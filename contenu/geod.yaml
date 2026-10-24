@@ -2,8 +2,9 @@
 # On construit d'abord le calcul différentiel dans ℝⁿ (normes, différentielle, classe Cᵏ,
 # point fixe, inversion locale, submersions), puis les sous-variétés de ℝⁿ, et enfin les
 # variétés abstraites, leurs espaces tangents et le fibré tangent.
-# Le déterminant n'étant pas construit dans l'atlas, l'inversibilité et la régularité de
-# l'inversion des matrices sont obtenues par la série de Neumann.
+# L'inversion des matrices est C^∞ par la formule de la comatrice (déterminant, construit
+# dans l'algèbre linéaire) ; la série de Neumann fournit la forme quantitative utilisée
+# par l'inversion locale.
 # Les fonctions trigonométriques et l'exponentielle (analyse complexe) ne sont pas des
 # ancêtres de ce nœud : les exemples sont polynomiaux ou rationnels.
 
@@ -14,7 +15,7 @@ conteneur: geod
 entrees:
   top: [gd-normes]
   analyse-reelle: [gd-normes, gd-denombrable, gd-accroissements]
-  alglin: [gd-equivalence]
+  alglin: [gd-equivalence, gd-gl]
 
 noeuds:
   - id: gd-normes
@@ -211,27 +212,25 @@ noeuds:
     nature: proposition
     titre: Le groupe linéaire et l'inversion des matrices
     texte: |
-      Une matrice $A \in \mathcal M_n(\mathbb R)$ est inversible s'il existe $B$ telle que $AB = BA = I_n$ ; c'est le cas si et seulement si l'endomorphisme $x \mapsto Ax$ est bijectif, ou encore injectif, par le théorème du rang ({{v-rang|Théorème du rang}}). Les matrices inversibles forment un groupe pour le produit, le [[groupe-lineaire|groupe linéaire]] $GL_n(\mathbb R)$. On munit $\mathcal M_n(\mathbb R) \cong \mathcal L(\mathbb R^n)$ de la norme subordonnée $|||\cdot|||$ à une norme de $\mathbb R^n$.
+      Une matrice $A \in \mathcal M_n(\mathbb R)$ est inversible s'il existe $B$ telle que $AB = BA = I_n$ ; c'est le cas si et seulement si l'endomorphisme $x \mapsto Ax$ est bijectif, c'est-à-dire si et seulement si $\det A \neq 0$ ({{v-determinant|Déterminant}}, (ii) et (iii)). Les matrices inversibles forment un groupe pour le produit, le [[groupe-lineaire|groupe linéaire]] $GL_n(\mathbb R)$. On munit $\mathcal M_n(\mathbb R) \cong \mathcal L(\mathbb R^n)$ de la norme subordonnée $|||\cdot|||$ à une norme de $\mathbb R^n$.
     enonce: |
       (i) *Série de Neumann.* Si $|||H||| < 1$, la série $\sum_{m \geqslant 0} H^m$ converge, $I - H$ est inversible, d'inverse sa somme, et $|||(I - H)^{-1}||| \leqslant \dfrac{1}{1 - |||H|||}$.
 
-      (ii) $GL_n(\mathbb R)$ est un ouvert de $\mathcal M_n(\mathbb R)$ : si $A$ est inversible et $|||H||| < 1/|||A^{-1}|||$, alors $A + H$ est inversible.
+      (ii) $GL_n(\mathbb R)$ est un ouvert de $\mathcal M_n(\mathbb R)$.
 
       (iii) L'application $\mathrm{inv} : A \mapsto A^{-1}$ est de classe $C^\infty$ sur $GL_n(\mathbb R)$, et
       $$d\,\mathrm{inv}(A)(H) = -A^{-1} H A^{-1}.$$
     preuve: |
       (i) Soit $S_m = \sum_{j=0}^m H^j$. Pour $q > m$, $|||S_q - S_m||| \leqslant \sum_{j=m+1}^q |||H|||^j \leqslant \frac{|||H|||^{m+1}}{1 - |||H|||}$, qui tend vers $0$ ; la suite $(S_m)$ est de Cauchy, donc converge vers une matrice $S$, l'espace $\mathcal M_n(\mathbb R)$ étant complet ({{gd-equivalence|Équivalence des normes}}). On a $(I - H)S_m = S_m(I - H) = I - H^{m+1}$, qui tend vers $I$ ; la multiplication par une matrice fixée étant linéaire, donc continue, $(I - H)S = S(I - H) = I$. Enfin $|||S_m||| \leqslant 1/(1 - |||H|||)$ pour tout $m$, et l'inégalité passe à la limite.
 
-      (ii) $A + H = A(I + A^{-1}H)$, avec $|||A^{-1}H||| \leqslant |||A^{-1}|||\;|||H||| < 1$ : par (i), $I + A^{-1}H$ est inversible, et $A + H$ l'est comme produit de deux matrices inversibles.
+      (ii) Le déterminant est une fonction polynomiale des $n^2$ coefficients, donc continue ({{gd-classe-ck|Classe Cᵏ}}, (iii)), et $GL_n(\mathbb R)$ est l'image réciproque par $\det$ de l'ouvert $\mathbb R \setminus \{0\}$.
 
-      (iii) Pour $H$ petit, (i) appliqué à $-A^{-1}H$ donne $(A + H)^{-1} = \sum_{m \geqslant 0} (-A^{-1}H)^m A^{-1}$, d'où
-      $$(A + H)^{-1} - A^{-1} + A^{-1}HA^{-1} = \sum_{m \geqslant 2} (-A^{-1}H)^m A^{-1},$$
-      dont la norme est au plus $\dfrac{|||A^{-1}|||^3\,|||H|||^2}{1 - |||A^{-1}|||\;|||H|||}$, quantité de la forme $|||H|||\,\varepsilon(H)$. Donc $\mathrm{inv}$ est différentiable, en particulier continue, et $d\,\mathrm{inv} = \beta \circ (\mathrm{inv}, \mathrm{inv})$, où $\beta(X, Y) = (H \mapsto -XHY)$ est bilinéaire de $\mathcal M_n \times \mathcal M_n$ dans $\mathcal L(\mathcal M_n)$, donc $C^\infty$. Si $\mathrm{inv}$ est de classe $C^k$, alors $d\,\mathrm{inv}$ l'est aussi par composition ({{gd-classe-ck|Classe Cᵏ}}, (iii)), et $\mathrm{inv}$ est de classe $C^{k+1}$. Par récurrence, $\mathrm{inv}$ est $C^\infty$.
+      (iii) La fonction $r(t) = 1/t$ est dérivable sur $\mathbb R \setminus \{0\}$, de dérivée $-r^2$, puisque son taux d'accroissement $-1/\big(t(t + h)\big)$ tend vers $-1/t^2$. Si $r$ est de classe $C^k$, sa dérivée $-r^2$ l'est aussi, comme produit, donc $r$ est de classe $C^{k+1}$ : $r$ est $C^\infty$. Par la formule de la comatrice ({{v-determinant|Déterminant}}, (iv)), le coefficient $(i, j)$ de $A^{-1}$ est $r(\det A)\, C_{ji}(A)$, produit de deux fonctions $C^\infty$ de $A$, le cofacteur étant polynomial : $\mathrm{inv}$ est de classe $C^\infty$. Enfin $A \cdot \mathrm{inv}(A) = I$ est constante sur $GL_n(\mathbb R)$ ; en différentiant ce produit, qui est bilinéaire ({{gd-differentielle|Différentielle}}, (iii) et (iv)), on obtient $H A^{-1} + A\, d\,\mathrm{inv}(A)(H) = 0$, d'où la formule.
     remarques:
       - |
         Pour $n = 1$, la formule redonne la dérivée $-h/a^2$ de $x \mapsto 1/x$. L'erreur la plus répandue est d'écrire $-A^{-2}H$ : le produit des matrices n'étant pas commutatif, $H$ reste pris entre les deux facteurs $A^{-1}$.
       - |
-        L'atlas n'a pas encore construit le déterminant. Avec lui, on montrerait plus vite que $GL_n(\mathbb R) = \{\det \neq 0\}$ est ouvert, et que $\mathrm{inv}$ est $C^\infty$ par les formules de Cramer, dont les coefficients sont des fractions rationnelles. La série de Neumann évite ce détour et vaut aussi en dimension infinie, pour les espaces de Banach.
+        La série de Neumann donne davantage que le déterminant : un rayon explicite. Si $A$ est inversible et $|||H||| < 1/|||A^{-1}|||$, alors $A + H = A(I + A^{-1}H)$ est inversible par (i). C'est cette forme quantitative qu'emploie l'inversion locale, et elle vaut en dimension infinie, dans les espaces de Banach, où le déterminant n'a plus de sens.
 
   - id: gd-inversion-locale
     etiquette: Inversion locale

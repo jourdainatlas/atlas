@@ -7,7 +7,7 @@ titre: Algèbre linéaire
 conteneur: alglin
 
 entrees:
-  alg: [v-espace]
+  alg: [v-espace, v-permutations]
   n: [v-combinaisons]
   ordin: [v-bases-existence]
 
@@ -272,6 +272,102 @@ noeuds:
       - |
         En dimension infinie, $E^*$ est strictement plus gros que $E$ : le dual de $K^{(\mathbb N)}$ est isomorphe à $K^{\mathbb N}$, dont la dimension est strictement plus grande que celle de $K^{(\mathbb N)}$ (théorème d'Erdős-Kaplansky). L'analyse fonctionnelle remplace pour cette raison le dual algébrique par le dual topologique.
 
+  - id: v-permutations
+    etiquette: Permutations, signature
+    nature: proposition
+    titre: Groupe symétrique et signature
+    texte: |
+      Pour $n \geqslant 1$, le [[groupe-symetrique|groupe symétrique]] $\mathfrak S_n$ est l'ensemble des bijections de $\{1, \dots, n\}$ sur lui-même, muni de la composition ; c'est un [[groupe]], d'élément neutre l'identité. Pour $a \neq b$, la **transposition** $(a\ b)$ échange $a$ et $b$ et fixe les autres éléments.
+
+      Soit $\sigma \in \mathfrak S_n$ et $P = \{i, j\}$ une paire, avec $i < j$. On pose $s_\sigma(P) = 1$ si $\sigma(i) < \sigma(j)$, c'est-à-dire si $\sigma$ respecte l'ordre de $P$, et $s_\sigma(P) = -1$ sinon. Ces valeurs sont prises dans le groupe à deux éléments $\{1, -1\}$, où $(-1)^2 = 1$. La [[signature-permutation|signature]] de $\sigma$ est le produit
+      $$\varepsilon(\sigma) = \prod_{P} s_\sigma(P),$$
+      étendu aux paires de $\{1, \dots, n\}$, défini comme les sommes finies du nœud {{v-combinaisons|Combinaisons linéaires}}, puisque le groupe $\{1, -1\}$ est commutatif.
+    enonce: |
+      (i) Toute permutation est un produit de transpositions, l'identité étant le produit vide.
+
+      (ii) $\varepsilon$ est un morphisme de groupes de $\mathfrak S_n$ dans $\{1, -1\}$.
+
+      (iii) Toute transposition a pour signature $-1$. Par suite, si $\sigma$ est le produit de $k$ transpositions, $\varepsilon(\sigma) = (-1)^k$ : la parité de $k$ ne dépend que de $\sigma$.
+    preuve: |
+      (i) Par récurrence sur $n$, le cas $n = 1$ étant trivial. Soit $\sigma \in \mathfrak S_n$ et $m = \sigma(n)$. Si $m \neq n$, la permutation $\tau\sigma$, où $\tau = (m\ n)$, fixe $n$ ; sinon on prend $\tau = \mathrm{id}$. La restriction de $\tau\sigma$ à $\{1, \dots, n - 1\}$ est une permutation, produit de transpositions par hypothèse de récurrence, et $\sigma = \tau(\tau\sigma)$ puisque $\tau^2 = \mathrm{id}$.
+
+      (ii) Soient $\sigma, \tau$ et $P = \{i, j\}$ avec $i < j$. Si $\tau(i) < \tau(j)$, $\sigma\tau$ respecte l'ordre de $P$ si et seulement si $\sigma$ respecte celui de $\tau(P)$ ; si $\tau(i) > \tau(j)$, il le respecte si et seulement si $\sigma$ inverse celui de $\tau(P)$. Dans les deux cas,
+      $$s_{\sigma\tau}(P) = s_\sigma(\tau(P))\, s_\tau(P).$$
+      On fait le produit sur toutes les paires. L'application $P \mapsto \tau(P)$ est une bijection de l'ensemble des paires, et un produit fini dans un groupe commutatif ne change pas quand on réindexe ses facteurs par une bijection, par l'unicité qui le caractérise. Donc $\prod_P s_\sigma(\tau(P)) = \varepsilon(\sigma)$, et $\varepsilon(\sigma\tau) = \varepsilon(\sigma)\varepsilon(\tau)$.
+
+      (iii) Soit $\tau = (a\ b)$ avec $a < b$. Les paires dont $\tau$ inverse l'ordre sont $\{a, b\}$, et, pour chaque $k$ tel que $a < k < b$, les deux paires $\{a, k\}$ et $\{k, b\}$ ; toutes les autres sont respectées. Il y a donc $2(b - a - 1) + 1$ facteurs égaux à $-1$, nombre impair, et $\varepsilon(\tau) = -1$. La dernière assertion découle de (ii).
+    remarques:
+      - |
+        Dans $\mathfrak S_3$, l'identité et les deux permutations circulaires $1 \mapsto 2 \mapsto 3 \mapsto 1$ et $1 \mapsto 3 \mapsto 2 \mapsto 1$ ont pour signature $1$, et les trois transpositions ont pour signature $-1$. Une permutation circulaire de trois éléments est en effet le produit de deux transpositions, par exemple $(1\ 2\ 3) = (1\ 3)(1\ 2)$.
+      - |
+        L'erreur la plus répandue est de croire que la décomposition en transpositions est unique. Elle ne l'est pas, même en nombre de facteurs : $\mathrm{id} = (1\ 2)(1\ 2)$ s'écrit avec zéro ou deux transpositions. Seule la **parité** du nombre de facteurs est déterminée, et c'est exactement ce que mesure la signature.
+
+  - id: v-formes-alternees
+    etiquette: Formes alternées
+    nature: théorème
+    titre: Formes multilinéaires alternées
+    texte: |
+      Soit $E$ un espace vectoriel de dimension $n \geqslant 1$. Une forme $n$-linéaire $f : E^n \to K$ est linéaire par rapport à chacune de ses variables, les autres étant fixées. Elle est [[forme-alternee|alternée]] si $f(x_1, \dots, x_n) = 0$ dès que deux des $x_k$ sont égaux. Pour une base $\mathcal B = (e_1, \dots, e_n)$, on note $x_{ij}$ la $i$-ième coordonnée de $x_j$ dans $\mathcal B$, et l'on pose
+      $$\det\nolimits_{\mathcal B}(x_1, \dots, x_n) = \sum_{\sigma \in \mathfrak S_n} \varepsilon(\sigma) \prod_{j=1}^n x_{\sigma(j)\, j},$$
+      où $\varepsilon(\sigma)$ est vu dans $K$, par $1 \mapsto 1$ et $-1 \mapsto -1$.
+    enonce: |
+      (i) Si $f$ est $n$-linéaire alternée, alors $f(x_{\sigma(1)}, \dots, x_{\sigma(n)}) = \varepsilon(\sigma) f(x_1, \dots, x_n)$ pour toute $\sigma \in \mathfrak S_n$, et $f(x_1, \dots, x_n) = 0$ dès que la famille $(x_1, \dots, x_n)$ est liée.
+
+      (ii) $\det_{\mathcal B}$ est une forme $n$-linéaire alternée, qui vaut $1$ en $(e_1, \dots, e_n)$.
+
+      (iii) Toute forme $n$-linéaire alternée $f$ vérifie $f = f(e_1, \dots, e_n)\, \det_{\mathcal B}$. L'espace des formes $n$-linéaires alternées sur $E$ est donc de dimension $1$, de base $\det_{\mathcal B}$.
+    preuve: |
+      (i) En développant $f(\dots, x + y, \dots, x + y, \dots) = 0$ par linéarité dans les deux places concernées, on obtient $f(\dots, x, \dots, y, \dots) = -f(\dots, y, \dots, x, \dots)$ : la formule vaut pour une transposition. Si elle vaut pour $\sigma$ et si $\tau$ est une transposition, posons $y_k = x_{\sigma(k)}$ ; alors $x_{\sigma\tau(k)} = y_{\tau(k)}$, et
+      $$\begin{aligned} f(x_{\sigma\tau(1)}, \dots, x_{\sigma\tau(n)}) &= -f(y_1, \dots, y_n) \\ &= -\varepsilon(\sigma) f(x_1, \dots, x_n) \\ &= \varepsilon(\sigma\tau) f(x_1, \dots, x_n). \end{aligned}$$
+      On conclut par {{v-permutations|Permutations, signature}}, (i). Si la famille est liée, l'un des vecteurs, disons $x_k$, est combinaison linéaire des autres ; en développant par linéarité dans la place $k$, chaque terme contient deux fois le même vecteur et s'annule.
+
+      (ii) Chaque produit $\prod_j x_{\sigma(j)\, j}$ contient exactement un facteur issu de chaque $x_j$, et les coordonnées sont linéaires : $\det_{\mathcal B}$ est $n$-linéaire. Supposons $x_k = x_l$ avec $k < l$, et soit $\tau = (k\ l)$. Pour toute $\sigma$, les produits associés à $\sigma$ et à $\sigma\tau$ sont égaux, puisque $x_{\sigma\tau(k)\, k} = x_{\sigma(l)\, l}$ et $x_{\sigma\tau(l)\, l} = x_{\sigma(k)\, k}$, tandis que $\varepsilon(\sigma\tau) = -\varepsilon(\sigma)$. L'application $\sigma \mapsto \sigma\tau$ est une bijection du noyau de $\varepsilon$ sur son complémentaire ; en regroupant ainsi les termes deux à deux, la somme est nulle. Enfin, pour $x_j = e_j$, le produit $\prod_j x_{\sigma(j)\, j}$ est nul sauf si $\sigma(j) = j$ pour tout $j$ : seule l'identité contribue, pour $1$.
+
+      (iii) Écrivons $x_j = \sum_i x_{ij} e_i$ et développons par multilinéarité :
+      $$f(x_1, \dots, x_n) = \sum_{\varphi} \Big(\prod_j x_{\varphi(j)\, j}\Big) f(e_{\varphi(1)}, \dots, e_{\varphi(n)}),$$
+      la somme portant sur les applications $\varphi$ de $\{1, \dots, n\}$ dans lui-même. Si $\varphi$ n'est pas injective, deux arguments sont égaux et le terme est nul. Une injection d'un ensemble fini dans lui-même est une bijection ({{n-fini|Ensembles finis}}, (iii)) ; par (i), $f(e_{\sigma(1)}, \dots, e_{\sigma(n)}) = \varepsilon(\sigma) f(e_1, \dots, e_n)$, d'où $f = f(e_1, \dots, e_n) \det_{\mathcal B}$. Par (ii), $\det_{\mathcal B}$ n'est pas nulle, et elle engendre l'espace des formes alternées.
+    remarques:
+      - |
+        En caractéristique $2$, où $-1 = 1$ dans $K$, l'antisymétrie $f(\dots, x, \dots, y, \dots) = -f(\dots, y, \dots, x, \dots)$ n'entraîne pas que $f$ s'annule quand deux arguments sont égaux. C'est pourquoi la définition porte sur cette annulation, plus forte, et non sur l'antisymétrie : avec elle, la théorie vaut sur tout corps.
+      - |
+        Pour $n = 2$, $\det_{\mathcal B}(x, y) = x_1y_2 - x_2y_1$ : les deux permutations de $\mathfrak S_2$ donnent les deux termes. Pour $n = 3$, les six permutations donnent la règle de Sarrus, qui ne se généralise pas : en dimension $4$, la somme compte $24$ termes, et non $8$.
+
+  - id: v-determinant
+    etiquette: Déterminant
+    nature: théorème
+    titre: Déterminant d'un endomorphisme, d'une matrice
+    texte: |
+      Soit $E$ de dimension $n \geqslant 1$ et $u \in \mathcal L(E)$. Si $f$ est une forme $n$-linéaire alternée, $(x_1, \dots, x_n) \mapsto f(u(x_1), \dots, u(x_n))$ en est une autre. Le [[determinant|déterminant]] $\det u$ est le scalaire tel que
+      $$f(u(x_1), \dots, u(x_n)) = \det u \cdot f(x_1, \dots, x_n)$$
+      pour toute forme $f$ et tous $x_1, \dots, x_n$. Le déterminant d'une matrice carrée $A = (a_{ij})$ est $\det A = \sum_{\sigma \in \mathfrak S_n} \varepsilon(\sigma) \prod_j a_{\sigma(j)\, j}$, c'est-à-dire le déterminant de ses colonnes dans la base canonique de $K^n$. Le **cofacteur** $C_{ij}$ est $(-1)^{i+j}\Delta_{ij}$, où le mineur $\Delta_{ij}$ est le déterminant de la matrice obtenue en supprimant la ligne $i$ et la colonne $j$ ; la **comatrice** est $\operatorname{com} A = (C_{ij})$.
+    enonce: |
+      (i) $\det u$ existe et est unique ; $\det(v \circ u) = \det v \cdot \det u$ et $\det \mathrm{id} = 1$.
+
+      (ii) $u$ est bijectif si et seulement si $\det u \neq 0$, et alors $\det(u^{-1}) = (\det u)^{-1}$.
+
+      (iii) $\det u$ est le déterminant de la matrice de $u$ dans n'importe quelle base. Pour deux matrices carrées, $\det(AB) = \det A \cdot \det B$ et $\det {}^tA = \det A$, où ${}^tA = (a_{ji})$ est la transposée.
+
+      (iv) *Développement et comatrice.* Pour tout $j$, $\det A = \sum_i a_{ij} C_{ij}$, et
+      $$A\, {}^t\!\operatorname{com} A = {}^t\!\operatorname{com} A\; A = \det A \cdot I_n.$$
+      En particulier, si $\det A \neq 0$, alors $A^{-1} = \dfrac{1}{\det A}\, {}^t\!\operatorname{com} A$.
+    preuve: |
+      (i) L'application $f \mapsto f(u(\cdot), \dots, u(\cdot))$ est un endomorphisme de l'espace des formes alternées, qui est de dimension $1$ ({{v-formes-alternees|Formes alternées}}, (iii)) ; un tel endomorphisme est la multiplication par un unique scalaire, car il envoie la base $\det_{\mathcal B}$ sur un multiple $\lambda \det_{\mathcal B}$. Ensuite $f(vu(x_1), \dots) = \det v \cdot f(u(x_1), \dots) = \det v \cdot \det u \cdot f(x_1, \dots)$, et l'identité donne $1$.
+
+      (ii) Si $u$ est bijectif, $\det u \cdot \det u^{-1} = \det \mathrm{id} = 1$. Sinon, $u$ n'est pas surjectif ({{v-rang|Théorème du rang}}), et la famille $(u(e_1), \dots, u(e_n))$ est liée, car une famille libre de $n$ vecteurs serait une base ({{v-dimension|Dimension}}, (ii)) ; donc $\det u = \det u \cdot \det_{\mathcal B}(e_1, \dots, e_n) = \det_{\mathcal B}(u(e_1), \dots, u(e_n)) = 0$.
+
+      (iii) Si $A$ est la matrice de $u$ dans $\mathcal B$, les coordonnées de $u(e_j)$ forment la $j$-ième colonne de $A$, et $\det u = \det_{\mathcal B}(u(e_1), \dots, u(e_n)) = \det A$ ; le premier membre ne dépend d'aucune base. La formule du produit découle de (i) et de {{v-matrices|Matrices}}, (ii). Pour la transposée, en réindexant chaque produit par $i = \sigma(j)$, $\prod_j a_{\sigma(j)\, j} = \prod_i a_{i\, \sigma^{-1}(i)}$, et $\varepsilon(\sigma^{-1}) = \varepsilon(\sigma)$ ; comme $\sigma \mapsto \sigma^{-1}$ est une bijection de $\mathfrak S_n$, $\det A = \sum_\rho \varepsilon(\rho) \prod_i a_{i\, \rho(i)} = \det {}^tA$. Le déterminant est donc aussi multilinéaire et alterné par rapport aux lignes.
+
+      (iv) Par linéarité par rapport à la colonne $j$, $\det A = \sum_i a_{ij} D_{ij}$, où $D_{ij}$ est le déterminant de la matrice $A_{ij}$ obtenue en remplaçant la colonne $j$ de $A$ par le $i$-ième vecteur de la base canonique. Amenons cette colonne en première position par $j - 1$ échanges de colonnes voisines, puis la ligne $i$ en première position par $i - 1$ échanges de lignes voisines : le déterminant est multiplié par $(-1)^{i+j}$, et l'on obtient une matrice dont la première colonne est $(1, 0, \dots, 0)$ et dont le bloc obtenu en supprimant la première ligne et la première colonne est la matrice du mineur $\Delta_{ij}$. Dans la formule du déterminant de cette matrice, seules les $\sigma$ qui fixent $1$ contribuent, et ces $\sigma$ s'identifient aux permutations de $\{2, \dots, n\}$, avec la même signature, puisque les paires $\{1, k\}$ sont respectées. Donc $D_{ij} = (-1)^{i+j}\Delta_{ij} = C_{ij}$.
+
+      Le coefficient $(j, k)$ de ${}^t\!\operatorname{com} A\; A$ est $\sum_i C_{ij} a_{ik}$ : c'est, par le même développement, le déterminant de la matrice obtenue en remplaçant la colonne $j$ de $A$ par sa colonne $k$. Il vaut $\det A$ si $j = k$, et $0$ sinon, deux colonnes étant égales. L'autre égalité s'obtient en appliquant celle-ci à ${}^tA$, dont la comatrice est ${}^t\!\operatorname{com} A$, puis en transposant, avec ${}^t(XY) = {}^tY\, {}^tX$.
+    remarques:
+      - |
+        Pour $A = \begin{pmatrix} 2 & 1 & 0 \\ 1 & 3 & 1 \\ 0 & 1 & 4 \end{pmatrix}$, le développement suivant la première colonne donne $\det A = 2 \cdot 11 - 1 \cdot 4 + 0 = 18$, et la comatrice, symétrique ici comme $A$, est $\begin{pmatrix} 11 & -4 & 1 \\ -4 & 8 & -2 \\ 1 & -2 & 5 \end{pmatrix}$. Ainsi $A^{-1} = \frac{1}{18}\,{}^t\!\operatorname{com} A$ a pour premier coefficient $11/18$ ; on vérifie que le produit par $A$ redonne $I_3$. La formule est précieuse en théorie, mais coûteuse en pratique : la méthode du pivot inverse une matrice bien plus vite.
+      - |
+        L'erreur la plus répandue est de traiter le déterminant comme une application linéaire. Il est multiplicatif, mais pas additif : $\det(I_2 + I_2) = \det(2I_2) = 4$, alors que $\det I_2 + \det I_2 = 2$. En général $\det(\lambda A) = \lambda^n \det A$, puisque chacune des $n$ colonnes est multipliée par $\lambda$.
+      - |
+        Sur $\mathbb R$, le signe du déterminant sépare les bases en deux classes, celles qui ont même orientation que la base canonique et les autres, et sa valeur absolue mesure le facteur par lequel $u$ multiplie les volumes. Le premier fait fonde l'orientation des variétés, le second la formule du changement de variables en théorie de la {{mes|mesure}}. Sur $\mathbb R$, le déterminant est polynomial en les coefficients, donc continu : c'est ce que le nœud {{gd-gl|Groupe linéaire}} utilise.
+
 aretes:
   - [v-espace, v-combinaisons]
   - [v-espace, v-applications]
@@ -287,3 +383,9 @@ aretes:
   - [v-dimension, v-rang]
   - [v-dimension, v-matrices]
   - [v-rang, v-dual]
+  - [v-combinaisons, v-permutations]
+  - [v-permutations, v-formes-alternees]
+  - [v-dimension, v-formes-alternees]
+  - [v-formes-alternees, v-determinant]
+  - [v-matrices, v-determinant]
+  - [v-rang, v-determinant]
