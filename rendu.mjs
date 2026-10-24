@@ -94,12 +94,29 @@ console.log(`Page écrite : construction/atlas.html (${(page.length / 1024).toFi
 // atlas.html sert à l'aperçu dans Claude, qui ajoute lui-même l'enveloppe du document.
 const coupure = page.indexOf('<div class="app">');
 const tete = page.slice(0, coupure), corps = page.slice(coupure);
+// Adresse publique du site : les messageries exigent une adresse complète pour l'image d'aperçu.
+const ADRESSE = 'https://jourdainatlas.github.io/atlas/';
 const index = `<!doctype html>
 <html lang="fr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="ATLAS, atlas interactif des dépendances entre les théories mathématiques, de la logique aux grandes théories.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#121418">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ATLAS">
+<meta property="og:title" content="ATLAS">
+<meta property="og:description" content="Atlas interactif des dépendances entre les théories mathématiques, de la logique aux grandes théories.">
+<meta property="og:url" content="${ADRESSE}">
+<meta property="og:image" content="${ADRESSE}apercu.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Logo ATLAS : un graphe orienté de l'alpha à l'oméga">
+<meta property="og:locale" content="fr_FR">
+<meta name="twitter:card" content="summary_large_image">
 <style>body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
 ${tete}</head>
 <body>
@@ -109,4 +126,7 @@ ${corps}
 `;
 fs.mkdirSync('site', { recursive: true });
 fs.writeFileSync('site/index.html', index);
+// Icônes et image d'aperçu (fabriquées par identite/fabriquer-icones.mjs).
+for (const f of ['favicon.svg', 'favicon-32.png', 'apple-touch-icon.png', 'icone-512.png', 'apercu.png'])
+  fs.copyFileSync(`identite/${f}`, `site/${f}`);
 console.log(`Site écrit : site/index.html (${(index.length / 1024).toFixed(0)} Ko)`);
