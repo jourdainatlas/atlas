@@ -101,7 +101,7 @@ const index = `<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="ATLAS, atlas interactif des dépendances entre les théories mathématiques, de la logique aux grandes théories.">
+<meta name="description" content="ATLAS, architecture logique des théories mathématiques : un graphe interactif des dépendances, de la logique du premier ordre et de ZFC aux grandes théories.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -109,7 +109,7 @@ const index = `<!doctype html>
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ATLAS">
 <meta property="og:title" content="ATLAS">
-<meta property="og:description" content="Atlas interactif des dépendances entre les théories mathématiques, de la logique aux grandes théories.">
+<meta property="og:description" content="Architecture logique des théories mathématiques, de la logique du premier ordre et de ZFC aux grandes théories.">
 <meta property="og:url" content="${ADRESSE}">
 <meta property="og:image" content="${ADRESSE}apercu.png">
 <meta property="og:image:width" content="1200">

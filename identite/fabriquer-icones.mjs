@@ -31,7 +31,7 @@ const page = (w, h, corps, fond = 'transparent') => `<!doctype html><meta charse
 const apercu = `<div style="width:1200px;height:630px;background:#121418;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px">
 <div style="width:300px;height:300px">${tuile(true)}</div>
 <div style="font-family:Spectral;font-weight:600;font-size:64px;letter-spacing:.18em;padding-left:.18em;color:#e7e9ed;line-height:1">ATLAS</div>
-<div style="font-family:Spectral;font-weight:400;font-size:26px;color:#a1a6af;letter-spacing:.02em">Les dépendances entre les théories mathématiques</div></div>`;
+<div style="font-family:Spectral;font-weight:400;font-size:26px;color:#a1a6af;letter-spacing:.02em">Architecture logique des théories mathématiques</div></div>`;
 
 const nav = await chromium.launch();
 const p = await nav.newPage();
