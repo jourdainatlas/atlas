@@ -2,8 +2,8 @@
 # Espace probabilisé, indépendance, variables aléatoires et lois, espérance et variance,
 # loi faible des grands nombres (et théorème de Weierstrass par les polynômes de Bernstein),
 # Borel-Cantelli, modes de convergence, loi forte (moment d'ordre 4), loi du 0-1, nombres
-# normaux de Borel. L'exponentielle n'étant pas un ancêtre de ce nœud (elle est construite en
-# analyse complexe), la loi normale et le théorème central limite ne figurent qu'en remarque.
+# normaux de Borel ; puis, grâce à l'analyse complexe (exp, π, arctan) : lois de Poisson et
+# exponentielle, loi normale, inégalité de Hoeffding, théorème central limite par Lindeberg.
 
 graphe: proba
 titre: Probabilités
@@ -11,7 +11,7 @@ conteneur: proba
 
 entrees:
   mes: [p-espace, p-independance, p-variables, p-esperance]
-  analyse-reelle: [p-loi-faible]
+  anc: [p-poisson-exp, p-normale]
 
 noeuds:
   - id: p-espace
@@ -155,7 +155,7 @@ noeuds:
       - |
         Pour des événements indépendants de probabilités $1/n$, une infinité se produit presque sûrement, puisque $\sum 1/n = +\infty$ ; pour des probabilités $1/n^2$, seulement un nombre fini. C'est une loi du tout ou rien : la probabilité de $\limsup A_n$ ne vaut que $0$ ou $1$, ce que la {{p-zero-un|loi du 0-1}} généralisera.
       - |
-        La démonstration de (ii) évite l'inégalité $1 - p \leqslant e^{-p}$ que l'on emploie d'ordinaire, l'exponentielle n'étant pas encore disponible ici ; la minoration $\prod(1 + p_k) \geqslant 1 + \sum p_k$ suffit.
+        La démonstration de (ii) évite l'inégalité $1 - p \leqslant e^{-p}$ que l'on emploie d'ordinaire, bien que l'exponentielle soit disponible ici, l'{{anc|analyse complexe}} étant un parent de cette branche : la minoration $\prod(1 + p_k) \geqslant 1 + \sum p_k$ suffit et reste purement algébrique.
 
   - id: p-convergences
     etiquette: Modes de convergence
@@ -202,7 +202,7 @@ noeuds:
       - |
         L'hypothèse $E[X^4] < +\infty$ rend la démonstration courte, mais elle n'est pas nécessaire : Kolmogorov a montré que l'intégrabilité suffit, et Etemadi (1981) a même affaibli l'indépendance mutuelle en indépendance deux à deux. Ces versions sont admises ici ; leur démonstration repose sur une troncature des variables.
       - |
-        La loi forte justifie l'interprétation fréquentielle des probabilités : la fréquence d'un événement dans une suite d'épreuves indépendantes tend presque sûrement vers sa probabilité. Le théorème central limite précise la vitesse, en $\sigma/\sqrt n$, et la loi limite, qui est la loi normale ; sa densité fait intervenir l'exponentielle de l'{{anc|analyse complexe}}, qui n'est pas un ancêtre de cette branche.
+        La loi forte justifie l'interprétation fréquentielle des probabilités : la fréquence d'un événement dans une suite d'épreuves indépendantes tend presque sûrement vers sa probabilité. Le théorème central limite ({{p-tcl|Théorème central limite}}) précise la vitesse, en $\sigma/\sqrt n$, et la forme des fluctuations, qui suivent la loi normale.
 
   - id: p-zero-un
     etiquette: Loi du 0-1
@@ -238,6 +238,109 @@ noeuds:
       - |
         En répartissant les chiffres $d_k$ en une infinité de sous-suites disjointes, au moyen d'une bijection de $\mathbb N \times \mathbb N$ sur $\mathbb N$ ({{q-denombrable|ℚ est dénombrable}}), et en recomposant chaque sous-suite en un réel, on obtient une suite de variables uniformes indépendantes sur le seul espace $[0, 1[$. C'est le point de départ de la construction de suites indépendantes de lois quelconques.
 
+  - id: p-poisson-exp
+    etiquette: Poisson, exponentielle
+    nature: théorème
+    titre: Lois de Poisson et loi exponentielle
+    texte: |
+      Une probabilité $\mu$ sur $\mathbb R$ a pour **densité** une fonction borélienne $f \geqslant 0$ telle que $\int f\,d\lambda = 1$ si $\mu(B) = \int_B f\,d\lambda$ pour tout borélien $B$ ; c'est bien une probabilité ({{m-beppo-levi|Convergence monotone}}, (iii)). La [[loi-poisson|loi de Poisson]] de paramètre $\lambda > 0$ est la loi sur $\mathbb N$ donnée par $P(X = k) = e^{-\lambda}\lambda^k/k!$. La **loi exponentielle** de paramètre $\lambda > 0$ a pour densité $\lambda e^{-\lambda x}\mathbf 1_{x \geqslant 0}$.
+    enonce: |
+      (i) Pour tout réel $x$, $(1 + x/n)^n \to e^x$ quand $n \to \infty$.
+
+      (ii) La loi de Poisson est une probabilité, d'espérance et de variance $\lambda$. Si $S_n$ suit la loi binomiale de paramètres $n$ et $\lambda/n$, alors $P(S_n = k) \to e^{-\lambda}\lambda^k/k!$ pour tout $k$.
+
+      (iii) La loi exponentielle est une probabilité, de fonction de répartition $1 - e^{-\lambda x}$ sur $[0, +\infty[$, et elle est **sans mémoire** : $P(X > s + t \mid X > s) = P(X > t)$ pour $s, t \geqslant 0$.
+
+      (iv) Réciproquement, si $X$ est à valeurs dans $]0, +\infty[$, sans mémoire, et $0 < P(X > 1) < 1$, alors $X$ suit une loi exponentielle.
+    preuve: |
+      (i) En développant, $(1 + x/n)^n = \sum_{k=0}^n \frac{x^k}{k!}\prod_{j<k}\big(1 - \frac jn\big)$. Chaque terme tend vers $x^k/k!$ et est majoré en module par $|x|^k/k!$, terme d'une série convergente. Le théorème de convergence dominée pour la mesure de comptage sur $\mathbb N$ ({{m-convergence-dominee|Convergence dominée}}) donne la limite $\sum_k x^k/k! = e^x$ ({{cx-exponentielle|Exponentielle}}).
+
+      (ii) $\sum_k e^{-\lambda}\lambda^k/k! = e^{-\lambda}e^\lambda = 1$. De même $\sum_k k\,e^{-\lambda}\lambda^k/k! = \lambda$ et $\sum_k k(k-1)e^{-\lambda}\lambda^k/k! = \lambda^2$, d'où $E[X^2] = \lambda^2 + \lambda$ et $\operatorname{Var} X = \lambda$. Pour la loi binomiale, $P(S_n = k) = \frac{\lambda^k}{k!}\prod_{j<k}\frac{n - j}{n}\,\big(1 - \frac\lambda n\big)^{n-k}$ ; le produit tend vers $1$, $(1 - \lambda/n)^{-k}$ aussi, et $(1 - \lambda/n)^n \to e^{-\lambda}$ par (i).
+
+      (iii) La fonction $x \mapsto -e^{-\lambda x}$ a pour dérivée $\lambda e^{-\lambda x}$ ; par le théorème fondamental et la comparaison de Riemann et Lebesgue ({{m-riemann|Riemann et Lebesgue}}), $\int_{[0, T]} \lambda e^{-\lambda x}\,dx = 1 - e^{-\lambda T}$, qui tend vers $1$ par convergence monotone, puisque $e^{\lambda T} \geqslant 1 + \lambda T$. Donc $P(X > t) = e^{-\lambda t}$, et $P(X > s + t)/P(X > s) = e^{-\lambda t}$ par $\exp(a + b) = \exp a \exp b$.
+
+      (iv) Posons $G(t) = P(X > t)$, décroissante, continue à droite ({{p-variables|Variables aléatoires}}), avec $G(s + t) = G(s)G(t)$ et $G(0) = 1$. Soit $q = G(1) \in \,]0, 1[$. La fonction $\exp$ étant continue et strictement croissante sur $\mathbb R$, avec $\exp 0 = 1$ et $\exp(-x) = 1/\exp x \to 0$, il existe un unique $\lambda > 0$ tel que $e^{-\lambda} = q$. Par récurrence, $G(m) = q^m$, puis $G(m/n)^n = G(m)$ ; la racine $n$-ième positive étant unique, $G(m/n) = e^{-\lambda m/n}$. Enfin $G$ et $t \mapsto e^{-\lambda t}$ sont continues à droite et coïncident sur les rationnels positifs, qui sont denses : elles sont égales.
+    remarques:
+      - |
+        L'approximation de Poisson explique la fréquence de cette loi : elle compte les événements rares parmi de nombreuses épreuves indépendantes. Pour $n = 100$ et $\lambda = 2$, la loi binomiale donne $0{,}1326$, $0{,}2707$, $0{,}2734$, $0{,}1823$ pour $k = 0, 1, 2, 3$, et la loi de Poisson $0{,}1353$, $0{,}2707$, $0{,}2707$, $0{,}1804$.
+      - |
+        L'absence de mémoire caractérise les durées de vie sans vieillissement, comme celle d'un noyau radioactif : savoir qu'il n'est pas désintégré au temps $s$ ne change rien à la loi de ce qui lui reste à vivre. Elle est l'analogue continu de la loi géométrique du nœud {{p-variables|Variables aléatoires}}.
+
+  - id: p-normale
+    etiquette: Loi normale
+    nature: théorème
+    titre: La loi normale
+    texte: |
+      La [[loi-normale|loi normale]] $\mathcal N(m, \sigma^2)$, pour $m$ réel et $\sigma > 0$, a pour densité $\dfrac{1}{\sigma\sqrt{2\pi}}\exp\Big(-\dfrac{(x - m)^2}{2\sigma^2}\Big)$. La loi $\mathcal N(0, 1)$ est la loi normale centrée réduite.
+    enonce: |
+      (i) $\displaystyle \int_{\mathbb R} e^{-x^2/2}\,dx = \sqrt{2\pi}$ : la loi $\mathcal N(m, \sigma^2)$ est une probabilité.
+
+      (ii) Une variable de loi $\mathcal N(m, \sigma^2)$ a pour espérance $m$ et pour variance $\sigma^2$, et des moments de tout ordre. Si $X$ suit $\mathcal N(0, 1)$, $m + \sigma X$ suit $\mathcal N(m, \sigma^2)$.
+
+      (iii) Si $X$ et $Y$ sont indépendantes, de lois $\mathcal N(0, \alpha)$ et $\mathcal N(0, \beta)$, alors $X + Y$ suit la loi $\mathcal N(0, \alpha + \beta)$.
+    preuve: |
+      *Préliminaires.* Sur $]-\frac\pi2, \frac\pi2[$, $\cos > 0$, puisque $\frac\pi2$ est le plus petit zéro positif de $\cos$ et que $\cos$ est paire ({{cx-pi|Le nombre π}}). La fonction $\tan = \sin/\cos$ y est dérivable, de dérivée $1 + \tan^2 > 0$, et tend vers $\pm\infty$ aux bornes, puisque $\sin(\pm\frac\pi2) = \pm 1$ : c'est une bijection croissante sur $\mathbb R$, dont la réciproque $\arctan$ a pour dérivée $\frac{1}{1 + s^2}$. Donc $\int_0^T \frac{ds}{1 + s^2} = \arctan T \to \frac\pi2$. Pour les changements de variable affines ou $y = xs$ sur un segment, on dérive les deux membres par rapport à la borne supérieure ({{ar-tfa|Théorème fondamental}}) ; les intégrales sur $[0, +\infty[$ de fonctions continues positives sont des limites d'intégrales sur des segments, par convergence monotone et {{m-riemann|Riemann et Lebesgue}}.
+
+      (i) Soit $J = \int_0^{+\infty} e^{-x^2}\,dx$. Par Tonelli ({{m-fubini|Tonelli, Fubini}}), $J^2 = \int_0^{+\infty}\!\!\int_0^{+\infty} e^{-x^2 - y^2}\,dy\,dx$. Pour $x > 0$ fixé, le changement de variable $y = xs$ donne $\int_0^{+\infty} e^{-x^2(1 + s^2)}\,x\,ds$. En intervertissant à nouveau, et puisque $x e^{-x^2(1+s^2)}$ a pour primitive $-\frac{e^{-x^2(1+s^2)}}{2(1 + s^2)}$,
+      $$J^2 = \int_0^{+\infty} \frac{ds}{2(1 + s^2)} = \frac\pi4.$$
+      Donc $J = \frac{\sqrt\pi}2$, puis, par parité et le changement de variable $x = \sqrt 2\,u$, $\int_{\mathbb R} e^{-u^2/2}\,du = 2\sqrt 2\,J = \sqrt{2\pi}$.
+
+      (ii) $|x|^k e^{-x^2/4}$ est borné, d'où l'intégrabilité de $|x|^k e^{-x^2/2}$. Pour $\mathcal N(0, 1)$, l'espérance est nulle par imparité, et l'intégration par parties sur $[-T, T]$, avec $(e^{-x^2/2})' = -xe^{-x^2/2}$, donne $\int x^2 e^{-x^2/2} = \int e^{-x^2/2}$, d'où $E[X^2] = 1$. Le changement de variable affine donne le cas général.
+
+      (iii) La loi du couple a pour densité $f(x)g(y)$ par rapport à $\lambda \otimes \lambda$ ({{p-variables|Variables aléatoires}}, (iii)). Par Tonelli et l'invariance de $\lambda$ par translation ({{m-lebesgue|Mesure de Lebesgue}}), $P(X + Y \leqslant t) = \int\!\int \mathbf 1_{x \leqslant t - y}f(x)g(y)\,dx\,dy = \int_{-\infty}^t h(u)\,du$, avec $h(u) = \int f(u - y)g(y)\,dy$. En complétant le carré,
+      $$\frac{(u - y)^2}{\alpha} + \frac{y^2}{\beta} = \frac{u^2}{\alpha + \beta} + \frac{\alpha + \beta}{\alpha\beta}\Big(y - \frac{\beta u}{\alpha + \beta}\Big)^2,$$
+      et (i), après translation et changement d'échelle, donne $h(u) = \frac{1}{\sqrt{2\pi(\alpha + \beta)}}e^{-u^2/(2(\alpha + \beta))}$.
+    remarques:
+      - |
+        L'erreur la plus répandue est de croire que deux variables normales ont toujours une somme normale. L'indépendance est essentielle : si $X$ suit $\mathcal N(0, 1)$, $-X$ aussi, mais $X + (-X) = 0$ n'est pas une variable normale.
+      - |
+        Le calcul de $J$ évite les coordonnées polaires, qui demanderaient la formule du changement de variables en dimension $2$ ; seuls interviennent Tonelli et un changement de variable sur une droite. C'est en cela que l'{{anc|analyse complexe}}, qui fournit $\exp$, $\pi$ et $\arctan$, est un parent de cette branche.
+
+  - id: p-hoeffding
+    etiquette: Inégalité de Hoeffding
+    nature: théorème
+    titre: Moments exponentiels et inégalité de Hoeffding
+    enonce: |
+      (i) *Chernoff.* Pour toute variable $X$, tout réel $a$ et tout $t > 0$, $P(X \geqslant a) \leqslant e^{-ta}\,E[e^{tX}]$.
+
+      (ii) Si $E[X] = 0$ et $|X| \leqslant 1$, alors $E[e^{tX}] \leqslant \cosh t \leqslant e^{t^2/2}$ pour tout réel $t$, où $\cosh t = \frac12(e^t + e^{-t})$.
+
+      (iii) *Hoeffding.* Si $X_1, \dots, X_n$ sont indépendantes, centrées, à valeurs dans $[-1, 1]$, et $S_n = X_1 + \cdots + X_n$, alors pour tout $a > 0$,
+      $$P(S_n \geqslant a) \leqslant e^{-a^2/(2n)}.$$
+    preuve: |
+      (i) Inégalité de Markov ({{p-esperance|Espérance, variance}}) appliquée à $e^{tX} \geqslant 0$ et à $e^{ta}$, la fonction $\exp$ étant croissante.
+
+      (ii) La fonction $\exp$ est convexe : pour $u < v$ et $\theta \in [0, 1]$, la fonction $\varphi(\theta) = (1 - \theta)e^u + \theta e^v - e^{(1-\theta)u + \theta v}$ est nulle en $0$ et $1$ et de dérivée seconde $-(v - u)^2e^{(1-\theta)u + \theta v} < 0$. Si elle prenait une valeur négative, elle atteindrait sur $[0, 1]$ un minimum strictement négatif en un point intérieur $\theta_m$, où $\varphi'(\theta_m) = 0$ ; $\varphi'$ étant décroissante, $\varphi$ décroîtrait sur $[\theta_m, 1]$ ({{ar-deriv|Dérivabilité}}), et $\varphi(1) < 0$, ce qui est absurde. Pour $x \in [-1, 1]$, en écrivant $tx = \frac{1 - x}2(-t) + \frac{1 + x}2 t$, on obtient $e^{tx} \leqslant \frac{1 - x}2 e^{-t} + \frac{1 + x}2 e^t$, et en prenant l'espérance, $E[e^{tX}] \leqslant \cosh t$. Enfin $\cosh t = \sum_k \frac{t^{2k}}{(2k)!} \leqslant \sum_k \frac{(t^2/2)^k}{k!} = e^{t^2/2}$, puisque $(2k)! \geqslant 2^k k!$.
+
+      (iii) Par indépendance ({{p-esperance|Espérance, variance}}, (iv), et regroupement), $E[e^{tS_n}] = \prod_i E[e^{tX_i}] \leqslant e^{nt^2/2}$. Par (i), $P(S_n \geqslant a) \leqslant e^{-ta + nt^2/2}$, et l'on prend $t = a/n$.
+    remarques:
+      - |
+        Pour $n = 100$ et $a = 30$, Hoeffding donne $P(S_n \geqslant 30) \leqslant e^{-4{,}5} \approx 0{,}011$, alors que Bienaymé-Tchebychev ne donne que $\frac{100}{900} \approx 0{,}111$. La décroissance est exponentielle en $a^2/n$, et non polynomiale : c'est ce que gagne l'emploi de $E[e^{tX}]$, qui contrôle tous les moments à la fois.
+
+  - id: p-tcl
+    etiquette: Théorème central limite
+    nature: théorème
+    titre: Théorème central limite (méthode de Lindeberg)
+    enonce: |
+      Soient $X_1, X_2, \dots$ indépendantes, de même loi, avec $E[X_1] = 0$, $E[X_1^2] = 1$ et $E[|X_1|^3] < +\infty$, et $S_n = X_1 + \cdots + X_n$. Soit $N$ une variable de loi $\mathcal N(0, 1)$.
+
+      (i) Pour toute $f : \mathbb R \to \mathbb R$ de classe $C^3$ dont les trois premières dérivées sont bornées,
+      $$\Big|E\Big[f\Big(\frac{S_n}{\sqrt n}\Big)\Big] - E[f(N)]\Big| \leqslant \frac{\|f'''\|_\infty\,\big(E|X_1|^3 + E|N|^3\big)}{6\sqrt n}.$$
+      (ii) Pour tout réel $x$, $P\big(S_n/\sqrt n \leqslant x\big) \to P(N \leqslant x)$.
+    preuve: |
+      (i) *Taylor.* Pour $f$ de classe $C^3$ et $y, h$ réels, $f(y + h) = f(y) + hf'(y) + \frac{h^2}2 f''(y) + R$, avec $|R| \leqslant \|f'''\|_\infty |h|^3/6$. En effet, la fonction $\varphi(s) = f(y + h) - f(y + s) - (h - s)f'(y + s) - \frac{(h - s)^2}2 f''(y + s) - (h - s)^3K$, où $K$ est choisi pour que $\varphi(0) = 0$, s'annule aussi en $h$, et $\varphi'(s) = (h - s)^2\big(3K - \frac12 f'''(y + s)\big)$ ; le théorème de Rolle donne $K = f'''(\xi)/6$.
+
+      *Remplacement.* Sur l'espace produit de l'espace de départ et de $(\mathbb R^n, \mathcal N(0, 1)^{\otimes n})$ ({{m-produit|Mesure produit}}), on dispose de variables $Z_1, \dots, Z_n$ de loi $\mathcal N(0, 1)$, indépendantes entre elles et des $X_i$. Par {{p-normale|Loi normale}}, (ii) et (iii), $(Z_1 + \cdots + Z_n)/\sqrt n$ suit la loi $\mathcal N(0, 1)$. Posons, pour $0 \leqslant k \leqslant n$, $T_k = (X_1 + \cdots + X_k + Z_{k+1} + \cdots + Z_n)/\sqrt n$, de sorte que $T_n = S_n/\sqrt n$ et que $T_0$ suit la loi de $N$. Avec $W_k = T_k - X_k/\sqrt n = T_{k-1} - Z_k/\sqrt n$, indépendante de $X_k$ et de $Z_k$ ({{p-independance|Indépendance}}, (ii)), la formule de Taylor donne
+      $$\begin{aligned} E[f(T_k)] - E[f(T_{k-1})] = {} &E\Big[f'(W_k)\frac{X_k - Z_k}{\sqrt n}\Big] \\ &+ E\Big[\frac{f''(W_k)}{2}\frac{X_k^2 - Z_k^2}{n}\Big] + E[R_k - R'_k]. \end{aligned}$$
+      Les deux premiers termes sont nuls, par indépendance, puisque $X_k$ et $Z_k$ ont même espérance et même moment d'ordre $2$ ({{p-esperance|Espérance, variance}}, (iv)). Le reste est majoré par $\|f'''\|_\infty(E|X_1|^3 + E|N|^3)/(6n^{3/2})$. On somme sur $k$.
+
+      (ii) Soit $h(u) = 1 - 35u^4 + 84u^5 - 70u^6 + 20u^7$ sur $[0, 1]$, prolongée par $1$ sur $]-\infty, 0]$ et par $0$ sur $[1, +\infty[$ : elle est de classe $C^3$, ses trois premières dérivées s'annulant en $0$ et en $1$. Pour $\varepsilon > 0$, $f_\varepsilon(y) = h\big((y - x)/\varepsilon\big)$ vérifie $\mathbf 1_{y \leqslant x} \leqslant f_\varepsilon(y) \leqslant \mathbf 1_{y \leqslant x + \varepsilon}$. Par (i), $\limsup P(S_n/\sqrt n \leqslant x) \leqslant E[f_\varepsilon(N)] \leqslant P(N \leqslant x + \varepsilon)$, et de même $\liminf P(S_n/\sqrt n \leqslant x) \geqslant P(N \leqslant x - \varepsilon)$. La fonction de répartition de $N$ est continue, puisque $N$ a une densité : on fait tendre $\varepsilon$ vers $0$.
+    remarques:
+      - |
+        Pour $100$ lancers d'une pièce équilibrée, $P(S \leqslant 55)$ vaut exactement $0{,}86437$ pour la loi binomiale, et l'approximation normale avec correction de continuité, $P(N \leqslant 1{,}1)$, donne $0{,}86433$. C'est le théorème de de Moivre (1733) et Laplace (1812), cas particulier de celui-ci.
+      - |
+        La méthode est due à Lindeberg (1922) : on remplace les variables une à une par des variables normales, et chaque échange ne coûte qu'un terme d'ordre $n^{-3/2}$. Elle évite les fonctions caractéristiques, qu'introduira l'analyse de Fourier. L'hypothèse $E|X|^3 < +\infty$ simplifie la preuve ; un moment d'ordre $2$ suffit, au prix d'une troncature.
+
 aretes:
   - [p-espace, p-independance]
   - [p-espace, p-variables]
@@ -250,3 +353,7 @@ aretes:
   - [p-convergences, p-loi-forte]
   - [p-independance, p-zero-un]
   - [p-loi-forte, p-normaux]
+  - [p-esperance, p-poisson-exp]
+  - [p-esperance, p-normale]
+  - [p-poisson-exp, p-hoeffding]
+  - [p-normale, p-tcl]
