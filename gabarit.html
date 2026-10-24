@@ -30,12 +30,12 @@
   --c-ord: #6a7d00;
   --c-alg: #d26d00;
   --c-top: #c0007a;
-  --c-mix: #2f343c;
-  --c-n: #0070c0;
-  --c-z: #00866b;
-  --c-q: #8a45ab;
-  --c-r: #c00000;
-  --c-c: #7d4718;
+  --c-nb: #0070c0;     /* nombres et arithmétique */
+  --c-ana: #00866b;    /* analyse */
+  --c-geo: #8a45ab;    /* géométrie */
+  --c-mix: #2f343c;    /* théorie mixte : contour dégradé entre ses sources */
+  --c-neutre: #2f343c; /* chapitres des graphes intérieurs */
+  --c-axiome: #c00000;
   --ombre: 0 1px 2px rgba(27, 30, 36, .08), 0 4px 14px rgba(27, 30, 36, .08);
 
   --f-titre: "Spectral", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
@@ -49,7 +49,7 @@
     --filet: #2b2f37; --trame: #1f2329; --rouge: #ff6d7d; --rouge-fond: #351a1f; --noeud: #1d2027;
     --arete: #5b616b; --arete-vive: #e7e9ed; --choix: #e6c15c; --choix-fond: #2c2512;
     --c-fond: #a3a8b1; --c-ord: #b6ca4c; --c-alg: #ffa24a; --c-top: #ff62bd; --c-mix: #c9ced6;
-    --c-n: #55aaff; --c-z: #35caa4; --c-q: #c793e6; --c-r: #ff6b6b; --c-c: #d79c66;
+    --c-nb: #55aaff; --c-ana: #35caa4; --c-geo: #c793e6; --c-neutre: #c9ced6; --c-axiome: #ff6b6b;
     --ombre: 0 1px 2px rgba(0, 0, 0, .4), 0 6px 18px rgba(0, 0, 0, .35);
     color-scheme: dark;
   }
@@ -59,7 +59,7 @@
   --filet: #2b2f37; --trame: #1f2329; --rouge: #ff6d7d; --rouge-fond: #351a1f; --noeud: #1d2027;
   --arete: #5b616b; --arete-vive: #e7e9ed; --choix: #e6c15c; --choix-fond: #2c2512;
   --c-fond: #a3a8b1; --c-ord: #b6ca4c; --c-alg: #ffa24a; --c-top: #ff62bd; --c-mix: #c9ced6;
-  --c-n: #55aaff; --c-z: #35caa4; --c-q: #c793e6; --c-r: #ff6b6b; --c-c: #d79c66;
+  --c-nb: #55aaff; --c-ana: #35caa4; --c-geo: #c793e6; --c-neutre: #c9ced6; --c-axiome: #ff6b6b;
   --ombre: 0 1px 2px rgba(0, 0, 0, .4), 0 6px 18px rgba(0, 0, 0, .35);
   color-scheme: dark;
 }
@@ -172,8 +172,9 @@ body.redim .vue { pointer-events: none; }
 .plan.focus .arete { opacity: .25; }
 .plan.focus .arete.vive { opacity: 1; stroke: var(--arete-vive); stroke-width: 1.8; marker-end: url(#pointe-vive); }
 
+:root { --c-n: var(--c-nb); --c-z: var(--c-nb); --c-q: var(--c-nb); --c-r: var(--c-nb); --c-c: var(--c-nb); --c-ari: var(--c-nb); }
 .noeud {
-  --c: var(--c-mix);
+  --c: var(--c-neutre);
   position: absolute; display: flex; align-items: center; justify-content: center; text-align: center;
   padding: 4px 12px; border-radius: 8px; cursor: pointer;
   border: 1.5px solid var(--c); background: color-mix(in srgb, var(--c) 9%, var(--noeud));
@@ -190,16 +191,31 @@ body.redim .vue { pointer-events: none; }
 .fam-alg  { --c: var(--c-alg); }
 .fam-top  { --c: var(--c-top); }
 .fam-mix  { --c: var(--c-mix); background: var(--noeud); }
+/* Théorie mixte de l'édifice : le contour passe de la couleur d'une source à celle de l'autre. */
+.noeud.mixte {
+  --c: var(--c1);
+  border-color: transparent;
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--c1) 9%, var(--noeud)), color-mix(in srgb, var(--c2) 9%, var(--noeud))) padding-box,
+    linear-gradient(90deg, var(--c1), var(--c2)) border-box;
+}
+.pastille.mixte {
+  border: 2px solid transparent;
+  background: linear-gradient(var(--noeud), var(--noeud)) padding-box, linear-gradient(90deg, var(--c-alg), var(--c-top)) border-box;
+}
+.fam-ana  { --c: var(--c-ana); }
+.fam-geo  { --c: var(--c-geo); }
+.fam-ari  { --c: var(--c-ari); }
 .fam-n { --c: var(--c-n); } .fam-z { --c: var(--c-z); } .fam-q { --c: var(--c-q); }
 .fam-r { --c: var(--c-r); } .fam-c { --c: var(--c-c); }
 .nombre { border-radius: 50%; border-width: 2.5px; padding: 0; font-family: var(--f-titre); font-size: 22px; font-weight: 400; color: var(--c); }
 
 /* natures, dans les graphes intérieurs */
 .nat-définition { --c: var(--rouge); background: var(--rouge-fond); }
-.nat-axiome { --c: var(--c-r); background: color-mix(in srgb, var(--c-r) 8%, var(--noeud)); border-width: 2px; }
+.nat-axiome { --c: var(--c-axiome); background: color-mix(in srgb, var(--c-axiome) 8%, var(--noeud)); border-width: 2px; }
 .nat-théorème { --c: var(--encre); background: var(--noeud); border: 3.5px double var(--c); }
 .nat-proposition, .nat-lemme, .nat-corollaire { --c: var(--encre-2); background: var(--noeud); }
-.nat-chapitre { --c: var(--c-mix); background: color-mix(in srgb, var(--c-mix) 6%, var(--noeud)); }
+.nat-chapitre { --c: var(--c-neutre); background: color-mix(in srgb, var(--c-neutre) 6%, var(--noeud)); }
 .entree-amont {
   --c: var(--encre-3); border-style: dashed; background: var(--papier); color: var(--encre-2); font-weight: 400;
 }
@@ -353,8 +369,10 @@ body.redim .vue { pointer-events: none; }
             <li><span class="pastille" style="--c: var(--c-ord)"></span>Ordre</li>
             <li><span class="pastille" style="--c: var(--c-alg)"></span>Algèbre</li>
             <li><span class="pastille" style="--c: var(--c-top)"></span>Topologie</li>
-            <li><span class="pastille" style="--c: var(--c-mix)"></span>Théorie mixte</li>
-            <li><span class="pastille" style="--c: var(--c-r); border-radius: 50%"></span>Nombres</li>
+            <li><span class="pastille" style="--c: var(--c-nb); border-radius: 50%"></span>Nombres et arithmétique</li>
+            <li><span class="pastille" style="--c: var(--c-ana)"></span>Analyse</li>
+            <li><span class="pastille" style="--c: var(--c-geo)"></span>Géométrie</li>
+            <li><span class="pastille mixte"></span>Théorie mixte (couleurs de ses sources)</li>
           </ul>
         </div>
         <div>
@@ -467,6 +485,11 @@ function dessiner(gid) {
       classes.push('fam-' + FAM(n));
       if (gid !== D.racine) classes.push('nat-' + n.nature);
       if (NOMBRES.has(n.famille)) classes.push('nombre');
+      if (gid === D.racine && n.famille === 'mix') {
+        const [c1, c2 = c1] = sourcesMixte(n);
+        classes.push('mixte');
+        b.style.setProperty('--c1', c1); b.style.setProperty('--c2', c2);
+      }
       if (n.sous) { classes.push('a-interieur'); b.title = 'Ouvrir la structure interne de « ' + n.titre + ' »'; }
     }
     b.className = classes.join(' ');
@@ -572,14 +595,19 @@ function ouvrirNoeud(id) {
 const rang = n => (n.graphe === D.racine ? `<span>rang ${n.rang}</span>` : '');
 function puce(id, niveau) {
   const n = D.noeuds[id];
-  const c = n.graphe === D.racine ? `var(--c-${n.famille})` : 'var(--encre-3)';
+  const c = n.graphe === D.racine ? couleurNoeud(n) : 'var(--encre-3)';
   return `<button type="button" class="puce" data-n="${id}" style="--c: ${c}">${esc(n.titre)}${niveau ? '<span class="niv">↑</span>' : ''}</button>`;
 }
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
 
+// Couleurs des sources directes d'une théorie mixte, sans doublon.
+function sourcesMixte(n) {
+  const c = [...new Set(n.parents.map(p => `var(--c-${D.noeuds[p].famille})`))];
+  return c.length ? c : ['var(--c-mix)'];
+}
 function couleurNoeud(n) {
-  if (n.graphe === D.racine) return `var(--c-${n.famille})`;
-  return { 'définition': 'var(--rouge)', 'axiome': 'var(--c-r)' }[n.nature] || 'var(--encre)';
+  if (n.graphe === D.racine) return n.famille === 'mix' ? sourcesMixte(n)[0] : `var(--c-${n.famille})`;
+  return { 'définition': 'var(--rouge)', 'axiome': 'var(--c-axiome)' }[n.nature] || 'var(--encre)';
 }
 
 function fiche() {

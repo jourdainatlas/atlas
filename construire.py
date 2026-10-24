@@ -22,7 +22,7 @@ import yaml
 NATURES = {'théorie', 'chapitre', 'axiome', 'définition', 'théorème',
            'proposition', 'lemme', 'corollaire'}
 NUMEROTEES = ['définition', 'proposition', 'lemme', 'théorème', 'corollaire']
-FAMILLES = {'fond', 'ord', 'alg', 'top', 'mix', 'n', 'z', 'q', 'r', 'c'}
+FAMILLES = {'fond', 'ord', 'alg', 'top', 'ana', 'geo', 'ari', 'mix', 'n', 'z', 'q', 'r', 'c'}
 NOMBRES = {'n', 'z', 'q', 'r', 'c'}
 CHAMPS_TEXTE = ['texte', 'enonce', 'preuve', 'choix']
 
