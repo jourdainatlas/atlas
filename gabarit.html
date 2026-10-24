@@ -480,7 +480,7 @@ function dessiner(gid) {
     if (pl.entree) {
       classes.push('entree-amont');
       b.dataset.entree = '1';
-      b.title = 'Venu de « ' + D.graphes[n.graphe].titre + ' » : cliquer pour y remonter';
+      b.title = 'Venu de « ' + D.graphes[n.graphe].titre + ' » : cliquer pour lire sa fiche';
     } else {
       classes.push('fam-' + FAM(n));
       if (gid !== D.racine) classes.push('nat-' + n.nature);
@@ -570,7 +570,8 @@ function aller(gid, choisi = null, opts = {}) {
   }
   document.querySelectorAll('.noeud.choisi').forEach(e => e.classList.remove('choisi'));
   if (choisi) {
-    const b = document.querySelector(`.noeud[data-id="${choisi}"]:not([data-entree])`);
+    const b = document.querySelector(`.noeud[data-id="${choisi}"]:not([data-entree])`)
+      || document.querySelector(`.noeud[data-id="${choisi}"][data-entree]`);
     if (b) {
       b.classList.add('choisi');
       if (!opts.sansDefilement) b.scrollIntoView({ block: 'nearest', inline: 'nearest' });
@@ -651,6 +652,9 @@ function fiche() {
       () => { o.innerHTML = '<p class="contexte">Cette branche n\'a pas pu être chargée. Vérifiez la connexion, puis rechargez la page.</p>'; });
     return;
   }
+  if (etat.choisi && n.graphe !== etat.graphe) {
+    contexte = `<p class="contexte">Cette fiche vient du niveau supérieur, « ${esc(D.graphes[n.graphe].titre)} ». Vous restez dans le graphe « ${esc(g.titre)} » ; <a class="lien-noeud" href="#${n.graphe}.${id}" data-n="${id}">voir cette notion à sa place dans « ${esc(D.graphes[n.graphe].titre)} »</a>.</p>`;
+  }
   const c = couleurNoeud(n);
   let h = `<article class="fiche" style="--c: ${c}">`;
   h += `<p class="sur-titre"><span class="sorte">${esc(n.sorte)}</span>${rang(n)}${n.graphe !== D.racine ? `<span>${esc(D.graphes[n.graphe].titre)}</span>` : ''}</p>`;
@@ -661,7 +665,7 @@ function fiche() {
   if (n.enonce) h += `<div class="enonce"><span class="tete">${n.nature === 'chapitre' ? 'Résultat principal' : 'Énoncé'}</span>${n.enonce}</div>`;
   if (n.preuve) h += `<details class="preuve"><summary>Démonstration</summary><div class="contenu">${n.preuve}<span class="cqfd">□</span></div></details>`;
   for (const r of n.remarques) h += `<div class="remarque"><span class="tete">Remarque</span>${r}</div>`;
-  if (n.sous && !contexte) h += `<button type="button" class="ouvrir" data-sous="${n.sous}">Ouvrir la structure interne <span aria-hidden="true">→</span></button>`;
+  if (n.sous && (!contexte || n.graphe !== etat.graphe)) h += `<button type="button" class="ouvrir" data-sous="${n.sous}">Ouvrir la structure interne <span aria-hidden="true">→</span></button>`;
   h += '<div class="liens">';
   const amont = n.parents.map(p => puce(p)).concat(n.amont.map(p => puce(p, true)));
   h += `<div><h3>Repose sur</h3><div class="puces">${amont.length ? amont.join('') : '<span class="vide">Rien dans ce graphe : c\'est un point de départ.</span>'}</div></div>`;
@@ -775,7 +779,7 @@ $('#plan').addEventListener('click', ev => {
   const b = ev.target.closest('.noeud');
   if (!b) return;
   const id = b.dataset.id, n = D.noeuds[id];
-  if (b.dataset.entree) { aller(n.graphe, id); return; }
+  if (b.dataset.entree) { aller(etat.graphe, id, { sansDefilement: true }); return; }   // fiche lue sur place
   if (n.sous) { aller(n.sous); return; }
   aller(etat.graphe, id, { sansDefilement: true });
 });
@@ -860,7 +864,8 @@ try { const l = parseInt(localStorage.getItem(CLE_LARGEUR), 10); if (l) fixerLar
 function depuisAncre() {
   const h = decodeURIComponent(location.hash.slice(1));
   const [g, n] = h.split('.');
-  if (g && D.graphes[g]) aller(g, n && D.noeuds[n] && D.noeuds[n].graphe === g ? n : null);
+  const valide = n && D.noeuds[n] && (D.noeuds[n].graphe === g || (D.graphes[g] && D.graphes[g].noeuds.some(p => p.id === n && p.entree)));
+  if (g && D.graphes[g]) aller(g, valide ? n : null);
   else aller(D.racine);
 }
 addEventListener('hashchange', depuisAncre);
