@@ -1,0 +1,150 @@
+# Niveau 1 : structure interne du nœud ℂ.
+# ℂ est construit comme ℝ[X]/(X² + 1). Dans l'édifice, il précède l'analyse réelle : les racines carrées réelles
+# sont obtenues ici directement par la borne supérieure, et le théorème de d'Alembert-Gauss, dont toutes les
+# démonstrations demandent un argument d'analyse, est admis avec l'indication de la difficulté.
+
+graphe: c
+titre: Les nombres complexes
+conteneur: c
+
+entrees:
+  r: [c-racine-reelle, c-construction]
+
+noeuds:
+  - id: c-racine-reelle
+    etiquette: Racine carrée réelle
+    nature: proposition
+    titre: Racine carrée d'un réel positif
+    enonce: |
+      Pour tout réel $x \geqslant 0$, il existe un unique réel $y \geqslant 0$ tel que $y^2 = x$ ; on le note $\sqrt x$.
+    preuve: |
+      *Unicité.* Si $y, y' \geqslant 0$ et $y^2 = y'^2$, alors $(y - y')(y + y') = 0$. Si $y + y' = 0$, les deux sont nuls ; sinon $y = y'$.
+
+      *Existence.* Pour $x = 0$, $y = 0$ convient. Soit $x > 0$, et $A = \{t \geqslant 0 : t^2 \leqslant x\}$. Elle contient $m = \min(1, x)$, puisque $m^2 \leqslant m \leqslant x$, et elle est majorée par $M = \max(1, x)$, puisque $t > M$ entraîne $t^2 > t \geqslant x$. Soit $s = \sup A$, qui existe ({{rr-complet|Corps ordonné complet}}) ; on a $s \geqslant m > 0$.
+
+      Si $s^2 < x$, posons $h = \min\big(1, \frac{x - s^2}{2(2s + 1)}\big) > 0$. Alors $(s + h)^2 \leqslant s^2 + h(2s + 1) < x$, donc $s + h \in A$, ce qui contredit $s = \sup A$. Si $s^2 > x$, posons $h = \frac{s^2 - x}{2s} > 0$. Alors $s - h = \frac{s^2 + x}{2s} > 0$ et $(s - h)^2 = x + h^2 > x$ ; tout $t \in A$ vérifie $t^2 \leqslant x < (s - h)^2$, donc $t < s - h$, et $s - h$ est un majorant plus petit que $s$. Il reste $s^2 = x$.
+    remarques:
+      - |
+        Ce sont exactement les calculs qui montraient que $\{t : t^2 < 2\}$ n'a pas de borne supérieure dans $\mathbb Q$ ({{q-irrationnel|Irrationalité de √2}}). Dans $\mathbb Q$, ils aboutissaient à une contradiction ; dans $\mathbb R$, ils prouvent l'existence. C'est la propriété de la borne supérieure qui fait toute la différence.
+
+  - id: c-construction
+    etiquette: Construction de ℂ
+    nature: théorème
+    titre: ℂ comme quotient de ℝ[X]
+    enonce: |
+      L'idéal engendré par $X^2 + 1$ dans $\mathbb R[X]$ est maximal. Le quotient $\mathbb C = \mathbb R[X]/(X^2 + 1)$ est donc un [[corps]], dans lequel $\mathbb R$ se plonge par les classes des polynômes constants. La classe $i$ de $X$ vérifie $i^2 = -1$, et tout [[nombre-complexe|nombre complexe]] s'écrit de manière unique $z = a + ib$ avec $a, b \in \mathbb R$ ; $a$ et $b$ sont ses parties **réelle** et **imaginaire**, notées $\operatorname{Re} z$ et $\operatorname{Im} z$.
+    preuve: |
+      *Maximalité.* $X^2 + 1$ n'a pas de racine réelle, puisque $x^2 + 1 \geqslant 1 > 0$ dans le corps ordonné $\mathbb R$ ({{q-ordre|Ordre de ℚ}}). L'anneau $\mathbb R[X]$ est principal ({{z-polynomes|Anneaux de polynômes}}) ; un idéal contenant $X^2 + 1$ s'écrit $(D)$ avec $D$ divisant $X^2 + 1$. Si $D$ était de degré $1$, il aurait une racine réelle, qui serait racine de $X^2 + 1$. Donc $D$ est de degré $0$, et $(D) = \mathbb R[X]$, ou de degré $2$, multiple constant de $X^2 + 1$, et $(D) = (X^2 + 1)$. Le quotient est un corps ({{a-premier-maximal|Idéaux premiers, maximaux}}).
+
+      *Plongement de ℝ.* La composée de l'inclusion de $\mathbb R$ dans $\mathbb R[X]$ et de la projection est un morphisme d'anneaux issu d'un corps vers un anneau non nul ; elle est injective ({{a-corps|Corps}}).
+
+      *Écriture.* $i^2$ est la classe de $X^2 = (X^2 + 1) - 1$, c'est-à-dire $-1$. La division euclidienne de $P$ par $X^2 + 1$ donne un reste unique $a + bX$ ({{z-polynomes|Anneaux de polynômes}}) ; deux polynômes ont même classe si et seulement s'ils ont même reste, d'où l'existence et l'unicité de l'écriture $a + ib$.
+    remarques:
+      - |
+        On aurait pu définir $\mathbb C$ comme $\mathbb R^2$ muni de la multiplication $(a, b)(c, d) = (ac - bd, ad + bc)$, et vérifier les axiomes de corps à la main. La construction par quotient donne ces axiomes gratuitement, et explique la formule : c'est la règle de calcul des polynômes, avec $X^2$ remplacé par $-1$.
+      - |
+        Le même procédé, appliqué à un polynôme irréductible quelconque sur un corps $K$, fabrique un corps où ce polynôme a une racine. C'est la construction des corps de rupture, base de la théorie de Galois.
+
+  - id: c-calcul
+    etiquette: Conjugué, module
+    nature: proposition
+    titre: Conjugaison et module
+    texte: |
+      Le **conjugué** de $z = a + ib$ est $\bar z = a - ib$, et son [[module-complexe|module]] est $|z| = \sqrt{a^2 + b^2}$ ({{c-racine-reelle|Racine carrée réelle}}).
+    enonce: |
+      Pour tous $z, w \in \mathbb C$ :
+
+      (i) $(a + ib)(c + id) = (ac - bd) + i(ad + bc)$ ;
+
+      (ii) $\overline{z + w} = \bar z + \bar w$, $\overline{zw} = \bar z\,\bar w$, $\bar{\bar z} = z$, et $\bar z = z$ si et seulement si $z \in \mathbb R$ ;
+
+      (iii) $z \bar z = |z|^2$, $|zw| = |z|\,|w|$, et si $z \neq 0$, $\dfrac 1z = \dfrac{\bar z}{|z|^2}$ ;
+
+      (iv) $|z + w| \leqslant |z| + |w|$.
+    preuve: |
+      (i) On développe et l'on remplace $i^2$ par $-1$.
+
+      (ii) La première égalité est immédiate ; la deuxième se vérifie avec (i), les deux membres valant $(ac - bd) - i(ad + bc)$. Les deux dernières viennent de l'unicité de l'écriture $a + ib$.
+
+      (iii) $(a + ib)(a - ib) = a^2 + b^2$. Puis $|zw|^2 = zw\,\overline{zw} = z\bar z\,w\bar w = |z|^2|w|^2$, et l'unicité de la racine positive donne $|zw| = |z||w|$. Enfin $z \cdot \bar z/|z|^2 = 1$.
+
+      (iv) $|z + w|^2 = (z + w)(\bar z + \bar w) = |z|^2 + |w|^2 + 2\operatorname{Re}(z \bar w)$. Pour $u = c + id$, on a $c \leqslant |c| = \sqrt{c^2} \leqslant \sqrt{c^2 + d^2} = |u|$, la racine carrée étant croissante. Donc $|z + w|^2 \leqslant |z|^2 + |w|^2 + 2|z||w| = (|z| + |w|)^2$, et l'on prend les racines.
+    remarques:
+      - |
+        Le module fait de $\mathbb C$ un espace métrique, par $d(z, w) = |z - w|$ ; c'est la distance euclidienne du plan, quand on identifie $a + ib$ au point $(a, b)$. L'erreur la plus répandue est d'écrire $|z|^2 = z^2$ : pour $z = i$, on a $|i|^2 = 1$ et $i^2 = -1$.
+
+  - id: c-automorphismes
+    etiquette: Automorphismes
+    nature: proposition
+    titre: Les automorphismes de ℂ qui fixent ℝ
+    enonce: |
+      Les seuls automorphismes de corps de $\mathbb C$ qui fixent chaque réel sont l'identité et la conjugaison.
+    preuve: |
+      La conjugaison en est un ({{c-calcul|Conjugué, module}}). Soit $\sigma$ un tel automorphisme. Alors $\sigma(i)^2 = \sigma(i^2) = \sigma(-1) = -1$, donc $(\sigma(i) - i)(\sigma(i) + i) = 0$, et $\sigma(i) = \pm i$ par intégrité. Pour $z = a + ib$, $\sigma(z) = a + \sigma(i)\,b$ vaut $z$ ou $\bar z$.
+    remarques:
+      - |
+        Le nombre $i$ n'est donc défini qu'au signe près : rien, dans la structure de corps de $\mathbb C$ au-dessus de $\mathbb R$, ne distingue $i$ de $-i$. Choisir l'un, c'est choisir une orientation du plan.
+      - |
+        Sans la condition de fixer $\mathbb R$, l'axiome du choix fournit une infinité d'autres automorphismes de $\mathbb C$, tous discontinus et impossibles à décrire explicitement.
+
+  - id: c-non-ordonnable
+    etiquette: ℂ n'est pas ordonné
+    nature: proposition
+    titre: Aucun ordre de corps sur ℂ
+    enonce: |
+      Il n'existe aucun ordre total qui fasse de $\mathbb C$ un [[corps-ordonne|corps ordonné]].
+    preuve: |
+      Dans un corps ordonné, tout carré est positif et $1 > 0$ ({{q-ordre|Ordre de ℚ}}). On aurait $-1 = i^2 \geqslant 0$, donc $0 = 1 + (-1) \geqslant 1 > 0$, contradiction.
+    remarques:
+      - |
+        On ne peut donc pas comparer deux nombres complexes de manière compatible avec les opérations. Les inégalités entre complexes portent toujours sur leurs modules ou leurs parties réelles, qui sont des réels.
+
+  - id: c-racines-carrees
+    etiquette: Racines carrées complexes
+    nature: théorème
+    titre: Racines carrées et équations du second degré
+    enonce: |
+      (i) Tout $z = a + ib \in \mathbb C$ a une racine carrée : avec $\varepsilon = 1$ si $b \geqslant 0$ et $\varepsilon = -1$ sinon,
+      $$w = \sqrt{\frac{|z| + a}{2}} + i\,\varepsilon\sqrt{\frac{|z| - a}{2}}$$
+      vérifie $w^2 = z$. Si $z \neq 0$, ses racines carrées sont exactement $w$ et $-w$.
+
+      (ii) Pour $\alpha \neq 0$, les solutions de $\alpha u^2 + \beta u + \gamma = 0$ dans $\mathbb C$ sont $\dfrac{-\beta \pm \delta}{2\alpha}$, où $\delta$ est une racine carrée de $\beta^2 - 4\alpha\gamma$.
+    preuve: |
+      (i) Les quantités sous les racines sont positives, puisque $|a| \leqslant |z|$ ({{c-calcul|Conjugué, module}}). Notons $x$ et $y$ la partie réelle et la partie imaginaire de $w$. Alors $x^2 - y^2 = \frac{|z| + a}{2} - \frac{|z| - a}{2} = a$, et $(2xy)^2 = |z|^2 - a^2 = b^2$ ; comme $x \geqslant 0$ et que $y$ a le signe de $b$, $2xy = b$. Donc $w^2 = x^2 - y^2 + 2ixy = z$. Si $u^2 = z = w^2$, alors $(u - w)(u + w) = 0$ et $u = \pm w$ ; ces deux valeurs sont distinctes si $z \neq 0$.
+
+      (ii) En multipliant par $4\alpha$, l'équation devient $(2\alpha u + \beta)^2 = \beta^2 - 4\alpha\gamma = \delta^2$, c'est-à-dire $2\alpha u + \beta = \pm\delta$ par (i).
+    remarques:
+      - |
+        Exemple : pour $z = -5 - 12i$, on a $|z| = 13$, d'où $w = \sqrt 4 - i\sqrt 9 = 2 - 3i$, et l'on vérifie $(2 - 3i)^2 = 4 - 12i - 9 = -5 - 12i$. Le signe $\varepsilon$ est indispensable : sans lui, on obtiendrait $2 + 3i$, dont le carré est $-5 + 12i$.
+      - |
+        Le second degré est ainsi toujours résoluble dans $\mathbb C$, même lorsque le discriminant est un réel négatif. C'est ce qui a fait introduire les nombres complexes, au XVIe siècle, à propos des équations du troisième degré, où ils apparaissent dans les calculs même quand les solutions sont réelles.
+
+  - id: c-dalembert
+    etiquette: D'Alembert-Gauss
+    nature: théorème
+    titre: Théorème de d'Alembert-Gauss
+    enonce: |
+      Tout polynôme non constant de $\mathbb C[X]$ a une racine dans $\mathbb C$ ; on dit que $\mathbb C$ est algébriquement clos. Par conséquent :
+
+      (i) tout polynôme de degré $n \geqslant 1$ de $\mathbb C[X]$ s'écrit $c(X - z_1)\cdots(X - z_n)$ ;
+
+      (ii) les polynômes irréductibles de $\mathbb R[X]$ sont ceux de degré $1$ et ceux de degré $2$ sans racine réelle.
+    preuve: |
+      **Admis.** La difficulté contournée est analytique : on montre que $|P|$ atteint un minimum sur $\mathbb C$, en utilisant que les parties fermées et bornées de $\mathbb C$ sont compactes, ce que seule l'{{analyse-reelle|analyse réelle}} établit, puis qu'en un point où $P$ ne s'annule pas, on peut faire décroître $|P|$, ce qui demande l'existence de racines $k$-ièmes des nombres complexes. Toutes les démonstrations connues utilisent une propriété de ce type, au minimum le théorème des valeurs intermédiaires pour les polynômes réels de degré impair.
+
+      Les conséquences se démontrent à partir du théorème. (i) Par récurrence sur $n$ : si $z_1$ est une racine de $P$, la division euclidienne par $X - z_1$ donne un reste constant, égal à $P(z_1) = 0$, donc $P = (X - z_1)Q$ avec $\deg Q = n - 1$ ({{z-polynomes|Anneaux de polynômes}}).
+
+      (ii) Un polynôme de degré $1$ est irréductible. Un polynôme de degré $2$ est irréductible si et seulement s'il n'a pas de racine réelle, puisqu'une factorisation non triviale ferait apparaître un facteur de degré $1$, donc une racine. Un polynôme réel de degré $\geqslant 3$ ayant une racine réelle n'est pas irréductible. Si $P \in \mathbb R[X]$, de degré $\geqslant 3$, n'a pas de racine réelle, soit $z$ une racine complexe ; alors $\bar z$ en est une autre, puisque $P(\bar z) = \overline{P(z)} = 0$ par (ii) du nœud {{c-calcul|Conjugué, module}}. Le polynôme $(X - z)(X - \bar z) = X^2 - 2\operatorname{Re}(z)X + |z|^2$ est réel, et il divise $P$ dans $\mathbb C[X]$ ; par unicité de la division euclidienne, il le divise aussi dans $\mathbb R[X]$, et $P$ n'est pas irréductible.
+    remarques:
+      - |
+        Le théorème est souvent appelé « théorème fondamental de l'algèbre », mais il n'est pas purement algébrique : $\mathbb C$ est algébriquement clos parce que $\mathbb R$ est complet. La preuve la plus courte passe par le théorème de Liouville, en {{anc|analyse complexe}}.
+      - |
+        D'Alembert en a publié une démonstration en 1746, incomplète selon les critères actuels ; Gauss en a donné plusieurs, la première dans sa thèse de 1799, et la critique qu'il y fait des preuves antérieures porte justement sur le recours non justifié à des propriétés de continuité.
+
+aretes:
+  - [c-racine-reelle, c-calcul]
+  - [c-construction, c-calcul]
+  - [c-calcul, c-automorphismes]
+  - [c-construction, c-non-ordonnable]
+  - [c-calcul, c-racines-carrees]
+  - [c-racines-carrees, c-dalembert]

@@ -1,0 +1,190 @@
+# Niveau 1 : structure interne du nœud « Topologie algébrique ».
+# Chemins, homotopies, groupe fondamental, revêtements, et le calcul fondateur π₁(S¹) ≅ ℤ.
+# Le cercle est défini comme le quotient ℝ/ℤ, ce qui évite les fonctions trigonométriques,
+# que l'atlas ne construit pas encore. Les propriétés du segment [0, 1] (compact, connexe)
+# viennent de l'analyse réelle.
+
+graphe: topalg
+titre: Topologie algébrique
+conteneur: topalg
+
+entrees:
+  top: [ta-chemins]
+  alg: [ta-groupe-fondamental]
+  analyse-reelle: [ta-chemins]
+
+noeuds:
+  - id: ta-chemins
+    etiquette: Chemins
+    nature: proposition
+    titre: Chemins et connexité par arcs
+    texte: |
+      On note $I = [0, 1]$, muni de la topologie induite par $\mathbb R$. Un [[chemin]] d'un point $x$ à un point $y$ d'un espace topologique $X$ est une application continue $\gamma : I \to X$ telle que $\gamma(0) = x$ et $\gamma(1) = y$ ; c'est un **lacet** en $x$ si $x = y$. On note $c_x$ le chemin constant, $\bar\gamma(s) = \gamma(1 - s)$ le chemin inverse et, si $\gamma(1) = \delta(0)$, $\gamma \cdot \delta$ le chemin qui parcourt $\gamma$ puis $\delta$ :
+      $$(\gamma \cdot \delta)(s) = \begin{cases} \gamma(2s) & \text{si } s \leqslant \tfrac12, \\ \delta(2s - 1) & \text{si } s \geqslant \tfrac12. \end{cases}$$
+      L'espace $X$ est [[connexe-par-arcs|connexe par arcs]] si deux points quelconques sont reliés par un chemin.
+    enonce: |
+      (i) *Recollement.* Si $X = F \cup G$ avec $F$ et $G$ fermés, une application $f : X \to Y$ dont les restrictions à $F$ et à $G$ sont continues est continue.
+
+      (ii) L'addition et la multiplication $\mathbb R \times \mathbb R \to \mathbb R$ sont continues. Par suite, $\bar\gamma$ et $\gamma \cdot \delta$ sont des chemins.
+
+      (iii) Un espace connexe par arcs est [[connexe]].
+    preuve: |
+      (i) Pour un fermé $C$ de $Y$, $f^{-1}(C) = (f|_F)^{-1}(C) \cup (f|_G)^{-1}(C)$. Chaque terme est fermé dans $F$, resp. $G$, donc dans $X$, puisque $F$ et $G$ sont fermés ; la réunion est fermée ({{t-continue|Continuité}}).
+
+      (ii) Soient $a, b \in \mathbb R$ et $\varepsilon > 0$. Pour $|x - a| < \delta$ et $|y - b| < \delta$, avec $\delta = \min\big(1, \frac{\varepsilon}{|a| + |b| + 2}\big)$, on a $|(x + y) - (a + b)| < 2\delta \leqslant \varepsilon$ et $|xy - ab| \leqslant |x|\,|y - b| + |b|\,|x - a| < (|a| + 1 + |b|)\,\delta \leqslant \varepsilon$. Les carrés $]a - \delta, a + \delta[ \times ]b - \delta, b + \delta[$ sont des voisinages de $(a, b)$ pour la topologie produit, d'où la continuité. Les applications $s \mapsto 1 - s$, $s \mapsto 2s$ et $s \mapsto 2s - 1$ sont donc continues, et $\gamma \cdot \delta$ l'est par (i), appliqué aux fermés $[0, \frac12]$ et $[\frac12, 1]$, sur lesquels les deux formules coïncident en $\frac12$.
+
+      (iii) Fixons $x_0 \in X$. Pour chaque $y$, l'image d'un chemin de $x_0$ à $y$ est connexe, comme image continue de $I$, qui est connexe ({{ar-topo|Topologie de ℝ}}, {{t-connexe-prop|Réunions de connexes}}). $X$ est la réunion de ces images, qui contiennent toutes $x_0$ : il est connexe.
+    remarques:
+      - |
+        La réciproque de (iii) est fausse : l'adhérence, dans le plan, du graphe de $x \mapsto \sin(1/x)$ sur $]0, 1]$ est connexe sans être connexe par arcs. Aucun chemin ne relie le segment vertical ajouté au reste de la courbe.
+
+  - id: ta-homotopie
+    etiquette: Homotopie
+    nature: proposition
+    titre: Homotopie de chemins
+    texte: |
+      Deux chemins $\gamma$ et $\delta$ de $x$ à $y$ sont [[homotopie-chemins|homotopes]], ce qu'on note $\gamma \simeq \delta$, s'il existe une application continue $H : I \times I \to X$ telle que $H(s, 0) = \gamma(s)$, $H(s, 1) = \delta(s)$, $H(0, t) = x$ et $H(1, t) = y$ pour tous $s, t$. On déforme continûment $\gamma$ en $\delta$ sans bouger les extrémités.
+    enonce: |
+      (i) L'homotopie est une relation d'équivalence sur les chemins de $x$ à $y$.
+
+      (ii) *Reparamétrage.* Si $\varphi : I \to I$ est continue avec $\varphi(0) = 0$ et $\varphi(1) = 1$, alors $\gamma \circ \varphi \simeq \gamma$.
+
+      (iii) Si $\gamma \simeq \gamma'$ et $\delta \simeq \delta'$, avec $\gamma(1) = \delta(0)$, alors $\gamma \cdot \delta \simeq \gamma' \cdot \delta'$.
+    preuve: |
+      (i) Réflexivité : $H(s, t) = \gamma(s)$. Symétrie : $(s, t) \mapsto H(s, 1 - t)$. Transitivité : si $H$ va de $\gamma$ à $\delta$ et $H'$ de $\delta$ à $\varepsilon$, on pose $K(s, t) = H(s, 2t)$ pour $t \leqslant \frac12$ et $K(s, t) = H'(s, 2t - 1)$ pour $t \geqslant \frac12$, continue par recollement ({{ta-chemins|Chemins}}).
+
+      (ii) $H(s, t) = \gamma\big((1 - t)\varphi(s) + ts\big)$ convient : le point $(1 - t)\varphi(s) + ts$ reste dans $I$, comme moyenne pondérée de deux points de $I$, et dépend continûment de $(s, t)$ ({{ta-chemins|Chemins}}, point (ii)) ; pour $s = 0$ et $s = 1$, il vaut $0$ et $1$.
+
+      (iii) Si $H$ et $H'$ sont les homotopies, $K(s, t) = H(2s, t)$ pour $s \leqslant \frac12$ et $K(s, t) = H'(2s - 1, t)$ pour $s \geqslant \frac12$ convient ; les deux formules valent $\gamma(1) = \delta(0)$ pour $s = \frac12$.
+    remarques:
+      - |
+        L'erreur la plus répandue est d'oublier la condition sur les extrémités. Sans elle, deux chemins quelconques d'un espace convexe seraient homotopes, mais surtout deux lacets d'un espace connexe par arcs le seraient toujours en déplaçant leur point de base, et le groupe fondamental, au nœud suivant, serait trivial.
+
+  - id: ta-groupe-fondamental
+    etiquette: Groupe fondamental
+    nature: théorème
+    titre: Le groupe fondamental
+    enonce: |
+      Soit $x \in X$. L'ensemble $\pi_1(X, x)$ des classes d'homotopie de lacets en $x$, muni de $[\gamma][\delta] = [\gamma \cdot \delta]$, est un [[groupe]], le [[groupe-fondamental|groupe fondamental]] de $X$ en $x$. Son neutre est $[c_x]$, et l'inverse de $[\gamma]$ est $[\bar\gamma]$.
+    preuve: |
+      La loi est bien définie par (iii) du nœud {{ta-homotopie|Homotopie}}. Les trois axiomes résultent du reparamétrage.
+
+      *Associativité.* On vérifie que $(\gamma \cdot \delta) \cdot \varepsilon = (\gamma \cdot (\delta \cdot \varepsilon)) \circ \varphi$, avec $\varphi(s) = 2s$ sur $[0, \frac14]$, $\varphi(s) = s + \frac14$ sur $[\frac14, \frac12]$ et $\varphi(s) = \frac{s + 1}2$ sur $[\frac12, 1]$ : sur chacun de ces trois intervalles, les deux membres parcourent respectivement $\gamma$, $\delta$ et $\varepsilon$ au même instant. Comme $\varphi$ est continue, croissante, et fixe $0$ et $1$, les deux lacets sont homotopes.
+
+      *Neutre.* $c_x \cdot \gamma = \gamma \circ \varphi$ avec $\varphi(s) = 0$ sur $[0, \frac12]$ et $\varphi(s) = 2s - 1$ ensuite ; de même $\gamma \cdot c_x = \gamma \circ \psi$ avec $\psi(s) = 2s$ sur $[0, \frac12]$ et $\psi(s) = 1$ ensuite.
+
+      *Inverse.* $H(s, t) = \gamma(2s(1 - t))$ pour $s \leqslant \frac12$ et $H(s, t) = \gamma((2 - 2s)(1 - t))$ pour $s \geqslant \frac12$ est une homotopie de $\gamma \cdot \bar\gamma$ à $c_x$ : les deux formules coïncident en $s = \frac12$, on a $H(s, 0) = (\gamma \cdot \bar\gamma)(s)$ puisque $\bar\gamma(2s - 1) = \gamma(2 - 2s)$, $H(s, 1) = \gamma(0) = x$, et $H(0, t) = H(1, t) = x$. En appliquant ceci à $\bar\gamma$, dont l'inverse est $\gamma$, on obtient $\bar\gamma \cdot \gamma \simeq c_x$.
+    remarques:
+      - |
+        Le groupe fondamental mesure les « trous » d'un espace : un lacet qui fait le tour d'un trou ne peut pas être contracté. Il n'est pas commutatif en général ; dans le plan privé de deux points, les lacets autour de chacun des deux points ne commutent pas.
+      - |
+        L'ensemble des chemins de $I$ dans $X$ est une partie de $X^I$ ({{r-application|Application}}), et $\pi_1(X, x)$ en est un ensemble quotient ({{r-equivalence|Relation d'équivalence}}) : la construction reste dans $\mathsf{ZF}$.
+
+  - id: ta-fonctorialite
+    etiquette: Fonctorialité
+    nature: proposition
+    titre: Fonctorialité et changement de point de base
+    enonce: |
+      (i) Toute application continue $f : X \to Y$ induit un morphisme de groupes $f_* : \pi_1(X, x) \to \pi_1(Y, f(x))$, $[\gamma] \mapsto [f \circ \gamma]$. On a $(g \circ f)_* = g_* \circ f_*$ et $(\mathrm{id}_X)_* = \mathrm{id}$ ; en particulier, un homéomorphisme induit un isomorphisme.
+
+      (ii) Si $\alpha$ est un chemin de $x$ à $y$, l'application $[\gamma] \mapsto [\bar\alpha \cdot \gamma \cdot \alpha]$ est un isomorphisme de $\pi_1(X, x)$ sur $\pi_1(X, y)$. Dans un espace connexe par arcs, le groupe fondamental ne dépend donc pas du point de base, à isomorphisme près.
+    preuve: |
+      (i) Si $H$ est une homotopie de $\gamma$ à $\delta$, $f \circ H$ en est une de $f \circ \gamma$ à $f \circ \delta$ : $f_*$ est bien défini. Il est multiplicatif, puisque $f \circ (\gamma \cdot \delta) = (f \circ \gamma) \cdot (f \circ \delta)$. Les deux égalités sont immédiates ; si $f$ est un homéomorphisme, $(f^{-1})_*$ est l'inverse de $f_*$.
+
+      (ii) Les homotopies du nœud {{ta-groupe-fondamental|Groupe fondamental}} valent pour des chemins quelconques, et non seulement pour des lacets : la concaténation est associative à homotopie près, et $\alpha \cdot \bar\alpha \simeq c_x$. On en déduit que l'application est un morphisme, puisque $\bar\alpha \cdot \gamma \cdot \alpha \cdot \bar\alpha \cdot \delta \cdot \alpha \simeq \bar\alpha \cdot \gamma \cdot \delta \cdot \alpha$, et que l'application associée à $\bar\alpha$ en est l'inverse.
+    remarques:
+      - |
+        Le point (i) est le principe même de la topologie algébrique : deux espaces homéomorphes ont des groupes fondamentaux isomorphes. Pour montrer que deux espaces ne sont **pas** homéomorphes, il suffit donc de trouver des groupes fondamentaux différents.
+
+  - id: ta-simplement-connexe
+    etiquette: Simple connexité
+    nature: proposition
+    titre: Espaces simplement connexes
+    texte: |
+      Un espace est [[simplement-connexe|simplement connexe]] s'il est connexe par arcs et si son groupe fondamental est réduit au neutre. Une partie $C$ de $\mathbb R^n$, muni de la topologie produit, est **convexe** si $(1 - t)a + tb \in C$ pour tous $a, b \in C$ et $t \in I$.
+    enonce: |
+      Toute partie convexe non vide de $\mathbb R^n$ est simplement connexe. C'est le cas de $\mathbb R^n$ lui-même, des intervalles de $\mathbb R$, de $I$ et de $I \times I$.
+    preuve: |
+      Deux points $a, b$ de $C$ sont reliés par le segment $s \mapsto (1 - s)a + sb$, continu composante par composante ({{ta-chemins|Chemins}}, point (ii), et {{t-produit|Topologie produit}}). Si $\gamma$ est un lacet en $x$, $H(s, t) = (1 - t)\gamma(s) + tx$ est continue, reste dans $C$ par convexité, et vérifie $H(s, 0) = \gamma(s)$, $H(s, 1) = x$, $H(0, t) = H(1, t) = x$ : $\gamma \simeq c_x$.
+    remarques:
+      - |
+        L'homotopie employée ressemble à celle du reparamétrage : on fait glisser chaque point du lacet en ligne droite vers $x$. Elle n'est possible que si le segment reste dans l'espace, et c'est exactement ce qu'un trou empêche.
+
+  - id: ta-revetement
+    etiquette: Revêtements, relèvement
+    nature: théorème
+    titre: Revêtements et relèvement des chemins et des homotopies
+    texte: |
+      Un [[revetement|revêtement]] est une application continue et surjective $p : E \to B$ telle que tout point de $B$ ait un voisinage ouvert $U$ **uniformément couvert** : $p^{-1}(U)$ est réunion d'ouverts deux à deux disjoints, les **feuillets**, dont chacun est envoyé homéomorphiquement sur $U$ par $p$. Si $f : Y \to B$ est continue, un **relèvement** de $f$ est une application continue $\tilde f : Y \to E$ telle que $p \circ \tilde f = f$.
+    enonce: |
+      Soit $p : E \to B$ un revêtement.
+
+      (i) *Unicité.* Deux relèvements d'une même application, définie sur un espace connexe, qui coïncident en un point, sont égaux.
+
+      (ii) *Chemins.* Pour tout chemin $\gamma$ de $B$ et tout $e \in p^{-1}(\gamma(0))$, il existe un unique relèvement $\tilde\gamma$ de $\gamma$ tel que $\tilde\gamma(0) = e$.
+
+      (iii) *Homotopies.* Pour toute application continue $H : I \times I \to B$ et tout $e \in p^{-1}(H(0, 0))$, il existe un unique relèvement $\tilde H$ tel que $\tilde H(0, 0) = e$. En particulier, si $\gamma \simeq \delta$, leurs relèvements issus d'un même point ont la même extrémité.
+    preuve: |
+      *Lemme de Lebesgue.* Soit $K = I$ ou $I \times I$, muni de la distance $d(u, v) = \max_k |u_k - v_k|$, dont les boules sont des produits d'intervalles et définissent donc la topologie produit. Pour tout recouvrement ouvert de $K$, il existe $\eta > 0$ tel que toute partie de $K$ de diamètre $< \eta$ soit contenue dans un ouvert du recouvrement. En effet, $K$ est compact ({{ar-topo|Topologie de ℝ}}, {{t-produit-fini|Produit de deux compacts}}) ; pour chaque $u \in K$, on choisit $r_u > 0$ tel que la boule $B(u, 2r_u)$ soit dans un ouvert du recouvrement ; on extrait des boules $B(u, r_u)$ un recouvrement fini, de rayons $r_1, \dots, r_N$, et $\eta = \min r_j$ convient, car une partie de diamètre $< \eta$ rencontrant $B(u_j, r_j)$ est contenue dans $B(u_j, 2r_j)$.
+
+      (i) Soient $\tilde f$ et $\tilde f'$ deux relèvements de $f : Y \to B$, et $A$ l'ensemble où ils coïncident. Pour $y \in Y$, soit $U$ un voisinage uniformément couvert de $f(y)$, et $V$, $V'$ les feuillets contenant $\tilde f(y)$ et $\tilde f'(y)$. Sur l'ouvert $W = \tilde f^{-1}(V) \cap \tilde f'^{-1}(V')$, qui contient $y$ : si $V = V'$, les deux relèvements coïncident, car $p$ est injective sur $V$ ; si $V \neq V'$, ils diffèrent partout, les feuillets étant disjoints. Donc $A$ et son complémentaire sont ouverts ; $A$ est non vide et $Y$ connexe, donc $A = Y$ ({{t-connexe|Connexité}}).
+
+      (ii) Par le lemme de Lebesgue, appliqué aux images réciproques par $\gamma$ des ouverts uniformément couverts, il existe une subdivision $0 = s_0 < s_1 < \cdots < s_m = 1$ telle que chaque $\gamma([s_k, s_{k+1}])$ soit contenu dans un ouvert uniformément couvert $U_k$. Supposons $\tilde\gamma$ construit sur $[0, s_k]$ ; soit $V_k$ le feuillet au-dessus de $U_k$ contenant $\tilde\gamma(s_k)$ ; on pose $\tilde\gamma = (p|_{V_k})^{-1} \circ \gamma$ sur $[s_k, s_{k+1}]$. Le recollement de ces morceaux est continu ({{ta-chemins|Chemins}}). L'unicité vient de (i), $I$ étant connexe.
+
+      (iii) On découpe de même $I \times I$ en petits carrés $Q_{jk}$ dont chaque image par $H$ est dans un ouvert uniformément couvert, et l'on construit $\tilde H$ carré par carré, rangée après rangée, de gauche à droite. Lorsqu'on traite $Q$, la partie de son bord déjà traitée, formée de son côté gauche et de son côté inférieur, ou d'un seul coin pour le premier carré, est connexe ; son image par le relèvement déjà construit, continu, est donc contenue dans un seul feuillet $V$, puisque les feuillets sont des ouverts disjoints. On pose $\tilde H = (p|_V)^{-1} \circ H$ sur $Q$, qui prolonge les valeurs déjà définies par injectivité de $p|_V$ ; le recollement des carrés, en nombre fini, est continu. L'unicité vient encore de (i).
+
+      Enfin, si $H$ est une homotopie de $\gamma$ à $\delta$, les applications $t \mapsto \tilde H(0, t)$ et $t \mapsto \tilde H(1, t)$ relèvent des chemins constants ; par unicité, elles sont constantes. Par unicité encore, $s \mapsto \tilde H(s, 0)$ et $s \mapsto \tilde H(s, 1)$ sont les relèvements de $\gamma$ et de $\delta$ issus de $e$, qui ont donc la même extrémité $\tilde H(1, 0) = \tilde H(1, 1)$.
+    remarques:
+      - |
+        La compacité de $I$ et de $I \times I$, établie par l'analyse réelle, est ce qui permet de recouvrir un chemin ou une homotopie par un nombre fini de morceaux. C'est la raison pour laquelle, dans l'édifice, la topologie algébrique dépend de l'{{analyse-reelle|analyse réelle}}.
+
+  - id: ta-cercle
+    etiquette: Groupe fondamental du cercle
+    nature: théorème
+    titre: Le groupe fondamental du cercle est ℤ
+    texte: |
+      Le **cercle** est $S^1 = \mathbb R/\mathbb Z$, quotient de $\mathbb R$ par la relation $x \sim y \iff x - y \in \mathbb Z$, muni de la [[topologie-quotient|topologie quotient]] ; on note $p : \mathbb R \to S^1$ la projection.
+    enonce: |
+      (i) $p$ est un revêtement.
+
+      (ii) Pour un lacet $\gamma$ en $p(0)$, soit $\tilde\gamma$ son relèvement issu de $0$. Le **degré** $\deg\gamma = \tilde\gamma(1)$ est un entier, qui ne dépend que de la classe de $\gamma$, et
+      $$\deg : \pi_1(S^1, p(0)) \to \mathbb Z$$
+      est un isomorphisme de groupes.
+    preuve: |
+      (i) $p$ est continue ({{t-quotient|Topologie quotient}}). Elle est ouverte : pour $V$ ouvert, $p^{-1}(p(V)) = \bigcup_{k \in \mathbb Z} (V + k)$ est ouvert, les translations de $\mathbb R$ étant des homéomorphismes. Pour $x \in \mathbb R$, soit $J = \,]x - \frac12, x + \frac12[$ et $U = p(J)$, ouvert. Alors $p^{-1}(U)$ est la réunion des intervalles $J + k$, deux à deux disjoints. Sur chacun, $p$ est continue, ouverte, surjective sur $U$, et injective, puisque deux points d'un intervalle ouvert de longueur $1$ qui diffèrent d'un entier sont égaux : c'est un homéomorphisme sur $U$.
+
+      (ii) $\tilde\gamma(1)$ appartient à $p^{-1}(p(0)) = \mathbb Z$, et ne dépend que de la classe de $\gamma$ par le relèvement des homotopies ({{ta-revetement|Revêtements, relèvement}}). *Morphisme.* Si $m = \deg\gamma$, l'application $s \mapsto m + \tilde\delta(s)$ relève $\delta$ à partir de $m$, puisque $p(m + y) = p(y)$ ; le relèvement de $\gamma \cdot \delta$ issu de $0$ parcourt donc $\tilde\gamma$, puis $m + \tilde\delta$, et se termine en $m + \deg\delta$. *Surjectivité.* Pour $n \in \mathbb Z$, le lacet $s \mapsto p(ns)$ a pour relèvement $s \mapsto ns$, de degré $n$. *Injectivité.* Si $\deg\gamma = 0$, $\tilde\gamma$ est un lacet de $\mathbb R$ en $0$ ; $\mathbb R$ est simplement connexe ({{ta-simplement-connexe|Simple connexité}}), donc $\tilde\gamma \simeq c_0$ par une homotopie $G$, et $p \circ G$ est une homotopie de $\gamma$ à $c_{p(0)}$.
+    remarques:
+      - |
+        Le degré compte le nombre de tours, avec leur sens : c'est la première apparition de $\mathbb Z$ comme invariant topologique. Le lacet $s \mapsto p(ns)$ fait $n$ fois le tour du cercle, et aucune déformation ne peut changer ce nombre.
+      - |
+        Le cercle unité $\{(x, y) : x^2 + y^2 = 1\}$ du plan est homéomorphe à $\mathbb R/\mathbb Z$ par $t \mapsto (\cos 2\pi t, \sin 2\pi t)$ ; cette identification demande les fonctions trigonométriques, que l'analyse réelle construira.
+
+  - id: ta-consequences
+    etiquette: Conséquences
+    nature: corollaire
+    titre: Premières conséquences
+    enonce: |
+      (i) Le cercle n'est pas simplement connexe ; il n'est homéomorphe à aucune partie convexe de $\mathbb R^n$.
+
+      (ii) Il n'existe pas d'« angle continu » : aucune application continue $\sigma : S^1 \to \mathbb R$ ne vérifie $p \circ \sigma = \mathrm{id}_{S^1}$.
+    preuve: |
+      (i) $\pi_1(S^1) \cong \mathbb Z$ n'est pas trivial ({{ta-cercle|Groupe fondamental du cercle}}), alors que les convexes sont simplement connexes ; un homéomorphisme induirait un isomorphisme ({{ta-fonctorialite|Fonctorialité}}).
+
+      (ii) Sinon, en notant $x = p(0)$ et $y = \sigma(x)$, on aurait $\mathrm{id} = (p \circ \sigma)_* = p_* \circ \sigma_*$ sur $\pi_1(S^1, x)$. Or $\sigma_*$ est à valeurs dans $\pi_1(\mathbb R, y)$, qui est trivial : l'identité de $\mathbb Z$ serait nulle, ce qui est absurde.
+    remarques:
+      - |
+        Le point (ii) explique une difficulté rencontrée en analyse complexe : on ne peut pas définir l'argument d'un nombre complexe de façon continue sur tout le cercle. Il faut couper le plan, ou accepter un argument défini à un multiple de $2\pi$ près.
+      - |
+        Avec quelques outils de plus, les mêmes idées donnent le théorème du point fixe de Brouwer en dimension $2$, puis, par l'homologie, l'invariance du domaine et le fait que $\mathbb R^m$ et $\mathbb R^n$ ne sont pas homéomorphes pour $m \neq n$.
+
+aretes:
+  - [ta-chemins, ta-homotopie]
+  - [ta-homotopie, ta-groupe-fondamental]
+  - [ta-groupe-fondamental, ta-fonctorialite]
+  - [ta-groupe-fondamental, ta-simplement-connexe]
+  - [ta-homotopie, ta-revetement]
+  - [ta-revetement, ta-cercle]
+  - [ta-simplement-connexe, ta-cercle]
+  - [ta-cercle, ta-consequences]
+  - [ta-fonctorialite, ta-consequences]
