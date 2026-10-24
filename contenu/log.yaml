@@ -1,0 +1,290 @@
+# Niveau 1 : structure interne de la logique du premier ordre.
+# Ce graphe est à la racine de l'édifice : il n'a pas d'entrée. Sa syntaxe est purement
+# combinatoire (mots finis sur un alphabet) ; sa sémantique emploie des ensembles au sens
+# naïf, dans une métathéorie, et non dans ZF qui n'est pas encore construite.
+
+graphe: log
+titre: Logique du premier ordre
+conteneur: log
+
+noeuds:
+  - id: l-langage
+    etiquette: Langage, signature
+    nature: définition
+    enonce: |
+      Une [[signature]] $\mathcal L$ est la donnée de symboles de constantes, de symboles de fonctions et de symboles de relations, chacun muni d'un entier, son **arité**. Les formules sur $\mathcal L$ s'écrivent avec ces symboles et avec les symboles logiques, communs à tous les langages : une suite infinie de variables $x_0, x_1, \dots$, l'égalité $=$, les connecteurs $\neg$ et $\to$, le quantificateur $\forall$, et les parenthèses.
+    texte: |
+      Les autres connecteurs sont des abréviations : $\varphi \wedge \psi$ abrège $\neg(\varphi \to \neg\psi)$, $\varphi \vee \psi$ abrège $\neg\varphi \to \psi$, et $\exists x\, \varphi$ abrège $\neg \forall x\, \neg\varphi$. Réduire le nombre de symboles primitifs raccourcit toutes les démonstrations par récurrence de ce graphe.
+    remarques:
+      - |
+        Exemples : le langage de $\mathsf{ZF}$ n'a qu'un symbole de relation binaire $\in$ ; celui de l'arithmétique a une constante $0$, un symbole de fonction unaire $S$ et deux binaires $+$ et $\times$ ; celui des groupes, une constante $e$, une fonction binaire $\cdot$ et une unaire ${}^{-1}$.
+      - |
+        La logique est **sous** la théorie des ensembles, ce qui pose une question de circularité. Elle se résout ainsi : la syntaxe ne manipule que des mots finis, objets combinatoires que l'on peut traiter sans théorie des ensembles ; la sémantique, elle, emploie des ensembles au sens naïf, dans une métathéorie. Une fois $\mathsf{ZF}$ posée, on peut tout recoder à l'intérieur, et c'est ce que fait Gödel pour démontrer l'incomplétude.
+
+  - id: l-termes
+    etiquette: Termes
+    nature: définition
+    enonce: |
+      Les [[terme|termes]] sur $\mathcal L$ forment le plus petit ensemble de mots contenant les variables et les constantes, et tel que, si $f$ est un symbole de fonction d'arité $n$ et $t_1, \dots, t_n$ des termes, alors $f\, t_1 \cdots t_n$ est un terme.
+    remarques:
+      - |
+        On écrit ici les termes en notation **préfixée**, sans parenthèses ni virgules : $+\,x\,S0$ plutôt que $x + S(0)$. C'est la notation la plus commode pour démontrer la lecture unique ; la notation usuelle n'en est qu'une abréviation lisible.
+
+  - id: l-formules
+    etiquette: Formules, variables libres
+    nature: définition
+    enonce: |
+      Les **formules atomiques** sont les mots $t_1 = t_2$ et $R\, t_1 \cdots t_n$, où $R$ est un symbole de relation d'arité $n$ et les $t_i$ des termes. Les [[formule|formules]] forment le plus petit ensemble de mots contenant les formules atomiques et stable par $\varphi \mapsto \neg\varphi$, $(\varphi, \psi) \mapsto (\varphi \to \psi)$ et $\varphi \mapsto \forall x\, \varphi$.
+
+      Une occurrence de $x$ est **liée** si elle se trouve dans une sous-formule $\forall x\, \psi$, et **libre** sinon. Une formule sans variable libre est un [[enonce]], ou formule close.
+    remarques:
+      - |
+        Une même variable peut avoir des occurrences libres et liées dans une formule : dans $x = 0 \to \forall x\, (x = x)$, la première occurrence de $x$ est libre, les autres sont liées. L'erreur la plus répandue est de parler de « la » variable $x$ d'une telle formule, comme si elle avait un statut unique.
+
+  - id: l-lecture
+    etiquette: Lecture unique
+    nature: théorème
+    titre: Théorème de lecture unique
+    enonce: |
+      Tout terme s'écrit de manière unique sous l'une des formes $x$, $c$ ou $f\, t_1 \cdots t_n$ : si $f\, t_1 \cdots t_n = g\, u_1 \cdots u_m$, alors $f = g$, $n = m$ et $t_i = u_i$ pour tout $i$. Il en va de même pour les formules.
+    preuve: |
+      Attribuons à chaque symbole un **poids** : $1$ pour une variable ou une constante, $1 - n$ pour un symbole de fonction d'arité $n$. Le poids $p(w)$ d'un mot est la somme des poids de ses symboles.
+
+      **Lemme.** Si $t$ est un terme, alors $p(t) = 1$, et tout préfixe propre non vide de $t$ est de poids au plus $0$. Par récurrence sur la construction de $t$ : c'est clair pour une variable ou une constante. Pour $t = f\, t_1 \cdots t_n$, on a $p(t) = (1 - n) + n = 1$. Un préfixe propre non vide de $t$ s'écrit $f\, t_1 \cdots t_k\, w$, avec $k < n$ et $w$ un préfixe propre de $t_{k+1}$, éventuellement vide ; son poids vaut $(1 - n) + k + p(w) \leqslant 1 - n + k \leqslant 0$, puisque $p(w) \leqslant 0$ par hypothèse de récurrence.
+
+      Il en résulte qu'aucun terme n'est un préfixe propre d'un autre terme, puisque leurs poids diffèrent. Supposons alors $f\, t_1 \cdots t_n = g\, u_1 \cdots u_m$. Les premiers symboles donnent $f = g$, donc $n = m$. Les mots $t_1 \cdots t_n$ et $u_1 \cdots u_n$ sont égaux ; $t_1$ et $u_1$ sont deux termes dont l'un est préfixe de l'autre, donc $t_1 = u_1$. On efface ce préfixe commun et l'on recommence, ce qui donne $t_i = u_i$ pour tout $i$.
+
+      Pour les formules, écrites elles aussi en notation préfixée, on prend le poids $1 - n$ pour un symbole de relation d'arité $n$, $-1$ pour $=$ et pour $\to$, $0$ pour $\neg$, et $0$ pour le bloc $\forall x$, compté comme un seul symbole. La même démonstration s'applique mot pour mot.
+    remarques:
+      - |
+        Ce théorème justifie toutes les définitions par récurrence sur les termes et les formules, comme celle de la satisfaction : sans lui, une formule pourrait se décomposer de deux façons, et recevoir deux valeurs de vérité.
+
+  - id: l-substitution
+    etiquette: Substitution
+    nature: définition
+    titre: Substitution et lemme de substitution
+    enonce: |
+      On note $\varphi[t/x]$ la formule obtenue en remplaçant chaque occurrence **libre** de $x$ dans $\varphi$ par le terme $t$. Le terme $t$ est **substituable** à $x$ dans $\varphi$ si aucune occurrence libre de $x$ ne se trouve dans une sous-formule $\forall y\, \psi$ où $y$ est une variable de $t$.
+
+      **Lemme de substitution.** Si $t$ est substituable à $x$ dans $\varphi$, alors pour toute structure $\mathcal M$ et toute valuation $s$,
+      $$\mathcal M \models \varphi[t/x]\,[s] \iff \mathcal M \models \varphi\,[s(x \mid t^{\mathcal M}[s])],$$
+      où $s(x \mid a)$ désigne la valuation qui coïncide avec $s$ sauf en $x$, où elle vaut $a$.
+    preuve: |
+      Pour les termes, on vérifie par récurrence que la valeur de $u[t/x]$ sous $s$ est celle de $u$ sous $s(x \mid t^{\mathcal M}[s])$. Pour les formules, on raisonne par récurrence sur $\varphi$ ; les cas atomiques découlent du cas des termes, et les connecteurs passent directement.
+
+      Pour $\varphi = \forall y\, \psi$ : si $x$ n'est pas libre dans $\varphi$, la substitution ne change rien et le lemme de coïncidence conclut. Sinon $y \neq x$, et l'hypothèse de substituabilité impose que $y$ ne figure pas dans $t$ ; ainsi $t$ a la même valeur sous $s$ et sous $s(y \mid a)$ pour tout $a$. On applique alors l'hypothèse de récurrence à $\psi$ sous chaque valuation $s(y \mid a)$, et l'on conclut en quantifiant sur $a$.
+    remarques:
+      - |
+        La condition de substituabilité n'est pas une formalité. Dans $\varphi = \exists y\, (y \neq x)$, qui exprime « il existe un élément différent de $x$ », substituer $y$ à $x$ donne $\exists y\, (y \neq y)$, qui est toujours faux : la variable $y$ a été **capturée** par le quantificateur.
+
+  - id: l-structure
+    etiquette: Structures
+    nature: définition
+    enonce: |
+      Une [[structure]] $\mathcal M$ pour la signature $\mathcal L$ est la donnée d'un ensemble **non vide** $M$, son domaine, et d'une interprétation de chaque symbole : un élément $c^{\mathcal M} \in M$ pour chaque constante, une application $f^{\mathcal M} : M^n \to M$ pour chaque symbole de fonction d'arité $n$, une partie $R^{\mathcal M} \subset M^n$ pour chaque symbole de relation d'arité $n$.
+
+      Une **valuation** est une application $s$ de l'ensemble des variables dans $M$. La valeur $t^{\mathcal M}[s]$ d'un terme s'obtient par récurrence : $x^{\mathcal M}[s] = s(x)$, et $(f\, t_1 \cdots t_n)^{\mathcal M}[s] = f^{\mathcal M}(t_1^{\mathcal M}[s], \dots, t_n^{\mathcal M}[s])$.
+    remarques:
+      - |
+        Le domaine est non vide par convention. C'est ce qui rend valide la formule $\forall x\, \varphi \to \exists x\, \varphi$, et ce qui permet de démontrer l'existence d'un ensemble au nœud {{zf-vide|Ensemble vide}} des axiomes de $\mathsf{ZF}$.
+
+  - id: l-satisfaction
+    etiquette: Satisfaction (Tarski)
+    nature: définition
+    titre: Définition de la satisfaction
+    enonce: |
+      La relation $\mathcal M \models \varphi\,[s]$, lue « $\mathcal M$ satisfait $\varphi$ sous $s$ », est définie par récurrence sur $\varphi$ :
+
+      $\mathcal M \models t_1 = t_2\,[s]$ si $t_1^{\mathcal M}[s] = t_2^{\mathcal M}[s]$, et $\mathcal M \models R\, t_1 \cdots t_n\,[s]$ si $(t_1^{\mathcal M}[s], \dots, t_n^{\mathcal M}[s]) \in R^{\mathcal M}$ ;
+
+      $\mathcal M \models \neg\varphi\,[s]$ si $\mathcal M \not\models \varphi\,[s]$, et $\mathcal M \models (\varphi \to \psi)\,[s]$ si $\mathcal M \not\models \varphi\,[s]$ ou $\mathcal M \models \psi\,[s]$ ;
+
+      $\mathcal M \models \forall x\, \varphi\,[s]$ si $\mathcal M \models \varphi\,[s(x \mid a)]$ pour tout $a \in M$.
+    remarques:
+      - |
+        La définition est récursive, et le symbole $\forall$ du langage est interprété par le « pour tout » de la métathéorie. Elle ne dit pas ce qu'est la vérité, mais réduit la vérité d'une formule à celle de ses sous-formules ; Tarski a montré en 1933 qu'une telle définition ne peut pas être formulée dans le langage même qu'elle interprète.
+
+  - id: l-coincidence
+    etiquette: Lemme de coïncidence
+    nature: lemme
+    enonce: |
+      Si deux valuations $s$ et $s'$ coïncident sur les variables libres de $\varphi$, alors $\mathcal M \models \varphi\,[s] \iff \mathcal M \models \varphi\,[s']$. En particulier, la satisfaction d'un énoncé ne dépend pas de la valuation : on écrit simplement $\mathcal M \models \varphi$.
+    preuve: |
+      Par récurrence sur les termes, la valeur d'un terme ne dépend que des valeurs de ses variables ; les cas atomiques s'en déduisent, et les connecteurs passent directement.
+
+      Pour $\forall x\, \varphi$, les variables libres sont celles de $\varphi$ privées de $x$. Pour tout $a \in M$, les valuations $s(x \mid a)$ et $s'(x \mid a)$ coïncident donc sur les variables libres de $\varphi$, et l'hypothèse de récurrence donne $\mathcal M \models \varphi\,[s(x \mid a)] \iff \mathcal M \models \varphi\,[s'(x \mid a)]$. On conclut en quantifiant sur $a$.
+
+  - id: l-consequence
+    etiquette: Modèles, conséquence
+    nature: définition
+    enonce: |
+      Une [[theorie]] est un ensemble d'énoncés. Un [[modele]] de $T$ est une structure qui satisfait tous les énoncés de $T$. Un énoncé $\varphi$ est [[consequence-semantique|conséquence sémantique]] de $T$, noté $T \models \varphi$, si tout modèle de $T$ satisfait $\varphi$. Il est **universellement valide** si $\varnothing \models \varphi$.
+
+  - id: l-deduction
+    etiquette: Démonstrations formelles
+    nature: définition
+    enonce: |
+      On fixe le système de Hilbert suivant, dû à Enderton. Les **axiomes logiques** sont toutes les généralisations $\forall y_1 \cdots \forall y_k\, \alpha$ des formules $\alpha$ suivantes :
+
+      (1) les tautologies, c'est-à-dire les formules obtenues en remplaçant les lettres d'une tautologie propositionnelle par des formules ;
+
+      (2) $\forall x\, \alpha \to \alpha[t/x]$, si $t$ est substituable à $x$ dans $\alpha$ ;
+
+      (3) $\forall x\, (\alpha \to \beta) \to (\forall x\, \alpha \to \forall x\, \beta)$ ;
+
+      (4) $\alpha \to \forall x\, \alpha$, si $x$ n'est pas libre dans $\alpha$ ;
+
+      (5) $x = x$, et $x = y \to (\alpha \to \alpha')$, si $\alpha$ est atomique et si $\alpha'$ s'obtient en remplaçant certaines occurrences de $x$ par $y$.
+
+      Une [[demonstration-formelle]] de $\varphi$ à partir de $T$ est une suite finie de formules, terminée par $\varphi$, dont chacune est un axiome logique, un élément de $T$, ou se déduit de deux formules précédentes $\alpha$ et $\alpha \to \beta$ par la seule règle, le **modus ponens**. On note alors $T \vdash \varphi$.
+    remarques:
+      - |
+        Le choix de n'avoir qu'une règle, au prix d'axiomes nombreux, simplifie toutes les démonstrations sur le système, qui se font par récurrence sur la longueur des démonstrations formelles. D'autres systèmes, comme la déduction naturelle, sont plus proches du raisonnement usuel ; ils démontrent exactement les mêmes formules.
+
+  - id: l-correction
+    etiquette: Correction
+    nature: théorème
+    titre: Théorème de correction
+    enonce: |
+      Si $T \vdash \varphi$, alors $T \models \varphi$ : tout ce qui est démontrable est vrai dans tous les modèles.
+    preuve: |
+      Montrons, par récurrence sur la longueur d'une démonstration formelle, que chacune de ses formules est satisfaite par tout modèle $\mathcal M$ de $T$, sous toute valuation $s$.
+
+      Les éléments de $T$ sont des énoncés satisfaits par $\mathcal M$. Les axiomes logiques sont valides : (1) par les tables de vérité ; (2) par le lemme de substitution ; (3) directement ; (4) par le lemme de coïncidence, puisque $x$ n'est pas libre dans $\alpha$ ; (5) directement. Une généralisation d'une formule satisfaite sous toute valuation l'est aussi. Enfin, si $\alpha$ et $\alpha \to \beta$ sont satisfaites sous $s$, alors $\beta$ l'est, par la définition de la satisfaction pour $\to$.
+    remarques:
+      - |
+        En particulier, une théorie qui a un modèle est cohérente : sinon elle démontrerait $\varphi$ et $\neg\varphi$, qui seraient toutes deux vraies dans ce modèle. C'est la seule méthode générale pour prouver la cohérence d'une théorie, et elle déplace la question vers la cohérence de la théorie où l'on construit le modèle.
+
+  - id: l-thm-deduction
+    etiquette: Théorème de la déduction
+    nature: théorème
+    enonce: |
+      Si $T \cup \{\psi\} \vdash \varphi$, alors $T \vdash \psi \to \varphi$.
+    preuve: |
+      Par récurrence sur une démonstration de $\varphi$ à partir de $T \cup \{\psi\}$, montrons que $T \vdash \psi \to \alpha$ pour chacune de ses formules $\alpha$.
+
+      Si $\alpha$ est un axiome logique ou un élément de $T$, on a $T \vdash \alpha$, et $\alpha \to (\psi \to \alpha)$ est une tautologie : le modus ponens donne $T \vdash \psi \to \alpha$. Si $\alpha = \psi$, alors $\psi \to \psi$ est une tautologie.
+
+      Si $\alpha$ s'obtient par modus ponens à partir de $\beta$ et $\beta \to \alpha$, on a par hypothèse $T \vdash \psi \to \beta$ et $T \vdash \psi \to (\beta \to \alpha)$. La tautologie $(\psi \to (\beta \to \alpha)) \to ((\psi \to \beta) \to (\psi \to \alpha))$ et deux modus ponens donnent $T \vdash \psi \to \alpha$.
+    remarques:
+      - |
+        Dans un système muni d'une règle de généralisation, ce théorème n'est vrai que si $\psi$ est un énoncé, ou sous une restriction sur l'usage de la généralisation : de $x = 0$ on déduirait $\forall x\, (x = 0)$, mais $x = 0 \to \forall x\, (x = 0)$ n'est pas valide. Le système choisi ici évite cette difficulté.
+
+  - id: l-coherence
+    etiquette: Cohérence
+    nature: proposition
+    enonce: |
+      Une théorie $T$ est [[theorie-coherente|cohérente]] s'il n'existe pas de formule $\varphi$ telle que $T \vdash \varphi$ et $T \vdash \neg\varphi$. Alors :
+
+      (i) $T$ est incohérente si et seulement si elle démontre toutes les formules ;
+
+      (ii) si $T \nvdash \varphi$, la théorie $T \cup \{\neg\varphi\}$ est cohérente.
+    preuve: |
+      (i) Si $T \vdash \varphi$ et $T \vdash \neg\varphi$, la tautologie $\neg\varphi \to (\varphi \to \chi)$ et deux modus ponens donnent $T \vdash \chi$ pour toute formule $\chi$. La réciproque est claire.
+
+      (ii) Si $T \cup \{\neg\varphi\}$ était incohérente, elle démontrerait $\varphi$ par (i). Le théorème de la déduction donnerait $T \vdash \neg\varphi \to \varphi$, et la tautologie $(\neg\varphi \to \varphi) \to \varphi$ donnerait $T \vdash \varphi$, ce qui est exclu.
+
+  - id: l-completude
+    etiquette: Complétude (Gödel)
+    nature: théorème
+    titre: Théorème de complétude
+    choix: |
+      Pour un langage dénombrable, la démonstration se fait dans $\mathsf{ZF}$ : on énumère les formules au lieu de les choisir. Pour un langage quelconque, le théorème équivaut au lemme de l'[[ultrafiltre]] (sous la forme « toute théorie cohérente a un modèle »).
+    enonce: |
+      Toute théorie cohérente a un modèle. De façon équivalente, pour tout énoncé $\varphi$, si $T \models \varphi$, alors $T \vdash \varphi$.
+    preuve: |
+      **Équivalence des deux formes.** Supposons que toute théorie cohérente ait un modèle, et que $T \nvdash \varphi$, pour un énoncé $\varphi$. Alors $T \cup \{\neg\varphi\}$ est cohérente, donc a un modèle, qui est un modèle de $T$ ne satisfaisant pas $\varphi$ : ainsi $T \not\models \varphi$. Réciproquement, si $T$ n'a pas de modèle, alors $T \models \varphi \wedge \neg\varphi$ par vacuité, donc $T$ démontre une contradiction.
+
+      **Existence d'un modèle : admise ici.** La démonstration de Henkin procède en trois temps. On ajoute au langage une constante témoin $c_\varphi$ pour chaque formule $\exists x\, \varphi$, avec l'axiome $\exists x\, \varphi \to \varphi[c_\varphi/x]$, sans perdre la cohérence. On prolonge ensuite la théorie en une théorie cohérente **complète**, qui contient chaque énoncé ou sa négation, en examinant les énoncés un par un. On construit enfin le modèle dont les éléments sont les termes clos, quotientés par la relation $T \vdash t_1 = t_2$, et l'on démontre par récurrence que ce modèle satisfait exactement les énoncés de la théorie. La difficulté contournée est la vérification de ce dernier point, longue mais sans idée nouvelle, et la gestion des témoins à chaque étape.
+    remarques:
+      - |
+        Ce théorème relie deux notions de natures différentes : l'une, syntaxique, porte sur des suites finies de symboles ; l'autre, sémantique, sur tous les modèles possibles, collection immense. Il ne dit pas que tout énoncé vrai est démontrable, ce que l'incomplétude contredit, mais que tout énoncé vrai dans **tous** les modèles de $T$ l'est.
+
+  - id: l-compacite
+    etiquette: Compacité
+    nature: théorème
+    titre: Théorème de compacité
+    choix: |
+      Pour des langages quelconques, le théorème de compacité équivaut au lemme de l'[[ultrafiltre]].
+    enonce: |
+      Une théorie a un modèle si et seulement si chacune de ses parties finies a un modèle.
+    preuve: |
+      Une partie finie d'une théorie qui a un modèle en a un. Réciproquement, supposons que chaque partie finie de $T$ ait un modèle ; par le théorème de correction, chacune est cohérente. Si $T$ était incohérente, une démonstration formelle d'une contradiction à partir de $T$ n'utiliserait qu'un nombre fini d'éléments de $T$, formant une partie finie incohérente. Donc $T$ est cohérente, et elle a un modèle par le théorème de complétude.
+    remarques:
+      - |
+        Le nom vient de la topologie : l'espace des théories complètes, muni d'une topologie naturelle, est compact, et le théorème en est la traduction. Dans $\mathsf{ZF}$, il équivaut d'ailleurs au lemme de l'ultrafiltre, tout comme le {{t-tychonov|théorème de Tychonov}} pour les compacts séparés.
+
+  - id: l-lowenheim
+    etiquette: Löwenheim-Skolem
+    nature: théorème
+    titre: Théorème de Löwenheim-Skolem descendant
+    enonce: |
+      Toute théorie cohérente dans un langage [[denombrable]] a un modèle fini ou dénombrable.
+    preuve: |
+      *Admis ici.* C'est une conséquence de la démonstration de complétude : lorsque le langage est dénombrable, les témoins ajoutés le sont aussi, et le modèle construit, formé de classes de termes clos, est fini ou dénombrable.
+    remarques:
+      - |
+        D'où le **paradoxe de Skolem** : si $\mathsf{ZFC}$ est cohérente, elle a un modèle dénombrable, bien qu'elle démontre l'existence d'ensembles non dénombrables comme $\mathbb R$. Il n'y a pas de contradiction : dans ce modèle, l'ensemble qui joue le rôle de $\mathbb R$ est dénombrable vu de l'extérieur, mais aucune bijection avec $\mathbb N$ n'appartient au modèle.
+      - |
+        La forme générale, qui fournit pour toute structure sur un langage dénombrable une sous-structure élémentaire dénombrable, équivaut au choix dépendant.
+
+  - id: l-non-standard
+    etiquette: Modèles non standard
+    nature: corollaire
+    titre: Modèles non standard de l'arithmétique
+    enonce: |
+      Soit $\mathrm{Th}(\mathbb N)$ l'ensemble des énoncés du langage $\{0, S, +, \times\}$ vrais dans $\mathbb N$. Il existe un modèle de $\mathrm{Th}(\mathbb N)$ qui n'est pas isomorphe à $\mathbb N$.
+    preuve: |
+      Pour $n \in \mathbb N$, notons $\underline n$ le terme $S \cdots S\, 0$, avec $n$ occurrences de $S$, dont la valeur dans $\mathbb N$ est $n$. Ajoutons une constante $c$ et considérons
+      $$T = \mathrm{Th}(\mathbb N) \cup \{c \neq \underline n : n \in \mathbb N\}.$$
+      Une partie finie de $T$ ne mentionne qu'un nombre fini d'énoncés $c \neq \underline n$ ; en interprétant $c$ dans $\mathbb N$ par un entier plus grand que tous les $n$ concernés, on obtient un modèle. Par compacité, $T$ a un modèle $\mathcal M$.
+
+      Dans $\mathbb N$, tout élément est la valeur d'un terme $\underline n$. Un isomorphisme $h : \mathbb N \to \mathcal M$ enverrait la valeur de $\underline n$ sur celle de $\underline n$ dans $\mathcal M$, et serait donc à valeurs dans l'ensemble de ces valeurs, qui ne contient pas $c^{\mathcal M}$. Il ne serait pas surjectif : $\mathcal M$ n'est pas isomorphe à $\mathbb N$.
+    remarques:
+      - |
+        Aucun ensemble d'énoncés du premier ordre ne caractérise donc $\mathbb N$ à isomorphisme près, contrairement aux axiomes de Peano du second ordre, comme le signale le nœud {{n-peano|Axiomes de Peano}}. La récurrence au premier ordre, qui est un schéma portant sur les seules propriétés définissables, est trop faible pour exclure les éléments infiniment grands.
+
+  - id: l-incompletude
+    etiquette: Incomplétude (Gödel)
+    nature: théorème
+    titre: Théorèmes d'incomplétude
+    enonce: |
+      Soit $T$ une théorie cohérente, dont l'ensemble des axiomes est récursivement énumérable, et qui contient l'arithmétique de Robinson.
+
+      (i) Il existe un énoncé $G$ tel que $T \nvdash G$ et $T \nvdash \neg G$ (Gödel, 1931 ; Rosser, 1936, pour l'hypothèse de simple cohérence).
+
+      (ii) Si $T$ contient de plus l'arithmétique de Peano, elle ne démontre pas l'énoncé $\mathrm{Coh}(T)$ qui exprime sa propre cohérence.
+    preuve: |
+      *Admis ici.* On code les formules et les démonstrations par des entiers, de sorte que « $n$ est le code d'une démonstration de la formule de code $m$ » s'exprime par une formule de l'arithmétique. Le lemme diagonal fournit alors un énoncé $G$ équivalent, dans $T$, à « $G$ n'est pas démontrable dans $T$ ». La difficulté contournée est l'arithmétisation, qui demande de représenter dans $T$ toutes les fonctions récursives.
+    remarques:
+      - |
+        Le théorème s'applique à $\mathsf{ZFC}$ : si elle est cohérente, elle ne démontre pas sa propre cohérence, et l'on ne peut pas prouver la solidité de l'édifice tout entier avec ses seuls outils. Il ne contredit pas la complétude : $G$ est vrai dans certains modèles de $T$ et faux dans d'autres.
+
+aretes:
+  - [l-langage, l-termes]
+  - [l-termes, l-formules]
+  - [l-termes, l-lecture]
+  - [l-formules, l-lecture]
+  - [l-formules, l-substitution]
+  - [l-langage, l-structure]
+  - [l-termes, l-structure]
+  - [l-structure, l-satisfaction]
+  - [l-formules, l-satisfaction]
+  - [l-lecture, l-satisfaction]
+  - [l-satisfaction, l-coincidence]
+  - [l-satisfaction, l-substitution]
+  - [l-coincidence, l-substitution]
+  - [l-satisfaction, l-consequence]
+  - [l-substitution, l-deduction]
+  - [l-consequence, l-correction]
+  - [l-deduction, l-correction]
+  - [l-substitution, l-correction]
+  - [l-deduction, l-thm-deduction]
+  - [l-thm-deduction, l-coherence]
+  - [l-coherence, l-completude]
+  - [l-correction, l-completude]
+  - [l-completude, l-compacite]
+  - [l-completude, l-lowenheim]
+  - [l-compacite, l-non-standard]
+  - [l-coherence, l-incompletude]
+  - [l-deduction, l-incompletude]
