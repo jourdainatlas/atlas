@@ -1,0 +1,289 @@
+# Niveau 1 : structure interne du nœud « Algèbre linéaire ».
+# K désigne un corps commutatif quelconque. Les sommes finies et la dimension reposent sur ℕ ;
+# l'existence d'une base en dimension quelconque repose sur le lemme de Zorn et est marquée ⋆.
+
+graphe: alglin
+titre: Algèbre linéaire
+conteneur: alglin
+
+entrees:
+  alg: [v-espace]
+  n: [v-combinaisons]
+  ordin: [v-bases-existence]
+
+noeuds:
+  - id: v-espace
+    etiquette: Espace vectoriel
+    nature: définition
+    titre: Espaces vectoriels et sous-espaces
+    enonce: |
+      Un [[espace-vectoriel|espace vectoriel]] sur le corps $K$ est un $K$-module ({{a-module|Module}}) : un groupe abélien $(E, +)$ muni d'une multiplication externe $K \times E \to E$ telle que $\lambda(x + y) = \lambda x + \lambda y$, $(\lambda + \mu)x = \lambda x + \mu x$, $(\lambda\mu)x = \lambda(\mu x)$ et $1x = x$. Ses éléments sont appelés vecteurs, ceux de $K$ scalaires.
+
+      Un [[sous-espace-vectoriel|sous-espace vectoriel]] est une partie non vide stable par addition et par multiplication externe. L'intersection d'un ensemble non vide de sous-espaces en est un ; le **sous-espace engendré** $\operatorname{Vect}(S)$ par une partie $S$ est l'intersection des sous-espaces qui la contiennent.
+    preuve: |
+      Un sous-espace $F$ contient $0 = 0 \cdot x$ pour un $x \in F$, et $-x = (-1)x$ : c'est un sous-groupe, stable par la loi externe, donc un sous-module. La stabilité passe à l'intersection, et l'ensemble des sous-espaces contenant $S$, obtenu par séparation dans $\mathcal P(E)$, contient $E$.
+    remarques:
+      - |
+        Exemples fondamentaux : $K$ lui-même ; l'espace $K^I$ des applications d'un ensemble $I$ dans $K$, avec les opérations point par point ; son sous-espace $K^{(I)}$ formé des applications nulles hors d'une partie finie de $I$. Pour $I = n$, les deux coïncident et l'on note $K^n$.
+      - |
+        Les égalités $0x = 0$ et $\lambda 0 = 0$ se démontrent comme dans un anneau ({{a-anneau|Anneau}}). De plus, $\lambda x = 0$ entraîne $\lambda = 0$ ou $x = 0$, puisque $\lambda \neq 0$ est inversible : c'est ici que sert l'hypothèse que $K$ est un corps.
+
+  - id: v-combinaisons
+    etiquette: Combinaisons linéaires
+    nature: théorème
+    titre: Sommes finies et combinaisons linéaires
+    texte: |
+      Une famille $(\lambda_i)_{i \in I}$ de scalaires est **à support fini** si $\{i : \lambda_i \neq 0\}$ est un [[ensemble-fini|ensemble fini]]. Pour une telle famille et une famille $(x_i)_{i \in I}$ de vecteurs, la [[combinaison-lineaire|combinaison linéaire]] $\sum_{i \in I} \lambda_i x_i$ est la somme, définie ci-dessous, des $\lambda_i x_i$ pour $i$ dans le support.
+    enonce: |
+      (i) *Sommes finies.* Soit $(G, +)$ un groupe abélien, $I$ un ensemble fini et $(x_i)_{i \in I}$ une famille de $G$. Il existe une unique application $S : \mathcal P(I) \to G$ telle que $S(\varnothing) = 0$ et $S(A \cup \{i\}) = S(A) + x_i$ pour $A \subset I$ et $i \in I \setminus A$. On note $\sum_{i \in A} x_i = S(A)$ ; cette somme ne dépend d'aucun ordre sur $I$.
+
+      (ii) $\sum_i (x_i + y_i) = \sum_i x_i + \sum_i y_i$ et, dans un espace vectoriel, $\lambda \sum_i x_i = \sum_i \lambda x_i$.
+
+      (iii) $\operatorname{Vect}(S)$ est l'ensemble des combinaisons linéaires d'éléments de $S$.
+    preuve: |
+      (i) *Unicité.* Si $S$ et $S'$ conviennent, $S(A) = S'(A)$ par récurrence sur $|A|$ ({{n-fini|Ensembles finis}}) : c'est vrai pour $\varnothing$, et une partie à $k + 1$ éléments s'écrit $A \cup \{i\}$ avec $|A| = k$.
+
+      *Existence.* Par récurrence sur $|I|$. Pour $I = \varnothing$, $S(\varnothing) = 0$. Si $I = J \cup \{j\}$ avec $j \notin J$, et si $S_J$ convient pour $J$, on pose $S(A) = S_J(A)$ si $j \notin A$ et $S(A) = S_J(A \setminus \{j\}) + x_j$ si $j \in A$. Vérifions $S(A \cup \{i\}) = S(A) + x_i$ pour $i \notin A$. Si $i = j$, c'est la définition. Si $i \neq j$ et $j \notin A$, c'est la propriété de $S_J$. Si $i \neq j$ et $j \in A$, alors
+      $$\begin{aligned} S(A \cup \{i\}) &= S_J\big((A \setminus \{j\}) \cup \{i\}\big) + x_j \\ &= S_J(A \setminus \{j\}) + x_i + x_j = S(A) + x_i, \end{aligned}$$
+      par commutativité de $+$. C'est cette commutativité qui rend la somme indépendante de tout ordre.
+
+      (ii) L'application $A \mapsto \sum_{A} x_i + \sum_{A} y_i$ vérifie la relation qui caractérise $A \mapsto \sum_A (x_i + y_i)$ ; par unicité, elles sont égales. De même pour $A \mapsto \lambda \sum_A x_i$.
+
+      (iii) Par (ii), l'ensemble $C$ des combinaisons linéaires est un sous-espace ; il contient chaque $s \in S$, qui s'écrit $1 \cdot s$. Réciproquement, tout sous-espace contenant $S$ contient chaque $\sum_A \lambda_i s_i$, par récurrence sur $|A|$. Donc $C = \operatorname{Vect}(S)$.
+    remarques:
+      - |
+        Une combinaison linéaire ne comporte qu'un nombre fini de termes, même si la famille est infinie : l'algèbre linéaire ne connaît pas de somme infinie. Celles-ci demandent une notion de limite, qui relève de la topologie ; c'est l'objet de l'{{anf|analyse fonctionnelle}}.
+
+  - id: v-applications
+    etiquette: Applications linéaires
+    nature: proposition
+    titre: Applications linéaires
+    texte: |
+      Une [[application-lineaire|application linéaire]] $u : E \to F$ entre espaces vectoriels vérifie $u(x + y) = u(x) + u(y)$ et $u(\lambda x) = \lambda u(x)$. On note $\mathcal L(E, F)$ leur ensemble, $\operatorname{Ker} u = u^{-1}(\{0\})$ et $\operatorname{Im} u = u(E)$.
+    enonce: |
+      (i) $\operatorname{Ker} u$ et $\operatorname{Im} u$ sont des sous-espaces ; $u$ est injective si et seulement si $\operatorname{Ker} u = \{0\}$.
+
+      (ii) La composée de deux applications linéaires est linéaire, et la réciproque d'une application linéaire bijective (un **isomorphisme**) est linéaire.
+
+      (iii) $\mathcal L(E, F)$ est un sous-espace de $F^E$, et $u \circ \big(\sum_i \lambda_i x_i\big) = \sum_i \lambda_i u(x_i)$ pour toute combinaison linéaire.
+    preuve: |
+      (i) Une application linéaire est un morphisme de groupes ; l'image directe et l'image réciproque d'un sous-groupe sont des sous-groupes, et l'injectivité équivaut à $\operatorname{Ker} u = \{0\}$ ({{a-morphisme|Morphisme}}). La stabilité par la loi externe vient de $u(\lambda x) = \lambda u(x)$.
+
+      (ii) La composée respecte les deux opérations. Si $u$ est bijective, $u^{-1}$ est additive ({{a-morphisme|Morphisme}}), et $u(\lambda u^{-1}(y)) = \lambda y$ donne $u^{-1}(\lambda y) = \lambda u^{-1}(y)$.
+
+      (iii) Une somme et un multiple d'applications linéaires sont linéaires, puisque $K$ est commutatif : $(\lambda u)(\mu x) = \lambda\mu\, u(x) = \mu (\lambda u)(x)$. La formule pour les combinaisons s'obtient par récurrence sur le nombre de termes.
+    remarques:
+      - |
+        La commutativité de $K$ sert dans (iii) : sur un anneau à division non commutatif, $x \mapsto \lambda x$ n'est pas linéaire en général, et $\mathcal L(E, F)$ n'est plus un espace vectoriel sur le même corps.
+
+  - id: v-somme-directe
+    etiquette: Sommes directes
+    nature: proposition
+    titre: Sommes directes, supplémentaires, projecteurs
+    texte: |
+      Pour deux sous-espaces $F$ et $G$ de $E$, la somme $F + G = \{f + g : f \in F,\ g \in G\}$ est un sous-espace. Elle est **directe**, notée $F \oplus G$, si tout élément de $F + G$ s'écrit de manière unique $f + g$. Deux sous-espaces sont [[supplementaire|supplémentaires]] si $E = F \oplus G$.
+    enonce: |
+      (i) La somme $F + G$ est directe si et seulement si $F \cap G = \{0\}$.
+
+      (ii) Si $E = F \oplus G$, l'application $p$ qui à $x = f + g$ associe $f$ est linéaire, et vérifie $p \circ p = p$, $\operatorname{Im} p = F$, $\operatorname{Ker} p = G$ : c'est le **projecteur** sur $F$ parallèlement à $G$.
+
+      (iii) Réciproquement, si $p \in \mathcal L(E, E)$ vérifie $p \circ p = p$, alors $E = \operatorname{Im} p \oplus \operatorname{Ker} p$.
+    preuve: |
+      (i) Si $f + g = f' + g'$, alors $f - f' = g' - g \in F \cap G$. Si cette intersection est nulle, $f = f'$ et $g = g'$. Réciproquement, si $x \in F \cap G$, alors $x + 0 = 0 + x$ donne deux écritures, égales seulement si $x = 0$.
+
+      (ii) L'unicité de l'écriture donne la linéarité : $x + x' = (f + f') + (g + g')$, et de même pour $\lambda x$. Pour $f \in F$, $p(f) = f$, d'où $p \circ p = p$ et $\operatorname{Im} p = F$ ; $p(x) = 0$ équivaut à $x \in G$.
+
+      (iii) Tout $x$ s'écrit $p(x) + (x - p(x))$, avec $p(x - p(x)) = p(x) - p(p(x)) = 0$. Si $x \in \operatorname{Im} p \cap \operatorname{Ker} p$, alors $x = p(y)$ et $0 = p(x) = p(p(y)) = p(y) = x$.
+    remarques:
+      - |
+        L'erreur la plus répandue est de confondre supplémentaire et complémentaire : $F \cup G$ n'est jamais un sous-espace si $F$ et $G$ sont deux droites distinctes, et un sous-espace a en général une infinité de supplémentaires. Dans $K^2$, avec $K$ infini, les droites engendrées par $(1, t)$, pour $t \in K$, sont toutes supplémentaires de la droite engendrée par $(0, 1)$.
+
+  - id: v-quotient
+    etiquette: Espace quotient
+    nature: théorème
+    titre: Espace quotient et théorème d'isomorphisme
+    enonce: |
+      (i) Si $F$ est un sous-espace de $E$, le quotient $E/F$ est un espace vectoriel et la surjection canonique $\pi : E \to E/F$ est linéaire, de noyau $F$.
+
+      (ii) Toute application linéaire $u : E \to E'$ induit un isomorphisme $E/\operatorname{Ker} u \cong \operatorname{Im} u$.
+
+      (iii) Si $G$ est un supplémentaire de $F$, la restriction de $\pi$ à $G$ est un isomorphisme de $G$ sur $E/F$.
+    preuve: |
+      (i) C'est le quotient d'un module par un sous-module ({{a-module|Module}}).
+
+      (ii) Le théorème d'isomorphisme des groupes fournit un isomorphisme de groupes $\bar u : E/\operatorname{Ker} u \to \operatorname{Im} u$ avec $\bar u(\pi(x)) = u(x)$ ({{a-isomorphisme|Théorème d'isomorphisme}}) ; il respecte la loi externe, puisque $\bar u(\lambda \pi(x)) = \bar u(\pi(\lambda x)) = \lambda u(x)$.
+
+      (iii) $\pi|_G$ est linéaire, de noyau $G \cap F = \{0\}$, donc injective. Tout $x \in E$ s'écrit $f + g$, et $\pi(x) = \pi(g)$ : elle est surjective.
+    remarques:
+      - |
+        Le point (iii) dit que tous les supplémentaires de $F$ sont isomorphes entre eux, puisqu'ils le sont tous à $E/F$. Le quotient en est le représentant canonique, qui ne demande aucun choix.
+
+  - id: v-libre
+    etiquette: Familles libres, bases
+    nature: proposition
+    titre: Familles libres, génératrices, bases
+    texte: |
+      Une famille $(e_i)_{i \in I}$ de $E$ est [[famille-libre|libre]] si toute combinaison linéaire nulle $\sum_i \lambda_i e_i = 0$ a tous ses coefficients nuls ; [[famille-generatrice|génératrice]] si $\operatorname{Vect}\{e_i : i \in I\} = E$ ; c'est une [[base-vectorielle|base]] si elle est libre et génératrice.
+    enonce: |
+      (i) $(e_i)$ est une base si et seulement si tout $x \in E$ s'écrit de manière unique $x = \sum_i \lambda_i e_i$, avec $(\lambda_i)$ à support fini ; les $\lambda_i$ sont les **coordonnées** de $x$.
+
+      (ii) *Propriété universelle.* Si $(e_i)_{i \in I}$ est une base de $E$ et $(y_i)_{i \in I}$ une famille de $F$, il existe une unique application linéaire $u : E \to F$ telle que $u(e_i) = y_i$ pour tout $i$.
+
+      (iii) Avec ces notations, $u$ est injective si et seulement si $(y_i)$ est libre, surjective si et seulement si $(y_i)$ est génératrice. En particulier, $E$ a une base indexée par $I$ si et seulement si $E$ est isomorphe à $K^{(I)}$.
+
+      (iv) Si $L$ est une partie libre et $x \notin \operatorname{Vect}(L)$, alors $L \cup \{x\}$ est libre.
+    preuve: |
+      (i) L'existence de l'écriture est le caractère générateur ({{v-combinaisons|Combinaisons linéaires}}). Deux écritures différentes donnent, par différence, une combinaison nulle à coefficients non tous nuls, et réciproquement.
+
+      (ii) On pose $u\big(\sum_i \lambda_i e_i\big) = \sum_i \lambda_i y_i$, ce qui a un sens par (i) ; $u$ est linéaire par unicité des coordonnées. Toute application linéaire qui convient prend cette valeur ({{v-applications|Applications linéaires}}).
+
+      (iii) $u\big(\sum_i \lambda_i e_i\big) = 0$ équivaut à $\sum_i \lambda_i y_i = 0$ : l'injectivité est la liberté des $y_i$. L'image de $u$ est l'ensemble des combinaisons des $y_i$. Enfin, les fonctions indicatrices $\delta_i$ des singletons forment une base de $K^{(I)}$, et l'application qui envoie $\delta_i$ sur $e_i$ est un isomorphisme lorsque $(e_i)$ est une base.
+
+      (iv) Dans une relation $\lambda x + \sum_m \mu_m m = 0$, avec $m \in L$, on a $\lambda = 0$, sinon $x = -\lambda^{-1}\sum_m \mu_m m \in \operatorname{Vect}(L)$ ; puis tous les $\mu_m$ sont nuls, $L$ étant libre.
+    remarques:
+      - |
+        Une application linéaire est donc entièrement déterminée par les images des vecteurs d'une base, qu'on peut choisir librement. C'est ce qui permettra de la représenter par une matrice ({{v-matrices|Matrices}}).
+
+  - id: v-bases-existence
+    etiquette: Existence de bases
+    nature: théorème
+    titre: Tout espace vectoriel a une base
+    choix: |
+      La démonstration utilise le lemme de Zorn. Réciproquement, Blass a montré en 1984 que l'existence d'une base dans tout espace vectoriel entraîne l'axiome du choix ; cette réciproque est admise ici.
+    enonce: |
+      Dans tout espace vectoriel $E$ :
+
+      (i) toute partie libre est contenue dans une base (**théorème de la base incomplète**) ; en particulier, $E$ a une base ;
+
+      (ii) tout sous-espace $F$ a un supplémentaire.
+    preuve: |
+      (i) Soit $L$ une partie libre. L'ensemble $\mathcal E$ des parties libres contenant $L$, ordonné par inclusion, est non vide. Il est [[inductif-ordre|inductif]] : si $\mathcal C$ est une chaîne de $\mathcal E$, la réunion $U$ de ses éléments contient $L$, et elle est libre, car une combinaison linéaire ne fait intervenir qu'un nombre fini de vecteurs $u_1, \dots, u_k$ de $U$, et ceux-ci appartiennent tous à un même élément de la chaîne, le plus grand des éléments qui contiennent chacun d'eux. Le [[lemme-zorn|lemme de Zorn]] ({{o-zorn|Lemme de Zorn}}) fournit une partie libre maximale $M$.
+
+      $M$ est génératrice : si $x \notin \operatorname{Vect}(M)$, alors $M \cup \{x\}$ est libre ({{v-libre|Familles libres, bases}}, point (iv)), ce qui contredit la maximalité. Pour $L = \varnothing$, on obtient une base de $E$.
+
+      (ii) Soit $B_F$ une base de $F$, complétée en une base $B$ de $E$ par (i). Le sous-espace $G$ engendré par $B \setminus B_F$ vérifie $F + G = E$, et $F \cap G = \{0\}$ par unicité des coordonnées dans la base $B$ ({{v-libre|Familles libres, bases}}).
+    remarques:
+      - |
+        Sans l'axiome du choix, l'espace $\mathbb R$ vu comme espace vectoriel sur {{q|$\mathbb Q$}} peut n'avoir aucune base : il est cohérent avec $\mathsf{ZF}$ qu'il n'en ait pas. Une base de ce type, dite de Hamel, n'est jamais explicite.
+      - |
+        En dimension finie, le choix est inutile : le nœud {{v-dimension|Dimension}} complète une famille libre en piochant dans une base donnée, sans lemme de Zorn.
+
+  - id: v-echange
+    etiquette: Lemme d'échange
+    nature: lemme
+    titre: Lemme d'échange de Steinitz
+    enonce: |
+      Si $E$ est engendré par une famille $(g_1, \dots, g_n)$ et si $(f_1, \dots, f_m)$ est une famille libre de $E$, alors $m \leqslant n$.
+    preuve: |
+      Montrons par récurrence sur $k \leqslant m$ que $k \leqslant n$ et que, quitte à renuméroter les $g_j$, la famille $(f_1, \dots, f_k, g_{k+1}, \dots, g_n)$ engendre $E$. Pour $k = 0$, c'est l'hypothèse.
+
+      Supposons le résultat vrai pour $k < m$. Écrivons $f_{k+1} = \sum_{i \leqslant k} a_i f_i + \sum_{j > k} b_j g_j$. Si tous les $b_j$ étaient nuls, en particulier s'il n'y avait aucun $g_j$ d'indice $j > k$, on aurait une relation de dépendance entre $f_1, \dots, f_{k+1}$, ce qui contredit la liberté. Il existe donc $j > k$, d'où $k + 1 \leqslant n$, avec $b_j \neq 0$ ; on renumérote pour que $j = k + 1$. Alors
+      $$g_{k+1} = b_{k+1}^{-1}\Big(f_{k+1} - \sum_{i \leqslant k} a_i f_i - \sum_{j > k+1} b_j g_j\Big)$$
+      appartient au sous-espace engendré par $(f_1, \dots, f_{k+1}, g_{k+2}, \dots, g_n)$, qui contient donc tous les vecteurs de la famille génératrice précédente : il est égal à $E$. Pour $k = m$, on obtient $m \leqslant n$.
+    remarques:
+      - |
+        C'est le seul lemme où l'on doit vraiment calculer ; tout ce qui concerne la dimension en découle. L'idée est de remplacer, un par un, les vecteurs générateurs par les vecteurs libres sans perdre le caractère générateur.
+
+  - id: v-dimension
+    etiquette: Dimension
+    nature: théorème
+    titre: Dimension d'un espace vectoriel
+    texte: |
+      $E$ est **de dimension finie** s'il est engendré par une famille finie.
+    enonce: |
+      Soit $E$ de dimension finie.
+
+      (i) $E$ a une base finie, et toutes ses bases ont le même nombre d'éléments, la [[dimension]] de $E$, notée $\dim E$.
+
+      (ii) Si $\dim E = n$, toute famille libre a au plus $n$ éléments, et toute famille libre à $n$ éléments est une base ; toute famille génératrice a au moins $n$ éléments, et toute famille génératrice à $n$ éléments est une base.
+
+      (iii) Toute famille libre se complète en une base, en lui ajoutant des vecteurs d'une base donnée. Tout sous-espace $F$ est de dimension finie, avec $\dim F \leqslant \dim E$, et $\dim F = \dim E$ seulement si $F = E$.
+    preuve: |
+      On utilise le point (iv) du nœud {{v-libre|Familles libres, bases}} : si $L$ est libre et $x \notin \operatorname{Vect}(L)$, alors $L \cup \{x\}$ est libre. Aucun choix n'intervient.
+
+      (i) Soit $(g_1, \dots, g_n)$ génératrice. Parmi ses sous-familles libres, dont le nombre d'éléments est au plus $n$ ({{v-echange|Lemme d'échange}}), il y en a une de nombre d'éléments maximal ; par ce point (iv), chaque $g_j$ appartient au sous-espace qu'elle engendre, qui est donc $E$ : c'est une base finie. Si $B$ et $B'$ sont deux bases, chacune est libre et l'autre génératrice, donc $|B| \leqslant |B'|$ et $|B'| \leqslant |B|$ par le lemme d'échange.
+
+      (ii) Une base, à $n$ éléments, est génératrice : le lemme d'échange borne les familles libres par $n$. Si $L$ est libre à $n$ éléments et non génératrice, on lui ajoute un vecteur hors de $\operatorname{Vect}(L)$ et l'on obtient une famille libre à $n + 1$ éléments : contradiction. Une famille génératrice contient une base, comme dans (i), donc a au moins $n$ éléments, et si elle en a exactement $n$, cette base est la famille entière.
+
+      (iii) Soit $L$ libre et $B$ une base. Parmi les familles libres formées de $L$ et de vecteurs de $B$, en nombre au plus $n$, on en prend une de nombre d'éléments maximal ; elle engendre chaque vecteur de $B$, par ce même point, donc $E$. Pour un sous-espace $F$, on prend de même une famille libre de $F$ à nombre d'éléments maximal, au plus $n$ : elle engendre $F$, et c'en est une base. Si $\dim F = n$, cette base est une famille libre à $n$ éléments de $E$, donc une base de $E$ par (ii), et $F = E$.
+    remarques:
+      - |
+        Ainsi $K^n$ est de dimension $n$, de base $(\delta_1, \dots, \delta_n)$. Deux espaces de dimension finie sont isomorphes si et seulement s'ils ont même dimension : la dimension est le seul invariant.
+      - |
+        En dimension infinie, deux bases d'un même espace sont encore équipotentes, ce qui permet de définir la dimension comme un [[cardinal]] ; la démonstration utilise l'arithmétique des cardinaux infinis.
+
+  - id: v-rang
+    etiquette: Théorème du rang
+    nature: théorème
+    titre: Théorème du rang
+    enonce: |
+      Soit $E$ de dimension finie et $u \in \mathcal L(E, F)$. Alors $\operatorname{Im} u$ est de dimension finie, appelée le [[rang]] de $u$, et
+      $$\dim E = \dim \operatorname{Ker} u + \operatorname{rg} u.$$
+      En particulier, si $\dim E = \dim F$ est finie, $u$ est injective si et seulement si elle est surjective. Pour deux sous-espaces $F$ et $G$ d'un espace de dimension finie, $\dim(F + G) = \dim F + \dim G - \dim(F \cap G)$.
+    preuve: |
+      Soit $(e_1, \dots, e_k)$ une base de $\operatorname{Ker} u$, complétée en une base $(e_1, \dots, e_n)$ de $E$ ({{v-dimension|Dimension}}). Les vecteurs $u(e_{k+1}), \dots, u(e_n)$ engendrent $\operatorname{Im} u$, puisque $u(e_i) = 0$ pour $i \leqslant k$. Ils sont libres : si $\sum_{j > k} \lambda_j u(e_j) = 0$, alors $\sum_{j > k} \lambda_j e_j \in \operatorname{Ker} u$ s'écrit $\sum_{i \leqslant k} \mu_i e_i$, et la liberté de la base donne $\lambda_j = 0$. Donc $\operatorname{rg} u = n - k$.
+
+      Si $\dim E = \dim F$, l'injectivité équivaut à $\operatorname{Ker} u = \{0\}$, donc à $\operatorname{rg} u = \dim F$, donc à $\operatorname{Im} u = F$ ({{v-dimension|Dimension}}).
+
+      Pour la formule de Grassmann, on applique le théorème à $s : F \times G \to E$, $(f, g) \mapsto f + g$. Son image est $F + G$, son noyau $\{(x, -x) : x \in F \cap G\}$ est isomorphe à $F \cap G$, et $\dim(F \times G) = \dim F + \dim G$, une base étant formée des $(f_i, 0)$ et des $(0, g_j)$.
+    remarques:
+      - |
+        En dimension infinie, l'équivalence entre injectivité et surjectivité tombe. Sur $K^{(\mathbb N)}$, le décalage $(x_0, x_1, \dots) \mapsto (0, x_0, x_1, \dots)$ est injectif sans être surjectif.
+
+  - id: v-matrices
+    etiquette: Matrices
+    nature: proposition
+    titre: Matrices d'une application linéaire
+    texte: |
+      Une **matrice** à $p$ lignes et $n$ colonnes est une famille $A = (a_{ij})$ de scalaires indexée par $\{1, \dots, p\} \times \{1, \dots, n\}$ ; leur ensemble $\mathcal M_{p,n}(K)$ est un espace vectoriel. Le produit de $A \in \mathcal M_{p,n}(K)$ et $B \in \mathcal M_{n,q}(K)$ est la matrice $AB \in \mathcal M_{p,q}(K)$ de coefficients $\sum_{k=1}^n a_{ik} b_{kj}$. Si $\mathcal B = (e_1, \dots, e_n)$ et $\mathcal C = (f_1, \dots, f_p)$ sont des bases de $E$ et $F$, la **matrice** de $u \in \mathcal L(E, F)$ dans ces bases est la matrice dont la $j$-ième colonne contient les coordonnées de $u(e_j)$ dans $\mathcal C$.
+    enonce: |
+      (i) $u \mapsto \operatorname{Mat}_{\mathcal B, \mathcal C}(u)$ est un isomorphisme d'espaces vectoriels de $\mathcal L(E, F)$ sur $\mathcal M_{p,n}(K)$ ; en particulier $\dim \mathcal L(E, F) = np$.
+
+      (ii) Si $v \in \mathcal L(F, G)$ et $\mathcal D$ est une base de $G$, alors $\operatorname{Mat}_{\mathcal B, \mathcal D}(v \circ u) = \operatorname{Mat}_{\mathcal C, \mathcal D}(v)\operatorname{Mat}_{\mathcal B, \mathcal C}(u)$.
+    preuve: |
+      (i) La correspondance est linéaire, puisque les coordonnées le sont ; elle est bijective par la propriété universelle des bases ({{v-libre|Familles libres, bases}}), une application linéaire étant déterminée par les images arbitraires des $e_j$. L'espace $\mathcal M_{p,n}(K)$ a pour base les matrices élémentaires, qui ont un seul coefficient égal à $1$.
+
+      (ii) Notons $A = (a_{kj})$ la matrice de $u$ et $B = (b_{ik})$ celle de $v$. Alors
+      $$v(u(e_j)) = v\Big(\sum_k a_{kj} f_k\Big) = \sum_k a_{kj} \sum_i b_{ik} g_i = \sum_i \Big(\sum_k b_{ik} a_{kj}\Big) g_i,$$
+      ce qui est le coefficient $(i, j)$ de $BA$.
+    remarques:
+      - |
+        La définition du produit des matrices n'a rien d'arbitraire : c'est la seule qui traduise la composition. Elle n'est pas commutative. Pour $A = \begin{pmatrix} 0 & 1 \\ 0 & 0 \end{pmatrix}$ et $B = \begin{pmatrix} 0 & 0 \\ 1 & 0 \end{pmatrix}$, on trouve $AB = \begin{pmatrix} 1 & 0 \\ 0 & 0 \end{pmatrix}$ et $BA = \begin{pmatrix} 0 & 0 \\ 0 & 1 \end{pmatrix}$, et l'on a même $A^2 = 0$ avec $A \neq 0$ : l'anneau $\mathcal M_2(K)$ n'est pas intègre.
+
+  - id: v-dual
+    etiquette: Dualité
+    nature: proposition
+    titre: Espace dual
+    texte: |
+      L'[[espace-dual|espace dual]] de $E$ est $E^* = \mathcal L(E, K)$ ; ses éléments sont les **formes linéaires**.
+    enonce: |
+      Soit $E$ de dimension finie $n$ et $(e_1, \dots, e_n)$ une base.
+
+      (i) Les formes $e_1^*, \dots, e_n^*$ définies par $e_i^*(e_j) = 1$ si $i = j$ et $0$ sinon forment une base de $E^*$, la **base duale** ; en particulier $\dim E^* = n$.
+
+      (ii) L'application $E \to E^{**}$ qui envoie $x$ sur l'évaluation $\varphi \mapsto \varphi(x)$ est un isomorphisme, qui ne dépend d'aucun choix de base.
+    preuve: |
+      (i) Les $e_i^*$ existent par la propriété universelle ({{v-libre|Familles libres, bases}}). Si $\sum_i \lambda_i e_i^* = 0$, on applique à $e_j$ : $\lambda_j = 0$. Toute forme $\varphi$ coïncide avec $\sum_i \varphi(e_i) e_i^*$ sur la base, donc lui est égale.
+
+      (ii) L'application est linéaire. Si $x \neq 0$, on complète $x$ en une base ({{v-dimension|Dimension}}) ; la première forme de la base duale vaut $1$ en $x$, donc l'évaluation en $x$ n'est pas nulle : l'application est injective. Comme $\dim E^{**} = \dim E^* = \dim E$, elle est bijective par le théorème du rang ({{v-rang|Théorème du rang}}).
+    remarques:
+      - |
+        L'isomorphisme $E \cong E^*$ fourni par une base dépend de la base ; celui de $E$ sur $E^{**}$ n'en dépend pas. C'est l'exemple qui a conduit Eilenberg et Mac Lane, en 1945, à préciser la notion d'isomorphisme « naturel ».
+      - |
+        En dimension infinie, $E^*$ est strictement plus gros que $E$ : le dual de $K^{(\mathbb N)}$ est isomorphe à $K^{\mathbb N}$, dont la dimension est strictement plus grande que celle de $K^{(\mathbb N)}$ (théorème d'Erdős-Kaplansky). L'analyse fonctionnelle remplace pour cette raison le dual algébrique par le dual topologique.
+
+aretes:
+  - [v-espace, v-combinaisons]
+  - [v-espace, v-applications]
+  - [v-applications, v-somme-directe]
+  - [v-applications, v-quotient]
+  - [v-somme-directe, v-quotient]
+  - [v-combinaisons, v-libre]
+  - [v-applications, v-libre]
+  - [v-libre, v-bases-existence]
+  - [v-somme-directe, v-bases-existence]
+  - [v-libre, v-echange]
+  - [v-echange, v-dimension]
+  - [v-dimension, v-rang]
+  - [v-dimension, v-matrices]
+  - [v-rang, v-dual]
