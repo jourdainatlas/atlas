@@ -1,0 +1,200 @@
+# Niveau 1 : structure interne du nœud « Géométrie algébrique ».
+# Deux volets : le spectre d'un anneau commutatif et sa topologie de Zariski, puis les ensembles
+# algébriques de K^n et le Nullstellensatz, qui relie les deux. Les anneaux sont commutatifs.
+# Les énoncés qui demandent un idéal maximal ou premier reposent sur le lemme de Zorn et sont marqués ⋆.
+
+graphe: geoalg
+titre: Géométrie algébrique
+conteneur: geoalg
+
+entrees:
+  alg: [ga-spectre]
+  top: [ga-zariski]
+  z: [ga-zeros]
+  ordin: [ga-krull]
+
+noeuds:
+  - id: ga-spectre
+    etiquette: Spectre
+    nature: définition
+    titre: Spectre premier d'un anneau
+    enonce: |
+      Le [[spectre-premier|spectre premier]] d'un anneau commutatif $A$ est l'ensemble $\operatorname{Spec} A$ de ses [[ideal-premier|idéaux premiers]]. Pour une partie $S \subset A$ et un élément $f \in A$, on pose
+      $$V(S) = \{\mathfrak p \in \operatorname{Spec} A : S \subset \mathfrak p\},$$
+      $$D(f) = \{\mathfrak p \in \operatorname{Spec} A : f \notin \mathfrak p\}.$$
+    remarques:
+      - |
+        L'idée est de voir un élément $f \in A$ comme une « fonction » sur $\operatorname{Spec} A$, dont la valeur en $\mathfrak p$ est la classe de $f$ dans l'anneau intègre $A/\mathfrak p$ ({{a-premier-maximal|Idéaux premiers, maximaux}}). Alors $V(S)$ est le lieu où s'annulent les éléments de $S$, et $D(f)$ celui où $f$ ne s'annule pas.
+      - |
+        Pour $A = \mathbb Z$, les idéaux premiers sont $(0)$ et les $p\mathbb Z$, $p$ premier ({{z-zn|ℤ/nℤ}}) : le spectre a un point par nombre premier, plus un point $(0)$ qui ne correspond à aucun d'eux.
+
+  - id: ga-zariski
+    etiquette: Topologie de Zariski
+    nature: proposition
+    titre: La topologie de Zariski
+    enonce: |
+      (i) $V(S) = V(I)$, où $I$ est l'idéal engendré par $S$ ; $V(0) = \operatorname{Spec} A$ et $V(1) = \varnothing$.
+
+      (ii) Pour toute famille d'idéaux, $\bigcap_i V(I_i) = V\big(\bigcup_i I_i\big)$ ; pour deux idéaux, $V(I) \cup V(J) = V(IJ)$, où $IJ$ est l'idéal engendré par les produits $ab$, $a \in I$, $b \in J$.
+
+      (iii) Les parties $V(S)$ sont donc les fermés d'une topologie sur $\operatorname{Spec} A$, la [[topologie-zariski|topologie de Zariski]], dont les $D(f)$ forment une base, avec $D(f) \cap D(g) = D(fg)$.
+    preuve: |
+      (i) Un idéal contient $S$ si et seulement s'il contient l'idéal engendré par $S$ ({{a-ideal|Idéal}}). Tout idéal premier contient $0$, et aucun ne contient $1$.
+
+      (ii) La première égalité est immédiate. Pour la seconde, $IJ \subset I$ et $IJ \subset J$ donnent $V(I) \cup V(J) \subset V(IJ)$. Réciproquement, soit $\mathfrak p \supset IJ$ et supposons $I \not\subset \mathfrak p$, avec $a \in I \setminus \mathfrak p$. Pour tout $b \in J$, $ab \in \mathfrak p$, donc $b \in \mathfrak p$ puisque $\mathfrak p$ est premier : $J \subset \mathfrak p$.
+
+      (iii) Par (i) et (ii), les $V(S)$ contiennent $\varnothing$ et $\operatorname{Spec} A$, et sont stables par intersection quelconque et réunion finie : leurs complémentaires vérifient les axiomes d'une topologie ({{t-espace|Espace topologique}}). Le complémentaire de $V(S)$ est $\bigcup_{f \in S} D(f)$ : les $D(f)$ forment une base. Enfin $fg \notin \mathfrak p$ équivaut, pour $\mathfrak p$ premier, à $f \notin \mathfrak p$ et $g \notin \mathfrak p$.
+
+  - id: ga-points
+    etiquette: Points fermés
+    nature: proposition
+    titre: Adhérence d'un point, points fermés
+    choix: |
+      Le sens « point fermé ⇒ idéal maximal » utilise le théorème de Krull, donc le lemme de Zorn.
+    enonce: |
+      (i) L'adhérence de $\{\mathfrak p\}$ dans $\operatorname{Spec} A$ est $V(\mathfrak p)$.
+
+      (ii) Le point $\mathfrak p$ est fermé si et seulement si $\mathfrak p$ est un [[ideal-maximal|idéal maximal]].
+
+      (iii) Deux points distincts ne sont pas tous deux dans l'adhérence l'un de l'autre : l'un des deux a un voisinage qui ne contient pas l'autre.
+    preuve: |
+      (i) Un fermé $V(S)$ contient $\mathfrak p$ si et seulement si $S \subset \mathfrak p$, et alors $V(\mathfrak p) \subset V(S)$. Le plus petit fermé contenant $\mathfrak p$ est donc $V(\mathfrak p)$ ({{t-adherence|Intérieur, adhérence}}).
+
+      (ii) $\{\mathfrak p\}$ est fermé si et seulement si $V(\mathfrak p) = \{\mathfrak p\}$, c'est-à-dire si aucun idéal premier ne contient strictement $\mathfrak p$. Si $\mathfrak p$ est maximal, c'est le cas. Réciproquement, si $\mathfrak p$ n'est pas maximal, il est strictement contenu dans un idéal $J \neq A$, lui-même contenu dans un idéal maximal par le théorème de Krull, qui est premier : ce sens utilise donc le lemme de Zorn ({{ga-krull|Théorème de Krull}}).
+
+      (iii) Si $\mathfrak p \neq \mathfrak q$, l'un ne contient pas l'autre, disons $\mathfrak p \not\subset \mathfrak q$. Alors $\mathfrak q \notin V(\mathfrak p)$, l'adhérence de $\mathfrak p$.
+    remarques:
+      - |
+        L'erreur la plus répandue est de transposer l'intuition des espaces séparés. $\operatorname{Spec} A$ ne l'est presque jamais : si $A$ est intègre, le point $(0)$ a pour adhérence $V(0)$, l'espace tout entier. Il appartient à tout ouvert non vide, et on l'appelle le **point générique**.
+
+  - id: ga-krull
+    etiquette: Théorème de Krull
+    nature: théorème
+    titre: Existence d'idéaux maximaux
+    choix: |
+      La démonstration utilise le lemme de Zorn. Réciproquement, Hodges a montré en 1979 que l'énoncé « tout anneau commutatif non nul a un idéal maximal » entraîne l'axiome du choix ; cette réciproque est admise ici.
+    enonce: |
+      Dans un anneau commutatif $A$, tout idéal $I \neq A$ est contenu dans un idéal maximal. En particulier, si $A \neq \{0\}$, alors $\operatorname{Spec} A \neq \varnothing$, et tout élément non inversible appartient à un idéal maximal.
+    preuve: |
+      L'ensemble $\mathcal E$ des idéaux $J \neq A$ contenant $I$, ordonné par inclusion, contient $I$. Il est [[inductif-ordre|inductif]] : la réunion d'une chaîne non vide d'idéaux est un idéal, puisque deux éléments de la réunion appartiennent à un même membre de la chaîne, et elle ne contient pas $1$, puisqu'aucun membre ne le contient ({{a-ideal|Idéal}}) ; la chaîne vide est majorée par $I$. Le [[lemme-zorn|lemme de Zorn]] ({{o-zorn|Lemme de Zorn}}) fournit un élément maximal de $\mathcal E$, qui est un idéal maximal. Si $A \neq \{0\}$, on l'applique à $I = \{0\}$ ; si $x$ n'est pas inversible, on l'applique à $xA$, qui est différent de $A$.
+
+  - id: ga-quasi-compact
+    etiquette: Quasi-compacité
+    nature: théorème
+    titre: Le spectre est quasi-compact
+    choix: |
+      La démonstration utilise le théorème de Krull, donc le lemme de Zorn.
+    enonce: |
+      Un espace topologique est [[quasi-compact|quasi-compact]] si de tout recouvrement par des ouverts on peut extraire un recouvrement fini. Pour tout anneau commutatif $A$, l'espace $\operatorname{Spec} A$ est quasi-compact.
+    preuve: |
+      Il suffit de traiter un recouvrement par des ouverts de la base, $\operatorname{Spec} A = \bigcup_{i \in I} D(f_i)$ : un recouvrement quelconque se raffine en un tel recouvrement, et une sous-famille finie de celui-ci donne, en prenant pour chacun de ses membres un ouvert du recouvrement initial qui le contient, une sous-famille finie de ce dernier.
+
+      L'égalité dit que $V(\{f_i : i \in I\}) = \varnothing$ ({{ga-zariski|Topologie de Zariski}}). L'idéal $J$ engendré par les $f_i$ est donc égal à $A$ : sinon, il serait contenu dans un idéal maximal ({{ga-krull|Théorème de Krull}}), qui appartiendrait à $V(J)$. Ainsi $1 = \sum_{i \in F} a_i f_i$ pour une partie finie $F \subset I$ ({{v-combinaisons|Combinaisons linéaires}}), et aucun idéal premier ne contient tous les $f_i$, $i \in F$ : les $D(f_i)$, $i \in F$, recouvrent $\operatorname{Spec} A$.
+    remarques:
+      - |
+        On dit « quasi-compact » et non « compact », car l'atlas réserve ce mot aux espaces séparés ({{t-compact|Compacité}}), ce que le spectre n'est pas. La preuve traduit une propriété algébrique, qu'une combinaison égale à $1$ ne fait intervenir qu'un nombre fini de termes, en une propriété topologique.
+
+  - id: ga-nilradical
+    etiquette: Nilradical
+    nature: théorème
+    titre: Radical d'un idéal et intersection des idéaux premiers
+    choix: |
+      La démonstration utilise le lemme de Zorn.
+    texte: |
+      Le [[radical-ideal|radical]] d'un idéal $I$ est $\sqrt I = \{x \in A : x^n \in I \text{ pour un } n \in \mathbb N\}$ ; le radical de $\{0\}$, ensemble des éléments nilpotents, est le **nilradical**. Un idéal est **radical** s'il est égal à son radical.
+    enonce: |
+      (i) $\sqrt I$ est l'intersection des idéaux premiers qui contiennent $I$ ; c'est donc un idéal.
+
+      (ii) $V(I) \subset V(J)$ si et seulement si $\sqrt J \subset \sqrt I$. Les fermés de $\operatorname{Spec} A$ correspondent ainsi bijectivement aux idéaux radicaux, par $I \mapsto V(I)$.
+    preuve: |
+      (i) Si $x^n \in I \subset \mathfrak p$ avec $\mathfrak p$ premier, alors $x \in \mathfrak p$, par récurrence sur $n$. Réciproquement, soit $x \notin \sqrt I$, et $S = \{x^n : n \in \mathbb N\}$, qui ne rencontre pas $I$. L'ensemble des idéaux contenant $I$ et ne rencontrant pas $S$ est non vide et inductif, comme dans la preuve du théorème de {{ga-krull|Krull}} ; soit $\mathfrak p$ un élément maximal. Il est premier : si $a, b \notin \mathfrak p$, les idéaux $\mathfrak p + aA$ et $\mathfrak p + bA$ rencontrent $S$, par maximalité, et l'on écrit $x^m = p_1 + ar$, $x^n = p_2 + bs$ ; alors $x^{m + n} \in \mathfrak p + abA$, et $ab \notin \mathfrak p$, sinon $x^{m+n} \in \mathfrak p$. Ainsi $x$ n'appartient pas à l'idéal premier $\mathfrak p \supset I$.
+
+      (ii) Les idéaux premiers contenant $I$ sont les éléments de $V(I)$. Si $V(I) \subset V(J)$, l'intersection sur $V(J)$ est contenue dans l'intersection sur $V(I)$, soit $\sqrt J \subset \sqrt I$ par (i). Réciproquement, un premier qui contient $I$ contient $\sqrt I \supset \sqrt J \supset J$. Comme $V(I) = V(\sqrt I)$, deux idéaux radicaux distincts ont des fermés distincts.
+    remarques:
+      - |
+        Dans $\mathbb Z$, le radical de $12\mathbb Z$ est $6\mathbb Z$ : un entier dont une puissance est multiple de $12 = 2^2 \cdot 3$ est multiple de $2$ et de $3$. Les fermés $V(12\mathbb Z)$ et $V(6\mathbb Z)$ sont égaux, réduits aux deux points $2\mathbb Z$ et $3\mathbb Z$ : le spectre ne voit pas les multiplicités.
+
+  - id: ga-zeros
+    etiquette: Ensembles algébriques
+    nature: proposition
+    titre: Ensembles algébriques affines
+    texte: |
+      Soit $K$ un corps et $K[X] = K[X_1, \dots, X_n]$ ({{z-polynomes|Anneaux de polynômes}}). Pour $a \in K^n$, l'évaluation $P \mapsto P(a)$ est un morphisme d'anneaux. Pour $S \subset K[X]$ et $Y \subset K^n$, on pose
+      $$Z(S) = \{a \in K^n : P(a) = 0 \text{ pour tout } P \in S\},$$
+      $$I(Y) = \{P \in K[X] : P(a) = 0 \text{ pour tout } a \in Y\}.$$
+      Un [[ensemble-algebrique|ensemble algébrique]] est une partie de la forme $Z(S)$.
+    enonce: |
+      (i) $Z(S) = Z(J)$ où $J$ est l'idéal engendré par $S$, et $I(Y)$ est un idéal radical.
+
+      (ii) $Z(I) \cup Z(J) = Z(IJ)$ et $\bigcap_i Z(S_i) = Z\big(\bigcup_i S_i\big)$ : les ensembles algébriques sont les fermés d'une topologie sur $K^n$, la topologie de Zariski.
+
+      (iii) $Y \subset Z(I(Y))$, avec égalité si et seulement si $Y$ est algébrique ; $S \subset I(Z(S))$.
+    preuve: |
+      (i) Les polynômes qui s'annulent en $a$ forment le noyau de l'évaluation, qui est un idéal ; $Z(S)$ ne change donc pas si l'on remplace $S$ par l'idéal qu'il engendre. $I(Y)$ est une intersection de tels noyaux. Si $P^m$ s'annule sur $Y$, $P$ aussi, $K$ étant intègre.
+
+      (ii) Si $a \notin Z(I)$, il existe $P \in I$ avec $P(a) \neq 0$ ; pour $Q \in J$, $PQ \in IJ$ s'annule en $a$, donc $Q(a) = 0$ : $a \in Z(J)$. L'autre inclusion et l'égalité des intersections sont immédiates. On conclut comme au nœud {{ga-zariski|Topologie de Zariski}}, avec $Z(0) = K^n$ et $Z(1) = \varnothing$.
+
+      (iii) Les inclusions sont des tautologies. Si $Y = Z(S)$, alors $S \subset I(Y)$ donne $Z(I(Y)) \subset Z(S) = Y$.
+    remarques:
+      - |
+        Le cercle $Z(X_1^2 + X_2^2 - 1)$ de $\mathbb R^2$ est algébrique ; la courbe $\{(x, y) : y = \sin x\}$ ne l'est pas. En effet, un ensemble algébrique rencontre une droite en un nombre fini de points ou la contient tout entière, puisque chaque polynôme, restreint à la droite paramétrée, devient un polynôme en une variable, nul ou à racines en nombre fini ; or cette courbe coupe l'axe $y = 0$ en une infinité de points sans le contenir.
+      - |
+        Sans hypothèse sur $K$, $Z$ ne distingue pas assez d'idéaux. Sur $\mathbb R$, $Z(X^2 + 1) = \varnothing = Z(1)$, alors que l'idéal engendré par $X^2 + 1$ est maximal et différent de $\mathbb R[X]$. Le Nullstellensatz, au nœud suivant, demande un corps algébriquement clos.
+
+  - id: ga-nullstellensatz
+    etiquette: Nullstellensatz
+    nature: théorème
+    titre: Théorème des zéros de Hilbert
+    choix: |
+      Le passage de la forme faible à la forme forte utilise le théorème de Krull.
+    texte: |
+      Un corps $K$ est [[corps-algebriquement-clos|algébriquement clos]] si tout polynôme non constant de $K[X]$ a une racine dans $K$. Pour $a \in K^n$, on note $\mathfrak m_a$ l'idéal engendré par $X_1 - a_1, \dots, X_n - a_n$.
+    enonce: |
+      Soit $K$ algébriquement clos.
+
+      (i) *Forme faible.* Les idéaux maximaux de $K[X_1, \dots, X_n]$ sont exactement les $\mathfrak m_a$, $a \in K^n$. En particulier, un idéal $J \neq K[X]$ a un zéro : $Z(J) \neq \varnothing$.
+
+      (ii) *Forme forte.* Pour tout idéal $J$, $I(Z(J)) = \sqrt J$.
+    preuve: |
+      (i) **Admise en partie.** Montrons que $\mathfrak m_a$ est maximal. L'évaluation en $a$ est un morphisme surjectif sur $K$, dont le noyau contient $\mathfrak m_a$. Réciproquement, en écrivant chaque $X_i = (X_i - a_i) + a_i$ et en développant, tout $P$ s'écrit $P(a) + R$ avec $R \in \mathfrak m_a$ ; si $P(a) = 0$, alors $P \in \mathfrak m_a$. Le noyau est donc $\mathfrak m_a$, et le quotient, isomorphe à $K$, est un corps : $\mathfrak m_a$ est maximal ({{a-premier-maximal|Idéaux premiers, maximaux}}). Qu'il n'y ait pas d'autre idéal maximal est admis : la difficulté contournée est le lemme de Zariski, selon lequel un corps engendré comme $K$-algèbre par un nombre fini d'éléments est une extension finie de $K$, ce qui demande la théorie des extensions algébriques. Enfin, si $J \neq K[X]$, il est contenu dans un idéal maximal ({{ga-krull|Théorème de Krull}}), de la forme $\mathfrak m_a$, et $a \in Z(J)$.
+
+      (ii) Si $P^m \in J$, $P$ s'annule là où $P^m$ s'annule : $\sqrt J \subset I(Z(J))$. Réciproquement, soit $P \in I(Z(J))$, non nul. Dans $K[X_1, \dots, X_n, T]$, l'idéal engendré par $J$ et $1 - TP$ n'a pas de zéro, puisqu'en un zéro de $J$, $P$ s'annule et $1 - TP$ vaut $1$. Par (i), cet idéal est l'anneau entier, et l'on écrit $1 = \sum_k G_k Q_k + H\,(1 - TP)$ avec $Q_k \in J$. Évaluons dans le corps des fractions de $K[X]$ ({{a-fractions|Corps des fractions}}) en $T = 1/P$, par la propriété universelle des polynômes : $1 = \sum_k G_k(X, 1/P)\, Q_k$. En multipliant par une puissance $P^N$ assez grande pour chasser les dénominateurs, on obtient $P^N \in J$.
+    remarques:
+      - |
+        L'astuce de la variable supplémentaire $T$ est due à Rabinowitsch (1929) : elle ramène la forme forte à la forme faible, en transformant « $P$ s'annule sur $Z(J)$ » en « un certain idéal n'a pas de zéro ».
+      - |
+        Le corps {{c|$\mathbb C$}} est algébriquement clos ; c'est le cadre classique de la géométrie algébrique. L'hypothèse est indispensable, comme le montre l'exemple de $X^2 + 1$ sur $\mathbb R$ ({{ga-zeros|Ensembles algébriques}}).
+
+  - id: ga-correspondance
+    etiquette: Dictionnaire
+    nature: corollaire
+    titre: Le dictionnaire entre algèbre et géométrie
+    enonce: |
+      Soit $K$ algébriquement clos.
+
+      (i) $Z$ et $I$ sont des bijections réciproques, décroissantes pour l'inclusion, entre les ensembles algébriques de $K^n$ et les idéaux radicaux de $K[X_1, \dots, X_n]$.
+
+      (ii) L'application $a \mapsto \mathfrak m_a$ est une bijection de $K^n$ sur l'ensemble des idéaux maximaux, c'est-à-dire sur les points fermés de $\operatorname{Spec} K[X]$, et $a \in Z(J)$ si et seulement si $\mathfrak m_a \in V(J)$.
+    preuve: |
+      (i) Si $J$ est radical, $I(Z(J)) = \sqrt J = J$ par le Nullstellensatz ; si $Y$ est algébrique, $Z(I(Y)) = Y$ ({{ga-zeros|Ensembles algébriques}}). Les deux applications renversent l'inclusion par définition.
+
+      (ii) La forme faible du Nullstellensatz donne la surjectivité ; $\mathfrak m_a = \mathfrak m_b$ entraîne $b \in Z(\mathfrak m_a) = \{a\}$, d'où l'injectivité. Les idéaux maximaux sont les points fermés ({{ga-points|Points fermés}}). Enfin $a \in Z(J)$ signifie que $J$ est contenu dans le noyau de l'évaluation en $a$, qui est $\mathfrak m_a$.
+    remarques:
+      - |
+        Ce dictionnaire est la raison d'être du spectre : il identifie l'espace géométrique $K^n$ aux points fermés de $\operatorname{Spec} K[X]$, et chaque ensemble algébrique à un fermé de Zariski. Grothendieck a pris le spectre de n'importe quel anneau commutatif comme espace de départ ; recollés, ces spectres forment les schémas.
+      - |
+        Les idéaux premiers non maximaux correspondent aux ensembles algébriques irréductibles, qui ne sont pas réunion de deux fermés plus petits : la droite, le cercle, la surface. Le spectre ajoute à chacun un point générique, qui le représente tout entier.
+
+aretes:
+  - [ga-spectre, ga-zariski]
+  - [ga-zariski, ga-points]
+  - [ga-krull, ga-points]
+  - [ga-zariski, ga-quasi-compact]
+  - [ga-krull, ga-quasi-compact]
+  - [ga-krull, ga-nilradical]
+  - [ga-zariski, ga-nilradical]
+  - [ga-zeros, ga-nullstellensatz]
+  - [ga-krull, ga-nullstellensatz]
+  - [ga-nullstellensatz, ga-correspondance]
+  - [ga-nilradical, ga-correspondance]
+  - [ga-points, ga-correspondance]

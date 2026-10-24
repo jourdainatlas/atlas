@@ -1,0 +1,173 @@
+# Niveau 1 : structure interne du nœud « Groupes topologiques ».
+# Dans l'édifice, ce nœud ne repose que sur les structures algébriques et topologiques : il précède ℕ et ℝ.
+# Les exemples sont donc pris parmi les groupes discrets, les produits et les groupes de bijections ;
+# ℝ, ℂ et les groupes de matrices n'apparaissent qu'en remarque.
+
+graphe: grtop
+titre: Groupes topologiques
+conteneur: grtop
+
+entrees:
+  alg: [gt-definition]
+  top: [gt-definition]
+
+noeuds:
+  - id: gt-definition
+    etiquette: Groupe topologique
+    nature: définition
+    enonce: |
+      Un [[groupe-topologique|groupe topologique]] est un [[groupe]] $G$ muni d'une topologie pour laquelle la multiplication $G \times G \to G$, $(x, y) \mapsto xy$, où $G \times G$ porte la [[topologie-produit|topologie produit]], et le passage au symétrique $x \mapsto x^{-1}$ sont [[continuite|continus]]. Il revient au même de demander que $(x, y) \mapsto xy^{-1}$ soit continue.
+
+      Un **morphisme de groupes topologiques** est un morphisme de groupes continu ; un isomorphisme de groupes topologiques est un morphisme bijectif dont la réciproque est continue.
+    preuve: |
+      Si la multiplication et l'inversion sont continues, $(x, y) \mapsto xy^{-1}$ est la composée de $(x, y) \mapsto (x, y^{-1})$, continue par la propriété du produit ({{t-produit|Topologie produit}}), et de la multiplication. Réciproquement, si $\delta(x, y) = xy^{-1}$ est continue, alors $x \mapsto x^{-1} = \delta(e, x)$ est continue, et $xy = \delta(x, y^{-1})$ l'est aussi, comme composée.
+    remarques:
+      - |
+        Tout groupe muni de la [[topologie-discrete|topologie discrète]] est un groupe topologique, puisque toute application issue d'un espace discret est continue et que le produit de deux espaces discrets est discret. Un sous-groupe muni de la topologie induite, et un produit de groupes topologiques muni de la topologie produit, sont encore des groupes topologiques.
+      - |
+        Les exemples qui ont motivé la notion viendront plus tard : $(\mathbb R, +)$, le cercle des complexes de module $1$, les groupes de matrices inversibles réelles ou complexes. Ils demandent {{r|$\mathbb R$}}, que ce graphe précède.
+
+  - id: gt-translations
+    etiquette: Translations, voisinages de e
+    nature: proposition
+    titre: Translations et voisinages du neutre
+    enonce: |
+      Soit $G$ un groupe topologique.
+
+      (i) Pour tout $a \in G$, les translations $x \mapsto ax$ et $x \mapsto xa$, ainsi que l'inversion, sont des [[homeomorphisme|homéomorphismes]] de $G$.
+
+      (ii) Les voisinages de $a$ sont exactement les parties $aV$, où $V$ parcourt les voisinages de $e$. La topologie de $G$ est donc entièrement déterminée par les voisinages du neutre.
+
+      (iii) Pour tout voisinage $U$ de $e$, il existe un voisinage $V$ de $e$ tel que $V = V^{-1}$ et $VV \subset U$.
+
+      (iv) Un morphisme de groupes $f : G \to H$ entre groupes topologiques est continu si et seulement s'il est continu en $e$.
+    preuve: |
+      (i) La translation $L_a : x \mapsto ax$ est la composée de $x \mapsto (a, x)$, continue par la propriété du produit, et de la multiplication ; elle est bijective de réciproque $L_{a^{-1}}$, continue elle aussi. De même à droite. L'inversion est continue et égale à sa réciproque.
+
+      (ii) Un homéomorphisme envoie les voisinages d'un point sur les voisinages de son image ; on applique cela à $L_a$, qui envoie $e$ sur $a$.
+
+      (iii) La multiplication est continue en $(e, e)$ et vaut $e$ en ce point : l'image réciproque de $U$ est un voisinage de $(e, e)$, qui contient donc un cylindre $W_1 \times W_2$ de voisinages de $e$ ({{t-produit|Topologie produit}}), avec $W_1 W_2 \subset U$. Posons $W = W_1 \cap W_2$ et $V = W \cap W^{-1}$. C'est un voisinage de $e$, puisque l'inversion est un homéomorphisme fixant $e$ ; il vérifie $V^{-1} = V$ et $VV \subset W_1 W_2 \subset U$.
+
+      (iv) Si $f$ est continue en $e$ et $a \in G$, soit $U$ un voisinage de $f(a)$. Alors $f(a)^{-1}U$ est un voisinage de $e$ dans $H$, et il existe un voisinage $V$ de $e$ tel que $f(V) \subset f(a)^{-1}U$. Le voisinage $aV$ de $a$ vérifie $f(aV) = f(a)f(V) \subset U$ : $f$ est continue en $a$, donc continue ({{t-continue|Continuité}}).
+    remarques:
+      - |
+        Le point (ii) dit qu'un groupe topologique est « homogène » : tous ses points se ressemblent, un homéomorphisme envoyant n'importe lequel sur n'importe quel autre. L'erreur la plus répandue est d'en déduire que toute topologie homogène sur un groupe en fait un groupe topologique : il faut encore la continuité de la multiplication en les deux variables simultanément, que le point (iii) traduit.
+
+  - id: gt-sous-groupes
+    etiquette: Sous-groupes
+    nature: proposition
+    titre: Sous-groupes ouverts, fermés, adhérence
+    enonce: |
+      Soit $H$ un sous-groupe d'un groupe topologique $G$.
+
+      (i) L'adhérence $\overline H$ est un sous-groupe ; si $H$ est distingué, $\overline H$ l'est aussi.
+
+      (ii) Si $H$ contient un voisinage de $e$, il est ouvert.
+
+      (iii) Tout sous-groupe ouvert est fermé.
+    preuve: |
+      (i) Soient $x, y \in \overline H$, et $W$ un voisinage de $xy^{-1}$. Par continuité de $(u, v) \mapsto uv^{-1}$ en $(x, y)$, il existe des voisinages $A$ de $x$ et $B$ de $y$ avec $AB^{-1} \subset W$. Comme $x, y \in \overline H$, il existe $h \in A \cap H$ et $k \in B \cap H$ ({{t-adherence|Intérieur, adhérence}}), et $hk^{-1} \in W \cap H$. Ainsi tout voisinage de $xy^{-1}$ rencontre $H$ : $xy^{-1} \in \overline H$. Si $H$ est distingué et $g \in G$, la conjugaison $x \mapsto gxg^{-1}$ est un homéomorphisme ({{gt-translations|Translations}}) qui envoie $H$ dans $H$, donc $\overline H$ dans $\overline H$.
+
+      (ii) Si $V \subset H$ est un voisinage de $e$, chaque $h \in H$ a pour voisinage $hV \subset H$ : $H$ est voisinage de chacun de ses points, donc ouvert ({{t-voisinages|Ouverts et voisinages}}).
+
+      (iii) Le complémentaire de $H$ est la réunion des classes $gH$, $g \notin H$, qui sont ouvertes comme images de $H$ par des translations. Il est donc ouvert.
+    remarques:
+      - |
+        La réciproque de (iii) est fausse : un sous-groupe fermé n'est pas toujours ouvert. Ce sera le cas de $\mathbb Z$ dans $\mathbb R$, fermé et d'intérieur vide.
+      - |
+        Le point (ii) a une conséquence frappante, établie au nœud {{gt-connexe|Composante neutre}} : dans un groupe connexe, tout voisinage de $e$ engendre le groupe entier.
+
+  - id: gt-separation
+    etiquette: Séparation
+    nature: théorème
+    titre: Séparation des groupes topologiques
+    enonce: |
+      Pour un groupe topologique $G$, les conditions suivantes sont équivalentes :
+
+      (i) $G$ est [[separe|séparé]] ;
+
+      (ii) le singleton $\{e\}$ est fermé ;
+
+      (iii) l'intersection de tous les voisinages de $e$ est $\{e\}$.
+    preuve: |
+      (i) ⇒ (ii) : dans un espace séparé, les singletons sont fermés ({{t-separe|Espaces séparés}}).
+
+      (ii) ⇒ (i) : l'application $\delta(x, y) = xy^{-1}$ est continue et $\delta^{-1}(\{e\})$ est la diagonale de $G \times G$, qui est donc fermée. Un espace dont la diagonale est fermée est séparé ({{t-separe|Espaces séparés}}).
+
+      (ii) ⇔ (iii) : $\{e\}$ est fermé si et seulement si tout $x \neq e$ a un voisinage ne contenant pas $e$, c'est-à-dire, par translation et inversion, si et seulement s'il existe un voisinage $V$ de $e$ avec $x^{-1} \notin V$, soit $x \notin V^{-1}$. Comme $V^{-1}$ parcourt les voisinages de $e$ lorsque $V$ les parcourt, c'est la condition (iii).
+    remarques:
+      - |
+        Pour un espace topologique quelconque, avoir des points fermés est bien plus faible qu'être séparé. Dans un groupe, la structure fait le reste : c'est un exemple typique de la manière dont l'algèbre et la topologie se renforcent mutuellement.
+      - |
+        En général, l'adhérence $N$ de $\{e\}$ est un sous-groupe fermé distingué ({{gt-sous-groupes|Sous-groupes}}), et le quotient $G/N$, que le nœud suivant étudie, est séparé. On se ramène ainsi toujours au cas séparé.
+
+  - id: gt-quotient
+    etiquette: Quotient
+    nature: théorème
+    titre: Espace et groupe quotients
+    enonce: |
+      Soit $H$ un sous-groupe de $G$, et $G/H$ l'ensemble des classes $xH$, muni de la [[topologie-quotient|topologie quotient]].
+
+      (i) La projection $\pi : G \to G/H$ est ouverte : l'image d'un ouvert est ouverte.
+
+      (ii) $G/H$ est séparé si et seulement si $H$ est fermé.
+
+      (iii) Si $H$ est distingué, $G/H$ est un groupe topologique.
+    preuve: |
+      (i) Si $U$ est ouvert, $\pi^{-1}(\pi(U)) = UH = \bigcup_{h \in H} Uh$ est ouvert comme réunion de translatés de $U$ ; par définition de la topologie quotient, $\pi(U)$ est ouvert ({{t-quotient|Topologie quotient}}).
+
+      *Un lemme.* Si $p : X \to Y$ est continue, ouverte et surjective, une partie $V \subset Y$ est ouverte dès que $p^{-1}(V)$ l'est, puisque $V = p(p^{-1}(V))$. Le produit $\pi \times \pi : G \times G \to (G/H) \times (G/H)$ est continu, surjectif, et ouvert, puisqu'il envoie un cylindre ouvert $U \times U'$ sur le cylindre ouvert $\pi(U) \times \pi(U')$.
+
+      (ii) Si $G/H$ est séparé, le point $\pi(e)$ est fermé, et $H = \pi^{-1}(\pi(e))$ aussi. Réciproquement, si $H$ est fermé, l'ensemble $R = \{(x, y) : x^{-1}y \in H\}$ est fermé dans $G \times G$, comme image réciproque de $H$ par une application continue, et $R = (\pi \times \pi)^{-1}(\Delta)$, où $\Delta$ est la diagonale de $G/H$. Par le lemme, le complémentaire de $\Delta$, dont l'image réciproque est l'ouvert $G \times G \setminus R$, est ouvert : $\Delta$ est fermée, et $G/H$ est séparé ({{t-separe|Espaces séparés}}).
+
+      (iii) Le quotient est un groupe ({{a-quotient|Groupe quotient}}). L'application $\bar\delta(\pi(x), \pi(y)) = \pi(xy^{-1})$ vérifie $\bar\delta \circ (\pi \times \pi) = \pi \circ \delta$, qui est continue. Pour $V$ ouvert dans $G/H$, $(\pi \times \pi)^{-1}(\bar\delta^{-1}(V))$ est donc ouvert, et le lemme montre que $\bar\delta^{-1}(V)$ l'est : $\bar\delta$ est continue.
+    remarques:
+      - |
+        L'espace $G/H$ est homogène sans être un groupe lorsque $H$ n'est pas distingué : $G$ y agit par $g \cdot xH = gxH$. Les sphères et les espaces projectifs de la géométrie différentielle s'obtiendront ainsi comme quotients de groupes de matrices.
+
+  - id: gt-connexe
+    etiquette: Composante neutre
+    nature: proposition
+    titre: Composante neutre et sous-groupe engendré par un voisinage
+    texte: |
+      La **composante neutre** $G_0$ de $G$ est la réunion de toutes les parties [[connexe|connexes]] de $G$ contenant $e$ ; c'est la plus grande partie connexe contenant $e$ ({{t-connexe-prop|Réunions de connexes}}).
+    enonce: |
+      (i) $G_0$ est un sous-groupe fermé distingué de $G$.
+
+      (ii) $G_0$ est contenu dans tout sous-groupe ouvert de $G$.
+
+      (iii) Si $G$ est connexe, tout voisinage $V$ de $e$ engendre $G$ : le sous-groupe $\langle V \rangle$ est $G$ tout entier.
+    preuve: |
+      (i) Pour $g \in G_0$, la partie $g^{-1}G_0$ est connexe, comme image de $G_0$ par un homéomorphisme, et contient $g^{-1}g = e$ ; elle est donc incluse dans $G_0$. Ainsi $x, y \in G_0$ entraîne $y^{-1}x \in G_0$, et $G_0$ contient $e$ : c'est un sous-groupe ({{a-sous-groupe|Sous-groupe}}). Pour $g \in G$, la conjugaison par $g$ envoie $G_0$ sur un connexe contenant $e$, donc dans $G_0$ : $G_0$ est distingué. Son adhérence est connexe et contient $e$, donc égale à $G_0$, qui est fermé.
+
+      (ii) Un sous-groupe ouvert $H$ est aussi fermé ({{gt-sous-groupes|Sous-groupes}}). L'intersection $H \cap G_0$ est donc ouverte et fermée dans $G_0$, et non vide puisqu'elle contient $e$ ; comme $G_0$ est connexe, elle est égale à $G_0$ ({{t-connexe|Connexité}}).
+
+      (iii) $\langle V \rangle$ contient le voisinage $V$ de $e$, donc il est ouvert ({{gt-sous-groupes|Sous-groupes}}), et $G = G_0 \subset \langle V \rangle$ par (ii).
+    remarques:
+      - |
+        Le point (iii) est un principe de « propagation » : une propriété d'un groupe connexe qui se vérifie près du neutre et passe aux produits vaut partout. Par exemple, deux morphismes continus d'un groupe connexe qui coïncident sur un voisinage de $e$ sont égaux, puisque l'ensemble où ils coïncident est un sous-groupe contenant ce voisinage.
+      - |
+        La définition de $\langle V \rangle$ comme intersection de sous-groupes ({{a-sous-groupe|Sous-groupe}}) suffit ici : on n'a pas besoin de décrire ses éléments comme produits finis d'éléments de $V$, ce qui demanderait {{n|$\mathbb N$}}.
+
+  - id: gt-compact
+    etiquette: Compacts
+    nature: proposition
+    titre: Produits de compacts
+    enonce: |
+      Soit $G$ un groupe topologique séparé. Si $K$ et $L$ sont des parties [[compact|compactes]] de $G$, alors $KL = \{xy : x \in K,\ y \in L\}$ et $K^{-1}$ sont compactes.
+    preuve: |
+      $K \times L$ est compact ({{t-produit-fini|Produit de deux compacts}}), et $KL$ en est l'image par la multiplication, continue, à valeurs dans l'espace séparé $G$ : elle est compacte ({{t-compact-prop|Compacts, fermés et images}}). De même, $K^{-1}$ est l'image de $K$ par l'inversion.
+    remarques:
+      - |
+        Un groupe est **localement compact** si $e$ a un voisinage compact. C'est le cadre du théorème de Haar : un tel groupe porte une mesure invariante par translation à gauche, unique à un facteur près. Son énoncé demande la théorie de la mesure ({{mes|Mesure, intégration}}), donc {{r|$\mathbb R$}}.
+      - |
+        Un groupe compact connexe, comme le cercle unité de $\mathbb C$, et un groupe discret, comme $\mathbb Z$, sont les deux extrêmes ; la composante neutre ({{gt-connexe|Composante neutre}}) sépare tout groupe localement compact en une partie connexe et un quotient totalement discontinu.
+
+aretes:
+  - [gt-definition, gt-translations]
+  - [gt-translations, gt-sous-groupes]
+  - [gt-sous-groupes, gt-separation]
+  - [gt-sous-groupes, gt-quotient]
+  - [gt-separation, gt-quotient]
+  - [gt-sous-groupes, gt-connexe]
+  - [gt-translations, gt-compact]
