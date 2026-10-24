@@ -536,8 +536,28 @@ function echelleAjustee() {
   return Math.max(0.55, Math.min(1, l / g.largeur));
 }
 
+/* ------------------------------------------------------------ chargement des branches */
+// Sur le site publié, les textes des fiches de chaque branche sont dans un fichier séparé,
+// branches/<graphe>.json, chargé à la première ouverture. D.aCharger associe à chaque branche
+// non encore chargée l'adresse de son fichier ; il est absent de l'aperçu, qui contient tout.
+const chargements = {};
+function chargerBranche(gid) {
+  if (!D.aCharger || !D.aCharger[gid]) return Promise.resolve();
+  if (!chargements[gid]) {
+    chargements[gid] = fetch(D.aCharger[gid])
+      .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(textes => {
+        for (const [id, champs] of Object.entries(textes)) Object.assign(D.noeuds[id], champs);
+        delete D.aCharger[gid];
+      })
+      .catch(e => { delete chargements[gid]; throw e; });
+  }
+  return chargements[gid];
+}
+
 /* ------------------------------------------------------------ navigation */
 function aller(gid, choisi = null, opts = {}) {
+  chargerBranche(gid).catch(() => {});   // préchargement : les fiches de ce graphe seront prêtes
   const change = gid !== etat.graphe || !$('#plan').childElementCount;
   etat.graphe = gid; etat.choisi = choisi;
   if (change) {
@@ -623,6 +643,14 @@ function fiche() {
   }
   if (!id) { o.innerHTML = accueil(); return; }
   const n = D.noeuds[id];
+  if (D.aCharger && D.aCharger[n.graphe]) {
+    o.innerHTML = '<p class="contexte">Chargement de la fiche…</p>';
+    const attendu = id;
+    chargerBranche(n.graphe).then(
+      () => { if ((etat.choisi || D.graphes[etat.graphe].conteneur) === attendu) fiche(); },
+      () => { o.innerHTML = '<p class="contexte">Cette branche n\'a pas pu être chargée. Vérifiez la connexion, puis rechargez la page.</p>'; });
+    return;
+  }
   const c = couleurNoeud(n);
   let h = `<article class="fiche" style="--c: ${c}">`;
   h += `<p class="sur-titre"><span class="sorte">${esc(n.sorte)}</span>${rang(n)}${n.graphe !== D.racine ? `<span>${esc(D.graphes[n.graphe].titre)}</span>` : ''}</p>`;

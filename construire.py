@@ -18,6 +18,7 @@ import glob, json, re, sys
 from collections import defaultdict
 import networkx as nx
 import yaml
+import random
 
 NATURES = {'théorie', 'chapitre', 'axiome', 'définition', 'théorème',
            'proposition', 'lemme', 'corollaire'}
@@ -200,7 +201,12 @@ def taille(n, entree=False):
 
 def disposer(gid):
     g = G[gid]
-    r = R[gid].copy()
+    # Graphe reconstruit dans l'ordre des fichiers de contenu : sans cela, l'ordre de parcours
+    # des ensembles, propre à chaque exécution de Python, changeait la disposition d'une fois à l'autre.
+    rang_yaml = {n['id']: k for k, n in enumerate(g['noeuds'])}
+    r = nx.DiGraph()
+    r.add_nodes_from(sorted(R[gid].nodes, key=rang_yaml.get))
+    r.add_edges_from(sorted(R[gid].edges, key=lambda e: (rang_yaml[e[0]], rang_yaml[e[1]])))
     entrees = list(g['entrees'])
     for e, cibles in g['entrees'].items():
         r.add_node('↑' + e)
@@ -226,28 +232,56 @@ def disposer(gid):
     for ch in chaines:
         for u, v in zip(ch, ch[1:]): voisins_haut[u].append(v); voisins_bas[v].append(u)
 
+    # Ordre des nœuds dans chaque rang : on minimise les croisements d'arêtes.
+    # Heuristique de Sugiyama : balayages par barycentres, puis échanges de voisins (transposition),
+    # le tout à partir de plusieurs ordres de départ déterministes ; on garde le meilleur.
+    def croisements_entre(ordre, t):
+        bas = {v: i for i, v in enumerate(ordre[t])}
+        haut = {v: i for i, v in enumerate(ordre[t + 1])}
+        segs = [(bas[u], haut[v]) for u in ordre[t] for v in voisins_haut[u]]
+        return sum(1 for i in range(len(segs)) for j in range(i + 1, len(segs))
+                   if (segs[i][0] - segs[j][0]) * (segs[i][1] - segs[j][1]) < 0)
     def croisements(ordre):
-        pos = {v: i for c in ordre.values() for i, v in enumerate(c)}
-        tot = 0
-        for t in range(nmax):
-            segs = [(pos[u], pos[v]) for u in ordre[t] for v in voisins_haut[u]]
-            tot += sum(1 for i in range(len(segs)) for j in range(i + 1, len(segs))
-                       if (segs[i][0] - segs[j][0]) * (segs[i][1] - segs[j][1]) < 0)
-        return tot
-    ordre = {t: list(couches[t]) for t in range(nmax + 1)}
-    meilleur, score = {t: list(c) for t, c in ordre.items()}, croisements(ordre)
-    for it in range(40):
-        montee = it % 2 == 0
-        rng = range(1, nmax + 1) if montee else range(nmax - 1, -1, -1)
-        for t in rng:
-            ref = {v: i for i, v in enumerate(ordre[t - 1 if montee else t + 1])}
-            def bary(v, i):
-                vs = [ref[w] for w in (voisins_bas[v] if montee else voisins_haut[v]) if w in ref]
-                return (sum(vs) / len(vs), i) if vs else (i, i)
-            ordre[t] = [v for i, v in sorted(enumerate(ordre[t]), key=lambda iv: bary(iv[1], iv[0]))]
-        s = croisements(ordre)
-        if s < score: meilleur, score = {t: list(c) for t, c in ordre.items()}, s
-    ordre = meilleur
+        return sum(croisements_entre(ordre, t) for t in range(nmax))
+    def autour(ordre, t):
+        return (croisements_entre(ordre, t - 1) if t > 0 else 0) + (croisements_entre(ordre, t) if t < nmax else 0)
+    def transposer(ordre):
+        for _ in range(30):
+            ameliore = False
+            for t in range(nmax + 1):
+                c = ordre[t]
+                for i in range(len(c) - 1):
+                    avant = autour(ordre, t)
+                    c[i], c[i + 1] = c[i + 1], c[i]
+                    if autour(ordre, t) < avant: ameliore = True
+                    else: c[i], c[i + 1] = c[i + 1], c[i]
+            if not ameliore: return
+    def balayer(ordre):
+        meilleur, score = {t: list(c) for t, c in ordre.items()}, croisements(ordre)
+        for it in range(24):
+            montee = it % 2 == 0
+            rng = range(1, nmax + 1) if montee else range(nmax - 1, -1, -1)
+            for t in rng:
+                ref = {v: i for i, v in enumerate(ordre[t - 1 if montee else t + 1])}
+                def bary(v, i):
+                    vs = [ref[w] for w in (voisins_bas[v] if montee else voisins_haut[v]) if w in ref]
+                    return (sum(vs) / len(vs), i) if vs else (i, i)
+                ordre[t] = [v for i, v in sorted(enumerate(ordre[t]), key=lambda iv: bary(iv[1], iv[0]))]
+            transposer(ordre)
+            s = croisements(ordre)
+            if s < score: meilleur, score = {t: list(c) for t, c in ordre.items()}, s
+            if score == 0: break
+        return meilleur, score
+    departs = [{t: list(couches[t]) for t in range(nmax + 1)},
+               {t: list(reversed(couches[t])) for t in range(nmax + 1)}]
+    for graine in range(6):
+        hasard = random.Random(graine)
+        departs.append({t: hasard.sample(couches[t], len(couches[t])) for t in range(nmax + 1)})
+    ordre, score = None, None
+    for d in departs:
+        o, s = balayer(d)
+        if score is None or s < score: ordre, score = o, s
+        if score == 0: break
 
     dims = {}
     for v in rang:

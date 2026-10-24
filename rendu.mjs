@@ -12,6 +12,7 @@
 //   **gras**  *italique*   ; une ligne vide sépare deux paragraphes
 import fs from 'node:fs';
 import path from 'node:path';
+import crypto from 'node:crypto';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const katex = require('katex');
@@ -94,6 +95,43 @@ console.log(`Page écrite : construction/atlas.html (${(page.length / 1024).toFi
 // atlas.html sert à l'aperçu dans Claude, qui ajoute lui-même l'enveloppe du document.
 const coupure = page.indexOf('<div class="app">');
 const tete = page.slice(0, coupure), corps = page.slice(coupure);
+
+// ---- Site publié : découpage par branche.
+// La page ne contient que les graphes, le lexique et les textes de l'édifice ; les textes des fiches
+// de chaque branche sont écrits dans site/branches/<graphe>.json et chargés à la demande. La feuille
+// de style KaTeX et ses polices deviennent des fichiers séparés, mis en cache par le navigateur.
+const empreinte = s => crypto.createHash('sha256').update(s).digest('hex').slice(0, 10);
+const CHAMPS = ['texte', 'enonce', 'preuve', 'remarques'];
+fs.rmSync('site/branches', { recursive: true, force: true });
+fs.mkdirSync('site/branches', { recursive: true });
+fs.mkdirSync('site/fonts', { recursive: true });
+const Dsite = JSON.parse(JSON.stringify(D));
+Dsite.aCharger = {};
+for (const gid of Object.keys(D.graphes)) {
+  if (gid === D.racine) continue;
+  const textes = {};
+  for (const n of Object.values(Dsite.noeuds)) {
+    if (n.graphe !== gid) continue;
+    textes[n.id] = { choix: n.choix };
+    for (const c of CHAMPS) { textes[n.id][c] = n[c]; delete n[c]; }
+    n.choix = n.choix ? true : '';      // l'étoile ⋆ du graphe n'a besoin que de savoir s'il y a un choix
+  }
+  const contenu = JSON.stringify(textes);
+  fs.writeFileSync(`site/branches/${gid}.json`, contenu);
+  Dsite.aCharger[gid] = `branches/${gid}.json?v=${empreinte(contenu)}`;
+}
+let cssSite = fs.readFileSync(path.join(dist, 'katex.min.css'), 'utf8')
+  .replace(/src:url\(fonts\/([^)]+?)\.woff2\) format\("woff2"\)(,url\([^)]+\) format\("[^"]+"\))*/g, (m, f) => {
+    fs.copyFileSync(path.join(dist, 'fonts', f + '.woff2'), `site/fonts/${f}.woff2`);
+    return `src:url(fonts/${f}.woff2) format("woff2")`;
+  });
+cssSite = `/*! KaTeX ${require('katex/package.json').version} (feuille de style et polices)\n${licenceKatex}\n*/\n` + cssSite;
+fs.writeFileSync('site/katex.css', cssSite);
+const vCss = empreinte(cssSite);
+const jsonSite = JSON.stringify(Dsite).replace(/</g, '\\u003c');
+const pageSite = fs.readFileSync('gabarit.html', 'utf8').replace('/*KATEX*/', '').replace('"__DONNEES__"', () => jsonSite);
+const coupureSite = pageSite.indexOf('<div class="app">');
+const teteSite = pageSite.slice(0, coupureSite), corpsSite = pageSite.slice(coupureSite);
 // Adresse publique du site : les messageries exigent une adresse complète pour l'image d'aperçu.
 const ADRESSE = 'https://jourdainatlas.github.io/atlas/';
 const index = `<!doctype html>
@@ -118,9 +156,10 @@ const index = `<!doctype html>
 <meta property="og:locale" content="fr_FR">
 <meta name="twitter:card" content="summary_large_image">
 <style>body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
-${tete}</head>
+<link rel="stylesheet" href="katex.css?v=${vCss}">
+${teteSite}</head>
 <body>
-${corps}
+${corpsSite}
 </body>
 </html>
 `;
