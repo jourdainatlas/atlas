@@ -1,0 +1,465 @@
+# Niveau 1 : structure interne du nœud « Géométrie différentielle ».
+# On construit d'abord le calcul différentiel dans ℝⁿ (normes, différentielle, classe Cᵏ,
+# point fixe, inversion locale, submersions), puis les sous-variétés de ℝⁿ, et enfin les
+# variétés abstraites, leurs espaces tangents et le fibré tangent.
+# Le déterminant n'étant pas construit dans l'atlas, l'inversibilité et la régularité de
+# l'inversion des matrices sont obtenues par la série de Neumann.
+# Les fonctions trigonométriques et l'exponentielle (analyse complexe) ne sont pas des
+# ancêtres de ce nœud : les exemples sont polynomiaux ou rationnels.
+
+graphe: geod
+titre: Géométrie différentielle
+conteneur: geod
+
+entrees:
+  top: [gd-normes]
+  analyse-reelle: [gd-normes, gd-denombrable, gd-accroissements]
+  alglin: [gd-equivalence]
+
+noeuds:
+  - id: gd-normes
+    etiquette: Normes
+    nature: définition
+    titre: Normes et topologie associée
+    texte: |
+      Une [[norme]] sur un $\mathbb R$-[[espace-vectoriel|espace vectoriel]] $E$ est une application $N : E \to [0, +\infty[$ telle que, pour tous $x, y \in E$ et $\lambda \in \mathbb R$, $N(x) = 0$ entraîne $x = 0$, $N(\lambda x) = |\lambda|\, N(x)$ et $N(x + y) \leqslant N(x) + N(y)$. La **boule ouverte** de centre $a$ et de rayon $r > 0$ est $B(a, r) = \{x \in E : N(x - a) < r\}$.
+
+      Sur $\mathbb R^n$, on dispose de $\|x\|_\infty = \max_i |x_i|$ et de $\|x\|_1 = \sum_i |x_i|$ ; ce sont des normes, puisque la valeur absolue en est une sur $\mathbb R$ et que les trois axiomes passent au maximum et à la somme. On les note souvent $\|\cdot\|$ quand le choix est indifférent.
+    enonce: |
+      Soit $N$ une norme sur $E$.
+
+      (i) $d(x, y) = N(x - y)$ est une distance, qui fait de $E$ un [[espace-metrique]]. Les boules ouvertes forment la [[base-topologie|base]] d'une topologie sur $E$, dite associée à $N$ : une partie $O$ est [[ouvert|ouverte]] si et seulement si, pour tout $a \in O$, il existe $r > 0$ tel que $B(a, r) \subset O$. Cette topologie est [[separe|séparée]].
+
+      (ii) La topologie associée à $\|\cdot\|_\infty$ sur $\mathbb R^n$ est la [[topologie-produit]] de $n$ copies de $\mathbb R$.
+
+      (iii) Soient $E$ et $F$ deux espaces normés, $A \subset E$ muni de la [[topologie-induite]], $f : A \to F$ et $a \in A$. L'application $f$ est continue en $a$ si et seulement si
+      $$\begin{gathered} \forall \varepsilon > 0,\ \exists \delta > 0,\ \forall x \in A, \\ \|x - a\| < \delta \ \Longrightarrow\ \|f(x) - f(a)\| < \varepsilon. \end{gathered}$$
+    preuve: |
+      (i) $d(x, y) = 0$ entraîne $x = y$ ; $d(y, x) = N(-(x - y)) = |-1|\,N(x - y) = d(x, y)$ ; l'inégalité triangulaire de $d$ est celle de $N$ appliquée à $(x - y) + (y - z)$. Les boules recouvrent $E$, puisque $a \in B(a, 1)$. Si $x \in B(a, r) \cap B(b, s)$, posons $t = \min\big(r - N(x - a),\, s - N(x - b)\big) > 0$ : pour $z \in B(x, t)$, $N(z - a) \leqslant N(z - x) + N(x - a) < r$, et de même $N(z - b) < s$, donc $B(x, t) \subset B(a, r) \cap B(b, s)$. Les deux conditions du nœud {{t-base|Bases}} sont remplies.
+
+      Si $O$ est une réunion de boules et $a \in O$, alors $a \in B(b, s) \subset O$ pour une boule, et le calcul précédent donne $B(a, s - N(a - b)) \subset B(b, s)$. Réciproquement, si la condition est remplie, $O$ est la réunion des boules qu'il contient. Enfin, si $x \neq y$, les boules de rayon $r = N(x - y)/2 > 0$ centrées en $x$ et en $y$ sont disjointes : un point $z$ commun donnerait $N(x - y) \leqslant N(x - z) + N(z - y) < 2r$.
+
+      (ii) La boule $B_\infty(a, r)$ est le produit $\prod_i\, ]a_i - r, a_i + r[$, qui est un ouvert produit. Réciproquement, soit $\prod_i U_i$ un produit d'ouverts de $\mathbb R$ contenant $a$. Par (i) appliqué à $(\mathbb R, |\cdot|)$, chaque $U_i$ contient un intervalle $]a_i - r_i, a_i + r_i[$, et $B_\infty(a, \min_i r_i) \subset \prod_i U_i$. Les produits d'ouverts formant une base de la topologie produit, les deux topologies ont les mêmes ouverts.
+
+      (iii) Par (i) et le nœud {{t-induite|Topologie induite}}, une partie de $A$ est un [[voisinage]] de $a$ dans $A$ si et seulement si elle contient une partie $B(a, \delta) \cap A$, et une partie de $F$ est un voisinage de $f(a)$ si et seulement si elle contient une boule $B(f(a), \varepsilon)$. La continuité en $a$ au sens du nœud {{t-continue|Continuité}} demande que chaque $f^{-1}\big(B(f(a), \varepsilon)\big)$ contienne un $B(a, \delta) \cap A$ : c'est exactement la condition écrite.
+    remarques:
+      - |
+        Pour $E = \mathbb R$ et $N = |\cdot|$, le point (iii) redonne la définition de la continuité du nœud {{c-point|Continuité en un point}}. Les deux notions de continuité, topologique et métrique, coïncident donc ; c'est ce qui permet d'employer librement l'une ou l'autre dans toute la suite.
+      - |
+        Une norme est déterminée par sa boule unité, qui est convexe et symétrique. Pour $\|\cdot\|_\infty$ sur $\mathbb R^2$, c'est un carré ; pour $\|\cdot\|_1$, un losange. Le nœud suivant montre que ces différences de forme sont sans effet sur la topologie.
+
+  - id: gd-denombrable
+    etiquette: Base dénombrable de ℝⁿ
+    nature: proposition
+    titre: ℚ est dénombrable, ℝⁿ a une base au plus dénombrable
+    enonce: |
+      (i) L'application $(p, q) \mapsto 2^p(2q + 1) - 1$ est une bijection de $\mathbb N \times \mathbb N$ sur $\mathbb N$. Par suite, pour tout $k \geqslant 1$, $\mathbb N^k$ est [[denombrable]].
+
+      (ii) $\mathbb Z$ et $\mathbb Q$ sont dénombrables.
+
+      (iii) Les boules $B_\infty(c, r)$, pour $c \in \mathbb Q^n$ et $r \in \mathbb Q$, $r > 0$, forment une base au plus dénombrable de la topologie de $\mathbb R^n$. Toute partie de $\mathbb R^n$, munie de la topologie induite, a une base au plus dénombrable.
+    preuve: |
+      (i) *Injectivité.* Supposons $2^p(2q + 1) = 2^{p'}(2q' + 1)$ avec $p < p'$. En simplifiant par $2^p$ ({{n-proprietes|Propriétés de l'arithmétique}}), $2q + 1 = 2 \cdot 2^{p' - p - 1}(2q' + 1)$, et l'unicité de la [[division-euclidienne]] par $2$ serait contredite, le reste valant $1$ d'un côté et $0$ de l'autre. Donc $p = p'$, puis $2q + 1 = 2q' + 1$ et $q = q'$. *Surjectivité.* Montrons par récurrence forte que tout $m \geqslant 1$ s'écrit $2^p(2q + 1)$ : si $m$ est impair, $p = 0$ convient ; sinon $m = 2m'$ avec $1 \leqslant m' < m$, et l'écriture de $m'$ fournit celle de $m$. On l'applique à $m + 1$ pour tout $m \in \mathbb N$. Enfin $\mathbb N^{k+1} = \mathbb N^k \times \mathbb N$ est équipotent à $\mathbb N \times \mathbb N$, donc à $\mathbb N$, par récurrence sur $k$.
+
+      (ii) L'application qui envoie $n \geqslant 0$ sur $2n$ et $-n < 0$ sur $2n - 1$ est une bijection de $\mathbb Z$ sur $\mathbb N$. Tout rationnel s'écrit de façon unique $p/q$ avec $p \in \mathbb Z$, $q \geqslant 1$ et $p \wedge q = 1$ : l'existence vient de la division de $p$ et $q$ par leur [[pgcd]], et l'unicité du lemme de Gauss ({{z-bezout|Bézout}}), car $p/q = p'/q'$ donne $q \mid pq'$, donc $q \mid q'$, et symétriquement. On obtient une injection de $\mathbb Q$ dans $\mathbb Z \times \mathbb N$, donc dans $\mathbb N$ ; comme $\mathbb N \subset \mathbb Q$, le théorème de Cantor-Bernstein ({{r-bernstein|Cantor-Bernstein}}) conclut.
+
+      (iii) L'ensemble d'indices $\mathbb Q^n \times \mathbb Q$ s'injecte dans $\mathbb N^{n+1}$, donc dans $\mathbb N$. Soit $O$ ouvert et $x \in O$ : il existe $\varepsilon > 0$ tel que $B_\infty(x, \varepsilon) \subset O$. Par densité de $\mathbb Q$ ({{ar-archimede|Archimède, densité de ℚ}}), il existe un rationnel $r \in \,]0, \varepsilon/2[$, puis des rationnels $c_i \in \,]x_i - r, x_i + r[$. Alors $x \in B_\infty(c, r)$, et pour $z \in B_\infty(c, r)$, $\|z - x\|_\infty < 2r < \varepsilon$, donc $B_\infty(c, r) \subset O$. Ainsi $O$ est la réunion des boules de la famille qu'il contient. Pour $A \subset \mathbb R^n$, les traces $B \cap A$ de ces boules forment une base de la topologie induite, puisque tout ouvert de $A$ est de la forme $O \cap A$.
+    remarques:
+      - |
+        Aucun choix n'intervient : chaque rationnel est désigné par son écriture irréductible, et l'ouvert $O$ est décrit comme la réunion de **toutes** les boules rationnelles qu'il contient, sans qu'on ait à en sélectionner une par point.
+      - |
+        L'existence d'une base au plus dénombrable sera exigée des variétés ({{gd-varietes|Variétés différentiables}}). Elle exclut des objets localement semblables à $\mathbb R$ mais « trop longs », comme la droite longue, obtenue en recollant $\omega_1$ copies de $[0, 1[$.
+
+  - id: gd-equivalence
+    etiquette: Équivalence des normes
+    nature: théorème
+    titre: Normes en dimension finie
+    texte: |
+      Deux normes $N$ et $N'$ sur $E$ sont [[normes-equivalentes|équivalentes]] s'il existe $\alpha, \beta > 0$ tels que $\alpha N \leqslant N' \leqslant \beta N$. Les boules de l'une contiennent alors des boules de même centre de l'autre, si bien que les deux normes définissent la même topologie et les mêmes suites de Cauchy.
+    enonce: |
+      (i) Sur $\mathbb R^n$, toutes les normes sont équivalentes ; elles définissent toutes la topologie produit.
+
+      (ii) Pour n'importe quelle norme, les parties [[compact|compactes]] de $\mathbb R^n$ sont les parties fermées et bornées, et $\mathbb R^n$ est complet : toute [[suite-cauchy|suite de Cauchy]] converge.
+
+      (iii) Munissons $\mathbb R^n$ et $\mathbb R^p$ de normes. Toute [[application-lineaire|application linéaire]] $u : \mathbb R^n \to \mathbb R^p$ est bornée sur la boule unité, et sa [[norme-subordonnee|norme subordonnée]] $|||u||| = \sup\{\|u(x)\| : \|x\| \leqslant 1\}$ est une norme sur $\mathcal L(\mathbb R^n, \mathbb R^p)$, qui vérifie
+      $$\|u(x)\| \leqslant |||u|||\,\|x\|,$$
+      $$|||v \circ u||| \leqslant |||v|||\;|||u|||.$$
+      En particulier, $u$ est lipschitzienne, donc continue.
+
+      (iv) Sur un espace $E$ de [[dimension]] finie, toutes les normes sont équivalentes, et la topologie qu'elles définissent est celle que transporte n'importe quel isomorphisme $\mathbb R^n \to E$. Pour $E = \mathcal L(\mathbb R^n, \mathbb R^p)$, identifié aux matrices, c'est la topologie de $|||\cdot|||$ comme celle de $\max_{i,j} |a_{ij}|$.
+    preuve: |
+      (i) Soit $N$ une norme et $(e_i)$ la base canonique. Pour $x = \sum x_i e_i$, $N(x) \leqslant \sum |x_i|\, N(e_i) \leqslant \beta \|x\|_\infty$ avec $\beta = \sum N(e_i)$. Par suite $|N(x) - N(y)| \leqslant N(x - y) \leqslant \beta \|x - y\|_\infty$, et $N$ est continue pour $\|\cdot\|_\infty$ ({{gd-normes|Normes}}, (iii)) ; c'est vrai en particulier de $\|\cdot\|_\infty$ elle-même.
+
+      La sphère $S = \{x : \|x\|_\infty = 1\}$ est fermée, comme image réciproque d'un singleton, et contenue dans $[-1, 1]^n$. Ce pavé est compact, comme produit fini de [[segment|segments]] ({{ar-topo|Topologie de ℝ}}, {{t-produit-fini|Produit fini de compacts}}) pour la topologie produit, qui est celle de $\|\cdot\|_\infty$. Donc $S$ est compacte ({{t-compact-prop|Parties compactes}}, (i)), et $N(S)$ est une partie compacte non vide de $\mathbb R$, fermée et bornée. Sa borne inférieure $\alpha$ est adhérente à $N(S)$, donc lui appartient : $\alpha = N(x_0)$ avec $x_0 \in S$, d'où $\alpha > 0$. Pour $x \neq 0$, $x/\|x\|_\infty \in S$ donne $N(x) \geqslant \alpha \|x\|_\infty$. Toute norme est ainsi équivalente à $\|\cdot\|_\infty$, et deux normes quelconques sont équivalentes entre elles.
+
+      (ii) Une partie compacte $K$ est fermée, l'espace étant séparé ({{t-compact-prop|Parties compactes}}, (ii)), et bornée, puisque les boules $B(0, k)$, $k \in \mathbb N$, la recouvrent et qu'un nombre fini d'entre elles suffit. Une partie fermée et bornée est bornée pour $\|\cdot\|_\infty$, donc fermée dans un pavé $[-R, R]^n$, qui est compact : elle est compacte. Si $(u_k)$ est de Cauchy, chaque suite de coordonnées l'est dans $\mathbb R$ et converge ({{ar-cauchy|Complétude}}) ; la suite converge alors pour $\|\cdot\|_\infty$, donc pour toute norme.
+
+      (iii) Pour $\|x\| \leqslant 1$, $\|u(x)\| \leqslant \sum |x_j|\,\|u(e_j)\|$ est majoré par une constante, grâce à (i) ; la borne supérieure existe ({{ar-corps|Borne supérieure}}). Pour $x \neq 0$, $\|u(x/\|x\|)\| \leqslant |||u|||$ donne la première inégalité, et la seconde s'en déduit : $\|v(u(x))\| \leqslant |||v|||\;|||u|||\,\|x\|$. Les axiomes de norme se vérifient point par point avant de passer à la borne supérieure. Enfin $\|u(x) - u(y)\| \leqslant |||u|||\,\|x - y\|$.
+
+      (iv) Si $\varphi : \mathbb R^n \to E$ est un isomorphisme et $N$ une norme sur $E$, alors $N \circ \varphi$ est une norme sur $\mathbb R^n$. Deux normes sur $E$ se transportent en deux normes équivalentes sur $\mathbb R^n$ ; elles sont donc équivalentes sur $E$. L'isomorphisme $\varphi$ envoie la topologie de $\|\cdot\|_\infty$ sur celle de la norme $\|\varphi^{-1}(\cdot)\|_\infty$, qui est l'une d'elles. Pour les applications linéaires, on utilise l'isomorphisme avec $\mathcal M_{p,n}(\mathbb R) \cong \mathbb R^{pn}$ ({{v-matrices|Matrices}}).
+    remarques:
+      - |
+        L'erreur la plus répandue est d'étendre ce théorème à la dimension infinie. Sur l'espace des polynômes réels, le maximum des valeurs absolues des coefficients et leur somme sont deux normes, mais le polynôme $1 + X + \cdots + X^k$ vaut $1$ pour la première et $k + 1$ pour la seconde : aucune constante $\beta$ ne convient.
+      - |
+        Toute la difficulté est concentrée dans la compacité du pavé $[-1, 1]^n$, c'est-à-dire, en dernier ressort, dans la propriété de la borne supérieure. Sur $\mathbb Q^n$, les normes ne sont plus nécessairement équivalentes : $|a + b\sqrt 2|$ est une norme sur $\mathbb Q^2$, et $(a, b) \mapsto |a + b\sqrt 2|$ prend des valeurs arbitrairement petites sur des vecteurs de norme $\|\cdot\|_\infty$ égale à $1$, d'après les approximations de $\sqrt 2$ du nœud {{q-irrationnel|√2 est irrationnel}}.
+
+  - id: gd-differentielle
+    etiquette: Différentielle
+    nature: définition
+    titre: Applications différentiables
+    texte: |
+      Soit $U$ un ouvert de $\mathbb R^n$, $f : U \to \mathbb R^p$ et $a \in U$. L'application $f$ est [[differentiable]] en $a$ s'il existe $u \in \mathcal L(\mathbb R^n, \mathbb R^p)$ et une application $\varepsilon$, définie au voisinage de $0$, nulle et continue en $0$, telles que
+      $$f(a + h) = f(a) + u(h) + \|h\|\, \varepsilon(h).$$
+      Grâce à l'équivalence des normes, cette condition ne dépend pas des normes choisies. On note $u = df(a)$, la **différentielle** de $f$ en $a$. La **dérivée partielle** $\partial_j f(a)$ est, si elle existe, la limite de $\big(f(a + te_j) - f(a)\big)/t$ quand $t \to 0$, et la **matrice jacobienne** $J_f(a)$ est la matrice $p \times n$ de coefficients $\partial_j f_i(a)$.
+    enonce: |
+      (i) Si elle existe, la différentielle est unique, et $f$ est continue en $a$.
+
+      (ii) $f$ est différentiable en $a$ si et seulement si chacune de ses composantes $f_i$ l'est. Les dérivées partielles existent alors, et $df(a)$ a pour matrice $J_f(a)$ : $df(a)(h) = \sum_j h_j\, \partial_j f(a)$. Pour $n = 1$, $f$ est différentiable en $a$ si et seulement si ses composantes sont [[derivable|dérivables]] en $a$, et $df(a)(h) = h f'(a)$.
+
+      (iii) Une application linéaire $u$ est différentiable partout, avec $du(a) = u$. Une application bilinéaire $B : \mathbb R^n \times \mathbb R^m \to \mathbb R^p$ l'est aussi, avec $dB(x, y)(h, k) = B(h, y) + B(x, k)$. La différentielle d'une somme est la somme des différentielles.
+
+      (iv) *Règle de la chaîne.* Si $f$ est différentiable en $a$, à valeurs dans un ouvert $V$ de $\mathbb R^p$, et si $g : V \to \mathbb R^q$ est différentiable en $f(a)$, alors $g \circ f$ est différentiable en $a$ et
+      $$d(g \circ f)(a) = dg(f(a)) \circ df(a),$$
+      ce qui s'écrit matriciellement $J_{g \circ f}(a) = J_g(f(a))\, J_f(a)$.
+    preuve: |
+      (i) Si $u$ et $u'$ conviennent, $(u - u')(h) = \|h\|\,\eta(h)$ avec $\eta$ de limite nulle en $0$. Pour $h$ fixé non nul et $t > 0$ petit, la linéarité donne $t\,(u - u')(h) = t\|h\|\,\eta(th)$, donc $(u - u')(h) = \|h\|\,\eta(th)$, qui tend vers $0$ quand $t \to 0$ : $u = u'$. Ensuite $\|f(a + h) - f(a)\| \leqslant \big(|||u||| + \|\varepsilon(h)\|\big)\|h\|$ tend vers $0$.
+
+      (ii) Avec $\|\cdot\|_\infty$ sur $\mathbb R^p$, la condition de différentiabilité pour $f$ équivaut à la conjonction des conditions pour ses $p$ composantes. Si $f$ est différentiable, prenons $h = te_j$ : $\big(f(a + te_j) - f(a)\big)/t = u(e_j) + \frac{|t|}{t}\|e_j\|\,\varepsilon(te_j)$, qui tend vers $u(e_j)$ ; la $j$-ième colonne de la matrice de $u$ est donc $\partial_j f(a)$. Pour $n = 1$, la condition s'écrit $\big(f(a + h) - f(a)\big)/h - v = \pm\varepsilon(h)$ avec $v = u(1)$, c'est-à-dire que le taux d'accroissement tend vers $v$.
+
+      (iii) Pour $u$ linéaire, $\varepsilon = 0$ convient. Pour $B$ bilinéaire, $B(x + h, y + k) - B(x, y) - B(h, y) - B(x, k) = B(h, k)$, et, en développant sur les bases, $\|B(h, k)\| \leqslant C\,\|h\|_\infty \|k\|_\infty \leqslant C\,\|(h, k)\|_\infty^2$ avec $C = \sum_{i,j}\|B(e_i, e_j)\|$, ce qui est de la forme $\|(h, k)\|_\infty\,\varepsilon(h, k)$. L'énoncé sur les sommes est immédiat.
+
+      (iv) Posons $b = f(a)$, $u = df(a)$, $w = dg(b)$, et $k = f(a + h) - b = u(h) + \|h\|\,\varepsilon(h)$. Alors
+      $$\begin{aligned} &g(f(a + h)) - g(b) - w(u(h)) \\ &\quad = \|h\|\, w(\varepsilon(h)) + \|k\|\,\eta(k), \end{aligned}$$
+      où $\eta$ est l'application associée à $g$ en $b$. On a $\|k\| \leqslant \big(|||u||| + \|\varepsilon(h)\|\big)\|h\|$, et $k \to 0$ quand $h \to 0$, donc $\eta(k) \to 0$. Les deux termes sont de la forme $\|h\|$ fois une quantité qui tend vers $0$.
+    remarques:
+      - |
+        L'erreur la plus répandue est de croire que l'existence des dérivées partielles entraîne la différentiabilité. La fonction $f(x, y) = xy/(x^2 + y^2)$, prolongée par $f(0, 0) = 0$, a des dérivées partielles nulles en $(0, 0)$, puisqu'elle est nulle sur les deux axes ; pourtant $f(t, t) = 1/2$ pour tout $t \neq 0$, si bien que $f$ n'est même pas continue en $(0, 0)$.
+      - |
+        Le point (ii) relie la différentielle à la dérivée du nœud {{ar-deriv|Dérivabilité}} : en dimension $1$, la différentielle est l'application linéaire $h \mapsto h f'(a)$, et la dérivée est sa matrice $1 \times 1$.
+
+  - id: gd-accroissements
+    etiquette: Accroissements finis
+    nature: théorème
+    titre: Inégalité des accroissements finis
+    enonce: |
+      (i) *Égalité des accroissements finis.* Si $f : [a, b] \to \mathbb R$ est continue, dérivable sur $]a, b[$, et $a < b$, il existe $c \in \,]a, b[$ tel que $f(b) - f(a) = f'(c)(b - a)$.
+
+      (ii) *Inégalité.* Soit $U$ un ouvert convexe de $\mathbb R^n$, muni d'une norme, et $f : U \to \mathbb R^p$ différentiable, $\mathbb R^p$ étant muni de $\|\cdot\|_\infty$. Si $|||df(z)||| \leqslant M$ pour tout $z \in U$, alors $\|f(y) - f(x)\|_\infty \leqslant M\, \|y - x\|$ pour tous $x, y \in U$.
+
+      (iii) Si $U$ est un ouvert [[connexe]] et si $df(z) = 0$ pour tout $z \in U$, alors $f$ est constante.
+    preuve: |
+      (i) La fonction $g(x) = f(x) - f(a) - (x - a)\dfrac{f(b) - f(a)}{b - a}$ est continue sur $[a, b]$ et nulle en $a$ et en $b$. Son taux d'accroissement est celui de $f$ diminué de la constante $\frac{f(b) - f(a)}{b - a}$ : elle est dérivable sur $]a, b[$, de dérivée $f' - \frac{f(b) - f(a)}{b - a}$. Le théorème de Rolle ({{ar-deriv|Dérivabilité}}) fournit $c$ tel que $g'(c) = 0$.
+
+      (ii) Soient $x, y \in U$ et $i$ fixé. L'ensemble des $t$ tels que $x + t(y - x) \in U$ est un ouvert de $\mathbb R$ contenant $[0, 1]$, par convexité. Sur cet ouvert, $\varphi(t) = f_i\big(x + t(y - x)\big)$ est dérivable, de dérivée $df_i(x + t(y - x))(y - x)$, par la règle de la chaîne ({{gd-differentielle|Différentielle}}, (ii) et (iv)). Par (i), il existe $c$ tel que $f_i(y) - f_i(x) = df_i(z)(y - x)$, avec $z = x + c(y - x)$. Ce nombre est la $i$-ième coordonnée de $df(z)(y - x)$, donc $|f_i(y) - f_i(x)| \leqslant \|df(z)(y - x)\|_\infty \leqslant M\|y - x\|$. On prend le maximum sur $i$.
+
+      (iii) Fixons $a \in U$ et $A = \{x \in U : f(x) = f(a)\}$, qui est non vide. $A$ est fermé dans $U$, comme image réciproque d'un singleton, fermé dans l'espace séparé $\mathbb R^p$, par l'application continue $f$. Tout point $x$ de $U$ est le centre d'une boule $B(x, r) \subset U$, qui est convexe par l'inégalité triangulaire ; par (ii) avec $M = 0$, $f$ est constante sur cette boule. Donc $A$ et $U \setminus A$ sont ouverts, et la connexité de $U$ donne $A = U$.
+    remarques:
+      - |
+        L'erreur la plus répandue est d'écrire une **égalité** des accroissements finis pour une fonction à valeurs vectorielles. Pour $f(t) = (t^2, t^3)$ sur $[0, 1]$, il faudrait $c$ tel que $(1, 1) = (2c, 3c^2)$ ; la première coordonnée impose $c = 1/2$, la seconde $c = 1/\sqrt 3$. Chaque coordonnée a son propre point $c$, et seule l'inégalité survit.
+
+  - id: gd-classe-ck
+    etiquette: Classe Cᵏ
+    nature: théorème
+    titre: Fonctions de classe Cᵏ
+    texte: |
+      Soit $U$ un ouvert de $\mathbb R^n$. Une application $f : U \to \mathbb R^p$ est [[classe-ck|de classe $C^1$]] si elle est différentiable en tout point et si $df : U \to \mathcal L(\mathbb R^n, \mathbb R^p)$ est continue, cet espace étant muni de sa topologie d'espace de dimension finie. Par récurrence, $f$ est de classe $C^{k+1}$ si elle est de classe $C^1$ et si $df$, vue comme application à valeurs dans $\mathbb R^{pn}$, est de classe $C^k$ ; elle est de classe $C^\infty$ si elle est de classe $C^k$ pour tout $k$. La classe $C^0$ est celle des applications continues.
+    enonce: |
+      (i) $f$ est de classe $C^1$ si et seulement si toutes les dérivées partielles $\partial_j f_i$ existent et sont continues sur $U$.
+
+      (ii) Les applications linéaires et bilinéaires sont de classe $C^\infty$. Une application est de classe $C^k$ si et seulement si ses composantes le sont, et une somme d'applications de classe $C^k$ l'est.
+
+      (iii) Pour $k \in \mathbb N \cup \{\infty\}$, la composée de deux applications de classe $C^k$ est de classe $C^k$. En particulier, les produits de fonctions réelles de classe $C^k$ et les fonctions polynomiales de $n$ variables sont de classe $C^k$, respectivement $C^\infty$.
+    preuve: |
+      (i) Si $f$ est de classe $C^1$, $\partial_j f(x) = df(x)(e_j)$ est continue en $x$, comme composée de $df$ et de l'évaluation en $e_j$, qui est linéaire. Réciproquement, il suffit de traiter le cas $p = 1$ ({{gd-differentielle|Différentielle}}, (ii)). Soit $a \in U$, $r > 0$ tel que $B_\infty(a, r) \subset U$, et $h$ tel que $\|h\|_\infty < r$. Posons $a^{(0)} = a$ et $a^{(j)} = a + h_1e_1 + \cdots + h_je_j$, points du cube $B_\infty(a, r)$. La fonction $t \mapsto f(a^{(j-1)} + te_j)$ a pour dérivée $\partial_j f(a^{(j-1)} + te_j)$ ; l'égalité des accroissements finis ({{gd-accroissements|Accroissements finis}}, (i)) donne un point $c_j$ du segment $[a^{(j-1)}, a^{(j)}]$ tel que $f(a^{(j)}) - f(a^{(j-1)}) = h_j\,\partial_j f(c_j)$, ce qui vaut encore si $h_j = 0$. En sommant,
+      $$\Big|f(a + h) - f(a) - \sum_j h_j\,\partial_j f(a)\Big| \leqslant \|h\|_\infty\, \rho(h),$$
+      où $\rho(h) = \sum_j \big|\partial_j f(c_j) - \partial_j f(a)\big|$ tend vers $0$ avec $h$, puisque $\|c_j - a\|_\infty \leqslant \|h\|_\infty$ et que les dérivées partielles sont continues en $a$. Donc $f$ est différentiable en $a$, et $df$ est continue puisque les coefficients de sa matrice le sont.
+
+      (ii) Une application linéaire a une différentielle constante, donc de classe $C^\infty$. Pour $B$ bilinéaire, $dB(x, y)$ dépend linéairement de $(x, y)$ ({{gd-differentielle|Différentielle}}, (iii)) : $dB$ est linéaire, donc $C^\infty$, et $B$ aussi. La matrice de $df$ a pour lignes celles des $df_i$, et $d(f + g) = df + dg$ ; on conclut par récurrence sur $k$.
+
+      (iii) Montrons par récurrence sur $k \in \mathbb N$ l'énoncé : pour toutes $f : U \to V$ et $g : V \to \mathbb R^q$ de classe $C^k$, $g \circ f$ est de classe $C^k$. Pour $k = 0$, c'est la continuité d'une composée. Supposons-le pour $k$, et soient $f, g$ de classe $C^{k+1}$. Par la règle de la chaîne,
+      $$d(g \circ f)(x) = c\big(dg(f(x)),\, df(x)\big),$$
+      où $c(A, B) = AB$ est le produit matriciel, bilinéaire donc $C^\infty$. Par hypothèse de récurrence, $dg \circ f$ est de classe $C^k$, puis $x \mapsto \big(dg(f(x)), df(x)\big)$ l'est par (ii), et sa composée avec $c$ aussi. Donc $d(g \circ f)$ est de classe $C^k$, et $g \circ f$ de classe $C^{k+1}$. Le cas $k = \infty$ s'en déduit. Le produit de $f$ et $g$ réelles est la composée de $x \mapsto (f(x), g(x))$ et de la multiplication, bilinéaire ; les polynômes s'obtiennent à partir des projections, linéaires, par sommes et produits.
+    remarques:
+      - |
+        Dans (i), la continuité des dérivées partielles ne peut pas être omise : l'exemple $xy/(x^2 + y^2)$ du nœud {{gd-differentielle|Différentielle}} a des dérivées partielles en tout point, sans même être continu à l'origine.
+      - |
+        La classe $C^\infty$ est celle qu'adopteront les variétés. On pourrait travailler en classe $C^k$ avec $k \geqslant 1$ fixé ; Whitney a montré en 1936 que toute variété de classe $C^k$, $k \geqslant 1$, porte une structure $C^\infty$ compatible, de sorte que le choix de $C^\infty$ ne restreint pas la théorie.
+
+  - id: gd-point-fixe
+    etiquette: Point fixe
+    nature: théorème
+    titre: Théorème du point fixe de Banach
+    texte: |
+      Soit $F$ une partie de $\mathbb R^n$ muni d'une norme. Une application $\varphi : F \to F$ est [[contractante]] s'il existe $k \in [0, 1[$ tel que $\|\varphi(x) - \varphi(y)\| \leqslant k\,\|x - y\|$ pour tous $x, y \in F$.
+    enonce: |
+      Soit $F$ une partie fermée non vide de $\mathbb R^n$ et $\varphi : F \to F$ contractante, de rapport $k$. Alors $\varphi$ a un unique point fixe $x^*$. Pour tout $x_0 \in F$, la suite définie par $x_{m+1} = \varphi(x_m)$ converge vers $x^*$, et
+      $$\|x_m - x^*\| \leqslant \frac{k^m}{1 - k}\,\|x_1 - x_0\|.$$
+    preuve: |
+      Par récurrence, $\|x_{m+1} - x_m\| \leqslant k^m\,\|x_1 - x_0\|$. Pour $q > m$, l'inégalité triangulaire et la somme géométrique donnent
+      $$\|x_q - x_m\| \leqslant \sum_{j=m}^{q-1} k^j\,\|x_1 - x_0\| = k^m\frac{1 - k^{q-m}}{1 - k}\,\|x_1 - x_0\|,$$
+      qui est majoré par $\dfrac{k^m}{1 - k}\,\|x_1 - x_0\|$. La suite $(k^m)$ tend vers $0$ : c'est clair si $k = 0$, et sinon $1/k = 1 + s$ avec $s > 0$, et $(1 + s)^m \geqslant 1 + ms$ par récurrence, ce qui tend vers $+\infty$ puisque $\mathbb R$ est [[archimedien]]. La suite $(x_m)$ est donc de Cauchy ; elle converge vers un $x^*$ ({{gd-equivalence|Équivalence des normes}}, (ii)), qui appartient à $F$ : sinon le complémentaire de $F$, ouvert, contiendrait une boule centrée en $x^*$, et donc tous les $x_m$ à partir d'un certain rang.
+
+      $\varphi$ est lipschitzienne, donc continue, et $x_{m+1} = \varphi(x_m)$ tend à la fois vers $x^*$ et vers $\varphi(x^*)$ ; l'unicité de la limite dans un espace séparé donne $\varphi(x^*) = x^*$. Si $y^*$ est un autre point fixe, $\|x^* - y^*\| \leqslant k\,\|x^* - y^*\|$ impose $x^* = y^*$. L'estimation s'obtient en faisant tendre $q$ vers l'infini dans l'inégalité ci-dessus, la norme étant continue.
+    remarques:
+      - |
+        La démonstration est constructive : elle fournit un algorithme et une majoration de l'erreur. Pour $\varphi(x) = \frac12\big(x + \frac2x\big)$ sur $F = [1, 2]$, on a $\varphi(x) - 1 = \frac{(x - 1)^2 + 1}{2x} > 0$ et $2 - \varphi(x) = \frac{2 - (x - 2)^2}{2x} > 0$, donc $\varphi(F) \subset F$, et $\varphi(x) - \varphi(y) = \frac12(x - y)\big(1 - \frac{2}{xy}\big)$ avec $\big|1 - \frac2{xy}\big| \leqslant 1$, donc $k = 1/2$. Le point fixe vérifie $x^2 = 2$. Partant de $1$, on obtient $3/2$, $17/12$, $577/408 \approx 1{,}4142157$ : ce sont les approximations de Héron du nœud {{q-irrationnel|√2 est irrationnel}}, et l'erreur décroît bien plus vite que la majoration $2^{-m}$, car $\varphi'(\sqrt 2) = 0$.
+      - |
+        L'hypothèse que $F$ est fermé est indispensable : la même $\varphi$ sur $F = [1, 2] \cap \mathbb Q$ envoie $F$ dans $F$ et reste contractante, mais n'a pas de point fixe, puisque $\sqrt 2$ est irrationnel.
+
+  - id: gd-gl
+    etiquette: Groupe linéaire
+    nature: proposition
+    titre: Le groupe linéaire et l'inversion des matrices
+    texte: |
+      Une matrice $A \in \mathcal M_n(\mathbb R)$ est inversible s'il existe $B$ telle que $AB = BA = I_n$ ; c'est le cas si et seulement si l'endomorphisme $x \mapsto Ax$ est bijectif, ou encore injectif, par le théorème du rang ({{v-rang|Théorème du rang}}). Les matrices inversibles forment un groupe pour le produit, le [[groupe-lineaire|groupe linéaire]] $GL_n(\mathbb R)$. On munit $\mathcal M_n(\mathbb R) \cong \mathcal L(\mathbb R^n)$ de la norme subordonnée $|||\cdot|||$ à une norme de $\mathbb R^n$.
+    enonce: |
+      (i) *Série de Neumann.* Si $|||H||| < 1$, la série $\sum_{m \geqslant 0} H^m$ converge, $I - H$ est inversible, d'inverse sa somme, et $|||(I - H)^{-1}||| \leqslant \dfrac{1}{1 - |||H|||}$.
+
+      (ii) $GL_n(\mathbb R)$ est un ouvert de $\mathcal M_n(\mathbb R)$ : si $A$ est inversible et $|||H||| < 1/|||A^{-1}|||$, alors $A + H$ est inversible.
+
+      (iii) L'application $\mathrm{inv} : A \mapsto A^{-1}$ est de classe $C^\infty$ sur $GL_n(\mathbb R)$, et
+      $$d\,\mathrm{inv}(A)(H) = -A^{-1} H A^{-1}.$$
+    preuve: |
+      (i) Soit $S_m = \sum_{j=0}^m H^j$. Pour $q > m$, $|||S_q - S_m||| \leqslant \sum_{j=m+1}^q |||H|||^j \leqslant \frac{|||H|||^{m+1}}{1 - |||H|||}$, qui tend vers $0$ ; la suite $(S_m)$ est de Cauchy, donc converge vers une matrice $S$, l'espace $\mathcal M_n(\mathbb R)$ étant complet ({{gd-equivalence|Équivalence des normes}}). On a $(I - H)S_m = S_m(I - H) = I - H^{m+1}$, qui tend vers $I$ ; la multiplication par une matrice fixée étant linéaire, donc continue, $(I - H)S = S(I - H) = I$. Enfin $|||S_m||| \leqslant 1/(1 - |||H|||)$ pour tout $m$, et l'inégalité passe à la limite.
+
+      (ii) $A + H = A(I + A^{-1}H)$, avec $|||A^{-1}H||| \leqslant |||A^{-1}|||\;|||H||| < 1$ : par (i), $I + A^{-1}H$ est inversible, et $A + H$ l'est comme produit de deux matrices inversibles.
+
+      (iii) Pour $H$ petit, (i) appliqué à $-A^{-1}H$ donne $(A + H)^{-1} = \sum_{m \geqslant 0} (-A^{-1}H)^m A^{-1}$, d'où
+      $$(A + H)^{-1} - A^{-1} + A^{-1}HA^{-1} = \sum_{m \geqslant 2} (-A^{-1}H)^m A^{-1},$$
+      dont la norme est au plus $\dfrac{|||A^{-1}|||^3\,|||H|||^2}{1 - |||A^{-1}|||\;|||H|||}$, quantité de la forme $|||H|||\,\varepsilon(H)$. Donc $\mathrm{inv}$ est différentiable, en particulier continue, et $d\,\mathrm{inv} = \beta \circ (\mathrm{inv}, \mathrm{inv})$, où $\beta(X, Y) = (H \mapsto -XHY)$ est bilinéaire de $\mathcal M_n \times \mathcal M_n$ dans $\mathcal L(\mathcal M_n)$, donc $C^\infty$. Si $\mathrm{inv}$ est de classe $C^k$, alors $d\,\mathrm{inv}$ l'est aussi par composition ({{gd-classe-ck|Classe Cᵏ}}, (iii)), et $\mathrm{inv}$ est de classe $C^{k+1}$. Par récurrence, $\mathrm{inv}$ est $C^\infty$.
+    remarques:
+      - |
+        Pour $n = 1$, la formule redonne la dérivée $-h/a^2$ de $x \mapsto 1/x$. L'erreur la plus répandue est d'écrire $-A^{-2}H$ : le produit des matrices n'étant pas commutatif, $H$ reste pris entre les deux facteurs $A^{-1}$.
+      - |
+        L'atlas n'a pas encore construit le déterminant. Avec lui, on montrerait plus vite que $GL_n(\mathbb R) = \{\det \neq 0\}$ est ouvert, et que $\mathrm{inv}$ est $C^\infty$ par les formules de Cramer, dont les coefficients sont des fractions rationnelles. La série de Neumann évite ce détour et vaut aussi en dimension infinie, pour les espaces de Banach.
+
+  - id: gd-inversion-locale
+    etiquette: Inversion locale
+    nature: théorème
+    titre: Théorème d'inversion locale
+    texte: |
+      Soient $U$ et $V$ deux ouverts de $\mathbb R^n$ et $k \geqslant 1$, éventuellement infini. Un [[diffeomorphisme|$C^k$-difféomorphisme]] de $U$ sur $V$ est une bijection $f : U \to V$ de classe $C^k$ dont la réciproque est de classe $C^k$.
+    enonce: |
+      Soit $U$ un ouvert de $\mathbb R^n$, $f : U \to \mathbb R^n$ de classe $C^k$ avec $k \geqslant 1$, et $a \in U$ tel que $df(a)$ soit inversible. Il existe un ouvert $V \subset U$ contenant $a$ et un ouvert $W$ contenant $f(a)$ tels que $f$ induise un $C^k$-difféomorphisme de $V$ sur $W$. De plus, $d(f^{-1})(y) = df\big(f^{-1}(y)\big)^{-1}$ pour $y \in W$.
+    preuve: |
+      *Réduction.* Soit $L = df(a)$. L'application $\tilde f(x) = L^{-1}\big(f(a + x) - f(a)\big)$ est de classe $C^k$ sur $U - a$, avec $\tilde f(0) = 0$ et $d\tilde f(0) = I$, et $f$ s'en déduit par composition avec les difféomorphismes affines $x \mapsto x - a$ et $y \mapsto f(a) + Ly$. On suppose donc $a = 0$, $f(0) = 0$, $df(0) = I$, et l'on munit $\mathbb R^n$ de $\|\cdot\|_\infty$.
+
+      *Étape 1.* Posons $g(x) = x - f(x)$, de classe $C^k$, avec $dg(0) = 0$. Par continuité de $dg$, il existe $r > 0$ tel que $B(0, 2r) \subset U$ et $|||dg(x)||| \leqslant \frac12$ sur $B(0, 2r)$. Cette boule est convexe ; l'inégalité des accroissements finis ({{gd-accroissements|Accroissements finis}}, (ii)) y donne $\|g(x) - g(x')\| \leqslant \frac12\|x - x'\|$.
+
+      *Étape 2.* Soit $y$ tel que $\|y\| < r/2$, et $\varphi_y(x) = y + g(x)$. Pour $\|x\| \leqslant r$, $\|\varphi_y(x)\| \leqslant \|y\| + \|g(x) - g(0)\| \leqslant r$ : $\varphi_y$ envoie la boule fermée $\bar B(0, r)$, qui est fermée, dans elle-même, et elle est contractante de rapport $\frac12$. Par le théorème du point fixe ({{gd-point-fixe|Point fixe}}), il existe un unique $x \in \bar B(0, r)$ tel que $\varphi_y(x) = x$, c'est-à-dire $f(x) = y$ ; de plus $\|x\| \leqslant \|y\| + \frac12\|x\|$, donc $\|x\| \leqslant 2\|y\| < r$.
+
+      Posons $W = B(0, r/2)$ et $V = B(0, r) \cap f^{-1}(W)$, ouvert contenant $0$. Par ce qui précède, $f : V \to W$ est surjective. Elle est injective : si $f(x) = f(x')$, alors $x - x' = g(x) - g(x')$, de norme au plus $\frac12\|x - x'\|$, donc $x = x'$.
+
+      *Étape 3.* Soit $h : W \to V$ la réciproque. Pour $x, x' \in V$, $\|x - x'\| \leqslant \|f(x) - f(x')\| + \|g(x) - g(x')\| \leqslant \|f(x) - f(x')\| + \frac12\|x - x'\|$, d'où $\|h(y) - h(y')\| \leqslant 2\|y - y'\|$ : $h$ est continue.
+
+      *Étape 4.* Pour $x \in V$, $df(x) = I - dg(x)$ est inversible par la série de Neumann ({{gd-gl|Groupe linéaire}}, (i)). Soit $y \in W$, $x = h(y)$, $k$ petit et $u = h(y + k) - x$, de sorte que $\|u\| \leqslant 2\|k\|$. Alors $k = f(x + u) - f(x) = df(x)u + \|u\|\,\varepsilon(u)$, d'où
+      $$h(y + k) - h(y) - df(x)^{-1}k = -\|u\|\, df(x)^{-1}\varepsilon(u),$$
+      de norme au plus $2\|k\|\;|||df(x)^{-1}|||\;\|\varepsilon(u)\|$. Comme $u \to 0$ quand $k \to 0$, par continuité de $h$, $h$ est différentiable en $y$ et $dh(y) = df(h(y))^{-1}$.
+
+      *Étape 5.* On a donc $dh = \mathrm{inv} \circ df \circ h$. Si $h$ est de classe $C^j$ avec $j < k$, alors $df \circ h$ est de classe $C^j$, puisque $df$ est de classe $C^{k-1}$ et $j \leqslant k - 1$ ; $\mathrm{inv}$ étant $C^\infty$, $dh$ est de classe $C^j$ ({{gd-classe-ck|Classe Cᵏ}}, (iii)), et $h$ de classe $C^{j+1}$. Partant de $j = 0$, on atteint $j = k$, ou toute valeur de $j$ si $k = \infty$.
+    remarques:
+      - |
+        Le théorème est local et ne se globalise pas. Pour $f(x, y) = (x^2 - y^2, 2xy)$, qui est $z \mapsto z^2$ lue dans $\mathbb R^2$, la matrice jacobienne $\begin{pmatrix} 2x & -2y \\ 2y & 2x \end{pmatrix}$ est injective dès que $(x, y) \neq (0, 0)$, mais $f(-x, -y) = f(x, y)$ : $f$ est un difféomorphisme local en tout point de $\mathbb R^2 \setminus \{0\}$ sans être injective sur cet ouvert.
+      - |
+        L'inversibilité de $df(a)$ est nécessaire pour que la réciproque soit différentiable. L'application $x \mapsto x^3$ est un homéomorphisme de $\mathbb R$, de classe $C^\infty$, mais si sa réciproque $h$ était dérivable en $0$, la règle de la chaîne appliquée à $h(x^3) = x$ donnerait $1 = h'(0) \cdot 0$.
+
+  - id: gd-submersions
+    etiquette: Submersions
+    nature: théorème
+    titre: Forme locale des submersions et fonctions implicites
+    texte: |
+      Une application $F : U \to \mathbb R^q$ de classe $C^k$ sur un ouvert $U$ de $\mathbb R^n$ est une [[submersion]] en $a$ si $dF(a)$ est surjective, ce qui impose $q \leqslant n$.
+    enonce: |
+      (i) *Forme locale.* Si $F$ est de classe $C^k$, $k \geqslant 1$, et si $dF(a)$ est surjective, il existe un ouvert $V$ contenant $a$ et un $C^k$-difféomorphisme $\Phi$ de $V$ sur un ouvert de $\mathbb R^{n-q} \times \mathbb R^q$ tels que $F(x) = F(a) + \pi(\Phi(x))$ sur $V$, où $\pi(z', z'') = z''$.
+
+      (ii) *Fonctions implicites.* Soit $U$ un ouvert de $\mathbb R^m \times \mathbb R^q$, $F : U \to \mathbb R^q$ de classe $C^k$, et $(a, b) \in U$ tel que $F(a, b) = 0$ et que la différentielle partielle $\partial_y F(a, b) : \ell \mapsto dF(a, b)(0, \ell)$ soit inversible. Il existe un ouvert $A$ de $\mathbb R^m$ contenant $a$, un ouvert $V$ contenant $(a, b)$ et une application $\varphi : A \to \mathbb R^q$ de classe $C^k$ tels que, pour $(x, y) \in V$,
+      $$F(x, y) = 0 \iff \big(x \in A \text{ et } y = \varphi(x)\big).$$
+    preuve: |
+      (i) Le noyau $K$ de $dF(a)$ est de dimension $n - q$, par le théorème du rang. Complétons une base $(v_1, \dots, v_{n-q})$ de $K$ en une base de $\mathbb R^n$ ({{v-dimension|Dimension}}, (iii)), et soit $L : \mathbb R^n \to \mathbb R^{n-q}$ l'application qui associe à $x$ ses $n - q$ premières coordonnées dans cette base ; elle est linéaire, et sa restriction à $K$ est bijective. Posons $\Phi(x) = \big(L(x), F(x) - F(a)\big)$, de classe $C^k$, avec $d\Phi(a)h = \big(Lh, dF(a)h\big)$. Si $d\Phi(a)h = 0$, alors $h \in K$ et $Lh = 0$, donc $h = 0$ : $d\Phi(a)$ est injective, donc inversible. Le théorème d'inversion locale ({{gd-inversion-locale|Inversion locale}}) fournit $V$, et $\pi \circ \Phi = F - F(a)$ par construction.
+
+      (ii) Posons $\Phi(x, y) = \big(x, F(x, y)\big)$. Alors $d\Phi(a, b)(h, \ell) = \big(h,\, dF(a, b)(h, 0) + \partial_y F(a, b)\ell\big)$ ; s'il est nul, $h = 0$ puis $\partial_y F(a, b)\ell = 0$, donc $\ell = 0$. Par inversion locale, $\Phi$ induit un difféomorphisme d'un ouvert $V \ni (a, b)$ sur un ouvert $W \ni (a, 0)$, de réciproque de la forme $\Psi(x, z) = \big(x, \psi(x, z)\big)$ puisque $\Phi$ conserve la première composante. Soit $A = \{x : (x, 0) \in W\}$, ouvert comme image réciproque de $W$ par l'application continue $x \mapsto (x, 0)$, et $\varphi(x) = \psi(x, 0)$, de classe $C^k$. Pour $(x, y) \in V$, $F(x, y) = 0$ équivaut à $\Phi(x, y) = (x, 0)$, c'est-à-dire à $(x, 0) \in W$ et $(x, y) = \Psi(x, 0) = (x, \varphi(x))$.
+    remarques:
+      - |
+        Pour $F(x, y) = x^2 + y^2 - 1$ au point $(0, 1)$, $\partial_y F = 2y$ vaut $2$, et l'équation définit localement $y = \sqrt{1 - x^2}$. Au point $(1, 0)$, $\partial_y F$ s'annule, et en effet $y$ n'est fonction de $x$ sur aucun voisinage ; mais $\partial_x F = 2 \neq 0$, et c'est $x$ qui s'exprime en fonction de $y$.
+      - |
+        La forme locale (i) dit que, vue dans de bonnes coordonnées, une submersion est une projection. C'est exactement ce qui permettra de « redresser » les ensembles de niveau en sous-espaces affines au nœud suivant.
+
+  - id: gd-sous-varietes
+    etiquette: Sous-variétés de ℝⁿ
+    nature: théorème
+    titre: Sous-variétés de ℝⁿ
+    texte: |
+      Une partie $M$ de $\mathbb R^n$ est une [[sous-variete|sous-variété]] de dimension $d$, avec $0 \leqslant d \leqslant n$, si pour tout $a \in M$ il existe un ouvert $U$ contenant $a$ et un $C^\infty$-difféomorphisme $\Phi$ de $U$ sur un ouvert de $\mathbb R^n$ tels que
+      $$\Phi(U \cap M) = \Phi(U) \cap \big(\mathbb R^d \times \{0\}\big).$$
+      Localement, et à difféomorphisme près, $M$ est un morceau de sous-espace vectoriel.
+    enonce: |
+      (i) *Équations.* $M$ est une sous-variété de dimension $d$ si et seulement si, pour tout $a \in M$, il existe un ouvert $U$ contenant $a$ et $F : U \to \mathbb R^{n-d}$ de classe $C^\infty$, avec $dF(a)$ surjective, tels que $M \cap U = F^{-1}(0)$.
+
+      (ii) *Graphes.* Le graphe d'une application $\varphi : \Omega \to \mathbb R^{n-d}$ de classe $C^\infty$ sur un ouvert $\Omega$ de $\mathbb R^d$ est une sous-variété de dimension $d$ de $\mathbb R^n$.
+
+      (iii) La sphère $S^{n-1} = \{x \in \mathbb R^n : x_1^2 + \cdots + x_n^2 = 1\}$ est une sous-variété de dimension $n - 1$.
+    preuve: |
+      (i) Si $\Phi$ redresse $M$ près de $a$, $F = (\Phi_{d+1}, \dots, \Phi_n)$ convient : $dF(a)$ est formée des $n - d$ dernières lignes de la matrice inversible $J_\Phi(a)$, donc surjective, et pour $x \in U$, $x \in M$ équivaut à $\Phi(x) \in \mathbb R^d \times \{0\}$, c'est-à-dire à $F(x) = 0$. Réciproquement, la forme locale des submersions ({{gd-submersions|Submersions}}, (i)), avec $F(a) = 0$, fournit un ouvert $V \subset U$ contenant $a$ et un difféomorphisme $\Phi$ de $V$ sur un ouvert tels que $F = \pi \circ \Phi$ sur $V$. Pour $x \in V$, $x \in M$ équivaut à $F(x) = 0$, donc à $\Phi(x) \in \mathbb R^d \times \{0\}$.
+
+      (ii) Le graphe est $F^{-1}(0)$ pour $F(x, y) = y - \varphi(x)$ sur $\Omega \times \mathbb R^{n-d}$, et $dF(x, y)(h, \ell) = \ell - d\varphi(x)h$ est surjective, puisque $\ell$ est arbitraire. On applique (i).
+
+      (iii) $S^{n-1} = F^{-1}(0)$ avec $F(x) = \sum x_i^2 - 1$, polynomiale donc $C^\infty$, et $dF(x)h = 2\sum x_i h_i$. Pour $x \in S^{n-1}$, $dF(x)x = 2 \neq 0$ : la forme linéaire $dF(x)$ est surjective sur $\mathbb R$.
+    remarques:
+      - |
+        L'erreur la plus répandue est de conclure qu'une partie n'est pas une sous-variété parce qu'une équation particulière qui la définit a une différentielle nulle. La droite $\{y = 0\}$ de $\mathbb R^2$ est l'ensemble des zéros de $F(x, y) = y^2$, dont la différentielle est nulle en tout point de la droite ; c'est pourtant une sous-variété, car $y$ est une meilleure équation.
+      - |
+        Le groupe orthogonal $O(n) = \{A : {}^tA A = I\}$ est une sous-variété de $\mathcal M_n(\mathbb R)$, de dimension $n(n - 1)/2$. L'application $F(A) = {}^tAA$, à valeurs dans l'espace des matrices symétriques, a pour différentielle $H \mapsto {}^tHA + {}^tAH$, qui est surjective en tout $A \in O(n)$ : pour $S$ symétrique, $H = AS/2$ convient. C'est le premier exemple de groupe de Lie, qui rejoint les {{grtop|groupes topologiques}}.
+
+  - id: gd-tangent-sm
+    etiquette: Tangent à une sous-variété
+    nature: proposition
+    titre: Espace tangent à une sous-variété
+    texte: |
+      Soit $M$ une sous-variété de dimension $d$ de $\mathbb R^n$ et $a \in M$. Un vecteur $v \in \mathbb R^n$ est tangent à $M$ en $a$ s'il existe $\varepsilon > 0$ et une courbe $\gamma : \,]-\varepsilon, \varepsilon[ \to \mathbb R^n$ à valeurs dans $M$, dérivable en $0$, avec $\gamma(0) = a$ et $\gamma'(0) = v$. L'ensemble de ces vecteurs est l'[[espace-tangent-sv|espace tangent]] $T_aM$.
+    enonce: |
+      Si $\Phi$ redresse $M$ près de $a$, et si $F$ est une équation de $M$ près de $a$ au sens du nœud précédent, alors
+      $$T_aM = d\Phi(a)^{-1}\big(\mathbb R^d \times \{0\}\big) = \operatorname{Ker} dF(a).$$
+      En particulier, $T_aM$ est un sous-espace vectoriel de dimension $d$, qui ne dépend ni de $\Phi$ ni de $F$. Pour la sphère, $T_aS^{n-1} = \{h : \sum a_ih_i = 0\}$.
+    preuve: |
+      Soit $\gamma$ comme dans la définition. Étant dérivable en $0$, $\gamma$ y est continue, donc $\gamma(t) \in U \cap M$ pour $|t|$ petit, et $F \circ \gamma = 0$ au voisinage de $0$. La règle de la chaîne donne $dF(a)\gamma'(0) = 0$ : ainsi $T_aM \subset \operatorname{Ker} dF(a)$.
+
+      Réciproquement, soit $v$ tel que $d\Phi(a)v = (w, 0)$. Comme $a \in M$, $\Phi(a) \in \mathbb R^d \times \{0\}$, et pour $|t|$ petit, $\Phi(a) + t(w, 0)$ appartient à l'ouvert $\Phi(U)$ et à $\mathbb R^d \times \{0\}$. La courbe $\gamma(t) = \Phi^{-1}\big(\Phi(a) + t(w, 0)\big)$ est donc à valeurs dans $M$, et $\gamma'(0) = d\Phi(a)^{-1}(w, 0) = v$. On obtient $d\Phi(a)^{-1}(\mathbb R^d \times \{0\}) \subset T_aM$.
+
+      Le premier ensemble est de dimension $d$, image d'un sous-espace de dimension $d$ par un isomorphisme ; le noyau de $dF(a)$ est de dimension $n - (n - d) = d$ par le théorème du rang. Les inclusions $d\Phi(a)^{-1}(\mathbb R^d \times \{0\}) \subset T_aM \subset \operatorname{Ker} dF(a)$ entre espaces de même dimension sont des égalités ({{v-dimension|Dimension}}, (iii)). Pour la sphère, $dF(a)h = 2\sum a_ih_i$.
+    remarques:
+      - |
+        La définition par les courbes est intrinsèque : elle ne fait intervenir ni carte ni équation. La démonstration montre que le résultat ne dépend donc pas du choix de $\Phi$ ou de $F$, ce qui n'aurait rien d'évident si l'on avait défini $T_aM$ comme un noyau.
+
+  - id: gd-varietes
+    etiquette: Variétés différentiables
+    nature: définition
+    titre: Variétés différentiables
+    texte: |
+      Soit $M$ un [[espace-topologique|espace topologique]] et $n \in \mathbb N$. Une [[carte]] de dimension $n$ est un couple $(U, \varphi)$ où $U$ est un ouvert de $M$ et $\varphi$ un [[homeomorphisme]] de $U$ sur un ouvert de $\mathbb R^n$. Deux cartes $(U, \varphi)$ et $(V, \psi)$ sont **compatibles** si le changement de carte $\psi \circ \varphi^{-1} : \varphi(U \cap V) \to \psi(U \cap V)$ et sa réciproque sont de classe $C^\infty$ ; ce sont des applications entre ouverts de $\mathbb R^n$. Un [[atlas]] est une famille de cartes deux à deux compatibles dont les domaines recouvrent $M$.
+
+      Une [[variete-differentiable|variété différentiable]] de dimension $n$ est un espace topologique séparé, ayant une base au plus dénombrable, muni d'un atlas maximal, c'est-à-dire contenu dans aucun autre atlas.
+    enonce: |
+      (i) Soit $\mathcal A$ un atlas. L'ensemble $\bar{\mathcal A}$ des cartes compatibles avec toutes celles de $\mathcal A$ est un atlas maximal, et c'est le seul atlas maximal qui contienne $\mathcal A$. Deux atlas définissent le même atlas maximal si et seulement si leur réunion est un atlas.
+
+      (ii) Tout ouvert de $\mathbb R^n$ est une variété de dimension $n$, d'atlas $\{\mathrm{id}\}$. Toute sous-variété $M$ de dimension $d$ de $\mathbb R^n$ est une variété de dimension $d$, pour l'atlas des cartes $\big(U \cap M,\ p \circ \Phi|_{U \cap M}\big)$, où $\Phi$ redresse $M$ sur $U$ et $p : \mathbb R^n \to \mathbb R^d$ est la projection sur les $d$ premières coordonnées.
+
+      (iii) Sur la sphère $S^n \subset \mathbb R^{n+1}$, les projections stéréographiques $\sigma_\pm(x) = \dfrac{(x_1, \dots, x_n)}{1 \mp x_{n+1}}$, définies hors de $(0, \dots, 0, \pm 1)$, forment un atlas à deux cartes, compatible avec celui de (ii), et
+      $$\sigma_+^{-1}(z) = \frac{\big(2z,\ \|z\|_2^2 - 1\big)}{\|z\|_2^2 + 1},$$
+      $$\sigma_- \circ \sigma_+^{-1}(z) = \frac{z}{\|z\|_2^2} \quad (z \neq 0).$$
+    preuve: |
+      (i) Soient $(V, \psi)$ et $(V', \psi')$ dans $\bar{\mathcal A}$, et $z = \psi(p)$ avec $p \in V \cap V'$. Choisissons $(U, \varphi) \in \mathcal A$ telle que $p \in U$. Sur l'ouvert $\psi(V \cap V' \cap U)$, qui contient $z$,
+      $$\psi' \circ \psi^{-1} = (\psi' \circ \varphi^{-1}) \circ (\varphi \circ \psi^{-1}),$$
+      composée d'applications $C^\infty$ ({{gd-classe-ck|Classe Cᵏ}}, (iii)). La classe $C^\infty$ se vérifiant au voisinage de chaque point, $\psi' \circ \psi^{-1}$ est $C^\infty$ sur $\psi(V \cap V')$. Donc $\bar{\mathcal A}$ est un atlas ; il contient $\mathcal A$, dont les cartes sont deux à deux compatibles. Tout atlas $\mathcal B \supset \mathcal A$ est formé de cartes compatibles avec $\mathcal A$, donc $\mathcal B \subset \bar{\mathcal A}$ : cela prouve à la fois que $\bar{\mathcal A}$ est maximal et qu'il est le seul atlas maximal contenant $\mathcal A$. Si $\mathcal A \cup \mathcal A'$ est un atlas, son atlas maximal contient $\mathcal A$ et $\mathcal A'$, donc égale $\bar{\mathcal A}$ et $\bar{\mathcal A'}$ ; réciproquement, si $\bar{\mathcal A} = \bar{\mathcal A'}$, alors $\mathcal A \cup \mathcal A' \subset \bar{\mathcal A}$ est un atlas. Le choix de $(U, \varphi)$ porte sur un seul point et n'a rien d'un axiome du choix : $\bar{\mathcal A}$ est défini par compréhension.
+
+      (ii) Une partie de $\mathbb R^n$ est séparée et a une base au plus dénombrable ({{t-separe|Espaces séparés}}, (iii), {{gd-denombrable|Base dénombrable de ℝⁿ}}, (iii)). Pour $\Phi$ redressant $M$ sur $U$, $\varphi = p \circ \Phi|_{U \cap M}$ est une bijection continue de $U \cap M$ sur l'ouvert $\{z \in \mathbb R^d : (z, 0) \in \Phi(U)\}$, de réciproque continue $z \mapsto \Phi^{-1}(z, 0)$. Pour deux telles cartes, $\varphi' \circ \varphi^{-1}(z) = p \circ \Phi' \circ \Phi^{-1}(z, 0)$ est une composée d'applications $C^\infty$, et ces cartes recouvrent $M$ par définition d'une sous-variété.
+
+      (iii) Un calcul direct montre que $x = \sigma_+^{-1}(z)$ vérifie $\sum x_i^2 = 1$ et $\sigma_+(x) = z$, et que $\sigma_-(x) = 2z/(2\|z\|_2^2)$. Les applications $\sigma_\pm$ sont des restrictions d'applications rationnelles, donc $C^\infty$ sur l'ouvert $\{x_{n+1} \neq \pm 1\}$ de $\mathbb R^{n+1}$, et $\sigma_+^{-1}$ est $C^\infty$ de $\mathbb R^n$ dans $\mathbb R^{n+1}$. Pour une carte $\varphi = p \circ \Phi$ de (ii), $\sigma_+ \circ \varphi^{-1}(z) = \sigma_+\big(\Phi^{-1}(z, 0)\big)$ et $\varphi \circ \sigma_+^{-1} = p \circ \Phi \circ \sigma_+^{-1}$ sont $C^\infty$ comme composées : les atlas sont compatibles.
+    remarques:
+      - |
+        La séparation n'est pas une conséquence de l'existence des cartes. La droite à deux origines, obtenue en recollant deux copies de $\mathbb R$ le long de $\mathbb R \setminus \{0\}$, a un atlas de deux cartes compatibles, mais ses deux origines n'ont pas de voisinages disjoints : une suite peut y avoir deux limites.
+      - |
+        Toute variété de dimension $n$ se plonge comme sous-variété dans $\mathbb R^{2n}$ : c'est le théorème de plongement de Whitney (1944), admis ici. Les variétés abstraites ne sont donc pas plus générales que les sous-variétés ; elles libèrent seulement la théorie du choix d'un espace ambiant.
+
+  - id: gd-applications-lisses
+    etiquette: Applications lisses
+    nature: proposition
+    titre: Applications lisses entre variétés
+    texte: |
+      Soient $M$ et $N$ deux variétés. Une application $f : M \to N$ est [[application-lisse|lisse]] si elle est continue et si, pour toutes cartes $(U, \varphi)$ de $M$ et $(V, \psi)$ de $N$ prises dans les atlas maximaux, l'expression en cartes $\psi \circ f \circ \varphi^{-1}$ est de classe $C^\infty$ sur l'ouvert $\varphi(U \cap f^{-1}(V))$. Un **difféomorphisme** est une bijection lisse dont la réciproque est lisse.
+    enonce: |
+      (i) Il suffit de vérifier la condition pour des cartes prises dans des atlas quelconques de $M$ et de $N$.
+
+      (ii) L'identité est lisse, et la composée de deux applications lisses est lisse.
+
+      (iii) Un ouvert $U$ de $M$ est une variété pour les cartes de $M$ de domaine contenu dans $U$, et si $(U, \varphi)$ est une carte, $\varphi$ est un difféomorphisme de $U$ sur $\varphi(U)$. Les fonctions lisses $M \to \mathbb R$ forment un anneau $C^\infty(M)$.
+
+      (iv) Entre ouverts de $\mathbb R^m$ et de $\mathbb R^n$, être lisse équivaut à être $C^\infty$. Si $M \subset \mathbb R^m$ et $N \subset \mathbb R^n$ sont des sous-variétés et $F$ une application $C^\infty$ sur un ouvert contenant $M$, avec $F(M) \subset N$, la restriction de $F$ à $M$ est lisse.
+    preuve: |
+      (i) Si $(U', \varphi')$ et $(V', \psi')$ sont des cartes des atlas maximaux et $p \in U' \cap f^{-1}(V')$, choisissons des cartes $(U, \varphi)$ et $(V, \psi)$ des atlas donnés autour de $p$ et de $f(p)$. Au voisinage de $\varphi'(p)$,
+      $$\begin{aligned} &\psi' \circ f \circ \varphi'^{-1} \\ &\quad = (\psi' \circ \psi^{-1}) \circ (\psi \circ f \circ \varphi^{-1}) \circ (\varphi \circ \varphi'^{-1}), \end{aligned}$$
+      composée d'applications $C^\infty$ ; la continuité de $f$ garantit que les ouverts en jeu sont bien des ouverts. On conclut par le caractère local de la classe $C^\infty$.
+
+      (ii) Si $f : M \to N$ et $g : N \to P$ sont lisses, $g \circ f$ est continue, et au voisinage de chaque point, $\chi \circ g \circ f \circ \varphi^{-1} = (\chi \circ g \circ \psi^{-1}) \circ (\psi \circ f \circ \varphi^{-1})$ pour une carte $(V, \psi)$ de $N$ autour de l'image du point.
+
+      (iii) $U$ est séparé et a une base au plus dénombrable, formée des traces d'une base de $M$ ; les cartes de domaine contenu dans $U$ forment un atlas maximal de $U$. L'expression de $\varphi$ dans les cartes $(U', \varphi')$ et $\mathrm{id}$ est $\varphi \circ \varphi'^{-1}$, de classe $C^\infty$, et de même pour $\varphi^{-1}$. Dans une carte, $(f + g) \circ \varphi^{-1} = f \circ \varphi^{-1} + g \circ \varphi^{-1}$, et de même pour le produit ({{gd-classe-ck|Classe Cᵏ}}, (iii)).
+
+      (iv) Le premier point découle de (i) avec les atlas $\{\mathrm{id}\}$. Pour le second, avec les cartes du nœud {{gd-varietes|Variétés différentiables}}, $\psi \circ F \circ \varphi^{-1}(z) = p' \circ \Phi' \circ F \circ \Phi^{-1}(z, 0)$, composée d'applications $C^\infty$.
+    remarques:
+      - |
+        L'erreur la plus répandue est de confondre homéomorphisme lisse et difféomorphisme. Sur $\mathbb R$, les atlas $\{\mathrm{id}\}$ et $\{x \mapsto x^3\}$ ne sont pas compatibles, car $x \mapsto x^{1/3}$ n'est pas dérivable en $0$ : l'identité de $\mathbb R$ n'est pas un difféomorphisme entre ces deux structures. Pourtant $f(x) = x^3$ en est un, de la seconde vers la première, puisque son expression en cartes est $x^3 \circ x^{1/3} = \mathrm{id}$ : les deux variétés sont difféomorphes sans être égales.
+      - |
+        Il existe en revanche des structures réellement distinctes : Milnor a construit en 1956 des variétés homéomorphes à la sphère $S^7$ mais non difféomorphes à elle. Le type topologique ne détermine pas le type différentiable.
+
+  - id: gd-espace-tangent
+    etiquette: Espace tangent
+    nature: théorème
+    titre: Espace tangent et application linéaire tangente
+    texte: |
+      Soit $M$ une variété de dimension $n$ et $p \in M$. Sur l'ensemble des triplets $(U, \varphi, v)$ formés d'une carte en $p$ et d'un vecteur $v \in \mathbb R^n$, posons $(U, \varphi, v) \sim (V, \psi, w)$ si $w = d(\psi \circ \varphi^{-1})(\varphi(p))\,v$. L'[[espace-tangent]] $T_pM$ est l'[[ensemble-quotient]], et pour chaque carte on note $\theta_\varphi : \mathbb R^n \to T_pM$ l'application qui envoie $v$ sur la classe de $(U, \varphi, v)$. Un vecteur tangent est un vecteur de $\mathbb R^n$ défini à changement de carte près.
+    enonce: |
+      (i) $\sim$ est une relation d'équivalence ; chaque $\theta_\varphi$ est bijective, et il existe une unique structure d'espace vectoriel sur $T_pM$ qui fasse de toutes les $\theta_\varphi$ des isomorphismes. $T_pM$ est de dimension $n$.
+
+      (ii) Si $f : M \to N$ est lisse, l'application $T_pf : T_pM \to T_{f(p)}N$ qui envoie $\theta_\varphi(v)$ sur $\theta_\psi\big(d(\psi \circ f \circ \varphi^{-1})(\varphi(p))v\big)$ est bien définie et linéaire, et $T_p(g \circ f) = T_{f(p)}g \circ T_pf$. Par suite, si $f$ est un difféomorphisme, $T_pf$ est un isomorphisme, et deux ouverts difféomorphes de $\mathbb R^m$ et de $\mathbb R^n$ vérifient $m = n$.
+
+      (iii) Si $M$ est une sous-variété de dimension $d$ de $\mathbb R^n$, l'application $\theta_\varphi(v) \mapsto d(\varphi^{-1})(\varphi(p))v$ est un isomorphisme de $T_pM$ sur l'espace tangent géométrique du nœud {{gd-tangent-sm|Tangent à une sous-variété}}.
+    preuve: |
+      (i) Réflexivité : le changement de carte est l'identité. Symétrie : $\varphi \circ \psi^{-1}$ est la réciproque de $\psi \circ \varphi^{-1}$, et la règle de la chaîne donne $d(\varphi \circ \psi^{-1})(\psi(p)) = d(\psi \circ \varphi^{-1})(\varphi(p))^{-1}$. Transitivité : la règle de la chaîne appliquée à $\chi \circ \varphi^{-1} = (\chi \circ \psi^{-1}) \circ (\psi \circ \varphi^{-1})$. L'application $\theta_\varphi$ est injective, puisque deux triplets de même carte ne sont équivalents que si les vecteurs sont égaux, et surjective, puisque $(V, \psi, w) \sim \big(U, \varphi, d(\varphi \circ \psi^{-1})(\psi(p))w\big)$. On transporte la structure de $\mathbb R^n$ par $\theta_\varphi$ ; elle ne dépend pas de la carte, car $\theta_\psi^{-1} \circ \theta_\varphi = d(\psi \circ \varphi^{-1})(\varphi(p))$ est linéaire.
+
+      (ii) Remplacer $\varphi$ et $\psi$ par d'autres cartes multiplie l'expression, à droite et à gauche, par les différentielles des changements de carte ; la règle de la chaîne montre que le résultat définit le même élément de $T_{f(p)}N$. La linéarité se lit dans les cartes, et la formule de composition découle encore de la règle de la chaîne. Si $f$ a pour réciproque lisse $g$, alors $T_pf$ et $T_{f(p)}g$ sont réciproques l'une de l'autre, puisque $T_p\,\mathrm{id} = \mathrm{id}$ ; les dimensions sont donc égales, et celle de $T_p$ d'un ouvert de $\mathbb R^m$ est $m$.
+
+      (iii) Avec $\varphi^{-1}(z) = \Phi^{-1}(z, 0)$, $d(\varphi^{-1})(\varphi(p))v = d\Phi(p)^{-1}(v, 0)$ : l'application $\mathbb R^d \to \mathbb R^n$ ainsi définie est injective, d'image $d\Phi(p)^{-1}(\mathbb R^d \times \{0\}) = T_pM$. Elle ne dépend pas de la carte, car $\varphi^{-1} = \varphi'^{-1} \circ (\varphi' \circ \varphi^{-1})$ donne $d(\varphi^{-1})(\varphi(p)) = d(\varphi'^{-1})(\varphi'(p)) \circ d(\varphi' \circ \varphi^{-1})(\varphi(p))$, ce qui est exactement la relation $\sim$.
+    remarques:
+      - |
+        L'invariance de la dimension par difféomorphisme, obtenue ici en une ligne grâce à la différentielle, a un analogue topologique beaucoup plus difficile : un ouvert de $\mathbb R^m$ n'est homéomorphe à un ouvert de $\mathbb R^n$ que si $m = n$. C'est le théorème d'invariance du domaine de Brouwer (1911), admis ici ; sa démonstration demande la topologie algébrique.
+      - |
+        D'autres définitions de $T_pM$ sont en usage : classes de courbes passant par $p$, ou dérivations de l'anneau des germes de fonctions lisses en $p$. Elles sont équivalentes à celle-ci, mais l'équivalence avec les dérivations demande des fonctions plateau, que l'atlas ne construit pas encore.
+
+  - id: gd-fibre-tangent
+    etiquette: Fibré tangent
+    nature: théorème
+    titre: Fibré tangent et champs de vecteurs
+    texte: |
+      Le [[fibre-tangent|fibré tangent]] d'une variété $M$ de dimension $n$ est l'ensemble $TM = \{(p, \xi) : p \in M,\ \xi \in T_pM\}$, avec la projection $\pi(p, \xi) = p$. Pour une carte $(U, \varphi)$, on note $T\varphi : \pi^{-1}(U) \to \varphi(U) \times \mathbb R^n$ la bijection $(p, \xi) \mapsto \big(\varphi(p), \theta_\varphi^{-1}(\xi)\big)$. Un [[champ-vecteurs|champ de vecteurs]] est une application lisse $X : M \to TM$ telle que $\pi \circ X = \mathrm{id}_M$.
+    choix: |
+      Pour montrer que $TM$ a une base au plus dénombrable, on choisit une carte pour chacun des ouverts d'une base dénombrable de $M$ : c'est un usage du [[choix-denombrable]]. Le reste de la construction n'utilise aucun choix.
+    enonce: |
+      Il existe une unique topologie sur $TM$ pour laquelle chaque $\pi^{-1}(U)$ est ouvert et chaque $T\varphi$ est un homéomorphisme sur l'ouvert $\varphi(U) \times \mathbb R^n$ de $\mathbb R^{2n}$, pour toutes les cartes $(U, \varphi)$ de $M$. Muni des cartes $(\pi^{-1}(U), T\varphi)$, $TM$ est une variété de dimension $2n$, et $\pi$ est lisse.
+    preuve: |
+      *Changements de carte.* Pour deux cartes, $\tau = \psi \circ \varphi^{-1}$, et $(z, v) \in \varphi(U \cap V) \times \mathbb R^n$,
+      $$T\psi \circ T\varphi^{-1}(z, v) = \big(\tau(z),\ d\tau(z)v\big),$$
+      puisque $\theta_\psi^{-1} \circ \theta_\varphi = d\tau(\varphi(p))$. C'est une application $C^\infty$ : $z \mapsto d\tau(z)$ est $C^\infty$, et l'évaluation $(A, v) \mapsto Av$ est bilinéaire. Il en va de même de sa réciproque, obtenue en échangeant les cartes.
+
+      *Topologie.* Soit $\mathcal B$ l'ensemble des parties $T\varphi^{-1}(O)$, où $(U, \varphi)$ est une carte et $O$ un ouvert de $\varphi(U) \times \mathbb R^n$. Elles recouvrent $TM$. Notons $\tilde\tau = T\psi \circ T\varphi^{-1}$, continue sur l'ouvert $\varphi(U \cap V) \times \mathbb R^n$. Alors
+      $$T\varphi^{-1}(O) \cap T\psi^{-1}(O') = T\varphi^{-1}\big(O \cap \tilde\tau^{-1}(O')\big),$$
+      et $O \cap \tilde\tau^{-1}(O')$ est ouvert. Donc $\mathcal B$ est la base d'une topologie, et le même calcul montre que les ouverts de cette topologie contenus dans $\pi^{-1}(U)$ sont exactement les $T\varphi^{-1}(O)$ : $T\varphi$ est un homéomorphisme. Toute topologie ayant les propriétés annoncées contient $\mathcal B$, et chacun de ses ouverts est réunion de ses traces sur les $\pi^{-1}(U)$, qui sont dans $\mathcal B$ : elle est égale à la précédente.
+
+      *Séparation.* Si $p \neq q$, des ouverts disjoints $U'$ et $V'$ de $M$ séparant $p$ et $q$ donnent les ouverts disjoints $\pi^{-1}(U')$ et $\pi^{-1}(V')$. Si $p = q$, les deux points sont dans un même $\pi^{-1}(U)$, homéomorphe à une partie de $\mathbb R^{2n}$, qui est séparée.
+
+      *Base dénombrable.* Soit $(B_k)_{k \in J}$, avec $J \subset \mathbb N$, une base de $M$, et $K$ l'ensemble des $k$ tels que $B_k$ soit contenu dans le domaine d'une carte ; les $B_k$, $k \in K$, recouvrent $M$. Pour chaque $k \in K$, choisissons une carte $\varphi_k$ définie sur $B_k$. Les images réciproques par $T\varphi_k$ des boules rationnelles de $\mathbb R^{2n}$ contenues dans $\varphi_k(B_k) \times \mathbb R^n$ forment une base de $\pi^{-1}(B_k)$ ({{gd-denombrable|Base dénombrable de ℝⁿ}}), indexée par une partie de $K \times \mathbb Q^{2n} \times \mathbb Q$, qui s'injecte dans $\mathbb N$. Tout ouvert $O$ de $TM$ est la réunion des $O \cap \pi^{-1}(B_k)$, et chacun est réunion d'éléments de cette famille.
+
+      *Lissité de $\pi$.* Dans les cartes $T\varphi$ et $\varphi$, l'expression de $\pi$ est $(z, v) \mapsto z$, linéaire.
+    remarques:
+      - |
+        Sur le cercle $S^1 \subset \mathbb R^2$, identifions $T_{(x, y)}S^1$ à la droite orthogonale à $(x, y)$ ({{gd-tangent-sm|Tangent à une sous-variété}}). Le champ $X(x, y) = (-y, x)$ est lisse et ne s'annule nulle part. Sur $S^2$, au contraire, tout champ de vecteurs continu s'annule en au moins un point : c'est le théorème de la boule chevelue, de Poincaré et Brouwer, admis ici, dont la démonstration utilise le degré topologique, cousin du degré des lacets du nœud {{ta-cercle|Groupe fondamental du cercle}}.
+      - |
+        Le fibré tangent n'est en général pas un produit : $TS^1$ est difféomorphe à $S^1 \times \mathbb R$, grâce au champ précédent qui fournit une base de chaque espace tangent, mais $TS^2$ n'est pas difféomorphe à $S^2 \times \mathbb R^2$, sans quoi $S^2$ porterait un champ ne s'annulant pas.
+
+aretes:
+  - [gd-normes, gd-denombrable]
+  - [gd-normes, gd-equivalence]
+  - [gd-equivalence, gd-differentielle]
+  - [gd-differentielle, gd-accroissements]
+  - [gd-accroissements, gd-classe-ck]
+  - [gd-equivalence, gd-point-fixe]
+  - [gd-classe-ck, gd-gl]
+  - [gd-point-fixe, gd-inversion-locale]
+  - [gd-gl, gd-inversion-locale]
+  - [gd-inversion-locale, gd-submersions]
+  - [gd-submersions, gd-sous-varietes]
+  - [gd-sous-varietes, gd-tangent-sm]
+  - [gd-sous-varietes, gd-varietes]
+  - [gd-denombrable, gd-varietes]
+  - [gd-varietes, gd-applications-lisses]
+  - [gd-applications-lisses, gd-espace-tangent]
+  - [gd-tangent-sm, gd-espace-tangent]
+  - [gd-espace-tangent, gd-fibre-tangent]
