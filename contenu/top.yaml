@@ -1,0 +1,327 @@
+# Niveau 1 : structure interne de la topologie générale.
+# Au niveau 0, les structures topologiques ne dépendent que des relations et fonctions :
+# ce graphe n'utilise donc ni R ni les espaces métriques. Les exemples tirés de R,
+# placés dans les remarques, illustrent sans fonder.
+
+graphe: top
+titre: Structures topologiques
+conteneur: top
+
+entrees:
+  rel: [t-espace, t-continue, t-produit, t-quotient]
+
+noeuds:
+  - id: t-espace
+    etiquette: Espace topologique
+    nature: définition
+    enonce: |
+      Une **topologie** sur un ensemble $X$ est une partie $\mathcal T \subset \mathcal P(X)$ telle que :
+
+      (i) $\varnothing \in \mathcal T$ et $X \in \mathcal T$ ;
+
+      (ii) toute réunion d'éléments de $\mathcal T$ appartient à $\mathcal T$ ;
+
+      (iii) l'intersection de deux éléments de $\mathcal T$ appartient à $\mathcal T$.
+
+      Le couple $(X, \mathcal T)$ est un [[espace-topologique]]. Les éléments de $\mathcal T$ sont les [[ouvert|ouverts]], et leurs complémentaires les [[ferme|fermés]].
+    remarques:
+      - |
+        Par récurrence, (iii) donne la stabilité par intersection **finie**. Une intersection infinie d'ouverts n'est pas ouverte en général : dans $\mathbb R$, $\bigcap_{n \geqslant 1} \,]-\frac1n, \frac1n[\, = \{0\}$. Par passage au complémentaire, les fermés sont stables par intersection quelconque et par réunion finie.
+      - |
+        Deux topologies extrêmes existent sur tout ensemble : la topologie **grossière** $\{\varnothing, X\}$ et la [[topologie-discrete]] $\mathcal P(X)$. L'erreur la plus répandue est de croire qu'une partie est soit ouverte, soit fermée : dans la topologie discrète, toute partie est les deux, et dans $\mathbb R$, l'intervalle $[0, 1[$ n'est ni l'un ni l'autre.
+
+  - id: t-voisinages
+    etiquette: Voisinages
+    nature: proposition
+    titre: Ouverts et voisinages
+    enonce: |
+      Une partie $V$ est un [[voisinage]] de $x$ si elle contient un ouvert contenant $x$. Une partie $U$ de $X$ est ouverte si et seulement si elle est voisinage de chacun de ses points.
+    preuve: |
+      Si $U$ est ouvert, il est voisinage de chacun de ses points, puisqu'il se contient lui-même.
+
+      Réciproquement, supposons $U$ voisinage de chacun de ses points, et posons
+      $$W = \bigcup \{O \in \mathcal T : O \subset U\}.$$
+      C'est un ouvert, comme réunion d'ouverts, et $W \subset U$. Tout $x \in U$ appartient à un ouvert inclus dans $U$, donc à $W$. Ainsi $U = W$ est ouvert.
+    remarques:
+      - |
+        On aurait pu choisir, pour chaque $x \in U$, un ouvert $O_x$ tel que $x \in O_x \subset U$, puis écrire $U = \bigcup_x O_x$. Ce choix simultané d'une infinité d'ouverts utiliserait l'[[axiome-choix]] ; prendre la réunion de **tous** les ouverts inclus dans $U$ l'évite. Ce procédé reviendra dans tout ce graphe.
+
+  - id: t-adherence
+    etiquette: Intérieur, adhérence
+    nature: proposition
+    enonce: |
+      Soit $A \subset X$. L'[[interieur]] $\mathring A$ est la réunion des ouverts inclus dans $A$, et l'[[adherence]] $\overline A$ l'intersection des fermés contenant $A$. Alors :
+
+      (i) $\mathring A$ est le plus grand ouvert inclus dans $A$, et $\overline A$ le plus petit fermé contenant $A$ ;
+
+      (ii) $X \setminus \overline A$ est l'intérieur de $X \setminus A$ ;
+
+      (iii) $x \in \overline A$ si et seulement si tout voisinage de $x$ rencontre $A$.
+    preuve: |
+
+      (i) $\mathring A$ est ouvert comme réunion d'ouverts, inclus dans $A$, et contient tout ouvert inclus dans $A$. De même, $\overline A$ est fermé comme intersection de fermés, contient $A$, et est inclus dans tout fermé contenant $A$.
+
+      (ii) Un fermé $F$ contient $A$ si et seulement si l'ouvert $X \setminus F$ est inclus dans $X \setminus A$. Par les lois de De Morgan, $X \setminus \overline A = \bigcup \{X \setminus F : F \text{ fermé}, F \supset A\}$ est donc la réunion des ouverts inclus dans $X \setminus A$.
+
+      (iii) D'après (ii), $x \notin \overline A$ équivaut à l'existence d'un ouvert $O$ tel que $x \in O \subset X \setminus A$, c'est-à-dire d'un voisinage de $x$ qui ne rencontre pas $A$.
+
+  - id: t-base
+    etiquette: Bases d'une topologie
+    nature: proposition
+    titre: Critère pour une base
+    enonce: |
+      Une [[base-topologie|base]] d'une topologie $\mathcal T$ est une partie $\mathcal B \subset \mathcal T$ telle que tout ouvert soit réunion d'éléments de $\mathcal B$. Une partie $\mathcal B \subset \mathcal P(X)$ est la base d'une topologie sur $X$ si et seulement si :
+
+      (a) $\bigcup \mathcal B = X$ ;
+
+      (b) pour tous $B_1, B_2 \in \mathcal B$ et tout $x \in B_1 \cap B_2$, il existe $B_3 \in \mathcal B$ tel que $x \in B_3 \subset B_1 \cap B_2$.
+
+      Cette topologie est alors l'ensemble $\mathcal T_{\mathcal B}$ des réunions d'éléments de $\mathcal B$.
+    preuve: |
+      Les conditions sont nécessaires : $X$ est un ouvert, donc réunion d'éléments de $\mathcal B$, et $B_1 \cap B_2$ est un ouvert, donc réunion d'éléments de $\mathcal B$, dont l'un contient $x$.
+
+      Réciproquement, $\mathcal T_{\mathcal B}$ contient $\varnothing$ (réunion vide) et $X$ par (a), et il est stable par réunion. Pour l'intersection, soit $U = \bigcup_i B_i$ et $V = \bigcup_j C_j$ ; alors $U \cap V = \bigcup_{i,j} (B_i \cap C_j)$. Par (b), chaque $B_i \cap C_j$ est la réunion de tous les éléments de $\mathcal B$ qu'il contient, donc appartient à $\mathcal T_{\mathcal B}$, et $U \cap V$ aussi.
+
+  - id: t-continue
+    etiquette: Applications continues
+    nature: proposition
+    titre: Continuité
+    enonce: |
+      Une application $f : X \to Y$ est **continue** si l'image réciproque de tout ouvert de $Y$ est un ouvert de $X$. Elle est **continue en $a$** si l'image réciproque de tout voisinage de $f(a)$ est un voisinage de $a$. Alors :
+
+      (i) $f$ est continue si et seulement si l'image réciproque de tout fermé est fermée ;
+
+      (ii) $f$ est continue si et seulement si elle est continue en tout point ;
+
+      (iii) la composée de deux applications continues est continue ;
+
+      (iv) si $\mathcal B$ est une base de $Y$, il suffit que $f^{-1}(B)$ soit ouvert pour tout $B \in \mathcal B$.
+    preuve: |
+
+      (i) résulte de $f^{-1}(Y \setminus F) = X \setminus f^{-1}(F)$, et (iii) de $(g \circ f)^{-1}(W) = f^{-1}(g^{-1}(W))$.
+
+      (ii) Si $f$ est continue et $W$ un voisinage de $f(a)$, il contient un ouvert $V \ni f(a)$, et $f^{-1}(V)$ est un ouvert contenant $a$ et inclus dans $f^{-1}(W)$. Réciproquement, si $f$ est continue en tout point et $V$ est ouvert, alors $V$ est voisinage de $f(a)$ pour tout $a \in f^{-1}(V)$, donc $f^{-1}(V)$ est voisinage de chacun de ses points : il est ouvert d'après la proposition sur les voisinages.
+
+      (iv) Tout ouvert $V$ de $Y$ est une réunion $\bigcup_i B_i$, et $f^{-1}(V) = \bigcup_i f^{-1}(B_i)$ est ouvert.
+    remarques:
+      - |
+        Pour des espaces métriques, la continuité en un point équivaut à la définition par $\varepsilon$ et $\delta$, celle du chapitre {{c-point|Continuité}} de l'analyse réelle : les boules ouvertes centrées en $f(a)$ forment une famille de voisinages assez petits.
+
+  - id: t-homeo
+    etiquette: Homéomorphismes
+    nature: définition
+    enonce: |
+      Un [[homeomorphisme]] est une bijection continue $f : X \to Y$ dont la réciproque est continue. Deux espaces sont **homéomorphes** s'il existe un homéomorphisme de l'un sur l'autre ; les propriétés qu'ils partagent alors sont dites **topologiques**.
+    remarques:
+      - |
+        Une bijection continue n'est pas toujours un homéomorphisme. Si $X$ a au moins deux points, l'identité de $X$ muni de la topologie discrète vers $X$ muni de la topologie grossière est continue et bijective. Sa réciproque, l'identité de $X$ grossier vers $X$ discret, n'est pas continue : l'image réciproque de l'ouvert $\{x\}$ est $\{x\}$, qui n'est pas ouvert pour la topologie grossière.
+      - |
+        Le théorème sur les {{t-bij-compact|bijections continues entre compacts}} donne une condition simple pour que le cas favorable se produise.
+
+  - id: t-induite
+    etiquette: Topologie induite
+    nature: proposition
+    enonce: |
+      Soit $A \subset X$. La [[topologie-induite]] sur $A$ est $\mathcal T_A = \{O \cap A : O \in \mathcal T\}$. C'est une topologie, l'inclusion $i : A \to X$ est continue, et pour tout espace $Z$, une application $g : Z \to A$ est continue si et seulement si $i \circ g : Z \to X$ l'est.
+    preuve: |
+      Les réunions et les intersections commutent avec l'intersection par $A$, donc $\mathcal T_A$ est une topologie. On a $i^{-1}(O) = O \cap A$, d'où la continuité de $i$. Enfin $(i \circ g)^{-1}(O) = g^{-1}(O \cap A)$ pour tout ouvert $O$ de $X$ ; comme tout ouvert de $A$ est de la forme $O \cap A$, les deux continuités sont équivalentes.
+    remarques:
+      - |
+        Un ouvert de $A$ n'est pas nécessairement ouvert dans $X$ : dans $\mathbb R$, la partie $[0, \frac12[$ est ouverte dans $[0, 1]$ sans être ouverte dans $\mathbb R$. Dire « ouvert » sans préciser l'espace est la source d'erreur la plus fréquente de ce chapitre.
+
+  - id: t-produit
+    etiquette: Topologie produit
+    nature: proposition
+    enonce: |
+      Soit $(X_i)_{i \in I}$ une famille d'espaces topologiques et $X = \prod_{i \in I} X_i$, de projections $p_i$. Les **cylindres ouverts** $\prod_i U_i$, où chaque $U_i$ est ouvert dans $X_i$ et $U_i = X_i$ sauf pour un nombre fini d'indices, forment la base d'une topologie, la [[topologie-produit]]. Les projections sont continues, et une application $f : Z \to X$ est continue si et seulement si toutes les $p_i \circ f$ le sont.
+    preuve: |
+      Les cylindres ouverts vérifient le critère des bases : $X$ est lui-même un cylindre, et l'intersection de deux cylindres est un cylindre, puisque la réunion de deux parties finies de $I$ est finie.
+
+      Pour $U$ ouvert dans $X_j$, $p_j^{-1}(U)$ est le cylindre de facteur $U$ en $j$ et $X_i$ ailleurs : $p_j$ est continue. Si $f$ est continue, les $p_i \circ f$ le sont par composition. Réciproquement, pour un cylindre $\prod_i U_i$ avec $U_i = X_i$ hors d'une partie finie $J$,
+      $$f^{-1}\Big(\prod_i U_i\Big) = \bigcap_{j \in J} (p_j \circ f)^{-1}(U_j),$$
+      intersection finie d'ouverts ; on conclut par le point (iv) de la proposition sur la continuité.
+    remarques:
+      - |
+        La restriction à un nombre fini de facteurs différents de $X_i$ est ce qui rend vraie la propriété universelle. Les produits $\prod_i U_i$ quelconques forment la base d'une autre topologie, dite des boîtes, plus fine, pour laquelle elle échoue en général.
+      - |
+        L'ensemble $\prod_i X_i$ peut être vide alors que chaque $X_i$ est non vide : affirmer le contraire est exactement l'[[axiome-choix]].
+
+  - id: t-quotient
+    etiquette: Topologie quotient
+    nature: proposition
+    enonce: |
+      Soit $\sim$ une [[relation-equivalence]] sur $X$ et $\pi : X \to X/\!\sim$ la projection. La [[topologie-quotient]] est formée des parties $V$ de $X/\!\sim$ telles que $\pi^{-1}(V)$ soit ouvert dans $X$. C'est une topologie, $\pi$ est continue, et une application $f : X/\!\sim \ \to Y$ est continue si et seulement si $f \circ \pi$ l'est.
+    preuve: |
+      L'image réciproque par $\pi$ commute aux réunions et aux intersections, ce qui donne les axiomes d'une topologie, et la continuité de $\pi$ est la définition même. Enfin $(f \circ \pi)^{-1}(W) = \pi^{-1}(f^{-1}(W))$, qui est ouvert dans $X$ si et seulement si $f^{-1}(W)$ est ouvert dans le quotient.
+    remarques:
+      - |
+        C'est la topologie des recollements : tore, ruban de Möbius, espaces projectifs. Elle peut être très pauvre : le quotient de $\mathbb R$ par la relation $x - y \in \mathbb Q$ porte la topologie grossière, car tout ouvert non vide de $\mathbb R$ saturé pour cette relation est $\mathbb R$ tout entier.
+
+  - id: t-separe
+    etiquette: Espaces séparés
+    nature: proposition
+    enonce: |
+      Un espace est [[separe]] si deux points distincts ont des voisinages disjoints. Alors :
+
+      (i) dans un espace séparé, les singletons sont fermés ;
+
+      (ii) $X$ est séparé si et seulement si la diagonale $\Delta = \{(x,x) : x \in X\}$ est fermée dans $X \times X$ ;
+
+      (iii) toute partie d'un espace séparé, munie de la topologie induite, est séparée.
+    preuve: |
+
+      (i) Soit $x \in X$. Tout $y \neq x$ appartient à un ouvert qui ne contient pas $x$, donc $X \setminus \{x\}$ est la réunion de tous les ouverts qui ne contiennent pas $x$ : il est ouvert.
+
+      (ii) Si $X$ est séparé et $x \neq y$, il existe des ouverts disjoints $U \ni x$ et $V \ni y$ ; le cylindre $U \times V$ contient $(x,y)$ et ne rencontre pas $\Delta$. Le complémentaire de $\Delta$ est donc la réunion des cylindres qui ne rencontrent pas $\Delta$ : il est ouvert. Réciproquement, si ce complémentaire est ouvert et $x \neq y$, il contient un cylindre $U \times V \ni (x,y)$ ; ne pas rencontrer $\Delta$ signifie exactement $U \cap V = \varnothing$.
+
+      (iii) Si $U$ et $V$ séparent $x$ et $y$ dans $X$, alors $U \cap A$ et $V \cap A$ les séparent dans $A$.
+    remarques:
+      - |
+        Dans un espace séparé, une suite a au plus une limite. Sans séparation, une suite peut converger vers tous les points : c'est le cas de n'importe quelle suite pour la topologie grossière.
+
+  - id: t-compact
+    etiquette: Compacité
+    nature: définition
+    enonce: |
+      Un espace $X$ est [[compact]] s'il est séparé et si de tout [[recouvrement]] de $X$ par des ouverts on peut extraire un recouvrement fini. Une partie est compacte si elle l'est pour la topologie induite.
+
+      De façon équivalente, en passant aux complémentaires : $X$ est séparé, et toute famille de fermés dont les intersections finies sont non vides a une intersection non vide.
+    remarques:
+      - |
+        La convention française inclut la séparation dans la définition ; sans elle, on parle d'espace **quasi-compact**. Les ouvrages anglo-saxons appellent *compact* ce que l'on nomme ici quasi-compact : il faut vérifier la convention avant d'importer un énoncé.
+
+  - id: t-compact-prop
+    etiquette: Parties compactes
+    nature: proposition
+    titre: Compacts, fermés et images
+    enonce: |
+
+      (i) Toute partie fermée d'un espace compact est compacte.
+
+      (ii) Toute partie compacte d'un espace séparé est fermée.
+
+      (iii) Si $K$ est compact, $Y$ séparé et $f : K \to Y$ continue, alors $f(K)$ est compact.
+    preuve: |
+
+      (i) Soit $F$ fermé dans le compact $K$, séparé comme partie d'un séparé. Soit $\mathcal C$ un recouvrement de $F$ par des ouverts de $F$, et $\mathcal D$ l'ensemble des ouverts $O$ de $K$ tels que $O \cap F \in \mathcal C$. Les éléments de $\mathcal D$ et l'ouvert $K \setminus F$ recouvrent $K$ ; on en extrait un recouvrement fini, et les traces sur $F$ de ses éléments pris dans $\mathcal D$ forment un sous-recouvrement fini de $\mathcal C$.
+
+      (ii) Soit $A$ compact dans le séparé $X$, et $x \notin A$. Soit $\mathcal U$ l'ensemble des ouverts $U$ de $X$ pour lesquels il existe un ouvert $V \ni x$ disjoint de $U$. Par séparation, leurs traces recouvrent $A$ ; on en extrait $U_1, \dots, U_n$, et l'on choisit des ouverts associés $V_1, \dots, V_n$, ce qui ne demande qu'un nombre fini de choix. L'ouvert $V = \bigcap_k V_k$ contient $x$ et ne rencontre pas $\bigcup_k U_k \supset A$. Ainsi $X \setminus A$ est voisinage de chacun de ses points : il est ouvert.
+
+      (iii) $f(K)$ est séparé comme partie de $Y$. Soit un recouvrement de $f(K)$ par des ouverts de $f(K)$, et $\mathcal W$ l'ensemble des ouverts $W$ de $Y$ dont la trace sur $f(K)$ appartient à ce recouvrement. Les $f^{-1}(W)$, pour $W \in \mathcal W$, recouvrent $K$ ; un nombre fini suffit, et les traces correspondantes recouvrent $f(K)$.
+    remarques:
+      - |
+        Le point (ii) est faux sans séparation : pour la topologie grossière sur un ensemble à deux points, un singleton est quasi-compact, comme toute partie finie, mais n'est pas fermé.
+
+  - id: t-bij-compact
+    etiquette: Bijection d'un compact
+    nature: corollaire
+    titre: Bijections continues entre compacts
+    enonce: |
+      Soit $K$ compact, $Y$ séparé et $f : K \to Y$ une bijection continue. Alors $f$ est un homéomorphisme.
+    preuve: |
+      Montrons que $f^{-1}$ est continue, c'est-à-dire que l'image réciproque par $f^{-1}$ de tout fermé $F$ de $K$, qui est $f(F)$, est fermée dans $Y$. Or $F$ est compact par le point (i), $f(F)$ est compact par le point (iii), donc fermé dans le séparé $Y$ par le point (ii).
+    remarques:
+      - |
+        C'est ainsi que l'on prouve que le segment $[0, 1]$ dont on identifie les extrémités est homéomorphe au cercle : l'application induite par $t \mapsto e^{2i\pi t}$ est une bijection continue du quotient, compact, sur le cercle, séparé.
+
+  - id: t-produit-fini
+    etiquette: Produit fini de compacts
+    nature: théorème
+    titre: Le produit de deux compacts est compact
+    enonce: |
+      Si $K$ et $L$ sont compacts, $K \times L$ est compact. Par récurrence, tout produit fini d'espaces compacts est compact.
+    preuve: |
+      $K \times L$ est séparé : si $(x,y) \neq (x',y')$, les points diffèrent par une coordonnée, disons $x \neq x'$, et des ouverts disjoints $U \ni x$, $U' \ni x'$ donnent les ouverts disjoints $U \times L$ et $U' \times L$.
+
+      Soit $\mathcal C$ un recouvrement ouvert de $K \times L$, et $\mathcal B$ l'ensemble des cylindres $U \times V$ inclus dans un élément de $\mathcal C$. Ils recouvrent $K \times L$, et il suffit d'en extraire un recouvrement fini, chacun étant inclus dans un élément de $\mathcal C$.
+
+      **Lemme du tube.** Pour $x \in K$, il existe un ouvert $U \ni x$ tel que $U \times L$ soit recouvert par un nombre fini d'éléments de $\mathcal B$. En effet, les ouverts $V$ tels qu'il existe $U \times V \in \mathcal B$ avec $x \in U$ recouvrent $L$ ; on en extrait $V_1, \dots, V_n$, associés à $U_1, \dots, U_n$, et $U = \bigcap_k U_k$ convient.
+
+      Soit $\mathcal T$ l'ensemble des ouverts $U$ de $K$ tels que $U \times L$ soit recouvert par un nombre fini d'éléments de $\mathcal B$. Par le lemme, $\mathcal T$ recouvre $K$ ; on en extrait $U^1, \dots, U^m$, et la réunion des recouvrements finis des $U^j \times L$ recouvre $K \times L$.
+    remarques:
+      - |
+        Le lemme du tube est le cœur de l'argument. La démonstration ne fait qu'un nombre fini de choix, et vaut donc dans $\mathsf{ZF}$ sans aucune forme de l'axiome du choix.
+
+  - id: t-tychonov
+    etiquette: Théorème de Tychonov
+    nature: théorème
+    choix: |
+      Pour des espaces séparés, comme dans la convention adoptée ici, l'énoncé équivaut au lemme de l'ultrafiltre. Pour des espaces seulement quasi-compacts, il équivaut à l'[[axiome-choix]] (Kelley, 1950).
+    enonce: |
+      Tout produit d'une famille quelconque d'espaces compacts, muni de la topologie produit, est compact.
+    preuve: |
+      *Admis ici.* La démonstration usuelle passe par les [[ultrafiltre|ultrafiltres]] : un espace séparé est compact si et seulement si tout ultrafiltre sur cet espace converge. Un ultrafiltre sur le produit a pour image, par chaque projection, un ultrafiltre sur le facteur correspondant, qui converge vers un point unique puisque le facteur est séparé. Le point du produit formé de ces limites est une limite de l'ultrafiltre initial, par la définition des cylindres. La difficulté contournée est la caractérisation de la compacité par les ultrafiltres, qui demande elle-même le lemme de l'ultrafiltre.
+    remarques:
+      - |
+        Pour un produit fini, le lemme du tube suffit et aucun choix n'intervient : c'est le passage à une infinité de facteurs qui coûte une forme de l'axiome du choix.
+
+  - id: t-connexe
+    etiquette: Connexité
+    nature: proposition
+    titre: Caractérisations de la connexité
+    enonce: |
+      Un espace $X$ est [[connexe]] s'il n'est pas réunion de deux ouverts disjoints non vides. Il y a équivalence entre :
+
+      (a) $X$ est connexe ;
+
+      (b) les seules parties de $X$ à la fois ouvertes et fermées sont $\varnothing$ et $X$ ;
+
+      (c) toute application continue de $X$ dans $\{0, 1\}$, muni de la [[topologie-discrete]], est constante.
+    preuve: |
+
+      (a) ⇔ (b). Si $U$ est ouvert et fermé, distinct de $\varnothing$ et de $X$, alors $U$ et $X \setminus U$ sont deux ouverts disjoints non vides de réunion $X$. Réciproquement, si $X = U \cup V$ avec $U, V$ ouverts disjoints non vides, alors $U = X \setminus V$ est aussi fermé.
+
+      (b) ⇔ (c). Si $f : X \to \{0,1\}$ est continue, $f^{-1}(\{0\})$ est ouvert et fermé, donc vide ou égal à $X$ : $f$ est constante. Réciproquement, si $U$ est ouvert et fermé, sa fonction indicatrice est continue, les images réciproques des quatre parties de $\{0,1\}$ étant $\varnothing$, $X \setminus U$, $U$ et $X$ ; elle est constante, donc $U = \varnothing$ ou $U = X$.
+    remarques:
+      - |
+        Avec cette définition, l'ensemble vide est connexe. Certains ouvrages l'excluent ; la convention n'a d'incidence que sur l'énoncé de quelques résultats.
+
+  - id: t-connexe-prop
+    etiquette: Stabilité de la connexité
+    nature: proposition
+    titre: Images, réunions et adhérences de connexes
+    enonce: |
+
+      (i) L'image d'un connexe par une application continue est connexe.
+
+      (ii) La réunion d'une famille de parties connexes ayant un point commun est connexe.
+
+      (iii) Si $A$ est connexe et $A \subset B \subset \overline A$, alors $B$ est connexe ; en particulier l'[[adherence]] d'un connexe est connexe.
+    preuve: |
+      On utilise la caractérisation (c) et la topologie induite.
+
+      (i) Soit $f : X \to Y$ continue, $X$ connexe, et $g : f(X) \to \{0,1\}$ continue. L'application $g \circ f$ est continue sur $X$, donc constante, et $g$ l'est sur $f(X)$.
+
+      (ii) Soit $(A_i)$ des connexes contenant tous le point $p$, et $g$ continue de leur réunion dans $\{0,1\}$. Sa restriction à chaque $A_i$ est continue, donc constante, égale à $g(p)$ : $g$ est constante.
+
+      (iii) Soit $g : B \to \{0,1\}$ continue. Sa restriction à $A$ est constante, égale à $c$. Si $g(b) = 1 - c$ pour un $b \in B$, l'ensemble $g^{-1}(\{1-c\})$ est un ouvert de $B$ contenant $b$, de la forme $O \cap B$ avec $O$ ouvert dans $X$. Comme $b \in \overline A$, l'ouvert $O$ rencontre $A$ en un point $a$, qui appartient à $O \cap B$ ; alors $g(a) = 1 - c$, ce qui contredit $g(a) = c$.
+    remarques:
+      - |
+        Le point (i), joint au fait que les parties connexes de $\mathbb R$ sont les intervalles, redonne le théorème des valeurs intermédiaires du chapitre {{c-tvi|Continuité}} : c'est sa forme topologique.
+
+aretes:
+  - [t-espace, t-voisinages]
+  - [t-voisinages, t-adherence]
+  - [t-espace, t-base]
+  - [t-voisinages, t-continue]
+  - [t-base, t-continue]
+  - [t-continue, t-homeo]
+  - [t-continue, t-induite]
+  - [t-base, t-produit]
+  - [t-continue, t-produit]
+  - [t-continue, t-quotient]
+  - [t-voisinages, t-separe]
+  - [t-produit, t-separe]
+  - [t-induite, t-separe]
+  - [t-separe, t-compact]
+  - [t-compact, t-compact-prop]
+  - [t-continue, t-compact-prop]
+  - [t-compact-prop, t-bij-compact]
+  - [t-homeo, t-bij-compact]
+  - [t-compact, t-produit-fini]
+  - [t-produit, t-produit-fini]
+  - [t-produit-fini, t-tychonov]
+  - [t-continue, t-connexe]
+  - [t-induite, t-connexe]
+  - [t-connexe, t-connexe-prop]
+  - [t-adherence, t-connexe-prop]

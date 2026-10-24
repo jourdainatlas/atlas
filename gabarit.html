@@ -119,15 +119,29 @@ button { font: inherit; color: inherit; }
 .pastille { width: 12px; height: 12px; border-radius: 3px; border: 2px solid var(--c); background: color-mix(in srgb, var(--c) 14%, var(--noeud)); }
 
 /* ---------------------------------------------------------------- zones */
-.corps { display: grid; grid-template-columns: minmax(0, 1fr) minmax(340px, 440px); min-height: 0; }
-.cadre { position: relative; min-width: 0; min-height: 0; border-right: 1px solid var(--filet); }
+.corps {
+  display: grid; min-height: 0;
+  grid-template-columns: minmax(0, 1fr) 9px var(--largeur-panneau, clamp(440px, 42vw, 820px));
+}
+.cadre { position: relative; min-width: 0; min-height: 0; }
+.separateur {
+  position: relative; cursor: col-resize; background: var(--surface); touch-action: none;
+  border-left: 1px solid var(--filet); border-right: 1px solid var(--filet);
+}
+.separateur::after {
+  content: ""; position: absolute; left: 50%; top: 50%; width: 3px; height: 36px; border-radius: 2px;
+  transform: translate(-50%, -50%); background: var(--encre-3); opacity: .45; transition: opacity .15s, height .15s;
+}
+.separateur:hover::after, .separateur:focus-visible::after, .separateur.actif::after { opacity: 1; height: 56px; }
+body.redim { cursor: col-resize; user-select: none; }
+body.redim .vue { pointer-events: none; }
 .vue {
   position: absolute; inset: 0; overflow: auto;
   background-color: var(--papier);
   background-image: radial-gradient(var(--trame) 1px, transparent 1px);
   background-size: 18px 18px;
 }
-.dimension { position: relative; margin: 0 auto; }
+.dimension { position: relative; margin: 0 auto 64px; }  /* marge : les commandes ne masquent pas la dernière rangée */
 .plan { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
 .plan svg { position: absolute; left: 0; top: 0; overflow: visible; }
 
@@ -218,7 +232,7 @@ button { font: inherit; color: inherit; }
 .onglets button[aria-selected="true"] { color: var(--encre); border-bottom-color: var(--rouge); font-weight: 500; }
 .onglet { padding: 20px 24px 40px; }
 
-.fiche { font-family: var(--f-texte); font-size: 17px; line-height: 1.55; }
+.fiche { font-family: var(--f-texte); font-size: 17px; line-height: 1.55; max-width: 46rem; }
 .fiche p { margin: 0 0 .7em; }
 .sur-titre {
   font-family: var(--f-mono) !important; font-size: 11.5px !important; letter-spacing: .06em; text-transform: uppercase;
@@ -287,7 +301,7 @@ button { font: inherit; color: inherit; }
 
 /* lexique */
 .recherche { width: 100%; box-sizing: border-box; padding: 8px 12px; border: 1px solid var(--filet); border-radius: 6px; background: var(--papier); color: var(--encre); font: inherit; font-size: 14px; margin-bottom: 16px; }
-.lexique { display: block; min-width: 0; }
+.lexique { display: block; min-width: 0; max-width: 46rem; }
 .onglet { min-width: 0; overflow-wrap: break-word; }
 .entree-lex { padding: 12px 0; border-bottom: 1px solid var(--filet); font-family: var(--f-texte); font-size: 16px; scroll-margin-top: 60px; border-radius: 4px; transition: background .6s; }
 .entree-lex h3 { font-family: var(--f-titre); font-size: 18px; font-weight: 600; margin: 0 0 4px; color: var(--rouge); }
@@ -310,6 +324,7 @@ button { font: inherit; color: inherit; }
 @media (max-width: 860px) {
   .app { height: auto; display: block; }
   .corps { display: block; }
+  .separateur { display: none; }
   .cadre { height: 64vh; border-right: 0; border-bottom: 1px solid var(--filet); }
   .panneau { overflow: visible; }
   .onglet { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
@@ -376,6 +391,8 @@ button { font: inherit; color: inherit; }
         <button type="button" id="ajuster" title="Ajuster à la largeur">Ajuster</button>
       </div>
     </section>
+
+    <div class="separateur" id="separateur" role="separator" aria-orientation="vertical" aria-label="Largeur du panneau de lecture" tabindex="0" title="Glisser pour élargir ou réduire ; double-clic pour revenir à la largeur par défaut"></div>
 
     <aside class="panneau" id="panneau">
       <div class="onglets" role="tablist">
@@ -599,12 +616,12 @@ function accueil() {
   const g = D.graphes[D.racine];
   const nTheo = g.noeuds.length;
   return `<article class="fiche">
-    <p class="sur-titre"><span class="sorte">Prototype</span><span>${nTheo} théories</span><span>${Object.keys(D.lexique).length} termes</span></p>
+    <p class="sur-titre"><span class="sorte">Accueil</span><span>${nTheo} théories</span><span>${Object.keys(D.lexique).length} termes</span></p>
     <h2>L'édifice, de la logique aux grandes théories</h2>
     <p>Chaque bulle est une théorie, et chaque flèche va d'une notion vers celle dont la définition l'utilise. Le graphe se lit de bas en haut : le <em>rang</em> d'une théorie est la longueur du plus long chemin qui la relie à la logique.</p>
     <p>Seules les dépendances immédiates sont tracées. Une flèche absente ne signifie pas qu'une théorie est indépendante d'une autre, mais que le lien passe par un intermédiaire.</p>
     <div class="enonce" style="--c: var(--encre)"><span class="tete">Utilisation</span>
-      <p>Cliquez une bulle pour lire sa fiche. Les bulles marquées d'un coin carré contiennent un graphe : un clic l'ouvre. Trois branches sont développées dans ce prototype : les {{zf}}, la construction de {{n}}, et l'{{ar}} jusqu'au chapitre {{co}}. Chaque proposition et chaque théorème y sont démontrés.</p>
+      <p>Cliquez une bulle pour lire sa fiche. Les bulles marquées d'un coin carré contiennent un graphe : un clic l'ouvre. Quatre branches sont développées : les {{zf}}, la construction de {{n}}, les {{top}}, et l'{{ar}} jusqu'au chapitre {{co}}. Chaque proposition et chaque théorème y sont démontrés.</p>
       <p>Les termes soulignés en pointillés, comme <span class="terme" data-g="borne-superieure" tabindex="0" role="button">borne supérieure</span>, affichent leur définition au survol ; un clic les ouvre dans le lexique.</p>
     </div>
     <p>Le signe <span class="etoile">⋆</span> marque les théories dont un théorème central équivaut à l'axiome du choix ou à l'une de ses formes faibles.</p>
@@ -617,7 +634,8 @@ function accueil() {
   </article>`.replace('{{ar}}', '<a class="lien-noeud" href="#edifice.analyse-reelle" data-n="analyse-reelle">analyse réelle</a>')
            .replace('{{co}}', '<a class="lien-noeud" href="#analyse-reelle.continuite" data-n="continuite">Continuité</a>')
            .replace('{{zf}}', '<a class="lien-noeud" href="#edifice.zf" data-n="zf">axiomes de ZF</a>')
-           .replace('{{n}}', '<a class="lien-noeud" href="#edifice.n" data-n="n">ℕ</a>');
+           .replace('{{n}}', '<a class="lien-noeud" href="#edifice.n" data-n="n">ℕ</a>')
+           .replace('{{top}}', '<a class="lien-noeud" href="#edifice.top" data-n="top">structures topologiques</a>');
 }
 
 /* ------------------------------------------------------------ lexique */
@@ -728,6 +746,40 @@ $('#plus').addEventListener('click', () => { etat.echelle = Math.min(1.6, etat.e
 $('#moins').addEventListener('click', () => { etat.echelle = Math.max(0.35, etat.echelle / 1.15); appliquerEchelle(); });
 $('#ajuster').addEventListener('click', () => { etat.echelle = Math.max(0.35, Math.min(1, ($('#vue').clientWidth - 8) / D.graphes[etat.graphe].largeur)); appliquerEchelle(); });
 addEventListener('resize', () => cacherBulle(true));
+
+/* ------------------------------------------------------------ largeur du panneau */
+const CLE_LARGEUR = 'atlas-largeur-panneau';
+function fixerLargeur(px, memoriser = true) {
+  const racine = document.documentElement;
+  if (px == null) { racine.style.removeProperty('--largeur-panneau'); }
+  else {
+    const l = Math.round(Math.max(360, Math.min(px, innerWidth - 320)));
+    racine.style.setProperty('--largeur-panneau', l + 'px');
+  }
+  if (memoriser) { try { px == null ? localStorage.removeItem(CLE_LARGEUR) : localStorage.setItem(CLE_LARGEUR, String(Math.round(px))); } catch (e) {} }
+}
+try { const l = parseInt(localStorage.getItem(CLE_LARGEUR), 10); if (l) fixerLargeur(l, false); } catch (e) {}
+(() => {
+  const sep = $('#separateur');
+  sep.addEventListener('pointerdown', ev => {
+    ev.preventDefault();
+    sep.setPointerCapture(ev.pointerId);
+    sep.classList.add('actif'); document.body.classList.add('redim');
+  });
+  sep.addEventListener('pointermove', ev => {
+    if (!sep.hasPointerCapture(ev.pointerId)) return;
+    fixerLargeur(innerWidth - ev.clientX - 4);
+  });
+  const fin = ev => { sep.classList.remove('actif'); document.body.classList.remove('redim'); };
+  sep.addEventListener('pointerup', fin);
+  sep.addEventListener('pointercancel', fin);
+  sep.addEventListener('dblclick', () => fixerLargeur(null));
+  sep.addEventListener('keydown', ev => {
+    const actuel = $('#panneau').getBoundingClientRect().width;
+    if (ev.key === 'ArrowLeft') { ev.preventDefault(); fixerLargeur(actuel + 40); }
+    if (ev.key === 'ArrowRight') { ev.preventDefault(); fixerLargeur(actuel - 40); }
+  });
+})();
 
 function depuisAncre() {
   const h = decodeURIComponent(location.hash.slice(1));
