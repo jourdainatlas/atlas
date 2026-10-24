@@ -1,0 +1,247 @@
+# Niveau 1 : structure interne du nœud « Analyse de Fourier ».
+# Séries de Fourier sous forme réelle (cos, sin), l'analyse fonctionnelle de l'atlas étant
+# réelle : densité des fonctions en escalier, coefficients et Bessel, Fejér, Parseval et
+# Σ 1/n² = π²/6, Riemann-Lebesgue et Dini, divergence par Banach-Steinhaus ; transformée de
+# Fourier sur L¹(ℝ) (intégrales de fonctions complexes par parties réelle et imaginaire),
+# gaussienne, inversion, Plancherel, fonctions caractéristiques.
+# Parents : analyse fonctionnelle, analyse complexe (cos, sin, π, exp), probabilités (loi
+# normale et ∫ e^{-x²/2} = √(2π)).
+
+graphe: fourier
+titre: Analyse de Fourier
+conteneur: fourier
+
+entrees:
+  anf: [fo-densite, fo-coefficients, fo-divergence]
+  anc: [fo-coefficients, fo-transformee]
+  proba: [fo-transformee, fo-caracteristiques]
+
+noeuds:
+  - id: fo-densite
+    etiquette: Densité
+    nature: proposition
+    titre: Densité des fonctions en escalier et continuité des translations
+    texte: |
+      On munit $\mathbb R$ de la tribu borélienne et de la mesure de Lebesgue $\lambda$ ({{m-lebesgue|Mesure de Lebesgue}}). Une **fonction en escalier** est ici une combinaison linéaire finie d'indicatrices d'intervalles bornés. Pour $p \in \{1, 2\}$, $L^p$ désigne $L^p(\lambda)$ sur $\mathbb R$ ou sur un intervalle borné ({{f-lp|Espaces L¹ et L²}}).
+    enonce: |
+      (i) Pour tout borélien $A$ de mesure finie et tout $\varepsilon > 0$, il existe une réunion finie $E$ d'intervalles telle que $\lambda(A \,\triangle\, E) < \varepsilon$.
+
+      (ii) Les fonctions en escalier, et les fonctions continues nulles hors d'un segment, sont denses dans $L^1$ et dans $L^2$.
+
+      (iii) *Continuité des translations.* Pour $f \in L^p$ et $\tau_yf(x) = f(x - y)$, $\|\tau_yf - f\|_p \to 0$ quand $y \to 0$.
+    preuve: |
+      (i) Supposons d'abord $A$ contenu dans un segment $I$. Soit $\mathcal D$ l'ensemble des boréliens $A \subset I$ approchables comme annoncé. Il contient les intervalles $]a, b] \cap I$, qui forment un π-système engendrant les boréliens de $I$ ({{m-tribus|Tribus}}). Il contient $I$, est stable par différence $B \setminus A$ avec $A \subset B$, puisque $(B \setminus A) \triangle (F \setminus E) \subset (B \triangle F) \cup (A \triangle E)$, et par réunion croissante, puisque $\lambda(A \setminus A_n) \to 0$ par continuité. C'est une classe monotone ; par le lemme de Dynkin ({{m-dynkin|Classes monotones}}), elle contient tous les boréliens de $I$. Si $A$ est quelconque de mesure finie, $\lambda\big(A \setminus [-n, n]\big) \to 0$, et l'on applique ce qui précède à $A \cap [-n, n]$.
+
+      (ii) Par (i), $\|\mathbf 1_A - \mathbf 1_E\|_p^p = \lambda(A \triangle E)$ est petit. Une fonction étagée intégrable est combinaison finie d'indicatrices d'ensembles de mesure finie ; et toute $f \in L^p$ est limite dans $L^p$ de fonctions étagées, par l'approximation du nœud {{m-etagees|Fonctions étagées}} appliquée à $f^+$ et $f^-$, tronquée à $[-n, n]$, et par convergence dominée. Enfin l'indicatrice d'un intervalle $[a, b]$ est limite dans $L^p$ des fonctions continues affines par morceaux qui valent $1$ sur $[a, b]$, $0$ hors de $[a - \delta, b + \delta]$.
+
+      (iii) Pour $g$ continue nulle hors d'un segment, $g$ est uniformément continue ({{c-heine|Théorème de Heine}}), et $\|\tau_yg - g\|_p \to 0$. On écrit $\|\tau_yf - f\|_p \leqslant \|\tau_y(f - g)\|_p + \|\tau_yg - g\|_p + \|g - f\|_p$, le premier terme valant $\|f - g\|_p$ par invariance de $\lambda$ par translation.
+    remarques:
+      - |
+        La continuité des translations est fausse dans $L^\infty$ : pour $f = \mathbf 1_{[0, 1]}$, $\sup|\tau_yf - f| = 1$ pour tout $y \neq 0$. C'est la raison pour laquelle l'analyse de Fourier se fait d'abord dans $L^1$ et $L^2$.
+
+  - id: fo-coefficients
+    etiquette: Coefficients de Fourier
+    nature: proposition
+    titre: Système trigonométrique et coefficients de Fourier
+    texte: |
+      On travaille sur $[-\pi, \pi]$ avec le produit scalaire $\langle f, g \rangle = \frac1\pi\int_{-\pi}^{\pi} fg\,d\lambda$ de $L^2$. Les **coefficients de Fourier** de $f \in L^1([-\pi, \pi])$ sont $a_n(f) = \frac1\pi\int f(x)\cos(nx)\,dx$ et $b_n(f) = \frac1\pi\int f(x)\sin(nx)\,dx$, et sa **somme partielle de Fourier** est
+      $$S_Nf(x) = \frac{a_0}{2} + \sum_{n=1}^N \big(a_n\cos(nx) + b_n\sin(nx)\big).$$
+    enonce: |
+      (i) *Orthogonalité.* Pour $m, n \geqslant 0$, $\langle \cos(m\,\cdot), \cos(n\,\cdot) \rangle$ vaut $0$ si $m \neq n$, $1$ si $m = n \geqslant 1$ et $2$ si $m = n = 0$ ; $\langle \sin(m\,\cdot), \sin(n\,\cdot) \rangle$ vaut $0$ si $m \neq n$ et $1$ si $m = n \geqslant 1$ ; $\langle \cos(m\,\cdot), \sin(n\,\cdot) \rangle = 0$.
+
+      (ii) La famille $\frac{1}{\sqrt 2}, \cos x, \sin x, \cos 2x, \sin 2x, \dots$ est orthonormale, et $S_Nf$ est la projection orthogonale de $f \in L^2$ sur l'espace qu'engendrent ses $2N + 1$ premiers termes.
+
+      (iii) *Bessel.* Pour $f \in L^2$, $\frac{a_0^2}2 + \sum_{n \geqslant 1}(a_n^2 + b_n^2) \leqslant \frac1\pi\int_{-\pi}^\pi f^2$.
+    preuve: |
+      (i) Les formules $\cos a\cos b = \frac12\big(\cos(a - b) + \cos(a + b)\big)$, $\sin a\sin b = \frac12\big(\cos(a - b) - \cos(a + b)\big)$ et $\sin a\cos b = \frac12\big(\sin(a + b) + \sin(a - b)\big)$ découlent de $\exp(i(a + b)) = \exp(ia)\exp(ib)$ ({{cx-exponentielle|Exponentielle}}). Pour $k \neq 0$ entier, $\int_{-\pi}^\pi \cos(kx)\,dx = \big[\frac{\sin(kx)}{k}\big]_{-\pi}^{\pi} = 0$, puisque $\sin(k\pi) = 0$ ({{cx-pi|Le nombre π}}), et $\int_{-\pi}^{\pi}\sin(kx)\,dx = 0$ par imparité.
+
+      (ii) Les coefficients de $S_Nf$ sont les produits scalaires de $f$ avec la famille orthonormale ; la projection sur un sous-espace de dimension finie, fermé, est donnée par cette formule ({{f-bases-hilbertiennes|Bases hilbertiennes}}, (ii)).
+
+      (iii) C'est l'inégalité de Bessel ({{f-bases-hilbertiennes|Bases hilbertiennes}}, (i)).
+    remarques:
+      - |
+        Pour $f(x) = x$ sur $]-\pi, \pi[$, l'imparité annule les $a_n$, et une intégration par parties donne $b_n = \frac{2(-1)^{n+1}}{n}$. La série de Fourier est donc $2\big(\sin x - \frac{\sin 2x}{2} + \frac{\sin 3x}{3} - \cdots\big)$ ; on la retrouvera au nœud {{fo-parseval|Parseval}}.
+
+  - id: fo-fejer
+    etiquette: Théorème de Fejér
+    nature: théorème
+    titre: Noyaux de Dirichlet et de Fejér, théorème de Fejér
+    texte: |
+      Une fonction $f : \mathbb R \to \mathbb R$ est $2\pi$-**périodique** si $f(x + 2\pi) = f(x)$. Le **noyau de Dirichlet** est $D_N(t) = 1 + 2\sum_{k=1}^N \cos(kt)$ et le **noyau de Fejér** $F_N = \frac{1}{N + 1}\sum_{k=0}^N D_k$. La **moyenne de Fejér** de $f$ est $\sigma_Nf = \frac1{N + 1}\sum_{k=0}^N S_kf$.
+    enonce: |
+      (i) Pour $t \notin 2\pi\mathbb Z$, $D_N(t) = \dfrac{\sin\big((N + \frac12)t\big)}{\sin(t/2)}$ et $F_N(t) = \dfrac{1}{N + 1}\Big(\dfrac{\sin\big((N + 1)t/2\big)}{\sin(t/2)}\Big)^2$. On a $S_Nf(x) = \frac1{2\pi}\int_{-\pi}^\pi f(x - t)D_N(t)\,dt$ et $\sigma_Nf(x) = \frac1{2\pi}\int_{-\pi}^\pi f(x - t)F_N(t)\,dt$ pour $f$ périodique intégrable sur une période.
+
+      (ii) $F_N \geqslant 0$, $\frac1{2\pi}\int_{-\pi}^\pi F_N = 1$, et pour tout $\delta \in \,]0, \pi[$, $\sup_{\delta \leqslant |t| \leqslant \pi} F_N(t) \to 0$.
+
+      (iii) *Fejér.* Pour $f$ continue et $2\pi$-périodique, $\sigma_Nf \to f$ uniformément. En particulier, les polynômes trigonométriques sont denses dans l'espace des fonctions continues $2\pi$-périodiques, pour la norme uniforme.
+    preuve: |
+      (i) Avec $w = \exp(it/2)$, $D_N(t) = \sum_{k=-N}^N w^{2k}$, somme géométrique égale à $\frac{w^{2N+1} - w^{-2N-1}}{w - w^{-1}} = \frac{\sin((N + \frac12)t)}{\sin(t/2)}$. En sommant, $\sum_{k=0}^N \sin\big((k + \frac12)t\big)\sin(t/2) = \frac12\sum_k \big(\cos(kt) - \cos((k + 1)t)\big) = \frac12\big(1 - \cos((N + 1)t)\big) = \sin^2\big((N + 1)t/2\big)$, d'où $F_N$. La formule intégrale vient de $\cos(n(x - t)) = \cos(nx)\cos(nt) + \sin(nx)\sin(nt)$ et de la périodicité.
+
+      (ii) $\frac1{2\pi}\int D_k = 1$ par l'orthogonalité ({{fo-coefficients|Coefficients de Fourier}}), donc $\frac1{2\pi}\int F_N = 1$. Pour $\delta \leqslant |t| \leqslant \pi$, $\sin^2(t/2) \geqslant \sin^2(\delta/2) > 0$, et $F_N(t) \leqslant \frac{1}{(N + 1)\sin^2(\delta/2)}$.
+
+      (iii) $f$ est uniformément continue sur une période, donc sur $\mathbb R$. Pour $\varepsilon > 0$, soit $\delta$ tel que $|t| < \delta$ entraîne $|f(x - t) - f(x)| < \varepsilon$. Par (ii),
+      $$\begin{aligned} |\sigma_Nf(x) - f(x)| &\leqslant \frac1{2\pi}\int_{-\pi}^\pi |f(x - t) - f(x)|\,F_N(t)\,dt \\ &\leqslant \varepsilon + 2\sup|f| \sup_{\delta \leqslant |t| \leqslant \pi} F_N(t), \end{aligned}$$
+      qui est inférieur à $2\varepsilon$ pour $N$ grand, indépendamment de $x$.
+    remarques:
+      - |
+        La positivité du noyau de Fejér est l'ingrédient décisif ; celui de Dirichlet change de signe, et l'on verra au nœud {{fo-divergence|Divergence}} que les sommes $S_Nf$ elles-mêmes peuvent diverger pour une fonction continue. Faire la moyenne des sommes partielles, comme Cesàro, suffit à tout régulariser.
+
+  - id: fo-parseval
+    etiquette: Parseval
+    nature: théorème
+    titre: Le système trigonométrique est une base hilbertienne
+    enonce: |
+      (i) La famille $\frac{1}{\sqrt 2}, \cos x, \sin x, \cos 2x, \sin 2x, \dots$ est une [[base-hilbertienne|base hilbertienne]] de $L^2([-\pi, \pi])$ : pour tout $f \in L^2$, $S_Nf \to f$ dans $L^2$.
+
+      (ii) *Parseval.* $\dfrac{a_0^2}{2} + \displaystyle\sum_{n \geqslant 1}(a_n^2 + b_n^2) = \dfrac1\pi\int_{-\pi}^\pi f^2$.
+
+      (iii) $\displaystyle\sum_{n \geqslant 1}\frac1{n^2} = \frac{\pi^2}{6}$.
+    preuve: |
+      (i) Il suffit que l'espace engendré soit dense ({{f-bases-hilbertiennes|Bases hilbertiennes}}, (ii)). Les fonctions continues nulles hors d'un segment intérieur à $]-\pi, \pi[$ sont denses dans $L^2$ ({{fo-densite|Densité}}) ; elles se prolongent en fonctions continues $2\pi$-périodiques, que le théorème de Fejér ({{fo-fejer|Théorème de Fejér}}) approche uniformément, donc dans $L^2$, par des polynômes trigonométriques.
+
+      (ii) C'est l'égalité de Parseval pour une base hilbertienne.
+
+      (iii) Pour $f(x) = x$, $a_n = 0$ et $b_n = 2(-1)^{n+1}/n$ ({{fo-coefficients|Coefficients de Fourier}}), et $\frac1\pi\int_{-\pi}^{\pi} x^2\,dx = \frac{2\pi^2}{3}$. Parseval donne $\sum 4/n^2 = 2\pi^2/3$.
+    remarques:
+      - |
+        Le problème de Bâle, posé par Mengoli en 1650 et résolu par Euler en 1735, tombe ainsi en une ligne. Numériquement, $\sum_{n < 10^5} 1/n^2 \approx 1{,}644924$, à comparer à $\pi^2/6 \approx 1{,}644934$ : l'écart, de l'ordre de $10^{-5}$, est bien celui du reste $\sum_{n \geqslant N} 1/n^2 \approx 1/N$.
+      - |
+        La convergence a lieu dans $L^2$, c'est-à-dire en moyenne quadratique, et non point par point. L'erreur la plus répandue est de conclure de Parseval que $S_Nf(x) \to f(x)$ pour tout $x$ ; la convergence ponctuelle demande une hypothèse de régularité, objet du nœud suivant.
+
+  - id: fo-dirichlet
+    etiquette: Convergence ponctuelle
+    nature: théorème
+    titre: Riemann-Lebesgue et critère de Dini
+    enonce: |
+      (i) *Riemann-Lebesgue.* Pour $g \in L^1([-\pi, \pi])$, $\int g(t)\cos(\lambda t)\,dt$ et $\int g(t)\sin(\lambda t)\,dt$ tendent vers $0$ quand le réel $\lambda \to +\infty$.
+
+      (ii) *Dini.* Soit $f$ intégrable sur une période, $2\pi$-périodique, et $x$ tel que $t \mapsto \frac{f(x - t) - f(x)}{t}$ soit intégrable au voisinage de $0$. Alors $S_Nf(x) \to f(x)$. C'est le cas si $f$ est dérivable en $x$, ou lipschitzienne au voisinage de $x$.
+    preuve: |
+      (i) Pour l'indicatrice d'un intervalle $[a, b]$, $\int_a^b \cos(\lambda t)\,dt = \frac{\sin(\lambda b) - \sin(\lambda a)}{\lambda}$ est majoré par $2/\lambda$. Par linéarité, l'énoncé vaut pour les fonctions en escalier, et par densité ({{fo-densite|Densité}}) pour toute $g \in L^1$, puisque $\big|\int (g - h)\cos(\lambda t)\big| \leqslant \|g - h\|_1$.
+
+      (ii) Par {{fo-fejer|Théorème de Fejér}}, (i), et $\frac1{2\pi}\int D_N = 1$,
+      $$S_Nf(x) - f(x) = \frac1{2\pi}\int_{-\pi}^\pi \frac{f(x - t) - f(x)}{\sin(t/2)}\,\sin\big((N + \tfrac12)t\big)\,dt.$$
+      Sur $[-\pi, \pi]$, $|\sin(t/2)| \geqslant |t|/\pi$, par concavité du sinus sur $[0, \frac\pi2]$ ; la fonction $g(t) = \frac{f(x - t) - f(x)}{\sin(t/2)}$ est donc intégrable, et l'on applique (i) avec $\lambda = N + \frac12$, en développant $\sin((N + \frac12)t)$.
+    remarques:
+      - |
+        Au point $x = \frac\pi2$, la série de $f(x) = x$ donne $\frac\pi2 = 2\big(1 - \frac13 + \frac15 - \cdots\big)$, c'est-à-dire la formule de Leibniz $\frac\pi4 = 1 - \frac13 + \frac15 - \frac17 + \cdots$. Aux points de discontinuité de la fonction prolongée par périodicité, $\pm\pi$, la série converge vers $0$, moyenne des limites à gauche et à droite.
+
+  - id: fo-divergence
+    etiquette: Divergence
+    nature: théorème
+    titre: Une fonction continue dont la série de Fourier diverge
+    enonce: |
+      (i) Les **constantes de Lebesgue** $L_N = \frac1{2\pi}\int_{-\pi}^{\pi}|D_N(t)|\,dt$ tendent vers $+\infty$.
+
+      (ii) Il existe une fonction continue $2\pi$-périodique $f$ telle que la suite $S_Nf(0)$ ne soit pas bornée.
+    preuve: |
+      (i) Comme $|\sin u| \leqslant |u|$, $|D_N(t)| \geqslant \frac{2|\sin((N + \frac12)t)|}{|t|}$. Avec $u = (N + \frac12)t$,
+      $$\begin{aligned} L_N &\geqslant \frac2\pi\int_0^{(N + \frac12)\pi}\frac{|\sin u|}{u}\,du \\ &\geqslant \frac2\pi\sum_{k=0}^{N-1}\frac{1}{(k + 1)\pi}\int_{k\pi}^{(k+1)\pi}|\sin u|\,du = \frac{4}{\pi^2}\sum_{k=1}^N\frac1k, \end{aligned}$$
+      et la série harmonique diverge.
+
+      (ii) Soit $E$ l'espace des fonctions continues $2\pi$-périodiques, de Banach pour la norme uniforme ({{f-exemples|Exemples d'espaces de Banach}}), et $u_N(f) = S_Nf(0) = \frac1{2\pi}\int f(-t)D_N(t)\,dt$, forme linéaire continue de norme au plus $L_N$. Elle vaut exactement $L_N$ : la fonction $\operatorname{signe}(D_N(-t))$, qui n'a qu'un nombre fini de sauts, est limite, en dehors de voisinages arbitrairement petits de ces sauts, de fonctions continues de norme $1$, et l'intégrale correspondante tend vers $L_N$. Si les $S_Nf(0)$ étaient bornés pour toute $f \in E$, le théorème de Banach-Steinhaus ({{f-banach-steinhaus|Banach-Steinhaus}}) bornerait les $L_N$, ce que (i) contredit.
+    remarques:
+      - |
+        Numériquement, $L_{10} \approx 2{,}22$, $L_{100} \approx 3{,}14$, $L_{1000} \approx 4{,}07$ : la croissance est logarithmique, en $\frac{4}{\pi^2}\ln N$. Du Bois-Reymond a construit en 1876 une fonction continue dont la série diverge en un point ; la démonstration par Banach-Steinhaus, non constructive, en montre l'existence en quelques lignes. Carleson a prouvé en 1966 qu'au contraire, la série de Fourier d'une fonction de $L^2$ converge presque partout ; ce théorème difficile est admis ici.
+
+  - id: fo-transformee
+    etiquette: Transformée de Fourier
+    nature: théorème
+    titre: Transformée de Fourier des fonctions intégrables
+    texte: |
+      Une fonction $h = u + iv : \mathbb R \to \mathbb C$ est intégrable si $u$ et $v$ le sont, et $\int h = \int u + i\int v$. La [[transformee-fourier|transformée de Fourier]] de $f \in L^1(\mathbb R)$ est
+      $$\hat f(\xi) = \int_{\mathbb R} f(x)\,e^{-ix\xi}\,dx.$$
+    enonce: |
+      (i) $\big|\int h\big| \leqslant \int |h|$ ; en particulier $|\hat f(\xi)| \leqslant \|f\|_1$.
+
+      (ii) $\hat f$ est continue, et $\hat f(\xi) \to 0$ quand $|\xi| \to \infty$ (Riemann-Lebesgue).
+
+      (iii) Pour $\gamma(x) = e^{-x^2/2}$, $\hat\gamma(\xi) = \sqrt{2\pi}\,e^{-\xi^2/2}$. Plus généralement, pour $\varepsilon > 0$, la fonction $G_\varepsilon(x) = \frac{1}{\varepsilon\sqrt{2\pi}}e^{-x^2/(2\varepsilon^2)}$ vérifie $\hat G_\varepsilon(\xi) = e^{-\varepsilon^2\xi^2/2}$.
+
+      (iv) Pour $f, g \in L^1$, la **convolée** $f * g(x) = \int f(x - y)g(y)\,dy$ est définie presque partout, intégrable, et $\widehat{f * g} = \hat f\,\hat g$.
+    preuve: |
+      (i) Si $\int h \neq 0$, écrivons $\int h = |\int h|\,e^{i\theta}$ ({{cx-pi|Le nombre π}}, (iii)) ; alors $|\int h| = \int \operatorname{Re}(e^{-i\theta}h) \leqslant \int |h|$.
+
+      (ii) La continuité vient de la convergence dominée ({{m-convergence-dominee|Convergence dominée}}), $|f(x)e^{-ix\xi}| \leqslant |f(x)|$. Pour la limite, on applique l'argument de {{fo-dirichlet|Convergence ponctuelle}}, (i) : vrai pour l'indicatrice d'un intervalle, il passe aux fonctions en escalier, puis à $L^1$ par densité ({{fo-densite|Densité}}).
+
+      (iii) Par imparité, $\hat\gamma(\xi) = g(\xi) = \int e^{-x^2/2}\cos(x\xi)\,dx$. En dérivant sous l'intégrale, avec la domination par $|x|e^{-x^2/2}$, puis en intégrant par parties, $g'(\xi) = -\int xe^{-x^2/2}\sin(x\xi)\,dx = -\xi g(\xi)$. Donc $\big(g(\xi)e^{\xi^2/2}\big)' = 0$, et $g(\xi) = g(0)e^{-\xi^2/2}$, avec $g(0) = \sqrt{2\pi}$ ({{p-normale|Loi normale}}). Le cas de $G_\varepsilon$ s'en déduit par le changement de variable $x = \varepsilon u$.
+
+      (iv) Par Tonelli, $\int\!\!\int |f(x - y)g(y)|\,dy\,dx = \|f\|_1\|g\|_1$, par invariance de $\lambda$ par translation ; par Fubini ({{m-fubini|Tonelli, Fubini}}), $f * g$ est définie presque partout, intégrable, et $\widehat{f * g}(\xi) = \int\!\!\int f(x - y)e^{-i(x - y)\xi}g(y)e^{-iy\xi}\,dy\,dx = \hat f(\xi)\hat g(\xi)$.
+    remarques:
+      - |
+        La gaussienne est, à un facteur près, sa propre transformée de Fourier. C'est ce qui la rend omniprésente : elle sert de « noyau d'approximation » dans les deux nœuds suivants, et c'est elle que produit le théorème central limite ({{p-tcl|Théorème central limite}}).
+
+  - id: fo-inversion
+    etiquette: Inversion
+    nature: théorème
+    titre: Formule d'inversion de Fourier
+    enonce: |
+      (i) *Approximation de l'unité.* Pour $f \in L^1$, $f * G_\varepsilon \to f$ dans $L^1$ quand $\varepsilon \to 0$. Si $f$ est bornée et continue en $x$, $f * G_\varepsilon(x) \to f(x)$.
+
+      (ii) *Inversion.* Si $f \in L^1$ et $\hat f \in L^1$, alors, pour presque tout $x$,
+      $$f(x) = \frac{1}{2\pi}\int_{\mathbb R} \hat f(\xi)\,e^{ix\xi}\,d\xi,$$
+      et l'égalité a lieu en tout point où $f$ est continue. En particulier, $\hat f = 0$ entraîne $f = 0$ presque partout.
+    preuve: |
+      (i) $\int G_\varepsilon = 1$ ({{p-normale|Loi normale}}). Par Tonelli, $\|f * G_\varepsilon - f\|_1 \leqslant \int \|\tau_yf - f\|_1\,G_\varepsilon(y)\,dy = \int \|\tau_{\varepsilon u}f - f\|_1\,G_1(u)\,du$, qui tend vers $0$ par la continuité des translations ({{fo-densite|Densité}}) et la convergence dominée, l'intégrande étant majoré par $2\|f\|_1G_1(u)$. Le second point se traite de même, avec $|f(x - \varepsilon u) - f(x)| \leqslant 2\sup|f|$.
+
+      (ii) Posons $I_\varepsilon(x) = \frac1{2\pi}\int \hat f(\xi)e^{ix\xi}e^{-\varepsilon^2\xi^2/2}\,d\xi$. Par Fubini, licite puisque $|f(y)|e^{-\varepsilon^2\xi^2/2}$ est intégrable sur $\mathbb R^2$,
+      $$\begin{aligned} I_\varepsilon(x) &= \int f(y)\,\Big(\frac1{2\pi}\int e^{-i(y - x)\xi}e^{-\varepsilon^2\xi^2/2}\,d\xi\Big)\,dy \\ &= \int f(y)\,G_\varepsilon(x - y)\,dy = f * G_\varepsilon(x), \end{aligned}$$
+      la parenthèse se calculant par le changement de variable $\xi = s/\varepsilon$ et la formule $\hat\gamma = \sqrt{2\pi}\,\gamma$ ({{fo-transformee|Transformée de Fourier}}, (iii)), qui donnent $\frac{1}{2\pi\varepsilon}\sqrt{2\pi}\,e^{-(y - x)^2/(2\varepsilon^2)} = G_\varepsilon(x - y)$. Quand $\varepsilon \to 0$, $I_\varepsilon(x)$ tend vers l'intégrale annoncée par convergence dominée, $\hat f$ étant intégrable ; et $f * G_\varepsilon \to f$ dans $L^1$ par (i), donc presque partout le long d'une suite $\varepsilon_k \to 0$ ({{f-lp|Espaces L¹ et L²}}, (iii)).
+    remarques:
+      - |
+        La transformée d'une fonction intégrable n'est pas toujours intégrable : pour $f = \mathbf 1_{[-1, 1]}$, $\hat f(\xi) = \frac{2\sin\xi}{\xi}$, dont l'intégrale du module diverge. La formule d'inversion ne s'applique alors pas telle quelle, ce qui annonce le cadre $L^2$ du nœud suivant.
+
+  - id: fo-plancherel
+    etiquette: Plancherel
+    nature: théorème
+    titre: Théorème de Plancherel
+    enonce: |
+      Pour $f \in L^1(\mathbb R) \cap L^2(\mathbb R)$, $\hat f$ est de carré intégrable et
+      $$\int_{\mathbb R} |\hat f(\xi)|^2\,d\xi = 2\pi\int_{\mathbb R} f(x)^2\,dx.$$
+      La transformation $f \mapsto \hat f/\sqrt{2\pi}$ se prolonge donc en une isométrie de $L^2$ dans l'espace des fonctions complexes de carré intégrable.
+    preuve: |
+      Soit $\tilde f(x) = f(-x)$ et $g = f * \tilde f$, c'est-à-dire $g(x) = \int f(x + y)f(y)\,dy$. Par Cauchy-Schwarz ({{f-lp|Espaces L¹ et L²}}), $g$ est bornée par $\|f\|_2^2$ et continue, puisque $|g(x) - g(x')| \leqslant \|\tau_{-x}f - \tau_{-x'}f\|_2\|f\|_2$ ({{fo-densite|Densité}}) ; et $g(0) = \|f\|_2^2$. Par {{fo-transformee|Transformée de Fourier}}, (iv), $\hat g = \hat f\,\hat{\tilde f} = |\hat f|^2$, puisque $\hat{\tilde f} = \overline{\hat f}$, $f$ étant réelle. Le calcul de la preuve de l'inversion, qui n'utilisait que $f \in L^1$, donne
+      $$\frac1{2\pi}\int |\hat f(\xi)|^2\,e^{-\varepsilon^2\xi^2/2}\,d\xi = g * G_\varepsilon(0).$$
+      Quand $\varepsilon \to 0$, le second membre tend vers $g(0) = \|f\|_2^2$ ({{fo-inversion|Inversion}}, (i)), et le premier croît vers $\frac1{2\pi}\int|\hat f|^2$ par convergence monotone. Le prolongement découle de la densité de $L^1 \cap L^2$ dans $L^2$ ({{fo-densite|Densité}}) et de la complétude.
+    remarques:
+      - |
+        En mécanique quantique, $f$ et $\hat f$ décrivent un même état en position et en impulsion, et Plancherel dit que la probabilité totale est la même dans les deux descriptions. Le principe d'incertitude de Heisenberg, $\big(\int x^2f^2\big)\big(\int \xi^2|\hat f|^2\big) \geqslant \frac{\pi}{2}\|f\|_2^4$ dans cette normalisation, en découle par une intégration par parties et Cauchy-Schwarz.
+
+  - id: fo-caracteristiques
+    etiquette: Fonctions caractéristiques
+    nature: théorème
+    titre: Fonctions caractéristiques des variables aléatoires
+    texte: |
+      La [[fonction-caracteristique|fonction caractéristique]] d'une variable aléatoire réelle $X$ est $\varphi_X(t) = E[e^{itX}] = \int e^{itx}\,dP_X(x)$, intégrale de fonctions bornées.
+    enonce: |
+      (i) $|\varphi_X| \leqslant 1$, $\varphi_X(0) = 1$, et $\varphi_X$ est continue.
+
+      (ii) Si $X$ et $Y$ sont indépendantes, $\varphi_{X+Y} = \varphi_X\,\varphi_Y$.
+
+      (iii) Si $X$ suit $\mathcal N(0, 1)$, $\varphi_X(t) = e^{-t^2/2}$.
+
+      (iv) *Unicité.* Si $\varphi_X = \varphi_Y$, alors $X$ et $Y$ ont même loi.
+    preuve: |
+      (i) Comme au nœud {{fo-transformee|Transformée de Fourier}}, par convergence dominée.
+
+      (ii) $e^{it(X+Y)} = e^{itX}e^{itY}$ ; en séparant parties réelles et imaginaires, l'espérance d'un produit de fonctions bornées de variables indépendantes est le produit des espérances ({{p-esperance|Espérance, variance}}, (iv)).
+
+      (iii) $\varphi_X(t) = \frac1{\sqrt{2\pi}}\hat\gamma(-t) = e^{-t^2/2}$ ({{fo-transformee|Transformée de Fourier}}, (iii)).
+
+      (iv) Soit $N$ de loi $\mathcal N(0, 1)$, indépendante de $X$, sur un espace produit, et $\sigma > 0$. La variable $X + \sigma N$ a pour densité $h_\sigma(x) = E\big[G_\sigma(x - X)\big]$, par Fubini ; en écrivant $G_\sigma(u) = \frac1{2\pi}\int e^{iut}e^{-\sigma^2t^2/2}\,dt$ par l'inversion ({{fo-inversion|Inversion}}), puis Fubini, $h_\sigma(x) = \frac1{2\pi}\int \varphi_X(-t)\,e^{ixt}\,e^{-\sigma^2t^2/2}\,dt$, qui ne dépend que de $\varphi_X$. Donc $X + \sigma N$ et $Y + \sigma N$ ont même loi pour tout $\sigma$. En un point $x$ tel que $P(X = x) = 0$, $\mathbf 1_{X + \sigma N \leqslant x} \to \mathbf 1_{X \leqslant x}$ presque sûrement quand $\sigma \to 0$, d'où $F_{X+\sigma N}(x) \to F_X(x)$ par convergence dominée. Les fonctions de répartition de $X$ et $Y$ coïncident donc en dehors des points où l'une a un saut, qui sont au plus dénombrables, au plus $n$ sauts de taille supérieure à $\frac1n$ ; par continuité à droite, elles coïncident partout, et les lois sont égales ({{p-variables|Variables aléatoires}}).
+    remarques:
+      - |
+        Le théorème de continuité de Lévy affirme que la convergence simple des fonctions caractéristiques vers une fonction continue en $0$ équivaut à la convergence des fonctions de répartition aux points de continuité de la limite ; il est admis ici. Avec lui, le théorème central limite ({{p-tcl|Théorème central limite}}) se démontre en développant $\varphi_X(t/\sqrt n)^n = \big(1 - \frac{t^2}{2n} + o(\frac1n)\big)^n \to e^{-t^2/2}$, sans l'hypothèse d'un moment d'ordre $3$.
+
+aretes:
+  - [fo-coefficients, fo-fejer]
+  - [fo-fejer, fo-parseval]
+  - [fo-densite, fo-parseval]
+  - [fo-densite, fo-dirichlet]
+  - [fo-fejer, fo-dirichlet]
+  - [fo-dirichlet, fo-divergence]
+  - [fo-densite, fo-transformee]
+  - [fo-dirichlet, fo-transformee]
+  - [fo-transformee, fo-inversion]
+  - [fo-inversion, fo-plancherel]
+  - [fo-inversion, fo-caracteristiques]
