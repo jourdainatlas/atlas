@@ -15,7 +15,7 @@ conteneur: geod
 entrees:
   top: [gd-normes]
   analyse-reelle: [gd-normes, gd-denombrable, gd-accroissements]
-  alglin: [gd-equivalence, gd-gl]
+  alglin: [gd-equivalence, gd-gl, gd-formes]
 
 noeuds:
   - id: gd-normes
@@ -435,6 +435,172 @@ noeuds:
       - |
         Le fibré tangent n'est en général pas un produit : $TS^1$ est difféomorphe à $S^1 \times \mathbb R$, grâce au champ précédent qui fournit une base de chaque espace tangent, mais $TS^2$ n'est pas difféomorphe à $S^2 \times \mathbb R^2$, sans quoi $S^2$ porterait un champ ne s'annulant pas.
 
+  - id: gd-schwarz
+    etiquette: Schwarz, intégrales à paramètre
+    nature: théorème
+    titre: Théorème de Schwarz et intégrales à paramètre
+    enonce: |
+      (i) *Schwarz.* Si $f : U \to \mathbb R$ est de classe $C^2$ sur un ouvert $U$ de $\mathbb R^n$, alors $\partial_i\partial_j f = \partial_j\partial_i f$ pour tous $i, j$.
+
+      (ii) *Intégrales à paramètre.* Soit $h : [0, 1] \times U \to \mathbb R$ continue. Alors $F(x) = \int_0^1 h(t, x)\,dt$ est continue sur $U$. Si de plus les dérivées partielles $\partial_{x_j} h$ existent et sont continues sur $[0, 1] \times U$, $F$ est de classe $C^1$ et $\partial_j F(x) = \int_0^1 \partial_{x_j} h(t, x)\,dt$. Par récurrence, si $h$ est $C^\infty$ en $x$ avec toutes ses dérivées partielles continues sur $[0, 1] \times U$, $F$ est $C^\infty$.
+    preuve: |
+      (ii) *Continuité.* Fixons $x_0 \in U$ et $\varepsilon > 0$. Les ouverts produits $V \times W$ de $\mathbb R \times U$ sur lesquels $|h(t, x) - h(t', x_0)| < \varepsilon$ pour tous $(t, x) \in V \times W$ et $(t', x_0) \in V \times W$ recouvrent le compact $[0, 1] \times \{x_0\}$, par continuité de $h$ ; un nombre fini d'entre eux, $V_1 \times W_1, \dots, V_m \times W_m$, suffit, et l'on pose $W = \bigcap_i W_i$. Pour $x \in W$ et $t \in [0, 1]$, $t$ appartient à un $V_i$, et $|h(t, x) - h(t, x_0)| < \varepsilon$. Donc $|F(x) - F(x_0)| \leqslant \varepsilon$. Aucun choix n'intervient : la famille des ouverts est définie par compréhension, et l'on n'en extrait qu'un nombre fini.
+
+      *Dérivation.* Par l'égalité des accroissements finis ({{gd-accroissements|Accroissements finis}}, (i)), pour $s \neq 0$ petit, $\frac{h(t, x_0 + se_j) - h(t, x_0)}{s} = \partial_{x_j} h(t, x_0 + c\,s\,e_j)$ avec $c \in \,]0, 1[$ dépendant de $t$. Le même argument de recouvrement, appliqué à $\partial_{x_j} h$, montre que cette quantité est à moins de $\varepsilon$ de $\partial_{x_j} h(t, x_0)$ dès que $|s|$ est petit, uniformément en $t$. On intègre, puis on applique la continuité à $\partial_{x_j} h$ et le nœud {{gd-classe-ck|Classe Cᵏ}}, (i).
+
+      (i) Fixons $a$, et posons, pour $s$ petit, $\Delta(s) = f(a + se_i + se_j) - f(a + se_i) - f(a + se_j) + f(a)$, avec $i \neq j$. La fonction $g(u) = f(u + se_j) - f(u)$ donne $\Delta(s) = g(a + se_i) - g(a)$ ; par l'égalité des accroissements finis appliquée deux fois, d'abord à $\tau \mapsto g(a + \tau e_i)$, puis à $\tau \mapsto \partial_i f(a + ce_i + \tau e_j)$, on obtient $\Delta(s) = s^2\,\partial_j\partial_i f(a + c\,s\,e_i + c'\,s\,e_j)$ pour des $c, c' \in \,]0, 1[$. En échangeant les rôles de $i$ et $j$, $\Delta(s) = s^2\,\partial_i\partial_j f(a + d\,s\,e_i + d'\,s\,e_j)$. On divise par $s^2$ et l'on fait tendre $s$ vers $0$ : les deux dérivées secondes étant continues en $a$, elles y sont égales.
+    remarques:
+      - |
+        L'hypothèse de continuité des dérivées secondes ne peut pas être omise. La fonction $f(x, y) = xy\frac{x^2 - y^2}{x^2 + y^2}$, prolongée par $0$ en l'origine, a des dérivées secondes croisées en $(0, 0)$ qui valent $-1$ et $1$ : on calcule $\partial_x f(0, y) = -y$ et $\partial_y f(x, 0) = x$. Le théorème de Schwarz est ce qui donnera $d \circ d = 0$ au nœud {{gd-formes|Formes différentielles}}.
+
+  - id: gd-orientation
+    etiquette: Orientation
+    nature: définition
+    titre: Orientation des espaces vectoriels et des variétés
+    texte: |
+      Deux bases d'un $\mathbb R$-espace vectoriel $E$ de dimension $n \geqslant 1$ ont **même orientation** si la matrice de passage de l'une à l'autre a un [[determinant|déterminant]] strictement positif. Une [[orientation]] de $E$ est une classe d'équivalence pour cette relation. Un atlas d'une variété est **orienté** si tous ses changements de carte $\tau$ vérifient $\det d\tau(z) > 0$ en tout point ; une variété est **orientable** si elle possède un atlas orienté.
+    enonce: |
+      (i) « Avoir même orientation » est une relation d'équivalence sur les bases de $E$, qui a exactement deux classes. Un isomorphisme $u$ de $E$ conserve chaque classe si et seulement si $\det u > 0$.
+
+      (ii) Tout ouvert de $\mathbb R^n$ est orientable. Si $(U, \varphi)$ est une carte et $\rho(z_1, z_2, \dots, z_n) = (-z_1, z_2, \dots, z_n)$, alors $(U, \rho \circ \varphi)$ est une carte, dont les changements de carte avec les autres ont des jacobiens de signe opposé.
+
+      (iii) La sphère $S^n$, $n \geqslant 1$, est orientable : les cartes $\sigma_+$ et $\rho \circ \sigma_-$ forment un atlas orienté.
+    preuve: |
+      (i) Si $P$ et $Q$ sont les matrices de passage de $\mathcal B$ à $\mathcal B'$ et de $\mathcal B'$ à $\mathcal B''$, celle de $\mathcal B$ à $\mathcal B''$ est $PQ$, et $\det(PQ) = \det P \det Q$ ({{v-determinant|Déterminant}}) ; la matrice de passage inverse est $P^{-1}$, de déterminant $1/\det P$. Une base $\mathcal B$ et la base obtenue en changeant $e_1$ en $-e_1$ n'ont pas même orientation, la matrice de passage étant de déterminant $-1$, et toute base a même orientation que l'une ou l'autre, selon le signe du déterminant de passage. Enfin, la matrice de passage de $\mathcal B$ à $u(\mathcal B)$ est la matrice de $u$.
+
+      (ii) L'atlas $\{\mathrm{id}\}$ est orienté. $\rho$ est un difféomorphisme linéaire de déterminant $-1$, et $d(\psi \circ (\rho \circ \varphi)^{-1}) = d(\psi \circ \varphi^{-1}) \circ \rho$.
+
+      (iii) Le changement de carte $\sigma_- \circ \sigma_+^{-1}(z) = z/\|z\|_2^2$ ({{gd-varietes|Variétés différentiables}}) a pour différentielle $\|z\|_2^{-2}\big(I - 2uu^{\mathsf T}\big)$, avec $u = z/\|z\|_2$. L'application $h \mapsto h - 2\langle u, h \rangle u$ envoie $u$ sur $-u$ et fixe l'hyperplan $u^\perp$ ; dans une base formée de $u$ et d'une base de $u^\perp$, sa matrice est diagonale de coefficients $-1, 1, \dots, 1$ : le déterminant du changement de carte vaut $-\|z\|_2^{-2n} < 0$. Composer $\sigma_-$ avec $\rho$ change ce signe, par (ii).
+    remarques:
+      - |
+        L'erreur la plus répandue est de croire qu'une orientation est une propriété des vecteurs eux-mêmes. C'est un choix entre deux classes de bases, sans base privilégiée : $\mathbb R^n$ a une orientation « canonique » seulement parce que l'on a choisi sa base canonique. Le ruban de Möbius, quotient du ruban $[0, 1] \times \,]-1, 1[$ où l'on recolle $(0, y)$ avec $(1, -y)$, est une variété de dimension $2$ non orientable ; ce fait est admis ici.
+      - |
+        Le signe du déterminant joue ici le rôle que sa valeur absolue joue en théorie de la {{mes|mesure}}, où elle mesure la dilatation des volumes : l'intégrale d'une forme de degré maximal sur une variété orientée réunit les deux.
+
+  - id: gd-formes
+    etiquette: Formes différentielles
+    nature: théorème
+    titre: Formes différentielles et différentielle extérieure
+    texte: |
+      Soit $U$ un ouvert de $\mathbb R^n$. Une [[forme-differentielle|forme différentielle]] de degré $k$ sur $U$ est une application $\omega$ qui associe à chaque $x \in U$ une forme $\omega_x \in \Lambda^k(\mathbb R^n)$ ({{v-algebre-exterieure|Algèbre extérieure}}), de la forme $\omega = \sum_I a_I\, dx_I$ avec des coefficients $a_I$ de classe $C^\infty$, où $dx_I = dx_{i_1} \wedge \cdots \wedge dx_{i_k}$ et $dx_i$ désigne la $i$-ième forme coordonnée. Pour une fonction $f$, de degré $0$, $df = \sum_j \partial_j f\, dx_j$ est sa différentielle. La **différentielle extérieure** est
+      $$d\Big(\sum_I a_I\, dx_I\Big) = \sum_I da_I \wedge dx_I.$$
+      Pour $\varphi : V \to U$ de classe $C^\infty$, l'**image réciproque** est $(\varphi^*\omega)_y = d\varphi(y)^*\,\omega_{\varphi(y)}$.
+    enonce: |
+      (i) $d$ est linéaire, et $d(\omega \wedge \eta) = d\omega \wedge \eta + (-1)^k \omega \wedge d\eta$ pour $\omega$ de degré $k$.
+
+      (ii) $d \circ d = 0$.
+
+      (iii) $\varphi^*(\omega \wedge \eta) = \varphi^*\omega \wedge \varphi^*\eta$, $(\psi \circ \varphi)^* = \varphi^* \circ \psi^*$, et $\varphi^* \circ d = d \circ \varphi^*$.
+    preuve: |
+      (i) Par linéarité, il suffit de traiter $\omega = a\,dx_I$ et $\eta = b\,dx_J$. Alors $\omega \wedge \eta = ab\,dx_I \wedge dx_J$, et, $dx_I \wedge dx_J$ étant $\pm dx_{I \cup J}$ ou nul, $d(\omega \wedge \eta) = d(ab) \wedge dx_I \wedge dx_J = (b\,da + a\,db) \wedge dx_I \wedge dx_J$. Le premier terme est $d\omega \wedge \eta$ ; dans le second, faire passer la forme $db$, de degré $1$, devant $dx_I$, de degré $k$, coûte le signe $(-1)^k$ ({{v-algebre-exterieure|Algèbre extérieure}}, (ii)).
+
+      (ii) Pour une fonction, $d(df) = \sum_{i, j} \partial_i\partial_j f\, dx_i \wedge dx_j = \sum_{i < j} (\partial_i\partial_j f - \partial_j\partial_i f)\, dx_i \wedge dx_j = 0$ par le théorème de Schwarz ({{gd-schwarz|Schwarz, intégrales à paramètre}}). En particulier $d(dx_i) = 0$, puis $d(dx_I) = 0$ par (i), et $d(d(a\,dx_I)) = d(da \wedge dx_I) = d(da) \wedge dx_I - da \wedge d(dx_I) = 0$.
+
+      (iii) La première égalité vient de {{v-algebre-exterieure|Algèbre extérieure}}, (iii), point par point, et la deuxième de la règle de la chaîne. Pour une fonction, $\varphi^*f = f \circ \varphi$ et $d(f \circ \varphi) = df \circ d\varphi = \varphi^*(df)$ ; en particulier $\varphi^*(dx_i) = d\varphi_i$. Pour $\omega = a\,dx_I$, $\varphi^*\omega = (a \circ \varphi)\, d\varphi_{i_1} \wedge \cdots \wedge d\varphi_{i_k}$, dont la différentielle est, par (i) et (ii), $d(a \circ \varphi) \wedge d\varphi_{i_1} \wedge \cdots = \varphi^*(da) \wedge \varphi^*(dx_I) = \varphi^*(d\omega)$.
+    remarques:
+      - |
+        Dans $\mathbb R^3$, en identifiant les $1$-formes et les $2$-formes à des champs de vecteurs, $d$ sur les fonctions est le gradient, $d$ sur les $1$-formes le rotationnel, $d$ sur les $2$-formes la divergence. Les identités $\operatorname{rot}\operatorname{grad} = 0$ et $\operatorname{div}\operatorname{rot} = 0$ de la physique sont deux cas de $d \circ d = 0$.
+      - |
+        L'égalité $\varphi^* \circ d = d \circ \varphi^*$ dit que $d$ ne dépend pas des coordonnées. C'est elle qui permet de transporter les formes différentielles sur les variétés, au nœud {{gd-formes-varietes|Formes sur une variété}}.
+
+  - id: gd-formes-varietes
+    etiquette: Formes sur une variété
+    nature: proposition
+    titre: Formes différentielles sur une variété, formes volume
+    texte: |
+      Soit $M$ une variété de dimension $n$. Une forme différentielle de degré $k$ sur $M$ est la donnée, pour chaque carte $(U, \varphi)$, d'une forme $\omega_\varphi$ de degré $k$ sur l'ouvert $\varphi(U)$, ces formes étant compatibles : $\omega_\varphi = \tau^*\omega_\psi$ sur $\varphi(U \cap V)$, où $\tau = \psi \circ \varphi^{-1}$. Une **forme volume** est une forme de degré $n$ qui ne s'annule en aucun point.
+    enonce: |
+      (i) Le produit extérieur et la différentielle extérieure, définis carte par carte, donnent des formes sur $M$ ; $d \circ d = 0$, et la formule de Leibniz vaut. Une application lisse $f : M \to N$ définit une image réciproque $f^*$, qui commute à $d$ et au produit extérieur.
+
+      (ii) Une forme de degré $n$ s'écrit dans chaque carte $\omega_\varphi = a_\varphi\, dz_1 \wedge \cdots \wedge dz_n$, et $a_\varphi = (a_\psi \circ \tau) \det d\tau$ sur les changements de carte.
+
+      (iii) Si $M$ porte une forme volume, $M$ est orientable.
+    preuve: |
+      (i) Il suffit de vérifier la compatibilité, c'est-à-dire que $\tau^*$ commute au produit et à $d$ : c'est le nœud {{gd-formes|Formes différentielles}}, (iii). Pour $f$ lisse, on pose $(f^*\omega)_\varphi = (\psi \circ f \circ \varphi^{-1})^*\omega_\psi$ là où c'est défini, et les mêmes formules montrent la compatibilité et les propriétés.
+
+      (ii) $\tau^*(dz_1 \wedge \cdots \wedge dz_n) = \det d\tau \cdot dz_1 \wedge \cdots \wedge dz_n$, par {{v-algebre-exterieure|Algèbre extérieure}}, (iii).
+
+      (iii) Pour chaque carte $(U, \varphi)$, la fonction $a_\varphi$ est continue et ne s'annule pas ; les ensembles $U^+ = \varphi^{-1}(\{a_\varphi > 0\})$ et $U^- = \varphi^{-1}(\{a_\varphi < 0\})$ sont ouverts. Les cartes $(U^+, \varphi)$ et $(U^-, \rho \circ \varphi)$ ({{gd-orientation|Orientation}}, (ii)), pour toutes les cartes de $M$, forment un atlas dans lequel tous les coefficients $a$ sont positifs ; par (ii), tous les changements de carte ont un jacobien de déterminant positif.
+    remarques:
+      - |
+        La réciproque de (iii) est vraie : toute variété orientable porte une forme volume. Sa démonstration recolle des formes locales $dz_1 \wedge \cdots \wedge dz_n$ au moyen de **partitions de l'unité**, qui demandent des fonctions $C^\infty$ nulles hors d'un compact sans être nulles, comme $x \mapsto \exp(-1/x)$ pour $x > 0$. L'exponentielle est construite en {{anc|analyse complexe}}, qui n'est pas un ancêtre de cette branche ; la réciproque est donc admise ici.
+      - |
+        Sur la sphère $S^2 \subset \mathbb R^3$, la restriction de $x\,dy \wedge dz + y\,dz \wedge dx + z\,dx \wedge dy$ est une forme volume : en un point $a$, sa valeur sur deux vecteurs tangents $v, w$ est $\det(a, v, w)$, non nul si $(v, w)$ est une base du plan $a^\perp$.
+
+  - id: gd-integrale-curviligne
+    etiquette: Intégrale d'une 1-forme
+    nature: proposition
+    titre: Intégrale d'une forme de degré 1 le long d'un chemin
+    texte: |
+      Soit $\omega$ une forme de degré $1$ sur un ouvert $U$ de $\mathbb R^n$ et $\gamma : [a, b] \to U$ un chemin de classe $C^1$ par morceaux. On pose $\int_\gamma \omega = \int_a^b \omega_{\gamma(t)}\big(\gamma'(t)\big)\,dt$. Une forme est **fermée** si $d\omega = 0$, **exacte** si $\omega = df$ pour une fonction $f$.
+    enonce: |
+      (i) $\int_\gamma df = f(\gamma(b)) - f(\gamma(a))$ ; en particulier, l'intégrale d'une forme exacte sur un chemin fermé est nulle.
+
+      (ii) Une forme exacte est fermée.
+
+      (iii) Si $U$ est connexe et si $\int_\gamma \omega = 0$ pour tout chemin fermé $\gamma$ formé de segments, alors $\omega$ est exacte.
+    preuve: |
+      (i) $\omega_{\gamma(t)}(\gamma'(t)) = (f \circ \gamma)'(t)$ par la règle de la chaîne, et l'on applique le théorème fondamental sur chaque morceau ({{ar-tfa|Théorème fondamental}}).
+
+      (ii) $d(df) = 0$ ({{gd-formes|Formes différentielles}}).
+
+      (iii) Fixons $x_0 \in U$. L'ensemble des points de $U$ reliés à $x_0$ par une ligne brisée contenue dans $U$ est ouvert, car les boules sont convexes, et son complémentaire aussi ; par connexité, c'est $U$. Posons $f(x) = \int_\gamma \omega$ pour une ligne brisée $\gamma$ de $x_0$ à $x$ : la valeur ne dépend pas de la ligne choisie, puisque deux telles lignes forment un chemin fermé. Pour $t$ petit, en prolongeant la ligne par le segment $[x, x + te_j]$, $f(x + te_j) - f(x) = \int_0^t \omega_{x + se_j}(e_j)\,ds$, d'où $\partial_j f(x) = \omega_x(e_j)$ par le théorème fondamental : $df = \omega$, et $f$ est $C^\infty$ puisque ses dérivées partielles le sont.
+    remarques:
+      - |
+        Sur $U = \mathbb R^2 \setminus \{0\}$, la forme $\omega = \dfrac{x\,dy - y\,dx}{x^2 + y^2}$ est fermée, comme on le vérifie en calculant $d\omega$. Son intégrale sur le bord du carré $[-1, 1]^2$, parcouru dans le sens direct, vaut $4\int_{-1}^1 \frac{dt}{1 + t^2}$, puisque sur chaque côté elle se réduit à $\frac{dt}{1 + t^2}$ : c'est un nombre strictement positif, égal à $2\pi$. Donc $\omega$ n'est pas exacte, et (ii) n'a pas de réciproque sur cet ouvert. Le nœud {{gd-de-rham|Cohomologie de de Rham}} mesurera ce défaut.
+
+  - id: gd-poincare
+    etiquette: Lemme de Poincaré
+    nature: théorème
+    titre: Lemme de Poincaré
+    enonce: |
+      Soit $U$ un ouvert de $\mathbb R^n$ étoilé par rapport à $0$ : $tx \in U$ pour tout $x \in U$ et tout $t \in [0, 1]$. Toute forme fermée de degré $k \geqslant 1$ sur $U$ est exacte.
+    preuve: |
+      Pour une fonction $a$ et un degré $k \geqslant 1$, posons $c_a(x) = \int_0^1 t^{k-1} a(tx)\,dt$. Définissons l'opérateur $K$, qui abaisse le degré d'une unité, par
+      $$K(a\,dx_{j_0} \wedge \cdots \wedge dx_{j_{k-1}}) = \sum_{r=0}^{k-1} (-1)^r\, c_a\, x_{j_r}\, dx_{J \setminus j_r},$$
+      où $dx_{J \setminus j_r}$ est le produit des $dx_{j_s}$, $s \neq r$, dans l'ordre. La formule est alternée en la suite $(j_0, \dots, j_{k-1})$, donc compatible avec les relations entre les $dx_J$, et définit $K$ par linéarité. Le résultat est $C^\infty$ par le nœud {{gd-schwarz|Schwarz, intégrales à paramètre}}, (ii). Montrons $dK\omega + Kd\omega = \omega$ pour $\omega = a\,dx_I$, $I = (i_1, \dots, i_k)$, ce qui suffit : si $d\omega = 0$, alors $\omega = d(K\omega)$.
+
+      En dérivant sous l'intégrale, $dK\omega$ est la somme de deux termes. Le premier provient de la différentielle des coefficients :
+      $$\sum_{r} \sum_j (-1)^{r-1}\Big(\int_0^1 t^k\, \partial_j a(tx)\,dt\Big) x_{i_r}\, dx_j \wedge dx_{I \setminus i_r}.$$
+      Le second provient de la différentielle des $x_{i_r}$, et vaut $\sum_r (-1)^{r-1}\big(\int_0^1 t^{k-1}a(tx)\,dt\big)\, dx_{i_r} \wedge dx_{I \setminus i_r} = k\big(\int_0^1 t^{k-1}a(tx)\,dt\big)\, dx_I$, puisque ramener $dx_{i_r}$ à sa place coûte $(-1)^{r-1}$.
+
+      D'autre part $d\omega = \sum_j \partial_j a\, dx_j \wedge dx_I$, et $K$ appliqué à $dx_j \wedge dx_I$, suite $(j, i_1, \dots, i_k)$, donne le terme $\big(\int_0^1 t^k \partial_j a(tx)\,dt\big)\, x_j\, dx_I$ pour l'indice $j$, et, pour l'indice $i_r$, le terme $(-1)^r\big(\int_0^1 t^k \partial_j a(tx)\,dt\big)\, x_{i_r}\, dx_j \wedge dx_{I \setminus i_r}$, qui annule le premier terme de $dK\omega$. Il reste
+      $$\begin{aligned} dK\omega + Kd\omega &= \Big(\int_0^1 \big(k\,t^{k-1}a(tx) + t^k \textstyle\sum_j x_j\, \partial_j a(tx)\big)\,dt\Big)\, dx_I \\ &= \Big(\int_0^1 \frac{d}{dt}\big(t^k a(tx)\big)\,dt\Big)\, dx_I, \end{aligned}$$
+      qui vaut $a(x)\,dx_I$ par le théorème fondamental.
+    remarques:
+      - |
+        Pour $k = 1$ et $\omega = 2xy\,dx + x^2\,dy$ sur $\mathbb R^2$, qui est fermée, $K\omega(x, y) = \int_0^1 \big(2t^2xy \cdot x + t^2x^2 \cdot y\big)\,dt = x^2y$, et l'on vérifie que $d(x^2y) = \omega$. L'opérateur $K$ intègre la forme le long des segments issus de l'origine : c'est la version explicite de la construction du nœud {{gd-integrale-curviligne|Intégrale d'une 1-forme}}, (iii).
+      - |
+        L'hypothèse que $U$ est étoilé, ou plus généralement contractile, est essentielle : sur $\mathbb R^2 \setminus \{0\}$, la forme $\frac{x\,dy - y\,dx}{x^2 + y^2}$ est fermée sans être exacte. Le lemme de Poincaré est l'analogue différentiel de la simple connexité des convexes en {{topalg|topologie algébrique}}.
+
+  - id: gd-de-rham
+    etiquette: Cohomologie de de Rham
+    nature: définition
+    titre: Cohomologie de de Rham
+    texte: |
+      Pour un ouvert $U$ de $\mathbb R^n$, ou une variété, notons $Z^k(U)$ l'espace des formes fermées de degré $k$ et $B^k(U)$ celui des formes exactes, avec $B^0(U) = \{0\}$. Comme $d \circ d = 0$, $B^k(U) \subset Z^k(U)$, et la [[cohomologie-de-rham|cohomologie de de Rham]] est l'espace quotient $H^k(U) = Z^k(U)/B^k(U)$.
+    enonce: |
+      (i) $H^0(U)$ est l'espace des fonctions localement constantes ; si $U$ a $m$ composantes connexes, il est de dimension $m$.
+
+      (ii) Si $U$ est étoilé, $H^k(U) = \{0\}$ pour $k \geqslant 1$, et $H^0(U) \cong \mathbb R$.
+
+      (iii) $H^1(\mathbb R^2 \setminus \{0\}) \neq \{0\}$.
+
+      (iv) Une application lisse $\varphi : V \to U$ induit des applications linéaires $\varphi^* : H^k(U) \to H^k(V)$, avec $(\psi \circ \varphi)^* = \varphi^* \circ \psi^*$. Deux ouverts difféomorphes ont des cohomologies isomorphes.
+    preuve: |
+      (i) $df = 0$ si et seulement si $f$ est constante sur chaque boule, donc sur chaque composante connexe ({{gd-accroissements|Accroissements finis}}, (iii)).
+
+      (ii) Pour $k \geqslant 1$, c'est le lemme de Poincaré ({{gd-poincare|Lemme de Poincaré}}). Si $df = 0$, la fonction $t \mapsto f(tx)$ a une dérivée nulle sur $[0, 1]$, donc $f(x) = f(0)$ : les fonctions localement constantes sur $U$ sont constantes.
+
+      (iii) La forme $\frac{x\,dy - y\,dx}{x^2 + y^2}$ est fermée et n'est pas exacte ({{gd-integrale-curviligne|Intégrale d'une 1-forme}}, remarque) : sa classe n'est pas nulle.
+
+      (iv) $\varphi^*$ commute à $d$ ({{gd-formes|Formes différentielles}}, (iii)), donc envoie formes fermées sur formes fermées et formes exactes sur formes exactes. Si $\varphi$ est un difféomorphisme, $(\varphi^{-1})^*$ est l'application réciproque.
+    remarques:
+      - |
+        On montre que $H^1(\mathbb R^2 \setminus \{0\})$ est de dimension $1$, engendré par la classe de $\frac{x\,dy - y\,dx}{x^2 + y^2}$ : une forme fermée est exacte si et seulement si son intégrale sur le cercle unité est nulle. C'est la traduction différentielle de $\pi_1(S^1) \cong \mathbb Z$ ({{ta-cercle|Groupe fondamental du cercle}}), qui compte les tours.
+      - |
+        La cohomologie de de Rham est un invariant différentiel, défini avec des formes. Le théorème de de Rham (1931) affirme qu'elle coïncide, pour une variété, avec la cohomologie singulière à coefficients réels, invariant purement topologique ; il est admis ici, et relierait cette branche à une future branche d'**homologie**.
+
 aretes:
   - [gd-normes, gd-denombrable]
   - [gd-normes, gd-equivalence]
@@ -454,3 +620,13 @@ aretes:
   - [gd-applications-lisses, gd-espace-tangent]
   - [gd-tangent-sm, gd-espace-tangent]
   - [gd-espace-tangent, gd-fibre-tangent]
+  - [gd-classe-ck, gd-schwarz]
+  - [gd-schwarz, gd-formes]
+  - [gd-varietes, gd-orientation]
+  - [gd-formes, gd-formes-varietes]
+  - [gd-applications-lisses, gd-formes-varietes]
+  - [gd-orientation, gd-formes-varietes]
+  - [gd-formes, gd-integrale-curviligne]
+  - [gd-formes, gd-poincare]
+  - [gd-integrale-curviligne, gd-de-rham]
+  - [gd-poincare, gd-de-rham]
