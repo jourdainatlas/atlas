@@ -1,0 +1,141 @@
+# Niveau 1 : construction des entiers naturels dans ZF.
+
+graphe: n
+titre: Les entiers naturels
+conteneur: n
+
+entrees:
+  zf: [n-omega]
+  rel: [n-recdef]
+  ordin: [n-ordre]
+
+noeuds:
+  - id: n-succ
+    etiquette: Successeur, inductif
+    nature: définition
+    enonce: |
+      Le **successeur** d'un ensemble $x$ est $S(x) = x \cup \{x\}$. Un ensemble $X$ est [[inductif-successeur|inductif]] si $\varnothing \in X$ et si $x \in X$ entraîne $S(x) \in X$.
+
+      On pose $0 = \varnothing$, $1 = S(0) = \{0\}$, $2 = S(1) = \{0, 1\}$, $3 = S(2) = \{0, 1, 2\}$, et ainsi de suite.
+    remarques:
+      - |
+        Ce codage, dû à von Neumann, n'est pas le seul possible : Zermelo posait $S(x) = \{x\}$. Seules comptent les propriétés démontrées dans ce graphe, et non la nature des ensembles qui représentent les entiers.
+
+  - id: n-omega
+    etiquette: Construction de ω
+    nature: proposition
+    titre: Le plus petit ensemble inductif
+    enonce: |
+      Il existe un unique ensemble $\omega$ qui est inductif et inclus dans tout ensemble inductif. On l'appelle l'ensemble des **entiers naturels** et on le note aussi $\mathbb N$.
+    preuve: |
+      Soit $I$ un ensemble inductif, qui existe par l'axiome de l'infini. Posons, par séparation,
+      $$\omega = \{x \in I : x \text{ appartient à toute partie inductive de } I\}.$$
+      L'ensemble $\omega$ est inductif : $\varnothing$ appartient à toute partie inductive de $I$, et si $x$ appartient à toutes, $S(x)$ aussi.
+
+      Soit $J$ un ensemble inductif quelconque. Alors $I \cap J$ est une partie inductive de $I$, donc $\omega \subset I \cap J \subset J$.
+
+      Si $\omega'$ vérifie les mêmes propriétés, on a $\omega \subset \omega'$ et $\omega' \subset \omega$, d'où $\omega = \omega'$ par extensionnalité. En particulier, $\omega$ ne dépend pas du choix de $I$.
+    remarques:
+      - |
+        On ne peut pas définir $\omega$ comme « l'intersection de tous les ensembles inductifs », car la classe des ensembles inductifs n'est pas un ensemble. Le détour par un ensemble inductif fixé $I$ est exactement ce qu'exige le schéma de séparation.
+
+  - id: n-recurrence
+    etiquette: Récurrence
+    nature: théorème
+    titre: Principe de récurrence
+    enonce: |
+      Soit $P(n)$ une propriété des entiers. Si $P(0)$ est vraie, et si $P(n)$ entraîne $P(S(n))$ pour tout $n \in \omega$, alors $P(n)$ est vraie pour tout $n \in \omega$.
+    preuve: |
+      La partie $A = \{n \in \omega : P(n)\}$, qui existe par séparation, contient $0$ et est stable par $S$ : elle est inductive. Par minimalité de $\omega$, on a $\omega \subset A$, donc $A = \omega$.
+    remarques:
+      - |
+        Ce principe, admis comme un axiome au lycée, est ici un théorème : il traduit le fait que $\omega$ est le **plus petit** ensemble inductif.
+
+  - id: n-transitif
+    etiquette: Entiers transitifs
+    nature: lemme
+    titre: Les entiers sont des ensembles transitifs
+    enonce: |
+      Tout $n \in \omega$ est un [[ensemble-transitif]] : si $m \in n$, alors $m \subset n$. De plus, tout élément d'un entier est un entier.
+    preuve: |
+      Par récurrence. L'ensemble vide est transitif. Supposons $n$ transitif et soit $x \in S(n) = n \cup \{n\}$. Si $x \in n$, alors $x \subset n \subset S(n)$ ; si $x = n$, alors $x \subset S(n)$. Donc $S(n)$ est transitif.
+
+      Pour la seconde assertion, la propriété « tout élément de $n$ appartient à $\omega$ » est vraie pour $0$, et si elle est vraie pour $n$, les éléments de $S(n)$ sont les éléments de $n$, qui sont des entiers, et $n$ lui-même.
+
+  - id: n-peano
+    etiquette: Axiomes de Peano
+    nature: théorème
+    titre: Les axiomes de Peano sont des théorèmes
+    enonce: |
+      La fonction $S$ envoie $\omega$ dans $\omega$, elle est injective sur $\omega$, et $0$ n'est le successeur d'aucun entier. Avec le principe de récurrence, ce sont les axiomes de Peano.
+    preuve: |
+      $\omega$ est inductif, donc stable par $S$. Comme $n \in S(n)$, le successeur n'est jamais vide.
+
+      Supposons $S(n) = S(m)$ avec $n \neq m$. Comme $n \in S(n) = m \cup \{m\}$ et $n \neq m$, on a $n \in m$ ; symétriquement, $m \in n$. Or on ne peut avoir à la fois $n \in m$ et $m \in n$, d'après l'{{zf-bienfonde|axiome de fondation}}.
+    remarques:
+      - |
+        Les axiomes de Peano au second ordre caractérisent $\mathbb N$ à isomorphisme près (Dedekind, 1888). Leur version au premier ordre, où la récurrence devient un schéma, admet au contraire des modèles non standard, d'après le théorème de compacité.
+
+  - id: n-ordre
+    etiquette: Bon ordre sur ℕ
+    nature: théorème
+    titre: L'appartenance est un bon ordre sur ω
+    enonce: |
+      Pour $m, n \in \omega$, posons $m < n$ si $m \in n$. C'est un ordre strict total, et toute partie non vide de $\omega$ a un plus petit élément. De plus $m < n \Leftrightarrow m \subsetneq n$. Ainsi $\omega$ est un [[ordinal]], et chaque entier est l'ensemble des entiers qui lui sont inférieurs.
+    preuve: |
+      **Transitivité et irréflexivité.** Si $k \in m$ et $m \in n$, alors $k \in n$ car $n$ est transitif. Et $n \notin n$ par fondation.
+
+      **Deux lemmes.** (a) Pour tout $n$, on a $0 = n$ ou $0 \in n$ : c'est vrai pour $0$, et si c'est vrai pour $n$, alors $0 \in S(n)$ puisque $n \in S(n)$ et $n \subset S(n)$. (b) Si $m \in n$, alors $S(m) = n$ ou $S(m) \in n$ : par récurrence sur $n$, le cas $n = 0$ est vide ; si $m \in S(n)$, ou bien $m \in n$ et l'hypothèse donne $S(m) \in S(n)$, ou bien $m = n$ et $S(m) = S(n)$.
+
+      **Trichotomie.** Montrons par récurrence sur $m$ que, pour tout $n$, on a $m \in n$, $m = n$ ou $n \in m$. Pour $m = 0$, c'est le lemme (a). Supposons-le pour $m$, et soit $n$. Si $n \in m$ ou $n = m$, alors $n \in S(m)$. Si $m \in n$, le lemme (b) donne $S(m) = n$ ou $S(m) \in n$.
+
+      **Bon ordre.** Soit $A \subset \omega$ non vide. Par fondation, il existe $m \in A$ tel que $m \cap A = \varnothing$. Pour tout $a \in A$, on a $a \notin m$, donc $m = a$ ou $m \in a$ par trichotomie : $m$ est le plus petit élément de $A$.
+
+      **Inclusion.** Si $m \in n$, alors $m \subset n$ par transitivité, et $m \neq n$ car $n \notin n$. Réciproquement, si $m \subsetneq n$ et que l'on avait $n \in m$ ou $n = m$, on aurait $n \in n$ ou $m = n$.
+    remarques:
+      - |
+        La démonstration du bon ordre utilise l'axiome de fondation, mais on peut s'en passer : par récurrence, on montre directement que toute partie de $\omega$ sans plus petit élément est vide.
+
+  - id: n-recdef
+    etiquette: Définition par récurrence
+    nature: théorème
+    titre: Théorème de définition par récurrence
+    enonce: |
+      Soit $E$ un ensemble, $a \in E$ et $g : E \to E$ une [[application]]. Il existe une unique application $f : \omega \to E$ telle que
+      $$f(0) = a \quad \text{et} \quad f(S(n)) = g(f(n)) \ \text{ pour tout } n \in \omega.$$
+    preuve: |
+      Appelons **approximation** une application $h$ définie sur un entier $k \neq 0$, à valeurs dans $E$, telle que $h(0) = a$ et $h(S(m)) = g(h(m))$ dès que $S(m) \in k$.
+
+      *Unicité.* Deux approximations $h$ et $h'$ coïncident sur l'intersection de leurs domaines : par récurrence sur $m$, si $m$ est dans les deux domaines, $h(m) = h'(m)$, car $h(0) = a = h'(0)$ et $h(S(m)) = g(h(m)) = g(h'(m)) = h'(S(m))$.
+
+      *Existence.* Par récurrence, pour tout $n$ il existe une approximation de domaine $S(n)$ : pour $n = 0$, c'est $\{(0, a)\}$ ; si $h$ convient pour $n$, alors $h \cup \{(S(n), g(h(n)))\}$ convient pour $S(n)$, l'injectivité de $S$ garantissant que la nouvelle condition ne porte que sur le point ajouté.
+
+      On pose alors $f(n) = h(n)$, pour $h$ une approximation de domaine $S(n)$. Ces approximations forment un ensemble, partie de $\mathcal P(\omega \times E)$, et $f$, réunion de leurs graphes, est une application d'après l'unicité. Elle vérifie les deux relations, et toute application qui les vérifie coïncide avec $f$ par récurrence.
+    remarques:
+      - |
+        Le principe de récurrence prouve une propriété ; ce théorème **construit** une fonction. Il faut les distinguer : c'est lui, et non la récurrence seule, qui donne un sens à des définitions comme $u_{n+1} = g(u_n)$.
+
+  - id: n-operations
+    etiquette: Addition, multiplication
+    nature: définition
+    titre: Opérations arithmétiques
+    enonce: |
+      Pour $m \in \omega$ fixé, le théorème de définition par récurrence fournit des applications $n \mapsto m + n$ et $n \mapsto m \cdot n$ caractérisées par
+      $$m + 0 = m, \quad m + S(n) = S(m + n), \qquad m \cdot 0 = 0, \quad m \cdot S(n) = m \cdot n + m.$$
+      On a alors $S(n) = n + 1$.
+    remarques:
+      - |
+        Les propriétés usuelles s'établissent par récurrence. Par exemple, l'associativité $(k + m) + n = k + (m + n)$ se démontre par récurrence sur $n$ : pour $n = 0$, les deux membres valent $k + m$, et $(k + m) + S(n) = S((k+m)+n) = S(k + (m+n)) = k + S(m+n) = k + (m + S(n))$.
+      - |
+        La commutativité demande deux récurrences imbriquées : on montre d'abord $0 + n = n$ et $S(m) + n = S(m + n)$, puis $m + n = n + m$ par récurrence sur $n$.
+
+aretes:
+  - [n-succ, n-omega]
+  - [n-omega, n-recurrence]
+  - [n-recurrence, n-transitif]
+  - [n-transitif, n-peano]
+  - [n-transitif, n-ordre]
+  - [n-recurrence, n-ordre]
+  - [n-peano, n-recdef]
+  - [n-recurrence, n-recdef]
+  - [n-recdef, n-operations]

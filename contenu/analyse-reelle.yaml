@@ -1,0 +1,153 @@
+# Niveau 1 : structure interne de l'analyse réelle.
+# Les entrées sont des nœuds du graphe parent ; chacune doit être un ancêtre
+# du conteneur, et chaque parent direct du conteneur doit figurer parmi elles.
+
+graphe: analyse-reelle
+titre: Analyse réelle
+conteneur: analyse-reelle
+
+entrees:
+  r: [ar-corps]
+  top: [ar-topo]
+
+noeuds:
+  - id: ar-corps
+    etiquette: Borne supérieure
+    nature: axiome
+    titre: ℝ, corps ordonné complet
+    enonce: |
+      $\mathbb R$ est un [[corps-ordonne|corps totalement ordonné]] dans lequel toute partie non vide et majorée admet une [[borne-superieure]].
+    texte: |
+      C'est la seule propriété qui distingue $\mathbb R$ de $\mathbb Q$ parmi les corps totalement ordonnés : tout le reste de l'analyse réelle s'en déduit. L'existence et l'unicité d'un tel corps sont établies au nœud {{r|$\mathbb R$}} de l'édifice.
+
+      La valeur absolue $|x| = \max(x, -x)$ vérifie l'inégalité triangulaire, et $d(x,y) = |x-y|$ fait de $\mathbb R$ un [[espace-metrique]].
+
+  - id: ar-archimede
+    etiquette: Archimède, densité de ℚ
+    nature: théorème
+    titre: Propriété d'Archimède et densité de ℚ
+    enonce: |
+      $\mathbb R$ est [[archimedien]], et tout intervalle ouvert non vide $]a,b[$ contient un rationnel.
+    preuve: |
+      Supposons qu'il existe $x > 0$ et $y$ tels que $nx \leqslant y$ pour tout $n \in \mathbb N$. La partie $A = \{nx : n \in \mathbb N\}$ est non vide et majorée par $y$ ; soit $s = \sup A$. Comme $s - x < s$, le réel $s - x$ ne majore pas $A$ : il existe $n$ tel que $nx > s - x$, d'où $(n+1)x > s$, ce qui contredit $(n+1)x \in A$.
+
+      Soit $a < b$. Par la propriété d'Archimède, il existe $n \geqslant 1$ tel que $n(b-a) > 1$. L'ensemble des entiers relatifs strictement supérieurs à $na$ est non vide, et minoré par un entier d'après la propriété d'Archimède appliquée à $-na$ ; comme toute partie non vide et minorée de $\mathbb Z$ admet un plus petit élément, on peut considérer le plus petit d'entre eux, $m$. Alors $m - 1 \leqslant na < m$, donc
+      $$na < m \leqslant na + 1 < nb,$$
+      et $a < m/n < b$.
+
+  - id: ar-suites
+    etiquette: Suites et limites
+    nature: chapitre
+    titre: Suites réelles et limites
+    texte: |
+      Une [[suite]] réelle $(u_n)$ converge vers $\ell$ au sens de la [[limite-suite|définition]] métrique ; la limite est unique, et toute suite convergente est bornée.
+    enonce: |
+      **Théorème de la limite monotone.** Toute suite réelle croissante et majorée converge, vers la borne supérieure de l'ensemble de ses termes.
+    preuve: |
+      Soit $(u_n)$ croissante et majorée, et $s = \sup\{u_n : n \in \mathbb N\}$, qui existe par la propriété de la borne supérieure. Soit $\varepsilon > 0$. Le réel $s - \varepsilon$ ne majore pas l'ensemble des termes : il existe $N$ tel que $u_N > s - \varepsilon$. Pour tout $n \geqslant N$, la croissance donne $s - \varepsilon < u_N \leqslant u_n \leqslant s$, donc $|u_n - s| < \varepsilon$.
+    remarques:
+      - |
+        La suite $(1/n)_{n \geqslant 1}$ tend vers $0$ précisément parce que $\mathbb R$ est archimédien : pour $\varepsilon > 0$, il faut un $N$ tel que $N\varepsilon > 1$.
+
+  - id: ar-bw
+    etiquette: Bolzano-Weierstrass
+    nature: théorème
+    titre: Théorème de Bolzano-Weierstrass
+    enonce: |
+      Toute suite réelle bornée admet une [[suite-extraite]] convergente.
+    preuve: |
+      **Lemme des pics.** Toute suite réelle $(u_n)$ admet une suite extraite monotone. Disons que $n$ est un *pic* si $u_n \geqslant u_m$ pour tout $m > n$.
+
+      Si les pics sont en nombre infini, on les range par ordre croissant $n_0 < n_1 < \cdots$, ce qui ne demande aucun choix puisque $\mathbb N$ est bien ordonné ; la suite $(u_{n_k})$ est alors décroissante.
+
+      S'ils sont en nombre fini, soit $n_0$ un entier strictement supérieur à tous les pics. Aucun $n \geqslant n_0$ n'est un pic, donc il existe $m > n$ avec $u_m > u_n$ ; on définit par récurrence $n_{k+1}$ comme le **plus petit** tel entier pour $n = n_k$. La suite $(u_{n_k})$ est strictement croissante.
+
+      Si $(u_n)$ est bornée, la suite extraite monotone obtenue l'est aussi ; elle converge par le théorème de la limite monotone, appliqué à elle ou à son opposée.
+    remarques:
+      - |
+        Cette démonstration n'utilise aucune forme de l'axiome du choix : chaque choix est remplacé par la désignation d'un plus petit élément de $\mathbb N$.
+
+  - id: ar-cauchy
+    etiquette: Complétude
+    nature: théorème
+    titre: Complétude de ℝ
+    enonce: |
+      Toute [[suite-cauchy|suite de Cauchy]] réelle converge : $\mathbb R$ est un espace métrique complet.
+    preuve: |
+      Soit $(u_n)$ de Cauchy. Pour $\varepsilon = 1$, il existe $N$ tel que $|u_n - u_N| < 1$ pour $n \geqslant N$ ; la suite est donc bornée par $\max(|u_0|, \dots, |u_{N-1}|, |u_N| + 1)$. Par Bolzano-Weierstrass, une suite extraite $(u_{\varphi(n)})$ converge vers un réel $\ell$.
+
+      Soit $\varepsilon > 0$, et $N'$ tel que $|u_p - u_q| < \varepsilon/2$ pour $p, q \geqslant N'$. Il existe $k \geqslant N'$ tel que $|u_{\varphi(k)} - \ell| < \varepsilon/2$, et $\varphi(k) \geqslant k \geqslant N'$. Pour $n \geqslant N'$, on obtient
+      $$|u_n - \ell| \leqslant |u_n - u_{\varphi(k)}| + |u_{\varphi(k)} - \ell| < \varepsilon.$$
+
+  - id: ar-topo
+    etiquette: Topologie de ℝ
+    nature: chapitre
+    titre: Topologie de ℝ
+    texte: |
+      La distance $|x - y|$ définit les [[ouvert|ouverts]] et les [[ferme|fermés]] de $\mathbb R$. Deux théorèmes décrivent ses parties remarquables.
+    enonce: |
+      **Connexes.** Les parties [[connexe|connexes]] de $\mathbb R$ sont exactement les [[intervalle|intervalles]].
+
+      **Compacts (Borel-Lebesgue).** Une partie de $\mathbb R$ est [[compact|compacte]] si et seulement si elle est fermée et bornée. En particulier, tout [[segment]] $[a,b]$ est compact.
+    preuve: |
+      *Admis ici.* Le point délicat est la compacité du segment. On considère l'ensemble des $x \in [a,b]$ tels que $[a,x]$ soit recouvert par un nombre fini d'ouverts du recouvrement donné ; il contient $a$, et l'on montre que sa borne supérieure vaut $b$ et lui appartient. C'est encore la propriété de la borne supérieure qui fait tout le travail.
+
+  - id: continuite
+    etiquette: Continuité
+    nature: chapitre
+    titre: Continuité
+    sous: continuite
+    texte: |
+      [[continuite-point|Continuité en un point]], caractérisation séquentielle, puis les grands théorèmes sur un intervalle ou un segment : valeurs intermédiaires, bornes atteintes, continuité uniforme, bijection continue.
+
+  - id: ar-deriv
+    etiquette: Dérivabilité
+    nature: chapitre
+    titre: Dérivabilité
+    texte: |
+      Une fonction [[derivable]] en un point y est continue. Les théorèmes de Rolle et des accroissements finis relient la dérivée aux variations de la fonction.
+    enonce: |
+      **Théorème de Rolle.** Soit $f : [a,b] \to \mathbb R$ continue, dérivable sur $]a,b[$, avec $f(a) = f(b)$ et $a < b$. Il existe $c \in \,]a,b[$ tel que $f'(c) = 0$.
+    preuve: |
+      Par le théorème des bornes atteintes, $f$ admet un minimum $m$ et un maximum $M$ sur $[a,b]$. Si $m = M$, $f$ est constante et tout $c$ convient. Sinon, l'une des deux valeurs diffère de $f(a) = f(b)$ ; supposons que ce soit $M$, atteint en un point $c$ nécessairement intérieur.
+
+      Pour $x \in \,]c, b]$, on a $\dfrac{f(x) - f(c)}{x - c} \leqslant 0$, et pour $x \in [a, c[$, ce taux est $\geqslant 0$. En passant à la limite en $c$ de part et d'autre, $f'(c) \leqslant 0$ et $f'(c) \geqslant 0$, d'où $f'(c) = 0$. Le cas où $m$ diffère de $f(a)$ est symétrique.
+
+  - id: ar-riemann
+    etiquette: Intégrale de Riemann
+    nature: chapitre
+    titre: Intégrale de Riemann
+    texte: |
+      L'intégrale est d'abord définie pour les [[fonction-escalier|fonctions en escalier]], puis étendue aux fonctions [[riemann-integrable|intégrables au sens de Riemann]].
+    enonce: |
+      Toute fonction continue sur un segment $[a,b]$ est intégrable au sens de Riemann.
+    preuve: |
+      Soit $f$ continue sur $[a,b]$ et $\varepsilon > 0$. Par le théorème de Heine, $f$ est [[continuite-uniforme|uniformément continue]] : il existe $\delta > 0$ tel que $|x - y| < \delta$ entraîne $|f(x) - f(y)| < \varepsilon$. Soit une [[subdivision]] $(x_i)$ de pas inférieur à $\delta$, et posons, sur chaque $[x_i, x_{i+1}[$,
+      $$\varphi = f(x_i) - \varepsilon, \qquad \psi = f(x_i) + \varepsilon,$$
+      en prolongeant en $b$ par $f(b)$. Pour $x \in [x_i, x_{i+1}[$, on a $|x - x_i| < \delta$, donc $\varphi(x) \leqslant f(x) \leqslant \psi(x)$. Ce sont des fonctions en escalier, et $\int (\psi - \varphi) = 2\varepsilon(b - a)$, qui est arbitrairement petit.
+
+  - id: ar-tfa
+    etiquette: Théorème fondamental
+    nature: théorème
+    titre: Théorème fondamental de l'analyse
+    enonce: |
+      Soit $f$ continue sur un [[intervalle]] $I$ et $a \in I$. La fonction $F : x \mapsto \displaystyle\int_a^x f$ est dérivable sur $I$, et $F' = f$.
+    preuve: |
+      Soit $x \in I$ et $h \neq 0$ tel que $x + h \in I$. La relation de Chasles et l'intégrale d'une constante donnent
+      $$\left| \frac{F(x+h) - F(x)}{h} - f(x) \right| = \left| \frac{1}{h} \int_x^{x+h} \big(f(t) - f(x)\big)\,dt \right| \leqslant \sup_{|t - x| \leqslant |h|} |f(t) - f(x)|.$$
+      Par continuité de $f$ en $x$, ce majorant tend vers $0$ quand $h \to 0$.
+
+aretes:
+  - [ar-corps, ar-archimede]
+  - [ar-archimede, ar-suites]
+  - [ar-suites, ar-bw]
+  - [ar-bw, ar-cauchy]
+  - [ar-bw, ar-topo]
+  - [ar-corps, ar-topo]
+  - [ar-suites, continuite]
+  - [ar-topo, continuite]
+  - [ar-bw, continuite]
+  - [continuite, ar-deriv]
+  - [continuite, ar-riemann]
+  - [ar-deriv, ar-tfa]
+  - [ar-riemann, ar-tfa]

@@ -1,0 +1,171 @@
+# Niveau 1 : structure interne des axiomes de ZF et de leurs premières conséquences.
+
+graphe: zf
+titre: Axiomes de ZF
+conteneur: zf
+
+entrees:
+  log: [zf-langage]
+
+noeuds:
+  - id: zf-langage
+    etiquette: Langage de ZF
+    nature: définition
+    enonce: |
+      Le langage de $\mathsf{ZF}$ est le langage du premier ordre égalitaire dont le seul symbole non logique est un symbole de relation binaire $\in$. Une [[formule]] y est construite à partir des formules atomiques $x \in y$ et $x = y$ par les connecteurs et les quantificateurs $\forall x$, $\exists x$, où $x$ parcourt les [[ensemble|ensembles]].
+    remarques:
+      - |
+        Les notations usuelles sont des abréviations. Ainsi $x \subset y$ abrège $\forall z\, (z \in x \Rightarrow z \in y)$, et $y = \{x \in A : \varphi(x)\}$ abrège $\forall x\, (x \in y \Leftrightarrow (x \in A \wedge \varphi(x)))$. On ne sort jamais du langage : on le rend lisible.
+
+  - id: zf-ext
+    etiquette: Extensionnalité
+    nature: axiome
+    titre: Axiome d'extensionnalité
+    enonce: |
+      $$\forall A\, \forall B\, \big[\forall x\, (x \in A \Leftrightarrow x \in B) \Rightarrow A = B\big].$$
+    texte: |
+      Un ensemble est entièrement déterminé par ses éléments. C'est cet axiome qui rend **unique** tout ensemble décrit par une propriété de ses éléments, et qui justifie donc l'emploi de l'article défini : *la* paire, *la* réunion, *l'*ensemble vide.
+
+  - id: zf-sep
+    etiquette: Séparation
+    nature: axiome
+    titre: Schéma de séparation
+    enonce: |
+      Pour toute formule $\varphi(x, p_1, \dots, p_k)$ où $B$ n'est pas libre :
+      $$\forall p_1 \dots \forall p_k\, \forall A\, \exists B\, \forall x\, \big[x \in B \Leftrightarrow (x \in A \wedge \varphi)\big].$$
+    texte: |
+      On note $B = \{x \in A : \varphi(x)\}$. C'est un schéma : un axiome par [[formule]] $\varphi$.
+
+  - id: zf-paire
+    etiquette: Paire
+    nature: axiome
+    titre: Axiome de la paire
+    enonce: |
+      $$\forall a\, \forall b\, \exists P\, \forall x\, \big[x \in P \Leftrightarrow (x = a \vee x = b)\big].$$
+    texte: |
+      Par extensionnalité, $P$ est unique ; on le note $\{a, b\}$. Pour $a = b$, on obtient le singleton $\{a\} = \{a, a\}$.
+
+  - id: zf-reunion
+    etiquette: Réunion
+    nature: axiome
+    titre: Axiome de la réunion
+    enonce: |
+      $$\forall \mathcal F\, \exists U\, \forall x\, \big[x \in U \Leftrightarrow \exists A\, (A \in \mathcal F \wedge x \in A)\big].$$
+    texte: |
+      L'ensemble $U$, unique par extensionnalité, est noté $\bigcup \mathcal F$ : ce sont les éléments des éléments de $\mathcal F$.
+
+  - id: zf-parties
+    etiquette: Parties
+    nature: axiome
+    titre: Axiome des parties
+    enonce: |
+      $$\forall A\, \exists P\, \forall x\, \big[x \in P \Leftrightarrow x \subset A\big].$$
+    texte: |
+      On note $\mathcal P(A)$ cet ensemble. Il est indispensable pour former le [[produit-cartesien]], qui s'obtient par séparation dans $\mathcal P(\mathcal P(A \cup B))$.
+
+  - id: zf-rempl
+    etiquette: Remplacement
+    nature: axiome
+    titre: Schéma de remplacement
+    enonce: |
+      Pour toute formule $\varphi(x, y, p_1, \dots, p_k)$ : si pour tout $x \in A$ il existe un unique $y$ tel que $\varphi(x, y)$, alors il existe un ensemble $B$ contenant tous ces $y$, pour $x$ parcourant $A$.
+    texte: |
+      Il affirme que l'image d'un ensemble par une correspondance fonctionnelle définissable est encore un ensemble. Il est nécessaire pour les définitions par récurrence transfinie et pour prouver que tout [[bon-ordre]] est isomorphe à un [[ordinal]] ; l'analyse usuelle n'en a presque jamais besoin.
+
+  - id: zf-infini
+    etiquette: Infini
+    nature: axiome
+    titre: Axiome de l'infini
+    enonce: |
+      Il existe un ensemble [[inductif-successeur|inductif]] :
+      $$\exists I\, \big[\varnothing \in I \wedge \forall x\, (x \in I \Rightarrow x \cup \{x\} \in I)\big].$$
+    texte: |
+      C'est le seul axiome qui affirme l'existence d'un ensemble infini ; sans lui, tous les ensembles construits seraient finis. Il fonde la construction de {{n|$\mathbb N$}}.
+
+  - id: zf-fond
+    etiquette: Fondation
+    nature: axiome
+    titre: Axiome de fondation
+    enonce: |
+      Tout ensemble non vide $A$ possède un élément $x$ tel que $x \cap A = \varnothing$.
+    texte: |
+      La relation $\in$ est donc bien fondée : il n'existe pas de « descente infinie » $\cdots \in x_2 \in x_1 \in x_0$ formant un ensemble. Cet axiome ne sert presque jamais en mathématiques usuelles, mais il simplifie la théorie des ordinaux.
+
+  - id: zf-vide
+    etiquette: Ensemble vide
+    nature: proposition
+    titre: Existence et unicité de l'ensemble vide
+    enonce: |
+      Il existe un unique ensemble sans élément, noté $\varnothing$.
+    preuve: |
+      En logique du premier ordre, le domaine d'un modèle est non vide : la formule $\exists A\, (A = A)$ est un théorème logique. Soit donc un ensemble $A$. Par séparation avec la formule $x \neq x$, l'ensemble $\{x \in A : x \neq x\}$ existe, et il n'a aucun élément.
+
+      Si $V$ et $V'$ n'ont aucun élément, la condition $x \in V \Leftrightarrow x \in V'$ est vraie pour tout $x$, les deux membres étant faux ; par extensionnalité, $V = V'$.
+
+  - id: zf-russell
+    etiquette: Paradoxe de Russell
+    nature: proposition
+    titre: Il n'existe pas d'ensemble de tous les ensembles
+    enonce: |
+      Pour tout ensemble $A$, l'ensemble $R = \{x \in A : x \notin x\}$ n'appartient pas à $A$. En particulier, aucun ensemble ne contient tous les ensembles.
+    preuve: |
+      Supposons $R \in A$. Par définition de $R$, on a alors $R \in R \Leftrightarrow R \notin R$, ce qui est contradictoire. Donc $R \notin A$, et $A$ ne contient pas tous les ensembles.
+    remarques:
+      - |
+        La démonstration n'utilise que le schéma de séparation, et elle explique sa forme : on ne peut former $\{x : \varphi(x)\}$ qu'à l'intérieur d'un ensemble $A$ déjà construit. Le schéma de compréhension naïf, sans $A$, est contradictoire.
+
+  - id: zf-operations
+    etiquette: Opérations booléennes
+    nature: proposition
+    titre: Réunion, intersection, différence
+    enonce: |
+      Pour tous ensembles $A$ et $B$, les ensembles $A \cup B$, $A \cap B$ et $A \setminus B$ existent. Pour toute famille non vide $\mathcal F$, l'intersection $\bigcap \mathcal F$ existe.
+    preuve: |
+      On pose $A \cup B = \bigcup \{A, B\}$, par les axiomes de la paire et de la réunion. On pose $A \cap B = \{x \in A : x \in B\}$ et $A \setminus B = \{x \in A : x \notin B\}$, par séparation.
+
+      Si $\mathcal F$ est non vide, on choisit $A_0 \in \mathcal F$ et l'on pose $\bigcap \mathcal F = \{x \in A_0 : \forall A\, (A \in \mathcal F \Rightarrow x \in A)\}$. Cet ensemble ne dépend pas de $A_0$, par extensionnalité, puisque ses éléments sont exactement ceux qui appartiennent à tous les éléments de $\mathcal F$.
+    remarques:
+      - |
+        L'intersection d'une famille **vide** n'existe pas : elle devrait contenir tous les ensembles, ce que le paradoxe de Russell interdit.
+
+  - id: zf-bienfonde
+    etiquette: Pas de x ∈ x
+    nature: proposition
+    titre: Aucun ensemble n'appartient à lui-même
+    enonce: |
+      Pour tous ensembles $x$ et $y$, on a $x \notin x$, et l'on n'a pas à la fois $x \in y$ et $y \in x$.
+    preuve: |
+      Appliquons l'axiome de fondation au singleton $\{x\}$ : son seul élément $x$ doit vérifier $x \cap \{x\} = \varnothing$, donc $x \notin x$.
+
+      Appliquons-le à la paire $\{x, y\}$ : l'un de ses éléments est disjoint de $\{x, y\}$. Si c'est $x$, alors $y \notin x$ ; si c'est $y$, alors $x \notin y$.
+
+  - id: zf-choix
+    etiquette: Axiome du choix
+    nature: axiome
+    titre: Axiome du choix (ZFC)
+    choix: |
+      Cet axiome ne fait pas partie de $\mathsf{ZF}$. Il est indépendant des autres : ni lui ni sa négation ne se démontrent dans $\mathsf{ZF}$, si celle-ci est cohérente (Gödel, 1938 ; Cohen, 1963).
+    enonce: |
+      Pour toute famille $(A_i)_{i \in I}$ d'ensembles non vides, il existe une application $f$ de domaine $I$ telle que $f(i) \in A_i$ pour tout $i \in I$.
+    texte: |
+      Voir l'entrée [[axiome-choix]] du lexique et ses formes affaiblies, comme le [[choix-denombrable]].
+
+aretes:
+  - [zf-langage, zf-ext]
+  - [zf-langage, zf-sep]
+  - [zf-langage, zf-paire]
+  - [zf-langage, zf-reunion]
+  - [zf-langage, zf-parties]
+  - [zf-langage, zf-rempl]
+  - [zf-langage, zf-infini]
+  - [zf-langage, zf-fond]
+  - [zf-langage, zf-choix]
+  - [zf-ext, zf-vide]
+  - [zf-sep, zf-vide]
+  - [zf-sep, zf-russell]
+  - [zf-sep, zf-operations]
+  - [zf-paire, zf-operations]
+  - [zf-reunion, zf-operations]
+  - [zf-ext, zf-operations]
+  - [zf-paire, zf-bienfonde]
+  - [zf-fond, zf-bienfonde]

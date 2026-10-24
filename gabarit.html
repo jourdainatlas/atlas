@@ -1,0 +1,741 @@
+<title>ATLAS</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="author" content="Armand Jourdain">
+<link rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+/*KATEX*/
+</style>
+<style>
+/* Mise en page : un plan de l'édifice à gauche, qu'on lit de bas en haut comme une
+   coupe de bâtiment ; la fiche du nœud choisi à droite, composée comme une page de cours. */
+:root {
+  --papier: #f4f5f7;
+  --surface: #ffffff;
+  --encre: #1b1e24;
+  --encre-2: #4f5561;
+  --encre-3: #858b96;
+  --filet: #d8dbe1;
+  --trame: #e3e6eb;
+  --rouge: #b0001a;
+  --rouge-fond: #fbeef0;
+  --noeud: #ffffff;
+  --arete: #a1a6af;
+  --arete-vive: #1b1e24;
+  --choix: #8a6400;
+  --choix-fond: #fdf5dc;
+  --c-fond: #666b74;
+  --c-ord: #6a7d00;
+  --c-alg: #d26d00;
+  --c-top: #c0007a;
+  --c-mix: #2f343c;
+  --c-n: #0070c0;
+  --c-z: #00866b;
+  --c-q: #8a45ab;
+  --c-r: #c00000;
+  --c-c: #7d4718;
+  --ombre: 0 1px 2px rgba(27, 30, 36, .08), 0 4px 14px rgba(27, 30, 36, .08);
+
+  --f-titre: "Spectral", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --f-texte: "Spectral", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --f-ui: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --papier: #121418; --surface: #191c22; --encre: #e7e9ed; --encre-2: #aeb4be; --encre-3: #7c838e;
+    --filet: #2b2f37; --trame: #1f2329; --rouge: #ff6d7d; --rouge-fond: #351a1f; --noeud: #1d2027;
+    --arete: #5b616b; --arete-vive: #e7e9ed; --choix: #e6c15c; --choix-fond: #2c2512;
+    --c-fond: #a3a8b1; --c-ord: #b6ca4c; --c-alg: #ffa24a; --c-top: #ff62bd; --c-mix: #c9ced6;
+    --c-n: #55aaff; --c-z: #35caa4; --c-q: #c793e6; --c-r: #ff6b6b; --c-c: #d79c66;
+    --ombre: 0 1px 2px rgba(0, 0, 0, .4), 0 6px 18px rgba(0, 0, 0, .35);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --papier: #121418; --surface: #191c22; --encre: #e7e9ed; --encre-2: #aeb4be; --encre-3: #7c838e;
+  --filet: #2b2f37; --trame: #1f2329; --rouge: #ff6d7d; --rouge-fond: #351a1f; --noeud: #1d2027;
+  --arete: #5b616b; --arete-vive: #e7e9ed; --choix: #e6c15c; --choix-fond: #2c2512;
+  --c-fond: #a3a8b1; --c-ord: #b6ca4c; --c-alg: #ffa24a; --c-top: #ff62bd; --c-mix: #c9ced6;
+  --c-n: #55aaff; --c-z: #35caa4; --c-q: #c793e6; --c-r: #ff6b6b; --c-c: #d79c66;
+  --ombre: 0 1px 2px rgba(0, 0, 0, .4), 0 6px 18px rgba(0, 0, 0, .35);
+  color-scheme: dark;
+}
+
+html, body { height: 100%; }
+body {
+  background: var(--papier); color: var(--encre);
+  font-family: var(--f-ui); font-size: 15px; line-height: 1.5;
+}
+body::before {
+  content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px);
+  z-index: 10; background: var(--surface);
+}
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--rouge); outline-offset: 2px; }
+
+.app { display: grid; grid-template-rows: auto minmax(0, 1fr); height: 100%; }
+
+/* ---------------------------------------------------------------- en-tête */
+.entete {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px;
+  padding-block: 10px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  background: var(--surface); border-bottom: 1px solid var(--filet);
+  position: relative; z-index: 5;
+}
+.marque {
+  font-family: var(--f-titre); font-weight: 600; font-size: 19px; letter-spacing: .14em;
+  margin: 0; white-space: nowrap;
+}
+.fil { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin: 0; padding: 0; list-style: none; min-width: 0; flex: 1; }
+.fil li { display: flex; align-items: center; gap: 4px; font-size: 14px; color: var(--encre-2); white-space: nowrap; }
+.fil li + li::before { content: "›"; color: var(--encre-3); }
+.fil button {
+  border: 0; background: none; padding: 2px 6px; border-radius: 4px; cursor: pointer; color: var(--encre-2);
+}
+.fil button:hover { background: var(--trame); color: var(--encre); }
+.fil li:last-child button { color: var(--encre); font-weight: 600; cursor: default; }
+.fil li:last-child button:hover { background: none; }
+
+.legende { position: relative; }
+.legende > summary {
+  list-style: none; cursor: pointer; font-size: 13px; color: var(--encre-2);
+  border: 1px solid var(--filet); border-radius: 999px; padding: 3px 12px;
+}
+.legende > summary::-webkit-details-marker { display: none; }
+.legende[open] > summary { color: var(--encre); border-color: var(--encre-3); }
+.legende-corps {
+  position: absolute; right: 0; top: calc(100% + 8px); width: min(340px, calc(100vw - 32px));
+  background: var(--surface); border: 1px solid var(--filet); border-radius: 8px; box-shadow: var(--ombre);
+  padding: 14px 16px; display: grid; gap: 12px; font-size: 13px;
+}
+.legende-corps h3 { margin: 0 0 6px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--encre-3); font-weight: 500; }
+.legende-liste { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 0; padding: 0; list-style: none; }
+.legende-liste li { display: flex; align-items: center; gap: 6px; }
+.pastille { width: 12px; height: 12px; border-radius: 3px; border: 2px solid var(--c); background: color-mix(in srgb, var(--c) 14%, var(--noeud)); }
+
+/* ---------------------------------------------------------------- zones */
+.corps { display: grid; grid-template-columns: minmax(0, 1fr) minmax(340px, 440px); min-height: 0; }
+.cadre { position: relative; min-width: 0; min-height: 0; border-right: 1px solid var(--filet); }
+.vue {
+  position: absolute; inset: 0; overflow: auto;
+  background-color: var(--papier);
+  background-image: radial-gradient(var(--trame) 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+.dimension { position: relative; margin: 0 auto; }
+.plan { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+.plan svg { position: absolute; left: 0; top: 0; overflow: visible; }
+
+.commandes {
+  position: absolute; right: 12px; bottom: 12px; display: flex; gap: 4px;
+  background: var(--surface); border: 1px solid var(--filet); border-radius: 8px; padding: 4px;
+  box-shadow: var(--ombre);
+}
+.commandes button {
+  min-width: 34px; height: 30px; border: 0; background: none; border-radius: 5px; cursor: pointer;
+  font-size: 14px; color: var(--encre-2); padding: 0 8px;
+}
+.commandes button:hover { background: var(--trame); color: var(--encre); }
+.commandes .remonter { font-size: 13px; }
+
+/* ---------------------------------------------------------------- graphe */
+.rang-etiq {
+  position: absolute; left: 14px; font-family: var(--f-mono); font-size: 11px; color: var(--encre-3);
+  transform: translateY(-50%); letter-spacing: .04em; pointer-events: none;
+}
+.rang-trait { position: absolute; left: 70px; right: 0; border-top: 1px dashed var(--trame); pointer-events: none; }
+
+.arete { fill: none; stroke: var(--arete); stroke-width: 1.4; marker-end: url(#pointe); transition: stroke .15s, opacity .15s; }
+.arete.entree { stroke-dasharray: 4 4; }
+#pointe path { fill: var(--arete); }
+#pointe-vive path { fill: var(--arete-vive); }
+.plan.focus .arete { opacity: .25; }
+.plan.focus .arete.vive { opacity: 1; stroke: var(--arete-vive); stroke-width: 1.8; marker-end: url(#pointe-vive); }
+
+.noeud {
+  --c: var(--c-mix);
+  position: absolute; display: flex; align-items: center; justify-content: center; text-align: center;
+  padding: 4px 12px; border-radius: 8px; cursor: pointer;
+  border: 1.5px solid var(--c); background: color-mix(in srgb, var(--c) 9%, var(--noeud));
+  font-size: 13px; line-height: 1.25; font-weight: 500; color: var(--encre);
+  transition: transform .15s, box-shadow .15s, opacity .15s;
+}
+.noeud:hover { transform: translateY(-1px); box-shadow: var(--ombre); }
+.plan.focus .noeud { opacity: .4; }
+.plan.focus .noeud.voisin { opacity: 1; }
+.noeud.choisi { box-shadow: 0 0 0 3px var(--surface), 0 0 0 5px var(--c); }
+
+.fam-fond { --c: var(--c-fond); }
+.fam-ord  { --c: var(--c-ord); }
+.fam-alg  { --c: var(--c-alg); }
+.fam-top  { --c: var(--c-top); }
+.fam-mix  { --c: var(--c-mix); background: var(--noeud); }
+.fam-n { --c: var(--c-n); } .fam-z { --c: var(--c-z); } .fam-q { --c: var(--c-q); }
+.fam-r { --c: var(--c-r); } .fam-c { --c: var(--c-c); }
+.nombre { border-radius: 50%; border-width: 2.5px; padding: 0; font-family: var(--f-titre); font-size: 22px; font-weight: 400; color: var(--c); }
+
+/* natures, dans les graphes intérieurs */
+.nat-définition { --c: var(--rouge); background: var(--rouge-fond); }
+.nat-axiome { --c: var(--c-r); background: color-mix(in srgb, var(--c-r) 8%, var(--noeud)); border-width: 2px; }
+.nat-théorème { --c: var(--encre); background: var(--noeud); border: 3.5px double var(--c); }
+.nat-proposition, .nat-lemme, .nat-corollaire { --c: var(--encre-2); background: var(--noeud); }
+.nat-chapitre { --c: var(--c-mix); background: color-mix(in srgb, var(--c-mix) 6%, var(--noeud)); }
+.entree-amont {
+  --c: var(--encre-3); border-style: dashed; background: var(--papier); color: var(--encre-2); font-weight: 400;
+}
+.entree-amont::before {
+  content: "niveau supérieur"; position: absolute; top: -9px; left: 50%; transform: translateX(-50%);
+  font-family: var(--f-mono); font-size: 9.5px; letter-spacing: .05em; color: var(--encre-3);
+  background: var(--papier); padding: 0 4px; white-space: nowrap;
+}
+.etoile { color: var(--choix); font-weight: 600; margin-left: 3px; }
+.a-interieur::after {
+  content: ""; position: absolute; top: -7px; right: -7px; width: 16px; height: 16px; border-radius: 4px;
+  background:
+    linear-gradient(var(--c), var(--c)) 4px 4px / 8px 1.5px no-repeat,
+    linear-gradient(var(--c), var(--c)) 4px 10.5px / 8px 1.5px no-repeat,
+    linear-gradient(var(--c), var(--c)) 4px 4px / 1.5px 8px no-repeat,
+    linear-gradient(var(--c), var(--c)) 10.5px 4px / 1.5px 8px no-repeat,
+    var(--surface);
+  border: 1.5px solid var(--c);
+}
+
+/* ---------------------------------------------------------------- panneau */
+.panneau { min-width: 0; overflow: auto; background: var(--surface); display: flex; flex-direction: column; }
+.onglets {
+  display: flex; gap: 2px; padding: 8px 12px 0; border-bottom: 1px solid var(--filet);
+  position: sticky; top: 0; background: var(--surface); z-index: 2;
+}
+.onglets button {
+  border: 0; background: none; padding: 8px 12px; cursor: pointer; font-size: 14px; color: var(--encre-2);
+  border-bottom: 2px solid transparent; margin-bottom: -1px;
+}
+.onglets button[aria-selected="true"] { color: var(--encre); border-bottom-color: var(--rouge); font-weight: 500; }
+.onglet { padding: 20px 24px 40px; }
+
+.fiche { font-family: var(--f-texte); font-size: 17px; line-height: 1.55; }
+.fiche p { margin: 0 0 .7em; }
+.sur-titre {
+  font-family: var(--f-mono) !important; font-size: 11.5px !important; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--encre-3); margin: 0 0 4px !important; display: flex; gap: 10px; flex-wrap: wrap;
+}
+.sur-titre .sorte { color: var(--c, var(--encre-2)); font-weight: 500; }
+.fiche h2 {
+  font-family: var(--f-titre); font-weight: 600; font-size: 25px; line-height: 1.2; margin: 0 0 14px;
+  text-wrap: balance;
+}
+.contexte {
+  font-family: var(--f-ui); font-size: 13.5px; color: var(--encre-2); background: var(--papier);
+  border-radius: 6px; padding: 8px 12px; margin: 0 0 16px !important;
+}
+.choix {
+  font-family: var(--f-ui); font-size: 13.5px; line-height: 1.5; background: var(--choix-fond);
+  border-radius: 6px; padding: 10px 12px; margin: 0 0 16px;
+}
+.choix p { margin: 0; }
+.choix strong.tete { color: var(--choix); display: block; font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 2px; }
+.enonce {
+  border-left: 3px solid var(--c, var(--encre)); padding: 4px 0 4px 16px; margin: 4px 0 18px;
+}
+.enonce .tete, .remarque .tete, .preuve summary {
+  font-family: var(--f-ui); font-size: 11.5px; letter-spacing: .07em; text-transform: uppercase;
+  color: var(--encre-3); font-weight: 500;
+}
+.enonce .tete { display: block; margin-bottom: 4px; }
+.preuve { margin: 0 0 18px; border-top: 1px solid var(--filet); border-bottom: 1px solid var(--filet); padding: 10px 0; }
+.preuve summary { cursor: pointer; list-style: none; display: flex; align-items: center; gap: 8px; }
+.preuve summary::-webkit-details-marker { display: none; }
+.preuve summary::before { content: "+"; font-family: var(--f-mono); font-size: 14px; width: 12px; color: var(--encre-2); }
+.preuve[open] summary::before { content: "−"; }
+.preuve .contenu { padding-top: 10px; }
+.preuve .cqfd { display: block; text-align: right; color: var(--encre-2); font-size: 15px; }
+.remarque { margin: 0 0 14px; font-size: 16px; color: var(--encre); }
+.remarque .tete { display: block; margin-bottom: 2px; }
+.formule { overflow-x: auto; overflow-y: hidden; margin: .2em 0 .8em; padding: 2px 0; }
+.ouvrir {
+  display: inline-flex; align-items: center; gap: 8px; margin: 4px 0 20px; cursor: pointer;
+  border: 1.5px solid var(--encre); background: var(--encre); color: var(--surface);
+  border-radius: 6px; padding: 8px 14px; font-family: var(--f-ui); font-size: 14px; font-weight: 500;
+}
+.ouvrir:hover { background: var(--encre-2); border-color: var(--encre-2); }
+.liens { font-family: var(--f-ui); display: grid; gap: 12px; margin-top: 22px; padding-top: 16px; border-top: 1px solid var(--filet); }
+.liens h3 { margin: 0 0 6px; font-size: 11.5px; letter-spacing: .07em; text-transform: uppercase; color: var(--encre-3); font-weight: 500; }
+.puces { display: flex; flex-wrap: wrap; gap: 6px; }
+.puce {
+  --c: var(--encre-3);
+  border: 1px solid color-mix(in srgb, var(--c) 55%, var(--filet)); background: var(--surface);
+  border-radius: 999px; padding: 3px 10px; font-size: 13px; cursor: pointer; color: var(--encre);
+}
+.puce:hover { background: color-mix(in srgb, var(--c) 12%, var(--surface)); }
+.puce .niv { color: var(--encre-3); font-size: 11.5px; margin-left: 4px; }
+.vide { color: var(--encre-3); font-size: 13px; }
+.credits p { font-size: 13px; line-height: 1.55; color: var(--encre-2); margin: 0; }
+.credits a { color: inherit; text-underline-offset: 3px; }
+
+.terme {
+  color: var(--rouge); cursor: help; border-bottom: 1px dotted currentColor;
+  font-weight: 600; font-style: normal;
+}
+.terme:hover { background: var(--rouge-fond); }
+.lien-noeud { color: inherit; text-decoration: underline; text-decoration-color: var(--encre-3); text-underline-offset: 3px; }
+.lien-noeud:hover { text-decoration-color: var(--encre); }
+
+/* lexique */
+.recherche { width: 100%; box-sizing: border-box; padding: 8px 12px; border: 1px solid var(--filet); border-radius: 6px; background: var(--papier); color: var(--encre); font: inherit; font-size: 14px; margin-bottom: 16px; }
+.lexique { display: block; min-width: 0; }
+.onglet { min-width: 0; overflow-wrap: break-word; }
+.entree-lex { padding: 12px 0; border-bottom: 1px solid var(--filet); font-family: var(--f-texte); font-size: 16px; scroll-margin-top: 60px; border-radius: 4px; transition: background .6s; }
+.entree-lex h3 { font-family: var(--f-titre); font-size: 18px; font-weight: 600; margin: 0 0 4px; color: var(--rouge); }
+.entree-lex p { margin: 0 0 .5em; }
+.entree-lex .emplois { font-family: var(--f-ui); font-size: 12.5px; color: var(--encre-3); display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 6px; }
+.entree-lex.eclair { background: var(--rouge-fond); }
+
+/* bulle de définition au survol */
+.bulle {
+  position: fixed; z-index: 20; width: min(360px, calc(100vw - 24px)); box-sizing: border-box;
+  background: var(--surface); border: 1px solid var(--filet); border-radius: 8px; box-shadow: var(--ombre);
+  padding: 12px 14px 10px; font-family: var(--f-texte); font-size: 15.5px; line-height: 1.5;
+}
+.bulle .bulle-terme { font-family: var(--f-titre); font-weight: 600; color: var(--rouge); margin: 0 0 4px; font-size: 16.5px; }
+.bulle p { margin: 0 0 .5em; }
+.bulle .bulle-pied { font-family: var(--f-ui); font-size: 12px; color: var(--encre-3); margin: 6px 0 0; }
+.bulle .formule { margin: .2em 0 .5em; }
+
+/* ---------------------------------------------------------------- étroit */
+@media (max-width: 860px) {
+  .app { height: auto; display: block; }
+  .corps { display: block; }
+  .cadre { height: 64vh; border-right: 0; border-bottom: 1px solid var(--filet); }
+  .panneau { overflow: visible; }
+  .onglet { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .marque { font-size: 17px; white-space: normal; }
+  .entete { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
+  .fil { grid-column: 1 / -1; grid-row: 2; }
+  .commandes button { min-width: 30px; padding: 0 6px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; scroll-behavior: auto !important; }
+}
+</style>
+
+<div class="app">
+  <header class="entete">
+    <h1 class="marque">ATLAS</h1>
+    <ol class="fil" id="fil" aria-label="Position dans l'atlas"></ol>
+    <details class="legende">
+      <summary>Légende</summary>
+      <div class="legende-corps">
+        <div>
+          <h3>Familles de l'édifice</h3>
+          <ul class="legende-liste">
+            <li><span class="pastille" style="--c: var(--c-fond)"></span>Socle</li>
+            <li><span class="pastille" style="--c: var(--c-ord)"></span>Ordre</li>
+            <li><span class="pastille" style="--c: var(--c-alg)"></span>Algèbre</li>
+            <li><span class="pastille" style="--c: var(--c-top)"></span>Topologie</li>
+            <li><span class="pastille" style="--c: var(--c-mix)"></span>Théorie mixte</li>
+            <li><span class="pastille" style="--c: var(--c-r); border-radius: 50%"></span>Nombres</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Natures, dans les graphes intérieurs</h3>
+          <ul class="legende-liste">
+            <li><span class="pastille" style="--c: var(--rouge)"></span>Définition</li>
+            <li><span class="pastille" style="--c: var(--encre); border-style: double; border-width: 3px"></span>Théorème</li>
+            <li><span class="pastille" style="--c: var(--encre-2)"></span>Proposition, lemme</li>
+            <li><span class="pastille" style="--c: var(--encre-3); border-style: dashed"></span>Venu du niveau supérieur</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Signes</h3>
+          <ul class="legende-liste" style="display: grid; gap: 6px">
+            <li><span class="pastille" style="--c: var(--encre-2)"></span>Coin carré : le nœud contient un graphe ; un clic l'ouvre.</li>
+            <li><span class="etoile">⋆</span>Fait intervenir l'axiome du choix ou l'une de ses formes faibles.</li>
+            <li><span class="terme" style="cursor: default">terme</span>Survoler pour lire la définition, cliquer pour l'ouvrir.</li>
+          </ul>
+        </div>
+      </div>
+    </details>
+  </header>
+
+  <main class="corps">
+    <section class="cadre" aria-label="Graphe de dépendances">
+      <div class="vue" id="vue">
+        <div class="dimension" id="dimension">
+          <div class="plan" id="plan"></div>
+        </div>
+      </div>
+      <div class="commandes" role="toolbar" aria-label="Affichage du graphe">
+        <button type="button" class="remonter" id="remonter" title="Revenir au niveau supérieur">↑ Remonter</button>
+        <button type="button" id="moins" title="Réduire" aria-label="Réduire">−</button>
+        <button type="button" id="plus" title="Agrandir" aria-label="Agrandir">+</button>
+        <button type="button" id="ajuster" title="Ajuster à la largeur">Ajuster</button>
+      </div>
+    </section>
+
+    <aside class="panneau" id="panneau">
+      <div class="onglets" role="tablist">
+        <button type="button" role="tab" id="tab-fiche" aria-selected="true" aria-controls="onglet-fiche">Fiche</button>
+        <button type="button" role="tab" id="tab-lexique" aria-selected="false" aria-controls="onglet-lexique">Lexique</button>
+      </div>
+      <div class="onglet" id="onglet-fiche" role="tabpanel" aria-labelledby="tab-fiche"></div>
+      <div class="onglet" id="onglet-lexique" role="tabpanel" aria-labelledby="tab-lexique" hidden>
+        <input class="recherche" id="filtre" type="search" placeholder="Chercher un terme" aria-label="Chercher un terme">
+        <div class="lexique" id="lexique"></div>
+      </div>
+    </aside>
+  </main>
+</div>
+
+<div class="bulle" id="bulle" role="tooltip" hidden></div>
+
+<script>
+const D = "__DONNEES__";
+const $ = s => document.querySelector(s);
+const etat = { graphe: D.racine, choisi: null, echelle: 1 };
+const FAM = n => n.famille;
+const NOMBRES = new Set(['n', 'z', 'q', 'r', 'c']);
+
+/* ------------------------------------------------------------ graphe */
+function dessiner(gid) {
+  const g = D.graphes[gid];
+  const plan = $('#plan');
+  plan.innerHTML = '';
+  plan.style.width = g.largeur + 'px';
+  plan.style.height = g.hauteur + 'px';
+
+  for (const r of g.rangs) {
+    const e = document.createElement('div');
+    e.className = 'rang-etiq'; e.style.top = r.y + 'px'; e.textContent = 'rang ' + r.rang;
+    const t = document.createElement('div');
+    t.className = 'rang-trait'; t.style.top = r.y + 'px';
+    plan.append(t, e);
+  }
+
+  const NS = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(NS, 'svg');
+  svg.setAttribute('width', g.largeur); svg.setAttribute('height', g.hauteur);
+  svg.setAttribute('aria-hidden', 'true');
+  svg.innerHTML = '<defs>' +
+    '<marker id="pointe" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z"/></marker>' +
+    '<marker id="pointe-vive" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z"/></marker>' +
+    '</defs>';
+  for (const a of g.aretes) {
+    const p = document.createElementNS(NS, 'path');
+    p.setAttribute('d', a.d);
+    p.setAttribute('class', 'arete' + (a.entree ? ' entree' : ''));
+    p.dataset.de = a.de; p.dataset.vers = a.vers;
+    svg.append(p);
+  }
+  plan.append(svg);
+
+  for (const pl of g.noeuds) {
+    const n = D.noeuds[pl.id];
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.dataset.id = pl.id;
+    b.style.left = (pl.x - pl.w / 2) + 'px'; b.style.top = (pl.y - pl.h / 2) + 'px';
+    b.style.width = pl.w + 'px'; b.style.height = pl.h + 'px';
+    const classes = ['noeud'];
+    if (pl.entree) {
+      classes.push('entree-amont');
+      b.dataset.entree = '1';
+      b.title = 'Venu de « ' + D.graphes[n.graphe].titre + ' » : cliquer pour y remonter';
+    } else {
+      classes.push('fam-' + FAM(n));
+      if (gid !== D.racine) classes.push('nat-' + n.nature);
+      if (NOMBRES.has(n.famille)) classes.push('nombre');
+      if (n.sous) { classes.push('a-interieur'); b.title = 'Ouvrir la structure interne de « ' + n.titre + ' »'; }
+    }
+    b.className = classes.join(' ');
+    const lib = document.createElement('span');
+    lib.textContent = n.etiquette;
+    b.append(lib);
+    if (n.choix && !pl.entree) {
+      const s = document.createElement('span'); s.className = 'etoile'; s.textContent = '⋆';
+      s.setAttribute('aria-label', 'axiome du choix'); b.append(s);
+    }
+    b.setAttribute('aria-label', (pl.entree ? 'Niveau supérieur : ' : '') + n.titre + (n.sous ? ', contient un graphe' : ''));
+    plan.append(b);
+  }
+}
+
+function surligner(id) {
+  const plan = $('#plan');
+  plan.querySelectorAll('.voisin').forEach(e => e.classList.remove('voisin'));
+  plan.querySelectorAll('.arete.vive').forEach(e => e.classList.remove('vive'));
+  if (!id) { plan.classList.remove('focus'); return; }
+  plan.classList.add('focus');
+  const ids = new Set([id]);
+  plan.querySelectorAll('.arete').forEach(p => {
+    if (p.dataset.de === id || p.dataset.vers === id) {
+      p.classList.add('vive'); ids.add(p.dataset.de); ids.add(p.dataset.vers);
+    }
+  });
+  plan.querySelectorAll('.noeud').forEach(b => { if (ids.has(b.dataset.id)) b.classList.add('voisin'); });
+}
+
+function appliquerEchelle() {
+  const g = D.graphes[etat.graphe];
+  $('#plan').style.transform = `scale(${etat.echelle})`;
+  const dim = $('#dimension');
+  dim.style.width = g.largeur * etat.echelle + 'px';
+  dim.style.height = g.hauteur * etat.echelle + 'px';
+}
+function echelleAjustee() {
+  const g = D.graphes[etat.graphe];
+  const l = $('#vue').clientWidth - 8;
+  return Math.max(0.55, Math.min(1, l / g.largeur));
+}
+
+/* ------------------------------------------------------------ navigation */
+function aller(gid, choisi = null, opts = {}) {
+  const change = gid !== etat.graphe || !$('#plan').childElementCount;
+  etat.graphe = gid; etat.choisi = choisi;
+  if (change) {
+    dessiner(gid);
+    etat.echelle = echelleAjustee();
+    appliquerEchelle();
+    const vue = $('#vue');
+    vue.scrollTop = vue.scrollHeight;
+    vue.scrollLeft = (vue.scrollWidth - vue.clientWidth) / 2;
+  }
+  document.querySelectorAll('.noeud.choisi').forEach(e => e.classList.remove('choisi'));
+  if (choisi) {
+    const b = document.querySelector(`.noeud[data-id="${choisi}"]:not([data-entree])`);
+    if (b) {
+      b.classList.add('choisi');
+      if (!opts.sansDefilement) b.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    }
+  }
+  fil();
+  fiche();
+  montrerOnglet('fiche');
+  $('#remonter').hidden = !D.graphes[gid].parent;
+  try { history.replaceState(null, '', '#' + gid + (choisi ? '.' + choisi : '')); } catch (e) {}
+}
+
+function chemin(gid) {
+  const c = [];
+  for (let g = gid; g; g = D.graphes[g].parent) c.unshift(g);
+  return c;
+}
+function fil() {
+  const ol = $('#fil'); ol.innerHTML = '';
+  for (const g of chemin(etat.graphe)) {
+    const li = document.createElement('li');
+    const b = document.createElement('button');
+    b.type = 'button'; b.textContent = D.graphes[g].titre;
+    if (g === etat.graphe) b.setAttribute('aria-current', 'location');
+    else {
+      const c = chemin(etat.graphe), suivant = c[c.indexOf(g) + 1];
+      b.addEventListener('click', () => aller(g, D.graphes[suivant].conteneur));
+    }
+    li.append(b); ol.append(li);
+  }
+}
+
+function remonter() {
+  const g = D.graphes[etat.graphe];
+  if (g.parent) aller(g.parent, g.conteneur);
+}
+
+function ouvrirNoeud(id) {
+  const n = D.noeuds[id];
+  if (!n) return;
+  aller(n.graphe, id);
+}
+
+/* ------------------------------------------------------------ fiche */
+const rang = n => (n.graphe === D.racine ? `<span>rang ${n.rang}</span>` : '');
+function puce(id, niveau) {
+  const n = D.noeuds[id];
+  const c = n.graphe === D.racine ? `var(--c-${n.famille})` : 'var(--encre-3)';
+  return `<button type="button" class="puce" data-n="${id}" style="--c: ${c}">${esc(n.titre)}${niveau ? '<span class="niv">↑</span>' : ''}</button>`;
+}
+const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+
+function couleurNoeud(n) {
+  if (n.graphe === D.racine) return `var(--c-${n.famille})`;
+  return { 'définition': 'var(--rouge)', 'axiome': 'var(--c-r)' }[n.nature] || 'var(--encre)';
+}
+
+function fiche() {
+  const o = $('#onglet-fiche');
+  const g = D.graphes[etat.graphe];
+  let id = etat.choisi, contexte = '';
+  if (!id && g.conteneur) {
+    id = g.conteneur;
+    contexte = '<p class="contexte">Vous êtes à l\'intérieur de ce nœud. Choisissez un élément du graphe pour en lire la fiche ; les nœuds en pointillés viennent du niveau supérieur.</p>';
+  }
+  if (!id) { o.innerHTML = accueil(); return; }
+  const n = D.noeuds[id];
+  const c = couleurNoeud(n);
+  let h = `<article class="fiche" style="--c: ${c}">`;
+  h += `<p class="sur-titre"><span class="sorte">${esc(n.sorte)}</span>${rang(n)}${n.graphe !== D.racine ? `<span>${esc(D.graphes[n.graphe].titre)}</span>` : ''}</p>`;
+  h += `<h2>${esc(n.titre)}${n.choix ? ' <span class="etoile">⋆</span>' : ''}</h2>`;
+  h += contexte;
+  if (n.choix) h += `<div class="choix"><strong class="tete">⋆ Axiome du choix</strong>${n.choix}</div>`;
+  if (n.texte) h += n.texte;
+  if (n.enonce) h += `<div class="enonce"><span class="tete">${n.nature === 'chapitre' ? 'Résultat principal' : 'Énoncé'}</span>${n.enonce}</div>`;
+  if (n.preuve) h += `<details class="preuve"><summary>Démonstration</summary><div class="contenu">${n.preuve}<span class="cqfd">□</span></div></details>`;
+  for (const r of n.remarques) h += `<div class="remarque"><span class="tete">Remarque</span>${r}</div>`;
+  if (n.sous && !contexte) h += `<button type="button" class="ouvrir" data-sous="${n.sous}">Ouvrir la structure interne <span aria-hidden="true">→</span></button>`;
+  h += '<div class="liens">';
+  const amont = n.parents.map(p => puce(p)).concat(n.amont.map(p => puce(p, true)));
+  h += `<div><h3>Repose sur</h3><div class="puces">${amont.length ? amont.join('') : '<span class="vide">Rien dans ce graphe : c\'est un point de départ.</span>'}</div></div>`;
+  h += `<div><h3>Sert à</h3><div class="puces">${n.enfants.length ? n.enfants.map(p => puce(p)).join('') : '<span class="vide">Aucun nœud de ce graphe ne l\'utilise encore.</span>'}</div></div>`;
+  h += '</div></article>';
+  o.innerHTML = h;
+  o.scrollTop = 0;
+  $('#panneau').scrollTop = 0;
+}
+
+function accueil() {
+  const g = D.graphes[D.racine];
+  const nTheo = g.noeuds.length;
+  return `<article class="fiche">
+    <p class="sur-titre"><span class="sorte">Prototype</span><span>${nTheo} théories</span><span>${Object.keys(D.lexique).length} termes</span></p>
+    <h2>L'édifice, de la logique aux grandes théories</h2>
+    <p>Chaque bulle est une théorie, et chaque flèche va d'une notion vers celle dont la définition l'utilise. Le graphe se lit de bas en haut : le <em>rang</em> d'une théorie est la longueur du plus long chemin qui la relie à la logique.</p>
+    <p>Seules les dépendances immédiates sont tracées. Une flèche absente ne signifie pas qu'une théorie est indépendante d'une autre, mais que le lien passe par un intermédiaire.</p>
+    <div class="enonce" style="--c: var(--encre)"><span class="tete">Utilisation</span>
+      <p>Cliquez une bulle pour lire sa fiche. Les bulles marquées d'un coin carré contiennent un graphe : un clic l'ouvre. Trois branches sont développées dans ce prototype : les {{zf}}, la construction de {{n}}, et l'{{ar}} jusqu'au chapitre {{co}}. Chaque proposition et chaque théorème y sont démontrés.</p>
+      <p>Les termes soulignés en pointillés, comme <span class="terme" data-g="borne-superieure" tabindex="0" role="button">borne supérieure</span>, affichent leur définition au survol ; un clic les ouvre dans le lexique.</p>
+    </div>
+    <p>Le signe <span class="etoile">⋆</span> marque les théories dont un théorème central équivaut à l'axiome du choix ou à l'une de ses formes faibles.</p>
+    <div class="liens credits">
+      <div><h3>Licence</h3>
+        <p>© 2026 Armand Jourdain. Le contenu d'ATLAS est mis à disposition selon les termes de la licence <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.fr" target="_blank" rel="license noopener">Creative Commons Attribution, Pas d'utilisation commerciale, Partage dans les mêmes conditions 4.0 International</a> (CC BY-NC-SA 4.0) : vous pouvez le reprendre et l'adapter en citant l'auteur, sans usage commercial, et en partageant vos adaptations sous la même licence.</p></div>
+      <div><h3>Crédits</h3>
+        <p>Formules composées avec <a href="https://katex.org" target="_blank" rel="noopener">KaTeX</a> (licence MIT, © Khan Academy et contributeurs). Polices Spectral et IBM Plex, sous licence SIL Open Font License, servies par Google Fonts.</p></div>
+    </div>
+  </article>`.replace('{{ar}}', '<a class="lien-noeud" href="#edifice.analyse-reelle" data-n="analyse-reelle">analyse réelle</a>')
+           .replace('{{co}}', '<a class="lien-noeud" href="#analyse-reelle.continuite" data-n="continuite">Continuité</a>')
+           .replace('{{zf}}', '<a class="lien-noeud" href="#edifice.zf" data-n="zf">axiomes de ZF</a>')
+           .replace('{{n}}', '<a class="lien-noeud" href="#edifice.n" data-n="n">ℕ</a>');
+}
+
+/* ------------------------------------------------------------ lexique */
+function remplirLexique() {
+  const L = Object.values(D.lexique).sort((a, b) => a.terme.localeCompare(b.terme, 'fr'));
+  $('#lexique').innerHTML = L.map(e => `<article class="entree-lex" id="lx-${e.id}" data-t="${esc(e.terme.toLowerCase())}">
+      <h3>${esc(e.terme)}</h3>${e.definition}
+      ${e.emplois.length ? `<div class="emplois">Employé dans ${e.emplois.map(i => puce(i)).join('')}</div>` : ''}
+    </article>`).join('');
+}
+function ouvrirTerme(id) {
+  cacherBulle(true);
+  montrerOnglet('lexique');
+  $('#filtre').value = ''; filtrer();
+  const e = document.getElementById('lx-' + id);
+  if (!e) return;
+  e.scrollIntoView({ block: 'start' });
+  e.classList.add('eclair');
+  setTimeout(() => e.classList.remove('eclair'), 1400);
+}
+function filtrer() {
+  const q = $('#filtre').value.trim().toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu, '');
+  document.querySelectorAll('.entree-lex').forEach(e => {
+    const t = e.dataset.t.normalize('NFD').replace(/\p{Diacritic}/gu, '');
+    e.hidden = q !== '' && !t.includes(q);
+  });
+}
+function montrerOnglet(nom) {
+  for (const t of ['fiche', 'lexique']) {
+    $('#tab-' + t).setAttribute('aria-selected', String(t === nom));
+    $('#onglet-' + t).hidden = t !== nom;
+  }
+}
+
+/* ------------------------------------------------------------ bulle */
+let minuterie = null, termeActif = null;
+function montrerBulle(el) {
+  const e = D.lexique[el.dataset.g];
+  if (!e) return;
+  clearTimeout(minuterie);
+  const b = $('#bulle');
+  if (termeActif !== el) {
+    b.innerHTML = `<p class="bulle-terme">${esc(e.terme)}</p>${e.definition}<p class="bulle-pied">Cliquer pour l'ouvrir dans le lexique</p>`;
+    termeActif = el;
+  }
+  b.hidden = false;
+  const r = el.getBoundingClientRect(), bw = b.offsetWidth, bh = b.offsetHeight;
+  let top = r.bottom + 8;
+  if (top + bh > innerHeight - 8 && r.top - bh - 8 > 8) top = r.top - bh - 8;
+  const left = Math.min(Math.max(8, r.left), innerWidth - bw - 8);
+  b.style.top = top + 'px'; b.style.left = left + 'px';
+}
+function cacherBulle(tout) {
+  clearTimeout(minuterie);
+  const f = () => { $('#bulle').hidden = true; termeActif = null; };
+  if (tout) f(); else minuterie = setTimeout(f, 220);
+}
+
+/* ------------------------------------------------------------ événements */
+$('#plan').addEventListener('click', ev => {
+  const b = ev.target.closest('.noeud');
+  if (!b) return;
+  const id = b.dataset.id, n = D.noeuds[id];
+  if (b.dataset.entree) { aller(n.graphe, id); return; }
+  if (n.sous) { aller(n.sous); return; }
+  aller(etat.graphe, id, { sansDefilement: true });
+});
+$('#plan').addEventListener('mouseover', ev => {
+  const b = ev.target.closest('.noeud');
+  surligner(b ? b.dataset.id : null);
+});
+$('#plan').addEventListener('mouseleave', () => surligner(null));
+$('#plan').addEventListener('focusin', ev => { const b = ev.target.closest('.noeud'); if (b) surligner(b.dataset.id); });
+$('#plan').addEventListener('focusout', () => surligner(null));
+
+document.addEventListener('click', ev => {
+  const t = ev.target.closest('.terme');
+  if (t && t.dataset.g) { ev.preventDefault(); ouvrirTerme(t.dataset.g); return; }
+  const p = ev.target.closest('.puce, .lien-noeud');
+  if (p && p.dataset.n) { ev.preventDefault(); ouvrirNoeud(p.dataset.n); return; }
+  const o = ev.target.closest('.ouvrir');
+  if (o) { aller(o.dataset.sous); return; }
+  if (!ev.target.closest('.legende')) document.querySelectorAll('.legende[open]').forEach(d => d.open = false);
+});
+document.addEventListener('keydown', ev => {
+  const t = ev.target.closest && ev.target.closest('.terme');
+  if (t && (ev.key === 'Enter' || ev.key === ' ')) { ev.preventDefault(); ouvrirTerme(t.dataset.g); }
+  if (ev.key === 'Escape') cacherBulle(true);
+});
+document.addEventListener('mouseover', ev => {
+  const t = ev.target.closest('.terme');
+  if (t && t.dataset.g && matchMedia('(hover: hover)').matches) { clearTimeout(minuterie); minuterie = setTimeout(() => montrerBulle(t), 120); return; }
+  if (ev.target.closest('#bulle')) { clearTimeout(minuterie); return; }
+});
+document.addEventListener('mouseout', ev => {
+  const t = ev.target.closest('.terme, #bulle');
+  if (t && !(ev.relatedTarget && (ev.relatedTarget.closest('#bulle') || ev.relatedTarget.closest('.terme') === termeActif))) cacherBulle(false);
+});
+document.addEventListener('focusin', ev => { const t = ev.target.closest('.terme'); if (t) montrerBulle(t); });
+document.addEventListener('focusout', ev => { if (ev.target.closest('.terme')) cacherBulle(false); });
+document.addEventListener('scroll', () => cacherBulle(true), true);
+
+$('#tab-fiche').addEventListener('click', () => montrerOnglet('fiche'));
+$('#tab-lexique').addEventListener('click', () => montrerOnglet('lexique'));
+$('#filtre').addEventListener('input', filtrer);
+$('#remonter').addEventListener('click', remonter);
+$('#plus').addEventListener('click', () => { etat.echelle = Math.min(1.6, etat.echelle * 1.15); appliquerEchelle(); });
+$('#moins').addEventListener('click', () => { etat.echelle = Math.max(0.35, etat.echelle / 1.15); appliquerEchelle(); });
+$('#ajuster').addEventListener('click', () => { etat.echelle = Math.max(0.35, Math.min(1, ($('#vue').clientWidth - 8) / D.graphes[etat.graphe].largeur)); appliquerEchelle(); });
+addEventListener('resize', () => cacherBulle(true));
+
+function depuisAncre() {
+  const h = decodeURIComponent(location.hash.slice(1));
+  const [g, n] = h.split('.');
+  if (g && D.graphes[g]) aller(g, n && D.noeuds[n] && D.noeuds[n].graphe === g ? n : null);
+  else aller(D.racine);
+}
+addEventListener('hashchange', depuisAncre);
+remplirLexique();
+depuisAncre();
+</script>

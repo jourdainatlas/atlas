@@ -1,0 +1,151 @@
+# Niveau 2 : structure interne du chapitre « Continuité ».
+# Tous les énoncés portent sur des fonctions définies sur une partie de ℝ.
+
+graphe: continuite
+titre: Continuité
+conteneur: continuite
+
+entrees:
+  ar-corps: [c-tvi, c-monotone]
+  ar-suites: [c-sequentielle]
+  ar-bw: [c-bornes, c-heine]
+  ar-topo: [c-bornes]
+
+noeuds:
+  - id: c-point
+    etiquette: Continuité en un point
+    nature: définition
+    enonce: |
+      Soit $I \subset \mathbb R$, $f : I \to \mathbb R$ et $a \in I$. La fonction $f$ est **continue en $a$** si
+      $$\forall \varepsilon > 0,\ \exists \delta > 0,\ \forall x \in I,\quad |x - a| < \delta \ \Longrightarrow\ |f(x) - f(a)| < \varepsilon.$$
+      Elle est **continue sur $I$** si elle est continue en tout point de $I$.
+    remarques:
+      - |
+        C'est la [[continuite-point|définition métrique]] appliquée à la distance $|x - y|$. Elle équivaut à la définition topologique de la [[continuite]] pour la topologie induite sur $I$.
+      - |
+        L'erreur la plus répandue est d'inverser les quantificateurs : $\delta$ dépend de $\varepsilon$ et de $a$. Le faire dépendre de $a$ seulement, ou le choisir avant $\varepsilon$, change complètement la notion.
+
+  - id: c-uniforme
+    etiquette: Continuité uniforme
+    nature: définition
+    enonce: |
+      La fonction $f : I \to \mathbb R$ est **uniformément continue** sur $I$ si
+      $$\forall \varepsilon > 0,\ \exists \delta > 0,\ \forall x, y \in I,\quad |x - y| < \delta \ \Longrightarrow\ |f(x) - f(y)| < \varepsilon.$$
+    remarques:
+      - |
+        Le même $\delta$ convient en tout point : une fonction uniformément continue est continue, mais la réciproque est fausse. La fonction $x \mapsto x^2$ n'est pas uniformément continue sur $\mathbb R$, puisque $(x + \frac1x)^2 - x^2 = 2 + \frac1{x^2} > 2$ alors que $\frac1x$ tend vers $0$.
+
+  - id: c-sequentielle
+    etiquette: Caractérisation séquentielle
+    nature: proposition
+    choix: |
+      Le sens réciproque construit une suite en choisissant un terme $x_n$ dans chacun des ensembles $A_n$ : il utilise le [[choix-denombrable]]. Sans lui, l'équivalence peut tomber en défaut.
+    enonce: |
+      La fonction $f : I \to \mathbb R$ est continue en $a \in I$ si et seulement si, pour toute [[suite]] $(x_n)$ d'éléments de $I$ qui converge vers $a$, la suite $(f(x_n))$ converge vers $f(a)$.
+    preuve: |
+      Supposons $f$ continue en $a$ et $x_n \to a$. Soit $\varepsilon > 0$ et $\delta$ associé. Il existe $N$ tel que $|x_n - a| < \delta$ pour $n \geqslant N$, et alors $|f(x_n) - f(a)| < \varepsilon$.
+
+      Réciproquement, supposons $f$ non continue en $a$ : il existe $\varepsilon > 0$ tel que, pour tout $n \geqslant 1$, l'ensemble
+      $$A_n = \Big\{ x \in I : |x - a| < \tfrac1n \text{ et } |f(x) - f(a)| \geqslant \varepsilon \Big\}$$
+      soit non vide. Choisissons $x_n \in A_n$ pour chaque $n$. Alors $x_n \to a$, mais $|f(x_n) - f(a)| \geqslant \varepsilon$ pour tout $n$, donc $(f(x_n))$ ne tend pas vers $f(a)$.
+
+  - id: c-tvi
+    etiquette: Valeurs intermédiaires
+    nature: théorème
+    titre: Théorème des valeurs intermédiaires
+    enonce: |
+      Soit $I$ un [[intervalle]] et $f : I \to \mathbb R$ continue. Alors $f(I)$ est un intervalle.
+    preuve: |
+      Soit $u < v$ deux éléments de $f(I)$, $y \in \,]u, v[$, et $a, b \in I$ tels que $f(a) = u$ et $f(b) = v$.
+
+      **Cas $a < b$.** On a $[a,b] \subset I$ puisque $I$ est un intervalle. La partie $A = \{x \in [a,b] : f(x) < y\}$ contient $a$ et est majorée par $b$ ; soit $c = \sup A \in [a,b]$.
+
+      Si $f(c) < y$, alors $c \neq b$ puisque $f(b) > y$. Par continuité en $c$ avec $\varepsilon = y - f(c)$, il existe $\delta > 0$ tel que $f(x) < y$ pour $x \in [a,b]$ et $|x - c| < \delta$. Le point $c + \frac12 \min(\delta, b - c)$ appartient alors à $A$ et dépasse $c$ : contradiction.
+
+      Si $f(c) > y$, alors $c \neq a$. Par continuité, il existe $\delta > 0$, que l'on peut prendre inférieur à $c - a$, tel que $f(x) > y$ pour $x \in \,]c - \delta, c]$. Aucun élément de $A$ n'est dans cet intervalle, et aucun n'est strictement supérieur à $c$ ; donc $c - \delta$ majore $A$, ce qui contredit $c = \sup A$.
+
+      Ainsi $f(c) = y$, et $y \in f(I)$.
+
+      **Cas $a > b$.** On applique ce qui précède à $-f$ et à $-y$, puisque $-f(b) = -v < -y < -u = -f(a)$ avec $b < a$.
+    remarques:
+      - |
+        La démonstration utilise la propriété de la borne supérieure de façon essentielle. Le théorème est faux sur $\mathbb Q$ : la fonction $x \mapsto x^2 - 2$ est continue sur $[0, 2] \cap \mathbb Q$, prend des valeurs de signes opposés, et ne s'annule pas.
+
+  - id: c-bornes
+    etiquette: Bornes atteintes
+    nature: théorème
+    titre: Théorème des bornes atteintes
+    choix: |
+      Cette démonstration choisit une suite $(x_n)$ et utilise le [[choix-denombrable]]. Un raisonnement par la borne supérieure, du même type que pour les valeurs intermédiaires, permet de s'en passer.
+    enonce: |
+      Toute fonction continue sur un [[segment]] $[a,b]$ est bornée et atteint ses bornes : il existe $c, d \in [a,b]$ tels que $f(c) = \inf f$ et $f(d) = \sup f$.
+    preuve: |
+      Supposons $f$ non majorée. Pour tout $n$, on choisit $x_n \in [a,b]$ tel que $f(x_n) > n$. Par Bolzano-Weierstrass, une suite extraite $(x_{\varphi(n)})$ converge vers un réel $d$, qui appartient à $[a,b]$ car ce segment est [[ferme|fermé]]. Par caractérisation séquentielle, $f(x_{\varphi(n)}) \to f(d)$ ; or $f(x_{\varphi(n)}) > \varphi(n) \geqslant n$, ce qui est absurde.
+
+      Soit $M = \sup f$. Pour tout $n \geqslant 1$, on choisit $x_n$ tel que $f(x_n) > M - \frac1n$. Une suite extraite converge vers $d \in [a,b]$, et en passant à la limite dans $M - \frac1{\varphi(n)} < f(x_{\varphi(n)}) \leqslant M$, on obtient $f(d) = M$. Le cas de la borne inférieure s'obtient en remplaçant $f$ par $-f$.
+    remarques:
+      - |
+        Les deux hypothèses sont nécessaires. Sur $]0, 1]$, la fonction $x \mapsto 1/x$ est continue et non bornée ; sur $[0, 1]$, la fonction égale à $x$ sur $[0,1[$ et à $0$ en $1$ est bornée mais n'atteint pas sa borne supérieure.
+
+  - id: c-heine
+    etiquette: Théorème de Heine
+    nature: théorème
+    titre: Théorème de Heine
+    choix: |
+      La démonstration choisit les suites $(x_n)$ et $(y_n)$ et utilise le [[choix-denombrable]].
+    enonce: |
+      Toute fonction continue sur un [[segment]] y est [[continuite-uniforme|uniformément continue]].
+    preuve: |
+      Supposons $f$ continue sur $[a,b]$ et non uniformément continue : il existe $\varepsilon > 0$ tel que, pour tout $n \geqslant 1$, on puisse choisir $x_n, y_n \in [a,b]$ avec $|x_n - y_n| < \frac1n$ et $|f(x_n) - f(y_n)| \geqslant \varepsilon$.
+
+      Par Bolzano-Weierstrass, une suite extraite $(x_{\varphi(n)})$ converge vers $c \in [a,b]$, et $(y_{\varphi(n)})$ converge aussi vers $c$ puisque $|x_{\varphi(n)} - y_{\varphi(n)}| < \frac1{\varphi(n)} \leqslant \frac1n$. Par caractérisation séquentielle, $f(x_{\varphi(n)}) - f(y_{\varphi(n)})$ tend vers $f(c) - f(c) = 0$, ce qui contredit la minoration par $\varepsilon$.
+    remarques:
+      - |
+        C'est l'ingrédient clé de l'intégrabilité des fonctions continues au sens de Riemann, établie au nœud {{ar-riemann|Intégrale de Riemann}}.
+
+  - id: c-image
+    etiquette: Image d'un segment
+    nature: corollaire
+    enonce: |
+      L'image d'un [[segment]] par une fonction continue est un segment : $f([a,b]) = [m, M]$, avec $m = \min f$ et $M = \max f$.
+    preuve: |
+      Par le théorème des bornes atteintes, $m$ et $M$ sont des valeurs de $f$, et $f([a,b]) \subset [m, M]$. Par le théorème des valeurs intermédiaires, $f([a,b])$ est un intervalle ; contenant $m$ et $M$, il contient $[m,M]$.
+
+  - id: c-monotone
+    etiquette: Monotone d'image intervalle
+    nature: lemme
+    titre: Continuité des fonctions monotones
+    enonce: |
+      Soit $J$ un [[intervalle]] et $g : J \to \mathbb R$ monotone. Si $g(J)$ est un intervalle, alors $g$ est continue.
+    preuve: |
+      Quitte à remplacer $g$ par $-g$, supposons $g$ croissante. Soit $b \in J$ qui n'est pas l'extrémité droite de $J$ ; montrons la continuité à droite en $b$. L'ensemble $\{g(x) : x \in J,\ x > b\}$ est non vide et minoré par $g(b)$ ; soit $\ell$ sa borne inférieure, de sorte que $\ell \geqslant g(b)$.
+
+      Si l'on avait $\ell > g(b)$, aucune valeur de $g$ ne serait dans $]g(b), \ell[$ : les points $x \leqslant b$ ont une image $\leqslant g(b)$, et les points $x > b$ une image $\geqslant \ell$. Mais $g(b)$ et $g(x)$, pour un $x > b$ de $J$, appartiennent à l'intervalle $g(J)$, qui contiendrait alors $]g(b), \ell[$. Donc $\ell = g(b)$.
+
+      Soit $\varepsilon > 0$. Par définition de la borne inférieure, il existe $x_0 > b$ dans $J$ tel que $g(x_0) < g(b) + \varepsilon$, et pour $b \leqslant t < x_0$, on a $g(b) \leqslant g(t) \leqslant g(x_0) < g(b) + \varepsilon$. La continuité à gauche se traite de même, avec une borne supérieure.
+
+  - id: c-bijection
+    etiquette: Bijection continue
+    nature: théorème
+    titre: Théorème de la bijection
+    enonce: |
+      Soit $I$ un intervalle et $f : I \to \mathbb R$ continue et strictement monotone. Alors $J = f(I)$ est un intervalle, $f$ réalise une [[bijection]] de $I$ sur $J$, et sa réciproque $f^{-1} : J \to I$ est continue, strictement monotone de même sens que $f$.
+    preuve: |
+      $J$ est un intervalle par le théorème des valeurs intermédiaires. La stricte monotonie rend $f$ injective, donc bijective de $I$ sur $J$. Si $f$ est strictement croissante et $y < y'$ dans $J$, on ne peut avoir $f^{-1}(y) \geqslant f^{-1}(y')$, sans quoi $y \geqslant y'$ : la réciproque est strictement croissante.
+
+      Enfin $f^{-1}$ est monotone sur l'intervalle $J$, et son image $I$ est un intervalle : le lemme sur les fonctions monotones montre qu'elle est continue. Ainsi $f$ est un [[homeomorphisme]] de $I$ sur $J$.
+    remarques:
+      - |
+        C'est ainsi que l'on définit la racine $n$-ième sur $[0, +\infty[$, puis, au niveau supérieur, le logarithme comme réciproque de l'exponentielle.
+
+aretes:
+  - [c-point, c-sequentielle]
+  - [c-point, c-tvi]
+  - [c-point, c-monotone]
+  - [c-sequentielle, c-bornes]
+  - [c-sequentielle, c-heine]
+  - [c-uniforme, c-heine]
+  - [c-tvi, c-image]
+  - [c-bornes, c-image]
+  - [c-tvi, c-bijection]
+  - [c-monotone, c-bijection]
