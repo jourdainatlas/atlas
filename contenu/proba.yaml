@@ -1,0 +1,252 @@
+# Niveau 1 : structure interne du nœud « Probabilités ».
+# Espace probabilisé, indépendance, variables aléatoires et lois, espérance et variance,
+# loi faible des grands nombres (et théorème de Weierstrass par les polynômes de Bernstein),
+# Borel-Cantelli, modes de convergence, loi forte (moment d'ordre 4), loi du 0-1, nombres
+# normaux de Borel. L'exponentielle n'étant pas un ancêtre de ce nœud (elle est construite en
+# analyse complexe), la loi normale et le théorème central limite ne figurent qu'en remarque.
+
+graphe: proba
+titre: Probabilités
+conteneur: proba
+
+entrees:
+  mes: [p-espace, p-independance, p-variables, p-esperance]
+  analyse-reelle: [p-loi-faible]
+
+noeuds:
+  - id: p-espace
+    etiquette: Espace probabilisé
+    nature: définition
+    titre: Espaces probabilisés et probabilités conditionnelles
+    texte: |
+      Un [[espace-probabilise|espace probabilisé]] est un espace mesuré $(\Omega, \mathcal A, P)$ tel que $P(\Omega) = 1$ ; la [[mesure]] $P$ est une **probabilité**, les éléments de $\mathcal A$ sont les **événements**. Si $P(B) > 0$, la **probabilité conditionnelle** de $A$ sachant $B$ est $P(A \mid B) = P(A \cap B)/P(B)$.
+    enonce: |
+      (i) Si $P(B) > 0$, $A \mapsto P(A \mid B)$ est une probabilité sur $(\Omega, \mathcal A)$.
+
+      (ii) *Probabilités totales.* Si $(B_n)$ est une partition de $\Omega$, finie ou indexée par $\mathbb N$, en événements de probabilité non nulle, alors $P(A) = \sum_n P(A \mid B_n)\,P(B_n)$ pour tout événement $A$.
+
+      (iii) *Formule de Bayes.* Sous les mêmes hypothèses, si $P(A) > 0$,
+      $$P(B_k \mid A) = \frac{P(A \mid B_k)\,P(B_k)}{\sum_n P(A \mid B_n)\,P(B_n)}.$$
+    preuve: |
+      (i) $P(\Omega \mid B) = 1$, et la σ-additivité de $P$, appliquée aux $A_n \cap B$ disjoints, donne celle de $P(\cdot \mid B)$.
+
+      (ii) Les $A \cap B_n$ sont disjoints, de réunion $A$ ; par σ-additivité, $P(A) = \sum_n P(A \cap B_n)$, et $P(A \cap B_n) = P(A \mid B_n)P(B_n)$.
+
+      (iii) $P(B_k \mid A) = P(A \cap B_k)/P(A)$ ; on écrit le numérateur comme en (ii) et le dénominateur par (ii).
+    remarques:
+      - |
+        Le modèle de Kolmogorov (1933) ne dit pas ce qu'est le hasard : il fixe les règles de calcul, celles de la théorie de la {{mes|mesure}}, et laisse à chaque situation le soin de choisir $\Omega$ et $P$. Tous les théorèmes de cette branche sont des théorèmes d'intégration sur un espace de masse $1$.
+      - |
+        L'erreur la plus répandue est de confondre $P(A \mid B)$ et $P(B \mid A)$. Pour une maladie de prévalence $1\,\%$, un test qui détecte $99\,\%$ des malades et donne $5\,\%$ de faux positifs, la formule de Bayes donne $P(\text{malade} \mid +) = \frac{0{,}99 \times 0{,}01}{0{,}99 \times 0{,}01 + 0{,}05 \times 0{,}99} = \frac16$ : un test positif ne laisse qu'une chance sur six d'être malade, parce que les bien-portants sont beaucoup plus nombreux.
+
+  - id: p-independance
+    etiquette: Indépendance
+    nature: théorème
+    titre: Indépendance d'événements et de tribus
+    texte: |
+      Des sous-tribus $(\mathcal A_i)_{i \in I}$ de $\mathcal A$ sont [[independance|indépendantes]] si, pour toute partie finie $J \subset I$ et tous $A_j \in \mathcal A_j$,
+      $$P\Big(\bigcap_{j \in J} A_j\Big) = \prod_{j \in J} P(A_j).$$
+      Des événements $(A_i)$ sont indépendants si les tribus $\{\varnothing, A_i, A_i^c, \Omega\}$ le sont.
+    enonce: |
+      (i) Soient $(\mathcal C_i)_{i \in I}$ des π-systèmes tels que la formule produit vaille pour toute partie finie $J$ et tous $C_j \in \mathcal C_j$. Alors les tribus $\sigma(\mathcal C_i)$ sont indépendantes. En particulier, des événements sont indépendants dès que la formule produit vaut pour leurs intersections finies.
+
+      (ii) *Regroupement.* Si les $(\mathcal A_i)_{i \in I}$ sont indépendantes et si $I$ est la réunion disjointe de parties $(I_k)_{k \in K}$, les tribus $\mathcal B_k = \sigma\big(\bigcup_{i \in I_k} \mathcal A_i\big)$ sont indépendantes.
+    preuve: |
+      (i) Fixons $J$ fini, $j_0 \in J$ et des $C_j \in \mathcal C_j$ pour $j \neq j_0$. L'ensemble des $A \in \mathcal A$ tels que $P\big(A \cap \bigcap_{j \neq j_0} C_j\big) = P(A)\prod_{j \neq j_0} P(C_j)$ est une classe monotone : il contient $\Omega$, par la formule produit pour $J \setminus \{j_0\}$, il est stable par différence $B \setminus A$ avec $A \subset B$, puisque $P$ est finie, et par réunion croissante, par continuité. Il contient $\mathcal C_{j_0}$, donc $\sigma(\mathcal C_{j_0})$ par le lemme de Dynkin ({{m-dynkin|Classes monotones}}). On remplace ainsi chaque $\mathcal C_j$ par $\sigma(\mathcal C_j)$, l'un après l'autre. Pour des événements, on applique ce résultat aux π-systèmes $\{A_i\}$, qui engendrent $\{\varnothing, A_i, A_i^c, \Omega\}$.
+
+      (ii) Soit $\mathcal C_k$ l'ensemble des intersections finies d'éléments de $\bigcup_{i \in I_k} \mathcal A_i$ : c'est un π-système qui engendre $\mathcal B_k$. Une intersection finie d'éléments pris dans des $\mathcal C_k$ distincts est une intersection finie d'éléments de tribus $\mathcal A_i$ d'indices distincts, puisque les $I_k$ sont disjoints et qu'on peut regrouper dans une même $\mathcal A_i$ les facteurs de même indice ; la formule produit vaut donc pour les $\mathcal C_k$, et l'on applique (i).
+    remarques:
+      - |
+        L'erreur la plus répandue est de croire que l'indépendance deux à deux suffit. Lançons deux pièces équilibrées : les événements « la première donne pile », « la seconde donne pile » et « les deux pièces donnent le même côté » sont deux à deux indépendants, chacun de probabilité $\frac12$ et chaque intersection de deux d'entre eux de probabilité $\frac14$ ; mais l'intersection des trois est de probabilité $\frac14$, et non $\frac18$.
+
+  - id: p-variables
+    etiquette: Variables aléatoires
+    nature: définition
+    titre: Variables aléatoires, lois, fonctions de répartition
+    texte: |
+      Une [[variable-aleatoire|variable aléatoire]] réelle est une fonction mesurable $X : \Omega \to \mathbb R$. Sa [[loi-variable|loi]] est la probabilité $P_X(B) = P(X \in B)$ sur $\mathcal B(\mathbb R)$, et sa **fonction de répartition** est $F_X(x) = P(X \leqslant x)$. La tribu engendrée par $X$ est $\sigma(X) = \{X^{-1}(B) : B \in \mathcal B(\mathbb R)\}$, et des variables sont indépendantes si les tribus qu'elles engendrent le sont.
+    enonce: |
+      (i) $F_X$ est croissante, continue à droite, de limites $0$ en $-\infty$ et $1$ en $+\infty$, et elle détermine la loi $P_X$.
+
+      (ii) Des variables $X_1, \dots, X_n$ sont indépendantes si et seulement si $P(X_1 \leqslant x_1, \dots, X_n \leqslant x_n) = \prod_i F_{X_i}(x_i)$ pour tous $x_i$. Si $X$ et $Y$ sont indépendantes, $\varphi(X)$ et $\psi(Y)$ le sont pour $\varphi, \psi$ boréliennes.
+
+      (iii) Le couple $(X, Y)$ est mesurable pour la tribu produit $\mathcal B(\mathbb R) \otimes \mathcal B(\mathbb R)$, et $X$ et $Y$ sont indépendantes si et seulement si la loi du couple est la [[mesure-produit|mesure produit]] $P_X \otimes P_Y$.
+    preuve: |
+      (i) $P_X$ est une probabilité, image de $P$ par $X$ : la σ-additivité passe aux images réciproques. La croissance est claire. Si $x_n \downarrow x$, les $\{X \leqslant x_n\}$ décroissent vers $\{X \leqslant x\}$, et la continuité décroissante d'une mesure finie ({{m-mesures|Mesures}}) donne la continuité à droite ; les limites se traitent de même. Les demi-droites $]-\infty, x]$ forment un π-système qui engendre $\mathcal B(\mathbb R)$ ({{m-tribus|Tribus}}) ; deux lois de même fonction de répartition coïncident par le lemme de Dynkin ({{m-dynkin|Classes monotones}}), appliqué avec $X_n = \,]-\infty, n]$, dont la réunion est $\mathbb R$, et les mesures étant finies.
+
+      (ii) Les $\{X_i \leqslant x\}$ forment un π-système engendrant $\sigma(X_i)$, et l'on peut prendre $x_j$ arbitrairement grand pour les indices $j$ hors d'une sous-famille, la continuité croissante faisant tendre $F_{X_j}(x_j)$ vers $1$ ; on applique {{p-independance|Indépendance}}, (i). Ensuite $\sigma(\varphi(X)) \subset \sigma(X)$.
+
+      (iii) $(X, Y)^{-1}(A \times B) = X^{-1}(A) \cap Y^{-1}(B)$ est mesurable, et les pavés engendrent la tribu produit ({{m-tribus|Tribus}}, (iv)). Sur les pavés, l'indépendance s'écrit $P_{(X, Y)}(A \times B) = P_X(A)P_Y(B)$ ; ils forment un π-système, et l'unicité de la mesure produit ({{m-produit|Mesure produit}}) conclut.
+    remarques:
+      - |
+        Une **variable de Bernoulli** de paramètre $p$ vaut $1$ avec probabilité $p$ et $0$ sinon. Le nombre de succès en $n$ épreuves indépendantes suit la **loi binomiale** : $P(S_n = k) = N_{n,k}\, p^k (1 - p)^{n-k}$, où $N_{n,k}$ est le nombre de parties à $k$ éléments de $\{1, \dots, n\}$. Le rang du premier succès suit la **loi géométrique** : $P(T = k) = (1 - p)^{k-1}p$ pour $k \geqslant 1$.
+      - |
+        Toute probabilité $\mu$ sur $\mathbb R$ est la loi d'une variable : sur $(\mathbb R, \mathcal B(\mathbb R), \mu)$, l'identité convient. La loi uniforme sur $[0, 1]$ est la restriction de la {{m-lebesgue|mesure de Lebesgue}}, de fonction de répartition $x \mapsto x$ sur $[0, 1]$. Construire une **suite** de variables indépendantes est plus délicat ; le nœud {{p-normaux|Nombres normaux}} le fait pour des variables de Bernoulli.
+
+  - id: p-esperance
+    etiquette: Espérance, variance
+    nature: théorème
+    titre: Espérance, variance et inégalités
+    texte: |
+      L'[[esperance|espérance]] d'une variable positive ou intégrable est $E[X] = \int_\Omega X \, dP$. Si $E[X^2] < +\infty$, la **variance** est $\operatorname{Var} X = E\big[(X - E[X])^2\big] = E[X^2] - E[X]^2$, et la **covariance** de $X$ et $Y$ est $E[XY] - E[X]E[Y]$.
+    enonce: |
+      (i) *Transfert.* Pour $\varphi : \mathbb R \to \mathbb R$ borélienne, positive ou telle que $\varphi(X)$ soit intégrable, $E[\varphi(X)] = \int_{\mathbb R} \varphi \, dP_X$. Il en va de même pour un couple et $\varphi$ mesurable sur $\mathbb R^2$ pour la tribu produit.
+
+      (ii) Si $E[X^2] < +\infty$, $X$ est intégrable, et $E[|XY|] \leqslant \sqrt{E[X^2]\,E[Y^2]}$ (Cauchy-Schwarz).
+
+      (iii) *Markov, Bienaymé-Tchebychev.* Pour $a > 0$, $P(|X| \geqslant a) \leqslant E[|X|]/a$, et $P\big(|X - E[X]| \geqslant a\big) \leqslant \operatorname{Var} X / a^2$.
+
+      (iv) Si $X$ et $Y$ sont indépendantes et intégrables, $XY$ est intégrable et $E[XY] = E[X]\,E[Y]$. Par suite, si $X_1, \dots, X_n$ sont de carré intégrable et deux à deux indépendantes, $\operatorname{Var}(X_1 + \cdots + X_n) = \sum_i \operatorname{Var} X_i$.
+    preuve: |
+      (i) Pour $\varphi = \mathbf 1_B$, c'est la définition de $P_X$. Par linéarité, la formule vaut pour les fonctions étagées positives, puis pour $\varphi \geqslant 0$ par convergence monotone ({{m-beppo-levi|Convergence monotone}}), en approchant $\varphi$ par une suite croissante d'étagées, et enfin pour $\varphi$ intégrable en séparant $\varphi^+$ et $\varphi^-$. Le cas d'un couple est identique.
+
+      (ii) $|X| \leqslant \frac12(1 + X^2)$. Pour tout réel $t$, $0 \leqslant E\big[(|X| - t|Y|)^2\big] = E[X^2] - 2tE[|XY|] + t^2E[Y^2]$ ; si $E[Y^2] > 0$, on prend $t = E[|XY|]/E[Y^2]$, et si $E[Y^2] = 0$, alors $Y = 0$ presque partout et l'inégalité est triviale. La racine carrée existe par le théorème des valeurs intermédiaires ({{c-tvi|Valeurs intermédiaires}}).
+
+      (iii) $a\mathbf 1_{\{|X| \geqslant a\}} \leqslant |X|$, puis on applique la première inégalité à $(X - E[X])^2$ et $a^2$.
+
+      (iv) Par (i) et l'indépendance ({{p-variables|Variables aléatoires}}, (iii)), $E[|XY|] = \int |xy| \, d(P_X \otimes P_Y) = E[|X|]\,E[|Y|]$ par le théorème de Tonelli, et $E[XY] = E[X]\,E[Y]$ par celui de Fubini ({{m-fubini|Tonelli, Fubini}}). En développant le carré, la variance d'une somme est la somme des variances et des covariances, qui sont nulles.
+    remarques:
+      - |
+        Pour une variable de Bernoulli, $E[X] = p$ et $\operatorname{Var} X = p(1 - p)$, qui vaut au plus $\frac14$. Une variable binomiale est une somme de $n$ variables de Bernoulli indépendantes, d'où $E[S_n] = np$ et $\operatorname{Var} S_n = np(1 - p)$, sans aucun calcul de somme.
+      - |
+        Pour une variable $T$ à valeurs dans $\mathbb N$, $T = \sum_{k \geqslant 0} \mathbf 1_{\{T > k\}}$, et la convergence monotone donne $E[T] = \sum_{k \geqslant 0} P(T > k)$. Pour la loi géométrique, $P(T > k) = (1 - p)^k$, d'où $E[T] = 1/p$ : il faut en moyenne six lancers pour obtenir un six.
+
+  - id: p-loi-faible
+    etiquette: Loi faible des grands nombres
+    nature: théorème
+    titre: Loi faible des grands nombres et théorème de Weierstrass
+    enonce: |
+      (i) *Loi faible.* Soient $X_1, X_2, \dots$ des variables deux à deux indépendantes, de même loi, de carré intégrable, d'espérance $m$ et de variance $\sigma^2$, et $S_n = X_1 + \cdots + X_n$. Pour tout $\varepsilon > 0$,
+      $$P\Big(\Big|\frac{S_n}{n} - m\Big| \geqslant \varepsilon\Big) \leqslant \frac{\sigma^2}{n\varepsilon^2} \longrightarrow 0.$$
+      (ii) *Weierstrass, par Bernstein.* Pour $f : [0, 1] \to \mathbb R$ continue, les polynômes
+      $$B_nf(x) = \sum_{k=0}^n N_{n,k}\, f\Big(\frac kn\Big)\, x^k (1 - x)^{n-k}$$
+      convergent uniformément vers $f$ sur $[0, 1]$. En particulier, toute fonction continue sur un segment est limite uniforme de polynômes.
+    preuve: |
+      (i) $E[S_n/n] = m$ et $\operatorname{Var}(S_n/n) = \sigma^2/n$ ({{p-esperance|Espérance, variance}}, (iv)) ; on applique l'inégalité de Bienaymé-Tchebychev.
+
+      (ii) Fixons $x \in [0, 1]$. Sur l'ensemble fini $\Omega = \{0, 1\}^n$, muni de toutes ses parties, posons $P(\{\omega\}) = x^{|\omega|}(1 - x)^{n - |\omega|}$, où $|\omega|$ est le nombre de $1$ ; en développant $\prod_i \big(x + (1 - x)\big) = 1$, ces poids ont pour somme $1$. Les coordonnées $\omega_i$ sont des variables de Bernoulli de paramètre $x$, indépendantes, car $P(\omega_1 = \varepsilon_1, \dots, \omega_n = \varepsilon_n)$ est le produit des $x^{\varepsilon_i}(1 - x)^{1 - \varepsilon_i}$. Leur somme $S_n$ vérifie $P(S_n = k) = N_{n,k}x^k(1 - x)^{n-k}$, d'où $B_nf(x) = E[f(S_n/n)]$.
+
+      Soit $\varepsilon > 0$. Par le théorème de Heine ({{c-heine|Théorème de Heine}}), il existe $\delta > 0$ tel que $|u - v| < \delta$ entraîne $|f(u) - f(v)| < \varepsilon$. Soit $\|f\| = \sup |f|$. En séparant les cas $|S_n/n - x| < \delta$ et $\geqslant \delta$, et par (i) avec $\sigma^2 = x(1 - x) \leqslant \frac14$,
+      $$\begin{aligned} |B_nf(x) - f(x)| &\leqslant E\big[|f(S_n/n) - f(x)|\big] \\ &\leqslant \varepsilon + \frac{2\|f\|}{4n\delta^2}. \end{aligned}$$
+      La majoration ne dépend pas de $x$ : pour $n$ assez grand, $|B_nf - f| < 2\varepsilon$ sur $[0, 1]$. Un segment $[a, b]$ se ramène à $[0, 1]$ par une application affine.
+    remarques:
+      - |
+        La convergence est lente. Pour $f(x) = |x - \frac12|$, on calcule $B_nf(\frac12) = E\big[|S_n/n - \frac12|\big] \approx 0{,}123$ pour $n = 10$ et $\approx 0{,}040$ pour $n = 100$ : l'erreur au point de non-dérivabilité décroît comme $1/\sqrt n$, alors que $f(\frac12) = 0$.
+      - |
+        La démonstration de Bernstein (1912) est le premier exemple d'une preuve probabiliste d'un théorème d'analyse qui ne parle pas de hasard. L'aléa n'y est qu'un moyen de calcul : $B_nf(x)$ est une moyenne de valeurs de $f$ pondérée par des poids qui se concentrent près de $x$.
+
+  - id: p-borel-cantelli
+    etiquette: Borel-Cantelli
+    nature: lemme
+    titre: Lemmes de Borel-Cantelli
+    texte: |
+      Pour une suite d'événements $(A_n)$, l'événement $\limsup A_n = \bigcap_m \bigcup_{k \geqslant m} A_k$ est formé des $\omega$ qui appartiennent à une infinité de $A_n$.
+    enonce: |
+      (i) Si $\sum_n P(A_n) < +\infty$, alors $P(\limsup A_n) = 0$ : presque sûrement, seul un nombre fini des $A_n$ est réalisé.
+
+      (ii) Si les $A_n$ sont indépendants et $\sum_n P(A_n) = +\infty$, alors $P(\limsup A_n) = 1$.
+    preuve: |
+      (i) Pour tout $m$, $P(\limsup A_n) \leqslant P\big(\bigcup_{k \geqslant m} A_k\big) \leqslant \sum_{k \geqslant m} P(A_k)$, reste d'une série convergente.
+
+      (ii) Notons $p_k = P(A_k)$. Les complémentaires $A_k^c$ sont indépendants ({{p-independance|Indépendance}}), et, pour $m \leqslant n$,
+      $$\begin{aligned} P\Big(\bigcap_{k=m}^n A_k^c\Big) &= \prod_{k=m}^n (1 - p_k) \\ &\leqslant \prod_{k=m}^n \frac{1}{1 + p_k} \leqslant \frac{1}{1 + \sum_{k=m}^n p_k}, \end{aligned}$$
+      puisque $(1 - p)(1 + p) \leqslant 1$ et qu'en développant, $\prod (1 + p_k) \geqslant 1 + \sum p_k$. Le majorant tend vers $0$ quand $n \to \infty$, donc $P\big(\bigcap_{k \geqslant m} A_k^c\big) = 0$ par continuité décroissante. Le complémentaire de $\limsup A_n$ est la réunion dénombrable de ces événements négligeables.
+    remarques:
+      - |
+        Pour des événements indépendants de probabilités $1/n$, une infinité se produit presque sûrement, puisque $\sum 1/n = +\infty$ ; pour des probabilités $1/n^2$, seulement un nombre fini. C'est une loi du tout ou rien : la probabilité de $\limsup A_n$ ne vaut que $0$ ou $1$, ce que la {{p-zero-un|loi du 0-1}} généralisera.
+      - |
+        La démonstration de (ii) évite l'inégalité $1 - p \leqslant e^{-p}$ que l'on emploie d'ordinaire, l'exponentielle n'étant pas encore disponible ici ; la minoration $\prod(1 + p_k) \geqslant 1 + \sum p_k$ suffit.
+
+  - id: p-convergences
+    etiquette: Modes de convergence
+    nature: proposition
+    titre: Convergence presque sûre, en probabilité, en moyenne
+    texte: |
+      Une suite de variables $(X_n)$ converge vers $X$ **presque sûrement** si $P(X_n \to X) = 1$, **en probabilité** si $P(|X_n - X| > \varepsilon) \to 0$ pour tout $\varepsilon > 0$, et **en moyenne** si $E[|X_n - X|] \to 0$.
+    enonce: |
+      (i) La convergence presque sûre entraîne la convergence en probabilité.
+
+      (ii) La convergence en moyenne entraîne la convergence en probabilité.
+
+      (iii) Si $X_n \to X$ en probabilité, une suite extraite converge presque sûrement.
+
+      (iv) La convergence en probabilité, et même en moyenne, n'entraîne pas la convergence presque sûre.
+    preuve: |
+      (i) L'événement $\{X_n \to X\}$ est mesurable, comme $\bigcap_k \bigcup_m \bigcap_{n \geqslant m} \{|X_n - X| \leqslant 1/(k+1)\}$. Les événements $B_m = \bigcup_{n \geqslant m} \{|X_n - X| > \varepsilon\}$ décroissent vers un événement disjoint de $\{X_n \to X\}$, donc négligeable, et $P(|X_m - X| > \varepsilon) \leqslant P(B_m) \to 0$ par continuité décroissante.
+
+      (ii) Inégalité de Markov ({{p-esperance|Espérance, variance}}, (iii)).
+
+      (iii) Soit $n_0 = 0$ et, pour $k \geqslant 1$, $n_k$ le **plus petit** entier $n > n_{k-1}$ tel que $P(|X_m - X| > 2^{-k}) \leqslant 2^{-k}$ pour tout $m \geqslant n$ ; il existe par hypothèse, et aucun choix n'intervient. Comme $\sum_k 2^{-k} < +\infty$, le lemme de Borel-Cantelli ({{p-borel-cantelli|Borel-Cantelli}}, (i)) montre que, presque sûrement, $|X_{n_k} - X| \leqslant 2^{-k}$ à partir d'un certain rang.
+
+      (iv) Sur $[0, 1[$ muni de la mesure de Lebesgue, écrivons $n = 2^j + i$ avec $0 \leqslant i < 2^j$, et posons $X_n = \mathbf 1_{[i2^{-j}, (i+1)2^{-j}[}$. Alors $E[X_n] = 2^{-j} \to 0$ ; mais chaque $\omega$ appartient, pour chaque $j$, à l'un des intervalles de longueur $2^{-j}$, si bien que $X_n(\omega) = 1$ pour une infinité de $n$ et $X_n(\omega)$ ne tend vers $0$ pour aucun $\omega$.
+    remarques:
+      - |
+        L'exemple (iv) est une « machine à écrire » : un intervalle de plus en plus étroit balaie $[0, 1[$ indéfiniment. La suite extraite $X_{2^j}$, qui ne garde que le premier intervalle de chaque balayage, converge bien presque sûrement vers $0$, comme (iii) l'annonçait.
+
+  - id: p-loi-forte
+    etiquette: Loi forte des grands nombres
+    nature: théorème
+    titre: Loi forte des grands nombres
+    enonce: |
+      Soient $X_1, X_2, \dots$ des variables indépendantes, de même loi, telles que $E[X_1^4] < +\infty$, et $m = E[X_1]$. Alors, presque sûrement,
+      $$\frac{X_1 + \cdots + X_n}{n} \longrightarrow m.$$
+    preuve: |
+      Posons $Y_i = X_i - m$ : $E[Y_i] = 0$, $c = E[Y_i^4] < +\infty$, puisque $Y^4 \leqslant 8(X^4 + m^4)$, et $s = E[Y_i^2]$ vérifie $s^2 \leqslant c$ par Cauchy-Schwarz appliqué à $Y^2$ et $1$. En développant,
+      $$E\big[(Y_1 + \cdots + Y_n)^4\big] = \sum_{i, j, k, l} E[Y_iY_jY_kY_l].$$
+      Si l'un des indices n'apparaît qu'une fois, disons $i$, la variable $Y_i$ est indépendante du produit des trois autres ({{p-independance|Indépendance}}, (ii)), qui est intégrable puisque $|abc| \leqslant |a|^3 + |b|^3 + |c|^3 \leqslant 3 + a^4 + b^4 + c^4$, et le terme vaut $E[Y_i] \cdot E[\cdots] = 0$ ({{p-esperance|Espérance, variance}}, (iv)). Restent les $n$ termes où les quatre indices sont égaux, qui valent $c$, et les $3n(n - 1)$ termes formés de deux paires distinctes, qui valent $s^2$. Donc $E\big[(Y_1 + \cdots + Y_n)^4\big] \leqslant nc + 3n^2c \leqslant 4n^2c$.
+
+      Par l'inégalité de Markov appliquée à la puissance quatrième,
+      $$P\Big(\Big|\frac{S_n}{n} - m\Big| \geqslant \varepsilon\Big) \leqslant \frac{4c}{n^2\varepsilon^4},$$
+      terme général d'une série convergente, puisque $\frac1{n^2} \leqslant \frac1{n - 1} - \frac1n$ pour $n \geqslant 2$. Par Borel-Cantelli ({{p-borel-cantelli|Borel-Cantelli}}), presque sûrement $|S_n/n - m| < \varepsilon$ à partir d'un certain rang. On prend $\varepsilon = 1/(k + 1)$ ; l'intersection de ces événements de probabilité $1$, indexée par $k \in \mathbb N$, est encore de probabilité $1$.
+    remarques:
+      - |
+        L'hypothèse $E[X^4] < +\infty$ rend la démonstration courte, mais elle n'est pas nécessaire : Kolmogorov a montré que l'intégrabilité suffit, et Etemadi (1981) a même affaibli l'indépendance mutuelle en indépendance deux à deux. Ces versions sont admises ici ; leur démonstration repose sur une troncature des variables.
+      - |
+        La loi forte justifie l'interprétation fréquentielle des probabilités : la fréquence d'un événement dans une suite d'épreuves indépendantes tend presque sûrement vers sa probabilité. Le théorème central limite précise la vitesse, en $\sigma/\sqrt n$, et la loi limite, qui est la loi normale ; sa densité fait intervenir l'exponentielle de l'{{anc|analyse complexe}}, qui n'est pas un ancêtre de cette branche.
+
+  - id: p-zero-un
+    etiquette: Loi du 0-1
+    nature: théorème
+    titre: Loi du 0-1 de Kolmogorov
+    texte: |
+      Pour une suite de variables $(X_n)$, la **tribu asymptotique** est $\mathcal T = \bigcap_n \sigma(X_k : k \geqslant n)$ : ses événements ne dépendent pas d'un nombre fini quelconque de variables.
+    enonce: |
+      Si les $X_n$ sont indépendantes, tout événement de $\mathcal T$ a pour probabilité $0$ ou $1$.
+    preuve: |
+      Par regroupement ({{p-independance|Indépendance}}, (ii)), $\sigma(X_1, \dots, X_n)$ est indépendante de $\sigma(X_k : k > n)$, qui contient $\mathcal T$. Ainsi $\mathcal T$ est indépendante de chaque $\sigma(X_1, \dots, X_n)$, donc de leur réunion, qui est un π-système, réunion croissante de tribus. Par {{p-independance|Indépendance}}, (i), $\mathcal T$ est indépendante de la tribu engendrée par cette réunion, $\sigma(X_k : k \geqslant 1)$, qui contient $\mathcal T$. Pour $A \in \mathcal T$, $P(A) = P(A \cap A) = P(A)^2$, donc $P(A) \in \{0, 1\}$.
+    remarques:
+      - |
+        L'événement « $S_n/n$ converge » est asymptotique, puisque modifier un nombre fini de termes ne change ni la convergence ni la limite. La loi du 0-1 dit, avant tout calcul, qu'il est presque sûr ou presque impossible ; la loi forte tranche. Elle ne dit pas lequel des deux cas a lieu, et c'est là toute sa limite.
+
+  - id: p-normaux
+    etiquette: Nombres normaux
+    nature: théorème
+    titre: Chiffres binaires et nombres normaux de Borel
+    texte: |
+      Pour $\omega \in [0, 1[$, le $k$-ième chiffre binaire est $d_k(\omega) = \lfloor 2^k\omega \rfloor - 2\lfloor 2^{k-1}\omega \rfloor$, qui vaut $0$ ou $1$, puisque $\lfloor 2y \rfloor - 2\lfloor y \rfloor \in \{0, 1\}$ pour tout réel $y$.
+    enonce: |
+      (i) Sur $[0, 1[$ muni de la mesure de Lebesgue, les $d_k$ sont des variables de Bernoulli de paramètre $\frac12$, indépendantes.
+
+      (ii) *Borel, 1909.* Pour presque tout $\omega \in [0, 1[$, la proportion de $1$ parmi les $n$ premiers chiffres binaires de $\omega$ tend vers $\frac12$.
+    preuve: |
+      (i) Par récurrence, $\lfloor 2^n\omega \rfloor = \sum_{k \leqslant n} d_k(\omega) 2^{n-k}$, la somme étant télescopique. L'application $(\varepsilon_1, \dots, \varepsilon_n) \mapsto \sum_k \varepsilon_k 2^{n-k}$ est une bijection de $\{0, 1\}^n$ sur $\{0, \dots, 2^n - 1\}$, par l'unicité de la division euclidienne par $2$ ; donc l'événement $\{d_1 = \varepsilon_1, \dots, d_n = \varepsilon_n\}$ est $\{\lfloor 2^n\omega \rfloor = N\}$, c'est-à-dire l'intervalle $[N2^{-n}, (N + 1)2^{-n}[$, de mesure $2^{-n} = \prod_k \frac12$. Les $d_k$ sont boréliennes, comme différences de fonctions en escalier. La formule produit pour ces événements entraîne, en sommant sur les valeurs des indices omis, celle de toute sous-famille, d'où l'indépendance par {{p-independance|Indépendance}}, (i).
+
+      (ii) Les $d_k$ sont bornées, donc de moment d'ordre $4$ fini ; on applique la loi forte des grands nombres ({{p-loi-forte|Loi forte}}).
+    remarques:
+      - |
+        Le théorème affirme que presque tout réel est normal en base $2$, sans en exhiber aucun de façon simple. En base $10$, Champernowne a montré en 1933 que $0{,}123456789101112\ldots$, obtenu en écrivant les entiers à la suite, est normal ; on ignore en revanche si $\sqrt 2$ ou $\pi$ le sont.
+      - |
+        En répartissant les chiffres $d_k$ en une infinité de sous-suites disjointes, au moyen d'une bijection de $\mathbb N \times \mathbb N$ sur $\mathbb N$ ({{q-denombrable|ℚ est dénombrable}}), et en recomposant chaque sous-suite en un réel, on obtient une suite de variables uniformes indépendantes sur le seul espace $[0, 1[$. C'est le point de départ de la construction de suites indépendantes de lois quelconques.
+
+aretes:
+  - [p-espace, p-independance]
+  - [p-espace, p-variables]
+  - [p-independance, p-variables]
+  - [p-variables, p-esperance]
+  - [p-esperance, p-loi-faible]
+  - [p-independance, p-borel-cantelli]
+  - [p-borel-cantelli, p-convergences]
+  - [p-esperance, p-convergences]
+  - [p-convergences, p-loi-forte]
+  - [p-independance, p-zero-un]
+  - [p-loi-forte, p-normaux]
