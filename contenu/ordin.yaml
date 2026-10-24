@@ -1,0 +1,308 @@
+# Niveau 1 : structure interne du nœud « Ordinaux, cardinaux ».
+# Dans l'édifice, ce nœud précède ℕ : ω, les entiers et la finitude n'apparaissent qu'en remarque.
+# Les théorèmes qui utilisent l'axiome du choix sont marqués ⋆ ; tous les autres sont démontrés dans ZF.
+
+graphe: ordin
+titre: Ordinaux, cardinaux
+conteneur: ordin
+
+entrees:
+  rel: [o-transitif]
+  ord: [o-ordinal]
+
+noeuds:
+  - id: o-transitif
+    etiquette: Ensemble transitif
+    nature: définition
+    enonce: |
+      Un ensemble $x$ est un [[ensemble-transitif|ensemble transitif]] si tout élément de $x$ est aussi une partie de $x$ : $y \in x$ entraîne $y \subset x$. De manière équivalente, $z \in y \in x$ entraîne $z \in x$.
+
+      Pour tout ensemble $x$, on pose $x^+ = x \cup \{x\}$. Si $x$ est transitif, $x^+$ l'est aussi.
+    preuve: |
+      Soit $y \in x^+$. Si $y \in x$, alors $y \subset x \subset x^+$. Si $y = x$, alors $y \subset x^+$ par définition.
+    remarques:
+      - |
+        Les ensembles $\varnothing$, $\{\varnothing\}$ et $\{\varnothing, \{\varnothing\}\}$ sont transitifs, chacun étant de la forme $x^+$ pour le précédent. L'ensemble $\{\{\varnothing\}\}$ ne l'est pas : son élément $\{\varnothing\}$ contient $\varnothing$, qui n'est pas élément de $\{\{\varnothing\}\}$.
+      - |
+        Le mot « transitif » vient de ce que la relation $\in$, restreinte à un ensemble transitif $x$, vérifie $z \in y \in x \Rightarrow z \in x$. Ce n'est pas la transitivité de $\in$ sur $x$ au sens des relations ({{r-relation|Relation}}), qui demanderait $z \in y$ et $y \in w$ $\Rightarrow$ $z \in w$ pour $z, y, w \in x$.
+
+  - id: o-ordinal
+    etiquette: Ordinal
+    nature: définition
+    enonce: |
+      Un [[ordinal]] est un ensemble transitif $\alpha$ sur lequel la relation $\in$ est un ordre strict bien fondé et total : pour $x, y, z \in \alpha$, on n'a jamais $x \in x$ ; $x \in y \in z$ entraîne $x \in z$ ; on a $x \in y$, $x = y$ ou $y \in x$ ; et toute partie non vide de $\alpha$ a un élément $m$ tel qu'aucun de ses éléments n'appartienne à $m$. Autrement dit, l'ordre large « $x \in y$ ou $x = y$ » est un [[bon-ordre]] sur $\alpha$.
+
+      Pour deux ordinaux, on écrit $\alpha < \beta$ pour $\alpha \in \beta$, et $\alpha \leqslant \beta$ pour « $\alpha \in \beta$ ou $\alpha = \beta$ ».
+    remarques:
+      - |
+        En présence de l'axiome de fondation ({{zf-fond|Fondation}}), l'irréflexivité et la bonne fondation sont automatiques : un ordinal est alors simplement un ensemble transitif sur lequel $\in$ est transitive et totale. On garde ici la définition longue, qui ne dépend pas de cet axiome.
+      - |
+        La notation $<$ suggère un ordre sur tous les ordinaux. Ce n'est pas une relation au sens de {{r-relation|Relation}}, puisque les ordinaux ne forment pas un ensemble, comme le montrera le paradoxe de Burali-Forti.
+
+  - id: o-elements
+    etiquette: Éléments d'un ordinal
+    nature: proposition
+    titre: Premières propriétés des ordinaux
+    enonce: |
+      (i) Tout élément d'un ordinal est un ordinal.
+
+      (ii) Aucun ordinal n'appartient à lui-même.
+
+      (iii) Si $\alpha$ est un ordinal, $\alpha^+ = \alpha \cup \{\alpha\}$ est un ordinal, et $\alpha$ en est le plus grand élément.
+
+      (iv) Si $\alpha$ et $\beta$ sont des ordinaux et $\alpha \subsetneq \beta$, alors $\alpha \in \beta$.
+    preuve: |
+      (i) Soit $x \in \alpha$. Par transitivité de $\alpha$, $x \subset \alpha$, et $\in$ est sur $x$ la restriction d'un bon ordre strict, donc un bon ordre strict. Il reste à voir que $x$ est transitif : si $z \in y \in x$, alors $y \in \alpha$ et $z \in \alpha$ par transitivité de $\alpha$, appliquée deux fois ; $z$, $y$, $x$ sont donc trois éléments de $\alpha$ avec $z \in y \in x$, d'où $z \in x$, l'ordre $\in$ étant transitif sur $\alpha$.
+
+      (ii) Si $\alpha \in \alpha$, alors $\alpha$ est un élément $x$ de $\alpha$ tel que $x \in x$, ce que l'irréflexivité interdit.
+
+      (iii) $\alpha^+$ est transitif ({{o-transitif|Ensemble transitif}}). Ses éléments sont ceux de $\alpha$, totalement et bien ordonnés par $\in$, et $\alpha$ lui-même, qui contient tous les autres et ne s'appartient pas par (ii). On vérifie aussitôt les quatre conditions ; par exemple, une partie non vide $S$ de $\alpha^+$ a pour plus petit élément celui de $S \cap \alpha$ si cette intersection est non vide, et $\alpha$ sinon.
+
+      (iv) Soit $\gamma$ le plus petit élément de $\beta \setminus \alpha$, non vide par hypothèse. Montrons que $\gamma = \alpha$. Si $x \in \gamma$, alors $x \in \beta$ par transitivité, et $x$ précède $\gamma$, donc $x \notin \beta \setminus \alpha$ par minimalité : $x \in \alpha$. Réciproquement, si $x \in \alpha$, alors $x \in \beta$ et $x$ est comparable à $\gamma$ dans $\beta$. On ne peut avoir $x = \gamma$, puisque $\gamma \notin \alpha$, ni $\gamma \in x$, sinon $\gamma \in \alpha$ par transitivité de $\alpha$. Donc $x \in \gamma$. Ainsi $\alpha = \gamma \in \beta$.
+    remarques:
+      - |
+        Le point (i) dit qu'un ordinal est exactement l'ensemble des ordinaux qui le précèdent : $\alpha = \{\beta : \beta < \alpha\}$. Chaque ordinal est l'ensemble de ses prédécesseurs, comme chaque entier sera, dans la construction de {{n|$\mathbb N$}}, l'ensemble des entiers plus petits.
+
+  - id: o-comparaison
+    etiquette: Comparaison des ordinaux
+    nature: théorème
+    titre: Les ordinaux sont bien ordonnés
+    enonce: |
+      (i) Pour tous ordinaux $\alpha$ et $\beta$, on a exactement l'une des relations $\alpha \in \beta$, $\alpha = \beta$, $\beta \in \alpha$. De plus, $\alpha \leqslant \beta$ si et seulement si $\alpha \subset \beta$.
+
+      (ii) Tout ensemble non vide $S$ d'ordinaux a un plus petit élément, qui est $\bigcap S$.
+
+      (iii) Pour tout ensemble $S$ d'ordinaux, $\bigcup S$ est un ordinal, et c'est le plus petit ordinal supérieur ou égal à tous les éléments de $S$ ; on le note $\sup S$.
+    preuve: |
+      (i) L'ensemble $\alpha \cap \beta$ est transitif, comme intersection de deux ensembles transitifs, et c'est une partie de $\alpha$ ; il est donc bien ordonné par $\in$, et c'est un ordinal. Si l'on avait à la fois $\alpha \cap \beta \neq \alpha$ et $\alpha \cap \beta \neq \beta$, le point (iv) du nœud {{o-elements|Éléments d'un ordinal}} donnerait $\alpha \cap \beta \in \alpha$ et $\alpha \cap \beta \in \beta$, donc $\alpha \cap \beta \in \alpha \cap \beta$, ce qu'interdit le point (ii). Donc $\alpha \cap \beta = \alpha$, c'est-à-dire $\alpha \subset \beta$, ou $\alpha \cap \beta = \beta$. Dans le premier cas, $\alpha = \beta$ ou $\alpha \in \beta$, toujours par (iv) ; dans le second, $\beta = \alpha$ ou $\beta \in \alpha$.
+
+      Les trois cas s'excluent : $\alpha \in \beta$ et $\beta \in \alpha$ entraîneraient $\alpha \in \alpha$ par transitivité de $\alpha$, et $\alpha \in \beta = \alpha$ est exclu de même. Enfin, si $\alpha \in \beta$, alors $\alpha \subset \beta$ par transitivité de $\beta$ ; la réciproque est (iv).
+
+      (ii) Soit $\alpha \in S$. Si aucun élément de $S$ n'appartient à $\alpha$, alors $\alpha$ est le plus petit élément de $S$ par (i). Sinon, $S \cap \alpha$ est une partie non vide de $\alpha$, qui a un plus petit élément $\mu$ ; tout $\beta \in S$ vérifie $\beta \geqslant \alpha > \mu$ ou $\beta \in S \cap \alpha$, donc $\beta \geqslant \mu$. Par (i), $\mu \subset \beta$ pour tout $\beta \in S$, donc $\mu \subset \bigcap S$, et $\bigcap S \subset \mu$ puisque $\mu \in S$.
+
+      (iii) $\bigcup S$ est transitif, comme réunion d'ensembles transitifs ; ses éléments sont des ordinaux par le point (i) du nœud {{o-elements|Éléments d'un ordinal}}, totalement ordonnés par $\in$ d'après (i) ci-dessus, et toute partie non vide en a un plus petit élément d'après (ii). C'est donc un ordinal. Il contient chaque $\alpha \in S$, d'où $\alpha \leqslant \bigcup S$ ; et si $\gamma \geqslant \alpha$ pour tout $\alpha \in S$, alors $\alpha \subset \gamma$ pour tout $\alpha$, donc $\bigcup S \subset \gamma$.
+    remarques:
+      - |
+        L'ordre des ordinaux n'est autre que l'inclusion. C'est ce qui rend la théorie si maniable : comparer deux ordinaux, c'est comparer deux ensembles.
+
+  - id: o-burali-forti
+    etiquette: Burali-Forti
+    nature: proposition
+    titre: Paradoxe de Burali-Forti
+    enonce: |
+      Il n'existe pas d'ensemble dont les éléments soient tous les ordinaux. Plus généralement, tout ensemble d'ordinaux $S$ est majoré strictement : l'ordinal $(\sup S)^+$ n'appartient pas à $S$.
+    preuve: |
+      Si $\gamma = (\sup S)^+$ appartenait à $S$, on aurait $\gamma \leqslant \sup S < \gamma$, ce qui est impossible. Un ensemble de tous les ordinaux contiendrait en particulier $\gamma$.
+    remarques:
+      - |
+        Burali-Forti a rencontré cette difficulté en 1897, avant que la théorie de Zermelo ne la rende inoffensive : comme le paradoxe de {{zf-russell|Russell}}, elle montre seulement qu'une certaine collection est trop grosse pour être un ensemble. Les ordinaux forment ce qu'on appelle une classe propre.
+
+  - id: o-successeur-limite
+    etiquette: Successeurs, limites
+    nature: proposition
+    titre: Ordinaux successeurs et ordinaux limites
+    texte: |
+      L'ordinal $\alpha^+$, noté aussi $\alpha + 1$, est le [[ordinal-successeur|successeur]] de $\alpha$. Un ordinal non vide qui n'est le successeur d'aucun ordinal est un [[ordinal-limite|ordinal limite]].
+    enonce: |
+      (i) $\alpha^+$ est le plus petit ordinal strictement supérieur à $\alpha$.
+
+      (ii) Tout ordinal est soit $\varnothing$, soit un successeur, soit un ordinal limite, et un seul de ces cas se produit.
+
+      (iii) Un ordinal non vide $\alpha$ est limite si et seulement si $\alpha = \bigcup \alpha$, c'est-à-dire si $\alpha = \sup\{\beta : \beta < \alpha\}$.
+    preuve: |
+      (i) $\alpha \in \alpha^+$. Si $\alpha < \gamma$, alors $\alpha \in \gamma$ et $\alpha \subset \gamma$, donc $\alpha^+ \subset \gamma$, c'est-à-dire $\alpha^+ \leqslant \gamma$ ({{o-comparaison|Comparaison des ordinaux}}).
+
+      (ii) Par définition, les trois cas couvrent tout ; $\varnothing$ n'est pas un successeur, puisque $\alpha \in \alpha^+$, et un ordinal limite n'est ni vide ni successeur.
+
+      (iii) Si $\alpha = \beta^+$, alors $\bigcup \alpha = \bigcup \beta \cup \beta = \beta \neq \alpha$, car $\bigcup \beta \subset \beta$ par transitivité. Réciproquement, supposons $\alpha$ limite. On a toujours $\bigcup \alpha \subset \alpha$, par transitivité. Si $\beta \in \alpha$, alors $\beta^+ \leqslant \alpha$ par (i), et $\beta^+ \neq \alpha$ puisque $\alpha$ n'est pas un successeur ; donc $\beta^+ \in \alpha$, et $\beta \in \beta^+$ donne $\beta \in \bigcup \alpha$.
+    remarques:
+      - |
+        Rien dans les axiomes utilisés jusqu'ici n'assure l'existence d'un ordinal limite. C'est l'axiome de l'{{zf-infini|infini}} qui la fournit : le plus petit ordinal limite sera $\omega$, l'ensemble des entiers naturels construit au nœud {{n|$\mathbb N$}}.
+
+  - id: o-induction
+    etiquette: Induction transfinie
+    nature: théorème
+    titre: Principe d'induction transfinie
+    enonce: |
+      Soit $\varphi(x)$ une formule. Si, pour tout ordinal $\alpha$, la propriété « $\varphi(\beta)$ pour tout $\beta < \alpha$ » entraîne $\varphi(\alpha)$, alors $\varphi(\alpha)$ est vraie pour tout ordinal $\alpha$.
+
+      Sous forme équivalente : si $\varphi(\varnothing)$, si $\varphi(\alpha)$ entraîne $\varphi(\alpha^+)$, et si, pour tout ordinal limite $\lambda$, « $\varphi(\beta)$ pour tout $\beta < \lambda$ » entraîne $\varphi(\lambda)$, alors $\varphi$ est vraie pour tout ordinal.
+    preuve: |
+      Supposons $\neg\varphi(\alpha)$ pour un ordinal $\alpha$. L'ensemble $\{\beta \in \alpha^+ : \neg\varphi(\beta)\}$, obtenu par séparation, est non vide puisqu'il contient $\alpha$ ; soit $\gamma$ son plus petit élément ({{o-comparaison|Comparaison des ordinaux}}). Tout $\beta < \gamma$ vérifie $\beta < \alpha^+$ et $\varphi(\beta)$, par minimalité ; l'hypothèse donne $\varphi(\gamma)$, ce qui est contradictoire.
+
+      La seconde forme se ramène à la première : pour $\alpha$ donné, l'un des trois cas du nœud {{o-successeur-limite|Successeurs, limites}} se produit, et l'hypothèse correspondante donne $\varphi(\alpha)$ dès que $\varphi$ est vraie au-dessous de $\alpha$.
+    remarques:
+      - |
+        C'est un schéma, un énoncé par formule $\varphi$, comme le schéma de séparation : on ne peut quantifier sur les propriétés dans $\mathsf{ZF}$ ({{log|Logique du premier ordre}}). L'erreur la plus répandue est d'oublier le cas limite, qui n'a pas d'analogue dans la récurrence sur les entiers.
+
+  - id: o-recursion
+    etiquette: Récursion transfinie
+    nature: théorème
+    titre: Définition par récursion transfinie
+    enonce: |
+      Soit $\psi(f, y)$ une formule telle que, pour tout ensemble $f$, il existe un unique $y$ vérifiant $\psi(f, y)$ ; on note $y = G(f)$. Pour tout ordinal $\delta$, il existe une unique application $F_\delta$ de domaine $\delta$ telle que
+      $$F_\delta(\alpha) = G\big(F_\delta|_\alpha\big) \quad \text{pour tout } \alpha < \delta,$$
+      et pour $\delta \leqslant \delta'$, $F_\delta$ est la restriction de $F_{\delta'}$ à $\delta$. On note $F(\alpha)$ la valeur commune des $F_\delta(\alpha)$, $\delta > \alpha$ : c'est la fonction définie par [[recursion-transfinie|récursion transfinie]] à partir de $G$. On note $F[\alpha] = \{F(\beta) : \beta < \alpha\}$ l'image de sa restriction à $\alpha$.
+    preuve: |
+      *Unicité.* Si $F_\delta$ et $F'_{\delta}$ conviennent, l'ensemble des $\alpha < \delta$ où elles diffèrent, s'il était non vide, aurait un plus petit élément $\alpha$ ; alors $F_\delta|_\alpha = F'_\delta|_\alpha$, donc $F_\delta(\alpha) = G(F_\delta|_\alpha) = F'_\delta(\alpha)$, contradiction. Le même argument montre que la restriction de $F_{\delta'}$ à $\delta$, qui vérifie l'équation sur $\delta$, est $F_\delta$.
+
+      *Existence.* Raisonnons par induction transfinie sur $\delta$ ({{o-induction|Induction transfinie}}) : supposons que $F_\beta$ existe pour tout $\beta < \delta$. Par le schéma de {{zf-rempl|remplacement}}, appliqué à $\delta$ et à la formule « $y$ est l'unique $F_\beta$ », l'ensemble $\{F_\beta : \beta < \delta\}$ existe. Sa réunion $g$ est une application, puisque ces applications coïncident là où elles sont toutes deux définies, de domaine $\bigcup \delta$.
+
+      Si $\delta$ est vide ou limite, $\bigcup \delta = \delta$ ({{o-successeur-limite|Successeurs, limites}}), et l'on pose $F_\delta = g$. Pour $\alpha < \delta$, il existe alors $\beta < \delta$ avec $\alpha < \beta$, et $F_\delta(\alpha) = F_\beta(\alpha) = G(F_\beta|_\alpha) = G(F_\delta|_\alpha)$.
+
+      Si $\delta = \beta^+$, on pose $F_\delta = F_\beta \cup \{(\beta, G(F_\beta))\}$, application de domaine $\beta \cup \{\beta\} = \delta$. Pour $\alpha < \beta$, l'équation est celle de $F_\beta$ ; pour $\alpha = \beta$, elle s'écrit $F_\delta(\beta) = G(F_\beta) = G(F_\delta|_\beta)$.
+    remarques:
+      - |
+        Le schéma de remplacement est ici indispensable : sans lui, on ne pourrait rassembler les approximations $F_\beta$ en un ensemble. C'est l'usage qu'annonçait la remarque du nœud {{zf-rempl|Remplacement}}.
+      - |
+        $F$ n'est pas un ensemble, puisque son domaine serait l'ensemble de tous les ordinaux. On ne manipule que ses restrictions $F_\delta$, qui en sont, et l'énoncé est, comme l'induction, un schéma.
+
+  - id: o-representation
+    etiquette: Type d'ordre
+    nature: théorème
+    titre: Tout bon ordre est isomorphe à un unique ordinal
+    enonce: |
+      (i) Si deux ordinaux sont isomorphes pour l'ordre, ils sont égaux, et l'unique isomorphisme est l'identité.
+
+      (ii) Tout ensemble bien ordonné $(E, \leqslant)$ est isomorphe à un unique ordinal, son **type d'ordre**, par un unique isomorphisme.
+    preuve: |
+      (i) Soit $f : \alpha \to \beta$ un isomorphisme d'ordres. Pour $\gamma < \alpha$, les éléments de $\beta$ inférieurs à $f(\gamma)$ sont exactement les $f(\delta)$, $\delta < \gamma$, puisque $f$ est une bijection croissante. Comme un ordinal est l'ensemble de ses prédécesseurs, $f(\gamma) = \{f(\delta) : \delta < \gamma\}$. Si $f(\delta) = \delta$ pour tout $\delta < \gamma$, il vient $f(\gamma) = \gamma$ ; par induction dans le bon ordre $\alpha$, $f$ est l'identité, et $\beta = f(\alpha) = \alpha$. Si $f$ et $f'$ sont deux isomorphismes de $E$ sur des ordinaux $\alpha$ et $\alpha'$, alors $f' \circ f^{-1}$ est un isomorphisme de $\alpha$ sur $\alpha'$ ; donc $\alpha = \alpha'$ et $f = f'$.
+
+      (ii) Pour $x \in E$, notons $E_x = \{y \in E : y < x\}$. Soit $A$ l'ensemble des $x \in E$ tels que $E_x$ soit isomorphe à un ordinal, nécessairement unique par (i), noté $\alpha_x$. Si $y < x$ et $x \in A$, l'isomorphisme de $E_x$ sur $\alpha_x$ envoie $E_y$ sur l'ensemble des éléments de $\alpha_x$ inférieurs à son image $f(y)$, c'est-à-dire sur l'ordinal $f(y)$ ; donc $y \in A$ et $\alpha_y = f(y) < \alpha_x$.
+
+      Montrons que $A = E$. Sinon, soit $x$ le plus petit élément de $E \setminus A$. Tout $y < x$ appartient à $A$, et par {{zf-rempl|remplacement}}, $y \mapsto \alpha_y$ est une application de $E_x$ ; elle est strictement croissante d'après ce qui précède. Son image $\{\alpha_y : y < x\}$ est transitive, puisque tout élément de $\alpha_y$ est de la forme $\alpha_z$ avec $z < y$ ; c'est donc un ensemble transitif d'ordinaux, bien ordonné par $\in$, c'est-à-dire un ordinal. Ainsi $E_x$ est isomorphe à un ordinal, et $x \in A$ : contradiction. Le même raisonnement, appliqué à $E$ tout entier, montre que $x \mapsto \alpha_x$ est un isomorphisme de $E$ sur un ordinal. L'unicité vient de (i).
+    remarques:
+      - |
+        L'ordinal associé à $E$ mesure la « longueur » de son bon ordre, et non le nombre de ses éléments : deux bons ordres sur un même ensemble peuvent avoir des types différents. C'est pourquoi il faut ensuite définir les cardinaux.
+      - |
+        La preuve emploie encore le remplacement. Sans lui, on ne peut pas même démontrer que tout bon ordre est isomorphe à un ordinal ; c'est l'une des raisons pour lesquelles Fraenkel l'a ajouté, en 1922, aux axiomes de Zermelo.
+
+  - id: o-hartogs
+    etiquette: Théorème de Hartogs
+    nature: théorème
+    titre: Ordinal de Hartogs
+    enonce: |
+      Pour tout ensemble $A$, il existe un ordinal qui ne s'injecte pas dans $A$. Le plus petit d'entre eux, l'[[ordinal-hartogs|ordinal de Hartogs]] $h(A)$, est l'ensemble des ordinaux qui s'injectent dans $A$. La démonstration n'utilise pas l'axiome du choix.
+    preuve: |
+      Soit $W$ l'ensemble des couples $(B, R)$ où $B \subset A$ et où $R \subset B \times B$ est un bon ordre sur $B$ ; il existe par séparation dans $\mathcal P(A) \times \mathcal P(A \times A)$. Chacun a un type d'ordre ({{o-representation|Type d'ordre}}), et par remplacement, l'ensemble $H$ de ces types existe.
+
+      Un ordinal $\alpha$ appartient à $H$ si et seulement s'il s'injecte dans $A$. En effet, si $f : \alpha \to A$ est injective, l'ordre de $\alpha$ transporté sur $f(\alpha)$ est un bon ordre de type $\alpha$ ; réciproquement, si $(B, R) \in W$ a pour type $\alpha$, la réciproque de l'isomorphisme de $B$ sur $\alpha$, suivie de l'inclusion de $B$ dans $A$, est une injection de $\alpha$ dans $A$.
+
+      Si $\alpha \in H$ et $\beta < \alpha$, alors $\beta \subset \alpha$ s'injecte dans $A$, donc $\beta \in H$ : l'ensemble $H$ est un ensemble transitif d'ordinaux, donc un ordinal. Comme $H \notin H$, l'ordinal $H$ ne s'injecte pas dans $A$, et tout ordinal plus petit, élément de $H$, s'y injecte.
+    remarques:
+      - |
+        Ce théorème remplace, sans choix, l'argument naïf « on énumère les éléments de $A$ jusqu'à épuisement ». Il fournit un ordinal assez long pour qu'une énumération de $A$ indexée par lui doive s'arrêter : c'est le ressort des théorèmes de Zermelo et de Zorn, qui suivent.
+
+  - id: o-zermelo
+    etiquette: Théorème de Zermelo
+    nature: théorème
+    titre: Théorème de Zermelo
+    choix: |
+      Ce théorème établit, dans $\mathsf{ZF}$, l'équivalence entre l'axiome du choix et l'énoncé « tout ensemble peut être bien ordonné ».
+    enonce: |
+      Dans $\mathsf{ZF}$, l'[[axiome-choix]] équivaut à l'énoncé : tout ensemble peut être muni d'un [[bon-ordre]].
+    preuve: |
+      *Le bon ordre entraîne le choix.* Soit $(A_i)_{i \in I}$ une famille d'ensembles non vides, et $\leqslant$ un bon ordre sur $\bigcup_i A_i$. L'application $i \mapsto \min A_i$ est une fonction de choix, définie sans aucun choix arbitraire ; on conclut par la forme (iii) du nœud {{r-choix|Formes de l'axiome du choix}}.
+
+      *Le choix entraîne le bon ordre.* Soit $A$ un ensemble et $c$ une fonction de choix sur la famille des parties non vides de $A$, donnée par {{r-choix|la même forme}}. Pour tout ensemble $f$, posons $G(f) = c(A \setminus \operatorname{Im} f)$ si $f$ est une application et si cette différence est non vide, et $G(f) = A$ sinon ; comme $A \notin A$ ({{zf-bienfonde|Pas de x ∈ x}}), cette valeur sert de marque d'arrêt. Soit $F$ définie sur l'ordinal de Hartogs $h(A)$ par récursion transfinie, $F(\alpha) = G(F|_\alpha)$, et notons $F[\alpha]$ l'image de $F|_\alpha$.
+
+      Tant que $F(\alpha) \neq A$, l'élément $F(\alpha)$ appartient à $A \setminus F[\alpha]$ : il diffère des $F(\beta)$, $\beta < \alpha$. Si l'on avait $F(\alpha) \neq A$ pour tout $\alpha < h(A)$, $F$ serait donc une injection de $h(A)$ dans $A$, ce qu'exclut le théorème de {{o-hartogs|Hartogs}}. Soit $\alpha$ le plus petit ordinal tel que $F(\alpha) = A$. Alors $F|_\alpha$ est injective et à valeurs dans $A$, et $F(\alpha) = A$ signifie $A \setminus F[\alpha] = \varnothing$ : $F|_\alpha$ est une bijection de $\alpha$ sur $A$. L'ordre de $\alpha$, transporté par cette bijection, est un bon ordre sur $A$.
+    remarques:
+      - |
+        Zermelo a publié cette démonstration en 1904, en formulant explicitement l'axiome du choix pour la première fois ; les objections qu'elle suscita le conduisirent à proposer en 1908 son axiomatique, origine de $\mathsf{ZF}$.
+      - |
+        L'erreur la plus répandue est de croire que ce théorème permet d'exhiber un bon ordre de {{r|$\mathbb R$}}. Il n'en affirme que l'existence, et l'on ne peut se passer du choix : il est cohérent avec $\mathsf{ZF}$ que $\mathbb R$ ne puisse pas être bien ordonné (Cohen, 1963).
+
+  - id: o-zorn
+    etiquette: Lemme de Zorn
+    nature: théorème
+    titre: Lemme de Zorn
+    choix: |
+      Le lemme de Zorn équivaut, dans $\mathsf{ZF}$, à l'axiome du choix ; les deux implications sont démontrées ici.
+    enonce: |
+      Un élément $m$ d'un ensemble ordonné est **maximal** si aucun élément n'est strictement plus grand que $m$. Le [[lemme-zorn|lemme de Zorn]] affirme : tout ensemble ordonné [[inductif-ordre|inductif]], c'est-à-dire dont toute [[chaine]] admet un [[majorant]], possède un élément maximal.
+
+      Dans $\mathsf{ZF}$, il équivaut à l'[[axiome-choix]].
+    preuve: |
+      *Le choix entraîne Zorn.* Soit $(E, \leqslant)$ inductif. Il est non vide, puisque la chaîne vide est majorée. Supposons qu'il n'ait pas d'élément maximal. Pour toute chaîne $C$, l'ensemble $S(C)$ de ses majorants stricts est alors non vide : un majorant $M$ de $C$ n'est pas maximal, et tout $x > M$ est un majorant strict. Soit $c$ une fonction de choix sur les parties non vides de $E$ et $e_0 \in E$. On définit $F$ sur l'ordinal de Hartogs $h(E)$ par récursion transfinie : $F(\alpha) = c\big(S(F[\alpha])\big)$ si l'image $F[\alpha] = \{F(\beta) : \beta < \alpha\}$ est une chaîne, et $F(\alpha) = e_0$ sinon.
+
+      Par induction transfinie, pour tout $\alpha < h(E)$, $F[\alpha]$ est une chaîne et $F(\alpha)$ en est un majorant strict : si c'est vrai au-dessous de $\alpha$, deux éléments $F(\beta)$ et $F(\gamma)$ avec $\beta < \gamma < \alpha$ vérifient $F(\beta) < F(\gamma)$, donc $F[\alpha]$ est une chaîne, et $F(\alpha)$ est pris parmi ses majorants stricts. Ainsi $F$ est strictement croissante, donc injective, de $h(E)$ dans $E$, ce qu'exclut le théorème de {{o-hartogs|Hartogs}}.
+
+      *Zorn entraîne le choix.* Soit $(A_i)_{i \in I}$ une famille d'ensembles non vides. Soit $E$ l'ensemble des fonctions de choix partielles, c'est-à-dire des applications $g$ définies sur une partie $J \subset I$ avec $g(i) \in A_i$, ordonné par inclusion des graphes. La réunion d'une chaîne de telles applications en est encore une, qui majore la chaîne : $E$ est inductif. Soit $g$ maximal, de domaine $J$. Si $J \neq I$, on prend $i_0 \in I \setminus J$ et $a \in A_{i_0}$, et $g \cup \{(i_0, a)\}$ contredit la maximalité ; ce choix unique ne demande aucun axiome. Donc $g$ est une fonction de choix sur $I$.
+    remarques:
+      - |
+        Le lemme de Zorn est la forme du choix la plus employée hors de la théorie des ensembles : existence d'idéaux maximaux (voir {{a-premier-maximal|Idéaux premiers, maximaux}}), de bases d'espaces vectoriels ({{alglin|Algèbre linéaire}}), d'ultrafiltres, théorème de Hahn-Banach.
+
+  - id: o-cardinal
+    etiquette: Cardinal
+    nature: proposition
+    titre: Cardinaux
+    texte: |
+      Un [[cardinal]] est un ordinal qui n'est équipotent à aucun ordinal strictement plus petit. Pour un ensemble $A$ qui peut être bien ordonné, le **cardinal de $A$**, noté $|A|$, est le plus petit ordinal équipotent à $A$.
+    enonce: |
+      Soient $A$ et $B$ deux ensembles qui peuvent être bien ordonnés.
+
+      (i) $|A|$ existe, et c'est un cardinal.
+
+      (ii) $A \approx B$ si et seulement si $|A| = |B|$.
+
+      (iii) $A \preccurlyeq B$ si et seulement si $|A| \leqslant |B|$.
+    preuve: |
+      *Lemme.* Toute partie $X$ d'un ordinal $\beta$ a un type d'ordre $\gamma \leqslant \beta$. En effet, soit $f : \gamma \to X$ l'isomorphisme ; montrons $f(\delta) \geqslant \delta$ pour tout $\delta < \gamma$, par induction. Si c'est vrai au-dessous de $\delta$, alors pour $\varepsilon < \delta$, on a $\varepsilon \leqslant f(\varepsilon) < f(\delta)$, donc $\varepsilon \in f(\delta)$ ; ainsi $\delta \subset f(\delta)$, c'est-à-dire $\delta \leqslant f(\delta)$. Si l'on avait $\beta < \gamma$, il viendrait $f(\beta) \geqslant \beta$, alors que $f(\beta) \in X \subset \beta$.
+
+      (i) Un bon ordre sur $A$ a un type $\alpha$, équipotent à $A$ ({{o-representation|Type d'ordre}}). L'ensemble des $\beta \leqslant \alpha$ équipotents à $A$ est non vide ; son plus petit élément $\kappa$ est le plus petit ordinal équipotent à $A$, car tout ordinal équipotent à $A$ et plus petit que $\kappa$ serait aussi $\leqslant \alpha$. Si $\kappa$ était équipotent à un ordinal $\beta < \kappa$, $\beta$ le serait à $A$ : $\kappa$ est un cardinal.
+
+      (ii) Si $A \approx B$, les ordinaux équipotents à $A$ et à $B$ sont les mêmes ({{r-equipotence|Équipotence}}), donc $|A| = |B|$. Réciproquement, $A \approx |A| = |B| \approx B$.
+
+      (iii) Si $|A| \leqslant |B|$, l'inclusion $|A| \subset |B|$ ({{o-comparaison|Comparaison des ordinaux}}) donne $A \preccurlyeq B$. Réciproquement, une injection de $A$ dans $B$ fournit une injection de $|A|$ dans $|B|$, d'image $X$ ; par le lemme, $X$ a un type $\gamma \leqslant |B|$, et $|A| \approx \gamma$ donne $|A| \leqslant \gamma \leqslant |B|$ par minimalité de $|A|$.
+    remarques:
+      - |
+        Sous l'axiome du choix, tout ensemble peut être bien ordonné ({{o-zermelo|Théorème de Zermelo}}), et $|A|$ est défini pour tout $A$. Sans lui, on ne peut associer à chaque ensemble un représentant canonique de sa taille.
+      - |
+        Le cardinal $|A|$ ne dépend pas du bon ordre choisi, alors que le type d'ordre en dépend. Les cardinaux infinis seront notés $\aleph_\alpha$, indexés par les ordinaux, une fois $\omega = \aleph_0$ construit au nœud {{n|$\mathbb N$}}.
+
+  - id: o-comparabilite
+    etiquette: Comparabilité
+    nature: théorème
+    titre: Comparabilité des ensembles
+    choix: |
+      La comparabilité de deux ensembles quelconques est équivalente, dans $\mathsf{ZF}$, à l'axiome du choix.
+    enonce: |
+      Dans $\mathsf{ZF}$, l'[[axiome-choix]] équivaut à l'énoncé : pour tous ensembles $A$ et $B$, on a $A \preccurlyeq B$ ou $B \preccurlyeq A$.
+    preuve: |
+      Sous l'axiome du choix, $A$ et $B$ peuvent être bien ordonnés ({{o-zermelo|Théorème de Zermelo}}), et les ordinaux $|A|$ et $|B|$ sont comparables ({{o-comparaison|Comparaison des ordinaux}}) ; le nœud {{o-cardinal|Cardinal}} conclut.
+
+      Réciproquement, soit $A$ un ensemble. Son ordinal de Hartogs $h(A)$ ne s'injecte pas dans $A$ ({{o-hartogs|Hartogs}}) ; par comparabilité, $A$ s'injecte dans $h(A)$. Le bon ordre de $h(A)$, transporté sur $A$ par cette injection, est un bon ordre de $A$, et le théorème de Zermelo donne l'axiome du choix.
+    remarques:
+      - |
+        Avec le théorème de {{r-bernstein|Cantor-Bernstein}}, qui n'utilise pas le choix, la relation $\preccurlyeq$ devient, sous l'axiome du choix, un ordre total sur les tailles d'ensembles. Ce résultat est dû à Hartogs (1915).
+
+  - id: o-pas-de-maximum
+    etiquette: Pas de plus grand cardinal
+    nature: proposition
+    titre: Il n'y a pas de plus grand cardinal
+    enonce: |
+      Pour tout cardinal $\kappa$, l'ordinal de Hartogs $h(\kappa)$ est un cardinal strictement supérieur à $\kappa$. La démonstration n'utilise pas l'axiome du choix.
+    preuve: |
+      $\kappa$ s'injecte dans lui-même, donc $\kappa \in h(\kappa)$ ({{o-hartogs|Hartogs}}), soit $\kappa < h(\kappa)$. Si $h(\kappa)$ était équipotent à un ordinal $\beta < h(\kappa)$, alors $\beta$, qui s'injecte dans $\kappa$, ferait s'injecter $h(\kappa)$ dans $\kappa$, ce qui est exclu. Donc $h(\kappa)$ est un cardinal.
+    remarques:
+      - |
+        Le théorème de {{r-cantor|Cantor}} donne une autre preuve, mais seulement sous l'axiome du choix, qui assure que $\mathcal P(\kappa)$ a un cardinal ; $h(\kappa)$ est en revanche toujours le cardinal suivant $\kappa$. L'égalité entre ces deux cardinaux, pour $\kappa = \aleph_0$, est l'hypothèse du continu, indépendante de $\mathsf{ZFC}$ (Gödel, 1938 ; Cohen, 1963).
+
+aretes:
+  - [o-transitif, o-ordinal]
+  - [o-ordinal, o-elements]
+  - [o-elements, o-comparaison]
+  - [o-comparaison, o-burali-forti]
+  - [o-comparaison, o-successeur-limite]
+  - [o-successeur-limite, o-induction]
+  - [o-induction, o-recursion]
+  - [o-recursion, o-representation]
+  - [o-representation, o-hartogs]
+  - [o-hartogs, o-zermelo]
+  - [o-hartogs, o-zorn]
+  - [o-representation, o-cardinal]
+  - [o-zermelo, o-comparabilite]
+  - [o-cardinal, o-comparabilite]
+  - [o-hartogs, o-pas-de-maximum]
+  - [o-cardinal, o-pas-de-maximum]

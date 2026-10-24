@@ -271,6 +271,10 @@ def disposer(gid):
             for v in c:
                 vs = voisins_bas[v] + voisins_haut[v]
                 poids = [3 if (w.startswith('·') or v.startswith('·')) else 1 for w in vs]
+                # Une feuille posée au-dessus (nœud sans successeur) suit son parent sans l'attirer :
+                # sinon chaque embranchement décale la chaîne principale, et les décalages s'accumulent.
+                poids = [p * (0.2 if (w in voisins_haut[v] and not voisins_haut[w] and len(vs) > 1) else 1)
+                         for w, p in zip(vs, poids)]
                 voulu.append(sum(x[w] * p for w, p in zip(vs, poids)) / sum(poids) if vs else x[v])
             # placement au plus près des positions voulues, ordre et écarts respectés
             g_ = list(voulu)
@@ -280,6 +284,15 @@ def disposer(gid):
             moy = [(a + b) / 2 for a, b in zip(g_, d_)]
             for i in range(1, len(c)): moy[i] = max(moy[i], moy[i - 1] + sep(c[i - 1], c[i]))
             for i, v in enumerate(c): x[v] = moy[i]
+    # Redressement : une couche réduite à un seul nœud, de parent unique, est alignée sur ce parent,
+    # et tout ce qui est au-dessus suit. Toute arête qui traverse la couche passe par ce nœud
+    # (les arêtes longues y auraient un nœud fictif), donc aucune autre arête n'est déformée.
+    for t in range(1, nmax + 1):
+        c = ordre[t]
+        if len(c) == 1 and len(voisins_bas[c[0]]) == 1:
+            d = x[voisins_bas[c[0]][0]] - x[c[0]]
+            for v in x:
+                if rang[v] >= t: x[v] += d
     xmin = min(x[v] - dims[v][0] / 2 for v in x)
     xmax = max(x[v] + dims[v][0] / 2 for v in x)
     decal = MARGE - xmin
