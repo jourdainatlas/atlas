@@ -121,13 +121,44 @@ noeuds:
     titre: Opérations arithmétiques
     enonce: |
       Pour $m \in \omega$ fixé, le théorème de définition par récurrence fournit des applications $n \mapsto m + n$ et $n \mapsto m \cdot n$ caractérisées par
-      $$m + 0 = m, \quad m + S(n) = S(m + n), \qquad m \cdot 0 = 0, \quad m \cdot S(n) = m \cdot n + m.$$
+      $$m + 0 = m, \qquad m + S(n) = S(m + n),$$
+      $$m \cdot 0 = 0, \qquad m \cdot S(n) = m \cdot n + m.$$
       On a alors $S(n) = n + 1$.
     remarques:
       - |
         Les propriétés usuelles s'établissent par récurrence. Par exemple, l'associativité $(k + m) + n = k + (m + n)$ se démontre par récurrence sur $n$ : pour $n = 0$, les deux membres valent $k + m$, et $(k + m) + S(n) = S((k+m)+n) = S(k + (m+n)) = k + S(m+n) = k + (m + S(n))$.
       - |
         La commutativité demande deux récurrences imbriquées : on montre d'abord $0 + n = n$ et $S(m) + n = S(m + n)$, puis $m + n = n + m$ par récurrence sur $n$.
+
+  - id: n-proprietes
+    etiquette: Propriétés des opérations
+    nature: théorème
+    titre: L'arithmétique de ℕ
+    enonce: |
+      Pour tous $k, m, n, p \in \mathbb N$ :
+
+      (i) L'addition est associative, commutative, de neutre $0$, et tout élément est simplifiable : $m + p = n + p$ entraîne $m = n$. De plus, $m + n = 0$ entraîne $m = n = 0$.
+
+      (ii) La multiplication est associative, commutative, de neutre $1$, et distributive sur l'addition. Si $mn = 0$, alors $m = 0$ ou $n = 0$.
+
+      (iii) $m \leqslant n$ si et seulement s'il existe $k$ tel que $m + k = n$ ; ce $k$ est alors unique, et $m < n$ équivaut à $k \neq 0$.
+
+      (iv) Si $m \leqslant n$, alors $m + p \leqslant n + p$ et $mp \leqslant np$ ; si $m < n$ et $p \neq 0$, alors $m + p < n + p$ et $mp < np$.
+    preuve: |
+      Toutes les preuves sont des récurrences sur la dernière variable ({{n-recurrence|Récurrence}}), à partir des quatre égalités qui définissent les opérations ({{n-operations|Addition, multiplication}}).
+
+      *(i)* L'associativité est établie dans la remarque du nœud {{n-operations|Addition, multiplication}}. On montre $0 + n = n$, puis $S(m) + n = S(m + n)$, par récurrence sur $n$ : pour $n = 0$ les deux membres valent $S(m)$, et $S(m) + S(n) = S(S(m) + n) = S(S(m + n)) = S(m + S(n))$. La commutativité $m + n = n + m$ s'en déduit par récurrence sur $n$, puisque $m + S(n) = S(m + n) = S(n + m) = S(n) + m$. Pour la simplification, récurrence sur $p$ : si $m + S(p) = n + S(p)$, alors $S(m + p) = S(n + p)$, d'où $m + p = n + p$ par injectivité de $S$ ({{n-peano|Axiomes de Peano}}), puis $m = n$. Enfin, si $n = S(n')$, alors $m + n = S(m + n') \neq 0$ ; donc $m + n = 0$ impose $n = 0$, puis $m = 0$.
+
+      *(ii)* On montre successivement, par récurrence sur la dernière variable : la distributivité à gauche $m(n + p) = mn + mp$, car $m(n + S(p)) = m\,S(n + p) = m(n + p) + m = mn + mp + m = mn + m\,S(p)$ ; l'associativité $(mn)p = m(np)$, car $(mn)S(p) = (mn)p + mn = m(np) + mn = m(np + n) = m(n\,S(p))$ ; les égalités $0 \cdot n = 0$ et $S(m)\,n = mn + n$ ; d'où la commutativité, puisque $S(m)\,S(n) = S(m)\,n + S(m) = mn + n + m + 1$ et $m\,S(n) + S(n) = mn + m + n + 1$. La distributivité à droite s'en déduit, et $1 \cdot n = n \cdot 1 = n$. Si $n = S(n') \neq 0$ et $mn = 0$, alors $mn' + m = 0$, donc $m = 0$ par (i).
+
+      *(iii)* Récurrence sur $n$. Pour $n = 0$ : $m \leqslant 0$ équivaut à $m = 0$, et $m + k = 0$ aussi, par (i). Supposons le résultat vrai pour $n$. Comme $S(n) = n \cup \{n\}$, on a $m \leqslant S(n)$ si et seulement si $m \leqslant n$ ou $m = S(n)$. Si $m + k = n$, alors $m + S(k) = S(n)$ ; si $m = S(n)$, $k = 0$ convient. Réciproquement, si $m + k = S(n)$, ou bien $k = 0$ et $m = S(n)$, ou bien $k = S(k')$, et $S(m + k') = S(n)$ donne $m + k' = n$, donc $m \leqslant n$. L'unicité de $k$ est la simplification de (i), et $k = 0$ équivaut à $m = n$.
+
+      *(iv)* Si $m + k = n$, alors $(m + p) + k = n + p$ et $mp + kp = np$, par commutativité, associativité et distributivité. Si de plus $k \neq 0$ et $p \neq 0$, alors $kp \neq 0$ par (ii), et les inégalités sont strictes par (iii).
+    remarques:
+      - |
+        Le point (i) dit exactement que $(\mathbb N, +)$ est un monoïde commutatif régulier, ce qu'exige la symétrisation ({{a-symetrise|Symétrisation}}). C'est ce qui permettra de construire {{z|$\mathbb Z$}}, en ajoutant les opposés qui manquent.
+      - |
+        Le point (iii) relie l'ordre défini par l'appartenance, $m < n \iff m \in n$, à l'ordre défini par l'addition. Les deux points de vue, ensembliste et arithmétique, décrivent le même ordre.
 
 aretes:
   - [n-succ, n-omega]
@@ -139,3 +170,5 @@ aretes:
   - [n-peano, n-recdef]
   - [n-recurrence, n-recdef]
   - [n-recdef, n-operations]
+  - [n-operations, n-proprietes]
+  - [n-ordre, n-proprietes]
