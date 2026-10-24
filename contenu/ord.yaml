@@ -1,0 +1,243 @@
+# Niveau 1 : structure interne du nœud « Structures d'ordre ».
+# Dans l'édifice, ce nœud ne repose que sur « Relations, fonctions », et il précède les ordinaux,
+# ℕ, ℚ et ℝ. Aucun énoncé n'emploie donc de nombre ; les exemples sont pris dans les parties d'un ensemble.
+# Il fournit aux graphes supérieurs : ordre strict, isomorphisme d'ordres, élément maximal, bon ordre,
+# segments initiaux, chaînes, propriété de la borne supérieure et coupures de Dedekind.
+
+graphe: ord
+titre: Structures d'ordre
+conteneur: ord
+
+entrees:
+  rel: [od-ordre]
+
+noeuds:
+  - id: od-ordre
+    etiquette: Relation d'ordre
+    nature: proposition
+    titre: Ordres larges, ordres stricts
+    texte: |
+      Une [[relation-ordre|relation d'ordre]] sur $E$ est une relation réflexive, antisymétrique et transitive ({{r-relation|Relation}}), notée $\leqslant$ ; le couple $(E, \leqslant)$ est un **ensemble ordonné**. Un [[ordre-strict|ordre strict]] est une relation irréflexive et transitive, notée $<$. Un ordre est [[ordre-total|total]] si deux éléments quelconques sont comparables : $x \leqslant y$ ou $y \leqslant x$.
+
+      Toute partie $F$ d'un ensemble ordonné est ordonnée par la restriction de l'ordre à $F \times F$, l'**ordre induit**.
+    enonce: |
+      (i) Si $\leqslant$ est une relation d'ordre, la relation « $x \leqslant y$ et $x \neq y$ » est un ordre strict.
+
+      (ii) Si $<$ est un ordre strict, la relation « $x < y$ ou $x = y$ » est une relation d'ordre.
+
+      (iii) Ces deux passages sont réciproques l'un de l'autre. Un ordre strict est de plus asymétrique : $x < y$ et $y < x$ ne se produisent jamais ensemble.
+    preuve: |
+      (i) L'irréflexivité est claire. Si $x < y$ et $y < z$, alors $x \leqslant z$ par transitivité ; si l'on avait $x = z$, on aurait $x \leqslant y$ et $y \leqslant x$, donc $x = y$ par antisymétrie, ce qui est exclu.
+
+      (ii) La réflexivité est claire, la transitivité se vérifie cas par cas. Si $x \leqslant y$ et $y \leqslant x$ avec $x \neq y$, alors $x < y < x$, donc $x < x$ par transitivité, ce qu'interdit l'irréflexivité.
+
+      (iii) Partant de $\leqslant$, la relation « $x \leqslant y$ et $x \neq y$, ou $x = y$ » est $\leqslant$ ; partant de $<$, la relation « ($x < y$ ou $x = y$) et $x \neq y$ » est $<$, par irréflexivité. Enfin $x < y < x$ donnerait $x < x$.
+    remarques:
+      - |
+        L'inclusion est l'exemple fondamental : pour tout ensemble $E$, $(\mathcal P(E), \subset)$ est un ensemble ordonné. Il n'est pas total dès que $E$ contient deux éléments distincts $a$ et $b$, puisque $\{a\}$ et $\{b\}$ ne sont pas comparables.
+      - |
+        L'erreur la plus répandue est de croire que « $x \not\leqslant y$ » signifie « $y < x$ ». Ce n'est vrai que pour un ordre total ; dans $\mathcal P(E)$, $\{a\} \not\subset \{b\}$ sans que $\{b\} \subsetneq \{a\}$.
+      - |
+        Si $\leqslant$ est un ordre sur $E$, la relation réciproque $\geqslant$ en est un aussi, l'**ordre opposé**. Chaque énoncé sur les majorants a ainsi un énoncé jumeau sur les minorants, qu'on ne répète pas.
+
+  - id: od-majorants
+    etiquette: Majorants, bornes
+    nature: proposition
+    titre: Majorants, plus grand élément, borne supérieure
+    texte: |
+      Soit $A$ une partie de l'ensemble ordonné $E$. Un [[majorant]] de $A$ est un $M \in E$ tel que $x \leqslant M$ pour tout $x \in A$ ; la partie $A$ est **majorée** si elle en a un. Un **plus grand élément** de $A$ est un majorant de $A$ qui appartient à $A$. Un [[element-maximal|élément maximal]] de $A$ est un $m \in A$ tel qu'aucun $x \in A$ ne vérifie $m < x$. La [[borne-superieure|borne supérieure]] de $A$, notée $\sup A$, est, s'il existe, le plus petit élément de l'ensemble des majorants de $A$.
+
+      Les notions de **minorant**, **plus petit élément**, **élément minimal** et **borne inférieure** $\inf A$ sont les mêmes pour l'ordre opposé.
+    enonce: |
+      (i) Une partie a au plus un plus grand élément, et au plus une borne supérieure.
+
+      (ii) Si $A$ a un plus grand élément $m$, alors $\sup A$ existe et vaut $m$.
+
+      (iii) Un plus grand élément de $A$ est l'unique élément maximal de $A$. Dans un ordre total, réciproquement, un élément maximal est le plus grand élément.
+
+      (iv) Un élément $s$ est la borne supérieure de $A$ si et seulement si $s$ majore $A$ et si tout majorant $M$ de $A$ vérifie $s \leqslant M$.
+    preuve: |
+      (i) Si $m$ et $m'$ sont deux plus grands éléments, chacun majore l'autre, et $m = m'$ par antisymétrie. La borne supérieure est un plus petit élément, donc unique par l'énoncé jumeau.
+
+      (ii) $m$ est un majorant de $A$, et tout majorant $M$ vérifie $m \leqslant M$ puisque $m \in A$.
+
+      (iii) Si $m$ est le plus grand élément et $m < x$ avec $x \in A$, alors $x \leqslant m$, ce qui contredit l'asymétrie. Si $m'$ est maximal, $m' \leqslant m$, et $m' < m$ est exclu, donc $m' = m$. Dans un ordre total, si $m$ est maximal, tout $x \in A$ vérifie $x \leqslant m$, puisque $m < x$ est exclu.
+
+      (iv) C'est la définition, écrite en deux conditions.
+    remarques:
+      - |
+        Dans un ordre non total, maximal ne veut pas dire plus grand. Si $E$ contient deux éléments distincts, la partie de $\mathcal P(E)$ formée des parties différentes de $E$ a pour éléments maximaux les complémentaires $E \setminus \{a\}$ des singletons, et elle n'a pas de plus grand élément. C'est cette distinction que le lemme de Zorn, au nœud {{o-zorn|Lemme de Zorn}}, met en jeu : il fournit un élément maximal, jamais un plus grand.
+      - |
+        Dans $(\mathcal P(E), \subset)$, toute partie $\mathcal A$ a une borne supérieure, $\bigcup \mathcal A$, et, si elle est non vide, une borne inférieure, $\bigcap \mathcal A$. La borne inférieure de la partie vide est $E$, qui est majorant de tout.
+
+  - id: od-croissantes
+    etiquette: Applications croissantes
+    nature: proposition
+    titre: Applications croissantes, isomorphismes d'ordres
+    texte: |
+      Une application $f : E \to F$ entre ensembles ordonnés est **croissante** si $x \leqslant y$ entraîne $f(x) \leqslant f(y)$, et **strictement croissante** si $x < y$ entraîne $f(x) < f(y)$. Un [[isomorphisme-ordres|isomorphisme d'ordres]] est une bijection $f$ telle que $x \leqslant y \iff f(x) \leqslant f(y)$.
+    enonce: |
+      (i) Une composée d'applications croissantes est croissante ; la réciproque d'un isomorphisme d'ordres en est un.
+
+      (ii) Si $E$ est totalement ordonné, toute application strictement croissante $f : E \to F$ est injective et vérifie $x \leqslant y \iff f(x) \leqslant f(y)$. En particulier, c'est un isomorphisme de $E$ sur $f(E)$.
+
+      (iii) Si $E$ et $F$ sont totalement ordonnés, une bijection croissante de $E$ sur $F$ est un isomorphisme d'ordres.
+    preuve: |
+      (i) Si $x \leqslant y$, alors $f(x) \leqslant f(y)$, puis $g(f(x)) \leqslant g(f(y))$. Pour un isomorphisme $f$, la condition $x \leqslant y \iff f(x) \leqslant f(y)$, lue avec $x = f^{-1}(x')$ et $y = f^{-1}(y')$, est exactement celle de $f^{-1}$.
+
+      (ii) Si $x \neq y$, on a $x < y$ ou $y < x$ par totalité, donc $f(x) < f(y)$ ou $f(y) < f(x)$, et $f(x) \neq f(y)$. Si $f(x) \leqslant f(y)$ et $y < x$, on aurait $f(y) < f(x)$, contradiction avec l'asymétrie ; donc $x \leqslant y$ par totalité.
+
+      (iii) Une bijection croissante est strictement croissante, puisque $x < y$ donne $f(x) \leqslant f(y)$ et $f(x) \neq f(y)$. On applique (ii).
+    remarques:
+      - |
+        L'hypothèse de totalité est indispensable dans (iii). Sur $E = \mathcal P(\{a, b\})$, avec $a \neq b$, l'identité de $E$ muni de l'égalité, qui est une relation d'ordre, vers $E$ muni de l'inclusion est une bijection croissante, mais sa réciproque ne l'est pas.
+      - |
+        Deux ensembles ordonnés isomorphes ont les mêmes propriétés d'ordre. C'est l'idée qui mène aux ordinaux : un représentant canonique de chaque bon ordre à isomorphisme près ({{o-representation|Type d'ordre}}).
+
+  - id: od-intervalles
+    etiquette: Intervalles
+    nature: définition
+    titre: Intervalles et segments
+    enonce: |
+      Dans un ensemble totalement ordonné $E$, une partie $I$ est un [[intervalle]] si, pour tous $x \leqslant y$ dans $I$, tout $z$ vérifiant $x \leqslant z \leqslant y$ appartient à $I$. Pour $a \leqslant b$, le [[segment]] d'extrémités $a$ et $b$ est $[a, b] = \{x : a \leqslant x \leqslant b\}$ ; on définit de même $]a, b[$, $[a, b[$, $]a, b]$, et les demi-droites $]{\leftarrow}, a[ = \{x : x < a\}$, $]{\leftarrow}, a]$, $]a, {\rightarrow}[$, $[a, {\rightarrow}[$. Une partie $C$ est un **segment initial** si $x \in C$ et $y \leqslant x$ entraînent $y \in C$.
+
+      Toutes ces parties sont des intervalles, et toute intersection d'intervalles est un intervalle.
+    preuve: |
+      Si $x \leqslant z \leqslant y$ avec $a \leqslant x$ et $y \leqslant b$, alors $a \leqslant z \leqslant b$ par transitivité ; les inégalités strictes se traitent de même, et un segment initial contient tout $z \leqslant y$. Si $x$ et $y$ appartiennent à chacun des intervalles d'une famille, il en va de même de tout $z$ compris entre eux.
+    remarques:
+      - |
+        Une réunion d'intervalles n'en est pas un en général ; elle en est un si les intervalles ont un point commun. La connexité, au nœud {{t-connexe|Connexité}}, retrouvera exactement les intervalles de {{r|$\mathbb R$}}.
+
+  - id: od-treillis
+    etiquette: Treillis complets
+    nature: proposition
+    titre: Treillis et treillis complets
+    texte: |
+      Un ensemble ordonné est un **treillis** si toute paire $\{x, y\}$ a une borne supérieure $x \vee y$ et une borne inférieure $x \wedge y$. C'est un [[treillis-complet|treillis complet]] si toute partie a une borne supérieure.
+    enonce: |
+      Dans un ensemble ordonné où toute partie a une borne supérieure, toute partie a aussi une borne inférieure : pour $A \subset E$, $\inf A$ est la borne supérieure de l'ensemble des minorants de $A$.
+    preuve: |
+      Soit $N$ l'ensemble des minorants de $A$ et $s = \sup N$. Tout $a \in A$ majore $N$, donc $s \leqslant a$ : $s$ est un minorant de $A$, c'est-à-dire $s \in N$. Comme $s$ majore $N$, c'est le plus grand élément de $N$, soit le plus grand des minorants : $s = \inf A$.
+    remarques:
+      - |
+        Un treillis complet a un plus petit élément, $\sup \varnothing$, et un plus grand, $\sup E$. L'exemple type est $(\mathcal P(E), \subset)$ ; l'ensemble des sous-groupes d'un groupe, ordonné par inclusion, en est un autre, où la borne inférieure est l'intersection et la borne supérieure le sous-groupe engendré par la réunion ({{a-sous-groupe|Sous-groupe}}).
+
+  - id: od-tarski
+    etiquette: Knaster-Tarski
+    nature: théorème
+    titre: Théorème du point fixe de Knaster-Tarski
+    enonce: |
+      Soit $E$ un treillis complet et $\varphi : E \to E$ une application croissante. Alors $\varphi$ a un plus grand point fixe, qui est $\sup\{x \in E : x \leqslant \varphi(x)\}$, et un plus petit point fixe.
+    preuve: |
+      Soit $S = \{x \in E : x \leqslant \varphi(x)\}$ et $s = \sup S$. Pour $x \in S$, on a $x \leqslant s$, donc $x \leqslant \varphi(x) \leqslant \varphi(s)$ par croissance : $\varphi(s)$ majore $S$, d'où $s \leqslant \varphi(s)$. Par croissance encore, $\varphi(s) \leqslant \varphi(\varphi(s))$, donc $\varphi(s) \in S$ et $\varphi(s) \leqslant s$. Ainsi $\varphi(s) = s$. Tout point fixe $p$ appartient à $S$, donc $p \leqslant s$.
+
+      Le plus petit point fixe s'obtient en appliquant ce résultat à l'ordre opposé, qui fait encore de $E$ un treillis complet ({{od-treillis|Treillis complets}}) et de $\varphi$ une application croissante.
+    remarques:
+      - |
+        La démonstration du théorème de {{r-bernstein|Cantor-Bernstein}} en est le cas particulier où $E = \mathcal P(A)$. C'est l'ordre qui fait le travail, et non une énumération : aucun entier n'intervient.
+      - |
+        En logique et en informatique, ce théorème justifie les définitions « par le plus petit ensemble stable » : par exemple, l'ensemble des formules d'un langage est le plus petit point fixe d'une opération de construction ({{l-formules|Formules}}).
+
+  - id: od-bon-ordre
+    etiquette: Bon ordre
+    nature: proposition
+    titre: Bons ordres
+    texte: |
+      Un [[bon-ordre|bon ordre]] sur $E$ est une relation d'ordre pour laquelle toute partie non vide de $E$ a un plus petit élément. Pour $x \in E$, on note $E_x = \{y \in E : y < x\}$.
+    enonce: |
+      Soit $(E, \leqslant)$ bien ordonné.
+
+      (i) L'ordre est total.
+
+      (ii) *Principe d'induction.* Soit $P \subset E$ telle que, pour tout $x \in E$, l'inclusion $E_x \subset P$ entraîne $x \in P$. Alors $P = E$.
+
+      (iii) Toute application strictement croissante $f : E \to E$ vérifie $x \leqslant f(x)$ pour tout $x$.
+
+      (iv) Tout segment initial $C \neq E$ est de la forme $E_x$, avec $x = \min(E \setminus C)$. Aucun $E_x$ n'est isomorphe à $E$.
+
+      (v) Entre deux ensembles bien ordonnés, il existe au plus un isomorphisme d'ordres.
+    preuve: |
+      (i) Pour $x, y \in E$, la partie $\{x, y\}$ a un plus petit élément, qui est inférieur à l'autre.
+
+      (ii) Sinon, $E \setminus P$ a un plus petit élément $x$. Tout $y < x$ appartient à $P$, donc $E_x \subset P$, et l'hypothèse donne $x \in P$ : contradiction.
+
+      (iii) Sinon, $\{x : f(x) < x\}$ a un plus petit élément $x_0$. Comme $f(x_0) < x_0$ et que $f$ est strictement croissante, $f(f(x_0)) < f(x_0)$ : l'élément $f(x_0)$ appartient à cet ensemble et précède $x_0$, contradiction.
+
+      (iv) Soit $x$ le plus petit élément de $E \setminus C$. Si $y < x$, alors $y \in C$ par minimalité. Si $y \in C$, on ne peut avoir $x \leqslant y$, sinon $x \in C$ ; donc $y < x$ par totalité. Ainsi $C = E_x$. Un isomorphisme $f$ de $E$ sur $E_x$ serait strictement croissant de $E$ dans $E$ avec $f(x) < x$, contrairement à (iii).
+
+      (v) Si $f$ et $g$ sont deux isomorphismes de $E$ sur $F$, alors $g^{-1} \circ f$ et $f^{-1} \circ g$ sont strictement croissantes de $E$ dans $E$. Par (iii), $x \leqslant g^{-1}(f(x))$, soit $g(x) \leqslant f(x)$, et de même $f(x) \leqslant g(x)$. Donc $f = g$.
+    remarques:
+      - |
+        Le principe (ii) est la forme ensembliste de l'induction transfinie. Sur les ordinaux, qui ne forment pas un ensemble, il deviendra un schéma, au nœud {{o-induction|Induction transfinie}}.
+      - |
+        Sur un ensemble bien ordonné, aucune suite ne peut décroître strictement indéfiniment, puisque ses termes formeraient une partie sans plus petit élément. Cette formulation demande les suites, donc {{n|$\mathbb N$}} ; elle caractérise les bons ordres parmi les ordres totaux sous l'axiome du choix dépendant.
+
+  - id: od-chaines
+    etiquette: Chaînes, ensembles inductifs
+    nature: définition
+    titre: Chaînes et ensembles inductifs
+    enonce: |
+      Une [[chaine|chaîne]] d'un ensemble ordonné est une partie sur laquelle l'ordre induit est total. Un ensemble ordonné est [[inductif-ordre|inductif]] si toute chaîne y admet un majorant.
+    remarques:
+      - |
+        La partie vide est une chaîne ; un ensemble inductif est donc non vide, puisque la chaîne vide doit y être majorée. Cette subtilité évite d'ajouter l'hypothèse « non vide » dans le lemme de Zorn.
+      - |
+        Exemple type : l'ensemble des applications définies sur une partie d'un ensemble $I$, ordonné par inclusion des graphes, est inductif, car la réunion d'une chaîne de telles applications en est encore une. C'est sur cet exemple que le lemme de {{o-zorn|Zorn}}, énoncé et démontré au graphe des ordinaux, fournit des fonctions de choix, des bases et des idéaux maximaux.
+      - |
+        Le mot « inductif » a un autre sens, sans rapport, pour les ensembles stables par successeur ({{zf-infini|axiome de l'infini}}). Le lexique distingue les deux entrées.
+
+  - id: od-sup-propriete
+    etiquette: Propriété de la borne supérieure
+    nature: proposition
+    titre: Propriété de la borne supérieure
+    texte: |
+      Un ensemble totalement ordonné $E$ a la [[propriete-borne-superieure|propriété de la borne supérieure]] si toute partie non vide et majorée de $E$ a une borne supérieure.
+    enonce: |
+      Si $E$ a la propriété de la borne supérieure, toute partie non vide et minorée de $E$ a une borne inférieure.
+    preuve: |
+      Soit $A$ non vide et minorée, et $N$ l'ensemble de ses minorants. $N$ est non vide par hypothèse, et majorée par n'importe quel élément de $A$, qui est non vide. Donc $s = \sup N$ existe. Comme dans la preuve du nœud {{od-treillis|Treillis complets}}, tout $a \in A$ majore $N$, donc $s \leqslant a$ : $s$ minore $A$, et c'est le plus grand minorant, $s = \inf A$.
+    remarques:
+      - |
+        Cette propriété est purement d'ordre : elle ne mentionne ni addition ni multiplication. C'est elle qui distinguera {{r|$\mathbb R$}} de {{q|$\mathbb Q$}}, où la partie des $x$ tels que $x^2 < 2$ est non vide et majorée sans borne supérieure. Le nœud suivant montre comment l'obtenir en complétant un ordre.
+
+  - id: od-coupures
+    etiquette: Coupures de Dedekind
+    nature: théorème
+    titre: Complétion par les coupures de Dedekind
+    texte: |
+      Un ordre total est **dense** si pour tous $x < y$ il existe $z$ avec $x < z < y$. Dans un ensemble totalement ordonné $E$, une [[coupure-dedekind|coupure]] est un segment initial $C$ de $E$, différent de $\varnothing$ et de $E$, sans plus grand élément.
+    enonce: |
+      Soit $E$ un ensemble totalement ordonné dense, sans plus petit ni plus grand élément, et $\widehat E$ l'ensemble de ses coupures, ordonné par inclusion. Alors :
+
+      (i) $\widehat E$ est totalement ordonné et a la propriété de la borne supérieure ;
+
+      (ii) l'application $j : E \to \widehat E$, $x \mapsto \,]{\leftarrow}, x[$, est bien définie et strictement croissante : $E$ s'identifie à une partie de $\widehat E$, avec le même ordre.
+    preuve: |
+      $\widehat E$ existe par séparation dans $\mathcal P(E)$.
+
+      *Totalité.* Soient $C$ et $D$ deux coupures avec $C \not\subset D$, et $c \in C \setminus D$. Pour $d \in D$, on ne peut avoir $c \leqslant d$, sinon $c \in D$, $D$ étant un segment initial ; donc $d < c$ par totalité de $E$, et $d \in C$, $C$ étant un segment initial. Ainsi $D \subset C$.
+
+      *Borne supérieure.* Soit $\mathcal A$ un ensemble non vide de coupures, majoré par une coupure $D$, et $U = \bigcup \mathcal A$. Alors $U$ est non vide, contenu dans $D$ donc différent de $E$, et c'est un segment initial, comme réunion de segments initiaux. Il n'a pas de plus grand élément : un $u \in U$ appartient à une coupure $C \in \mathcal A$, qui contient un élément $u' > u$, lui aussi dans $U$. Donc $U$ est une coupure ; elle contient chaque élément de $\mathcal A$ et elle est contenue dans tout majorant de $\mathcal A$ : $U = \sup \mathcal A$.
+
+      *Plongement.* Pour $x \in E$, la demi-droite $]{\leftarrow}, x[$ est un segment initial ; elle est non vide, puisque $x$ n'est pas le plus petit élément ; elle ne contient pas $x$ ; et si elle avait un plus grand élément $m < x$, la densité fournirait $z$ avec $m < z < x$, contradiction. C'est donc une coupure. Si $x < x'$, alors $]{\leftarrow}, x[\; \subset \;]{\leftarrow}, x'[$, et $x$ appartient à la seconde sans appartenir à la première : $j$ est strictement croissante, donc un isomorphisme sur son image ({{od-croissantes|Applications croissantes}}).
+    remarques:
+      - |
+        C'est la construction de {{r|$\mathbb R$}} par Dedekind (*Stetigkeit und irrationale Zahlen*, 1872), appliquée à l'ordre de {{q|$\mathbb Q$}} : un réel est une coupure de rationnels. Il restera à définir l'addition et la multiplication des coupures, et à vérifier les axiomes de corps ordonné.
+      - |
+        On exclut le plus grand élément des coupures pour que chaque $x \in E$ corresponde à une seule coupure. Sans cette convention, $]{\leftarrow}, x[$ et $]{\leftarrow}, x]$ représenteraient le même point, et l'application $j$ aurait deux candidats naturels.
+
+aretes:
+  - [od-ordre, od-majorants]
+  - [od-ordre, od-croissantes]
+  - [od-ordre, od-intervalles]
+  - [od-majorants, od-treillis]
+  - [od-treillis, od-tarski]
+  - [od-croissantes, od-tarski]
+  - [od-majorants, od-bon-ordre]
+  - [od-croissantes, od-bon-ordre]
+  - [od-intervalles, od-bon-ordre]
+  - [od-majorants, od-chaines]
+  - [od-treillis, od-sup-propriete]
+  - [od-sup-propriete, od-coupures]
+  - [od-intervalles, od-coupures]
+  - [od-croissantes, od-coupures]
