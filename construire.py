@@ -11,6 +11,7 @@ Vérifications bloquantes (le script s'arrête sur erreur) :
   - cohérence entre niveaux : chaque entrée d'un sous-graphe est un ancêtre du conteneur
     dans le graphe parent, et chaque parent direct du conteneur figure parmi les entrées ;
   - tout terme [[id]] et tout lien {{id|...}} renvoie à une entrée existante ;
+  - un lien {{id|...}} dans un texte, un énoncé ou une démonstration renvoie à un nœud antérieur ;
   - aucune arête tracée ne traverse un nœud.
 Avertissements : termes du lexique jamais employés, arêtes redondantes non tracées.
 """
@@ -159,6 +160,9 @@ if avant and not erreurs:
                 d = lex[t]['defini_dans']
                 if d not in avant[n['id']]:
                     erreur(f"{n['id']}/{champ} emploie « {t} », défini plus loin, au nœud {d}")
+            for t in RE_LIEN.findall(n.get(champ) or ''):
+                if t in noeuds and t not in avant[n['id']]:
+                    erreur(f"{n['id']}/{champ} renvoie au nœud {t}, qui vient plus loin ou ailleurs")
         for txt in n['remarques'] + ([n['choix']] if n.get('choix') else []):
             for t in RE_TERME.findall(txt):
                 if lex[t]['defini_dans'] not in avant[n['id']]:
