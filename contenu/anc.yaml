@@ -1,0 +1,311 @@
+# Niveau 1 : structure interne du nœud « Analyse complexe ».
+# L'atlas n'ayant construit ni les séries, ni l'exponentielle, ni π, on les construit ici par les séries
+# entières, ce qui est la voie naturelle sur ℂ. On en tire la trigonométrie, l'intégrale curviligne,
+# le théorème de Cauchy pour les ouverts convexes, la formule de Cauchy, l'analyticité des fonctions
+# holomorphes, le théorème de Liouville, qui démontre enfin d'Alembert-Gauss, et les zéros isolés.
+
+graphe: anc
+titre: Analyse complexe
+conteneur: anc
+
+entrees:
+  c: [cx-suites]
+  analyse-reelle: [cx-suites]
+
+noeuds:
+  - id: cx-suites
+    etiquette: Suites et séries complexes
+    nature: proposition
+    titre: Suites, séries et parties compactes de ℂ
+    texte: |
+      Une suite $(z_n)$ de nombres complexes **converge** vers $z$ si $|z_n - z| \to 0$, le module jouant le rôle de la valeur absolue ({{c-calcul|Conjugué, module}}). La **série** $\sum z_n$ converge si la suite de ses sommes partielles $S_N = \sum_{n \leqslant N} z_n$ converge ; elle converge **absolument** si $\sum |z_n|$ converge.
+    enonce: |
+      (i) $(z_n)$ converge si et seulement si $(\operatorname{Re} z_n)$ et $(\operatorname{Im} z_n)$ convergent ; toute suite de Cauchy de $\mathbb C$ converge.
+
+      (ii) Une série absolument convergente converge, et $\big|\sum z_n\big| \leqslant \sum |z_n|$.
+
+      (iii) Si $|q| < 1$, la série géométrique $\sum q^n$ converge absolument, de somme $\frac{1}{1 - q}$.
+
+      (iv) Toute partie fermée et bornée de $\mathbb C$ est [[compact|compacte]].
+    preuve: |
+      (i) Pour $w = a + ib$, on a $|a|, |b| \leqslant |w| \leqslant |a| + |b|$. Les deux énoncés se ramènent donc aux suites réelles, et la complétude de $\mathbb R$ ({{ar-cauchy|Complétude de ℝ}}) donne la seconde.
+
+      (ii) Pour $M < N$, $|S_N - S_M| \leqslant \sum_{M < n \leqslant N} |z_n|$, par l'inégalité triangulaire ; si $\sum |z_n|$ converge, la suite $(S_N)$ est de Cauchy, donc converge par (i). L'inégalité passe à la limite.
+
+      (iii) $(1 - q) \sum_{n \leqslant N} q^n = 1 - q^{N+1}$. Il reste à voir que $|q|^N \to 0$. Si $q \neq 0$, écrivons $1/|q| = 1 + h$ avec $h > 0$ ; par récurrence, $(1 + h)^N \geqslant 1 + Nh$, donc $|q|^N \leqslant \frac{1}{1 + Nh}$, qui tend vers $0$ par la propriété d'Archimède ({{ar-archimede|Archimède, densité de ℚ}}).
+
+      (iv) Identifions $a + ib$ au couple $(a, b)$ : les disques ouverts pour le module contiennent et sont contenus dans des carrés ouverts de même centre, si bien que la topologie de $\mathbb C$ est la topologie produit de $\mathbb R^2$. Une partie bornée est contenue dans un carré $[-R, R]^2$, compact comme produit de deux segments ({{ar-topo|Topologie de ℝ}}, {{t-produit-fini|Produit de deux compacts}}) ; une partie fermée d'un compact est compacte ({{t-compact-prop|Compacts, fermés et images}}).
+    remarques:
+      - |
+        L'erreur la plus répandue est de croire qu'une série convergente l'est absolument. La série $\sum (-1)^n/(n+1)$ converge, ses sommes partielles s'emboîtant deux à deux, mais $\sum 1/(n+1)$ diverge. Toutes les séries de ce graphe seront absolument convergentes, ce qui évite cette difficulté.
+
+  - id: cx-convergence-uniforme
+    etiquette: Convergence uniforme
+    nature: proposition
+    titre: Convergence uniforme et intégrale des fonctions complexes
+    texte: |
+      Une suite de fonctions $f_n : A \to \mathbb C$ [[convergence-uniforme|converge uniformément]] vers $f$ si $\sup_{x \in A} |f_n(x) - f(x)| \to 0$. Pour $h : [a, b] \to \mathbb C$ continue, on pose $\int_a^b h = \int_a^b \operatorname{Re} h + i \int_a^b \operatorname{Im} h$, avec l'intégrale de Riemann ({{ar-riemann|Intégrale de Riemann}}).
+    enonce: |
+      (i) Une limite uniforme de fonctions continues est continue.
+
+      (ii) *Critère de Weierstrass.* Si $|f_n(x)| \leqslant M_n$ pour tout $x \in A$ et si $\sum M_n$ converge, la série $\sum f_n$ converge uniformément sur $A$.
+
+      (iii) L'intégrale est $\mathbb C$-linéaire, et $\big|\int_a^b h\big| \leqslant 2(b - a)\sup |h|$. Par suite, si $h_n \to h$ uniformément sur $[a, b]$, avec $h_n$ continues, alors $\int_a^b h_n \to \int_a^b h$.
+
+      (iv) Si $F : [a, b] \to \mathbb C$ est dérivable de dérivée continue, $\int_a^b F' = F(b) - F(a)$.
+    preuve: |
+      (i) Soit $x_0 \in A$ et $\varepsilon > 0$. On choisit $n$ tel que $|f_n - f| < \varepsilon/3$ sur $A$, puis un voisinage de $x_0$ où $|f_n(x) - f_n(x_0)| < \varepsilon/3$ ; sur ce voisinage, $|f(x) - f(x_0)| < \varepsilon$ par l'inégalité triangulaire.
+
+      (ii) Pour chaque $x$, la série converge absolument ({{cx-suites|Suites et séries complexes}}), et le reste vérifie $\big|\sum_{n > N} f_n(x)\big| \leqslant \sum_{n > N} M_n$, qui tend vers $0$ indépendamment de $x$.
+
+      (iii) La linéarité réelle vient de celle de l'intégrale de Riemann ; pour la multiplication par $i$, $\int ih = \int (-\operatorname{Im} h) + i\int \operatorname{Re} h = i\int h$. Comme $|\operatorname{Re} h|, |\operatorname{Im} h| \leqslant |h|$, la positivité de l'intégrale donne $\big|\int h\big| \leqslant \big|\int \operatorname{Re} h\big| + \big|\int \operatorname{Im} h\big| \leqslant 2(b - a)\sup |h|$. On applique cette inégalité à $h_n - h$.
+
+      (iv) On travaille sur la partie réelle et la partie imaginaire. La fonction $G(x) = \int_a^x F' - F(x)$ est dérivable de dérivée nulle ({{ar-tfa|Théorème fondamental de l'analyse}}). Une fonction réelle $g$ de dérivée nulle est constante : pour $x < y$, la fonction $t \mapsto g(t) - g(x) - \frac{g(y) - g(x)}{y - x}(t - x)$ s'annule en $x$ et en $y$, et le théorème de Rolle ({{ar-deriv|Dérivabilité}}) fournit $c$ avec $0 = g'(c) = \frac{g(y) - g(x)}{y - x}$. Donc $G(b) = G(a)$.
+    remarques:
+      - |
+        Le facteur $2$ de (iii) est grossier, mais suffit ici. Une fois l'exponentielle construite, on obtiendra l'inégalité optimale $\big|\int h\big| \leqslant \int |h|$ ({{cx-integrale-chemin|Intégrale curviligne}}).
+
+  - id: cx-series-entieres
+    etiquette: Séries entières
+    nature: théorème
+    titre: Séries entières et rayon de convergence
+    texte: |
+      Une [[serie-entiere|série entière]] est une série $\sum a_n z^n$, où $(a_n)$ est une suite de complexes. Son **rayon de convergence** est $R = \sup\{r \geqslant 0 : (a_n r^n) \text{ est bornée}\}$, éventuellement infini.
+    enonce: |
+      (i) *Lemme d'Abel.* Si $(a_n r^n)$ est bornée et $0 \leqslant \rho < r$, la série converge absolument et uniformément sur le disque fermé $|z| \leqslant \rho$.
+
+      (ii) La série converge absolument pour $|z| < R$ et diverge pour $|z| > R$. Sa somme est continue sur le disque ouvert $D(0, R)$.
+    preuve: |
+      (i) Si $|a_n r^n| \leqslant M$, alors $|a_n z^n| \leqslant M(\rho/r)^n$ pour $|z| \leqslant \rho$ ; la série géométrique de raison $\rho/r < 1$ converge ({{cx-suites|Suites et séries complexes}}), et le critère de Weierstrass s'applique ({{cx-convergence-uniforme|Convergence uniforme}}).
+
+      (ii) Si $|z| < R$, il existe $r$ avec $|z| < r$ et $(a_n r^n)$ bornée, par définition de la borne supérieure ; (i) s'applique avec $\rho = |z|$. Si $|z| > R$, la suite $(a_n z^n)$ n'est pas bornée, donc ne tend pas vers $0$, et la série diverge. Tout point de $D(0, R)$ est dans un disque $|z| \leqslant \rho$ avec $\rho < R$, sur lequel la convergence est uniforme : la somme y est continue.
+    remarques:
+      - |
+        Sur le cercle $|z| = R$, tout peut arriver : $\sum z^n$ diverge en tout point du cercle unité, tandis que $\sum z^n/(n+1)^2$ converge en tout point. Le rayon ne dit rien du bord.
+
+  - id: cx-holomorphe
+    etiquette: Fonctions holomorphes
+    nature: proposition
+    titre: Dérivabilité complexe
+    texte: |
+      Soit $U$ un [[ouvert]] de $\mathbb C$ et $f : U \to \mathbb C$. Elle est dérivable au sens complexe en $z_0$ si $\frac{f(z) - f(z_0)}{z - z_0}$ a une limite $f'(z_0)$ quand $z \to z_0$ ; elle est [[holomorphe]] sur $U$ si elle l'est en tout point.
+    enonce: |
+      (i) $f$ est dérivable en $z_0$ si et seulement si $f(z) = f(z_0) + (z - z_0)\big(\ell + \varepsilon(z)\big)$ avec $\varepsilon(z) \to 0$, et alors $\ell = f'(z_0)$ ; $f$ est alors continue en $z_0$.
+
+      (ii) Sommes, produits, quotients à dénominateur non nul et composées de fonctions holomorphes sont holomorphes, avec les formules usuelles. Les polynômes sont holomorphes sur $\mathbb C$.
+
+      (iii) Si $f$ est holomorphe sur $U$ et $\gamma : [a, b] \to U$ dérivable, alors $(f \circ \gamma)'(t) = f'(\gamma(t))\,\gamma'(t)$.
+    preuve: |
+      (i) C'est la définition, en posant $\varepsilon(z) = \frac{f(z) - f(z_0)}{z - z_0} - \ell$ ; la continuité vient de ce que $(z - z_0)(\ell + \varepsilon(z)) \to 0$.
+
+      (ii) Pour un produit, $fg(z) - fg(z_0) = (f(z) - f(z_0))g(z) + f(z_0)(g(z) - g(z_0))$ ; on divise par $z - z_0$ et l'on utilise la continuité de $g$. Pour une composée $g \circ f$, l'écriture (i) appliquée à $g$ en $f(z_0)$ donne $g(f(z)) - g(f(z_0)) = (f(z) - f(z_0))\big(g'(f(z_0)) + \eta(f(z))\big)$, avec $\eta \to 0$ ; on divise par $z - z_0$. Le quotient s'obtient par $1/g$, composée de $g$ et de $w \mapsto 1/w$, dont la dérivée $-1/w^2$ se calcule directement. Les polynômes s'obtiennent par sommes et produits à partir de $z \mapsto z$.
+
+      (iii) C'est le calcul de la composée, la variable réelle $t$ remplaçant $z$.
+    remarques:
+      - |
+        La condition est bien plus forte que la dérivabilité des parties réelle et imaginaire : la limite doit être la même dans toutes les directions. La conjugaison $z \mapsto \bar z$ n'est holomorphe nulle part, puisque son taux d'accroissement vaut $1$ le long de l'axe réel et $-1$ le long de l'axe imaginaire.
+
+  - id: cx-derivation-series
+    etiquette: Dérivation terme à terme
+    nature: théorème
+    titre: Une série entière est holomorphe
+    enonce: |
+      Soit $f(z) = \sum a_n z^n$ de rayon $R > 0$. Alors $f$ est holomorphe sur $D(0, R)$, et $f'(z) = \sum_{n \geqslant 1} n a_n z^{n-1}$, série de même rayon. Par récurrence, $f$ est indéfiniment dérivable, et $a_n = f^{(n)}(0)/n!$.
+    preuve: |
+      *Rayons.* Si $r < r' < R$, la suite $(a_n r'^n)$ est bornée, et $u_n = n^2 (r/r')^n$ tend vers $0$ : le rapport $u_{n+1}/u_n = (1 + \frac1n)^2 \frac{r}{r'}$ tend vers $r/r' < 1$, donc reste inférieur à un $\kappa < 1$ à partir d'un rang, et $u_n$ est dominée par une suite géométrique de raison $\kappa$. Ainsi $(n^2 a_n r^n)$ est bornée : les séries $\sum n a_n z^{n-1}$ et $\sum n(n-1) a_n z^{n-2}$ ont un rayon au moins $R$. Elles n'en ont pas un plus grand, puisque $|a_n z^n| \leqslant |z| \cdot |n a_n z^{n-1}|$ pour $n \geqslant 1$.
+
+      *Une majoration.* Pour $|z|, |z + h| \leqslant \rho$, on a $(z + h)^k - z^k = h\sum_{j < k} (z + h)^j z^{k-1-j}$, donc $|(z + h)^k - z^k| \leqslant k|h|\rho^{k-1}$. En écrivant $(z + h)^n - z^n - nz^{n-1}h = h\sum_{k < n} z^{n-1-k}\big((z + h)^k - z^k\big)$, on obtient
+      $$\big|(z + h)^n - z^n - nz^{n-1}h\big| \leqslant \frac{n(n-1)}{2}\,|h|^2 \rho^{n-2}.$$
+
+      *Dérivabilité.* Soit $|z| < \rho < R$ et $h$ assez petit pour que $|z + h| \leqslant \rho$. Alors
+      $$\Big|\frac{f(z + h) - f(z)}{h} - \sum_n n a_n z^{n-1}\Big| \leqslant |h| \sum_n \frac{n(n-1)}{2}|a_n|\rho^{n-2},$$
+      et la dernière série converge, puisque $\rho < R$. Le membre de droite tend vers $0$ avec $h$. La dérivée $n$-ième en $0$ s'obtient en itérant et en évaluant en $0$.
+    remarques:
+      - |
+        Le coefficient $a_n$ est déterminé par les dérivées de $f$ en $0$ : une série entière de rayon non nul est entièrement fixée par le comportement de sa somme au voisinage d'un point. C'est le germe du principe des zéros isolés, en fin de graphe.
+
+  - id: cx-exponentielle
+    etiquette: Exponentielle
+    nature: théorème
+    titre: La fonction exponentielle
+    texte: |
+      L'[[exponentielle]] est $\exp z = \sum_{n \geqslant 0} \frac{z^n}{n!}$. Pour $t$ réel, on pose $\cos t = \operatorname{Re}\exp(it)$ et $\sin t = \operatorname{Im}\exp(it)$.
+    enonce: |
+      (i) La série a un rayon infini ; $\exp$ est holomorphe sur $\mathbb C$, et $\exp' = \exp$.
+
+      (ii) $\exp(z + w) = \exp z \exp w$ ; en particulier $\exp z \neq 0$ et $\exp(-z) = 1/\exp z$.
+
+      (iii) $\overline{\exp z} = \exp \bar z$, et $|\exp(it)| = 1$ pour $t$ réel : $\cos^2 t + \sin^2 t = 1$.
+
+      (iv) Sur $\mathbb R$, $\exp$ est strictement positive et strictement croissante. Les fonctions $\cos$ et $\sin$ sont dérivables, avec $\cos' = -\sin$ et $\sin' = \cos$.
+    preuve: |
+      (i) Pour tout $r > 0$, $r^n/n! \to 0$, puisque le rapport de deux termes consécutifs, $r/(n + 1)$, devient inférieur à $\frac12$ : la suite est bornée, et $R = +\infty$. Le nœud {{cx-derivation-series|Dérivation terme à terme}} donne $\exp' = \sum_{n \geqslant 1} \frac{n z^{n-1}}{n!} = \exp$.
+
+      (ii) Fixons $a \in \mathbb C$ et posons $g(z) = \exp(z)\exp(a - z)$, holomorphe de dérivée $\exp(z)\exp(a - z) - \exp(z)\exp(a - z) = 0$. Pour $z$ fixé, $t \mapsto g(tz)$, sur $[0, 1]$, a une dérivée nulle ({{cx-holomorphe|Fonctions holomorphes}}), donc est constante ({{cx-convergence-uniforme|Convergence uniforme}}, (iv)) : $g(z) = g(0) = \exp a$. Avec $a = z + w$, on obtient l'égalité, et $\exp(z)\exp(-z) = \exp 0 = 1$.
+
+      (iii) La conjugaison passe aux sommes partielles, puis à la limite. Pour $t$ réel, $|\exp(it)|^2 = \exp(it)\exp(-it) = 1$.
+
+      (iv) Pour $x \geqslant 0$, $\exp x \geqslant 1 > 0$ ; pour $x < 0$, $\exp x = 1/\exp(-x) > 0$. La dérivée $\exp$ étant positive, $\exp$ est strictement croissante, par le théorème de Rolle comme en (iv) du nœud {{cx-convergence-uniforme|Convergence uniforme}}. Enfin $\frac{d}{dt}\exp(it) = i\exp(it)$, dont les parties réelle et imaginaire donnent les formules.
+    remarques:
+      - |
+        Les définitions ont l'air arbitraires, mais tout en découle : la relation $\exp(it) = \cos t + i \sin t$ n'est plus une formule à démontrer, c'est la définition, et les formules d'addition des fonctions trigonométriques sont les parties réelle et imaginaire de $\exp(i(s + t)) = \exp(is)\exp(it)$.
+
+  - id: cx-pi
+    etiquette: Le nombre π
+    nature: théorème
+    titre: Le nombre π et la périodicité de l'exponentielle
+    texte: |
+      On note [[pi|$\pi$]] le double du plus petit zéro strictement positif de $\cos$, dont l'existence est établie ci-dessous.
+    enonce: |
+      (i) $\cos$ a un plus petit zéro strictement positif, compris entre $0$ et $2$.
+
+      (ii) $\exp(i\pi/2) = i$, $\exp(i\pi) = -1$, $\exp(2i\pi) = 1$, et $\exp(z) = 1$ si et seulement si $z \in 2i\pi\mathbb Z$.
+
+      (iii) L'application $t \mapsto \exp(it)$ est surjective de $\mathbb R$ sur le cercle unité $\mathbb U = \{w : |w| = 1\}$. Tout complexe non nul s'écrit donc $z = |z|\exp(i\theta)$, avec $\theta$ unique modulo $2\pi$.
+    preuve: |
+      (i) On a $\cos 2 = \sum_k (-1)^k \frac{4^k}{(2k)!}$. Les termes $t_k = 4^k/(2k)!$ décroissent à partir de $k = 1$, puisque $t_{k+1}/t_k = \frac{4}{(2k+1)(2k+2)} < 1$. En groupant deux à deux les termes d'indices $k \geqslant 3$, on obtient une somme négative ; donc $\cos 2 \leqslant 1 - 2 + \frac23 = -\frac13 < 0$. Comme $\cos 0 = 1 > 0$, le théorème des valeurs intermédiaires ({{c-tvi|Valeurs intermédiaires}}) fournit un zéro dans $]0, 2[$. L'ensemble des zéros de $\cos$ dans $[0, 2]$ est fermé, comme image réciproque d'un point par une fonction continue, et ne contient pas $0$ ; sa borne inférieure est un zéro strictement positif, le plus petit.
+
+      (ii) Sur $[0, \frac\pi2[$, $\cos > 0$, donc $\sin$ y est strictement croissante, et $\sin\frac\pi2 > \sin 0 = 0$. Comme $\cos^2 + \sin^2 = 1$ et $\cos\frac\pi2 = 0$, on a $\sin\frac\pi2 = 1$, soit $\exp(i\pi/2) = i$. En élevant au carré puis à la puissance quatrième, $\exp(i\pi) = -1$ et $\exp(2i\pi) = 1$. Si $\exp(x + iy) = 1$, le module donne $\exp x = 1$, donc $x = 0$ par stricte croissance. Soit $n$ le plus grand entier tel que $n \leqslant 2y/\pi$, qui existe par la propriété d'Archimède ({{rr-archimede|Archimède, densité de ℚ}}), et $n = 4k + m$ sa division euclidienne par $4$ ({{z-division|Division euclidienne}}). Alors $y = 2k\pi + m\frac\pi2 + r$ avec $0 \leqslant r < \frac\pi2$, et $1 = i^m \exp(ir)$. Or $\exp(ir) = \cos r + i\sin r$ avec $\cos r > 0$ et $\sin r \geqslant 0$. Pour $m = 1$, la partie réelle de $i\exp(ir)$ est $-\sin r \leqslant 0$ ; pour $m = 2$, celle de $-\exp(ir)$ est $-\cos r < 0$ ; pour $m = 3$, la partie imaginaire de $-i\exp(ir)$ est $-\cos r \neq 0$. Aucun de ces nombres ne vaut $1$, donc $m = 0$, puis $\sin r = 0$, et $r = 0$ puisque $\sin$ est strictement croissante sur $[0, \frac\pi2]$.
+
+      (iii) Soit $w = a + ib \in \mathbb U$ avec $a, b \geqslant 0$. Sur $[0, \frac\pi2]$, $\cos$ décroît continûment de $1$ à $0$ ; il existe $t$ avec $\cos t = a$, et alors $\sin t = \sqrt{1 - a^2} = b$. Les autres quadrants s'en déduisent en multipliant par $i$, $-1$ ou $-i$, qui valent $\exp(i\pi/2)$, $\exp(i\pi)$, $\exp(3i\pi/2)$. L'unicité modulo $2\pi$ est (ii).
+    remarques:
+      - |
+        Numériquement, le plus petit zéro positif de $\cos$ vaut $1{,}5707963\ldots$, d'où $\pi = 3{,}14159265\ldots$ On retrouve la constante d'Archimède, définie ici sans aucune géométrie : c'est la demi-période de $t \mapsto \exp(it)$.
+      - |
+        Le point (iii) identifie le cercle unité du plan à $\mathbb R/2\pi\mathbb Z$, homéomorphe au cercle $\mathbb R/\mathbb Z$ de la {{topalg|topologie algébrique}} par $t \mapsto 2\pi t$. La fonction « argument » $\theta$ existe localement, mais pas continûment sur tout le cercle ({{ta-consequences|Conséquences}}).
+
+  - id: cx-integrale-chemin
+    etiquette: Intégrale curviligne
+    nature: proposition
+    titre: Intégrale le long d'un chemin
+    texte: |
+      Un **chemin de classe $C^1$ par morceaux** est une application continue $\gamma : [a, b] \to \mathbb C$ dérivable à dérivée continue sur chaque intervalle d'une subdivision finie. Pour $f$ continue sur l'image de $\gamma$, l'[[integrale-curviligne|intégrale curviligne]] est $\int_\gamma f = \int_a^b f(\gamma(t))\,\gamma'(t)\,dt$, somme des intégrales sur les morceaux ; la **longueur** de $\gamma$ est $L(\gamma) = \int_a^b |\gamma'|$.
+    enonce: |
+      (i) Pour $h : [a, b] \to \mathbb C$ continue, $\big|\int_a^b h\big| \leqslant \int_a^b |h|$. Par suite, $\big|\int_\gamma f\big| \leqslant L(\gamma)\sup_\gamma |f|$.
+
+      (ii) Si $f = F'$ avec $F$ holomorphe, alors $\int_\gamma f = F(\gamma(b)) - F(\gamma(a))$ ; en particulier, $\int_\gamma f = 0$ si $\gamma$ est fermé.
+
+      (iii) Pour le cercle $C(c, r) : t \mapsto c + r\exp(it)$, $t \in [0, 2\pi]$, on a $\int_{C(c,r)} \frac{dz}{z - c} = 2i\pi$, et $\int_{C(c,r)} (z - c)^n\,dz = 0$ pour tout entier $n \neq -1$.
+    preuve: |
+      (i) Écrivons $\int h = \rho\exp(i\theta)$ avec $\rho \geqslant 0$ ({{cx-pi|Le nombre π}}). Alors $\rho = \exp(-i\theta)\int h = \int \exp(-i\theta) h$ est réel, donc égal à sa partie réelle $\int \operatorname{Re}(\exp(-i\theta)h) \leqslant \int |h|$. On applique ceci à $h = (f \circ \gamma)\gamma'$.
+
+      (ii) Sur chaque morceau, $(F \circ \gamma)' = (f \circ \gamma)\gamma'$ ({{cx-holomorphe|Fonctions holomorphes}}), et l'on applique (iv) du nœud {{cx-convergence-uniforme|Convergence uniforme}} ; les termes intermédiaires se télescopent.
+
+      (iii) $\gamma'(t) = ir\exp(it)$, donc $\int \frac{dz}{z - c} = \int_0^{2\pi} \frac{ir\exp(it)}{r\exp(it)}\,dt = 2i\pi$. Pour $n \neq -1$, $(z - c)^n$ a pour primitive $(z - c)^{n+1}/(n + 1)$, holomorphe hors de $c$, et le chemin est fermé.
+    remarques:
+      - |
+        Le point (iii) montre que $1/z$ n'a pas de primitive holomorphe sur $\mathbb C \setminus \{0\}$ : sinon son intégrale sur le cercle serait nulle. C'est la version analytique de l'absence d'« angle continu » de la {{ta-consequences|topologie algébrique}} : une primitive de $1/z$ serait un logarithme, dont la partie imaginaire serait un argument continu.
+
+  - id: cx-goursat
+    etiquette: Théorème de Goursat
+    nature: théorème
+    titre: Lemme de Goursat
+    texte: |
+      Pour trois points $a, b, c$, on note $T$ le triangle plein qu'ils engendrent et $\partial T$ le chemin fermé qui parcourt $[a, b]$, $[b, c]$, $[c, a]$.
+    enonce: |
+      (i) Si $f$ est holomorphe sur un ouvert $U$ contenant $T$, alors $\int_{\partial T} f = 0$.
+
+      (ii) Le même résultat vaut si $f$ est seulement continue sur $U$ et holomorphe sur $U \setminus \{p\}$.
+    preuve: |
+      (i) Joignons les milieux des côtés : $T$ se découpe en quatre triangles de demi-taille, et $\int_{\partial T} f$ est la somme des quatre intégrales, les côtés intérieurs étant parcourus deux fois en sens opposés. L'une d'elles, notée $T_1$, vérifie $\big|\int_{\partial T_1} f\big| \geqslant \frac14\big|\int_{\partial T} f\big|$. En itérant, on obtient des triangles emboîtés $T_n$, de périmètre $L 2^{-n}$ et de diamètre $d\,2^{-n}$, avec $\big|\int_{\partial T} f\big| \leqslant 4^n\big|\int_{\partial T_n} f\big|$. Un sommet de chaque $T_n$ forme une suite de Cauchy, dont la limite $z_0$ appartient à tous les $T_n$, fermés ({{cx-suites|Suites et séries complexes}}).
+
+      Écrivons $f(z) = f(z_0) + f'(z_0)(z - z_0) + (z - z_0)\varepsilon(z)$ ({{cx-holomorphe|Fonctions holomorphes}}). Les deux premiers termes ont une primitive, et leur intégrale sur $\partial T_n$ est nulle ({{cx-integrale-chemin|Intégrale curviligne}}). Soit $\eta > 0$, et $n$ assez grand pour que $|\varepsilon| \leqslant \eta$ sur $T_n$. Alors $\big|\int_{\partial T_n} f\big| \leqslant L 2^{-n} \cdot d\,2^{-n} \cdot \eta$, d'où $\big|\int_{\partial T} f\big| \leqslant Ld\eta$ pour tout $\eta > 0$.
+
+      (ii) Si $p \notin T$, c'est (i). Si $p$ est un sommet, disons $p = a$, choisissons $b'$ sur $[a, b]$ et $c'$ sur $[a, c]$ proches de $a$ : $T$ se découpe en $[a, b', c']$, $[b', b, c]$ et $[b', c, c']$, dont les deux derniers ne contiennent pas $p$. L'intégrale sur $\partial T$ est donc celle sur le petit triangle, majorée par son périmètre fois $\sup_T |f|$, qui tend vers $0$. Si $p$ est sur un côté ou à l'intérieur, on découpe $T$ en deux ou trois triangles de sommet $p$.
+    remarques:
+      - |
+        Goursat (1900) a montré que l'on n'a pas besoin de supposer $f'$ continue, contrairement à la démonstration originale de Cauchy, qui passait par la formule de Green. Toute la théorie repose sur cet argument de découpage, proche de la preuve de Bolzano-Weierstrass par dichotomie ({{ar-bw|Bolzano-Weierstrass}}).
+
+  - id: cx-cauchy-convexe
+    etiquette: Cauchy, ouverts convexes
+    nature: théorème
+    titre: Théorème de Cauchy pour un ouvert convexe
+    enonce: |
+      Soit $U$ un ouvert convexe, $p \in U$, et $f$ continue sur $U$, holomorphe sur $U \setminus \{p\}$. Alors $f$ a une primitive holomorphe sur $U$, et $\int_\gamma f = 0$ pour tout chemin fermé $C^1$ par morceaux de $U$.
+    preuve: |
+      Fixons $a \in U$ et posons $F(z) = \int_{[a, z]} f$, intégrale sur le segment de $a$ à $z$, contenu dans $U$ par convexité. Pour $z + h \in U$, le triangle de sommets $a, z, z + h$ est dans $U$, et le lemme de Goursat ({{cx-goursat|Lemme de Goursat}}) donne $F(z + h) - F(z) = \int_{[z, z+h]} f$. Comme $\int_{[z, z+h]} f(z)\,dw = h f(z)$,
+      $$\begin{aligned} \Big|\frac{F(z + h) - F(z)}{h} - f(z)\Big| &= \frac{1}{|h|}\Big|\int_{[z, z+h]} \big(f(w) - f(z)\big)\,dw\Big| \\ &\leqslant \sup_{w \in [z, z+h]} |f(w) - f(z)|, \end{aligned}$$
+      qui tend vers $0$ par continuité de $f$ ({{cx-integrale-chemin|Intégrale curviligne}}). Donc $F' = f$, et l'intégrale sur un chemin fermé est nulle.
+    remarques:
+      - |
+        La convexité sert à tracer les segments. Elle ne peut pas être supprimée : sur la couronne $\{1 < |z| < 3\}$, la fonction $1/z$ est holomorphe, mais son intégrale sur le cercle de rayon $2$ vaut $2i\pi$. Ce sont les « trous » de l'ouvert, mesurés par le {{ta-groupe-fondamental|groupe fondamental}}, qui font obstacle.
+
+  - id: cx-formule-cauchy
+    etiquette: Formule de Cauchy
+    nature: théorème
+    titre: Formule intégrale de Cauchy
+    enonce: |
+      Soit $f$ holomorphe sur un ouvert $U$ contenant le disque fermé $\overline D(c, r)$. Pour tout $z$ tel que $|z - c| < r$,
+      $$f(z) = \frac{1}{2i\pi}\int_{C(c, r)} \frac{f(w)}{w - z}\,dw.$$
+    preuve: |
+      *Un disque un peu plus grand.* Le disque fermé est compact ({{cx-suites|Suites et séries complexes}}) et contenu dans l'ouvert $U$. Chaque point $u$ du disque a un disque ouvert $D(u, 2s_u) \subset U$ ; un nombre fini de disques $D(u_j, s_{u_j})$ recouvrent $\overline D(c, r)$ ; soit $s = \min_j s_{u_j}$. Si $|z - c| < r + s$, il existe un point $u$ du disque fermé avec $|z - u| < s$ (le point $z$ lui-même, ou $c + r\frac{z - c}{|z - c|}$) ; $u$ appartient à un $D(u_j, s_{u_j})$, donc $|z - u_j| < 2s_{u_j}$ et $z \in U$. Le disque $D(c, r + s)$, contenu dans $U$, est convexe.
+
+      *Le noyau.* Soit $g(w) = \frac{f(w) - f(z)}{w - z}$ pour $w \neq z$ et $g(z) = f'(z)$ : elle est continue sur $D(c, r + s)$ et holomorphe hors de $z$. Par le théorème de Cauchy convexe ({{cx-cauchy-convexe|Cauchy, ouverts convexes}}), $\int_{C(c,r)} g = 0$, d'où $\int_{C(c,r)} \frac{f(w)}{w - z}\,dw = f(z)\int_{C(c,r)} \frac{dw}{w - z}$.
+
+      *Le calcul.* Pour $w$ sur le cercle, $\frac{1}{w - z} = \frac{1}{w - c}\cdot\frac{1}{1 - q}$ avec $q = \frac{z - c}{w - c}$, de module $\frac{|z - c|}{r} < 1$ constant. La série géométrique converge donc uniformément sur le cercle ({{cx-convergence-uniforme|Convergence uniforme}}) : $\frac{1}{w - z} = \sum_n \frac{(z - c)^n}{(w - c)^{n+1}}$. En intégrant terme à terme, seul le terme $n = 0$ contribue ({{cx-integrale-chemin|Intégrale curviligne}}), et $\int_{C(c,r)} \frac{dw}{w - z} = 2i\pi$.
+    remarques:
+      - |
+        La formule est saisissante : les valeurs de $f$ sur un cercle déterminent toutes ses valeurs à l'intérieur. Aucune fonction dérivable d'une variable réelle n'a de propriété comparable ; c'est la rigidité propre aux fonctions holomorphes.
+
+  - id: cx-analytique
+    etiquette: Analyticité
+    nature: théorème
+    titre: Les fonctions holomorphes sont analytiques
+    enonce: |
+      Soit $f$ holomorphe sur $U$ et $\overline D(c, r) \subset U$. Pour $|z - c| < r$,
+      $$f(z) = \sum_{n \geqslant 0} c_n (z - c)^n,$$
+      $$c_n = \frac{1}{2i\pi}\int_{C(c,r)} \frac{f(w)}{(w - c)^{n+1}}\,dw,$$
+      et $|c_n| \leqslant M r^{-n}$, où $M = \sup_{C(c,r)} |f|$ (**inégalités de Cauchy**). En particulier, $f'$ est holomorphe, et $f$ est indéfiniment dérivable.
+    preuve: |
+      Dans la formule de Cauchy ({{cx-formule-cauchy|Formule de Cauchy}}), on remplace $\frac{1}{w - z}$ par la série géométrique $\sum_n \frac{(z - c)^n}{(w - c)^{n+1}}$, qui converge uniformément sur le cercle ; multipliée par $f(w)$, bornée sur le cercle, elle converge encore uniformément, et l'on intègre terme à terme ({{cx-convergence-uniforme|Convergence uniforme}}). L'inégalité vient de (i) du nœud {{cx-integrale-chemin|Intégrale curviligne}} : la longueur du cercle est $2\pi r$, et $|f(w)/(w - c)^{n+1}| \leqslant M r^{-n-1}$. Une série entière est indéfiniment dérivable ({{cx-derivation-series|Dérivation terme à terme}}).
+    remarques:
+      - |
+        C'est le phénomène annoncé dans l'édifice : une fonction holomorphe, supposée seulement dérivable une fois au sens complexe, est automatiquement développable en série entière, donc indéfiniment dérivable. En analyse réelle, $x \mapsto x|x|$ est dérivable une fois sans l'être deux.
+
+  - id: cx-liouville
+    etiquette: Liouville
+    nature: théorème
+    titre: Théorème de Liouville et d'Alembert-Gauss
+    texte: |
+      Une **fonction entière** est une fonction holomorphe sur $\mathbb C$ tout entier.
+    enonce: |
+      (i) *Liouville.* Une fonction entière bornée est constante.
+
+      (ii) *D'Alembert-Gauss.* Tout polynôme non constant de $\mathbb C[X]$ a une racine dans $\mathbb C$.
+    preuve: |
+      (i) Si $|f| \leqslant M$ sur $\mathbb C$, les inégalités de Cauchy ({{cx-analytique|Analyticité}}) en $c = 0$ donnent $|c_n| \leqslant M r^{-n}$ pour tout $r > 0$ ; pour $n \geqslant 1$, on fait tendre $r$ vers l'infini : $c_n = 0$. Le développement, valable sur tout disque, donc sur $\mathbb C$, se réduit à $f = c_0$.
+
+      (ii) Soit $P = \sum_{k \leqslant d} a_k X^k$ avec $d \geqslant 1$ et $a_d \neq 0$, et supposons qu'il n'ait pas de racine. Pour $|z| \geqslant \rho = \max\big(1, \frac{2}{|a_d|}\sum_{k < d} |a_k|\big)$, on a $|P(z)| \geqslant |a_d||z|^d - \sum_{k < d}|a_k||z|^{d-1} \geqslant \frac{|a_d|}{2}|z|^d \geqslant \frac{|a_d|}{2}$. Sur le disque fermé $\overline D(0, \rho)$, compact ({{cx-suites|Suites et séries complexes}}), la fonction continue $|P|$ atteint son minimum, qui est strictement positif puisque $P$ ne s'annule pas. Ainsi $|P|$ est minorée sur $\mathbb C$ par un réel $m > 0$, et $1/P$ est entière et bornée par $1/m$ ; par (i), elle est constante, donc $P$ aussi : contradiction.
+    remarques:
+      - |
+        Le théorème de d'Alembert-Gauss, admis au nœud {{c-dalembert|D'Alembert-Gauss}} de la branche ℂ, est ainsi démontré, avec ses deux conséquences. Il ne pouvait l'être plus tôt dans l'atlas : il fallait la compacité des disques et la formule de Cauchy, qui viennent toutes deux de l'analyse.
+
+  - id: cx-zeros-isoles
+    etiquette: Zéros isolés
+    nature: théorème
+    titre: Principe des zéros isolés
+    enonce: |
+      Soit $U$ un ouvert [[connexe]] et $f$ holomorphe sur $U$, non identiquement nulle. Les zéros de $f$ sont isolés : chaque zéro $a$ a un voisinage où $f$ ne s'annule qu'en $a$. Par suite, deux fonctions holomorphes sur $U$ qui coïncident sur une partie ayant un point d'accumulation dans $U$ sont égales.
+    preuve: |
+      Soit $A$ l'ensemble des points de $U$ où toutes les dérivées $f^{(n)}$, $n \geqslant 0$, s'annulent. Il est fermé dans $U$, comme intersection des fermés $(f^{(n)})^{-1}(\{0\})$, les dérivées étant continues ({{cx-analytique|Analyticité}}). Il est ouvert : si $c \in A$, le développement de $f$ sur un disque centré en $c$ a tous ses coefficients nuls, et $f$ est nulle sur ce disque, ainsi que ses dérivées. $U$ étant connexe et $f$ non identiquement nulle, $A$ est vide ({{t-connexe|Connexité}}).
+
+      Soit $a$ un zéro de $f$, et $k$ le plus petit entier tel que $f^{(k)}(a) \neq 0$, qui existe puisque $a \notin A$. Sur un disque centré en $a$, $f(z) = (z - a)^k g(z)$ avec $g(z) = \sum_{n \geqslant k} c_n (z - a)^{n - k}$, continue et non nulle en $a$, donc non nulle au voisinage de $a$. Ainsi $f$ ne s'annule qu'en $a$ près de $a$. Pour la seconde affirmation, on applique ce qui précède à la différence des deux fonctions.
+    remarques:
+      - |
+        Une fonction holomorphe sur un ouvert connexe est donc déterminée par ses valeurs sur n'importe quel petit segment. C'est ce qui justifie que $\exp$, $\cos$, $\sin$ soient les seuls prolongements holomorphes possibles des fonctions réelles du même nom. En analyse réelle, au contraire, une fonction indéfiniment dérivable peut être nulle sur $]-\infty, 0]$ sans l'être partout.
+
+aretes:
+  - [cx-suites, cx-convergence-uniforme]
+  - [cx-convergence-uniforme, cx-series-entieres]
+  - [cx-suites, cx-holomorphe]
+  - [cx-series-entieres, cx-derivation-series]
+  - [cx-holomorphe, cx-derivation-series]
+  - [cx-derivation-series, cx-exponentielle]
+  - [cx-exponentielle, cx-pi]
+  - [cx-pi, cx-integrale-chemin]
+  - [cx-integrale-chemin, cx-goursat]
+  - [cx-goursat, cx-cauchy-convexe]
+  - [cx-cauchy-convexe, cx-formule-cauchy]
+  - [cx-formule-cauchy, cx-analytique]
+  - [cx-analytique, cx-liouville]
+  - [cx-analytique, cx-zeros-isoles]
