@@ -124,6 +124,54 @@ for t in lex:
         cites = [e['id'] for e in lex.values() if f'[[{t}' in e['definition']]
         if not cites: avert(f"lexique : « {t} » n'est employé nulle part")
 
+# ------------------------------------------------------------------ ordre d'apparition des notions
+# Ordre global de l'atlas : arêtes de chaque graphe, entrées des sous-graphes ; chaque nœud
+# intérieur vient après les parents de son conteneur et avant le conteneur lui-même (ce qui
+# dépend d'une théorie dépend de tout son contenu).
+# Un terme du lexique est défini au nœud indiqué par « defini_dans » ; on ne peut l'employer,
+# dans un texte, un énoncé ou une démonstration, qu'en ce nœud ou après lui. Les remarques et
+# les notes sur le choix peuvent renvoyer en avant : ces renvois sont seulement signalés.
+ORDRE = nx.DiGraph(); ORDRE.add_nodes_from(noeuds)
+for d in D.values(): ORDRE.add_edges_from(d.edges())
+for g in graphes:
+    for e, cibles in g['entrees'].items():
+        for c in cibles: ORDRE.add_edge(e, c)
+    if g['conteneur']:
+        k = g['conteneur']
+        for n in g['noeuds']:
+            ORDRE.add_edge(n['id'], k)                 # le contenu précède son conteneur...
+            for p in D[noeuds[k]['graphe']].predecessors(k):
+                ORDRE.add_edge(p, n['id'])             # ...et suit les parents de ce conteneur
+if not nx.is_directed_acyclic_graph(ORDRE):
+    erreur(f"ordre global : cycle {nx.find_cycle(ORDRE)}")
+avant = {v: nx.ancestors(ORDRE, v) | {v} for v in noeuds} if not erreurs else {}
+renvois = []
+for t, e in lex.items():
+    if e.get('defini_dans') not in noeuds:
+        erreur(f"lexique/{t} : « defini_dans » absent ou inconnu ({e.get('defini_dans')})")
+    for v in e.get('voir', []):
+        if v not in lex: erreur(f"lexique/{t} : « voir » renvoie au terme inconnu {v}")
+if avant and not erreurs:
+    for n in noeuds.values():
+        for champ in ['texte', 'enonce', 'preuve']:
+            for t in RE_TERME.findall(n.get(champ) or ''):
+                d = lex[t]['defini_dans']
+                if d not in avant[n['id']]:
+                    erreur(f"{n['id']}/{champ} emploie « {t} », défini plus loin, au nœud {d}")
+        for txt in n['remarques'] + ([n['choix']] if n.get('choix') else []):
+            for t in RE_TERME.findall(txt):
+                if lex[t]['defini_dans'] not in avant[n['id']]:
+                    renvois.append(f"{n['id']} → {t}")
+    for t, e in lex.items():
+        d = e['defini_dans']
+        for t2 in RE_TERME.findall(e['definition']):
+            d2 = lex[t2]['defini_dans']
+            if d2 not in avant[d]:
+                erreur(f"lexique/{t} (défini au nœud {d}) emploie « {t2} », défini plus loin, au nœud {d2}")
+        if not any(f'[[{t}' in x for x in textes(noeuds[d])):
+            avert(f"lexique/{t} : le nœud {d}, où il est défini, ne le mentionne pas")
+    if renvois: avert(f"renvois en avant dans les remarques ({len(renvois)}) : " + ', '.join(sorted(renvois)))
+
 # ------------------------------------------------------------------ rangs et numéros
 for gid, d in D.items():
     for v in nx.topological_sort(d):
@@ -316,7 +364,8 @@ for gid, d in D.items():
                                    amont=amont)
 for t, e in lex.items():
     sortie['lexique'][t] = {'id': t, 'terme': e['terme'], 'definition': e['definition'],
-                            'emplois': sorted(emplois[t])}
+                            'emplois': sorted(emplois[t]), 'defini': e['defini_dans'],
+                            'voir': e.get('voir', [])}
 
 import os; os.makedirs('construction', exist_ok=True)
 json.dump(sortie, open('construction/donnees.json', 'w', encoding='utf-8'), ensure_ascii=False, indent=1)

@@ -644,7 +644,9 @@ function remplirLexique() {
   const L = Object.values(D.lexique).sort((a, b) => a.terme.localeCompare(b.terme, 'fr'));
   $('#lexique').innerHTML = L.map(e => `<article class="entree-lex" id="lx-${e.id}" data-t="${esc(e.terme.toLowerCase())}">
       <h3>${esc(e.terme)}</h3>${e.definition}
+      <div class="emplois">Défini dans ${puce(e.defini)}</div>
       ${e.emplois.length ? `<div class="emplois">Employé dans ${e.emplois.map(i => puce(i)).join('')}</div>` : ''}
+      ${e.voir.length ? `<div class="emplois">Voir aussi ${e.voir.map(v => `<span class="terme" data-g="${v}" tabindex="0" role="button">${esc(D.lexique[v].terme)}</span>`).join(', ')}</div>` : ''}
     </article>`).join('');
 }
 function ouvrirTerme(id) {
@@ -679,7 +681,7 @@ function montrerBulle(el) {
   clearTimeout(minuterie);
   const b = $('#bulle');
   if (termeActif !== el) {
-    b.innerHTML = `<p class="bulle-terme">${esc(e.terme)}</p>${e.definition}<p class="bulle-pied">Cliquer pour l'ouvrir dans le lexique</p>`;
+    b.innerHTML = `<p class="bulle-terme">${esc(e.terme)}</p>${e.definition}<p class="bulle-pied">Défini au nœud « ${esc(D.noeuds[e.defini].titre)} » · cliquer pour l'ouvrir dans le lexique</p>`;
     termeActif = el;
   }
   b.hidden = false;

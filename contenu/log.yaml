@@ -8,18 +8,60 @@ titre: Logique du premier ordre
 conteneur: log
 
 noeuds:
+  - id: l-metatheorie
+    etiquette: Cadre métathéorique
+    nature: axiome
+    titre: Le cadre de la logique
+    enonce: |
+      La logique étudie des **mots**, suites finies de symboles pris dans un alphabet, et des **structures** qui leur donnent un sens. Pour en parler, on s'autorise les notions du raisonnement mathématique ordinaire : ensembles, applications, entiers naturels, récurrence, ensembles finis et dénombrables, pris dans leur sens intuitif. C'est la **métathéorie**.
+    texte: |
+      La logique est placée sous la théorie des ensembles, alors que sa sémantique emploie des ensembles : ce n'est pas un cercle, mais un échelonnement. La syntaxe, qui ne manipule que des mots finis, n'exige qu'une arithmétique élémentaire des suites finies. La sémantique, elle, emploie des ensembles intuitifs. Une fois $\mathsf{ZF}$ posée sur cette base, on peut tout recoder à l'intérieur, et c'est ce que fait Gödel pour démontrer l'incomplétude.
+    remarques:
+      - |
+        Les notions de la métathéorie recevront plus loin une définition rigoureuse dans $\mathsf{ZF}$ : applications au nœud {{rel|Relations, fonctions}}, entiers au nœud {{n|ℕ}}. Elles ne sont utilisées ici que dans leur sens intuitif, et jamais comme objets de la théorie étudiée.
+
+  - id: l-connecteurs
+    etiquette: Connecteurs
+    nature: définition
+    titre: Connecteurs et tables de vérité
+    enonce: |
+      Les [[connecteur|connecteurs]] primitifs sont la négation $\neg$, d'arité $1$, et l'implication $\to$, d'arité $2$. Leur sens est fixé par des fonctions de $\{0, 1\}$ dans lui-même, où $1$ représente le vrai et $0$ le faux, données par leurs **tables de vérité** :
+      $$\begin{array}{c|c} P & \neg P \\ \hline 1 & 0 \\ 0 & 1 \end{array} \qquad\qquad \begin{array}{cc|c} P & Q & P \to Q \\ \hline 1 & 1 & 1 \\ 1 & 0 & 0 \\ 0 & 1 & 1 \\ 0 & 0 & 1 \end{array}$$
+      Les autres connecteurs sont des **abréviations** : $P \wedge Q$ pour $\neg(P \to \neg Q)$, $P \vee Q$ pour $\neg P \to Q$, et $P \leftrightarrow Q$ pour $(P \to Q) \wedge (Q \to P)$. On vérifie sur les tables que $P \wedge Q$ vaut $1$ si et seulement si $P$ et $Q$ valent $1$, que $P \vee Q$ vaut $1$ si et seulement si l'un d'eux au moins vaut $1$, et que $P \leftrightarrow Q$ vaut $1$ si et seulement si $P$ et $Q$ ont même valeur.
+    remarques:
+      - |
+        L'implication est **matérielle** : $P \to Q$ est vraie dès que $P$ est fausse, sans aucun lien de cause entre $P$ et $Q$. L'erreur la plus répandue est d'y lire une causalité ; « si $2 + 2 = 5$, alors la Lune est un fromage » est un énoncé vrai.
+      - |
+        Le choix de $\neg$ et $\to$ comme seuls connecteurs primitifs n'appauvrit pas le langage : le nœud {{l-tautologies|Tautologies}} montre que toute fonction de vérité s'exprime avec eux.
+
+  - id: l-prop-formules
+    etiquette: Formules propositionnelles
+    nature: définition
+    enonce: |
+      On se donne une suite de **lettres propositionnelles** $P_0, P_1, \dots$. Les **formules propositionnelles** forment le plus petit ensemble de mots contenant les lettres, et tel que, si $\varphi$ et $\psi$ en sont, alors $\neg\varphi$ et $\to \varphi\, \psi$ en sont aussi.
+    remarques:
+      - |
+        On écrit les formules en notation **préfixée**, $\to \varphi\, \psi$ plutôt que $(\varphi \to \psi)$, pour démontrer simplement la lecture unique ; l'écriture usuelle, avec parenthèses, n'en est qu'une abréviation lisible.
+
   - id: l-langage
     etiquette: Langage, signature
     nature: définition
     enonce: |
-      Une [[signature]] $\mathcal L$ est la donnée de symboles de constantes, de symboles de fonctions et de symboles de relations, chacun muni d'un entier, son **arité**. Les formules sur $\mathcal L$ s'écrivent avec ces symboles et avec les symboles logiques, communs à tous les langages : une suite infinie de variables $x_0, x_1, \dots$, l'égalité $=$, les connecteurs $\neg$ et $\to$, le quantificateur $\forall$, et les parenthèses.
-    texte: |
-      Les autres connecteurs sont des abréviations : $\varphi \wedge \psi$ abrège $\neg(\varphi \to \neg\psi)$, $\varphi \vee \psi$ abrège $\neg\varphi \to \psi$, et $\exists x\, \varphi$ abrège $\neg \forall x\, \neg\varphi$. Réduire le nombre de symboles primitifs raccourcit toutes les démonstrations par récurrence de ce graphe.
+      Une [[signature]] $\mathcal L$ est la donnée de symboles de constantes, de symboles de fonctions et de symboles de relations, chacun muni d'un entier, son **arité**. L'alphabet du langage du premier ordre sur $\mathcal L$ comprend ces symboles et les symboles logiques, communs à tous les langages : une suite infinie de variables $x_0, x_1, \dots$, l'égalité $=$, les [[connecteur|connecteurs]] $\neg$ et $\to$, et le symbole $\forall$, dont le rôle de quantificateur est précisé au nœud suivant.
     remarques:
       - |
         Exemples : le langage de $\mathsf{ZF}$ n'a qu'un symbole de relation binaire $\in$ ; celui de l'arithmétique a une constante $0$, un symbole de fonction unaire $S$ et deux binaires $+$ et $\times$ ; celui des groupes, une constante $e$, une fonction binaire $\cdot$ et une unaire ${}^{-1}$.
+
+  - id: l-quantificateurs
+    etiquette: Quantificateurs
+    nature: définition
+    enonce: |
+      Pour chaque variable $x$, le mot $\forall x$ est un [[quantificateur]] **universel** ; il se place devant une formule $\varphi$ pour former $\forall x\, \varphi$, lu « pour tout $x$, $\varphi$ ». Le **quantificateur existentiel** est une abréviation : $\exists x\, \varphi$ désigne $\neg \forall x\, \neg\varphi$, lu « il existe $x$ tel que $\varphi$ ».
+    texte: |
+      Les quantificateurs ne portent que sur les **éléments** du domaine, jamais sur ses parties ni sur les propriétés : c'est ce qui définit le premier ordre. Leur sens précis, qui fait parcourir à $x$ tous les éléments d'une structure, est donné par la définition de la satisfaction.
+    remarques:
       - |
-        La logique est **sous** la théorie des ensembles, ce qui pose une question de circularité. Elle se résout ainsi : la syntaxe ne manipule que des mots finis, objets combinatoires que l'on peut traiter sans théorie des ensembles ; la sémantique, elle, emploie des ensembles au sens naïf, dans une métathéorie. Une fois $\mathsf{ZF}$ posée, on peut tout recoder à l'intérieur, et c'est ce que fait Gödel pour démontrer l'incomplétude.
+        L'ordre des quantificateurs compte. $\forall x\, \exists y\, (x < y)$ dit que tout élément a un élément plus grand, ce qui est vrai dans $\mathbb N$ ; $\exists y\, \forall x\, (x < y)$ dit qu'un même élément les dépasse tous, ce qui y est faux. Les définitions de la continuité et de la continuité uniforme, au graphe {{c-uniforme|Continuité}}, ne diffèrent que par cet ordre.
 
   - id: l-termes
     etiquette: Termes
@@ -34,9 +76,9 @@ noeuds:
     etiquette: Formules, variables libres
     nature: définition
     enonce: |
-      Les **formules atomiques** sont les mots $t_1 = t_2$ et $R\, t_1 \cdots t_n$, où $R$ est un symbole de relation d'arité $n$ et les $t_i$ des termes. Les [[formule|formules]] forment le plus petit ensemble de mots contenant les formules atomiques et stable par $\varphi \mapsto \neg\varphi$, $(\varphi, \psi) \mapsto (\varphi \to \psi)$ et $\varphi \mapsto \forall x\, \varphi$.
+      Les **formules atomiques** sont les mots $= t_1\, t_2$ et $R\, t_1 \cdots t_n$, où $R$ est un symbole de relation d'arité $n$ et les $t_i$ des [[terme|termes]]. Les [[formule|formules]] forment le plus petit ensemble de mots contenant les formules atomiques et stable par $\varphi \mapsto \neg\varphi$, $(\varphi, \psi) \mapsto\, \to \varphi\, \psi$ et $\varphi \mapsto \forall x\, \varphi$.
 
-      Une occurrence de $x$ est **liée** si elle se trouve dans une sous-formule $\forall x\, \psi$, et **libre** sinon. Une formule sans variable libre est un [[enonce]], ou formule close.
+      Dans $\forall x\, \psi$, la formule $\psi$ est la **portée** du quantificateur. Une occurrence de $x$ est **liée** si elle se trouve dans la portée d'un quantificateur $\forall x$, et **libre** sinon. Une formule sans variable libre est un [[enonce]], ou formule close, et un ensemble d'énoncés est une [[theorie]].
     remarques:
       - |
         Une même variable peut avoir des occurrences libres et liées dans une formule : dans $x = 0 \to \forall x\, (x = x)$, la première occurrence de $x$ est libre, les autres sont liées. L'erreur la plus répandue est de parler de « la » variable $x$ d'une telle formule, comme si elle avait un statut unique.
@@ -46,7 +88,7 @@ noeuds:
     nature: théorème
     titre: Théorème de lecture unique
     enonce: |
-      Tout terme s'écrit de manière unique sous l'une des formes $x$, $c$ ou $f\, t_1 \cdots t_n$ : si $f\, t_1 \cdots t_n = g\, u_1 \cdots u_m$, alors $f = g$, $n = m$ et $t_i = u_i$ pour tout $i$. Il en va de même pour les formules.
+      Tout terme s'écrit de manière unique sous l'une des formes $x$, $c$ ou $f\, t_1 \cdots t_n$ : si $f\, t_1 \cdots t_n = g\, u_1 \cdots u_m$, alors $f = g$, $n = m$ et $t_i = u_i$ pour tout $i$. Il en va de même pour les formules propositionnelles et pour les formules du premier ordre.
     preuve: |
       Attribuons à chaque symbole un **poids** : $1$ pour une variable ou une constante, $1 - n$ pour un symbole de fonction d'arité $n$. Le poids $p(w)$ d'un mot est la somme des poids de ses symboles.
 
@@ -54,10 +96,26 @@ noeuds:
 
       Il en résulte qu'aucun terme n'est un préfixe propre d'un autre terme, puisque leurs poids diffèrent. Supposons alors $f\, t_1 \cdots t_n = g\, u_1 \cdots u_m$. Les premiers symboles donnent $f = g$, donc $n = m$. Les mots $t_1 \cdots t_n$ et $u_1 \cdots u_n$ sont égaux ; $t_1$ et $u_1$ sont deux termes dont l'un est préfixe de l'autre, donc $t_1 = u_1$. On efface ce préfixe commun et l'on recommence, ce qui donne $t_i = u_i$ pour tout $i$.
 
-      Pour les formules, écrites elles aussi en notation préfixée, on prend le poids $1 - n$ pour un symbole de relation d'arité $n$, $-1$ pour $=$ et pour $\to$, $0$ pour $\neg$, et $0$ pour le bloc $\forall x$, compté comme un seul symbole. La même démonstration s'applique mot pour mot.
+      Pour les formules, écrites elles aussi en notation préfixée, on prend le poids $1$ pour une lettre propositionnelle, $1 - n$ pour un symbole de relation d'arité $n$, $-1$ pour $=$ et pour $\to$, $0$ pour $\neg$, et $0$ pour le bloc $\forall x$, compté comme un seul symbole. La même démonstration s'applique mot pour mot.
     remarques:
       - |
-        Ce théorème justifie toutes les définitions par récurrence sur les termes et les formules, comme celle de la satisfaction : sans lui, une formule pourrait se décomposer de deux façons, et recevoir deux valeurs de vérité.
+        Ce théorème justifie toutes les définitions par récurrence sur les termes et les formules, comme celles de la valeur de vérité d'une formule propositionnelle et de la satisfaction : sans lui, une formule pourrait se décomposer de deux façons, et recevoir deux valeurs de vérité.
+
+  - id: l-tautologies
+    etiquette: Tautologies
+    nature: proposition
+    titre: Tautologies et complétude fonctionnelle
+    enonce: |
+      Une **valuation booléenne** est une application $v$ des lettres propositionnelles dans $\{0, 1\}$. Elle se prolonge de manière unique en une application $\bar v$ définie sur toutes les formules propositionnelles et compatible avec les tables de vérité : $\bar v(\neg\varphi) = 1 - \bar v(\varphi)$, et $\bar v(\to \varphi\, \psi) = 0$ si et seulement si $\bar v(\varphi) = 1$ et $\bar v(\psi) = 0$. Une [[tautologie]] est une formule $\varphi$ telle que $\bar v(\varphi) = 1$ pour toute valuation $v$.
+
+      **Complétude fonctionnelle.** Pour toute fonction $F : \{0,1\}^n \to \{0,1\}$, il existe une formule $\varphi$ écrite avec les lettres $P_1, \dots, P_n$ et les seuls connecteurs $\neg$ et $\to$, telle que $\bar v(\varphi) = F(v(P_1), \dots, v(P_n))$ pour toute valuation $v$.
+    preuve: |
+      Le prolongement $\bar v$ est bien défini par récurrence sur les formules, grâce à la lecture unique, qui garantit que chaque formule non réduite à une lettre s'écrit d'une seule façon $\neg\varphi$ ou $\to \varphi\, \psi$.
+
+      Pour la complétude fonctionnelle, notons, pour $\varepsilon \in \{0,1\}^n$, $C_\varepsilon$ la conjonction des littéraux $P_i$ si $\varepsilon_i = 1$ et $\neg P_i$ si $\varepsilon_i = 0$ : par les tables de $\wedge$ et de $\neg$, $\bar v(C_\varepsilon) = 1$ si et seulement si $v(P_i) = \varepsilon_i$ pour tout $i$. Si $F$ est identiquement nulle, la formule $P_1 \wedge \neg P_1$ convient. Sinon, la disjonction des $C_\varepsilon$ pour les $\varepsilon$ tels que $F(\varepsilon) = 1$ vaut $1$ exactement aux points où $F$ vaut $1$. Comme $\wedge$ et $\vee$ sont des abréviations, cette formule s'écrit avec $\neg$ et $\to$ seuls.
+    remarques:
+      - |
+        Savoir si une formule à $n$ lettres est une tautologie est un calcul fini : il suffit d'examiner les $2^n$ lignes de sa table. Par exemple, $\varphi \to (\psi \to \varphi)$ ne peut valoir $0$ que si $\varphi$ vaut $1$ et $\psi \to \varphi$ vaut $0$, ce qui exige $\varphi = 0$ : c'est impossible, la formule est une tautologie. Ce caractère décidable disparaît au premier ordre.
 
   - id: l-substitution
     etiquette: Substitution
@@ -118,7 +176,7 @@ noeuds:
     etiquette: Modèles, conséquence
     nature: définition
     enonce: |
-      Une [[theorie]] est un ensemble d'énoncés. Un [[modele]] de $T$ est une structure qui satisfait tous les énoncés de $T$. Un énoncé $\varphi$ est [[consequence-semantique|conséquence sémantique]] de $T$, noté $T \models \varphi$, si tout modèle de $T$ satisfait $\varphi$. Il est **universellement valide** si $\varnothing \models \varphi$.
+      Soit $T$ une théorie. Un [[modele]] de $T$ est une structure qui satisfait tous les énoncés de $T$. Un énoncé $\varphi$ est [[consequence-semantique|conséquence sémantique]] de $T$, noté $T \models \varphi$, si tout modèle de $T$ satisfait $\varphi$. Il est **universellement valide** si $\varnothing \models \varphi$.
 
   - id: l-deduction
     etiquette: Démonstrations formelles
@@ -126,7 +184,7 @@ noeuds:
     enonce: |
       On fixe le système de Hilbert suivant, dû à Enderton. Les **axiomes logiques** sont toutes les généralisations $\forall y_1 \cdots \forall y_k\, \alpha$ des formules $\alpha$ suivantes :
 
-      (1) les tautologies, c'est-à-dire les formules obtenues en remplaçant les lettres d'une tautologie propositionnelle par des formules ;
+      (1) les instances de tautologies, c'est-à-dire les formules obtenues en remplaçant les lettres d'une [[tautologie]] propositionnelle par des formules du premier ordre ;
 
       (2) $\forall x\, \alpha \to \alpha[t/x]$, si $t$ est substituable à $x$ dans $\alpha$ ;
 
@@ -219,7 +277,7 @@ noeuds:
     nature: théorème
     titre: Théorème de Löwenheim-Skolem descendant
     enonce: |
-      Toute théorie cohérente dans un langage [[denombrable]] a un modèle fini ou dénombrable.
+      Toute théorie cohérente dans un langage dénombrable, au sens de la métathéorie, a un modèle fini ou dénombrable.
     preuve: |
       *Admis ici.* C'est une conséquence de la démonstration de complétude : lorsque le langage est dénombrable, les témoins ajoutés le sont aussi, et le modèle construit, formé de classes de termes clos, est fini ou dénombrable.
     remarques:
@@ -261,6 +319,14 @@ noeuds:
         Le théorème s'applique à $\mathsf{ZFC}$ : si elle est cohérente, elle ne démontre pas sa propre cohérence, et l'on ne peut pas prouver la solidité de l'édifice tout entier avec ses seuls outils. Il ne contredit pas la complétude : $G$ est vrai dans certains modèles de $T$ et faux dans d'autres.
 
 aretes:
+  - [l-metatheorie, l-connecteurs]
+  - [l-connecteurs, l-prop-formules]
+  - [l-connecteurs, l-langage]
+  - [l-langage, l-quantificateurs]
+  - [l-quantificateurs, l-formules]
+  - [l-prop-formules, l-lecture]
+  - [l-lecture, l-tautologies]
+  - [l-tautologies, l-deduction]
   - [l-langage, l-termes]
   - [l-termes, l-formules]
   - [l-termes, l-lecture]

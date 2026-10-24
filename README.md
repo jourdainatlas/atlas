@@ -29,6 +29,14 @@ vérification échoue, rien n'est publié et l'erreur s'affiche dans l'onglet *A
 - `{{id|texte}}` : lien vers un autre nœud ;
 - `**gras**`, `*italique*` ; une ligne vide sépare deux paragraphes.
 
+## Ordre d'apparition des notions
+
+Chaque terme du lexique indique, par `defini_dans`, le nœud où il est défini. Le script de
+construction refuse qu'un texte, un énoncé ou une démonstration emploie un terme avant ce nœud
+dans l'ordre de l'atlas. Seules les remarques et les notes sur l'axiome du choix peuvent renvoyer
+vers des notions ultérieures ; ces renvois sont listés à chaque construction. Dans le lexique, un
+renvoi vers une notion ultérieure s'écrit dans le champ `voir`, affiché en « Voir aussi ».
+
 ## Construire sur un ordinateur
 
 ```sh
