@@ -1,0 +1,121 @@
+# Niveau 1 : structure interne du nœud « Martingales ».
+# Espérance conditionnelle comme projection orthogonale dans L², prolongée à L¹ ;
+# martingales, temps d'arrêt et arrêt borné ; inégalité maximale de Kolmogorov-Doob ;
+# convergence des martingales bornées dans L² ; série harmonique aléatoire et urne de Pólya.
+# Le théorème de convergence dans L¹ (montées de Doob) est admis et signalé.
+
+graphe: mart
+titre: Martingales
+conteneur: mart
+
+entrees:
+  proba: [mt-conditionnelle, mt-martingales]
+  anf: [mt-conditionnelle]
+
+noeuds:
+  - id: mt-conditionnelle
+    etiquette: Espérance conditionnelle
+    nature: théorème
+    titre: Espérance conditionnelle
+    texte: |
+      Soit $(\Omega, \mathcal A, P)$ un espace probabilisé et $\mathcal G \subset \mathcal A$ une sous-tribu. On note $L^2(\mathcal G)$ le sous-espace de $L^2(\mathcal A)$ formé des classes contenant une variable $\mathcal G$-mesurable.
+    choix: |
+      La définition par projection orthogonale hérite du [[choix-denombrable]] employé par le théorème de projection ({{f-hilbert|Espaces de Hilbert}}) et pour montrer que $L^2(\mathcal G)$ est fermé.
+    enonce: |
+      (i) $L^2(\mathcal G)$ est un sous-espace fermé de $L^2(\mathcal A)$. Pour $X \in L^2$, l'[[esperance-conditionnelle|espérance conditionnelle]] $E[X \mid \mathcal G]$ est la projection orthogonale de $X$ sur $L^2(\mathcal G)$. C'est l'unique $Y \in L^2(\mathcal G)$ telle que $E[X\mathbf 1_G] = E[Y\mathbf 1_G]$ pour tout $G \in \mathcal G$.
+
+      (ii) Elle est linéaire, positive ($X \geqslant 0$ entraîne $E[X \mid \mathcal G] \geqslant 0$ presque sûrement), vérifie $E\big[E[X \mid \mathcal G]\big] = E[X]$ et $\big\|E[X \mid \mathcal G]\big\|_1 \leqslant \|X\|_1$. Elle se prolonge donc de façon unique en une application de $L^1$ dans $L^1(\mathcal G)$, caractérisée par la même propriété.
+
+      (iii) *Emboîtement.* Si $\mathcal G \subset \mathcal H$, $E\big[E[X \mid \mathcal H] \mid \mathcal G\big] = E[X \mid \mathcal G]$.
+
+      (iv) Si $Z$ est bornée et $\mathcal G$-mesurable, $E[ZX \mid \mathcal G] = Z\,E[X \mid \mathcal G]$. Si $X$ est indépendante de $\mathcal G$, $E[X \mid \mathcal G] = E[X]$.
+    preuve: |
+      (i) $L^2(\mathcal G)$ est complet par Riesz-Fischer ({{f-lp|Espaces L¹ et L²}}), et une suite de $L^2(\mathcal G)$ qui converge dans $L^2(\mathcal A)$ y est de Cauchy, donc converge dans $L^2(\mathcal G)$ vers la même limite : le sous-espace est fermé. La projection $Y$ est caractérisée par $E[(X - Y)Z] = 0$ pour tout $Z \in L^2(\mathcal G)$ ({{f-hilbert|Espaces de Hilbert}}, (iii)). Il suffit de le vérifier pour les indicatrices $\mathbf 1_G$, $G \in \mathcal G$ : par linéarité, cela vaut pour les variables étagées $\mathcal G$-mesurables, qui sont denses dans $L^2(\mathcal G)$ par l'approximation du nœud {{m-etagees|Fonctions étagées}} et la convergence dominée.
+
+      (ii) La linéarité est celle d'une projection. Si $X \geqslant 0$ et $G = \{Y < 0\} \in \mathcal G$, alors $E[Y\mathbf 1_G] = E[X\mathbf 1_G] \geqslant 0$, d'où $Y\mathbf 1_G = 0$ presque sûrement. Avec $G = \Omega$, $E[Y] = E[X]$. Appliquée à $X^+$ et $X^-$, la positivité donne $|E[X \mid \mathcal G]| \leqslant E[|X| \mid \mathcal G]$, d'où la contraction dans $L^1$. Les variables bornées sont denses dans $L^1$, par troncature et convergence dominée, et elles sont dans $L^2$ ; une application linéaire contractante se prolonge par continuité à $L^1$, qui est complet, et la caractérisation passe à la limite.
+
+      (iii) Pour $G \in \mathcal G \subset \mathcal H$, $E\big[E[X \mid \mathcal H]\mathbf 1_G\big] = E[X\mathbf 1_G] = E\big[E[X \mid \mathcal G]\mathbf 1_G\big]$.
+
+      (iv) Pour $Z = \mathbf 1_{G'}$, $E[\mathbf 1_{G'}X\mathbf 1_G] = E[X\mathbf 1_{G \cap G'}] = E\big[\mathbf 1_{G'}E[X \mid \mathcal G]\mathbf 1_G\big]$ ; on étend par linéarité aux $Z$ étagées, puis aux $Z$ bornées par limite uniforme. Si $X$ est indépendante de $\mathcal G$, $E[X\mathbf 1_G] = E[X]P(G) = E\big[E[X]\mathbf 1_G\big]$ ({{p-esperance|Espérance, variance}}, (iv)).
+    remarques:
+      - |
+        Si $\mathcal G$ est engendrée par une partition finie $(B_1, \dots, B_m)$ en événements de probabilité non nulle, $E[X \mid \mathcal G]$ vaut $E[X\mathbf 1_{B_i}]/P(B_i)$ sur $B_i$ : c'est la moyenne de $X$ sachant $B_i$, et l'on retrouve les probabilités conditionnelles du nœud {{p-espace|Espace probabilisé}}. La définition géométrique, par projection, est ce qui permet de conditionner par un événement de probabilité nulle, comme $\{Y = y\}$ pour une variable à densité.
+
+  - id: mt-martingales
+    etiquette: Martingales
+    nature: définition
+    titre: Martingales et temps d'arrêt
+    texte: |
+      Une **filtration** est une suite croissante $(\mathcal F_n)_{n \in \mathbb N}$ de sous-tribus. Une suite $(M_n)$ de variables intégrables, chaque $M_n$ étant $\mathcal F_n$-mesurable, est une [[martingale]] si $E[M_{n+1} \mid \mathcal F_n] = M_n$ pour tout $n$. Un **temps d'arrêt** est une variable $T$ à valeurs dans $\mathbb N \cup \{+\infty\}$ telle que $\{T = n\} \in \mathcal F_n$ pour tout $n$ : la décision de s'arrêter à l'instant $n$ ne dépend que du passé.
+    enonce: |
+      (i) Si $(X_n)_{n \geqslant 1}$ sont indépendantes, intégrables et centrées, $S_n = X_1 + \cdots + X_n$ est une martingale pour $\mathcal F_n = \sigma(X_1, \dots, X_n)$. Pour toute $X \in L^1$, $M_n = E[X \mid \mathcal F_n]$ est une martingale.
+
+      (ii) Pour une martingale, $E[M_n] = E[M_0]$, et $E[M_m \mid \mathcal F_n] = M_n$ pour $m \geqslant n$.
+
+      (iii) *Arrêt borné.* Si $T$ est un temps d'arrêt borné par $N$, alors $E[M_T] = E[M_0]$.
+    preuve: |
+      (i) $E[S_{n+1} \mid \mathcal F_n] = S_n + E[X_{n+1} \mid \mathcal F_n] = S_n + E[X_{n+1}] = S_n$, par l'indépendance de $X_{n+1}$ et de $\mathcal F_n$ ({{p-independance|Indépendance}}, (ii)) et {{mt-conditionnelle|Espérance conditionnelle}}, (iv). Pour $M_n = E[X \mid \mathcal F_n]$, c'est l'emboîtement.
+
+      (ii) Par récurrence et emboîtement, puis en prenant l'espérance.
+
+      (iii) $M_T = M_0 + \sum_{k=0}^{N-1}(M_{k+1} - M_k)\mathbf 1_{\{T > k\}}$, et $\{T > k\}$, complémentaire de $\{T \leqslant k\}$, appartient à $\mathcal F_k$. Donc $E\big[(M_{k+1} - M_k)\mathbf 1_{\{T > k\}}\big] = E\big[\mathbf 1_{\{T > k\}}\,E[M_{k+1} - M_k \mid \mathcal F_k]\big] = 0$.
+    remarques:
+      - |
+        L'hypothèse que $T$ est borné ne peut pas être levée. Au jeu de pile ou face équitable, la stratégie qui double la mise après chaque perte et s'arrête au premier gain assure un gain de $1$ à l'instant d'arrêt $T$, presque sûrement fini ; pourtant $E[M_0] = 0$. Le paradoxe tient à ce que $T$ n'est pas borné et que les pertes intermédiaires ne le sont pas non plus : aucune richesse finie ne permet de suivre la stratégie jusqu'au bout.
+
+  - id: mt-doob
+    etiquette: Inégalité maximale
+    nature: théorème
+    titre: Inégalité maximale de Kolmogorov et Doob
+    enonce: |
+      Soit $(M_n)$ une martingale de carré intégrable. Alors $E[M_n^2] = E[M_0^2] + \sum_{k=1}^n E\big[(M_k - M_{k-1})^2\big]$, les accroissements étant orthogonaux, et pour tout $a > 0$,
+      $$P\Big(\max_{0 \leqslant k \leqslant n}|M_k| \geqslant a\Big) \leqslant \frac{E[M_n^2]}{a^2}.$$
+    preuve: |
+      Pour $k \geqslant 1$, $M_{k-1} = E[M_k \mid \mathcal F_{k-1}]$ est la projection de $M_k$ sur $L^2(\mathcal F_{k-1})$ ({{mt-conditionnelle|Espérance conditionnelle}}) : l'accroissement $M_k - M_{k-1}$ est orthogonal à $L^2(\mathcal F_{k-1})$, qui contient $M_0$ et les accroissements antérieurs. D'où la première formule. De même, $M_n - M_k$, somme d'accroissements postérieurs, est orthogonal à $L^2(\mathcal F_k)$ ; pour $A \in \mathcal F_k$, la variable $M_k\mathbf 1_A$ appartient à $L^2(\mathcal F_k)$, et $E[M_n^2\mathbf 1_A] = E[M_k^2\mathbf 1_A] + E[(M_n - M_k)^2\mathbf 1_A] \geqslant E[M_k^2\mathbf 1_A]$.
+
+      Soit $T$ le premier $k \leqslant n$ tel que $|M_k| \geqslant a$, s'il existe : c'est un temps d'arrêt, et $\{T = k\} \in \mathcal F_k$. Alors
+      $$E[M_n^2] \geqslant \sum_{k=0}^n E\big[M_n^2\mathbf 1_{\{T = k\}}\big] \geqslant \sum_{k=0}^n E\big[M_k^2\mathbf 1_{\{T = k\}}\big] \geqslant a^2\,P(T \leqslant n),$$
+      et $\{T \leqslant n\}$ est l'événement $\max_{k \leqslant n}|M_k| \geqslant a$.
+    remarques:
+      - |
+        Pour une somme $S_n$ de variables indépendantes centrées, l'inégalité dit que le maximum de $|S_k|$ sur $k \leqslant n$ n'est pas plus souvent grand que $|S_n|$ lui-même, au sens de Bienaymé-Tchebychev ({{p-esperance|Espérance, variance}}). Contrôler toute la trajectoire au prix d'un seul instant est l'idée qui mène à la convergence presque sûre.
+
+  - id: mt-convergence
+    etiquette: Convergence des martingales
+    nature: théorème
+    titre: Convergence des martingales bornées dans L²
+    enonce: |
+      Si $(M_n)$ est une martingale telle que $\sup_n E[M_n^2] < +\infty$, elle converge presque sûrement et dans $L^2$ vers une variable $M_\infty$, et $M_n = E[M_\infty \mid \mathcal F_n]$.
+    preuve: |
+      Par l'orthogonalité des accroissements ({{mt-doob|Inégalité maximale}}), $E[M_n^2]$ croît et est bornée, donc $\sum_k E[(M_k - M_{k-1})^2] < +\infty$, et $E[(M_n - M_m)^2] = \sum_{m < k \leqslant n} E[(M_k - M_{k-1})^2]$ : la suite est de Cauchy dans $L^2$, qui est complet ({{f-lp|Espaces L¹ et L²}}), et converge vers $M_\infty$.
+
+      Pour $m$ fixé, $(M_{m+j} - M_m)_{j \geqslant 0}$ est une martingale ; l'inégalité maximale et la continuité croissante donnent
+      $$P\Big(\sup_{n \geqslant m}|M_n - M_m| \geqslant \varepsilon\Big) \leqslant \frac{1}{\varepsilon^2}\sum_{k > m} E\big[(M_k - M_{k-1})^2\big],$$
+      qui tend vers $0$ quand $m \to \infty$. Les événements $\{\sup_{n, n' \geqslant m}|M_n - M_{n'}| \geqslant 2\varepsilon\}$ décroissent donc vers un événement négligeable ; avec $\varepsilon = 1/(j + 1)$, $j \in \mathbb N$, la suite est presque sûrement de Cauchy, donc converge presque sûrement, vers une limite égale à $M_\infty$ presque sûrement, une suite extraite convergeant presque sûrement vers $M_\infty$. Enfin, pour $G \in \mathcal F_n$, $E[M_\infty\mathbf 1_G] = \lim_m E[M_m\mathbf 1_G] = E[M_n\mathbf 1_G]$.
+    remarques:
+      - |
+        Le théorème de Doob affirme plus : une martingale bornée dans $L^1$ converge presque sûrement. Sa démonstration compte les **montées** de la martingale entre deux niveaux, dont l'espérance est contrôlée ; elle est admise ici. La convergence dans $L^1$ demande en outre l'équi-intégrabilité : la martingale $M_n = \prod_{k \leqslant n} 2\,\mathbf 1_{\{\varepsilon_k = 1\}}$, produit de facteurs indépendants d'espérance $1$, tend vers $0$ presque sûrement alors que $E[M_n] = 1$.
+
+  - id: mt-applications
+    etiquette: Applications
+    nature: proposition
+    titre: Série harmonique aléatoire et urne de Pólya
+    enonce: |
+      (i) Si $(\varepsilon_n)$ sont indépendantes et valent $\pm 1$ avec probabilité $\frac12$, la série $\sum_{n \geqslant 1} \varepsilon_n/n$ converge presque sûrement.
+
+      (ii) *Urne de Pólya.* Une urne contient au départ une boule rouge et une bleue ; à chaque étape, on tire une boule uniformément, et on la remet avec une boule supplémentaire de même couleur. La proportion $X_n$ de boules rouges après $n$ tirages est une martingale, qui converge presque sûrement.
+    preuve: |
+      (i) Les sommes partielles $M_n = \sum_{k \leqslant n}\varepsilon_k/k$ forment une martingale ({{mt-martingales|Martingales}}, (i)), et $E[M_n^2] = \sum_{k \leqslant n}1/k^2$ est borné. On applique {{mt-convergence|Convergence des martingales}}. Des variables $\varepsilon_n$ existent sur $[0, 1[$ : $\varepsilon_n = 2d_n - 1$, où $d_n$ est le $n$-ième chiffre binaire ({{p-normaux|Nombres normaux}}).
+
+      (ii) On réalise l'urne à partir d'une suite de variables uniformes indépendantes $U_n$, dont l'existence est admise ({{p-normaux|Nombres normaux}}, remarque) : au tirage $n + 1$, on tire une rouge si $U_{n+1} \leqslant X_n$. Après $n$ tirages, l'urne contient $n + 2$ boules, dont $R_n$ rouges, et $X_n = R_n/(n + 2)$. Sachant $\mathcal F_n$, on tire une rouge avec probabilité $X_n$, d'où $E[R_{n+1} \mid \mathcal F_n] = R_n + X_n$ et $E[X_{n+1} \mid \mathcal F_n] = \frac{R_n(n + 3)/(n + 2)}{n + 3} = X_n$. Comme $0 \leqslant X_n \leqslant 1$, $E[X_n^2] \leqslant 1$, et la martingale converge presque sûrement.
+    remarques:
+      - |
+        On montre par récurrence que $R_n$ est uniforme sur $\{1, \dots, n + 1\}$ : la limite de l'urne de Pólya suit la loi uniforme sur $[0, 1]$. Chaque urne converge, mais vers une proportion aléatoire, fixée par les tout premiers tirages ; c'est un modèle de renforcement, où le hasard initial devient une propriété permanente.
+      - |
+        La série harmonique alternée $\sum (-1)^{n+1}/n$ converge, vers une valeur précise, alors que $\sum 1/n$ diverge. Le théorème (i) dit que des signes tirés au hasard suffisent presque sûrement à la convergence ; la somme, elle, est une variable aléatoire de loi continue.
+
+aretes:
+  - [mt-conditionnelle, mt-martingales]
+  - [mt-martingales, mt-doob]
+  - [mt-doob, mt-convergence]
+  - [mt-convergence, mt-applications]
