@@ -1,0 +1,347 @@
+# Niveau 1 : structure interne du nœud « Relations, fonctions ».
+# Tout se fait dans ZF : couples, produits, relations, applications, quotients,
+# comparaison des ensembles par injections et bijections.
+# Les entiers ne sont pas encore construits : aucun énoncé de ce graphe ne les utilise.
+
+graphe: rel
+titre: Relations, fonctions
+conteneur: rel
+
+entrees:
+  zf: [r-couple, r-produit, r-choix]
+
+noeuds:
+  - id: r-couple
+    etiquette: Couple
+    nature: définition
+    titre: Couple de Kuratowski
+    enonce: |
+      Pour tous ensembles $a$ et $b$, le [[couple]] de $a$ et $b$ est l'ensemble
+      $$(a, b) = \{\{a\}, \{a, b\}\},$$
+      qui existe par l'axiome de la paire appliqué deux fois. Il vérifie
+      $$(a, b) = (c, d) \iff (a = c \text{ et } b = d).$$
+      Le triplet $(a, b, c)$ est le couple $((a, b), c)$ ; il vérifie la propriété analogue.
+    preuve: |
+      Si $a = c$ et $b = d$, les deux couples sont égaux par définition. Supposons réciproquement $(a, b) = (c, d)$.
+
+      *Premier cas : $a = b$.* Alors $(a, b) = \{\{a\}, \{a\}\} = \{\{a\}\}$ a pour seul élément $\{a\}$. Les deux éléments $\{c\}$ et $\{c, d\}$ de $(c, d)$ sont donc égaux à $\{a\}$. De $\{c\} = \{a\}$ on tire $c = a$, et de $\{c, d\} = \{a\}$ on tire $d = a$. Ainsi $c = a$ et $d = a = b$.
+
+      *Second cas : $a \neq b$.* Alors $b \notin \{a\}$, donc $\{a\} \neq \{a, b\}$, et $(a, b)$ a exactement deux éléments, dont un seul est un singleton : $\{a\}$. On ne peut avoir $c = d$, sinon $(c, d) = \{\{c\}\}$ n'aurait qu'un élément. Donc $(c, d)$ a aussi un seul élément singleton, $\{c\}$. L'égalité des deux couples impose $\{a\} = \{c\}$, d'où $a = c$, puis $\{a, b\} = \{c, d\} = \{a, d\}$. Comme $b$ appartient à $\{a, d\}$ et que $b \neq a$, on obtient $b = d$.
+
+      Pour les triplets, $((a, b), c) = ((a', b'), c')$ donne $(a, b) = (a', b')$ et $c = c'$, puis $a = a'$ et $b = b'$.
+    remarques:
+      - |
+        Le codage lui-même n'a aucun sens mathématique ; seule compte la propriété caractéristique, et tout autre codage qui la vérifie conviendrait. Celui-ci est dû à Kuratowski (1921). Wiener avait proposé dès 1914 le codage $\{\{\{a\}, \varnothing\}, \{\{b\}\}\}$.
+      - |
+        L'erreur la plus répandue est de croire que $\{a, b\}$ suffirait : la paire ne distingue pas $a$ de $b$, puisque $\{a, b\} = \{b, a\}$. C'est le singleton $\{a\}$ qui marque la première place.
+
+  - id: r-produit
+    etiquette: Produit cartésien
+    nature: proposition
+    titre: Existence du produit cartésien
+    enonce: |
+      Pour tous ensembles $A$ et $B$, il existe un unique ensemble, noté $A \times B$ et appelé [[produit-cartesien|produit cartésien]], dont les éléments sont exactement les couples $(a, b)$ avec $a \in A$ et $b \in B$.
+    preuve: |
+      Soient $a \in A$ et $b \in B$. Les ensembles $\{a\}$ et $\{a, b\}$ sont des parties de $A \cup B$, donc des éléments de $\mathcal P(A \cup B)$. Le couple $(a, b)$ est ainsi une partie de $\mathcal P(A \cup B)$, c'est-à-dire un élément de $\mathcal P(\mathcal P(A \cup B))$.
+
+      Le schéma de séparation, appliqué à cet ensemble et à la formule $\exists a\, \exists b\, (a \in A \wedge b \in B \wedge z = (a, b))$, fournit l'ensemble cherché. L'unicité vient de l'extensionnalité.
+    remarques:
+      - |
+        La formule $z = (a, b)$ s'écrit dans le langage de $\mathsf{ZF}$ : elle dit que $z$ a exactement deux sortes d'éléments, l'ensemble dont le seul élément est $a$ et l'ensemble dont les éléments sont $a$ et $b$. C'est ce qui rend la séparation applicable.
+      - |
+        On a $A \times \varnothing = \varnothing \times B = \varnothing$, puisqu'aucun couple ne peut être formé. La démonstration emploie les axiomes de la paire, de la réunion et des parties, et le schéma de séparation (voir {{zf-operations|Opérations booléennes}}).
+
+  - id: r-relation
+    etiquette: Relation
+    nature: définition
+    enonce: |
+      Une [[relation]] de $A$ vers $B$ est une partie $R$ de $A \times B$ ; on écrit $x \mathrel R y$ pour $(x, y) \in R$. Une relation **sur** $E$ est une relation de $E$ vers $E$.
+
+      La relation **réciproque** de $R$ est $R^{-1} = \{(y, x) \in B \times A : x \mathrel R y\}$.
+
+      Une relation $R$ sur $E$ est **réflexive** si $x \mathrel R x$ pour tout $x \in E$, **symétrique** si $x \mathrel R y$ entraîne $y \mathrel R x$, **antisymétrique** si $x \mathrel R y$ et $y \mathrel R x$ entraînent $x = y$, et **transitive** si $x \mathrel R y$ et $y \mathrel R z$ entraînent $x \mathrel R z$, ces conditions portant sur tous $x, y, z \in E$.
+    remarques:
+      - |
+        Une relation est un ensemble de couples, défini sur des ensembles $A$ et $B$ donnés. L'appartenance $\in$ n'est donc pas une relation au sens de cette définition : il n'existe pas d'ensemble de tous les ensembles ({{zf-russell|paradoxe de Russell}}). En revanche, sa trace $\{(x, y) \in E \times E : x \in y\}$ sur un ensemble $E$ en est une.
+      - |
+        Les relations d'ordre, réflexives, antisymétriques et transitives, sont l'objet du nœud {{ord|Structures d'ordre}}. Les relations réflexives, symétriques et transitives sont étudiées plus bas.
+
+  - id: r-application
+    etiquette: Application
+    nature: définition
+    enonce: |
+      Une [[application]] $f : A \to B$ est un triplet $(A, B, \Gamma)$ où $\Gamma$ est une relation de $A$ vers $B$ telle que, pour tout $a \in A$, il existe un unique $b \in B$ vérifiant $(a, b) \in \Gamma$. Cet élément est noté $f(a)$ ; $A$ est l'**ensemble de départ**, $B$ l'**ensemble d'arrivée**, $\Gamma$ le **graphe** de $f$.
+
+      Deux applications sont égales si elles ont mêmes ensembles de départ et d'arrivée et prennent la même valeur en tout point. L'ensemble des applications de $A$ dans $B$ est noté $B^A$.
+
+      L'**identité** de $A$ est l'application $\mathrm{id}_A : A \to A$ de graphe $\{(a, a) : a \in A\}$. Pour $X \subset A$, la [[restriction]] de $f$ à $X$ est l'application $f|_X : X \to B$ de graphe $\Gamma \cap (X \times B)$.
+    remarques:
+      - |
+        L'ensemble $B^A$ existe : une application de $A$ dans $B$ est déterminée par son graphe, élément de $\mathcal P(A \times B)$, et la séparation isole les graphes qui conviennent. L'ensemble $B^{\varnothing}$ a un unique élément, l'application vide, et $\varnothing^A = \varnothing$ dès que $A$ est non vide.
+      - |
+        On retient l'ensemble d'arrivée dans la définition parce que la surjectivité en dépend : le même graphe peut définir une application surjective vers un ensemble et non surjective vers un ensemble plus grand. Les mots « fonction » et « application » sont ici synonymes.
+      - |
+        Une application est un **ensemble**. Ce n'est pas le cas d'une correspondance $x \mapsto y$ définie par une formule sur tous les ensembles, comme dans le schéma de {{zf-rempl|remplacement}} : celle-ci n'a pas de graphe, puisqu'il faudrait un ensemble de tous les ensembles pour le contenir.
+
+  - id: r-images
+    etiquette: Images directe et réciproque
+    nature: proposition
+    titre: Images directes et réciproques
+    texte: |
+      Soit $f : A \to B$. Pour $X \subset A$, l'[[image-directe|image directe]] de $X$ est $f(X) = \{b \in B : \exists a \in X,\ f(a) = b\}$. Pour $Y \subset B$, l'[[image-reciproque|image réciproque]] de $Y$ est $f^{-1}(Y) = \{a \in A : f(a) \in Y\}$. Ces deux ensembles existent par séparation.
+    enonce: |
+      Soit $\mathcal Y$ un ensemble de parties de $B$ et $\mathcal X$ un ensemble de parties de $A$. Alors
+
+      (i) $f^{-1}\big(\bigcup \mathcal Y\big) = \bigcup_{Y \in \mathcal Y} f^{-1}(Y)$, et si $\mathcal Y$ est non vide, $f^{-1}\big(\bigcap \mathcal Y\big) = \bigcap_{Y \in \mathcal Y} f^{-1}(Y)$ ;
+
+      (ii) $f^{-1}(B \setminus Y) = A \setminus f^{-1}(Y)$ pour tout $Y \subset B$ ;
+
+      (iii) $f\big(\bigcup \mathcal X\big) = \bigcup_{X \in \mathcal X} f(X)$, mais seulement $f(X \cap X') \subset f(X) \cap f(X')$ ;
+
+      (iv) $X \subset f^{-1}(f(X))$ et $f(f^{-1}(Y)) = Y \cap f(A)$.
+    preuve: |
+      La notation $\bigcup_{Y \in \mathcal Y} f^{-1}(Y)$ désigne la réunion de l'ensemble $\{X \in \mathcal P(A) : \exists Y \in \mathcal Y,\ X = f^{-1}(Y)\}$, qui existe par séparation ; de même pour les autres.
+
+      (i) Un élément $a$ appartient à $f^{-1}(\bigcup \mathcal Y)$ si et seulement si $f(a)$ appartient à l'un des $Y \in \mathcal Y$, c'est-à-dire si et seulement si $a$ appartient à l'un des $f^{-1}(Y)$. Le même raisonnement, avec « tous » au lieu de « l'un », donne l'intersection.
+
+      (ii) $a \in f^{-1}(B \setminus Y)$ si et seulement si $f(a) \notin Y$, si et seulement si $a \notin f^{-1}(Y)$.
+
+      (iii) $b \in f(\bigcup \mathcal X)$ si et seulement s'il existe $X \in \mathcal X$ et $a \in X$ tels que $f(a) = b$, si et seulement si $b$ appartient à l'un des $f(X)$. Si $b = f(a)$ avec $a \in X \cap X'$, alors $b \in f(X)$ et $b \in f(X')$.
+
+      (iv) Si $a \in X$, alors $f(a) \in f(X)$, donc $a \in f^{-1}(f(X))$. Un élément $b$ appartient à $f(f^{-1}(Y))$ si et seulement s'il est de la forme $f(a)$ avec $f(a) \in Y$, c'est-à-dire s'il appartient à $Y$ et à $f(A)$.
+    remarques:
+      - |
+        L'inclusion de (iii) peut être stricte. Soient $a \neq a'$ et $f : \{a, a'\} \to \{c\}$ l'application constante. Pour $X = \{a\}$ et $X' = \{a'\}$, on a $f(X \cap X') = \varnothing$, alors que $f(X) \cap f(X') = \{c\}$. L'erreur la plus répandue est d'appliquer à l'image directe les règles de l'image réciproque, qui seule respecte toutes les opérations.
+      - |
+        La notation $f^{-1}(Y)$ ne suppose pas que $f$ soit inversible : elle a un sens pour toute application. C'est cette image réciproque qui définit la continuité, au nœud {{t-continue|Applications continues}}, et le point (i) explique pourquoi l'on y parle d'ouverts plutôt que d'images d'ouverts.
+
+  - id: r-composition
+    etiquette: Composition
+    nature: proposition
+    titre: Composition des applications
+    texte: |
+      Soient $f : A \to B$ et $g : B \to C$. La [[composee|composée]] $g \circ f : A \to C$ est l'application de graphe
+      $$\{(a, c) \in A \times C : \exists b \in B,\ f(a) = b \text{ et } g(b) = c\}.$$
+    enonce: |
+      La composée $g \circ f$ est une application, et $(g \circ f)(a) = g(f(a))$ pour tout $a \in A$. La composition est associative, $h \circ (g \circ f) = (h \circ g) \circ f$, et les identités sont neutres : $f \circ \mathrm{id}_A = f = \mathrm{id}_B \circ f$.
+    preuve: |
+      Pour $a \in A$, le seul $b$ possible est $f(a)$, puis le seul $c$ possible est $g(f(a))$ : il existe donc un unique $c$ tel que $(a, c)$ appartienne au graphe, à savoir $g(f(a))$.
+
+      Les deux applications $h \circ (g \circ f)$ et $(h \circ g) \circ f$ ont mêmes ensembles de départ et d'arrivée, et prennent en $a$ la même valeur $h(g(f(a)))$ ; elles sont donc égales. De même, $f \circ \mathrm{id}_A$ et $\mathrm{id}_B \circ f$ prennent en $a$ la valeur $f(a)$.
+    remarques:
+      - |
+        La composée $g \circ f$ n'est définie que si l'ensemble d'arrivée de $f$ est l'ensemble de départ de $g$. La composition n'est pas commutative : même lorsque $f \circ g$ et $g \circ f$ sont toutes deux définies, elles n'ont en général ni le même ensemble de départ ni la même valeur.
+
+  - id: r-injections
+    etiquette: Injection, surjection, bijection
+    nature: proposition
+    titre: Injections, surjections, bijections
+    texte: |
+      Une application $f : A \to B$ est une [[injection]] si $f(a) = f(a')$ entraîne $a = a'$ ; une [[surjection]] si $f(A) = B$, c'est-à-dire si tout $b \in B$ a au moins un antécédent ; une [[bijection]] si elle est injective et surjective, c'est-à-dire si tout $b \in B$ a exactement un antécédent.
+    enonce: |
+      Soient $f : A \to B$ et $g : B \to C$.
+
+      (i) Si $f$ et $g$ sont injectives (resp. surjectives, bijectives), $g \circ f$ l'est aussi.
+
+      (ii) Si $g \circ f$ est injective, $f$ est injective. Si $g \circ f$ est surjective, $g$ est surjective.
+
+      (iii) Si $f$ est surjective et si $h \circ f = k \circ f$ pour deux applications $h, k : B \to D$, alors $h = k$.
+    preuve: |
+      (i) Si $g(f(a)) = g(f(a'))$, l'injectivité de $g$ donne $f(a) = f(a')$, puis celle de $f$ donne $a = a'$. Si $c \in C$, il s'écrit $g(b)$ par surjectivité de $g$, puis $b = f(a)$ par surjectivité de $f$, donc $c = (g \circ f)(a)$. Le cas bijectif réunit les deux.
+
+      (ii) Si $f(a) = f(a')$, alors $g(f(a)) = g(f(a'))$, d'où $a = a'$. Si $c \in C$, il s'écrit $g(f(a))$ ; il a donc l'antécédent $f(a)$ par $g$.
+
+      (iii) Tout $b \in B$ s'écrit $f(a)$, et $h(b) = h(f(a)) = k(f(a)) = k(b)$.
+    remarques:
+      - |
+        Le point (iii) dit qu'une surjection est simplifiable à droite. C'est ce qui garantit l'unicité des applications obtenues par passage au quotient, plus bas.
+
+  - id: r-inverses
+    etiquette: Réciproque, rétraction
+    nature: proposition
+    titre: Bijection réciproque, rétractions et sections
+    enonce: |
+      Soit $f : A \to B$.
+
+      (i) $f$ est bijective si et seulement s'il existe $g : B \to A$ telle que $g \circ f = \mathrm{id}_A$ et $f \circ g = \mathrm{id}_B$. Cette application $g$ est alors unique, bijective, et notée $f^{-1}$. Si $f$ et $f'$ sont des bijections composables, $(f' \circ f)^{-1} = f^{-1} \circ f'^{-1}$.
+
+      (ii) Si $A$ est non vide, $f$ est injective si et seulement s'il existe $r : B \to A$ telle que $r \circ f = \mathrm{id}_A$ (une **rétraction** de $f$).
+
+      (iii) S'il existe $s : B \to A$ telle que $f \circ s = \mathrm{id}_B$ (une **section** de $f$), alors $f$ est surjective.
+    preuve: |
+      (i) Supposons $f$ bijective. La relation réciproque $\{(b, a) \in B \times A : f(a) = b\}$ est le graphe d'une application $g : B \to A$, puisque tout $b$ a exactement un antécédent ; $g(b)$ est cet antécédent. Alors $f(g(b)) = b$, et $g(f(a)) = a$ puisque $a$ est l'unique antécédent de $f(a)$.
+
+      Réciproquement, si un tel $g$ existe, $f$ est injective et $g$ surjective par le point (ii) du nœud précédent appliqué à $g \circ f = \mathrm{id}_A$, et $f$ est surjective par le même point appliqué à $f \circ g = \mathrm{id}_B$. Les hypothèses étant symétriques en $f$ et $g$, $g$ est aussi bijective.
+
+      Si $g'$ vérifie aussi $f \circ g' = \mathrm{id}_B$, alors, par associativité, $g = g \circ (f \circ g') = (g \circ f) \circ g' = g'$. Enfin $(f^{-1} \circ f'^{-1}) \circ (f' \circ f) = \mathrm{id}_A$ et $(f' \circ f) \circ (f^{-1} \circ f'^{-1}) = \mathrm{id}$, par associativité ; l'unicité donne la formule annoncée.
+
+      (ii) Si $r \circ f = \mathrm{id}_A$ est injective, $f$ l'est. Réciproquement, soit $f$ injective et $a_0 \in A$. La relation
+      $$\{(b, a) \in B \times A : f(a) = b,\ \text{ou}\ (b \notin f(A) \text{ et } a = a_0)\}$$
+      est le graphe d'une application $r$ : un $b \in f(A)$ a un unique antécédent par injectivité, et un $b \notin f(A)$ est associé au seul $a_0$. Par construction, $r(f(a)) = a$.
+
+      (iii) Tout $b \in B$ s'écrit $b = f(s(b))$.
+    remarques:
+      - |
+        L'hypothèse $A \neq \varnothing$ est nécessaire dans (ii) : l'application vide $\varnothing \to B$ est injective, mais n'a aucune rétraction si $B$ est non vide, puisqu'il n'y a pas d'application d'un ensemble non vide dans $\varnothing$.
+      - |
+        La réciproque de (iii), « toute surjection admet une section », est **indémontrable** dans $\mathsf{ZF}$ : elle équivaut à l'axiome du choix, comme l'établit le nœud {{r-choix|Formes de l'axiome du choix}}. Le contraste avec (ii) vient de ce que la rétraction est construite sans aucun choix, l'antécédent étant unique.
+
+  - id: r-familles
+    etiquette: Familles, produits
+    nature: définition
+    titre: Familles et produit d'une famille
+    enonce: |
+      Une [[famille]] $(x_i)_{i \in I}$ d'éléments d'un ensemble $X$, indexée par $I$, est une application $x : I \to X$, avec $x_i = x(i)$. Pour une famille $(A_i)_{i \in I}$ d'ensembles, on pose $\bigcup_{i \in I} A_i = \bigcup x(I)$ et, si $I$ est non vide, $\bigcap_{i \in I} A_i = \bigcap x(I)$.
+
+      Le [[produit-famille|produit]] de la famille est l'ensemble
+      $$\prod_{i \in I} A_i = \Big\{g \in \Big(\bigcup_{i \in I} A_i\Big)^{I} : \forall i \in I,\ g(i) \in A_i\Big\}.$$
+      Pour $j \in I$, la **projection** $p_j : \prod_{i \in I} A_i \to A_j$ est l'application $g \mapsto g(j)$.
+    remarques:
+      - |
+        Une famille diffère de l'ensemble de ses valeurs : elle peut répéter un même élément sous deux indices, et elle est ordonnée par ses indices. On parle ainsi de la famille $(A, A)$ indexée par une paire, alors que $\{A, A\} = \{A\}$.
+      - |
+        Le produit est un ensemble, obtenu par séparation dans $\mathcal P\big(I \times \bigcup_i A_i\big)$. Pour $I = \varnothing$, il a un unique élément, l'application vide. Lorsque $I$ est une paire $\{\alpha, \beta\}$, l'application $g \mapsto (g(\alpha), g(\beta))$ est une bijection de $\prod_i A_i$ sur $A_\alpha \times A_\beta$ : les deux notions de produit coïncident à cette identification près.
+      - |
+        L'erreur la plus répandue est de croire évident que le produit d'une famille d'ensembles non vides est non vide. Pour une famille quelconque, c'est exactement l'axiome du choix ({{r-choix|nœud suivant}}). La topologie produit, au nœud {{t-produit|Topologie produit}}, est définie sur cet ensemble.
+
+  - id: r-choix
+    etiquette: Formes du choix
+    nature: théorème
+    titre: Formes de l'axiome du choix
+    choix: |
+      Ce théorème ne démontre pas l'axiome du choix : il établit, dans $\mathsf{ZF}$ seul, que trois énoncés sont équivalents. Chacun d'eux est donc indémontrable dans $\mathsf{ZF}$, si celle-ci est cohérente.
+    enonce: |
+      Dans $\mathsf{ZF}$, les énoncés suivants sont équivalents :
+
+      (i) l'[[axiome-choix]] sous la forme de Zermelo : pour tout ensemble $\mathcal F$ d'ensembles non vides deux à deux disjoints, il existe un ensemble $C$ qui rencontre chaque élément de $\mathcal F$ en exactement un point ;
+
+      (ii) toute surjection admet une section ;
+
+      (iii) pour toute famille $(A_i)_{i \in I}$ d'ensembles non vides, le produit $\prod_{i \in I} A_i$ est non vide : il existe une **fonction de choix** $g$, avec $g(i) \in A_i$ pour tout $i$.
+    preuve: |
+      *(i) ⇒ (ii).* Soit $f : A \to B$ surjective. Les fibres $f^{-1}(\{b\})$, pour $b \in B$, sont non vides par surjectivité et deux à deux disjointes, puisqu'un élément $a$ n'appartient qu'à la fibre de $f(a)$. Elles forment un ensemble $\mathcal F$, obtenu par séparation dans $\mathcal P(A)$. Soit $C$ donné par (i). Pour chaque $b \in B$, l'ensemble $C \cap f^{-1}(\{b\})$ a exactement un élément ; la relation $\{(b, a) \in B \times A : a \in C,\ f(a) = b\}$ est donc le graphe d'une application $s : B \to A$, et $f(s(b)) = b$.
+
+      *(ii) ⇒ (iii).* Soit $U = \bigcup_{i \in I} A_i$ et $E = \{(i, a) \in I \times U : a \in A_i\}$. L'application $q : E \to I$, $(i, a) \mapsto i$, est surjective puisque chaque $A_i$ est non vide. Soit $s$ une section de $q$. Pour $i \in I$, le couple $s(i)$ s'écrit $(i', a)$ avec $i' = q(s(i)) = i$ et $a \in A_i$ ; on pose $g(i) = a$. Alors $g$ appartient au produit.
+
+      *(iii) ⇒ (i).* Soit $\mathcal F$ comme dans (i). La famille $(X)_{X \in \mathcal F}$, c'est-à-dire l'identité de $\mathcal F$, est une famille d'ensembles non vides ; soit $g$ une fonction de choix, et $C = g(\mathcal F)$. Pour $X \in \mathcal F$, on a $g(X) \in C \cap X$. Si $c \in C \cap X$, alors $c = g(Y)$ pour un $Y \in \mathcal F$, et $c \in X \cap Y$ ; les éléments de $\mathcal F$ étant deux à deux disjoints, $Y = X$ et $c = g(X)$. L'ensemble $C$ rencontre donc $X$ en exactement un point.
+    remarques:
+      - |
+        La forme (iii) est la plus employée. Elle est démontrable sans axiome du choix dans des cas particuliers : si $I$ est fini, ou si l'on dispose d'une règle explicite, par exemple si chaque $A_i$ est une partie non vide d'un ensemble bien ordonné, où l'on prend le plus petit élément ({{ord|Structures d'ordre}}).
+      - |
+        Le choix intervient dans la preuve de (i) ⇒ (ii) au seul endroit où il le doit : pour une surjection, plusieurs antécédents sont possibles, et rien ne permet d'en désigner un. Pour une injection, au contraire, la rétraction se construit sans choix ({{r-inverses|nœud précédent}}).
+
+  - id: r-equivalence
+    etiquette: Relation d'équivalence
+    nature: proposition
+    titre: Relations d'équivalence et partitions
+    texte: |
+      Une [[relation-equivalence|relation d'équivalence]] sur $E$ est une relation réflexive, symétrique et transitive. La **classe** de $x \in E$ est $\overline x = \{y \in E : y \sim x\}$, et l'[[ensemble-quotient|ensemble quotient]] $E/\!\sim$ est l'ensemble des classes, obtenu par séparation dans $\mathcal P(E)$. L'**application canonique** est $\pi : E \to E/\!\sim$, $x \mapsto \overline x$ ; elle est surjective, puisque toute classe est la classe de l'un de ses éléments.
+
+      Une [[partition]] de $E$ est un ensemble de parties non vides de $E$, deux à deux disjointes, dont la réunion est $E$.
+    enonce: |
+      (i) Les classes d'une relation d'équivalence sur $E$ forment une partition de $E$, et $\overline x = \overline y$ si et seulement si $x \sim y$.
+
+      (ii) Réciproquement, si $\mathcal Q$ est une partition de $E$, la relation « appartenir au même élément de $\mathcal Q$ » est une relation d'équivalence, dont l'ensemble quotient est $\mathcal Q$.
+    preuve: |
+      (i) Par réflexivité, $x \in \overline x$ : chaque classe est non vide, et leur réunion est $E$. Supposons $x \sim y$ et soit $u \in \overline x$. De $u \sim x$ et $x \sim y$, la transitivité donne $u \sim y$, donc $u \in \overline y$. Ainsi $\overline x \subset \overline y$, et l'inclusion inverse s'obtient de même, puisque $y \sim x$ par symétrie. Réciproquement, si $\overline x = \overline y$, alors $x \in \overline y$, c'est-à-dire $x \sim y$.
+
+      Si deux classes $\overline x$ et $\overline y$ ont un élément commun $z$, alors $z \sim x$ et $z \sim y$, d'où $x \sim y$ par symétrie et transitivité, et $\overline x = \overline y$. Deux classes distinctes sont donc disjointes.
+
+      (ii) Tout $x \in E$ appartient à un élément de $\mathcal Q$, et à un seul, puisque ces éléments sont disjoints ; notons-le $Q_x$. La relation s'écrit $x \sim y \iff Q_x = Q_y$, et elle est donc réflexive, symétrique et transitive. La classe de $x$ est $Q_x$, et tout élément de $\mathcal Q$, étant non vide, est la classe de l'un de ses points ; l'ensemble des classes est donc $\mathcal Q$.
+    remarques:
+      - |
+        Toutes les constructions de la colonne des nombres reposent sur ce nœud : {{z|$\mathbb Z$}} est un quotient de $\mathbb N \times \mathbb N$, {{q|$\mathbb Q$}} un quotient de $\mathbb Z \times (\mathbb Z \setminus \{0\})$, et {{r|$\mathbb R$}} peut être construit comme quotient d'un ensemble de suites. La topologie quotient, au nœud {{t-quotient|Topologie quotient}}, munit $E/\!\sim$ d'une topologie.
+
+  - id: r-factorisation
+    etiquette: Passage au quotient
+    nature: théorème
+    titre: Passage au quotient et décomposition canonique
+    enonce: |
+      (i) Soit $\sim$ une relation d'équivalence sur $E$ et $f : E \to F$ une application constante sur chaque classe : $x \sim y$ entraîne $f(x) = f(y)$. Il existe une unique application $\bar f : E/\!\sim \to F$ telle que $\bar f \circ \pi = f$. Elle est injective si et seulement si $f(x) = f(y)$ entraîne $x \sim y$.
+
+      (ii) Toute application $f : A \to B$ se décompose en $f = \iota \circ \tilde f \circ \pi$, où $\pi$ est l'application canonique de $A$ sur $A/\!\sim_f$, pour la relation $x \sim_f y \iff f(x) = f(y)$, puis $\tilde f : A/\!\sim_f \to f(A)$ est une bijection et $\iota : f(A) \to B$ l'inclusion.
+    preuve: |
+      (i) La relation $\{(C, b) \in (E/\!\sim) \times F : \exists x \in C,\ f(x) = b\}$ est le graphe d'une application. En effet, toute classe $C$ est non vide, donc a au moins une image ; et si $x, y \in C$, alors $x \sim y$, donc $f(x) = f(y)$ : l'image est unique. Cette application $\bar f$ vérifie $\bar f(\overline x) = f(x)$, c'est-à-dire $\bar f \circ \pi = f$. Si $\bar g$ vérifie aussi $\bar g \circ \pi = f$, alors $\bar g = \bar f$, car $\pi$ est surjective et donc simplifiable à droite ({{r-injections|Injections, surjections, bijections}}).
+
+      L'égalité $\bar f(\overline x) = \bar f(\overline y)$ s'écrit $f(x) = f(y)$, et $\overline x = \overline y$ s'écrit $x \sim y$. L'injectivité de $\bar f$ est donc exactement la condition annoncée.
+
+      (ii) La relation $\sim_f$ est une relation d'équivalence, puisque l'égalité est réflexive, symétrique et transitive. L'application $f$, vue comme application de $A$ dans $f(A)$, est constante sur les classes. Par (i), elle passe au quotient en $\tilde f$, injective puisque $f(x) = f(y)$ est la définition de $x \sim_f y$, et surjective puisque tout élément de $f(A)$ s'écrit $f(x) = \tilde f(\overline x)$. Enfin $\iota(\tilde f(\pi(x))) = f(x)$.
+    remarques:
+      - |
+        La définition de $\bar f$ ne choisit aucun représentant : le graphe est décrit en une fois, pour tous les éléments de chaque classe. Lorsqu'on écrit « $\bar f(\overline x) = f(x)$ », l'erreur la plus répandue est d'oublier de vérifier que le membre de droite ne dépend pas du représentant $x$, ce qui est précisément l'hypothèse de (i).
+
+  - id: r-equipotence
+    etiquette: Équipotence
+    nature: proposition
+    titre: Équipotence et comparaison des ensembles
+    texte: |
+      Deux ensembles $A$ et $B$ sont [[equipotent|équipotents]], ce qu'on note $A \approx B$, s'il existe une bijection de $A$ sur $B$. On note $A \preccurlyeq B$ s'il existe une injection de $A$ dans $B$.
+    enonce: |
+      Pour tous ensembles $A$, $B$, $C$ :
+
+      (i) $A \approx A$ ; si $A \approx B$, alors $B \approx A$ ; si $A \approx B$ et $B \approx C$, alors $A \approx C$ ;
+
+      (ii) $A \preccurlyeq A$ ; si $A \preccurlyeq B$ et $B \preccurlyeq C$, alors $A \preccurlyeq C$ ; si $A \subset B$, alors $A \preccurlyeq B$.
+    preuve: |
+      (i) L'identité est une bijection. Si $f : A \to B$ est bijective, $f^{-1}$ l'est aussi, et la composée de deux bijections est bijective ({{r-inverses|Bijection réciproque}}).
+
+      (ii) L'identité et la composée de deux injections sont injectives. Si $A \subset B$, l'inclusion $A \to B$, de graphe $\{(a, a) : a \in A\}$, est injective.
+    remarques:
+      - |
+        Ces énoncés ressemblent aux propriétés d'une relation d'équivalence et d'une relation d'ordre, mais $\approx$ et $\preccurlyeq$ ne sont pas des relations au sens de ce graphe : elles portent sur tous les ensembles, qui ne forment pas un ensemble. Ce sont des formules à deux variables libres. Restreintes aux parties d'un ensemble fixé, elles redeviennent des relations.
+      - |
+        L'antisymétrie de $\preccurlyeq$, à équipotence près, est le théorème de Cantor-Bernstein, deux nœuds plus loin. La comparabilité, « $A \preccurlyeq B$ ou $B \preccurlyeq A$ pour tous $A$, $B$ », est en revanche équivalente à l'axiome du choix ; elle sera établie avec les [[cardinal|cardinaux]], au nœud {{ordin|Ordinaux, cardinaux}}.
+
+  - id: r-cantor
+    etiquette: Théorème de Cantor
+    nature: théorème
+    titre: Théorème de Cantor
+    enonce: |
+      Pour tout ensemble $A$, il n'existe aucune surjection de $A$ sur $\mathcal P(A)$. En particulier, $A \preccurlyeq \mathcal P(A)$, mais $A$ et $\mathcal P(A)$ ne sont pas équipotents.
+    preuve: |
+      Soit $f : A \to \mathcal P(A)$ une application. L'ensemble $D = \{a \in A : a \notin f(a)\}$ existe par séparation, et c'est une partie de $A$. Supposons $D = f(d)$ pour un $d \in A$. Par définition de $D$, on a $d \in D \iff d \notin f(d) = D$, ce qui est contradictoire. Donc $D$ n'a pas d'antécédent, et $f$ n'est pas surjective.
+
+      L'application $A \to \mathcal P(A)$, $a \mapsto \{a\}$, de graphe $\{(a, S) \in A \times \mathcal P(A) : S = \{a\}\}$, est injective, puisque $\{a\} = \{a'\}$ entraîne $a = a'$. Une bijection de $A$ sur $\mathcal P(A)$ serait une surjection, ce qui vient d'être exclu.
+    remarques:
+      - |
+        L'argument diagonal est celui du {{zf-russell|paradoxe de Russell}}, appliqué à $x \notin f(x)$ au lieu de $x \notin x$. Il montre qu'aucun ensemble n'est « le plus grand » : $\mathcal P(A)$ est toujours strictement plus gros que $A$. Cantor l'a publié sous cette forme générale en 1891.
+
+  - id: r-bernstein
+    etiquette: Cantor-Bernstein
+    nature: théorème
+    titre: Théorème de Cantor-Bernstein
+    enonce: |
+      Si $A \preccurlyeq B$ et $B \preccurlyeq A$, alors $A \approx B$. La démonstration n'utilise pas l'axiome du choix.
+    preuve: |
+      Soient $f : A \to B$ et $g : B \to A$ injectives. Pour $X \subset A$, posons
+      $$\varphi(X) = A \setminus g\big(B \setminus f(X)\big).$$
+      L'application $\varphi : \mathcal P(A) \to \mathcal P(A)$ est croissante pour l'inclusion : si $X \subset X'$, alors $f(X) \subset f(X')$, donc $B \setminus f(X) \supset B \setminus f(X')$, donc leurs images par $g$ sont dans le même sens, et les complémentaires dans $A$ dans le sens inverse, soit $\varphi(X) \subset \varphi(X')$.
+
+      *Un point fixe.* Soit $\mathcal S = \{X \in \mathcal P(A) : X \subset \varphi(X)\}$ et $X_0 = \bigcup \mathcal S$. Pour $X \in \mathcal S$, on a $X \subset X_0$, donc $X \subset \varphi(X) \subset \varphi(X_0)$ ; ainsi $X_0 \subset \varphi(X_0)$. Par croissance, $\varphi(X_0) \subset \varphi(\varphi(X_0))$, donc $\varphi(X_0) \in \mathcal S$ et $\varphi(X_0) \subset X_0$. D'où $\varphi(X_0) = X_0$, c'est-à-dire
+      $$A \setminus X_0 = g\big(B \setminus f(X_0)\big).$$
+
+      *La bijection.* Posons $h(a) = f(a)$ si $a \in X_0$, et $h(a) = $ l'unique antécédent de $a$ par $g$ si $a \in A \setminus X_0$ ; cet antécédent existe par l'égalité précédente, est unique par injectivité de $g$, et appartient à $B \setminus f(X_0)$. L'application $h : A \to B$ est injective : elle l'est sur $X_0$ comme $f$, sur $A \setminus X_0$ comme réciproque de $g$, et les deux images $f(X_0)$ et $B \setminus f(X_0)$ sont disjointes. Elle est surjective : un $b \in f(X_0)$ est atteint sur $X_0$ ; un $b \notin f(X_0)$ vérifie $g(b) \in A \setminus X_0$, et $h(g(b)) = b$.
+    remarques:
+      - |
+        Cette preuve est celle du théorème de point fixe de Knaster-Tarski, qui vaut pour toute application croissante de $\mathcal P(A)$ dans lui-même. Elle évite les itérations $f$, $g \circ f$, $f \circ g \circ f$, … de la preuve habituelle, qui demanderaient d'avoir déjà construit {{n|$\mathbb N$}}.
+      - |
+        Le théorème a été conjecturé par Cantor. Dedekind en avait une démonstration dès 1887, restée inédite de son vivant ; Bernstein en a donné une en 1897.
+
+aretes:
+  - [r-couple, r-produit]
+  - [r-produit, r-relation]
+  - [r-relation, r-application]
+  - [r-application, r-images]
+  - [r-application, r-composition]
+  - [r-composition, r-injections]
+  - [r-images, r-injections]
+  - [r-injections, r-inverses]
+  - [r-images, r-familles]
+  - [r-inverses, r-choix]
+  - [r-familles, r-choix]
+  - [r-application, r-equivalence]
+  - [r-equivalence, r-factorisation]
+  - [r-injections, r-factorisation]
+  - [r-inverses, r-equipotence]
+  - [r-equipotence, r-cantor]
+  - [r-equipotence, r-bernstein]

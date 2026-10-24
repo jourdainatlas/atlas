@@ -195,9 +195,7 @@ body.redim .vue { pointer-events: none; }
 .noeud.mixte {
   --c: var(--c1);
   border-color: transparent;
-  background:
-    linear-gradient(90deg, color-mix(in srgb, var(--c1) 9%, var(--noeud)), color-mix(in srgb, var(--c2) 9%, var(--noeud))) padding-box,
-    linear-gradient(90deg, var(--c1), var(--c2)) border-box;
+  background: var(--deg-fond) padding-box, var(--deg-bord) border-box;
 }
 .pastille.mixte {
   border: 2px solid transparent;
@@ -486,9 +484,12 @@ function dessiner(gid) {
       if (gid !== D.racine) classes.push('nat-' + n.nature);
       if (NOMBRES.has(n.famille)) classes.push('nombre');
       if (gid === D.racine && n.famille === 'mix') {
-        const [c1, c2 = c1] = sourcesMixte(n);
+        const cs = sourcesMixte(n);
+        if (cs.length === 1) cs.push(cs[0]);
         classes.push('mixte');
-        b.style.setProperty('--c1', c1); b.style.setProperty('--c2', c2);
+        b.style.setProperty('--c1', cs[0]);
+        b.style.setProperty('--deg-bord', `linear-gradient(90deg, ${cs.join(', ')})`);
+        b.style.setProperty('--deg-fond', `linear-gradient(90deg, ${cs.map(c => `color-mix(in srgb, ${c} 9%, var(--noeud))`).join(', ')})`);
       }
       if (n.sous) { classes.push('a-interieur'); b.title = 'Ouvrir la structure interne de « ' + n.titre + ' »'; }
     }
