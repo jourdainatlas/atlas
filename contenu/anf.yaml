@@ -1,0 +1,277 @@
+# Niveau 1 : structure interne du nœud « Analyse fonctionnelle ».
+# Espaces vectoriels normés réels (les complexes ne sont pas des ancêtres de ce nœud), espaces
+# de Banach, opérateurs continus, espaces L¹ et L², espaces de Hilbert (projection, Riesz,
+# bases hilbertiennes), Hahn-Banach, Baire, Banach-Steinhaus, application ouverte.
+# Les normes sont redéfinies ici en dimension quelconque : la géométrie différentielle, qui
+# les introduit sur ℝⁿ, n'est pas un ancêtre de ce nœud. Les espaces Lᵖ pour p quelconque
+# demandent les puissances réelles, donc l'exponentielle, et ne sont pas traités.
+# Choix : Hahn-Banach (Zorn), bases hilbertiennes en général (Zorn), projection (choix
+# dénombrable), Baire et application ouverte (choix dépendant).
+
+graphe: anf
+titre: Analyse fonctionnelle
+conteneur: anf
+
+entrees:
+  alglin: [f-evn, f-hahn-banach]
+  top: [f-evn, f-baire]
+  mes: [f-lp]
+
+noeuds:
+  - id: f-evn
+    etiquette: Espaces normés
+    nature: définition
+    titre: Espaces vectoriels normés et espaces de Banach
+    texte: |
+      Un [[espace-norme|espace vectoriel normé]] est un $\mathbb R$-espace vectoriel $E$ muni d'une application $\|\cdot\| : E \to [0, +\infty[$ telle que $\|x\| = 0$ entraîne $x = 0$, $\|\lambda x\| = |\lambda|\,\|x\|$ et $\|x + y\| \leqslant \|x\| + \|y\|$. La distance $d(x, y) = \|x - y\|$ en fait un [[espace-metrique]], et l'on munit $E$ de la topologie dont les ouverts sont les parties qui contiennent une boule $B(a, r)$ autour de chacun de leurs points. Un [[banach|espace de Banach]] est un espace normé complet : toute [[suite-cauchy|suite de Cauchy]] y converge.
+    enonce: |
+      (i) Les boules ouvertes forment une base de cette topologie, qui est séparée. Une partie $F$ est fermée si et seulement si toute suite d'éléments de $F$ qui converge a sa limite dans $F$.
+
+      (ii) L'addition, la multiplication par un scalaire et la norme sont continues, la norme vérifiant $\big|\|x\| - \|y\|\big| \leqslant \|x - y\|$. L'adhérence d'un sous-espace est un sous-espace.
+
+      (iii) $E$ est un espace de Banach si et seulement si toute série $\sum x_n$ telle que $\sum \|x_n\| < +\infty$ converge.
+
+      (iv) Un sous-espace fermé d'un espace de Banach est un espace de Banach.
+    preuve: |
+      (i) Si $x \in B(a, r) \cap B(b, s)$, la boule de centre $x$ et de rayon $\min(r - \|x - a\|, s - \|x - b\|)$ est contenue dans l'intersection, par l'inégalité triangulaire. Deux points distincts sont séparés par les boules de rayon la moitié de leur distance. Si $F$ est fermé et $x_n \to x$ avec $x \notin F$, une boule autour de $x$ évite $F$, et contient pourtant les $x_n$ à partir d'un rang. Réciproquement, si $x \notin F$ et si aucune boule $B(x, \frac1{n+1})$ n'évitait $F$, la suite construite en choisissant un point dans chacune contredirait la condition ; cette direction utilise le [[choix-denombrable]], et l'on n'emploiera que la première.
+
+      (ii) $\|(x + y) - (x_0 + y_0)\| \leqslant \|x - x_0\| + \|y - y_0\|$ et $\|\lambda x - \lambda_0 x_0\| \leqslant |\lambda|\,\|x - x_0\| + |\lambda - \lambda_0|\,\|x_0\|$. L'inégalité sur la norme découle de l'inégalité triangulaire. Si $F$ est un sous-espace, $\bar F$ est stable par les opérations, qui sont continues.
+
+      (iii) Si $E$ est complet et $\sum \|x_n\| < +\infty$, les sommes partielles forment une suite de Cauchy, puisque $\|S_q - S_p\| \leqslant \sum_{p < n \leqslant q} \|x_n\|$. Réciproquement, soit $(y_n)$ de Cauchy, et $n_k$ le plus petit entier $n > n_{k-1}$ tel que $\|y_m - y_{m'}\| \leqslant 2^{-k}$ pour $m, m' \geqslant n$. La série $\sum (y_{n_{k+1}} - y_{n_k})$ converge absolument, donc converge, et la suite extraite $(y_{n_k})$ converge. Une suite de Cauchy qui a une suite extraite convergente converge, vers la même limite.
+
+      (iv) Une suite de Cauchy de $F$ converge dans $E$, et sa limite est dans $F$, fermé, par (i).
+    remarques:
+      - |
+        En dimension infinie, deux normes sur un même espace peuvent définir des topologies différentes. Sur l'espace des fonctions continues sur $[0, 1]$, les fonctions $x \mapsto x^n$ ont pour norme uniforme $1$ et pour intégrale $\frac1{n+1}$ : elles tendent vers $0$ pour la norme $\int_0^1 |f|$, mais pas pour la norme uniforme. En dimension finie, au contraire, toutes les normes sont équivalentes ({{gd-equivalence|Équivalence des normes}}).
+
+  - id: f-exemples
+    etiquette: Exemples d'espaces de Banach
+    nature: proposition
+    titre: Fonctions bornées, fonctions continues, suites sommables
+    enonce: |
+      (i) Pour tout ensemble $X$, l'espace $\mathcal B(X)$ des fonctions bornées $X \to \mathbb R$, muni de $\|f\|_\infty = \sup_X |f|$, est un espace de Banach.
+
+      (ii) Si $K$ est un espace [[compact]], l'espace $C(K)$ des fonctions continues $K \to \mathbb R$ est un sous-espace fermé de $\mathcal B(K)$, donc un espace de Banach. En particulier, une limite uniforme de fonctions continues est continue.
+
+      (iii) L'espace $\ell^1$ des suites réelles $(a_n)$ telles que $\|a\|_1 = \sum_n |a_n| < +\infty$ est un espace de Banach.
+    preuve: |
+      (i) Si $(f_k)$ est de Cauchy pour $\|\cdot\|_\infty$, chaque suite $(f_k(x))$ est de Cauchy dans $\mathbb R$ et converge ({{ar-cauchy|Complétude}}) vers $f(x)$. Pour $\varepsilon > 0$, soit $N$ tel que $|f_k(x) - f_l(x)| \leqslant \varepsilon$ pour $k, l \geqslant N$ et tout $x$ ; en faisant tendre $l$ vers l'infini, $|f_k(x) - f(x)| \leqslant \varepsilon$ pour $k \geqslant N$. Donc $f$ est bornée et $\|f_k - f\|_\infty \to 0$.
+
+      (ii) Une fonction continue sur un compact a une image compacte, donc bornée ({{t-compact-prop|Parties compactes}}, {{ar-topo|Topologie de ℝ}}). Soit $f$ adhérente à $C(K)$, $a \in K$ et $\varepsilon > 0$. La boule $B(f, \varepsilon)$ rencontre $C(K)$ : il existe $g$ continue avec $\|f - g\|_\infty < \varepsilon$, et un voisinage $V$ de $a$ sur lequel $|g(x) - g(a)| < \varepsilon$ ; sur $V$, $|f(x) - f(a)| < 3\varepsilon$. Donc $f$ est continue : $C(K)$ est fermé, et l'on conclut par {{f-evn|Espaces normés}}, (iv), dont la démonstration n'utilise que le sens direct de (i).
+
+      (iii) $\ell^1$ est un espace vectoriel normé, par l'inégalité triangulaire terme à terme. Si $(a^k)$ est de Cauchy, chaque coordonnée l'est, de limite $a_n$. Pour $\varepsilon > 0$, soit $K$ tel que $\|a^k - a^l\|_1 \leqslant \varepsilon$ pour $k, l \geqslant K$. Pour $N$ fixé et $k \geqslant K$, $\sum_{n < N} |a^k_n - a_n| = \lim_l \sum_{n < N} |a^k_n - a^l_n| \leqslant \varepsilon$ ; en passant à la borne supérieure sur $N$, $\|a^k - a\|_1 \leqslant \varepsilon$, d'où $a \in \ell^1$ et $a^k \to a$.
+    remarques:
+      - |
+        L'erreur la plus répandue est de croire que tout espace naturel de fonctions est complet. L'espace des fonctions continues sur $[0, 1]$, muni de $\int_0^1 |f|$, ne l'est pas : les fonctions affines par morceaux qui valent $0$ sur $[0, \frac12 - \frac1n]$ et $1$ sur $[\frac12, 1]$ forment une suite de Cauchy dont la « limite » serait l'indicatrice de $[\frac12, 1]$, qui n'est pas continue. Le complété de cet espace est $L^1$ ({{f-lp|Espaces L¹ et L²}}).
+
+  - id: f-operateurs
+    etiquette: Opérateurs continus
+    nature: proposition
+    titre: Applications linéaires continues et dual topologique
+    texte: |
+      Pour $u : E \to F$ linéaire entre espaces normés, on pose $|||u||| = \sup\{\|u(x)\| : \|x\| \leqslant 1\}$, éventuellement infini. On note $\mathcal L_c(E, F)$ l'espace des applications linéaires continues, et $E' = \mathcal L_c(E, \mathbb R)$ le [[dual-topologique|dual topologique]] de $E$.
+    enonce: |
+      (i) Pour $u$ linéaire, sont équivalents : $u$ est continue ; $u$ est continue en $0$ ; $|||u||| < +\infty$ ; il existe $C$ tel que $\|u(x)\| \leqslant C\|x\|$ pour tout $x$. On a alors $\|u(x)\| \leqslant |||u|||\,\|x\|$.
+
+      (ii) $|||\cdot|||$ est une norme sur $\mathcal L_c(E, F)$, la [[norme-operateur|norme d'opérateur]], et $|||v \circ u||| \leqslant |||v|||\;|||u|||$.
+
+      (iii) Si $F$ est un espace de Banach, $\mathcal L_c(E, F)$ en est un. En particulier, le dual $E'$ d'un espace normé quelconque est un espace de Banach.
+    preuve: |
+      (i) Si $u$ est continue en $0$, il existe $\delta > 0$ tel que $\|x\| \leqslant \delta$ entraîne $\|u(x)\| \leqslant 1$ ; par homogénéité, $\|u(x)\| \leqslant \|x\|/\delta$. Si $\|u(x)\| \leqslant C\|x\|$, alors $\|u(x) - u(y)\| \leqslant C\|x - y\|$ et $u$ est continue. L'équivalence avec $|||u||| < +\infty$ et la dernière inégalité s'obtiennent en appliquant $u$ à $x/\|x\|$.
+
+      (ii) Les axiomes se vérifient en chaque $x$ avant de passer à la borne supérieure ; $\|v(u(x))\| \leqslant |||v|||\;|||u|||\,\|x\|$.
+
+      (iii) Si $(u_k)$ est de Cauchy, chaque $(u_k(x))$ l'est, puisque $\|u_k(x) - u_l(x)\| \leqslant |||u_k - u_l|||\,\|x\|$, et converge vers $u(x)$ ; $u$ est linéaire, par passage à la limite. Pour $\varepsilon > 0$ et $k, l \geqslant N$, $\|u_k(x) - u_l(x)\| \leqslant \varepsilon\|x\|$ ; en faisant tendre $l$ vers l'infini, $\|u_k(x) - u(x)\| \leqslant \varepsilon\|x\|$. Donc $u - u_k$, puis $u$, est continue, et $|||u_k - u||| \leqslant \varepsilon$. Enfin $\mathbb R$ est complet.
+    remarques:
+      - |
+        En dimension infinie, une application linéaire n'est pas toujours continue. Sur l'espace des polynômes muni de la norme uniforme sur $[0, 1]$, la forme $P \mapsto P'(1)$ envoie $X^n$, de norme $1$, sur $n$ : elle n'est bornée sur aucune boule. En dimension finie, au contraire, toute application linéaire est continue ({{gd-equivalence|Équivalence des normes}}).
+
+  - id: f-lp
+    etiquette: Espaces L¹ et L²
+    nature: théorème
+    titre: Les espaces L¹ et L² et le théorème de Riesz-Fischer
+    texte: |
+      Soit $(X, \mathcal A, \mu)$ un espace mesuré. On identifie deux fonctions mesurables égales presque partout. L'espace $L^1(\mu)$ est formé des classes de fonctions [[integrable-lebesgue|intégrables]], muni de $\|f\|_1 = \int |f| \, d\mu$ ; l'espace $L^2(\mu)$, des classes de fonctions mesurables $f$ telles que $\int f^2 \, d\mu < +\infty$, muni de $\|f\|_2 = \big(\int f^2 \, d\mu\big)^{1/2}$. Pour la mesure de comptage sur $\mathbb N$, on obtient l'espace $\ell^2$ des suites de carré sommable.
+    enonce: |
+      (i) $L^1(\mu)$ est un espace normé. $L^2(\mu)$ est un espace vectoriel ; pour $f, g \in L^2$, $fg$ est intégrable, $\langle f, g \rangle = \int fg \, d\mu$ vérifie l'inégalité de Cauchy-Schwarz $|\langle f, g \rangle| \leqslant \|f\|_2\|g\|_2$, et $\|\cdot\|_2$ est une norme.
+
+      (ii) *Riesz-Fischer.* $L^1(\mu)$ et $L^2(\mu)$ sont des espaces de Banach.
+
+      (iii) Toute suite qui converge dans $L^1$ ou dans $L^2$ a une suite extraite qui converge presque partout.
+    preuve: |
+      (i) Les opérations et la norme ne dépendent pas du représentant ({{m-integrables|Fonctions intégrables}}, (iii)), et $\|f\|_1 = 0$ entraîne $f = 0$ presque partout ({{m-integrale|Intégrale positive}}, (iv)). Pour $L^2$ : $(f + g)^2 \leqslant 2f^2 + 2g^2$ et $|fg| \leqslant \frac12(f^2 + g^2)$. Pour tout réel $t$, $0 \leqslant \int (|f| - t|g|)^2 = \|f\|_2^2 - 2t\int |fg| + t^2\|g\|_2^2$, d'où l'inégalité de Cauchy-Schwarz en prenant $t = \int |fg| / \|g\|_2^2$ si $\|g\|_2 \neq 0$, le cas $\|g\|_2 = 0$ étant trivial. Elle donne $\|f + g\|_2^2 \leqslant \|f\|_2^2 + 2\|f\|_2\|g\|_2 + \|g\|_2^2$, c'est-à-dire l'inégalité triangulaire.
+
+      (ii) et (iii) Notons $\|\cdot\|$ l'une des deux normes. Soit $(f_n)$ de Cauchy, et $n_k$ le plus petit entier $n > n_{k-1}$ tel que $\|f_m - f_{m'}\| \leqslant 2^{-k}$ pour $m, m' \geqslant n$. Posons $g = \sum_k |f_{n_{k+1}} - f_{n_k}|$, à valeurs dans $[0, +\infty]$. Les sommes partielles $g_K$ croissent vers $g$ et vérifient $\|g_K\| \leqslant \sum_k 2^{-k} \leqslant 2$ ; par convergence monotone, appliquée à $g_K$ ou à $g_K^2$, $\int g$ ou $\int g^2$ est fini. Donc $g < +\infty$ presque partout, et la série $f_{n_1} + \sum_k (f_{n_{k+1}} - f_{n_k})$ converge absolument presque partout, vers une fonction $f$, que l'on prend nulle sur le négligeable restant. Ainsi $f_{n_k} \to f$ presque partout, et $|f - f_{n_k}| \leqslant \sum_{j \geqslant k} |f_{n_{j+1}} - f_{n_j}|$, dont la norme est au plus $2^{1-k}$ par le même argument : $f$ est dans l'espace et $\|f - f_{n_k}\| \to 0$. Une suite de Cauchy ayant une suite extraite convergente converge. Si enfin $f_n \to f$ dans l'espace, la suite est de Cauchy, et la construction fournit une suite extraite qui converge presque partout vers une limite égale à $f$ presque partout.
+    remarques:
+      - |
+        La convergence dans $L^1$ n'entraîne pas la convergence presque partout de la suite entière : la « machine à écrire » du nœud {{p-convergences|Modes de convergence}} tend vers $0$ dans $L^1$ et dans $L^2$ sans converger en aucun point. Seule une suite extraite converge presque partout, comme le dit (iii).
+      - |
+        Les espaces $L^p$, $1 \leqslant p < +\infty$, se définissent de même avec $\int |f|^p$, et leur théorie repose sur l'inégalité de Hölder. Ils demandent les puissances réelles $|f|^p$, donc l'exponentielle de l'{{anc|analyse complexe}}, qui n'est pas un ancêtre de cette branche ; seuls $L^1$ et $L^2$ sont traités ici.
+
+  - id: f-hilbert
+    etiquette: Espaces de Hilbert
+    nature: théorème
+    titre: Espaces de Hilbert et théorème de projection
+    texte: |
+      Un **produit scalaire** sur un $\mathbb R$-espace vectoriel $H$ est une forme bilinéaire symétrique $\langle \cdot, \cdot \rangle$ telle que $\langle x, x \rangle > 0$ pour $x \neq 0$ ; il définit la norme $\|x\| = \langle x, x \rangle^{1/2}$. Un [[espace-hilbert|espace de Hilbert]] est un espace muni d'un produit scalaire et complet pour cette norme. Exemples : $\mathbb R^n$, $\ell^2$, $L^2(\mu)$. L'**orthogonal** d'une partie $A$ est $A^\perp = \{x : \langle x, a \rangle = 0 \text{ pour tout } a \in A\}$.
+    choix: |
+      La démonstration du théorème de projection choisit une suite minimisante : c'est un usage du [[choix-denombrable]].
+    enonce: |
+      (i) $|\langle x, y \rangle| \leqslant \|x\|\,\|y\|$, $\|\cdot\|$ est une norme, et l'**identité du parallélogramme** $\|x + y\|^2 + \|x - y\|^2 = 2\|x\|^2 + 2\|y\|^2$ est vérifiée.
+
+      (ii) *Projection.* Soit $C$ une partie convexe, fermée, non vide d'un espace de Hilbert $H$, et $x \in H$. Il existe un unique $p \in C$ tel que $\|x - p\| = d(x, C) = \inf_{y \in C} \|x - y\|$, et il est caractérisé par $\langle x - p, y - p \rangle \leqslant 0$ pour tout $y \in C$.
+
+      (iii) Si $F$ est un sous-espace fermé, la projection $p_F$ sur $F$ est linéaire, $x - p_F(x) \in F^\perp$, et $H = F \oplus F^\perp$. De plus $F^{\perp\perp} = F$.
+    preuve: |
+      (i) Comme au nœud {{f-lp|Espaces L¹ et L²}}, en développant $\|x - ty\|^2 \geqslant 0$ ; le parallélogramme s'obtient en développant les deux carrés.
+
+      (ii) Soit $d = d(x, C)$, et choisissons $y_n \in C$ tels que $\|x - y_n\|^2 \leqslant d^2 + \frac1{n+1}$. Par le parallélogramme appliqué à $x - y_n$ et $x - y_m$, et puisque $\frac{y_n + y_m}2 \in C$ par convexité,
+      $$\begin{aligned} \|y_n - y_m\|^2 &= 2\|x - y_n\|^2 + 2\|x - y_m\|^2 - 4\Big\|x - \frac{y_n + y_m}{2}\Big\|^2 \\ &\leqslant \frac{2}{n+1} + \frac{2}{m+1}. \end{aligned}$$
+      La suite est de Cauchy, converge vers un $p$ qui est dans $C$, fermé, et $\|x - p\| = d$ par continuité de la norme. Le même calcul, appliqué à deux points réalisant la distance, montre qu'ils sont égaux. Pour $y \in C$ et $t \in \,]0, 1]$, $p + t(y - p) \in C$, d'où $\|x - p\|^2 \leqslant \|x - p - t(y - p)\|^2 = \|x - p\|^2 - 2t\langle x - p, y - p \rangle + t^2\|y - p\|^2$ ; en divisant par $t$ et en faisant tendre $t$ vers $0$, $\langle x - p, y - p \rangle \leqslant 0$. Réciproquement, cette inégalité donne $\|x - y\|^2 = \|x - p\|^2 - 2\langle x - p, y - p \rangle + \|y - p\|^2 \geqslant \|x - p\|^2$.
+
+      (iii) Pour un sous-espace, on applique la caractérisation à $y = p \pm z$, $z \in F$ : $\langle x - p, z \rangle = 0$, donc $x - p \in F^\perp$. Réciproquement, un $p \in F$ tel que $x - p \in F^\perp$ vérifie la caractérisation : c'est la projection. La linéarité en découle, puisque $\lambda p_F(x) + \mu p_F(y)$ vérifie cette condition pour $\lambda x + \mu y$. On a $x = p_F(x) + (x - p_F(x))$ et $F \cap F^\perp = \{0\}$. Enfin $F \subset F^{\perp\perp}$, et si $x \in F^{\perp\perp}$, $x - p_F(x)$ est à la fois dans $F^\perp$ et dans $F^{\perp\perp}$, donc orthogonal à lui-même, et nul.
+    remarques:
+      - |
+        L'hypothèse que $F$ est fermé est indispensable. Dans $\ell^2$, le sous-espace des suites à support fini est dense et distinct de $\ell^2$ ; son orthogonal est $\{0\}$, si bien que $F \oplus F^\perp \neq \ell^2$ et $F^{\perp\perp} = \ell^2 \neq F$.
+      - |
+        La norme de $L^1$ ne vérifie pas l'identité du parallélogramme : sur $\ell^1$, $x = (1, 0, 0, \dots)$ et $y = (0, 1, 0, \dots)$ donnent $\|x + y\|_1^2 + \|x - y\|_1^2 = 8$ et $2\|x\|_1^2 + 2\|y\|_1^2 = 4$. Elle ne provient donc d'aucun produit scalaire, et le théorème de projection y est faux en général.
+
+  - id: f-riesz
+    etiquette: Théorème de Riesz
+    nature: théorème
+    titre: Théorème de représentation de Riesz
+    enonce: |
+      Soit $H$ un espace de Hilbert. Pour toute forme linéaire continue $\varphi \in H'$, il existe un unique $a \in H$ tel que $\varphi(x) = \langle a, x \rangle$ pour tout $x$, et $|||\varphi||| = \|a\|$. L'application $a \mapsto \langle a, \cdot \rangle$ est une bijection linéaire isométrique de $H$ sur $H'$.
+    preuve: |
+      Par Cauchy-Schwarz, $\langle a, \cdot \rangle$ est continue, de norme au plus $\|a\|$, atteinte en $x = a$. Si $\langle a, \cdot \rangle = \langle a', \cdot \rangle$, en évaluant en $a - a'$ on trouve $\|a - a'\|^2 = 0$. Pour l'existence, si $\varphi = 0$, $a = 0$ convient. Sinon, le noyau $F$ de $\varphi$ est un sous-espace fermé, image réciproque de $\{0\}$, distinct de $H$ ; par le théorème de projection ({{f-hilbert|Espaces de Hilbert}}, (iii)), $F^\perp \neq \{0\}$. Soit $z \in F^\perp$ non nul ; quitte à le diviser par $\varphi(z)$, qui n'est pas nul puisque $z \notin F$, on suppose $\varphi(z) = 1$. Pour tout $x$, $x - \varphi(x)z \in F$, donc $\langle x - \varphi(x)z, z \rangle = 0$, c'est-à-dire $\varphi(x) = \langle z/\|z\|^2, x \rangle$.
+    remarques:
+      - |
+        Le théorème identifie un espace de Hilbert à son dual, ce qu'aucun autre espace de Banach n'autorise en général. Le dual de $\ell^1$, par exemple, est $\ell^\infty$, l'espace des suites bornées, qui est strictement plus gros. C'est cette identification qui rend les espaces de Hilbert si commodes pour résoudre des équations, par exemple au moyen du théorème de Lax-Milgram.
+
+  - id: f-bases-hilbertiennes
+    etiquette: Bases hilbertiennes
+    nature: théorème
+    titre: Familles orthonormales et bases hilbertiennes
+    texte: |
+      Une famille $(e_i)_{i \in I}$ d'un espace de Hilbert $H$ est **orthonormale** si $\langle e_i, e_j \rangle$ vaut $1$ pour $i = j$ et $0$ sinon. C'est une [[base-hilbertienne|base hilbertienne]] si, de plus, le sous-espace qu'elle engendre est dense dans $H$.
+    choix: |
+      L'existence d'une famille orthonormale maximale dans un espace quelconque repose sur le [[lemme-zorn|lemme de Zorn]]. Dans un espace séparable, le procédé de Gram-Schmidt construit une base hilbertienne sans aucun choix.
+    enonce: |
+      (i) *Bessel.* Pour toute famille orthonormale et tout $x$, $\sum_{i \in I} \langle x, e_i \rangle^2 \leqslant \|x\|^2$, la somme étant prise dans $[0, +\infty]$.
+
+      (ii) Soit $(e_n)_{n \in \mathbb N}$ orthonormale. Pour tout $x$, la série $\sum_n \langle x, e_n \rangle e_n$ converge, vers la projection de $x$ sur l'adhérence $F$ du sous-espace engendré. Sont équivalents : $(e_n)$ est une base hilbertienne ; $x = \sum_n \langle x, e_n \rangle e_n$ pour tout $x$ ; *Parseval* : $\|x\|^2 = \sum_n \langle x, e_n \rangle^2$ pour tout $x$ ; le seul vecteur orthogonal à tous les $e_n$ est $0$.
+
+      (iii) *Gram-Schmidt.* Si $H$ contient une suite dense, il a une base hilbertienne finie ou indexée par $\mathbb N$.
+
+      (iv) Tout espace de Hilbert a une famille orthonormale maximale, et le seul vecteur orthogonal à tous ses éléments est $0$.
+    preuve: |
+      (i) Pour $J \subset I$ fini, $x - \sum_{j \in J} \langle x, e_j \rangle e_j$ est orthogonal à chaque $e_j$, d'où, en développant, $\|x\|^2 = \big\|x - \sum_J \langle x, e_j \rangle e_j\big\|^2 + \sum_J \langle x, e_j \rangle^2 \geqslant \sum_J \langle x, e_j \rangle^2$. On passe à la borne supérieure sur $J$.
+
+      (ii) Pour $p < q$, $\big\|\sum_{p < n \leqslant q} \langle x, e_n \rangle e_n\big\|^2 = \sum_{p < n \leqslant q} \langle x, e_n \rangle^2$, reste d'une série convergente par (i) : les sommes partielles forment une suite de Cauchy, de limite $s \in F$. Pour tout $k$, $\langle x - s, e_k \rangle = \lim_N \langle x - \sum_{n \leqslant N} \langle x, e_n \rangle e_n, e_k \rangle = 0$, donc $x - s$ est orthogonal à l'espace engendré, et par continuité à $F$ : $s = p_F(x)$ ({{f-hilbert|Espaces de Hilbert}}, (iii)). Si $F = H$, $s = x$ ; alors $\|x\|^2 = \lim \|S_N\|^2 = \sum \langle x, e_n \rangle^2$ ; Parseval entraîne que le seul vecteur orthogonal à tous les $e_n$ est nul ; et cette dernière condition donne $F^\perp = \{0\}$, donc $F = F^{\perp\perp} = H$.
+
+      (iii) Soit $(x_k)$ dense. On parcourt la suite en ne retenant que les $x_k$ qui ne sont pas dans l'espace engendré par les précédents ; on obtient une suite $(y_m)$, finie ou non, de même espace engendré, dont toute sous-famille finie est libre. On pose $e_0 = y_0/\|y_0\|$ et $e_{m} = z_m/\|z_m\|$, où $z_m = y_m - \sum_{j < m} \langle y_m, e_j \rangle e_j$ est non nul. Les $e_m$ sont orthonormaux et engendrent le même espace que les $x_k$, qui est dense.
+
+      (iv) Les familles orthonormales, vues comme parties de $H$, forment un ensemble ordonné par inclusion, où la réunion d'une chaîne est encore orthonormale. Le lemme de Zorn donne une famille maximale. Si $x \neq 0$ était orthogonal à tous ses éléments, on pourrait lui adjoindre $x/\|x\|$.
+    remarques:
+      - |
+        Dans $\ell^2$, les suites $e_n$, nulles sauf un $1$ en position $n$, forment une base hilbertienne, et Parseval n'est autre que la définition de la norme. L'erreur la plus répandue est de confondre base hilbertienne et base algébrique : un élément de $\ell^2$ comme $(1, \frac12, \frac13, \dots)$ n'est pas combinaison linéaire **finie** des $e_n$ ; il en est seulement la somme d'une série convergente.
+      - |
+        Dans $L^2([0, 1])$, le système de Haar, formé des fonctions valant $\pm 2^{j/2}$ sur les deux moitiés d'un intervalle dyadique de longueur $2^{-j}$ et nulles ailleurs, complété par la constante $1$, est une base hilbertienne ; ce fait est admis ici. Le système trigonométrique, plus célèbre, demande les fonctions $\cos$ et $\sin$ de l'{{anc|analyse complexe}}.
+
+  - id: f-hahn-banach
+    etiquette: Hahn-Banach
+    nature: théorème
+    titre: Théorème de Hahn-Banach
+    texte: |
+      Une application $q : E \to \mathbb R$ est **sous-linéaire** si $q(x + y) \leqslant q(x) + q(y)$ et $q(tx) = t\,q(x)$ pour tous $x, y$ et $t \geqslant 0$. Une norme en est un exemple.
+    choix: |
+      La démonstration utilise le [[lemme-zorn|lemme de Zorn]]. Le théorème découle déjà du lemme de l'[[ultrafiltre]], lui-même strictement plus faible que l'axiome du choix (Halpern et Lévy, 1964). Dans un espace séparable, une récurrence sur une suite dense suffit.
+    enonce: |
+      (i) *Forme analytique.* Soit $E$ un $\mathbb R$-espace vectoriel, $q$ sous-linéaire, $G$ un sous-espace et $g : G \to \mathbb R$ linéaire avec $g \leqslant q$ sur $G$. Il existe $f : E \to \mathbb R$ linéaire qui prolonge $g$ et vérifie $f \leqslant q$ sur $E$.
+
+      (ii) Dans un espace normé, toute forme linéaire continue sur un sous-espace se prolonge en une forme linéaire continue sur $E$ de même norme.
+
+      (iii) Pour tout $x \neq 0$, il existe $f \in E'$ tel que $|||f||| = 1$ et $f(x) = \|x\|$. Par suite $\|x\| = \max\{f(x) : f \in E',\ |||f||| \leqslant 1\}$, et $E'$ sépare les points de $E$.
+    preuve: |
+      (i) *Un pas.* Soit $x_0 \notin G$. Pour $y, y' \in G$, $g(y) + g(y') = g(y + y') \leqslant q(y + y') \leqslant q(y + x_0) + q(y' - x_0)$, donc $g(y') - q(y' - x_0) \leqslant q(y + x_0) - g(y)$. La borne supérieure $\alpha$ du premier membre en $y'$ est donc majorée par la borne inférieure du second en $y$, et l'on choisit $c$ entre les deux. On pose $h(y + tx_0) = g(y) + tc$ sur $G + \mathbb R x_0$. Pour $t > 0$, $h(y + tx_0) = t\big(g(y/t) + c\big) \leqslant t\,q(y/t + x_0) = q(y + tx_0)$ ; pour $t < 0$, on utilise de même l'autre inégalité.
+
+      *Zorn.* Considérons l'ensemble des couples $(K, k)$ où $K \supset G$ est un sous-espace et $k$ une forme linéaire sur $K$ qui prolonge $g$ et vérifie $k \leqslant q$, ordonné par prolongement. Toute chaîne a pour majorant la forme définie sur la réunion des sous-espaces, qui est un sous-espace parce que la famille est totalement ordonnée. Le lemme de Zorn ({{o-zorn|Lemme de Zorn}}) donne un élément maximal $(K, f)$, et $K = E$, sans quoi le pas précédent le prolongerait.
+
+      (ii) Si $g$ est continue sur $G$, de norme $c$, on applique (i) avec $q(x) = c\|x\|$ ; alors $f(x) \leqslant c\|x\|$ et $-f(x) = f(-x) \leqslant c\|x\|$.
+
+      (iii) Sur $G = \mathbb R x$, $g(tx) = t\|x\|$ est de norme $1$ ; on la prolonge par (ii). L'égalité $\|x\| = \max f(x)$ en découle, puisque $f(x) \leqslant |||f|||\,\|x\|$. Si $x \neq y$, une forme $f$ telle que $f(x - y) = \|x - y\| \neq 0$ les sépare.
+    remarques:
+      - |
+        Dans un espace de Hilbert, le théorème est immédiat : une forme continue sur un sous-espace $G$ se prolonge à $\bar G$ par continuité, puis par $0$ sur $\bar G^\perp$, sans changer de norme, grâce au théorème de projection. Toute la force de Hahn-Banach est dans les espaces dépourvus de produit scalaire, comme $\ell^1$ ou $C(K)$.
+
+  - id: f-baire
+    etiquette: Théorème de Baire
+    nature: théorème
+    titre: Théorème de Baire
+    texte: |
+      Un espace métrique est **complet** si toute suite de Cauchy y converge. Une partie est **dense** si son adhérence est l'espace entier, c'est-à-dire si elle rencontre tout ouvert non vide.
+    choix: |
+      La démonstration construit une suite de boules emboîtées, chacune choisie en fonction de la précédente : c'est le **choix dépendant**. Blair a montré en 1977 que le théorème de Baire pour les espaces métriques complets lui est équivalent.
+    enonce: |
+      Dans un espace métrique complet $X$, toute intersection d'une suite $(U_n)$ d'ouverts denses est dense. De façon équivalente, une réunion d'une suite de fermés d'intérieurs vides est d'intérieur vide.
+    preuve: |
+      Soit $V$ un ouvert non vide ; montrons que $V \cap \bigcap_n U_n \neq \varnothing$. Comme $U_0$ est dense, $V \cap U_0$ est un ouvert non vide : il contient une boule fermée $\bar B(x_0, r_0)$ avec $0 < r_0 \leqslant 1$. Supposons construite $\bar B(x_n, r_n)$. L'ouvert $B(x_n, r_n) \cap U_{n+1}$ est non vide, par densité, et contient une boule fermée $\bar B(x_{n+1}, r_{n+1})$ avec $0 < r_{n+1} \leqslant 2^{-n-1}$. Les boules sont emboîtées, donc $d(x_m, x_n) \leqslant r_n \leqslant 2^{-n}$ pour $m \geqslant n$ : la suite des centres est de Cauchy, et converge vers un $x$, qui appartient à chaque boule fermée $\bar B(x_n, r_n)$, puisqu'elles sont fermées et contiennent les $x_m$ pour $m \geqslant n$. Donc $x \in V \cap \bigcap_n U_n$. La forme équivalente s'obtient par passage aux complémentaires.
+    remarques:
+      - |
+        Le théorème redonne la non-dénombrabilité de $\mathbb R$, et plus précisément de $[0, 1]$, qui est complet : si $[0, 1] = \{q_0, q_1, \dots\}$, ce serait une réunion dénombrable de singletons, fermés et d'intérieur vide. L'argument diagonal de Cantor ({{r-cantor|Théorème de Cantor}}) établit le même fait par une autre voie.
+      - |
+        La complétude est indispensable : $\mathbb Q$ est la réunion dénombrable de ses singletons, qui sont fermés et d'intérieur vide dans $\mathbb Q$.
+
+  - id: f-banach-steinhaus
+    etiquette: Banach-Steinhaus
+    nature: théorème
+    titre: Théorème de Banach-Steinhaus
+    enonce: |
+      Soit $E$ un espace de Banach, $F$ un espace normé et $(u_i)_{i \in I}$ une famille d'applications linéaires continues de $E$ dans $F$. Si $\sup_i \|u_i(x)\| < +\infty$ pour tout $x \in E$, alors $\sup_i |||u_i||| < +\infty$.
+
+      En particulier, si une suite $(u_n)$ d'applications linéaires continues converge simplement vers $u$ sur $E$, alors $u$ est linéaire et continue.
+    preuve: |
+      Les ensembles $F_n = \{x : \|u_i(x)\| \leqslant n \text{ pour tout } i\}$ sont fermés, comme intersections de fermés, et leur réunion est $E$. Par le théorème de Baire ({{f-baire|Théorème de Baire}}), l'un d'eux contient une boule $B(x_0, r)$. Pour $\|z\| < r$, $\|u_i(z)\| \leqslant \|u_i(x_0 + z)\| + \|u_i(x_0)\| \leqslant 2n$, d'où $|||u_i||| \leqslant 2n/r$ pour tout $i$. Pour la seconde assertion, la suite $(u_n(x))$ converge, donc est bornée, pour tout $x$ ; $u$ est linéaire par passage à la limite, et $\|u(x)\| = \lim \|u_n(x)\| \leqslant \sup_n |||u_n|||\,\|x\|$.
+    remarques:
+      - |
+        La complétude de $E$ est indispensable. Sur l'espace des suites à support fini, muni de la norme $\sup_n |x_n|$, les formes $u_n(x) = n x_n$ sont continues et simplement bornées, puisque chaque suite n'a qu'un nombre fini de termes non nuls ; pourtant $|||u_n||| = n$.
+
+  - id: f-application-ouverte
+    etiquette: Application ouverte
+    nature: théorème
+    titre: Théorème de l'application ouverte et du graphe fermé
+    choix: |
+      Outre le théorème de Baire, la démonstration construit par récurrence une suite d'antécédents approchés, chacun choisi en fonction des précédents : c'est encore le choix dépendant.
+    enonce: |
+      Soient $E$ et $F$ des espaces de Banach et $u \in \mathcal L_c(E, F)$.
+
+      (i) *Application ouverte.* Si $u$ est surjective, l'image de tout ouvert est ouverte ; plus précisément, il existe $c > 0$ tel que $u(B(0, 1)) \supset B(0, c)$.
+
+      (ii) *Isomorphisme de Banach.* Si $u$ est bijective, $u^{-1}$ est continue.
+
+      (iii) *Graphe fermé.* Une application linéaire $v : E \to F$ dont le graphe est fermé dans $E \times F$ est continue.
+    preuve: |
+      (i) *Étape 1.* $F = \bigcup_n \overline{u(B(0, n))}$, par surjectivité. Par Baire, l'un de ces fermés contient une boule $B(y_0, \rho)$. Comme $\overline{u(B(0, n))}$ est convexe et symétrique, il contient $\frac12\big(B(y_0, \rho) + B(-y_0, \rho)\big) \supset B(0, \rho)$, et par homogénéité $\overline{u(B(0, 1))} \supset B(0, 2c)$ avec $2c = \rho/n$.
+
+      *Étape 2.* Soit $y$ avec $\|y\| < c$. Par l'étape 1 et homogénéité, il existe $x_1 \in B(0, \frac12)$ tel que $\|y - u(x_1)\| < c/2$, puis $x_2 \in B(0, \frac14)$ tel que $\|y - u(x_1) - u(x_2)\| < c/4$, et ainsi de suite : $\|x_k\| < 2^{-k}$ et $\|y - u(x_1 + \cdots + x_k)\| < c\,2^{-k}$. La série $\sum x_k$ converge absolument, donc converge dans l'espace de Banach $E$ ({{f-evn|Espaces normés}}, (iii)), vers $x$ de norme $< 1$, et $u(x) = y$ par continuité. Donc $B(0, c) \subset u(B(0, 1))$. Si $O$ est ouvert et $x \in O$ avec $B(x, r) \subset O$, alors $u(O) \supset u(x) + B(0, rc)$.
+
+      (ii) Par (i), $\|u^{-1}(y)\| < 1$ dès que $\|y\| < c$, donc $|||u^{-1}||| \leqslant 1/c$.
+
+      (iii) Le graphe $\Gamma$, sous-espace fermé de l'espace de Banach $E \times F$ muni de $\|x\| + \|y\|$, est un espace de Banach. La projection $(x, v(x)) \mapsto x$ est une bijection linéaire continue de $\Gamma$ sur $E$ ; par (ii), sa réciproque $x \mapsto (x, v(x))$ est continue, et $v$ aussi.
+    remarques:
+      - |
+        Une conséquence frappante : si un même espace est complet pour deux normes, et si l'une est dominée par l'autre, elles sont équivalentes, par (ii) appliqué à l'identité. L'espace des fonctions continues sur $[0, 1]$ est complet pour la norme uniforme, qui domine $\int_0^1 |f|$, mais les deux normes ne sont pas équivalentes ; c'est bien que la seconde n'est pas complète ({{f-exemples|Exemples d'espaces de Banach}}).
+
+aretes:
+  - [f-evn, f-exemples]
+  - [f-evn, f-operateurs]
+  - [f-evn, f-lp]
+  - [f-lp, f-hilbert]
+  - [f-hilbert, f-riesz]
+  - [f-operateurs, f-riesz]
+  - [f-hilbert, f-bases-hilbertiennes]
+  - [f-operateurs, f-hahn-banach]
+  - [f-baire, f-banach-steinhaus]
+  - [f-operateurs, f-banach-steinhaus]
+  - [f-baire, f-application-ouverte]
+  - [f-operateurs, f-application-ouverte]
