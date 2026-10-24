@@ -1,0 +1,67 @@
+# Publication automatique de l'atlas sur GitHub Pages.
+#
+# À chaque modification enregistrée sur la branche main (par exemple un fichier
+# du dossier contenu/), GitHub exécute ce script : il vérifie le contenu,
+# construit la page, puis la met en ligne. Si une vérification échoue
+# (cycle, terme inconnu, formule LaTeX incorrecte...), rien n'est publié et
+# l'erreur est affichée dans l'onglet « Actions » du dépôt.
+
+name: Publier ATLAS
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:        # permet aussi de lancer la publication à la main
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  construire:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupérer les fichiers
+        uses: actions/checkout@v4
+
+      - name: Installer Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Installer Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Installer les dépendances
+        run: |
+          pip install -r requirements.txt
+          npm ci
+
+      - name: Vérifier le contenu et construire la page
+        run: sh construire.sh
+
+      - name: Préparer la publication
+        uses: actions/configure-pages@v5
+
+      - name: Envoyer la page construite
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  publier:
+    needs: construire
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploiement.outputs.page_url }}
+    steps:
+      - name: Mettre en ligne
+        id: deploiement
+        uses: actions/deploy-pages@v4
