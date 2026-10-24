@@ -1,0 +1,447 @@
+# Niveau 1 : structure interne du nœud « Structures algébriques ».
+# Dans l'édifice, ce nœud ne repose que sur « Relations, fonctions » : il précède ℕ.
+# Aucun énoncé n'emploie donc d'entier, de puissance x^n, de finitude ni de cardinal ;
+# ces notions n'apparaissent qu'en remarque, comme ouvertures vers la suite.
+
+graphe: alg
+titre: Structures algébriques
+conteneur: alg
+
+entrees:
+  rel: [a-loi, a-groupe, a-distingue, a-transversal]
+
+noeuds:
+  - id: a-loi
+    etiquette: Loi de composition
+    nature: définition
+    titre: Lois de composition interne
+    enonce: |
+      Une [[loi-composition|loi de composition interne]] sur un ensemble $E$ est une application $E \times E \to E$, notée $(x, y) \mapsto x \ast y$. Elle est **associative** si $(x \ast y) \ast z = x \ast (y \ast z)$ pour tous $x, y, z$, et **commutative** si $x \ast y = y \ast x$ pour tous $x, y$.
+
+      Un [[element-neutre|élément neutre]] est un $e \in E$ tel que $e \ast x = x \ast e = x$ pour tout $x \in E$. Une partie $F \subset E$ est **stable** si $x \ast y \in F$ pour tous $x, y \in F$ ; la loi induit alors une loi sur $F$, par [[restriction]] à $F \times F$.
+    preuve: |
+      *Unicité du neutre.* Si $e$ et $e'$ sont neutres, alors $e = e \ast e'$, puisque $e'$ est neutre, et $e \ast e' = e'$, puisque $e$ est neutre. Donc $e = e'$.
+    remarques:
+      - |
+        On note le plus souvent la loi multiplicativement, $xy$ au lieu de $x \ast y$, et l'on note $1$ ou $e$ le neutre. La notation additive $x + y$, de neutre $0$, est réservée aux lois commutatives.
+      - |
+        L'associativité ne porte que sur trois éléments. Qu'un produit d'un nombre quelconque de facteurs ne dépende pas du parenthésage est un théorème, qui demande de savoir compter les facteurs ; il viendra avec {{n|$\mathbb N$}}. D'ici là, les énoncés de ce graphe ne font intervenir que des produits explicitement parenthésés.
+
+  - id: a-monoide
+    etiquette: Monoïde
+    nature: proposition
+    titre: Monoïdes et éléments inversibles
+    texte: |
+      Un [[monoide|monoïde]] est un ensemble muni d'une loi associative possédant un élément neutre $e$. Un élément $x$ est [[inversible]] s'il existe $y$ tel que $xy = yx = e$. Il est **régulier** si $xy = xz$ entraîne $y = z$ et $yx = zx$ entraîne $y = z$.
+    enonce: |
+      Soit $M$ un monoïde.
+
+      (i) Si $x$ est inversible, l'élément $y$ tel que $xy = yx = e$ est unique ; on le note $x^{-1}$.
+
+      (ii) Le neutre est inversible ; si $x$ est inversible, $x^{-1}$ l'est et $(x^{-1})^{-1} = x$ ; si $x$ et $y$ sont inversibles, $xy$ l'est et $(xy)^{-1} = y^{-1} x^{-1}$.
+
+      (iii) Tout élément inversible est régulier.
+    preuve: |
+      (i) Si $xy = yx = e$ et $xy' = y'x = e$, alors $y = ye = y(xy') = (yx)y' = ey' = y'$.
+
+      (ii) On a $ee = e$. Les égalités $x x^{-1} = x^{-1} x = e$ disent aussi que $x$ est le symétrique de $x^{-1}$. Enfin, par associativité, $(xy)(y^{-1}x^{-1}) = x(yy^{-1})x^{-1} = xex^{-1} = e$, et de même $(y^{-1}x^{-1})(xy) = e$.
+
+      (iii) Si $xy = xz$, on multiplie à gauche par $x^{-1}$ : $y = (x^{-1}x)y = x^{-1}(xy) = x^{-1}(xz) = z$. L'autre condition se traite à droite.
+    remarques:
+      - |
+        Pour tout ensemble $E$, l'ensemble $E^E$ des applications de $E$ dans $E$, muni de la composition, est un monoïde de neutre $\mathrm{id}_E$. Ses éléments inversibles sont exactement les bijections ({{r-inverses|Bijection réciproque}}), et ses éléments réguliers à gauche sont les injections lorsque $E$ est non vide.
+      - |
+        La réciproque de (iii) est fausse : dans le monoïde $(\mathbb N, +)$, que construira le nœud {{n|$\mathbb N$}}, tout élément est régulier, mais seul $0$ est inversible. C'est exactement ce défaut que corrige la symétrisation, plus bas.
+      - |
+        L'erreur la plus répandue est d'écrire $(xy)^{-1} = x^{-1}y^{-1}$. L'ordre s'inverse, comme lorsqu'on se déchausse : on retire d'abord la chaussure, puis la chaussette.
+
+  - id: a-groupe
+    etiquette: Groupe
+    nature: proposition
+    titre: Groupes
+    texte: |
+      Un [[groupe]] est un monoïde dont tout élément est inversible. Il est **abélien** si sa loi est commutative ; on le note alors souvent additivement, avec $0$ pour neutre et $-x$ pour symétrique.
+    enonce: |
+      (i) Dans un monoïde $M$, l'ensemble $M^\times$ des éléments inversibles est stable, et c'est un groupe pour la loi induite.
+
+      (ii) Pour tout ensemble $E$, l'ensemble $\mathfrak S(E)$ des bijections de $E$ sur lui-même est un groupe pour la composition, le **groupe symétrique** de $E$. Si $E$ contient trois éléments distincts, il n'est pas abélien.
+
+      (iii) Dans un groupe, pour tous $a$ et $b$, l'équation $ax = b$ a une unique solution, $x = a^{-1}b$.
+    preuve: |
+      (i) Par le point (ii) du nœud {{a-monoide|Monoïde}}, $M^\times$ contient $e$, est stable par produit et par passage au symétrique. La loi induite est associative, et tout élément de $M^\times$ a son symétrique dans $M^\times$.
+
+      (ii) C'est le cas $M = E^E$ de (i), dont les inversibles sont les bijections. Soient $a$, $b$, $c$ distincts dans $E$, et $\tau_{ab}$ la bijection qui échange $a$ et $b$ et fixe tout autre point ; de même pour $\tau_{bc}$. Alors $(\tau_{ab} \circ \tau_{bc})(c) = \tau_{ab}(b) = a$, tandis que $(\tau_{bc} \circ \tau_{ab})(c) = \tau_{bc}(c) = b$. Comme $a \neq b$, les deux composées diffèrent.
+
+      (iii) $x = a^{-1}b$ convient, puisque $a(a^{-1}b) = (aa^{-1})b = b$. Si $ax = b = ax'$, la régularité de $a$ donne $x = x'$.
+    remarques:
+      - |
+        Le point (iii) dit que la translation $x \mapsto ax$ est une bijection de $G$ sur lui-même. C'est l'idée du théorème de Cayley : tout groupe s'identifie à un sous-groupe de $\mathfrak S(G)$. Les groupes ont d'abord été des groupes de bijections, et le groupe symétrique en est le modèle.
+      - |
+        La transposition $\tau_{ab}$ est bien une application : son graphe est la réunion de $\{(a, b), (b, a)\}$ et de la diagonale de $E \setminus \{a, b\}$. Elle est sa propre réciproque, donc bijective.
+
+  - id: a-sous-groupe
+    etiquette: Sous-groupe
+    nature: proposition
+    titre: Sous-groupes
+    texte: |
+      Un [[sous-groupe]] d'un groupe $G$ est une partie $H$ qui contient $e$ et qui est stable par produit et par passage au symétrique. Muni de la loi induite, c'est un groupe.
+    enonce: |
+      (i) Une partie $H \subset G$ est un sous-groupe si et seulement si elle est non vide et si $xy^{-1} \in H$ pour tous $x, y \in H$.
+
+      (ii) L'intersection d'un ensemble non vide de sous-groupes de $G$ est un sous-groupe de $G$.
+
+      (iii) Pour toute partie $S \subset G$, il existe un plus petit sous-groupe contenant $S$, le **sous-groupe engendré** $\langle S \rangle$ : c'est l'intersection de tous les sous-groupes de $G$ qui contiennent $S$.
+    preuve: |
+      (i) Un sous-groupe vérifie ces conditions. Réciproquement, soit $x \in H$ ; alors $e = xx^{-1} \in H$. Pour $y \in H$, $y^{-1} = ey^{-1} \in H$. Pour $x, y \in H$, on a donc $y^{-1} \in H$ et $xy = x(y^{-1})^{-1} \in H$.
+
+      (ii) Soit $\mathcal H$ cet ensemble et $K = \bigcap \mathcal H$. Chaque élément de $\mathcal H$ contient $e$, donc $K$ aussi. Si $x, y \in K$, alors $xy^{-1}$ appartient à chaque élément de $\mathcal H$, donc à $K$. On conclut par (i).
+
+      (iii) L'ensemble des sous-groupes contenant $S$ existe par séparation dans $\mathcal P(G)$, et il est non vide puisqu'il contient $G$. Son intersection est un sous-groupe par (ii), contient $S$, et est contenue dans tout sous-groupe contenant $S$.
+    remarques:
+      - |
+        L'erreur la plus répandue est de croire que la réunion de deux sous-groupes en est un. Dans $\mathfrak S(E)$, avec $a$, $b$, $c$ distincts, $\{\mathrm{id}, \tau_{ab}\}$ et $\{\mathrm{id}, \tau_{bc}\}$ sont des sous-groupes, mais leur réunion ne contient pas $\tau_{ab} \circ \tau_{bc}$, qui envoie $c$ sur $a$ et ne coïncide donc ni avec l'identité, ni avec $\tau_{ab}$, ni avec $\tau_{bc}$.
+      - |
+        La définition de $\langle S \rangle$ « par le haut », comme intersection, ne demande aucun entier. La description « par le bas », comme ensemble des produits d'un nombre quelconque d'éléments de $S$ et de leurs symétriques, n'est accessible qu'après {{n|$\mathbb N$}}.
+
+  - id: a-morphisme
+    etiquette: Morphisme
+    nature: proposition
+    titre: Morphismes de groupes
+    texte: |
+      Un [[morphisme-groupes|morphisme de groupes]] est une application $f : G \to G'$ telle que $f(xy) = f(x)f(y)$ pour tous $x, y \in G$. Son [[noyau]] est $\operatorname{Ker} f = f^{-1}(\{e'\})$ et son image $\operatorname{Im} f = f(G)$. Un [[isomorphisme]] est un morphisme bijectif.
+    enonce: |
+      Soit $f : G \to G'$ un morphisme.
+
+      (i) $f(e) = e'$ et $f(x^{-1}) = f(x)^{-1}$ pour tout $x$.
+
+      (ii) La composée de deux morphismes est un morphisme, et la réciproque d'un isomorphisme est un morphisme.
+
+      (iii) L'image d'un sous-groupe de $G$ est un sous-groupe de $G'$ ; l'image réciproque d'un sous-groupe de $G'$ est un sous-groupe de $G$. En particulier, $\operatorname{Ker} f$ et $\operatorname{Im} f$ sont des sous-groupes.
+
+      (iv) $f$ est injective si et seulement si $\operatorname{Ker} f = \{e\}$.
+    preuve: |
+      (i) $f(e) = f(ee) = f(e)f(e)$ ; en multipliant par $f(e)^{-1}$, on obtient $e' = f(e)$. Puis $f(x)f(x^{-1}) = f(xx^{-1}) = f(e) = e'$, et de même dans l'autre ordre.
+
+      (ii) $(g \circ f)(xy) = g(f(x)f(y)) = g(f(x))\,g(f(y))$. Si $f$ est bijective, soient $x', y' \in G'$, et $x = f^{-1}(x')$, $y = f^{-1}(y')$. Alors $f(xy) = x'y'$, donc $f^{-1}(x'y') = xy = f^{-1}(x')f^{-1}(y')$.
+
+      (iii) Si $H$ est un sous-groupe, $f(H)$ contient $f(e) = e'$, et pour $f(x), f(y) \in f(H)$, on a $f(x)f(y)^{-1} = f(xy^{-1}) \in f(H)$. Si $H'$ est un sous-groupe de $G'$, $f^{-1}(H')$ contient $e$, et pour $x, y \in f^{-1}(H')$, $f(xy^{-1}) = f(x)f(y)^{-1} \in H'$. On applique le critère du nœud {{a-sous-groupe|Sous-groupe}}.
+
+      (iv) Si $f$ est injective, $f(x) = e' = f(e)$ entraîne $x = e$. Réciproquement, si $\operatorname{Ker} f = \{e\}$ et $f(x) = f(y)$, alors $f(x^{-1}y) = f(x)^{-1}f(y) = e'$, donc $x^{-1}y = e$ et $x = y$.
+    remarques:
+      - |
+        Le point (iv) est l'outil de base pour prouver qu'un morphisme est injectif : on remplace l'égalité de deux images quelconques par l'étude d'une seule équation, $f(x) = e'$.
+      - |
+        Deux groupes isomorphes ont exactement les mêmes propriétés exprimables à partir de la loi. On dit qu'ils ne diffèrent que par le nom de leurs éléments, ce qui justifie qu'on les identifie souvent.
+
+  - id: a-distingue
+    etiquette: Sous-groupe distingué
+    nature: proposition
+    titre: Classes modulo un sous-groupe, sous-groupes distingués
+    texte: |
+      Soit $H$ un sous-groupe de $G$. Pour $x \in G$, on pose $xH = \{xh : h \in H\}$ et $Hx = \{hx : h \in H\}$. Le sous-groupe $H$ est [[sous-groupe-distingue|distingué]], ce qu'on note $H \trianglelefteq G$, si $ghg^{-1} \in H$ pour tous $g \in G$ et $h \in H$.
+    enonce: |
+      (i) La relation $x \sim_H y \iff x^{-1}y \in H$ est une relation d'équivalence sur $G$, dont la classe de $x$ est $xH$. L'ensemble quotient est noté $G/H$.
+
+      (ii) $H$ est distingué si et seulement si $gH = Hg$ pour tout $g \in G$.
+
+      (iii) Le noyau d'un morphisme est distingué. Dans un groupe abélien, tout sous-groupe est distingué.
+    preuve: |
+      (i) $x^{-1}x = e \in H$ donne la réflexivité ; $(x^{-1}y)^{-1} = y^{-1}x$ donne la symétrie ; $(x^{-1}y)(y^{-1}z) = x^{-1}z$ donne la transitivité, $H$ étant un sous-groupe. Par symétrie, $y \sim_H x$ équivaut à $x^{-1}y \in H$, c'est-à-dire à $y = xh$ avec $h = x^{-1}y \in H$ : la classe de $x$ est $xH$.
+
+      (ii) Si $H$ est distingué et $h \in H$, alors $gh = (ghg^{-1})g \in Hg$, et $hg = g(g^{-1}hg) \in gH$, en appliquant la définition à $g^{-1}$ ; donc $gH = Hg$. Réciproquement, si $gH = Hg$, tout $gh$ s'écrit $h'g$ avec $h' \in H$, et $ghg^{-1} = h' \in H$.
+
+      (iii) Si $f(h) = e'$, alors $f(ghg^{-1}) = f(g)\,e'\,f(g)^{-1} = e'$. Dans un groupe abélien, $ghg^{-1} = h$.
+    remarques:
+      - |
+        Avec la relation $y x^{-1} \in H$, on obtiendrait les classes à droite $Hx$. Le point (ii) dit que les deux partitions de $G$ coïncident exactement lorsque $H$ est distingué.
+      - |
+        Dans $\mathfrak S(E)$, avec $a$, $b$, $c$ distincts, le sous-groupe $\{\mathrm{id}, \tau_{ab}\}$ n'est pas distingué : $\tau_{bc} \circ \tau_{ab} \circ \tau_{bc}$ échange $a$ et $c$, et n'est donc ni $\mathrm{id}$ ni $\tau_{ab}$.
+
+  - id: a-quotient
+    etiquette: Groupe quotient
+    nature: théorème
+    titre: Groupe quotient
+    enonce: |
+      Soit $H \trianglelefteq G$. Il existe une unique loi sur $G/H$ pour laquelle la surjection canonique $\pi : G \to G/H$ est un morphisme ; elle est donnée par $(xH)(yH) = xyH$. Muni de cette loi, $G/H$ est un groupe, le [[groupe-quotient|groupe quotient]], de neutre $H$, et $\operatorname{Ker} \pi = H$.
+    preuve: |
+      *La loi est bien définie.* Supposons $x \sim_H x'$ et $y \sim_H y'$, et posons $h = x^{-1}x'$ et $k = y^{-1}y'$, éléments de $H$. Alors
+      $$(xy)^{-1}(x'y') = y^{-1}(x^{-1}x')y' = (y^{-1}hy)(y^{-1}y') = (y^{-1}hy)\,k,$$
+      qui appartient à $H$ puisque $H$ est distingué. Donc $xy \sim_H x'y'$. La relation $\{((C, D), E) : \exists x \in C,\ \exists y \in D,\ E = \pi(xy)\}$ est ainsi le graphe d'une application de $(G/H) \times (G/H)$ dans $G/H$, sans qu'aucun représentant soit choisi, comme au nœud {{r-factorisation|Passage au quotient}}.
+
+      *Axiomes de groupe.* Tout élément de $G/H$ s'écrit $\pi(x)$, et $\pi(x)\pi(y) = \pi(xy)$. Alors $(\pi(x)\pi(y))\pi(z) = \pi((xy)z) = \pi(x(yz)) = \pi(x)(\pi(y)\pi(z))$ ; $\pi(e)$ est neutre ; $\pi(x^{-1})$ est le symétrique de $\pi(x)$.
+
+      *Unicité et noyau.* Si $\pi$ est un morphisme pour une loi $\star$, alors $\pi(x) \star \pi(y) = \pi(xy)$, ce qui détermine $\star$ sur tous les couples, puisque $\pi$ est surjective. Enfin $\pi(x) = \pi(e)$ équivaut à $x \sim_H e$, c'est-à-dire à $x \in H$.
+    remarques:
+      - |
+        L'hypothèse « distingué » est nécessaire. Si la formule $(xH)(yH) = xyH$ définit une loi, alors, pour $h \in H$ et $g \in G$, l'égalité $hH = eH$ donne $hg^{-1}H = g^{-1}H$, d'où $g h^{-1} g^{-1} \in H$ ; en remplaçant $h$ par $h^{-1}$, on obtient $ghg^{-1} \in H$.
+      - |
+        Le point (iii) du nœud {{a-distingue|Sous-groupe distingué}} et ce théorème disent la même chose de deux côtés : les sous-groupes distingués sont exactement les noyaux de morphismes. Les groupes $\mathbb Z/n\mathbb Z$ seront les premiers exemples, une fois {{z|$\mathbb Z$}} construit.
+
+  - id: a-isomorphisme
+    etiquette: Théorème d'isomorphisme
+    nature: théorème
+    titre: Factorisation et premier théorème d'isomorphisme
+    enonce: |
+      Soit $f : G \to G'$ un morphisme et $H \trianglelefteq G$ tel que $H \subset \operatorname{Ker} f$. Il existe un unique morphisme $\bar f : G/H \to G'$ tel que $\bar f \circ \pi = f$. Si $H = \operatorname{Ker} f$, il est injectif, et $f$ induit un isomorphisme
+      $$G/\operatorname{Ker} f \;\cong\; \operatorname{Im} f.$$
+    preuve: |
+      Si $x \sim_H y$, alors $x^{-1}y \in H \subset \operatorname{Ker} f$, donc $f(x)^{-1}f(y) = e'$ et $f(x) = f(y)$ : $f$ est constante sur les classes. Le nœud {{r-factorisation|Passage au quotient}} fournit une unique application $\bar f$ telle que $\bar f \circ \pi = f$. C'est un morphisme : $\bar f(\pi(x)\pi(y)) = \bar f(\pi(xy)) = f(xy) = f(x)f(y) = \bar f(\pi(x))\,\bar f(\pi(y))$.
+
+      Si $H = \operatorname{Ker} f$, l'égalité $f(x) = f(y)$ équivaut à $x^{-1}y \in \operatorname{Ker} f$, c'est-à-dire à $x \sim_H y$ : $\bar f$ est injective par le critère du même nœud. Son image est celle de $f$, et $\bar f$, vue comme application de $G/\operatorname{Ker} f$ dans $\operatorname{Im} f$, est un morphisme bijectif.
+    remarques:
+      - |
+        En pratique, on prouve qu'un groupe quotient $G/H$ est isomorphe à un groupe connu $K$ en construisant un morphisme surjectif de $G$ sur $K$ de noyau $H$, plutôt qu'en manipulant des classes. C'est la forme sous laquelle on rencontrera $\mathbb C \cong \mathbb R[X]/(X^2 + 1)$ au nœud {{c|$\mathbb C$}}.
+
+  - id: a-transversal
+    etiquette: Transversale
+    nature: théorème
+    titre: Un groupe est en bijection avec H × G/H
+    choix: |
+      La démonstration choisit simultanément un représentant dans chaque classe, ce que permet l'axiome du choix sous la forme de Zermelo : les classes sont non vides et deux à deux disjointes.
+    enonce: |
+      Soit $H$ un sous-groupe de $G$. Il existe une partie $T \subset G$ qui rencontre chaque classe $xH$ en exactement un point (une **transversale**), et pour toute telle partie, l'application
+      $$H \times (G/H) \to G, \qquad (h, C) \mapsto t_C\, h,$$
+      où $t_C$ est l'unique élément de $T \cap C$, est une bijection. En particulier, $G$ est [[equipotent|équipotent]] à $H \times (G/H)$.
+    preuve: |
+      Les classes à gauche forment une partition de $G$ ({{r-equivalence|Relation d'équivalence}}) ; l'[[axiome-choix]], sous la forme de Zermelo, fournit $T$. La relation $\{(C, t) \in (G/H) \times G : t \in T \cap C\}$ est le graphe d'une application $C \mapsto t_C$.
+
+      *Injectivité.* Si $t_C h = t_D k$, cet élément appartient à $C$, puisque $t_C \in C = t_C H$, et à $D$ de même ; les classes étant disjointes, $C = D$, donc $t_C = t_D$, et $h = k$ par régularité.
+
+      *Surjectivité.* Soit $x \in G$ et $C = xH$ sa classe. Comme $t_C \in C$, on a $t_C \sim_H x$, donc $h = t_C^{-1}x \in H$, et $x = t_C h$.
+    remarques:
+      - |
+        Chaque classe $xH$ est en bijection avec $H$ par $h \mapsto xh$, sans aucun choix. Le choix n'intervient que pour faire ce choix de $x$ dans toutes les classes à la fois.
+      - |
+        Lorsque $G$ est fini, cet énoncé donnera le théorème de Lagrange, $|G| = |H| \cdot |G/H|$, une fois les entiers et les [[cardinal|cardinaux]] construits ; pour un groupe fini, l'axiome du choix n'est d'ailleurs pas nécessaire.
+
+  - id: a-anneau
+    etiquette: Anneau
+    nature: proposition
+    titre: Anneaux
+    texte: |
+      Un [[anneau]] est un ensemble $A$ muni de deux lois, $+$ et $\times$, telles que $(A, +)$ soit un groupe abélien de neutre $0$, que $\times$ soit associative et possède un neutre $1$, et que $\times$ soit distributive sur $+$ des deux côtés : $x(y + z) = xy + xz$ et $(y + z)x = yx + zx$. L'anneau est **commutatif** si $\times$ l'est.
+
+      Un anneau commutatif est [[anneau-integre|intègre]] si $1 \neq 0$ et si $xy = 0$ entraîne $x = 0$ ou $y = 0$.
+    enonce: |
+      Dans un anneau $A$, pour tous $x, y$ :
+
+      (i) $0x = x0 = 0$ ;
+
+      (ii) $(-x)y = x(-y) = -(xy)$ et $(-x)(-y) = xy$ ;
+
+      (iii) $1 = 0$ si et seulement si $A = \{0\}$ ;
+
+      (iv) les éléments inversibles pour $\times$ forment un groupe, noté $A^\times$.
+    preuve: |
+      (i) $0x = (0 + 0)x = 0x + 0x$, et l'on simplifie par $0x$ dans le groupe $(A, +)$. De même à droite.
+
+      (ii) $(-x)y + xy = (-x + x)y = 0y = 0$, donc $(-x)y = -(xy)$ ; de même $x(-y) = -(xy)$. Puis $(-x)(-y) = -(x(-y)) = -(-(xy)) = xy$.
+
+      (iii) Si $1 = 0$, alors $x = 1x = 0x = 0$ pour tout $x$. La réciproque est claire.
+
+      (iv) C'est le point (i) du nœud {{a-groupe|Groupe}}, appliqué au monoïde $(A, \times)$.
+    remarques:
+      - |
+        Pour tout groupe abélien $G$, l'ensemble $\operatorname{End}(G)$ des morphismes de $G$ dans $G$, muni de l'addition point par point et de la composition, est un anneau. Il n'est pas commutatif en général : c'est le modèle des anneaux non commutatifs, comme $\mathfrak S(E)$ est celui des groupes.
+      - |
+        L'anneau nul $\{0\}$ est le seul où $1 = 0$. On l'exclut des anneaux intègres et des corps, mais pas des anneaux : il est le quotient de tout anneau par lui-même.
+
+  - id: a-morph-anneau
+    etiquette: Morphisme d'anneaux
+    nature: définition
+    titre: Morphismes d'anneaux, sous-anneaux
+    enonce: |
+      Un **morphisme d'anneaux** est une application $f : A \to A'$ telle que $f(x + y) = f(x) + f(y)$, $f(xy) = f(x)f(y)$ et $f(1) = 1$. C'est en particulier un morphisme de groupes additifs, donc $f(0) = 0$ et $f(-x) = -f(x)$.
+
+      Un **sous-anneau** de $A$ est un sous-groupe additif qui contient $1$ et qui est stable par produit.
+    remarques:
+      - |
+        La condition $f(1) = 1$ ne découle pas des deux autres. L'application nulle d'un anneau $A$ dans lui-même respecte la somme et le produit, mais envoie $1$ sur $0$ ; elle n'est donc pas un morphisme d'anneaux si $A$ est non nul.
+      - |
+        Comme pour les groupes, la composée de deux morphismes d'anneaux en est un, et la réciproque d'un morphisme bijectif aussi : la preuve du nœud {{a-morphisme|Morphisme}} s'applique à chacune des deux lois.
+
+  - id: a-ideal
+    etiquette: Idéal
+    nature: proposition
+    titre: Idéaux d'un anneau commutatif
+    texte: |
+      Dans ce nœud et les suivants, les anneaux sont commutatifs. Un [[ideal|idéal]] de $A$ est un sous-groupe additif $I$ tel que $ax \in I$ pour tous $a \in A$ et $x \in I$.
+    enonce: |
+      (i) Le noyau d'un morphisme d'anneaux est un idéal.
+
+      (ii) L'intersection d'un ensemble non vide d'idéaux est un idéal. Pour $S \subset A$, l'intersection des idéaux contenant $S$ est le plus petit idéal contenant $S$. Pour $x \in A$, le plus petit idéal contenant $x$ est $xA = \{xa : a \in A\}$, l'**idéal principal** engendré par $x$.
+
+      (iii) La somme $I + J = \{i + j : i \in I,\ j \in J\}$ de deux idéaux est un idéal.
+
+      (iv) Un idéal est égal à $A$ si et seulement s'il contient un élément inversible.
+    preuve: |
+      (i) Le noyau est un sous-groupe additif ({{a-morphisme|Morphisme}}), et si $f(x) = 0$, alors $f(ax) = f(a) \cdot 0 = 0$.
+
+      (ii) La stabilité par les opérations passe à l'intersection comme pour les sous-groupes. L'ensemble $xA$ est un sous-groupe, puisque $xa - xb = x(a - b)$, il est stable par multiplication, puisque $b(xa) = x(ba)$, il contient $x = x1$, et tout idéal contenant $x$ contient les $xa$.
+
+      (iii) $I + J$ contient $0 = 0 + 0$ ; $(i + j) - (i' + j') = (i - i') + (j - j')$ par commutativité de $+$ ; et $a(i + j) = ai + aj$.
+
+      (iv) Si $u \in I$ est inversible, alors $1 = u^{-1}u \in I$, puis $a = a1 \in I$ pour tout $a$. Réciproquement, $A$ contient l'inversible $1$.
+    remarques:
+      - |
+        Un idéal est au produit ce qu'un sous-groupe distingué est à un groupe : la condition qui permettra de passer au quotient. Un sous-anneau, qui contient $1$, n'est jamais un idéal propre, d'après (iv).
+
+  - id: a-corps
+    etiquette: Corps
+    nature: proposition
+    titre: Corps
+    texte: |
+      Un [[corps]] est un anneau commutatif $K$ dans lequel $1 \neq 0$ et où tout élément non nul est inversible : $K^\times = K \setminus \{0\}$.
+    enonce: |
+      (i) Un corps est intègre.
+
+      (ii) Un anneau commutatif $A$ est un corps si et seulement si $A \neq \{0\}$ et si ses seuls idéaux sont $\{0\}$ et $A$.
+
+      (iii) Tout morphisme d'anneaux d'un corps vers un anneau non nul est injectif.
+    preuve: |
+      (i) Si $xy = 0$ et $x \neq 0$, alors $y = x^{-1}(xy) = x^{-1} \cdot 0 = 0$.
+
+      (ii) Dans un corps, un idéal non nul contient un élément non nul, donc inversible, et vaut $K$ ({{a-ideal|Idéal}}). Réciproquement, si $A \neq \{0\}$ n'a que ces deux idéaux et si $x \neq 0$, l'idéal $xA$ n'est pas $\{0\}$, donc vaut $A$ : il contient $1$, et $1 = xa$ pour un $a$, ce qui rend $x$ inversible. Enfin $1 \neq 0$ puisque $A \neq \{0\}$.
+
+      (iii) Le noyau est un idéal du corps ; ce n'est pas $K$, puisque $f(1) = 1 \neq 0$ dans un anneau non nul. C'est donc $\{0\}$, et le morphisme est injectif.
+    remarques:
+      - |
+        On suit l'usage actuel, où un corps est commutatif. Un anneau non nul, non nécessairement commutatif, dont tout élément non nul est inversible s'appelle un anneau à division ; les quaternions de Hamilton en sont l'exemple classique.
+
+  - id: a-anneau-quotient
+    etiquette: Anneau quotient
+    nature: théorème
+    titre: Anneau quotient et théorème d'isomorphisme
+    enonce: |
+      Soit $I$ un idéal de l'anneau commutatif $A$. Le groupe quotient $A/I$ est un anneau commutatif pour le produit $(x + I)(y + I) = xy + I$, et la surjection canonique $\pi : A \to A/I$ est un morphisme d'anneaux de noyau $I$.
+
+      Pour tout morphisme d'anneaux $f : A \to A'$, $f$ induit un isomorphisme d'anneaux $A/\operatorname{Ker} f \cong \operatorname{Im} f$.
+    preuve: |
+      Le groupe $(A, +)$ est abélien, donc $I$ y est distingué, et $A/I$ est un groupe additif, de classes $x + I$ ({{a-quotient|Groupe quotient}}).
+
+      *Le produit est bien défini.* Si $x - x' \in I$ et $y - y' \in I$, alors $xy - x'y' = x(y - y') + (x - x')y'$, somme de deux éléments de $I$. On définit le produit sur $A/I$ par son graphe, comme pour la somme. Associativité, commutativité, distributivité et neutralité de $1 + I$ se lisent sur les représentants : par exemple $\pi(x)(\pi(y) + \pi(z)) = \pi(x(y + z)) = \pi(xy + xz) = \pi(x)\pi(y) + \pi(x)\pi(z)$. Par construction, $\pi$ est un morphisme d'anneaux, de noyau $I$.
+
+      *Isomorphisme.* $\operatorname{Ker} f$ est un idéal ({{a-ideal|Idéal}}), et le nœud {{a-isomorphisme|Théorème d'isomorphisme}}, appliqué au groupe additif, fournit un isomorphisme de groupes $\bar f : A/\operatorname{Ker} f \to \operatorname{Im} f$, avec $\bar f(\pi(x)) = f(x)$. Il respecte le produit, puisque $\bar f(\pi(x)\pi(y)) = f(xy) = f(x)f(y)$, et envoie $\pi(1)$ sur $1$.
+    remarques:
+      - |
+        Le corps {{c|$\mathbb C$}} sera obtenu ainsi, comme quotient de l'anneau des polynômes $\mathbb R[X]$ par l'idéal engendré par $X^2 + 1$ ; les polynômes eux-mêmes demandent {{n|$\mathbb N$}}, puisqu'un polynôme est une suite presque nulle de coefficients.
+
+  - id: a-premier-maximal
+    etiquette: Idéaux premiers, maximaux
+    nature: proposition
+    titre: Idéaux premiers et maximaux
+    texte: |
+      Un idéal $I$ de $A$ est [[ideal-premier|premier]] si $I \neq A$ et si $xy \in I$ entraîne $x \in I$ ou $y \in I$. Il est [[ideal-maximal|maximal]] si $I \neq A$ et si aucun idéal $J$ ne vérifie $I \subsetneq J \subsetneq A$.
+    enonce: |
+      (i) $A/I$ est intègre si et seulement si $I$ est premier.
+
+      (ii) $A/I$ est un corps si et seulement si $I$ est maximal.
+
+      (iii) Tout idéal maximal est premier.
+    preuve: |
+      Notons $\bar x = x + I$. L'anneau $A/I$ est non nul si et seulement si $\bar 1 \neq \bar 0$, c'est-à-dire $1 \notin I$, c'est-à-dire $I \neq A$ ({{a-ideal|Idéal}}).
+
+      (i) L'égalité $\bar x \bar y = \bar 0$ s'écrit $xy \in I$, et $\bar x = \bar 0$ s'écrit $x \in I$. La condition d'intégrité de $A/I$ est donc mot pour mot celle qui définit un idéal premier.
+
+      (ii) Supposons $I$ maximal, et soit $\bar x \neq \bar 0$, c'est-à-dire $x \notin I$. L'idéal $I + xA$ contient $I$ et $x$, donc contient strictement $I$ : il vaut $A$. On écrit $1 = i + xa$ avec $i \in I$, d'où $\bar x \bar a = \bar 1$. Ainsi $A/I$, non nul, est un corps.
+
+      Réciproquement, supposons que $A/I$ soit un corps, et soit $J$ un idéal tel que $I \subsetneq J$. Pour $x \in J \setminus I$, on a $\bar x \neq \bar 0$, donc il existe $a$ avec $\bar x \bar a = \bar 1$, soit $xa - 1 \in I \subset J$. Alors $1 = xa - (xa - 1) \in J$, et $J = A$. Comme $A/I$ est non nul, $I \neq A$ : $I$ est maximal.
+
+      (iii) Si $I$ est maximal, $A/I$ est un corps par (ii), donc intègre ({{a-corps|Corps}}), et $I$ est premier par (i).
+    remarques:
+      - |
+        Que tout anneau commutatif non nul possède un idéal maximal est le théorème de Krull. Il se démontre par le lemme de Zorn, et il équivaut à l'axiome du choix, comme le signale le nœud {{geoalg|Géométrie algébrique}}. Il ne figure donc pas ici, où aucun choix n'est fait.
+      - |
+        La réciproque de (iii) est fausse en général. Dans l'anneau des polynômes à deux indéterminées sur un corps, l'idéal engendré par la première indéterminée est premier, sans être maximal.
+
+  - id: a-symetrise
+    etiquette: Symétrisation
+    nature: théorème
+    titre: Symétrisé d'un monoïde commutatif régulier
+    enonce: |
+      Soit $(M, +, 0)$ un monoïde commutatif dont tout élément est régulier. Sur $M \times M$, la relation
+      $$(a, b) \sim (c, d) \iff a + d = b + c$$
+      est une relation d'équivalence. Le quotient $G$, muni de l'addition des représentants, est un groupe abélien, le [[groupe-symetrise|symétrisé]] de $M$. L'application $\iota : M \to G$, $a \mapsto \overline{(a, 0)}$, est injective et respecte l'addition, et tout élément de $G$ s'écrit $\iota(a) - \iota(b)$.
+    preuve: |
+      *Équivalence.* La réflexivité et la symétrie viennent de la commutativité. Si $a + d = b + c$ et $c + f = d + e$, alors, en ajoutant membre à membre, $(a + f) + (c + d) = (b + e) + (c + d)$, et la régularité de $c + d$ donne $a + f = b + e$.
+
+      *Addition.* Si $(a, b) \sim (a', b')$, alors $(a + c) + (b' + d) = (a + b') + (c + d) = (b + a') + (c + d) = (b + d) + (a' + c)$, donc $(a + c, b + d) \sim (a' + c, b' + d)$ ; de même pour le second terme. La somme des classes est donc bien définie, par son graphe, comme au nœud {{a-quotient|Groupe quotient}}. Elle hérite de l'associativité et de la commutativité de $M$.
+
+      *Groupe.* La classe de $(0, 0)$ est neutre. La classe de $(b, a)$ est symétrique de celle de $(a, b)$, puisque $(a + b, b + a) \sim (0, 0)$.
+
+      *Plongement.* $\iota(a + a') = \iota(a) + \iota(a')$ par définition de l'addition. Si $\iota(a) = \iota(a')$, alors $a + 0 = 0 + a'$, soit $a = a'$. Enfin $\overline{(a, b)} = \overline{(a, 0)} + \overline{(0, b)}$, et $\overline{(0, b)} = -\iota(b)$ puisque $\overline{(0, b)} + \overline{(b, 0)} = \overline{(b, b)} = \overline{(0, 0)}$.
+    remarques:
+      - |
+        La classe de $(a, b)$ représente la « différence » $a - b$, qui n'existe pas encore dans $M$. C'est exactement ainsi que {{z|$\mathbb Z$}} sera construit à partir du monoïde $(\mathbb N, +)$, dont tout élément est régulier.
+      - |
+        La régularité sert uniquement à la transitivité. Sans elle, on remplace la relation par « $a + d + k = b + c + k$ pour un $k$ » ; le groupe obtenu existe toujours, mais $\iota$ n'est plus injective en général : deux éléments que l'on peut simplifier par un même $k$ y deviennent égaux.
+
+  - id: a-fractions
+    etiquette: Corps des fractions
+    nature: théorème
+    titre: Corps des fractions d'un anneau intègre
+    enonce: |
+      Soit $A$ un anneau intègre. Sur $A \times (A \setminus \{0\})$, la relation $(a, b) \sim (c, d) \iff ad = bc$ est une relation d'équivalence. Notons $a/b$ la classe de $(a, b)$. Le quotient $K$, muni de
+      $$\frac ab + \frac cd = \frac{ad + bc}{bd}, \qquad \frac ab \cdot \frac cd = \frac{ac}{bd},$$
+      est un corps, le [[corps-fractions|corps des fractions]] de $A$. L'application $a \mapsto a/1$ est un morphisme d'anneaux injectif de $A$ dans $K$.
+    preuve: |
+      *Équivalence.* Réflexivité et symétrie viennent de la commutativité. Si $ad = bc$ et $cf = de$, avec $b, d, f \neq 0$, alors $adf = bcf = bde$, donc $d(af - be) = 0$, et l'intégrité, avec $d \neq 0$, donne $af = be$.
+
+      *Les opérations sont bien définies.* D'abord $bd \neq 0$ par intégrité. Si $ab' = a'b$, alors $(ad + bc)\,b'd = (ab')d^2 + bb'cd = (a'b)d^2 + bb'cd = (a'd + b'c)\,bd$, et $ac \cdot b'd = (ab')cd = (a'b)cd = a'c \cdot bd$. Le second argument se traite de même.
+
+      *Axiomes de corps.* On a $(xc)/(yc) = x/y$ pour $c \neq 0$, puisque $xcy = ycx$. Avec cette règle, chaque axiome d'anneau commutatif se ramène à une identité de $A$. Par exemple, pour la distributivité,
+      $$\frac ab\Big(\frac cd + \frac ef\Big) = \frac{a(cf + de)}{bdf},$$
+      tandis que
+      $$\frac{ac}{bd} + \frac{ae}{bf} = \frac{b(acf + ade)}{b \cdot bdf} = \frac{a(cf + de)}{bdf}.$$
+      Le neutre additif est $0/1$, le neutre multiplicatif $1/1$, distinct de $0/1$ puisque $1 \cdot 1 \neq 0 \cdot 1$. Si $a/b \neq 0/1$, alors $a \neq 0$, et $b/a$ est son inverse : $(ab)/(ba) = 1/1$.
+
+      *Plongement.* $a/1 + a'/1 = (a + a')/1$, $(a/1)(a'/1) = aa'/1$, et $a/1 = a'/1$ entraîne $a = a'$.
+    remarques:
+      - |
+        L'intégrité sert dès la transitivité, où l'on simplifie par $d \neq 0$. Dans un anneau qui n'est pas intègre, la relation n'est en général plus transitive ; on contourne la difficulté par la localisation, qui n'inverse qu'une partie des éléments.
+      - |
+        C'est la construction de {{q|$\mathbb Q$}} à partir de {{z|$\mathbb Z$}}. Le symétrisé et le corps des fractions sont les deux gestes qui font passer de $\mathbb N$ à $\mathbb Q$ : ajouter les opposés, puis les inverses.
+
+  - id: a-module
+    etiquette: Module
+    nature: définition
+    titre: Modules sur un anneau commutatif
+    enonce: |
+      Soit $A$ un anneau commutatif. Un [[module|$A$-module]] est un groupe abélien $(M, +)$ muni d'une loi externe $A \times M \to M$, $(a, x) \mapsto ax$, telle que, pour tous $a, b \in A$ et $x, y \in M$,
+      $$a(x + y) = ax + ay, \qquad (a + b)x = ax + bx,$$
+      $$(ab)x = a(bx), \qquad 1x = x.$$
+      Un **sous-module** est un sous-groupe stable par la loi externe ; une application $f : M \to M'$ est **$A$-linéaire** si $f(x + y) = f(x) + f(y)$ et $f(ax) = af(x)$.
+
+      Si $N$ est un sous-module de $M$, le groupe quotient $M/N$ est un $A$-module pour $a(x + N) = ax + N$.
+    preuve: |
+      *Le quotient.* Si $x - x' \in N$, alors $ax - ax' = a(x - x') \in N$ : la loi externe est bien définie sur les classes, par son graphe. Les quatre axiomes se lisent sur les représentants.
+    remarques:
+      - |
+        Les idéaux de $A$ sont exactement les sous-modules de $A$, vu comme module sur lui-même. Le quotient $A/I$ est ainsi à la fois un anneau et un $A$-module.
+      - |
+        Lorsque $A$ est un corps, un $A$-module est un espace vectoriel : c'est l'objet du nœud {{alglin|Algèbre linéaire}}. Sur l'anneau {{z|$\mathbb Z$}}, une structure de module sur un groupe abélien existe toujours et est unique ; groupes abéliens et $\mathbb Z$-modules ne font qu'un.
+
+aretes:
+  - [a-loi, a-monoide]
+  - [a-monoide, a-groupe]
+  - [a-groupe, a-sous-groupe]
+  - [a-sous-groupe, a-morphisme]
+  - [a-sous-groupe, a-distingue]
+  - [a-morphisme, a-distingue]
+  - [a-distingue, a-quotient]
+  - [a-quotient, a-isomorphisme]
+  - [a-distingue, a-transversal]
+  - [a-groupe, a-anneau]
+  - [a-anneau, a-morph-anneau]
+  - [a-morphisme, a-morph-anneau]
+  - [a-morph-anneau, a-ideal]
+  - [a-ideal, a-corps]
+  - [a-ideal, a-anneau-quotient]
+  - [a-isomorphisme, a-anneau-quotient]
+  - [a-anneau-quotient, a-premier-maximal]
+  - [a-corps, a-premier-maximal]
+  - [a-monoide, a-symetrise]
+  - [a-quotient, a-symetrise]
+  - [a-corps, a-fractions]
+  - [a-quotient, a-module]
+  - [a-anneau, a-module]
