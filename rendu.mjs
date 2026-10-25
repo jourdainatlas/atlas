@@ -198,6 +198,65 @@ ${corpsSite}
 `;
 fs.mkdirSync('site', { recursive: true });
 fs.writeFileSync('site/index.html', index);
+
+// ---- Adresses partageables. Tout ce qui suit « # » n'est jamais envoyé au serveur : les messageries
+// voient donc la même page, et le même aperçu, pour toutes les ancres. Chaque cours, rubrique et nœud
+// reçoit une petite page à une vraie adresse (cours/t-01/, edifice/<nœud>/), avec son titre, sa
+// description et l'image d'aperçu, qui renvoie aussitôt vers l'ancre correspondante du site.
+const texteBrut = h => String(h || '').replace(/<annotation[\s\S]*?<\/annotation>/g, '').replace(/<span class="katex-mathml">[\s\S]*?<\/span><\/span>/g, '')
+  .replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+const coupe = (t, n = 200) => t.length > n ? t.slice(0, n - 1).replace(/\s+\S*$/, '') + '…' : t;
+const attr = t => String(t).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+let nbPartage = 0;
+function pagePartage(chemin, ancre, titre, description) {
+  const url = ADRESSE + chemin, cible = ADRESSE + '#' + ancre;
+  const t = titre ? `${titre} · ATLAS` : 'ATLAS';
+  const d = coupe(description || 'Architecture logique des théories mathématiques, de la logique du premier ordre et de ZFC aux grandes théories.');
+  fs.mkdirSync('site/' + chemin, { recursive: true });
+  fs.writeFileSync(`site/${chemin}index.html`, `<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${attr(t)}</title>
+<meta name="description" content="${attr(d)}">
+<link rel="canonical" href="${url}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ATLAS">
+<meta property="og:title" content="${attr(t)}">
+<meta property="og:description" content="${attr(d)}">
+<meta property="og:url" content="${url}">
+<meta property="og:image" content="${ADRESSE}apercu.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Logo ATLAS : un graphe orienté de l'alpha à l'oméga">
+<meta property="og:locale" content="fr_FR">
+<meta name="twitter:card" content="summary_large_image">
+<meta http-equiv="refresh" content="0; url=${attr(cible)}">
+<script>location.replace(${JSON.stringify(cible)});</script>
+</head>
+<body><p><a href="${attr(cible)}">${attr(t)}</a></p></body>
+</html>
+`);
+  nbPartage++;
+}
+const Rb = D.rubriques || {};
+const niveaux = Object.fromEntries((Rb.cours?.niveaux || []).map(n => [n.id, texteBrut(n.titre)]));
+pagePartage('cours/', 'cours', 'Cours', texteBrut(Rb.cours?.intro));
+for (const c of Rb.cours?.cours || []) {
+  const lieu = `${niveaux[c.niveau] || ''}${c.chapitre ? `, chapitre ${c.chapitre}` : ''}`;
+  pagePartage(`cours/${c.id}/`, `cours/${c.id}`, `${texteBrut(c.titre)} — ${lieu}`, texteBrut(c.resume) || `Cours de ${lieu}.`);
+}
+pagePartage('exercices/', 'exercices', 'Exercices', texteBrut(Rb.exercices?.intro));
+pagePartage('annales/', 'annales', 'Annales', texteBrut(Rb.annales?.intro));
+pagePartage('a-propos/', 'a-propos', 'À propos', 'L\'auteur et le projet ATLAS.');
+for (const n of Object.values(D.noeuds)) {
+  const ancre = n.sous ? n.sous : `${n.graphe}.${n.id}`;
+  const g = D.graphes[n.graphe];
+  const contexte = n.graphe === D.racine ? 'Théorie de l\'édifice' : `${NOMS[n.nature] || ''} · ${texteBrut(g.titre)}`;
+  pagePartage(`edifice/${n.id}/`, ancre, texteBrut(n.titre), `${contexte}. ${texteBrut(n.texte || n.enonce)}`);
+}
+console.log(`Pages de partage : ${nbPartage}`);
 // Icônes et image d'aperçu (fabriquées par identite/fabriquer-icones.mjs).
 for (const f of ['favicon.svg', 'favicon-32.png', 'apple-touch-icon.png', 'icone-512.png', 'apercu.png'])
   fs.copyFileSync(`identite/${f}`, `site/${f}`);
