@@ -44,6 +44,15 @@ function rendre(texte, ou) {
   if (!texte) return '';
   // Blocs de code : ```python … ``` (avant les formules : le code peut contenir des $).
   const codes = [];
+  // Tableaux de texte : ```tableau, une rangée par ligne, cellules séparées par « ¦ » ; la 1re rangée est l'en-tête.
+  texte = texte.replace(/```tableau\n([\s\S]*?)\n\s*```/g, (m, corps) => {
+    const rangs = corps.split('\n').filter(l => l.trim()).map(l => l.split(' ¦ '));
+    const cell = (c, b) => `<${b}>${c.trim() ? rendre(c, ou).replace(/^<p>|<\/p>$/g, '') : ''}</${b}>`;
+    const h = `<div class="tab-wrap"><table class="tab-exo"><thead><tr>${rangs[0].map(c => cell(c, 'th')).join('')}</tr></thead><tbody>`
+      + rangs.slice(1).map(r => `<tr>${r.map(c => cell(c, 'td')).join('')}</tr>`).join('') + '</tbody></table></div>';
+    codes.push(h);
+    return `\n\n\u0001${codes.length - 1}\u0001\n\n`;
+  });
   texte = texte.replace(/```(\w*)\n([\s\S]*?)\n\s*```/g, (m, lang, code) => {
     const lignes = code.split('\n'), retrait = Math.min(...lignes.filter(l => l.trim()).map(l => l.match(/^ */)[0].length));
     codes.push(`<pre class="code"${lang ? ` data-lang="${lang}"` : ''}><code>${echappe(lignes.map(l => l.slice(retrait)).join('\n'))}</code></pre>`);

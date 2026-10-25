@@ -115,6 +115,37 @@ class Conv:
             out.append(' '.join(hl) + ' ' + ' & '.join(s.cellule(c) for c in cells))
         return '\\begin{array}{%s} %s \\end{array}' % (spec, ' \\\\ '.join(x for x in out if x is not None))
 
+    def tableau_texte(s, spec, corps):
+        """Tableau à rendre en HTML (le texte doit pouvoir passer à la ligne) : colonne p{…}
+        ou cellule de texte longue. Les tableaux numériques restent des array KaTeX."""
+        if re.search(r'[pmb]\{', spec): return True
+        for li in s.couper_lignes(corps):
+            for c in s.couper_cellules(li):
+                if len(re.sub(r'\$[^$]*\$', '', c).strip()) > 40: return True
+        return False
+
+    def tableau_html(s, corps):
+        """Bloc ```tableau : une ligne par rangée, cellules séparées par « ¦ », texte et $formules$."""
+        corps = re.sub(r'\\(rowcolor|cellcolor)(\[[^]]*\])?\{[^}]*\}', '', corps)
+        corps = re.sub(r'\\(renewcommand|arraystretch)[^\n]*', '', corps)
+        rangs = []
+        for li in s.couper_lignes(corps):
+            li = li.replace('\\hline', '').strip()
+            if not li: continue
+            cells = []
+            for c in s.couper_cellules(li):
+                c = re.sub(r'\\phantom\{(?:[^{}]|\{[^{}]*\})*\}', '', c).strip()
+                parts = re.split(r'(\$[^$]*\$)', c); r = ''
+                for q in parts:
+                    if q.startswith('$'): r += '$' + s.tex_math(q[1:-1]) + '$'
+                    else:
+                        q = re.sub(r'\\textbf\{([^}]*)\}', r'**\1**', q); q = re.sub(r'\\emph\{([^}]*)\}', r'*\1*', q)
+                        q = q.replace('\\og', '«').replace('\\fg{}', '»').replace('\\fg', '»').replace('~', ' ')
+                        r += q
+                cells.append(re.sub(r'\s+', ' ', r).strip().replace('¦', '|'))
+            rangs.append(' ¦ '.join(cells))
+        return '\n'.join(rangs)
+
     def couper_lignes(s, corps):
         """Coupe aux \\\\ de niveau 0 (hors accolades et hors environnements imbriqués, ex. pmatrix)."""
         out, cur, d, env, i = [], '', 0, 0, 0
@@ -177,7 +208,9 @@ class Conv:
         t = rempl_env(t, 'lstlisting', lambda c, tout: s.jeton('CODE', re.sub(r'^\[[^]]*\]', '', c).strip('\n')))
         t = rempl_env(t, 'tikzpicture', lambda c, tout: s.jeton('FIG', tout))
         def tab(c, tout):
-            spec, j = arg(c, 0); return s.jeton('TAB', s.tableau(spec, c[j:]))
+            spec, j = arg(c, 0)
+            if s.tableau_texte(spec, c[j:]): return s.jeton('TABH', s.tableau_html(c[j:]))
+            return s.jeton('TAB', s.tableau(spec, c[j:]))
         t = rempl_env(t, 'tabular', tab)
         for env in ('align*', 'align', 'eqnarray*', 'equation*', 'equation', 'gather*'):
             cible = 'gathered' if env.startswith('gather') else 'aligned'
@@ -293,6 +326,7 @@ class Conv:
             p = re.sub(r'@@MI\d+@@', lambda x: '$' + s.tex_math(s.ph[x.group(0)][1]) + '$', p)
             p = re.sub(r'@@MD\d+@@', lambda x: '\n$$' + s.tex_math(s.ph[x.group(0)][1]) + '$$\n', p)
             p = re.sub(r'@@TAB\d+@@', lambda x: '\n$$' + s.ph[x.group(0)][1] + '$$\n', p)
+            p = re.sub(r'@@TABH\d+@@', lambda x: '\n\n```tableau\n' + s.ph[x.group(0)][1] + '\n```\n\n', p)
             def code(x): return '\n\n```python\n' + s.ph[x.group(0)][1] + '\n```\n\n'
             p = re.sub(r'@@CODE\d+@@', code, p)
             def fig(x):
