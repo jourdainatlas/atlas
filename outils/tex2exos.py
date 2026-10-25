@@ -218,7 +218,7 @@ class Conv:
                 t = rempl_env(t, env, lambda c, tout: s.jeton('MD', c.strip()))
             else:
                 t = rempl_env(t, env, lambda c, tout, cible=cible: s.jeton('MD', '\\begin{%s} %s \\end{%s}' % (cible, c.strip(), cible)))
-        t = re.sub(r'\\\[([\s\S]*?)\\\]', lambda m: s.jeton('MD', m.group(1).strip()), t)
+        t = re.sub(r'(?<!\\)\\\[([\s\S]*?)\\\]', lambda m: s.jeton('MD', m.group(1).strip()), t)
         t = re.sub(r'\$\$([\s\S]*?)\$\$', lambda m: s.jeton('MD', m.group(1).strip()), t)
         t = re.sub(r'\\\(([\s\S]*?)\\\)', lambda m: s.jeton('MI', m.group(1)), t)
         # formules en ligne : un $ fermant n'est reconnu qu'au niveau 0 des accolades ($ imbriqués dans \text{…})
@@ -301,6 +301,8 @@ class Conv:
 
     def texte(s, t):
         t = s.listes(t)
+        t = re.sub(r'\\textsc\{([^{}]*)\}', lambda m: m.group(1).upper(), t)  # siècles en petites capitales
+        t = re.sub(r'\\texttt\{((?:[^{}]|\\[{}])*)\}', lambda m: '`' + re.sub(r'\\([_%#&{}$])', r'\1', m.group(1)) + '`', t)  # code en ligne
         rep = [(r'\\textbf\{\\itshape\s*([^}]*)\}', r'**\1**'), (r'\{\\itshape\s*([^}]*)\}', r'*\1*'),
                (r'\\textsuperscript\{(e|ème|eme)\}', 'ᵉ'), (r'\\textsuperscript\{(ère|re)\}', 'ʳᵉ'),
                (r'\\textsuperscript\{([^}]*)\}', r'\1'), (r'\\underline\{([^{}]*)\}', r'\1'),
