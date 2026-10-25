@@ -447,6 +447,24 @@ def verifie_rubrique(nom, objet, ou):
         for x in objet: verifie_rubrique(nom, x, ou)
     elif isinstance(objet, str):
         verifie_refs(objet, f"rubriques/{nom} {ou}")
+# Les exercices d'une feuille peuvent être rangés dans rubriques/exercices/<feuille>.yaml (une liste).
+if 'exercices' in rubriques:
+    E = rubriques['exercices']; E.setdefault('exercices', [])
+    for f in sorted(glob.glob('rubriques/exercices/*.yaml')):
+        E['exercices'] += yaml.safe_load(open(f, encoding='utf-8')) or []
+    ids = [e['id'] for e in E['exercices']]
+    for i in set(x for x in ids if ids.count(x) > 1): erreur(f"rubriques/exercices : id en double {i}")
+    for fe in E.get('feuilles', []):
+        les = [e for e in E['exercices'] if e['feuille'] == fe['id']]
+        if les:
+            fe['nombre'] = len(les)
+            fe['etoiles'] = [sum(1 for e in les if e['etoiles'] == k) for k in (1, 2, 3, 4)]
+            fe['parties'] = list(dict.fromkeys(e['partie'] for e in les))
+        for champ in ('pdf_enonce', 'pdf_corrige'):
+            if fe.get(champ) and not os.path.isfile(fe[champ]):
+                erreur(f"rubriques/exercices {fe['id']} : fichier introuvable {fe[champ]}")
+    for e in E['exercices']:
+        e['mots_cles'] = [m.strip().lower() if m.strip() != 'Python' else m for m in e.get('mots_cles', [])]
 for nom, r in rubriques.items(): verifie_rubrique(nom, r, '')
 if 'exercices' in rubriques and 'cours' in rubriques:
     ids_cours = {c['id'] for c in rubriques['cours'].get('cours', [])}

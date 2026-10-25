@@ -294,6 +294,11 @@ body.redim .vue { pointer-events: none; }
 .preuve .cqfd { display: block; text-align: right; color: var(--encre-2); font-size: 15px; }
 .remarque { margin: 0 0 14px; font-size: 16px; color: var(--encre); }
 .remarque .tete { display: block; margin-bottom: 2px; }
+pre.code {
+  font-family: var(--f-mono); font-size: 13px; line-height: 1.5; background: var(--papier); border: 1px solid var(--filet);
+  border-radius: 6px; padding: 10px 12px; overflow-x: auto; margin: .3em 0 .9em; white-space: pre;
+}
+p.sq, .formule.sq { margin-left: 1.6em; }
 .formule { overflow-x: auto; overflow-y: hidden; margin: .2em 0 .8em; padding: 2px 0; }
 .ouvrir {
   display: inline-flex; align-items: center; gap: 8px; margin: 4px 0 20px; cursor: pointer;
@@ -483,7 +488,20 @@ body.en-rubrique .legende { display: none; }
 .difficulte i.plein { background: var(--encre-2); border-color: var(--encre-2); }
 .resultats-tete { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; margin-bottom: 12px; font-size: 13.5px; color: var(--encre-2); }
 .bandeau-filtre { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; background: var(--surface); border: 1px solid var(--filet); border-left: 3px solid var(--rouge); border-radius: 6px; padding: 8px 12px; margin-bottom: 12px; font-size: 13.5px; }
-.exo { padding: 16px 18px 12px; margin-bottom: 14px; }
+.exo { padding: 16px 18px 12px; margin-bottom: 14px; scroll-margin-top: 16px; }
+.lien-exo { color: inherit; text-decoration: none; }
+.lien-exo:hover { text-decoration: underline; text-decoration-color: var(--encre-3); text-underline-offset: 4px; }
+.exo-titre { font-family: var(--f-ui); font-size: 13.5px; font-weight: 500; color: var(--encre-2); margin-left: 6px; }
+.recherche-exo { width: 100%; box-sizing: border-box; padding: 7px 10px; border: 1px solid var(--filet); border-radius: 6px; background: var(--papier); color: var(--encre); font: inherit; font-size: 13.5px; }
+.chip.cache { display: none; }
+.themes .chip { font-size: 12.5px; padding: 3px 10px; text-align: left; }
+button.lien-simple { border: 0; background: none; padding: 0; cursor: pointer; font: inherit; font-size: 13px; color: var(--encre-2); }
+.plus-themes { margin-top: 8px; }
+.mot-cle { border: 1px solid var(--filet); background: var(--papier); color: var(--encre-2); border-radius: 4px; padding: 1px 7px; font-size: 12px; cursor: pointer; }
+.mot-cle:hover, .mot-cle[aria-pressed="true"] { border-color: var(--encre-3); color: var(--encre); }
+.exo-liens { display: flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
+.exo-liens .bouton { font-size: 12.5px; padding: 4px 10px; }
+.exo-atlas { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; margin-top: 10px; font-size: 13px; color: var(--encre-3); }
 .exo-tete { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; margin-bottom: 4px; }
 .exo-tete h3 { font-family: var(--f-titre); font-size: 19px; margin: 0; }
 .exo-meta { font-size: 13px; color: var(--encre-2); margin-bottom: 10px; }
@@ -1209,7 +1227,11 @@ function pageChapitre(c, tous) {
   h += `<div class="carte"><h3 class="titre-bloc">Dans l'atlas</h3><div class="puces">${(c.theories || []).map(t => puce(t)).join('')}</div>`;
   if ((c.notions || []).length) h += `<p style="margin:10px 0 0;font-size:13.5px">Notions : ${(c.notions).map(terme).join(', ')}</p>`;
   h += `</div>`;
-  h += `<div class="carte"><h3 class="titre-bloc">Exercices</h3>${feuille ? `<a class="lien-simple" href="#exercices/feuille/${feuille.id}">Feuille du chapitre${feuille.nombre ? ` · ${feuille.nombre} exercices` : ''}</a>` : '<p class="vide-note">Pas encore de feuille associée.</p>'}</div>`;
+  if (feuille && (feuille.pdf_enonce || feuille.nombre)) {
+    h += `<div class="carte"><h3 class="titre-bloc">Exercices</h3><div style="display:grid;gap:8px">`;
+    if ((R.exercices?.exercices || []).some(e => e.feuille === feuille.id)) h += `<a class="bouton plein" href="#exercices/feuille/${feuille.id}" style="justify-content:center">Les ${feuille.nombre} exercices en ligne →</a>`;
+    h += `<div style="display:flex;gap:6px;flex-wrap:wrap">${lienPdf(feuille.pdf_enonce, 0, 'Feuille PDF')}${lienPdf(feuille.pdf_corrige, 0, 'Corrigé PDF')}</div></div></div>`;
+  } else h += `<div class="carte"><h3 class="titre-bloc">Exercices</h3><p class="vide-note">Feuille d'exercices à venir.</p></div>`;
   h += `<div class="carte"><h3 class="titre-bloc">Fichiers</h3><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">${statut(c.statut)}${c.pdf ? `<a class="lien-simple" href="${c.pdf}" download style="font-size:13.5px">PDF${c.pages ? `, ${c.pages} pages` : ''}</a>` : '<span style="font-size:13px;color:var(--encre-2)">PDF</span>'}</div></div>`;
   h += `</aside></div>`;
   h += `<nav class="voisins">${prec ? `<a href="#cours/${prec.id}">← ${prec.titre}</a>` : '<span></span>'}<a href="#cours">Tous les cours</a>${suiv ? `<a href="#cours/${suiv.id}">${suiv.titre} →</a>` : '<span></span>'}</nav>`;
@@ -1217,18 +1239,40 @@ function pageChapitre(c, tous) {
 }
 
 /* ---- Exercices */
-const etatExo = { vue: 'exercice', niveaux: new Set(), diff: new Set(), types: new Set(), noeud: '', feuille: '' };
+const etatExo = { vue: 'exercice', niveaux: new Set(), diff: new Set(), types: new Set(), themes: new Set(), q: '', noeud: '', feuille: '', ex: '', montres: 15 };
+const sansAccents = t => String(t).normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
 function exercicesDuNoeud(id) { return (R.exercices?.exercices || []).filter(e => (e.noeuds || []).includes(id)); }
+const feuilleDe = id => (R.exercices?.feuilles || []).find(f => f.id === id) || {};
+const lienPdf = (url, page, texte) => url ? `<a class="bouton" href="${url}${page ? '#page=' + page : ''}" target="_blank" rel="noopener">${texte}</a>` : '';
+
+// Textes des exercices (site publié) : un fichier par feuille, chargé à la première ouverture.
+let chargementExos = null;
+function chargerExercices() {
+  const A = R.exercices?.aCharger;
+  if (!A || !Object.keys(A).length) return null;
+  if (!chargementExos) {
+    chargementExos = Promise.all(Object.entries(A).map(([fid, url]) => fetch(url).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(t => { for (const e of R.exercices.exercices) if (t[e.id]) Object.assign(e, t[e.id]); delete A[fid]; })))
+      .catch(() => { chargementExos = null; });
+  }
+  return chargementExos;
+}
+
 function pageExercices(chemin, premiere) {
   const E = R.exercices || {};
   const [mode, arg] = (chemin || '').split('/');
-  if (!premiere) {}
-  else if (mode === 'notion') { etatExo.vue = 'exercice'; etatExo.noeud = arg || ''; etatExo.feuille = ''; }
-  else if (mode === 'feuille') { etatExo.vue = 'exercice'; etatExo.feuille = arg || ''; etatExo.noeud = ''; }
+  if (premiere) {
+    etatExo.noeud = ''; etatExo.feuille = ''; etatExo.ex = ''; etatExo.montres = 15;
+    if (mode === 'notion') { etatExo.vue = 'exercice'; etatExo.noeud = arg || ''; }
+    else if (mode === 'feuille') { etatExo.vue = 'exercice'; etatExo.feuille = arg || ''; }
+    else if (mode === 'ex') { etatExo.vue = 'exercice'; etatExo.ex = arg || ''; }
+  }
+  const attente = chargerExercices();
+  if (attente) attente.then(() => { const z = $('#rubrique'); if (enRubrique() && z.dataset.nom === 'exercices') rafraichirRubrique(); });
   let h = tete('Rubrique', 'Exercices', E.intro);
-  h += maquette('La banque se remplit au fur et à mesure : trois exercices de la feuille du chapitre 8 de Terminale sont en ligne, avec leur corrigé.');
+  h += maquette('La banque se remplit au fur et à mesure : les exercices du chapitre 1 de Terminale sont en ligne, avec leurs corrigés.');
   h += `<div class="resultats-tete" style="margin-bottom:18px"><div class="segments" role="group" aria-label="Affichage"><button type="button" data-vue="exercice" aria-pressed="${etatExo.vue === 'exercice'}">Par exercice</button><button type="button" data-vue="feuille" aria-pressed="${etatExo.vue === 'feuille'}">Par feuille</button></div></div>`;
-  h += etatExo.vue === 'feuille' ? vueFeuilles(E) : vueExercices(E);
+  h += etatExo.vue === 'feuille' ? vueFeuilles(E) : vueExercices(E, !!attente);
   return h;
 }
 function vueFeuilles(E) {
@@ -1241,48 +1285,68 @@ function vueFeuilles(E) {
       const tot = f.etoiles.reduce((a, b) => a + b, 0);
       h += `<div><div class="repartition" title="Répartition par difficulté">${f.etoiles.map((k, i) => k ? `<span style="width:${100 * k / tot}%;background:${couleurs[i]}"></span>` : '').join('')}</div>`;
       h += `<div class="repartition-legende" style="margin-top:6px">${f.etoiles.map((k, i) => k ? `<span><i class="pastille-diff" style="background:${couleurs[i]}"></i>${difficulte(i + 1)} ${k}</span>` : '').join('')}<span>${f.nombre} exercices</span></div></div>`;
-    } else h += `<p class="vide-note" style="margin:0">Nombre d'exercices et difficultés lus à partir de la feuille déposée.</p>`;
+    } else h += `<p class="vide-note" style="margin:0">Feuille à venir.</p>`;
     if (f.parties) h += `<ol class="parties">${f.parties.map(x => `<li>${x}</li>`).join('')}</ol>`;
-    h += `<div class="actions">${statut(f.statut)}<a class="bouton" aria-disabled="true">Énoncé PDF</a><a class="bouton" aria-disabled="true">Corrigé PDF</a>`;
+    h += `<div class="actions">${statut(f.statut)}${f.pdf_enonce ? lienPdf(f.pdf_enonce, 0, 'Énoncés PDF') : '<a class="bouton" aria-disabled="true">Énoncés PDF</a>'}${f.pdf_corrige ? lienPdf(f.pdf_corrige, 0, 'Corrigés PDF') : '<a class="bouton" aria-disabled="true">Corrigés PDF</a>'}`;
     if ((E.exercices || []).some(e => e.feuille === f.id)) h += `<a class="bouton plein" href="#exercices/feuille/${f.id}">Voir les exercices</a>`;
     if (c) h += `<a class="bouton" href="#cours/${c.id}">Cours</a>`;
     h += `</div></article>`;
   }
   return h + '</div>';
 }
-function vueExercices(E) {
-  const tous = E.exercices || [];
-  const feuilleDe = id => (E.feuilles || []).find(f => f.id === id) || {};
-  const garde = tous.filter(e => {
+function filtrerExercices(tous) {
+  const mots = sansAccents(etatExo.q).split(/[\s,;]+/).filter(m => m.length > 1);
+  return tous.filter(e => {
     const f = feuilleDe(e.feuille);
+    if (etatExo.ex && e.id !== etatExo.ex) return false;
     if (etatExo.feuille && e.feuille !== etatExo.feuille) return false;
     if (etatExo.noeud && !(e.noeuds || []).includes(etatExo.noeud)) return false;
     if (etatExo.niveaux.size && !etatExo.niveaux.has(f.niveau)) return false;
     if (etatExo.diff.size && !etatExo.diff.has(e.etoiles)) return false;
     if (etatExo.types.size && !(e.types || []).some(t => etatExo.types.has(t))) return false;
-    return true;
+    for (const t of etatExo.themes) if (!(e.mots_cles || []).includes(t)) return false;
+    const texte = e.recherche || '';
+    return mots.every(m => texte.includes(m));
   });
-  const niveaux = [...new Set((E.feuilles || []).map(f => f.niveau))];
+}
+function vueExercices(E, enChargement) {
+  const tous = E.exercices || [];
+  const garde = filtrerExercices(tous);
+  const niveaux = [...new Set((E.feuilles || []).filter(f => tous.some(e => e.feuille === f.id)).map(f => f.niveau))];
   const noeudsCites = [...new Set(tous.flatMap(e => e.noeuds || []))];
+  // thèmes : mots-clés, du plus fréquent au moins fréquent, comptés sur les exercices retenus par les autres filtres
+  const compte = new Map();
+  for (const e of tous) for (const m of e.mots_cles || []) compte.set(m, (compte.get(m) || 0) + 1);
+  const themes = [...compte.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'fr'));
+  const typesPresents = (E.types || []).filter(t => tous.some(e => (e.types || []).includes(t)));
   let h = '<div class="banque"><aside class="filtres carte" aria-label="Filtres">';
-  h += `<div><h3 class="titre-bloc">Niveau</h3>${niveaux.map(n => `<label><input type="checkbox" data-filtre="niveau" value="${n}" ${etatExo.niveaux.has(n) ? 'checked' : ''}> ${niveauDe(n).titre} <span class="compte" style="margin-left:auto;color:var(--encre-3);font-size:12px">${tous.filter(e => feuilleDe(e.feuille).niveau === n).length}</span></label>`).join('')}</div>`;
-  h += `<div><h3 class="titre-bloc">Difficulté</h3><div class="niveaux-diff">${[1, 2, 3, 4].map(k => `<button type="button" data-filtre="diff" value="${k}" aria-pressed="${etatExo.diff.has(k)}" title="${['Application directe', 'Mise en œuvre', 'Problème structuré', 'Problème long'][k - 1]}">${difficulte(k)}</button>`).join('')}</div></div>`;
-  h += `<div><h3 class="titre-bloc">Type d'activité</h3><div class="puces-chips">${(E.types || []).map(t => `<button type="button" class="chip" data-filtre="type" value="${esc(t)}" aria-pressed="${etatExo.types.has(t)}">${esc(t)}</button>`).join('')}</div></div>`;
+  h += `<div><h3 class="titre-bloc">Rechercher</h3><input class="recherche-exo" type="search" data-filtre="q" value="${esc(etatExo.q).replace(/"/g, '&quot;')}" placeholder="récurrence, limite, géométrique…" aria-label="Rechercher un exercice par thème" list="themes-exo"><datalist id="themes-exo">${themes.map(([m]) => `<option value="${esc(m)}">`).join('')}</datalist></div>`;
+  h += `<div><h3 class="titre-bloc">Thèmes</h3><div class="puces-chips themes">${themes.map(([m, k], i) => `<button type="button" class="chip${i >= 14 && !etatExo.themes.has(m) && !etatExo.tousThemes ? ' cache' : ''}" data-filtre="theme" value="${esc(m)}" aria-pressed="${etatExo.themes.has(m)}">${esc(m)} <span class="compte">${k}</span></button>`).join('')}</div>${themes.length > 14 ? `<button type="button" class="lien-simple plus-themes" data-plus-themes="1">${etatExo.tousThemes ? 'Moins de thèmes' : `Tous les thèmes (${themes.length})`}</button>` : ''}</div>`;
+  if (niveaux.length > 1) h += `<div><h3 class="titre-bloc">Niveau</h3>${niveaux.map(n => `<label><input type="checkbox" data-filtre="niveau" value="${n}" ${etatExo.niveaux.has(n) ? 'checked' : ''}> ${niveauDe(n).titre} <span class="compte" style="margin-left:auto;color:var(--encre-3);font-size:12px">${tous.filter(e => feuilleDe(e.feuille).niveau === n).length}</span></label>`).join('')}</div>`;
+  h += `<div><h3 class="titre-bloc">Difficulté</h3><div class="niveaux-diff">${[1, 2, 3, 4].map(k => `<button type="button" data-filtre="diff" value="${k}" aria-pressed="${etatExo.diff.has(k)}" title="${['Application directe', 'Mise en œuvre', 'Problème structuré', 'Problème long'][k - 1]} (${tous.filter(e => e.etoiles === k).length})">${difficulte(k)}</button>`).join('')}</div></div>`;
+  h += `<div><h3 class="titre-bloc">Type d'activité</h3><div class="puces-chips">${typesPresents.map(t => `<button type="button" class="chip" data-filtre="type" value="${esc(t)}" aria-pressed="${etatExo.types.has(t)}">${esc(t)}</button>`).join('')}</div></div>`;
   h += `<div><h3 class="titre-bloc">Notion de l'atlas</h3><select data-filtre="noeud"><option value="">Toutes</option>${noeudsCites.map(n => `<option value="${n}" ${etatExo.noeud === n ? 'selected' : ''}>${esc(D.noeuds[n].titre)}</option>`).join('')}</select></div>`;
   h += '</aside><div>';
+  const actifs = etatExo.q || etatExo.themes.size || etatExo.diff.size || etatExo.types.size || etatExo.niveaux.size;
   if (etatExo.noeud) h += `<div class="bandeau-filtre">Exercices liés à ${puce(etatExo.noeud)}<a class="lien-simple" href="#exercices" data-effacer="1" style="margin-left:auto">Retirer ce filtre</a></div>`;
-  if (etatExo.feuille) h += `<div class="bandeau-filtre">Feuille : ${feuilleDe(etatExo.feuille).titre}<a class="lien-simple" href="#exercices" data-effacer="1" style="margin-left:auto">Retirer ce filtre</a></div>`;
-  h += `<div class="resultats-tete"><span>${garde.length} ${garde.length > 1 ? 'exercices' : 'exercice'}</span></div>`;
-  for (const e of garde) {
-    const f = feuilleDe(e.feuille);
-    h += `<article class="exo carte"><div class="exo-tete"><h3>Exercice ${e.numero}</h3>${difficulte(e.etoiles)}${(e.types || []).map(t => `<span class="etiquette-type">${esc(t)}</span>`).join('')}</div>`;
-    h += `<div class="exo-meta">${esc(niveauDe(f.niveau).titre)}${f.chapitre ? `, chapitre ${f.chapitre}` : ''} — ${f.titre}${e.partie ? ` · ${e.partie}` : ''}</div>`;
-    h += `<div class="exo-enonce">${e.enonce}</div>`;
-    if (e.corrige) h += `<details class="corrige"><summary>Corrigé</summary><div class="contenu">${e.corrige}</div></details>`;
-    h += `<div class="exo-pied"><div class="notions">${(e.noeuds || []).map(n => puce(n)).join('')}${(e.notions || []).map(terme).join(' ')}</div><a class="bouton" aria-disabled="true">Feuille complète</a></div></article>`;
-  }
-  if (!garde.length) h += '<p class="vide-note">Aucun exercice ne correspond à ces filtres.</p>';
+  if (etatExo.feuille) h += `<div class="bandeau-filtre">Feuille : ${feuilleDe(etatExo.feuille).titre} (${esc(niveauDe(feuilleDe(etatExo.feuille).niveau).titre)})<a class="lien-simple" href="#exercices" data-effacer="1" style="margin-left:auto">Retirer ce filtre</a></div>`;
+  if (etatExo.ex) h += `<div class="bandeau-filtre">Un seul exercice affiché<a class="lien-simple" href="#exercices" data-effacer="1" style="margin-left:auto">Voir toute la banque</a></div>`;
+  h += `<div class="resultats-tete"><span>${garde.length} ${garde.length > 1 ? 'exercices' : 'exercice'}${actifs ? ` sur ${tous.length}` : ''}</span>${actifs ? '<button type="button" class="lien-simple" data-reinit="1">Effacer la recherche et les filtres</button>' : ''}</div>`;
+  for (const e of garde.slice(0, etatExo.montres)) h += carteExercice(e, enChargement);
+  if (garde.length > etatExo.montres) h += `<p style="text-align:center"><button type="button" class="bouton" data-plus-exos="1">Afficher ${Math.min(15, garde.length - etatExo.montres)} exercices de plus</button></p>`;
+  if (!garde.length) h += '<p class="vide-note">Aucun exercice ne correspond à cette recherche.</p>';
   return h + '</div></div>';
+}
+function carteExercice(e, enChargement) {
+  const f = feuilleDe(e.feuille);
+  let h = `<article class="exo carte" id="ex-${e.id}"><div class="exo-tete"><h3><a class="lien-exo" href="#exercices/ex/${e.id}" title="Lien vers cet exercice">Exercice ${e.numero}</a>${e.titre ? ` <span class="exo-titre">${e.titre}</span>` : ''}</h3>${difficulte(e.etoiles)}${(e.types || []).map(t => `<span class="etiquette-type">${esc(t)}</span>`).join('')}</div>`;
+  h += `<div class="exo-meta">${esc(niveauDe(f.niveau).titre)}${f.chapitre ? `, chapitre ${f.chapitre}` : ''} — ${f.titre}${e.partie ? ` · ${e.partie}` : ''}</div>`;
+  h += e.enonce ? `<div class="exo-enonce">${e.enonce}</div>` : `<p class="vide-note">${enChargement ? 'Chargement de l\'énoncé…' : ''}</p>`;
+  if (e.corrige) h += `<details class="corrige"><summary>Corrigé</summary><div class="contenu">${e.corrige}</div></details>`;
+  h += `<div class="exo-pied"><div class="notions">${(e.mots_cles || []).map(m => `<button type="button" class="mot-cle" data-filtre="theme" value="${esc(m)}" aria-pressed="${etatExo.themes.has(m)}">${esc(m)}</button>`).join('')}</div>`;
+  h += `<div class="exo-liens">${lienPdf(f.pdf_enonce, e.page_enonce, `Énoncé PDF${e.page_enonce ? `, p. ${e.page_enonce}` : ''}`)}${lienPdf(f.pdf_corrige, e.page_corrige, `Corrigé PDF${e.page_corrige ? `, p. ${e.page_corrige}` : ''}`)}</div></div>`;
+  if ((e.noeuds || []).length || (e.notions || []).length) h += `<div class="exo-atlas"><span>Dans l'atlas :</span>${(e.noeuds || []).map(n => puce(n)).join('')}${(e.notions || []).map(terme).join(' ')}</div>`;
+  return h + '</article>';
 }
 
 /* ---- Annales */
@@ -1420,12 +1484,16 @@ $('#rubrique').addEventListener('click', ev => {
   const t = ev.target;
   const b = t.closest('[data-niveau]'); if (b) { pageCours.filtre = b.dataset.niveau; rafraichirRubrique(); return; }
   const v = t.closest('[data-vue]'); if (v) { etatExo.vue = v.dataset.vue; rafraichirRubrique(); return; }
-  const fz = t.closest('[data-filtre="diff"], [data-filtre="type"]');
+  const fz = t.closest('[data-filtre="diff"], [data-filtre="type"], [data-filtre="theme"]');
   if (fz) {
-    const ens = fz.dataset.filtre === 'diff' ? etatExo.diff : etatExo.types, val = fz.dataset.filtre === 'diff' ? +fz.value : fz.value;
-    ens.has(val) ? ens.delete(val) : ens.add(val); rafraichirRubrique(); return;
+    const ens = { diff: etatExo.diff, type: etatExo.types, theme: etatExo.themes }[fz.dataset.filtre];
+    const val = fz.dataset.filtre === 'diff' ? +fz.value : fz.value;
+    ens.has(val) ? ens.delete(val) : ens.add(val); etatExo.montres = 15; rafraichirRubrique(); return;
   }
-  const ef = t.closest('[data-effacer]'); if (ef) { etatExo.noeud = ''; etatExo.feuille = ''; if (location.hash === '#exercices') { ev.preventDefault(); rafraichirRubrique(); } return; }
+  if (t.closest('[data-reinit]')) { etatExo.q = ''; [etatExo.themes, etatExo.diff, etatExo.types, etatExo.niveaux].forEach(x => x.clear()); etatExo.montres = 15; rafraichirRubrique(); return; }
+  if (t.closest('[data-plus-exos]')) { etatExo.montres += 15; rafraichirRubrique(); return; }
+  if (t.closest('[data-plus-themes]')) { etatExo.tousThemes = !etatExo.tousThemes; rafraichirRubrique(); return; }
+  const ef = t.closest('[data-effacer]'); if (ef) { etatExo.noeud = ''; etatExo.feuille = ''; etatExo.ex = ''; if (location.hash === '#exercices') { ev.preventDefault(); rafraichirRubrique(); } return; }
   const fa = t.closest('[data-famille]'); if (fa) { etatAnn.famille = fa.dataset.famille; etatAnn.cle = ''; rafraichirRubrique(); return; }
   const fi = t.closest('[data-filiere]'); if (fi) { etatAnn.filiere = fi.dataset.filiere; etatAnn.cle = ''; rafraichirRubrique(); return; }
   const ca = t.closest('.case[data-cle]'); if (ca) { etatAnn.cle = etatAnn.cle === ca.dataset.cle ? '' : ca.dataset.cle; rafraichirRubrique(); const s = $('#rubrique .tiroir'); if (s) s.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); return; }
@@ -1443,6 +1511,19 @@ $('#rubrique').addEventListener('change', ev => {
   if (t.dataset.filtre === 'niveau') { t.checked ? etatExo.niveaux.add(t.value) : etatExo.niveaux.delete(t.value); rafraichirRubrique(); }
   if (t.dataset.filtre === 'noeud') { etatExo.noeud = t.value; rafraichirRubrique(); }
 });
+// recherche au fil de la frappe : on redessine la page puis on rend le focus au champ
+let minuterieRecherche = null;
+$('#rubrique').addEventListener('input', ev => {
+  const t = ev.target;
+  if (t.dataset.filtre !== 'q') return;
+  clearTimeout(minuterieRecherche);
+  minuterieRecherche = setTimeout(() => {
+    etatExo.q = t.value; etatExo.montres = 15;
+    const pos = t.selectionStart;
+    rafraichirRubrique();
+    const n = $('#rubrique [data-filtre="q"]'); if (n) { n.focus(); n.setSelectionRange(pos, pos); }
+  }, 180);
+});
 
 /* ---- partage : adresse réelle (sans « # »), dont la page porte son propre aperçu */
 const ADRESSE_SITE = 'https://jourdainatlas.github.io/atlas/';
@@ -1450,6 +1531,7 @@ function adressePartage() {
   if (enRubrique()) {
     const z = $('#rubrique'), nom = z.dataset.nom, ch = z.dataset.chemin;
     if (nom === 'cours' && ch && (R.cours?.cours || []).some(c => c.id === ch)) return `${ADRESSE_SITE}cours/${ch}/`;
+    if (nom === 'exercices' && etatExo.ex) return `${ADRESSE_SITE}exercices/${etatExo.ex}/`;
     return `${ADRESSE_SITE}${nom}/`;
   }
   const id = etat.choisi || (etat.graphe !== D.racine ? D.graphes[etat.graphe].conteneur : null);

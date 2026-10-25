@@ -42,6 +42,13 @@ function formule(tex, affichee, ou) {
 
 function rendre(texte, ou) {
   if (!texte) return '';
+  // Blocs de code : ```python … ``` (avant les formules : le code peut contenir des $).
+  const codes = [];
+  texte = texte.replace(/```(\w*)\n([\s\S]*?)\n\s*```/g, (m, lang, code) => {
+    const lignes = code.split('\n'), retrait = Math.min(...lignes.filter(l => l.trim()).map(l => l.match(/^ */)[0].length));
+    codes.push(`<pre class="code"${lang ? ` data-lang="${lang}"` : ''}><code>${echappe(lignes.map(l => l.slice(retrait)).join('\n'))}</code></pre>`);
+    return `\n\n\u0001${codes.length - 1}\u0001\n\n`;
+  });
   const maths = [];
   let s = texte.replace(/\$\$([\s\S]+?)\$\$|\$([^$]+?)\$/g, (m, aff, inl) => {
     const affichee = aff !== undefined;
@@ -62,9 +69,13 @@ function rendre(texte, ou) {
       return `<a class="lien-noeud" href="#${n.graphe}.${id}" data-n="${id}">${txt}</a>`;
     });
     h = h.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>').replace(/\*([^*]+)\*/g, '<em>$1</em>');
+    const code = /^\u0001(\d+)\u0001$/.exec(h.trim());
+    if (code) return codes[+code[1]];
+    // sous-question : paragraphe qui commence par **(a)**, **a)** ou **(i)** → en retrait
+    const sq = /^<strong>\(?[a-z]{1,3}\)<\/strong>/.test(h.trim());
     const seul = /^\u0000(\d+)\u0000$/.exec(h.trim());
     h = h.replace(/\u0000(\d+)\u0000/g, (m, k) => maths[+k].html);
-    return seul && maths[+seul[1]].affichee ? `<div class="formule">${h}</div>` : `<p>${h}</p>`;
+    return seul && maths[+seul[1]].affichee ? `<div class="formule${sq ? ' sq' : ''}">${h}</div>` : `<p${sq ? ' class="sq"' : ''}>${h}</p>`;
   }).join('');
 }
 
@@ -92,6 +103,12 @@ function rendreRubrique(o, ou) {
     }
   }
   return o;
+}
+// Texte de recherche d'un exercice : énoncé sans les formules, minuscules, sans accents.
+const sansAccent = t => t.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
+for (const e of D.rubriques?.exercices?.exercices || []) {
+  const brut = String(e.enonce || '').replace(/```[\s\S]*?```/g, ' ').replace(/\$\$[\s\S]+?\$\$|\$[^$]+?\$/g, ' ').replace(/[*_#]/g, '');
+  e.recherche = sansAccent([e.titre, e.partie, ...(e.mots_cles || []), ...(e.types || []), brut].filter(Boolean).join(' ')).replace(/\s+/g, ' ');
 }
 for (const [nom, r] of Object.entries(D.rubriques || {})) rendreRubrique(r, `rubriques/${nom}`);
 
@@ -150,6 +167,21 @@ for (const gid of Object.keys(D.graphes)) {
   const contenu = JSON.stringify(textes);
   fs.writeFileSync(`site/branches/${gid}.json`, contenu);
   Dsite.aCharger[gid] = `branches/${gid}.json?v=${empreinte(contenu)}`;
+}
+// Textes des exercices (énoncé, corrigé) : un fichier par feuille, chargé à l'ouverture des exercices.
+const Esite = Dsite.rubriques?.exercices;
+if (Esite) {
+  fs.rmSync('site/exercices-textes', { recursive: true, force: true });
+  fs.mkdirSync('site/exercices-textes', { recursive: true });
+  Esite.aCharger = {};
+  for (const fe of Esite.feuilles || []) {
+    const textes = {};
+    for (const e of Esite.exercices || []) if (e.feuille === fe.id) { textes[e.id] = { enonce: e.enonce, corrige: e.corrige }; delete e.enonce; delete e.corrige; }
+    if (!Object.keys(textes).length) continue;
+    const contenu = JSON.stringify(textes);
+    fs.writeFileSync(`site/exercices-textes/${fe.id}.json`, contenu);
+    Esite.aCharger[fe.id] = `exercices-textes/${fe.id}.json?v=${empreinte(contenu)}`;
+  }
 }
 let cssSite = fs.readFileSync(path.join(dist, 'katex.min.css'), 'utf8')
   .replace(/src:url\(fonts\/([^)]+?)\.woff2\) format\("woff2"\)(,url\([^)]+\) format\("[^"]+"\))*/g, (m, f) => {
@@ -248,6 +280,11 @@ for (const c of Rb.cours?.cours || []) {
   pagePartage(`cours/${c.id}/`, `cours/${c.id}`, `${texteBrut(c.titre)} — ${lieu}`, texteBrut(c.resume) || `Cours de ${lieu}.`);
 }
 pagePartage('exercices/', 'exercices', 'Exercices', texteBrut(Rb.exercices?.intro));
+for (const e of Rb.exercices?.exercices || []) {
+  const fe = (Rb.exercices.feuilles || []).find(f => f.id === e.feuille) || {};
+  const lieu = `${texteBrut(fe.titre)}, ${niveaux[fe.niveau] || ''}${fe.chapitre ? ` chapitre ${fe.chapitre}` : ''}`;
+  pagePartage(`exercices/${e.id}/`, `exercices/ex/${e.id}`, `Exercice ${e.numero}${e.titre ? ` (${texteBrut(e.titre)})` : ''} — ${lieu}`, texteBrut(e.enonce));
+}
 pagePartage('annales/', 'annales', 'Annales', texteBrut(Rb.annales?.intro));
 pagePartage('a-propos/', 'a-propos', 'À propos', 'L\'auteur et le projet ATLAS.');
 for (const n of Object.values(D.noeuds)) {
