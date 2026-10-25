@@ -139,6 +139,7 @@ class Conv:
                 for q in parts:
                     if q.startswith('$'): r += '$' + s.tex_math(q[1:-1]) + '$'
                     else:
+                        q = re.sub(r'\\textsc\{([^{}]*)\}', lambda m: m.group(1).upper(), q)
                         q = re.sub(r'\\textbf\{([^}]*)\}', r'**\1**', q); q = re.sub(r'\\emph\{([^}]*)\}', r'*\1*', q)
                         q = q.replace('\\og', '«').replace('\\fg{}', '»').replace('\\fg', '»').replace('~', ' ')
                         r += q
