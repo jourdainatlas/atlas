@@ -8,6 +8,7 @@
 // Syntaxe des fiches :
 //   $...$  et  $$...$$     formules LaTeX
 //   [[id]]  ou [[id|texte]] terme du lexique, avec définition au survol
+//   \lex{id}{...}         dans une formule : notation du lexique (ensembles usuels)
 //   {{id|texte}}           lien vers un nœud de l'atlas
 //   **gras**  *italique*   ; une ligne vide sépare deux paragraphes
 import fs from 'node:fs';
@@ -22,9 +23,17 @@ const erreurs = [];
 
 const echappe = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
+// Dans une formule, \lex{id}{corps} marque une notation définie au lexique (un ensemble usuel,
+// par exemple) : le corps est composé normalement, puis enveloppé comme un terme cliquable.
 function formule(tex, affichee, ou) {
+  tex = tex.replace(/\\lex\{([^}]+)\}/g, (m, id) => {
+    if (!D.lexique[id]) erreurs.push(`${ou} : notation inconnue \\lex{${id}}`);
+    return `\\htmlData{g=${id}}`;
+  });
   try {
-    return katex.renderToString(tex, { displayMode: affichee, throwOnError: true, strict: 'ignore', output: 'html' });
+    return katex.renderToString(tex, { displayMode: affichee, throwOnError: true, strict: 'ignore', output: 'html',
+      trust: c => c.command === '\\htmlData' })
+      .replace(/<span class="enclosing" data-g="/g, '<span class="enclosing terme terme-math" tabindex="0" role="button" data-g="');
   } catch (e) {
     erreurs.push(`${ou} : ${e.message}`);
     return echappe(tex);
@@ -67,7 +76,10 @@ for (const n of Object.values(D.noeuds)) {
   n.remarques = (n.remarques || []).map((r, i) => rendre(r, `${n.id}/remarque ${i + 1}`));
   n.sorte = NOMS[n.nature] + (n.numero ? ' ' + n.numero : '');
 }
-for (const e of Object.values(D.lexique)) e.definition = rendre(e.definition, `lexique/${e.id}`);
+for (const e of Object.values(D.lexique)) {
+  e.definition = rendre(e.definition, `lexique/${e.id}`);
+  if (e.notation) e.notation = formule(e.notation.trim().replace(/^\$|\$$/g, ''), false, `lexique/${e.id}/notation`);
+}
 
 if (erreurs.length) {
   console.error('ERREURS :\n  - ' + erreurs.join('\n  - '));

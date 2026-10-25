@@ -103,6 +103,14 @@ for g in graphes:
 # ------------------------------------------------------------------ références
 RE_TERME = re.compile(r'\[\[([^\]|]+)(?:\|[^\]]*)?\]\]')
 RE_LIEN = re.compile(r'\{\{([^}|]+)\|[^}]*\}\}')
+RE_LEX = re.compile(r'\\lex\{([^}]+)\}')          # notation du lexique dans une formule
+
+def termes(texte):
+    """Termes du lexique employés : [[id]] dans le texte, \\lex{id}{...} dans les formules."""
+    return RE_TERME.findall(texte) + RE_LEX.findall(texte)
+
+def mentionne(texte, t):
+    return f'[[{t}]' in texte or f'[[{t}|' in texte or f'\\lex{{{t}}}' in texte
 emplois = defaultdict(set)
 
 def textes(n):
@@ -111,7 +119,7 @@ def textes(n):
     yield from n['remarques']
 
 def verifie_refs(texte, ou, lieu=None):
-    for t in RE_TERME.findall(texte):
+    for t in termes(texte):
         if t not in lex: erreur(f"{ou} : terme inconnu [[{t}]]")
         elif lieu: emplois[t].add(lieu)
     for t in RE_LIEN.findall(texte):
@@ -123,7 +131,7 @@ for e in lex.values():
     verifie_refs(e['definition'], f"lexique/{e['id']}")
 for t in lex:
     if not emplois[t]:
-        cites = [e['id'] for e in lex.values() if f'[[{t}' in e['definition']]
+        cites = [e['id'] for e in lex.values() if mentionne(e['definition'], t)]
         if not cites: avert(f"lexique : « {t} » n'est employé nulle part")
 
 # ------------------------------------------------------------------ ordre d'apparition des notions
@@ -156,7 +164,7 @@ for t, e in lex.items():
 if avant and not erreurs:
     for n in noeuds.values():
         for champ in ['texte', 'enonce', 'preuve']:
-            for t in RE_TERME.findall(n.get(champ) or ''):
+            for t in termes(n.get(champ) or ''):
                 d = lex[t]['defini_dans']
                 if d not in avant[n['id']]:
                     erreur(f"{n['id']}/{champ} emploie « {t} », défini plus loin, au nœud {d}")
@@ -164,16 +172,16 @@ if avant and not erreurs:
                 if t in noeuds and t not in avant[n['id']]:
                     erreur(f"{n['id']}/{champ} renvoie au nœud {t}, qui vient plus loin ou ailleurs")
         for txt in n['remarques'] + ([n['choix']] if n.get('choix') else []):
-            for t in RE_TERME.findall(txt):
+            for t in termes(txt):
                 if lex[t]['defini_dans'] not in avant[n['id']]:
                     renvois.append(f"{n['id']} → {t}")
     for t, e in lex.items():
         d = e['defini_dans']
-        for t2 in RE_TERME.findall(e['definition']):
+        for t2 in termes(e['definition']):
             d2 = lex[t2]['defini_dans']
             if d2 not in avant[d]:
                 erreur(f"lexique/{t} (défini au nœud {d}) emploie « {t2} », défini plus loin, au nœud {d2}")
-        if not any(f'[[{t}' in x for x in textes(noeuds[d])):
+        if not any(mentionne(x, t) for x in textes(noeuds[d])):
             avert(f"lexique/{t} : le nœud {d}, où il est défini, ne le mentionne pas")
     if renvois: avert(f"renvois en avant dans les remarques ({len(renvois)}) : " + ', '.join(sorted(renvois)))
 
@@ -416,7 +424,7 @@ for gid, d in D.items():
 for t, e in lex.items():
     sortie['lexique'][t] = {'id': t, 'terme': e['terme'], 'definition': e['definition'],
                             'emplois': sorted(emplois[t]), 'defini': e['defini_dans'],
-                            'voir': e.get('voir', [])}
+                            'voir': e.get('voir', []), 'notation': e.get('notation')}
 
 import os; os.makedirs('construction', exist_ok=True)
 json.dump(sortie, open('construction/donnees.json', 'w', encoding='utf-8'), ensure_ascii=False, indent=1)

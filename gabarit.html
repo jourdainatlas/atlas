@@ -101,6 +101,8 @@ button { font: inherit; color: inherit; }
 .fil button:hover { background: var(--trame); color: var(--encre); }
 .fil li:last-child button { color: var(--encre); font-weight: 600; cursor: default; }
 .fil li:last-child button:hover { background: none; }
+.fil li:last-child button.rappel { cursor: pointer; text-decoration: underline dotted var(--encre-3); text-underline-offset: 4px; }
+.fil li:last-child button.rappel:hover { background: var(--trame); }
 
 .legende { position: relative; }
 .legende > summary {
@@ -311,6 +313,11 @@ body.redim .vue { pointer-events: none; }
   font-weight: 600; font-style: normal;
 }
 .terme:hover { background: var(--rouge-fond); }
+/* notation du lexique dans une formule : même rouge, sans graisse ni italique imposés */
+.katex .terme-math { font-weight: inherit; font-style: inherit; border-bottom-width: 1px; padding-bottom: 1px; }
+.katex .terme-math .terme-math { color: inherit; border-bottom: none; }
+.notation { font-weight: 400; color: var(--encre-2); margin-left: 6px; }
+.notation .terme { color: inherit; border-bottom: none; cursor: inherit; font-weight: inherit; }
 .lien-noeud { color: inherit; text-decoration: underline; text-decoration-color: var(--encre-3); text-underline-offset: 3px; }
 .lien-noeud:hover { text-decoration-color: var(--encre); }
 
@@ -595,8 +602,17 @@ function fil() {
     const li = document.createElement('li');
     const b = document.createElement('button');
     b.type = 'button'; b.textContent = D.graphes[g].titre;
-    if (g === etat.graphe) b.setAttribute('aria-current', 'location');
-    else {
+    if (g === etat.graphe) {
+      b.setAttribute('aria-current', 'location');
+      // Le nom du graphe courant réaffiche la fiche de la théorie qui le contient,
+      // quand on lit la fiche d'un de ses nœuds.
+      const k = D.graphes[g].conteneur;
+      if (k && etat.choisi && etat.choisi !== k) {
+        b.classList.add('rappel');
+        b.title = `Afficher la fiche « ${D.noeuds[k].titre} »`;
+        b.addEventListener('click', () => aller(g, null, { sansDefilement: true }));
+      }
+    } else {
       const c = chemin(etat.graphe), suivant = c[c.indexOf(g) + 1];
       b.addEventListener('click', () => aller(g, D.graphes[suivant].conteneur));
     }
@@ -733,11 +749,16 @@ function accueil() {
 function remplirLexique() {
   const L = Object.values(D.lexique).sort((a, b) => a.terme.localeCompare(b.terme, 'fr'));
   $('#lexique').innerHTML = L.map(e => `<article class="entree-lex" id="lx-${e.id}" data-t="${esc(e.terme.toLowerCase())}">
-      <h3>${esc(e.terme)}</h3>${e.definition}
+      <h3>${esc(e.terme)}${e.notation ? ` <span class="notation">${e.notation}</span>` : ''}</h3>${e.definition}
       <div class="emplois">Défini dans ${puce(e.defini)}</div>
       ${e.emplois.length ? `<div class="emplois">Employé dans ${e.emplois.map(i => puce(i)).join('')}</div>` : ''}
       ${e.voir.length ? `<div class="emplois">Voir aussi ${e.voir.map(v => `<span class="terme" data-g="${v}" tabindex="0" role="button">${esc(D.lexique[v].terme)}</span>`).join(', ')}</div>` : ''}
     </article>`).join('');
+  // la recherche porte aussi sur la notation (« L2 », « Spec », « Z/nZ »…)
+  document.querySelectorAll('.entree-lex').forEach(a => {
+    const n = a.querySelector('h3 .notation .katex-html');
+    if (n) a.dataset.t += ' ' + n.textContent.replace(/\s+/g, '').toLowerCase();
+  });
 }
 function ouvrirTerme(id) {
   cacherBulle(true);
@@ -771,7 +792,7 @@ function montrerBulle(el) {
   clearTimeout(minuterie);
   const b = $('#bulle');
   if (termeActif !== el) {
-    b.innerHTML = `<p class="bulle-terme">${esc(e.terme)}</p>${e.definition}<p class="bulle-pied">Défini au nœud « ${esc(D.noeuds[e.defini].titre)} » · cliquer pour l'ouvrir dans le lexique</p>`;
+    b.innerHTML = `<p class="bulle-terme">${esc(e.terme)}${e.notation ? ` <span class="notation">${e.notation}</span>` : ''}</p>${e.definition}<p class="bulle-pied">Défini au nœud « ${esc(D.noeuds[e.defini].titre)} » · cliquer pour l'ouvrir dans le lexique</p>`;
     termeActif = el;
   }
   b.hidden = false;
