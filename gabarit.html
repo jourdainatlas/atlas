@@ -299,6 +299,10 @@ pre.code {
   border-radius: 6px; padding: 10px 12px; overflow-x: auto; margin: .3em 0 .9em; white-space: pre;
 }
 p.sq, .formule.sq { margin-left: 1.6em; }
+figure.fig { margin: .6em 0 1em; text-align: center; }
+figure.fig img { max-width: 100%; height: auto; background: #fff; padding: 8px; border-radius: 6px; }
+p code, li code { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .9em; background: var(--fond-code, rgba(127,127,127,.12)); padding: 0 .25em; border-radius: 3px; }
+.source-exo { font-size: .82em; opacity: .7; font-style: italic; margin: .3em 0 0; }
 .formule { overflow-x: auto; overflow-y: hidden; margin: .2em 0 .8em; padding: 2px 0; }
 .ouvrir {
   display: inline-flex; align-items: center; gap: 8px; margin: 4px 0 20px; cursor: pointer;
@@ -1342,6 +1346,7 @@ function carteExercice(e, enChargement) {
   let h = `<article class="exo carte" id="ex-${e.id}"><div class="exo-tete"><h3><a class="lien-exo" href="#exercices/ex/${e.id}" title="Lien vers cet exercice">Exercice ${e.numero}</a>${e.titre ? ` <span class="exo-titre">${e.titre}</span>` : ''}</h3>${difficulte(e.etoiles)}${(e.types || []).map(t => `<span class="etiquette-type">${esc(t)}</span>`).join('')}</div>`;
   h += `<div class="exo-meta">${esc(niveauDe(f.niveau).titre)}${f.chapitre ? `, chapitre ${f.chapitre}` : ''} — ${f.titre}${e.partie ? ` · ${e.partie}` : ''}</div>`;
   h += e.enonce ? `<div class="exo-enonce">${e.enonce}</div>` : `<p class="vide-note">${enChargement ? 'Chargement de l\'énoncé…' : ''}</p>`;
+  if (e.source) h += `<p class="source-exo">Source : ${esc(e.source)}</p>`;
   if (e.corrige) h += `<details class="corrige"><summary>Corrigé</summary><div class="contenu">${e.corrige}</div></details>`;
   h += `<div class="exo-pied"><div class="notions">${(e.mots_cles || []).map(m => `<button type="button" class="mot-cle" data-filtre="theme" value="${esc(m)}" aria-pressed="${etatExo.themes.has(m)}">${esc(m)}</button>`).join('')}</div>`;
   h += `<div class="exo-liens">${lienPdf(f.pdf_enonce, e.page_enonce, `Énoncé PDF${e.page_enonce ? `, p. ${e.page_enonce}` : ''}`)}${lienPdf(f.pdf_corrige, e.page_corrige, `Corrigé PDF${e.page_corrige ? `, p. ${e.page_corrige}` : ''}`)}</div></div>`;

@@ -49,6 +49,19 @@ function rendre(texte, ou) {
     codes.push(`<pre class="code"${lang ? ` data-lang="${lang}"` : ''}><code>${echappe(lignes.map(l => l.slice(retrait)).join('\n'))}</code></pre>`);
     return `\n\n\u0001${codes.length - 1}\u0001\n\n`;
   });
+  // Figures : ![légende](documents/figures/x.svg) seule sur sa ligne.
+  texte = texte.replace(/^!\[([^\]]*)\]\(([^)\s]+)\)\s*$/gm, (m, alt, src) => {
+    let dim = '';
+    try {
+      const m = /<svg[^>]*\bwidth="([\d.]+)(pt)?"[^>]*\bheight="([\d.]+)(pt)?"/.exec(fs.readFileSync(src, 'utf8').slice(0, 600));
+      if (m) dim = ` width="${Math.round(m[1] * 1.5)}" height="${Math.round(m[3] * 1.5)}"`;
+    } catch (e) { erreurs.push(`${ou} : figure introuvable ${src}`); }
+    codes.push(`<figure class="fig"><img src="${echappe(src)}" alt="${echappe(alt)}"${dim} loading="lazy"></figure>`);
+    return `\n\n\u0001${codes.length - 1}\u0001\n\n`;
+  });
+  // Code en ligne : `…` (hors formules).
+  const enligne = [];
+  texte = texte.replace(/`([^`\n]+)`/g, (m, c) => { enligne.push(`<code>${echappe(c)}</code>`); return `\u0002${enligne.length - 1}\u0002`; });
   const maths = [];
   let s = texte.replace(/\$\$([\s\S]+?)\$\$|\$([^$]+?)\$/g, (m, aff, inl) => {
     const affichee = aff !== undefined;
@@ -75,6 +88,7 @@ function rendre(texte, ou) {
     const sq = /^<strong>\(?[a-z]{1,3}\)<\/strong>/.test(h.trim());
     const seul = /^\u0000(\d+)\u0000$/.exec(h.trim());
     h = h.replace(/\u0000(\d+)\u0000/g, (m, k) => maths[+k].html);
+    h = h.replace(/\u0002(\d+)\u0002/g, (m, k) => enligne[+k]);
     return seul && maths[+seul[1]].affichee ? `<div class="formule${sq ? ' sq' : ''}">${h}</div>` : `<p${sq ? ' class="sq"' : ''}>${h}</p>`;
   }).join('');
 }
