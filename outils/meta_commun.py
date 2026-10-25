@@ -6,7 +6,7 @@ import re
 
 
 def sans_formules(t):
-    t = re.sub(r'```.*?```', ' ', t, flags=re.S)
+    t = re.sub(r'```python.*?```', ' ', t, flags=re.S)  # le code est ignoré, les tableaux non
     return t
 
 
@@ -17,7 +17,7 @@ def types_exercice(titre, enonce, corrige, etoiles):
     if 'type bac' in titre: T.append('Type Bac')
     if re.search(r'une seule (des réponses|réponse) (proposées )?est exacte|qcm|réponse a\b', e): T.append('QCM')
     if re.search(r'vrai ou faux|vraie ou fausse|vraies ou fausses', e): T.append('Vrai ou faux')
-    if 'python' in titre or '```python' in enonce or re.search(r'python|algorithme|script|programme (suivant|python|ci-dessous)|écrire un programme', e): T.append('Algorithmique')
+    if 'python' in titre or '```python' in enonce or re.search(r'python|(un|cet|l\'|l’)\s*algorithme (suivant|ci-dessous)|cet algorithme|écrire un algorithme|script|programme (suivant|python|ci-dessous)|écrire un programme', e): T.append('Algorithmique')
     if re.search(r'graphiquement|lecture graphique|par lecture|courbe représentative ci-dessous|ci-dessous la courbe|on a représenté|ci-contre', e): T.append('Lecture graphique')
     if re.search(r'conjectur', e): T.append('Conjecture')
     if etoiles >= 3 and len(enonce) > 1200: T.append('Problème')

@@ -383,6 +383,7 @@ def feuille(tex):
     pre, corps = brut.split('\\begin{document}', 1)
     M = lire_macros(sans_commentaires(pre))
     corps_sc = sans_commentaires(corps)
+    corps_sc = re.sub(r'\\(?:euro|texteuro)(?:\{\})?', '€', corps_sc)
     return pre, developper(corps_sc, M), sources(brut)
 
 def main():
