@@ -76,6 +76,25 @@ for (const n of Object.values(D.noeuds)) {
   n.remarques = (n.remarques || []).map((r, i) => rendre(r, `${n.id}/remarque ${i + 1}`));
   n.sorte = NOMS[n.nature] + (n.numero ? ' ' + n.numero : '');
 }
+// Rubriques : les champs de texte riche sont rendus comme les fiches ; les titres courts
+// (sommaire, parties) peuvent contenir des formules, rendues sans paragraphe.
+const RICHES = new Set(['intro', 'resume', 'enonce', 'corrige', 'indication', 'texte']);
+const COURTS = new Set(['sommaire', 'parties', 'partie', 'titre']);
+const enLigne = (t, ou) => rendre(String(t), ou).replace(/^<p>|<\/p>$/g, '');
+function rendreRubrique(o, ou) {
+  if (Array.isArray(o)) return o.map((x, i) => rendreRubrique(x, `${ou}[${i}]`));
+  if (o && typeof o === 'object') {
+    for (const [k, v] of Object.entries(o)) {
+      if (typeof v === 'string' && RICHES.has(k)) o[k] = rendre(v, `${ou}/${k}`);
+      else if (typeof v === 'string' && COURTS.has(k)) o[k] = enLigne(v, `${ou}/${k}`);
+      else if (Array.isArray(v) && COURTS.has(k)) o[k] = v.map((t, i) => enLigne(t, `${ou}/${k}[${i}]`));
+      else o[k] = rendreRubrique(v, `${ou}/${k}`);
+    }
+  }
+  return o;
+}
+for (const [nom, r] of Object.entries(D.rubriques || {})) rendreRubrique(r, `rubriques/${nom}`);
+
 for (const e of Object.values(D.lexique)) {
   e.definition = rendre(e.definition, `lexique/${e.id}`);
   if (e.notation) e.notation = formule(e.notation.trim().replace(/^\$|\$$/g, ''), false, `lexique/${e.id}/notation`);

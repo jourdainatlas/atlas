@@ -15,7 +15,7 @@ Vérifications bloquantes (le script s'arrête sur erreur) :
   - aucune arête tracée ne traverse un nœud.
 Avertissements : termes du lexique jamais employés, arêtes redondantes non tracées.
 """
-import glob, json, re, sys
+import glob, json, os, re, sys
 from collections import defaultdict
 import networkx as nx
 import yaml
@@ -425,6 +425,44 @@ for t, e in lex.items():
     sortie['lexique'][t] = {'id': t, 'terme': e['terme'], 'definition': e['definition'],
                             'emplois': sorted(emplois[t]), 'defini': e['defini_dans'],
                             'voir': e.get('voir', []), 'notation': e.get('notation')}
+
+# ------------------------------------------------------------------ rubriques (cours, exercices…)
+# Fichiers rubriques/*.yaml : chaque rubrique est passée telle quelle à la page ; on vérifie
+# seulement que les renvois vers l'atlas (nœuds, termes) et entre rubriques existent.
+rubriques = {}
+for f in sorted(glob.glob('rubriques/*.yaml')):
+    rubriques[os.path.basename(f)[:-5]] = yaml.safe_load(open(f, encoding='utf-8')) or {}
+def verifie_rubrique(nom, objet, ou):
+    if isinstance(objet, dict):
+        for cle, v in objet.items():
+            if cle in ('theories', 'noeuds'):
+                for t in v or []:
+                    if t not in noeuds: erreur(f"rubriques/{nom} {ou} : nœud inconnu {t}")
+            elif cle == 'notions':
+                for t in v or []:
+                    if t not in lex: erreur(f"rubriques/{nom} {ou} : terme inconnu {t}")
+            else:
+                verifie_rubrique(nom, v, f"{ou}/{objet.get('id', cle)}")
+    elif isinstance(objet, list):
+        for x in objet: verifie_rubrique(nom, x, ou)
+    elif isinstance(objet, str):
+        verifie_refs(objet, f"rubriques/{nom} {ou}")
+for nom, r in rubriques.items(): verifie_rubrique(nom, r, '')
+if 'exercices' in rubriques and 'cours' in rubriques:
+    ids_cours = {c['id'] for c in rubriques['cours'].get('cours', [])}
+    ids_feuilles = {f['id'] for f in rubriques['exercices'].get('feuilles', [])}
+    for c in rubriques['cours'].get('cours', []):
+        if c.get('exercices') and c['exercices'] not in ids_feuilles:
+            erreur(f"rubriques/cours {c['id']} : feuille inconnue {c['exercices']}")
+    for fe in rubriques['exercices'].get('feuilles', []):
+        if fe.get('cours') and fe['cours'] not in ids_cours:
+            erreur(f"rubriques/exercices {fe['id']} : cours inconnu {fe['cours']}")
+    for e in rubriques['exercices'].get('exercices', []):
+        if e['feuille'] not in ids_feuilles:
+            erreur(f"rubriques/exercices {e['id']} : feuille inconnue {e['feuille']}")
+if erreurs:
+    print("ERREURS :"); [print("  -", e) for e in erreurs]; sys.exit(1)
+sortie['rubriques'] = rubriques
 
 import os; os.makedirs('construction', exist_ok=True)
 json.dump(sortie, open('construction/donnees.json', 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
