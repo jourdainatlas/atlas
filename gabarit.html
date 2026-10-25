@@ -581,11 +581,11 @@ body.en-rubrique .legende { display: none; }
       <nav class="menu-rubriques" id="menu-rubriques" aria-label="Rubriques" hidden>
         <a href="#edifice" data-rubrique="edifice"><span class="m-titre">L'édifice</span><span class="m-desc">Le graphe des théories, de la logique aux grandes théories.</span></a>
         <hr>
-        <a href="#cours" data-rubrique="cours"><span class="m-titre">Cours</span><span class="m-badge">maquette</span><span class="m-desc">Les cours rédigés en LaTeX, chapitre par chapitre.</span></a>
-        <a href="#exercices" data-rubrique="exercices"><span class="m-titre">Exercices</span><span class="m-badge">maquette</span><span class="m-desc">Feuilles et exercices corrigés, à chercher par notion.</span></a>
-        <a href="#annales" data-rubrique="annales"><span class="m-titre">Annales</span><span class="m-badge">maquette</span><span class="m-desc">Sujets des concours d'ingénieurs et de l'enseignement.</span></a>
+        <a href="#cours" data-rubrique="cours"><span class="m-titre">Cours</span><span class="m-badge">en construction</span><span class="m-desc">Les cours scolaires, chapitre par chapitre.</span></a>
+        <a href="#exercices" data-rubrique="exercices"><span class="m-titre">Exercices</span><span class="m-badge">en construction</span><span class="m-desc">Feuilles et exercices corrigés, à chercher par notion.</span></a>
+        <a href="#annales" data-rubrique="annales"><span class="m-titre">Annales</span><span class="m-badge">en construction</span><span class="m-desc">Sujets des concours d'ingénieurs et de l'enseignement.</span></a>
         <hr>
-        <a href="#a-propos" data-rubrique="a-propos"><span class="m-titre">À propos</span><span class="m-badge">maquette</span><span class="m-desc">L'auteur et le projet.</span></a>
+        <a href="#a-propos" data-rubrique="a-propos"><span class="m-titre">À propos</span><span class="m-badge">en construction</span><span class="m-desc">L'auteur et le projet.</span></a>
       </nav>
     </div>
     <ol class="fil" id="fil" aria-label="Position dans l'atlas"></ol>
@@ -1140,7 +1140,7 @@ let ancreEdifice = '';
 const enRubrique = () => document.body.classList.contains('en-rubrique');
 
 function maquette(texte) {
-  return `<p class="maquette"><strong>Maquette</strong><span>${texte}</span></p>`;
+  return `<p class="maquette"><strong>En construction</strong><span>${texte}</span></p>`;
 }
 function tete(surTitre, titre, chapeau) {
   return `<header class="page-tete"><p class="sur-titre">${surTitre}</p><h2>${titre}</h2>${chapeau ? `<div class="chapeau">${chapeau}</div>` : ''}</header>`;
@@ -1163,7 +1163,7 @@ function pageCours(chemin) {
   }
   const niv = (pageCours.filtre ||= 'tous');
   let h = tete('Rubrique', 'Cours', C.intro);
-  h += maquette('Les chapitres listés sont ceux de vos fichiers de cours ; leurs titres sont provisoires et aucun PDF n\'est encore déposé.');
+  h += maquette('Les chapitres sont déposés au fur et à mesure ; leurs titres sont provisoires tant que le PDF n\'est pas en ligne.');
   const presents = (C.niveaux || []).filter(n => tous.some(c => c.niveau === n.id));
   h += `<div class="cours-filtres"><div class="puces-chips" role="group" aria-label="Niveau">`;
   h += `<button type="button" class="chip" data-niveau="tous" aria-pressed="${niv === 'tous'}">Tous <span class="compte">${tous.length}</span></button>`;
@@ -1186,8 +1186,8 @@ function pageChapitre(c, tous) {
   const meme = tous.filter(x => x.niveau === c.niveau);
   const i = meme.indexOf(c), prec = meme[i - 1], suiv = meme[i + 1];
   const feuille = (R.exercices?.feuilles || []).find(f => f.id === c.exercices);
-  let h = tete(`${esc(niveauDe(c.niveau).titre)}${c.chapitre ? ` · chapitre ${c.chapitre}` : ''}`, c.titre, c.resume || '<p class="vide-note">Résumé du chapitre à rédiger.</p>');
-  h += maquette('Le lecteur affichera le PDF du chapitre une fois déposé ; la colonne de droite montre les liens prévus vers l\'atlas et les exercices.');
+  let h = tete(`${esc(niveauDe(c.niveau).titre)}${c.chapitre ? ` · chapitre ${c.chapitre}` : ''}`, c.titre, c.resume || '<p class="vide-note">Résumé à venir.</p>');
+  h += maquette('Le PDF de ce chapitre n\'est pas encore déposé ; il s\'affichera ici.');
   h += `<div class="lecture"><div class="lecteur carte">`;
   h += `<div class="lecteur-barre"><div class="groupe"><button class="bouton" aria-disabled="true">‹</button><span>page — / —</span><button class="bouton" aria-disabled="true">›</button></div>`;
   h += `<div class="groupe"><a class="bouton" aria-disabled="true">Ouvrir le PDF</a><a class="bouton" aria-disabled="true">Source .tex</a></div></div>`;
@@ -1215,7 +1215,7 @@ function pageExercices(chemin, premiere) {
   else if (mode === 'notion') { etatExo.vue = 'exercice'; etatExo.noeud = arg || ''; etatExo.feuille = ''; }
   else if (mode === 'feuille') { etatExo.vue = 'exercice'; etatExo.feuille = arg || ''; etatExo.noeud = ''; }
   let h = tete('Rubrique', 'Exercices', E.intro);
-  h += maquette('Les trois exercices affichés sont repris de votre feuille du chapitre 8 de Terminale, avec leur corrigé ; les feuilles ne sont pas encore déposées.');
+  h += maquette('La banque se remplit au fur et à mesure : trois exercices de la feuille du chapitre 8 de Terminale sont en ligne, avec leur corrigé.');
   h += `<div class="resultats-tete" style="margin-bottom:18px"><div class="segments" role="group" aria-label="Affichage"><button type="button" data-vue="exercice" aria-pressed="${etatExo.vue === 'exercice'}">Par exercice</button><button type="button" data-vue="feuille" aria-pressed="${etatExo.vue === 'feuille'}">Par feuille</button></div></div>`;
   h += etatExo.vue === 'feuille' ? vueFeuilles(E) : vueExercices(E);
   return h;
@@ -1284,7 +1284,7 @@ function pageAnnales() {
   etatAnn.famille = fam.id;
   if (fam.filieres && !fam.filieres.includes(etatAnn.filiere)) etatAnn.filiere = fam.filieres[0];
   let h = tete('Rubrique', 'Annales', A.intro);
-  h += maquette('La grille montre l\'organisation prévue ; aucune épreuve n\'est encore déposée. Cliquez une case pour voir la fiche d\'un sujet.');
+  h += maquette('Aucun sujet n\'est encore déposé ; la grille montre l\'organisation prévue. Une case ouvre la fiche du sujet correspondant.');
   h += `<div class="annales-barre"><div class="segments" role="group" aria-label="Famille de concours">${fams.map(f => `<button type="button" data-famille="${f.id}" aria-pressed="${f.id === fam.id}">${f.titre}</button>`).join('')}</div>`;
   if (fam.filieres) h += `<div class="puces-chips" role="group" aria-label="Filière">${fam.filieres.map(x => `<button type="button" class="chip" data-filiere="${x}" aria-pressed="${x === etatAnn.filiere}">${x}</button>`).join('')}</div>`;
   h += `</div><div class="carte grille-wrap"><table class="grille"><thead><tr><th>Concours</th>${fam.annees.map(a => `<th>${a}</th>`).join('')}</tr></thead><tbody>`;
@@ -1321,10 +1321,10 @@ function pageAPropos() {
   const nbExos = (R.exercices?.exercices || []).length;
   const nbCours = (R.cours?.cours || []).filter(c => c.statut === 'depose').length;
   let h = tete('Rubrique', 'À propos', '');
-  h += maquette('Les sections en pointillés attendent votre texte ; la présentation du projet est un premier jet.');
+  h += maquette('Cette page sera complétée prochainement.');
   h += `<div class="apropos"><aside class="profil carte"><div class="portrait" aria-hidden="true">${esc(P.initiales || '')}</div><h3>${esc(P.auteur || '')}</h3><p class="fonction">${esc(P.fonction || '')}</p>`;
   h += `<div class="chiffres"><div><b>${D.graphes[D.racine].noeuds.length}</b>théories</div><div><b>${Object.keys(D.noeuds).length}</b>nœuds</div><div><b>${Object.keys(D.lexique).length}</b>termes</div><div><b>${nbCours}</b>cours déposés</div><div><b>${nbExos}</b>exercices en ligne</div></div></aside>`;
-  h += `<div class="texte-auteur">${(P.sections || []).map(s => `<section class="${s.a_rediger ? 'a-rediger' : ''}"><h3>${s.titre}${s.a_rediger ? ' <span class="statut">À rédiger</span>' : ''}</h3><div class="corps-texte">${s.texte || ''}</div></section>`).join('')}</div></div>`;
+  h += `<div class="texte-auteur">${(P.sections || []).map(s => `<section class="${s.a_rediger ? 'a-rediger' : ''}"><h3>${s.titre}${s.a_rediger ? ' <span class="statut">À venir</span>' : ''}</h3><div class="corps-texte">${s.texte || ''}</div></section>`).join('')}</div></div>`;
   return h;
 }
 
