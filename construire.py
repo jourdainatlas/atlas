@@ -460,6 +460,10 @@ if 'exercices' in rubriques and 'cours' in rubriques:
     for e in rubriques['exercices'].get('exercices', []):
         if e['feuille'] not in ids_feuilles:
             erreur(f"rubriques/exercices {e['id']} : feuille inconnue {e['feuille']}")
+for c in rubriques.get('cours', {}).get('cours', []):
+    for champ in ('pdf', 'tex'):
+        if c.get(champ) and not os.path.isfile(c[champ]):
+            erreur(f"rubriques/cours {c['id']} : fichier introuvable {c[champ]}")
 if erreurs:
     print("ERREURS :"); [print("  -", e) for e in erreurs]; sys.exit(1)
 sortie['rubriques'] = rubriques

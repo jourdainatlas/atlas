@@ -445,6 +445,8 @@ body.en-rubrique .legende { display: none; }
 }
 .lecteur-barre .groupe { display: flex; gap: 6px; align-items: center; }
 .lecteur-fond { background: var(--trame); padding: 28px 16px; display: flex; justify-content: center; }
+.lecteur-pages { flex-direction: column; align-items: center; gap: 16px; padding: 16px; min-height: 300px; }
+.page-pdf { width: 100%; height: auto; background: #fff; box-shadow: var(--ombre); display: block; }
 .feuille-a4 {
   width: min(100%, 560px); aspect-ratio: 1 / 1.414; background: #fff; color: #1b1e24; box-shadow: var(--ombre);
   padding: 9% 10%; display: flex; flex-direction: column; gap: 10px; font-family: var(--f-texte);
@@ -1148,7 +1150,7 @@ function tete(surTitre, titre, chapeau) {
 const terme = id => D.lexique[id] ? `<span class="terme" data-g="${id}" tabindex="0" role="button">${esc(D.lexique[id].terme)}</span>` : '';
 function theorieDe(id) { let n = D.noeuds[id]; while (n && n.graphe !== D.racine) n = D.noeuds[D.graphes[n.graphe].conteneur]; return n; }
 const miniTheorie = id => { const n = D.noeuds[id]; return n ? `<span class="mini-theorie" style="--c: ${couleurNoeud(theorieDe(id) || n)}">${esc(n.titre)}</span>` : ''; };
-const statut = s => s === 'depose' ? '<span class="statut depose">Déposé</span>' : '<span class="statut">À déposer</span>';
+const statut = s => s === 'depose' ? '<span class="statut depose">En ligne</span>' : '<span class="statut">À déposer</span>';
 const difficulte = k => `<span class="difficulte" title="Difficulté ${k} sur 4" aria-label="Difficulté ${k} sur 4">${[1, 2, 3, 4].map(i => `<i class="${i <= k ? 'plein' : ''}"></i>`).join('')}</span>`;
 const niveauDe = id => (R.cours.niveaux || []).find(n => n.id === id) || { titre: id };
 const libelleChapitre = c => niveauDe(c.niveau).titre + (c.chapitre ? ` · chapitre ${c.chapitre}` : '');
@@ -1187,11 +1189,12 @@ function pageChapitre(c, tous) {
   const i = meme.indexOf(c), prec = meme[i - 1], suiv = meme[i + 1];
   const feuille = (R.exercices?.feuilles || []).find(f => f.id === c.exercices);
   let h = tete(`${esc(niveauDe(c.niveau).titre)}${c.chapitre ? ` · chapitre ${c.chapitre}` : ''}`, c.titre, c.resume || '<p class="vide-note">Résumé à venir.</p>');
-  h += maquette('Le PDF de ce chapitre n\'est pas encore déposé ; il s\'affichera ici.');
+  if (!c.pdf) h += maquette('Le PDF de ce chapitre n\'est pas encore déposé ; il s\'affichera ici.');
   h += `<div class="lecture"><div class="lecteur carte">`;
-  h += `<div class="lecteur-barre"><div class="groupe"><button class="bouton" aria-disabled="true">‹</button><span>page — / —</span><button class="bouton" aria-disabled="true">›</button></div>`;
-  h += `<div class="groupe"><a class="bouton" aria-disabled="true">Ouvrir le PDF</a><a class="bouton" aria-disabled="true">Source .tex</a></div></div>`;
-  h += c.pdf ? `<iframe class="pdf" src="${c.pdf}" title="${esc(c.titre)}" style="width:100%;height:80vh;border:0"></iframe>`
+  const actif = c.pdf ? '' : ' aria-disabled="true"';
+  h += `<div class="lecteur-barre"><div class="groupe"><button type="button" class="bouton" data-pdf-pas="-1"${actif} aria-label="Page précédente">‹</button><span>page <span class="pdf-num">${c.pdf ? 1 : '—'}</span> / ${c.pages || '—'}</span><button type="button" class="bouton" data-pdf-pas="1"${actif} aria-label="Page suivante">›</button></div>`;
+  h += `<div class="groupe"><a class="bouton"${c.pdf ? ` href="${c.pdf}" target="_blank" rel="noopener"` : actif}>Ouvrir le PDF</a>${c.pdf ? `<a class="bouton" href="${c.pdf}" download>Télécharger</a>` : ''}${c.tex ? `<a class="bouton" href="${c.tex}" download>Source .tex</a>` : ''}</div></div>`;
+  h += c.pdf ? `<div class="lecteur-fond lecteur-pages" data-pdf="${c.pdf}"><p class="vide-note">Chargement du PDF…</p></div>`
     : `<div class="lecteur-fond"><div class="feuille-a4" aria-hidden="true"><div class="fa-titre">Chapitre ${c.chapitre || ''} — ${c.titre.replace(/<[^>]+>/g, '')}</div>${'<div class="fa-ligne"></div>'.repeat(4)}<div class="fa-cadre">${'<div class="fa-ligne"></div>'.repeat(3)}</div>${'<div class="fa-ligne"></div>'.repeat(6)}<div class="fa-note">Le PDF du chapitre s'affichera ici.</div></div></div>`;
   h += `</div><aside class="cote">`;
   h += `<div class="carte"><h3 class="titre-bloc">Sommaire</h3>${c.sommaire ? `<ol class="sommaire">${c.sommaire.map(x => `<li>${x}</li>`).join('')}</ol>` : '<p class="vide-note">Tiré du PDF une fois déposé.</p>'}</div>`;
@@ -1199,7 +1202,7 @@ function pageChapitre(c, tous) {
   if ((c.notions || []).length) h += `<p style="margin:10px 0 0;font-size:13.5px">Notions : ${(c.notions).map(terme).join(', ')}</p>`;
   h += `</div>`;
   h += `<div class="carte"><h3 class="titre-bloc">Exercices</h3>${feuille ? `<a class="lien-simple" href="#exercices/feuille/${feuille.id}">Feuille du chapitre${feuille.nombre ? ` · ${feuille.nombre} exercices` : ''}</a>` : '<p class="vide-note">Pas encore de feuille associée.</p>'}</div>`;
-  h += `<div class="carte"><h3 class="titre-bloc">Fichiers</h3><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">${statut(c.statut)}<span style="font-size:13px;color:var(--encre-2)">PDF et source LaTeX</span></div></div>`;
+  h += `<div class="carte"><h3 class="titre-bloc">Fichiers</h3><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">${statut(c.statut)}${c.pdf ? `<a class="lien-simple" href="${c.pdf}" download style="font-size:13.5px">PDF${c.pages ? `, ${c.pages} pages` : ''}</a>` : '<span style="font-size:13px;color:var(--encre-2)">PDF</span>'}</div></div>`;
   h += `</aside></div>`;
   h += `<nav class="voisins">${prec ? `<a href="#cours/${prec.id}">← ${prec.titre}</a>` : '<span></span>'}<a href="#cours">Tous les cours</a>${suiv ? `<a href="#cours/${suiv.id}">${suiv.titre} →</a>` : '<span></span>'}</nav>`;
   return h;
@@ -1328,6 +1331,47 @@ function pageAPropos() {
   return h;
 }
 
+/* ---- lecteur PDF (PDF.js, chargé à la demande) */
+const PDFJS = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/';
+function chargerScript(src) {
+  return new Promise((ok, ko) => {
+    if (window.pdfjsLib) return ok();
+    const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = ko; document.head.append(s);
+  });
+}
+async function monterPdf(z) {
+  const zone = z.querySelector('[data-pdf]');
+  if (!zone) return;
+  const url = zone.dataset.pdf;
+  try {
+    await chargerScript(PDFJS + 'pdf.min.js');
+    pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS + 'pdf.worker.min.js';
+    const doc = await pdfjsLib.getDocument(url).promise;
+    if (!zone.isConnected) return;
+    zone.innerHTML = '';
+    const total = z.querySelector('.pdf-num').parentElement;
+    total.innerHTML = `page <span class="pdf-num">1</span> / ${doc.numPages}`;
+    const largeur = Math.max(260, zone.clientWidth - 32), dpr = Math.min(2, devicePixelRatio || 1);
+    const vues = [];
+    for (let i = 1; i <= doc.numPages; i++) {
+      const page = await doc.getPage(i);
+      const v = page.getViewport({ scale: largeur / page.getViewport({ scale: 1 }).width });
+      const c = document.createElement('canvas');
+      c.width = Math.floor(v.width * dpr); c.height = Math.floor(v.height * dpr);
+      c.className = 'page-pdf'; c.dataset.page = i;
+      c.setAttribute('role', 'img'); c.setAttribute('aria-label', `Page ${i}`);
+      zone.append(c); vues.push(c);
+      await page.render({ canvasContext: c.getContext('2d'), viewport: v, transform: dpr !== 1 ? [dpr, 0, 0, dpr, 0, 0] : null }).promise;
+      if (!zone.isConnected) return;
+    }
+    const num = z.querySelector('.pdf-num');
+    const obs = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) num.textContent = e.target.dataset.page; }), { rootMargin: '-45% 0px -45% 0px' });
+    vues.forEach(c => obs.observe(c));
+  } catch (e) {
+    zone.innerHTML = `<p class="vide-note">Le PDF ne peut pas être affiché ici. <a class="lien-simple" href="${url}" target="_blank" rel="noopener">L'ouvrir dans un nouvel onglet</a>.</p>`;
+  }
+}
+
 /* ---- navigation entre l'édifice et les rubriques */
 function afficherRubrique(nom, chemin) {
   cacherBulle(true);
@@ -1339,6 +1383,7 @@ function afficherRubrique(nom, chemin) {
   z.innerHTML = `<div class="page">${RUBRIQUES[nom].page(chemin, true)}</div>`;
   z.dataset.nom = nom; z.dataset.chemin = chemin || '';
   z.scrollTop = 0; scrollTo(0, 0);
+  monterPdf(z);
   // fil d'Ariane
   const ol = $('#fil'); ol.innerHTML = '';
   const elems = [[RUBRIQUES[nom].titre, '#' + nom]];
@@ -1376,6 +1421,13 @@ $('#rubrique').addEventListener('click', ev => {
   const fa = t.closest('[data-famille]'); if (fa) { etatAnn.famille = fa.dataset.famille; etatAnn.cle = ''; rafraichirRubrique(); return; }
   const fi = t.closest('[data-filiere]'); if (fi) { etatAnn.filiere = fi.dataset.filiere; etatAnn.cle = ''; rafraichirRubrique(); return; }
   const ca = t.closest('.case[data-cle]'); if (ca) { etatAnn.cle = etatAnn.cle === ca.dataset.cle ? '' : ca.dataset.cle; rafraichirRubrique(); const s = $('#rubrique .tiroir'); if (s) s.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); return; }
+  const pas = t.closest('[data-pdf-pas]');
+  if (pas && !pas.hasAttribute('aria-disabled')) {
+    const num = $('#rubrique .pdf-num'), pages = [...document.querySelectorAll('#rubrique .page-pdf')];
+    const cible = pages[Math.min(pages.length, Math.max(1, +num.textContent + +pas.dataset.pdfPas)) - 1];
+    if (cible) cible.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    return;
+  }
   if (t.closest('[aria-disabled="true"]')) ev.preventDefault();
 });
 $('#rubrique').addEventListener('change', ev => {

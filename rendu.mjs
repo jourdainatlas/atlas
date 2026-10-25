@@ -158,6 +158,8 @@ let cssSite = fs.readFileSync(path.join(dist, 'katex.min.css'), 'utf8')
   });
 cssSite = `/*! KaTeX ${require('katex/package.json').version} (feuille de style et polices)\n${licenceKatex}\n*/\n` + cssSite;
 fs.writeFileSync('site/katex.css', cssSite);
+// Documents déposés (PDF des cours…) : copiés tels quels dans le site.
+if (fs.existsSync('documents')) fs.cpSync('documents', 'site/documents', { recursive: true });
 const vCss = empreinte(cssSite);
 const jsonSite = JSON.stringify(Dsite).replace(/</g, '\\u003c');
 const pageSite = fs.readFileSync('gabarit.html', 'utf8').replace('/*KATEX*/', '').replace('"__DONNEES__"', () => jsonSite);
