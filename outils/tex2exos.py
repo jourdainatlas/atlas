@@ -140,6 +140,7 @@ class Conv:
                     if q.startswith('$'): r += '$' + s.tex_math(q[1:-1]) + '$'
                     else:
                         q = re.sub(r'\\textsc\{([^{}]*)\}', lambda m: m.group(1).upper(), q)
+                        q = re.sub(r'\\(centering|arraybackslash|raggedright|raggedleft)\b\s*', '', q)
                         q = re.sub(r'\\textbf\{([^}]*)\}', r'**\1**', q); q = re.sub(r'\\emph\{([^}]*)\}', r'*\1*', q)
                         q = q.replace('\\og', '«').replace('\\fg{}', '»').replace('\\fg', '»').replace('~', ' ')
                         r += q
@@ -346,7 +347,7 @@ class Conv:
         return s.restaurer(s.texte(t))
 
 # ------------------------------------------------------------------ découpage en exercices
-ENTETE = re.compile(r'\\exo\{(?P<a>[^}]*)\}\{\\(?P<et>etoile|etoiles|etoilesss|etoilesv)\}'
+ENTETE = re.compile(r'\\exo\{(?P<a>[^}]*)\}\{(?:\\(?P<et>etoile|etoiles|etoilesss|etoilesv))?\}'
                     r'|\\noindent\\textbf\{\\underline\{Exercice (?P<b>[^}]*)\}\}\s*(?P<st>\$[^$]*\$)')
 PARTIE = re.compile(r'\\partie\{([^}]*)\}|\\subsection\*\{\\textcolor\{blue\}\{([^}]*)\}\}')
 ETOILES = {'etoile': 1, 'etoiles': 2, 'etoilesss': 3, 'etoilesv': 4}
@@ -360,7 +361,7 @@ def decouper(t):
         tete = (m.group('a') or m.group('b')).strip()
         mn = re.match(r'(\d+)\s*(?:[-:–]\s*(.*))?$', tete)
         num, titre = int(mn.group(1)), (mn.group(2) or '').strip()
-        et = ETOILES[m.group('et')] if m.group('et') else m.group('st').count('\\star')
+        et = ETOILES[m.group('et')] if m.group('et') else (m.group('st').count('\\star') if m.group('st') else 0)  # 0 : non indiquée
         corps = t[m.end():fin]
         source = re.findall(r'%\s*Sources?\s*:\s*(.*)', t[evts[k-1][0] if k else 0:pos]) if False else []
         exos.append({'numero': num, 'titre': titre[:1].upper() + titre[1:] if titre else '', 'partie': partie, 'etoiles': et, 'corps': corps, 'pos': pos})
@@ -384,8 +385,15 @@ def pages(pdf):
 def feuille(tex):
     brut = lire(tex)
     pre, corps = brut.split('\\begin{document}', 1)
-    M = lire_macros(sans_commentaires(pre))
     corps_sc = sans_commentaires(corps)
+    # Macros définies après \begin{document} (ex. \graduations) : déplacées dans le préambule,
+    # pour être développées dans le texte et connues à la compilation des figures.
+    defs = []
+    for m in list(re.finditer(r'\\newcommand\*?\s*\{?\\[A-Za-z]+\}?\s*(?:\[\d\])?\s*\{', corps_sc))[::-1]:
+        f = accolade(corps_sc, m.end() - 1)
+        defs.insert(0, corps_sc[m.start():f]); corps_sc = corps_sc[:m.start()] + corps_sc[f:]
+    if defs: pre = pre + '\n' + '\n'.join(defs) + '\n'
+    M = lire_macros(sans_commentaires(pre))
     corps_sc = re.sub(r'\\(?:euro|texteuro)(?:\{\})?', '€', corps_sc)
     return pre, developper(corps_sc, M), sources(brut)
 
