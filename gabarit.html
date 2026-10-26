@@ -764,7 +764,7 @@ span.case:hover { border-style: dashed; color: inherit; }
         <hr>
         <a href="#cours" data-rubrique="cours"><span class="m-titre">Cours</span><span class="m-badge">en construction</span><span class="m-desc">Les cours scolaires, chapitre par chapitre.</span></a>
         <a href="#exercices" data-rubrique="exercices"><span class="m-titre">Exercices</span><span class="m-badge">en construction</span><span class="m-desc">Feuilles et exercices corrigés, à chercher par notion.</span></a>
-        <a href="#annales" data-rubrique="annales"><span class="m-titre">Annales</span><span class="m-badge">en construction</span><span class="m-desc">Sujets des concours d'ingénieurs et de l'enseignement.</span></a>
+        <a href="#annales" data-rubrique="annales"><span class="m-titre">Annales</span><span class="m-badge">en construction</span><span class="m-desc">Sujets des concours d'ingénieurs et de l'enseignement, et recherche par thème.</span></a>
         <hr>
         <a href="#a-propos" data-rubrique="a-propos"><span class="m-titre">À propos</span><span class="m-badge">en construction</span><span class="m-desc">L'auteur et le projet.</span></a>
       </nav>
@@ -1377,7 +1377,7 @@ function pageAccueil() {
   const ansAnn = [...new Set(sujAnn.map(x => x.annee))].sort((a, b) => a - b);
   const nbConc = (ann.familles || []).reduce((n, f) => n + (f.concours || []).length, 0);
   h += sujAnn.length
-    ? carte('#annales', 'Annales', sujAnn.length, 'sujets en ligne', "Les sujets d'écrit de mathématiques des concours d'écoles d'ingénieurs (X-ENS, Mines-Ponts, Centrale, CCINP, e3a) et de l'enseignement (CAPES, agrégations), rangés par concours, par filière et par année, avec les rapports du jury.", `${nbConc} concours · sessions ${ansAnn[0]} à ${ansAnn[ansAnn.length - 1]}`)
+    ? carte('#annales', 'Annales', sujAnn.length, 'sujets en ligne', "Les sujets d'écrit de mathématiques des concours d'écoles d'ingénieurs (X-ENS, Mines-Ponts, Centrale, CCINP, e3a) et de l'enseignement (CAPES, agrégations), avec les rapports du jury, et un moteur qui retrouve les parties de sujets traitant d'une notion.", `${nbConc} concours · sessions ${ansAnn[0]} à ${ansAnn[ansAnn.length - 1]}`)
     : carte('#annales', 'Annales', '—', 'à venir', "Les sujets d'écrit des concours d'ingénieurs et de l'enseignement, rangés par concours, par année et par épreuve, avec leurs rapports de jury.", 'En préparation', true);
   h += `</div></section>`;
 
@@ -1600,7 +1600,7 @@ function pageAnnales() {
   const enLigne = sujets.filter(x => x.sujet);
   const annees = [...new Set(enLigne.map(x => x.annee))].sort((a, b) => b - a);
   let h = tete('Rubrique', 'Annales', A.intro);
-  h += maquette(`Chaque case ouvre le sujet en PDF. ${enLigne.length} sujets sont référencés${annees.length ? ` (session${annees.length > 1 ? 's' : ''} ${annees.length > 2 ? `${annees[annees.length - 1]} à ${annees[0]}` : annees.join(', ')})` : ''}. Le curseur fait défiler les années.`);
+  h += maquette(`Chaque case ouvre le sujet en PDF. ${enLigne.length} sujets sont référencés${annees.length ? ` (session${annees.length > 1 ? 's' : ''} ${annees.length > 2 ? `${annees[annees.length - 1]} à ${annees[0]}` : annees.join(', ')})` : ''}. Le curseur fait défiler les années. Le moteur de recherche, sous la grille, couvre pour l'instant ${(() => { const I = indexAnnales(); const a = [...new Set(I.sujets.map(x => x.annee))].sort(); return I.sujets.length ? `la session ${a.join(', ')} (${I.sujets.length} sujets étiquetés partie par partie)` : 'aucune session'; })()} ; les autres années suivront.`);
 
   h += `<div class="annales-barre"><div class="segments" role="group" aria-label="Famille de concours">${fams.map(f => `<button type="button" data-famille="${f.id}" aria-pressed="${f.id === fam.id}">${f.titre}</button>`).join('')}</div>`;
   if (fam.filieres) h += `<div class="puces-chips" role="group" aria-label="Filière">${fam.filieres.map(x => `<button type="button" class="chip" data-filiere="${x}" aria-pressed="${x === etatAnn.filiere}">${x}</button>`).join('')}</div>`;
