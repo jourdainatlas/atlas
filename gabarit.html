@@ -624,6 +624,14 @@ button.lien-simple { border: 0; background: none; padding: 0; cursor: pointer; f
 }
 .case:hover { border-style: solid; color: var(--encre); }
 .case.present { border: 1px solid var(--c-ana); color: var(--encre); background: color-mix(in srgb, var(--c-ana) 12%, var(--surface)); }
+a.case.present { text-decoration: none; display: inline-grid; place-items: center; }
+a.case.present:hover { background: color-mix(in srgb, var(--c-ana) 26%, var(--surface)); }
+.case.attente { border: 1px dashed var(--choix); color: var(--choix); background: var(--choix-fond); }
+span.case { cursor: default; display: inline-grid; place-items: center; }
+span.case:hover { border-style: dashed; color: inherit; }
+.grille .rapports { margin-top: 6px; font-size: 12px; line-height: 1.5; }
+.grille .rapports a { color: var(--encre-2); text-decoration: underline; text-decoration-color: var(--filet); text-underline-offset: 3px; }
+.grille .rapports a:hover { color: var(--encre); text-decoration-color: currentColor; }
 .case[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--rouge); }
 .legende-annales { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 12.5px; color: var(--encre-2); margin-top: 10px; }
 .tiroir { margin-top: 18px; padding: 18px 20px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px 28px; }
@@ -1517,32 +1525,48 @@ function pageAnnales() {
   if (!fam) return '';
   etatAnn.famille = fam.id;
   if (fam.filieres && !fam.filieres.includes(etatAnn.filiere)) etatAnn.filiere = fam.filieres[0];
+  const fil = fam.filieres ? etatAnn.filiere : null;
+  const epreuvesDe = c => Array.isArray(c.epreuves) ? c.epreuves : ((c.epreuves || {})[fil] || []);
+  const sujets = A.sujets || [];
+  const trouver = (c, an, ep) => sujets.find(x => x.concours === c.id && x.annee === an && x.epreuve === ep && (!fil || x.filiere === fil));
+  const enLigne = sujets.filter(x => x.sujet);
+  const annees = [...new Set(enLigne.map(x => x.annee))].sort((a, b) => b - a);
   let h = tete('Rubrique', 'Annales', A.intro);
-  h += maquette('Aucun sujet n\'est encore déposé ; la grille montre l\'organisation prévue. Une case ouvre la fiche du sujet correspondant.');
+  h += maquette(`Chaque case ouvre le sujet tel qu'il est publié par l'organisateur du concours. ${enLigne.length} sujets sont référencés${annees.length ? ` (session${annees.length > 1 ? 's' : ''} ${annees.join(', ')})` : ''} ; les autres années suivront.`);
   h += `<div class="annales-barre"><div class="segments" role="group" aria-label="Famille de concours">${fams.map(f => `<button type="button" data-famille="${f.id}" aria-pressed="${f.id === fam.id}">${f.titre}</button>`).join('')}</div>`;
   if (fam.filieres) h += `<div class="puces-chips" role="group" aria-label="Filière">${fam.filieres.map(x => `<button type="button" class="chip" data-filiere="${x}" aria-pressed="${x === etatAnn.filiere}">${x}</button>`).join('')}</div>`;
   h += `</div><div class="carte grille-wrap"><table class="grille"><thead><tr><th>Concours</th>${fam.annees.map(a => `<th>${a}</th>`).join('')}</tr></thead><tbody>`;
   for (const c of fam.concours) {
-    h += `<tr><th scope="row">${c.titre}<small>${c.epreuves.join(' · ')}</small></th>`;
+    const eps = epreuvesDe(c);
+    if (!eps.length) continue;
+    const nomC = c.titre.replace(/<[^>]+>/g, '');
+    h += `<tr><th scope="row">${c.titre}<small>${eps.map(esc).join(' · ')}</small></th>`;
     for (const an of fam.annees) {
-      h += `<td><div class="cases">${c.epreuves.map((ep, i) => {
-        const cle = [fam.id, etatAnn.filiere, c.id, an, i].join('|');
-        const court = c.epreuves.length === 1 ? 'M' : (ep.match(/\b([A-Z0-9])$/) || [, String(i + 1)])[1];
-        return `<button type="button" class="case" data-cle="${cle}" aria-pressed="${etatAnn.cle === cle}" title="${esc(c.titre.replace(/<[^>]+>/g, ''))} ${an}, ${esc(ep)}">${court}</button>`;
-      }).join('')}</div></td>`;
+      const court = (ep, i) => eps.length === 1 ? 'M' : (ep.match(/\b([A-Z0-9])$/) || [, String(i + 1)])[1];
+      const cases = eps.map((ep, i) => {
+        const x = trouver(c, an, ep), lib = `${nomC}${fil ? ' ' + fil : ''} ${an}, ${ep}`;
+        if (x && x.sujet) return `<a class="case present" href="${esc(x.sujet)}" target="_blank" rel="noopener" title="${esc(lib)} : sujet officiel (PDF)">${court(ep, i)}</a>`;
+        if (x && x.attente) { const cle = [fam.id, fil || '', c.id, an, ep].join('|'); return `<button type="button" class="case attente" data-cle="${esc(cle)}" aria-pressed="${etatAnn.cle === cle}" title="${esc(lib)} : ${esc(x.attente)}">${court(ep, i)}</button>`; }
+        return `<span class="case" title="${esc(lib)} : pas encore référencé">${court(ep, i)}</span>`;
+      }).join('');
+      // rapports du jury de la case (un seul lien s'il est commun aux épreuves)
+      const rap = eps.map((ep, i) => [court(ep, i), (trouver(c, an, ep) || {}).rapport]).filter(r => r[1]);
+      const uniques = [...new Set(rap.map(r => r[1]))];
+      const liens = uniques.length === 1 ? `<a href="${esc(uniques[0])}" target="_blank" rel="noopener">rapport du jury</a>`
+        : rap.map(([k, u]) => `<a href="${esc(u)}" target="_blank" rel="noopener">rapport ${k}</a>`).join(' · ');
+      h += `<td><div class="cases">${cases}</div>${rap.length ? `<div class="rapports">${liens}</div>` : ''}</td>`;
     }
     h += `</tr>`;
   }
   h += `</tbody></table></div>`;
-  h += `<div class="legende-annales"><span><button class="case present" tabindex="-1" aria-hidden="true">1</button> sujet déposé</span><span><button class="case" tabindex="-1" aria-hidden="true">1</button> à déposer</span><span>Les lettres et chiffres désignent les épreuves de chaque concours.</span></div>`;
+  h += `<div class="legende-annales"><span><span class="case present" aria-hidden="true">1</span> sujet officiel, ouvert dans un nouvel onglet</span><span><span class="case attente" aria-hidden="true">1</span> pas de PDF officiel individuel : cliquer pour le détail</span><span><span class="case" aria-hidden="true">1</span> pas encore référencé</span><span>Les lettres et chiffres désignent les épreuves de chaque concours.</span></div>`;
   if (etatAnn.cle) {
-    const [fid, fil, cid, an, i] = etatAnn.cle.split('|');
+    const [fid, fl, cid, an, ep] = etatAnn.cle.split('|');
     const f2 = fams.find(f => f.id === fid), c = f2 && f2.concours.find(x => x.id === cid);
-    if (c) {
-      const ep = c.epreuves[+i];
-      h += `<section class="tiroir carte"><p class="sur-titre">${f2.titre}${fil && f2.filieres ? ` · ${fil}` : ''} · ${an}</p><h3>${c.titre} — ${esc(ep)}</h3>`;
-      h += `<dl><dt>Sujet</dt><dd>${statut()}</dd><dt>Corrigé</dt><dd>${statut()}</dd><dt>Rapport du jury</dt><dd>${statut()}</dd><dt>Durée</dt><dd class="vide-note">à renseigner</dd></dl>`;
-      h += `<div><h4 class="titre-bloc">Thèmes de l'atlas</h4><p class="vide-note" style="margin:0 0 12px">Les théories mises en jeu par le sujet, sous forme de liens vers l'édifice.</p><h4 class="titre-bloc">Dans la banque d'exercices</h4><p class="vide-note" style="margin:0">Les questions du sujet reprises comme exercices, avec leur corrigé.</p></div>`;
+    const x = c && sujets.find(y => y.concours === cid && String(y.annee) === an && y.epreuve === ep && (!fl || y.filiere === fl));
+    if (c && x) {
+      h += `<section class="tiroir carte"><p class="sur-titre">${f2.titre}${fl ? ` · ${fl}` : ''} · ${an}</p><h3>${c.titre} — ${esc(ep)}</h3>`;
+      h += `<dl><dt>Sujet</dt><dd>${esc(x.attente || '')}</dd><dt>Rapport du jury</dt><dd>${x.rapport ? `<a href="${esc(x.rapport)}" target="_blank" rel="noopener">ouvrir le rapport (site officiel)</a>` : '<span class="vide-note">non référencé</span>'}</dd></dl>`;
       h += `</section>`;
     }
   }
