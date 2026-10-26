@@ -297,6 +297,8 @@ function pagePartage(chemin, ancre, titre, description) {
 }
 const Rb = D.rubriques || {};
 const niveaux = Object.fromEntries((Rb.cours?.niveaux || []).map(n => [n.id, texteBrut(n.titre)]));
+pagePartage('accueil/', 'accueil', 'Accueil', 'Architecture logique des théories mathématiques, de la logique du premier ordre et de ZFC aux grandes théories ; cours, exercices corrigés et annales.');
+pagePartage('edifice/', 'edifice', 'L\'édifice', 'Le graphe des théories mathématiques, de la logique du premier ordre et de ZFC aux grandes théories.');
 pagePartage('cours/', 'cours', 'Cours', texteBrut(Rb.cours?.intro));
 for (const c of Rb.cours?.cours || []) {
   const lieu = `${niveaux[c.niveau] || ''}${c.chapitre ? `, chapitre ${c.chapitre}` : ''}`;
