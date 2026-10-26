@@ -1677,7 +1677,7 @@ function proche(a, b) {
   return a.slice(i + 1) === b.slice(i + 1) || a.slice(i) === b.slice(i + 1) || a.slice(i + 1) === b.slice(i) || (a[i] === b[i + 1] && a[i + 1] === b[i] && a.slice(i + 2) === b.slice(i + 2));
 }
 // score d'une clé normalisée pour une requête normalisée (0 : aucune correspondance)
-function scoreCle(q, k) {
+function scoreCle(q, k, flou = true) {
   if (!q || !k) return 0;
   if (k === q) return 10;
   if (k.startsWith(q + ' ') || k.startsWith(q) && q.length >= 4) return 7;
@@ -1685,14 +1685,16 @@ function scoreCle(q, k) {
   if (q.length >= 6 && (' ' + q + ' ').includes(' ' + k + ' ') && k.length >= 5) return 3.5;
   const mq = q.split(' ').filter(m => m.length > 1 && !['de', 'des', 'du', 'la', 'le', 'les', 'et', 'en', 'a', 'un', 'une', 'd', 'l'].includes(m)), mk = k.split(' ');
   if (!mq.length) return 0;
-  const ok = mq.every(m => mk.some(w => w.startsWith(m) && m.length >= 3 || m.length >= 5 && (proche(m, w) || w.length > m.length && proche(m, w.slice(0, m.length)))));
+  const ok = mq.every(m => mk.some(w => w.startsWith(m) && m.length >= 3 || flou && m.length >= 5 && (proche(m, w) || w.length > m.length && proche(m, w.slice(0, m.length)))));
   return ok ? 4 : 0;
 }
 function rechercherAnnales(q) {
   const I = indexAnnales(), n = normRech(q);
   if (!n) return { themes: [], res: [] };
   // le titre du thème compte plein ; un synonyme (souvent plus étroit que le thème) compte moitié
-  const th = Object.values(I.themes).map(t => { const sc = t.cles.map((k, i) => scoreCle(n, k) * (i ? .55 : 1)); return { t, s: Math.max(...sc), brut: Math.max(...t.cles.map(k => scoreCle(n, k))) }; }).filter(x => x.brut >= 4).sort((a, b) => b.s - a.s);
+  // tolérance aux fautes seulement si rien ne correspond exactement
+  const essai = flou => Object.values(I.themes).map(t => { const sc = t.cles.map((k, i) => scoreCle(n, k, flou) * (i ? .55 : 1)); return { t, s: Math.max(...sc), brut: Math.max(...t.cles.map(k => scoreCle(n, k, flou))) }; }).filter(x => x.brut >= 4).sort((a, b) => b.s - a.s);
+  let th = essai(false); if (!th.length) th = essai(true);
   const best = th.length ? th[0].s : 0;
   const thRet = th.filter(x => x.s === best || x.s >= Math.max(3.3, .7 * best));
   const poids = Object.fromEntries(thRet.map(x => [x.t.id, x.s / 10]));
@@ -1755,7 +1757,9 @@ function resultatsAnnales() {
     h += `<ul class="res-parties">${r.parts.map(({ p, prin }) => {
       const [a, b] = p.pages || [1, 1];
       const tt = (p.themes || []).map(t => `<b>${esc((I.themes[t] || {}).titre || t)}</b>`).concat((p.secondaires || []).map(t => esc((I.themes[t] || {}).titre || t)));
-      return `<li class="${prin ? '' : 'sec'}"><a class="partie" href="${esc(s.sujet)}#page=${a}" target="_blank" rel="noopener" title="Ouvrir le sujet à la page ${a}">${surligner(p.nom || '', q)}</a><span class="pp">p. ${a === b ? a : `${a}–${b}`}</span><span class="tt">${tt.join(' · ')}${(p.mots || []).length ? ` — ${surligner(p.mots.join(', '), q)}` : ''}</span></li>`;
+      // certains sites (devenirenseignant.gouv.fr) imposent le téléchargement : le renvoi à la page n'y est pas suivi
+      const telecharge = /devenirenseignant\.gouv\.fr\/media\//.test(s.sujet);
+      return `<li class="${prin ? '' : 'sec'}"><a class="partie" href="${esc(s.sujet)}#page=${a}" target="_blank" rel="noopener" title="${telecharge ? `Le site officiel impose le téléchargement : la partie commence page ${a}` : `Ouvrir le sujet à la page ${a}`}">${surligner(p.nom || '', q)}</a><span class="pp">p. ${a === b ? a : `${a}–${b}`}${telecharge ? ' · PDF téléchargé' : ''}</span><span class="tt">${tt.join(' · ')}${(p.mots || []).length ? ` — ${surligner(p.mots.join(', '), q)}` : ''}</span></li>`;
     }).join('')}</ul>`;
     const autres = s.parties.length - r.parts.length;
     if (autres > 0) h += `<p class="res-autres">Le sujet compte ${autres} autre${autres > 1 ? 's' : ''} partie${autres > 1 ? 's' : ''} sur d'autres thèmes.</p>`;
