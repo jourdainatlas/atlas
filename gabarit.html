@@ -610,8 +610,25 @@ button.lien-simple { border: 0; background: none; padding: 0; cursor: pointer; f
 
 /* ---- annales */
 .annales-barre { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; margin-bottom: 16px; }
-.grille-wrap { overflow-x: auto; }
-.grille { border-collapse: separate; border-spacing: 0; width: 100%; min-width: 720px; font-size: 13.5px; }
+.grille-wrap { overflow-x: auto; scrollbar-width: none; overscroll-behavior-x: contain; }
+.grille-wrap::-webkit-scrollbar { display: none; }
+.grille { border-collapse: separate; border-spacing: 0; width: max-content; min-width: 100%; font-size: 13.5px; }
+.grille thead th:first-child, .grille tbody th { position: sticky; left: 0; z-index: 2; background: var(--surface); box-shadow: 1px 0 0 var(--filet); }
+.grille td, .grille thead th:not(:first-child) { min-width: 150px; }
+/* curseur de défilement des années */
+.defil-annees { display: flex; align-items: center; gap: 10px; flex: 1 1 260px; min-width: 220px; margin-left: auto; font-family: var(--f-mono); font-size: 12px; color: var(--encre-2); }
+.defil-annees input[type=range] { flex: 1; min-width: 120px; accent-color: var(--encre-2); cursor: ew-resize; }
+.defil-annees .bout { white-space: nowrap; }
+.defil-annees .visible { white-space: nowrap; color: var(--encre); min-width: 92px; text-align: center; }
+.defil-annees button { border: 1px solid var(--filet); background: var(--surface); color: var(--encre-2); border-radius: 6px; width: 26px; height: 26px; cursor: pointer; line-height: 1; }
+.defil-annees button:hover { color: var(--encre); border-color: var(--encre-3); }
+.defil-annees button:disabled { opacity: .35; cursor: default; }
+@media (max-width: 640px) {
+  .grille-wrap .grille tbody th { white-space: normal; width: 96px; min-width: 96px; max-width: 96px; padding-right: 8px; }
+  .grille-wrap .grille tbody th small { display: none; }
+  .grille td, .grille thead th:not(:first-child) { min-width: 132px; }
+  .defil-annees .visible { display: none; }
+}
 .grille th, .grille td { padding: 10px 12px; border-bottom: 1px solid var(--filet); text-align: left; vertical-align: top; }
 .grille thead th { font-family: var(--f-mono); font-size: 11.5px; font-weight: 500; color: var(--encre-3); letter-spacing: .05em; position: sticky; top: 0; background: var(--surface); }
 .grille tbody tr:last-child td, .grille tbody tr:last-child th { border-bottom: 0; }
@@ -1302,7 +1319,7 @@ function pageAccueil() {
   h += `<p class="sur-titre">Mathématiques · de la logique aux grandes théories</p>`;
   h += `<h2>L'architecture des mathématiques, <em>de l'axiome au théorème</em></h2>`;
   h += `<p class="chapeau">ATLAS présente les mathématiques comme un édifice : un graphe qui part des axiomes de la théorie des ensembles et dont chaque théorie s'ouvre sur ses définitions et ses théorèmes, démontrés dans l'ordre. Autour de lui, des cours, des exercices corrigés et des sujets de concours, rattachés aux théories qui les fondent.</p>`;
-  h += `<div class="acc-actions"><a class="bouton plein" href="#${D.racine}">Entrer dans l'édifice</a><a class="bouton" href="#cours">Les cours</a><a class="bouton" href="#exercices">Les exercices</a></div>`;
+  h += `<div class="acc-actions"><a class="bouton plein" href="#${D.racine}">Entrer dans l'édifice</a><a class="bouton" href="#cours">Les cours</a><a class="bouton" href="#exercices">Les exercices</a><a class="bouton" href="#annales">Les annales</a></div>`;
   h += `</div><a class="acc-carte-edifice carte" href="#${D.racine}" aria-label="Ouvrir l'édifice">${miniEdifice()}`;
   h += `<div class="acc-legende"><span><b>${nbTheories}</b> théories</span><span><b>${nbEnonces}</b> définitions, axiomes et théorèmes</span><span><b>${nbTermes}</b> termes au lexique</span></div></a></section>`;
 
@@ -1312,7 +1329,12 @@ function pageAccueil() {
   h += carte(`#${D.racine}`, "L'édifice", nbTheories, 'théories', "Le graphe des théories, de la logique du premier ordre et de ZFC jusqu'aux grandes théories. Chaque nœud s'ouvre sur sa fiche et sur son propre graphe.", `${nbEnonces} énoncés · lexique de ${nbTermes} termes`);
   h += carte('#cours', 'Cours', cours.length, cours.length > 1 ? 'chapitres en ligne' : 'chapitre en ligne', "Les cours scolaires, chapitre par chapitre, à lire en ligne ou à télécharger. Chaque chapitre indique les théories de l'édifice sur lesquelles il repose.", niveauxCours.length ? `${niveauxCours.join(', ')} · d'autres niveaux à venir` : 'En construction');
   h += carte('#exercices', 'Exercices', nbExos, 'exercices corrigés', "Les feuilles d'exercices et leurs corrigés, exercice par exercice. On cherche par thème, par difficulté, par type d'activité ou par notion de l'atlas.", `${pl(feuilles.length, 'feuille', 'feuilles')} en ligne`);
-  h += carte('#annales', 'Annales', '—', 'à venir', "Les sujets d'écrit des concours d'ingénieurs et de l'enseignement, rangés par concours, par année et par épreuve, avec leurs rapports de jury.", 'En préparation', true);
+  const ann = R.annales || {}, sujAnn = (ann.sujets || []).filter(x => x.sujet);
+  const ansAnn = [...new Set(sujAnn.map(x => x.annee))].sort((a, b) => a - b);
+  const nbConc = (ann.familles || []).reduce((n, f) => n + (f.concours || []).length, 0);
+  h += sujAnn.length
+    ? carte('#annales', 'Annales', sujAnn.length, 'sujets en ligne', "Les sujets d'écrit de mathématiques des concours d'écoles d'ingénieurs (X-ENS, Mines-Ponts, Centrale, CCINP, e3a) et de l'enseignement (CAPES, agrégations), rangés par concours, par filière et par année, avec les rapports du jury.", `${nbConc} concours · sessions ${ansAnn[0]} à ${ansAnn[ansAnn.length - 1]}`)
+    : carte('#annales', 'Annales', '—', 'à venir', "Les sujets d'écrit des concours d'ingénieurs et de l'enseignement, rangés par concours, par année et par épreuve, avec leurs rapports de jury.", 'En préparation', true);
   h += `</div></section>`;
 
   // Un exemple réel du lien entre les rubriques : le premier chapitre en ligne qui a des exercices.
@@ -1519,7 +1541,7 @@ function carteExercice(e, enChargement) {
 }
 
 /* ---- Annales */
-const etatAnn = { famille: '', filiere: '', cle: '' };
+const etatAnn = { famille: '', filiere: '', cle: '', defil: 0 };
 function pageAnnales() {
   const A = R.annales || {};
   const fams = A.familles || [];
@@ -1534,10 +1556,12 @@ function pageAnnales() {
   const enLigne = sujets.filter(x => x.sujet);
   const annees = [...new Set(enLigne.map(x => x.annee))].sort((a, b) => b - a);
   let h = tete('Rubrique', 'Annales', A.intro);
-  h += maquette(`Chaque case ouvre le sujet en PDF. ${enLigne.length} sujets sont référencés${annees.length ? ` (session${annees.length > 1 ? 's' : ''} ${annees.join(', ')})` : ''} ; les autres années suivront.`);
+  h += maquette(`Chaque case ouvre le sujet en PDF. ${enLigne.length} sujets sont référencés${annees.length ? ` (session${annees.length > 1 ? 's' : ''} ${annees.length > 2 ? `${annees[annees.length - 1]} à ${annees[0]}` : annees.join(', ')})` : ''}. Le curseur fait défiler les années.`);
   h += `<div class="annales-barre"><div class="segments" role="group" aria-label="Famille de concours">${fams.map(f => `<button type="button" data-famille="${f.id}" aria-pressed="${f.id === fam.id}">${f.titre}</button>`).join('')}</div>`;
   if (fam.filieres) h += `<div class="puces-chips" role="group" aria-label="Filière">${fam.filieres.map(x => `<button type="button" class="chip" data-filiere="${x}" aria-pressed="${x === etatAnn.filiere}">${x}</button>`).join('')}</div>`;
-  h += `</div><div class="carte grille-wrap"><table class="grille"><thead><tr><th>Concours</th>${fam.annees.map(a => `<th>${a}</th>`).join('')}</tr></thead><tbody>`;
+  const ans = fam.annees;
+  h += `<div class="defil-annees" role="group" aria-label="Faire défiler les années"><span class="bout">${ans[0]}</span><button type="button" data-defil="-1" aria-label="Années plus récentes">‹</button><input type="range" min="0" max="1000" step="1" value="${Math.round(etatAnn.defil * 1000)}" aria-label="Faire défiler les années de ${ans[0]} à ${ans[ans.length - 1]}"><button type="button" data-defil="1" aria-label="Années plus anciennes">›</button><span class="bout">${ans[ans.length - 1]}</span><span class="visible" aria-live="polite"></span></div>`;
+  h += `</div><div class="carte grille-wrap"><table class="grille"><thead><tr><th>Concours</th>${fam.annees.map(a => `<th data-an="${a}">${a}</th>`).join('')}</tr></thead><tbody>`;
   for (const c of fam.concours) {
     const eps = epreuvesDe(c);
     if (!eps.length) continue;
@@ -1648,6 +1672,7 @@ function afficherRubrique(nom, chemin) {
   z.classList.toggle('accueil', nom === 'accueil');
   z.scrollTop = 0; scrollTo(0, 0);
   monterPdf(z);
+  brancherDefilAnnales(z);
   // fil d'Ariane
   const ol = $('#fil'); ol.innerHTML = '';
   const elems = [[RUBRIQUES[nom].titre, '#' + nom]];
@@ -1667,9 +1692,33 @@ function quitterRubrique() {
   $('#rubrique').hidden = true; $('#rubrique').innerHTML = '';
   $('.corps').hidden = false;
 }
+// Annales : le curseur et le défilement horizontal du tableau restent synchronisés.
+function brancherDefilAnnales(z) {
+  const w = z.querySelector('.grille-wrap'), r = z.querySelector('.defil-annees input');
+  if (!w || !r) return;
+  const vis = z.querySelector('.defil-annees .visible'), bts = z.querySelectorAll('.defil-annees button');
+  const maxi = () => Math.max(0, w.scrollWidth - w.clientWidth);
+  const maj = () => {
+    const m = maxi(), f = m ? w.scrollLeft / m : 0;
+    etatAnn.defil = f; r.value = Math.round(f * 1000); r.disabled = !m;
+    bts[0].disabled = !m || w.scrollLeft <= 1; bts[1].disabled = !m || w.scrollLeft >= m - 1;
+    const g = w.getBoundingClientRect(), col1 = w.querySelector('thead th').getBoundingClientRect().right;
+    const vus = [...w.querySelectorAll('thead th[data-an]')].filter(th => { const b = th.getBoundingClientRect(); const v = Math.min(b.right, g.right) - Math.max(b.left, col1); return v >= b.width * .6; }).map(th => th.dataset.an);
+    vis.textContent = vus.length ? (vus.length > 1 ? `${vus[0]} – ${vus[vus.length - 1]}` : vus[0]) : '';
+  };
+  r.addEventListener('input', () => { w.scrollLeft = r.value / 1000 * maxi(); });
+  w.addEventListener('scroll', maj, { passive: true });
+  bts.forEach(b => b.addEventListener('click', () => {
+    const th = w.querySelector('thead th[data-an]'); const pas = th ? th.getBoundingClientRect().width : 160;
+    w.scrollBy({ left: +b.dataset.defil * pas, behavior: 'smooth' });
+  }));
+  new ResizeObserver(maj).observe(w);
+  w.scrollLeft = etatAnn.defil * maxi(); maj();
+}
 function rafraichirRubrique() {
   const z = $('#rubrique'), y = z.scrollTop, yw = scrollY;
   z.querySelector('.page').innerHTML = RUBRIQUES[z.dataset.nom].page(z.dataset.chemin, false);
+  brancherDefilAnnales(z);
   z.scrollTop = y; scrollTo(0, yw);
 }
 $('#rubrique').addEventListener('click', ev => {
