@@ -696,6 +696,37 @@ span.case:hover { border-style: dashed; color: inherit; }
 .res-parties mark, .res-ann mark { background: var(--choix-fond); color: inherit; border-radius: 3px; padding: 0 2px; }
 .res-autres { font-size: 12.5px; color: var(--encre-3); margin-top: 6px; }
 .res-plus { margin-top: 12px; }
+.vue-ann button { display: inline-flex; align-items: center; gap: 6px; }
+.vue-ann svg { width: 14px; height: 14px; fill: currentColor; }
+.liste-ann .la-bilan { font-size: 13.5px; color: var(--encre-2); margin: 0 0 10px; }
+.la-annees { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px; position: sticky; top: 0; z-index: 3; background: var(--papier); padding: 6px 0; }
+.la-annees .chip { font-family: var(--f-mono); font-size: 12px; }
+.la-annees .chip.decrite { border-color: var(--corrige-filet); color: var(--encre); }
+.la-annees .chip.decrite::after { content: ''; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--corrige-filet); margin-left: 5px; vertical-align: middle; }
+.liste-ann .la-bilan a { color: var(--encre); }
+.la-an h3 { font-family: var(--f-titre); font-size: 20px; margin: 22px 0 6px; scroll-margin-top: 64px; }
+.fiche-ann { padding: 14px 16px; margin-top: 10px; }
+.fiche-ann .fa-tete { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; justify-content: space-between; }
+.fiche-ann .fa-liens { display: flex; flex-wrap: wrap; gap: 6px; }
+.fiche-ann .fa-liens .bouton { font-size: 12.5px; padding: 4px 10px; }
+.fiche-ann h4 { margin: 8px 0 4px; font-size: 16px; }
+.fiche-ann .fa-vide, .fiche-ann .fa-source { margin: 8px 0 0; font-size: 13px; color: var(--encre-3); }
+.fiche-ann .fa-source a { color: var(--encre-2); }
+.fiche-ann .fa-themes { display: flex; flex-wrap: wrap; gap: 5px; margin: 6px 0 4px; }
+.fiche-ann .fa-themes .chip { font-size: 12px; padding-top: 2px; padding-bottom: 2px; }
+.fa-parties { margin-top: 6px; }
+.fa-parties summary { cursor: pointer; font-size: 13px; color: var(--encre-2); padding: 4px 0; }
+.fa-parties summary:hover { color: var(--encre); }
+.fa-parties .res-parties { margin-top: 6px; }
+.fiches-ann a { color: var(--encre-2); }
+.res-ann .lien-fiche { font-size: 12.5px; color: var(--encre-2); text-decoration: underline; text-decoration-color: var(--filet); text-underline-offset: 3px; }
+.panneau-ann { position: fixed; inset: 0; z-index: 50; display: flex; justify-content: flex-end; }
+.panneau-ann .pa-fond { position: absolute; inset: 0; background: rgba(0, 0, 0, .45); }
+.panneau-ann .pa-corps { position: relative; width: min(640px, 100%); height: 100%; overflow-y: auto; background: var(--papier); border-left: 1px solid var(--filet); padding: 48px 18px 24px; box-sizing: border-box; animation: pa-entree .18s ease-out; }
+.panneau-ann .fiche-ann { margin: 0; }
+.panneau-ann .pa-fermer { position: absolute; top: 8px; right: 12px; width: 32px; height: 32px; border-radius: 6px; border: 1px solid var(--filet); background: var(--surface); color: var(--encre); font-size: 20px; line-height: 1; cursor: pointer; }
+@keyframes pa-entree { from { transform: translateX(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .panneau-ann .pa-corps { animation: none; } }
 .legende-annales { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 12.5px; color: var(--encre-2); margin-top: 10px; }
 .tiroir { margin-top: 18px; padding: 18px 20px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px 28px; }
 .tiroir h3 { grid-column: 1 / -1; font-family: var(--f-titre); font-size: 22px; margin: 0; }
@@ -1585,8 +1616,8 @@ function carteExercice(e, enChargement) {
 }
 
 /* ---- Annales */
-const etatAnn = { famille: '', filiere: '', cle: '', defil: 0 };
-function pageAnnales() {
+const etatAnn = { famille: '', filiere: '', cle: '', defil: 0, vue: matchMedia('(max-width: 640px)').matches ? 'liste' : 'grille', ouverts: new Set() };
+function pageAnnales(chemin) {
   const A = R.annales || {};
   const fams = A.familles || [];
   const fam = fams.find(f => f.id === etatAnn.famille) || fams[0];
@@ -1604,7 +1635,11 @@ function pageAnnales() {
 
   h += `<div class="annales-barre"><div class="segments" role="group" aria-label="Famille de concours">${fams.map(f => `<button type="button" data-famille="${f.id}" aria-pressed="${f.id === fam.id}">${f.titre}</button>`).join('')}</div>`;
   if (fam.filieres) h += `<div class="puces-chips" role="group" aria-label="Filière">${fam.filieres.map(x => `<button type="button" class="chip" data-filiere="${x}" aria-pressed="${x === etatAnn.filiere}">${x}</button>`).join('')}</div>`;
+  h += `<div class="segments vue-ann" role="group" aria-label="Affichage"><button type="button" data-vue-ann="grille" aria-pressed="${etatAnn.vue === 'grille'}"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h5v5H2zM9 2h5v5H9zM2 9h5v5H2zM9 9h5v5H9z"/></svg>Grille</button><button type="button" data-vue-ann="liste" aria-pressed="${etatAnn.vue === 'liste'}"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 3h2v2H2zM6 3h8v2H6zM2 7h2v2H2zM6 7h8v2H6zM2 11h2v2H2zM6 11h8v2H6z"/></svg>Liste</button></div>`;
   const ans = fam.annees;
+  if (etatAnn.vue === 'liste') {
+    h += `</div>` + vueListeAnnales(fam, fil);
+  } else {
   h += `<div class="defil-annees" role="group" aria-label="Faire défiler les années"><span class="bout">${ans[0]}</span><button type="button" data-defil="-1" aria-label="Années plus récentes">‹</button><input type="range" min="0" max="1000" step="1" value="${Math.round(etatAnn.defil * 1000)}" aria-label="Faire défiler les années de ${ans[0]} à ${ans[ans.length - 1]}"><button type="button" data-defil="1" aria-label="Années plus anciennes">›</button><span class="bout">${ans[ans.length - 1]}</span><span class="visible" aria-live="polite"></span></div>`;
   h += `</div><div class="carte grille-wrap"><table class="grille"><thead><tr><th>Concours</th>${fam.annees.map(a => `<th data-an="${a}">${a}</th>`).join('')}</tr></thead><tbody>`;
   for (const c of fam.concours) {
@@ -1634,12 +1669,16 @@ function pageAnnales() {
       // provenance des PDF qui ne viennent pas directement du site officiel
       const srcs = [...new Map(eps.map(ep => (trouver(c, an, ep) || {}).source).filter(Boolean).map(o => [o.url, o])).values()];
       const provenance = srcs.length ? `<div class="rapports source-ann">source : ${srcs.map(o => `<a href="${esc(o.url)}" target="_blank" rel="noopener">${esc(o.nom)}</a>`).join(' · ')}</div>` : '';
-      h += `<td><div class="cases">${cases}</div>${rap.length ? `<div class="rapports">${liens}</div>` : ''}${provenance}</td>`;
+      // fiches des sujets décrits par thème
+      const fiches = eps.map((ep, i) => { const x = trouver(c, an, ep); return x && x.sujet && indexAnnales().parUrl[x.sujet] ? [court(ep, i), slugSujet(x)] : null; }).filter(Boolean);
+      const lienFiches = fiches.length ? `<div class="rapports fiches-ann">${fiches.length === 1 && eps.length === 1 ? `<a href="#annales/sujet/${fiches[0][1]}">fiche détaillée</a>` : 'fiche ' + fiches.map(([k, sl]) => `<a href="#annales/sujet/${sl}">${k}</a>`).join(' · ')}</div>` : '';
+      h += `<td><div class="cases">${cases}</div>${rap.length ? `<div class="rapports">${liens}</div>` : ''}${lienFiches}${provenance}</td>`;
     }
     h += `</tr>`;
   }
   h += `</tbody></table></div>`;
   h += `<div class="legende-annales"><span><span class="case present" aria-hidden="true">1</span> sujet, ouvert dans un nouvel onglet (sa provenance est indiquée sous la case s'il ne vient pas du site officiel)</span><span><span class="case attente" aria-hidden="true">1</span> pas de PDF officiel individuel : cliquer pour le détail</span><span><span class="case" aria-hidden="true">1</span> pas encore référencé</span><span>— : épreuve inexistante cette année-là (filière ou concours créés plus tard).</span><span>Les lettres et chiffres désignent les épreuves de chaque concours.</span></div>`;
+  }
   if (etatAnn.cle) {
     const [fid, fl, cid, an, ep] = etatAnn.cle.split('|');
     const f2 = fams.find(f => f.id === fid), c = f2 && f2.concours.find(x => x.id === cid);
@@ -1651,8 +1690,70 @@ function pageAnnales() {
     }
   }
   h += blocRechercheAnnales();
+  h += panneauFicheAnnales(chemin);
   return h;
 }
+
+/* ---- Annales : vue Liste et fiches détaillées (description par thème d'un sujet) */
+const slugSujet = x => normRech([x.concours, x.filiere, x.annee, x.epreuve].filter(Boolean).join(' ')).replace(/ /g, '-');
+function entreeDeSlug(sl) { return ((R.annales || {}).sujets || []).find(x => slugSujet(x) === sl); }
+function ficheSujetHTML(x, complet) {
+  const I = indexAnnales();
+  const cf = I.famDe[x.concours] || {}, d = x.sujet && I.parUrl[x.sujet], sl = slugSujet(x);
+  const titreConc = `${esc(cf.titre || x.concours)}${x.filiere ? ` · ${x.filiere}` : ''} · ${x.annee} · ${esc(x.epreuve)}`;
+  let h = `<article class="fiche-ann carte${complet ? ' complete' : ''}" data-slug="${sl}">`;
+  h += `<div class="fa-tete"><span class="res-conc">${titreConc}</span><span class="fa-liens">`;
+  if (x.sujet) h += `<a class="bouton plein fa-pdf" href="${esc(x.sujet)}" target="_blank" rel="noopener">Sujet (PDF)</a>`;
+  if (x.rapport) h += `<a class="bouton" href="${esc(x.rapport)}" target="_blank" rel="noopener">Rapport du jury</a>`;
+  if (!complet && d) h += `<a class="bouton" href="#annales/sujet/${sl}" title="Ouvrir la fiche (adresse à partager)">Fiche</a>`;
+  h += `</span></div>`;
+  if (x.source) h += `<p class="fa-source">PDF hébergé hors du site officiel — source : <a href="${esc(x.source.url)}" target="_blank" rel="noopener">${esc(x.source.nom)}</a></p>`;
+  if (x.attente) h += `<p class="fa-source">${esc(x.attente)}</p>`;
+  if (!d) { h += `<p class="fa-vide">Description par thème à venir : les sujets de cette session n'ont pas encore été étiquetés.</p></article>`; return h; }
+  h += `<h4>${esc(d.nom || '')}</h4>`;
+  if (d.apercu) h += `<p class="res-resume">${esc(d.apercu)}</p>`;
+  const tous = [...new Set(d.parties.flatMap(p => p.themes || []))];
+  h += `<p class="fa-themes">${tous.map(t => `<button type="button" class="chip" data-rq-ext="${esc((I.themes[t] || {}).titre || t)}" title="Chercher ce thème dans les autres sujets">${esc((I.themes[t] || {}).titre || t)}</button>`).join('')}</p>`;
+  const ouvert = complet || etatAnn.ouverts.has(sl);
+  const telecharge = /devenirenseignant\.gouv\.fr\/media\//.test(x.sujet);
+  h += `<details class="fa-parties" data-slug="${sl}"${ouvert ? ' open' : ''}><summary>${d.parties.length} partie${d.parties.length > 1 ? 's' : ''}, détail par thème</summary><ul class="res-parties">`;
+  for (const p of d.parties) {
+    const [a, b] = p.pages || [1, 1];
+    const tt = (p.themes || []).map(t => `<b>${esc((I.themes[t] || {}).titre || t)}</b>`).concat((p.secondaires || []).map(t => esc((I.themes[t] || {}).titre || t)));
+    h += `<li><a class="partie" href="${esc(x.sujet)}#page=${a}" target="_blank" rel="noopener" title="${telecharge ? `Le site officiel impose le téléchargement : la partie commence page ${a}` : `Ouvrir le sujet à la page ${a}`}">${esc(p.nom || '')}</a><span class="pp">p. ${a === b ? a : `${a}–${b}`}</span><span class="tt">${tt.join(' · ')}${(p.mots || []).length ? ` — ${esc(p.mots.join(', '))}` : ''}</span></li>`;
+  }
+  h += `</ul></details></article>`;
+  return h;
+}
+function vueListeAnnales(fam, fil) {
+  const A = R.annales || {}, ordre = Object.fromEntries(fam.concours.map((c, i) => [c.id, i]));
+  const epOrdre = c => { const e = Array.isArray(c.epreuves) ? c.epreuves : ((c.epreuves || {})[fil] || []); return e.map(x => typeof x === 'string' ? x : x.nom); };
+  const L = (A.sujets || []).filter(x => x.concours in ordre && (!fil || x.filiere === fil) && (x.sujet || x.attente));
+  const ans = [...new Set(L.map(x => x.annee))].sort((a, b) => b - a);
+  const nbDecrits = L.filter(x => x.sujet && indexAnnales().parUrl[x.sujet]).length;
+  let h = `<div class="liste-ann"><p class="la-bilan">${L.length} sujet${L.length > 1 ? 's' : ''}${fil ? ` en filière ${fil}` : ''}, dont ${nbDecrits} avec leur description par thème. Chaque fiche ouvre le sujet en un clic ; le détail des parties se déplie. <a href="#" data-aller-rech>Chercher un thème ↓</a></p>`;
+  const anDecrits = new Set(L.filter(x => x.sujet && indexAnnales().parUrl[x.sujet]).map(x => x.annee));
+  h += `<nav class="la-annees" aria-label="Aller à une session">${ans.map(a => `<button type="button" class="chip${anDecrits.has(a) ? ' decrite' : ''}" data-aller-an="${a}" title="${anDecrits.has(a) ? 'Session décrite par thème' : 'Description par thème à venir'}">${a}</button>`).join('')}</nav>`;
+  for (const an of ans) {
+    const xs = L.filter(x => x.annee === an).sort((a, b) => ordre[a.concours] - ordre[b.concours] || epOrdre(fam.concours[ordre[a.concours]]).indexOf(a.epreuve) - epOrdre(fam.concours[ordre[b.concours]]).indexOf(b.epreuve));
+    h += `<section class="la-an" id="la-${an}"><h3>Session ${an}</h3>${xs.map(x => ficheSujetHTML(x, false)).join('')}</section>`;
+  }
+  return h + `</div>`;
+}
+function panneauFicheAnnales(chemin) {
+  const m = /^sujet\/(.+)$/.exec(chemin || ''); if (!m) return '';
+  const x = entreeDeSlug(m[1]); if (!x) return '';
+  return `<div class="panneau-ann" role="dialog" aria-modal="true" aria-label="Fiche du sujet"><div class="pa-fond" data-fermer-fiche></div><aside class="pa-corps"><button type="button" class="pa-fermer" data-fermer-fiche aria-label="Fermer la fiche">×</button>${ficheSujetHTML(x, true)}</aside></div>`;
+}
+// ouverture et fermeture de la fiche sans redessiner la page (la grille garde son défilement)
+function majFicheAnnales(chemin) {
+  const z = $('#rubrique .page'); if (!z) return;
+  z.querySelectorAll('.panneau-ann').forEach(e => e.remove());
+  $('#rubrique').dataset.chemin = chemin || '';
+  const p = panneauFicheAnnales(chemin);
+  if (p) { z.insertAdjacentHTML('beforeend', p); const b = z.querySelector('.pa-fermer'); if (b) b.focus({ preventScroll: true }); }
+}
+function fermerFicheAnnales() { location.hash = '#annales'; }
 
 /* ---- Annales : moteur de recherche par thème.
    Chaque sujet étiqueté (rubriques/annales-index.yaml) est découpé en parties ; chaque partie porte
@@ -1684,7 +1785,8 @@ function indexAnnales() {
     for (const t of p.themes || []) { vus.add(t); if (themes[t] && themes[t].parent) vus.add(themes[t].parent); }
     for (const t of vus) compte[t] = (compte[t] || 0) + 1;
   }
-  return (indexAnn = { themes, sujets, domaines: T.domaines || [], famDe, compte, enfants });
+  const parUrl = Object.fromEntries(sujets.map(s => [s.sujet, s]));
+  return (indexAnn = { themes, sujets, domaines: T.domaines || [], famDe, compte, enfants, parUrl });
 }
 // distance d'édition bornée (tolérance aux fautes de frappe)
 function proche(a, b) {
@@ -1781,7 +1883,7 @@ function resultatsAnnales() {
     const s = r.s, cf = I.famDe[s.concours] || {};
     const fils = s.filieres.length ? ` · ${s.filieres.join(', ')}` : '';
     const eps = [...new Set(s.cases.map(c => c.epreuve))].join(', ');
-    h += `<article class="res-ann carte"><div class="res-tete"><span class="res-conc">${esc(cf.titre || s.concours)}${fils} · ${s.annee} · ${esc(eps)}</span></div>`;
+    h += `<article class="res-ann carte"><div class="res-tete"><span class="res-conc">${esc(cf.titre || s.concours)}${fils} · ${s.annee} · ${esc(eps)}</span>${s.cases[0] ? `<a class="lien-fiche" href="#annales/sujet/${slugSujet(s.cases[0])}">fiche du sujet</a>` : ''}</div>`;
     h += `<h4><a href="${esc(s.sujet)}" target="_blank" rel="noopener">${esc(s.nom || '')}</a></h4>`;
     if (s.apercu) h += `<p class="res-resume">${surligner(s.apercu, q)}</p>`;
     h += `<ul class="res-parties">${r.parts.map(({ p, prin }) => {
@@ -1975,6 +2077,17 @@ $('#rubrique').addEventListener('click', ev => {
   if (t.closest('[data-plus-themes]')) { etatExo.tousThemes = !etatExo.tousThemes; rafraichirRubrique(); return; }
   const ef = t.closest('[data-effacer]'); if (ef) { etatExo.noeud = ''; etatExo.feuille = ''; etatExo.ex = ''; if (location.hash === '#exercices') { ev.preventDefault(); rafraichirRubrique(); } return; }
   const fa = t.closest('[data-famille]'); if (fa) { etatAnn.famille = fa.dataset.famille; etatAnn.cle = ''; rafraichirRubrique(); return; }
+  const va = t.closest('[data-vue-ann]'); if (va) { etatAnn.vue = va.dataset.vueAnn; rafraichirRubrique(); return; }
+  if (t.closest('[data-aller-rech]')) { ev.preventDefault(); const z = $('#rech-ann'); if (z) z.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
+  const aa = t.closest('[data-aller-an]'); if (aa) { const s2 = $('#la-' + aa.dataset.allerAn); if (s2) s2.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
+  if (t.closest('[data-fermer-fiche]')) { fermerFicheAnnales(); return; }
+  const rx = t.closest('[data-rq-ext]');
+  if (rx) {
+    etatRech.q = rx.dataset.rqExt; etatRech.montres = 12;
+    if (location.hash.startsWith('#annales/sujet/')) location.hash = '#annales';
+    setTimeout(() => { const i = $('#ann-q'); if (i) i.value = etatRech.q; majRechercheAnnales(); const z = $('#rech-ann'); if (z) z.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 30);
+    return;
+  }
   const fi = t.closest('[data-filiere]'); if (fi) { etatAnn.filiere = fi.dataset.filiere; etatAnn.cle = ''; rafraichirRubrique(); return; }
   const ca = t.closest('.case[data-cle]'); if (ca) { etatAnn.cle = etatAnn.cle === ca.dataset.cle ? '' : ca.dataset.cle; rafraichirRubrique(); const s = $('#rubrique .tiroir'); if (s) s.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); return; }
   const pas = t.closest('[data-pdf-pas]');
@@ -1992,6 +2105,12 @@ $('#rubrique').addEventListener('change', ev => {
   if (t.dataset.filtre === 'noeud') { etatExo.noeud = t.value; rafraichirRubrique(); }
 });
 // recherche au fil de la frappe : on redessine la page puis on rend le focus au champ
+// mémorise les fiches dépliées dans la liste
+$('#rubrique').addEventListener('toggle', ev => {
+  const d = ev.target; if (!d.matches || !d.matches('details.fa-parties') || d.closest('.panneau-ann')) return;
+  d.open ? etatAnn.ouverts.add(d.dataset.slug) : etatAnn.ouverts.delete(d.dataset.slug);
+}, true);
+document.addEventListener('keydown', ev => { if (ev.key === 'Escape' && $('#rubrique .panneau-ann')) fermerFicheAnnales(); });
 let minuterieRecherche = null;
 $('#rubrique').addEventListener('input', ev => {
   const t = ev.target;
@@ -2013,6 +2132,7 @@ function adressePartage() {
     if (nom === 'cours' && ch && (R.cours?.cours || []).some(c => c.id === ch)) return `${ADRESSE_SITE}cours/${ch}/`;
     if (nom === 'exercices' && etatExo.ex) return `${ADRESSE_SITE}exercices/${etatExo.ex}/`;
     if (nom === 'accueil') return ADRESSE_SITE;
+    if (nom === 'annales' && (ch || '').startsWith('sujet/')) return `${ADRESSE_SITE}#annales/${ch}`;
     return `${ADRESSE_SITE}${nom}/`;
   }
   const id = etat.choisi || (etat.graphe !== D.racine ? D.graphes[etat.graphe].conteneur : null);
@@ -2055,6 +2175,10 @@ function depuisAncre() {
   const h = decodeURIComponent(location.hash.slice(1));
   const [r, ...reste] = h.split('/');
   if (!h) { afficherRubrique('accueil', ''); return; }
+  if (r === 'annales' && enRubrique() && $('#rubrique').dataset.nom === 'annales' && $('#rubrique .page')) {
+    const ch = reste.join('/');
+    if (ch.startsWith('sujet/') || ($('#rubrique').dataset.chemin || '').startsWith('sujet/')) { majFicheAnnales(ch); return; }
+  }
   if (RUBRIQUES[r]) { afficherRubrique(r, reste.join('/')); return; }
   const [g, n] = h.split('.');
   const valide = n && D.noeuds[n] && (D.noeuds[n].graphe === g || (D.graphes[g] && D.graphes[g].noeuds.some(p => p.id === n && p.entree)));
