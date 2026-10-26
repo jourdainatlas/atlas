@@ -631,6 +631,7 @@ span.case { cursor: default; display: inline-grid; place-items: center; }
 span.case:hover { border-style: dashed; color: inherit; }
 .grille .rapports { margin-top: 6px; font-size: 12px; line-height: 1.5; }
 .grille .rapports a { color: var(--encre-2); text-decoration: underline; text-decoration-color: var(--filet); text-underline-offset: 3px; }
+.grille .hors { color: var(--encre-3, var(--encre-2)); opacity: .55; font-size: 13px; padding-left: 4px; }
 .grille .source-ann { margin-top: 2px; color: var(--encre-2); }
 .grille .rapports a:hover { color: var(--encre); text-decoration-color: currentColor; }
 .case[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--rouge); }
@@ -1543,6 +1544,9 @@ function pageAnnales() {
     const nomC = c.titre.replace(/<[^>]+>/g, '');
     h += `<tr><th scope="row">${c.titre}<small>${eps.map(esc).join(' · ')}</small></th>`;
     for (const an of fam.annees) {
+      // épreuve inexistante cette année-là (filière ou concours créés plus tard)
+      const debut = Math.max((fam.debut || {})[fil] || 0, c.debut || 0);
+      if (an < debut) { h += `<td><span class="hors" title="${esc(fil && (fam.debut || {})[fil] > (c.debut || 0) ? `Filière ${fil} créée en ${debut}` : `Concours créé en ${debut}`)}">—</span></td>`; continue; }
       const court = (ep, i) => eps.length === 1 ? 'M' : (ep.match(/\b([A-Z0-9])$/) || [, String(i + 1)])[1];
       const cases = eps.map((ep, i) => {
         const x = trouver(c, an, ep), lib = `${nomC}${fil ? ' ' + fil : ''} ${an}, ${ep}`;
@@ -1563,7 +1567,7 @@ function pageAnnales() {
     h += `</tr>`;
   }
   h += `</tbody></table></div>`;
-  h += `<div class="legende-annales"><span><span class="case present" aria-hidden="true">1</span> sujet, ouvert dans un nouvel onglet (sa provenance est indiquée sous la case s'il ne vient pas du site officiel)</span><span><span class="case attente" aria-hidden="true">1</span> pas de PDF officiel individuel : cliquer pour le détail</span><span><span class="case" aria-hidden="true">1</span> pas encore référencé</span><span>Les lettres et chiffres désignent les épreuves de chaque concours.</span></div>`;
+  h += `<div class="legende-annales"><span><span class="case present" aria-hidden="true">1</span> sujet, ouvert dans un nouvel onglet (sa provenance est indiquée sous la case s'il ne vient pas du site officiel)</span><span><span class="case attente" aria-hidden="true">1</span> pas de PDF officiel individuel : cliquer pour le détail</span><span><span class="case" aria-hidden="true">1</span> pas encore référencé</span><span>— : épreuve inexistante cette année-là (filière ou concours créés plus tard).</span><span>Les lettres et chiffres désignent les épreuves de chaque concours.</span></div>`;
   if (etatAnn.cle) {
     const [fid, fl, cid, an, ep] = etatAnn.cle.split('|');
     const f2 = fams.find(f => f.id === fid), c = f2 && f2.concours.find(x => x.id === cid);
