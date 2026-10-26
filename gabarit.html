@@ -652,8 +652,14 @@ span.case:hover { border-style: dashed; color: inherit; }
 .grille .source-ann { margin-top: 2px; color: var(--encre-2); }
 .grille .rapports a:hover { color: var(--encre); text-decoration-color: currentColor; }
 .case[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--rouge); }
-.titre-grille-ann { font-size: 17px; margin: 26px 0 12px; }
-.rech-ann { padding: 18px 20px; margin-bottom: 22px; }
+.rech-ann { padding: 18px 20px; margin: 26px 0 8px; }
+.rech-ann .rech-tete { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.rech-ann .rech-effacer { font-size: 13px; }
+.rech-ann .rech-effacer[hidden] { display: none; }
+.rech-periode { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--encre-2); }
+.rech-themes .sous { flex-basis: 100%; display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: baseline; margin-top: 2px; }
+.rech-themes .sous .chip { font-size: 12px; padding-top: 2px; padding-bottom: 2px; }
+.rech-themes .sous .chip small, .rech-domaines .chip small { color: var(--encre-3); margin-left: 4px; }
 .rech-ann h3 { margin: 0 0 4px; font-size: 17px; }
 .rech-ann .rech-aide { margin: 0 0 12px; color: var(--encre-2); font-size: 13.5px; }
 .rech-ligne { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
@@ -1592,8 +1598,7 @@ function pageAnnales() {
   const annees = [...new Set(enLigne.map(x => x.annee))].sort((a, b) => b - a);
   let h = tete('Rubrique', 'Annales', A.intro);
   h += maquette(`Chaque case ouvre le sujet en PDF. ${enLigne.length} sujets sont référencés${annees.length ? ` (session${annees.length > 1 ? 's' : ''} ${annees.length > 2 ? `${annees[annees.length - 1]} à ${annees[0]}` : annees.join(', ')})` : ''}. Le curseur fait défiler les années.`);
-  h += blocRechercheAnnales();
-  h += `<h3 class="titre-grille-ann">Tous les sujets, par concours et par année</h3>`;
+
   h += `<div class="annales-barre"><div class="segments" role="group" aria-label="Famille de concours">${fams.map(f => `<button type="button" data-famille="${f.id}" aria-pressed="${f.id === fam.id}">${f.titre}</button>`).join('')}</div>`;
   if (fam.filieres) h += `<div class="puces-chips" role="group" aria-label="Filière">${fam.filieres.map(x => `<button type="button" class="chip" data-filiere="${x}" aria-pressed="${x === etatAnn.filiere}">${x}</button>`).join('')}</div>`;
   const ans = fam.annees;
@@ -1642,13 +1647,15 @@ function pageAnnales() {
       h += `</section>`;
     }
   }
+  h += blocRechercheAnnales();
   return h;
 }
 
 /* ---- Annales : moteur de recherche par thème.
    Chaque sujet étiqueté (rubriques/annales-index.yaml) est découpé en parties ; chaque partie porte
    des thèmes du vocabulaire (rubriques/annales-themes.yaml), principaux ou secondaires, et des mots-clés. */
-const etatRech = { q: '', fam: '', fil: '', montres: 12 };
+const etatRech = { q: '', fam: '', fil: '', de: '', a: '', montres: 12 };
+const rechVide = () => !etatRech.q.trim() && !etatRech.fam && !etatRech.fil && !etatRech.de && !etatRech.a;
 let indexAnn = null;
 const normRech = t => sansAccents(t).replace(/[^a-z0-9]+/g, ' ').trim();
 function indexAnnales() {
@@ -1665,9 +1672,16 @@ function indexAnnales() {
       parties: (x.blocs || []).map(p => ({ ...p, motsN: (p.mots || []).map(normRech), titreN: normRech(p.nom || '') })),
       texteN: normRech(`${x.nom || ''} ${x.apercu || ''}`) };
   });
+  const enfants = {};
+  for (const t of Object.values(themes)) if (t.parent) (enfants[t.parent] = enfants[t.parent] || []).push(t.id);
+  // une partie compte pour un thème fin, et pour le thème large qui le regroupe
   const compte = {};
-  for (const s of sujets) for (const p of s.parties) for (const t of p.themes || []) compte[t] = (compte[t] || 0) + 1;
-  return (indexAnn = { themes, sujets, domaines: T.domaines || [], famDe, compte });
+  for (const s of sujets) for (const p of s.parties) {
+    const vus = new Set();
+    for (const t of p.themes || []) { vus.add(t); if (themes[t] && themes[t].parent) vus.add(themes[t].parent); }
+    for (const t of vus) compte[t] = (compte[t] || 0) + 1;
+  }
+  return (indexAnn = { themes, sujets, domaines: T.domaines || [], famDe, compte, enfants });
 }
 // distance d'édition bornée (tolérance aux fautes de frappe)
 function proche(a, b) {
@@ -1698,10 +1712,13 @@ function rechercherAnnales(q) {
   const best = th.length ? th[0].s : 0;
   const thRet = th.filter(x => x.s === best || x.s >= Math.max(3.3, .7 * best));
   const poids = Object.fromEntries(thRet.map(x => [x.t.id, x.s / 10]));
+  for (const x of thRet) for (const c of I.enfants[x.t.id] || []) if (!(c in poids)) poids[c] = .95 * x.s / 10;
   const res = [];
   for (const s of I.sujets) {
     if (etatRech.fam && s.fam !== etatRech.fam) continue;
     if (etatRech.fil && !s.filieres.includes(etatRech.fil)) continue;
+    if (etatRech.de && s.annee < +etatRech.de) continue;
+    if (etatRech.a && s.annee > +etatRech.a) continue;
     const parts = s.parties.map((p, i) => {
       let sc = 0, prin = false;
       for (const t of p.themes || []) if (poids[t]) { sc += 3 * poids[t]; prin = true; }
@@ -1735,7 +1752,7 @@ function resultatsAnnales() {
     // parcours : les thèmes présents, par domaine, avec le nombre de parties concernées
     let h = '<div class="rech-domaines">';
     for (const d of I.domaines) {
-      const ts = Object.values(I.themes).filter(t => t.domaine === d.id && I.compte[t.id]).sort((a, b) => I.compte[b.id] - I.compte[a.id]);
+      const ts = Object.values(I.themes).filter(t => t.domaine === d.id && !t.parent && I.compte[t.id]).sort((a, b) => I.compte[b.id] - I.compte[a.id]);
       if (!ts.length) continue;
       h += `<div><h4>${esc(d.titre)}</h4><div class="puces-chips">${ts.map(t => `<button type="button" class="chip" data-rq="${esc(t.titre)}">${esc(t.titre)}<small>${I.compte[t.id]}</small></button>`).join('')}</div></div>`;
     }
@@ -1743,9 +1760,19 @@ function resultatsAnnales() {
   }
   const { themes, res } = rechercherAnnales(q);
   let h = '';
-  if (themes.length) h += `<div class="rech-themes"><span>Thème${themes.length > 1 ? 's' : ''} reconnu${themes.length > 1 ? 's' : ''} :</span>${themes.slice(0, 6).map(t => { const l = (t.noeuds || []).map(lienEdifice).find(Boolean); return `<button type="button" class="chip" data-rq="${esc(t.titre)}" aria-pressed="${normRech(t.titre) === normRech(q)}">${esc(t.titre)}</button>${l ? `<a class="edif" href="${l}" title="Voir la théorie correspondante dans l'édifice">dans l'édifice →</a>` : ''}`; }).join('')}</div>`;
+  if (themes.length) {
+    h += `<div class="rech-themes"><span>Thème${themes.length > 1 ? 's' : ''} reconnu${themes.length > 1 ? 's' : ''} :</span>`;
+    for (const t of themes.slice(0, 6)) {
+      const l = (t.noeuds || []).map(lienEdifice).find(Boolean), par = t.parent && I.themes[t.parent];
+      if (par) h += `<button type="button" class="chip" data-rq="${esc(par.titre)}" title="Thème plus large">${esc(par.titre)}</button><span aria-hidden="true">›</span>`;
+      h += `<button type="button" class="chip" data-rq="${esc(t.titre)}" aria-pressed="${normRech(t.titre) === normRech(q)}">${esc(t.titre)}</button>${l ? `<a class="edif" href="${l}" title="Voir la théorie correspondante dans l'édifice">dans l'édifice →</a>` : ''}`;
+      const fins = (I.enfants[t.id] || []).filter(c => I.compte[c]).sort((a, b) => I.compte[b] - I.compte[a]);
+      if (fins.length) h += `<div class="sous"><span>Préciser :</span>${fins.map(c => `<button type="button" class="chip" data-rq="${esc(I.themes[c].titre)}">${esc(I.themes[c].titre)}<small>${I.compte[c]}</small></button>`).join('')}</div>`;
+    }
+    h += `</div>`;
+  }
   const nbP = res.reduce((u, r) => u + r.parts.length, 0);
-  h += `<p class="rech-bilan">${res.length ? `${res.length} sujet${res.length > 1 ? 's' : ''}, ${nbP} partie${nbP > 1 ? 's' : ''} concernée${nbP > 1 ? 's' : ''}.` : 'Aucun sujet étiqueté ne correspond. Essayez un thème plus général, ou choisissez-en un ci-dessous.'}</p>`;
+  h += `<p class="rech-bilan">${res.length ? `${res.length} sujet${res.length > 1 ? 's' : ''}, ${nbP} partie${nbP > 1 ? 's' : ''} concernée${nbP > 1 ? 's' : ''}.` : (etatRech.fam || etatRech.fil || etatRech.de || etatRech.a ? 'Aucun sujet étiqueté ne correspond avec ces filtres (concours, filière ou période). Élargissez-les, ou choisissez un thème ci-dessous.' : 'Aucun sujet étiqueté ne correspond. Essayez un thème plus général, ou choisissez-en un ci-dessous.')}</p>`;
   if (!res.length) { const sv = etatRech.q; etatRech.q = ''; h += resultatsAnnales(); etatRech.q = sv; return h; }
   for (const r of res.slice(0, etatRech.montres)) {
     const s = r.s, cf = I.famDe[s.concours] || {};
@@ -1773,16 +1800,22 @@ function blocRechercheAnnales() {
   if (!I.sujets.length) return '';
   const ans = [...new Set(I.sujets.map(s => s.annee))].sort();
   const fams = (R.annales || {}).familles || [];
-  let h = `<section class="rech-ann carte"><h3>Chercher un thème dans les sujets</h3>`;
-  h += `<p class="rech-aide">Tapez une notion (« séries entières », « Perron-Frobenius », « loi de Poisson »…) : le moteur renvoie les parties de sujets qui la travaillent, avec un lien qui ouvre le PDF à la bonne page. Sujets étiquetés : session${ans.length > 1 ? 's' : ''} ${ans.join(', ')} (${I.sujets.length} sujets), les autres années suivront.</p>`;
+  const anTous = [...new Set(((R.annales || {}).familles || []).flatMap(f => f.annees || []))].sort((a, b) => a - b);
+  let h = `<section class="rech-ann carte" id="rech-ann"><div class="rech-tete"><h3>Chercher un thème dans les sujets</h3><button type="button" class="bouton rech-effacer" data-reffacer${rechVide() ? ' hidden' : ''}>Effacer la recherche</button></div>`;
+  h += `<p class="rech-aide">Tapez une notion (« séries entières », « Perron-Frobenius », « loi de Poisson »…) : le moteur renvoie les parties de sujets qui la travaillent, avec un lien qui ouvre le PDF à la bonne page. Un thème large (« Variables aléatoires ») regroupe des thèmes fins (« Loi de Poisson ») qu'on peut choisir ensuite pour préciser. Sujets étiquetés : session${ans.length > 1 ? 's' : ''} ${ans.join(', ')} (${I.sujets.length} sujets), les autres années suivront.</p>`;
   h += `<div class="rech-ligne"><input type="search" id="ann-q" value="${esc(etatRech.q)}" placeholder="Un thème, un théorème, un objet…" aria-label="Rechercher un thème dans les sujets" autocomplete="off" list="ann-themes">`;
   h += `<datalist id="ann-themes">${Object.values(I.themes).filter(t => I.compte[t.id]).map(t => `<option value="${esc(t.titre)}">`).join('')}</datalist>`;
   h += `<select id="ann-fam" aria-label="Famille de concours"><option value="">Tous les concours</option>${fams.map(f => `<option value="${f.id}"${etatRech.fam === f.id ? ' selected' : ''}>${esc(f.titre)}</option>`).join('')}</select>`;
-  h += `<select id="ann-fil" aria-label="Filière"><option value="">Toutes filières</option>${['MP', 'MPI', 'PC', 'PSI'].map(f => `<option${etatRech.fil === f ? ' selected' : ''}>${f}</option>`).join('')}</select></div>`;
+  h += `<select id="ann-fil" aria-label="Filière"><option value="">Toutes filières</option>${['MP', 'MPI', 'PC', 'PSI'].map(f => `<option${etatRech.fil === f ? ' selected' : ''}>${f}</option>`).join('')}</select>`;
+  const opts = v => anTous.map(y => `<option${String(y) === v ? ' selected' : ''}>${y}</option>`).join('');
+  h += `<span class="rech-periode">de <select id="ann-de" aria-label="Première session"><option value="">${anTous[0]}</option>${opts(etatRech.de)}</select> à <select id="ann-a" aria-label="Dernière session"><option value="">${anTous[anTous.length - 1]}</option>${opts(etatRech.a)}</select></span></div>`;
   h += `<div id="ann-res" aria-live="polite">${resultatsAnnales()}</div></section>`;
   return h;
 }
-function majRechercheAnnales() { const z = $('#ann-res'); if (z) z.innerHTML = resultatsAnnales(); }
+function majRechercheAnnales() {
+  const z = $('#ann-res'); if (z) z.innerHTML = resultatsAnnales();
+  const b = $('#rech-ann [data-reffacer]'); if (b) b.hidden = rechVide();
+}
 $('#rubrique').addEventListener('input', ev => {
   if (ev.target.id !== 'ann-q') return;
   clearTimeout(minuterieRechAnn);
@@ -1792,11 +1825,20 @@ let minuterieRechAnn = null;
 $('#rubrique').addEventListener('change', ev => {
   if (ev.target.id === 'ann-fam') { etatRech.fam = ev.target.value; etatRech.montres = 12; majRechercheAnnales(); }
   if (ev.target.id === 'ann-fil') { etatRech.fil = ev.target.value; etatRech.montres = 12; majRechercheAnnales(); }
+  if (ev.target.id === 'ann-de' || ev.target.id === 'ann-a') {
+    etatRech[ev.target.id === 'ann-de' ? 'de' : 'a'] = ev.target.value;
+    if (etatRech.de && etatRech.a && +etatRech.de > +etatRech.a) { [etatRech.de, etatRech.a] = [etatRech.a, etatRech.de]; const z = $('#rech-ann'); if (z) z.outerHTML = blocRechercheAnnales(); }
+    etatRech.montres = 12; majRechercheAnnales();
+  }
 });
 $('#rubrique').addEventListener('click', ev => {
   const b = ev.target.closest('[data-rq]');
   if (b) { etatRech.q = b.dataset.rq; etatRech.montres = 12; const i = $('#ann-q'); if (i) i.value = etatRech.q; majRechercheAnnales(); return; }
   if (ev.target.closest('[data-rplus]')) { etatRech.montres += 12; majRechercheAnnales(); }
+  if (ev.target.closest('[data-reffacer]')) {
+    Object.assign(etatRech, { q: '', fam: '', fil: '', de: '', a: '', montres: 12 });
+    const z = $('#rech-ann'); if (z) { z.outerHTML = blocRechercheAnnales(); const i = $('#ann-q'); if (i) i.focus(); }
+  }
 });
 
 /* ---- À propos */
