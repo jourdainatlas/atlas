@@ -221,7 +221,7 @@ const pageSite = fs.readFileSync('gabarit.html', 'utf8').replace('/*KATEX*/', ''
 const coupureSite = pageSite.indexOf('<div class="app">');
 const teteSite = pageSite.slice(0, coupureSite), corpsSite = pageSite.slice(coupureSite);
 // Adresse publique du site : les messageries exigent une adresse complète pour l'image d'aperçu.
-const ADRESSE = 'https://jourdainatlas.github.io/atlas/';
+const ADRESSE = 'https://www.atlasjourdain.fr/';
 const index = `<!doctype html>
 <html lang="fr">
 <head>
