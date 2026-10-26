@@ -192,6 +192,15 @@ for (const gid of Object.keys(D.graphes)) {
   Dsite.aCharger[gid] = `branches/${gid}.json?v=${empreinte(contenu)}`;
 }
 // Textes des exercices (énoncé, corrigé) : un fichier par feuille, chargé à l'ouverture des exercices.
+// Index du moteur des annales : fichier séparé, chargé à l'ouverture de la rubrique.
+const AIsite = Dsite.rubriques?.['annales-index'];
+if (AIsite) {
+  const contenu = JSON.stringify(AIsite.sujets || []);
+  fs.writeFileSync('site/annales-index.json', contenu);
+  AIsite.aCharger = `annales-index.json?v=${empreinte(contenu)}`;
+  AIsite.nombre = (AIsite.sujets || []).length;
+  AIsite.sujets = [];
+}
 const Esite = Dsite.rubriques?.exercices;
 if (Esite) {
   fs.rmSync('site/exercices-textes', { recursive: true, force: true });

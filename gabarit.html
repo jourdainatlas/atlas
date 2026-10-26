@@ -1625,6 +1625,8 @@ function carteExercice(e, enChargement) {
 /* ---- Annales */
 const etatAnn = { famille: '', filiere: '', cle: '', defil: 0, vue: 'grille', ouverts: new Set() };
 function pageAnnales(chemin) {
+  const attente = chargerIndexAnnales();
+  if (attente) attente.then(() => { const z = $('#rubrique'); if (enRubrique() && z.dataset.nom === 'annales' && !R['annales-index'].aCharger) rafraichirRubrique(); });
   const A = R.annales || {};
   const fams = A.familles || [];
   const fam = fams.find(f => f.id === etatAnn.famille) || fams[0];
@@ -1639,7 +1641,7 @@ function pageAnnales(chemin) {
   const annees = [...new Set(enLigne.map(x => x.annee))].sort((a, b) => b - a);
   let h = tete('Rubrique', 'Annales', `<p>${esc(A.accroche || '')}</p>`);
   h += `<details class="presentation-ann"><summary>Présentation de la rubrique</summary><div class="chapeau">${A.intro || ''}</div>`;
-  h += maquette(`Chaque case ouvre le sujet en PDF. ${enLigne.length} sujets sont référencés${annees.length ? ` (session${annees.length > 1 ? 's' : ''} ${annees.length > 2 ? `${annees[annees.length - 1]} à ${annees[0]}` : annees.join(', ')})` : ''}. Le curseur fait défiler les années. Le moteur de recherche, sous la grille, couvre pour l'instant ${(() => { const I = indexAnnales(); const a = [...new Set(I.sujets.map(x => x.annee))].sort(); return I.sujets.length ? `la session ${a.join(', ')} (${I.sujets.length} sujets étiquetés partie par partie)` : 'aucune session'; })()} ; les autres années suivront.`);
+  h += maquette(`Chaque case ouvre le sujet en PDF. ${enLigne.length} sujets sont référencés${annees.length ? ` (session${annees.length > 1 ? 's' : ''} ${annees.length > 2 ? `${annees[annees.length - 1]} à ${annees[0]}` : annees.join(', ')})` : ''}. Le curseur fait défiler les années. Le moteur de recherche, sous la grille, couvre pour l'instant ${(() => { const I = indexAnnales(); const a = [...new Set(I.sujets.map(x => x.annee))].sort(); if (!I.sujets.length) return (R['annales-index'] || {}).nombre ? `${R['annales-index'].nombre} sujets étiquetés partie par partie` : 'aucune session'; return `${a.length > 1 ? `les sessions ${a.length > 3 ? `${a[0]} à ${a[a.length - 1]}` : a.join(', ')}` : `la session ${a[0]}`} (${I.sujets.length} sujets étiquetés partie par partie)`; })()} ; les autres années suivront.`);
   h += `</details>`;
 
   h += `<div class="annales-barre"><div class="segments" role="group" aria-label="Famille de concours">${fams.map(f => `<button type="button" data-famille="${f.id}" aria-pressed="${f.id === fam.id}">${f.titre}</button>`).join('')}</div>`;
@@ -1769,7 +1771,15 @@ function fermerFicheAnnales() { location.hash = '#annales'; }
    des thèmes du vocabulaire (rubriques/annales-themes.yaml), principaux ou secondaires, et des mots-clés. */
 const etatRech = { q: '', fam: '', fil: '', de: '', a: '', montres: 12 };
 const rechVide = () => !etatRech.q.trim() && !etatRech.fam && !etatRech.fil && !etatRech.de && !etatRech.a;
-let indexAnn = null;
+let indexAnn = null, chargementIndexAnn = null;
+// Sur le site publié, l'index est dans un fichier séparé (annales-index.json), chargé à la première visite.
+function chargerIndexAnnales() {
+  const AI = R['annales-index']; if (!AI || !AI.aCharger) return null;
+  if (!chargementIndexAnn) chargementIndexAnn = fetch(AI.aCharger).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(l => { AI.sujets = l; delete AI.aCharger; indexAnn = null; })
+    .catch(() => { chargementIndexAnn = null; });
+  return chargementIndexAnn;
+}
 const normRech = t => sansAccents(t).replace(/[^a-z0-9]+/g, ' ').trim();
 function indexAnnales() {
   if (indexAnn) return indexAnn;
@@ -1910,13 +1920,14 @@ function resultatsAnnales() {
   return h;
 }
 function blocRechercheAnnales() {
+  if ((R['annales-index'] || {}).aCharger) return `<section class="rech-ann carte" id="rech-ann"><h3>Chercher un thème dans les sujets</h3><p class="rech-aide">Chargement de l'index des sujets…</p></section>`;
   const I = indexAnnales();
   if (!I.sujets.length) return '';
   const ans = [...new Set(I.sujets.map(s => s.annee))].sort();
   const fams = (R.annales || {}).familles || [];
   const anTous = [...new Set(((R.annales || {}).familles || []).flatMap(f => f.annees || []))].sort((a, b) => a - b);
   let h = `<section class="rech-ann carte" id="rech-ann"><div class="rech-tete"><h3>Chercher un thème dans les sujets</h3><button type="button" class="bouton rech-effacer" data-reffacer${rechVide() ? ' hidden' : ''}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>Effacer la recherche</button></div>`;
-  h += `<p class="rech-aide">Tapez une notion (« séries entières », « Perron-Frobenius », « loi de Poisson »…) : le moteur renvoie les parties de sujets qui la travaillent, avec un lien qui ouvre le PDF à la bonne page. Un thème large (« Variables aléatoires ») regroupe des thèmes fins (« Loi de Poisson ») qu'on peut choisir ensuite pour préciser. Sujets étiquetés : session${ans.length > 1 ? 's' : ''} ${ans.join(', ')} (${I.sujets.length} sujets), les autres années suivront.</p>`;
+  h += `<p class="rech-aide">Tapez une notion (« séries entières », « Perron-Frobenius », « loi de Poisson »…) : le moteur renvoie les parties de sujets qui la travaillent, avec un lien qui ouvre le PDF à la bonne page. Un thème large (« Variables aléatoires ») regroupe des thèmes fins (« Loi de Poisson ») qu'on peut choisir ensuite pour préciser. Sujets étiquetés : session${ans.length > 1 ? 's' : ''} ${ans.length > 3 ? `${ans[0]} à ${ans[ans.length - 1]}` : ans.join(', ')} (${I.sujets.length} sujets)${ans.length < 16 ? ', les autres années suivront' : ''}.</p>`;
   h += `<div class="rech-ligne"><input type="search" id="ann-q" value="${esc(etatRech.q)}" placeholder="Un thème, un théorème, un objet…" aria-label="Rechercher un thème dans les sujets" autocomplete="off" list="ann-themes">`;
   h += `<datalist id="ann-themes">${Object.values(I.themes).filter(t => I.compte[t.id]).map(t => `<option value="${esc(t.titre)}">`).join('')}</datalist>`;
   h += `<select id="ann-fam" aria-label="Famille de concours"><option value="">Tous les concours</option>${fams.map(f => `<option value="${f.id}"${etatRech.fam === f.id ? ' selected' : ''}>${esc(f.titre)}</option>`).join('')}</select>`;

@@ -448,6 +448,13 @@ def verifie_rubrique(nom, objet, ou):
     elif isinstance(objet, str):
         verifie_refs(objet, f"rubriques/{nom} {ou}")
 # Les exercices d'une feuille peuvent être rangés dans rubriques/exercices/<feuille>.yaml (une liste).
+# L'index du moteur des annales est rangé par session dans rubriques/annales-index/AAAA.yaml.
+if 'annales-index' in rubriques:
+    AI = rubriques['annales-index']; AI['sujets'] = AI.get('sujets') or []
+    for f in sorted(glob.glob('rubriques/annales-index/*.yaml')):
+        AI['sujets'] += yaml.safe_load(open(f, encoding='utf-8')) or []
+    urls = [x['sujet'] for x in AI['sujets']]
+    for u in set(x for x in urls if urls.count(x) > 1): erreur(f"rubriques/annales-index : sujet en double {u}")
 if 'exercices' in rubriques:
     E = rubriques['exercices']; E.setdefault('exercices', [])
     for f in sorted(glob.glob('rubriques/exercices/*.yaml')):
