@@ -666,6 +666,7 @@ span.case:hover { border-style: dashed; color: inherit; }
 .rech-domaines { margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px 20px; }
 .rech-domaines h4 { margin: 0 0 6px; font-size: 12px; font-family: var(--f-mono); font-weight: 500; letter-spacing: .05em; text-transform: uppercase; color: var(--encre-3); }
 .rech-domaines .puces-chips { gap: 5px; }
+.rech-domaines .chip { text-align: left; }
 .rech-domaines .chip small { color: var(--encre-3); margin-left: 4px; }
 .rech-bilan { margin: 16px 0 8px; font-size: 13.5px; color: var(--encre-2); }
 .res-ann { padding: 14px 16px; margin-top: 10px; }
@@ -1661,8 +1662,8 @@ function indexAnnales() {
     const c0 = cases[0] || {};
     return { ...x, cases, annee: c0.annee, concours: c0.concours, fam: (famDe[c0.concours] || {}).fam,
       filieres: [...new Set(cases.map(c => c.filiere).filter(Boolean))],
-      parties: (x.parties || []).map(p => ({ ...p, motsN: (p.mots || []).map(normRech), titreN: normRech(p.titre || '') })),
-      texteN: normRech(`${x.titre || ''} ${x.resume || ''}`) };
+      parties: (x.blocs || []).map(p => ({ ...p, motsN: (p.mots || []).map(normRech), titreN: normRech(p.nom || '') })),
+      texteN: normRech(`${x.nom || ''} ${x.apercu || ''}`) };
   });
   const compte = {};
   for (const s of sujets) for (const p of s.parties) for (const t of p.themes || []) compte[t] = (compte[t] || 0) + 1;
@@ -1681,7 +1682,7 @@ function scoreCle(q, k) {
   if (k === q) return 10;
   if (k.startsWith(q + ' ') || k.startsWith(q) && q.length >= 4) return 7;
   if ((' ' + k + ' ').includes(' ' + q + ' ')) return 6;
-  if (q.length >= 6 && (' ' + q + ' ').includes(' ' + k + ' ') && k.length >= 5) return 5;
+  if (q.length >= 6 && (' ' + q + ' ').includes(' ' + k + ' ') && k.length >= 5) return 3.5;
   const mq = q.split(' ').filter(m => m.length > 1 && !['de', 'des', 'du', 'la', 'le', 'les', 'et', 'en', 'a', 'un', 'une', 'd', 'l'].includes(m)), mk = k.split(' ');
   if (!mq.length) return 0;
   const ok = mq.every(m => mk.some(w => w.startsWith(m) && m.length >= 3 || m.length >= 5 && (proche(m, w) || w.length > m.length && proche(m, w.slice(0, m.length)))));
@@ -1690,9 +1691,10 @@ function scoreCle(q, k) {
 function rechercherAnnales(q) {
   const I = indexAnnales(), n = normRech(q);
   if (!n) return { themes: [], res: [] };
-  const th = Object.values(I.themes).map(t => ({ t, s: Math.max(...t.cles.map(k => scoreCle(n, k))) })).filter(x => x.s >= 4).sort((a, b) => b.s - a.s);
+  // le titre du thème compte plein ; un synonyme (souvent plus étroit que le thème) compte moitié
+  const th = Object.values(I.themes).map(t => { const sc = t.cles.map((k, i) => scoreCle(n, k) * (i ? .55 : 1)); return { t, s: Math.max(...sc), brut: Math.max(...t.cles.map(k => scoreCle(n, k))) }; }).filter(x => x.brut >= 4).sort((a, b) => b.s - a.s);
   const best = th.length ? th[0].s : 0;
-  const thRet = th.filter(x => x.s >= Math.min(best, 6) || x.s === best);
+  const thRet = th.filter(x => x.s === best || x.s >= Math.max(3.3, .7 * best));
   const poids = Object.fromEntries(thRet.map(x => [x.t.id, x.s / 10]));
   const res = [];
   for (const s of I.sujets) {
@@ -1703,15 +1705,18 @@ function rechercherAnnales(q) {
       for (const t of p.themes || []) if (poids[t]) { sc += 3 * poids[t]; prin = true; }
       for (const t of p.secondaires || []) if (poids[t]) sc += 1 * poids[t];
       const sm = Math.max(0, ...p.motsN.map(k => scoreCle(n, k)));
-      if (sm >= 4) { sc += 2.5 * sm / 10; prin = prin || sm >= 6; }
+      if (sm >= 4) { sc += 3.5 * sm / 10; prin = prin || sm >= 6; }
       if (scoreCle(n, p.titreN) >= 4) sc += 1;
       return { p, i, sc, prin };
     }).filter(x => x.sc > 0).sort((a, b) => b.sc - a.sc);
-    let sc = parts.length ? parts[0].sc + .3 * parts.slice(1).reduce((u, x) => u + x.sc, 0) : 0;
+    if (!parts.length) continue;
+    let sc = parts[0].sc + .3 * parts.slice(1).reduce((u, x) => u + x.sc, 0);
     if (scoreCle(n, s.texteN) >= 4) sc += 1;
-    if (sc > 0) res.push({ s, sc, parts });
+    res.push({ s, sc, parts });
   }
   res.sort((a, b) => b.sc - a.sc || (b.s.annee || 0) - (a.s.annee || 0));
+  // on écarte les correspondances très faibles devant les meilleures
+  if (res.length) { const m = res[0].sc; while (res.length && res[res.length - 1].sc < .2 * m) res.pop(); }
   return { themes: thRet.map(x => x.t), res };
 }
 function lienEdifice(id) { const nd = D.noeuds[id]; return nd ? `#${nd.graphe || D.racine}.${id}` : ''; }
@@ -1745,12 +1750,12 @@ function resultatsAnnales() {
     const fils = s.filieres.length ? ` · ${s.filieres.join(', ')}` : '';
     const eps = [...new Set(s.cases.map(c => c.epreuve))].join(', ');
     h += `<article class="res-ann carte"><div class="res-tete"><span class="res-conc">${esc(cf.titre || s.concours)}${fils} · ${s.annee} · ${esc(eps)}</span></div>`;
-    h += `<h4><a href="${esc(s.sujet)}" target="_blank" rel="noopener">${esc(s.titre || '')}</a></h4>`;
-    if (s.resume) h += `<p class="res-resume">${surligner(s.resume, q)}</p>`;
+    h += `<h4><a href="${esc(s.sujet)}" target="_blank" rel="noopener">${esc(s.nom || '')}</a></h4>`;
+    if (s.apercu) h += `<p class="res-resume">${surligner(s.apercu, q)}</p>`;
     h += `<ul class="res-parties">${r.parts.map(({ p, prin }) => {
       const [a, b] = p.pages || [1, 1];
       const tt = (p.themes || []).map(t => `<b>${esc((I.themes[t] || {}).titre || t)}</b>`).concat((p.secondaires || []).map(t => esc((I.themes[t] || {}).titre || t)));
-      return `<li class="${prin ? '' : 'sec'}"><a class="partie" href="${esc(s.sujet)}#page=${a}" target="_blank" rel="noopener" title="Ouvrir le sujet à la page ${a}">${surligner(p.titre || '', q)}</a><span class="pp">p. ${a === b ? a : `${a}–${b}`}</span><span class="tt">${tt.join(' · ')}${(p.mots || []).length ? ` — ${surligner(p.mots.join(', '), q)}` : ''}</span></li>`;
+      return `<li class="${prin ? '' : 'sec'}"><a class="partie" href="${esc(s.sujet)}#page=${a}" target="_blank" rel="noopener" title="Ouvrir le sujet à la page ${a}">${surligner(p.nom || '', q)}</a><span class="pp">p. ${a === b ? a : `${a}–${b}`}</span><span class="tt">${tt.join(' · ')}${(p.mots || []).length ? ` — ${surligner(p.mots.join(', '), q)}` : ''}</span></li>`;
     }).join('')}</ul>`;
     const autres = s.parties.length - r.parts.length;
     if (autres > 0) h += `<p class="res-autres">Le sujet compte ${autres} autre${autres > 1 ? 's' : ''} partie${autres > 1 ? 's' : ''} sur d'autres thèmes.</p>`;
