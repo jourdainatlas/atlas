@@ -1563,11 +1563,14 @@ function pageAnnales() {
   h += `<div class="defil-annees" role="group" aria-label="Faire défiler les années"><span class="bout">${ans[0]}</span><button type="button" data-defil="-1" aria-label="Années plus récentes">‹</button><input type="range" min="0" max="1000" step="1" value="${Math.round(etatAnn.defil * 1000)}" aria-label="Faire défiler les années de ${ans[0]} à ${ans[ans.length - 1]}"><button type="button" data-defil="1" aria-label="Années plus anciennes">›</button><span class="bout">${ans[ans.length - 1]}</span><span class="visible" aria-live="polite"></span></div>`;
   h += `</div><div class="carte grille-wrap"><table class="grille"><thead><tr><th>Concours</th>${fam.annees.map(a => `<th data-an="${a}">${a}</th>`).join('')}</tr></thead><tbody>`;
   for (const c of fam.concours) {
-    const eps = epreuvesDe(c);
-    if (!eps.length) continue;
+    // une épreuve est un libellé, ou {nom, annees} pour une épreuve qui n'a existé que certaines années
+    const epsTout = epreuvesDe(c).map(e => typeof e === 'string' ? { nom: e } : e);
+    if (!epsTout.length) continue;
     const nomC = c.titre.replace(/<[^>]+>/g, '');
-    h += `<tr><th scope="row">${c.titre}<small>${eps.map(esc).join(' · ')}</small></th>`;
+    const anPlage = l => l.length > 1 ? `${Math.min(...l)}–${Math.max(...l)}` : l[0];
+    h += `<tr><th scope="row">${c.titre}<small>${epsTout.map(e => esc(e.nom) + (e.annees ? ` (${anPlage(e.annees)})` : '')).join(' · ')}</small></th>`;
     for (const an of fam.annees) {
+      const eps = epsTout.filter(e => !e.annees || e.annees.includes(an)).map(e => e.nom);
       // épreuve inexistante cette année-là (filière ou concours créés plus tard)
       const debut = Math.max((fam.debut || {})[fil] || 0, c.debut || 0);
       if (an < debut) { h += `<td><span class="hors" title="${esc(fil && (fam.debut || {})[fil] > (c.debut || 0) ? `Filière ${fil} créée en ${debut}` : `Concours créé en ${debut}`)}">—</span></td>`; continue; }
