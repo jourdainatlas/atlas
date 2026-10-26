@@ -654,7 +654,10 @@ span.case:hover { border-style: dashed; color: inherit; }
 .case[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--rouge); }
 .rech-ann { padding: 18px 20px; margin: 26px 0 8px; }
 .rech-ann .rech-tete { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
-.rech-ann .rech-effacer { font-size: 13px; }
+.rech-ann .rech-effacer { font-size: 13.5px; font-weight: 600; background: var(--encre); border-color: var(--encre); color: var(--surface); padding: 7px 14px; box-shadow: 0 1px 0 rgba(0,0,0,.25); }
+.rech-ann .rech-effacer:hover { background: var(--encre-2); border-color: var(--encre-2); }
+.rech-ann .rech-effacer:focus-visible { outline: 2px solid var(--encre-2); outline-offset: 2px; }
+.rech-ann .rech-effacer svg { width: 16px; height: 16px; flex: none; }
 .rech-ann .rech-effacer[hidden] { display: none; }
 .rech-periode { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--encre-2); }
 .rech-themes .sous { flex-basis: 100%; display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: baseline; margin-top: 2px; }
@@ -1801,7 +1804,7 @@ function blocRechercheAnnales() {
   const ans = [...new Set(I.sujets.map(s => s.annee))].sort();
   const fams = (R.annales || {}).familles || [];
   const anTous = [...new Set(((R.annales || {}).familles || []).flatMap(f => f.annees || []))].sort((a, b) => a - b);
-  let h = `<section class="rech-ann carte" id="rech-ann"><div class="rech-tete"><h3>Chercher un thème dans les sujets</h3><button type="button" class="bouton rech-effacer" data-reffacer${rechVide() ? ' hidden' : ''}>Effacer la recherche</button></div>`;
+  let h = `<section class="rech-ann carte" id="rech-ann"><div class="rech-tete"><h3>Chercher un thème dans les sujets</h3><button type="button" class="bouton rech-effacer" data-reffacer${rechVide() ? ' hidden' : ''}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>Effacer la recherche</button></div>`;
   h += `<p class="rech-aide">Tapez une notion (« séries entières », « Perron-Frobenius », « loi de Poisson »…) : le moteur renvoie les parties de sujets qui la travaillent, avec un lien qui ouvre le PDF à la bonne page. Un thème large (« Variables aléatoires ») regroupe des thèmes fins (« Loi de Poisson ») qu'on peut choisir ensuite pour préciser. Sujets étiquetés : session${ans.length > 1 ? 's' : ''} ${ans.join(', ')} (${I.sujets.length} sujets), les autres années suivront.</p>`;
   h += `<div class="rech-ligne"><input type="search" id="ann-q" value="${esc(etatRech.q)}" placeholder="Un thème, un théorème, un objet…" aria-label="Rechercher un thème dans les sujets" autocomplete="off" list="ann-themes">`;
   h += `<datalist id="ann-themes">${Object.values(I.themes).filter(t => I.compte[t.id]).map(t => `<option value="${esc(t.titre)}">`).join('')}</datalist>`;
