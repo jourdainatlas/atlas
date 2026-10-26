@@ -304,3 +304,8 @@ exercices/<id>/. Feuille en ligne : Terminale chapitre 1 (33 exercices).
 - Contenu : accroche, miniature de l'édifice (positions, arêtes et couleurs réelles, nœuds cliquables), cartes des rubriques avec chiffres calculés (théories, énoncés hors chapitres, termes, chapitres déposés, exercices des feuilles déposées), exemple réel cours → exercices → théories (premier cours déposé qui a une feuille).
 - Bandeau de la page Exercices calculé par enLigneExos().
 - racine/index.html : page de renvoi vers /atlas/ pour un dépôt jourdainatlas.github.io, à créer par l'auteur (Claude n'a pas accès à la création de dépôt).
+
+### 16. Domaine (26 oct. 2026)
+- Le site est servi à https://www.atlasjourdain.fr/ (domaine OVHcloud, déclaré dans Settings → Pages du dépôt atlas ; DNS : CNAME www → jourdainatlas.github.io., A/AAAA de GitHub sur @, TXT de vérification GitHub).
+- ADRESSE (rendu.mjs) et ADRESSE_SITE (gabarit.html) valent https://www.atlasjourdain.fr/. GitHub redirige jourdainatlas.github.io/atlas/… vers le domaine ; la page du dépôt jourdainatlas.github.io renvoie aussi vers le domaine.
+- Thème : bouton soleil/lune (#theme) ; choix gardé par cookie de session atlas-theme (+ sessionStorage).
