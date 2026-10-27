@@ -396,7 +396,15 @@ class Conv:
 # \noindent\textbf{\underline{Exercice N : titre}} suivi des étoiles ($\star\star$ ou \etoilesv).
 # Les titres peuvent contenir des formules à accolades : lecture par accolades appariées.
 TETE = re.compile(r'\\exo\{|\\noindent\s*\\textbf\{\s*\\underline\{\s*Exercice\s')
-PARTIE = re.compile(r'\\partie\{([^}]*)\}|\\subsection\*\{\\textcolor\{blue\}\{([^}]*)\}\}')
+PARTIE = re.compile(r'\\partie\{|\\subsection\*\{\\textcolor\{blue\}\{')
+
+def parties(t):
+    """Titres de partie, lus par accolades appariées (ils peuvent contenir $\\mathbb{Z}$) : [(début, titre)]."""
+    r = []
+    for m in PARTIE.finditer(t):
+        f = accolade(t, m.end() - 1)
+        r.append((m.start(), re.sub(r'\s+', ' ', t[m.end():f - 1]).strip()))
+    return r
 ETOILES = {'etoile': 1, 'etoiles': 2, 'etoilesss': 3, 'etoilesv': 4}
 
 def entetes(t):
@@ -428,10 +436,10 @@ def entetes(t):
     return r
 
 def decouper(t):
-    evts = sorted([(m.start(), 'P', m) for m in PARTIE.finditer(t)] + [(e[0], 'E', e) for e in entetes(t)], key=lambda x: x[0])
+    evts = sorted([(d, 'P', ti) for d, ti in parties(t)] + [(e[0], 'E', e) for e in entetes(t)], key=lambda x: x[0])
     exos, partie = [], None
     for k, (pos, genre, m) in enumerate(evts):
-        if genre == 'P': partie = (m.group(1) or m.group(2)).strip(); continue
+        if genre == 'P': partie = m; continue
         fin = evts[k + 1][0] if k + 1 < len(evts) else t.index('\\end{document}')
         _, fin_tete, tete, et = m
         mn = re.match(r'(\d+)\s*(?:[-:–]\s*(.*))?$', tete, re.S)

@@ -21,7 +21,7 @@ point 1) : `rubriques/cours.yaml`, `rubriques/exercices.yaml`, `rubriques/exerci
 `outils/meta_*.py` et le présent mémo. Dans les fichiers communs, elle ne touche qu'à ce qui lui
 appartient, par remplacements locaux après `git fetch` et `git rebase` sur `origin/main` :
 - dans `gabarit.html`, les fonctions `pageCours`, `coursLies`, `pageChapitre`, `chargerExercices`, `enLigneExos`,
-  `pageExercices`, `vueFeuilles`, `filtrerExercices`, `vueExercices`, `carteExercice`, et dans
+  `pageExercices`, `vueFeuilles`, `bilanNiveauExos`, `vueNiveauxExos`, `filtrerExercices`, `vueExercices`, `carteExercice`, et dans
   `pageAccueil` la seule carte des cours et des exercices ; toute nouvelle fonction porte un nom qui
   commence par `Cours`, `Chapitre`, `Exo` ou `Feuille` (ou les contient) ;
 - dans `construire.py`, le bloc « rubriques (cours, exercices…) » et ses vérifications ;
@@ -62,6 +62,15 @@ données YAML. Les messages de commit commencent par « Cours : » ou « Exercic
 - L'édifice n'a aucun nœud pour les graphes (matrice d'adjacence) ni pour les chaînes de Markov :
   `me-06` et `me-09` se rattachent à des nœuds voisins (matrices, espaces probabilisés). Le dossier
   `contenu/` appartient désormais à la conversation Édifice : un nœud manquant se demande à l'auteur.
+
+**Page Exercices (27 oct. 2026).** Trois onglets : « Par exercice » (recherche et filtres), « Par
+feuille » (cartes rangées sous un titre par niveau, dans l'ordre de `niveaux` de `cours.yaml`) et
+« Par niveau », demandé par l'auteur pour que les élèves n'aient pas à fouiller toutes les feuilles. Ce
+dernier montre une carte par niveau qui a des feuilles en ligne (nombre de feuilles et d'exercices,
+répartition des difficultés), les autres niveaux étant cités en une ligne ; une carte ouvre
+`#exercices/niveau/<id>`, qui liste les feuilles du niveau et propose « Chercher parmi ces N
+exercices », c'est-à-dire la vue « Par exercice » filtrée sur ce niveau. Le bouton Partager donne
+`…/#exercices/niveau/<id>` (pas de page de partage dédiée).
 
 ### 21. Déposer un cours
 

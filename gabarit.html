@@ -604,6 +604,16 @@ button.lien-simple { border: 0; background: none; padding: 0; cursor: pointer; f
   background: var(--corrige-fond); border-left: 3px solid var(--corrige-filet); border-radius: 0 6px 6px 6px; }
 .exo .corrige .contenu p { margin: 0 0 .6em; }
 .feuilles { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+.niveau-exos + .niveau-exos { margin-top: 28px; }
+.niveaux-exos { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+.niveau-exo { position: relative; display: flex; flex-direction: column; gap: 8px; padding: 18px 20px; color: inherit; text-decoration: none; }
+.niveau-exo h3, .niveau-exos-tete h3 { margin: 0; font-family: var(--f-titre); font-size: 22px; }
+.niveau-exo p, .niveau-exos-tete p { margin: 0; font-size: 14px; color: var(--encre-2); }
+.niveau-exo .fleche { position: absolute; top: 18px; right: 20px; color: var(--encre-3); }
+a.niveau-exo:hover { border-color: var(--encre-3); }
+.niveau-exos-chiffres { font-size: 13px !important; color: var(--encre) !important; }
+.niveau-exos-tete { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-end; justify-content: space-between; padding: 18px 20px; margin-bottom: 16px; }
+.niveau-exos-tete > div { display: grid; gap: 8px; min-width: 240px; flex: 1; }
 .feuille { padding: 16px 18px; display: flex; flex-direction: column; gap: 10px; }
 .feuille h3 { font-family: var(--f-titre); font-size: 19px; margin: 0; }
 .repartition { display: flex; height: 8px; border-radius: 4px; overflow: hidden; background: var(--trame); }
@@ -1537,7 +1547,7 @@ function pageChapitre(c, tous) {
 }
 
 /* ---- Exercices */
-const etatExo = { vue: 'exercice', niveaux: new Set(), diff: new Set(), types: new Set(), themes: new Set(), q: '', noeud: '', feuille: '', ex: '', montres: 15 };
+const etatExo = { vue: 'exercice', niveauVu: '', niveaux: new Set(), diff: new Set(), types: new Set(), themes: new Set(), q: '', noeud: '', feuille: '', ex: '', montres: 15 };
 const sansAccents = t => String(t).normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
 function exercicesDuNoeud(id) { return (R.exercices?.exercices || []).filter(e => (e.noeuds || []).includes(id)); }
 const feuilleDe = id => (R.exercices?.feuilles || []).find(f => f.id === id) || {};
@@ -1580,19 +1590,25 @@ function pageExercices(chemin, premiere) {
     if (mode === 'notion') { etatExo.vue = 'exercice'; etatExo.noeud = arg || ''; }
     else if (mode === 'feuille') { etatExo.vue = 'exercice'; etatExo.feuille = arg || ''; }
     else if (mode === 'ex') { etatExo.vue = 'exercice'; etatExo.ex = arg || ''; }
+    else if (mode === 'niveau') { etatExo.vue = 'niveau'; etatExo.niveauVu = arg || ''; }
   }
   const attente = chargerExercices();
   if (attente) attente.then(() => { const z = $('#rubrique'); if (enRubrique() && z.dataset.nom === 'exercices') rafraichirRubrique(); });
   let h = tete('Rubrique', 'Exercices', E.intro);
   h += maquette(`La banque se remplit au fur et à mesure : ${enLigneExos(E)}, avec leurs corrigés.`);
-  h += `<div class="resultats-tete" style="margin-bottom:18px"><div class="segments" role="group" aria-label="Affichage"><button type="button" data-vue="exercice" aria-pressed="${etatExo.vue === 'exercice'}">Par exercice</button><button type="button" data-vue="feuille" aria-pressed="${etatExo.vue === 'feuille'}">Par feuille</button></div></div>`;
-  h += etatExo.vue === 'feuille' ? vueFeuilles(E) : vueExercices(E, !!attente);
+  h += `<div class="resultats-tete" style="margin-bottom:18px"><div class="segments" role="group" aria-label="Affichage"><button type="button" data-vue="exercice" aria-pressed="${etatExo.vue === 'exercice'}">Par exercice</button><button type="button" data-vue="feuille" aria-pressed="${etatExo.vue === 'feuille'}">Par feuille</button><button type="button" data-vue="niveau" aria-pressed="${etatExo.vue === 'niveau'}">Par niveau</button></div></div>`;
+  h += etatExo.vue === 'feuille' ? vueFeuilles(E) : etatExo.vue === 'niveau' ? vueNiveauxExos(E) : vueExercices(E, !!attente);
   return h;
 }
-function vueFeuilles(E) {
+// Feuilles d'un niveau, ou de tous les niveaux, rangées sous un titre par niveau dans l'ordre de rubriques/cours.yaml.
+function vueFeuilles(E, liste) {
+  const toutes = liste || E.feuilles || [];
+  const ordre = (R.cours?.niveaux || []).map(n => n.id);
+  const niveaux = [...new Set(toutes.map(f => f.niveau))].sort((a, b) => ordre.indexOf(a) - ordre.indexOf(b));
+  if (!liste && niveaux.length > 1) return niveaux.map(n => `<section class="niveau-exos"><div class="niveau-tete"><h3>${esc(niveauDe(n).titre)}</h3><span>${esc(niveauDe(n).description || '')}</span></div>${vueFeuilles(E, toutes.filter(f => f.niveau === n))}</section>`).join('');
   let h = '<div class="feuilles">';
   const couleurs = ['var(--c-ana)', 'var(--c-nb)', 'var(--c-geo)', 'var(--rouge)'];
-  for (const f of E.feuilles || []) {
+  for (const f of toutes) {
     const c = (R.cours?.cours || []).find(x => x.id === f.cours);
     h += `<article class="feuille carte"><p class="sur-titre">${esc(niveauDe(f.niveau).titre)}${f.chapitre ? ` · chapitre ${f.chapitre}` : ''}</p><h3>${f.titre}</h3>`;
     if (f.etoiles) {
@@ -1607,6 +1623,38 @@ function vueFeuilles(E) {
     h += `</div></article>`;
   }
   return h + '</div>';
+}
+// Vue « Par niveau » : une carte par niveau du cours, puis les feuilles du niveau choisi (#exercices/niveau/<id>).
+function bilanNiveauExos(E, n) {
+  const fs = (E.feuilles || []).filter(f => f.niveau === n && f.statut === 'depose' && f.nombre);
+  const etoiles = [0, 0, 0, 0];
+  for (const f of fs) (f.etoiles || []).forEach((k, i) => { etoiles[i] += k; });
+  return { fs, nombre: fs.reduce((t, f) => t + f.nombre, 0), etoiles };
+}
+function vueNiveauxExos(E) {
+  const couleurs = ['var(--c-ana)', 'var(--c-nb)', 'var(--c-geo)', 'var(--rouge)'];
+  const repartition = et => { const tot = et.reduce((a, b) => a + b, 0); return tot ? `<div class="repartition" title="Répartition par difficulté">${et.map((k, i) => k ? `<span style="width:${100 * k / tot}%;background:${couleurs[i]}"></span>` : '').join('')}</div>` : ''; };
+  const n = etatExo.niveauVu, niv = (R.cours?.niveaux || []).find(x => x.id === n);
+  if (niv) {
+    const b = bilanNiveauExos(E, n);
+    const listees = (E.feuilles || []).filter(f => f.niveau === n);
+    let h = `<div class="niveau-exos-tete carte"><div><a class="lien-simple" href="#exercices/niveau">← Tous les niveaux</a><h3>${esc(niv.titre)}</h3><p>${esc(niv.description || '')}</p>`;
+    h += `<p class="niveau-exos-chiffres">${b.fs.length} ${b.fs.length > 1 ? 'feuilles' : 'feuille'} en ligne · ${b.nombre} exercices corrigés</p>${repartition(b.etoiles)}</div>`;
+    if (b.nombre) h += `<button type="button" class="bouton plein" data-niveau-exos="${n}">Chercher parmi ces ${b.nombre} exercices →</button>`;
+    h += `</div>`;
+    return h + (listees.length ? vueFeuilles(E, listees) : '<p class="vide-note">Aucune feuille pour ce niveau pour l\'instant.</p>');
+  }
+  let h = '<div class="niveaux-exos">';
+  const aVenir = [];
+  for (const x of R.cours?.niveaux || []) {
+    const b = bilanNiveauExos(E, x.id);
+    if (!b.nombre) { aVenir.push(x.titre); continue; }
+    h += `<a class="niveau-exo carte" href="#exercices/niveau/${x.id}"><h3>${esc(x.titre)}</h3><p>${esc(x.description || '')}</p>`;
+    h += `<p class="niveau-exos-chiffres">${b.fs.length} ${b.fs.length > 1 ? 'feuilles' : 'feuille'} · ${b.nombre} exercices</p>${repartition(b.etoiles)}<span class="fleche" aria-hidden="true">→</span></a>`;
+  }
+  h += '</div>';
+  if (aVenir.length) h += `<p class="bientot">Niveaux prévus, sans feuille d'exercices pour l'instant : ${aVenir.map(esc).join(', ')}.</p>`;
+  return h;
 }
 function filtrerExercices(tous) {
   const mots = sansAccents(etatExo.q).split(/[\s,;]+/).filter(m => m.length > 1);
@@ -2167,7 +2215,9 @@ function rafraichirRubrique() {
 $('#rubrique').addEventListener('click', ev => {
   const t = ev.target;
   const b = t.closest('[data-niveau]'); if (b) { pageCours.filtre = b.dataset.niveau; rafraichirRubrique(); return; }
-  const v = t.closest('[data-vue]'); if (v) { etatExo.vue = v.dataset.vue; rafraichirRubrique(); return; }
+  const v = t.closest('[data-vue]'); if (v) { etatExo.vue = v.dataset.vue; if (v.dataset.vue === 'niveau') etatExo.niveauVu = ''; rafraichirRubrique(); return; }
+  const ne = t.closest('[data-niveau-exos]');
+  if (ne) { etatExo.niveaux = new Set([ne.dataset.niveauExos]); etatExo.vue = 'exercice'; etatExo.noeud = ''; etatExo.feuille = ''; etatExo.ex = ''; etatExo.montres = 15; if (location.hash === '#exercices') rafraichirRubrique(); else location.hash = '#exercices'; return; }
   const fz = t.closest('[data-filtre="diff"], [data-filtre="type"], [data-filtre="theme"]');
   if (fz) {
     const ens = { diff: etatExo.diff, type: etatExo.types, theme: etatExo.themes }[fz.dataset.filtre];
@@ -2233,6 +2283,7 @@ function adressePartage() {
     const z = $('#rubrique'), nom = z.dataset.nom, ch = z.dataset.chemin;
     if (nom === 'cours' && ch && (R.cours?.cours || []).some(c => c.id === ch)) return `${ADRESSE_SITE}cours/${ch}/`;
     if (nom === 'exercices' && etatExo.ex) return `${ADRESSE_SITE}exercices/${etatExo.ex}/`;
+    if (nom === 'exercices' && etatExo.vue === 'niveau' && etatExo.niveauVu) return `${ADRESSE_SITE}#exercices/niveau/${etatExo.niveauVu}`;
     if (nom === 'accueil') return ADRESSE_SITE;
     if (nom === 'annales' && (ch || '').startsWith('sujet/')) return `${ADRESSE_SITE}#annales/${ch}`;
     return `${ADRESSE_SITE}${nom}/`;
