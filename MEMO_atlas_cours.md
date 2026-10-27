@@ -42,17 +42,22 @@ données YAML. Les messages de commit commencent par « Cours : » ou « Exercic
 - **Niveaux sans cours** : Seconde, Première, Maths approfondies (MPSI), ECG. Le programme officiel
   MPSI-MP2I est un fichier du projet Claude (`programme-mpsi-mp2i_mathematiques.pdf`).
 - **Maths expertes** (27 oct. 2026) : chapitres 1 à 9 (`me-01` à `me-09`), PDF dans
-  `documents/cours/expertes/` (4,4 Mo), sans feuilles d'exercices pour l'instant. Niveau `expertes`
-  (« Maths expertes »), rangé après `terminale` dans `niveaux`.
+  `documents/cours/expertes/` (4,4 Mo). Niveau `expertes` (« Maths expertes »), rangé après
+  `terminale` dans `niveaux`. Feuilles `f-me-01` à `f-me-09`, soit 305 exercices (41, 37, 28, 37, 37,
+  29, 42, 31, 23), PDF dans `documents/exercices/expertes/` (4,9 Mo), 59 figures ajoutées à
+  `documents/figures/` (202 au total). Le site compte 712 exercices.
 - Le dépôt ne contient aucune source `.tex`. Les cours et les feuilles arrivent de l'auteur, en `.tex`
   et en PDF, à chaque session.
 
 **Points ouverts.**
-- Les 80 avertissements KaTeX de la construction (« No character metrics » pour «, » et €) viennent
-  des feuilles d'exercices, où des guillemets ou le symbole euro sont placés dans `\text{…}` à
-  l'intérieur d'une formule (au moins `f-t-02`, `f-t-05` et `f-t-10`). Ils ne bloquent rien. Il faut
+- Les avertissements KaTeX de la construction (« No character metrics » pour «, » et €), 98 depuis
+  l'ajout des feuilles de Maths expertes, viennent des feuilles d'exercices, où des guillemets ou le
+  symbole euro sont placés dans `\text{…}` à l'intérieur d'une formule. Ils ne bloquent rien. Il faut
   les corriger dans `tex2exos.py`, en sortant ces signes de la formule, puis dans les feuilles déjà
   versées.
+- Les modifications de `tex2exos.py` du 27 octobre n'ont pas pu être rejouées sur les sources des
+  feuilles de Terminale, absentes du dépôt. La forme `\exo{…}{…}` y est lue par le nouveau code
+  d'en-têtes ; il faudra le confirmer au prochain versement d'une feuille de ce type.
 - Le cours `m-homologie` attend son PDF.
 - L'édifice n'a aucun nœud pour les graphes (matrice d'adjacence) ni pour les chaînes de Markov :
   `me-06` et `me-09` se rattachent à des nœuds voisins (matrices, espaces probabilisés). Le dossier
@@ -82,10 +87,28 @@ données YAML. Les messages de commit commencent par « Cours : » ou « Exercic
    `python3 outils/tex2exos.py ENONCE.tex CORRIGE.tex ENONCE.pdf CORRIGE.pdf f-<niv>-NN <niv>-NN > rubriques/exercices/f-<niv>-NN.yaml`.
    L'outil a besoin de `pdflatex`, `pdftocairo`, `pdfinfo` et `pdftotext`, tous présents dans
    l'environnement de travail. Les figures TikZ sont compilées en SVG dans `documents/figures/`.
-2. Métadonnées : `outils/meta_<niv>_NN.py`, fondé sur `meta_commun.py`, propose les étoiles, les types,
-   les mots-clés, les nœuds et les notions. Ces propositions sont à relire exercice par exercice. Les
-   mots-clés sont cherchés dans l'énoncé seul.
+   Il lit deux formes d'en-tête : la macro `\exo{N : titre}{\etoiles}` et
+   `\noindent\textbf{\underline{Exercice N : titre}}` suivi de `$\star…$` ou de `\etoilesv` (titres
+   à formules lus par accolades appariées). Les commentaires `% Source : …` et `% Inspiré de : …`
+   placés avant un exercice deviennent son champ `source` (« inspiré de … » dans le second cas).
+   Les blocs `minipage` et `flushright` sont retirés, `\cline` est ignoré, les cellules
+   `\textcolor{c}{$x$}` et `\textbf{… $x$ …}` sont converties.
+   **Images** : un `\includegraphics{nom.png}` n'est pas dans les sources. On extrait les images du PDF
+   de la feuille (`pdfimages -list` pour les repérer, puis `pdfimages -png`), on les range sous leur nom
+   d'origine dans un dossier, et l'on passe ce dossier par `TEX2EXOS_IMAGES=dossier`. Le PNG est
+   enveloppé dans un SVG de même taille que dans le PDF (96 ppp, option `scale=`). Exemple : les deux
+   graphes de `f-me-06` (exercices 14 et 17).
+2. Métadonnées : `outils/meta_<niv>_NN.py` (préfixe avec `_`, ainsi `meta_me_01.py` pour `me-01`), fondé
+   sur `meta_commun.py`, propose les types, les mots-clés, les nœuds et les notions ; les étoiles
+   viennent de l'en-tête. Ces propositions sont à relire. Les mots-clés sont cherchés dans l'énoncé
+   seul. Le dictionnaire `EXTRA` de chaque fichier complète les exercices que les règles ne
+   reconnaissent pas (numéro → mots-clés, nœuds, notions) : aucun exercice ne reste sans nœud.
 3. Déclarer la feuille dans `rubriques/exercices.yaml` (`pdf_enonce`, `pdf_corrige`, `cours`,
    `statut: depose`) et relier le cours par son champ `exercices`.
-4. Contrôle : vérifier les calculs des corrigés avec Python (sympy, numpy) sur un échantillon au moins,
-   et regarder les figures rendues sur le site, en clair et en sombre.
+4. Contrôle de la conversion (et non du contenu, qui n'est pas relu ici, voir section 19) : aucun
+   avertissement de l'outil (corrigé manquant, étoiles différentes, image introuvable), numéros
+   consécutifs, pages trouvées, aucune commande LaTeX ni aucun jeton `@@…@@` hors des formules ou dans
+   les blocs ```tableau, sources toutes retrouvées ; comparaison des mots de chaque énoncé et corrigé
+   avec le texte du PDF dans les deux sens (seuls doivent manquer les en-têtes, les pieds de page, les
+   césures et les étiquettes des figures) ; enfin regarder sur le site les tableaux, les figures et
+   les images, en clair et en sombre, sur ordinateur et sur téléphone.
