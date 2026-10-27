@@ -49,7 +49,15 @@ données YAML. Les messages de commit commencent par « Cours : » ou « Exercic
   pas, d'origine, `babel-french`, `lmodern`, `tkz-tab` ni `diagbox` : `apt-get install
   texlive-lang-french lmodern texlive-latex-extra texlive-pictures texlive-fonts-recommended
   texlive-science`.
-- **Niveaux sans cours** : Maths approfondies (MPSI), ECG. Le programme officiel
+- **Maths approfondies** (27 oct. 2026) : option de Terminale donnée par l'auteur, préparation à l'entrée
+  en CPGE scientifique (« Initiation au programme de MPSI »), partie Algèbre. Niveau `approfondies`
+  (« Maths approfondies »), rangé après `expertes`. Chapitres 1 à 9 (`ap-01` à `ap-09` : ensembles et
+  logique, applications, groupes, morphismes, structures algébriques, espaces vectoriels,
+  endomorphismes, dimension finie, matrices), PDF de l'auteur dans `documents/cours/approfondies/`
+  (3,2 Mo). Le site compte 47 chapitres en ligne. Les feuilles d'exercices suivront (`f-ap-NN`, préfixe
+  `ap-NN`). Pour éviter deux niveaux de même nom, le niveau vide `ma`, réservé aux cours de classe
+  préparatoire, s'intitule désormais « MPSI ».
+- **Niveaux sans cours** : MPSI (`ma`), ECG. Le programme officiel
   MPSI-MP2I est un fichier du projet Claude (`programme-mpsi-mp2i_mathematiques.pdf`).
 - **Première** (27 oct. 2026) : chapitres 1 à 8 (`p-01` à `p-08`), PDF dans `documents/cours/premiere/`
   (3,5 Mo). Le site compte 27 chapitres en ligne. Feuilles `f-p-01` à `f-p-08` (29, 30, 34, 36, 35,
@@ -105,7 +113,7 @@ exercices », c'est-à-dire la vue « Par exercice » filtrée sur ce niveau. Le
    effectivement mobilisés), `notions` (termes du lexique), `exercices` (identifiant de la feuille),
    `liens` (identifiants d'autres cours : chapitres liés, affichés dans les deux sens, y compris
    d'un niveau à l'autre), `pdf`, `pages` (lu par `pdfinfo`), `statut: depose`. Préfixes : `s-` Seconde, `p-`
-   Première, `t-` Terminale, `me-` Maths expertes, `m-` Master.
+   Première, `t-` Terminale, `me-` Maths expertes, `ap-` Maths approfondies, `m-` Master.
 3. `construire.py` vérifie que les fichiers existent, que les renvois aux nœuds, aux termes et aux
    feuilles sont valides, que les identifiants sont uniques, que le niveau est déclaré, que chaque
    lien vise un autre cours existant et qu'un numéro de chapitre n'est pas pris deux fois dans un
