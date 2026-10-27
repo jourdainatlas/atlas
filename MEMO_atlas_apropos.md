@@ -1,0 +1,30 @@
+# Mémo ATLAS — complément : À propos, apparence et contact
+
+> Complète `MEMO_atlas.md` (sections 0 à 16) et se lit avec lui. Ce mémo appartient à la conversation
+> « À propos » : elle seule le modifie. La version du dépôt fait foi ; la copie du projet Claude en est
+> le reflet.
+
+### 28. Page À propos (27 oct. 2026)
+
+**Données.** `rubriques/apropos.yaml` : `auteur`, `fonction`, `etablissement`, `initiales`, puis
+`sections` (id, titre, texte). Une section peut porter `etapes` (frise : `periode`, `titre`, `lieu`) ou
+`epreuves` (cartes : `nom`, `public`, `texte`) ; `a_rediger: true` affiche « À venir » et nourrit le
+bandeau « Prototype » de la page. Seuls `titre` et `texte` passent par le rendu (formules, liens) ; les
+autres champs sont du texte simple, échappé.
+
+**Code.** `pageAPropos` et `aProposSection` dans `gabarit.html` ; styles `.apropos*`, `.profil`,
+`.texte-auteur`. La carte de profil porte un sommaire qui fait défiler jusqu'aux sections sans changer
+l'ancre (`data-apropos-section`) ; il est masqué sur téléphone. Le rouge reste réservé aux définitions,
+aux axiomes et au logo : le dernier jalon de la frise est à la couleur de l'encre.
+
+**Sources du contenu.** Le CV et la lettre de motivation de l'auteur (avril 2026). Consigne de
+l'auteur : aucune mention de la foi ni de la religion (pas d'aumônerie, pas de couvent). Ne publier ni
+l'adresse postale ni le téléphone. Descriptions des concours vérifiées le 27 oct. 2026 : TFJM²
+(communiqué de l'ENSMA, 2026 : Animath, équipes de 4 à 6, problèmes ouverts, rôles défenseur, opposant,
+rapporteur), Olympiades (Éduscol : Première, 4 h, partie nationale individuelle, partie académique en
+équipes de 2 à 4), Concours général (Terminale, 5 h), TeSciA (L'Étudiant, 2023 : test de l'AORES, pas
+un concours).
+
+**Points ouverts.** Contact (choix du moyen : adresse dédiée sur le domaine, `mailto:` protégé ou
+formulaire tiers) ; portrait (photo ou initiales) ; année sabbatique 2014-2015 et projet de thèse,
+laissés de côté en attendant l'avis de l'auteur.

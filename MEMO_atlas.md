@@ -27,9 +27,13 @@ a poussé entre-temps, un fichier commun réécrit à partir d'une copie périm�
      `lexique.yaml`), tout outil nommé `outils/edifice_*`, et `MEMO_atlas_edifice.md`. Les autres
      conversations n'écrivent plus dans `contenu/` ; si elles ont besoin d'un nœud ou d'un terme, elles
      le demandent à l'auteur.
+   - *À propos, apparence et contact* (27 oct. 2026) : `rubriques/apropos.yaml`, `identite/`,
+     `MEMO_atlas_apropos.md`, et dans `gabarit.html` la fonction `pageAPropos` et ses auxiliaires
+     (noms en `aPropos…`, `APropos…` ou `Contact…`) avec leurs styles (`.apropos*`, `.profil`,
+     `.texte-auteur`). Les retouches d'apparence globale (variables de couleur, typographie, en-tête,
+     menu) restent communes : remplacements locaux, commits « Apparence : … ».
    - *Communs* (toute conversation peut y toucher, avec les précautions du point 2) : `construire.py`,
-     `rendu.mjs`, `gabarit.html`, `MEMO_atlas.md`, `rubriques/apropos.yaml`, `LICENCE.md`,
-     `identite/`, `.github/`, `package*.json`, `requirements.txt`.
+     `rendu.mjs`, `gabarit.html`, `MEMO_atlas.md`, `LICENCE.md`, `.github/`, `package*.json`, `requirements.txt`.
 2. **Fichiers communs : modifications ciblées, jamais de réécriture complète.** On les modifie par
    remplacements locaux (outil Edit) sur la version du dépôt fraîchement récupérée, jamais en recopiant
    un fichier entier tiré d'une ancienne copie ou du projet. Dans `gabarit.html`, chaque rubrique garde son code
@@ -50,12 +54,12 @@ a poussé entre-temps, un fichier commun réécrit à partir d'une copie périm�
    `gh run list -R jourdainatlas/atlas` jusqu'au succès. Si elle échoue à cause des fichiers de l'autre
    rubrique, on ne les corrige pas soi-même : on signale l'erreur à l'auteur.
 7. **Mémos du projet Claude :** chaque conversation n'écrit dans le projet que son propre mémo
-   (`MEMO_atlas_annales.md`, `MEMO_atlas_cours.md`, `MEMO_atlas_edifice.md`). `MEMO_atlas.md` est commun : on le modifie dans le
+   (`MEMO_atlas_annales.md`, `MEMO_atlas_cours.md`, `MEMO_atlas_edifice.md`, `MEMO_atlas_apropos.md`). `MEMO_atlas.md` est commun : on le modifie dans le
    dépôt (point 2), et la copie du projet ne fait que refléter la version du dépôt ; avant de l'écrire
    dans le projet, on relit la copie du projet et on vérifie qu'elle ne contient rien que le dépôt
    n'ait pas. Une nouvelle section commune prend le numéro suivant le plus grand déjà employé, tous
    mémos confondus (sections 17-18 et 27 dans `MEMO_atlas_annales.md`, 19-22 dans `MEMO_atlas_cours.md`,
-   23-26 dans `MEMO_atlas_edifice.md` ; prochain numéro libre : 28).
+   23-26 dans `MEMO_atlas_edifice.md`, 28 dans `MEMO_atlas_apropos.md` ; prochain numéro libre : 29).
 
 ## 1. Ce qu'est l'atlas
 
