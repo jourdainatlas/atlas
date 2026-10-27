@@ -267,15 +267,15 @@ const index = `<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="ATLAS, architecture logique des théories mathématiques : un graphe interactif des dépendances, de la logique du premier ordre et de ZFC aux grandes théories.">
+<meta name="description" content="Architecture logique des théories mathématiques ; cours, exercices corrigés, et annales de concours avec recherche par thème.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#121418">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ATLAS">
-<meta property="og:title" content="ATLAS">
-<meta property="og:description" content="Architecture logique des théories mathématiques, de la logique du premier ordre et de ZFC aux grandes théories.">
+<meta property="og:title" content="ATLAS – Architecture des mathématiques">
+<meta property="og:description" content="Architecture logique des théories mathématiques ; cours, exercices corrigés, et annales de concours avec recherche par thème.">
 <meta property="og:url" content="${ADRESSE}">
 <meta property="og:image" content="${ADRESSE}apercu.png">
 <meta property="og:image:width" content="1200">
@@ -340,7 +340,7 @@ function pagePartage(chemin, ancre, titre, description) {
 }
 const Rb = D.rubriques || {};
 const niveaux = Object.fromEntries((Rb.cours?.niveaux || []).map(n => [n.id, texteBrut(n.titre)]));
-pagePartage('accueil/', 'accueil', 'Accueil', 'Architecture logique des théories mathématiques, de la logique du premier ordre et de ZFC aux grandes théories ; cours, exercices corrigés et annales.');
+pagePartage('accueil/', 'accueil', 'Accueil', 'Architecture logique des théories mathématiques ; cours, exercices corrigés, et annales de concours avec recherche par thème.');
 pagePartage('edifice/', 'edifice', 'L\'édifice', 'Le graphe des théories mathématiques, de la logique du premier ordre et de ZFC aux grandes théories.');
 pagePartage('cours/', 'cours', 'Cours', texteBrut(Rb.cours?.intro));
 for (const c of Rb.cours?.cours || []) {

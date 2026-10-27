@@ -44,6 +44,9 @@ l'adresse ».
 construction ». Titres d'onglet et de partage : voir `MEMO_atlas.md`, section 13. Un lien copié depuis la
 barre d'adresse (`/#annales`) donne toujours l'aperçu générique de l'accueil, car le serveur ne reçoit
 pas ce qui suit « # » : seul le bouton « Partager » (`/annales/`) donne l'aperçu propre à la rubrique.
+Page d'accueil (27 oct. 2026) : titre « ATLAS – Architecture des mathématiques » (`<title>` de `gabarit.html`, `og:title`
+de `rendu.mjs`) ; description choisie par l'auteur, pour l'aperçu, les moteurs et `/accueil/` : « Architecture logique
+des théories mathématiques ; cours, exercices corrigés, et annales de concours avec recherche par thème. »
 
 **Points ouverts.** Année sabbatique 2014-2015 et projet de thèse,
 laissés de côté en attendant l'avis de l'auteur.
