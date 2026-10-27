@@ -427,6 +427,7 @@ body.en-rubrique .legende { display: none; }
   display: flex; gap: 10px; align-items: baseline; font-size: 13px; line-height: 1.5; color: var(--encre-2);
   border: 1px dashed var(--encre-3); border-radius: 8px; padding: 8px 12px; margin: 0 0 24px; background: var(--surface);
 }
+.ann-info { font-size: 13px; line-height: 1.5; color: var(--encre-2); margin: 0 0 20px; }
 .maquette strong { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--rouge); font-weight: 600; white-space: nowrap; }
 .carte { background: var(--surface); border: 1px solid var(--filet); border-radius: 10px; }
 /* ---- Accueil */
@@ -852,7 +853,7 @@ span.case:hover { border-style: dashed; color: inherit; }
         <hr>
         <a href="#cours" data-rubrique="cours"><span class="m-titre">Cours</span><span class="m-desc">Les cours scolaires, chapitre par chapitre.</span></a>
         <a href="#exercices" data-rubrique="exercices"><span class="m-titre">Exercices</span><span class="m-desc">Feuilles et exercices corrigés, à chercher par notion.</span></a>
-        <a href="#annales" data-rubrique="annales"><span class="m-titre">Annales</span><span class="m-badge">en construction</span><span class="m-desc">Sujets des concours d'ingénieurs et de l'enseignement, et recherche par thème.</span></a>
+        <a href="#annales" data-rubrique="annales"><span class="m-titre">Annales</span><span class="m-desc">Sujets des concours d'ingénieurs et de l'enseignement, et recherche par thème.</span></a>
         <hr>
         <a href="#a-propos" data-rubrique="a-propos"><span class="m-titre">À propos – Contact</span><span class="m-desc">L'auteur, le projet, et une adresse pour écrire ou signaler une erreur.</span></a>
       </nav>
@@ -1414,6 +1415,8 @@ let ancreEdifice = '';
 const titreOnglet = rubrique => `ATLAS – ${rubrique}`;
 const enRubrique = () => document.body.classList.contains('en-rubrique');
 
+// Annales : rubrique achevée (27 oct. 2026), simple note d'usage, sans la mention « En construction »
+const annalesInfo = texte => `<p class="ann-info">${texte}</p>`;
 function maquette(texte) {
   return `<p class="maquette"><strong>En construction</strong><span>${texte}</span></p>`;
 }
@@ -1730,7 +1733,7 @@ function pageAnnales(chemin) {
   const annees = [...new Set(enLigne.map(x => x.annee))].sort((a, b) => b - a);
   let h = tete('Rubrique', 'Annales', `<p>${esc(A.accroche || '')}</p>`);
   h += `<details class="presentation-ann"><summary>Présentation de la rubrique</summary><div class="chapeau">${A.intro || ''}</div>`;
-  h += maquette(`Chaque case ouvre le sujet en PDF. ${enLigne.length} sujets sont référencés${annees.length ? ` (session${annees.length > 1 ? 's' : ''} ${annees.length > 2 ? `${annees[annees.length - 1]} à ${annees[0]}` : annees.join(', ')})` : ''}. Le curseur fait défiler les années. Le moteur de recherche, sous la grille, couvre ${(() => { const I = indexAnnales(); const a = [...new Set(I.sujets.map(x => x.annee))].sort(); if (!I.sujets.length) return (R['annales-index'] || {}).nombre ? `${R['annales-index'].nombre} sujets étiquetés partie par partie` : 'aucune session'; return `${a.length > 1 ? `les sessions ${a.length > 3 ? `${a[0]} à ${a[a.length - 1]}` : a.join(', ')}` : `la session ${a[0]}`} (${I.sujets.length} sujets étiquetés partie par partie)`; })()}${(() => { const a = new Set(indexAnnales().sujets.map(x => x.annee)); return a.size && a.size < annees.length ? ' ; les autres années suivront' : ''; })()}.`);
+  h += annalesInfo(`Chaque case ouvre le sujet en PDF. ${enLigne.length} sujets sont référencés${annees.length ? ` (session${annees.length > 1 ? 's' : ''} ${annees.length > 2 ? `${annees[annees.length - 1]} à ${annees[0]}` : annees.join(', ')})` : ''}. Le curseur fait défiler les années. Le moteur de recherche, sous la grille, couvre ${(() => { const I = indexAnnales(); const a = [...new Set(I.sujets.map(x => x.annee))].sort(); if (!I.sujets.length) return (R['annales-index'] || {}).nombre ? `${R['annales-index'].nombre} sujets étiquetés partie par partie` : 'aucune session'; return `${a.length > 1 ? `les sessions ${a.length > 3 ? `${a[0]} à ${a[a.length - 1]}` : a.join(', ')}` : `la session ${a[0]}`} (${I.sujets.length} sujets étiquetés partie par partie)`; })()}${(() => { const a = new Set(indexAnnales().sujets.map(x => x.annee)); return a.size && a.size < annees.length ? ' ; les autres années suivront' : ''; })()}.`);
   h += `</details>`;
 
   h += `<div class="annales-barre"><div class="segments" role="group" aria-label="Famille de concours">${fams.map(f => `<button type="button" data-famille="${f.id}" aria-pressed="${f.id === fam.id}">${f.titre}</button>`).join('')}</div>`;

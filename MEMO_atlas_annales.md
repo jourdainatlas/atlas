@@ -46,6 +46,10 @@ des domaines dans `annales-themes.yaml`, variable `--c-<famille>`) : algèbre et
 (`alg`), arithmétique et numérique en bleu (`nb`), les quatre d'analyse et les probabilités en vert d'eau
 (`ana`), géométrie en violet (`geo`) ; filet à gauche et soulignement de la même couleur.
 
+**Rubrique achevée (27 oct. 2026).** À la demande de l'auteur, la mention « En construction » est retirée :
+plus de badge dans le menu du logo, et la note d'usage de la présentation (`annalesInfo`, classe `ann-info`)
+remplace le bandeau `maquette`.
+
 **Convention de saisie.** Intervalles à la française : `\left]-1, +\infty\right[` (sinon le « − » est
 espacé comme une soustraction). Ensembles : `\mathbb{R}`, `\mathbb{R}_n[X]`, `\mathcal{M}_n(\mathbb{K})`.
 Indices et exposants explicites (`D_n`, `\lambda_i p_i`, `u^q`). `\leqslant`, `\geqslant`. `\mathrm{d}t`.
