@@ -33,6 +33,12 @@ sRGB, sans métadonnées), déclaré par `portrait:` dans `apropos.yaml` et ajou
 d'`identite/` que `rendu.mjs` copie dans `site/`. Si l'image manque (aperçu en fichier unique), les
 initiales s'affichent à sa place.
 
-**Points ouverts.** Contact (choix du moyen : adresse dédiée sur le domaine, `mailto:` protégé ou
-formulaire tiers) ; année sabbatique 2014-2015 et projet de thèse,
+**Contact (27 oct. 2026).** Adresse `contact@atlasjourdain.fr` : redirection gratuite de l'offre MX Plan
+« redirect » d'OVH vers l'adresse personnelle de l'auteur (aucune boîte chez OVH ; les réponses partent
+de l'adresse personnelle). Zone DNS inchangée : MX et SPF d'OVH, A, AAAA et CNAME `www` vers GitHub.
+Dans `apropos.yaml`, champ `courriel: {local, domaine}` ; `aProposSection` assemble l'adresse dans la
+page (elle n'apparaît pas en clair dans `site/index.html`) et affiche « Écrire » (`mailto:`) et « Copier
+l'adresse ».
+
+**Points ouverts.** Année sabbatique 2014-2015 et projet de thèse,
 laissés de côté en attendant l'avis de l'auteur.

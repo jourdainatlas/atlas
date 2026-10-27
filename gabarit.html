@@ -792,6 +792,12 @@ span.case:hover { border-style: dashed; color: inherit; }
 .af-periode { grid-row: span 2; font-size: 12.5px; color: var(--encre-3); font-variant-numeric: tabular-nums; padding-top: 2px; }
 .af-titre { font-size: 15px; color: var(--encre); line-height: 1.4; }
 .af-lieu { font-size: 13px; color: var(--encre-2); }
+.apropos-contact { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 18px; padding: 14px 18px; margin-top: 4px; }
+.apropos-contact .ac-adresse { font-size: 16px; color: var(--encre); overflow-wrap: anywhere; }
+.apropos-contact .ac-actions { display: flex; gap: 8px; }
+.apropos-contact .ac-ecrire, .apropos-contact .ac-copier { font: inherit; font-size: 13.5px; padding: 6px 14px; border-radius: 6px; border: 1px solid var(--filet); background: var(--surface); color: var(--encre); text-decoration: none; cursor: pointer; }
+.apropos-contact .ac-ecrire { background: var(--encre); color: var(--papier); border-color: var(--encre); }
+.apropos-contact .ac-ecrire:hover, .apropos-contact .ac-copier:hover { opacity: .85; }
 .apropos-epreuves { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 14px; }
 .apropos-epreuves article { padding: 16px 18px; }
 .apropos-epreuves h4 { font-family: var(--f-titre); font-size: 19px; margin: 0; }
@@ -2103,9 +2109,20 @@ function pageAPropos() {
 function aProposSection(s) {
   let h = `<section id="apropos-${esc(s.id)}" class="${s.a_rediger ? 'a-rediger' : ''}"><h3>${s.titre}${s.a_rediger ? ' <span class="statut">À venir</span>' : ''}</h3><div class="corps-texte">${s.texte || ''}</div>`;
   if (s.etapes?.length) h += `<ol class="apropos-frise">${s.etapes.map(e => `<li><span class="af-periode">${esc(e.periode || '')}</span><span class="af-titre">${e.titre || ''}</span>${e.lieu ? `<span class="af-lieu">${esc(e.lieu)}</span>` : ''}</li>`).join('')}</ol>`;
+  if (s.courriel?.local && s.courriel?.domaine) {
+    const adr = [s.courriel.local, s.courriel.domaine].join('\u0040');
+    h += `<div class="apropos-contact carte"><span class="ac-adresse">${esc(adr)}</span><span class="ac-actions"><a class="ac-ecrire" href="${'mai' + 'lto:' + esc(adr)}">Écrire</a><button type="button" class="ac-copier" data-apropos-copier="${esc(adr)}">Copier l'adresse</button></span></div>`;
+  }
   if (s.epreuves?.length) h += `<div class="apropos-epreuves">${s.epreuves.map(e => `<article class="carte"><h4>${esc(e.nom || '')}</h4>${e.public ? `<p class="ae-public">${esc(e.public)}</p>` : ''}<div class="ae-texte">${e.texte || ''}</div></article>`).join('')}</div>`;
   return h + '</section>';
 }
+// Contact : copie de l'adresse dans le presse-papiers.
+document.addEventListener('click', ev => {
+  const b = ev.target.closest('[data-apropos-copier]');
+  if (!b) return;
+  const fini = t => { b.textContent = t; setTimeout(() => { b.textContent = 'Copier l\'adresse'; }, 1800); };
+  (navigator.clipboard?.writeText(b.dataset.aproposCopier) || Promise.reject()).then(() => fini('Adresse copiée'), () => fini('Copie impossible'));
+});
 // Sommaire de la carte de profil : défilement vers la section, sans changer l'ancre.
 document.addEventListener('click', ev => {
   const a = ev.target.closest('[data-apropos-section]');
