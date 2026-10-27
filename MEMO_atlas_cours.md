@@ -54,8 +54,9 @@ données YAML. Les messages de commit commencent par « Cours : » ou « Exercic
 - **Première** (27 oct. 2026) : chapitres 1 à 8 (`p-01` à `p-08`), PDF dans `documents/cours/premiere/`
   (3,5 Mo). Le site compte 27 chapitres en ligne. Feuilles `f-p-01` à `f-p-08` (29, 30, 34, 36, 35,
   30, 35, 30 exercices) et la feuille complémentaire `f-p-sommes` (« Sommes de termes d'une suite
-  arithmétique », 10 exercices, préfixe `p-sa`, **sans corrigé**, sans numéro de chapitre, rattachée
-  au cours `p-02` par son champ `cours`), soit 269 exercices ; PDF dans `documents/exercices/premiere/`
+  arithmétique », 10 exercices, préfixe `p-sa`, sans numéro de chapitre, rattachée au cours `p-02`
+  par son champ `cours` ; corrigé ajouté le 27 oct.), et `f-p-sommes-g` (« Sommes de termes d'une suite
+  géométrique », 10 exercices, préfixe `p-sg`, même rattachement), soit 279 exercices ; PDF dans `documents/exercices/premiere/`
   (4,6 Mo), 151 figures ajoutées (353 au total). Le site compte 981 exercices.
 - **Maths expertes** (27 oct. 2026) : chapitres 1 à 9 (`me-01` à `me-09`), PDF dans
   `documents/cours/expertes/` (4,4 Mo). Niveau `expertes` (« Maths expertes »), rangé après
