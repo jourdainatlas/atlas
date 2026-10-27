@@ -19,7 +19,10 @@ aux axiomes et au logo : le dernier jalon de la frise est à la couleur de l'enc
 
 **Sources du contenu.** Le CV et la lettre de motivation de l'auteur (avril 2026). Consigne de
 l'auteur : aucune mention de la foi ni de la religion (pas d'aumônerie, pas de couvent). Ne publier ni
-l'adresse postale ni le téléphone. Descriptions des concours vérifiées le 27 oct. 2026 : TFJM²
+l'adresse postale ni le téléphone. Parcours abrégé à la demande de l'auteur (27 oct. 2026) : classes préparatoires
+(Gustave-Eiffel), court passage en école d'ingénieurs sans la nommer, université de Bordeaux, CAFEP
+(2018), agrégation (2025) ; aucun établissement d'exercice passé, seul le lycée actuel, cité dans
+« Enseignements ». Descriptions des concours vérifiées le 27 oct. 2026 : TFJM²
 (communiqué de l'ENSMA, 2026 : Animath, équipes de 4 à 6, problèmes ouverts, rôles défenseur, opposant,
 rapporteur), Olympiades (Éduscol : Première, 4 h, partie nationale individuelle, partie académique en
 équipes de 2 à 4), Concours général (Terminale, 5 h), TeSciA (L'Étudiant, 2023 : test de l'AORES, pas
