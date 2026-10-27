@@ -7,6 +7,51 @@
 
 ---
 
+## 0. Travail en parallèle (27 oct. 2026)
+
+Plusieurs conversations du projet travaillent en même temps sur le même dépôt, chacune pour une
+rubrique (une pour les **Cours** et les exercices, une pour les **Annales**, d'autres possibles). Le
+site n'est pas menacé, car `site/` et `construction/` ne sont pas versionnés et chaque publication
+reconstruit tout `main`. Les risques sont ailleurs : une poussée refusée parce que l'autre conversation
+a poussé entre-temps, un fichier commun réécrit à partir d'une copie périmée, un mémo du projet
+écrasé, une erreur de construction d'une rubrique qui bloque la publication de l'autre. Règles :
+
+1. **Chaque conversation a son domaine de fichiers et n'écrit pas dans celui des autres.**
+   - *Annales* : `rubriques/annales.yaml`, `rubriques/annales-themes.yaml`, `rubriques/annales-index.yaml`,
+     `rubriques/annales-index/`, `documents/annales/`, `MEMO_atlas_annales.md`, et tout outil nommé
+     `outils/annales_*`.
+   - *Cours et exercices* : `rubriques/cours.yaml`, `rubriques/exercices.yaml`, `rubriques/exercices/`,
+     `documents/cours/`, `documents/exercices/`, `documents/figures/`, `outils/tex2exos.py`,
+     `outils/meta_*.py`, et son propre mémo `MEMO_atlas_cours.md` (à créer par cette conversation).
+   - *Communs* (toute conversation peut y toucher, avec les précautions du point 2) : `construire.py`,
+     `rendu.mjs`, `gabarit.html`, `MEMO_atlas.md`, `contenu/`, `rubriques/apropos.yaml`, `LICENCE.md`,
+     `identite/`, `.github/`, `package*.json`, `requirements.txt`.
+2. **Fichiers communs : modifications ciblées, jamais de réécriture complète.** On les modifie par
+   remplacements locaux (outil Edit) sur la version du dépôt fraîchement récupérée, jamais en recopiant
+   un fichier entier tiré d'une ancienne copie ou du projet. Dans `gabarit.html`, chaque rubrique garde son code
+   dans ses propres fonctions (`pageAnnales`, `pageCours`, `pageChapitre`, `pageExercices`…) ; toute
+   nouvelle fonction porte le nom de sa rubrique, pour que les modifications ne se chevauchent pas.
+   `pageAccueil` est commune : on n'y touche que la carte de sa rubrique.
+3. **Juste avant chaque commit :** `git fetch origin main && git rebase origin/main` (le clone est
+   superficiel : ne jamais pousser depuis une copie périmée), puis `sh construire.sh` à nouveau sur la
+   version rebasée, jusqu'à zéro erreur. Un conflit de rebase se résout à la main, en conservant les
+   modifications des deux côtés ; en cas de doute, on s'arrête et on demande à l'auteur.
+4. **Pousser :** `git push origin HEAD:main`. Si la poussée est refusée, on refait le point 3 puis on
+   repousse. Jamais de `--force`, jamais de réécriture de l'historique.
+5. **Commits petits et fréquents**, un par lot cohérent, avec un message qui commence par la rubrique
+   (« Annales : … », « Cours : … »). Une conversation ne laisse jamais de travail non poussé qui
+   touche un fichier commun.
+6. **Publication :** le flux `publier.yml` annule une publication en cours quand une autre poussée
+   arrive (`cancel-in-progress`) ; c'est normal. Seule compte la dernière exécution : on la suit avec
+   `gh run list -R jourdainatlas/atlas` jusqu'au succès. Si elle échoue à cause des fichiers de l'autre
+   rubrique, on ne les corrige pas soi-même : on signale l'erreur à l'auteur.
+7. **Mémos du projet Claude :** chaque conversation n'écrit dans le projet que son propre mémo
+   (`MEMO_atlas_annales.md`, `MEMO_atlas_cours.md`). `MEMO_atlas.md` est commun : on le modifie dans le
+   dépôt (point 2), et la copie du projet ne fait que refléter la version du dépôt ; avant de l'écrire
+   dans le projet, on relit la copie du projet et on vérifie qu'elle ne contient rien que le dépôt
+   n'ait pas. Une nouvelle section commune prend le numéro suivant le plus grand déjà employé, tous
+   mémos confondus (les sections 17 et suivantes de la rubrique Annales sont dans `MEMO_atlas_annales.md`).
+
 ## 1. Ce qu'est l'atlas
 
 Un site web statique, d'un seul fichier HTML, qui représente les mathématiques comme un graphe
