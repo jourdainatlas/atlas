@@ -1,6 +1,6 @@
 # Mémo ATLAS — complément : rubrique Annales
 
-> Complète `MEMO_atlas.md` (sections 0 à 16), à lire avec lui. Ce mémo appartient à la conversation
+> Complète `MEMO_atlas.md` (sections 0 à 16) ; sections propres : 17, 18, 27, à lire avec lui. Ce mémo appartient à la conversation
 > « Annales » : elle seule le modifie (voir `MEMO_atlas.md`, section 0). La version du dépôt fait foi ;
 > la copie du projet Claude en est le reflet.
 
@@ -23,3 +23,30 @@ annales (`pageAnnales` et ses auxiliaires, vérifications des annales dans `cons
 `annales-index.json` dans `rendu.mjs`), après `git fetch` et `git rebase` sur `origin/main`. Les
 fichiers volumineux de la rubrique (PDF de `documents/annales/`) sont versés dans des commits séparés
 du code, pour qu'un éventuel retour en arrière n'emporte pas le travail de l'autre conversation.
+
+### 27. Formules des fiches en LaTeX (27 oct. 2026)
+
+**Mécanisme.** Dans `rubriques/annales-index/AAAA.yaml`, une formule de l'aperçu (`apercu`), d'un nom de
+partie (`nom`) ou d'un mot-clé (`mots`) s'écrit entre `$…$` (en ligne seulement, pas de `$$`). Un sujet
+sans `$` s'affiche comme avant. `rendu.mjs` compile chaque formule avec KaTeX (erreur bloquante),
+remplace chacune dans le texte par un repère `\uE000` + caractère privé (U+E100 + rang) et range dans le
+sujet `F` (source), `Ft` (texte pour la recherche) et, pour l'aperçu à fichier unique seulement, `Fh`
+(HTML). Sur le site, `katex.min.js` (copié dans `site/`, empreinte `?v=`) est chargé avec l'index et
+compose les formules à l'affichage (`formuleAnn`, `annalesF` dans `gabarit.html`) : composer à la
+construction ajouterait ~23 Ko par sujet, contre ~0,7 Ko ainsi. Une formule de 40 caractères au plus,
+une parenthèse ouvrante qui la précède et la ponctuation qui la suit ne se coupent pas en fin de ligne
+(classe `f-ann`). La recherche porte sur le texte, formules remplacées par `Ft`.
+
+**Convention de saisie.** Intervalles à la française : `\left]-1, +\infty\right[` (sinon le « − » est
+espacé comme une soustraction). Ensembles : `\mathbb{R}`, `\mathbb{R}_n[X]`, `\mathcal{M}_n(\mathbb{K})`.
+Indices et exposants explicites (`D_n`, `\lambda_i p_i`, `u^q`). `\leqslant`, `\geqslant`. `\mathrm{d}t`.
+Fonctions usuelles en romain (`\ln`, `\sin`, `\exp`, `\det`, `\operatorname{tr}`, `\operatorname{Ker}`).
+Une lettre isolée qui désigne un objet mathématique se met aussi en formule (`$f$`). Dans un YAML entre
+apostrophes, l'apostrophe se double : `$f''''(0)$` s'écrit pour f''(0).
+
+**Chaîne de conversion.** Un agent ne réécrit pas les textes : il produit, par sujet, une liste de
+remplacements `avant → apres` (formule linéaire d'origine → `$…$`), appliquée par un script qui exige
+que chaque `avant` figure tel quel dans le champ visé ; le texte hors formules reste donc identique mot
+pour mot. Un second agent relit chaque remplacement. Les notations ambiguës sont résolues sur le PDF
+quand il est accessible (Mines-Ponts : dans le dépôt) ; à défaut, par le sens mathématique, et un cas
+indécidable est laissé en texte et signalé.

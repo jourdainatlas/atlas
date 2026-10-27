@@ -54,7 +54,7 @@ a poussé entre-temps, un fichier commun réécrit à partir d'une copie périm�
    dépôt (point 2), et la copie du projet ne fait que refléter la version du dépôt ; avant de l'écrire
    dans le projet, on relit la copie du projet et on vérifie qu'elle ne contient rien que le dépôt
    n'ait pas. Une nouvelle section commune prend le numéro suivant le plus grand déjà employé, tous
-   mémos confondus (sections 17-18 dans `MEMO_atlas_annales.md`, 19-22 dans `MEMO_atlas_cours.md`,
+   mémos confondus (sections 17-18 et 27 dans `MEMO_atlas_annales.md`, 19-22 dans `MEMO_atlas_cours.md`,
    23 et suivantes dans `MEMO_atlas_edifice.md`).
 
 ## 1. Ce qu'est l'atlas

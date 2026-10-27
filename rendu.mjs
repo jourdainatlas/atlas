@@ -135,6 +135,31 @@ for (const e of D.rubriques?.exercices?.exercices || []) {
 }
 for (const [nom, r] of Object.entries(D.rubriques || {})) rendreRubrique(r, `rubriques/${nom}`);
 
+// Annales : les formules $…$ de l'aperçu, des noms et des mots-clés des parties sont vérifiées par
+// KaTeX à la construction (une erreur de formule bloque donc la publication). Dans le texte, chaque
+// formule est remplacée par un repère \uE000 suivi d'un caractère privé (U+E100 + rang) ; le sujet
+// porte F (source LaTeX), Ft (texte, pour la recherche) et, dans l'aperçu à fichier unique seulement,
+// Fh (HTML déjà composé). Sur le site, le HTML des quelque 3 000 formules alourdirait l'index de
+// plusieurs mégaoctets : le navigateur les compose à l'affichage avec katex.min.js, chargé avec l'index.
+// Le gabarit remet les formules en place après échappement et surlignage du texte (annalesF, annalesFt).
+const texteTex = tex => tex.replace(/\\(?:mathrm|operatorname|text|mathbb|mathcal|mathbf|mathfrak)\{([^}]*)\}/g, '$1')
+  .replace(/\\([a-zA-Z]+)/g, '$1').replace(/[{}^_\\]/g, ' ').replace(/\s+/g, ' ').trim();
+for (const s of D.rubriques?.['annales-index']?.sujets || []) {
+  const F = [], Ft = [], Fh = [];
+  const comp = (t, ou) => typeof t !== 'string' || !t.includes('$') ? t : t.replace(/\$([^$]+?)\$/g, (m, tex) => {
+    F.push(tex); Fh.push(tex.length <= 40 ? `<span class="f-ann">${formule(tex, false, ou)}</span>` : formule(tex, false, ou)); Ft.push(texteTex(tex));
+    return '\uE000' + String.fromCharCode(0xE100 + F.length - 1);
+  });
+  const ou = `annales-index/${s.sujet}`;
+  s.apercu = comp(s.apercu, `${ou}/apercu`);
+  for (const [i, b] of (s.blocs || []).entries()) {
+    b.nom = comp(b.nom, `${ou}/partie ${i + 1}/nom`);
+    b.mots = (b.mots || []).map(m => comp(m, `${ou}/partie ${i + 1}/mots`));
+  }
+  if (F.length > 0xE00) erreurs.push(`${ou} : trop de formules`);
+  if (F.length) { s.F = F; s.Ft = Ft; s.Fh = Fh; }
+}
+
 for (const e of Object.values(D.lexique)) {
   e.definition = rendre(e.definition, `lexique/${e.id}`);
   if (e.notation) e.notation = formule(e.notation.trim().replace(/^\$|\$$/g, ''), false, `lexique/${e.id}/notation`);
@@ -195,9 +220,14 @@ for (const gid of Object.keys(D.graphes)) {
 // Index du moteur des annales : fichier séparé, chargé à l'ouverture de la rubrique.
 const AIsite = Dsite.rubriques?.['annales-index'];
 if (AIsite) {
+  for (const x of AIsite.sujets || []) delete x.Fh;
   const contenu = JSON.stringify(AIsite.sujets || []);
   fs.writeFileSync('site/annales-index.json', contenu);
   AIsite.aCharger = `annales-index.json?v=${empreinte(contenu)}`;
+  // KaTeX côté navigateur, pour les formules de l'index (même version que la construction)
+  const kjs = fs.readFileSync(path.join(dist, 'katex.min.js'), 'utf8');
+  fs.writeFileSync('site/katex.min.js', kjs);
+  AIsite.katex = `katex.min.js?v=${empreinte(kjs)}`;
   AIsite.nombre = (AIsite.sujets || []).length;
   AIsite.sujets = [];
 }

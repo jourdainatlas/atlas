@@ -698,6 +698,7 @@ span.case:hover { border-style: dashed; color: inherit; }
 .res-parties .pp { font-family: var(--f-mono); font-size: 11.5px; color: var(--encre-3); margin-left: 6px; }
 .res-parties .tt { display: block; margin-top: 2px; color: var(--encre-2); font-size: 12.5px; }
 .res-parties .tt b { color: var(--encre); font-weight: 600; }
+.f-ann { white-space: nowrap; }
 .res-parties mark, .res-ann mark { background: var(--choix-fond); color: inherit; border-radius: 3px; padding: 0 2px; }
 .res-autres { font-size: 12.5px; color: var(--encre-3); margin-top: 6px; }
 .res-plus { margin-top: 12px; }
@@ -1740,7 +1741,7 @@ function ficheSujetHTML(x, complet) {
   if (x.attente) h += `<p class="fa-source">${esc(x.attente)}</p>`;
   if (!d) { h += `<p class="fa-vide">Description par thème à venir : les sujets de cette session n'ont pas encore été étiquetés.</p></article>`; return h; }
   h += `<h4>${esc(d.nom || '')}</h4>`;
-  if (d.apercu) h += `<p class="res-resume">${esc(d.apercu)}</p>`;
+  if (d.apercu) h += `<p class="res-resume">${annalesF(esc(d.apercu), d)}</p>`;
   const tous = [...new Set(d.parties.flatMap(p => p.themes || []))];
   h += `<p class="fa-themes">${tous.map(t => `<button type="button" class="chip" data-rq-ext="${esc((I.themes[t] || {}).titre || t)}" title="Chercher ce thème dans les autres sujets">${esc((I.themes[t] || {}).titre || t)}</button>`).join('')}</p>`;
   const ouvert = complet || etatAnn.ouverts.has(sl);
@@ -1749,7 +1750,7 @@ function ficheSujetHTML(x, complet) {
   for (const p of d.parties) {
     const [a, b] = p.pages || [1, 1];
     const tt = (p.themes || []).map(t => `<b>${esc((I.themes[t] || {}).titre || t)}</b>`).concat((p.secondaires || []).map(t => esc((I.themes[t] || {}).titre || t)));
-    h += `<li><a class="partie" href="${esc(x.sujet)}#page=${a}" target="_blank" rel="noopener" title="${telecharge ? `Le site officiel impose le téléchargement : la partie commence page ${a}` : `Ouvrir le sujet à la page ${a}`}">${esc(p.nom || '')}</a><span class="pp">p. ${a === b ? a : `${a}–${b}`}</span><span class="tt">${tt.join(' · ')}${(p.mots || []).length ? ` — ${esc(p.mots.join(', '))}` : ''}</span></li>`;
+    h += `<li><a class="partie" href="${esc(x.sujet)}#page=${a}" target="_blank" rel="noopener" title="${telecharge ? `Le site officiel impose le téléchargement : la partie commence page ${a}` : `Ouvrir le sujet à la page ${a}`}">${annalesF(esc(p.nom || ''), d)}</a><span class="pp">p. ${a === b ? a : `${a}–${b}`}</span><span class="tt">${tt.join(' · ')}${(p.mots || []).length ? ` — ${annalesF(esc(p.mots.join(', ')), d)}` : ''}</span></li>`;
   }
   h += `</ul></details></article>`;
   return h;
@@ -1793,8 +1794,12 @@ let indexAnn = null, chargementIndexAnn = null;
 // Sur le site publié, l'index est dans un fichier séparé (annales-index.json), chargé à la première visite.
 function chargerIndexAnnales() {
   const AI = R['annales-index']; if (!AI || !AI.aCharger) return null;
-  if (!chargementIndexAnn) chargementIndexAnn = fetch(AI.aCharger).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
-    .then(l => { AI.sujets = l; delete AI.aCharger; indexAnn = null; })
+  // KaTeX (formules de l'index) est chargé en même temps que l'index ; s'il manque, les formules restent en texte
+  const script = () => !AI.katex || window.katex ? Promise.resolve() : new Promise(ok => {
+    const e = document.createElement('script'); e.src = AI.katex; e.onload = e.onerror = ok; document.head.appendChild(e);
+  });
+  if (!chargementIndexAnn) chargementIndexAnn = Promise.all([fetch(AI.aCharger).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); }), script()])
+    .then(([l]) => { AI.sujets = l; delete AI.aCharger; indexAnn = null; })
     .catch(() => { chargementIndexAnn = null; });
   return chargementIndexAnn;
 }
@@ -1810,8 +1815,8 @@ function indexAnnales() {
     const c0 = cases[0] || {};
     return { ...x, cases, annee: c0.annee, concours: c0.concours, fam: (famDe[c0.concours] || {}).fam,
       filieres: [...new Set(cases.map(c => c.filiere).filter(Boolean))],
-      parties: (x.blocs || []).map(p => ({ ...p, motsN: (p.mots || []).map(normRech), titreN: normRech(p.nom || '') })),
-      texteN: normRech(`${x.nom || ''} ${x.apercu || ''}`) };
+      parties: (x.blocs || []).map(p => ({ ...p, motsN: (p.mots || []).map(m => normRech(annalesFt(m, x))), titreN: normRech(annalesFt(p.nom || '', x)) })),
+      texteN: normRech(`${x.nom || ''} ${annalesFt(x.apercu || '', x)}`) };
   });
   const enfants = {};
   for (const t of Object.values(themes)) if (t.parent) (enfants[t.parent] = enfants[t.parent] || []).push(t.id);
@@ -1881,6 +1886,26 @@ function rechercherAnnales(q) {
   return { themes: thRet.map(x => x.t), res };
 }
 function lienEdifice(id) { const nd = D.noeuds[id]; return nd ? `#${nd.graphe || D.racine}.${id}` : ''; }
+// Formules des annales (rendu.mjs) : dans le texte, repère \uE000 + caractère privé (U+E100 + rang).
+const RE_F_ANN = /\uE000([\uE100-\uEFFF])/g;
+// Fh : HTML déjà composé (aperçu à fichier unique) ; sur le site, KaTeX (chargé avec l'index) compose la
+// source F à l'affichage, résultat gardé dans Fh ; à défaut de KaTeX, le texte Ft.
+// Une formule courte ne se coupe pas en fin de ligne (KaTeX coupe après « = » ou « + »), une longue peut se couper.
+const enveloppeFAnn = (tex, h) => tex.length <= 40 ? `<span class="f-ann">${h}</span>` : h;
+function formuleAnn(s, k) {
+  if (s.Fh && s.Fh[k] != null) return s.Fh[k];
+  if (window.katex) {
+    s.Fh = s.Fh || [];
+    try { return (s.Fh[k] = enveloppeFAnn(s.F[k], katex.renderToString(s.F[k], { throwOnError: false, strict: 'ignore', output: 'html' }))); } catch (e) {}
+  }
+  return esc(s.Ft[k] || '');
+}
+// La parenthèse ouvrante qui précède une formule et la ponctuation qui la suit restent collées à elle.
+const annalesF = (h, s) => s && s.F ? h.replace(/(\(?)\uE000([\uE100-\uEFFF])([).,;:]*)/g, (m, av, c, ap) => {
+  const f = formuleAnn(s, c.charCodeAt(0) - 0xE100);
+  return av || ap ? `<span class="f-ann">${av}${f}${ap}</span>` : f;
+}) : h;
+const annalesFt = (t, s) => s && s.Ft ? String(t).replace(RE_F_ANN, (m, c) => ` ${s.Ft[c.charCodeAt(0) - 0xE100] || ''} `) : t;
 function surligner(texte, q) {
   const mots = normRech(q).split(' ').filter(m => m.length >= 3);
   if (!mots.length) return esc(texte);
@@ -1922,13 +1947,13 @@ function resultatsAnnales() {
     const eps = [...new Set(s.cases.map(c => c.epreuve))].join(', ');
     h += `<article class="res-ann carte"><div class="res-tete"><span class="res-conc">${esc(cf.titre || s.concours)}${fils} · ${s.annee} · ${esc(eps)}</span>${s.cases[0] ? `<a class="lien-fiche" href="#annales/sujet/${slugSujet(s.cases[0])}">contenu du sujet</a>` : ''}</div>`;
     h += `<h4><a href="${esc(s.sujet)}" target="_blank" rel="noopener">${esc(s.nom || '')}</a></h4>`;
-    if (s.apercu) h += `<p class="res-resume">${surligner(s.apercu, q)}</p>`;
+    if (s.apercu) h += `<p class="res-resume">${annalesF(surligner(s.apercu, q), s)}</p>`;
     h += `<ul class="res-parties">${r.parts.map(({ p, prin }) => {
       const [a, b] = p.pages || [1, 1];
       const tt = (p.themes || []).map(t => `<b>${esc((I.themes[t] || {}).titre || t)}</b>`).concat((p.secondaires || []).map(t => esc((I.themes[t] || {}).titre || t)));
       // certains sites (devenirenseignant.gouv.fr) imposent le téléchargement : le renvoi à la page n'y est pas suivi
       const telecharge = /devenirenseignant\.gouv\.fr\/media\//.test(s.sujet);
-      return `<li class="${prin ? '' : 'sec'}"><a class="partie" href="${esc(s.sujet)}#page=${a}" target="_blank" rel="noopener" title="${telecharge ? `Le site officiel impose le téléchargement : la partie commence page ${a}` : `Ouvrir le sujet à la page ${a}`}">${surligner(p.nom || '', q)}</a><span class="pp">p. ${a === b ? a : `${a}–${b}`}${telecharge ? ' · PDF téléchargé' : ''}</span><span class="tt">${tt.join(' · ')}${(p.mots || []).length ? ` — ${surligner(p.mots.join(', '), q)}` : ''}</span></li>`;
+      return `<li class="${prin ? '' : 'sec'}"><a class="partie" href="${esc(s.sujet)}#page=${a}" target="_blank" rel="noopener" title="${telecharge ? `Le site officiel impose le téléchargement : la partie commence page ${a}` : `Ouvrir le sujet à la page ${a}`}">${annalesF(surligner(p.nom || '', q), s)}</a><span class="pp">p. ${a === b ? a : `${a}–${b}`}${telecharge ? ' · PDF téléchargé' : ''}</span><span class="tt">${tt.join(' · ')}${(p.mots || []).length ? ` — ${annalesF(surligner(p.mots.join(', '), q), s)}` : ''}</span></li>`;
     }).join('')}</ul>`;
     const autres = s.parties.length - r.parts.length;
     if (autres > 0) h += `<p class="res-autres">Le sujet compte ${autres} autre${autres > 1 ? 's' : ''} partie${autres > 1 ? 's' : ''} sur d'autres thèmes.</p>`;
