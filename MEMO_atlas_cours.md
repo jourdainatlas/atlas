@@ -9,6 +9,12 @@
 
 ### 19. Domaine de la conversation « Cours » (27 oct. 2026)
 
+**Rôle (consigne de l'auteur, 27 oct. 2026).** Cette conversation transfère les documents vers le site :
+dépôt des PDF, fiches de `cours.yaml`, conversion et versement des feuilles d'exercices, aménagement
+de la rubrique. Elle ne relit pas et ne corrige pas le contenu mathématique des cours et des
+exercices, ni leurs épigraphes : ces corrections se font ailleurs. Les résumés et les sommaires des
+fiches restent rédigés d'après le PDF, pour décrire fidèlement ce qu'il contient.
+
 La conversation Cours n'écrit que dans son domaine, tel que le définit `MEMO_atlas.md` (section 0,
 point 1) : `rubriques/cours.yaml`, `rubriques/exercices.yaml`, `rubriques/exercices/`,
 `documents/cours/`, `documents/exercices/`, `documents/figures/`, `outils/tex2exos.py`,
