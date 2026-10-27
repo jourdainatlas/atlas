@@ -42,7 +42,11 @@ données YAML. Les messages de commit commencent par « Cours : » ou « Exercic
 - **Niveaux sans cours** : Seconde, Maths approfondies (MPSI), ECG. Le programme officiel
   MPSI-MP2I est un fichier du projet Claude (`programme-mpsi-mp2i_mathematiques.pdf`).
 - **Première** (27 oct. 2026) : chapitres 1 à 8 (`p-01` à `p-08`), PDF dans `documents/cours/premiere/`
-  (3,5 Mo), sans feuilles d'exercices pour l'instant. Le site compte 27 chapitres en ligne.
+  (3,5 Mo). Le site compte 27 chapitres en ligne. Feuilles `f-p-01` à `f-p-08` (29, 30, 34, 36, 35,
+  30, 35, 30 exercices) et la feuille complémentaire `f-p-sommes` (« Sommes de termes d'une suite
+  arithmétique », 10 exercices, préfixe `p-sa`, **sans corrigé**, sans numéro de chapitre, rattachée
+  au cours `p-02` par son champ `cours`), soit 269 exercices ; PDF dans `documents/exercices/premiere/`
+  (4,6 Mo), 151 figures ajoutées (353 au total). Le site compte 981 exercices.
 - **Maths expertes** (27 oct. 2026) : chapitres 1 à 9 (`me-01` à `me-09`), PDF dans
   `documents/cours/expertes/` (4,4 Mo). Niveau `expertes` (« Maths expertes »), rangé après
   `terminale` dans `niveaux`. Feuilles `f-me-01` à `f-me-09`, soit 305 exercices (41, 37, 28, 37, 37,
@@ -61,6 +65,12 @@ données YAML. Les messages de commit commencent par « Cours : » ou « Exercic
   feuilles de Terminale, absentes du dépôt. La forme `\exo{…}{…}` y est lue par le nouveau code
   d'en-têtes ; il faudra le confirmer au prochain versement d'une feuille de ce type.
 - Le cours `m-homologie` attend son PDF.
+- Deux défauts de `tex2exos.py` corrigés le 27 octobre (feuilles de Première) touchaient peut-être les
+  feuilles de Terminale, dont les sources ne sont pas dans le dépôt : un `\emph{…}` ou `\textbf{…}`
+  contenant un groupe `{}` perdait son premier mot (« \emph{On adopte … \eunc{} …} » donnait
+  « adopte … ») ; les couleurs `crouge`, `cbleu`… restaient en noir. Les feuilles de Maths expertes
+  ont été reconverties (seules `f-me-06` et `f-me-07` changeaient, par les couleurs). Pour la
+  Terminale, il faudra reconvertir quand l'auteur renverra les `.tex`.
 - L'édifice n'a aucun nœud pour les graphes (matrice d'adjacence) ni pour les chaînes de Markov :
   `me-06` et `me-09` se rattachent à des nœuds voisins (matrices, espaces probabilisés). Le dossier
   `contenu/` appartient désormais à la conversation Édifice : un nœud manquant se demande à l'auteur.
@@ -103,7 +113,16 @@ exercices », c'est-à-dire la vue « Par exercice » filtrée sur ce niveau. Le
    à formules lus par accolades appariées). Les commentaires `% Source : …` et `% Inspiré de : …`
    placés avant un exercice deviennent son champ `source` (« inspiré de … » dans le second cas).
    Les blocs `minipage` et `flushright` sont retirés, `\cline` est ignoré, les cellules
-   `\textcolor{c}{$x$}` et `\textbf{… $x$ …}` sont converties.
+   `\textcolor{c}{$x$}` et `\textbf{… $x$ …}` sont converties, `\multicolumn{n}{…}{x}` devient `x`
+   suivi de n−1 cellules vides.
+   **Feuille sans corrigé** : « - » à la place de CORRIGE.tex et de CORRIGE.pdf ; on omet alors
+   `pdf_corrige` dans `exercices.yaml`. Une feuille sans chapitre (complémentaire) se rattache à un cours
+   par son champ `cours` : la page du chapitre l'affiche sous la feuille principale.
+   **Étiquettes cerclées** : `\textcircled{…}` et la macro TikZ `\textcircledd{…}` des feuilles
+   (avec `\eun`, `\edeux`, `\eunc`, `\edeuxc`) deviennent `\textcircled{…}` de KaTeX, en formule ou
+   enveloppées de `$…$`, et non plus une figure par occurrence. Dans un tableau de texte, ①…⑳.
+   **Couleurs** : les `\definecolor` de la source (`crouge` = #c61e2d, `cbleu`…) sont remplacées par leur
+   code hexadécimal hors des figures. **Pseudo-code** : `$\leftarrow$` dans un `\texttt{…}` devient ←.
    **Images** : un `\includegraphics{nom.png}` n'est pas dans les sources. On extrait les images du PDF
    de la feuille (`pdfimages -list` pour les repérer, puis `pdfimages -png`), on les range sous leur nom
    d'origine dans un dossier, et l'on passe ce dossier par `TEX2EXOS_IMAGES=dossier`. Le PNG est

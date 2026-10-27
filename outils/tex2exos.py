@@ -3,6 +3,7 @@
 
 Usage : python3 outils/tex2exos.py ENONCE.tex CORRIGE.tex ENONCE.pdf CORRIGE.pdf FEUILLE PREFIXE > sortie.yaml
   FEUILLE : identifiant de la feuille (f-t-02) ; PREFIXE : préfixe des exercices (t-02).
+  Feuille sans corrigé : « - » à la place de CORRIGE.tex et de CORRIGE.pdf.
 Les figures TikZ sont compilées en SVG dans documents/figures/ (nom = empreinte du code).
 Les métadonnées (mots-clés, nœuds…) sont proposées par outils/meta_<PREFIXE>.py s'il existe, à relire."""
 import re, sys, os, hashlib, subprocess, tempfile, json, importlib.util
@@ -75,6 +76,82 @@ def developper(t, M):
         if t == avant: break
     return t
 
+# Symboles en formule dans un code en ligne (pseudo-code) : le site ne rend pas de formule dans `…`.
+CODE_SYMB = {'leftarrow': '←', 'gets': '←', 'rightarrow': '→', 'geqslant': '⩾', 'leqslant': '⩽', 'geq': '≥', 'leq': '≤', 'neq': '≠', 'times': '×'}
+CODE_MATH = re.compile(r'\$\s*\\(' + '|'.join(CODE_SYMB) + r')\s*\$')
+
+def couleurs(brut, t):
+    """\\definecolor{crouge}{RGB}{198,30,45} : le nom, inconnu de KaTeX et du navigateur, devient #c61e2d."""
+    C = {}
+    for m in re.finditer(r'\\definecolor\{(\w+)\}\{(RGB|rgb|HTML)\}\{([^}]*)\}', brut):
+        nom, mod, v = m.groups()
+        if mod == 'HTML': C[nom] = '#' + v.strip().lower()
+        else:
+            x = [float(y) for y in v.split(',')]
+            if mod == 'rgb': x = [round(255 * y) for y in x]
+            C[nom] = '#%02x%02x%02x' % tuple(int(y) for y in x)
+    if not C: return t
+    sub = lambda x: re.sub(r'\\(textcolor|color|colorbox)\{(\w+)\}', lambda m: '\\%s{%s}' % (m.group(1), C.get(m.group(2), m.group(2))), x)
+    # Les figures (compilées par LaTeX, qui connaît ces noms) sont laissées telles quelles.
+    morceaux = re.split(r'(\\begin\{tikzpicture\}.*?\\end\{tikzpicture\}|\\begin\{tikz\w*\}.*?\\end\{tikz\w*\})', t, flags=re.S)
+    return ''.join(m if k % 2 else sub(m) for k, m in enumerate(morceaux))
+
+# ------------------------------------------------------------------ étiquettes cerclées et cellules fusionnées
+CERCLES = '①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳'
+def cercle_texte(x):
+    """\\textcircled{3} hors formule : ③ ; autre contenu : (x)."""
+    x = x.strip()
+    return CERCLES[int(x) - 1] if x.isdigit() and 1 <= int(x) <= 20 else f'({x})'
+
+def zones_maths(t):
+    """Intervalles [début, fin[ du texte en mode mathématique ($…$, $$…$$, \\[…\\], \\(…\\), environnements d'équations)."""
+    zones, i, n = [], 0, len(t)
+    envs = r'(align|equation|gather|eqnarray|multline)\*?'
+    while i < n:
+        if t[i] == '\\':
+            m = re.match(r'\\begin\{(' + envs + r')\}', t[i:])
+            if m:
+                fin = t.find('\\end{%s}' % m.group(1), i)
+                fin = n if fin < 0 else fin
+                zones.append((i, fin)); i = fin + 1; continue
+            if t.startswith('\\[', i) or t.startswith('\\(', i):
+                ferme = '\\]' if t[i + 1] == '[' else '\\)'
+                fin = t.find(ferme, i + 2); fin = n if fin < 0 else fin
+                zones.append((i, fin)); i = fin + 2; continue
+            i += 2; continue
+        if t[i] == '$':
+            double = t.startswith('$$', i)
+            j = i + (2 if double else 1)
+            while j < n:
+                if t[j] == '\\': j += 2; continue
+                if t[j] == '$': break
+                j += 1
+            zones.append((i, j)); i = j + (2 if double else 1); continue
+        i += 1
+    return zones
+
+def cercles(t):
+    """\\textcircledd{…} (macro TikZ des feuilles) et \\textcircled{…} : KaTeX connaît \\textcircled en mode
+    mathématique ; hors formule, on l'enveloppe dans $…$."""
+    motif = re.compile(r'\\textrm\{\s*\\textcircledd?\{\s*\$?([^${}]*(?:\{[^{}]*\}[^${}]*)*)\$?\s*\}\s*\}|\\textcircledd?\{\s*\$?([^${}]*(?:\{[^{}]*\}[^${}]*)*)\$?\s*\}')
+    # 1) jetons sans « $ » (le contenu $e_1$ fausserait le repérage des formules), 2) mode de chaque jeton.
+    vals = []
+    def jeton(m):
+        vals.append((m.group(1) if m.group(1) is not None else m.group(2)).strip())
+        return '\x00%d\x00' % (len(vals) - 1)
+    t = motif.sub(jeton, t)
+    zones = zones_maths(t)
+    def dans(p): return any(a <= p < b for a, b in zones)
+    return re.sub('\x00(\\d+)\x00', lambda m: ('\\textcircled{%s}' if dans(m.start()) else '$\\textcircled{%s}$') % vals[int(m.group(1))], t)
+
+def multicolonnes(corps):
+    """\\multicolumn{n}{spec}{contenu} → contenu suivi de n-1 cellules vides (inconnu de KaTeX)."""
+    while True:
+        m = re.search(r'\\multicolumn\{(\d+)\}\{[^}]*\}\{', corps)
+        if not m: return corps
+        f = accolade(corps, m.end() - 1)
+        corps = corps[:m.start()] + corps[m.end():f - 1] + ' &' * (int(m.group(1)) - 1) + corps[f:]
+
 # ------------------------------------------------------------------ figures TikZ
 DOSSIER_FIG = 'documents/figures'
 def compiler_figure(code, pre):
@@ -131,6 +208,7 @@ class Conv:
         corps = re.sub(r'\\(rowcolor|cellcolor)(\[[^]]*\])?\{[^}]*\}', '', corps)
         corps = re.sub(r'\\(renewcommand|arraystretch)[^\n]*', '', corps)
         corps = re.sub(r'\\cline\{[^}]*\}', '', corps)        # filets partiels : inconnus de KaTeX
+        corps = multicolonnes(corps)
         lignes = s.couper_lignes(corps)
         out = []
         for li in lignes:
@@ -153,6 +231,7 @@ class Conv:
 
     def tableau_html(s, corps):
         """Bloc ```tableau : une ligne par rangée, cellules séparées par « ¦ », texte et $formules$."""
+        corps = multicolonnes(corps)
         corps = re.sub(r'\\(rowcolor|cellcolor)(\[[^]]*\])?\{[^}]*\}', '', corps)
         corps = re.sub(r'\\(renewcommand|arraystretch)[^\n]*', '', corps)
         rangs = []
@@ -178,6 +257,7 @@ class Conv:
                         q = re.sub(r'\\textbf\{([^}]*)\}', r'**\1**', q); q = re.sub(r'\\emph\{([^}]*)\}', r'*\1*', q)
                         q = q.replace('\\og', '«').replace('\\fg{}', '»').replace('\\fg', '»').replace('~', ' ')
                         q = re.sub(r'\\(quad|qquad)\b|\\[,;:! ]', ' ', q)       # espacements entre formules
+                        q = re.sub(r'\\oe\b\s?', 'œ', q); q = re.sub(r'\\textcircled\{([^{}]*)\}', lambda mm: cercle_texte(mm.group(1)), q)
                         r += q
                 cells.append(re.sub(r'\s+', ' ', r).strip().replace('¦', '|'))
             rangs.append(' ¦ '.join(cells))
@@ -217,6 +297,11 @@ class Conv:
         c = re.sub(r'\\textcolor\{(\w+)\}\{\s*\$([^$]*)\$\s*\}', r'$\\textcolor{\1}{\2}$', c)
         c = re.sub(r'\\textcolor\{\w+\}\{([^{}$]*)\}', r'\1', c)
         c = re.sub(r'\\phantom\{(?:[^{}]|\{[^{}]*\})*\}', '', c).strip()
+        # \textbf{… $x$ …} : l'enveloppe est retirée avant le découpage aux $ (accolades appariées)
+        while True:
+            mm = re.search(r'\\(textbf|emph|textit)\{', c)
+            if not mm: break
+            f = accolade(c, mm.end() - 1); c = c[:mm.start()] + c[mm.end():f - 1] + c[f:]
         if not c: return ''
         parts = [p for p in re.split(r'(\$[^$]*\$)', c) if p]
         r = ''
@@ -282,6 +367,7 @@ class Conv:
     def tex_math(s, m):
         m = re.sub(r'@@TAB\d+@@', lambda x: s.ph[x.group(0)][1], m)
         m = m.replace('\\textrm', '\\text')
+        m = re.sub(r'\\textsuperscript\{([^{}]*)\}', r'$^{\\text{\1}}$', m)   # 1er dans \text{…} : sorti ci-dessous
         # \text{… $x$ …} : les $ imbriqués sont sortis du texte (le site découpe les formules sur $)
         def sortir(mm):
             debut = mm.start(); j = debut + len(mm.group(0)) - 1
@@ -344,7 +430,8 @@ class Conv:
     def texte(s, t):
         t = s.listes(t)
         t = re.sub(r'\\textsc\{([^{}]*)\}', lambda m: m.group(1).upper(), t)  # siècles en petites capitales
-        t = re.sub(r'\\texttt\{((?:[^{}]|\\[{}])*)\}', lambda m: '`' + re.sub(r'\\([_%#&{}$])', r'\1', m.group(1)) + '`', t)  # code en ligne
+        t = re.sub(r'\\textcircled\{([^{}]*)\}', lambda m: cercle_texte(m.group(1)), t)
+        t = re.sub(r'\\texttt\{((?:[^{}]|\\[{}])*)\}', lambda m: '`' + re.sub(r'\\([_%#&{}$])', r'\1', CODE_MATH.sub(lambda x: CODE_SYMB[x.group(1)], m.group(1))) + '`', t)  # code en ligne
         rep = [(r'\\textbf\{\\itshape\s*([^}]*)\}', r'**\1**'), (r'\{\\itshape\s*([^}]*)\}', r'*\1*'),
                (r'\\textsuperscript\{(e|ème|eme)\}', 'ᵉ'), (r'\\textsuperscript\{(ère|re)\}', 'ʳᵉ'),
                (r'\\textsuperscript\{([^}]*)\}', r'\1'), (r'\\underline\{([^{}]*)\}', r'\1'),
@@ -359,6 +446,15 @@ class Conv:
                (r'\\dots|\\ldots', '…'), (r'\\%', '%'), (r'\\&', '&'), (r"\\'", "'")]
         for a, b in rep:
             for _ in range(3): t = re.sub(a, b, t)
+        # \textbf / \emph à accolades imbriquées (\eunc{} dans \emph{…}) : appariement explicite
+        while True:
+            mm = re.search(r'\\(textbf|emph|textit)\{', t)
+            if not mm: break
+            try: f = accolade(t, mm.end() - 1)
+            except ValueError: t = t[:mm.start()] + t[mm.end():]; continue
+            marque = '**' if mm.group(1) == 'textbf' else '*'
+            t = t[:mm.start()] + marque + t[mm.end():f - 1].strip() + marque + t[f:]
+        t = re.sub(r'\\[A-Za-z]+(?=\{)', '', t)          # commande inconnue suivie d'un groupe : on garde le contenu
         t = re.sub(r'(?<!\\)[{}]', '', t)
         t = re.sub(r'\\[A-Za-z]+\*?', '', t)               # commandes résiduelles (mise en page)
         paras = [re.sub(r'[ \t]*\n[ \t]*', ' ', p).strip() for p in re.split(r'\n\s*\n', t)]
@@ -481,13 +577,20 @@ def feuille(tex):
     if defs: pre = pre + '\n' + '\n'.join(defs) + '\n'
     M = lire_macros(sans_commentaires(pre))
     corps_sc = re.sub(r'\\(?:euro|texteuro)(?:\{\})?', '€', corps_sc)
-    return pre, developper(corps_sc, M), sources(brut)
+    M.pop('textcircledd', None)                    # dessin TikZ d'un cercle : traité par cercles()
+    corps = cercles(developper(corps_sc, M))
+    corps = couleurs(brut, corps)
+    corps = re.sub(r'\\texttt\{((?:[^{}]|\\[{}])*)\}', lambda m: '\\texttt{%s}' % CODE_MATH.sub(lambda x: CODE_SYMB[x.group(1)], m.group(1)), corps)
+    return pre, corps, sources(brut)
 
 def main():
     en_tex, co_tex, en_pdf, co_pdf, fid, pref = sys.argv[1:7]
-    pre_e, t_e, src = feuille(en_tex); pre_c, t_c, _ = feuille(co_tex)
+    # Feuille sans corrigé : « - » à la place du .tex et du PDF du corrigé.
+    sans_corrige = co_tex == '-'
+    pre_e, t_e, src = feuille(en_tex)
+    pre_c, t_c, _ = (pre_e, '\\end{document}', {}) if sans_corrige else feuille(co_tex)
     E, C = decouper(t_e), {x['numero']: x for x in decouper(t_c)}
-    pe, pc = pages(en_pdf), pages(co_pdf)
+    pe, pc = pages(en_pdf), ({} if sans_corrige else pages(co_pdf))
     meta = None
     chemin_meta = os.path.join(os.path.dirname(__file__), f'meta_{pref.replace("-", "_")}.py')
     if os.path.exists(chemin_meta):
@@ -495,7 +598,7 @@ def main():
     sortie = []
     for x in E:
         c = C.get(x['numero'])
-        if not c: sys.stderr.write(f"exercice {x['numero']} : pas de corrigé\n")
+        if not c and not sans_corrige: sys.stderr.write(f"exercice {x['numero']} : pas de corrigé\n")
         if c and c['etoiles'] != x['etoiles']: sys.stderr.write(f"exercice {x['numero']} : étoiles différentes\n")
         enonce = Conv(pre_e).convertir(x['corps'])
         corrige = Conv(pre_c).convertir(c['corps']) if c else ''

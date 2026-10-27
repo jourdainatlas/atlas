@@ -1551,7 +1551,11 @@ function pageChapitre(c, tous) {
   if (feuille && (feuille.pdf_enonce || feuille.nombre)) {
     h += `<div class="carte"><h3 class="titre-bloc">Exercices</h3><div style="display:grid;gap:8px">`;
     if ((R.exercices?.exercices || []).some(e => e.feuille === feuille.id)) h += `<a class="bouton plein" href="#exercices/feuille/${feuille.id}" style="justify-content:center">Les ${feuille.nombre} exercices en ligne →</a>`;
-    h += `<div style="display:flex;gap:6px;flex-wrap:wrap">${lienPdf(feuille.pdf_enonce, 0, 'Feuille PDF')}${lienPdf(feuille.pdf_corrige, 0, 'Corrigé PDF')}</div></div></div>`;
+    h += `<div style="display:flex;gap:6px;flex-wrap:wrap">${lienPdf(feuille.pdf_enonce, 0, 'Feuille PDF')}${lienPdf(feuille.pdf_corrige, 0, 'Corrigé PDF')}</div>`;
+    // Feuilles complémentaires rattachées au chapitre (champ cours), sans numéro de chapitre.
+    for (const f of (R.exercices?.feuilles || []).filter(f => f.cours === c.id && f.id !== feuille.id && f.statut === 'depose'))
+      h += `<a class="bouton" href="#exercices/feuille/${f.id}" style="justify-content:center">${esc(f.titre)}${f.nombre ? ` · ${f.nombre} exercices` : ''} →</a>`;
+    h += `</div></div>`;
   } else h += `<div class="carte"><h3 class="titre-bloc">Exercices</h3><p class="vide-note">Feuille d'exercices à venir.</p></div>`;
   h += `<div class="carte"><h3 class="titre-bloc">Fichiers</h3><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">${statut(c.statut)}${c.pdf ? `<a class="lien-simple" href="${c.pdf}" download style="font-size:13.5px">PDF${c.pages ? `, ${c.pages} pages` : ''}</a>` : '<span style="font-size:13px;color:var(--encre-2)">PDF</span>'}</div></div>`;
   h += `</aside></div>`;
@@ -1581,7 +1585,8 @@ function chargerExercices() {
 
 // « les feuilles des chapitres 1 à 8 de Terminale sont en ligne (… exercices) », calculé sur les feuilles déposées.
 function enLigneExos(E) {
-  const dep = (E.feuilles || []).filter(f => f.statut === 'depose' && f.chapitre);
+  const tout = (E.feuilles || []).filter(f => f.statut === 'depose');
+  const dep = tout.filter(f => f.chapitre), hors = tout.length - dep.length;
   if (!dep.length) return 'aucune feuille n\'est encore en ligne';
   const parNiveau = {};
   for (const f of dep) (parNiveau[f.niveau] = parNiveau[f.niveau] || []).push(f.chapitre);
@@ -1591,8 +1596,8 @@ function enLigneExos(E) {
     return r.join(', ');
   };
   const morceaux = Object.entries(parNiveau).map(([niv, ch]) => `${ch.length > 1 ? 'des chapitres' : 'du chapitre'} ${plages(ch)} de ${niveauDe(niv).titre}`);
-  const n = dep.reduce((t, f) => t + (f.nombre || 0), 0);
-  return `les feuilles ${morceaux.join(' et ')} sont en ligne${n ? ` (${n} exercices)` : ''}`;
+  const n = tout.reduce((t, f) => t + (f.nombre || 0), 0);
+  return `les feuilles ${morceaux.join(' et ')}${hors ? `, ainsi que ${hors} ${hors > 1 ? "feuilles complémentaires" : "feuille complémentaire"},` : ''} sont en ligne${n ? ` (${n} exercices)` : ''}`;
 }
 
 function pageExercices(chemin, premiere) {
@@ -1608,7 +1613,8 @@ function pageExercices(chemin, premiere) {
   const attente = chargerExercices();
   if (attente) attente.then(() => { const z = $('#rubrique'); if (enRubrique() && z.dataset.nom === 'exercices') rafraichirRubrique(); });
   let h = tete('Rubrique', 'Exercices', E.intro);
-  h += maquette(`La banque se remplit au fur et à mesure : ${enLigneExos(E)}, avec leurs corrigés.`);
+  { const sc = (E.feuilles || []).filter(f => f.statut === 'depose' && !f.pdf_corrige).length;
+    h += maquette(`La banque se remplit au fur et à mesure : ${enLigneExos(E)}, avec leurs corrigés${sc ? `, sauf pour ${sc > 1 ? `${sc} feuilles qui n'en ont pas` : "une feuille qui n'en a pas"}` : ''}.`); }
   h += `<div class="resultats-tete" style="margin-bottom:18px"><div class="segments" role="group" aria-label="Affichage"><button type="button" data-vue="exercice" aria-pressed="${etatExo.vue === 'exercice'}">Par exercice</button><button type="button" data-vue="feuille" aria-pressed="${etatExo.vue === 'feuille'}">Par feuille</button><button type="button" data-vue="niveau" aria-pressed="${etatExo.vue === 'niveau'}">Par niveau</button></div></div>`;
   h += etatExo.vue === 'feuille' ? vueFeuilles(E) : etatExo.vue === 'niveau' ? vueNiveauxExos(E) : vueExercices(E, !!attente);
   return h;
