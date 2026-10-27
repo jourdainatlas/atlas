@@ -546,6 +546,11 @@ a.acc-etape:hover { background: var(--trame); }
 .cote { display: grid; gap: 14px; position: sticky; top: 16px; }
 .cote .carte { padding: 14px 16px; }
 .sommaire { margin: 0; padding-left: 20px; font-family: var(--f-texte); font-size: 15.5px; display: grid; gap: 4px; }
+.cours-lies { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: 14.5px; }
+.cours-lie { display: block; color: var(--encre); text-decoration: none; }
+.cours-lies .cl-lieu { display: block; font-size: 12px; color: var(--encre-2); letter-spacing: .02em; }
+.cours-lie .cl-titre { text-decoration: underline; text-decoration-color: var(--encre-3); text-underline-offset: 3px; }
+.cours-lie:hover .cl-titre { text-decoration-color: currentColor; }
 .voisins { display: flex; justify-content: space-between; gap: 12px; margin-top: 20px; font-size: 13.5px; }
 .voisins a { color: var(--encre-2); text-decoration: none; }
 .voisins a:hover { color: var(--encre); }
@@ -1447,7 +1452,8 @@ function pageCours(chemin) {
   }
   const niv = (pageCours.filtre ||= 'tous');
   let h = tete('Rubrique', 'Cours', C.intro);
-  h += maquette('Les chapitres sont déposés au fur et à mesure ; les cours de Terminale sont en ligne.');
+  const enLigneCours = (C.niveaux || []).filter(n => tous.some(c => c.niveau === n.id && c.statut === 'depose')).map(n => n.titre);
+  h += maquette(`Les chapitres sont déposés au fur et à mesure${enLigneCours.length ? ` ; en ligne : ${enLigneCours.join(', ')}` : ''}.`);
   const presents = (C.niveaux || []).filter(n => tous.some(c => c.niveau === n.id));
   h += `<div class="cours-filtres"><div class="puces-chips" role="group" aria-label="Niveau">`;
   h += `<button type="button" class="chip" data-niveau="tous" aria-pressed="${niv === 'tous'}">Tous <span class="compte">${tous.length}</span></button>`;
@@ -1466,6 +1472,12 @@ function pageCours(chemin) {
   if (absents.length && niv === 'tous') h += `<p class="bientot">Niveaux prévus, sans chapitre déposé pour l'instant : ${absents.map(n => n.titre).join(', ')}.</p>`;
   return h;
 }
+// Chapitres liés : ceux que c cite dans `liens` et ceux qui citent c, dans l'ordre des niveaux puis des chapitres.
+function coursLies(c, tous) {
+  const ordre = (R.cours?.niveaux || []).map(n => n.id);
+  return tous.filter(x => x.id !== c.id && ((c.liens || []).includes(x.id) || (x.liens || []).includes(c.id)))
+    .sort((a, b) => (ordre.indexOf(a.niveau) - ordre.indexOf(b.niveau)) || ((a.chapitre || 0) - (b.chapitre || 0)));
+}
 function pageChapitre(c, tous) {
   const meme = tous.filter(x => x.niveau === c.niveau);
   const i = meme.indexOf(c), prec = meme[i - 1], suiv = meme[i + 1];
@@ -1483,6 +1495,12 @@ function pageChapitre(c, tous) {
   h += `<div class="carte"><h3 class="titre-bloc">Dans l'atlas</h3><div class="puces">${(c.theories || []).map(t => puce(t)).join('')}</div>`;
   if ((c.notions || []).length) h += `<p style="margin:10px 0 0;font-size:13.5px">Notions : ${(c.notions).map(terme).join(', ')}</p>`;
   h += `</div>`;
+  const lies = coursLies(c, tous);
+  if (lies.length) {
+    h += `<div class="carte"><h3 class="titre-bloc">Chapitres liés</h3><ul class="cours-lies">`;
+    for (const x of lies) h += `<li><a class="cours-lie" href="#cours/${x.id}"><span class="cl-lieu">${esc(niveauDe(x.niveau).titre)}${x.chapitre ? `, ch. ${x.chapitre}` : ''}</span><span class="cl-titre">${x.titre}</span></a></li>`;
+    h += `</ul></div>`;
+  }
   if (feuille && (feuille.pdf_enonce || feuille.nombre)) {
     h += `<div class="carte"><h3 class="titre-bloc">Exercices</h3><div style="display:grid;gap:8px">`;
     if ((R.exercices?.exercices || []).some(e => e.feuille === feuille.id)) h += `<a class="bouton plein" href="#exercices/feuille/${feuille.id}" style="justify-content:center">Les ${feuille.nombre} exercices en ligne →</a>`;

@@ -489,6 +489,20 @@ for c in rubriques.get('cours', {}).get('cours', []):
     for champ in ('pdf', 'tex'):
         if c.get(champ) and not os.path.isfile(c[champ]):
             erreur(f"rubriques/cours {c['id']} : fichier introuvable {c[champ]}")
+# Cours : identifiants uniques, niveau déclaré, chapitres liés existants, numéros distincts par niveau.
+if 'cours' in rubriques:
+    Cr = rubriques['cours']
+    ids_c = [c['id'] for c in Cr.get('cours', [])]
+    for i in sorted(set(x for x in ids_c if ids_c.count(x) > 1)): erreur(f"rubriques/cours : id en double {i}")
+    ids_niv = {n['id'] for n in Cr.get('niveaux', [])}
+    vus = set()
+    for c in Cr.get('cours', []):
+        if c.get('niveau') not in ids_niv: erreur(f"rubriques/cours {c['id']} : niveau inconnu {c.get('niveau')}")
+        for l in c.get('liens') or []:
+            if l not in ids_c or l == c['id']: erreur(f"rubriques/cours {c['id']} : lien invalide {l}")
+        if c.get('chapitre'):
+            if (c['niveau'], c['chapitre']) in vus: erreur(f"rubriques/cours {c['id']} : chapitre {c['chapitre']} déjà pris au niveau {c['niveau']}")
+            vus.add((c['niveau'], c['chapitre']))
 if erreurs:
     print("ERREURS :"); [print("  -", e) for e in erreurs]; sys.exit(1)
 sortie['rubriques'] = rubriques
