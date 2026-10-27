@@ -93,6 +93,32 @@ def compiler_figure(code, pre):
         subprocess.run(['pdftocairo', '-svg', 'f.pdf', os.path.abspath(cible)], cwd=d, check=True)
     return cible
 
+# ------------------------------------------------------------------ images (\\includegraphics)
+# Les images ne sont pas dans les sources : on les cherche dans les dossiers de la variable
+# d'environnement TEX2EXOS_IMAGES (séparés par « : »), par exemple après extraction du PDF
+# de la feuille avec « pdfimages -png ». Le PNG est enveloppé dans un SVG dont la taille en pt
+# reproduit celle du PDF (PNG à 96 ppp, multiplié par l'option scale=…), pour que le site
+# l'affiche comme une figure TikZ.
+def image_svg(nom, opts):
+    import base64, struct
+    for d in [x for x in os.environ.get('TEX2EXOS_IMAGES', '').split(':') if x]:
+        for cand in (nom, nom + '.png'):
+            src = os.path.join(d, cand)
+            if os.path.isfile(src): break
+        else: continue
+        data = open(src, 'rb').read()
+        if data[:8] != b'\x89PNG\r\n\x1a\n': sys.stderr.write(f'image {nom} : PNG attendu\n'); return None
+        w, h = struct.unpack('>II', data[16:24])
+        ms = re.search(r'scale\s*=\s*([\d.]+)', opts); k = float(ms.group(1)) if ms else 1.0
+        wpt, hpt = w * 0.75 * k, h * 0.75 * k
+        hsh = hashlib.sha256(data + opts.encode()).hexdigest()[:16]
+        cible = f'{DOSSIER_FIG}/{hsh}.svg'
+        os.makedirs(DOSSIER_FIG, exist_ok=True)
+        open(cible, 'w').write(f'<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="{wpt:.1f}pt" height="{hpt:.1f}pt" viewBox="0 0 {w} {h}">'
+                               f'<image width="{w}" height="{h}" xlink:href="data:image/png;base64,{base64.b64encode(data).decode()}"/></svg>\n')
+        return cible
+    sys.stderr.write(f'image introuvable : {nom} (variable TEX2EXOS_IMAGES)\n'); return None
+
 # ------------------------------------------------------------------ conversion d'un fragment
 class Conv:
     def __init__(s, pre): s.pre = pre; s.ph = {}; s.n = 0
@@ -104,6 +130,7 @@ class Conv:
         spec = spec.replace('Q', 'c').replace('@{}', '')
         corps = re.sub(r'\\(rowcolor|cellcolor)(\[[^]]*\])?\{[^}]*\}', '', corps)
         corps = re.sub(r'\\(renewcommand|arraystretch)[^\n]*', '', corps)
+        corps = re.sub(r'\\cline\{[^}]*\}', '', corps)        # filets partiels : inconnus de KaTeX
         lignes = s.couper_lignes(corps)
         out = []
         for li in lignes:
@@ -135,6 +162,13 @@ class Conv:
             cells = []
             for c in s.couper_cellules(li):
                 c = re.sub(r'\\phantom\{(?:[^{}]|\{[^{}]*\})*\}', '', c).strip()
+                # \textbf{… $x$ …} et \emph{…} : convertis avant le découpage aux $ (accolades appariées)
+                for cmd, marque in (('textbf', '**'), ('emph', '*'), ('textit', '*')):
+                    while True:
+                        mm = re.search(r'\\' + cmd + r'\{', c)
+                        if not mm: break
+                        f = accolade(c, mm.end() - 1)
+                        c = c[:mm.start()] + marque + c[mm.end():f - 1].strip() + marque + c[f:]
                 parts = re.split(r'(\$[^$]*\$)', c); r = ''
                 for q in parts:
                     if q.startswith('$'): r += '$' + s.tex_math(q[1:-1]) + '$'
@@ -143,6 +177,7 @@ class Conv:
                         q = re.sub(r'\\(centering|arraybackslash|raggedright|raggedleft)\b\s*', '', q)
                         q = re.sub(r'\\textbf\{([^}]*)\}', r'**\1**', q); q = re.sub(r'\\emph\{([^}]*)\}', r'*\1*', q)
                         q = q.replace('\\og', '«').replace('\\fg{}', '»').replace('\\fg', '»').replace('~', ' ')
+                        q = re.sub(r'\\(quad|qquad)\b|\\[,;:! ]', ' ', q)       # espacements entre formules
                         r += q
                 cells.append(re.sub(r'\s+', ' ', r).strip().replace('¦', '|'))
             rangs.append(' ¦ '.join(cells))
@@ -178,6 +213,9 @@ class Conv:
 
     def cellule(s, c):
         c = c.strip().replace('\\hline', '')
+        # \textcolor{rouge}{$x$} : la couleur passe dans la formule (KaTeX connaît \textcolor en mode math)
+        c = re.sub(r'\\textcolor\{(\w+)\}\{\s*\$([^$]*)\$\s*\}', r'$\\textcolor{\1}{\2}$', c)
+        c = re.sub(r'\\textcolor\{\w+\}\{([^{}$]*)\}', r'\1', c)
         c = re.sub(r'\\phantom\{(?:[^{}]|\{[^{}]*\})*\}', '', c).strip()
         if not c: return ''
         parts = [p for p in re.split(r'(\$[^$]*\$)', c) if p]
@@ -209,6 +247,7 @@ class Conv:
                 t = t[:m.start()] + f(t[m.end():fin], t[m.start():fin + len('\\end{%s}' % nom)]) + t[fin + len('\\end{%s}' % nom):]
         t = rempl_env(t, 'lstlisting', lambda c, tout: s.jeton('CODE', re.sub(r'^\[[^]]*\]', '', c).strip('\n')))
         t = rempl_env(t, 'tikzpicture', lambda c, tout: s.jeton('FIG', tout))
+        t = re.sub(r'\\includegraphics(\[[^\]]*\])?\{([^}]*)\}', lambda m: s.jeton('IMG', (m.group(2).strip(), m.group(1) or '')), t)
         def tab(c, tout):
             spec, j = arg(c, 0)
             if s.tableau_texte(spec, c[j:]): return s.jeton('TABH', s.tableau_html(c[j:]))
@@ -258,6 +297,7 @@ class Conv:
             else: break
         m = m2[0]
         m = re.sub(r'\\(medskip|smallskip|bigskip|noindent)\b', '', m)
+        m = re.sub(r'\\renewcommand\s*\{?\\arraystretch\}?\s*\{[^}]*\}', '', m)   # interligne des tableaux : sans objet
         m = m.replace('\\og', '«').replace('\\fg{}', '»').replace('\\fg', '»')
         m = re.sub(r'\\(rowcolor|cellcolor)\{[^}]*\}', '', m)
         return re.sub(r'\s+', ' ', m).strip()
@@ -312,7 +352,8 @@ class Conv:
                (r'\\textbf\{([^{}]*)\}', r'**\1**'), (r'\\(emph|textit)\{([^{}]*)\}', r'*\2*'),
                (r'\\(phantom|hspace|vspace|needspace)\{[^{}]*\}', ''), (r'\\renewcommand\{\\arraystretch\}\{[^}]*\}', ''),
                (r'\\(medskip|smallskip|bigskip|medbreak|noindent|newpage|centering|hfill|par|raggedright|Large|large|small)\b', ' '),
-               (r'\\begin\{(center|quote|multicols|flushleft|tcolorbox)\}(\{\d+\})?(\[[^\]]*\])?', '\n\n'), (r'\\end\{(center|quote|multicols|flushleft|tcolorbox)\}', '\n\n'),
+               (r'\\begin\{minipage\}(\[[^\]]*\])?\{[^{}]*\}', '\n\n'), (r'\\end\{minipage\}', '\n\n'),
+               (r'\\begin\{(center|quote|multicols|flushleft|flushright|tcolorbox)\}(\{\d+\})?(\[[^\]]*\])?', '\n\n'), (r'\\end\{(center|quote|multicols|flushleft|flushright|tcolorbox)\}', '\n\n'),
                (r'\\og\s*', '« '), (r'\s*\\fg\{\}', ' »'), (r'\s*\\fg\b', ' »'), (r'\\oe\b\s?', 'œ'), (r'\\textbackslash', '\\\\'),
                (r'\\checkmark', '✓'), (r'\\quad|\\qquad', ' '), (r'\\[,;:]', ' '), (r'\\ ', ' '), (r'~', ' '), (r'\\\\(\[[^\]]*\])?', '\n\n'),
                (r'\\dots|\\ldots', '…'), (r'\\%', '%'), (r'\\&', '&'), (r"\\'", "'")]
@@ -337,6 +378,10 @@ class Conv:
                 f = compiler_figure(s.ph[x.group(0)][1], s.pre)
                 return f'\n\n![Figure]({f})\n\n' if f else '\n\n*La figure est dans le PDF de la feuille.*\n\n'
             p = re.sub(r'@@FIG\d+@@', fig, p)
+            def img(x):
+                f = image_svg(*s.ph[x.group(0)][1])
+                return f'\n\n![Figure]({f})\n\n' if f else '\n\n*La figure est dans le PDF de la feuille.*\n\n'
+            p = re.sub(r'@@IMG\d+@@', img, p)
             p = re.sub(r'\n{3,}', '\n\n', p).strip()
             p = re.sub(r'^\s*\n', '', p)
             out.append(p)
@@ -347,31 +392,64 @@ class Conv:
         return s.restaurer(s.texte(t))
 
 # ------------------------------------------------------------------ découpage en exercices
-ENTETE = re.compile(r'\\exo\{(?P<a>[^}]*)\}\{(?:\\(?P<et>etoile|etoiles|etoilesss|etoilesv))?\}'
-                    r'|\\noindent\\textbf\{\\underline\{Exercice (?P<b>[^}]*)\}\}\s*(?P<st>\$[^$]*\$)')
+# Deux formes d'en-tête : \exo{N : titre}{\etoiles} (macro des feuilles), ou
+# \noindent\textbf{\underline{Exercice N : titre}} suivi des étoiles ($\star\star$ ou \etoilesv).
+# Les titres peuvent contenir des formules à accolades : lecture par accolades appariées.
+TETE = re.compile(r'\\exo\{|\\noindent\s*\\textbf\{\s*\\underline\{\s*Exercice\s')
 PARTIE = re.compile(r'\\partie\{([^}]*)\}|\\subsection\*\{\\textcolor\{blue\}\{([^}]*)\}\}')
 ETOILES = {'etoile': 1, 'etoiles': 2, 'etoilesss': 3, 'etoilesv': 4}
 
+def entetes(t):
+    """Liste de (début, fin, texte de l'en-tête, nombre d'étoiles ; 0 si non indiqué)."""
+    r = []
+    for m in TETE.finditer(t):
+        if m.group(0).startswith('\\exo'):
+            j = accolade(t, m.end() - 1); tete = t[m.end():j - 1]
+            et = 0
+            k = j
+            while k < len(t) and t[k] in ' \t\n': k += 1
+            if k < len(t) and t[k] == '{':
+                f = accolade(t, k); me = re.search(r'\\(etoilesv|etoilesss|etoiles|etoile)\b', t[k:f])
+                if me: et = ETOILES[me.group(1)]
+                elif '\\star' in t[k:f]: et = t[k:f].count('\\star')
+                j = f
+        else:
+            debut_tb = t.index('{', m.start() + len('\\noindent'))
+            j = accolade(t, debut_tb)
+            interieur = t[debut_tb + 1:j - 1]
+            iu = interieur.index('{'); fu = accolade(interieur, iu)
+            tete = re.sub(r'^\s*Exercice\s+', '', interieur[iu + 1:fu - 1])
+            et = 0
+            ms = re.match(r'\s*(\$[^$]*\$|\\(etoilesv|etoilesss|etoiles|etoile)\b)', t[j:])
+            if ms:
+                et = ETOILES[ms.group(2)] if ms.group(2) else ms.group(1).count('\\star')
+                j += ms.end()
+        r.append((m.start(), j, tete.strip(), et))
+    return r
+
 def decouper(t):
-    evts = sorted([(m.start(), 'P', m) for m in PARTIE.finditer(t)] + [(m.start(), 'E', m) for m in ENTETE.finditer(t)], key=lambda x: x[0])
+    evts = sorted([(m.start(), 'P', m) for m in PARTIE.finditer(t)] + [(e[0], 'E', e) for e in entetes(t)], key=lambda x: x[0])
     exos, partie = [], None
     for k, (pos, genre, m) in enumerate(evts):
         if genre == 'P': partie = (m.group(1) or m.group(2)).strip(); continue
         fin = evts[k + 1][0] if k + 1 < len(evts) else t.index('\\end{document}')
-        tete = (m.group('a') or m.group('b')).strip()
-        mn = re.match(r'(\d+)\s*(?:[-:–]\s*(.*))?$', tete)
-        num, titre = int(mn.group(1)), (mn.group(2) or '').strip()
-        et = ETOILES[m.group('et')] if m.group('et') else (m.group('st').count('\\star') if m.group('st') else 0)  # 0 : non indiquée
-        corps = t[m.end():fin]
-        source = re.findall(r'%\s*Sources?\s*:\s*(.*)', t[evts[k-1][0] if k else 0:pos]) if False else []
+        _, fin_tete, tete, et = m
+        mn = re.match(r'(\d+)\s*(?:[-:–]\s*(.*))?$', tete, re.S)
+        num, titre = int(mn.group(1)), re.sub(r'\s+', ' ', (mn.group(2) or '')).strip()
+        corps = t[fin_tete:fin]
         exos.append({'numero': num, 'titre': titre[:1].upper() + titre[1:] if titre else '', 'partie': partie, 'etoiles': et, 'corps': corps, 'pos': pos})
     return exos
 
 def sources(t_brut):
-    """Sources indiquées en commentaire juste avant un exercice : « % Source : … » → {numéro: texte}."""
+    """Sources indiquées en commentaire juste avant un exercice : « % Source : … » → {numéro: texte} ;
+    « % Inspiré de : … » donne « inspiré de … »."""
     r = {}
-    for m in re.finditer(r'%\s*Sources?\s*:\s*(.*)\n(?:%[^\n]*\n|\s*\n|\\newpage\s*\n)*\\exo\{(\d+)', t_brut):
-        r[int(m.group(2))] = m.group(1).strip()
+    tete = r'(?:\\exo\{|\\noindent\s*\\textbf\{\s*\\underline\{\s*Exercice\s+)(\d+)'
+    for m in re.finditer(r'%\s*(Sources?|Inspiré de)\s*:\s*(.*)\n(?:%[^\n]*\n|\s*\n|\\newpage\s*\n)*' + tete, t_brut):
+        texte = m.group(2).strip()
+        # Les commentaires LaTeX sont souvent écrits sans accents : titre du polycopié rétabli.
+        texte = texte.replace('Mathematiques : du lycee aux CPGE', 'Mathématiques : du lycée aux CPGE')
+        r[int(m.group(3))] = texte if m.group(1).startswith('Source') else 'inspiré de ' + texte   # affiché « Source : inspiré de … »
     return r
 
 def pages(pdf):

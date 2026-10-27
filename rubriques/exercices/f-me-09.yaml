@@ -1,0 +1,1158 @@
+- id: "me-09-01"
+  feuille: "f-me-09"
+  numero: 1
+  partie: "Graphes probabilistes et matrices de transition"
+  etoiles: 1
+  types: [Calcul]
+  mots_cles: [graphes probabilistes, matrice de transition]
+  noeuds: [v-matrices]
+  notions: [espace-matrices]
+  page_enonce: 1
+  page_corrige: 1
+  enonce: |
+    **1.** Construire la matrice de transition associée au graphe suivant :
+
+    **2.** Construire le graphe orienté associé à la matrice : 
+    $$\begin{pmatrix} 0{,}2 & 0 & 0 & 0{,}8 \\ 0 & 0{,}7 & 0{,}1 & 0{,}2 \\ 0{,}5 & 0{,}4 & 0{,}1 & 0 \\ 0{,}2 & 0{,}2 & 0{,}3 & 0{,}3 \end{pmatrix}$$
+
+    ![Figure](documents/figures/01582d38c02ab867.svg)
+  corrige: |
+    **1.** On lit sur le graphe, pour chaque sommet, les arêtes qui en *partent*. La ligne $i$ de la matrice regroupe les probabilités de transition depuis l'état $i$.
+
+    ```tableau
+    **Depuis** ¦ **Transitions lues sur le graphe**
+    $A$ ¦ $A\to A$ : $0{,}2$ ; $A\to B$ : $0{,}3$ ; $A\to C$ : $0{,}5$
+    $B$ ¦ $B\to A$ : $0{,}6$ ; $B\to C$ : $0{,}4$ ; pas de boucle en $B$
+    $C$ ¦ $C\to B$ : $0{,}9$ ; $C\to C$ : $0{,}1$ ; pas d'arête $C\to A$
+    ```
+
+    $$\boxed{T=\begin{pmatrix} 0{,}2 & 0{,}3 & 0{,}5 \\ 0{,}6 & 0 & 0{,}4 \\ 0 & 0{,}9 & 0{,}1 \end{pmatrix}}$$
+     On vérifie que chaque ligne a pour somme $1$ : la matrice est bien **stochastique**.
+
+    **2.** Chaque coefficient non nul $t_{ij}$ donne une flèche de l'état $i$ vers l'état $j$, étiquetée par $t_{ij}$. Les états sont notés $A$, $B$, $C$, $D$ dans l'ordre des lignes.
+
+    ![Figure](documents/figures/f9383ce0ed3d6ff8.svg)
+
+    *On prendra garde à ne pas oublier les coefficients nuls : ils correspondent simplement à une flèche absente.*
+- id: "me-09-02"
+  feuille: "f-me-09"
+  numero: 2
+  partie: "Graphes probabilistes et matrices de transition"
+  etoiles: 1
+  types: [Calcul]
+  mots_cles: [graphes probabilistes, matrice de transition]
+  noeuds: [v-matrices]
+  notions: [espace-matrices]
+  page_enonce: 1
+  page_corrige: 2
+  enonce: |
+    Trois chaînes de télévision $A$, $B$, $C$ se partagent la diffusion de la coupe du monde de football. D’un match au suivant, elle évolue de la façon suivante :
+
+    • 10% des téléspectateurs de $A$ passent sur $B$ et 10% sur $C$ ;
+
+    • 20% des téléspectateurs de $B$ passent sur $A$ et 10% sur $C$ ;
+
+    • 30% des téléspectateurs de $C$ passent sur $A$ et 10% sur $B$.
+
+    **1.** Représenter cette évolution par un graphe.
+
+    **2.** Pourquoi s’agit-il d’un graphe probabiliste ?
+
+    **3.** Déterminer la matrice de transition $M$. (Dans l’ordre $A$, $B$, $C$)
+  corrige: |
+    **1.** On complète d'abord chaque ligne : les téléspectateurs qui ne changent pas de chaîne restent, ce qui donne la boucle. 
+    $$A : \; 1-0{,}1-0{,}1=0{,}8 \qquad ; \qquad B : \; 1-0{,}2-0{,}1=0{,}7 \qquad ; \qquad C : \; 1-0{,}3-0{,}1=0{,}6$$
+
+    ![Figure](documents/figures/501df8235194b3c7.svg)
+
+    **2.** Un graphe est **probabiliste** lorsque chaque arête est étiquetée par un réel de $[0\,;1]$ et que, pour chaque sommet, la somme des étiquettes des arêtes qui en partent vaut $1$. 
+    $$\boxed{\text{Ici : } 0{,}8+0{,}1+0{,}1=1 \; ; \; 0{,}2+0{,}7+0{,}1=1 \; ; \; 0{,}3+0{,}1+0{,}6=1}$$
+
+    **3.** 
+    $$\boxed{M=\begin{pmatrix} 0{,}8 & 0{,}1 & 0{,}1 \\ 0{,}2 & 0{,}7 & 0{,}1 \\ 0{,}3 & 0{,}1 & 0{,}6 \end{pmatrix}}$$
+- id: "me-09-03"
+  feuille: "f-me-09"
+  numero: 3
+  partie: "Graphes probabilistes et matrices de transition"
+  etoiles: 1
+  types: [Calcul]
+  mots_cles: [graphes probabilistes, matrice de transition, chaînes de Markov, probabilités conditionnelles]
+  noeuds: [v-matrices, p-variables, p-espace]
+  notions: [espace-matrices, variable-aleatoire, espace-probabilise]
+  page_enonce: 1
+  page_corrige: 2
+  enonce: |
+    Soit la matrice : 
+    $$A=\begin{pmatrix} 0{,}2 & 0{,}3 & 0{,}5 \\ 0{,}4 & 0{,}2 & 0{,}4 \\ 0{,}1 & 0{,}7 & 0{,}2 \end{pmatrix}$$
+
+    **1.** Pourquoi la matrice $A$ est-elle stochastique ?
+
+    **2.** On admet que la matrice $A$ est la matrice de transition d’une chaîne de Markov homogène liée aux états $\{1, 2, 3\}$.
+
+    **(a)** Que signifie le terme « homogène » pour une chaîne de Markov ?
+
+    **(b)** Représenter le graphe associé à cette chaîne de Markov.
+
+    **(c)** Donner les probabilités suivantes : 
+    $$P_{(X_{n}=1)}(X_{n+1} = 3)\qquad ,\qquad P_{(X_{n}=3)}(X_{n+1} = 1)\qquad ,\qquad P_{(X_{n}=2)}(X_{n+1} = 2)$$
+  corrige: |
+    **1.** Tous les coefficients de $A$ appartiennent à $[0\,;1]$, et la somme de chaque ligne vaut $1$ : 
+    $$0{,}2+0{,}3+0{,}5=1 \qquad ; \qquad 0{,}4+0{,}2+0{,}4=1 \qquad ; \qquad 0{,}1+0{,}7+0{,}2=1$$
+
+    $$\boxed{A \text{ est une matrice stochastique}}$$
+
+    **2.** **(a)** 
+    $$\boxed{\begin{array}{l} \text{Une chaîne est \emph{homogène} lorsque les probabilités de transition ne dépendent pas} \\[1mm] \text{de l'instant } n : \text{ la matrice } A \text{ est la même à chaque étape.} \end{array}}$$
+
+    **(b)**
+
+    ![Figure](documents/figures/3537ed76165a499b.svg)
+
+    **(c)** Chaque probabilité demandée se lit directement comme un coefficient de $A$ : 
+    $$\boxed{P_{(X_{n}=1)}\left(X_{n+1}=3\right)=a_{13}=0{,}5}$$
+
+    $$\boxed{P_{(X_{n}=3)}\left(X_{n+1}=1\right)=a_{31}=0{,}1}$$
+
+    $$\boxed{P_{(X_{n}=2)}\left(X_{n+1}=2\right)=a_{22}=0{,}2}$$
+     *L'ordre des indices est essentiel : le premier désigne l'état de départ, le second l'état d'arrivée.*
+- id: "me-09-04"
+  feuille: "f-me-09"
+  numero: 4
+  partie: "Graphes probabilistes et matrices de transition"
+  etoiles: 1
+  types: [Calcul]
+  mots_cles: [graphes probabilistes, chaînes de Markov]
+  noeuds: [p-variables, p-espace]
+  notions: [variable-aleatoire]
+  page_enonce: 1
+  page_corrige: 3
+  enonce: |
+    Représenter le graphe des matrices de transition $T$ des chaînes de Markov homogènes suivantes. On prendra comme espace des états : $\{A, B, C, \dots \}$.
+
+    **1.** $T=\begin{pmatrix} 0&1&0\\0{,}6&0&0{,}4\\0&1&0 \end{pmatrix}$
+
+    **2.** $T=\begin{pmatrix} 0{,}6&0{,}4&0\\0{,}55&0{,}2 &0{,}25 \\0 &0{,}9&0{,}1 \end{pmatrix}$
+
+    **3.** $T=\begin{pmatrix} 0{,}5&0&0{,}5 &0\\ 0{,}1 &0{,}2& 0{,}4 &0{,}3\\0& 1 &0 &0\\0{,}2& 0{,}3& 0{,}5& 0\end{pmatrix}$
+  corrige: |
+    **1.** Les lignes donnent $A\to B$ : $1$ ; $B\to A$ : $0{,}6$ et $B\to C$ : $0{,}4$ ; $C\to B$ : $1$. Aucune boucle.
+
+    ![Figure](documents/figures/31bf25362d12d7d3.svg)
+
+    *L'état $A$ ne peut être quitté que vers $B$, et $C$ de même : la chaîne oscille autour de $B$.*
+
+    **2.**
+
+    ![Figure](documents/figures/6e06906430f97a89.svg)
+
+    *Il n'y a aucune arête entre $A$ et $C$ : les coefficients $t_{13}$ et $t_{31}$ sont nuls.*
+
+    **3.**
+
+    ![Figure](documents/figures/a75cadae3d835039.svg)
+
+    *L'état $C$ ne renvoie que vers $B$, avec une probabilité $1$ : sa ligne ne comporte qu'un seul coefficient non nul. On lit la ligne de $A$ avec soin : $A$ mène à $A$ et à $C$ (troisième colonne), et non à $D$.*
+- id: "me-09-05"
+  feuille: "f-me-09"
+  numero: 5
+  titre: "Reconnaître une matrice stochastique"
+  partie: "Graphes probabilistes et matrices de transition"
+  etoiles: 2
+  types: [Démonstration]
+  mots_cles: [matrice de transition, puissances de matrices]
+  noeuds: [v-matrices]
+  notions: [espace-matrices]
+  page_enonce: 2
+  page_corrige: 3
+  enonce: |
+    **1.** Parmi les matrices suivantes, lesquelles sont stochastiques ? Justifier. 
+    $$M_{1}=\begin{pmatrix} 0{,}3 & 0{,}7 \\ 0{,}6 & 0{,}4 \end{pmatrix} \quad M_{2}=\begin{pmatrix} 0{,}5 & 0{,}5 \\ 0{,}2 & 0{,}7 \end{pmatrix} \quad M_{3}=\begin{pmatrix} 1{,}2 & -0{,}2 \\ 0{,}5 & 0{,}5 \end{pmatrix} \quad M_{4}=\begin{pmatrix} 0{,}2 & 0{,}5 \\ 0{,}8 & 0{,}5 \end{pmatrix}$$
+
+    **2.** On note $U=\begin{pmatrix} 1 \\ 1 \end{pmatrix}$. Montrer qu'une matrice carrée d'ordre $2$ à coefficients positifs est stochastique si et seulement si $MU=U$.
+
+    **3.** En déduire que le produit de deux matrices stochastiques d'ordre $2$ est stochastique, puis que toute puissance d'une matrice stochastique est stochastique. Quel résultat du cours retrouve-t-on ainsi ?
+  corrige: |
+    **1.** Une matrice est stochastique si ses coefficients sont dans $[0\,;1]$ et si la somme de chaque **ligne** vaut $1$.
+
+    • $M_{1}$ : $0{,}3+0{,}7=1$ et $0{,}6+0{,}4=1$ : **stochastique**.
+
+    • $M_{2}$ : $0{,}2+0{,}7=0{,}9\neq 1$ : **non stochastique**.
+
+    • $M_{3}$ : les lignes ont bien pour somme $1$, mais $1{,}2$ et $-0{,}2$ ne sont pas des probabilités : **non stochastique**.
+
+    • $M_{4}$ : $0{,}2+0{,}5=0{,}7\neq 1$ : **non stochastique**. Ce sont ses *colonnes* qui ont pour somme $1$. **L'erreur la plus répandue** est de vérifier les colonnes au lieu des lignes : la ligne $i$ regroupe les probabilités de sortie de l'état $i$, qui doivent totaliser $1$.
+
+    **2.** Si $M=\begin{pmatrix} a & b \\ c & d \end{pmatrix}$, alors $MU=\begin{pmatrix} a+b \\ c+d \end{pmatrix}$, qui est égal à $U$ si et seulement si les deux lignes ont pour somme $1$. Les coefficients étant positifs, ils sont alors tous inférieurs ou égaux à $1$. $\boxed{M \text{ stochastique} \iff MU=U}$
+
+    **3.** Si $M$ et $N$ sont stochastiques, $MN$ est à coefficients positifs, comme somme de produits de positifs, et $(MN)U=M(NU)=MU=U$ : $\boxed{MN \text{ est stochastique}}$. Par récurrence, $M^{n}U=U$ pour tout $n$ : toute puissance de $M$ est stochastique. On retrouve que $P^{n}$ est une matrice de transition, celle du passage en $n$ étapes (relation de Chapman-Kolmogorov). Le même raisonnement vaut pour des matrices de taille quelconque.
+- id: "me-09-06"
+  feuille: "f-me-09"
+  numero: 6
+  partie: "Calcul de distributions"
+  etoiles: 1
+  types: [Démonstration]
+  mots_cles: [graphes probabilistes, matrice de transition, chaînes de Markov, probabilités conditionnelles, suites]
+  noeuds: [v-matrices, p-variables, p-espace, n-recurrence]
+  notions: [espace-matrices, variable-aleatoire, espace-probabilise]
+  page_enonce: 2
+  page_corrige: 4
+  enonce: |
+    Dans une usine, deux machines $A$ et $B$ peuvent tomber en panne de manière indépendante l’une de l’autre dans la journée avec une probabilité $\dfrac{1}{3}$. On suppose que si une machine tombe en panne, elle est réparée dans la nuit mais que l’on ne peut réparer qu’une seule machine en une nuit. On note $X_{n}$ le nombre de machines en panne au matin du $n$-ième jour.
+
+    **1.** **(a)** Justifier que la suite $(X_{n})$ forme une chaîne de Markov homogène.
+
+    **(b)** Pourquoi peut-on considérer deux états ? Quels sont-ils ?
+
+    **2.** **(a)** On appelle $P_{A}$ et $P_{B}$ les événements correspondant à « la machine $A$ est en panne » et « la machine $B$ est en panne ». Compléter le tableau de probabilité double entrée suivant :
+
+    2 
+    $$\begin{array}{|c|c|c|c|} \hline  & P_{A} & \overline{P_{A}} & \text{Total} \\ \hline P_{B} &  &  & \dfrac{1}{3} \\ \hline \overline{P_{B}} &  &  &  \\ \hline \text{Total} &  &  & 1 \\ \hline \end{array}$$
+
+    **(b)** En déduire la matrice de transition de cette chaîne de Markov.
+
+    **(c)** Représenter le graphe de cette chaîne de Markov.
+  corrige: |
+    **1.** **(a)** L'état du système au matin du jour $n+1$ ne dépend que du nombre de machines en panne au matin du jour $n$ : les pannes de la journée sont indépendantes de ce qui s'est produit les jours précédents, et la réparation nocturne ne dépend que de l'état du soir. 
+    $$\boxed{(X_{n}) \text{ est une chaîne de Markov}}$$
+     De plus les probabilités de panne, égales à $\dfrac{1}{3}$, ne dépendent pas du jour considéré : 
+    $$\boxed{\text{la chaîne est homogène}}$$
+
+    **(b)** Au soir, il y a au plus $2$ machines en panne, et l'on en répare exactement une lorsqu'il y en a au moins une. Il reste donc au matin *au plus une* machine en panne. 
+    $$\boxed{\text{Les états possibles sont } 0 \text{ et } 1}$$
+     *L'état $2$ est inaccessible dès le deuxième matin : c'est ce qui permet de se limiter à deux états.*
+
+    **2.** **(a)** Les deux pannes étant indépendantes, chaque case du tableau est le produit des deux probabilités marginales.
+
+    $$\begin{array}{|c||c|c||c|} \hline  & P_{A} & \overline{P_{A}} & \text{Total} \\ \hline P_{B} & \dfrac{1}{9} & \dfrac{2}{9} & \dfrac{1}{3} \\ \hline \overline{P_{B}} & \dfrac{2}{9} & \dfrac{4}{9} & \dfrac{2}{3} \\ \hline \hline \text{Total} & \dfrac{1}{3} & \dfrac{2}{3} & 1 \\ \hline \end{array}$$
+
+    **(b)** Depuis l'état $0$ (les deux machines fonctionnent le matin) : elles peuvent toutes deux tomber en panne dans la journée.
+
+    • Aucune panne : probabilité $\dfrac{4}{9}$, rien à réparer, on repart de $0$.
+
+    • Une seule panne : probabilité $\dfrac{2}{9}+\dfrac{2}{9}=\dfrac{4}{9}$, elle est réparée la nuit, on repart de $0$.
+
+    • Deux pannes : probabilité $\dfrac{1}{9}$, une seule est réparée, on repart de $1$.
+
+    $$P(0\to 0)=\frac{4}{9}+\frac{4}{9}=\frac{8}{9} \qquad ; \qquad P(0\to 1)=\frac{1}{9}$$
+
+    Depuis l'état $1$ : une machine est déjà en panne, seule l'autre peut tomber. 
+    $$P(1\to 0)=\frac{2}{3} \qquad \text{(l'autre tient : on répare la seule en panne)}$$
+
+    $$P(1\to 1)=\frac{1}{3} \qquad \text{(l'autre tombe : deux pannes, une seule réparée)}$$
+
+    $$\boxed{T=\begin{pmatrix} \dfrac{8}{9} & \dfrac{1}{9} \\[3mm] \dfrac{2}{3} & \dfrac{1}{3} \end{pmatrix}}$$
+
+    **(c)**
+
+    ![Figure](documents/figures/18a4cf4ee1d23489.svg)
+- id: "me-09-07"
+  feuille: "f-me-09"
+  numero: 7
+  partie: "Calcul de distributions"
+  etoiles: 1
+  types: [Lecture graphique, Calcul]
+  mots_cles: [graphes probabilistes, matrice de transition, chaînes de Markov, probabilités conditionnelles]
+  noeuds: [v-matrices, p-variables, p-espace]
+  notions: [espace-matrices, variable-aleatoire, espace-probabilise]
+  page_enonce: 2
+  page_corrige: 5
+  enonce: |
+    On considère une chaîne de Markov $(X_{n})$ admettant le graphe probabiliste ci-contre.
+
+    **1.** On a $P(X_{0}=A)=0{,}2$ et $P(X_{0}=B)=0{,}5$.
+
+    Déterminer les probabilités suivantes :
+
+    **(a)** $P(X_{1}=A)$
+
+    **(b)** $P(X_{1}=B)$
+
+    **(c)** $P(X_{1}=C)$
+
+    **(d)** $P(X_{2}=A)$
+
+    **2.** Déterminer la matrice de transition $M$ associée à cette chaîne de Markov.
+
+    ![Figure](documents/figures/b278807c86679174.svg)
+  corrige: |
+    **1.** Comme $P(X_{0}=A)+P(X_{0}=B)+P(X_{0}=C)=1$, on a $P(X_{0}=C)=1-0{,}2-0{,}5=0{,}3$, d'où $\pi_{0}=\begin{pmatrix} 0{,}2 & 0{,}5 & 0{,}3 \end{pmatrix}$.
+
+    On lit sur le graphe les probabilités d'arriver en chaque état, à l'aide de la formule des probabilités totales.
+
+    **(a)** 
+    $$P(X_{1}=A)=0{,}2\times 0{,}3+0{,}5\times 0{,}7+0{,}3\times 0{,}4 =0{,}06+0{,}35+0{,}12=\boxed{0{,}53}$$
+
+    **(b)** 
+    $$P(X_{1}=B)=0{,}2\times 0{,}5+0{,}5\times 0{,}3+0{,}3\times 0{,}6 =0{,}10+0{,}15+0{,}18=\boxed{0{,}43}$$
+
+    **(c)** 
+    $$P(X_{1}=C)=0{,}2\times 0{,}2+0{,}5\times 0+0{,}3\times 0=\boxed{0{,}04}$$
+     On vérifie : $0{,}53+0{,}43+0{,}04=1$.
+
+    **(d)** On repart de $\pi_{1}=\begin{pmatrix} 0{,}53 & 0{,}43 & 0{,}04 \end{pmatrix}$ : 
+    $$P(X_{2}=A)=0{,}53\times 0{,}3+0{,}43\times 0{,}7+0{,}04\times 0{,}4 =0{,}159+0{,}301+0{,}016=\boxed{0{,}476}$$
+
+    **2.** On lit les arêtes partant de chaque sommet : 
+    $$\boxed{M=\begin{pmatrix} 0{,}3 & 0{,}5 & 0{,}2 \\ 0{,}7 & 0{,}3 & 0 \\ 0{,}4 & 0{,}6 & 0 \end{pmatrix}}$$
+     Les deux zéros de la dernière colonne traduisent qu'aucune arête n'arrive en $C$ depuis $B$ ou depuis $C$ : une fois quitté, l'état $C$ ne peut être atteint que depuis $A$.
+
+    On retrouve alors les résultats de la question 1 par le calcul matriciel : 
+    $$\pi_{1}=\pi_{0}M=\begin{pmatrix} 0{,}53 & 0{,}43 & 0{,}04 \end{pmatrix} \qquad ; \qquad \pi_{2}=\pi_{1}M=\begin{pmatrix} 0{,}476 & 0{,}418 & 0{,}106 \end{pmatrix}$$
+- id: "me-09-08"
+  feuille: "f-me-09"
+  numero: 8
+  partie: "Calcul de distributions"
+  etoiles: 1
+  types: [Calcul]
+  mots_cles: [matrice de transition, chaînes de Markov]
+  noeuds: [v-matrices, p-variables, p-espace]
+  notions: [espace-matrices, variable-aleatoire]
+  page_enonce: 2
+  page_corrige: 6
+  enonce: |
+    On considère que la météo varie entre deux états beau et mauvais temps. Après un jour de beau temps, on a une chance sur deux que le temps change le jour suivant et le mauvais temps a trois fois plus de chance de durer d’un jour au jour suivant.
+
+    **1.** Pourquoi peut-on dire que la situation peut être modélisée par une chaîne de Markov ?
+
+    **2.** Donner sa matrice de transition.
+  corrige: |
+    **1.** Le temps d'un jour ne dépend que de celui de la veille, et les règles données ne dépendent pas de la date. 
+    $$\boxed{\text{C'est une chaîne de Markov homogène, à deux états } B \text{ et } M}$$
+
+    **2.** Depuis le beau temps. « Une chance sur deux que le temps change » signifie $P(B\to M)=\dfrac{1}{2}$, donc $P(B\to B)=\dfrac{1}{2}$.
+
+    Depuis le mauvais temps. « Le mauvais temps a trois fois plus de chance de durer » signifie $P(M\to M)=3\,P(M\to B)$. Comme la somme vaut $1$ : 
+    $$P(M\to B)+3\,P(M\to B)=1 \iff P(M\to B)=\frac{1}{4} \qquad \text{et} \qquad P(M\to M)=\frac{3}{4}$$
+
+    $$\boxed{T=\begin{pmatrix} \dfrac{1}{2} & \dfrac{1}{2} \\[3mm] \dfrac{1}{4} & \dfrac{3}{4} \end{pmatrix}}$$
+
+    ![Figure](documents/figures/3e689701085a643f.svg)
+- id: "me-09-09"
+  feuille: "f-me-09"
+  numero: 9
+  partie: "Calcul de distributions"
+  etoiles: 1
+  types: [Calcul]
+  mots_cles: [graphes probabilistes, matrice de transition, probabilités conditionnelles, distributions, puissances de matrices]
+  noeuds: [v-matrices, p-espace, p-variables]
+  notions: [espace-matrices, espace-probabilise]
+  page_enonce: 3
+  page_corrige: 6
+  enonce: |
+    Deux marques de lessive $A$ et $B$ se partagent un marché. D'un mois sur l'autre, $80\,\%$ des clients de $A$ lui restent fidèles, tandis que $30\,\%$ des clients de $B$ passent à $A$. Au départ, chaque marque a la moitié des clients. On note $\pi_{n}=\begin{pmatrix} a_{n} & b_{n} \end{pmatrix}$ la répartition des clients au bout de $n$ mois.
+
+    **1.** Représenter la situation par un graphe probabiliste et donner la matrice de transition $P$.
+
+    **2.** Calculer $\pi_{1}$ puis $\pi_{2}$.
+
+    **3.** Calculer $P^{2}$. Quelle est la probabilité qu'un client de $B$ soit client de $A$ deux mois plus tard ?
+  corrige: |
+    **1.** Depuis $A$ : $0{,}8$ vers $A$, donc $0{,}2$ vers $B$. Depuis $B$ : $0{,}3$ vers $A$, donc $0{,}7$ vers $B$.
+
+    ![Figure](documents/figures/80f6dc20fc627479.svg)
+
+    $$\boxed{P=\begin{pmatrix} 0{,}8 & 0{,}2 \\ 0{,}3 & 0{,}7 \end{pmatrix}}$$
+
+    **2.** $\pi_{0}=\begin{pmatrix} 0{,}5 & 0{,}5 \end{pmatrix}$, puis : 
+    $$\pi_{1}=\pi_{0}P=\begin{pmatrix} 0{,}4+0{,}15 & 0{,}1+0{,}35 \end{pmatrix}=\boxed{\begin{pmatrix} 0{,}55 & 0{,}45 \end{pmatrix}}$$
+
+    $$\pi_{2}=\pi_{1}P=\begin{pmatrix} 0{,}44+0{,}135 & 0{,}11+0{,}315 \end{pmatrix}=\boxed{\begin{pmatrix} 0{,}575 & 0{,}425 \end{pmatrix}}$$
+     La marque $A$ gagne des parts de marché.
+
+    **3.** 
+    $$P^{2}=\begin{pmatrix} 0{,}64+0{,}06 & 0{,}16+0{,}14 \\ 0{,}24+0{,}21 & 0{,}06+0{,}49 \end{pmatrix}=\begin{pmatrix} 0{,}7 & 0{,}3 \\ 0{,}45 & 0{,}55 \end{pmatrix}$$
+     D'après la relation de Chapman-Kolmogorov, la probabilité de passer de $B$ à $A$ en deux mois est le coefficient en ligne $2$ et colonne $1$ de $P^{2}$ : $\boxed{0{,}45}$. On le vérifie en listant les deux trajets : $B\to A\to A$, de probabilité $0{,}3\times 0{,}8=0{,}24$, et $B\to B\to A$, de probabilité $0{,}7\times 0{,}3=0{,}21$.
+- id: "me-09-10"
+  feuille: "f-me-09"
+  numero: 10
+  titre: "Arbre et puissance de matrice"
+  partie: "Calcul de distributions"
+  etoiles: 2
+  types: [Calcul]
+  mots_cles: [matrice de transition, probabilités conditionnelles, puissances de matrices, arbres pondérés, dés et pièces]
+  noeuds: [v-matrices, p-espace]
+  notions: [espace-matrices, espace-probabilise]
+  page_enonce: 3
+  page_corrige: 7
+  enonce: |
+    Un robot aspirateur passe d'une pièce à l'autre d'un appartement de trois pièces : le salon $S$, la cuisine $C$ et la chambre $H$. Toutes les dix minutes, il change de pièce ou reste sur place selon la matrice de transition, dans l'ordre $S$, $C$, $H$ : 
+    $$P=\begin{pmatrix} 0{,}5 & 0{,}3 & 0{,}2 \\ 0{,}4 & 0{,}6 & 0 \\ 0{,}5 & 0 & 0{,}5 \end{pmatrix}$$
+     Le robot part du salon.
+
+    **1.** Construire l'arbre pondéré décrivant ses deux premiers déplacements.
+
+    **2.** En déduire la probabilité qu'il soit dans la chambre au bout de vingt minutes.
+
+    **3.** Calculer $P^{2}$ et retrouver ce résultat à l'aide de la relation de Chapman-Kolmogorov.
+
+    **4.** S'il part de la chambre, quelle est la probabilité qu'il soit dans la cuisine au bout de vingt minutes ? Retrouver ce résultat en énumérant les trajets possibles.
+  corrige: |
+    **1.** Les branches de probabilité nulle ($C\to H$ et $H\to C$) sont omises.
+
+    ![Figure](documents/figures/a36cecb243660cb3.svg)
+
+    Les deux chemins menant en $H$ au bout de deux déplacements sont signalés en rouge.
+
+    **2.** Par la formule des probabilités totales, en suivant les deux chemins rouges : 
+    $$P(X_{2}=H)=0{,}5\times 0{,}2+0{,}2\times 0{,}5=\boxed{0{,}2}$$
+
+    **3.** 
+    $$P^{2}=\begin{pmatrix} 0{,}47 & 0{,}33 & 0{,}2 \\ 0{,}44 & 0{,}48 & 0{,}08 \\ 0{,}5 & 0{,}15 & 0{,}35 \end{pmatrix}$$
+     Le robot part du salon, état numéro $1$. La probabilité cherchée est le coefficient de $P^{2}$ en ligne $1$ et colonne $3$ : on retrouve $0{,}2$. Le calcul de ce coefficient, $0{,}5\times 0{,}2+0{,}3\times 0+0{,}2\times 0{,}5$, est exactement celui de l'arbre : **un coefficient de $P^{2}$ résume un arbre à deux niveaux**.
+
+    **4.** On lit le coefficient en ligne $3$ et colonne $2$ de $P^{2}$ : $\boxed{0{,}15}$. Le seul trajet possible est $H\to S\to C$, de probabilité $0{,}5\times 0{,}3=0{,}15$, puisque le robot ne passe jamais directement de la chambre à la cuisine.
+- id: "me-09-11"
+  feuille: "f-me-09"
+  numero: 11
+  partie: "Calcul de distributions"
+  etoiles: 1
+  types: [Modélisation]
+  mots_cles: [graphes probabilistes, matrice de transition, chaînes de Markov, probabilités conditionnelles, dés et pièces]
+  noeuds: [v-matrices, p-variables, p-espace]
+  notions: [espace-matrices, variable-aleatoire, espace-probabilise]
+  page_enonce: 3
+  page_corrige: 8
+  enonce: |
+    Un garagiste contrôle tous les mois l’état d’une pièce de moteur. Elle peut se trouver dans les états suivants : fonctionnelle (F), usée (U) ou défaillante (D). On considère que la situation peut se modéliser avec une chaîne de Markov dont la matrice de transition est donnée dans l’ordre F, U, D par : 
+    $$T=\begin{pmatrix} 0{,}9 &0{,}1& 0\\0 &0{,}6& 0{,}4\\0 &0& 1\end{pmatrix}$$
+
+    **1.** Expliquer les coefficients de la dernière ligne de la matrice $T$.
+
+    **2.** Dresser le graphe correspondant à cette chaîne.
+
+    **3.** Au début des contrôles, la pièce vient d’être changée pour une pièce neuve. Quelle est la probabilité pour qu’au bout de 6 mois, la pièce soit défaillante ?
+  corrige: |
+    **1.** La dernière ligne est $\begin{pmatrix} 0 & 0 & 1 \end{pmatrix}$ : depuis l'état $D$, on reste en $D$ avec probabilité $1$. 
+    $$\boxed{\text{Une pièce défaillante le reste : l'état } D \text{ est \emph{absorbant}}}$$
+     C'est cohérent avec l'énoncé : le garagiste constate l'état de la pièce mais ne la remplace pas.
+
+    **2.**
+
+    ![Figure](documents/figures/0724bab699e289d1.svg)
+
+    *Le graphe est « à sens unique » : on ne peut que se dégrader, jamais s'améliorer.*
+
+    **3.** La pièce étant neuve au départ, $\pi_{0}=\begin{pmatrix} 1 & 0 & 0 \end{pmatrix}$, et $\pi_{6}=\pi_{0}T^{6}$ est la première ligne de $T^{6}$.
+
+    On peut aussi raisonner directement. Pour être encore fonctionnelle au bout de $6$ mois, la pièce doit ne jamais s'être usée : 
+    $$P(X_{6}=F)=0{,}9^{6}\approx 0{,}531$$
+     Pour être usée sans être défaillante, il faut choisir le mois où elle s'est usée. Enfin : 
+    $$P(X_{6}=D)=1-P(X_{6}=F)-P(X_{6}=U)$$
+     La calculatrice donne, en calculant $T^{6}$ : 
+    $$\pi_{6}\approx\begin{pmatrix} 0{,}531 & 0{,}162 & 0{,}307 \end{pmatrix}$$
+
+    $$\boxed{P(X_{6}=D)\approx 0{,}307}$$
+     Il y a donc environ $31\ \%$ de risque que la pièce soit défaillante au bout de six mois.
+- id: "me-09-12"
+  feuille: "f-me-09"
+  numero: 12
+  partie: "Distribution invariante"
+  etoiles: 2
+  types: [Démonstration, Modélisation]
+  mots_cles: [graphes probabilistes, chaînes de Markov, probabilités conditionnelles, distributions, distribution invariante, suites]
+  noeuds: [p-variables, p-espace, n-recurrence]
+  notions: [variable-aleatoire, espace-probabilise]
+  page_enonce: 3
+  page_corrige: 8
+  enonce: |
+    Dans une ville il peut venter, neiger ou grêler. Le vent et la grêle ne restent jamais deux jours de suite. S’il vente un jour donné, le lendemain il neige ou il grêle de manière équiprobable. S’il neige, il y a une chance sur trois qu’il vente le jour d’après et une chance sur deux qu’il continue à neiger le lendemain. Après un jour de grêle, il y a deux fois plus de chance d’avoir de la neige que du vent.
+
+    **1.** Justifier la modélisation de la météo dans cette ville par une chaîne de Markov.
+
+    **2.** Représenter le graphe puis donner la matrice $T$ de transition de cette chaîne de Markov associée aux états $V$, $N$ et $G$.
+
+    **3.** Quelle est la probabilité, qu’après deux jours de neige, le vent souffle ?
+
+    **4.** Quelle est la distribution invariante de cette chaîne de Markov ?
+  corrige: |
+    **1.** Le temps du lendemain ne dépend que du temps du jour, et les règles énoncées sont les mêmes chaque jour. 
+    $$\boxed{\text{C'est une chaîne de Markov homogène, d'états } V, \; N, \; G}$$
+
+    **2.** On traduit chaque phrase :
+
+    • « le vent et la grêle ne restent jamais deux jours de suite » : $P(V\to V)=0$ et $P(G\to G)=0$ ;
+
+    • après du vent, neige ou grêle de façon équiprobable : $P(V\to N)=P(V\to G)=\dfrac{1}{2}$ ;
+
+    • après la neige : $P(N\to V)=\dfrac{1}{3}$ et $P(N\to N)=\dfrac{1}{2}$, d'où $P(N\to G)=1-\dfrac{1}{3}-\dfrac{1}{2}=\dfrac{1}{6}$ ;
+
+    • après la grêle : $P(G\to N)=2\,P(G\to V)$ et $P(G\to G)=0$, donc $3\,P(G\to V)=1$, soit $P(G\to V)=\dfrac{1}{3}$ et $P(G\to N)=\dfrac{2}{3}$.
+
+    ![Figure](documents/figures/a090ac93bbca8d62.svg)
+
+    $$\boxed{T=\begin{pmatrix} 0 & \dfrac{1}{2} & \dfrac{1}{2} \\[3mm] \dfrac{1}{3} & \dfrac{1}{2} & \dfrac{1}{6} \\[3mm] \dfrac{1}{3} & \dfrac{2}{3} & 0 \end{pmatrix}}$$
+
+    **3.** Il s'agit de la probabilité de passer de $N$ à $V$ *en deux étapes*, c'est-à-dire du coefficient d'indice $(N,V)$ de $T^{2}$. La formule des probabilités totales donne : 
+    $$\begin{aligned} P(N\to\ \cdot\ \to V) &= P(N\to V)P(V\to V)+P(N\to N)P(N\to V)+P(N\to G)P(G\to V) \\ &= \frac{1}{3}\times 0+\frac{1}{2}\times\frac{1}{3}+\frac{1}{6}\times\frac{1}{3} \\ &= \frac{1}{6}+\frac{1}{18}=\frac{3}{18}+\frac{1}{18}=\boxed{\frac{2}{9}} \end{aligned}$$
+
+    **4.** On cherche $\pi=\begin{pmatrix} v & n & g \end{pmatrix}$ vérifiant $\pi T=\pi$ et $v+n+g=1$. Le système $\pi T=\pi$ s'écrit : 
+    $$\left\{\begin{array}{l} \dfrac{1}{3}n+\dfrac{1}{3}g=v \\[2mm] \dfrac{1}{2}v+\dfrac{1}{2}n+\dfrac{2}{3}g=n \\[2mm] \dfrac{1}{2}v+\dfrac{1}{6}n=g \end{array}\right.$$
+     La première équation donne $n+g=3v$, et comme $v+n+g=1$ il vient $v+3v=1$, soit $v=\dfrac{1}{4}$. La troisième donne alors $g=\dfrac{1}{8}+\dfrac{1}{6}n$, que l'on reporte dans $n+g=\dfrac{3}{4}$ : 
+    $$n+\frac{1}{8}+\frac{1}{6}n=\frac{3}{4} \iff \frac{7}{6}n=\frac{5}{8} \iff n=\frac{15}{28}$$
+     puis $g=\dfrac{3}{4}-\dfrac{15}{28}=\dfrac{21-15}{28}=\dfrac{6}{28}=\dfrac{3}{14}$. 
+    $$\boxed{\pi=\begin{pmatrix} \dfrac{1}{4} & \dfrac{15}{28} & \dfrac{3}{14} \end{pmatrix}\approx\begin{pmatrix} 0{,}250 & 0{,}536 & 0{,}214 \end{pmatrix}}$$
+     Vérification : $\dfrac{1}{4}+\dfrac{15}{28}+\dfrac{3}{14}=\dfrac{7+15+6}{28}=1$.
+
+    À long terme, il neige donc un peu plus d'un jour sur deux dans cette ville.
+- id: "me-09-13"
+  feuille: "f-me-09"
+  numero: 13
+  partie: "Distribution invariante"
+  etoiles: 1
+  types: [Démonstration, Calcul]
+  mots_cles: [graphes probabilistes, matrice de transition, chaînes de Markov, probabilités conditionnelles, distributions, distribution invariante, suites]
+  noeuds: [v-matrices, p-variables, p-espace, n-recurrence]
+  notions: [espace-matrices, variable-aleatoire, espace-probabilise]
+  page_enonce: 4
+  page_corrige: 10
+  enonce: |
+    Un simulateur de jeux est programmé pour le niveau difficile de la façon suivante :
+
+    • La personne a $15$% de chance de réussite au premier jeu, puis;
+
+    • si la personne a gagné, elle a une chance sur quatre de gagner le jeu suivant;
+
+    • si la personne a perdu, elle a deux chances sur cinq de gagner le jeu suivant.
+
+    Soit $X_{n}$ la variable aléatoire correspondant à la réussite du joueur au $n$-ième jeu.
+
+    **1.** **(a)** Justifier que la suite de variables aléatoires $(X_{n})$ est une chaîne de Markov dont on précisera l’espace des états.
+
+    **(b)** Représenter le graphe puis donner la matrice de transition $P$ de cette chaîne.
+
+    **2.** **(a)** Donner la distribution initiale $\pi_{0}$ de cette chaîne puis exprimer la distribution $\pi_{n}$ au $n$-ième jeu en fonction de $\pi_{0}$ et de $P$.
+
+    **(b)** En déduire la probabilité qu’un joueur gagne le cinquième jeu.
+
+    **(c)** Déterminer la distribution invariante $\pi$ de cette chaîne.
+
+    **(d)** Comment programmer les chances de réussite initiales afin qu’un joueur ait les mêmes chances quel que soit le nombre de parties qu’il fait ?
+  corrige: |
+    **1.** **(a)** L'issue du jeu $n+1$ ne dépend que du résultat du jeu $n$ — gagné ou perdu — et non de l'historique complet. Les probabilités énoncées ne dépendent pas du numéro du jeu. 
+    $$\boxed{(X_{n}) \text{ est une chaîne de Markov homogène d'espace des états } \{G\,;P\}}$$
+     où $G$ signifie « le joueur gagne » et $P$ « le joueur perd ».
+
+    **(b)** Si le joueur a gagné, il gagne le suivant avec probabilité $\dfrac{1}{4}$, donc il perd avec probabilité $\dfrac{3}{4}$. S'il a perdu, il gagne le suivant avec probabilité $\dfrac{2}{5}$, donc il perd avec probabilité $\dfrac{3}{5}$.
+
+    ![Figure](documents/figures/a161e161c4c4d77f.svg)
+
+    $$\boxed{P=\begin{pmatrix} \dfrac{1}{4} & \dfrac{3}{4} \\[3mm] \dfrac{2}{5} & \dfrac{3}{5} \end{pmatrix}}$$
+
+    **2.** **(a)** Le premier jeu est réussi avec probabilité $0{,}15$ : 
+    $$\boxed{\pi_{0}=\begin{pmatrix} 0{,}15 & 0{,}85 \end{pmatrix}}$$
+     Chaque passage d'un jeu au suivant se traduit par une multiplication à droite par $P$ : 
+    $$\boxed{\pi_{n}=\pi_{0}\,P^{n}}$$
+
+    **(b)** Avec la convention précédente, $\pi_{0}$ décrit le *premier* jeu : le cinquième jeu correspond donc à $\pi_{4}$. 
+    $$\pi_{4}=\pi_{0}\,P^{4}\approx\begin{pmatrix} 0{,}3477 & 0{,}6523 \end{pmatrix}$$
+
+    $$\boxed{P(\text{gagner le cinquième jeu})\approx 0{,}348}$$
+
+    **(c)** On cherche $\pi=\begin{pmatrix} g & p \end{pmatrix}$ tel que $\pi P=\pi$ et $g+p=1$. La première équation s'écrit : 
+    $$\frac{1}{4}g+\frac{2}{5}p=g \iff \frac{2}{5}p=\frac{3}{4}g \iff p=\frac{15}{8}g$$
+     En reportant dans $g+p=1$ : 
+    $$g\left(1+\frac{15}{8}\right)=1 \iff \frac{23}{8}g=1 \iff g=\frac{8}{23}$$
+
+    $$\boxed{\pi=\begin{pmatrix} \dfrac{8}{23} & \dfrac{15}{23} \end{pmatrix} \approx\begin{pmatrix} 0{,}348 & 0{,}652 \end{pmatrix}}$$
+     On remarque que $\pi_{4}$ est déjà très proche de $\pi$ : la convergence est rapide.
+
+    **(d)** Pour que les chances soient les mêmes quel que soit le nombre de parties, il faut que la distribution ne change plus d'un jeu au suivant, c'est-à-dire que $\pi_{0}$ soit déjà la distribution invariante. 
+    $$\boxed{\text{Il faut programmer une probabilité de réussite initiale de } \frac{8}{23}\approx 34{,}8\ \%}$$
+- id: "me-09-14"
+  feuille: "f-me-09"
+  numero: 14
+  titre: "Vitesse de convergence"
+  partie: "Distribution invariante"
+  etoiles: 2
+  types: [Démonstration, Calcul]
+  mots_cles: [graphes probabilistes, matrice de transition, chaînes de Markov, distributions, distribution invariante, convergence, suites]
+  noeuds: [v-matrices, p-variables, p-espace, n-recurrence]
+  notions: [espace-matrices, variable-aleatoire]
+  page_enonce: 4
+  page_corrige: 11
+  enonce: |
+    On considère une chaîne de Markov à deux états $A$ et $B$, de matrice de transition $P=\begin{pmatrix} 0{,}9 & 0{,}1 \\ 0{,}3 & 0{,}7 \end{pmatrix}$, et l'on note $\pi_{n}=\begin{pmatrix} x_{n} & 1-x_{n} \end{pmatrix}$ ses distributions. Initialement, la chaîne est dans l'état $B$.
+
+    **1.** Représenter le graphe de la chaîne, puis déterminer sa distribution invariante $\pi$.
+
+    **2.** Montrer que, pour tout $n\in\mathbb{N}$, $x_{n+1}=0{,}6\,x_{n}+0{,}3$.
+
+    **3.** On pose $u_{n}=x_{n}-\dfrac{3}{4}$. Montrer que $(u_{n})$ est géométrique, puis exprimer $x_{n}$ en fonction de $n$.
+
+    **4.** Déterminer la limite de $(\pi_{n})$, puis le plus petit entier $n$ à partir duquel $\left|x_{n}-\dfrac{3}{4}\right|<0{,}01$.
+  corrige: |
+    **1.**
+
+    ![Figure](documents/figures/11beff144889e487.svg)
+
+    On cherche $\pi=\begin{pmatrix} x & 1-x \end{pmatrix}$ avec $\pi P=\pi$ : $0{,}9x+0{,}3(1-x)=x$, soit $0{,}4x=0{,}3$ et $x=\frac{3}{4}$. $\boxed{\pi=\begin{pmatrix} \frac{3}{4} & \frac{1}{4} \end{pmatrix}}$. C'est la formule $\left(\frac{q}{p+q},\frac{p}{p+q}\right)$ du cours, avec $p=0{,}1$ et $q=0{,}3$.
+
+    **2.** $\pi_{n+1}=\pi_{n}P$ donne, pour la première coordonnée : $x_{n+1}=0{,}9x_{n}+0{,}3(1-x_{n})=\boxed{0{,}6\,x_{n}+0{,}3}$.
+
+    **3.** $u_{n+1}=0{,}6x_{n}+0{,}3-0{,}75=0{,}6x_{n}-0{,}45=0{,}6\left(x_{n}-0{,}75\right)=0{,}6\,u_{n}$ : $(u_{n})$ est géométrique de raison $0{,}6$. Comme la chaîne part de $B$, $x_{0}=0$ et $u_{0}=-\frac{3}{4}$, donc : 
+    $$\boxed{x_{n}=\frac{3}{4}-\frac{3}{4}\times 0{,}6^{n}}$$
+
+    **4.** Comme $0<0{,}6<1$, $0{,}6^{n}\to 0$, donc $x_{n}\to\frac{3}{4}$ et $\boxed{\pi_{n}\to\begin{pmatrix} \frac{3}{4} & \frac{1}{4} \end{pmatrix}=\pi}$, conformément à la Proposition 4.
+
+    On cherche $\frac{3}{4}\times 0{,}6^{n}<0{,}01$. La suite $(0{,}6^{n})$ est décroissante, et $\frac{3}{4}\times 0{,}6^{8}\approx 0{,}0126$, tandis que $\frac{3}{4}\times 0{,}6^{9}\approx 0{,}0076$. $\boxed{n=9}$. Au bout de neuf étapes, la distribution est donc à moins d'un centième de la distribution invariante.
+- id: "me-09-15"
+  feuille: "f-me-09"
+  numero: 15
+  partie: "Distribution invariante"
+  etoiles: 2
+  types: [Démonstration, Calcul]
+  mots_cles: [matrice de transition, chaînes de Markov, distributions, distribution invariante, puissances de matrices]
+  noeuds: [v-matrices, p-variables, p-espace]
+  notions: [espace-matrices, variable-aleatoire]
+  page_enonce: 4
+  page_corrige: 11
+  enonce: |
+    Une chaîne de Markov a pour matrice de transition $P=\begin{pmatrix} 0{,}5 & 0{,}3 & 0{,}2 \\ 0{,}2 & 0{,}6 & 0{,}2 \\ 0{,}1 & 0{,}3 & 0{,}6 \end{pmatrix}$.
+
+    **1.** Justifier que cette chaîne admet une unique distribution invariante $\pi=\begin{pmatrix} a & b & c \end{pmatrix}$.
+
+    **2.** Montrer que $a$, $b$ et $c$ sont solutions d'un système de trois équations, et le résoudre.
+
+    **3.** À l'aide de la calculatrice, calculer $P^{20}$. Que constate-t-on ? Interpréter.
+  corrige: |
+    **1.** Aucun coefficient de $P$ hors de la diagonale n'est nul : d'après la Proposition 3, la chaîne admet une unique distribution invariante.
+
+    **2.** $\pi P=\pi$ s'écrit, colonne par colonne, et en ajoutant la condition $a+b+c=1$ : 
+    $$\left\{\begin{array}{l} 0{,}5a+0{,}2b+0{,}1c=a \\ 0{,}3a+0{,}6b+0{,}3c=b \\ 0{,}2a+0{,}2b+0{,}6c=c \\ a+b+c=1 \end{array}\right.$$
+     La deuxième équation donne $0{,}3(a+c)=0{,}4b$, et avec $a+c=1-b$ : $0{,}3-0{,}3b=0{,}4b$, soit $b=\frac{3}{7}$. La troisième donne $0{,}2(a+b)=0{,}4c$, soit $a+b=2c$, et avec $a+b=1-c$ : $c=\frac{1}{3}$. Enfin $a=1-\frac{3}{7}-\frac{1}{3}=\frac{5}{21}$. La première équation est alors vérifiée : $0{,}5\times\frac{5}{21}+0{,}2\times\frac{9}{21}+0{,}1\times\frac{7}{21}=\frac{2{,}5+1{,}8+0{,}7}{21}=\frac{5}{21}=a$. 
+    $$\boxed{\pi=\begin{pmatrix} \frac{5}{21} & \frac{3}{7} & \frac{1}{3} \end{pmatrix}\approx\begin{pmatrix} 0{,}238 & 0{,}429 & 0{,}333 \end{pmatrix}}$$
+     **L'erreur la plus répandue** est d'oublier la condition $a+b+c=1$ : le système $\pi P=\pi$ seul a une infinité de solutions, toutes proportionnelles.
+
+    **3.** La calculatrice donne $P^{20}\approx\begin{pmatrix} 0{,}238 & 0{,}429 & 0{,}333 \\ 0{,}238 & 0{,}429 & 0{,}333 \\ 0{,}238 & 0{,}429 & 0{,}333 \end{pmatrix}$ : **les trois lignes sont presque égales à $\pi$**. Quel que soit l'état de départ, la loi de $X_{20}$ est très proche de $\pi$ : la chaîne a « oublié » son point de départ. C'est ce qu'exprime $\pi_{20}=\pi_{0}P^{20}\approx\pi$ pour toute distribution initiale $\pi_{0}$.
+- id: "me-09-16"
+  feuille: "f-me-09"
+  numero: 16
+  partie: "Problèmes de synthèse"
+  etoiles: 2
+  types: [Calcul]
+  mots_cles: [graphes probabilistes, matrice de transition, chaînes de Markov, probabilités conditionnelles, puissances de matrices, suites]
+  noeuds: [v-matrices, p-variables, p-espace, n-recurrence]
+  notions: [espace-matrices, variable-aleatoire, espace-probabilise]
+  page_enonce: 4
+  page_corrige: 11
+  enonce: |
+    Dans un village imaginaire isolé, une nouvelle maladie contagieuse mais non mortelle a fait son apparition. Les scientifiques ont découvert qu’un individu pouvait être dans l’un des trois états suivants :
+
+    • $S$ : « l’individu est sain, c’est-à-dire non malade et non infecté »,
+
+    • $I$ : « l’individu est porteur sain, c’est-à-dire non malade mais infecté »,
+
+    • $M$ : « l’individu est malade et infecté ».
+
+    **Partie A** Les scientifiques estiment qu’un seul individu est à l’origine de la maladie sur les $100$ personnes que compte la population et que, d’une semaine à la suivante, un individu change d’état suivant le processus suivant :
+
+    • parmi les individus sains $S$, $\dfrac{1}{3}$ deviennent $I$ et $\dfrac{1}{3}$ deviennent $M$,
+
+    • parmi les individus porteurs sains, $\dfrac{1}{2}$ deviennent $M$.
+
+    • Ceux qui sont malades le restent.
+
+    On note $P_{n} = \begin{pmatrix} s_n & i_n & m_n \end{pmatrix}$ la matrice ligne donnant l’état probabiliste au bout de $n$ semaines des états $S$, $I$ et $M$. On a alors $P_0 = \begin{pmatrix} 0{,}99 &0& 0{,}01\end{pmatrix}$.
+
+    **1.** Justifier que l’état probabiliste $P_{n}$ obéit à une chaîne de Markov.
+
+    **2.** Représenter le graphe de cette chaîne de Markov associée aux états $S$, $I$, $M$.
+
+    **3.** Déterminer la matrice de transition $A$.
+
+    **4.** Exprimer $P_n$ en fonction de $P_0$ et $A$.
+
+    **5.** Déterminer l’état probabiliste au bout de quatre semaines (arrondir à $10^{-2}$). Quelle est la probabilité qu’un individu soit sain au bout de quatre semaines ?
+
+    **Partie B** La maladie n’évolue en réalité pas selon le modèle précédent puisqu’au bout de 4 semaines de recherche, les scientifiques découvrent un vaccin qui permet d’enrayer l’endémie et traitent immédiatement l’ensemble de la population. L’évolution hebdomadaire de la maladie après vaccination est donnée par la matrice de transition :
+
+    $$B=\begin{pmatrix} \dfrac{5}{12} & \dfrac{1}{4} & \dfrac{1}{3} \\ \dfrac{5}{12} & \dfrac{1}{4} & \dfrac{1}{3} \\ \dfrac{1}{6} & \dfrac{1}{2} & \dfrac{1}{3} \end{pmatrix}$$
+
+    On note $Q_n$ la matrice ligne donnant l’état probabiliste au bout de $n$ semaines après la mise en place de ces nouvelles mesures de vaccination. Ainsi $Q_n = \begin{pmatrix} S_n & I_n & M_n \end{pmatrix}$ donne les états $S$, $I$, $M$ la $n$-ième semaine après la vaccination. Sachant que $Q_{0}=P_{4}$ :
+
+    **1.** Exprimer $Q_n$ en fonction de $Q_0$ et $B$.
+
+    **2.** **(a)** Déterminer $k\in\mathbb{R}$ tel que $B^{2} = kJ$ où $J$ est la matrice carrée d’ordre $3$ dont tous les coefficients sont égaux à $1$.
+
+    On pourra, pour calculer la valeur exacte de $B^{2}$, calculer d’abord $(12B)^{2}$.
+
+    **(b)** Montrer par récurrence que : $\forall n \geqslant 2$, $B^{n} = B^{2}$.
+
+    **(c)** En déduire $Q_n$ pour tout $n \geqslant 2$.
+
+    **(d)** Interpréter ce résultat en termes d’évolution de la maladie. Peut-on espérer éradiquer la maladie grâce au vaccin ?
+  corrige: |
+    **Partie A**
+
+    **1.** L'état d'un individu la semaine $n+1$ ne dépend que de son état la semaine $n$, et les proportions de passage sont les mêmes chaque semaine. 
+    $$\boxed{(P_{n}) \text{ obéit à une chaîne de Markov homogène}}$$
+
+    **2.** Depuis $S$ : $\dfrac{1}{3}$ vers $I$, $\dfrac{1}{3}$ vers $M$, donc $\dfrac{1}{3}$ restent en $S$. Depuis $I$ : $\dfrac{1}{2}$ vers $M$, donc $\dfrac{1}{2}$ restent en $I$. Depuis $M$ : on reste en $M$.
+
+    ![Figure](documents/figures/29898910e270e017.svg)
+
+    **3.** 
+    $$\boxed{A=\begin{pmatrix} \dfrac{1}{3} & \dfrac{1}{3} & \dfrac{1}{3} \\[3mm] 0 & \dfrac{1}{2} & \dfrac{1}{2} \\[3mm] 0 & 0 & 1 \end{pmatrix}}$$
+     La matrice est triangulaire supérieure : on ne peut jamais revenir en arrière.
+
+    **4.** 
+    $$\boxed{P_{n}=P_{0}\,A^{n}}$$
+
+    **5.** La calculatrice donne : 
+    $$P_{4}=P_{0}A^{4}=\begin{pmatrix} \dfrac{11}{900} & \dfrac{143}{1440} & \dfrac{6397}{7200} \end{pmatrix}\approx \begin{pmatrix} 0{,}01 & 0{,}10 & 0{,}89 \end{pmatrix}$$
+
+    $$\boxed{P(\text{être sain au bout de quatre semaines})\approx 0{,}01}$$
+     En quatre semaines, la quasi-totalité de la population est donc contaminée, et près de $89\ \%$ est déjà malade.
+
+    **Partie B**
+
+    **1.** 
+    $$\boxed{Q_{n}=Q_{0}\,B^{n}} \qquad \text{avec} \qquad Q_{0}=P_{4}$$
+
+    **2.** **(a)** On calcule d'abord $12B$, dont tous les coefficients sont entiers : 
+    $$12B=\begin{pmatrix} 5 & 3 & 4 \\ 5 & 3 & 4 \\ 2 & 6 & 4 \end{pmatrix}$$
+     On élève au carré. La première ligne du produit vaut, colonne par colonne : 
+    $$5\times 5+3\times 5+4\times 2=48 \quad ; \quad 5\times 3+3\times 3+4\times 6=48 \quad ; \quad 5\times 4+3\times 4+4\times 4=48$$
+     La deuxième ligne est identique à la première. Pour la troisième : 
+    $$2\times 5+6\times 5+4\times 2=48 \quad ; \quad 2\times 3+6\times 3+4\times 6=48 \quad ; \quad 2\times 4+6\times 4+4\times 4=48$$
+
+    $$(12B)^{2}=48\,J \qquad \text{c'est-à-dire} \qquad 144\,B^{2}=48\,J$$
+
+    $$\boxed{B^{2}=\frac{1}{3}\,J, \text{ donc } k=\frac{1}{3}}$$
+
+    **(b)** Démontrons par récurrence la propriété $\mathcal{P}(n)$ : « $B^{n}=B^{2}$ », pour $n\geqslant 2$.
+
+    **Initialisation :** Pour $n=2$, l'égalité est immédiate.
+
+    **Hérédité :** Supposons $B^{n}=B^{2}$ pour un entier $n\geqslant 2$. Alors : 
+    $$B^{n+1}=B^{n}\times B=B^{2}\times B=\frac{1}{3}\,J\,B$$
+     Or le produit $J\,B$ a pour coefficients les sommes des colonnes de $B$, chacune répétée sur les trois lignes : 
+    $$\frac{5}{12}+\frac{5}{12}+\frac{1}{6}=1 \quad ; \quad \frac{1}{4}+\frac{1}{4}+\frac{1}{2}=1 \quad ; \quad \frac{1}{3}+\frac{1}{3}+\frac{1}{3}=1$$
+     donc $J\,B=J$, et $B^{n+1}=\dfrac{1}{3}J=B^{2}$ : la propriété est héréditaire.
+
+    **Conclusion :** 
+    $$\boxed{\forall n\geqslant 2, \; B^{n}=B^{2}=\frac{1}{3}\,J}$$
+
+    **(c)** Pour $n\geqslant 2$ : 
+    $$Q_{n}=Q_{0}B^{n}=Q_{0}\times\frac{1}{3}J$$
+     Or $Q_{0}$ est une matrice ligne dont la somme des coefficients vaut $1$ : le produit $Q_{0}J$ vaut donc $\begin{pmatrix} 1 & 1 & 1 \end{pmatrix}$. 
+    $$\boxed{\forall n\geqslant 2, \; Q_{n}=\begin{pmatrix} \dfrac{1}{3} & \dfrac{1}{3} & \dfrac{1}{3} \end{pmatrix}}$$
+
+    **(d)** Dès la deuxième semaine après la vaccination, et quelle que soit la situation de départ, la population se répartit en trois tiers égaux. 
+    $$\boxed{\text{L'état se stabilise immédiatement en } \left(\frac{1}{3},\frac{1}{3}, \frac{1}{3}\right)}$$
+
+    $$\boxed{\text{Non, on ne peut pas espérer éradiquer la maladie}}$$
+     La proportion de malades se stabilise en effet à $\dfrac{1}{3}$, et ne tend pas vers $0$. Le vaccin a enrayé l'épidémie — la proportion de malades chute de $89\ \%$ à $33\ \%$ — mais il ne l'élimine pas : la maladie devient *endémique*.
+- id: "me-09-17"
+  feuille: "f-me-09"
+  numero: 17
+  partie: "Problèmes de synthèse"
+  etoiles: 3
+  types: [Problème, Démonstration, Calcul]
+  mots_cles: [graphes probabilistes, matrice de transition, chaînes de Markov, probabilités conditionnelles, distributions, distribution invariante, suites, loi binomiale]
+  noeuds: [v-matrices, p-variables, p-espace, n-recurrence]
+  notions: [espace-matrices, variable-aleatoire, espace-probabilise]
+  page_enonce: 5
+  page_corrige: 14
+  enonce: |
+    On dispose de deux urnes $A$ et $B$.
+
+    Initialement l’urne $A$ contient trois boules numérotées $1$, $2$, $3$. L’urne $B$ est vide. À chaque instant, on tire au hasard un nombre entre $1$ et $3$ et on change la boule portant le numéro choisi d’urne. On s’intéresse au nombre de boules contenu dans l’urne $A$ à l’instant $n$, que l’on consigne dans une variable aléatoire $(X_{n})$.
+
+    **1.** **(a)** Quels sont les états possibles pour $(X_{n})$ ?
+
+    **(b)** Justifier que $(X_{n})$ est une chaîne de Markov homogène.
+
+    **(c)** Quelle est la répartition initiale $\pi_{0}$ associée au problème ?
+
+    **(d)** Représenter le graphe de cette chaîne de Markov.
+
+    **(e)** En déduire la matrice de transition $T$.
+
+    **2.** Démontrer que la répartition stable $\pi$ correspond à la loi binomiale $\mathscr{B}\left(3,\dfrac{1}{2}\right)$.
+
+    **3.** On note $p_n$, la probabilité qu’il y ait trois boules dans l’urne $A$ à l’instant $n$.
+
+    **(a)** Démontrer que si $n$ est impair, $p_n = 0$.
+
+    **(b)** Expliquer le graphe probabiliste ci-dessous, qui décrit l’évolution du nombre de boules dans l'urne $A$ entre l’étape $2k$ et l’étape $2k + 2$, où $k\in\mathbb{N}$.
+
+    ![Figure](documents/figures/13641bd22121245f.svg)
+
+    **(c)** En déduire que pour tout $k\in\mathbb{N}$ : $p_{2k+2}=\dfrac{1}{3}p_{2k}+\dfrac{2}{9}(1-p_{2k})$
+
+    **(d)** On pose $u_k = p_{2k}$ et $v_k = u_k -\dfrac{1}{4}$.
+
+    Montrer que la suite $(v_k)$ est géométrique dont on précisera la raison et le premier terme. En déduire $v_k$ en fonction de $k$ puis $p_{2k}$ en fonction de $k$.
+
+    **(e)** Déterminer $\lim\limits_{k\to +\infty} p_{2k}$. Peut-on déterminer $\lim\limits_{n \to +\infty} p_{n}$ ?
+
+    **(f)** Comment expliquer le résultat de la répartition stable de la question $2.$ ?
+
+    **4.** On appelle $D$ la variable aléatoire qui indique le nombre d’étapes jusqu’au premier retour à l’état initial (trois boules dans A).
+
+    **(a)** Démontrer que, si $n$ est impair, alors $P(D = n) = 0$.
+
+    **(b)** Déterminer $P(D = 2)$ et $P(D = 4)$.
+
+    **(c)** Quelle est la probabilité de revenir au moins une fois à l’état initial en moins de cinq étapes ?
+  corrige: |
+    **1.** **(a)** L'urne $A$ contient entre $0$ et $3$ boules : 
+    $$\boxed{E=\{0\,;1\,;2\,;3\}}$$
+
+    **(b)** À chaque instant on tire un numéro entre $1$ et $3$ de façon équiprobable, et la boule correspondante change d'urne. Le nombre de boules dans $A$ à l'instant $n+1$ ne dépend donc que de celui à l'instant $n$, et la règle du tirage est la même à chaque étape. 
+    $$\boxed{(X_{n}) \text{ est une chaîne de Markov homogène}}$$
+
+    **(c)** Initialement les trois boules sont dans $A$ : 
+    $$\boxed{\pi_{0}=\begin{pmatrix} 0 & 0 & 0 & 1 \end{pmatrix}}$$
+
+    **(d)** Supposons qu'il y ait $k$ boules dans $A$. Le numéro tiré désigne une boule de $A$ avec probabilité $\dfrac{k}{3}$, auquel cas cette boule part vers $B$ et l'on passe à $k-1$ ; il désigne une boule de $B$ avec probabilité $\dfrac{3-k}{3}$, et l'on passe à $k+1$. 
+    $$\boxed{P(k\to k-1)=\frac{k}{3} \qquad ; \qquad P(k\to k+1)=\frac{3-k}{3}}$$
+
+    ![Figure](documents/figures/e292e6a57571cbdc.svg)
+
+    *Aucune boucle : le nombre de boules change nécessairement à chaque étape.*
+
+    **(e)** 
+    $$\boxed{T=\begin{pmatrix} 0 & 1 & 0 & 0 \\[1mm] \dfrac{1}{3} & 0 & \dfrac{2}{3} & 0 \\[2mm] 0 & \dfrac{2}{3} & 0 & \dfrac{1}{3} \\[2mm] 0 & 0 & 1 & 0 \end{pmatrix}}$$
+
+    **2.** La loi binomiale $\mathcal{B}\left(3,\dfrac{1}{2}\right)$ a pour coefficients $\dbinom{3}{k}\left(\dfrac{1}{2}\right)^{3}$, soit : 
+    $$\pi=\begin{pmatrix} \dfrac{1}{8} & \dfrac{3}{8} & \dfrac{3}{8} & \dfrac{1}{8} \end{pmatrix}$$
+     Il suffit de vérifier que $\pi T=\pi$, en calculant chaque coefficient du produit : 
+    $$\begin{aligned} \text{coefficient } 0 &: \quad \frac{3}{8}\times\frac{1}{3}=\frac{1}{8} \\[1mm] \text{coefficient } 1 &: \quad \frac{1}{8}\times 1+\frac{3}{8}\times\frac{2}{3} =\frac{1}{8}+\frac{2}{8}=\frac{3}{8} \\[1mm] \text{coefficient } 2 &: \quad \frac{3}{8}\times\frac{2}{3}+\frac{1}{8}\times 1 =\frac{2}{8}+\frac{1}{8}=\frac{3}{8} \\[1mm] \text{coefficient } 3 &: \quad \frac{3}{8}\times\frac{1}{3}=\frac{1}{8} \end{aligned}$$
+     On retrouve bien $\pi$, et la somme des coefficients vaut $1$. 
+    $$\boxed{\pi=\mathcal{B}\left(3,\frac{1}{2}\right) \text{ est la répartition stable de la chaîne}}$$
+     *Interprétation : à l'équilibre, chaque boule se trouve dans $A$ ou dans $B$ avec la même probabilité $\dfrac{1}{2}$, indépendamment des autres.*
+
+    **3.** **(a)** À chaque étape, le nombre de boules dans $A$ augmente ou diminue de $1$ : sa **parité change à chaque étape**. Comme $X_{0}=3$ est impair, $X_{n}$ est impair si $n$ est pair, et pair si $n$ est impair. 
+    $$\boxed{\text{Si } n \text{ est impair, } X_{n} \text{ est pair, donc } p_{n}=P(X_{n}=3)=0}$$
+
+    **(b)** Aux instants pairs, la chaîne se trouve nécessairement dans un état impair, c'est-à-dire dans $\{1\,;3\}$. Le graphe proposé décrit donc les transitions *en deux étapes* entre ces deux états. On les retrouve par la formule des probabilités totales.
+
+    Depuis $3$. On passe forcément en $2$, puis : 
+    $$P(3\to 3 \text{ en } 2 \text{ étapes})=1\times\frac{1}{3}=\frac{1}{3} \qquad ; \qquad P(3\to 1)=1\times\frac{2}{3}=\frac{2}{3}$$
+
+    Depuis $1$. On passe en $0$ avec probabilité $\dfrac{1}{3}$, ou en $2$ avec probabilité $\dfrac{2}{3}$. 
+    $$P(1\to 1)=\underbrace{\frac{1}{3}\times 1}_{\text{via } 0} +\underbrace{\frac{2}{3}\times\frac{2}{3}}_{\text{via } 2} =\frac{3}{9}+\frac{4}{9}=\frac{7}{9}$$
+
+    $$P(1\to 3)=\frac{2}{3}\times\frac{1}{3}=\frac{2}{9}$$
+
+    $$\boxed{\text{Les quatre valeurs du graphe sont bien } \frac{7}{9},\ \frac{2}{9},\ \frac{2}{3} \text{ et } \frac{1}{3}}$$
+
+    **(c)** À l'instant $2k$, la chaîne est en $3$ avec probabilité $p_{2k}$, et en $1$ avec probabilité $1-p_{2k}$. La formule des probabilités totales appliquée au graphe précédent donne : 
+    $$\boxed{p_{2k+2}=\frac{1}{3}\,p_{2k}+\frac{2}{9}\left(1-p_{2k}\right)}$$
+
+    **(d)** On pose $u_{k}=p_{2k}$. La relation précédente s'écrit : 
+    $$u_{k+1}=\frac{1}{3}u_{k}+\frac{2}{9}-\frac{2}{9}u_{k} =\left(\frac{3}{9}-\frac{2}{9}\right)u_{k}+\frac{2}{9} =\frac{1}{9}u_{k}+\frac{2}{9}$$
+     Alors, avec $v_{k}=u_{k}-\dfrac{1}{4}$ : 
+    $$\begin{aligned} v_{k+1} &= u_{k+1}-\frac{1}{4}=\frac{1}{9}u_{k}+\frac{2}{9}-\frac{1}{4} \\ &= \frac{1}{9}\left(v_{k}+\frac{1}{4}\right)+\frac{2}{9}-\frac{1}{4} \\ &= \frac{1}{9}v_{k}+\frac{1}{36}+\frac{8}{36}-\frac{9}{36}=\frac{1}{9}v_{k} \end{aligned}$$
+
+    $$\boxed{(v_{k}) \text{ est géométrique de raison } \frac{1}{9}}$$
+     Son premier terme vaut $v_{0}=u_{0}-\dfrac{1}{4}=p_{0}-\dfrac{1}{4}=1-\dfrac{1}{4} =\dfrac{3}{4}$, puisque les trois boules sont initialement dans $A$. 
+    $$\boxed{v_{k}=\frac{3}{4}\left(\frac{1}{9}\right)^{k}}$$
+
+    $$\boxed{p_{2k}=u_{k}=v_{k}+\frac{1}{4}=\frac{1}{4} +\frac{3}{4}\left(\frac{1}{9}\right)^{k}}$$
+     Vérification pour $k=1$ : $\dfrac{1}{4}+\dfrac{3}{4}\times\dfrac{1}{9} =\dfrac{1}{4}+\dfrac{1}{12}=\dfrac{1}{3}$, ce qui correspond bien à $P(X_{2}=3)=\dfrac{1}{3}$.
+
+    **(e)** Comme $0<\dfrac{1}{9}<1$, on a $\displaystyle\lim_{k\to+\infty}\left(\dfrac{1}{9}\right)^{k}=0$ : 
+    $$\boxed{\lim_{k\to+\infty}p_{2k}=\frac{1}{4}}$$
+     En revanche, la suite $(p_{n})$ prend alternativement la valeur $0$ (pour $n$ impair) et des valeurs proches de $\dfrac{1}{4}$ (pour $n$ pair) : ses termes de rang impair tendent vers $0$ et ses termes de rang pair vers $\dfrac{1}{4}$, elle ne peut donc pas converger. 
+    $$\boxed{\lim_{n\to+\infty}p_{n} \text{ n'existe pas}}$$
+
+    **(f)** La répartition stable donne pourtant $\pi_{3}=\dfrac{1}{8}$, alors que $p_{2k}$ tend vers $\dfrac{1}{4}$. Il n'y a pas de contradiction : la chaîne est **périodique de période $2$**, donc $\pi_{n}$ ne converge pas vers $\pi$.
+
+    La répartition stable s'interprète ici comme une *moyenne temporelle* : sur deux étapes consécutives, la proportion du temps passé en $3$ vaut 
+    $$\frac{1}{2}\left(0+\frac{1}{4}\right)=\frac{1}{8}=\pi_{3}$$
+
+    $$\boxed{\pi \text{ décrit la fréquence de visite à long terme, non la loi de } X_{n}}$$
+
+    **4.** **(a)** Le raisonnement de parité de la question 3a s'applique : partant de $3$, la chaîne ne peut revenir en un état impair qu'après un nombre *pair* d'étapes. 
+    $$\boxed{\text{Si } n \text{ est impair, } P(D=n)=0}$$
+
+    **(b)** Cas $D=2$. Depuis $3$ on passe nécessairement en $2$, puis on revient en $3$ avec probabilité $\dfrac{1}{3}$ : 
+    $$\boxed{P(D=2)=1\times\frac{1}{3}=\frac{1}{3}}$$
+
+    Cas $D=4$. Il faut ne pas être revenu à l'étape $2$, puis revenir à l'étape $4$. Le seul chemin possible est $3\to 2\to 1\to 2\to 3$ :
+
+    • $3\to 2$ : probabilité $1$ ;
+
+    • $2\to 1$ : probabilité $\dfrac{2}{3}$ (il ne faut pas revenir en $3$) ;
+
+    • $1\to 2$ : probabilité $\dfrac{2}{3}$ (par $0$, on arriverait en $1$ à l'étape $4$) ;
+
+    • $2\to 3$ : probabilité $\dfrac{1}{3}$.
+
+    $$\boxed{P(D=4)=1\times\frac{2}{3}\times\frac{2}{3}\times\frac{1}{3}=\frac{4}{27}}$$
+
+    **(c)** Revenir au moins une fois en moins de cinq étapes signifie $D\leqslant 4$. Les valeurs $1$ et $3$ étant impossibles : 
+    $$P(D\leqslant 4)=P(D=2)+P(D=4)=\frac{1}{3}+\frac{4}{27}=\frac{9}{27}+\frac{4}{27}$$
+
+    $$\boxed{P(D\leqslant 4)=\frac{13}{27}\approx 0{,}481}$$
+     Il y a donc un peu moins d'une chance sur deux de revoir les trois boules réunies dans l'urne $A$ au cours des quatre premières étapes.
+- id: "me-09-18"
+  feuille: "f-me-09"
+  numero: 18
+  titre: "La puce du cours"
+  partie: "Problèmes de synthèse"
+  etoiles: 3
+  types: [Démonstration, Calcul]
+  mots_cles: [matrice de transition, probabilités conditionnelles, distributions, distribution invariante, puissances de matrices, convergence, suites]
+  noeuds: [v-matrices, p-espace, p-variables, n-recurrence]
+  notions: [espace-matrices, espace-probabilise]
+  page_enonce: 6
+  page_corrige: 17
+  enonce: |
+    On reprend l'exemple du cours : une puce saute d'un sommet à l'autre d'un triangle, sans jamais rester sur place, de façon équiprobable. On note $P$ la matrice de transition, $I$ la matrice identité d'ordre $3$ et $J$ la matrice carrée d'ordre $3$ dont tous les coefficients valent $1$.
+
+    **1.** Vérifier que $P=\dfrac{1}{2}(J-I)$ et que $J^{2}=3J$.
+
+    **2.** Montrer par récurrence que, pour tout $n\in\mathbb{N}$ : 
+    $$P^{n}=\frac{1}{3}J+\left(-\frac{1}{2}\right)^{n}\left(I-\frac{1}{3}J\right)$$
+
+    **3.** En déduire la probabilité $r_{n}$ que la puce soit revenue à son sommet de départ après $n$ sauts. Retrouver la valeur du cours pour $n=3$.
+
+    **4.** Déterminer la limite de $r_{n}$, puis la distribution invariante de la chaîne. Interpréter.
+  corrige: |
+    **1.** $J-I$ a des $0$ sur la diagonale et des $1$ ailleurs : la moitié donne bien $P$. Chaque coefficient de $J^{2}$ est la somme de trois produits $1\times 1$, d'où $J^{2}=3J$.
+
+    **2.** On note $\mathcal{P}_{n}$ l'égalité annoncée.
+
+    **Initialisation :** Pour $n=0$ : $\frac{1}{3}J+I-\frac{1}{3}J=I=P^{0}$.
+
+    **Hérédité :** Supposons $\mathcal{P}_{n}$ vraie. On calcule d'abord, à l'aide de $J^{2}=3J$ : 
+    $$JP=\frac{1}{2}\left(J^{2}-J\right)=\frac{1}{2}(3J-J)=J$$
+
+    $$\left(I-\tfrac{1}{3}J\right)P=P-\tfrac{1}{3}J=\tfrac{1}{2}J-\tfrac{1}{2}I-\tfrac{1}{3}J=-\tfrac{1}{2}\left(I-\tfrac{1}{3}J\right)$$
+     Ainsi $P^{n+1}=P^{n}P=\frac{1}{3}J+\left(-\frac{1}{2}\right)^{n}\left(-\frac{1}{2}\right)\left(I-\frac{1}{3}J\right)$, ce qui est $\mathcal{P}_{n+1}$.
+
+    **Conclusion :** L'égalité est vraie pour tout $n\in\mathbb{N}$.
+
+    **3.** $r_{n}$ est un coefficient diagonal de $P^{n}$ (Chapman-Kolmogorov) : 
+    $$\boxed{r_{n}=\frac{1}{3}+\left(-\frac{1}{2}\right)^{n}\left(1-\frac{1}{3}\right)=\frac{1}{3}+\frac{2}{3}\left(-\frac{1}{2}\right)^{n}}$$
+     Pour $n=3$ : $r_{3}=\frac{1}{3}-\frac{2}{3}\times\frac{1}{8}=\frac{1}{3}-\frac{1}{12}=\frac{1}{4}$, c'est le coefficient $0{,}25$ calculé dans le cours. On vérifie aussi $r_{1}=0$ (la puce ne reste jamais sur place) et $r_{2}=\frac{1}{2}$.
+
+    **4.** Comme $\left|-\frac{1}{2}\right|<1$, $\left(-\frac{1}{2}\right)^{n}\to 0$, d'où $\boxed{r_{n}\to\frac{1}{3}}$. Plus généralement $P^{n}\to\frac{1}{3}J$, dont toutes les lignes valent $\begin{pmatrix} \frac{1}{3} & \frac{1}{3} & \frac{1}{3} \end{pmatrix}$. Cette distribution est invariante, puisque $\frac{1}{3}\begin{pmatrix} 1 & 1 & 1 \end{pmatrix}P=\frac{1}{3}\begin{pmatrix} 1 & 1 & 1 \end{pmatrix}$, chaque colonne de $P$ ayant pour somme $1$. Elle est unique d'après la Proposition 3. 
+    $$\boxed{\pi=\begin{pmatrix} \tfrac{1}{3} & \tfrac{1}{3} & \tfrac{1}{3} \end{pmatrix}}$$
+     À long terme, la puce a autant de chances d'être sur chacun des trois sommets, ce que la symétrie du triangle laissait prévoir. La probabilité de retour oscille autour de $\frac{1}{3}$ en s'en rapprochant, à cause du signe alterné de $\left(-\frac{1}{2}\right)^{n}$. Ce calcul est celui du graphe complet $K_{3}$ (exercice 29 du chapitre 6), divisé par $2^{n}$.
+- id: "me-09-19"
+  feuille: "f-me-09"
+  numero: 19
+  titre: "La ruine du joueur"
+  partie: "Problèmes de synthèse"
+  etoiles: 3
+  types: [Démonstration, Calcul]
+  mots_cles: [graphes probabilistes, matrice de transition, chaînes de Markov, probabilités conditionnelles, distributions, distribution invariante, puissances de matrices, états absorbants]
+  noeuds: [v-matrices, p-variables, p-espace]
+  notions: [espace-matrices, variable-aleatoire, espace-probabilise]
+  page_enonce: 6
+  page_corrige: 18
+  enonce: |
+    Un joueur possède $1$ € et joue à pile ou face avec une pièce équilibrée : il gagne $1$ € s'il obtient pile, il perd $1$ € sinon. Il s'arrête lorsqu'il est ruiné ou lorsqu'il possède $3$ €. On note $X_{n}$ sa fortune après $n$ parties, à valeurs dans $\{0\,;1\,;2\,;3\}$.
+
+    **1.** Représenter le graphe de cette chaîne de Markov et donner sa matrice de transition $P$. Que dire des états $0$ et $3$ ?
+
+    **2.** On note $r_{k}$ la probabilité que le joueur finisse ruiné en partant d'une fortune de $k$ euros. On admet que $r_{0}=1$, $r_{3}=0$ et, en raisonnant sur la première partie, que $r_{1}=\dfrac{1}{2}r_{0}+\dfrac{1}{2}r_{2}$ et $r_{2}=\dfrac{1}{2}r_{1}+\dfrac{1}{2}r_{3}$. Calculer $r_{1}$ et $r_{2}$.
+
+    **3.** À l'aide de la calculatrice, calculer $P^{20}$ et confronter au résultat précédent.
+
+    **4.** Montrer que $\begin{pmatrix} p & 0 & 0 & 1-p \end{pmatrix}$ est une distribution invariante pour tout $p\in[0\,;1]$. Pourquoi ce résultat n'est-il pas en contradiction avec la Proposition 3 du cours ?
+  corrige: |
+    **1.**
+
+    ![Figure](documents/figures/c4af0c40d041b04a.svg)
+
+    $$\boxed{P=\begin{pmatrix} 1 & 0 & 0 & 0 \\ \frac{1}{2} & 0 & \frac{1}{2} & 0 \\ 0 & \frac{1}{2} & 0 & \frac{1}{2} \\ 0 & 0 & 0 & 1 \end{pmatrix}}$$
+     Les états $0$ et $3$ ont une boucle de probabilité $1$ : une fois atteints, on ne les quitte plus. Ce sont des **états absorbants**.
+
+    **2.** Avec $r_{0}=1$ et $r_{3}=0$ : $r_{1}=\frac{1}{2}+\frac{1}{2}r_{2}$ et $r_{2}=\frac{1}{2}r_{1}$. En reportant : $r_{1}=\frac{1}{2}+\frac{1}{4}r_{1}$, soit $\frac{3}{4}r_{1}=\frac{1}{2}$. 
+    $$\boxed{r_{1}=\frac{2}{3} \qquad ; \qquad r_{2}=\frac{1}{3}}$$
+     Partant de $1$ €, le joueur a deux chances sur trois d'être ruiné avant d'avoir atteint $3$ €.
+
+    **3.** La calculatrice donne $P^{20}\approx\begin{pmatrix} 1 & 0 & 0 & 0 \\ 0{,}667 & 0 & 0 & 0{,}333 \\ 0{,}333 & 0 & 0 & 0{,}667 \\ 0 & 0 & 0 & 1 \end{pmatrix}$, à $10^{-3}$ près. La deuxième ligne donne la loi de $X_{20}$ en partant de $1$ : la chaîne est presque sûrement absorbée, en $0$ avec probabilité proche de $\frac{2}{3}=r_{1}$, en $3$ avec probabilité proche de $\frac{1}{3}$. Les deux méthodes concordent.
+
+    **4.** $\begin{pmatrix} p & 0 & 0 & 1-p \end{pmatrix}P=\begin{pmatrix} p & 0 & 0 & 1-p \end{pmatrix}$, puisque les lignes $1$ et $4$ de $P$ sont celles de l'identité. Il y a donc **une infinité de distributions invariantes**. Ce n'est pas contradictoire avec la Proposition 3 : son hypothèse n'est pas vérifiée, car $P$ a des coefficients nuls hors de la diagonale. Une proposition qui donne une condition suffisante ne dit rien quand la condition n'est pas remplie.
+- id: "me-09-20"
+  feuille: "f-me-09"
+  numero: 20
+  titre: "Tout ce qui est possible finit par arriver"
+  partie: "Pour aller plus loin"
+  etoiles: 2
+  types: [Démonstration, Calcul]
+  mots_cles: [matrice de transition, chaînes de Markov, probabilités conditionnelles, puissances de matrices, convergence, suites, états absorbants, dés et pièces]
+  noeuds: [v-matrices, p-variables, p-espace, n-recurrence]
+  notions: [espace-matrices, variable-aleatoire, espace-probabilise]
+  source: "inspiré de poly « Mathématiques : du lycée aux CPGE scientifiques » (LLG / H4), n° 266, 267 et 307 (modélisation par une chaîne de Markov)"
+  page_enonce: 6
+  page_corrige: 18
+  enonce: |
+    On lance un dé non pipé de façon répétée. On note $X_{n}$ l'état après $n$ lancers : $X_{n}=0$ si aucun $6$ n'est encore sorti, $X_{n}=1$ sinon.
+
+    **1.** Justifier que $(X_{n})$ est une chaîne de Markov homogène, et donner sa matrice de transition $T$. Quel est l'état absorbant ?
+
+    **2.** Montrer par récurrence que, pour tout $n\in\mathbb{N}$, $T^{n}=\begin{pmatrix} \left(\frac{5}{6}\right)^{n} & 1-\left(\frac{5}{6}\right)^{n} \\ 0 & 1 \end{pmatrix}$.
+
+    **3.** En déduire la probabilité $p_{n}$ d'obtenir au moins un $6$ en $n$ lancers, ainsi que sa limite.
+
+    **4.** *Problème posé à Pascal par le chevalier de Méré.* La probabilité qu'en $4$ lancers le dé amène au moins un $6$ est-elle supérieure à $\dfrac{1}{2}$ ? Même question pour la probabilité d'obtenir au moins un double six en $24$ lancers de deux dés, en adaptant la chaîne.
+
+    **5.** Pour $k\geqslant 1$, on note $T_{6}$ le rang du premier $6$. Calculer $P(T_{6}=k)$.
+  corrige: |
+    **1.** L'état après le lancer $n+1$ ne dépend que de l'état après le lancer $n$ et du résultat du lancer $n+1$, indépendant des précédents, avec les mêmes probabilités à chaque lancer : la chaîne est de Markov et homogène. 
+    $$\boxed{T=\begin{pmatrix} \frac{5}{6} & \frac{1}{6} \\ 0 & 1 \end{pmatrix}}$$
+     L'état $1$ est **absorbant** : une fois un $6$ sorti, on reste dans l'état $1$.
+
+    **2.** **Initialisation :** $T^{0}=I_{2}$ correspond bien à la formule pour $n=0$.
+
+    **Hérédité :** Si la formule est vraie au rang $n$, alors : 
+    $$T^{n+1}=T^{n}T=\begin{pmatrix} \left(\frac{5}{6}\right)^{n}\times\frac{5}{6} & \left(\frac{5}{6}\right)^{n}\times\frac{1}{6}+1-\left(\frac{5}{6}\right)^{n} \\ 0 & 1 \end{pmatrix}=\begin{pmatrix} \left(\frac{5}{6}\right)^{n+1} & 1-\left(\frac{5}{6}\right)^{n+1} \\ 0 & 1 \end{pmatrix}$$
+     car $\left(\frac{5}{6}\right)^{n}\left(\frac{1}{6}-1\right)=-\left(\frac{5}{6}\right)^{n+1}$.
+
+    **Conclusion :** La formule est vraie pour tout $n\in\mathbb{N}$.
+
+    **3.** On part de l'état $0$ : $p_{n}$ est le coefficient en ligne $1$ et colonne $2$ de $T^{n}$. 
+    $$\boxed{p_{n}=1-\left(\frac{5}{6}\right)^{n}\xrightarrow[n\to+\infty]{}1}$$
+     car $0<\frac{5}{6}<1$. Un événement de probabilité non nulle, répété indépendamment, finit par se produire avec une probabilité aussi proche de $1$ que l'on veut.
+
+    **4.** $p_{4}=1-\frac{625}{1296}=\frac{671}{1296}\approx 0{,}518>\frac{1}{2}$ : **oui**. Pour le double six, la chaîne est la même avec $\frac{35}{36}$ et $\frac{1}{36}$ à la place de $\frac{5}{6}$ et $\frac{1}{6}$ : 
+    $$1-\left(\frac{35}{36}\right)^{24}\approx 0{,}491<\frac{1}{2}$$
+     **Non**. Le chevalier de Méré pensait, par une règle de proportionnalité, que les deux paris étaient équivalents : $4$ est à $6$ comme $24$ est à $36$. Le calcul montre que le premier est favorable et le second défavorable.
+
+    **5.** L'événement $(T_{6}=k)$ signifie $X_{k-1}=0$ et $X_{k}=1$. D'après la question 2 et la propriété de Markov : 
+    $$\boxed{P(T_{6}=k)=P(X_{k-1}=0)\times P_{(X_{k-1}=0)}(X_{k}=1)=\left(\frac{5}{6}\right)^{k-1}\times\frac{1}{6}}$$
+     C'est la loi géométrique de paramètre $\frac{1}{6}$. Contrôle : $P(T_{6}=1)=\frac{1}{6}$, comme attendu.
+- id: "me-09-21"
+  feuille: "f-me-09"
+  numero: 21
+  titre: "Principe de Hardy-Weinberg"
+  partie: "Pour aller plus loin"
+  etoiles: 3
+  types: [Démonstration]
+  mots_cles: [probabilités conditionnelles]
+  noeuds: [p-espace]
+  notions: [espace-probabilise]
+  source: "poly « Mathématiques : du lycée aux CPGE scientifiques » (LLG / H4), n° 276 (coquilles corrigées : 2y_2=2(x_1+y_1)(y_1+z_1), et « n-ième génération » en b)"
+  page_enonce: 6
+  page_corrige: 19
+  enonce: |
+    Un gène possède deux allèles notés $a$ et $A$. Les trois génotypes possibles sont donc $aa$, $aA$, $AA$, avec des probabilités respectives $x_{1}$, $2y_{1}$, $z_{1}$. Chaque allèle $a$ et $A$ a une probabilité $\dfrac{1}{2}$ d'être transmis. Les parents sont sélectionnés indépendamment.
+
+    **a)** On note $x_{2}$, $2y_{2}$ et $z_{2}$ les probabilités respectives des génotypes $aa$, $aA$, $AA$ à la seconde génération. Montrer que 
+    $$x_{2}=(x_{1}+y_{1})^{2}, \qquad 2y_{2}=2(x_{1}+y_{1})(y_{1}+z_{1}), \qquad z_{2}=(y_{1}+z_{1})^{2}.$$
+
+    **b)** Montrer que la probabilité de chaque génotype est constante à partir de la seconde génération, c'est-à-dire que, si on note $x_{n}$, $2y_{n}$ et $z_{n}$ les probabilités respectives des génotypes $aa$, $aA$, $AA$ à la $n$-ième génération, on a, pour tout entier $n\geqslant 2$, 
+    $$x_{n}=x_{2}, \qquad y_{n}=y_{2}, \qquad z_{n}=z_{2}.$$
+  corrige: |
+    On suppose bien sûr $x_{1}+2y_{1}+z_{1}=1$.
+
+    **a)** Un parent pris au hasard transmet l'allèle $a$ s'il est de génotype $aa$ (probabilité $x_{1}$, transmission certaine) ou s'il est de génotype $aA$ (probabilité $2y_{1}$, transmission avec probabilité $\frac{1}{2}$). Par la formule des probabilités totales, il transmet $a$ avec la probabilité $\alpha=x_{1}+2y_{1}\times\frac{1}{2}=x_{1}+y_{1}$, et $A$ avec la probabilité $\beta=y_{1}+z_{1}=1-\alpha$. Les deux parents étant indépendants : 
+    $$\boxed{x_{2}=\alpha^{2}=(x_{1}+y_{1})^{2} \qquad z_{2}=\beta^{2}=(y_{1}+z_{1})^{2} \qquad 2y_{2}=2\alpha\beta=2(x_{1}+y_{1})(y_{1}+z_{1})}$$
+     Le facteur $2$ du génotype $aA$ vient de ce que l'allèle $a$ peut venir du père ou de la mère.
+
+    **b)** La probabilité de transmettre $a$ à la génération suivante vaut : 
+    $$x_{2}+y_{2}=\alpha^{2}+\alpha\beta=\alpha(\alpha+\beta)=\alpha=x_{1}+y_{1}$$
+     **La fréquence de l'allèle $a$ est conservée**. Le même calcul, appliqué entre les générations $n$ et $n+1$, montre par récurrence que $x_{n}+y_{n}=\alpha$ pour tout $n\geqslant 1$, et donc $y_{n}+z_{n}=\beta$. Pour $n\geqslant 2$, la question a) appliquée entre les générations $n-1$ et $n$ donne : 
+    $$x_{n}=(x_{n-1}+y_{n-1})^{2}=\alpha^{2}=x_{2}, \qquad y_{n}=\alpha\beta=y_{2}, \qquad z_{n}=\beta^{2}=z_{2}$$
+
+    $$\boxed{\text{la répartition des génotypes est stable dès la deuxième génération}}$$
+
+    *Comme pour la Partie B de l'exercice 16, l'état d'équilibre est atteint en une seule étape. Ce n'est pas tout à fait une chaîne de Markov au sens du cours : les probabilités de la génération suivante dépendent ici de la répartition des génotypes de toute la population, et non d'une matrice fixe.*
+- id: "me-09-22"
+  feuille: "f-me-09"
+  numero: 22
+  titre: "Puissances d'une matrice de transition à deux états"
+  partie: "Pour aller plus loin"
+  etoiles: 3
+  types: [Démonstration, Calcul]
+  mots_cles: [matrice de transition, distributions, distribution invariante, puissances de matrices, convergence, suites]
+  noeuds: [v-matrices, p-variables, n-recurrence]
+  notions: [espace-matrices]
+  source: "inspiré de poly « Mathématiques : du lycée aux CPGE scientifiques » (LLG / H4), n° 7 et 11 (suites récurrentes linéaires), transposition matricielle"
+  page_enonce: 7
+  page_corrige: 20
+  enonce: |
+    Soient $p$ et $q$ deux réels de $]0\,;1[$, et $P=\begin{pmatrix} 1-p & p \\ q & 1-q \end{pmatrix}$. On pose $r=1-p-q$ et : 
+    $$A=\frac{1}{p+q}\begin{pmatrix} q & p \\ q & p \end{pmatrix} \qquad \text{et} \qquad B=\frac{1}{p+q}\begin{pmatrix} p & -p \\ -q & q \end{pmatrix}$$
+
+    **1.** Vérifier que $A+B=I_{2}$, $P=A+rB$, $A^{2}=A$, $B^{2}=B$ et $AB=BA=0$.
+
+    **2.** Montrer par récurrence que, pour tout $n\in\mathbb{N}$, $P^{n}=A+r^{n}B$.
+
+    **3.** Justifier que $-1<r<1$, puis déterminer la limite de chaque coefficient de $P^{n}$. Que représentent les lignes de la matrice limite ?
+
+    **4.** Application : retrouver la distribution invariante de l'exemple du cours, $P=\begin{pmatrix} 0{,}8 & 0{,}2 \\ 0{,}4 & 0{,}6 \end{pmatrix}$, et donner l'expression de $P^{n}$.
+  corrige: |
+    **1.** On calcule, en factorisant par $\frac{1}{p+q}$ ou $\frac{1}{(p+q)^{2}}$ :
+
+    • $A+B=\frac{1}{p+q}\begin{pmatrix} p+q & 0 \\ 0 & p+q \end{pmatrix}=I_{2}$ ;
+
+    • $\begin{pmatrix} q & p \\ q & p \end{pmatrix}^{2}=\begin{pmatrix} q^{2}+pq & qp+p^{2} \\ q^{2}+pq & qp+p^{2} \end{pmatrix}=(p+q)\begin{pmatrix} q & p \\ q & p \end{pmatrix}$, d'où $A^{2}=A$ ; de même $\begin{pmatrix} p & -p \\ -q & q \end{pmatrix}^{2}=(p+q)\begin{pmatrix} p & -p \\ -q & q \end{pmatrix}$, d'où $B^{2}=B$ ;
+
+    • $\begin{pmatrix} q & p \\ q & p \end{pmatrix}\begin{pmatrix} p & -p \\ -q & q \end{pmatrix}=\begin{pmatrix} qp-pq & -qp+pq \\ qp-pq & -qp+pq \end{pmatrix}=0$, et de même dans l'autre ordre : $AB=BA=0$ ;
+
+    • le coefficient $(1,1)$ de $A+rB$ vaut $\frac{q+(1-p-q)p}{p+q}=\frac{(p+q)-p(p+q)}{p+q}=1-p$. De même pour les trois autres, on trouve $P=A+rB$.
+
+    **2.** **Initialisation :** $P^{0}=I_{2}=A+B=A+r^{0}B$.
+
+    **Hérédité :** Si $P^{n}=A+r^{n}B$, alors $P^{n+1}=(A+r^{n}B)(A+rB)=A^{2}+rAB+r^{n}BA+r^{n+1}B^{2}=A+r^{n+1}B$.
+
+    **Conclusion :** $\boxed{P^{n}=A+r^{n}B}$ pour tout $n\in\mathbb{N}$.
+
+    **3.** $0<p+q<2$, donc $-1<r=1-(p+q)<1$, et $r^{n}\to 0$. Ainsi : 
+    $$P^{n}\xrightarrow[n\to+\infty]{}A=\begin{pmatrix} \frac{q}{p+q} & \frac{p}{p+q} \\[1mm] \frac{q}{p+q} & \frac{p}{p+q} \end{pmatrix}$$
+     Les deux lignes de la limite sont égales à la distribution invariante $\pi=\left(\frac{q}{p+q},\frac{p}{p+q}\right)$ trouvée dans la démonstration de la Proposition 4. Quel que soit l'état de départ, la loi de $X_{n}$ tend vers $\pi$.
+
+    **4.** Ici $p=0{,}2$, $q=0{,}4$ et $r=0{,}4$ : 
+    $$\boxed{P^{n}=\begin{pmatrix} \frac{2}{3} & \frac{1}{3} \\[1mm] \frac{2}{3} & \frac{1}{3} \end{pmatrix}+0{,}4^{n}\begin{pmatrix} \frac{1}{3} & -\frac{1}{3} \\[1mm] -\frac{2}{3} & \frac{2}{3} \end{pmatrix}}$$
+     On retrouve $\pi=\begin{pmatrix} \frac{2}{3} & \frac{1}{3} \end{pmatrix}$. Contrôle pour $n=1$ : $\frac{2}{3}+0{,}4\times\frac{1}{3}=\frac{2{,}4}{3}=0{,}8$. Cette décomposition joue le rôle de la diagonalisation de l'exercice 26 du chapitre 3 : $A$ et $B$ « séparent » les deux comportements, la partie stable $A$ et la partie qui s'éteint, $r^{n}B$.
+- id: "me-09-23"
+  feuille: "f-me-09"
+  numero: 23
+  titre: "Deux piles consécutifs"
+  partie: "Pour aller plus loin"
+  etoiles: 4
+  types: [Problème, Démonstration, Calcul]
+  mots_cles: [matrice de transition, chaînes de Markov, probabilités conditionnelles, distributions, puissances de matrices, convergence, suites, dés et pièces]
+  noeuds: [v-matrices, p-variables, p-espace, n-recurrence]
+  notions: [espace-matrices, variable-aleatoire, espace-probabilise]
+  source: "inspiré de poly « Mathématiques : du lycée aux CPGE scientifiques » (LLG / H4), n° 309 (modélisation par une chaîne de Markov)"
+  page_enonce: 7
+  page_corrige: 20
+  enonce: |
+    On lance une pièce équilibrée de façon répétée. Pour $n\in\mathbb{N}^{*}$, on note $p_{n}$ la probabilité de n'avoir jamais observé deux piles consécutifs au cours des $n$ premiers lancers. On considère la chaîne de Markov $(X_{n})$ à trois états :
+
+    • $0$ : « deux piles consécutifs ne sont pas encore apparus, et le dernier lancer est face (ou aucun lancer n'a eu lieu) » ;
+
+    • $1$ : « deux piles consécutifs ne sont pas encore apparus, et le dernier lancer est pile » ;
+
+    • $2$ : « deux piles consécutifs sont déjà apparus ».
+
+    **1.** Donner la matrice de transition $T$ et la distribution initiale $\pi_{0}$. Calculer $p_{1}$ et $p_{2}$.
+
+    **2.** On note $\pi_{n}=\begin{pmatrix} a_{n} & b_{n} & c_{n} \end{pmatrix}$. Exprimer $a_{n+1}$ et $b_{n+1}$ en fonction de $a_{n}$ et $b_{n}$, puis montrer que $p_{n}=a_{n}+b_{n}$ vérifie : 
+    $$\forall n\in\mathbb{N}^{*}, \qquad p_{n+2}=\frac{p_{n+1}}{2}+\frac{p_{n}}{4}.$$
+
+    **3.** La suite de Fibonacci est définie par $F_{1}=F_{2}=1$ et $F_{n+2}=F_{n+1}+F_{n}$. Montrer que, pour tout $n\in\mathbb{N}^{*}$, $p_{n}=\dfrac{F_{n+2}}{2^{n}}$.
+
+    **4.** Montrer que, pour tout $n\in\mathbb{N}^{*}$, $F_{n}\leqslant\left(\dfrac{7}{4}\right)^{n}$, puis en déduire la limite de $(p_{n})$. Interpréter.
+  corrige: |
+    ![Figure](documents/figures/395c6c4837f85c50.svg)
+
+    Un pile fait passer de $0$ à $1$, puis de $1$ à l'état absorbant $2$ ; un face ramène toujours en $0$, sauf depuis l'état $2$.
+
+    **1.** 
+    $$T=\begin{pmatrix} \frac{1}{2} & \frac{1}{2} & 0 \\[1mm] \frac{1}{2} & 0 & \frac{1}{2} \\[1mm] 0 & 0 & 1 \end{pmatrix} \qquad ; \qquad \pi_{0}=\begin{pmatrix} 1 & 0 & 0 \end{pmatrix}$$
+     $\pi_{1}=\begin{pmatrix} \frac{1}{2} & \frac{1}{2} & 0 \end{pmatrix}$ et $\pi_{2}=\begin{pmatrix} \frac{1}{2} & \frac{1}{4} & \frac{1}{4} \end{pmatrix}$, donc $\boxed{p_{1}=1}$ et $\boxed{p_{2}=\frac{3}{4}}$ : sur quatre suites de deux lancers, seule $PP$ est exclue.
+
+    **2.** $\pi_{n+1}=\pi_{n}T$ donne $a_{n+1}=\frac{1}{2}a_{n}+\frac{1}{2}b_{n}=\frac{1}{2}p_{n}$ et $b_{n+1}=\frac{1}{2}a_{n}$. Alors : 
+    $$p_{n+2}=a_{n+2}+b_{n+2}=\frac{1}{2}p_{n+1}+\frac{1}{2}a_{n+1}=\frac{1}{2}p_{n+1}+\frac{1}{4}p_{n}$$
+
+    **3.** Récurrence à deux termes. **Initialisation :** $\frac{F_{3}}{2}=\frac{2}{2}=1=p_{1}$ et $\frac{F_{4}}{4}=\frac{3}{4}=p_{2}$. **Hérédité :** Si la formule est vraie aux rangs $n$ et $n+1$ : 
+    $$p_{n+2}=\frac{1}{2}\times\frac{F_{n+3}}{2^{n+1}}+\frac{1}{4}\times\frac{F_{n+2}}{2^{n}}=\frac{F_{n+3}+F_{n+2}}{2^{n+2}}=\frac{F_{n+4}}{2^{n+2}}$$
+     **Conclusion :** $\boxed{p_{n}=\dfrac{F_{n+2}}{2^{n}}}$ pour tout $n\in\mathbb{N}^{*}$. Autrement dit, parmi les $2^{n}$ suites de $n$ lancers, exactement $F_{n+2}$ ne contiennent pas deux piles consécutifs.
+
+    **4.** Récurrence à deux termes encore : $F_{1}=1\leqslant\frac{7}{4}$ et $F_{2}=1\leqslant\frac{49}{16}$. Si $F_{n}\leqslant\left(\frac{7}{4}\right)^{n}$ et $F_{n+1}\leqslant\left(\frac{7}{4}\right)^{n+1}$, alors : 
+    $$F_{n+2}\leqslant\left(\frac{7}{4}\right)^{n}\left(1+\frac{7}{4}\right)=\left(\frac{7}{4}\right)^{n}\times\frac{44}{16}\leqslant\left(\frac{7}{4}\right)^{n}\times\frac{49}{16}=\left(\frac{7}{4}\right)^{n+2}$$
+     On en déduit : 
+    $$0\leqslant p_{n}\leqslant\frac{1}{2^{n}}\left(\frac{7}{4}\right)^{n+2}=\frac{49}{16}\left(\frac{7}{8}\right)^{n}$$
+     Comme $0<\frac{7}{8}<1$, le majorant tend vers $0$, et par le théorème des gendarmes : $\boxed{\lim_{n\to+\infty}p_{n}=0}$. Deux piles consécutifs finissent par apparaître avec une probabilité aussi proche de $1$ que l'on veut : l'état $2$ absorbe la chaîne, comme dans l'exercice 20.
+
