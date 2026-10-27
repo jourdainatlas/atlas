@@ -42,10 +42,10 @@ données YAML. Les messages de commit commencent par « Cours : » ou « Exercic
 - **Seconde** (27 oct. 2026) : chapitres 1 à 11 (`s-01` à `s-11`), PDF dans `documents/cours/seconde/`
   (7,0 Mo). Le site compte 38 chapitres déposés. Feuilles `f-s-01` à `f-s-11` (42, 35, 30, 33, 30, 32,
   29, 31, 33, 33, 34 exercices), soit 362 exercices ; PDF dans `documents/exercices/seconde/` (5,1 Mo),
-  166 figures ajoutées (519 au total). Le site compte 1 343 exercices. **Les PDF des feuilles de Seconde
-  ont été compilés ici à partir des `.tex`** (l'auteur n'avait envoyé que les sources) : il faudra les
-  remplacer par ses PDF s'il les envoie, en vérifiant que la pagination ne change pas (les champs
-  `page_enonce` et `page_corrige` en dépendent ; sinon reconvertir). L'environnement de travail n'a
+  166 figures ajoutées (519 au total). Le site compte 1 343 exercices. Les PDF, d'abord compilés ici à partir
+  des `.tex`, ont été remplacés le jour même par ceux de l'auteur : texte et pagination identiques, la
+  reconversion n'a rien changé aux champs `page_enonce` et `page_corrige`. Si l'on doit compiler
+  soi-même une feuille, l'environnement de travail n'a
   pas, d'origine, `babel-french`, `lmodern`, `tkz-tab` ni `diagbox` : `apt-get install
   texlive-lang-french lmodern texlive-latex-extra texlive-pictures texlive-fonts-recommended
   texlive-science`.
