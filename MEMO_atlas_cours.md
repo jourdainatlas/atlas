@@ -57,6 +57,11 @@ données YAML. Les messages de commit commencent par « Cours : » ou « Exercic
   (3,2 Mo). Le site compte 47 chapitres en ligne. Les feuilles d'exercices suivront (`f-ap-NN`, préfixe
   `ap-NN`). Pour éviter deux niveaux de même nom, le niveau vide `ma`, réservé aux cours de classe
   préparatoire, s'intitule désormais « MPSI ».
+  Feuilles `f-ap-01` à `f-ap-09` (27 oct. 2026) : 30, 25, 22, 20, 22, 21, 22, 22, 25 exercices, soit 209 ;
+  PDF de l'auteur dans `documents/exercices/approfondies/` (3,9 Mo), 23 figures ajoutées (545 au total),
+  métadonnées `outils/meta_ap_01.py` à `meta_ap_09.py`. Le site compte 1562 exercices. Les avertissements
+  KaTeX « No character metrics » passent à 205 : les guillemets de `\gui{…}` placés dans des `\text{…}`
+  de formules encadrées (point ouvert ci-dessous).
 - **Niveaux sans cours** : MPSI (`ma`), ECG. Le programme officiel
   MPSI-MP2I est un fichier du projet Claude (`programme-mpsi-mp2i_mathematiques.pdf`).
 - **Première** (27 oct. 2026) : chapitres 1 à 8 (`p-01` à `p-08`), PDF dans `documents/cours/premiere/`
