@@ -48,5 +48,7 @@ apostrophes, l'apostrophe se double : `$f''''(0)$` s'écrit pour f''(0).
 remplacements `avant → apres` (formule linéaire d'origine → `$…$`), appliquée par un script qui exige
 que chaque `avant` figure tel quel dans le champ visé ; le texte hors formules reste donc identique mot
 pour mot. Un second agent relit chaque remplacement. Les notations ambiguës sont résolues sur le PDF
-quand il est accessible (Mines-Ponts : dans le dépôt) ; à défaut, par le sens mathématique, et un cas
-indécidable est laissé en texte et signalé. Le titre du sujet (`nom` au niveau du sujet) est couvert aussi. Consignes des deux agents : `outils/annales_formules_consignes.md`. Session 2023 convertie le 27 oct. 2026 (348 remplacements et 10 titres ; relecture : 0 correction sur les lots, 3 titres oubliés ajoutés, 2 titres e3a rectifiés d'après l'aperçu, la fonction étant $x \mapsto \int_0^1 t^{t^x}\,\mathrm{d}t$).
+quand il est accessible (Mines-Ponts : dans le dépôt ; Centrale, devenirenseignant, e3a, X, vmaths : téléchargeables par `curl`
+depuis la machine ; le site du CCINP ferme la connexion et doc-solus est refusé par le filtre, mais
+WebFetch lit doc-solus quand l'adresse a été trouvée par WebSearch) ; à défaut, par le sens mathématique,
+et un cas indécidable est laissé en texte et signalé. Le titre du sujet (`nom` au niveau du sujet) est couvert aussi. Consignes des deux agents : `outils/annales_formules_consignes.md`. Session 2023 convertie le 27 oct. 2026 (348 remplacements et 10 titres ; relecture : 0 correction sur les lots, 3 titres oubliés ajoutés, 2 titres e3a rectifiés d'après l'aperçu, la fonction étant $x \mapsto \int_0^1 t^{t^x}\,\mathrm{d}t$).
