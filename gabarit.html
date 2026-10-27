@@ -690,7 +690,7 @@ span.case:hover { border-style: dashed; color: inherit; }
 .rech-domaines { margin-top: 14px; columns: 3 260px; column-gap: 20px; }
 /* colonnes équilibrées (à la manière d'un mur de briques) : un domaine ne se coupe pas d'une colonne à l'autre */
 .rech-domaines > div { break-inside: avoid; margin-bottom: 14px; }
-.rech-domaines h4 { margin: 0 0 6px; font-size: 12px; font-family: var(--f-mono); font-weight: 500; letter-spacing: .05em; text-transform: uppercase; color: var(--encre-3); }
+.rech-domaines h4 { margin: 0 0 8px; padding: 0 0 4px 9px; font-size: 13px; font-family: var(--f-mono); font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--dc, var(--encre-2)); border-left: 3px solid var(--dc, var(--ligne)); border-bottom: 1px solid color-mix(in srgb, var(--dc, var(--encre-3)) 35%, transparent); }
 .rech-domaines .puces-chips { gap: 5px; }
 .rech-domaines .chip { text-align: left; }
 .rech-domaines .chip small { color: var(--encre-3); margin-left: 4px; }
@@ -1996,7 +1996,8 @@ function resultatsAnnales() {
     for (const d of I.domaines) {
       const ts = Object.values(I.themes).filter(t => t.domaine === d.id && !t.parent && I.compte[t.id]).sort((a, b) => I.compte[b.id] - I.compte[a.id]);
       if (!ts.length) continue;
-      h += `<div><h4>${esc(d.titre)}</h4><div class="puces-chips">${ts.map(t => `<button type="button" class="chip" data-rq="${esc(t.titre)}">${esc(t.titre)}<small>${I.compte[t.id]}</small></button>`).join('')}</div></div>`;
+      // couleur du domaine : celle de sa famille dans l'édifice (algèbre orange, nombres bleu, analyse vert d'eau, géométrie violet)
+      h += `<div${d.famille ? ` style="--dc: var(--c-${esc(d.famille)})"` : ''}><h4>${esc(d.titre)}</h4><div class="puces-chips">${ts.map(t => `<button type="button" class="chip" data-rq="${esc(t.titre)}">${esc(t.titre)}<small>${I.compte[t.id]}</small></button>`).join('')}</div></div>`;
     }
     return h + '</div>';
   }

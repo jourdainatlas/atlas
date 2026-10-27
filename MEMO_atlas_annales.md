@@ -41,7 +41,10 @@ une parenthèse ouvrante qui la précède et la ponctuation qui la suit ne se co
 domaine ne se coupe pas : `break-inside: avoid`) au lieu d'une grille à rangées alignées ; avec l'analyse
 scindée en quatre, la hauteur du panneau passe de 1 674 à 1 120 px sur ordinateur, sans vides. Ordre des
 domaines : algèbre, algèbre linéaire, arithmétique, les quatre d'analyse, probabilités, géométrie,
-numérique et combinatoire.
+numérique et combinatoire. Titres de domaine colorés selon la famille de l'édifice (champ `famille:`
+des domaines dans `annales-themes.yaml`, variable `--c-<famille>`) : algèbre et algèbre linéaire en orange
+(`alg`), arithmétique et numérique en bleu (`nb`), les quatre d'analyse et les probabilités en vert d'eau
+(`ana`), géométrie en violet (`geo`) ; filet à gauche et soulignement de la même couleur.
 
 **Convention de saisie.** Intervalles à la française : `\left]-1, +\infty\right[` (sinon le « − » est
 espacé comme une soustraction). Ensembles : `\mathbb{R}`, `\mathbb{R}_n[X]`, `\mathcal{M}_n(\mathbb{K})`.
