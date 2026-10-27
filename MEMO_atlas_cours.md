@@ -38,7 +38,10 @@ données YAML. Les messages de commit commencent par « Cours : » ou « Exercic
 - **Feuilles en ligne** : `f-t-01` à `f-t-10`, soit 407 exercices transcrits (33, 42, 45, 38, 40, 50,
   38, 36, 42, 43). Les PDF sont dans `documents/exercices/terminale/` (6,7 Mo) et les 143 figures dans
   `documents/figures/` (4,0 Mo).
-- **Déclaré, non déposé** : `m-homologie` (Master).
+- **Niveau Master retiré** (27 oct. 2026, demande de l'auteur) : le niveau `master`, la fiche prototype
+  `m-homologie` et la feuille annoncée `f-m-galois` sont supprimés, faute de cours prêt. Le même jour, les
+  bandeaux « En construction » des pages Cours et Exercices et les badges du menu pour ces deux
+  rubriques sont retirés (la fonction `enLigneExos` de `gabarit.html`, qui ne servait qu'au bandeau, aussi).
 - **Seconde** (27 oct. 2026) : chapitres 1 à 11 (`s-01` à `s-11`), PDF dans `documents/cours/seconde/`
   (7,0 Mo). Le site compte 38 chapitres déposés. Feuilles `f-s-01` à `f-s-11` (42, 35, 30, 33, 30, 32,
   29, 31, 33, 33, 34 exercices), soit 362 exercices ; PDF dans `documents/exercices/seconde/` (5,1 Mo),
@@ -88,7 +91,6 @@ données YAML. Les messages de commit commencent par « Cours : » ou « Exercic
 - Les modifications de `tex2exos.py` du 27 octobre n'ont pas pu être rejouées sur les sources des
   feuilles de Terminale, absentes du dépôt. La forme `\exo{…}{…}` y est lue par le nouveau code
   d'en-têtes ; il faudra le confirmer au prochain versement d'une feuille de ce type.
-- Le cours `m-homologie` attend son PDF.
 - Deux défauts de `tex2exos.py` corrigés le 27 octobre (feuilles de Première) touchaient peut-être les
   feuilles de Terminale, dont les sources ne sont pas dans le dépôt : un `\emph{…}` ou `\textbf{…}`
   contenant un groupe `{}` perdait son premier mot (« \emph{On adopte … \eunc{} …} » donnait
@@ -112,13 +114,12 @@ exercices », c'est-à-dire la vue « Par exercice » filtrée sur ce niveau. Le
 
 1. Placer le PDF dans `documents/cours/<niveau>/chapNN_<sujet>.pdf`, en minuscules, sans accent, avec
    un numéro sur deux chiffres.
-2. Dans `rubriques/cours.yaml`, compléter ou créer l'entrée : `id` (par exemple `t-11`, `m-…` pour le
-   Master), `niveau`, `chapitre`, `titre`, `resume` (en prose, rédigé à partir de la lecture du cours
+2. Dans `rubriques/cours.yaml`, compléter ou créer l'entrée : `id` (par exemple `t-11`), `niveau`, `chapitre`, `titre`, `resume` (en prose, rédigé à partir de la lecture du cours
    et non d'après le titre), `sommaire` (sections réelles du PDF), `theories` (nœuds de l'édifice
    effectivement mobilisés), `notions` (termes du lexique), `exercices` (identifiant de la feuille),
    `liens` (identifiants d'autres cours : chapitres liés, affichés dans les deux sens, y compris
    d'un niveau à l'autre), `pdf`, `pages` (lu par `pdfinfo`), `statut: depose`. Préfixes : `s-` Seconde, `p-`
-   Première, `t-` Terminale, `me-` Maths expertes, `ap-` Maths approfondies, `m-` Master.
+   Première, `t-` Terminale, `me-` Maths expertes, `ap-` Maths approfondies.
 3. `construire.py` vérifie que les fichiers existent, que les renvois aux nœuds, aux termes et aux
    feuilles sont valides, que les identifiants sont uniques, que le niveau est déclaré, que chaque
    lien vise un autre cours existant et qu'un numéro de chapitre n'est pas pris deux fois dans un

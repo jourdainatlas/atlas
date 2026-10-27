@@ -850,8 +850,8 @@ span.case:hover { border-style: dashed; color: inherit; }
         <hr>
         <a href="#edifice" data-rubrique="edifice"><span class="m-titre">L'édifice</span><span class="m-desc">Le graphe des théories, de la logique aux grandes théories.</span></a>
         <hr>
-        <a href="#cours" data-rubrique="cours"><span class="m-titre">Cours</span><span class="m-badge">en construction</span><span class="m-desc">Les cours scolaires, chapitre par chapitre.</span></a>
-        <a href="#exercices" data-rubrique="exercices"><span class="m-titre">Exercices</span><span class="m-badge">en construction</span><span class="m-desc">Feuilles et exercices corrigés, à chercher par notion.</span></a>
+        <a href="#cours" data-rubrique="cours"><span class="m-titre">Cours</span><span class="m-desc">Les cours scolaires, chapitre par chapitre.</span></a>
+        <a href="#exercices" data-rubrique="exercices"><span class="m-titre">Exercices</span><span class="m-desc">Feuilles et exercices corrigés, à chercher par notion.</span></a>
         <a href="#annales" data-rubrique="annales"><span class="m-titre">Annales</span><span class="m-badge">en construction</span><span class="m-desc">Sujets des concours d'ingénieurs et de l'enseignement, et recherche par thème.</span></a>
         <hr>
         <a href="#a-propos" data-rubrique="a-propos"><span class="m-titre">À propos – Contact</span><span class="m-desc">L'auteur, le projet, et une adresse pour écrire ou signaler une erreur.</span></a>
@@ -1500,8 +1500,6 @@ function pageCours(chemin) {
   }
   const niv = (pageCours.filtre ||= 'tous');
   let h = tete('Rubrique', 'Cours', C.intro);
-  const enLigneCours = (C.niveaux || []).filter(n => tous.some(c => c.niveau === n.id && c.statut === 'depose')).map(n => n.titre);
-  h += maquette(`Les chapitres sont déposés au fur et à mesure${enLigneCours.length ? ` ; en ligne : ${enLigneCours.join(', ')}` : ''}.`);
   const presents = (C.niveaux || []).filter(n => tous.some(c => c.niveau === n.id));
   h += `<div class="cours-filtres"><div class="puces-chips" role="group" aria-label="Niveau">`;
   h += `<button type="button" class="chip" data-niveau="tous" aria-pressed="${niv === 'tous'}">Tous <span class="compte">${tous.length}</span></button>`;
@@ -1584,23 +1582,6 @@ function chargerExercices() {
   return chargementExos;
 }
 
-// « les feuilles des chapitres 1 à 8 de Terminale sont en ligne (… exercices) », calculé sur les feuilles déposées.
-function enLigneExos(E) {
-  const tout = (E.feuilles || []).filter(f => f.statut === 'depose');
-  const dep = tout.filter(f => f.chapitre), hors = tout.length - dep.length;
-  if (!dep.length) return 'aucune feuille n\'est encore en ligne';
-  const parNiveau = {};
-  for (const f of dep) (parNiveau[f.niveau] = parNiveau[f.niveau] || []).push(f.chapitre);
-  const plages = ch => {
-    ch = [...new Set(ch)].sort((a, b) => a - b); const r = [];
-    for (let i = 0; i < ch.length; i++) { let j = i; while (j + 1 < ch.length && ch[j + 1] === ch[j] + 1) j++; r.push(j > i + 1 ? `${ch[i]} à ${ch[j]}` : j === i + 1 ? `${ch[i]} et ${ch[j]}` : `${ch[i]}`); i = j; }
-    return r.join(', ');
-  };
-  const morceaux = Object.entries(parNiveau).map(([niv, ch]) => `${ch.length > 1 ? 'des chapitres' : 'du chapitre'} ${plages(ch)} de ${niveauDe(niv).titre}`);
-  const n = tout.reduce((t, f) => t + (f.nombre || 0), 0);
-  return `les feuilles ${morceaux.join(' et ')}${hors ? `, ainsi que ${hors} ${hors > 1 ? "feuilles complémentaires" : "feuille complémentaire"},` : ''} sont en ligne${n ? ` (${n} exercices)` : ''}`;
-}
-
 function pageExercices(chemin, premiere) {
   const E = R.exercices || {};
   const [mode, arg] = (chemin || '').split('/');
@@ -1614,8 +1595,6 @@ function pageExercices(chemin, premiere) {
   const attente = chargerExercices();
   if (attente) attente.then(() => { const z = $('#rubrique'); if (enRubrique() && z.dataset.nom === 'exercices') rafraichirRubrique(); });
   let h = tete('Rubrique', 'Exercices', E.intro);
-  { const sc = (E.feuilles || []).filter(f => f.statut === 'depose' && !f.pdf_corrige).length;
-    h += maquette(`La banque se remplit au fur et à mesure : ${enLigneExos(E)}, avec leurs corrigés${sc ? `, sauf pour ${sc > 1 ? `${sc} feuilles qui n'en ont pas` : "une feuille qui n'en a pas"}` : ''}.`); }
   h += `<div class="resultats-tete" style="margin-bottom:18px"><div class="segments" role="group" aria-label="Affichage"><button type="button" data-vue="exercice" aria-pressed="${etatExo.vue === 'exercice'}">Par exercice</button><button type="button" data-vue="feuille" aria-pressed="${etatExo.vue === 'feuille'}">Par feuille</button><button type="button" data-vue="niveau" aria-pressed="${etatExo.vue === 'niveau'}">Par niveau</button></div></div>`;
   h += etatExo.vue === 'feuille' ? vueFeuilles(E) : etatExo.vue === 'niveau' ? vueNiveauxExos(E) : vueExercices(E, !!attente);
   return h;
