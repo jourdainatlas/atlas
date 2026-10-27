@@ -39,7 +39,9 @@ données YAML. Les messages de commit commencent par « Cours : » ou « Exercic
   38, 36, 42, 43). Les PDF sont dans `documents/exercices/terminale/` (6,7 Mo) et les 143 figures dans
   `documents/figures/` (4,0 Mo).
 - **Déclaré, non déposé** : `m-homologie` (Master).
-- **Niveaux sans cours** : Seconde, Maths approfondies (MPSI), ECG. Le programme officiel
+- **Seconde** (27 oct. 2026) : chapitres 1 à 11 (`s-01` à `s-11`), PDF dans `documents/cours/seconde/`
+  (7,0 Mo), sans feuilles d'exercices pour l'instant. Le site compte 38 chapitres déposés.
+- **Niveaux sans cours** : Maths approfondies (MPSI), ECG. Le programme officiel
   MPSI-MP2I est un fichier du projet Claude (`programme-mpsi-mp2i_mathematiques.pdf`).
 - **Première** (27 oct. 2026) : chapitres 1 à 8 (`p-01` à `p-08`), PDF dans `documents/cours/premiere/`
   (3,5 Mo). Le site compte 27 chapitres en ligne. Feuilles `f-p-01` à `f-p-08` (29, 30, 34, 36, 35,
@@ -93,7 +95,7 @@ exercices », c'est-à-dire la vue « Par exercice » filtrée sur ce niveau. Le
    et non d'après le titre), `sommaire` (sections réelles du PDF), `theories` (nœuds de l'édifice
    effectivement mobilisés), `notions` (termes du lexique), `exercices` (identifiant de la feuille),
    `liens` (identifiants d'autres cours : chapitres liés, affichés dans les deux sens, y compris
-   d'un niveau à l'autre), `pdf`, `pages` (lu par `pdfinfo`), `statut: depose`. Préfixes : `p-`
+   d'un niveau à l'autre), `pdf`, `pages` (lu par `pdfinfo`), `statut: depose`. Préfixes : `s-` Seconde, `p-`
    Première, `t-` Terminale, `me-` Maths expertes, `m-` Master.
 3. `construire.py` vérifie que les fichiers existent, que les renvois aux nœuds, aux termes et aux
    feuilles sont valides, que les identifiants sont uniques, que le niveau est déclaré, que chaque
