@@ -1,7 +1,9 @@
 # Mémo ATLAS — complément : rubrique L'édifice
 
 > Complète `MEMO_atlas.md` (sections 0 à 16) et se lit avec lui. Les sections 17 et 18 sont dans
-> `MEMO_atlas_annales.md`, les sections 19 à 22 dans `MEMO_atlas_cours.md` ; ce mémo commence à 23.
+> `MEMO_atlas_annales.md` (ainsi que la 27), les sections 19 à 22 dans `MEMO_atlas_cours.md` ; ce mémo
+> commence à 23. Toute nouvelle section prend le numéro suivant le plus grand déjà employé, tous mémos
+> confondus (section 0, point 7).
 > Il appartient à la conversation « L'édifice » : elle seule le modifie. La version du dépôt fait foi ;
 > la copie du projet Claude n'en est que le reflet.
 >
