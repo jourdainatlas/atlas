@@ -64,7 +64,7 @@ aussi révélé des erreurs de fond dans les aperçus et mots-clés, corrigées 
 2018), indice ℓ manquant (agrégation interne 2017), GL_n au lieu de GL_{2n} (Mines PSI 2015) et de
 GL_{p+1}(ℝ) (Centrale PSI 2014), A(d) au lieu de Δ(d) avec normes infinies (agrégation 2013), K(t) et θ au
 lieu de φ(t) et α (CCP PSI 2011), entre autres. Défauts de données réparés : mots-clés coupés à une
-virgule interne (`min(x, t)`, `O(r, s)`, `⟨AX, X⟩`, recollés ; `outils` ne les produit plus) et crochets
+virgule interne (`min(x, t)`, `O(r, s)`, `⟨AX, X⟩`, recollés ; à surveiller lors d'un prochain étiquetage) et crochets
 perdus (« Rn de X », « K de M », « R de A », « de 0 1 »). Le site du CCINP a fermé la connexion la plupart du
 temps mais a répondu à certaines heures ; copies utiles : doc-solus (WebFetch), bibmath, cahier-de-prepa,
 groupe-reussite, et vmaths pour 2011-2013. Choix laissés ouverts : les nombres du texte courant (« rang 1 »,
