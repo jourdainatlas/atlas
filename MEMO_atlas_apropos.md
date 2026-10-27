@@ -48,8 +48,8 @@ Page d'accueil (27 oct. 2026) : titre « ATLAS – Architecture des mathématiqu
 de `rendu.mjs`) ; description choisie par l'auteur, pour l'aperçu, les moteurs et `/accueil/` : « Architecture logique
 des théories mathématiques ; cours, exercices corrigés, et annales de concours avec recherche par thème. »
 
-**Voix (27 oct. 2026).** À la demande de l'auteur, les sections sont écrites à la première personne ; seules
-les cartes des épreuves, descriptives, restent impersonnelles. La section Enseignements ne donne pas de
+**Voix (27 oct. 2026).** À la demande de l'auteur, les sections sont écrites à la première personne ; restent
+impersonnelles les cartes des épreuves et la section « Principes de rédaction » (demande de l'auteur). La section Enseignements ne donne pas de
 compte de chapitres, pour ne pas vieillir à chaque dépôt.
 
 **Points ouverts.** Année sabbatique 2014-2015 et projet de thèse,
