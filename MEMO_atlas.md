@@ -329,6 +329,9 @@ Partage (25 octobre 2026) : `rendu.mjs` écrit des pages de partage `site/cours/
 `site/annales/`, `site/a-propos/` et `site/edifice/<nœud>/` (395 pages), chacune avec titre, description et `og:image`,
 qui redirigent vers l'ancre du site. Le bouton « Partager » de l'en-tête copie l'adresse correspondant à la vue.
 Cause du problème : tout ce qui suit « # » n'est pas envoyé au serveur, et Telegram gardait un aperçu périmé de l'accueil.
+Titres (27 oct. 2026) : onglet « ATLAS – <rubrique> » (`titreOnglet` dans `gabarit.html`, appelé par `afficherRubrique` et `aller`) ;
+pages de partage « ATLAS – <rubrique> » ou « ATLAS – <rubrique> : <titre> », la rubrique étant déduite du premier segment du
+chemin (`RUBRIQUES_PARTAGE` dans `rendu.mjs`). Image d'aperçu commune : `apercu.png`.
 Note de l'auteur : les cours suivent la chronologie scolaire, pas celle de l'édifice ; l'édifice sert à recontextualiser
 logiquement le cours. Ne pas signaler comme incohérence un écart de statut (admis au lycée, démontré dans l'édifice).
 

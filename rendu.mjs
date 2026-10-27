@@ -303,9 +303,12 @@ const texteBrut = h => String(h || '').replace(/<annotation[\s\S]*?<\/annotation
 const coupe = (t, n = 200) => t.length > n ? t.slice(0, n - 1).replace(/\s+\S*$/, '') + '…' : t;
 const attr = t => String(t).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
 let nbPartage = 0;
+const RUBRIQUES_PARTAGE = { accueil: 'Accueil', edifice: 'L\'édifice', cours: 'Cours', exercices: 'Exercices', annales: 'Annales', 'a-propos': 'À propos' };
 function pagePartage(chemin, ancre, titre, description) {
   const url = ADRESSE + chemin, cible = ADRESSE + '#' + ancre;
-  const t = titre ? `${titre} · ATLAS` : 'ATLAS';
+  // Titre : « ATLAS – <rubrique> » pour une rubrique, « ATLAS – <rubrique> : <titre> » plus profond.
+  const tete = chemin.split('/')[0], rubrique = RUBRIQUES_PARTAGE[tete];
+  const t = !titre ? 'ATLAS' : !rubrique || titre === rubrique ? `ATLAS – ${titre}` : `ATLAS – ${rubrique} : ${titre}`;
   const d = coupe(description || 'Architecture logique des théories mathématiques, de la logique du premier ordre et de ZFC aux grandes théories.');
   fs.mkdirSync('site/' + chemin, { recursive: true });
   fs.writeFileSync(`site/${chemin}index.html`, `<!doctype html>
@@ -351,7 +354,7 @@ for (const e of Rb.exercices?.exercices || []) {
   pagePartage(`exercices/${e.id}/`, `exercices/ex/${e.id}`, `Exercice ${e.numero}${e.titre ? ` (${texteBrut(e.titre)})` : ''} — ${lieu}`, texteBrut(e.enonce));
 }
 pagePartage('annales/', 'annales', 'Annales', texteBrut(Rb.annales?.intro));
-pagePartage('a-propos/', 'a-propos', 'À propos', 'L\'auteur et le projet ATLAS.');
+pagePartage('a-propos/', 'a-propos', 'À propos', 'L\'auteur d\'ATLAS, professeur agrégé de mathématiques, le projet et ses principes de rédaction ; une adresse pour écrire ou signaler une erreur.');
 for (const n of Object.values(D.noeuds)) {
   const ancre = n.sous ? n.sous : `${n.graphe}.${n.id}`;
   const g = D.graphes[n.graphe];

@@ -853,7 +853,7 @@ span.case:hover { border-style: dashed; color: inherit; }
         <a href="#exercices" data-rubrique="exercices"><span class="m-titre">Exercices</span><span class="m-badge">en construction</span><span class="m-desc">Feuilles et exercices corrigés, à chercher par notion.</span></a>
         <a href="#annales" data-rubrique="annales"><span class="m-titre">Annales</span><span class="m-badge">en construction</span><span class="m-desc">Sujets des concours d'ingénieurs et de l'enseignement, et recherche par thème.</span></a>
         <hr>
-        <a href="#a-propos" data-rubrique="a-propos"><span class="m-titre">À propos</span><span class="m-badge">en construction</span><span class="m-desc">L'auteur et le projet.</span></a>
+        <a href="#a-propos" data-rubrique="a-propos"><span class="m-titre">À propos – Contact</span><span class="m-desc">L'auteur, le projet, et une adresse pour écrire ou signaler une erreur.</span></a>
       </nav>
     </div>
     <ol class="fil" id="fil" aria-label="Position dans l'atlas"></ol>
@@ -1061,6 +1061,7 @@ function chargerBranche(gid) {
 function aller(gid, choisi = null, opts = {}) {
   quitterRubrique();
   ancreEdifice = gid + (choisi ? '.' + choisi : '');
+  document.title = titreOnglet('L\'édifice');
   chargerBranche(gid).catch(() => {});   // préchargement : les fiches de ce graphe seront prêtes
   const change = gid !== etat.graphe || !$('#plan').childElementCount;
   etat.graphe = gid; etat.choisi = choisi;
@@ -1408,6 +1409,8 @@ const RUBRIQUES = {
   'a-propos': { titre: 'À propos', page: pageAPropos },
 };
 let ancreEdifice = '';
+// Titre de l'onglet : « ATLAS – <rubrique> » (même forme que les pages de partage de rendu.mjs).
+const titreOnglet = rubrique => `ATLAS – ${rubrique}`;
 const enRubrique = () => document.body.classList.contains('en-rubrique');
 
 function maquette(texte) {
@@ -2182,6 +2185,7 @@ function afficherRubrique(nom, chemin) {
   z.hidden = false;
   z.innerHTML = `<div class="page">${RUBRIQUES[nom].page(chemin, true)}</div>`;
   z.dataset.nom = nom; z.dataset.chemin = chemin || '';
+  document.title = titreOnglet(RUBRIQUES[nom].titre);
   z.classList.toggle('accueil', nom === 'accueil');
   z.scrollTop = 0; scrollTo(0, 0);
   monterPdf(z);

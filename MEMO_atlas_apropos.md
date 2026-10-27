@@ -40,5 +40,10 @@ Dans `apropos.yaml`, champ `courriel: {local, domaine}` ; `aProposSection` assem
 page (elle n'apparaît pas en clair dans `site/index.html`) et affiche « Écrire » (`mailto:`) et « Copier
 l'adresse ».
 
+**Menu et partage (27 oct. 2026).** Le menu du logo affiche « À propos – Contact », sans badge « en
+construction ». Titres d'onglet et de partage : voir `MEMO_atlas.md`, section 13. Un lien copié depuis la
+barre d'adresse (`/#annales`) donne toujours l'aperçu générique de l'accueil, car le serveur ne reçoit
+pas ce qui suit « # » : seul le bouton « Partager » (`/annales/`) donne l'aperçu propre à la rubrique.
+
 **Points ouverts.** Année sabbatique 2014-2015 et projet de thèse,
 laissés de côté en attendant l'avis de l'auteur.
