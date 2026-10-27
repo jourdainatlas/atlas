@@ -52,3 +52,21 @@ quand il est accessible (Mines-Ponts : dans le dépôt ; Centrale, devenirenseig
 depuis la machine ; le site du CCINP ferme la connexion et doc-solus est refusé par le filtre, mais
 WebFetch lit doc-solus quand l'adresse a été trouvée par WebSearch) ; à défaut, par le sens mathématique,
 et un cas indécidable est laissé en texte et signalé. Le titre du sujet (`nom` au niveau du sujet) est couvert aussi. Consignes des deux agents : `outils/annales_formules_consignes.md`. Session 2023 convertie le 27 oct. 2026 (348 remplacements et 10 titres ; relecture : 0 correction sur les lots, 3 titres oubliés ajoutés, 2 titres e3a rectifiés d'après l'aperçu, la fonction étant $x \mapsto \int_0^1 t^{t^x}\,\mathrm{d}t$).
+
+**Bilan (27 oct. 2026).** Les seize sessions sont converties : 542 sujets, 6 502 formules, toutes
+compilées par KaTeX à la construction et recomposées sans erreur dans le navigateur (contrôle sur
+l'ensemble de l'index) ; `controler` ne trouve plus aucun reste de notation linéaire. Cinq sujets n'ont
+aucune formule. Index : 1,43 Mo (334 Ko compressés). Chaque session : trois lots convertis en parallèle,
+chacun relu par un agent indépendant, puis retouches à la main consignées et poussées session par session.
+Les relectures ont surtout ajouté des formules oubliées et aligné des lettres sur les sujets ; elles ont
+aussi révélé des erreurs de fond dans les aperçus et mots-clés, corrigées sur le sujet : K[X] au lieu de
+ℂ[X] (X 2025), racines n-ièmes au lieu de p-ièmes (Mines PC 2025), √(2 ln 2) au lieu de 2√(ln 2) (ENS PC
+2018), indice ℓ manquant (agrégation interne 2017), GL_n au lieu de GL_{2n} (Mines PSI 2015) et de
+GL_{p+1}(ℝ) (Centrale PSI 2014), A(d) au lieu de Δ(d) avec normes infinies (agrégation 2013), K(t) et θ au
+lieu de φ(t) et α (CCP PSI 2011), entre autres. Défauts de données réparés : mots-clés coupés à une
+virgule interne (`min(x, t)`, `O(r, s)`, `⟨AX, X⟩`, recollés ; `outils` ne les produit plus) et crochets
+perdus (« Rn de X », « K de M », « R de A », « de 0 1 »). Le site du CCINP a fermé la connexion la plupart du
+temps mais a répondu à certaines heures ; copies utiles : doc-solus (WebFetch), bibmath, cahier-de-prepa,
+groupe-reussite, et vmaths pour 2011-2013. Choix laissés ouverts : les nombres du texte courant (« rang 1 »,
+« dimension 2 ») restent en texte, les valeurs d'objets (« en $0$ ») passent en formule ; quand l'aperçu
+et le sujet diffèrent par une notation équivalente, on garde l'aperçu, sauf erreur.
