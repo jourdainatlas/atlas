@@ -775,6 +775,8 @@ span.case:hover { border-style: dashed; color: inherit; }
 .texte-auteur .corps-texte { font-family: var(--f-texte); font-size: 17px; line-height: 1.6; }
 .texte-auteur .corps-texte p { margin: 0 0 .7em; }
 .texte-auteur .a-rediger .corps-texte { color: var(--encre-3); border: 1px dashed var(--encre-3); border-radius: 8px; padding: 12px 14px; }
+.portrait.a-photo { width: 140px; height: 140px; border: 2px solid var(--filet); background: var(--trame); overflow: hidden; }
+.portrait.a-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .profil .etablissement { color: var(--encre-3); font-size: 13px; margin: -10px 0 16px; }
 .apropos-sommaire { display: flex; flex-direction: column; gap: 2px; text-align: left; border-top: 1px solid var(--filet); margin-top: 14px; padding-top: 10px; }
 .apropos-sommaire a { color: var(--encre-2); text-decoration: none; font-size: 13.5px; padding: 4px 8px; border-radius: 6px; }
@@ -2088,7 +2090,7 @@ function pageAPropos() {
   let h = tete('Rubrique', 'À propos', '');
   const aVenir = (P.sections || []).filter(s => s.a_rediger).map(s => s.titre);
   if (aVenir.length) h += maquette(`Prototype : ${aVenir.length > 1 ? 'les sections' : 'la section'} ${aVenir.map(t => `« ${t} »`).join(', ')} ${aVenir.length > 1 ? 'sont' : 'est'} à venir.`);
-  h += `<div class="apropos"><aside class="profil carte"><div class="portrait" aria-hidden="true">${esc(P.initiales || '')}</div><h3>${esc(P.auteur || '')}</h3><p class="fonction">${esc(P.fonction || '')}</p>`;
+  h += `<div class="apropos"><aside class="profil carte"><div class="portrait${P.portrait ? ' a-photo' : ''}">${P.portrait ? `<img src="${esc(P.portrait)}" alt="Portrait de ${esc(P.auteur || '')}" width="140" height="140" onerror="this.parentNode.classList.remove('a-photo');this.replaceWith(document.createTextNode('${esc(P.initiales || '')}'))">` : `<span aria-hidden="true">${esc(P.initiales || '')}</span>`}</div><h3>${esc(P.auteur || '')}</h3><p class="fonction">${esc(P.fonction || '')}</p>`;
   if (P.etablissement) h += `<p class="etablissement">${esc(P.etablissement)}</p>`;
   h += `<div class="chiffres"><div><b>${D.graphes[D.racine].noeuds.length}</b>théories</div><div><b>${Object.keys(D.noeuds).length}</b>nœuds</div><div><b>${Object.keys(D.lexique).length}</b>termes</div><div><b>${nbCours}</b>cours déposés</div><div><b>${nbExos}</b>exercices en ligne</div></div>`;
   h += `<nav class="apropos-sommaire" aria-label="Sections">${(P.sections || []).map(s => `<a href="#a-propos" data-apropos-section="${esc(s.id)}">${s.titre}</a>`).join('')}</nav></aside>`;

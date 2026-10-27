@@ -28,6 +28,11 @@ rapporteur), Olympiades (Éduscol : Première, 4 h, partie nationale individuell
 équipes de 2 à 4), Concours général (Terminale, 5 h), TeSciA (L'Étudiant, 2023 : test de l'AORES, pas
 un concours).
 
+**Portrait.** `identite/portrait.jpg` (280 px, recadré sur le visage depuis la photo du CV, converti en
+sRGB, sans métadonnées), déclaré par `portrait:` dans `apropos.yaml` et ajouté à la liste des fichiers
+d'`identite/` que `rendu.mjs` copie dans `site/`. Si l'image manque (aperçu en fichier unique), les
+initiales s'affichent à sa place.
+
 **Points ouverts.** Contact (choix du moyen : adresse dédiée sur le domaine, `mailto:` protégé ou
-formulaire tiers) ; portrait (photo ou initiales) ; année sabbatique 2014-2015 et projet de thèse,
+formulaire tiers) ; année sabbatique 2014-2015 et projet de thèse,
 laissés de côté en attendant l'avis de l'auteur.

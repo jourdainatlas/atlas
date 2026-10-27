@@ -360,6 +360,6 @@ for (const n of Object.values(D.noeuds)) {
 }
 console.log(`Pages de partage : ${nbPartage}`);
 // Icônes et image d'aperçu (fabriquées par identite/fabriquer-icones.mjs).
-for (const f of ['favicon.svg', 'favicon-32.png', 'apple-touch-icon.png', 'icone-512.png', 'apercu.png'])
+for (const f of ['favicon.svg', 'favicon-32.png', 'apple-touch-icon.png', 'icone-512.png', 'apercu.png', 'portrait.jpg'])
   fs.copyFileSync(`identite/${f}`, `site/${f}`);
 console.log(`Site écrit : site/index.html (${(index.length / 1024).toFixed(0)} Ko)`);
