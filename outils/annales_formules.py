@@ -2,7 +2,7 @@
 """Conversion des formules de l'index des annales en LaTeX ($…$), par remplacements contrôlés.
 
   python3 outils/annales_formules.py extraire AAAA > champs.json
-      Champs à convertir d'une session : pour chaque sujet (clé = URL du sujet), l'aperçu, le nom
+      Champs à convertir d'une session : pour chaque sujet (clé = URL du sujet), le titre (nom), l'aperçu, le nom
       et les mots-clés de chaque partie, avec leur chemin (apercu, blocs.3.nom, blocs.3.mots.2).
 
   python3 outils/annales_formules.py appliquer AAAA remplacements.json [--essai]
@@ -45,6 +45,7 @@ def ecrire(a, d):
 
 
 def champs(s):
+    yield 'nom', s.get('nom', '')
     yield 'apercu', s.get('apercu', '')
     for i, b in enumerate(s.get('blocs', [])):
         yield f'blocs.{i}.nom', b.get('nom', '')
@@ -54,16 +55,16 @@ def champs(s):
 
 def lire(s, ch):
     p = ch.split('.')
-    if p[0] == 'apercu':
-        return s['apercu']
+    if p[0] in ('apercu', 'nom') and len(p) == 1:
+        return s[p[0]]
     b = s['blocs'][int(p[1])]
     return b['nom'] if p[2] == 'nom' else b['mots'][int(p[3])]
 
 
 def poser(s, ch, v):
     p = ch.split('.')
-    if p[0] == 'apercu':
-        s['apercu'] = v
+    if p[0] in ('apercu', 'nom') and len(p) == 1:
+        s[p[0]] = v
         return
     b = s['blocs'][int(p[1])]
     if p[2] == 'nom':

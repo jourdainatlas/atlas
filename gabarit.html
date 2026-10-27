@@ -1740,7 +1740,7 @@ function ficheSujetHTML(x, complet) {
   if (x.source) h += `<p class="fa-source">PDF hébergé hors du site officiel — source : <a href="${esc(x.source.url)}" target="_blank" rel="noopener">${esc(x.source.nom)}</a></p>`;
   if (x.attente) h += `<p class="fa-source">${esc(x.attente)}</p>`;
   if (!d) { h += `<p class="fa-vide">Description par thème à venir : les sujets de cette session n'ont pas encore été étiquetés.</p></article>`; return h; }
-  h += `<h4>${esc(d.nom || '')}</h4>`;
+  h += `<h4>${annalesF(esc(d.nom || ''), d)}</h4>`;
   if (d.apercu) h += `<p class="res-resume">${annalesF(esc(d.apercu), d)}</p>`;
   const tous = [...new Set(d.parties.flatMap(p => p.themes || []))];
   h += `<p class="fa-themes">${tous.map(t => `<button type="button" class="chip" data-rq-ext="${esc((I.themes[t] || {}).titre || t)}" title="Chercher ce thème dans les autres sujets">${esc((I.themes[t] || {}).titre || t)}</button>`).join('')}</p>`;
@@ -1816,7 +1816,7 @@ function indexAnnales() {
     return { ...x, cases, annee: c0.annee, concours: c0.concours, fam: (famDe[c0.concours] || {}).fam,
       filieres: [...new Set(cases.map(c => c.filiere).filter(Boolean))],
       parties: (x.blocs || []).map(p => ({ ...p, motsN: (p.mots || []).map(m => normRech(annalesFt(m, x))), titreN: normRech(annalesFt(p.nom || '', x)) })),
-      texteN: normRech(`${x.nom || ''} ${annalesFt(x.apercu || '', x)}`) };
+      texteN: normRech(`${annalesFt(x.nom || '', x)} ${annalesFt(x.apercu || '', x)}`) };
   });
   const enfants = {};
   for (const t of Object.values(themes)) if (t.parent) (enfants[t.parent] = enfants[t.parent] || []).push(t.id);
@@ -1946,7 +1946,7 @@ function resultatsAnnales() {
     const fils = s.filieres.length ? ` · ${s.filieres.join(', ')}` : '';
     const eps = [...new Set(s.cases.map(c => c.epreuve))].join(', ');
     h += `<article class="res-ann carte"><div class="res-tete"><span class="res-conc">${esc(cf.titre || s.concours)}${fils} · ${s.annee} · ${esc(eps)}</span>${s.cases[0] ? `<a class="lien-fiche" href="#annales/sujet/${slugSujet(s.cases[0])}">contenu du sujet</a>` : ''}</div>`;
-    h += `<h4><a href="${esc(s.sujet)}" target="_blank" rel="noopener">${esc(s.nom || '')}</a></h4>`;
+    h += `<h4><a href="${esc(s.sujet)}" target="_blank" rel="noopener">${annalesF(esc(s.nom || ''), s)}</a></h4>`;
     if (s.apercu) h += `<p class="res-resume">${annalesF(surligner(s.apercu, q), s)}</p>`;
     h += `<ul class="res-parties">${r.parts.map(({ p, prin }) => {
       const [a, b] = p.pages || [1, 1];

@@ -135,7 +135,7 @@ for (const e of D.rubriques?.exercices?.exercices || []) {
 }
 for (const [nom, r] of Object.entries(D.rubriques || {})) rendreRubrique(r, `rubriques/${nom}`);
 
-// Annales : les formules $…$ de l'aperçu, des noms et des mots-clés des parties sont vérifiées par
+// Annales : les formules $…$ du titre, de l'aperçu, des noms et des mots-clés des parties sont vérifiées par
 // KaTeX à la construction (une erreur de formule bloque donc la publication). Dans le texte, chaque
 // formule est remplacée par un repère \uE000 suivi d'un caractère privé (U+E100 + rang) ; le sujet
 // porte F (source LaTeX), Ft (texte, pour la recherche) et, dans l'aperçu à fichier unique seulement,
@@ -151,6 +151,7 @@ for (const s of D.rubriques?.['annales-index']?.sujets || []) {
     return '\uE000' + String.fromCharCode(0xE100 + F.length - 1);
   });
   const ou = `annales-index/${s.sujet}`;
+  s.nom = comp(s.nom, `${ou}/nom`);
   s.apercu = comp(s.apercu, `${ou}/apercu`);
   for (const [i, b] of (s.blocs || []).entries()) {
     b.nom = comp(b.nom, `${ou}/partie ${i + 1}/nom`);
