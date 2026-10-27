@@ -144,6 +144,14 @@ def cercles(t):
     def dans(p): return any(a <= p < b for a, b in zones)
     return re.sub('\x00(\\d+)\x00', lambda m: ('\\textcircled{%s}' if dans(m.start()) else '$\\textcircled{%s}$') % vals[int(m.group(1))], t)
 
+def menage_tableau(corps):
+    """Réglages de mise en page des cellules, sans équivalent sur le site : étais (\\rule), \\newline,
+    \\diagbox{ligne}{colonne} (case oblique : « ligne / colonne »)."""
+    corps = re.sub(r'\\rule(\[[^\]]*\])?\{[^{}]*\}\{[^{}]*\}', '', corps)
+    corps = re.sub(r'\\newline\b', ' ', corps)
+    corps = re.sub(r'\\diagbox\{([^{}]*)\}\{([^{}]*)\}', r'\1 / \2', corps)
+    return corps
+
 def multicolonnes(corps):
     """\\multicolumn{n}{spec}{contenu} → contenu suivi de n-1 cellules vides (inconnu de KaTeX)."""
     while True:
@@ -208,7 +216,7 @@ class Conv:
         corps = re.sub(r'\\(rowcolor|cellcolor)(\[[^]]*\])?\{[^}]*\}', '', corps)
         corps = re.sub(r'\\(renewcommand|arraystretch)[^\n]*', '', corps)
         corps = re.sub(r'\\cline\{[^}]*\}', '', corps)        # filets partiels : inconnus de KaTeX
-        corps = multicolonnes(corps)
+        corps = menage_tableau(multicolonnes(corps))
         lignes = s.couper_lignes(corps)
         out = []
         for li in lignes:
@@ -231,7 +239,7 @@ class Conv:
 
     def tableau_html(s, corps):
         """Bloc ```tableau : une ligne par rangée, cellules séparées par « ¦ », texte et $formules$."""
-        corps = multicolonnes(corps)
+        corps = menage_tableau(multicolonnes(corps))
         corps = re.sub(r'\\(rowcolor|cellcolor)(\[[^]]*\])?\{[^}]*\}', '', corps)
         corps = re.sub(r'\\(renewcommand|arraystretch)[^\n]*', '', corps)
         rangs = []
@@ -578,7 +586,11 @@ def feuille(tex):
     M = lire_macros(sans_commentaires(pre))
     corps_sc = re.sub(r'\\(?:euro|texteuro)(?:\{\})?', '€', corps_sc)
     M.pop('textcircledd', None)                    # dessin TikZ d'un cercle : traité par cercles()
-    corps = cercles(developper(corps_sc, M))
+    corps = developper(corps_sc, M)
+    # Étiquette cerclée dessinée en ligne : \tikz[baseline=(n.base)]{\node[circle,…] (n) {$e_{1}$};}
+    corps = re.sub(r'\\tikz\s*\[baseline=\(\w+\.base\)\]\s*\{%?\s*\\node\[circle[^\]]*\]\s*\(\w+\)\s*\{\s*\$?((?:[^{}$]|\{[^{}]*\})*)\$?\s*\}\s*;?\s*\}',
+                   lambda m: '\\textcircledd{%s}' % m.group(1).strip(), corps)
+    corps = cercles(corps)
     corps = couleurs(brut, corps)
     corps = re.sub(r'\\texttt\{((?:[^{}]|\\[{}])*)\}', lambda m: '\\texttt{%s}' % CODE_MATH.sub(lambda x: CODE_SYMB[x.group(1)], m.group(1)), corps)
     return pre, corps, sources(brut)

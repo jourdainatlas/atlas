@@ -40,7 +40,15 @@ données YAML. Les messages de commit commencent par « Cours : » ou « Exercic
   `documents/figures/` (4,0 Mo).
 - **Déclaré, non déposé** : `m-homologie` (Master).
 - **Seconde** (27 oct. 2026) : chapitres 1 à 11 (`s-01` à `s-11`), PDF dans `documents/cours/seconde/`
-  (7,0 Mo), sans feuilles d'exercices pour l'instant. Le site compte 38 chapitres déposés.
+  (7,0 Mo). Le site compte 38 chapitres déposés. Feuilles `f-s-01` à `f-s-11` (42, 35, 30, 33, 30, 32,
+  29, 31, 33, 33, 34 exercices), soit 362 exercices ; PDF dans `documents/exercices/seconde/` (5,1 Mo),
+  166 figures ajoutées (519 au total). Le site compte 1 343 exercices. **Les PDF des feuilles de Seconde
+  ont été compilés ici à partir des `.tex`** (l'auteur n'avait envoyé que les sources) : il faudra les
+  remplacer par ses PDF s'il les envoie, en vérifiant que la pagination ne change pas (les champs
+  `page_enonce` et `page_corrige` en dépendent ; sinon reconvertir). L'environnement de travail n'a
+  pas, d'origine, `babel-french`, `lmodern`, `tkz-tab` ni `diagbox` : `apt-get install
+  texlive-lang-french lmodern texlive-latex-extra texlive-pictures texlive-fonts-recommended
+  texlive-science`.
 - **Niveaux sans cours** : Maths approfondies (MPSI), ECG. Le programme officiel
   MPSI-MP2I est un fichier du projet Claude (`programme-mpsi-mp2i_mathematiques.pdf`).
 - **Première** (27 oct. 2026) : chapitres 1 à 8 (`p-01` à `p-08`), PDF dans `documents/cours/premiere/`
@@ -125,6 +133,10 @@ exercices », c'est-à-dire la vue « Par exercice » filtrée sur ce niveau. Le
    enveloppées de `$…$`, et non plus une figure par occurrence. Dans un tableau de texte, ①…⑳.
    **Couleurs** : les `\definecolor` de la source (`crouge` = #c61e2d, `cbleu`…) sont remplacées par leur
    code hexadécimal hors des figures. **Pseudo-code** : `$\leftarrow$` dans un `\texttt{…}` devient ←.
+   Une étiquette cerclée dessinée en ligne, `\tikz[baseline=(n.base)]{\node[circle,…] (n) {$e_{1}$};}`
+   (macro `\eq` des corrigés de Seconde), devient elle aussi `\textcircled{…}`. Dans les tableaux, les
+   étais `\rule[…]{…}{…}` sont retirés, `\newline` devient une espace et `\diagbox{A}{B}` devient
+   « A / B ».
    **Images** : un `\includegraphics{nom.png}` n'est pas dans les sources. On extrait les images du PDF
    de la feuille (`pdfimages -list` pour les repérer, puis `pdfimages -png`), on les range sous leur nom
    d'origine dans un dossier, et l'on passe ce dossier par `TEX2EXOS_IMAGES=dossier`. Le PNG est
