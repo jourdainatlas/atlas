@@ -368,3 +368,6 @@ exercices/<id>/. Feuille en ligne : Terminale chapitre 1 (33 exercices).
 - Le site est servi à https://www.atlasjourdain.fr/ (domaine OVHcloud, déclaré dans Settings → Pages du dépôt atlas ; DNS : CNAME www → jourdainatlas.github.io., A/AAAA de GitHub sur @, TXT de vérification GitHub).
 - ADRESSE (rendu.mjs) et ADRESSE_SITE (gabarit.html) valent https://www.atlasjourdain.fr/. GitHub redirige jourdainatlas.github.io/atlas/… vers le domaine ; la page du dépôt jourdainatlas.github.io renvoie aussi vers le domaine.
 - Thème : bouton soleil/lune (#theme) ; choix gardé par cookie de session atlas-theme (+ sessionStorage).
+- Mode clair par défaut (27 oct. 2026, demande de l'auteur) : sans choix enregistré, `data-theme="light"` est posé
+  au chargement, quel que soit le réglage du système ; le sombre ne s'applique que s'il a été choisi au bouton.
+  `meta theme-color` suit le thème (#f4f5f7 / #121418). Le bloc CSS `prefers-color-scheme` est conservé mais inactif.

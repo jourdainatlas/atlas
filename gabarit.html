@@ -4,7 +4,8 @@
 (function () { let t = null;
   try { t = (document.cookie.match(/(?:^|; )atlas-theme=(light|dark)/) || [])[1] || null; } catch (e) {}
   if (!t) try { t = sessionStorage.getItem('atlas-theme'); } catch (e) {}
-  if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t; })();</script>
+  // Mode clair par défaut (27 oct. 2026) : le mode sombre ne s'applique que s'il a été choisi.
+  document.documentElement.dataset.theme = t === 'dark' ? 'dark' : 'light'; })();</script>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="author" content="Armand Jourdain">
 <link rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
@@ -2372,9 +2373,10 @@ function depuisAncre() {
 }
 /* ---- Mode clair / sombre, mémorisé pour la session (cookie sans date d'expiration + sessionStorage) */
 const boutonTheme = $('#theme'), sombreSysteme = matchMedia('(prefers-color-scheme: dark)');
-const themeEffectif = () => document.documentElement.dataset.theme || (sombreSysteme.matches ? 'dark' : 'light');
+const themeEffectif = () => document.documentElement.dataset.theme || 'light';
 function majBoutonTheme() {
-  const clair = themeEffectif() === 'light', texte = clair ? 'Revenir au mode sombre' : 'Passer en mode clair';
+  const clair = themeEffectif() === 'light', texte = clair ? 'Passer en mode sombre' : 'Revenir au mode clair';
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', clair ? '#f4f5f7' : '#121418');
   boutonTheme.classList.toggle('clair', clair);
   boutonTheme.setAttribute('aria-pressed', String(clair));
   boutonTheme.title = texte; boutonTheme.setAttribute('aria-label', texte);

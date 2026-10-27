@@ -271,7 +271,7 @@ const index = `<!doctype html>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<meta name="theme-color" content="#121418">
+<meta name="theme-color" content="#f4f5f7">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ATLAS">
 <meta property="og:title" content="ATLAS – Architecture des mathématiques">
