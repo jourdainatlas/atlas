@@ -72,6 +72,14 @@ l'emploie.
 - Démonstrations : complètes, ou marquées « Admis ici » avec la difficulté contournée ; tout usage
   d'une forme du choix est signalé dans `choix:` (⋆). Les calculs des exemples sont vérifiés avec sympy
   ou numpy avant d'être écrits.
+- **Passe de schématisation obligatoire (consigne de l'auteur, 28 oct. 2026).** Toute fiche créée ou
+  réécrite passe par le travail de la section 29 avant publication : relire chaque définition,
+  énoncé, preuve, exemple et remarque, décider où un schéma ou un diagramme commutatif éclaire
+  vraiment (mécanisme d'une preuve, contenu géométrique ou combinatoire d'une définition, exemple
+  qui se lit mieux dessiné ; jamais décoratif), le dessiner par le calcul dans le module du graphe
+  (`outils/edifice_schemas_<groupe>.py`), le regarder (clair et sombre, bureau et téléphone), et
+  consigner dans le rapport les endroits examinés et écartés. Une consigne donnée à un agent de
+  rédaction comporte toujours cette étape ; elle n'est jamais facultative.
 - Après chaque lot : construire jusqu'à zéro erreur, regarder le rendu du graphe modifié et de ses
   fiches (clair et sombre, bureau et téléphone), relever le nombre de croisements du graphe touché,
   puis rebaser, pousser et suivre la publication (section 0).
