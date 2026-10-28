@@ -120,13 +120,13 @@ class Schema:
     # -- primitives
     def ligne(self, p, q, c='t', d=False, l=None):
         cls = f's-{c}' + (' d' if d else '')
-        lw = f' stroke-width="{f(l)}"' if l else ''
+        lw = f' style="stroke-width:{f(l)}"' if l else ''
         self.el.append(f'<line class="{cls}" x1="{f(p[0])}" y1="{f(p[1])}" x2="{f(q[0])}" y2="{f(q[1])}"{lw}/>')
 
     def poly(self, pts, c='t', d=False, ferme=False, rempli=None, l=None):
         pts = np.asarray(pts, float)
         cls = f's-{c}' + (' d' if d else '') + (f' f-{rempli}' if rempli else '')
-        lw = f' stroke-width="{f(l)}"' if l else ''
+        lw = f' style="stroke-width:{f(l)}"' if l else ''
         tag = 'polygon' if ferme else 'polyline'
         self.el.append(f'<{tag} class="{cls}"{lw} points="{" ".join(f(x) + "," + f(y) for x, y in pts)}"/>')
 
@@ -137,7 +137,7 @@ class Schema:
 
     def chemin(self, d, c='t', pointille=False, rempli=None, l=None):
         cls = f's-{c}' + (' d' if pointille else '') + (f' f-{rempli}' if rempli else '')
-        lw = f' stroke-width="{f(l)}"' if l else ''
+        lw = f' style="stroke-width:{f(l)}"' if l else ''
         self.el.append(f'<path class="{cls}"{lw} d="{d}"/>')
 
     def cercle(self, centre, r, c='t', d=False, rempli=None):
