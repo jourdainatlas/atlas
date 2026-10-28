@@ -1,0 +1,270 @@
+# Niveau 2 : structure interne du nœud « Complétude (Gödel) » du graphe log.
+# Démonstration de Henkin : règles dérivées du système de Hilbert (l-deduction), constantes
+# nouvelles, égalité démontrable, extension par témoins par étages, lemme de Lindenbaum (sans choix
+# pour une signature dénombrable, par un principe de maximalité ⋆ sinon), modèle des termes clos,
+# lemme de vérité, théorème. Les ensembles et les entiers sont ceux, intuitifs, de la métathéorie
+# (l-metatheorie). Les identifiants commencent par « hk- ».
+
+graphe: l-completude
+titre: Théorème de complétude
+conteneur: l-completude
+
+entrees:
+  l-coherence: [hk-generalisation, hk-temoins, hk-lindenbaum]
+  l-substitution: [hk-verite]
+  l-correction: [hk-existence]
+
+noeuds:
+  - id: hk-generalisation
+    etiquette: Règles dérivées
+    nature: lemme
+    titre: Généralisation et règles dérivées
+    texte: |
+      Le système de {{l-deduction|Démonstrations formelles}} n'a qu'une règle, le modus ponens ; ce lemme en tire les règles dérivées dont la construction de Henkin a besoin. Dans tout ce graphe, $T$ désigne une théorie, c'est-à-dire un ensemble d'énoncés : aucune variable n'est libre dans ses éléments.
+
+      Un [[terme-clos|terme clos]] est un [[terme]] sans variable, comme $S\,S\,0$ dans le langage de l'arithmétique. Un terme clos est substituable à toute variable dans toute formule, puisqu'aucun quantificateur ne peut capturer une variable qu'il ne contient pas.
+    enonce: |
+      Soit $T$ une théorie, $\alpha$, $\beta$, $\varphi$, $\psi$ des formules et $x$ une variable.
+
+      (i) **Règle des tautologies.** Si $T \vdash \alpha_1$, …, $T \vdash \alpha_n$, et si $\alpha_1 \to (\alpha_2 \to \cdots \to (\alpha_n \to \beta) \cdots)$ est une instance de tautologie, alors $T \vdash \beta$.
+
+      (ii) **Généralisation.** Si $T \vdash \alpha$, alors $T \vdash \forall x\, \alpha$.
+
+      (iii) **Instanciation, distribution.** Si $T \vdash \forall x\, \alpha$, alors $T \vdash \alpha$, et $T \vdash \alpha[t/x]$ pour tout terme clos $t$. Si $T \vdash \forall x\, \alpha$ et si $\alpha \to \beta$ est une instance de tautologie, alors $T \vdash \forall x\, \beta$.
+
+      (iv) Si $x$ n'est pas libre dans $\psi$ et si $T \vdash \forall x\, (\varphi \to \psi)$, alors $T \vdash \exists x\, \varphi \to \psi$.
+
+      (v) $T \vdash \neg \forall x\, \varphi \to \exists x\, \neg\varphi$.
+    preuve: |
+      (i) La formule $\alpha_1 \to (\alpha_2 \to \cdots \to (\alpha_n \to \beta) \cdots)$ est un axiome logique du groupe (1) ; $n$ modus ponens successifs donnent $T \vdash \beta$.
+
+      (ii) Soit $\alpha_0, \dots, \alpha_m = \alpha$ une démonstration formelle à partir de $T$. Montrons par récurrence sur $k$ que $T \vdash \forall x\, \alpha_k$. Si $\alpha_k$ est un axiome logique, $\forall x\, \alpha_k$ en est un aussi, car les axiomes logiques sont **toutes** les généralisations des formules des groupes (1) à (5). Si $\alpha_k$ appartient à $T$, c'est un énoncé, où $x$ n'est pas libre : l'axiome (4) $\alpha_k \to \forall x\, \alpha_k$ et le modus ponens donnent $T \vdash \forall x\, \alpha_k$. Si enfin $\alpha_k$ se déduit par modus ponens de $\alpha_i$ et de $\alpha_j = (\alpha_i \to \alpha_k)$, avec $i, j < k$, l'hypothèse de récurrence donne $T \vdash \forall x\, \alpha_i$ et $T \vdash \forall x\, (\alpha_i \to \alpha_k)$ ; l'axiome (3) $\forall x\, (\alpha_i \to \alpha_k) \to (\forall x\, \alpha_i \to \forall x\, \alpha_k)$ et deux modus ponens donnent $T \vdash \forall x\, \alpha_k$.
+
+      (iii) Un terme clos $t$ est substituable à $x$ dans $\alpha$, donc $\forall x\, \alpha \to \alpha[t/x]$ est un axiome (2), et le modus ponens donne $T \vdash \alpha[t/x]$. La variable $x$ est elle aussi substituable à $x$, et $\alpha[x/x] = \alpha$ : le même axiome donne $T \vdash \alpha$. Si $\alpha \to \beta$ est une instance de tautologie, sa généralisation $\forall x\, (\alpha \to \beta)$ est un axiome, et l'axiome (3) donne $\forall x\, \alpha \to \forall x\, \beta$ par modus ponens ; un second modus ponens donne $T \vdash \forall x\, \beta$.
+
+      (iv) La formule $(\varphi \to \psi) \to (\neg\psi \to \neg\varphi)$ est une instance de tautologie ; par (iii), $T \vdash \forall x\, (\neg\psi \to \neg\varphi)$, et l'axiome (3) donne $T \vdash \forall x\, \neg\psi \to \forall x\, \neg\varphi$. Comme $x$ n'est pas libre dans $\neg\psi$, l'axiome (4) donne $\neg\psi \to \forall x\, \neg\psi$. Par la règle des tautologies, appliquée à l'instance $(P \to Q) \to ((Q \to R) \to (\neg R \to \neg P))$ avec $P = \neg\psi$, $Q = \forall x\, \neg\psi$ et $R = \forall x\, \neg\varphi$, on obtient $T \vdash \neg\forall x\, \neg\varphi \to \neg\neg\psi$, puis $T \vdash \neg\forall x\, \neg\varphi \to \psi$ par l'instance $(A \to \neg\neg B) \to (A \to B)$. Or $\neg\forall x\, \neg\varphi$ est, par définition, $\exists x\, \varphi$.
+
+      (v) La généralisation $\forall x\, (\neg\neg\varphi \to \varphi)$ d'une instance de tautologie est un axiome, et l'axiome (3) donne $\vdash \forall x\, \neg\neg\varphi \to \forall x\, \varphi$. L'instance $(P \to Q) \to (\neg Q \to \neg P)$ donne alors $\vdash \neg\forall x\, \varphi \to \neg\forall x\, \neg\neg\varphi$, et $\neg\forall x\, \neg\neg\varphi$ est, par définition, $\exists x\, \neg\varphi$.
+    remarques:
+      - |
+        La généralisation (ii) repose sur le fait que les éléments de $T$ sont des énoncés. L'erreur la plus répandue est de l'appliquer à une hypothèse qui a une variable libre : de l'hypothèse $x = 0$, on ne peut pas tirer $\forall x\, (x = 0)$. C'est pour cette raison que les théories sont des ensembles d'énoncés, et c'est la même raison qui rend le {{l-thm-deduction|théorème de la déduction}} valable sans restriction.
+      - |
+        La règle (iv) est la forme formelle d'un raisonnement usuel : « soit $x$ tel que $\varphi$ ; … ; donc $\psi$ ». Elle n'est correcte que si la conclusion $\psi$ ne parle plus de $x$, ce qu'exprime l'hypothèse que $x$ n'y est pas libre.
+
+  - id: hk-constantes
+    etiquette: Constantes nouvelles
+    nature: lemme
+    titre: Constantes nouvelles et changement de langage
+    texte: |
+      On considère une signature $\mathcal L'$ obtenue en ajoutant à $\mathcal L$ de nouveaux symboles de constantes. Pour une formule $\alpha$, une constante $c$ et une variable $y$, on note $\alpha\langle y/c\rangle$ le mot obtenu en remplaçant **chaque** occurrence de $c$ dans $\alpha$ par $y$ ; c'est encore une formule, comme on le voit par récurrence sur $\alpha$.
+    enonce: |
+      (i) Soit $\alpha_0, \dots, \alpha_m$ une démonstration formelle à partir d'une théorie $T$, $c$ une constante qui ne figure dans aucun élément de $T$, et $y$ une variable qui ne figure dans aucune des formules $\alpha_k$. Alors $\alpha_0\langle y/c\rangle, \dots, \alpha_m\langle y/c\rangle$ est une démonstration formelle à partir de $T$.
+
+      (ii) **Généralisation sur une constante.** Soit $T$ une théorie et $\theta$ une formule, telles que la constante $c$ ne figure ni dans $\theta$ ni dans aucun élément de $T$. Si $T \vdash \theta[c/x]$, alors $T \vdash \forall x\, \theta$.
+
+      (iii) **Changement de langage.** Soit $T$ une théorie sur $\mathcal L$ et $\varphi$ une formule de $\mathcal L$. Si $\varphi$ a une démonstration formelle à partir de $T$ écrite avec les symboles de $\mathcal L'$, elle en a une écrite avec ceux de $\mathcal L$. En particulier, $T$ est cohérente comme théorie sur $\mathcal L'$ si et seulement si elle l'est comme théorie sur $\mathcal L$.
+    preuve: |
+      (i) Le remplacement de $c$ par $y$ respecte le modus ponens, puisque $(\beta \to \gamma)\langle y/c\rangle = \beta\langle y/c\rangle \to \gamma\langle y/c\rangle$, et il laisse inchangés les éléments de $T$, où $c$ ne figure pas. Il reste à voir qu'il transforme un axiome logique en un axiome logique. Comme $y$ ne figure pas dans l'axiome, toute variable $z$ qui y figure est distincte de $y$, et le remplacement ne touche ni aux variables ni aux quantificateurs : les occurrences libres de $z$ restent les mêmes. Une instance de tautologie devient une instance de la même tautologie ; une généralisation $\forall y_1 \cdots \forall y_k\, \beta$ devient $\forall y_1 \cdots \forall y_k\, \beta\langle y/c\rangle$. Pour le groupe (2), $\forall z\, \beta \to \beta[t/z]$ devient $\forall z\, \beta\langle y/c\rangle \to \beta\langle y/c\rangle[t\langle y/c\rangle/z]$, et $t\langle y/c\rangle$ est substituable à $z$ dans $\beta\langle y/c\rangle$, car la seule variable qu'il peut avoir en plus de celles de $t$ est $y$, qui n'est quantifiée nulle part. Les groupes (3) et (4) sont conservés, puisque $z$ est libre dans $\beta\langle y/c\rangle$ exactement quand elle l'est dans $\beta$. Pour le groupe (5), $z = z$ ne contient pas $c$, et $z_1 = z_2 \to (\beta \to \beta')$, où $\beta'$ remplace certaines occurrences de $z_1$ par $z_2$ dans la formule atomique $\beta$, devient $z_1 = z_2 \to (\beta\langle y/c\rangle \to \beta'\langle y/c\rangle)$, où $\beta'\langle y/c\rangle$ s'obtient de la même façon à partir de la formule atomique $\beta\langle y/c\rangle$.
+
+      (ii) Soit une démonstration formelle de $\theta[c/x]$ à partir de $T$, et $T_0$ l'ensemble, fini, des éléments de $T$ qu'elle emploie. Choisissons une variable $y$, distincte de $x$, qui ne figure dans aucune de ses formules : il y en a, puisque ces formules sont en nombre fini et que les variables forment une suite infinie, et l'on peut prendre celle de plus petit indice, sans aucun choix arbitraire. Par (i), $T_0 \vdash \theta[c/x]\langle y/c\rangle$. Comme $c$ ne figure pas dans $\theta$, ses occurrences dans $\theta[c/x]$ sont exactement les occurrences libres de $x$ dans $\theta$, si bien que $\theta[c/x]\langle y/c\rangle = \theta[y/x]$. Par {{hk-generalisation|la généralisation}}, $T_0 \vdash \forall y\, \theta[y/x]$. Les occurrences libres de $y$ dans $\theta[y/x]$ occupent les places des occurrences libres de $x$ dans $\theta$, qui ne sont dans la portée d'aucun quantificateur $\forall x$ : $x$ est substituable à $y$ dans $\theta[y/x]$, et, $y$ ne figurant pas dans $\theta$, $\theta[y/x][x/y] = \theta$. L'axiome (2) donne $T_0 \vdash \theta$, et une nouvelle généralisation, sur $x$ cette fois, donne $T_0 \vdash \forall x\, \theta$, donc $T \vdash \forall x\, \theta$.
+
+      (iii) Une démonstration formelle n'emploie qu'un nombre fini de nouvelles constantes $c_1, \dots, c_k$. Prenons des variables distinctes $y_1, \dots, y_k$ qui n'y figurent pas, et appliquons (i) $k$ fois, en remplaçant $c_1$ par $y_1$, puis $c_2$ par $y_2$, et ainsi de suite ; les éléments de $T$ et la formule $\varphi$, écrits dans $\mathcal L$, ne sont pas modifiés. On obtient une démonstration formelle de $\varphi$ à partir de $T$ dont toutes les formules sont écrites dans $\mathcal L$. Si $T$ est incohérente sur $\mathcal L'$, elle démontre toutes les formules de $\mathcal L'$ ({{l-coherence|Cohérence}}, (i)), en particulier $x_0 = x_0$ et $\neg\, x_0 = x_0$, et ces deux démonstrations se récrivent dans $\mathcal L$. La réciproque est claire, une démonstration écrite dans $\mathcal L$ l'étant aussi dans $\mathcal L'$.
+    remarques:
+      - |
+        Le point (ii) est la forme formelle de la phrase « soit $c$ quelconque » : une constante dont la théorie ne dit rien se comporte comme une variable, et ce que l'on démontre sur elle vaut pour tout élément. L'hypothèse que $c$ ne figure pas dans $T$ est indispensable : la théorie $\{R\, c\}$, où $R$ est un symbole de relation unaire, démontre $R\, c$, mais pas $\forall x\, R\, x$, puisqu'une structure à deux éléments dont un seul est dans $R$ en est un modèle où $\forall x\, R\, x$ est faux.
+
+  - id: hk-egalite
+    etiquette: Égalité démontrable
+    nature: lemme
+    titre: Propriétés démontrables de l'égalité
+    texte: |
+      Les axiomes (5) de {{l-deduction|Démonstrations formelles}} ne portent que sur des variables et sur une formule atomique. Ce lemme en déduit que l'égalité démontrable entre termes clos a les propriétés d'une égalité, ce qui permettra de regrouper les termes clos qu'une théorie déclare égaux.
+    enonce: |
+      Soit $T$ une théorie et $t$, $u$, $v$, $t_1, \dots, t_n$, $u_1, \dots, u_n$ des [[terme-clos|termes clos]].
+
+      (i) $T \vdash t = t$.
+
+      (ii) Si $T \vdash t = u$, alors $T \vdash u = t$.
+
+      (iii) Si $T \vdash t = u$ et $T \vdash u = v$, alors $T \vdash t = v$.
+
+      (iv) Si $T \vdash t_i = u_i$ pour tout $i$, alors $T \vdash f\, t_1 \cdots t_n = f\, u_1 \cdots u_n$ pour tout symbole de fonction $f$ d'arité $n$, et $T \vdash R\, t_1 \cdots t_n \to R\, u_1 \cdots u_n$ pour tout symbole de relation $R$ d'arité $n$.
+    preuve: |
+      Si $\vdash \alpha$ et si $x_1, \dots, x_k$ sont des variables, on a $\vdash \alpha[w_1/x_1] \cdots [w_k/x_k]$ pour tous termes clos $w_1, \dots, w_k$ : on généralise et l'on instancie successivement ({{hk-generalisation|Règles dérivées}}, (ii) et (iii)). C'est sous cette forme que serviront les axiomes (5).
+
+      (i) L'axiome $x = x$ donne $\vdash t = t$.
+
+      (ii) Dans l'axiome (5), prenons pour $\alpha$ la formule atomique $x = x$, et pour $\alpha'$ la formule $y = x$, obtenue en remplaçant la première occurrence de $x$ par $y$ : $\vdash x = y \to (x = x \to y = x)$. En substituant $t$ à $x$ et $u$ à $y$, il vient $\vdash t = u \to (t = t \to u = t)$, et la règle des tautologies, avec (i) et l'hypothèse $T \vdash t = u$, donne $T \vdash u = t$.
+
+      (iii) Avec $\alpha$ la formule $x = z$ et $\alpha'$ la formule $y = z$, l'axiome (5) donne $\vdash x = y \to (x = z \to y = z)$ ; en substituant $u$, $t$, $v$ à $x$, $y$, $z$ : $\vdash u = t \to (u = v \to t = v)$. Or $T \vdash u = t$ par (ii), et $T \vdash u = v$ : deux modus ponens donnent $T \vdash t = v$.
+
+      (iv) Fixons $i$ et des variables distinctes $x_1, \dots, x_n, y$. Soit $\alpha$ la formule atomique $f\, x_1 \cdots x_n = f\, x_1 \cdots x_n$, et $\alpha'$ celle où l'occurrence de $x_i$ dans le second membre est remplacée par $y$. L'axiome (5) donne $\vdash x_i = y \to (\alpha \to \alpha')$. Substituons $u_j$ à $x_j$ pour $j < i$, $t_j$ à $x_j$ pour $j \geqslant i$, et $u_i$ à $y$ ; avec $w = f\, u_1 \cdots u_{i-1}\, t_i \cdots t_n$ et $w' = f\, u_1 \cdots u_i\, t_{i+1} \cdots t_n$, il vient $\vdash t_i = u_i \to (w = w \to w = w')$, et (i) donne $T \vdash w = w'$. On passe ainsi de $f\, t_1 \cdots t_n$ à $f\, u_1 \cdots u_n$ en $n$ égalités démontrables, que (iii) enchaîne. Pour un symbole de relation, l'axiome (5) appliqué à $R\, x_1 \cdots x_n$ donne de même $T \vdash R\, u_1 \cdots u_{i-1}\, t_i \cdots t_n \to R\, u_1 \cdots u_i\, t_{i+1} \cdots t_n$ pour chaque $i$, et ces $n$ implications s'enchaînent par la règle des tautologies.
+    remarques:
+      - |
+        C'est la seule étape où servent les axiomes de l'égalité, et elle est indispensable : dans le modèle à construire, le symbole $=$ doit être interprété par l'égalité des éléments, alors que deux termes clos distincts comme $S\,S\,0$ et $0$ peuvent être déclarés égaux par la théorie. Les propriétés (i) à (iii) disent que l'égalité démontrable est une relation d'équivalence, et (iv) qu'elle est compatible avec les symboles, notions que le graphe {{r-equivalence|Relations d'équivalence}} définira ; on n'en emploie ici que ces quatre propriétés.
+
+  - id: hk-temoins
+    etiquette: Témoins de Henkin
+    nature: proposition
+    titre: Extension par témoins
+    texte: |
+      Soit $\mathcal L$ une signature. On pose $\mathcal L_0 = \mathcal L$ et, pour tout entier $n$, on obtient $\mathcal L_{n+1}$ en ajoutant à $\mathcal L_n$ un nouveau symbole de constante $c_\sigma$ pour chaque énoncé $\sigma$ de la forme $\exists x\, \varphi$ qui est écrit avec les symboles de $\mathcal L_n$, mais pas avec ceux de $\mathcal L_{n-1}$ (aucune restriction si $n = 0$) ; ces symboles sont distincts deux à deux et distincts de ceux de $\mathcal L_n$. La signature $\mathcal L^+$ est la réunion des $\mathcal L_n$. Pour chacun de ces énoncés $\sigma = \exists x\, \varphi$, l'**axiome de Henkin** de $\sigma$ est l'énoncé
+      $$h_\sigma :\quad \exists x\, \varphi \to \varphi[c_\sigma/x],$$
+      et l'on note $H$ l'ensemble des axiomes de Henkin ; on dit que $c_\sigma$ est de **niveau** $n + 1$.
+
+      Une théorie $T'$ sur une signature $\mathcal L'$ a la [[propriete-temoins|propriété des témoins]] si, pour tout énoncé $\exists x\, \varphi$ de $\mathcal L'$, il existe une constante $c$ de $\mathcal L'$ telle que $T' \vdash \exists x\, \varphi \to \varphi[c/x]$.
+
+      ```schema hk-temoins
+      La signature n'a qu'un symbole de relation binaire $R$. L'énoncé $\sigma = \exists x\, \forall y\, R\, x\, y$ de $\mathcal L_0$ reçoit son témoin $c_\sigma$ dans $\mathcal L_1$ ; l'énoncé $\sigma' = \exists y\, \neg R\, c_\sigma\, y$, qui mentionne ce témoin, n'existe qu'à partir de $\mathcal L_1$ et reçoit le sien à l'étage suivant : chaque étage crée de nouveaux énoncés existentiels, d'où les étages successifs.
+      ```
+    enonce: |
+      Soit $T$ une théorie sur $\mathcal L$.
+
+      (i) **Conservativité.** Pour tout énoncé $\psi$ de $\mathcal L$, si $T \cup H \vdash \psi$, alors $T \vdash \psi$. En particulier, si $T$ est [[theorie-coherente|cohérente]], $T \cup H$ est une théorie cohérente sur $\mathcal L^+$.
+
+      (ii) La théorie $T \cup H$, et toute théorie sur $\mathcal L^+$ qui la contient, a la propriété des témoins.
+
+      (iii) Si la signature $\mathcal L$ est finie ou dénombrable, l'ensemble des mots sur l'alphabet de $\mathcal L^+$ est dénombrable, et une énumération s'en déduit explicitement d'une énumération des symboles de $\mathcal L$, sans aucun choix ; il en va de même de ses énoncés et de ses termes clos.
+    preuve: |
+      (i) Une démonstration formelle de $\psi$ à partir de $T \cup H$ n'emploie qu'un nombre fini d'axiomes de Henkin ; montrons $T \vdash \psi$ par récurrence sur ce nombre $k$, pour toute démonstration. Si $k = 0$, c'est une démonstration à partir de $T$, écrite dans $\mathcal L^+$, et le {{hk-constantes|changement de langage}} en donne une écrite dans $\mathcal L$.
+
+      Si $k \geqslant 1$, prenons, parmi les axiomes de Henkin employés, un axiome $h_\sigma$, avec $\sigma = \exists x\, \varphi$ et $c = c_\sigma$, dont la constante est de niveau maximal, disons $n + 1$, et notons $H_0$ l'ensemble des $k - 1$ autres. La constante $c$ ne figure ni dans $T$ ni dans $\psi$, écrits dans $\mathcal L$, ni dans $\varphi$, écrite dans $\mathcal L_n$. Elle ne figure pas non plus dans les éléments de $H_0$ : un axiome $h_{\sigma'}$ de $H_0$ a une constante $c_{\sigma'}$ de niveau $m + 1 \leqslant n + 1$, distincte de $c$, et l'énoncé $\sigma'$ est écrit dans $\mathcal L_m$, donc dans $\mathcal L_n$. Le {{l-thm-deduction|théorème de la déduction}} donne $T \cup H_0 \vdash h_\sigma \to \psi$. Posons $\theta = ((\exists x\, \varphi \to \varphi) \to \psi)$ ; comme $x$ n'est libre ni dans l'énoncé $\exists x\, \varphi$ ni dans l'énoncé $\psi$, on a $\theta[c/x] = (h_\sigma \to \psi)$, et $c$ ne figure pas dans $\theta$. La {{hk-constantes|généralisation sur une constante}} donne $T \cup H_0 \vdash \forall x\, \theta$.
+
+      Par distribution ({{hk-generalisation|Règles dérivées}}, (iii)), avec les instances de tautologies $((A \to B) \to C) \to (\neg A \to C)$ et $((A \to B) \to C) \to (B \to C)$, il vient $T \cup H_0 \vdash \forall x\, (\neg\exists x\, \varphi \to \psi)$ et $T \cup H_0 \vdash \forall x\, (\varphi \to \psi)$. La première donne $T \cup H_0 \vdash \neg\exists x\, \varphi \to \psi$ par instanciation ; la seconde donne $T \cup H_0 \vdash \exists x\, \varphi \to \psi$ par la règle (iv), puisque $x$ n'est pas libre dans $\psi$. L'instance $(A \to C) \to ((\neg A \to C) \to C)$ donne alors $T \cup H_0 \vdash \psi$, par une démonstration qui n'emploie que $k - 1$ axiomes de Henkin, et l'hypothèse de récurrence conclut.
+
+      Si $T \cup H$ était incohérente, elle démontrerait toutes les formules ({{l-coherence|Cohérence}}, (i)), en particulier l'énoncé $\forall x_0\, (x_0 = x_0)$ de $\mathcal L$ et sa négation ; par ce qui précède, $T$ les démontrerait aussi, et serait incohérente.
+
+      (ii) Un énoncé $\sigma = \exists x\, \varphi$ de $\mathcal L^+$ n'a qu'un nombre fini de symboles, donc est écrit dans l'un des $\mathcal L_n$ ; pour le plus petit tel $n$, il a reçu une constante $c_\sigma$ de $\mathcal L_{n+1}$, et $h_\sigma \in H$. Une théorie qui contient $H$ démontre donc $\exists x\, \varphi \to \varphi[c_\sigma/x]$.
+
+      (iii) Soit $a_0, a_1, \dots$ une énumération de l'alphabet de $\mathcal L$, variables et symboles logiques compris. Le mot $a_{k_1} \cdots a_{k_m}$ a pour code l'entier $2^{k_1 + 1}\, 3^{k_2 + 1} \cdots p_m^{k_m + 1}$, où $p_j$ est le $j$-ième nombre premier ; deux mots distincts ont des codes distincts, par l'unicité de la décomposition en facteurs premiers. En rangeant les mots dans l'ordre de leurs codes, on énumère les mots, puis les énoncés de la forme $\exists x\, \varphi$, donc les nouvelles constantes de $\mathcal L_1$, et l'on obtient une énumération de l'alphabet de $\mathcal L_1$ en intercalant les nouvelles constantes entre les anciens symboles. Par récurrence sur $n$, on définit ainsi une énumération de chaque $\mathcal L_n$, puis de $\mathcal L^+$, en rangeant le $k$-ième symbole de $\mathcal L_n$ au rang $2^n(2k + 1) - 1$ et en ne retenant que sa première apparition. Tout est défini par récurrence, rien n'est choisi.
+    remarques:
+      - |
+        Un seul étage ne suffit pas, comme le montre la figure : le témoin $c_\sigma$ fait naître de nouveaux énoncés existentiels, comme $\exists y\, \neg R\, c_\sigma\, y$, que l'étage qui l'a introduit ne pouvait pas connaître. Les niveaux servent aussi à la preuve de (i) : on retire d'abord un axiome de niveau maximal, dont la constante ne figure nulle part ailleurs.
+      - |
+        L'axiome $h_\sigma$ n'affirme pas $\sigma$ : il dit seulement que, si quelque chose vérifie $\varphi$, alors $c_\sigma$ le vérifie. C'est pourquoi il n'apporte aucune information nouvelle sur $\mathcal L$, ce qu'exprime la conservativité.
+      - |
+        Une variante, celle d'Enderton, ajoute toutes les constantes en une seule fois et attribue à chaque formule, dans l'ordre d'une énumération, une constante encore inutilisée. Elle demande une énumération des formules, donc une signature dénombrable, ou un bon ordre. La construction par étages vaut pour toute signature et n'emploie aucun choix : celui-ci n'interviendra, s'il le faut, que dans le {{hk-lindenbaum|lemme de Lindenbaum}}.
+
+  - id: hk-lindenbaum
+    etiquette: Lemme de Lindenbaum
+    nature: lemme
+    titre: Lemme de Lindenbaum
+    choix: |
+      Le cas (ii) emploie le principe de maximalité de l'énoncé, forme de l'axiome du choix admise ici comme principe de la métathéorie : c'est le [[lemme-zorn|lemme de Zorn]] appliqué à un ensemble de parties ordonné par l'inclusion, que le nœud {{o-zorn|Lemme de Zorn}} démontrera équivalent, dans $\mathsf{ZF}$, à l'axiome du choix. Le lemme de l'[[ultrafiltre]], strictement plus faible, suffirait. Le cas (i), qui couvre toutes les signatures finies ou dénombrables, n'emploie aucune forme du choix.
+    texte: |
+      Une théorie $T$ sur une signature $\mathcal L'$ est [[theorie-complete|complète]] si, pour tout énoncé $\sigma$ de $\mathcal L'$, on a $T \vdash \sigma$ ou $T \vdash \neg\sigma$.
+    enonce: |
+      Soit $T$ une théorie [[theorie-coherente|cohérente]] sur une signature $\mathcal L'$.
+
+      (i) **Cas dénombrable.** Si les énoncés de $\mathcal L'$ sont énumérés en une suite $\sigma_0, \sigma_1, \dots$, la théorie $T$ est contenue dans une théorie cohérente $\widehat T$ sur $\mathcal L'$ qui contient, pour tout énoncé $\sigma$, l'énoncé $\sigma$ ou l'énoncé $\neg\sigma$ ; $\widehat T$ est déterminée par l'énumération.
+
+      (ii) **Cas général.** La même conclusion vaut pour toute signature, si l'on admet le **principe de maximalité** suivant : si $\mathcal F$ est un ensemble non vide de parties d'un ensemble $E$, et si la réunion de toute partie non vide de $\mathcal F$ formée d'éléments deux à deux comparables pour l'inclusion appartient à $\mathcal F$, alors $\mathcal F$ a un élément maximal pour l'inclusion, c'est-à-dire strictement contenu dans aucun autre élément de $\mathcal F$.
+
+      (iii) Une théorie cohérente $\widehat T$ qui contient, pour tout énoncé $\sigma$, $\sigma$ ou $\neg\sigma$ est complète. De plus, pour tout énoncé $\sigma$, $\widehat T \vdash \sigma$ si et seulement si $\sigma \in \widehat T$, et exactement l'un des énoncés $\sigma$ et $\neg\sigma$ appartient à $\widehat T$.
+    preuve: |
+      Observons d'abord que, si $T \vdash \sigma$, la théorie $T \cup \{\sigma\}$ démontre les mêmes formules que $T$ : dans une démonstration formelle à partir de $T \cup \{\sigma\}$, on remplace chaque emploi de l'hypothèse $\sigma$ par une démonstration de $\sigma$ à partir de $T$. En particulier, $T \cup \{\sigma\}$ est cohérente si $T$ l'est.
+
+      (i) On définit par récurrence $T_0 = T$, puis $T_{n+1} = T_n \cup \{\sigma_n\}$ si $T_n \vdash \sigma_n$, et $T_{n+1} = T_n \cup \{\neg\sigma_n\}$ sinon. Si $T_n$ est cohérente, $T_{n+1}$ l'est aussi : dans le premier cas par l'observation qui précède, dans le second par le point (ii) de {{l-coherence|Cohérence}}. Soit $\widehat T$ la réunion des $T_n$. Si l'on avait $\widehat T \vdash \varphi$ et $\widehat T \vdash \neg\varphi$, ces deux démonstrations n'emploieraient qu'un nombre fini d'éléments de $\widehat T$, tous dans un même $T_n$ puisque les $T_n$ croissent, et $T_n$ serait incohérente. Enfin, tout énoncé est l'un des $\sigma_n$, et $T_{n+1} \subset \widehat T$ contient $\sigma_n$ ou $\neg\sigma_n$.
+
+      ```schema hk-lindenbaum
+      Les trois premières étapes, pour la signature formée de deux symboles de relation unaires $P$ et $Q$ et d'une constante $c$, la théorie $T = \{\forall x\, P\, x\}$ et une énumération qui commence par $P\, c$, $Q\, c$, $\exists x\, \neg Q\, x$. À chaque étage, la branche rouge garde l'énoncé si la théorie déjà construite le démontre, et sa négation sinon (à droite, la raison : $T_0 \vdash P\,c$ par l'axiome (2), $T_1 \nvdash Q\,c$ parce qu'une structure à un élément où $Q$ est vide est un modèle de $T_1$, et $T_2 \vdash \exists x\, \neg Q\, x$ puisque $\neg Q\, c \in T_2$) ; la branche grise est écartée, et $\widehat T$ est la réunion des théories de la branche rouge.
+      ```
+
+      (ii) Soit $E$ l'ensemble des énoncés de $\mathcal L'$, et $\mathcal F$ l'ensemble des théories cohérentes sur $\mathcal L'$ qui contiennent $T$ ; il est non vide, puisque $T \in \mathcal F$. Soit $\mathcal C$ une partie non vide de $\mathcal F$ formée de théories deux à deux comparables pour l'inclusion, et $U$ leur réunion, qui contient $T$. Une démonstration formelle d'une formule et de sa négation à partir de $U$ n'emploierait qu'un nombre fini d'énoncés, chacun dans un élément de $\mathcal C$. Parmi ces éléments, en nombre fini et deux à deux comparables, l'un contient tous les autres, comme on le voit par récurrence sur leur nombre ; il serait incohérent. Donc $U \in \mathcal F$. Le principe de maximalité fournit un élément maximal $\widehat T$ de $\mathcal F$. Soit $\sigma$ un énoncé. Si $\widehat T \vdash \sigma$, la théorie $\widehat T \cup \{\sigma\}$ est cohérente, par l'observation initiale, donc appartient à $\mathcal F$ et, par maximalité, est égale à $\widehat T$ : $\sigma \in \widehat T$. Sinon, $\widehat T \cup \{\neg\sigma\}$ est cohérente par {{l-coherence|Cohérence}}, (ii), et de même $\neg\sigma \in \widehat T$.
+
+      (iii) Si $\sigma \in \widehat T$ ou $\neg\sigma \in \widehat T$, alors $\widehat T \vdash \sigma$ ou $\widehat T \vdash \neg\sigma$ : $\widehat T$ est complète. Si $\widehat T \vdash \sigma$ sans que $\sigma$ appartienne à $\widehat T$, alors $\neg\sigma \in \widehat T$, donc $\widehat T \vdash \neg\sigma$, et $\widehat T$ serait incohérente. La même raison interdit à $\sigma$ et à $\neg\sigma$ d'appartenir tous deux à $\widehat T$.
+    remarques:
+      - |
+        La récurrence de (i) n'est pas un algorithme : savoir si $T_n \vdash \sigma_n$ n'est pas décidable en général (Church, 1936). Elle n'en est pas moins une définition légitime, qui n'emploie que le tiers exclu de la métathéorie : à chaque étape, l'une des deux possibilités a lieu, et la règle dit laquelle retenir. L'erreur la plus répandue est de confondre cette dichotomie avec un choix ; il n'y a rien à choisir, puisque l'énumération fixe l'ordre et que la règle fixe la décision.
+      - |
+        Le principe de maximalité de (ii) est le lemme de Zorn pour l'inclusion, que le graphe des ordinaux démontrera à partir de l'axiome du choix ({{o-zorn|Lemme de Zorn}}). Sans énumération des énoncés, il n'y a pas d'ordre dans lequel les examiner, et la récurrence de (i) n'a plus de sens.
+      - |
+        Le lemme porte le nom de Lindenbaum, qui ne l'a pas publié : c'est Tarski qui le lui attribue, dès 1930. Les théories complètes et cohérentes d'une signature forment l'espace dont la topologie donne son nom au {{l-compacite|théorème de compacité}}.
+
+  - id: hk-modele
+    etiquette: Modèle des termes clos
+    nature: proposition
+    titre: Le modèle des termes clos
+    texte: |
+      Soit $\widehat T$ une théorie cohérente sur une signature $\mathcal L'$ ayant au moins un symbole de constante, qui contient, pour tout énoncé $\sigma$, $\sigma$ ou $\neg\sigma$ ({{hk-lindenbaum|Lemme de Lindenbaum}}). Soit $K$ l'ensemble des [[terme-clos|termes clos]] de $\mathcal L'$ et, pour $t \in K$,
+      $$[t] = \{ u \in K : (t = u) \in \widehat T \}.$$
+      Le **modèle des termes clos** $\mathcal M$ de $\widehat T$ a pour domaine $M = \{ [t] : t \in K \}$, et interprète les symboles par
+      $$c^{\mathcal M} = [c], \qquad f^{\mathcal M}([t_1], \dots, [t_n]) = [f\, t_1 \cdots t_n], \qquad R^{\mathcal M} = \{ ([t_1], \dots, [t_n]) : (R\, t_1 \cdots t_n) \in \widehat T \}.$$
+    enonce: |
+      (i) Pour $t, u \in K$, on a $[t] = [u]$ si et seulement si $(t = u) \in \widehat T$, si et seulement si $\widehat T \vdash t = u$.
+
+      (ii) Les définitions de $f^{\mathcal M}$ et de $R^{\mathcal M}$ ne dépendent que des éléments $[t_i]$, et non des termes $t_i$ qui les représentent : $\mathcal M$ est une [[structure]] pour $\mathcal L'$.
+
+      (iii) Pour tout terme clos $t$ et toute valuation $s$, $t^{\mathcal M}[s] = [t]$. En particulier, tout élément de $M$ est la valeur d'un terme clos.
+    preuve: |
+      Par le point (iii) du {{hk-lindenbaum|lemme de Lindenbaum}}, $(t = u) \in \widehat T$ équivaut à $\widehat T \vdash t = u$ ; on emploie librement les propriétés de {{hk-egalite|l'égalité démontrable}}.
+
+      (i) Si $[t] = [u]$, alors $u \in [u]$, puisque $\widehat T \vdash u = u$, donc $u \in [t]$, c'est-à-dire $\widehat T \vdash t = u$. Réciproquement, supposons $\widehat T \vdash t = u$. Si $v \in [u]$, alors $\widehat T \vdash u = v$, donc $\widehat T \vdash t = v$ par transitivité, et $v \in [t]$ : ainsi $[u] \subset [t]$. Comme $\widehat T \vdash u = t$ par symétrie, le même raisonnement donne $[t] \subset [u]$.
+
+      (ii) Le domaine $M$ est non vide, puisqu'il contient $[c]$ pour une constante $c$. Si $[t_i] = [u_i]$ pour tout $i$, alors $\widehat T \vdash t_i = u_i$ par (i), et le point (iv) de {{hk-egalite|l'égalité démontrable}} donne $\widehat T \vdash f\, t_1 \cdots t_n = f\, u_1 \cdots u_n$, donc $[f\, t_1 \cdots t_n] = [f\, u_1 \cdots u_n]$. Il donne aussi $\widehat T \vdash R\, t_1 \cdots t_n \to R\, u_1 \cdots u_n$ : si $R\, t_1 \cdots t_n \in \widehat T$, alors $\widehat T \vdash R\, u_1 \cdots u_n$, donc $R\, u_1 \cdots u_n \in \widehat T$ ; la réciproque s'obtient en échangeant les rôles, par symétrie. Ainsi $f^{\mathcal M}$ est une application de $M^n$ dans $M$, et $R^{\mathcal M}$ une partie de $M^n$.
+
+      (iii) Par récurrence sur $t$ : $c^{\mathcal M}[s] = [c]$, et si $t = f\, t_1 \cdots t_n$, alors $t^{\mathcal M}[s] = f^{\mathcal M}(t_1^{\mathcal M}[s], \dots, t_n^{\mathcal M}[s]) = f^{\mathcal M}([t_1], \dots, [t_n]) = [t]$. Un terme clos n'ayant pas de variable, la valuation n'intervient pas.
+
+      ```schema hk-modele
+      Signature $\{0, S\}$, et $\widehat T$ l'ensemble des énoncés vrais dans la structure à deux éléments où $S$ échange les deux éléments : $\widehat T$ contient $S\,S\,0 = 0$. Les termes clos se répartissent en deux éléments du modèle, $[0]$ et $[S\,0]$ ; les flèches grises vont de chaque terme $t$ au terme $S\,t$, et, parties d'un même élément, elles arrivent toutes dans un même élément : c'est ce qui rend bien définie l'interprétation de $S$, en rouge.
+      ```
+    remarques:
+      - |
+        L'erreur la plus répandue est d'oublier de regrouper les termes. Si l'on prenait pour domaine l'ensemble $K$ lui-même, le symbole $=$ serait interprété par l'identité des mots, et, dans l'exemple de la figure, la structure ne satisferait pas l'énoncé $S\,S\,0 = 0$ de $\widehat T$, puisque les mots $S\,S\,0$ et $0$ sont distincts. Les ensembles $[t]$ sont les classes d'une relation d'équivalence, et $M$ en est le quotient, au sens que le graphe {{r-equivalence|Relations d'équivalence}} donnera à ces mots.
+      - |
+        La construction n'emploie aucun choix : les classes $[t]$ sont définies par une condition, et l'on n'a jamais à désigner un représentant particulier d'une classe.
+
+  - id: hk-verite
+    etiquette: Lemme de vérité
+    nature: lemme
+    titre: Lemme de vérité
+    enonce: |
+      Soit $\widehat T$ une théorie cohérente sur une signature $\mathcal L'$, qui contient, pour tout énoncé $\sigma$, $\sigma$ ou $\neg\sigma$, et qui a la [[propriete-temoins|propriété des témoins]]. La signature $\mathcal L'$ a alors un symbole de constante, et le modèle des termes clos $\mathcal M$ de $\widehat T$ vérifie, pour tout énoncé $\sigma$ de $\mathcal L'$,
+      $$\mathcal M \models \sigma \iff \sigma \in \widehat T.$$
+    preuve: |
+      L'énoncé $\exists x_0\, (x_0 = x_0)$ a un témoin, qui est une constante de $\mathcal L'$ : le {{hk-modele|modèle des termes clos}} est donc défini. La **hauteur** $h(\sigma)$ d'une formule est le nombre d'occurrences de $\neg$, de $\to$ et de $\forall$ qu'elle contient. Si $\varphi$ n'a pas d'autre variable libre que $x$ et si $t$ est un terme clos, $\varphi[t/x]$ est un énoncé, de même hauteur que $\varphi$, puisqu'un terme ne contient aucun de ces symboles. Montrons l'équivalence par récurrence sur $h(\sigma)$, pour tous les énoncés à la fois. Par la lecture unique, $\sigma$ est atomique, ou de la forme $\neg\tau$, $\tau \to \rho$ ou $\forall x\, \varphi$, avec $\tau$, $\rho$ des énoncés de hauteur plus petite et $\varphi$ une formule de hauteur $h(\sigma) - 1$ sans autre variable libre que $x$.
+
+      *Cas atomique.* Les termes d'un énoncé atomique sont clos. Par le point (iii) de {{hk-modele|Modèle des termes clos}}, $\mathcal M \models t = u$ équivaut à $[t] = [u]$, donc à $(t = u) \in \widehat T$ par (i) ; et $\mathcal M \models R\, t_1 \cdots t_n$ équivaut à $([t_1], \dots, [t_n]) \in R^{\mathcal M}$, c'est-à-dire, par la définition de $R^{\mathcal M}$ et son indépendance des représentants, à $R\, t_1 \cdots t_n \in \widehat T$.
+
+      *Négation.* $\mathcal M \models \neg\tau$ équivaut à $\mathcal M \not\models \tau$, donc, par hypothèse de récurrence, à $\tau \notin \widehat T$, et donc à $\neg\tau \in \widehat T$, puisque exactement l'un de $\tau$ et $\neg\tau$ appartient à $\widehat T$ ({{hk-lindenbaum|Lemme de Lindenbaum}}, (iii)).
+
+      *Implication.* Si $\tau \notin \widehat T$, alors $\neg\tau \in \widehat T$, et l'instance de tautologie $\neg\tau \to (\tau \to \rho)$ donne $\widehat T \vdash \tau \to \rho$ ; si $\rho \in \widehat T$, l'instance $\rho \to (\tau \to \rho)$ donne de même $\widehat T \vdash \tau \to \rho$ ; dans les deux cas, $(\tau \to \rho) \in \widehat T$. Réciproquement, si $(\tau \to \rho) \in \widehat T$ et $\tau \in \widehat T$, le modus ponens donne $\widehat T \vdash \rho$, donc $\rho \in \widehat T$. Ainsi $(\tau \to \rho) \in \widehat T$ équivaut à « $\tau \notin \widehat T$ ou $\rho \in \widehat T$ », c'est-à-dire, par hypothèse de récurrence, à « $\mathcal M \not\models \tau$ ou $\mathcal M \models \rho$ », qui est la définition de $\mathcal M \models \tau \to \rho$.
+
+      *Quantificateur.* Soit $s$ une valuation. Par la définition de la satisfaction, $\mathcal M \models \forall x\, \varphi$ signifie $\mathcal M \models \varphi\,[s(x \mid a)]$ pour tout $a \in M$. Tout $a \in M$ s'écrit $[t] = t^{\mathcal M}[s]$ pour un terme clos $t$, et le {{l-substitution|lemme de substitution}}, qui s'applique puisque $t$ est substituable à $x$, donne $\mathcal M \models \varphi[t/x]\,[s] \iff \mathcal M \models \varphi\,[s(x \mid t^{\mathcal M}[s])]$. Ainsi $\mathcal M \models \forall x\, \varphi$ équivaut à $\mathcal M \models \varphi[t/x]$ pour tout terme clos $t$, donc, par hypothèse de récurrence, à $\varphi[t/x] \in \widehat T$ pour tout terme clos $t$. Il reste à voir que cette dernière condition équivaut à $\forall x\, \varphi \in \widehat T$. Si $\forall x\, \varphi \in \widehat T$, l'axiome (2) donne $\widehat T \vdash \varphi[t/x]$, donc $\varphi[t/x] \in \widehat T$, pour tout $t$. Si $\forall x\, \varphi \notin \widehat T$, alors $\neg\forall x\, \varphi \in \widehat T$, et le point (v) des {{hk-generalisation|règles dérivées}} donne $\widehat T \vdash \exists x\, \neg\varphi$. La propriété des témoins fournit une constante $c$ telle que $\widehat T \vdash \exists x\, \neg\varphi \to \neg\varphi[c/x]$ ; ainsi $\widehat T \vdash \neg\varphi[c/x]$, donc $\neg\varphi[c/x] \in \widehat T$ et $\varphi[c/x] \notin \widehat T$ : la condition est en défaut pour le terme clos $c$.
+    remarques:
+      - |
+        La récurrence ne porte pas sur les sous-formules : $\varphi[t/x]$ n'est pas une sous-formule de $\forall x\, \varphi$. L'erreur la plus répandue est de raisonner ainsi par récurrence sur la construction des formules ; c'est la hauteur, que la substitution d'un terme clos ne change pas, qui permet de conclure.
+      - |
+        La propriété des témoins ne sert qu'au cas du quantificateur, et elle y est indispensable. Sur la signature $\{0, S, P\}$, où $P$ est un symbole de relation unaire, la théorie formée de $\neg\forall x\, P\, x$ et des énoncés $P\, S \cdots S\, 0$, pour tous les nombres d'occurrences de $S$, est cohérente : les entiers, augmentés d'un élément qui n'est pas dans $P$, en forment un modèle. Mais les termes clos sont les mots $S \cdots S\, 0$ ; dans le modèle des termes clos d'un prolongement complet de cette théorie, tous les éléments sont dans $P$, et l'énoncé $\forall x\, P\, x$ est satisfait, alors que la théorie contient sa négation. Il manque un témoin de $\exists x\, \neg P\, x$.
+
+  - id: hk-existence
+    etiquette: Existence d'un modèle
+    nature: théorème
+    titre: Théorème de complétude
+    choix: |
+      Pour une signature finie ou dénombrable, la démonstration n'emploie aucune forme du choix : le lemme de Lindenbaum s'y fait par énumération des énoncés. Pour une signature quelconque, elle emploie le principe de maximalité du {{hk-lindenbaum|lemme de Lindenbaum}}, (ii) ; le théorème équivaut alors, dans $\mathsf{ZF}$, au lemme de l'[[ultrafiltre]].
+    enonce: |
+      (i) Toute théorie [[theorie-coherente|cohérente]] sur une signature $\mathcal L$ a un [[modele|modèle]].
+
+      (ii) Pour toute théorie $T$ et tout énoncé $\varphi$, $T \vdash \varphi$ si et seulement si $T \models \varphi$.
+    preuve: |
+      (i) Soit $T$ une théorie cohérente sur $\mathcal L$, et $\mathcal L^+$, $H$ comme dans {{hk-temoins|Extension par témoins}}. La théorie $T \cup H$ est cohérente sur $\mathcal L^+$. Le {{hk-lindenbaum|lemme de Lindenbaum}} la prolonge en une théorie cohérente $\widehat T$ sur $\mathcal L^+$ qui contient, pour tout énoncé, cet énoncé ou sa négation ; comme $\widehat T$ contient $H$, elle a la propriété des témoins. Par le {{hk-verite|lemme de vérité}}, le modèle des termes clos $\mathcal M$ de $\widehat T$ satisfait tous les énoncés de $\widehat T$, en particulier ceux de $T$. C'est une structure pour $\mathcal L^+$ ; en oubliant l'interprétation des nouvelles constantes, on obtient une structure $\mathcal M_0$ pour $\mathcal L$, de même domaine. La valeur d'un terme de $\mathcal L$ et la satisfaction d'une formule de $\mathcal L$ ne font intervenir que les interprétations des symboles de $\mathcal L$, comme on le voit par récurrence sur les termes, puis sur les formules ; $\mathcal M_0$ satisfait donc les mêmes énoncés de $\mathcal L$ que $\mathcal M$, et c'est un modèle de $T$.
+
+      (ii) Si $T \vdash \varphi$, alors $T \models \varphi$ par le {{l-correction|théorème de correction}}. Réciproquement, si $T \nvdash \varphi$, la théorie $T \cup \{\neg\varphi\}$ est cohérente ({{l-coherence|Cohérence}}, (ii)), donc a un modèle par (i), qui est un modèle de $T$ ne satisfaisant pas $\varphi$ : ainsi $T \not\models \varphi$.
+
+      Les deux formes sont d'ailleurs équivalentes : on vient de déduire (ii) de (i), et, si (ii) est vrai, une théorie $T$ sans modèle vérifie $T \models \varphi \wedge \neg\varphi$ par vacuité, donc démontre $\varphi \wedge \neg\varphi$, puis $\varphi$ et $\neg\varphi$ par la règle des tautologies : elle est incohérente.
+    remarques:
+      - |
+        Gödel a démontré ce théorème dans sa thèse (1929), publiée en 1930 sous le titre « Die Vollständigkeit der Axiome des logischen Funktionenkalküls » (Monatshefte für Mathematik und Physik 37, p. 349-360), pour une signature dénombrable et par une autre méthode. La démonstration suivie ici est celle de Henkin, « The completeness of the first-order functional calculus » (Journal of Symbolic Logic 14, 1949, p. 159-166), qui vaut pour toute signature.
+      - |
+        La démonstration dit davantage que l'existence d'un modèle : elle en construit un dont les éléments sont des classes de termes clos de $\mathcal L^+$. Le {{l-lowenheim|théorème de Löwenheim-Skolem}} lit sur cette construction la taille du modèle obtenu.
+
+aretes:
+  - [hk-generalisation, hk-constantes]
+  - [hk-generalisation, hk-egalite]
+  - [hk-constantes, hk-temoins]
+  - [hk-egalite, hk-modele]
+  - [hk-lindenbaum, hk-modele]
+  - [hk-modele, hk-verite]
+  - [hk-temoins, hk-verite]
+  - [hk-verite, hk-existence]
