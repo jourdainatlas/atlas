@@ -351,47 +351,108 @@ def disposer(gid):
             if not vrais: continue
             milieu = (min(x[v] - dims[v][0] / 2 for v in vrais) + max(x[v] + dims[v][0] / 2 for v in vrais)) / 2
             for v in ordre[t]: x[v] += axe - milieu
-    # Lissage des arêtes longues (28 oct. 2026) : les nœuds fictifs d'une arête sont ramenés vers la droite
-    # qui joint ses deux extrémités, sans changer l'ordre de leur couche (donc sans croisement nouveau) et
-    # sans approcher une bulle ou un autre fictif de moins de l'écart réglementaire ; les bulles ne bougent
-    # pas. Une couche où ces contraintes ne peuvent être tenues garde ses positions.
-    chaine_de = {f: ch for ch in chaines for f in ch[1:-1]}
-    def placer_fictifs(t, cibles):
-        c = ordre[t]
-        nouv = [cibles.get(v, x[v]) for v in c]
-        for i in range(1, len(c)):
-            if c[i].startswith('·'): nouv[i] = max(nouv[i], nouv[i - 1] + sep(c[i - 1], c[i]))
-        for i in range(len(c) - 2, -1, -1):
-            if c[i].startswith('·'): nouv[i] = min(nouv[i], nouv[i + 1] - sep(c[i], c[i + 1]))
-        if all(nouv[i + 1] - nouv[i] >= sep(c[i], c[i + 1]) - 1e-6 for i in range(len(c) - 1)):
-            for v, xv in zip(c, nouv): x[v] = xv
-    # départ : la droite entre les extrémités ; puis « élastique tendu » : chaque fictif va vers le milieu
-    # de ses deux voisins sur l'arête, sous les mêmes contraintes, ce qui converge vers le chemin le plus
-    # court qui contourne les bulles, sans ondulation inutile.
-    couches_fictives = [t for t in range(1, nmax) if any(v.startswith('·') for v in ordre[t])]
-    for t in couches_fictives:
-        cib = {}
-        for v in ordre[t]:
-            if v.startswith('·'):
-                ch = chaine_de[v]; a_, b_ = ch[0], ch[-1]
-                cib[v] = x[a_] + (x[b_] - x[a_]) * (rang[v] - rang[a_]) / (rang[b_] - rang[a_])
-        placer_fictifs(t, cib)
-    for _ in range(60):
-        for t in couches_fictives:
-            cib = {}
-            for v in ordre[t]:
-                if v.startswith('·'):
-                    ch = chaine_de[v]; k_ = ch.index(v)
-                    cib[v] = (x[ch[k_ - 1]] + x[ch[k_ + 1]]) / 2
-            placer_fictifs(t, cib)
+    # Routage des arêtes en pistes (28 oct. 2026, demande de l'auteur : pouvoir suivre chaque flèche).
+    # 1. Redressement des arêtes longues : leurs nœuds fictifs sont alignés à la verticale aussi longtemps
+    #    que les voisins de couche le permettent (ordre et écarts gardés, donc croisements inchangés).
+    # 2. Ports : chaque arête part d'un point distinct du haut de sa bulle et arrive en un point distinct
+    #    du bas de sa cible, rangés de gauche à droite comme leurs destinations.
+    # 3. Pistes : entre deux couches, chaque changement d'abscisse se fait sur une horizontale qui lui
+    #    est propre (coins arrondis) ; deux horizontales qui se recouvrent sont sur deux pistes
+    #    différentes, ordonnées pour ne pas se croiser sans nécessité ; la bande s'élargit au besoin.
+    #    Deux arêtes ne se superposent donc jamais : elles ne peuvent que se croiser à angle droit.
+    pos = {v: i for t_ in range(nmax + 1) for i, v in enumerate(ordre[t_])}
+    def intervalle(f):
+        c = ordre[rang[f]]; i = pos[f]
+        lo = x[c[i - 1]] + sep(c[i - 1], f) if i > 0 else -1e9
+        hi = x[c[i + 1]] - sep(f, c[i + 1]) if i < len(c) - 1 else 1e9
+        return lo, hi
+    for _ in range(4):
+        for ch in sorted(chaines, key=lambda ch: -len(ch)):
+            fs = ch[1:-1]
+            if not fs: continue
+            a_, b_ = ch[0], ch[-1]
+            i, prec = 0, x[a_]
+            while i < len(fs):
+                lo, hi = intervalle(fs[i]); j = i + 1
+                while j < len(fs):
+                    l2, h2 = intervalle(fs[j])
+                    if max(lo, l2) <= min(hi, h2): lo, hi = max(lo, l2), min(hi, h2); j += 1
+                    else: break
+                if i == 0 and lo <= x[a_] <= hi: val = x[a_]
+                elif j == len(fs) and lo <= x[b_] <= hi: val = x[b_]
+                else: val = min(max(prec, lo), hi)
+                for k in range(i, j): x[fs[k]] = val
+                prec, i = val, j
     xmin = min(x[v] - dims[v][0] / 2 for v in x)
     xmax = max(x[v] + dims[v][0] / 2 for v in x)
     decal = MARGE - xmin
     if gid == racines[0]['graphe']: decal += 64   # place des étiquettes de rang
     for v in x: x[v] += decal
-    y = {v: MARGE + 10 + (nmax - rang[v]) * ECART_Y for v in rang}
     largeur = xmax - xmin + 2 * MARGE + (64 if gid == racines[0]['graphe'] else 0)
-    hauteur = 2 * MARGE + 20 + nmax * ECART_Y
+    HMAX = max(h for w, h in dims.values())
+    rond = lambda v: not v.startswith('·') and not v.startswith('↑') and noeuds[v]['famille'] in NOMBRES
+
+    # ports
+    sorties, arrivees = defaultdict(list), defaultdict(list)
+    for k, ch in enumerate(chaines):
+        sorties[ch[0]].append(k); arrivees[ch[-1]].append(k)
+    port_dep, port_arr = {}, {}
+    def repartir(v, ks, cle):
+        ks = sorted(ks, key=cle)
+        w = dims[v][0]
+        utile = max(0.0, w / 2 - (14 if rond(v) else 22))
+        ecart = min(14.0, 2 * utile / (len(ks) - 1)) if len(ks) > 1 else 0
+        return {k: x[v] + (i - (len(ks) - 1) / 2) * ecart for i, k in enumerate(ks)}
+    for v, ks in sorties.items():
+        port_dep.update(repartir(v, ks, lambda k: (x[chaines[k][1]], x[chaines[k][-1]])))
+    for v, ks in arrivees.items():
+        port_arr.update(repartir(v, ks, lambda k: (x[chaines[k][-2]], x[chaines[k][0]])))
+    def abscisse(k, i):
+        ch = chaines[k]
+        if i == 0: return port_dep[k]
+        if i == len(ch) - 1: return port_arr[k]
+        return x[ch[i]]
+
+    # pistes, couche par couche
+    PISTE = 8
+    piste, npistes = {}, {}
+    for t in range(nmax):
+        segs = []
+        for k, ch in enumerate(chaines):
+            for i in range(len(ch) - 1):
+                if rang[ch[i]] == t:
+                    x0, x1 = abscisse(k, i), abscisse(k, i + 1)
+                    if abs(x1 - x0) >= 0.5: segs.append((k, i, x0, x1))
+        def recouvre(s, u):
+            m = 10
+            return min(s[2], s[3]) - m < max(u[2], u[3]) and min(u[2], u[3]) - m < max(s[2], s[3])
+        # « s au-dessus de u » quand l'ordre est conservé : vers la droite, celui de gauche ; vers la
+        # gauche, celui de droite (sinon l'horizontale de l'un couperait la verticale de l'autre).
+        def dessus(s, u):
+            if not recouvre(s, u): return False
+            ds, du = s[3] > s[2], u[3] > u[2]
+            if ds != du: return False
+            inverse = (s[2] - u[2]) * (s[3] - u[3]) < 0
+            if inverse: return False
+            return s[2] < u[2] if ds else s[2] > u[2]
+        # ordre de traitement compatible : vers la droite par abscisse de départ croissante, vers la gauche
+        # décroissante ; on alterne les deux familles, qui ne se contraignent pas entre elles.
+        segs.sort(key=lambda s: (0, s[2]) if s[3] > s[2] else (1, -s[2]))
+        attribue = {}
+        for s in segs:
+            mini = max([attribue[u] + 1 for u in attribue if dessus(u, s)], default=0)
+            pris = {attribue[u] for u in attribue if recouvre(u, s)}
+            p_ = mini
+            while p_ in pris: p_ += 1
+            attribue[s] = p_
+        for s, p_ in attribue.items(): piste[(s[0], s[1])] = p_
+        npistes[t] = max(attribue.values(), default=-1) + 1
+    # ordonnées des couches : la bande entre t et t + 1 contient ses pistes
+    bande = {t: max(ECART_Y - HMAX, (npistes[t] + 1) * PISTE) for t in range(nmax)}
+    ycouche = {nmax: MARGE + 10}
+    for t in range(nmax - 1, -1, -1): ycouche[t] = ycouche[t + 1] + HMAX + bande[t]
+    y = {v: ycouche[rang[v]] for v in rang}
+    hauteur = ycouche[0] + MARGE + 10
 
     places = []
     for v in rang:
@@ -399,113 +460,36 @@ def disposer(gid):
         w, h = dims[v]
         places.append({'id': v[1:] if v.startswith('↑') else v, 'entree': v.startswith('↑'),
                        'x': round(x[v], 1), 'y': round(y[v], 1), 'w': round(w, 1), 'h': h})
+    def bord(v, px, haut):
+        """Ordonnée du bord haut (ou bas) de la bulle v à l'abscisse px."""
+        h = dims[v][1]
+        if rond(v):
+            r_ = h / 2; d_ = min(abs(px - x[v]), r_ - 1)
+            e_ = (r_ * r_ - d_ * d_) ** 0.5
+        else: e_ = h / 2
+        return y[v] - e_ if haut else y[v] + e_
     aretes, morceaux = [], []
-    HMAX = max(h for w, h in dims.values())
-    def traverse(a, b, typ, pts_):
-        """Le morceau de tracé passe-t-il sur une bulle autre que ses extrémités ?"""
-        for i in range(0, 61):
-            t = i / 60
-            if typ == 'L':
-                (x0, y0), (x1, y1) = pts_
-                px, py = x0 + t * (x1 - x0), y0 + t * (y1 - y0)
-            else:
-                (x0, y0), (c1x, c1y), (c2x, c2y), (x1, y1) = pts_
-                u = 1 - t
-                px = u**3 * x0 + 3 * u**2 * t * c1x + 3 * u * t**2 * c2x + t**3 * x1
-                py = u**3 * y0 + 3 * u**2 * t * c1y + 3 * u * t**2 * c2y + t**3 * y1
-            for v in rang:
-                if v in (a, b) or v.startswith('·'): continue
-                w, h = dims[v]
-                if abs(px - x[v]) < w / 2 + 4 and abs(py - y[v]) < h / 2 + 4: return True
-        return False
-    for ch in chaines:
+    for k, ch in enumerate(chaines):
         a, b = ch[0], ch[-1]
-        pts = [(x[a], y[a] - dims[a][1] / 2)] + [(x[f], y[f]) for f in ch[1:-1]] + [(x[b], y[b] + dims[b][1] / 2 + 6)]
-        centres = [y[v] for v in ch]
-        if len(ch) > 2:
-            # Arête longue. Dans chaque couche qu'elle franchit, l'arête dispose d'un « couloir » : l'intervalle
-            # entre ses voisins de couche (bulles, à 8 px de leur bord, ou autres arêtes, à 6 px), sur toute la
-            # hauteur de la couche. Entre deux couches, la bande est libre. On tend un fil dans cette suite de
-            # couloirs (chemin le plus court : chaque point va vers la droite qui joint ses voisins, puis est
-            # ramené dans son couloir), ce qui supprime toute ondulation inutile ; la ligne brisée obtenue ne
-            # peut toucher aucune bulle, puisque chaque couloir est convexe. On l'arrondit ensuite par une
-            # spline de Catmull-Rom, la plus souple qui ne frôle aucune bulle.
-            pos = {v: k for t_ in range(nmax + 1) for k, v in enumerate(ordre[t_])}
-            y_dep = centres[0] - HMAX / 2 - 3
-            y_arr = centres[-1] + HMAX / 2 + 3
-            P = [[x[a], min(y_dep, pts[0][1])]]
-            bornes = [None]
-            for f in ch[1:-1]:
-                c = ordre[rang[f]]; k = pos[f]
-                lo, hi = -1e9, 1e9
-                if k > 0:
-                    g_ = c[k - 1]
-                    lo = x[g_] + (dims[g_][0] / 2 + 8 if not g_.startswith('·') else 6)
-                if k < len(c) - 1:
-                    d_ = c[k + 1]
-                    hi = x[d_] - (dims[d_][0] / 2 + 8 if not d_.startswith('·') else 6)
-                if lo > hi: lo = hi = x[f]
-                for yy in (y[f] + HMAX / 2 + 4, y[f] - HMAX / 2 - 4):
-                    P.append([min(max(x[f], lo), hi), yy]); bornes.append((lo, hi))
-            P.append([x[b], max(y_arr, pts[-1][1])]); bornes.append(None)
-            for _ in range(300):
-                for k in range(1, len(P) - 1):
-                    (x0, y0), (x1, y1) = P[k - 1], P[k + 1]
-                    xv = x0 + (x1 - x0) * (P[k][1] - y0) / (y1 - y0)
-                    P[k][0] = min(max(xv, bornes[k][0]), bornes[k][1])
-            # on retire les points alignés avec leurs voisins (le fil y est droit)
-            Q = [tuple(P[0])]
-            for k in range(1, len(P) - 1):
-                (x0, y0), (x1, y1) = Q[-1], P[k + 1]
-                xv = x0 + (x1 - x0) * (P[k][1] - y0) / (y1 - y0)
-                if abs(xv - P[k][0]) > 0.5: Q.append(tuple(P[k]))
-            Q.append(tuple(P[-1]))
-            lisses = None
-            for tension in (1.0, 0.7, 0.45, 0.25, 0.0):
-                # tangente unitaire en chaque point (verticale aux extrémités), poignées proportionnelles à
-                # la longueur de chaque arc : pas de boucle ni de rebroussement entre points rapprochés
-                U = []
-                for k in range(len(Q)):
-                    if k in (0, len(Q) - 1): U.append((0.0, -1.0))
-                    else:
-                        dx_, dy_ = Q[k + 1][0] - Q[k - 1][0], Q[k + 1][1] - Q[k - 1][1]
-                        n_ = (dx_ * dx_ + dy_ * dy_) ** 0.5; U.append((dx_ / n_, dy_ / n_))
-                essai = []
-                if pts[0][1] > Q[0][1]: essai.append((a, b, 'L', pts[0], Q[0]))
-                for k in range(len(Q) - 1):
-                    if tension == 0.0:
-                        essai.append((a, b, 'L', Q[k], Q[k + 1])); continue
-                    L_ = ((Q[k + 1][0] - Q[k][0]) ** 2 + (Q[k + 1][1] - Q[k][1]) ** 2) ** 0.5 * tension / 3
-                    c1 = (Q[k][0] + U[k][0] * L_, Q[k][1] + U[k][1] * L_)
-                    c2 = (Q[k + 1][0] - U[k + 1][0] * L_, Q[k + 1][1] - U[k + 1][1] * L_)
-                    essai.append((a, b, 'C', Q[k], c1, c2, Q[k + 1]))
-                if pts[-1][1] < Q[-1][1]: essai.append((a, b, 'L', Q[-1], pts[-1]))
-                if not any(traverse(m[0], m[1], m[2], m[3:]) for m in essai):
-                    lisses = essai; break
-            if lisses:
-                dstr = f'M{pts[0][0]:.1f},{pts[0][1]:.1f}'
-                for m in lisses:
-                    if m[2] == 'L': dstr += f' L{m[4][0]:.1f},{m[4][1]:.1f}'
-                    else: dstr += ' C' + ' '.join(f'{p[0]:.1f},{p[1]:.1f}' for p in m[4:7])
-                morceaux.extend(lisses)
-                aretes.append({'de': a[1:] if a.startswith('↑') else a, 'vers': b,
-                               'entree': a.startswith('↑'), 'd': dstr})
-                continue
-        dstr = f'M{pts[0][0]:.1f},{pts[0][1]:.1f}'
-        for i, ((x0, y0), (x1, y1)) in enumerate(zip(pts, pts[1:])):
-            # le changement d'abscisse se fait entièrement dans la bande libre entre deux couches
-            yb = centres[i] - HMAX / 2 - 3
-            ya = centres[i + 1] + HMAX / 2 + 3
-            if y0 > yb:
-                dstr += f' L{x0:.1f},{yb:.1f}'; morceaux.append((a, b, 'L', (x0, y0), (x0, yb)))
-            else: yb = y0
-            ym = (yb + ya) / 2
-            dstr += f' C{x0:.1f},{ym:.1f} {x1:.1f},{ym:.1f} {x1:.1f},{ya:.1f}'
-            morceaux.append((a, b, 'C', (x0, yb), (x0, ym), (x1, ym), (x1, ya)))
-            if y1 < ya:
-                dstr += f' L{x1:.1f},{y1:.1f}'; morceaux.append((a, b, 'L', (x1, ya), (x1, y1)))
+        cx, cy = port_dep[k], bord(a, port_dep[k], True) - (7 if a.startswith('↑') else 0)   # au-dessus de « niveau supérieur »
+        d = f'M{cx:.1f},{cy:.1f}'; poly = [(cx, cy)]
+        for i in range(len(ch) - 1):
+            t = rang[ch[i]]
+            x0, x1 = abscisse(k, i), abscisse(k, i + 1)
+            if (k, i) in piste:
+                haut_bande = ycouche[t + 1] + HMAX / 2
+                pas = bande[t] / (npistes[t] + 1)
+                yk = haut_bande + (piste[(k, i)] + 1) * pas
+                s_ = 1 if x1 > x0 else -1
+                rc = min(8.0, abs(x1 - x0) / 2, pas * 0.9)
+                d += f' L{x0:.1f},{yk + rc:.1f} Q{x0:.1f},{yk:.1f} {x0 + s_ * rc:.1f},{yk:.1f}'
+                d += f' L{x1 - s_ * rc:.1f},{yk:.1f} Q{x1:.1f},{yk:.1f} {x1:.1f},{yk - rc:.1f}'
+                poly += [(x0, yk), (x1, yk)]
+        fx = port_arr[k]; fy = bord(b, fx, False) + 6
+        d += f' L{fx:.1f},{fy:.1f}'; poly.append((fx, fy))
+        for p0, p1 in zip(poly, poly[1:]): morceaux.append((a, b, 'L', p0, p1))
         aretes.append({'de': a[1:] if a.startswith('↑') else a, 'vers': b,
-                       'entree': a.startswith('↑'), 'd': dstr})
+                       'entree': a.startswith('↑'), 'd': d})
     # vérification : aucun tracé ne traverse un nœud autre que ses extrémités
     for m in morceaux:
         a, b, typ, pts_ = m[0], m[1], m[2], m[3:]
@@ -528,7 +512,7 @@ def disposer(gid):
                     break
     rangs = []
     if gid == racines[0]['graphe']:
-        rangs = [{'rang': t, 'y': MARGE + 10 + (nmax - t) * ECART_Y} for t in range(nmax + 1)]
+        rangs = [{'rang': t, 'y': ycouche[t]} for t in range(nmax + 1)]
     return {'largeur': round(largeur), 'hauteur': round(hauteur), 'noeuds': places,
             'aretes': aretes, 'rangs': rangs, 'croisements': score}
 

@@ -311,13 +311,11 @@ Placement (`disposer` dans `construire.py`) :
 - enfin, pour le seul graphe de l'édifice (28 oct. 2026, demande de l'auteur), chaque couche est translatée
   pour que le milieu de ses bulles soit à l'aplomb de la logique ; une translation de couche entière
   (nœuds fictifs compris) garde l'ordre, donc les croisements (16), et l'édifice cesse de pencher à droite.
-- tracé des arêtes longues (28 oct. 2026, demande de l'auteur : « ondulations inutiles ») : les nœuds
-  fictifs sont d'abord tendus comme un élastique (chaque fictif vers le milieu de ses voisins sur l'arête,
-  dans la limite de ses voisins de couche) ; puis, au tracé, l'arête dispose dans chaque couche d'un couloir
-  (entre ses voisins, à 8 px d'une bulle, 6 px d'une autre arête) et on y tend un fil (plus court chemin
-  par les couloirs), arrondi en spline à poignées proportionnelles aux longueurs, verticale au départ et à
-  l'arrivée ; la tension baisse jusqu'à la ligne brisée, qui ne peut toucher aucune bulle (couloirs
-  convexes). Détails : section 33 de MEMO_atlas_edifice.md. Croisements inchangés (l'ordre l'est).
+- routage des arêtes (28 oct. 2026, demande de l'auteur : suivre chaque flèche) : fictifs redressés à la
+  verticale, ports distincts sur chaque bulle, et dans chaque bande entre deux couches une piste
+  horizontale propre par changement d'abscisse (coins arrondis, bande élargie au besoin) ; aucune
+  superposition, seulement des croisements à angle droit ; survol d'une flèche = mise en évidence.
+  Détails : section 33 de MEMO_atlas_edifice.md. Croisements inchangés (l'ordre l'est).
 Modification de l'édifice : l'arête ℝ → Topologie algébrique est remplacée par Analyse réelle → Topologie algébrique (compacité et connexité de [0, 1]).
 
 Navigation : un clic sur une bulle « niveau supérieur » (entrée d'un sous-graphe) ouvre directement sa structure interne si elle en a une ; sinon (entrée qui est un nœud interne d'un autre graphe) sa fiche s'affiche sur place, sans quitter le graphe courant. L'ancre `#graphe.entrée` est acceptée.

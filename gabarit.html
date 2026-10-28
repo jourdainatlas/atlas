@@ -197,6 +197,7 @@ body.redim .vue { pointer-events: none; }
 
 .arete { fill: none; stroke: var(--arete); stroke-width: 1.4; marker-end: url(#pointe); transition: stroke .15s, opacity .15s; }
 .arete.entree { stroke-dasharray: 4 4; }
+.zone-arete { fill: none; stroke: transparent; stroke-width: 12; pointer-events: stroke; cursor: pointer; }
 #pointe path { fill: var(--arete); }
 #pointe-vive path { fill: var(--arete-vive); }
 .plan.focus .arete { opacity: .25; }
@@ -1040,6 +1041,14 @@ function dessiner(gid) {
     p.dataset.de = a.de; p.dataset.vers = a.vers;
     svg.append(p);
   }
+  // zones de saisie, larges et invisibles, au-dessus des tracés : survoler (ou toucher) une flèche la
+  // met en évidence avec ses deux extrémités
+  for (const a of g.aretes) {
+    const z = document.createElementNS(NS, 'path');
+    z.setAttribute('d', a.d); z.setAttribute('class', 'zone-arete');
+    z.dataset.de = a.de; z.dataset.vers = a.vers;
+    svg.append(z);
+  }
   plan.append(svg);
 
   for (const pl of g.noeuds) {
@@ -1094,6 +1103,25 @@ function surligner(id) {
     }
   });
   plan.querySelectorAll('.noeud').forEach(b => { if (ids.has(b.dataset.id)) b.classList.add('voisin'); });
+  remonterVives(plan);
+}
+function remonterVives(plan) {
+  // les flèches mises en évidence passent au premier plan (avant les zones de saisie)
+  const z = plan.querySelector('.zone-arete');
+  plan.querySelectorAll('.arete.vive').forEach(p => p.parentNode.insertBefore(p, z));
+}
+function surlignerArete(z) {
+  const plan = $('#plan');
+  plan.querySelectorAll('.voisin').forEach(e => e.classList.remove('voisin'));
+  plan.querySelectorAll('.arete.vive').forEach(e => e.classList.remove('vive'));
+  plan.classList.add('focus');
+  plan.querySelectorAll('.arete').forEach(p => {
+    if (p.dataset.de === z.dataset.de && p.dataset.vers === z.dataset.vers) p.classList.add('vive');
+  });
+  plan.querySelectorAll('.noeud').forEach(b => {
+    if (b.dataset.id === z.dataset.de || b.dataset.id === z.dataset.vers) b.classList.add('voisin');
+  });
+  remonterVives(plan);
 }
 
 function appliquerEchelle() {
@@ -1491,6 +1519,7 @@ $('#plan').addEventListener('click', ev => {
   aller(etat.graphe, id, { sansDefilement: true });
 });
 $('#plan').addEventListener('mouseover', ev => {
+  if (ev.target.classList && ev.target.classList.contains('zone-arete')) { surlignerArete(ev.target); return; }
   const b = ev.target.closest('.noeud');
   surligner(b ? b.dataset.id : null);
 });

@@ -223,25 +223,26 @@ du pavé tactile sur ordinateur) appelle la même fonction. Vérifié en simulat
 doigt et toucher d'une bulle inchangés. Les boutons + et − restent.
 
 
-## 33. Tracé des arêtes longues (28 octobre 2026)
+## 33. Routage des arêtes en pistes (28 octobre 2026)
 
-Demande de l'auteur : les arêtes qui franchissent plusieurs rangs dessinaient des ondulations inutiles.
-Cause : chaque nœud fictif était placé indépendamment par couche, et chaque passage d'une couche à la
-suivante était tracé comme un « S » à tangentes verticales, d'où une marche d'escalier à chaque rang.
-
-Deux étapes dans `disposer` (`construire.py`) :
-1. Placement : après le centrage, les fictifs sont posés sur la droite qui joint les extrémités, puis
-   60 passes « élastique tendu » (chaque fictif vers le milieu de ses deux voisins sur l'arête), chaque
-   déplacement étant borné par les voisins de couche (ordre et écarts `sep` conservés, donc croisements
-   inchangés : édifice 16).
-2. Tracé : pour une arête longue, chaque couche franchie offre un couloir vertical (entre les voisins de
-   couche, à 8 px du bord d'une bulle, 6 px d'un autre fictif), sur toute la hauteur HMAX + 8. On tend un
-   fil (300 itérations : chaque point vers la droite joignant ses voisins, puis projeté dans son couloir),
-   on retire les points alignés, puis on arrondit par une spline dont la tangente en chaque point est la
-   direction (point suivant − point précédent) et dont les poignées valent tension × longueur de l'arc / 3
-   (pas de boucle ni de rebroussement). Tension essayée : 1 ; 0,7 ; 0,45 ; 0,25 ; 0 (ligne brisée). Le
-   premier essai qui ne frôle aucune bulle (`traverse`, marge 4 px) est gardé ; la ligne brisée ne peut en
-   toucher aucune, les couloirs étant convexes. L'ancien tracé en escalier ne reste qu'en dernier recours.
-Vérifié sur l'édifice (clair, sombre, téléphone) et sur continuite, mes : courbes d'un seul tenant.
-Défaut connu : au départ d'une couche dense, le fil peut traverser la bande libre presque à l'horizontale
-(sorties de Structures algébriques et topologiques vers la droite) ; c'est le plus court chemin.
+Demande de l'auteur : d'abord supprimer les ondulations des arêtes longues, puis (même jour) pouvoir suivre
+le trajet de chaque flèche, sans chevauchement. Une première version (fils tendus arrondis en splines)
+a été remplacée le jour même par un routage orthogonal à coins arrondis, dans `disposer` (`construire.py`) :
+1. Redressement : les fictifs de chaque arête longue sont alignés à la verticale aussi longtemps que leurs
+   voisins de couche le permettent (intersection des intervalles admissibles, couche après couche ;
+   4 passes, arêtes les plus longues d'abord), de préférence à l'aplomb du départ ou de l'arrivée.
+   L'ordre et les écarts `sep` sont gardés : croisements inchangés (édifice 16).
+2. Ports : chaque arête part d'un point distinct du haut de sa bulle et arrive en un point distinct du
+   bas de sa cible (pas de 14 px au plus, rangés comme les destinations ; bord du cercle calculé pour
+   ℕ, ℤ, ℚ, ℝ, ℂ ; départ des entrées « niveau supérieur » 7 px au-dessus de leur étiquette).
+3. Pistes : dans la bande entre deux couches, chaque changement d'abscisse se fait sur une horizontale
+   propre (coins en quart d'arc, rayon 8 px au plus). Deux horizontales qui se recouvrent (marge 10 px)
+   ont des pistes différentes ; quand l'ordre est conservé, vers la droite celle de gauche est au-dessus,
+   vers la gauche celle de droite (sinon une horizontale couperait la verticale de l'autre). La bande
+   vaut max(ECART_Y − HMAX, (pistes + 1) × 8 px) : les rangs s'écartent selon le besoin, et les
+   ordonnées des étiquettes de rang suivent (`ycouche`).
+Deux arêtes ne se superposent donc jamais ; elles ne peuvent que se croiser à angle droit.
+4. Gabarit : chaque arête a une zone de saisie invisible de 12 px (`.zone-arete`) ; la survoler (ou la
+   toucher sur téléphone) met la flèche en évidence, au premier plan, avec ses deux extrémités, comme le
+   survol d'une bulle le faisait déjà pour toutes ses flèches.
+Vérifié : édifice (clair, sombre, téléphone), continuite, geod ; zéro traversée de bulle.
