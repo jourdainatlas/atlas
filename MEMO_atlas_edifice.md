@@ -222,3 +222,26 @@ du pavé tactile sur ordinateur) appelle la même fonction. Vérifié en simulat
 80 → 200 px donne 0,55 → 1,375, point central conservé à 3 px près, page non agrandie ; défilement à un
 doigt et toucher d'une bulle inchangés. Les boutons + et − restent.
 
+
+## 33. Tracé des arêtes longues (28 octobre 2026)
+
+Demande de l'auteur : les arêtes qui franchissent plusieurs rangs dessinaient des ondulations inutiles.
+Cause : chaque nœud fictif était placé indépendamment par couche, et chaque passage d'une couche à la
+suivante était tracé comme un « S » à tangentes verticales, d'où une marche d'escalier à chaque rang.
+
+Deux étapes dans `disposer` (`construire.py`) :
+1. Placement : après le centrage, les fictifs sont posés sur la droite qui joint les extrémités, puis
+   60 passes « élastique tendu » (chaque fictif vers le milieu de ses deux voisins sur l'arête), chaque
+   déplacement étant borné par les voisins de couche (ordre et écarts `sep` conservés, donc croisements
+   inchangés : édifice 16).
+2. Tracé : pour une arête longue, chaque couche franchie offre un couloir vertical (entre les voisins de
+   couche, à 8 px du bord d'une bulle, 6 px d'un autre fictif), sur toute la hauteur HMAX + 8. On tend un
+   fil (300 itérations : chaque point vers la droite joignant ses voisins, puis projeté dans son couloir),
+   on retire les points alignés, puis on arrondit par une spline dont la tangente en chaque point est la
+   direction (point suivant − point précédent) et dont les poignées valent tension × longueur de l'arc / 3
+   (pas de boucle ni de rebroussement). Tension essayée : 1 ; 0,7 ; 0,45 ; 0,25 ; 0 (ligne brisée). Le
+   premier essai qui ne frôle aucune bulle (`traverse`, marge 4 px) est gardé ; la ligne brisée ne peut en
+   toucher aucune, les couloirs étant convexes. L'ancien tracé en escalier ne reste qu'en dernier recours.
+Vérifié sur l'édifice (clair, sombre, téléphone) et sur continuite, mes : courbes d'un seul tenant.
+Défaut connu : au départ d'une couche dense, le fil peut traverser la bande libre presque à l'horizontale
+(sorties de Structures algébriques et topologiques vers la droite) ; c'est le plus court chemin.

@@ -351,6 +351,39 @@ def disposer(gid):
             if not vrais: continue
             milieu = (min(x[v] - dims[v][0] / 2 for v in vrais) + max(x[v] + dims[v][0] / 2 for v in vrais)) / 2
             for v in ordre[t]: x[v] += axe - milieu
+    # Lissage des arêtes longues (28 oct. 2026) : les nœuds fictifs d'une arête sont ramenés vers la droite
+    # qui joint ses deux extrémités, sans changer l'ordre de leur couche (donc sans croisement nouveau) et
+    # sans approcher une bulle ou un autre fictif de moins de l'écart réglementaire ; les bulles ne bougent
+    # pas. Une couche où ces contraintes ne peuvent être tenues garde ses positions.
+    chaine_de = {f: ch for ch in chaines for f in ch[1:-1]}
+    def placer_fictifs(t, cibles):
+        c = ordre[t]
+        nouv = [cibles.get(v, x[v]) for v in c]
+        for i in range(1, len(c)):
+            if c[i].startswith('·'): nouv[i] = max(nouv[i], nouv[i - 1] + sep(c[i - 1], c[i]))
+        for i in range(len(c) - 2, -1, -1):
+            if c[i].startswith('·'): nouv[i] = min(nouv[i], nouv[i + 1] - sep(c[i], c[i + 1]))
+        if all(nouv[i + 1] - nouv[i] >= sep(c[i], c[i + 1]) - 1e-6 for i in range(len(c) - 1)):
+            for v, xv in zip(c, nouv): x[v] = xv
+    # départ : la droite entre les extrémités ; puis « élastique tendu » : chaque fictif va vers le milieu
+    # de ses deux voisins sur l'arête, sous les mêmes contraintes, ce qui converge vers le chemin le plus
+    # court qui contourne les bulles, sans ondulation inutile.
+    couches_fictives = [t for t in range(1, nmax) if any(v.startswith('·') for v in ordre[t])]
+    for t in couches_fictives:
+        cib = {}
+        for v in ordre[t]:
+            if v.startswith('·'):
+                ch = chaine_de[v]; a_, b_ = ch[0], ch[-1]
+                cib[v] = x[a_] + (x[b_] - x[a_]) * (rang[v] - rang[a_]) / (rang[b_] - rang[a_])
+        placer_fictifs(t, cib)
+    for _ in range(60):
+        for t in couches_fictives:
+            cib = {}
+            for v in ordre[t]:
+                if v.startswith('·'):
+                    ch = chaine_de[v]; k_ = ch.index(v)
+                    cib[v] = (x[ch[k_ - 1]] + x[ch[k_ + 1]]) / 2
+            placer_fictifs(t, cib)
     xmin = min(x[v] - dims[v][0] / 2 for v in x)
     xmax = max(x[v] + dims[v][0] / 2 for v in x)
     decal = MARGE - xmin
@@ -368,10 +401,96 @@ def disposer(gid):
                        'x': round(x[v], 1), 'y': round(y[v], 1), 'w': round(w, 1), 'h': h})
     aretes, morceaux = [], []
     HMAX = max(h for w, h in dims.values())
+    def traverse(a, b, typ, pts_):
+        """Le morceau de tracé passe-t-il sur une bulle autre que ses extrémités ?"""
+        for i in range(0, 61):
+            t = i / 60
+            if typ == 'L':
+                (x0, y0), (x1, y1) = pts_
+                px, py = x0 + t * (x1 - x0), y0 + t * (y1 - y0)
+            else:
+                (x0, y0), (c1x, c1y), (c2x, c2y), (x1, y1) = pts_
+                u = 1 - t
+                px = u**3 * x0 + 3 * u**2 * t * c1x + 3 * u * t**2 * c2x + t**3 * x1
+                py = u**3 * y0 + 3 * u**2 * t * c1y + 3 * u * t**2 * c2y + t**3 * y1
+            for v in rang:
+                if v in (a, b) or v.startswith('·'): continue
+                w, h = dims[v]
+                if abs(px - x[v]) < w / 2 + 4 and abs(py - y[v]) < h / 2 + 4: return True
+        return False
     for ch in chaines:
         a, b = ch[0], ch[-1]
         pts = [(x[a], y[a] - dims[a][1] / 2)] + [(x[f], y[f]) for f in ch[1:-1]] + [(x[b], y[b] + dims[b][1] / 2 + 6)]
         centres = [y[v] for v in ch]
+        if len(ch) > 2:
+            # Arête longue. Dans chaque couche qu'elle franchit, l'arête dispose d'un « couloir » : l'intervalle
+            # entre ses voisins de couche (bulles, à 8 px de leur bord, ou autres arêtes, à 6 px), sur toute la
+            # hauteur de la couche. Entre deux couches, la bande est libre. On tend un fil dans cette suite de
+            # couloirs (chemin le plus court : chaque point va vers la droite qui joint ses voisins, puis est
+            # ramené dans son couloir), ce qui supprime toute ondulation inutile ; la ligne brisée obtenue ne
+            # peut toucher aucune bulle, puisque chaque couloir est convexe. On l'arrondit ensuite par une
+            # spline de Catmull-Rom, la plus souple qui ne frôle aucune bulle.
+            pos = {v: k for t_ in range(nmax + 1) for k, v in enumerate(ordre[t_])}
+            y_dep = centres[0] - HMAX / 2 - 3
+            y_arr = centres[-1] + HMAX / 2 + 3
+            P = [[x[a], min(y_dep, pts[0][1])]]
+            bornes = [None]
+            for f in ch[1:-1]:
+                c = ordre[rang[f]]; k = pos[f]
+                lo, hi = -1e9, 1e9
+                if k > 0:
+                    g_ = c[k - 1]
+                    lo = x[g_] + (dims[g_][0] / 2 + 8 if not g_.startswith('·') else 6)
+                if k < len(c) - 1:
+                    d_ = c[k + 1]
+                    hi = x[d_] - (dims[d_][0] / 2 + 8 if not d_.startswith('·') else 6)
+                if lo > hi: lo = hi = x[f]
+                for yy in (y[f] + HMAX / 2 + 4, y[f] - HMAX / 2 - 4):
+                    P.append([min(max(x[f], lo), hi), yy]); bornes.append((lo, hi))
+            P.append([x[b], max(y_arr, pts[-1][1])]); bornes.append(None)
+            for _ in range(300):
+                for k in range(1, len(P) - 1):
+                    (x0, y0), (x1, y1) = P[k - 1], P[k + 1]
+                    xv = x0 + (x1 - x0) * (P[k][1] - y0) / (y1 - y0)
+                    P[k][0] = min(max(xv, bornes[k][0]), bornes[k][1])
+            # on retire les points alignés avec leurs voisins (le fil y est droit)
+            Q = [tuple(P[0])]
+            for k in range(1, len(P) - 1):
+                (x0, y0), (x1, y1) = Q[-1], P[k + 1]
+                xv = x0 + (x1 - x0) * (P[k][1] - y0) / (y1 - y0)
+                if abs(xv - P[k][0]) > 0.5: Q.append(tuple(P[k]))
+            Q.append(tuple(P[-1]))
+            lisses = None
+            for tension in (1.0, 0.7, 0.45, 0.25, 0.0):
+                # tangente unitaire en chaque point (verticale aux extrémités), poignées proportionnelles à
+                # la longueur de chaque arc : pas de boucle ni de rebroussement entre points rapprochés
+                U = []
+                for k in range(len(Q)):
+                    if k in (0, len(Q) - 1): U.append((0.0, -1.0))
+                    else:
+                        dx_, dy_ = Q[k + 1][0] - Q[k - 1][0], Q[k + 1][1] - Q[k - 1][1]
+                        n_ = (dx_ * dx_ + dy_ * dy_) ** 0.5; U.append((dx_ / n_, dy_ / n_))
+                essai = []
+                if pts[0][1] > Q[0][1]: essai.append((a, b, 'L', pts[0], Q[0]))
+                for k in range(len(Q) - 1):
+                    if tension == 0.0:
+                        essai.append((a, b, 'L', Q[k], Q[k + 1])); continue
+                    L_ = ((Q[k + 1][0] - Q[k][0]) ** 2 + (Q[k + 1][1] - Q[k][1]) ** 2) ** 0.5 * tension / 3
+                    c1 = (Q[k][0] + U[k][0] * L_, Q[k][1] + U[k][1] * L_)
+                    c2 = (Q[k + 1][0] - U[k + 1][0] * L_, Q[k + 1][1] - U[k + 1][1] * L_)
+                    essai.append((a, b, 'C', Q[k], c1, c2, Q[k + 1]))
+                if pts[-1][1] < Q[-1][1]: essai.append((a, b, 'L', Q[-1], pts[-1]))
+                if not any(traverse(m[0], m[1], m[2], m[3:]) for m in essai):
+                    lisses = essai; break
+            if lisses:
+                dstr = f'M{pts[0][0]:.1f},{pts[0][1]:.1f}'
+                for m in lisses:
+                    if m[2] == 'L': dstr += f' L{m[4][0]:.1f},{m[4][1]:.1f}'
+                    else: dstr += ' C' + ' '.join(f'{p[0]:.1f},{p[1]:.1f}' for p in m[4:7])
+                morceaux.extend(lisses)
+                aretes.append({'de': a[1:] if a.startswith('↑') else a, 'vers': b,
+                               'entree': a.startswith('↑'), 'd': dstr})
+                continue
         dstr = f'M{pts[0][0]:.1f},{pts[0][1]:.1f}'
         for i, ((x0, y0), (x1, y1)) in enumerate(zip(pts, pts[1:])):
             # le changement d'abscisse se fait entièrement dans la bande libre entre deux couches
