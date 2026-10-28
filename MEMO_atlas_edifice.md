@@ -75,3 +75,44 @@ l'emploie.
 - Après chaque lot : construire jusqu'à zéro erreur, regarder le rendu du graphe modifié et de ses
   fiches (clair et sombre, bureau et téléphone), relever le nombre de croisements du graphe touché,
   puis rebaser, pousser et suivre la publication (section 0).
+
+### 29. Schémas dans les fiches (28 oct. 2026)
+
+**Syntaxe.** Dans `texte`, `enonce`, `preuve` ou une remarque, sur des lignes à part :
+
+    ```schema <nom>
+    Légende : une ou deux phrases complètes qui disent ce qu'il faut lire sur la figure.
+    ```
+
+`rendu.mjs` insère `contenu/schemas/<nom>.svg` tel quel dans la page (`<figure class="schema">`), puis
+la légende rendue comme le texte (formules, mais ni `[[…]]` ni `{{…}}` par prudence) en `figcaption`.
+Un schéma manquant est une erreur de construction. Le nom est l'id du nœud, suivi de `-2`, `-3`… s'il y
+en a plusieurs. Un diagramme commutatif ne passe pas par un SVG : on écrit `$$\begin{CD}…\end{CD}$$`
+(KaTeX 0.16), suivi d'une phrase.
+
+**Couleurs.** Aucune couleur n'est écrite dans les SVG, seulement des classes, que `gabarit.html` relie
+au thème (règles `svg.schema`, `figure.schema > svg` ; ne jamais écrire `figure.schema svg`, qui
+atteindrait les radicaux de KaTeX). Code constant : `t` encre (trait principal), `g` gris (axes,
+constructions, exclu), `r` rouge (objet étudié, point décisif), `b` bleu (second objet), `v` vert
+(troisième), `o` or (ce que fournit l'axiome du choix) ; `s-X` trait, `d` pointillé, `f-X` remplissage
+léger, `p-X` point plein, `x-X` texte.
+
+**Outils.** `outils/edifice_svg.py` (classes `Schema` et `Repere`, flèches, étiquettes en polices KaTeX
+avec indices `x_0`, exposants, `` `sup` `` en romain, ℝ en ajouré ; l'épaisseur `l=` passe par un style
+en ligne) ; `outils/edifice_schemas.py` (registre ; `python3 outils/edifice_schemas.py [noms]` régénère
+les SVG) ; un module par groupe de graphes, `outils/edifice_schemas_<groupe>.py` (analyse, reelle,
+fondations, topologie, geod, integration, proba, algebre), chaque figure étant une fonction qui calcule
+ses positions et vérifie par `assert` ce qu'elle affirme ; `outils/edifice_apercu.mjs SORTIE noms…`
+(aperçu clair/sombre, bureau 560 px et téléphone 358 px, sans construire le site). Largeur 460 à 540,
+étiquettes 15 à 17.
+
+**État.** 106 schémas et 7 diagrammes commutatifs, dans 29 graphes (zf et n n'en ont pas, ni les
+fiches de l'édifice). Relevé fait par quatre lecteurs, production par sept agents ; relecture du rendu
+de chaque schéma dans le site construit. Corrections de fond faites à cette occasion : `geod`
+(‖·‖₂ et ⟨·,·⟩ définis là où ils servent, coquille « a + c s e_i » dans Schwarz, « 2π » donné comme
+renvoi à l'analyse complexe), `top` (e^{2iπt} signalé comme renvoi en avant). Écartés : q-denombrable
+(un tableau n'apporte rien), gs-correspondance-2 (la remarque ne traite pas ℚ(∛2, j)), et la fiche ℚ de
+l'édifice (doublon de q-irrationnel).
+
+Précision ajoutée dans ta-revetement (iii) : la partie déjà traitée du bord d'un carré est un seul côté
+dans la première rangée ou la première colonne, et le coin $(0, 0)$ pour le premier carré.
