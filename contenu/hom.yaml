@@ -45,6 +45,10 @@ noeuds:
       Une suite exacte courte de complexes induit une suite exacte longue
       $$\begin{aligned} \cdots \to \lex{groupe-homologie}{H_n}(A) &\xrightarrow{i_*} H_n(B) \xrightarrow{p_*} H_n(C) \\ &\xrightarrow{\delta} H_{n-1}(A) \xrightarrow{i_*} H_{n-1}(B) \to \cdots \end{aligned}$$
       où le **morphisme de connexion** $\delta$ est défini ainsi : pour un cycle $c \in C_n$, on choisit $b \in B_n$ tel que $p(b) = c$ ; alors $\partial b = i(a)$ pour un unique $a \in A_{n-1}$, qui est un cycle, et $\delta[c] = [a]$.
+
+      $$\begin{CD} @. b @>p>> c \\ @. @V{\partial}VV @VV{\partial}V \\ a @>i>> \partial b @>p>> 0 \end{CD}$$
+
+      Le diagramme se lit en zigzag : on relève $c \in C_n$ en $b \in B_n$, on prend le bord $\partial b \in B_{n-1}$, puis l'unique $a \in A_{n-1}$ tel que $i(a) = \partial b$. La commutation du carré de droite, $p(\partial b) = \partial c = 0$, est ce qui place $\partial b$ dans l'image de $i$.
     preuve: |
       *Définition de $\delta$.* $p(\partial b) = \partial p(b) = \partial c = 0$, donc $\partial b \in \operatorname{Ker} p = \operatorname{Im} i$, et $a$ est unique par injectivité de $i$. De plus $i(\partial a) = \partial\partial b = 0$, donc $\partial a = 0$. Si l'on remplace $b$ par $b + i(a')$, $a$ devient $a + \partial a'$ ; si l'on remplace $c$ par $c + \partial c'$, avec $c' = p(b')$, on peut prendre $b + \partial b'$, et $a$ ne change pas. Donc $\delta$ est bien défini, et c'est un morphisme. Aucun axiome du choix n'intervient : la classe $\delta[c]$ ne dépend pas de $b$, dont on affirme seulement l'existence.
 
@@ -64,6 +68,10 @@ noeuds:
     texte: |
       Le **simplexe standard** $\Delta_n$ est l'ensemble des $t \in \lex{n-uplet}{\mathbb R^{n+1}}$ tels que $t_i \geqslant 0$ et $\sum t_i = 1$, muni de la topologie induite par la topologie produit ; ses sommets sont les vecteurs de base $e_0, \dots, e_n$. Pour $0 \leqslant i \leqslant n$, la **face** $\delta_i : \Delta_{n-1} \to \Delta_n$ insère un $0$ en position $i$. Un **simplexe singulier** de dimension $n$ d'un espace topologique $X$ est une application continue $\sigma : \Delta_n \to X$. Le groupe des **chaînes** $C_n(X)$ est le groupe abélien libre sur l'ensemble de ces simplexes, et le **bord** est le morphisme défini par
       $$\partial \sigma = \sum_{i=0}^n (-1)^i\, \sigma \circ \delta_i.$$
+
+      ```schema h-singuliere
+      Pour $n = 2$, la face $\delta_0$ a pour image l'arête de $e_1$ à $e_2$, $\delta_1$ celle de $e_0$ à $e_2$, et $\delta_2$ celle de $e_0$ à $e_1$, orientées comme l'image des sommets de $\Delta_1$. Avec les signes du bord, $\partial\sigma$ parcourt le contour de $\Delta_2$ : de $e_0$ à $e_1$, de $e_1$ à $e_2$, puis de $e_2$ à $e_0$ grâce au signe $-$.
+      ```
     enonce: |
       (i) $\partial \circ \partial = 0$ : les $C_n(X)$, nuls pour $n < 0$, forment un complexe, dont l'homologie $\lex{homologie-singuliere}{H_n}(X)$ est l'[[homologie-singuliere|homologie singulière]] de $X$.
 
@@ -105,7 +113,13 @@ noeuds:
     preuve: |
       (i) Pour des points $p_0, \dots, p_k$ d'un convexe de $\mathbb R^m$, notons $[p_0, \dots, p_k] : \Delta_k \to \mathbb R^m$ le simplexe affine $t \mapsto \sum t_jp_j$. Dans $\Delta_n \times [0, 1] \subset \mathbb R^{n+2}$, soit $v_i = (e_i, 0)$ et $w_i = (e_i, 1)$. L'**opérateur prisme** associe à $\sigma : \Delta_n \to X$ la chaîne
       $$P\sigma = \sum_{i=0}^n (-1)^i\, F \circ (\sigma \times \mathrm{id}) \circ [v_0, \dots, v_i, w_i, \dots, w_n].$$
-      Calculons $\partial P\sigma$. Le bord de $[v_0, \dots, v_i, w_i, \dots, w_n]$ s'obtient en omettant un sommet. Omettre $v_i$, en position $i$, dans le simplexe d'indice $i$, et omettre $w_{i-1}$, en position $i$, dans le simplexe d'indice $i - 1$, donnent le même simplexe $[v_0, \dots, v_{i-1}, w_i, \dots, w_n]$, avec les signes $(-1)^i(-1)^i = 1$ et $(-1)^{i-1}(-1)^i = -1$ : ces termes se compensent pour $1 \leqslant i \leqslant n$. Il reste, d'une part, le terme où l'on omet $v_0$ dans le simplexe d'indice $0$, soit $[w_0, \dots, w_n]$, qui donne $g \circ \sigma$, et le terme où l'on omet $w_n$ dans celui d'indice $n$, soit $[v_0, \dots, v_n]$, qui donne $-f \circ \sigma$ ; d'autre part, les termes où l'on omet un sommet $v_j$ avec $j < i$ ou $w_j$ avec $j > i$, qui reconstituent exactement $-P(\partial\sigma)$, puisque les faces de $\sigma$ se lisent sur les faces de $\Delta_n \times [0, 1]$. Ainsi $\partial P + P\partial = g_\# - f_\#$, et l'on conclut par {{h-complexes|Complexes de chaînes}}, (iii).
+      Calculons $\partial P\sigma$. Le bord de $[v_0, \dots, v_i, w_i, \dots, w_n]$ s'obtient en omettant un sommet. Omettre $v_i$, en position $i$, dans le simplexe d'indice $i$, et omettre $w_{i-1}$, en position $i$, dans le simplexe d'indice $i - 1$, donnent le même simplexe $[v_0, \dots, v_{i-1}, w_i, \dots, w_n]$, avec les signes $(-1)^i(-1)^i = 1$ et $(-1)^{i-1}(-1)^i = -1$ : ces termes se compensent pour $1 \leqslant i \leqslant n$. Il reste, d'une part, le terme où l'on omet $v_0$ dans le simplexe d'indice $0$, soit $[w_0, \dots, w_n]$, qui donne $g \circ \sigma$, et le terme où l'on omet $w_n$ dans celui d'indice $n$, soit $[v_0, \dots, v_n]$, qui donne $-f \circ \sigma$ ; d'autre part, les termes où l'on omet un sommet $v_j$ avec $j < i$ ou $w_j$ avec $j > i$, qui reconstituent exactement $-P(\partial\sigma)$, puisque les faces de $\sigma$ se lisent sur les faces de $\Delta_n \times [0, 1]$.
+
+      ```schema h-homotopie
+      Pour $n = 1$, le prisme $\Delta_1 \times [0, 1]$ est un carré découpé en deux triangles, $[v_0, w_0, w_1]$ compté avec le signe $+$ et $[v_0, v_1, w_1]$ avec le signe $-$. Dans le bord de $P\sigma$, la diagonale commune se compense ; il reste le haut $g \circ \sigma$, le bas $-f \circ \sigma$, et les deux côtés verticaux, qui forment $-P(\partial\sigma)$.
+      ```
+
+      Ainsi $\partial P + P\partial = g_\# - f_\#$, et l'on conclut par {{h-complexes|Complexes de chaînes}}, (iii).
 
       (ii) Si $g \circ f$ et $f \circ g$ sont homotopes aux identités, $g_* \circ f_*$ et $f_* \circ g_*$ sont les identités par (i). Si $U$ est étoilé par rapport à $a$, l'application constante $c_a$ et l'identité sont homotopes par $F(x, t) = a + t(x - a)$, continue ({{ta-chemins|Chemins}}, (ii)) : l'inclusion du point $a$ est une équivalence d'homotopie, et l'on applique {{h-degre0|Degré 0, point}}.
     remarques:
@@ -125,7 +139,13 @@ noeuds:
       $$\begin{aligned} \cdots \to \lex{homologie-singuliere}{H_n}(U \cap V) &\xrightarrow{(i_*, j_*)} H_n(U) \oplus H_n(V) \\ &\xrightarrow{k_* - l_*} H_n(X) \xrightarrow{\delta} H_{n-1}(U \cap V) \to \cdots \end{aligned}$$
       où $i, j, k, l$ sont les inclusions de $U \cap V$ dans $U$ et $V$, et de $U$ et $V$ dans $X$.
     preuve: |
-      (i) **Admis.** La difficulté contournée est la **subdivision barycentrique** : on construit un opérateur $S$ sur les chaînes, qui remplace chaque simplexe par la somme signée des simplexes de sa subdivision barycentrique, et un opérateur $T$ tel que $\partial T + T\partial = \mathrm{id} - S$. Le diamètre des simplexes affines est multiplié par au plus $n/(n+1)$ à chaque subdivision ; par compacité de $\Delta_n$ et un argument de nombre de Lebesgue appliqué au recouvrement $\{\sigma^{-1}(U), \sigma^{-1}(V)\}$, une chaîne donnée devient, après assez de subdivisions, une chaîne de $C^{U,V}(X)$. On en déduit que tout cycle est homologue à un cycle de $C^{U,V}$, et qu'un cycle de $C^{U,V}$ qui borde dans $C(X)$ borde dans $C^{U,V}$.
+      (i) **Admis.** La difficulté contournée est la **subdivision barycentrique** : on construit un opérateur $S$ sur les chaînes, qui remplace chaque simplexe par la somme signée des simplexes de sa subdivision barycentrique, et un opérateur $T$ tel que $\partial T + T\partial = \mathrm{id} - S$. Le diamètre des simplexes affines est multiplié par au plus $n/(n+1)$ à chaque subdivision ; par compacité de $\Delta_n$ et un argument de nombre de Lebesgue appliqué au recouvrement $\{\sigma^{-1}(U), \sigma^{-1}(V)\}$, une chaîne donnée devient, après assez de subdivisions, une chaîne de $C^{U,V}(X)$.
+
+      ```schema h-mayer-vietoris
+      Le $1$-simplexe $\sigma$ n'est contenu ni dans $U$ ni dans $V$, et une seule subdivision ne suffit pas, puisque sa première moitié sort à la fois de $U$ et de $V$. Après deux subdivisions, chacun des quatre morceaux est dans $U$, en bleu, ou dans $V$, en vert.
+      ```
+
+      On en déduit que tout cycle est homologue à un cycle de $C^{U,V}$, et qu'un cycle de $C^{U,V}$ qui borde dans $C(X)$ borde dans $C^{U,V}$.
 
       (ii) La suite $0 \to C(U \cap V) \xrightarrow{(i_\#, j_\#)} C(U) \oplus C(V) \xrightarrow{k_\# - l_\#} C^{U,V}(X) \to 0$ est exacte. L'application de gauche est injective ; celle de droite est surjective, par définition de $C^{U,V}$ ; et $k_\#(a) = l_\#(b)$ signifie que $a$ et $b$ sont la même chaîne, formée de simplexes à valeurs dans $U \cap V$. On applique la suite exacte longue ({{h-suite-exacte|Suite exacte longue}}), puis (i) pour remplacer l'homologie de $C^{U,V}(X)$ par celle de $X$.
     remarques:
@@ -146,6 +166,10 @@ noeuds:
       *Les ouverts.* Pour $n \geqslant 1$, soit $N = (0, \dots, 0, 1)$, $S = -N$, $U = S^n \setminus \{N\}$ et $V = S^n \setminus \{S\}$. La projection stéréographique $x \mapsto (x_1, \dots, x_n)/(1 - x_{n+1})$ est un homéomorphisme de $U$ sur $\mathbb R^n$, de réciproque $z \mapsto \big(2z, \|z\|^2 - 1\big)/(\|z\|^2 + 1)$, toutes deux continues comme composées d'opérations continues. Donc $U$, et de même $V$, ont l'homologie d'un point ({{h-homotopie|Invariance par homotopie}}).
 
       *L'intersection.* $U \cap V$ contient l'équateur $S^{n-1} \times \{0\}$, et $r(x) = (x_1, \dots, x_n, 0)/\|(x_1, \dots, x_n)\|$ est bien défini sur $U \cap V$, puisque $x \neq \pm N$. On a $r \circ \iota = \mathrm{id}$, où $\iota$ est l'inclusion de l'équateur, et $\iota \circ r$ est homotope à l'identité de $U \cap V$ par $F(x, t) = \big(x_1, \dots, x_n, (1 - t)x_{n+1}\big)/\|(x_1, \dots, x_n, (1 - t)x_{n+1})\|$, qui reste dans $U \cap V$. Donc $U \cap V$ a l'homologie de $S^{n-1}$.
+
+      ```schema h-spheres
+      Pour $n = 1$, $U$ est le cercle privé de $N$ et $V$ le cercle privé de $S$. Leur intersection est formée de deux arcs ouverts, que l'homotopie $F$ fait glisser, dans le sens des flèches, sur les deux points de l'équateur $S^0$.
+      ```
 
       *Mayer-Vietoris* ({{h-mayer-vietoris|Mayer-Vietoris}}). Pour $k \geqslant 2$, $H_k(U) \oplus H_k(V) = 0$ et $H_{k-1}(U) \oplus H_{k-1}(V) = 0$, donc $\delta : H_k(S^n) \to H_{k-1}(S^{n-1})$ est un isomorphisme. En degrés bas, la suite se termine par $0 \to H_1(S^n) \to H_0(U \cap V) \to \mathbb Z \oplus \mathbb Z \to H_0(S^n) \to 0$. Pour $n = 1$, $U \cap V$ a deux composantes, $H_0(U \cap V) \cong \mathbb Z^2$, la flèche suivante envoie $(a, b)$ sur $(a + b, a + b)$, de noyau isomorphe à $\mathbb Z$, et $H_1(S^1) \cong \mathbb Z$. Pour $n \geqslant 2$, $U \cap V$ est connexe par arcs, la flèche $\mathbb Z \to \mathbb Z^2$, $a \mapsto (a, a)$, est injective, et $H_1(S^n) = 0$. Dans tous les cas $S^n$ est connexe par arcs et $H_0(S^n) \cong \mathbb Z$. Une récurrence sur $n$ conclut.
     remarques:
@@ -170,6 +194,10 @@ noeuds:
       (ii) Supposons $f(x) \neq x$ pour tout $x$. Posons $u = x - f(x) \neq 0$, et soit $t(x) \geqslant 0$ la plus grande racine du trinôme $\|x + tu\|^2 - 1 = \|u\|^2t^2 + 2\langle x, u\rangle t + \|x\|^2 - 1$, où $\langle x, u \rangle = \sum x_iu_i$ ; sa valeur en $t = 0$ est $\leqslant 0$, donc
       $$t(x) = \frac{-\langle x, u\rangle + \sqrt{\langle x, u \rangle^2 + \|u\|^2(1 - \|x\|^2)}}{\|u\|^2},$$
       qui dépend continûment de $x$. Alors $r(x) = x + t(x)u$ est continue, de norme $1$, et $r(x) = x$ si $\|x\| = 1$, puisque $t(x) = 0$ en ce cas. C'est une rétraction, ce que (i) interdit.
+
+      ```schema h-applications
+      Dans le plan, pour $x = (0{,}3\,;\,0{,}2)$ et $f(x) = (-0{,}2\,;\,-0{,}1)$, la demi-droite issue de $f(x)$ qui passe par $x$ sort du disque en $r(x) \approx (0{,}849\,;\,0{,}529)$, atteint pour $t(x) \approx 1{,}097$. Si $x$ est sur le bord, $t(x) = 0$ et $r(x) = x$.
+      ```
 
       (iii) Un homéomorphisme $h : \mathbb R^m \to \mathbb R^n$ induit un homéomorphisme de $\mathbb R^m \setminus \{0\}$ sur $\mathbb R^n \setminus \{h(0)\}$, et ce dernier est homéomorphe à $\mathbb R^n \setminus \{0\}$ par translation. Or $\mathbb R^k \setminus \{0\}$ a l'homologie de $S^{k-1}$, par la rétraction $x \mapsto x/\|x\|$ et l'homotopie $F(x, t) = x/\big((1 - t) + t\|x\|\big)$. Les homologies de $S^{m-1}$ et de $S^{n-1}$ diffèrent si $m \neq n$, par {{h-spheres|Homologie des sphères}} : si $m, n \geqslant 2$, le degré où $H$ est non nul, hors du degré $0$, les distingue ; si l'un vaut $1$, le nombre de composantes connexes par arcs, $2$ ou $1$, les distingue.
     remarques:
