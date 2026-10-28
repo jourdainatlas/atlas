@@ -41,7 +41,7 @@ l'emploie.
 
 ### 24. État au 27 octobre 2026
 
-- Construction : `OK : 380 nœuds, 257 termes, 32 graphes`, zéro erreur (commit de départ `2d7ca3b`).
+- Construction : `OK : 380 nœuds, 257 termes, 32 graphes`, zéro erreur (commit de départ `2d7ca3b`) ; voir la section 30 pour l'état au 28 octobre.
 - Avertissements permanents : des arêtes redondantes non tracées dans 15 graphes, et 11 renvois en avant
   dans des remarques (`a-transversal → cardinal`, `l-compacite → ultrafiltre`, `l-completude →
   ultrafiltre`, `r-equipotence → cardinal`, `rr-definition → suite-cauchy`, `top → espace-metrique`,
@@ -116,3 +116,43 @@ l'édifice (doublon de q-irrationnel).
 
 Précision ajoutée dans ta-revetement (iii) : la partie déjà traitée du bord d'un carré est un seul côté
 dans la première rangée ou la première colonne, et le coin $(0, 0)$ pour le premier carré.
+
+### 30. Chapitres de l'analyse réelle détaillés ; candidats suivants (28 oct. 2026)
+
+**Fait.** Les quatre chapitres `ar-suites` (10 nœuds), `ar-topo` (10), `ar-deriv` (12) et `ar-riemann`
+(11) s'ouvrent désormais sur un graphe intérieur, comme `continuite` ; ils gardent leur identifiant
+(cités par les cours, les feuilles et les annales). Rédaction par quatre agents dans des copies de
+travail séparées, fusion sans conflit, construction à zéro erreur, 0 croisement dans chacun. Bilan :
+`OK : 423 nœuds, 265 termes, 36 graphes`. Borel-Lebesgue n'est plus admis. Choix signalé (⋆) :
+caractérisation séquentielle de l'adhérence et compacité séquentielle ⇒ compacité (équivalentes dans ZF
+au choix dénombrable sur ℝ, Herrlich et Strecker, Comment. Math. Univ. Carolinae 38, 1997). Termes
+déplacés : `limite-suite`, `suite-extraite` (de `ar-bw` vers `su-extraites`), `sphere-unite`,
+`derivable`, `subdivision`, `fonction-escalier`, `riemann-integrable` ; créés : `limite-infinie`,
+`suites-adjacentes`, `topologie-usuelle`, `partie-dense`, `limite-fonction`, `extremum-local`,
+`derivee-successive`, `somme-riemann`. Retouches de fusion : Rolle cite `de-extremum` au lieu de
+refaire l'argument ; `gd-accroissements` (i) renvoie à `de-taf` ; renvoi à `q-irrationnel` dans une
+remarque de `ri-integrable` ; source exacte du mémoire de Riemann (présenté en 1854, publié par
+Dedekind en 1867, Abh. Göttingen 13).
+
+**Candidats suivants** (relevé du 28 oct. 2026 sur tout l'édifice ; priorité 1 d'abord) :
+1. `rr-multiplication` (r) : « admise en partie », sous toute l'analyse → sous-graphe (axiomes de corps
+   des positives, inverse, signes, morphisme q ↦ q*). Petit à moyen.
+2. `z-polynomes` (z) : de fait un chapitre ; « racine ⇔ facteur », « au plus d racines », factorisation
+   dans K[X] sont employés sans être démontrés ; Gauss et Eisenstein prouvés dans `gs-abel-ruffini`,
+   dérivée formelle dans `gs-separabilite`, binôme et p | C(p,k) dispersés → sous-graphe « polynômes »
+   (+ arête z-zn → z-polynomes). Moyen.
+3. `gs-abel-ruffini` : la preuve s'appuie sur `c-dalembert`, admis dans `c` (démontré dans `anc`, qui
+   n'est pas un ancêtre de galois) ; correction : trois racines réelles par le TVI, le quotient de
+   degré 2 par `c-racines-carrees`. Petit.
+4. Niveau 0 « Espaces métriques et normés » (point ouvert 25.2) : matière aujourd'hui dispersée et
+   démontrée deux fois (boules : gd-normes et f-evn ; point fixe : gd-point-fixe et
+   ed-cauchy-lipschitz ; fermés bornés : cx-suites et gd-equivalence ; Lebesgue dans ta-revetement).
+   Gros.
+5. `l-completude` (log) : existence d'un modèle admise → sous-graphe Henkin (Löwenheim-Skolem en
+   devient un corollaire). Moyen.
+Priorité 2 : `li-cartan` (à portée), `ga-nullstellensatz` (lemme de Zariski, arête alglin → geoalg),
+`t-tychonov` (ultrafiltres, arête ordin → top), scindages de `gs-groupes`, `v-determinant`,
+`ta-revetement` ; réduction et trace en algèbre linéaire (la trace est employée sans être définie) ;
+découpage de `geod` en trois théories ; suites i.i.d. uniformes en proba. Priorité 3 : Mayer-Vietoris
+(subdivision, gros), `derham` en degré 1, compléments des théories terminales, théories « groupes
+finis » et « algèbre commutative », scindages de confort.

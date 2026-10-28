@@ -59,7 +59,7 @@ a poussé entre-temps, un fichier commun réécrit à partir d'une copie périm�
    dans le projet, on relit la copie du projet et on vérifie qu'elle ne contient rien que le dépôt
    n'ait pas. Une nouvelle section commune prend le numéro suivant le plus grand déjà employé, tous
    mémos confondus (sections 17-18 et 27 dans `MEMO_atlas_annales.md`, 19-22 dans `MEMO_atlas_cours.md`,
-   23-26 et 29 dans `MEMO_atlas_edifice.md`, 28 dans `MEMO_atlas_apropos.md` ; prochain numéro libre : 30).
+   23-26, 29 et 30 dans `MEMO_atlas_edifice.md`, 28 dans `MEMO_atlas_apropos.md` ; prochain numéro libre : 31).
 
 ## 1. Ce qu'est l'atlas
 
@@ -116,6 +116,10 @@ cette adresse comme `url`, après l'avoir lue).
 | Structures topologiques | `top.yaml` | `top` | topologie, voisinages, adhérence, bases, continuité, induite, produit, quotient, séparés, compacité, produit fini (lemme du tube), Tychonov (admis, ⋆), connexité |
 | Analyse réelle | `analyse-reelle.yaml` | `analyse-reelle` | borne sup, Archimède, suites, Bolzano-Weierstrass, complétude, topologie, dérivation, Riemann, TFA |
 | Continuité | `continuite.yaml` | `continuite` | ε-δ, uniforme, séquentielle, TVI, bornes, Heine, image d'un segment, monotone, bijection |
+| Suites réelles | `ar-suites.yaml` | `ar-suites` | convergence, bornée et unicité, opérations, inégalités, encadrement, limites infinies et suites géométriques, extraites, limite monotone, adjacentes, segments emboîtés (préfixe `su-`) |
+| Topologie de ℝ | `ar-topo.yaml` | `ar-topo` | ouverts, adhérence, densité (√2 par la borne sup), caractérisation séquentielle (⋆), intervalles, connexes = intervalles, Borel-Lebesgue démontré, compacts = fermés bornés, compacité séquentielle (⋆), sphère Sⁿ compacte (préfixe `tr-`) |
+| Dérivabilité | `ar-deriv.yaml` | `ar-deriv` | limite en un point, dérivée, ordre 1 et Carathéodory, opérations, composée, réciproque, extremum, Rolle, accroissements finis (égalité, inégalité), signe de la dérivée, Taylor-Lagrange (préfixe `de-`) |
+| Intégrale de Riemann | `ar-riemann.yaml` | `ar-riemann` | subdivisions, escalier et son intégrale, propriétés, intégrables (Darboux), critère, propriétés, continues, monotones, moyenne, sommes de Riemann et réciproque (préfixe `ri-`) |
 
 Pistes suivantes : les théories mixtes restantes (analyse complexe, mesure, groupes topologiques…).
 
