@@ -1,0 +1,629 @@
+"""Schémas des graphes analyse-reelle, continuite, anc (analyse complexe) et edo.
+
+Toute position est calculée ; toute affirmation illustrée est vérifiée par un assert.
+Ordre d'apparition : dans analyse-reelle et continuite, exemples polynomiaux ou rationnels seulement.
+"""
+import numpy as np
+from fractions import Fraction as Fr
+from edifice_schemas import schema
+from edifice_svg import Schema, Repere, arc, blob
+
+
+def _cercle_oriente(S, centre, r, c='t', t0=-0.6, d=False):
+    """Cercle (coordonnées image) avec une pointe indiquant le sens direct (anti-horaire à l'écran)."""
+    S.cercle(centre, r, c, d)
+    p = np.array([centre[0] + r * np.cos(t0), centre[1] - r * np.sin(t0)])
+    tangente = np.array([-np.sin(t0), -np.cos(t0)])      # dérivée de (cos t, -sin t)
+    S.pointe(p + 5 * tangente, tangente, c)
+
+
+def _milieu_fleche(S, p, q, c='t', decal=0.0):
+    """Petite pointe au milieu du segment [p, q] (sens p → q), éventuellement décalée vers la gauche."""
+    p, q = np.asarray(p, float), np.asarray(q, float)
+    u = (q - p) / np.linalg.norm(q - p)
+    n = np.array([u[1], -u[0]])
+    S.pointe((p + q) / 2 + 4 * u + decal * n, u, c, taille=7, largeur=3)
+
+
+# ---------------------------------------------------------------------------------------------------
+# analyse-reelle
+# ---------------------------------------------------------------------------------------------------
+
+def _pics(u, N, M=4000):
+    """Indices n < N tels que u_n >= u_m pour tout m > n (vérifié jusqu'à M, la suite étant
+    monotone par parité au-delà, ce que l'on vérifie aussi)."""
+    vals = [u(n) for n in range(M)]
+    return [n for n in range(N) if all(vals[n] >= vals[m] for m in range(n + 1, M))]
+
+
+@schema('ar-bw')
+def ar_bw():
+    u1 = lambda n: Fr((-1) ** n * n, n + 1) + Fr(2, n + 1)
+    u2 = lambda n: Fr((-1) ** n * (n - 3), n + 1)
+    N = 16
+    # u1 : termes pairs 1 + 1/(n+1) > 1, décroissants ; termes impairs (2 - n)/(n+1) < 1.
+    assert all(u1(2 * k) > 1 > u1(2 * k + 1) for k in range(2000))
+    assert all(u1(2 * k) > u1(2 * k + 2) for k in range(2000))
+    p1 = _pics(u1, N)
+    assert p1 == list(range(0, N, 2))                         # une infinité de pics : les pairs
+    # u2 : pairs (n-3)/(n+1) croissants < 1 ; impairs n >= 5 négatifs décroissants ; u_1 = 1.
+    assert u2(1) == 1 and all(u2(n) < 1 for n in range(2, 4000))
+    p2 = _pics(u2, N)
+    assert p2 == [1]                                          # un seul pic
+    # construction de la preuve : n_0 > tous les pics (on prend n_0 = 2), puis le plus petit m > n_k
+    # avec u_m > u_{n_k}
+    ext = [2]
+    while True:
+        n = ext[-1]
+        m = next(m for m in range(n + 1, 10 ** 4) if u2(m) > u2(n))
+        if m >= N:
+            break
+        ext.append(m)
+    assert ext == [2, 3, 4, 6, 8, 10, 12, 14]
+    assert all(u2(ext[i]) < u2(ext[i + 1]) for i in range(len(ext) - 1))
+
+    S = Schema(520, 390, 'Lemme des pics : une infinité de pics, puis un seul pic')
+    for k, (u, pics, ymin, ymax, y0, h) in enumerate([
+            (u1, p1, -1.0, 2.1, 34, 140), (u2, p2, -1.0, 1.2, 228, 150)]):
+        R = Repere(-0.6, 16.4, ymin, ymax, 30, y0, 470, h)
+        S.ligne(R(-0.6, 0), R(16.2, 0), 'g')
+        S.texte(R(16.2, 0) + [6, 0], 'n', 'g', ancre='start', taille=15)
+        for n in range(N):
+            S.ligne(R(n, 0) + [0, -3], R(n, 0) + [0, 3], 'g')
+        if k == 0:
+            for n in pics[:3]:      # u_n majore tous les termes suivants : pointillé vers la droite
+                S.ligne(R(n, float(u(n))), R(16.2, float(u(n))), 'g', d=True)
+            S.poly(R(np.array(pics, float), np.array([float(u(n)) for n in pics])), 'r', l=1.6)
+        else:
+            S.ligne(R(1, float(u(1))), R(16.2, float(u(1))), 'g', d=True)
+            S.poly(R(np.array(ext, float), np.array([float(u(n)) for n in ext])), 'r', l=1.6)
+        for n in range(0 if k == 0 else 1, N):   # en bas, u_0 = -3 sort du cadre et ne joue aucun rôle
+            S.point(R(n, float(u(n))), 't', r=3)
+        for n in pics:
+            S.cercle(R(n, float(u(n))), 7, 'r' if k == 0 else 'g')
+        if k == 0:
+            S.texte(R(0, float(u(0))) + [0, 24], 'pic', 'r', ui=True)
+            S.texte((265, 14), 'une infinité de pics : ils forment une suite décroissante', 'r', ui=True)
+            S.texte(R(7, float(u(7))) + [0, 16], 'u_n', taille=15)
+        else:
+            S.texte(R(1, float(u(1))) + [12, -12], 'seul pic', 'g', ancre='start', ui=True)
+            for n, lab in [(2, 'n_0'), (3, 'n_1'), (4, 'n_2'), (6, 'n_3'), (8, 'n_4')]:
+                S.texte(R(n, float(u(n))) + [0, 17 if n != 3 else -15] if n < 6 else R(n, float(u(n))) + [0, -15],
+                        lab, 'r', taille=15)
+            S.texte((265, 208), 'un seul pic : on prend chaque fois le premier terme qui dépasse', 'r', ui=True)
+    return S
+
+
+@schema('ar-deriv')
+def ar_deriv():
+    fn = lambda x: x * (x - 3) ** 2
+    a, b = 0.0, 3.0
+    assert fn(a) == fn(b) == 0
+    xs = np.linspace(a, b, 30001)
+    c = xs[np.argmax(fn(xs))]
+    assert abs(c - 1) < 1e-3 and abs(fn(1) - 4) < 1e-12
+    c, M = 1.0, 4.0
+    assert abs(3 * c ** 2 - 12 * c + 9) < 1e-12                  # f'(1) = 0
+    xd, xg = 2.2, 0.35
+    td, tg = (fn(xd) - M) / (xd - c), (fn(xg) - M) / (xg - c)
+    assert td <= 0 <= tg
+    # tous les taux à droite sont <= 0, à gauche >= 0
+    assert all((fn(x) - M) / (x - c) <= 0 for x in np.linspace(1.001, 3, 500))
+    assert all((fn(x) - M) / (x - c) >= 0 for x in np.linspace(0, 0.999, 500))
+    S = Schema(500, 330, 'Rolle : au maximum, taux à droite négatifs, à gauche positifs')
+    R = Repere(-0.3, 3.5, -0.7, 4.8, 30, 15, 440, 285)
+    S.fleche(R(-0.3, 0), R(3.45, 0), 'g')
+    S.texte(R(3.45, 0) + [8, 0], 'x', 'g', ancre='start')
+    R.graphe(S, fn, a, b, 't', l=2)
+    S.texte(R(2.55, fn(2.55)) + [12, -6], 'f', ancre='start')
+    # tangente horizontale
+    S.ligne(R(c - 0.75, M), R(c + 0.75, M), 'r', l=2)
+    # cordes
+    S.ligne(R(c, M), R(xd, fn(xd)), 'b', l=1.6)
+    S.ligne(R(c, M), R(xg, fn(xg)), 'v', l=1.6)
+    S.point(R(xd, fn(xd)), 'b')
+    S.point(R(xg, fn(xg)), 'v')
+    S.texte(R((c + xd) / 2, (M + fn(xd)) / 2) + [22, 4], 'taux ⩽ 0', 'b', ancre='start', ui=True)
+    S.texte(R((c + xg) / 2, (M + fn(xg)) / 2) + [-22, -8], 'taux ⩾ 0', 'v', ancre='end', ui=True)
+    for x, lab in [(a, 'a'), (c, 'c'), (xg, 'x'), (xd, 'x'), (b, 'b')]:
+        S.texte(R(x, 0) + [0, 17], lab, 'r' if lab == 'c' else ('t' if lab in 'ab' else ('v' if x < c else 'b')))
+    S.ligne(R(c, 0), R(c, M), 'g', d=True)
+    S.ligne(R(xg, 0), R(xg, fn(xg)), 'g', d=True)
+    S.ligne(R(xd, 0), R(xd, fn(xd)), 'g', d=True)
+    S.point(R(c, M), 'r', r=4.2)
+    S.texte(R(c, M) + [0, -16], 'M = f(c)', 'r')
+    S.texte(R(c - 0.75, M) + [-6, 0], 'f^{′}(c) = 0', 'r', ancre='end')
+    return S
+
+
+@schema('ar-riemann')
+def ar_riemann():
+    fn = lambda x: 1 + x - x ** 3 / 3
+    a, b, n, eps = 0.0, 2.0, 16, 0.4
+    xi = np.linspace(a, b, n + 1)
+    ecart = 0
+    for i in range(n):
+        xs = np.linspace(xi[i], xi[i + 1], 2001)
+        ecart = max(ecart, np.max(np.abs(fn(xs) - fn(xi[i]))))
+    assert ecart < eps and abs(ecart - 0.344) < 1e-3              # phi <= f <= psi sur chaque pas
+    S = Schema(500, 330, 'Escaliers phi et psi encadrant f, écart constant 2 epsilon')
+    R = Repere(-0.15, 2.3, -0.25, 2.25, 40, 12, 420, 285)
+    S.fleche(R(-0.15, 0), R(2.25, 0), 'g')
+    S.fleche(R(0, -0.25), R(0, 2.22), 'g')
+    for i in range(n):
+        p, q, v = xi[i], xi[i + 1], fn(xi[i])
+        S.surface([R(p, v - eps), R(q, v - eps), R(q, v + eps), R(p, v + eps)], 'g')
+    for sgn, c in [(-1, 'b'), (1, 'v')]:
+        pts = []
+        for i in range(n):
+            v = fn(xi[i]) + sgn * eps
+            pts += [R(xi[i], v), R(xi[i + 1], v)]
+        S.poly(pts, c, l=1.6)
+    R.graphe(S, fn, a, b, 't', l=2)
+    for i in range(n):
+        S.point(R(xi[i], fn(xi[i])), 't', r=2.2)
+    for x, lab in [(a, 'a'), (b, 'b')]:
+        S.texte(R(x, 0) + [0, 16], lab)
+    for i in (5, 6):
+        S.ligne(R(xi[i], 0) + [0, -4], R(xi[i], 0) + [0, 4], 'g')
+    S.texte(R(xi[5], 0) + [0, 16], 'x_i', 'g', taille=15)
+    S.texte(R(xi[6], 0) + [6, 16], 'x_{i+1}', 'g', taille=15, ancre='start')
+    vl = fn(xi[-2])
+    S.texte(R(2.0, vl + eps) + [10, 0], 'ψ', 'v', ancre='start')
+    S.texte(R(2.0, fn(2.0)) + [10, 2], 'f', ancre='start')
+    S.texte(R(xi[1], fn(0) - eps) + [0, 15], 'φ', 'b')
+    # échelle 2 epsilon à gauche
+    v0 = fn(0)
+    S.ligne(R(0, v0 - eps) + [-10, 0], R(0, v0 + eps) + [-10, 0], 'g')
+    S.texte(R(0, v0) + [-14, 0], '2ε', 'g', ancre='end')
+    return S
+
+
+# ---------------------------------------------------------------------------------------------------
+# continuite
+# ---------------------------------------------------------------------------------------------------
+
+@schema('c-point')
+def c_point():
+    fn = lambda x: x ** 2
+    a, eps, dl = 1.0, 0.5, 0.2
+    assert dl < np.sqrt(1 + eps) - 1                               # 0,2 < 0,2247
+    xs = np.linspace(a - dl, a + dl, 2001)
+    assert np.all(np.abs(fn(xs) - fn(a)) < eps)
+    S = Schema(480, 340, 'Continuité en a : bande epsilon, bande delta, graphe dans le rectangle')
+    R = Repere(-0.15, 1.75, -0.2, 2.6, 40, 15, 400, 290)
+    S.fleche(R(-0.15, 0), R(1.72, 0), 'g')
+    S.fleche(R(0, -0.2), R(0, 2.57), 'g')
+    S.texte(R(1.72, 0) + [8, 0], 'x', 'g', ancre='start')
+    # bande horizontale ]f(a)-eps, f(a)+eps[ et bande verticale ]a-delta, a+delta[
+    S.surface([R(0, fn(a) - eps), R(1.7, fn(a) - eps), R(1.7, fn(a) + eps), R(0, fn(a) + eps)], 'b')
+    S.surface([R(a - dl, 0), R(a + dl, 0), R(a + dl, 2.55), R(a - dl, 2.55)], 'v')
+    for y in (fn(a) - eps, fn(a) + eps):
+        S.ligne(R(0, y), R(1.7, y), 'b', d=True)
+    for x in (a - dl, a + dl):
+        S.ligne(R(x, 0), R(x, 2.55), 'v', d=True)
+    S.rect(*R(a - dl, fn(a) + eps), *(R(a + dl, fn(a) - eps) - R(a - dl, fn(a) + eps)), 'r', d=False)
+    R.graphe(S, fn, 0, 1.6, 't', l=1.6)
+    R.graphe(S, fn, a - dl, a + dl, 'r', l=3)
+    S.point(R(a, fn(a)), 'r', r=4)
+    S.ligne(R(a, 0), R(a, fn(a)), 'g', d=True)
+    S.ligne(R(0, fn(a)), R(a, fn(a)), 'g', d=True)
+    S.texte(R(a, 0) + [0, 16], 'a')
+    S.texte(R(0, fn(a)) + [-8, 0], 'f(a)', ancre='end')
+    S.texte(R(1.6, fn(1.6)) + [8, 4], 'f', ancre='start')
+    # cotes epsilon et delta
+    xe = 1.55
+    S.fleche(R(xe, fn(a)), R(xe, fn(a) + eps), 'b')
+    S.texte(R(xe, fn(a) + eps / 2) + [8, 0], 'ε', 'b', ancre='start')
+    yd = 0.18
+    S.fleche(R(a, yd), R(a + dl, yd), 'v')
+    S.texte(R(a + dl / 2, yd) + [0, -12], 'δ', 'v')
+    return S
+
+
+@schema('c-uniforme')
+def c_uniforme():
+    fn = lambda x: x ** 2
+    xs0 = [1.2, 2.2, 3.2]
+    S = Schema(500, 380, 'x carré : écarts 1/x de plus en plus petits, écarts des images toujours supérieurs à 2')
+    R = Repere(-0.2, 4.0, -0.9, 13.0, 62, 14, 400, 330)
+    S.fleche(R(-0.2, 0), R(3.95, 0), 'g')
+    S.fleche(R(0, -0.9), R(0, 12.95), 'g')
+    S.texte(R(3.95, 0) + [8, 0], 'x', 'g', ancre='start')
+    R.graphe(S, fn, 0, 3.6, 't', l=1.6)
+    S.texte(R(3.6, fn(3.6)) + [8, 6], 'f', ancre='start')
+    for x in xs0:
+        y = x + 1 / x
+        gap = fn(y) - fn(x)
+        assert abs(gap - (2 + 1 / x ** 2)) < 1e-12 and gap > 2
+        for t in (x, y):
+            S.ligne(R(t, 0), R(t, fn(t)), 'g', d=True)
+            S.ligne(R(0, fn(t)), R(t, fn(t)), 'g', d=True)
+            S.point(R(t, fn(t)), 'r', r=3)
+        S.ligne(R(x, 0), R(y, 0), 'b', l=4)
+        S.ligne(R(0, fn(x)), R(0, fn(y)), 'r', l=4)
+        S.texte(R((x + y) / 2, 0) + [0, 17], f'{1 / x:.2f}'.replace('.', ','), 'b', taille=14)
+        S.texte(R(0, (fn(x) + fn(y)) / 2) + [-8, 0], f'{gap:.2f}'.replace('.', ','), 'r', ancre='end', taille=14)
+    # les trois intervalles sont disjoints sur chaque axe
+    assert all(xs0[i] + 1 / xs0[i] < xs0[i + 1] for i in range(2))
+    assert all(fn(xs0[i] + 1 / xs0[i]) < fn(xs0[i + 1]) for i in range(2))
+    S.texte(R(1.2, 0) + [0, 34], 'x', 'b', taille=15)
+    S.texte(R(1.2 + 1 / 1.2, 0) + [0, 34], 'x + 1/x', 'b', taille=15)
+    return S
+
+
+@schema('c-monotone')
+def c_monotone():
+    # J = [0, 2], g(x) = x sur [0, 1], x + 1 sur ]1, 2] ; b = 1, g(b) = 1, l = inf{g(x) : x > 1} = 2.
+    g = lambda x: np.where(x <= 1, x, x + 1)
+    b = 1.0
+    ell = min(g(np.linspace(1 + 1e-9, 2, 1000)))
+    assert abs(ell - 2) < 1e-6 and g(np.array(b)) == 1
+    img = g(np.linspace(0, 2, 20001))
+    assert not np.any((img > 1) & (img < 2))                      # aucune valeur dans ]g(b), l[
+    S = Schema(460, 330, 'Fonction croissante avec un saut : son image évite ]g(b), l[')
+    R = Repere(-0.6, 2.5, -0.25, 3.3, 30, 15, 400, 290)
+    S.fleche(R(-0.2, 0), R(2.45, 0), 'g')
+    S.fleche(R(0, -0.25), R(0, 3.27), 'g')
+    S.ligne(R(0, 0), R(1, 1), 't', l=2)
+    S.ligne(R(1, 2), R(2, 3), 't', l=2)
+    S.point(R(1, 1), 't', r=4)
+    S.point(R(1, 2), 't', r=4, creux=True)
+    S.point(R(2, 3), 't', r=3.5)
+    S.ligne(R(b, 0), R(b, 2), 'g', d=True)
+    S.ligne(R(0, 1), R(b, 1), 'g', d=True)
+    S.ligne(R(0, 2), R(b, 2), 'g', d=True)
+    S.ligne(R(0, 3), R(2, 3), 'g', d=True)
+    S.ligne(R(2, 0), R(2, 3), 'g', d=True)
+    # image sur l'axe des ordonnées
+    S.ligne(R(0, 0), R(0, 1), 'b', l=5)
+    S.ligne(R(0, 2), R(0, 3), 'b', l=5)
+    S.ligne(R(0, 1) + [0, -5], R(0, 2) + [0, 5], 'r', d=True, l=2.5)
+    S.texte(R(0, 1) + [-10, 0], 'g(b)', ancre='end')
+    S.texte(R(0, 2) + [-10, 0], 'ℓ', ancre='end')
+    S.texte(R(0, 1.5) + [-10, 0], 'trou', 'r', ancre='end', ui=True)
+    S.texte(R(0, 2.75) + [-10, 0], 'g(J)', 'b', ancre='end')
+    S.texte(R(b, 0) + [0, 17], 'b')
+    S.texte(R(2, 0) + [0, 17], '2', 'g')
+    S.texte(R(0, 0) + [-8, 17], '0', 'g')
+    S.texte(R(1.5, 2.5) + [-6, -16], 'g', ancre='end')
+    return S
+
+
+# ---------------------------------------------------------------------------------------------------
+# anc (analyse complexe) : les points du plan complexe sont dessinés comme des points de ℝ²
+# ---------------------------------------------------------------------------------------------------
+
+@schema('cx-series-entieres')
+def cx_series_entieres():
+    Rr, r, rho = 3.0, 2.2, 1.5                    # rayon de convergence, (a_n r^n) bornée, |z| = rho
+    assert 0 < rho < r < Rr
+    k = 56                                        # pixels par unité
+    O = np.array([200.0, 200.0])
+    P = lambda x, y: O + k * np.array([x, -y])
+    S = Schema(520, 400, 'Disques de rayons rho, r et R d’une série entière')
+    S.cercle(O, k * rho, 'r', rempli='r')
+    S.cercle(O, k * r, 'b', d=True)
+    S.cercle(O, k * Rr, 't')
+    S.point(O, 't')
+    S.texte(O + [8, 14], '0', ancre='start')
+    th = np.radians(35)
+    z = P(rho * np.cos(th), rho * np.sin(th))
+    S.ligne(O, z, 'r')
+    S.point(z, 'r', r=4)
+    S.texte(z + [8, -10], 'z', 'r', ancre='start')
+    S.texte((O + z) / 2 + [-4, -12], 'ρ', 'r', ancre='end')
+    th2 = np.radians(150)
+    q = P(r * np.cos(th2), r * np.sin(th2))
+    S.ligne(O, q, 'b', d=True)
+    S.texte((O + q) / 2 + [-4, -14], 'r', 'b')
+    th3 = np.radians(190)
+    q3 = P(Rr * np.cos(th3), Rr * np.sin(th3))
+    S.ligne(O, q3, 't')
+    S.texte(O + 0.82 * (q3 - O) + [0, 14], 'R')
+    # mentions, avec un trait de rappel
+    S.texte(P(0, -rho / 2) + [0, 2], 'convergence absolue', 'r', ui=True)
+    S.texte(P(0, -rho / 2) + [0, 18], 'et uniforme', 'r', ui=True)
+    pb = P(r * np.cos(np.radians(60)), r * np.sin(np.radians(60)))
+    S.ligne(pb, (395, 52), 'g')
+    S.texte((400, 52), '(a_n r^n) `bornée`', 'b', ancre='start', taille=15)
+    pR = P(Rr * np.cos(np.radians(15)), Rr * np.sin(np.radians(15)))
+    S.ligne(pR, (395, 150), 'g')
+    S.texte((400, 150), '|z| = R : ?', ancre='start', taille=15)
+    S.texte((420, 330), '|z| > R :', ancre='middle', taille=15)
+    S.texte((420, 352), 'diverge', ui=True)
+    # z est bien à l'intérieur strict de chaque disque, et le point du cercle R est bien sur lui
+    assert np.isclose(np.linalg.norm(z - O) / k, rho) and np.isclose(np.linalg.norm(pR - O) / k, Rr)
+    return S
+
+
+def _int_triangle(f, sommets, ng=6):
+    """Intégrale de f sur le bord orienté du triangle (Gauss-Legendre, exacte pour un polynôme en
+    x, y de degré < 2 ng)."""
+    xg, wg = np.polynomial.legendre.leggauss(ng)
+    t, w = (xg + 1) / 2, wg / 2
+    tot = 0
+    for p, q in zip(sommets, sommets[1:] + sommets[:1]):
+        tot += np.sum(w * f(p + t * (q - p))) * (q - p)
+    return tot
+
+
+def _quatre(T):
+    a, b, c = T
+    mab, mbc, mca = (a + b) / 2, (b + c) / 2, (c + a) / 2
+    return [[a, mab, mca], [mab, b, mbc], [mca, mbc, c], [mbc, mca, mab]]
+
+
+def _goursat_suite(f, T, n=14):
+    """Triangles emboîtés de la preuve : à chaque étape, le sous-triangle d'intégrale de plus grand
+    module, qui vérifie bien |∫ ∂T_{n+1}| ⩾ |∫ ∂T_n| / 4."""
+    suite = [T]
+    for _ in range(n):
+        quatre = _quatre(suite[-1])
+        vals = [_int_triangle(f, Q) for Q in quatre]
+        tout = _int_triangle(f, suite[-1])
+        assert abs(sum(vals) - tout) < 1e-12 + 1e-9 * abs(tout)       # les côtés intérieurs se compensent
+        j = int(np.argmax(np.abs(vals)))
+        assert abs(vals[j]) >= abs(tout) / 4 * (1 - 1e-12)
+        suite.append(quatre[j])
+    return suite
+
+
+@schema('cx-goursat')
+def cx_goursat():
+    a, b, c = 0j, 4 + 0j, 1 + 3j
+    p0 = 2 + 1j
+    # f non holomorphe : f(z) = conj(w) - w conj(w)^2 / 16, w = z - p0 ; df/dz̄ = 1 - |w|^2 / 8 > 0 sur T
+    f = lambda z: np.conj(z - p0) - (z - p0) * np.conj(z - p0) ** 2 / 16
+    T = [a, b, c]
+    assert max(abs(v - p0) ** 2 for v in T) < 8
+    assert abs(_int_triangle(f, T)) > 1
+    suite = _goursat_suite(f, T)
+    z0 = sum(suite[-1]) / 3        # T_14 a un diamètre 4 · 2^-14 : z_0 à moins d'un millième de pixel
+    for n, Tn in enumerate(suite):        # z_0 appartient à chaque T_n (coordonnées barycentriques)
+        A = np.array([[Tn[0].real, Tn[1].real, Tn[2].real], [Tn[0].imag, Tn[1].imag, Tn[2].imag], [1, 1, 1]])
+        lam = np.linalg.solve(A, [z0.real, z0.imag, 1])
+        assert np.all(lam > -1e-9)
+    S = Schema(520, 262, 'Découpage de Goursat et triangles emboîtés')
+    k = 57
+    O1, O2 = np.array([22.0, 205.0]), np.array([282.0, 205.0])
+    P = lambda O, z: O + k * np.array([z.real, -z.imag])
+    # panneau gauche : quatre sous-triangles, chacun parcouru dans le sens direct
+    S.poly([P(O1, v) for v in _quatre(T)[3]], 'g', ferme=True)
+    S.poly([P(O1, v) for v in T], 't', ferme=True, l=1.6)
+    for Q in _quatre(T):
+        pg = P(O1, sum(Q) / 3)
+        for u, v in zip(Q, Q[1:] + Q[:1]):
+            pu, pv = P(O1, u), P(O1, v)
+            m = (pu + pv) / 2
+            dirn = (pg - m) / np.linalg.norm(pg - m)
+            e = (pv - pu) / np.linalg.norm(pv - pu)
+            S.pointe(m + 7 * dirn + 4 * e, e, 'b', taille=7, largeur=3)
+    for v, lab, dd in [(a, 'a', [-4, 16]), (b, 'b', [4, 16]), (c, 'c', [0, -14])]:
+        S.texte(P(O1, v) + dd, lab)
+    # panneau droit : T_1 ⊃ T_2 ⊃ T_3 ⊃ T_4, et z_0
+    S.poly([P(O2, v) for v in T], 'g', ferme=True)
+    for n in range(1, 5):
+        S.poly([P(O2, v) for v in suite[n]], 'r', ferme=True, rempli='r' if n == 1 else None,
+               l=1.6 if n == 1 else 1.1)
+    S.point(P(O2, z0), 'r', r=2.6)
+    S.texte(P(O2, 0.95 + 1.3j), 'T_1', 'r', taille=15)
+    pz = P(O2, z0)
+    lab = P(O2, 3.1 + 0.55j)
+    S.ligne(pz + (lab - pz) / np.linalg.norm(lab - pz) * 6, lab + [-4, 2], 'g')
+    S.texte(lab + [0, 6], 'z_0', 'r', ancre='start', taille=15)
+    for v, lab, dd in [(a, 'a', [-4, 16]), (b, 'b', [4, 16]), (c, 'c', [0, -14])]:
+        S.texte(P(O2, v) + dd, lab, 'g')
+    return S
+
+
+@schema('cx-goursat-2')
+def cx_goursat_2():
+    a, b, c = 0j, 4 + 0j, 1 + 3j
+    p = a
+    t = 0.28
+    b1, c1 = a + t * (b - a), a + t * (c - a)                 # b' sur [a, b], c' sur [a, c]
+    pieces = [[a, b1, c1], [b1, b, c], [b1, c, c1]]
+    aire = lambda Q: ((Q[1] - Q[0]).conjugate() * (Q[2] - Q[0])).imag / 2
+    assert abs(sum(aire(Q) for Q in pieces) - aire([a, b, c])) < 1e-12        # partition de T
+    assert all(aire(Q) > 0 for Q in pieces)                                     # même orientation
+    # p n'appartient pas aux deux derniers (coordonnées barycentriques)
+    def dedans(Q, z):
+        A = np.array([[v.real for v in Q], [v.imag for v in Q], [1, 1, 1]])
+        return np.all(np.linalg.solve(A, [z.real, z.imag, 1]) >= -1e-12)
+    assert dedans(pieces[0], p) and not dedans(pieces[1], p) and not dedans(pieces[2], p)
+    S = Schema(480, 290, 'Lemme de Goursat, cas où p est un sommet')
+    k = 78
+    O = np.array([96.0, 258.0])
+    P = lambda z: O + k * np.array([z.real, -z.imag])
+    S.poly([P(v) for v in pieces[0]], 'r', ferme=True, rempli='r', l=1.6)
+    S.poly([P(v) for v in pieces[1]], 'g', ferme=True)
+    S.poly([P(v) for v in pieces[2]], 'g', ferme=True)
+    S.poly([P(v) for v in [a, b, c]], 't', ferme=True, l=1.6)
+    S.point(P(p), 'r', r=4.2)
+    S.texte(P(p) + [-8, 14], 'p = a', 'r', ancre='end')
+    S.texte(P(b) + [6, 14], 'b', ancre='start')
+    S.texte(P(c) + [0, -14], 'c')
+    S.texte(P(b1) + [0, 17], 'b^{′}')
+    S.texte(P(c1) + [-10, -4], 'c^{′}', ancre='end')
+    S.texte(P((b1 + b + c) / 3), 'ne contient pas p', 'g', ui=True)
+    S.texte(P((b1 + c + c1) / 3) + [-16, 0], 'ni celui-ci', 'g', ui=True)
+    return S
+
+
+@schema('cx-cauchy-convexe')
+def cx_cauchy_convexe():
+    A, B = 3.0, 2.0                                         # U : intérieur de l'ellipse x²/9 + y²/4 = 1
+    a, z, zh = -1.9 - 0.5j, 1.0 + 0.9j, 1.9 - 0.3j
+    dans = lambda w: (w.real / A) ** 2 + (w.imag / B) ** 2 < 1
+    # le triangle est dans U : ses sommets y sont, et U est convexe
+    assert dans(a) and dans(z) and dans(zh)
+    S = Schema(500, 320, 'Primitive sur un convexe : le triangle a, z, z + h')
+    k = 75
+    O = np.array([250.0, 165.0])
+    P = lambda w: O + k * np.array([w.real, -w.imag])
+    S.ellipse(O, k * A, k * B, 't', rempli='g')
+    S.surface([P(a), P(z), P(zh)], 'g')
+    def seg(p, q, c):
+        pp, qq = P(p), P(q)
+        S.ligne(pp, qq, c, l=1.8)
+        _milieu_fleche(S, pp, qq, c)
+    seg(a, z, 'b')
+    seg(a, zh, 'v')
+    seg(z, zh, 'r')
+    for w, lab, dd, c in [(a, 'a', [-10, 4], 't'), (z, 'z', [0, -15], 't'), (zh, 'z + h', [10, 8], 't')]:
+        S.point(P(w), c)
+        S.texte(P(w) + dd, lab, c, ancre={'a': 'end', 'z': 'middle'}.get(lab, 'start'))
+    S.texte(P(-2.0 + 1.15j), 'U')
+    S.texte(P((a + z) / 2) + [-14, -14], 'F(z)', 'b', ancre='end')
+    S.texte(P((a + zh) / 2) + [6, 22], 'F(z + h)', 'v')
+    return S
+
+
+@schema('cx-formule-cauchy')
+def cx_formule_cauchy():
+    k = 52
+    O = np.array([250.0, 190.0])            # image de c
+    r, s = 1.6, 0.55
+    U = blob(O, k * 3.1, k * 2.75, graine=4, amplitude=0.07)
+    dmin = np.min(np.linalg.norm(U - O, axis=1)) / k
+    # distance du centre au bord du polygone (bord échantillonné finement, segments courts)
+    pas = np.max(np.linalg.norm(np.diff(np.vstack([U, U[:1]]), axis=0), axis=1)) / k
+    assert dmin - pas > r + s                 # D(c, r + s) est bien contenu dans U
+    zc = 0.75 + 0.55j                         # z - c
+    assert abs(zc) < r
+    th = np.radians(-28)
+    wc = r * np.exp(1j * th)                  # w - c sur le cercle
+    q = zc / wc
+    assert np.isclose(abs(q), abs(zc) / r) and abs(q) < 1
+    P = lambda w: O + k * np.array([w.real, -w.imag])
+    S = Schema(500, 380, 'Formule de Cauchy : cercle C(c, r), disque D(c, r + s) dans U')
+    S.poly(U, 't', ferme=True, rempli='g')
+    S.cercle(O, k * (r + s), 'b', d=True)
+    S.cercle(O, k * r, 'r', rempli='r')
+    _cercle_oriente(S, O, k * r, 'r', t0=np.radians(120))
+    S.point(O, 't')
+    S.texte(O + [-6, 15], 'c', ancre='end')
+    S.ligne(O, P(zc), 'g')
+    S.ligne(O, P(wc), 'g')
+    S.ligne(P(zc), P(wc), 'g', d=True)
+    S.point(P(zc), 't', r=3.6)
+    S.texte(P(zc) + [0, -14], 'z')
+    S.point(P(wc), 'r', r=3.6)
+    S.texte(P(wc) + [10, 6], 'w', 'r', ancre='start')
+    S.texte(P(r * np.exp(1j * np.radians(200))) + [12, 0], 'C(c, r)', 'r', ancre='start', taille=15)
+    pb = P((r + s) * np.exp(1j * np.radians(62)))
+    S.texte(pb + [8, -10], 'D(c, r + s)', 'b', ancre='start', taille=15)
+    S.texte(O + k * np.array([-2.5, -1.9]), 'U')
+    S.texte((250, 362), '|q| = |z − c| / r < 1', taille=15)
+    return S
+
+
+# ---------------------------------------------------------------------------------------------------
+# edo
+# ---------------------------------------------------------------------------------------------------
+
+@schema('ed-cauchy-lipschitz')
+def ed_cauchy_lipschitz():
+    t0, y0, a, r = 0.0, 1.0, 1.0, 1.0
+    F = lambda t, y: y ** 2
+    ys = np.linspace(y0 - r, y0 + r, 2001)
+    M = float(np.max(F(0, ys)))
+    assert M == 4.0
+    h = min(a, r / M)
+    assert h == 0.25
+    sol = lambda t: 1 / (1 - t)
+    ts = np.linspace(t0 - h, t0 + h, 2001)
+    assert np.all(np.abs(sol(ts) - y0) <= M * np.abs(ts - t0) + 1e-12)           # dans le cône
+    assert np.all(np.abs(sol(ts) - y0) <= r)                                     # dans le cylindre
+    S = Schema(500, 330, 'Cylindre de sécurité, cône de pente M et solution sur [t0 - h, t0 + h]')
+    R = Repere(-1.35, 1.45, -0.45, 2.75, 30, 12, 440, 290)
+    S.fleche(R(-1.35, 0), R(1.42, 0), 'g')
+    S.fleche(R(0, -0.45), R(0, 2.72), 'g')
+    S.texte(R(1.42, 0) + [8, 0], 't', 'g', ancre='start')
+    S.texte(R(0, 2.72) + [12, 4], 'y', 'g', ancre='start')
+    S.rect(*R(t0 - a, y0 + r), *(R(t0 + a, y0 - r) - R(t0 - a, y0 + r)), 'g', rempli='g')
+    S.texte(R(t0 - a, y0 + r) + [10, 16], 'C', 'g', ancre='start')
+    # cône |y - y0| <= M |t - t0| limité à |t - t0| <= h : il touche le bord du cylindre en t0 ± h
+    for sg in (-1, 1):
+        S.surface([R(t0, y0), R(t0 + sg * h, y0 + r), R(t0 + sg * h, y0 - r)], 'b')
+        S.ligne(R(t0 - sg * h, y0 - r), R(t0 + sg * h, y0 + r), 'b')
+        S.ligne(R(t0 + sg * h, 0), R(t0 + sg * h, y0 + r), 'g', d=True)
+    ext = np.linspace(-1.0, 0.62, 300)
+    S.poly(R(ext, sol(ext)), 'g', d=True)
+    S.poly(R(ts, sol(ts)), 'r', l=2.4)
+    S.point(R(t0, y0), 'r', r=4)
+    S.texte(R(t0, y0) + [-10, -12], '(t_0, y_0)', 'r', ancre='end', taille=15)
+    S.texte(R(0.62, sol(0.62)) + [8, 0], 'y = 1/(1 − t)', 'g', ancre='start', taille=15)
+    S.texte(R(t0 + h, y0 + r) + [6, -12], '`pente` M', 'b', ancre='start', taille=15)
+    for t, lab in [(t0 - a, 't_0 − a'), (t0 + a, 't_0 + a')]:
+        S.texte(R(t, 0) + [0, 17], lab, taille=15)
+    S.texte(R(t0 - h, 0) + [-6, 17], 't_0 − h', 'b', ancre='end', taille=15)
+    S.texte(R(t0 + h, 0) + [6, 17], 't_0 + h', 'b', ancre='start', taille=15)
+    S.texte(R(t0 - a, y0 + r) + [-6, 0], 'y_0 + r', ancre='end', taille=15)
+    S.texte(R(t0 - a, y0 - r) + [-6, -8], 'y_0 − r', ancre='end', taille=15)
+    return S
+
+
+@schema('ed-cauchy-lipschitz-2')
+def ed_cauchy_lipschitz_2():
+    # y' = 2 sqrt|y|, y(0) = 0 : y = 0, y = t², et y_tau = 0 sur [0, tau], (t - tau)² au-delà
+    taus = [0.0, 0.8, 1.6, 2.4]
+    sol = lambda tau, t: np.where(t <= tau, 0.0, (t - tau) ** 2)
+    der = lambda tau, t: np.where(t <= tau, 0.0, 2 * (t - tau))
+    ts = np.linspace(0, 3.4, 3401)
+    for tau in taus:
+        assert np.allclose(der(tau, ts), 2 * np.sqrt(np.abs(sol(tau, ts))))     # l'équation
+        e = 1e-6                                                                # raccord C¹ en tau
+        assert abs((sol(tau, tau + e) - sol(tau, tau)) / e) < 1e-5 and der(tau, tau) == 0
+    S = Schema(500, 300, 'Solutions de y′ = 2 racine de |y| issues de l’origine')
+    R = Repere(-0.3, 3.6, -0.5, 4.4, 40, 12, 420, 255)
+    S.fleche(R(-0.3, 0), R(3.55, 0), 'g')
+    S.fleche(R(0, -0.5), R(0, 4.35), 'g')
+    S.texte(R(3.55, 0) + [8, 0], 't', 'g', ancre='start')
+    S.texte(R(0, 4.35) + [12, 4], 'y', 'g', ancre='start')
+    for tau in taus[1:]:
+        tt = np.linspace(tau, min(3.5, tau + 2.0), 200)
+        S.poly(R(tt, (tt - tau) ** 2), 't', l=1.4)
+        S.point(R(tau, 0), 't', r=3)
+    tt = np.linspace(0, 2.0, 200)
+    S.poly(R(tt, tt ** 2), 'r', l=2.2)
+    S.ligne(R(0, 0), R(3.5, 0), 'b', l=2.6)
+    S.point(R(0, 0), 'r', r=4)
+    S.texte(R(2.0, 4.0) + [-8, 0], 'y = t^2', 'r', ancre='end', taille=15)
+    S.texte(R(3.1, 0) + [0, 16], 'y = 0', 'b', taille=15)
+    for tau, lab in [(0.8, 'τ_1'), (1.6, 'τ_2'), (2.4, 'τ_3')]:
+        S.texte(R(tau, 0) + [0, 17], lab, taille=15)
+    S.texte(R(0, 0) + [-8, 14], '0', ancre='end')
+    return S
+
+
+@schema('ed-maximales')
+def ed_maximales():
+    sol = lambda t: 1 / (1 - t)
+    ts = np.linspace(-1.25, 1 - 1 / 6.3, 800)
+    import sympy as sp
+    t = sp.symbols('t')
+    assert sp.simplify(sp.diff(1 / (1 - t), t) - (1 / (1 - t)) ** 2) == 0      # y' = y², y(0) = 1
+    assert np.all(np.diff(sol(ts)) > 0)       # croissante : une fois sortie de [0, R], elle n'y revient pas
+    S = Schema(500, 320, 'Explosion de y = 1/(1 - t) en t = 1')
+    R = Repere(-1.35, 1.5, -0.45, 6.6, 30, 10, 430, 270)
+    S.fleche(R(-1.35, 0), R(1.47, 0), 'g')
+    S.fleche(R(0, -0.45), R(0, 6.55), 'g')
+    S.texte(R(1.47, 0) + [8, 0], 't', 'g', ancre='start')
+    S.texte(R(0, 6.55) + [-12, 4], 'y', 'g', ancre='end')
+    S.ligne(R(1, -0.3), R(1, 6.5), 'g', d=True)
+    S.texte(R(1, 0) + [8, 17], '1', ancre='start')
+    for Rv, lab in [(2, '1/2'), (5, '4/5')]:
+        tR = 1 - 1 / Rv
+        assert np.isclose(sol(tR), Rv)
+        S.ligne(R(-1.35, Rv), R(1.45, Rv), 'b', d=True)
+        S.ligne(R(tR, 0), R(tR, Rv), 'g', d=True)
+        S.point(R(tR, Rv), 'b', r=3.6)
+        S.texte(R(tR, 0) + [0, 17], lab, 'b', taille=14)
+        S.texte(R(1.45, Rv) + [0, -11], f'R = {Rv}', 'b', ancre='end', taille=15)
+    S.poly(R(ts, sol(ts)), 'r', l=2.2)
+    S.point(R(0, 1), 'r', r=4)
+    S.texte(R(0, 1) + [-10, -12], '(0, 1)', 'r', ancre='end', taille=15)
+    S.texte(R(-0.85, sol(-0.85)) + [0, -18], 'y = 1/(1 − t)', 'r', taille=15)
+    return S
