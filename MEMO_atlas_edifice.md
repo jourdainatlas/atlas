@@ -159,6 +159,14 @@ lemme de vérité, existence d'un modèle) ; `l-lowenheim` démontré (corollair
 dénombrable est sans choix (énumération) ; le cas général invoque, dans la métathéorie, un principe de
 maximalité (Zorn pour l'inclusion), signalé ⋆ dans `hk-lindenbaum` (ii) : pour une signature quelconque,
 la complétude équivaut dans ZF au lemme de l'ultrafiltre. Bilan : `OK : 448 nœuds, 274 termes, 39 graphes`.
+Candidat 4 : nouvelle théorie de niveau 0 `met` « Espaces métriques et normés » (famille ana ; arêtes
+analyse-reelle → met, alglin → met, met → geod, anf, anc, topalg ; top → anf retirée). Graphe de 12 nœuds :
+8 nœuds `me-` et 4 nœuds déménagés avec leur id (gd-normes, gd-equivalence, gd-point-fixe généralisé aux
+espaces complets, f-baire). Doublons remplacés par des renvois : f-evn (i), ed-cauchy-lipschitz (i),
+cx-suites (i, iv), lemme de Lebesgue de ta-revetement (dont la preuve cachait un choix de rayons). Ordre de
+edifice.yaml réglé : 16 croisements (19 avant) ; geod 1 (5), anf 1 (3), met 0. Entrées réduites aux
+nœuds de départ (gd-gl et f-application-ouverte n'affichent plus leur entrée, pour un croisement de moins).
+Texte d'accueil de l'édifice mis à jour (31 branches). Bilan : `OK : 457 nœuds, 276 termes, 40 graphes`.
 
 **Candidats suivants** (relevé du 28 oct. 2026 sur tout l'édifice ; priorité 1 d'abord) :
 1. `rr-multiplication` (r) : « admise en partie », sous toute l'analyse → sous-graphe (axiomes de corps
