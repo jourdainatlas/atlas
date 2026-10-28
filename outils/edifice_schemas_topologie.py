@@ -859,3 +859,34 @@ def c_racines_carrees():
     S.point(P(z.conjugate()), 'g', r=4)
     S.texte(P(z.conjugate()) + [-10, 0], '−5 + 12i = z̄', 'g', ancre='end')
     return S
+
+
+@schema('ga-lemme-zariski')
+def ga_lemme_zariski():
+    # Tour K ⊂ F ⊂ L ; à gauche le cas algébrique (dimensions finies composées), à droite le cas
+    # transcendant (F = A, contradiction). Disposition calculée : trois étages équidistants.
+    S = Schema(600, 300, 'Lemme de Zariski : la tour K ⊂ F ⊂ L, cas algébrique et cas transcendant')
+    xg, xd = 150, 380
+    yL, yF, yK = 44, 150, 256
+    assert yF - yL == yK - yF
+    for xc, c in ((xg, 'b'), (xd, 'r')):
+        for yy, nom in ((yL, 'L'), (yF, 'F'), (yK, 'K')):
+            S.cercle([xc, yy], 19, c, rempli=c)
+            S.texte([xc, yy], nom, c, taille=19)
+        S.ligne([xc, yL + 19], [xc, yF - 19], c, l=1.8)
+        S.ligne([xc, yF + 19], [xc, yK - 19], c, l=1.8, d=(c == 'r'))
+    S.texte([xg, 14], 'x algébrique', 'b', ui=True, taille=14)
+    S.texte([xd, 14], 'x transcendant', 'r', ui=True, taille=14)
+    # annotations des étages
+    S.texte([xg - 28, (yL + yF) / 2], 'dim finie', 'b', ancre='end', ui=True, taille=13)
+    S.texte([xg - 28, (yL + yF) / 2 + 17], '(récurrence)', 'b', ancre='end', ui=True, taille=13)
+    S.texte([xg - 28, (yF + yK) / 2], 'F = K[x]', 'b', ancre='end', taille=15)
+    S.texte([xg - 28, (yF + yK) / 2 + 19], 'dim ≤ deg Q', 'b', ancre='end', ui=True, taille=13)
+    S.texte([xd + 28, (yL + yF) / 2], 'dim finie', 'r', ancre='start', ui=True, taille=13)
+    S.texte([xd + 28, (yL + yF) / 2 + 17], '(récurrence)', 'r', ancre='start', ui=True, taille=13)
+    S.texte([xd + 28, (yF + yK) / 2 - 10], 'F = A,', 'r', ancre='start', taille=15)
+    S.texte([xd + 80, (yF + yK) / 2 - 10], 'mais', 'r', ancre='start', ui=True, taille=13)
+    S.texte([xd + 28, (yF + yK) / 2 + 14], '1/(1 + x f(x)) ∉ A', 'r', ancre='start', taille=15)
+    S.texte([(xg + xd) / 2, (yF + yK) / 2 - 9], '⟹ L de dim', 't', ui=True, taille=13)
+    S.texte([(xg + xd) / 2, (yF + yK) / 2 + 9], 'finie sur K', 't', ui=True, taille=13)
+    return S

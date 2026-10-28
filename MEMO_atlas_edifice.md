@@ -184,7 +184,7 @@ Texte d'accueil de l'édifice mis à jour (31 branches). Bilan : `OK : 457 nœud
    Gros.
 5. `l-completude` (log) : existence d'un modèle admise → sous-graphe Henkin (Löwenheim-Skolem en
    devient un corollaire). Moyen.
-Priorité 2 : ~~`li-cartan`~~ (fait le 28 oct. 2026, voir plus bas), `ga-nullstellensatz` (lemme de Zariski, arête alglin → geoalg),
+Priorité 2 : ~~`li-cartan`~~ (fait le 28 oct. 2026, voir plus bas), ~~`ga-nullstellensatz`~~ (fait le 28 oct. 2026),
 `t-tychonov` (ultrafiltres, arête ordin → top), scindages de `gs-groupes`, `v-determinant`,
 `ta-revetement` ; réduction et trace en algèbre linéaire (la trace est employée sans être définie) ;
 découpage de `geod` en trois théories ; suites i.i.d. uniformes en proba. Priorité 3 : Mayer-Vietoris
@@ -267,3 +267,12 @@ n'était définie nulle part : ajout du point (iv) *Produit* à `gd-varietes` (a
 base dénombrable par q-denombrable (i), et, pour deux sous-variétés, même atlas maximal que celui de
 (ii)) ; densité de l'enroulement irrationnel et non-sous-variété marquées « admis ici » ; remarque de
 li-series corrigée (on applique le premier pas de la preuve, pas le lemme ; argument de positivité).
+
+Nullstellensatz complété (28 oct. 2026, graphe `geoalg`, 10 nœuds). Nouveau nœud `ga-lemme-zariski` :
+un corps L = K[x₁, …, xₙ] est de dimension finie sur K, par récurrence sur n (pour tous les couples
+K ⊂ L à la fois) ; cas algébrique (K[x] corps de dimension ≤ deg Q, tour de dimensions finies) et cas
+transcendant (un dénominateur commun f écrit tout F = K(x) comme P(x)/f(x)^k, contredit par
+1/(1 + xf(x)) via le binôme). Aucun choix. Schéma `ga-lemme-zariski` (tour à deux étages). Dans
+l'édifice, arête alglin → geoalg (alg → geoalg devient redondante) ; croisements de l'édifice 16 → 19.
+Entrées de geoalg : alglin et z alimentent le lemme. Champ `choix` du Nullstellensatz précisé : seul
+« un idéal propre a un zéro » passe par Krull. Relu par un second agent (six remarques, traitées).
