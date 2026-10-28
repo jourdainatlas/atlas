@@ -2124,8 +2124,8 @@ function fermerFicheAnnales() { location.hash = '#annales'; }
 /* ---- Annales : moteur de recherche par thème.
    Chaque sujet étiqueté (rubriques/annales-index.yaml) est découpé en parties ; chaque partie porte
    des thèmes du vocabulaire (rubriques/annales-themes.yaml), principaux ou secondaires, et des mots-clés. */
-const etatRech = { q: '', fam: '', fil: '', de: '', a: '', montres: 12 };
-const rechVide = () => !etatRech.q.trim() && !etatRech.fam && !etatRech.fil && !etatRech.de && !etatRech.a;
+const etatRech = { q: '', fam: '', conc: '', fil: '', de: '', a: '', montres: 12 };
+const rechVide = () => !etatRech.q.trim() && !etatRech.fam && !etatRech.conc && !etatRech.fil && !etatRech.de && !etatRech.a;
 let indexAnn = null, chargementIndexAnn = null;
 // Sur le site publié, l'index est dans un fichier séparé (annales-index.json), chargé à la première visite.
 function chargerIndexAnnales() {
@@ -2199,6 +2199,7 @@ function rechercherAnnales(q) {
   const res = [];
   for (const s of I.sujets) {
     if (etatRech.fam && s.fam !== etatRech.fam) continue;
+    if (etatRech.conc && !s.cases.some(c => c.concours === etatRech.conc)) continue;
     if (etatRech.fil && !s.filieres.includes(etatRech.fil)) continue;
     if (etatRech.de && s.annee < +etatRech.de) continue;
     if (etatRech.a && s.annee > +etatRech.a) continue;
@@ -2276,7 +2277,7 @@ function resultatsAnnales() {
     h += `</div>`;
   }
   const nbP = res.reduce((u, r) => u + r.parts.length, 0);
-  h += `<p class="rech-bilan">${res.length ? `${res.length} sujet${res.length > 1 ? 's' : ''}, ${nbP} partie${nbP > 1 ? 's' : ''} concernée${nbP > 1 ? 's' : ''}.` : (etatRech.fam || etatRech.fil || etatRech.de || etatRech.a ? 'Aucun sujet étiqueté ne correspond avec ces filtres (concours, filière ou période). Élargissez-les, ou choisissez un thème ci-dessous.' : 'Aucun sujet étiqueté ne correspond. Essayez un thème plus général, ou choisissez-en un ci-dessous.')}</p>`;
+  h += `<p class="rech-bilan">${res.length ? `${res.length} sujet${res.length > 1 ? 's' : ''}, ${nbP} partie${nbP > 1 ? 's' : ''} concernée${nbP > 1 ? 's' : ''}.` : (etatRech.fam || etatRech.conc || etatRech.fil || etatRech.de || etatRech.a ? 'Aucun sujet étiqueté ne correspond avec ces filtres (concours, école, filière ou période). Élargissez-les, ou choisissez un thème ci-dessous.' : 'Aucun sujet étiqueté ne correspond. Essayez un thème plus général, ou choisissez-en un ci-dessous.')}</p>`;
   if (!res.length) { const sv = etatRech.q; etatRech.q = ''; h += resultatsAnnales(); etatRech.q = sv; return h; }
   for (const r of res.slice(0, etatRech.montres)) {
     const s = r.s, cf = I.famDe[s.concours] || {};
@@ -2311,6 +2312,14 @@ function blocRechercheAnnales() {
   h += `<div class="rech-ligne"><input type="search" id="ann-q" value="${esc(etatRech.q)}" placeholder="Un thème, un théorème, un objet…" aria-label="Rechercher un thème dans les sujets" autocomplete="off" list="ann-themes">`;
   h += `<datalist id="ann-themes">${Object.values(I.themes).filter(t => I.compte[t.id]).map(t => `<option value="${esc(t.titre)}">`).join('')}</datalist>`;
   h += `<select id="ann-fam" aria-label="Famille de concours"><option value="">Tous les concours</option>${fams.map(f => `<option value="${f.id}"${etatRech.fam === f.id ? ' selected' : ''}>${esc(f.titre)}</option>`).join('')}</select>`;
+  // écoles (ingénieurs) ou concours (enseignement) de la famille choisie, ceux qui ont des sujets étiquetés
+  const famCh = fams.find(f => f.id === etatRech.fam);
+  if (famCh) {
+    const avec = new Set(I.sujets.flatMap(x => x.cases.map(c => c.concours)));
+    const cs = (famCh.concours || []).filter(c => avec.has(c.id));
+    const libre = famCh.filieres ? 'Toutes les écoles' : 'Tous les concours';
+    h += `<select id="ann-conc" aria-label="${famCh.filieres ? 'École' : 'Concours'}"><option value="">${libre}</option>${cs.map(c => `<option value="${c.id}"${etatRech.conc === c.id ? ' selected' : ''}>${esc(c.titre.replace(/<[^>]+>/g, ''))}</option>`).join('')}</select>`;
+  }
   // filières de la famille choisie (aucune pour les concours de l'enseignement : le menu disparaît)
   const filsAnn = [...new Set(fams.filter(f => !etatRech.fam || f.id === etatRech.fam).flatMap(f => f.filieres || []))];
   if (filsAnn.length) h += `<select id="ann-fil" aria-label="Filière"><option value="">Toutes filières</option>${filsAnn.map(f => `<option${etatRech.fil === f ? ' selected' : ''}>${f}</option>`).join('')}</select>`;
@@ -2335,9 +2344,11 @@ $('#rubrique').addEventListener('change', ev => {
     // une filière qui n'existe pas dans la famille choisie est oubliée, et le menu des filières est refait
     const f = ((R.annales || {}).familles || []).find(x => x.id === etatRech.fam);
     if (f && !(f.filieres || []).includes(etatRech.fil)) etatRech.fil = '';
+    if (!f || !(f.concours || []).some(c => c.id === etatRech.conc)) etatRech.conc = '';
     const z = $('#rech-ann'); if (z) z.outerHTML = blocRechercheAnnales();
     majRechercheAnnales();
   }
+  if (ev.target.id === 'ann-conc') { etatRech.conc = ev.target.value; etatRech.montres = 12; majRechercheAnnales(); }
   if (ev.target.id === 'ann-fil') { etatRech.fil = ev.target.value; etatRech.montres = 12; majRechercheAnnales(); }
   if (ev.target.id === 'ann-de' || ev.target.id === 'ann-a') {
     etatRech[ev.target.id === 'ann-de' ? 'de' : 'a'] = ev.target.value;
@@ -2350,7 +2361,7 @@ $('#rubrique').addEventListener('click', ev => {
   if (b) { etatRech.q = b.dataset.rq; etatRech.montres = 12; const i = $('#ann-q'); if (i) i.value = etatRech.q; majRechercheAnnales(); return; }
   if (ev.target.closest('[data-rplus]')) { etatRech.montres += 12; majRechercheAnnales(); }
   if (ev.target.closest('[data-reffacer]')) {
-    Object.assign(etatRech, { q: '', fam: '', fil: '', de: '', a: '', montres: 12 });
+    Object.assign(etatRech, { q: '', fam: '', conc: '', fil: '', de: '', a: '', montres: 12 });
     const z = $('#rech-ann'); if (z) { z.outerHTML = blocRechercheAnnales(); const i = $('#ann-q'); if (i) i.focus(); }
   }
 });

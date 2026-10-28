@@ -53,7 +53,10 @@ remplace le bandeau `maquette`.
 **Filtre des filières (28 oct. 2026).** Le menu des filières du moteur ne propose que celles de la famille
 choisie (champ `filieres:` de la famille dans `annales.yaml`) : il disparaît pour l'enseignement, qui n'en a
 pas, et une filière choisie auparavant est alors oubliée ; le bloc de recherche est refait au changement
-de famille, la saisie est conservée.
+de famille, la saisie est conservée. Une famille choisie fait apparaître un second menu (`ann-conc`, état
+`etatRech.conc`) : « Toutes les écoles » et les cinq écoles pour les ingénieurs, « Tous les concours » et
+les quatre concours pour l'enseignement (seuls ceux qui ont des sujets étiquetés) ; le filtre porte sur
+les cases du sujet (`s.cases[].concours`), et le choix est oublié au changement de famille.
 
 **Convention de saisie.** Intervalles à la française : `\left]-1, +\infty\right[` (sinon le « − » est
 espacé comme une soustraction). Ensembles : `\mathbb{R}`, `\mathbb{R}_n[X]`, `\mathcal{M}_n(\mathbb{K})`.
