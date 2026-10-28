@@ -339,6 +339,18 @@ def disposer(gid):
             d = x[voisins_bas[c[0]][0]] - x[c[0]]
             for v in x:
                 if rang[v] >= t: x[v] += d
+    # Centrage de l'édifice (demande de l'auteur, 28 oct. 2026) : chaque couche est translatée pour que
+    # le milieu de ses bulles soit à l'aplomb de la source (la logique). Une translation d'une couche
+    # entière, nœuds fictifs compris, garde l'ordre dans chaque couche, donc le nombre de croisements ;
+    # la vérification « aucune arête ne traverse un nœud », plus bas, porte sur le tracé obtenu.
+    if gid == racines[0]['graphe']:
+        sources = [v for v in ordre[0] if not v.startswith('·')]
+        axe = (min(x[v] - dims[v][0] / 2 for v in sources) + max(x[v] + dims[v][0] / 2 for v in sources)) / 2
+        for t in range(1, nmax + 1):
+            vrais = [v for v in ordre[t] if not v.startswith('·')]
+            if not vrais: continue
+            milieu = (min(x[v] - dims[v][0] / 2 for v in vrais) + max(x[v] + dims[v][0] / 2 for v in vrais)) / 2
+            for v in ordre[t]: x[v] += axe - milieu
     xmin = min(x[v] - dims[v][0] / 2 for v in x)
     xmax = max(x[v] + dims[v][0] / 2 for v in x)
     decal = MARGE - xmin

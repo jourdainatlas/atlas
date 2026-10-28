@@ -203,7 +203,9 @@ nœud dans n'importe quelle théorie ou sous-théorie sans les ouvrir une à une
   lexique que le nœud définit (25, ligne « définit : … »), puis texte de la fiche (8, « dans le texte de
   la fiche ») ; léger avantage aux niveaux supérieurs ; 40 résultats au plus. Chaque résultat donne le
   titre surligné, la nature (couleur de la fiche) et le chemin (Théorie › Sous-théorie). Flèches,
-  Entrée, Échap ; clic ou Entrée → `ouvrirNoeud` (sur téléphone, défilement jusqu'au panneau).
+  Entrée, Échap ; clic ou Entrée → `ouvrirNoeud` (sur téléphone, défilement jusqu'au panneau). Bouton
+  « Effacer la recherche » (`#effacer-edifice`, style de `.rech-effacer` des Annales, icône seule sur
+  téléphone), visible dès que le champ n'est pas vide ; la croix native du champ est masquée.
 - **rendu.mjs** : champ `cherche` de chaque nœud (texte et énoncé en texte brut, sans formules ni
   schémas, minuscules sans accents, 400 caractères), présent dans la page même quand les fiches des
   branches sont chargées à la demande (environ 150 Ko non compressés de plus dans `site/index.html`).

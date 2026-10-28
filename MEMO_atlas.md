@@ -308,6 +308,9 @@ Placement (`disposer` dans `construire.py`) :
 - l'ordre des nœuds suit les fichiers de contenu, ce qui rend la disposition déterministe (elle variait avec l'ordre de parcours des ensembles de Python : l'édifice sortait tantôt à 4, tantôt à 10 croisements) ;
 - balayages par barycentres, échanges de voisins (transposition), et huit ordres de départ (fichier, inverse, six tirages à graines fixes) ; on garde le moins de croisements ;
 - puis les deux retouches contre la dérive vers la droite (section 2).
+- enfin, pour le seul graphe de l'édifice (28 oct. 2026, demande de l'auteur), chaque couche est translatée
+  pour que le milieu de ses bulles soit à l'aplomb de la logique ; une translation de couche entière
+  (nœuds fictifs compris) garde l'ordre, donc les croisements (16), et l'édifice cesse de pencher à droite.
 Modification de l'édifice : l'arête ℝ → Topologie algébrique est remplacée par Analyse réelle → Topologie algébrique (compacité et connexité de [0, 1]).
 
 Navigation : un clic sur une bulle « niveau supérieur » (entrée d'un sous-graphe) ouvre directement sa structure interne si elle en a une ; sinon (entrée qui est un nœud interne d'un autre graphe) sa fiche s'affiche sur place, sans quitter le graphe courant. L'ancre `#graphe.entrée` est acceptée.
