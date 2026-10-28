@@ -180,7 +180,13 @@ noeuds:
       - |
         L'ensemble $\lex{ensemble-rationnels}{\mathbb Q}$ est dense et négligeable : la mesure ignore la topologie. Recouvrons ses éléments, énumérés $q_0, q_1, \dots$, par des intervalles de longueurs $\varepsilon 2^{-n}$ : leur réunion est un ouvert dense de mesure au plus $2\varepsilon$, dont le complémentaire, de mesure infinie, ne contient aucun intervalle.
       - |
-        L'ensemble triadique de Cantor $K = \bigcap_n K_n$, où $K_n$ est la réunion des $2^n$ segments de longueur $3^{-n}$ obtenus en retirant successivement le tiers central, vérifie $\lambda(K) \leqslant (2/3)^n$ pour tout $n$ : il est négligeable. Il n'est pourtant pas dénombrable, puisqu'il est en bijection avec les suites à valeurs dans $\{0, 2\}$ par le développement en base $3$. Les ensembles négligeables ne sont donc pas tous dénombrables.
+        L'ensemble triadique de Cantor $K = \bigcap_n K_n$, où $K_n$ est la réunion des $2^n$ segments de longueur $3^{-n}$ obtenus en retirant successivement le tiers central, vérifie $\lambda(K) \leqslant (2/3)^n$ pour tout $n$ : il est négligeable.
+
+        ```schema m-lebesgue
+        Chaque étape remplace un segment par ses deux tiers extrêmes : $K_n$ est formé de $2^n$ segments de longueur $3^{-n}$, et sa mesure $(2/3)^n$ tend vers $0$.
+        ```
+
+        Il n'est pourtant pas dénombrable, puisqu'il est en bijection avec les suites à valeurs dans $\{0, 2\}$ par le développement en base $3$. Les ensembles négligeables ne sont donc pas tous dénombrables.
 
   - id: m-vitali
     etiquette: Ensemble de Vitali
@@ -234,6 +240,10 @@ noeuds:
       Toute fonction mesurable $f : X \to \lex{demi-droite-achevee}{[0, +\infty]}$ est la limite simple d'une suite croissante $(s_n)$ de fonctions étagées positives. On peut prendre
       $$s_n = \sum_{k=0}^{n2^n - 1} \frac{k}{2^n}\, \mathbf 1_{\{k2^{-n} \leqslant f < (k+1)2^{-n}\}} + n\, \mathbf 1_{\{f \geqslant n\}},$$
       et la convergence est uniforme sur toute partie où $f$ est bornée.
+
+      ```schema m-etagees
+      Pour $f(x) = \frac12 + 3x - x^2$ sur $[0, 3]$, dont le maximum vaut $\frac{11}4$, les fonctions $s_1$ (vert) et $s_2$ (bleu) se lisent sur l'axe des valeurs et sont tronquées à $1$ et à $2$. L'ensemble $\{\frac32 \leqslant f < \frac74\}$, où $s_2$ vaut $\frac32$, est la réunion des deux intervalles rouges $[\frac{3 - \sqrt5}2, \frac12[$ et $]\frac52, \frac{3 + \sqrt5}2]$ : découper les valeurs ne découpe pas l'axe des abscisses en intervalles consécutifs.
+      ```
     preuve: |
       Les ensembles qui interviennent sont mesurables ({{m-mesurables|Fonctions mesurables}}, (i)), donc $s_n$ est étagée, et $0 \leqslant s_n \leqslant f$. Si $f(x) < n$, $s_n(x) = 2^{-n} \lfloor 2^n f(x) \rfloor$, où $\lfloor t \rfloor$ désigne la partie entière, qui existe parce que $\mathbb R$ est [[archimedien]] ; alors $0 \leqslant f(x) - s_n(x) < 2^{-n}$. Si $f(x) = +\infty$, $s_n(x) = n$. Dans les deux cas $s_n(x) \to f(x)$, uniformément sur $\{f \leqslant M\}$ dès que $n > M$.
 
@@ -352,6 +362,10 @@ noeuds:
     remarques:
       - |
         La domination ne peut pas être omise. La suite $f_n = n\mathbf 1_{]0, 1/n]}$ converge simplement vers $0$ sur $\lex{ensemble-reels}{\mathbb R}$, mais $\int f_n \, d\lambda = 1$ pour tout $n$ ; aucune fonction intégrable ne majore toutes les $f_n$, puisque $\sup_n f_n$ vaut au moins $\frac1{2x}$ sur $]0, 1]$, fonction dont l'intégrale sur $]0, 1]$ est infinie.
+
+        ```schema m-convergence-dominee
+        Les rectangles bleus sont les graphes de $f_1$, $f_2$, $f_3$ et $f_5$, tous d'aire $1$. Leur enveloppe $\sup_n f_n$, en rouge, vaut $k$ sur $]\frac1{k+1}, \frac1k]$ et reste au-dessus de la courbe verte $\frac1{2x}$, d'aire infinie : aucune fonction intégrable ne peut la majorer.
+        ```
       - |
         Le théorème reste vrai si la convergence et la domination n'ont lieu que presque partout : on modifie les fonctions sur un ensemble négligeable, ce qui ne change aucune intégrale ({{m-integrables|Fonctions intégrables}}, (iii)). C'est cette souplesse que l'intégrale de Riemann ne possède pas.
 
@@ -363,7 +377,13 @@ noeuds:
       Soit $f : [a, b] \to \lex{ensemble-reels}{\mathbb R}$ [[riemann-integrable|intégrable au sens de Riemann]]. Alors $f$ est mesurable pour la tribu de Lebesgue, intégrable pour $\lambda$, et
       $$\int_{[a, b]} f \, d\lambda = \int_a^b f(x)\, dx.$$
     preuve: |
-      Soit $M$ un majorant de $|f|$. Pour $n \in \lex{ensemble-entiers-naturels}{\mathbb N}$, découpons $[a, b]$ en $2^n$ segments égaux $I_k$, de longueur $\delta_n = (b - a)2^{-n}$. Soit $\varphi_n$ la fonction égale à $f$ aux points de découpage et à $\inf_{I_k} f$ sur l'intérieur de $I_k$, et $\psi_n$ définie de même avec $\sup$. Ce sont des fonctions en escalier, boréliennes, et $\varphi_n \leqslant f \leqslant \psi_n$. Les points de découpage de rang $n$ le sont aussi de rang $n + 1$, et un segment plus petit a un $\inf$ plus grand : $(\varphi_n)$ croît et $(\psi_n)$ décroît. Pour une fonction en escalier, l'intégrale du nœud {{ar-riemann|Intégrale de Riemann}} coïncide avec l'intégrale par rapport à $\lambda$, puisque $\lambda(]x_i, x_{i+1}[) = x_{i+1} - x_i$ et que les points sont négligeables.
+      Soit $M$ un majorant de $|f|$. Pour $n \in \lex{ensemble-entiers-naturels}{\mathbb N}$, découpons $[a, b]$ en $2^n$ segments égaux $I_k$, de longueur $\delta_n = (b - a)2^{-n}$. Soit $\varphi_n$ la fonction égale à $f$ aux points de découpage et à $\inf_{I_k} f$ sur l'intérieur de $I_k$, et $\psi_n$ définie de même avec $\sup$. Ce sont des fonctions en escalier, boréliennes, et $\varphi_n \leqslant f \leqslant \psi_n$. Les points de découpage de rang $n$ le sont aussi de rang $n + 1$, et un segment plus petit a un $\inf$ plus grand : $(\varphi_n)$ croît et $(\psi_n)$ décroît.
+
+      ```schema m-riemann
+      Pour $f(x) = 1 + x - \frac{x^3}3$ sur $[0, 2]$, les fonctions $\varphi_3$ et $\psi_3$ (bleu, bande teintée entre elles) encadrent $f$ de plus près que $\varphi_2$ et $\psi_2$ (gris, pointillés) : sur chaque moitié d'un segment coupé en deux, l'$\inf$ ne peut que croître et le $\sup$ que décroître. Sur $[\frac34, \frac54]$, le $\sup$ est atteint à l'intérieur, au maximum $f(1) = \frac53$, et non aux bornes.
+      ```
+
+      Pour une fonction en escalier, l'intégrale du nœud {{ar-riemann|Intégrale de Riemann}} coïncide avec l'intégrale par rapport à $\lambda$, puisque $\lambda(]x_i, x_{i+1}[) = x_{i+1} - x_i$ et que les points sont négligeables.
 
       Soit $\varepsilon > 0$, et $\varphi \leqslant f \leqslant \psi$ des fonctions en escalier, adaptées à une subdivision à $p$ points, avec $\int (\psi - \varphi) < \varepsilon$. Sur un $I_k$ dont l'adhérence ne contient aucun point de cette subdivision, $\varphi$ et $\psi$ sont constantes, et $\psi_n - \varphi_n \leqslant \psi - \varphi$ à l'intérieur de $I_k$. Les autres $I_k$ sont au plus $2p$, et sur chacun $\psi_n - \varphi_n \leqslant 2M$. Donc $\int (\psi_n - \varphi_n) \leqslant \varepsilon + 4pM\delta_n < 2\varepsilon$ pour $n$ grand.
 
@@ -396,6 +416,10 @@ noeuds:
     remarques:
       - |
         La mesure de Lebesgue du plan est $\lambda \otimes \lambda$ sur $\lex{tribu-borelienne}{\mathcal B}(\lex{ensemble-reels}{\mathbb R}) \otimes \mathcal B(\mathbb R)$, qui est la tribu borélienne de $\lex{n-uplet}{\mathbb R^2}$, les ouverts du plan étant réunions dénombrables de pavés à extrémités rationnelles. La formule (iii) est le principe de Cavalieri : l'aire d'une partie du plan est l'intégrale des longueurs de ses sections verticales.
+
+        ```schema m-produit
+        Pour $E = \{(x, y) : 0 \leqslant x \leqslant 1,\ x^2 \leqslant y \leqslant x\}$, les sections verticales $E_x = [x^2, x]$ et les sections horizontales $E^y = [y, \sqrt y]$ donnent la même aire : $\int_0^1 (x - x^2)\,dx = \int_0^1 (\sqrt y - y)\,dy = \frac16$.
+        ```
 
   - id: m-fubini
     etiquette: Tonelli, Fubini
