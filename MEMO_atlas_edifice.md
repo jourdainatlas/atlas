@@ -186,7 +186,7 @@ Texte d'accueil de l'édifice mis à jour (31 branches). Bilan : `OK : 457 nœud
    devient un corollaire). Moyen.
 Priorité 2 : ~~`li-cartan`~~ (fait le 28 oct. 2026, voir plus bas), ~~`ga-nullstellensatz`~~ (fait le 28 oct. 2026),
 `t-tychonov` (écarté par l'auteur le 28 oct. 2026 : il demanderait la flèche ordin → top, qui ferait remonter la topologie et ses 19 descendants ; l'énoncé conditionnel « ultrafiltre ⇒ Tychonov » a été proposé sans être retenu), ~~scindages de `gs-groupes`~~ (fait), ~~`v-determinant`~~ (fait),
-`ta-revetement` ; réduction et trace en algèbre linéaire (la trace est employée sans être définie) ;
+~~`ta-revetement`~~ (fait) ; réduction et trace en algèbre linéaire (la trace est employée sans être définie) ;
 découpage de `geod` en trois théories ; suites i.i.d. uniformes en proba. Priorité 3 : Mayer-Vietoris
 (subdivision, gros), `derham` en degré 1, compléments des théories terminales, théories « groupes
 finis » et « algèbre commutative », scindages de confort.
@@ -300,3 +300,10 @@ inversibilité, (iii) transposée, lignes ; remarques non-additivité et orienta
 `v-comatrice` (développement, comatrice ; exemple 3×3 vérifié par sympy, schéma `v-comatrice` du cofacteur
 C₂₁ = −4). Liens réorientés dans alglin (algèbre extérieure), geod (gd-gl, orientation), edo, tan.
 Croisements d'alglin 3 → 4.
+
+Scindage de `ta-revetement` (28 oct. 2026) en trois nœuds : `ta-revetement` (id conservé pour le
+lexique : définition et unicité des relèvements ; contre-exemple ℝ → ℝ/ℤ restreint à ]0, 3/2[, schéma
+`ta-revetement-0`), `ta-relevement-chemins` (lemme de Lebesgue, existence par subdivision, schéma
+`ta-revetement` ; entrée met), `ta-relevement-homotopies` (carrés rangée par rangée, schéma
+`ta-revetement-2`). ta-cercle renvoie au relèvement des homotopies. Arêtes : chemins → revêtements,
+homotopie → relèvement des homotopies.

@@ -890,3 +890,39 @@ def ga_lemme_zariski():
     S.texte([(xg + xd) / 2, (yF + yK) / 2 - 9], '⟹ L de dim', 't', ui=True, taille=13)
     S.texte([(xg + xd) / 2, (yF + yK) / 2 + 9], 'finie sur K', 't', ui=True, taille=13)
     return S
+
+
+@schema('ta-revetement-0')
+def ta_revetement_0():
+    # p : ]0, 3/2[ → ℝ/ℤ, t ↦ classe de t ; voisinage U = p(]−ε, ε[) de p(0), ε = 0,15.
+    eps = 0.15
+    a, b = 0.0, 1.5
+    morceaux = [(a, a + eps), (1 - eps, 1 + eps)]
+    # les points de ]0, 3/2[ dont la classe est dans ]−ε, ε[ modulo 1 sont exactement ces deux morceaux
+    ts = np.linspace(0.001, 1.499, 3000)
+    dedans = [t for t in ts if min(t % 1, 1 - t % 1) < eps]
+    assert all(any(u < t < v for u, v in morceaux) for t in dedans)
+    S = Schema(560, 300, 'La restriction de ℝ → ℝ/ℤ à ]0, 3/2[ n’est pas un revêtement')
+    X = lambda t: 50 + t * 300
+    yl = 60
+    S.ligne([X(a), yl], [X(b), yl], 'g', l=2)
+    S.cercle([X(a), yl], 5, 'g', rempli=None); S.cercle([X(b), yl], 5, 'g', rempli=None)
+    S.ligne([X(morceaux[0][0]), yl], [X(morceaux[0][1]), yl], 'r', l=6)
+    S.ligne([X(morceaux[1][0]), yl], [X(morceaux[1][1]), yl], 'b', l=6)
+    for t, nom in ((0, '0'), (1, '1'), (1.5, '3/2')):
+        S.texte([X(t), yl + 24], nom, 'g', taille=15)
+    S.texte([X(0.07), yl - 20], ']0, ε[', 'r', taille=15)
+    S.texte([X(1), yl - 20], ']1 − ε, 1 + ε[', 'b', taille=15)
+    # cercle ℝ/ℤ : l'angle 2πt, compté à partir du point p(0) à droite
+    O, R0 = np.array([420.0, 190.0]), 72.0
+    P = lambda t: O + R0 * np.array([math.cos(2 * math.pi * t), -math.sin(2 * math.pi * t)])
+    S.cercle(O, R0, 'g')
+    S.poly(np.array([P(t) for t in np.linspace(-eps, eps, 60)]), 'b', l=6)
+    S.poly(np.array([P(t) for t in np.linspace(0, eps, 40)]), 'r', l=3)
+    S.point(P(0), 't', r=4)
+    S.texte(P(0) + [14, 0], 'p(0)', 't', ancre='start', taille=15)
+    S.texte(O + [0, R0 + 22], 'ℝ/ℤ', 'g', taille=16)
+    S.texte(P(-eps) + [16, 12], 'U', 'b', ancre='start', taille=16)
+    S.fleche([X(0.75), yl + 40], [O[0] - R0 - 20, O[1] - 30], 'g', retrait=4)
+    S.texte([X(0.55), yl + 92], 'p', 'g', taille=17)
+    return S
