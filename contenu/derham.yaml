@@ -1,0 +1,148 @@
+# Niveau 1 : structure interne du nœud « Théorème de de Rham » (développé le 28 oct. 2026, en degré 1,
+# pour les ouverts de ℝⁿ).
+# Primitives locales des formes fermées, intégrale d'une 1-forme fermée le long d'un chemin seulement
+# continu, invariance par homotopie (découpage d'un carré), intégration sur les chaînes singulières,
+# et injectivité de H¹_dR(U) → Hom(H₁(U), ℝ) ; corollaire : H¹(ℝ² ∖ {0}) ≅ ℝ. La surjectivité, qui
+# demande la suite de Mayer-Vietoris et des partitions de l'unité, est admise et signalée.
+
+graphe: derham
+titre: Théorème de de Rham
+conteneur: derham
+
+entrees:
+  geod: [dr-primitives, dr-integrale, dr-degre1]
+  hom: [dr-chaines, dr-degre1]
+
+noeuds:
+  - id: dr-primitives
+    etiquette: Primitives locales
+    nature: lemme
+    titre: Primitives locales d'une forme fermée
+    texte: |
+      Dans tout ce graphe, $U$ est un ouvert de $\lex{n-uplet}{\mathbb R^n}$ et $\omega$ une forme différentielle fermée de degré $1$ sur $U$ ({{gd-integrale-curviligne|Intégrale d'une 1-forme}}). Une **boule** est une boule ouverte pour la norme $\|\cdot\|_\infty$ ; c'est un ouvert convexe. Une **primitive** de $\omega$ sur un ouvert $V \subset U$ est une fonction $f$ de classe $C^\infty$ sur $V$ telle que $df = \omega$ sur $V$.
+    enonce: |
+      (i) Sur toute boule $B \subset U$, $\omega$ a une primitive.
+
+      (ii) Deux primitives de $\omega$ sur un ouvert connexe diffèrent d'une constante. En particulier, si $B$ et $B'$ sont deux boules contenues dans $U$, de primitives $f$ et $f'$, la différence $f - f'$ est constante sur $B \cap B'$.
+    preuve: |
+      (i) Soit $B$ la boule de centre $a$, et $\omega = \sum_i a_i\,dx_i$. La boule $B - a$ est étoilée par rapport à $0$, et la forme $\omega' = \sum_i a_i(y + a)\,dy_i$ y est fermée, puisque ses coefficients sont ceux de $\omega$ translatés, et que $d\omega' $ s'écrit avec les dérivées partielles $\partial_j a_i(y + a) - \partial_i a_j(y + a)$, toutes nulles. Par le lemme de Poincaré ({{gd-poincare|Lemme de Poincaré}}), $\omega' = dg$ sur $B - a$. La fonction $f(x) = g(x - a)$ vérifie $\partial_i f(x) = \partial_i g(x - a) = a_i(x)$ : c'est une primitive de $\omega$ sur $B$.
+
+      (ii) Si $f$ et $f'$ sont deux primitives sur un ouvert connexe $V$, alors $d(f - f') = 0$ sur $V$, et $f - f'$ est constante ({{gd-accroissements|Accroissements finis}}, (iii)). L'intersection $B \cap B'$, convexe, est connexe, ou vide.
+    remarques:
+      - |
+        L'hypothèse de connexité de (ii) ne peut pas être levée : sur la réunion de deux boules disjointes, la fonction qui vaut $0$ sur l'une et $1$ sur l'autre a une différentielle nulle. C'est cette liberté, une constante par morceau, qui rendra nécessaire la vérification que l'intégrale ne dépend pas des primitives choisies.
+
+  - id: dr-integrale
+    etiquette: Intégrale le long d'un chemin continu
+    nature: définition
+    titre: Intégrale d'une forme fermée le long d'un chemin continu
+    texte: |
+      Soit $\gamma : [a, b] \to U$ continu, avec $a < b$. Une **subdivision adaptée** est une suite $a = s_0 < s_1 < \cdots < s_m = b$ et des boules $B_1, \dots, B_m$ contenues dans $U$, munies de primitives $f_1, \dots, f_m$ de $\omega$ ({{dr-primitives|Primitives locales}}), telles que $\gamma([s_{k-1}, s_k]) \subset B_k$. On pose alors
+      $$\int_\gamma \omega = \sum_{k=1}^m \Big(f_k\big(\gamma(s_k)\big) - f_k\big(\gamma(s_{k-1})\big)\Big).$$
+    enonce: |
+      (i) Il existe des subdivisions adaptées, et la somme ne dépend ni de la subdivision, ni des boules, ni des primitives choisies.
+
+      (ii) Si $\gamma$ est de classe $C^1$ par morceaux, $\int_\gamma \omega$ coïncide avec l'intégrale du nœud {{gd-integrale-curviligne|Intégrale d'une 1-forme}}.
+
+      (iii) *Chasles.* Pour $a < c < b$, $\int_\gamma \omega = \int_{\gamma|_{[a,c]}} \omega + \int_{\gamma|_{[c,b]}} \omega$. L'intégrale est linéaire en $\omega$, ne change pas par reparamétrage affine croissant de $[a, b]$, change de signe par reparamétrage affine décroissant, et vaut $0$ pour un chemin constant.
+
+      (iv) Si $\omega = df$ sur $U$, alors $\int_\gamma \omega = f(\gamma(b)) - f(\gamma(a))$.
+    preuve: |
+      (i) *Existence.* Les images réciproques par $\gamma$ des boules contenues dans $U$ forment un recouvrement ouvert du compact $[a, b]$ ({{me-rn|L'espace ℝⁿ}}, (iii)) ; soit $\eta$ un nombre de Lebesgue ({{me-lebesgue|Nombre de Lebesgue}}). Une subdivision de pas $< \eta$ convient : chaque $[s_{k-1}, s_k]$, de diamètre $< \eta$, est contenu dans l'image réciproque d'une boule $B_k$, qui a une primitive par {{dr-primitives|Primitives locales}}, (i).
+
+      *Indépendance des primitives et des boules.* Si, sur un même intervalle $[s_{k-1}, s_k]$, on remplace $(B_k, f_k)$ par $(B'_k, f'_k)$ avec $\gamma([s_{k-1}, s_k]) \subset B'_k$, les deux extrémités sont dans $B_k \cap B'_k$, où $f_k - f'_k$ est constante ({{dr-primitives|Primitives locales}}, (ii)) : le terme correspondant ne change pas.
+
+      *Indépendance de la subdivision.* Insérer un point $s$ dans $]s_{k-1}, s_k[$, en gardant $(B_k, f_k)$ sur les deux morceaux, ne change pas la somme, qui est télescopique sur ces deux morceaux. Deux subdivisions adaptées ont une subdivision commune plus fine, obtenue en réunissant leurs points ; chaque morceau de celle-ci est contenu dans un morceau de chacune, et peut donc recevoir la boule de l'une ou de l'autre. Par insertions successives, puis changement de boules, les deux sommes sont égales à celle de la subdivision commune.
+
+      (ii) Sur $[s_{k-1}, s_k]$, $\omega = df_k$, et l'intégrale du nœud {{gd-integrale-curviligne|Intégrale d'une 1-forme}}, (i), de $df_k$ le long de ce morceau vaut $f_k(\gamma(s_k)) - f_k(\gamma(s_{k-1}))$ ; on somme, l'intégrale d'un chemin $C^1$ par morceaux étant additive par la relation de Chasles ({{ri-proprietes|Propriétés de l'intégrale}}, (iii)).
+
+      (iii) Une subdivision adaptée contenant $c$ se coupe en deux subdivisions adaptées de $[a, c]$ et de $[c, b]$. Pour deux formes fermées $\omega$ et $\omega'$, une même subdivision est adaptée aux deux, toute boule contenue dans $U$ portant une primitive de chacune ; si $f_k$ et $f'_k$ sont ces primitives sur $B_k$, $f_k + \lambda f'_k$ en est une de $\omega + \lambda\omega'$, d'où la linéarité. Un reparamétrage affine transporte les subdivisions adaptées, en renversant leur ordre s'il est décroissant, ce qui change chaque terme en son opposé. Pour un chemin constant, chaque terme est nul.
+
+      (iv) La restriction de $f$ à chaque boule est une primitive, et la somme est télescopique.
+    remarques:
+      - |
+        Pour un chemin seulement continu, la formule $\int_a^b \omega_{\gamma(t)}(\gamma'(t))\,dt$ n'a pas de sens, $\gamma$ pouvant n'être dérivable nulle part. La définition contourne la dérivée en remplaçant, sur chaque petit morceau, la forme par la différentielle d'une primitive locale : seules les valeurs de $\gamma$ aux points de la subdivision interviennent. Elle ne vaut que pour une forme **fermée**, la seule qui ait des primitives locales.
+
+  - id: dr-homotopie
+    etiquette: Invariance par homotopie
+    nature: théorème
+    titre: Intégrale sur le bord d'un carré et invariance par homotopie
+    enonce: |
+      (i) Soit $H : [0, 1]^2 \to U$ continue. Avec les chemins $\beta(s) = H(s, 0)$, $\rho(t) = H(1, t)$, $\theta(s) = H(s, 1)$ et $\lambda(t) = H(0, t)$, les quatre côtés du carré,
+      $$\int_\beta \omega + \int_\rho \omega - \int_\theta \omega - \int_\lambda \omega = 0.$$
+
+      (ii) Deux chemins $\gamma$ et $\delta$ de $x$ à $y$, homotopes à extrémités fixes, ont la même intégrale.
+    preuve: |
+      (i) Les images réciproques par $H$ des boules contenues dans $U$ recouvrent le compact $[0, 1]^2$ ; par le lemme de Lebesgue, appliqué pour la distance $d_\infty$ ({{me-lebesgue|Nombre de Lebesgue}}), il existe $N$ tel que chacun des carrés $Q_{jk} = [\frac{j-1}N, \frac jN] \times [\frac{k-1}N, \frac kN]$ soit envoyé par $H$ dans une boule $B_{jk}$, de primitive $f_{jk}$. Pour un segment horizontal ou vertical $e$ de la grille, notons $\int_e$ l'intégrale de $\omega$ le long du chemin $H$ restreint à $e$, parcouru dans le sens des coordonnées croissantes.
+
+      Pour un petit carré $Q_{jk}$, de coins $c_0, c_1, c_2, c_3$ dans l'ordre direct à partir du coin inférieur gauche, chaque côté est dans $Q_{jk}$, donc envoyé dans $B_{jk}$, et son intégrale est la différence des valeurs de $f_{jk} \circ H$ à ses extrémités ({{dr-integrale|Intégrale le long d'un chemin continu}}, (i), avec une subdivision réduite à un seul morceau). La somme alternée sur le bord de $Q_{jk}$ vaut donc
+      $$\big(f(c_1) - f(c_0)\big) + \big(f(c_2) - f(c_1)\big) - \big(f(c_2) - f(c_3)\big) - \big(f(c_3) - f(c_0)\big) = 0,$$
+      où $f = f_{jk} \circ H$. En sommant sur les $N^2$ petits carrés, chaque segment intérieur de la grille apparaît deux fois, avec des signes opposés, comme côté droit de l'un et côté gauche du suivant, ou comme côté supérieur et côté inférieur ; son intégrale ne dépend pas du carré qui la calcule ({{dr-integrale|Intégrale le long d'un chemin continu}}, (i)). Il reste les segments du bord, qui reconstituent, par la relation de Chasles (même nœud, (iii)), $\int_\beta \omega + \int_\rho \omega - \int_\theta \omega - \int_\lambda \omega$, qui est donc nul.
+
+      ```schema dr-homotopie
+      Chaque petit carré est envoyé par $H$ dans une boule où $\omega$ a une primitive, et la somme alternée sur son bord est nulle. Les segments intérieurs, en gris, sont parcourus une fois dans chaque sens par deux carrés voisins, et leurs contributions s'annulent ; il ne reste que le bord du grand carré, en rouge.
+      ```
+
+      (ii) Soit $H$ une homotopie à extrémités fixes, $H(s, 0) = \gamma(s)$, $H(s, 1) = \delta(s)$, $H(0, t) = x$ et $H(1, t) = y$. Les côtés $\rho$ et $\lambda$ sont constants, d'intégrale nulle, et (i) donne $\int_\gamma \omega = \int_\delta \omega$.
+    remarques:
+      - |
+        Le découpage en petits carrés est le même que pour le relèvement des homotopies ({{ta-relevement-homotopies|Relèvement des homotopies}}) : dans les deux cas, une information locale (un feuillet, une primitive) est propagée de proche en proche sur un carré compact. Le résultat dit que l'intégrale d'une forme fermée est un invariant d'homotopie, ce que l'homologie va traduire en termes de chaînes.
+
+  - id: dr-chaines
+    etiquette: Intégration sur les chaînes
+    nature: théorème
+    titre: Intégration d'une forme fermée sur les chaînes singulières
+    texte: |
+      Un simplexe singulier $\sigma : \Delta_1 \to U$ de dimension $1$ ({{h-singuliere|Homologie singulière}}) définit le chemin $\sigma \circ \alpha$, où $\alpha(s) = (1 - s, s)$ ; on pose $\int_\sigma \omega = \int_{\sigma \circ \alpha} \omega$, et l'on prolonge en un morphisme $C_1(U) \to \mathbb R$, $c \mapsto \int_c \omega$, par la propriété universelle du groupe abélien libre ({{h-complexes|Complexes de chaînes}}, (i)).
+    enonce: |
+      (i) Pour tout simplexe singulier $\tau : \Delta_2 \to U$, $\int_{\partial \tau} \omega = 0$ : l'intégrale est nulle sur les bords.
+
+      (ii) Si $\omega = df$ est exacte, $\int_z \omega = 0$ pour tout cycle $z \in Z_1(U)$.
+
+      (iii) Par suite, l'application qui associe à $\omega$ le morphisme $[z] \mapsto \int_z \omega$ induit une application linéaire
+      $$\Phi : \lex{cohomologie-de-rham}{H^1}(U) \to \operatorname{Hom}\big(\lex{homologie-singuliere}{H_1}(U), \mathbb R\big).$$
+    preuve: |
+      (i) Soit $H(s, t) = \tau\big(1 - s,\ s(1 - t),\ st\big)$, continue sur $[0, 1]^2$, le triplet ayant des coordonnées positives de somme $1$. Ses côtés sont $\beta(s) = \tau(1 - s, s, 0) = (\tau \circ \delta_2 \circ \alpha)(s)$, $\rho(t) = \tau(0, 1 - t, t) = (\tau \circ \delta_0 \circ \alpha)(t)$, $\theta(s) = H(s, 1) = \tau(1 - s, 0, s) = (\tau \circ \delta_1 \circ \alpha)(s)$, et $\lambda$ constant en $\tau(e_0)$. Par {{dr-homotopie|Invariance par homotopie}}, (i),
+      $$0 = \int_{\tau\delta_2} \omega + \int_{\tau\delta_0} \omega - \int_{\tau\delta_1} \omega - 0 = \int_{\partial\tau} \omega,$$
+      puisque $\partial\tau = \tau\delta_0 - \tau\delta_1 + \tau\delta_2$.
+
+      ```schema dr-chaines
+      L'application $(s, t) \mapsto (1 - s, s(1 - t), st)$ envoie le carré sur le triangle $\Delta_2$ : le côté inférieur sur l'arête de $e_0$ à $e_1$, le côté droit sur celle de $e_1$ à $e_2$, le côté supérieur sur celle de $e_0$ à $e_2$, et le côté gauche tout entier sur le sommet $e_0$. Le bord du carré devient ainsi le bord $\partial\tau$, avec ses signes.
+      ```
+
+      (ii) Pour un simplexe $\sigma$, $\int_\sigma df = f(\sigma(e_1)) - f(\sigma(e_0))$ ({{dr-integrale|Intégrale le long d'un chemin continu}}, (iv)), et $\partial \sigma = \sigma(e_1) - \sigma(e_0)$. Notons $F : C_0(U) \to \mathbb R$ le morphisme qui prolonge $f$ ; alors $\int_c df = F(\partial c)$ pour toute chaîne $c$, par additivité, et cette quantité est nulle si $\partial c = 0$.
+
+      (iii) Pour $\omega$ fermée, $c \mapsto \int_c \omega$ est un morphisme nul sur $B_1(U)$ par (i) : sa restriction à $Z_1(U)$ passe donc au quotient $H_1(U) = Z_1(U)/B_1(U)$ ({{h-complexes|Complexes de chaînes}}) : la formule $[z] \mapsto \int_z \omega$ est bien définie, puisque deux cycles de même classe diffèrent d'un bord, et c'est un morphisme. L'application qui à $\omega$ associe ce morphisme est linéaire ({{dr-integrale|Intégrale le long d'un chemin continu}}, (iii)) et nulle sur les formes exactes par (ii) ; elle passe au quotient $Z^1(U)/B^1(U) = H^1(U)$ ({{v-quotient|Espace quotient}}) par le même argument : si $\omega - \omega'$ est exacte, $\omega$ et $\omega'$ ont les mêmes intégrales sur les cycles.
+    remarques:
+      - |
+        L'intégration est un accouplement entre formes et chaînes : c'est pourquoi le théorème compare $H^1$ à un **dual** de l'homologie, et non à l'homologie elle-même. Comme l'intégrale est réelle alors que les chaînes sont à coefficients entiers, ce dual est $\operatorname{Hom}(H_1(U), \mathbb R)$.
+
+  - id: dr-degre1
+    etiquette: De Rham en degré 1
+    nature: théorème
+    titre: Théorème de de Rham en degré 1
+    enonce: |
+      (i) Pour tout ouvert $U$ de $\lex{n-uplet}{\mathbb R^n}$, l'application $\Phi : \lex{cohomologie-de-rham}{H^1}(U) \to \operatorname{Hom}\big(\lex{homologie-singuliere}{H_1}(U), \mathbb R\big)$ est injective : une forme fermée dont l'intégrale est nulle sur tous les cycles est exacte.
+
+      (ii) $H^1(\mathbb R^2 \setminus \{0\})$ est de dimension $1$. Une forme fermée sur $\mathbb R^2 \setminus \{0\}$ est exacte si et seulement si son intégrale sur le bord du carré $[-1, 1]^2$ est nulle.
+    preuve: |
+      (i) Supposons $\int_z \omega = 0$ pour tout cycle $z$. Soit $\gamma$ un chemin fermé formé de segments $[p_0, p_1], \dots, [p_{m-1}, p_m]$, avec $p_m = p_0$, et $\sigma_k$ le simplexe affine $t \mapsto t_0p_{k-1} + t_1p_k$ de $\Delta_1$ dans $U$. La chaîne $z = \sum_k \sigma_k$ a pour bord $\sum_k (p_k - p_{k-1}) = 0$ ; c'est un cycle, et $\int_z \omega = \sum_k \int_{[p_{k-1}, p_k]} \omega$ est l'intégrale de $\omega$ le long de $\gamma$ au sens du nœud {{gd-integrale-curviligne|Intégrale d'une 1-forme}} ({{dr-integrale|Intégrale le long d'un chemin continu}}, (ii)). Elle est donc nulle.
+
+      Disons que deux points de $U$ sont **liés** s'ils sont reliés par une ligne brisée contenue dans $U$ ; c'est une relation d'équivalence, par concaténation et renversement des lignes. Chaque classe $V$ est ouverte : une boule centrée en un point $y$ de $V$ et contenue dans $U$ est convexe, et ses points sont liés à $y$ par un segment. Fixons une bijection de $\lex{ensemble-entiers-naturels}{\mathbb N}$ sur $\lex{n-uplet}{\mathbb Q^n}$ ({{q-denombrable|ℚ est dénombrable}}, (ii)). Chaque classe $V$, ouverte et non vide, contient une boule, produit d'intervalles ouverts, donc un point de $\mathbb Q^n$, $\mathbb Q$ étant dense dans $\mathbb R$ ({{tr-dense|Densité de ℚ}}), et l'on note $x_V$ le premier d'entre eux dans cette énumération. Pour $x \in V$, posons $f(x) = \int_\gamma \omega$, où $\gamma$ est une ligne brisée de $x_V$ à $x$ dans $U$ : la valeur ne dépend pas de $\gamma$, deux telles lignes formant un chemin fermé, d'intégrale nulle. Pour $x \in V$ et $t$ assez petit, le segment $[x, x + te_j]$ est dans une boule contenue dans $V$, et, en prolongeant la ligne par ce segment, $f(x + te_j) - f(x) = \int_0^t \omega_{x + se_j}(e_j)\,ds$ ; par le théorème fondamental ({{ar-tfa|Théorème fondamental}}), $\partial_j f(x) = \omega_x(e_j)$. Les dérivées partielles de $f$ sont les coefficients de $\omega$, continus, donc $f$ est de classe $C^1$ ({{gd-classe-ck|Classe Cᵏ}}, (i)) ; comme $df = \omega$ est de classe $C^\infty$, $f$ l'est, par la définition récursive de la classe $C^{k+1}$, et $df = \omega$ : $\omega$ est exacte, et $\Phi$ est injective. La construction ne fait aucun choix, l'énumération de $\mathbb Q^n$ étant fixée une fois pour toutes.
+
+      (ii) Soit $U = \mathbb R^2 \setminus \{0\}$, $r(x) = x/\|x\|_2$ et $\iota$ l'inclusion du cercle $\lex{sphere-unite}{S^1}$ dans $U$. On a $r \circ \iota = \mathrm{id}$, et $\iota \circ r$ est homotope à l'identité de $U$ par $F(x, t) = (1 - t)x + t\,x/\|x\|_2$, qui ne s'annule pas, comme multiple strictement positif de $x$. Donc $H_1(U) \cong H_1(S^1) \cong \lex{ensemble-entiers-relatifs}{\mathbb Z}$ ({{h-homotopie|Invariance par homotopie}}, (ii), et {{h-spheres|Homologie des sphères}}). Un morphisme de $\mathbb Z$ dans $\mathbb R$ est déterminé par l'image de $1$ : $\operatorname{Hom}(H_1(U), \mathbb R)$ est de dimension $1$. Par (i), $\dim H^1(U) \leqslant 1$, et $H^1(U) \neq \{0\}$ ({{gd-de-rham|Cohomologie de de Rham}}, (iii)) : la dimension vaut $1$.
+
+      La forme $\omega_0 = \frac{x\,dy - y\,dx}{x^2 + y^2}$, fermée et non exacte, engendre donc $H^1(U)$ : toute forme fermée s'écrit $\omega = c\,\omega_0 + df$, avec $c$ réel. Notons $\int_\square$ l'intégrale sur le bord du carré $[-1, 1]^2$ parcouru dans le sens direct, qui vaut $c\int_\square \omega_0$ pour cette forme, l'intégrale de $df$ sur un chemin fermé étant nulle. Comme $\int_\square \omega_0 = 4\int_{-1}^1 \frac{dt}{1 + t^2} > 0$ ({{gd-integrale-curviligne|Intégrale d'une 1-forme}}, remarque), $\omega$ est exacte si et seulement si $c = 0$, c'est-à-dire si et seulement si $\int_\square \omega = 0$.
+    remarques:
+      - |
+        L'autre moitié du théorème, la surjectivité de $\Phi$, est vraie : pour tout morphisme $\varphi : H_1(U) \to \mathbb R$, il existe une forme fermée dont les intégrales sur les cycles sont données par $\varphi$, et $\Phi$ est un isomorphisme. Elle est admise ici : la difficulté contournée est de construire une forme de périodes prescrites, ce qui se fait par recollement, au moyen de la suite de Mayer-Vietoris de la cohomologie de de Rham, dont l'exactitude demande des partitions de l'unité, que l'atlas ne construit pas, faute de fonctions plateaux sans l'exponentielle dans cette branche.
+      - |
+        Sur $\mathbb R^2 \setminus \{0\}$, le théorème retrouve en termes différentiels le fait que le cercle a un seul « trou » : le groupe $H_1$, engendré par la classe d'un tour, est dual de $H^1$, engendré par la forme $\omega_0$, qui mesure l'angle balayé. L'analyse complexe identifie $\int_\square \omega_0$ à $2\pi$.
+      - |
+        L'erreur la plus répandue est d'oublier que $U$ peut avoir plusieurs morceaux. Sur la réunion de deux disques disjoints, toute forme fermée est exacte, mais une primitive n'est déterminée qu'à une constante près **sur chaque disque** : c'est $H^0$, de dimension $2$, qui compte les morceaux, et non $H^1$. La preuve de (i) construit une primitive sur chaque classe de points liés, avec un point de base fixé sans choix.
+
+aretes:
+  - [dr-primitives, dr-integrale]
+  - [dr-integrale, dr-homotopie]
+  - [dr-homotopie, dr-chaines]
+  - [dr-chaines, dr-degre1]

@@ -188,7 +188,7 @@ Priorité 2 : ~~`li-cartan`~~ (fait le 28 oct. 2026, voir plus bas), ~~`ga-nulls
 `t-tychonov` (écarté par l'auteur le 28 oct. 2026 : il demanderait la flèche ordin → top, qui ferait remonter la topologie et ses 19 descendants ; l'énoncé conditionnel « ultrafiltre ⇒ Tychonov » a été proposé sans être retenu), ~~scindages de `gs-groupes`~~ (fait), ~~`v-determinant`~~ (fait),
 ~~`ta-revetement`~~ (fait) ; ~~réduction et trace en algèbre linéaire~~ (fait) ;
 ~~découpage de `geod`~~ (fait en deux théories, voir plus bas) ; ~~suites i.i.d. uniformes en proba~~ (fait). Priorité 3 : Mayer-Vietoris
-(subdivision, gros), `derham` en degré 1, compléments des théories terminales, théories « groupes
+(subdivision, gros), ~~`derham` en degré 1~~ (fait), compléments des théories terminales, théories « groupes
 finis » et « algèbre commutative », scindages de confort.
 
 ### 31. Recherche dans tout l'édifice (28 oct. 2026)
@@ -338,3 +338,15 @@ chiffres colorés selon U_m). Remarques : variables décalées 2^m ω mod 1 unif
 produits infinis (Andersen-Jessen, Ionescu Tulcea, Kolmogorov polonais) admis ; choix dénombrable seulement
 via la mesure de Lebesgue. Relu par un second agent (deux passes, cinq remarques traitées). La priorité 2
 est épuisée, à l'exception de Tychonov, écarté par l'auteur.
+
+De Rham en degré 1 (28 oct. 2026) : le nœud `derham` devient un conteneur (graphe `derham.yaml`, 5 nœuds,
+entrées geod et hom). `dr-primitives` (primitive sur toute boule ‖·‖∞ par Poincaré translaté ; unicité à
+constante près sur un connexe), `dr-integrale` (intégrale d'une forme fermée le long d'un chemin continu par
+subdivision adaptée, indépendance, accord avec gd-integrale-curviligne, Chasles, linéarité),
+`dr-homotopie` (bord d'un carré : grille de Lebesgue, schéma `dr-homotopie` ; homotopie à extrémités
+fixes), `dr-chaines` (intégration sur C₁, nulle sur les bords via (s,t) ↦ (1−s, s(1−t), st), schéma
+`dr-chaines` ; Φ : H¹(U) → Hom(H₁(U), ℝ)), `dr-degre1` (Φ injective, primitive construite sur chaque
+classe de points liés par lignes brisées, point de base pris dans une énumération fixée de ℚⁿ, sans choix ;
+corollaire H¹(ℝ²∖0) ≅ ℝ et critère du carré). Surjectivité admise (Mayer-Vietoris de de Rham, partitions de
+l'unité). Remarques de gd-de-rham mises à jour ; accueil : « Trente-trois branches », derham « démontré en
+degré 1 ». Relu par un second agent (trois passes, dix remarques traitées).
