@@ -116,6 +116,15 @@ function rendre(texte, ou) {
 const NOMS = { 'définition': 'Définition', 'théorème': 'Théorème', 'proposition': 'Proposition',
   'lemme': 'Lemme', 'corollaire': 'Corollaire', 'chapitre': 'Chapitre', 'axiome': 'Axiome', 'théorie': 'Théorie' };
 
+// Recherche dans l'édifice (gabarit : chercherEdifice) : pour chaque nœud, un extrait en texte brut de
+// son texte et de son énoncé, sans formules, schémas ni balisage, en minuscules et sans accents. Il reste
+// dans la page même quand les textes des branches sont chargés à la demande.
+const brutEdifice = t => String(t || '').replace(/```[\s\S]*?```/g, ' ').replace(/\$\$[\s\S]*?\$\$|\$[^$]*\$/g, ' ')
+  .replace(/\[\[([^\]|]+)(?:\|([^\]]*))?\]\]/g, (m, id, txt) => txt || (D.lexique[id] || {}).terme || id)
+  .replace(/\{\{[^}|]+\|([^}]*)\}\}/g, '$1').replace(/[*_`#]/g, '')
+  .normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase().replace(/\s+/g, ' ').trim();
+for (const n of Object.values(D.noeuds)) n.cherche = brutEdifice(`${n.texte || ''} ${n.enonce || ''}`).slice(0, 400);
+
 for (const n of Object.values(D.noeuds)) {
   for (const c of ['texte', 'enonce', 'preuve', 'choix']) n[c] = rendre(n[c], `${n.id}/${c}`);
   n.remarques = (n.remarques || []).map((r, i) => rendre(r, `${n.id}/remarque ${i + 1}`));

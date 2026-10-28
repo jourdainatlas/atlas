@@ -173,3 +173,21 @@ Priorité 2 : `li-cartan` (à portée), `ga-nullstellensatz` (lemme de Zariski, 
 découpage de `geod` en trois théories ; suites i.i.d. uniformes en proba. Priorité 3 : Mayer-Vietoris
 (subdivision, gros), `derham` en degré 1, compléments des théories terminales, théories « groupes
 finis » et « algèbre commutative », scindages de confort.
+
+### 31. Recherche dans tout l'édifice (28 oct. 2026)
+
+Demande de l'auteur : une barre de recherche au-dessus des onglets Fiche et Lexique, pour trouver un
+nœud dans n'importe quelle théorie ou sous-théorie sans les ouvrir une à une.
+- **Gabarit** : bloc `.tete-panneau` (collant) qui contient `.cherche-edifice` (champ `#cherche-edifice`,
+  liste `#resultats-edifice`) puis `.onglets`. Fonctions `indexEdifice`, `surligneEdifice`,
+  `chercherEdifice`, `fermerResultatsEdifice`, `ouvrirResultatEdifice`, `clavierEdifice` (après
+  `montrerOnglet`). Tous les mots doivent figurer (sans accents) ; classement : titre et étiquette
+  (début de mot 60, ailleurs 40, titre exact +100, titre commençant par la requête +40), puis termes du
+  lexique que le nœud définit (25, ligne « définit : … »), puis texte de la fiche (8, « dans le texte de
+  la fiche ») ; léger avantage aux niveaux supérieurs ; 40 résultats au plus. Chaque résultat donne le
+  titre surligné, la nature (couleur de la fiche) et le chemin (Théorie › Sous-théorie). Flèches,
+  Entrée, Échap ; clic ou Entrée → `ouvrirNoeud` (sur téléphone, défilement jusqu'au panneau).
+- **rendu.mjs** : champ `cherche` de chaque nœud (texte et énoncé en texte brut, sans formules ni
+  schémas, minuscules sans accents, 400 caractères), présent dans la page même quand les fiches des
+  branches sont chargées à la demande (environ 150 Ko non compressés de plus dans `site/index.html`).
+

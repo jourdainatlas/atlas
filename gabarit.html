@@ -265,10 +265,36 @@ body.redim .vue { pointer-events: none; }
 
 /* ---------------------------------------------------------------- panneau */
 .panneau { min-width: 0; overflow: auto; background: var(--surface); display: flex; flex-direction: column; }
+.tete-panneau { position: sticky; top: 0; background: var(--surface); z-index: 3; }
 .onglets {
   display: flex; gap: 2px; padding: 8px 12px 0; border-bottom: 1px solid var(--filet);
-  position: sticky; top: 0; background: var(--surface); z-index: 2;
+  background: var(--surface);
 }
+/* Recherche dans tout l'édifice (chercherEdifice) */
+.cherche-edifice { position: relative; padding: 12px 24px 0; }
+.cherche-edifice input {
+  width: 100%; box-sizing: border-box; font: inherit; font-family: var(--f-ui); font-size: 14px;
+  padding: 8px 12px 8px 34px; border: 1px solid var(--filet); border-radius: 8px; color: var(--encre);
+  background: var(--papier) no-repeat 11px 50% / 15px 15px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%237c838e' stroke-width='1.6'%3E%3Ccircle cx='6.5' cy='6.5' r='5'/%3E%3Cpath d='M10.3 10.3 15 15'/%3E%3C/svg%3E");
+}
+.cherche-edifice input:focus { outline: 2px solid var(--rouge); outline-offset: -1px; border-color: transparent; }
+.resultats-edifice {
+  position: absolute; left: 24px; right: 24px; top: calc(100% + 4px); max-height: min(60vh, 460px); overflow: auto;
+  background: var(--surface); border: 1px solid var(--filet); border-radius: 8px; box-shadow: var(--ombre); z-index: 5;
+  font-family: var(--f-ui); padding: 4px;
+}
+.resultats-edifice .re-item {
+  display: block; width: 100%; text-align: left; border: 0; background: none; cursor: pointer; color: var(--encre);
+  padding: 7px 10px; border-radius: 6px; font: inherit;
+}
+.resultats-edifice .re-item[aria-selected="true"], .resultats-edifice .re-item:hover { background: var(--trame); }
+.resultats-edifice .re-titre { font-size: 14px; font-weight: 500; display: flex; align-items: baseline; gap: 8px; }
+.resultats-edifice .re-titre .re-nature { font-size: 11px; letter-spacing: .04em; text-transform: uppercase; color: var(--re-c, var(--encre-3)); font-weight: 500; }
+.resultats-edifice .re-chemin { font-size: 12px; color: var(--encre-3); margin-top: 1px; }
+.resultats-edifice .re-motif { font-size: 12px; color: var(--encre-2); margin-top: 1px; }
+.resultats-edifice mark { background: none; color: var(--rouge); font-weight: 600; }
+.resultats-edifice .re-vide { padding: 10px; font-size: 13px; color: var(--encre-3); }
 .onglets button {
   border: 0; background: none; padding: 8px 12px; cursor: pointer; font-size: 14px; color: var(--encre-2);
   border-bottom: 2px solid transparent; margin-bottom: -1px;
@@ -850,6 +876,9 @@ span.case:hover { border-style: dashed; color: inherit; }
   .cadre { height: 64vh; border-right: 0; border-bottom: 1px solid var(--filet); }
   .panneau { overflow: visible; }
   .onglet { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .cherche-edifice { padding-left: 16px; padding-right: 16px; }
+  .cherche-edifice input { font-size: 16px; }   /* 16 px : pas de zoom automatique sur iOS */
+  .resultats-edifice { left: 16px; right: 16px; max-height: 55vh; }
   .marque { font-size: 17px; white-space: normal; }
   .entete { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; }
   .fil { grid-column: 1 / -1; grid-row: 2; }
@@ -936,9 +965,15 @@ span.case:hover { border-style: dashed; color: inherit; }
     <div class="separateur" id="separateur" role="separator" aria-orientation="vertical" aria-label="Largeur du panneau de lecture" tabindex="0" title="Glisser pour élargir ou réduire ; double-clic pour revenir à la largeur par défaut"></div>
 
     <aside class="panneau" id="panneau">
+      <div class="tete-panneau">
+      <div class="cherche-edifice" role="search">
+        <input id="cherche-edifice" type="search" placeholder="Chercher une notion dans tout l'édifice" aria-label="Chercher une notion dans tout l'édifice" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="resultats-edifice" aria-autocomplete="list">
+        <div class="resultats-edifice" id="resultats-edifice" role="listbox" aria-label="Résultats" hidden></div>
+      </div>
       <div class="onglets" role="tablist">
         <button type="button" role="tab" id="tab-fiche" aria-selected="true" aria-controls="onglet-fiche">Fiche</button>
         <button type="button" role="tab" id="tab-lexique" aria-selected="false" aria-controls="onglet-lexique">Lexique</button>
+      </div>
       </div>
       <div class="onglet" id="onglet-fiche" role="tabpanel" aria-labelledby="tab-fiche"></div>
       <div class="onglet" id="onglet-lexique" role="tabpanel" aria-labelledby="tab-lexique" hidden>
@@ -1308,6 +1343,104 @@ function montrerOnglet(nom) {
   }
 }
 
+/* ------------------------------------------------------------ recherche dans tout l'édifice */
+// Chaque nœud de tous les graphes (théories, sous-théories, chapitres) est cherché par son titre et son
+// étiquette, par les termes du lexique qu'il définit, puis par l'extrait de son texte et de son énoncé
+// (champ « cherche », écrit par rendu.mjs, toujours présent dans la page). Tous les mots doivent figurer.
+const normEdifice = t => String(t || '').normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
+let indexEdificeMemo = null;
+function indexEdifice() {
+  if (indexEdificeMemo) return indexEdificeMemo;
+  const termes = {};
+  for (const e of Object.values(D.lexique)) if (e.defini) (termes[e.defini] = termes[e.defini] || []).push(e.terme);
+  indexEdificeMemo = Object.values(D.noeuds).map(n => {
+    const ch = chemin(n.graphe);
+    return { id: n.id, titre: n.titre, chemin: ch.slice(1).map(g => D.graphes[g].titre), prof: ch.length,
+      t: ' ' + normEdifice(n.titre + ' ' + n.etiquette), termes: termes[n.id] || [],
+      tt: normEdifice((termes[n.id] || []).join(' ; ')), x: n.cherche || '' };
+  });
+  return indexEdificeMemo;
+}
+// Met en évidence les mots cherchés dans un titre, en tenant compte des accents.
+function surligneEdifice(s, mots) {
+  let norm = '', pos = [];
+  [...s].forEach((c, i) => { const n = normEdifice(c); norm += n; for (const _ of n) pos.push(i); });
+  const marque = new Array([...s].length).fill(false);
+  for (const m of mots) for (let k = norm.indexOf(m); k >= 0; k = norm.indexOf(m, k + 1))
+    for (let j = k; j < k + m.length; j++) marque[pos[j]] = true;
+  let h = '', ouvert = false;
+  [...s].forEach((c, i) => {
+    if (marque[i] && !ouvert) { h += '<mark>'; ouvert = true; }
+    if (!marque[i] && ouvert) { h += '</mark>'; ouvert = false; }
+    h += esc(c);
+  });
+  return h + (ouvert ? '</mark>' : '');
+}
+function chercherEdifice() {
+  const champ = $('#cherche-edifice'), boite = $('#resultats-edifice');
+  const q = normEdifice(champ.value).trim();
+  const mots = q.split(/[\s,;'’()]+/).filter(Boolean);
+  if (q.length < 2) { fermerResultatsEdifice(); return; }
+  const res = [];
+  for (const e of indexEdifice()) {
+    let s = 0, motif = '';
+    const ok = mots.every(m => {
+      if (e.t.includes(' ' + m)) { s += 60; return true; }
+      if (e.t.includes(m)) { s += 40; return true; }
+      if (e.tt.includes(m)) { s += 25; motif = motif || 'terme'; return true; }
+      if (e.x.includes(m)) { s += 8; motif = motif || 'texte'; return true; }
+      return false;
+    });
+    if (!ok) continue;
+    const nt = normEdifice(e.titre);
+    if (nt === q) s += 100; else if (nt.startsWith(q)) s += 40;
+    res.push({ s: s - 2 * e.prof, e, motif });
+  }
+  res.sort((a, b) => b.s - a.s || a.e.titre.length - b.e.titre.length);
+  const vus = res.slice(0, 40);
+  boite.innerHTML = vus.length ? vus.map(({ e, motif }, i) => {
+    const n = D.noeuds[e.id];
+    const nature = n.graphe === D.racine ? 'théorie' : n.nature;
+    let ligne = '';
+    if (motif === 'terme') ligne = `<div class="re-motif">définit : ${e.termes.filter(t => mots.some(m => normEdifice(t).includes(m))).map(t => surligneEdifice(t, mots)).join(', ')}</div>`;
+    else if (motif === 'texte') ligne = '<div class="re-motif">dans le texte de la fiche</div>';
+    return `<button type="button" class="re-item" role="option" id="re-${i}" data-n="${e.id}" aria-selected="${i === 0}">`
+      + `<div class="re-titre"><span>${surligneEdifice(e.titre, mots)}</span><span class="re-nature" style="--re-c: ${couleurNoeud(n)}">${esc(nature)}</span></div>`
+      + `<div class="re-chemin">${e.chemin.length ? e.chemin.map(esc).join(' › ') : 'L\'édifice'}</div>${ligne}</button>`;
+  }).join('') + (res.length > vus.length ? `<div class="re-vide">${res.length - vus.length} autres résultats : précisez la recherche.</div>` : '')
+    : '<div class="re-vide">Aucune notion ne correspond.</div>';
+  boite.hidden = false;
+  champ.setAttribute('aria-expanded', 'true');
+  champ.setAttribute('aria-activedescendant', vus.length ? 're-0' : '');
+}
+function fermerResultatsEdifice() {
+  $('#resultats-edifice').hidden = true;
+  $('#cherche-edifice').setAttribute('aria-expanded', 'false');
+}
+function ouvrirResultatEdifice(id) {
+  fermerResultatsEdifice();
+  ouvrirNoeud(id);
+  if (window.matchMedia('(max-width: 860px)').matches) $('#panneau').scrollIntoView({ block: 'start' });
+  else $('#panneau').scrollTop = 0;
+}
+function clavierEdifice(ev) {
+  const boite = $('#resultats-edifice');
+  const items = [...boite.querySelectorAll('.re-item')];
+  if (ev.key === 'Escape') { fermerResultatsEdifice(); return; }
+  if (boite.hidden || !items.length) { if (ev.key === 'ArrowDown') chercherEdifice(); return; }
+  let i = items.findIndex(b => b.getAttribute('aria-selected') === 'true');
+  if (ev.key === 'ArrowDown' || ev.key === 'ArrowUp') {
+    ev.preventDefault();
+    i = (i + (ev.key === 'ArrowDown' ? 1 : items.length - 1)) % items.length;
+    items.forEach((b, k) => b.setAttribute('aria-selected', String(k === i)));
+    items[i].scrollIntoView({ block: 'nearest' });
+    $('#cherche-edifice').setAttribute('aria-activedescendant', items[i].id);
+  } else if (ev.key === 'Enter') {
+    ev.preventDefault();
+    ouvrirResultatEdifice(items[Math.max(i, 0)].dataset.n);
+  }
+}
+
 /* ------------------------------------------------------------ bulle */
 let minuterie = null, termeActif = null;
 function montrerBulle(el) {
@@ -1379,6 +1512,13 @@ document.addEventListener('scroll', () => cacherBulle(true), true);
 $('#tab-fiche').addEventListener('click', () => montrerOnglet('fiche'));
 $('#tab-lexique').addEventListener('click', () => montrerOnglet('lexique'));
 $('#filtre').addEventListener('input', filtrer);
+$('#cherche-edifice').addEventListener('input', chercherEdifice);
+$('#cherche-edifice').addEventListener('keydown', clavierEdifice);
+$('#cherche-edifice').addEventListener('focus', () => { if ($('#cherche-edifice').value.trim().length > 1) chercherEdifice(); });
+$('#resultats-edifice').addEventListener('click', ev => {
+  const b = ev.target.closest('.re-item'); if (b) ouvrirResultatEdifice(b.dataset.n);
+});
+document.addEventListener('click', ev => { if (!ev.target.closest('.cherche-edifice')) fermerResultatsEdifice(); });
 $('#remonter').addEventListener('click', remonter);
 $('#plus').addEventListener('click', () => { etat.echelle = Math.min(1.6, etat.echelle * 1.15); appliquerEchelle(); });
 $('#moins').addEventListener('click', () => { etat.echelle = Math.max(0.35, etat.echelle / 1.15); appliquerEchelle(); });
