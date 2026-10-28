@@ -1,0 +1,292 @@
+# Niveau 2 : structure interne du chapitre « Suites réelles et limites ».
+# Toutes les suites sont réelles. Bolzano-Weierstrass (ar-bw) et la complétude (ar-cauchy) sont des
+# nœuds frères du graphe analyse-reelle, qui suivent ce chapitre.
+
+graphe: ar-suites
+titre: Suites réelles et limites
+conteneur: ar-suites
+
+entrees:
+  ar-archimede: [su-convergence]
+
+noeuds:
+  - id: su-convergence
+    etiquette: Convergence
+    nature: définition
+    titre: Suite convergente, limite
+    enonce: |
+      Une [[suite]] réelle est une suite $(u_n)_{n \in \lex{ensemble-entiers-naturels}{\mathbb N}}$ d'éléments de $\lex{ensemble-reels}{\mathbb R}$. Elle **converge vers** le réel $\ell$ si
+      $$\begin{aligned} &\forall \varepsilon > 0,\ \exists N \in \mathbb N, \\ &\qquad \forall n \geqslant N,\quad |u_n - \ell| < \varepsilon. \end{aligned}$$
+      On écrit alors $u_n \to \ell$, ou $u_n \xrightarrow[n \to \infty]{} \ell$. La suite est **convergente** s'il existe un réel $\ell$ vers lequel elle converge, et **divergente** sinon.
+
+      C'est la [[limite-suite|définition métrique de la limite]], appliquée à la distance $d(x, y) = |x - y|$ de $\mathbb R$.
+    texte: |
+      Une propriété $P(n)$ est vraie **à partir d'un certain rang** s'il existe $N \in \mathbb N$ tel qu'elle soit vraie pour tout $n \geqslant N$. Dire que $u_n \to \ell$, c'est donc dire que, pour tout $\varepsilon > 0$, l'inégalité $|u_n - \ell| < \varepsilon$ est vraie à partir d'un certain rang. Il en résulte aussitôt que $u_n \to \ell$ équivaut à $u_n - \ell \to 0$, et aussi à $|u_n - \ell| \to 0$, puisque les trois définitions portent sur la même quantité $|u_n - \ell|$.
+
+      La convergence ne dépend pas des premiers termes : modifier un nombre fini de termes ne change ni la convergence ni la limite, puisqu'il suffit d'agrandir $N$. Pour la même raison, une suite qui n'est définie qu'à partir d'un rang $n_0$, comme $(1/n)_{n \geqslant 1}$, converge vers $\ell$ si la définition est satisfaite pour les $n \geqslant \max(N, n_0)$ ; tous les énoncés de ce chapitre valent pour de telles suites.
+    remarques:
+      - |
+        La suite $(1/n)_{n \geqslant 1}$ tend vers $0$ précisément parce que $\lex{ensemble-reels}{\mathbb R}$ est archimédien : pour $\varepsilon > 0$, il faut un $N$ tel que $N\varepsilon > 1$.
+      - |
+        La définition donne un rang explicite dès que l'on sait majorer l'écart. Pour $u_n = \frac{n+1}{2n+3}$, on calcule $\big|u_n - \frac12\big| = \frac{1}{4n + 6}$, de sorte que $u_n \to \frac12$. Pour $\varepsilon = 10^{-3}$, l'inégalité $\frac1{4n+6} < 10^{-3}$ équivaut à $4n + 6 > 1000$, c'est-à-dire à $n \geqslant 249$ : à partir du rang $249$, et pas avant, tous les termes sont à moins d'un millième de $\frac12$. Le rang grandit quand $\varepsilon$ diminue, et c'est tout le sens de la définition.
+      - |
+        L'erreur la plus répandue est de croire qu'une suite converge vers $\ell$ dès que ses termes « se rapprochent » de $\ell$. Les termes de $(1/n)_{n \geqslant 1}$ se rapprochent de $-1$ à chaque pas, puisque $|1/n - (-1)| = 1 + 1/n$ décroît, mais ils restent à une distance supérieure à $1$ : la suite ne converge pas vers $-1$. Ce que demande la définition, c'est que l'écart devienne **plus petit que tout** $\varepsilon > 0$ donné à l'avance.
+      - |
+        Comme pour la continuité ({{c-point|Continuité en un point}}), l'ordre des quantificateurs est essentiel : le rang $N$ dépend de $\varepsilon$. Écrire $\exists N,\ \forall \varepsilon > 0$ demanderait que la suite soit constante égale à $\ell$ à partir du rang $N$.
+
+  - id: su-bornee
+    etiquette: Unicité, bornitude
+    nature: proposition
+    titre: Unicité de la limite ; une suite convergente est bornée
+    enonce: |
+      Une suite réelle $(u_n)$ est **majorée** s'il existe $M \in \lex{ensemble-reels}{\mathbb R}$ tel que $u_n \leqslant M$ pour tout $n$, **minorée** s'il existe $m$ tel que $u_n \geqslant m$ pour tout $n$, et **bornée** si elle est majorée et minorée, c'est-à-dire s'il existe $M$ tel que $|u_n| \leqslant M$ pour tout $n$.
+
+      (i) Si $(u_n)$ converge vers $\ell$ et vers $\ell'$, alors $\ell = \ell'$. Ce réel est appelé **la limite** de $(u_n)$ et noté $\lim u_n$ ou $\lim_{n \to \infty} u_n$.
+
+      (ii) Toute suite convergente est bornée.
+    preuve: |
+      (i) Supposons $\ell \neq \ell'$ et posons $\varepsilon = \frac12|\ell - \ell'| > 0$. Il existe $N_1$ tel que $|u_n - \ell| < \varepsilon$ pour $n \geqslant N_1$, et $N_2$ tel que $|u_n - \ell'| < \varepsilon$ pour $n \geqslant N_2$. Pour $n = \max(N_1, N_2)$, l'inégalité triangulaire donne
+      $$\begin{aligned} |\ell - \ell'| &\leqslant |\ell - u_n| + |u_n - \ell'| \\ &< 2\varepsilon = |\ell - \ell'|, \end{aligned}$$
+      ce qui est absurde.
+
+      (ii) Soit $u_n \to \ell$. Pour $\varepsilon = 1$, il existe $N$ tel que $|u_n - \ell| < 1$ pour $n \geqslant N$, et alors $|u_n| \leqslant |\ell| + |u_n - \ell| < |\ell| + 1$. Le réel $M = \max(|u_0|, \dots, |u_{N-1}|, |\ell| + 1)$, maximum d'un ensemble fini, majore alors $|u_n|$ pour tout $n$.
+    remarques:
+      - |
+        La réciproque de (ii) est fausse : la suite $((-1)^n)$ est bornée et divergente. Si elle convergeait vers un réel $\ell$, il existerait $N$ tel que $|(-1)^n - \ell| < 1$ pour $n \geqslant N$ ; en prenant $n = 2N$ et $n = 2N + 1$, on obtiendrait $2 = |1 - (-1)| \leqslant |1 - \ell| + |\ell + 1| < 2$.
+      - |
+        On se sert surtout de (ii) par contraposée : une suite non bornée diverge. Ainsi $(n^2)$ diverge, puisque $n^2 \geqslant n$ et que, $\mathbb R$ étant archimédien, aucun réel ne majore $\mathbb N$.
+      - |
+        L'unicité de la limite traduit le fait que deux points distincts de $\mathbb R$ ont des voisinages disjoints : les boules de rayon $\varepsilon$ de la preuve. Dans un espace topologique quelconque, où cette propriété de séparation peut manquer, une suite peut converger vers plusieurs points.
+
+  - id: su-operations
+    etiquette: Opérations sur les limites
+    nature: proposition
+    titre: Opérations sur les limites
+    enonce: |
+      Soit $(u_n)$ et $(v_n)$ deux suites réelles telles que $u_n \to \ell$ et $v_n \to \ell'$, et $\lambda \in \lex{ensemble-reels}{\mathbb R}$.
+
+      (i) $u_n + v_n \to \ell + \ell'$.
+
+      (ii) $u_n v_n \to \ell \ell'$ ; en particulier $\lambda u_n \to \lambda \ell$.
+
+      (iii) $|u_n| \to |\ell|$.
+
+      (iv) Si $\ell \neq 0$, il existe un rang $N_0$ tel que $u_n \neq 0$ pour $n \geqslant N_0$, et $\frac1{u_n} \to \frac1\ell$. Le quotient $\frac{v_n}{u_n}$, défini à partir du rang $N_0$, tend alors vers $\frac{\ell'}{\ell}$.
+    preuve: |
+      (i) Soit $\varepsilon > 0$. Il existe $N_1$ et $N_2$ tels que $|u_n - \ell| < \varepsilon/2$ pour $n \geqslant N_1$ et $|v_n - \ell'| < \varepsilon/2$ pour $n \geqslant N_2$. Pour $n \geqslant \max(N_1, N_2)$, on a $|(u_n + v_n) - (\ell + \ell')| \leqslant |u_n - \ell| + |v_n - \ell'| < \varepsilon$.
+
+      (ii) On écrit
+      $$u_n v_n - \ell\ell' = u_n (v_n - \ell') + \ell' (u_n - \ell).$$
+      La suite $(u_n)$ converge, donc elle est bornée : il existe $M > 0$ tel que $|u_n| \leqslant M$ pour tout $n$. Soit $\varepsilon > 0$. Il existe $N_1$ tel que $|v_n - \ell'| < \frac{\varepsilon}{2M}$ pour $n \geqslant N_1$, et $N_2$ tel que $|u_n - \ell| < \frac{\varepsilon}{2(|\ell'| + 1)}$ pour $n \geqslant N_2$. Pour $n \geqslant \max(N_1, N_2)$,
+      $$\begin{aligned} |u_n v_n - \ell\ell'| &\leqslant M\,\frac{\varepsilon}{2M} + |\ell'|\,\frac{\varepsilon}{2(|\ell'| + 1)} \\ &< \frac\varepsilon2 + \frac\varepsilon2 = \varepsilon. \end{aligned}$$
+      Le cas $\lambda u_n$ s'obtient en prenant pour $(v_n)$ la suite constante égale à $\lambda$, qui converge vers $\lambda$ puisque $|v_n - \lambda| = 0$.
+
+      (iii) L'inégalité triangulaire donne $\big||u_n| - |\ell|\big| \leqslant |u_n - \ell|$, et il suffit de prendre le même rang que pour $(u_n)$.
+
+      (iv) Appliquons la définition avec $\varepsilon = |\ell|/2 > 0$ : il existe $N_0$ tel que $|u_n - \ell| < |\ell|/2$ pour $n \geqslant N_0$, d'où $|u_n| \geqslant |\ell| - |u_n - \ell| > |\ell|/2 > 0$. Pour $n \geqslant N_0$, on a donc
+      $$\begin{aligned} \left|\frac1{u_n} - \frac1\ell\right| &= \frac{|\ell - u_n|}{|u_n|\,|\ell|} \\ &\leqslant \frac{2}{|\ell|^2}\,|u_n - \ell|. \end{aligned}$$
+      Soit $\varepsilon > 0$ et $N_1$ tel que $|u_n - \ell| < \frac{|\ell|^2 \varepsilon}{2}$ pour $n \geqslant N_1$ : pour $n \geqslant \max(N_0, N_1)$, l'écart est $< \varepsilon$. Enfin $\frac{v_n}{u_n} = v_n \cdot \frac1{u_n}$, et l'on applique (ii).
+    remarques:
+      - |
+        Ces règles ramènent bien des limites à celle de $(1/n)$. Pour $u_n = \frac{3n^2 + n}{n^2 + 1}$, on divise numérateur et dénominateur par $n^2$ : $u_n = \frac{3 + 1/n}{1 + 1/n^2}$ pour $n \geqslant 1$. Comme $\frac1{n^2} = \frac1n \cdot \frac1n \to 0$, le numérateur tend vers $3$, le dénominateur vers $1 \neq 0$, et $u_n \to 3$. Numériquement, $u_{10} \approx 3{,}069$ et $u_{1000} \approx 3{,}000\,997$ : l'écart est de l'ordre de $1/n$, ce que laisse prévoir le terme $1/n$ du numérateur.
+      - |
+        L'erreur la plus répandue est d'appliquer ces règles sans avoir établi que **chacune** des deux suites converge. La somme $n + (-n)$ converge vers $0$ alors qu'aucun des deux termes ne converge, et le produit $(1 + (-1)^n)(1 - (-1)^n)$ est nul pour tout $n$ alors que les deux facteurs divergent. Les règles ne se lisent que dans un sens : de la convergence des facteurs à celle du résultat.
+      - |
+        Dans le langage de l'algèbre, (i) et (ii) disent que les suites convergentes forment une sous-algèbre de l'algèbre de toutes les suites réelles, et que $(u_n) \mapsto \lim u_n$ est un morphisme d'algèbres de cette sous-algèbre dans $\mathbb R$. Par la caractérisation séquentielle ({{c-sequentielle|Caractérisation séquentielle}}), ce sont exactement ces règles qui feront de la somme et du produit de deux fonctions continues des fonctions continues.
+
+  - id: su-inegalites
+    etiquette: Passage à la limite
+    nature: proposition
+    titre: Limites et inégalités
+    enonce: |
+      Soit $(u_n)$ et $(v_n)$ deux suites réelles telles que $u_n \to \ell$ et $v_n \to \ell'$.
+
+      (i) Si $\ell < \ell'$, alors $u_n < v_n$ à partir d'un certain rang. En particulier, si $\ell > a$, alors $u_n > a$ à partir d'un certain rang.
+
+      (ii) **Passage à la limite.** Si $u_n \leqslant v_n$ à partir d'un certain rang, alors $\ell \leqslant \ell'$. En particulier, si $a \leqslant u_n \leqslant b$ à partir d'un certain rang, alors $a \leqslant \ell \leqslant b$.
+    preuve: |
+      (i) Posons $\varepsilon = \frac12(\ell' - \ell) > 0$. Il existe $N_1$ tel que $u_n < \ell + \varepsilon$ pour $n \geqslant N_1$, et $N_2$ tel que $v_n > \ell' - \varepsilon$ pour $n \geqslant N_2$. Comme $\ell + \varepsilon = \ell' - \varepsilon$, on a $u_n < v_n$ pour $n \geqslant \max(N_1, N_2)$. Le cas particulier s'obtient en prenant pour $(u_n)$ la suite constante égale à $a$, qui converge vers $a$.
+
+      (ii) Supposons $u_n \leqslant v_n$ pour $n \geqslant N$ et, par l'absurde, $\ell' < \ell$. D'après (i), où l'on échange les rôles des deux suites, il existe $N'$ tel que $v_n < u_n$ pour $n \geqslant N'$. Pour $n = \max(N, N')$, on aurait à la fois $u_n \leqslant v_n$ et $v_n < u_n$. Le cas particulier s'obtient avec des suites constantes.
+    remarques:
+      - |
+        L'erreur la plus répandue est de passer à la limite dans une inégalité **stricte** en la gardant stricte. On a $\frac1n > 0$ pour tout $n \geqslant 1$, et pourtant $\lim \frac1n = 0$ : les inégalités strictes deviennent larges à la limite, et (ii) n'affirme rien de plus.
+      - |
+        Le point (ii) suppose que les deux suites convergent ; il ne sert pas à établir une convergence. C'est le rôle du théorème d'encadrement ({{su-encadrement|Encadrement}}), qui conclut à l'existence de la limite.
+      - |
+        C'est sous cette forme que la démonstration des bornes atteintes ({{c-bornes|Bornes atteintes}}) conclut, en passant à la limite dans $M - \frac1{\varphi(n)} < f(x_{\varphi(n)}) \leqslant M$.
+
+  - id: su-encadrement
+    etiquette: Encadrement
+    nature: théorème
+    titre: Théorème d'encadrement
+    enonce: |
+      Soit $(u_n)$, $(v_n)$ et $(w_n)$ trois suites réelles telles que $u_n \leqslant w_n \leqslant v_n$ à partir d'un certain rang. Si $(u_n)$ et $(v_n)$ convergent vers la même limite $\ell$, alors $(w_n)$ converge, et $w_n \to \ell$.
+
+      En particulier, s'il existe une suite $(\alpha_n)$ qui tend vers $0$ et telle que $|w_n - \ell| \leqslant \alpha_n$ à partir d'un certain rang, alors $w_n \to \ell$.
+    preuve: |
+      Soit $N_0$ tel que $u_n \leqslant w_n \leqslant v_n$ pour $n \geqslant N_0$, et $\varepsilon > 0$. Il existe $N_1$ tel que $u_n > \ell - \varepsilon$ pour $n \geqslant N_1$, et $N_2$ tel que $v_n < \ell + \varepsilon$ pour $n \geqslant N_2$. Pour $n \geqslant \max(N_0, N_1, N_2)$,
+      $$\ell - \varepsilon < u_n \leqslant w_n \leqslant v_n < \ell + \varepsilon,$$
+      c'est-à-dire $|w_n - \ell| < \varepsilon$.
+
+      Pour le second énoncé, on applique le premier à $\ell - \alpha_n \leqslant w_n \leqslant \ell + \alpha_n$, en remarquant que $|(\ell \pm \alpha_n) - \ell| = |\alpha_n|$, de sorte que $\ell - \alpha_n \to \ell$ et $\ell + \alpha_n \to \ell$.
+    remarques:
+      - |
+        Soit $w_n = \displaystyle\sum_{k=1}^{n} \frac{n}{n^2 + k}$ pour $n \geqslant 1$. Chacun des $n$ termes est compris entre $\frac{n}{n^2 + n}$ et $\frac{n}{n^2 + 1}$, d'où
+        $$\frac{n}{n+1} \leqslant w_n \leqslant \frac{n^2}{n^2+1}.$$
+        Les deux bornes sont à distance $\frac1{n+1}$ et $\frac1{n^2+1}$ de $1$, toutes deux inférieures à $\frac1n$ : elles tendent vers $1$, et donc $w_n \to 1$. Numériquement, $w_{10} \approx 0{,}949$, $w_{100} \approx 0{,}995$ et $w_{1000} \approx 0{,}9995$. On ne dispose d'aucune expression simple de $w_n$, et l'on n'en a pas besoin : l'encadrement donne la limite sans calculer la somme.
+      - |
+        L'erreur la plus répandue est d'encadrer par deux suites de limites **différentes** : de $0 \leqslant w_n \leqslant 1$, on ne tire rien sur la convergence de $(w_n)$, comme le montre $w_n = \frac12(1 + (-1)^n)$.
+
+  - id: su-infinies
+    etiquette: Limites infinies
+    nature: proposition
+    titre: Limites infinies et comparaison
+    enonce: |
+      **Définition.** La suite réelle $(u_n)$ [[limite-infinie|tend vers $+\infty$]] si
+      $$\forall A \in \lex{ensemble-reels}{\mathbb R},\ \exists N \in \lex{ensemble-entiers-naturels}{\mathbb N},\ \forall n \geqslant N,\ u_n > A,$$
+      et elle tend vers $-\infty$ si $(-u_n)$ tend vers $+\infty$. On écrit $u_n \to +\infty$ ou $u_n \to -\infty$. Une telle suite n'est pas bornée, donc elle **diverge**.
+
+      **Proposition.** Soit $(u_n)$ et $(v_n)$ deux suites réelles.
+
+      (i) **Comparaison.** Si $u_n \leqslant v_n$ à partir d'un certain rang et $u_n \to +\infty$, alors $v_n \to +\infty$. Si $u_n \leqslant v_n$ à partir d'un certain rang et $v_n \to -\infty$, alors $u_n \to -\infty$.
+
+      (ii) Si $u_n \to +\infty$ et si $(v_n)$ est minorée, en particulier si elle converge, alors $u_n + v_n \to +\infty$. Si $u_n \to +\infty$ et $v_n \to \ell' > 0$, alors $u_n v_n \to +\infty$.
+
+      (iii) Si $u_n \to +\infty$, alors $u_n > 0$ à partir d'un certain rang, et $\frac1{u_n} \to 0$. Si $u_n \to 0$ et $u_n > 0$ à partir d'un certain rang, alors $\frac1{u_n} \to +\infty$.
+
+      (iv) **Suites géométriques.** Si $q > 1$, alors $q^n \to +\infty$ ; si $|q| < 1$, alors $q^n \to 0$.
+    preuve: |
+      Une suite qui tend vers $+\infty$ n'est pas majorée : sinon, pour $A$ un majorant, on aurait $u_N > A \geqslant u_N$. Elle n'est donc pas bornée, et une suite convergente est bornée ; le cas de $-\infty$ s'en déduit par passage à l'opposé.
+
+      (i) Soit $N_0$ tel que $u_n \leqslant v_n$ pour $n \geqslant N_0$, et $A \in \mathbb R$. Il existe $N$ tel que $u_n > A$ pour $n \geqslant N$, et alors $v_n \geqslant u_n > A$ pour $n \geqslant \max(N, N_0)$. Le second énoncé s'obtient en appliquant le premier à $-v_n \leqslant -u_n$.
+
+      (ii) Soit $m$ un minorant de $(v_n)$ et $A \in \mathbb R$. Il existe $N$ tel que $u_n > A - m$ pour $n \geqslant N$, et alors $u_n + v_n > A$. Une suite convergente est bornée, donc minorée. Pour le produit, appliquons la définition de $v_n \to \ell'$ avec $\varepsilon = \ell'/2$ : il existe $N_1$ tel que $v_n > \ell'/2 > 0$ pour $n \geqslant N_1$. Soit $A \in \mathbb R$ et $A' = \max(A, 1) > 0$ ; il existe $N_2$ tel que $u_n > 2A'/\ell'$ pour $n \geqslant N_2$, et pour $n \geqslant \max(N_1, N_2)$, on obtient $u_n v_n > \frac{2A'}{\ell'} \cdot \frac{\ell'}{2} = A' \geqslant A$.
+
+      (iii) Avec $A = 0$, on obtient $u_n > 0$ à partir d'un certain rang. Soit $\varepsilon > 0$ : il existe $N$ tel que $u_n > 1/\varepsilon$ pour $n \geqslant N$, et alors $0 < \frac1{u_n} < \varepsilon$. Réciproquement, si $u_n \to 0$ et $u_n > 0$ pour $n \geqslant N_0$, soit $A \in \mathbb R$, $A' = \max(A, 1)$, et $N$ tel que $|u_n| < 1/A'$ pour $n \geqslant N$ : pour $n \geqslant \max(N, N_0)$, on a $0 < u_n < 1/A'$, donc $\frac1{u_n} > A' \geqslant A$.
+
+      (iv) Écrivons $q = 1 + h$ avec $h > 0$. L'**inégalité de Bernoulli** $(1 + h)^n \geqslant 1 + nh$ se démontre par récurrence sur $n$ : elle est vraie pour $n = 0$, et si elle l'est au rang $n$, alors
+      $$\begin{aligned} (1 + h)^{n+1} &\geqslant (1 + nh)(1 + h) \\ &= 1 + (n+1)h + nh^2 \\ &\geqslant 1 + (n+1)h. \end{aligned}$$
+      Comme $(nh)_n$ n'est pas majorée, par la propriété d'Archimède, la suite $(1 + nh)$ tend vers $+\infty$ : pour tout $A$, il existe $N$ tel que $Nh > A$, et alors $1 + nh > A$ pour $n \geqslant N$. Par (i), $q^n \to +\infty$.
+
+      Si $q = 0$, la suite $(q^n)_{n \geqslant 1}$ est nulle. Si $0 < |q| < 1$, alors $\frac1{|q|} > 1$, donc $\big(\frac1{|q|}\big)^n \to +\infty$, et par (iii), $|q^n| = |q|^n = 1 \big/ \big(\frac1{|q|}\big)^n \to 0$, ce qui équivaut à $q^n \to 0$.
+    remarques:
+      - |
+        L'erreur la plus répandue est de confondre « divergente » et « tend vers l'infini ». La suite $((-1)^n)$ diverge en restant bornée, et la suite $((-2)^n)$ diverge sans être bornée, mais ne tend ni vers $+\infty$ ni vers $-\infty$, puisque ses termes changent de signe à chaque pas. Avec (iv) et le cas $q = 1$, on a ainsi le comportement de toutes les suites géométriques : $(q^n)$ converge si et seulement si $-1 < q \leqslant 1$.
+      - |
+        Les sommes $u_n + v_n$ où $u_n \to +\infty$ et $v_n \to -\infty$ échappent à toute règle générale : avec $u_n = n$, la suite $v_n = -n$ donne une somme nulle, $v_n = -n + \ell$ une somme qui tend vers $\ell$, et $v_n = n - n^2$ une somme $2n - n^2 = n(2 - n)$, inférieure à $-n$ pour $n \geqslant 3$, qui tend donc vers $-\infty$. C'est ce qu'on appelle une forme indéterminée ; il en va de même du produit d'une suite qui tend vers $0$ par une suite qui tend vers $+\infty$.
+      - |
+        L'inégalité de Bernoulli est grossière, puisque $2^{10} = 1024$ alors que $1 + 10 \cdot 1 = 11$, mais elle suffit : pour établir une limite infinie, il n'est pas nécessaire de savoir à quelle vitesse la suite croît, seulement qu'elle dépasse tout réel donné.
+
+  - id: su-extraites
+    etiquette: Suites extraites
+    nature: proposition
+    titre: Suites extraites
+    enonce: |
+      Une [[suite-extraite]] de la suite $(u_n)$ est une suite $(u_{\varphi(n)})_{n \in \lex{ensemble-entiers-naturels}{\mathbb N}}$, où $\varphi : \mathbb N \to \mathbb N$ est strictement croissante. On a alors $\varphi(n) \geqslant n$ pour tout $n$.
+
+      (i) Si $(u_n)$ tend vers une limite $\ell \in \lex{ensemble-reels}{\mathbb R}$, ou vers $+\infty$, ou vers $-\infty$, toute suite extraite de $(u_n)$ tend vers la même limite.
+
+      (ii) Si $u_{2n} \to \ell$ et $u_{2n+1} \to \ell$, alors $u_n \to \ell$.
+
+      (iii) Si deux suites extraites de $(u_n)$ convergent vers des limites différentes, $(u_n)$ diverge.
+    preuve: |
+      L'inégalité $\varphi(n) \geqslant n$ se démontre par récurrence : $\varphi(0) \geqslant 0$, et si $\varphi(n) \geqslant n$, alors $\varphi(n+1) > \varphi(n) \geqslant n$, d'où $\varphi(n+1) \geqslant n + 1$ puisque ce sont des entiers.
+
+      (i) Supposons $u_n \to \ell$ et soit $\varepsilon > 0$, et $N$ tel que $|u_m - \ell| < \varepsilon$ pour $m \geqslant N$. Pour $n \geqslant N$, on a $\varphi(n) \geqslant n \geqslant N$, donc $|u_{\varphi(n)} - \ell| < \varepsilon$. Le même argument, avec « $u_m > A$ » au lieu de « $|u_m - \ell| < \varepsilon$ », traite le cas de $+\infty$, et l'on passe à l'opposé pour $-\infty$.
+
+      (ii) Soit $\varepsilon > 0$, $N_1$ tel que $|u_{2k} - \ell| < \varepsilon$ pour $k \geqslant N_1$, et $N_2$ tel que $|u_{2k+1} - \ell| < \varepsilon$ pour $k \geqslant N_2$. Soit $n \geqslant \max(2N_1, 2N_2 + 1)$. Si $n = 2k$ est pair, alors $k \geqslant N_1$ ; si $n = 2k + 1$ est impair, alors $k \geqslant N_2$. Dans les deux cas, $|u_n - \ell| < \varepsilon$.
+
+      (iii) Si $(u_n)$ convergeait vers $\ell$, les deux suites extraites convergeraient vers $\ell$ par (i), et leurs limites seraient égales par unicité de la limite.
+    remarques:
+      - |
+        Le point (iii) est la façon la plus rapide de prouver une divergence. Pour $u_n = (-1)^n + \frac1{n+1}$, les termes pairs $1 + \frac1{2k+1}$ tendent vers $1$ et les termes impairs $-1 + \frac1{2k+2}$ vers $-1$ : la suite diverge, alors même que chacune de ses deux moitiés converge.
+      - |
+        L'erreur la plus répandue, dans (ii), est d'oublier que les deux suites extraites doivent **recouvrir tous les indices**. Les suites $(u_{3n})$ et $(u_{3n+1})$ peuvent converger vers la même limite sans que $(u_n)$ converge, puisque les termes $u_{3n+2}$ restent libres. En revanche, l'énoncé vaut pour toute famille finie de suites extraites dont les indices recouvrent $\mathbb N$ à partir d'un certain rang, avec la même preuve.
+      - |
+        Le critère (ii) sera appliqué aux sommes partielles de séries alternées, dont les termes pairs et les termes impairs forment des suites adjacentes ({{su-adjacentes|Suites adjacentes}}). Le théorème de Bolzano-Weierstrass ({{ar-bw|Bolzano-Weierstrass}}) dira ensuite que toute suite bornée a au moins une suite extraite convergente.
+
+  - id: su-monotone
+    etiquette: Limite monotone
+    nature: théorème
+    titre: Théorème de la limite monotone
+    enonce: |
+      La suite réelle $(u_n)$ est **croissante** si $u_n \leqslant u_{n+1}$ pour tout $n$, ce qui entraîne $u_n \leqslant u_m$ pour $n \leqslant m$ par récurrence sur $m$ ; elle est **décroissante** si $(-u_n)$ est croissante, et **monotone** si elle est croissante ou décroissante.
+
+      **Théorème de la limite monotone.** Toute suite réelle croissante et majorée converge, vers la borne supérieure de l'ensemble de ses termes.
+
+      Toute suite croissante non majorée tend vers $+\infty$. Symétriquement, toute suite décroissante minorée converge vers la borne inférieure de l'ensemble de ses termes, et toute suite décroissante non minorée tend vers $-\infty$.
+    preuve: |
+      Soit $(u_n)$ croissante et majorée, et $s = \sup\{u_n : n \in \lex{ensemble-entiers-naturels}{\mathbb N}\}$, qui existe par la propriété de la borne supérieure. Soit $\varepsilon > 0$. Le réel $s - \varepsilon$ ne majore pas l'ensemble des termes : il existe $N$ tel que $u_N > s - \varepsilon$. Pour tout $n \geqslant N$, la croissance donne $s - \varepsilon < u_N \leqslant u_n \leqslant s$, donc $|u_n - s| < \varepsilon$.
+
+      Si $(u_n)$ est croissante et non majorée, aucun réel $A$ ne la majore : il existe $N$ tel que $u_N > A$, et alors $u_n \geqslant u_N > A$ pour tout $n \geqslant N$.
+
+      Si $(u_n)$ est décroissante et minorée par $m$, la suite $(-u_n)$ est croissante et majorée par $-m$ ; elle converge vers $s = \sup\{-u_n\}$. Le réel $-s$ est la borne inférieure des $u_n$ : il les minore puisque $-u_n \leqslant s$, et si $m'$ les minore, $-m'$ majore les $-u_n$, donc $-m' \geqslant s$ et $m' \leqslant -s$. Comme $|u_n - (-s)| = |-u_n - s|$, on a $u_n \to -s$. Le cas d'une suite décroissante non minorée se ramène de même au cas croissant non majoré.
+    remarques:
+      - |
+        La suite $u_n = \displaystyle\sum_{k=1}^{n} \frac1{k^2}$ est croissante, et majorée par $2$ : pour $k \geqslant 2$, on a $\frac1{k^2} \leqslant \frac1{k(k-1)} = \frac1{k-1} - \frac1k$, et la somme télescopique donne $u_n \leqslant 1 + 1 - \frac1n < 2$. Elle converge donc, alors qu'on ne sait pas encore exprimer sa limite. Le théorème donne l'existence d'une limite sans la calculer, et c'est précisément ce qui le rend indispensable.
+      - |
+        Le théorème est faux dans $\lex{ensemble-rationnels}{\mathbb Q}$. La suite des approximations décimales par défaut de la racine carrée de $2$, soit $1$ ; $1{,}4$ ; $1{,}41$ ; $1{,}414$ ; …, est croissante et majorée par $2$ dans $\mathbb Q$, mais n'a pas de limite rationnelle, puisque sa limite réelle $\ell$ vérifie $\ell^2 = 2$ ({{su-adjacentes|Suites adjacentes}}). Toute la force du théorème vient de la propriété de la borne supérieure ({{ar-corps|Borne supérieure}}), qui fournit le candidat $s$.
+      - |
+        Réciproquement, un corps totalement ordonné où toute suite croissante et majorée converge a la propriété de la borne supérieure. Il est d'abord archimédien, sans quoi la suite $(n)$, croissante et majorée, ne pourrait converger ; une dichotomie, comme celle des segments emboîtés ({{su-segments|Segments emboîtés}}), produit ensuite la borne supérieure d'une partie non vide et majorée. Le théorème de la limite monotone est ainsi une autre forme de l'axiome de complétude.
+
+  - id: su-adjacentes
+    etiquette: Suites adjacentes
+    nature: théorème
+    titre: Théorème des suites adjacentes
+    enonce: |
+      Deux suites réelles $(u_n)$ et $(v_n)$ sont [[suites-adjacentes|adjacentes]] si $(u_n)$ est croissante, $(v_n)$ décroissante, et $v_n - u_n \to 0$.
+
+      Deux suites adjacentes convergent vers une même limite $\ell$, et $u_n \leqslant \ell \leqslant v_n$ pour tout $n$.
+    preuve: |
+      La suite $w_n = v_n - u_n$ est décroissante, puisque $w_{n+1} - w_n = (v_{n+1} - v_n) - (u_{n+1} - u_n) \leqslant 0$, et elle tend vers $0$. Pour $n$ fixé et tout $m \geqslant n$, on a $w_m \leqslant w_n$ ; en passant à la limite quand $m \to \infty$, on obtient $0 \leqslant w_n$, c'est-à-dire $u_n \leqslant v_n$.
+
+      Il en résulte $u_n \leqslant v_n \leqslant v_0$ : la suite $(u_n)$ est croissante et majorée par $v_0$, donc converge vers un réel $\ell$. De même, $v_n \geqslant u_n \geqslant u_0$ : la suite $(v_n)$ est décroissante et minorée par $u_0$, donc converge vers un réel $\ell'$. Par les opérations sur les limites, $v_n - u_n \to \ell' - \ell$, et par unicité de la limite, $\ell' - \ell = 0$.
+
+      Enfin, pour $n$ fixé et $m \geqslant n$, on a $u_n \leqslant u_m$ et $v_m \leqslant v_n$ ; en passant à la limite quand $m \to \infty$, on obtient $u_n \leqslant \ell$ et $\ell \leqslant v_n$.
+    remarques:
+      - |
+        Les suites $u_n = \displaystyle\sum_{k=1}^{n} \frac1{k^2}$ et $v_n = u_n + \frac1n$, pour $n \geqslant 1$, sont adjacentes : $(u_n)$ est croissante, $v_n - u_n = \frac1n \to 0$, et
+        $$\begin{aligned} v_{n+1} - v_n &= \frac1{(n+1)^2} + \frac1{n+1} - \frac1n \\ &= -\frac{1}{n(n+1)^2} < 0. \end{aligned}$$
+        Leur limite commune est donc encadrée par deux rationnels calculables, à $\frac1n$ près : pour $n = 10$, elle est comprise entre $1{,}5497$ et $1{,}6498$. On montrera en analyse de Fourier ({{fo-parseval|Parseval}}) qu'elle vaut $\pi^2/6 \approx 1{,}6449$.
+      - |
+        Les suites adjacentes construisent des réels. Notons $u_n$ le plus grand nombre décimal à $n$ chiffres après la virgule dont le carré est inférieur ou égal à $2$, c'est-à-dire $u_n = k_n / 10^n$, où $k_n$ est le plus grand entier tel que $k_n^2 \leqslant 2 \cdot 10^{2n}$, et posons $v_n = u_n + 10^{-n}$. On obtient $u_0 = 1$, $u_1 = 1{,}4$, $u_2 = 1{,}41$, $u_3 = 1{,}414$, et $v_3 = 1{,}415$. La suite $(u_n)$ croît, car $u_n$ est encore un candidat au rang $n + 1$ ; on a $v_n^2 > 2$ par maximalité, donc tout décimal à $n + 1$ chiffres de carré $\leqslant 2$ est $< v_n$, d'où $u_{n+1} \leqslant v_n - 10^{-n-1}$ et $v_{n+1} \leqslant v_n$. Les deux suites sont donc adjacentes ; de $u_n^2 \leqslant 2 < v_n^2$, on tire, par produit et passage à la limite, $\ell^2 \leqslant 2 \leqslant \ell^2$. Le réel $\ell$ est la racine carrée de $2$, obtenue sans aucun choix : chaque $k_n$ est le plus grand élément d'un ensemble fini d'entiers.
+      - |
+        L'erreur la plus répandue est d'oublier la condition $v_n - u_n \to 0$. Sans elle, une suite croissante majorée par une suite décroissante converge encore, de même que la suite décroissante, mais les deux limites peuvent différer, comme pour $u_n = -\frac1{n+1}$ et $v_n = 1 + \frac1{n+1}$.
+      - |
+        Les sommes partielles $S_n = \sum_{k=1}^{n} \frac{(-1)^{k+1}}{k}$ donnent deux suites adjacentes $(S_{2n})$ et $(S_{2n+1})$ : $S_{2n+2} - S_{2n} = \frac1{2n+1} - \frac1{2n+2} > 0$, $S_{2n+3} - S_{2n+1} = \frac1{2n+3} - \frac1{2n+2} < 0$, et $S_{2n+1} - S_{2n} = \frac1{2n+1} \to 0$. Par le critère des suites extraites paires et impaires ({{su-extraites|Suites extraites}}), $(S_n)$ converge ; numériquement, $S_{100} \approx 0{,}6882$ et $S_{101} \approx 0{,}6981$ encadrent sa limite.
+
+  - id: su-segments
+    etiquette: Segments emboîtés
+    nature: corollaire
+    titre: Théorème des segments emboîtés
+    enonce: |
+      Soit $([a_n, b_n])_{n \in \lex{ensemble-entiers-naturels}{\mathbb N}}$ une suite de segments de $\lex{ensemble-reels}{\mathbb R}$, avec $a_n \leqslant b_n$, **emboîtés** au sens où $[a_{n+1}, b_{n+1}] \subset [a_n, b_n]$ pour tout $n$. Leur intersection $\bigcap_n [a_n, b_n]$ n'est pas vide : c'est le segment $[\alpha, \beta]$, où $\alpha = \lim a_n$ et $\beta = \lim b_n$.
+
+      Si de plus $b_n - a_n \to 0$, cette intersection est réduite à un point.
+    preuve: |
+      L'inclusion $[a_{n+1}, b_{n+1}] \subset [a_n, b_n]$ équivaut à $a_n \leqslant a_{n+1} \leqslant b_{n+1} \leqslant b_n$. La suite $(a_n)$ est donc croissante et majorée par $b_0$, et converge vers un réel $\alpha$ ; la suite $(b_n)$ est décroissante et minorée par $a_0$, et converge vers un réel $\beta$. En passant à la limite dans $a_m \leqslant b_m$, on obtient $\alpha \leqslant \beta$. Pour $n$ fixé et $m \geqslant n$, on a $a_n \leqslant a_m$ et $b_m \leqslant b_n$, d'où, à la limite, $a_n \leqslant \alpha$ et $\beta \leqslant b_n$.
+
+      Ainsi $[\alpha, \beta] \subset [a_n, b_n]$ pour tout $n$, et $[\alpha, \beta]$ est contenu dans l'intersection. Réciproquement, si $x$ appartient à tous les $[a_n, b_n]$, le passage à la limite dans $a_n \leqslant x \leqslant b_n$ donne $\alpha \leqslant x \leqslant \beta$. L'intersection est donc $[\alpha, \beta]$, qui contient $\alpha$.
+
+      Si $b_n - a_n \to 0$, les suites $(a_n)$ et $(b_n)$ sont adjacentes, donc $\alpha = \beta$, et l'intersection est $\{\alpha\}$.
+    remarques:
+      - |
+        Les deux hypothèses contenues dans le mot « segment » sont nécessaires. Les intervalles ouverts $]0, \frac1{n+1}[$ sont emboîtés et d'intersection vide, puisqu'un réel $x > 0$ sort de $]0, \frac1{n+1}[$ dès que $\frac1{n+1} \leqslant x$ ; les intervalles fermés non bornés $[n, +\infty[$ sont emboîtés et d'intersection vide aussi, par la propriété d'Archimède. Il faut des parties fermées **et** bornées, c'est-à-dire compactes ({{ar-topo|Topologie de ℝ}}).
+      - |
+        C'est le moteur de toutes les **dichotomies** : on coupe un segment en deux, on garde la moitié qui conserve une propriété, et l'on recommence. Les segments obtenus sont emboîtés et de longueur $\frac{b - a}{2^n}$, qui tend vers $0$ par (iv) des limites infinies ; le point commun est celui que l'on cherchait. Une preuve classique de Bolzano-Weierstrass ({{ar-bw|Bolzano-Weierstrass}}) procède ainsi, en gardant la moitié gauche si elle contient des termes d'indices arbitrairement grands, et la moitié droite sinon ; l'atlas en donne une autre, par le lemme des pics.
+      - |
+        Cantor en a tiré que $\mathbb R$ n'est pas dénombrable : pour une suite $(x_n)$ de réels, on construit des segments emboîtés $[a_n, b_n]$ tels que $x_n \notin [a_{n+1}, b_{n+1}]$, en gardant à chaque étape le tiers gauche ou le tiers droit selon une règle explicite, et le point commun n'est aucun des $x_n$.
+
+aretes:
+  - [su-convergence, su-bornee]
+  - [su-convergence, su-encadrement]
+  - [su-convergence, su-inegalites]
+  - [su-bornee, su-operations]
+  - [su-bornee, su-infinies]
+  - [su-infinies, su-extraites]
+  - [su-infinies, su-monotone]
+  - [su-monotone, su-adjacentes]
+  - [su-inegalites, su-adjacentes]
+  - [su-operations, su-adjacentes]
+  - [su-adjacentes, su-segments]
