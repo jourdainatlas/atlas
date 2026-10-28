@@ -1,0 +1,356 @@
+# Niveau 2 : structure interne du chapitre « Anneaux de polynômes » (nœud z-polynomes du graphe z).
+# Construction de A[X], degré et intégrité ; propriété universelle et évaluation ; division euclidienne ;
+# K[X] principal, PGCD et Bézout ; irréductibles et factorisation unique ; racines et multiplicités ;
+# dérivée formelle ; binôme de Newton et p | C(p, k) ; contenu, lemme de Gauss, critère d'Eisenstein.
+# Ni ℚ, ni ℝ, ni ℂ ne sont encore construits : le corps des fractions de ℤ est désigné comme tel, et
+# les exemples sont pris dans ℤ[X] et dans les anneaux ℤ/nℤ.
+
+graphe: z-polynomes
+titre: Anneaux de polynômes
+conteneur: z-polynomes
+
+entrees:
+  z-premiers: [pol-binome]
+  z-zn: [pol-gauss]
+
+noeuds:
+  - id: pol-anneau
+    etiquette: Anneau A[X]
+    nature: théorème
+    titre: L'anneau A[X], degré et intégrité
+    texte: |
+      Dans tout ce chapitre, $A$ est un [[anneau]] commutatif. L'[[anneau-polynomes|anneau des polynômes]] $\lex{anneau-polynomes}{A[X]}$ est l'ensemble des suites $(a_k)_{k \in \lex{ensemble-entiers-naturels}{\mathbb N}}$ d'éléments de $A$ nulles à partir d'un certain rang, muni de l'addition terme à terme et du produit
+      $$(a_k)(b_k) = (c_k), \qquad c_k = \sum_{i + j = k} a_i b_j.$$
+      On note $X$ la suite dont seul le terme d'indice $1$ vaut $1$. Le **degré** d'un polynôme non nul $P = (a_k)$ est le plus grand $k$ tel que $a_k \neq 0$ ; ce coefficient $a_{\deg P}$ est le **coefficient dominant** de $P$, et $P$ est **unitaire** s'il vaut $1$. Par convention, le polynôme nul a pour degré $-\infty$, plus petit que tout entier, avec $-\infty + d = -\infty$. Un polynôme est **constant** s'il est nul ou de degré $0$.
+
+      Pour $n \in \mathbb N$ et $a \in A$, on note $n \cdot a$, ou $na$, le **multiple** de $a$ défini par récurrence ({{n-recdef|Définition par récurrence}}) : $0 \cdot a = 0$ et $(n + 1) \cdot a = n \cdot a + a$. Par récurrence sur $n$, on a $(n + m) \cdot a = n \cdot a + m \cdot a$, $(nm) \cdot a = n \cdot (m \cdot a)$ et $n \cdot (ab) = (n \cdot a)\,b$ ; en particulier $n \cdot a = (n \cdot 1)\,a$.
+    enonce: |
+      (i) $A[X]$ est un anneau commutatif. L'application $a \mapsto (a, 0, 0, \dots)$ est un morphisme d'anneaux injectif, par lequel on identifie $A$ aux polynômes constants. Pour $k \in \mathbb N$, $X^k$ est la suite dont seul le terme d'indice $k$ vaut $1$, et tout polynôme s'écrit de manière unique $\sum_k a_k X^k$.
+
+      (ii) Pour $P, Q \in A[X]$, $\deg(P + Q) \leqslant \max(\deg P, \deg Q)$ et $\deg(PQ) \leqslant \deg P + \deg Q$. Si $P$ et $Q$ sont non nuls, le coefficient d'indice $\deg P + \deg Q$ de $PQ$ est le produit de leurs coefficients dominants ; il y a donc égalité dès que ce produit est non nul, en particulier dès que l'un des deux coefficients dominants est inversible, par exemple si $P$ ou $Q$ est unitaire.
+
+      (iii) Si $A$ est [[anneau-integre|intègre]], $\deg(PQ) = \deg P + \deg Q$ pour tous $P, Q$, l'anneau $A[X]$ est intègre, et ses éléments inversibles sont les constantes inversibles : $A[X]^\times = A^\times$.
+    preuve: |
+      (i) Le produit est bien défini, la somme $\sum_{i + j = k}$ portant sur un ensemble fini ({{n-sommes|Sommes finies}}), et $c_k = 0$ dès que $k$ dépasse la somme des rangs à partir desquels les deux suites sont nulles. La commutativité et la distributivité se lisent sur la formule. Pour l'associativité, les coefficients d'indice $k$ de $(PQ)R$ et de $P(QR)$ valent tous deux $\sum_{i + j + l = k} a_i b_j c_l$, par l'associativité généralisée des sommes finies ; seules interviennent l'associativité et la commutativité des deux lois de $A$. Le neutre est la suite $(1, 0, 0, \dots)$. Les constantes s'additionnent et se multiplient comme dans $A$, puisque $(a, 0, \dots)(b, 0, \dots) = (ab, 0, \dots)$. Par récurrence sur $k$, $X^k$ est la suite dont seul le terme d'indice $k$ vaut $1$, et $a X^k$ celle dont seul ce terme vaut $a$ ; la suite $(a_k)$ est donc la somme finie $\sum_k a_k X^k$, et ses termes se lisent sur cette écriture, d'où l'unicité.
+
+      (ii) La première inégalité est claire. Soient $P = (a_k)$ et $Q = (b_k)$, non nuls, de degrés $p$ et $q$. Si $i + j > p + q$, alors $i > p$ ou $j > q$, et $a_ib_j = 0$ : les coefficients de $PQ$ d'indice supérieur à $p + q$ sont nuls. Pour $i + j = p + q$, le seul terme qui puisse être non nul est $a_pb_q$, et c'est le coefficient d'indice $p + q$.
+
+      ```schema pol-anneau
+      Pour $\deg P = 3$ et $\deg Q = 2$, la case $(i, j)$ porte le produit $a_ib_j$, et le coefficient $c_k$ de $PQ$ est la somme des cases de l'antidiagonale $i + j = k$. Les cases grises, au-delà des degrés, sont nulles ; l'antidiagonale $i + j = 5$ ne rencontre qu'une case non nulle, celle des deux coefficients dominants, en rouge, et les suivantes n'en rencontrent aucune.
+      ```
+
+      Si $a_p$ est inversible et si $a_pb_q = 0$, alors $b_q = a_p^{-1}(a_pb_q) = 0$, ce qui est exclu : le produit des coefficients dominants est alors non nul. Les cas où $P$ ou $Q$ est nul découlent de la convention $\deg 0 = -\infty$.
+
+      (iii) Dans un anneau intègre, le produit $a_pb_q$ de deux éléments non nuls est non nul, d'où l'égalité des degrés par (ii). En particulier $PQ \neq 0$ si $P \neq 0$ et $Q \neq 0$, et $1 \neq 0$ dans $A[X]$ puisque $1 \neq 0$ dans $A$ : l'anneau $A[X]$ est intègre. Si $PQ = 1$, alors $\deg P + \deg Q = 0$, donc $P$ et $Q$ sont des constantes $a$ et $b$ avec $ab = 1$.
+    remarques:
+      - |
+        Dans $\lex{ensemble-entiers-relatifs}{\mathbb Z}[X]$, qui est intègre comme $\mathbb Z$ ({{z-anneau|Anneau ℤ}}), on a $(X + 1)(X^2 - X + 1) = X^3 + 1$ : les degrés s'ajoutent, comme le veut (iii). L'écriture $\sum_k a_kX^k$ n'est pas une convention d'écriture mais un théorème, le point (i) ; l'indéterminée $X$ est un polynôme précis, et non un élément inconnu de $A$.
+      - |
+        L'intégrité ne peut pas être omise dans (iii). Dans $(\lex{anneau-zn}{\mathbb Z/4\mathbb Z})[X]$, on a $(\overline 2X + \overline 1)^2 = \overline 4X^2 + \overline 4X + \overline 1 = \overline 1$ : le carré d'un polynôme de degré $1$ est de degré $0$, et $\overline 2X + \overline 1$ est un polynôme inversible qui n'est pas constant. L'erreur la plus répandue est d'appliquer la formule des degrés sans vérifier que le produit des coefficients dominants est non nul.
+
+  - id: pol-evaluation
+    etiquette: Évaluation
+    nature: théorème
+    titre: Propriété universelle et évaluation
+    texte: |
+      Soit $\varphi : A \to B$ un morphisme d'anneaux, avec $B$ commutatif, et $b \in B$. Pour $P = \sum_k a_kX^k \in \lex{anneau-polynomes}{A[X]}$, on pose $P(b) = \sum_k \varphi(a_k)\, b^k$ : c'est l'**évaluation** de $P$ en $b$. Le plus souvent $A$ est un sous-anneau de $B$ et $\varphi$ l'inclusion ; pour $B = A$, l'application $a \mapsto P(a)$ de $A$ dans $A$ est la **fonction polynomiale** associée à $P$.
+    enonce: |
+      (i) *Propriété universelle.* L'application $\mathrm{ev}_b : P \mapsto P(b)$ est l'unique morphisme d'anneaux de $A[X]$ dans $B$ qui prolonge $\varphi$ et envoie $X$ sur $b$. En particulier, $(P + Q)(b) = P(b) + Q(b)$ et $(PQ)(b) = P(b)\,Q(b)$.
+
+      $$\begin{CD} A @>{\iota}>> A[X] \\ @V{\varphi}VV @VV{\mathrm{ev}_b}V \\ B @= B \end{CD}$$
+
+      Le diagramme, où $\iota$ est l'inclusion des constantes, commute : évaluer une constante $a$, c'est calculer $\varphi(a)$. Le morphisme $\mathrm{ev}_b$ est le seul à le rendre commutatif parmi ceux qui envoient $X$ sur $b$.
+
+      (ii) *Substitution.* Pour $Q \in A[X]$, l'application $P \mapsto P(Q)$ est un morphisme d'anneaux de $A[X]$ dans lui-même. Pour $c \in A$, l'application $P \mapsto P(X + c)$ est un automorphisme d'anneaux de $A[X]$, de réciproque $P \mapsto P(X - c)$, qui conserve le degré et le coefficient dominant.
+
+      (iii) *Plusieurs indéterminées.* On pose $A[X_1, \dots, X_n] = A[X_1, \dots, X_{n-1}][X_n]$, par récurrence sur $n$. Pour tout morphisme d'anneaux $\varphi : A \to B$, avec $B$ commutatif, et tous $b_1, \dots, b_n \in B$, il existe un unique morphisme d'anneaux $A[X_1, \dots, X_n] \to B$ qui prolonge $\varphi$ et envoie chaque $X_i$ sur $b_i$.
+    preuve: |
+      (i) L'application $\mathrm{ev}_b$ est additive. Elle est multiplicative, puisque, $B$ étant commutatif,
+      $$\sum_k \Big(\sum_{i + j = k} \varphi(a_i)\varphi(c_j)\Big) b^k = \Big(\sum_i \varphi(a_i) b^i\Big)\Big(\sum_j \varphi(c_j) b^j\Big)$$
+      par distributivité dans $B$ ; elle envoie $1$ sur $\varphi(1) = 1$ et $X$ sur $b$. Un morphisme qui prolonge $\varphi$ et envoie $X$ sur $b$ envoie $X^k$ sur $b^k$ et $\sum_k a_k X^k$ sur $\sum_k \varphi(a_k) b^k$ : il est unique.
+
+      (ii) La première assertion est (i) pour $B = A[X]$, $\varphi$ l'inclusion des constantes et $b = Q$. La composée de $P \mapsto P(X + c)$ et de $P \mapsto P(X - c)$, dans un ordre ou dans l'autre, est un morphisme d'anneaux qui fixe les constantes et envoie $X$ sur $(X \mp c) \pm c = X$ ; par l'unicité de (i), c'est l'identité. Enfin $(X + c)^k$ est unitaire de degré $k$, comme produit de polynômes unitaires ({{pol-anneau|Anneau A[X]}}, (ii)) ; donc, si $P = \sum_{k \leqslant n} a_kX^k$ avec $a_n \neq 0$, le polynôme $P(X + c) = \sum_{k \leqslant n} a_k(X + c)^k$ a pour terme d'indice $n$ le seul $a_n$, et pour termes d'indice supérieur des zéros.
+
+      (iii) Par récurrence sur $n$, le cas $n = 1$ étant (i). L'hypothèse de récurrence fournit un unique morphisme $\psi : A[X_1, \dots, X_{n-1}] \to B$ qui prolonge $\varphi$ et envoie $X_i$ sur $b_i$ pour $i < n$, et (i), appliqué à $\psi$ et à $b_n$, le prolonge de manière unique en un morphisme qui envoie $X_n$ sur $b_n$. Un morphisme qui convient se restreint à $A[X_1, \dots, X_{n-1}]$ en un morphisme qui convient, égal à $\psi$ par unicité ; il est donc celui que donne (i).
+    remarques:
+      - |
+        Un polynôme n'est pas une fonction. Sur le corps $\lex{anneau-zn}{\mathbb Z/2\mathbb Z}$ ({{z-zn|ℤ/nℤ}}), le polynôme $X^2 + X$ est non nul, mais sa fonction polynomiale est nulle, puisqu'elle s'annule en $\overline 0$ et en $\overline 1$. C'est l'erreur la plus répandue, et la raison pour laquelle on définit les polynômes par leurs coefficients ; le nœud {{pol-racines|Racines}} montrera que la confusion devient sans danger sur un anneau intègre infini.
+      - |
+        La propriété (i) servira à construire {{c|$\mathbb C$}} comme quotient de $\mathbb R[X]$, et (iii) à évaluer les polynômes en des points de $\lex{n-uplet}{K^n}$ en {{geoalg|géométrie algébrique}}. La commutativité de $B$ est indispensable : pour deux matrices $M$ et $N$ qui ne commutent pas, l'évaluation de $XY$ et de $YX$ en $(M, N)$ donnerait $MN \neq NM$, alors que $XY = YX$.
+
+  - id: pol-division
+    etiquette: Division des polynômes
+    nature: théorème
+    titre: Division euclidienne des polynômes
+    texte: |
+      Pour $P, B \in \lex{anneau-polynomes}{A[X]}$, on dit que $B$ **divise** $P$, et l'on note $B \mid P$, s'il existe $C \in A[X]$ tel que $P = BC$.
+    enonce: |
+      (i) Soit $B \in A[X]$ un polynôme non nul dont le coefficient dominant est inversible dans $A$. Pour tout $P \in A[X]$, il existe un unique couple $(Q, R)$ de polynômes de $A[X]$ tel que
+      $$P = BQ + R \quad \text{et} \quad \deg R < \deg B.$$
+      C'est la **division euclidienne** de $P$ par $B$ ; $Q$ est le quotient et $R$ le reste.
+
+      (ii) Si $K$ est un [[corps]], la division euclidienne de $P$ par $B$ existe dans $K[X]$ pour tout $B \neq 0$.
+
+      (iii) Si $A$ est un sous-anneau d'un anneau commutatif $A'$, le quotient et le reste de la division de $P$ par $B$ dans $A'[X]$ sont ceux de la division dans $A[X]$. En particulier, $B$ divise $P$ dans $A'[X]$ si et seulement s'il le divise dans $A[X]$.
+    preuve: |
+      (i) *Existence*, par récurrence forte sur le degré de $P$ ({{n-ordre|Bon ordre sur ℕ}}). Si $\deg P < \deg B$, ce qui comprend le cas $P = 0$, on prend $Q = 0$ et $R = P$. Sinon, soient $aX^p$ et $bX^q$ les termes dominants de $P$ et de $B$, avec $p \geqslant q$ et $b$ inversible. Le polynôme $P_1 = P - ab^{-1}X^{p - q}B$ a même coefficient d'indice $p$ que $P$ moins $ab^{-1}b = a$, donc nul, et aucun coefficient non nul d'indice supérieur : $\deg P_1 < p$. Par hypothèse de récurrence, $P_1 = BQ_1 + R$ avec $\deg R < \deg B$, et $P = B\,(ab^{-1}X^{p-q} + Q_1) + R$.
+
+      *Unicité.* Si $BQ + R = BQ' + R'$ avec $\deg R, \deg R' < \deg B$, alors $B(Q - Q') = R' - R$. Si l'on avait $Q \neq Q'$, le membre de gauche serait de degré $\deg B + \deg(Q - Q') \geqslant \deg B$, le coefficient dominant de $B$ étant inversible ({{pol-anneau|Anneau A[X]}}, (ii)), alors que celui de droite est de degré $< \deg B$. Donc $Q = Q'$, puis $R = R'$.
+
+      (ii) Dans un corps, le coefficient dominant d'un polynôme non nul est inversible.
+
+      (iii) $A[X]$ est un sous-anneau de $A'[X]$, formé des suites à valeurs dans $A$. Le couple $(Q, R)$ obtenu dans $A[X]$ vérifie les conditions de (i) dans $A'[X]$ ; par unicité dans $A'[X]$, c'est le quotient et le reste de la division dans $A'[X]$. Si $B$ divise $P$ dans $A'[X]$, ce reste est nul, et $B$ divise $P$ dans $A[X]$.
+    remarques:
+      - |
+        Dans $\lex{ensemble-entiers-relatifs}{\mathbb Z}[X]$, divisons $P = X^4 + 2X^3 - X + 3$ par le polynôme unitaire $B = X^2 + X + 1$. La preuve d'existence est un algorithme : chaque étape retranche à $P$ un multiple de $B$ qui en tue le terme dominant.
+
+        ```schema pol-division
+        On retranche successivement $X^2B$, $XB$ et $-2B$, c'est-à-dire qu'on ajoute les lignes bleues ; à chaque étape, le degré du reste partiel baisse d'au moins $1$, et l'on s'arrête quand il passe sous $\deg B = 2$. Le quotient, en bleu, se lit sous le diviseur ; le reste est la constante $5$, en rouge.
+        ```
+
+        On trouve $P = (X^2 + X + 1)(X^2 + X - 2) + 5$, ce que l'on vérifie en développant : le produit vaut $X^4 + 2X^3 - X - 2$. Comme dans $\mathbb Z$ ({{z-division|Division euclidienne}}), le degré joue ici le rôle de la valeur absolue, et c'est sa décroissance stricte qui fait terminer l'algorithme.
+      - |
+        L'hypothèse sur le coefficient dominant ne peut pas être omise. Dans $\mathbb Z[X]$, on ne peut pas diviser $X^2$ par $2X$ : une égalité $X^2 = 2X\,Q + R$ avec $R$ constant imposerait au coefficient de $X^2$ d'être pair, puisque $Q$ serait de degré $1$. L'erreur la plus répandue est de diviser comme dans un corps sans vérifier que le coefficient dominant du diviseur est inversible.
+
+  - id: pol-principal
+    etiquette: K[X] principal
+    nature: théorème
+    titre: K[X] est principal ; PGCD et Bézout
+    texte: |
+      Dans ce nœud, $K$ est un [[corps]]. Deux polynômes de $\lex{anneau-polynomes}{K[X]}$ sont **associés** si l'un est le produit de l'autre par une constante non nulle. On note $(P) = P\,K[X]$ l'idéal principal engendré par $P$ ({{a-ideal|Idéal}}).
+    enonce: |
+      (i) $K[X]$ est un [[anneau-principal|anneau principal]] : tout [[ideal|idéal]] $I$ s'écrit $(D)$, pour un unique $D$ nul ou unitaire. Deux polynômes non nuls se divisent l'un l'autre si et seulement s'ils sont associés.
+
+      (ii) Pour $P, Q$ non tous deux nuls, le générateur unitaire $D$ de l'idéal $(P) + (Q)$ est le **PGCD** de $P$ et $Q$, noté $P \wedge Q$ : il divise $P$ et $Q$, tout diviseur commun de $P$ et $Q$ le divise, et il s'écrit $UP + VQ$ avec $U, V \in K[X]$ (*Bézout*). Les polynômes $P$ et $Q$ sont **premiers entre eux** si $P \wedge Q = 1$, ce qui équivaut à l'existence de $U, V$ tels que $UP + VQ = 1$.
+
+      (iii) *Gauss.* Si $P$ divise $QR$ et si $P \wedge Q = 1$, alors $P$ divise $R$.
+
+      (iv) Si $K$ est un sous-corps d'un corps $L$, le PGCD de $P$ et $Q$ dans $L[X]$ est le même que dans $K[X]$.
+    preuve: |
+      (i) L'anneau $K[X]$ est intègre ({{pol-anneau|Anneau A[X]}}, (iii)). Si $I = \{0\}$, $D = 0$ convient. Sinon, soit $B \in I$ non nul de degré minimal ({{n-ordre|Bon ordre sur ℕ}}). Pour $P \in I$, la division euclidienne $P = BQ + R$ ({{pol-division|Division des polynômes}}, (ii)) donne $R = P - BQ \in I$ avec $\deg R < \deg B$, donc $R = 0$ par minimalité : $I = (B)$, et $D = b^{-1}B$, où $b$ est le coefficient dominant de $B$, est un générateur unitaire. C'est l'argument du nœud {{z-ideaux|Idéaux de ℤ}}, avec le degré au lieu de la valeur absolue.
+
+      Si $P = DC$ et $D = PC'$ avec $P \neq 0$, alors $P = PC'C$, donc $C'C = 1$ par intégrité, et $C$ est une constante non nulle ({{pol-anneau|Anneau A[X]}}, (iii)) ; la réciproque est claire. Deux générateurs d'un même idéal non nul se divisent l'un l'autre, donc sont associés, et égaux s'ils sont tous deux unitaires.
+
+      (ii) Comme $P = P \cdot 1 + Q \cdot 0$ appartient à $(D)$, $D$ divise $P$ ; de même pour $Q$. Comme $D \in (P) + (Q)$, on écrit $D = UP + VQ$, et un diviseur commun de $P$ et $Q$ divise $D$. Si $UP + VQ = 1$, alors $1 \in (D)$, donc $D$ divise $1$ et est constant ; étant unitaire, $D = 1$. La réciproque est le cas $D = 1$ de la relation de Bézout.
+
+      (iii) Écrivons $UP + VQ = 1$. Alors $R = UPR + VQR$, et $P$ divise les deux termes.
+
+      (iv) Écrivons $D = UP + VQ$ dans $K[X]$. Dans $L[X]$, $D$ divise encore $P$ et $Q$, et tout diviseur commun de $P$ et $Q$ divise $UP + VQ = D$. Le PGCD $D_L$ calculé dans $L[X]$ divise donc $D$ et est divisé par lui ; tous deux unitaires, ils sont égaux par (i), appliqué dans $L[X]$.
+    remarques:
+      - |
+        Sur n'importe quel corps, $X^6 - 1 = X^2(X^4 - 1) + (X^2 - 1)$ et $X^4 - 1 = (X^2 + 1)(X^2 - 1)$ : l'algorithme d'Euclide s'arrête au second pas, et $(X^6 - 1) \wedge (X^4 - 1) = X^2 - 1$, avec la relation de Bézout $X^2 - 1 = (X^6 - 1) - X^2(X^4 - 1)$. L'exposant $2$ est $6 \wedge 4$ : les divisions successives sur les polynômes reproduisent celles du nœud {{z-bezout|PGCD, Bézout}} sur les exposants.
+      - |
+        Le corps est indispensable : $\lex{ensemble-entiers-relatifs}{\mathbb Z}[X]$ n'est pas principal. Si l'idéal $(2) + (X)$ était engendré par un $D$, celui-ci diviserait $2$, donc serait une constante $\pm 1$ ou $\pm 2$, par les degrés ; $\pm 2$ ne divise pas $X$, et $\pm 1$ s'écrirait $2U + XV$, ce qui est impossible, puisque le terme constant de $2U + XV$ est pair. C'est pourquoi l'arithmétique de $\mathbb Z[X]$ passe par le lemme de Gauss ({{pol-gauss|Lemme de Gauss}}).
+      - |
+        Le point (iv) dit que le PGCD ne dépend pas du corps où l'on calcule : l'algorithme d'Euclide n'utilise que les coefficients de $P$ et de $Q$. Il servira à montrer qu'un polynôme premier avec sa dérivée n'a de racine multiple dans aucune extension ({{gs-separabilite|Séparabilité}}).
+
+  - id: pol-racines
+    etiquette: Racines
+    nature: théorème
+    titre: Racines et multiplicités
+    texte: |
+      Soit $P \in \lex{anneau-polynomes}{A[X]}$ et $a \in A$. On dit que $a$ est une **racine** de $P$ si $P(a) = 0$. Pour $P \neq 0$, la [[multiplicite-racine|multiplicité]] de $a$ dans $P$ est le plus grand entier $m$ tel que $(X - a)^m$ divise $P$ ; elle existe, car $(X - a)^m$ est unitaire de degré $m$, de sorte que $(X - a)^m \mid P$ impose $m \leqslant \deg P$ ({{pol-anneau|Anneau A[X]}}, (ii)). La racine $a$ est **simple** si $m = 1$, **multiple** si $m \geqslant 2$ ; $m = 0$ signifie que $a$ n'est pas racine, comme le montre (i).
+    enonce: |
+      (i) *Racine et facteur.* Le reste de la division de $P$ par $X - a$ est la constante $P(a)$. Ainsi $a$ est racine de $P$ si et seulement si $X - a$ divise $P$.
+
+      (ii) $a$ est de multiplicité $m$ dans $P \neq 0$ si et seulement si $P = (X - a)^m\,Q$ avec $Q(a) \neq 0$.
+
+      (iii) Supposons $A$ [[anneau-integre|intègre]]. Si $a_1, \dots, a_k$ sont des racines deux à deux distinctes de $P \neq 0$, de multiplicités $m_1, \dots, m_k$, alors $\prod_{i=1}^k (X - a_i)^{m_i}$ divise $P$, et $m_1 + \cdots + m_k \leqslant \deg P$. En particulier, un polynôme non nul de degré $d$ a au plus $d$ racines dans $A$.
+
+      (iv) Si $A$ est intègre et infini, un polynôme dont la fonction polynomiale est nulle est le polynôme nul, et deux polynômes qui ont la même fonction polynomiale sont égaux.
+    preuve: |
+      (i) Le polynôme $X - a$ est unitaire ; la division euclidienne ({{pol-division|Division des polynômes}}, (i)) donne $P = (X - a)Q + R$ avec $\deg R < 1$, c'est-à-dire $R = r$ constant. L'évaluation en $a$ est un morphisme d'anneaux ({{pol-evaluation|Évaluation}}, (i)), d'où $P(a) = 0 \cdot Q(a) + r = r$. Si $P(a) = 0$, $P = (X - a)Q$ ; réciproquement, si $P = (X - a)Q$, alors $P(a) = 0$.
+
+      (ii) Si $m$ est la multiplicité, $P = (X - a)^mQ$ ; si l'on avait $Q(a) = 0$, (i) donnerait $Q = (X - a)Q_1$, et $(X - a)^{m+1}$ diviserait $P$. Réciproquement, soit $P = (X - a)^mQ$ avec $Q(a) \neq 0$ ; la multiplicité est au moins $m$. Si l'on avait $P = (X - a)^{m+1}R$, alors $(X - a)^m\big(Q - (X - a)R\big) = 0$ ; le produit d'un polynôme unitaire par un polynôme non nul étant non nul ({{pol-anneau|Anneau A[X]}}, (ii)), $Q = (X - a)R$, et $Q(a) = 0$ : contradiction.
+
+      (iii) Par récurrence sur $k$, le cas $k = 0$ étant clair, le produit vide valant $1$. Par (ii), $P = (X - a_1)^{m_1}Q$ avec $Q(a_1) \neq 0$. Pour $i \geqslant 2$, soit $n_i$ la multiplicité de $a_i$ dans $Q$, et $Q = (X - a_i)^{n_i}Q_i$ avec $Q_i(a_i) \neq 0$. Alors $P = (X - a_i)^{n_i}\,(X - a_1)^{m_1}Q_i$, et le second facteur prend en $a_i$ la valeur $(a_i - a_1)^{m_1}Q_i(a_i)$, non nulle par intégrité puisque $a_i \neq a_1$. Par (ii), $n_i = m_i$ : les $a_i$, $i \geqslant 2$, sont racines de $Q$ avec les multiplicités $m_i$. Par hypothèse de récurrence, $\prod_{i \geqslant 2}(X - a_i)^{m_i}$ divise $Q$, et le produit complet divise $P$. Si $P = \prod_i (X - a_i)^{m_i}\,S$, alors $S \neq 0$ et $\deg P = \sum_i m_i + \deg S \geqslant \sum_i m_i$ ({{pol-anneau|Anneau A[X]}}, (iii)). Chaque racine ayant une multiplicité au moins égale à $1$, il y en a au plus $\deg P$.
+
+      (iv) Un polynôme non nul de degré $d$ a au plus $d$ racines, alors que $A$, infini, contient $d + 1$ éléments distincts ({{n-fini|Ensembles finis}}) ; si sa fonction polynomiale était nulle, ils seraient tous racines. Pour la seconde assertion, on applique la première à $P - Q$, l'évaluation étant additive.
+    remarques:
+      - |
+        L'intégrité ne peut pas être omise dans (iii). Dans $\lex{anneau-zn}{\mathbb Z/8\mathbb Z}$, le polynôme $X^2 - 1$, de degré $2$, a quatre racines, $\overline 1$, $\overline 3$, $\overline 5$ et $\overline 7$ ; la preuve échoue parce que $(\overline 3 - \overline 1)(\overline 3 + \overline 1) = \overline 8 = \overline 0$ sans qu'aucun facteur soit nul. Dans le corps $\mathbb Z/7\mathbb Z$, il n'en a que deux.
+
+        ```schema pol-racines
+        Les classes de carré $\overline 1$, racines de $X^2 - 1$, sont en rouge, et les flèches les relient à $\overline 1$. Dans le corps $\mathbb Z/7\mathbb Z$, il n'y a que $\overline 1$ et $\overline 6 = -\overline 1$ ; dans $\mathbb Z/8\mathbb Z$, qui n'est pas intègre, il y en a quatre, plus que le degré de $X^2 - 1$.
+        ```
+      - |
+        Dans $\lex{ensemble-entiers-relatifs}{\mathbb Z}[X]$, $X^3 - 3X + 2 = (X - 1)^2(X + 2)$ : la racine $1$ est double, la racine $-2$ simple, et la somme des multiplicités atteint le degré $3$. Le nœud {{pol-derivee|Dérivée formelle}} reconnaîtra la racine double sans factoriser.
+      - |
+        L'hypothèse « infini » de (iv) est nécessaire, comme le montrait le polynôme $X^2 + X$ sur $\mathbb Z/2\mathbb Z$ ({{pol-evaluation|Évaluation}}). La borne de (iii) sera décisive pour les corps finis : elle force le groupe multiplicatif d'un corps fini à être cyclique ({{gs-corps-finis|Corps finis}}).
+
+  - id: pol-irreductibles
+    etiquette: Irréductibles
+    nature: théorème
+    titre: Polynômes irréductibles et factorisation unique
+    texte: |
+      Soit $K$ un [[corps]]. Un polynôme non constant $P \in \lex{anneau-polynomes}{K[X]}$ est [[polynome-irreductible|irréductible]] s'il n'est pas le produit de deux polynômes de degrés strictement inférieurs au sien. Comme $\deg D + \deg E = \deg P$ quand $P = DE$ ({{pol-anneau|Anneau A[X]}}, (iii)), cela revient à dire que les seuls diviseurs de $P$ sont les constantes non nulles et les polynômes associés à $P$.
+    enonce: |
+      (i) *Lemme d'Euclide.* Si $P$ est irréductible et divise $AB$, il divise $A$ ou $B$.
+
+      (ii) *Factorisation.* Tout polynôme non constant $P$ s'écrit $P = c\,P_1 \cdots P_r$, avec $c \in K$ non nul et $P_1, \dots, P_r$ irréductibles unitaires, et cette écriture est unique à l'ordre des facteurs près. En regroupant les facteurs égaux, $P = c\prod_i P_i^{m_i}$ avec des $P_i$ deux à deux distincts.
+
+      (iii) Tout polynôme de degré $1$ est irréductible. Un polynôme de degré $2$ ou $3$ est irréductible si et seulement s'il n'a pas de racine dans $K$.
+    preuve: |
+      (i) Le PGCD $P \wedge A$ divise $P$ ({{pol-principal|K[X] principal}}, (ii)) ; il est donc $1$, ou associé à $P$, auquel cas $P$ divise $A$. S'il vaut $1$, le lemme de Gauss ({{pol-principal|K[X] principal}}, (iii)) donne $P \mid B$.
+
+      (ii) *Existence.* Sinon, soit $n$ le plus petit degré d'un polynôme non constant sans telle écriture, et $P$ un tel polynôme ({{n-ordre|Bon ordre sur ℕ}}). Il n'est pas irréductible, sans quoi $P = c \cdot (c^{-1}P)$, avec $c$ son coefficient dominant, conviendrait. Donc $P = DE$ avec $1 \leqslant \deg D, \deg E < n$ ; par minimalité, $D$ et $E$ s'écrivent comme annoncé, et leur produit aussi : contradiction.
+
+      *Unicité.* La constante $c$ est le coefficient dominant de $P$, puisqu'un produit de polynômes unitaires est unitaire. Supposons $P_1 \cdots P_r = Q_1 \cdots Q_s$, produits d'irréductibles unitaires, et raisonnons par récurrence sur $r$. Si $r = 0$, le membre de droite est de degré $0$, donc $s = 0$. Sinon, par (i), étendu à un produit quelconque par récurrence sur le nombre de facteurs, $P_1$ divise l'un des $Q_j$ ; comme $Q_j$ est irréductible et $P_1$ non constant, ils sont associés, donc égaux puisque tous deux unitaires. On simplifie par $P_1$, ce que permet l'intégrité de $K[X]$, et l'on conclut par l'hypothèse de récurrence.
+
+      (iii) Si $\deg P = 1$, une écriture $P = DE$ avec $\deg D, \deg E < 1$ donnerait $\deg P = \deg D + \deg E \leqslant 0$. Soit $P$ de degré $2$ ou $3$. S'il n'est pas irréductible, $P = DE$ avec $\deg D + \deg E = \deg P$ et $1 \leqslant \deg D, \deg E$ : l'un des facteurs est de degré $1$, de la forme $\alpha X + \beta$ avec $\alpha \neq 0$, et $-\alpha^{-1}\beta$ est racine de ce facteur, donc de $P$. Réciproquement, si $P(a) = 0$, alors $P = (X - a)Q$ ({{pol-racines|Racines}}, (i)), avec $1 \leqslant \deg Q < \deg P$ : $P$ n'est pas irréductible.
+    remarques:
+      - |
+        L'irréductibilité dépend du corps. Le polynôme $X^2 + 1$ est irréductible sur $\lex{anneau-zn}{\mathbb Z/3\mathbb Z}$, où il prend les valeurs $\overline 1$, $\overline 2$, $\overline 2$ en $\overline 0$, $\overline 1$, $\overline 2$ ; sur $\mathbb Z/5\mathbb Z$, il s'écrit $(X - \overline 2)(X - \overline 3)$, puisque $\overline 4 + \overline 1 = \overline 0$. Sur les corps réels et complexes, la réponse sera donnée par le théorème de {{c-dalembert|d'Alembert-Gauss}}.
+      - |
+        Le critère (iii) ne s'étend pas au degré $4$, et l'erreur la plus répandue est de conclure à l'irréductibilité faute de racine. Sur $\mathbb Z/3\mathbb Z$, le polynôme $X^4 + 1$ n'a pas de racine, puisqu'il prend les valeurs $\overline 1$, $\overline 2$, $\overline 2$, et pourtant $X^4 + 1 = (X^2 + X + \overline 2)(X^2 + \overline 2X + \overline 2)$ : il est produit de deux facteurs de degré $2$ sans racine.
+      - |
+        La démonstration est celle du théorème fondamental de l'arithmétique ({{z-premiers|Nombres premiers}}), mot pour mot : les irréductibles unitaires jouent le rôle des nombres premiers, et le lemme d'Euclide vient, dans les deux cas, de Bézout, donc de la division euclidienne.
+
+  - id: pol-derivee
+    etiquette: Dérivée formelle
+    nature: proposition
+    titre: Dérivée formelle et racines multiples
+    texte: |
+      La [[derivee-formelle|dérivée]] de $P = \sum_k a_kX^k \in \lex{anneau-polynomes}{A[X]}$ est le polynôme
+      $$P' = \sum_{k \geqslant 1} k\,a_k\,X^{k-1},$$
+      où $k\,a_k$ est le multiple entier ({{pol-anneau|Anneau A[X]}}). Aucune limite n'intervient : c'est une définition sur les coefficients, valable sur tout anneau commutatif.
+    enonce: |
+      (i) L'application $P \mapsto P'$ est additive, $(cP)' = cP'$ pour $c \in A$, et $(PQ)' = P'Q + PQ'$. Par suite $(P^n)' = n\,P^{n-1}P'$ pour $n \geqslant 1$, et en particulier $\big((X - a)^n\big)' = n\,(X - a)^{n-1}$.
+
+      (ii) $a \in A$ est racine multiple de $P$ si et seulement si $P(a) = P'(a) = 0$.
+
+      (iii) Si $P = (X - a)^mQ$ avec $m \geqslant 1$, alors $P' = (X - a)^{m-1}\big(m\,Q + (X - a)\,Q'\big)$. Si de plus $A$ est intègre, $Q(a) \neq 0$ et $m \cdot 1 \neq 0$ dans $A$, la racine $a$ de $P$, de multiplicité $m$, est racine de $P'$ de multiplicité exactement $m - 1$.
+    preuve: |
+      (i) L'additivité et la relation $(cP)' = cP'$ se lisent coefficient par coefficient, puisque $k(a_k + b_k) = ka_k + kb_k$ et $k(ca_k) = c\,(ka_k)$. Les deux membres de la formule du produit sont additifs en $P$ à $Q$ fixé, en $Q$ à $P$ fixé, et compatibles avec la multiplication par une constante ; tout polynôme étant une somme finie de termes $cX^i$, il suffit de la vérifier pour $P = X^i$ et $Q = X^j$. Or
+      $$(X^{i+j})' = (i + j)\,X^{i+j-1} = i\,X^{i-1}X^j + X^i\,j\,X^{j-1},$$
+      y compris si $i$ ou $j$ est nul, le terme correspondant étant alors nul. Par récurrence, $(P^{n+1})' = (P^nP)' = n\,P^{n-1}P'P + P^nP' = (n + 1)\,P^nP'$ ; et $(X - a)' = 1$.
+
+      (ii) Si $a$ est racine multiple, $P = (X - a)^2S$, et $P' = 2(X - a)S + (X - a)^2S'$ s'annule en $a$, comme $P$. Réciproquement, si $P(a) = 0$, alors $P = (X - a)Q$ ({{pol-racines|Racines}}, (i)) et $P' = Q + (X - a)Q'$, d'où $P'(a) = Q(a)$. Si $P'(a) = 0$, $Q(a) = 0$, donc $X - a$ divise $Q$, et $(X - a)^2$ divise $P$.
+
+      (iii) La formule découle de (i). La valeur en $a$ du second facteur est $m\,Q(a) = (m \cdot 1)\,Q(a)$, non nulle si $A$ est intègre, $Q(a) \neq 0$ et $m \cdot 1 \neq 0$ ; on conclut par le point (ii) du nœud {{pol-racines|Racines}}.
+    remarques:
+      - |
+        Pour $P = X^3 - 3X + 2 = (X - 1)^2(X + 2)$, on a $P' = 3X^2 - 3 = 3(X - 1)(X + 1)$ : la racine double $1$ de $P$ est racine simple de $P'$, et la racine simple $-2$ n'est pas racine de $P'$, conformément à (ii) et (iii).
+      - |
+        L'hypothèse $m \cdot 1 \neq 0$ de (iii) ne peut pas être omise. Dans $(\lex{anneau-zn}{\mathbb Z/3\mathbb Z})[X]$, le même polynôme devient $X^3 + \overline 2 = (X - \overline 1)^3$, puisque les coefficients $3$ du développement sont nuls, et sa dérivée $\overline 3X^2$ est nulle. La racine triple $\overline 1$ annule bien $P$ et $P'$, comme le veut (ii), mais $P'$ n'a plus de multiplicité en $\overline 1$, la multiplicité n'étant définie que pour un polynôme non nul ; ici $m \cdot 1 = \overline 3 = \overline 0$. C'est le phénomène que le nœud {{gs-separabilite|Séparabilité}} rencontrera en caractéristique $p$.
+      - |
+        Pour un polynôme à coefficients réels, la dérivée formelle sera la dérivée de la fonction polynomiale au sens de l'analyse ({{ar-deriv|Dérivabilité}}). La définition algébrique ne demande aucune limite, et c'est ce qui permet de l'employer sur $\mathbb Z/p\mathbb Z$, où la notion de limite n'a pas de sens utile.
+
+  - id: pol-binome
+    etiquette: Binôme de Newton
+    nature: proposition
+    titre: Binôme de Newton et coefficients binomiaux
+    texte: |
+      Les [[coefficient-binomial|coefficients binomiaux]] $\binom nk$, pour $n, k \in \lex{ensemble-entiers-naturels}{\mathbb N}$, sont les entiers naturels définis par récurrence sur $n$ : $\binom 00 = 1$, $\binom 0k = 0$ pour $k \geqslant 1$, et, pour tout $n$, la **relation de Pascal**
+      $$\binom{n+1}{0} = 1, \qquad \binom{n+1}{k+1} = \binom nk + \binom n{k+1}.$$
+    enonce: |
+      (i) $\binom nk = 0$ pour $k > n$, $\binom nn = 1$, $\binom n1 = n$, et, pour tous $n, k \in \mathbb N$,
+      $$(k + 1)\binom{n+1}{k+1} = (n + 1)\binom nk.$$
+
+      (ii) *Binôme de Newton.* Dans un anneau commutatif $A$, pour tous $a, b \in A$ et tout $n \in \mathbb N$,
+      $$(a + b)^n = \sum_{k=0}^n \binom nk a^k b^{n-k}.$$
+
+      (iii) Si $p$ est un [[nombre-premier|nombre premier]] et $0 < k < p$, alors $p$ divise $\binom pk$.
+
+      (iv) Si $p$ est premier et $p \cdot 1 = 0$ dans $A$, alors $(a + b)^p = a^p + b^p$ pour tous $a, b \in A$, et plus généralement $(a + b)^{p^r} = a^{p^r} + b^{p^r}$ pour tout $r \in \mathbb N$ : l'application $x \mapsto x^p$ est un morphisme d'anneaux de $A$ dans $A$.
+    preuve: |
+      (i) Les trois premières assertions se démontrent par récurrence sur $n$, directement à partir de la relation de Pascal ; par exemple $\binom{n+1}1 = \binom n0 + \binom n1 = 1 + n$. Pour la dernière, raisonnons aussi par récurrence sur $n$. Si $n = 0$, les deux membres valent $1$ pour $k = 0$ et $0$ pour $k \geqslant 1$. Supposons-la vraie au rang $n$ pour tout $k$. Pour $k = 0$, les deux membres de l'égalité au rang $n + 1$ valent $n + 2$. Pour $k \geqslant 1$, la relation de Pascal et l'hypothèse, appliquée en $k$ et en $k - 1$, donnent
+      $$\begin{aligned} (k + 1)\binom{n+2}{k+1} &= \binom{n+1}k + k\binom{n+1}k + (k + 1)\binom{n+1}{k+1} \\ &= \binom{n+1}k + (n + 1)\binom n{k-1} + (n + 1)\binom nk \\ &= (n + 2)\binom{n+1}k. \end{aligned}$$
+
+      (ii) Par récurrence sur $n$, le cas $n = 0$ étant clair. En développant par distributivité et commutativité,
+      $$(a + b)^{n+1} = \sum_{k=0}^n \binom nk a^{k+1}b^{n-k} + \sum_{k=0}^n \binom nk a^kb^{n+1-k}.$$
+      Après le changement d'indice $k + 1 \mapsto k$ dans la première somme, le coefficient de $a^kb^{n+1-k}$ est $\binom n{k-1} + \binom nk = \binom{n+1}k$ pour $1 \leqslant k \leqslant n$, et $1$ pour $k = 0$ et $k = n + 1$ ; on a utilisé $u \cdot x + v \cdot x = (u + v) \cdot x$ pour les multiples ({{pol-anneau|Anneau A[X]}}).
+
+      (iii) Par (i), $k\binom pk = p\binom{p-1}{k-1}$, donc $p$ divise $k\binom pk$. Comme $0 < k < p$, $p$ ne divise pas $k$, et le lemme d'Euclide ({{z-premiers|Nombres premiers}}, (i)) donne $p \mid \binom pk$.
+
+      (iv) Pour $0 < k < p$, écrivons $\binom pk = pu$ ; alors $\binom pk \cdot x = u \cdot \big((p \cdot 1)\,x\big) = 0$ pour tout $x \in A$. Les termes intermédiaires de (ii) disparaissent, et $(a + b)^p = a^p + b^p$. Par récurrence, $(a + b)^{p^{r+1}} = \big(a^{p^r} + b^{p^r}\big)^p = a^{p^{r+1}} + b^{p^{r+1}}$. Enfin $(ab)^p = a^pb^p$ par commutativité, et $1^p = 1$.
+    remarques:
+      - |
+        Les coefficients se disposent en triangle, chaque nombre étant la somme des deux qui le surmontent : c'est la relation de Pascal.
+
+        ```schema pol-binome
+        Les lignes $n = 0$ à $7$ du triangle. Sur les lignes d'indice premier, $2$, $3$, $5$ et $7$, tous les coefficients intérieurs sont multiples de $n$ (en rouge). Sur les lignes $4$ et $6$, les coefficients en bleu ne le sont pas : $\binom 42 = 6$ n'est pas multiple de $4$, ni $15$ et $20$ de $6$.
+        ```
+
+        L'hypothèse « $p$ premier » de (iii) ne peut donc pas être omise. Dans $(\lex{anneau-zn}{\mathbb Z/4\mathbb Z})[X]$, $(X + 1)^4 = X^4 + \overline 2X^2 + \overline 1$, et non $X^4 + \overline 1$ ; dans $(\mathbb Z/5\mathbb Z)[X]$, en revanche, $(X + 1)^5 = X^5 + 1$, puisque les coefficients $5$, $10$, $10$, $5$ sont multiples de $5$.
+      - |
+        Le point (i) donne aussi $k!\,(n - k)!\binom nk = n!$ pour $k \leqslant n$, par récurrence, et $\binom nk$ est le nombre de parties à $k$ éléments d'un ensemble à $n$ éléments, puisque ces nombres vérifient la même relation de Pascal. L'atlas n'utilise ni l'une ni l'autre de ces interprétations : la divisibilité de (iii) découle de la seule relation de (i).
+      - |
+        Le morphisme $x \mapsto x^p$ de (iv) est le morphisme de Frobenius. Il est au cœur de la théorie des corps finis ({{gs-corps-finis|Corps finis}}), où il engendre le groupe de Galois.
+
+  - id: pol-gauss
+    etiquette: Lemme de Gauss
+    nature: théorème
+    titre: Contenu et lemme de Gauss
+    texte: |
+      Soit $F$ le [[corps-fractions|corps des fractions]] de $\lex{ensemble-entiers-relatifs}{\mathbb Z}$ ({{a-fractions|Corps des fractions}}), dans lequel on identifie $a \in \mathbb Z$ à $a/1$, de sorte que $\mathbb Z[X] \subset F[X]$. Pour $P = \sum_k a_kX^k \in \mathbb Z[X]$ non nul, l'idéal engendré par ses coefficients, somme des idéaux $a_k\mathbb Z$ ({{a-ideal|Idéal}}), s'écrit $c\,\mathbb Z$ pour un unique entier $c \geqslant 1$ ({{z-ideaux|Idéaux de ℤ}}) : c'est le **contenu** $c(P)$ de $P$, [[pgcd|PGCD]] de ses coefficients. Le polynôme $P$ est [[polynome-primitif|primitif]] si $c(P) = 1$.
+
+      Pour un nombre premier $p$, la **réduction modulo $p$** est le morphisme d'anneaux $\pi : \mathbb Z[X] \to (\lex{anneau-zn}{\mathbb Z/p\mathbb Z})[X]$ qui prolonge $\mathbb Z \to \mathbb Z/p\mathbb Z$ et envoie $X$ sur $X$ ({{pol-evaluation|Évaluation}}, (i)) ; il remplace chaque coefficient par sa classe modulo $p$.
+    enonce: |
+      (i) Tout $P \in \mathbb Z[X]$ non nul s'écrit $P = c(P)\,P_0$ avec $P_0$ primitif.
+
+      (ii) Le produit de deux polynômes primitifs est primitif ; plus généralement, $c(PQ) = c(P)\,c(Q)$.
+
+      (iii) Tout $P \in F[X]$ non nul s'écrit $P = \lambda P_0$, avec $\lambda \in F$ non nul et $P_0 \in \mathbb Z[X]$ primitif ; $P_0$ est unique au signe près.
+
+      (iv) *Lemme de Gauss.* Si $P \in \mathbb Z[X]$ est le produit, dans $F[X]$, de deux polynômes de degrés $r$ et $s$, il est le produit, dans $\mathbb Z[X]$, de deux polynômes de degrés $r$ et $s$.
+    preuve: |
+      (i) Chaque $a_k$ s'écrit $c\,b_k$, avec $c = c(P)$ ; posons $P_0 = \sum_k b_kX^k$. Si l'idéal engendré par les $b_k$ est $d\,\mathbb Z$, celui qu'engendrent les $a_k$ est $cd\,\mathbb Z$ ; donc $cd = c$, et $d = 1$ par intégrité de $\mathbb Z$. Le même calcul montre que $c(aR) = |a|$ pour $a \in \mathbb Z$ non nul et $R$ primitif.
+
+      (ii) Soient $P$ et $Q$ primitifs. Le produit $PQ$ est non nul ({{pol-anneau|Anneau A[X]}}, (iii)). Si l'on avait $c(PQ) \geqslant 2$, un nombre premier $p$ diviserait $c(PQ)$ ({{z-premiers|Nombres premiers}}, (ii)), donc tous les coefficients de $PQ$, et $\pi(P)\pi(Q) = \pi(PQ) = 0$. Comme $\mathbb Z/p\mathbb Z$ est un [[corps]] ({{z-zn|ℤ/nℤ}}), l'anneau $(\mathbb Z/p\mathbb Z)[X]$ est intègre ({{pol-anneau|Anneau A[X]}}, (iii)) : $\pi(P) = 0$ ou $\pi(Q) = 0$, c'est-à-dire que $p$ divise tous les coefficients de $P$ ou tous ceux de $Q$, ce qui contredit leur primitivité. En général, $PQ = c(P)c(Q)\,P_0Q_0$ avec $P_0Q_0$ primitif, donc $c(PQ) = c(P)c(Q)$ par la fin de (i).
+
+      (iii) Soit $v \geqslant 1$ le produit des dénominateurs d'écritures $u_k/v_k$ des coefficients de $P$ ; alors $vP \in \mathbb Z[X]$, et $vP = c(vP)\,P_0$ par (i), d'où $\lambda = c(vP)/v$. Si $\lambda P_0 = \mu Q_0$ avec $Q_0$ primitif, écrivons $\mu/\lambda = a/b$ avec $a, b \in \mathbb Z$ non nuls ; alors $bP_0 = aQ_0$ dans $\mathbb Z[X]$, et les contenus donnent $|b| = |a|$. Ainsi $a = \pm b$, puis $Q_0 = \pm P_0$ par intégrité.
+
+      (iv) Soit $P = AB$ dans $F[X]$, avec $\deg A = r$ et $\deg B = s$. Par (iii), $A = \alpha A_0$ et $B = \beta B_0$, avec $A_0$, $B_0$ primitifs de degrés $r$ et $s$, et $P = (\alpha\beta)\,A_0B_0$, où $A_0B_0$ est primitif par (ii). Mais aussi $P = c(P)\,P_0$ par (i) ; l'unicité de (iii) donne $A_0B_0 = \pm P_0$, d'où $P = \big(\pm c(P)A_0\big)\,B_0$, produit de deux polynômes de $\mathbb Z[X]$ de degrés $r$ et $s$.
+    remarques:
+      - |
+        Dans $F[X]$, on a $4X^2 - 1 = \big(X - \tfrac12\big)(4X + 2)$, factorisation dont aucun facteur n'est dans $\mathbb Z[X]$. Le lemme de Gauss redistribue les constantes : $X - \frac12 = \frac12(2X - 1)$ et $4X + 2 = 2(2X + 1)$, d'où $4X^2 - 1 = (2X - 1)(2X + 1)$. Il ne dit pas que les facteurs trouvés dans $F[X]$ sont eux-mêmes à coefficients entiers, mais qu'ils le deviennent après multiplication par des constantes de produit $1$.
+      - |
+        Le corps $F$ est le corps $\mathbb Q$ des rationnels, qui sera construit ainsi au nœud {{q-construction|Construction de ℚ}}. Le même argument vaut pour tout anneau factoriel à la place de $\mathbb Z$ : il montre que $A[X]$ est factoriel si $A$ l'est, et donc que $\mathbb Z[X]$ l'est, bien qu'il ne soit pas principal ({{pol-principal|K[X] principal}}).
+
+  - id: pol-eisenstein
+    etiquette: Eisenstein
+    nature: théorème
+    titre: Critère d'Eisenstein
+    texte: |
+      Comme au nœud {{pol-gauss|Lemme de Gauss}}, $F$ désigne le corps des fractions de $\lex{ensemble-entiers-relatifs}{\mathbb Z}$, et $\pi$ la réduction modulo un nombre premier $p$.
+    enonce: |
+      (i) *Critère d'Eisenstein.* Soit $P = \sum_{k=0}^n a_kX^k \in \mathbb Z[X]$ de degré $n \geqslant 1$, et $p$ un nombre premier tel que $p \nmid a_n$, $p \mid a_k$ pour $k < n$, et $p^2 \nmid a_0$. Alors $P$ est [[polynome-irreductible|irréductible]] dans $\lex{anneau-polynomes}{F[X]}$.
+
+      (ii) Pour tout nombre premier $p$, le polynôme $\Phi_p = X^{p-1} + X^{p-2} + \cdots + X + 1$ est irréductible dans $F[X]$.
+    preuve: |
+      (i) Supposons $P = AB$ dans $F[X]$ avec $\deg A = r \geqslant 1$ et $\deg B = s \geqslant 1$. Par le lemme de Gauss ({{pol-gauss|Lemme de Gauss}}, (iv)), on peut supposer $A, B \in \mathbb Z[X]$, toujours de degrés $r$ et $s$, avec $r + s = n$. Réduisons modulo $p$ : comme $p$ divise tous les coefficients de $P$ sauf $a_n$,
+      $$\pi(A)\,\pi(B) = \pi(P) = \overline{a_n}\,X^n, \qquad \overline{a_n} \neq 0.$$
+      Dans $(\lex{anneau-zn}{\mathbb Z/p\mathbb Z})[X]$, où $\mathbb Z/p\mathbb Z$ est un corps ({{z-zn|ℤ/nℤ}}), le polynôme $X$ est irréductible, et la factorisation de $\overline{a_n}X^n$ en irréductibles unitaires est $X \cdots X$ ; par unicité de la factorisation ({{pol-irreductibles|Irréductibles}}, (ii)), appliquée au produit des factorisations de $\pi(A)$ et de $\pi(B)$, on a $\pi(A) = \alpha X^i$ et $\pi(B) = \beta X^j$ avec $\alpha, \beta \neq 0$ et $i + j = n$. Comme $\deg \pi(A) \leqslant r$, $\deg \pi(B) \leqslant s$ et $i + j = r + s$, on a $i = r \geqslant 1$ et $j = s \geqslant 1$.
+
+      ```schema pol-eisenstein
+      Les coefficients de $A$, de $B$ et de $P$ sont rangés par degré croissant, pour $r = 2$ et $s = 3$ ; les cases rouges sont les multiples de $p$. Modulo $p$, $A$ et $B$ se réduisent à leurs termes dominants ; leurs termes constants sont donc tous deux multiples de $p$, et leur produit $a_0$ l'est de $p^2$, ce que l'hypothèse interdit.
+      ```
+
+      Les termes constants de $\pi(A)$ et de $\pi(B)$ sont donc nuls : $p$ divise $A(0)$ et $B(0)$, et $p^2$ divise $A(0)B(0) = a_0$, contrairement à l'hypothèse.
+
+      (ii) On a $(X - 1)\Phi_p = X^p - 1$, en développant. En substituant $X + 1$ à $X$ ({{pol-evaluation|Évaluation}}, (ii)), $X\,\Phi_p(X + 1) = (X + 1)^p - 1 = \sum_{k=1}^p \binom pk X^k$ par le binôme ({{pol-binome|Binôme de Newton}}), et, en simplifiant par $X$ dans l'anneau intègre $\mathbb Z[X]$,
+      $$\Phi_p(X + 1) = X^{p-1} + \binom p{p-1}X^{p-2} + \cdots + \binom p2 X + p.$$
+      Son coefficient dominant est $1$, les autres sont multiples de $p$ ({{pol-binome|Binôme de Newton}}, (iii)), et son terme constant $p$ n'est pas multiple de $p^2$ : il est irréductible par (i). Si l'on avait $\Phi_p = AB$ avec $\deg A, \deg B \geqslant 1$, alors $\Phi_p(X + 1) = A(X + 1)\,B(X + 1)$, avec des facteurs de mêmes degrés, puisque la substitution conserve le degré : contradiction.
+    remarques:
+      - |
+        Pour $P = X^5 - 4X + 2$ et $p = 2$, les hypothèses sont satisfaites : $2 \nmid 1$, $2$ divise $-4$, $2$ et les coefficients nuls, et $4 \nmid 2$. Ce polynôme est donc irréductible dans $F[X]$ ; c'est le point de départ du nœud {{gs-abel-ruffini|Abel-Ruffini}}.
+      - |
+        Le critère est suffisant, non nécessaire. Aucun nombre premier ne s'applique directement à $X^2 + 1$, dont le terme constant vaut $1$ ; mais $(X + 1)^2 + 1 = X^2 + 2X + 2$ relève du critère avec $p = 2$, et l'argument de (ii) conclut. Le critère porte enfin sur $F[X]$ : $3X + 6$ le vérifie pour $p = 2$, et s'écrit pourtant $3(X + 2)$ dans $\mathbb Z[X]$, où $3$ n'est pas inversible.
+      - |
+        Le polynôme $\Phi_p$ est le polynôme cyclotomique d'indice $p$, dont les racines complexes sont les racines $p$-ièmes de l'unité autres que $1$. Son irréductibilité donne le degré $p - 1$ de l'extension qu'elles engendrent, résultat que Gauss a établi dans les *Disquisitiones arithmeticae* (1801, section VII) pour étudier la construction des polygones réguliers à la règle et au compas.
+
+aretes:
+  - [pol-anneau, pol-evaluation]
+  - [pol-anneau, pol-division]
+  - [pol-anneau, pol-binome]
+  - [pol-evaluation, pol-racines]
+  - [pol-division, pol-racines]
+  - [pol-division, pol-principal]
+  - [pol-principal, pol-irreductibles]
+  - [pol-racines, pol-irreductibles]
+  - [pol-racines, pol-derivee]
+  - [pol-evaluation, pol-gauss]
+  - [pol-gauss, pol-eisenstein]
+  - [pol-irreductibles, pol-eisenstein]
+  - [pol-binome, pol-eisenstein]
