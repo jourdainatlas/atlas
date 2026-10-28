@@ -187,7 +187,7 @@ Texte d'accueil de l'édifice mis à jour (31 branches). Bilan : `OK : 457 nœud
 Priorité 2 : ~~`li-cartan`~~ (fait le 28 oct. 2026, voir plus bas), ~~`ga-nullstellensatz`~~ (fait le 28 oct. 2026),
 `t-tychonov` (écarté par l'auteur le 28 oct. 2026 : il demanderait la flèche ordin → top, qui ferait remonter la topologie et ses 19 descendants ; l'énoncé conditionnel « ultrafiltre ⇒ Tychonov » a été proposé sans être retenu), ~~scindages de `gs-groupes`~~ (fait), ~~`v-determinant`~~ (fait),
 ~~`ta-revetement`~~ (fait) ; ~~réduction et trace en algèbre linéaire~~ (fait) ;
-découpage de `geod` en trois théories ; suites i.i.d. uniformes en proba. Priorité 3 : Mayer-Vietoris
+~~découpage de `geod`~~ (fait en deux théories, voir plus bas) ; suites i.i.d. uniformes en proba. Priorité 3 : Mayer-Vietoris
 (subdivision, gros), `derham` en degré 1, compléments des théories terminales, théories « groupes
 finis » et « algèbre commutative », scindages de confort.
 
@@ -317,3 +317,15 @@ vérifiés par sympy, rotation sans valeur propre réelle, Jordan 2×2 non diago
 n'est pas un ancêtre d'alglin. `v-matrices` définit maintenant K^n en colonnes, M_n, I_n, la
 transposée, et (iii) l'associativité. Liouville (ed-lineaires (iii)) : différentiabilité de det et règle
 de la chaîne justifiées. Lexique : `trace`, `valeur-propre`. Relu par un second agent (deux passes).
+
+Découpage de la géométrie différentielle (28 oct. 2026). Proposé en trois théories (calcul différentiel,
+variétés, formes) ; l'auteur a écarté la séparation des formes, dont l'usage est essentiellement
+géométrique et dont le contraste avec les variétés est trop faible. Fait en deux : `cdiff` (Calcul
+différentiel, famille ana, 7 fiches : gd-differentielle, gd-accroissements, gd-classe-ck, gd-gl,
+gd-inversion-locale, gd-submersions, gd-schwarz) et `geod` (13 fiches, nom et id conservés). Ids des
+fiches inchangés, donc aucun renvoi à retoucher. Entrées : cdiff ← met, analyse-reelle, alglin ; geod ←
+cdiff (sous-variétés, formes), met (base dénombrable), alglin (formes). Les deux arêtes croisées
+(submersions → sous-variétés, Schwarz → formes) passent par les entrées. Texte d'accueil : « Trente-deux
+branches », lien {{cdiff}} ajouté dans le gabarit. Les rubriques Cours et Exercices qui rangent sous la
+théorie `geod` des notions de calcul différentiel pourraient les rattacher à `cdiff` (domaine des autres
+conversations).
