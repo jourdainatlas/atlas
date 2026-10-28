@@ -2125,6 +2125,26 @@ function fermerFicheAnnales() { location.hash = '#annales'; }
    Chaque sujet étiqueté (rubriques/annales-index.yaml) est découpé en parties ; chaque partie porte
    des thèmes du vocabulaire (rubriques/annales-themes.yaml), principaux ou secondaires, et des mots-clés. */
 const etatRech = { q: '', fam: '', conc: '', fil: '', de: '', a: '', montres: 12 };
+// filtres du moteur (famille, école ou concours, filière, période) appliqués à un sujet
+const passeFiltresAnn = s => !(etatRech.fam && s.fam !== etatRech.fam)
+  && !(etatRech.conc && !s.cases.some(c => c.concours === etatRech.conc))
+  && !(etatRech.fil && !s.filieres.includes(etatRech.fil))
+  && !(etatRech.de && s.annee < +etatRech.de) && !(etatRech.a && s.annee > +etatRech.a);
+// nombre de parties par thème, restreint aux sujets qui passent les filtres (mis en cache par jeu de filtres)
+let compteAnnCache = { cle: null, compte: null };
+function compteAnnales() {
+  const I = indexAnnales(), cle = [etatRech.fam, etatRech.conc, etatRech.fil, etatRech.de, etatRech.a].join('|');
+  if (cle === '||||') return I.compte;
+  if (compteAnnCache.cle === cle && compteAnnCache.I === I) return compteAnnCache.compte;
+  const compte = {};
+  for (const s of I.sujets) if (passeFiltresAnn(s)) for (const p of s.parties) {
+    const vus = new Set();
+    for (const t of p.themes || []) { vus.add(t); if (I.themes[t] && I.themes[t].parent) vus.add(I.themes[t].parent); }
+    for (const t of vus) compte[t] = (compte[t] || 0) + 1;
+  }
+  compteAnnCache = { cle, I, compte };
+  return compte;
+}
 const rechVide = () => !etatRech.q.trim() && !etatRech.fam && !etatRech.conc && !etatRech.fil && !etatRech.de && !etatRech.a;
 let indexAnn = null, chargementIndexAnn = null;
 // Sur le site publié, l'index est dans un fichier séparé (annales-index.json), chargé à la première visite.
@@ -2198,11 +2218,7 @@ function rechercherAnnales(q) {
   for (const x of thRet) for (const c of I.enfants[x.t.id] || []) if (!(c in poids)) poids[c] = .95 * x.s / 10;
   const res = [];
   for (const s of I.sujets) {
-    if (etatRech.fam && s.fam !== etatRech.fam) continue;
-    if (etatRech.conc && !s.cases.some(c => c.concours === etatRech.conc)) continue;
-    if (etatRech.fil && !s.filieres.includes(etatRech.fil)) continue;
-    if (etatRech.de && s.annee < +etatRech.de) continue;
-    if (etatRech.a && s.annee > +etatRech.a) continue;
+    if (!passeFiltresAnn(s)) continue;
     const parts = s.parties.map((p, i) => {
       let sc = 0, prin = false;
       for (const t of p.themes || []) if (poids[t]) { sc += 3 * poids[t]; prin = true; }
@@ -2251,15 +2267,16 @@ function surligner(texte, q) {
 function resultatsAnnales() {
   const I = indexAnnales();
   if (!I.sujets.length) return '';
+  const C = compteAnnales();
   const q = etatRech.q.trim();
   if (!q) {
     // parcours : les thèmes présents, par domaine, avec le nombre de parties concernées
     let h = '<div class="rech-domaines">';
     for (const d of I.domaines) {
-      const ts = Object.values(I.themes).filter(t => t.domaine === d.id && !t.parent && I.compte[t.id]).sort((a, b) => I.compte[b.id] - I.compte[a.id]);
+      const ts = Object.values(I.themes).filter(t => t.domaine === d.id && !t.parent && C[t.id]).sort((a, b) => C[b.id] - C[a.id]);
       if (!ts.length) continue;
       // couleur du domaine : celle de sa famille dans l'édifice (algèbre orange, nombres bleu, analyse vert d'eau, géométrie violet)
-      h += `<div${d.famille ? ` style="--dc: var(--c-${esc(d.famille)})"` : ''}><h4>${esc(d.titre)}</h4><div class="puces-chips">${ts.map(t => `<button type="button" class="chip" data-rq="${esc(t.titre)}">${esc(t.titre)}<small>${I.compte[t.id]}</small></button>`).join('')}</div></div>`;
+      h += `<div${d.famille ? ` style="--dc: var(--c-${esc(d.famille)})"` : ''}><h4>${esc(d.titre)}</h4><div class="puces-chips">${ts.map(t => `<button type="button" class="chip" data-rq="${esc(t.titre)}">${esc(t.titre)}<small>${C[t.id]}</small></button>`).join('')}</div></div>`;
     }
     return h + '</div>';
   }
@@ -2271,8 +2288,8 @@ function resultatsAnnales() {
       const l = (t.noeuds || []).map(lienEdifice).find(Boolean), par = t.parent && I.themes[t.parent];
       if (par) h += `<button type="button" class="chip" data-rq="${esc(par.titre)}" title="Thème plus large">${esc(par.titre)}</button><span aria-hidden="true">›</span>`;
       h += `<button type="button" class="chip" data-rq="${esc(t.titre)}" aria-pressed="${normRech(t.titre) === normRech(q)}">${esc(t.titre)}</button>${l ? `<a class="edif" href="${l}" title="Voir la théorie correspondante dans l'édifice">dans l'édifice →</a>` : ''}`;
-      const fins = (I.enfants[t.id] || []).filter(c => I.compte[c]).sort((a, b) => I.compte[b] - I.compte[a]);
-      if (fins.length) h += `<div class="sous"><span>Préciser :</span>${fins.map(c => `<button type="button" class="chip" data-rq="${esc(I.themes[c].titre)}">${esc(I.themes[c].titre)}<small>${I.compte[c]}</small></button>`).join('')}</div>`;
+      const fins = (I.enfants[t.id] || []).filter(c => C[c]).sort((a, b) => C[b] - C[a]);
+      if (fins.length) h += `<div class="sous"><span>Préciser :</span>${fins.map(c => `<button type="button" class="chip" data-rq="${esc(I.themes[c].titre)}">${esc(I.themes[c].titre)}<small>${C[c]}</small></button>`).join('')}</div>`;
     }
     h += `</div>`;
   }

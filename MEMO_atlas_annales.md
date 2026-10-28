@@ -56,7 +56,11 @@ pas, et une filière choisie auparavant est alors oubliée ; le bloc de recherch
 de famille, la saisie est conservée. Une famille choisie fait apparaître un second menu (`ann-conc`, état
 `etatRech.conc`) : « Toutes les écoles » et les cinq écoles pour les ingénieurs, « Tous les concours » et
 les quatre concours pour l'enseignement (seuls ceux qui ont des sujets étiquetés) ; le filtre porte sur
-les cases du sujet (`s.cases[].concours`), et le choix est oublié au changement de famille.
+les cases du sujet (`s.cases[].concours`), et le choix est oublié au changement de famille. Les nombres affichés après chaque thème (panneau des
+domaines et « Préciser ») suivent les filtres (`compteAnnales`, mis en cache par jeu de filtres ; filtres
+communs dans `passeFiltresAnn`) : ils comptent les parties où le thème est principal, dans les sujets
+retenus ; un thème à zéro disparaît. Le bilan d'une recherche compte en plus les parties où il est
+secondaire, d'où un nombre parfois un peu plus grand.
 
 **Convention de saisie.** Intervalles à la française : `\left]-1, +\infty\right[` (sinon le « − » est
 espacé comme une soustraction). Ensembles : `\mathbb{R}`, `\mathbb{R}_n[X]`, `\mathcal{M}_n(\mathbb{K})`.
