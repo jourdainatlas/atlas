@@ -640,3 +640,36 @@ def li_cartan():
         S.texte(P(0, 0.5) + [-8, 0], 'αt', 'g', ancre='end', taille=15)
         S.texte(P(0.5, 0) + [0, 46], nom, 'r')
     return S
+
+
+@schema('li-petits')
+def li_petits():
+    # t = 3, δ = 0,6, pas s = 0,45 < δ : m = ⌊t/s⌋ = 6, ms = 2,7 dans la zone |u − t| ≤ δ.
+    t, delta, s = Fr(3), Fr(3, 5), Fr(9, 20)
+    m = math.floor(t / s)
+    assert s < delta and m == 6 and m * s == Fr(27, 10) and abs(m * s - t) <= delta
+    assert t - s < m * s <= t
+    # aucun des multiples précédents n'est dans la zone : 5s = 2,25 < 2,4
+    assert all(abs(k * s - t) > delta for k in range(m))
+    S = Schema(560, 170, 'Les multiples kY avancent par pas de longueur s < δ : l’un tombe dans la zone interdite')
+    R = Repere(-0.25, 4.1, -1, 1, 20, 10, 520, 150)
+    y0 = 0
+    # zone interdite |u − t| ≤ δ, en rouge
+    S.surface([R(float(t - delta), -0.35), R(float(t + delta), -0.35), R(float(t + delta), 0.35), R(float(t - delta), 0.35)], 'r')
+    S.fleche(R(0, y0), R(4.0, y0), 'g', l=1.6)
+    S.texte(R(4.0, y0) + [4, -16], 'Z′', 'g', ancre='end', taille=16)
+    for k in range(0, m + 1):
+        u = float(k * s)
+        c = 'r' if k == m else 'b'
+        S.point(R(u, y0), c, r=5 if k == m else 3.6)
+    S.texte(R(0, y0) + [0, 22], '0', 'g', taille=15)
+    S.texte(R(float(s), y0) + [0, -18], 'Y', 'b', taille=15)
+    S.texte(R(float(2 * s), y0) + [0, -18], '2Y', 'b', taille=15)
+    S.texte(R(float(m * s), y0) + [0, -20], '6Y', 'r', taille=16)
+    S.ligne(R(float(t), -0.35), R(float(t), 0.35), 'r', d=True)
+    for u, nom in ((t - delta, 't − δ'), (t, 't = 3'), (t + delta, 't + δ')):
+        S.texte(R(float(u), -0.35) + [0, 16], nom, 'r', taille=14)
+    # le pas s, entre 0 et Y
+    S.fleche(R(0, -0.62), R(float(s), -0.62), 'b', l=1.2, double=True)
+    S.texte(R(float(s) / 2, -0.62) + [0, 16], 's', 'b', taille=15)
+    return S

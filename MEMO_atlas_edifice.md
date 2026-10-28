@@ -184,7 +184,7 @@ Texte d'accueil de l'édifice mis à jour (31 branches). Bilan : `OK : 457 nœud
    Gros.
 5. `l-completude` (log) : existence d'un modèle admise → sous-graphe Henkin (Löwenheim-Skolem en
    devient un corollaire). Moyen.
-Priorité 2 : `li-cartan` (à portée), `ga-nullstellensatz` (lemme de Zariski, arête alglin → geoalg),
+Priorité 2 : ~~`li-cartan`~~ (fait le 28 oct. 2026, voir plus bas), `ga-nullstellensatz` (lemme de Zariski, arête alglin → geoalg),
 `t-tychonov` (ultrafiltres, arête ordin → top), scindages de `gs-groupes`, `v-determinant`,
 `ta-revetement` ; réduction et trace en algèbre linéaire (la trace est employée sans être définie) ;
 découpage de `geod` en trois théories ; suites i.i.d. uniformes en proba. Priorité 3 : Mayer-Vietoris
@@ -251,3 +251,19 @@ Légende sur téléphone (28 oct. 2026) : le panneau, calé à droite du bouton,
 gauche quand le bouton passe à la ligne. `placerLegende` (événement `toggle`, et `resize`) le décale pour
 qu'il tienne entre deux marges de 16 px, et borne sa hauteur à l'écran (défilement interne) ; largeur
 min(374 px, 100vw − 32 px) en `border-box`. Vérifié à 375 et 390 px (clair, sombre) et sur ordinateur.
+
+Cartan-von Neumann démontré (28 oct. 2026, graphe `lie`, 7 nœuds). Deux lemmes ajoutés :
+`li-series` (une série de polynômes de N variables dont toutes les séries de dérivées partielles
+convergent normalement sur les cubes est C^∞ ; preuve par la dérivation terme à terme en une variable,
+établie sur place par l'intégrale, puis récurrence via gd-classe-ck (i)) rend `li-exponentielle`
+C^∞ (majoration n^{k-1} k^m ρ^{k-m}/k! des dérivées des coefficients de A^k/k!, vérifiée par sympy) ;
+`li-petits` (aucun e^Y ∈ G avec Y petit dans un supplémentaire m de g) par un recouvrement fini de la
+sphère unité de m par des « bonnes boules », ce qui évite l'extraction de suite et donc le choix
+dénombrable de la preuve habituelle ; schéma `li-petits` (t = 3, δ = 0,6, s = 0,45, m = 6). La preuve
+de `li-cartan` redresse G en I par Ψ(x, y) = e^{X}e^{Y}, puis partout par translation à gauche.
+Relecture indépendante (second agent, deux passes) : huit remarques, toutes traitées. Points notables :
+dΨ(0) justifié par gd-differentielle (iii)-(iv) ; la « structure produit » employée par li-definition
+n'était définie nulle part : ajout du point (iv) *Produit* à `gd-varietes` (atlas produit, séparation,
+base dénombrable par q-denombrable (i), et, pour deux sous-variétés, même atlas maximal que celui de
+(ii)) ; densité de l'enroulement irrationnel et non-sous-variété marquées « admis ici » ; remarque de
+li-series corrigée (on applique le premier pas de la preuve, pas le lemme ; argument de positivité).
