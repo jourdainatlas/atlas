@@ -246,3 +246,8 @@ Deux arêtes ne se superposent donc jamais ; elles ne peuvent que se croiser à 
    toucher sur téléphone) met la flèche en évidence, au premier plan, avec ses deux extrémités, comme le
    survol d'une bulle le faisait déjà pour toutes ses flèches.
 Vérifié : édifice (clair, sombre, téléphone), continuite, geod ; zéro traversée de bulle.
+
+Légende sur téléphone (28 oct. 2026) : le panneau, calé à droite du bouton, sortait de l'écran par la
+gauche quand le bouton passe à la ligne. `placerLegende` (événement `toggle`, et `resize`) le décale pour
+qu'il tienne entre deux marges de 16 px, et borne sa hauteur à l'écran (défilement interne) ; largeur
+min(374 px, 100vw − 32 px) en `border-box`. Vérifié à 375 et 390 px (clair, sombre) et sur ordinateur.

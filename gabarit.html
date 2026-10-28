@@ -139,9 +139,9 @@ body.en-rubrique .bouton-theme { margin-left: auto; }
 .legende > summary::-webkit-details-marker { display: none; }
 .legende[open] > summary { color: var(--encre); border-color: var(--encre-3); }
 .legende-corps {
-  position: absolute; right: 0; top: calc(100% + 8px); width: min(340px, calc(100vw - 32px));
+  position: absolute; right: 0; top: calc(100% + 8px); width: min(374px, calc(100vw - 32px)); box-sizing: border-box;
   background: var(--surface); border: 1px solid var(--filet); border-radius: 8px; box-shadow: var(--ombre);
-  padding: 14px 16px; display: grid; gap: 12px; font-size: 13px;
+  padding: 14px 16px; display: grid; gap: 12px; font-size: 13px; overflow-y: auto; overscroll-behavior: contain;
 }
 .legende-corps h3 { margin: 0 0 6px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--encre-3); font-weight: 500; }
 .legende-liste { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 0; padding: 0; list-style: none; }
@@ -1527,6 +1527,20 @@ $('#plan').addEventListener('mouseleave', () => surligner(null));
 $('#plan').addEventListener('focusin', ev => { const b = ev.target.closest('.noeud'); if (b) surligner(b.dataset.id); });
 $('#plan').addEventListener('focusout', () => surligner(null));
 
+// La légende s'ouvre sous son bouton, mais toujours entière dans l'écran : sur téléphone, le bouton passe
+// à gauche, et un panneau calé à droite du bouton sortait de l'écran par la gauche.
+function placerLegende(d) {
+  const corps = d.querySelector('.legende-corps');
+  if (!d.open || !corps) return;
+  corps.style.left = corps.style.right = corps.style.maxHeight = '';
+  const marge = 16, vw = document.documentElement.clientWidth, vh = window.innerHeight;
+  const rd = d.getBoundingClientRect(), rc = corps.getBoundingClientRect();
+  const voulu = Math.max(marge, Math.min(rd.right - rc.width, vw - marge - rc.width));
+  corps.style.right = 'auto'; corps.style.left = (voulu - rd.left) + 'px';
+  corps.style.maxHeight = Math.max(160, vh - rc.top - marge) + 'px';
+}
+document.querySelectorAll('.legende').forEach(d => d.addEventListener('toggle', () => placerLegende(d)));
+window.addEventListener('resize', () => document.querySelectorAll('.legende[open]').forEach(placerLegende));
 document.addEventListener('click', ev => {
   const t = ev.target.closest('.terme');
   if (t && t.dataset.g) { ev.preventDefault(); ouvrirTerme(t.dataset.g); return; }
