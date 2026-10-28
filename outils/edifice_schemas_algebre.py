@@ -730,3 +730,31 @@ def v_comatrice():
             S.texte([420 + j * 30, y0 + 20 + i * 30], sg, c, taille=19 if (i, j) == (i0, j0) else 16)
     S.texte([450, y0 + 2 * pas + 14], 'C₂₁ = −4', 'b', taille=16)
     return S
+
+
+@schema('v-valeurs-propres')
+def v_valeurs_propres():
+    A = np.array([[2.0, 1.0], [1.0, 2.0]])
+    w, V = np.linalg.eigh(A)
+    assert np.allclose(w, [1, 3])
+    s2 = math.sqrt(2)
+    v3, v1 = np.array([1, 1]) / s2, np.array([1, -1]) / s2
+    assert np.allclose(A @ v3, 3 * v3) and np.allclose(A @ v1, v1)
+    S = Schema(420, 380, 'Le cercle unité, son image par A, et les deux droites propres')
+    R = Repere(-3.0, 3.0, -2.6, 2.6, 20, 14, 380, 330)
+    R.axes(S, '', '')
+    t = np.linspace(0, 2 * math.pi, 241)
+    cer = np.stack([np.cos(t), np.sin(t)])
+    ell = A @ cer
+    S.poly(R(cer[0], cer[1]), 'g', ferme=True, d=True)
+    S.poly(R(ell[0], ell[1]), 't', ferme=True, l=1.6)
+    for v, c in ((v3, 'r'), (v1, 'b')):
+        S.ligne(R(*(-2.6 * v)), R(*(2.6 * v)), c, d=True)
+    S.fleche(R(0, 0), R(*v3), 'r', l=2); S.fleche(R(0, 0), R(*(A @ v3)), 'r', l=3)
+    S.fleche(R(0, 0), R(*v1), 'b', l=3)
+    e1 = np.array([1.0, 0.0])
+    S.fleche(R(0, 0), R(*e1), 'v', l=2); S.fleche(R(0, 0), R(*(A @ e1)), 'v', l=2)
+    S.texte(R(*(A @ v3)) + [10, -8], 'Av = 3v', 'r', ancre='start', taille=15)
+    S.texte(R(*v1) + [10, 12], 'Av = v', 'b', ancre='start', taille=15)
+    S.texte(R(*(A @ e1)) + [8, 12], 'A(1, 0)', 'v', ancre='start', taille=14)
+    return S
