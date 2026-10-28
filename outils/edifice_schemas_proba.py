@@ -483,3 +483,34 @@ def mt_applications_2():
         S.poly(R(xs, np.concatenate([[0], s])), 'r', l=1.5)
     S.poly(R(xs, np.concatenate([[0], alt])), 't', d=True, l=1.6)
     return _epaisseurs(S)
+
+
+@schema('p-suites-iid')
+def p_suites_iid():
+    # d_k va à U_m, où 2^m est la plus grande puissance de 2 qui divise k (k = 2^m (2j + 1)).
+    def v2(k):
+        m = 0
+        while k % 2 == 0:
+            k //= 2; m += 1
+        return m
+    K = 24
+    groupes = {}
+    for k in range(1, K + 1):
+        groupes.setdefault(v2(k), []).append(k)
+    assert groupes[0] == list(range(1, 25, 2)) and groupes[1] == [2, 6, 10, 14, 18, 22] and groupes[2] == [4, 12, 20]
+    assert groupes[3] == [8, 24] and groupes[4] == [16]
+    couleurs = {0: 'r', 1: 'b', 2: 'v', 3: 'o', 4: 't'}
+    S = Schema(560, 156, 'Répartition des chiffres binaires d_k entre les variables U_m')
+    pas, x0, y0 = 21.5, 26, 40
+    for k in range(1, K + 1):
+        c = couleurs[v2(k)]
+        x = x0 + (k - 1) * pas
+        S.rect(x - 9, y0 - 12, 18, 24, c, rempli=c, rx=3)
+        S.texte([x, y0 + 26], str(k), 'g', taille=11, ui=True)
+    S.texte([x0 + K * pas, y0], '…', 'g', taille=16)
+    S.texte([x0 - 4, y0 + 46], 'indice k', 'g', ancre='start', taille=12, ui=True)
+    for i, (m, c) in enumerate(couleurs.items()):
+        x = 40 + i * 104
+        S.rect(x - 8, 132 - 8, 16, 16, c, rempli=c, rx=3)
+        S.texte([x + 14, 132], f'U_{m}', c, ancre='start', taille=15)
+    return S

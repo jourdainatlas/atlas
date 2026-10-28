@@ -187,7 +187,7 @@ Texte d'accueil de l'édifice mis à jour (31 branches). Bilan : `OK : 457 nœud
 Priorité 2 : ~~`li-cartan`~~ (fait le 28 oct. 2026, voir plus bas), ~~`ga-nullstellensatz`~~ (fait le 28 oct. 2026),
 `t-tychonov` (écarté par l'auteur le 28 oct. 2026 : il demanderait la flèche ordin → top, qui ferait remonter la topologie et ses 19 descendants ; l'énoncé conditionnel « ultrafiltre ⇒ Tychonov » a été proposé sans être retenu), ~~scindages de `gs-groupes`~~ (fait), ~~`v-determinant`~~ (fait),
 ~~`ta-revetement`~~ (fait) ; ~~réduction et trace en algèbre linéaire~~ (fait) ;
-~~découpage de `geod`~~ (fait en deux théories, voir plus bas) ; suites i.i.d. uniformes en proba. Priorité 3 : Mayer-Vietoris
+~~découpage de `geod`~~ (fait en deux théories, voir plus bas) ; ~~suites i.i.d. uniformes en proba~~ (fait). Priorité 3 : Mayer-Vietoris
 (subdivision, gros), `derham` en degré 1, compléments des théories terminales, théories « groupes
 finis » et « algèbre commutative », scindages de confort.
 
@@ -329,3 +329,12 @@ cdiff (sous-variétés, formes), met (base dénombrable), alglin (formes). Les d
 branches », lien {{cdiff}} ajouté dans le gabarit. Les rubriques Cours et Exercices qui rangent sous la
 théorie `geod` des notions de calcul différentiel pourraient les rattacher à `cdiff` (domaine des autres
 conversations).
+
+Suites indépendantes (28 oct. 2026, proba, 15 nœuds) : `p-suites-iid`, après p-normaux. (i) U_m =
+Σ_j d_{2^m(2j+1)} 2^{-(j+1)} indépendantes uniformes (partage des chiffres par k = 2^m(2j+1), regroupement ;
+loi de V par les dyadiques et P(V = x) = 0) ; (ii) fonction quantile G(u) = inf{F ≥ u}, X = h(U) borélienne ;
+(iii) suites indépendantes de lois données, donc i.i.d. de loi quelconque. Schéma `p-suites-iid` (24
+chiffres colorés selon U_m). Remarques : variables décalées 2^m ω mod 1 uniformes mais dépendantes ;
+produits infinis (Andersen-Jessen, Ionescu Tulcea, Kolmogorov polonais) admis ; choix dénombrable seulement
+via la mesure de Lebesgue. Relu par un second agent (deux passes, cinq remarques traitées). La priorité 2
+est épuisée, à l'exception de Tychonov, écarté par l'auteur.
