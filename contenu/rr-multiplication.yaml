@@ -1,0 +1,239 @@
+# Niveau 2 : structure interne du nœud « Multiplication des réels » du graphe r.
+# ℝ est l'ensemble des coupures de Dedekind de ℚ, ordonné par inclusion (rr-definition) ; l'addition,
+# l'opposé −C et la notation q* = ]←, q[ sont ceux de rr-addition. On construit le produit des coupures
+# positives, on vérifie les axiomes de corps sur elles, puis on étend le produit à tous les signes.
+# Les identifiants commencent par « rm- ».
+
+graphe: rr-multiplication
+titre: Multiplication des réels
+conteneur: rr-multiplication
+
+entrees:
+  rr-addition: [rm-positives]
+
+noeuds:
+  - id: rm-positives
+    etiquette: Produit des positives
+    nature: proposition
+    titre: Coupures positives et leur produit
+    texte: |
+      Une coupure $C$ est [[coupure-positive|positive]] si $0^* \subset C$, et strictement positive si de plus $C \neq 0^*$ ; l'ordre de $\lex{ensemble-reels}{\mathbb R}$ étant l'inclusion ({{rr-definition|Coupures de ℚ}}), cela revient à $0^* \leqslant C$. Pour une coupure positive $C$, on note $C_+ = \{c \in C : c \geqslant 0\}$ la partie positive de $C$, et pour deux coupures positives $C$ et $D$, on pose
+      $$C \cdot D = 0^* \cup \{cd : c \in C_+,\ d \in D_+\}.$$
+    enonce: |
+      (i) Pour toute coupure $C$, l'une au moins des coupures $C$ et $-C$ est positive ; elles le sont toutes les deux si et seulement si $C = 0^*$.
+
+      (ii) Une coupure positive $C$ est strictement positive si et seulement si $0 \in C$, et si et seulement si $C$ contient un rationnel strictement positif.
+
+      (iii) Si $C$ et $D$ sont positives, $C \cdot D$ est une coupure positive. De plus $C \cdot 0^* = 0^* \cdot C = 0^*$.
+    preuve: |
+      (i) L'ordre de $\mathbb R$ est total ({{rr-definition|Coupures de ℚ}}, (i)) : on a $0^* \subset C$ ou $C \subset 0^*$. Dans le second cas, en ajoutant $-C$ aux deux membres ({{rr-addition|Addition des réels}}, (iv)), il vient $C + (-C) \subset 0^* + (-C)$, c'est-à-dire $0^* \subset -C$, puisque $0^*$ est le neutre et $-C$ l'opposé de $C$ ({{rr-addition|Addition des réels}}, (ii)). Si $C$ et $-C$ sont toutes deux positives, l'inclusion $0^* \subset C$ donne de même $-C = 0^* + (-C) \subset C + (-C) = 0^*$, donc $-C = 0^*$, et $C = -(-C) = -0^* = 0^*$, car dans un groupe l'opposé du neutre est le neutre. Réciproquement, $0^*$ et $-0^* = 0^*$ sont positives.
+
+      (ii) Si $C \neq 0^*$, il existe $x \in C$ hors de $0^*$, c'est-à-dire $x \geqslant 0$ ; comme $C$ n'a pas de plus grand élément, il existe $x' \in C$ avec $x' > x \geqslant 0$. Si $C$ contient un rationnel $x' > 0$, il contient $0$, puisque c'est un segment initial. Enfin, si $0 \in C$, alors $C \neq 0^*$, car $0 \notin 0^*$.
+
+      (iii) *Non vide, distincte de $\lex{ensemble-rationnels}{\mathbb Q}$.* $C \cdot D$ contient $0^*$, qui n'est pas vide. Soit $u \notin C$ et $v \notin D$, et posons $u' = \max(u, 1)$ et $v' = \max(v, 1)$ ; par {{rr-definition|Coupures de ℚ}} (ii), tout rationnel supérieur ou égal à un rationnel hors de $C$ est hors de $C$, donc $u' \notin C$ et $v' \notin D$. Pour $c \in C_+$ et $d \in D_+$, on a $0 \leqslant c < u'$ et $0 \leqslant d < v'$, donc $cd \leqslant cv' < u'v'$, la première inégalité parce que $c \geqslant 0$ et la seconde parce que $v' > 0$ ({{q-ordre|Ordre de ℚ}}, (i)). Comme $u'v' > 0$, ce rationnel n'est pas dans $0^*$ ; il n'est donc pas dans $C \cdot D$.
+
+      *Segment initial.* Soit $w \in C \cdot D$ et $z < w$. Si $w < 0$, alors $z < 0$ et $z \in 0^*$. Sinon $w = cd$ avec $c \in C_+$ et $d \in D_+$ ; si $z < 0$, encore $z \in 0^*$. Reste le cas $0 \leqslant z < cd$ : alors $cd > 0$, donc $c > 0$, et $z/c < d$ en multipliant par $1/c > 0$. Ainsi $z/c$ appartient à $D$, qui est un segment initial, et à $D_+$ puisque $z/c \geqslant 0$ ; d'où $z = c \cdot (z/c) \in C \cdot D$.
+
+      *Pas de plus grand élément.* Si $w < 0$, alors $w < w/2 < 0$ et $w/2 \in 0^*$. Si $w = cd$, il existe $c' \in C$ et $d' \in D$ avec $c' > c$ et $d' > d$, puisque $C$ et $D$ n'ont pas de plus grand élément ; ils sont strictement positifs, et $c'd' > c'd \geqslant cd$, la première inégalité parce que $c' > 0$ et la seconde parce que $d \geqslant 0$. Or $c'd' \in C \cdot D$.
+
+      *Positivité et produit par $0^*$.* $C \cdot D$ contient $0^*$ par définition. Enfin $(0^*)_+ = \varnothing$, puisque $0^*$ ne contient que des rationnels strictement négatifs ; il ne reste donc dans $C \cdot 0^*$ et $0^* \cdot C$ que $0^*$.
+
+      ```schema rm-positives
+      Les couples $(c, d)$ de $C_+ \times D_+$ remplissent le rectangle bleu, ouvert en haut et à droite, ici pour $C = D = \Gamma$, la coupure de $\sqrt 2$. Si $0 \leqslant z < cd$, le point $(c, z/c)$ est sur l'hyperbole rouge $xy = z$, à la verticale de $(c, d)$ et en dessous : c'est pourquoi $z$ est encore un produit $c \cdot (z/c)$ d'éléments de $C_+$ et de $D_+$.
+      ```
+    remarques:
+      - |
+        L'erreur la plus répandue est de calquer le produit sur la somme et de poser $C \cdot D = \{cd : c \in C,\ d \in D\}$. Une coupure contient tous les rationnels assez négatifs : pour $n$ entier assez grand, $-n$ appartient à $C$ et à $D$, et le produit $(-n)(-n) = n^2$ appartient à cet ensemble, qui contient donc des rationnels arbitrairement grands et n'est pas une coupure. C'est pour cela que l'on ne multiplie que des éléments positifs, et que l'on rajoute à la main la partie $0^*$.
+      - |
+        Le premier exemple instructif est celui de la coupure $\Gamma = \{x \in \mathbb Q : x \leqslant 0 \text{ ou } x^2 < 2\}$ de la remarque du nœud {{q-irrationnel|Irrationalité de √2}}, pour laquelle $\Gamma_+ = \{x \geqslant 0 : x^2 < 2\}$. Montrons que $\Gamma \cdot \Gamma = 2^*$. Si $c, d \in \Gamma_+$, alors $cd \leqslant \max(c, d)^2 < 2$, donc $\Gamma \cdot \Gamma \subset 2^*$. Inversement, soit $0 \leqslant z < 2$ ; il suffit de trouver $c \in \Gamma_+$ tel que $z < c^2$, car alors $z < c \cdot c$ et $z \in \Gamma \cdot \Gamma$, qui est un segment initial. Si $z < 1$, $c = 1$ convient. Sinon, posons $h = 2 - z \in \,]0, 1]$, choisissons un entier $n \geqslant 4/h$ et considérons $c_k = 1 + k/n$ : on a $c_0^2 = 1 < 2$ et $c_n^2 = 4 > 2$, et pour le plus petit $k$ tel que $c_k^2 \geqslant 2$, en fait $c_k^2 > 2$ puisque $2$ n'est pas le carré d'un rationnel. Comme $c_{k-1} < 3/2$, l'écart $c_k^2 - c_{k-1}^2 = 2c_{k-1}/n + 1/n^2$ est strictement inférieur à $4/n \leqslant h$, d'où $c_{k-1}^2 > 2 - h = z$, et $c = c_{k-1}$ convient. C'est l'argument des sauts de longueur fixe de {{rr-definition|Coupures de ℚ}} (iii), et il dit que $\Gamma$ est bien une racine carrée de $2^*$ dans $\mathbb R$ ; pour $z = 199/100$, par exemple, on trouve $n = 400$ et $c = 1 + 165/400 = 113/80$, de carré $12769/6400 \approx 1{,}9952$.
+
+  - id: rm-monoide
+    etiquette: Associativité, neutre
+    nature: proposition
+    titre: Le produit des coupures positives est associatif et commutatif
+    enonce: |
+      Pour toutes coupures positives $C$, $D$ et $E$ :
+
+      (i) $C \cdot D = D \cdot C$ ;
+
+      (ii) $(C \cdot D) \cdot E = C \cdot (D \cdot E)$ ;
+
+      (iii) $1^*$ est positive et $C \cdot 1^* = 1^* \cdot C = C$.
+    preuve: |
+      Notons d'abord que les éléments positifs de $C \cdot D$ sont exactement les produits $cd$ avec $c \in C_+$ et $d \in D_+$ : les éléments de $0^*$ sont strictement négatifs, et ces produits sont positifs. Autrement dit, $(C \cdot D)_+ = \{cd : c \in C_+,\ d \in D_+\}$.
+
+      (i) L'ensemble $\{cd : c \in C_+,\ d \in D_+\}$ ne change pas quand on échange $C$ et $D$, puisque la multiplication de $\lex{ensemble-rationnels}{\mathbb Q}$ est commutative.
+
+      (ii) Par la remarque préliminaire, $(C \cdot D) \cdot E = 0^* \cup \{(cd)e : c \in C_+,\ d \in D_+,\ e \in E_+\}$, et de même $C \cdot (D \cdot E) = 0^* \cup \{c(de)\}$, avec les mêmes conditions. Les deux ensembles sont égaux par l'associativité de la multiplication de $\mathbb Q$.
+
+      (iii) Comme $0 < 1$, on a $0^* \subset 1^*$ ({{rr-definition|Coupures de ℚ}}, (i)), et $(1^*)_+ = \{t \in \mathbb Q : 0 \leqslant t < 1\}$. Par (i), il suffit de montrer $C \cdot 1^* = C$. D'une part $0^* \subset C$ ; et si $c \in C_+$ et $0 \leqslant t < 1$, alors $ct \leqslant c$, donc $ct \in C$, qui est un segment initial. D'autre part, soit $c \in C$ ; si $c < 0$, il est dans $0^*$. Si $c \geqslant 0$, choisissons $c' \in C$ avec $c' > c$, possible puisque $C$ n'a pas de plus grand élément : alors $c' > 0$, $t = c/c'$ vérifie $0 \leqslant t < 1$, et $c = c't$ appartient à $C \cdot 1^*$.
+    remarques:
+      - |
+        Ces vérifications se lisent directement sur les éléments, comme pour l'addition ({{rr-addition|Addition des réels}}), parce qu'on reste parmi les coupures positives, où le produit est défini par une seule formule. C'est le passage à tous les signes, au nœud {{rm-signes|Règle des signes}}, qui demande une disjonction de cas.
+
+  - id: rm-distributivite
+    etiquette: Distributivité (positives)
+    nature: proposition
+    titre: Distributivité pour les coupures positives
+    enonce: |
+      Si $C$, $D$ et $E$ sont des coupures positives, alors $D + E$ est positive et
+      $$C \cdot (D + E) = C \cdot D + C \cdot E.$$
+    preuve: |
+      *Positivité.* L'addition est compatible avec l'inclusion ({{rr-addition|Addition des réels}}, (iv)) et $0^*$ en est le neutre : de $0^* \subset E$ on tire $D = D + 0^* \subset D + E$, et de même $E \subset D + E$. En particulier $0^* \subset D \subset D + E$. Pour la même raison, $C \cdot D + C \cdot E$ est positive, puisque $C \cdot D$ et $C \cdot E$ le sont ({{rm-positives|Produit des positives}}, (iii)).
+
+      *Inclusion $C \cdot (D + E) \subset C \cdot D + C \cdot E$.* Soit $x$ dans le premier membre. Si $x < 0$, il est dans $0^* \subset C \cdot D + C \cdot E$. Sinon $x = cs$, avec $c \in C_+$ et $s$ un élément positif de $D + E$, que l'on écrit $s = d + e$ avec $d \in D$ et $e \in E$ ; attention, $d$ ou $e$ peut être strictement négatif. Choisissons $c' \in C$ avec $c' > c$, de sorte que $c' > 0$. Alors $c'd \in C \cdot D$ : si $d \geqslant 0$, c'est un produit d'éléments de $C_+$ et $D_+$, et si $d < 0$, alors $c'd < 0$ est dans $0^*$. De même $c'e \in C \cdot E$, et donc $c's = c'd + c'e \in C \cdot D + C \cdot E$. Comme $s \geqslant 0$ et $c \leqslant c'$, on a $x = cs \leqslant c's$, et $x$ appartient au segment initial $C \cdot D + C \cdot E$ ({{rr-addition|Addition des réels}}, (i)).
+
+      *Inclusion $C \cdot D + C \cdot E \subset C \cdot (D + E)$.* Soit $y = a + b$ avec $a \in C \cdot D$ et $b \in C \cdot E$. Si $y < 0$, il est dans $0^*$. Supposons $y \geqslant 0$ ; alors $a$ et $b$ ne sont pas tous deux strictement négatifs, et un élément positif de $C \cdot D$ s'écrit $cd$ avec $c \in C_+$ et $d \in D_+$. Trois cas restent.
+
+      Si $a = cd \geqslant 0$ et $b < 0$, alors $y < cd$ ; or $d \in D \subset D + E$ et $d \geqslant 0$, donc $cd \in C \cdot (D + E)$, et $y$ aussi, ce produit étant un segment initial. Le cas $a < 0$, $b = c'e \geqslant 0$ est symétrique, avec $E \subset D + E$.
+
+      Si $a = cd$ et $b = c'e$, avec $c, c' \in C_+$, $d \in D_+$ et $e \in E_+$, posons $c'' = \max(c, c') \in C_+$. Alors $y = cd + c'e \leqslant c''d + c''e = c''(d + e)$, où $d + e$ est un élément positif de $D + E$ ; donc $c''(d + e) \in C \cdot (D + E)$, et $y$ aussi.
+    remarques:
+      - |
+        Le choix de $c' > c$ dans la première inclusion n'est pas un luxe. Avec $c = 0$ et $D = 0^*$, l'élément $x = 0 \cdot s = 0$ ne s'écrit pas sous la forme $c \cdot d + c \cdot e$ avec $c \cdot d \in C \cdot D$, puisque $0 \notin C \cdot 0^* = 0^*$ ; on contourne la difficulté en majorant $x$ par un élément de $C \cdot D + C \cdot E$, puis en utilisant que ce dernier est un segment initial. C'est le même procédé que pour l'addition : on montre l'appartenance d'un rationnel en le majorant par un élément bien choisi.
+
+  - id: rm-inverse
+    etiquette: Inverse d'une positive
+    nature: proposition
+    titre: Inverse d'une coupure strictement positive
+    texte: |
+      Pour une coupure strictement positive $C$, on pose
+      $$C^{-1} = \{x \in \lex{ensemble-rationnels}{\mathbb Q} : x \leqslant 0\} \cup \{x \in \mathbb Q : x > 0 \text{ et } \exists r \in \mathbb Q,\ r > 1 \text{ et } 1/(rx) \notin C\}.$$
+      Le facteur $r > 1$ joue le rôle du décalage $r > 0$ dans la définition de l'opposé ({{rr-addition|Addition des réels}}).
+    enonce: |
+      Soit $C$ une coupure strictement positive.
+
+      (i) Pour tout rationnel $\rho > 1$, il existe $c \in C$, $c > 0$, tel que $\rho c \notin C$.
+
+      (ii) $C^{-1}$ est une coupure strictement positive.
+
+      (iii) $C \cdot C^{-1} = 1^*$.
+    preuve: |
+      (i) Par {{rm-positives|Produit des positives}} (ii), il existe $c_0 \in C$ avec $c_0 > 0$. Posons $\varepsilon = (\rho - 1)c_0 > 0$ ; par {{rr-definition|Coupures de ℚ}} (iii), il existe $x \in C$ tel que $x + \varepsilon \notin C$. Le rationnel $c = \max(x, c_0)$ appartient à $C$ et vérifie $c > 0$, et
+      $$\rho c = c + (\rho - 1)c \geqslant c + (\rho - 1)c_0 = c + \varepsilon \geqslant x + \varepsilon.$$
+      Un rationnel supérieur ou égal à un rationnel hors de $C$ est hors de $C$ ({{rr-definition|Coupures de ℚ}}, (ii)) : $\rho c \notin C$.
+
+      (ii) *Non vide, distincte de $\mathbb Q$.* $C^{-1}$ contient $0$. Soit $c \in C$ avec $c > 0$ ; montrons que $1/c \notin C^{-1}$. Sinon, il existerait $r > 1$ tel que $1/(r \cdot \frac 1c) = c/r \notin C$, alors que $c/r < c$ et que $C$ est un segment initial.
+
+      *Segment initial.* Soit $x \in C^{-1}$ et $y < x$. Si $y \leqslant 0$, il est dans $C^{-1}$. Sinon $0 < y < x$, et $x > 0$ est associé à un $r > 1$ tel que $1/(rx) \notin C$. Comme $0 < ry < rx$, on a $1/(ry) > 1/(rx)$, donc $1/(ry) \notin C$, et $y \in C^{-1}$ avec le même $r$.
+
+      *Pas de plus grand élément.* Si $x < 0$, alors $x/2 \in C^{-1}$ et $x/2 > x$. Si $x = 0$, soit $u \notin C$ ; comme $0 \in C$, on a $u > 0$, et $x' = 1/(2u) > 0$ appartient à $C^{-1}$, avec $r = 2$, puisque $1/(2x') = u \notin C$. Si $x > 0$, avec $r > 1$ tel que $1/(rx) \notin C$, posons $r' = (1 + r)/2$ et $x' = rx/r'$ : on a $1 < r' < r$, donc $x' > x$, et $r'x' = rx$, donc $1/(r'x') \notin C$ et $x' \in C^{-1}$.
+
+      *Stricte positivité.* $0 \in C^{-1}$ ({{rm-positives|Produit des positives}}, (ii)).
+
+      (iii) *Inclusion $C \cdot C^{-1} \subset 1^*$.* On a $0^* \subset 1^*$. Soit $c \in C_+$ et $x$ un élément positif de $C^{-1}$. Si $x = 0$, alors $cx = 0 < 1$. Si $x > 0$, soit $r > 1$ tel que $1/(rx) \notin C$ ; alors $c < 1/(rx)$ ({{rr-definition|Coupures de ℚ}}, (ii)), donc $cx < 1/r < 1$. Dans les deux cas, $cx \in 1^*$.
+
+      *Inclusion $1^* \subset C \cdot C^{-1}$.* Soit $z < 1$. Si $z < 0$, il est dans $0^*$. Si $z = 0$, alors $0 = 0 \cdot 0$, avec $0 \in C_+$ et $0 \in C^{-1}$. Si $0 < z < 1$, on écrit $1/z$ comme produit de deux rationnels strictement supérieurs à $1$ :
+      $$\rho = \frac{1 + z}{2z}, \qquad r = \frac{2}{1 + z}, \qquad \rho r = \frac 1z,$$
+      et l'on a bien $\rho > 1$ et $r > 1$, puisque $z < 1$. Par (i), il existe $c \in C$, $c > 0$, tel que $\rho c \notin C$. Posons $x = 1/(r\rho c) > 0$ : alors $1/(rx) = \rho c \notin C$, donc $x \in C^{-1}$, et $cx = 1/(r\rho) = z$. Ainsi $z \in C \cdot C^{-1}$.
+    remarques:
+      - |
+        Sans le facteur $r$, la définition échouerait exactement comme celle de l'opposé sans décalage. Pour $C = 2^*$, l'ensemble des $x > 0$ tels que $1/x \notin C$, c'est-à-dire tels que $1/x \geqslant 2$, est $]0, 1/2]$, qui a $1/2$ pour plus grand élément. Avec le facteur $r$, la condition $1/(rx) \geqslant 2$ pour un $r > 1$ équivaut à $x < 1/2$ : on obtient $(2^*)^{-1} = (1/2)^*$, comme on l'attend.
+
+        ```schema rm-inverse
+        Pour $C = 2^*$, l'application $x \mapsto 1/x$ envoie le complémentaire $[2, {\rightarrow}[$ de $C$ sur $]0, 1/2]$, qui a $1/2$ pour plus grand élément. Le facteur $r > 1$ retire ce point : la partie strictement positive de $C^{-1}$, en rouge, est $]0, 1/2[$, et $C^{-1} = (1/2)^*$.
+        ```
+      - |
+        L'inverse est unique : si $D$ est une coupure positive telle que $C \cdot D = 1^*$, alors $D = D \cdot 1^* = D \cdot (C \cdot C^{-1}) = (D \cdot C) \cdot C^{-1} = 1^* \cdot C^{-1} = C^{-1}$, par {{rm-monoide|Associativité, neutre}}. En revanche $0^*$ n'a pas d'inverse, puisque $0^* \cdot D = 0^*$ ne contient pas $0$, qui est dans $1^*$.
+
+  - id: rm-signes
+    etiquette: Règle des signes
+    nature: proposition
+    titre: Produit de deux coupures quelconques
+    texte: |
+      Pour une coupure $C$, on pose $|C| = C$ si $C$ est positive, et $|C| = -C$ sinon. Deux coupures sont *de même signe* si elles sont toutes deux positives ou toutes deux non positives. Pour deux coupures $C$ et $D$, on pose
+      $$C \cdot D = |C| \cdot |D| \ \text{ si } C \text{ et } D \text{ sont de même signe}, \qquad C \cdot D = -\big(|C| \cdot |D|\big) \ \text{ sinon},$$
+      où $|C| \cdot |D|$ est le produit des coupures positives ({{rm-positives|Produit des positives}}). Si $C$ et $D$ sont positives, on retrouve ce produit. Pour $\sigma \in \{1, -1\}$ et une coupure $X$, on note $1X = X$ et $(-1)X = -X$ ; comme $-(-X) = X$, on a $\sigma(\tau X) = (\sigma\tau)X$.
+    enonce: |
+      (i) Pour toute coupure $C$, $|C|$ est positive, et $C = \sigma |C|$ pour un $\sigma \in \{1, -1\}$. Si $A$ est positive, alors $|\sigma A| = A$ pour $\sigma = \pm 1$ ; en particulier $|-C| = |C|$.
+
+      (ii) Si $A$ et $B$ sont positives et $\sigma, \tau \in \{1, -1\}$, alors $(\sigma A) \cdot (\tau B) = (\sigma\tau)(A \cdot B)$.
+
+      (iii) Pour toutes coupures $C$ et $D$, $(-C) \cdot D = -(C \cdot D) = C \cdot (-D)$.
+    preuve: |
+      (i) Si $C$ est positive, $|C| = C$. Sinon, $-C$ est positive ({{rm-positives|Produit des positives}}, (i)), et $|C| = -C$, donc $C = -|C|$. Soit $A$ positive : $|A| = A$. Si $A = 0^*$, alors $-A = 0^*$ et $|-A| = 0^* = A$. Si $A \neq 0^*$, alors $-A$ n'est pas positive, toujours par {{rm-positives|Produit des positives}} (i), et $|-A| = -(-A) = A$. Enfin, écrivant $C = \sigma|C|$, on a $-C = (-\sigma)|C|$, donc $|-C| = |C|$.
+
+      (ii) Par (i), $|\sigma A| = A$ et $|\tau B| = B$. Si $A = 0^*$, alors $\sigma A = 0^*$, puisque $-0^* = 0^*$ ; les deux membres sont alors $\pm(0^* \cdot B)$ et $\pm(A \cdot B)$, c'est-à-dire $\pm 0^* = 0^*$ ({{rm-positives|Produit des positives}}, (iii)). Il en va de même si $B = 0^*$. Supposons $A \neq 0^*$ et $B \neq 0^*$ : alors $\sigma A$ est positive si et seulement si $\sigma = 1$, par (i) de {{rm-positives|Produit des positives}}, et de même pour $\tau B$. Les coupures $\sigma A$ et $\tau B$ sont donc de même signe si et seulement si $\sigma = \tau$, c'est-à-dire $\sigma\tau = 1$, et la définition donne $(\sigma A) \cdot (\tau B) = A \cdot B$ dans ce cas, $-(A \cdot B)$ dans l'autre : c'est $(\sigma\tau)(A \cdot B)$.
+
+      (iii) Écrivons $C = \sigma|C|$ et $D = \tau|D|$ par (i). Alors $-C = (-\sigma)|C|$, et (ii) donne $(-C) \cdot D = (-\sigma\tau)(|C| \cdot |D|) = -\big((\sigma\tau)(|C| \cdot |D|)\big) = -(C \cdot D)$. Le calcul de $C \cdot (-D)$ est le même.
+    remarques:
+      - |
+        Le point (ii) est l'outil de toute la suite : il ramène n'importe quel produit à un produit de coupures positives, affecté d'un signe que l'on calcule comme dans $\lex{ensemble-entiers-relatifs}{\mathbb Z}$. Le cas de $0^*$, à la fois positif et égal à son opposé, est le seul qui demande une attention particulière, et c'est pourquoi il est traité à part dans la preuve.
+      - |
+        La notation $|C|$ annonce la valeur absolue de l'analyse réelle. Une fois établi que $\lex{ensemble-reels}{\mathbb R}$ est un corps ordonné dont les éléments positifs sont les coupures positives ({{rm-ordre|Corps ordonné, ℚ ⊂ ℝ}}), $|C|$ est exactement le plus grand des deux éléments $C$ et $-C$, c'est-à-dire la valeur absolue $\max(x, -x)$ du nœud {{ar-corps|Borne supérieure}}.
+
+  - id: rm-corps
+    etiquette: ℝ est un corps
+    nature: théorème
+    titre: Les coupures forment un corps
+    enonce: |
+      Muni de l'addition et de la multiplication des coupures, $\lex{ensemble-reels}{\mathbb R}$ est un [[corps]], de zéro $0^*$ et d'unité $1^*$. L'inverse d'une coupure $C \neq 0^*$ est $|C|^{-1}$ si $C$ est positive, et $-\big(|C|^{-1}\big)$ sinon.
+    preuve: |
+      $(\mathbb R, +)$ est un groupe abélien de neutre $0^*$ ({{rr-addition|Addition des réels}}). Dans toute la preuve, on écrit $C = \sigma A$, $D = \tau B$, $E = \upsilon F$, avec $A = |C|$, $B = |D|$, $F = |E|$ positives et $\sigma, \tau, \upsilon \in \{1, -1\}$ ({{rm-signes|Règle des signes}}, (i)).
+
+      *Commutativité.* Par {{rm-signes|Règle des signes}} (ii) et {{rm-monoide|Associativité, neutre}} (i), $C \cdot D = (\sigma\tau)(A \cdot B) = (\tau\sigma)(B \cdot A) = D \cdot C$.
+
+      *Neutre.* $1^*$ est positive, donc $C \cdot 1^* = (\sigma \cdot 1)(A \cdot 1^*) = \sigma A = C$.
+
+      *Associativité.* $A \cdot B$ est positive, et deux applications de {{rm-signes|Règle des signes}} (ii) donnent $(C \cdot D) \cdot E = \big((\sigma\tau)(A \cdot B)\big) \cdot (\upsilon F) = (\sigma\tau\upsilon)\big((A \cdot B) \cdot F\big)$. De même $C \cdot (D \cdot E) = (\sigma\tau\upsilon)\big(A \cdot (B \cdot F)\big)$, et les deux coïncident par {{rm-monoide|Associativité, neutre}} (ii).
+
+      *Distributivité.* Montrons $C \cdot (D + E) = C \cdot D + C \cdot E$ pour toutes coupures $C$, $D$, $E$. Pour toute coupure $X$, on a $C \cdot X = \sigma(A \cdot X)$ : en écrivant $X = \xi|X|$, {{rm-signes|Règle des signes}} (ii) donne $C \cdot X = (\sigma\xi)(A \cdot |X|) = \sigma\big(\xi(A \cdot |X|)\big) = \sigma(A \cdot X)$. Comme $-(Y + Z) = (-Y) + (-Z)$ dans le groupe abélien $\mathbb R$, il suffit donc de traiter le cas où $C = A$ est positive. On distingue selon les signes de $D$ et $E$, en utilisant $A \cdot (-X) = -(A \cdot X)$ ({{rm-signes|Règle des signes}}, (iii)).
+
+      Si $D$ et $E$ sont positives, c'est {{rm-distributivite|Distributivité (positives)}}.
+
+      Si $D$ et $E$ ne sont pas positives, $D = -B$ et $E = -F$, et $D + E = -(B + F)$ ; alors $A \cdot (D + E) = -\big(A \cdot (B + F)\big) = -(A \cdot B + A \cdot F) = A \cdot (-B) + A \cdot (-F) = A \cdot D + A \cdot E$.
+
+      Si $D$ est positive et $E = -F$ ne l'est pas, deux sous-cas se présentent. Si $G = D + E$ est positive, alors $D = G + F$, somme de deux positives, donc $A \cdot D = A \cdot G + A \cdot F$, d'où $A \cdot (D + E) = A \cdot G = A \cdot D - A \cdot F = A \cdot D + A \cdot E$. Sinon, $H = -(D + E)$ est positive et $F = H + D$, donc $A \cdot F = A \cdot H + A \cdot D$, d'où $A \cdot (D + E) = -(A \cdot H) = A \cdot D - A \cdot F = A \cdot D + A \cdot E$.
+
+      Si $D$ n'est pas positive et $E$ l'est, on échange les rôles de $D$ et $E$, l'addition étant commutative.
+
+      ```schema rm-corps
+      Le cas mixte de la distributivité, $D$ positive et $E = -F$ non positive, lu sur la droite ordonnée : chaque segment coloré a pour longueur la coupure positive qui l'étiquette. En haut, $G = D + E$ est positive et $D = G + F$ ; en bas, $D + E$ n'est pas positive, $H = -(D + E)$ l'est et $F = H + D$. Dans les deux cas, une égalité entre coupures positives, où s'applique la distributivité déjà établie, contient l'égalité cherchée.
+      ```
+
+      *Unité non nulle.* $0 \in 1^*$ et $0 \notin 0^*$, donc $1^* \neq 0^*$.
+
+      *Inverse.* Soit $C \neq 0^*$. Alors $A = |C| \neq 0^*$, puisque $C = \pm A$ et $-0^* = 0^*$ ; $A$ est donc strictement positive et a un inverse $A^{-1}$ ({{rm-inverse|Inverse d'une positive}}). Si $C$ est positive, $C \cdot A^{-1} = A \cdot A^{-1} = 1^*$. Sinon $C = -A$, et $C \cdot \big(-(A^{-1})\big) = (-A) \cdot \big(-(A^{-1})\big) = A \cdot A^{-1} = 1^*$ par {{rm-signes|Règle des signes}} (ii).
+
+      Ainsi $(\mathbb R, +, \cdot)$ est un anneau commutatif, où $1^* \neq 0^*$ et où toute coupure non nulle est inversible : c'est un corps.
+    remarques:
+      - |
+        La disjonction de cas est le prix à payer pour avoir défini le produit par une formule réservée aux coupures positives. On peut s'en dispenser en construisant d'abord les réels positifs, dont on symétrise ensuite le monoïde additif comme on construit {{z|$\mathbb Z$}} à partir de $\lex{ensemble-entiers-naturels}{\mathbb N}$, ou en passant par les suites de Cauchy, où les axiomes de corps se vérifient terme à terme ; mais la vérification que l'inverse existe reste, dans toutes les constructions, l'étape où il faut un argument d'approximation, ici le point (i) de {{rm-inverse|Inverse d'une positive}}.
+
+  - id: rm-ordre
+    etiquette: Corps ordonné, ℚ ⊂ ℝ
+    nature: théorème
+    titre: ℝ est un corps ordonné qui contient ℚ
+    enonce: |
+      (i) Muni de l'inclusion, $\lex{ensemble-reels}{\mathbb R}$ est un [[corps-ordonne|corps ordonné]], dont les éléments positifs, c'est-à-dire supérieurs ou égaux à $0^*$, sont les coupures positives. Pour toute coupure $C$, $|C|$ est le plus grand des deux éléments $C$ et $-C$.
+
+      (ii) L'application $q \mapsto q^*$ de $\lex{ensemble-rationnels}{\mathbb Q}$ dans $\mathbb R$ est un morphisme de corps injectif et strictement croissant : $(p + q)^* = p^* + q^*$, $(pq)^* = p^* \cdot q^*$ et $1^*$ est l'unité de $\mathbb R$. C'est donc l'unique morphisme d'anneaux de $\mathbb Q$ dans $\mathbb R$ ({{q-plongement|ℚ dans tout corps ordonné}}).
+    preuve: |
+      (i) $\mathbb R$ est un corps ({{rm-corps|ℝ est un corps}}) et l'inclusion est un ordre total ({{rr-definition|Coupures de ℚ}}, (i)). Si $C \subset D$, alors $C + E \subset D + E$ ({{rr-addition|Addition des réels}}, (iv)). Si $0^* \subset C$ et $0^* \subset D$, alors $C$ et $D$ sont positives, leur produit est le produit des coupures positives, et $0^* \subset C \cdot D$ ({{rm-positives|Produit des positives}}, (iii)). Ce sont les deux axiomes d'un corps ordonné. Pour la valeur absolue, si $C$ est positive, alors $-C \subset 0^* \subset C$ par {{rm-positives|Produit des positives}} (i) et la totalité de l'ordre, et $|C| = C = \max(C, -C)$ ; sinon, $C \subset 0^* \subset -C$ et $|C| = -C = \max(C, -C)$.
+
+      (ii) L'additivité est {{rr-addition|Addition des réels}} (iii) ; elle donne $0^* + 0^* = 0^*$, et $p^* + (-p)^* = 0^*$, donc $(-p)^* = -(p^*)$. La stricte croissance, donc l'injectivité, est {{rr-definition|Coupures de ℚ}} (i), et $1^*$ est l'unité ({{rm-corps|ℝ est un corps}}).
+
+      *Multiplicativité pour $p, q \geqslant 0$.* Les coupures $p^*$ et $q^*$ sont positives, puisque $0 \leqslant p$ entraîne $0^* \subset p^*$. Si $p = 0$ ou $q = 0$, les deux membres valent $0^*$ ({{rm-positives|Produit des positives}}, (iii)). Supposons $p, q > 0$ ; alors $(p^*)_+ = \{a : 0 \leqslant a < p\}$ et de même pour $q$. Si $0 \leqslant a < p$ et $0 \leqslant b < q$, alors $ab \leqslant aq < pq$, donc $p^* \cdot q^* \subset (pq)^*$. Inversement, soit $z < pq$ ; si $z < 0$, il est dans $0^*$. Si $0 \leqslant z < pq$, posons
+      $$t = \frac12\Big(1 + \frac{z}{pq}\Big), \qquad a = pt, \qquad b = \frac{z}{pt}.$$
+      On a $\frac12 \leqslant t < 1$, donc $0 < a < p$ ; et $t > z/(pq)$, donc $b = z/(pt) < q$, avec $b \geqslant 0$. Ainsi $z = ab \in p^* \cdot q^*$.
+
+      *Cas général.* Écrivons $p = \sigma|p|$ et $q = \tau|q|$, où $|p| = \max(p, -p)$ dans $\mathbb Q$ et $\sigma, \tau \in \{1, -1\}$. Par ce qui précède, $p^* = \sigma\,|p|^*$, avec $|p|^*$ positive, et de même pour $q$. Par {{rm-signes|Règle des signes}} (ii), $p^* \cdot q^* = (\sigma\tau)\big(|p|^* \cdot |q|^*\big) = (\sigma\tau)(|p|\,|q|)^* = \big((\sigma\tau)|p|\,|q|\big)^* = (pq)^*$.
+
+      Enfin, $q \mapsto q^*$ est un morphisme d'anneaux ; par l'unicité de {{q-plongement|ℚ dans tout corps ordonné}}, c'est le plongement canonique de $\mathbb Q$ dans le corps ordonné $\mathbb R$.
+    remarques:
+      - |
+        L'égalité $(pq)^* = p^* \cdot q^*$ dit que le diagramme suivant est commutatif, où les flèches horizontales sont les multiplications de $\mathbb Q$ et de $\mathbb R$ :
+        $$\begin{CD} \mathbb Q \times \mathbb Q @>{(p, q) \,\mapsto\, pq}>> \mathbb Q \\ @V{(p, q) \,\mapsto\, (p^*, q^*)}VV @VV{q \,\mapsto\, q^*}V \\ \mathbb R \times \mathbb R @>{(C, D) \,\mapsto\, C \cdot D}>> \mathbb R \end{CD}$$
+        On peut donc calculer dans $\mathbb Q$ puis plonger, ou plonger puis calculer dans $\mathbb R$ : c'est ce qui permet d'identifier $q$ à $q^*$ et de considérer $\mathbb Q$ comme un sous-corps ordonné de $\mathbb R$, comme le fera {{rr-complet|Corps ordonné complet}}.
+      - |
+        La compatibilité avec le produit n'est qu'à sens unique. Comme dans tout corps ordonné ({{q-ordre|Ordre de ℚ}}, (i)), $C \subset D$ et $0^* \subset E$ entraînent $C \cdot E \subset D \cdot E$, mais l'inclusion se renverse si $E$ n'est pas positive : de $1^* \subset 2^*$ on tire $2^* \cdot (-1)^* = (-2)^* \subset (-1)^* = 1^* \cdot (-1)^*$. L'erreur la plus répandue, dans les inégalités, est d'oublier ce renversement.
+
+aretes:
+  - [rm-positives, rm-monoide]
+  - [rm-positives, rm-distributivite]
+  - [rm-positives, rm-signes]
+  - [rm-monoide, rm-inverse]
+  - [rm-inverse, rm-corps]
+  - [rm-distributivite, rm-corps]
+  - [rm-signes, rm-corps]
+  - [rm-corps, rm-ordre]
