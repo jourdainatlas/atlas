@@ -2311,7 +2311,9 @@ function blocRechercheAnnales() {
   h += `<div class="rech-ligne"><input type="search" id="ann-q" value="${esc(etatRech.q)}" placeholder="Un thème, un théorème, un objet…" aria-label="Rechercher un thème dans les sujets" autocomplete="off" list="ann-themes">`;
   h += `<datalist id="ann-themes">${Object.values(I.themes).filter(t => I.compte[t.id]).map(t => `<option value="${esc(t.titre)}">`).join('')}</datalist>`;
   h += `<select id="ann-fam" aria-label="Famille de concours"><option value="">Tous les concours</option>${fams.map(f => `<option value="${f.id}"${etatRech.fam === f.id ? ' selected' : ''}>${esc(f.titre)}</option>`).join('')}</select>`;
-  h += `<select id="ann-fil" aria-label="Filière"><option value="">Toutes filières</option>${['MP', 'MPI', 'PC', 'PSI'].map(f => `<option${etatRech.fil === f ? ' selected' : ''}>${f}</option>`).join('')}</select>`;
+  // filières de la famille choisie (aucune pour les concours de l'enseignement : le menu disparaît)
+  const filsAnn = [...new Set(fams.filter(f => !etatRech.fam || f.id === etatRech.fam).flatMap(f => f.filieres || []))];
+  if (filsAnn.length) h += `<select id="ann-fil" aria-label="Filière"><option value="">Toutes filières</option>${filsAnn.map(f => `<option${etatRech.fil === f ? ' selected' : ''}>${f}</option>`).join('')}</select>`;
   const opts = v => anTous.map(y => `<option${String(y) === v ? ' selected' : ''}>${y}</option>`).join('');
   h += `<span class="rech-periode">de <select id="ann-de" aria-label="Première session"><option value="">${anTous[0]}</option>${opts(etatRech.de)}</select> à <select id="ann-a" aria-label="Dernière session"><option value="">${anTous[anTous.length - 1]}</option>${opts(etatRech.a)}</select></span></div>`;
   h += `<div id="ann-res" aria-live="polite">${resultatsAnnales()}</div></section>`;
@@ -2328,7 +2330,14 @@ $('#rubrique').addEventListener('input', ev => {
 });
 let minuterieRechAnn = null;
 $('#rubrique').addEventListener('change', ev => {
-  if (ev.target.id === 'ann-fam') { etatRech.fam = ev.target.value; etatRech.montres = 12; majRechercheAnnales(); }
+  if (ev.target.id === 'ann-fam') {
+    etatRech.fam = ev.target.value; etatRech.montres = 12;
+    // une filière qui n'existe pas dans la famille choisie est oubliée, et le menu des filières est refait
+    const f = ((R.annales || {}).familles || []).find(x => x.id === etatRech.fam);
+    if (f && !(f.filieres || []).includes(etatRech.fil)) etatRech.fil = '';
+    const z = $('#rech-ann'); if (z) z.outerHTML = blocRechercheAnnales();
+    majRechercheAnnales();
+  }
   if (ev.target.id === 'ann-fil') { etatRech.fil = ev.target.value; etatRech.montres = 12; majRechercheAnnales(); }
   if (ev.target.id === 'ann-de' || ev.target.id === 'ann-a') {
     etatRech[ev.target.id === 'ann-de' ? 'de' : 'a'] = ev.target.value;

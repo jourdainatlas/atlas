@@ -50,6 +50,11 @@ des domaines dans `annales-themes.yaml`, variable `--c-<famille>`) : algèbre et
 plus de badge dans le menu du logo, et la note d'usage de la présentation (`annalesInfo`, classe `ann-info`)
 remplace le bandeau `maquette`.
 
+**Filtre des filières (28 oct. 2026).** Le menu des filières du moteur ne propose que celles de la famille
+choisie (champ `filieres:` de la famille dans `annales.yaml`) : il disparaît pour l'enseignement, qui n'en a
+pas, et une filière choisie auparavant est alors oubliée ; le bloc de recherche est refait au changement
+de famille, la saisie est conservée.
+
 **Convention de saisie.** Intervalles à la française : `\left]-1, +\infty\right[` (sinon le « − » est
 espacé comme une soustraction). Ensembles : `\mathbb{R}`, `\mathbb{R}_n[X]`, `\mathcal{M}_n(\mathbb{K})`.
 Indices et exposants explicites (`D_n`, `\lambda_i p_i`, `u^q`). `\leqslant`, `\geqslant`. `\mathrm{d}t`.
