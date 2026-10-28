@@ -53,6 +53,17 @@ function rendre(texte, ou) {
     codes.push(h);
     return `\n\n\u0001${codes.length - 1}\u0001\n\n`;
   });
+  // Schémas de l'édifice : ```schema nom ↵ légende ↵ ```. Le SVG de contenu/schemas/nom.svg est inséré
+  // tel quel (ses classes prennent les couleurs du thème) ; la légende, rendue comme le texte, dit ce
+  // qu'il faut lire sur la figure.
+  texte = texte.replace(/```schema ([\w-]+)\n([\s\S]*?)\n\s*```/g, (m, nom, legende) => {
+    let svg = '';
+    try { svg = fs.readFileSync(`contenu/schemas/${nom}.svg`, 'utf8').replace(/<\?xml[^>]*>\s*/, '').trim(); }
+    catch (e) { erreurs.push(`${ou} : schéma introuvable contenu/schemas/${nom}.svg`); }
+    const leg = rendre(legende.trim(), `${ou}/schéma ${nom}`).replace(/^<p>|<\/p>$/g, '');
+    codes.push(`<figure class="schema" data-schema="${nom}">${svg}<figcaption>${leg}</figcaption></figure>`);
+    return `\n\n\u0001${codes.length - 1}\u0001\n\n`;
+  });
   texte = texte.replace(/```(\w*)\n([\s\S]*?)\n\s*```/g, (m, lang, code) => {
     const lignes = code.split('\n'), retrait = Math.min(...lignes.filter(l => l.trim()).map(l => l.match(/^ */)[0].length));
     codes.push(`<pre class="code"${lang ? ` data-lang="${lang}"` : ''}><code>${echappe(lignes.map(l => l.slice(retrait)).join('\n'))}</code></pre>`);
@@ -298,7 +309,7 @@ fs.writeFileSync('site/index.html', index);
 // voient donc la même page, et le même aperçu, pour toutes les ancres. Chaque cours, rubrique et nœud
 // reçoit une petite page à une vraie adresse (cours/t-01/, edifice/<nœud>/), avec son titre, sa
 // description et l'image d'aperçu, qui renvoie aussitôt vers l'ancre correspondante du site.
-const texteBrut = h => String(h || '').replace(/<annotation[\s\S]*?<\/annotation>/g, '').replace(/<span class="katex-mathml">[\s\S]*?<\/span><\/span>/g, '')
+const texteBrut = h => String(h || '').replace(/<figure class="schema"[\s\S]*?<\/figure>/g, '').replace(/<annotation[\s\S]*?<\/annotation>/g, '').replace(/<span class="katex-mathml">[\s\S]*?<\/span><\/span>/g, '')
   .replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
 const coupe = (t, n = 200) => t.length > n ? t.slice(0, n - 1).replace(/\s+\S*$/, '') + '…' : t;
 const attr = t => String(t).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
