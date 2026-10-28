@@ -142,6 +142,15 @@ refaire l'argument ; `gd-accroissements` (i) renvoie à `de-taf` ; renvoi à `q-
 remarque de `ri-integrable` ; source exacte du mémoire de Riemann (présenté en 1854, publié par
 Dedekind en 1867, Abh. Göttingen 13).
 
+**Faits ensuite (28 oct. 2026).** Passe de schématisation des quatre chapitres (27 schémas). Candidat 1 :
+`rr-multiplication` devient un graphe de 7 nœuds (`rm-`), ℝ corps ordonné entièrement démontré.
+Candidats 2 et 3 : `z-polynomes` devient un graphe de 10 nœuds (`pol-` ; racines, factorisation,
+dérivée formelle, binôme et p | C(p,k), Gauss, Eisenstein, énoncés sur le corps des fractions de ℤ
+puisque ℚ vient après) ; arête z-zn → z-polynomes ; galois et ℂ y renvoient ; `gs-abel-ruffini` (ii)
+récrit sans d'Alembert-Gauss (TVI, Rolle, racine ⇔ facteur, `c-racines-carrees`), et deux lacunes de
+l'ancienne preuve comblées (élément d'ordre 5 = 5-cycle ; génération de 𝔖₅). Bilan :
+`OK : 440 nœuds, 271 termes, 38 graphes`. Croisement préexistant relevé : `zf` (1).
+
 **Candidats suivants** (relevé du 28 oct. 2026 sur tout l'édifice ; priorité 1 d'abord) :
 1. `rr-multiplication` (r) : « admise en partie », sous toute l'analyse → sous-graphe (axiomes de corps
    des positives, inverse, signes, morphisme q ↦ q*). Petit à moyen.
