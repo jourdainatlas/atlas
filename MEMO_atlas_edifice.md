@@ -185,7 +185,7 @@ Texte d'accueil de l'édifice mis à jour (31 branches). Bilan : `OK : 457 nœud
 5. `l-completude` (log) : existence d'un modèle admise → sous-graphe Henkin (Löwenheim-Skolem en
    devient un corollaire). Moyen.
 Priorité 2 : ~~`li-cartan`~~ (fait le 28 oct. 2026, voir plus bas), ~~`ga-nullstellensatz`~~ (fait le 28 oct. 2026),
-`t-tychonov` (ultrafiltres, arête ordin → top), scindages de `gs-groupes`, `v-determinant`,
+`t-tychonov` (écarté par l'auteur le 28 oct. 2026 : il demanderait la flèche ordin → top, qui ferait remonter la topologie et ses 19 descendants ; l'énoncé conditionnel « ultrafiltre ⇒ Tychonov » a été proposé sans être retenu), ~~scindages de `gs-groupes`~~ (fait), `v-determinant`,
 `ta-revetement` ; réduction et trace en algèbre linéaire (la trace est employée sans être définie) ;
 découpage de `geod` en trois théories ; suites i.i.d. uniformes en proba. Priorité 3 : Mayer-Vietoris
 (subdivision, gros), `derham` en degré 1, compléments des théories terminales, théories « groupes
@@ -284,3 +284,11 @@ bulle n'avait aucun effet, et que la mise en évidence d'une flèche (`surligner
 effacée. La fonction de l'édifice s'appelle désormais `surlignerNoeud`. Vérifié : survol d'une bulle
 (4 flèches, 5 bulles), retour à l'aspect initial sur le fond, après un clic, et hors du graphe.
 Précaution : préfixer les fonctions globales du gabarit par rubrique.
+
+Scindage de `gs-groupes` (28 oct. 2026) en quatre nœuds : `gs-lagrange` (schéma `gs-lagrange` : les
+classes de {0, 4, 8} dans ℤ/12ℤ, quatre triangles), `gs-cauchy` (McKay ; exemple 𝔖₃, p = 3 : 36 triplets,
+3 points fixes, 11 orbites, vérifié par Python), `gs-resolubles` (définition, commutateurs, quotients ;
+preuves détaillées), `gs-sn` (𝔖ₙ non résoluble pour n ≥ 5 ; remarque vérifiée : dans 𝔖₄ le commutateur
+de deux 3-cycles est l'identité ou une double transposition). Liens réorientés : corps finis → Lagrange,
+radicaux → résolubles, Abel-Ruffini → Cauchy et 𝔖ₙ ; lexique `groupe-resoluble` défini dans
+`gs-resolubles`. L'ancre `#galois.gs-groupes` n'existe plus.

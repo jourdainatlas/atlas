@@ -673,3 +673,28 @@ def li_petits():
     S.fleche(R(0, -0.62), R(float(s), -0.62), 'b', l=1.2, double=True)
     S.texte(R(float(s) / 2, -0.62) + [0, 16], 's', 'b', taille=15)
     return S
+
+
+@schema('gs-lagrange')
+def gs_lagrange():
+    # ℤ/12ℤ en cadran ; classes k + H, H = {0, 4, 8} : quatre triangles équilatéraux disjoints.
+    H = {0, 4, 8}
+    classes = [sorted((k + h) % 12 for h in H) for k in range(4)]
+    assert sorted(x for c in classes for x in c) == list(range(12))
+    S = Schema(340, 330, 'Les quatre classes de H = {0, 4, 8} dans ℤ/12ℤ')
+    O, R0 = np.array([170.0, 165.0]), 120.0
+    P = lambda k: O + R0 * np.array([math.sin(2 * math.pi * k / 12), -math.cos(2 * math.pi * k / 12)])
+    # les trois sommets d'une classe sont à 120° les uns des autres : triangle équilatéral
+    for c in classes:
+        d = [np.linalg.norm(P(c[i]) - P(c[(i + 1) % 3])) for i in range(3)]
+        assert max(d) - min(d) < 1e-9
+    S.cercle(O, R0, 'g', d=True)
+    couleurs = ['r', 'b', 'v', 'o']
+    for c, coul in zip(classes, couleurs):
+        S.poly([P(k) for k in c], coul, ferme=True, l=2)
+        for k in c:
+            S.point(P(k), coul, r=5)
+    for k in range(12):
+        u = (P(k) - O) / R0
+        S.texte(P(k) + 20 * u, str(k), couleurs[k % 4], taille=15)
+    return S
