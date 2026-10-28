@@ -1,20 +1,20 @@
 # Niveau 1 : structure interne du nœud « Analyse fonctionnelle ».
 # Espaces vectoriels normés réels (les complexes ne sont pas des ancêtres de ce nœud), espaces
 # de Banach, opérateurs continus, espaces L¹ et L², espaces de Hilbert (projection, Riesz,
-# bases hilbertiennes), Hahn-Banach, Baire, Banach-Steinhaus, application ouverte.
-# Les normes sont redéfinies ici en dimension quelconque : la géométrie différentielle, qui
-# les introduit sur ℝⁿ, n'est pas un ancêtre de ce nœud. Les espaces Lᵖ pour p quelconque
+# bases hilbertiennes), Hahn-Banach, Banach-Steinhaus, application ouverte.
+# Les normes, les espaces métriques complets et le théorème de Baire viennent du graphe
+# « Espaces métriques et normés » (met), parent de celui-ci. Les espaces Lᵖ pour p quelconque
 # demandent les puissances réelles, donc l'exponentielle, et ne sont pas traités.
 # Choix : Hahn-Banach (Zorn), bases hilbertiennes en général (Zorn), projection (choix
-# dénombrable), Baire et application ouverte (choix dépendant).
+# dénombrable), application ouverte (choix dépendant, comme Baire).
 
 graphe: anf
 titre: Analyse fonctionnelle
 conteneur: anf
 
 entrees:
-  alglin: [f-evn, f-hahn-banach]
-  top: [f-evn, f-baire]
+  met: [f-evn, f-banach-steinhaus]
+  alglin: [f-hahn-banach]
   mes: [f-lp]
 
 noeuds:
@@ -23,7 +23,7 @@ noeuds:
     nature: définition
     titre: Espaces vectoriels normés et espaces de Banach
     texte: |
-      Un [[espace-norme|espace vectoriel normé]] est un $\lex{ensemble-reels}{\mathbb R}$-espace vectoriel $E$ muni d'une application $\|\cdot\| : E \to [0, +\infty[$ telle que $\|x\| = 0$ entraîne $x = 0$, $\|\lambda x\| = |\lambda|\,\|x\|$ et $\|x + y\| \leqslant \|x\| + \|y\|$. La distance $d(x, y) = \|x - y\|$ en fait un [[espace-metrique]], et l'on munit $E$ de la topologie dont les ouverts sont les parties qui contiennent une boule $B(a, r)$ autour de chacun de leurs points. Un [[banach|espace de Banach]] est un espace normé complet : toute [[suite-cauchy|suite de Cauchy]] y converge.
+      Un [[espace-norme|espace vectoriel normé]] est un $\lex{ensemble-reels}{\mathbb R}$-espace vectoriel $E$ muni d'une [[norme]] $\|\cdot\|$ ({{gd-normes|Normes}}) : $\|x\| = 0$ entraîne $x = 0$, $\|\lambda x\| = |\lambda|\,\|x\|$ et $\|x + y\| \leqslant \|x\| + \|y\|$. La distance $d(x, y) = \|x - y\|$ en fait un [[espace-metrique]], et l'on munit $E$ de la topologie associée, dont les ouverts sont les parties qui contiennent une boule $B(a, r)$ autour de chacun de leurs points ({{me-topologie|Topologie d'une distance}}). Un [[banach|espace de Banach]] est un espace normé [[espace-complet|complet]] : toute [[suite-cauchy|suite de Cauchy]] y converge.
     enonce: |
       (i) Les boules ouvertes forment une base de cette topologie, qui est séparée. Une partie $F$ est fermée si et seulement si toute suite d'éléments de $F$ qui converge a sa limite dans $F$.
 
@@ -33,13 +33,13 @@ noeuds:
 
       (iv) Un sous-espace fermé d'un espace de Banach est un espace de Banach.
     preuve: |
-      (i) Si $x \in B(a, r) \cap B(b, s)$, la boule de centre $x$ et de rayon $\min(r - \|x - a\|, s - \|x - b\|)$ est contenue dans l'intersection, par l'inégalité triangulaire. Deux points distincts sont séparés par les boules de rayon la moitié de leur distance. Si $F$ est fermé et $x_n \to x$ avec $x \notin F$, une boule autour de $x$ évite $F$, et contient pourtant les $x_n$ à partir d'un rang. Réciproquement, si $x \notin F$ et si aucune boule $B(x, \frac1{n+1})$ n'évitait $F$, la suite construite en choisissant un point dans chacune contredirait la condition ; cette direction utilise le [[choix-denombrable]], et l'on n'emploiera que la première.
+      (i) C'est, pour la distance d'une norme, le contenu des nœuds {{gd-normes|Normes}}, (i), et {{me-sequentielle|Suites convergentes}}, (iii). La réciproque de la caractérisation des fermés utilise le [[choix-denombrable]] ; on n'emploiera que le sens direct.
 
       (ii) $\|(x + y) - (x_0 + y_0)\| \leqslant \|x - x_0\| + \|y - y_0\|$ et $\|\lambda x - \lambda_0 x_0\| \leqslant |\lambda|\,\|x - x_0\| + |\lambda - \lambda_0|\,\|x_0\|$. L'inégalité sur la norme découle de l'inégalité triangulaire. Si $F$ est un sous-espace, $\bar F$ est stable par les opérations, qui sont continues.
 
-      (iii) Si $E$ est complet et $\sum \|x_n\| < +\infty$, les sommes partielles forment une suite de Cauchy, puisque $\|S_q - S_p\| \leqslant \sum_{p < n \leqslant q} \|x_n\|$. Réciproquement, soit $(y_n)$ de Cauchy, et $n_k$ le plus petit entier $n > n_{k-1}$ tel que $\|y_m - y_{m'}\| \leqslant 2^{-k}$ pour $m, m' \geqslant n$. La série $\sum (y_{n_{k+1}} - y_{n_k})$ converge absolument, donc converge, et la suite extraite $(y_{n_k})$ converge. Une suite de Cauchy qui a une suite extraite convergente converge, vers la même limite.
+      (iii) Si $E$ est complet et $\sum \|x_n\| < +\infty$, les sommes partielles forment une suite de Cauchy, puisque $\|S_q - S_p\| \leqslant \sum_{p < n \leqslant q} \|x_n\|$. Réciproquement, soit $(y_n)$ de Cauchy, et $n_k$ le plus petit entier $n > n_{k-1}$ tel que $\|y_m - y_{m'}\| \leqslant 2^{-k}$ pour $m, m' \geqslant n$. La série $\sum (y_{n_{k+1}} - y_{n_k})$ converge absolument, donc converge, et la suite extraite $(y_{n_k})$ converge. Une suite de Cauchy qui a une suite extraite convergente converge, vers la même limite ({{me-cauchy|Espaces complets}}, (i)).
 
-      (iv) Une suite de Cauchy de $F$ converge dans $E$, et sa limite est dans $F$, fermé, par (i).
+      (iv) C'est le sens direct du nœud {{me-cauchy|Espaces complets}}, (iii), qui n'emploie que le sens direct de (i).
     remarques:
       - |
         En dimension infinie, deux normes sur un même espace peuvent définir des topologies différentes. Sur l'espace des fonctions continues sur $[0, 1]$, les fonctions $x \mapsto x^n$ ont pour norme uniforme $1$ et pour intégrale $\frac1{n+1}$ : elles tendent vers $0$ pour la norme $\int_0^1 |f|$, mais pas pour la norme uniforme. En dimension finie, au contraire, toutes les normes sont équivalentes ({{gd-equivalence|Équivalence des normes}}).
@@ -220,30 +220,6 @@ noeuds:
       - |
         Dans un espace de Hilbert, le théorème est immédiat : une forme continue sur un sous-espace $G$ se prolonge à $\bar G$ par continuité, puis par $0$ sur $\bar G^\perp$, sans changer de norme, grâce au théorème de projection. Toute la force de Hahn-Banach est dans les espaces dépourvus de produit scalaire, comme $\ell^1$ ou $C(K)$.
 
-  - id: f-baire
-    etiquette: Théorème de Baire
-    nature: théorème
-    titre: Théorème de Baire
-    texte: |
-      Un espace métrique est **complet** si toute suite de Cauchy y converge. Une partie est **dense** si son adhérence est l'espace entier, c'est-à-dire si elle rencontre tout ouvert non vide.
-    choix: |
-      La démonstration construit une suite de boules emboîtées, chacune choisie en fonction de la précédente : c'est le **choix dépendant**. Blair a montré en 1977 que le théorème de Baire pour les espaces métriques complets lui est équivalent.
-    enonce: |
-      Dans un espace métrique complet $X$, toute intersection d'une suite $(U_n)$ d'ouverts denses est dense. De façon équivalente, une réunion d'une suite de fermés d'intérieurs vides est d'intérieur vide.
-    preuve: |
-      Soit $V$ un ouvert non vide ; montrons que $V \cap \bigcap_n U_n \neq \varnothing$. Comme $U_0$ est dense, $V \cap U_0$ est un ouvert non vide : il contient une boule fermée $\bar B(x_0, r_0)$ avec $0 < r_0 \leqslant 1$. Supposons construite $\bar B(x_n, r_n)$. L'ouvert $B(x_n, r_n) \cap U_{n+1}$ est non vide, par densité, et contient une boule fermée $\bar B(x_{n+1}, r_{n+1})$ avec $0 < r_{n+1} \leqslant 2^{-n-1}$. Les boules sont emboîtées, donc $d(x_m, x_n) \leqslant r_n \leqslant 2^{-n}$ pour $m \geqslant n$ : la suite des centres est de Cauchy, et converge vers un $x$, qui appartient à chaque boule fermée $\bar B(x_n, r_n)$, puisqu'elles sont fermées et contiennent les $x_m$ pour $m \geqslant n$. Donc $x \in V \cap \bigcap_n U_n$.
-
-      ```schema f-baire
-      Dans le plan, $V$ est un disque et chaque $U_n$ est le complémentaire d'une droite $L_n$. Les boules fermées rouges sont emboîtées, chacune contenue dans la boule ouverte précédente et disjointe de la droite de même indice, avec $r_n \leqslant 2^{-n}$ ; le médaillon agrandit $\bar B(x_2, r_2)$, que $L_3$ traverse sans toucher $\bar B(x_3, r_3)$. La limite des centres appartient à toutes les boules, donc à aucune des droites.
-      ```
-
-      La forme équivalente s'obtient par passage aux complémentaires.
-    remarques:
-      - |
-        Le théorème redonne la non-dénombrabilité de $\lex{ensemble-reels}{\mathbb R}$, et plus précisément de $[0, 1]$, qui est complet : si $[0, 1] = \{q_0, q_1, \dots\}$, ce serait une réunion dénombrable de singletons, fermés et d'intérieur vide. L'argument diagonal de Cantor ({{r-cantor|Théorème de Cantor}}) établit le même fait par une autre voie.
-      - |
-        La complétude est indispensable : $\lex{ensemble-rationnels}{\mathbb Q}$ est la réunion dénombrable de ses singletons, qui sont fermés et d'intérieur vide dans $\mathbb Q$.
-
   - id: f-banach-steinhaus
     etiquette: Banach-Steinhaus
     nature: théorème
@@ -273,7 +249,7 @@ noeuds:
 
       (iii) *Graphe fermé.* Une application linéaire $v : E \to F$ dont le graphe est fermé dans $E \times F$ est continue.
     preuve: |
-      (i) *Étape 1.* $F = \bigcup_n \overline{u(B(0, n))}$, par surjectivité. Par Baire, l'un de ces fermés contient une boule $B(y_0, \rho)$. Comme $\overline{u(B(0, n))}$ est convexe et symétrique, il contient $\frac12\big(B(y_0, \rho) + B(-y_0, \rho)\big) \supset B(0, \rho)$, et par homogénéité $\overline{u(B(0, 1))} \supset B(0, 2c)$ avec $2c = \rho/n$.
+      (i) *Étape 1.* $F = \bigcup_n \overline{u(B(0, n))}$, par surjectivité. Par le théorème de Baire ({{f-baire|Théorème de Baire}}), l'un de ces fermés contient une boule $B(y_0, \rho)$. Comme $\overline{u(B(0, n))}$ est convexe et symétrique, il contient $\frac12\big(B(y_0, \rho) + B(-y_0, \rho)\big) \supset B(0, \rho)$, et par homogénéité $\overline{u(B(0, 1))} \supset B(0, 2c)$ avec $2c = \rho/n$.
 
       *Étape 2.* Soit $y$ avec $\|y\| < c$. Par l'étape 1 et homogénéité, il existe $x_1 \in B(0, \frac12)$ tel que $\|y - u(x_1)\| < c/2$, puis $x_2 \in B(0, \frac14)$ tel que $\|y - u(x_1) - u(x_2)\| < c/4$, et ainsi de suite : $\|x_k\| < 2^{-k}$ et $\|y - u(x_1 + \cdots + x_k)\| < c\,2^{-k}$. La série $\sum x_k$ converge absolument, donc converge dans l'espace de Banach $E$ ({{f-evn|Espaces normés}}, (iii)), vers $x$ de norme $< 1$, et $u(x) = y$ par continuité. Donc $B(0, c) \subset u(B(0, 1))$. Si $O$ est ouvert et $x \in O$ avec $B(x, r) \subset O$, alors $u(O) \supset u(x) + B(0, rc)$.
 
@@ -297,7 +273,5 @@ aretes:
   - [f-operateurs, f-riesz]
   - [f-hilbert, f-bases-hilbertiennes]
   - [f-operateurs, f-hahn-banach]
-  - [f-baire, f-banach-steinhaus]
   - [f-operateurs, f-banach-steinhaus]
-  - [f-baire, f-application-ouverte]
   - [f-operateurs, f-application-ouverte]

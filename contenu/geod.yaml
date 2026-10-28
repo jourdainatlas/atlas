@@ -1,7 +1,8 @@
 # Niveau 1 : structure interne du nœud « Géométrie différentielle ».
-# On construit d'abord le calcul différentiel dans ℝⁿ (normes, différentielle, classe Cᵏ,
-# point fixe, inversion locale, submersions), puis les sous-variétés de ℝⁿ, et enfin les
-# variétés abstraites, leurs espaces tangents et le fibré tangent.
+# On construit d'abord le calcul différentiel dans ℝⁿ (différentielle, classe Cᵏ, inversion
+# locale, submersions), puis les sous-variétés de ℝⁿ, et enfin les variétés abstraites, leurs
+# espaces tangents et le fibré tangent. Les normes, leur équivalence en dimension finie et le
+# point fixe de Banach sont au graphe « Espaces métriques et normés » (met), parent de celui-ci.
 # L'inversion des matrices est C^∞ par la formule de la comatrice (déterminant, construit
 # dans l'algèbre linéaire) ; la série de Neumann fournit la forme quantitative utilisée
 # par l'inversion locale.
@@ -13,48 +14,11 @@ titre: Géométrie différentielle
 conteneur: geod
 
 entrees:
-  top: [gd-normes]
-  analyse-reelle: [gd-normes, gd-denombrable, gd-accroissements]
-  alglin: [gd-equivalence, gd-gl, gd-formes]
+  met: [gd-denombrable, gd-differentielle, gd-inversion-locale]
+  analyse-reelle: [gd-accroissements]
+  alglin: [gd-formes]
 
 noeuds:
-  - id: gd-normes
-    etiquette: Normes
-    nature: définition
-    titre: Normes et topologie associée
-    texte: |
-      Une [[norme]] sur un $\lex{ensemble-reels}{\mathbb R}$-[[espace-vectoriel|espace vectoriel]] $E$ est une application $N : E \to [0, +\infty[$ telle que, pour tous $x, y \in E$ et $\lambda \in \mathbb R$, $N(x) = 0$ entraîne $x = 0$, $N(\lambda x) = |\lambda|\, N(x)$ et $N(x + y) \leqslant N(x) + N(y)$. La **boule ouverte** de centre $a$ et de rayon $r > 0$ est $B(a, r) = \{x \in E : N(x - a) < r\}$.
-
-      Sur $\lex{n-uplet}{\mathbb R^n}$, on dispose de $\|x\|_\infty = \max_i |x_i|$ et de $\|x\|_1 = \sum_i |x_i|$ ; ce sont des normes, puisque la valeur absolue en est une sur $\mathbb R$ et que les trois axiomes passent au maximum et à la somme. On les note souvent $\|\cdot\|$ quand le choix est indifférent.
-    enonce: |
-      Soit $N$ une norme sur $E$.
-
-      (i) $d(x, y) = N(x - y)$ est une distance, qui fait de $E$ un [[espace-metrique]]. Les boules ouvertes forment la [[base-topologie|base]] d'une topologie sur $E$, dite associée à $N$ : une partie $O$ est [[ouvert|ouverte]] si et seulement si, pour tout $a \in O$, il existe $r > 0$ tel que $B(a, r) \subset O$. Cette topologie est [[separe|séparée]].
-
-      (ii) La topologie associée à $\|\cdot\|_\infty$ sur $\mathbb R^n$ est la [[topologie-produit]] de $n$ copies de $\mathbb R$.
-
-      (iii) Soient $E$ et $F$ deux espaces normés, $A \subset E$ muni de la [[topologie-induite]], $f : A \to F$ et $a \in A$. L'application $f$ est continue en $a$ si et seulement si
-      $$\begin{gathered} \forall \varepsilon > 0,\ \exists \delta > 0,\ \forall x \in A, \\ \|x - a\| < \delta \ \Longrightarrow\ \|f(x) - f(a)\| < \varepsilon. \end{gathered}$$
-    preuve: |
-      (i) $d(x, y) = 0$ entraîne $x = y$ ; $d(y, x) = N(-(x - y)) = |-1|\,N(x - y) = d(x, y)$ ; l'inégalité triangulaire de $d$ est celle de $N$ appliquée à $(x - y) + (y - z)$. Les boules recouvrent $E$, puisque $a \in B(a, 1)$. Si $x \in B(a, r) \cap B(b, s)$, posons $t = \min\big(r - N(x - a),\, s - N(x - b)\big) > 0$ : pour $z \in B(x, t)$, $N(z - a) \leqslant N(z - x) + N(x - a) < r$, et de même $N(z - b) < s$, donc $B(x, t) \subset B(a, r) \cap B(b, s)$. Les deux conditions du nœud {{t-base|Bases}} sont remplies.
-
-      Si $O$ est une réunion de boules et $a \in O$, alors $a \in B(b, s) \subset O$ pour une boule, et le calcul précédent donne $B(a, s - N(a - b)) \subset B(b, s)$. Réciproquement, si la condition est remplie, $O$ est la réunion des boules qu'il contient. Enfin, si $x \neq y$, les boules de rayon $r = N(x - y)/2 > 0$ centrées en $x$ et en $y$ sont disjointes : un point $z$ commun donnerait $N(x - y) \leqslant N(x - z) + N(z - y) < 2r$.
-
-      (ii) La boule $B_\infty(a, r)$ est le produit $\prod_i\, ]a_i - r, a_i + r[$, qui est un ouvert produit. Réciproquement, soit $\prod_i U_i$ un produit d'ouverts de $\mathbb R$ contenant $a$. Par (i) appliqué à $(\mathbb R, |\cdot|)$, chaque $U_i$ contient un intervalle $]a_i - r_i, a_i + r_i[$, et $B_\infty(a, \min_i r_i) \subset \prod_i U_i$. Les produits d'ouverts formant une base de la topologie produit, les deux topologies ont les mêmes ouverts.
-
-      (iii) Par (i) et le nœud {{t-induite|Topologie induite}}, une partie de $A$ est un [[voisinage]] de $a$ dans $A$ si et seulement si elle contient une partie $B(a, \delta) \cap A$, et une partie de $F$ est un voisinage de $f(a)$ si et seulement si elle contient une boule $B(f(a), \varepsilon)$. La continuité en $a$ au sens du nœud {{t-continue|Continuité}} demande que chaque $f^{-1}\big(B(f(a), \varepsilon)\big)$ contienne un $B(a, \delta) \cap A$ : c'est exactement la condition écrite.
-    remarques:
-      - |
-        Pour $E = \mathbb R$ et $N = |\cdot|$, le point (iii) redonne la définition de la continuité du nœud {{c-point|Continuité en un point}}. Les deux notions de continuité, topologique et métrique, coïncident donc ; c'est ce qui permet d'employer librement l'une ou l'autre dans toute la suite.
-      - |
-        Une norme est déterminée par sa boule unité, qui est convexe et symétrique. Pour $\|\cdot\|_\infty$ sur $\mathbb R^2$, c'est un carré ; pour $\|\cdot\|_1$, un losange.
-
-        ```schema gd-normes
-        En notant $B_1$ et $B_\infty$ les boules de $\|\cdot\|_1$ et de $\|\cdot\|_\infty$, la boule unité de la première (losange rouge) et celle de la seconde (carré bleu) n'ont pas la même forme, mais elles s'emboîtent : $B_1(0, 1) \subset B_\infty(0, 1) \subset B_1(0, 2)$, cette dernière en pointillé. Cet encadrement traduit $\|x\|_\infty \leqslant \|x\|_1 \leqslant 2\|x\|_\infty$, et c'est lui qui rend les deux topologies égales.
-        ```
-
-        Le nœud suivant montre que ces différences de forme sont sans effet sur la topologie.
-
   - id: gd-denombrable
     etiquette: Base dénombrable de ℝⁿ
     nature: proposition
@@ -68,39 +32,6 @@ noeuds:
         Aucun choix n'intervient : l'ouvert $O$ est décrit comme la réunion de **toutes** les boules rationnelles qu'il contient, sans qu'on ait à en sélectionner une par point.
       - |
         L'existence d'une base au plus dénombrable sera exigée des variétés ({{gd-varietes|Variétés différentiables}}). Elle exclut des objets localement semblables à $\lex{ensemble-reels}{\mathbb R}$ mais « trop longs », comme la droite longue, obtenue en recollant $\omega_1$ copies de $[0, 1[$.
-
-  - id: gd-equivalence
-    etiquette: Équivalence des normes
-    nature: théorème
-    titre: Normes en dimension finie
-    texte: |
-      Deux normes $N$ et $N'$ sur $E$ sont [[normes-equivalentes|équivalentes]] s'il existe $\alpha, \beta > 0$ tels que $\alpha N \leqslant N' \leqslant \beta N$. Les boules de l'une contiennent alors des boules de même centre de l'autre, si bien que les deux normes définissent la même topologie et les mêmes suites de Cauchy.
-    enonce: |
-      (i) Sur $\lex{n-uplet}{\mathbb R^n}$, toutes les normes sont équivalentes ; elles définissent toutes la topologie produit.
-
-      (ii) Pour n'importe quelle norme, les parties [[compact|compactes]] de $\mathbb R^n$ sont les parties fermées et bornées, et $\mathbb R^n$ est complet : toute [[suite-cauchy|suite de Cauchy]] converge.
-
-      (iii) Munissons $\mathbb R^n$ et $\mathbb R^p$ de normes. Toute [[application-lineaire|application linéaire]] $u : \mathbb R^n \to \mathbb R^p$ est bornée sur la boule unité, et sa [[norme-subordonnee|norme subordonnée]] $|||u||| = \sup\{\|u(x)\| : \|x\| \leqslant 1\}$ est une norme sur $\lex{espace-applications-lineaires}{\mathcal L}(\mathbb R^n, \mathbb R^p)$, qui vérifie
-      $$\|u(x)\| \leqslant |||u|||\,\|x\|,$$
-      $$|||v \circ u||| \leqslant |||v|||\;|||u|||.$$
-      En particulier, $u$ est lipschitzienne, donc continue.
-
-      (iv) Sur un espace $E$ de [[dimension]] finie, toutes les normes sont équivalentes, et la topologie qu'elles définissent est celle que transporte n'importe quel isomorphisme $\mathbb R^n \to E$. Pour $E = \mathcal L(\mathbb R^n, \mathbb R^p)$, identifié aux matrices, c'est la topologie de $|||\cdot|||$ comme celle de $\max_{i,j} |a_{ij}|$.
-    preuve: |
-      (i) Soit $N$ une norme et $(e_i)$ la base canonique. Pour $x = \sum x_i e_i$, $N(x) \leqslant \sum |x_i|\, N(e_i) \leqslant \beta \|x\|_\infty$ avec $\beta = \sum N(e_i)$. Par suite $|N(x) - N(y)| \leqslant N(x - y) \leqslant \beta \|x - y\|_\infty$, et $N$ est continue pour $\|\cdot\|_\infty$ ({{gd-normes|Normes}}, (iii)) ; c'est vrai en particulier de $\|\cdot\|_\infty$ elle-même.
-
-      La sphère $S = \{x : \|x\|_\infty = 1\}$ est fermée, comme image réciproque d'un singleton, et contenue dans $[-1, 1]^n$. Ce pavé est compact, comme produit fini de [[segment|segments]] ({{ar-topo|Topologie de ℝ}}, {{t-produit-fini|Produit fini de compacts}}) pour la topologie produit, qui est celle de $\|\cdot\|_\infty$. Donc $S$ est compacte ({{t-compact-prop|Parties compactes}}, (i)), et $N(S)$ est une partie compacte non vide de $\lex{ensemble-reels}{\mathbb R}$, fermée et bornée. Sa borne inférieure $\alpha$ est adhérente à $N(S)$, donc lui appartient : $\alpha = N(x_0)$ avec $x_0 \in S$, d'où $\alpha > 0$. Pour $x \neq 0$, $x/\|x\|_\infty \in S$ donne $N(x) \geqslant \alpha \|x\|_\infty$. Toute norme est ainsi équivalente à $\|\cdot\|_\infty$, et deux normes quelconques sont équivalentes entre elles.
-
-      (ii) Une partie compacte $K$ est fermée, l'espace étant séparé ({{t-compact-prop|Parties compactes}}, (ii)), et bornée, puisque les boules $B(0, k)$, $k \in \lex{ensemble-entiers-naturels}{\mathbb N}$, la recouvrent et qu'un nombre fini d'entre elles suffit. Une partie fermée et bornée est bornée pour $\|\cdot\|_\infty$, donc fermée dans un pavé $[-R, R]^n$, qui est compact : elle est compacte. Si $(u_k)$ est de Cauchy, chaque suite de coordonnées l'est dans $\mathbb R$ et converge ({{ar-cauchy|Complétude}}) ; la suite converge alors pour $\|\cdot\|_\infty$, donc pour toute norme.
-
-      (iii) Pour $\|x\| \leqslant 1$, $\|u(x)\| \leqslant \sum |x_j|\,\|u(e_j)\|$ est majoré par une constante, grâce à (i) ; la borne supérieure existe ({{ar-corps|Borne supérieure}}). Pour $x \neq 0$, $\|u(x/\|x\|)\| \leqslant |||u|||$ donne la première inégalité, et la seconde s'en déduit : $\|v(u(x))\| \leqslant |||v|||\;|||u|||\,\|x\|$. Les axiomes de norme se vérifient point par point avant de passer à la borne supérieure. Enfin $\|u(x) - u(y)\| \leqslant |||u|||\,\|x - y\|$.
-
-      (iv) Si $\varphi : \mathbb R^n \to E$ est un isomorphisme et $N$ une norme sur $E$, alors $N \circ \varphi$ est une norme sur $\mathbb R^n$. Deux normes sur $E$ se transportent en deux normes équivalentes sur $\mathbb R^n$ ; elles sont donc équivalentes sur $E$. L'isomorphisme $\varphi$ envoie la topologie de $\|\cdot\|_\infty$ sur celle de la norme $\|\varphi^{-1}(\cdot)\|_\infty$, qui est l'une d'elles. Pour les applications linéaires, on utilise l'isomorphisme avec $\lex{espace-matrices}{\mathcal M_{p,n}}(\mathbb R) \cong \mathbb R^{pn}$ ({{v-matrices|Matrices}}).
-    remarques:
-      - |
-        L'erreur la plus répandue est d'étendre ce théorème à la dimension infinie. Sur l'espace des polynômes réels, le maximum des valeurs absolues des coefficients et leur somme sont deux normes, mais le polynôme $1 + X + \cdots + X^k$ vaut $1$ pour la première et $k + 1$ pour la seconde : aucune constante $\beta$ ne convient.
-      - |
-        Toute la difficulté est concentrée dans la compacité du pavé $[-1, 1]^n$, c'est-à-dire, en dernier ressort, dans la propriété de la borne supérieure. Sur $\mathbb Q^n$, les normes ne sont plus nécessairement équivalentes : $|a + b\sqrt 2|$ est une norme sur $\mathbb Q^2$, et $(a, b) \mapsto |a + b\sqrt 2|$ prend des valeurs arbitrairement petites sur des vecteurs de norme $\|\cdot\|_\infty$ égale à $1$, d'après les approximations de $\sqrt 2$ du nœud {{q-irrationnel|√2 est irrationnel}}.
 
   - id: gd-differentielle
     etiquette: Différentielle
@@ -193,31 +124,6 @@ noeuds:
         Dans (i), la continuité des dérivées partielles ne peut pas être omise : l'exemple $xy/(x^2 + y^2)$ du nœud {{gd-differentielle|Différentielle}} a des dérivées partielles en tout point, sans même être continu à l'origine.
       - |
         La classe $C^\infty$ est celle qu'adopteront les variétés. On pourrait travailler en classe $C^k$ avec $k \geqslant 1$ fixé ; Whitney a montré en 1936 que toute variété de classe $C^k$, $k \geqslant 1$, porte une structure $C^\infty$ compatible, de sorte que le choix de $C^\infty$ ne restreint pas la théorie.
-
-  - id: gd-point-fixe
-    etiquette: Point fixe
-    nature: théorème
-    titre: Théorème du point fixe de Banach
-    texte: |
-      Soit $F$ une partie de $\lex{n-uplet}{\mathbb R^n}$ muni d'une norme. Une application $\varphi : F \to F$ est [[contractante]] s'il existe $k \in [0, 1[$ tel que $\|\varphi(x) - \varphi(y)\| \leqslant k\,\|x - y\|$ pour tous $x, y \in F$.
-    enonce: |
-      Soit $F$ une partie fermée non vide de $\mathbb R^n$ et $\varphi : F \to F$ contractante, de rapport $k$. Alors $\varphi$ a un unique point fixe $x^*$. Pour tout $x_0 \in F$, la suite définie par $x_{m+1} = \varphi(x_m)$ converge vers $x^*$, et
-      $$\|x_m - x^*\| \leqslant \frac{k^m}{1 - k}\,\|x_1 - x_0\|.$$
-    preuve: |
-      Par récurrence, $\|x_{m+1} - x_m\| \leqslant k^m\,\|x_1 - x_0\|$. Pour $q > m$, l'inégalité triangulaire et la somme géométrique donnent
-      $$\|x_q - x_m\| \leqslant \sum_{j=m}^{q-1} k^j\,\|x_1 - x_0\| = k^m\frac{1 - k^{q-m}}{1 - k}\,\|x_1 - x_0\|,$$
-      qui est majoré par $\dfrac{k^m}{1 - k}\,\|x_1 - x_0\|$. La suite $(k^m)$ tend vers $0$ : c'est clair si $k = 0$, et sinon $1/k = 1 + s$ avec $s > 0$, et $(1 + s)^m \geqslant 1 + ms$ par récurrence, ce qui tend vers $+\infty$ puisque $\lex{ensemble-reels}{\mathbb R}$ est [[archimedien]]. La suite $(x_m)$ est donc de Cauchy ; elle converge vers un $x^*$ ({{gd-equivalence|Équivalence des normes}}, (ii)), qui appartient à $F$ : sinon le complémentaire de $F$, ouvert, contiendrait une boule centrée en $x^*$, et donc tous les $x_m$ à partir d'un certain rang.
-
-      $\varphi$ est lipschitzienne, donc continue, et $x_{m+1} = \varphi(x_m)$ tend à la fois vers $x^*$ et vers $\varphi(x^*)$ ; l'unicité de la limite dans un espace séparé donne $\varphi(x^*) = x^*$. Si $y^*$ est un autre point fixe, $\|x^* - y^*\| \leqslant k\,\|x^* - y^*\|$ impose $x^* = y^*$. L'estimation s'obtient en faisant tendre $q$ vers l'infini dans l'inégalité ci-dessus, la norme étant continue.
-    remarques:
-      - |
-        La démonstration est constructive : elle fournit un algorithme et une majoration de l'erreur. Pour $\varphi(x) = \frac12\big(x + \frac2x\big)$ sur $F = [1, 2]$, on a $\varphi(x) - 1 = \frac{(x - 1)^2 + 1}{2x} > 0$ et $2 - \varphi(x) = \frac{2 - (x - 2)^2}{2x} > 0$, donc $\varphi(F) \subset F$, et $\varphi(x) - \varphi(y) = \frac12(x - y)\big(1 - \frac{2}{xy}\big)$ avec $\big|1 - \frac2{xy}\big| \leqslant 1$, donc $k = 1/2$. Le point fixe vérifie $x^2 = 2$. Partant de $1$, on obtient $3/2$, $17/12$, $577/408 \approx 1{,}4142157$ : ce sont les approximations de Héron du nœud {{q-irrationnel|√2 est irrationnel}}, et l'erreur décroît bien plus vite que la majoration $2^{-m}$, car $\varphi'(\sqrt 2) = 0$.
-
-        ```schema gd-point-fixe
-        Le graphe de $\varphi$ reste dans le carré $[1, 2]^2$, ce qui traduit $\varphi(F) \subset F$, et l'escalier rouge, qui va du graphe à la diagonale, produit $x_0 = 1$, $x_1 = 3/2$ et $x_2 = 17/12$. Le graphe est presque horizontal là où il coupe la diagonale, parce que $\varphi'(\sqrt 2) = 0$ : c'est pourquoi $x_2$ est déjà à moins de $1/400$ du point fixe, dont on ne peut le distinguer à cette échelle.
-        ```
-      - |
-        L'hypothèse que $F$ est fermé est indispensable : la même $\varphi$ sur $F = [1, 2] \cap \lex{ensemble-rationnels}{\mathbb Q}$ envoie $F$ dans $F$ et reste contractante, mais n'a pas de point fixe, puisque $\sqrt 2$ est irrationnel.
 
   - id: gd-gl
     etiquette: Groupe linéaire
@@ -664,14 +570,9 @@ noeuds:
         La cohomologie de de Rham est un invariant différentiel, défini avec des formes. Le théorème de de Rham (1931) affirme qu'elle coïncide, pour une variété, avec la cohomologie singulière à coefficients réels, invariant purement topologique ; il est admis ici, et fait l'objet du nœud {{derham|Théorème de de Rham}}, qui relie cette branche à l'{{hom|homologie}}.
 
 aretes:
-  - [gd-normes, gd-denombrable]
-  - [gd-normes, gd-equivalence]
-  - [gd-equivalence, gd-differentielle]
   - [gd-differentielle, gd-accroissements]
   - [gd-accroissements, gd-classe-ck]
-  - [gd-equivalence, gd-point-fixe]
   - [gd-classe-ck, gd-gl]
-  - [gd-point-fixe, gd-inversion-locale]
   - [gd-gl, gd-inversion-locale]
   - [gd-inversion-locale, gd-submersions]
   - [gd-submersions, gd-sous-varietes]
