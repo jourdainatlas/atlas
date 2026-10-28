@@ -185,7 +185,7 @@ Texte d'accueil de l'édifice mis à jour (31 branches). Bilan : `OK : 457 nœud
 5. `l-completude` (log) : existence d'un modèle admise → sous-graphe Henkin (Löwenheim-Skolem en
    devient un corollaire). Moyen.
 Priorité 2 : ~~`li-cartan`~~ (fait le 28 oct. 2026, voir plus bas), ~~`ga-nullstellensatz`~~ (fait le 28 oct. 2026),
-`t-tychonov` (écarté par l'auteur le 28 oct. 2026 : il demanderait la flèche ordin → top, qui ferait remonter la topologie et ses 19 descendants ; l'énoncé conditionnel « ultrafiltre ⇒ Tychonov » a été proposé sans être retenu), ~~scindages de `gs-groupes`~~ (fait), `v-determinant`,
+`t-tychonov` (écarté par l'auteur le 28 oct. 2026 : il demanderait la flèche ordin → top, qui ferait remonter la topologie et ses 19 descendants ; l'énoncé conditionnel « ultrafiltre ⇒ Tychonov » a été proposé sans être retenu), ~~scindages de `gs-groupes`~~ (fait), ~~`v-determinant`~~ (fait),
 `ta-revetement` ; réduction et trace en algèbre linéaire (la trace est employée sans être définie) ;
 découpage de `geod` en trois théories ; suites i.i.d. uniformes en proba. Priorité 3 : Mayer-Vietoris
 (subdivision, gros), `derham` en degré 1, compléments des théories terminales, théories « groupes
@@ -292,3 +292,11 @@ preuves détaillées), `gs-sn` (𝔖ₙ non résoluble pour n ≥ 5 ; remarque v
 de deux 3-cycles est l'identité ou une double transposition). Liens réorientés : corps finis → Lagrange,
 radicaux → résolubles, Abel-Ruffini → Cauchy et 𝔖ₙ ; lexique `groupe-resoluble` défini dans
 `gs-resolubles`. L'ancre `#galois.gs-groupes` n'existe plus.
+
+Scindage de `v-determinant` (28 oct. 2026) en trois nœuds : `v-determinant` (id conservé, car les
+rubriques Cours, Exercices et Annales y renvoient : déterminant d'un endomorphisme, (i) existence et
+multiplicativité, (ii) bijectivité), `v-det-matrice` ((i) matrice dans toute base, (ii) produit et
+inversibilité, (iii) transposée, lignes ; remarques non-additivité et orientation, schéma `v-determinant`),
+`v-comatrice` (développement, comatrice ; exemple 3×3 vérifié par sympy, schéma `v-comatrice` du cofacteur
+C₂₁ = −4). Liens réorientés dans alglin (algèbre extérieure), geod (gd-gl, orientation), edo, tan.
+Croisements d'alglin 3 → 4.

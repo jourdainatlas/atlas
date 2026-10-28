@@ -698,3 +698,35 @@ def gs_lagrange():
         u = (P(k) - O) / R0
         S.texte(P(k) + 20 * u, str(k), couleurs[k % 4], taille=15)
     return S
+
+
+@schema('v-comatrice')
+def v_comatrice():
+    import sympy as sp
+    A = sp.Matrix([[2, 1, 0], [1, 3, 1], [0, 1, 4]])
+    i0, j0 = 1, 0                      # ligne 2, colonne 1 (indices à partir de 0)
+    mineur = A.minor_submatrix(i0, j0)
+    assert mineur == sp.Matrix([[1, 0], [1, 4]]) and mineur.det() == 4 and A.cofactor(i0, j0) == -4
+    S = Schema(520, 230, 'Cofacteur C₂₁ : on barre la ligne 2 et la colonne 1, puis on lit le signe sur le damier')
+    pas, x0, y0 = 52, 50, 40
+    C = lambda i, j: np.array([x0 + j * pas, y0 + i * pas])
+    for i in range(3):
+        for j in range(3):
+            barre = (i == i0 or j == j0)
+            S.texte(C(i, j), str(A[i, j]), 'g' if barre else 'r', taille=20)
+    S.ligne(C(i0, 0) + [-22, 0], C(i0, 2) + [22, 0], 'g', l=2)
+    S.ligne(C(0, j0) + [0, -22], C(2, j0) + [0, 22], 'g', l=2)
+    S.texte(C(3, 1) + [0, -8], 'A', 't', taille=18)
+    # mineur
+    S.texte([250, y0 + pas], '⟶', 'g', taille=20)
+    S.texte([305, y0 + pas / 2 - 4], '1', 'r', taille=18); S.texte([345, y0 + pas / 2 - 4], '0', 'r', taille=18)
+    S.texte([305, y0 + 3 * pas / 2 - 4], '1', 'r', taille=18); S.texte([345, y0 + 3 * pas / 2 - 4], '4', 'r', taille=18)
+    S.texte([325, y0 + 2 * pas + 14], 'Δ₂₁ = 4', 'r', taille=16)
+    # damier des signes
+    for i in range(3):
+        for j in range(3):
+            sg = '+' if (i + j) % 2 == 0 else '−'
+            c = 'b' if (i, j) == (i0, j0) else 'g'
+            S.texte([420 + j * 30, y0 + 20 + i * 30], sg, c, taille=19 if (i, j) == (i0, j0) else 16)
+    S.texte([450, y0 + 2 * pas + 14], 'C₂₁ = −4', 'b', taille=16)
+    return S
