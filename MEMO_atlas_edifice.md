@@ -105,6 +105,9 @@ constructions, exclu), `r` rouge (objet étudié, point décisif), `b` bleu (sec
 (troisième), `o` or (ce que fournit l'axiome du choix) ; `s-X` trait, `d` pointillé, `f-X` remplissage
 léger, `p-X` point plein, `x-X` texte.
 
+**Prime.** Dans une étiquette, `′` est placé automatiquement en exposant (au pied, la police KaTeX le
+dessine comme « / »).
+
 **Outils.** `outils/edifice_svg.py` (classes `Schema` et `Repere`, flèches, étiquettes en polices KaTeX
 avec indices `x_0`, exposants, `` `sup` `` en romain, ℝ en ajouré ; l'épaisseur `l=` passe par un style
 en ligne) ; `outils/edifice_schemas.py` (registre ; `python3 outils/edifice_schemas.py [noms]` régénère
@@ -150,6 +153,12 @@ puisque ℚ vient après) ; arête z-zn → z-polynomes ; galois et ℂ y renvoi
 récrit sans d'Alembert-Gauss (TVI, Rolle, racine ⇔ facteur, `c-racines-carrees`), et deux lacunes de
 l'ancienne preuve comblées (élément d'ordre 5 = 5-cycle ; génération de 𝔖₅). Bilan :
 `OK : 440 nœuds, 271 termes, 38 graphes`. Croisement préexistant relevé : `zf` (1).
+Candidat 5 : `l-completude` devient un graphe de 8 nœuds (`hk-` : règles dérivées, constantes,
+égalité, témoins par étages L₀ ⊂ L₁ ⊂ … ⊂ L⁺ et conservativité, Lindenbaum, modèle des termes clos,
+lemme de vérité, existence d'un modèle) ; `l-lowenheim` démontré (corollaire, sans choix). Choix : le cas
+dénombrable est sans choix (énumération) ; le cas général invoque, dans la métathéorie, un principe de
+maximalité (Zorn pour l'inclusion), signalé ⋆ dans `hk-lindenbaum` (ii) : pour une signature quelconque,
+la complétude équivaut dans ZF au lemme de l'ultrafiltre. Bilan : `OK : 448 nœuds, 274 termes, 39 graphes`.
 
 **Candidats suivants** (relevé du 28 oct. 2026 sur tout l'édifice ; priorité 1 d'abord) :
 1. `rr-multiplication` (r) : « admise en partie », sous toute l'analyse → sous-graphe (axiomes de corps

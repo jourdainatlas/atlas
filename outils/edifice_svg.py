@@ -96,6 +96,10 @@ def _tspans(s, roman=False, taille=17):
             continue
         if c == '\\' and i + 1 < len(s):
             tampon += s[i + 1]; i += 2; continue
+        if c == '′':                    # prime : en exposant, comme KaTeX (au pied, il ressemble à « / »)
+            ajoute(tampon, 0); tampon = ''
+            ajoute('′', 1); i += 1
+            continue
         if c in '_^':
             ajoute(tampon, 0); tampon = ''
             niv = -1 if c == '_' else 1

@@ -88,16 +88,16 @@ def hk_temoins():
     S.texte((cx[0], y_enon), 'σ = ∃x ∀y R x y', taille=16)
     # ℒ_1
     S.texte((cx[1], y_sym), 'c_σ', 'r', taille=17)
-    S.texte((cx[1], y_enon), 'σ′ = ∃y ¬R c_σ y', taille=16)
+    S.texte((cx[1], y_enon), 'σ’ = ∃y ¬R c_σ y', taille=16)
     S.texte((cx[1], y_h), 'h_σ', 'g', taille=14)
     S.texte((cx[1], y_ax), 'σ → ∀y R c_σ y', taille=15)
     # ℒ_2
-    S.texte((cx[2], y_sym), 'c_{σ′}', 'r', taille=17)
-    S.texte((cx[2], y_h), 'h_{σ′}', 'g', taille=14)
-    S.texte((cx[2], y_ax), 'σ′ → ¬R c_σ c_{σ′}', taille=15)
-    # flèches « énoncé → son témoin » (rouge) et « le témoin figure dans σ′ » (gris pointillé)
+    S.texte((cx[2], y_sym), 'c_{σ’}', 'r', taille=17)
+    S.texte((cx[2], y_h), 'h_{σ’}', 'g', taille=14)
+    S.texte((cx[2], y_ax), 'σ’ → ¬R c_σ c_{σ’}', taille=15)
+    # flèches « énoncé → son témoin » (rouge) et « le témoin figure dans σ’ » (gris pointillé)
     for a, b in [((cx[0] + largeur('σ = ∃x ∀y R x y') / 2 - 4, y_enon - 10), (cx[1] - 20, y_sym + 6)),
-                 ((cx[1] + largeur('σ′ = ∃y ¬R c_σ y') / 2 - 4, y_enon - 10), (cx[2] - 24, y_sym + 6))]:
+                 ((cx[1] + largeur('σ’ = ∃y ¬R c_σ y') / 2 - 4, y_enon - 10), (cx[2] - 24, y_sym + 6))]:
         fleche_entre(S, a, b, 'r', marge_p=4, marge_q=4)
     fleche_entre(S, (cx[1], y_sym + 12), (cx[1] + 18, y_enon - 12), 'g', d=True)
     S.texte((W / 2, H - 22), 'ℒ_0 ⊂ ℒ_1 ⊂ ℒ_2 ⊂ ⋯ ⊂ ℒ^+', 'g', taille=15)
