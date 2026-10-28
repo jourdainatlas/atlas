@@ -191,3 +191,15 @@ nœud dans n'importe quelle théorie ou sous-théorie sans les ouvrir une à une
   schémas, minuscules sans accents, 400 caractères), présent dans la page même quand les fiches des
   branches sont chargées à la demande (environ 150 Ko non compressés de plus dans `site/index.html`).
 
+### 32. Zoom du graphe au pincement (28 oct. 2026)
+
+Demande de l'auteur : sur téléphone, zoomer à deux doigts plutôt qu'avec + et −. `.vue` porte
+`touch-action: pan-x pan-y` : un doigt garde le défilement natif, le navigateur n'agrandit plus la page
+entière au pincement. Gabarit : `zoomGraphe(échelle, cx, cy)` change `etat.echelle` (bornes 0,35 à 1,6,
+celles des boutons) et corrige le défilement pour que le point du graphe sous (cx, cy) y reste ; les
+écouteurs `touchstart`/`touchmove`/`touchend` sur `#vue` suivent deux doigts (échelle = échelle initiale ×
+écart courant / écart initial ; le milieu des doigts fait aussi glisser le graphe) ; Ctrl + molette (pincement
+du pavé tactile sur ordinateur) appelle la même fonction. Vérifié en simulation tactile (CDP) : écart
+80 → 200 px donne 0,55 → 1,375, point central conservé à 3 px près, page non agrandie ; défilement à un
+doigt et toucher d'une bulle inchangés. Les boutons + et − restent.
+
