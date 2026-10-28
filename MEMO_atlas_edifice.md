@@ -276,3 +276,11 @@ transcendant (un dénominateur commun f écrit tout F = K(x) comme P(x)/f(x)^k, 
 l'édifice, arête alglin → geoalg (alg → geoalg devient redondante) ; croisements de l'édifice 16 → 19.
 Entrées de geoalg : alglin et z alimentent le lemme. Champ `choix` du Nullstellensatz précisé : seul
 « un idéal propre a un zéro » passe par Krull. Relu par un second agent (six remarques, traitées).
+
+Survol des bulles (28 oct. 2026, signalé par l'auteur : la mise en évidence restait après le survol).
+Cause : le gabarit contenait deux fonctions `surligner`, celle de l'édifice (bulle) et celle des Annales
+(texte, requête), déclarée plus bas ; la seconde remplaçait la première, si bien que le survol d'une
+bulle n'avait aucun effet, et que la mise en évidence d'une flèche (`surlignerArete`) n'était jamais
+effacée. La fonction de l'édifice s'appelle désormais `surlignerNoeud`. Vérifié : survol d'une bulle
+(4 flèches, 5 bulles), retour à l'aspect initial sur le fond, après un clic, et hors du graphe.
+Précaution : préfixer les fonctions globales du gabarit par rubrique.
