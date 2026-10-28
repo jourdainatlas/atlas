@@ -2,6 +2,7 @@
 
 Toute position est calculée ; toute affirmation illustrée est vérifiée par un assert.
 """
+import numpy as np
 from fractions import Fraction as Fr
 from edifice_schemas import schema
 from edifice_svg import Schema, Repere
@@ -98,5 +99,171 @@ def tr_connexes():
             S.texte(R(x, 0) + [0, 18], 'x', 'r', taille=16)
             S.texte(R(-0.12, 1.45), 'si c ∈ U : x serait dans E et dépasserait c', 'g', ancre='start', ui=True,
                     taille=14)
-        S.texte(R((a + c) / 2, 0) + [0, -14], 'E ⊂ U', 'b', ui=True, taille=14)
+        S.texte(R((a + c) / 2, 0) + [0, -14], '[a, c[ ⊂ U', 'b', ui=True, taille=14)
+    return S
+
+
+@schema('tr-ouverts')
+def tr_ouverts():
+    a, b = Fr(0), Fr(1)
+    xs = [Fr(6, 100), Fr(22, 100), Fr(1, 2), Fr(72, 100), Fr(93, 100)]
+    rayons = [min(x - a, b - x) for x in xs]
+    for x, r in zip(xs, rayons):
+        assert r > 0 and a <= x - r and x + r <= b          # la boule est incluse dans ]a, b[
+        assert x - r == a or x + r == b                     # elle touche l'extrémité la plus proche
+    assert rayons[0] < rayons[1] < rayons[2] > rayons[3] > rayons[4]   # le rayon diminue vers le bord
+
+    S = Schema(520, 260, 'Ouvert ]a, b[ : une boule autour de chaque point, de rayon de plus en plus petit vers le bord')
+    R = Repere(-0.12, 1.12, -0.55, 5.6, 20, 10, 480, 240)
+    S.ligne(R(-0.12, 0), R(1.12, 0), 'g')
+    S.ligne(R(a, 0), R(b, 0), 'r', l=4)
+    S.point(R(a, 0), 'r', r=4, creux=True)
+    S.point(R(b, 0), 'r', r=4, creux=True)
+    _graduation(S, R, a, 'a', 'r')
+    _graduation(S, R, b, 'b', 'r')
+    hauteurs = [1, 2, 3, 4, 5]
+    for x, r, h in zip(xs, rayons, hauteurs):
+        _intervalle_ouvert(S, R, x - r, x + r, h, 'b', l=2)
+        S.ligne(R(x, 0), R(x, h), 'g', d=True)
+        S.point(R(x, h), 'b', r=3.4)
+        bord = a if x - r == a else b
+        S.ligne(R(bord, 0), R(bord, h), 'g', d=True)
+    S.point(R(xs[2], 0), 'b', r=3.6)
+    S.texte(R(xs[2], 0) + [0, 18], 'x', 'b', taille=16)
+    S.texte(R(xs[2], 3) + [0, -15], 'r = `min`(x − a, b − x)', 'b', taille=15)
+    return S
+
+
+@schema('tr-adherence')
+def tr_adherence():
+    # A = [1/10, 7/20] ∪ {1/2} ∪ ]31/50, 9/10[ ; sa borne supérieure 9/10 n'est pas dans A
+    seg1, isole, seg2 = (Fr(1, 10), Fr(7, 20)), Fr(1, 2), (Fr(31, 50), Fr(9, 10))
+    dans_A = lambda t: seg1[0] <= t <= seg1[1] or t == isole or seg2[0] < t < seg2[1]
+    s = seg2[1]
+    assert not dans_A(s) and all(not dans_A(s + Fr(k, 1000)) for k in range(1, 200))   # s majore A
+    assert all(dans_A(s - Fr(1, k)) for k in range(4, 1000))                             # et c'est le plus petit
+    cas = [(Fr(1, 5), Fr(3, 4)), (Fr(7, 100), Fr(22, 25))]       # (r, a) avec a ∈ A ∩ ]s - r, s]
+    for r, pa in cas:
+        assert dans_A(pa) and s - r < pa <= s
+
+    S = Schema(520, 230, 'La borne supérieure s de A est adhérente : chaque boule de centre s contient un point de A')
+    R = Repere(-0.02, 1.2, -0.75, 2.75, 20, 10, 480, 210)
+    S.ligne(R(-0.02, 0), R(1.2, 0), 'g')
+    S.ligne(R(seg1[0], 0), R(seg1[1], 0), 'r', l=4)
+    S.point(R(seg1[0], 0), 'r', r=3.6)
+    S.point(R(seg1[1], 0), 'r', r=3.6)
+    S.point(R(isole, 0), 'r', r=4)
+    S.ligne(R(seg2[0], 0), R(seg2[1], 0), 'r', l=4)
+    S.point(R(seg2[0], 0), 'r', r=3.6, creux=True)
+    S.point(R(s, 0), 'r', r=4.2, creux=True)
+    S.texte(R((seg1[0] + seg1[1]) / 2, 0) + [0, -16], 'A', 'r', taille=17)
+    S.texte(R(s, 0) + [0, 20], 's = `sup` A', 'r', taille=16)
+    for k, ((r, pa), h) in enumerate(zip(cas, [2, 1])):
+        _intervalle_ouvert(S, R, s - r, s + r, h, 'b', l=2)
+        S.ligne(R(pa, 0), R(pa, h), 'g', d=True)
+        S.point(R(pa, h), 'b', r=4)
+        S.point(R(pa, 0), 'b', r=4)
+        S.texte(R(pa, h) + [0, -16], 'a' if k == 0 else 'a^{′}', 'b', taille=16)
+    S.ligne(R(s, 0), R(s, 2), 'g', d=True)
+    S.texte(R(s - cas[0][0], 2) + [-10, 0], 's − r', 'b', ancre='end', taille=16)
+    return S
+
+
+@schema('tr-adherence-2')
+def tr_adherence_2():
+    N = 30
+    A = [Fr(1, n) for n in range(1, N + 1)]
+    r0 = Fr(3, 20)                                    # boule centrée en 0
+    dedans = [q for q in A if abs(q) < r0]
+    assert dedans and all(Fr(1, n) < r0 for n in range(7, 10 ** 4)) and Fr(1, 6) > r0   # n >= 7
+    x = Fr(5, 12)                                     # entre 1/3 et 1/2
+    rx = min(x - Fr(1, 3), Fr(1, 2) - x)
+    assert rx > 0 and all(abs(Fr(1, n) - x) >= rx for n in range(1, 10 ** 4))     # la boule évite A
+
+    S = Schema(520, 200, 'A = {1/n} : 0 est adhérent, un point entre deux termes ne l’est pas')
+    R = Repere(-0.2, 1.12, -0.9, 2.4, 20, 10, 480, 180)
+    S.ligne(R(-0.2, 0), R(1.12, 0), 'g')
+    _intervalle_ouvert(S, R, -r0, r0, 1.4, 'b', l=2)
+    S.ligne(R(0, 0), R(0, 1.4), 'g', d=True)
+    _intervalle_ouvert(S, R, x - rx, x + rx, 1.4, 'v', l=2)
+    S.ligne(R(x, 0), R(x, 1.4), 'g', d=True)
+    for q in A:
+        S.point(R(q, 0), 'b' if q < r0 else 't', r=2.6 if q < Fr(1, 8) else 3.4)
+    S.point(R(0, 0), 'r', r=4.2, creux=True)
+    S.point(R(x, 0), 'v', r=3.6)
+    S.texte(R(0, 0) + [0, 20], '0', 'r', taille=16)
+    for n in (1, 2, 3):
+        S.texte(R(Fr(1, n), 0) + [0, 20], '1' if n == 1 else f'1/{n}', taille=15)
+    S.texte(R(x, 0) + [9, -13], 'x', 'v', ancre='start', taille=16)
+    S.texte(R(0, 1.4) + [0, -18], 'contient les 1/n, n ⩾ 7', 'b', ancre='start', ui=True, taille=14)
+    S.texte(R(x + rx, 1.4) + [10, 0], 'évite A', 'v', ancre='start', ui=True, taille=14)
+    return S
+
+
+@schema('tr-sequentielle')
+def tr_sequentielle():
+    x = Fr(0)
+    A = [(-1) ** k * Fr(3, 2 * k) for k in range(2, 25)]
+    assert x not in A and all(abs(q - x) > 0 for q in A)
+    choix = {1: Fr(3, 4), 2: Fr(-3, 10), 3: Fr(1, 4), 4: Fr(-1, 6), 5: Fr(3, 20)}
+    for n, an in choix.items():
+        boule = [q for q in A if abs(q - x) < Fr(1, n)]
+        assert an in boule and len(boule) >= 2            # plusieurs candidats : il faut choisir
+    S = Schema(520, 300, 'Réciproque : un point a_n choisi dans chaque boule de rayon 1/n')
+    R = Repere(-1.12, 1.12, -0.7, 5.6, 20, 12, 480, 280)
+    S.ligne(R(-1.12, 0), R(1.12, 0), 'g')
+    for q in A:
+        S.point(R(q, 0), 't', r=2.6)
+    for n, an in choix.items():
+        h = n
+        _intervalle_ouvert(S, R, x - Fr(1, n), x + Fr(1, n), h, 'b', l=2)
+        S.ligne(R(an, 0), R(an, h), 'o', d=True)
+        S.point(R(an, h), 'o', r=4.2)
+        S.texte(R(an, h) + [0, -15], f'a_{n}', 'o', taille=16)
+    S.ligne(R(x, 0), R(x, 5), 'g', d=True)
+    S.point(R(x, 0), 'r', r=4.2, creux=True)
+    S.texte(R(x, 0) + [0, 20], 'x', 'r', taille=16)
+    S.texte(R(-1, 0) + [0, 20], 'x − 1', 'b', taille=15)
+    S.texte(R(1, 0) + [0, 20], 'x + 1', 'b', taille=15)
+    S.texte(R(Fr(-1, 2), 0) + [0, -18], 'A', taille=17)
+    return S
+
+
+@schema('tr-sphere')
+def tr_sphere():
+    t = np.linspace(0, 2 * np.pi, 241)
+    cx, cy = np.cos(t), np.sin(t)
+    assert np.allclose(cx ** 2 + cy ** 2, 1) and np.all(np.abs(cx) <= 1) and np.all(np.abs(cy) <= 1)   # S¹ ⊂ P
+    S0 = [Fr(-1), Fr(1)]
+    assert all(z * z == 1 for z in S0)
+    U, V = (Fr(-2), Fr(0)), (Fr(0), Fr(2))
+    assert U[0] < -1 < U[1] <= V[0] < 1 < V[1]           # chaque ouvert capte un point, et ils sont disjoints
+
+    S = Schema(520, 260, 'S¹ dans le carré [-1, 1]², et S⁰ coupé par deux ouverts disjoints')
+    # à gauche : le plan, le carré P et le cercle
+    R = Repere(-1.45, 1.45, -1.45, 1.45, 12, 18, 224, 224)
+    R.axes(S, '', '')
+    P = [R(-1, -1), R(1, -1), R(1, 1), R(-1, 1)]
+    S.poly(P, 'g', ferme=True, rempli='g')
+    S.poly(R(cx, cy), 'r', l=2.4)
+    for v in (-1, 1):
+        S.texte(R(v, 0) + [(-6 if v < 0 else 6), 13], '−1' if v < 0 else '1', 'g', ancre='end' if v < 0 else 'start',
+                taille=15)
+    u = (np.sqrt(3) / 2, 1 / 2)                         # point du cercle d'où part le renvoi de l'étiquette
+    assert abs(u[0] ** 2 + u[1] ** 2 - 1) < 1e-12
+    S.ligne(R(*u), R(1, 0.62) + [10, 0], 'r')
+    S.texte(R(1, 0.62) + [13, 0], 'S^1', 'r', ancre='start', taille=17)
+    S.texte(R(1, -1) + [8, 2], 'P', 'g', ancre='start', taille=17)
+    # à droite : la droite réelle et S⁰
+    Q = Repere(-2.6, 2.6, -0.8, 2.4, 262, 40, 248, 180)
+    S.ligne(Q(-2.6, 0), Q(2.6, 0), 'g')
+    _intervalle_ouvert(S, Q, *U, 1, 'b', l=2)
+    _intervalle_ouvert(S, Q, *V, 1.8, 'v', l=2)
+    for z in S0:
+        S.point(Q(z, 0), 'r', r=4.6)
+        S.ligne(Q(z, 0), Q(z, 1 if z < 0 else 1.8), 'g', d=True)
+    for z, lab in [(-2, '−2'), (-1, '−1'), (0, '0'), (1, '1'), (2, '2')]:
+        S.ligne(Q(z, 0) + [0, -4], Q(z, 0) + [0, 4], 'g')
+        S.texte(Q(z, 0) + [0, 18], lab, 'r' if abs(z) == 1 else 'g', taille=15)
+    S.texte(Q(0, 0) + [0, 42], 'S^0 = {−1, 1}', 'r', taille=16)
     return S
