@@ -240,70 +240,114 @@ def disposer(gid):
     for v in nx.topological_sort(r):
         base = 0 if v.startswith('↑') else plancher
         rang[v] = max([base] + [rang[p] + 1 for p in r.predecessors(v)])
-    # nœuds fictifs sur les arêtes longues
-    chaines, couches = [], defaultdict(list)
-    for v in r.nodes: couches[rang[v]].append(v)
-    k = 0
-    for a, b in r.edges():
-        ch = [a]
-        for t in range(rang[a] + 1, rang[b]):
-            f = f'·{k}'; k += 1; rang[f] = t; couches[t].append(f); ch.append(f)
-        ch.append(b); chaines.append(ch)
-    nmax = max(rang.values())
-    voisins_bas, voisins_haut = defaultdict(list), defaultdict(list)
-    for ch in chaines:
-        for u, v in zip(ch, ch[1:]): voisins_haut[u].append(v); voisins_bas[v].append(u)
+    def essai(rang):
+        rang = dict(rang)
+        # nœuds fictifs sur les arêtes longues
+        chaines, couches = [], defaultdict(list)
+        for v in r.nodes: couches[rang[v]].append(v)
+        k = 0
+        for a, b in r.edges():
+            ch = [a]
+            for t in range(rang[a] + 1, rang[b]):
+                f = f'·{k}'; k += 1; rang[f] = t; couches[t].append(f); ch.append(f)
+            ch.append(b); chaines.append(ch)
+        nmax = max(rang.values())
+        voisins_bas, voisins_haut = defaultdict(list), defaultdict(list)
+        for ch in chaines:
+            for u, v in zip(ch, ch[1:]): voisins_haut[u].append(v); voisins_bas[v].append(u)
 
-    # Ordre des nœuds dans chaque rang : on minimise les croisements d'arêtes.
-    # Heuristique de Sugiyama : balayages par barycentres, puis échanges de voisins (transposition),
-    # le tout à partir de plusieurs ordres de départ déterministes ; on garde le meilleur.
-    def croisements_entre(ordre, t):
-        bas = {v: i for i, v in enumerate(ordre[t])}
-        haut = {v: i for i, v in enumerate(ordre[t + 1])}
-        segs = [(bas[u], haut[v]) for u in ordre[t] for v in voisins_haut[u]]
-        return sum(1 for i in range(len(segs)) for j in range(i + 1, len(segs))
-                   if (segs[i][0] - segs[j][0]) * (segs[i][1] - segs[j][1]) < 0)
-    def croisements(ordre):
-        return sum(croisements_entre(ordre, t) for t in range(nmax))
-    def autour(ordre, t):
-        return (croisements_entre(ordre, t - 1) if t > 0 else 0) + (croisements_entre(ordre, t) if t < nmax else 0)
-    def transposer(ordre):
-        for _ in range(30):
-            ameliore = False
-            for t in range(nmax + 1):
-                c = ordre[t]
-                for i in range(len(c) - 1):
-                    avant = autour(ordre, t)
-                    c[i], c[i + 1] = c[i + 1], c[i]
-                    if autour(ordre, t) < avant: ameliore = True
-                    else: c[i], c[i + 1] = c[i + 1], c[i]
-            if not ameliore: return
-    def balayer(ordre):
-        meilleur, score = {t: list(c) for t, c in ordre.items()}, croisements(ordre)
-        for it in range(24):
-            montee = it % 2 == 0
-            rng = range(1, nmax + 1) if montee else range(nmax - 1, -1, -1)
-            for t in rng:
-                ref = {v: i for i, v in enumerate(ordre[t - 1 if montee else t + 1])}
-                def bary(v, i):
-                    vs = [ref[w] for w in (voisins_bas[v] if montee else voisins_haut[v]) if w in ref]
-                    return (sum(vs) / len(vs), i) if vs else (i, i)
-                ordre[t] = [v for i, v in sorted(enumerate(ordre[t]), key=lambda iv: bary(iv[1], iv[0]))]
-            transposer(ordre)
-            s = croisements(ordre)
-            if s < score: meilleur, score = {t: list(c) for t, c in ordre.items()}, s
+        # Ordre des nœuds dans chaque rang : on minimise les croisements d'arêtes.
+        # Heuristique de Sugiyama : balayages par barycentres, puis échanges de voisins (transposition),
+        # le tout à partir de plusieurs ordres de départ déterministes ; on garde le meilleur.
+        def croisements_entre(ordre, t):
+            bas = {v: i for i, v in enumerate(ordre[t])}
+            haut = {v: i for i, v in enumerate(ordre[t + 1])}
+            segs = [(bas[u], haut[v]) for u in ordre[t] for v in voisins_haut[u]]
+            return sum(1 for i in range(len(segs)) for j in range(i + 1, len(segs))
+                       if (segs[i][0] - segs[j][0]) * (segs[i][1] - segs[j][1]) < 0)
+        def croisements(ordre):
+            return sum(croisements_entre(ordre, t) for t in range(nmax))
+        def autour(ordre, t):
+            return (croisements_entre(ordre, t - 1) if t > 0 else 0) + (croisements_entre(ordre, t) if t < nmax else 0)
+        def transposer(ordre):
+            for _ in range(30):
+                ameliore = False
+                for t in range(nmax + 1):
+                    c = ordre[t]
+                    for i in range(len(c) - 1):
+                        avant = autour(ordre, t)
+                        c[i], c[i + 1] = c[i + 1], c[i]
+                        if autour(ordre, t) < avant: ameliore = True
+                        else: c[i], c[i + 1] = c[i + 1], c[i]
+                if not ameliore: return
+        def balayer(ordre):
+            meilleur, score = {t: list(c) for t, c in ordre.items()}, croisements(ordre)
+            for it in range(24):
+                montee = it % 2 == 0
+                rng = range(1, nmax + 1) if montee else range(nmax - 1, -1, -1)
+                for t in rng:
+                    ref = {v: i for i, v in enumerate(ordre[t - 1 if montee else t + 1])}
+                    def bary(v, i):
+                        vs = [ref[w] for w in (voisins_bas[v] if montee else voisins_haut[v]) if w in ref]
+                        return (sum(vs) / len(vs), i) if vs else (i, i)
+                    ordre[t] = [v for i, v in sorted(enumerate(ordre[t]), key=lambda iv: bary(iv[1], iv[0]))]
+                transposer(ordre)
+                s = croisements(ordre)
+                if s < score: meilleur, score = {t: list(c) for t, c in ordre.items()}, s
+                if score == 0: break
+            return meilleur, score
+        departs = [{t: list(couches[t]) for t in range(nmax + 1)},
+                   {t: list(reversed(couches[t])) for t in range(nmax + 1)}]
+        # Six ordres aléatoires suffisent : une résolution exacte par programmation en nombres entiers
+        # (29 oct. 2026, CP-SAT, rangement fixé) donne le même minimum pour chaque graphe intérieur, et
+        # 15 pour l'édifice, contre 16 ici, que 300 départs n'améliorent pas.
+        for graine in range(6):
+            hasard = random.Random(graine)
+            departs.append({t: hasard.sample(couches[t], len(couches[t])) for t in range(nmax + 1)})
+        ordre, score = None, None
+        for d in departs:
+            o, s = balayer(d)
+            if score is None or s < score: ordre, score = o, s
             if score == 0: break
-        return meilleur, score
-    departs = [{t: list(couches[t]) for t in range(nmax + 1)},
-               {t: list(reversed(couches[t])) for t in range(nmax + 1)}]
-    for graine in range(6):
-        hasard = random.Random(graine)
-        departs.append({t: hasard.sample(couches[t], len(couches[t])) for t in range(nmax + 1)})
-    ordre, score = None, None
-    for d in departs:
-        o, s = balayer(d)
-        if score is None or s < score: ordre, score = o, s
-        if score == 0: break
+
+
+        return rang, couches, chaines, nmax, voisins_bas, voisins_haut, ordre, score
+
+    # Autres rangements possibles (29 oct. 2026) : au plus tard, et un rangement qui raccourcit les
+    # arêtes (chaque nœud libre va à la médiane des rangs que lui imposent ses voisins). On garde celui
+    # qui donne le moins de croisements ; à égalité, le rangement au plus tôt d'origine.
+    def fixe(v): return v.startswith('↑')
+    def bornes(rg, v):
+        lo = max([0 if fixe(v) else plancher] + [rg[p] + 1 for p in r.predecessors(v)])
+        hi = min([rg[s_] - 1 for s_ in r.successors(v)] or [max(rg.values())])
+        return lo, hi
+    candidats = [rang]
+    tard = dict(rang)
+    for v in reversed(list(nx.topological_sort(r))):
+        if fixe(v): continue
+        lo, hi = bornes(tard, v)
+        if list(r.successors(v)): tard[v] = hi
+    candidats.append(tard)
+    court = dict(rang)
+    for _ in range(20):
+        bouge = False
+        for v in nx.topological_sort(r):
+            if fixe(v): continue
+            lo, hi = bornes(court, v)
+            cibles = sorted([court[p] + 1 for p in r.predecessors(v)] + [court[s_] - 1 for s_ in r.successors(v)])
+            if not cibles or lo > hi: continue
+            m = min(max(cibles[(len(cibles) - 1) // 2], lo), hi)
+            if m != court[v]: court[v] = m; bouge = True
+        if not bouge: break
+    candidats.append(court)
+    # Dans le graphe de l'édifice, le rang affiché est la longueur du plus long chemin depuis la logique
+    # (texte d'accueil) : seul le rangement au plus tôt le respecte.
+    if gid == racines[0]['graphe']: candidats = [rang]
+    meilleur_essai = None
+    for k_, rg in enumerate(candidats):
+        e_ = essai(rg)
+        if meilleur_essai is None or e_[-1] < meilleur_essai[-1]: meilleur_essai = e_
+    rang, couches, chaines, nmax, voisins_bas, voisins_haut, ordre, score = meilleur_essai
 
     dims = {}
     for v in rang:

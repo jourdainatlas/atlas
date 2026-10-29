@@ -534,3 +534,18 @@ gd-submersions (ii), gd-exemples-varietes (iii)…). Retouches de la relecture :
 par leur sujet, une coupure trompeuse retirée (ga-nullstellensatz), le « et » d'origine rendu à ac-nakayama (iii),
 Tₖ de p-tcl passé en display. Corrigé au passage : accord « Elle en contient un » (an-norme-ideal (iii)), entier q
 introduit dans la remarque de li-cartan sur l'enroulement irrationnel (ε ∈ ]0, 1], k ≠ 0 justifié).
+
+## 38. Croisements et renvois en avant (29 octobre 2026)
+
+Mesure : avec le rangement au plus tôt, l'heuristique de Sugiyama de `disposer` atteint le minimum exact de
+croisements de chaque graphe intérieur, et 16 contre 15 pour l'édifice. Ce minimum a été calculé par programmation
+en nombres entiers (CP-SAT d'OR-Tools, ordre de chaque couche en variables booléennes, transitivité, une variable
+par paire de segments ; script `scratchpad/ch5/exact.py`, hors construction). Plus de départs (jusqu'à 300) ou un
+tamisage nœud par nœud n'y changent rien : les croisements restants tiennent au rangement et aux dépendances.
+Changement retenu dans `disposer` : chaque graphe intérieur essaie trois rangements (au plus tôt, au plus tard,
+et un rangement qui ramène chaque nœud à la médiane des rangs que lui imposent ses voisins) et garde celui qui croise
+le moins, l'original à égalité ; continuite passe de 3 à 2, alg de 2 à 1 (total 43 → 41). L'édifice garde le
+rangement au plus tôt, puisque son texte d'accueil définit le rang comme la longueur du plus long chemin depuis la
+logique. Pour gagner davantage, il faudrait changer les dépendances elles-mêmes.
+Renvois en avant des remarques (15) : tous sont des ouvertures annoncées (« sera établie », « défini au nœud »…) ;
+les quatre mentions du lemme de l'ultrafiltre en logique renvoient désormais à `o-ultrafiltre`.
