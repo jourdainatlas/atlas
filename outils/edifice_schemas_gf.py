@@ -313,3 +313,55 @@ def gf_pq_non_abelien():
             S.texte(P(n) + 20 * u, str(n), c, taille=16)
         S.texte(O + [0, R0 + 48], f'x ↦ {a}x', 't', taille=16)
     return S
+
+
+# ------------------------------------------------------------------ gf-moins-de-60
+@schema('gf-moins-de-60')
+def gf_moins_de_60():
+    # G = (ℤ/2ℤ)³ ⋊ ℤ/7ℤ, le générateur agissant par u(x1, x2, x3) = (x3, x1 + x3, x2), d'ordre 7.
+    u = lambda v: (v[2], (v[0] + v[2]) % 2, v[1])
+    def u_puiss(v, h):
+        for _ in range(h % 7):
+            v = u(v)
+        return v
+    vecteurs = list(product(range(2), repeat=3))
+    assert all(u_puiss(v, 7) == v for v in vecteurs) and any(u(v) != v for v in vecteurs)
+    els = [(v, h) for v in vecteurs for h in range(7)]
+    mul = lambda x, y: (tuple((a + b) % 2 for a, b in zip(x[0], u_puiss(y[0], x[1]))), (x[1] + y[1]) % 7)
+    e = ((0, 0, 0), 0)
+    assert all(mul(mul(x, y), z) == mul(x, mul(y, z)) for x in els for y in els for z in els)   # 56³ triplets
+    def ordre(x):
+        k, y = 1, x
+        while y != e:
+            y = mul(y, x); k += 1
+        return k
+    sept = [x for x in els if ordre(x) == 7]
+    sylow7 = sorted({engendre([x], mul, e) for x in sept}, key=lambda P: sorted(P))
+    assert len(sept) == 48 and len(sylow7) == 8 and all(len(P) == 7 for P in sylow7)
+    assert all(P & Q == {e} for P in sylow7 for Q in sylow7 if P != Q)
+    reste = sorted(set(els) - set(sept))
+    Q = frozenset(x for x in els if x[1] == 0)
+    assert set(reste) == Q and len(Q) == 8 and engendre(list(Q), mul, e) == Q
+    assert all(ordre(x) == 2 for x in Q if x != e)
+    S = Schema(520, 290, 'Les 56 éléments d’un groupe d’ordre 56 qui a huit 7-Sylow')
+    y0, dy, x0, dx = 30, 28, 92, 28
+    for i, P in enumerate(sylow7):
+        y = y0 + i * dy
+        S.rect(x0 - 16, y - 11, 5 * dx + 32, 22, 'r', rempli='r', rx=11)
+        S.texte([x0 - 30, y], f'P_{i + 1}', 'r', ancre='end', taille=15)
+        for j, x in enumerate(sorted(P - {e})):
+            S.point([x0 + j * dx, y], 'r', r=4.5)
+    yb = y0 + 7 * dy + 34
+    assert yb + 10 < 290
+    S.texte([x0 + 2.5 * dx, yb], '8 × 6 = 48 éléments d’ordre 7', 'r', taille=13, ui=True)
+    bx, by, bw, bh = 316, 82, 180, 100
+    S.rect(bx, by, bw, bh, 'b', rempli='b', rx=12)
+    for k, x in enumerate(reste):
+        p = [bx + 30 + (k % 4) * 40, by + 32 + (k // 4) * 38]
+        S.point(p, 't' if x == e else 'b', r=4.5)
+        if x == e:
+            S.texte([p[0], p[1] - 15], 'e', 't', taille=15)
+    assert reste[0] == e
+    S.texte([bx + bw / 2, by - 20], 'le 2-Sylow : 8 éléments', 'b', taille=13, ui=True)
+    S.texte([bx + bw / 2, by + bh + 22], 'le neutre et sept éléments d’ordre 2', 'b', taille=13, ui=True)
+    return S

@@ -507,8 +507,7 @@ relecture pour la preuve réécrite de `ed-flot`), consigne `scratchpad/ch1/cons
 Corrigé aussi : Halpern et Lévy datés de 1971 (anf). 539 nœuds, 302 termes ; croisements inchangés (édifice 16).
 Restent admis, hors de portée : incomplétude de Gödel, Whitney, boule chevelue, invariance du domaine, Hurewicz,
 unités de Dirichlet, Kolmogorov, Carleson, réciproque de `gs-radicaux`, Möbius non orientable, `gd-formes-varietes`
-(réciproque, les outils existent désormais en aval). Candidat signalé : 𝔄₅ plus petit groupe non résoluble (deux ou
-trois fiches, par Sylow). La partie non borélienne mesurable de `m-riemann` est affirmée sans mention « admis ».
+(réciproque, les outils existent désormais en aval). 𝔄₅ plus petit groupe non résoluble : démontré, voir §39. La partie non borélienne mesurable de `m-riemann` est affirmée sans mention « admis ».
 
 ## 36. Schémas, deuxième passe (29 octobre 2026)
 
@@ -549,3 +548,17 @@ rangement au plus tôt, puisque son texte d'accueil définit le rang comme la lo
 logique. Pour gagner davantage, il faudrait changer les dépendances elles-mêmes.
 Renvois en avant des remarques (15) : tous sont des ouvertures annoncées (« sera établie », « défini au nœud »…) ;
 les quatre mentions du lemme de l'ultrafiltre en logique renvoient désormais à `o-ultrafiltre`.
+
+## 39. Groupes d'ordre < 60 résolubles (29 octobre 2026)
+
+L'« admis » de `gf-petits-ordres` (𝔄₅ plus petit groupe non résoluble) est démontré, sans choix :
+`gs-resolubles` (iii) (extension de résolubles), `gf-non-simples` (« Critères de non-simplicité » : centre d'un
+p-groupe, Sylow unique quand 1 est le seul diviseur de m congru à 1 mod p, action par translation sur G/H avec
+|𝔖(X)| = k! démontré, comptage des éléments d'ordre p), `gf-moins-de-60` (récurrence sur l'ordre, p-groupes
+résolubles, tableau des 58 ordres de 2 à 59 : 25 puissances de premiers, 27 à Sylow unique, 12, 24, 36, 48 par
+translation, 30 et 56 par comptage ; |𝔄₅| = 60 et 𝔄₅ non résoluble ; schéma du groupe (ℤ/2ℤ)³ ⋊ ℤ/7ℤ d'ordre 56
+à huit 7-Sylow). `gs-sn` énoncé pour tout sous-groupe de 𝔖ₙ contenant les 3-cycles. Arête
+`gf-petits-ordres → gf-moins-de-60` : par elle la preuve atteint `gs-resolubles` et `gs-sn` (gf reste à
+6 croisements). Lettre de Galois à Chevalier (29 mai 1832, Œuvres 1897) citée sans numéro de page : p. 26 ou 27
+selon les copies, image non consultable d'ici. Relu par un agent indépendant (script de couverture propre ; sept
+retouches). Restent admis : 𝔄₅ simple, unicité du groupe simple d'ordre 60, ordre 168 du suivant.
