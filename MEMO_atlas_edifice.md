@@ -431,3 +431,20 @@ restaient atténuées). Cause : les survols simulés par le navigateur au touche
 `#plan`, sans sortie pour l'effacer. Gabarit : le survol (`pointerover`/`pointerleave`) ne réagit qu'à une souris ;
 au toucher, un appui sur une flèche la met en évidence et un appui hors des bulles l'efface (`pointerup`) ; le
 focus ne surligne qu'au clavier (`:focus-visible`) ; `dessiner` retire `focus` à chaque nouveau graphe.
+
+Découpages de confort (29 oct. 2026, accord de l'auteur ; contenu inchangé, ids conservés pour la partie principale) :
+- `alglin` : sous-graphe `v-det` « Groupe symétrique et déterminant » (v-permutations, v-formes-alternees,
+  v-determinant, v-det-matrice, v-comatrice) ; alglin 20 → 16 nœuds, 4 → 1 croisement.
+- `log` : sous-graphe `l-syntaxe` « Syntaxe du premier ordre » (l-langage, l-quantificateurs, l-termes,
+  l-formules, l-lecture ; la substitution reste dehors, elle dépend de la satisfaction) ; log 23 → 19 nœuds.
+- `gs-abel-ruffini` en trois, dans galois : `gs-engendrer-sp` (lemme : transposition et p-cycle engendrent 𝔖ₚ,
+  cite gf-cycliques ; remarque 𝔖₄ : ⟨(1 3), (1 2 3 4)⟩ d'ordre 8 ; placé dans gf, il imposait une longue arête et
+  11 croisements), `gs-quintique` (X⁵ − 4X + 2, ses racines, corps de décomposition), et Abel-Ruffini ; galois 0 croisement.
+- `gf-ordre-12` : `gf-alterne-4` (3-cycles, doubles transpositions, 𝔄₄, absence de sous-groupe d'ordre 6
+  démontrée en (ii)) ; gf 6 croisements ; la réciproque fausse de Lagrange passe en remarque, sans arête nouvelle.
+- `gd-varietes` : `gd-exemples-varietes` (ouverts, sous-variétés, sphère stéréographique, produit).
+- `ac-gauss` : `ac-contenu` en amont (contenu, lemme de Gauss) ; la découpe d'abord proposée (irréductibles seuls)
+  aurait créé un cycle.
+Onglet du navigateur (même jour) : `aller` met « ATLAS – <étiquette du nœud> » ou « ATLAS – <titre du graphe> ».
+Aération des fiches : exemple proposé à l'auteur sur la remarque de `li-series` (paragraphes, formules centrées
+pour ce qui porte l'argument), en attente de sa décision ; défaut relevé : « ]−1, 1[ » à écrire `]{-1}, 1[`.

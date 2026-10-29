@@ -275,7 +275,7 @@ def gs_correspondance():
     return S
 
 
-@schema('gs-abel-ruffini')
+@schema('gs-quintique')
 def gs_abel_ruffini():
     P = np.poly1d([1, 0, 0, 0, -4, 2])
     rac = np.roots(P.coeffs)

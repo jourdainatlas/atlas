@@ -125,6 +125,8 @@ cette adresse comme `url`, après l'avoir lue).
 | Dérivabilité | `ar-deriv.yaml` | `ar-deriv` | limite en un point, dérivée, ordre 1 et Carathéodory, opérations, composée, réciproque, extremum, Rolle, accroissements finis (égalité, inégalité), signe de la dérivée, Taylor-Lagrange (préfixe `de-`) |
 | Intégrale de Riemann | `ar-riemann.yaml` | `ar-riemann` | subdivisions, escalier et son intégrale, propriétés, intégrables (Darboux), critère, propriétés, continues, monotones, moyenne, sommes de Riemann et réciproque (préfixe `ri-`) |
 | Multiplication des réels | `rr-multiplication.yaml` | `rr-multiplication` | coupures positives et leur produit, lois, distributivité, inverse, règle des signes, ℝ corps, ordre et morphisme q ↦ q* (préfixe `rm-`) |
+| Déterminant | `v-det.yaml` | `v-det` | (29 oct. 2026, sous-graphe de l'algèbre linéaire, ids `v-` inchangés) groupe symétrique et signature, formes alternées, déterminant d'un endomorphisme et d'une matrice, comatrice |
+| Syntaxe du premier ordre | `l-syntaxe.yaml` | `l-syntaxe` | (29 oct. 2026, sous-graphe de la logique, ids `l-` inchangés) langage et signature, quantificateurs, termes, formules, lecture unique |
 | Polynômes | `z-polynomes.yaml` | `z-polynomes` | A[X] et degré, propriété universelle, division, K[X] principal, factorisation, racines et multiplicité, dérivée formelle, binôme et p ∣ C(p,k), Gauss, Eisenstein (préfixe `pol-`) |
 
 Pistes suivantes : les théories mixtes restantes (analyse complexe, mesure, groupes topologiques…).

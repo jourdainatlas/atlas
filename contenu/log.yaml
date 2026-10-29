@@ -45,67 +45,13 @@ noeuds:
       - |
         On écrit les formules en notation **préfixée**, $\to \varphi\, \psi$ plutôt que $(\varphi \to \psi)$, pour démontrer simplement la lecture unique ; l'écriture usuelle, avec parenthèses, n'en est qu'une abréviation lisible.
 
-  - id: l-langage
-    etiquette: Langage, signature
-    nature: définition
-    enonce: |
-      Une [[signature]] $\mathcal L$ est la donnée de symboles de constantes, de symboles de fonctions et de symboles de relations, chacun muni d'un entier, son **arité**. L'alphabet du langage du premier ordre sur $\mathcal L$ comprend ces symboles et les symboles logiques, communs à tous les langages : une suite infinie de variables $x_0, x_1, \dots$, l'égalité $=$, les [[connecteur|connecteurs]] $\neg$ et $\to$, et le symbole $\forall$, dont le rôle de quantificateur est précisé au nœud suivant.
-    remarques:
-      - |
-        Exemples : le langage de $\mathsf{ZF}$ n'a qu'un symbole de relation binaire $\in$ ; celui de l'arithmétique a une constante $0$, un symbole de fonction unaire $S$ et deux binaires $+$ et $\times$ ; celui des groupes, une constante $e$, une fonction binaire $\cdot$ et une unaire ${}^{-1}$.
-
-  - id: l-quantificateurs
-    etiquette: Quantificateurs
-    nature: définition
-    enonce: |
-      Pour chaque variable $x$, le mot $\forall x$ est un [[quantificateur]] **universel** ; il se place devant une formule $\varphi$ pour former $\forall x\, \varphi$, lu « pour tout $x$, $\varphi$ ». Le **quantificateur existentiel** est une abréviation : $\exists x\, \varphi$ désigne $\neg \forall x\, \neg\varphi$, lu « il existe $x$ tel que $\varphi$ ».
+  - id: l-syntaxe
+    etiquette: Syntaxe
+    nature: chapitre
+    titre: Syntaxe du premier ordre
+    sous: l-syntaxe
     texte: |
-      Les quantificateurs ne portent que sur les **éléments** du domaine, jamais sur ses parties ni sur les propriétés : c'est ce qui définit le premier ordre. Leur sens précis, qui fait parcourir à $x$ tous les éléments d'une structure, est donné par la définition de la satisfaction.
-    remarques:
-      - |
-        L'ordre des quantificateurs compte. $\forall x\, \exists y\, (x < y)$ dit que tout élément a un élément plus grand, ce qui est vrai dans $\mathbb N$ ; $\exists y\, \forall x\, (x < y)$ dit qu'un même élément les dépasse tous, ce qui y est faux. Les définitions de la continuité et de la continuité uniforme, au graphe {{c-uniforme|Continuité}}, ne diffèrent que par cet ordre.
-
-  - id: l-termes
-    etiquette: Termes
-    nature: définition
-    enonce: |
-      Les [[terme|termes]] sur $\mathcal L$ forment le plus petit ensemble de mots contenant les variables et les constantes, et tel que, si $f$ est un symbole de fonction d'arité $n$ et $t_1, \dots, t_n$ des termes, alors $f\, t_1 \cdots t_n$ est un terme.
-    remarques:
-      - |
-        On écrit ici les termes en notation **préfixée**, sans parenthèses ni virgules : $+\,x\,S0$ plutôt que $x + S(0)$. C'est la notation la plus commode pour démontrer la lecture unique ; la notation usuelle n'en est qu'une abréviation lisible.
-
-  - id: l-formules
-    etiquette: Formules, variables libres
-    nature: définition
-    enonce: |
-      Les **formules atomiques** sont les mots $= t_1\, t_2$ et $R\, t_1 \cdots t_n$, où $R$ est un symbole de relation d'arité $n$ et les $t_i$ des [[terme|termes]]. Les [[formule|formules]] forment le plus petit ensemble de mots contenant les formules atomiques et stable par $\varphi \mapsto \neg\varphi$, $(\varphi, \psi) \mapsto\, \to \varphi\, \psi$ et $\varphi \mapsto \forall x\, \varphi$.
-
-      Dans $\forall x\, \psi$, la formule $\psi$ est la **portée** du quantificateur. Une occurrence de $x$ est **liée** si elle se trouve dans la portée d'un quantificateur $\forall x$, et **libre** sinon. Une formule sans variable libre est un [[enonce]], ou formule close, et un ensemble d'énoncés est une [[theorie]].
-    remarques:
-      - |
-        Une même variable peut avoir des occurrences libres et liées dans une formule : dans $x = 0 \to \forall x\, (x = x)$, la première occurrence de $x$ est libre, les autres sont liées. L'erreur la plus répandue est de parler de « la » variable $x$ d'une telle formule, comme si elle avait un statut unique.
-
-  - id: l-lecture
-    etiquette: Lecture unique
-    nature: théorème
-    titre: Théorème de lecture unique
-    enonce: |
-      Tout terme s'écrit de manière unique sous l'une des formes $x$, $c$ ou $f\, t_1 \cdots t_n$ : si $f\, t_1 \cdots t_n = g\, u_1 \cdots u_m$, alors $f = g$, $n = m$ et $t_i = u_i$ pour tout $i$. Il en va de même pour les formules propositionnelles et pour les formules du premier ordre.
-    preuve: |
-      Attribuons à chaque symbole un **poids** : $1$ pour une variable ou une constante, $1 - n$ pour un symbole de fonction d'arité $n$. Le poids $p(w)$ d'un mot est la somme des poids de ses symboles.
-
-      **Lemme.** Si $t$ est un terme, alors $p(t) = 1$, et tout préfixe propre non vide de $t$ est de poids au plus $0$. Par récurrence sur la construction de $t$ : c'est clair pour une variable ou une constante. Pour $t = f\, t_1 \cdots t_n$, on a $p(t) = (1 - n) + n = 1$. Un préfixe propre non vide de $t$ s'écrit $f\, t_1 \cdots t_k\, w$, avec $k < n$ et $w$ un préfixe propre de $t_{k+1}$, éventuellement vide ; son poids vaut $(1 - n) + k + p(w) \leqslant 1 - n + k \leqslant 0$, puisque $p(w) \leqslant 0$ par hypothèse de récurrence.
-
-      ```schema l-lecture
-      Le terme $+\,\times\, x\, y\, S\, 0$, c'est-à-dire $x \times y + S(0)$ en notation usuelle, est dessiné avec son arbre de lecture, chaque nœud placé au-dessus de son symbole. Les poids des préfixes, en escalier, restent inférieurs ou égaux à $0$ tant que le mot n'est pas achevé et n'atteignent $1$, en rouge, qu'au dernier symbole : la fin d'un terme se repère ainsi sans parenthèses.
-      ```
-
-      Il en résulte qu'aucun terme n'est un préfixe propre d'un autre terme, puisque leurs poids diffèrent. Supposons alors $f\, t_1 \cdots t_n = g\, u_1 \cdots u_m$. Les premiers symboles donnent $f = g$, donc $n = m$. Les mots $t_1 \cdots t_n$ et $u_1 \cdots u_n$ sont égaux ; $t_1$ et $u_1$ sont deux termes dont l'un est préfixe de l'autre, donc $t_1 = u_1$. On efface ce préfixe commun et l'on recommence, ce qui donne $t_i = u_i$ pour tout $i$.
-
-      Pour les formules, écrites elles aussi en notation préfixée, on prend le poids $1$ pour une lettre propositionnelle, $1 - n$ pour un symbole de relation d'arité $n$, $-1$ pour $=$ et pour $\to$, $0$ pour $\neg$, et $0$ pour le bloc $\forall x$, compté comme un seul symbole. La même démonstration s'applique mot pour mot.
-    remarques:
-      - |
-        Ce théorème justifie toutes les définitions par récurrence sur les termes et les formules, comme celles de la valeur de vérité d'une formule propositionnelle et de la satisfaction : sans lui, une formule pourrait se décomposer de deux façons, et recevoir deux valeurs de vérité.
+      Un langage du premier ordre est donné par une signature, symboles de constantes, de fonctions et de relations munis de leurs arités. Les termes et les formules sont des mots sur l'alphabet ainsi formé, définis par induction, et l'on distingue les variables libres des variables liées par les quantificateurs. Le théorème de lecture unique garantit que chaque terme et chaque formule se décompose d'une seule façon, ce qui permet de définir des fonctions sur les formules par récurrence sur leur construction.
 
   - id: l-tautologies
     etiquette: Tautologies
@@ -332,22 +278,8 @@ noeuds:
 aretes:
   - [l-metatheorie, l-connecteurs]
   - [l-connecteurs, l-prop-formules]
-  - [l-connecteurs, l-langage]
-  - [l-langage, l-quantificateurs]
-  - [l-quantificateurs, l-formules]
-  - [l-prop-formules, l-lecture]
-  - [l-lecture, l-tautologies]
   - [l-tautologies, l-deduction]
-  - [l-langage, l-termes]
-  - [l-termes, l-formules]
-  - [l-termes, l-lecture]
-  - [l-formules, l-lecture]
-  - [l-formules, l-substitution]
-  - [l-langage, l-structure]
-  - [l-termes, l-structure]
   - [l-structure, l-satisfaction]
-  - [l-formules, l-satisfaction]
-  - [l-lecture, l-satisfaction]
   - [l-satisfaction, l-coincidence]
   - [l-satisfaction, l-substitution]
   - [l-coincidence, l-substitution]
@@ -365,3 +297,9 @@ aretes:
   - [l-compacite, l-non-standard]
   - [l-coherence, l-incompletude]
   - [l-deduction, l-incompletude]
+  - [l-connecteurs, l-syntaxe]
+  - [l-prop-formules, l-syntaxe]
+  - [l-syntaxe, l-structure]
+  - [l-syntaxe, l-satisfaction]
+  - [l-syntaxe, l-substitution]
+  - [l-syntaxe, l-tautologies]

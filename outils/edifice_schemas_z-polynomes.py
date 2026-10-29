@@ -1,5 +1,5 @@
 """Schémas du chapitre « Anneaux de polynômes » (graphe z-polynomes) et du lemme sur 𝔖_p du nœud
-gs-abel-ruffini (graphe galois)."""
+gs-engendrer-sp (graphe galois)."""
 import math
 from fractions import Fraction as Fr
 
@@ -247,7 +247,7 @@ def pol_eisenstein():
     return S
 
 
-# ---------------------------------------------------------------- gs-abel-ruffini (lemme)
+# ---------------------------------------------------------------- gs-engendrer-sp (lemme)
 
 def compose(*perms):
     """Composée de permutations de {1..n} (dictionnaires), appliquées de droite à gauche."""
@@ -262,7 +262,7 @@ def transpo(a, b):
     return {a: b, b: a}
 
 
-@schema('gs-abel-ruffini-2')
+@schema('gs-engendrer-sp')
 def gs_abel_ruffini_2():
     p = 5
     rho = {j: j % p + 1 for j in range(1, p + 1)}

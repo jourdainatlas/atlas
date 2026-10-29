@@ -382,8 +382,8 @@ def gd_varietes():
     return S
 
 
-# ------------------------------------------------------------------ (31) gd-varietes-2
-@schema('gd-varietes-2')
+# ------------------------------------------------------------------ (31) gd-exemples-varietes
+@schema('gd-exemples-varietes')
 def gd_varietes_2():
     x = (Fr(3, 5), Fr(4, 5))
     assert x[0]**2 + x[1]**2 == 1

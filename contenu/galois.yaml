@@ -1,11 +1,11 @@
 # Niveau 1 : structure interne du nœud « Théorie de Galois ».
 # Extensions et degrés, éléments algébriques et polynôme minimal, corps de décomposition,
 # séparabilité, lemme de Dedekind et théorème d'Artin, extensions galoisiennes, théorème
-# fondamental, corps finis, groupes résolubles (Lagrange, Cauchy, non-résolubilité de 𝔖ₙ),
-# résolubilité par radicaux (sens direct de Galois, en caractéristique nulle), polynôme
-# X⁵ − 4X + 2 non résoluble par radicaux. L'arithmétique des polynômes (racines, factorisation,
+# fondamental, corps finis, résolubilité par radicaux (sens direct de Galois, en caractéristique
+# nulle), une transposition et un p-cycle engendrent 𝔖ₚ, le polynôme X⁵ − 4X + 2 et ses racines,
+# puis Abel-Ruffini. Les groupes (Lagrange, Cauchy, résolubles, 𝔖ₙ) sont dans le graphe gf. L'arithmétique des polynômes (racines, factorisation,
 # dérivée formelle, binôme, Gauss et Eisenstein) est dans le chapitre z-polynomes du graphe z.
-# Parents : algèbre linéaire (dimension), ℂ (racines, conjugaison), analyse réelle (valeurs
+# Parents : groupes finis, algèbre linéaire (dimension), ℂ (racines, conjugaison), analyse réelle (valeurs
 # intermédiaires et Rolle pour compter les racines réelles de l'exemple).
 
 graphe: galois
@@ -13,10 +13,10 @@ titre: Théorie de Galois
 conteneur: galois
 
 entrees:
-  gf: [gs-corps-finis, gs-radicaux, gs-abel-ruffini]
+  gf: [gs-corps-finis, gs-radicaux, gs-engendrer-sp]
   alglin: [gs-extensions]
-  c: [gs-abel-ruffini]
-  analyse-reelle: [gs-abel-ruffini]
+  c: [gs-quintique]
+  analyse-reelle: [gs-quintique]
 
 noeuds:
   - id: gs-extensions
@@ -219,30 +219,40 @@ noeuds:
       - |
         La réciproque est vraie : un polynôme dont le groupe de Galois est résoluble est résoluble par radicaux. Elle demande la théorie de Kummer, qui montre qu'une extension cyclique de degré $n$, sur un corps contenant les racines $n$-ièmes de l'unité, est engendrée par un radical ; elle est admise ici.
 
-  - id: gs-abel-ruffini
-    etiquette: Abel-Ruffini
-    nature: théorème
-    titre: Un polynôme de degré 5 non résoluble par radicaux
+  - id: gs-engendrer-sp
+    etiquette: Engendrer 𝔖ₚ
+    nature: lemme
+    titre: Une transposition et un p-cycle engendrent 𝔖ₚ
+    texte: |
+      Pour des éléments distincts $a_1, \dots, a_k$ de $\{1, \dots, n\}$, le **$k$-cycle** $(a_1\ a_2\ \cdots\ a_k)$ est la permutation qui envoie $a_1$ sur $a_2$, …, $a_{k-1}$ sur $a_k$ et $a_k$ sur $a_1$, et qui fixe les autres éléments ; une transposition est un $2$-cycle ({{v-permutations|Permutations, signature}}).
     enonce: |
-      (i) *Lemme.* Soit $p$ un nombre premier. Un sous-groupe de $\lex{groupe-symetrique}{\mathfrak S_p}$ qui contient une transposition et un élément d'ordre $p$ est $\mathfrak S_p$ tout entier.
-
-      (ii) Le groupe de Galois sur $\lex{ensemble-rationnels}{\mathbb Q}$ du polynôme $X^5 - 4X + 2$ est $\mathfrak S_5$ ; ce polynôme n'est donc pas résoluble par radicaux.
+      Soit $p$ un nombre premier. Un sous-groupe de $\lex{groupe-symetrique}{\mathfrak S_p}$ qui contient une transposition et un élément d'ordre $p$ est $\mathfrak S_p$ tout entier.
     preuve: |
-      (i) Soit $H$ un tel sous-groupe, $\tau = (a\ b)$ la transposition et $\sigma$ l'élément d'ordre $p$. Pour $m \in \lex{ensemble-entiers-naturels}{\mathbb N}$, on a $\sigma^m = \mathrm{id}$ si et seulement si $p$ divise $m$ : en écrivant $m = pq + r$ avec $0 \leqslant r < p$, on obtient $\sigma^r = \mathrm{id}$, donc $r = 0$ par définition de l'ordre.
+      Soit $H$ un tel sous-groupe, $\tau = (a\ b)$ la transposition et $\sigma$ l'élément d'ordre $p$. Pour $m \in \lex{ensemble-entiers-naturels}{\mathbb N}$, on a $\sigma^m = \mathrm{id}$ si et seulement si $p$ divise $m$ ({{gf-cycliques|Groupes cycliques}}, (i)).
 
-      *Un élément d'ordre $p$ de $\mathfrak S_p$ est un $p$-cycle.* Pour $i \in \{1, \dots, p\}$, soit $k_i$ le plus petit entier $k \geqslant 1$ tel que $\sigma^k(i) = i$, qui existe puisque $\sigma^p = \mathrm{id}$. En divisant $p$ par $k_i$, $p = k_iq + r$ avec $0 \leqslant r < k_i$, on obtient $\sigma^r(i) = i$, donc $r = 0$ par minimalité : $k_i$ divise $p$, et vaut $1$ ou $p$. Les $k_i$ ne valent pas tous $1$, sans quoi $\sigma = \mathrm{id}$. Si $k_i = p$, les éléments $i, \sigma(i), \dots, \sigma^{p-1}(i)$ sont deux à deux distincts, puisque $\sigma^u(i) = \sigma^v(i)$ avec $0 \leqslant u < v < p$ donnerait $\sigma^{v-u}(i) = i$ ; ce sont donc tous les éléments de $\{1, \dots, p\}$, et $\sigma$ envoie chacun sur le suivant et le dernier sur $i$ : c'est la permutation circulaire $(i\ \ \sigma(i)\ \cdots\ \sigma^{p-1}(i))$.
+      *Un élément d'ordre $p$ de $\mathfrak S_p$ est un $p$-cycle.* Pour $i \in \{1, \dots, p\}$, soit $k_i$ le plus petit entier $k \geqslant 1$ tel que $\sigma^k(i) = i$, qui existe puisque $\sigma^p = \mathrm{id}$. En divisant $p$ par $k_i$, $p = k_iq + r$ avec $0 \leqslant r < k_i$, on obtient $\sigma^r(i) = i$, donc $r = 0$ par minimalité : $k_i$ divise $p$, et vaut $1$ ou $p$. Les $k_i$ ne valent pas tous $1$, sans quoi $\sigma = \mathrm{id}$. Si $k_i = p$, les éléments $i, \sigma(i), \dots, \sigma^{p-1}(i)$ sont deux à deux distincts, puisque $\sigma^u(i) = \sigma^v(i)$ avec $0 \leqslant u < v < p$ donnerait $\sigma^{v-u}(i) = i$ ; ce sont donc tous les éléments de $\{1, \dots, p\}$, et $\sigma$ envoie chacun sur le suivant et le dernier sur $i$ : c'est le $p$-cycle $(i\ \ \sigma(i)\ \cdots\ \sigma^{p-1}(i))$.
 
       *Renumérotation.* L'orbite de $a$ sous $\sigma$ est donc tout $\{1, \dots, p\}$, et $b = \sigma^k(a)$ pour un $k$ tel que $1 \leqslant k \leqslant p - 1$. L'élément $\sigma^k$ est encore d'ordre $p$ : si $(\sigma^k)^j = \mathrm{id}$, alors $p$ divise $kj$, donc $j$ par le lemme d'Euclide ({{z-premiers|Nombres premiers}}), puisque $p$ ne divise pas $k$. C'est donc un $p$-cycle qui envoie $a$ sur $b$. Numérotons les éléments $a = 1$, $b = 2$, puis $\sigma^k(b) = 3$, et ainsi de suite : $H$ contient $\tau = (1\ 2)$ et $\rho = (1\ 2\ \cdots\ p)$, qui envoie $j$ sur $j + 1$ pour $j < p$ et $p$ sur $1$.
 
       *Toutes les transpositions.* Pour une permutation $\rho$ et une transposition $(u\ v)$, on a $\rho\,(u\ v)\,\rho^{-1} = (\rho(u)\ \rho(v))$, comme on le vérifie en $\rho(u)$, en $\rho(v)$ et aux autres points. Ainsi $\rho^j\tau\rho^{-j} = (1{+}j\ \ 2{+}j)$ appartient à $H$ pour $0 \leqslant j \leqslant p - 2$ : ce sont toutes les transpositions $(i\ \ i{+}1)$. Par la même formule, $(j{-}1\ \ j)\,(i\ \ j{-}1)\,(j{-}1\ \ j) = (i\ \ j)$ pour $i < j - 1$ ; par récurrence sur $j - i$, $H$ contient toutes les transpositions.
 
-      ```schema gs-abel-ruffini-2
+      ```schema gs-engendrer-sp
       Pour $p = 5$, les sommets du pentagone sont $1, \dots, 5$, et $\rho = (1\ 2\ 3\ 4\ 5)$ le fait tourner d'un cran. La transposition $\tau = (1\ 2)$ est le côté rouge ; ses conjugués $\rho^j\tau\rho^{-j}$ sont les côtés obtenus en tournant, en bleu. Les diagonales, en vert, s'en déduisent par conjugaison, par exemple $(1\ 3) = (2\ 3)(1\ 2)(2\ 3)$.
       ```
 
       Toute permutation étant un produit de transpositions ({{v-permutations|Permutations, signature}}, (i)), $H = \mathfrak S_p$.
+    remarques:
+      - |
+        L'hypothèse « $p$ premier » est nécessaire : dans $\mathfrak S_4$, la transposition $(1\ 3)$ et le $4$-cycle $(1\ 2\ 3\ 4)$ engendrent le groupe des huit isométries du carré de sommets $1, 2, 3, 4$, et non $\mathfrak S_4$, qui en a vingt-quatre. La preuve échoue à la renumérotation : $3 = \sigma^2(1)$, et $\sigma^2$ n'est pas un $4$-cycle.
 
-      (ii) *Irréductibilité.* Le polynôme $P = X^5 - 4X + 2$ est irréductible sur $\mathbb Q$, corps des fractions de $\lex{ensemble-entiers-relatifs}{\mathbb Z}$, par le critère d'Eisenstein avec $p = 2$ ({{pol-eisenstein|Eisenstein}}, (i)).
+  - id: gs-quintique
+    etiquette: Le polynôme X⁵ − 4X + 2
+    nature: proposition
+    titre: Le polynôme X⁵ − 4X + 2 et ses racines
+    enonce: |
+      Le polynôme $P = X^5 - 4X + 2$ est irréductible sur $\lex{ensemble-rationnels}{\mathbb Q}$. Il a exactement trois racines réelles $r_1 < r_2 < r_3$, toutes simples, et deux racines complexes non réelles, conjuguées, $z$ et $\bar z$. Ainsi $P = (X - r_1)(X - r_2)(X - r_3)(X - z)(X - \bar z)$, et $L = \mathbb Q(r_1, r_2, r_3, z, \bar z) \subset \lex{ensemble-complexes}{\mathbb C}$ est un corps de décomposition de $P$ sur $\mathbb Q$.
+    preuve: |
+      *Irréductibilité.* Le polynôme $P = X^5 - 4X + 2$ est irréductible sur $\mathbb Q$, corps des fractions de $\lex{ensemble-entiers-relatifs}{\mathbb Z}$, par le critère d'Eisenstein avec $p = 2$ ({{pol-eisenstein|Eisenstein}}, (i)).
 
       *Trois racines réelles, simples.* On a $P(-2) = -22$, $P(0) = 2$, $P(1) = -1$ et $P(2) = 26$ : par les valeurs intermédiaires ({{c-tvi|Valeurs intermédiaires}}), $P$ a une racine réelle dans chacun des intervalles $]{-2}, 0[$, $]0, 1[$ et $]1, 2[$, soit trois racines $r_1 < r_2 < r_3$. La fonction $x \mapsto P(x)$ est dérivable, de dérivée $x \mapsto 5x^4 - 4$ ({{ar-deriv|Dérivabilité}}), qui s'annule en au plus deux réels, puisque $x \mapsto x^4$ est paire et strictement croissante sur $[0, +\infty[$. Entre deux racines réelles de $P$ se trouve une racine de la dérivée, par le théorème de Rolle ({{de-rolle|Rolle}}) ; $P$ a donc au plus trois racines réelles, qui sont $r_1$, $r_2$, $r_3$. Elles sont simples : en une racine multiple $r$, on aurait $P(r) = P'(r) = 0$ ({{pol-derivee|Dérivée formelle}}, (ii)), donc $r^4 = \frac45$, puis $0 = r \cdot r^4 - 4r + 2 = 2 - \frac{16}5 r$, soit $r = \frac58$, alors que $\big(\frac58\big)^4 = \frac{625}{4096} \neq \frac45$.
 
@@ -250,22 +260,32 @@ noeuds:
       $$P = (X - r_1)(X - r_2)(X - r_3)(X - z)(X - \bar z)$$
       a cinq racines distinctes dans $\mathbb C$, et $L = \mathbb Q(r_1, r_2, r_3, z, \bar z) \subset \mathbb C$ est un corps de décomposition de $P$ sur $\mathbb Q$.
 
-      ```schema gs-abel-ruffini
+      ```schema gs-quintique
       Le graphe de $P$ coupe l'axe en trois points, et ne peut le couper davantage, puisque la dérivée ne s'annule qu'en $\pm c$, avec $c = (4/5)^{1/4}$. Les deux autres racines, celles du facteur $Q$ de degré $2$, sont $z$ et $\bar z$ ; la conjugaison complexe les échange en fixant les trois racines réelles.
       ```
+    remarques:
+      - |
+        Le corps $L$ a été construit dans $\mathbb C$ sans le théorème de {{c-dalembert|d'Alembert-Gauss}}, admis au chapitre des nombres complexes : l'analyse réelle a fourni trois racines, et le second degré les deux autres. Un corps de décomposition abstrait aurait suffi pour définir le groupe de Galois de $P$ ({{gs-decomposition|Corps de décomposition}}), mais c'est la conjugaison complexe, donc la présence des racines dans $\mathbb C$, qui fournira la transposition, au nœud {{gs-abel-ruffini|Abel-Ruffini}}.
+
+  - id: gs-abel-ruffini
+    etiquette: Abel-Ruffini
+    nature: théorème
+    titre: Un polynôme de degré 5 non résoluble par radicaux
+    enonce: |
+      Le groupe de Galois sur $\lex{ensemble-rationnels}{\mathbb Q}$ du polynôme $P = X^5 - 4X + 2$ est $\lex{groupe-symetrique}{\mathfrak S_5}$ ; ce polynôme n'est donc pas résoluble par radicaux.
+    preuve: |
+      Soit $L \subset \mathbb C$ le corps de décomposition de $P$ obtenu au nœud {{gs-quintique|Le polynôme X⁵ − 4X + 2}}, où $P$ a trois racines réelles $r_1, r_2, r_3$ et deux racines conjuguées $z$, $\bar z$, toutes distinctes.
 
       *Une transposition.* Le polynôme $P$, qui a cinq racines distinctes dans $L$, est séparable ; donc $L/\mathbb Q$ est galoisienne ({{gs-galoisiennes|Extensions galoisiennes}}, (a)). Soit $G = \lex{groupe-galois}{\operatorname{Gal}}(L/\mathbb Q)$. Tout élément de $G$ envoie une racine de $P$ sur une racine de $P$, et il est déterminé par la permutation des racines qu'il induit, puisqu'elles engendrent $L$ : $G$ s'identifie à un sous-groupe de $\mathfrak S_5$. La conjugaison complexe est un automorphisme de $\mathbb C$ qui fixe $\mathbb R$ ({{c-automorphismes|Automorphismes}}) ; elle envoie les racines de $P$, polynôme à coefficients réels, sur des racines de $P$, donc $L$ sur $L$. Sa restriction à $L$ est un élément de $G$ qui fixe $r_1$, $r_2$, $r_3$ et échange $z$ et $\bar z$ : c'est une transposition.
 
       *Un élément d'ordre $5$.* Le polynôme $P$, unitaire, irréductible et annulateur de $r_1$, en est le polynôme minimal, et $[\mathbb Q(r_1):\mathbb Q] = 5$ ({{gs-algebriques|Polynôme minimal}}, (i) et (ii)). Par multiplicativité ({{gs-extensions|Extensions, degré}}), $5$ divise $[L:\mathbb Q] = |G|$ ({{gs-galoisiennes|Extensions galoisiennes}}, (b)), et $G$ contient un élément d'ordre $5$ par le théorème de Cauchy ({{gs-cauchy|Cauchy}}).
 
-      *Conclusion.* Par (i), $G = \mathfrak S_5$, qui n'est pas résoluble ({{gs-sn|𝔖ₙ non résoluble}}). Par le théorème de Galois ({{gs-radicaux|Résolubilité par radicaux}}), $P$ n'est pas résoluble par radicaux.
+      *Conclusion.* Par le lemme du nœud {{gs-engendrer-sp|Engendrer 𝔖ₚ}}, $G = \mathfrak S_5$, qui n'est pas résoluble ({{gs-sn|𝔖ₙ non résoluble}}). Par le théorème de Galois ({{gs-radicaux|Résolubilité par radicaux}}), $P$ n'est pas résoluble par radicaux.
     remarques:
       - |
         Le théorème d'Abel-Ruffini n'affirme pas qu'aucune équation de degré $5$ n'est résoluble par radicaux : $X^5 - 2$ l'est évidemment, et $X^5 - 5X + 12$ aussi, son groupe étant le groupe diédral d'ordre $10$. Il affirme qu'il n'existe pas de **formule générale**, et Galois a donné le critère exact : la résolubilité du groupe.
       - |
-        Le corps $L$ a été construit dans $\mathbb C$ sans le théorème de {{c-dalembert|d'Alembert-Gauss}}, admis au chapitre des nombres complexes : l'analyse réelle a fourni trois racines, et le second degré les deux autres. Un corps de décomposition abstrait aurait suffi pour définir $G$ ({{gs-decomposition|Corps de décomposition}}), mais c'est la conjugaison complexe, donc la présence des racines dans $\mathbb C$, qui fournit la transposition.
-      - |
-        L'argument (ii) vaut pour tout polynôme irréductible sur $\mathbb Q$ de degré premier $p$ ayant exactement $p - 2$ racines réelles : le quotient par les facteurs réels est de degré $2$ sans racine réelle, la conjugaison fournit une transposition, et le théorème de Cauchy un élément d'ordre $p$ ; son groupe est donc $\mathfrak S_p$. L'analyse réelle y fournit la transposition, et l'algèbre le $p$-cycle ; c'est une rencontre caractéristique des deux disciplines.
+        L'argument de ce nœud et du nœud {{gs-quintique|Le polynôme X⁵ − 4X + 2}} vaut pour tout polynôme irréductible sur $\mathbb Q$ de degré premier $p$ ayant exactement $p - 2$ racines réelles : le quotient par les facteurs réels est de degré $2$ sans racine réelle, la conjugaison fournit une transposition, et le théorème de Cauchy un élément d'ordre $p$ ; son groupe est donc $\mathfrak S_p$. L'analyse réelle y fournit la transposition, et l'algèbre le $p$-cycle ; c'est une rencontre caractéristique des deux disciplines.
 
 aretes:
   - [gs-extensions, gs-algebriques]
@@ -279,3 +299,6 @@ aretes:
   - [gs-galoisiennes, gs-corps-finis]
   - [gs-correspondance, gs-radicaux]
   - [gs-radicaux, gs-abel-ruffini]
+  - [gs-decomposition, gs-quintique]
+  - [gs-quintique, gs-abel-ruffini]
+  - [gs-engendrer-sp, gs-abel-ruffini]
