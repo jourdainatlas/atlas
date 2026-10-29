@@ -107,6 +107,12 @@ function rendre(texte, ou) {
     // sous-question : paragraphe qui commence par **(a)**, **a)** ou **(i)** → en retrait
     const sq = /^<strong>\(?[a-z]{1,3}\)<\/strong>/.test(h.trim());
     const seul = /^\u0000(\d+)\u0000$/.exec(h.trim());
+    // Une formule en ligne reste collée à la ponctuation qui la suit : sans cela, le navigateur peut couper
+    // la ligne entre la formule et la virgule, qui ouvre alors la ligne suivante. La ponctuation est placée
+    // dans le dernier bloc insécable (.base) de la formule, en police du texte (.ponct, gabarit).
+    const FIN = '</span></span></span>';
+    h = h.replace(/\u0000(\d+)\u0000([,.;:)\]]+)/g, (m, k, ponct) => !maths[+k].affichee && maths[+k].html.endsWith(FIN)
+      ? maths[+k].html.slice(0, -FIN.length) + `<span class="ponct">${ponct}</span>` + FIN : m);
     h = h.replace(/\u0000(\d+)\u0000/g, (m, k) => maths[+k].html);
     h = h.replace(/\u0002(\d+)\u0002/g, (m, k) => enligne[+k]);
     return seul && maths[+seul[1]].affichee ? `<div class="formule${sq ? ' sq' : ''}">${h}</div>` : `<p${sq ? ' class="sq"' : ''}>${h}</p>`;

@@ -446,5 +446,26 @@ Découpages de confort (29 oct. 2026, accord de l'auteur ; contenu inchangé, id
 - `ac-gauss` : `ac-contenu` en amont (contenu, lemme de Gauss) ; la découpe d'abord proposée (irréductibles seuls)
   aurait créé un cycle.
 Onglet du navigateur (même jour) : `aller` met « ATLAS – <étiquette du nœud> » ou « ATLAS – <titre du graphe> ».
-Aération des fiches : exemple proposé à l'auteur sur la remarque de `li-series` (paragraphes, formules centrées
-pour ce qui porte l'argument), en attente de sa décision ; défaut relevé : « ]−1, 1[ » à écrire `]{-1}, 1[`.
+
+## 34. Aération des fiches (29 octobre 2026)
+
+Style validé par l'auteur sur la remarque de `li-series`, puis appliqué aux 45 graphes intérieurs. Quatre règles :
+une idée par paragraphe (coupure aux articulations du raisonnement) ; en display seulement les formules qui portent
+l'argument (égalité centrale, objet construit, chaîne de plus de deux membres), un ou deux par paragraphe au plus ;
+la ponctuation reste dans le display et la phrase continue autour ; rien n'est retiré (mêmes affirmations, renvois,
+termes, ordre), seules des liaisons minimales (« Soit », « on a ») sont permises. Retouches de formules permises :
+`a/b` → `\frac`, coupure `aligned`, ponctuation, `\big` → `\Big` autour des grands opérateurs en display, et
+intervalles `]{-1}, 1[` (sinon KaTeX lit le moins comme binaire). À suivre pour toute fiche nouvelle.
+Contrôle : `verif_aer.py` (comparaison à HEAD : champs non textuels, renvois, termes, `\lex`, schémas identiques ;
+écarts de formules et de mots listés), huit lots relus chacun par un agent indépendant, puis mesure de largeur dans
+Chromium à 390 px sur les 478 fiches : 79 fiches débordaient avant, aucune après (reste un artefact de 2 px de
+KaTeX dans `f-baire`, invisible). Les modèles de consigne sont à reprendre pour un futur lot.
+Rendu (`rendu.mjs`) : la ponctuation qui suit une formule en ligne est placée dans le dernier bloc insécable de la
+formule (`.ponct`, police du texte) ; le navigateur ne coupe plus la ligne entre une formule et sa virgule.
+Erreurs de fond corrigées au passage : changement de variable inversé dans `p-normale` (u = √2 x), π-système de
+la remarque de `m-dynkin` (il faut le vide), N non introduit dans `f-operateurs` (iii), renvoi à un point (iii)
+inexistant de `gd-denombrable` dans `gd-exemples-varietes` ; cas de `gf-ordre-12` en intitulés italiques
+(« Premier cas », « Second cas ») au lieu de tirets que le moteur ne rend pas.
+Signalés, non tranchés : `nb-zeros` attribue à Mertens une version de l'inégalité 3 + 4 cos θ + cos 2θ ⩾ 0 (formulation
+conforme aux sources consultées, Elkies : « Mertens' elegant version of the original arguments ») ; `gd-equivalence`
+appelle « norme sur ℚ² » une application sur un espace non réel ; `hk-egalite` (iv) emploie une hypothèse sans la citer.
