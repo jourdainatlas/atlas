@@ -1,0 +1,689 @@
+# Niveau 2 : structure interne du chapitre « Réduction des endomorphismes » (nœud ac-reduction du graphe ac,
+# créé le 29 oct. 2026). Polynômes d'un endomorphisme et polynôme minimal, lemme des noyaux (par le lemme
+# chinois dans K[X]), polynôme caractéristique défini dans le corps des fractions rationnelles K(X), sous-espaces
+# stables et matrices triangulaires par blocs, Cayley-Hamilton (par la comatrice), critères de diagonalisation et
+# de trigonalisation, nilpotents, sous-espaces caractéristiques, décomposition de Dunford, réduction de Jordan.
+# K est un corps quelconque, E de dimension finie : aucune forme du choix n'intervient (les bases sont finies).
+# Le chapitre est placé dans l'algèbre commutative parce que l'algèbre linéaire ne dépend pas des polynômes.
+
+graphe: ac-reduction
+titre: Réduction des endomorphismes
+conteneur: ac-reduction
+
+entrees:
+  ac-chinois: [rd-noyaux]
+
+noeuds:
+  - id: rd-polynomes-endo
+    etiquette: Polynômes d'endomorphismes
+    nature: théorème
+    titre: Polynômes d'un endomorphisme, polynôme minimal
+    texte: |
+      Dans tout ce chapitre, $K$ est un [[corps]], $E$ un $K$-[[espace-vectoriel|espace vectoriel]] de [[dimension]] finie $n \geqslant 1$, et $u \in \lex{espace-applications-lineaires}{\mathcal L}(E)$.
+
+      L'ensemble $\mathcal L(E)$ est un [[anneau]] pour l'addition et la composition, de neutre $\mathrm{id}_E$. La composition est associative ; elle est distributive des deux côtés, puisque $(v + w) \circ u = v \circ u + w \circ u$ par définition de la somme, et $u \circ (v + w) = u \circ v + u \circ w$ par linéarité de $u$ ({{v-applications|Applications linéaires}}). Cet anneau n'est pas commutatif en général ({{v-matrices|Matrices}}).
+
+      On pose $u^0 = \mathrm{id}_E$ et $u^{k+1} = u \circ u^k$. Pour $P = \sum_k a_kX^k \in \lex{anneau-polynomes}{K[X]}$, on définit
+      $$P(u) = \sum_k a_k\,u^k \in \mathcal L(E),$$
+      et de même $P(A) = \sum_k a_kA^k$ pour une matrice carrée $A$. Un polynôme $P$ est **annulateur** de $u$ si $P(u) = 0$.
+
+      Un sous-espace $F$ de $E$ est [[sous-espace-stable|stable]] par $u$ si $u(F) \subset F$. Plus généralement que pour deux sous-espaces ({{v-somme-directe|Sommes directes}}), la somme $F_1 + \cdots + F_k$ de sous-espaces est **directe**, et se note $F_1 \oplus \cdots \oplus F_k$, si une égalité $x_1 + \cdots + x_k = 0$ avec $x_i \in F_i$ entraîne que tous les $x_i$ sont nuls ; l'écriture d'un élément de la somme est alors unique.
+    enonce: |
+      (i) L'application $P \mapsto P(u)$ est un morphisme d'anneaux de $K[X]$ dans $\mathcal L(E)$, linéaire, qui envoie $X$ sur $u$. Deux polynômes en $u$ commutent, et tout $v \in \mathcal L(E)$ qui commute avec $u$ commute avec tous les $P(u)$.
+
+      (ii) Si $v$ commute avec $u$, $\operatorname{Ker} v$ et $\operatorname{Im} v$ sont stables par $u$. En particulier, $\operatorname{Ker} P(u)$ et $\operatorname{Im} P(u)$ sont stables par $u$ pour tout $P$.
+
+      (iii) Les polynômes annulateurs de $u$ forment un [[ideal|idéal]] non nul de $K[X]$. Son générateur unitaire $\mu_u$ est le [[polynome-minimal-endomorphisme|polynôme minimal]] de $u$ : $P(u) = 0$ si et seulement si $\mu_u$ divise $P$. On a $\deg \mu_u \geqslant 1$.
+
+      (iv) Si $u(x) = \lambda x$, alors $P(u)(x) = P(\lambda)\,x$ pour tout $P$. Les racines de $\mu_u$ dans $K$ sont exactement les [[valeur-propre|valeurs propres]] de $u$.
+
+      (v) Si $A$ est la matrice de $u$ dans une base, $P(A)$ est celle de $P(u)$. Pour $S$ inversible, $P(S^{-1}AS) = S^{-1}P(A)S$ : deux matrices semblables ont les mêmes polynômes annulateurs, donc le même polynôme minimal.
+    preuve: |
+      (i) L'associativité donne $u^i \circ u^j = u^{i+j}$, par récurrence sur $i$. L'application est linéaire par construction. Pour $P = \sum_i a_iX^i$ et $Q = \sum_j b_jX^j$, la composition étant bilinéaire,
+      $$\begin{aligned} P(u) \circ Q(u) &= \sum_{i, j} a_ib_j\,u^{i+j} \\ &= \sum_k \Big(\sum_{i+j=k} a_ib_j\Big)u^k, \end{aligned}$$
+      ce qui est $(PQ)(u)$ ({{pol-anneau|Anneau A[X]}}). L'image de $1$ est $\mathrm{id}_E$, celle de $X$ est $u$.
+
+      Comme $PQ = QP$, les endomorphismes $P(u)$ et $Q(u)$ commutent. Si $v \circ u = u \circ v$, alors $v \circ u^k = u^k \circ v$ par récurrence sur $k$, puis $v \circ P(u) = P(u) \circ v$ par linéarité.
+
+      (ii) Si $v(x) = 0$, alors $v(u(x)) = u(v(x)) = 0$. Si $y = v(x)$, alors $u(y) = v(u(x))$ appartient à $\operatorname{Im} v$. On applique ceci à $v = P(u)$, qui commute avec $u$ par (i).
+
+      (iii) L'ensemble des annulateurs est le noyau du morphisme (i) : il est stable par différence, et si $P(u) = 0$, alors $(RP)(u) = R(u) \circ P(u) = 0$ pour tout $R$. C'est donc un idéal.
+
+      Il n'est pas nul. L'espace $\mathcal L(E)$ est de dimension $n^2$ ({{v-matrices|Matrices}}, (i)), et la famille $(u^k)_{0 \leqslant k \leqslant n^2}$, qui a $n^2 + 1$ termes, est liée ({{v-dimension|Dimension}}, (ii)). Une relation $\sum_k c_ku^k = 0$ à coefficients non tous nuls fournit l'annulateur non nul $\sum_k c_kX^k$.
+
+      Le générateur unitaire existe et est unique ({{pol-principal|K[X] principal}}, (i)), et $P$ appartient à l'idéal $(\mu_u)$ si et seulement si $\mu_u$ divise $P$. Enfin $\mu_u \neq 1$, puisque $1(u) = \mathrm{id}_E$ n'est pas nul, $E$ n'étant pas réduit à $\{0\}$.
+
+      (iv) Par récurrence, $u^k(x) = \lambda^kx$, d'où $P(u)(x) = \sum_k a_k\lambda^kx = P(\lambda)x$. Si $\lambda$ est valeur propre, de vecteur propre $x \neq 0$, alors $0 = \mu_u(u)(x) = \mu_u(\lambda)x$, donc $\mu_u(\lambda) = 0$.
+
+      Réciproquement, si $\mu_u(\lambda) = 0$, on écrit $\mu_u = (X - \lambda)Q$ ({{pol-racines|Racines}}, (i)), avec $\deg Q = \deg \mu_u - 1$. Un multiple non nul de $\mu_u$ est de degré au moins $\deg \mu_u$ ({{pol-anneau|Anneau A[X]}}, (iii)) ; le polynôme $Q$, non nul, n'est donc pas annulateur.
+
+      Il existe ainsi $y$ tel que $x = Q(u)(y) \neq 0$, et
+      $$(u - \lambda\,\mathrm{id})(x) = \mu_u(u)(y) = 0 :$$
+      $x$ est un vecteur propre associé à $\lambda$.
+
+      (v) L'application $v \mapsto \operatorname{Mat}(v)$, dans une base fixée, est linéaire et transforme la composition en produit ({{v-matrices|Matrices}}, (i) et (ii)) ; elle envoie $\mathrm{id}_E$ sur $I_n$. Par récurrence, elle envoie $u^k$ sur $A^k$, puis $P(u)$ sur $P(A)$ par linéarité.
+
+      Par associativité du produit ({{v-matrices|Matrices}}, (iii)), $(S^{-1}AS)^k = S^{-1}A^kS$ par récurrence sur $k$, et l'on conclut par linéarité ; $S^{-1}P(A)S$ est nulle si et seulement si $P(A)$ l'est.
+    remarques:
+      - |
+        Soit $F$ le corps des fractions de $\mathbb Z$ et $A = \begin{pmatrix} 2 & 1 \\ 1 & 2 \end{pmatrix} \in \lex{espace-matrices}{\mathcal M_2}(F)$, déjà rencontrée au nœud {{v-valeurs-propres|Valeurs propres}}. On calcule
+        $$A^2 = \begin{pmatrix} 5 & 4 \\ 4 & 5 \end{pmatrix} = 4A - 3I_2.$$
+
+        Le polynôme $X^2 - 4X + 3 = (X - 1)(X - 3)$ annule donc $A$. Aucun polynôme unitaire de degré $1$, $X - c$, ne l'annule, puisque $A$ n'est pas égale à $cI_2$ : c'est le polynôme minimal, et ses racines $1$ et $3$ sont bien les valeurs propres, comme l'annonce (iv).
+
+        Le polynôme minimal donne aussi l'inverse, sans aucun déterminant : de $A(4I_2 - A) = 3I_2$ on tire $A^{-1} = \frac13(4I_2 - A)$.
+      - |
+        L'erreur la plus répandue est de lire $A^k$ comme une puissance calculée coefficient par coefficient. C'est le produit matriciel de $k$ copies de $A$ : pour $N = \begin{pmatrix} 0 & 1 \\ 0 & 0 \end{pmatrix}$, élever chaque coefficient au carré redonnerait $N$, alors que $N^2 = 0$. Le polynôme minimal de $N$ est $X^2$, puisque $N \neq 0$.
+      - |
+        Le polynôme minimal d'un élément algébrique, au nœud {{gs-algebriques|Éléments algébriques}} de la théorie de Galois, naît du même geste : c'est le générateur du noyau d'un morphisme d'évaluation. Par le théorème d'isomorphisme, l'anneau $K[u]$ des polynômes en $u$ est isomorphe à $K[X]/(\mu_u)$.
+
+        Mais $\mu_u$ n'est pas irréductible en général, et $K[u]$ n'est alors pas un corps : pour la matrice $N$ ci-dessus, $K[N]$ contient l'élément non nul $N$, de carré nul.
+
+  - id: rd-noyaux
+    etiquette: Lemme des noyaux
+    nature: théorème
+    titre: Lemme des noyaux
+    enonce: |
+      Soient $P_1, \dots, P_k \in \lex{anneau-polynomes}{K[X]}$ deux à deux premiers entre eux, avec $k \geqslant 1$, et $P = P_1 \cdots P_k$.
+
+      (i) On a
+      $$\begin{aligned} \operatorname{Ker} P(u) &= \operatorname{Ker} P_1(u) \\ &\quad \oplus \cdots \oplus \operatorname{Ker} P_k(u). \end{aligned}$$
+
+      (ii) Il existe des polynômes $Q_1, \dots, Q_k$, qui ne dépendent que des $P_i$ et non de $u$, tels que, pour tout $x = x_1 + \cdots + x_k$ de $\operatorname{Ker} P(u)$ avec $x_i \in \operatorname{Ker} P_i(u)$, on ait $x_i = Q_i(u)(x)$.
+
+      (iii) Si $P$ annule $u$, alors $E = \bigoplus_i \operatorname{Ker} P_i(u)$, et les projecteurs $p_i = Q_i(u)$ associés à cette décomposition sont des polynômes en $u$ : $p_1 + \cdots + p_k = \mathrm{id}_E$, $p_i^2 = p_i$ et $p_i \circ p_j = 0$ pour $i \neq j$.
+    preuve: |
+      *Les polynômes $Q_i$.* Pour $i \neq j$, la relation de Bézout $U P_i + V P_j = 1$ ({{pol-principal|K[X] principal}}, (ii)) dit que les idéaux $(P_i)$ et $(P_j)$ sont comaximaux.
+
+      Le lemme chinois ({{ac-chinois|Lemme chinois}}) s'applique : la flèche $K[X] \to \prod_i K[X]/(P_i)$ est surjective, de noyau
+      $$(P_1) \cap \cdots \cap (P_k) = (P_1) \cdots (P_k) = (P),$$
+      le produit des idéaux principaux $(P_i)$ étant l'idéal engendré par les produits $a_1P_1 \cdots a_kP_k$, c'est-à-dire $(P)$.
+
+      Soit $Q_i$ un antécédent de l'élément dont la composante d'indice $i$ vaut $1$ et les autres $0$ : $Q_i - 1 \in (P_i)$ et $Q_i \in (P_j)$ pour $j \neq i$.
+
+      Le polynôme $P_iQ_i$ appartient à chaque $(P_j)$, donc à $(P)$. Le polynôme $Q_1 + \cdots + Q_k - 1$ aussi : pour chaque $j$, il s'écrit $(Q_j - 1) + \sum_{i \neq j} Q_i$, somme d'éléments de $(P_j)$.
+
+      *Décomposition.* Chaque $\operatorname{Ker} P_i(u)$ est contenu dans $\operatorname{Ker} P(u)$, puisque $P(u) = \big(\prod_{j \neq i} P_j\big)(u) \circ P_i(u)$ par {{rd-polynomes-endo|Polynômes d'endomorphismes}}, (i).
+
+      Soit $x \in \operatorname{Ker} P(u)$. Si $R$ est un multiple de $P$, $R = SP$, alors $R(u)(x) = S(u)(P(u)(x)) = 0$. Appliqué à $R = \sum_i Q_i - 1$, ceci donne $x = \sum_i Q_i(u)(x)$ ; appliqué à $R = P_iQ_i$, il montre que $Q_i(u)(x)$ appartient à $\operatorname{Ker} P_i(u)$. La somme des noyaux est donc $\operatorname{Ker} P(u)$.
+
+      *La somme est directe.* Soient $x_i \in \operatorname{Ker} P_i(u)$ avec $\sum_i x_i = 0$, et $j$ fixé. Pour $i \neq j$, $P_i$ divise $Q_j$, donc $Q_j(u)(x_i) = 0$ ; et $Q_j - 1$ est multiple de $P_j$, donc $Q_j(u)(x_j) = x_j$. En appliquant $Q_j(u)$ à la relation, il vient $x_j = 0$.
+
+      Le même calcul, appliqué à $x = \sum_i x_i$, donne $Q_j(u)(x) = x_j$ : c'est (ii), et (i) est démontré.
+
+      (iii) Si $P(u) = 0$, alors $\operatorname{Ker} P(u) = E$. Par (ii), $p_i(x) = x_i$, d'où $\sum_i p_i(x) = x$, $p_i(p_i(x)) = x_i$ et $p_i(p_j(x)) = 0$ pour $i \neq j$, la décomposition de $x_j$ étant $x_j$ lui-même à la place $j$.
+    remarques:
+      - |
+        Pour $A = \begin{pmatrix} 2 & 1 \\ 1 & 2 \end{pmatrix}$ sur le corps des fractions de $\mathbb Z$, annulée par $(X - 1)(X - 3)$ ({{rd-polynomes-endo|Polynômes d'endomorphismes}}), on peut prendre
+        $$Q_1 = -\frac{X - 3}2, \qquad Q_2 = \frac{X - 1}2,$$
+        qui valent $1$ en $1$ et en $3$ respectivement, et $0$ en l'autre point.
+
+        On obtient les projecteurs $p_1 = \frac12(3I_2 - A)$ et $p_2 = \frac12(A - I_2)$, de matrices $\frac12\begin{pmatrix} 1 & -1 \\ -1 & 1 \end{pmatrix}$ et $\frac12\begin{pmatrix} 1 & 1 \\ 1 & 1 \end{pmatrix}$. Ils projettent sur les droites propres engendrées par $(1, -1)$ et $(1, 1)$, chacune parallèlement à l'autre, et vérifient $p_1 + p_2 = I_2$, $p_1p_2 = 0$.
+      - |
+        L'hypothèse « premiers entre eux » ne peut pas être omise. Pour $N = \begin{pmatrix} 0 & 1 \\ 0 & 0 \end{pmatrix}$ et $P_1 = P_2 = X$, on a $\operatorname{Ker} N^2 = K^2$, alors que $\operatorname{Ker} N + \operatorname{Ker} N$ n'est que la droite $\operatorname{Ker} N$.
+      - |
+        C'est le lemme chinois sous un autre vêtement. La loi $P \cdot x = P(u)(x)$ fait de $E$ un [[module|$K[X]$-module]] ({{a-module|Module}}), et $\operatorname{Ker} P(u)$ est le sous-module des éléments annulés par $P$ ; la décomposition (i) reflète l'isomorphisme $K[X]/(P) \cong \prod_i K[X]/(P_i)$.
+
+        Les $Q_i$ sont les polynômes d'interpolation de la dernière remarque du nœud {{ac-chinois|Lemme chinois}}, dans le cas où les $P_i$ sont les $X - a_i$.
+
+  - id: rd-caracteristique
+    etiquette: Polynôme caractéristique
+    nature: théorème
+    titre: Polynôme caractéristique
+    texte: |
+      L'anneau $\lex{anneau-polynomes}{K[X]}$ est intègre ({{pol-anneau|Anneau A[X]}}, (iii)) ; son [[corps-fractions|corps des fractions]] ({{a-fractions|Corps des fractions}}) est le corps des **fractions rationnelles**, noté $K(X)$, dans lequel on identifie $K[X]$ au sous-anneau des $P/1$.
+
+      Toute l'algèbre linéaire de l'édifice est établie sur un corps commutatif quelconque ; elle s'applique donc au corps $K(X)$, et en particulier le [[determinant|déterminant]] d'une matrice de $\lex{espace-matrices}{\mathcal M_n}(K(X))$ est défini et multiplicatif ({{v-det-matrice|Déterminant d'une matrice}}).
+
+      Le [[polynome-caracteristique|polynôme caractéristique]] d'une matrice $A \in \mathcal M_n(K)$ est
+      $$\chi_A = \det(XI_n - A),$$
+      déterminant calculé dans le corps $K(X)$ ; le point (i) montre qu'il appartient à $K[X]$. Celui de $u$, noté $\chi_u$, est celui de sa matrice dans une base quelconque, ce que justifie (iii).
+
+      Un polynôme non nul $P$ est **scindé** sur $K$ s'il s'écrit $c\prod_{i=1}^d (X - \alpha_i)$ avec $c, \alpha_1, \dots, \alpha_d \in K$ et $d = \deg P$. Si $\chi_u$ est scindé, la **multiplicité** d'une valeur propre $\lambda$ est sa [[multiplicite-racine|multiplicité]] comme racine de $\chi_u$.
+    enonce: |
+      (i) Le déterminant d'une matrice $M = (m_{ij})$ à coefficients dans $K[X]$ est la somme $\sum_\sigma \varepsilon(\sigma)\prod_j m_{\sigma(j)\,j}$, calculée dans $K[X]$. Pour tout morphisme d'anneaux $\varphi$ de $K[X]$ dans un corps $L$, on a $\varphi(\det M) = \det \varphi(M)$, où $\varphi(M)$ est la matrice des $\varphi(m_{ij})$.
+
+      (ii) $\chi_A$ est unitaire de degré $n$, et
+      $$\begin{aligned} \chi_A &= X^n - (\operatorname{tr} A)X^{n-1} + \cdots \\ &\quad + (-1)^n\det A. \end{aligned}$$
+
+      (iii) Deux matrices semblables ont le même polynôme caractéristique ; $\chi_u$ ne dépend donc pas de la base.
+
+      (iv) Pour tout $\lambda \in K$, $\chi_u(\lambda) = \det(\lambda\,\mathrm{id} - u)$. Les valeurs propres de $u$ sont exactement les racines de $\chi_u$ dans $K$.
+
+      (v) Si $P = c\prod_{i=1}^d (X - \alpha_i)$ est scindé, tout diviseur unitaire de $P$ s'écrit $\prod_{i \in J}(X - \alpha_i)$ pour une partie $J$ de $\{1, \dots, d\}$ ; il est scindé. Si $P = \prod_{i=1}^k (X - \lambda_i)^{m_i}$ avec des $\lambda_i$ deux à deux distincts, $m_i$ est la multiplicité de la racine $\lambda_i$.
+    preuve: |
+      (i) La formule du déterminant ({{v-det-matrice|Déterminant d'une matrice}}) n'emploie que des sommes, des produits et les signes $\pm 1$ ; appliquée à des éléments du sous-anneau $K[X]$, elle donne un élément de $K[X]$. Un morphisme d'anneaux respecte les sommes et les produits, et envoie $\pm 1$ sur $\pm 1$ : il transforme la formule pour $M$ en la formule pour $\varphi(M)$.
+
+      (ii) Les coefficients de $M = XI_n - A$ sont $m_{jj} = X - a_{jj}$, de degré $1$, et $m_{ij} = -a_{ij}$, constants, pour $i \neq j$. Si $\sigma \neq \mathrm{id}$, $\sigma$ déplace au moins deux indices, puisqu'une permutation qui fixe $n - 1$ éléments fixe aussi le dernier ; le produit $\prod_j m_{\sigma(j)\,j}$ a donc au plus $n - 2$ facteurs de degré $1$, et il est de degré au plus $n - 2$.
+
+      Le terme de l'identité est $\prod_j (X - a_{jj})$.
+
+      Par récurrence sur le nombre de facteurs, un produit $\prod_{j \leqslant k}(X - a_{jj})$ s'écrit $X^k - \big(\sum_{j \leqslant k} a_{jj}\big)X^{k-1}$ plus des termes de degré au plus $k - 2$, puisque
+      $$\begin{aligned} &(X^k - sX^{k-1} + R)(X - a) \\ &\quad = X^{k+1} - (s + a)X^k + R_1 \end{aligned}$$
+      avec $\deg R \leqslant k - 2$ et $\deg R_1 \leqslant k - 1$. D'où le coefficient dominant $1$ et le coefficient $-\operatorname{tr} A$ de $X^{n-1}$.
+
+      Le terme constant est la valeur en $0$. Par (i), appliqué à l'évaluation en $0$ ({{pol-evaluation|Évaluation}}, (i)), il vaut $\det(-A)$, c'est-à-dire $(-1)^n\det A$, chacune des $n$ colonnes étant multipliée par $-1$ et le déterminant étant $n$-linéaire en les colonnes ({{v-formes-alternees|Formes alternées}}, (ii)).
+
+      (iii) Pour $S$ inversible, $XI_n - S^{-1}AS = S^{-1}(XI_n - A)S$ dans $\mathcal M_n(K(X))$, puisque $S^{-1}(XI_n)S = XI_n$. Le déterminant étant multiplicatif sur le corps $K(X)$, avec $\det S^{-1}\det S = \det I_n = 1$, les deux polynômes caractéristiques sont égaux. Les matrices d'un même endomorphisme dans deux bases sont semblables ({{v-trace|Trace}}, (iii)).
+
+      (iv) L'évaluation en $\lambda$ est un morphisme d'anneaux de $K[X]$ dans $K$ ({{pol-evaluation|Évaluation}}, (i)), qui envoie $XI_n - A$ sur $\lambda I_n - A$, matrice de $\lambda\,\mathrm{id} - u$.
+
+      Par (i) et {{v-det-matrice|Déterminant d'une matrice}}, (i), $\chi_u(\lambda) = \det(\lambda\,\mathrm{id} - u)$, qui vaut $(-1)^n\det(u - \lambda\,\mathrm{id})$ comme dans (ii). Il est nul si et seulement si $\lambda$ est valeur propre ({{v-valeurs-propres|Valeurs propres}}, (i)).
+
+      (v) Chaque $X - \alpha_i$ est irréductible et unitaire ({{pol-irreductibles|Irréductibles}}, (iii)) : $c \cdot \prod_i (X - \alpha_i)$ est la factorisation de $P$.
+
+      Si $P = DD'$ avec $D$ unitaire, les factorisations de $D$ et de $D'$, mises bout à bout, en donnent une de $P$ ; par unicité ({{pol-irreductibles|Irréductibles}}, (ii)), les facteurs irréductibles de $D$ sont certains des $X - \alpha_i$, chacun pris au plus autant de fois qu'il figure dans $P$.
+
+      Pour la seconde assertion, $P = (X - \lambda_i)^{m_i}Q$ avec $Q = \prod_{j \neq i}(X - \lambda_j)^{m_j}$, et $Q(\lambda_i) = \prod_{j \neq i}(\lambda_i - \lambda_j)^{m_j}$ n'est pas nul, $K$ étant intègre ; on conclut par {{pol-racines|Racines}}, (ii).
+    remarques:
+      - |
+        Pourquoi passer par $K(X)$ ? Le déterminant n'est construit dans l'édifice que sur un corps, et $XI_n - A$ est une matrice à coefficients dans l'anneau $K[X]$, qui n'en est pas un. Le corps des fractions fournit un corps qui contient $K[X]$ ; le point (i) assure que rien n'est perdu.
+
+        La voie qui paraît plus simple, définir $\chi_u$ par la fonction $\lambda \mapsto \det(\lambda\,\mathrm{id} - u)$, ne convient pas sur un corps fini, où un polynôme n'est pas déterminé par sa fonction ({{pol-evaluation|Évaluation}}).
+
+        Sur $\lex{anneau-zn}{\mathbb Z/2\mathbb Z}$, la matrice nulle de taille $3$ et la matrice
+        $$C = \begin{pmatrix} 0 & 0 & 0 \\ 1 & 0 & 1 \\ 0 & 1 & 1 \end{pmatrix}$$
+        ont pour polynômes caractéristiques $X^3$ et $X^3 + X^2 + X$, distincts, qui prennent pourtant les mêmes valeurs, $\overline 0$ en $\overline 0$ et $\overline 1$ en $\overline 1$.
+      - |
+        Pour $A = \begin{pmatrix} 2 & 1 \\ 1 & 2 \end{pmatrix}$, on trouve $\chi_A = (X - 2)^2 - 1 = X^2 - 4X + 3$ : le coefficient $-4$ est l'opposé de la trace, et $3$ est le déterminant, comme le veut (ii). Ici $\chi_A$ est égal au polynôme minimal ; le nœud {{rd-cayley-hamilton|Cayley-Hamilton}} montrera qu'il en est toujours un multiple.
+
+        Pour la rotation $J = \begin{pmatrix} 0 & -1 \\ 1 & 0 \end{pmatrix}$, $\chi_J = X^2 + 1$. Sur $\mathbb Z/3\mathbb Z$, il prend les valeurs $\overline 1$, $\overline 2$, $\overline 2$ : $J$ n'a aucune valeur propre. Sur $\mathbb Z/5\mathbb Z$, $X^2 + 1 = (X - \overline 2)(X - \overline 3)$, et $J$ en a deux.
+      - |
+        On rencontre aussi la convention $\det(A - XI_n) = (-1)^n\chi_A$, qui a les mêmes racines. Celle qui est retenue ici rend $\chi_A$ unitaire, ce qui permet de le comparer au polynôme minimal, unitaire lui aussi, sans se soucier d'un signe.
+
+  - id: rd-stables
+    etiquette: Sous-espaces stables
+    nature: théorème
+    titre: Sous-espaces stables et matrices triangulaires par blocs
+    texte: |
+      Soit $F$ un [[sous-espace-stable|sous-espace stable]] par $u$. La **restriction** $u_F : F \to F$, $x \mapsto u(x)$, est un endomorphisme de $F$.
+
+      Soit $\pi : E \to E/F$ la surjection canonique ({{v-quotient|Espace quotient}}). Si $x - x' \in F$, alors $u(x) - u(x') \in F$ ; l'endomorphisme **induit** $\bar u$ de $E/F$, défini par $\bar u(\pi(x)) = \pi(u(x))$, est donc bien défini, et il est linéaire.
+    enonce: |
+      (i) Si $E = F_1 \oplus \cdots \oplus F_k$, des bases des $F_i$ mises bout à bout forment une base de $E$.
+
+      (ii) Sur un corps quelconque, si $B$ et $D$ sont des matrices carrées, de tailles $p$ et $n - p$, et $C$ une matrice à $p$ lignes et $n - p$ colonnes,
+      $$\det\begin{pmatrix} B & C \\ 0 & D \end{pmatrix} = \det B \cdot \det D.$$
+      En particulier, le déterminant d'une matrice triangulaire supérieure est le produit de ses coefficients diagonaux.
+
+      (iii) Soit $F$ stable, avec $\{0\} \neq F \neq E$, et $(e_1, \dots, e_n)$ une base de $E$ dont les $p$ premiers vecteurs forment une base de $F$. La matrice de $u$ s'écrit comme en (ii), où $B$ est la matrice de $u_F$ et $D$ celle de $\bar u$ dans la base $(\pi(e_{p+1}), \dots, \pi(e_n))$ de $E/F$. Par suite
+      $$\chi_u = \chi_{u_F}\,\chi_{\bar u}.$$
+
+      Si $E = F_1 \oplus \cdots \oplus F_k$ avec des $F_i$ stables et non nuls, la matrice de $u$ dans une base comme en (i) est diagonale par blocs, et $\chi_u = \prod_i \chi_{u_{F_i}}$.
+
+      (iv) Si la matrice de $u$ dans une base est triangulaire supérieure, de coefficients diagonaux $t_{11}, \dots, t_{nn}$, alors $\chi_u = \prod_j (X - t_{jj})$.
+
+      (v) Pour $F$ stable et $P \in \lex{anneau-polynomes}{K[X]}$, $P(u_F)$ est la restriction de $P(u)$ à $F$, et $P(\bar u) \circ \pi = \pi \circ P(u)$. Les polynômes minimaux de $u_F$ et de $\bar u$ divisent $\mu_u$.
+
+      (vi) Pour toute valeur propre $\lambda$, $1 \leqslant \dim E_\lambda \leqslant m$, où $m$ est la multiplicité de $\lambda$ comme racine de $\chi_u$.
+    preuve: |
+      (i) La famille obtenue engendre chaque $F_i$, donc leur somme $E$. Une combinaison linéaire nulle s'écrit $y_1 + \cdots + y_k = 0$, où $y_i \in F_i$ regroupe les termes de la base de $F_i$ ; la somme étant directe, chaque $y_i$ est nul, et ses coefficients aussi, par liberté de la base de $F_i$.
+
+      (ii) Notons $A = (a_{ij})$ la matrice entière. Dans la formule $\sum_\sigma \varepsilon(\sigma)\prod_j a_{\sigma(j)\,j}$, si $\sigma(j) > p$ pour un $j \leqslant p$, le facteur $a_{\sigma(j)\,j}$ appartient au bloc nul. Restent les $\sigma$ qui envoient $\{1, \dots, p\}$ dans lui-même, donc sur lui-même, par injectivité ({{n-fini|Ensembles finis}}, (iii)), et $\{p + 1, \dots, n\}$ sur lui-même.
+
+      Une telle $\sigma$ équivaut à un couple $(\sigma', \sigma'')$ formé d'une permutation de $\{1, \dots, p\}$ et d'une de $\{p + 1, \dots, n\}$.
+
+      Une paire $i < j$ avec $i \leqslant p < j$ n'est jamais inversée, puisque $\sigma(i) \leqslant p < \sigma(j)$ ; le nombre de paires inversées par $\sigma$ est donc la somme de ceux de $\sigma'$ et de $\sigma''$, et $\varepsilon(\sigma) = \varepsilon(\sigma')\varepsilon(\sigma'')$ ({{v-permutations|Permutations, signature}}).
+
+      La somme se factorise alors en $\det B \cdot \det D$. Le cas triangulaire s'en déduit par récurrence sur la taille, avec $p = 1$.
+
+      (iii) Pour $j \leqslant p$, $u(e_j) \in F$ n'a de coordonnées que sur $e_1, \dots, e_p$ : c'est le bloc nul, et $B$ est la matrice de $u_F$. Pour $j > p$, écrivons $u(e_j) = \sum_i a_{ij}e_i$ ; en appliquant $\pi$, qui annule $e_1, \dots, e_p$,
+      $$\bar u(\pi(e_j)) = \sum_{i > p} a_{ij}\,\pi(e_i).$$
+
+      Les $\pi(e_i)$, $i > p$, forment une base de $E/F$, puisque $\pi$ restreinte au supplémentaire $\operatorname{Vect}(e_{p+1}, \dots, e_n)$ de $F$ est un isomorphisme ({{v-quotient|Espace quotient}}, (iii)) ; la matrice $D$ est donc celle de $\bar u$.
+
+      La matrice $XI_n - A$ est elle aussi triangulaire par blocs, de blocs diagonaux $XI_p - B$ et $XI_{n-p} - D$. Le point (ii), appliqué dans le corps $K(X)$, donne $\chi_u = \chi_B\chi_D$, et $\chi_B = \chi_{u_F}$, $\chi_D = \chi_{\bar u}$ par {{rd-caracteristique|Polynôme caractéristique}}, (iii).
+
+      Si $E = F_1 \oplus \cdots \oplus F_k$ avec des $F_i$ stables, chaque $u(e)$, pour $e$ dans la base de $F_i$, n'a de coordonnées que sur cette base : la matrice est diagonale par blocs, et (ii), appliqué $k - 1$ fois dans $K(X)$, donne le produit.
+
+      (iv) La matrice $XI_n - T$ est triangulaire, de coefficients diagonaux $X - t_{jj}$, et l'on applique (ii) dans $K(X)$.
+
+      (v) Par récurrence, $(u_F)^k$ est la restriction de $u^k$, et $\bar u^k \circ \pi = \pi \circ u^k$ ; on passe aux polynômes par linéarité. Si $P(u) = 0$, alors $P(u_F) = 0$, et $P(\bar u) \circ \pi = 0$, donc $P(\bar u) = 0$ puisque $\pi$ est surjective. On applique ceci à $P = \mu_u$ et l'on conclut par {{rd-polynomes-endo|Polynômes d'endomorphismes}}, (iii).
+
+      (vi) Le sous-espace propre $F = E_\lambda$ est non nul et stable, et $u_F = \lambda\,\mathrm{id}_F$. Si $F = E$, $\chi_u = (X - \lambda)^n$ par (iv) ; sinon, par (iii) et (iv), $(X - \lambda)^d$ divise $\chi_u$, avec $d = \dim E_\lambda$. Par définition de la multiplicité ({{pol-racines|Racines}}), $d \leqslant m$.
+    remarques:
+      - |
+        L'inégalité (vi) peut être stricte. Pour $T = \begin{pmatrix} 1 & 1 \\ 0 & 1 \end{pmatrix}$, $\chi_T = (X - 1)^2$ par (iv), donc $1$ est de multiplicité $2$, alors que le sous-espace propre est la droite engendrée par $(1, 0)$. Le nœud {{rd-diagonalisable|Diagonalisation}} montrera que c'est exactement ce qui empêche la diagonalisation.
+      - |
+        L'erreur la plus répandue est de croire qu'un sous-espace stable a toujours un supplémentaire stable, ce qui ramènerait toute matrice à une forme diagonale par blocs. Pour la même matrice $T$, la droite $\operatorname{Ker}(T - I_2)$ est stable, mais une autre droite stable serait engendrée par un vecteur propre, donc égale à elle : aucun supplémentaire n'est stable.
+
+        C'est pourquoi le point (iii) passe par le quotient $E/F$ plutôt que par un supplémentaire.
+
+  - id: rd-cayley-hamilton
+    etiquette: Cayley-Hamilton
+    nature: théorème
+    titre: Théorème de Cayley-Hamilton
+    enonce: |
+      (i) Le [[polynome-caracteristique|polynôme caractéristique]] annule $u$ : $\chi_u(u) = 0$. Pour une matrice $A \in \lex{espace-matrices}{\mathcal M_n}(K)$, $\chi_A(A) = 0$.
+
+      (ii) Le [[polynome-minimal-endomorphisme|polynôme minimal]] $\mu_u$ divise $\chi_u$ ; en particulier $\deg \mu_u \leqslant n$. Les polynômes $\mu_u$ et $\chi_u$ ont les mêmes racines dans $K$, qui sont les valeurs propres de $u$.
+
+      (iii) Si $u$ est inversible, $u^{-1}$ est un polynôme en $u$, de degré au plus $n - 1$.
+    preuve: |
+      (i) Par {{rd-polynomes-endo|Polynômes d'endomorphismes}}, (v), il suffit de traiter la matrice $A$ de $u$. Si $n = 1$, $A = (a_{11})$, $\chi_A = X - a_{11}$ et $\chi_A(A) = A - a_{11}I_1 = 0$ ; on suppose désormais $n \geqslant 2$, pour que les cofacteurs soient des déterminants de matrices de taille $n - 1 \geqslant 1$.
+
+      Soit $M = XI_n - A$, matrice à coefficients dans $\lex{anneau-polynomes}{K[X]}$, et $\chi_A = \sum_{k=0}^n c_kX^k$, avec $c_n = 1$.
+
+      *La comatrice.* Dans le corps $K(X)$, la formule de la comatrice ({{v-comatrice|Comatrice}}) donne
+      $${}^t\!\operatorname{com} M \; M = \det M \cdot I_n = \chi_A\,I_n.$$
+      Chaque cofacteur est, au signe près, le déterminant d'une matrice de taille $n - 1$ extraite de $M$.
+
+      Ce déterminant appartient à $K[X]$ et il est de degré au plus $n - 1$, chaque terme de la formule du déterminant étant un produit de $n - 1$ coefficients de degré au plus $1$ ({{rd-caracteristique|Polynôme caractéristique}}, (i)).
+
+      *Écriture selon les puissances de $X$.* Une matrice à coefficients dans $K[X]$, de degrés au plus $d$, s'écrit de manière unique $\sum_{k=0}^d X^kB_k$ avec $B_k \in \mathcal M_n(K)$, la matrice $B_k$ rassemblant les coefficients d'indice $k$ ({{pol-anneau|Anneau A[X]}}, (i)).
+
+      Écrivons ainsi ${}^t\!\operatorname{com} M = \sum_{k=0}^{n-1} X^kB_k$, et posons $B_{-1} = B_n = 0$. Comme $X$ commute avec tout, le produit vaut
+      $$\begin{aligned} &\Big(\sum_k X^kB_k\Big)(XI_n - A) \\ &\quad = \sum_k X^{k+1}B_k - \sum_k X^kB_kA \\ &\quad = \sum_{k=0}^n X^k\,(B_{k-1} - B_kA). \end{aligned}$$
+
+      En identifiant les coefficients d'indice $k$ avec ceux de $\chi_A I_n$, il vient, pour $0 \leqslant k \leqslant n$,
+      $$B_{k-1} - B_kA = c_k\,I_n.$$
+
+      *Télescopage.* Multiplions la relation d'indice $k$ à droite par $A^k$ et sommons :
+      $$\begin{aligned} \chi_A(A) &= \sum_{k=0}^n c_kA^k \\ &= \sum_{k=0}^n \big(B_{k-1}A^k - B_kA^{k+1}\big) \\ &= B_{-1} - B_nA^{n+1} = 0, \end{aligned}$$
+      les termes intermédiaires se compensant deux à deux.
+
+      (ii) Par (i), $\chi_u$ est annulateur, donc multiple de $\mu_u$ ({{rd-polynomes-endo|Polynômes d'endomorphismes}}, (iii)), et $\deg \mu_u \leqslant \deg \chi_u = n$. Les racines de $\mu_u$ et celles de $\chi_u$ sont, dans les deux cas, les valeurs propres ({{rd-polynomes-endo|Polynômes d'endomorphismes}}, (iv), et {{rd-caracteristique|Polynôme caractéristique}}, (iv)).
+
+      (iii) Le terme constant $c_0 = (-1)^n\det u$ n'est pas nul ({{rd-caracteristique|Polynôme caractéristique}}, (ii), et {{v-determinant|Déterminant}}, (ii)). La relation (i) s'écrit
+      $$u \circ \Big(-\frac1{c_0}\sum_{k=1}^n c_ku^{k-1}\Big) = \mathrm{id}_E,$$
+      et le facteur de droite, polynôme en $u$, commute avec $u$ : c'est $u^{-1}$.
+    remarques:
+      - |
+        L'erreur la plus répandue est la « démonstration » en une ligne : $\chi_A(A) = \det(AI_n - A) = \det 0 = 0$. Elle confond deux objets. Le membre de gauche est une matrice, obtenue en substituant $A$ à $X$ dans le polynôme $\chi_A$ une fois développé ; le membre de droite est un scalaire.
+
+        On n'a pas non plus le droit de remplacer $X$ par $A$ à l'intérieur du déterminant. Le coefficient diagonal $X - a_{ii}$ de $XI_n - A$ deviendrait la matrice $A - a_{ii}I_n$, et le coefficient $-a_{ij}$ la matrice $-a_{ij}I_n$ : on obtiendrait un tableau dont les coefficients sont des matrices, qui ne commutent pas entre elles, et non la matrice nulle $AI_n - A$.
+
+        La preuve ci-dessus contourne cet obstacle en séparant les puissances de $X$ avant de remplacer $X$ par $A$.
+      - |
+        Pour $B = \begin{pmatrix} 1 & 2 \\ 3 & 4 \end{pmatrix}$, $\chi_B = X^2 - 5X - 2$, et l'on vérifie $B^2 = \begin{pmatrix} 7 & 10 \\ 15 & 22 \end{pmatrix} = 5B + 2I_2$. Sur le corps des fractions de $\mathbb Z$, (iii) donne $B^{-1} = \frac12(B - 5I_2)$, c'est-à-dire $\begin{pmatrix} -2 & 1 \\ 3/2 & -1/2 \end{pmatrix}$.
+
+        Le polynôme minimal peut être un diviseur strict : pour $u = \mathrm{id}_E$, $\mu_u = X - 1$ et $\chi_u = (X - 1)^n$.
+      - |
+        Hamilton a rencontré le premier un cas particulier du théorème, pour les fonctions linéaires de quaternions, dans ses *Lectures on Quaternions* (Dublin, 1853). Cayley l'énonce pour les matrices dans « A memoir on the theory of matrices » (*Philosophical Transactions of the Royal Society of London* 148, 1858, p. 17-37) ; il le démontre pour $n = 2$, dit l'avoir vérifié pour $n = 3$, et écrit ne pas avoir jugé nécessaire d'entreprendre une démonstration formelle du cas général. La première démonstration générale est due à Frobenius (« Ueber lineare Substitutionen und bilineare Formen », *J. reine angew. Math.* 84, 1878, p. 1-63).
+
+  - id: rd-diagonalisable
+    etiquette: Diagonalisation
+    nature: théorème
+    titre: Critères de diagonalisation
+    texte: |
+      On rappelle que $u$ est **diagonalisable** s'il existe une base de $E$ formée de vecteurs propres ({{v-valeurs-propres|Valeurs propres}}). On note $\lambda_1, \dots, \lambda_k$ les valeurs propres de $u$, deux à deux distinctes, et $E_{\lambda_i}$ les sous-espaces propres.
+    enonce: |
+      (i) Les conditions suivantes sont équivalentes :
+
+      (a) $u$ est diagonalisable ;
+
+      (b) $u$ est annulé par un polynôme scindé à racines simples, c'est-à-dire de la forme $\prod_{j=1}^d (X - \alpha_j)$ avec des $\alpha_j$ deux à deux distincts ;
+
+      (c) $\mu_u$ est scindé à racines simples ; c'est alors $\prod_{i=1}^k (X - \lambda_i)$ ;
+
+      (d) $E = E_{\lambda_1} \oplus \cdots \oplus E_{\lambda_k}$ ;
+
+      (e) $\chi_u$ est scindé, et $\dim E_{\lambda_i}$ est égale à la multiplicité de $\lambda_i$ pour tout $i$.
+
+      (ii) Si $u$ est diagonalisable et $F$ stable par $u$, la restriction $u_F$ est diagonalisable.
+
+      (iii) *Codiagonalisation.* Si $u$ et $v$ sont diagonalisables et commutent, il existe une base de $E$ formée de vecteurs propres communs à $u$ et à $v$.
+    preuve: |
+      (i) *(a) ⇒ (b).* Dans une base de vecteurs propres, chaque vecteur $e$ vérifie $u(e) = \lambda_ie$ pour un $i$. Le polynôme $P = \prod_i (X - \lambda_i)$ s'écrit $Q\,(X - \lambda_i)$, d'où $P(u)(e) = Q(u)\big((u - \lambda_i\,\mathrm{id})(e)\big) = 0$ ({{rd-polynomes-endo|Polynômes d'endomorphismes}}, (i)). L'endomorphisme $P(u)$ s'annule sur une base : il est nul.
+
+      *(b) ⇒ (c).* Le polynôme minimal divise l'annulateur $P$ ({{rd-polynomes-endo|Polynômes d'endomorphismes}}, (iii)) ; il est donc de la forme $\prod_{j \in J}(X - \alpha_j)$ ({{rd-caracteristique|Polynôme caractéristique}}, (v)), scindé à racines simples. Ses racines sont les valeurs propres ({{rd-polynomes-endo|Polynômes d'endomorphismes}}, (iv)), d'où $\mu_u = \prod_i (X - \lambda_i)$.
+
+      *(c) ⇒ (d).* Les polynômes $X - \lambda_i$ sont deux à deux premiers entre eux, puisque
+      $$\frac{(X - \lambda_i) - (X - \lambda_j)}{\lambda_j - \lambda_i} = 1$$
+      est une relation de Bézout. Le lemme des noyaux ({{rd-noyaux|Lemme des noyaux}}, (iii)), appliqué à $\mu_u = \prod_i (X - \lambda_i)$, donne $E = \bigoplus_i \operatorname{Ker}(u - \lambda_i\,\mathrm{id}) = \bigoplus_i E_{\lambda_i}$.
+
+      *(d) ⇒ (a).* Des bases des $E_{\lambda_i}$, mises bout à bout, forment une base de $E$ ({{rd-stables|Sous-espaces stables}}, (i)), formée de vecteurs propres.
+
+      *(d) ⇒ (e).* Les $E_{\lambda_i}$ sont stables, et $u$ y induit $\lambda_i\,\mathrm{id}$, de polynôme caractéristique $(X - \lambda_i)^{d_i}$ avec $d_i = \dim E_{\lambda_i}$ ({{rd-stables|Sous-espaces stables}}, (iv)). Par {{rd-stables|Sous-espaces stables}}, (iii), $\chi_u = \prod_i (X - \lambda_i)^{d_i}$ est scindé, et la multiplicité de $\lambda_i$ est $d_i$ ({{rd-caracteristique|Polynôme caractéristique}}, (v)).
+
+      *(e) ⇒ (d).* La somme des $E_{\lambda_i}$ est directe : dans une relation $\sum_i x_i = 0$ avec $x_i \in E_{\lambda_i}$, les $x_i$ non nuls seraient des vecteurs propres associés à des valeurs propres distinctes, formant une famille liée, contrairement à {{v-valeurs-propres|Valeurs propres}}, (ii).
+
+      Par (i) du nœud {{rd-stables|Sous-espaces stables}}, la dimension de cette somme est $\sum_i \dim E_{\lambda_i}$, c'est-à-dire la somme des multiplicités. Comme $\chi_u$ est scindé, de degré $n$, et que ses racines sont les $\lambda_i$, il s'écrit $\prod_i (X - \lambda_i)^{m_i}$, où $m_i$ est la multiplicité de $\lambda_i$ ({{rd-caracteristique|Polynôme caractéristique}}, (v)), et cette somme vaut $\sum_i m_i = n$ ; la somme directe est donc $E$ ({{v-dimension|Dimension}}, (iii)).
+
+      (ii) Le polynôme minimal de $u_F$ divise $\mu_u$ ({{rd-stables|Sous-espaces stables}}, (v)), scindé à racines simples ; il l'est donc lui aussi, et l'on applique (c) ⇒ (a) à $u_F$.
+
+      (iii) Soient $\lambda_1, \dots, \lambda_k$ les valeurs propres de $u$. Chaque $E_{\lambda_i}$ est stable par $v$, puisque $u - \lambda_i\,\mathrm{id}$ commute avec $v$ ({{rd-polynomes-endo|Polynômes d'endomorphismes}}, (ii)).
+
+      La restriction de $v$ à $E_{\lambda_i}$ est diagonalisable par (ii) ; on choisit dans chaque $E_{\lambda_i}$ une base de vecteurs propres de $v$, qui sont aussi propres pour $u$, et on les met bout à bout, ce qui donne une base de $E$ par (d) et {{rd-stables|Sous-espaces stables}}, (i).
+    remarques:
+      - |
+        Le critère (c) se vérifie sans chercher les vecteurs propres : il suffit de calculer $\prod_i (A - \lambda_iI_n)$. Pour
+        $$A = \begin{pmatrix} 2 & 1 & 1 \\ 0 & 2 & 1 \\ 0 & 0 & 3 \end{pmatrix},$$
+        dont les valeurs propres sont $2$ et $3$, le produit $(A - 2I_3)(A - 3I_3)$ a pour seul coefficient non nul la première ligne $(0, -1, 1)$ : il n'est pas nul, et $A$ n'est pas diagonalisable.
+
+        La valeur propre $2$ est double, mais $A - 2I_3$ est de rang $2$, de sorte que $\dim E_2 = 1$, ce que (e) interdisait.
+      - |
+        L'existence d'une diagonalisation dépend du corps, par le caractère scindé.
+
+        La rotation $J = \begin{pmatrix} 0 & -1 \\ 1 & 0 \end{pmatrix}$ n'a pas de valeur propre sur $\lex{anneau-zn}{\mathbb Z/3\mathbb Z}$ ({{rd-caracteristique|Polynôme caractéristique}}) ; sur $\mathbb Z/5\mathbb Z$, elle est diagonalisable, de vecteurs propres $(\overline 2, \overline 1)$ pour $\overline 2$ et $(\overline 3, \overline 1)$ pour $\overline 3$, et sur les nombres complexes aussi, de valeurs propres $\pm i$.
+
+        Le critère (b) donne en revanche un résultat général sur $\mathbb Z/3\mathbb Z$ : comme $X^3 - X = X(X - \overline 1)(X + \overline 1)$ y est scindé à racines simples, toute matrice $A$ telle que $A^3 = A$ y est diagonalisable.
+      - |
+        L'hypothèse « racines simples » de (b) est indispensable, et l'arithmétique du corps peut la faire disparaître sans qu'on y prenne garde. Sur $\mathbb Z/2\mathbb Z$, $T = \begin{pmatrix} \overline 1 & \overline 1 \\ \overline 0 & \overline 1 \end{pmatrix}$ vérifie $T^2 = I_2$, puisque $\overline 2 = \overline 0$.
+
+        Elle est annulée par $X^2 - 1$, qui y vaut $(X - \overline 1)^2$, et elle n'est pas diagonalisable, son seul sous-espace propre étant une droite. Lorsque $1 + 1 \neq 0$ dans $K$, une matrice telle que $A^2 = I_n$ est au contraire toujours diagonalisable, $X^2 - 1 = (X - 1)(X + 1)$ ayant alors deux racines distinctes.
+      - |
+        Pour une matrice réelle symétrique, la diagonalisabilité, et même en base orthonormée, est établie en {{anf|analyse fonctionnelle}} par la compacité de la sphère ({{f-spectral-fini|Théorème spectral}}), sans polynôme caractéristique. Les deux points de vue se complètent : le critère (c) dit, par exemple, qu'un projecteur, annulé par $X^2 - X = X(X - 1)$, est toujours diagonalisable, sans hypothèse de symétrie ni de corps.
+
+  - id: rd-trigonalisable
+    etiquette: Trigonalisation
+    nature: théorème
+    titre: Trigonalisation
+    texte: |
+      L'endomorphisme $u$ est [[endomorphisme-trigonalisable|trigonalisable]] s'il existe une base de $E$ dans laquelle sa matrice est triangulaire supérieure.
+    enonce: |
+      (i) Les conditions suivantes sont équivalentes :
+
+      (a) $u$ est trigonalisable ;
+
+      (b) $\chi_u$ est scindé ;
+
+      (c) $\mu_u$ est scindé ;
+
+      (d) $u$ est annulé par un polynôme scindé.
+
+      (ii) Si $\chi_u = \prod_i (X - \lambda_i)^{m_i}$, avec des $\lambda_i$ deux à deux distincts, chaque $\lambda_i$ figure exactement $m_i$ fois sur la diagonale de toute matrice triangulaire de $u$, et
+      $$\operatorname{tr} u = \sum_i m_i\lambda_i, \qquad \det u = \prod_i \lambda_i^{m_i}.$$
+    preuve: |
+      (i) *(a) ⇒ (b)* par {{rd-stables|Sous-espaces stables}}, (iv). *(b) ⇒ (d)* par le théorème de Cayley-Hamilton ({{rd-cayley-hamilton|Cayley-Hamilton}}, (i)). *(d) ⇒ (c)* : $\mu_u$ divise l'annulateur ({{rd-polynomes-endo|Polynômes d'endomorphismes}}, (iii)), et un diviseur unitaire d'un polynôme scindé est scindé ({{rd-caracteristique|Polynôme caractéristique}}, (v)). *(c) ⇒ (d)* : $\mu_u$, scindé, annule $u$.
+
+      *(d) ⇒ (a)*, par récurrence sur $n$, pour tous les espaces de dimension $n$ à la fois. Si $n = 1$, toute matrice est triangulaire.
+
+      Soit $n \geqslant 2$ et $P$ scindé tel que $P(u) = 0$. Le polynôme $\mu_u$, qui divise $P$, est scindé et de degré au moins $1$ ; il a donc une racine $\lambda$, qui est une valeur propre ({{rd-polynomes-endo|Polynômes d'endomorphismes}}, (iv)). Soit $e_1$ un vecteur propre associé, $F = Ke_1$, stable, et $\bar u$ l'endomorphisme induit sur $E/F$, de dimension $n - 1$.
+
+      Par {{rd-stables|Sous-espaces stables}}, (v), $\mu_u$ annule $\bar u$ ; l'hypothèse de récurrence fournit une base $(\varepsilon_2, \dots, \varepsilon_n)$ de $E/F$ dans laquelle $\bar u(\varepsilon_j) = \sum_{2 \leqslant i \leqslant j} t_{ij}\varepsilon_i$. Choisissons $e_j \in E$ tel que $\pi(e_j) = \varepsilon_j$, pour $2 \leqslant j \leqslant n$.
+
+      La famille $(e_1, \dots, e_n)$ est libre : si $\sum_j a_je_j = 0$, l'image par $\pi$ donne $\sum_{j \geqslant 2} a_j\varepsilon_j = 0$, donc $a_j = 0$ pour $j \geqslant 2$, puis $a_1 = 0$. Elle a $n$ éléments : c'est une base ({{v-dimension|Dimension}}, (ii)).
+
+      Enfin $\pi\big(u(e_j) - \sum_{2 \leqslant i \leqslant j} t_{ij}e_i\big) = \bar u(\varepsilon_j) - \sum_i t_{ij}\varepsilon_i = 0$, donc $u(e_j) - \sum_{2 \leqslant i \leqslant j} t_{ij}e_i \in F = Ke_1$. Ainsi $u(e_j) \in \operatorname{Vect}(e_1, \dots, e_j)$ pour tout $j$, et la matrice de $u$ est triangulaire supérieure.
+
+      (ii) Si la matrice est triangulaire, de coefficients diagonaux $t_{11}, \dots, t_{nn}$, alors $\chi_u = \prod_j (X - t_{jj})$ ({{rd-stables|Sous-espaces stables}}, (iv)).
+
+      En regroupant les $t_{jj}$ égaux, on obtient une écriture $\prod (X - \lambda)^{e_\lambda}$, où $e_\lambda$ est le nombre de $j$ tels que $t_{jj} = \lambda$ ; par {{rd-caracteristique|Polynôme caractéristique}}, (v), $e_\lambda$ est la multiplicité de $\lambda$, soit $m_i$ pour $\lambda = \lambda_i$.
+
+      La trace est celle de la matrice ({{v-trace|Trace}}, (iii)), somme des $t_{jj}$, et le déterminant celui de la matrice ({{v-det-matrice|Déterminant d'une matrice}}, (i)), produit des $t_{jj}$ ({{rd-stables|Sous-espaces stables}}, (ii)).
+    remarques:
+      - |
+        Pour $A = \begin{pmatrix} 1 & 1 \\ -1 & 3 \end{pmatrix}$, $\chi_A = (X - 1)(X - 3) + 1 = (X - 2)^2$ est scindé. Le seul sous-espace propre est la droite engendrée par $e_1 = (1, 1)$, de sorte que $A$ n'est pas diagonalisable ; mais en complétant $e_1$ par $e_2 = (0, 1)$, on obtient $Ae_2 = (1, 3) = e_1 + 2e_2$, et la matrice dans la base $(e_1, e_2)$ est
+        $$\begin{pmatrix} 2 & 1 \\ 0 & 2 \end{pmatrix}.$$
+
+        La preuve de (d) ⇒ (a) est exactement ce calcul : un vecteur propre, puis le quotient par la droite qu'il engendre.
+      - |
+        Sur les nombres complexes, tout polynôme non constant est scindé : c'est le théorème de {{c-dalembert|d'Alembert-Gauss}}, admis dans la branche de $\mathbb C$ et démontré en {{anc|analyse complexe}} ({{cx-liouville|Liouville}}). Toute matrice complexe est donc trigonalisable, et (ii) exprime sa trace et son déterminant par ses valeurs propres complexes comptées avec multiplicité.
+
+        Une matrice réelle peut ne pas l'être sur $\mathbb R$ : la rotation $J = \begin{pmatrix} 0 & -1 \\ 1 & 0 \end{pmatrix}$ n'a aucune valeur propre réelle, alors que, vue comme matrice complexe, elle est même diagonalisable. Le même contraste se lit, sans quitter l'arbre, entre $\lex{anneau-zn}{\mathbb Z/3\mathbb Z}$ et $\mathbb Z/5\mathbb Z$ ({{rd-diagonalisable|Diagonalisation}}).
+      - |
+        La matrice triangulaire n'est pas unique, et l'endomorphisme dont la matrice, dans la base de trigonalisation, est la matrice diagonale extraite dépend de cette base : seuls les coefficients diagonaux, comptés avec multiplicité, sont imposés par (ii). L'erreur la plus répandue est de prendre cet endomorphisme pour la « partie diagonalisable » de $u$ ; le nœud {{rd-dunford|Dunford}} montrera, sur l'exemple de $\begin{pmatrix} 2 & 1 & 1 \\ 0 & 2 & 1 \\ 0 & 0 & 3 \end{pmatrix}$, qu'il n'en est rien.
+
+  - id: rd-nilpotents
+    etiquette: Nilpotents
+    nature: théorème
+    titre: Endomorphismes nilpotents
+    texte: |
+      Un endomorphisme $u$ est [[endomorphisme-nilpotent|nilpotent]] s'il existe $r \in \lex{ensemble-entiers-naturels}{\mathbb N}$ tel que $u^r = 0$ ; le plus petit tel $r$ est l'**indice** de $u$. On note $K_j = \operatorname{Ker} u^j$, avec $K_0 = \{0\}$.
+    enonce: |
+      (i) Pour tout $v \in \lex{espace-applications-lineaires}{\mathcal L}(E)$, les noyaux $\operatorname{Ker} v^j$ croissent avec $j$ ; si $\operatorname{Ker} v^j = \operatorname{Ker} v^{j+1}$ pour un $j$, alors $\operatorname{Ker} v^{j+i} = \operatorname{Ker} v^j$ pour tout $i \in \mathbb N$.
+
+      (ii) Les conditions suivantes sont équivalentes : $u$ est nilpotent ; $u^n = 0$ ; $\chi_u = X^n$ ; la matrice de $u$ est triangulaire supérieure stricte, c'est-à-dire à diagonale nulle, dans une base. Si elles sont remplies, l'indice $r$ vérifie $r \leqslant n$, $\mu_u = X^r$, $\operatorname{tr} u = 0$, et
+      $$\{0\} = K_0 \subsetneq K_1 \subsetneq \cdots \subsetneq K_r = E.$$
+
+      (iii) Si $u$ et $v$ sont nilpotents et commutent, $u + v$ et $u \circ v$ sont nilpotents.
+
+      (iv) Un endomorphisme à la fois nilpotent et diagonalisable est nul.
+    preuve: |
+      (i) Si $v^j(x) = 0$, alors $v^{j+1}(x) = v(v^j(x)) = 0$. Supposons $\operatorname{Ker} v^j = \operatorname{Ker} v^{j+1}$, et soit $x \in \operatorname{Ker} v^{j+2}$. Alors $v(x) \in \operatorname{Ker} v^{j+1} = \operatorname{Ker} v^j$, d'où $v^{j+1}(x) = 0$ : $\operatorname{Ker} v^{j+2} = \operatorname{Ker} v^{j+1}$, et l'on conclut par récurrence sur $i$.
+
+      (ii) *La suite des noyaux.* Soit $u$ nilpotent d'indice $r$. Pour $j < r$, $K_j \neq E = K_r$ ; une égalité $K_j = K_{j+1}$ avec $j < r$ donnerait, par (i), $K_j = K_r = E$. Les inclusions sont donc strictes, et $\dim K_j \geqslant j$, d'où $r \leqslant n$.
+
+      *Nilpotent ⇒ triangulaire stricte.* Le polynôme $X^r$, scindé, annule $u$ : par {{rd-trigonalisable|Trigonalisation}}, (i), la matrice de $u$ est triangulaire dans une base. Ses coefficients diagonaux sont des racines de $\chi_u$ ({{rd-trigonalisable|Trigonalisation}}, (ii)), donc des valeurs propres, donc des racines de $\mu_u$ ({{rd-cayley-hamilton|Cayley-Hamilton}}, (ii)).
+
+      Comme $\mu_u$ divise $X^r$, une telle racine $\lambda$ vérifie $\lambda^r = 0$ : les coefficients diagonaux sont nuls.
+
+      *Triangulaire stricte ⇒ $\chi_u = X^n$* par {{rd-stables|Sous-espaces stables}}, (iv). *$\chi_u = X^n$ ⇒ $u^n = 0$* par le théorème de Cayley-Hamilton ({{rd-cayley-hamilton|Cayley-Hamilton}}, (i)). Enfin $u^n = 0$ entraîne que $u$ est nilpotent.
+
+      Le polynôme minimal divise $X^r$, scindé ; c'est donc un $X^k$ ({{rd-caracteristique|Polynôme caractéristique}}, (v)), et $k = r$ par définition de l'indice. La trace est l'opposé du coefficient de $X^{n-1}$ dans $\chi_u = X^n$ ({{rd-caracteristique|Polynôme caractéristique}}, (ii)), c'est-à-dire $0$.
+
+      (iii) Montrons par récurrence sur $m$ que $(u + v)^m$ est une somme de termes $u^k \circ v^{m-k}$, chacun répété un nombre fini de fois. C'est clair pour $m = 0$. Si c'est vrai pour $m$, alors
+      $$\begin{aligned} &(u + v) \circ u^k \circ v^{m-k} \\ &\quad = u^{k+1} \circ v^{m-k} + u^k \circ v^{m+1-k}, \end{aligned}$$
+      puisque $v \circ u^k = u^k \circ v$ ({{rd-polynomes-endo|Polynômes d'endomorphismes}}, (i)).
+
+      Si $u^a = 0$ et $v^b = 0$, prenons $m = a + b - 1$ : dans chaque terme, $k \geqslant a$ ou $m - k \geqslant b$, et le terme est nul. De même $(u \circ v)^a = u^a \circ v^a = 0$.
+
+      (iv) Dans une base de vecteurs propres, la matrice de $u$ est diagonale, de coefficients $\lambda_i$, et celle de $u^r$ est diagonale, de coefficients $\lambda_i^r$. Si $u^r = 0$, chaque $\lambda_i^r$ est nul, donc chaque $\lambda_i$, le corps étant intègre : $u = 0$.
+    remarques:
+      - |
+        La matrice $N = \begin{pmatrix} 0 & 1 & 1 \\ 0 & 0 & 1 \\ 0 & 0 & 0 \end{pmatrix}$ vérifie $N^2 = \begin{pmatrix} 0 & 0 & 1 \\ 0 & 0 & 0 \\ 0 & 0 & 0 \end{pmatrix} \neq 0$ et $N^3 = 0$ : son indice est $3 = n$, la plus grande valeur permise par (ii), et ses noyaux $K_1 \subsetneq K_2 \subsetneq K_3$ sont de dimensions $1$, $2$, $3$.
+      - |
+        L'hypothèse de commutation de (iii) ne peut pas être omise, et l'erreur la plus répandue est de l'oublier. Les matrices $E_{12} = \begin{pmatrix} 0 & 1 \\ 0 & 0 \end{pmatrix}$ et $E_{21} = \begin{pmatrix} 0 & 0 \\ 1 & 0 \end{pmatrix}$ sont nilpotentes, mais leur somme $\begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}$ a pour carré $I_2$ : elle n'est pas nilpotente.
+
+        La réciproque de $\operatorname{tr} u = 0$ est fausse aussi : $\begin{pmatrix} 1 & 0 \\ 0 & -1 \end{pmatrix}$ est de trace nulle, et inversible.
+
+  - id: rd-caracteristiques
+    etiquette: Sous-espaces caractéristiques
+    nature: théorème
+    titre: Sous-espaces caractéristiques
+    texte: |
+      On suppose $\chi_u$ scindé, et l'on écrit $\chi_u = \prod_{i=1}^k (X - \lambda_i)^{m_i}$, avec des $\lambda_i$ deux à deux distincts et $m_i \geqslant 1$. Le [[sous-espace-caracteristique|sous-espace caractéristique]] associé à $\lambda_i$ est
+      $$N_i = \operatorname{Ker}(u - \lambda_i\,\mathrm{id})^{m_i}.$$
+    enonce: |
+      (i) $E = N_1 \oplus \cdots \oplus N_k$ ; chaque $N_i$ est stable par $u$, et les projecteurs $p_i$ associés à cette décomposition sont des polynômes en $u$.
+
+      (ii) $\dim N_i = m_i$, et la restriction de $u$ à $N_i$ s'écrit $\lambda_i\,\mathrm{id} + n_i$, avec $n_i$ [[endomorphisme-nilpotent|nilpotent]].
+
+      (iii) Soit $r_i$ l'indice de $n_i$. Pour tout $j$, $\operatorname{Ker}(u - \lambda_i\,\mathrm{id})^j = \operatorname{Ker} n_i^j$.
+
+      Ces noyaux croissent strictement jusqu'à $j = r_i$, où ils atteignent $N_i$, et restent égaux à $N_i$ ensuite ; en particulier $E_{\lambda_i} \subset N_i$, avec égalité si et seulement si $r_i = 1$. Enfin
+      $$\mu_u = \prod_{i=1}^k (X - \lambda_i)^{r_i}.$$
+      En particulier, $u$ est diagonalisable si et seulement si tous les $r_i$ valent $1$.
+    preuve: |
+      (i) Les polynômes $(X - \lambda_i)^{m_i}$ sont deux à deux premiers entre eux : une relation de Bézout entre $X - \lambda_i$ et $X - \lambda_j$, élevée à la puissance $m_i + m_j - 1$ et développée, en fournit une entre leurs puissances, chaque terme étant multiple de $(X - \lambda_i)^{m_i}$ ou de $(X - \lambda_j)^{m_j}$ ({{pol-binome|Binôme de Newton}}, (ii)).
+
+      Comme $\chi_u$ annule $u$ ({{rd-cayley-hamilton|Cayley-Hamilton}}, (i)), le lemme des noyaux ({{rd-noyaux|Lemme des noyaux}}, (iii)) donne la décomposition et les projecteurs ; les $N_i$ sont stables par {{rd-polynomes-endo|Polynômes d'endomorphismes}}, (ii).
+
+      (ii) Le sous-espace $N_i$ n'est pas nul : il contient $E_{\lambda_i} = \operatorname{Ker}(u - \lambda_i\,\mathrm{id})$, non nul puisque $\lambda_i$, racine de $\chi_u$, est valeur propre ({{rd-caracteristique|Polynôme caractéristique}}, (iv)). Soit $d_i = \dim N_i \geqslant 1$ et $u_i$ la restriction de $u$ à $N_i$. L'endomorphisme $n_i = u_i - \lambda_i\,\mathrm{id}$ de $N_i$ vérifie $n_i^{m_i} = 0$, par définition de $N_i$ : il est nilpotent, et $\chi_{n_i} = X^{d_i}$ ({{rd-nilpotents|Nilpotents}}, (ii)).
+
+      La substitution $\varphi : P \mapsto P(X - \lambda_i)$ est un morphisme d'anneaux de $K[X]$ dans lui-même ({{pol-evaluation|Évaluation}}, (ii)), donc dans $K(X)$. Si $A$ est une matrice de $n_i$, celle de $u_i$ est $A + \lambda_iI$, et $\varphi(XI - A) = (X - \lambda_i)I - A = XI - (A + \lambda_iI)$. Par {{rd-caracteristique|Polynôme caractéristique}}, (i),
+      $$\chi_{u_i} = \varphi(\chi_{n_i}) = (X - \lambda_i)^{d_i}.$$
+
+      Par {{rd-stables|Sous-espaces stables}}, (iii), appliqué à la décomposition (i), $\chi_u = \prod_i (X - \lambda_i)^{d_i}$, et la comparaison avec $\prod_i (X - \lambda_i)^{m_i}$ donne $d_i = m_i$ ({{rd-caracteristique|Polynôme caractéristique}}, (v)).
+
+      (iii) *Les noyaux.* Pour $l \neq i$, $\lambda_i$ n'est pas racine de $\chi_{u_l} = (X - \lambda_l)^{m_l}$, donc pas valeur propre de $u_l$ ({{rd-caracteristique|Polynôme caractéristique}}, (iv)) : $u - \lambda_i\,\mathrm{id}$ est injectif sur $N_l$, et ses puissances aussi.
+
+      Soit $x = \sum_l x_l$, avec $x_l \in N_l$, tel que $(u - \lambda_i\,\mathrm{id})^j(x) = 0$. Les termes $(u - \lambda_i\,\mathrm{id})^j(x_l)$ appartiennent aux $N_l$, stables, et leur somme est nulle ; la somme étant directe, chacun est nul, et $x_l = 0$ pour $l \neq i$. Ainsi $\operatorname{Ker}(u - \lambda_i\,\mathrm{id})^j$ est contenu dans $N_i$, où il coïncide avec $\operatorname{Ker} n_i^j$.
+
+      La croissance stricte jusqu'à l'indice, puis la constance, sont le point (ii) du nœud {{rd-nilpotents|Nilpotents}}, appliqué à $n_i$ ; pour $j = 1$, on obtient $E_{\lambda_i} = \operatorname{Ker} n_i$, égal à $N_i$ si et seulement si $r_i = 1$.
+
+      *Le polynôme minimal.* Un polynôme $P$ annule $u$ si et seulement s'il annule chaque $u_i$, puisque $P(u)$ agit sur $N_i$ comme $P(u_i)$ ({{rd-stables|Sous-espaces stables}}, (v)). Le polynôme $(X - \lambda_i)^{r_i}$ annule $u_i$, et $(X - \lambda_i)^{r_i - 1}$ ne l'annule pas ; comme $\mu_{u_i}$ divise $(X - \lambda_i)^{r_i}$, c'est un $(X - \lambda_i)^s$ ({{rd-caracteristique|Polynôme caractéristique}}, (v)), et $s = r_i$.
+
+      Ainsi $P(u) = 0$ si et seulement si chaque $(X - \lambda_i)^{r_i}$ divise $P$. Ces polynômes sont deux à deux premiers entre eux, comme au point (i), donc les idéaux $((X - \lambda_i)^{r_i})$ sont deux à deux comaximaux, et leur intersection est leur produit, l'idéal engendré par $\prod_i (X - \lambda_i)^{r_i}$ ({{ac-chinois|Lemme chinois}}) : la condition équivaut à ce que ce produit divise $P$. Le produit est unitaire : c'est $\mu_u$.
+
+      Ce polynôme est à racines simples si et seulement si tous les $r_i$ valent $1$, et l'on conclut par le critère (c) du nœud {{rd-diagonalisable|Diagonalisation}}, (i).
+    remarques:
+      - |
+        Pour $A = \begin{pmatrix} 2 & 1 & 1 \\ 0 & 2 & 1 \\ 0 & 0 & 3 \end{pmatrix}$, $\chi_A = (X - 2)^2(X - 3)$. On trouve $N_2 = \operatorname{Ker}(A - 2I_3)^2 = \operatorname{Vect}(e_1, e_2)$, de dimension $2$, qui contient strictement la droite propre $E_2 = Ke_1$, et $N_3 = E_3$, engendré par $(2, 1, 1)$.
+
+        Ici $r_2 = 2$ et $r_3 = 1$, et le polynôme minimal est $(X - 2)^2(X - 3) = \chi_A$, ce que confirme le calcul du nœud {{rd-diagonalisable|Diagonalisation}}, où $(A - 2I_3)(A - 3I_3) \neq 0$.
+      - |
+        Le dessin suit les dimensions des noyaux pour un endomorphisme $u$ d'un espace de dimension $6$, de polynôme caractéristique $(X - 2)^4(X - 5)^2$, pour lequel $\dim \operatorname{Ker}(u - 2\,\mathrm{id})^j$ vaut $2$, $3$, $4$, $4$ et $\dim \operatorname{Ker}(u - 5\,\mathrm{id})^j$ vaut $1$, $2$, $2$ pour $j = 1, 2, 3, \dots$ ; le nœud {{rd-jordan|Forme de Jordan}} en donnera une matrice.
+
+        ```schema rd-caracteristiques
+        Pour chaque valeur propre, la hauteur de la colonne d'indice $j$ est $\dim \operatorname{Ker}(u - \lambda\,\mathrm{id})^j$. Pour $\lambda = 2$, en rouge, elle vaut $2$, $3$, puis $4$ à partir de $j = 3$ ; pour $\lambda = 5$, en bleu, $1$, puis $2$ à partir de $j = 2$. Chaque suite croît strictement jusqu'à l'exposant $r$ de $\mu_u = (X - 2)^3(X - 5)^2$, marqué par un trait pointillé vertical, puis se stabilise à la multiplicité $m$ dans $\chi_u$, trait pointillé horizontal : la première colonne est le sous-espace propre, le palier le sous-espace caractéristique.
+        ```
+      - |
+        L'erreur la plus répandue est de prendre l'exposant de $\chi_u$ pour celui qui suffit, ou l'inverse : l'exposant $m_i$ de la définition peut être remplacé par n'importe quel $j \geqslant r_i$, d'après (iii), mais pas par un exposant plus petit. Prendre $j = 1$ ne donne le sous-espace caractéristique que lorsque $u$ est diagonalisable.
+
+  - id: rd-dunford
+    etiquette: Dunford
+    nature: théorème
+    titre: Décomposition de Dunford
+    enonce: |
+      Supposons $\chi_u$ scindé.
+
+      (i) Il existe un unique couple $(d, n)$ d'endomorphismes de $E$ tels que
+      $$u = d + n, \qquad d \circ n = n \circ d,$$
+      avec $d$ diagonalisable et $n$ [[endomorphisme-nilpotent|nilpotent]]. C'est la [[decomposition-dunford|décomposition de Dunford]] de $u$.
+
+      (ii) Les endomorphismes $d$ et $n$ sont des polynômes en $u$. Avec les notations du nœud {{rd-caracteristiques|Sous-espaces caractéristiques}}, $d = \sum_i \lambda_ip_i$, c'est-à-dire que $d$ agit sur chaque $N_i$ comme $\lambda_i\,\mathrm{id}$.
+
+      (iii) $u$ est diagonalisable si et seulement si $n = 0$, et nilpotent si et seulement si $d = 0$.
+    preuve: |
+      *Existence.* Soient $N_i$ les sous-espaces caractéristiques et $p_i$ les projecteurs associés, qui sont des polynômes en $u$ ({{rd-caracteristiques|Sous-espaces caractéristiques}}, (i)). Posons $d = \sum_i \lambda_ip_i$ et $n = u - d$, polynômes en $u$, qui commutent donc ({{rd-polynomes-endo|Polynômes d'endomorphismes}}, (i)).
+
+      Sur $N_i$, $d$ agit comme $\lambda_i\,\mathrm{id}$ : tout vecteur non nul de $N_i$ est propre pour $d$, et des bases des $N_i$ mises bout à bout forment une base de vecteurs propres de $d$ ({{rd-stables|Sous-espaces stables}}, (i)). Donc $d$ est diagonalisable.
+
+      Sur $N_i$, stable, $n$ agit comme le nilpotent $n_i = u - \lambda_i\,\mathrm{id}$ ({{rd-caracteristiques|Sous-espaces caractéristiques}}, (ii)). Pour $r = \max_i m_i$, $n^r$ s'annule sur chaque $N_i$, donc sur $E$ : $n$ est nilpotent.
+
+      *Unicité.* Soit $u = d' + n'$ une autre décomposition. L'endomorphisme $d'$ commute avec $n'$ et avec lui-même, donc avec $u = d' + n'$ ; il commute donc avec $d$ et $n$, polynômes en $u$ ({{rd-polynomes-endo|Polynômes d'endomorphismes}}, (i)). De même pour $n'$.
+
+      Les endomorphismes $d$ et $d'$, diagonalisables et commutant, ont une base commune de vecteurs propres ({{rd-diagonalisable|Diagonalisation}}, (iii)), dans laquelle $d - d'$ a une matrice diagonale : $d - d'$ est diagonalisable.
+
+      Les nilpotents $n'$ et $-n$ commutent, donc $n' - n$ est nilpotent ({{rd-nilpotents|Nilpotents}}, (iii)). Or $d - d' = n' - n$ : cet endomorphisme, diagonalisable et nilpotent, est nul ({{rd-nilpotents|Nilpotents}}, (iv)). Donc $d' = d$ et $n' = n$.
+
+      (iii) Si $u$ est diagonalisable, $(u, 0)$ est une décomposition, et c'est la seule ; si $u$ est nilpotent, $(0, u)$ en est une. Les réciproques sont claires.
+    remarques:
+      - |
+        Pour $A = \begin{pmatrix} 2 & 1 & 1 \\ 0 & 2 & 1 \\ 0 & 0 & 3 \end{pmatrix}$, on a vu $N_2 = \operatorname{Ker}(A - 2I_3)^2$ et $N_3 = \operatorname{Ker}(A - 3I_3)$. Les polynômes du lemme des noyaux sont $Q_3 = (X - 2)^2$, qui vaut $1$ en $3$, et $Q_2 = 1 - (X - 2)^2$, multiple de $X - 3$. D'où
+        $$\begin{aligned} D &= 2(I_3 - Q_3(A)) + 3Q_3(A) \\ &= 2I_3 + (A - 2I_3)^2. \end{aligned}$$
+
+        Le calcul donne
+        $$D = \begin{pmatrix} 2 & 0 & 2 \\ 0 & 2 & 1 \\ 0 & 0 & 3 \end{pmatrix}$$
+        et
+        $$N = A - D = \begin{pmatrix} 0 & 1 & -1 \\ 0 & 0 & 0 \\ 0 & 0 & 0 \end{pmatrix},$$
+        avec $N^2 = 0$ et $DN = ND$ ; $D$ est diagonalisable, de vecteurs propres $e_1$, $e_2$ pour $2$ et $(2, 1, 1)$ pour $3$.
+      - |
+        L'erreur la plus répandue est de croire que, pour une matrice triangulaire, $d$ est la partie diagonale et $n$ le reste. Pour la matrice $A$ ci-dessus, la partie diagonale $\Delta = \operatorname{diag}(2, 2, 3)$ et le reste $A - \Delta$ ne commutent pas : $\Delta(A - \Delta) - (A - \Delta)\Delta$ a pour troisième colonne $(-1, -1, 0)$.
+
+        L'exemple le plus simple est $\begin{pmatrix} 1 & 1 \\ 0 & 2 \end{pmatrix}$ : ses deux valeurs propres sont distinctes, il est diagonalisable, et sa décomposition est $(u, 0)$, alors que $\operatorname{diag}(1, 2)$ et $\begin{pmatrix} 0 & 1 \\ 0 & 0 \end{pmatrix}$ ne commutent pas.
+      - |
+        L'hypothèse « $\chi_u$ scindé » ne peut pas être omise. Sur $\lex{anneau-zn}{\mathbb Z/3\mathbb Z}$, la rotation $J$ n'a aucune décomposition : si $J = d + n$, $n$ commute avec $J$ ; si $n \neq 0$, son noyau est une droite, stable par $J$ ({{rd-polynomes-endo|Polynômes d'endomorphismes}}, (ii)), ce qui fournirait une valeur propre ; si $n = 0$, $J = d$ serait diagonalisable. Dans les deux cas, on contredit l'absence de valeur propre.
+      - |
+        La décomposition sert à calculer les exponentielles de matrices des {{edo|équations différentielles}} ({{ed-lineaires|Systèmes linéaires}}) et des {{lie|groupes de Lie}}. Comme $d$ et $n$ commutent, $e^{tA} = e^{tD}e^{tN}$ ; l'exponentielle de $tD$ se lit sur les sous-espaces propres, et celle de $tN$ est une somme finie, la série s'arrêtant à l'indice de $N$.
+
+        Pour la matrice $A$ ci-dessus, avec $p_2 = I_3 - (A - 2I_3)^2$ et $p_3 = (A - 2I_3)^2$, on trouve ainsi
+        $$e^{tA} = e^{2t}(I_3 + tN)\,p_2 + e^{3t}p_3,$$
+        ce qu'un calcul direct de la série confirme.
+      - |
+        Le nom de Dunford est celui de l'usage français. La décomposition se trouve en substance dans la forme canonique de Jordan (*Traité des substitutions et des équations algébriques*, Paris, 1870) ; Chevalley la met au premier plan, avec $d$ et $n$ polynômes en $u$, dans sa *Théorie des groupes de Lie*, tome II (Hermann, 1951), d'où le nom de décomposition de Jordan-Chevalley employé ailleurs ; N. Dunford en donne une version pour les opérateurs dans « Spectral operators » (*Pacific J. Math.* 4, 1954, p. 321-354). Sur cet historique, voir D. Couty, J. Esterle et R. Zarouf, « Décomposition effective de Jordan-Chevalley et ses retombées en enseignement », arXiv:1103.5020, 2011.
+
+  - id: rd-jordan-nilpotent
+    etiquette: Jordan, cas nilpotent
+    nature: théorème
+    titre: Réduction de Jordan des endomorphismes nilpotents
+    texte: |
+      Le [[bloc-jordan|bloc de Jordan]] de taille $k \geqslant 1$ est la matrice $J_k \in \lex{espace-matrices}{\mathcal M_k}(K)$ dont les coefficients d'indices $(i, i + 1)$ valent $1$ et tous les autres $0$ ; pour $\lambda \in K$, on note $J_k(\lambda) = \lambda I_k + J_k$. Si $(f_1, \dots, f_k)$ est la base canonique, $J_k$ envoie $f_1$ sur $0$ et $f_i$ sur $f_{i-1}$ pour $i \geqslant 2$.
+
+      Dans ce nœud, $u$ est [[endomorphisme-nilpotent|nilpotent]], d'indice $r$, et $K_j = \operatorname{Ker} u^j$.
+    enonce: |
+      (i) Il existe une base de $E$ dans laquelle la matrice de $u$ est diagonale par blocs, de blocs diagonaux $J_{k_1}, \dots, J_{k_s}$.
+
+      (ii) Dans une telle base, pour tout $j \geqslant 1$, le nombre de blocs de taille au moins $j$ est
+      $$\dim K_j - \dim K_{j-1}.$$
+      Les tailles $k_1, \dots, k_s$ sont donc déterminées par $u$, à l'ordre près ; le nombre $s$ de blocs est $\dim \operatorname{Ker} u$, et la plus grande taille est $r$.
+    preuve: |
+      (i) *Un lemme.* Soit $j \geqslant 2$ et $W$ un sous-espace de $K_j$ tel que $W \cap K_{j-1} = \{0\}$. Alors $u(W) \subset K_{j-1}$, $u$ est injectif sur $W$, et $u(W) \cap K_{j-2} = \{0\}$.
+
+      En effet, $u^{j-1}(u(x)) = u^j(x) = 0$ pour $x \in W$. Si $u(x) \in K_{j-2}$, alors $u^{j-1}(x) = 0$, donc $x \in W \cap K_{j-1}$ et $x = 0$ ; ceci donne à la fois l'injectivité, pour $u(x) = 0$, et la dernière assertion.
+
+      *Construction.* On construit, par récurrence descendante sur $j$, des sous-espaces $W_r, \dots, W_1$ tels que $K_j = K_{j-1} \oplus W_j$, et des familles finies $T_j$ telles que $W_j$ ait pour base la réunion de $T_j$ et de l'image par $u$ de la base choisie de $W_{j+1}$.
+
+      Pour $j = r$, on complète une base de $K_{r-1}$ en une base de $K_r = E$ ({{v-dimension|Dimension}}, (iii)) ; les vecteurs ajoutés forment $T_r$, et $W_r = \operatorname{Vect}(T_r)$.
+
+      Soit $1 \leqslant j < r$, et $W_{j+1}$ construit, de base $\mathcal B_{j+1}$, avec $W_{j+1} \subset K_{j+1}$ et $W_{j+1} \cap K_j = \{0\}$. Par le lemme, appliqué avec $j + 1 \geqslant 2$, $u(\mathcal B_{j+1})$ est une base de $u(W_{j+1})$, contenu dans $K_j$ et d'intersection nulle avec $K_{j-1}$.
+
+      Une base de $K_{j-1}$, suivie de $u(\mathcal B_{j+1})$, est donc libre ; on la complète en une base de $K_j$ par une famille $T_j$, et l'on pose $\mathcal B_j = u(\mathcal B_{j+1}) \cup T_j$, $W_j = \operatorname{Vect}(\mathcal B_j)$. Alors $K_j = K_{j-1} \oplus W_j$, et $W_j \cap K_{j-1} = \{0\}$, ce qui permet de poursuivre.
+
+      *La base.* Par récurrence sur $j$, $K_j = W_1 \oplus \cdots \oplus W_j$ : c'est vrai pour $j = 1$, puisque $K_0 = \{0\}$, et si c'est vrai pour $j - 1$, $K_j = K_{j-1} \oplus W_j$ donne le résultat pour $j$, une relation $x_1 + \cdots + x_j = 0$ imposant d'abord $x_j = 0$, puis les autres. Pour $j = r$, $E = W_1 \oplus \cdots \oplus W_r$, et la réunion des $\mathcal B_j$ est une base de $E$ ({{rd-stables|Sous-espaces stables}}, (i)). Par construction, ses éléments sont les $u^i(t)$, pour $t \in T_j$ et $0 \leqslant i \leqslant j - 1$, chacun une seule fois.
+
+      Rangeons-les chaîne par chaîne : pour chaque $t \in T_j$, la famille $(u^{j-1}(t), \dots, u(t), t)$. L'endomorphisme $u$ envoie chaque terme sur le précédent, et le premier sur $u^j(t) = 0$, puisque $t \in K_j$. La matrice de $u$ restreinte à cette chaîne est $J_j$, et la matrice de $u$ est diagonale par blocs.
+
+      (ii) La puissance $J_k^j$ envoie $f_i$ sur $f_{i-j}$ si $i > j$, et sur $0$ sinon ; son noyau est de dimension $\min(j, k)$. La matrice de $u^j$ étant diagonale par blocs, de blocs $J_{k_b}^j$, son noyau est la somme directe des noyaux des blocs, et
+      $$\dim K_j = \sum_{b=1}^s \min(j, k_b).$$
+
+      Or $\min(j, k) - \min(j - 1, k)$ vaut $1$ si $k \geqslant j$, et $0$ sinon : la différence $\dim K_j - \dim K_{j-1}$ compte les blocs de taille au moins $j$. Pour $j = 1$, on obtient $s$ ; et il y a un bloc de taille au moins $j$ si et seulement si $K_{j-1} \neq K_j$, c'est-à-dire $j \leqslant r$ ({{rd-nilpotents|Nilpotents}}, (ii)).
+    remarques:
+      - |
+        Le dessin représente un nilpotent de dimension $8$, de blocs de tailles $3$, $2$, $2$ et $1$. Les noyaux $K_1$, $K_2$, $K_3$ y sont de dimensions $4$, $7$, $8$.
+
+        ```schema rd-jordan-nilpotent
+        Chaque colonne est une chaîne $t, u(t), \dots$, lue de haut en bas, et $u$ fait descendre d'une ligne jusqu'à $0$. La ligne $j$ représente une base de $W_j$, supplémentaire de $K_{j-1}$ dans $K_j$ : ses points sont, en rouge, les vecteurs de $T_j$ qui commencent une chaîne, et, en noir, les images de la ligne du dessus. Les longueurs des lignes, $4$, $3$ et $1$, sont les différences $\dim K_j - \dim K_{j-1}$, et les hauteurs des colonnes, $3$, $2$, $2$, $1$, les tailles des blocs.
+        ```
+      - |
+        Pour $N = \begin{pmatrix} 1 & 1 & -1 \\ 1 & 1 & -1 \\ 2 & 2 & -2 \end{pmatrix}$ sur le corps des fractions de $\mathbb Z$, on trouve $N^2 = 0$ et $\operatorname{rg} N = 1$ : $\dim K_1 = 2$ et $\dim K_2 = 3$, d'où un bloc de taille $2$ et un de taille $1$.
+
+        La construction prend $t = e_1 \notin K_1$, qui donne la chaîne $(Ne_1, e_1) = \big((1, 1, 2), e_1\big)$, puis complète $(1, 1, 2)$ en une base de $K_1$ par $(1, -1, 0)$. Dans la base $\big((1, 1, 2), e_1, (1, -1, 0)\big)$, la matrice de $N$ est $\operatorname{diag}(J_2, J_1)$.
+      - |
+        Le point (ii) répond à la question de l'unicité, et l'erreur la plus répandue est de croire que l'indice et la dimension suffisent à décrire un nilpotent. En dimension $4$, $\operatorname{diag}(J_2, J_2)$ et $\operatorname{diag}(J_2, J_1, J_1)$ ont le même indice $2$, mais des noyaux de dimensions $2$ et $3$ : elles ne sont pas semblables.
+
+        Aucune forme du choix n'intervient : les familles choisies sont finies, et un nombre fini de choix se fait par récurrence.
+
+  - id: rd-jordan
+    etiquette: Forme de Jordan
+    nature: théorème
+    titre: Forme de Jordan
+    enonce: |
+      Supposons $\chi_u$ scindé, de racines $\lambda_1, \dots, \lambda_k$ deux à deux distinctes.
+
+      (i) Il existe une base de $E$ dans laquelle la matrice de $u$ est diagonale par blocs, chaque bloc diagonal étant un [[bloc-jordan|bloc de Jordan]] $J_m(\lambda_i)$.
+
+      (ii) Dans une telle base, pour tout $\lambda \in K$ et tout $j \geqslant 1$, le nombre de blocs $J_m(\lambda)$ avec $m \geqslant j$ est
+      $$\begin{aligned} &\dim \operatorname{Ker}(u - \lambda\,\mathrm{id})^j \\ &\quad - \dim \operatorname{Ker}(u - \lambda\,\mathrm{id})^{j-1}. \end{aligned}$$
+      Les blocs sont donc déterminés par $u$, à l'ordre près : c'est la **forme de Jordan** de $u$.
+
+      Pour chaque $\lambda_i$, la somme des tailles de ses blocs est sa multiplicité dans $\chi_u$, leur nombre est $\dim E_{\lambda_i}$, et la plus grande taille est l'exposant de $X - \lambda_i$ dans $\mu_u$.
+
+      (iii) Deux matrices $A, B \in \lex{espace-matrices}{\mathcal M_n}(K)$ dont les polynômes caractéristiques sont scindés sont semblables si et seulement si $\operatorname{rg}(A - \lambda I_n)^j = \operatorname{rg}(B - \lambda I_n)^j$ pour tout $\lambda \in K$ et tout $j \geqslant 1$.
+    preuve: |
+      (i) Par {{rd-caracteristiques|Sous-espaces caractéristiques}}, (i) et (ii), $E = N_1 \oplus \cdots \oplus N_k$, et $u$ agit sur $N_i$ comme $\lambda_i\,\mathrm{id} + n_i$, avec $n_i$ nilpotent.
+
+      Le nœud {{rd-jordan-nilpotent|Jordan, cas nilpotent}}, (i), fournit une base de $N_i$ dans laquelle $n_i$ a une matrice diagonale par blocs de Jordan $J_m$ ; dans cette base, $u$ a pour blocs les $J_m(\lambda_i)$. Les bases des $N_i$, mises bout à bout, forment une base de $E$ ({{rd-stables|Sous-espaces stables}}, (i)).
+
+      (ii) Dans une telle base, $(u - \lambda\,\mathrm{id})^j$ est diagonale par blocs, de blocs $(J_m(\mu) - \lambda I_m)^j = \big((\mu - \lambda)I_m + J_m\big)^j$. Si $\mu \neq \lambda$, la matrice $(\mu - \lambda)I_m + J_m$ est triangulaire, de coefficients diagonaux $\mu - \lambda \neq 0$, donc de déterminant $(\mu - \lambda)^m \neq 0$ et inversible ({{rd-stables|Sous-espaces stables}}, (ii), et {{v-det-matrice|Déterminant d'une matrice}}, (ii)) ; sa puissance $j$-ième est inversible, d'inverse la puissance $j$-ième de son inverse, et son noyau est nul. Si $\mu = \lambda$, c'est $J_m^j$, de noyau de dimension $\min(j, m)$, comme au nœud {{rd-jordan-nilpotent|Jordan, cas nilpotent}}, (ii).
+
+      Par suite, $\dim \operatorname{Ker}(u - \lambda\,\mathrm{id})^j = \sum \min(j, m)$, la somme portant sur les blocs $J_m(\lambda)$, et la différence de deux termes consécutifs compte ceux de taille au moins $j$.
+
+      Pour $j$ au moins égal à toutes les tailles, $\sum \min(j, m)$ est la somme des tailles des blocs associés à $\lambda_i$ ; c'est aussi $\dim \operatorname{Ker}(u - \lambda_i\,\mathrm{id})^j = \dim N_i = m_i$ pour $j \geqslant r_i$ ({{rd-caracteristiques|Sous-espaces caractéristiques}}, (ii) et (iii)). Le nombre de ces blocs est la différence pour $j = 1$, c'est-à-dire $\dim E_{\lambda_i}$.
+
+      Enfin, il existe un bloc de taille au moins $j$ si et seulement si la différence d'indice $j$ est non nulle, c'est-à-dire, par {{rd-caracteristiques|Sous-espaces caractéristiques}}, (iii), si et seulement si $j \leqslant r_i$ : la plus grande taille est $r_i$, exposant de $X - \lambda_i$ dans $\mu_u$.
+
+      (iii) Si $B = S^{-1}AS$, alors $(B - \lambda I_n)^j = S^{-1}(A - \lambda I_n)^jS$, et, pour toute matrice $M$, $\operatorname{Ker}(S^{-1}MS) = S^{-1}(\operatorname{Ker} M)$, image de $\operatorname{Ker} M$ par l'isomorphisme $x \mapsto S^{-1}x$, donc de même dimension. Par le théorème du rang ({{v-rang|Théorème du rang}}), $(B - \lambda I_n)^j$ et $(A - \lambda I_n)^j$ ont le même rang.
+
+      Réciproquement, le rang de $(A - \lambda I_n)^j$ vaut $n - \dim \operatorname{Ker}(A - \lambda I_n)^j$ ({{v-rang|Théorème du rang}}). Si les rangs coïncident, (ii) donne à $A$ et à $B$ les mêmes blocs de Jordan, avec les mêmes répétitions. En rangeant les vecteurs de base par blocs dans le même ordre, $A$ et $B$ sont semblables à la même matrice diagonale par blocs, donc semblables entre elles.
+    remarques:
+      - |
+        Pour $A = \begin{pmatrix} 2 & 1 & 1 \\ 0 & 2 & 1 \\ 0 & 0 & 3 \end{pmatrix}$, la valeur propre $2$ a pour noyaux de dimensions $1$ puis $2$ : un seul bloc, de taille $2$.
+
+        Une chaîne commence en $e_2 \notin \operatorname{Ker}(A - 2I_3)$, avec $(A - 2I_3)e_2 = e_1$ ; avec le vecteur propre $(2, 1, 1)$ de $3$, la matrice de passage
+        $$S = \begin{pmatrix} 1 & 0 & 2 \\ 0 & 1 & 1 \\ 0 & 0 & 1 \end{pmatrix}$$
+        donne $S^{-1}AS = \operatorname{diag}(J_2(2), J_1(3))$.
+      - |
+        Une forme de Jordan se dessine.
+
+        ```schema rd-jordan
+        La matrice de taille $6$ de forme de Jordan $\operatorname{diag}(J_3(2), J_1(2), J_2(5))$ : les cases vides sont nulles, les valeurs propres occupent la diagonale, et les $1$, en gris, la surdiagonale de chaque bloc et elle seule. La valeur propre $2$, en rouge, a deux blocs, de tailles $3$ et $1$, de somme $4$, sa multiplicité ; la valeur propre $5$, en bleu, un bloc de taille $2$.
+        ```
+      - |
+        Le polynôme caractéristique et le polynôme minimal ne suffisent pas à décider si deux matrices sont semblables. Les matrices $\operatorname{diag}(J_2, J_2)$ et $\operatorname{diag}(J_2, J_1, J_1)$ ont toutes deux $\chi = X^4$ et $\mu = X^2$, mais des noyaux de dimensions $2$ et $3$.
+
+        En dimension au plus $3$, ils suffisent au contraire, lorsque $\chi$ est scindé : pour chaque valeur propre, la somme des tailles des blocs est au plus $3$ et la plus grande est donnée par $\mu$, et les découpages d'un même total ont des plus grandes parts distinctes : $3$, $2 + 1$ et $1 + 1 + 1$ pour une multiplicité $3$, $2$ et $1 + 1$ pour une multiplicité $2$.
+      - |
+        Sur les nombres complexes, le polynôme caractéristique est toujours scindé ({{c-dalembert|d'Alembert-Gauss}}), et toute matrice complexe a une forme de Jordan. Sur $\mathbb R$, on dispose d'une forme de Jordan réelle, qui groupe les valeurs propres conjuguées en blocs de taille $2$ ; elle est admise ici, la difficulté contournée étant le passage du complexifié au réel.
+
+        Camille Jordan a établi cette réduction entre 1868 et 1870, pour les substitutions linéaires à coefficients dans un corps fini, et l'a exposée dans son *Traité des substitutions et des équations algébriques* (Paris, 1870) sous le nom de forme canonique (F. Brechenmacher, « Linear groups in Galois fields », arXiv:1202.2966).
+
+aretes:
+  - [rd-polynomes-endo, rd-noyaux]
+  - [rd-polynomes-endo, rd-stables]
+  - [rd-caracteristique, rd-stables]
+  - [rd-polynomes-endo, rd-cayley-hamilton]
+  - [rd-caracteristique, rd-cayley-hamilton]
+  - [rd-noyaux, rd-diagonalisable]
+  - [rd-stables, rd-diagonalisable]
+  - [rd-stables, rd-trigonalisable]
+  - [rd-cayley-hamilton, rd-trigonalisable]
+  - [rd-trigonalisable, rd-nilpotents]
+  - [rd-diagonalisable, rd-caracteristiques]
+  - [rd-nilpotents, rd-caracteristiques]
+  - [rd-caracteristiques, rd-dunford]
+  - [rd-nilpotents, rd-jordan-nilpotent]
+  - [rd-jordan-nilpotent, rd-jordan]
+  - [rd-caracteristiques, rd-jordan]

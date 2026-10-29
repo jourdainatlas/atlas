@@ -576,3 +576,19 @@ Renvoi depuis `v-valeurs-propres`. Sources vérifiées : Cauchy 1829 (via Hawkin
 Hellinger-Toeplitz 1910, Mercer 1909, Enflo 1973. Relu par un agent indépendant (deux fautes de signalement et de
 renvoi, neuf retouches). Admis en remarque : approximation des compacts par le rang fini (Hilbert), formule de
 Mercer, valeurs propres du noyau min(x, y). 547 nœuds, 308 termes ; anf 1 croisement.
+
+## 41. Réduction des endomorphismes (29 octobre 2026)
+
+Inventaire des grands résultats absents (même calibre que le théorème spectral), proposé à l'auteur : réduction des
+endomorphismes, résidus (Laurent, Rouché), changement de variables dans ℝⁿ et Stokes, formes quadratiques (Gauss,
+Sylvester), modules de type fini sur un anneau principal, Radon-Nikodym, Riesz-Markov, Hölder et Minkowski pour Lᵖ,
+Ascoli, Stone-Weierstrass général, extrema liés, représentations des groupes finis, réciprocité quadratique, Wilson,
+Jordan-Hölder, van Kampen, Jordan (courbe), Liapounov. Premier traité, à la demande de l'auteur : la réduction.
+Placement : sous-graphe `ac-reduction` (contenu/ac-reduction.yaml), ouvert par le nœud chapitre `ac-reduction`
+de ac (qui a déjà alg, z, alglin pour parents : aucune arête nouvelle dans l'édifice ; une arête ac-chinois →
+ac-reduction). Douze fiches rd-* : polynômes d'endomorphismes et polynôme minimal, lemme des noyaux (par ac-chinois),
+χ_A = det(XI − A) calculé dans K(X) (pas de déterminant sur un anneau ; remarque : la définition par évaluation
+échoue sur ℤ/2ℤ), sous-espaces stables, Cayley-Hamilton (comatrice sur K(X), télescopage), diagonalisation,
+trigonalisation, nilpotents, sous-espaces caractéristiques, Dunford, Jordan nilpotent, forme de Jordan et critère
+de similitude par les rangs. Aucun choix. Admise en remarque : la forme de Jordan réelle. Relu par un agent
+indépendant (cinq trous et dix retouches traités). 560 nœuds, 316 termes, 47 graphes ; ac-reduction 1 croisement.
