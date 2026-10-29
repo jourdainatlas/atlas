@@ -1022,6 +1022,9 @@ function dessiner(gid) {
   const g = D.graphes[gid];
   const plan = $('#plan');
   plan.innerHTML = '';
+  // un graphe neuf n'a rien de surligné : sur un écran tactile, le toucher qui ouvre une théorie
+  // déclenche un survol simulé, et aucun « mouseleave » ne viendrait retirer la classe focus
+  plan.classList.remove('focus');
   plan.style.width = g.largeur + 'px';
   plan.style.height = g.hauteur + 'px';
 
@@ -1537,13 +1540,23 @@ $('#plan').addEventListener('click', ev => {
   if (b.dataset.entree) { aller(etat.graphe, id, { sansDefilement: true }); return; }   // sinon fiche lue sur place
   aller(etat.graphe, id, { sansDefilement: true });
 });
-$('#plan').addEventListener('mouseover', ev => {
+// Le survol ne vaut que pour une souris : sur un écran tactile, le navigateur simule des survols au
+// moment du toucher, puis sur ce qui se trouve sous le doigt une fois le graphe redessiné, et aucune
+// sortie ne vient les effacer ; toutes les bulles restaient alors atténuées (signalé sur iPhone).
+$('#plan').addEventListener('pointerover', ev => {
+  if (ev.pointerType !== 'mouse') return;
   if (ev.target.classList && ev.target.classList.contains('zone-arete')) { surlignerArete(ev.target); return; }
   const b = ev.target.closest('.noeud');
   surlignerNoeud(b ? b.dataset.id : null);
 });
-$('#plan').addEventListener('mouseleave', () => surlignerNoeud(null));
-$('#plan').addEventListener('focusin', ev => { const b = ev.target.closest('.noeud'); if (b) surlignerNoeud(b.dataset.id); });
+$('#plan').addEventListener('pointerleave', ev => { if (ev.pointerType === 'mouse') surlignerNoeud(null); });
+// Au toucher, une flèche se met en évidence par un appui, et un appui hors des bulles et des flèches l'efface.
+$('#plan').addEventListener('pointerup', ev => {
+  if (ev.pointerType === 'mouse') return;
+  if (ev.target.classList && ev.target.classList.contains('zone-arete')) { surlignerArete(ev.target); return; }
+  if (!ev.target.closest('.noeud')) surlignerNoeud(null);
+});
+$('#plan').addEventListener('focusin', ev => { const b = ev.target.closest('.noeud'); if (b && b.matches(':focus-visible')) surlignerNoeud(b.dataset.id); });   // clavier seulement
 $('#plan').addEventListener('focusout', () => surlignerNoeud(null));
 
 // La légende s'ouvre sous son bouton, mais toujours entière dans l'écran : sur téléphone, le bouton passe

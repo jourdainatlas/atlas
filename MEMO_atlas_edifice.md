@@ -426,3 +426,8 @@ reste admise ; exemple des lois uniformes discrètes, schéma `fo-levy`). Relu p
 Lie (29 oct. 2026) : les deux faits admis en remarque sont démontrés : (−1, 1 ; 0, −1) n'est pas une exponentielle
 (commutant de N) ; l'enroulement irrationnel est dense, non fermé (le point (I, R_{πα})) et n'est pas une
 sous-variété (localement fermé ⇒ ouvert dans son adhérence ⇒ fermé).
+Surlignage sur écran tactile (29 oct. 2026, signalé sur iPhone : en ouvrant une théorie, toutes les bulles
+restaient atténuées). Cause : les survols simulés par le navigateur au toucher posaient la classe `focus` sur
+`#plan`, sans sortie pour l'effacer. Gabarit : le survol (`pointerover`/`pointerleave`) ne réagit qu'à une souris ;
+au toucher, un appui sur une flèche la met en évidence et un appui hors des bulles l'efface (`pointerup`) ; le
+focus ne surligne qu'au clavier (`:focus-visible`) ; `dessiner` retire `focus` à chaque nouveau graphe.
