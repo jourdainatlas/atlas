@@ -3,7 +3,8 @@
 # réelle : densité des fonctions en escalier, coefficients et Bessel, Fejér, Parseval et
 # Σ 1/n² = π²/6, Riemann-Lebesgue et Dini, divergence par Banach-Steinhaus ; transformée de
 # Fourier sur L¹(ℝ) (intégrales de fonctions complexes par parties réelle et imaginaire),
-# gaussienne, inversion, Plancherel, fonctions caractéristiques.
+# gaussienne, inversion, Plancherel, fonctions caractéristiques ; convergence en loi, lemme de Scheffé et
+# théorème de continuité de Lévy (sens direct, démontré le 29 oct. 2026).
 # Parents : analyse fonctionnelle, analyse complexe (cos, sin, π, exp), probabilités (loi
 # normale et ∫ e^{-x²/2} = √(2π)).
 
@@ -243,7 +244,41 @@ noeuds:
       (iv) Soit $N$ de loi $\mathcal N(0, 1)$, indépendante de $X$, sur un espace produit, et $\sigma > 0$. La variable $X + \sigma N$ a pour densité $h_\sigma(x) = E\big[G_\sigma(x - X)\big]$, par Fubini ; en écrivant $G_\sigma(u) = \frac1{2\pi}\int e^{iut}e^{-\sigma^2t^2/2}\,dt$ par l'inversion ({{fo-inversion|Inversion}}), puis Fubini, $h_\sigma(x) = \frac1{2\pi}\int \varphi_X(-t)\,e^{ixt}\,e^{-\sigma^2t^2/2}\,dt$, qui ne dépend que de $\varphi_X$. Donc $X + \sigma N$ et $Y + \sigma N$ ont même loi pour tout $\sigma$. En un point $x$ tel que $P(X = x) = 0$, $\mathbf 1_{X + \sigma N \leqslant x} \to \mathbf 1_{X \leqslant x}$ presque sûrement quand $\sigma \to 0$, d'où $F_{X+\sigma N}(x) \to F_X(x)$ par convergence dominée. Les fonctions de répartition de $X$ et $Y$ coïncident donc en dehors des points où l'une a un saut, qui sont au plus dénombrables, au plus $n$ sauts de taille supérieure à $\frac1n$ ; par continuité à droite, elles coïncident partout, et les lois sont égales ({{p-variables|Variables aléatoires}}).
     remarques:
       - |
-        Le théorème de continuité de Lévy affirme que la convergence simple des fonctions caractéristiques vers une fonction continue en $0$ équivaut à la convergence des fonctions de répartition aux points de continuité de la limite ; il est admis ici. Avec lui, le théorème central limite ({{p-tcl|Théorème central limite}}) se démontre en développant $\varphi_X(t/\sqrt n)^n = \big(1 - \frac{t^2}{2n} + o(\frac1n)\big)^n \to e^{-t^2/2}$, sans l'hypothèse d'un moment d'ordre $3$.
+        Le théorème de continuité de Lévy relie la convergence simple des fonctions caractéristiques à la convergence des fonctions de répartition ; le sens utile est démontré au nœud suivant, {{fo-levy|Continuité de Lévy}}.
+
+  - id: fo-levy
+    etiquette: Continuité de Lévy
+    nature: théorème
+    titre: Théorème de continuité de Lévy
+    texte: |
+      Pour des variables réelles $X_n$ et $X$, éventuellement définies sur des espaces différents, on dit que $X_n$ [[convergence-loi|converge en loi]] vers $X$ si $F_{X_n}(x) \to F_X(x)$ en tout point $x$ où la fonction de répartition $F_X$ est continue ({{p-variables|Variables aléatoires}}).
+    enonce: |
+      (i) *Lemme de Scheffé.* Si des densités de probabilité $h_n$ convergent presque partout vers une densité $h$, alors $\int |h_n - h| \to 0$.
+
+      (ii) *Lévy.* Si $\varphi_{X_n}(t) \to \varphi_X(t)$ pour tout $t \in \lex{ensemble-reels}{\mathbb R}$, alors $X_n$ converge en loi vers $X$.
+    preuve: |
+      (i) Comme $\int h_n = \int h = 1$, on a $\int (h - h_n) = 0$, donc $\int |h_n - h| = 2\int (h - h_n)^+$. Or $0 \leqslant (h - h_n)^+ \leqslant h$, intégrable, et $(h - h_n)^+ \to 0$ presque partout : la convergence dominée ({{m-convergence-dominee|Convergence dominée}}) conclut.
+
+      (ii) *Lissage.* Soit $\sigma > 0$ et $N$ de loi $\mathcal N(0, 1)$, indépendante de $X_n$ sur un espace produit, comme dans la preuve de {{fo-caracteristiques|Fonctions caractéristiques}}, (iv). La variable $X_n + \sigma N$ a pour densité
+      $$h_{n,\sigma}(x) = \frac1{2\pi}\int \varphi_{X_n}(-t)\,e^{ixt}\,e^{-\sigma^2t^2/2}\,dt,$$
+      et de même $X + \sigma N$ a pour densité $h_\sigma$, avec $\varphi_X$. Comme $|\varphi_{X_n}| \leqslant 1$ et que $e^{-\sigma^2t^2/2}$ est intégrable, la convergence dominée, appliquée aux parties réelle et imaginaire, donne $h_{n,\sigma}(x) \to h_\sigma(x)$ pour tout $x$. Par (i), pour tout $y$, $|P(X_n + \sigma N \leqslant y) - P(X + \sigma N \leqslant y)| \leqslant \int |h_{n,\sigma} - h_\sigma| \to 0$.
+
+      *Encadrement.* Soient $x \in \mathbb R$, $\varepsilon > 0$, et $r_\sigma = P(|\sigma N| > \varepsilon) \leqslant \sigma^2/\varepsilon^2$ (Bienaymé-Tchebychev, {{p-esperance|Espérance, variance}}, (iii)). Si $X_n \leqslant x$ et $\sigma N \leqslant \varepsilon$, alors $X_n + \sigma N \leqslant x + \varepsilon$ ; et si $X + \sigma N \leqslant x + \varepsilon$ et $\sigma N \geqslant -\varepsilon$, alors $X \leqslant x + 2\varepsilon$. Donc
+      $$F_{X_n}(x) \leqslant P(X_n + \sigma N \leqslant x + \varepsilon) + r_\sigma$$
+      et
+      $$P(X + \sigma N \leqslant x + \varepsilon) \leqslant F_X(x + 2\varepsilon) + r_\sigma.$$
+      En faisant tendre $n$ vers l'infini, $\limsup_n F_{X_n}(x) \leqslant F_X(x + 2\varepsilon) + 2r_\sigma$, puis, avec $\sigma \to 0$, $\limsup_n F_{X_n}(x) \leqslant F_X(x + 2\varepsilon)$, et, avec $\varepsilon \to 0$ et la continuité à droite de $F_X$, $\limsup_n F_{X_n}(x) \leqslant F_X(x)$. Les inclusions symétriques, $\{X_n + \sigma N \leqslant x - \varepsilon\} \subset \{X_n \leqslant x\} \cup \{\sigma N < -\varepsilon\}$ et $\{X \leqslant x - 2\varepsilon\} \subset \{X + \sigma N \leqslant x - \varepsilon\} \cup \{\sigma N > \varepsilon\}$, donnent de même $\liminf_n F_{X_n}(x) \geqslant F_X(x - 2\varepsilon)$ pour tout $\varepsilon > 0$. Si $F_X$ est continue en $x$, $F_X(x - 2\varepsilon) \to F_X(x)$, et $F_{X_n}(x) \to F_X(x)$.
+    remarques:
+      - |
+        Soit $X_n$ uniforme sur $\{\frac1n, \frac2n, \dots, 1\}$ et $X$ uniforme sur $[0, 1]$. Alors $\varphi_{X_n}(t) = \frac1n\sum_{k=1}^n e^{itk/n}$ est une somme de Riemann de $x \mapsto e^{itx}$ sur $[0, 1]$, et tend vers $\int_0^1 e^{itx}\,dx = \varphi_X(t)$ ({{ri-sommes|Sommes de Riemann}}, appliqué à $\cos(tx)$ et à $\sin(tx)$). Le théorème donne la convergence en loi, que l'on vérifie directement : $F_{X_n}(x) = \lfloor nx \rfloor/n \to x$ pour $x \in [0, 1]$.
+
+        ```schema fo-levy
+        Les fonctions de répartition des lois uniformes sur $\{\frac kn : 1 \leqslant k \leqslant n\}$, pour $n = 4$ en bleu et $n = 12$ en rouge, sont des escaliers de marches $\frac1n$ ; elles se rapprochent de la diagonale $F_X(x) = x$, en gris, à moins de $\frac1n$ près.
+        ```
+      - |
+        L'hypothèse porte sur une fonction limite qui est déjà une fonction caractéristique. La forme complète du théorème de Lévy, admise ici, ne suppose que la continuité en $0$ de la limite simple $\varphi$ : il faut alors montrer que la suite des lois ne laisse pas de masse s'échapper à l'infini, propriété de tension, puis extraire une sous-suite qui converge, ce qui demande un argument de compacité. L'exemple de $X_n$ de loi $\mathcal N(0, n)$, pour laquelle $\varphi_{X_n}(t) = e^{-nt^2/2}$ tend vers l'indicatrice de $\{0\}$, discontinue en $0$, montre que l'on ne peut pas omettre cette hypothèse : $F_{X_n}(x) \to \frac12$ pour tout $x$, et la limite n'est pas une fonction de répartition.
+      - |
+        Avec ce théorème, le théorème central limite ({{p-tcl|Théorème central limite}}) se ramène à un calcul de fonctions caractéristiques. Si $X_1, X_2, \dots$ sont indépendantes, de même loi que $X$ centrée réduite, et $S_n = X_1 + \cdots + X_n$, alors $\varphi_{S_n/\sqrt n}(t) = \varphi_X(t/\sqrt n)^n$ par {{fo-caracteristiques|Fonctions caractéristiques}}, (ii) ; comme $e^{-t^2/2}$ est la fonction caractéristique de la loi $\mathcal N(0, 1)$, dont la fonction de répartition est continue, il suffit de montrer que $\varphi_X(t/\sqrt n)^n \to e^{-t^2/2}$. Un développement de $\varphi_X$ à l'ordre $2$ en $0$, qui existe sous la seule hypothèse d'un moment d'ordre $2$, ce qui est admis ici, le permet, alors que la preuve de Lindeberg du nœud cité demande un moment d'ordre $3$.
 
 aretes:
   - [fo-coefficients, fo-fejer]
@@ -257,3 +292,4 @@ aretes:
   - [fo-transformee, fo-inversion]
   - [fo-inversion, fo-plancherel]
   - [fo-inversion, fo-caracteristiques]
+  - [fo-caracteristiques, fo-levy]

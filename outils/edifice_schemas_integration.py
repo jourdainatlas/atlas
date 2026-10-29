@@ -669,3 +669,35 @@ def fo_inversion():
     S.texte(R(1.04, 1.0) + [8, -12], 'ε = 0,05', 'r', ancre='start', taille=15)
     S.texte(R(-0.5, 1.0) + [0, -14], 'f', ancre='middle')
     return S
+
+
+@schema('fo-levy')
+def fo_levy():
+    # F_n(x) = ⌊nx⌋/n sur [0, 1] (loi uniforme sur {k/n}), F(x) = x ; écart au plus 1/n
+    def Fn(n, x):
+        return min(max(math.floor(n * x + 1e-12), 0), n) / n
+    for n in (4, 12):
+        xs = np.linspace(0, 1, 2001)
+        assert max(abs(Fn(n, x) - x) for x in xs) <= 1 / n + 1e-9
+    # convergence des fonctions caractéristiques : sommes de Riemann de e^{itx}
+    for t in (1.0, 5.0):
+        lim = (complex(math.cos(t), math.sin(t)) - 1) / complex(0, t)
+        ecarts = [abs(sum(complex(math.cos(t * k / n), math.sin(t * k / n)) for k in range(1, n + 1)) / n - lim)
+                  for n in (10, 100, 1000)]
+        assert ecarts[0] > ecarts[1] > ecarts[2] and ecarts[2] < 1e-2
+    S = Schema(480, 300, 'Fonctions de répartition des lois uniformes discrètes et de la loi uniforme')
+    R = Repere(-0.08, 1.12, -0.06, 1.1, 40, 14, 420, 260)
+    R.axes(S, 'x', '')
+    S.ligne(R(0, 0), R(1, 1), 'g', l=1.6)
+    for n, c in ((4, 'b'), (12, 'r')):
+        for k in range(n):
+            S.ligne(R(k / n, k / n), R((k + 1) / n, k / n), c, l=2)
+            S.point(R(k / n, k / n), c, r=2.8)
+        S.point(R(1, 1), c, r=2.8)
+    S.ligne(R(1, 1), R(1.1, 1), 't', l=1.4)
+    for v in (1,):
+        S.texte(R(v, 0) + [0, 18], '1', 'g', taille=14)
+        S.texte(R(0, v) + [-10, 0], '1', 'g', ancre='end', taille=14)
+    S.texte(R(0.62, 0.45) + [10, 8], 'n = 4', 'b', ancre='start', taille=15)
+    S.texte(R(0.35, 0.40) + [-10, -6], 'n = 12', 'r', ancre='end', taille=15)
+    return S

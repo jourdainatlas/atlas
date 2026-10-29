@@ -420,3 +420,9 @@ un produit de premiers, par récurrence sur l'indice, sans choix), `an-inverse` 
 vers 𝔽₂, 𝔽₃ et non-principalité ; schéma `an-factorisation`, produits vérifiés par formes d'Hermite). Groupe des
 classes : défini, finitude admise. `outils/edifice_svg.py` : 𝔮 ajouté aux lettres gothiques. Relu par un second
 agent (deux passes ; une affirmation fausse corrigée sur les idéaux non principaux de ℤ[√−5]).
+Lévy (29 oct. 2026) : nœud `fo-levy` dans `fourier` (convergence en loi, terme `convergence-loi` ; lemme de Scheffé ;
+sens direct du théorème de continuité de Lévy par lissage gaussien et encadrement ; la forme complète, avec tension,
+reste admise ; exemple des lois uniformes discrètes, schéma `fo-levy`). Relu par un second agent (deux passes).
+Lie (29 oct. 2026) : les deux faits admis en remarque sont démontrés : (−1, 1 ; 0, −1) n'est pas une exponentielle
+(commutant de N) ; l'enroulement irrationnel est dense, non fermé (le point (I, R_{πα})) et n'est pas une
+sous-variété (localement fermé ⇒ ouvert dans son adhérence ⇒ fermé).
