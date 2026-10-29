@@ -1,12 +1,19 @@
 # Niveau 1 : structure interne du nœud « Analyse fonctionnelle ».
 # Espaces vectoriels normés réels (les complexes ne sont pas des ancêtres de ce nœud), espaces
 # de Banach, opérateurs continus, espaces L¹ et L², espaces de Hilbert (projection, Riesz,
-# bases hilbertiennes, système de Haar), Hahn-Banach, Banach-Steinhaus, application ouverte.
+# bases hilbertiennes, système de Haar), Hahn-Banach, Banach-Steinhaus, application ouverte ;
+# opérateurs autoadjoints, théorème spectral en dimension finie (quotient de Rayleigh, sans ℂ),
+# opérateurs compacts (diagonaux, à noyau continu) et théorème spectral des opérateurs compacts
+# autoadjoints.
 # Les normes, les espaces métriques complets et le théorème de Baire viennent du graphe
 # « Espaces métriques et normés » (met), parent de celui-ci. Les espaces Lᵖ pour p quelconque
 # demandent les puissances réelles, donc l'exponentielle, et ne sont pas traités.
 # Choix : Hahn-Banach (Zorn), bases hilbertiennes en général (Zorn), projection (choix
-# dénombrable), application ouverte (choix dépendant, comme Baire).
+# dénombrable), application ouverte (choix dépendant, comme Baire), limites quelconques
+# d'opérateurs compacts et base hilbertienne de vecteurs propres d'un opérateur compact
+# autoadjoint (choix dénombrable ; sans choix pour des approximations explicites, ou dans un
+# espace séparable). Le théorème spectral lui-même est démontré sans choix : la valeur propre
+# extrême vient d'une intersection de fermés emboîtés d'un compact, non d'une suite maximisante.
 
 graphe: anf
 titre: Analyse fonctionnelle
@@ -513,6 +520,361 @@ noeuds:
       - |
         Une conséquence frappante : si un même espace est complet pour deux normes, et si l'une est dominée par l'autre, elles sont équivalentes, par (ii) appliqué à l'identité. L'espace des fonctions continues sur $[0, 1]$ est complet pour la norme uniforme, qui domine $\int_0^1 |f|$, mais les deux normes ne sont pas équivalentes ; c'est bien que la seconde n'est pas complète ({{f-exemples|Exemples d'espaces de Banach}}).
 
+  - id: f-autoadjoints
+    etiquette: Opérateurs autoadjoints
+    nature: proposition
+    titre: Opérateurs autoadjoints d'un espace de Hilbert
+    texte: |
+      Soit $H$ un [[espace-hilbert|espace de Hilbert]], et $\mathcal L_c(H) = \lex{espace-applications-continues}{\mathcal L_c}(H, H)$. Un opérateur $u \in \mathcal L_c(H)$ est [[operateur-autoadjoint|autoadjoint]] si
+      $$\langle u(x), y \rangle = \langle x, u(y) \rangle$$
+      pour tous $x, y \in H$.
+
+      Comme en dimension finie ({{v-valeurs-propres|Valeurs propres}}), un réel $\lambda$ est une [[valeur-propre|valeur propre]] de $u$ s'il existe $x \neq 0$ tel que $u(x) = \lambda x$ ; un tel $x$ est un **vecteur propre**. On note $E_\lambda = \operatorname{Ker}(u - \lambda\,\mathrm{id})$ pour tout réel $\lambda$. Un sous-espace $F$ est **stable** par $u$ si $u(F) \subset F$.
+
+      Le [[quotient-rayleigh|quotient de Rayleigh]] de $u$ est la fonction définie sur $H \setminus \{0\}$ par
+      $$R_u(x) = \frac{\langle u(x), x \rangle}{\|x\|^2}.$$
+    enonce: |
+      Soit $u \in \mathcal L_c(H)$ autoadjoint.
+
+      (i) Chaque $E_\lambda$ est un sous-espace fermé. Si $\lambda \neq \mu$, les sous-espaces $E_\lambda$ et $E_\mu$ sont orthogonaux : $\langle x, y \rangle = 0$ pour $x \in E_\lambda$ et $y \in E_\mu$.
+
+      (ii) Si $F$ est stable par $u$, son orthogonal $F^\perp$ est un sous-espace fermé stable par $u$. Si $G$ est un sous-espace fermé stable par $u$, c'est un espace de Hilbert pour le produit scalaire de $H$, et la restriction de $u$ à $G$ en est un opérateur autoadjoint.
+
+      (iii) La norme de $u$ se lit sur sa forme quadratique :
+      $$|||u||| = \sup\big\{|\langle u(x), x \rangle| : \|x\| \leqslant 1\big\}.$$
+
+      (iv) *Rayleigh.* Si $R_u$ atteint en un point $x_0$ son maximum, ou son minimum, sur $H \setminus \{0\}$, alors $x_0$ est un vecteur propre de $u$, associé à la valeur propre $R_u(x_0)$.
+    preuve: |
+      (i) L'application $u - \lambda\,\mathrm{id}$ est linéaire et continue ({{f-evn|Espaces normés}}, (ii)), et $E_\lambda$ est l'image réciproque du fermé $\{0\}$. Pour $x \in E_\lambda$ et $y \in E_\mu$,
+      $$\lambda \langle x, y \rangle = \langle u(x), y \rangle = \langle x, u(y) \rangle = \mu \langle x, y \rangle,$$
+      donc $(\lambda - \mu)\langle x, y \rangle = 0$, puis $\langle x, y \rangle = 0$.
+
+      (ii) Soit $x \in F^\perp$. Pour $y \in F$, on a $u(y) \in F$, donc $\langle u(x), y \rangle = \langle x, u(y) \rangle = 0$ : $u(x) \in F^\perp$. L'orthogonal est l'intersection des noyaux des formes linéaires $x \mapsto \langle x, a \rangle$, $a \in F$, qui sont continues par l'inégalité de Cauchy-Schwarz ({{f-hilbert|Espaces de Hilbert}}, (i)) : c'est un sous-espace fermé.
+
+      Un sous-espace fermé $G$ d'un espace complet est complet ({{f-evn|Espaces normés}}, (iv)), et la restriction du produit scalaire en est un, qui définit la même norme. La restriction $v$ de $u$ à $G$ est linéaire, à valeurs dans $G$, et vérifie $\|v(x)\| \leqslant |||u|||\,\|x\|$ ; l'égalité $\langle v(x), y \rangle = \langle x, v(y) \rangle$ est celle de $u$.
+
+      (iii) Notons $M$ la borne supérieure. Par l'inégalité de Cauchy-Schwarz, $|\langle u(x), x \rangle| \leqslant |||u|||\,\|x\|^2$, donc $M \leqslant |||u|||$ ; par homogénéité, $|\langle u(x), x \rangle| \leqslant M\|x\|^2$ pour tout $x$.
+
+      En développant, et grâce à l'autoadjonction, on a pour tous $x, y$
+      $$\begin{aligned} &\langle u(x + y), x + y \rangle - \langle u(x - y), x - y \rangle \\ &\quad = 2\langle u(x), y \rangle + 2\langle u(y), x \rangle \\ &\quad = 4\langle u(x), y \rangle. \end{aligned}$$
+      Par l'identité du parallélogramme ({{f-hilbert|Espaces de Hilbert}}, (i)), il vient
+      $$\begin{aligned} 4\langle u(x), y \rangle &\leqslant M\big(\|x + y\|^2 + \|x - y\|^2\big) \\ &= 2M\big(\|x\|^2 + \|y\|^2\big). \end{aligned}$$
+
+      Soit $x$ tel que $\|x\| \leqslant 1$ et $u(x) \neq 0$, et $y = u(x)/\|u(x)\|$. L'inégalité devient $4\|u(x)\| \leqslant 2M(\|x\|^2 + 1) \leqslant 4M$. Ainsi $\|u(x)\| \leqslant M$ pour $\|x\| \leqslant 1$, et $|||u||| \leqslant M$.
+
+      (iv) Supposons que $m = R_u(x_0)$ soit le maximum, c'est-à-dire que $\langle u(x), x \rangle \leqslant m\|x\|^2$ pour tout $x$, avec égalité en $x_0$. Posons $w = u(x_0) - m x_0$, et fixons $y \in H$. Pour tout réel $t$, l'expression $\langle u(x_0 + ty), x_0 + ty \rangle - m\|x_0 + ty\|^2$ est négative ; en la développant grâce à l'autoadjonction, on obtient
+      $$2t\,\langle w, y \rangle + t^2 c \leqslant 0,$$
+      où $c = \langle u(y), y \rangle - m\|y\|^2$.
+
+      Pour $t > 0$, en divisant par $t$, $2\langle w, y \rangle \leqslant -tc$. Si $\langle w, y \rangle$ était strictement positif, un $t > 0$ tel que $t|c| < 2\langle w, y \rangle$ donnerait une contradiction ; donc $\langle w, y \rangle \leqslant 0$. De même, avec $t < 0$, $\langle w, y \rangle \geqslant 0$.
+
+      Ainsi $\langle w, y \rangle = 0$ pour tout $y$ ; pour $y = w$, il vient $w = 0$, c'est-à-dire $u(x_0) = m x_0$. Pour le minimum, on applique ce qui précède à $-u$, autoadjoint, dont le quotient de Rayleigh est $-R_u$.
+    remarques:
+      - |
+        L'autoadjonction est indispensable au point (iii). La rotation d'un quart de tour $J(x_1, x_2) = (-x_2, x_1)$ de $\lex{n-uplet}{\mathbb R^2}$, muni du produit scalaire $x_1y_1 + x_2y_2$, conserve la norme, si bien que $|||J||| = 1$ ; pourtant $\langle J(x), x \rangle = -x_2x_1 + x_1x_2 = 0$ pour tout $x$. Elle n'est pas autoadjointe : pour la base canonique, $\langle J(e_1), e_2 \rangle = 1$ alors que $\langle e_1, J(e_2) \rangle = -1$.
+
+        Pour un opérateur autoadjoint, au contraire, le calcul de la démonstration montre que $\langle u(x), y \rangle$ s'exprime au moyen de la forme quadratique $x \mapsto \langle u(x), x \rangle$, qui détermine donc $u$ entièrement.
+      - |
+        Pour $u \in \mathcal L_c(H)$ quelconque et $y \in H$, la forme $x \mapsto \langle u(x), y \rangle$ est linéaire et continue ; le théorème de Riesz ({{f-riesz|Théorème de Riesz}}) fournit un unique $u^*(y)$ tel que $\langle u(x), y \rangle = \langle x, u^*(y) \rangle$ pour tout $x$. C'est l'**adjoint** de $u$, et $u$ est autoadjoint lorsque $u^* = u$. La définition adoptée ici évite de construire $u^*$, ce qui, par le théorème de Riesz, ferait appel au théorème de projection et au choix dénombrable.
+      - |
+        L'hypothèse de continuité est en fait superflue. Soit $u : H \to H$ linéaire, telle que $\langle u(x), y \rangle = \langle x, u(y) \rangle$ pour tous $x, y$. Son graphe est l'ensemble des couples $(x, z)$ tels que $\langle z, y \rangle = \langle x, u(y) \rangle$ pour tout $y$ : en effet, cette condition s'écrit $\langle z - u(x), y \rangle = 0$, et, pour $y = z - u(x)$, elle impose $z = u(x)$.
+
+        Chacune de ces conditions définit un fermé de $H \times H$, image réciproque de $\{0\}$ par une fonction continue, si bien que le graphe est fermé, et le théorème du graphe fermé ({{f-application-ouverte|Application ouverte}}, (iii)) montre que $u$ est continue. C'est le théorème qui porte les noms d'E. Hellinger et O. Toeplitz, d'après leur article « Grundlagen für eine Theorie der unendlichen Matrizen » (*Math. Ann.* 69, 1910, p. 289-330) ; par le théorème de Baire, il repose sur le choix dépendant.
+
+  - id: f-spectral-fini
+    etiquette: Théorème spectral
+    nature: théorème
+    titre: Théorème spectral en dimension finie
+    texte: |
+      Soit $E$ un espace vectoriel réel de [[dimension]] finie $n \geqslant 1$, muni d'un produit scalaire. Il est complet, et toute application linéaire $u : E \to E$ est continue ({{gd-equivalence|Équivalence des normes}}, (iv)) : $E$ est un [[espace-hilbert|espace de Hilbert]], et $u$ est [[operateur-autoadjoint|autoadjoint]] dès que $\langle u(x), y \rangle = \langle x, u(y) \rangle$ pour tous $x, y$.
+
+      Une base $(e_1, \dots, e_n)$ de $E$ est **orthonormée** si $\langle e_i, e_j \rangle$ vaut $1$ pour $i = j$ et $0$ sinon. Une matrice $A \in \lex{espace-matrices}{\mathcal M_n}(\mathbb R)$ est **symétrique** si ${}^tA = A$ ; une matrice $P \in \mathcal M_n(\mathbb R)$ est [[matrice-orthogonale|orthogonale]] si ${}^tP\,P = I_n$.
+    enonce: |
+      Soit $u : E \to E$ linéaire et autoadjoint.
+
+      (i) Le [[quotient-rayleigh|quotient de Rayleigh]] $R_u$ atteint sur $E \setminus \{0\}$ un maximum $\lambda_{\max}$ et un minimum $\lambda_{\min}$, qui sont des [[valeur-propre|valeurs propres]] de $u$. Toute valeur propre est comprise entre eux, et pour tout $x \in E$
+      $$\lambda_{\min}\|x\|^2 \leqslant \langle u(x), x \rangle \leqslant \lambda_{\max}\|x\|^2.$$
+
+      (ii) *Théorème spectral.* Il existe une base orthonormée $(e_1, \dots, e_n)$ de $E$ formée de vecteurs propres de $u$, $u(e_i) = \lambda_i e_i$. Pour tout $x \in E$,
+      $$\begin{aligned} x &= \sum_i \langle x, e_i \rangle\, e_i, \\ u(x) &= \sum_i \lambda_i \langle x, e_i \rangle\, e_i, \\ \langle u(x), x \rangle &= \sum_i \lambda_i \langle x, e_i \rangle^2. \end{aligned}$$
+      Les $\lambda_i$ sont les valeurs propres de $u$, et chacune, $\lambda$, figure parmi eux autant de fois que la dimension de $E_\lambda$, sa **multiplicité**.
+
+      (iii) *Forme matricielle.* Pour toute matrice symétrique $A \in \mathcal M_n(\mathbb R)$, il existe une matrice orthogonale $P$ et une matrice diagonale $D$ telles que
+      $$A = P D\, {}^tP.$$
+      Une matrice $A$ est symétrique si et seulement si $x \mapsto Ax$ est autoadjointe pour le produit scalaire usuel. La matrice $P$ est inversible, d'inverse ${}^tP$, et les coefficients diagonaux de $D$ sont les valeurs propres de $A$, répétées selon leur multiplicité.
+    preuve: |
+      (i) La sphère unité $S = \{x : \|x\| = 1\}$ n'est pas vide, puisque $x/\|x\|$ lui appartient pour tout $x \neq 0$. Elle est fermée, comme image réciproque de $\{1\}$ par la norme, qui est continue ({{f-evn|Espaces normés}}, (ii)), et bornée : elle est compacte ({{gd-equivalence|Équivalence des normes}}, (iv)).
+
+      L'application $x \mapsto \langle u(x), x \rangle$ est continue sur $E$, puisque $u$ l'est et que, par l'inégalité de Cauchy-Schwarz,
+      $$\begin{aligned} &|\langle a, b \rangle - \langle a', b' \rangle| \\ &\quad \leqslant \|a - a'\|\,\|b\| + \|a'\|\,\|b - b'\|. \end{aligned}$$
+      Elle atteint donc sur le compact non vide $S$ un maximum et un minimum ({{tr-compacts|Compacts de ℝ}}, (iii)).
+
+      Comme $R_u(x) = \langle u(x/\|x\|), x/\|x\| \rangle$ pour $x \neq 0$, ce sont le maximum $\lambda_{\max}$ et le minimum $\lambda_{\min}$ de $R_u$ sur $E \setminus \{0\}$, et le point (iv) du nœud {{f-autoadjoints|Opérateurs autoadjoints}} montre que ce sont des valeurs propres. Si $u(x) = \lambda x$ avec $x \neq 0$, alors $R_u(x) = \lambda$, compris entre eux. L'encadrement s'obtient en multipliant $\lambda_{\min} \leqslant R_u(x) \leqslant \lambda_{\max}$ par $\|x\|^2$, et il est évident pour $x = 0$.
+
+      (ii) Raisonnons par récurrence sur $n$, l'énoncé portant sur tous les espaces de dimension $n$ munis d'un produit scalaire, et sur tous les endomorphismes autoadjoints de ces espaces. Par (i), $u$ a un vecteur propre $e_1$ de norme $1$. La droite $F = \mathbb R e_1$ est stable par $u$, donc $G = F^\perp$ l'est aussi ({{f-autoadjoints|Opérateurs autoadjoints}}, (ii)).
+
+      Le sous-espace $G$ est le noyau de la forme linéaire $x \mapsto \langle x, e_1 \rangle$, qui vaut $1$ en $e_1$ ; son image est $\mathbb R$, et $\dim G = n - 1$ par le théorème du rang ({{v-rang|Théorème du rang}}). Si $n = 1$, la famille $(e_1)$, libre à un élément, est une base ({{v-dimension|Dimension}}, (ii)). Sinon, la restriction de $u$ à $G$ est un endomorphisme autoadjoint de $G$, muni du produit scalaire induit ({{f-autoadjoints|Opérateurs autoadjoints}}, (ii)), et l'hypothèse de récurrence fournit une base orthonormée $(e_2, \dots, e_n)$ de $G$ formée de vecteurs propres.
+
+      Les vecteurs $e_1, \dots, e_n$ sont de norme $1$ et deux à deux orthogonaux, puisque $e_2, \dots, e_n \in G$. Une telle famille est libre : si $\sum_i a_i e_i = 0$, le produit scalaire avec $e_j$ donne $a_j = 0$. Formée de $n$ vecteurs, c'est une base ({{v-dimension|Dimension}}, (ii)).
+
+      Pour $x = \sum_i x_i e_i$, le produit scalaire avec $e_j$ donne $x_j = \langle x, e_j \rangle$, d'où les trois formules, la dernière par orthonormalité. Enfin $u(x) = \lambda x$ s'écrit $\sum_i (\lambda_i - \lambda) x_i e_i = 0$, c'est-à-dire $x_i = 0$ pour tout $i$ tel que $\lambda_i \neq \lambda$. Le sous-espace $E_\lambda$ a donc pour base les $e_i$ tels que $\lambda_i = \lambda$ : ils sont au nombre de $\dim E_\lambda$, et $E_\lambda$ est nul si $\lambda$ n'est aucun des $\lambda_i$.
+
+      (iii) Sur $\mathbb R^n$, l'expression $\langle x, y \rangle = \sum_i x_i y_i$ est un produit scalaire : elle est bilinéaire et symétrique, et $\sum_i x_i^2 > 0$ si $x \neq 0$. Si $A = (a_{ij})$ est symétrique, l'application $x \mapsto Ax$ est autoadjointe : en permutant les deux sommes finies, comme au nœud {{v-trace|Trace}}, (ii), puis en utilisant $a_{ij} = a_{ji}$,
+      $$\begin{aligned} \langle Ax, y \rangle &= \sum_i \sum_j a_{ij} x_j y_i \\ &= \sum_j x_j \sum_i a_{ji} y_i = \langle x, Ay \rangle. \end{aligned}$$
+      Réciproquement, si $x \mapsto Ax$ est autoadjointe, la base canonique $(\varepsilon_j)$ donne $a_{ij} = \langle A\varepsilon_j, \varepsilon_i \rangle = \langle \varepsilon_j, A\varepsilon_i \rangle = a_{ji}$.
+
+      Soit $(e_1, \dots, e_n)$ la base fournie par (ii), $P$ la matrice dont la $j$-ième colonne est $e_j$, et $D$ la matrice diagonale de coefficients $\lambda_1, \dots, \lambda_n$. Le coefficient d'indice $(i, j)$ de ${}^tP\,P$ est $\sum_k p_{ki}\, p_{kj} = \langle e_i, e_j \rangle$, si bien que ${}^tP\,P = I_n$.
+
+      La matrice $P$ est celle de l'identité, de la base $(e_j)$ dans la base canonique. Elle est inversible, et la matrice de $x \mapsto Ax$ dans la base $(e_j)$, qui est $D$ puisque $Ae_j = \lambda_j e_j$, vaut $P^{-1}AP$ ({{v-trace|Trace}}, (iii)). En multipliant ${}^tP\,P = I_n$ à droite par $P^{-1}$, le produit étant associatif ({{v-matrices|Matrices}}, (iii)), on obtient ${}^tP = P^{-1}$, puis
+      $$A = PDP^{-1} = PD\,{}^tP.$$
+      Les valeurs propres et leurs multiplicités sont celles que donne (ii).
+    remarques:
+      - |
+        Pour la matrice
+        $$A = \begin{pmatrix} 2 & 1 & 1 \\ 1 & 2 & 1 \\ 1 & 1 & 2 \end{pmatrix},$$
+        on a $Ax = x + (x_1 + x_2 + x_3)(1, 1, 1)$, donc $R_A(x) = 1 + (x_1 + x_2 + x_3)^2/\|x\|^2$. Par l'inégalité de Cauchy-Schwarz, ce quotient est compris entre $1$ et $1 + 3 = 4$ ; son maximum $4$ est atteint en $e_1 = \frac1{\sqrt3}(1, 1, 1)$, qui est bien un vecteur propre, de valeur propre $4$.
+
+        L'orthogonal de $e_1$ est le plan $x_1 + x_2 + x_3 = 0$, sur lequel $A$ est l'identité : toute base orthonormée de ce plan poursuit la récurrence, par exemple $e_2 = \frac1{\sqrt2}(1, -1, 0)$ et $e_3 = \frac1{\sqrt6}(1, 1, -2)$. On obtient $A = PD\,{}^tP$ avec $D$ diagonale de coefficients $4, 1, 1$ et
+        $$P = \frac1{\sqrt6}\begin{pmatrix} \sqrt2 & \sqrt3 & 1 \\ \sqrt2 & -\sqrt3 & 1 \\ \sqrt2 & 0 & -2 \end{pmatrix}.$$
+
+        La valeur propre $1$ est double, et c'est ce qui rend $P$ non unique : dans le plan propre, n'importe quelle base orthonormée convient.
+      - |
+        Le point (i) a une lecture géométrique. Pour $A = \begin{pmatrix} 5 & 2 \\ 2 & 2 \end{pmatrix}$, la forme $\langle Ax, x \rangle = 5x_1^2 + 4x_1x_2 + 2x_2^2$ varie entre $1$ et $6$ sur le cercle unité. Son maximum est atteint en $\pm\frac1{\sqrt5}(2, 1)$ et son minimum en $\pm\frac1{\sqrt5}(1, -2)$, qui sont des vecteurs propres, de valeurs propres $6$ et $1$.
+
+        ```schema f-spectral-fini
+        Le cercle unité est pris entre les lignes de niveau $\langle Ax, x \rangle = 1$, en bleu, et $\langle Ax, x \rangle = 6$, en rouge, qu'il touche aux points de minimum et de maximum. En ces points, la ligne de niveau est tangente au cercle, et sa normale, dirigée par $Ax$, est radiale : $Ax$ est colinéaire à $x$. En un autre point du cercle, en vert, la flèche $Ax$ n'est pas colinéaire à la direction radiale de $x$, en pointillé.
+        ```
+
+        C'est le calcul du point (iv) du nœud {{f-autoadjoints|Opérateurs autoadjoints}} : au point de maximum $x_0$, la dérivée en $t = 0$ de $\langle A(x_0 + ty), x_0 + ty \rangle - 6\|x_0 + ty\|^2$ est nulle dans toute direction $y$.
+      - |
+        La démonstration usuelle passe par les nombres complexes : le polynôme caractéristique a une racine complexe par le théorème de d'Alembert-Gauss, et l'autoadjonction force cette racine à être réelle. Ni $\mathbb C$ ni le théorème de d'Alembert-Gauss ({{cx-liouville|Liouville}}) ne sont des ancêtres de cette branche ; la compacité de la sphère, c'est-à-dire en dernier ressort le théorème de Borel-Lebesgue ({{tr-borel-lebesgue|Borel-Lebesgue}}), en tient lieu, et aucun choix n'intervient.
+
+        C'est déjà par les extremums d'une forme quadratique sur la sphère que Cauchy, en 1829, aborde la recherche des axes principaux et établit que les racines de l'équation correspondante sont réelles (T. Hawkins, « Cauchy and the spectral theory of matrices », *Historia Mathematica* 2, 1975, p. 1-29).
+      - |
+        L'erreur la plus répandue est de croire qu'une matrice diagonalisable se diagonalise en base orthonormée. La matrice $\begin{pmatrix} 1 & 1 \\ 0 & 2 \end{pmatrix}$ a deux valeurs propres distinctes, $1$ et $2$, et elle est diagonalisable ({{v-valeurs-propres|Valeurs propres}}, (iii)). Mais ses sous-espaces propres sont les droites engendrées par $(1, 0)$ et $(1, 1)$, qui ne sont pas orthogonales ; une base de vecteurs propres prend un vecteur sur chacune, et aucune n'est orthonormée.
+
+        La symétrie est en effet nécessaire : si $A = PD\,{}^tP$ avec $D$ diagonale de coefficients $d_k$, le coefficient d'indice $(i, j)$ de $A$ vaut $\sum_k p_{ik}\, d_k\, p_{jk}$, expression symétrique en $i$ et $j$. Une matrice réelle se diagonalise donc dans une base orthonormée si et seulement si elle est symétrique.
+      - |
+        Le point (ii) est la réduction des formes quadratiques en base orthonormée : dans les coordonnées $y_i = \langle x, e_i \rangle$, la forme $\langle u(x), x \rangle$ s'écrit $\sum_i \lambda_i y_i^2$, sans terme croisé. Pour la matrice du schéma ci-dessus, la courbe $5x_1^2 + 4x_1x_2 + 2x_2^2 = 6$ s'écrit $6y_1^2 + y_2^2 = 6$ : c'est une ellipse de demi-axes $1$ et $\sqrt 6$, dirigés par les vecteurs propres.
+
+        Les nombres de $\lambda_i$ strictement positifs et strictement négatifs ne dépendent même pas de la base, orthonormée ou non, dans laquelle on réduit la forme : c'est la loi d'inertie de Sylvester, point de départ de la classification des formes quadratiques réelles, qui n'est pas menée ici.
+      - |
+        Les matrices orthogonales sont celles qui conservent le produit scalaire de $\mathbb R^n$ : un calcul de sommes, comme en (iii), donne $\langle Px, Py \rangle = \langle x, y \rangle$. Elles forment le groupe orthogonal $O(n)$, sous-variété de $\mathcal M_n(\mathbb R)$ de dimension $n(n - 1)/2$ ({{gd-sous-varietes|Sous-variétés de ℝⁿ}}) et groupe de Lie ({{li-definition|Groupes de Lie}}).
+
+        Le compte des dimensions éclaire (iii) : une matrice symétrique dépend de $n(n + 1)/2$ coefficients, autant que $n$ valeurs propres et une matrice de $O(n)$, puisque $n + n(n - 1)/2 = n(n + 1)/2$.
+      - |
+        Le théorème s'applique aux matrices hessiennes. Pour $f$ de classe $C^2$ sur un ouvert de $\mathbb R^n$, la matrice $(\partial_i\partial_j f(a))$ est symétrique par le théorème de Schwarz ({{gd-schwarz|Schwarz, intégrales à paramètre}}), donc se diagonalise en base orthonormée, et en un point critique le signe de ses valeurs propres décide du comportement de $f$ au second ordre.
+
+        Pour $f(x_1, x_2) = x_1^2 + 4x_1x_2 + x_2^2$, la hessienne $\begin{pmatrix} 2 & 4 \\ 4 & 2 \end{pmatrix}$ a pour valeurs propres $6$ et $-2$, de vecteurs propres $(1, 1)$ et $(1, -1)$ ; en effet $f(t, t) = 6t^2$ et $f(t, -t) = -2t^2$, et l'origine est un col. Le critère général, qui passe par la formule de Taylor à l'ordre $2$, relève du {{cdiff|calcul différentiel}}.
+
+  - id: f-compacts
+    etiquette: Opérateurs compacts
+    nature: proposition
+    titre: Opérateurs compacts
+    texte: |
+      Soient $E$ et $F$ des [[espace-norme|espaces normés]], et $\bar B_E = \{x \in E : \|x\| \leqslant 1\}$ la boule unité fermée de $E$. Une application linéaire $u : E \to F$ est un [[operateur-compact|opérateur compact]] si l'adhérence de $u(\bar B_E)$ dans $F$ est [[compact|compacte]].
+
+      Un opérateur continu est **de rang fini** si son image est de [[dimension]] finie.
+    choix: |
+      Les points (i) et (ii) n'utilisent aucun choix : en (ii), les réseaux qui rendent l'image de la boule précompacte sont construits sur une grille, à partir des familles $(b_{k,i})$ données. Le point (iii), où les opérateurs $u_k$ sont seulement supposés compacts, choisit un réseau de l'image de la boule par chaque $u_k$ : c'est le [[choix-denombrable]], comme au nœud {{me-precompacts|Parties précompactes}}, (iii).
+    enonce: |
+      (i) Un opérateur compact est continu, et l'image par lui de toute partie bornée a une adhérence compacte. Tout opérateur continu de rang fini est compact.
+
+      (ii) *Limites explicites.* Soit $F$ un espace de Banach, $u \in \lex{espace-applications-continues}{\mathcal L_c}(E, F)$, et $(u_k)$ une suite de $\mathcal L_c(E, F)$ telle que $|||u - u_k||| \to 0$. On suppose donnée, pour chaque $k$, une famille finie $(b_{k,1}, \dots, b_{k,d_k})$ de $F$ dont le sous-espace engendré contient l'image de $u_k$. Alors $u$ est compact.
+
+      (iii) Si $F$ est un espace de Banach, toute limite, pour la norme d'opérateur, d'une suite d'opérateurs compacts de $E$ dans $F$ est un opérateur compact.
+    preuve: |
+      (i) Soit $u$ compact et $K$ l'adhérence de $u(\bar B_E)$. Les boules $B(0, k)$, pour les entiers $k \geqslant 1$, recouvrent $F$ par la propriété d'Archimède ; un nombre fini d'entre elles recouvre le compact $K$, qui est donc contenu dans la plus grande, $B(0, k)$. Ainsi $\|u(x)\| < k$ pour $\|x\| \leqslant 1$, et $u$ est continu ({{f-operateurs|Opérateurs continus}}, (i)).
+
+      Si $A \subset E$ est bornée, elle est contenue dans une boule fermée de centre $0$ et de rayon $r > 0$, et $u(A) \subset r\,u(\bar B_E) \subset rK$. L'homothétie $y \mapsto ry$ est continue, donc $rK$ est compact ({{t-compact-prop|Parties compactes}}, (iii)), et fermé dans $F$, qui est séparé (même nœud, (ii)). L'adhérence de $u(A)$ est ainsi une partie fermée de $rK$, donc compacte (même nœud, (i)).
+
+      Soit enfin $u$ continu de rang fini, et $G = \operatorname{Im} u$. La partie $L = \{y \in G : \|y\| \leqslant |||u|||\}$ est fermée et bornée dans l'espace normé $G$, de dimension finie : elle est compacte ({{gd-equivalence|Équivalence des normes}}, (iv)), pour la topologie que $G$ induit, qui est aussi celle que $F$ induit sur $L$. Elle contient $u(\bar B_E)$, et elle est fermée dans $F$ ({{t-compact-prop|Parties compactes}}, (ii)) : l'adhérence de $u(\bar B_E)$ est une partie fermée de $L$, donc compacte.
+
+      (ii) Soit $Y$ l'adhérence de $u(\bar B_E)$, fermée dans l'espace complet $F$. Construisons, pour chaque $j \in \lex{ensemble-entiers-naturels}{\mathbb N}$, un $2^{-j-1}$-réseau fini de $u(\bar B_E)$ : par le point (i) du nœud {{me-precompacts|Parties précompactes}}, ce sera un $2^{-j}$-réseau de $Y$, et le point (ii) du même nœud montrera que $Y$ est compacte.
+
+      Fixons $j$, soit $k$ le plus petit entier tel que $|||u - u_k||| < 2^{-j-2}$, et notons $v = u_k$. En retenant, parmi les $b_{k,i}$ pris dans l'ordre, ceux qui n'appartiennent pas au sous-espace engendré par les précédents retenus, on obtient une famille $(c_1, \dots, c_d)$, libre par {{v-libre|Familles libres, bases}}, (iv). Chaque $b_{k,i}$ écarté est dans le sous-espace engendré par les précédents retenus, si bien que la famille retenue engendre le même sous-espace $G$ que les $b_{k,i}$ : c'est une base de $G$. Si $d = 0$, alors $v = 0$, et le seul point $0$ forme un $2^{-j-1}$-réseau de $u(\bar B_E)$.
+
+      Si $d \geqslant 1$, les coordonnées dans la base $(c_i)$ sont des formes linéaires sur $G$, continues ({{gd-equivalence|Équivalence des normes}}, (iv)). Il existe donc un réel $C$ tel que les coordonnées $\beta_1, \dots, \beta_d$ de $v(x)$ vérifient $|\beta_i| \leqslant C$ pour $\|x\| \leqslant 1$ : le produit de $|||v|||$ et de la plus grande des normes de ces formes convient. Posons $S = \|c_1\| + \cdots + \|c_d\|$ et $\delta = 2^{-j-2}/S$, et considérons les points
+      $$g = \sum_{i = 1}^d n_i \delta\, c_i,$$
+      où les $n_i$ sont des entiers relatifs tels que $|n_i| \delta \leqslant C + \delta$. Ils sont en nombre fini, et on les range dans l'ordre lexicographique des $(n_1, \dots, n_d)$.
+
+      Pour $\|x\| \leqslant 1$, prenons pour $n_i$ la partie entière de $\beta_i/\delta$, qui existe parce que $\mathbb R$ est [[archimedien]]. Alors $|\beta_i - n_i\delta| < \delta$ et $|n_i|\delta \leqslant C + \delta$, si bien que le point $g$ correspondant vérifie
+      $$\begin{aligned} \|v(x) - g\| &\leqslant \sum_i |\beta_i - n_i\delta|\,\|c_i\| \\ &< \delta S = 2^{-j-2}. \end{aligned}$$
+      Comme $\|u(x) - v(x)\| < 2^{-j-2}$, on a $\|u(x) - g\| < 2^{-j-1}$ : ces points forment un $2^{-j-1}$-réseau de $u(\bar B_E)$, défini sans aucun choix à partir des données.
+
+      (iii) Soit $u$ limite d'une suite $(u_k)$ d'opérateurs compacts, et $Y$ l'adhérence de $u(\bar B_E)$. Pour chaque $j$, soit $k$ le plus petit entier tel que $|||u - u_k||| < 2^{-j-2}$. L'adhérence de $u_k(\bar B_E)$ est compacte, donc précompacte ({{me-precompacts|Parties précompactes}}, (i)) : elle a un $2^{-j-2}$-réseau fini, que l'on choisit.
+
+      Tout point de $u(\bar B_E)$ est à distance $< 2^{-j-2}$ d'un point de $u_k(\bar B_E)$, donc à distance $< 2^{-j-1}$ d'un point du réseau : celui-ci est un $2^{-j-1}$-réseau de $u(\bar B_E)$, donc un $2^{-j}$-réseau de $Y$ ({{me-precompacts|Parties précompactes}}, (i)). Le point (ii) du même nœud montre que $Y$ est compacte.
+    remarques:
+      - |
+        L'identité d'un espace de Hilbert $H$ de dimension infinie n'est pas compacte, et l'on peut le voir sans aucun choix. Si la boule unité fermée $\bar B$ était compacte, elle serait contenue dans une réunion finie de boules $B(a_1, \frac12), \dots, B(a_m, \frac12)$ ({{me-precompacts|Parties précompactes}}, (i)) ; soit $V$ le sous-espace engendré par les $a_i$.
+
+        Par récurrence sur $k$, $\bar B \subset V + 2^{-k}\bar B$ : si $x = v + 2^{-k}z$ avec $v \in V$ et $z \in \bar B$, on écrit $z = a_i + w$ avec $\|w\| < \frac12$, et $x = (v + 2^{-k}a_i) + 2^{-k-1}(2w)$, où $2w \in \bar B$. Tout point de $\bar B$ est donc à distance au plus $2^{-k}$ de $V$ pour tout $k$, c'est-à-dire adhérent à $V$. Or $V$, de dimension finie, est fermé, comme noyau de $\mathrm{id} - p_V$, où $p_V$ est la projection orthogonale continue du nœud {{f-spectral-compact|Théorème spectral compact}}. Ainsi $\bar B \subset V$, puis $H = V$ par homogénéité, et $H$ serait de dimension finie.
+
+        Dans l'espace $\ell^2$ des suites de carré sommable ({{f-lp|Espaces L¹ et L²}}), on le voit plus directement : les suites $e_n$, nulles sauf un $1$ en position $n$, sont dans la boule unité, à distance $\sqrt 2$ les unes des autres, et une boule de rayon $\frac{\sqrt 2}2$ en contient au plus une. Un opérateur compact est donc, en un sens, presque de rang fini, ce que précisent (ii) et (iii).
+      - |
+        Réciproquement, tout opérateur compact d'un espace de Hilbert est limite d'opérateurs de rang fini. Pour un opérateur autoadjoint, c'est une conséquence du théorème spectral ({{f-spectral-compact|Théorème spectral compact}}, (iii)) ; le cas général, où l'on compose l'opérateur avec des projections orthogonales sur des sous-espaces de dimension finie, est admis ici.
+
+        Dans les espaces de Banach, cette réciproque est fausse en général : le premier exemple d'un espace de Banach où des opérateurs compacts à valeurs dans cet espace ne sont pas limites d'opérateurs de rang fini est dû à P. Enflo (« A counterexample to the approximation problem in Banach spaces », *Acta Math.* 130, 1973, p. 309-317).
+
+  - id: f-compacts-exemples
+    etiquette: Exemples d'opérateurs compacts
+    nature: proposition
+    titre: Opérateurs diagonaux et opérateurs à noyau
+    texte: |
+      Pour $n \in \lex{ensemble-entiers-naturels}{\mathbb N}$, on note $e_n \in \lex{espace-l2-suites}{\ell^2}$ la suite nulle sauf un $1$ en position $n$. À une suite réelle bornée $a = (a_n)$, on associe l'**opérateur diagonal** $D_a$, défini sur $\ell^2$ par
+      $$D_a(x) = (a_n x_n)_{n \in \mathbb N}.$$
+
+      On munit $[0, 1]$ de la [[mesure-lebesgue|mesure de Lebesgue]], on note $L^2 = \lex{espace-L2}{L^2}([0, 1])$, et l'on munit $[0, 1]^2$ de la distance $d_\infty$. À une fonction continue $K : [0, 1]^2 \to \mathbb R$, le **noyau**, on associe l'**opérateur à noyau** $T_K$, défini par
+      $$T_K f(x) = \int_0^1 K(x, y) f(y) \, dy.$$
+    enonce: |
+      (i) L'opérateur $D_a$ est continu, [[operateur-autoadjoint|autoadjoint]], de norme $\sup_n |a_n|$, et $D_a(e_n) = a_n e_n$ pour tout $n$. Il est [[operateur-compact|compact]] si et seulement si $a_n \to 0$.
+
+      (ii) Pour $f \in L^2$, la fonction $T_K f$ est continue sur $[0, 1]$, et $T_K$ est un opérateur compact de $L^2$, de norme au plus $\max |K|$. Si $K(x, y) = K(y, x)$ pour tous $x, y$, il est autoadjoint.
+    preuve: |
+      (i) Soit $M = \sup_n |a_n|$. Pour $x \in \ell^2$, on a $\sum_n a_n^2 x_n^2 \leqslant M^2 \|x\|^2$, si bien que $D_a(x) \in \ell^2$ et $\|D_a(x)\| \leqslant M\|x\|$. L'opérateur $D_a$, linéaire, est donc continu, de norme au plus $M$, et au moins chaque $|a_n| = \|D_a(e_n)\|$. Pour $x, y \in \ell^2$, $\langle D_a(x), y \rangle = \sum_n a_n x_n y_n = \langle x, D_a(y) \rangle$.
+
+      *Si $a_n \to 0$.* Pour $N \in \mathbb N$, soit $D_N$ l'opérateur diagonal associé à la suite $(a_0, \dots, a_{N-1}, 0, 0, \dots)$, dont l'image est contenue dans le sous-espace engendré par $e_0, \dots, e_{N-1}$. L'opérateur $D_a - D_N$ est diagonal, associé à la suite nulle jusqu'au rang $N - 1$ puis égale à $(a_n)$, et sa norme $\sup_{n \geqslant N} |a_n|$ tend vers $0$. Le point (ii) du nœud {{f-compacts|Opérateurs compacts}}, appliqué aux familles $(e_0, \dots, e_{N-1})$, montre que $D_a$ est compact.
+
+      *Si $(a_n)$ ne tend pas vers $0$*, il existe $\varepsilon > 0$ tel que l'ensemble $I$ des $n$ vérifiant $|a_n| \geqslant \varepsilon$ soit infini.
+
+      Si $D_a$ était compact, l'adhérence de l'image de la boule unité serait contenue dans un nombre fini de boules $B(c_1, \varepsilon/\sqrt2), \dots, B(c_m, \varepsilon/\sqrt2)$ ({{me-precompacts|Parties précompactes}}, (i)). Or, pour $n \neq p$ dans $I$,
+      $$\|D_a(e_n) - D_a(e_p)\|^2 = a_n^2 + a_p^2 \geqslant 2\varepsilon^2,$$
+      alors que deux points d'une même boule sont à distance $< \sqrt2\,\varepsilon$. En associant à $n \in I$ le plus petit indice $i$ tel que $D_a(e_n) \in B(c_i, \varepsilon/\sqrt2)$, on obtiendrait une injection de l'ensemble infini $I$ dans $\{1, \dots, m\}$.
+
+      (ii) La partie $[0, 1]^2$ est fermée et bornée dans $\mathbb R^2$, donc compacte ({{me-rn|L'espace ℝⁿ}}, (iii)) ; soit $M$ le maximum de $|K|$ ({{tr-compacts|Compacts de ℝ}}, (iii)). Soit $f \in L^2$, dont on fixe un représentant. Par l'inégalité de Cauchy-Schwarz appliquée à $|f|$ et à la constante $1$ ({{f-lp|Espaces L¹ et L²}}, (i)), $f$ est intégrable et $\|f\|_1 \leqslant \|f\|_2$.
+
+      Pour $x$ fixé, la fonction $y \mapsto K(x, y)$ est continue, donc mesurable, et bornée par $M$ : le produit $y \mapsto K(x, y) f(y)$ est intégrable ({{m-mesurables|Fonctions mesurables}}, (iii)), et $T_K f(x)$ ne dépend pas du représentant de $f$ ({{m-integrables|Fonctions intégrables}}, (iii)).
+
+      Par le théorème de Heine ({{me-heine|Théorème de Heine}}), $K$ est uniformément continue : pour $\varepsilon > 0$, il existe $\delta > 0$ tel que $|K(p) - K(q)| < \varepsilon$ dès que $d_\infty(p, q) < \delta$.
+
+      Pour $|x - x'| < \delta$, on a donc
+      $$\begin{aligned} &|T_K f(x) - T_K f(x')| \\ &\quad \leqslant \int_0^1 |K(x, y) - K(x', y)|\,|f(y)| \, dy \\ &\quad \leqslant \varepsilon\|f\|_1. \end{aligned}$$
+      Ainsi $T_K f$ est continue, donc mesurable, et bornée par $M\|f\|_1$ ; elle appartient à $L^2$, et $\|T_K f\|_2 \leqslant M\|f\|_1 \leqslant M\|f\|_2$, la mesure de $[0, 1]$ valant $1$. L'application $T_K$ est linéaire, comme l'intégrale ({{m-integrables|Fonctions intégrables}}, (i)) : c'est un opérateur continu de norme au plus $M$.
+
+      *Approximations.* Pour $m \geqslant 1$ entier et $k < m$, soit $J_k = [\frac km, \frac{k+1}m[$ ; ces intervalles forment une partition de $[0, 1[$, puisque $x$ appartient au seul $J_k$ d'indice $k = \lfloor mx \rfloor$. Notons $\kappa_{kl} = K\big(\frac km, \frac lm\big)$, et posons
+      $$T_m f = \sum_{k < m} \Big(\sum_{l < m} \kappa_{kl} \int_{J_l} f\Big)\, \mathbf 1_{J_k}.$$
+      C'est un opérateur continu de $L^2$, puisque $|T_m f| \leqslant M\|f\|_1$, et son image est contenue dans le sous-espace engendré par les $m$ fonctions $\mathbf 1_{J_k}$.
+
+      Soit $\varepsilon$ et $\delta$ comme ci-dessus, et $m > 1/\delta$. Pour $x \in J_k$ et $y \in J_l$, on a $d_\infty\big((x, y), (\frac km, \frac lm)\big) < \frac1m < \delta$. Le point $1$ étant négligeable, il vient, pour $x \in J_k$,
+      $$\begin{aligned} &|T_K f(x) - T_m f(x)| \\ &\quad = \Big|\sum_{l < m} \int_{J_l} \big(K(x, y) - \kappa_{kl}\big) f(y) \, dy\Big| \\ &\quad \leqslant \varepsilon\|f\|_1 \leqslant \varepsilon\|f\|_2. \end{aligned}$$
+      Donc $|||T_K - T_m||| \leqslant \varepsilon$ : la suite $(T_m)$ tend vers $T_K$, et le point (ii) du nœud {{f-compacts|Opérateurs compacts}}, appliqué aux familles $(\mathbf 1_{J_0}, \dots, \mathbf 1_{J_{m-1}})$, montre que $T_K$ est compact.
+
+      *Symétrie.* Si $K$ est symétrique,
+      $$\langle T_m f, g \rangle = \sum_{k, l < m} \kappa_{kl} \int_{J_l} f \int_{J_k} g$$
+      ne change pas quand on échange $f$ et $g$, en échangeant aussi $k$ et $l$. Comme $|\langle (T_K - T_m)f, g \rangle| \leqslant |||T_K - T_m|||\,\|f\|_2\|g\|_2$, on obtient à la limite $\langle T_K f, g \rangle = \langle f, T_K g \rangle$.
+    remarques:
+      - |
+        Pour $a_n = \frac1{n+1}$, l'opérateur $D_a$ est compact et injectif ; ses valeurs propres sont les $\frac1{n+1}$, de vecteurs propres $e_n$, et elles tendent vers $0$, qui n'est pas valeur propre. Il n'est pas surjectif : la suite $(\frac1{n+1})$ appartient à $\ell^2$, mais son seul antécédent possible, la suite constante égale à $1$, n'y appartient pas.
+
+        Ainsi $D_a - 0 \cdot \mathrm{id}$ n'est pas bijectif, sans que $0$ soit valeur propre. En dimension infinie, les valeurs propres ne suffisent plus à décrire un opérateur, et l'on introduit son **spectre**, ensemble des $\lambda$ tels que $u - \lambda\,\mathrm{id}$ ne soit pas bijectif.
+      - |
+        La symétrie de $T_K$ s'établit ici sans le théorème de Fubini, par les approximations $T_m$, pour lesquelles elle se réduit à une somme finie. La même méthode, qui passe par des opérateurs de rang fini explicites, donne la compacité sans aucun choix : la complétude de $L^2$ n'y sert qu'à faire converger la suite des centres des réseaux, formée de combinaisons explicites des fonctions $\mathbf 1_{J_l}$, pour laquelle aucun représentant n'est à choisir.
+      - |
+        Aucune forme du choix n'intervient dans cette fiche. Les deux compacités passent par le point (ii) du nœud {{f-compacts|Opérateurs compacts}}, qui suppose l'espace d'arrivée complet ; la complétude de $L^2$ est signalée avec le [[choix-denombrable]] au nœud {{f-lp|Espaces L¹ et L²}}, parce qu'elle choisit un représentant de chaque classe d'une suite de Cauchy. Elle n'est employée ici, au point (ii) du nœud {{me-precompacts|Parties précompactes}}, que pour la suite des centres des réseaux, combinaisons explicites des fonctions $\mathbf 1_{J_l}$ données, si bien que ce choix disparaît. Pour $\ell^2$, les classes sont réduites à une suite, et la question ne se pose pas.
+
+  - id: f-spectral-compact
+    etiquette: Théorème spectral compact
+    nature: théorème
+    titre: Théorème spectral des opérateurs compacts autoadjoints
+    texte: |
+      Soit $H$ un [[espace-hilbert|espace de Hilbert]], $\bar B$ sa boule unité fermée, et $u$ un opérateur [[operateur-compact|compact]] et [[operateur-autoadjoint|autoadjoint]] de $H$.
+
+      Si $F$ est un sous-espace de dimension finie de $H$, il existe un unique $p_F(x) \in F$ tel que $x - p_F(x) \in F^\perp$. L'unicité vient de ce que la différence de deux tels points est dans $F \cap F^\perp = \{0\}$. Pour l'existence, le procédé de Gram-Schmidt, tel que le décrit la démonstration du nœud {{f-bases-hilbertiennes|Bases hilbertiennes}}, (iii), appliqué à une famille libre finie, en fait une famille orthonormale de même espace engendré ; appliqué à une base de $F$, il en donne une base orthonormée $(b_1, \dots, b_d)$, et $\sum_i \langle x, b_i \rangle b_i$ convient.
+
+      L'application $p_F$, la **projection orthogonale** sur $F$, est linéaire par unicité, et $\|x\|^2 = \|p_F(x)\|^2 + \|x - p_F(x)\|^2$.
+    choix: |
+      Les points (i) à (iii) n'utilisent aucun choix. En (i), la valeur propre n'est pas obtenue, comme d'ordinaire, par une suite maximisante dont on extrait une suite convergente, ce qui demanderait le [[choix-denombrable]] pour choisir la suite, mais par l'intersection d'une famille emboîtée de fermés non vides d'un compact. En (iii), les projections $p_n$ sont définies par une propriété qui les caractérise, et non par le choix d'une base de chaque sous-espace propre, et les valeurs propres sont rangées par un ordre explicite.
+
+      Le point (iv) choisit une base orthonormée de chaque sous-espace propre, ce qui fait une infinité dénombrable de choix : c'est le choix dénombrable. Il disparaît si $H$ contient une suite dense donnée, car une base de chaque sous-espace propre s'obtient alors par le procédé de Gram-Schmidt appliqué aux projections des termes de cette suite.
+    enonce: |
+      (i) *Valeur propre extrême.* Si $u \neq 0$, l'un des deux réels $|||u|||$ et $-|||u|||$ est une [[valeur-propre|valeur propre]] de $u$.
+
+      (ii) *Valeurs propres non nulles.* Pour tout $\varepsilon > 0$, $u$ n'a qu'un nombre fini de valeurs propres $\lambda$ telles que $|\lambda| \geqslant \varepsilon$, et, pour $\lambda \neq 0$, le sous-espace propre $E_\lambda$ est de dimension finie. Les valeurs propres non nulles, rangées par valeurs absolues décroissantes, et $\lambda$ avant $-\lambda$ en cas d'égalité, forment donc une suite $(\lambda_n)_{n < N}$, finie si $N \in \lex{ensemble-entiers-naturels}{\mathbb N}$, ou infinie si $N = \infty$ ; dans ce second cas, $\lambda_n \to 0$.
+
+      (iii) *Théorème spectral.* Soit $p_n$ la projection orthogonale sur $E_{\lambda_n}$, et $F$ l'adhérence du sous-espace engendré par les $E_{\lambda_n}$. Alors $F = (\operatorname{Ker} u)^\perp$ et $H = F \oplus \operatorname{Ker} u$. Pour tout $x \in H$,
+      $$\begin{aligned} x &= q(x) + \sum_{n < N} p_n(x), \\ u(x) &= \sum_{n < N} \lambda_n\, p_n(x), \end{aligned}$$
+      où $q(x) \in \operatorname{Ker} u$ et où les séries convergent dans $H$. Si $N = \infty$, la norme d'opérateur de $u - \sum_{n < k} \lambda_n p_n$ vaut $|\lambda_k|$, qui tend vers $0$ : $u$ est limite d'opérateurs de rang fini.
+
+      (iv) *Base de vecteurs propres.* Le sous-espace $(\operatorname{Ker} u)^\perp$ a une [[base-hilbertienne|base hilbertienne]] $(e_k)$, finie ou indexée par $\mathbb N$, formée de vecteurs propres, $u(e_k) = \mu_k e_k$, où chaque $\lambda_n$ figure parmi les $\mu_k$ autant de fois que la dimension de $E_{\lambda_n}$. Pour tout $x \in H$,
+      $$u(x) = \sum_k \mu_k \langle x, e_k \rangle\, e_k.$$
+    preuve: |
+      (i) Notons $Y$ l'adhérence de $u(\bar B)$, qui est compacte. Par le point (iii) du nœud {{f-autoadjoints|Opérateurs autoadjoints}}, $|||u|||$ est la plus grande des bornes supérieures de $\langle u(x), x \rangle$ et de $\langle -u(x), x \rangle$ sur $\bar B$. Quitte à remplacer $u$ par $-u$, encore autoadjoint, et compact puisque $(-u)(\bar B) = u(-\bar B) = u(\bar B)$, on peut supposer que $\lambda = |||u|||$, qui n'est pas nul, est la borne supérieure de $\langle u(x), x \rangle$ sur $\bar B$.
+
+      Pour $\varepsilon > 0$, l'ensemble $A_\varepsilon$ des $x \in \bar B$ tels que $\langle u(x), x \rangle > \lambda - \varepsilon$ n'est pas vide, par définition de la borne supérieure. Pour $x \in A_\varepsilon$, puisque $\|u(x)\| \leqslant \lambda$ et $\|x\| \leqslant 1$,
+      $$\begin{aligned} \|u(x) - \lambda x\|^2 &= \|u(x)\|^2 - 2\lambda\langle u(x), x \rangle \\ &\quad + \lambda^2\|x\|^2 \\ &\leqslant 2\lambda^2 - 2\lambda(\lambda - \varepsilon) \\ &= 2\lambda\varepsilon. \end{aligned}$$
+
+      *Un point limite, sans suite.* Soit $C_\varepsilon$ l'adhérence de $u(A_\varepsilon)$ : c'est un fermé non vide contenu dans $Y$, et $C_\varepsilon \subset C_{\varepsilon'}$ pour $\varepsilon \leqslant \varepsilon'$. Une intersection finie $C_{\varepsilon_1} \cap \cdots \cap C_{\varepsilon_r}$ contient le plus petit de ces fermés et n'est pas vide ; comme $Y$ est compact ({{t-compact|Compacité}}), l'intersection de tous les $C_\varepsilon$ contient un point $y$.
+
+      *Ce point est un vecteur propre.* Soit $\varepsilon > 0$. Comme $y \in C_\varepsilon$, il existe $x \in A_\varepsilon$ tel que $\|u(x) - y\| < \varepsilon$ ({{me-topologie|Topologie d'une distance}}, (ii)). Alors $\|y - \lambda x\| < \varepsilon + \sqrt{2\lambda\varepsilon}$, et
+      $$u(y) - \lambda y = u(y - \lambda x) + \lambda\big(u(x) - y\big)$$
+      a une norme au plus $\lambda\big(2\varepsilon + \sqrt{2\lambda\varepsilon}\big)$. Ceci valant pour tout $\varepsilon > 0$, $u(y) = \lambda y$.
+
+      De plus, $\|u(x)\| \geqslant \langle u(x), x \rangle > \lambda - \varepsilon$ par l'inégalité de Cauchy-Schwarz, d'où $\|y\| > \|u(x)\| - \varepsilon > \lambda - 2\varepsilon$. Donc $\|y\| \geqslant \lambda > 0$, et $y$ est un vecteur propre associé à $\lambda$.
+
+      (ii) Soit $\varepsilon > 0$. La partie compacte $Y$ est précompacte ({{me-precompacts|Parties précompactes}}, (i)) : elle est contenue dans une réunion de boules $B(c_1, r), \dots, B(c_m, r)$ de rayon $r = \varepsilon/\sqrt2$, et deux points d'une même boule sont à distance $< \sqrt2\,\varepsilon$.
+
+      Soient $e_1, \dots, e_k$ des vecteurs de norme $1$, deux à deux orthogonaux, propres pour des valeurs propres $\mu_1, \dots, \mu_k$ telles que $|\mu_i| \geqslant \varepsilon$. Pour $i \neq j$,
+      $$\begin{aligned} \|u(e_i) - u(e_j)\|^2 &= \|\mu_i e_i - \mu_j e_j\|^2 \\ &= \mu_i^2 + \mu_j^2 \geqslant 2\varepsilon^2, \end{aligned}$$
+      si bien que les $u(e_i)$, qui sont dans $Y$, appartiennent à des boules distinctes : $k \leqslant m$.
+
+      Des vecteurs propres de norme $1$ associés à des valeurs propres distinctes sont deux à deux orthogonaux ({{f-autoadjoints|Opérateurs autoadjoints}}, (i)). Il y a donc au plus $m$ valeurs propres $\lambda$ telles que $|\lambda| \geqslant \varepsilon$.
+
+      Soit $\lambda \neq 0$ une valeur propre, et prenons $\varepsilon = |\lambda|$. Si $E_\lambda$ contenait une famille libre de $m + 1$ vecteurs, le procédé de Gram-Schmidt, tel que le décrit la démonstration du nœud {{f-bases-hilbertiennes|Bases hilbertiennes}}, (iii), appliqué à une famille libre finie, en fait une famille orthonormale de même espace engendré, formée de $m + 1$ vecteurs propres de norme $1$ deux à deux orthogonaux, ce qui est exclu. Une famille libre de $E_\lambda$ ayant le plus grand nombre d'éléments, au plus $m$, engendre alors $E_\lambda$ ({{v-libre|Familles libres, bases}}, (iv)) : $E_\lambda$ est de dimension finie.
+
+      *Rangement.* Soit $\Lambda$ l'ensemble des valeurs propres non nulles, ordonné en plaçant $\lambda$ avant $\mu$ si $|\lambda| > |\mu|$, ou si $|\lambda| = |\mu|$ et $\lambda > \mu$. C'est un ordre total, pour lequel chaque $\mu$ n'a qu'un nombre fini de prédécesseurs, puisque ceux-ci vérifient $|\lambda| \geqslant |\mu|$.
+
+      On définit par récurrence sur $n$, la donnée à chaque étape étant la liste $(\lambda_0, \dots, \lambda_{n-1})$ déjà construite, $\lambda_n$ comme le premier élément de $\Lambda$ distinct de $\lambda_0, \dots, \lambda_{n-1}$, tant qu'il en reste. Il existe : si $\mu$ est l'un des éléments restants, les éléments restants qui précèdent $\mu$ ou lui sont égaux forment un ensemble fini, non vide et totalement ordonné ; leur premier élément est le premier des éléments restants, puisque tout élément restant qui le précède précède aussi $\mu$. Tout $\mu \in \Lambda$ est atteint, au plus tard au rang égal au nombre de ses prédécesseurs. Si la suite est infinie, seuls un nombre fini de ses termes vérifient $|\lambda_n| \geqslant \varepsilon$, pour tout $\varepsilon > 0$ : elle tend vers $0$.
+
+      (iii) Notons $E_n = E_{\lambda_n}$, de dimension finie et non nul. Les $E_n$ sont deux à deux orthogonaux ({{f-autoadjoints|Opérateurs autoadjoints}}, (i)), et chacun est stable par $u$, qui y vaut $\lambda_n\,\mathrm{id}$.
+
+      *Développement de $x$.* Fixons $x$, et posons $s_k = \sum_{n < k} p_n(x)$ pour $k \leqslant N$. Pour $z \in E_n$ avec $n < k$, on a $\langle p_{n'}(x), z \rangle = 0$ pour $n' \neq n$, et $\langle x - p_n(x), z \rangle = 0$, d'où $\langle x - s_k, z \rangle = 0$. Le vecteur $x - s_k$ est donc orthogonal à $s_k$, et, les $p_n(x)$ étant deux à deux orthogonaux,
+      $$\|x\|^2 = \|x - s_k\|^2 + \sum_{n < k} \|p_n(x)\|^2.$$
+
+      Ainsi $\sum_n \|p_n(x)\|^2 \leqslant \|x\|^2$. Si $N$ est fini, on pose $s(x) = s_N$. Sinon, pour $k < l$,
+      $$\|s_l - s_k\|^2 = \sum_{k \leqslant n < l} \|p_n(x)\|^2$$
+      est le reste d'une série convergente : la suite $(s_k)$ est de Cauchy, et converge vers un $s(x) \in F$, $H$ étant complet. Par continuité du produit scalaire, $q(x) = x - s(x)$ est orthogonal à chaque $E_n$.
+
+      *Le noyau.* Soit $G$ l'ensemble des vecteurs orthogonaux à tous les $E_n$, c'est-à-dire l'orthogonal du sous-espace qu'ils engendrent, lequel est stable par $u$. C'est un sous-espace fermé stable par $u$, et la restriction $v$ de $u$ à $G$ est un opérateur autoadjoint de l'espace de Hilbert $G$ ({{f-autoadjoints|Opérateurs autoadjoints}}, (ii)).
+
+      Elle est compacte : $v(\bar B \cap G)$ est contenu dans $Y \cap G$, partie fermée du compact $Y$, donc compacte ({{t-compact-prop|Parties compactes}}, (i)) et fermée ; l'adhérence de $v(\bar B \cap G)$, dans $G$ comme dans $H$, en est une partie fermée, donc compacte.
+
+      Si $v$ n'était pas nul, il aurait par (i) une valeur propre non nulle $\mu$, de vecteur propre $z \in G$. Alors $u(z) = \mu z$, $\mu$ serait l'un des $\lambda_n$, et $z \in E_n \cap G$ serait orthogonal à lui-même, donc nul. Ainsi $v = 0$, c'est-à-dire $G \subset \operatorname{Ker} u$. Réciproquement, $\operatorname{Ker} u$, sous-espace propre de la valeur $0$, est orthogonal à chaque $E_n$, puisque $\lambda_n \neq 0$ ({{f-autoadjoints|Opérateurs autoadjoints}}, (i)). Donc $G = \operatorname{Ker} u$.
+
+      *Conclusion.* Le vecteur $q(x)$ appartient donc à $\operatorname{Ker} u$, ce qui donne la première formule. Par continuité du produit scalaire, $G$ est aussi l'orthogonal de $F$, de sorte que $\operatorname{Ker} u = F^\perp$ ; la première formule donne $H = F + \operatorname{Ker} u$, et la somme est directe puisque $F \cap F^\perp = \{0\}$.
+
+      L'égalité $\operatorname{Ker} u = F^\perp$ donne $F \subset (\operatorname{Ker} u)^\perp$. Réciproquement, si $x \in (\operatorname{Ker} u)^\perp$, le vecteur $q(x) = x - s(x)$, qui est dans $\operatorname{Ker} u = F^\perp$, est orthogonal à $x$ et à $s(x) \in F$, donc à lui-même : $x = s(x) \in F$. Enfin, $u$ étant continu et nul sur $\operatorname{Ker} u$,
+      $$u(x) = u(s(x)) = \lim_k \sum_{n < k} \lambda_n\, p_n(x).$$
+
+      *Norme du reste.* Si $N = \infty$, le vecteur $\big(u - \sum_{n < k} \lambda_n p_n\big)(x)$ est la limite des sommes $\sum_{k \leqslant n < l} \lambda_n p_n(x)$, dont les termes sont deux à deux orthogonaux. Le carré de sa norme vaut donc
+      $$\sum_{n \geqslant k} \lambda_n^2 \|p_n(x)\|^2 \leqslant \lambda_k^2 \|x\|^2,$$
+      les $|\lambda_n|$ décroissant ; il y a égalité pour un vecteur propre de norme $1$ associé à $\lambda_k$. L'opérateur $\sum_{n < k} \lambda_n p_n$ a son image dans $E_0 + \cdots + E_{k-1}$, de dimension finie.
+
+      (iv) Choisissons, pour chaque $n < N$, une base orthonormée de $E_n$, et mettons ces bases bout à bout dans l'ordre des $n$. On obtient une famille $(e_k)$ de vecteurs propres, finie ou indexée par $\mathbb N$, orthonormale puisque les $E_n$ sont deux à deux orthogonaux, et contenue dans $F = (\operatorname{Ker} u)^\perp$, qui est un espace de Hilbert ({{f-evn|Espaces normés}}, (iv)).
+
+      Un vecteur $z \in F$ orthogonal à tous les $e_k$ est orthogonal à chaque $E_n$, donc à $F$, et il est nul. Si la famille est infinie, le critère du nœud {{f-bases-hilbertiennes|Bases hilbertiennes}}, (ii), montre que c'est une base hilbertienne de $F$ ; si elle est finie, $N$ est fini, et pour $x \in F = (\operatorname{Ker} u)^\perp$, le point (iii) donne $x = s(x) = \sum_{n < N} p_n(x)$ : donc $F = E_0 + \cdots + E_{N-1}$, et la famille en est une base orthonormée.
+
+      Pour chaque $n$, $p_n(x) = \sum \langle x, e_k \rangle e_k$, la somme portant sur les indices $k$ de la base de $E_n$, et $\lambda_n p_n(x) = \sum \mu_k \langle x, e_k \rangle e_k$ sur ces mêmes indices. Les sommes partielles de la série $\sum_k \mu_k \langle x, e_k \rangle e_k$ forment une suite de Cauchy, puisque $\sum_k \mu_k^2 \langle x, e_k \rangle^2 \leqslant |||u|||^2 \|x\|^2$ par l'inégalité de Bessel ; leur sous-suite formée des fins de blocs tend vers $u(x)$ par (iii), et la série converge donc vers $u(x)$ ({{me-cauchy|Espaces complets}}, (i)).
+
+      *Sans choix dans le cas séparable.* Si $(d_j)$ est une suite dense de $H$, les $p_n(d_j)$ forment une suite dense de $E_n$, puisque $p_n$ est surjective sur $E_n$ et vérifie $\|p_n(x) - p_n(x')\| \leqslant \|x - x'\|$. Le procédé de Gram-Schmidt ({{f-bases-hilbertiennes|Bases hilbertiennes}}, (iii)), appliqué à cette suite, fournit sans choix une famille orthonormale finie de $E_n$, qui engendre un sous-espace $V$ dense dans $E_n$. Or $V$ est fermé, comme noyau de $\mathrm{id} - p_V$, qui est continue : donc $V = E_n$, et cette famille est une base orthonormée de $E_n$.
+    remarques:
+      - |
+        La compacité ne peut pas être omise. Sur $\lex{espace-L2}{L^2}([0, 1])$, l'opérateur de multiplication $M f(x) = x f(x)$ est continu, de norme au plus $1$, et autoadjoint, puisque $\langle Mf, g \rangle = \int_0^1 x f(x) g(x) \, dx$. Il n'a aucune valeur propre : $x f(x) = \lambda f(x)$ presque partout entraîne que $f$ est nulle presque partout hors de $\{\lambda\}$, qui est négligeable.
+
+        Le point (i) tombe donc, alors que $1$ est bien la borne supérieure de $\langle Mf, f \rangle$ sur la boule unité : pour $f = \frac1{\sqrt h}\mathbf 1_{[1 - h, 1]}$, de norme $1$, on trouve $\langle Mf, f \rangle = 1 - \frac h2$. Cette borne n'est pas atteinte, puisque $\|f\|_2^2 - \langle Mf, f \rangle = \int_0^1 (1 - x) f(x)^2 \, dx$ est strictement positif pour $f \neq 0$. La théorie spectrale des opérateurs autoadjoints qui ne sont pas compacts remplace les valeurs propres par une mesure, et dépasse ce chapitre.
+      - |
+        L'autoadjonction ne peut pas non plus être omise. L'opérateur $S$ de $\lex{espace-l2-suites}{\ell^2}$ défini par $S(x) = (0, x_0, \frac{x_1}2, \frac{x_2}3, \dots)$, c'est-à-dire $S(x)_{n+1} = \frac{x_n}{n+1}$, est compact. Il est en effet limite des opérateurs $S_N$ qui ne retiennent que $x_0, \dots, x_{N-1}$, d'image contenue dans le sous-espace engendré par $e_1, \dots, e_N$, avec $|||S - S_N||| = \frac1{N+1}$, et l'on conclut par le point (ii) du nœud {{f-compacts|Opérateurs compacts}}.
+
+        Il n'a pourtant aucune valeur propre. L'égalité $S(x) = \lambda x$ donne $\lambda x_0 = 0$ et $\lambda x_{n+1} = \frac{x_n}{n+1}$ : si $\lambda = 0$, tous les $x_n$ sont nuls, et si $\lambda \neq 0$, $x_0 = 0$, puis, de proche en proche, tous les $x_n$. Il n'est pas autoadjoint : $\langle S(e_0), e_1 \rangle = 1$, alors que $\langle e_0, S(e_1) \rangle = 0$.
+      - |
+        Le théorème dit que tout opérateur compact autoadjoint ressemble à un opérateur diagonal du nœud {{f-compacts-exemples|Exemples d'opérateurs compacts}} : dans la base hilbertienne $(e_k)$ de $(\operatorname{Ker} u)^\perp$, il multiplie chaque coordonnée par un réel $\mu_k$, et les $\mu_k$ tendent vers $0$. C'est l'analogue exact de la forme matricielle du théorème en dimension finie ({{f-spectral-fini|Théorème spectral}}, (iii)), où la dimension finie dispense de toute question de convergence.
+      - |
+        Pour le noyau symétrique $K(x, y) = \min(x, y)$ sur $[0, 1]^2$, on a $T_K f(x) = \int_0^x y f(y) \, dy + x \int_x^1 f(y) \, dy$. En dérivant deux fois, l'équation $T_K f = \lambda f$ avec $\lambda \neq 0$ se ramène à $\lambda f'' = -f$, avec $f(0) = 0$ et $f'(1) = 0$. Ses solutions font appel aux fonctions trigonométriques de l'{{anc|analyse complexe}}, qui ne sont pas des ancêtres de cette branche.
+
+        Les valeurs propres sont les $\frac{1}{(n + \frac12)^2\pi^2}$, de fonctions propres $\sin\big((n + \frac12)\pi x\big)$, et leur somme vaut $\frac12 = \int_0^1 K(x, x) \, dx$. C'est un cas de la formule de la trace, conséquence, admise ici, du théorème de J. Mercer sur les noyaux continus positifs (*Phil. Trans. R. Soc. A* 209, 1909).
+      - |
+        Le théorème est né de l'étude des équations intégrales. Dans la quatrième des communications qu'il leur consacre à partir de 1904, Hilbert étend le théorème des axes principaux aux formes quadratiques en une infinité de variables (« Grundzüge einer allgemeinen Theorie der linearen Integralgleichungen. Vierte Mitteilung », *Nachr. Ges. Wiss. Göttingen*, 1906, p. 157-228).
+
 aretes:
   - [f-evn, f-exemples]
   - [f-evn, f-operateurs]
@@ -525,3 +887,11 @@ aretes:
   - [f-operateurs, f-hahn-banach]
   - [f-operateurs, f-banach-steinhaus]
   - [f-operateurs, f-application-ouverte]
+  - [f-riesz, f-autoadjoints]
+  - [f-autoadjoints, f-spectral-fini]
+  - [f-operateurs, f-compacts]
+  - [f-compacts, f-compacts-exemples]
+  - [f-autoadjoints, f-compacts-exemples]
+  - [f-compacts-exemples, f-spectral-compact]
+  - [f-spectral-fini, f-spectral-compact]
+  - [f-bases-hilbertiennes, f-spectral-compact]

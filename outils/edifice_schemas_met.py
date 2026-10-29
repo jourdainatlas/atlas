@@ -209,3 +209,74 @@ def me_topologie():
     S.ligne(R(float(x[0]) + 0.3, float(x[1]) - 0.4), R(3.0, -2.15), 'r', l=1)
     S.texte(R(3.0, -2.15) + [0, 14], 'B(x, t)', 'r', taille=16)
     return S
+
+
+# ------------------------------------------------------------------ me-precompacts
+@schema('me-precompacts')
+def me_precompacts():
+    # Y = [0, 1]² privé de p, distance d_∞ ; réseau de rang k : grille de pas 2^-k, rangée dans l'ordre
+    # lexicographique de (i, j). Pour le recouvrement par les {z : d(z, p) > 1/(n+1)}, une partie S ⊂ Y
+    # est mauvaise si et seulement si p est adhérent à S ; S_k est la trace sur Y d'un rectangle ouvert,
+    # mauvaise si et seulement si p est dans le rectangle (p n'est sur aucun bord dyadique).
+    p = (Fr(79, 100), Fr(43, 100))
+    lo, hi = [Fr(0), Fr(0)], [Fr(1), Fr(1)]
+    etapes = []
+    for k in range(4):
+        r = Fr(1, 2 ** k)
+        choisi = None
+        for i in range(2 ** k + 1):
+            for j in range(2 ** k + 1):
+                c = (i * r, j * r)
+                nlo = [max(lo[t], c[t] - r) for t in range(2)]
+                nhi = [min(hi[t], c[t] + r) for t in range(2)]
+                dedans = all(nlo[t] < p[t] < nhi[t] for t in range(2))
+                ferme = all(nlo[t] <= p[t] <= nhi[t] for t in range(2))
+                assert dedans == ferme                       # p jamais sur un bord : critère net
+                if dedans:
+                    choisi = (c, nlo, nhi)
+                    break
+            if choisi:
+                break
+        c, nlo, nhi = choisi
+        assert all(lo[t] <= nlo[t] and nhi[t] <= hi[t] for t in range(2))          # emboîtement
+        assert all(c[t] - r <= nlo[t] and nhi[t] <= c[t] + r for t in range(2))    # S_k ⊂ B(c_k, 2^-k)
+        assert max(abs(c[t] - p[t]) for t in range(2)) <= 4 * r                    # d(c_k, p) ≤ 2^(2-k)
+        lo, hi = nlo, nhi
+        etapes.append((c, list(lo), list(hi)))
+    for k in range(3):
+        c, c2 = etapes[k][0], etapes[k + 1][0]
+        assert max(abs(c[t] - c2[t]) for t in range(2)) < 2 * Fr(1, 2 ** k)       # d(c_k, c_k+1) < 2^(1-k)
+    assert [e[0] for e in etapes] == [(0, 0), (Fr(1, 2), 0), (Fr(3, 4), Fr(1, 4)), (Fr(3, 4), Fr(3, 8))]
+    assert etapes[3][1:] == ([Fr(5, 8), Fr(1, 4)], [Fr(7, 8), Fr(1, 2)])
+    # p est loin des bords de S_1, S_2, S_3 et des centres (lisibilité)
+    assert min(min(p[t] - l[t], h[t] - p[t]) for _, l, h in etapes[1:] for t in range(2)) >= Fr(7, 100)
+
+    S = Schema(500, 440, 'Parties mauvaises emboîtées dans le carré privé d’un point')
+    R = Repere(-0.1, 1.1, -0.08, 1.08, 0, 0, 500, 440)
+    # le carré et la grille de rang 3 (réseau)
+    S.poly(R(np.array([0, 1, 1, 0]), np.array([0, 0, 1, 1])), 't', ferme=True)
+    for i in range(9):
+        for j in range(9):
+            S.point(R(i / 8, j / 8), 'g', r=1.6)
+    # S_1, S_2, S_3 (S_0, trace de ]-1, 1[², est Y privé des côtés haut et droit : dessiné comme le carré)
+    for k, (c, l, h) in enumerate(etapes):
+        if k == 0:
+            continue
+        xs = np.array([float(l[0]), float(h[0]), float(h[0]), float(l[0])])
+        ys = np.array([float(l[1]), float(l[1]), float(h[1]), float(h[1])])
+        S.poly(R(xs, ys), 'r', ferme=True, rempli='r' if k == 3 else None, l=1.4 + 0.4 * k)
+    # étiquettes des parties
+    S.texte(R(0.04, 0.93), 'S_0', 't', ancre='start', taille=16)
+    S.texte(R(0.04, 0.44), 'S_1', 'r', ancre='start', taille=16)
+    S.texte(R(0.53, 0.06), 'S_2', 'r', ancre='start', taille=16)
+    S.texte(R(0.64, 0.46), 'S_3', 'r', ancre='start', taille=15)
+    # centres
+    pos = [(-0.025, 0.035, 'end'), (0.0, -0.045, 'middle'), (0.03, -0.035, 'start'), (-0.025, 0.0, 'end')]
+    for k, (c, _, _) in enumerate(etapes):
+        P = R(float(c[0]), float(c[1]))
+        S.point(P, 'b', r=4)
+        dx, dy, a = pos[k]
+        S.texte(R(float(c[0]) + dx, float(c[1]) + dy), f'c_{k}', 'b', ancre=a, taille=15)
+    S.point(R(float(p[0]), float(p[1])), 't', r=5, creux=True)
+    S.texte(R(float(p[0]) + 0.03, float(p[1]) + 0.025), 'p', 't', ancre='start', taille=17)
+    return S

@@ -1165,3 +1165,64 @@ def fo_tcl():
     S.texte(R(-1.9, float(gn(10, -1.9))) + [-12, -10], 'n = 10', 'b', ancre='end', taille=15)
     S.texte(R(1.25, math.exp(-1.25 ** 2 / 2)) + [-6, 4], 'e^{−t²/2}', 'r', ancre='end', taille=15)
     return S
+
+
+# ================================================================ anf : théorème spectral
+
+@schema('f-spectral-fini')
+def f_spectral_fini():
+    # A = (5 2 ; 2 2) : valeurs propres 6 et 1, vecteurs propres (2, 1)/√5 et (1, -2)/√5.
+    A = np.array([[5.0, 2.0], [2.0, 2.0]])
+    s5 = math.sqrt(5)
+    v6, v1 = np.array([2.0, 1.0]) / s5, np.array([1.0, -2.0]) / s5
+    assert np.allclose(A @ v6, 6 * v6) and np.allclose(A @ v1, v1) and abs(v6 @ v1) < 1e-15
+    q = lambda x: x @ A @ x
+    t = np.linspace(0, 2 * math.pi, 3601)
+    cer = np.stack([np.cos(t), np.sin(t)], axis=1)
+    qs = np.einsum('ij,jk,ik->i', cer, A, cer)
+    assert abs(q(v6) - 6) < 1e-12 and abs(q(v1) - 1) < 1e-12
+    assert qs.max() <= 6 + 1e-12 and qs.min() >= 1 - 1e-12                  # extremums sur le cercle
+    assert abs(qs.max() - 6) < 1e-4 and abs(qs.min() - 1) < 1e-4
+    assert np.linalg.norm(cer[qs.argmax()] - v6) < 1e-2 or np.linalg.norm(cer[qs.argmax()] + v6) < 1e-2
+    assert np.linalg.norm(cer[qs.argmin()] - v1) < 1e-2 or np.linalg.norm(cer[qs.argmin()] + v1) < 1e-2
+    # lignes de niveau q = c : x = (√(c/6) cos θ) v6 + (√c sin θ) v1
+    def niveau(c):
+        return np.outer(np.sqrt(c / 6) * np.cos(t), v6) + np.outer(np.sqrt(c) * np.sin(t), v1)
+    e1, e6 = niveau(1.0), niveau(6.0)
+    assert np.allclose(np.einsum('ij,jk,ik->i', e1, A, e1), 1) and np.allclose(np.einsum('ij,jk,ik->i', e6, A, e6), 6)
+    assert np.linalg.norm(e1, axis=1).max() <= 1 + 1e-9                     # q = 1 à l'intérieur du cercle
+    assert np.linalg.norm(e6, axis=1).min() >= 1 - 1e-9                     # q = 6 à l'extérieur
+    xg = np.array([-0.8, 0.6])                                                # sur le cercle
+    assert abs(xg @ xg - 1) < 1e-12
+    assert np.allclose(A @ xg, [-2.8, -0.4]) and abs(cross2(xg, A @ xg)) > 1  # Ax non colinéaire à x
+
+    S = Schema(500, 470, 'Le cercle unité entre deux lignes de niveau de la forme quadratique')
+    R = Repere(-2.75, 2.75, -2.55, 2.6, 5, 5, 490, 458)
+    k = R(1, 0)[0] - R(0, 0)[0]
+    R.axes(S, '', '')
+    S.poly(R(e6[:, 0], e6[:, 1]), 'r', ferme=True, l=1.6)
+    S.poly(R(e1[:, 0], e1[:, 1]), 'b', ferme=True, l=1.6)
+    S.cercle(R(0, 0), k, 't', rempli=None)
+    L = 0.75                                                                  # longueur des flèches (direction de Ax)
+    for x, c in ((v6, 'r'), (-v6, 'r'), (v1, 'b'), (-v1, 'b')):
+        d = A @ x
+        S.fleche(R(*x), R(*(x + L * d / np.linalg.norm(d))), c, l=2)
+        S.point(R(*x), c, r=4.4)
+    d = A @ xg
+    S.ligne(R(*xg), R(*(xg + L * xg)), 'v', d=True)                        # direction radiale, en pointillé
+    S.fleche(R(*xg), R(*(xg + L * d / np.linalg.norm(d))), 'v', l=2)
+    S.point(R(*xg), 'v', r=4.4)
+    S.texte(R(*(v6 + L * v6)) + [8, -10], 'Ax = 6x', 'r', ancre='start', taille=15)
+    S.texte(R(*(v1 + L * v1)) + [-10, 12], 'Ax = x', 'b', ancre='end', taille=15)
+    S.texte(R(*(xg + L * d / np.linalg.norm(d))) + [-6, 16], 'Ax', 'v', ancre='end', taille=15)
+    S.texte(R(*xg) + [10, 16], 'x', 'v', ancre='start', taille=15)
+    S.texte(R(-1.55, 1.85), '⟨Ax, x⟩ = 6', 'r', ancre='end', taille=15)
+    # étiquette de q = 1, reliée à un point de l'ellipse bleue par un trait fin
+    th = 0.9
+    pe = math.sqrt(1 / 6) * math.cos(th) * v6 + math.sin(th) * v1
+    assert abs(q(pe) - 1) < 1e-12 and np.linalg.norm(pe) < 1
+    lab = np.array([1.32, -0.35])
+    assert q(lab - [0.08, 0]) > 6                                             # étiquette hors de l'ellipse rouge
+    S.ligne(R(*pe), R(*lab) + [-4, 0], 'b', l=0.8)
+    S.texte(R(*lab), '⟨Ax, x⟩ = 1', 'b', ancre='start', taille=15)
+    return S

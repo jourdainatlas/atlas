@@ -562,3 +562,17 @@ translation, 30 et 56 par comptage ; |𝔄₅| = 60 et 𝔄₅ non résoluble ; 
 6 croisements). Lettre de Galois à Chevalier (29 mai 1832, Œuvres 1897) citée sans numéro de page : p. 26 ou 27
 selon les copies, image non consultable d'ici. Relu par un agent indépendant (script de couverture propre ; sept
 retouches). Restent admis : 𝔄₅ simple, unicité du groupe simple d'ordre 60, ordre 168 du suivant.
+
+## 40. Théorème spectral (29 octobre 2026)
+
+Absent jusqu'ici sous tout nom. Ajouté à anf (proposition de l'auteur acceptée) : `f-autoadjoints` (adjonction,
+quotient de Rayleigh, |||u||| = sup |⟨u x, x⟩|), `f-spectral-fini` (maximum de Rayleigh sur la sphère compacte, sans ℂ
+ni polynôme caractéristique ; A = P D ᵗP), `f-compacts`, `f-compacts-exemples` (diagonal sur ℓ² compact ⇔ aₙ → 0 ;
+noyau continu ; multiplication par x sans valeur propre), `f-spectral-compact` (±|||u||| valeur propre par
+intersection de fermés emboîtés, sans suite maximisante ; valeurs propres de multiplicité finie tendant vers 0 ;
+u = Σ λₙ pₙ ; base hilbertienne de (Ker u)^⊥, ⋆ choix dénombrable sauf suite dense donnée). Dans met :
+`me-precompacts` (⋆ si les réseaux sont choisis) ; `gd-equivalence` (iv) étendu aux espaces de dimension finie.
+Renvoi depuis `v-valeurs-propres`. Sources vérifiées : Cauchy 1829 (via Hawkins 1975), Hilbert 1906 (p. 157-228),
+Hellinger-Toeplitz 1910, Mercer 1909, Enflo 1973. Relu par un agent indépendant (deux fautes de signalement et de
+renvoi, neuf retouches). Admis en remarque : approximation des compacts par le rang fini (Hilbert), formule de
+Mercer, valeurs propres du noyau min(x, y). 547 nœuds, 308 termes ; anf 1 croisement.

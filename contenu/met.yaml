@@ -2,7 +2,8 @@
 # Distances et boules, topologie associée, suites (caractérisation séquentielle des fermés, ⋆),
 # suites de Cauchy et espaces complets, l'espace ℝⁿ (topologie produit, complétude, compacts =
 # fermés bornés), nombre de Lebesgue et théorème de Heine sur un compact métrique (sans choix),
-# compacité séquentielle (réciproque ⋆) ; puis les normes, leur équivalence en dimension finie,
+# compacité séquentielle (réciproque ⋆), parties précompactes (compactes dans un espace complet,
+# sans choix quand les réseaux sont donnés) ; puis les normes, leur équivalence en dimension finie,
 # le point fixe de Banach et le théorème de Baire (⋆, choix dépendant).
 # Les nœuds gd-normes, gd-equivalence et gd-point-fixe (venus de la géométrie différentielle) et
 # f-baire (venu de l'analyse fonctionnelle) gardent leur identifiant, cité par les rubriques.
@@ -341,6 +342,63 @@ noeuds:
       - |
         L'équivalence est propre aux espaces métriques : comme le rappelle le nœud {{tr-compacite-sequentielle|Compacité séquentielle}}, le produit $[0, 1]^{[0, 1]}$ est compact sans être séquentiellement compact.
 
+  - id: me-precompacts
+    etiquette: Parties précompactes
+    nature: proposition
+    titre: Parties précompactes d'un espace complet
+    texte: |
+      Une partie $A$ d'un espace métrique $X$ est [[partie-precompacte|précompacte]] si, pour tout $\varepsilon > 0$, il existe une famille finie $(a_1, \dots, a_m)$ de points de $X$ telle que
+      $$A \subset B(a_1, \varepsilon) \cup \cdots \cup B(a_m, \varepsilon).$$
+      Une telle famille est un **$\varepsilon$-réseau** de $A$.
+    choix: |
+      Le point (ii) suppose les réseaux donnés, sous la forme d'une suite de familles finies, et n'utilise alors aucun choix : à chaque étape, la démonstration prend le plus petit indice qui convient. Le point (iii) doit d'abord désigner un réseau pour chaque rayon $2^{-k}$, parmi tous ceux qui existent, ce qui fait une infinité dénombrable de choix : c'est le [[choix-denombrable]]. Les applications de l'analyse fonctionnelle fournissent le plus souvent les réseaux explicitement, et s'en tiennent à (ii).
+    enonce: |
+      (i) Une partie compacte d'un espace métrique est précompacte, et toute partie d'une partie précompacte l'est aussi. Si $A$ est contenue dans la réunion des boules $B(a_i, \varepsilon)$, $i \leqslant m$, son adhérence $\bar A$ est contenue dans la réunion des boules $B(a_i, 2\varepsilon)$ ; en particulier, l'adhérence d'une partie précompacte est précompacte.
+
+      (ii) Soit $X$ un espace métrique [[espace-complet|complet]] et $Y$ une partie fermée de $X$. On suppose donnée, pour chaque $k \in \lex{ensemble-entiers-naturels}{\mathbb N}$, une famille finie $(a_{k,1}, \dots, a_{k,m_k})$ de points de $X$ telle que
+      $$Y \subset \bigcup_{i \leqslant m_k} B(a_{k,i}, 2^{-k}).$$
+      Alors $Y$ est [[compact|compacte]].
+
+      (iii) Dans un espace complet, toute partie fermée et précompacte est compacte, et l'adhérence de toute partie précompacte est compacte.
+    preuve: |
+      (i) Soit $K$ compacte et $\varepsilon > 0$. Les traces sur $K$ des boules $B(x, \varepsilon)$, $x \in K$, sont des ouverts de $K$ ({{me-topologie|Topologie d'une distance}}, (iii)) qui recouvrent $K$ ; un nombre fini d'entre elles suffit, et leurs centres, en nombre fini, forment un $\varepsilon$-réseau. Une partie de $A$ est contenue dans les mêmes boules que $A$.
+
+      Si enfin $y \in \bar A$, la boule $B(y, \varepsilon)$ rencontre $A$ ({{me-topologie|Topologie d'une distance}}, (ii)) en un point $z$, qui appartient à une boule $B(a_i, \varepsilon)$, et
+      $$d(y, a_i) \leqslant d(y, z) + d(z, a_i) < 2\varepsilon.$$
+
+      (ii) Si $Y$ est vide, il n'y a rien à démontrer. Soit $\mathcal U$ une famille d'ouverts de $X$ dont la réunion contient $Y$ ; par {{me-topologie|Topologie d'une distance}}, (iii), il suffit de montrer qu'une sous-famille finie de $\mathcal U$ recouvre $Y$. Supposons le contraire, et disons qu'une partie $S \subset Y$ est *mauvaise* si aucune sous-famille finie de $\mathcal U$ ne la recouvre. Une partie mauvaise n'est pas vide, puisque la famille vide recouvre le vide.
+
+      Si $S$ est mauvaise et contenue dans une réunion finie de parties, l'une au moins des traces de ces parties sur $S$ est mauvaise : sinon, la réunion des sous-familles finies qui recouvrent chacune d'elles serait une sous-famille finie qui recouvre $S$.
+
+      On définit donc par récurrence sur $k$, en appliquant le nœud {{n-recdef|Définition par récurrence}} aux couples $(k, S_k)$, puisque l'étape dépend du rang $k$, des parties mauvaises $S_k$ et des indices $i_k$ : $S_{-1} = Y$, et $i_k$ est le plus petit indice $i \leqslant m_k$ tel que
+      $$S_k = S_{k-1} \cap B(a_{k,i}, 2^{-k})$$
+      soit mauvaise ; il existe par ce qui précède, puisque $S_{k-1} \subset Y$ est contenue dans la réunion des $B(a_{k,i}, 2^{-k})$.
+
+      ```schema me-precompacts
+      Ici $Y$ est le carré $[0, 1]^2$ privé du point $p$, partie qui n'est pas fermée, et le réseau de rang $k$ est la grille de pas $2^{-k}$ (en gris pour $k = 3$), pour la distance $d_\infty$, dont les boules sont des carrés. Les ouverts « distance à $p$ supérieure à $\frac1{n+1}$ » recouvrent $Y$ sans qu'un nombre fini suffise, et les parties mauvaises sont celles dont $p$ est adhérent. Les parties emboîtées $S_0 \supset S_1 \supset S_2 \supset S_3$, la première presque égale à $Y$ et les suivantes en rouge, se resserrent autour de $p$, et leurs centres $c_k$, en bleu, tendent vers $p$, qui manque à $Y$ : c'est là que la démonstration utilise que $Y$ est fermée.
+      ```
+
+      Posons $c_k = a_{k,i_k}$. La partie $S_{k+1}$ n'est pas vide et elle est contenue dans $B(c_k, 2^{-k}) \cap B(c_{k+1}, 2^{-k-1})$, d'où $d(c_k, c_{k+1}) < 2^{-k} + 2^{-k-1} < 2^{1-k}$. Pour $l > k$, l'inégalité triangulaire donne
+      $$d(c_k, c_l) < \sum_{j \geqslant k} 2^{1-j} = 2^{2-k}.$$
+      La suite $(c_k)$ est de Cauchy, puisque $2^{-k} \leqslant \frac1{k+1}$ et que $\mathbb R$ est [[archimedien]] ; elle converge vers un point $x \in X$, et $d(c_k, x) \leqslant 2^{2-k}$ par continuité de la distance.
+
+      Soit $r > 0$ et $k$ tel que $5 \cdot 2^{-k} < r$. Pour $z \in S_k$, on a
+      $$d(z, x) \leqslant d(z, c_k) + d(c_k, x) < 5 \cdot 2^{-k},$$
+      donc $S_k \subset B(x, r)$. Ainsi toute boule de centre $x$ rencontre $Y$, qui contient $S_k$ : le point $x$ est adhérent à $Y$, et il appartient à $Y$, qui est fermée.
+
+      Il appartient donc à un ouvert $U \in \mathcal U$, qui contient une boule $B(x, r)$ ({{me-topologie|Topologie d'une distance}}, (i)). Pour $k$ comme ci-dessus, $S_k \subset B(x, r) \subset U$ est recouverte par le seul ouvert $U$, ce qui contredit le fait qu'elle est mauvaise. Enfin $Y$ est séparée, comme tout espace métrique ({{me-topologie|Topologie d'une distance}}, (i)) : elle est compacte.
+
+      (iii) Soit $Y$ fermée et précompacte. Pour chaque $k$, il existe un $2^{-k}$-réseau de $Y$ ; en choisissant l'un d'eux pour chaque $k$, on applique (ii). Si $A$ est précompacte, $\bar A$ est fermée, et précompacte par (i).
+    remarques:
+      - |
+        La complétude est indispensable. Dans $X = \lex{ensemble-rationnels}{\mathbb Q}$, la partie $Y = [1, 2] \cap \mathbb Q$ est fermée et précompacte, puisque les rationnels $1 + j2^{-k}$, $0 \leqslant j \leqslant 2^k$, en forment des $2^{-k}$-réseaux. Elle n'est pourtant pas compacte : la suite de rationnels du nœud {{me-cauchy|Espaces complets}}, qui tend vers $\sqrt 2$ dans $\mathbb R$, n'a aucune suite extraite qui converge dans $\mathbb Q$, ce qu'interdirait le sens direct, sans choix, du nœud {{me-compacite-sequentielle|Compacité séquentielle}}.
+      - |
+        L'erreur la plus répandue est de confondre précompacte et bornée. Une partie précompacte est bornée, car contenue dans une réunion finie de boules, mais la réciproque est fausse. Pour la distance $\min(|x - y|, 1)$ sur $\mathbb R$ ({{me-topologie|Topologie d'une distance}}), l'espace entier est borné ; ses boules de rayon $\frac12$ sont des intervalles de longueur $1$, et un nombre fini d'entre elles ne recouvre pas $\mathbb R$.
+
+        En dimension infinie, le même phénomène atteint la boule unité d'un espace normé : dans l'espace des suites de carré sommable, les vecteurs de base sont à distance $\sqrt 2$ les uns des autres, et une boule de rayon $\frac{\sqrt 2}{2}$ en contient au plus un ({{f-compacts|Opérateurs compacts}}).
+      - |
+        Le point (ii) remplace, dans un espace complet, l'extraction de suites de la réciproque du nœud {{me-compacite-sequentielle|Compacité séquentielle}}, qui demande le choix dépendant, par une récurrence où chaque étape est désignée sans choix. Sa démonstration suit la même idée que celle du théorème de Baire ({{f-baire|Théorème de Baire}}) : des parties emboîtées de diamètres tendant vers $0$, dont les centres forment une suite de Cauchy. Mais là où Baire doit choisir une boule à chaque étape, on prend ici le premier indice d'une liste donnée d'avance.
+
   - id: gd-normes
     etiquette: Normes
     nature: définition
@@ -401,6 +459,8 @@ noeuds:
       En particulier, $u$ est lipschitzienne, donc continue.
 
       (iv) Sur un espace $E$ de [[dimension]] finie, toutes les normes sont équivalentes, et la topologie qu'elles définissent est celle que transporte n'importe quel isomorphisme $\mathbb R^n \to E$. Pour $E = \mathcal L(\mathbb R^n, \mathbb R^p)$, identifié aux matrices, c'est la topologie de $|||\cdot|||$ comme celle de $\max_{i,j} |a_{ij}|$.
+
+      Pour toute norme sur $E$, l'espace $E$ est complet, ses parties compactes sont ses parties fermées et bornées, et toute application linéaire de $E$ dans un espace normé de dimension finie est continue.
     preuve: |
       (i) Soit $N$ une norme et $(e_i)$ la base canonique. Pour $x = \sum x_i e_i$,
       $$N(x) \leqslant \sum |x_i|\, N(e_i) \leqslant \beta \|x\|_\infty$$
@@ -425,6 +485,10 @@ noeuds:
       (iv) Si $\varphi : \mathbb R^n \to E$ est un isomorphisme et $N$ une norme sur $E$, alors $N \circ \varphi$ est une norme sur $\mathbb R^n$.
 
       Deux normes sur $E$ se transportent en deux normes équivalentes sur $\mathbb R^n$ ; elles sont donc équivalentes sur $E$. L'isomorphisme $\varphi$ envoie la topologie de $\|\cdot\|_\infty$ sur celle de la norme $\|\varphi^{-1}(\cdot)\|_\infty$, qui est l'une d'elles. Pour les applications linéaires, on utilise l'isomorphisme avec $\lex{espace-matrices}{\mathcal M_{p,n}}(\mathbb R) \cong \mathbb R^{pn}$ ({{v-matrices|Matrices}}).
+
+      Enfin, pour une norme $N$ sur $E$, l'isomorphisme $\varphi$ est une isométrie de $\mathbb R^n$, muni de la norme $N \circ \varphi$, sur $(E, N)$. Il est continu ainsi que sa réciproque, puisque tous deux sont $1$-lipschitziens ({{me-topologie|Topologie d'une distance}}, (iv)), et il envoie boules sur boules et suites de Cauchy sur suites de Cauchy. Il conserve donc les fermés, les parties bornées, les compacts ({{t-compact-prop|Parties compactes}}, (iii)) et la complétude, et (ii) donne les deux premières affirmations.
+
+      Pour la dernière, soit $u : E \to F$ linéaire, où $F$ est un espace normé de dimension finie $p$, et $\psi : \mathbb R^p \to F$ un isomorphisme, isométrique pour la norme transportée. L'application $\psi^{-1} \circ u \circ \varphi$ est continue par (iii), et $u = \psi \circ (\psi^{-1} \circ u \circ \varphi) \circ \varphi^{-1}$ l'est aussi.
     remarques:
       - |
         L'erreur la plus répandue est d'étendre ce théorème à la dimension infinie. Sur l'espace des polynômes réels, le maximum des valeurs absolues des coefficients et leur somme sont deux normes, mais le polynôme $1 + X + \cdots + X^k$ vaut $1$ pour la première et $k + 1$ pour la seconde : aucune constante $\beta$ ne convient.
@@ -520,6 +584,7 @@ aretes:
   - [me-topologie, me-lebesgue]
   - [me-lebesgue, me-heine]
   - [me-cauchy, me-compacite-sequentielle]
+  - [me-cauchy, me-precompacts]
   - [me-rn, gd-normes]
   - [gd-normes, gd-equivalence]
   - [gd-equivalence, gd-point-fixe]
