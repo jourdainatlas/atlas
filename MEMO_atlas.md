@@ -68,7 +68,7 @@ orienté de dépendances, à plusieurs niveaux emboîtés. **Public : niveau Mas
 la rigueur** : toute définition est exacte, toute proposition et tout théorème des graphes
 intérieurs sont démontrés, ou marqués *Admis ici* avec l'indication de la difficulté contournée.
 
-- **Niveau 0** (`contenu/edifice.yaml`) : 34 théories au 29 octobre 2026 (23 à l'origine), de la
+- **Niveau 0** (`contenu/edifice.yaml`) : 35 théories au 29 octobre 2026 (23 à l'origine), de la
   logique du premier ordre aux grandes théories. C'est le graphe du cours `MASTER_COURS_architecture.tex`,
   étendu depuis.
 - **Niveaux intérieurs** : un fichier par graphe. Un nœud qui porte `sous: <graphe>` s'ouvre sur ce
@@ -83,7 +83,7 @@ cette adresse comme `url`, après l'avoir lue).
 
 | Graphe | Fichier | Conteneur | Contenu |
 |---|---|---|---|
-| L'édifice | `edifice.yaml` | — | 34 théories (dont le nœud-énoncé `derham`, sans sous-graphe), réduction transitive tracée |
+| L'édifice | `edifice.yaml` | — | 35 théories (dont le nœud-énoncé `derham`, sans sous-graphe), réduction transitive tracée |
 | Logique du premier ordre | `log.yaml` | `log` | cadre métathéorique, connecteurs et tables de vérité, formules propositionnelles, tautologies et complétude fonctionnelle, quantificateurs, signature, termes, formules, lecture unique, substitution, structures, satisfaction, coïncidence, système de Hilbert (Enderton), correction, déduction, cohérence, complétude (admise, ⋆), compacité (⋆), Löwenheim-Skolem (admis), modèles non standard, incomplétude (admise) |
 | Axiomes de ZF | `zf.yaml` | `zf` | langage, 8 axiomes, AC ; vide, Russell, opérations, $x \notin x$ |
 | Relations, fonctions | `rel.yaml` | `rel` | couple de Kuratowski, produit cartésien, relations, applications, images directe et réciproque, composition, injections/surjections/bijections, réciproque, rétraction et section, familles et produit d'une famille, formes de l'axiome du choix (⋆), équivalence et partitions, passage au quotient, équipotence, Cantor, Cantor-Bernstein (Knaster-Tarski, sans ℕ) |
@@ -115,6 +115,7 @@ cette adresse comme `url`, après l'avoir lue).
 | Théorie analytique des nombres | `nban.yaml` | `nban` | logarithme réel et puissances complexes, sommation d'Abel et intégrales impropres, lemme de Weierstrass et intégrales à paramètre holomorphes, ζ et prolongement de Z=(s−1)ζ à Re s>0, produit eulérien (sans réarrangement de séries), θ(x) ≤ x ln 4 (Erdős), Φ et −Z'/Z − ψ, non-annulation sur Re s = 1 (coefficients 1,4,6,4,1 sans trigonométrie), théorème de Newman (indice du contour par une primitive de 1/z sur Re z<0), théorème des nombres premiers. Preuve de Newman-Zagier |
 | Algèbre linéaire | `alglin.yaml` | `alglin` | espaces et sous-espaces, sommes finies (indépendantes de l'ordre) et combinaisons linéaires, applications linéaires, sommes directes et projecteurs, quotient, familles libres et bases (propriété universelle), existence des bases et base incomplète (⋆, Zorn ; réciproque de Blass admise), lemme d'échange, dimension, théorème du rang et Grassmann, matrices, dual et bidual. Dans l'édifice, dépend de `alg` et de `n` ; ajouts : groupe symétrique et signature (par les paires inversées, à valeurs dans {±1}), formes n-linéaires alternées (espace de dimension 1), trace (`v-trace`), valeurs propres et diagonalisation (`v-valeurs-propres`, sans polynôme caractéristique), déterminant en trois nœuds (`v-determinant` endomorphisme, `v-det-matrice` matrice et transposée, `v-comatrice` développement et comatrice). Lexique : `signature-permutation` (l'id `signature` est pris par la logique) |
 | Groupes topologiques | `grtop.yaml` | `grtop` | définition, translations et voisinages du neutre, sous-groupes ouverts et fermés, séparation (⇔ {e} fermé), quotient (π ouverte, séparé ⇔ H fermé), composante neutre et sous-groupe engendré par un voisinage, produits de compacts. Antérieur à ℕ et ℝ |
+| Algèbre commutative | `ac.yaml` | `ac` | (29 oct. 2026) divisibilité (contre-exemple K[X², X³]), anneaux factoriels et PGCD, noethériens (⋆ choix dépendant pour la condition maximale), principal ⇒ factoriel (⋆), Gauss : A factoriel ⇒ A[X] factoriel (sans choix), base de Hilbert, lemme chinois, localisation et idéaux premiers de S⁻¹A, anneaux locaux (sans Krull), ℤ₍ₚ₎, Nakayama. Entrées alg, z, alglin ; alimente geoalg (ga-zeros (iv)) et tan (an-ideaux) |
 | Géométrie algébrique | `geoalg.yaml` | `geoalg` | spectre, topologie de Zariski, points fermés (⋆), Krull (⋆, réciproque de Hodges admise), quasi-compacité (⋆), radical = intersection des premiers (⋆), ensembles algébriques, lemme de Zariski (démontré le 28 oct. 2026 par récurrence et algèbre linéaire, sans choix ; arête alglin → geoalg), Nullstellensatz (forme faible complète, forme forte par Rabinowitsch), dictionnaire. Dans l'édifice, dépend aussi de ℤ |
 | Structures topologiques | `top.yaml` | `top` | topologie, voisinages, adhérence, bases, continuité, induite, produit, quotient, séparés, compacité, produit fini (lemme du tube), Tychonov (admis, ⋆), connexité |
 | Analyse réelle | `analyse-reelle.yaml` | `analyse-reelle` | borne sup, Archimède, suites, Bolzano-Weierstrass, complétude, topologie, dérivation, Riemann, TFA |
@@ -318,6 +319,7 @@ Placement (`disposer` dans `construire.py`) :
   horizontale propre par changement d'abscisse (coins arrondis, bande élargie au besoin) ; aucune
   superposition, seulement des croisements à angle droit ; survol d'une flèche = mise en évidence.
   Détails : section 33 de MEMO_atlas_edifice.md. Croisements inchangés (l'ordre l'est).
+Modification de l'édifice (29 oct. 2026, suite) : nouvelle théorie Algèbre commutative (`ac`), arêtes alg, z, alglin → ac → geoalg, tan ; 35 théories, 16 croisements.
 Modification de l'édifice (29 oct. 2026) : nouvelle théorie Groupes finis (`gf`), arêtes z, alglin, alg → gf → galois ; les quatre nœuds de groupes de la théorie de Galois y passent avec leurs ids ; 34 théories, 16 croisements. Champ de nœud `documents:` (titre, fichier, description, pages, auteur) : carte « Ouvrir / Télécharger » dans la fiche, fichier vérifié par `construire.py`.
 Modification de l'édifice (28 oct. 2026, soir) : nouvelle théorie Calcul différentiel (`cdiff`), détachée de la géométrie différentielle (sept fiches, ids `gd-…` inchangés) ; arêtes analyse-reelle, met, alglin → cdiff → geod (met → geod et alglin → geod gardées pour les entrées, redondantes au tracé) ; l'édifice revient à 16 croisements.
 Modification de l'édifice (28 oct. 2026) : arête ajoutée Algèbre linéaire → Géométrie algébrique (lemme de Zariski) ; l'édifice passe de 16 à 19 croisements.

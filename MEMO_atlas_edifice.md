@@ -188,8 +188,8 @@ Priorité 2 : ~~`li-cartan`~~ (fait le 28 oct. 2026, voir plus bas), ~~`ga-nulls
 `t-tychonov` (écarté par l'auteur le 28 oct. 2026 : il demanderait la flèche ordin → top, qui ferait remonter la topologie et ses 19 descendants ; l'énoncé conditionnel « ultrafiltre ⇒ Tychonov » a été proposé sans être retenu), ~~scindages de `gs-groupes`~~ (fait), ~~`v-determinant`~~ (fait),
 ~~`ta-revetement`~~ (fait) ; ~~réduction et trace en algèbre linéaire~~ (fait) ;
 ~~découpage de `geod`~~ (fait en deux théories, voir plus bas) ; ~~suites i.i.d. uniformes en proba~~ (fait). Priorité 3 : Mayer-Vietoris
-(subdivision, gros), ~~`derham` en degré 1~~ (fait), compléments des théories terminales, théories « groupes
-finis » et « algèbre commutative », scindages de confort.
+(subdivision, gros), ~~`derham` en degré 1~~ (fait), compléments des théories terminales, ~~théories « groupes
+finis » et « algèbre commutative »~~ (faites le 29 oct. 2026, voir plus bas), scindages de confort.
 
 ### 31. Recherche dans tout l'édifice (28 oct. 2026)
 
@@ -367,3 +367,19 @@ proposé par une carte « Ouvrir / Télécharger » dans la fiche gf-petits-ordr
 rendu par le gabarit, `.document-fiche`) et mentionné dans le texte de la théorie. Relu par un second agent (deux
 passes, quinze remarques traitées, dont deux identités de permutations qu'il proposait fausses et qui ont été
 recalculées). Accueil : « Trente-quatre branches », lien {{gf}}.
+
+Algèbre commutative (29 oct. 2026, priorité 3) : nouvelle théorie de niveau 0 `ac` (famille alg ; arêtes alg, z,
+alglin → ac → geoalg, tan), 10 fiches, 0 croisement. ac-divisibilite (associés, irréductibles, premiers ; contre-exemple
+K[X², X³], X⁶ = X²·X²·X² = X³·X³), ac-factoriels (factoriel ⇔ existence + irréductibles premiers ; PGCD), ac-noetheriens
+(⋆ choix dépendant pour la condition maximale ; sous-anneau non noethérien {P ∈ F[X] : P(0) ∈ ℤ}), ac-principaux (⋆,
+principal ⇒ factoriel ; premiers non nuls maximaux), ac-gauss (A factoriel ⇒ A[X] factoriel, sans choix : ne dépend
+pas de ac-principaux ; K[X, Y] non principal), ac-hilbert (base de Hilbert, Math. Ann. 36, 1890, p. 473-534),
+ac-chinois (idéaux comaximaux, interpolation de Lagrange en remarque), ac-localisation (S⁻¹A, propriété universelle,
+idéaux premiers de S⁻¹A), ac-locaux (définition par l'idéal des non-inversibles, sans Krull ; A_𝔭 ; ℤ₍ₚ₎ et
+valuation), ac-nakayama (1 + I ⊂ A^×, générateurs minimaux = dim M/𝔪M). Quatre schémas
+(`outils/edifice_schemas_ac.py`) : exposants de K[X², X³], escalier des L_d de (4, 2X, X²), bijection chinoise
+ℤ/12 → ℤ/3 × ℤ/4, spectre de ℤ vu par ℤ₍₃₎ et ℤ[1/6] ; écartés : factoriels, principaux, Gauss, locaux, Nakayama
+(rien de géométrique qu’un dessin éclaire). Relu par un second agent (sept remarques et dix suggestions traitées, dont une fausse affirmation sur la dimension de plongement et le mot « spectre » employé avant sa définition). Retouches : ga-zeros (iv) (tout ensemble algébrique est défini par un
+nombre fini d'équations, par Hilbert ; entrée ac de geoalg), an-ideaux (i) (ℤ[√−5] non factoriel, 2 irréductible non
+premier ; entrée ac de tan). Lexique : element-irreductible, element-premier, anneau-factoriel, anneau-noetherien,
+localise, anneau-local. Accueil : « Trente-cinq branches », lien {{ac}}.
