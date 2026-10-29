@@ -632,6 +632,241 @@ def m_produit():
     return S
 
 
+@schema('m-mesurables')
+def m_mesurables():
+    # f_n(x) = max(0, 1 - n|x|), continues ; limite simple 1_{0} : f_n(0) = 1, et f_n(x) = 0 dès que n|x| >= 1.
+    fn = lambda n, x: np.maximum(0.0, 1 - n * np.abs(np.asarray(x, float)))
+    ns = [1, 2, 4, 8]
+    for n in ns:
+        assert fn(n, 0.0) == 1 and fn(n, 1 / n) == 0 and fn(n, -1 / n) == 0
+    xs = np.linspace(-1.2, 1.2, 2401)
+    for x in xs:
+        if abs(x) > 1e-12:                                  # au-delà du rang ⌈1/|x|⌉, f_n(x) = 0
+            N = math.ceil(1 / abs(x)) + 1
+            assert all(fn(n, x) == 0 for n in range(N, N + 50))
+        for n in range(1, 40):                              # suite décroissante en chaque point
+            assert fn(n + 1, x) <= fn(n, x) + 1e-15
+    S = Schema(500, 270, 'Fonctions continues en tente et leur limite simple, discontinue en 0')
+    R = Repere(-1.25, 1.35, -0.18, 1.18, 20, 16, 460, 230)
+    R.axes(S, 'x', '')
+    for n in ns:
+        S.poly(R(np.array([-1.25, -1 / n, 0, 1 / n, 1.25]), np.array([0, 0, 1, 0, 0])), 'b', l=1.4)
+    # limite : 0 hors de 0, 1 en 0
+    S.ligne(R(-1.25, 0), R(-0.012, 0), 'r', l=3)
+    S.ligne(R(0.012, 0), R(1.25, 0), 'r', l=3)
+    S.point(R(0, 0), 'r', r=4.2, creux=True)
+    S.point(R(0, 1), 'r', r=4.6)
+    S.texte(R(0, 1) + [12, -4], '1', 'r', ancre='start')
+    for n, hy in ((1, 0.7), (2, 0.5), (4, 0.3)):            # étiquettes étagées sur les branches gauches
+        S.texte(R(-(1 - hy) / n, hy) + [-9, -2], f'f_{n}', 'b', ancre='end', taille=15)
+    p8 = R(0.7 / 8, 0.3)                                   # point de f_8 (branche droite, hauteur 0,3)
+    assert abs(fn(8, 0.7 / 8) - 0.3) < 1e-12
+    S.ligne(R(0.55, 0.62) + [-4, 6], p8, 'g')
+    S.texte(R(0.55, 0.62) + [0, -2], 'f_8', 'b', ancre='start', taille=15)
+    for xv, s in [(-1, '−1'), (-0.5, '−1/2'), (0.5, '1/2'), (1, '1')]:
+        S.ligne(R(xv, 0) + [0, -3], R(xv, 0) + [0, 3], 'g')
+        S.texte(R(xv, 0) + [0, 18], s, 'g', taille=14)
+    return S
+
+
+@schema('m-integrale')
+def m_integrale():
+    # Mesure de comptage μ sur X = {0, …, 7}, f(k) donné ; a = 3 : {f >= 3} = {1, 2, 4, 5},
+    # a 1_{f >= a} <= f point par point, et Markov : μ({f >= 3}) = 4 <= (1/3) ∫ f dμ = 19/3.
+    vals = [1, 3, 4, 2, 5, 3, 1, 0]
+    a = 3
+    A = [k for k, v in enumerate(vals) if v >= a]
+    assert A == [1, 2, 4, 5]
+    assert all(a * (k in A) <= v for k, v in enumerate(vals))
+    integrale = sum(vals)                                  # ∫ f dμ pour la mesure de comptage
+    assert integrale == 19 and len(A) == 4 and Fr(len(A)) <= Fr(integrale, a)
+    assert a * len(A) == 12 and 12 <= 19                   # aire rouge sous l'aire grise (barres de largeur 1)
+    assert [k for k in A if vals[k] == a] == [1, 5]          # là, la barre rouge recouvre la grise
+    S = Schema(500, 300, 'Markov pour la mesure de comptage : les barres rouges sous les barres grises')
+    R = Repere(-0.7, 8.0, -0.6, 5.6, 40, 8, 420, 270)
+    R.axes(S, 'k', '', origine=(-0.7, 0))
+    w = 0.5                                                # barres jointives de largeur 1 : aire = hauteur
+    for k, v in enumerate(vals):
+        if v:
+            S.poly(R(np.array([k - w, k - w, k + w, k + w]), np.array([0, v, v, 0])), 't', ferme=True, rempli='g')
+        if k in A:
+            S.poly(R(np.array([k - w, k - w, k + w, k + w]), np.array([0, a, a, 0])), 'r', ferme=True, rempli='r')
+            S.point(R(k, 0), 'r', r=4)
+        S.texte(R(k, 0) + [0, 18], str(k), 'g', taille=14)
+    S.ligne(R(-0.7, a), R(7.6, a), 'g', d=True)
+    for yv in range(1, 6):
+        S.ligne(R(-0.7, yv) + [0, 0], R(-0.7, yv) + [6, 0], 'g')
+        S.texte(R(-0.7, yv) + [-6, 0], str(yv), 'g', ancre='end', taille=14)
+    S.texte(R(7.6, a) + [0, -14], 'a = 3', 'g', ancre='end', taille=14)
+    S.texte(R(6.6, 4.9), '∫ f dμ = 19', 't', ancre='middle', taille=15)
+    S.texte(R(6.6, 4.1), 'μ(\\{f ⩾ 3\\}) = 4', 'r', ancre='middle', taille=15)
+    return S
+
+
+@schema('m-beppo-levi')
+def m_beppo_levi():
+    # X = ]0, 2], f(x) = 1 + x(2 - x) ; s = 3/2 sur [α, β] = {f >= 3/2}, 1 ailleurs ; c = 3/4 ;
+    # f_n = f (1 - (1 - x/2)^n), croissante en n, de limite f sur ]0, 2] ; E_n = {f_n >= c s}.
+    f = lambda x: 1 + x * (2 - x)
+    al, be = 1 - 2 ** -0.5, 1 + 2 ** -0.5
+    assert abs(f(al) - 1.5) < 1e-12 and abs(f(be) - 1.5) < 1e-12
+    s = lambda x: np.where((x >= al) & (x <= be), 1.5, 1.0)
+    c = 0.75
+    fn = lambda n, x: f(x) * (1 - (1 - x / 2) ** n)
+    xs = np.linspace(1e-6, 2, 400001)
+    assert np.all(s(xs) <= f(xs) + 1e-12)                   # s étagée, s <= f
+    for n in range(1, 12):
+        assert np.all(fn(n, xs) <= fn(n + 1, xs) + 1e-12)   # (f_n) croissante
+    assert np.max(f(xs[xs > 0.3]) - fn(200, xs[xs > 0.3])) < 1e-12          # f_n → f (convergence simple)
+
+    def morceaux(n):
+        """Composantes de E_n = {f_n >= c s}, extrémités affinées par dichotomie."""
+        g = lambda x: fn(n, x) - c * float(s(np.array(x)))
+        E = fn(n, xs) >= c * s(xs)
+        coupes = np.where(np.diff(E.astype(int)) != 0)[0]
+        bords = []
+        for i in coupes:
+            u, v = xs[i], xs[i + 1]
+            if u < al <= v:                                 # saut de s : l'extrémité est α
+                bords.append(al)
+                continue
+            for _ in range(60):
+                m = (u + v) / 2
+                (u, v) = (m, v) if (g(m) >= 0) == bool(E[i]) else (u, m)
+            bords.append((u + v) / 2)
+        assert not E[0] and E[-1]
+        pts = bords + [2.0]
+        return [(pts[k], pts[k + 1]) for k in range(0, len(pts), 2)]
+    E2, E6 = morceaux(2), morceaux(6)
+    assert len(E2) == 1 and len(E6) == 2                  # E_6 a deux morceaux
+    assert E6[0][0] < E2[0][0] and E6[1][0] < E2[0][0]    # E_2 ⊂ E_6
+    assert abs(E6[0][1] - al) < 1e-12                     # le trou de E_6 commence au saut de c s en α
+    # minoration de la preuve : ∫ f_n >= c ∫_{E_n} s
+    for n, E in ((2, E2), (6, E6)):
+        msk = np.zeros_like(xs, bool)
+        for u, v in E:
+            msk |= (xs >= u) & (xs <= v)
+        assert np.trapezoid(fn(n, xs), xs) >= np.trapezoid(c * s(xs) * msk, xs)
+    S = Schema(520, 380, 'Une fonction étagée réduite cs et les ensembles croissants E_n')
+    R = Repere(-0.12, 2.3, -0.62, 2.18, 40, 8, 450, 350)
+    R.axes(S, 'x', '')
+    marche(S, R, [(0, al, 1.0), (al, be, 1.5), (be, 2, 1.0)], 'v', l=2)
+    marche(S, R, [(0, al, c), (al, be, 1.5 * c), (be, 2, c)], 'v', d=True)
+    R.graphe(S, lambda x: fn(2, x), 0, 2, 'b', l=1.6)
+    R.graphe(S, lambda x: fn(6, x), 0, 2, 'b', l=1.6)
+    R.graphe(S, f, 0, 2, 't', l=2.2)
+    for n, E, y in ((2, E2, -0.24), (6, E6, -0.46)):
+        for u, v in E:
+            S.ligne(R(u, y), R(v, y), 'r', l=5)
+            S.ligne(R(u, 0), R(u, y), 'r', d=True)
+        S.texte(R(2, y) + [10, 0], f'E_{n}', 'r', ancre='start', taille=15)
+    S.texte(R(1, 2) + [0, -14], 'f', ancre='middle')
+    S.texte(R(1.0, 1.5) + [0, 14], 's', 'v')
+    S.texte(R(1.0, 1.125) + [0, 14], 'cs', 'v', taille=15)
+    S.texte(R(0.55, fn(2, 0.55)) + [12, 10], 'f_2', 'b', ancre='start', taille=15)
+    S.texte(R(0.75, fn(6, 0.75)) + [14, 14], 'f_6', 'b', ancre='start', taille=15)
+    for xv, sv in [(1, '1'), (2, '2')]:
+        S.ligne(R(xv, 0) + [0, -3], R(xv, 0) + [0, 3], 'g')
+        S.texte(R(xv, 0) + [10, 12], sv, 'g', taille=14)
+    for yv, sv in [(c, '3/4'), (1, None), (1.5 * c, '9/8'), (1.5, '3/2'), (2, '2')]:
+        S.ligne(R(0, yv) + [-3, 0], R(0, yv) + [3, 0], 'g')
+        if sv:                                             # « 1 » omis : il toucherait « 9/8 »
+            S.texte(R(0, yv) + [-7, 0], sv, 'g', ancre='end', taille=14)
+    return S
+
+
+@schema('m-fatou')
+def m_fatou():
+    # À gauche f_n = 1_{]n, n+1]} (la bosse glisse), à droite f_n = n 1_{]0, 1/n]} (elle s'écrase) :
+    # ∫ f_n = 1 pour tout n, limite simple nulle en tout point.
+    gl = lambda n, x: ((x > n) & (x <= n + 1)).astype(float)
+    ec = lambda n, x: n * ((x > 0) & (x <= 1 / n)).astype(float)
+    xs = np.linspace(-1, 6, 70001)
+    pas = xs[1] - xs[0]
+    for n in range(1, 6):
+        assert abs(gl(n, xs).sum() * pas - 1) < 2e-3 and abs(ec(n, xs).sum() * pas - 1) < 2e-3
+    for x in np.linspace(-1, 6, 701):
+        N = 2 + math.ceil(abs(x)) + (math.ceil(1 / x) if x > 0 else 0)
+        assert all(gl(n, np.array(x)) == 0 and ec(n, np.array(x)) == 0 for n in range(N, N + 30))
+    S = Schema(520, 300, 'Deux suites d’intégrale 1 de limite nulle : la bosse glisse, la bosse s’écrase')
+    # panneau de gauche
+    R = Repere(-0.25, 4.6, -0.3, 1.45, 18, 30, 250, 230)
+    R.axes(S, 'x', '')
+    for n in range(4):                                     # f_0 plein, les suivantes en contour pointillé
+        cadre = R(np.array([n, n, n + 1, n + 1]), np.array([0, 1, 1, 0]))
+        if n:                                              # retrait de 3 px : les bords voisins ne se confondent pas
+            cadre = cadre + np.array([[3, 0], [3, 0], [-3, 0], [-3, 0]])
+        S.poly(cadre, 'b', d=n > 0, ferme=True, rempli='b' if n == 0 else None)
+        S.texte(R(n + 0.5, 1) + [0, -14], f'f_{n}', 'b', taille=15)
+        S.texte(R(n + 0.5, 0.5), '1', 'b', taille=14)
+        S.texte(R(n, 0) + [-6 if n == 0 else 0, 16], str(n), 'g', ancre='end' if n == 0 else 'middle', taille=14)
+    S.texte(R(4, 0) + [0, 16], '4', 'g', taille=14)
+    S.fleche(R(0.5, 1.32), R(3.6, 1.32), 'g')
+    S.ligne(R(-0.25, 0), R(4.45, 0), 'r', l=3)
+    # panneau de droite
+    Q = Repere(-0.12, 1.25, -0.3, 4.7, 300, 30, 190, 230)
+    Q.axes(S, 'x', '')
+    for n in (4, 2, 1):
+        S.poly(Q(np.array([0, 0, 1 / n, 1 / n]), np.array([0, n, n, 0])), 'b', ferme=True, rempli='b')
+        S.texte(Q(1 / n, n) + [8, -10], f'f_{n}', 'b', ancre='start', taille=15)
+    for xv, sv in [(0.25, '1/4'), (0.5, '1/2'), (1, '1')]:
+        S.texte(Q(xv, 0) + [0, 16], sv, 'g', taille=14)
+    S.ligne(Q(-0.12, 0), Q(1.12, 0), 'r', l=3)
+    S.texte((150, 286), 'f_n → 0, ∫ f_n = 1', 'r', taille=15)
+    S.texte((395, 286), 'f_n → 0, ∫ f_n = 1', 'r', taille=15)
+    return S
+
+
+@schema('m-fubini')
+def m_fubini():
+    # a_{mn} = 1 si m = n, -1 si m = n + 1, 0 sinon (m indice de ligne, n de colonne).
+    a = lambda m, n: 1 if m == n else (-1 if m == n + 1 else 0)
+    N = 400                                                 # chaque ligne et chaque colonne n'a que deux termes non nuls
+    lignes = [sum(a(m, n) for n in range(N)) for m in range(N - 1)]
+    colonnes = [sum(a(m, n) for m in range(N)) for n in range(N - 1)]
+    assert lignes[0] == 1 and all(v == 0 for v in lignes[1:])
+    assert all(v == 0 for v in colonnes)
+    assert sum(lignes) == 1 and sum(colonnes) == 0
+    assert sum(abs(a(m, n)) for m in range(N) for n in range(N)) == 2 * N - 1   # croît sans borne
+    M, K = 6, 6                                             # lignes 0..5, colonnes 0..5 affichées
+    S = Schema(500, 446, 'Une famille double dont les deux sommes itérées diffèrent')
+    x0, y0, h = 92, 58, 46
+    S.texte((x0 + K * h / 2, 18), 'n', 'g')
+    S.texte((40, y0 + M * h / 2), 'm', 'g')
+    for n in range(K):
+        S.texte((x0 + (n + 0.5) * h, 40), str(n), 'g', taille=14)
+    for m in range(M):
+        S.texte((x0 - 14, y0 + (m + 0.5) * h), str(m), 'g', ancre='end', taille=14)
+    S.rect(x0, y0, K * h, M * h, 'g')
+    for m in range(M):
+        for n in range(K):
+            v = a(m, n)
+            p = (x0 + (n + 0.5) * h, y0 + (m + 0.5) * h)
+            if v == 1:
+                S.texte(p, '1', 'r')
+            elif v == -1:
+                S.texte(p, '−1', 'b')
+            else:
+                S.texte(p, '0', 'g', taille=14)
+    S.texte((x0 + K * h + 18, y0 + M * h / 2), '⋯', 'g')
+    for n in range(K):
+        S.texte((x0 + (n + 0.5) * h, y0 + M * h + 14), '⋮', 'g', taille=14)
+    # sommes des lignes (à droite) et des colonnes (en bas)
+    xs_ = x0 + K * h + 74
+    S.texte((xs_, 40), 'Σ_n', 't', taille=16)
+    for m in range(M):
+        S.texte((xs_, y0 + (m + 0.5) * h), str(lignes[m]), 'r' if lignes[m] else 'g', taille=15)
+    ys_ = y0 + M * h + 46
+    S.texte((x0 - 14, ys_), 'Σ_m', 't', ancre='end', taille=16)
+    for n in range(K):
+        S.texte((x0 + (n + 0.5) * h, ys_), str(colonnes[n]), 'g', taille=15)
+    S.ligne((xs_ - 20, y0), (xs_ - 20, y0 + M * h), 'g')
+    S.ligne((x0, ys_ - 20), (x0 + K * h, ys_ - 20), 'g')
+    S.texte((140, ys_ + 46), 'Σ_m Σ_n a_{mn} = 1', 'r', taille=16)
+    S.texte((370, ys_ + 46), 'Σ_n Σ_m a_{mn} = 0', 'b', taille=16)
+    return S
+
+
 # ================================================================ fourier
 
 @schema('fo-fejer')

@@ -319,6 +319,225 @@ def gs_abel_ruffini():
     return S
 
 
+@schema('gs-decomposition')
+def gs_decomposition():
+    # X³ − 2 sur ℚ : racines a_0 = α, a_1 = αj, a_2 = αj², avec α = ∛2 et j = e^{2iπ/3}.
+    import sympy as sp
+    X = sp.symbols('X')
+    al, jj = sp.cbrt(2), sp.Rational(-1, 2) + sp.sqrt(3) * sp.I / 2
+    rac = [al, al * jj, al * jj ** 2]
+    assert all(sp.simplify(sp.expand(r ** 3) - 2) == 0 for r in rac)
+    # polynôme minimal de αj sur ℚ(α) : X² + αX + α², de racines αj et αj² (et (X − α) · ce facteur = X³ − 2)
+    mu2 = X ** 2 + al * X + al ** 2
+    assert sp.expand((X - al) * mu2 - (X ** 3 - 2)) == 0
+    assert all(sp.simplify(sp.expand(mu2.subs(X, r))) == 0 for r in rac[1:])
+    # premier étage : α ↦ a_k ; second étage : αj ↦ racine du transporté X² + a_k X + a_k²
+    feuilles = []
+    for k in range(3):
+        transp = X ** 2 + rac[k] * X + rac[k] ** 2
+        images = [l for l in range(3) if sp.simplify(sp.expand(transp.subs(X, rac[l]))) == 0]
+        assert images == [l for l in range(3) if l != k]          # les deux racines autres que a_k
+        for l in images:
+            m = 3 - k - l                                          # αj² ↦ la racine restante
+            feuilles.append((k, l, (k, l, m)))
+    perms = [p for _, _, p in feuilles]
+    assert len(feuilles) == 6 and len(set(perms)) == 6            # 3 × 2 = 6 = [L:ℚ], tout 𝔖_3
+
+    def cycles(p):                                                 # p : i ↦ p[i], racines numérotées 1, 2, 3
+        vus, out = set(), []
+        for i in range(3):
+            if i in vus or p[i] == i:
+                continue
+            c, x = [], i
+            while x not in vus:
+                vus.add(x); c.append(x + 1); x = p[x]
+            out.append('(' + ' '.join(map(str, c)) + ')')
+        return ''.join(out) or '`id`'
+    noms_cyc = [cycles(p) for p in perms]
+    assert noms_cyc == ['`id`', '(2 3)', '(1 2)', '(1 2 3)', '(1 3 2)', '(1 3)']
+
+    nom = ['α', 'αj', 'αj^2']
+    S = Schema(520, 262, 'Arbre des prolongements de l’identité de ℚ au corps de décomposition de X³ − 2')
+    x0, pas = 142, 70
+    xf = [x0 + pas * i for i in range(6)]
+    x1 = [(xf[2 * k] + xf[2 * k + 1]) / 2 for k in range(3)]
+    xr = sum(x1) / 3
+    y0, y1, y2, y3 = 30, 112, 194, 236
+    S.texte([xr, y0], '`id`_ℚ', 't', taille=16)
+    for k in range(3):
+        S.ligne([xr, y0 + 12], [x1[k], y1 - 13], 'g')
+        S.texte([x1[k], y1], nom[k], 'r', taille=16)
+        for i in (2 * k, 2 * k + 1):
+            S.ligne([x1[k], y1 + 13], [xf[i], y2 - 13], 'g')
+            S.texte([xf[i], y2], nom[feuilles[i][1]], 'b', taille=16)
+            S.texte([xf[i], y3], noms_cyc[i], 't', taille=15)
+    for y, s, c in [(y1, 'image de α', 'r'), (y2, 'image de αj', 'b'), (y3, 'permutation', 't')]:
+        S.texte([8, y], s, c, ancre='start', ui=True, taille=13)
+    S.ligne([4, (y2 + y3) / 2 + 2], [516, (y2 + y3) / 2 + 2], 'g', d=True)
+    return S
+
+
+@schema('gs-galoisiennes')
+def gs_galoisiennes():
+    # Racines de X³ − 2 dans ℂ : α e^{2ikπ/3}, α = ∛2 ; ℚ(α) ⊂ ℝ.
+    a = 2 ** (1 / 3)
+    rac = [a * np.exp(2j * math.pi * k / 3) for k in range(3)]
+    assert all(abs(z ** 3 - 2) < 1e-12 for z in rac)
+    reelles = [z for z in rac if abs(z.imag) < 1e-12]
+    assert len(reelles) == 1 and abs(reelles[0] - a) < 1e-12        # seule α est réelle
+    assert all(abs(abs(rac[k] - rac[(k + 1) % 3]) - a * math.sqrt(3)) < 1e-12 for k in range(3))  # triangle équilatéral
+    S = Schema(480, 300, 'Les trois racines de X³ − 2 dans ℂ, dont une seule est réelle')
+    R = Repere(-2.45, 1.95, -1.5, 1.5, 30, 16, 396, 270)
+    # cercle de rayon α
+    ctr = R(0, 0)
+    ray = R(a, 0)[0] - ctr[0]
+    assert abs(ray - (ctr[1] - R(0, a)[1])) < 1e-9                    # repère orthonormé
+    S.cercle(ctr, ray, 'g', d=True)
+    S.poly([R(z.real, z.imag) for z in rac], 'g', ferme=True)
+    # axe réel en rouge : ℝ, qui contient ℚ(α) ; axe imaginaire en gris
+    S.fleche(R(-2.45, 0), R(1.95, 0) + [8, 0], 'r', l=2)
+    S.fleche(R(0, -1.5), R(0, 1.5) - [0, 8], 'g')
+    # étiquette au-dessus de l'axe, à gauche du cercle : largeur 67,2 px mesurée dans Chromium (getBBox),
+    # comptée 70 ; à la hauteur de l'étiquette (15 px au-dessus de l'axe), le cercle est à x = cx − √(r² − 15²)
+    pe, larg, dy = R(-2.45, 0) + [0, -15], 70, 15
+    x_cercle = ctr[0] - math.sqrt(ray ** 2 - dy ** 2)
+    assert pe[0] + larg + 4 <= x_cercle
+    S.texte(pe, 'ℝ ⊃ ℚ(α)', 'r', ancre='start', taille=16)
+    noms = ['α', 'αj', 'αj^2']
+    decal = [[10, 14], [-12, -12], [-12, 12]]
+    for z, s, dd, c in zip(rac, noms, decal, ['r', 'b', 'b']):
+        P = R(z.real, z.imag)
+        S.point(P, c, r=4.5)
+        S.texte(P + dd, s, c, ancre='start' if dd[0] > 0 else 'end', taille=16)
+    S.texte(R(0, 0) + [8, 14], '0', 'g', ancre='start', taille=15)
+    return S
+
+
+@schema('gs-corps-finis')
+def gs_corps_finis():
+    # 𝔽_8 = 𝔽_2[X]/(X³ + X + 1) ; un élément est un entier de 3 bits (bit i : coefficient de g^i).
+    M = 0b1011                                            # X³ + X + 1
+    assert all(((x ** 3 + x + 1) % 2) == 1 for x in (0, 1))   # pas de racine dans 𝔽_2 : irréductible (degré 3)
+
+    def mul(u, v):
+        r = 0
+        for i in range(3):
+            if (v >> i) & 1:
+                r ^= u << i
+        for i in (4, 3):
+            if (r >> i) & 1:
+                r ^= M << (i - 3)
+        return r
+    puis = [1]
+    for _ in range(6):
+        puis.append(mul(puis[-1], 0b010))
+    assert sorted(puis) == list(range(1, 8))              # g engendre 𝔽_8^× : cyclique d'ordre 7
+    assert mul(puis[-1], 0b010) == 1
+    frob = {x: mul(x, x) for x in range(8)}
+    assert all(frob[x ^ y] == frob[x] ^ frob[y] for x in range(8) for y in range(8))   # (x + y)² = x² + y²
+    assert all(frob[puis[k]] == puis[2 * k % 7] for k in range(7))                    # g^k ↦ g^{2k}
+    assert [x for x in range(8) if frob[x] == x] == [0, 1]                            # points fixes : 𝔽_2
+    f2 = {x: frob[frob[x]] for x in range(8)}
+    assert any(f2[x] != x for x in range(8)) and all(frob[f2[x]] == x for x in range(8))  # ordre 3
+    orbites = [[1, 2, 4], [3, 6, 5]]
+    assert all(2 * o[i] % 7 == o[(i + 1) % 3] for o in orbites for i in range(3))
+
+    def ecrit(x):
+        t = [s for i, s in enumerate(['1', 'g', 'g^2']) if (x >> i) & 1]
+        return ' + '.join(t)
+    S = Schema(520, 330, 'Les éléments de 𝔽₈ et le Frobenius x ↦ x²')
+    c0, rr = np.array([260.0, 162.0]), 112
+    ang = [-math.pi / 2 + 2 * math.pi * k / 7 for k in range(7)]
+    pos = [c0 + rr * np.array([math.cos(t), math.sin(t)]) for t in ang]
+    S.poly(pos, 'g', ferme=True)
+    coul = {0: 'r', 1: 'b', 2: 'b', 4: 'b', 3: 'v', 6: 'v', 5: 'v'}
+    for o, c in zip(orbites, ['b', 'v']):
+        for i in range(3):
+            P, Q = pos[o[i]], pos[o[(i + 1) % 3]]
+            # côté de l'heptagone (sommets voisins) : courbure forte, pour ne pas recouvrir le côté gris
+            voisins = (o[(i + 1) % 3] - o[i]) % 7 in (1, 6)
+            pts = courbe_entre(P, Q, courbure=-0.3 if voisins else -0.08)
+            # couper aux disques des sommets (rayon 9)
+            dP = np.linalg.norm(pts - P, axis=1); dQ = np.linalg.norm(pts - Q, axis=1)
+            pts = pts[(dP > 9) & (dQ > 9)]
+            S.courbe_fleche(pts, c)
+    for k in range(7):
+        S.point(pos[k], coul[k], r=4.5)
+        u = (pos[k] - c0) / rr
+        etiq = {0: 'g^0 = 1', 1: 'g', 2: 'g^2'}.get(k, f'g^{k} = ' + ecrit(puis[k]))
+        p = pos[k] + u * 16
+        ancre = 'middle' if abs(u[0]) < 0.3 else ('start' if u[0] > 0 else 'end')
+        if k == 0:
+            p = pos[k] + [0, -16]
+        S.texte(p, etiq, coul[k], ancre=ancre, taille=15)
+    S.point(c0, 'r', r=4.5)
+    S.texte(c0 + [0, -16], '0', 'r', taille=15)
+    S.texte([260, 318], '`Frobenius` x ↦ x^2', 't', taille=15)
+    return S
+
+
+@schema('gs-radicaux')
+def gs_radicaux():
+    # P = X³ − 2 sur ℚ, extension radicale R = ℚ(√−3, α) avec β_1 = √−3 (m_1 = 2), β_2 = α = ∛2 (m_2 = 3) :
+    # m = 6, ζ = −j² = e^{iπ/3}, ℚ(ζ) = ℚ(j) ; Ω, corps de décomposition de (X⁶ − 1)(X² + 3)(X³ − 2), vaut ℚ(j, α).
+    # Tour de la preuve : K_0′ = ℚ(j), puis ±√−3 (déjà dans ℚ(j)), puis α, αj, αj² ; seul α ajoute quelque
+    # chose, et le dernier étage K_s′ = Ω a pour groupe H_s = {id}.
+    # Un automorphisme de Ω est σ_{a,b} : α ↦ α j^a, j ↦ j^b (a ∈ ℤ/3, b ∈ {1, 2}).
+    import sympy as sp
+    X = sp.symbols('X')
+    jj = sp.Rational(-1, 2) + sp.sqrt(3) * sp.I / 2
+    zeta = sp.exp(sp.I * sp.pi / 3)
+    assert sp.simplify(sp.expand(-jj ** 2) - sp.expand(zeta, complex=True)) == 0     # ζ = −j²
+    assert all(sp.simplify(sp.expand(zeta ** k, complex=True) - 1) != 0 for k in range(1, 6))  # primitive d'ordre 6
+    assert sp.simplify(sp.expand(zeta ** 6, complex=True) - 1) == 0
+    assert sp.simplify(sp.expand(zeta, complex=True) - (1 + jj)) == 0               # ζ = 1 + j ∈ ℚ(j), j = ζ − 1
+    assert sp.simplify(2 * jj + 1 - sp.sqrt(-3)) == 0                              # √−3 = 2j + 1 ∈ ℚ(j)
+    assert sp.factor_list(X ** 3 - 1)[1] == [(X - 1, 1), (X ** 2 + X + 1, 1)]
+    assert len(sp.factor_list(X ** 3 - 2, extension=sp.sqrt(-3))[1]) == 1      # irréductible sur ℚ(j)
+    G = [(a, b) for a in range(3) for b in (1, 2)]
+
+    def comp(s, t):                       # s ∘ t
+        (a, b), (c, d) = s, t
+        return ((a + b * c) % 3, (b * d) % 3)
+    e = (0, 1)
+    def inv(s):
+        return next(t for t in G if comp(s, t) == e)
+    assert len(G) == 6 == 2 * 3                                   # |G| = [ℚ(j):ℚ] · [Ω:ℚ(j)]
+    assert any(comp(s, t) != comp(t, s) for s in G for t in G)    # G non abélien (≅ 𝔖_3)
+    H0 = [s for s in G if s[1] == 1]                              # fixe j : Gal(Ω/ℚ(j))
+    assert len(H0) == 3 and all(comp(s, t) in H0 for s in H0 for t in H0)
+    assert all(comp(comp(g, h), inv(g)) in H0 for g in G for h in H0)          # distingué
+    assert all(comp(s, t) == comp(t, s) for s in H0 for t in H0)               # H_0 abélien (cyclique d'ordre 3)
+    classes = {frozenset(comp(g, h) for h in H0) for g in G}
+    assert len(classes) == 2                                      # G/H_0 d'ordre 2
+    # chaque σ_{a,b} permute les racines α j^k : k ↦ a + b k
+    perms = {tuple((a + b * k) % 3 for k in range(3)) for a, b in G}
+    assert len(perms) == 6
+
+    S = Schema(520, 300, 'Tour de radicaux de X³ − 2 et suite des groupes de Galois correspondants')
+    yh, ym, yb = 44, 150, 256
+    xg, xd = 120, 400
+    corps = [(yh, 'Ω = ℚ(j, α)', 't'), (ym, 'ℚ(j)', 't'), (yb, 'ℚ', 't')]
+    groupes = [(yh, 'H_s = {`id`}', 't'), (ym, 'H_0 ≅ ℤ/3ℤ', 't'), (yb, 'G ≅ 𝔖_3', 't')]
+    for y, s, c in corps:
+        S.texte([xg, y], s, c, taille=16)
+    for y, s, c in groupes:
+        S.texte([xd, y], s, c, taille=16)
+    # étages : rouge (cyclotomique) en bas, bleu (Kummer) en haut
+    for (ya, yb_), c, deg, quo in [((yb, ym), 'r', '2', 'ℤ/2ℤ'), ((ym, yh), 'b', '3', 'ℤ/3ℤ')]:
+        S.ligne([xg, ya - 14], [xg, yb_ + 14], c, l=2)
+        S.ligne([xd, ya - 14], [xd, yb_ + 14], c, l=2)
+        S.texte([xg - 12, (ya + yb_) / 2], deg, c, ancre='end', taille=16)
+        S.texte([xd + 12, (ya + yb_) / 2], quo, c, ancre='start', taille=16)
+    S.texte([xg + 10, (yb + ym) / 2], '+ ζ', 'r', ancre='start', taille=15)
+    S.texte([xg + 10, (ym + yh) / 2], '+ α', 'b', ancre='start', taille=15)
+    for y in (yh, ym, yb):
+        S.fleche([xg + 78, y], [xd - 74, y], 'g', d=True, double=True)
+    S.texte([xg, 288], 'corps', 'g', ui=True)
+    S.texte([xd, 288], 'groupes', 'g', ui=True)
+    return S
+
+
 # ================================================================ théorie algébrique des nombres
 
 def _hnf2(vecs):
@@ -818,6 +1037,131 @@ def li_petits():
     # le pas s, entre 0 et Y
     S.fleche(R(0, -0.62), R(float(s), -0.62), 'b', l=1.2, double=True)
     S.texte(R(float(s) / 2, -0.62) + [0, 16], 's', 'b', taille=15)
+    return S
+
+
+def _expm(M, termes=40):
+    """Exponentielle d'une matrice par la série, après division par 2^q (puis q élévations au carré)."""
+    M = np.asarray(M, float)
+    q = max(0, int(np.ceil(np.log2(max(np.abs(M).sum(), 1e-300)))) + 1)
+    X = M / 2 ** q
+    E, T = np.eye(len(M)), np.eye(len(M))
+    for k in range(1, termes):
+        T = T @ X / k
+        E = E + T
+    for _ in range(q):
+        E = E @ E
+    return E
+
+
+@schema('li-exponentielle')
+def li_exponentielle():
+    J = np.array([[0., -1.], [1., 0.]])
+    rot = lambda t: np.array([[math.cos(t), -math.sin(t)], [math.sin(t), math.cos(t)]])
+    # e^{tJ} = R_t (remarque de la fiche), e^{2πJ} = I = e^0 et e^{±πJ} = −I
+    for t in np.linspace(-4, 7, 23):
+        assert np.allclose(_expm(t * J), rot(t), atol=1e-10)
+    assert np.allclose(_expm(2 * math.pi * J), np.eye(2), atol=1e-10)
+    assert np.allclose(_expm(math.pi * J), -np.eye(2)) and np.allclose(_expm(-math.pi * J), -np.eye(2))
+    # sur ]−π, π[, t ↦ R_t est injective (l'angle se lit par atan2), et n'atteint pas −I
+    ts = np.linspace(-math.pi, math.pi, 401)[1:-1]
+    angles = [math.atan2(_expm(t * J)[1, 0], _expm(t * J)[0, 0]) for t in ts]
+    assert np.allclose(angles, ts, atol=1e-9)
+    S = Schema(520, 280, 'La droite des tJ s’enroule sur le cercle SO(2) : bijective près de 0, pas globalement')
+    X = lambda t: 34 + (t + 4.2) * 37            # droite des tJ, de t = −4,2 à t = 7,6
+    y = 236
+    # cercle au-dessus de t = π ; R_t est placé à l'angle t compté depuis le bas (I en bas, −I en haut)
+    O, rr = np.array([X(math.pi), 106.]), 66.
+    C = lambda t: O + rr * np.array([-math.sin(t), math.cos(t)])
+    assert X(7.6) < 500 and C(0)[1] < y - 50                    # le cercle reste au-dessus de la droite
+    assert np.allclose(C(math.pi), C(-math.pi)) and np.allclose(C(0), C(2 * math.pi))
+    S.fleche((X(-4.2), y), (X(7.6), y), 'g')
+    S.texte((X(7.6), y - 18), 'tJ', 'g', ancre='end', taille=16)
+    epais = lambda p, q: S.brut(f'<line class="s-r" style="stroke-width:4px" x1="{f(p[0])}" y1="{f(p[1])}" '
+                                f'x2="{f(q[0])}" y2="{f(q[1])}"/>')
+    epais((X(-math.pi) + 5, y), (X(math.pi) - 5, y))
+    for t, nom, c in ((-math.pi, '−π', 'g'), (0, '0', 'r'), (math.pi / 2, 'π/2', 'b'), (math.pi, 'π', 'g'),
+                      (2 * math.pi, '2π', 'r')):
+        S.ligne((X(t), y - 5), (X(t), y + 5), 'g')
+        S.texte((X(t), y + 22), nom, c, taille=15)
+    S.point((X(-math.pi), y), 'r', r=4.5, creux=True)
+    S.point((X(math.pi), y), 'r', r=4.5, creux=True)
+    S.point((X(0), y), 'r', r=4.5)
+    S.point((X(2 * math.pi), y), 'r', r=4.5)
+    S.point((X(math.pi / 2), y), 'b', r=4.5)
+    # le cercle : image de ]−π, π[ en rouge (tout sauf −I), −I en point creux
+    S.cercle(O, rr, 'g')
+    pts = np.array([C(t) for t in np.linspace(-math.pi + 0.08, math.pi - 0.08, 200)])
+    S.brut(f'<polyline class="s-r" style="stroke-width:4px;fill:none" points="'
+           + ' '.join(f'{f(a)},{f(b)}' for a, b in pts) + '"/>')
+    S.point(C(0), 'r', r=5)
+    S.point(C(math.pi), 'r', r=4.5, creux=True)
+    S.point(C(math.pi / 2), 'b', r=5)
+    S.texte(C(0) + [0, -20], 'I', 'r', taille=16)
+    S.texte(C(math.pi) + [0, -18], '−I', 'g', taille=16)
+    S.texte(C(math.pi / 2) + [-14, -4], 'R_{π/2}', 'b', ancre='end', taille=16)
+    S.texte(O + [rr + 16, -30], 'SO(2)', 'g', ancre='start', taille=16)
+    # 0 et 2π ont la même image I ; π/2 s'envoie sur R_{π/2}
+    for t, bomb in ((0, 0.18), (2 * math.pi, -0.18)):
+        S.courbe_fleche(courbe_entre((X(t), y - 12), C(0) + [8 * np.sign(t - 1), 9], bomb), 'r')
+    S.courbe_fleche(courbe_entre((X(math.pi / 2), y - 12), C(math.pi / 2) + [-4, 9], 0.15), 'b', d=True)
+    S.texte((90, 60), 't ↦ e^{tJ} = R_t', 'r', taille=16)
+    return S
+
+
+@schema('li-algebre')
+def li_algebre():
+    J = np.array([[0., -1.], [1., 0.]])
+    A, B = 1.2 * J, np.diag([0.6, -0.6])
+    x0 = np.array([1.0, 0.4])
+    cible = _expm(A + B) @ x0
+    # flots explicites : e^{sA} est la rotation d'angle 1,2 s, e^{sB} = diag(e^{0,6 s}, e^{−0,6 s})
+    for s in (0.1, 0.5, 1.0):
+        assert np.allclose(_expm(s * A), [[math.cos(1.2 * s), -math.sin(1.2 * s)], [math.sin(1.2 * s), math.cos(1.2 * s)]])
+        assert np.allclose(_expm(s * B), np.diag([math.exp(0.6 * s), math.exp(-0.6 * s)]))
+    assert not np.allclose(A @ B, B @ A)                       # A et B ne commutent pas
+
+    def trotter(k, n=24):
+        p, pts = x0.copy(), [x0.copy()]
+        for _ in range(k):
+            for M in (B, A):                                    # e^{B/k} agit d'abord, puis e^{A/k}
+                q = p
+                for s in np.linspace(0, 1 / k, n)[1:]:
+                    pts.append(_expm(s * M) @ q)
+                p = pts[-1]
+        assert np.allclose(p, np.linalg.matrix_power(_expm(A / k) @ _expm(B / k), k) @ x0)
+        return np.array(pts), p
+    chemins = {k: trotter(k) for k in (3, 8)}
+    ecarts = {k: np.linalg.norm(chemins[k][1] - cible) for k in chemins}
+    e64 = np.linalg.norm(np.linalg.matrix_power(_expm(A / 64) @ _expm(B / 64), 64) @ x0 - cible)
+    assert ecarts[3] > ecarts[8] > e64 and e64 < 0.02          # l'extrémité se rapproche de e^{A+B}x₀
+    assert 0.5 < 3 * ecarts[3] / (8 * ecarts[8]) < 2            # écart de l'ordre de 1/k
+    # valeurs de la légende : environ 0,22 puis 0,08, proches de 0,65/k
+    assert round(ecarts[3], 2) == 0.22 and round(ecarts[8], 2) == 0.08
+    assert abs(ecarts[3] - 0.65 / 3) < 0.01 and abs(ecarts[8] - 0.65 / 8) < 0.005
+    S = Schema(520, 340, 'Produits de Trotter : pas alternés selon B puis A, qui approchent la trajectoire de A + B')
+    R = Repere(0.4, 1.3, 0.25, 1.3, 40, 16, 279, 325.5)
+    assert abs(279 / 0.9 - 325.5 / 1.05) < 1e-9                 # même échelle sur les deux axes
+    lo = np.min([chemins[3][0].min(0), chemins[8][0].min(0)], axis=0)
+    hi = np.max([chemins[3][0].max(0), chemins[8][0].max(0)], axis=0)
+    assert lo[0] > 0.4 and lo[1] > 0.25 and hi[0] < 1.3 and hi[1] < 1.3
+    exacte = np.array([_expm(s * (A + B)) @ x0 for s in np.linspace(0, 1, 120)])
+    S.poly(R(exacte[:, 0], exacte[:, 1]), 'r', l=2.4)
+    S.poly(R(chemins[8][0][:, 0], chemins[8][0][:, 1]), 'v', l=1.4)
+    S.poly(R(chemins[3][0][:, 0], chemins[3][0][:, 1]), 'b', l=1.6)
+    S.point(R(*x0), 't', r=4.5)
+    S.texte(R(*x0) + [-10, 12], 'x_0', ancre='end', taille=16)
+    S.point(R(*cible), 'r', r=5)
+    S.texte(R(*cible) + [-12, 14], 'e^{A+B}x_0', 'r', ancre='end', taille=16)
+    S.point(R(*chemins[3][1]), 'b', r=4)
+    S.point(R(*chemins[8][1]), 'v', r=4)
+    # légende à droite
+    xl, yl = 345, 60
+    for j, (c, nom) in enumerate((('r', 's ↦ e^{s(A+B)}x_0'), ('b', 'k = 3'), ('v', 'k = 8'))):
+        S.ligne((xl, yl + 34 * j), (xl + 28, yl + 34 * j), c, l=2)
+        S.texte((xl + 38, yl + 34 * j), nom, c, ancre='start', taille=15)
+    S.texte((xl, 200), 'A = 1,2 J', 'g', ancre='start', taille=15)
+    S.texte((xl, 232), 'B = `diag`(0,6 ; −0,6)', 'g', ancre='start', taille=15)
     return S
 
 

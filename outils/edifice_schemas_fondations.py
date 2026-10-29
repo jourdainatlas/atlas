@@ -183,6 +183,42 @@ def l_substitution():
     return S
 
 
+@schema('l-tautologies')
+def l_tautologies():
+    # Formule → φ → ψ φ, c'est-à-dire φ → (ψ → φ). On cherche une valuation qui donne 0 à la racine :
+    # la table de → n'a qu'une ligne de valeur 0, (1, 0), ce qui impose les valeurs en descendant.
+    imp = lambda a, b: 0 if (a, b) == (1, 0) else 1
+    assert [(a, b) for a in (0, 1) for b in (0, 1) if imp(a, b) == 0] == [(1, 0)]
+    assert all(imp(f, imp(p, f)) == 1 for f in (0, 1) for p in (0, 1))       # tautologie
+    # nœuds : (étiquette, parent) ; valeurs imposées par la recherche d'un 0 à la racine
+    noeuds = {'r': ('→', None), 'a': ('φ', 'r'), 'b': ('→', 'r'), 'c': ('ψ', 'b'), 'd': ('φ', 'b')}
+    impose = {'r': 0}
+    for x in ('r', 'b'):                                   # nœuds → de valeur 0, dans l'ordre de lecture
+        g, d = [k for k, (_, par) in noeuds.items() if par == x]
+        impose[g], impose[d] = 1, 0                        # seule ligne de valeur 0
+    assert impose == {'r': 0, 'a': 1, 'b': 0, 'c': 1, 'd': 0}
+    assert impose['a'] != impose['d']                      # les deux occurrences de φ : conflit
+
+    S = Schema(500, 250, "Recherche d'une valuation qui annule φ → (ψ → φ) : les deux occurrences de φ se contredisent")
+    P = {'r': (210, 40), 'a': (120, 120), 'b': (300, 120), 'c': (240, 200), 'd': (360, 200)}
+    # recentrage : de la gauche de l'étiquette φ de gauche au bord du cercle de valeur de droite
+    gauche = min(x for x, _ in P.values()) - 7
+    droite = max(x for x, _ in P.values()) + 28.5 + 11
+    dx = 250 - (gauche + droite) / 2
+    P = {k: np.array(v, float) + [dx, 0] for k, v in P.items()}
+    assert abs((gauche + dx) + (droite + dx) - 500) < 1e-9
+    for k, (_, par) in noeuds.items():
+        if par:
+            ligne_boites(S, P[par], P[k], (10, 12), (10, 12), 'g', marge=2)
+    for k, (lab, _) in noeuds.items():
+        c = 'r' if k in ('a', 'd') else 't'
+        S.texte(P[k], lab, c, taille=17)
+        S.texte(P[k] + [24, -2], str(impose[k]), c, ancre='start', taille=15)
+        S.cercle(P[k] + [28.5, -2], 11, c if c == 'r' else 'g')
+    S.texte((250, 240), '`mot` : → φ → ψ φ', 'g', taille=15)
+    return S
+
+
 # ================================================================ rel
 def sagittal(S, cx, cy, A, B, f, rouge_fl=(), rouge_pt=(), titre=''):
     """Diagramme sagittal : A et B listes de noms, f dictionnaire A → B."""
@@ -593,6 +629,118 @@ def a_transversal():
     return S
 
 
+def _s3():
+    """Les six bijections de {a, b, c}, nommées comme dans les fiches, et leur composition."""
+    E = 'abc'
+    idt = {x: x for x in E}
+    tab = {'a': 'b', 'b': 'a', 'c': 'c'}
+    tbc = {'a': 'a', 'b': 'c', 'c': 'b'}
+    tac = {'a': 'c', 'b': 'b', 'c': 'a'}
+    nom = {'id': idt, 'τ_{ab}': tab, 'τ_{bc}': tbc, 'τ_{ac}': tac,
+           'τ_{ab}∘τ_{bc}': compose(tab, tbc), 'τ_{bc}∘τ_{ab}': compose(tbc, tab)}
+    key = lambda p: tuple(p[x] for x in E)
+    inv = {key(v): k for k, v in nom.items()}
+    assert len(inv) == 6
+    mul = lambda x, y: inv[key(compose(nom[x], nom[y]))]
+    return list(nom), mul
+
+
+def _est_sous_groupe(H, G, mul):
+    inv = {x: next(y for y in G if mul(x, y) == 'id') for x in G}
+    return 'id' in H and all(mul(x, inv[y]) in H for x in H for y in H), inv
+
+
+@schema('a-quotient')
+def a_quotient():
+    G, mul = _s3()
+    A3 = ['id', 'τ_{ab}∘τ_{bc}', 'τ_{bc}∘τ_{ab}']
+    H2 = ['id', 'τ_{ab}']
+    y = 'τ_{bc}'
+    S = Schema(540, 330, "Produits xτ_bc pour x dans H : une seule classe si H est distingué, deux sinon")
+    panneaux = [(A3, [['id', 'τ_{ab}∘τ_{bc}', 'τ_{bc}∘τ_{ab}'], ['τ_{bc}', 'τ_{ab}', 'τ_{ac}']],
+                 ['H', 'τ_{bc}H'], [65, 168], 'H distingué', 'une classe'),
+                (H2, [['id', 'τ_{ab}'], ['τ_{bc}', 'τ_{bc}∘τ_{ab}'], ['τ_{ac}', 'τ_{ab}∘τ_{bc}']],
+                 ['H', 'τ_{bc}H', 'τ_{ac}H'], [303, 397, 491], 'H non distingué', 'deux classes')]
+    for k, (H, cols, noms, X, titre, bilan) in enumerate(panneaux):
+        ok, inv = _est_sous_groupe(H, G, mul)
+        assert ok
+        distingue = all(mul(mul(g, h), inv[g]) in H for g in G for h in H)
+        assert distingue == (k == 0)
+        if k == 0:
+            # justification de la légende : classes à gauche et à droite = H et son complémentaire
+            gauches = {frozenset(mul(x, h) for h in H) for x in G}
+            droites = {frozenset(mul(h, x) for h in H) for x in G}
+            assert gauches == droites == {frozenset(H), frozenset(set(G) - set(H))}
+        # les colonnes dessinées sont exactement les classes à gauche xH, et leur premier élément les nomme
+        assert sorted(map(sorted, cols)) == sorted(map(sorted, {frozenset(mul(x, h) for h in H) for x in G}))
+        assert all(set(c) == {mul(c[0], h) for h in H} for c in cols)
+        assert [n.replace('H', '') or 'id' for n in noms] == [c[0] for c in cols]
+        produits = {mul(x, y) for x in H}                          # l'ensemble Hτ_bc
+        touchees = [j for j, c in enumerate(cols) if produits & set(c)]
+        assert len(touchees) == (1 if k == 0 else 2)
+        if k == 1:
+            # la remarque : x = id et x′ = τ_ab sont dans la même classe H, mais xτ_bc et x′τ_bc non
+            assert mul('id', y) in cols[1] and mul('τ_{ab}', y) in cols[2]
+        Y = [92, 150, 208][:len(cols[0])]
+        for j, (c, xc) in enumerate(zip(cols, X)):
+            for e, yy in zip(c, Y):
+                coul = 'b' if j == 0 else ('r' if e in produits else 't')
+                S.texte((xc, yy), e.replace('id', '`id`').replace('∘', ' ∘ '), coul, taille=15)
+            capsule(S, (xc, Y[0]), (xc, Y[-1]), 42, 'r' if j in touchees else 'g')
+            S.texte((xc, Y[-1] + 68), noms[j], 'g', taille=15)
+        xm = (X[0] + X[-1]) / 2
+        S.texte((xm, 24), titre, 'g', ui=True)
+        S.texte((xm, 314), bilan, 'r', ui=True)
+    S.ligne((240, 40), (240, 300), 'g', d=True)
+    return S
+
+
+@schema('a-isomorphisme')
+def a_isomorphisme():
+    G, mul = _s3()
+    H = ['id', 'τ_{ab}∘τ_{bc}', 'τ_{bc}∘τ_{ab}']
+    T = ['τ_{ab}', 'τ_{bc}', 'τ_{ac}']
+    fn = {x: ('id' if x in H else 'τ_{ab}') for x in G}
+    # f est un morphisme de 𝔖({a, b, c}) dans lui-même, de noyau H et d'image {id, τ_ab}
+    assert all(fn[mul(x, y)] == mul(fn[x], fn[y]) for x in G for y in G)
+    assert [x for x in G if fn[x] == 'id'] == H and sorted(set(fn.values())) == ['id', 'τ_{ab}']
+    ok, _ = _est_sous_groupe(H, G, mul)
+    assert ok and set(T) == {mul('τ_{ab}', h) for h in H}          # la seconde ligne est τ_ab H
+    # f est constante sur chaque classe, et deux classes distinctes ont des images distinctes
+    assert len({fn[x] for x in H}) == 1 and len({fn[x] for x in T}) == 1 and fn[H[0]] != fn[T[0]]
+    # justification de la légende : xH = G ∖ H pour x ∉ H, donc xy ∈ H ⟺ (x ∈ H ⟺ y ∈ H), et τ_ab² = id
+    assert all({mul(x, h) for h in H} == set(T) for x in T)
+    assert all((mul(x, y) in H) == ((x in H) == (y in H)) for x in G for y in G)
+    assert mul('τ_{ab}', 'τ_{ab}') == 'id'
+    S = Schema(540, 300, "Le morphisme f, constant sur les classes de son noyau, et son image")
+    X = [52, 140, 228]
+    Ys = [96, 206]
+    for lig, yy, coul in ((H, Ys[0], 'b'), (T, Ys[1], 't')):
+        for e, xx in zip(lig, X):
+            S.texte((xx, yy), e.replace('id', '`id`').replace('∘', ' ∘ '), coul, taille=15)
+        capsule(S, (X[0], yy), (X[-1], yy), 40, 'g')
+    S.texte((X[1], Ys[0] + 52), 'H = `Ker` f', 'b', taille=15)
+    S.texte((X[1], Ys[1] + 52), 'τ_{ab}H', 'g', taille=15)
+    S.texte((X[1], 30), 'G', 'g', taille=16)
+    # G′ : les six éléments ; Im f = {id, τ_ab} en rouge
+    P = {'id': (398, 96), 'τ_{ab}': (398, 151), 'τ_{ab}∘τ_{bc}': (398, 206),
+         'τ_{bc}∘τ_{ab}': (486, 96), 'τ_{bc}': (486, 151), 'τ_{ac}': (486, 206)}
+    assert sorted(P) == sorted(G)
+    S.rect(350, 58, 182, 186, 'g', rx=12)
+    S.texte((486, 30), 'G′', 'g', taille=16)
+    for e, p in P.items():
+        S.texte(p, e.replace('id', '`id`').replace('∘', ' ∘ '), 'r' if e in fn.values() else 'g', taille=15)
+    capsule(S, (398, 96), (398, 151), 22, 'r')
+    S.texte((398, 30), '`Im` f', 'r', taille=15)
+    S.ligne((398, 44), (398, 72), 'r')
+    for lig, yy in ((H, Ys[0]), (T, Ys[1])):
+        cible = np.array(P[fn[lig[0]]], float)
+        S.fleche((X[-1] + 50, yy), cible - [26, 0], 'r', l=1.6)
+    S.texte((318, 84), 'f', 'r', taille=16)
+    S.texte((318, 166), 'f', 'r', taille=16)
+    return S
+
+
 # ================================================================ ordin
 @schema('o-transitif')
 def o_transitif():
@@ -660,6 +808,213 @@ def o_ultrafiltre():
         c = 'r' if F in maximaux else 't'
         S.texte(pos[F], lab[F], c, taille=17)
     S.texte((260, 16), 'ultrafiltres (principaux)', 'r', ui=True, taille=13)
+    return S
+
+
+@schema('o-representation')
+def o_representation():
+    # Trois bons ordres sur l'ensemble des entiers, donnés par une clé : x précède y si cle(x) < cle(y).
+    K = 60                                               # troncature pour les vérifications
+    ordres = [('usuel', lambda m: (0, m)),
+              ('0 renvoyé à la fin', lambda m: (1 if m == 0 else 0, m)),
+              ('pairs, puis impairs', lambda m: (m % 2, m))]
+    rangs = []
+    for nom, cle in ordres:
+        L = sorted(range(K), key=cle)
+
+        # prédécesseur immédiat de x : le plus grand élément qui le précède, s'il existe ; calculé sur la
+        # troncature, puis on vérifie qu'aucun entier de K à 3K ne s'intercale (sinon, il n'y en a pas)
+        def pred(x):
+            av = [y for y in range(K) if cle(y) < cle(x)]
+            if not av:
+                return None
+            m = max(av, key=cle)
+            return m if all(not (cle(m) < cle(z) < cle(x)) for z in range(K, 3 * K)) else 'aucun'
+        limites = [x for x in range(K // 2) if pred(x) == 'aucun']
+        rangs.append((L, limites))
+    # éléments, autres que le premier, sans prédécesseur immédiat (en rouge) : aucun, 0, puis 1
+    assert rangs[0][1] == [] and rangs[1][1] == [0] and rangs[2][1] == [1]
+    # le deuxième ordre a un plus grand élément (0), les deux autres non
+    cle1 = ordres[1][1]
+    assert all(cle1(m) < cle1(0) for m in range(1, 3 * K))
+    assert all(any(ordres[j][1](z) > ordres[j][1](x) for z in range(3 * K)) for j in (0, 2) for x in range(K))
+
+    S = Schema(520, 300, "Trois bons ordres sur les entiers : types différents sur un même ensemble")
+    xg, r = 60, 0.74
+    pos = lambda k, x0, L: x0 + L * (1 - r ** k)          # k-ième élément d'une suite croissante sans fin
+    ys = [60, 150, 240]
+    nb = 9
+    for j, (y, (nom, cle), (L, lim)) in enumerate(zip(ys, ordres, rangs)):
+        S.texte((xg - 6, y - 26), nom, 'g', ancre='start', ui=True)
+        S.ligne((xg - 8, y), (500, y), 'g', l=0.8)
+        if j == 0:
+            blocs = [(xg, 400, L[:nb])]
+        elif j == 1:
+            blocs = [(xg, 330, L[:nb])]
+        else:
+            blocs = [(xg, 190, [m for m in L if m % 2 == 0][:nb]), (xg + 230, 190, [m for m in L if m % 2][:nb])]
+        for x0, Lb, elems in blocs:
+            for k, m in enumerate(elems):
+                x = pos(k, x0, Lb)
+                c = 'r' if m in lim else 't'
+                S.point((x, y), c, r=4.4 if c == 'r' else 3.4)
+                if k < 4:
+                    S.texte((x, y + 20), str(m), c, taille=15)
+            S.texte((x0 + Lb + 6, y + 20), '⋯', 'g', ancre='end', taille=15)
+        if j == 1:
+            assert L[-1] == 0
+            x = 330 + xg + 40
+            S.point((x, y), 'r', r=4.4)
+            S.texte((x, y + 20), '0', 'r', taille=15)
+        S.texte((508, y - 26), ['`type` ω', '`type` ω + 1', ''][j], 'g', ancre='end', taille=15)
+    S.texte((508, ys[2] - 26), 'deux suites', 'g', ancre='end', ui=True)
+    return S
+
+
+@schema('o-zorn')
+def o_zorn():
+    # Ensemble ordonné fini dessiné par niveaux ; l'ordre est la clôture transitive des relations données.
+    elems = ['c1', 'c2', 'c3', 'y', 'z', 'm1', 'm2', 'w']
+    couv = [('c1', 'c2'), ('c2', 'c3'), ('c2', 'y'), ('c1', 'z'),
+            ('c3', 'm1'), ('c3', 'm2'), ('m1', 'w'), ('y', 'w')]
+    inf = set(couv)
+    while True:
+        plus = {(a, d) for a, b in inf for c, d in inf if b == c} - inf
+        if not plus:
+            break
+        inf |= plus
+    lt = lambda a, b: (a, b) in inf
+    assert not any(lt(a, a) for a in elems)                          # ordre strict
+    C = ['c1', 'c2', 'c3']                                           # la chaîne F[α]
+    chaine = lambda X: all(lt(a, b) or lt(b, a) or a == b for a in X for b in X)
+    assert chaine(C)
+    Smaj = [x for x in elems if all(lt(c, x) for c in C)]            # majorants stricts de F[α]
+    assert Smaj == ['m1', 'm2', 'w']
+    assert lt('c2', 'y') and not lt('c3', 'y') and lt('c1', 'z') and not lt('c2', 'z')   # y, z : non
+    choisi = 'm1'                                                    # F(α) = c(S(F[α]))
+    assert choisi in Smaj and chaine(C + [choisi])                   # F[α^+] est encore une chaîne
+    hasse = [(a, b) for a, b in inf if not any(lt(a, c) and lt(c, b) for c in elems)]
+    assert sorted(hasse) == sorted(couv)                             # traits = relations de couverture
+    P = {'c1': (230, 296), 'c2': (230, 226), 'c3': (230, 156), 'y': (110, 156), 'z': (350, 226),
+         'm1': (170, 86), 'm2': (300, 86), 'w': (120, 26)}
+    P = {k: np.array(v, float) + [0, 12] for k, v in P.items()}
+    assert all(P[a][1] > P[b][1] for a, b in hasse)                  # chaque trait monte
+    S = Schema(520, 336, "Une étape de la preuve de Zorn : chaîne, majorants stricts et élément choisi")
+    nuage = np.vstack([arc(P[x], 22, 0, 2 * np.pi, 40) for x in Smaj])
+    S.poly(enveloppe(nuage), 'b', d=True, ferme=True, rempli='b')
+    capsule(S, P['c1'], P['c3'], 20, 'r', rempli='r')
+    for a, b in sorted(hasse):
+        ligne_boites(S, P[a], P[b], (6, 6), (6, 6), 'r' if a in C and b in C else 'g', marge=1)
+    for x in elems:
+        c = 'r' if x in C else ('o' if x == choisi else ('b' if x in Smaj else 't'))
+        S.point(P[x], c, r=5.2 if c in 'ro' else 3.8)
+    S.texte(P['c2'] + [-30, 0], 'F[α]', 'r', ancre='end')
+    S.texte(P['m1'] + [16, -4], 'F(α)', 'o', ancre='start', taille=16)   # dans la zone bleue
+    S.texte(P['m2'] + [36, 0], 'S(F[α])', 'b', ancre='start')
+    return S
+
+
+# ================================================================ n
+@schema('n-recdef')
+def n_recdef():
+    # E = {a, b, c, d}, g : a ↦ b, b ↦ c, c ↦ d, d ↦ b. Approximations h_n de domaine S(n) = {0, …, n},
+    # construites comme dans la preuve : h_0 = {(0, a)}, h_{n+1} = h_n ∪ {(n+1, g(h_n(n)))}.
+    E = ['a', 'b', 'c', 'd']
+    g = {'a': 'b', 'b': 'c', 'c': 'd', 'd': 'b'}
+    N = 6                                               # on dessine le graphe sur 0, …, 5
+    h = [{0: 'a'}]
+    for n in range(N - 1):
+        h.append({**h[-1], n + 1: g[h[-1][n]]})
+    for n, hn in enumerate(h):
+        assert set(hn) == set(range(n + 1))                                   # domaine S(n)
+        assert hn[0] == 'a' and all(hn[m + 1] == g[hn[m]] for m in range(n))  # approximation
+    for n in range(N):                                   # deux approximations coïncident sur leurs domaines
+        for k in range(N):
+            assert all(h[n][m] == h[k][m] for m in set(h[n]) & set(h[k]))
+    graphe = set().union(*(hn.items() for hn in h))       # réunion des graphes
+    assert len({m for m, _ in graphe}) == len(graphe)     # c'est une application
+    f = dict(graphe)
+    assert f == h[-1] and [f[m] for m in range(N)] == ['a', 'b', 'c', 'd', 'b', 'c']
+    assert f[1] == f[4]                                   # f n'est pas injective (légende)
+
+    S = Schema(520, 356, "Graphe de f construit par approximations successives h_n de domaine S(n)")
+    x0, dx = 132, 64
+    X = [x0 + dx * m for m in range(N)]
+    yE = {e: 46 + 44 * i for i, e in enumerate(E)}
+    ybas = yE['d'] + 34
+    # axes : ω horizontalement, E verticalement
+    S.ligne((x0 - 30, ybas), (X[-1] + 22, ybas), 'g')
+    S.texte((X[-1] + 30, ybas), '⋯', 'g', ancre='start')
+    S.texte((X[-1] + 42, ybas + 18), 'ω', 'g', taille=15)
+    for m in range(N):
+        S.ligne((X[m], ybas - 4), (X[m], ybas + 4), 'g')
+        S.texte((X[m], ybas + 18), str(m), 'g', taille=15)
+    for e in E:
+        S.ligne((x0 - 30, yE[e]), (X[-1] + 26, yE[e]), 'g', d=True, l=0.7)
+        S.texte((x0 - 40, yE[e]), e, ancre='end')
+    S.texte((x0 - 64, yE['b'] + 22), 'E', 'g', ancre='end')
+    # flèches de g entre points consécutifs du graphe
+    for m in range(N - 1):
+        p, q = np.array([X[m], yE[f[m]]]), np.array([X[m + 1], yE[f[m + 1]]])
+        S.fleche(p, q, 'g', retrait=8, retrait_debut=8, l=1)
+    S.texte(((X[0] + X[1]) / 2 + 12, (yE['a'] + yE['b']) / 2 - 8), 'g', 'g', ancre='start', taille=15)
+    for m in range(N):
+        S.point((X[m], yE[f[m]]), 'r', r=4.6)
+    # approximations h_0, …, h_4 : barres emboîtées sous l'axe, le point ajouté en rouge
+    y0, pas = ybas + 46, 18
+    for n in range(N - 1):
+        y = y0 + pas * n
+        if n:
+            epais(S, (X[0], y), (X[n], y), 't', 2.2)
+        for m in range(n + 1):
+            S.point((X[m], y), 'r' if m == n else 't', r=3.6 if m == n else 2.8)
+        S.texte((X[0] - 22, y), f'h_{n}', 'g', ancre='end', taille=15)
+    S.texte((X[N - 2] + 34, y0 + pas * (N - 2)), '⋯', 'g', ancre='start')
+    return S
+
+
+@schema('n-fini')
+def n_fini():
+    # Construction de la preuve de (i), appliquée à une injection f : p + 1 → n + 1 (ici p = 3, n = 4) :
+    # si f(k) = n avec k < p, on pose g(j) = f(j) pour j ≠ k et g(k) = f(p) ; g : p → n est injective.
+    p, n = 3, 4
+    f = {0: 0, 1: 4, 2: 3, 3: 2}
+    assert set(f) == set(range(p + 1)) and set(f.values()) <= set(range(n + 1))
+    assert len(set(f.values())) == len(f)                                  # f injective
+    k = next(j for j in range(p) if f[j] == n)
+    gg = {j: (f[p] if j == k else f[j]) for j in range(p)}
+    assert k == 1 and f[p] != n
+    assert set(gg.values()) <= set(range(n)) and len(set(gg.values())) == p  # g : p → n injective
+
+    S = Schema(520, 300, "Construction de g : on réoriente vers f(p) la flèche qui atteignait n")
+    dy, ytop = 44, 70
+
+    def panneau(cx, dom, cod, fl, titre, coul):
+        xa, xb = cx - 66, cx + 66
+        Ya = {j: ytop + dy * j for j in range(dom)}
+        Yb = {j: ytop + dy * j for j in range(cod)}
+        S.rect(xa - 26, ytop - 24, 52, dy * (dom - 1) + 48, 'g', rx=20)
+        S.rect(xb - 26, ytop - 24, 52, dy * (cod - 1) + 48, 'g', rx=20)
+        for j in range(dom):
+            S.point((xa, Ya[j]))
+            S.texte((xa - 12, Ya[j]), str(j), ancre='end', taille=15)
+        for j in range(cod):
+            S.point((xb, Yb[j]))
+            S.texte((xb + 12, Yb[j]), str(j), ancre='start', taille=15)
+        for j, v in fl.items():
+            S.fleche((xa, Ya[j]), (xb, Yb[v]), coul.get(j, 't'), retrait=6, retrait_debut=6)
+        S.texte((cx, ytop + dy * (max(dom, cod) - 1) + 44), titre, 'g', taille=16)
+        return xa, xb, Ya, Yb
+
+    xa, xb, Ya, Yb = panneau(130, p + 1, n + 1, f, 'f : p + 1 → n + 1', {k: 'r', p: 'b'})
+    S.texte((xa - 40, Ya[k]), 'k', 'r', ancre='end', taille=15)
+    S.texte((xa - 40, Ya[p]), 'p', 'b', ancre='end', taille=15)
+    S.texte((xb + 32, Yb[n]), 'n', 'r', ancre='start', taille=15)
+    xa, xb, Ya, Yb = panneau(390, p, n + 1, gg, 'g : p → n', {k: 'b'})
+    S.texte((xa - 40, Ya[k]), 'k', 'b', ancre='end', taille=15)
+    S.point((xb, Yb[n]), 'g', r=6, creux=True)          # n n'est plus atteint : g est à valeurs dans n
+    S.texte((xb + 32, Yb[n]), 'n', 'g', ancre='start', taille=15)
+    S.fleche((236, 150), (292, 150), 'g')
     return S
 
 

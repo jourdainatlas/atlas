@@ -249,6 +249,131 @@ def t_quotient():
     return S
 
 
+@schema('t-produit')
+def t_produit():
+    S = Schema(520, 330, 'Un cylindre ouvert du produit : des fenêtres en un nombre fini d’indices')
+    n = 7
+    J = {2: (0.30, 0.62), 4: (0.52, 0.86), 5: (0.18, 0.46)}       # fenêtres U_j, j ∈ J ; ailleurs U_i = X_i
+    rouge = [0.70, 0.45, 0.20, 0.66, 0.31, 0.83, 0.55]            # x_1, …, x_7 (indices 1 à 7)
+    gris = [0.38, 0.55, 0.90, 0.35, 0.40, 0.12, 0.62]
+    dans = lambda pt: all(J[j][0] < pt[j - 1] < J[j][1] for j in J)
+    assert len(J) < n and dans(rouge)                               # contrainte finie, famille rouge dedans
+    assert not dans(gris) and [j for j in J if not J[j][0] < gris[j - 1] < J[j][1]] == [4]
+    assert all(0 < v < 1 for v in rouge + gris)
+    y0, y1 = 270.0, 50.0
+    X = lambda i: 48 + (i - 1) * 62.0
+    Y = lambda t: y0 + t * (y1 - y0)
+    for i in range(1, n + 1):
+        if i in J:
+            a, b = J[i]
+            S.rect(X(i) - 13, Y(b), 26, Y(a) - Y(b), 'b', rempli='b')
+            S.ligne([X(i), Y(a)], [X(i), Y(b)], 'b', l=5)
+            S.texte([X(i) + 17, Y(b) - 4], f'U_{i}', 'b', ancre='start', taille=15)
+        S.ligne([X(i), y0], [X(i), y1], 't')
+        S.texte([X(i), y0 + 22], f'X_{i}', 't', taille=16)
+    S.texte([X(n) + 44, (y0 + y1) / 2], '…', 't')
+    S.texte([X(n) + 44, y0 + 22], '…', 't', taille=16)
+    S.poly([[X(i + 1), Y(v)] for i, v in enumerate(gris)], 'g', d=True)
+    S.poly([[X(i + 1), Y(v)] for i, v in enumerate(rouge)], 'r')
+    for i, v in enumerate(gris):
+        S.point([X(i + 1), Y(v)], 'g', r=3.4)
+    for i, v in enumerate(rouge):
+        S.point([X(i + 1), Y(v)], 'r', r=4)
+    S.texte([X(1) - 10, Y(rouge[0]) - 4], 'x_1', 'r', ancre='end', taille=15)
+    S.texte([X(4) - 9, Y(gris[3]) + 14], 'x′_4', 'g', ancre='end', taille=15)
+    S.texte([X(4), Y(0) + 46], 'J = {2, 4, 5}', 'b', taille=16)
+    return S
+
+
+@schema('t-compact-prop')
+def t_compact_prop():
+    S = Schema(520, 340, 'Une partie compacte d’un séparé est fermée : un point extérieur et ses voisinages')
+    S.rect(16, 16, 488, 308, 'g', rx=6)
+    S.texte([36, 40], 'X')
+    cA = np.array([180.0, 172.0])
+    A = blob(cA, 92, 82, graine=7, amplitude=0.06, n=200)
+    U = [((185.0, 100.0), 150.0, 50.0), ((205.0, 172.0), 190.0, 44.0), ((185.0, 248.0), 145.0, 52.0)]
+    x = np.array([428.0, 168.0])
+    V = [((436.0, 178.0), 74.0), ((440.0, 168.0), 27.0), ((424.0, 148.0), 46.0)]
+    # échantillon de X
+    gx, gy = np.meshgrid(np.arange(16, 504, 1.5), np.arange(16, 324, 1.5))
+    G = np.stack([gx.ravel(), gy.ravel()], 1)
+    inU = [dans_ellipse(c, rx, ry, G) for c, rx, ry in U]
+    inV = [np.hypot(*(G - c).T) < r for c, r in V]
+    inA = dedans(A, G)
+    assert not dedans(A, x)[0]
+    assert np.all(inU[0] | inU[1] | inU[2] | ~inA)                 # U_1, U_2, U_3 recouvrent A
+    assert all(np.hypot(*(x - c)) < r for c, r in V)                # x ∈ V_k
+    assert all(not np.any(inU[k] & inV[k]) for k in range(3))       # V_k ∩ U_k = ∅
+    assert np.any(inV[0] & inU[1])                                  # V_1 rencontre U_2
+    inter = inV[0] & inV[1] & inV[2]
+    assert not np.any(inter & (inU[0] | inU[1] | inU[2]))           # V ∩ (U_1 ∪ U_2 ∪ U_3) = ∅
+    assert not np.any(inter & inA)
+    for c, rx, ry in U:
+        S.ellipse(c, rx, ry, 'b', rempli='b')
+    S.surface(A, 'g')
+    S.poly(A, 't', ferme=True)
+    S.texte(cA + [-30, 4], 'A', 't')
+    S.texte([U[0][0][0] - 118, U[0][0][1] - 34], 'U_1', 'b', taille=16)
+    S.texte([U[1][0][0] - 172, U[1][0][1]], 'U_2', 'b', taille=16)
+    S.texte([U[2][0][0] - 116, U[2][0][1] + 38], 'U_3', 'b', taille=16)
+    for c, r in V:
+        S.cercle(c, r, 'v')
+    # V = ∩ V_k : contour polygonal calculé sur l'échantillon (intersection de disques, donc convexe)
+    th = np.linspace(0, 2 * np.pi, 240, endpoint=False)
+    bord = []
+    for t in th:
+        u = np.array([np.cos(t), np.sin(t)])
+        rmax = 0.0
+        for rr in np.linspace(0, 80, 1601):
+            p = x + rr * u
+            if all(np.hypot(*(p - c)) < r for c, r in V):
+                rmax = rr
+            else:
+                break
+        bord.append(x + rmax * u)
+    S.poly(np.array(bord), 'r', ferme=True, rempli='r')
+    S.point(x, 'r', r=4)
+    S.texte(x + [8, -6], 'x', 'r', ancre='start', taille=16)
+    S.texte([V[0][0][0] + 42, V[0][0][1] + 74], 'V_1', 'v', taille=16)
+    S.texte([V[1][0][0] + 40, V[1][0][1] + 4], 'V_2', 'v', ancre='start', taille=16)
+    S.texte([V[2][0][0] + 2, V[2][0][1] - 58], 'V_3', 'v', taille=16)
+    return S
+
+
+@schema('t-connexe-prop')
+def t_connexe_prop():
+    S = Schema(500, 330, 'Le sinus du topologue : graphe de sin(1/x) et segment adhérent')
+    R = Repere(-0.2, 1.06, -1.25, 1.25, 30, 25, 440, 270)
+    # graphe A = {(x, sin 1/x) : 0 < x ≤ 1}, paramétré par t = 1/x ∈ [1, 400]
+    ts = np.concatenate([np.linspace(1, 40, 4000), np.linspace(40, 400, 20000)])
+    S.poly(R(1 / ts, np.sin(ts)), 't')
+    S.fleche(R(-0.06, 0), R(1.05, 0), 'g')
+    S.texte(R(1.0, 0) + [0, 16], '1', 'g', taille=14)
+    S.ligne(R(1.0, 0) + [0, -4], R(1.0, 0) + [0, 4], 'g')
+    S.point(R(1.0, math.sin(1.0)), 't', r=3.4)
+    S.texte(R(0.75, math.sin(1 / 0.75)) + [14, -14], 'A', 't', ancre='start')
+    # segment {0} × [−1, 1], contenu dans l'adhérence
+    S.ligne(R(0, -1), R(0, 1), 'r', l=3.5)
+    S.texte(R(0, 1) + [-10, 0], '1', 'g', ancre='end', taille=14)
+    S.texte(R(0, -1) + [-10, 0], '−1', 'g', ancre='end', taille=14)
+    # un point (0, y) et un cylindre ]−ε, ε[ × ]y − ε, y + ε[ qui rencontre A
+    y, eps = 0.5, 0.11
+    t0 = math.asin(y)
+    xs = [1 / (t0 + 2 * k * math.pi) for k in range(1, 4)]
+    assert all(abs(math.sin(1 / xx) - y) < 1e-12 and 0 < xx <= 1 for xx in xs)
+    assert xs[1] < eps < xs[0]                         # le cylindre contient (x_n, y) à partir de n = 2
+    p0, p1 = R(-eps, y + eps), R(eps, y - eps)
+    S.rect(p0[0], p0[1], p1[0] - p0[0], p1[1] - p0[1], 'b', rempli='b')
+    for xx in xs:
+        S.point(R(xx, y), 'b', r=3.2)
+    S.point(R(0, y), 'r', r=4.4)
+    S.texte([p0[0] - 6, R(0, y)[1]], '(0, y)', 'r', ancre='end', taille=15)
+    S.texte(R(xs[0], y) + [4, -16], '(x_1, y)', 'b', ancre='start', taille=15)
+    S.texte(R(0, -1) + [12, 18], '{0} × [−1, 1]', 'r', ancre='start', taille=15)
+    return S
+
+
 # ---------------------------------------------------------------- topalg : topologie algébrique
 def _carre_unite(S, o, L, ls='s', lt='t', graduer=True):
     """Carré I × I de côté L, coin inférieur gauche o ; renvoie P(s, t) -> image."""
@@ -779,6 +904,62 @@ def gt_sous_groupes():
     S.texte((a + b) / 2 + [0, 34], 'x ↦ g_1x', taille=15)
     S.texte([x1 - 8, y1 + 16], 'G', ancre='end')
     return S
+
+
+@schema('gt-translations')
+def gt_translations():
+    # Groupe additif ℝ : la multiplication est (x, y) ↦ x + y, le neutre 0, le symétrique de W est −W.
+    U = (Fr(-1), Fr(2))
+    W1, W2 = (Fr(-2, 5), Fr(1)), (Fr(-1, 2), Fr(9, 10))
+    W = (max(W1[0], W2[0]), min(W1[1], W2[1]))
+    Wm = (-W[1], -W[0])
+    V = (max(W[0], Wm[0]), min(W[1], Wm[1]))
+    assert W == (Fr(-2, 5), Fr(9, 10)) and V == (Fr(-2, 5), Fr(2, 5)) and V[0] == -V[1]
+    # W1 × W2 dans la bande : inf et sup de x + y sur le rectangle ouvert (non atteints) dans U
+    assert U[0] <= W1[0] + W2[0] and W1[1] + W2[1] <= U[1]
+    assert U[0] < 2 * V[0] and 2 * V[1] < U[1]                  # V + V = ]−4/5, 4/5[ ⊂ U
+    assert W1[0] <= V[0] and V[1] <= W1[1] and W2[0] <= V[0] and V[1] <= W2[1]
+    S = Schema(460, 416, 'Continuité de l’addition en (0, 0) : bande x + y ∈ U et cylindres')
+    a, b = -1.6, 2.2
+    R = Repere(a, b, a, b, 40, 30, 380, 380)
+    fl = lambda q: float(q)
+    S.surface(_bande(R, a, b, fl(U[0]), fl(U[1])), 'r')        # {x + y ∈ U}, rognée au cadre
+    for c in map(fl, U):
+        S.ligne(R(max(a, c - b), c - max(a, c - b)), R(min(b, c - a), c - min(b, c - a)), 'r', d=True)
+    R.axes(S, 'x', 'y', origine=(0, 0))
+    r0, r1 = R(fl(W1[0]), fl(W2[1])), R(fl(W1[1]), fl(W2[0]))
+    S.rect(r0[0], r0[1], r1[0] - r0[0], r1[1] - r0[1], 'b', rempli='b')
+    v0, v1 = R(fl(V[0]), fl(V[1])), R(fl(V[1]), fl(V[0]))
+    S.rect(v0[0], v0[1], v1[0] - v0[0], v1[1] - v0[1], 'v', rempli='v')
+    S.point(R(0, 0), 't', r=3.6)
+    S.texte(R(fl(V[0]), 0) + [-6, 14], '(0, 0)', ancre='end', taille=15)
+    S.ligne(R(fl(V[0]), 0) + [-5, 9], R(0, 0) + [-3, 3], 'g')
+    S.texte(R(fl(W1[1]), fl(W2[1])) + [-6, -14], 'W_1 × W_2', 'b', ancre='end', taille=15)
+    S.texte(R(fl(V[0]), fl(V[1])) + [4, 14], 'V × V', 'v', ancre='start', taille=15)
+    S.texte(R(1.55, 1.75), 'x + y = 2', 'r', taille=15)
+    S.texte(R(-1.05, -0.95) + [-6, 0], 'x + y = −1', 'r', ancre='start', taille=15)
+    S.texte(R(1.55, -0.95), 'x + y ∈ U', 'r', taille=15)
+    return S
+
+
+def _bande(R, a, b, c0, c1):
+    """Polygone {c0 < x + y < c1} ∩ [a, b]², calculé par découpage du carré."""
+    poly = [(a, a), (b, a), (b, b), (a, b)]
+    def coupe(poly, garder, val):
+        out = []
+        for i in range(len(poly)):
+            p, q = np.array(poly[i]), np.array(poly[(i + 1) % len(poly)])
+            fp, fq = p.sum() - val, q.sum() - val
+            if garder(fp):
+                out.append(tuple(p))
+            if garder(fp) != garder(fq):
+                t = fp / (fp - fq)
+                out.append(tuple(p + t * (q - p)))
+        return out
+    poly = coupe(poly, lambda s: s >= 0, c0)
+    poly = coupe(poly, lambda s: s <= 0, c1)
+    assert all(c0 - 1e-9 <= x + y <= c1 + 1e-9 for x, y in poly)
+    return np.array([R(x, y) for x, y in poly])
 
 
 # ---------------------------------------------------------------- geoalg : géométrie algébrique

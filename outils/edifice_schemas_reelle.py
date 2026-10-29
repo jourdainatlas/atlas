@@ -519,6 +519,222 @@ def cx_formule_cauchy():
     return S
 
 
+@schema('cx-suites')
+def cx_suites():
+    qa, qb = Fr(3, 5), Fr(3, 5)                   # q = 3/5 + 3i/5, exactement
+    # somme 1/(1 - q) calculée exactement : (1 - q)(10 + 15i)/13 = 1
+    la, lb = Fr(10, 13), Fr(15, 13)
+    assert (1 - qa) * la + qb * lb == 1 and (1 - qa) * lb - qb * la == 0
+    q = complex(qa, qb)
+    L = complex(la, lb)
+    N = 60
+    Ss = np.cumsum(q ** np.arange(N))
+    for n in range(N):                            # (1 - q) S_n = 1 - q^{n+1}, et la distance à la somme
+        assert abs((1 - q) * Ss[n] - (1 - q ** (n + 1))) < 1e-12
+        assert np.isclose(abs(Ss[n] - L), abs(q) ** (n + 1) / abs(1 - q))
+    assert abs(q) < 1
+    rho3 = abs(q) ** 4 / abs(1 - q)               # cercle passant par S_3, contenant les S_N suivants
+    assert np.isclose(abs(Ss[3] - L), rho3) and np.all(np.abs(Ss[4:] - L) < rho3)
+    k = 170
+    O = np.array([62.0, 360.0])                   # image de 0
+    P = lambda z: O + k * np.array([z.real, -z.imag])
+    assert P(1.6 + 0j)[0] < 360 and P(1.752j)[1] > 20
+    S = Schema(520, 400, 'Sommes partielles de la série géométrique de raison 0,6 + 0,6i')
+    S.fleche(P(-0.25 + 0j), P(1.95 + 0j), 'g')
+    S.fleche(P(-0.12j), P(2.03j), 'g')
+    S.texte(P(0j) + [-8, 14], '0', 'g', ancre='end')
+    S.cercle(P(L), k * rho3, 'g', d=True)
+    S.poly([P(z) for z in Ss[:45]], 'b', l=1.3)
+    for n in range(12):
+        S.point(P(Ss[n]), 'b', r=3.4 if n < 4 else 2.4)
+    for n, dd, an in [(0, [0, 17], 'middle'), (1, [9, 4], 'start'), (2, [10, 0], 'start'),
+                      (3, [6, -14], 'start')]:
+        S.texte(P(Ss[n]) + dd, f'S_{n}', 'b', ancre=an)
+    S.point(P(L), 'r', r=4.6)
+    S.point((392, 250), 'r', r=4.6)                # légende du point rouge, hors de la spirale
+    S.texte((404, 250), '= 1 / (1 − q)', 'r', ancre='start', taille=15)
+    S.texte(P(1j) + [-8, 0], 'i', 'g', ancre='end')
+    S.ligne(P(1j) + [-3, 0], P(1j) + [3, 0], 'g')
+    S.ligne(P(1 + 0j) + [0, -3], P(1 + 0j) + [0, 3], 'g')
+    S.texte((440, 300), 'q = 0,6 + 0,6i', taille=15)
+    S.texte((440, 326), '|q| ≈ 0,85', taille=15)
+    return S
+
+
+def _cos_serie(x, n=40):
+    """cos x = Re exp(ix), par la série, comme dans la fiche cx-exponentielle."""
+    x = np.asarray(x, float)
+    tot, terme = np.zeros_like(x), np.ones_like(x)
+    for j in range(n):
+        tot += terme
+        terme = -terme * x * x / ((2 * j + 1) * (2 * j + 2))
+    return tot
+
+
+@schema('cx-pi')
+def cx_pi():
+    p4 = lambda x: 1 - x ** 2 / 2 + x ** 4 / 24              # termes k = 0, 1, 2 de la série
+    assert p4(Fr(2)) == Fr(-1, 3)
+    c2 = float(_cos_serie(2.0))
+    assert c2 < -1 / 3 and np.isclose(c2, np.cos(2.0))
+    # premier zéro positif, par dichotomie sur la série
+    a, b = 0.0, 2.0
+    for _ in range(60):
+        m = (a + b) / 2
+        a, b = (m, b) if _cos_serie(m) > 0 else (a, m)
+    z = (a + b) / 2
+    assert np.all(_cos_serie(np.linspace(0, z - 1e-9, 4001)) > 0)       # c'est bien le premier
+    assert abs(z - np.pi / 2) < 1e-12
+    S = Schema(500, 300, 'Graphe de cos sur [0, 2] et son premier zéro')
+    R = Repere(-0.25, 2.35, -0.62, 1.22, 34, 14, 420, 252)
+    S.fleche(R(-0.25, 0), R(2.32, 0), 'g')
+    S.fleche(R(0, -0.62), R(0, 1.2), 'g')
+    S.texte(R(2.32, 0) + [10, 0], 'x', 'g', ancre='start')
+    R.graphe(S, p4, 0, 2, 'b', d=True)
+    R.graphe(S, _cos_serie, 0, 2.2, 'r', l=2.2)
+    S.ligne(R(2, 0), R(2, c2), 'g', d=True)
+    S.ligne(R(0, -1 / 3), R(2, -1 / 3), 'g', d=True)
+    S.point(R(0, 1), 'r', r=3.8)
+    S.point(R(z, 0), 'r', r=4.4)
+    S.point(R(2, -1 / 3), 'b', r=3.8)
+    S.point(R(2, c2), 'r', r=3.8)
+    S.texte(R(0, 1) + [-9, 0], '1', ancre='end')
+    S.texte(R(0, -1 / 3) + [-9, 0], '−1/3', 'b', ancre='end', taille=15)
+    S.texte(R(0, 0) + [-8, 13], '0', 'g', ancre='end')
+    S.texte(R(z, 0) + [-8, 17], 'π/2', 'r', ancre='end')
+    S.texte(R(1, 0) + [0, 16], '1', 'g')
+    S.ligne(R(1, 0) + [0, -3], R(1, 0) + [0, 3], 'g')
+    S.texte(R(2, 0) + [0, -14], '2', 'g')
+    S.texte(R(0.62, _cos_serie(0.62)) + [12, -10], 'cos', 'r', ancre='start', roman=True)
+    S.ligne(R(0.1, -0.52), R(0.3, -0.52), 'b', d=True)
+    S.texte(R(0.3, -0.52) + [8, 0], '1 − x^2/2 + x^4/24', 'b', ancre='start', taille=15)
+    S.texte(R(2, c2) + [-10, 6], 'cos 2', 'r', ancre='end', taille=15, roman=True)
+    return S
+
+
+@schema('cx-pi-2')
+def cx_pi_2():
+    # les quatre arcs i^m exp(ir), 0 <= r < π/2, et les signes qu'examine la preuve de (ii)
+    rs = np.linspace(0, np.pi / 2, 2001)[:-1]
+    e = np.exp(1j * rs)
+    assert np.all(e.real > 0) and np.all(e.imag >= 0)                 # cos r > 0, sin r ⩾ 0
+    assert np.all((1j * e).real <= 0)                                 # m = 1 : partie réelle ⩽ 0
+    assert np.all((-e).real < 0)                                      # m = 2 : partie réelle < 0
+    assert np.all((-1j * e).imag < 0)                                 # m = 3 : partie imaginaire < 0
+    assert np.isclose(e[0], 1) and abs(e[-1] - 1j) < 1e-3             # arc rouge : de 1 (inclus) vers i
+    assert abs(-1j * e[-1] - 1) < 1e-3 and np.all(-1j * e != 1)       # arc m = 3 : s'approche de 1
+    k = 128
+    O = np.array([250.0, 172.0])
+    P = lambda z: O + k * np.array([z.real, -z.imag])
+    S = Schema(500, 344, 'Les quatre arcs i^m exp(ir) du cercle unité')
+    S.fleche(P(-1.42 + 0j), P(1.48 + 0j), 'g')
+    S.fleche(P(-1.3j), P(1.3j), 'g')
+    cols = ['r', 'b', 'b', 'b']
+    for m in range(4):
+        arcpts = [P(1j ** m * np.exp(1j * r)) for r in np.linspace(0, np.pi / 2, 90)]
+        S.poly(arcpts[:-1], cols[m], l=3.2 if m == 0 else 1.8)
+    for m in range(4):
+        S.point(P(1j ** m), cols[m], r=4.4)
+    for m, (lab, dd, an) in enumerate([('1', [8, 14], 'start'), ('i', [10, -12], 'start'),
+                                       ('−1', [-8, 14], 'end'), ('−i', [-10, 12], 'end')]):
+        S.texte(P(1j ** m) + dd, lab, cols[m], ancre=an)
+    r0 = 0.62
+    w0 = np.exp(1j * r0)
+    S.ligne(O, P(w0), 'g')
+    S.point(P(w0), 'r', r=3.6)
+    S.texte(P(w0) + [10, -8], '`exp`(ir)', 'r', ancre='start', taille=16)
+    for m in range(4):
+        p = P(1.27 * 1j ** m * np.exp(1j * (np.pi / 4)))
+        S.texte(p, f'm = {m}', cols[m], taille=15)
+    S.texte(O + [8, 14], '0', 'g', ancre='start')
+    return S
+
+
+@schema('cx-integrale-chemin')
+def cx_integrale_chemin():
+    r = 1.0
+    c = 0j
+    gam = lambda t: c + r * np.exp(1j * t)
+    ts = [0.5, 2.35, 4.25]
+    h = 1e-6
+    for t in ts:
+        der = (gam(t + h) - gam(t - h)) / (2 * h)                    # vitesse, par différence finie
+        assert abs(der - 1j * (gam(t) - c)) < 1e-8                   # γ′ = i (γ − c)
+        assert np.isclose(abs(der), r)
+    k = 110
+    O = np.array([250.0, 172.0])
+    P = lambda z: O + k * np.array([z.real, -z.imag])
+    pts = [P(gam(t)) for t in ts] + [P(gam(t) + 1j * (gam(t) - c)) for t in ts]
+    xs, ys = [p[0] for p in pts], [p[1] for p in pts]
+    assert min(xs) > 25 and max(xs) < 495 and min(ys) > 15 and max(ys) < 335
+    S = Schema(520, 345, 'Rayon et vitesse sur le cercle C(c, r)')
+    S.cercle(O, k * r, 't')
+    S.point(O, 't')
+    S.texte(O + [12, 10], 'c', ancre='start')
+    for j, t in enumerate(ts):
+        g = gam(t)
+        v = 1j * (g - c)
+        S.fleche(O, P(g), 'b', retrait=4)
+        S.fleche(P(g), P(g + v), 'r', l=1.8)
+        u1 = np.array([(c - g).real, -(c - g).imag]) / abs(g - c)   # vers le centre (image)
+        u2 = np.array([v.real, -v.imag]) / abs(v)
+        q0 = P(g)
+        S.poly([q0 + 11 * u1, q0 + 11 * u1 + 11 * u2, q0 + 11 * u2], 'g')
+        S.point(P(g), 't', r=3.4)
+    g, v = gam(ts[0]), 1j * gam(ts[0])
+    S.texte(P(g) + [12, 12], 'γ(t)', ancre='start')
+    S.texte(P(g + 0.62 * v) + [12, 0], 'γ^{′}(t)', 'r', ancre='start')
+    S.texte(P(0.5 * gam(ts[2])) + [12, 6], 'γ(t) − c', 'b', ancre='start', taille=15)
+    S.texte(P(r * np.exp(1j * 5.4)) + [14, 12], 'C(c, r)', ancre='start', taille=15)
+    return S
+
+
+@schema('cx-zeros-isoles')
+def cx_zeros_isoles():
+    fz = lambda z: np.exp(2j * np.pi / z) - 1
+    assert np.isclose(fz(2.0 + 0j), -2)                               # f n'est pas nulle
+    K = 14
+    zeros = [1 / n for n in range(1, K + 1)] + [-1 / n for n in range(1, K + 1)]
+    for a in zeros:
+        assert abs(fz(complex(a))) < 1e-9
+    # disques isolants : rayon moitié de la distance au zéro voisin ; f ne s'y annule qu'au centre
+    rng = np.random.default_rng(0)
+    disques = []
+    for n in (1, 2, 3):
+        rho = 1 / (2 * n * (n + 1))
+        for a in (1 / n, -1 / n):
+            ang = rng.uniform(0, 2 * np.pi, 4000)
+            rad = rho * np.sqrt(rng.uniform(0, 1, 4000))
+            z = a + rad * np.exp(1j * ang)
+            z = z[rad > 1e-9]
+            # |f(z)| / |z - a| reste minoré (au premier ordre 2π n² |z − a|) : pas d'autre zéro
+            assert np.min(np.abs(fz(z)) / np.abs(z - a)) > 1.0
+            disques.append((a, rho))
+    # entre deux zéros consécutifs du segment réel ]0, 1], f ne s'annule pas
+    for n in range(1, K):
+        x = np.linspace(1 / (n + 1), 1 / n, 2003)[1:-1]
+        assert np.min(np.abs(fz(x + 0j))) > 1e-6
+    k = 200
+    O = np.array([260.0, 132.0])
+    P = lambda x, y=0.0: O + k * np.array([x, -y])
+    S = Schema(520, 250, 'Zéros de exp(2iπ/z) − 1 sur ℂ privé de 0')
+    S.fleche(P(-1.17), P(1.17), 'g')
+    S.fleche(P(0, -0.5), P(0, 0.55), 'g')
+    for a, rho in disques:
+        S.cercle(P(a), k * rho, 'b', d=True, rempli='b')
+    for a in zeros:
+        if k * min(abs(a - b) for b in zeros if b != a) > 1.8:
+            S.point(P(a), 'r', r=3.2 if abs(a) > 0.2 else 2.0)
+    S.point(P(0), 'g', r=4.2, creux=True)
+    for n in (1, 2, 3):
+        dy = {1: 26, 2: 26, 3: -24}[n]
+        S.texte(P(1 / n) + [0, dy], '1' if n == 1 else f'1/{n}', 'r', taille=15)
+        S.texte(P(-1 / n) + [0, dy], '−1' if n == 1 else f'−1/{n}', 'r', taille=15)
+    S.texte(P(0) + [8, 26], '0 ∉ U', ancre='start', taille=16)
+    S.texte((40, 222), 'U = ℂ ∖ {0}', ancre='start', taille=16)
+    return S
+
+
 # ---------------------------------------------------------------------------------------------------
 # edo
 # ---------------------------------------------------------------------------------------------------

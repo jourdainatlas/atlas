@@ -509,3 +509,18 @@ Restent admis, hors de portée : incomplétude de Gödel, Whitney, boule chevelu
 unités de Dirichlet, Kolmogorov, Carleson, réciproque de `gs-radicaux`, Möbius non orientable, `gd-formes-varietes`
 (réciproque, les outils existent désormais en aval). Candidat signalé : 𝔄₅ plus petit groupe non résoluble (deux ou
 trois fiches, par Sylow). La partie non borélienne mesurable de `m-riemann` est affirmée sans mention « admis ».
+
+## 36. Schémas, deuxième passe (29 octobre 2026)
+
+Couverture mesurée par graphe (fiches avec schéma ou diagramme commutatif) ; la passe vise les graphes les
+moins couverts. 27 schémas nouveaux, chacun relu par un agent indépendant (consignes `scratchpad/ch2/`) :
+galois 4 (gs-decomposition, gs-galoisiennes, gs-corps-finis, gs-radicaux), mes 5 (m-mesurables, m-integrale,
+m-beppo-levi, m-fatou, m-fubini), top et grtop 4 (t-produit, t-compact-prop, t-connexe-prop avec une remarque
+nouvelle sur le sinus du topologue, gt-translations), anc 5 (cx-suites, cx-pi, cx-pi-2, cx-integrale-chemin,
+cx-zeros-isoles), alg et lie 4 (a-quotient, a-isomorphisme dans une remarque nouvelle, li-exponentielle,
+li-algebre), fondations 5 (n-recdef, n-fini, o-representation, o-zorn, l-tautologies ; aucun pour zf, où tout
+dessin serait décoratif). Les relectures ont trouvé des légendes fausses (m = 3 au lieu de 6 dans gs-radicaux,
+partition du cercle supposée dans cx-pi-2, injection « quelconque » dans n-fini, ω et « fini » employés sans
+renvoi avant ℕ), toutes corrigées. Corrigé aussi : trou dans la preuve de cx-zeros-isoles (le point
+d'accumulation est un zéro non isolé de la différence). 215 schémas ; les SVG dont les traits viennent d'un
+ensemble Python changent d'ordre à chaque génération (gf-ordre-8) : trier avant de tracer.
