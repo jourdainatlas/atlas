@@ -590,8 +590,56 @@ def h_homotopie():
     return S
 
 
-@schema('h-mayer-vietoris')
-def h_mayer_vietoris():
+@schema('h-subdivision')
+def h_subdivision():
+    # formules de la fiche : Sλ = b_λ · S(∂λ), avec S[∅] = [∅] ; coordonnées barycentriques exactes
+    from fractions import Fraction as Fr
+    def ajoute(a, b, c=1):
+        r = dict(a)
+        for k, v in b.items():
+            r[k] = r.get(k, 0) + c * v
+        return {k: v for k, v in r.items() if v}
+    def bord(ch):
+        r = {}
+        for sm, c in ch.items():
+            for i in range(len(sm)):
+                r = ajoute(r, {sm[:i] + sm[i + 1:]: (-1) ** i * c})
+        return r
+    def bary(sm):
+        return tuple(sum(v[k] for v in sm) / len(sm) for k in range(3))
+    def Sd(ch):
+        r = {}
+        for sm, c in ch.items():
+            if len(sm) == 0:
+                r = ajoute(r, {(): c}); continue
+            b = bary(sm)
+            r = ajoute(r, {(b,) + t: v for t, v in Sd(bord({sm: 1})).items()}, c)
+        return r
+    e = tuple(tuple(Fr(int(i == j)) for j in range(3)) for i in range(3))
+    S1 = Sd({e: 1}); S2 = Sd(S1)
+    dinf = lambda x, y: max(abs(a - b) for a, b in zip(x, y))
+    diam = lambda sm: max(dinf(a, b) for a in sm for b in sm)
+    assert len(S1) == 6 and len(S2) == 36
+    assert max(map(diam, S1)) == Fr(2, 3) and max(map(diam, S2)) == Fr(7, 18) <= Fr(4, 9)
+    assert set(S1.values()) == {1, -1}
+    S = Schema(540, 250, 'Première et deuxième subdivisions barycentriques du triangle')
+    def plan(o, t):
+        A, B, C = o + np.array([-110.0, 85]), o + np.array([110.0, 85]), o + np.array([0.0, -105])
+        return float(t[0]) * A + float(t[1]) * B + float(t[2]) * C
+    for o, ch in ((np.array([140.0, 130]), S1), (np.array([400.0, 130]), S2)):
+        for sm, c in ch.items():
+            pts = [plan(o, t) for t in sm]
+            S.poly(pts, 'b' if c > 0 else 'g', ferme=True, rempli='b' if c > 0 else None, l=1.2)
+        A, B, C = plan(o, e[0]), plan(o, e[1]), plan(o, e[2])
+        S.poly([A, B, C], 't', ferme=True, l=1.8)
+        S.point(plan(o, bary(e)), 'r', r=4.2)
+    S.texte([140, 238], 'S ι_2', 't', taille=16)
+    S.texte([400, 238], 'S^2 ι_2', 't', taille=16)
+    return S
+
+
+@schema('h-petites-chaines')
+def h_petites_chaines():
     S = Schema(500, 300, 'Subdivision d’un simplexe trop grand en morceaux contenus dans U ou dans V')
     cU, cV, rx, ry = np.array([175.0, 150.0]), np.array([325.0, 150.0]), 125.0, 112.0
     sig = bezier([80, 180], [300, 60], [480, 260], [330, 230], n=401)
@@ -609,6 +657,12 @@ def h_mayer_vietoris():
     morceaux = decoupe(4)
     cols = [lieu(a, b) for a, b in morceaux]
     assert None not in cols                                  # deux subdivisions suffisent
+    # m(σ) selon la fiche : toute fenêtre de paramètres de longueur 1/2^k est dans U ou dans V
+    def P(k):
+        L = round(400 / 2 ** k)
+        return all(lieu(i, i + L) is not None for i in range(0, 401 - L))
+    m = next(k for k in range(12) if P(k))
+    assert m == 3
     S.ellipse(cU, rx, ry, 'b', rempli='b')
     S.ellipse(cV, rx, ry, 'v', rempli='v')
     S.texte(cU + [-rx + 22, -ry + 18], 'U', 'b')

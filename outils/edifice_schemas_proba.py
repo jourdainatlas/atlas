@@ -417,6 +417,50 @@ def mt_doob():
     return _epaisseurs(S)
 
 
+@schema('mt-montees')
+def mt_montees():
+    # définitions de la fiche : σ_j = inf{k ≥ τ_{j-1} : M_k ≤ a}, τ_j = inf{k > σ_j : M_k ≥ b}
+    n, a, b = 60, -2, 2
+    M = _marche(254, n)
+    sig, tau, t = [], [], 0
+    while True:
+        s_ = next((k for k in range(t, n + 1) if M[k] <= a), None)
+        if s_ is None:
+            break
+        t_ = next((k for k in range(s_ + 1, n + 1) if M[k] >= b), None)
+        sig.append(s_); tau.append(t_)
+        if t_ is None:
+            break
+        t = t_
+    assert sig == [2, 22, 52] and tau == [6, 38, None]
+    H = [0] + [int(any(sj < k <= (tj if tj is not None else n + 1) for sj, tj in zip(sig, tau))) for k in range(1, n + 1)]
+    gain = sum(H[k] * (M[k] - M[k - 1]) for k in range(1, n + 1))
+    U = sum(1 for tj in tau if tj is not None and tj <= n)
+    assert U == 2 and gain >= (b - a) * U - max(-(M[n] - a), 0) and M.min() >= -4 and M.max() <= 3
+    S = Schema(520, 280, 'Montées de a à b d’une marche simple et stratégie H')
+    R = Repere(-1, 63, -5, 4, 40, 34, 450, 215)
+    for sj, tj in zip(sig, tau):
+        fin = tj if tj is not None else n
+        c = 'r' if tj is not None else 'b'
+        S.poly([R(sj, -5), R(fin, -5), R(fin, 4), R(sj, 4)], c, ferme=True, rempli=c, l=0.1)
+    S.fleche(R(-1, 0), R(63, 0) + [6, 0], 'g')
+    S.texte(R(63, 0) + [10, -12], 'k', 'g', ancre='start')
+    for v, nom in [(a, 'a'), (b, 'b')]:
+        S.ligne(R(0, v), R(62, v), 'g', d=True)
+        S.texte(R(0, v) + [-8, 0], nom, 'g', ancre='end')
+    ks = np.arange(n + 1)
+    S.poly(R(ks, M), 't', l=2)
+    for j, (sj, tj) in enumerate(zip(sig, tau), 1):
+        S.point(R(sj, M[sj]), 't', r=3.6)
+        S.texte(R(sj, -5) + [0, 14], f'σ_{j}', 'g', taille=14)
+        if tj is not None:
+            S.point(R(tj, M[tj]), 'r', r=4.2)
+            S.texte(R(tj, 4) + [0, -14], f'τ_{j}', 'r', taille=14)
+    S.ligne(R(n, 0) + [0, -4], R(n, 0) + [0, 4], 'g')
+    S.texte(R(n, 0) + [-6, -14], str(n), 'g', ancre='end', taille=14)
+    return _epaisseurs(S)
+
+
 @schema('mt-applications')
 def mt_applications():
     # Urne de Pólya selon la fiche : tirage n + 1 rouge si U_{n+1} ≤ X_n, X_n = R_n/(n + 2), R_0 = 1.

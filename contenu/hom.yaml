@@ -1,7 +1,7 @@
 # Niveau 1 : structure interne du nœud « Homologie ».
 # Complexes de chaînes et suite exacte longue, homologie singulière, degré 0, invariance par
-# homotopie (opérateur prisme), suite de Mayer-Vietoris (le théorème des petites chaînes, qui
-# repose sur la subdivision barycentrique, est admis et signalé), homologie des sphères,
+# homotopie (opérateur prisme), subdivision barycentrique et théorème des petites chaînes (démontrés
+# le 29 oct. 2026), suite de Mayer-Vietoris, homologie des sphères,
 # Brouwer et invariance de la dimension.
 # Coefficients entiers : les groupes abéliens sont des ℤ-modules (structures algébriques).
 
@@ -126,6 +126,85 @@ noeuds:
       - |
         L'invariance par homotopie fait de l'homologie un invariant bien plus grossier que l'homéomorphie : $\mathbb R^n$ a l'homologie d'un point, comme une boule fermée ou un disque. C'est précisément cette grossièreté qui la rend calculable.
 
+  - id: h-subdivision
+    etiquette: Subdivision barycentrique
+    nature: théorème
+    titre: Subdivision barycentrique
+    texte: |
+      Soit $Y$ une partie convexe de $\lex{n-uplet}{\mathbb R^m}$. Pour $w_0, \dots, w_n \in Y$ et des réels $t_i \geqslant 0$ de somme $1$, le point $\sum_i t_iw_i$ appartient à $Y$ : c'est clair pour $n = 0$ ou $t_n = 1$, le point valant alors $w_0$ ou $w_n$ ; c'est la définition de la convexité pour $n = 1$, et, pour $n \geqslant 2$ et $t_n \neq 1$, on écrit $\sum_i t_iw_i = (1 - t_n)\sum_{i < n}\frac{t_i}{1 - t_n}w_i + t_nw_n$ et l'on raisonne par récurrence sur $n$. Le **simplexe affine** $[w_0, \dots, w_n] : \Delta_n \to Y$ est l'application $t \mapsto \sum_i t_iw_i$, continue ({{ta-chemins|Chemins}}, (ii)) ; elle envoie $e_i$ sur $w_i$, de sorte que ses sommets la déterminent, et ses faces sont $[w_0, \dots, w_n] \circ \delta_i = [w_0, \dots, \widehat{w_i}, \dots, w_n]$, où le chapeau signale l'omission. Le groupe $LC_n(Y)$ des **chaînes linéaires**, pour $n \geqslant 0$, est le sous-groupe de $C_n(Y)$ engendré par les simplexes affines ; on y ajoute $LC_{-1}(Y) = \lex{ensemble-entiers-relatifs}{\mathbb Z}$, engendré par un symbole $[\varnothing]$, avec $\partial[w_0] = [\varnothing]$ et $\partial[\varnothing] = 0$. En degré $n \geqslant 1$, le bord de $LC(Y)$ est celui de $C(Y)$, et $LC(Y)$ est un complexe : $\partial\partial = 0$ en degré au moins $2$ par {{h-singuliere|Homologie singulière}}, (i), et $\partial\partial[w_0, w_1] = [\varnothing] - [\varnothing] = 0$. Une application $f : \mathbb R^m \to \mathbb R^{m'}$ est **affine** si elle s'écrit $f(x) = u(x) + c$, avec $u$ linéaire ; elle vérifie alors $f\big(\sum_i t_ix_i\big) = \sum_i t_if(x_i)$ dès que $\sum_i t_i = 1$.
+
+      Pour $b \in Y$, le **cône** de sommet $b$ est le morphisme $LC_n(Y) \to LC_{n+1}(Y)$ défini par $b \cdot [w_0, \dots, w_n] = [b, w_0, \dots, w_n]$ et $b \cdot [\varnothing] = [b]$ ({{h-complexes|Complexes de chaînes}}, (i)). Le **barycentre** de $\lambda = [w_0, \dots, w_n]$ est $b_\lambda = \frac1{n+1}\sum_i w_i \in Y$. On définit, par récurrence sur $n \geqslant -1$, deux morphismes $S : LC_n(Y) \to LC_n(Y)$ et $T : LC_n(Y) \to LC_{n+1}(Y)$ par $S[\varnothing] = [\varnothing]$, $T[\varnothing] = 0$, et, pour un simplexe affine $\lambda$ de dimension $n \geqslant 0$,
+      $$\begin{aligned} S\lambda &= b_\lambda \cdot S(\partial\lambda), \\ T\lambda &= b_\lambda \cdot (\lambda - T\partial\lambda). \end{aligned}$$
+      Enfin, pour un espace $X$ et un simplexe singulier $\sigma : \Delta_n \to X$, on note $\iota_n = [e_0, \dots, e_n]$ l'identité de $\Delta_n$, et l'on pose $S\sigma = \sigma_\#(S\iota_n)$ et $T\sigma = \sigma_\#(T\iota_n)$, ce qui définit des morphismes $S : C_n(X) \to C_n(X)$ et $T : C_n(X) \to C_{n+1}(X)$. C'est la **subdivision barycentrique**.
+    enonce: |
+      (i) *Cône.* Pour $\alpha \in LC_n(Y)$, $n \geqslant -1$, on a $\partial(b \cdot \alpha) = \alpha - b \cdot \partial\alpha$.
+
+      (ii) *Chaînes linéaires.* Sur $LC(Y)$, $\partial S = S\partial$ et $\partial T + T\partial = \mathrm{id} - S$. Si $f : Y \to Y'$ est la restriction d'une application affine, $f_\# S = Sf_\#$ et $f_\# T = Tf_\#$.
+
+      (iii) *Chaînes singulières.* Sur $C(X)$, $S$ est un morphisme de complexes et $\partial T + T\partial = \mathrm{id} - S$. Pour $g : X \to X'$ continue, $g_\# S = Sg_\#$ et $g_\# T = Tg_\#$. Les simplexes qui figurent dans $S\sigma$ et $T\sigma$ sont de la forme $\sigma \circ \mu$, avec $\mu : \Delta_k \to \Delta_n$ affine : si $\sigma$ est à valeurs dans une partie $A$ de $X$, $S\sigma$ et $T\sigma$ sont des chaînes de $A$.
+
+      (iv) *Diamètres.* Munissons les $\mathbb R^m$ de la distance $d_\infty$ ({{me-espace|Espaces métriques}}). L'image d'un simplexe affine $[w_0, \dots, w_n]$ a pour diamètre $\max_{i,j} d_\infty(w_i, w_j)$. Pour $k \in \lex{ensemble-entiers-naturels}{\mathbb N}$, $S^k\iota_n$ est une combinaison de simplexes affines de $\Delta_n$ dont les images ont un diamètre au plus égal à $\big(\frac n{n+1}\big)^k$.
+    preuve: |
+      (i) Pour $\alpha = [w_0, \dots, w_n]$ avec $n \geqslant 1$, le bord de $[b, w_0, \dots, w_n]$ comporte le terme $[w_0, \dots, w_n]$, où l'on omet $b$, et les termes $(-1)^{i+1}[b, w_0, \dots, \widehat{w_i}, \dots, w_n]$, dont la somme est $-b \cdot \partial\alpha$. Pour $n = 0$, $\partial[b, w_0] = [w_0] - [b] = \alpha - b \cdot [\varnothing]$ ; pour $n = -1$, $\partial[b] = [\varnothing]$. On conclut par linéarité.
+
+      (ii) Montrons que $\partial S = S\partial$ par récurrence sur $n$ ; le cas $n = -1$ est clair. Pour un simplexe affine $\lambda$ de dimension $n \geqslant 0$, (i) et l'hypothèse de récurrence donnent $\partial S\lambda = S\partial\lambda - b_\lambda \cdot \partial S\partial\lambda = S\partial\lambda - b_\lambda \cdot S\partial\partial\lambda = S\partial\lambda$.
+
+      Montrons de même que $\partial T + T\partial = \mathrm{id} - S$. En degré $-1$, les deux membres sont nuls, puisque $S[\varnothing] = [\varnothing]$. Pour $\lambda$ de dimension $n \geqslant 0$, l'hypothèse de récurrence en degré $n - 1$ s'écrit $\partial T\partial\lambda = \partial\lambda - S\partial\lambda - T\partial\partial\lambda = \partial\lambda - S\partial\lambda$. Par (i),
+      $$\begin{aligned} \partial T\lambda &= \lambda - T\partial\lambda - b_\lambda \cdot (\partial\lambda - \partial T\partial\lambda) \\ &= \lambda - T\partial\lambda - b_\lambda \cdot S\partial\lambda \\ &= \lambda - T\partial\lambda - S\lambda. \end{aligned}$$
+
+      *Naturalité.* Une application affine envoie barycentre sur barycentre et vérifie $f_\#[w_0, \dots, w_n] = [f(w_0), \dots, f(w_n)]$, donc $f_\#(b \cdot \alpha) = f(b) \cdot f_\#\alpha$ ; on prolonge $f_\#$ par $f_\#[\varnothing] = [\varnothing]$. Une récurrence sur $n$, appliquée aux deux formules de définition, donne $f_\#S\lambda = f(b_\lambda) \cdot f_\#S\partial\lambda = b_{f_\#\lambda} \cdot S\partial f_\#\lambda = Sf_\#\lambda$, et de même pour $T$.
+
+      (iii) Un simplexe affine $\lambda : \Delta_n \to Y$ est l'image de $\iota_n$ par lui-même, $\lambda = \lambda_\#\iota_n$, et la naturalité donne $\lambda_\#(S\iota_n) = S\lambda$ : les deux définitions de $S$ coïncident sur les simplexes affines, et de même pour $T$. Les faces $\delta_i : \Delta_{n-1} \to \Delta_n$ sont affines, et $\iota_n \circ \delta_i = \delta_{i\#}\iota_{n-1}$. Pour $n \geqslant 1$,
+      $$\begin{aligned} \partial S\sigma &= \sigma_\#\partial S\iota_n = \sigma_\#S\partial\iota_n \\ &= \sum_i (-1)^i\sigma_\#\delta_{i\#}S\iota_{n-1} \\ &= \sum_i (-1)^i S(\sigma \circ \delta_i) = S\partial\sigma, \end{aligned}$$
+      et, de la même façon, $\partial T\sigma = \sigma_\#(\iota_n - S\iota_n - T\partial\iota_n) = \sigma - S\sigma - T\partial\sigma$. Pour $n = 0$, $S\iota_0 = [e_0]$ et $T\iota_0 = [e_0, e_0]$, donc $S\sigma = \sigma$ et $\partial T\sigma = \sigma - \sigma = 0$, ce qui est l'identité attendue, puisque le bord d'un $0$-simplexe singulier est nul. La naturalité vient de $g_\#\sigma_\# = (g \circ \sigma)_\#$. Enfin $S\iota_n$ et $T\iota_n$ sont des combinaisons de simplexes affines $\mu$ de $\Delta_n$, et les simplexes de $S\sigma$ et $T\sigma$ sont les $\sigma \circ \mu$.
+
+      (iv) *Diamètre d'un simplexe affine.* Si $x = \sum_i t_iw_i$ et $y = \sum_j s_jw_j$, alors, puisque $\sum_{i,j} t_is_j = 1$, $x - y = \sum_{i,j} t_is_j(w_i - w_j)$, et, en majorant coordonnée par coordonnée la valeur absolue de cette combinaison à coefficients positifs, $d_\infty(x, y) \leqslant \max_{i,j} d_\infty(w_i, w_j) = \delta$ ; ce maximum est atteint en des sommets. De même, pour le barycentre $b$, $b - x = \frac1{n+1}\sum_j t_j \sum_{i \neq j} (w_i - w_j)$, d'où $d_\infty(b, x) \leqslant \frac n{n+1}\,\delta$ pour tout point $x$ de l'image.
+
+      *Une subdivision.* Montrons, par récurrence sur $n$, que $S\lambda$ est une combinaison de simplexes affines à sommets dans l'image de $\lambda$ et de diamètre au plus $\frac n{n+1}\delta$. Pour $n = 0$, $S\lambda = \lambda$, de diamètre $0$. Pour $n \geqslant 1$, $S\lambda = b_\lambda \cdot S(\partial\lambda)$ est une combinaison de simplexes $[b_\lambda, u_0, \dots, u_{n-1}]$, où $[u_0, \dots, u_{n-1}]$ figure dans $S$ d'une face de $\lambda$ ; par hypothèse de récurrence, les $u_j$ sont dans l'image de la face, donc de $\lambda$, et $d_\infty(u_j, u_l) \leqslant \frac{n-1}{n}\delta \leqslant \frac n{n+1}\delta$, la face ayant un diamètre au plus $\delta$. Enfin $d_\infty(b_\lambda, u_j) \leqslant \frac n{n+1}\delta$ par ce qui précède.
+
+      *Itération.* $S$ étant linéaire, $S^{k+1}\iota_n$ est combinaison des $S\mu$, pour les simplexes $\mu$ de $S^k\iota_n$ ; par récurrence sur $k$, et puisque $\Delta_n$ a pour diamètre $d_\infty(e_0, e_1) = 1$ si $n \geqslant 1$, on obtient la borne $\big(\frac n{n+1}\big)^k$. Pour $n = 0$, $\Delta_0$ est un point.
+    remarques:
+      - |
+        Pour le triangle $\Delta_2$, $S\iota_2$ est formé de six triangles et $S^2\iota_2$ de trente-six, ce que l'on vérifie en programmant les formules de définition ; les coefficients sont $\pm 1$, et l'orientation alterne d'un triangle à son voisin.
+
+        ```schema h-subdivision
+        À gauche, $S\iota_2$ : chaque triangle a pour sommets le barycentre de $\Delta_2$, en rouge, le milieu d'un côté et l'une de ses extrémités. À droite, $S^2\iota_2$ : on recommence dans chacun des six triangles. Les triangles comptés avec le signe $+$, en bleu, alternent avec ceux comptés avec le signe $-$, non remplis. Le plus grand côté passe de $1$ à $\frac23$, puis à $\frac7{18}$, pour la distance $d_\infty$, sous les bornes $\frac23$ et $\frac49$ de (iv).
+        ```
+      - |
+        L'opérateur $T$ ne sert qu'à prouver que $S$ ne change pas l'homologie : la formule $\partial T + T\partial = \mathrm{id} - S$ est une homotopie de chaînes, comme l'opérateur prisme du nœud {{h-homotopie|Invariance par homotopie}}. L'erreur la plus répandue est de croire que l'on peut supprimer les simplexes à sommets répétés, comme dans les complexes simpliciaux : $T\iota_1 = [b, e_0, e_1] - [b, e_1, e_1] + [b, e_0, e_0]$ contient de tels simplexes, qui sont des simplexes singuliers légitimes et qu'il faut garder.
+
+  - id: h-petites-chaines
+    etiquette: Petites chaînes
+    nature: théorème
+    titre: Le théorème des petites chaînes
+    texte: |
+      Soit $\mathcal U$ un ensemble d'ouverts d'un espace $X$, de réunion $X$. Notons $C_n^{\mathcal U}(X)$ le sous-groupe de $C_n(X)$ engendré par les simplexes singuliers à valeurs dans un élément de $\mathcal U$ ; c'est un sous-complexe, puisque les faces d'un tel simplexe le sont aussi. Le simplexe $\Delta_n$ est muni de la distance $d_\infty$, dont la topologie est la topologie produit de $\lex{n-uplet}{\mathbb R^{n+1}}$ ({{me-rn|L'espace ℝⁿ}}, (i)), celle du nœud {{h-singuliere|Homologie singulière}}. Il est compact, comme partie fermée et bornée (même nœud, (iii)) : il est contenu dans $[0, 1]^{n+1}$, et c'est l'intersection des fermés $\{t_i \geqslant 0\}$ et $\{\sum_i t_i = 1\}$, images réciproques de fermés par des fonctions continues.
+    enonce: |
+      L'inclusion $\jmath : C^{\mathcal U}(X) \to C(X)$ induit des isomorphismes $H_n(C^{\mathcal U}(X)) \to \lex{homologie-singuliere}{H_n}(X)$. Plus précisément, il existe un morphisme de complexes $\rho : C(X) \to C^{\mathcal U}(X)$ tel que $\rho \circ \jmath = \mathrm{id}$ et que $\jmath \circ \rho$ soit homotope à l'identité, au sens de {{h-complexes|Complexes de chaînes}}, (iii).
+    preuve: |
+      *Un entier attaché à chaque simplexe.* Pour $\sigma : \Delta_n \to X$ et $k \in \lex{ensemble-entiers-naturels}{\mathbb N}$, notons $P(\sigma, k)$ la propriété : toute partie non vide de $\Delta_n$ de diamètre au plus $c_{n,k} = \big(\frac n{n+1}\big)^k$ est contenue dans l'un des ouverts $\sigma^{-1}(U)$, $U \in \mathcal U$. Ces ouverts recouvrent le compact $\Delta_n$, qui a donc un nombre de Lebesgue $\eta > 0$ ({{me-lebesgue|Nombre de Lebesgue}}) ; comme $0 \leqslant \frac n{n+1} < 1$, $c_{n,k} \to 0$ ({{su-infinies|Limites infinies}}, (iv)), et $P(\sigma, k)$ est vraie dès que $c_{n,k} < \eta$. Soit $m(\sigma)$ le plus petit entier $k$ tel que $P(\sigma, k)$ ({{n-ordre|Bon ordre sur ℕ}}). Comme $c_{n,k}$ décroît avec $k$, $P(\sigma, k)$ est vraie pour tout $k \geqslant m(\sigma)$.
+
+      *Trois propriétés de $m$.* (a) Si $P(\sigma, k)$, alors $S^k\sigma \in C^{\mathcal U}(X)$. En effet, $S^k\sigma = \sigma_\#(S^k\iota_n)$ par naturalité ({{h-subdivision|Subdivision barycentrique}}, (iii)), et chaque simplexe $\mu$ de $S^k\iota_n$ a une image de diamètre au plus $c_{n,k}$ (même nœud, (iv)), contenue dans un $\sigma^{-1}(U)$ : $\sigma \circ \mu$ est à valeurs dans $U$. (b) Si $\sigma$ est à valeurs dans $U \in \mathcal U$, alors $\Delta_n = \sigma^{-1}(U)$, et $m(\sigma) = 0$. (c) Si $\tau = \sigma \circ \delta_i$ est une face de $\sigma$, $m(\tau) \leqslant m(\sigma)$. En effet, $\delta_i$, qui insère un $0$, préserve $d_\infty$, et $c_{n-1,k} \leqslant c_{n,k}$ ; une partie $A$ de $\Delta_{n-1}$ de diamètre au plus $c_{n-1,k}$ a donc une image $\delta_i(A)$ de même diamètre, contenue dans un $\sigma^{-1}(U)$ si $P(\sigma, k)$, et $A \subset \tau^{-1}(U)$.
+
+      *L'opérateur $D$.* Posons $D_k = \sum_{i < k} TS^i$. Comme $S$ est un morphisme de complexes et que $\partial T + T\partial = \mathrm{id} - S$ ({{h-subdivision|Subdivision barycentrique}}, (iii)),
+      $$\begin{aligned} \partial D_k + D_k\partial &= \sum_{i < k} (\partial T + T\partial)S^i \\ &= \sum_{i < k} (S^i - S^{i+1}) = \mathrm{id} - S^k. \end{aligned}$$
+      On définit $D : C_n(X) \to C_{n+1}(X)$ par $D\sigma = D_{m(\sigma)}\sigma$ sur chaque simplexe, puis par linéarité ({{h-complexes|Complexes de chaînes}}, (i)), et $\rho = \mathrm{id} - \partial D - D\partial$.
+
+      *$\rho$ est à valeurs dans $C^{\mathcal U}(X)$.* Soit $\sigma$ un simplexe, $m = m(\sigma)$, et $\partial\sigma = \sum_i (-1)^i\sigma_i$. D'après l'identité précédente, $\partial D\sigma = \sigma - S^m\sigma - D_m\partial\sigma$, donc
+      $$\begin{aligned} \rho\sigma &= S^m\sigma + \sum_i (-1)^i\big(D_m - D_{m(\sigma_i)}\big)\sigma_i \\ &= S^m\sigma + \sum_i (-1)^i \sum_{m(\sigma_i) \leqslant j < m} TS^j\sigma_i, \end{aligned}$$
+      puisque $m(\sigma_i) \leqslant m$ par (c). Le terme $S^m\sigma$ est dans $C^{\mathcal U}(X)$ par (a). Pour $j \geqslant m(\sigma_i)$, $S^j\sigma_i$ y est aussi, par (a), et $T$ conserve $C^{\mathcal U}(X)$, puisque $T\tau$ est une chaîne de l'image de $\tau$ ({{h-subdivision|Subdivision barycentrique}}, (iii)).
+
+      *Conclusion.* $\rho$ est un morphisme de complexes : $\partial\rho = \partial - \partial D\partial = \rho\partial$. Si $\sigma \in C^{\mathcal U}(X)$, ses faces y sont aussi, et (b) donne $D\sigma = 0$ et $D\partial\sigma = 0$, d'où $\rho\sigma = \sigma$ : $\rho \circ \jmath = \mathrm{id}$. Enfin $\jmath \circ \rho = \mathrm{id} - \partial D - D\partial$ est homotope à l'identité, et induit l'identité en homologie ({{h-complexes|Complexes de chaînes}}, (iii)). Ainsi $\jmath_*$ et $\rho_*$ sont réciproques l'un de l'autre.
+    remarques:
+      - |
+        L'idée se voit sur un $1$-simplexe : un chemin qui n'est contenu dans aucun des ouverts devient, après assez de subdivisions, une somme de petits chemins, chacun contenu dans l'un d'eux, et la subdivision ne change pas sa classe d'homologie.
+
+        ```schema h-petites-chaines
+        Le $1$-simplexe $\sigma$ n'est contenu ni dans $U$ ni dans $V$, et une seule subdivision ne suffit pas, puisque sa première moitié sort à la fois de $U$ et de $V$. Après deux subdivisions, chacun des quatre morceaux est dans $U$, en bleu, ou dans $V$, en vert : $S^2\sigma$ est déjà une petite chaîne. L'entier $m(\sigma)$ vaut pourtant $3$ ici, car la propriété $P(\sigma, k)$ porte sur toutes les parties de diamètre au plus $\big(\frac12\big)^k$, et pas seulement sur les morceaux de la subdivision.
+        ```
+      - |
+        Aucun choix n'intervient : l'entier $m(\sigma)$ est le plus petit de ceux qui conviennent, et le nombre de Lebesgue ne sert qu'à prouver qu'il en existe. La subtilité de la preuve tient au fait que $m$ varie d'un simplexe à l'autre ; c'est la propriété (c), qui compare $m$ sur un simplexe et sur ses faces, qui permet de recoller les subdivisions de profondeurs différentes.
+
   - id: h-mayer-vietoris
     etiquette: Mayer-Vietoris
     nature: théorème
@@ -139,13 +218,7 @@ noeuds:
       $$\begin{aligned} \cdots \to \lex{homologie-singuliere}{H_n}(U \cap V) &\xrightarrow{(i_*, j_*)} H_n(U) \oplus H_n(V) \\ &\xrightarrow{k_* - l_*} H_n(X) \xrightarrow{\delta} H_{n-1}(U \cap V) \to \cdots \end{aligned}$$
       où $i, j, k, l$ sont les inclusions de $U \cap V$ dans $U$ et $V$, et de $U$ et $V$ dans $X$.
     preuve: |
-      (i) **Admis.** La difficulté contournée est la **subdivision barycentrique** : on construit un opérateur $S$ sur les chaînes, qui remplace chaque simplexe par la somme signée des simplexes de sa subdivision barycentrique, et un opérateur $T$ tel que $\partial T + T\partial = \mathrm{id} - S$. Le diamètre des simplexes affines est multiplié par au plus $n/(n+1)$ à chaque subdivision ; par compacité de $\Delta_n$ et un argument de nombre de Lebesgue appliqué au recouvrement $\{\sigma^{-1}(U), \sigma^{-1}(V)\}$, une chaîne donnée devient, après assez de subdivisions, une chaîne de $C^{U,V}(X)$.
-
-      ```schema h-mayer-vietoris
-      Le $1$-simplexe $\sigma$ n'est contenu ni dans $U$ ni dans $V$, et une seule subdivision ne suffit pas, puisque sa première moitié sort à la fois de $U$ et de $V$. Après deux subdivisions, chacun des quatre morceaux est dans $U$, en bleu, ou dans $V$, en vert.
-      ```
-
-      On en déduit que tout cycle est homologue à un cycle de $C^{U,V}$, et qu'un cycle de $C^{U,V}$ qui borde dans $C(X)$ borde dans $C^{U,V}$.
+      (i) C'est le théorème du nœud {{h-petites-chaines|Petites chaînes}}, appliqué à $\mathcal U = \{U, V\}$, pour lequel $C^{\mathcal U}(X) = C^{U,V}(X)$.
 
       (ii) La suite $0 \to C(U \cap V) \xrightarrow{(i_\#, j_\#)} C(U) \oplus C(V) \xrightarrow{k_\# - l_\#} C^{U,V}(X) \to 0$ est exacte. L'application de gauche est injective ; celle de droite est surjective, par définition de $C^{U,V}$ ; et $k_\#(a) = l_\#(b)$ signifie que $a$ et $b$ sont la même chaîne, formée de simplexes à valeurs dans $U \cap V$. On applique la suite exacte longue ({{h-suite-exacte|Suite exacte longue}}), puis (i) pour remplacer l'homologie de $C^{U,V}(X)$ par celle de $X$.
     remarques:
@@ -213,7 +286,9 @@ aretes:
   - [h-singuliere, h-homotopie]
   - [h-degre0, h-homotopie]
   - [h-suite-exacte, h-mayer-vietoris]
-  - [h-singuliere, h-mayer-vietoris]
+  - [h-singuliere, h-subdivision]
+  - [h-subdivision, h-petites-chaines]
+  - [h-petites-chaines, h-mayer-vietoris]
   - [h-homotopie, h-spheres]
   - [h-mayer-vietoris, h-spheres]
   - [h-spheres, h-applications]

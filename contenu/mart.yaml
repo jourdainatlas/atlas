@@ -1,8 +1,8 @@
 # Niveau 1 : structure interne du nœud « Martingales ».
 # Espérance conditionnelle comme projection orthogonale dans L², prolongée à L¹ ;
 # martingales, temps d'arrêt et arrêt borné ; inégalité maximale de Kolmogorov-Doob ;
-# convergence des martingales bornées dans L² ; série harmonique aléatoire et urne de Pólya.
-# Le théorème de convergence dans L¹ (montées de Doob) est admis et signalé.
+# convergence des martingales bornées dans L² ; montées de Doob et convergence presque sûre des
+# martingales bornées dans L¹ (démontrées le 29 oct. 2026) ; série harmonique aléatoire et urne de Pólya.
 
 graphe: mart
 titre: Martingales
@@ -110,7 +110,51 @@ noeuds:
       qui tend vers $0$ quand $m \to \infty$. Les événements $\{\sup_{n, n' \geqslant m}|M_n - M_{n'}| \geqslant 2\varepsilon\}$ décroissent donc vers un événement négligeable ; avec $\varepsilon = 1/(j + 1)$, $j \in \lex{ensemble-entiers-naturels}{\mathbb N}$, la suite est presque sûrement de Cauchy, donc converge presque sûrement, vers une limite égale à $M_\infty$ presque sûrement, une suite extraite convergeant presque sûrement vers $M_\infty$. Enfin, pour $G \in \mathcal F_n$, $E[M_\infty\mathbf 1_G] = \lim_m E[M_m\mathbf 1_G] = E[M_n\mathbf 1_G]$.
     remarques:
       - |
-        Le théorème de Doob affirme plus : une martingale bornée dans $\lex{espace-L1}{L^1}$ converge presque sûrement. Sa démonstration compte les **montées** de la martingale entre deux niveaux, dont l'espérance est contrôlée ; elle est admise ici. La convergence dans $L^1$ demande en outre l'équi-intégrabilité : la martingale $M_n = \prod_{k \leqslant n} 2\,\mathbf 1_{\{\varepsilon_k = 1\}}$, produit de facteurs indépendants d'espérance $1$, tend vers $0$ presque sûrement alors que $E[M_n] = 1$.
+        Le théorème de Doob affirme plus : une martingale bornée dans $\lex{espace-L1}{L^1}$ converge presque sûrement. Sa démonstration, qui compte les **montées** de la martingale entre deux niveaux, fait l'objet des deux nœuds suivants, {{mt-montees|Montées}} et {{mt-doob-l1|Martingales bornées dans L¹}}.
+
+  - id: mt-montees
+    etiquette: Montées
+    nature: lemme
+    titre: Inégalité des montées de Doob
+    texte: |
+      Soit $(M_n)$ une martingale pour la filtration $(\mathcal F_n)$, et $a < b$ deux réels. On définit par récurrence $\tau_0 = 0$ et, pour $j \geqslant 1$,
+      $$\begin{aligned} \sigma_j &= \inf\{k \geqslant \tau_{j-1} : M_k \leqslant a\}, \\ \tau_j &= \inf\{k > \sigma_j : M_k \geqslant b\}, \end{aligned}$$
+      avec $\inf \varnothing = +\infty$. Le nombre de **montées** de $a$ à $b$ avant l'instant $n$ est $U_n = \max\{j : \tau_j \leqslant n\}$, le maximum valant $0$ si aucun $\tau_j$ n'est $\leqslant n$. On pose $H_k = 1$ s'il existe $j$ tel que $\sigma_j < k \leqslant \tau_j$, et $H_k = 0$ sinon.
+    enonce: |
+      (i) Les $\sigma_j$ et les $\tau_j$ sont des temps d'arrêt, et $H_k$ est $\mathcal F_{k-1}$-mesurable pour $k \geqslant 1$.
+
+      (ii) Pour tout $n$, $\displaystyle \sum_{k=1}^n H_k(M_k - M_{k-1}) \geqslant (b - a)\,U_n - (M_n - a)^-$, où $x^- = \max(-x, 0)$.
+
+      (iii) *Inégalité des montées.* $(b - a)\,E[U_n] \leqslant E\big[(M_n - a)^-\big] \leqslant E[|M_n|] + |a|$.
+    preuve: |
+      (i) Par récurrence sur $j$, montrons que $\{\sigma_j \leqslant k\}$ et $\{\tau_j \leqslant k\}$ appartiennent à $\mathcal F_k$ pour tout $k$. On a $\{\sigma_j \leqslant k\} = \bigcup_{l \leqslant k} \big(\{\tau_{j-1} \leqslant l\} \cap \{M_l \leqslant a\}\big)$, réunion finie d'événements de $\mathcal F_l \subset \mathcal F_k$, puisque, $M_l$ étant $\mathcal F_l$-mesurable, $\{M_l \leqslant a\} \in \mathcal F_l$ ; de même $\{\tau_j \leqslant k\} = \bigcup_{l \leqslant k}\big(\{\sigma_j \leqslant l - 1\} \cap \{M_l \geqslant b\}\big)$ ; enfin $\{\sigma_j = k\} = \{\sigma_j \leqslant k\} \setminus \{\sigma_j \leqslant k - 1\} \in \mathcal F_k$, et de même pour $\tau_j$. Par récurrence, puisque $\tau_j > \sigma_j \geqslant \tau_{j-1}$, on a $\tau_j \geqslant j$ et $\sigma_j \geqslant j - 1$ ; en particulier $U_n = \sum_{j=1}^n \mathbf 1_{\{\tau_j \leqslant n\}}$, les $\tau_j$ étant croissants, est une variable aléatoire. Les intervalles $]\sigma_j, \tau_j]$ sont disjoints, car $\sigma_{j+1} \geqslant \tau_j$, et $\{\sigma_j < k \leqslant \tau_j\} = \{\sigma_j \leqslant k - 1\} \setminus \{\tau_j \leqslant k - 1\} \in \mathcal F_{k-1}$. Seuls les $j \leqslant k$ interviennent, puisque $\sigma_j \geqslant j - 1$ : $H_k$ est l'indicatrice d'une réunion finie d'événements de $\mathcal F_{k-1}$.
+
+      (ii) Sur chaque intervalle $]\sigma_j, \tau_j]$ contenu dans $[1, n]$, la somme télescope en $M_{\tau_j} - M_{\sigma_j} \geqslant b - a$ ; il y en a $U_n$. Il peut rester un intervalle commencé et non achevé, $]\sigma_j, n]$ avec $\sigma_j < n < \tau_j$, qui contribue $M_n - M_{\sigma_j} \geqslant M_n - a \geqslant -(M_n - a)^-$, puisque $M_{\sigma_j} \leqslant a$. Les autres termes sont nuls.
+
+      (iii) Par (i), $H_k = \mathbf 1_A$ avec $A \in \mathcal F_{k-1}$. Comme $M_{k-1} = E[M_k \mid \mathcal F_{k-1}]$, la caractérisation de l'espérance conditionnelle ({{mt-conditionnelle|Espérance conditionnelle}}, (i) et (ii)) donne $E[\mathbf 1_AM_k] = E[\mathbf 1_AM_{k-1}]$, c'est-à-dire $E[H_k(M_k - M_{k-1})] = 0$. On prend l'espérance de (ii), et $(M_n - a)^- \leqslant |M_n| + |a|$.
+    remarques:
+      - |
+        La suite $(H_k)$ est une stratégie de jeu : on achète quand le cours est descendu sous $a$, on revend dès qu'il dépasse $b$. Chaque montée rapporte au moins $b - a$, la seule perte possible est celle de la dernière position ouverte, et un jeu équitable ne rapporte rien en moyenne : les montées ne peuvent donc pas être nombreuses en moyenne.
+
+        ```schema mt-montees
+        Une trajectoire de la marche simple sur $60$ pas, avec $a = -2$ et $b = 2$. Les intervalles où $H_k = 1$ sont ombrés : les deux montées achevées, de $\sigma_j$ à $\tau_j$, en rouge, et la dernière position, ouverte en $\sigma_3 = 52$ et non soldée à l'instant $60$, en bleu. Ici $U_{60} = 2$.
+        ```
+
+  - id: mt-doob-l1
+    etiquette: Martingales bornées dans L¹
+    nature: théorème
+    titre: Convergence presque sûre des martingales bornées dans L¹
+    enonce: |
+      Si $(M_n)$ est une martingale telle que $K = \sup_n E[|M_n|] < +\infty$, elle converge presque sûrement vers une variable $M_\infty$ intégrable, avec $E[|M_\infty|] \leqslant K$.
+    preuve: |
+      Pour $a < b$, la suite des $U_n$ du nœud {{mt-montees|Montées}} est croissante ; sa limite $U_\infty \in [0, +\infty]$, nombre total de montées de $a$ à $b$, vérifie $E[U_\infty] \leqslant (K + |a|)/(b - a)$ par convergence monotone ({{m-beppo-levi|Beppo Levi}}) et l'inégalité des montées. Donc $U_\infty < +\infty$ presque sûrement. Or, sur l'événement $\{\liminf M_n < a < b < \limsup M_n\}$, la suite passe une infinité de fois sous $a$ et au-dessus de $b$ ; par récurrence, tous les $\sigma_j$ et $\tau_j$ sont alors finis, et $U_\infty = +\infty$ : cet événement est négligeable.
+
+      La réunion de ces événements, pour les couples de rationnels $a < b$, est négligeable, comme réunion dénombrable d'événements négligeables, une énumération de $\lex{ensemble-rationnels}{\mathbb Q}^2$ étant fixée ({{q-denombrable|ℚ dénombrable}}) ; c'est exactement l'événement $\{\liminf M_n < \limsup M_n\}$, puisqu'entre deux éléments distincts de $[-\infty, +\infty]$ on trouve deux rationnels. Par le lemme de Fatou ({{m-fatou|Fatou}}), $E[\liminf |M_n|] \leqslant \liminf E[|M_n|] \leqslant K$, donc $\liminf |M_n| < +\infty$ presque sûrement ({{m-integrale|Intégrale}}, (iv)). L'événement $\Omega_0 = \{\liminf M_n = \limsup M_n \in \mathbb R\}$ est donc de probabilité $1$. Posons $M_\infty = \limsup M_n$ sur $\Omega_0$ et $M_\infty = 0$ ailleurs, variable mesurable ({{m-mesurables|Fonctions mesurables}}, (ii)) : $M_n \to M_\infty$ presque sûrement, et $|M_\infty| \leqslant \liminf |M_n|$ partout, d'où $E[|M_\infty|] \leqslant K$.
+    remarques:
+      - |
+        La convergence n'a pas lieu dans $\lex{espace-L1}{L^1}$ en général. Avec des signes $\varepsilon_k = \pm 1$ indépendants équiprobables, la suite $M_n = \prod_{k \leqslant n} 2\,\mathbf 1_{\{\varepsilon_k = 1\}}$, produit de facteurs indépendants d'espérance $1$, est une martingale ({{mt-conditionnelle|Espérance conditionnelle}}, (iv), puisque $M_n \leqslant 2^n$ est bornée et que $\varepsilon_{n+1}$ est indépendante de $\mathcal F_n$), et $E[|M_n|] = 2^n \cdot 2^{-n} = 1$. Elle est nulle dès le premier $\varepsilon_k = -1$, et $P(\varepsilon_1 = \cdots = \varepsilon_n = 1) = 2^{-n} \to 0$ : elle tend vers $0$ presque sûrement. Mais $E[|M_n - 0|] = 1$ ne tend pas vers $0$, et une limite dans $L^1$ coïnciderait presque sûrement avec $0$. Ce qui manque est la propriété dite d'équi-intégrabilité, qui n'est pas étudiée ici.
+      - |
+        Le théorème contient celui du nœud {{mt-convergence|Convergence des martingales}} pour la convergence presque sûre, puisque $E[|M_n|] \leqslant E[M_n^2]^{1/2}$ par Cauchy-Schwarz ; la preuve dans $L^2$ reste utile, parce qu'elle donne en plus la convergence dans $L^2$ et $M_n = E[M_\infty \mid \mathcal F_n]$.
 
   - id: mt-applications
     etiquette: Applications
@@ -123,7 +167,9 @@ noeuds:
     preuve: |
       (i) Les sommes partielles $M_n = \sum_{k \leqslant n}\varepsilon_k/k$ forment une martingale ({{mt-martingales|Martingales}}, (i)), et $E[M_n^2] = \sum_{k \leqslant n}1/k^2$ est borné. On applique {{mt-convergence|Convergence des martingales}}. Des variables $\varepsilon_n$ existent sur $[0, 1[$ : $\varepsilon_n = 2d_n - 1$, où $d_n$ est le $n$-ième chiffre binaire ({{p-normaux|Nombres normaux}}).
 
-      (ii) On réalise l'urne à partir d'une suite de variables uniformes indépendantes $U_n$, dont l'existence est admise ({{p-normaux|Nombres normaux}}, remarque) : au tirage $n + 1$, on tire une rouge si $U_{n+1} \leqslant X_n$. Après $n$ tirages, l'urne contient $n + 2$ boules, dont $R_n$ rouges, et $X_n = R_n/(n + 2)$. Sachant $\mathcal F_n$, on tire une rouge avec probabilité $X_n$, d'où $E[R_{n+1} \mid \mathcal F_n] = R_n + X_n$ et $E[X_{n+1} \mid \mathcal F_n] = \frac{R_n(n + 3)/(n + 2)}{n + 3} = X_n$. Comme $0 \leqslant X_n \leqslant 1$, $E[X_n^2] \leqslant 1$, et la martingale converge presque sûrement.
+      (ii) On réalise l'urne à partir d'une suite de variables uniformes indépendantes $U_n$, qui existe sur $[0, 1[$ ({{p-suites-iid|Suites indépendantes}}, (i)) : au tirage $n + 1$, on tire une rouge si $U_{n+1} \leqslant X_n$. Après $n$ tirages, l'urne contient $n + 2$ boules, dont $R_n$ rouges, et $X_n = R_n/(n + 2)$ ; on prend $\mathcal F_n = \sigma(U_1, \dots, U_n)$, et $R_n$ est $\mathcal F_n$-mesurable, par récurrence. Comme $X_n$ ne prend que les valeurs $r/(n + 2)$, $1 \leqslant r \leqslant n + 1$,
+      $$\mathbf 1_{\{U_{n+1} \leqslant X_n\}} = \sum_r \mathbf 1_{\{X_n = r/(n+2)\}}\,\mathbf 1_{\{U_{n+1} \leqslant r/(n+2)\}},$$
+      où chaque $\mathbf 1_{\{X_n = r/(n+2)\}}$ est bornée et $\mathcal F_n$-mesurable, et $U_{n+1}$ est indépendante de $\mathcal F_n$ par regroupement ({{p-independance|Indépendance}}, (ii)). Par {{mt-conditionnelle|Espérance conditionnelle}}, (iv), l'espérance conditionnelle de ce tirage sachant $\mathcal F_n$ vaut $\sum_r \mathbf 1_{\{X_n = r/(n+2)\}}\,\frac r{n+2} = X_n$, d'où $E[R_{n+1} \mid \mathcal F_n] = R_n + X_n$ et $E[X_{n+1} \mid \mathcal F_n] = \frac{R_n(n + 3)/(n + 2)}{n + 3} = X_n$. Comme $0 \leqslant X_n \leqslant 1$, $E[X_n^2] \leqslant 1$, et la martingale converge presque sûrement.
     remarques:
       - |
         On montre par récurrence que $R_n$ est uniforme sur $\{1, \dots, n + 1\}$ : la limite de l'urne de Pólya suit la loi uniforme sur $[0, 1]$. Chaque urne converge, mais vers une proportion aléatoire, fixée par les tout premiers tirages ; c'est un modèle de renforcement, où le hasard initial devient une propriété permanente.
@@ -143,3 +189,5 @@ aretes:
   - [mt-martingales, mt-doob]
   - [mt-doob, mt-convergence]
   - [mt-convergence, mt-applications]
+  - [mt-doob, mt-montees]
+  - [mt-montees, mt-doob-l1]

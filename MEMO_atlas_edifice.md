@@ -393,3 +393,23 @@ ports d'une bulle (écart inchangé, sans sortir de la bulle) pour aligner les f
 passer les crochets de moins de 16 px de 114 à 15 sur les 708 arêtes ; vérification bloquante « la flèche … arrive
 par un segment trop court ». Croisements inchangés. Document de l'auteur remplacé par sa version recompilée
 (sommaire visible, 42 p.).
+
+Mayer-Vietoris (29 oct. 2026, priorité 3) : le théorème des petites chaînes n'est plus admis. Deux nœuds dans
+`hom` : `h-subdivision` (chaînes linéaires augmentées LC(Y), cône, S et T par récurrence, ∂S = S∂ et
+∂T + T∂ = id − S, transfert aux chaînes singulières par S σ = σ_#(S ι_n), naturalité, diamètres pour d_∞ :
+facteur n/(n+1)) et `h-petites-chaines` (recouvrement ouvert quelconque ; entier m(σ) le plus petit k tel que
+toute partie de diamètre ≤ (n/(n+1))^k soit dans un σ⁻¹(U), sans choix ; monotonie sur les faces ; D = D_{m(σ)} ;
+ρ = id − ∂D − D∂). `h-mayer-vietoris` (i) cite ce nœud. Schémas `h-subdivision` (S ι₂ : 6 triangles, S² ι₂ :
+36, côté maximal 7/18) et `h-petites-chaines` (ancien schéma de Mayer-Vietoris, m(σ) = 3 calculé par fenêtres
+glissantes). Relu par un second agent (deux passes ; une affirmation fausse corrigée : m(σ) = 2 dans la légende).
+Identités vérifiées par un calcul exact jusqu'en dimension 3.
+
+Compléments des théories terminales (29 oct. 2026). Inventaire des « admis » des théories sans successeur
+(fourier, lie, mart, tan, derham, nban). Faits : `mart` — `mt-montees` (inégalité des montées, stratégie H) et
+`mt-doob-l1` (martingales bornées dans L¹ : convergence p.s. ; M_∞ défini hors d'un négligeable), l'urne de Pólya
+cite désormais `p-suites-iid` (elle admettait encore l'existence de variables uniformes indépendantes) et justifie
+l'espérance conditionnelle du tirage ; schéma `mt-montees`. Relu par un second agent (deux passes).
+Restent candidats : tan (factorisation de Dedekind, en cours ; groupe des classes), fourier (continuité de Lévy),
+lie (deux faits admis en remarque), derham (surjectivité, partitions de l'unité).
+Formules longues : 79 fiches ont une formule centrée plus large que l'écran d'un téléphone de 390 px (défilement
+horizontal) ; relevé dans le dossier de travail, à traiter avec l'auteur.
