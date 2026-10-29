@@ -349,6 +349,13 @@ body.redim .vue { pointer-events: none; }
 .preuve .contenu { padding-top: 10px; }
 .preuve .cqfd { display: block; text-align: right; color: var(--encre-2); font-size: 15px; }
 .remarque { margin: 0 0 14px; font-size: 16px; color: var(--encre); }
+.document-fiche { margin: 18px 0; padding: 14px 16px; border: 1px solid var(--filet); border-left: 3px solid var(--c, var(--encre-3)); border-radius: 8px; background: var(--surface); }
+.document-fiche .tete { display: block; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--encre-3); margin-bottom: 4px; }
+.document-fiche .doc-titre { margin: 0; font-weight: 600; font-size: 16px; }
+.document-fiche .doc-desc { margin: 4px 0 0; font-size: 14.5px; color: var(--encre-2); }
+.document-fiche .doc-meta { margin: 6px 0 10px; font-size: 12.5px; color: var(--encre-3); font-family: var(--f-mono); }
+.document-fiche .doc-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.document-fiche .doc-actions .bouton { text-decoration: none; }
 .remarque .tete { display: block; margin-bottom: 2px; }
 pre.code {
   font-family: var(--f-mono); font-size: 13px; line-height: 1.5; background: var(--papier); border: 1px solid var(--filet);
@@ -1281,6 +1288,13 @@ function fiche() {
   if (n.enonce) h += `<div class="enonce"><span class="tete">${n.nature === 'chapitre' ? 'Résultat principal' : 'Énoncé'}</span>${n.enonce}</div>`;
   if (n.preuve) h += `<details class="preuve"><summary>Démonstration</summary><div class="contenu">${n.preuve}<span class="cqfd">□</span></div></details>`;
   for (const r of n.remarques) h += `<div class="remarque"><span class="tete">Remarque</span>${r}</div>`;
+  for (const doc of n.documents || []) {
+    // document de référence joint à la fiche : un clic l'ouvre dans le lecteur PDF du navigateur, d'où l'on peut l'enregistrer
+    h += `<div class="document-fiche"><span class="tete">Document à télécharger</span><p class="doc-titre">${esc(doc.titre)}</p>`
+      + (doc.description ? `<p class="doc-desc">${esc(doc.description)}</p>` : '')
+      + `<p class="doc-meta">PDF${doc.pages ? `, ${doc.pages} pages` : ''}${doc.auteur ? ` · ${esc(doc.auteur)}` : ''}</p>`
+      + `<div class="doc-actions"><a class="bouton" href="${esc(doc.fichier)}" target="_blank" rel="noopener">Ouvrir</a><a class="bouton" href="${esc(doc.fichier)}" download>Télécharger</a></div></div>`;
+  }
   if (n.sous && (!contexte || n.graphe !== etat.graphe)) h += `<button type="button" class="ouvrir" data-sous="${n.sous}">Ouvrir la structure interne <span aria-hidden="true">→</span></button>`;
   h += '<div class="liens">';
   const amont = n.parents.map(p => puce(p)).concat(n.amont.map(p => puce(p, true)));
@@ -1303,7 +1317,7 @@ function accueil() {
     <p>Chaque bulle est une théorie, et chaque flèche va d'une notion vers celle dont la définition l'utilise. Le graphe se lit de bas en haut : le <em>rang</em> d'une théorie est la longueur du plus long chemin qui la relie à la logique.</p>
     <p>Seules les dépendances immédiates sont tracées. Une flèche absente ne signifie pas qu'une théorie est indépendante d'une autre, mais que le lien passe par un intermédiaire.</p>
     <div class="enonce" style="--c: var(--encre)"><span class="tete">Utilisation</span>
-      <p>Cliquez une bulle pour lire sa fiche. Les bulles marquées d'un coin carré contiennent un graphe : un clic l'ouvre. Trente-trois branches sont développées : la {{log}}, les {{zf}}, les {{rel}}, les {{ord}}, les {{alg}}, les {{ordin}}, la construction de {{n}}, de {{z}}, de {{q}}, de {{r}} et de {{c}}, l'{{alglin}}, les {{met}}, les {{grtop}}, la {{geoalg}}, la {{topalg}}, le {{cdiff}}, la {{geod}}, l'{{anc}}, la {{mes}}, les {{proba}}, l'{{anf}}, la {{nban}}, l'{{hom}}, la {{galois}}, l'{{fourier}}, les {{edo}}, les {{lie}}, les {{mart}}, la {{tan}}, les {{top}}, et l'{{ar}}, dont les cinq chapitres, des suites réelles à l'intégrale de Riemann en passant par la {{co}}, ont chacun leur graphe. Le {{derham}}, qui relie la géométrie différentielle à l'homologie, est démontré en degré 1 pour les ouverts de ℝⁿ. Chaque proposition et chaque théorème y sont démontrés, sauf ceux dont la preuve est explicitement marquée « Admis », avec l'indication de la difficulté contournée.</p>
+      <p>Cliquez une bulle pour lire sa fiche. Les bulles marquées d'un coin carré contiennent un graphe : un clic l'ouvre. Trente-quatre branches sont développées : la {{log}}, les {{zf}}, les {{rel}}, les {{ord}}, les {{alg}}, les {{ordin}}, la construction de {{n}}, de {{z}}, de {{q}}, de {{r}} et de {{c}}, l'{{alglin}}, les {{met}}, les {{grtop}}, la {{geoalg}}, la {{topalg}}, le {{cdiff}}, la {{geod}}, l'{{anc}}, la {{mes}}, les {{proba}}, l'{{anf}}, la {{nban}}, l'{{hom}}, les {{gf}}, la {{galois}}, l'{{fourier}}, les {{edo}}, les {{lie}}, les {{mart}}, la {{tan}}, les {{top}}, et l'{{ar}}, dont les cinq chapitres, des suites réelles à l'intégrale de Riemann en passant par la {{co}}, ont chacun leur graphe. Le {{derham}}, qui relie la géométrie différentielle à l'homologie, est démontré en degré 1 pour les ouverts de ℝⁿ. Chaque proposition et chaque théorème y sont démontrés, sauf ceux dont la preuve est explicitement marquée « Admis », avec l'indication de la difficulté contournée.</p>
       <p>Les termes soulignés en pointillés, comme <span class="terme" data-g="borne-superieure" tabindex="0" role="button">borne supérieure</span>, affichent leur définition au survol ; un clic les ouvre dans le lexique.</p>
     </div>
     <p>Le signe <span class="etoile">⋆</span> marque les théories dont un théorème central équivaut à l'axiome du choix ou à l'une de ses formes faibles.</p>
@@ -1331,6 +1345,7 @@ function accueil() {
            .replace('{{topalg}}', '<a class="lien-noeud" href="#edifice.topalg" data-n="topalg">topologie algébrique</a>')
            .replace('{{geod}}', '<a class="lien-noeud" href="#edifice.geod" data-n="geod">géométrie différentielle</a>')
            .replace('{{cdiff}}', '<a class="lien-noeud" href="#edifice.cdiff" data-n="cdiff">calcul différentiel</a>')
+           .replace('{{gf}}', '<a class="lien-noeud" href="#edifice.gf" data-n="gf">groupes finis</a>')
            .replace('{{mes}}', '<a class="lien-noeud" href="#edifice.mes" data-n="mes">mesure et intégration</a>')
            .replace('{{proba}}', '<a class="lien-noeud" href="#edifice.proba" data-n="proba">probabilités</a>')
            .replace('{{anf}}', '<a class="lien-noeud" href="#edifice.anf" data-n="anf">analyse fonctionnelle</a>')

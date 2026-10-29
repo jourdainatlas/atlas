@@ -13,6 +13,7 @@ titre: Théorie de Galois
 conteneur: galois
 
 entrees:
+  gf: [gs-corps-finis, gs-radicaux, gs-abel-ruffini]
   alglin: [gs-extensions]
   c: [gs-abel-ruffini]
   analyse-reelle: [gs-abel-ruffini]
@@ -191,7 +192,7 @@ noeuds:
     preuve: |
       (i) La caractéristique n'est pas nulle, $\lex{ensemble-entiers-relatifs}{\mathbb Z}$ ne s'injectant pas dans un ensemble fini ; elle est donc un premier $p$ ({{gs-separabilite|Séparabilité}}), et $F$ est un espace vectoriel de dimension finie $n$ sur $\mathbb F_p$, de cardinal $p^n$.
 
-      (ii) Soit $m = q - 1$. Pour $d \mid m$, notons $\psi(d)$ le nombre d'éléments d'ordre $d$ de $F^\times$. S'il en existe un, $x$, ses puissances $x^k$, $0 \leqslant k < d$, sont $d$ racines distinctes de $X^d - 1$, qui en a au plus $d$ dans le corps $F$ ({{pol-racines|Racines}}, (iii)) ; les éléments d'ordre $d$ sont donc parmi elles, et sont les $x^k$ avec $k$ premier à $d$ : $\psi(d)$ vaut $0$ ou $\varphi(d)$, nombre d'entiers de $\{1, \dots, d\}$ premiers à $d$. Par le théorème de Lagrange ({{gs-lagrange|Lagrange}}), l'ordre de tout élément divise $m$, d'où $\sum_{d \mid m} \psi(d) = m$. D'autre part $\sum_{d \mid m} \varphi(d) = m$, en classant les éléments de $\mathbb Z/m\mathbb Z$ selon leur ordre. Donc $\psi(m) = \varphi(m) \geqslant 1$.
+      (ii) Soit $m = q - 1$. Pour $d \mid m$, notons $\psi(d)$ le nombre d'éléments d'ordre $d$ de $F^\times$. S'il en existe un, $x$, ses puissances $x^k$, $0 \leqslant k < d$, sont $d$ racines distinctes de $X^d - 1$, qui en a au plus $d$ dans le corps $F$ ({{pol-racines|Racines}}, (iii)) ; les éléments d'ordre $d$ sont donc parmi elles, et sont les $x^k$ avec $k$ premier à $d$ : $\psi(d)$ vaut $0$ ou $\varphi(d)$, nombre d'entiers de $\{1, \dots, d\}$ premiers à $d$. Par le théorème de Lagrange ({{gf-cycliques|Groupes cycliques}}, (i)), l'ordre de tout élément divise $m$, d'où $\sum_{d \mid m} \psi(d) = m$. D'autre part $\sum_{d \mid m} \varphi(d) = m$, en classant les éléments de $\mathbb Z/m\mathbb Z$ selon leur ordre. Donc $\psi(m) = \varphi(m) \geqslant 1$.
 
       (iii) Si $|F| = q$, tout $x \in F^\times$ vérifie $x^{q-1} = 1$, donc tout $x \in F$ annule $X^q - X$, qui a $q$ racines distinctes dans $F$ et vaut donc $\prod_{x \in F}(X - x)$, les degrés et les coefficients dominants étant égaux ({{pol-racines|Racines}}, (iii)) : $F$ est un corps de décomposition de ce polynôme, d'où l'unicité ({{gs-decomposition|Corps de décomposition}}). Pour l'existence, $X^q - X$ a pour dérivée $-1$ en caractéristique $p$, donc est séparable ; ses $q$ racines dans un corps de décomposition forment un corps, car $(x + y)^q = x^q + y^q$ en caractéristique $p$ ({{pol-binome|Binôme de Newton}}, (iv)), tandis que $(xy)^q = x^qy^q$, $(x^{-1})^q = (x^q)^{-1}$ et $(-x)^q = -x^q$, puisque $(-1)^q = -1$ si $p$ est impair et que $-1 = 1$ si $p = 2$.
 
@@ -199,70 +200,6 @@ noeuds:
     remarques:
       - |
         $\mathbb F_4 = \mathbb F_2[X]/(X^2 + X + 1)$ n'est pas $\mathbb Z/4\mathbb Z$, qui n'est pas même intègre, puisque $2 \cdot 2 = 0$. L'erreur la plus répandue est de confondre le corps à $p^n$ éléments avec l'anneau $\mathbb Z/p^n\mathbb Z$ ; ils n'ont le même cardinal que par coïncidence de notation.
-
-  - id: gs-lagrange
-    etiquette: Lagrange
-    nature: théorème
-    titre: Théorème de Lagrange
-    enonce: |
-      Si $H$ est un sous-groupe d'un groupe fini $G$, $|H|$ divise $|G|$ ; en particulier l'ordre de tout élément divise $|G|$.
-    preuve: |
-      Les classes $xH$ forment une partition de $G$ ({{a-quotient|Groupe quotient}}), et $h \mapsto xh$ est une bijection de $H$ sur $xH$ : $|G| = |H| \cdot |G/H|$, sans choix, $G$ étant fini. Pour un élément $x$ d'ordre $d$, on prend $H = \{e, x, \dots, x^{d-1}\}$, qui a $d$ éléments.
-    remarques:
-      - |
-        Dans $\lex{ensemble-entiers-relatifs}{\mathbb Z}/12\mathbb Z$, le sous-groupe $H = \{0, 4, 8\}$ a trois éléments, et ses classes $H$, $1 + H$, $2 + H$, $3 + H$ découpent les douze éléments en quatre paquets de trois.
-
-        ```schema gs-lagrange
-        Les douze éléments de $\mathbb Z/12\mathbb Z$ sont disposés comme les heures d'un cadran. Chaque classe $k + H$, avec $H = \{0, 4, 8\}$, relie trois heures distantes de quatre, et forme un triangle équilatéral ; les quatre triangles, de quatre couleurs, n'ont deux à deux aucun sommet commun, et leurs sommets sont les douze heures, d'où $12 = 3 \times 4$.
-        ```
-
-        La réciproque est fausse : un groupe d'ordre $n$ n'a pas toujours de sous-groupe d'ordre $d$ pour chaque diviseur $d$ de $n$. Le groupe alterné $\mathfrak A_4$, d'ordre $12$, n'a pas de sous-groupe d'ordre $6$ ; ce fait classique est admis ici. Le théorème suivant donne une réciproque partielle, pour les diviseurs premiers.
-
-  - id: gs-cauchy
-    etiquette: Cauchy
-    nature: théorème
-    titre: Théorème de Cauchy
-    enonce: |
-      Si un nombre premier $p$ divise l'ordre d'un groupe fini $G$, $G$ a un élément d'ordre $p$.
-    preuve: |
-      *Argument de McKay.* Soit $E$ l'ensemble des $(x_1, \dots, x_p) \in G^p$ tels que $x_1x_2\cdots x_p = e$ ; il a $|G|^{p-1}$ éléments, $x_p$ étant déterminé par les autres, nombre divisible par $p$. La permutation circulaire des coordonnées préserve $E$, car $x_1(x_2\cdots x_p) = e$ entraîne $(x_2 \cdots x_p)x_1 = e$. Ses orbites ont $1$ ou $p$ éléments, $p$ étant premier ; celles à un élément sont les $(x, \dots, x)$ avec $x^p = e$. Leur nombre est donc divisible par $p$, et, comme $(e, \dots, e)$ en est une, il y a un $x \neq e$ tel que $x^p = e$ : son ordre divise $p$ sans valoir $1$, il vaut $p$.
-    remarques:
-      - |
-        Pour $G = \mathfrak S_3$ et $p = 3$, l'ensemble $E$ des triplets de produit $e$ a $6^2 = 36$ éléments. Les triplets constants sont $(e, e, e)$ et ceux formés de l'un des deux $3$-cycles, soit $3$ points fixes, et les $33$ autres se répartissent en $11$ orbites de trois triplets. Le nombre de points fixes est bien un multiple de $3$, et les deux points fixes autres que $(e, e, e)$ fournissent les deux éléments d'ordre $3$.
-      - |
-        L'erreur la plus répandue est de croire que l'argument donne un sous-groupe d'ordre $p^k$ pour toute puissance $p^k$ qui divise $|G|$ : c'est le premier théorème de Sylow, qui demande un argument plus fin, et il est admis ici.
-
-  - id: gs-resolubles
-    etiquette: Groupes résolubles
-    nature: définition
-    titre: Groupes résolubles
-    texte: |
-      Un groupe $G$ est [[groupe-resoluble|résoluble]] s'il existe une suite de sous-groupes $G = G_0 \supset G_1 \supset \cdots \supset G_r = \{e\}$, chacun distingué dans le précédent, avec des quotients $G_{i-1}/G_i$ abéliens. Le **commutateur** de $x$ et $y$ est $[x, y] = xyx^{-1}y^{-1}$.
-    enonce: |
-      (i) Si $N$ est distingué dans $G$, $G/N$ est abélien si et seulement si $N$ contient tous les commutateurs.
-
-      (ii) Un quotient d'un groupe résoluble est résoluble.
-    preuve: |
-      (i) $G/N$ est abélien si et seulement si $xyN = yxN$ pour tous $x, y$, c'est-à-dire $(yx)^{-1}xy = x^{-1}y^{-1}xy \in N$ pour tous $x, y$. En appliquant cette condition à $x^{-1}$ et $y^{-1}$, qui parcourent $G$ quand $x$ et $y$ le parcourent, elle équivaut à $xyx^{-1}y^{-1} = [x, y] \in N$ pour tous $x, y$.
-
-      (ii) Si $\pi : G \to G/N$ est la projection et $(G_i)$ une suite de résolubilité de $G$, les $\pi(G_i)$ forment une suite de résolubilité de $G/N$. D'abord $\pi(G_i)$ est distingué dans $\pi(G_{i-1})$, puisque $\pi(g)\pi(G_i)\pi(g)^{-1} = \pi(gG_ig^{-1}) = \pi(G_i)$ pour $g \in G_{i-1}$. Ensuite le morphisme surjectif $G_{i-1} \to \pi(G_{i-1})/\pi(G_i)$, composé de $\pi$ et de la projection, s'annule sur $G_i$ ; il passe au quotient en un morphisme surjectif de $G_{i-1}/G_i$, abélien, sur $\pi(G_{i-1})/\pi(G_i)$, qui est donc abélien, comme toute image d'un groupe abélien.
-    remarques:
-      - |
-        Tout groupe abélien est résoluble, avec la suite $G \supset \{e\}$. La notion mesure jusqu'où un groupe s'éloigne de la commutativité par étapes abéliennes ; c'est exactement ce qu'il faut pour monter une tour d'extensions par radicaux, comme le montrera le théorème de Galois sur la résolubilité par radicaux.
-
-  - id: gs-sn
-    etiquette: 𝔖ₙ non résoluble
-    nature: théorème
-    titre: Le groupe symétrique n'est pas résoluble pour n ≥ 5
-    enonce: |
-      Pour $n \geqslant 5$, le groupe symétrique $\lex{groupe-symetrique}{\mathfrak S_n}$ n'est pas résoluble.
-    preuve: |
-      Si $a, b, c, d, e$ sont cinq éléments distincts, $[(a\ b\ d), (a\ c\ e)] = (a\ b\ c)$, comme on le vérifie en suivant les images. Soit $H \subset \mathfrak S_n$ un sous-groupe contenant tous les $3$-cycles, et $N$ distingué dans $H$ avec $H/N$ abélien : par {{gs-resolubles|Groupes résolubles}}, (i), $N$ contient tous les commutateurs d'éléments de $H$, donc tous les $3$-cycles, puisque $n \geqslant 5$ permet de compléter $a, b, c$ par deux éléments distincts $d, e$. Par récurrence, chaque $G_i$ d'une suite de résolubilité de $\mathfrak S_n$ contiendrait tous les $3$-cycles, et $G_r \neq \{e\}$ : contradiction.
-    remarques:
-      - |
-        Pour $n \leqslant 4$, $\mathfrak S_n$ est résoluble : $\mathfrak S_4 \supset \mathfrak A_4 \supset V \supset \{e\}$, où $\mathfrak A_4$ est le noyau de la signature ({{v-permutations|Permutations, signature}}) et $V$ le groupe de Klein des doubles transpositions, a des quotients d'ordres $2$, $3$ et $4$, tous abéliens. C'est la raison profonde de l'existence des formules de Cardan et de Ferrari pour les degrés $3$ et $4$.
-      - |
-        L'argument tombe en défaut pour $n = 4$ précisément parce qu'on ne trouve plus cinq éléments distincts : le commutateur de deux $3$-cycles de $\mathfrak S_4$ est une double transposition ou l'identité, jamais un $3$-cycle, et la suite des $G_i$ peut alors descendre jusqu'à $V$.
 
   - id: gs-radicaux
     etiquette: Résolubilité par radicaux
@@ -340,10 +277,5 @@ aretes:
   - [gs-artin, gs-galoisiennes]
   - [gs-galoisiennes, gs-correspondance]
   - [gs-galoisiennes, gs-corps-finis]
-  - [gs-lagrange, gs-corps-finis]
   - [gs-correspondance, gs-radicaux]
-  - [gs-resolubles, gs-radicaux]
-  - [gs-resolubles, gs-sn]
-  - [gs-cauchy, gs-abel-ruffini]
-  - [gs-sn, gs-abel-ruffini]
   - [gs-radicaux, gs-abel-ruffini]

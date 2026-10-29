@@ -15,7 +15,7 @@ Vérifications bloquantes (le script s'arrête sur erreur) :
   - aucune arête tracée ne traverse un nœud.
 Avertissements : termes du lexique jamais employés, arêtes redondantes non tracées.
 """
-import glob, json, os, re, sys
+import os, glob, json, re, sys
 from collections import defaultdict
 import networkx as nx
 import yaml
@@ -533,7 +533,11 @@ for gid, d in D.items():
         amont = [e for e, cs in g['entrees'].items() if v in cs]
         sortie['noeuds'][v] = {k: n.get(k) for k in
             ['id', 'graphe', 'etiquette', 'titre', 'nature', 'famille', 'numero', 'rang',
-             'texte', 'enonce', 'preuve', 'choix', 'remarques', 'sous']}
+             'texte', 'enonce', 'preuve', 'choix', 'remarques', 'sous', 'documents']}
+        # documents à télécharger (fiche) : le fichier doit exister dans documents/
+        for doc in n.get('documents') or []:
+            if not os.path.exists(doc.get('fichier', '')):
+                erreur(f"[{gid}] {v} : document introuvable {doc.get('fichier')}")
         sortie['noeuds'][v].update(parents=list(d.predecessors(v)), enfants=list(d.successors(v)),
                                    amont=amont)
 for t, e in lex.items():

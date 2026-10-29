@@ -350,3 +350,20 @@ classe de points liés par lignes brisées, point de base pris dans une énumér
 corollaire H¹(ℝ²∖0) ≅ ℝ et critère du carré). Surjectivité admise (Mayer-Vietoris de de Rham, partitions de
 l'unité). Remarques de gd-de-rham mises à jour ; accueil : « Trente-trois branches », derham « démontré en
 degré 1 ». Relu par un second agent (trois passes, dix remarques traitées).
+
+Groupes finis (29 oct. 2026, priorité 3) : nouvelle théorie de niveau 0 `gf` (famille alg ; arêtes z, alglin,
+alg → gf → galois), 14 fiches. Les nœuds gs-lagrange, gs-cauchy, gs-resolubles et gs-sn quittent galois avec leurs
+ids (entrée gf de galois : gs-corps-finis, gs-radicaux, gs-abel-ruffini). Nouveaux : gf-cycliques (produit direct
+défini là), gf-actions, gf-sylow (Wielandt ; dénombrement des parties ajouté en pol-binome (v)), gf-produits
+(transport des produits semi-directs), gf-abeliens (lemme du supplémentaire puis existence), gf-diedraux (𝒬₈ réalisé
+dans GL₂(ℤ/3ℤ)), gf-ordres-pq, gf-ordre-8, gf-ordre-12 (3-cycles et doubles transpositions définis ; Dic₃ et 𝒟₆ par
+transport), gf-petits-ordres (tableau des 24 groupes, résolubilité démontrée en remarque, 𝔄₅ non résoluble par
+gs-sn, minimalité admise). Admis : 𝒟ₙ = isométries du polygone, 𝔄₄ = rotations du tétraèdre, unicité du groupe
+non abélien d'ordre pq, nombres 14 et 51 de groupes d'ordres 16 et 32. Cinq schémas (`outils/edifice_schemas_gf.py`) :
+treillis de ℤ/12ℤ, orbite et stabilisateur du carré, pentagone et hexagone, treillis de 𝒟₄ et 𝒬₈, nombre de groupes
+par ordre ; écartés : Sylow et produits semi-directs (rien à dessiner qui ne soit déjà dans les treillis).
+**Document de l'auteur** « Liste des premiers groupes finis » (41 p.) : `documents/edifice/liste-premiers-groupes-finis.pdf`,
+proposé par une carte « Ouvrir / Télécharger » dans la fiche gf-petits-ordres (champ générique `documents:` d'un nœud,
+rendu par le gabarit, `.document-fiche`) et mentionné dans le texte de la théorie. Relu par un second agent (deux
+passes, quinze remarques traitées, dont deux identités de permutations qu'il proposait fausses et qui ont été
+recalculées). Accueil : « Trente-quatre branches », lien {{gf}}.
