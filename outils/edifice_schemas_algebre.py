@@ -321,6 +321,67 @@ def gs_abel_ruffini():
 
 # ================================================================ théorie algébrique des nombres
 
+def _hnf2(vecs):
+    """Forme d'Hermite (triangulaire supérieure) du réseau de Z^2 engendré par des vecteurs entiers."""
+    from math import gcd
+    vs = [list(v) for v in vecs if v != (0, 0)]
+    # élimination sur la seconde coordonnée puis la première, par l'algorithme d'Euclide
+    def euclide(vs, k):
+        piv = None
+        reste = []
+        for v in vs:
+            if v[k] == 0:
+                reste.append(v); continue
+            if piv is None:
+                piv = v; continue
+            a, b = piv, v
+            while b[k] != 0:
+                q = a[k] // b[k]
+                a, b = b, [a[0] - q * b[0], a[1] - q * b[1]]
+            piv = a
+            reste.append(b)
+        return piv, [v for v in reste if v != [0, 0]]
+    p2, reste = euclide(vs, 1)
+    g = 0
+    for v in reste:
+        g = gcd(g, v[0])
+    if p2[1] < 0:
+        p2 = [-p2[0], -p2[1]]
+    return (g, (p2[0] % g if g else p2[0], p2[1]))
+
+
+@schema('an-factorisation')
+def an_factorisation():
+    # idéaux de Z[√−5] comme réseaux de Z^2 (coordonnées sur 1 et w = √−5, w² = −5)
+    mul = lambda x, y: (x[0] * y[0] - 5 * x[1] * y[1], x[0] * y[1] + x[1] * y[0])
+    def ideal(*gens):
+        return [g for x in gens for g in (x, mul(x, (0, 1)))]
+    def prod(I, J):
+        return [mul(x, y) for x in I for y in J]
+    p, q, q2 = ideal((2, 0), (1, 1)), ideal((3, 0), (1, 1)), ideal((3, 0), (1, -1))
+    H = _hnf2
+    assert H(prod(p, p)) == H(ideal((2, 0)))
+    assert H(prod(q, q2)) == H(ideal((3, 0)))
+    assert H(prod(p, q)) == H(ideal((1, 1))) and H(prod(p, q2)) == H(ideal((1, -1)))
+    assert H(prod(prod(p, p), prod(q, q2))) == H(ideal((6, 0)))
+    S = Schema(520, 250, 'Les quatre facteurs premiers de (6) dans ℤ[√−5] et leurs deux regroupements')
+    xs, y = [100, 210, 320, 430], 125
+    noms = ['𝔭', '𝔭', '𝔮', '𝔮′']
+    for x, nm in zip(xs, noms):
+        S.rect(x - 32, y - 18, 64, 36, 'r', rempli='r', rx=7)
+        S.texte([x, y], nm, 'r', taille=19)
+    def regroupe(i, j, lab, yl, c):
+        m = np.array([(xs[i] + xs[j]) / 2, yl])
+        for k in (i, j):
+            S.ligne(m + [0, 14 if yl < y else -14], [xs[k], y + (-18 if yl < y else 18)], c)
+        S.texte(m, lab, c, taille=17)
+    regroupe(0, 1, '(2)', 40, 'b')
+    regroupe(2, 3, '(3)', 40, 'b')
+    regroupe(0, 2, '(1 + √−5)', 212, 'v')
+    regroupe(1, 3, '(1 − √−5)', 212, 'v')
+    return S
+
+
 @schema('an-gauss')
 def an_gauss():
     # α = 7 + 5i, β = 2 + i : α/β = (19 + 3i)/5, q = 4 + i, r = α − βq = −i.

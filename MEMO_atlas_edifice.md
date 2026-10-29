@@ -413,3 +413,10 @@ Restent candidats : tan (factorisation de Dedekind, en cours ; groupe des classe
 lie (deux faits admis en remarque), derham (surjectivité, partitions de l'unité).
 Formules longues : 79 fiches ont une formule centrée plus large que l'écran d'un téléphone de 390 px (défilement
 horizontal) ; relevé dans le dossier de travail, à traiter avec l'auteur.
+Factorisation de Dedekind (29 oct. 2026) : trois nœuds dans `tan`, après an-ideaux : `an-dedekind-lemmes` (indice
+et Lagrange, idéaux de type fini, 𝒪 intégralement clos sous la forme « xI ⊂ I ⇒ x ∈ 𝒪 », tout idéal non nul contient
+un produit de premiers, par récurrence sur l'indice, sans choix), `an-inverse` (𝔭′ = {x : x𝔭 ⊂ 𝒪}, 𝔭𝔭′ = 𝒪),
+`an-factorisation` (existence et unicité ; exemple (6) = 𝔭²𝔮𝔮′ dans ℤ[√−5] avec primalité par des morphismes
+vers 𝔽₂, 𝔽₃ et non-principalité ; schéma `an-factorisation`, produits vérifiés par formes d'Hermite). Groupe des
+classes : défini, finitude admise. `outils/edifice_svg.py` : 𝔮 ajouté aux lettres gothiques. Relu par un second
+agent (deux passes ; une affirmation fausse corrigée sur les idéaux non principaux de ℤ[√−5]).
