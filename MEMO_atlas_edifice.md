@@ -609,3 +609,19 @@ agent indépendant (quatre fautes de définition et de rédaction, dix retouches
 Restent dans la liste du §41 : changement de variables et Stokes, formes quadratiques, modules sur un anneau
 principal, Radon-Nikodym, Riesz-Markov, Lᵖ, Ascoli, Stone-Weierstrass, extrema liés, représentations, réciprocité
 quadratique, Wilson, Jordan-Hölder, van Kampen, Jordan, Liapounov.
+
+## 43. Changement de variables dans ℝⁿ (30 octobre 2026)
+
+Sous-graphe `edo-changement` (contenu/edo-changement.yaml), ouvert par le nœud chapitre `edo-changement` de edo
+(arête ed-variationnelle → edo-changement). Placement : edo et lie sont les seules théories en aval de mes, cdiff,
+alglin et anc ; edo vient d'abord, et la formule y donne Liouville. Les arêtes cdiff → proba ou mes → cdiff
+faisaient passer l'édifice de 16 à 19 croisements, écartées. Renvois visibles : remarques ajoutées aux théories mes
+et cdiff dans edifice.yaml (un lien {{…}} vers l'aval n'est permis qu'en remarque), et remarques de m-produit,
+v-det-matrice, gd-orientation, p-normale. Dix fiches cv-* : λₙ = λₙ₋₁ ⊗ λ₁ et boréliens (unicité par les pavés),
+cubes dyadiques (décomposition des ouverts sans choix), matrices élémentaires (pivot de Gauss), image linéaire
+(λ(b + A(E)) = |det A| λ(E), par unicité de la mesure invariante et Cavalieri), image d'un petit cube (accroissements
+finis, point fixe de Banach), mesure de l'image d'un cube (Heine), changement de variables (Dynkin, pas de
+régularité), polaires (aire du disque, π du cosinus), intégrale de Gauss, Liouville (det Z = e^{∫ div}). Aucun
+choix nouveau ; ⋆ sur la remarque de non-complétude (Vitali). J désigne ici le déterminant jacobien (mise en garde :
+matrice jacobienne dans gd-differentielle). Relu par un agent indépendant (deux trous, onze retouches). Source :
+Liouville, J. Math. Pures Appl. 3 (1838), p. 342-349. Stokes reste à faire. 584 nœuds, 328 termes, 49 graphes.

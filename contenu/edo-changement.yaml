@@ -1,0 +1,505 @@
+# Niveau 2 : structure interne du chapitre « Changement de variables » (nœud edo-changement du graphe edo,
+# créé le 29 oct. 2026). Mesure de Lebesgue de ℝⁿ comme mesure produit (boréliens, pavés, invariances,
+# hyperplans négligeables), cubes dyadiques et décomposition d'un ouvert, matrices élémentaires (pivot de
+# Gauss), image de λ par une application linéaire (facteur |det A|, par l'unicité des mesures invariantes par
+# translation), image d'un petit cube par une application C¹ (accroissements finis pour l'inclusion extérieure,
+# point fixe pour l'inclusion intérieure), mesure de l'image d'un cube, formule du changement de variables
+# (boréliens, fonctions positives, intégrables, négligeables), coordonnées polaires, intégrale de Gauss, et
+# théorème de Liouville : le flot d'un champ de divergence nulle conserve le volume.
+# Placement : edo est la première théorie de l'édifice dont la mesure (par anf), le calcul différentiel (par
+# geod), l'algèbre linéaire et l'analyse complexe (exp, cos, sin, π) soient tous des ancêtres. Une arête
+# cdiff → proba ou mes → cdiff aurait fait passer les croisements de l'édifice de 16 à 19.
+# On travaille sur les boréliens : ni la régularité de λ, ni sa complétion, ni une majoration appliquée à φ⁻¹
+# ne servent ; de φ⁻¹, on n'utilise que la continuité (mesurabilité des images) et la différentiabilité.
+# Choix : aucun usage nouveau ; seule intervient, à travers λ, la σ-additivité de la mesure de Lebesgue
+# (choix dénombrable, signalé au nœud m-lebesgue).
+
+graphe: edo-changement
+titre: Changement de variables
+conteneur: edo-changement
+
+entrees:
+  ed-variationnelle: [cv-liouville]
+
+noeuds:
+  - id: cv-lebesgue-rn
+    etiquette: Lebesgue sur ℝⁿ
+    nature: proposition
+    titre: La mesure de Lebesgue sur ℝⁿ
+    texte: |
+      On munit $\lex{n-uplet}{\mathbb R^n}$ de la topologie de la norme $\|\cdot\|_\infty$, qui est la topologie produit ({{gd-normes|Normes}}, (ii)). Sa [[tribu-borelienne|tribu borélienne]] $\mathcal B(\mathbb R^n)$ est la tribu engendrée par ses ouverts. Pour un borélien $W$, on note $\mathcal B(W)$ l'ensemble des boréliens contenus dans $W$ : c'est une tribu sur $W$, puisque $W \setminus B = W \cap B^c$. Une application définie sur $W$ est **borélienne** si elle est mesurable pour $\mathcal B(W)$.
+
+      Un **pavé** est un produit $\prod_i \,]a_i, b_i]$, avec $a_i \leqslant b_i$ réels. Pour $n \geqslant 2$, on identifie $\mathbb R^n$ à $\mathbb R^{n-1} \times \mathbb R$ en séparant la dernière coordonnée.
+
+      On note $\lambda_1$ la restriction à $\mathcal B(\mathbb R)$ de la [[mesure-lebesgue|mesure de Lebesgue]], et l'on pose par récurrence
+      $$\lambda_n = \lambda_{n-1} \otimes \lambda_1,$$
+      [[mesure-produit|mesure produit]] du nœud {{m-produit|Mesure produit}}, ce que justifient (i) et (ii). C'est la **mesure de Lebesgue** de $\mathbb R^n$ ; on la note $\lambda$ quand la dimension est claire.
+    enonce: |
+      (i) *Boréliens.* $\mathcal B(\mathbb R^n)$ est engendrée par les pavés et, pour $n \geqslant 2$, égale la tribu produit $\mathcal B(\mathbb R^{n-1}) \otimes \mathcal B(\mathbb R)$. Si $W$ est un ouvert de $\mathbb R^n$ et $h : W \to \mathbb R^p$ une application continue, $h^{-1}(B)$ est borélien pour tout borélien $B$ de $\mathbb R^p$.
+
+      (ii) *Pavés.* $\lambda_n$ est une mesure σ-finie sur $\mathcal B(\mathbb R^n)$, et c'est l'unique mesure sur $\mathcal B(\mathbb R^n)$ telle que
+      $$\lambda_n\Big(\prod_{i=1}^n \,]a_i, b_i]\Big) = \prod_{i=1}^n (b_i - a_i).$$
+
+      (iii) *Invariances.* Pour $t \in \mathbb R^n$ et $E$ borélien, $E + t$ est borélien et $\lambda(E + t) = \lambda(E)$. Pour $\sigma \in \lex{groupe-symetrique}{\mathfrak S_n}$, soit $P_\sigma$ l'application linéaire telle que $P_\sigma(e_j) = e_{\sigma(j)}$ : alors $P_\sigma(E)$ est borélien et $\lambda(P_\sigma(E)) = \lambda(E)$.
+
+      (iv) *Hyperplans.* Pour $1 \leqslant i \leqslant n$ et $c$ réel, l'hyperplan $\{x : x_i = c\}$ est [[negligeable|négligeable]]. Par suite, tout produit d'intervalles d'extrémités $a_i \leqslant b_i$, ouverts, fermés ou semi-ouverts, a pour mesure $\prod_i (b_i - a_i)$.
+    preuve: |
+      (i) *Images réciproques.* Soit $h : W \to \mathbb R^p$ continue. L'ensemble des parties $B$ de $\mathbb R^p$ telles que $h^{-1}(B) \in \mathcal B(W)$ est une tribu ({{m-tribus|Tribus}}, (iv)). Elle contient les ouverts : si $O$ est ouvert, $h^{-1}(O)$ est un ouvert de $W$ pour la topologie induite, donc de la forme $O' \cap W$ avec $O'$ ouvert, et c'est un ouvert de $\mathbb R^n$ puisque $W$ en est un. Elle contient donc $\mathcal B(\mathbb R^p)$.
+
+      *Les pavés engendrent les boréliens.* Un pavé est borélien, puisque
+      $$\prod_i \,]a_i, b_i] = \bigcap_{k \in \mathbb N} \prod_i \,\Big]a_i, b_i + \frac{1}{k + 1}\Big[$$
+      est une intersection dénombrable d'ouverts de la topologie produit.
+
+      Réciproquement, soit $O$ un ouvert et $x \in O$. Il existe $r > 0$ tel que la boule $B_\infty(x, r)$ soit contenue dans $O$, puis, par densité de $\lex{ensemble-rationnels}{\mathbb Q}$ ({{rr-archimede|Archimède, densité de ℚ}}, (ii)), des rationnels $a_i \in \,]x_i - r, x_i[$ et $b_i \in \,]x_i, x_i + r[$. Le pavé $\prod_i \,]a_i, b_i]$ contient $x$ et est contenu dans $B_\infty(x, r)$, donc dans $O$.
+
+      Ainsi $O$ est la réunion des pavés à extrémités rationnelles contenus dans $O$. Cette famille est définie par compréhension, sans aucun choix, et indexée par une partie de $\mathbb Q^{2n}$, qui est dénombrable ({{q-denombrable|ℚ est dénombrable}}, (ii)). Les ouverts appartiennent donc à la tribu engendrée par les pavés ({{m-tribus|Tribus}}, (i)), et celle-ci est $\mathcal B(\mathbb R^n)$.
+
+      *La tribu produit.* Un pavé de $\mathbb R^n$ s'écrit $P' \times \,]a_n, b_n]$, où $P'$ est un pavé de $\mathbb R^{n-1}$, borélien par ce qui précède. Il appartient à $\mathcal B(\mathbb R^{n-1}) \otimes \mathcal B(\mathbb R)$, qui contient donc $\mathcal B(\mathbb R^n)$.
+
+      Inversement, si $A \in \mathcal B(\mathbb R^{n-1})$ et $B \in \mathcal B(\mathbb R)$, alors $A \times B = p^{-1}(A) \cap q^{-1}(B)$, où $p$ et $q$ sont les projections sur $\mathbb R^{n-1}$ et sur la dernière coordonnée, linéaires donc continues. Par le premier point, $A \times B$ est borélien, et la tribu produit est contenue dans $\mathcal B(\mathbb R^n)$.
+
+      (ii) Par récurrence sur $n$. Pour $n = 1$, c'est le nœud {{m-lebesgue|Mesure de Lebesgue}}, (ii) et (iii), et $\lambda_1$ est σ-finie, avec $\lambda_1(]{-k}, k]) = 2k$.
+
+      Si l'énoncé vaut pour $n - 1$, les mesures $\lambda_{n-1}$ et $\lambda_1$ sont σ-finies, et leur produit est défini sur $\mathcal B(\mathbb R^{n-1}) \otimes \mathcal B(\mathbb R) = \mathcal B(\mathbb R^n)$. Sur un pavé $P' \times \,]a_n, b_n]$, il vaut $\lambda_{n-1}(P')\,(b_n - a_n)$ ({{m-produit|Mesure produit}}, (iii)), d'où la formule ; les pavés $]{-k}, k]^n$ croissent vers $\mathbb R^n$ et sont de mesure $(2k)^n$.
+
+      *Unicité.* Les pavés et le vide forment un π-système, l'intersection de deux pavés étant vide ou égale à $\prod_i \,]\max(a_i, a'_i), \min(b_i, b'_i)]$. Il engendre $\mathcal B(\mathbb R^n)$ par (i), et l'unicité du nœud {{m-dynkin|Classes monotones}}, (ii), s'applique avec $X_k = \,]{-k}, k]^n$.
+
+      (iii) L'ensemble $E + t$ est l'image réciproque de $E$ par la translation continue $x \mapsto x - t$, donc borélien par (i). L'application $E \mapsto \lambda(E + t)$ est une mesure, la translation étant bijective. Elle vaut $\prod_i (b_i - a_i)$ sur le pavé $\prod_i \,]a_i, b_i]$, dont le translaté est $\prod_i \,]a_i + t_i, b_i + t_i]$ ; par l'unicité de (ii), elle égale $\lambda$.
+
+      De même, $P_\sigma(E)$ est l'image réciproque de $E$ par l'application linéaire $P_{\sigma^{-1}}$, réciproque de $P_\sigma$. La $\sigma(j)$-ième coordonnée de $P_\sigma(x)$ est $x_j$ : $P_\sigma$ envoie le pavé $\prod_j \,]a_j, b_j]$ sur le pavé dont le $\sigma(j)$-ième facteur est $]a_j, b_j]$, qui a le même produit de longueurs, et l'unicité de (ii) conclut.
+
+      (iv) Pour $n = 1$, l'hyperplan est le singleton $\{c\}$, négligeable ({{m-lebesgue|Mesure de Lebesgue}}, (iv)). Pour $n \geqslant 2$, l'hyperplan $\{x : x_n = c\}$ est le produit $\mathbb R^{n-1} \times \{c\}$. Par le nœud {{m-produit|Mesure produit}}, (iii), sa mesure est $\lambda_{n-1}(\mathbb R^{n-1}) \cdot \lambda_1(\{c\}) = (+\infty) \cdot 0 = 0$, avec la convention du nœud {{m-droite-achevee|Sommes dans [0, +∞]}}. Pour $i < n$, l'application $P_\sigma$ associée à la transposition $\sigma = (i\ n)$ envoie $\{x_n = c\}$ sur $\{x_i = c\}$, et (iii) conclut.
+
+      Enfin, le produit des segments $[a_i, b_i]$ privé du produit des intervalles ouverts $]a_i, b_i[$ est contenu dans la réunion des $2n$ hyperplans $\{x_i = a_i\}$ et $\{x_i = b_i\}$, qui est négligeable. Le produit ouvert, le pavé et le produit fermé ont donc la même mesure, $\prod_i (b_i - a_i)$, et tout produit d'intervalles compris entre le premier et le dernier aussi, par croissance de $\lambda$.
+    remarques:
+      - |
+        La construction privilégie les axes de coordonnées : rien n'y laisse voir que $\lambda$ est invariante par rotation. Ce sera une conséquence de la formule $\lambda(A(E)) = |\det A|\,\lambda(E)$, établie au nœud {{cv-lineaire|Image linéaire}}, appliquée aux matrices orthogonales.
+      - |
+        Pour $n = 2$, le point (i) justifie l'identification annoncée au nœud {{m-produit|Mesure produit}} : la tribu produit $\mathcal B(\mathbb R) \otimes \mathcal B(\mathbb R)$ est la tribu borélienne du plan, et la mesure $\lambda \otimes \lambda$ qu'y calcule le principe de Cavalieri est $\lambda_2$.
+      - |
+        On travaille ici avec les boréliens, et non avec la tribu produit des tribus de Lebesgue, qui n'est pas complète (⋆). Si $A \subset \mathbb R$ n'est pas mesurable au sens de Lebesgue, la partie $\{0\} \times A$ du plan est contenue dans la droite $\{0\} \times \mathbb R$, de mesure nulle. Elle n'appartient pourtant pas à cette tribu produit, puisque sa section en $0$, qui est $A$, devrait être mesurable ({{m-produit|Mesure produit}}, (i)).
+
+        Le signe ⋆ marque que l'existence d'une telle partie $A$ demande l'axiome du choix ({{m-vitali|Ensemble de Vitali}}). Les énoncés de ce chapitre portent sur les boréliens ; leur extension aux parties mesurables au sens de Lebesgue n'y sert pas et n'est pas rédigée.
+
+  - id: cv-dyadiques
+    etiquette: Cubes dyadiques
+    nature: lemme
+    titre: Cubes dyadiques et décomposition des ouverts
+    texte: |
+      Pour $k \in \lex{ensemble-entiers-naturels}{\mathbb N}$ et $m \in \lex{ensemble-entiers-relatifs}{\mathbb Z}^n$, le [[cube-dyadique|cube dyadique]] de niveau $k$ et d'indice $m$ est le pavé
+      $$Q_{k,m} = \prod_{i=1}^n \Big]\frac{m_i}{2^k}, \frac{m_i + 1}{2^k}\Big],$$
+      de côté $2^{-k}$. Son adhérence $\bar Q_{k,m}$ est le produit des segments correspondants. On munit $\lex{n-uplet}{\mathbb R^n}$ de la norme $\|\cdot\|_\infty$.
+    enonce: |
+      (i) *Emboîtement.* Pour chaque $k$, les cubes de niveau $k$ forment une partition de $\mathbb R^n$, et chacun d'eux est la réunion disjointe des $2^n$ cubes de niveau $k + 1$ qu'il contient. Deux cubes dyadiques sont disjoints, ou l'un contient l'autre. Un cube de niveau $k$ a pour mesure $2^{-kn}$, et deux de ses points sont à distance strictement inférieure à $2^{-k}$.
+
+      (ii) *Décomposition d'un ouvert.* Soit $U$ un ouvert de $\mathbb R^n$, et $\mathcal Q(U)$ l'ensemble des cubes dyadiques $Q$, de niveau $k$, tels que $\bar Q \subset U$ et qu'aucun cube de niveau $j < k$ contenant $Q$ n'ait son adhérence contenue dans $U$. Les éléments de $\mathcal Q(U)$ sont deux à deux disjoints, ils forment une famille au plus [[denombrable]], et leur réunion est $U$.
+
+      (iii) *Boréliens d'un cube.* Si $Q$ est un cube dyadique, les cubes dyadiques contenus dans $Q$ forment avec $\varnothing$ un π-système qui engendre la tribu $\lex{tribu-borelienne}{\mathcal B}(Q)$ des boréliens contenus dans $Q$.
+    preuve: |
+      (i) Un point $x$ appartient à $Q_{k,m}$ si et seulement si $m_i < 2^k x_i \leqslant m_i + 1$ pour tout $i$. Pour tout réel $u$, il existe un unique entier $m$ tel que $m < u \leqslant m + 1$, par la propriété d'Archimède ({{rr-archimede|Archimède, densité de ℚ}}), comme pour la partie entière ({{m-etagees|Fonctions étagées}}) : les cubes de niveau $k$ partitionnent $\mathbb R^n$.
+
+      L'équivalence entre $m < u \leqslant m + 1$ et $2m < 2u \leqslant 2m + 2$ montre que l'entier associé à $2u$ est $2m$ ou $2m + 1$. Ainsi
+      $$Q_{k,m} = \bigcup_{\varepsilon \in \{0, 1\}^n} Q_{k+1,\, 2m + \varepsilon},$$
+      réunion disjointe.
+
+      Par récurrence, un cube de niveau $k$ est, pour tout $j \geqslant k$, la réunion des cubes de niveau $j$ qu'il contient ; pour tout $j \leqslant k$, il est contenu dans un cube de niveau $j$, unique par la partition. Si $Q$, de niveau $k$, rencontre $Q'$, de niveau $j \leqslant k$, le cube de niveau $j$ qui contient $Q$ rencontre $Q'$, donc lui est égal : $Q \subset Q'$.
+
+      La mesure vaut $(2^{-k})^n$ ({{cv-lebesgue-rn|Lebesgue sur ℝⁿ}}, (ii)). Enfin, deux réels d'un même intervalle $]a, a + 2^{-k}]$ sont à distance strictement inférieure à $2^{-k}$.
+
+      (ii) *Disjonction.* Deux éléments distincts de $\mathcal Q(U)$ qui se rencontrent sont emboîtés par (i), disons $Q \subsetneq Q'$, et $Q'$ est alors de niveau strictement inférieur à celui de $Q$, sans quoi $Q'$ serait contenu dans $Q$. Mais $\bar Q' \subset U$, ce que la définition de $\mathcal Q(U)$ interdit pour $Q$.
+
+      *Recouvrement.* Soit $x \in U$, et $r > 0$ tel que $B_\infty(x, r) \subset U$. Notons $Q_k(x)$ le cube de niveau $k$ qui contient $x$. Pour $2^{-k} < r$, les points de $\overline{Q_k(x)}$ sont à distance au plus $2^{-k}$ de $x$, par (i), et $\overline{Q_k(x)} \subset U$. L'ensemble des $k \in \mathbb N$ tels que $\overline{Q_k(x)} \subset U$ n'est donc pas vide ; soit $k_0$ son plus petit élément.
+
+      Un cube de niveau $j < k_0$ qui contient $Q_{k_0}(x)$ contient $x$, donc c'est $Q_j(x)$, dont l'adhérence n'est pas contenue dans $U$ : ainsi $Q_{k_0}(x) \in \mathcal Q(U)$. Les éléments de $\mathcal Q(U)$, contenus dans leurs adhérences, sont contenus dans $U$, et leur réunion est donc $U$.
+
+      *Dénombrabilité.* $\mathcal Q(U)$ est indexé par une partie de $\mathbb N \times \mathbb Z^n$, qui est dénombrable ({{q-denombrable|ℚ est dénombrable}}). Aucun choix n'intervient : l'entier $k_0$ est le plus petit élément d'un ensemble d'entiers, et la famille est définie par compréhension.
+
+      (iii) L'intersection de deux cubes dyadiques est vide ou égale au plus petit, par (i) : les cubes dyadiques contenus dans $Q$ et le vide forment un π-système, constitué de boréliens contenus dans $Q$. Soit $\sigma_Q$ la tribu qu'il engendre sur $Q$ ; elle est contenue dans $\mathcal B(Q)$.
+
+      L'ensemble $\mathcal T$ des boréliens $B$ de $\mathbb R^n$ tels que $B \cap Q \in \sigma_Q$ est une tribu, puisque $B^c \cap Q = Q \setminus (B \cap Q)$ et que l'intersection avec $Q$ commute aux réunions. Il contient les ouverts. En effet, si $O$ est ouvert et $x \in O \cap Q$, avec $B_\infty(x, r) \subset O$, le cube dyadique de niveau $k$ qui contient $x$, pour $k$ au moins égal au niveau de $Q$ et $2^{-k} < r$, est contenu dans $Q$ et dans $O$, par (i).
+
+      Donc $O \cap Q$ est la réunion, dénombrable, des cubes dyadiques contenus dans $O \cap Q$, et il appartient à $\sigma_Q$. Ainsi $\mathcal T = \mathcal B(\mathbb R^n)$, et tout borélien $B \subset Q$, qui vérifie $B = B \cap Q$, appartient à $\sigma_Q$.
+    remarques:
+      - |
+        La décomposition (ii) remplace, dans $\mathbb R^n$, l'écriture d'un ouvert de $\mathbb R$ comme réunion d'intervalles disjoints. Les cubes y sont d'autant plus petits qu'ils sont proches du bord de $U$.
+
+        ```schema cv-dyadiques
+        Pour le disque unité ouvert $U$, aucun cube de niveau $0$ n'a son adhérence dans $U$. Les cubes de $\mathcal Q(U)$ des niveaux $1$ à $5$, de couleurs alternées, les chiffres indiquant le niveau, sont au nombre de $4$, $16$, $36$, $76$ et $152$ ; ils couvrent déjà une aire $\frac{385}{128} \approx 3{,}008$ sur les $\pi$ du disque, et les suivants s'accumulent contre le cercle, qu'ils n'atteignent jamais.
+        ```
+      - |
+        La restriction aux niveaux $k \in \mathbb N$ ne peut pas être omise. Si l'on autorisait des cubes de côté $2^j$ pour tout entier $j$, l'ouvert $U = \mathbb R^n$ n'aurait aucun cube maximal, chaque cube étant contenu dans un cube plus grand, dont l'adhérence est encore dans $U$. Avec la convention adoptée, $\mathcal Q(\mathbb R^n)$ est formé des cubes de niveau $0$.
+
+  - id: cv-elementaires
+    etiquette: Matrices élémentaires
+    nature: lemme
+    titre: Matrices élémentaires et pivot de Gauss
+    texte: |
+      Soit $K$ un [[corps]] et $n \geqslant 1$. On note $E_{ij}$ la matrice de $\lex{espace-matrices}{\mathcal M_n}(K)$ dont le seul coefficient non nul vaut $1$, en ligne $i$ et en colonne $j$ ; le produit $E_{ij}E_{kl}$ vaut $E_{il}$ si $j = k$, et $0$ sinon. Pour $i \neq j$ et $s \in K$, la [[transvection]] est
+      $$T_{ij}(s) = I_n + sE_{ij}.$$
+
+      Pour $\sigma \in \lex{groupe-symetrique}{\mathfrak S_n}$, la **matrice de permutation** $P_\sigma$ a pour $j$-ième colonne $e_{\sigma(j)}$. On note $\operatorname{diag}(d_1, \dots, d_n)$ la matrice diagonale de coefficients $d_1, \dots, d_n$. Ces trois sortes de matrices sont dites **élémentaires**.
+    enonce: |
+      (i) *Effet.* Multiplier $A$ à gauche par $T_{ij}(s)$ ajoute à sa ligne $i$ la ligne $j$ multipliée par $s$ ; multiplier $A$ à droite par $T_{ij}(s)$ ajoute à sa colonne $j$ la colonne $i$ multipliée par $s$. La $k$-ième ligne de $P_\sigma A$ est la ligne $\sigma^{-1}(k)$ de $A$.
+
+      (ii) *Déterminants et inverses.* On a $\det T_{ij}(s) = 1$, $\det P_\sigma = \varepsilon(\sigma)$ et $\det \operatorname{diag}(d_1, \dots, d_n) = d_1 \cdots d_n$. De plus $T_{ij}(s)^{-1} = T_{ij}(-s)$, $P_\sigma P_\rho = P_{\sigma\rho}$, et
+      $$P_\sigma\, T_{ij}(s)\, P_\sigma^{-1} = T_{\sigma(i)\sigma(j)}(s).$$
+
+      (iii) *Pivot de Gauss.* Toute matrice inversible de $\mathcal M_n(K)$ est un produit de matrices élémentaires inversibles.
+    preuve: |
+      (i) Notons $\delta_{kl}$ le nombre qui vaut $1$ si $k = l$ et $0$ sinon. Le coefficient $(k, l)$ de $T_{ij}(s)A$ est $a_{kl} + s\,\delta_{ki}\,a_{jl}$, et celui de $AT_{ij}(s)$ est $a_{kl} + s\,a_{ki}\,\delta_{jl}$. Le coefficient $(k, l)$ de $P_\sigma$ vaut $1$ si $k = \sigma(l)$ et $0$ sinon, d'où $(P_\sigma A)_{kl} = a_{\sigma^{-1}(k)\, l}$.
+
+      (ii) Dans la formule $\det A = \sum_\rho \varepsilon(\rho) \prod_j a_{\rho(j)\, j}$ ({{v-det-matrice|Déterminant d'une matrice}}), un produit n'est non nul que si $a_{\rho(j)\,j} \neq 0$ pour tout $j$.
+
+      Pour $T_{ij}(s)$, cela impose $\rho(l) = l$ pour $l \neq j$, puis $\rho(j) = j$, puisque la valeur $i$ est déjà prise par $\rho(i) = i$ : seul $\rho = \mathrm{id}$ contribue, pour $1$. Pour $P_\sigma$, seul $\rho = \sigma$ contribue, pour $\varepsilon(\sigma)$ ; pour une matrice diagonale, seul $\rho = \mathrm{id}$.
+
+      Ensuite $T_{ij}(s)T_{ij}(-s) = I_n - s^2E_{ij}E_{ij} = I_n$, car $E_{ij}E_{ij} = 0$ pour $i \neq j$, et $P_\sigma P_\rho e_j = e_{\sigma(\rho(j))}$. Enfin, $P_\sigma E_{ij} P_\sigma^{-1}$ envoie $e_{\sigma(l)}$ sur $P_\sigma E_{ij} e_l$, qui vaut $e_{\sigma(i)}$ si $l = j$ et $0$ sinon : c'est $E_{\sigma(i)\sigma(j)}$.
+
+      (iii) Par récurrence sur $n$, le cas $n = 1$ étant immédiat. Soit $A$ inversible, avec $n \geqslant 2$. Sa dernière colonne $Ae_n$ n'est pas nulle ; soit $i$ le plus petit indice tel que $a_{in} \neq 0$, et $\tau$ la transposition $(i\ n)$, ou l'identité si $i = n$.
+
+      Par (i), $B = P_\tau A$ a un coefficient $b_{nn} \neq 0$. Multiplions $B$ à gauche, pour chaque $k < n$, par $T_{kn}(-b_{kn}/b_{nn})$ : la ligne $k$ perd $b_{kn}/b_{nn}$ fois la ligne $n$, qui n'est pas modifiée, et le coefficient $(k, n)$ s'annule.
+
+      On obtient $C = LB$, où $L$ est un produit de transvections, et la dernière colonne de $C$ est $b_{nn}e_n$. Multiplions $C$ à droite, pour chaque $j < n$, par $T_{nj}(-c_{nj}/b_{nn})$ : la colonne $j$ perd $c_{nj}/b_{nn}$ fois la colonne $n$, ce qui n'en change que le coefficient $(n, j)$, et l'annule.
+
+      La matrice $D = CR$ obtenue, où $R$ est un produit de transvections, est diagonale par blocs, de blocs $A' \in \mathcal M_{n-1}(K)$ et $b_{nn}$. Son déterminant, développé suivant la dernière colonne ({{v-comatrice|Comatrice}}), vaut $b_{nn}\det A'$. Il n'est pas nul, puisque $D = LP_\tau AR$ est inversible ({{v-det-matrice|Déterminant d'une matrice}}, (ii)) : $A'$ est inversible.
+
+      Par hypothèse de récurrence, $A'$ est un produit de matrices élémentaires inversibles de taille $n - 1$. L'application qui envoie $M$ sur la matrice diagonale par blocs de blocs $M$ et $1$ respecte les produits, et envoie une matrice élémentaire sur une matrice élémentaire de même sorte. Comme $D$ est le produit de l'image de $A'$ et de $\operatorname{diag}(1, \dots, 1, b_{nn})$, c'est un produit de matrices élémentaires inversibles, et il en va de même de $A = P_\tau^{-1}L^{-1}DR^{-1}$, par (ii).
+    remarques:
+      - |
+        Pour $A = \begin{pmatrix} 2 & 1 \\ 1 & 3 \end{pmatrix}$, le pivot $a_{22} = 3$ convient. La ligne $1$ perd le tiers de la ligne $2$, puis la colonne $1$ perd le tiers de la colonne $2$, et l'on obtient
+        $$A = T_{12}\Big(\frac13\Big)\begin{pmatrix} \frac53 & 0 \\ 0 & 3 \end{pmatrix} T_{21}\Big(\frac13\Big).$$
+        Le produit des coefficients diagonaux, $5$, est le déterminant de $A$, c'est-à-dire l'aire du parallélogramme du nœud {{v-det-matrice|Déterminant d'une matrice}} ; le nœud suivant montre que les transvections ne changent aucune aire, si bien que toute l'aire est portée par la matrice diagonale.
+      - |
+        Le procédé est la méthode du pivot, que le nœud {{v-comatrice|Comatrice}} oppose à la formule de la comatrice pour inverser une matrice. Il n'est utilisé ici que comme théorème de structure : il ramène une propriété multiplicative des matrices, comme celle du nœud suivant, aux trois sortes de matrices élémentaires.
+
+  - id: cv-lineaire
+    etiquette: Image linéaire
+    nature: théorème
+    titre: Image de la mesure de Lebesgue par une application linéaire
+    enonce: |
+      (i) *Mesures invariantes par translation.* Soit $\mu$ une mesure sur $\lex{tribu-borelienne}{\mathcal B}(\lex{n-uplet}{\mathbb R^n})$ telle que $\mu(E + t) = \mu(E)$ pour tout borélien $E$ et tout $t \in \mathbb R^n$, et que $c = \mu(]0, 1]^n)$ soit fini. Alors $\mu = c\,\lambda$.
+
+      (ii) Pour $A \in \lex{groupe-lineaire}{GL_n}(\mathbb R)$, $b \in \mathbb R^n$ et $E$ borélien, $b + A(E)$ est borélien et
+      $$\lambda\big(b + A(E)\big) = |\det A|\,\lambda(E).$$
+
+      (iii) Si $A \in \lex{espace-matrices}{\mathcal M_n}(\mathbb R)$ n'est pas inversible, $A(\mathbb R^n)$ est un borélien négligeable.
+    preuve: |
+      (i) *Cubes dyadiques.* Le cube $]0, 1]^n$ est la réunion disjointe des $2^{jn}$ cubes dyadiques de niveau $j$ qu'il contient ({{cv-dyadiques|Cubes dyadiques}}, (i)), tous translatés de $]0, 2^{-j}]^n$ ; donc $\mu(]0, 2^{-j}]^n) = c\,2^{-jn}$.
+
+      De même, pour des entiers $p_i \geqslant 1$, le pavé $\prod_i \,]0, p_i 2^{-j}]$ est la réunion disjointe de $p_1 \cdots p_n$ translatés de $]0, 2^{-j}]^n$. Sa mesure pour $\mu$ est donc $c\prod_i p_i 2^{-j}$, soit $c$ fois sa mesure pour $\lambda$.
+
+      *Pavés quelconques.* Soit $s \in \,]0, +\infty[^n$, et $s^{(j)}_i = 2^{-j}\big(\lfloor 2^j s_i \rfloor + 1\big)$. Comme $2^{j+1}s_i < 2\lfloor 2^j s_i \rfloor + 2$, on a $\lfloor 2^{j+1}s_i \rfloor \leqslant 2\lfloor 2^j s_i \rfloor + 1$ : la suite $(s^{(j)}_i)_j$ décroît, et $s_i < s^{(j)}_i \leqslant s_i + 2^{-j}$.
+
+      Les pavés $\prod_i \,]0, s^{(j)}_i]$ décroissent donc, ont pour intersection $\prod_i \,]0, s_i]$, et sont de mesure finie pour $\mu$ comme pour $\lambda$. La continuité décroissante des mesures ({{m-mesures|Mesures}}, (iii)) donne
+      $$\mu\Big(\prod_i \,]0, s_i]\Big) = c\prod_i s_i.$$
+
+      Un pavé $\prod_i \,]a_i, b_i]$ dont tous les facteurs sont non vides est le translaté par $a$ de $\prod_i \,]0, b_i - a_i]$ ; si l'un des $a_i$ égale $b_i$, il est vide. Dans tous les cas, $\mu$ et $c\lambda$ coïncident sur les pavés.
+
+      *Conclusion.* Le pavé $]{-k}, k]^n$ est la réunion de $(2k)^n$ cubes de niveau $0$, translatés de $]0, 1]^n$, et sa mesure $c(2k)^n$ est finie. L'unicité du nœud {{m-dynkin|Classes monotones}}, (ii), appliquée au π-système des pavés et du vide, qui engendre $\mathcal B(\mathbb R^n)$ ({{cv-lebesgue-rn|Lebesgue sur ℝⁿ}}, (i)), donne $\mu = c\lambda$.
+
+      (ii) *Réduction.* Par l'invariance par translation ({{cv-lebesgue-rn|Lebesgue sur ℝⁿ}}, (iii)), on peut supposer $b = 0$. L'ensemble $A(E)$ est l'image réciproque de $E$ par l'application linéaire $A^{-1}$, continue ({{gd-equivalence|Équivalence des normes}}, (iii)) : il est borélien ({{cv-lebesgue-rn|Lebesgue sur ℝⁿ}}, (i)).
+
+      *Une mesure invariante.* Comme $A$ est injective, $\mu_A(E) = \lambda(A(E))$ définit une mesure, invariante par translation puisque $A(E + t) = A(E) + At$. Pour la norme $\|\cdot\|_\infty$ et $M = |||A|||$, on a $A(]0, 1]^n) \subset [-M, M]^n$, si bien que $c(A) = \mu_A(]0, 1]^n) \leqslant (2M)^n$ est fini. Par (i),
+      $$\lambda(A(E)) = c(A)\,\lambda(E).$$
+
+      *Multiplicativité.* Pour $A$ et $B$ inversibles, ce qui précède, appliqué à $A$ puis à $B$, donne
+      $$\begin{aligned} c(AB) &= \lambda\big(A(B(]0, 1]^n))\big) \\ &= c(A)\,c(B). \end{aligned}$$
+
+      *Matrices élémentaires.* Pour une matrice diagonale inversible $D$, l'ensemble $D(]0, 1]^n)$ est le produit des intervalles $]0, d_i]$ ou $[d_i, 0[$, selon le signe de $d_i$, de mesure $\prod_i |d_i| = |\det D|$ ({{cv-lebesgue-rn|Lebesgue sur ℝⁿ}}, (iv)). Pour une matrice de permutation, $c(P_\sigma) = 1 = |\det P_\sigma|$ ({{cv-lebesgue-rn|Lebesgue sur ℝⁿ}}, (iii)).
+
+      Soit enfin une transvection $T_{ij}(s)$, ce qui suppose $n \geqslant 2$, et $\sigma \in \lex{groupe-symetrique}{\mathfrak S_n}$ telle que $\sigma(j) = 1$ et $\sigma(i) = n$. Par le nœud {{cv-elementaires|Matrices élémentaires}}, (ii), et la multiplicativité, $c(T_{ij}(s)) = c(T_{n1}(s))$. Or $T_{n1}(s)$ envoie $(x', x_n)$, où $x' \in \mathbb R^{n-1}$, sur $(x', x_n + sx_1)$.
+
+      Un point $(x', y)$ appartient donc à $T_{n1}(s)(]0, 1]^n)$ si et seulement si $x' \in \,]0, 1]^{n-1}$ et $0 < y - sx_1 \leqslant 1$. La section en $x'$ est $]sx_1, sx_1 + 1]$, de longueur $1$, ou vide, et le nœud {{m-produit|Mesure produit}}, (iii), donne
+      $$\begin{aligned} c(T_{n1}(s)) &= \int_{\mathbb R^{n-1}} \mathbf 1_{]0, 1]^{n-1}}\,d\lambda_{n-1} \\ &= 1 = \det T_{n1}(s). \end{aligned}$$
+
+      *Conclusion.* Par le pivot de Gauss ({{cv-elementaires|Matrices élémentaires}}, (iii)), $A$ est un produit $G_1 \cdots G_r$ de matrices élémentaires inversibles. Par multiplicativité de $c$ et du déterminant ({{v-det-matrice|Déterminant d'une matrice}}, (ii)),
+      $$\begin{aligned} c(A) &= \prod_l c(G_l) \\ &= \prod_l |\det G_l| = |\det A|. \end{aligned}$$
+
+      (iii) Si $A$ n'est pas inversible, $x \mapsto Ax$ n'est pas bijective ({{v-det-matrice|Déterminant d'une matrice}}, (ii)), donc pas surjective ({{v-rang|Théorème du rang}}), et son image est un sous-espace de dimension $r \leqslant n - 1$ ({{v-dimension|Dimension}}, (iii)). Complétons une base $(f_1, \dots, f_r)$ de l'image en une base $(f_1, \dots, f_n)$ de $\mathbb R^n$ ({{v-dimension|Dimension}}, (iii)), et soit $B$ la matrice inversible de colonnes $f_1, \dots, f_n$.
+
+      Alors $A(\mathbb R^n) = B(F)$, où $F = \{x : x_{r+1} = \cdots = x_n = 0\}$ est un fermé, donc un borélien, contenu dans l'hyperplan $\{x_n = 0\}$. Par (ii) et le nœud {{cv-lebesgue-rn|Lebesgue sur ℝⁿ}}, (iv), $A(\mathbb R^n)$ est borélien et $\lambda(A(\mathbb R^n)) = |\det B|\,\lambda(F) = 0$.
+    remarques:
+      - |
+        Le calcul pour une transvection est le principe de Cavalieri : la mesure se lit sur les sections, que la transvection déplace sans les allonger.
+
+        ```schema cv-lineaire
+        La transvection $T_{21}(\frac12)$, qui envoie $(x_1, x_2)$ sur $(x_1, x_2 + \frac{x_1}2)$, transforme le carré gris $Q = \,]0, 1]^2$ en le parallélogramme bleu. Chaque section verticale, en rouge, est translatée de $\frac{x_1}2$ sans changer de longueur : l'aire reste $1$, sans qu'aucune formule d'aire du parallélogramme soit nécessaire.
+        ```
+      - |
+        L'erreur la plus répandue est d'écrire $\det A$ au lieu de $|\det A|$. La symétrie $x \mapsto -x$ de $\mathbb R$, de déterminant $-1$, envoie $]0, 1]$ sur $[-1, 0[$, de mesure $1$ et non $-1$ : une mesure est positive, et le signe du déterminant, qui code l'orientation, disparaît.
+      - |
+        Une matrice orthogonale $Q$, c'est-à-dire telle que ${}^tQ\,Q = I_n$, vérifie $(\det Q)^2 = \det{}^tQ \cdot \det Q = 1$ ({{v-det-matrice|Déterminant d'une matrice}}, (ii) et (iii)). Par (ii), la mesure de Lebesgue est donc invariante par toute application $x \mapsto b + Qx$ : c'est l'invariance par rotation que la construction par les axes ne laissait pas voir ({{cv-lebesgue-rn|Lebesgue sur ℝⁿ}}).
+      - |
+        Le point (i) est un cas particulier de l'unicité de la mesure de Haar, évoquée au niveau des {{grtop|groupes topologiques}} : sur le groupe $(\mathbb R^n, +)$, une mesure invariante par translation, finie sur un cube, est un multiple de $\lambda$. La démonstration donnée ici n'utilise que les cubes dyadiques et le lemme de Dynkin.
+
+  - id: cv-cube
+    etiquette: Image d'un petit cube
+    nature: lemme
+    titre: Image d'un petit cube par une application de classe C¹
+    texte: |
+      Dans la suite du chapitre, $\lex{n-uplet}{\mathbb R^n}$ est muni de $\|\cdot\| = \|\cdot\|_\infty$, et les matrices de la [[norme-subordonnee|norme subordonnée]] $|||\cdot|||$. Pour $c \in \mathbb R^n$ et $r > 0$, on note
+      $$\begin{aligned} C(c, r) &= c + [-r, r]^n, \\ B(c, r) &= c + \,]{-r}, r[^n \end{aligned}$$
+      la boule fermée et la boule ouverte de centre $c$ et de rayon $r$, qui sont des cubes.
+
+      Pour un borélien $W$ et une fonction borélienne $f : W \to \lex{demi-droite-achevee}{[0, +\infty]}$, on note $\int_W f\,d\lambda$ l'intégrale sur $\mathbb R^n$ de la fonction égale à $f$ sur $W$ et à $0$ ailleurs, qui est borélienne. Une fonction borélienne réelle $f$ sur $W$ est intégrable sur $W$ si cette fonction prolongée est intégrable.
+    enonce: |
+      Soit $U$ un ouvert de $\mathbb R^n$, $\varphi : U \to \mathbb R^n$ de [[classe-ck|classe $C^1$]], $c \in U$ et $r > 0$ tels que $C(c, r) \subset U$, et $L = d\varphi(c)$ inversible. Soit $\eta \geqslant 0$ tel que, pour tout $z \in C(c, r)$,
+      $$|||L^{-1}\,d\varphi(z) - I||| \leqslant \eta.$$
+
+      (i) *Inclusion extérieure.* On a $\varphi(C(c, r)) \subset \varphi(c) + L\big(C(0, (1 + \eta)r)\big)$.
+
+      (ii) *Inclusion intérieure.* Si $\eta < 1$, on a $\varphi(B(c, r)) \supset \varphi(c) + L\big(B(0, (1 - \eta)r)\big)$.
+
+      (iii) *Mesures.* Supposons de plus que $\varphi$ soit un [[diffeomorphisme|$C^1$-difféomorphisme]] de $U$ sur un ouvert $V$, et soit $P$ un borélien tel que $B(c, r) \subset P \subset C(c, r)$. Alors $\varphi(P)$ est borélien et
+      $$\lambda(\varphi(P)) \leqslant |\det L|\,(1 + \eta)^n\,\lambda(P),$$
+      et, si $\eta < 1$,
+      $$\lambda(\varphi(P)) \geqslant |\det L|\,(1 - \eta)^n\,\lambda(P).$$
+    preuve: |
+      *Un écart lipschitzien.* L'application $g = L^{-1} \circ \varphi - \mathrm{id}$ est de classe $C^1$ sur $U$, de différentielle $dg(z) = L^{-1}\,d\varphi(z) - I$ ({{gd-differentielle|Différentielle}}, (iii) et (iv)). Sur la boule ouverte $B(c, r)$, qui est convexe, $|||dg||| \leqslant \eta$, et l'inégalité des accroissements finis ({{gd-accroissements|Accroissements finis}}, (ii)) donne
+      $$\|g(x) - g(x')\| \leqslant \eta\,\|x - x'\|.$$
+      Par continuité de $g$, cette inégalité s'étend aux points $x, x'$ de $C(c, r)$, qui sont limites de points de $B(c, r)$ : $x$ est la limite de $c + (1 - \frac{1}{k + 1})(x - c)$.
+
+      (i) Pour $x \in C(c, r)$,
+      $$\begin{aligned} &L^{-1}\big(\varphi(x) - \varphi(c)\big) \\ &\quad = (x - c) + \big(g(x) - g(c)\big), \end{aligned}$$
+      qui est de norme au plus $r + \eta r$. Donc $\varphi(x) \in \varphi(c) + L\big(C(0, (1 + \eta)r)\big)$.
+
+      (ii) Soit $w \in B(0, (1 - \eta)r)$, et $T(x) = c + w - \big(g(x) - g(c)\big)$. Pour $x \in C(c, r)$,
+      $$\|T(x) - c\| \leqslant \|w\| + \eta r < r,$$
+      si bien que $T$ envoie le fermé $C(c, r)$ dans $B(c, r)$ ; elle est contractante de rapport $\eta < 1$.
+
+      Par le théorème du point fixe ({{gd-point-fixe|Point fixe}}, (ii)), $T$ a un point fixe $x$, qui appartient à $B(c, r)$. L'égalité $x = T(x)$ s'écrit $(x - c) + g(x) - g(c) = w$, c'est-à-dire $L^{-1}(\varphi(x) - \varphi(c)) = w$, soit $\varphi(x) = \varphi(c) + Lw$.
+
+      ```schema cv-cube
+      Pour $\varphi(x, y) = (x - \frac{y^2}2, y + \frac{x^2}3)$, $c = (\frac12, \frac12)$ et $r = \frac14$, le plus petit $\eta$ possible vaut $\frac27$ ; il est calculé exactement, la norme de $L^{-1}d\varphi(z) - I$ étant une fonction convexe de $z$, maximale en un sommet du carré. L'image du carré, en rouge, est prise entre le parallélogramme vert pointillé, de rapport $1 - \eta$, et le parallélogramme bleu pointillé, de rapport $1 + \eta$ ; le parallélogramme bleu plein, $\varphi(c) + L(C(0, r))$, est l'image que donnerait l'approximation affine de $\varphi$.
+      ```
+
+      (iii) L'ensemble $\varphi(P)$ est l'image réciproque de $P$ par $\varphi^{-1}$, continue sur $V$ : il est borélien ({{cv-lebesgue-rn|Lebesgue sur ℝⁿ}}, (i)). Par (i), (ii) et la croissance de $\lambda$, la mesure $\lambda(\varphi(P))$ est majorée par celle de $\varphi(c) + L\big(C(0, (1 + \eta)r)\big)$ et, si $\eta < 1$, minorée par celle de $\varphi(c) + L\big(B(0, (1 - \eta)r)\big)$.
+
+      Par le nœud {{cv-lineaire|Image linéaire}}, (ii), et le nœud {{cv-lebesgue-rn|Lebesgue sur ℝⁿ}}, (iv), ces mesures valent $|\det L|\,\big(2(1 + \eta)r\big)^n$ et $|\det L|\,\big(2(1 - \eta)r\big)^n$, et $\lambda(P) = (2r)^n$.
+    remarques:
+      - |
+        Les deux inclusions sont de nature différente. La première ne demande que les accroissements finis. La seconde affirme que l'image recouvre tout un parallélépipède : c'est un énoncé d'existence, obtenu par le point fixe, comme l'étape 2 de l'{{gd-inversion-locale|inversion locale}}. Sans elle, on n'aurait qu'une majoration de $\lambda(\varphi(P))$ ; pour la minorer, il faudrait appliquer la majoration à $\varphi^{-1}$, sur les images de cubes, qui ne sont plus des cubes.
+      - |
+        L'hypothèse porte sur l'écart relatif $L^{-1}d\varphi(z) - I$, et non sur l'écart absolu $d\varphi(z) - L$. L'erreur serait de croire qu'une petite variation de $d\varphi$ suffit toujours. Pour $L = \operatorname{diag}(1, 10^{-3})$ et $d\varphi(z) = L + 10^{-2}E_{21}$, l'écart absolu vaut $10^{-2}$, mais $L^{-1}d\varphi(z) - I = 10\,E_{21}$ est de norme $10$ : la direction que $L$ écrase est perturbée bien plus qu'elle n'est conservée, et le parallélépipède $\varphi(c) + L(C(0, r))$ n'approche plus l'image.
+
+  - id: cv-image-cube
+    etiquette: Mesure de l'image d'un cube
+    nature: proposition
+    titre: Mesure de l'image d'un cube par un difféomorphisme
+    texte: |
+      Soit $\varphi$ un [[diffeomorphisme|$C^1$-difféomorphisme]] d'un ouvert $U$ de $\lex{n-uplet}{\mathbb R^n}$ sur un ouvert $V$, et $J(z) = \det d\varphi(z)$ pour $z \in U$. La lettre $J$ désigne ici le déterminant de la matrice jacobienne, que le nœud {{gd-differentielle|Différentielle}} notait $J_\varphi(z)$, et non cette matrice elle-même. On garde les notations du nœud {{cv-cube|Image d'un petit cube}}.
+    enonce: |
+      (i) Pour tout $z \in U$, $d\varphi(z)$ est inversible. Les fonctions $J$ et $z \mapsto |||d\varphi(z)^{-1}|||$ sont continues sur $U$.
+
+      (ii) Si $P = c + \,]{-r}, r]^n$ est un cube tel que $C(c, r) \subset U$, alors
+      $$\lambda(\varphi(P)) = \int_P |J|\,d\lambda.$$
+    preuve: |
+      (i) La règle de la chaîne ({{gd-differentielle|Différentielle}}, (iv)), appliquée à $\varphi^{-1} \circ \varphi = \mathrm{id}_U$ et à $\varphi \circ \varphi^{-1} = \mathrm{id}_V$, montre que $d(\varphi^{-1})(\varphi(z))$ est l'inverse de $d\varphi(z)$.
+
+      Le déterminant est une fonction polynomiale des coefficients, donc continue, et $d\varphi$ est continue : $J$ l'est aussi. L'inversion des matrices est continue sur $\lex{groupe-lineaire}{GL_n}(\mathbb R)$ ({{gd-gl|Groupe linéaire}}, (iii)), ainsi que la norme, d'où la continuité de $z \mapsto |||d\varphi(z)^{-1}|||$.
+
+      (ii) *Les constantes.* Le cube $K = C(c, r)$ est fermé et borné, donc compact ({{me-rn|L'espace ℝⁿ}}, (iii)). Les fonctions continues $|J|$ et $z \mapsto |||d\varphi(z)^{-1}|||$ y sont bornées ({{tr-compacts|Compacts de ℝ}}, (iii)), par des constantes $M'$ et $M > 0$. En particulier, $\int_P |J| \leqslant M'\lambda(P)$ est fini.
+
+      Soit $\varepsilon \in \,]0, 1[$. Par le théorème de Heine ({{me-heine|Théorème de Heine}}), appliqué à $d\varphi$ et à $J$ sur $K$, il existe $\delta > 0$ tel que, pour $z, z' \in K$ avec $\|z - z'\| < \delta$,
+      $$\begin{aligned} |||d\varphi(z) - d\varphi(z')||| &\leqslant \frac{\varepsilon}{M}, \\ |J(z) - J(z')| &\leqslant \varepsilon. \end{aligned}$$
+
+      *Découpage.* Soit $k$ un entier tel que $s = r2^{-k} < \delta$, et notons $\mathbf 1 = (1, \dots, 1)$. Pour $m \in \{0, \dots, 2^k - 1\}^n$, posons $c_m = c - r\mathbf 1 + (2m + \mathbf 1)s$ et $P_m = c_m + \,]{-s}, s]^n$. Ces $2^{kn}$ cubes forment une partition de $P$, puisque $]{-r}, r]$ est la réunion disjointe des $2^k$ intervalles $]{-r} + 2ls,\ -r + 2(l + 1)s]$, et leurs adhérences $C(c_m, s)$ sont contenues dans $K$.
+
+      *Chaque petit cube.* Pour $z \in C(c_m, s)$, on a $\|z - c_m\| \leqslant s < \delta$, donc
+      $$\begin{aligned} &|||d\varphi(c_m)^{-1}d\varphi(z) - I||| \\ &\quad \leqslant |||d\varphi(c_m)^{-1}|||\;|||d\varphi(z) - d\varphi(c_m)||| \\ &\quad \leqslant \varepsilon. \end{aligned}$$
+      Le nœud {{cv-cube|Image d'un petit cube}}, (iii), appliqué avec $\eta = \varepsilon$, encadre $\lambda(\varphi(P_m))$ entre $(1 - \varepsilon)^n|J(c_m)|\,\lambda(P_m)$ et $(1 + \varepsilon)^n|J(c_m)|\,\lambda(P_m)$.
+
+      Sur $P_m$, la fonction $|J|$ est à moins de $\varepsilon$ de $|J(c_m)|$ ; par croissance et linéarité de l'intégrale,
+      $$\begin{aligned} \int_{P_m} |J| - \varepsilon\lambda(P_m) &\leqslant |J(c_m)|\,\lambda(P_m) \\ &\leqslant \int_{P_m} |J| + \varepsilon\lambda(P_m). \end{aligned}$$
+
+      *Sommation.* Comme $\varphi$ est injective, $\varphi(P)$ est la réunion disjointe des $\varphi(P_m)$. On somme les encadrements, $A \mapsto \int_A |J|$ étant une mesure ({{m-beppo-levi|Convergence monotone}}, (iii)) :
+      $$\begin{aligned} \lambda(\varphi(P)) &\leqslant (1 + \varepsilon)^n\Big(\int_P |J| + \varepsilon\lambda(P)\Big), \\ \lambda(\varphi(P)) &\geqslant (1 - \varepsilon)^n\Big(\int_P |J| - \varepsilon\lambda(P)\Big). \end{aligned}$$
+      On fait tendre $\varepsilon$ vers $0$.
+    remarques:
+      - |
+        La démonstration est celle des sommes de Riemann : $\sum_m |J(c_m)|\,\lambda(P_m)$ est une somme de Riemann de $|J|$ sur $P$, et chacun de ses termes est, à un facteur $(1 \pm \varepsilon)^n$ près, la mesure de l'image d'un petit cube, presque un parallélépipède. C'est la continuité uniforme de $d\varphi$ sur le compact $K$ qui rend le facteur $\varepsilon$ le même pour tous les petits cubes.
+
+  - id: cv-changement
+    etiquette: Changement de variables
+    nature: théorème
+    titre: Formule du changement de variables
+    texte: |
+      Soit $\varphi$ un [[diffeomorphisme|$C^1$-difféomorphisme]] d'un ouvert $U$ de $\lex{n-uplet}{\mathbb R^n}$ sur un ouvert $V$. Son [[jacobien]] est la fonction continue $J_\varphi(x) = \det d\varphi(x)$, qui ne s'annule pas ({{cv-image-cube|Mesure de l'image d'un cube}}, (i)). Attention à la notation : au nœud {{gd-differentielle|Différentielle}}, $J_\varphi(x)$ désignait la matrice jacobienne ; c'est ici son déterminant.
+    enonce: |
+      (i) *Boréliens.* Pour tout borélien $E \subset U$, $\varphi(E)$ est borélien et
+      $$\lambda(\varphi(E)) = \int_E |J_\varphi|\,d\lambda.$$
+
+      (ii) *Fonctions positives.* Pour toute fonction borélienne $f : V \to [0, +\infty]$,
+      $$\int_V f\,d\lambda = \int_U (f \circ \varphi)\,|J_\varphi|\,d\lambda.$$
+
+      (iii) *Fonctions intégrables.* Une fonction borélienne $f : V \to \lex{ensemble-reels}{\mathbb R}$ est intégrable sur $V$ si et seulement si $(f \circ \varphi)\,|J_\varphi|$ est intégrable sur $U$, et l'égalité de (ii) a lieu.
+
+      (iv) *Ensembles négligeables.* L'image par $\varphi$ d'un borélien [[negligeable|négligeable]] est négligeable, et $J_{\varphi^{-1}}(\varphi(x)) = 1/J_\varphi(x)$ pour $x \in U$.
+    preuve: |
+      (i) *Deux mesures.* L'ensemble $\varphi(E)$ est borélien, comme image réciproque de $E$ par $\varphi^{-1}$, continue sur $V$ ({{cv-lebesgue-rn|Lebesgue sur ℝⁿ}}, (i)). Comme $\varphi$ est injective, $\nu(E) = \lambda(\varphi(E))$ définit une mesure sur $\mathcal B(U)$. Il en va de même de $\mu(E) = \int_E |J_\varphi|\,d\lambda$ ({{m-beppo-levi|Convergence monotone}}, (iii)), la fonction $|J_\varphi|$ étant continue, donc borélienne.
+
+      *Dans un cube.* Soit $Q$ un élément de la décomposition $\mathcal Q(U)$ de $U$ en cubes dyadiques ({{cv-dyadiques|Cubes dyadiques}}, (ii)). Tout cube dyadique $Q' \subset Q$ est de la forme $c + \,]{-r}, r]^n$, avec $C(c, r) = \bar Q' \subset \bar Q \subset U$. Le nœud {{cv-image-cube|Mesure de l'image d'un cube}}, (ii), donne $\nu(Q') = \mu(Q')$, valeur finie.
+
+      Les cubes dyadiques contenus dans $Q$ forment avec $\varnothing$ un π-système qui engendre $\mathcal B(Q)$ ({{cv-dyadiques|Cubes dyadiques}}, (iii)). Les restrictions de $\nu$ et de $\mu$ à $\mathcal B(Q)$ y coïncident et sont finies. L'unicité du nœud {{m-dynkin|Classes monotones}}, (ii), appliquée sur l'ensemble $Q$ avec la suite constante $X_k = Q$, donne $\nu = \mu$ sur $\mathcal B(Q)$.
+
+      *Dans $U$.* Pour $E \in \mathcal B(U)$, les ensembles $E \cap Q$, pour $Q \in \mathcal Q(U)$, sont deux à deux disjoints, de réunion $E$, et en nombre au plus dénombrable. Par σ-additivité,
+      $$\begin{aligned} \nu(E) &= \sum_Q \nu(E \cap Q) \\ &= \sum_Q \mu(E \cap Q) = \mu(E). \end{aligned}$$
+
+      (ii) Pour $f = \mathbf 1_B$, avec $B \in \mathcal B(V)$, on a $f \circ \varphi = \mathbf 1_{\varphi^{-1}(B)}$, et $\varphi^{-1}(B)$ est un borélien de $U$ d'image $B$, $\varphi$ étant continue ({{cv-lebesgue-rn|Lebesgue sur ℝⁿ}}, (i)). Le point (i), appliqué à ce borélien, s'écrit $\lambda(B) = \int_U \mathbf 1_{\varphi^{-1}(B)}\,|J_\varphi|\,d\lambda$ : c'est l'égalité cherchée. Par linéarité ({{m-beppo-levi|Convergence monotone}}, (i)), elle vaut pour les fonctions étagées positives.
+
+      Pour $f$ quelconque, soit $(s_k)$ une suite croissante de fonctions étagées positives de limite $f$ ({{m-etagees|Fonctions étagées}}). Les fonctions $s_k \circ \varphi$ sont étagées et boréliennes, par le même argument ({{cv-lebesgue-rn|Lebesgue sur ℝⁿ}}, (i)), et les fonctions $(s_k \circ \varphi)\,|J_\varphi|$ le sont aussi ({{m-mesurables|Fonctions mesurables}}, (iii)) et croissent vers $(f \circ \varphi)\,|J_\varphi|$, y compris là où $f \circ \varphi$ vaut $+\infty$, puisque $|J_\varphi| > 0$. Cette limite est donc borélienne, et la convergence monotone ({{m-beppo-levi|Convergence monotone}}), appliquée des deux côtés, conclut.
+
+      (iii) On applique (ii) à $|f|$, puis à $f^+$ et à $f^-$, en remarquant que $(f \circ \varphi)^\pm = f^\pm \circ \varphi$ et que $|J_\varphi| > 0$. Les intégrales de $|f|$ sur $V$ et de $|f \circ \varphi|\,|J_\varphi|$ sur $U$ sont égales, donc finies en même temps, et l'on retranche les égalités obtenues pour $f^+$ et $f^-$.
+
+      (iv) Si $N \subset U$ est un borélien négligeable, la fonction $|J_\varphi|\mathbf 1_N$ est nulle presque partout, et (i) donne $\lambda(\varphi(N)) = \int_N |J_\varphi| = 0$ ({{m-integrale|Intégrale positive}}, (iv)). La règle de la chaîne appliquée à $\varphi^{-1} \circ \varphi = \mathrm{id}_U$ et la multiplicativité du déterminant ({{v-det-matrice|Déterminant d'une matrice}}, (ii)) donnent $J_{\varphi^{-1}}(\varphi(x))\,J_\varphi(x) = 1$.
+    remarques:
+      - |
+        L'application $\varphi(x, y) = (x, xy)$ est un $C^1$-difféomorphisme de $]0, +\infty[ \times \mathbb R$ sur lui-même, de réciproque $(u, v) \mapsto (u, \frac vu)$, et de jacobien $x$. Le carré $E = \,]1, 2] \times \,]0, 1]$ a pour image $\{(u, v) : 1 < u \leqslant 2,\ 0 < v \leqslant u\}$, dont la section en $u$ est de longueur $u$.
+
+        Par le principe de Cavalieri ({{m-produit|Mesure produit}}), l'aire de l'image vaut $\int_1^2 u\,du = \frac32$, et (i) donne de même $\int_E x\,d\lambda = \frac32$. L'aire $1$ du carré a été multipliée par la valeur moyenne du jacobien sur le carré.
+      - |
+        L'injectivité ne peut pas être omise : sans elle, la formule compte chaque point de l'image autant de fois qu'il a d'antécédents. Pour $\varphi(x) = x^2$ sur $U = \,]{-1}, 1[ \setminus \{0\}$, qui est un difféomorphisme au voisinage de chaque point sans être injective, $\int_U |\varphi'| = \int_U 2|x|\,dx = 2$, alors que l'image $]0, 1[$ est de mesure $1$ : chacun de ses points est atteint deux fois.
+      - |
+        En dimension $1$, pour $\varphi$ croissante de $]\alpha, \beta[$ sur $]a, b[$, (ii) redonne la règle $\int_a^b f = \int_\alpha^\beta f(\varphi(u))\,\varphi'(u)\,du$, que l'on démontre pour $f$ continue par le {{ar-tfa|théorème fondamental de l'analyse}}. Pour $\varphi$ décroissante, la règle usuelle échange les bornes et fait apparaître $\varphi' < 0$ : les deux signes se compensent, et l'on retrouve $|\varphi'|$. L'erreur la plus répandue est d'oublier la valeur absolue en dimension supérieure, où il n'y a plus de bornes à échanger.
+      - |
+        La démonstration ne passe ni par la régularité de $\lambda$, ni par une majoration appliquée à $\varphi^{-1}$ : de $\varphi^{-1}$, on n'utilise que la continuité, pour la mesurabilité des images $\varphi(E)$, et la règle de la chaîne, pour l'inversibilité de $d\varphi$. L'égalité est établie sur les cubes dyadiques, grâce à l'inclusion intérieure du nœud {{cv-cube|Image d'un petit cube}}, puis étendue aux boréliens de chaque cube par le lemme de Dynkin, et à $U$ par la décomposition en cubes. Aucune forme du choix n'intervient, en dehors de celle que demande la σ-additivité de la mesure de Lebesgue ({{m-lebesgue|Mesure de Lebesgue}}).
+
+  - id: cv-polaires
+    etiquette: Coordonnées polaires
+    nature: proposition
+    titre: Coordonnées polaires dans le plan
+    texte: |
+      On identifie $\lex{n-uplet}{\mathbb R^2}$ à $\lex{ensemble-complexes}{\mathbb C}$ par $(x, y) \mapsto x + iy$. Les [[coordonnees-polaires|coordonnées polaires]] sont données par l'application
+      $$P(r, \theta) = (r\cos\theta, r\sin\theta) = r\exp(i\theta),$$
+      définie sur la bande $U = \,]0, +\infty[ \times \,]{-\pi}, \pi[$. On note $D = \,]{-\infty}, 0] \times \{0\}$ la demi-droite des réels négatifs ou nuls ; les intégrales sur des intervalles sont prises pour $\lambda$.
+    enonce: |
+      (i) $P$ est un [[diffeomorphisme|$C^1$-difféomorphisme]] de $U$ sur l'ouvert $V = \mathbb R^2 \setminus D$, de [[jacobien]] $J_P(r, \theta) = r$.
+
+      (ii) $D$ est négligeable, et, pour toute fonction borélienne $f : \mathbb R^2 \to \lex{demi-droite-achevee}{[0, +\infty]}$,
+      $$\begin{aligned} &\int_{\mathbb R^2} f\,d\lambda \\ &= \int_{-\pi}^{\pi}\!\int_0^{+\infty} f(r\cos\theta, r\sin\theta)\,r\,dr\,d\theta. \end{aligned}$$
+
+      (iii) Le disque ouvert de centre $0$ et de rayon $R$ a pour mesure $\pi R^2$.
+    preuve: |
+      (i) *Régularité.* Les dérivées partielles $\partial_r P = (\cos\theta, \sin\theta)$ et $\partial_\theta P = (-r\sin\theta, r\cos\theta)$ existent et sont continues, puisque $\cos' = -\sin$ et $\sin' = \cos$ ({{cx-exponentielle|Exponentielle}}, (iv)). Donc $P$ est de classe $C^1$ ({{gd-classe-ck|Classe Cᵏ}}, (i)), et son jacobien vaut $r\cos^2\theta + r\sin^2\theta = r > 0$.
+
+      *Bijection.* Soit $z \in V$ ; il n'est pas nul, et s'écrit $z = |z|\exp(i\theta_0)$, avec $\theta_0$ unique modulo $2\pi$ ({{cx-pi|Le nombre π}}, (iii)). Par la propriété d'Archimède, il existe un unique entier $k$ tel que $\theta = \theta_0 - 2k\pi$ appartienne à $]{-\pi}, \pi]$, et $\exp(i\theta) = \exp(i\theta_0)$ ({{cx-pi|Le nombre π}}, (ii)).
+
+      Si $\theta$ valait $\pi$, $z = -|z|$ serait un réel strictement négatif, ce qui est exclu : $\theta \in \,]{-\pi}, \pi[$, et $z = P(|z|, \theta)$. Inversement, $P(r, \theta)$ n'est jamais dans $D$ : sinon $\exp(i\theta)$, de module $1$, serait un réel négatif, égal à $-1 = \exp(i\pi)$, et $\theta - \pi$ serait un multiple de $2\pi$, ce qui est impossible pour $\theta \in \,]{-\pi}, \pi[$.
+
+      Enfin $r = |P(r, \theta)|$, et $\theta$ est déterminé modulo $2\pi$, donc de façon unique dans $]{-\pi}, \pi[$ : $P$ est une bijection de $U$ sur $V$.
+
+      *Réciproque.* $D$ est fermé, intersection des fermés $\{y = 0\}$ et $\{x \leqslant 0\}$, donc $V$ est ouvert. En tout point $a \in U$, $dP(a)$ est inversible, de déterminant non nul ; le théorème d'{{gd-inversion-locale|inversion locale}} fournit un ouvert $O_a$ contenant $a$ et un ouvert $W_a$ contenant $P(a)$ tels que $P$ induise un $C^1$-difféomorphisme de $O_a$ sur $W_a$.
+
+      Pour $w \in W_a$, l'antécédent de $w$ dans $O_a$ est son unique antécédent dans $U$ : la réciproque de $P$ coïncide sur $W_a$ avec celle de la restriction de $P$ à $O_a$. Elle est donc de classe $C^1$ au voisinage de chaque point de $V$.
+
+      (ii) $D$ est contenu dans la droite $\{y = 0\}$, négligeable ({{cv-lebesgue-rn|Lebesgue sur ℝⁿ}}, (iv)), si bien que l'intégrale de $f$ sur $D$ est nulle et que $\int_{\mathbb R^2} f = \int_V f$. Le nœud {{cv-changement|Changement de variables}}, (ii), donne $\int_V f = \int_U (f \circ P)\,J_P\,d\lambda$.
+
+      Le théorème de Tonelli ({{m-fubini|Tonelli, Fubini}}), appliqué sur $\mathbb R \times \mathbb R$ à la fonction égale à $f(P(r, \theta))\,r$ sur $U$ et nulle ailleurs, écrit cette intégrale comme une intégrale double.
+
+      (iii) Pour $f$ l'indicatrice du disque, $f(P(r, \theta)) = \mathbf 1_{]0, R[}(r)$, et
+      $$\begin{aligned} \lambda(\{|z| < R\}) &= \int_{-\pi}^{\pi}\!\int_0^R r\,dr\,d\theta \\ &= 2\pi \cdot \frac{R^2}2, \end{aligned}$$
+      l'intégrale de $r$ sur $]0, R[$ étant celle de Riemann ({{m-riemann|Riemann et Lebesgue}}), calculée par le {{ar-tfa|théorème fondamental}}.
+    remarques:
+      - |
+        Le facteur $r$ se lit sur un quadrillage : les cellules du plan des $(r, \theta)$ ont toutes la même aire, mais leurs images s'élargissent à mesure qu'elles s'éloignent de l'origine.
+
+        ```schema cv-polaires
+        À gauche, la bande $U$ des $(r, \theta)$, quadrillée par les droites $r = \frac12, 1, \frac32, 2$ et $\theta = \frac{k\pi}4$ ; à droite, son image par $P$, faite de cercles et de rayons, la demi-droite $D$, en pointillé, étant exclue. La cellule rouge $[1, \frac32] \times [\frac\pi4, \frac\pi2]$, d'aire $\frac\pi8$, a pour image un secteur d'aire $\frac{5\pi}{32}$ : le rapport $\frac54$ est la valeur moyenne de $r$ sur la cellule.
+        ```
+      - |
+        L'erreur la plus répandue est d'oublier le facteur $r$. On trouverait alors pour le disque de rayon $R$ la valeur $\int_{-\pi}^{\pi}\int_0^R dr\,d\theta = 2\pi R$, qui est la longueur de son bord : le résultat n'a pas même la bonne dépendance en $R$, alors qu'une homothétie de rapport $R$ multiplie les aires par $R^2$ ({{cv-lineaire|Image linéaire}}).
+      - |
+        Le nombre $\pi$ a été défini au nœud {{cx-pi|Le nombre π}} comme le double du plus petit zéro positif de $\cos$, c'est-à-dire la demi-période de $t \mapsto \exp(it)$, sans aucune géométrie ; (iii) montre qu'il est aussi l'aire du disque unité. Avec le nœud {{cv-lineaire|Image linéaire}}, (ii), on en déduit l'aire $\pi ab$ de l'ellipse $\{\frac{x^2}{a^2} + \frac{y^2}{b^2} < 1\}$, image du disque unité par $\operatorname{diag}(a, b)$ pour $a, b > 0$.
+
+  - id: cv-gaussienne
+    etiquette: Intégrale de Gauss
+    nature: corollaire
+    titre: L'intégrale de Gauss par les coordonnées polaires
+    enonce: |
+      (i) $\displaystyle\int_{\mathbb R^2} e^{-(x^2 + y^2)}\,d\lambda(x, y) = \pi$.
+
+      (ii) $\displaystyle\int_{\lex{ensemble-reels}{\mathbb R}} e^{-x^2}\,dx = \sqrt\pi$, et $\displaystyle\int_{\mathbb R} e^{-u^2/2}\,du = \sqrt{2\pi}$.
+    preuve: |
+      (i) Pour $r > 0$ et tout $\theta$, $e^{-(r\cos\theta)^2 - (r\sin\theta)^2} = e^{-r^2}$, puisque $\cos^2 + \sin^2 = 1$ ({{cx-exponentielle|Exponentielle}}, (iii)). Les coordonnées polaires ({{cv-polaires|Coordonnées polaires}}, (ii)) donnent
+      $$\int_{\mathbb R^2} e^{-(x^2 + y^2)}\,d\lambda = \int_{-\pi}^{\pi}\!\int_0^{+\infty} re^{-r^2}\,dr\,d\theta.$$
+
+      La fonction $F(r) = -\frac12 e^{-r^2}$ a pour dérivée $re^{-r^2}$, par la règle de la chaîne et $\exp' = \exp$. Deux primitives d'une fonction continue sur un intervalle diffèrent d'une constante ({{de-taf|Égalité des accroissements finis}}), et le {{ar-tfa|théorème fondamental}} donne, pour l'intégrale de Riemann sur $[0, T]$,
+      $$\begin{aligned} \int_0^T re^{-r^2}\,dr &= F(T) - F(0) \\ &= \frac12\big(1 - e^{-T^2}\big). \end{aligned}$$
+
+      La convergence monotone ({{m-beppo-levi|Convergence monotone}}), appliquée aux fonctions $re^{-r^2}\mathbf 1_{]0, k]}(r)$, et le nœud {{m-riemann|Riemann et Lebesgue}} montrent que l'intégrale sur $]0, +\infty[$ est la limite de $\frac12(1 - e^{-k^2})$, c'est-à-dire $\frac12$, puisque $e^{k^2} \geqslant 1 + k^2$. L'intégrale en $\theta$ vaut alors $2\pi \cdot \frac12 = \pi$.
+
+      (ii) Soit $I = \int_{\mathbb R} e^{-x^2}\,dx$. Comme $e^{-(x^2 + y^2)} = e^{-x^2}e^{-y^2}$ ({{cx-exponentielle|Exponentielle}}, (ii)), le théorème de Tonelli ({{m-fubini|Tonelli, Fubini}}) sur $\mathbb R^2 = \mathbb R \times \mathbb R$ donne
+      $$\pi = \int_{\mathbb R}\Big(\int_{\mathbb R} e^{-x^2}\,dx\Big)e^{-y^2}\,dy = I^2.$$
+      Comme $I \geqslant 0$, $I = \sqrt\pi$.
+
+      Pour la seconde intégrale, le nœud {{cv-changement|Changement de variables}}, (ii), appliqué au difféomorphisme $x \mapsto \sqrt2\,x$ de $\mathbb R$, de jacobien $\sqrt2$, donne $\int_{\mathbb R} e^{-u^2/2}\,du = \sqrt2 \int_{\mathbb R} e^{-x^2}\,dx = \sqrt{2\pi}$.
+    remarques:
+      - |
+        Le nœud {{p-normale|Loi normale}} établit la même valeur sans coordonnées polaires, par Tonelli et le changement de variable $y = xs$ sur une droite, parce que la formule du changement de variables en dimension $2$ n'est pas un ancêtre de la théorie des probabilités dans l'édifice. Les deux calculs reposent sur la même idée : élever l'intégrale au carré pour en faire une intégrale double. Ici, l'invariance de $e^{-(x^2 + y^2)}$ par rotation rend le calcul immédiat.
+      - |
+        Le calcul se lit aussi par encadrement. Le disque de rayon $R$ est contenu dans le carré $[-R, R]^2$, lui-même contenu dans le disque de rayon $R\sqrt2$ ; le calcul de (i), restreint à $]0, R[$ puis à $]0, R\sqrt2[$, et Tonelli sur le carré donnent
+        $$\begin{aligned} \pi(1 - e^{-R^2}) &\leqslant \Big(\int_{-R}^R e^{-x^2}\,dx\Big)^2 \\ &\leqslant \pi(1 - e^{-2R^2}). \end{aligned}$$
+        Pour $R = 1$, on trouve $1{,}986 \leqslant 2{,}231 \leqslant 2{,}716$ ; pour $R = 3$, les deux bornes sont déjà à moins de $4 \cdot 10^{-4}$ de $\pi$. L'encadrement mesure ainsi l'erreur commise en tronquant l'intégrale.
+
+  - id: cv-liouville
+    etiquette: Conservation du volume
+    nature: théorème
+    titre: Théorème de Liouville sur le flot et les volumes
+    texte: |
+      Soit $U$ un ouvert de $\lex{n-uplet}{\mathbb R^n}$ et $X : U \to \mathbb R^n$ un champ de classe $C^1$, de [[flot|flot]] $\varphi$ et de domaine $D$ ({{ed-domaine-flot|Domaine du flot}}). Sa [[divergence]] est la fonction continue
+      $$\operatorname{div} X = \operatorname{tr} dX = \sum_{i=1}^n \partial_i X_i.$$
+
+      On note $Z_x$ la solution de l'équation variationnelle le long de la courbe issue de $x$ ({{ed-variationnelle|Équation variationnelle}}), et, pour $(t, x) \in D$,
+      $$\delta_t(x) = \int_0^t \operatorname{div} X(\varphi_s(x))\,ds,$$
+      intégrale orientée ({{ri-proprietes|Propriétés de l'intégrale}}, (v)).
+    enonce: |
+      (i) Pour $(t, x) \in D$, $\det Z_x(t) = e^{\delta_t(x)} > 0$.
+
+      (ii) Pour tout réel $t$ et tout borélien $E \subset D_t$,
+      $$\lambda(\varphi_t(E)) = \int_E e^{\delta_t}\,d\lambda.$$
+
+      (iii) *Conservation du volume.* Si $\operatorname{div} X = 0$, chaque $\varphi_t$ conserve la mesure : $\lambda(\varphi_t(E)) = \lambda(E)$ pour tout borélien $E \subset D_t$. C'est le cas, pour $n = 2$, d'un champ **hamiltonien** $X = (\partial_2 H, -\partial_1 H)$, où $H$ est de classe $C^2$.
+    preuve: |
+      (i) Fixons $x$. Sur $]\alpha(x), \beta(x)[$, la fonction $Z_x$ est dérivable, de dérivée $A(s)Z_x(s)$, où $A(s) = dX(\varphi_s(x))$. Le déterminant est différentiable, de différentielle $H \mapsto \operatorname{tr}\big({}^t\!\operatorname{com}(M)\,H\big)$ en $M$, comme l'établit la démonstration du nœud {{ed-lineaires|Systèmes linéaires}}, (iii).
+
+      Par la règle de la chaîne, $f(s) = \det Z_x(s)$ est dérivable, et
+      $$\begin{aligned} f'(s) &= \operatorname{tr}\big({}^t\!\operatorname{com}(Z_x)\,A\,Z_x\big) \\ &= \operatorname{tr}\big(Z_x\,{}^t\!\operatorname{com}(Z_x)\,A\big) \\ &= f(s)\operatorname{tr}A(s), \end{aligned}$$
+      par $\operatorname{tr}(PQ) = \operatorname{tr}(QP)$ ({{v-trace|Trace}}, (ii)) et la formule de la comatrice ({{v-comatrice|Comatrice}}).
+
+      La fonction $\operatorname{tr}A(s) = \operatorname{div} X(\varphi_s(x))$ est continue, et $G(s) = \int_0^s \operatorname{tr}A$ est dérivable, de dérivée $\operatorname{tr}A(s)$ ({{ar-tfa|Théorème fondamental}}). La fonction $h = f\,e^{-G}$ a pour dérivée $f'e^{-G} - f\,(\operatorname{tr}A)\,e^{-G} = 0$ ; elle est donc constante sur l'intervalle $]\alpha(x), \beta(x)[$ ({{de-taf|Égalité des accroissements finis}}), égale à $h(0) = \det I = 1$. Ainsi $f = e^G$, et $G(t) = \delta_t(x)$.
+
+      (ii) Par le nœud {{ed-variationnelle|Équation variationnelle}}, (i) et (iii), $\varphi_t$ est un $C^1$-difféomorphisme de l'ouvert $D_t$ sur l'ouvert $D_{-t}$, de différentielle $Z_x(t)$ en $x$. Son jacobien est $\det Z_x(t) = e^{\delta_t(x)}$, positif par (i), et le nœud {{cv-changement|Changement de variables}}, (i), conclut.
+
+      (iii) Si la divergence est nulle, $\delta_t = 0$, et (ii) donne $\lambda(\varphi_t(E)) = \int_E 1\,d\lambda = \lambda(E)$. Pour un champ hamiltonien, $X$ est de classe $C^1$, et
+      $$\operatorname{div} X = \partial_1\partial_2 H - \partial_2\partial_1 H = 0$$
+      par le théorème de Schwarz ({{gd-schwarz|Schwarz, intégrales à paramètre}}, (i)).
+    remarques:
+      - |
+        Pour l'équation $y' = y^2$ sur $\mathbb R$, la divergence est $2y$, et $Z_x(t) = \frac{1}{(1 - tx)^2}$ ({{ed-variationnelle|Équation variationnelle}}). Pour $t > 0$ et $a < b < \frac1t$, (ii) donne
+        $$\begin{aligned} \lambda\big(\varphi_t(]a, b[)\big) &= \int_a^b \frac{dx}{(1 - tx)^2} \\ &= \frac{b - a}{(1 - ta)(1 - tb)}. \end{aligned}$$
+
+        On le vérifie directement : $\varphi_t$ est croissante, et $\varphi_t(b) - \varphi_t(a) = \frac{b}{1 - tb} - \frac{a}{1 - ta}$ a cette valeur. Un intervalle de points positifs s'allonge, d'autant plus que ses points approchent de leur instant d'explosion ; un intervalle de points négatifs se contracte. La divergence n'étant pas nulle, le volume n'est pas conservé.
+      - |
+        Le champ $X(y) = (1, y_1^2)$ du nœud {{ed-variationnelle|Équation variationnelle}} est de divergence nulle, puisque sa première composante est constante et que la seconde ne dépend pas de $y_2$. Son flot cisaille et courbe les figures, mais n'en change pas l'aire.
+
+        ```schema cv-liouville
+        Le disque $\Delta$ de centre $0$ et de rayon $\frac12$, en gris, est emporté par le flot de $X(y) = (1, y_1^2)$ en $\varphi_{1/2}(\Delta)$, en bleu, puis en $\varphi_1(\Delta)$, en rouge, le long de la trajectoire verte de son centre. Les trois régions ont la même aire $\frac\pi4$, calculée exactement sur leurs bords paramétrés, bien que la dernière soit très allongée.
+        ```
+      - |
+        Pour un champ linéaire $X(y) = Ay$, le flot est $\varphi_t(y) = e^{tA}y$, sa différentielle est $e^{tA}$, et $\operatorname{div} X = \operatorname{tr}A$ : le point (i) redonne la formule $\det e^{tA} = e^{t\operatorname{tr}A}$ du nœud {{ed-lineaires|Systèmes linéaires}}, (iii), dont il est la version non linéaire.
+      - |
+        Le pendule $y_1'' = -\sin y_1$ s'écrit $y' = X(y)$ avec $X(y) = (y_2, -\sin y_1)$, champ hamiltonien de fonction $H(y) = \frac{y_2^2}2 - \cos y_1$. Son flot conserve donc les aires du plan des phases. Ce fait, qui vaut pour tous les systèmes hamiltoniens, est l'un des points de départ de la mécanique statistique, où la mesure de Lebesgue de l'espace des phases est invariante par l'évolution.
+      - |
+        Le calcul de (i) remonte à Liouville. Dans sa « Note sur la théorie de la variation des constantes arbitraires » (*Journal de mathématiques pures et appliquées* 3, 1838, p. 342-349), il montre que, pour un système $\frac{dx_i}{dt} = P_i$, le déterminant $u$ des dérivées des solutions par rapport aux constantes arbitraires vérifie
+        $$\frac{du}{dt} = u\Big(\frac{\partial P_1}{\partial x_1} + \cdots + \frac{\partial P_n}{\partial x_n}\Big),$$
+        et qu'il ne dépend donc pas de $t$ lorsque cette somme est nulle.
+
+aretes:
+  - [cv-lebesgue-rn, cv-dyadiques]
+  - [cv-dyadiques, cv-lineaire]
+  - [cv-elementaires, cv-lineaire]
+  - [cv-lineaire, cv-cube]
+  - [cv-cube, cv-image-cube]
+  - [cv-image-cube, cv-changement]
+  - [cv-changement, cv-polaires]
+  - [cv-polaires, cv-gaussienne]
+  - [cv-changement, cv-liouville]

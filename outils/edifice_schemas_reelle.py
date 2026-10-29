@@ -1269,3 +1269,238 @@ def ed_variationnelle():
     S.point(R(1, 1 / 3), 't', r=3.4)
     S.texte(R(1, 1 / 3) + [-8, -12], 'φ_1(0)', ancre='end', taille=15)
     return S
+
+
+# ---------------------------------------------------------------------------------------------------
+# edo-changement (changement de variables, chapitre du graphe edo)
+# ---------------------------------------------------------------------------------------------------
+
+@schema('cv-dyadiques')
+def cv_dyadiques():
+    # U = disque unité ouvert ; cubes de Q(U) des niveaux 1 à 5 (aucun cube de niveau 0 n'a son adhérence dans U)
+    from fractions import Fraction as Fq
+    import itertools
+
+    def adherence_dans_U(k, m):
+        s = Fq(1, 2 ** k)
+        return all(x * x + y * y < 1 for x in (m[0] * s, (m[0] + 1) * s) for y in (m[1] * s, (m[1] + 1) * s))
+
+    K = 5
+    niveaux = {}
+    for k in range(0, K + 1):
+        N = 2 ** k
+        niveaux[k] = [m for m in itertools.product(range(-N, N), repeat=2)
+                      if adherence_dans_U(k, m) and (k == 0 or not adherence_dans_U(k - 1, (m[0] // 2, m[1] // 2)))]
+    assert [len(niveaux[k]) for k in range(K + 1)] == [0, 4, 16, 36, 76, 152]
+    # deux à deux disjoints : chaque cube de niveau 5 est dans au plus un cube retenu
+    for m in itertools.product(range(-32, 32), repeat=2):
+        n = sum(1 for k in range(1, K + 1) if (m[0] >> (K - k), m[1] >> (K - k)) in set(niveaux[k]))
+        assert n <= 1
+    aire = sum(Fq(len(niveaux[k]), 4 ** k) for k in range(1, K + 1))
+    assert aire == Fq(385, 128)          # 3,0078125, contre π pour le disque
+    ech = 150
+    S = Schema(500, 2 * ech + 30, 'Décomposition du disque unité ouvert en cubes dyadiques maximaux')
+    R = Repere(-1.05, 1.05, -1.05, 1.05, 250 - 1.05 * ech, 15, 2.1 * ech, 2.1 * ech)
+    th = np.linspace(0, 2 * np.pi, 400)
+    S.poly(R(np.cos(th), np.sin(th)), 'g', ferme=True, rempli='g')
+    couleurs = {1: 'r', 2: 'b', 3: 'v', 4: 'r', 5: 'b'}
+    for k in range(1, K + 1):
+        s = 1 / 2 ** k
+        for m in niveaux[k]:
+            p = R(m[0] * s, (m[1] + 1) * s)
+            S.rect(p[0], p[1], s * ech, s * ech, 't', rempli=couleurs[k])
+    S.poly(R(np.cos(th), np.sin(th)), 't', ferme=True, d=True)
+    S.texte(R(0.25, 0.25), '1', taille=16)
+    S.texte(R(0.625, 0.125), '2', taille=15)
+    S.texte(R(0.78, 0.78) + [16, -14], 'U', taille=17)
+    return S
+
+
+@schema('cv-lineaire')
+def cv_lineaire():
+    # transvection T(x) = (x_1, x_2 + s x_1), s = 1/2 : les sections verticales de T(]0,1]²) sont de longueur 1
+    import sympy as sp
+    s = sp.Rational(1, 2)
+    T = sp.Matrix([[1, 0], [s, 1]])
+    assert T.det() == 1
+    x1, y = sp.symbols('x1 y', real=True)
+    # (x1, y) ∈ T(Q) ⟺ 0 < x1 ≤ 1 et 0 < y − s x1 ≤ 1 : section ]s x1, s x1 + 1]
+    aire = sp.integrate(sp.integrate(1, (y, s * x1, s * x1 + 1)), (x1, 0, 1))
+    assert aire == 1
+    ech = 170
+    S = Schema(500, 316, 'Image du carré unité par une transvection : sections verticales de longueur 1')
+    R = Repere(-0.25, 1.45, -0.2, 1.62, 100, 30, 1.7 * ech, 1.82 * ech * 0.85)
+    R.axes(S, 'x_1', 'x_2')
+    carre = np.array([[0, 0], [1, 0], [1, 1], [0, 1]], float)
+    im = carre @ np.array(T, dtype=float).T
+    assert np.allclose(im, [[0, 0], [1, 0.5], [1, 1.5], [0, 1]])
+    S.poly(R(*carre.T), 'g', ferme=True, rempli='g')
+    S.poly(R(*im.T), 'b', ferme=True, rempli='b', l=2)
+    for a in (0.25, 0.5, 0.75):
+        bas, haut = float(s) * a, float(s) * a + 1
+        assert np.isclose(haut - bas, 1)
+        S.ligne(R(a, bas), R(a, haut), 'r', l=2.6)
+        S.point(R(a, haut), 'r', r=3.4)
+        S.point(R(a, bas), 'r', r=3.4, creux=True)
+    S.texte(R(0.5, 1.25) + [0, -16], 'T(Q)', 'b', taille=16)
+    S.texte(R(0.12, 0.5), 'Q', 'g', taille=16)
+    S.texte(R(1, 0.5) + [10, 0], '(1, 1/2)', 'b', ancre='start', taille=14)
+    S.texte(R(1, 1.5) + [10, 0], '(1, 3/2)', 'b', ancre='start', taille=14)
+    return S
+
+
+@schema('cv-cube')
+def cv_cube():
+    # φ(x, y) = (x − y²/2, y + x²/3), cube C(c, r) avec c = (1/2, 1/2), r = 1/4, L = dφ(c)
+    import sympy as sp
+    import itertools
+    x, y = sp.symbols('x y', real=True)
+    F = sp.Matrix([x - y ** 2 / 2, y + x ** 2 / 3])
+    D = F.jacobian([x, y])
+    c = (sp.Rational(1, 2), sp.Rational(1, 2))
+    r = sp.Rational(1, 4)
+    Lm = D.subs({x: c[0], y: c[1]})
+    assert Lm == sp.Matrix([[1, -sp.Rational(1, 2)], [sp.Rational(1, 3), 1]]) and Lm.det() == sp.Rational(7, 6)
+    M = Lm.inv() * D - sp.eye(2)
+    # les coefficients de M sont affines en (x, y) : chaque somme de lignes |.| est convexe, son maximum
+    # sur le carré est atteint en un sommet ; η est donc calculé exactement
+    eta = max(max(sum(abs(M.subs({x: c[0] + a * r, y: c[1] + b * r})[i, j]) for j in range(2)) for i in range(2))
+              for a, b in itertools.product((-1, 1), repeat=2))
+    assert eta == sp.Rational(2, 7)
+    phi = sp.lambdify((x, y), F, 'numpy')
+    L = np.array(Lm, dtype=float)
+    Li = np.linalg.inv(L)
+    cf, rf, ef = 0.5, 0.25, float(eta)
+    pc = np.array(phi(cf, cf), dtype=float).ravel()
+    # bord du carré, parcouru
+    t = np.linspace(0, 1, 200)
+    cotes = [np.array([cf - rf + 2 * rf * t, cf - rf + 0 * t]), np.array([cf + rf + 0 * t, cf - rf + 2 * rf * t]),
+             np.array([cf + rf - 2 * rf * t, cf + rf + 0 * t]), np.array([cf - rf + 0 * t, cf + rf - 2 * rf * t])]
+    bord = np.hstack(cotes)
+    img = np.array(phi(bord[0], bord[1]), dtype=float).reshape(2, -1)
+    # ce que la figure affirme : (1 − η) r ≤ ‖L⁻¹(φ(x) − φ(c))‖∞ ≤ (1 + η) r sur le bord du carré
+    nrm = np.max(np.abs(Li @ (img - pc[:, None])), axis=0)
+    assert nrm.max() <= (1 + ef) * rf + 1e-12 and nrm.min() >= (1 - ef) * rf - 1e-12
+
+    def para(k):
+        sq = np.array([[-1, -1], [1, -1], [1, 1], [-1, 1]], float) * k * rf
+        return (sq @ L.T) + pc
+
+    ech = 300
+    S = Schema(520, 290, 'Image d’un petit cube et parallélogrammes dφ(c)(C), agrandi et réduit')
+    # panneau de gauche : le carré
+    RG = Repere(0.15, 0.85, 0.15, 0.85, 14, 40, 0.7 * ech * 0.8, 0.7 * ech * 0.8)
+    sq = np.array([[cf - rf, cf - rf], [cf + rf, cf - rf], [cf + rf, cf + rf], [cf - rf, cf + rf]])
+    S.poly(RG(*sq.T), 't', ferme=True, rempli='g', l=1.8)
+    S.point(RG(cf, cf), 't', r=3.4)
+    S.texte(RG(cf, cf) + [0, 16], 'c', taille=16)
+    S.texte(RG(cf, cf + rf) + [0, -14], 'C(c, r)', taille=15)
+    # flèche φ
+    S.fleche([196, 145], [250, 145], 't')
+    S.texte([223, 130], 'φ', taille=17)
+    # panneau de droite : les images
+    tous = np.hstack([para(1 + ef).T, img])
+    xmin, xmax = tous[0].min() - 0.03, tous[0].max() + 0.03
+    ymin, ymax = tous[1].min() - 0.03, tous[1].max() + 0.03
+    sc = min(250 / (ymax - ymin), 250 / (xmax - xmin))
+    RD = Repere(xmin, xmax, ymin, ymax, 262, 20 + (250 - sc * (ymax - ymin)) / 2, sc * (xmax - xmin), sc * (ymax - ymin))
+    assert 262 + sc * (xmax - xmin) < 516
+    S.poly(RD(*para(1 + ef).T), 'b', ferme=True, d=True)
+    S.poly(RD(*para(1 - ef).T), 'v', ferme=True, d=True, l=1.8)
+    S.poly(RD(*img), 'r', ferme=True, rempli='r', l=2.2)
+    S.poly(RD(*para(1).T), 'b', ferme=True, l=1.8)
+    S.point(RD(*pc), 't', r=3.4)
+    S.texte(RD(*pc) + [0, 16], 'φ(c)', taille=15)
+    S.texte(RD(*para(1 + ef)[2]) + [6, -4], '1 + η', 'b', ancre='start', taille=14)
+    S.texte(RD(*(pc + 0.55 * (para(1 - ef)[3] - pc))), '1 − η', 'v', taille=14)
+    return S
+
+
+@schema('cv-polaires')
+def cv_polaires():
+    # P(r, θ) = (r cos θ, r sin θ) ; la cellule [1, 3/2] × [π/4, π/2] a pour image un secteur d'aire 5π/32
+    import sympy as sp
+    rr, tt = sp.symbols('r theta', positive=True)
+    Pm = sp.Matrix([rr * sp.cos(tt), rr * sp.sin(tt)])
+    assert sp.simplify(Pm.jacobian([rr, tt]).det()) == rr
+    r0, r1, t0, t1 = 1, sp.Rational(3, 2), sp.pi / 4, sp.pi / 2
+    aire_cellule = (r1 - r0) * (t1 - t0)
+    aire_secteur = sp.integrate(sp.integrate(rr, (rr, r0, r1)), (tt, t0, t1))
+    assert aire_cellule == sp.pi / 8 and aire_secteur == 5 * sp.pi / 32
+    assert sp.simplify(aire_secteur / aire_cellule - (r0 + r1) / 2) == 0
+    H = 300
+    S = Schema(520, H + 50, 'Coordonnées polaires : une cellule du plan (r, θ) et son image')
+    RG = Repere(0, 2.25, -np.pi, np.pi, 34, 36, 128, H)
+    sc = H / 4.6
+    RD = Repere(-2.3, 2.3, -2.3, 2.3, 210, 36, 4.6 * sc, H)
+    # gauche : bande U, grille
+    for k in range(-3, 4):
+        S.ligne(RG(0, k * np.pi / 4), RG(2.1, k * np.pi / 4), 'g')
+    for rv in (0.5, 1, 1.5, 2):
+        S.ligne(RG(rv, -np.pi), RG(rv, np.pi), 'g')
+    S.ligne(RG(0, -np.pi), RG(2.1, -np.pi), 'g', d=True)
+    S.ligne(RG(0, np.pi), RG(2.1, np.pi), 'g', d=True)
+    S.fleche(RG(0, -np.pi - 0.05), RG(0, np.pi + 0.35), 'g')
+    S.fleche(RG(0, 0), RG(2.25, 0), 'g')
+    S.texte(RG(2.25, 0) + [-2, 14], 'r', 'g', ancre='end')
+    S.texte(RG(0, np.pi + 0.35) + [10, 2], 'θ', 'g', ancre='start')
+    S.texte(RG(0, np.pi) + [-6, 4], 'π', 'g', ancre='end', taille=14)
+    S.texte(RG(0, -np.pi) + [-6, 0], '−π', 'g', ancre='end', taille=14)
+    cell = np.array([[1, np.pi / 4], [1.5, np.pi / 4], [1.5, np.pi / 2], [1, np.pi / 2]])
+    S.poly(RG(*cell.T), 'r', ferme=True, rempli='r', l=2)
+    # droite : cercles et rayons, demi-droite exclue D
+    th = np.linspace(-np.pi, np.pi, 300)
+    for rv in (0.5, 1, 1.5, 2):
+        S.poly(RD(rv * np.cos(th), rv * np.sin(th)), 'g')
+    for k in range(-3, 4):
+        S.ligne(RD(0, 0), RD(2 * np.cos(k * np.pi / 4), 2 * np.sin(k * np.pi / 4)), 'g')
+    S.ligne(RD(-2.3, 0), RD(0, 0), 't', d=True, l=2.2)
+    S.point(RD(0, 0), 't', r=3.6, creux=True)
+    S.texte(RD(-1.55, 0) + [0, 15], 'D', taille=16)
+    ts = np.linspace(np.pi / 4, np.pi / 2, 60)
+    sect = np.vstack([np.array([1.5 * np.cos(ts), 1.5 * np.sin(ts)]).T,
+                      np.array([np.cos(ts[::-1]), np.sin(ts[::-1])]).T])
+    S.poly(RD(*sect.T), 'r', ferme=True, rempli='r', l=2)
+    S.fleche([168, 174], [200, 174], 't')
+    S.texte([184, 158], 'P', taille=16)
+    return S
+
+
+@schema('cv-liouville')
+def cv_liouville():
+    # X(y) = (1, y_1²), de divergence nulle ; flot φ_t(y) = (y_1 + t, y_2 + ((y_1 + t)³ − y_1³)/3)
+    import sympy as sp
+    t, y1, y2, a = sp.symbols('t y1 y2 a', real=True)
+    P = sp.Matrix([y1 + t, y2 + ((y1 + t) ** 3 - y1 ** 3) / 3])
+    assert sp.simplify(P.diff(t) - sp.Matrix([1, P[0] ** 2])) == sp.zeros(2, 1)
+    assert sp.diff(1, y1) + sp.diff(y1 ** 2, y2) == 0
+    assert sp.simplify(P.jacobian([y1, y2]).det()) == 1
+    # aire exacte de φ_t(disque de rayon 1/2) par la formule de Green appliquée au bord paramétré
+    for tv in (sp.Rational(1, 2), 1):
+        X = sp.cos(a) / 2 + tv
+        Y = sp.sin(a) / 2 + ((sp.cos(a) / 2 + tv) ** 3 - (sp.cos(a) / 2) ** 3) / 3
+        aire = sp.integrate(sp.expand(X * sp.diff(Y, a) - Y * sp.diff(X, a)) / 2, (a, 0, 2 * sp.pi))
+        assert sp.simplify(aire - sp.pi / 4) == 0
+    ech = 150
+    xmin, xmax, ymin, ymax = -0.75, 1.75, -0.65, 1.3
+    S = Schema(500, 24 + ech * (ymax - ymin), 'Un disque emporté par un flot de divergence nulle garde son aire')
+    R = Repere(xmin, xmax, ymin, ymax, 70, 12, ech * (xmax - xmin), ech * (ymax - ymin))
+    S.fleche(R(xmin, 0), R(xmax, 0), 'g')
+    S.fleche(R(0, ymin), R(0, ymax), 'g')
+    S.texte(R(xmax, 0) + [-4, 16], 'y_1', 'g', ancre='end')
+    S.texte(R(0, ymax) + [10, 8], 'y_2', 'g', ancre='start')
+    th = np.linspace(0, 2 * np.pi, 400)
+    Hc = 0.5 * np.array([np.cos(th), np.sin(th)])
+    for tv, cl in ((0, 'g'), (0.5, 'b'), (1, 'r')):
+        im = np.array([Hc[0] + tv, Hc[1] + ((Hc[0] + tv) ** 3 - Hc[0] ** 3) / 3])
+        assert im[0].max() < xmax and im[1].max() < ymax - 0.05 and im[1].min() > ymin
+        # aire par la formule du lacet polygonal (contrôle numérique de la valeur exacte π/4)
+        ap = 0.5 * np.sum(im[0][:-1] * im[1][1:] - im[0][1:] * im[1][:-1])
+        assert abs(ap - np.pi / 4) < 1e-3
+        S.poly(R(*im), cl, ferme=True, rempli=cl, l=2)
+    ss = np.linspace(0, 1, 100)
+    S.courbe_fleche(R(ss, ss ** 3 / 3), 'v', l=1.8)
+    S.texte(R(-0.36, 0.36) + [-6, -6], 'Δ', 'g', ancre='end', taille=16)
+    S.texte(R(0.5 - 0.42, 0.5 / 3 + 0.5) + [-6, -4], 'φ_{1/2}(Δ)', 'b', ancre='end', taille=15)
+    S.texte(R(1.5, 1.08) + [8, 0], 'φ_1(Δ)', 'r', ancre='start', taille=15)
+    return S
