@@ -1172,7 +1172,10 @@ function chargerBranche(gid) {
 function aller(gid, choisi = null, opts = {}) {
   quitterRubrique();
   ancreEdifice = gid + (choisi ? '.' + choisi : '');
-  document.title = titreOnglet('L\'édifice');
+  // onglet : la notion affichée (étiquette de la bulle), sinon le graphe ouvert, sinon « L'édifice »
+  const nChoisi = choisi && D.noeuds[choisi];
+  document.title = titreOnglet(nChoisi ? (nChoisi.etiquette || nChoisi.titre)
+    : gid === D.racine ? 'L\'édifice' : D.graphes[gid].titre);
   chargerBranche(gid).catch(() => {});   // préchargement : les fiches de ce graphe seront prêtes
   const change = gid !== etat.graphe || !$('#plan').childElementCount;
   etat.graphe = gid; etat.choisi = choisi;
