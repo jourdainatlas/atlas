@@ -468,4 +468,5 @@ inexistant de `gd-denombrable` dans `gd-exemples-varietes` ; cas de `gf-ordre-12
 (« Premier cas », « Second cas ») au lieu de tirets que le moteur ne rend pas.
 Signalés, non tranchés : `nb-zeros` attribue à Mertens une version de l'inégalité 3 + 4 cos θ + cos 2θ ⩾ 0 (formulation
 conforme aux sources consultées, Elkies : « Mertens' elegant version of the original arguments ») ; `gd-equivalence`
-appelle « norme sur ℚ² » une application sur un espace non réel ; `hk-egalite` (iv) emploie une hypothèse sans la citer.
+appelait « norme sur ℚ² » une application sur un espace non réel (corrigé : la remarque élargit la définition aux scalaires
+rationnels et démontre la non-équivalence par densité de ℚ) ; `hk-egalite` (iv) citait mal l'hypothèse (corrigé).
