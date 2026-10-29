@@ -403,10 +403,23 @@ def disposer(gid):
         utile = max(0.0, w / 2 - (14 if rond(v) else 22))
         ecart = min(14.0, 2 * utile / (len(ks) - 1)) if len(ks) > 1 else 0
         return {k: x[v] + (i - (len(ks) - 1) / 2) * ecart for i, k in enumerate(ks)}
+    def caler(v, ports, voisin):
+        """Glisse en bloc les ports de v (sans changer leur écart ni sortir de la bulle) pour aligner
+        exactement sur la verticale voisine les flèches qui feraient sinon un crochet de quelques pixels."""
+        if not ports: return ports
+        utile = max(0.0, dims[v][0] / 2 - (14 if rond(v) else 22))
+        lo = x[v] - utile - min(ports.values()); hi = x[v] + utile - max(ports.values())
+        def crochets(dl):
+            return sum(1 for k, px in ports.items() if 0.5 < abs(voisin(k) - (px + dl)) < 16)
+        cands = [0.0] + [voisin(k) - px for k, px in ports.items() if lo - 1e-9 <= voisin(k) - px <= hi + 1e-9]
+        meilleur = min(cands, key=lambda dl: (crochets(dl), abs(dl)))
+        return {k: px + meilleur for k, px in ports.items()}
     for v, ks in sorties.items():
-        port_dep.update(repartir(v, ks, lambda k: (x[chaines[k][1]], x[chaines[k][-1]])))
+        pd = repartir(v, ks, lambda k: (x[chaines[k][1]], x[chaines[k][-1]]))
+        port_dep.update(caler(v, pd, lambda k: x[chaines[k][1]]))
     for v, ks in arrivees.items():
-        port_arr.update(repartir(v, ks, lambda k: (x[chaines[k][-2]], x[chaines[k][0]])))
+        pa = repartir(v, ks, lambda k: (x[chaines[k][-2]], x[chaines[k][0]]))
+        port_arr.update(caler(v, pa, lambda k: x[chaines[k][-2]] if len(chaines[k]) > 2 else port_dep[k]))
     def abscisse(k, i):
         ch = chaines[k]
         if i == 0: return port_dep[k]
@@ -448,7 +461,10 @@ def disposer(gid):
         for s, p_ in attribue.items(): piste[(s[0], s[1])] = p_
         npistes[t] = max(attribue.values(), default=-1) + 1
     # ordonnées des couches : la bande entre t et t + 1 contient ses pistes
-    bande = {t: max(ECART_Y - HMAX, (npistes[t] + 1) * PISTE) for t in range(nmax)}
+    # DEGAGE : marge sous la couche supérieure, avant la première piste, pour que le dernier segment
+    # vertical d'une flèche soit plus long que sa pointe (6 px) et monte toujours vers la bulle.
+    DEGAGE = 10
+    bande = {t: max(ECART_Y - HMAX, (npistes[t] + 1) * PISTE + DEGAGE) for t in range(nmax)}
     ycouche = {nmax: MARGE + 10}
     for t in range(nmax - 1, -1, -1): ycouche[t] = ycouche[t + 1] + HMAX + bande[t]
     y = {v: ycouche[rang[v]] for v in rang}
@@ -473,19 +489,23 @@ def disposer(gid):
         a, b = ch[0], ch[-1]
         cx, cy = port_dep[k], bord(a, port_dep[k], True) - (7 if a.startswith('↑') else 0)   # au-dessus de « niveau supérieur »
         d = f'M{cx:.1f},{cy:.1f}'; poly = [(cx, cy)]
+        dernier_y = cy                     # ordonnée d'où part le dernier segment vertical
         for i in range(len(ch) - 1):
             t = rang[ch[i]]
             x0, x1 = abscisse(k, i), abscisse(k, i + 1)
             if (k, i) in piste:
-                haut_bande = ycouche[t + 1] + HMAX / 2
-                pas = bande[t] / (npistes[t] + 1)
+                haut_bande = ycouche[t + 1] + HMAX / 2 + DEGAGE
+                pas = (bande[t] - DEGAGE) / (npistes[t] + 1)
                 yk = haut_bande + (piste[(k, i)] + 1) * pas
                 s_ = 1 if x1 > x0 else -1
                 rc = min(8.0, abs(x1 - x0) / 2, pas * 0.9)
                 d += f' L{x0:.1f},{yk + rc:.1f} Q{x0:.1f},{yk:.1f} {x0 + s_ * rc:.1f},{yk:.1f}'
                 d += f' L{x1 - s_ * rc:.1f},{yk:.1f} Q{x1:.1f},{yk:.1f} {x1:.1f},{yk - rc:.1f}'
                 poly += [(x0, yk), (x1, yk)]
+                dernier_y = yk - rc
         fx = port_arr[k]; fy = bord(b, fx, False) + 6
+        if dernier_y - fy < 3:
+            erreur(f"[{gid}] la flèche {a}->{b} arrive par un segment trop court ({dernier_y - fy:.1f} px) : sa pointe serait mal orientée")
         d += f' L{fx:.1f},{fy:.1f}'; poly.append((fx, fy))
         for p0, p1 in zip(poly, poly[1:]): morceaux.append((a, b, 'L', p0, p1))
         aretes.append({'de': a[1:] if a.startswith('↑') else a, 'vers': b,

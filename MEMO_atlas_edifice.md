@@ -383,3 +383,13 @@ valuation), ac-nakayama (1 + I ⊂ A^×, générateurs minimaux = dim M/𝔪M). 
 nombre fini d'équations, par Hilbert ; entrée ac de geoalg), an-ideaux (i) (ℤ[√−5] non factoriel, 2 irréductible non
 premier ; entrée ac de tan). Lexique : element-irreductible, element-premier, anneau-factoriel, anneau-noetherien,
 localise, anneau-local. Accueil : « Trente-cinq branches », lien {{ac}}.
+
+Pointes de flèches (29 oct. 2026, signalé par l'auteur sur l'édifice : pointes détachées ou retournées sous
+« Théorie analytique des nombres » et « Analyse fonctionnelle »). Cause : dans une bande chargée, la piste la plus
+haute tombait à moins de 6 px (longueur de la pointe) sous la bulle d'arrivée ; le dernier segment était alors trop
+court, ou redescendait, et la pointe s'inversait. Le défaut touchait presque tous les graphes. Corrections dans
+`disposer` : marge `DEGAGE = 10` px sous chaque couche avant la première piste ; passe `caler` qui glisse en bloc les
+ports d'une bulle (écart inchangé, sans sortir de la bulle) pour aligner les flèches sur leur verticale, ce qui fait
+passer les crochets de moins de 16 px de 114 à 15 sur les 708 arêtes ; vérification bloquante « la flèche … arrive
+par un segment trop court ». Croisements inchangés. Document de l'auteur remplacé par sa version recompilée
+(sommaire visible, 42 p.).
