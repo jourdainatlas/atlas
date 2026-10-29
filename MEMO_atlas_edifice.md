@@ -524,3 +524,13 @@ partition du cercle supposée dans cx-pi-2, injection « quelconque » dans n-fi
 renvoi avant ℕ), toutes corrigées. Corrigé aussi : trou dans la preuve de cx-zeros-isoles (le point
 d'accumulation est un zéro non isolé de la différence). 215 schémas ; les SVG dont les traits viennent d'un
 ensemble Python changent d'ordre à chaque génération (gf-ordre-8) : trier avant de tracer.
+
+## 37. Aération, second passage (29 octobre 2026)
+
+Les paragraphes denses (plus de 700 caractères, ou plus de 450 avec au moins 8 formules en ligne) étaient 156 après
+le chantier des admis ; quatre agents les ont repris (`scratchpad/aer/consigne_aeration_2.md`), chaque lot relu.
+Il en reste 10, laissés à dessein : points d'énoncé d'un seul tenant (gd-normes (i), f-bases-hilbertiennes (ii),
+gd-submersions (ii), gd-exemples-varietes (iii)…). Retouches de la relecture : pronoms sans antécédent remplacés
+par leur sujet, une coupure trompeuse retirée (ga-nullstellensatz), le « et » d'origine rendu à ac-nakayama (iii),
+Tₖ de p-tcl passé en display. Corrigé au passage : accord « Elle en contient un » (an-norme-ideal (iii)), entier q
+introduit dans la remarque de li-cartan sur l'enroulement irrationnel (ε ∈ ]0, 1], k ≠ 0 justifié).
