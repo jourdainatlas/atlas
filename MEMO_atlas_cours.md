@@ -82,21 +82,30 @@ données YAML. Les messages de commit commencent par « Cours : » ou « Exercic
 - Le dépôt ne contient aucune source `.tex`. Les cours et les feuilles arrivent de l'auteur, en `.tex`
   et en PDF, à chaque session.
 
+- **Design v5 des feuilles** (29 oct. 2026) : l'auteur a refait le design de ses 49 feuilles et de
+  leurs corrigés (archive `Exercices_MAJ.zip` : `.tex`, PDF, rapports de migration). Les énoncés sont
+  inchangés hormis les noms de couleurs (palette `cdesign`, `cardoise`, `cocre`, `cpetrole`, fond
+  `cfond`), les phrases qui nomment une couleur et toutes les figures. Les 49 feuilles ont été
+  reconverties : textes, figures et pages tirés des nouvelles sources, **métadonnées conservées**
+  (types, mots-clés, nœuds, notions, titres, sources : fusion par exercice, script hors dépôt). Les 98
+  PDF sont remplacés ; 540 figures SVG régénérées, les 540 anciennes supprimées, les 5 images PNG
+  (`f-me-06` ex. 14 et 17, `f-p-02` ex. 7, 8 et 30) inchangées. Les PDF fournis des énoncés `f-me-06` et
+  `f-p-02` montraient un cadre vide à la place de ces images : ils ont été recompilés ici depuis les
+  `.tex` v5 avec les PNG du site (9 pages au lieu de 8, la dernière courte). Trois titres de `f-t-01`
+  (ex. 10, 11, 31), passés dans le corps en gras, restent des titres d'exercice, la ligne en gras étant
+  retirée de l'énoncé. Le tableau de `p-06-09` (corrigé) passe d'array KaTeX à tableau HTML.
+  Point signalé à l'auteur : dans le corrigé `f-me-03`, `\Id` vaut désormais `\mathrm{Id}` (préambule
+  v5) là où l'ancien PDF imprimait $I_{2}$ ; le site reproduit le nouveau PDF.
+
 **Points ouverts.**
 - Les avertissements KaTeX de la construction (« No character metrics » pour «, » et €), 98 depuis
   l'ajout des feuilles de Maths expertes, viennent des feuilles d'exercices, où des guillemets ou le
   symbole euro sont placés dans `\text{…}` à l'intérieur d'une formule. Ils ne bloquent rien. Il faut
   les corriger dans `tex2exos.py`, en sortant ces signes de la formule, puis dans les feuilles déjà
   versées.
-- Les modifications de `tex2exos.py` du 27 octobre n'ont pas pu être rejouées sur les sources des
-  feuilles de Terminale, absentes du dépôt. La forme `\exo{…}{…}` y est lue par le nouveau code
-  d'en-têtes ; il faudra le confirmer au prochain versement d'une feuille de ce type.
-- Deux défauts de `tex2exos.py` corrigés le 27 octobre (feuilles de Première) touchaient peut-être les
-  feuilles de Terminale, dont les sources ne sont pas dans le dépôt : un `\emph{…}` ou `\textbf{…}`
-  contenant un groupe `{}` perdait son premier mot (« \emph{On adopte … \eunc{} …} » donnait
-  « adopte … ») ; les couleurs `crouge`, `cbleu`… restaient en noir. Les feuilles de Maths expertes
-  ont été reconverties (seules `f-me-06` et `f-me-07` changeaient, par les couleurs). Pour la
-  Terminale, il faudra reconvertir quand l'auteur renverra les `.tex`.
+- Les deux défauts de `tex2exos.py` corrigés le 27 octobre (premier mot perdu dans un `\emph{…}`,
+  couleurs restées noires) sont réglés pour la Terminale aussi : ses feuilles ont été reconverties le
+  29 octobre à partir des sources v5.
 - L'édifice n'a aucun nœud pour les graphes (matrice d'adjacence) ni pour les chaînes de Markov :
   `me-06` et `me-09` se rattachent à des nœuds voisins (matrices, espaces probabilisés). Le dossier
   `contenu/` appartient désormais à la conversation Édifice : un nœud manquant se demande à l'auteur.
@@ -152,6 +161,13 @@ exercices », c'est-à-dire la vue « Par exercice » filtrée sur ce niveau. Le
    (macro `\eq` des corrigés de Seconde), devient elle aussi `\textcircled{…}`. Dans les tableaux, les
    étais `\rule[…]{…}{…}` sont retirés, `\newline` devient une espace et `\diagbox{A}{B}` devient
    « A / B ».
+   **Préambule v5** (oct. 2026) : le commentaire d'en-tête cite `\begin{document}` ; l'outil coupe au
+   `\begin{document}` placé en début de ligne. Les `\renewcommand` du corps (commandes déjà définies par
+   le préambule commun, `\cl`, `\Q`…) l'emportent sur la définition commune. Les en-têtes « EXERCICE N »
+   en capitales sont reconnus pour les pages. Le choix entre tableau HTML et array KaTeX mesure les
+   cellules avec l'ancien nom de fond (`cfond` lu comme `orange!50`). `\textcolor{#…}{$x$}` devient
+   `$\textcolor{#…}{x}$`. Un nom de commande précédé d'une barre oblique (`\\F`, saut de ligne puis F)
+   n'est pas développé. Les sorties de pdflatex sont lues avec `errors='replace'`.
    **Images** : un `\includegraphics{nom.png}` n'est pas dans les sources. On extrait les images du PDF
    de la feuille (`pdfimages -list` pour les repérer, puis `pdfimages -png`), on les range sous leur nom
    d'origine dans un dossier, et l'on passe ce dossier par `TEX2EXOS_IMAGES=dossier`. Le PNG est

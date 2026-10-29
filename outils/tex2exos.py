@@ -56,7 +56,7 @@ def developper(t, M):
     for _ in range(6):
         avant = t
         for nom, (n, corps) in M.items():
-            motif = re.compile(r'\\' + nom + r'(?![A-Za-z])')
+            motif = re.compile(r'(?<!\\)\\' + nom + r'(?![A-Za-z])')   # pas « \\F » (saut de ligne puis F)
             out, i = [], 0
             for m in list(motif.finditer(t)):
                 if m.start() < i: continue
@@ -172,7 +172,7 @@ def compiler_figure(code, pre):
     doc = '\\documentclass[border=4pt]{standalone}\n' + '\n'.join(garde) + '\n\\begin{document}\n' + code + '\n\\end{document}\n'
     with tempfile.TemporaryDirectory() as d:
         open(f'{d}/f.tex', 'w').write(doc)
-        r = subprocess.run(['pdflatex', '-interaction=nonstopmode', 'f.tex'], cwd=d, capture_output=True, text=True)
+        r = subprocess.run(['pdflatex', '-interaction=nonstopmode', 'f.tex'], cwd=d, capture_output=True, text=True, errors='replace')
         if not os.path.exists(f'{d}/f.pdf'):
             sys.stderr.write('ÉCHEC figure :\n' + r.stdout[-1500:] + '\n'); return None
         subprocess.run(['pdftocairo', '-svg', 'f.pdf', os.path.abspath(cible)], cwd=d, check=True)
@@ -232,6 +232,10 @@ class Conv:
         """Tableau à rendre en HTML (le texte doit pouvoir passer à la ligne) : colonne p{…}
         ou cellule de texte longue. Les tableaux numériques restent des array KaTeX."""
         if re.search(r'[pmb]\{', spec): return True
+        # Depuis le design v5 des feuilles, les fonds d'en-tête s'appellent « cfond » au lieu de
+        # « orange!50 », « corange!45 »… : on mesure les cellules avec l'ancien nom, pour que le choix
+        # entre tableau HTML et array KaTeX ne dépende pas du renommage.
+        corps = re.sub(r'\\(rowcolor|cellcolor)\{cfond\}', lambda m: '\\%s{orange!50}' % m.group(1), corps)
         for li in s.couper_lignes(corps):
             for c in s.couper_cellules(li):
                 if len(re.sub(r'\$[^$]*\$', '', c).strip()) > 40: return True
@@ -565,21 +569,25 @@ def sources(t_brut):
     return r
 
 def pages(pdf):
-    n = int(re.search(r'Pages:\s+(\d+)', subprocess.run(['pdfinfo', pdf], capture_output=True, text=True).stdout).group(1))
+    n = int(re.search(r'Pages:\s+(\d+)', subprocess.run(['pdfinfo', pdf], capture_output=True, text=True, errors='replace').stdout).group(1))
     r = {}
     for p in range(1, n + 1):
-        txt = subprocess.run(['pdftotext', '-f', str(p), '-l', str(p), pdf, '-'], capture_output=True, text=True).stdout
-        for m in re.finditer(r'^Exercice (\d+)\b', txt, re.M): r.setdefault(int(m.group(1)), p)
+        txt = subprocess.run(['pdftotext', '-f', str(p), '-l', str(p), pdf, '-'], capture_output=True, text=True, errors='replace').stdout
+        for m in re.finditer(r'^(?:Exercice|EXERCICE) (\d+)\b', txt, re.M): r.setdefault(int(m.group(1)), p)
     return r
 
 def feuille(tex):
     brut = lire(tex)
-    pre, corps = brut.split('\\begin{document}', 1)
+    # Le vrai \begin{document}, en début de ligne : le préambule v5 le cite dans un commentaire.
+    m = re.search(r'(?m)^[ \t]*\\begin\{document\}', brut)
+    pre, corps = brut[:m.start()], brut[m.end():]
     corps_sc = sans_commentaires(corps)
     # Macros définies après \begin{document} (ex. \graduations) : déplacées dans le préambule,
     # pour être développées dans le texte et connues à la compilation des figures.
     defs = []
-    for m in list(re.finditer(r'\\newcommand\*?\s*\{?\\[A-Za-z]+\}?\s*(?:\[\d\])?\s*\{', corps_sc))[::-1]:
+    # \renewcommand compris : une commande déjà définie par le préambule commun (\cl, \Q…) et redéfinie
+    # par la feuille garde la définition de la feuille, placée après celle du préambule.
+    for m in list(re.finditer(r'\\(?:re)?newcommand\*?\s*\{?\\(?!arraystretch)[A-Za-z]+\}?\s*(?:\[\d\])?\s*\{', corps_sc))[::-1]:
         f = accolade(corps_sc, m.end() - 1)
         defs.insert(0, corps_sc[m.start():f]); corps_sc = corps_sc[:m.start()] + corps_sc[f:]
     if defs: pre = pre + '\n' + '\n'.join(defs) + '\n'
@@ -592,6 +600,8 @@ def feuille(tex):
                    lambda m: '\\textcircledd{%s}' % m.group(1).strip(), corps)
     corps = cercles(corps)
     corps = couleurs(brut, corps)
+    # Chiffre coloré dans une cellule ou dans le texte : \textcolor{#…}{$2$} devient $\textcolor{#…}{2}$.
+    corps = re.sub(r'\\textcolor\{(#[0-9a-fA-F]{6})\}\{\$([^$]*)\$\}', r'$\\textcolor{\1}{\2}$', corps)
     corps = re.sub(r'\\texttt\{((?:[^{}]|\\[{}])*)\}', lambda m: '\\texttt{%s}' % CODE_MATH.sub(lambda x: CODE_SYMB[x.group(1)], m.group(1)), corps)
     return pre, corps, sources(brut)
 
