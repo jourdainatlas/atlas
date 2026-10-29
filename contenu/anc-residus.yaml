@@ -1,0 +1,555 @@
+# Niveau 2 : structure interne du chapitre « Théorème des résidus » (nœud anc-residus du graphe anc,
+# créé le 29 oct. 2026). Indice d'un lacet (entier, constant sur les parties connexes du complémentaire),
+# théorème de Cauchy sur une couronne (par découpage en secteurs contenus dans des ouverts convexes),
+# séries de Laurent (existence, unicité, coefficients), singularités isolées (prolongement de Riemann,
+# pôles, Casorati-Weierstrass), calcul des résidus, théorème des résidus pour un ouvert convexe privé d'un
+# nombre fini de points, principe de l'argument, théorème de Rouché et calculs d'intégrales réelles.
+# Le cadre est celui du graphe anc : chemins C¹ par morceaux, théorème de Cauchy pour les ouverts convexes.
+# La version homologique du théorème des résidus (ouvert quelconque) est énoncée en remarque, admise.
+# Aucune forme du choix n'intervient.
+
+graphe: anc-residus
+titre: Théorème des résidus
+conteneur: anc-residus
+
+entrees:
+  cx-formule-cauchy: [rs-indice]
+  cx-zeros-isoles: [rs-rouche]
+
+noeuds:
+  - id: rs-indice
+    etiquette: Indice d'un lacet
+    nature: proposition
+    titre: Indice d'un lacet par rapport à un point
+    texte: |
+      Dans ce chapitre, un **lacet** est un chemin fermé de classe $C^1$ par morceaux ({{cx-integrale-chemin|Intégrale curviligne}}) : une application continue $\gamma : [a, b] \to \lex{ensemble-complexes}{\mathbb C}$ telle que $\gamma(a) = \gamma(b)$, dérivable à dérivée continue sur chaque segment $[t_{j-1}, t_j]$ d'une subdivision $a = t_0 < \cdots < t_m = b$, les dérivées aux extrémités d'un segment étant prises à droite ou à gauche. Son **image** est $\gamma^* = \gamma([a, b])$.
+
+      Pour $w \notin \gamma^*$, l'[[indice-lacet|indice]] de $\gamma$ par rapport à $w$ est
+      $$\operatorname{Ind}_\gamma(w) = \frac{1}{2i\pi}\int_\gamma \frac{dz}{z - w}.$$
+
+      ```schema rs-indice
+      Le lacet $\gamma(t) = (\frac12 + \cos t)\exp(it)$, $t \in [0, 2\pi]$, parcouru dans le sens des flèches, fait une boucle intérieure. Son indice vaut $2$ au point rouge, pris dans la petite boucle, $1$ au point bleu, entre les deux boucles, et $0$ au point gris, à l'extérieur ; il est constant sur chacune des trois régions que délimite l'image.
+      ```
+    enonce: |
+      (i) L'image $\gamma^*$ est compacte. Pour $w \notin \gamma^*$, la distance $\delta(w) = \min_{t \in [a, b]} |\gamma(t) - w|$ existe et est strictement positive, et $\mathbb C \setminus \gamma^*$ est ouvert.
+
+      (ii) L'indice $\operatorname{Ind}_\gamma(w)$ est un entier relatif.
+
+      (iii) La fonction $w \mapsto \operatorname{Ind}_\gamma(w)$ est continue sur $\mathbb C \setminus \gamma^*$, et constante sur toute partie [[connexe]] de $\mathbb C \setminus \gamma^*$.
+
+      (iv) Si $V$ est un ouvert convexe qui contient $\gamma^*$ et si $w \notin V$, alors $\operatorname{Ind}_\gamma(w) = 0$. En particulier, $\operatorname{Ind}_\gamma(w) = 0$ dès que $|w| > \max_t |\gamma(t)|$.
+
+      (v) Pour le cercle $C(c, r)$, l'indice vaut $1$ en tout point $w$ tel que $|w - c| < r$, et $0$ en tout point tel que $|w - c| > r$.
+    preuve: |
+      (i) Le segment $[a, b]$ est compact ({{tr-borel-lebesgue|Borel-Lebesgue}}), donc son image par l'application continue $\gamma$ l'est aussi ({{t-compact-prop|Parties compactes}}, (iii)). Elle est fermée dans l'espace séparé $\mathbb C$ (même nœud, (ii)), et son complémentaire est ouvert.
+
+      Pour $w \notin \gamma^*$, la fonction continue $t \mapsto |\gamma(t) - w|$ atteint son minimum sur le compact $[a, b]$ ({{tr-compacts|Compacts de ℝ}}, (iii)). Ce minimum est l'une de ses valeurs, et aucune n'est nulle.
+
+      (ii) Sur chaque segment $[t_{j-1}, t_j]$, la fonction $q(t) = \frac{\gamma'(t)}{\gamma(t) - w}$ est continue. On définit $H$ de proche en proche par $H(a) = 0$ et, pour $t \in [t_{j-1}, t_j]$,
+      $$H(t) = H(t_{j-1}) + \int_{t_{j-1}}^t q(u)\,du,$$
+      de sorte que $H(b) = \int_\gamma \frac{dz}{z - w}$. Sur chaque segment, $H$ est dérivable de dérivée $q$, par le théorème fondamental appliqué aux parties réelle et imaginaire ({{ar-tfa|Théorème fondamental de l'analyse}}).
+
+      La fonction $\varphi(t) = \exp(-H(t))\,(\gamma(t) - w)$ est alors dérivable sur chaque segment. La dérivée d'une composée ({{cx-holomorphe|Fonctions holomorphes}}, (iii)), avec $\exp' = \exp$, et celle d'un produit, qui se calcule comme au point (ii) du même nœud, donnent
+      $$\varphi' = \exp(-H)\big(\gamma' - q\,(\gamma - w)\big) = 0.$$
+
+      La fonction $\varphi$ prend donc la même valeur aux deux extrémités de chaque segment ({{cx-convergence-uniforme|Convergence uniforme}}, (iv)), et $\varphi(b) = \varphi(a) = \gamma(a) - w$. Comme $\gamma(b) = \gamma(a) \neq w$, il vient $\exp(-H(b)) = 1$, donc $H(b) \in 2i\pi\lex{ensemble-entiers-relatifs}{\mathbb Z}$ ({{cx-pi|Le nombre π}}, (ii)) : l'indice est entier.
+
+      (iii) Soit $w \notin \gamma^*$, $\delta = \delta(w)$, et $w'$ tel que $|w' - w| < \delta/2$. Pour $z \in \gamma^*$, on a $|z - w'| \geqslant \delta/2$, et
+      $$\begin{aligned} \Big|\frac{1}{z - w'} - \frac{1}{z - w}\Big| &= \frac{|w' - w|}{|z - w'|\,|z - w|} \\ &\leqslant \frac{2|w' - w|}{\delta^2}. \end{aligned}$$
+
+      La majoration par la longueur ({{cx-integrale-chemin|Intégrale curviligne}}, (i)) donne alors
+      $$|\operatorname{Ind}_\gamma(w') - \operatorname{Ind}_\gamma(w)| \leqslant \frac{L(\gamma)\,|w' - w|}{\pi\delta^2},$$
+      d'où la continuité.
+
+      Ce majorant est inférieur à $1$ dès que $|w' - w|$ est assez petit, et deux entiers distants de moins de $1$ sont égaux : l'indice est constant au voisinage de chaque point de $\mathbb C \setminus \gamma^*$.
+
+      Soit $E$ une partie connexe de $\mathbb C \setminus \gamma^*$ et $w_0 \in E$. L'ensemble des $w \in E$ tels que $\operatorname{Ind}_\gamma(w) = \operatorname{Ind}_\gamma(w_0)$ et son complémentaire dans $E$ sont ouverts dans $E$, de sorte que l'indicatrice du premier est continue de $E$ dans $\{0, 1\}$. Elle est constante ({{t-connexe|Connexité}}, (c)), et vaut $1$ en $w_0$.
+
+      (iv) La fonction $z \mapsto \frac{1}{z - w}$ est holomorphe sur l'ouvert convexe $V$, qui ne contient pas $w$ ; son intégrale sur le lacet $\gamma$ de $V$ est nulle ({{cx-cauchy-convexe|Cauchy, ouverts convexes}}, avec pour $p$ un point quelconque de $V$).
+
+      Pour le cas particulier, soit $R = \max_t |\gamma(t)|$, qui existe comme en (i), et $|w| > R$. Le demi-plan
+      $$V = \{z : \operatorname{Re}(z\bar w) < |w|^2\}$$
+      est ouvert, puisque $z \mapsto \operatorname{Re}(z\bar w)$ est continue, et convexe, puisque cette fonction est $\mathbb R$-linéaire. Il contient $\gamma^*$, car $\operatorname{Re}(z\bar w) \leqslant |z|\,|w| \leqslant R|w| < |w|^2$ pour $z \in \gamma^*$, et il ne contient pas $w$.
+
+      (v) Si $|w - c| < r$, la formule de Cauchy ({{cx-formule-cauchy|Formule de Cauchy}}, (ii)), appliquée à la fonction constante égale à $1$, holomorphe sur $\mathbb C$, donne
+      $$1 = \frac{1}{2i\pi}\int_{C(c, r)} \frac{dz}{z - w}.$$
+
+      Si $|w - c| > r$, le disque ouvert $D(c, |w - c|)$ est convexe, par l'inégalité triangulaire ; il contient le cercle et ne contient pas $w$, et l'on applique (iv).
+    remarques:
+      - |
+        L'indice compte le nombre de tours que fait $\gamma$ autour de $w$, avec leur sens. Le cercle parcouru $n$ fois, $t \mapsto c + r\exp(it)$ pour $t \in [0, 2n\pi]$, a pour indice $n$ en tout point du disque ouvert : par la relation de Chasles sur les segments $[2j\pi, 2(j + 1)\pi]$ et la périodicité de $t \mapsto \exp(it)$, son intégrale est $n$ fois celle du cercle, dont l'indice vaut $1$ par (v). Le même cercle parcouru en sens inverse, $t \mapsto c + r\exp(-it)$, a pour indice $-1$ en ces points, par le changement de variable $t \mapsto 2\pi - t$. C'est la version différentiable du degré de la {{ta-cercle|topologie algébrique}}, défini là par relèvement.
+      - |
+        L'erreur la plus répandue est de croire que l'indice ne prend que les valeurs $0$ et $1$, selon que le point est « dedans » ou « dehors ». Le lacet de la figure a un indice $2$ dans sa petite boucle. Pour un lacet simple, c'est-à-dire sans point double, l'indice vaut $\pm 1$ dans la région bornée du complémentaire et $0$ dans l'autre ; c'est une forme du théorème de Jordan, nettement plus difficile, admis ici. La difficulté contournée est de montrer que le complémentaire de l'image d'un lacet simple a exactement deux composantes connexes, dont une seule est bornée.
+
+  - id: rs-couronne
+    etiquette: Cauchy sur une couronne
+    nature: théorème
+    titre: Théorème et formule de Cauchy sur une couronne
+    texte: |
+      Pour $c \in \lex{ensemble-complexes}{\mathbb C}$ et $0 \leqslant r_1 < r_2 \leqslant +\infty$, la **couronne** de centre $c$ et de rayons $r_1, r_2$ est
+      $$A(c; r_1, r_2) = \{z : r_1 < |z - c| < r_2\}.$$
+      C'est un ouvert, puisque $z \mapsto |z - c|$ est continue. Pour $r_1 = 0$, c'est le disque $D(c, r_2)$ privé de son centre ; pour $r_2 = +\infty$, aucune borne supérieure n'est imposée.
+    enonce: |
+      Soit $A = A(c; r_1, r_2)$ et $r_1 < \rho_1 < \rho_2 < r_2$.
+
+      (i) Si $g$ est continue sur $A$ et holomorphe sur $A \setminus \{p\}$ pour un point $p \in A$, alors
+      $$\int_{C(c, \rho_1)} g = \int_{C(c, \rho_2)} g.$$
+
+      (ii) *Formule de Cauchy sur la couronne.* Si $f$ est holomorphe sur $A$, alors pour tout $z$ tel que $\rho_1 < |z - c| < \rho_2$,
+      $$\begin{aligned} f(z) &= \frac{1}{2i\pi}\int_{C(c, \rho_2)} \frac{f(w)}{w - z}\,dw \\ &\quad - \frac{1}{2i\pi}\int_{C(c, \rho_1)} \frac{f(w)}{w - z}\,dw. \end{aligned}$$
+    preuve: |
+      (i) *Des secteurs dans des convexes.* Comme $\cos$ est continue en $0$, où elle vaut $1$, et que $r_1/\rho_1 < 1$, il existe un entier $N \geqslant 2$ tel que $\rho_1\cos\frac\pi N > r_1$ (propriété d'Archimède, {{rr-archimede|Archimède, densité de ℚ}}). Pour $0 \leqslant k \leqslant N$, posons $\theta_k = \frac{2k\pi}N$ et, pour $k < N$, $\varphi_k = \theta_k + \frac\pi N$, $u_k = \exp(-i\varphi_k)$ et
+      $$\begin{aligned} V_k = \big\{w :\ &|w - c| < r_2, \\ &\operatorname{Re}\big((w - c)u_k\big) > r_1\big\}. \end{aligned}$$
+
+      C'est l'intersection d'un disque et d'un demi-plan ouverts : un ouvert convexe, la fonction $w \mapsto \operatorname{Re}\big((w - c)u_k\big)$ étant continue et affine. Il est contenu dans $A$, puisque cette partie réelle est au plus $|w - c|$.
+
+      Pour $\rho \in [\rho_1, \rho_2]$ et $\theta \in [\theta_k, \theta_{k+1}]$, le point $c + \rho\exp(i\theta)$ appartient à $V_k$. En effet, la partie réelle en question vaut $\rho\cos(\theta - \varphi_k)$ ({{cx-exponentielle|Exponentielle}}, (ii)), et $|\theta - \varphi_k| \leqslant \frac\pi N \leqslant \frac\pi2$. Or $\cos$ est paire, puisque $\exp(-it) = \overline{\exp(it)}$, et décroissante sur $[0, \frac\pi2]$, puisque $\cos' = -\sin$ ({{cx-exponentielle|Exponentielle}}, (iv)) et que $\sin \geqslant 0$ sur cet intervalle, où elle croît à partir de $\sin 0 = 0$ ({{cx-pi|Le nombre π}}). Enfin $|w - c| = \rho < r_2$, et
+      $$\rho\cos(\theta - \varphi_k) \geqslant \rho_1\cos\frac\pi N > r_1.$$
+
+      ```schema rs-couronne
+      La couronne $A$, en gris, est découpée par $N = 8$ rayons en secteurs ; ici $r_1 = 1$, $\rho_1 = 1{,}2$, $\rho_2 = 2{,}2$ et $r_2 = 2{,}6$. L'ouvert convexe $V_k$, en bleu, est la partie du disque de rayon $r_2$ située au-delà de la tangente au cercle de rayon $r_1$ au point d'angle $\varphi_k$ ; il évite le trou et contient tout le secteur rouge, bord compris, parce que $\rho_1\cos\frac\pi8 \approx 1{,}11 > r_1$.
+      ```
+
+      *Primitives.* Par le théorème de Cauchy convexe ({{cx-cauchy-convexe|Cauchy, ouverts convexes}}), appliqué sur $V_k$ avec le point $p$ s'il appartient à $V_k$ et un point quelconque sinon, $g$ a sur $V_k$ une primitive holomorphe $G_k$.
+
+      Notons $a_k = c + \rho_1\exp(i\theta_k)$ et $b_k = c + \rho_2\exp(i\theta_k)$, et $J_k$ l'intégrale de $g$ le long du segment $\sigma_k : s \mapsto c + s\exp(i\theta_k)$, $s \in [\rho_1, \rho_2]$, qui va de $a_k$ à $b_k$. Comme $\exp(2i\pi) = 1$, on a $\sigma_N = \sigma_0$ et $J_N = J_0$.
+
+      *Le télescopage.* Notons $I_k(\rho) = \int_{\theta_k}^{\theta_{k+1}} g(c + \rho\exp(it))\,i\rho\exp(it)\,dt$ l'intégrale de $g$ le long de la restriction du cercle $C(c, \rho)$ à $[\theta_k, \theta_{k+1}]$. Pour $\rho = \rho_1$ et $\rho = \rho_2$, ces arcs, ainsi que les segments $\sigma_k$ et $\sigma_{k+1}$, sont des chemins de $V_k$, et leurs intégrales se lisent sur $G_k$ ({{cx-integrale-chemin|Intégrale curviligne}}, (ii)) :
+      $$\begin{aligned} I_k(\rho_2) - I_k(\rho_1) &= G_k(b_{k+1}) - G_k(b_k) \\ &\quad - G_k(a_{k+1}) + G_k(a_k) \\ &= J_{k+1} - J_k. \end{aligned}$$
+
+      On somme pour $k = 0, \dots, N - 1$. À gauche, la relation de Chasles ({{ri-proprietes|Propriétés de l'intégrale}}, (iii)), appliquée aux parties réelle et imaginaire, donne $\int_{C(c, \rho_2)} g - \int_{C(c, \rho_1)} g$ ; à droite, la somme vaut $J_N - J_0 = 0$.
+
+      (ii) Fixons $z$, et posons $g(w) = \frac{f(w) - f(z)}{w - z}$ pour $w \neq z$, et $g(z) = f'(z)$. Cette fonction est continue sur $A$, en $z$ par définition de la dérivée, et holomorphe sur $A \setminus \{z\}$ ({{cx-holomorphe|Fonctions holomorphes}}, (ii)). Par (i),
+      $$\int_{C(c, \rho_2)} g = \int_{C(c, \rho_1)} g.$$
+
+      En développant $g$, chacun des deux membres est la différence entre l'intégrale de $\frac{f(w)}{w - z}$ et $f(z)$ fois celle de $\frac{1}{w - z}$. Or $\frac{1}{2i\pi}\int_{C(c, \rho_2)} \frac{dw}{w - z} = 1$ et $\frac{1}{2i\pi}\int_{C(c, \rho_1)} \frac{dw}{w - z} = 0$, puisque $|z - c| < \rho_2$ et $|z - c| > \rho_1$ ({{rs-indice|Indice d'un lacet}}, (v)). L'égalité devient la formule annoncée.
+    remarques:
+      - |
+        Le point (i) ne dit pas que l'intégrale sur un cercle de la couronne est nulle : pour $g(w) = \frac1{w - c}$, elle vaut $2i\pi$ sur chacun d'eux. Il dit qu'elle ne dépend pas du rayon. C'est le phénomène que la remarque du nœud {{cx-cauchy-convexe|Cauchy, ouverts convexes}} attribuait au « trou » de la couronne : l'obstacle est le même pour tous les cercles qui en font le tour.
+      - |
+        La démonstration déforme le petit cercle en le grand par petits morceaux, chacun contenu dans un convexe où l'intégrale ne dépend que des extrémités. C'est, sous une forme élémentaire, l'invariance par homotopie que la {{ta-homotopie|topologie algébrique}} et la cohomologie de {{dr-homotopie|de Rham}} établissent en général.
+
+  - id: rs-laurent
+    etiquette: Séries de Laurent
+    nature: théorème
+    titre: Développement en série de Laurent sur une couronne
+    texte: |
+      Une [[serie-laurent|série de Laurent]] de centre $c$ est une famille $(a_n)_{n \in \lex{ensemble-entiers-relatifs}{\mathbb Z}}$ de complexes, notée $\sum_{n \in \mathbb Z} a_n(z - c)^n$. Elle converge en un point $z \neq c$ si les deux séries
+      $$\sum_{n \geqslant 0} a_n(z - c)^n \quad\text{et}\quad \sum_{n \geqslant 1} a_{-n}(z - c)^{-n}$$
+      convergent, et sa somme est alors la somme des deux sommes.
+    enonce: |
+      Soit $f$ holomorphe sur une couronne $A = A(c; r_1, r_2)$ ({{rs-couronne|Cauchy sur une couronne}}).
+
+      (i) Pour $n \in \mathbb Z$, le nombre
+      $$a_n = \frac{1}{2i\pi}\int_{C(c, \rho)} \frac{f(w)}{(w - c)^{n+1}}\,dw$$
+      ne dépend pas de $\rho \in \,]r_1, r_2[$, et $|a_n| \leqslant M(\rho)\,\rho^{-n}$, où $M(\rho) = \max_{|w - c| = \rho} |f(w)|$.
+
+      (ii) La série entière $\sum_{n \geqslant 0} a_n u^n$ a un rayon au moins $r_2$, et $\sum_{n \geqslant 1} a_{-n}v^n$ un rayon au moins $\frac1{r_1}$, infini si $r_1 = 0$. Par suite, $f_+(z) = \sum_{n \geqslant 0} a_n(z - c)^n$ est holomorphe sur $D(c, r_2)$, et $f_-(z) = \sum_{n \geqslant 1} a_{-n}(z - c)^{-n}$ est holomorphe sur $\{z : |z - c| > r_1\}$.
+
+      (iii) *Existence.* Pour tout $z \in A$, $f(z) = f_+(z) + f_-(z) = \sum_{n \in \mathbb Z} a_n(z - c)^n$.
+
+      (iv) *Unicité.* Si une série de Laurent $\sum_{n \in \mathbb Z} b_n(z - c)^n$ converge en tout point de $A$, de somme $f(z)$, alors $b_n = a_n$ pour tout $n$.
+    preuve: |
+      (i) La fonction $w \mapsto f(w)(w - c)^{-n-1}$ est holomorphe sur $A$ ; son intégrale sur $C(c, \rho)$ ne dépend pas de $\rho$ ({{rs-couronne|Cauchy sur une couronne}}, (i)).
+
+      Le maximum $M(\rho)$ existe, puisque $t \mapsto |f(c + \rho\exp(it))|$ est continue sur $[0, 2\pi]$ ({{tr-compacts|Compacts de ℝ}}, (iii)). Le cercle a pour longueur $2\pi\rho$, et l'intégrande est majoré par $M(\rho)\rho^{-n-1}$ : la majoration par la longueur ({{cx-integrale-chemin|Intégrale curviligne}}, (i)) donne l'inégalité.
+
+      (ii) Pour tout $\rho \in \,]r_1, r_2[$, (i) donne $|a_n\rho^n| \leqslant M(\rho)$ et $|a_{-n}\rho^{-n}| \leqslant M(\rho)$. Les suites $(a_n\rho^n)$ et $(a_{-n}(1/\rho)^n)$ sont donc bornées, et les rayons sont au moins $\rho$ et $\frac1\rho$ ({{cx-series-entieres|Séries entières}}). On fait tendre $\rho$ vers $r_2$, puis vers $r_1$.
+
+      La fonction $f_+$ est holomorphe comme composée de la somme d'une série entière ({{cx-derivation-series|Dérivation terme à terme}}) et de $z \mapsto z - c$. La fonction $f_-$ l'est comme composée de la somme $F_-(v) = \sum_{n \geqslant 1} a_{-n}v^n$, holomorphe sur $D(0, \frac1{r_1})$, et de $z \mapsto \frac1{z - c}$, qui envoie $\{|z - c| > r_1\}$ dans ce disque ({{cx-holomorphe|Fonctions holomorphes}}, (ii)).
+
+      (iii) Soit $z \in A$, et $\rho_1, \rho_2$ tels que $r_1 < \rho_1 < |z - c| < \rho_2 < r_2$. On part de la formule de Cauchy sur la couronne ({{rs-couronne|Cauchy sur une couronne}}, (ii)).
+
+      Sur le grand cercle, comme dans la preuve du nœud {{cx-formule-cauchy|Formule de Cauchy}},
+      $$\frac{1}{w - z} = \sum_{n \geqslant 0} \frac{(z - c)^n}{(w - c)^{n+1}},$$
+      la raison $\frac{z - c}{w - c}$ ayant le module constant $\frac{|z - c|}{\rho_2} < 1$. La convergence est uniforme en $w$, et le reste encore après multiplication par $f(w)$, bornée par $M(\rho_2)$ ({{cx-convergence-uniforme|Convergence uniforme}}, (ii)).
+
+      En intégrant terme à terme ({{cx-convergence-uniforme|Convergence uniforme}}, (iii)), le premier terme de la formule vaut $\sum_{n \geqslant 0} a_n(z - c)^n$, par (i) avec $\rho = \rho_2$.
+
+      Sur le petit cercle, c'est le rôle de $z$ et de $w$ qui s'échange :
+      $$\begin{aligned} -\frac{1}{w - z} &= \frac{1}{(z - c) - (w - c)} \\ &= \sum_{m \geqslant 0} \frac{(w - c)^m}{(z - c)^{m+1}}, \end{aligned}$$
+      de raison $\frac{w - c}{z - c}$, de module constant $\frac{\rho_1}{|z - c|} < 1$.
+
+      Le second terme de la formule, avec son signe, vaut donc $\sum_{m \geqslant 0} \beta_m(z - c)^{-m-1}$, où
+      $$\beta_m = \frac{1}{2i\pi}\int_{C(c, \rho_1)} f(w)(w - c)^m\,dw$$
+      est le coefficient $a_{-m-1}$, par (i) avec $\rho = \rho_1$. Ici encore, le critère de Weierstrass ({{cx-convergence-uniforme|Convergence uniforme}}, (ii)), avec les majorants $M(\rho_1)\frac{\rho_1^m}{|z - c|^{m+1}}$, rend la série uniformément convergente en $w$ sur le petit cercle, ce qui permet l'intégration terme à terme (même nœud, (iii)). C'est la série $\sum_{n \geqslant 1} a_{-n}(z - c)^{-n}$.
+
+      (iv) Fixons $\rho \in \,]r_1, r_2[$, puis $\rho'$ et $\rho''$ tels que $r_1 < \rho'' < \rho < \rho' < r_2$. La série converge au point $c + \rho'$ : le terme général $b_n\rho'^n$ tend vers $0$, donc est borné, et la série entière $\sum_{n \geqslant 0} b_n u^n$ converge uniformément sur le disque $|u| \leqslant \rho$ (lemme d'Abel, {{cx-series-entieres|Séries entières}}, (i)).
+
+      De même, la convergence au point $c + \rho''$ rend bornée la suite $\big(b_{-n}(1/\rho'')^n\big)$, et la série $\sum_{n \geqslant 1} b_{-n}v^n$ converge uniformément sur $|v| \leqslant \frac1\rho$, puisque $\frac1\rho < \frac1{\rho''}$. Les deux parties de la série convergent donc uniformément sur le cercle $C(c, \rho)$.
+
+      Multiplions par $(w - c)^{-k-1}$, de module constant $\rho^{-k-1}$ sur ce cercle, et intégrons terme à terme. Seul le terme $n = k$ contribue ({{cx-integrale-chemin|Intégrale curviligne}}, (iii)), d'où $2i\pi a_k = 2i\pi b_k$.
+    remarques:
+      - |
+        L'erreur la plus répandue est de parler de « la » série de Laurent d'une fonction en un point sans préciser la couronne. La fonction $f(z) = \frac{1}{(z - 1)(z - 2)} = \frac{1}{z - 2} - \frac{1}{z - 1}$ est holomorphe sur trois couronnes de centre $0$, et ses développements y diffèrent.
+
+        Sur $D(0, 1)$, c'est la série entière de coefficients $a_n = 1 - 2^{-n-1}$. Sur $1 < |z| < 2$, on trouve $a_n = -2^{-n-1}$ pour $n \geqslant 0$ et $a_{-n} = -1$ pour $n \geqslant 1$. Sur $|z| > 2$, $a_n = 0$ pour $n \geqslant 0$ et $a_{-n} = 2^{n-1} - 1$ pour $n \geqslant 1$. On obtient ces valeurs en développant $\frac1{z - 1}$ et $\frac1{z - 2}$ par la série géométrique, en $z$ ou en $\frac1z$ selon le cas, et (iv) garantit que ce sont les bons coefficients ; elles ont été contrôlées en calculant numériquement les intégrales de (i).
+
+        ```schema rs-laurent
+        Les pôles $1$ et $2$ de $f$, en rouge, découpent le plan en trois couronnes de centre $0$ : le disque $|z| < 1$, la couronne bleue $1 < |z| < 2$ et l'extérieur $|z| > 2$. Sur chacune, $f$ a un développement de Laurent différent ; le cercle $C(0, \frac32)$, en trait plein, sert à calculer les coefficients de la couronne bleue, et le coefficient $a_{-1} = -1$ qu'on y lit vaut $\frac{1}{2i\pi}\int_{C(0, 3/2)} f$.
+        ```
+      - |
+        Le théorème porte le nom de Pierre Alphonse Laurent, dont le mémoire, envoyé à l'Académie des sciences pour le grand prix de 1842 mais arrivé après la clôture du concours, fit l'objet d'un rapport de Cauchy en 1843 ; Weierstrass l'avait obtenu dès 1841, dans un travail resté inédit jusqu'à la publication de ses œuvres en 1894.
+      - |
+        Pour $r_1 = 0$ et une fonction holomorphe sur tout le disque $D(c, r_2)$, les coefficients d'indice négatif sont nuls, puisque $f(w)(w - c)^{n-1}$ est alors holomorphe sur le disque pour $n \geqslant 1$, et l'on retrouve le développement en série entière du nœud {{cx-analytique|Analyticité}}. La partie $f_-$ mesure exactement ce qui empêche $f$ de se prolonger au disque : c'est l'objet du nœud suivant.
+
+  - id: rs-singularites
+    etiquette: Singularités isolées
+    nature: théorème
+    titre: Singularités isolées et prolongement de Riemann
+    texte: |
+      Soit $U$ un ouvert, $a \in U$ et $f$ holomorphe sur $U \setminus \{a\}$ : on dit que $a$ est une [[singularite-isolee|singularité isolée]] de $f$. Pour $r > 0$ tel que $D(a, r) \subset U$, $f$ est holomorphe sur la couronne $A(a; 0, r)$ et y a des coefficients de Laurent $c_n$ ({{rs-laurent|Séries de Laurent}}). Ils ne dépendent pas de $r$, puisque la formule (i) de ce nœud peut être prise avec un rayon $\rho$ aussi petit qu'on veut. La série $\sum_{n \geqslant 1} c_{-n}(z - a)^{-n}$ est la **partie principale** de $f$ en $a$.
+
+      La singularité est **fausse** (on dit aussi éliminable) si $c_{-n} = 0$ pour tout $n \geqslant 1$. C'est un [[pole|pôle]] d'ordre $m \geqslant 1$ si $c_{-m} \neq 0$ et $c_{-n} = 0$ pour $n > m$ ; un pôle d'ordre $1$ est dit **simple**. C'est une **singularité essentielle** si $c_{-n} \neq 0$ pour une infinité d'entiers $n$. Ces trois cas s'excluent et épuisent toutes les possibilités.
+
+      Si $h$ est holomorphe au voisinage de $a$ et $h(a) = 0$, l'**ordre** du zéro $a$ est le plus petit entier $k$ tel que $h^{(k)}(a) \neq 0$, s'il existe ; on dit aussi multiplicité.
+    enonce: |
+      (i) *Ordre d'un zéro.* Soit $h$ holomorphe sur un disque $D(a, r)$, non identiquement nulle sur ce disque, avec $h(a) = 0$. Sur tout le disque $D(a, r)$, $h$ est la somme de sa série de Taylor $\sum_n \frac{h^{(n)}(a)}{n!}(z - a)^n$. Le zéro $a$ a un ordre fini $k \geqslant 1$, et $h(z) = (z - a)^k u(z)$, où $u$ est holomorphe sur $D(a, r)$ et $u(a) = \frac{h^{(k)}(a)}{k!} \neq 0$. En particulier, $u$ ne s'annule pas sur un disque $D(a, r')$, $0 < r' \leqslant r$.
+
+      (ii) *Théorème de prolongement de Riemann.* Pour $f$ holomorphe sur $U \setminus \{a\}$, il y a équivalence entre :
+
+      (a) $a$ est une fausse singularité de $f$ ;
+
+      (b) $f$ se prolonge en une fonction holomorphe sur $U$ ;
+
+      (c) $f$ est bornée sur $D(a, \rho) \setminus \{a\}$ pour un $\rho > 0$ ;
+
+      (d) $(z - a)f(z) \to 0$ quand $z \to a$.
+    preuve: |
+      (i) Pour $r' < r$, le disque fermé $\overline D(a, r')$ est contenu dans $D(a, r)$, et $h$ y est la somme de sa série de Taylor $\sum_n c_n(z - a)^n$ ({{cx-analytique|Analyticité}}), avec $c_n = \frac{h^{(n)}(a)}{n!}$ ({{cx-derivation-series|Dérivation terme à terme}}). Les coefficients ne dépendent pas de $r'$ : le développement vaut sur tout $D(a, r)$.
+
+      Si tous les $c_n$ étaient nuls, $h$ serait nulle sur $D(a, r)$. Soit donc $k$ le plus petit entier tel que $c_k \neq 0$ ; on a $k \geqslant 1$, puisque $c_0 = h(a) = 0$. La série $u(z) = \sum_{n \geqslant k} c_n(z - a)^{n-k}$ a le même rayon, les suites $(c_n\rho^n)$ et $(c_n\rho^{n-k})$ étant bornées en même temps ; elle est holomorphe sur $D(a, r)$, vérifie $(z - a)^k u(z) = h(z)$ et $u(a) = c_k \neq 0$. Par continuité, $u$ ne s'annule pas près de $a$.
+
+      (ii) (b) ⇒ (c). Le prolongement est continu en $a$, donc borné sur un disque assez petit centré en $a$.
+
+      (c) ⇒ (d). Si $|f| \leqslant M$ sur $D(a, \rho) \setminus \{a\}$, alors $|(z - a)f(z)| \leqslant M|z - a|$.
+
+      (d) ⇒ (a). Pour $n \geqslant 1$ et $\rho$ assez petit, l'inégalité (i) du nœud {{rs-laurent|Séries de Laurent}}, écrite pour l'indice $-n$, donne
+      $$\begin{aligned} |c_{-n}| &\leqslant \rho^n M(\rho) \\ &= \rho^{n-1}\max_{|w - a| = \rho} |(w - a)f(w)|. \end{aligned}$$
+      Pour $\rho \leqslant 1$, le facteur $\rho^{n-1}$ est au plus $1$, et le maximum tend vers $0$ avec $\rho$ par (d). Comme $c_{-n}$ ne dépend pas de $\rho$, il est nul.
+
+      (a) ⇒ (b). Soit $r$ tel que $D(a, r) \subset U$. Sur $D(a, r) \setminus \{a\}$, $f(z) = \sum_{n \geqslant 0} c_n(z - a)^n$ ({{rs-laurent|Séries de Laurent}}, (iii)), et le second membre est holomorphe sur tout $D(a, r)$ (même nœud, (ii)). On pose $f(a) = c_0$ : la fonction obtenue est holomorphe en chaque point de $U \setminus \{a\}$, et en $a$, puisqu'elle coïncide sur $D(a, r)$ avec la somme d'une série entière.
+    remarques:
+      - |
+        C'est un phénomène sans équivalent réel : la fonction $x \mapsto \sin\frac1x$ est bornée et indéfiniment dérivable sur $\mathbb R \setminus \{0\}$, mais n'a même pas de prolongement continu en $0$. Pour une fonction holomorphe, être bornée près d'un point suffit à la prolonger, et le prolongement est automatiquement holomorphe.
+      - |
+        L'hypothèse (c) porte sur un disque entier, et ne peut pas être affaiblie en une condition le long d'une direction. La fonction $\exp(-1/z^2)$, holomorphe sur $\mathbb C \setminus \{0\}$, tend vers $0$ le long de l'axe réel, mais vaut $\exp(1/y^2)$ au point $iy$, qui tend vers l'infini : elle n'est pas bornée près de $0$, et sa singularité est essentielle, son développement $\sum_n \frac{(-1)^n}{n!}z^{-2n}$ ayant une infinité de coefficients d'indice négatif non nuls.
+
+  - id: rs-poles
+    etiquette: Pôles
+    nature: proposition
+    titre: Pôles et comportement près d'une singularité
+    enonce: |
+      Soit $U$ un ouvert, $a \in U$, $f$ holomorphe sur $U \setminus \{a\}$ et $m \geqslant 1$.
+
+      (i) $a$ est un [[pole|pôle]] d'ordre $m$ de $f$ si et seulement s'il existe un disque $D(a, r) \subset U$ et une fonction $g$ holomorphe sur $D(a, r)$, avec $g(a) \neq 0$, tels que, pour $0 < |z - a| < r$,
+      $$f(z) = \frac{g(z)}{(z - a)^m}.$$
+
+      (ii) Si $g$ et $h$ sont holomorphes sur un disque $D(a, r)$, si $g(a) \neq 0$ et si $a$ est un zéro d'ordre $k$ de $h$, non identiquement nulle, alors $g/h$ est holomorphe sur $D(a, r') \setminus \{a\}$ pour un $r' > 0$, et y a un pôle d'ordre $k$ en $a$.
+
+      (iii) $a$ est un pôle de $f$ si et seulement si $|f(z)| \to +\infty$ quand $z \to a$.
+
+      (iv) Par suite, $a$ est une singularité essentielle si et seulement si $f$ n'est bornée sur aucun disque épointé $D(a, \rho) \setminus \{a\}$ et si $|f(z)|$ ne tend pas vers $+\infty$ quand $z \to a$.
+    preuve: |
+      (i) Supposons que $a$ est un pôle d'ordre $m$, et soit $r$ tel que $D(a, r) \subset U$. Sur $D(a, r) \setminus \{a\}$, $f(z) = \sum_{n \geqslant -m} c_n(z - a)^n$ ({{rs-laurent|Séries de Laurent}}, (iii)).
+
+      La série entière $g(z) = \sum_{k \geqslant 0} c_{k-m}(z - a)^k$ a un rayon au moins $r$, puisque, pour $k \geqslant m$, $c_{k-m}\rho^k = \rho^m\,c_{k-m}\rho^{k-m}$ (même nœud, (ii)). Elle vérifie $g(z) = (z - a)^m f(z)$ pour $0 < |z - a| < r$, et $g(a) = c_{-m} \neq 0$.
+
+      Réciproquement, $g$ est sur $D(a, r)$ la somme d'une série $\sum_{k \geqslant 0} b_k(z - a)^k$, avec $b_0 = g(a) \neq 0$, par (i) du nœud {{rs-singularites|Singularités isolées}}. Alors $f(z) = \sum_{k \geqslant 0} b_k(z - a)^{k-m}$ pour $0 < |z - a| < r$ : c'est une série de Laurent qui converge en tout point de la couronne $A(a; 0, r)$, puisque sa partie d'indices négatifs n'a qu'un nombre fini de termes. Par unicité ({{rs-laurent|Séries de Laurent}}, (iv)), $c_{-m} = b_0 \neq 0$ et $c_{-n} = 0$ pour $n > m$.
+
+      (ii) Par (i) du nœud {{rs-singularites|Singularités isolées}}, $h(z) = (z - a)^k u(z)$ avec $u$ holomorphe et sans zéro sur un disque $D(a, r')$. Sur ce disque privé de $a$, $h$ ne s'annule pas, et
+      $$\frac{g(z)}{h(z)} = \frac{g(z)/u(z)}{(z - a)^k},$$
+      où $g/u$ est holomorphe sur $D(a, r')$ et non nulle en $a$ : on applique (i).
+
+      (iii) Si $a$ est un pôle d'ordre $m$, écrivons $f$ comme en (i). Par continuité, $|g(z)| \geqslant \frac12|g(a)|$ près de $a$, et $|f(z)| \geqslant \frac{|g(a)|}{2|z - a|^m}$ tend vers l'infini.
+
+      Réciproquement, supposons $|f(z)| \to +\infty$. Il existe $\rho > 0$ tel que $D(a, \rho) \subset U$ et $|f| \geqslant 1$ sur $D(a, \rho) \setminus \{a\}$. La fonction $\frac1f$ y est holomorphe et bornée par $1$ ; elle se prolonge en une fonction $\Phi$ holomorphe sur $D(a, \rho)$ ({{rs-singularites|Singularités isolées}}, (ii)), avec $\Phi(a) = 0$, puisque $\frac1{f(z)} \to 0$.
+
+      Comme $\Phi$ ne s'annule pas hors de $a$, elle n'est pas identiquement nulle, et $a$ est un zéro d'ordre fini $k$ de $\Phi$. Par (ii), appliqué à $g = 1$ et $h = \Phi$, $f = 1/\Phi$ a un pôle d'ordre $k$ en $a$.
+
+      (iv) D'après le théorème de Riemann ({{rs-singularites|Singularités isolées}}, (ii)), la singularité est fausse si et seulement si $f$ est bornée sur un disque épointé ; d'après (iii), c'est un pôle si et seulement si $|f| \to +\infty$. Elle est essentielle quand elle n'est ni l'une ni l'autre.
+    remarques:
+      - |
+        La fonction $f(z) = \frac{1}{(1 + z^2)^2}$ a des pôles d'ordre $2$ en $i$ et en $-i$ : on applique (ii) avec $g = 1$ et $h = (1 + z^2)^2 = (z - i)^2(z + i)^2$, dont $i$ est un zéro d'ordre $2$, puisque $(z + i)^2$ vaut $-4 \neq 0$ en $i$. La fonction $\frac{\exp z - 1}{z}$ a en $0$ une fausse singularité : son développement $\sum_{n \geqslant 0} \frac{z^n}{(n+1)!}$ n'a aucun terme d'indice négatif, et son prolongement vaut $1$ en $0$.
+      - |
+        La fonction $\exp(1/z)$ a en $0$ une singularité essentielle. Sur $\mathbb C \setminus \{0\}$, elle est la somme de la série de Laurent $\sum_{n \geqslant 0} \frac{z^{-n}}{n!}$, et l'unicité ({{rs-laurent|Séries de Laurent}}, (iv)) assure que ce sont ses coefficients : ceux d'indice $-n$ valent $\frac1{n!} \neq 0$. Elle tend vers l'infini le long des réels positifs, vers $0$ le long des réels négatifs, et reste de module $1$ sur l'axe imaginaire : aucun des comportements de (iii) et du théorème de Riemann.
+
+  - id: rs-casorati
+    etiquette: Casorati-Weierstrass
+    nature: théorème
+    titre: Théorème de Casorati-Weierstrass
+    enonce: |
+      Soit $U$ un ouvert, $a \in U$, et $f$ holomorphe sur $U \setminus \{a\}$, avec une singularité essentielle en $a$. Pour tout $\rho > 0$ tel que $D(a, \rho) \subset U$, l'image $f\big(D(a, \rho) \setminus \{a\}\big)$ est [[partie-dense|dense]] dans $\lex{ensemble-complexes}{\mathbb C}$.
+    preuve: |
+      Supposons le contraire. Il existe un ouvert non vide de $\mathbb C$ qui ne rencontre pas l'image ; il contient un disque $D(w_0, \delta)$ ({{me-topologie|Topologie d'une distance}}, (i)), et $|f(z) - w_0| \geqslant \delta$ pour tout $z \in D(a, \rho) \setminus \{a\}$.
+
+      La fonction $g = \frac{1}{f - w_0}$ est alors holomorphe sur ce disque épointé et bornée par $\frac1\delta$. Par le théorème de Riemann ({{rs-singularites|Singularités isolées}}, (ii)), appliqué sur l'ouvert $D(a, \rho)$, elle se prolonge en une fonction $G$ holomorphe sur $D(a, \rho)$, qui ne s'annule pas hors de $a$.
+
+      *Si $G(a) \neq 0$*, la fonction $\frac1G$ est continue en $a$, donc bornée près de $a$, et $f = w_0 + \frac1G$ l'est aussi : la singularité serait fausse ({{rs-singularites|Singularités isolées}}, (ii)).
+
+      *Si $G(a) = 0$*, $G$ n'étant pas identiquement nulle, $a$ est un zéro d'ordre fini de $G$ ({{rs-singularites|Singularités isolées}}, (i)), et $\frac1G$ a un pôle en $a$ ({{rs-poles|Pôles}}, (ii)). Donc $|\frac1G| \to +\infty$, puis $|f| \geqslant |\frac1G| - |w_0| \to +\infty$, et $a$ serait un pôle de $f$ ({{rs-poles|Pôles}}, (iii)).
+
+      Les deux cas contredisent l'hypothèse : l'image est dense.
+    remarques:
+      - |
+        Pour $f(z) = \exp(1/z)$, on voit davantage : toute valeur $w \neq 0$ est atteinte dans tout disque épointé centré en $0$. Écrivons $w = \exp(\zeta)$, ce qui est possible puisque $w = |w|\exp(i\theta)$ ({{cx-pi|Le nombre π}}, (iii)) et que $\exp$ prend sur $\mathbb R$ toutes les valeurs strictement positives. En effet, $\exp x \geqslant 1 + x$ pour $x \geqslant 0$, d'après la série, et $\exp(-x) = 1/\exp x$ : la fonction continue $\exp$ prend sur $\mathbb R$ des valeurs arbitrairement grandes et arbitrairement proches de $0$, et les valeurs intermédiaires concluent. Pour les $k \in \mathbb Z$ tels que $\zeta + 2ik\pi \neq 0$, c'est-à-dire tous sauf au plus un, les points $z_k = \frac{1}{\zeta + 2ik\pi}$ vérifient $\exp(1/z_k) = w$, et ils tendent vers $0$ quand $|k| \to +\infty$.
+
+        ```schema rs-casorati
+        Pour $w = 1 + i$, les points $z_k = \frac{1}{\zeta + 2ik\pi}$, où $\zeta = x_0 + \frac{i\pi}4$ avec $\exp(x_0) = \sqrt 2$, sont ceux où $\exp(1/z)$ vaut $w$. Ils sont sur un cercle passant par $0$, image de la droite verticale $\operatorname{Re} u = x_0$ par $u \mapsto \frac1u$, et s'accumulent en $0$ : le disque bleu de rayon $0{,}1$ en contient une infinité, tous ceux pour lesquels $|k| \geqslant 2$.
+        ```
+      - |
+        La valeur $0$ n'est jamais prise par $\exp(1/z)$. Le grand théorème de Picard affirme qu'il en est toujours ainsi au plus pour une valeur : au voisinage d'une singularité essentielle, une fonction holomorphe prend toutes les valeurs complexes, sauf au plus une, une infinité de fois. Ce théorème, beaucoup plus profond, est admis ici : sa démonstration demande la fonction modulaire, ou les estimations de Schottky et de Bloch.
+
+  - id: rs-residu
+    etiquette: Calcul des résidus
+    nature: proposition
+    titre: Résidu en une singularité isolée et calcul pratique
+    texte: |
+      Soit $a$ une singularité isolée de $f$, et $c_n$ ses coefficients de Laurent sur un disque épointé $D(a, r) \setminus \{a\}$ ({{rs-singularites|Singularités isolées}}). Le [[residu|résidu]] de $f$ en $a$ est $\operatorname{Res}(f, a) = c_{-1}$, coefficient de $(z - a)^{-1}$. Par (i) du nœud {{rs-laurent|Séries de Laurent}}, pour tout $\rho \in \,]0, r[$,
+      $$\operatorname{Res}(f, a) = \frac{1}{2i\pi}\int_{C(a, \rho)} f.$$
+    enonce: |
+      (i) Le résidu en une fausse singularité est nul, et $\operatorname{Res}(f + \lambda g, a) = \operatorname{Res}(f, a) + \lambda\operatorname{Res}(g, a)$ pour $\lambda \in \mathbb C$.
+
+      (ii) Si $c_{-n} = 0$ pour tout $n > m$, où $m \geqslant 1$, la fonction $g(z) = (z - a)^m f(z)$ se prolonge en une fonction holomorphe au voisinage de $a$, et
+      $$\operatorname{Res}(f, a) = \frac{g^{(m-1)}(a)}{(m - 1)!}.$$
+      En particulier, en un pôle simple, $\operatorname{Res}(f, a) = \lim_{z \to a} (z - a)f(z)$.
+
+      (iii) Si $f = g/h$, avec $g$ et $h$ holomorphes au voisinage de $a$, $h(a) = 0$ et $h'(a) \neq 0$, alors $\operatorname{Res}(f, a) = \frac{g(a)}{h'(a)}$.
+    preuve: |
+      (i) Le premier point est la définition d'une fausse singularité ; le second vient de la formule intégrale, linéaire en $f$.
+
+      (ii) Comme en (i) du nœud {{rs-poles|Pôles}}, la série entière $\sum_{k \geqslant 0} c_{k-m}(z - a)^k$ a un rayon au moins $r$ et prolonge $g$. Son coefficient d'indice $m - 1$ est $c_{-1}$, et c'est aussi $\frac{g^{(m-1)}(a)}{(m-1)!}$ ({{cx-derivation-series|Dérivation terme à terme}}). Pour $m = 1$, $c_{-1}$ est la valeur en $a$ du prolongement, qui est continu.
+
+      (iii) Par (i) du nœud {{rs-singularites|Singularités isolées}}, $h(z) = (z - a)u(z)$, avec $u$ holomorphe, sans zéro sur un disque $D(a, r')$, et $u(a) = h'(a)$. Sur ce disque privé de $a$, $f(z) = \frac{g(z)/u(z)}{z - a}$.
+
+      Développons $g/u$ en série entière sur un disque centré en $a$ ({{cx-analytique|Analyticité}}), $\sum_k b_k(z - a)^k$ avec $b_0 = \frac{g(a)}{u(a)}$. La série $\sum_k b_k(z - a)^{k-1}$ est alors un développement de Laurent de $f$, et par unicité ({{rs-laurent|Séries de Laurent}}, (iv)), $\operatorname{Res}(f, a) = b_0 = \frac{g(a)}{h'(a)}$.
+    remarques:
+      - |
+        Voici trois calculs, vérifiés par un calcul formel. Pour $f(z) = \frac{1}{(1 + z^2)^2}$, pôle d'ordre $2$ en $i$, la formule (ii) avec $g(z) = (z + i)^{-2}$ donne
+        $$\operatorname{Res}(f, i) = g'(i) = \frac{-2}{(2i)^3} = -\frac i4.$$
+        Pour $f(z) = \frac{\exp(iz)}{1 + z^2}$, pôle simple en $i$, (iii) donne $\frac{\exp(-1)}{2i}$. Pour $\exp(1/z)$, singularité essentielle, aucune formule ne s'applique, mais le développement de Laurent se lit directement : le résidu en $0$ vaut $1$.
+      - |
+        L'erreur la plus répandue est d'appliquer la formule du pôle simple sans avoir vérifié l'ordre. Pour $f(z) = \frac{1}{z^2(z - 1)}$, le produit $zf(z) = \frac{1}{z(z - 1)}$ n'a pas de limite finie en $0$ : le pôle est double. La formule (ii) avec $m = 2$ et $g(z) = \frac{1}{z - 1}$ donne $\operatorname{Res}(f, 0) = g'(0) = -1$. La formule (ii) reste juste si l'on surestime l'ordre, puisqu'elle ne demande que $c_{-n} = 0$ pour $n > m$, mais elle devient fausse si on le sous-estime.
+
+  - id: rs-theoreme
+    etiquette: Théorème des résidus
+    nature: théorème
+    titre: Théorème des résidus
+    enonce: |
+      Soit $U$ un ouvert convexe, $a_1, \dots, a_p$ des points distincts de $U$, $f$ holomorphe sur $U \setminus \{a_1, \dots, a_p\}$, et $\gamma$ un lacet de $U \setminus \{a_1, \dots, a_p\}$. Alors
+      $$\int_\gamma f = 2i\pi\sum_{j=1}^p \operatorname{Ind}_\gamma(a_j)\,\operatorname{Res}(f, a_j).$$
+    preuve: |
+      *Parties principales.* Pour chaque $j$, choisissons $r_j > 0$ tel que $D(a_j, r_j) \subset U$ et que ce disque ne contienne aucun autre point $a_i$ ; il suffit de prendre $r_j$ inférieur aux distances $|a_i - a_j|$, $i \neq j$, et au rayon d'un disque centré en $a_j$ contenu dans $U$.
+
+      Sur la couronne $A(a_j; 0, r_j)$, notons $c^{(j)}_n$ les coefficients de Laurent de $f$ et $S_j(z) = \sum_{n \geqslant 1} c^{(j)}_{-n}(z - a_j)^{-n}$ sa partie principale. Par (ii) et (iii) du nœud {{rs-laurent|Séries de Laurent}}, avec $r_1 = 0$, $S_j$ est holomorphe sur $\mathbb C \setminus \{a_j\}$, et $f - S_j$ coïncide sur la couronne avec une fonction holomorphe sur tout le disque $D(a_j, r_j)$.
+
+      *Une fonction sans singularité.* La fonction $g = f - \sum_j S_j$ est holomorphe sur $U \setminus \{a_1, \dots, a_p\}$. Sur $D(a_j, r_j) \setminus \{a_j\}$, elle s'écrit
+      $$g = (f - S_j) - \sum_{i \neq j} S_i,$$
+      somme de fonctions holomorphes sur tout le disque $D(a_j, r_j)$, puisque les $a_i$, $i \neq j$, n'y sont pas.
+
+      En donnant à $g$ en chaque $a_j$ la valeur de cette somme, on obtient une fonction $G$ holomorphe sur $U$. Par le théorème de Cauchy convexe ({{cx-cauchy-convexe|Cauchy, ouverts convexes}}), $\int_\gamma G = 0$ ; comme $G = g$ sur l'image de $\gamma$,
+      $$\int_\gamma f = \sum_{j=1}^p \int_\gamma S_j.$$
+
+      *Intégrale d'une partie principale.* Soit $\delta_j = \min_t |\gamma(t) - a_j| > 0$ ({{rs-indice|Indice d'un lacet}}, (i)). La série entière $\sum_{n \geqslant 1} c^{(j)}_{-n}v^n$ a un rayon infini, donc converge uniformément sur le disque $|v| \leqslant \frac1{\delta_j}$ (lemme d'Abel, {{cx-series-entieres|Séries entières}}, (i)) : la série qui définit $S_j$ converge uniformément sur $\gamma^*$.
+
+      Sur chaque segment de la subdivision de $\gamma$, la dérivée $\gamma'$ est continue, donc bornée ({{tr-compacts|Compacts de ℝ}}, (iii)) ; on peut intégrer terme à terme ({{cx-convergence-uniforme|Convergence uniforme}}, (iii)) :
+      $$\int_\gamma S_j = \sum_{n \geqslant 1} c^{(j)}_{-n}\int_\gamma \frac{dz}{(z - a_j)^n}.$$
+
+      Pour $n \geqslant 2$, $(z - a_j)^{-n}$ est la dérivée de $\frac{-(z - a_j)^{1-n}}{n - 1}$, holomorphe sur $\mathbb C \setminus \{a_j\}$, et son intégrale sur le lacet est nulle ({{cx-integrale-chemin|Intégrale curviligne}}, (ii)). Pour $n = 1$, l'intégrale vaut $2i\pi\operatorname{Ind}_\gamma(a_j)$ par définition.
+
+      Donc $\int_\gamma S_j = 2i\pi\operatorname{Ind}_\gamma(a_j)\,c^{(j)}_{-1}$, et $c^{(j)}_{-1} = \operatorname{Res}(f, a_j)$.
+    remarques:
+      - |
+        Le cas le plus courant est celui d'un cercle $C(c, r)$ dont le disque fermé est contenu dans $U$ et qui ne passe par aucun $a_j$ : l'intégrale vaut $2i\pi$ fois la somme des résidus aux points du disque ouvert ({{rs-indice|Indice d'un lacet}}, (v)). Pour $f(z) = \frac{1}{(z - 1)(z - 2)}$, les résidus en $1$ et $2$ valent $-1$ et $1$. L'intégrale sur $C(0, \frac32)$ vaut donc $-2i\pi$, en accord avec le coefficient $a_{-1} = -1$ de la couronne $1 < |z| < 2$ ({{rs-laurent|Séries de Laurent}}) ; sur $C(0, 3)$, elle est nulle, comme le coefficient $a_{-1} = 2^0 - 1$ de l'extérieur.
+      - |
+        La convexité de $U$ ne sert qu'à appliquer le théorème de Cauchy à $G$. La démonstration du nœud {{cx-cauchy-convexe|Cauchy, ouverts convexes}} vaut sans changement pour un ouvert étoilé par rapport à un point $a_0$, en prenant ce point comme origine des segments : pour $z \in U$ et $h$ assez petit, le segment $[z, z + h]$ est dans un disque contenu dans $U$, et chaque point du triangle de sommets $a_0, z, z + h$ est sur un segment issu de $a_0$ et aboutissant à ce segment. Le théorème des résidus vaut donc aussi sur un ouvert étoilé.
+      - |
+        La forme générale, dite homologique, est admise ici. Elle porte sur un ouvert $U$ quelconque, une partie de $U$ sans point d'accumulation dans $U$ et un lacet $\gamma$ tel que $\operatorname{Ind}_\gamma(w) = 0$ pour tout $w \notin U$, et donne la même formule. La difficulté contournée est le théorème de Cauchy sous cette hypothèse, que l'on démontre en étudiant la fonction de deux variables $\frac{G(w) - G(z)}{w - z}$ et en appliquant le théorème de Liouville (J. D. Dixon, « A brief proof of Cauchy's integral theorem », *Proc. Amer. Math. Soc.* 29, 1971, p. 625-626).
+      - |
+        Dans la forme homologique, l'hypothèse sur les indices ne peut pas être omise : sur la couronne $1 < |z| < 3$, le cercle $C(0, 2)$ a l'indice $1$ en $0 \notin U$, et $\int_{C(0, 2)} \frac{dz}{z} = 2i\pi$ alors que $\frac1z$ n'a aucune singularité dans $U$.
+      - |
+        Cauchy a introduit les résidus en 1826, dans le premier numéro de ses *Exercices de mathématiques*, et appelé « calcul des résidus » la méthode qui en découle (F. Smithies, *Cauchy and the Creation of Complex Function Theory*, Cambridge, 1997).
+
+  - id: rs-argument
+    etiquette: Principe de l'argument
+    nature: théorème
+    titre: Principe de l'argument
+    texte: |
+      Une fonction $f$ est [[meromorphe|méromorphe]] sur un ouvert $U$ s'il existe une partie $P$ de $U$, sans point d'accumulation dans $U$, telle que $f$ soit holomorphe sur $U \setminus P$, et que chaque $p \in P$ ait un disque $D(p, r) \subset U$ qui ne rencontre $P$ qu'en $p$, $p$ étant un [[pole|pôle]] de la restriction de $f$ à $D(p, r) \setminus \{p\}$.
+    enonce: |
+      (i) Soit $W$ un ouvert, $h$ holomorphe sur $W$ et sans zéro, et $\gamma$ un lacet de $W$. Alors $h \circ \gamma$ est un lacet qui ne passe pas par $0$, et
+      $$\frac{1}{2i\pi}\int_\gamma \frac{h'}{h} = \operatorname{Ind}_{h \circ \gamma}(0).$$
+
+      (ii) Soit $U$ un ouvert convexe et $f$ méromorphe sur $U$, avec un nombre fini de pôles $p_1, \dots, p_q$, d'ordres $m_1, \dots, m_q$, et un nombre fini de zéros $z_1, \dots, z_s$. Alors chaque zéro $z_i$ a un ordre fini $k_i$, et pour tout lacet $\gamma$ de $U$ qui ne passe par aucun zéro ni aucun pôle,
+      $$\begin{aligned} \frac{1}{2i\pi}\int_\gamma \frac{f'}{f} &= \sum_{i=1}^s k_i\operatorname{Ind}_\gamma(z_i) \\ &\quad - \sum_{l=1}^q m_l\operatorname{Ind}_\gamma(p_l) \\ &= \operatorname{Ind}_{f \circ \gamma}(0). \end{aligned}$$
+
+      (iii) En particulier, si $\gamma = C(c, r)$ avec $\overline D(c, r) \subset U$, et si le cercle ne passe par aucun zéro ni aucun pôle, cette intégrale est le nombre de zéros de $f$ dans $D(c, r)$ moins le nombre de ses pôles dans ce disque, comptés avec leurs ordres.
+    preuve: |
+      (i) La fonction $h \circ \gamma$ est continue et prend la même valeur en $a$ et en $b$ ; sur chaque segment de la subdivision, elle est dérivable de dérivée $h'(\gamma(t))\gamma'(t)$ ({{cx-holomorphe|Fonctions holomorphes}}, (iii)), continue puisque $h'$ est holomorphe ({{cx-analytique|Analyticité}}). C'est donc un lacet, qui évite $0$, et par définition
+      $$\begin{aligned} \operatorname{Ind}_{h \circ \gamma}(0) &= \frac{1}{2i\pi}\int_a^b \frac{h'(\gamma(t))\,\gamma'(t)}{h(\gamma(t))}\,dt \\ &= \frac{1}{2i\pi}\int_\gamma \frac{h'}{h}. \end{aligned}$$
+
+      (ii) *Les zéros.* Soit $z_i$ un zéro, et $D(z_i, r)$ un disque contenu dans $U \setminus P$, qui existe puisque $P$ est fini. La fonction $f$ n'est pas identiquement nulle sur ce disque, puisqu'elle n'a qu'un nombre fini de zéros. Par (i) du nœud {{rs-singularites|Singularités isolées}}, $f(z) = (z - z_i)^{k_i}u(z)$, avec $u$ holomorphe et sans zéro près de $z_i$, et
+      $$\frac{f'(z)}{f(z)} = \frac{k_i}{z - z_i} + \frac{u'(z)}{u(z)}.$$
+      Le second terme est holomorphe près de $z_i$ : par unicité du développement de Laurent ({{rs-laurent|Séries de Laurent}}, (iv)), $\operatorname{Res}(f'/f, z_i) = k_i$.
+
+      *Les pôles.* Près de $p_l$, $f(z) = \frac{g(z)}{(z - p_l)^{m_l}}$, avec $g$ holomorphe et non nulle en $p_l$ ({{rs-poles|Pôles}}, (i)), donc sans zéro près de $p_l$. Alors
+      $$\frac{f'(z)}{f(z)} = \frac{g'(z)}{g(z)} - \frac{m_l}{z - p_l},$$
+      et de même $\operatorname{Res}(f'/f, p_l) = -m_l$.
+
+      *Conclusion.* La fonction $f'/f$ est holomorphe sur $U$ privé des zéros et des pôles ({{cx-analytique|Analyticité}}, {{cx-holomorphe|Fonctions holomorphes}}, (ii)), ensemble fini de points : le théorème des résidus ({{rs-theoreme|Théorème des résidus}}) donne la première égalité. La seconde est (i), appliqué à l'ouvert $W$ obtenu en retirant de $U$ les zéros et les pôles, qui est ouvert puisqu'un ensemble fini est fermé.
+
+      (iii) Le cercle ne passant par aucun zéro ni aucun pôle, (ii) s'applique. Par (v) du nœud {{rs-indice|Indice d'un lacet}}, l'indice du cercle vaut $1$ aux points du disque ouvert et $0$ aux points extérieurs au disque fermé.
+
+      ```schema rs-argument
+      À gauche, la fonction $f(z) = \frac{z^2(z - \frac12)}{z + \frac12}$ a dans le disque unité un zéro double en $0$ et un zéro simple en $\frac12$, en rouge, et un pôle simple en $-\frac12$, en bleu. À droite, l'image $f \circ \gamma$ du cercle unité $\gamma$ fait $3 - 1 = 2$ fois le tour de $0$ ; les points numérotés se correspondent sur les deux dessins.
+      ```
+    remarques:
+      - |
+        Le nom vient de l'interprétation de (i). Si l'on écrit $f(\gamma(t)) = |f(\gamma(t))|\exp(i\theta(t))$ avec un argument $\theta$ continu, dont l'existence est le relèvement des chemins de la {{ta-relevement-chemins|topologie algébrique}}, l'indice de $f \circ \gamma$ en $0$ est $\frac{\theta(b) - \theta(a)}{2\pi}$ : la variation de l'argument le long du lacet compte les zéros et les pôles qu'il entoure.
+      - |
+        L'hypothèse de finitude des zéros n'est pas automatique sur un ouvert convexe. La fonction $\exp\big(\frac{2i\pi}{1 - z}\big) - 1$ est holomorphe sur le disque $D(0, 1)$, et ses zéros, les points où $\frac{1}{1 - z}$ est entier, sont les $1 - \frac1n$, $n \geqslant 1$ : ils sont en nombre infini et s'accumulent au point $1$ du bord. Sur un disque fermé contenu dans $U$, en revanche, une fonction holomorphe non identiquement nulle n'a qu'un nombre fini de zéros, comme le montrera le nœud {{rs-rouche|Théorème de Rouché}}.
+
+  - id: rs-rouche
+    etiquette: Théorème de Rouché
+    nature: théorème
+    titre: Théorème de Rouché
+    enonce: |
+      (i) Soit $U$ un ouvert contenant le disque fermé $\overline D(c, r)$, et $f$, $g$ holomorphes sur $U$ telles que, pour $|z - c| = r$,
+      $$|f(z) - g(z)| < |f(z)|.$$
+      Alors $f$ et $g$ ont chacune un nombre fini de zéros dans $D(c, r)$, et le même nombre, comptés avec leurs ordres.
+
+      (ii) *Exemple.* Le polynôme $P(z) = z^5 - 5z + 1$ a exactement une racine de module $< 1$, qui est réelle et comprise entre $0$ et $1$, et quatre racines de module compris entre $1$ et $2$, comptées avec leurs ordres.
+    preuve: |
+      (i) *Le cadre.* Le point (i) du nœud {{cx-formule-cauchy|Formule de Cauchy}} fournit $s > 0$ tel que $D = D(c, r + s) \subset U$. Sur le cercle, $f$ ne s'annule pas, puisque $|f| > |f - g| \geqslant 0$, et $g$ non plus, puisque $|g| \geqslant |f| - |f - g| > 0$.
+
+      *Le disque est connexe.* Pour $z \in D$, le segment $[c, z]$ est l'image de $[0, 1]$, connexe ({{tr-connexes|Connexes de ℝ}}), par l'application continue $t \mapsto c + t(z - c)$ ; il est connexe ({{t-connexe-prop|Stabilité de la connexité}}, (i)). Le disque est la réunion de ces segments, qui ont tous le point $c$ en commun : il est connexe (même nœud, (ii)).
+
+      *Un nombre fini de zéros.* La fonction $f$, qui ne s'annule pas sur le cercle, n'est pas identiquement nulle sur $D$, et ses zéros dans $D$ sont isolés ({{cx-zeros-isoles|Zéros isolés}}). Tout point $x$ du disque fermé $K = \overline D(c, r + \frac s2)$, compact ({{cx-suites|Suites et séries complexes}}, (iv)), a donc un disque ouvert centré en $x$, contenu dans $D$, qui contient au plus un zéro de $f$ : si $f(x) = 0$, par isolement, et sinon, par continuité.
+
+      Les disques ouverts contenus dans $D$ qui contiennent au plus un zéro de $f$ recouvrent ainsi $K$ ; un nombre fini d'entre eux suffit, et $f$ n'a qu'un nombre fini de zéros dans $K$. Il en va de même de $g$.
+
+      *Les deux intégrales.* Sur l'ouvert convexe $V = D(c, r + \frac s2)$, $f$ et $g$ sont holomorphes et n'ont qu'un nombre fini de zéros, dont aucun sur le cercle. Par le principe de l'argument ({{rs-argument|Principe de l'argument}}, (iii)), les nombres $N_f$ et $N_g$ de zéros de $f$ et de $g$ dans $D(c, r)$ sont
+      $$\begin{aligned} N_f &= \frac{1}{2i\pi}\int_{C(c, r)} \frac{f'}{f}, \\ N_g &= \frac{1}{2i\pi}\int_{C(c, r)} \frac{g'}{g}. \end{aligned}$$
+
+      *La comparaison.* Soit $W$ l'ouvert obtenu en retirant de $V$ les zéros de $f$ et de $g$ ; il contient le cercle. La fonction $h = g/f$ y est holomorphe et sans zéro, et
+      $$\frac{h'}{h} = \frac{g'}{g} - \frac{f'}{f}.$$
+
+      Sur le cercle, $|h - 1| = \frac{|g - f|}{|f|} < 1$ : le lacet $h \circ C(c, r)$ est contenu dans le disque $D(1, 1)$, ouvert convexe qui ne contient pas $0$. Son indice en $0$ est nul ({{rs-indice|Indice d'un lacet}}, (iv)), et (i) du nœud {{rs-argument|Principe de l'argument}} donne $N_g - N_f = \operatorname{Ind}_{h \circ C(c, r)}(0) = 0$.
+
+      (ii) Sur le cercle $|z| = 1$, comparons $P$ à $f(z) = -5z$ : $|P(z) - f(z)| = |z^5 + 1| \leqslant 2 < 5 = |f(z)|$. Le seul zéro de $f$ est $0$, simple ; $P$ a donc une seule racine dans $D(0, 1)$, et aucune sur le cercle, puisque $|P| \geqslant 5 - 2$ y est non nul. Comme $P(0) = 1 > 0$ et $P(1) = -3 < 0$, les valeurs intermédiaires ({{c-tvi|Valeurs intermédiaires}}) en placent une dans $]0, 1[$ : c'est elle.
+
+      Sur le cercle $|z| = 2$, comparons $P$ à $z^5$ : $|P(z) - z^5| = |1 - 5z| \leqslant 11 < 32 = |z^5|$. Le zéro $0$ de $z^5$ est d'ordre $5$, et $P$ a donc cinq racines dans $D(0, 2)$, comptées avec leurs ordres. Il en reste quatre dans la couronne $1 < |z| < 2$.
+
+      ```schema rs-rouche
+      Les cinq racines de $z^5 - 5z + 1$, calculées numériquement : une seule, en rouge, dans le disque unité, et quatre, en bleu, dans la couronne $1 < |z| < 2$ ; trois sont réelles, les deux autres conjuguées.
+      ```
+    remarques:
+      - |
+        L'image classique est celle d'une promenade : si une personne parcourt le lacet $f \circ \gamma$ autour d'un arbre placé en $0$, et que son chien, au bout d'une laisse plus courte que la distance de la personne à l'arbre, parcourt $g \circ \gamma$, le chien fait autour de l'arbre autant de tours que la personne. La démonstration le dit exactement : le quotient $g/f$ reste dans le disque $D(1, 1)$ et ne tourne pas autour de $0$.
+
+        ```schema rs-rouche-2
+        Les lacets $h \circ \gamma$ de la démonstration pour l'exemple (ii) : $h(z) = \frac{P(z)}{-5z}$ sur le cercle $|z| = 1$, en rouge, et $h(z) = \frac{P(z)}{z^5}$ sur le cercle $|z| = 2$, en bleu. Ils restent dans les disques de centre $1$ et de rayons $\frac25$ et $\frac{11}{32}$, eux-mêmes contenus dans le disque pointillé $D(1, 1)$, qui ne contient pas $0$.
+        ```
+      - |
+        Numériquement, les racines de $P$ valent environ $0{,}2001$, $1{,}4405$, $-1{,}5417$ et $-0{,}0495 \pm 1{,}4994\,i$. Les deux racines réelles de la couronne se voyaient déjà par les valeurs intermédiaires, puisque $P(1) = -3$, $P(2) = 23$, $P(-2) = -21$ et $P(-1) = 5$ ; le théorème de Rouché dit en plus qu'il n'y en a pas d'autres que ces quatre-là entre les deux cercles, sans les calculer.
+      - |
+        Le théorème est d'Eugène Rouché, qui l'a publié en 1862 dans le *Journal de l'École polytechnique*.
+      - |
+        Le théorème redonne d'Alembert-Gauss ({{cx-liouville|Liouville}}), et le précise : pour $P = \sum_{k \leqslant d} a_kX^k$ avec $a_d \neq 0$ et $r$ assez grand, $|P(z) - a_dz^d| < |a_dz^d|$ sur le cercle $|z| = r$, de sorte que $P$ a exactement $d$ racines dans le disque $D(0, r)$, comptées avec leurs ordres.
+
+  - id: rs-trigo
+    etiquette: Intégrales trigonométriques
+    nature: proposition
+    titre: Intégrales trigonométriques par les résidus
+    enonce: |
+      Pour tout réel $a > 1$,
+      $$\int_0^{2\pi} \frac{d\theta}{a + \cos\theta} = \frac{2\pi}{\sqrt{a^2 - 1}}.$$
+      En particulier, $\int_0^{2\pi} \frac{d\theta}{2 + \cos\theta} = \frac{2\pi}{\sqrt 3} \approx 3{,}6276$.
+    preuve: |
+      *Passage au cercle.* Pour $\theta$ réel et $z = \exp(i\theta)$, on a $\bar z = \exp(-i\theta) = \frac1z$ ({{cx-exponentielle|Exponentielle}}, (ii) et (iii)), donc $\cos\theta = \operatorname{Re} z = \frac12\big(z + \frac1z\big)$. Soit
+      $$F(z) = \frac{2}{i(z^2 + 2az + 1)}.$$
+      Par définition, l'intégrale de $F$ sur le cercle unité $C(0, 1)$ est $\int_0^{2\pi} F(\exp(i\theta))\,i\exp(i\theta)\,d\theta$, et, pour $\omega = \exp(i\theta)$, en divisant le numérateur et le dénominateur par $\omega$,
+      $$F(\omega)\,i\omega = \frac{2}{\omega + 2a + \omega^{-1}}.$$
+      On obtient l'intégrale cherchée, puisque $\omega + \omega^{-1} = 2\cos\theta$ et que $a + \cos\theta \geqslant a - 1 > 0$.
+
+      *Les pôles.* On a $z^2 + 2az + 1 = (z - z_+)(z - z_-)$ avec $z_\pm = -a \pm \sqrt{a^2 - 1}$, réels. Comme $z_- < -a < -1$ et $z_+z_- = 1$, on a $z_+ = \frac1{z_-} \in \,]{-1}, 0[$. Au pôle simple $z_+$, la formule (iii) du nœud {{rs-residu|Calcul des résidus}}, avec $g = \frac2i$ et $h = z^2 + 2az + 1$, de dérivée $2z_+ + 2a = 2\sqrt{a^2 - 1}$ en $z_+$, donne
+      $$\operatorname{Res}(F, z_+) = \frac{1}{i\sqrt{a^2 - 1}}.$$
+
+      *Le théorème.* $F$ est holomorphe sur l'ouvert convexe $\mathbb C$ privé de $z_+$ et $z_-$, et l'indice du cercle unité vaut $1$ en $z_+$ et $0$ en $z_-$ ({{rs-indice|Indice d'un lacet}}, (v)). Le théorème des résidus ({{rs-theoreme|Théorème des résidus}}) donne
+      $$\int_{C(0, 1)} F = 2i\pi\cdot\frac{1}{i\sqrt{a^2 - 1}} = \frac{2\pi}{\sqrt{a^2 - 1}}.$$
+    remarques:
+      - |
+        Le résultat dit que la moyenne de $\frac1{a + \cos\theta}$ sur une période est $\frac1{\sqrt{a^2 - 1}}$ : pour $a = 2$, $\frac1{\sqrt 3} \approx 0{,}577$, entre les valeurs extrêmes $\frac13$ et $1$. Quand $a$ tend vers $1$, la moyenne explose, à cause des $\theta$ proches de $\pi$ où $a + \cos\theta$ devient petit. La valeur a été contrôlée par un calcul formel et par une intégration numérique pour $a = \frac32$, $2$ et $3$.
+      - |
+        La méthode s'applique à toute intégrale $\int_0^{2\pi} R(\cos\theta, \sin\theta)\,d\theta$, où $R$ est une fraction rationnelle sans pôle sur le cercle : on remplace $\cos\theta$ par $\frac12(z + \frac1z)$, $\sin\theta$ par $\frac1{2i}(z - \frac1z)$ et $d\theta$ par $\frac{dz}{iz}$, puis on somme les résidus dans le disque unité. L'erreur la plus répandue est d'oublier ce facteur $\frac1{iz}$, qui vient de $\gamma'(\theta) = i\exp(i\theta)$.
+
+  - id: rs-demi-cercle
+    etiquette: Intégrales sur ℝ
+    nature: proposition
+    titre: Intégrales sur la droite réelle par le demi-cercle
+    texte: |
+      Pour $R > 1$, le **demi-cercle** $\gamma_R$ est le lacet défini sur $[-R, R + \pi]$ par $\gamma_R(t) = t$ pour $t \in [-R, R]$, puis $\gamma_R(t) = R\exp\big(i(t - R)\big)$ pour $t \in [R, R + \pi]$. Il parcourt le segment $[-R, R]$, puis l'arc supérieur du cercle de rayon $R$, de $R$ à $R\exp(i\pi) = -R$.
+
+      Pour $\varphi$ continue sur $[0, \pi]$, on a $\int_R^{R+\pi} \varphi(t - R)\,dt = \int_0^\pi \varphi(s)\,ds$. En effet, si $\Phi(s) = \int_0^s \varphi$, la fonction $t \mapsto \Phi(t - R)$ a pour dérivée $\varphi(t - R)$, par le théorème fondamental ({{ar-tfa|Théorème fondamental de l'analyse}}) et la dérivée d'une composée ({{de-composee|Dérivée d'une composée}}) appliqués aux parties réelle et imaginaire ; on conclut par (iv) du nœud {{cx-convergence-uniforme|Convergence uniforme}}.
+
+      Notons donc $I_R(f)$ l'intégrale de $f$ sur l'arc,
+      $$I_R(f) = \int_0^\pi f(R\exp(is))\,iR\exp(is)\,ds,$$
+      de sorte que $\int_{\gamma_R} f = \int_{-R}^R f(x)\,dx + I_R(f)$.
+    enonce: |
+      (i) Si $\operatorname{Im} w > 0$ et $|w| < R$, alors $\operatorname{Ind}_{\gamma_R}(w) = 1$ ; si $\operatorname{Im} w < 0$, alors $\operatorname{Ind}_{\gamma_R}(w) = 0$.
+
+      (ii) $\displaystyle\lim_{R \to +\infty} \int_{-R}^R \frac{dx}{(1 + x^2)^2} = \frac\pi2$.
+
+      (iii) $\displaystyle\lim_{R \to +\infty} \int_{-R}^R \frac{\cos x}{1 + x^2}\,dx = \pi\exp(-1) \approx 1{,}1557$.
+    preuve: |
+      (i) *Points du demi-plan inférieur.* L'image de $\gamma_R$ est contenue dans $\{\operatorname{Im} z \geqslant 0\}$, puisque $\sin \geqslant 0$ sur $[0, \pi]$ : c'est vrai sur $[0, \frac\pi2]$ ({{cx-pi|Le nombre π}}), et $\sin(\pi - s) = \sin s$, puisque $\exp(i(\pi - s)) = -\exp(-is)$. Si $\operatorname{Im} w < 0$, le demi-plan ouvert $\{\operatorname{Im} z > \operatorname{Im} w\}$ est convexe, contient l'image et ne contient pas $w$ : l'indice est nul ({{rs-indice|Indice d'un lacet}}, (iv)).
+
+      *Points du demi-plan supérieur.* Soit $\operatorname{Im} w > 0$, $|w| < R$, et $f(z) = \frac{1}{z - w}$. La relation de Chasles coupe l'intégrale sur le cercle $C(0, R)$ en $I_R(f)$ et l'intégrale $I'_R(f)$ sur l'arc inférieur, $s \mapsto R\exp(is)$ pour $s \in [\pi, 2\pi]$ :
+      $$2i\pi\operatorname{Ind}_{C(0, R)}(w) = I_R(f) + I'_R(f).$$
+
+      L'arc inférieur, sur lequel $\sin \leqslant 0$ par $\sin(s + \pi) = -\sin s$, et le segment $[-R, R]$ sont deux chemins de $-R$ à $R$ contenus dans le demi-plan $H = \{\operatorname{Im} z < \operatorname{Im} w\}$, ouvert, convexe, qui ne contient pas $w$. Sur $H$, $f$ a une primitive holomorphe $F$ ({{cx-cauchy-convexe|Cauchy, ouverts convexes}}), et les deux intégrales, $I'_R(f)$ et $\int_{-R}^R f$, valent $F(R) - F(-R)$ ({{cx-integrale-chemin|Intégrale curviligne}}, (ii)).
+
+      Donc $2i\pi\operatorname{Ind}_{\gamma_R}(w) = \int_{-R}^R f + I_R(f) = 2i\pi\operatorname{Ind}_{C(0, R)}(w)$, qui vaut $2i\pi$ ({{rs-indice|Indice d'un lacet}}, (v)).
+
+      ```schema rs-demi-cercle
+      Le demi-cercle $\gamma_R$ pour $R = 2$, en rouge, entoure le pôle $i$ et laisse de côté le pôle $-i$, en gris. L'arc inférieur, en bleu pointillé, et le segment $[-R, R]$ sont dans le demi-plan $\operatorname{Im} z < 1$, sous la droite pointillée, où $\frac1{z - i}$ a une primitive : ils donnent la même intégrale, et l'indice de $\gamma_R$ en $i$ est celui du cercle entier.
+      ```
+
+      (ii) La fonction $f(z) = \frac{1}{(1 + z^2)^2}$ est holomorphe sur $\mathbb C$ privé de $i$ et $-i$. Près de $i$, $f(z) = \frac{g(z)}{(z - i)^2}$ avec $g(z) = (z + i)^{-2}$, holomorphe près de $i$ : la formule (ii) du nœud {{rs-residu|Calcul des résidus}}, avec $m = 2$, donne
+      $$\operatorname{Res}(f, i) = g'(i) = \frac{-2}{(2i)^3} = -\frac i4.$$
+
+      Pour $R > 1$, le théorème des résidus ({{rs-theoreme|Théorème des résidus}}) et (i) donnent
+      $$\begin{aligned} &\int_{-R}^R \frac{dx}{(1 + x^2)^2} + I_R(f) \\ &\quad = 2i\pi\cdot\Big(-\frac i4\Big) = \frac\pi2. \end{aligned}$$
+
+      Pour $|z| = R$, $|1 + z^2| \geqslant |z|^2 - 1 = R^2 - 1$, donc $|f(z)| \leqslant (R^2 - 1)^{-2}$ ; l'arc a pour longueur $\pi R$, et ({{cx-integrale-chemin|Intégrale curviligne}}, (i))
+      $$|I_R(f)| \leqslant \frac{\pi R}{(R^2 - 1)^2} \xrightarrow[R \to +\infty]{} 0.$$
+
+      (iii) Soit $f(z) = \frac{\exp(iz)}{1 + z^2}$, holomorphe sur $\mathbb C$ privé de $\pm i$, avec $\operatorname{Res}(f, i) = \frac{\exp(-1)}{2i}$ ({{rs-residu|Calcul des résidus}}, (iii)). Comme en (ii),
+      $$\int_{-R}^R \frac{\exp(ix)}{1 + x^2}\,dx + I_R(f) = \pi\exp(-1).$$
+
+      Pour $z = x + iy$ avec $y \geqslant 0$, on a $|\exp(iz)| = \exp(-y)\,|\exp(ix)| = \exp(-y) \leqslant 1$ ({{cx-exponentielle|Exponentielle}}, (ii), (iii), (iv)), d'où
+      $$|I_R(f)| \leqslant \frac{\pi R}{R^2 - 1} \xrightarrow[R \to +\infty]{} 0.$$
+
+      La partie réelle de $\int_{-R}^R \frac{\exp(ix)}{1 + x^2}\,dx$ est $\int_{-R}^R \frac{\cos x}{1 + x^2}\,dx$, par définition de l'intégrale d'une fonction complexe, et elle diffère de $\pi\exp(-1)$ d'au plus $|I_R(f)|$.
+    remarques:
+      - |
+        La même méthode, appliquée à $\frac1{1 + z^2}$, de résidu $\frac1{2i}$ en $i$, donne $\int_{-R}^R \frac{dx}{1 + x^2} \to \pi$. Comparé à ce nombre, le résultat (ii) dit qu'élever l'intégrande au carré, ce qui le diminue partout sauf en $0$, divise l'intégrale par deux ; le résultat (iii), $\pi\exp(-1) \approx 1{,}156 < \pi$, mesure les compensations dues à l'oscillation du cosinus. Les trois valeurs ont été contrôlées par un calcul formel.
+      - |
+        Plus généralement, $\int_{\mathbb R} \frac{\cos(\xi x)}{1 + x^2}\,dx = \pi\exp(-|\xi|)$ : c'est la transformée de {{fo-transformee|Fourier}} de $\frac{1}{1 + x^2}$, que le même contour calcule pour $\xi > 0$ avec $\exp(i\xi z)$.
+      - |
+        L'erreur la plus répandue est d'intégrer directement $\frac{\cos z}{1 + z^2}$, en posant $\cos z = \frac12\big(\exp(iz) + \exp(-iz)\big)$. Le terme $\exp(-iz)$ vaut $\exp(R)$ au point $iR$ de l'arc, et l'intégrale sur l'arc ne tend plus vers $0$. On choisit $\exp(iz)$, borné sur le demi-plan supérieur, puis l'on prend la partie réelle.
+      - |
+        Les limites (ii) et (iii) sont prises sur des intervalles symétriques. Les intégrandes sont majorés en module par $\frac1{1 + x^2}$, dont l'intégrale de $0$ à $X$ croît avec $X$ et reste bornée par $\pi$ ; les intégrales de $0$ à $X$ et de $-X$ à $0$ convergent donc séparément quand $X \to +\infty$, par le critère de Cauchy, et les deux nombres sont aussi les intégrales généralisées sur $\mathbb R$. Pour la fonction $x \mapsto x$, au contraire, la limite symétrique existe, nulle, sans que l'intégrale généralisée converge.
+
+aretes:
+  - [rs-indice, rs-couronne]
+  - [rs-couronne, rs-laurent]
+  - [rs-laurent, rs-singularites]
+  - [rs-singularites, rs-poles]
+  - [rs-poles, rs-casorati]
+  - [rs-poles, rs-residu]
+  - [rs-residu, rs-theoreme]
+  - [rs-theoreme, rs-argument]
+  - [rs-argument, rs-rouche]
+  - [rs-theoreme, rs-trigo]
+  - [rs-theoreme, rs-demi-cercle]

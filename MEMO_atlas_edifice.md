@@ -592,3 +592,20 @@ ac-reduction). Douze fiches rd-* : polynômes d'endomorphismes et polynôme mini
 trigonalisation, nilpotents, sous-espaces caractéristiques, Dunford, Jordan nilpotent, forme de Jordan et critère
 de similitude par les rangs. Aucun choix. Admise en remarque : la forme de Jordan réelle. Relu par un agent
 indépendant (cinq trous et dix retouches traités). 560 nœuds, 316 termes, 47 graphes ; ac-reduction 1 croisement.
+
+## 42. Théorème des résidus (29 octobre 2026)
+
+Sous-graphe `anc-residus` (contenu/anc-residus.yaml), ouvert par le nœud chapitre `anc-residus` de anc (arête
+cx-zeros-isoles → anc-residus ; entrées : formule de Cauchy, zéros isolés). Douze fiches rs-* : indice d'un lacet
+(entier par exp(−H)(γ − w), constant sur les connexes du complémentaire, nul hors d'un ouvert convexe), Cauchy sur
+une couronne (découpage en N secteurs, chacun dans un convexe V_k = disque ∩ demi-plan, télescopage des rayons, sans
+homotopie : l'arbre n'avait Cauchy que pour les convexes), Laurent, singularités (prolongement de Riemann), pôles,
+Casorati-Weierstrass, calcul des résidus, théorème des résidus (convexe privé de p points), principe de l'argument,
+Rouché (sans paramètre : g/f dans D(1, 1)), intégrales trigonométriques, demi-cercle (∫ dx/(1+x²)² = π/2,
+∫ cos x/(1+x²) = π/e). Aucun choix. `cx-formule-cauchy` a un point (i) nouveau (D(c, r + s) ⊂ U, sans fonction de
+choix), renvois mis à jour en (ii) ; « point d'accumulation » défini dans `cx-zeros-isoles`. Admis en remarque :
+version homologique (Dixon 1971), Jordan pour l'indice d'un lacet simple, grand théorème de Picard. Relu par un
+agent indépendant (quatre fautes de définition et de rédaction, dix retouches). 573 nœuds, 323 termes, 48 graphes.
+Restent dans la liste du §41 : changement de variables et Stokes, formes quadratiques, modules sur un anneau
+principal, Radon-Nikodym, Riesz-Markov, Lᵖ, Ascoli, Stone-Weierstrass, extrema liés, représentations, réciprocité
+quadratique, Wilson, Jordan-Hölder, van Kampen, Jordan, Liapounov.

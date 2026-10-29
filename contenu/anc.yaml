@@ -3,6 +3,9 @@
 # entières, ce qui est la voie naturelle sur ℂ. On en tire la trigonométrie, l'intégrale curviligne,
 # le théorème de Cauchy pour les ouverts convexes, la formule de Cauchy, l'analyticité des fonctions
 # holomorphes, le théorème de Liouville, qui démontre enfin d'Alembert-Gauss, et les zéros isolés.
+# anc-residus (sous-graphe, 29 oct. 2026) traite l'indice d'un lacet, les séries de Laurent, les
+# singularités isolées, le théorème des résidus pour un ouvert convexe privé d'un nombre fini de points,
+# le principe de l'argument, le théorème de Rouché et des calculs d'intégrales réelles.
 
 graphe: anc
 titre: Analyse complexe
@@ -265,6 +268,8 @@ noeuds:
     remarques:
       - |
         Le point (iii) montre que $1/z$ n'a pas de primitive holomorphe sur $\mathbb C \setminus \{0\}$ : sinon son intégrale sur le cercle serait nulle. C'est la version analytique de l'absence d'« angle continu » de la {{ta-consequences|topologie algébrique}} : une primitive de $1/z$ serait un logarithme, dont la partie imaginaire serait un argument continu.
+      - |
+        Le nombre $\frac{1}{2i\pi}\int_\gamma \frac{dz}{z - c}$ a un sens pour tout chemin fermé qui évite $c$ : c'est l'indice du chemin, entier qui compte ses tours autour de $c$, et (iii) dit qu'il vaut $1$ pour le cercle ({{rs-indice|Indice d'un lacet}}).
 
   - id: cx-goursat
     etiquette: Théorème de Goursat
@@ -324,18 +329,26 @@ noeuds:
     remarques:
       - |
         La convexité sert à tracer les segments. Elle ne peut pas être supprimée : sur la couronne $\{1 < |z| < 3\}$, la fonction $1/z$ est holomorphe, mais son intégrale sur le cercle de rayon $2$ vaut $2i\pi$. Ce sont les « trous » de l'ouvert, mesurés par le {{ta-groupe-fondamental|groupe fondamental}}, qui font obstacle.
+      - |
+        Le théorème s'étend pourtant à la couronne sous une forme affaiblie : l'intégrale sur un cercle centré n'y dépend plus du rayon ({{rs-couronne|Cauchy sur une couronne}}). C'est le point de départ des séries de Laurent et du théorème des résidus, qui mesure exactement la contribution de chaque « trou » ponctuel ({{rs-theoreme|Théorème des résidus}}).
 
   - id: cx-formule-cauchy
     etiquette: Formule de Cauchy
     nature: théorème
     titre: Formule intégrale de Cauchy
     enonce: |
-      Soit $f$ holomorphe sur un ouvert $U$ contenant le disque fermé $\overline D(c, r)$. Pour tout $z$ tel que $|z - c| < r$,
+      Soit $f$ holomorphe sur un ouvert $U$ contenant le disque fermé $\overline D(c, r)$.
+
+      (i) Il existe $s > 0$ tel que le disque ouvert $D(c, r + s)$ soit contenu dans $U$.
+
+      (ii) Pour tout $z$ tel que $|z - c| < r$,
       $$f(z) = \frac{1}{2i\pi}\int_{C(c, r)} \frac{f(w)}{w - z}\,dw.$$
     preuve: |
-      *Un disque un peu plus grand.* Le disque fermé est compact ({{cx-suites|Suites et séries complexes}}) et contenu dans l'ouvert $U$. Chaque point $u$ du disque a un disque ouvert $D(u, 2s_u) \subset U$ ; un nombre fini de disques $D(u_j, s_{u_j})$ recouvrent $\overline D(c, r)$ ; soit $s = \min_j s_{u_j}$.
+      (i) Le disque fermé est compact ({{cx-suites|Suites et séries complexes}}) et contenu dans l'ouvert $U$. Considérons tous les disques ouverts $D(u, t)$ tels que $u \in \overline D(c, r)$, $t > 0$ et $D(u, 2t) \subset U$. Ils recouvrent le disque fermé, puisque chacun de ses points $u$ est le centre d'un disque ouvert contenu dans $U$. On en extrait un nombre fini, $D(u_1, t_1), \dots, D(u_n, t_n)$, qui le recouvrent encore, et l'on pose $s = \min_j t_j$ ; aucun choix n'intervient, puisque la famille est définie sans désigner un rayon pour chaque point.
 
-      Si $|z - c| < r + s$, il existe un point $u$ du disque fermé avec $|z - u| < s$ (le point $z$ lui-même, ou $c + r\frac{z - c}{|z - c|}$) ; $u$ appartient à un $D(u_j, s_{u_j})$, donc $|z - u_j| < 2s_{u_j}$ et $z \in U$. Le disque $D(c, r + s)$, contenu dans $U$, est convexe.
+      Si $|z - c| < r + s$, il existe un point $u$ du disque fermé avec $|z - u| < s$ : le point $z$ lui-même, ou $c + r\frac{z - c}{|z - c|}$. Ce point $u$ appartient à un $D(u_j, t_j)$, donc $|z - u_j| < t_j + s \leqslant 2t_j$, et $z \in U$.
+
+      (ii) Soit $s$ comme en (i) ; le disque $D(c, r + s)$, contenu dans $U$, est convexe.
 
       *Le noyau.* Soit $g(w) = \frac{f(w) - f(z)}{w - z}$ pour $w \neq z$ et $g(z) = f'(z)$ : elle est continue sur $D(c, r + s)$ et holomorphe hors de $z$. Par le théorème de Cauchy convexe ({{cx-cauchy-convexe|Cauchy, ouverts convexes}}), $\int_{C(c,r)} g = 0$, d'où
       $$\int_{C(c,r)} \frac{f(w)}{w - z}\,dw = f(z)\int_{C(c,r)} \frac{dw}{w - z}.$$
@@ -365,7 +378,7 @@ noeuds:
       $$c_n = \frac{1}{2i\pi}\int_{C(c,r)} \frac{f(w)}{(w - c)^{n+1}}\,dw,$$
       et $|c_n| \leqslant M r^{-n}$, où $M = \sup_{C(c,r)} |f|$ (**inégalités de Cauchy**). En particulier, $f'$ est holomorphe, et $f$ est indéfiniment dérivable.
     preuve: |
-      Dans la formule de Cauchy ({{cx-formule-cauchy|Formule de Cauchy}}), on remplace $\frac{1}{w - z}$ par la série géométrique
+      Dans la formule de Cauchy ({{cx-formule-cauchy|Formule de Cauchy}}, (ii)), on remplace $\frac{1}{w - z}$ par la série géométrique
       $$\sum_n \frac{(z - c)^n}{(w - c)^{n+1}},$$
       qui converge uniformément sur le cercle ; multipliée par $f(w)$, bornée sur le cercle, elle converge encore uniformément, et l'on intègre terme à terme ({{cx-convergence-uniforme|Convergence uniforme}}).
 
@@ -406,7 +419,7 @@ noeuds:
     nature: théorème
     titre: Principe des zéros isolés
     enonce: |
-      Soit $U$ un ouvert [[connexe]] et $f$ holomorphe sur $U$, non identiquement nulle. Les zéros de $f$ sont isolés : chaque zéro $a$ a un voisinage où $f$ ne s'annule qu'en $a$. Par suite, deux fonctions holomorphes sur $U$ qui coïncident sur une partie ayant un point d'accumulation dans $U$ sont égales.
+      Soit $U$ un ouvert [[connexe]] et $f$ holomorphe sur $U$, non identiquement nulle. Les zéros de $f$ sont isolés : chaque zéro $a$ a un voisinage où $f$ ne s'annule qu'en $a$. Par suite, deux fonctions holomorphes sur $U$ qui coïncident sur une partie ayant un [[point-accumulation|point d'accumulation]] dans $U$ sont égales : un point $a \in U$ tel que tout disque $D(a, \rho)$ contienne un point de la partie distinct de $a$.
     preuve: |
       Soit $A$ l'ensemble des points de $U$ où toutes les dérivées $f^{(n)}$, $n \geqslant 0$, s'annulent. Il est fermé dans $U$, comme intersection des fermés $(f^{(n)})^{-1}(\{0\})$, les dérivées étant continues ({{cx-analytique|Analyticité}}).
 
@@ -424,6 +437,18 @@ noeuds:
     remarques:
       - |
         Une fonction holomorphe sur un ouvert connexe est donc déterminée par ses valeurs sur n'importe quel petit segment. C'est ce qui justifie que $\exp$, $\cos$, $\sin$ soient les seuls prolongements holomorphes possibles des fonctions réelles du même nom. En analyse réelle, au contraire, une fonction indéfiniment dérivable peut être nulle sur $]{-\infty}, 0]$ sans l'être partout.
+      - |
+        L'entier $k$ de la démonstration est l'ordre du zéro $a$. Le chapitre {{anc-residus|Théorème des résidus}} en fait un objet d'étude ({{rs-singularites|Singularités isolées}}) : le principe de l'argument compte les zéros d'une fonction, chacun avec son ordre, par une intégrale, et le théorème de Rouché en déduit leur nombre dans un disque sans les calculer.
+
+  - id: anc-residus
+    etiquette: Résidus
+    nature: chapitre
+    titre: Théorème des résidus
+    sous: anc-residus
+    texte: |
+      Une fonction holomorphe sur une couronne $\{r_1 < |z - c| < r_2\}$ se développe en série de Laurent, somme d'une série entière en $z - c$ et d'une série entière en $\frac{1}{z - c}$. Près d'un point où elle n'est pas définie, ce développement classe la singularité : fausse, quand la fonction se prolonge, ce qui arrive dès qu'elle est bornée (Riemann) ; pôle, quand son module tend vers l'infini ; essentielle sinon, et l'image de tout petit disque épointé est alors dense (Casorati-Weierstrass).
+
+      Le coefficient de $\frac{1}{z - c}$ est le résidu. Le théorème des résidus calcule l'intégrale d'une fonction holomorphe sur un ouvert convexe privé d'un nombre fini de points, le long d'un lacet qui les évite, comme $2i\pi$ fois la somme des résidus pondérés par l'indice du lacet en chaque point, entier qui compte ses tours. Il en découle le principe de l'argument, le théorème de Rouché, qui localise les racines d'un polynôme, et le calcul d'intégrales réelles. La version homologique, pour un ouvert quelconque, est énoncée sans démonstration. Aucune forme du choix n'intervient.
 
 aretes:
   - [cx-suites, cx-convergence-uniforme]
@@ -440,3 +465,4 @@ aretes:
   - [cx-formule-cauchy, cx-analytique]
   - [cx-analytique, cx-liouville]
   - [cx-analytique, cx-zeros-isoles]
+  - [cx-zeros-isoles, anc-residus]

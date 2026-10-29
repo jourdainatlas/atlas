@@ -736,6 +736,336 @@ def cx_zeros_isoles():
 
 
 # ---------------------------------------------------------------------------------------------------
+# anc-residus (chapitre « Théorème des résidus »)
+# ---------------------------------------------------------------------------------------------------
+
+def _indice(g, dg, t, w):
+    """Indice numérique (1/2iπ) ∫ γ′/(γ − w) par la méthode des trapèzes (γ échantillonné sur t)."""
+    return np.trapezoid(dg / (g - w), t) / (2j * np.pi)
+
+
+def _enroulement(w):
+    """Nombre de tours autour de 0 d'une courbe fermée échantillonnée (argument déroulé)."""
+    a = np.unwrap(np.angle(w))
+    return (a[-1] - a[0]) / (2 * np.pi)
+
+
+def _pointes_courbe(S, pts, indices, c='t'):
+    """Pointes de flèche posées sur une courbe échantillonnée (coordonnées image), aux indices donnés."""
+    for i in indices:
+        S.pointe(pts[i + 1] + 0.0, pts[i + 2] - pts[i], c, taille=8, largeur=3.5)
+
+
+def _anneau(S, O, r_int, r_ext, c):
+    """Couronne remplie (règle pair-impair), coordonnées image."""
+    def cerc(r):
+        x0, x1, y = f'{O[0] + r:.2f}', f'{O[0] - r:.2f}', f'{O[1]:.2f}'
+        return f'M {x0} {y} A {r:.2f} {r:.2f} 0 1 0 {x1} {y} A {r:.2f} {r:.2f} 0 1 0 {x0} {y} Z '
+    S.brut(f'<path class="f-{c}" fill-rule="evenodd" d="{cerc(r_ext)}{cerc(r_int)}"/>')
+
+
+@schema('rs-indice')
+def rs_indice():
+    t = np.linspace(0, 2 * np.pi, 6001)
+    g = (0.5 + np.cos(t)) * np.exp(1j * t)
+    dg = (-np.sin(t) + 1j * (0.5 + np.cos(t))) * np.exp(1j * t)      # dérivée exacte
+    points = [(0.25, 'r', 2), (1.0, 'b', 1), (-0.45, 'g', 0)]
+    for w, _, n in points:
+        assert abs(_indice(g, dg, t, w) - n) < 1e-6
+        assert np.min(np.abs(g - w)) > 0.15                        # le point est loin de l'image
+    k = 165
+    O = np.array([125.0, 165.0])
+    P = lambda z: O + k * np.array([np.real(z), -np.imag(z)])
+    pts = np.array([P(z) for z in g])
+    assert pts[:, 0].min() > 20 and pts[:, 0].max() < 380 and pts[:, 1].min() > 10 and pts[:, 1].max() < 320
+    S = Schema(500, 330, 'Le limaçon (1/2 + cos t) exp(it) et ses indices 2, 1, 0')
+    S.fleche(P(-0.7), P(1.68), 'g')
+    S.fleche(P(-1.05j), P(1.08j), 'g')
+    S.poly(pts, 't', l=1.8)
+    n = len(t) - 1
+    _pointes_courbe(S, pts, [int(n * s) for s in (0.12, 0.30, 0.5, 0.70, 0.88)], 't')
+    for w, c, ind in points:
+        S.point(P(w), c, r=4.2)
+    S.texte(P(0.25) + [0, 18], 'w_2', 'r', taille=15)
+    S.texte(P(1.0) + [0, -16], 'w_1', 'b', taille=15)
+    S.texte(P(-0.45) + [0, -16], 'w_0', 'g', taille=15)
+    for (x, y), s, c in [((392, 40), '`Ind`(w_2) = 2', 'r'), ((392, 72), '`Ind`(w_1) = 1', 'b'),
+                         ((392, 104), '`Ind`(w_0) = 0', 'g')]:
+        S.texte((x, y), s, c, ancre='start', taille=15)
+    S.texte(P(-0.12 + 0.56j), 'γ^{*}', ancre='end')
+    return S
+
+
+@schema('rs-couronne')
+def rs_couronne():
+    r1, rho1, rho2, r2, N = 1.0, 1.2, 2.2, 2.6, 8
+    assert rho1 * np.cos(np.pi / N) > r1
+    th0, th1 = 0.0, 2 * np.pi / N
+    phi = (th0 + th1) / 2
+    re_k = lambda w: np.real(w * np.exp(-1j * phi))
+    # le secteur fermé (bord compris) est dans V_k, et V_k est dans la couronne
+    rr, tt = np.meshgrid(np.linspace(rho1, rho2, 60), np.linspace(th0, th1, 60))
+    sect = rr * np.exp(1j * tt)
+    assert np.all(np.abs(sect) < r2) and np.all(re_k(sect) > r1)
+    xx, yy = np.meshgrid(np.linspace(-3, 3, 301), np.linspace(-3, 3, 301))
+    ww = xx + 1j * yy
+    dansV = (np.abs(ww) < r2) & (re_k(ww) > r1)
+    assert np.all(np.abs(ww[dansV]) > r1)
+    k = 58
+    O = np.array([175.0, 172.0])
+    P = lambda z: O + k * np.array([np.real(z), -np.imag(z)])
+    S = Schema(440, 345, 'Couronne découpée en secteurs, chacun dans un ouvert convexe V_k')
+    _anneau(S, O, k * r1, k * r2, 'g')
+    S.cercle(O, k * r1, 'g')
+    S.cercle(O, k * r2, 'g')
+    # V_k : segment du disque de rayon r2 au-delà de la tangente au cercle r1 au point d'angle φ
+    al = np.arccos(r1 / r2)
+    corde = [np.exp(1j * phi) * (r1 - 1j * np.sqrt(r2 ** 2 - r1 ** 2))]
+    arcV = [r2 * np.exp(1j * s) for s in np.linspace(phi - al, phi + al, 80)]
+    poly = np.array([P(z) for z in corde + arcV])
+    S.poly(poly, 'b', ferme=True, rempli='b')
+    tg = np.exp(1j * phi) * r1
+    S.point(P(tg), 'b', r=3)
+    # rayons, cercles ρ1, ρ2
+    for j in range(N):
+        e = np.exp(2j * np.pi * j / N)
+        S.ligne(P(rho1 * e), P(rho2 * e), 'g')
+    S.cercle(O, k * rho1, 't')
+    S.cercle(O, k * rho2, 't')
+    # secteur k = 0 en rouge, bord orienté
+    arc_ext = np.array([P(rho2 * np.exp(1j * s)) for s in np.linspace(th0, th1, 40)])
+    arc_int = np.array([P(rho1 * np.exp(1j * s)) for s in np.linspace(th0, th1, 40)])
+    S.poly(arc_ext, 'r', l=2.4)
+    S.poly(arc_int, 'r', l=2.4)
+    S.ligne(P(rho1), P(rho2), 'r', l=2.4)
+    S.ligne(P(rho1 * np.exp(1j * th1)), P(rho2 * np.exp(1j * th1)), 'r', l=2.4)
+    S.point(O, 't')
+    S.texte(O + [8, 14], 'c', ancre='start')
+    S.texte(P(2.8 * np.exp(2.4j)), 'A', 'g')
+    S.texte(P(2.75 * np.exp(1j * 0.55)) + [6, -4], 'V_k', 'b', ancre='start')
+    S.texte(P(0.62 * np.exp(1j * 3.5)), 'r_1', 'g', taille=15)
+    S.ligne(O, P(r1 * np.exp(1j * 3.9)), 'g')
+    S.texte(P(2.4 * np.exp(1j * 2.75)), 'ρ_2', taille=15)
+    S.texte(P(rho1 * np.exp(1j * 4.3)) + [10, 14], 'ρ_1', ancre='start', taille=15)
+    S.texte((360, 315), 'N = 8', ancre='start', taille=15)
+    return S
+
+
+@schema('rs-laurent')
+def rs_laurent():
+    f_ = lambda z: 1 / ((z - 1) * (z - 2))
+    th = np.linspace(0, 2 * np.pi, 4001)[:-1]
+    def coef(n, rho):
+        w = rho * np.exp(1j * th)
+        return np.mean(f_(w) * w ** (-n))
+    # trois couronnes, trois développements
+    for n in range(-4, 5):
+        a_int = (1 - 2.0 ** (-n - 1)) if n >= 0 else 0.0
+        a_mil = -2.0 ** (-n - 1) if n >= 0 else -1.0
+        a_ext = 0.0 if n >= 0 else 2.0 ** (-n - 1) - 1
+        assert abs(coef(n, 0.6) - a_int) < 1e-9
+        assert abs(coef(n, 1.5) - a_mil) < 1e-9
+        assert abs(coef(n, 3.0) - a_ext) < 1e-9
+    k = 66
+    O = np.array([190.0, 165.0])
+    P = lambda z: O + k * np.array([np.real(z), -np.imag(z)])
+    S = Schema(500, 330, 'Les trois couronnes de 1/((z − 1)(z − 2)) centrées en 0')
+    _anneau(S, O, k * 1, k * 2, 'b')
+    S.fleche(P(-2.6), P(3.9), 'g')
+    S.fleche(P(-2.35j), P(2.4j), 'g')
+    S.cercle(O, k * 1, 'g', d=True)
+    S.cercle(O, k * 2, 'g', d=True)
+    S.cercle(O, k * 1.5, 't')
+    _cercle_oriente(S, O, k * 1.5, 't', t0=np.radians(130))
+    for z, s in [(1, '1'), (2, '2')]:
+        S.point(P(z), 'r', r=4.2)
+        S.texte(P(z) + [8, 15], s, 'r', ancre='start')
+    S.texte(O + [-8, 14], '0', ancre='end')
+    S.texte(P(-0.45 + 0.42j), '|z| < 1', taille=14)
+    S.ligne(P(1.75 * np.exp(1j * 2.4)), (64, 40), 'g')
+    S.texte((70, 28), '1 < |z| < 2', 'b', ancre='middle', taille=14)
+    S.texte((430, 52), '|z| > 2', taille=14)
+    S.texte(P(1.5 * np.exp(1j * 1.15)) + [10, -6], 'C(0, 3/2)', ancre='start', taille=14)
+    return S
+
+
+@schema('rs-casorati')
+def rs_casorati():
+    w = 1 + 1j
+    x0 = np.log(np.sqrt(2))
+    zeta = x0 + 1j * np.pi / 4
+    assert abs(np.exp(zeta) - w) < 1e-12
+    ks = [k for k in range(-60, 61)]
+    zk = {k: 1 / (zeta + 2j * k * np.pi) for k in ks}
+    ctr, ray = 1 / (2 * x0), 1 / (2 * x0)
+    for k, z in zk.items():
+        assert abs(np.exp(1 / z) - w) < 1e-9                       # exp(1/z_k) = w
+        assert abs(abs(z - ctr) - ray) < 1e-9                       # sur le cercle image de Re u = x0
+        assert (abs(z) < 0.1) == (abs(k) >= 2)                      # dans le disque bleu ⇔ |k| ≥ 2
+    k = 850
+    O = np.array([170.0, 175.0])
+    P = lambda z: O + k * np.array([np.real(z), -np.imag(z)])
+    S = Schema(500, 350, 'Points où exp(1/z) vaut 1 + i, accumulés en 0')
+    S.fleche(P(-0.17), P(0.34), 'g')
+    S.cercle(O, k * 0.1, 'b', rempli='b')
+    # arc du cercle porteur, dans la fenêtre
+    s = np.linspace(-1, 1, 400)
+    arcz = ctr + ray * np.exp(1j * (np.pi + 0.14 * s))
+    S.poly(np.array([P(z) for z in arcz]), 'g', d=True)
+    for kk, z in zk.items():
+        p = P(z)
+        if 0 < p[1] < 350 and abs(kk) >= 1:
+            S.point(p, 'r', r=3.6 if abs(kk) < 4 else (2.6 if abs(kk) < 10 else 1.6))
+    S.point(O, 't', r=4, creux=True)
+    S.texte(O + [-10, 16], '0', ancre='end')
+    for kk, dx, dy in [(1, 14, 2), (-1, 14, 2), (2, 14, 2), (-2, 14, 2)]:
+        S.texte(P(zk[kk]) + [dx, dy], f'z_{{−{-kk}}}' if kk < 0 else f'z_{kk}', 'r', ancre='start', taille=14)
+    S.texte(P(0.075 - 0.072j) + [8, 10], '|z| < 0,1', 'b', ancre='start', taille=14)
+    return S
+
+
+@schema('rs-argument')
+def rs_argument():
+    fz = lambda z: z ** 2 * (z - 0.5) / (z + 0.5)
+    t = np.linspace(0, 2 * np.pi, 4001)
+    g = np.exp(1j * t)
+    img = fz(g)
+    assert abs(_enroulement(img) - 2) < 1e-9
+    assert np.min(np.abs(img)) > 0.3
+    S = Schema(520, 290, 'Le cercle unité et son image par z²(z − 1/2)/(z + 1/2)')
+    k1 = 95
+    O1 = np.array([115.0, 145.0])
+    P1 = lambda z: O1 + k1 * np.array([np.real(z), -np.imag(z)])
+    k2 = 64
+    O2 = np.array([300.0, 145.0])
+    P2 = lambda z: O2 + k2 * np.array([np.real(z), -np.imag(z)])
+    imgp = np.array([P2(z) for z in img])
+    assert imgp[:, 0].min() > 240 and imgp[:, 0].max() < 515 and imgp[:, 1].min() > 30 and imgp[:, 1].max() < 260
+    # à gauche
+    S.fleche(P1(-1.15), P1(1.2), 'g')
+    S.fleche(P1(-1.2j), P1(1.25j), 'g')
+    S.cercle(O1, k1, 't')
+    S.point(P1(0), 'r', r=4.4)
+    S.texte(P1(0) + [-7, 15], '0', 'r', ancre='end', taille=14)
+    S.point(P1(0.5), 'r', r=4.4)
+    S.point(P1(-0.5), 'b', r=4.6, creux=True)
+    S.texte(P1(0.5) + [0, -15], '1/2', 'r', taille=14)
+    S.texte(P1(-0.5) + [0, -15], '−1/2', 'b', taille=14)
+    S.texte(P1(np.exp(2.4j)) + [-6, -10], 'γ', ancre='end')
+    # à droite
+    S.fleche(P2(-1.0), P2(3.25), 'g')
+    S.fleche(P2(-1.62j), P2(1.62j), 'g')
+    S.poly(imgp, 't', l=1.6)
+    S.point(P2(0), 'g', r=3.6)
+    S.texte(P2(0) + [-8, 14], '0', 'g', ancre='end', taille=14)
+    S.texte(P2(2.2 + 1.3j), 'f ∘ γ', ancre='start')
+    # points correspondants numérotés
+    n = len(t) - 1
+    for j, s in enumerate((0.06, 0.31, 0.56, 0.81), start=1):
+        i = int(n * s)
+        S.pointe(np.array(P1(g[i + 1])), np.array(P1(g[i + 2])) - np.array(P1(g[i])), 't', taille=8, largeur=3.5)
+        S.pointe(imgp[i + 1], imgp[i + 2] - imgp[i], 't', taille=8, largeur=3.5)
+        u = np.array([np.cos(t[i]), -np.sin(t[i])])
+        S.texte(np.array(P1(g[i])) + 15 * u, str(j), 'g', taille=13)
+        v = imgp[i] - O2
+        v = v / np.linalg.norm(v)
+        S.texte(imgp[i] + 13 * v, str(j), 'g', taille=13)
+    return S
+
+
+@schema('rs-rouche')
+def rs_rouche():
+    racines = np.roots([1, 0, 0, 0, -5, 1])
+    mod = np.abs(racines)
+    assert np.sum(mod < 1) == 1 and np.sum((mod > 1) & (mod < 2)) == 4
+    assert np.sum(np.abs(racines.imag) < 1e-12) == 3
+    th = np.linspace(0, 2 * np.pi, 20001)
+    e = np.exp(1j * th)
+    assert np.max(np.abs(e ** 5 + 1)) <= 2 + 1e-12 and np.max(np.abs(1 - 10 * e)) <= 11 + 1e-12
+    k = 72
+    O = np.array([200.0, 165.0])
+    P = lambda z: O + k * np.array([np.real(z), -np.imag(z)])
+    S = Schema(420, 330, 'Racines de z⁵ − 5z + 1 : une dans le disque unité, quatre dans la couronne')
+    _anneau(S, O, k * 1, k * 2, 'b')
+    S.fleche(P(-2.45), P(2.6), 'g')
+    S.fleche(P(-2.25j), P(2.3j), 'g')
+    S.cercle(O, k, 't')
+    S.cercle(O, 2 * k, 't')
+    for z in racines:
+        S.point(P(z), 'r' if abs(z) < 1 else 'b', r=4.6)
+    S.texte(P(1) + [6, 14], '1', ancre='start', taille=14)
+    S.texte(P(2) + [6, 14], '2', ancre='start', taille=14)
+    S.texte(P(2.0 * np.exp(0.75j)) + [10, -8], '|z| = 2', ancre='start', taille=14)
+    S.texte(P(np.exp(2.35j)) + [-4, -12], '|z| = 1', ancre='end', taille=14)
+    return S
+
+
+@schema('rs-rouche-2')
+def rs_rouche_2():
+    th = np.linspace(0, 2 * np.pi, 6001)
+    Pz = lambda z: z ** 5 - 5 * z + 1
+    z1, z2 = np.exp(1j * th), 2 * np.exp(1j * th)
+    h1, h2 = Pz(z1) / (-5 * z1), Pz(z2) / z2 ** 5
+    assert np.max(np.abs(h1 - 1)) <= 0.4 + 1e-12 and np.max(np.abs(h2 - 1)) <= 11 / 32 + 1e-12
+    assert abs(_enroulement(h1)) < 1e-9 and abs(_enroulement(h2)) < 1e-9
+    k = 150
+    O = np.array([95.0, 165.0])
+    P = lambda z: O + k * np.array([np.real(z), -np.imag(z)])
+    S = Schema(440, 330, 'Les quotients g/f restent dans le disque D(1, 1)')
+    S.fleche(P(-0.4), P(2.25), 'g')
+    S.fleche(P(-1.05j), P(1.05j), 'g')
+    S.cercle(P(1), k, 'g', d=True)
+    S.cercle(P(1), 0.4 * k, 'r', d=True)
+    S.cercle(P(1), 11 / 32 * k, 'b', d=True)
+    S.poly(np.array([P(z) for z in h1]), 'r', l=1.6)
+    S.poly(np.array([P(z) for z in h2]), 'b', l=1.6)
+    S.point(P(0), 't', r=4)
+    S.texte(P(0) + [-8, 15], '0', ancre='end', taille=14)
+    S.point(P(1), 't', r=3)
+    S.texte(P(1 + 1.02 * np.exp(0.8j)) + [6, -6], 'D(1, 1)', 'g', ancre='start', taille=14)
+    return S
+
+
+@schema('rs-demi-cercle')
+def rs_demi_cercle():
+    R = 2.0
+    s = np.linspace(-R, R, 2001)
+    u = np.linspace(0, np.pi, 3001)
+    seg, arc_h = s + 0j, R * np.exp(1j * u)
+    # indice de γ_R en i et en −i, par les deux morceaux
+    for w, n in [(1j, 1), (-1j, 0)]:
+        I = np.trapezoid(1 / (seg - w), s) + np.trapezoid(1j * arc_h / (arc_h - w), u)
+        assert abs(I / (2j * np.pi) - n) < 1e-6
+    arc_b = R * np.exp(1j * np.linspace(np.pi, 2 * np.pi, 400))
+    assert np.max(arc_b.imag) < 1 and np.max(seg.imag) < 1              # sous la droite Im z = 1
+    k = 85
+    O = np.array([250.0, 205.0])
+    P = lambda z: O + k * np.array([np.real(z), -np.imag(z)])
+    S = Schema(500, 400, 'Le demi-cercle γ_R pour R = 2, autour du pôle i')
+    S.fleche(P(-2.7), P(2.75), 'g')
+    S.fleche(P(-2.25j), P(2.3j), 'g')
+    S.ligne(P(-2.6 + 1j), P(2.6 + 1j), 'g', d=True)
+    S.texte(P(2.6 + 1j) + [-2, -12], '`Im` z = 1', 'g', ancre='end', taille=14)
+    S.poly(np.array([P(z) for z in arc_b]), 'b', d=True)
+    S.ligne(P(-R), P(R), 'r', l=2.2)
+    pts = np.array([P(z) for z in arc_h])
+    S.poly(pts, 'r', l=2.2)
+    _milieu_fleche(S, P(-R), P(0), 'r')
+    _milieu_fleche(S, P(0), P(R), 'r')
+    for fr in (0.25, 0.75):
+        i = int(fr * (len(u) - 1))
+        S.pointe(pts[i + 6], pts[i + 12] - pts[i], 'r', taille=8, largeur=3.5)
+    S.point(P(1j), 'r', r=4.4)
+    S.texte(P(1j) + [10, 14], 'i', 'r', ancre='start')
+    S.point(P(-1j), 'g', r=4.4)
+    S.texte(P(-1j) + [10, 12], '−i', 'g', ancre='start')
+    S.texte(P(-R) + [-16, 16], '−R', taille=15)
+    S.texte(P(R) + [14, 16], 'R', taille=15)
+    S.texte(P(R * np.exp(2.25j)) + [-12, -10], 'γ_R', 'r', ancre='end')
+    return S
+
+
+# ---------------------------------------------------------------------------------------------------
 # edo
 # ---------------------------------------------------------------------------------------------------
 
