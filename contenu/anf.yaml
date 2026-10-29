@@ -1,7 +1,7 @@
 # Niveau 1 : structure interne du nœud « Analyse fonctionnelle ».
 # Espaces vectoriels normés réels (les complexes ne sont pas des ancêtres de ce nœud), espaces
 # de Banach, opérateurs continus, espaces L¹ et L², espaces de Hilbert (projection, Riesz,
-# bases hilbertiennes), Hahn-Banach, Banach-Steinhaus, application ouverte.
+# bases hilbertiennes, système de Haar), Hahn-Banach, Banach-Steinhaus, application ouverte.
 # Les normes, les espaces métriques complets et le théorème de Baire viennent du graphe
 # « Espaces métriques et normés » (met), parent de celui-ci. Les espaces Lᵖ pour p quelconque
 # demandent les puissances réelles, donc l'exponentielle, et ne sont pas traités.
@@ -15,7 +15,7 @@ conteneur: anf
 entrees:
   met: [f-evn, f-banach-steinhaus]
   alglin: [f-hahn-banach]
-  mes: [f-lp]
+  mes: [f-lp, f-haar]
 
 noeuds:
   - id: f-evn
@@ -116,6 +116,8 @@ noeuds:
       Soit $(X, \mathcal A, \mu)$ un espace mesuré. On identifie deux fonctions mesurables égales presque partout.
 
       L'espace $\lex{espace-L1}{L^1}(\mu)$ est formé des classes de fonctions [[integrable-lebesgue|intégrables]], muni de $\|f\|_1 = \int |f| \, d\mu$ ; l'espace $\lex{espace-L2}{L^2}(\mu)$, des classes de fonctions mesurables $f$ telles que $\int f^2 \, d\mu < +\infty$, muni de $\|f\|_2 = \big(\int f^2 \, d\mu\big)^{1/2}$. Pour la mesure de comptage sur $\lex{ensemble-entiers-naturels}{\mathbb N}$, on obtient l'espace $\lex{espace-l2-suites}{\ell^2}$ des suites de carré sommable.
+    choix: |
+      La démonstration de (ii) et (iii) part d'une suite de Cauchy de classes et choisit un représentant de chacune : c'est un usage du [[choix-denombrable]]. Il disparaît lorsque la suite est donnée par des fonctions, par exemple les sommes partielles d'une série de fonctions explicites, comme au nœud {{f-haar|Système de Haar}}.
     enonce: |
       (i) $L^1(\mu)$ est un espace normé. $L^2(\mu)$ est un espace vectoriel ; pour $f, g \in L^2$, $fg$ est intégrable, $\langle f, g \rangle = \int fg \, d\mu$ vérifie l'inégalité de Cauchy-Schwarz $|\langle f, g \rangle| \leqslant \|f\|_2\|g\|_2$, et $\|\cdot\|_2$ est une norme.
 
@@ -208,6 +210,8 @@ noeuds:
     etiquette: Théorème de Riesz
     nature: théorème
     titre: Théorème de représentation de Riesz
+    choix: |
+      L'existence utilise $F^\perp \neq \{0\}$, tiré du théorème de projection ({{f-hilbert|Espaces de Hilbert}}, (iii)), dont la démonstration choisit une suite minimisante : c'est un usage du [[choix-denombrable]].
     enonce: |
       Soit $H$ un espace de Hilbert. Pour toute forme linéaire continue $\varphi \in H'$, il existe un unique $a \in H$ tel que $\varphi(x) = \langle a, x \rangle$ pour tout $x$, et $|||\varphi||| = \|a\|$. L'application $a \mapsto \langle a, \cdot \rangle$ est une bijection linéaire isométrique de $H$ sur $H'$.
     preuve: |
@@ -228,7 +232,7 @@ noeuds:
     texte: |
       Une famille $(e_i)_{i \in I}$ d'un espace de Hilbert $H$ est **orthonormale** si $\langle e_i, e_j \rangle$ vaut $1$ pour $i = j$ et $0$ sinon. C'est une [[base-hilbertienne|base hilbertienne]] si, de plus, le sous-espace qu'elle engendre est dense dans $H$.
     choix: |
-      L'existence d'une famille orthonormale maximale dans un espace quelconque repose sur le [[lemme-zorn|lemme de Zorn]]. Dans un espace séparable, le procédé de Gram-Schmidt construit une base hilbertienne sans aucun choix.
+      L'existence d'une famille orthonormale maximale dans un espace quelconque, en (iv), repose sur le [[lemme-zorn|lemme de Zorn]]. Les points (i) à (iii) ne font aucun choix : en (ii), la projection sur $F$ est obtenue directement comme somme de la série, sans le théorème de projection et sa suite minimisante. Dans un espace séparable, une suite dense étant fixée, le procédé de Gram-Schmidt construit donc une base hilbertienne sans aucun choix.
     enonce: |
       (i) *Bessel.* Pour toute famille orthonormale et tout $x$, $\sum_{i \in I} \langle x, e_i \rangle^2 \leqslant \|x\|^2$, la somme étant prise dans $\lex{demi-droite-achevee}{[0, +\infty]}$.
 
@@ -248,9 +252,13 @@ noeuds:
 
       Pour tout $k$,
       $$\begin{aligned} \langle x - s, e_k \rangle &= \lim_N \langle x - \sum_{n \leqslant N} \langle x, e_n \rangle e_n, e_k \rangle \\ &= 0, \end{aligned}$$
-      donc $x - s$ est orthogonal à l'espace engendré, et par continuité à $F$ : $s = p_F(x)$ ({{f-hilbert|Espaces de Hilbert}}, (iii)).
+      donc $x - s$ est orthogonal à l'espace engendré, et par continuité à $F$.
 
-      Si $F = H$, $s = x$ ; alors $\|x\|^2 = \lim \|S_N\|^2 = \sum \langle x, e_n \rangle^2$ ; Parseval entraîne que le seul vecteur orthogonal à tous les $e_n$ est nul ; et cette dernière condition donne $F^\perp = \{0\}$, donc $F = F^{\perp\perp} = H$.
+      Pour $y \in F$, le vecteur $s - y$ est dans $F$, donc orthogonal à $x - s$, et
+      $$\|x - y\|^2 = \|x - s\|^2 + \|s - y\|^2.$$
+      Ainsi $s$ est l'unique point de $F$ le plus proche de $x$ : c'est la projection $p_F(x)$ ({{f-hilbert|Espaces de Hilbert}}, (ii)), obtenue ici sans suite minimisante.
+
+      Si $F = H$, le vecteur $x - s$ est orthogonal à lui-même, donc $s = x$ ; alors $\|x\|^2 = \lim \|S_N\|^2 = \sum \langle x, e_n \rangle^2$. Parseval entraîne que le seul vecteur orthogonal à tous les $e_n$ est nul, puisqu'il a une norme nulle. Enfin, si cette dernière condition est vérifiée, elle s'applique à $x - s$ : on a $x = s \in F$ pour tout $x$, donc $F = H$.
 
       (iii) Soit $(x_k)$ dense. On parcourt la suite en ne retenant que les $x_k$ qui ne sont pas dans l'espace engendré par les précédents ; on obtient une suite $(y_m)$, finie ou non, de même espace engendré, dont toute sous-famille finie est libre.
 
@@ -263,7 +271,145 @@ noeuds:
       - |
         Dans $\lex{espace-l2-suites}{\ell^2}$, les suites $e_n$, nulles sauf un $1$ en position $n$, forment une base hilbertienne, et Parseval n'est autre que la définition de la norme. L'erreur la plus répandue est de confondre base hilbertienne et base algébrique : un élément de $\ell^2$ comme $(1, \frac12, \frac13, \dots)$ n'est pas combinaison linéaire **finie** des $e_n$ ; il en est seulement la somme d'une série convergente.
       - |
-        Dans $\lex{espace-L2}{L^2}([0, 1])$, le système de Haar, formé des fonctions valant $\pm 2^{j/2}$ sur les deux moitiés d'un intervalle dyadique de longueur $2^{-j}$ et nulles ailleurs, complété par la constante $1$, est une base hilbertienne ; ce fait est admis ici. Le système trigonométrique, plus célèbre, demande les fonctions $\cos$ et $\sin$ de l'{{anc|analyse complexe}}.
+        Dans $\lex{espace-L2}{L^2}([0, 1])$, pour la mesure de Lebesgue, le système de Haar, formé des fonctions valant $\pm 2^{j/2}$ sur les deux moitiés d'un intervalle dyadique de longueur $2^{-j}$ et nulles ailleurs, complété par la constante $1$, est une base hilbertienne : c'est le théorème de Haar, démontré au nœud suivant ({{f-haar|Système de Haar}}) au moyen du critère (ii). Le système trigonométrique, plus célèbre, demande les fonctions $\cos$ et $\sin$ de l'{{anc|analyse complexe}}.
+
+  - id: f-haar
+    etiquette: Système de Haar
+    nature: théorème
+    titre: Le système de Haar est une base hilbertienne de L²([0, 1])
+    texte: |
+      On munit $[0, 1]$ de la tribu des parties mesurables au sens de Lebesgue et de la [[mesure-lebesgue|mesure de Lebesgue]] $\lambda$, et l'on note $L^2 = \lex{espace-L2}{L^2}([0, 1])$. Le point $1$ étant [[negligeable|négligeable]], il suffit qu'une fonction soit définie sur $[0, 1[$.
+
+      Pour $j \in \lex{ensemble-entiers-naturels}{\mathbb N}$ et $0 \leqslant k < 2^j$, l'[[intervalle-dyadique|intervalle dyadique]] de rang $j$ et d'indice $k$ est
+      $$I_{j,k} = [k2^{-j}, (k+1)2^{-j}[.$$
+      Ses deux moitiés sont $I_{j+1,2k}$ et $I_{j+1,2k+1}$. La fonction de Haar associée est
+      $$h_{j,k} = 2^{j/2}\big(\mathbf 1_{I_{j+1,2k}} - \mathbf 1_{I_{j+1,2k+1}}\big),$$
+      où $2^{j/2}$ désigne $(\sqrt 2)^j$.
+
+      Le [[systeme-haar|système de Haar]] est la famille des $h_{j,k}$. On le complète par la constante $1$ et on l'indexe par $\mathbb N$ en posant $e_0 = 1$ et $e_{2^j + k} = h_{j,k}$ : tout entier $n \geqslant 1$ s'écrit d'une seule manière $2^j + k$ avec $0 \leqslant k < 2^j$, $j$ étant l'unique entier tel que $2^j \leqslant n < 2^{j+1}$.
+    choix: |
+      La démonstration de (iv) fait appel au choix en un seul endroit, la quatrième étape, par la régularité de la mesure de Lebesgue ({{m-regularite|Régularité de λ}}), qui choisit des recouvrements : c'est le [[choix-denombrable]]. Le développement en série est établi directement, sans le théorème de projection, qui choisit une suite minimisante ; et la complétude de $L^2$ n'y est appliquée qu'aux sommes partielles, fonctions en escalier explicites, ce qui dispense de choisir des représentants ({{f-lp|Espaces L¹ et L²}}). Pour la tribu borélienne de $[0, 1]$, la quatrième étape devient inutile, et il ne reste que le choix dénombrable qui sert à construire $\lambda$.
+    enonce: |
+      (i) Deux intervalles dyadiques sont disjoints ou emboîtés. Plus précisément, pour chaque rang $j$, les $I_{j,k}$ forment une partition de $[0, 1[$, et si $i \leqslant j$, l'intervalle $I_{j,l}$ est contenu dans $I_{i,k}$ pour $k = \lfloor l/2^{j-i} \rfloor$.
+
+      (ii) La famille $(e_n)_{n \in \mathbb N}$ est orthonormale dans $L^2$.
+
+      ```schema f-haar
+      Les fonctions de rang $2$ vivent chacune sur une moitié d'un intervalle de rang $1$. Sur le support de $h_{2,1}$, la bande rouge $[\frac14, \frac12[$, les fonctions $h_{0,0}$ et $h_{1,0}$ sont constantes, égales à $1$ et à $-\sqrt 2$ : leur produit scalaire avec $h_{2,1}$ est cette constante multipliée par $\int h_{2,1} = 0$.
+      ```
+
+      (iii) Pour tout $j$, le sous-espace $V_j$ engendré par $1$ et les $h_{i,k}$ avec $i < j$ est engendré par les $2^j$ indicatrices $\mathbf 1_{I_{j,k}}$ : c'est l'espace des fonctions constantes sur chaque intervalle dyadique de rang $j$. La somme partielle
+      $$S_j f = \sum_{n < 2^j} \langle f, e_n \rangle\, e_n$$
+      vaut, sur chaque $I_{j,k}$, la moyenne $2^j \int_{I_{j,k}} f \, d\lambda$ de $f$ sur cet intervalle.
+
+      (iv) *Théorème de Haar.* La famille $(e_n)$ est une [[base-hilbertienne|base hilbertienne]] de $L^2$. Pour tout $f \in L^2$, on a donc, au sens de la convergence dans $L^2$ et dans l'ordre des $e_n$,
+      $$f = \langle f, 1 \rangle + \sum_{j \geqslant 0} \sum_{k < 2^j} \langle f, h_{j,k} \rangle\, h_{j,k},$$
+      et l'égalité de Parseval $\|f\|_2^2 = \langle f, 1 \rangle^2 + \sum_{j,k} \langle f, h_{j,k} \rangle^2$.
+    preuve: |
+      (i) Pour $x \in [0, 1[$, on a $x \in I_{j,l}$ si et seulement si $l \leqslant 2^j x < l + 1$, c'est-à-dire $l = \lfloor 2^j x \rfloor$, la partie entière, qui existe parce que $\lex{ensemble-reels}{\mathbb R}$ est [[archimedien]]. Comme $0 \leqslant 2^j x < 2^j$, cet entier est compris entre $0$ et $2^j - 1$ : chaque point de $[0, 1[$ est dans un et un seul intervalle de rang $j$.
+
+      Montrons que, pour $t \geqslant 0$ réel et $m \geqslant 1$ entier, $\lfloor t/m \rfloor = \lfloor \lfloor t \rfloor / m \rfloor$. Soit $n = \lfloor t \rfloor$ et $q = \lfloor n/m \rfloor$. On a $qm \leqslant n \leqslant t$, et $n < (q + 1)m$ entraîne $n + 1 \leqslant (q + 1)m$ entre entiers, d'où $t < n + 1 \leqslant (q + 1)m$. Ainsi $q \leqslant t/m < q + 1$.
+
+      Pour $x \in I_{j,l}$ et $i \leqslant j$, appliquons cette égalité à $t = 2^j x$ et $m = 2^{j-i}$ :
+      $$\lfloor 2^i x \rfloor = \Big\lfloor \frac{\lfloor 2^j x \rfloor}{2^{j-i}} \Big\rfloor = \Big\lfloor \frac{l}{2^{j-i}} \Big\rfloor.$$
+      Tous les points de $I_{j,l}$ sont donc dans le même intervalle de rang $i$, celui d'indice $\lfloor l/2^{j-i} \rfloor$, et $I_{j,l}$ ne rencontre aucun autre intervalle de rang $i$.
+
+      (ii) Les fonctions $e_n$ sont boréliennes et bornées, donc de carré intégrable sur $[0, 1]$. Un intervalle $[a, b[$ ne diffère de $]a, b]$ que par deux points, négligeables, si bien que $\lambda(I_{j,k}) = 2^{-j}$ ({{m-lebesgue|Mesure de Lebesgue}}, (ii) et (iv)).
+
+      On a $\|1\|_2 = 1$. Les deux moitiés de $I_{j,k}$ étant disjointes, $h_{j,k}^2 = 2^j\, \mathbf 1_{I_{j,k}}$, d'intégrale $2^j \cdot 2^{-j} = 1$. Enfin
+      $$\langle 1, h_{j,k} \rangle = 2^{j/2}\big(2^{-j-1} - 2^{-j-1}\big) = 0.$$
+
+      Soient $(i, k) \neq (j, l)$, avec, quitte à les échanger, $i \leqslant j$. Si $I_{i,k}$ et $I_{j,l}$ sont disjoints, $h_{i,k} h_{j,l} = 0$. Sinon, par (i), $I_{j,l} \subset I_{i,k}$, et $i < j$, puisque deux intervalles distincts de même rang sont disjoints.
+
+      Toujours par (i), $I_{j,l}$ est alors contenu dans un seul intervalle de rang $i + 1$ ; celui-ci rencontre $I_{i,k}$, donc y est contenu, et c'est l'une de ses deux moitiés. Sur cette moitié, $h_{i,k}$ est constante, égale à un réel $c$, et
+      $$\langle h_{i,k}, h_{j,l} \rangle = c \int h_{j,l} \, d\lambda = c\, \langle 1, h_{j,l} \rangle = 0.$$
+
+      (iii) Notons $W_j$ le sous-espace engendré par les $\mathbf 1_{I_{j,k}}$, $k < 2^j$.
+
+      *$V_j \subset W_j$.* Par (i), $1 = \sum_k \mathbf 1_{I_{j,k}}$ presque partout. Pour $i < j$, la fonction $h_{i,k}$ est combinaison de deux indicatrices d'intervalles de rang $i + 1 \leqslant j$. Chacune est la somme des indicatrices des intervalles de rang $j$ qu'il contient, car, par (i), tout point d'un intervalle $I$ de rang $i + 1$ est dans un intervalle de rang $j$, qui rencontre $I$ et lui est donc contenu.
+
+      *$W_j \subset V_j$*, par récurrence sur $j$. Pour $j = 0$, $\mathbf 1_{I_{0,0}} = \mathbf 1_{[0, 1[}$ est égale à $1$ presque partout. Si $W_j \subset V_j$, les identités
+      $$\begin{aligned} \mathbf 1_{I_{j+1,2k}} &= \tfrac12\big(\mathbf 1_{I_{j,k}} + 2^{-j/2} h_{j,k}\big), \\ \mathbf 1_{I_{j+1,2k+1}} &= \tfrac12\big(\mathbf 1_{I_{j,k}} - 2^{-j/2} h_{j,k}\big), \end{aligned}$$
+      qui se vérifient sur chaque moitié de $I_{j,k}$, montrent que $W_{j+1} \subset V_j + \operatorname{Vect}(h_{j,k})_k = V_{j+1}$.
+
+      *Sommes partielles.* La fonction $S_j f$ appartient à $V_j = W_j$, donc vaut une constante $c_k$ sur chaque $I_{j,k}$. Pour $m < 2^j$, l'orthonormalité donne
+      $$\langle f - S_j f, e_m \rangle = \langle f, e_m \rangle - \langle f, e_m \rangle = 0,$$
+      si bien que $f - S_j f$ est orthogonale à $V_j$, qui contient $\mathbf 1_{I_{j,k}}$. Ainsi $\int_{I_{j,k}} f \, d\lambda = \int_{I_{j,k}} S_j f \, d\lambda = c_k\, 2^{-j}$.
+
+      (iv) Montrons d'abord que le seul $f \in L^2$ orthogonal à tous les $e_n$ est $0$ ; on en déduira le développement en série à la fin. Soit $f$ un tel vecteur.
+
+      *Première étape : $\int_I f \, d\lambda = 0$ pour tout intervalle dyadique $I$.* En effet $\mathbf 1_I$ appartient à un $V_j$ par (iii), donc est combinaison linéaire finie des $e_n$, et $\int_I f \, d\lambda = \langle f, \mathbf 1_I \rangle = 0$.
+
+      *Deuxième étape : deux mesures finies.* La fonction $f$ est intégrable sur $[0, 1]$, puisque le produit de $f$ et de la constante $1$, toutes deux de carré intégrable, l'est ({{f-lp|Espaces L¹ et L²}}, (i)). Posons, pour $A \subset [0, 1[$ mesurable,
+      $$\begin{aligned} \nu^+(A) &= \int_A f^+ \, d\lambda, \\ \nu^-(A) &= \int_A f^- \, d\lambda. \end{aligned}$$
+      Ce sont des mesures ({{m-beppo-levi|Convergence monotone}}, (iii)), finies, et la première étape s'écrit $\nu^+(I) = \nu^-(I)$ pour tout intervalle dyadique $I$ ({{m-integrables|Fonctions intégrables}}).
+
+      *Troisième étape : $\nu^+$ et $\nu^-$ coïncident sur les boréliens contenus dans $[0, 1[$.* Par (i), l'ensemble $\mathcal C$ formé du vide et des intervalles dyadiques est un π-système sur $[0, 1[$ : l'intersection de deux d'entre eux est vide ou égale au plus petit.
+
+      Soit $O$ un ouvert de $\mathbb R$ et $x \in O \cap [0, 1[$. Il existe $r > 0$ tel que $O$ contienne $]x - r, x + r[$, puis, $\mathbb R$ étant archimédien, un rang $j$ tel que $2^{-j} < r$. L'intervalle $I_{j, \lfloor 2^j x \rfloor}$ contient $x$, est de longueur $2^{-j}$, donc est contenu dans $]x - r, x + r[$, puis dans $O$.
+
+      Ainsi $O \cap [0, 1[$ est la réunion des intervalles dyadiques contenus dans $O$. Ceux-ci sont indexés par une partie de $\mathbb N \times \mathbb N$, qui est dénombrable ({{q-denombrable|ℚ est dénombrable}}), et $O \cap [0, 1[$ appartient à la tribu $\sigma(\mathcal C)$.
+
+      Appliqué à l'inclusion $\iota$ de $[0, 1[$ dans $\mathbb R$, le point (iv) du nœud {{m-tribus|Tribus}} montre que les $B \subset \mathbb R$ dont la trace $B \cap [0, 1[$ appartient à $\sigma(\mathcal C)$ forment une tribu. Elle contient les ouverts, donc la [[tribu-borelienne|tribu borélienne]] : tout borélien contenu dans $[0, 1[$ appartient à $\sigma(\mathcal C)$.
+
+      Les intervalles dyadiques sont boréliens, donc mesurables au sens de Lebesgue ({{m-lebesgue|Mesure de Lebesgue}}, (iii)) : la tribu $\sigma(\mathcal C)$ est contenue dans celle des parties de $[0, 1[$ mesurables au sens de Lebesgue, sur laquelle $\nu^+$ et $\nu^-$ sont définies.
+
+      Le lemme de Dynkin ({{m-dynkin|Classes monotones}}, (ii)), appliqué sur $[0, 1[$ avec la suite constante $X_n = I_{0,0}$, c'est-à-dire $[0, 1[$, élément de $\mathcal C$ de mesures finies égales, donne $\nu^+ = \nu^-$ sur $\sigma(\mathcal C)$, donc sur tout borélien contenu dans $[0, 1[$.
+
+      *Quatrième étape : $f = 0$.* L'ensemble $A$ des $x \in [0, 1[$ tels que $f(x) > 0$ est mesurable au sens de Lebesgue, mais pas nécessairement borélien. Par la régularité de la mesure de Lebesgue ({{m-regularite|Régularité de λ}}, (i)), il existe un borélien $B$, que l'on peut supposer contenu dans $[0, 1[$, tel que $A \subset B$ et $\lambda(B \setminus A) = 0$.
+
+      Les fonctions $f^\pm \mathbf 1_{B \setminus A}$ sont nulles presque partout, donc $\nu^\pm(B \setminus A) = 0$ ({{m-integrale|Intégrale positive}}, (iv)). Comme $f^- = 0$ sur $A$,
+      $$\nu^+(A) = \nu^+(B) = \nu^-(B) = \nu^-(A) = 0.$$
+
+      Donc $f^+ \mathbf 1_A$ est nulle presque partout ; or $f^+$ est nulle hors de $A$ sur $[0, 1[$, et $f^+ = 0$ presque partout. Le vecteur $-f$ est lui aussi orthogonal à tous les $e_n$, si bien que $f^- = (-f)^+ = 0$ presque partout. Finalement $f = 0$ dans $L^2$.
+
+      *Conclusion.* Soit maintenant $f \in L^2$ quelconque, et $S_N = \sum_{n < N} \langle f, e_n \rangle e_n$. Pour $p < q$, l'orthonormalité donne
+      $$\|S_q - S_p\|_2^2 = \sum_{p \leqslant n < q} \langle f, e_n \rangle^2,$$
+      reste d'une série convergente par l'inégalité de Bessel ({{f-bases-hilbertiennes|Bases hilbertiennes}}, (i)). La suite $(S_N)$ est donc de Cauchy ; ses termes sont des fonctions en escalier explicites, et elle converge dans $L^2$, complet ({{f-lp|Espaces L¹ et L²}}, (ii)), vers un $s$.
+
+      Par l'inégalité de Cauchy-Schwarz, le produit scalaire est continu, et pour tout $m$
+      $$\langle f - s, e_m \rangle = \lim_N \langle f - S_N, e_m \rangle = 0.$$
+      Par ce qui précède, $f - s = 0$ : $f$ est la somme de la série. Le sous-espace engendré par les $e_n$, qui contient les $S_N$, est donc dense, et $(e_n)$ est une base hilbertienne. Enfin $\|S_N\|_2^2 = \sum_{n < N} \langle f, e_n \rangle^2$ tend vers $\|f\|_2^2$ par continuité de la norme, ce qui est l'égalité de Parseval.
+    remarques:
+      - |
+        Pour $f(x) = x$, on a $\langle f, 1 \rangle = \frac12$. Sur $I_{j,k}$, dont les moitiés ont pour longueur $\delta = 2^{-j-1}$, l'intégrale de $x$ sur la seconde moitié dépasse celle sur la première de $\delta^2$, d'où
+        $$\langle f, h_{j,k} \rangle = -2^{j/2} \cdot 2^{-2j-2} = -\tfrac14\, 2^{-3j/2},$$
+        indépendamment de $k$, parce que la pente de $f$ est la même partout.
+
+        L'égalité de Parseval se vérifie alors directement :
+        $$\begin{aligned} \frac14 + \sum_{j \geqslant 0} 2^j \cdot \frac{2^{-3j}}{16} &= \frac14 + \frac1{16} \cdot \frac43 \\ &= \frac13 = \int_0^1 x^2 \, dx. \end{aligned}$$
+
+        ```schema f-haar-2
+        Les sommes partielles $S_1 f$ (gris), $S_2 f$ (vert) et $S_3 f$ (bleu) de la série de Haar de $f(x) = x$ sont les fonctions en escalier qui valent, sur chaque intervalle dyadique de rang $j$, la moyenne de $f$, c'est-à-dire sa valeur au milieu. À chaque rang, le pas est divisé par deux, et l'écart quadratique $\|f - S_j f\|_2$ aussi.
+        ```
+
+        Le reste de la série mesure l'erreur commise par $S_j f$ :
+        $$\|f - S_j f\|_2^2 = \sum_{i \geqslant j} 2^i \cdot \frac{2^{-3i}}{16} = \frac{4^{-j}}{12}.$$
+        C'est bien la somme, sur les $2^j$ intervalles de longueur $2^{-j}$, de l'intégrale $\frac{(2^{-j})^3}{12}$ de $(x - m)^2$ autour du milieu $m$. L'erreur $\|f - S_j f\|_2 = \frac{2^{-j}}{2\sqrt 3}$ est donc proportionnelle au pas : une fonction régulière est approchée au premier ordre seulement, ce qui est le prix d'une approximation constante par morceaux.
+      - |
+        L'erreur la plus répandue est d'oublier la constante $1$. Chaque $h_{j,k}$ est d'intégrale nulle, si bien que la fonction $1$ est orthogonale à tout le système de Haar : celui-ci, seul, n'est pas total, et il n'engendre un sous-espace dense que dans l'orthogonal des constantes, formé des fonctions d'intégrale nulle.
+      - |
+        La démonstration n'utilise pas la densité des fonctions en escalier dans $L^2$, établie plus loin, pour la tribu borélienne ({{fo-densite|Densité}}) ; elle passe par l'unicité des mesures. Les trois premières étapes ne donnent l'égalité de $\nu^+$ et $\nu^-$ que sur les boréliens, et la quatrième est indispensable, car l'ensemble $\{f > 0\}$ peut ne pas être borélien quand $f$ est seulement mesurable au sens de Lebesgue : l'indicatrice d'une partie non borélienne de l'ensemble de Cantor, évoquée au nœud {{m-riemann|Riemann et Lebesgue}} et dont l'existence est admise ici, en donne un exemple. C'est la régularité de la mesure de Lebesgue qui comble cet écart.
+      - |
+        Les deux cadres n'en font d'ailleurs qu'un : le $L^2$ de la tribu de Lebesgue sur $[0, 1]$, employé ici, et celui de la tribu borélienne, employé au nœud {{fo-densite|Densité}}, sont le même espace. Envoyons la classe d'une fonction borélienne de carré intégrable sur sa classe pour la tribu de Lebesgue. C'est bien défini, car un borélien négligeable l'est pour les deux tribus, et c'est linéaire.
+
+        Les intégrales sont conservées : pour une fonction borélienne positive, les intégrales relatives aux deux tribus sont toutes deux la limite des intégrales des fonctions étagées $s_n$ du nœud {{m-etagees|Fonctions étagées}}, qui sont boréliennes, par convergence monotone ({{m-beppo-levi|Convergence monotone}}). L'application conserve donc la norme, et elle est injective.
+
+        Elle est surjective, car toute $f : [0, 1] \to \mathbb R$ mesurable au sens de Lebesgue est presque partout égale à une fonction borélienne $h$, qui a la même intégrale de carré ({{m-integrables|Fonctions intégrables}}, (iii)). Pour chaque rationnel $r$, choisissons par {{m-regularite|Régularité de λ}}, (ii), un borélien $C_r \subset A_r = \{f > r\}$ tel que $\lambda(A_r \setminus C_r) = 0$ : c'est un nouvel usage du [[choix-denombrable]]. La réunion $N$ des $A_r \setminus C_r$ est négligeable, $\lex{ensemble-rationnels}{\mathbb Q}$ étant dénombrable.
+
+        Posons $g(x) = \sup\{r \in \mathbb Q : x \in C_r\}$, dans la droite achevée, avec $\sup \varnothing = -\infty$. Pour tout réel $a$,
+        $$\{g > a\} = \bigcup_{r > a} C_r$$
+        est borélien, comme réunion dénombrable, et l'ensemble $E$ où $g$ est finie l'est aussi, puisque $\{g = +\infty\} = \bigcap_n \{g > n\}$ et que $\{g = -\infty\}$ est le complémentaire de $\bigcup_n \{g > -n\}$.
+
+        Hors de $N$, on a $x \in C_r$ si et seulement si $f(x) > r$, d'où $g(x) = \sup\{r \in \mathbb Q : r < f(x)\} = f(x)$ par densité de $\mathbb Q$. La fonction $h$ égale à $g$ sur $E$ et à $0$ ailleurs est borélienne, puisque $\{h > a\}$ vaut $\{g > a\} \cap E$, augmenté du complémentaire de $E$ si $a < 0$ ; et $h = f$ hors de $N$.
+      - |
+        Pour $f$ continue sur $[0, 1]$, les sommes partielles $S_j f$ convergent même uniformément vers $f$. Pour $x \in I_{j,k}$, par (iii),
+        $$\begin{aligned} &|S_j f(x) - f(x)| \\ &\quad = \Big|2^j \int_{I_{j,k}} \big(f(y) - f(x)\big) \, dy\Big|, \end{aligned}$$
+        majoré par la borne supérieure de $|f(y) - f(x)|$ pour $|y - x| \leqslant 2^{-j}$, qui tend vers $0$ uniformément en $x$ par le théorème de Heine ({{c-heine|Théorème de Heine}}).
+
+        La série de Fourier d'une fonction continue, au contraire, peut diverger en un point : Paul du Bois-Reymond en a construit un exemple, annoncé en 1873 dans les *Göttinger Nachrichten* et publié en détail en 1876 ({{fourier|Analyse de Fourier}}). Haar a introduit son système dans sa thèse, soutenue à Göttingen en 1909 sous la direction de Hilbert, et l'a publié en 1910 (« Zur Theorie der orthogonalen Funktionensysteme », *Math. Ann.* 69, p. 331-371).
+      - |
+        Les sommes $S_j f$ sont les espérances conditionnelles de $f$ sachant la tribu engendrée par les intervalles dyadiques de rang $j$ : elles forment une martingale pour la mesure de probabilité $\lambda$ sur $[0, 1[$, bornée dans $L^1$ puisque $\|S_j f\|_1 \leqslant \|f\|_1$. Le théorème de convergence des martingales bornées dans $L^1$ ({{mt-doob-l1|Martingales bornées dans L¹}}) montre qu'elle converge presque partout, et sa limite est $f$, car une suite extraite converge presque partout vers la limite $f$ dans $L^2$ ({{f-lp|Espaces L¹ et L²}}, (iii)). La série de Haar converge donc presque partout, et non seulement en moyenne quadratique, pour les sommes partielles d'indices $2^j$.
 
   - id: f-hahn-banach
     etiquette: Hahn-Banach
@@ -272,7 +418,7 @@ noeuds:
     texte: |
       Une application $q : E \to \lex{ensemble-reels}{\mathbb R}$ est **sous-linéaire** si $q(x + y) \leqslant q(x) + q(y)$ et $q(tx) = t\,q(x)$ pour tous $x, y$ et $t \geqslant 0$. Une norme en est un exemple.
     choix: |
-      La démonstration utilise le [[lemme-zorn|lemme de Zorn]]. Le théorème découle déjà du lemme de l'[[ultrafiltre]], lui-même strictement plus faible que l'axiome du choix (Halpern et Lévy, 1964). Dans un espace séparable, une récurrence sur une suite dense suffit.
+      La démonstration utilise le [[lemme-zorn|lemme de Zorn]]. Le théorème découle déjà du lemme de l'[[ultrafiltre]], lui-même strictement plus faible que l'axiome du choix (J. D. Halpern et A. Lévy, « The Boolean prime ideal theorem does not imply the axiom of choice », *Axiomatic Set Theory*, Proc. Sympos. Pure Math. 13, partie I, AMS, 1971, p. 83-134). Dans un espace séparable, une récurrence sur une suite dense suffit.
     enonce: |
       (i) *Forme analytique.* Soit $E$ un $\mathbb R$-espace vectoriel, $q$ sous-linéaire, $G$ un sous-espace et $g : G \to \mathbb R$ linéaire avec $g \leqslant q$ sur $G$. Il existe $f : E \to \mathbb R$ linéaire qui prolonge $g$ et vérifie $f \leqslant q$ sur $E$.
 
@@ -365,6 +511,7 @@ aretes:
   - [f-hilbert, f-riesz]
   - [f-operateurs, f-riesz]
   - [f-hilbert, f-bases-hilbertiennes]
+  - [f-bases-hilbertiennes, f-haar]
   - [f-operateurs, f-hahn-banach]
   - [f-operateurs, f-banach-steinhaus]
   - [f-operateurs, f-application-ouverte]

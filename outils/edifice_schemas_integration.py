@@ -328,6 +328,88 @@ def f_exemples():
     return S
 
 
+def _haar(j, k, x):
+    """h_{j,k}(x) = 2^{j/2} (1 sur la première moitié de I_{j,k}, -1 sur la seconde), x dans [0, 1[."""
+    x = np.asarray(x, float)
+    a, m, b = k / 2 ** j, (k + 0.5) / 2 ** j, (k + 1) / 2 ** j
+    return 2 ** (j / 2) * (((a <= x) & (x < m)).astype(float) - ((m <= x) & (x < b)).astype(float))
+
+
+@schema('f-haar')
+def f_haar():
+    # Trois rangées : h_{0,0} ; h_{1,0}, h_{1,1} ; h_{2,k}. Bande rouge : I_{2,1} = [1/4, 1/2[, support de h_{2,1}.
+    # Vérifications exactes sur la grille de pas 1/64 (les fonctions y sont constantes par morceaux).
+    N = 64
+    milieux = (np.arange(N) + 0.5) / N
+    fam = [(j, k) for j in range(4) for k in range(2 ** j)]
+    for a in fam:
+        for b in fam:
+            ps = np.sum(_haar(*a, milieux) * _haar(*b, milieux)) / N
+            assert abs(ps - (1.0 if a == b else 0.0)) < 1e-12
+        assert abs(np.sum(_haar(*a, milieux)) / N) < 1e-12           # orthogonale à la constante 1
+    dans = milieux[(milieux >= 0.25) & (milieux < 0.5)]
+    assert np.all(_haar(0, 0, dans) == 1) and np.allclose(_haar(1, 0, dans), -math.sqrt(2))
+    S = Schema(520, 430, 'Les fonctions de Haar des rangs 0, 1 et 2')
+    rangs = [(0, 1.0), (1, math.sqrt(2)), (2, 2.0)]
+    hauteur, haut = 118, 14
+    Rs = [Repere(-0.04, 1.1, -2.25, 2.25, 70, haut + i * (hauteur + 12), 420, hauteur) for i in range(3)]
+    # bande du support de h_{2,1}
+    y_haut, y_bas = Rs[0](0, 2.25)[1], Rs[2](0, -2.25)[1]
+    S.surface(np.array([Rs[0](0.25, 0)[0], y_haut, Rs[0](0.5, 0)[0], y_haut,
+                        Rs[0](0.5, 0)[0], y_bas, Rs[0](0.25, 0)[0], y_bas]).reshape(4, 2), 'r')
+    for (j, v), R in zip(rangs, Rs):
+        S.ligne(R(0, 0), R(1.06, 0), 'g')
+        for xv in (0.25, 0.5, 0.75, 1.0):
+            S.ligne(R(xv, -2.1), R(xv, 2.1), 'g', d=True)
+        for k in range(2 ** j):
+            a, m, b = k / 2 ** j, (k + 0.5) / 2 ** j, (k + 1) / 2 ** j
+            c = 'r' if (j, k) == (2, 1) else ('t' if j == 0 else ('b' if j == 1 else 'g'))
+            marche(S, R, [(a, m, v), (m, b, -v)], c, l=2.4 if c != 'g' else 1.4)
+            S.ligne(R(a, 0), R(a, v), c, d=True)
+            S.ligne(R(b, -v), R(b, 0), c, d=True)
+        S.texte(R(-0.04, 0) + [-6, 0], f'h_{{{j},·}}' if j else 'h_{0,0}', 'g' if j == 2 else ('b' if j == 1 else 't'),
+                ancre='end', taille=16)
+        lab = {0: '1', 1: '2^{1/2}', 2: '2'}[j]
+        S.texte(R(1.0, v) + [10, 0], lab, 'g', ancre='start', taille=14)
+    S.texte(Rs[2](0.375, 2.0) + [0, -12], 'h_{2,1}', 'r', taille=16)
+    for xv, s in [(0, '0'), (0.25, '1/4'), (0.5, '1/2'), (0.75, '3/4'), (1, '1')]:
+        S.texte(Rs[2](xv, -2.25) + [0, 14], s, 'g', taille=14)
+    return S
+
+
+@schema('f-haar-2')
+def f_haar_2():
+    # f(x) = x ; S_j f = moyenne de f sur chaque I_{j,k}, soit (k + 1/2) 2^{-j} ; ‖f - S_j f‖² = 4^{-j}/12.
+    # S_j f est aussi la somme partielle 1/2 + Σ_{i<j} Σ_k ⟨f, h_{i,k}⟩ h_{i,k}, avec ⟨f, h_{i,k}⟩ = -2^{-3i/2}/4.
+    xs = (np.arange(4096) + 0.5) / 4096
+    for j in range(5):
+        moy = (np.floor(xs * 2 ** j) + 0.5) / 2 ** j
+        som = 0.5 + sum(-2 ** (-1.5 * i) / 4 * _haar(i, k, xs) for i in range(j) for k in range(2 ** i))
+        assert np.allclose(moy, som)
+        k = np.arange(2 ** j)
+        err = sum(float(Fr(1, 12) * Fr(1, 2 ** j) ** 3) for _ in k)   # ∫ sur I_{j,k} de (x - milieu)² = δ³/12
+        assert abs(err - 1 / (12 * 4 ** j)) < 1e-15
+        assert abs(np.mean((xs - moy) ** 2) - 1 / (12 * 4 ** j)) < 1e-6
+    S = Schema(500, 400, 'Sommes partielles de la série de Haar de f(x) = x')
+    R = Repere(-0.06, 1.16, -0.12, 1.12, 40, 10, 430, 360)
+    R.axes(S, 'x', '')
+    for j, c, d in [(1, 'g', True), (2, 'v', False), (3, 'b', False)]:
+        P = [(k / 2 ** j, (k + 1) / 2 ** j, (k + 0.5) / 2 ** j) for k in range(2 ** j)]
+        marche(S, R, P, c, d=d, l=None if d else 2)
+    R.graphe(S, lambda x: x, 0, 1, 'r', l=2.2)
+    S.texte(R(1, 1) + [12, -8], 'f', 'r', ancre='start')
+    S.texte(R(1, 0.9375) + [12, 4], 'S_3 f', 'b', ancre='start', taille=15)
+    S.texte(R(1, 0.875) + [12, 10], 'S_2 f', 'v', ancre='start', taille=15)
+    S.texte(R(0.1, 0.25) + [0, -14], 'S_1 f', 'g', taille=15)
+    for xv, s in [(0, '0'), (0.5, '1/2'), (1, '1')]:
+        S.ligne(R(xv, 0) + [0, -4], R(xv, 0) + [0, 4], 'g')
+        S.texte(R(xv, 0) + [0, 18], s, 'g', taille=15)
+    for yv, s in [(0.25, '1/4'), (0.75, '3/4')]:
+        S.ligne(R(0, yv) + [-3, 0], R(0, yv) + [3, 0], 'g')
+        S.texte(R(0, yv) + [-7, 0], s, 'g', ancre='end', taille=14)
+    return S
+
+
 # ================================================================ mes
 
 @schema('m-lebesgue')
@@ -700,4 +782,151 @@ def fo_levy():
         S.texte(R(0, v) + [-10, 0], '1', 'g', ancre='end', taille=14)
     S.texte(R(0.62, 0.45) + [10, 8], 'n = 4', 'b', ancre='start', taille=15)
     S.texte(R(0.35, 0.40) + [-10, -6], 'n = 12', 'r', ancre='end', taille=15)
+    return S
+
+
+@schema('fo-troncature')
+def fo_troncature():
+    # noyau k(y) = 2(1 - sin y / y) : positif, et au moins 1 pour |y| >= 2
+    def k(y):
+        y = np.asarray(y, float)
+        out = np.zeros_like(y)
+        nz = np.abs(y) > 1e-12
+        out[nz] = 2 * (1 - np.sin(y[nz]) / y[nz])
+        return out
+    ys = np.linspace(-14, 14, 28001)
+    assert k(ys).min() >= -1e-12
+    assert k(ys[np.abs(ys) >= 2]).min() >= 1
+    assert abs(k(np.array([2.0]))[0] - (2 - math.sin(2))) < 1e-12 and 2 - math.sin(2) > 1.09
+    # vérification de l'identité (1/u) ∫_{-u}^{u} (1 - cos(tx)) dt = k(ux) en quelques points
+    for u, x in ((1.0, 0.7), (0.5, 3.0), (2.0, -1.3)):
+        t = np.linspace(-u, u, 200001)
+        val = np.trapezoid(1 - np.cos(t * x), t) / u
+        assert abs(val - k(np.array([u * x]))[0]) < 1e-8
+    S = Schema(500, 250, 'Le noyau de l’inégalité de troncature et l’indicatrice qu’il majore')
+    R = Repere(-14, 14, -0.15, 2.6, 30, 20, 430, 200)
+    R.axes(S, 'y', '')
+    # indicatrice de {|y| >= 2}, en bleu
+    S.ligne(R(-14, 1), R(-2, 1), 'b', l=2)
+    S.ligne(R(2, 1), R(14, 1), 'b', l=2)
+    S.ligne(R(-2, 0), R(2, 0), 'b', l=2)
+    S.ligne(R(-2, 0), R(-2, 1), 'b', d=True)
+    S.ligne(R(2, 0), R(2, 1), 'b', d=True)
+    S.point(R(-2, 1), 'b', r=3)
+    S.point(R(2, 1), 'b', r=3)
+    R.graphe(S, k, -14, 14, 'r', n=1400, l=2)
+    for v in (-2, 2):
+        S.texte(R(v, 0) + [0, 16], str(v).replace('-', '−'), 'g', taille=14)
+    S.texte(R(0, 1) + [-8, 0], '1', 'g', ancre='end', taille=14)
+    S.ligne(R(-0.25, 2), R(0.25, 2), 'g')
+    S.texte(R(0, 2) + [-8, 0], '2', 'g', ancre='end', taille=14)
+    S.texte(R(10.4, 2.15) + [0, -14], 'k(y)', 'r', taille=16)
+    S.texte(R(-9, 1) + [0, 16], '1_{|y| ⩾ 2}', 'b', taille=16)
+    return S
+
+
+@schema('fo-helly')
+def fo_helly():
+    # extractions emboîtées (exemple) : chaque ligne retire de la précédente les positions m ≡ (j mod 3) + 1 (mod 4)
+    N, J, NMAX = 400, 6, 30
+    lignes, prec = [], list(range(N))
+    for j in range(J):
+        cur = [prec[m] for m in range(len(prec)) if m % 4 != (j % 3) + 1]
+        lignes.append(cur)
+        prec = cur
+    diag = [lignes[k][k] for k in range(J)]
+    assert diag == [0, 2, 4, 10, 16, 26]
+    assert all(a < b for a, b in zip(diag, diag[1:]))
+    for j in range(1, J):
+        assert set(lignes[j]) <= set(lignes[j - 1])
+    for j in range(J):
+        assert all(diag[k] in lignes[j] for k in range(j, J))
+    S = Schema(500, 250, 'Extraction diagonale : lignes emboîtées et terme diagonal')
+    x0, dx, y0, dy = 62, 14, 34, 34
+    for n in range(NMAX + 1):
+        if n % 5 == 0:
+            S.texte((x0 + n * dx, 14), str(n), 'g', taille=13)
+    for j in range(J):
+        y = y0 + j * dy
+        S.texte((x0 - 18, y), f'ψ_{j}', 't', ancre='end', taille=16)
+        S.ligne((x0 - 6, y), (x0 + NMAX * dx + 6, y), 'g', d=True)
+        for n in lignes[j]:
+            if n > NMAX:
+                break
+            if n == diag[j]:
+                S.point((x0 + n * dx, y), 'r', r=5)
+            else:
+                S.point((x0 + n * dx, y), 't', r=3)
+    pts = [(x0 + diag[k] * dx, y0 + k * dy) for k in range(J)]
+    S.poly(pts, 'r', l=1.4)
+    return S
+
+
+@schema('fo-levy-complet')
+def fo_levy_complet():
+    # φ_n(t) = Π_{k≤n} cos(t/k) et sa limite (10^5 facteurs)
+    ks = np.arange(1, 100001)
+
+    def phi_n(n, t):
+        t = np.atleast_1d(np.asarray(t, float))
+        return np.prod(np.cos(t[:, None] / ks[None, :n]), axis=1)
+
+    def phi(t):
+        t = np.atleast_1d(np.asarray(t, float))
+        return np.array([np.prod(np.cos(s / ks)) for s in t])
+    assert abs(phi([1.0])[0] - 0.38854) < 1e-4 and abs(phi([0.5])[0] - 0.80926) < 1e-4
+    tt = np.linspace(-1, 1, 201)
+    assert (phi(tt) >= 1 - tt ** 2 - 1e-12).all() and (phi(tt) <= 1 + 1e-12).all()
+    S = Schema(500, 280, 'Fonctions caractéristiques de sommes aléatoires et leur limite')
+    R = Repere(-6, 6, -1.08, 1.12, 30, 14, 440, 240)
+    R.axes(S, 't', '')
+    R.graphe(S, lambda t: 1 - t ** 2, -1.2, 1.2, 'g', n=200)
+    R.graphe(S, lambda t: phi_n(1, t), -6, 6, 'v', n=600, l=1.6)
+    R.graphe(S, lambda t: phi_n(3, t), -6, 6, 'b', n=600, l=1.6)
+    R.graphe(S, phi, -6, 6, 'r', n=600, l=2.2)
+    S.ligne(R(-0.12, 1), R(0.12, 1), 'g')
+    S.texte(R(0, 1) + [-8, -10], '1', 'g', ancre='end', taille=14)
+    for v in (-1, 1):
+        S.ligne(R(v, -0.03), R(v, 0.03), 'g')
+        S.texte(R(v, 0) + [10 * v, 15], str(v).replace('-', '−'), 'g', taille=14)
+    S.texte(R(3.6, phi([3.6])[0]) + [0, -14], 'φ', 'r', taille=17)
+    S.texte(R(5.0, math.cos(5.0)) + [-10, 0], 'n = 1', 'v', ancre='end', taille=15)
+    S.texte(R(-5.6, phi_n(3, [-5.6])[0]) + [10, -4], 'n = 3', 'b', ancre='start', taille=15)
+    return S
+
+
+@schema('fo-tcl')
+def fo_tcl():
+    # Student à 3 degrés de liberté réduite : g(t) = (1 + |t|) e^{-|t|} ; g(t/√n)^n → e^{-t²/2}
+    def g(t):
+        a = np.abs(np.asarray(t, float))
+        return (1 + a) * np.exp(-a)
+
+    def gn(n, t):
+        return g(np.asarray(t, float) / math.sqrt(n)) ** n
+    # écarts annoncés en t = 1
+    e100 = gn(100, 1.0) - math.exp(-0.5)
+    assert abs(e100 - 0.0191) < 5e-4 and abs(math.exp(-0.5) / 30 - 0.0202) < 1e-4
+    r100 = math.cos(0.1) ** 100
+    assert abs(r100 - 0.6060) < 1e-4 and abs((math.exp(-0.5) - r100) - math.exp(-0.5) / 1200) < 1e-5
+    # la densité h(x) = 2/(π(1+x²)²) a pour fonction caractéristique g (vérification numérique)
+    xs = np.linspace(-400, 400, 800001)
+    h = 2 / (math.pi * (1 + xs ** 2) ** 2)
+    for t in (0.3, 1.0, 2.5):
+        assert abs(np.trapezoid(h * np.cos(t * xs), xs) - g(t)) < 1e-6
+    # l'écart à e^{-t²/2} décroît avec n
+    ts = np.linspace(-4, 4, 801)
+    ecarts = [np.max(np.abs(gn(n, ts) - np.exp(-ts ** 2 / 2))) for n in (1, 10, 100)]
+    assert ecarts[0] > ecarts[1] > ecarts[2]
+    S = Schema(500, 250, 'Fonctions caractéristiques de sommes normalisées de variables de Student')
+    R = Repere(-4.2, 4.2, -0.08, 1.12, 30, 18, 440, 200)
+    R.axes(S, 't', '')
+    R.graphe(S, lambda t: np.exp(-t ** 2 / 2), -4.2, 4.2, 'r', n=500, l=2.2)
+    R.graphe(S, lambda t: gn(1, t), -4.2, 4.2, 'v', n=500, l=1.6)
+    R.graphe(S, lambda t: gn(10, t), -4.2, 4.2, 'b', n=500, l=1.6)
+    S.ligne(R(-0.1, 1), R(0.1, 1), 'g')
+    S.texte(R(0, 1) + [-8, -10], '1', 'g', ancre='end', taille=14)
+    S.texte(R(2.6, float(gn(1, 2.6))) + [10, -12], 'n = 1', 'v', ancre='start', taille=15)
+    S.texte(R(-1.9, float(gn(10, -1.9))) + [-12, -10], 'n = 10', 'b', ancre='end', taille=15)
+    S.texte(R(1.25, math.exp(-1.25 ** 2 / 2)) + [-6, 4], 'e^{−t²/2}', 'r', ancre='end', taille=15)
     return S

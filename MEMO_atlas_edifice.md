@@ -348,7 +348,7 @@ fixes), `dr-chaines` (intégration sur C₁, nulle sur les bords via (s,t) ↦ (
 `dr-chaines` ; Φ : H¹(U) → Hom(H₁(U), ℝ)), `dr-degre1` (Φ injective, primitive construite sur chaque
 classe de points liés par lignes brisées, point de base pris dans une énumération fixée de ℚⁿ, sans choix ;
 corollaire H¹(ℝ²∖0) ≅ ℝ et critère du carré). Surjectivité admise (Mayer-Vietoris de de Rham, partitions de
-l'unité). Remarques de gd-de-rham mises à jour ; accueil : « Trente-trois branches », derham « démontré en
+l'unité) ; démontrée le 29 oct. 2026, voir §35. Remarques de gd-de-rham mises à jour ; accueil : « Trente-trois branches », derham « démontré en
 degré 1 ». Relu par un second agent (trois passes, dix remarques traitées).
 
 Groupes finis (29 oct. 2026, priorité 3) : nouvelle théorie de niveau 0 `gf` (famille alg ; arêtes z, alglin,
@@ -410,7 +410,7 @@ Compléments des théories terminales (29 oct. 2026). Inventaire des « admis »
 cite désormais `p-suites-iid` (elle admettait encore l'existence de variables uniformes indépendantes) et justifie
 l'espérance conditionnelle du tirage ; schéma `mt-montees`. Relu par un second agent (deux passes).
 Restent candidats : tan (factorisation de Dedekind, en cours ; groupe des classes), fourier (continuité de Lévy),
-lie (deux faits admis en remarque), derham (surjectivité, partitions de l'unité).
+lie (deux faits admis en remarque), derham (surjectivité, partitions de l'unité). Tous traités depuis, voir §35.
 Formules longues : 79 fiches ont une formule centrée plus large que l'écran d'un téléphone de 390 px (défilement
 horizontal) ; relevé dans le dossier de travail, à traiter avec l'auteur.
 Factorisation de Dedekind (29 oct. 2026) : trois nœuds dans `tan`, après an-ideaux : `an-dedekind-lemmes` (indice
@@ -474,3 +474,38 @@ Signalés, non tranchés : `nb-zeros` attribue à Mertens une version de l'inég
 conforme aux sources consultées, Elkies : « Mertens' elegant version of the original arguments ») ; `gd-equivalence`
 appelait « norme sur ℚ² » une application sur un espace non réel (corrigé : la remarque élargit la définition aux scalaires
 rationnels et démontre la non-équivalence par densité de ℚ) ; `hk-egalite` (iv) citait mal l'hypothèse (corrigé).
+
+
+## 35. Résultats admis démontrés (29 octobre 2026)
+
+Inventaire complet des « admis » (énoncés, preuves, remarques) ; d'Alembert-Gauss était déjà démontré dans
+`cx-liouville`. Sept résultats démontrés, chacun par un agent auteur puis un relecteur indépendant (une seconde
+relecture pour la preuve réécrite de `ed-flot`), consigne `scratchpad/ch1/consigne_admis.md` (à reprendre) :
+- **Tychonov** (espaces séparés, ⋆ lemme de l'ultrafiltre) : `o-ultrafiltre` (ordin, après `o-zorn` : filtres,
+  ultrafiltres, image, lemme par Zorn, sans notion de fini), `tr-ultrafiltres` et `tr-tychonov` (ar-topo, en aval de
+  top et ordin ; entrée `ordin: [ar-topo]` dans analyse-reelle). `t-tychonov` garde l'énoncé, preuve « Admis ici »
+  avec renvoi. Lexique `filtre`, `ultrafiltre` (défini dans o-ultrafiltre), `filtre-convergent`.
+- **Flot C¹ et Cᵏ, équation variationnelle** (edo, sans choix) : `ed-compacts`, `ed-domaine-flot`,
+  `ed-variationnelle`, `ed-flot-ck` ; preuve de `ed-flot` (ii) réécrite (le critère d'explosion n'était énoncé que
+  pour I × ℝⁿ ; Grönwall et accroissements finis sur boules ouvertes). Lexique `domaine-flot`, `equation-variationnelle`.
+- **Lévy complet et TCL sous moment d'ordre 2** (fourier) : `fo-loi-esperances`, `fo-troncature`, `fo-helly`
+  (sélection sans choix : extraction désignée par la preuve de `ar-bw`, qui prend désormais « le plus petit entier »
+  au-delà des pics), `fo-levy-complet`, `fo-tcl` (η croissante en |t|, sans caractérisation séquentielle).
+  Lexique `suite-tendue`.
+- **Groupe des classes fini, h = 2 pour ℤ[√−5]** (tan, sans choix) : `an-norme-ideal`, `an-petit-element`
+  (tiroirs, constante C_d), `an-classes`, `an-classes-z5`. Seule la borne de Minkowski reste en ouverture.
+  Lexique `norme-ideal`, `groupe-classes`.
+- **Groupe non abélien d'ordre pq unique** (gf) : `gf-multiplicatif` (sous-groupes finis de K^× cycliques,
+  critère |G[ℓ]| ⩽ ℓ, qui justifie l'arête depuis gf-abeliens : 6 croisements au lieu de 7), `gf-pq-non-abelien` ;
+  `gs-corps-finis` (ii) y renvoie. Lexique `racine-primitive`.
+- **Haar, base hilbertienne de L²([0, 1])** (anf) : `m-regularite` (mes, ⋆ choix dénombrable), `f-haar` (conclusion
+  sans théorème de projection ; les L² borélien et de Lebesgue identifiés). Au passage : `f-bases-hilbertiennes` (ii)
+  démontré sans projection, champs `choix` ajoutés à `f-lp` et `f-riesz` ; du Bois-Reymond 1873/1876 harmonisé.
+- **de Rham, surjectivité en degré 1** (derham, sans choix) : `dr-exp`, `dr-plateau`, `dr-recouvrement`,
+  `dr-partition`, `dr-cocycle`, `dr-surjectivite` ; `dr-degre1` (i) dit « isomorphisme ».
+  Lexique `fonction-plateau`, `localement-fini`, `partition-unite`.
+Corrigé aussi : Halpern et Lévy datés de 1971 (anf). 539 nœuds, 302 termes ; croisements inchangés (édifice 16).
+Restent admis, hors de portée : incomplétude de Gödel, Whitney, boule chevelue, invariance du domaine, Hurewicz,
+unités de Dirichlet, Kolmogorov, Carleson, réciproque de `gs-radicaux`, Möbius non orientable, `gd-formes-varietes`
+(réciproque, les outils existent désormais en aval). Candidat signalé : 𝔄₅ plus petit groupe non résoluble (deux ou
+trois fiches, par Sylow). La partie non borélienne mesurable de `m-riemann` est affirmée sans mention « admis ».

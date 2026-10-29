@@ -267,3 +267,60 @@ def tr_sphere():
         S.texte(Q(z, 0) + [0, 18], lab, 'r' if abs(z) == 1 else 'g', taille=15)
     S.texte(Q(0, 0) + [0, 42], 'S^0 = {−1, 1}', 'r', taille=16)
     return S
+
+
+@schema('tr-tychonov')
+def tr_tychonov():
+    # Produit X_1 × X_2 (ici le carré [0, 1]²), point limite x = (x_1, x_2), voisinages U_1, U_2,
+    # bandes p_1^{-1}(U_1), p_2^{-1}(U_2), cylindre U_1 × U_2, et un élément A de l'ultrafiltre.
+    x1, x2 = 0.56, 0.47
+    U1, U2 = (0.43, 0.70), (0.31, 0.63)
+    assert U1[0] < x1 < U1[1] and U2[0] < x2 < U2[1]
+    S = Schema(520, 380, 'Un cylindre ouvert autour de x est l’intersection de deux bandes, chacune dans 𝒱')
+    R = Repere(0, 1, 0, 1, 92, 40, 330, 270)
+    coin = lambda u, v: (R(u[0], v[1]), R(u[1], v[0]))
+    # bande verticale p_1^{-1}(U_1) (bleu) et bande horizontale p_2^{-1}(U_2) (vert)
+    # cylindre U_1 × U_2 (rouge) : on vérifie sur une grille qu'un point y est si et seulement s'il est
+    # dans les deux bandes, et que le dessin (bandes remplies hors du cylindre) couvre chaque point une fois
+    cyl = (U1, U2)
+    g = np.linspace(0.005, 0.995, 199)
+    for u in g:
+        for v in g:
+            dans_b, dans_v = U1[0] < u < U1[1], U2[0] < v < U2[1]
+            dans_c = cyl[0][0] < u < cyl[0][1] and cyl[1][0] < v < cyl[1][1]
+            assert dans_c == (dans_b and dans_v)
+    # remplissages disjoints : bande bleue au-dessus et au-dessous du cylindre, verte à gauche et à droite
+    for u, v, c in [(U1, (U2[1], 1), 'b'), (U1, (0, U2[0]), 'b'), ((0, U1[0]), U2, 'v'), ((U1[1], 1), U2, 'v'),
+                    (U1, U2, 'r')]:
+        (a, b) = coin(u, v)
+        S.surface([a, (b[0], a[1]), b, (a[0], b[1])], c)
+    for u, v, c in [(U1, (0, 1), 'b'), ((0, 1), U2, 'v'), (U1, U2, 'r')]:
+        (a, b) = coin(u, v)
+        S.rect(a[0], a[1], b[0] - a[0], b[1] - a[1], c)
+    S.rect(R(0, 1)[0], R(0, 1)[1], R(1, 0)[0] - R(0, 1)[0], R(1, 0)[1] - R(0, 1)[1], 't')
+    # un élément A de l'ultrafiltre, qui rencontre le cylindre (le cylindre est dans 𝒱)
+    from edifice_svg import blob
+    A = blob((0.36, 0.66), 0.17, 0.15, graine=3, amplitude=0.1)
+    dedans = [(U1[0] < u < U1[1]) and (U2[0] < v < U2[1]) for u, v in A]
+    assert any(dedans) and not all(dedans)
+    assert A[:, 0].min() > 0.02 and A[:, 0].max() < 0.98 and A[:, 1].min() > 0.02 and A[:, 1].max() < 0.98
+    S.poly(R(A[:, 0], A[:, 1]), 't', ferme=True, l=1.8)
+    S.texte(R(0.24, 0.84), 'A', 't')
+    # le point x et ses coordonnées
+    S.point(R(x1, x2), 'r', r=4.4)
+    S.texte(R(x1, x2) + [10, -10], 'x', 'r', ancre='start')
+    for (u, v), lab, c, y in [(U1, 'U_1', 'b', 26)]:
+        S.ligne(R(u, 0) + [0, y], R(v, 0) + [0, y], c, l=3.2)
+        S.texte(R(v, 0) + [8, y], lab, c, ancre='start', taille=16)
+    S.point(R(x1, 0) + [0, 26], 'r', r=3.6)
+    S.texte(R(x1, 0) + [0, 46], 'x_1', 'r', taille=16)
+    S.ligne(R(1, U2[0]) + [26, 0], R(1, U2[1]) + [26, 0], 'v', l=3.2)
+    S.texte(R(1, U2[1]) + [26, -14], 'U_2', 'v', taille=16)
+    S.point(R(1, x2) + [26, 0], 'r', r=3.6)
+    S.texte(R(1, x2) + [38, 0], 'x_2', 'r', ancre='start', taille=16)
+    # noms des bandes
+    S.texte(R((U1[0] + U1[1]) / 2, 1) + [0, -14], 'p_1^{−1}(U_1)', 'b', taille=15)
+    S.texte(R(0, (U2[0] + U2[1]) / 2) + [-8, 0], 'p_2^{−1}(U_2)', 'v', ancre='end', taille=15)
+    S.texte(R(1, 0) + [0, 46], 'X_1', 'g', ancre='end')
+    S.texte(R(0, 1) + [-8, 4], 'X_2', 'g', ancre='end')
+    return S

@@ -2,8 +2,10 @@
 # pour les ouverts de ℝⁿ).
 # Primitives locales des formes fermées, intégrale d'une 1-forme fermée le long d'un chemin seulement
 # continu, invariance par homotopie (découpage d'un carré), intégration sur les chaînes singulières,
-# et injectivité de H¹_dR(U) → Hom(H₁(U), ℝ) ; corollaire : H¹(ℝ² ∖ {0}) ≅ ℝ. La surjectivité, qui
-# demande la suite de Mayer-Vietoris et des partitions de l'unité, est admise et signalée.
+# et injectivité de H¹_dR(U) → Hom(H₁(U), ℝ) ; corollaire : H¹(ℝ² ∖ {0}) ≅ ℝ.
+# Surjectivité démontrée le 29 oct. 2026 : exponentielle par l'intégrale, fonctions plateau, recouvrement
+# localement fini par des cubes, partition de l'unité, chaînes d'accès et périodes locales, recollement ;
+# les cycles sont ramenés aux petites chaînes, sans Mayer-Vietoris. Aucun choix.
 
 graphe: derham
 titre: Théorème de de Rham
@@ -11,7 +13,7 @@ conteneur: derham
 
 entrees:
   geod: [dr-primitives, dr-integrale, dr-degre1]
-  hom: [dr-chaines, dr-degre1]
+  hom: [dr-chaines, dr-surjectivite, dr-degre1]
 
 noeuds:
   - id: dr-primitives
@@ -135,12 +137,311 @@ noeuds:
       - |
         L'intégration est un accouplement entre formes et chaînes : c'est pourquoi le théorème compare $H^1$ à un **dual** de l'homologie, et non à l'homologie elle-même. Comme l'intégrale est réelle alors que les chaînes sont à coefficients entiers, ce dual est $\operatorname{Hom}(H_1(U), \mathbb R)$.
 
+  - id: dr-exp
+    etiquette: Une exponentielle réelle
+    nature: lemme
+    titre: Une fonction égale à sa dérivée, construite par une intégrale
+    texte: |
+      Pour construire, au nœud suivant, une fonction de classe $C^\infty$ nulle sur une demi-droite sans être nulle, il faut une fonction qui croisse plus vite que tout polynôme. On la construit ici à partir de l'intégrale de Riemann.
+
+      Pour $x > 0$, posons
+      $$L(x) = \int_1^x \frac{dt}{t},$$
+      avec la convention $\int_1^x = -\int_x^1$ si $x < 1$.
+    enonce: |
+      (i) $L$ est une bijection strictement croissante et dérivable de $]0, +\infty[$ sur $\lex{ensemble-reels}{\mathbb R}$, avec $L'(x) = 1/x$ et $L(1) = 0$.
+
+      (ii) Sa réciproque $E : \mathbb R \to \,]0, +\infty[$ est dérivable, avec $E' = E$ et $E(0) = 1$ ; elle est donc indéfiniment dérivable, et toutes ses dérivées successives sont égales à $E$.
+
+      (iii) $E(y)\,E(-y) = 1$ pour tout réel $y$.
+
+      (iv) Pour tout $y \geqslant 0$ et tout $m \in \lex{ensemble-entiers-naturels}{\mathbb N}$,
+      $$E(y) \geqslant \frac{y^m}{m!}.$$
+    preuve: |
+      (i) La fonction $t \mapsto 1/t$ est continue sur l'intervalle $]0, +\infty[$. Par le théorème fondamental ({{ar-tfa|Théorème fondamental}}), $L$ est dérivable, de dérivée $x \mapsto 1/x$, strictement positive ; elle est donc continue ({{de-dl1|DL à l'ordre 1}}) et strictement croissante ({{de-monotonie|Monotonie}}, (iii)), et $L(1) = 0$.
+
+      La fonction $x \mapsto L(2x) - L(x)$ a pour dérivée $\frac{2}{2x} - \frac1x = 0$ ({{de-composee|Dérivée d'une composée}}). Elle est donc constante ({{de-monotonie|Monotonie}}, (ii)), égale à sa valeur $L(2)$ en $1$, et $L(2x) = L(x) + L(2)$. Par récurrence, pour $m \in \mathbb N$,
+      $$L(2^{\pm m}) = \pm mL(2),$$
+      avec $L(2) > L(1) = 0$.
+
+      Soit $y$ réel. La propriété d'Archimède ({{ar-archimede|Archimède}}) donne un entier $m$ tel que $mL(2) > |y|$, d'où $L(2^{-m}) < y < L(2^m)$. L'image de $L$ est un intervalle ({{c-tvi|Valeurs intermédiaires}}) qui contient ces deux valeurs, donc $y$ : $L$ est surjective, et c'est une bijection de $]0, +\infty[$ sur $\mathbb R$ ({{c-bijection|Théorème de la bijection}}).
+
+      (ii) Par le théorème de la bijection, $E$ est continue et strictement croissante. En $b = L(a)$, la dérivée $L'(a) = 1/a$ n'est pas nulle, et le nœud {{de-reciproque|Dérivée d'une réciproque}}, (i), donne
+      $$E'(b) = \frac{1}{L'\big(E(b)\big)} = E(b).$$
+      Ainsi $E' = E$, qui est elle-même dérivable, et par récurrence $E^{(k)} = E$ pour tout $k$. Enfin $E(0) = 1$, puisque $L(1) = 0$.
+
+      (iii) La fonction $h(y) = E(y)E(-y)$ est dérivable ({{de-operations|Opérations}}, (ii), et {{de-composee|Dérivée d'une composée}}), de dérivée
+      $$h'(y) = E(y)E(-y) - E(y)E(-y) = 0.$$
+      Elle est donc constante, égale à $h(0) = 1$.
+
+      (iv) Par récurrence sur $m$. Pour $m = 0$, $E(y) \geqslant E(0) = 1$ si $y \geqslant 0$, $E$ étant croissante.
+
+      Si l'inégalité vaut au rang $m$, la fonction $u(y) = E(y) - \frac{y^{m+1}}{(m+1)!}$ a pour dérivée, sur $[0, +\infty[$,
+      $$u'(y) = E(y) - \frac{y^m}{m!} \geqslant 0.$$
+      Elle est donc croissante ({{de-monotonie|Monotonie}}, (i)), et $u(y) \geqslant u(0) = 1 > 0$.
+    remarques:
+      - |
+        La fonction $E$ est l'exponentielle réelle, et $L$ le logarithme : un calcul numérique de l'intégrale donne $L(2) \approx 0{,}6931$, et la résolution de $L(x) = 1$ donne $E(1) \approx 2{,}7183$. L'atlas définit l'exponentielle par une série en {{cx-exponentielle|analyse complexe}}, qui n'est pas un ancêtre de cette branche. On n'a besoin ici que des propriétés (ii) à (iv), que l'intégrale de Riemann suffit à établir.
+      - |
+        L'inégalité (iv) est le seul point qui servira. Avec (iii), elle donne, pour $x > 0$ et $m$ fixé,
+        $$E(-1/x) = \frac{1}{E(1/x)} \leqslant m!\,x^m.$$
+        Cette décroissance plus rapide que toute puissance de $x$, quand $x$ tend vers $0$, est exactement ce qu'exige une fonction $C^\infty$ nulle sur une demi-droite, au nœud suivant.
+
+  - id: dr-plateau
+    etiquette: Fonctions plateau
+    nature: lemme
+    titre: Une fonction plateau sur chaque cube
+    texte: |
+      Soit $E$ la fonction du nœud {{dr-exp|Une exponentielle réelle}}. On pose $\theta(x) = E(-1/x)$ pour $x > 0$, et $\theta(x) = 0$ pour $x \leqslant 0$.
+
+      Pour $p \in \lex{n-uplet}{\mathbb R^n}$ et $r > 0$, on pose
+      $$\psi_{p,r}(y) = \prod_{l=1}^n \theta\big(r^2 - (y_l - p_l)^2\big).$$
+
+      Une [[fonction-plateau|fonction plateau]] sur $\mathbb R^n$ est une fonction de classe $C^\infty$, nulle hors d'une partie compacte, sans être identiquement nulle.
+    enonce: |
+      (i) $\theta$ est de classe $C^\infty$ sur $\lex{ensemble-reels}{\mathbb R}$ ; elle est nulle sur $]{-\infty}, 0]$ et strictement positive sur $]0, +\infty[$. Toutes ses dérivées successives sont nulles en $0$, et, pour $x > 0$, $\theta^{(k)}(x) = P_k(1/x)\,\theta(x)$, où les polynômes $P_k$ sont définis par $P_0 = 1$ et
+      $$P_{k+1}(u) = u^2\big(P_k(u) - P_k'(u)\big).$$
+
+      (ii) $\psi_{p,r}$ est une fonction plateau : elle est de classe $C^\infty$ sur $\mathbb R^n$, strictement positive sur le cube ouvert $B_\infty(p, r)$, et nulle en dehors.
+    preuve: |
+      (i) *Signe, et dérivées hors de $0$.* $E$ est à valeurs strictement positives, d'où le signe. Sur $]0, +\infty[$, $\theta$ est la composée de $x \mapsto -1/x$ et de $E$, et $\theta'(x) = \frac{1}{x^2}\,\theta(x)$ ({{de-composee|Dérivée d'une composée}}). Si $\theta^{(k)}(x) = P_k(1/x)\,\theta(x)$ sur $]0, +\infty[$, la dérivée de ce produit est
+      $$\begin{aligned} &-\frac{1}{x^2}P_k'\Big(\frac1x\Big)\theta(x) + P_k\Big(\frac1x\Big)\frac{\theta(x)}{x^2} \\ &\quad = P_{k+1}\Big(\frac1x\Big)\theta(x). \end{aligned}$$
+
+      *Une majoration.* Soit $P$ un polynôme de degré au plus $d$, dont la somme des valeurs absolues des coefficients vaut $A$. Pour $0 < x \leqslant 1$, chaque terme $c_jx^{-j}$ est majoré en valeur absolue par $|c_j|\,x^{-d}$, donc $|P(1/x)| \leqslant A\,x^{-d}$. Par {{dr-exp|Une exponentielle réelle}}, (iii) et (iv), avec $m = d + 2$,
+      $$\theta(x) = \frac{1}{E(1/x)} \leqslant (d+2)!\,x^{d+2}.$$
+      Ainsi $|P(1/x)\,\theta(x)| \leqslant A\,(d+2)!\,x^2$ pour $0 < x \leqslant 1$.
+
+      *Récurrence.* Montrons que, pour tout $k$, $\theta$ est $k$ fois dérivable sur $\mathbb R$, avec $\theta^{(k)} = 0$ sur $]{-\infty}, 0]$ et $\theta^{(k)}(x) = P_k(1/x)\,\theta(x)$ pour $x > 0$. C'est vrai pour $k = 0$.
+
+      Supposons-le au rang $k$. Sur $]{-\infty}, 0[$, $\theta^{(k)}$ est nulle, de dérivée nulle ; sur $]0, +\infty[$, elle a la dérivée calculée plus haut. En $0$, le taux d'accroissement
+      $$\frac{\theta^{(k)}(h) - \theta^{(k)}(0)}{h}$$
+      est nul pour $h < 0$, et majoré en valeur absolue par $A\,(d+2)!\,h$ pour $0 < h \leqslant 1$, par la majoration appliquée à $P_k$ ; il tend vers $0$, et $\theta^{(k+1)}(0) = 0$.
+
+      *Conclusion.* Chaque $\theta^{(k)}$ est dérivable sur $\mathbb R$, donc continue ({{de-dl1|DL à l'ordre 1}}) : $\theta$ est de classe $C^k$ pour tout $k$ au sens du nœud {{de-taylor|Taylor-Lagrange}}. C'est aussi la classe $C^k$ du nœud {{gd-classe-ck|Classe Cᵏ}} pour $n = 1$, par récurrence sur $k$, puisque $d\theta(x)(h) = h\,\theta'(x)$ ({{gd-differentielle|Différentielle}}, (ii)) et que $\theta'$ a la même forme que $\theta$ : dérivable en tout point, de dérivée elle-même dérivable à tout ordre.
+
+      (ii) Pour chaque $l$, la fonction $y \mapsto r^2 - (y_l - p_l)^2$ est polynomiale, donc de classe $C^\infty$, et sa composée avec $\theta$ l'est aussi ({{gd-classe-ck|Classe Cᵏ}}, (iii)), ainsi que le produit des $n$ facteurs.
+
+      Chaque facteur est positif, et strictement positif si et seulement si $|y_l - p_l| < r$. Le produit est donc strictement positif si et seulement si $\|y - p\|_\infty < r$, et nul sinon. Il est nul hors du cube fermé $\prod_l [p_l - r, p_l + r]$, fermé et borné, donc compact ({{me-rn|L'espace ℝⁿ}}, (iii)), et il n'est pas nul en $p$.
+    remarques:
+      - |
+        Les premiers polynômes sont $P_1(u) = u^2$, $P_2(u) = u^4 - 2u^3$ et $P_3(u) = u^6 - 6u^5 + 6u^4$, comme on le vérifie en dérivant $\theta$ à la machine. Comme $P_2(u) = u^3(u - 2)$, la dérivée seconde de $\theta$ ne s'annule sur $]0, +\infty[$ qu'en $x = 1/2$ : $\theta$ est convexe sur $]0, 1/2]$, concave au-delà, et c'est en $x = 1/2$ que sa pente, $\theta'(1/2) = 4\theta(1/2) \approx 0{,}541$, est maximale.
+
+        Les valeurs $\theta(1) \approx 0{,}368$, $\theta(1/2) \approx 0{,}135$ et $\theta(1/10) \approx 4{,}5 \cdot 10^{-5}$ montrent à quel point elle est plate près de $0$.
+
+        ```schema dr-plateau
+        À gauche, la fonction $\theta$, nulle sur $]{-\infty}, 0]$, qui quitte l'axe sans angle ni saut ; le point rouge, d'abscisse $x = 1/2$, est son unique point d'inflexion. À droite, la fonction plateau $\psi_{0,1}$ sur $\mathbb R$, soit $t \mapsto \theta(1 - t^2)$, strictement positive sur $]{-1}, 1[$ et nulle en dehors ; son maximum, en $0$, vaut $\theta(1) \approx 0{,}368$.
+        ```
+      - |
+        L'erreur la plus répandue est de croire qu'une fonction de classe $C^\infty$ est la somme de sa série de Taylor. Ici toutes les dérivées en $0$ sont nulles, si bien que le polynôme de Taylor en $0$ est nul à tout ordre, alors que $\theta(x) > 0$ pour $x > 0$ : dans la formule de Taylor-Lagrange ({{de-taylor|Taylor-Lagrange}}), le reste porte à lui seul toute la valeur de la fonction. C'est précisément cette souplesse, interdite aux fonctions développables en série entière, qui permettra de recoller des objets locaux.
+      - |
+        Ce sont les fonctions dont l'absence est signalée au nœud {{gd-formes-varietes|Formes sur une variété}}, où elles manquent pour démontrer qu'une variété orientable porte une forme volume. Elles sont construites ici, en aval de ce nœud, et ne servent dans l'atlas qu'aux partitions de l'unité de ce graphe.
+
+  - id: dr-recouvrement
+    etiquette: Recouvrement par des cubes
+    nature: lemme
+    titre: Un recouvrement localement fini de l'ouvert par des cubes
+    texte: |
+      Soit $U$ un ouvert non vide de $\lex{n-uplet}{\mathbb R^n}$, muni de $\|\cdot\|_\infty$. Si $U \neq \mathbb R^n$, notons
+      $$d(x) = \inf_{a \notin U} \|x - a\|_\infty$$
+      et $\delta(x) = \min\big(1, d(x)\big)$ ; si $U = \mathbb R^n$, posons $\delta = 1$.
+
+      Soit $I$ l'ensemble des couples $i = (k, p)$, où $k \in \lex{ensemble-entiers-naturels}{\mathbb N}$ et $p \in 2^{-k-4}\,\lex{ensemble-entiers-relatifs}{\mathbb Z}^n$ vérifient
+      $$2^{-k-2} \leqslant \delta(p) \leqslant 2^{1-k}.$$
+      On note $p_i = p$, $r_i = 2^{-k-3}$ et $B_i = B_\infty(p_i, r_i)$ : c'est une boule au sens du nœud {{dr-primitives|Primitives locales}}, que l'on appelle aussi un **cube**.
+
+      Une famille de parties de $U$ est [[localement-fini|localement finie]] si tout point de $U$ a un voisinage qui ne rencontre qu'un nombre fini d'entre elles.
+    enonce: |
+      (i) $|\delta(x) - \delta(y)| \leqslant \|x - y\|_\infty$ pour tous $x, y$. Pour $x \in U$, $\delta(x) > 0$ et $B_\infty(x, \delta(x)) \subset U$ ; pour $x \notin U$, $\delta(x) = 0$.
+
+      (ii) Chaque cube $B_i$ est contenu dans $U$, et les cubes recouvrent $U$.
+
+      (iii) Pour $x \in U$, le voisinage $W_x = B_\infty(x, \delta(x)/4)$, contenu dans $U$, ne rencontre qu'un nombre fini de cubes : la famille $(B_i)_{i \in I}$ est localement finie.
+
+      (iv) Si $B_i \cap B_j \neq \varnothing$, le segment $[p_i, p_j]$ est contenu dans $B_i \cup B_j$, et $B_i \cap B_j$ est convexe.
+
+      (v) L'application $(k, p) \mapsto (k, p_1, \dots, p_n)$ est une injection de $I$ dans $\lex{n-uplet}{\mathbb Q^{n+1}}$. Une bijection de $\mathbb N$ sur $\mathbb Q^{n+1}$ étant fixée ({{q-denombrable|ℚ est dénombrable}}, (ii)), on en déduit sur $I$ un [[bon-ordre|bon ordre]] : un ordre total pour lequel toute partie non vide a un plus petit élément.
+    preuve: |
+      (i) Si $U = \mathbb R^n$, tout est clair. Sinon, pour $a \notin U$,
+      $$\|x - a\|_\infty \leqslant \|x - y\|_\infty + \|y - a\|_\infty ;$$
+      en passant à la borne inférieure en $a$, $d(x) \leqslant \|x - y\|_\infty + d(y)$, et de même en échangeant $x$ et $y$. L'application $s \mapsto \min(1, s)$ vérifie $|\min(1, s) - \min(1, t)| \leqslant |s - t|$, d'où l'inégalité pour $\delta$.
+
+      Si $x \notin U$, le choix $a = x$ donne $d(x) = 0$. Si $x \in U$, il existe $\varepsilon > 0$ tel que $B_\infty(x, \varepsilon) \subset U$, $U$ étant ouvert ({{me-rn|L'espace ℝⁿ}}, (i)) ; tout $a \notin U$ vérifie alors $\|x - a\|_\infty \geqslant \varepsilon$, et $d(x) \geqslant \varepsilon > 0$. Enfin, si $\|y - x\|_\infty < \delta(x)$, le point $y$ est dans $U$, puisque sinon $d(x) \leqslant \|x - y\|_\infty < d(x)$.
+
+      (ii) *Inclusion.* Pour $i = (k, p)$, $\delta(p) \geqslant 2^{-k-2} > 0$, donc $p \in U$ par (i), et $r_i = 2^{-k-3} < \delta(p)$ : par (i) encore, $B_i \subset B_\infty(p, \delta(p)) \subset U$.
+
+      *Recouvrement.* Soit $x \in U$. La propriété d'Archimède ({{ar-archimede|Archimède}}) donne un entier $N \geqslant 1$ tel que $N\delta(x) > 1$, et $2^{-N} \leqslant 1/N < \delta(x)$ ; soit $k$ le plus petit entier tel que $2^{-k-1} < \delta(x)$ ({{n-ordre|Bon ordre sur ℕ}}). Alors $\delta(x) \leqslant 2^{-k}$ : par minimalité si $k \geqslant 1$, et parce que $\delta \leqslant 1$ si $k = 0$.
+
+      Pour chaque $l$, soit $m_l$ le plus grand entier tel que $m_l \leqslant 2^{k+4}x_l + \frac12$, qui existe par la propriété d'Archimède et le bon ordre ; alors $|2^{k+4}x_l - m_l| \leqslant \frac12$. Le point $p = 2^{-k-4}(m_1, \dots, m_n)$ vérifie donc $\|x - p\|_\infty \leqslant 2^{-k-5}$, et, par (i),
+      $$\begin{aligned} \delta(p) &\geqslant \delta(x) - 2^{-k-5} \\ &> 2^{-k-1} - 2^{-k-5} \geqslant 2^{-k-2}, \\ \delta(p) &\leqslant \delta(x) + 2^{-k-5} \\ &\leqslant 2^{-k} + 2^{-k-5} \leqslant 2^{1-k}. \end{aligned}$$
+      Ainsi $i = (k, p) \in I$, et $x \in B_i$, puisque $2^{-k-5} < r_i$.
+
+      (iii) $W_x \subset U$ par (i). Soit $y \in W_x \cap B_i$, avec $i = (k, p)$. D'une part $|\delta(y) - \delta(x)| < \delta(x)/4$ par (i). D'autre part $\|y - p\|_\infty < 2^{-k-3}$, donc, toujours par (i),
+      $$\begin{aligned} 2^{-k-3} &\leqslant \delta(p) - 2^{-k-3} < \delta(y), \\ \delta(y) &< \delta(p) + 2^{-k-3} < 2^{2-k}. \end{aligned}$$
+      On en tire $2^{-k-3} < \frac54\,\delta(x)$ et $2^{2-k} > \frac34\,\delta(x)$, c'est-à-dire
+      $$\frac{3}{16}\,\delta(x) < 2^{-k} < 10\,\delta(x),$$
+      ce que ne vérifie qu'un nombre fini d'entiers $k$. Pour chacun d'eux, $\|p - x\|_\infty < \delta(x)/4 + 2^{-k-3}$, et chaque coordonnée de $2^{k+4}p$ est un entier d'un intervalle borné : il n'y a qu'un nombre fini de tels $p$.
+
+      (iv) Notons $u = p_j - p_i$. Un point commun à $B_i$ et $B_j$ est à distance $< r_i$ de $p_i$ et $< r_j$ de $p_j$, donc $\|u\|_\infty < r_i + r_j$. Pour $t \in [0, 1]$, le point $p_i + tu$ est à distance $t\|u\|_\infty$ de $p_i$ et $(1 - t)\|u\|_\infty$ de $p_j$.
+
+      Si $t \leqslant \frac{r_i}{r_i + r_j}$, la première distance est $< r_i$ ; sinon, $1 - t < \frac{r_j}{r_i + r_j}$, et la seconde est $< r_j$. Enfin, l'intersection de deux convexes est convexe.
+
+      (v) Les coordonnées de $p$ sont des rationnels, et deux couples de même image sont égaux. On pose $i < i'$ si l'image de $i$ a un rang strictement plus petit que celle de $i'$ dans la bijection fixée : c'est un ordre total, et une partie non vide de $I$ a pour plus petit élément celui dont l'image a le plus petit rang ({{n-ordre|Bon ordre sur ℕ}}).
+    remarques:
+      - |
+        Pour $U = \mathbb R^2 \setminus \{0\}$, on a $\delta(x) = \min(1, \|x\|_\infty)$. Au point $x = \big(\frac3{10}, \frac1{10}\big)$, $\delta(x) = \frac3{10}$, d'où $k = 1$. L'arrondi de la preuve donne $p = \big(\frac5{16}, \frac3{32}\big)$, à distance $\frac1{80}$ de $x$, centre d'un cube de rayon $\frac1{16}$, et $\delta(p) = \frac5{16}$ est bien compris entre $\frac18$ et $1$.
+
+        Un dénombrement exhaustif, fait à la machine, montre que $x$ appartient à $44$ cubes, de trois tailles ($k = 0$, $1$ et $2$), et que $W_x$ en rencontre $418$. La famille est localement finie sans être clairsemée : seule compte la finitude, non la petitesse du nombre.
+      - |
+        L'erreur la plus tentante serait de prendre tous les cubes à centre et rayon rationnels contenus dans $U$. Ils recouvrent $U$, mais chaque point appartient à une infinité d'entre eux, de rayons arbitrairement petits, et la somme du nœud {{dr-partition|Partition de l'unité}} serait infinie. Ici le rayon $r_i$ est lié à $\delta(p_i)$, la distance au bord de $U$ : les cubes rapetissent à l'approche du bord, assez pour rester dans $U$, mais pas davantage, et c'est ce qui assure la finitude locale.
+      - |
+        Aucun choix n'intervient. Le cube qui contient un point est donné par un arrondi explicite, et l'ordre de (v) permettra, au nœud {{dr-cocycle|Périodes locales}}, de désigner sans choix un élément parmi une infinité de candidats.
+
+  - id: dr-partition
+    etiquette: Partition de l'unité
+    nature: proposition
+    titre: Partition de l'unité subordonnée aux cubes
+    texte: |
+      On garde les notations du nœud {{dr-recouvrement|Recouvrement par des cubes}}, et l'on pose $\psi_i = \psi_{p_i, r_i}$ pour $i \in I$ ({{dr-plateau|Fonctions plateau}}).
+
+      Une [[partition-unite|partition de l'unité]] subordonnée à la famille $(B_i)_{i \in I}$ est une famille $(\chi_i)_{i \in I}$ de fonctions positives de classe $C^\infty$ sur $U$, telle que $\chi_i$ soit nulle hors de $B_i$, que la famille des parties $\{\chi_i \neq 0\}$ soit localement finie, et que $\sum_i \chi_i = 1$ sur $U$, la somme n'ayant en chaque point qu'un nombre fini de termes non nuls.
+    enonce: |
+      (i) *La classe $C^\infty$ est locale.* Soit $O$ un ouvert de $\mathbb R^n$, $f : O \to \mathbb R^q$ et $(V_\alpha)$ une famille d'ouverts de réunion $O$. Si chaque restriction $f|_{V_\alpha}$ est de classe $C^\infty$, $f$ l'est.
+
+      (ii) La fonction $S = \sum_{i \in I} \psi_i$ est bien définie sur $U$, et elle y est de classe $C^\infty$ et strictement positive.
+
+      (iii) Les fonctions $\chi_i = \psi_i/S$ forment une partition de l'unité subordonnée à $(B_i)$, et $\chi_i(x) \neq 0$ si et seulement si $x \in B_i$.
+    preuve: |
+      (i) Montrons par récurrence sur $k$ que $f$ est de classe $C^k$, pour toutes les applications $f$ et tous les $q$ à la fois.
+
+      Pour $k = 0$, la continuité en un point ne dépend que des valeurs de $f$ au voisinage de ce point. Il en va de même de la différentiabilité en $a \in V_\alpha$ : sa définition ({{gd-differentielle|Différentielle}}) ne fait intervenir $f(a + h)$ que pour $h$ petit, de sorte que $f$ est différentiable en $a$, avec $df(a) = d(f|_{V_\alpha})(a)$.
+
+      Si chaque $f|_{V_\alpha}$ est de classe $C^{k+1}$, $f$ est donc différentiable en tout point, et la restriction de $df$ à $V_\alpha$, qui est $d(f|_{V_\alpha})$, vue à valeurs dans $\mathbb R^{qn}$, est de classe $C^k$. Par hypothèse de récurrence, $df$ est de classe $C^k$ sur $O$, et $f$ est de classe $C^{k+1}$ ({{gd-classe-ck|Classe Cᵏ}}).
+
+      (ii) Soit $x \in U$. Sur $W_x$, les $\psi_i$ dont le cube ne rencontre pas $W_x$ sont nulles ({{dr-plateau|Fonctions plateau}}, (ii)), et il n'en reste qu'un nombre fini ({{dr-recouvrement|Recouvrement par des cubes}}, (iii)). La somme a donc un sens en chaque point, et sa restriction à $W_x$ est une somme finie de fonctions de classe $C^\infty$, qui l'est ({{gd-classe-ck|Classe Cᵏ}}, (ii)). Les $W_x$ sont des ouverts de réunion $U$, et (i) conclut.
+
+      Enfin $x$ appartient à un cube $B_i$ ({{dr-recouvrement|Recouvrement par des cubes}}, (ii)), où $\psi_i(x) > 0$, les autres termes étant positifs : $S(x) > 0$.
+
+      (iii) La fonction $t \mapsto 1/t$ est de classe $C^\infty$ sur $]0, +\infty[$ : si elle est de classe $C^k$, sa dérivée $-\frac1t \cdot \frac1t$ l'est aussi, comme produit ({{gd-classe-ck|Classe Cᵏ}}, (iii)), et elle est donc de classe $C^{k+1}$. Par composition et produit, $\chi_i = \psi_i \cdot \frac1S$ est de classe $C^\infty$ sur $U$.
+
+      Elle est positive, et non nulle exactement là où $\psi_i$ l'est, c'est-à-dire sur $B_i$. La famille des $B_i$ est localement finie, et $\sum_i \chi_i = S/S = 1$.
+    remarques:
+      - |
+        Une partition de l'unité sert à recoller. Des objets définis chacun sur un cube, par exemple des fonctions $f_i$, se combinent en $\sum_i \chi_i f_i$, définie sur tout $U$ et égale à $f_i$ près d'un point qui n'appartient qu'au cube $B_i$. Le nœud {{dr-surjectivite|Surjectivité}} l'emploie ainsi, avec des constantes en guise d'objets locaux.
+      - |
+        Pour $U = \mathbb R^2 \setminus \{0\}$ et le point $x = \big(\frac3{10}, \frac1{10}\big)$ du nœud {{dr-recouvrement|Recouvrement par des cubes}}, la somme $S(x)$ compte $44$ termes non nuls, un par cube contenant $x$. Une partition de l'unité n'attribue donc pas chaque point à un seul cube : elle en fait une moyenne pondérée de nombreux cubes, dont les poids $\chi_i(x)$ dépendent de la position de $x$ dans chacun.
+      - |
+        Une construction analogue, faite carte par carte, fournit des partitions de l'unité sur les variétés séparées à base dénombrable ({{gd-varietes|Variétés}}). C'est l'outil qui manque au nœud {{gd-formes-varietes|Formes sur une variété}} pour démontrer qu'une variété orientable porte une forme volume ; ce résultat y reste admis, ce nœud précédant celui-ci.
+
+  - id: dr-cocycle
+    etiquette: Périodes locales
+    nature: lemme
+    titre: Chaînes d'accès et périodes locales d'un morphisme
+    texte: |
+      On garde les notations du nœud {{dr-recouvrement|Recouvrement par des cubes}}, et l'on fixe un morphisme $\varphi : \lex{homologie-singuliere}{H_1}(U) \to \mathbb R$. Pour deux points $x, y$ de $\lex{n-uplet}{\mathbb R^n}$, $[x, y]$ désigne le simplexe affine $t \mapsto t_0x + t_1y$ ({{h-subdivision|Subdivision barycentrique}}), d'image le segment $[x, y]$ et de bord $y - x$ ; c'est un simplexe singulier de $U$ dès que ce segment est contenu dans $U$.
+
+      Une **chaîne de cubes** de $i$ à $j$ est une suite $(i_0, \dots, i_m)$ d'éléments de $I$, avec $i_0 = i$, $i_m = j$ et $B_{i_{l-1}} \cap B_{i_l} \neq \varnothing$ pour $1 \leqslant l \leqslant m$. Être reliés par une chaîne de cubes est une relation d'équivalence sur $I$, par renversement et concaténation des chaînes. On note $b(i)$ le plus petit élément de la classe de $i$, pour l'ordre du nœud {{dr-recouvrement|Recouvrement par des cubes}}, (v).
+
+      La **chaîne d'accès** de $i$ est, parmi les chaînes de cubes de $b(i)$ à $i$ de longueur $m$ minimale, la plus petite pour l'ordre lexicographique. On prend le plus petit $i_1$ par lequel commence une telle chaîne, puis, parmi celles qui commencent par $(i_0, i_1)$, le plus petit $i_2$ possible, et ainsi de suite pendant $m$ étapes. À chaque étape, l'ensemble des candidats est non vide, puisque le début déjà construit est celui d'une chaîne de longueur $m$, et il a un plus petit élément par le nœud {{dr-recouvrement|Recouvrement par des cubes}}, (v). La chaîne obtenue est plus petite que toute autre chaîne de cubes de $b(i)$ à $i$ de longueur $m$, au premier indice où elles diffèrent. On lui associe la $1$-chaîne
+      $$c_i = \sum_{l=1}^m [p_{i_{l-1}}, p_{i_l}],$$
+      nulle si $i = b(i)$, et, pour $x \in B_i$,
+      $$\kappa_i(x) = c_i + [p_i, x].$$
+    enonce: |
+      (i) $c_i$ et $\kappa_i(x)$ sont des chaînes de $U$, et $\partial\kappa_i(x) = x - p_{b(i)}$.
+
+      (ii) Si $\tau : \Delta_1 \to U$ est un simplexe singulier à valeurs dans $B_i$, d'extrémités $x = \tau(e_0)$ et $y = \tau(e_1)$, alors $\tau - \kappa_i(y) + \kappa_i(x)$ est un bord de $U$.
+
+      (iii) Si $B_i \cap B_j \neq \varnothing$, alors $b(i) = b(j)$, et, pour $x \in B_i \cap B_j$, $\kappa_i(x) - \kappa_j(x)$ est un cycle dont la classe ne dépend pas de $x$. On pose
+      $$a_{ij} = \varphi\big([\kappa_i(x) - \kappa_j(x)]\big).$$
+
+      (iv) Si $x \in B_i \cap B_j \cap B_{j'}$, alors $a_{ij} + a_{jj'} = a_{ij'}$ ; de plus $a_{ii} = 0$.
+    preuve: |
+      (i) Le segment $[p_{i_{l-1}}, p_{i_l}]$ est contenu dans $B_{i_{l-1}} \cup B_{i_l}$, donc dans $U$ ({{dr-recouvrement|Recouvrement par des cubes}}, (ii) et (iv)), et le segment $[p_i, x]$ dans le cube convexe $B_i$. La somme des bords est télescopique :
+      $$\begin{aligned} \partial\kappa_i(x) &= \sum_{l=1}^m (p_{i_l} - p_{i_{l-1}}) + (x - p_i) \\ &= x - p_{b(i)}. \end{aligned}$$
+
+      (ii) La chaîne $\tau + [p_i, x] - [p_i, y]$ est formée de simplexes à valeurs dans $B_i$, et son bord est
+      $$(y - x) + (x - p_i) - (y - p_i) = 0 :$$
+      c'est un cycle de $B_i$. Le cube $B_i$, convexe, est étoilé et a l'homologie d'un point ({{h-homotopie|Invariance par homotopie}}, (ii)). Donc $H_1(B_i) = 0$, et ce cycle est le bord d'une $2$-chaîne de $B_i$, qui est aussi une chaîne de $U$. Or $\tau + [p_i, x] - [p_i, y] = \tau - \kappa_i(y) + \kappa_i(x)$, les termes $c_i$ se compensant.
+
+      (iii) La suite $(i, j)$ est une chaîne de cubes : $i$ et $j$ ont la même classe, et $b(i) = b(j)$. Par (i), le bord de $\kappa_i(x) - \kappa_j(x)$ est $(x - p_{b(i)}) - (x - p_{b(j)}) = 0$.
+
+      Si $x, y \in B_i \cap B_j$, le simplexe $[x, y]$ est à valeurs dans $B_i \cap B_j$, qui est convexe ({{dr-recouvrement|Recouvrement par des cubes}}, (iv)). Par (ii), appliqué dans $B_i$ puis dans $B_j$, les chaînes $[x, y] - \kappa_i(y) + \kappa_i(x)$ et $[x, y] - \kappa_j(y) + \kappa_j(x)$ sont des bords. Leur différence,
+      $$\big(\kappa_i(x) - \kappa_j(x)\big) - \big(\kappa_i(y) - \kappa_j(y)\big),$$
+      en est un aussi : les deux cycles ont la même classe.
+
+      (iv) Avec le même point $x$,
+      $$\begin{aligned} &\big(\kappa_i(x) - \kappa_j(x)\big) + \big(\kappa_j(x) - \kappa_{j'}(x)\big) \\ &\quad = \kappa_i(x) - \kappa_{j'}(x), \end{aligned}$$
+      et $\varphi$ est un morphisme. Pour $a_{ii}$, le cycle est nul.
+    remarques:
+      - |
+        Le nombre $a_{ij}$ est la valeur de $\varphi$ sur un lacet : partir du centre du cube de base, suivre la chaîne d'accès de $i$ jusqu'à $p_i$, aller en $x$, puis revenir par $p_j$ et la chaîne d'accès de $j$, parcourue à rebours. Sur $\mathbb R^2 \setminus \{0\}$, ce lacet fait le tour de l'origine lorsque les deux chaînes d'accès la contournent de part et d'autre.
+
+        ```schema dr-cocycle
+        Pour $U = \mathbb R^2 \setminus \{0\}$, les cubes dessinés appartiennent au recouvrement (ici $k = 0$, rayon $\frac18$). Deux chaînes de cubes partent d'un cube pris pour base, grisé, de centre $p_b$ : l'une contourne l'origine par le haut jusqu'au cube $B_i$, en bleu, l'autre par le bas jusqu'au cube $B_j$, en vert. Ce ne sont pas les chaînes d'accès, plus courtes, et dont le cube de base dépend de l'énumération fixée ; la démonstration permet de les mettre à leur place (remarque 2 du nœud {{dr-surjectivite|Surjectivité}}). Avec les segments rouges qui joignent leurs centres au point $x$ de $B_i \cap B_j$, elles forment un lacet qui fait une fois le tour de l'origine, et le nombre qu'il définit vaut $\varphi$ de la classe d'un tour.
+        ```
+      - |
+        L'erreur la plus tentante est de poser directement « $\varphi(\kappa_i(x))$ ». Or $\varphi$ n'est définie que sur les classes de cycles, et $\kappa_i(x)$, de bord $x - p_{b(i)}$, n'en est pas un. Seules les différences $\kappa_i(x) - \kappa_j(x)$, qui reviennent à leur point de départ, ont une valeur ; c'est pourquoi les nombres $a_{ij}$ sont attachés aux paires de cubes qui se rencontrent, et non aux cubes eux-mêmes.
+      - |
+        Les chaînes d'accès sont désignées sans choix, comme plus petits éléments d'ensembles de suites finies, grâce à l'ordre fixé sur $I$. Choisir arbitrairement un chemin vers chacun des cubes, en nombre infini, serait un usage de l'axiome du choix dénombrable ; la règle du plus petit élément l'évite.
+
+  - id: dr-surjectivite
+    etiquette: Surjectivité
+    nature: théorème
+    titre: Formes fermées de périodes prescrites
+    enonce: |
+      Soit $U$ un ouvert de $\lex{n-uplet}{\mathbb R^n}$ et $\varphi : \lex{homologie-singuliere}{H_1}(U) \to \mathbb R$ un morphisme. Il existe une forme fermée $\omega$ de degré $1$ sur $U$ telle que
+      $$\int_z \omega = \varphi([z])$$
+      pour tout cycle $z \in Z_1(U)$. Autrement dit, l'application $\Phi : \lex{cohomologie-de-rham}{H^1}(U) \to \operatorname{Hom}\big(H_1(U), \mathbb R\big)$ du nœud {{dr-chaines|Intégration sur les chaînes}} est surjective.
+    preuve: |
+      Si $U$ est vide, il n'y a rien à démontrer. Sinon, on reprend les cubes $B_i$ ({{dr-recouvrement|Recouvrement par des cubes}}), la partition de l'unité $(\chi_j)$ ({{dr-partition|Partition de l'unité}}) et les nombres $a_{ij}$ attachés à $\varphi$ ({{dr-cocycle|Périodes locales}}).
+
+      *Primitives locales.* Pour $i \in I$, soit $J_i$ l'ensemble des $j$ tels que $B_i \cap B_j \neq \varnothing$, et, sur $B_i$,
+      $$g_i = \sum_{j \in J_i} a_{ij}\,\chi_j.$$
+      Sur l'ouvert $W_x \cap B_i$, pour $x \in B_i$, seuls un nombre fini de termes ne sont pas identiquement nuls ; $g_i$ est donc de classe $C^\infty$ sur $B_i$ ({{dr-partition|Partition de l'unité}}, (i)).
+
+      *Leurs différences sont constantes.* Soit $x \in B_i \cap B_{j'}$. Si $\chi_j(x) \neq 0$, alors $x \in B_j$, de sorte que $j \in J_i \cap J_{j'}$ et que $a_{ij} - a_{j'j} = a_{ij'}$ ({{dr-cocycle|Périodes locales}}, (iv)) ; les autres $\chi_j$ sont nulles en $x$. Donc
+      $$\begin{aligned} g_i(x) - g_{j'}(x) &= \sum_j (a_{ij} - a_{j'j})\,\chi_j(x) \\ &= a_{ij'}\sum_j \chi_j(x) = a_{ij'}. \end{aligned}$$
+
+      *La forme.* Sur l'ouvert $B_i \cap B_{j'}$, la différence $g_i - g_{j'}$ est constante, donc $dg_i = dg_{j'}$. On définit $\omega$ en posant $\omega_x = dg_i(x)$ pour un $i$ quelconque tel que $x \in B_i$. Ses coefficients sont les $\partial_l g_i$ sur chaque cube ; ils sont de classe $C^\infty$ sur chaque cube, donc sur $U$ ({{dr-partition|Partition de l'unité}}, (i)), et $\omega$ est une forme différentielle de degré $1$.
+
+      Sur chaque cube, $\omega = dg_i$, et $d\omega = d(dg_i) = 0$ ({{gd-formes|Formes différentielles}}, (ii)), puisque $d\omega$ ne dépend en chaque point que des dérivées des coefficients. Ainsi $\omega$ est fermée, et $g_i$ en est une primitive sur la boule $B_i$, au sens du nœud {{dr-primitives|Primitives locales}}.
+
+      *Réduction aux petites chaînes.* Soit $z$ un cycle. Le théorème des petites chaînes ({{h-petites-chaines|Petites chaînes}}), appliqué à l'ensemble des cubes, fournit $\rho$ et $D$ tels que
+      $$z - \rho(z) = \partial Dz + D\partial z = \partial Dz.$$
+      La chaîne $z' = \rho(z)$ est un cycle, formé de simplexes à valeurs chacun dans un cube, et $[z] = [z']$. L'intégrale étant nulle sur les bords ({{dr-chaines|Intégration sur les chaînes}}, (i)), $\int_z \omega = \int_{z'} \omega$.
+
+      Écrivons $z' = \sum_\tau n_\tau\,\tau$, somme finie. Pour chaque $\tau$, soit $i(\tau)$ le plus petit indice tel que $\tau$ soit à valeurs dans $B_{i(\tau)}$, et $x_\tau = \tau(e_0)$, $y_\tau = \tau(e_1)$. Soit $P$ l'ensemble fini de ces extrémités et, pour $y \in P$, $j(y)$ le plus petit indice tel que $y \in B_{j(y)}$ ({{dr-recouvrement|Recouvrement par des cubes}}, (v)).
+
+      Pour $y \in P$ et $i$ tel que $y \in B_i$, le cycle $\zeta_i(y) = \kappa_i(y) - \kappa_{j(y)}(y)$ vérifie $\varphi([\zeta_i(y)]) = a_{i\,j(y)}$ ({{dr-cocycle|Périodes locales}}, (iii)).
+
+      *Valeur de $\varphi$.* Par {{dr-cocycle|Périodes locales}}, (ii), on a, modulo les bords,
+      $$z' \equiv \sum_\tau n_\tau\Big(\kappa_{i(\tau)}(y_\tau) - \kappa_{i(\tau)}(x_\tau)\Big).$$
+      Soit $K : \lex{ensemble-entiers-relatifs}{\mathbb Z}^{(P)} \to C_1(U)$ le morphisme qui envoie $y$ sur $\kappa_{j(y)}(y)$ ({{h-complexes|Complexes de chaînes}}, (i)). En écrivant $\kappa_i(y) = \zeta_i(y) + K(y)$, le second membre devient
+      $$\begin{aligned} &\sum_\tau n_\tau\Big(\zeta_{i(\tau)}(y_\tau) - \zeta_{i(\tau)}(x_\tau)\Big) \\ &\quad + K\Big(\sum_\tau n_\tau(y_\tau - x_\tau)\Big). \end{aligned}$$
+      L'argument de $K$ est $\partial z'$, élément de $\mathbb Z^{(P)} \subset C_0(U)$, qui est nul. Par conséquent
+      $$\varphi([z]) = \sum_\tau n_\tau\Big(a_{i(\tau)\,j(y_\tau)} - a_{i(\tau)\,j(x_\tau)}\Big).$$
+
+      *Valeur de l'intégrale.* Chaque $\tau$ est à valeurs dans $B_{i(\tau)}$, où $g_{i(\tau)}$ est une primitive de $\omega$ ; la subdivision réduite à un seul morceau est adaptée ({{dr-integrale|Intégrale le long d'un chemin continu}}), et
+      $$\int_\tau \omega = g_{i(\tau)}(y_\tau) - g_{i(\tau)}(x_\tau).$$
+      Pour $y \in P$ et $y \in B_i$, le calcul des différences donne $g_i(y) = a_{i\,j(y)} + g_{j(y)}(y)$. Avec le morphisme $G : \mathbb Z^{(P)} \to \mathbb R$ qui envoie $y$ sur $g_{j(y)}(y)$,
+      $$\begin{aligned} \int_{z'} \omega &= \sum_\tau n_\tau\Big(a_{i(\tau)\,j(y_\tau)} - a_{i(\tau)\,j(x_\tau)}\Big) \\ &\quad + G(\partial z'), \end{aligned}$$
+      et $G(\partial z') = 0$.
+
+      *Conclusion.* Les deux valeurs coïncident : $\int_z \omega = \varphi([z])$ pour tout cycle $z$, c'est-à-dire $\Phi([\omega]) = \varphi$. Aucun axiome du choix n'intervient : les indices $i(\tau)$ et $j(y)$ sont des plus petits éléments, et les nœuds utilisés n'en font pas.
+    remarques:
+      - |
+        La forme $\omega$ est localement exacte, de primitive $g_i$ sur chaque cube, sans être exacte en général : deux primitives voisines diffèrent de la constante $a_{ij'}$, et ce sont ces sauts, accumulés le long d'un cycle, qui en forment les périodes.
+
+        Sur $\mathbb R^2 \setminus \{0\}$, avec $\varphi$ valant $1$ sur la classe d'un tour, les $a_{ij'}$ non nuls se trouvent là où se rejoignent des chaînes d'accès venues des deux côtés de l'origine ({{dr-cocycle|Périodes locales}}, schéma). La forme $\omega$ est alors la différentielle d'une « fonction angle » dont le saut de $1$ a été étalé, par la partition de l'unité, sur une bande de cubes.
+      - |
+        On a programmé la construction dans ce cas, en se limitant aux $7848$ cubes qui rencontrent la couronne $0{,}35 < \|x\|_\infty < 1$ et en prenant des chaînes d'accès obtenues par un parcours en largeur, ce que la démonstration permet, puisqu'elle n'utilise que les propriétés (i) à (iv) du nœud {{dr-cocycle|Périodes locales}}. Les nombres $a_{ij}$ obtenus sont des entiers, et l'intégrale de $\omega$ vaut $1$, à $10^{-11}$ près, sur les cercles de centre $0$ et de rayons $0{,}6$ et $0{,}75$, et $0$ sur un petit cercle qui n'entoure pas l'origine : la forme recollée a bien la période prescrite.
+      - |
+        La démonstration classique du théorème de de Rham en tout degré procède par récurrence sur les ouverts d'un recouvrement, au moyen de la suite de Mayer-Vietoris ({{h-mayer-vietoris|Mayer-Vietoris}}) et de son analogue pour les formes. En degré $1$, on a pu s'en passer : le théorème des petites chaînes ramène tout cycle à des morceaux contenus dans des cubes, où les primitives existent, et une partition de l'unité suffit au recollement.
+
   - id: dr-degre1
     etiquette: De Rham en degré 1
     nature: théorème
     titre: Théorème de de Rham en degré 1
     enonce: |
-      (i) Pour tout ouvert $U$ de $\lex{n-uplet}{\mathbb R^n}$, l'application $\Phi : \lex{cohomologie-de-rham}{H^1}(U) \to \operatorname{Hom}\big(\lex{homologie-singuliere}{H_1}(U), \mathbb R\big)$ est injective : une forme fermée dont l'intégrale est nulle sur tous les cycles est exacte.
+      (i) Pour tout ouvert $U$ de $\lex{n-uplet}{\mathbb R^n}$, l'application $\Phi : \lex{cohomologie-de-rham}{H^1}(U) \to \operatorname{Hom}\big(\lex{homologie-singuliere}{H_1}(U), \mathbb R\big)$ est injective : une forme fermée dont l'intégrale est nulle sur tous les cycles est exacte. Comme elle est surjective ({{dr-surjectivite|Surjectivité}}), $\Phi$ est un isomorphisme d'espaces vectoriels.
 
       (ii) $H^1(\mathbb R^2 \setminus \{0\})$ est de dimension $1$. Une forme fermée sur $\mathbb R^2 \setminus \{0\}$ est exacte si et seulement si son intégrale sur le bord du carré $[-1, 1]^2$ est nulle.
     preuve: |
@@ -160,6 +461,8 @@ noeuds:
 
       Les dérivées partielles de $f$ sont les coefficients de $\omega$, continus, donc $f$ est de classe $C^1$ ({{gd-classe-ck|Classe Cᵏ}}, (i)) ; comme $df = \omega$ est de classe $C^\infty$, $f$ l'est, par la définition récursive de la classe $C^{k+1}$, et $df = \omega$ : $\omega$ est exacte, et $\Phi$ est injective. La construction ne fait aucun choix, l'énumération de $\mathbb Q^n$ étant fixée une fois pour toutes.
 
+      Linéaire, injective et surjective ({{dr-surjectivite|Surjectivité}}), $\Phi$ est un isomorphisme.
+
       (ii) Soit $U = \mathbb R^2 \setminus \{0\}$, $r(x) = x/\|x\|_2$ et $\iota$ l'inclusion du cercle $\lex{sphere-unite}{S^1}$ dans $U$. On a $r \circ \iota = \mathrm{id}$, et $\iota \circ r$ est homotope à l'identité de $U$ par $F(x, t) = (1 - t)x + t\,x/\|x\|_2$, qui ne s'annule pas, comme multiple strictement positif de $x$. Donc $H_1(U) \cong H_1(S^1) \cong \lex{ensemble-entiers-relatifs}{\mathbb Z}$ ({{h-homotopie|Invariance par homotopie}}, (ii), et {{h-spheres|Homologie des sphères}}).
 
       Un morphisme de $\mathbb Z$ dans $\mathbb R$ est déterminé par l'image de $1$ : $\operatorname{Hom}(H_1(U), \mathbb R)$ est de dimension $1$. Par (i), $\dim H^1(U) \leqslant 1$, et $H^1(U) \neq \{0\}$ ({{gd-de-rham|Cohomologie de de Rham}}, (iii)) : la dimension vaut $1$.
@@ -173,9 +476,9 @@ noeuds:
       ({{gd-integrale-curviligne|Intégrale d'une 1-forme}}, remarque), $\omega$ est exacte si et seulement si $c = 0$, c'est-à-dire si et seulement si $\int_\square \omega = 0$.
     remarques:
       - |
-        L'autre moitié du théorème, la surjectivité de $\Phi$, est vraie : pour tout morphisme $\varphi : H_1(U) \to \mathbb R$, il existe une forme fermée dont les intégrales sur les cycles sont données par $\varphi$, et $\Phi$ est un isomorphisme.
+        Les deux moitiés du théorème reposent sur des idées différentes. L'injectivité intègre la forme le long de lignes brisées, ce qui produit une primitive globale dès que toutes les périodes sont nulles. La surjectivité ({{dr-surjectivite|Surjectivité}}) fait le chemin inverse : elle part de primitives locales sur des cubes, dont les écarts sont dictés par les périodes prescrites, et les recolle au moyen d'une partition de l'unité ({{dr-partition|Partition de l'unité}}).
 
-        Elle est admise ici : la difficulté contournée est de construire une forme de périodes prescrites, ce qui se fait par recollement, au moyen de la suite de Mayer-Vietoris de la cohomologie de de Rham, dont l'exactitude demande des partitions de l'unité, que l'atlas ne construit pas, faute de fonctions plateaux sans l'exponentielle dans cette branche.
+        En (ii), l'injectivité suffit, parce que la dimension de $H^1$ est déjà minorée par la forme $\omega_0$ ; la surjectivité dit, plus généralement, que toute famille de périodes compatible avec les relations entre cycles est atteinte.
       - |
         Sur $\mathbb R^2 \setminus \{0\}$, le théorème retrouve en termes différentiels le fait que le cercle a un seul « trou » : le groupe $H_1$, engendré par la classe d'un tour, est dual de $H^1$, engendré par la forme $\omega_0$, qui mesure l'angle balayé. L'analyse complexe identifie $\int_\square \omega_0$ à $2\pi$.
       - |
@@ -185,4 +488,12 @@ aretes:
   - [dr-primitives, dr-integrale]
   - [dr-integrale, dr-homotopie]
   - [dr-homotopie, dr-chaines]
-  - [dr-chaines, dr-degre1]
+  - [dr-exp, dr-plateau]
+  - [dr-plateau, dr-partition]
+  - [dr-primitives, dr-recouvrement]
+  - [dr-recouvrement, dr-partition]
+  - [dr-recouvrement, dr-cocycle]
+  - [dr-partition, dr-surjectivite]
+  - [dr-cocycle, dr-surjectivite]
+  - [dr-chaines, dr-surjectivite]
+  - [dr-surjectivite, dr-degre1]

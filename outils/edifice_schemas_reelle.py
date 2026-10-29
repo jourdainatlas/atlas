@@ -627,3 +627,99 @@ def ed_maximales():
     S.texte(R(0, 1) + [-10, -12], '(0, 1)', 'r', ancre='end', taille=15)
     S.texte(R(-0.85, sol(-0.85)) + [0, -18], 'y = 1/(1 − t)', 'r', taille=15)
     return S
+
+
+@schema('ed-domaine-flot')
+def ed_domaine_flot():
+    # y' = y² : phi_t(x) = x / (1 - t x), défini tant que t x < 1 ; D = {t x < 1}
+    import sympy as sp
+    t, x = sp.symbols('t x', real=True)
+    phi = x / (1 - t * x)
+    assert sp.simplify(sp.diff(phi, t) - phi ** 2) == 0 and phi.subs(t, 0) == x
+    p12 = phi.subs(t, sp.Rational(1, 2))
+    assert sp.simplify(p12 - 2 * x / (2 - x)) == 0
+    assert sp.limit(p12, x, -sp.oo) == -2 and sp.limit(p12, x, 2, '-') == sp.oo     # D_{1/2} -> ]-2, +inf[
+    assert sp.simplify(sp.diff(p12, x)) == sp.simplify(4 / (2 - x) ** 2)              # strictement croissante
+    assert sp.simplify(phi.subs(t, -sp.Rational(1, 2)).subs(x, p12) - x) == 0         # réciproque phi_{-1/2}
+    tmin, tmax, xmin, xmax = -2.4, 2.4, -3.3, 3.3
+    S = Schema(500, 340, 'Domaine du flot de y′ = y², région t x < 1')
+    R = Repere(tmin, tmax, xmin, xmax, 30, 12, 440, 300)
+    # région exclue t x >= 1, dans le cadre
+    for sg in (1, -1):
+        ts = sg * np.linspace(1 / xmax, tmax, 300)
+        bord = [(tt, 1 / tt) for tt in ts]
+        assert np.allclose([a * b for a, b in bord], 1)
+        pts = bord + [(sg * tmax, sg * xmax), (sg / xmax, sg * xmax)]
+        S.surface(R(*np.array(pts).T), 'g')
+    S.fleche(R(tmin, 0), R(tmax + 0.05, 0), 'g')
+    S.fleche(R(0, xmin), R(0, xmax + 0.05), 'g')
+    S.texte(R(tmax, 0) + [10, 14], 't', 'g', ancre='start')
+    S.texte(R(0, xmax) + [12, 6], 'x', 'g', ancre='start')
+    for sg in (1, -1):
+        ts = sg * np.linspace(1 / xmax, tmax, 300)
+        S.poly(R(ts, 1 / ts), 'r', l=2.2)
+    # tranches D_{1/2} = ]-inf, 2[ et D_{-1/2} = ]-2, +inf[
+    S.ligne(R(0.5, xmin), R(0.5, 2), 'b', l=4)
+    S.point(R(0.5, 2), 'b', r=4.2, creux=True)
+    S.ligne(R(-0.5, -2), R(-0.5, xmax), 'v', l=4)
+    S.point(R(-0.5, -2), 'v', r=4.2, creux=True)
+    S.texte(R(0.5, -1.7) + [10, 0], 'D_{1/2}', 'b', ancre='start', taille=16)
+    S.texte(R(-0.5, 1.7) + [-10, 0], 'D_{−1/2}', 'v', ancre='end', taille=16)
+    S.texte(R(0.5, 0) + [8, 16], '1/2', 'b', ancre='start', taille=14)
+    S.texte(R(-0.5, 0) + [-8, -14], '−1/2', 'v', ancre='end', taille=14)
+    S.texte(R(0.5, 2) + [10, 0], '2', 'b', ancre='start', taille=14)
+    S.texte(R(-0.5, -2) + [-10, 0], '−2', 'v', ancre='end', taille=14)
+    S.texte(R(1.7, 1 / 1.7) + [8, 14], 't x = 1', 'r', ancre='start', taille=15)
+    S.texte(R(1.5, -1.9), 'D', taille=18)
+    S.texte(R(-1.5, 1.9), 'D', taille=18)
+    return S
+
+
+@schema('ed-variationnelle')
+def ed_variationnelle():
+    # X(y1, y2) = (1, y1²) : flot exact, équation variationnelle le long de la courbe issue de 0
+    import sympy as sp
+    t, y1, y2, s, h1, h2 = sp.symbols('t y1 y2 s h1 h2', real=True)
+    P = sp.Matrix([y1 + t, y2 + ((y1 + t) ** 3 - y1 ** 3) / 3])
+    assert sp.simplify(P.diff(t) - sp.Matrix([1, P[0] ** 2])) == sp.zeros(2, 1)       # c'est le flot
+    assert P.subs(t, 0) == sp.Matrix([y1, y2])
+    Z = sp.Matrix([[1, 0], [s ** 2, 1]])
+    A = sp.Matrix([[0, 0], [2 * s, 0]])                                                # dX(phi_s(0)), phi_s(0) = (s, s³/3)
+    assert P.subs({y1: 0, y2: 0, t: s}) == sp.Matrix([s, s ** 3 / 3])
+    assert sp.simplify(Z.diff(s) - A * Z) == sp.zeros(2, 2) and Z.subs(s, 0) == sp.eye(2)
+    assert sp.simplify(P.jacobian([y1, y2]).subs({y1: 0, y2: 0, t: s}) - Z) == sp.zeros(2, 2)
+    reste = sp.simplify(P.subs({y1: h1, y2: h2, t: 1}) - P.subs({y1: 0, y2: 0, t: 1}) - Z.subs(s, 1) * sp.Matrix([h1, h2]))
+    assert reste == sp.Matrix([0, h1 ** 2])
+    ech = 150
+    xmin, xmax, ymin, ymax = -0.75, 1.95, -0.7, 1.45
+    S = Schema(500, 30 + ech * (ymax - ymin), 'Image d’un petit cercle par le flot et par sa différentielle')
+    R = Repere(xmin, xmax, ymin, ymax, 40, 12, ech * (xmax - xmin), ech * (ymax - ymin))
+    th = np.linspace(0, 2 * np.pi, 400)
+    H = 0.5 * np.array([np.cos(th), np.sin(th)])
+    exacte = np.array([H[0] + 1, H[1] + ((H[0] + 1) ** 3 - H[0] ** 3) / 3])
+    lin = np.array([1 + H[0], 1 / 3 + H[0] + H[1]])
+    assert np.allclose(exacte - lin, [0 * H[0], H[0] ** 2]) and np.max(H[0] ** 2) <= 0.25 + 1e-12
+    assert exacte[1].max() < ymax - 0.1 and lin[1].min() > ymin and exacte[0].max() < xmax
+    S.fleche(R(xmin, 0), R(xmax, 0), 'g')
+    S.fleche(R(0, ymin), R(0, ymax), 'g')
+    S.texte(R(xmax, 0) + [-4, 16], 'y_1', 'g', ancre='end')
+    S.texte(R(0, ymax) + [10, 8], 'y_2', 'g', ancre='start')
+    S.poly(R(*H), 'g', ferme=True, l=1.8)
+    ss = np.linspace(0, 1, 100)
+    S.courbe_fleche(R(ss, ss ** 3 / 3), 'v', l=1.8)
+    S.poly(R(*lin), 'b', ferme=True, l=2)
+    S.poly(R(*exacte), 'r', ferme=True, l=2.2)
+    # h = (1/2, 0) : écart vertical h1² = 1/4
+    pe, pl = np.array([1.5, 1 / 3 + 0.5 + 0.25]), np.array([1.5, 1 / 3 + 0.5])
+    assert np.isclose(pe[1] - pl[1], 0.25)
+    S.ligne(R(*pl), R(*pe), 't', d=True)
+    S.point(R(*pe), 'r', r=3.6)
+    S.point(R(*pl), 'b', r=3.6)
+    S.texte(R(1.5, (pe[1] + pl[1]) / 2) + [10, 0], 'h_1^2', ancre='start', taille=15)
+    S.point(R(0.5, 0), 'g', r=3.4)
+    S.texte(R(0.5, 0) + [8, 14], 'h', 'g', ancre='start', taille=15)
+    S.point(R(0, 0), 't', r=3.4)
+    S.texte(R(0, 0) + [-8, 14], '0', ancre='end', taille=15)
+    S.point(R(1, 1 / 3), 't', r=3.4)
+    S.texte(R(1, 1 / 3) + [-8, -12], 'φ_1(0)', ancre='end', taille=15)
+    return S

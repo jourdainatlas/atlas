@@ -2,8 +2,9 @@
 # Point fixe dans un espace métrique complet et théorème de Cauchy-Lipschitz (Picard),
 # lemme de Grönwall, solutions maximales et critère d'explosion, systèmes linéaires et
 # exponentielle de matrices, flot d'un champ de vecteurs, courbes intégrales sur une variété.
-# La régularité C¹ du flot par rapport à la condition initiale (équation variationnelle) est
-# admise et signalée. Parents : analyse fonctionnelle (Banach), géométrie différentielle
+# Sortie des compacts, domaine du flot (ouvert, continuité), différentiabilité du flot par
+# rapport à la condition initiale (équation variationnelle, Grönwall appliqué au reste de
+# Taylor) et régularité Cᵏ par le système augmenté. Parents : analyse fonctionnelle (Banach), géométrie différentielle
 # (accroissements finis, variétés), analyse complexe (exp, cos, sin) ; le point fixe de
 # Banach et les normes de ℝⁿ viennent, à travers elles, des espaces métriques et normés.
 
@@ -123,6 +124,56 @@ noeuds:
 
         L'erreur la plus répandue est de croire qu'une équation à second membre partout défini a des solutions partout définies ; c'est la croissance de $F$ qui en décide, comme le montre (iv).
 
+  - id: ed-compacts
+    etiquette: Sortie des compacts
+    nature: lemme
+    titre: Voisinages compacts et sortie des compacts
+    texte: |
+      Pour une partie $A$ de $\lex{n-uplet}{\mathbb R^m}$, muni de $\|\cdot\|_\infty$, et pour $\delta \geqslant 0$, on note $A^\delta$ la réunion des boules fermées $\bar B(a, \delta)$, $a \in A$ : c'est l'ensemble des points situés à distance au plus $\delta$ d'un point de $A$.
+
+      Comme au nœud {{ed-maximales|Solutions maximales}}, $F$ est de classe $C^1$ sur un ouvert $\Omega$ de $\lex{ensemble-reels}{\mathbb R} \times \mathbb R^n$.
+    enonce: |
+      (i) *Voisinage compact.* Si $K$ est une partie [[compact|compacte]] de $\mathbb R^m$, $K^\delta$ est compacte pour tout $\delta \geqslant 0$. Si de plus $K$ est contenue dans un ouvert $W$, il existe $\delta > 0$ tel que $K^\delta \subset W$.
+
+      (ii) *Sortie des compacts.* Soit $y$ une solution maximale de $y' = F(t, y)$, définie sur $]\alpha, \beta[$, et $t_0 \in \,]\alpha, \beta[$. Si $\beta < +\infty$, le graphe $\{(t, y(t)) : t_0 \leqslant t < \beta\}$ n'est contenu dans aucun compact de $\Omega$. De même, si $\alpha > -\infty$, le graphe de $y$ sur $]\alpha, t_0]$ n'est contenu dans aucun compact de $\Omega$.
+
+      (iii) *Cas autonome.* Si $\Omega = \mathbb R \times U$, avec $U$ ouvert de $\mathbb R^n$, et $F(t, y) = X(y)$, et si $\beta < +\infty$, la courbe $\{y(t) : t_0 \leqslant t < \beta\}$ n'est contenue dans aucun compact de $U$ ; de même du côté de $\alpha$.
+    preuve: |
+      (i) Si $K$ est vide, $K^\delta$ l'est aussi. Sinon, $K$ est bornée ({{me-rn|L'espace ℝⁿ}}, (iii)), contenue dans une boule $\bar B(0, R)$, et $K^\delta$ est contenue dans $\bar B(0, R + \delta)$ par l'inégalité triangulaire.
+
+      Montrons que $K^\delta$ est fermée. Soit $y \notin K^\delta$. La fonction $a \mapsto \|y - a\|$ est continue sur le compact $K$ et y atteint son minimum $\mu$ en un point $a_0$ ({{tr-compacts|Compacts de ℝ}}, (iii)) ; comme $y \notin \bar B(a_0, \delta)$, on a $\mu > \delta$.
+
+      Pour $z \in B(y, \mu - \delta)$ et $a \in K$, on a alors
+      $$\begin{aligned} \|z - a\| &\geqslant \|y - a\| - \|y - z\| \\ &> \mu - (\mu - \delta) = \delta, \end{aligned}$$
+      donc $z \notin K^\delta$. Le complémentaire de $K^\delta$ est ouvert ; $K^\delta$, fermée et bornée, est compacte ({{me-rn|L'espace ℝⁿ}}, (iii)).
+
+      Supposons enfin $K \subset W$ et $K$ non vide. Si $W = \mathbb R^m$, tout $\delta$ convient. Sinon, posons $f(a) = \inf\{\|a - z\| : z \notin W\}$. L'inégalité $\|a - z\| \leqslant \|a - b\| + \|b - z\|$, passée à la borne inférieure en $z$, donne $f(a) \leqslant \|a - b\| + f(b)$ ; en échangeant $a$ et $b$, $|f(a) - f(b)| \leqslant \|a - b\|$ : $f$ est $1$-lipschitzienne, donc continue ({{me-topologie|Topologie d'une distance}}, (iv)).
+
+      Pour $a \in W$, l'ouvert $W$ contient une boule $B(a, r)$ ({{me-topologie|Topologie d'une distance}}, (i)), et $f(a) \geqslant r > 0$. Sur le compact $K$, $f$ atteint donc un minimum $m > 0$, et $\delta = m/2$ convient : si $\|y - a\| \leqslant m/2$ avec $a \in K$, alors $\|y - a\| < f(a)$, ce qui interdit $y \notin W$. Aucun choix n'intervient : $f$ est définie par une borne inférieure.
+
+      (ii) Supposons $\beta < +\infty$ et le graphe contenu dans un compact $K$ de $\Omega$. Par (i), dans $\mathbb R^{1+n}$, il existe $\delta > 0$ tel que $K^\delta$ soit un compact contenu dans $\Omega$. Les fonctions continues $\|F\|$ et $|||dF|||$ y sont bornées ({{tr-compacts|Compacts de ℝ}}, (iii)), par $M$ et $L$ ; quitte à agrandir $M$, on suppose $M \geqslant 1$.
+
+      Soit $(t_1, y_1) \in K$. La boule ouverte de centre $(t_1, y_1)$ et de rayon $\delta$ pour $\|\cdot\|_\infty$ est $]t_1 - \delta, t_1 + \delta[ \times B(y_1, \delta)$ ; elle est contenue dans $K^\delta$, et elle contient le cylindre
+      $$C = [t_1 - \tfrac\delta2, t_1 + \tfrac\delta2] \times \bar B(y_1, \tfrac\delta2),$$
+      sur lequel $\|F\| \leqslant M$.
+
+      Pour $t$ fixé, l'application $g(z) = F(t, z)$ est différentiable sur la boule convexe $B(y_1, \delta)$, de différentielle $k \mapsto dF(t, z)(0, k)$ par la règle de la chaîne ({{gd-differentielle|Différentielle}}, (iii) et (iv)), de norme au plus $L$ puisque $\|(0, k)\|_\infty = \|k\|_\infty$. Par l'inégalité des accroissements finis ({{gd-accroissements|Accroissements finis}}, (ii)), $F$ est $L$-lipschitzienne en $y$ sur $C$.
+
+      Le théorème {{ed-cauchy-lipschitz|Cauchy-Lipschitz}}, (ii), fournit donc une solution $z$ sur $[t_1 - h, t_1 + h]$ telle que $z(t_1) = y_1$, avec $h = \frac{\delta}{2M}$, qui ne dépend pas du point $(t_1, y_1)$ de $K$.
+
+      Prenons $t_1 = \max(t_0, \beta - \frac h2)$ et $y_1 = y(t_1)$. Par {{ed-maximales|Solutions maximales}}, (i), $z$ et $y$ coïncident sur l'intersection de leurs intervalles. La fonction égale à $y$ sur $]\alpha, \beta[$ et à $z$ sur $[t_1 - h, t_1 + h]$ est donc bien définie ; elle est solution, puisqu'au voisinage de chaque point elle coïncide avec $y$ ou avec $z$.
+
+      Elle est définie jusqu'en $t_1 + h \geqslant \beta + \frac h2 > \beta$, ce qui contredit la maximalité de $y$. Du côté de $\alpha$, on prend $t_1 = \min(t_0, \alpha + \frac h2)$ et l'on prolonge au-delà de $\alpha$ de la même façon.
+
+      (iii) Si la courbe est contenue dans un compact $K$ de $U$, le graphe est contenu dans $[t_0, \beta] \times K$. Cette partie de $\mathbb R^{1+n}$ est bornée, et fermée comme intersection des images réciproques de $[t_0, \beta]$ et de $K$ par les deux projections, qui sont continues, $K$ étant fermé comme partie compacte de l'espace séparé $\mathbb R^n$ ({{t-compact-prop|Parties compactes}}, (ii)) ; elle est donc compacte ({{me-rn|L'espace ℝⁿ}}, (iii)), contenue dans $\Omega = \mathbb R \times U$, ce que (ii) interdit.
+    remarques:
+      - |
+        L'erreur la plus répandue est de croire qu'une solution qui reste bornée est définie pour tous les temps. Pour le champ constant $X = -1$ sur $U = \,]0, +\infty[$, la solution issue de $x > 0$ est $x - t$ : elle reste dans $]0, x]$ et n'explose pas, mais elle n'est définie que pour $t < x$, puisqu'elle atteint le bord $0$ de $U$ à l'instant $x$.
+
+        C'est pourquoi le critère d'explosion de {{ed-maximales|Solutions maximales}}, (iii), énoncé pour $\Omega = I \times \mathbb R^n$, ne s'applique pas à un ouvert $U$ quelconque : la courbe peut cesser d'exister en s'approchant du bord de $U$. Le point (iii) en est la forme juste : sur $[0, x[$, la courbe sort de tout segment $[\varepsilon, M]$ de $U$, dès que $t > x - \varepsilon$.
+      - |
+        Pour $\Omega = I \times \mathbb R^n$, le nœud {{ed-maximales|Solutions maximales}} donnait davantage : $\|y(t)\| \to +\infty$ quand $t \to \beta$. L'énoncé (ii), plus faible, a l'avantage de valoir sur tout ouvert, et il suffit à ce qui suit : une solution ne s'arrête jamais à l'intérieur d'un compact. C'est sous la forme (iii) que l'emploie le nœud {{ed-flot|Flot}}, et, à travers lui, le nœud {{ed-domaine-flot|Domaine du flot}}.
+
   - id: ed-lineaires
     etiquette: Systèmes linéaires
     nature: théorème
@@ -173,26 +224,211 @@ noeuds:
     nature: théorème
     titre: Flot d'un champ de vecteurs
     texte: |
-      Soit $U$ un ouvert de $\lex{n-uplet}{\mathbb R^n}$ et $X : U \to \mathbb R^n$ de classe $C^1$, vu comme un champ de vecteurs. Pour $x \in U$, on note $t \mapsto \varphi_t(x)$ la solution maximale de l'équation **autonome** $y' = X(y)$ telle que $y(0) = x$, définie sur $]\alpha(x), \beta(x)[$ : c'est la **courbe intégrale** issue de $x$, et $\varphi$ est le [[flot|flot]] de $X$.
+      Soit $U$ un ouvert de $\lex{n-uplet}{\mathbb R^n}$ et $X : U \to \mathbb R^n$ de classe $C^1$, vu comme un champ de vecteurs. Pour $x \in U$, on note $t \mapsto \varphi_t(x)$ la solution maximale de l'équation **autonome** $y' = X(y)$ telle que $y(0) = x$, définie sur $]\alpha(x), \beta(x)[$ : c'est la **courbe intégrale** issue de $x$, et $\varphi$ est le [[flot|flot]] de $X$. On munit $\mathbb R^n$ de $\|\cdot\|_\infty$, et les matrices de la norme subordonnée $|||\cdot|||$.
     enonce: |
       (i) *Propriété de groupe.* Si $s$ et $t + s$ sont dans l'intervalle de définition, $\varphi_{t+s}(x) = \varphi_t(\varphi_s(x))$.
 
-      (ii) *Continuité.* Si $\varphi_t(x_0)$ est défini pour $t \in [0, T]$, il existe $\delta > 0$ et $L$ tels que, pour $\|x - x_0\| < \delta e^{-LT}$, $\varphi_t(x)$ soit défini sur $[0, T]$ et $\|\varphi_t(x) - \varphi_t(x_0)\| \leqslant \|x - x_0\|e^{Lt}$.
+      (ii) *Continuité.* Supposons $\varphi_t(x_0)$ défini pour $t \in [0, T]$. Il existe un compact $K \subset U$ et un $\delta > 0$ tels que $K$ contienne les boules $\bar B(\varphi_t(x_0), \delta)$, $t \in [0, T]$. Pour un tel couple, soit $L$ le maximum de $|||dX|||$ sur $K$ ; alors, pour $x \in U$ tel que $\|x - x_0\| < \delta e^{-LT}$, $\varphi_t(x)$ est défini pour $t \in [0, T]$, appartient à $K$, et
+      $$\|\varphi_t(x) - \varphi_t(x_0)\| \leqslant \|x - x_0\|e^{Lt} < \delta.$$
 
       (iii) Si $X$ est bornée et $U = \mathbb R^n$, le flot est défini sur $\lex{ensemble-reels}{\mathbb R} \times \mathbb R^n$, et chaque $\varphi_t$ est un homéomorphisme de réciproque $\varphi_{-t}$.
     preuve: |
       (i) Les deux membres, comme fonctions de $t$, sont solutions de $y' = X(y)$ de même valeur $\varphi_s(x)$ en $t = 0$ ; on conclut par l'unicité ({{ed-maximales|Solutions maximales}}, (i)).
 
-      (ii) Le compact $\Gamma = \{\varphi_t(x_0) : t \in [0, T]\}$ est contenu dans l'ouvert $U$ ; soit $\delta > 0$ tel que les boules fermées de rayon $\delta$ centrées sur $\Gamma$ soient dans $U$, et $L$ le maximum de $|||dX|||$ sur leur réunion, compacte.
+      (ii) *Existence de $K$ et $\delta$.* L'ensemble $\Gamma = \{\varphi_t(x_0) : t \in [0, T]\}$ est compact, image du segment $[0, T]$ ({{tr-compacts|Compacts de ℝ}}, (i)) par l'application continue $t \mapsto \varphi_t(x_0)$ ({{t-compact-prop|Parties compactes}}, (iii)), et il est contenu dans l'ouvert $U$. Le nœud {{ed-compacts|Sortie des compacts}}, (i), fournit $\delta > 0$ tel que $\Gamma^\delta$ soit un compact contenu dans $U$ : le couple $(\Gamma^\delta, \delta)$ convient. Désormais, $K$ et $\delta$ sont quelconques, comme dans l'énoncé ; le maximum $L$ existe, $y \mapsto |||dX(y)|||$ étant continue sur le compact $K$ ({{tr-compacts|Compacts de ℝ}}, (iii)).
 
-      Sur chaque boule, convexe, $X$ est $L$-lipschitzienne ({{gd-accroissements|Accroissements finis}}). Tant que $\|\varphi_t(x) - \varphi_t(x_0)\| \leqslant \delta$, Grönwall ({{ed-gronwall|Grönwall}}) donne
-      $$\|\varphi_t(x) - \varphi_t(x_0)\| \leqslant \|x - x_0\|e^{Lt} < \delta ;$$
-      par continuité, la courbe ne peut atteindre la distance $\delta$, reste dans un compact de $U$, et ne peut exploser avant $T$ ({{ed-maximales|Solutions maximales}}, (iii)).
+      *Une intégrale vectorielle.* Pour $v : [0, t] \to \mathbb R^n$ continue, on a $\|\int_0^t v\| \leqslant \int_0^t \|v\|$, puisque $|\int_0^t v_i| \leqslant \int_0^t |v_i| \leqslant \int_0^t \|v\|$ pour chaque coordonnée ({{ri-proprietes|Propriétés de l'intégrale}}, (iv) et (ii)).
 
-      (iii) $\|y(t)\| \leqslant \|x\| + |t|\sup\|X\|$ ne peut tendre vers l'infini en temps fini ; donc $\alpha = -\infty$ et $\beta = +\infty$. Par (i), $\varphi_t \circ \varphi_{-t} = \varphi_0 = \mathrm{id}$, et $\varphi_t$ est continue par (ii).
+      *L'estimation.* Soit $x \in U$ tel que $\|x - x_0\| < \delta e^{-LT}$, et posons $c = \|x - x_0\|e^{LT} < \delta$, $u(s) = \|\varphi_s(x) - \varphi_s(x_0)\|$, et $I_x = [0, T] \cap [0, \beta(x)[$. Soit $E$ l'ensemble des $s \in I_x$ tels que $u(\sigma) < \delta$ pour tout $\sigma \in [0, s]$ ; c'est un intervalle qui contient $0$, puisque $u(0) \leqslant c$.
+
+      Pour $s \in E$ et $\sigma \in [0, s]$, les points $\varphi_\sigma(x)$ et $\varphi_\sigma(x_0)$ sont dans la boule ouverte $B(\varphi_\sigma(x_0), \delta)$, convexe et contenue dans $K$, où $|||dX||| \leqslant L$. L'inégalité des accroissements finis ({{gd-accroissements|Accroissements finis}}, (ii)), appliquée sur cet ouvert convexe, donne
+      $$\|X(\varphi_\sigma(x)) - X(\varphi_\sigma(x_0))\| \leqslant L\,u(\sigma).$$
+
+      Par la forme intégrale des solutions ({{ed-cauchy-lipschitz|Cauchy-Lipschitz}}, (ii)) et l'inégalité précédente sur les intégrales, $u(\sigma) \leqslant u(0) + L\int_0^\sigma u$ pour $\sigma \in [0, s]$, et le lemme de Grönwall ({{ed-gronwall|Grönwall}}, (i)) donne $u(\sigma) \leqslant \|x - x_0\|e^{L\sigma} \leqslant c$ sur $[0, s]$.
+
+      *Tout $I_x$ est dans $E$.* Soit $s^*$ la borne supérieure de $E$. Premier cas, $s^* \in I_x$ : alors $u \leqslant c$ sur $[0, s^*[$, donc $u(s^*) \leqslant c < \delta$ par continuité, et $s^* \in E$. Si $s^*$ n'était pas le plus grand élément de $I_x$, la continuité de $u$ en $s^*$ donnerait $u < \delta$ un peu au-delà de $s^*$, contre la définition de $s^*$ ; donc $E = I_x$.
+
+      Second cas, $s^* \notin I_x$ : comme $s^* \leqslant T$, c'est que $s^* = \beta(x) \leqslant T$, et $I_x = [0, \beta(x)[$ ; l'intervalle $E$, qui contient $0$ et a la même borne supérieure, est alors égal à $I_x$.
+
+      *Conclusion.* Dans le second cas, la courbe issue de $x$ resterait, sur $[0, \beta(x)[$, dans le compact $K$, ce qu'interdit le nœud {{ed-compacts|Sortie des compacts}}, (iii). On est donc dans le premier cas : $I_x$ a un plus grand élément, ce qui impose $\beta(x) > T$, et $s^* = T$, $E = I_x = [0, T]$ : pour tout $t \in [0, T]$, $\varphi_t(x)$ est défini, vérifie l'estimation, et appartient à $B(\varphi_t(x_0), \delta) \subset K$.
+
+      (iii) $\|y(t)\| \leqslant \|x\| + |t|\sup\|X\|$ ne peut tendre vers l'infini en temps fini ; donc $\alpha = -\infty$ et $\beta = +\infty$, par le critère d'explosion ({{ed-maximales|Solutions maximales}}, (iii), avec $I = \mathbb R$). Par (i), $\varphi_t \circ \varphi_{-t} = \varphi_0 = \mathrm{id}$, et $\varphi_t$ est continue par (ii), appliqué à $X$ pour $t \geqslant 0$ et au champ $-X$, lui aussi borné et de classe $C^1$, pour $t \leqslant 0$ : si $y$ résout $y' = X(y)$, $s \mapsto y(-s)$ résout $y' = -X(y)$, si bien que le flot de $-X$ est $\varphi_{-t}$.
     remarques:
       - |
-        Le flot est en réalité de classe $C^1$, et même $C^k$ si $X$ l'est : sa différentielle par rapport à $x$ est la solution de l'**équation variationnelle** $Z' = dX(\varphi_t(x))\,Z$, $Z(0) = I$. Ce fait est admis ici ; sa démonstration applique Grönwall au reste de Taylor. Il fait de chaque $\varphi_t$ un difféomorphisme, comme le demandera le nœud {{ed-varietes|Champs sur une variété}}.
+        Le flot est en réalité de classe $C^1$, et même $C^k$ si $X$ l'est : sa différentielle par rapport à $x$ est la solution de l'**équation variationnelle** $Z' = dX(\varphi_t(x))\,Z$, $Z(0) = I$.
+
+        C'est le théorème du nœud {{ed-variationnelle|Équation variationnelle}}, dont la démonstration applique Grönwall au reste de Taylor, une fois établi au nœud {{ed-domaine-flot|Domaine du flot}} que l'ensemble des $(t, x)$ où le flot est défini est ouvert et que $\varphi$ y est continue. La classe $C^k$ fait l'objet du nœud {{ed-flot-ck|Flot de classe Cᵏ}}. Chaque $\varphi_t$ est ainsi un difféomorphisme de l'ouvert où il est défini sur celui où $\varphi_{-t}$ l'est.
+
+  - id: ed-domaine-flot
+    etiquette: Domaine du flot
+    nature: proposition
+    titre: Domaine du flot, continuité et réciproque de φₜ
+    texte: |
+      Soit $U$ un ouvert de $\lex{n-uplet}{\mathbb R^n}$, $X : U \to \mathbb R^n$ de classe $C^1$ et $\varphi$ son [[flot|flot]] ({{ed-flot|Flot}}), la courbe intégrale issue de $x$ étant définie sur $]\alpha(x), \beta(x)[$. Le [[domaine-flot|domaine du flot]] est
+      $$D = \{(t, x) \in \mathbb R \times U : \alpha(x) < t < \beta(x)\},$$
+      et, pour $t$ réel, $D_t = \{x \in U : (t, x) \in D\}$ est l'ensemble des points où $\varphi_t$ est défini.
+
+      On munit $\mathbb R^n$ de $\|\cdot\|_\infty$, et les matrices de la norme subordonnée $|||\cdot|||$. Pour une partie $A$ de $\mathbb R^n$, $A^\delta$ est la réunion des boules fermées de rayon $\delta$ centrées en un point de $A$ ({{ed-compacts|Sortie des compacts}}).
+    enonce: |
+      (i) *Renversement du temps.* Le champ $-X$ est de classe $C^1$, et son flot est $\psi_t(x) = \varphi_{-t}(x)$, défini pour $-\beta(x) < t < -\alpha(x)$.
+
+      (ii) *Estimation uniforme.* Soit $x_0 \in U$ et $[a, b]$ un segment contenant $0$ et contenu dans $]\alpha(x_0), \beta(x_0)[$. Posons $T = \max(-a, b)$ et $\Gamma = \{\varphi_t(x_0) : a \leqslant t \leqslant b\}$. Il existe $\delta > 0$ tel que $K = \Gamma^\delta$ soit un compact contenu dans $U$ ; soit $L$ le maximum de $|||dX|||$ sur $K$.
+
+      Alors, pour $x \in U$ tel que $\|x - x_0\| < \delta e^{-LT}$ et pour $t \in [a, b]$, $\varphi_t(x)$ est défini, appartient à $K$, et
+      $$\|\varphi_t(x) - \varphi_t(x_0)\| \leqslant \|x - x_0\|\,e^{L|t|} < \delta.$$
+
+      (iii) *Ouverture et continuité.* $D$ est un ouvert de $\mathbb R \times \mathbb R^n$, et $(t, x) \mapsto \varphi_t(x)$ est continue sur $D$.
+
+      (iv) *Réciproque.* Pour tout réel $t$, $D_t$ est ouvert, et $\varphi_t$ est une bijection de $D_t$ sur $D_{-t}$, de réciproque $\varphi_{-t}$.
+    preuve: |
+      (i) Si $y : J \to U$ est solution de $y' = X(y)$, la fonction $z(t) = y(-t)$, définie sur $-J$, vérifie $z'(t) = -y'(-t) = -X(z(t))$ par la règle de la chaîne ({{gd-differentielle|Différentielle}}, (ii) et (iv)), et réciproquement.
+
+      Le changement de $t$ en $-t$ échange donc les solutions des deux équations et respecte l'inclusion des intervalles, donc la maximalité : la solution maximale de $y' = -X(y)$ issue de $x$ est $t \mapsto \varphi_{-t}(x)$, sur $]{-\beta(x)}, -\alpha(x)[$. Enfin $-X$ est de classe $C^1$, de différentielle $-dX$.
+
+      (ii) *Les constantes.* $\Gamma$ est compact, image du segment $[a, b]$ ({{tr-compacts|Compacts de ℝ}}, (i)) par l'application continue $t \mapsto \varphi_t(x_0)$ ({{t-compact-prop|Parties compactes}}, (iii)). Le nœud {{ed-compacts|Sortie des compacts}}, (i), fournit $\delta$, et $L$ existe puisque $y \mapsto |||dX(y)|||$ est continue sur le compact $K$ ({{tr-compacts|Compacts de ℝ}}, (iii)).
+
+      *Les temps positifs.* Le compact $K = \Gamma^\delta$ contient les boules $\bar B(\varphi_t(x_0), \delta)$ pour $t \in [0, b]$, et $L$ est le maximum de $|||dX|||$ sur $K$. Comme $b \leqslant T$, la condition $\|x - x_0\| < \delta e^{-LT}$ entraîne $\|x - x_0\| < \delta e^{-Lb}$, et le nœud {{ed-flot|Flot}}, (ii), appliqué sur $[0, b]$ avec ce compact, donne exactement l'estimation cherchée pour $t \in [0, b]$, avec $\varphi_t(x) \in K$.
+
+      *Les temps négatifs.* Le champ $-X$ a pour flot $\psi_t = \varphi_{-t}$, par (i). Le segment $[-b, -a]$ contient $0$ et est contenu dans $]{-\beta(x_0)}, -\alpha(x_0)[$ ; il donne les mêmes $T$, $\Gamma$, $\delta$ et $K$, et le même $L$ puisque $|||d(-X)||| = |||dX|||$. Le nœud {{ed-flot|Flot}}, (ii), appliqué à $-X$ sur $[0, -a]$ avec le même compact $K$, qui contient les boules $\bar B(\psi_t(x_0), \delta)$ pour $t \in [0, -a]$, est l'estimation cherchée pour $t \in [a, 0]$.
+
+      (iii) Soit $(t_1, x_0) \in D$. Comme $\alpha(x_0) < \min(t_1, 0)$ et $\max(t_1, 0) < \beta(x_0)$, il existe $\eta > 0$ tel que le segment $[a, b] = [\min(t_1, 0) - \eta, \max(t_1, 0) + \eta]$ soit contenu dans $]\alpha(x_0), \beta(x_0)[$ ; il contient $0$, et $t_1 \in \,]a, b[$. Soit $\rho = \delta e^{-LT}$, avec les constantes de (ii).
+
+      Par (ii), $]a, b[ \times B(x_0, \rho)$ est contenu dans $D$ ; c'est un ouvert qui contient $(t_1, x_0)$, donc $D$ est ouvert. Pour $(t, x)$ dans cet ouvert,
+      $$\begin{aligned} &\|\varphi_t(x) - \varphi_{t_1}(x_0)\| \leqslant \|x - x_0\|\,e^{LT} \\ &\quad + \|\varphi_t(x_0) - \varphi_{t_1}(x_0)\|, \end{aligned}$$
+      qui tend vers $0$ quand $(t, x) \to (t_1, x_0)$, par continuité de la solution issue de $x_0$.
+
+      (iv) $D_t$ est l'image réciproque de l'ouvert $D$ par l'application continue $x \mapsto (t, x)$. Soit $x \in D_t$ et $y = \varphi_t(x)$. La fonction $s \mapsto \varphi_{s+t}(x)$, définie sur $]\alpha(x) - t, \beta(x) - t[$, est solution de l'équation autonome $y' = X(y)$ et vaut $y$ en $0$.
+
+      Par {{ed-maximales|Solutions maximales}}, (i), elle coïncide avec $s \mapsto \varphi_s(y)$ sur l'intersection de leurs intervalles ; la fonction égale à l'une ou à l'autre sur la réunion, qui est un intervalle contenant $0$, est une solution qui prolonge la solution maximale issue de $y$. Donc $]\alpha(x) - t, \beta(x) - t[ \;\subset\; ]\alpha(y), \beta(y)[$.
+
+      Comme $0 \in \,]\alpha(x), \beta(x)[$, le réel $-t$ appartient au premier intervalle : $y \in D_{-t}$, et $\varphi_{-t}(y) = \varphi_{-t+t}(x) = x$. Ainsi $\varphi_{-t} \circ \varphi_t$ est l'identité de $D_t$ ; en changeant $t$ en $-t$, $\varphi_t \circ \varphi_{-t}$ est l'identité de $D_{-t}$, et $\varphi_t$ est une bijection de $D_t$ sur $D_{-t}$.
+    remarques:
+      - |
+        Pour l'équation $y' = y^2$ sur $U = \mathbb R$, la solution issue de $x$ est $\varphi_t(x) = \frac{x}{1 - tx}$, définie tant que $tx < 1$ : le domaine du flot est $D = \{(t, x) : tx < 1\}$.
+
+        ```schema ed-domaine-flot
+        En gris, la région $tx \geqslant 1$, hors du domaine $D$ ; les deux branches de l'hyperbole $tx = 1$, en rouge, n'appartiennent pas à $D$, qui est ouvert. $D$ n'est pas un produit : la verticale $t = \frac12$ le coupe selon $D_{1/2} = \,]{-\infty}, 2[$, en bleu, que $\varphi_{1/2}$ envoie bijectivement sur $D_{-1/2} = \,]{-2}, +\infty[$, en vert.
+        ```
+
+        On vérifie en effet que $\varphi_{1/2}(x) = \frac{2x}{2 - x}$ croît de $-2$ à $+\infty$ quand $x$ parcourt $]{-\infty}, 2[$, et que $\varphi_{-1/2}\big(\varphi_{1/2}(x)\big) = x$. L'erreur la plus répandue est de voir dans $\varphi_t$ une bijection de $U$ : elle n'est définie que sur $D_t$, et son image est $D_{-t}$, qui en diffère en général.
+      - |
+        Le point (iii) dit que le temps d'existence ne peut pas chuter brusquement : si $\beta(x_0) > t$, alors $\beta(x) > t$ pour $x$ voisin de $x_0$. Il peut en revanche augmenter brusquement, et $\beta$ n'est pas continue en général. Pour le champ constant $X = (1, 0)$ sur $U = \mathbb R^2$ privé de la demi-droite $\{(1, s) : s \geqslant 0\}$, on a $\beta(0, s) = 1$ pour $s \geqslant 0$, mais $\beta(0, s) = +\infty$ pour $s < 0$ : la courbe issue d'un point situé sous la demi-droite passe sans la rencontrer.
+
+  - id: ed-variationnelle
+    etiquette: Équation variationnelle
+    nature: théorème
+    titre: Différentiabilité du flot et équation variationnelle
+    texte: |
+      Soit $X : U \to \lex{n-uplet}{\mathbb R^n}$ de classe $C^1$ sur un ouvert $U$, $\varphi$ son flot et $D$ son domaine ({{ed-domaine-flot|Domaine du flot}}). Pour $x \in U$, la fonction $A_x(s) = dX(\varphi_s(x))$ est continue sur $]\alpha(x), \beta(x)[$, comme composée de deux applications continues.
+
+      L'[[equation-variationnelle|équation variationnelle]] le long de la courbe issue de $x$ est le système linéaire matriciel
+      $$Z' = dX(\varphi_s(x))\,Z, \qquad Z(0) = I.$$
+      Résolu colonne par colonne, il a une unique solution $Z_x$, définie sur $]\alpha(x), \beta(x)[$ tout entier ({{ed-lineaires|Systèmes linéaires}}, (i)). On munit $\mathbb R^n$ de $\|\cdot\|_\infty$, et les matrices de la norme subordonnée $|||\cdot|||$.
+    enonce: |
+      (i) *Différentiabilité.* Pour tout $(t, x) \in D$, l'application $\varphi_t$ est [[differentiable]] en $x$, et
+      $$d\varphi_t(x) = Z_x(t).$$
+
+      (ii) *Classe $C^1$.* L'application $(t, x) \mapsto Z_x(t)$ est continue sur $D$, et $(t, x) \mapsto \varphi_t(x)$ est [[classe-ck|de classe $C^1$]] sur $D$, de dérivée partielle $X(\varphi_t(x))$ par rapport à $t$ et de différentielle $Z_x(t)$ par rapport à $x$.
+
+      (iii) *Difféomorphismes.* Pour tout réel $t$, $\varphi_t$ est un [[diffeomorphisme|$C^1$-difféomorphisme]] de $D_t$ sur $D_{-t}$, de réciproque $\varphi_{-t}$. En particulier, $Z_x(t)$ est inversible, d'inverse $Z_{\varphi_t(x)}(-t)$.
+    preuve: |
+      *Deux inégalités sur les intégrales.* Pour $v : [0, t] \to \mathbb R^n$ continue, on a $\|\int_0^t v\| \leqslant \int_0^t \|v\|$, puisque $|\int_0^t v_i| \leqslant \int_0^t |v_i| \leqslant \int_0^t \|v\|$ pour chaque coordonnée ({{ri-proprietes|Propriétés de l'intégrale}}). Pour une fonction matricielle continue $M$ et $\|w\| \leqslant 1$, $\big(\int_0^t M\big)w = \int_0^t Mw$ donne alors $|||\int_0^t M||| \leqslant \int_0^t |||M|||$.
+
+      *Les constantes.* Fixons $x_0 \in U$ et un segment $[a, b]$ comme au nœud {{ed-domaine-flot|Domaine du flot}}, (ii), avec les mêmes $T$, $\Gamma$, $\delta$, $K$ et $L$, et posons $\rho = \delta e^{-LT}$. La fonction
+      $$\begin{aligned} \omega(r) = \sup\big\{&|||dX(y) - dX(y')||| : \\ &y, y' \in K,\ \|y - y'\| \leqslant r\big\} \end{aligned}$$
+      est bien définie, majorée par $2L$, et croissante.
+
+      Elle tend vers $0$ quand $r \to 0$ : par le théorème de Heine ({{me-heine|Théorème de Heine}}), appliqué à $dX$, continue sur le compact $K$, il existe pour tout $\varepsilon > 0$ un $\eta > 0$ tel que $\omega(r) \leqslant \varepsilon$ pour $r < \eta$.
+
+      *Bornes sur $Z$.* Pour $\|x - x_0\| < \rho$ et $s \in [a, b]$, $\varphi_s(x) \in K$, donc $|||A_x(s)||| \leqslant L$. De $Z_x(t) = I + \int_0^t A_xZ_x$ ({{ed-cauchy-lipschitz|Cauchy-Lipschitz}}, (ii), forme intégrale) on tire, pour $t \in [0, b]$, $|||Z_x(t)||| \leqslant 1 + L\int_0^t |||Z_x|||$, et Grönwall ({{ed-gronwall|Grönwall}}, (i)) donne $|||Z_x(t)||| \leqslant e^{LT}$.
+
+      *Étape 1 : le reste de Taylor.* Soit $h$ tel que $0 < \|h\| < \rho$, $x = x_0 + h$ et $r = \|h\|e^{LT} < \delta$. Pour $s \in [0, b]$, posons $p = \varphi_s(x_0)$ et $q = \varphi_s(x)$, de sorte que $\|q - p\| \leqslant r$ ({{ed-domaine-flot|Domaine du flot}}, (ii)).
+
+      L'application $g(y) = X(y) - dX(p)y$ est différentiable sur la boule ouverte $V = B(p, \min(2r, \delta))$, convexe et contenue dans $K$, de différentielle $dX(y) - dX(p)$ ({{gd-differentielle|Différentielle}}, (iii)), de norme au plus $\omega(2r)$. Comme $q \in V$, l'inégalité des accroissements finis ({{gd-accroissements|Accroissements finis}}, (ii)), appliquée à $g$ entre $p$ et $q$, donne
+      $$\begin{aligned} &\|X(q) - X(p) - dX(p)(q - p)\| \\ &\quad \leqslant \omega(2r)\,r. \end{aligned}$$
+
+      *Étape 2 : Grönwall.* Posons $u(t) = \varphi_t(x) - \varphi_t(x_0) - Z_{x_0}(t)h$ et notons $R(s)$ le vecteur que l'on vient de majorer. Par les formes intégrales de $\varphi_t(x)$, de $\varphi_t(x_0)$ et de $Z_{x_0}$, et puisque $A_{x_0}(s)u(s) + R(s) = X(q) - X(p) - A_{x_0}(s)Z_{x_0}(s)h$,
+      $$u(t) = \int_0^t \big(A_{x_0}(s)u(s) + R(s)\big)\,ds.$$
+
+      Il vient $\|u(t)\| \leqslant T\omega(2r)r + L\int_0^t \|u\|$ pour $t \in [0, b]$, et le lemme de Grönwall donne
+      $$\|u(t)\| \leqslant Te^{2LT}\omega(2\|h\|e^{LT})\,\|h\|.$$
+
+      *Conclusion pour $t \geqslant 0$.* Posons $\varepsilon(h) = u(t)/\|h\|$ pour $h \neq 0$ et $\varepsilon(0) = 0$. Alors $\varphi_t(x_0 + h) = \varphi_t(x_0) + Z_{x_0}(t)h + \|h\|\,\varepsilon(h)$, et $\|\varepsilon(h)\| \leqslant Te^{2LT}\omega(2\|h\|e^{LT})$ tend vers $0$ avec $h$ : $\varphi_t$ est différentiable en $x_0$, de différentielle $Z_{x_0}(t)$, pour tout $t \in [0, b]$, et la majoration du reste ne dépend pas de $t$.
+
+      *Les temps négatifs.* Le champ $-X$ a pour flot $\psi_s = \varphi_{-s}$ ({{ed-domaine-flot|Domaine du flot}}, (i)), et $W(s) = Z_x(-s)$ vérifie $W'(s) = -A_x(-s)W(s) = d(-X)(\psi_s(x))\,W(s)$ et $W(0) = I$ : par unicité, c'est la solution de l'équation variationnelle de $-X$.
+
+      Le segment $[-b, -a]$ donne pour $-X$ les mêmes constantes ; le cas précédent, appliqué à $-X$, donne $d\varphi_t(x_0) = d\psi_{-t}(x_0) = Z_{x_0}(t)$ pour $t \in [a, 0]$.
+
+      (i) est ainsi démontré, puisque tout $(t, x_0) \in D$ a son temps $t$ dans un tel segment ({{ed-domaine-flot|Domaine du flot}}, preuve de (iii)).
+
+      (ii) *Continuité de $Z$.* Pour $\|h\| < \rho$, $x = x_0 + h$ et $t \in [0, b]$, la différence $V(t) = Z_x(t) - Z_{x_0}(t)$ vérifie
+      $$V(t) = \int_0^t \big(A_xV + (A_x - A_{x_0})Z_{x_0}\big)\,ds.$$
+
+      Les points $\varphi_s(x)$ et $\varphi_s(x_0)$ sont dans $K$ à distance au plus $r = \|h\|e^{LT}$, d'où $|||A_x(s) - A_{x_0}(s)||| \leqslant \omega(r)$. Avec $|||Z_{x_0}||| \leqslant e^{LT}$, on obtient $|||V(t)||| \leqslant T\omega(r)e^{LT} + L\int_0^t |||V|||$, puis, par Grönwall, $|||V(t)||| \leqslant Te^{2LT}\omega(\|h\|e^{LT})$. Pour $t \in [a, 0]$, la même majoration s'obtient en passant à $-X$, comme plus haut.
+
+      Tout $(t_1, x_0) \in D$ admet un tel segment $[a, b]$ avec $t_1 \in \,]a, b[$, comme on l'a vu dans la preuve du nœud {{ed-domaine-flot|Domaine du flot}}, (iii). Pour $t \in [a, b]$ et $\|x - x_0\| < \rho$, on a donc
+      $$\begin{aligned} &|||Z_x(t) - Z_{x_0}(t_1)||| \\ &\quad \leqslant Te^{2LT}\omega(\|x - x_0\|e^{LT}) \\ &\qquad + |||Z_{x_0}(t) - Z_{x_0}(t_1)|||, \end{aligned}$$
+      qui tend vers $0$ quand $(t, x) \to (t_1, x_0)$ : $(t, x) \mapsto Z_x(t)$ est continue sur $D$.
+
+      *Classe $C^1$.* Sur l'ouvert $D$ ({{ed-domaine-flot|Domaine du flot}}, (iii)), la dérivée partielle de $\varphi$ par rapport à $t$ est $X(\varphi_t(x))$, puisque $t \mapsto \varphi_t(x)$ est solution ; elle est continue, comme composée de $X$ et de $\varphi$, continue sur $D$. La dérivée partielle par rapport à $x_j$ est $Z_x(t)e_j$, par (i) et {{gd-differentielle|Différentielle}}, (ii) ; elle est continue par ce qui précède. Le nœud {{gd-classe-ck|Classe Cᵏ}}, (i), conclut.
+
+      (iii) Pour $t$ fixé, l'application affine $x \mapsto (t, x)$ envoie l'ouvert $D_t$ dans $D$ ; par composition ({{gd-classe-ck|Classe Cᵏ}}, (iii)), $\varphi_t$ est de classe $C^1$ sur $D_t$, et de même $\varphi_{-t}$ sur $D_{-t}$. Avec {{ed-domaine-flot|Domaine du flot}}, (iv), $\varphi_t$ est un $C^1$-difféomorphisme de $D_t$ sur $D_{-t}$.
+
+      Enfin, la règle de la chaîne ({{gd-differentielle|Différentielle}}, (iv)) appliquée à $\varphi_{-t} \circ \varphi_t = \mathrm{id}$ et à $\varphi_t \circ \varphi_{-t} = \mathrm{id}$ montre que $Z_{\varphi_t(x)}(-t)$ et $Z_x(t)$ sont inverses l'une de l'autre.
+    remarques:
+      - |
+        Le champ $X(y_1, y_2) = (1, y_1^2)$ sur $\mathbb R^2$ a pour flot
+        $$\varphi_t(y) = \Big(y_1 + t,\ y_2 + \frac{(y_1 + t)^3 - y_1^3}{3}\Big).$$
+        Le long de la courbe issue de $0$, $\varphi_s(0) = (s, \frac{s^3}3)$, et $dX(\varphi_s(0))$ a pour seul coefficient non nul $2s$, en bas à gauche.
+
+        L'équation variationnelle a pour solution la matrice $Z_0(s)$ de lignes $(1, 0)$ et $(s^2, 1)$, qui est bien la matrice jacobienne de $\varphi_s$ en $0$. Au temps $1$, on calcule exactement le reste : $\varphi_1(h) - \varphi_1(0) - Z_0(1)h = (0, h_1^2)$, qui est d'ordre $2$ en $h$, comme (i) le prévoit.
+
+        ```schema ed-variationnelle
+        Le cercle gris, de centre $0$ et de rayon $\frac12$, est emporté par le flot au temps $1$ : son image exacte $\varphi_1(\text{cercle})$, en rouge, et l'image $\varphi_1(0) + Z_0(1)h$ par l'approximation linéaire, en bleu, sont deux courbes autour de $\varphi_1(0) = (1, \frac13)$. Pour un même $h$, l'écart entre le point rouge et le point bleu est vertical et vaut $h_1^2 \leqslant \frac14$, d'ordre $2$ en $h$, comme on le voit pour $h = (\frac12, 0)$ ; la courbe verte est la trajectoire du centre.
+        ```
+
+        La différentielle $Z_0(1)$ est un cisaillement : elle déforme le cercle en ellipse, et le terme $h_1^2$ courbe encore cette ellipse.
+      - |
+        Pour $y' = y^2$, la dérivée de $\varphi_t(x) = \frac{x}{1 - tx}$ par rapport à $x$ est $\frac{1}{(1 - tx)^2}$ ; on vérifie qu'elle résout $Z' = 2\varphi_t(x)\,Z$, $Z(0) = 1$. Elle tend vers $+\infty$ quand $t$ s'approche de l'instant d'explosion $\frac1x$ : deux solutions voisines s'écartent d'autant plus vite que l'on s'approche de l'explosion, comme le laisse attendre l'explosion de la solution au nœud {{ed-maximales|Solutions maximales}}.
+      - |
+        L'hypothèse $C^1$ ne peut pas être affaiblie en une hypothèse lipschitzienne. Le champ $X(y) = |y|$ sur $\mathbb R$ est $1$-lipschitzien, et son flot est $\varphi_t(x) = xe^t$ pour $x \geqslant 0$ et $xe^{-t}$ pour $x < 0$.
+
+        Pour $t \neq 0$, $\varphi_t$ a en $0$ une dérivée à droite $e^t$ et une dérivée à gauche $e^{-t}$ : il n'est pas dérivable. Le flot reste lipschitzien en $x$, de rapport $e^{|t|}$, par le lemme de Grönwall ({{ed-gronwall|Grönwall}}, (ii)), qui ne demande qu'une hypothèse lipschitzienne ; c'est le reste de Taylor de l'étape 1 qui demande la différentiabilité de $X$, et la majoration uniforme de ce reste, la continuité de $dX$.
+      - |
+        La différentielle du flot transporte le champ : $Z_x(t)X(x) = X(\varphi_t(x))$. En effet, $s \mapsto \varphi_t(\varphi_s(x)) = \varphi_{t+s}(x)$ a pour dérivée en $s = 0$, d'un côté $d\varphi_t(x)X(x)$ par la règle de la chaîne, de l'autre $X(\varphi_t(x))$. Pour $y' = y^2$, on retrouve $\frac{x^2}{(1 - tx)^2} = \varphi_t(x)^2$.
+
+  - id: ed-flot-ck
+    etiquette: Flot de classe Cᵏ
+    nature: théorème
+    titre: Régularité Cᵏ du flot
+    texte: |
+      On garde les notations des nœuds {{ed-domaine-flot|Domaine du flot}} et {{ed-variationnelle|Équation variationnelle}} : $\varphi$ est le flot d'un champ $X$ sur un ouvert $U$ de $\lex{n-uplet}{\mathbb R^n}$, $D$ son domaine, et $Z_x$ la solution de l'équation variationnelle le long de la courbe issue de $x$. On identifie $\lex{espace-matrices}{\mathcal M_n}(\mathbb R)$ à $\mathbb R^{n^2}$.
+    enonce: |
+      Soit $k \geqslant 1$, éventuellement infini. Si $X$ est de [[classe-ck|classe $C^k$]] sur $U$, le flot $(t, x) \mapsto \varphi_t(x)$ est de classe $C^k$ sur $D$, l'application $(t, x) \mapsto Z_x(t)$ est de classe $C^{k-1}$, et chaque $\varphi_t$ est un [[diffeomorphisme|$C^k$-difféomorphisme]] de $D_t$ sur $D_{-t}$.
+    preuve: |
+      *Le système augmenté.* Sur l'ouvert $U \times \mathcal M_n(\mathbb R)$ de $\mathbb R^{n + n^2}$, considérons le champ
+      $$G(y, M) = \big(X(y),\ dX(y)M\big).$$
+      Si $X$ est de classe $C^{j+1}$, avec $j \geqslant 1$, $dX$ est de classe $C^j$ par définition, le produit $(P, M) \mapsto PM$ est bilinéaire, donc $C^\infty$, et $G$ est de classe $C^j$ ({{gd-classe-ck|Classe Cᵏ}}, (ii) et (iii)).
+
+      *Son flot.* Pour $x \in U$, la fonction $t \mapsto (\varphi_t(x), Z_x(t))$, définie sur $]\alpha(x), \beta(x)[$, est solution de $(y, M)' = G(y, M)$, de valeur $(x, I)$ en $0$, par définition de $\varphi$ et de $Z_x$.
+
+      Elle est maximale : une solution définie sur un intervalle plus grand aurait pour première composante une solution de $y' = X(y)$ prolongeant la solution maximale issue de $x$. Si $\Phi$ désigne le flot de $G$ et $D_G$ son domaine, on a donc, pour $(t, x) \in D$,
+      $$\begin{aligned} &(t, x, I) \in D_G, \\ &\Phi_t(x, I) = \big(\varphi_t(x), Z_x(t)\big). \end{aligned}$$
+
+      *Récurrence.* Notons $P(j)$ l'énoncé : pour tout entier $m$, tout ouvert de $\mathbb R^m$ et tout champ de classe $C^j$ sur cet ouvert, le flot est de classe $C^j$ sur son domaine. $P(1)$ est le point (ii) du nœud {{ed-variationnelle|Équation variationnelle}}.
+
+      Supposons $P(j)$, et $X$ de classe $C^{j+1}$. Le champ $G$ est de classe $C^j$, et $P(j)$, appliqué en dimension $n + n^2$, montre que $\Phi$ est de classe $C^j$ sur l'ouvert $D_G$. L'application affine $(t, x) \mapsto (t, x, I)$ envoie $D$ dans $D_G$ ; par composition, $(t, x) \mapsto (\varphi_t(x), Z_x(t))$ est de classe $C^j$ sur $D$.
+
+      La matrice jacobienne de $\varphi$ en $(t, x)$ a pour première colonne $X(\varphi_t(x))$ et pour autres colonnes celles de $Z_x(t)$ ({{ed-variationnelle|Équation variationnelle}}, (ii)). Ses coefficients sont de classe $C^j$, $X \circ \varphi$ comme composée de $X$, de classe $C^{j+1}$, et de $\varphi$, de classe $C^j$. Donc $d\varphi$ est de classe $C^j$, et $\varphi$, qui est $C^1$, est de classe $C^{j+1}$ : c'est $P(j + 1)$.
+
+      *Conclusion.* Pour $X$ de classe $C^k$, on obtient $P(k)$ si $k$ est fini, et $P(j)$ pour tout $j$ si $k = \infty$ ; l'application $Z$, partie de la différentielle de $\varphi$, est de classe $C^{k-1}$. Enfin $\varphi_t$ et $\varphi_{-t}$ sont de classe $C^k$ sur $D_t$ et $D_{-t}$, par composition avec $x \mapsto (t, x)$, et réciproques l'une de l'autre ({{ed-domaine-flot|Domaine du flot}}, (iv)).
+    remarques:
+      - |
+        La récurrence perd une dérivée sur le champ et la regagne sur le flot. Le champ augmenté $G$ n'est que de classe $C^{k-1}$, puisqu'il contient $dX$, et l'hypothèse de récurrence ne donne donc à son flot $\Phi$ que la classe $C^{k-1}$. Le gain vient de ce que la différentielle de $\varphi$ ne fait intervenir que $X \circ \varphi$ et $Z$, qui sont de classe $C^{k-1}$ : $\varphi$, dont la différentielle est $C^{k-1}$, est de classe $C^k$.
+      - |
+        Pour $y' = y^2$, la dérivée seconde $W = \partial_x^2\varphi_t(x) = \frac{2t}{(1 - tx)^3}$ s'obtient en dérivant l'équation variationnelle par rapport à $x$ : elle résout l'équation linéaire $W' = 2\varphi_t(x)\,W + 2Z^2$, $W(0) = 0$, où $Z = \frac{1}{(1 - tx)^2}$. Chaque dérivée supplémentaire se calcule ainsi par une équation linéaire dont le second membre fait intervenir les dérivées précédentes ; c'est ce qu'encode le système augmenté.
+      - |
+        Sur une variété, le flot du nœud {{ed-varietes|Champs sur une variété}} est construit dans des cartes. C'est le présent théorème, appliqué dans ces cartes, qui en ferait des difféomorphismes et non seulement des homéomorphismes ; ce passage aux cartes n'est pas rédigé ici.
 
   - id: ed-varietes
     etiquette: Champs sur une variété
@@ -221,5 +457,10 @@ aretes:
   - [ed-cauchy-lipschitz, ed-maximales]
   - [ed-gronwall, ed-maximales]
   - [ed-maximales, ed-lineaires]
-  - [ed-maximales, ed-flot]
+  - [ed-maximales, ed-compacts]
+  - [ed-compacts, ed-flot]
   - [ed-flot, ed-varietes]
+  - [ed-flot, ed-domaine-flot]
+  - [ed-domaine-flot, ed-variationnelle]
+  - [ed-lineaires, ed-variationnelle]
+  - [ed-variationnelle, ed-flot-ck]

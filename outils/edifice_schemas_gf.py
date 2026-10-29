@@ -235,3 +235,81 @@ def gf_petits_ordres():
         S.texte([x + l / 2, y0 - v * hu - 10], str(v), c, taille=13, ui=True)
     S.texte([x0 + 6 * (l + 4), y0 + 36], 'ordre n', 'g', taille=13, ui=True)
     return S
+
+
+# ------------------------------------------------------------------ gf-multiplicatif
+@schema('gf-multiplicatif')
+def gf_multiplicatif():
+    # (ℤ/13ℤ)^× en cadran : la classe 2^k à l'heure k ; ordres, sous-groupes d'ordres 3 et 4, comptes φ(d).
+    q, m, g = 13, 12, 2
+    val = [pow(g, k, q) for k in range(m)]
+    assert sorted(val) == list(range(1, q))                     # 2 est une racine primitive modulo 13
+    ordre = lambda x: next(d for d in range(1, m + 1) if pow(x, d, q) == 1)
+    assert all(ordre(val[k]) == m // math.gcd(m, k) for k in range(m))
+    phi = lambda d: sum(1 for j in range(1, d + 1) if math.gcd(j, d) == 1)
+    diviseurs = [d for d in range(1, m + 1) if m % d == 0]
+    par_ordre = {d: sorted(x for x in range(1, q) if ordre(x) == d) for d in diviseurs}
+    assert all(len(par_ordre[d]) == phi(d) for d in diviseurs) and sum(phi(d) for d in diviseurs) == m
+    assert par_ordre[12] == [2, 6, 7, 11]
+    tri = [0, 4, 8]; car = [0, 3, 6, 9]
+    assert sorted(val[k] for k in tri) == sorted(x for x in range(1, q) if pow(x, 3, q) == 1) == [1, 3, 9]
+    assert sorted(val[k] for k in car) == sorted(x for x in range(1, q) if pow(x, 4, q) == 1) == [1, 5, 8, 12]
+    S = Schema(520, 320, 'Les puissances de 2 modulo 13 sur un cadran, et le nombre d’éléments de chaque ordre')
+    O, R0 = np.array([160.0, 162.0]), 112.0
+    P = lambda k: O + R0 * np.array([math.sin(2 * math.pi * k / m), -math.cos(2 * math.pi * k / m)])
+    S.cercle(O, R0, 'g', d=True)
+    S.poly([P(k) for k in tri], 'b', ferme=True, l=2)
+    S.poly([P(k) for k in car], 'v', ferme=True, l=2)
+    for k in range(m):
+        gen = math.gcd(k, m) == 1
+        c = 'r' if gen else ('t' if k == 0 else ('b' if k in tri else ('v' if k in car else 't')))
+        S.point(P(k), c, r=5 if gen else 4)
+        u = (P(k) - O) / R0
+        S.texte(P(k) + 22 * u, str(val[k]), c, taille=16)
+        S.texte(P(k) - 19 * u, str(k), 'g', taille=11, ui=True)
+    # tableau : ordre d, éléments, nombre = φ(d)
+    x1, x2, x3, y = 330, 380, 490, 50
+    S.texte([x1, y], 'ordre', 'g', taille=13, ui=True)
+    S.texte([x2, y], 'éléments', 'g', ancre='start', taille=13, ui=True)
+    S.texte([x3, y], 'φ(d)', 'g', taille=13, ui=True)
+    S.ligne([308, y + 14], [512, y + 14], 'g')
+    for i, d in enumerate(diviseurs):
+        yy = y + 38 + 32 * i
+        c = 'r' if d == m else ('b' if d == 3 else ('v' if d == 4 else 't'))
+        S.texte([x1, yy], str(d), c, taille=15)
+        S.texte([x2, yy], ', '.join(map(str, par_ordre[d])), c, ancre='start', taille=15)
+        S.texte([x3, yy], str(phi(d)), c, taille=15)
+    yy = y + 38 + 32 * len(diviseurs) - 12
+    S.ligne([308, yy], [512, yy], 'g')
+    S.texte([x2, yy + 20], 'total', 'g', ancre='start', taille=13, ui=True)
+    S.texte([x3, yy + 20], str(m), 't', taille=15)
+    assert yy + 20 < 320 - 8
+    return S
+
+
+# ------------------------------------------------------------------ gf-pq-non-abelien
+@schema('gf-pq-non-abelien')
+def gf_pq_non_abelien():
+    # ℤ/7ℤ en heptagone ; multiplications par 2 et par 4 = 2² : 0 fixe, deux orbites {1, 2, 4} et {3, 6, 5}.
+    q = 7
+    orb = lambda a: {frozenset(pow(a, j, q) * n % q for j in range(3)) for n in range(1, q)}
+    assert pow(2, 3, q) == 1 and pow(4, 3, q) == 1 and 4 == pow(2, 2, q)
+    assert orb(2) == orb(4) == {frozenset({1, 2, 4}), frozenset({3, 5, 6})}
+    assert all((4 * n) % q == (2 * (2 * n)) % q for n in range(q))
+    assert pow(2, -1, q) == 4                                   # ×4 est la réciproque de ×2 : sens inverse
+    S = Schema(520, 270, 'Les multiplications par 2 et par 4 sur ℤ/7ℤ')
+    R0 = 82.0
+    for col, a in enumerate((2, 4)):
+        O = np.array([130.0 + 260 * col, 122.0])
+        P = lambda n: O + R0 * np.array([math.sin(2 * math.pi * n / q), -math.cos(2 * math.pi * n / q)])
+        S.poly([P(n) for n in range(q)], 'g', ferme=True, d=True)
+        for n in range(1, q):
+            c = 'r' if n in (1, 2, 4) else 'b'
+            S.fleche(P(n), P(a * n % q), c, retrait=9, retrait_debut=9, l=1.8)
+        for n in range(q):
+            c = 't' if n == 0 else ('r' if n in (1, 2, 4) else 'b')
+            S.point(P(n), c, r=4.5)
+            u = (P(n) - O) / R0
+            S.texte(P(n) + 20 * u, str(n), c, taille=16)
+        S.texte(O + [0, R0 + 48], f'x ↦ {a}x', 't', taille=16)
+    return S

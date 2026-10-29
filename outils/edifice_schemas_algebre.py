@@ -382,6 +382,91 @@ def an_factorisation():
     return S
 
 
+@schema('an-norme-ideal')
+def an_norme_ideal():
+    # O = ℤ[√−5], le point (a, b) figure a + b√−5 ; β = 1 + √−5, βO de base β ↦ (1, 1), β√−5 = −5 + √−5 ↦ (−5, 1)
+    mul = lambda x, y: (x[0] * y[0] - 5 * x[1] * y[1], x[0] * y[1] + x[1] * y[0])
+    be = (1, 1)
+    u, v = be, mul(be, (0, 1))
+    assert v == (-5, 1)
+    det = u[0] * v[1] - u[1] * v[0]
+    assert det == 6 == be[0] ** 2 + 5 * be[1] ** 2            # indice = |N(β)| = 6
+    # points de ℤ² dans la maille semi-ouverte {s u + t v : 0 ≤ s, t < 1}
+    def coords(p):
+        s = Fr(p[0] * v[1] - p[1] * v[0], det)
+        t = Fr(u[0] * p[1] - u[1] * p[0], det)
+        return s, t
+    dedans = [(a, b) for a in range(-6, 3) for b in range(-1, 4)
+              if all(0 <= c < 1 for c in coords((a, b)))]
+    assert len(dedans) == 6
+    # deux à deux non congrus modulo βO : la différence n'a pas de coordonnées (s, t) entières
+    for i, p in enumerate(dedans):
+        for q in dedans[i + 1:]:
+            s, t = coords((p[0] - q[0], p[1] - q[1]))
+            assert not (s.denominator == 1 and t.denominator == 1)
+    dans_beO = lambda p: all(c.denominator == 1 for c in coords(p))
+    S = Schema(500, 236, 'Le réseau de l’idéal (1 + √−5) dans ℤ[√−5] et une maille qui contient six points')
+    k = 52
+    R = Repere(-6.6, 2.4, -0.8, 2.9, 10, 10, 9.0 * k, 3.7 * k)
+    S.ligne(R(-6.6, 0), R(2.4, 0), 'g')
+    S.ligne(R(0, -0.8), R(0, 2.9), 'g')
+    S.poly(R([0, u[0], u[0] + v[0], v[0]], [0, u[1], u[1] + v[1], v[1]]), 'b', ferme=True, rempli='b')
+    for a in range(-6, 3):
+        for b in range(0, 3):
+            p = (a, b)
+            if dans_beO(p):
+                S.point(R(a, b), 'r', r=4.6)
+            elif p in dedans:
+                S.point(R(a, b), 't', r=3.6)
+            else:
+                S.point(R(a, b), 'g', r=2.6)
+    S.texte(R(*u) + [-6, 24], 'β = 1 + √−5', 'r', ancre='start', taille=15)
+    S.texte(R(*v) + [-4, -15], 'β√−5', 'r', ancre='end', taille=15)
+    S.texte(R(1, 0) + [0, 16], '1', 'g', taille=15)
+    S.texte(R(0, 2) + [-8, -16], '2√−5', 'g', ancre='end', taille=15)
+    return S
+
+
+@schema('an-petit-element')
+def an_petit_element():
+    # 𝔯 = (7, 3 + √−5) = noyau de a + b√−5 ↦ a − 3b mod 7 (c = −3, c² ≡ −5 mod 7), d'indice 7 ; m = ⌊√7⌋ = 2
+    assert (-3) ** 2 % 7 == (-5) % 7
+    cl = lambda p: (p[0] - 3 * p[1]) % 7
+    assert cl((7, 0)) == 0 and cl((3, 1)) == 0
+    n, m = 7, math.isqrt(7)
+    assert m == 2 and (m + 1) ** 2 > n >= m * m
+    boite = [(a, b) for a in range(m + 1) for b in range(m + 1)]
+    paires = [(p, q) for i, p in enumerate(boite) for q in boite[i + 1:] if cl(p) == cl(q)]
+    assert paires == [((0, 2), (1, 0)), ((1, 2), (2, 0))]
+    al = (1, -2)
+    for p, q in paires:
+        assert (q[0] - p[0], q[1] - p[1]) == al
+    Nal = al[0] ** 2 + 5 * al[1] ** 2
+    assert cl(al) == 0 and Nal == 21 <= (1 + 5) * n                 # |N(α)| ≤ C_d N(𝔯), C_{−5} = 6
+    S = Schema(500, 372, 'Neuf éléments de ℤ[√−5] pour sept classes modulo un idéal de norme 7')
+    k = 62
+    R = Repere(-1.6, 3.6, -2.6, 2.6, 90, 26, 5.2 * k, 5.2 * k)
+    S.ligne(R(-1.6, 0), R(3.6, 0), 'g')
+    S.ligne(R(0, -2.6), R(0, 2.6), 'g')
+    S.rect(*R(-0.3, m + 0.4), (m + 0.75) * k, (m + 0.7) * k, 'b', d=True, rempli='b', rx=6)
+    for a in range(-1, 4):
+        for b in range(-2, 3):
+            if cl((a, b)) == 0:
+                S.point(R(a, b), 'v', r=6.2, creux=True)
+            S.point(R(a, b), 'g', r=2.6)
+    rouges = {p for pq in paires for p in pq}
+    for p in boite:
+        S.point(R(*p), 'r' if p in rouges else 't', r=4.4)
+        S.texte(R(*p) + [11, -12], str(cl(p)), 'r' if p in rouges else 'b', ancre='start', taille=15)
+    for p, q in paires:
+        S.fleche(R(*p), R(*q), 'r', retrait=7, retrait_debut=7)
+    S.fleche(R(0, 0), R(*al), 'r', d=True, retrait=7)
+    S.point(R(*al), 'r', r=4.6)
+    S.texte(R(*al) + [12, 20], 'α = 1 − 2√−5', 'r', ancre='start', taille=15)
+    S.texte(R(0, 1) + [-9, -15], '√−5', 'g', ancre='end', taille=15)
+    return S
+
+
 @schema('an-gauss')
 def an_gauss():
     # α = 7 + 5i, β = 2 + i : α/β = (19 + 3i)/5, q = 4 + i, r = α − βq = −i.

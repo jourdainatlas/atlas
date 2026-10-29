@@ -621,6 +621,48 @@ def o_transitif():
     return S
 
 
+@schema('o-ultrafiltre')
+def o_ultrafiltre():
+    # Filtres sur X = {a, b, c} : on les énumère tous, on vérifie que chacun est ℱ_S = {B : S ⊂ B}
+    # pour une partie S non vide, et que les maximaux sont les trois filtres principaux.
+    X = frozenset('abc')
+    P = [frozenset(s) for k in range(4) for s in itertools.combinations('abc', k)]
+
+    def est_filtre(F):
+        return (X in F and frozenset() not in F and all(a & b in F for a in F for b in F)
+                and all(b in F for a in F for b in P if a <= b))
+    familles = itertools.chain.from_iterable(itertools.combinations(P, k) for k in range(len(P) + 1))
+    filtres = [frozenset(F) for F in familles if est_filtre(frozenset(F))]
+    assert len(filtres) == 7
+    gen = {F: frozenset.intersection(*F) for F in filtres}
+    assert all(F == frozenset(b for b in P if gen[F] <= b) for F in filtres)
+    maximaux = [F for F in filtres if not any(F < G for G in filtres)]
+    assert sorted(len(gen[F]) for F in maximaux) == [1, 1, 1]
+    # caractérisation (i) : maximal ⇔ contient A ou son complémentaire, pour toute partie A
+    assert all((F in maximaux) == all(a in F or X - a in F for a in P) for F in filtres)
+
+    S = Schema(520, 274, 'Les sept filtres sur {a, b, c}, ordonnés par inclusion ; les maximaux sont principaux')
+    yy = {3: 250.0, 2: 150.0, 1: 50.0}
+    pos = {}
+    for k in (1, 2, 3):
+        rang = sorted((F for F in filtres if len(gen[F]) == k), key=lambda F: sorted(gen[F]))
+        for j, F in enumerate(rang):
+            pos[F] = np.array([260.0 + (j - (len(rang) - 1) / 2) * 165.0, yy[k]])
+    lab = {F: 'ℱ_{' + ''.join(sorted(gen[F])) + '}' for F in filtres}
+    boite = {F: (largeur_etiquette(lab[F]) / 2 + 6, 14) for F in filtres}
+    for F in filtres:
+        for G in filtres:
+            # trait de F vers G quand G couvre F (F ⊊ G sans filtre strictement entre les deux)
+            if F < G and not any(F < H < G for H in filtres):
+                assert gen[G] < gen[F]
+                ligne_boites(S, pos[F], pos[G], boite[F], boite[G], 'g')
+    for F in filtres:
+        c = 'r' if F in maximaux else 't'
+        S.texte(pos[F], lab[F], c, taille=17)
+    S.texte((260, 16), 'ultrafiltres (principaux)', 'r', ui=True, taille=13)
+    return S
+
+
 # ================================================================ z
 @schema('z-construction')
 def z_construction():
