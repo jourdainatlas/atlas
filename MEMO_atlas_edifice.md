@@ -460,6 +460,10 @@ Contrôle : `verif_aer.py` (comparaison à HEAD : champs non textuels, renvois, 
 écarts de formules et de mots listés), huit lots relus chacun par un agent indépendant, puis mesure de largeur dans
 Chromium à 390 px sur les 478 fiches : 79 fiches débordaient avant, aucune après (reste un artefact de 2 px de
 KaTeX dans `f-baire`, invisible). Les modèles de consigne sont à reprendre pour un futur lot.
+Garde-fous (même jour) : `construire.py` refuse un intervalle « ]-… » dans une formule d'une fiche ou du lexique
+(`verifie_typo`, réservé à l'édifice ; les rubriques ne sont pas contrôlées) ; `outils/edifice_largeurs.py [graphes…]`
+mesure les débordements à 390 px dans Chromium sur le site construit (tolérance 2 px, code de sortie 1 s'il en reste) :
+à lancer avant de publier un lot de fiches.
 Rendu (`rendu.mjs`) : la ponctuation qui suit une formule en ligne est placée dans le dernier bloc insécable de la
 formule (`.ponct`, police du texte) ; le navigateur ne coupe plus la ligne entre une formule et sa virgule.
 Erreurs de fond corrigées au passage : changement de variable inversé dans `p-normale` (u = √2 x), π-système de

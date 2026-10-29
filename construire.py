@@ -118,6 +118,16 @@ def textes(n):
         if n.get(c): yield n[c]
     yield from n['remarques']
 
+RE_MATHS = re.compile(r'\$\$(.+?)\$\$|\$([^$]+)\$', re.S)
+RE_INTERVALLE = re.compile(r'(?:^|[\s(,;]|\\[,;!]|\\in)\]-')
+
+def verifie_typo(texte, ou):
+    # Intervalle ouvert à gauche dont la borne commence par un moins : « ]{-1}, 1[ » et non « ]-1, 1[ »,
+    # que KaTeX lit comme « ] − 1 » (moins binaire, espacé). Convention d'aération, mémo §34.
+    for a, b in RE_MATHS.findall(texte):
+        if RE_INTERVALLE.search(a or b):
+            erreur(f"{ou} : intervalle « ]-… » dans « {(a or b).strip()[:40]} » : écrire « ]{{-…}} »")
+
 def verifie_refs(texte, ou, lieu=None):
     for t in termes(texte):
         if t not in lex: erreur(f"{ou} : terme inconnu [[{t}]]")
@@ -126,9 +136,9 @@ def verifie_refs(texte, ou, lieu=None):
         if t not in noeuds: erreur(f"{ou} : lien vers un nœud inconnu {{{{{t}}}}}")
 
 for n in noeuds.values():
-    for t in textes(n): verifie_refs(t, n['id'], n['id'])
+    for t in textes(n): verifie_refs(t, n['id'], n['id']); verifie_typo(t, n['id'])
 for e in lex.values():
-    verifie_refs(e['definition'], f"lexique/{e['id']}")
+    verifie_refs(e['definition'], f"lexique/{e['id']}"); verifie_typo(e['definition'], f"lexique/{e['id']}")
 for t in lex:
     if not emplois[t]:
         cites = [e['id'] for e in lex.values() if mentionne(e['definition'], t)]
