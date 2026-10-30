@@ -934,3 +934,20 @@ pas r.e., d'où l'incomplétude des théories r.e. à axiomes vrais). Admis ici 
 signalé à chaque endroit. Thèse de Church-Turing énoncée comme thèse. Aucun choix. Relu : six fautes (remarque fausse
 sur l'instruction ajoutée, capture de variable, deux trous de rédaction, admis non signalé là où il agit, comparaison
 inexacte avec Gödel-Rosser).
+
+## 63. Distributions et EDP (30 octobre 2026)
+
+Théorie nouvelle `edp` « Distributions et EDP » (arêtes edo → edp et derham → edp : 16 croisements ; edo + fourier
+en faisait 18, fourier seule 17), avec le chapitre `edp-laplace`. edp (11 fiches ds-*) : fonctions test et
+convergence dans 𝒟 (définition séquentielle), noyau régularisant tiré de θ (dr-plateau), intégrales à paramètre Cᵏ
+par le reste de Taylor sans suites, régularisation, distributions et estimation par semi-normes (sens direct ⋆
+dénombrable : seul ⋆ propre, rien n'en dépend), exemples (L¹_loc, du Bois-Reymond, Dirac, vp(1/x)), dérivation et
+formule des sauts, primitives en dimension 1, multiplication et xT = 0, support et recollement, convolution (sans
+choix : passage des suites aux limites par ℚ^d énuméré), solution élémentaire −1/(4π|x|) du laplacien dans ℝ³ par
+régularisées, sans mesure de surface. edp-laplace (12) : harmoniques, divergence nulle sur la boule par Fubini,
+moyenne et sous-harmonicité, réciproque et régularité, Weyl, principe du maximum, Liouville, partie réelle
+holomorphe, Poisson sur le disque, noyau de la chaleur, problème de Cauchy, maximum parabolique et unicité des
+bornées. Admis : distributions à support ponctuel d'ordre quelconque, non-unicité de Tychonoff (g = e^{−1/t²},
+Mat. Sb. 42, 1935). Le ⋆ de λ est signalé une fois au nœud de la théorie. Relu : six fautes locales (support utilisé
+avant d'être démontré, trois remarques fausses, Tychonoff, argument de suite dense faux) et une vingtaine de
+retouches.

@@ -1,0 +1,625 @@
+# Niveau 1 : structure interne de la théorie « Distributions et EDP » (créée le 30 oct. 2026).
+# Fonctions test, convergence dans 𝒟(Ω) (définition séquentielle, sans topologie limite inductive), noyau
+# régularisant radial, troncatures ; intégrales à paramètre de classe Cᵏ et intégration par parties ; convolution
+# d'une fonction localement intégrable par une fonction test ; distributions (forme séquentielle et estimation
+# par semi-normes, ⋆ dans le sens direct) ; fonctions L¹_loc, Dirac, valeur principale de 1/x ; dérivation,
+# formule des sauts, H' = δ ; primitives en dimension 1 ; multiplication par une fonction C^∞, xT = 0 ;
+# support et recollement ; convolution d'une distribution par une fonction test, régularisation ; solution
+# élémentaire du laplacien dans ℝ³ et équation de Poisson. Le chapitre edp-laplace (fonctions harmoniques,
+# Weyl, Dirichlet sur le disque, équation de la chaleur) est en aval.
+# Placement : arêtes edo → edp (mesure de Lebesgue de ℝⁿ, changement de variables, coordonnées polaires,
+# intégrale de Gauss ; par edo, l'analyse complexe et l'analyse fonctionnelle) et derham → edp (fonction θ
+# du nœud dr-plateau). Croisements de l'édifice : 16 avec ces deux arêtes (16 avec edo seule) ; une arête
+# fourier → edp en aurait coûté 2 de plus.
+# Choix : la mesure de Lebesgue (choix dénombrable) une fois pour toutes ; en propre, le seul sens direct de la
+# caractérisation par semi-normes (ds-distributions, (ii)), dont rien ne dépend : la convolution (ds-convolution)
+# passe des suites aux limites par une énumération des rationnels.
+
+graphe: edp
+titre: Distributions et EDP
+conteneur: edp
+
+entrees:
+  edo: [ds-test]
+  derham: [ds-test]
+
+noeuds:
+  - id: ds-test
+    etiquette: Fonctions test
+    nature: définition
+    titre: Fonctions test et noyau régularisant
+    texte: |
+      Soit $\Omega$ un ouvert non vide de $\lex{n-uplet}{\mathbb R^n}$. On note $|x| = \|x\|_2$ la norme euclidienne ({{gd-normes|Normes}}), $B(a, r)$ et $\bar B(a, r)$ les boules ouverte et fermée qu'elle définit, et $\lambda$ la mesure de Lebesgue de $\mathbb R^n$ ({{cv-lebesgue-rn|Lebesgue sur ℝⁿ}}). On écrit $\int_A f$ pour $\int_A f\,d\lambda$.
+
+      Un **multi-indice** est un $\alpha = (\alpha_1, \dots, \alpha_n) \in \lex{n-uplet}{\mathbb N^n}$, de longueur $|\alpha| = \alpha_1 + \cdots + \alpha_n$. Pour $f$ de classe $C^\infty$ sur $\Omega$, on pose $\partial^\alpha f = \partial_1^{\alpha_1} \cdots \partial_n^{\alpha_n} f$ ; l'ordre des dérivations est indifférent, par le théorème de Schwarz ({{gd-schwarz|Schwarz}}, (i)). On écrit $\beta \leqslant \alpha$ si $\beta_i \leqslant \alpha_i$ pour tout $i$, et $e_j$ est le multi-indice dont seule la $j$-ième composante vaut $1$.
+
+      Le [[support-fonction|support]] d'une fonction continue $f : \Omega \to \lex{ensemble-reels}{\mathbb R}$, noté $\operatorname{supp} f$, est l'adhérence dans $\Omega$ de $\{f \neq 0\}$. Une [[fonction-test|fonction test]] sur $\Omega$ est une fonction de classe $C^\infty$ sur $\Omega$ dont le support est compact ; elles forment l'ensemble $\lex{fonction-test}{\mathcal D}(\Omega)$.
+
+      Pour un compact $K \subset \Omega$, on note $\mathcal D_K(\Omega)$ l'ensemble des $\varphi \in \mathcal D(\Omega)$ de support contenu dans $K$, et, pour $m \in \mathbb N$,
+      $$p_m(\varphi) = \max_{|\alpha| \leqslant m}\ \sup_{x \in \Omega} |\partial^\alpha \varphi(x)|,$$
+      qui est fini, puisque chaque $\partial^\alpha\varphi$ est continue et nulle hors du compact $\operatorname{supp} \varphi$ ({{tr-compacts|Compacts de ℝ}}, (iii)).
+
+      Une suite $(\varphi_k)$ de $\mathcal D(\Omega)$ **converge vers $\varphi$ dans $\mathcal D(\Omega)$** s'il existe un compact $K \subset \Omega$ tel que $\operatorname{supp}\varphi_k \subset K$ pour tout $k$, et si $p_m(\varphi_k - \varphi) \to 0$ pour tout $m$ : les supports restent dans un même compact, et chaque dérivée converge uniformément.
+
+      Pour $\varepsilon > 0$, on pose $\Omega_\varepsilon = \{x \in \Omega : \bar B(x, \varepsilon) \subset \Omega\}$ ; si $\Omega = \mathbb R^n$, $\Omega_\varepsilon = \mathbb R^n$.
+
+      Soit enfin $\theta$ la fonction du nœud {{dr-plateau|Fonctions plateau}}, nulle sur $]{-\infty}, 0]$ et strictement positive sur $]0, +\infty[$. On pose
+      $$\begin{aligned} \sigma(t) &= \frac{\theta(t)}{\theta(t) + \theta(1 - t)}, \\ \tilde\rho(x) &= \theta(1 - |x|^2), \qquad c_n = \int_{\mathbb R^n} \tilde\rho, \end{aligned}$$
+      puis $\rho = \tilde\rho / c_n$ et, pour $\varepsilon > 0$, $\rho_\varepsilon(x) = \varepsilon^{-n}\rho(x/\varepsilon)$. La famille $(\rho_\varepsilon)$ est le [[noyau-regularisant|noyau régularisant]].
+    enonce: |
+      (i) *Opérations.* $\mathcal D(\Omega)$ est un espace vectoriel, stable par chaque $\partial^\alpha$ et par multiplication par toute fonction $a$ de classe $C^\infty$ sur $\Omega$. Plus précisément, $\partial^\alpha(a\varphi)$ est une somme de termes $c\,\partial^\beta a\,\partial^{\alpha - \beta}\varphi$, où $\beta \leqslant \alpha$ et où les entiers $c \geqslant 0$ ne dépendent que de $\alpha$ et $\beta$.
+
+      Si $\varphi_k \to \varphi$ dans $\mathcal D(\Omega)$, alors $\partial^\alpha\varphi_k \to \partial^\alpha\varphi$ et $a\varphi_k \to a\varphi$ dans $\mathcal D(\Omega)$. Si $\omega \subset \Omega$ est ouvert, toute $\varphi \in \mathcal D(\omega)$, prolongée par $0$, appartient à $\mathcal D(\Omega)$ et y a le même support.
+
+      (ii) *Noyau régularisant.* $c_n$ est un réel strictement positif, et $\rho$ est de classe $C^\infty$ sur $\mathbb R^n$, positive, paire, de support $\bar B(0, 1)$ et d'intégrale $1$. Pour $\varepsilon > 0$, $\rho_\varepsilon$ a les mêmes propriétés, avec le support $\bar B(0, \varepsilon)$, et $\rho_\varepsilon(x) = h_\varepsilon(|x|)$, où $h_\varepsilon : \mathbb R \to \mathbb R$ est de classe $C^\infty$, décroissante sur $[0, +\infty[$ et nulle sur $[\varepsilon, +\infty[$.
+
+      (iii) *Troncatures.* $\sigma$ est de classe $C^\infty$ sur $\mathbb R$, croissante, à valeurs dans $[0, 1]$, nulle sur $]{-\infty}, 0]$ et égale à $1$ sur $[1, +\infty[$. Si $K$ est un compact contenu dans un ouvert $O$ de $\mathbb R^n$, il existe $\chi \in \mathcal D(O)$, à valeurs dans $[0, 1]$, égale à $1$ sur un ouvert contenant $K$.
+
+      (iv) *Voisinages des compacts.* Pour $\varepsilon > 0$, $\Omega_\varepsilon$ est ouvert. Tout compact $K \subset \Omega$ est contenu dans $\Omega_\varepsilon$ pour $\varepsilon$ assez petit. Si $K \subset \Omega_\varepsilon$ est compact, l'ensemble $K + \bar B(0, \varepsilon)$ des points $k + v$, où $k \in K$ et $|v| \leqslant \varepsilon$, est un compact contenu dans $\Omega$.
+    preuve: |
+      (i) *Stabilité.* Le support d'une somme est contenu dans la réunion des supports, et $\partial^\alpha\varphi$, comme $a\varphi$, est nulle sur l'ouvert $\Omega \setminus \operatorname{supp}\varphi$ : leurs supports sont des fermés de $\Omega$ contenus dans le compact $\operatorname{supp}\varphi$, donc compacts ({{t-compact-prop|Parties compactes}}, (i)). Les sommes, les dérivées partielles et les produits de fonctions de classe $C^\infty$ le sont ({{gd-classe-ck|Classe Cᵏ}}, (ii) et (iii)).
+
+      *Produits.* Pour $f$ et $g$ de classe $C^1$, $\partial_j(fg) = (\partial_j f)\,g + f\,\partial_j g$, par la dérivée d'un produit en la variable $x_j$ ({{de-operations|Opérations}}, (ii)). Si $\partial^\alpha(a\varphi)$ est une somme de termes $c\,\partial^\beta a\,\partial^{\alpha - \beta}\varphi$, l'application de $\partial_j$ à chacun donne
+      $$c\,\partial^{\beta + e_j}a\,\partial^{\alpha - \beta}\varphi + c\,\partial^\beta a\,\partial^{\alpha + e_j - \beta}\varphi,$$
+      deux termes de la forme voulue pour $\alpha + e_j$ : la récurrence sur $|\alpha|$ conclut.
+
+      *Suites.* Si $\operatorname{supp}\varphi_k \subset K$, la fonction $\varphi$, limite uniforme des $\varphi_k$, est nulle hors de $K$, et $\operatorname{supp}\varphi \subset K$, puisque $K$ est fermé. Les supports de $\partial^\alpha\varphi_k$ et de $a\varphi_k$ sont aussi dans $K$. D'une part $p_m(\partial^\alpha\varphi_k - \partial^\alpha\varphi) \leqslant p_{m + |\alpha|}(\varphi_k - \varphi)$. D'autre part, si $N_m$ est la somme des entiers $c$ qui interviennent pour les $|\alpha| \leqslant m$ et $A_m = \max_{|\beta| \leqslant m} \sup_K |\partial^\beta a|$, fini par compacité,
+      $$p_m(a\varphi_k - a\varphi) \leqslant N_m A_m\, p_m(\varphi_k - \varphi).$$
+
+      *Prolongement.* La fonction prolongée coïncide avec $\varphi$ sur l'ouvert $\omega$ et est nulle sur $\Omega \setminus \operatorname{supp}\varphi$, ouvert puisque le compact $\operatorname{supp}\varphi$ est fermé dans $\mathbb R^n$ ({{t-compact-prop|Parties compactes}}, (ii)). Ces deux ouverts recouvrent $\Omega$, et la classe $C^\infty$ est locale ({{dr-partition|Partition de l'unité}}, (i)). Le support, fermé de $\mathbb R^n$, ne change pas.
+
+      (ii) *Régularité et signe.* $x \mapsto 1 - |x|^2$ est polynomiale, et $\theta$ est de classe $C^\infty$ ({{dr-plateau|Fonctions plateau}}, (i)) : $\tilde\rho$ l'est par composition. Elle est strictement positive exactement sur $B(0, 1)$, et paire. Tout point $x$ tel que $|x| = 1$ est limite des points $(1 - \frac1k)x$ de $B(0, 1)$, et $\bar B(0, 1)$ est fermée : le support est $\bar B(0, 1)$.
+
+      *La constante.* Sur $]0, +\infty[$, $\theta'(x) = \theta(x)/x^2 \geqslant 0$ ({{dr-plateau|Fonctions plateau}}, (i), avec $P_1(u) = u^2$), et $\theta' = 0$ sur $]{-\infty}, 0[$ : $\theta$ est croissante ({{de-monotonie|Signe de la dérivée}}, (i)). Donc $0 \leqslant \tilde\rho \leqslant \theta(1)$, et $\tilde\rho$ est nulle hors de $[-1, 1]^n$, d'où $c_n \leqslant 2^n\theta(1)$.
+
+      Comme $|x| \leqslant n\|x\|_\infty$ ({{me-espace|Espaces métriques}}, (ii)), le cube $\{\|x\|_\infty < \frac1{2n}\}$ est contenu dans $B(0, \frac12)$, où $\tilde\rho \geqslant \theta(\frac34) > 0$. Ce cube a pour mesure $n^{-n}$ ({{cv-lebesgue-rn|Lebesgue sur ℝⁿ}}, (iv)), donc $c_n \geqslant \theta(\frac34)\,n^{-n} > 0$.
+
+      *Dilatées.* $\rho_\varepsilon$ est de classe $C^\infty$, positive, paire, de support $\bar B(0, \varepsilon)$. La formule du changement de variables ({{cv-changement|Changement de variables}}, (ii)), pour le difféomorphisme $y \mapsto \varepsilon y$ de $\mathbb R^n$, de jacobien $\varepsilon^n$, donne
+      $$\begin{aligned} \int_{\mathbb R^n} \rho_\varepsilon(x)\,dx &= \int_{\mathbb R^n} \rho_\varepsilon(\varepsilon y)\,\varepsilon^n\,dy \\ &= \int_{\mathbb R^n} \rho = 1. \end{aligned}$$
+
+      Enfin $h_\varepsilon(s) = \varepsilon^{-n}c_n^{-1}\,\theta\big(1 - s^2/\varepsilon^2\big)$ est de classe $C^\infty$, décroissante sur $[0, +\infty[$ comme composée de la fonction croissante $\theta$ et d'une fonction décroissante, et nulle pour $s \geqslant \varepsilon$.
+
+      (iii) *La fonction $\sigma$.* Le dénominateur est strictement positif : $\theta(1 - t) > 0$ si $t < 1$, et $\theta(t) > 0$ si $t > 0$. Comme $t \mapsto 1/t$ est de classe $C^\infty$ sur $]0, +\infty[$ (preuve de {{dr-partition|Partition de l'unité}}, (iii)), $\sigma$ est de classe $C^\infty$. Elle est nulle pour $t \leqslant 0$, égale à $1$ pour $t \geqslant 1$, puisque $\theta(1 - t) = 0$, et
+      $$\sigma'(t) = \frac{\theta'(t)\,\theta(1 - t) + \theta(t)\,\theta'(1 - t)}{(\theta(t) + \theta(1 - t))^2},$$
+      qui est positive, puisque $\theta$ et $\theta'$ le sont.
+
+      *Une fonction bosse.* La fonction $\tau(u) = \sigma(4 - 4u)\,\sigma(4 + 4u)$ est de classe $C^\infty$, à valeurs dans $[0, 1]$, égale à $1$ si $|u| \leqslant \frac34$ et nulle si $|u| \geqslant 1$.
+
+      *Troncature.* Si $K$ est vide, $\chi = 0$ convient. Sinon, soit $\delta(x) = \min\big(1, \inf_{a \notin O}\|x - a\|_\infty\big)$, et $\delta = 1$ si $O = \mathbb R^n$. Elle est $1$-lipschitzienne pour $\|\cdot\|_\infty$, et $B_\infty(x, \delta(x)) \subset O$ pour $x \in O$ : la preuve de {{dr-recouvrement|Recouvrement par des cubes}}, (i), vaut pour tout ouvert. Elle atteint sur le compact $K$ un minimum $\delta_0 > 0$ ({{tr-compacts|Compacts de ℝ}}, (iii)) ; posons $\eta = \delta_0/2$.
+
+      Pour $m \in \lex{n-uplet}{\mathbb Z^n}$, la fonction $g_m(x) = \prod_l \tau\big((x_l - \eta m_l)/\eta\big)$ est de classe $C^\infty$, à valeurs dans $[0, 1]$, égale à $1$ sur le cube $\{\|x - \eta m\|_\infty \leqslant \frac34\eta\}$ et nulle hors de $\{\|x - \eta m\|_\infty < \eta\}$. L'ensemble $M$ des $m$ tels que le cube $\{\|x - \eta m\|_\infty \leqslant \frac\eta2\}$ rencontre $K$ est fini, $K$ étant borné. On pose
+      $$\chi = 1 - \prod_{m \in M}(1 - g_m),$$
+      de classe $C^\infty$ et à valeurs dans $[0, 1]$.
+
+      Pour $x \in K$, soit $m_l$ le plus grand entier tel que $m_l \leqslant \frac{x_l}\eta + \frac12$ : alors $\|x - \eta m\|_\infty \leqslant \frac\eta2$, donc $m \in M$, et $x$ appartient à l'ouvert $\{\|y - \eta m\|_\infty < \frac34\eta\}$, où $g_m = 1$ et $\chi = 1$. La réunion de ces ouverts, pour $m \in M$, contient $K$.
+
+      Hors du compact $F = \bigcup_{m \in M}\{\|y - \eta m\|_\infty \leqslant \eta\}$, tous les $g_m$ sont nuls, et $\chi = 0$. Si $y \in F$, il existe $m \in M$ et $x \in K$ tels que $\|y - \eta m\|_\infty \leqslant \eta$ et $\|x - \eta m\|_\infty \leqslant \frac\eta2$ ; alors $\|y - x\|_\infty \leqslant \frac32\eta < \delta_0 \leqslant \delta(x)$, et $y \in O$. Ainsi $\operatorname{supp}\chi \subset F \subset O$, et $\chi \in \mathcal D(O)$.
+
+      (iv) *Compacts.* Soit $K \subset \Omega$ compact non vide, et $\delta_0 > 0$ le minimum sur $K$ de la fonction $\delta$ de (iii), pour $O = \Omega$. Si $\varepsilon < \delta_0$, $x \in K$ et $|w - x| \leqslant \varepsilon$, alors $\|w - x\|_\infty \leqslant |w - x| < \delta(x)$ ({{me-espace|Espaces métriques}}, (ii)), et $w \in \Omega$ : $K \subset \Omega_\varepsilon$.
+
+      *Ouverture.* Soit $x \in \Omega_\varepsilon$. La boule $K = \bar B(x, \varepsilon)$ est fermée et bornée, donc compacte ({{me-rn|L'espace ℝⁿ}}, (iii)), et contenue dans $\Omega$ ; soit $\delta_0$ comme ci-dessus. Si $|x' - x| < \delta_0$ et $|w - x'| \leqslant \varepsilon$, le point $z = x + (w - x')$ est dans $K$, et $\|w - z\|_\infty \leqslant |x' - x| < \delta(z)$ : $w \in \Omega$. Donc $B(x, \delta_0) \subset \Omega_\varepsilon$.
+
+      *Somme.* $K \times \bar B(0, \varepsilon)$ est fermé et borné dans $\mathbb R^{2n}$, donc compact, et son image par l'addition, linéaire donc continue, est compacte ({{t-compact-prop|Parties compactes}}, (iii)). Elle est contenue dans $\Omega$ par définition de $\Omega_\varepsilon$.
+    remarques:
+      - |
+        Pour $n = 1$, un calcul numérique donne $c_1 = \int_{-1}^1 \theta(1 - x^2)\,dx \approx 0{,}444$, d'où $\rho(0) = \theta(1)/c_1 \approx 0{,}829$. La fonction $\rho_\varepsilon$, de même aire $1$ sur un intervalle de longueur $2\varepsilon$, a pour maximum $\rho(0)/\varepsilon$ : elle se resserre et s'élève à mesure que $\varepsilon$ décroît, et c'est ce qui lui permettra d'approcher la masse de Dirac au nœud {{ds-exemples|Exemples de distributions}}.
+      - |
+        L'erreur la plus répandue est d'oublier la condition sur les supports dans la convergence de $\mathcal D(\Omega)$. Sur $\mathbb R$, les fonctions $\varphi_k(x) = \frac1k\,\rho(x - k)$ vérifient $p_m(\varphi_k) = p_m(\rho)/k \to 0$ pour tout $m$, mais leurs supports $[k - 1, k + 1]$ s'enfuient : elles ne convergent pas dans $\mathcal D(\mathbb R)$.
+
+        Ce n'est pas un détail. La forme linéaire $\varphi \mapsto \sum_{j \geqslant 1} j\,\varphi(j)$, somme finie pour chaque fonction test, prend la valeur $\rho(0) \approx 0{,}829$ sur chaque $\varphi_k$ ; avec la seule convergence uniforme des dérivées, elle ne serait pas continue, alors qu'elle sera une distribution au sens du nœud {{ds-distributions|Distributions}}.
+      - |
+        La fonction $\rho$ est une fonction plateau au sens du nœud {{dr-plateau|Fonctions plateau}}, mais construite sur la norme euclidienne plutôt que coordonnée par coordonnée. Ce caractère radial ne sert à rien pour la régularisation elle-même ; il sera décisif au nœud {{ha-regularite|Régularité des fonctions harmoniques}}, où une moyenne pondérée par $\rho_\varepsilon$ se décompose en moyennes sur des boules.
+
+  - id: ds-parametre
+    etiquette: Intégrales à paramètre
+    nature: lemme
+    titre: Intégrales à paramètre de classe Cᵏ et intégration par parties
+    texte: |
+      Pour un ouvert $W$ de $\lex{n-uplet}{\mathbb R^d}$, une **boule fermée de $W$** est une boule fermée $\bar B(p, r)$, de rayon $r > 0$, contenue dans $W$ ; on garde les notations du nœud {{ds-test|Fonctions test}}. Pour $k = \infty$, la condition « $|\beta| \leqslant k + 1$ » porte sur tous les multi-indices.
+    enonce: |
+      (i) *Intégrales à paramètre.* Soit $W$ un ouvert de $\mathbb R^d$, $A$ un borélien de $\mathbb R^n$, $k \in \lex{ensemble-entiers-naturels}{\mathbb N} \cup \{\infty\}$ et $h : W \times A \to \lex{ensemble-reels}{\mathbb R}$. On suppose :
+
+      (a) pour tout $y \in A$, $h(\cdot, y)$ est de classe $C^{k+1}$ sur $W$ ;
+
+      (b) pour tout $p \in W$ et tout $\beta$ tel que $|\beta| \leqslant k + 1$, la fonction $y \mapsto \partial^\beta_p h(p, y)$ est borélienne sur $A$ ;
+
+      (c) pour toute boule fermée $L$ de $W$ et tout $\beta$ tel que $|\beta| \leqslant k + 1$, il existe une fonction borélienne $g_{L,\beta} \geqslant 0$, intégrable sur $A$, telle que $|\partial^\beta_p h(p, y)| \leqslant g_{L,\beta}(y)$ pour $p \in L$ et $y \in A$.
+
+      Alors $H(p) = \int_A h(p, y)\,dy$ est de classe $C^k$ sur $W$, et, pour $|\beta| \leqslant k$,
+      $$\partial^\beta H(p) = \int_A \partial^\beta_p h(p, y)\,dy.$$
+
+      (ii) *Intégration par parties.* Si $u$ est de classe $C^1$ sur un ouvert $\Omega$ de $\mathbb R^n$ et de support compact, alors $\int_\Omega \partial_j u = 0$ pour tout $j$. Par suite, si $f$ et $\varphi$ sont de classe $C^1$ sur $\Omega$ et si $\varphi$ est de support compact,
+      $$\int_\Omega f\,\partial_j\varphi = -\int_\Omega (\partial_j f)\,\varphi.$$
+    preuve: |
+      (i) *Continuité.* Soit $L$ une boule fermée de $W$, et $p, p' \in L$. Le segment $[p, p']$ est contenu dans $L$, qui est convexe. Pour $y \in A$, la fonction $s \mapsto h\big(p + s(p' - p), y\big)$ est de classe $C^1$ sur $[0, 1]$, de dérivée $\sum_j (p'_j - p_j)\,\partial_j h\big(p + s(p' - p), y\big)$, par la règle de la chaîne ({{gd-differentielle|Différentielle}}, (iv)).
+
+      Comme $|p'_j - p_j| \leqslant |p' - p|$, l'inégalité des accroissements finis ({{de-iaf|Inégalité des accroissements finis}}, (ii)) donne
+      $$|h(p', y) - h(p, y)| \leqslant |p' - p|\sum_{j=1}^d g_{L,e_j}(y).$$
+      Les fonctions $h(p, \cdot)$ sont intégrables, dominées par $g_{L,0}$, et l'intégration donne $|H(p') - H(p)| \leqslant C_L\,|p' - p|$, avec $C_L = \sum_j \int_A g_{L,e_j}$. Tout point de $W$ est intérieur à une boule fermée de $W$ : $H$ est continue.
+
+      *Dérivées partielles.* Supposons $k \geqslant 1$. Soit $p \in W$ et $L = \bar B(p, r)$ une boule fermée de $W$. Pour $0 < |s| \leqslant r$, la formule de Taylor-Lagrange à l'ordre $1$ ({{de-taylor|Taylor-Lagrange}}), appliquée à $s \mapsto h(p + se_j, y)$, de classe $C^2$, donne
+      $$\begin{aligned} &\big|h(p + se_j, y) - h(p, y) - s\,\partial_j h(p, y)\big| \\ &\quad \leqslant \frac{s^2}{2}\,g_{L,2e_j}(y). \end{aligned}$$
+      En intégrant, on obtient
+      $$\begin{aligned} &\Big|\frac{H(p + se_j) - H(p)}{s} - \int_A \partial_j h(p, y)\,dy\Big| \\ &\quad \leqslant \frac{|s|}2\int_A g_{L,2e_j}, \end{aligned}$$
+      qui tend vers $0$ : $\partial_j H(p)$ existe et vaut $\int_A \partial_j h(p, y)\,dy$.
+
+      *Récurrence.* La fonction $\partial_j h$ vérifie (a), (b) et (c) avec $k - 1$ au lieu de $k$, ses dérivées d'ordre $\leqslant k$ étant des dérivées de $h$ d'ordre $\leqslant k + 1$. Par le premier point, les $\partial_j H$ sont continues, et $H$ est de classe $C^1$ ({{gd-classe-ck|Classe Cᵏ}}, (i)). Par récurrence sur $k$, chaque $\partial_j H$ est de classe $C^{k-1}$, avec la formule annoncée ; les composantes de $dH$ étant les $\partial_j H$, $H$ est de classe $C^k$. Pour $k = \infty$, on applique ce qui précède à chaque entier.
+
+      (ii) *Prolongement.* Prolongée par $0$ hors de $\Omega$, $u$ est de classe $C^1$ sur $\mathbb R^n$ : elle l'est sur l'ouvert $\Omega$ et sur l'ouvert $\mathbb R^n \setminus \operatorname{supp} u$, qui recouvrent $\mathbb R^n$, et la différentiabilité comme la continuité de la différentielle sont locales (preuve de {{dr-partition|Partition de l'unité}}, (i), qui traite chaque classe $C^k$). Soit $R$ tel que $\operatorname{supp} u \subset \,]{-R}, R[^n$, si bien que $u$ est nulle aux points dont une coordonnée vaut $\pm R$.
+
+      *Réduction à $j = n$.* Soit $\sigma$ la transposition de $j$ et $n$, et $P_\sigma$ la permutation des coordonnées du nœud {{cv-lebesgue-rn|Lebesgue sur ℝⁿ}}, (iii). La fonction $v = u \circ P_\sigma$ est de classe $C^1$ à support compact, et $\partial_n v = (\partial_j u) \circ P_\sigma$. La formule du changement de variables ({{cv-changement|Changement de variables}}, (iii)), pour l'application linéaire $P_\sigma$, de déterminant $\pm1$, donne $\int \partial_j u = \int \partial_n v$.
+
+      *Fubini.* Pour $n = 1$, $\int_{-R}^R u' = u(R) - u(-R) = 0$ par le {{ar-tfa|théorème fondamental}} et le nœud {{m-riemann|Riemann et Lebesgue}}. Pour $n \geqslant 2$, $\partial_n v$ est continue, bornée et nulle hors de $[-R, R]^n$, donc intégrable. Le théorème de Fubini ({{m-fubini|Tonelli, Fubini}}, (ii)), sur $\mathbb R^n = \mathbb R^{n-1} \times \mathbb R$ ({{cv-lebesgue-rn|Lebesgue sur ℝⁿ}}, (i) et (ii)), donne
+      $$\int_{\mathbb R^n} \partial_n v = \int_{\mathbb R^{n-1}}\Big(\int_{-R}^R \partial_n v(x', s)\,ds\Big)dx',$$
+      et l'intégrale intérieure vaut $v(x', R) - v(x', -R) = 0$.
+
+      *Conséquence.* La fonction $u = f\varphi$ est de classe $C^1$, de support contenu dans celui de $\varphi$, et $\partial_j u = (\partial_j f)\varphi + f\,\partial_j\varphi$.
+    remarques:
+      - |
+        Le point (i) diffère du nœud {{m-convergence-dominee|Convergence dominée}}, (iii), sur deux points. Il demande une dérivée de plus, qui fournit la majoration du reste de Taylor ; en échange, il ne passe par aucune suite, et la seule convergence qu'il invoque est celle d'un majorant explicite, $\frac{|s|}2\int g_{L,2e_j}$. C'est pourquoi il n'emprunte rien au choix dénombrable de la caractérisation séquentielle, et n'hérite que de celui de la mesure de Lebesgue.
+      - |
+        L'intégration par parties (ii) est la formule de la divergence ({{dr-green|Green-Riemann, divergence}}, (iii)) pour un champ $u\,e_j$ nul sur le bord d'un grand pavé : le flux à travers le bord est nul, et l'intégrale de la divergence aussi. Toute la théorie des distributions repose sur cette seule identité, qui permet de faire passer une dérivée d'une fonction sur l'autre.
+
+  - id: ds-regularisation
+    etiquette: Régularisation
+    nature: proposition
+    titre: Convolution par une fonction test et régularisation
+    texte: |
+      On garde les notations du nœud {{ds-test|Fonctions test}}. Une fonction $f : \Omega \to \lex{ensemble-reels}{\mathbb R}$ est [[localement-integrable|localement intégrable]] si elle est borélienne et si $\int_K |f| < +\infty$ pour tout compact $K \subset \Omega$. Elles forment l'espace vectoriel $\lex{localement-integrable}{L^1_{\mathrm{loc}}}(\Omega)$, qui contient les fonctions continues sur $\Omega$, bornées sur chaque compact ({{tr-compacts|Compacts de ℝ}}, (iii)), et les fonctions intégrables.
+
+      Soit $f \in L^1_{\mathrm{loc}}(\Omega)$, $\varepsilon > 0$, et $\varphi$ de classe $C^\infty$ sur $\lex{n-uplet}{\mathbb R^n}$, nulle hors de $\bar B(0, \varepsilon)$. Le [[produit-convolution|produit de convolution]] de $f$ par $\varphi$ est la fonction définie sur $\Omega_\varepsilon$ par
+      $$(f * \varphi)(x) = \int_\Omega f(y)\,\varphi(x - y)\,dy.$$
+      L'intégrande est borélienne, nulle hors de $\bar B(x, \varepsilon)$, compact contenu dans $\Omega$, et majorée par $\big(\sup|\varphi|\big)\,|f|\,\mathbf 1_{\bar B(x, \varepsilon)}$ : elle est intégrable.
+
+      Pour $\Omega = \mathbb R^n$ et $f$ de classe $C^\infty$, nulle hors d'une boule, on a $f * \varphi = \varphi * f$, par la formule du changement de variables pour l'application affine $y \mapsto x - y$, de déterminant $\pm1$ ({{cv-changement|Changement de variables}}, (iii)).
+    enonce: |
+      (i) *Régularité.* $f * \varphi$ est de classe $C^\infty$ sur $\Omega_\varepsilon$, et $\partial^\alpha(f * \varphi) = f * \partial^\alpha\varphi$ pour tout multi-indice $\alpha$.
+
+      (ii) *Approximation.* Si $f$ est continue sur $\Omega$, $f * \rho_\varepsilon$ converge vers $f$ uniformément sur tout compact $K$ de $\Omega$ : $\sup_K |f * \rho_\varepsilon - f| \to 0$ quand $\varepsilon \to 0$, $\varepsilon$ étant assez petit pour que $K \subset \Omega_\varepsilon$.
+
+      (iii) *Fonctions test.* Soit $\psi \in \lex{fonction-test}{\mathcal D}(\Omega)$ et $\eta > 0$ tel que $\operatorname{supp}\psi \subset \Omega_\eta$. Pour $0 < \varepsilon < \eta$, la fonction $\psi * \rho_\varepsilon$, calculée sur $\mathbb R^n$ en prolongeant $\psi$ par $0$, appartient à $\mathcal D(\Omega)$, a son support dans $\operatorname{supp}\psi + \bar B(0, \varepsilon)$, et $\partial^\alpha(\psi * \rho_\varepsilon) = (\partial^\alpha\psi) * \rho_\varepsilon$. Pour toute suite $\varepsilon_k \to 0$ d'éléments de $]0, \eta[$, $\psi * \rho_{\varepsilon_k} \to \psi$ dans $\mathcal D(\Omega)$.
+    preuve: |
+      (i) Appliquons le nœud {{ds-parametre|Intégrales à paramètre}}, (i), avec $W = \Omega_\varepsilon$, ouvert ({{ds-test|Fonctions test}}, (iv)), $A = \Omega$, $k = \infty$ et $h(x, y) = f(y)\,\varphi(x - y)$. Pour $y$ fixé, $h(\cdot, y)$ est de classe $C^\infty$, et $\partial^\beta_x h(x, y) = f(y)\,(\partial^\beta\varphi)(x - y)$ est borélienne en $y$.
+
+      Si $L$ est une boule fermée de $\Omega_\varepsilon$ et $x \in L$, $h(x, \cdot)$ est nulle hors de $L + \bar B(0, \varepsilon)$, compact contenu dans $\Omega$ ({{ds-test|Fonctions test}}, (iv)). La fonction
+      $$g_{L,\beta} = \big(\sup|\partial^\beta\varphi|\big)\,|f|\,\mathbf 1_{L + \bar B(0, \varepsilon)}$$
+      est donc intégrable et domine $\partial^\beta_x h$ : l'hypothèse (c) est remplie, et la formule de dérivation est celle de l'énoncé.
+
+      (ii) Soit $\varepsilon_0 > 0$ tel que $K \subset \Omega_{\varepsilon_0}$ ({{ds-test|Fonctions test}}, (iv)), et $K' = K + \bar B(0, \varepsilon_0)$, compact contenu dans $\Omega$. Par le théorème de Heine ({{me-heine|Heine}}), pour tout $\eta > 0$, il existe $\delta > 0$ tel que $|f(y) - f(x)| < \eta$ pour $x, y \in K'$ et $|y - x| < \delta$.
+
+      Pour $x$ fixé, $\int_\Omega \rho_\varepsilon(x - y)\,dy = \int_{\mathbb R^n} \rho_\varepsilon = 1$ dès que $\bar B(x, \varepsilon) \subset \Omega$, par le changement de variables $y \mapsto x - y$ ({{cv-changement|Changement de variables}}, (ii)). Pour $\varepsilon < \min(\delta, \varepsilon_0)$ et $x \in K$, on a donc
+      $$\begin{aligned} &(f * \rho_\varepsilon)(x) - f(x) \\ &\quad = \int_\Omega \big(f(y) - f(x)\big)\,\rho_\varepsilon(x - y)\,dy. \end{aligned}$$
+      L'intégrande est nulle hors de $\bar B(x, \varepsilon) \subset K'$, où $|f(y) - f(x)| < \eta$ ; la valeur absolue est donc au plus $\eta\int\rho_\varepsilon(x - y)\,dy = \eta$.
+
+      (iii) *Régularité et support.* Par (i), pour $\Omega = \mathbb R^n$, $\psi * \rho_\varepsilon$ est de classe $C^\infty$. Si $(\psi * \rho_\varepsilon)(x) \neq 0$, l'intégrande ne peut être identiquement nulle : $\psi(y) \neq 0$ pour un $y$ tel que $|x - y| \leqslant \varepsilon$, et $x$ appartient au compact $\operatorname{supp}\psi + \bar B(0, \varepsilon)$, contenu dans $\Omega$ puisque $\operatorname{supp}\psi \subset \Omega_\eta \subset \Omega_\varepsilon$.
+
+      *Dérivées.* Comme $\psi * \rho_\varepsilon = \rho_\varepsilon * \psi$, le point (i), appliqué à $f = \rho_\varepsilon$ et à la fonction test $\psi$, nulle hors d'une boule, donne
+      $$\partial^\alpha(\psi * \rho_\varepsilon) = \rho_\varepsilon * \partial^\alpha\psi = (\partial^\alpha\psi) * \rho_\varepsilon.$$
+
+      *Convergence.* Les supports sont tous dans le compact $\operatorname{supp}\psi + \bar B(0, \eta)$, contenu dans $\Omega$ ({{ds-test|Fonctions test}}, (iv)). Par (ii), appliqué sur $\mathbb R^n$ à la fonction continue $\partial^\alpha\psi$ et au compact $\operatorname{supp}\psi + \bar B(0, \eta)$, hors duquel les deux fonctions sont nulles, $(\partial^\alpha\psi) * \rho_{\varepsilon_k} \to \partial^\alpha\psi$ uniformément sur $\mathbb R^n$. Ainsi $p_m(\psi * \rho_{\varepsilon_k} - \psi) \to 0$ pour tout $m$.
+    remarques:
+      - |
+        La convolution remplace la valeur en $x$ par une moyenne des valeurs voisines, pondérée par $\rho_\varepsilon(x - \cdot)$ : la fonction obtenue a la régularité du noyau, et non celle de $f$. Le point (i) le dit en faisant porter toutes les dérivées sur $\varphi$.
+
+        ```schema ds-regularisation
+        L'indicatrice de $[-1, 1]$, en gris, et ses régularisées $\mathbf 1_{[-1,1]} * \rho_\varepsilon$ pour $\varepsilon = 0{,}6$ (bleu), $0{,}3$ (vert) et $0{,}1$ (rouge), sur $\mathbb R$ ; en bas, les noyaux $\rho_\varepsilon$ correspondants, d'aire $1$. Chaque régularisée vaut $1$ sur $[-1 + \varepsilon, 1 - \varepsilon]$, $0$ hors de $[-1 - \varepsilon, 1 + \varepsilon]$, et passe par $\frac12$ en $\pm1$, par parité de $\rho_\varepsilon$.
+        ```
+      - |
+        L'erreur la plus répandue est d'attendre du point (ii) une convergence uniforme pour une fonction discontinue. Pour $f = \mathbf 1_{[-1, 1]}$ sur $\mathbb R$, $(f * \rho_\varepsilon)(1) = \int_0^2 \rho_\varepsilon = \frac12$ pour tout $\varepsilon \leqslant 2$, alors que $f(1) = 1$ : l'écart reste $\frac12$. La convergence a bien lieu en chaque point de continuité, mais elle n'est pas uniforme près du saut.
+      - |
+        Sur le cercle, le noyau de Fejér joue le même rôle d'approximation de l'unité ({{fo-fejer|Théorème de Fejér}}) : une suite de fonctions positives d'intégrale $1$ qui se concentrent en $0$. La densité de $\mathcal D(\mathbb R^n)$ dans $L^1(\mathbb R^n)$ s'en déduirait par la continuité des translations, établie dans $L^1(\mathbb R)$ ({{fo-densite|Densité}}) mais non dans $\mathbb R^n$ ; elle n'est pas rédigée ici, ne servant pas à la suite.
+
+  - id: ds-distributions
+    etiquette: Distributions
+    nature: définition
+    titre: Distributions
+    texte: |
+      On garde les notations du nœud {{ds-test|Fonctions test}}. Une [[distribution]] sur $\Omega$ est une forme linéaire $T : \lex{fonction-test}{\mathcal D}(\Omega) \to \lex{ensemble-reels}{\mathbb R}$ telle que $T(\varphi_k) \to T(\varphi)$ chaque fois que $\varphi_k \to \varphi$ dans $\mathcal D(\Omega)$. On note $\langle T, \varphi\rangle = T(\varphi)$, et $\lex{distribution}{\mathcal D'}(\Omega)$ l'espace vectoriel des distributions sur $\Omega$.
+
+      Une suite $(T_k)$ de distributions **converge vers $T$ dans $\mathcal D'(\Omega)$** si $\langle T_k, \varphi\rangle \to \langle T, \varphi\rangle$ pour toute $\varphi \in \mathcal D(\Omega)$.
+
+      On dit que $T$ **vérifie l'estimation par semi-normes** si, pour tout compact $K \subset \Omega$, il existe $C \geqslant 0$ et $m \in \lex{ensemble-entiers-naturels}{\mathbb N}$ tels que
+      $$|\langle T, \varphi\rangle| \leqslant C\,p_m(\varphi), \qquad \varphi \in \mathcal D_K(\Omega).$$
+      Si l'on peut prendre le même $m$ pour tous les compacts, le plus petit tel $m$ est l'**ordre** de $T$.
+    enonce: |
+      (i) Une forme linéaire sur $\mathcal D(\Omega)$ qui vérifie l'estimation par semi-normes est une distribution.
+
+      (ii) Réciproquement, toute distribution vérifie l'estimation par semi-normes.
+    preuve: |
+      (i) Soit $\varphi_k \to \varphi$ dans $\mathcal D(\Omega)$, les supports étant dans un compact $K$. Le support de $\varphi$ est aussi dans $K$ : $\varphi$, limite simple des $\varphi_k$, est nulle sur l'ouvert $\Omega \setminus K$, et $K$ est fermé. Avec $C$ et $m$ associés à $K$,
+      $$\begin{aligned} |\langle T, \varphi_k\rangle - \langle T, \varphi\rangle| &= |\langle T, \varphi_k - \varphi\rangle| \\ &\leqslant C\,p_m(\varphi_k - \varphi) \to 0. \end{aligned}$$
+
+      (ii) Supposons que l'estimation soit fausse pour un compact $K$ : pour tout entier $m \geqslant 1$, l'ensemble des $\varphi \in \mathcal D_K(\Omega)$ telles que $|\langle T, \varphi\rangle| > m\,p_m(\varphi)$ n'est pas vide. Choisissons-en un élément $\varphi_m$ pour chaque $m$ (⋆).
+
+      On a $p_m(\varphi_m) > 0$, sans quoi $\varphi_m = 0$ et $\langle T, \varphi_m\rangle = 0$. Posons $\psi_m = \varphi_m / \big(m\,p_m(\varphi_m)\big)$. Pour $j \leqslant m$, $p_j \leqslant p_m$, donc
+      $$p_j(\psi_m) \leqslant p_m(\psi_m) = \frac1m.$$
+      Ainsi $\psi_m \to 0$ dans $\mathcal D(\Omega)$, les supports restant dans $K$, alors que $|\langle T, \psi_m\rangle| > 1$ : $T$ n'est pas une distribution.
+    choix: |
+      Le sens direct (ii) choisit, pour chaque entier $m$, une fonction test qui met l'estimation en défaut : c'est le [[choix-denombrable|choix dénombrable]], et l'atlas ne sait pas s'en passer. La définition, le point (i) et la convergence des distributions n'en font aucun usage, et aucun autre nœud ne s'appuie sur ce sens direct : la convolution ({{ds-convolution|Convolution des distributions}}) se contente de la continuité séquentielle.
+    remarques:
+      - |
+        La définition par les suites évite de munir $\mathcal D(\Omega)$ d'une topologie, la « limite inductive » des topologies des $\mathcal D_K(\Omega)$, qui n'est pas métrisable. Le point (ii) montre que rien n'est perdu : une distribution est continue, sur chaque $\mathcal D_K(\Omega)$, pour la famille des semi-normes $p_m$.
+      - |
+        L'erreur la plus répandue est de croire que l'entier $m$ peut être choisi une fois pour toutes. La forme $\varphi \mapsto \sum_{j \geqslant 0} (-1)^j\varphi^{(j)}(j)$ sur $\mathcal D(\mathbb R)$, somme finie pour chaque fonction test, est une distribution : sur $\mathcal D_{[-N, N]}$, elle est majorée par $(N + 1)\,p_N$. Mais sur un compact qui contient $[0, N + 1]$, l'entier $m$ doit être au moins $N$, et cette distribution n'a pas d'ordre fini.
+      - |
+        Dans l'estimation, $C$ et $m$ ne dépendent que de $K$, jamais de $\varphi$. Le nœud {{ds-convolution|Convolution des distributions}} n'en a pourtant pas besoin : il dérive $x \mapsto \langle T, \varphi(x - \cdot)\rangle$ par la seule continuité séquentielle, et passe des suites aux limites en énumérant les rationnels, sans choix.
+
+  - id: ds-exemples
+    etiquette: Exemples de distributions
+    nature: proposition
+    titre: Fonctions localement intégrables, masse de Dirac, valeur principale
+    texte: |
+      Pour $a \in \Omega$, la [[masse-dirac|masse de Dirac]] en $a$ est la forme $\langle \delta_a, \varphi\rangle = \varphi(a)$ ; on écrit $\delta$ pour $\delta_0$.
+
+      Sur $\lex{ensemble-reels}{\mathbb R}$, la [[valeur-principale|valeur principale]] de $\frac1x$ est la forme
+      $$\begin{aligned} &\Big\langle \operatorname{vp}\frac1x, \varphi\Big\rangle \\ &\quad = \lim_{\varepsilon \to 0^+}\Big(\int_{-R}^{-\varepsilon} + \int_\varepsilon^R\Big)\frac{\varphi(x)}x\,dx, \end{aligned}$$
+      où $R > 0$ est tel que $\operatorname{supp}\varphi \subset [-R, R]$ ; les intégrales sont celles de Riemann, et le résultat ne dépend pas de $R$.
+    enonce: |
+      (i) *Fonctions.* Pour $f \in \lex{localement-integrable}{L^1_{\mathrm{loc}}}(\Omega)$, la forme $T_f : \varphi \mapsto \int_\Omega f\varphi$ est une [[distribution]] d'ordre $0$. On l'identifie à $f$ et on écrit $\langle f, \varphi\rangle$.
+
+      (ii) *Du Bois-Reymond.* Si $\int_\Omega f\varphi = 0$ pour toute $\varphi \in \lex{fonction-test}{\mathcal D}(\Omega)$, alors $f = 0$ presque partout. Ainsi $T_f = T_g$ si et seulement si $f = g$ presque partout ; si $f$ et $g$ sont continues, si et seulement si $f = g$.
+
+      (iii) *Dirac.* $\delta_a$ est une distribution d'ordre $0$, et il n'existe aucune $f \in L^1_{\mathrm{loc}}(\Omega)$ telle que $\delta_a = T_f$.
+
+      (iv) *Valeur principale.* La limite qui définit $\operatorname{vp}\frac1x$ existe, et
+      $$\Big\langle \operatorname{vp}\frac1x, \varphi\Big\rangle = \int_0^R \frac{\varphi(x) - \varphi(-x)}{x}\,dx,$$
+      l'intégrande se prolongeant par continuité en $0$. C'est une distribution, et $|\langle \operatorname{vp}\frac1x, \varphi\rangle| \leqslant 2R\,p_1(\varphi)$.
+
+      (v) *Approximation de l'unité.* Quand $\varepsilon \to 0$, $\langle \rho_\varepsilon, \varphi\rangle \to \varphi(0)$ pour toute $\varphi \in \mathcal D(\mathbb R^n)$ : $\rho_{\varepsilon_k} \to \delta$ dans $\lex{distribution}{\mathcal D'}(\mathbb R^n)$ pour toute suite $\varepsilon_k \to 0$.
+    preuve: |
+      (i) Si $\operatorname{supp}\varphi \subset K$, la fonction $f\varphi$ est borélienne et majorée par $p_0(\varphi)\,|f|\,\mathbf 1_K$, d'où
+      $$|T_f(\varphi)| \leqslant \Big(\int_K |f|\Big)\,p_0(\varphi).$$
+      La forme est linéaire ({{m-integrables|Fonctions intégrables}}, (i)), et le nœud {{ds-distributions|Distributions}}, (i), conclut.
+
+      (ii) *Pavés ouverts.* Soit $Q = \prod_l \,]a_l, b_l[$ un pavé ouvert d'adhérence contenue dans $\Omega$, et
+      $$\varphi_k(x) = \prod_{l=1}^n \sigma\big(k(x_l - a_l)\big)\,\sigma\big(k(b_l - x_l)\big),$$
+      avec la fonction $\sigma$ du nœud {{ds-test|Fonctions test}}, (iii). Elle est de classe $C^\infty$, à valeurs dans $[0, 1]$, nulle hors de $Q$, donc $\varphi_k \in \mathcal D(\Omega)$. Si $x \in Q$, tous les facteurs valent $1$ dès que $k$ dépasse $1/(x_l - a_l)$ et $1/(b_l - x_l)$ ; si $x \notin Q$, l'un d'eux est nul. Ainsi $\varphi_k \to \mathbf 1_Q$ simplement, avec $|f\varphi_k| \leqslant |f|\,\mathbf 1_{\bar Q}$, et la convergence dominée ({{m-convergence-dominee|Convergence dominée}}, (i)) donne $\int_Q f = 0$.
+
+      *Un pavé fixé.* Soit $C = \prod_l \,]c_l, d_l]$ un pavé d'adhérence contenue dans $\Omega$, et $\mathcal C$ l'ensemble des boréliens $A \subset C$ tels que $\int_A f = 0$. Un pavé $]a, b] \subset C$ est l'intersection décroissante des pavés ouverts $\prod_l \,]a_l, b_l + \frac1k[$, d'adhérences contenues dans $\Omega$ pour $k$ grand ({{ds-test|Fonctions test}}, (iv)) : par convergence dominée, il appartient à $\mathcal C$.
+
+      $\mathcal C$ contient $C$, est stable par différence $B \setminus A$ avec $A \subset B$, par linéarité de l'intégrale, et par réunion croissante, par convergence dominée : c'est une classe monotone. Les pavés contenus dans $C$ et le vide forment un π-système, qui engendre les boréliens de $C$. En effet, l'ensemble des boréliens $B$ de $\mathbb R^n$ tels que $B \cap C$ appartienne à la tribu engendrée par ce π-système est une tribu ({{m-tribus|Tribus}}), qui contient les pavés, l'intersection d'un pavé avec $C$ étant un pavé ou le vide ; elle contient donc $\mathcal B(\mathbb R^n)$ ({{cv-lebesgue-rn|Lebesgue sur ℝⁿ}}, (i)). Le lemme de Dynkin ({{m-dynkin|Classes monotones}}, (i)) donne $\mathcal C = \mathcal B(C)$.
+
+      Pour $A = C \cap \{f > 0\}$, on a $\int f\,\mathbf 1_A = 0$ avec $f\,\mathbf 1_A \geqslant 0$, donc $f\,\mathbf 1_A = 0$ presque partout ({{m-integrale|Intégrale positive}}, (iv)) et $\lambda(A) = 0$. De même pour $\{f < 0\}$ : $f = 0$ presque partout sur $C$.
+
+      *Conclusion.* Comme dans la preuve du nœud {{cv-lebesgue-rn|Lebesgue sur ℝⁿ}}, (i), $\Omega$ est la réunion des pavés à extrémités rationnelles dont l'adhérence est contenue dans $\Omega$, famille dénombrable définie sans choix ; une réunion dénombrable d'ensembles négligeables l'est. Si $f$ et $g$ sont continues et égales presque partout, l'ouvert $\{f \neq g\}$ est négligeable ; s'il contenait un point, il contiendrait une boule, donc un cube inscrit de côté non nul, de mesure non nulle ({{cv-lebesgue-rn|Lebesgue sur ℝⁿ}}, (iv)).
+
+      (iii) *Ordre $0$.* $|\varphi(a)| \leqslant p_0(\varphi)$.
+
+      *Ce n'est pas une fonction.* Soit $r > 0$ tel que $\bar B(a, r) \subset \Omega$, et $\varphi_k(x) = \tilde\rho\big(k(x - a)/r\big)$, avec la fonction $\tilde\rho$ du nœud {{ds-test|Fonctions test}}. Alors $\varphi_k \in \mathcal D(\Omega)$, $\varphi_k(a) = \theta(1) > 0$, $\varphi_k(x) \to 0$ pour $x \neq a$, et $|f\varphi_k| \leqslant \theta(1)\,|f|\,\mathbf 1_{\bar B(a, r)}$. Si l'on avait $\delta_a = T_f$, la convergence dominée donnerait $\theta(1) = \int f\varphi_k \to 0$, ce qui est absurde.
+
+      (iv) *Symétrisation.* Le changement de variable $x \mapsto -x$ dans l'intégrale sur $[-R, -\varepsilon]$ donne
+      $$\begin{aligned} &\Big(\int_{-R}^{-\varepsilon} + \int_\varepsilon^R\Big)\frac{\varphi(x)}x\,dx = \int_\varepsilon^R g(x)\,dx, \\ &g(x) = \frac{\varphi(x) - \varphi(-x)}x. \end{aligned}$$
+
+      *Prolongement.* Par l'inégalité des accroissements finis ({{de-iaf|Inégalité des accroissements finis}}, (ii)), $|\varphi(x) - \varphi(-x)| \leqslant 2x\,p_1(\varphi)$, donc $|g| \leqslant 2p_1(\varphi)$. De plus
+      $$\begin{aligned} g(x) &= \frac{\varphi(x) - \varphi(0)}x + \frac{\varphi(-x) - \varphi(0)}{-x} \\ &\longrightarrow 2\varphi'(0). \end{aligned}$$
+      Prolongée par $g(0) = 2\varphi'(0)$, $g$ est continue sur $[0, R]$, donc intégrable au sens de Riemann ({{ri-continues|Fonctions continues}}, (ii)), et $\big|\int_0^\varepsilon g\big| \leqslant 2\varepsilon\,p_1(\varphi) \to 0$ : la limite existe et vaut $\int_0^R g$. Remplacer $R$ par $R' > R$ ajoute l'intégrale de $g$ sur $[R, R']$, où $g$ est nulle.
+
+      *Distribution.* La forme est linéaire, et, si $\operatorname{supp}\varphi \subset [-R, R]$, $|\langle \operatorname{vp}\frac1x, \varphi\rangle| \leqslant R\sup|g| \leqslant 2R\,p_1(\varphi)$. Le nœud {{ds-distributions|Distributions}}, (i), conclut.
+
+      (v) Comme $\rho_\varepsilon$ est paire, $\langle \rho_\varepsilon, \varphi\rangle = \int \varphi(y)\,\rho_\varepsilon(0 - y)\,dy = (\varphi * \rho_\varepsilon)(0)$, qui tend vers $\varphi(0)$ par le nœud {{ds-regularisation|Régularisation}}, (ii), appliqué au compact $\{0\}$.
+    remarques:
+      - |
+        L'erreur la plus répandue est d'écrire $\int_{-1}^1 \frac{dx}x = 0$ « par imparité » sans préciser comment on s'approche de $0$. La valeur principale retire un intervalle symétrique $]{-\varepsilon}, \varepsilon[$. Si l'on retire $]{-\varepsilon}, 2\varepsilon[$, on trouve, pour tout $\varepsilon$,
+        $$\int_{-1}^{-\varepsilon}\frac{dx}x + \int_{2\varepsilon}^1 \frac{dx}x = -\ln 2,$$
+        avec le logarithme du nœud {{lp-puissances|Puissances réelles}}. La limite dépend de la façon de retirer la singularité ; seule la forme symétrique compense les deux moitiés.
+      - |
+        La masse de Dirac est l'intégrale contre la mesure de Dirac, qui a servi d'exemple au théorème de Riesz-Markov ({{anf-riesz-markov|Riesz-Markov}}). Le point (v) dit qu'elle est limite de fonctions : les $\rho_\varepsilon$, d'intégrale $1$, se concentrent en $0$. Le point (iii) dit qu'elle n'est pas elle-même une fonction, ce que la notation des physiciens, « $\delta(x)$ », dissimule.
+      - |
+        Une suite de fonctions peut converger dans $\mathcal D'$ sans converger en aucun point. Sur $\mathbb R$, $\langle \sin(kx), \varphi\rangle = \frac1k\int \cos(kx)\,\varphi'(x)\,dx$, par intégration par parties ({{ds-parametre|Intégrales à paramètre}}, (ii)), et cette quantité est majorée par $\frac1k\int|\varphi'|$ : $\sin(kx) \to 0$ dans $\mathcal D'(\mathbb R)$, alors que $\sin(kx)$ n'a de limite en aucun point qui n'est pas multiple de $\pi$. Les oscillations rapides se compensent dans les moyennes contre les fonctions test.
+
+  - id: ds-derivation
+    etiquette: Dérivation
+    nature: proposition
+    titre: Dérivée d'une distribution
+    texte: |
+      Soit $T \in \lex{distribution}{\mathcal D'}(\Omega)$. Sa [[derivee-distribution|dérivée]] partielle $\partial_j T$ est la forme
+      $$\langle \partial_j T, \varphi\rangle = -\langle T, \partial_j\varphi\rangle.$$
+      Pour un multi-indice $\alpha$, on pose $\partial^\alpha T = \partial_1^{\alpha_1} \cdots \partial_n^{\alpha_n}T$, si bien que $\langle \partial^\alpha T, \varphi\rangle = (-1)^{|\alpha|}\langle T, \partial^\alpha\varphi\rangle$. Le [[laplacien]] est $\lex{laplacien}{\Delta}T = \sum_j \partial_j^2 T$ ; pour une fonction $u$ de classe $C^2$, $\Delta u = \sum_j \partial_j^2 u$. Sur $\lex{ensemble-reels}{\mathbb R}$, on écrit $T'$ pour $\partial_1 T$.
+
+      La [[fonction-heaviside|fonction de Heaviside]] est $H = \mathbf 1_{]0, +\infty[}$, et $\operatorname{sgn}$ la fonction égale à $-1$ sur $]{-\infty}, 0[$, à $1$ sur $]0, +\infty[$ et à $0$ en $0$.
+    enonce: |
+      (i) $\partial_j T$ est une distribution ; $\partial_i\partial_j T = \partial_j\partial_i T$ ; et si $T_k \to T$ dans $\mathcal D'(\Omega)$, alors $\partial_j T_k \to \partial_j T$.
+
+      (ii) *Compatibilité.* Si $f$ est de classe $C^1$ sur $\Omega$, $\partial_j T_f = T_{\partial_j f}$. Par suite, pour $f$ de classe $C^k$ et $|\alpha| \leqslant k$, $\partial^\alpha T_f = T_{\partial^\alpha f}$, et $\Delta T_u = T_{\Delta u}$ pour $u$ de classe $C^2$.
+
+      (iii) *Formule des sauts.* Soit $f : \mathbb R \to \mathbb R$ dont les restrictions à $]{-\infty}, 0[$ et à $]0, +\infty[$ sont de classe $C^1$, et telle que $f$ et $f'$ aient des limites finies $f(0^\pm)$ et $f'(0^\pm)$ à droite et à gauche de $0$. Alors $f$ et $f'$, définie hors de $0$, sont localement intégrables, et
+      $$(T_f)' = T_{f'} + \big(f(0^+) - f(0^-)\big)\,\delta.$$
+
+      (iv) *Exemples.* $H' = \delta$ ; $|x|' = \operatorname{sgn}$ et $|x|'' = 2\delta$ ; $(\ln|x|)' = \operatorname{vp}\frac1x$.
+    preuve: |
+      (i) Si $\varphi_k \to \varphi$ dans $\mathcal D(\Omega)$, alors $\partial_j\varphi_k \to \partial_j\varphi$ ({{ds-test|Fonctions test}}, (i)), et $\langle T, \partial_j\varphi_k\rangle \to \langle T, \partial_j\varphi\rangle$ : la forme linéaire $\partial_j T$ est une distribution. Le théorème de Schwarz pour $\varphi$ ({{gd-schwarz|Schwarz}}, (i)) donne la symétrie. Enfin $\langle \partial_j T_k, \varphi\rangle = -\langle T_k, \partial_j\varphi\rangle \to -\langle T, \partial_j\varphi\rangle$.
+
+      (ii) La fonction $\partial_j f$ est continue, donc localement intégrable. L'intégration par parties ({{ds-parametre|Intégrales à paramètre}}, (ii)) donne
+      $$\langle \partial_j T_f, \varphi\rangle = -\int_\Omega f\,\partial_j\varphi = \int_\Omega (\partial_j f)\,\varphi.$$
+      La suite s'obtient par récurrence sur $|\alpha|$.
+
+      (iii) *Intégrabilité.* $f$ et $f'$ sont boréliennes, continues sur chaque demi-droite ouverte, et bornées sur tout borné grâce aux limites en $0$ : elles sont localement intégrables.
+
+      *Prolongement en $0$.* Soit $f_+$ la fonction égale à $f$ sur $]0, +\infty[$ et à $f(0^+)$ en $0$. Pour $x > 0$, l'égalité des accroissements finis ({{de-taf|Égalité des accroissements finis}}) donne $c_x \in \,]0, x[$ tel que $\frac{f_+(x) - f_+(0)}x = f'(c_x)$, qui tend vers $f'(0^+)$ : $f_+$ est de classe $C^1$ sur $[0, +\infty[$. De même à gauche.
+
+      *Intégration par parties.* Soit $\varphi \in \mathcal D(\mathbb R)$ de support contenu dans $[-R, R]$. Le théorème fondamental ({{ar-tfa|Théorème fondamental}}) appliqué à $f_+\varphi$ sur $[0, R]$ donne
+      $$-\int_0^R f\varphi' = f(0^+)\,\varphi(0) + \int_0^R f'\varphi,$$
+      et de même $-\int_{-R}^0 f\varphi' = -f(0^-)\,\varphi(0) + \int_{-R}^0 f'\varphi$. La somme est la formule annoncée, évaluée sur $\varphi$.
+
+      (iv) Pour $H$, $f' = 0$ hors de $0$ et le saut vaut $1$. Pour $|x|$, $f' = \operatorname{sgn}$ hors de $0$, sans saut ; pour $\operatorname{sgn}$, $f' = 0$ et le saut vaut $2$, d'où $|x|'' = \operatorname{sgn}' = 2\delta$.
+
+      *Le logarithme.* La fonction $\ln|x|$ ({{lp-puissances|Puissances réelles}}) est localement intégrable : pour $0 < \varepsilon < 1$, $\int_\varepsilon^1 (-\ln x)\,dx = 1 - \varepsilon + \varepsilon\ln\varepsilon$, et la convergence monotone ({{m-beppo-levi|Convergence monotone}}) donne $\int_0^1 |\ln x|\,dx = 1$, l'intégrale de Riemann d'une fonction continue sur un segment étant celle de Lebesgue ({{m-riemann|Riemann et Lebesgue}}).
+
+      Soit $\varphi$ de support dans $[-R, R]$, et $\varepsilon = \frac1k$. La convergence dominée donne $-\int \ln|x|\,\varphi'(x)\,dx = \lim_k I_k$, où $I_k$ est l'intégrale sur $\{\varepsilon \leqslant |x| \leqslant R\}$. Sur chacun des deux segments, l'intégration par parties donne
+      $$\begin{aligned} I_k &= \ln\varepsilon\,\big(\varphi(\varepsilon) - \varphi(-\varepsilon)\big) \\ &\quad + \Big(\int_{-R}^{-\varepsilon} + \int_\varepsilon^R\Big)\frac{\varphi(x)}x\,dx. \end{aligned}$$
+      Le premier terme est majoré par $2\varepsilon|\ln\varepsilon|\,p_1(\varphi)$. Comme $\ln z \leqslant z - 1$ pour $z \geqslant 1$, par les accroissements finis, on a $|\ln\varepsilon| = 2\ln\varepsilon^{-1/2} \leqslant 2\varepsilon^{-1/2}$, donc $\varepsilon|\ln\varepsilon| \leqslant 2\sqrt\varepsilon \to 0$. Le second terme tend vers $\langle \operatorname{vp}\frac1x, \varphi\rangle$ ({{ds-exemples|Exemples de distributions}}, (iv)).
+    remarques:
+      - |
+        L'erreur la plus répandue est de confondre la dérivée au sens des distributions avec la dérivée presque partout. La fonction $H$ est dérivable hors de $0$, de dérivée nulle : sa dérivée presque partout est $0$. Sa dérivée au sens des distributions est $\delta$, qui n'est pas nulle : elle garde la trace du saut, que la dérivée presque partout oublie.
+
+        ```schema ds-derivation
+        En haut, la fonction $|x|$ ; au milieu, sa dérivée $\operatorname{sgn}$, qui saute de $-1$ à $1$ en $0$ ; en bas, la dérivée de $\operatorname{sgn}$, qui est nulle hors de $0$ et égale à $2\delta$, dessinée par une flèche rouge de hauteur $2$, la hauteur du saut. Chaque dérivation au sens des distributions transforme un coin en saut, puis un saut en masse de Dirac.
+        ```
+      - |
+        Toute distribution est indéfiniment dérivable, alors qu'une fonction continue peut n'être dérivable nulle part. C'est la force de la définition : la dérivée est transférée sur la fonction test, qui en a autant qu'on veut. Le prix est que la dérivée d'une fonction n'est plus, en général, une fonction.
+      - |
+        Pour $\varphi(x) = e^{-x^2}(1 + x)$, qui n'est pas à support compact mais décroît assez vite pour que les calculs aient un sens, on trouve $-\int_{\mathbb R}\ln|x|\,\varphi'(x)\,dx = \int_0^\infty \frac{\varphi(x) - \varphi(-x)}x\,dx = 2\int_0^\infty e^{-x^2}\,dx = \sqrt\pi \approx 1{,}7725$, valeur vérifiée par un calcul numérique des deux membres. La partie paire de $\varphi$ ne compte pas : la valeur principale ne voit que la partie impaire.
+
+  - id: ds-primitives
+    etiquette: Primitives
+    nature: proposition
+    titre: Distributions de dérivée nulle et primitives en dimension 1
+    texte: |
+      Soit $I$ un intervalle ouvert de $\lex{ensemble-reels}{\mathbb R}$. On fixe $\chi_0 \in \lex{fonction-test}{\mathcal D}(I)$ d'intégrale $1$, par exemple une translatée de $\rho_\varepsilon$ pour $\varepsilon$ assez petit ({{ds-test|Fonctions test}}, (ii)).
+    enonce: |
+      (i) Toute $\varphi \in \mathcal D(I)$ s'écrit de façon unique $\varphi = \big(\int\varphi\big)\chi_0 + \psi'$, avec $\psi \in \mathcal D(I)$.
+
+      (ii) Si $T \in \lex{distribution}{\mathcal D'}(I)$ vérifie $T' = 0$, alors $T$ est une fonction constante : $T = c$, avec $c = \langle T, \chi_0\rangle$.
+
+      (iii) Toute $S \in \mathcal D'(I)$ a une primitive, c'est-à-dire une distribution $U$ telle que $U' = S$, unique à une constante près. En particulier, les solutions de $T' = \delta$ dans $\mathcal D'(\mathbb R)$ sont les $H + c$, $c \in \mathbb R$.
+    preuve: |
+      (i) *Existence.* Soit $[\alpha, \beta] \subset I$ un segment qui contient $\operatorname{supp}\varphi$ et $\operatorname{supp}\chi_0$. La fonction $g = \varphi - \big(\int\varphi\big)\chi_0$ est de classe $C^\infty$, nulle hors de $[\alpha, \beta]$, et d'intégrale nulle. Posons $\psi(x) = \int_\alpha^x g$ pour $x \in I$.
+
+      Par le théorème fondamental ({{ar-tfa|Théorème fondamental}}), $\psi' = g$, si bien que $\psi$ est de classe $C^\infty$. Elle est nulle pour $x \leqslant \alpha$, et, pour $x \geqslant \beta$, $\psi(x) = \int_\alpha^\beta g = \int g = 0$ : son support est dans $[\alpha, \beta]$.
+
+      *Unicité.* Si $\big(\int\varphi\big)\chi_0 + \psi' = c\,\chi_0 + \psi_1'$, l'intégration donne $\int\varphi = c$, puisque $\int\psi' = \int\psi_1' = 0$ ({{ds-parametre|Intégrales à paramètre}}, (ii)). Alors $\psi - \psi_1$ est constante ({{de-monotonie|Signe de la dérivée}}, (ii)), et nulle hors d'un compact : elle est nulle.
+
+      (ii) Avec l'écriture de (i),
+      $$\begin{aligned} \langle T, \varphi\rangle &= \Big(\int\varphi\Big)\langle T, \chi_0\rangle + \langle T, \psi'\rangle \\ &= c\int\varphi - \langle T', \psi\rangle = c\int\varphi. \end{aligned}$$
+
+      (iii) *Définition.* Notons $\psi_\varphi$ la fonction $\psi$ de (i). Par unicité, $\varphi \mapsto \psi_\varphi$ est linéaire. Posons $\langle U, \varphi\rangle = -\langle S, \psi_\varphi\rangle$.
+
+      *Continuité.* Si $\varphi_k \to \varphi$ dans $\mathcal D(I)$, les supports étant dans un compact $K$, choisissons $[\alpha, \beta]$ contenant $K$ et $\operatorname{supp}\chi_0$. Les $\psi_{\varphi_k}$ ont leur support dans $[\alpha, \beta]$ ; leurs dérivées $\varphi_k - \big(\int\varphi_k\big)\chi_0$ convergent vers celle de $\psi_\varphi$ pour chaque semi-norme $p_m$ ; et $|\psi_{\varphi_k} - \psi_\varphi| \leqslant (\beta - \alpha)\sup|\psi_{\varphi_k}' - \psi_\varphi'|$. Donc $\psi_{\varphi_k} \to \psi_\varphi$ dans $\mathcal D(I)$, et $U$ est une distribution.
+
+      *Primitive.* Pour $\varphi \in \mathcal D(I)$, $\varphi'$ est d'intégrale nulle, et $\varphi' = 0 \cdot \chi_0 + \varphi'$ : $\psi_{\varphi'} = \varphi$. Ainsi $\langle U', \varphi\rangle = -\langle U, \varphi'\rangle = \langle S, \varphi\rangle$. Deux primitives diffèrent d'une distribution de dérivée nulle, constante par (ii). Enfin $H' = \delta$ ({{ds-derivation|Dérivation}}, (iv)).
+    remarques:
+      - |
+        Le point (ii) est l'analogue, pour les distributions, du fait qu'une fonction dérivable de dérivée nulle sur un intervalle est constante ({{de-monotonie|Signe de la dérivée}}, (ii)). Il n'est pas évident : une distribution de dérivée nulle n'est pas, a priori, une fonction, et c'est la décomposition (i) qui le montre. L'hypothèse que $I$ est un intervalle est essentielle : sur $\mathbb R \setminus \{0\}$, la fonction $H$ a une dérivée nulle sans être constante.
+      - |
+        Les solutions de $T' = \delta$ sont des **solutions élémentaires** de l'opérateur $\frac{d}{dx}$ ; il y en a une infinité, $H + c$, et la plus naturelle dépend du problème posé : $H$ est nulle dans le passé, $H - 1$ dans le futur. Le nœud {{ds-laplacien|Solution élémentaire du laplacien}} fait de même pour le laplacien de $\mathbb R^3$.
+
+  - id: ds-multiplication
+    etiquette: Multiplication
+    nature: proposition
+    titre: Multiplication par une fonction de classe C∞
+    texte: |
+      Soit $T \in \lex{distribution}{\mathcal D'}(\Omega)$ et $a$ une fonction de classe $C^\infty$ sur $\Omega$. Le produit $aT$ est la forme
+      $$\langle aT, \varphi\rangle = \langle T, a\varphi\rangle.$$
+    enonce: |
+      (i) $aT$ est une distribution ; $aT_f = T_{af}$ pour $f \in \lex{localement-integrable}{L^1_{\mathrm{loc}}}(\Omega)$ ; et
+      $$\partial_j(aT) = (\partial_j a)\,T + a\,\partial_j T.$$
+
+      (ii) $a\,\delta_b = a(b)\,\delta_b$ pour $b \in \Omega$. Sur $\lex{ensemble-reels}{\mathbb R}$, $x\,\delta = 0$ et $x \operatorname{vp}\frac1x = 1$.
+
+      (iii) Sur $\mathbb R$, $xT = 0$ si et seulement si $T = c\,\delta$ pour un réel $c$.
+
+      (iv) Sur $\mathbb R$, les solutions de $xT = 1$ sont les distributions $\operatorname{vp}\frac1x + c\,\delta$, $c \in \mathbb R$.
+    preuve: |
+      (i) Si $\varphi_k \to \varphi$ dans $\lex{fonction-test}{\mathcal D}(\Omega)$, alors $a\varphi_k \to a\varphi$ ({{ds-test|Fonctions test}}, (i)), et $\langle T, a\varphi_k\rangle \to \langle T, a\varphi\rangle$. La fonction $af$ est localement intégrable, $a$ étant bornée sur chaque compact, et $\langle T_f, a\varphi\rangle = \int (af)\varphi$. Enfin, comme $a\,\partial_j\varphi = \partial_j(a\varphi) - (\partial_j a)\varphi$,
+      $$\begin{aligned} \langle \partial_j(aT), \varphi\rangle &= -\langle T, a\,\partial_j\varphi\rangle \\ &= -\langle T, \partial_j(a\varphi)\rangle \\ &\quad + \langle T, (\partial_j a)\varphi\rangle \\ &= \langle a\,\partial_j T, \varphi\rangle \\ &\quad + \langle (\partial_j a)T, \varphi\rangle. \end{aligned}$$
+
+      (ii) $\langle a\delta_b, \varphi\rangle = a(b)\varphi(b)$, et $x\delta = 0$ en est le cas $b = 0$. Pour la valeur principale, l'intégrande $\frac{x\varphi(x)}x$ vaut $\varphi(x)$, et la limite qui la définit est $\int\varphi$ ({{ds-exemples|Exemples de distributions}}, (iv)).
+
+      (iii) *Lemme de division.* Soit $\chi \in \mathcal D(\mathbb R)$ égale à $1$ sur un voisinage de $0$ ({{ds-test|Fonctions test}}, (iii)). Pour $\varphi \in \mathcal D(\mathbb R)$, la fonction $g = \varphi - \varphi(0)\chi$ est une fonction test nulle en $0$. Par le théorème fondamental appliqué à $t \mapsto g(tx)$,
+      $$g(x) = x\,\psi(x), \qquad \psi(x) = \int_0^1 g'(tx)\,dt.$$
+
+      La fonction $\psi$ est de classe $C^\infty$ ({{gd-schwarz|Schwarz}}, (ii), appliqué à $(t, x) \mapsto g'(tx)$, dont les dérivées en $x$, $t^k g^{(k+1)}(tx)$, sont continues). Pour $x \neq 0$, $\psi(x) = g(x)/x$ ; donc $\{\psi \neq 0\} \subset \{g \neq 0\} \cup \{0\}$, et $\operatorname{supp}\psi \subset \operatorname{supp} g \cup \{0\}$, qui est compact : $\psi \in \mathcal D(\mathbb R)$.
+
+      *Conclusion.* Si $xT = 0$,
+      $$\begin{aligned} \langle T, \varphi\rangle &= \varphi(0)\langle T, \chi\rangle + \langle T, x\psi\rangle \\ &= \varphi(0)\langle T, \chi\rangle + \langle xT, \psi\rangle, \end{aligned}$$
+      c'est-à-dire $T = c\,\delta$ avec $c = \langle T, \chi\rangle$. La réciproque est (ii).
+
+      (iv) Par (ii), $x\big(\operatorname{vp}\frac1x + c\delta\big) = 1$. Si $xT = 1$, alors $x\big(T - \operatorname{vp}\frac1x\big) = 0$, et (iii) conclut.
+    remarques:
+      - |
+        On ne sait pas multiplier deux distributions en général, et aucune extension raisonnable du produit ne peut être associative. Si l'on pouvait former $\delta \cdot \operatorname{vp}\frac1x$, on aurait d'un côté $(\delta \cdot x)\operatorname{vp}\frac1x = 0 \cdot \operatorname{vp}\frac1x = 0$ par (ii), de l'autre $\delta\,\big(x \operatorname{vp}\frac1x\big) = \delta \cdot 1 = \delta$. Le produit par une fonction de classe $C^\infty$ est le cas où ce conflit ne peut pas se produire.
+      - |
+        Le point (iii) est le premier cas d'un théorème plus général : une distribution dont le support est réduit à un point $a$ est une combinaison linéaire finie de dérivées $\partial^\alpha\delta_a$. Il est énoncé au nœud {{ds-support|Support}}.
+
+  - id: ds-support
+    etiquette: Support
+    nature: proposition
+    titre: Support d'une distribution
+    texte: |
+      Soit $T \in \lex{distribution}{\mathcal D'}(\Omega)$ et $\omega \subset \Omega$ un ouvert. Par le prolongement par $0$ ({{ds-test|Fonctions test}}, (i)), $\lex{fonction-test}{\mathcal D}(\omega) \subset \mathcal D(\Omega)$ ; on dit que $T$ **s'annule sur $\omega$** si $\langle T, \varphi\rangle = 0$ pour toute $\varphi \in \mathcal D(\omega)$.
+
+      Le [[support-distribution|support]] de $T$, noté $\operatorname{supp} T$, est le complémentaire dans $\Omega$ de la réunion des ouverts sur lesquels $T$ s'annule.
+    enonce: |
+      (i) *Recollement.* Si $T$ s'annule sur chacun des ouverts $\omega_i$ d'une famille $(\omega_i)_{i \in I}$, elle s'annule sur leur réunion.
+
+      (ii) $\operatorname{supp} T$ est un fermé de $\Omega$, et $\Omega \setminus \operatorname{supp} T$ est le plus grand ouvert sur lequel $T$ s'annule. Si $\operatorname{supp}\varphi \cap \operatorname{supp} T = \varnothing$, alors $\langle T, \varphi\rangle = 0$. Pour tout $\alpha$, $\operatorname{supp}\partial^\alpha T \subset \operatorname{supp} T$.
+
+      (iii) *Exemples.* Si $f$ est continue, $\operatorname{supp} T_f = \operatorname{supp} f$. On a $\operatorname{supp}\delta_a = \{a\}$ et, sur $\lex{ensemble-reels}{\mathbb R}$, $\operatorname{supp}\operatorname{vp}\frac1x = \mathbb R$.
+    preuve: |
+      (i) *Un recouvrement fini.* Soit $\varphi \in \mathcal D(\bigcup_i \omega_i)$, de support $K$. Si $K$ est vide, $\varphi = 0$. Sinon $K$ est compact et recouvert par les $\omega_i$ : il existe $i_1, \dots, i_m$ tels que $K \subset \omega_{i_1} \cup \cdots \cup \omega_{i_m}$. Écrivons $\omega'_j = \omega_{i_j}$.
+
+      *Des compacts adaptés.* Soit $\delta_j(x) = \min\big(1, \inf_{a \notin \omega'_j}\|x - a\|_\infty\big)$, avec $\delta_j = 1$ si $\omega'_j = \mathbb R^n$. Chaque $\delta_j$ est $1$-lipschitzienne et strictement positive sur $\omega'_j$ ({{dr-recouvrement|Recouvrement par des cubes}}, (i)). La fonction $\max_j \delta_j$ est continue et strictement positive sur $K$ ; elle y atteint un minimum $\eta > 0$ ({{tr-compacts|Compacts de ℝ}}, (iii)).
+
+      Les ensembles $K_j = \{x \in K : \delta_j(x) \geqslant \eta\}$ sont fermés dans $K$, donc compacts ; ils sont contenus dans $\omega'_j$, où $\delta_j > 0$, et recouvrent $K$.
+
+      *Une partition.* Soit $\zeta_j \in \mathcal D(\omega'_j)$, à valeurs dans $[0, 1]$, égale à $1$ sur $K_j$ ({{ds-test|Fonctions test}}, (iii)). Posons $\chi_1 = \zeta_1$ et $\chi_j = \zeta_j\prod_{l < j}(1 - \zeta_l)$. Par récurrence sur $m$,
+      $$1 - \sum_{j=1}^m \chi_j = \prod_{j=1}^m (1 - \zeta_j),$$
+      qui est nul sur $K$, chaque point de $K$ étant dans un $K_j$.
+
+      *Conclusion.* Ainsi $\varphi = \sum_j \chi_j\varphi$, et $\chi_j\varphi \in \mathcal D(\omega'_j)$, son support étant contenu dans celui de $\zeta_j$. Donc $\langle T, \varphi\rangle = \sum_j \langle T, \chi_j\varphi\rangle = 0$.
+
+      (ii) Par (i), $T$ s'annule sur la réunion $\Omega \setminus \operatorname{supp} T$ des ouverts où elle s'annule, qui est donc le plus grand d'entre eux ; $\operatorname{supp} T$ est fermé dans $\Omega$ comme complémentaire d'un ouvert. Si $\operatorname{supp}\varphi$ ne rencontre pas $\operatorname{supp} T$, $\varphi \in \mathcal D(\Omega \setminus \operatorname{supp} T)$, et $\langle T, \varphi\rangle = 0$. Si $T$ s'annule sur $\omega$ et $\varphi \in \mathcal D(\omega)$, alors $\partial^\alpha\varphi \in \mathcal D(\omega)$ et $\langle \partial^\alpha T, \varphi\rangle = \pm\langle T, \partial^\alpha\varphi\rangle = 0$.
+
+      (iii) *Fonctions.* $T_f$ s'annule sur $\omega$ si et seulement si $f = 0$ sur $\omega$, par le nœud {{ds-exemples|Exemples de distributions}}, (ii), appliqué sur $\omega$. Le plus grand tel ouvert est le complémentaire de l'adhérence de $\{f \neq 0\}$.
+
+      *Dirac.* $\delta_a$ s'annule sur $\Omega \setminus \{a\}$. Sur un ouvert $\omega$ contenant $a$, elle ne s'annule pas : pour $\varepsilon$ petit, $x \mapsto \rho_\varepsilon(x - a)$ est dans $\mathcal D(\omega)$ et vaut $\rho_\varepsilon(0) > 0$ en $a$.
+
+      *Valeur principale.* Si $x_0 \neq 0$ et $\varphi \geqslant 0$ est une fonction test non nulle, de support contenu dans un intervalle autour de $x_0$ qui ne contient pas $0$, alors $\langle \operatorname{vp}\frac1x, \varphi\rangle = \int \frac{\varphi(x)}x\,dx \neq 0$. Tout $x_0 \neq 0$ est donc dans le support, qui est fermé et contient alors $0$.
+    remarques:
+      - |
+        L'erreur la plus répandue est de croire que $\langle T, \varphi\rangle = 0$ dès que $\varphi$ s'annule sur $\operatorname{supp} T$. Pour $T = \delta'$, de support $\{0\}$ par (ii), et $\varphi(x) = x\chi(x)$, où $\chi$ vaut $1$ près de $0$, on a $\varphi(0) = 0$ mais $\langle \delta', \varphi\rangle = -\varphi'(0) = -1$. Il suffit que $\varphi$ s'annule sur un voisinage du support, par (ii) ; pour $\delta'$, il suffit que $\varphi'(0) = 0$. *Admis ici* : en général, si $T$ est d'ordre $m$ et que les dérivées de $\varphi$ d'ordre $\leqslant m$ s'annulent sur $\operatorname{supp} T$, alors $\langle T, \varphi\rangle = 0$ ; la démonstration demande une troncature fine près du support, non rédigée.
+      - |
+        *Admis ici.* Une distribution de support $\{a\}$ s'écrit $\sum_{|\alpha| \leqslant m} c_\alpha\,\partial^\alpha\delta_a$. La démonstration combine l'estimation par semi-normes sur un voisinage compact de $a$ ({{ds-distributions|Distributions}}, (ii)) avec la formule de Taylor en plusieurs variables appliquée à $\varphi(x)\chi\big((x - a)/\varepsilon\big)$, dont les dérivées d'ordre $\leqslant m$ tendent vers $0$ avec $\varepsilon$ quand celles de $\varphi$ s'annulent en $a$ jusqu'à l'ordre $m$ ; c'est cette formule de Taylor avec reste, non rédigée dans l'atlas, qui manque. Le cas $xT = 0$ sur $\mathbb R$ est démontré au nœud {{ds-multiplication|Multiplication}}, (iii).
+
+  - id: ds-convolution
+    etiquette: Convolution des distributions
+    nature: théorème
+    titre: Convolution d'une distribution par une fonction test
+    texte: |
+      Soit $T \in \lex{distribution}{\mathcal D'}(\Omega)$, $\varepsilon > 0$ et $\varphi$ de classe $C^\infty$ sur $\lex{n-uplet}{\mathbb R^n}$, nulle hors de $\bar B(0, \varepsilon)$. Pour $x \in \Omega_\varepsilon$, la fonction $y \mapsto \varphi(x - y)$, restreinte à $\Omega$, est une fonction test, de support contenu dans $\bar B(x, \varepsilon)$, et l'on pose
+      $$(T * \varphi)(x) = \langle T, \varphi(x - \cdot)\rangle.$$
+      On note $\check\varphi(y) = \varphi(-y)$. Pour une fonction continue $u$ sur $\Omega_\varepsilon$ et $\psi \in \lex{fonction-test}{\mathcal D}(\Omega_\varepsilon)$, on écrit $\langle u, \psi\rangle = \int u\psi$.
+    enonce: |
+      (i) *Dérivation sous le crochet.* Soit $W$ un ouvert de $\mathbb R^d$ et $\Phi : W \times \Omega \to \lex{ensemble-reels}{\mathbb R}$ de classe $C^\infty$, telle que, pour toute boule fermée $L$ de $W$, il existe un compact $K \subset \Omega$ hors duquel les $\Phi(z, \cdot)$, $z \in L$, sont nulles. Alors $g(z) = \langle T, \Phi(z, \cdot)\rangle$ est de classe $C^\infty$ sur $W$, et $\partial^\beta g(z) = \langle T, \partial^\beta_z\Phi(z, \cdot)\rangle$.
+
+      (ii) *Intégration sous le crochet.* Si de plus $W = \mathbb R^d$ et si $\Phi$ est nulle hors de $L \times K$, avec $L \subset \mathbb R^d$ et $K \subset \Omega$ compacts, alors $I(y) = \int_{\mathbb R^d} \Phi(z, y)\,dz$ définit une fonction test, et
+      $$\begin{aligned} &\int_{\mathbb R^d} \langle T, \Phi(z, \cdot)\rangle\,dz \\ &\quad = \Big\langle T, \int_{\mathbb R^d}\Phi(z, \cdot)\,dz\Big\rangle. \end{aligned}$$
+
+      (iii) *Régularité.* $T * \varphi$ est de classe $C^\infty$ sur $\Omega_\varepsilon$, et $\partial^\alpha(T * \varphi) = T * \partial^\alpha\varphi = (\partial^\alpha T) * \varphi$. Pour $f \in \lex{localement-integrable}{L^1_{\mathrm{loc}}}(\Omega)$, $T_f * \varphi = f * \varphi$, et $\delta * \varphi = \varphi$ pour $\Omega = \mathbb R^n$.
+
+      (iv) *Associativité.* Pour $\psi \in \mathcal D(\Omega_\varepsilon)$, $\langle T * \varphi, \psi\rangle = \langle T, \check\varphi * \psi\rangle$. Si $\psi$ est de classe $C^\infty$ sur $\mathbb R^n$, nulle hors de $\bar B(0, \varepsilon')$, alors $(T * \varphi) * \psi = T * (\varphi * \psi)$ sur $\Omega_{\varepsilon + \varepsilon'}$.
+
+      (v) *Régularisation.* Pour $\psi \in \mathcal D(\Omega)$ et toute suite $\varepsilon_k \to 0$ d'éléments de $]0, \eta[$, où $\operatorname{supp}\psi \subset \Omega_\eta$, on a $\langle T * \rho_{\varepsilon_k}, \psi\rangle \to \langle T, \psi\rangle$. En particulier, pour $\Omega = \mathbb R^n$, les fonctions de classe $C^\infty$ $T * \rho_{\varepsilon_k}$ convergent vers $T$ dans $\mathcal D'(\mathbb R^n)$.
+    preuve: |
+      (i) *Des suites aux limites, sans choix.* Soit $A \subset \mathbb R^d$ dont tout point est limite d'une suite de points de $A \cap \lex{n-uplet}{\mathbb Q^d}$, $F : A \to \mathbb R$ séquentiellement continue en tout point de $A$, $a$ adhérent à $A$ et $\ell$ réel, tels que $F(y_k) \to \ell$ pour toute suite $(y_k)$ de $A$ qui tend vers $a$. Alors $F(y) \to \ell$ quand $y \to a$ dans $A$.
+
+      Fixons une énumération $(q_i)$ de $\mathbb Q^d$ ({{q-denombrable|ℚ est dénombrable}}, (ii)). Sinon, il existe $\varepsilon > 0$ tel que, pour tout entier $j \geqslant 1$, un point $y \in A$ vérifie $|y - a| < \frac1j$ et $|F(y) - \ell| \geqslant \varepsilon$. Pour un tel $y$, les premiers $q_i$ de $A$ à distance $< \frac1k$ de $y$, $k \geqslant 1$, forment une suite qui tend vers $y$, le long de laquelle $F$ tend vers $F(y)$ : un rationnel $q \in A$ vérifie donc $|q - a| < \frac1j$ et $|F(q) - \ell| > \frac\varepsilon2$. Le premier $q_i$ qui a ces deux propriétés définit, sans aucun choix, une suite qui tend vers $a$ et le long de laquelle $F$ ne tend pas vers $\ell$, ce qui est exclu.
+
+      *Majorations.* Soit $L$ une boule fermée de $W$ et $K$ le compact associé. Pour tous multi-indices $\alpha$ et $\gamma$, la fonction $\partial_z^\gamma\partial_y^\alpha\Phi$ est continue, donc bornée sur le compact $L \times K$ ; notons $M_{\gamma,m}$ le maximum de ces bornes pour $|\alpha| \leqslant m$.
+
+      *Continuité.* Pour $z, z' \in L$, $\Phi(z', \cdot) - \Phi(z, \cdot) \in \mathcal D_K(\Omega)$, et les accroissements finis le long du segment $[z, z'] \subset L$, comme au nœud {{ds-parametre|Intégrales à paramètre}}, (i), donnent, pour tout $m$,
+      $$\begin{aligned} &p_m\big(\Phi(z', \cdot) - \Phi(z, \cdot)\big) \\ &\quad \leqslant |z' - z|\sum_j M_{e_j,m}. \end{aligned}$$
+      Si $z_k \to z$, alors $\Phi(z_k, \cdot) \to \Phi(z, \cdot)$ dans $\mathcal D(\Omega)$, et $g(z_k) \to g(z)$ par continuité séquentielle de $T$. Le lemme ci-dessus, avec $A = W$ et $\ell = g(z)$, montre que $g$ est continue.
+
+      *Dérivées.* Pour $z$ intérieur à $L$ et $s \neq 0$ petit, la formule de Taylor-Lagrange en $s$, appliquée à chaque $\partial_y^\alpha\Phi(z + se_j, y)$, donne
+      $$\begin{aligned} &p_m\Big(\frac{\Phi(z + se_j, \cdot) - \Phi(z, \cdot)}s - \partial_{z_j}\Phi(z, \cdot)\Big) \\ &\quad \leqslant \frac{|s|}2\,M_{2e_j,m}, \end{aligned}$$
+      les dérivées en $y$ et en $z$ commutant ({{gd-schwarz|Schwarz}}, (i)). Pour toute suite $s_k \to 0$ de réels non nuls, le taux d'accroissement de $g$ tend donc vers $\langle T, \partial_{z_j}\Phi(z, \cdot)\rangle$. Ce taux est une fonction continue de $s$ sur $]{-r}, r[ \setminus \{0\}$, et le lemme, appliqué en $a = 0$, donne $\partial_j g(z) = \langle T, \partial_{z_j}\Phi(z, \cdot)\rangle$. Comme $\partial_{z_j}\Phi$ vérifie les mêmes hypothèses, une récurrence et le nœud {{gd-classe-ck|Classe Cᵏ}}, (i), concluent.
+
+      (ii) *La fonction $I$.* Par le nœud {{ds-parametre|Intégrales à paramètre}}, (i), avec la domination $\sup|\partial_y^\alpha\Phi|\,\mathbf 1_L$, $I$ est de classe $C^\infty$ sur $\Omega$, avec $\partial^\alpha I = \int \partial_y^\alpha\Phi(z, \cdot)\,dz$ ; elle est nulle hors de $K$. Par (i), $g$ est de classe $C^\infty$ et nulle hors de $L$.
+
+      *Sommes de Riemann.* Pour $k \geqslant 1$ et $q \in \lex{n-uplet}{\mathbb Z^d}$, soit $Q_{k,q} = \frac qk + [0, \frac1k[^d$ ; ces cubes forment une partition de $\mathbb R^d$ et sont de mesure $k^{-d}$ ({{cv-lebesgue-rn|Lebesgue sur ℝⁿ}}, (iv)). Soit $M_k$ l'ensemble fini des $q$ tels que $Q_{k,q}$ rencontre $L$, et
+      $$S_k(y) = k^{-d}\sum_{q \in M_k}\Phi\Big(\frac qk, y\Big),$$
+      fonction de $\mathcal D_K(\Omega)$. Si $\frac qk \in L$, alors $q \in M_k$ : $S_k$ contient tous les termes non nuls.
+
+      *Convergence dans $\mathcal D$.* Pour tout $\alpha$, la fonction $z \mapsto \partial_y^\alpha\Phi(z, y)$ est $\Lambda_\alpha$-lipschitzienne pour $\|\cdot\|_\infty$, avec $\Lambda_\alpha$ indépendant de $y$, par les accroissements finis sur $\mathbb R^d$, ses dérivées en $z$ étant bornées. Comme
+      $$\begin{aligned} &\partial^\alpha I(y) - \partial^\alpha S_k(y) \\ &\ = \sum_{q \in M_k}\int_{Q_{k,q}}\big(\partial_y^\alpha\Phi(z, y) \\ &\hspace{5em} - \partial_y^\alpha\Phi(\tfrac qk, y)\big)\,dz, \end{aligned}$$
+      et que la réunion des $Q_{k,q}$, $q \in M_k$, est contenue dans $L + [-1, 1]^d$, on obtient
+      $$\begin{aligned} &|\partial^\alpha I(y) - \partial^\alpha S_k(y)| \\ &\quad \leqslant \frac{\Lambda_\alpha}k\,\lambda\big(L + [-1, 1]^d\big). \end{aligned}$$
+      Ainsi $S_k \to I$ dans $\mathcal D(\Omega)$, et $\langle T, S_k\rangle \to \langle T, I\rangle$.
+
+      *Le premier membre.* Par linéarité, $\langle T, S_k\rangle = k^{-d}\sum_{q \in M_k} g(\frac qk)$. La fonction $g$, de classe $C^\infty$ et nulle hors de $L$, est lipschitzienne, et la même majoration montre que ces sommes tendent vers $\int g$.
+
+      (iii) *Régularité.* Appliquons (i) avec $W = \Omega_\varepsilon$ et $\Phi(x, y) = \varphi(x - y)$. Si $L$ est une boule fermée de $\Omega_\varepsilon$, les $\Phi(x, \cdot)$, $x \in L$, sont nulles hors du compact $K = L + \bar B(0, \varepsilon) \subset \Omega$ ({{ds-test|Fonctions test}}, (iv)). Comme $\partial^\alpha_x[\varphi(x - y)] = (\partial^\alpha\varphi)(x - y)$, on obtient $\partial^\alpha(T * \varphi) = T * \partial^\alpha\varphi$.
+
+      *Dérivée de $T$.* Comme $\partial^\alpha_y[\varphi(x - y)] = (-1)^{|\alpha|}(\partial^\alpha\varphi)(x - y)$,
+      $$\begin{aligned} &\langle \partial^\alpha T, \varphi(x - \cdot)\rangle \\ &\quad = (-1)^{|\alpha|}\langle T, \partial^\alpha_y[\varphi(x - \cdot)]\rangle \\ &\quad = (T * \partial^\alpha\varphi)(x). \end{aligned}$$
+      Les deux dernières affirmations sont les définitions de $f * \varphi$ ({{ds-regularisation|Régularisation}}) et de $\delta$.
+
+      (iv) *Crochet.* Appliquons (ii) avec $d = n$ et $\Phi(x, y) = \psi(x)\varphi(x - y)$, où $\psi$ est prolongée par $0$ : $L = \operatorname{supp}\psi$, $K = L + \bar B(0, \varepsilon)$. Le premier membre de (ii) est $\int \psi\,(T * \varphi)$, et $I(y) = \int \psi(x)\varphi(x - y)\,dx = (\psi * \check\varphi)(y) = (\check\varphi * \psi)(y)$.
+
+      *Associativité.* Soit $x \in \Omega_{\varepsilon + \varepsilon'}$. Alors $\bar B(x, \varepsilon') \subset \Omega_\varepsilon$, puisque $\bar B(z, \varepsilon) \subset \bar B(x, \varepsilon + \varepsilon') \subset \Omega$ pour $|z - x| \leqslant \varepsilon'$. Appliquons (ii) à $\Phi(z, y) = \psi(x - z)\,\varphi(z - y)$, nulle hors de $\bar B(x, \varepsilon') \times \bar B(x, \varepsilon + \varepsilon')$ :
+      $$\begin{aligned} &\big((T * \varphi) * \psi\big)(x) \\ &\quad = \Big\langle T, \int \varphi(z - \cdot)\,\psi(x - z)\,dz\Big\rangle. \end{aligned}$$
+      Le changement de variable $z = w + y$ montre que l'intégrale vaut $(\varphi * \psi)(x - y)$, et $\varphi * \psi$ est de classe $C^\infty$ ({{ds-regularisation|Régularisation}}, (i)), nulle hors de $\bar B(0, \varepsilon + \varepsilon')$.
+
+      (v) Pour $\varepsilon < \eta$, $\operatorname{supp}\psi \subset \Omega_\eta \subset \Omega_\varepsilon$, et (iv) donne, $\rho$ étant paire,
+      $$\begin{aligned} \langle T * \rho_\varepsilon, \psi\rangle &= \langle T, \rho_\varepsilon * \psi\rangle \\ &= \langle T, \psi * \rho_\varepsilon\rangle. \end{aligned}$$
+      Par le nœud {{ds-regularisation|Régularisation}}, (iii), $\psi * \rho_{\varepsilon_k} \to \psi$ dans $\mathcal D(\Omega)$, et la continuité séquentielle de $T$ conclut.
+    remarques:
+      - |
+        Le point (iii) est le cœur de la théorie : la convolution transforme une distribution, éventuellement très singulière, en une fonction de classe $C^\infty$. Pour $T = \delta'$ sur $\mathbb R$, $(\delta' * \varphi)(x) = -\partial_y[\varphi(x - y)]_{y=0} = \varphi'(x)$ : convoler par $\delta'$, c'est dériver. Pour $T = H$, $(H * \varphi)(x) = \int_0^{+\infty}\varphi(x - y)\,dy = \int_{-\infty}^x \varphi$ : convoler par $H$, c'est intégrer.
+      - |
+        Le point (v) dit que toute distribution est limite de fonctions régulières. C'est l'outil qui permet d'étendre aux distributions une propriété connue pour les fonctions de classe $C^\infty$ : on l'établit pour $T * \rho_\varepsilon$, puis on passe à la limite. Le lemme de Weyl ({{ha-weyl|Lemme de Weyl}}) en est l'exemple type.
+      - |
+        Une distribution $T$ sur $\mathbb R^n$ est **tempérée** si elle se prolonge à l'espace des fonctions de classe $C^\infty$ dont toutes les dérivées décroissent plus vite que toute puissance de $|x|$. La transformée de Fourier ({{fo-transformee|Transformée de Fourier}}) s'étend alors par dualité, $\langle \hat T, \varphi\rangle = \langle T, \hat\varphi\rangle$, et transforme la convolution en produit et la dérivation en multiplication par $i\xi$ : $\hat\delta = 1$, et la solution élémentaire du laplacien de $\mathbb R^3$ a pour transformée $-1/|\xi|^2$. Cette théorie, qui demande la transformée de Fourier dans $\mathbb R^n$, n'est pas développée ici, l'analyse de Fourier n'étant pas un ancêtre de cette branche.
+
+  - id: ds-laplacien
+    etiquette: Solution élémentaire du laplacien
+    nature: théorème
+    titre: Solution élémentaire du laplacien dans ℝ³ et équation de Poisson
+    texte: |
+      Une [[solution-elementaire|solution élémentaire]] d'un opérateur $P = \sum_{|\alpha| \leqslant m} c_\alpha\,\partial^\alpha$ à coefficients réels constants est une distribution $E$ sur $\lex{n-uplet}{\mathbb R^n}$ telle que $PE = \delta$. Par le nœud {{ds-derivation|Dérivation}}, (iv), $H$ est une solution élémentaire de $\frac{d}{dx}$.
+
+      Dans $\mathbb R^3$, on pose
+      $$\begin{aligned} E(x) &= -\frac1{4\pi|x|} \quad (x \neq 0), \\ E_\varepsilon(x) &= -\frac1{4\pi\sqrt{|x|^2 + \varepsilon^2}}, \end{aligned}$$
+      où $\pi$ est le nombre du nœud {{cx-pi|Le nombre π}}.
+    enonce: |
+      (i) La fonction $x \mapsto 1/|x|$ est localement intégrable sur $\mathbb R^3$ ; elle est de classe $C^\infty$ sur $\mathbb R^3 \setminus \{0\}$, et
+      $$\lex{laplacien}{\Delta}\frac1{|x|} = 0 \quad\text{sur } \mathbb R^3 \setminus \{0\}.$$
+
+      (ii) $E$ est une solution élémentaire du laplacien : $\Delta E = \delta$ dans $\lex{distribution}{\mathcal D'}(\mathbb R^3)$.
+
+      (iii) *Équation de Poisson.* Pour $f \in \lex{fonction-test}{\mathcal D}(\mathbb R^3)$, la fonction
+      $$\begin{aligned} u(x) &= (E * f)(x) \\ &= -\frac1{4\pi}\int_{\mathbb R^3}\frac{f(y)}{|x - y|}\,dy \end{aligned}$$
+      est de classe $C^\infty$ sur $\mathbb R^3$, et $\Delta u = f$.
+    preuve: |
+      (i) *Intégrabilité.* Par le nœud {{cv-lineaire|Image linéaire}}, (ii), appliqué à l'homothétie de rapport $r$, $\lambda(B(0, r)) = r^3\lambda(B(0, 1))$, et $\lambda(B(0, 1)) \leqslant 8$, la boule étant contenue dans $[-1, 1]^3$. Les couronnes $A_k = B(0, 2^{-k}) \setminus B(0, 2^{-k-1})$, $k \in \mathbb N$, sont disjointes, de réunion $B(0, 1) \setminus \{0\}$, et $\frac1{|x|} \leqslant 2^{k+1}$ sur $A_k$. Par convergence monotone ({{m-beppo-levi|Convergence monotone}}),
+      $$\begin{aligned} \int_{B(0, 1)}\frac{dx}{|x|} &\leqslant \sum_{k \geqslant 0} 2^{k+1}\,2^{-3k}\,\lambda(B(0, 1)) \\ &= \frac83\,\lambda(B(0, 1)). \end{aligned}$$
+      Hors de $B(0, 1)$, la fonction est majorée par $1$ : elle est intégrable sur tout compact.
+
+      *Laplacien.* Sur $\mathbb R^3 \setminus \{0\}$, $\frac1{|x|} = s(x)^{-1/2}$ avec $s(x) = x_1^2 + x_2^2 + x_3^2 > 0$, et $t \mapsto t^{-1/2}$ est de classe $C^\infty$ sur $]0, +\infty[$ ({{lp-puissances|Puissances réelles}}, (iv)). On calcule
+      $$\begin{aligned} \partial_i\frac1{|x|} &= -\frac{x_i}{|x|^3}, \\ \partial_i^2\frac1{|x|} &= -\frac1{|x|^3} + \frac{3x_i^2}{|x|^5}, \end{aligned}$$
+      et la somme sur $i$ vaut $-\frac3{|x|^3} + \frac{3|x|^2}{|x|^5} = 0$.
+
+      (ii) *Régularisées.* $E_\varepsilon$ est de classe $C^\infty$ sur $\mathbb R^3$, et le même calcul, avec $s(x) + \varepsilon^2$ au lieu de $s(x)$, donne
+      $$\begin{aligned} \Delta E_\varepsilon(x) &= \frac{3\varepsilon^2}{4\pi\,(|x|^2 + \varepsilon^2)^{5/2}} = \varepsilon^{-3}\,\eta\Big(\frac x\varepsilon\Big), \\ \eta(z) &= \frac3{4\pi}\,(|z|^2 + 1)^{-5/2}, \end{aligned}$$
+      formule vérifiée par un calcul formel.
+
+      *L'intégrale de $\eta$.* Écrivons $\mathbb R^3 = \mathbb R^2 \times \mathbb R$ ({{cv-lebesgue-rn|Lebesgue sur ℝⁿ}}, (i) et (ii)) et appliquons le théorème de Tonelli ({{m-fubini|Tonelli, Fubini}}, (i)). Pour $a > 0$, la fonction $F(t) = \frac{t(2t^2 + 3a^2)}{3a^4(a^2 + t^2)^{3/2}}$ a pour dérivée $(a^2 + t^2)^{-5/2}$ et pour limites $\pm\frac2{3a^4}$ en $\pm\infty$ ; par le théorème fondamental et la convergence monotone sur $[-k, k]$, $\int_{\mathbb R}(a^2 + t^2)^{-5/2}\,dt = \frac4{3a^4}$. Avec $a^2 = |y|^2 + 1$ et les coordonnées polaires ({{cv-polaires|Coordonnées polaires}}, (ii)),
+      $$\begin{aligned} &\int_{\mathbb R^3}(|z|^2 + 1)^{-5/2}\,dz \\ &\quad = \int_{-\pi}^\pi\!\int_0^{+\infty}\frac{4r}{3(r^2 + 1)^2}\,dr\,d\theta \\ &\quad = 2\pi \cdot \frac43 \cdot \frac12 = \frac{4\pi}3, \end{aligned}$$
+      la fonction $-\frac1{2(r^2 + 1)}$ étant une primitive de $\frac r{(r^2 + 1)^2}$. Ainsi $\int\eta = 1$.
+
+      *Passage à la limite.* Soit $\varphi \in \mathcal D(\mathbb R^3)$ et $\varepsilon = \frac1k$. Comme $|E_\varepsilon| \leqslant |E|$, localement intégrable, et que $E_\varepsilon \to E$ hors de $0$, la convergence dominée ({{m-convergence-dominee|Convergence dominée}}, (i)) donne
+      $$\langle \Delta E, \varphi\rangle = \int E\,\Delta\varphi = \lim_k \int E_\varepsilon\,\Delta\varphi.$$
+      Par le nœud {{ds-derivation|Dérivation}}, (ii), et le changement de variables $x = \varepsilon z$ ({{cv-changement|Changement de variables}}, (iii)),
+      $$\begin{aligned} \int E_\varepsilon\,\Delta\varphi &= \int (\Delta E_\varepsilon)\,\varphi \\ &= \int_{\mathbb R^3}\eta(z)\,\varphi(\varepsilon z)\,dz, \end{aligned}$$
+      qui tend vers $\varphi(0)\int\eta = \varphi(0)$ par convergence dominée, avec le majorant $p_0(\varphi)\,\eta$.
+
+      (iii) Par le nœud {{ds-convolution|Convolution des distributions}}, (iii), avec $\Omega = \mathbb R^3$, $T = E$ et une boule $\bar B(0, R)$ hors de laquelle $f$ est nulle, $E * f$ est de classe $C^\infty$, et
+      $$\Delta(E * f) = (\Delta E) * f = \delta * f = f.$$
+      Comme $E$ est localement intégrable, $(E * f)(x) = \int E(y) f(x - y)\,dy$, et le changement de variable $y \mapsto x - y$ donne la formule annoncée.
+    remarques:
+      - |
+        L'équation $\Delta u = -4\pi\mu$, qui corrige l'équation de Laplace $\Delta u = 0$ à l'intérieur de la matière attirante, a été publiée par Poisson en 1813 (W. W. Rouse Ball, *A Short Account of the History of Mathematics*, 1908). Pour une densité de masse $\mu$ et $f = -4\pi\mu$, le point (iii) donne le potentiel newtonien
+        $$u(x) = \int_{\mathbb R^3}\frac{\mu(y)}{|x - y|}\,dy,$$
+        superposition des potentiels $\frac1{|x - y|}$ des masses $\mu(y)\,dy$ : la solution élémentaire est le potentiel d'une masse ponctuelle, et la convolution le principe de superposition.
+      - |
+        La même démonstration, avec $E_\varepsilon(x) = \frac1{4\pi}\ln(|x|^2 + \varepsilon^2)$ dans $\mathbb R^2$, dont le laplacien vaut $\frac{\varepsilon^2}{\pi(|x|^2 + \varepsilon^2)^2}$ et a pour intégrale $1$, montre que $\frac1{2\pi}\ln|x|$ est une solution élémentaire du laplacien du plan ; ces formules ont été vérifiées par un calcul formel. La dimension change la forme de la solution, non le principe.
+      - |
+        L'erreur la plus répandue est de calculer $\Delta\frac1{|x|} = 0$ sur $\mathbb R^3 \setminus \{0\}$ et d'en conclure que $\frac1{|x|}$ est harmonique au sens des distributions. Le point (ii) montre au contraire que son laplacien est $-4\pi\delta$ : toute l'information est concentrée au point que le calcul classique exclut. C'est la régularisation $E_\varepsilon$, de laplacien $\varepsilon^{-3}\eta(x/\varepsilon)$, qui la fait apparaître.
+      - |
+        Une autre solution élémentaire s'obtient en ajoutant à $E$ une fonction harmonique quelconque. $E$ est la seule qui tende vers $0$ à l'infini, par le théorème de Liouville pour les fonctions harmoniques ({{ha-liouville|Liouville harmonique}}).
+
+  - id: edp-laplace
+    etiquette: Laplace et chaleur
+    nature: chapitre
+    titre: Équations de Laplace et de la chaleur
+    sous: edp-laplace
+    texte: |
+      Une fonction harmonique est une fonction de classe $C^2$ de laplacien nul. Le chapitre établit la propriété de la moyenne sur les boules, sans mesure de surface : la dérivée de la moyenne en fonction du rayon s'écrit comme l'intégrale d'une divergence d'un champ nul sur la sphère. Il en déduit la régularité $C^\infty$, par une convolution avec le noyau radial, le principe du maximum et l'unicité pour le problème de Dirichlet, le théorème de Liouville, et le lemme de Weyl : une distribution de laplacien nul est une fonction harmonique.
+
+      En dimension $2$, les fonctions harmoniques sont les parties réelles des fonctions holomorphes sur un convexe ; le noyau de Poisson résout le problème de Dirichlet sur le disque pour une donnée continue.
+
+      L'équation de la chaleur $\partial_t u = \partial_x^2 u$ sur $\mathbb R$ se résout, pour une donnée initiale continue et bornée, par convolution avec le noyau gaussien, et le principe du maximum sur un rectangle en donne l'unicité parmi les solutions bornées. Aucune forme du choix n'intervient en dehors de celle que demande la mesure de Lebesgue.
+
+aretes:
+  - [ds-test, ds-parametre]
+  - [ds-parametre, ds-regularisation]
+  - [ds-regularisation, ds-distributions]
+  - [ds-distributions, ds-exemples]
+  - [ds-exemples, ds-derivation]
+  - [ds-derivation, ds-primitives]
+  - [ds-derivation, ds-multiplication]
+  - [ds-exemples, ds-support]
+  - [ds-derivation, ds-convolution]
+  - [ds-convolution, ds-laplacien]
+  - [ds-laplacien, edp-laplace]

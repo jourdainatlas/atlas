@@ -1,0 +1,468 @@
+# Niveau 2 : structure interne du chapitre « Équations de Laplace et de la chaleur » (nœud edp-laplace du
+# graphe edp, créé le 30 oct. 2026). Fonctions harmoniques ; divergence sur la boule d'un champ nul sur la
+# sphère (Fubini et théorème fondamental, sans mesure de surface) ; propriété de la moyenne sur les boules et
+# sous-harmonicité ; régularité C^∞ par convolution avec le noyau radial, réciproque ; lemme de Weyl ; principe
+# du maximum, unicité pour le problème de Dirichlet ; Liouville ; parties réelles des fonctions holomorphes sur
+# un convexe ; noyau de Poisson et problème de Dirichlet sur le disque ; noyau de la chaleur, problème de
+# Cauchy pour une donnée continue bornée, principe du maximum parabolique et unicité des solutions bornées.
+# Choix : la mesure de Lebesgue seule (signalée au nœud edp).
+
+graphe: edp-laplace
+titre: Équations de Laplace et de la chaleur
+conteneur: edp-laplace
+
+entrees:
+  ds-laplacien: [ha-harmoniques]
+
+noeuds:
+  - id: ha-harmoniques
+    etiquette: Fonctions harmoniques
+    nature: définition
+    titre: Fonctions harmoniques
+    texte: |
+      Soit $\Omega$ un ouvert de $\lex{n-uplet}{\mathbb R^n}$ ; on garde les notations du nœud {{ds-test|Fonctions test}}. Une [[fonction-harmonique|fonction harmonique]] sur $\Omega$ est une fonction $u : \Omega \to \lex{ensemble-reels}{\mathbb R}$ de classe $C^2$ telle que
+      $$\lex{laplacien}{\Delta} u = \sum_{i=1}^n \partial_i^2 u = 0.$$
+    enonce: |
+      (i) Les fonctions harmoniques sur $\Omega$ forment un espace vectoriel. Si $u$ est harmonique sur $\Omega$, $a \in \mathbb R^n$, $r \neq 0$ et $Q$ une [[matrice-orthogonale|matrice orthogonale]], la fonction $x \mapsto u(a + rQx)$ est harmonique sur l'ouvert $\{x : a + rQx \in \Omega\}$.
+
+      (ii) *Exemples.* Les fonctions affines sont harmoniques sur $\mathbb R^n$. Sur $\mathbb R^2$, les fonctions $x^2 - y^2$, $xy$, $x^3 - 3xy^2$ et $e^x\cos y$ sont harmoniques ; la fonction $\ln(x^2 + y^2)$ l'est sur $\mathbb R^2 \setminus \{0\}$, et $\frac1{|x|}$ sur $\mathbb R^3 \setminus \{0\}$.
+    preuve: |
+      (i) La linéarité du laplacien donne la première affirmation. Soit $v(x) = u(a + rQx)$, de classe $C^2$ par composition ({{gd-classe-ck|Classe Cᵏ}}, (iii)). Par la règle de la chaîne,
+      $$\partial_i v(x) = r\sum_k Q_{ki}\,(\partial_k u)(a + rQx),$$
+      $$\begin{aligned} &\partial_i^2 v(x) \\ &\quad = r^2\sum_{k,l} Q_{ki}Q_{li}\,(\partial_k\partial_l u)(a + rQx). \end{aligned}$$
+      Comme ${}^tQ\,Q = I_n$, la matrice $Q$ est inversible d'inverse ${}^tQ$, et $Q\,{}^tQ = I_n$ : $\sum_i Q_{ki}Q_{li}$ vaut $1$ si $k = l$ et $0$ sinon. La somme sur $i$ donne $\Delta v(x) = r^2\,(\Delta u)(a + rQx) = 0$.
+
+      (ii) Pour une fonction affine, toutes les dérivées secondes sont nulles. On calcule $\Delta(x^2 - y^2) = 2 - 2$, $\Delta(xy) = 0$ et $\Delta(x^3 - 3xy^2) = 6x - 6x$. Comme $\cos'' = -\cos$ ({{cx-exponentielle|Exponentielle}}, (iv)), $\Delta(e^x\cos y) = e^x\cos y - e^x\cos y = 0$.
+
+      Pour $\ln(x^2 + y^2)$ ({{lp-puissances|Puissances réelles}}), $\partial_x = \frac{2x}{x^2 + y^2}$ et
+      $$\partial_x^2 = \frac{2(y^2 - x^2)}{(x^2 + y^2)^2},$$
+      et $\partial_y^2$ est l'opposé, par symétrie. Le cas de $\frac1{|x|}$ est le nœud {{ds-laplacien|Solution élémentaire du laplacien}}, (i).
+    remarques:
+      - |
+        En dimension $1$, une fonction harmonique sur un intervalle est affine, puisque $u'' = 0$ : la théorie ne devient riche qu'à partir de la dimension $2$, où l'équation $\partial_x^2 u = -\partial_y^2 u$ laisse une infinité de solutions indépendantes, comme les parties réelles des polynômes $(x + iy)^k$ (nœud {{ha-holomorphes|Harmoniques et holomorphes}}).
+      - |
+        L'erreur la plus répandue est d'oublier l'ouvert. La fonction $\frac1{|x|}$ est harmonique sur $\mathbb R^3 \setminus \{0\}$, mais son laplacien au sens des distributions sur $\mathbb R^3$ est $-4\pi\delta$ ({{ds-laplacien|Solution élémentaire du laplacien}}, (ii)) : elle n'est pas harmonique sur $\mathbb R^3$, et les théorèmes de ce chapitre ne s'appliquent qu'aux ouverts qui ne contiennent pas l'origine.
+
+  - id: ha-boule
+    etiquette: Divergence sur la boule
+    nature: lemme
+    titre: Divergence sur la boule d'un champ nul sur la sphère
+    texte: |
+      Soit $B = B(0, 1)$ la boule unité ouverte de $\lex{n-uplet}{\mathbb R^n}$ et $S = \{y : |y| = 1\}$. Pour un champ $F = (F_1, \dots, F_n)$ de classe $C^1$ sur un ouvert, la [[divergence]] est $\operatorname{div} F = \sum_i \partial_i F_i$. Pour $w$ de classe $C^1$, $\nabla w = (\partial_1 w, \dots, \partial_n w)$ est son [[gradient]], et $y \cdot \nabla w(y) = \sum_i y_i\,\partial_i w(y)$.
+    enonce: |
+      (i) Si $F$ est de classe $C^1$ sur un ouvert contenant $\bar B$ et nul sur $S$, alors $\int_B \operatorname{div} F = 0$.
+
+      (ii) Si $w$ est de classe $C^2$ sur un ouvert contenant $\bar B$,
+      $$\begin{aligned} &\int_B y \cdot \nabla w(y)\,dy \\ &\quad = \int_B \frac{1 - |y|^2}2\,\lex{laplacien}{\Delta} w(y)\,dy. \end{aligned}$$
+
+      (iii) $\int_B y_j\,dy = 0$ pour tout $j$.
+    preuve: |
+      (i) *Réduction.* Les fonctions $\partial_i F_i$ sont continues sur le compact $\bar B$, donc bornées, et intégrables sur $B$. Fixons $i$, soit $\sigma$ la transposition de $i$ et $n$, et $P_\sigma$ la permutation des coordonnées du nœud {{cv-lebesgue-rn|Lebesgue sur ℝⁿ}}, (iii). Elle conserve la norme euclidienne, donc $B$ et $S$.
+
+      La fonction $v = F_i \circ P_\sigma$ est de classe $C^1$, nulle sur $S$, et $\partial_n v = (\partial_i F_i) \circ P_\sigma$. La formule du changement de variables ({{cv-changement|Changement de variables}}, (iii)), pour l'application linéaire $P_\sigma$, de déterminant $\pm1$, donne $\int_B \partial_i F_i = \int_B \partial_n v$.
+
+      *Le cas $n = 1$.* Alors $B = \,]{-1}, 1[$, et $\int_{-1}^1 v' = v(1) - v(-1) = 0$ par le {{ar-tfa|théorème fondamental}}.
+
+      *Le cas $n \geqslant 2$.* Le théorème de Fubini ({{m-fubini|Tonelli, Fubini}}, (ii)), sur $\mathbb R^{n-1} \times \mathbb R$ ({{cv-lebesgue-rn|Lebesgue sur ℝⁿ}}, (i) et (ii)), appliqué à $\mathbf 1_B\,\partial_n v$, donne
+      $$\begin{aligned} &\int_B \partial_n v \\ &\ = \int_{\mathbb R^{n-1}}\Big(\int_{\mathbb R}\mathbf 1_B\,\partial_n v(y', s)\,ds\Big)\,dy'. \end{aligned}$$
+      Si $|y'| \geqslant 1$, la section $\{s : (y', s) \in B\}$ est vide. Si $|y'| < 1$, c'est l'intervalle $]{-a}, a[$, avec $a = \sqrt{1 - |y'|^2}$, et l'intégrale intérieure, qui est celle de Riemann ({{m-riemann|Riemann et Lebesgue}}), vaut
+      $$\begin{aligned} \int_{-a}^a \partial_n v(y', s)\,ds &= v(y', a) - v(y', -a) \\ &= 0, \end{aligned}$$
+      les points $(y', \pm a)$ étant sur $S$. La somme sur $i$ donne $\int_B \operatorname{div} F = 0$.
+
+      (ii) Le champ $F = \frac{|y|^2 - 1}2\,\nabla w$ est de classe $C^1$ et nul sur $S$. Par la dérivée d'un produit,
+      $$\begin{aligned} \operatorname{div} F &= \sum_i y_i\,\partial_i w + \frac{|y|^2 - 1}2\sum_i \partial_i^2 w \\ &= y \cdot \nabla w + \frac{|y|^2 - 1}2\,\Delta w, \end{aligned}$$
+      et (i) donne l'égalité annoncée.
+
+      (iii) Le champ $F = \frac{1 - |y|^2}2\,e_j$, où $e_j$ est le $j$-ième vecteur de base, est nul sur $S$ et de divergence $-y_j$ ; (i) conclut.
+    remarques:
+      - |
+        Le point (i) est le théorème de la divergence pour un champ nul sur le bord : le flux sortant à travers la sphère est nul, et l'intégrale de la divergence aussi. Le théorème général sur la boule ferait intervenir la mesure de surface de la sphère, que l'atlas ne définit pas ; le nœud {{dr-green|Green-Riemann, divergence}}, (iii), le démontre pour un pavé, où les faces sont planes. Le facteur $|y|^2 - 1$ de (ii) tue le terme de bord, et c'est tout ce dont la propriété de la moyenne aura besoin.
+
+        ```schema ha-boule
+        La preuve de (i) dans le disque unité : pour chaque $y'$ de $]{-1}, 1[$, la section verticale du disque est le segment rouge d'extrémités $(y', -a)$ et $(y', a)$, avec $a = \sqrt{1 - y'^2}$, toutes deux sur le cercle. Le théorème fondamental ramène l'intégrale de $\partial_n v$ sur ce segment à la différence des valeurs de $v$ aux deux extrémités, nulles par hypothèse.
+        ```
+
+  - id: ha-moyenne
+    etiquette: Propriété de la moyenne
+    nature: théorème
+    titre: Propriété de la moyenne
+    texte: |
+      Soit $\Omega$ un ouvert de $\lex{n-uplet}{\mathbb R^n}$, $B = B(0, 1)$, et $\omega_n = \lambda(B)$. Pour $u$ intégrable sur une boule $B(x, r)$, on note
+      $$m_{x,r}(u) = \frac1{\lambda(B(x, r))}\int_{B(x, r)} u$$
+      sa moyenne. Une fonction continue $u$ sur $\Omega$ a la [[propriete-moyenne|propriété de la moyenne]] si $u(x) = m_{x,r}(u)$ pour tous $x \in \Omega$ et $r > 0$ tels que $\bar B(x, r) \subset \Omega$.
+    enonce: |
+      (i) $\omega_n$ est un réel strictement positif. Soit $u$ de classe $C^2$ sur $\Omega$, $x \in \Omega$ et $R > 0$ tels que $\bar B(x, R) \subset \Omega$. La fonction
+      $$M(r) = \frac1{\omega_n}\int_B u(x + ry)\,dy$$
+      est de classe $C^1$ sur un intervalle ouvert contenant $[0, R]$ ; $M(0) = u(x)$, $M(r) = m_{x,r}(u)$ pour $0 < r \leqslant R$, et
+      $$\begin{aligned} M'(r) &= \frac r{\omega_n}\int_B \frac{1 - |y|^2}2 \\ &\qquad \times \lex{laplacien}{\Delta} u(x + ry)\,dy. \end{aligned}$$
+
+      (ii) *Propriété de la moyenne.* Toute [[fonction-harmonique|fonction harmonique]] sur $\Omega$ a la propriété de la moyenne.
+
+      (iii) *Sous-harmonicité.* Si $\Delta u \geqslant 0$ sur $\Omega$, alors $r \mapsto m_{x,r}(u)$ est croissante sur $]0, R]$, et $u(x) \leqslant m_{x,r}(u)$ pour $0 < r \leqslant R$.
+    preuve: |
+      (i) *La constante.* $B$ est contenue dans $[-1, 1]^n$ et contient le cube $\{\|y\|_\infty < \frac1n\}$ ({{me-espace|Espaces métriques}}, (ii)), d'où $(\frac2n)^n \leqslant \omega_n \leqslant 2^n$ ({{cv-lebesgue-rn|Lebesgue sur ℝⁿ}}, (iv)).
+
+      *Domaine.* La boule $\bar B(x, R)$ est compacte, donc contenue dans un $\Omega_\varepsilon$ ({{ds-test|Fonctions test}}, (iv)), et $R' = R + \varepsilon$ vérifie $\bar B(x, R') \subset \Omega$. Pour $|r| < R'$ et $y \in \bar B$, $x + ry \in \Omega$.
+
+      *Dérivation.* Appliquons le nœud {{ds-parametre|Intégrales à paramètre}}, (i), avec $W = \,]{-R'}, R'[$, $A = B$, $k = 1$ et $h(r, y) = u(x + ry)$. Par la règle de la chaîne, $\partial_r h = y \cdot \nabla u(x + ry)$ et $\partial_r^2 h = \sum_{i,l} y_iy_l\,\partial_i\partial_l u(x + ry)$. Une boule fermée $[c - \rho', c + \rho']$ de $W$ est contenue dans $[-\rho, \rho]$, avec $\rho = |c| + \rho' < R'$ ; pour $r$ dans ce segment, les points $x + ry$ restent dans le compact $\bar B(x, \rho)$, où les dérivées de $u$ d'ordre $\leqslant 2$ sont bornées : des constantes, intégrables sur $B$, dominent $h$, $\partial_r h$ et $\partial_r^2 h$. Donc $M$ est de classe $C^1$ sur $W$, et
+      $$M'(r) = \frac1{\omega_n}\int_B y \cdot \nabla u(x + ry)\,dy.$$
+
+      *Valeurs.* $M(0) = u(x)$. Pour $0 < r \leqslant R$, le changement de variables $z = x + ry$ ({{cv-changement|Changement de variables}}, (iii)), de jacobien $r^n$, et $\lambda(B(x, r)) = r^n\omega_n$ ({{cv-lineaire|Image linéaire}}, (ii)) donnent $M(r) = m_{x,r}(u)$.
+
+      *La dérivée.* Pour $r \neq 0$, la fonction $w(y) = u(x + ry)$ est de classe $C^2$ sur un ouvert contenant $\bar B$, avec $\nabla w(y) = r\,\nabla u(x + ry)$ et $\Delta w(y) = r^2\,\Delta u(x + ry)$. Le nœud {{ha-boule|Divergence sur la boule}}, (ii), donne
+      $$\begin{aligned} &r\int_B y \cdot \nabla u(x + ry)\,dy \\ &\quad = r^2\int_B \frac{1 - |y|^2}2\,\Delta u(x + ry)\,dy, \end{aligned}$$
+      et l'on divise par $r$. Pour $r = 0$, $M'(0) = \frac1{\omega_n}\nabla u(x) \cdot \int_B y\,dy = 0$ ({{ha-boule|Divergence sur la boule}}, (iii)), et le second membre est nul.
+
+      (ii) Si $\Delta u = 0$, $M' = 0$ sur un intervalle contenant $[0, R]$, et $M$ y est constante ({{de-monotonie|Signe de la dérivée}}, (ii)) : $m_{x,r}(u) = M(0) = u(x)$ pour $0 < r \leqslant R$. Toute boule fermée $\bar B(x, r) \subset \Omega$ s'obtient ainsi, avec $R = r$.
+
+      (iii) Si $\Delta u \geqslant 0$, l'intégrande de $M'$ est positive pour $r \geqslant 0$, et $M$ est croissante sur $[0, R]$ ({{de-monotonie|Signe de la dérivée}}, (i)).
+    remarques:
+      - |
+        Pour $u(x, y) = x^2 - y^2$ et le disque de centre $(a, b)$ et de rayon $R$, un calcul formel donne $m_{(a,b),R}(u) = a^2 - b^2$ quel que soit $R$ : la moyenne ne dépend pas du rayon. Pour $u(x, y) = x^2 + y^2$, de laplacien $4$, il donne $m_{(a,b),R}(u) = a^2 + b^2 + \frac{R^2}2$, qui croît avec $R$ ; c'est l'expression exacte de (i), puisque $M'(R) = \frac R\pi\int_B \frac{1 - |y|^2}2 \cdot 4\,dy = R$.
+
+        ```schema ha-moyenne
+        À gauche, en bleu, le disque de centre $(0{,}6\,;\,0{,}3)$ et de rayon $1$, avec les lignes de niveau de $u = x^2 - y^2$, en gris, et le centre, en rouge : la moyenne de $u$ sur le disque vaut $u(0{,}6\,;\,0{,}3) = 0{,}27$. À droite, la moyenne sur le disque de rayon $R$ en fonction de $R$ : constante, égale à $0{,}27$, pour $u$ (rouge) ; croissante, $0{,}45 + \frac{R^2}2$, pour la fonction sous-harmonique $x^2 + y^2$ (bleu).
+        ```
+      - |
+        La propriété est attribuée à Gauss, qui a publié en 1840, dans un mémoire sur les forces attractives qui varient en raison inverse du carré de la distance (*Allgemeine Lehrsätze…*, Werke, t. 5), le théorème de la moyenne arithmétique pour les potentiels (N. Kuznetsov, *Mean value properties of harmonic functions and related topics (a survey)*, arXiv:1904.08312). Gauss l'énonce sur les sphères ; la version sur les boules, seule démontrée ici, s'en déduit par intégration en rayon, et réciproquement par dérivation, ce qui demande la mesure de surface.
+      - |
+        La preuve n'emploie aucune solution explicite du laplacien : elle n'utilise que l'identité $\operatorname{div}\big(\frac{|y|^2 - 1}2\nabla w\big) = y \cdot \nabla w + \frac{|y|^2 - 1}2\Delta w$. La solution élémentaire du nœud {{ds-laplacien|Solution élémentaire du laplacien}} n'est pas nécessaire ; elle donnerait en revanche une formule de représentation de $u$ par ses valeurs au bord, que le nœud {{ha-poisson|Problème de Dirichlet sur le disque}} obtient dans le plan par une autre voie.
+
+  - id: ha-regularite
+    etiquette: Régularité des fonctions harmoniques
+    nature: théorème
+    titre: Régularité et caractérisation des fonctions harmoniques par la moyenne
+    texte: |
+      On garde les notations des nœuds {{ds-test|Fonctions test}} et {{ha-moyenne|Propriété de la moyenne}} ; $\rho_\varepsilon(z) = h_\varepsilon(|z|)$ est le noyau régularisant radial.
+    enonce: |
+      (i) Si $u$ est continue sur $\Omega$ et a la [[propriete-moyenne|propriété de la moyenne]], alors $u = u * \rho_\varepsilon$ sur $\Omega_\varepsilon$ pour tout $\varepsilon > 0$, et $u$ est de classe $C^\infty$ sur $\Omega$.
+
+      (ii) Une fonction continue sur $\Omega$ est harmonique si et seulement si elle a la propriété de la moyenne. En particulier, toute [[fonction-harmonique|fonction harmonique]] est de classe $C^\infty$, et ses dérivées partielles sont harmoniques.
+
+      (iii) Une limite uniforme sur tout compact de fonctions harmoniques sur $\Omega$ est harmonique.
+    preuve: |
+      (i) *Le noyau en couches.* La fonction $h_\varepsilon$ est de classe $C^1$, décroissante sur $[0, +\infty[$ et nulle sur $[\varepsilon, +\infty[$ ({{ds-test|Fonctions test}}, (ii)). Par le théorème fondamental, pour tout $z$,
+      $$h_\varepsilon(|z|) = \int_0^\varepsilon \big(-h'_\varepsilon(\tau)\big)\,\mathbf 1_{\{|z| < \tau\}}\,d\tau,$$
+      les deux membres valant $h_\varepsilon(|z|) - h_\varepsilon(\varepsilon)$ si $|z| < \varepsilon$, et $0$ sinon.
+
+      *Fubini.* Soit $x \in \Omega_\varepsilon$. La fonction $(\tau, y) \mapsto (-h'_\varepsilon(\tau))\,\mathbf 1_{\{|x - y| < \tau\}}\,u(y)$ est borélienne et bornée sur $[0, \varepsilon] \times \bar B(x, \varepsilon)$, nulle ailleurs, donc intégrable. Le théorème de Fubini ({{m-fubini|Tonelli, Fubini}}, (ii)) et la propriété de la moyenne donnent
+      $$\begin{aligned} &(u * \rho_\varepsilon)(x) \\ &\quad = \int_0^\varepsilon \big(-h'_\varepsilon(\tau)\big)\Big(\int_{B(x, \tau)} u\Big)\,d\tau \\ &\quad = u(x)\int_0^\varepsilon \big(-h'_\varepsilon(\tau)\big)\,\lambda(B(x, \tau))\,d\tau, \end{aligned}$$
+      l'intégrale intérieure étant nulle pour $\tau = 0$. Le même calcul pour la fonction constante $1$, qui a évidemment la propriété de la moyenne, montre que la dernière intégrale vaut $\int \rho_\varepsilon(x - y)\,dy = 1$. Donc $u * \rho_\varepsilon = u$ sur $\Omega_\varepsilon$.
+
+      *Régularité.* Par le nœud {{ds-regularisation|Régularisation}}, (i), $u * \rho_\varepsilon$ est de classe $C^\infty$ sur $\Omega_\varepsilon$. Les ouverts $\Omega_\varepsilon$ recouvrent $\Omega$, chaque point étant un compact ({{ds-test|Fonctions test}}, (iv)), et la classe $C^\infty$ est locale ({{dr-partition|Partition de l'unité}}, (i)).
+
+      (ii) Une fonction harmonique a la propriété de la moyenne ({{ha-moyenne|Propriété de la moyenne}}, (ii)). Réciproquement, si $u$ a la propriété de la moyenne, elle est de classe $C^\infty$ par (i), et la fonction $M$ du nœud {{ha-moyenne|Propriété de la moyenne}}, (i), est constante en chaque $x$. Si l'on avait $\Delta u(x) > 0$, la continuité donnerait $r_0 > 0$ tel que $\Delta u > 0$ sur $\bar B(x, r_0)$ ; pour $0 < r < r_0$, l'intégrande de $M'(r)$ serait strictement positive sur $B$, et $M'(r) > 0$, ce qui est absurde. De même si $\Delta u(x) < 0$.
+
+      Les dérivées partielles d'une fonction harmonique sont de classe $C^\infty$, et $\Delta(\partial_j u) = \partial_j(\Delta u) = 0$ par le théorème de Schwarz.
+
+      (iii) Soit $u_k \to u$ uniformément sur tout compact. La limite $u$ est continue. Si $\bar B(x, r) \subset \Omega$,
+      $$\begin{aligned} |u(x) - m_{x,r}(u)| &\leqslant |u(x) - u_k(x)| \\ &\quad + m_{x,r}(|u_k - u|) \\ &\leqslant 2\sup_{\bar B(x, r)}|u_k - u|, \end{aligned}$$
+      qui tend vers $0$ : $u$ a la propriété de la moyenne, et (ii) conclut.
+    remarques:
+      - |
+        Le noyau régularisant est ici choisi radial, et c'est essentiel : la décomposition de $\rho_\varepsilon$ en couches $\mathbf 1_{B(0, \tau)}$, pondérées par $-h'_\varepsilon(\tau) \geqslant 0$, écrit la moyenne pondérée par $\rho_\varepsilon$ comme une moyenne de moyennes sur des boules, toutes égales à $u(x)$. Avec le noyau produit du nœud {{dr-plateau|Fonctions plateau}}, qui n'est pas fonction de $|x|$, l'argument tomberait.
+      - |
+        La réciproque, une fonction continue qui a la propriété de la moyenne sur les sphères est harmonique, a été annoncée par Koebe en 1906 (N. Kuznetsov, survey cité au nœud {{ha-moyenne|Propriété de la moyenne}}). Elle est remarquable : une hypothèse portant sur la seule continuité donne, par (i), la classe $C^\infty$. Une fonction harmonique est même développable en série entière au voisinage de chaque point, ce qui, en dimension $2$, se lit au nœud {{ha-holomorphes|Harmoniques et holomorphes}} et n'est pas démontré ici en dimension quelconque.
+
+  - id: ha-weyl
+    etiquette: Lemme de Weyl
+    nature: théorème
+    titre: Lemme de Weyl
+    texte: |
+      On garde les notations du nœud {{ds-convolution|Convolution des distributions}}.
+    enonce: |
+      Soit $T \in \lex{distribution}{\mathcal D'}(\Omega)$ telle que $\lex{laplacien}{\Delta} T = 0$. Il existe une [[fonction-harmonique|fonction harmonique]] $u$ sur $\Omega$ telle que $T = T_u$.
+
+      En particulier, si $f \in \lex{localement-integrable}{L^1_{\mathrm{loc}}}(\Omega)$ vérifie $\int f\,\Delta\varphi = 0$ pour toute $\varphi \in \lex{fonction-test}{\mathcal D}(\Omega)$, alors $f$ est égale presque partout à une fonction harmonique.
+    preuve: |
+      *Les régularisées sont harmoniques.* Pour $\varepsilon > 0$, $T * \rho_\varepsilon$ est de classe $C^\infty$ sur $\Omega_\varepsilon$, et
+      $$\Delta(T * \rho_\varepsilon) = (\Delta T) * \rho_\varepsilon = 0$$
+      ({{ds-convolution|Convolution des distributions}}, (iii)). Elle a donc la propriété de la moyenne sur l'ouvert $\Omega_\varepsilon$ ({{ha-regularite|Régularité des fonctions harmoniques}}, (ii)), et, pour $\eta > 0$, $(T * \rho_\varepsilon) * \rho_\eta = T * \rho_\varepsilon$ sur $(\Omega_\varepsilon)_\eta$, qui contient $\Omega_{\varepsilon + \eta}$ ({{ha-regularite|Régularité des fonctions harmoniques}}, (i)).
+
+      *Échange des noyaux.* Par l'associativité ({{ds-convolution|Convolution des distributions}}, (iv)) et la commutativité $\rho_\varepsilon * \rho_\eta = \rho_\eta * \rho_\varepsilon$ ({{ds-regularisation|Régularisation}}), on a, sur $\Omega_{\varepsilon + \eta}$,
+      $$\begin{aligned} T * \rho_\varepsilon &= T * (\rho_\varepsilon * \rho_\eta) = T * (\rho_\eta * \rho_\varepsilon) \\ &= (T * \rho_\eta) * \rho_\varepsilon. \end{aligned}$$
+
+      *Passage à la limite.* Fixons $\eta > 0$, et soit $\psi \in \mathcal D(\Omega_{2\eta})$. Pour $\varepsilon = \frac1k < \eta$, le support de $\psi$ est contenu dans $\Omega_{\varepsilon + \eta}$, et
+      $$\langle T * \rho_\varepsilon, \psi\rangle = \int \big((T * \rho_\eta) * \rho_\varepsilon\big)\,\psi.$$
+      Le premier membre tend vers $\langle T, \psi\rangle$ ({{ds-convolution|Convolution des distributions}}, (v)). Au second, la fonction continue $v = T * \rho_\eta$ sur $\Omega_\eta$ est régularisée : $v * \rho_\varepsilon \to v$ uniformément sur le compact $\operatorname{supp}\psi$ ({{ds-regularisation|Régularisation}}, (ii)), et le second membre tend vers $\int v\,\psi$. Ainsi $\langle T, \psi\rangle = \int u_\eta\,\psi$, où $u_\eta = T * \rho_\eta$ est harmonique sur $\Omega_\eta$.
+
+      *Recollement.* Pour $\eta' < \eta$, $u_\eta$ et $u_{\eta'}$ définissent la même distribution sur $\Omega_{2\eta}$ ; continues, elles y coïncident ({{ds-exemples|Exemples de distributions}}, (ii)). La fonction $u$, égale à $u_\eta$ sur $\Omega_{2\eta}$ pour tout $\eta = \frac1j$, est donc bien définie, harmonique, puisqu'elle l'est sur chaque ouvert $\Omega_{2\eta}$, et ces ouverts recouvrent $\Omega$. Toute $\psi \in \mathcal D(\Omega)$ a son support dans un $\Omega_{2\eta}$ ({{ds-test|Fonctions test}}, (iv)), et $\langle T, \psi\rangle = \int u\,\psi$.
+
+      La seconde affirmation est le cas $T = T_f$ : $T_f = T_u$ entraîne $f = u$ presque partout ({{ds-exemples|Exemples de distributions}}, (ii)).
+    remarques:
+      - |
+        Le lemme figure dans un article de Hermann Weyl, *The method of orthogonal projection in potential theory*, Duke Math. J. 7 (1940), p. 411-444, où il est le lemme 2. Weyl y cherchait les solutions de l'équation de Laplace comme projections orthogonales dans un espace de Hilbert ; il obtient ainsi des solutions « faibles », et le lemme dit qu'elles sont de vraies fonctions harmoniques.
+      - |
+        L'erreur la plus répandue est de conclure que $f$ elle-même est harmonique. Elle n'est qu'égale presque partout à une fonction harmonique : l'indicatrice d'un point, ajoutée à une fonction harmonique, définit la même distribution sans être continue. Le lemme choisit, dans la classe de $f$, le seul représentant régulier.
+      - |
+        Le même énoncé est faux pour l'équation des ondes $\partial_t^2 u = \partial_x^2 u$, dont toute fonction $f(x - t)$, même discontinue, est solution au sens des distributions. La propriété du laplacien qui fait marcher la preuve est la propriété de la moyenne, que l'opérateur des ondes n'a pas.
+
+  - id: ha-maximum
+    etiquette: Principe du maximum
+    nature: théorème
+    titre: Principe du maximum et unicité pour le problème de Dirichlet
+    texte: |
+      Pour un ouvert $\Omega$ de $\lex{n-uplet}{\mathbb R^n}$, on note $\bar\Omega$ son adhérence et $\partial\Omega = \bar\Omega \setminus \Omega$ sa [[frontiere|frontière]]. Le [[probleme-dirichlet|problème de Dirichlet]] sur un ouvert borné $\Omega$, pour une fonction continue $g$ sur $\partial\Omega$, consiste à trouver $u$ continue sur $\bar\Omega$, harmonique sur $\Omega$, égale à $g$ sur $\partial\Omega$.
+    enonce: |
+      (i) *Principe fort.* Soit $\Omega$ un ouvert [[connexe]] et $u$ une [[fonction-harmonique|fonction harmonique]] sur $\Omega$. Si $u$ atteint son maximum en un point de $\Omega$, elle est constante.
+
+      (ii) *Principe faible.* Soit $\Omega$ un ouvert borné non vide, et $u$ continue sur $\bar\Omega$, de classe $C^2$ sur $\Omega$, avec $\lex{laplacien}{\Delta} u \geqslant 0$ sur $\Omega$. Alors $\partial\Omega$ n'est pas vide, et
+      $$\max_{\bar\Omega} u = \max_{\partial\Omega} u.$$
+
+      (iii) *Unicité.* Sur un ouvert borné, le problème de Dirichlet a au plus une solution, et elle vérifie $\min g \leqslant u \leqslant \max g$.
+    preuve: |
+      (i) Soit $m = \max_\Omega u$ et $A = \{x \in \Omega : u(x) = m\}$, non vide par hypothèse et fermé dans $\Omega$ par continuité. Soit $x \in A$ et $r > 0$ tel que $\bar B(x, r) \subset \Omega$. Par la propriété de la moyenne ({{ha-moyenne|Propriété de la moyenne}}, (ii)), la fonction continue et positive $m - u$ a une intégrale nulle sur $B(x, r)$.
+
+      Si elle était strictement positive en un point $z$ de $B(x, r)$, elle serait supérieure à une constante $c > 0$ sur une boule $B(z, s) \subset B(x, r)$, et son intégrale serait au moins $c\,\lambda(B(z, s)) > 0$. Donc $u = m$ sur $B(x, r)$ : $A$ est ouvert. L'ouvert $\Omega$ étant connexe, $A = \Omega$.
+
+      (ii) *Une perturbation.* Soit $\varepsilon > 0$ et $v(x) = u(x) + \varepsilon|x|^2$, continue sur le compact $\bar\Omega$, fermé et borné ({{me-rn|L'espace ℝⁿ}}, (iii)). Elle y atteint son maximum en un point $x^*$ ({{tr-compacts|Compacts de ℝ}}, (iii)). Sur $\Omega$, $\Delta v = \Delta u + 2n\varepsilon > 0$.
+
+      *Le maximum est au bord.* Supposons $x^* \in \Omega$. Pour chaque $i$, la fonction $g(t) = v(x^* + te_i)$, définie et de classe $C^2$ près de $0$, a un maximum local en $0$, donc $g'(0) = 0$ ({{de-extremum|Extremum local}}). Si l'on avait $g''(0) > 0$, le développement à l'ordre $1$ de $g'$ ({{de-dl1|DL à l'ordre 1}}) donnerait $g' > 0$ sur un intervalle $]0, h]$, et $g$ y serait strictement croissante ({{de-monotonie|Signe de la dérivée}}, (iii)), contre la maximalité. Donc $\partial_i^2 v(x^*) = g''(0) \leqslant 0$ pour tout $i$, et $\Delta v(x^*) \leqslant 0$ : contradiction.
+
+      Ainsi $x^* \in \bar\Omega \setminus \Omega = \partial\Omega$, qui n'est pas vide. Avec $D = \max_{\bar\Omega}|x|^2$,
+      $$\max_{\bar\Omega} u \leqslant \max_{\bar\Omega} v = \max_{\partial\Omega} v \leqslant \max_{\partial\Omega} u + \varepsilon D,$$
+      et l'on fait tendre $\varepsilon$ vers $0$. L'inégalité inverse est évidente.
+
+      (iii) Si $u_1$ et $u_2$ sont deux solutions, $\pm(u_1 - u_2)$ sont harmoniques sur $\Omega$, continues sur $\bar\Omega$ et nulles sur $\partial\Omega$ ; par (ii), leurs maxima sont nuls, et $u_1 = u_2$. L'encadrement est (ii) appliqué à $u$ et à $-u$.
+    remarques:
+      - |
+        L'hypothèse que $\Omega$ est borné ne peut pas être omise. Sur le demi-plan $\{y > 0\}$, la fonction $u(x, y) = y$ est harmonique, continue sur le demi-plan fermé, nulle sur la droite frontière, et pourtant non nulle : sans borne, le maximum peut « s'échapper à l'infini ».
+      - |
+        Le point (iii) ne dit rien de l'existence. Riemann a fondé l'existence sur un principe de minimisation de l'énergie $\int|\nabla u|^2$, qu'il employait dès sa thèse de 1851 et qu'il a nommé principe de Dirichlet en 1857, dans son mémoire sur les fonctions abéliennes (« Electrostatic Origins of the Dirichlet Principle », arXiv:2408.12002). La justification rigoureuse de ce principe passe par les espaces de Sobolev et le théorème de Riesz dans un espace de Hilbert, évoqués au niveau de la théorie ({{edp|Distributions et EDP}}). Le nœud {{ha-poisson|Problème de Dirichlet sur le disque}} résout le problème sur le disque par une formule explicite.
+
+  - id: ha-liouville
+    etiquette: Liouville harmonique
+    nature: théorème
+    titre: Théorème de Liouville pour les fonctions harmoniques
+    enonce: |
+      Toute [[fonction-harmonique|fonction harmonique]] bornée sur $\lex{n-uplet}{\mathbb R^n}$ est constante.
+    preuve: |
+      *Comparaison de deux boules.* Soit $u$ harmonique avec $|u| \leqslant K$, et $x, x'$ deux points, à distance $d = |x - x'|$. Pour $R > d$, soit $D = B(x, R) \,\triangle\, B(x', R)$ la différence symétrique des deux boules ; la propriété de la moyenne ({{ha-moyenne|Propriété de la moyenne}}, (ii)) et $\lambda(B(x, R)) = \lambda(B(x', R)) = R^n\omega_n$ donnent
+      $$\begin{aligned} &|u(x) - u(x')| \\ &\quad = \frac1{R^n\omega_n}\Big|\int_{B(x, R)} u - \int_{B(x', R)} u\Big| \\ &\quad \leqslant \frac K{R^n\omega_n}\,\lambda(D). \end{aligned}$$
+
+      *La différence symétrique.* Par l'inégalité triangulaire, $B(x', R) \subset B(x, R + d)$, et $B(x, R - d)$ est contenue dans $B(x, R) \cap B(x', R)$. Ainsi $D$ est contenue dans $B(x, R + d) \setminus B(x, R - d)$, de mesure $\omega_n\big((R + d)^n - (R - d)^n\big)$ ({{cv-lineaire|Image linéaire}}, (ii)). Ainsi
+      $$\begin{aligned} &|u(x) - u(x')| \\ &\quad \leqslant K\Big(\Big(1 + \frac dR\Big)^n - \Big(1 - \frac dR\Big)^n\Big), \end{aligned}$$
+      qui tend vers $0$ quand $R \to +\infty$, par continuité des polynômes. Donc $u(x) = u(x')$.
+    remarques:
+      - |
+        En dimension $2$, le théorème contient celui de Liouville pour les fonctions holomorphes ({{cx-liouville|Liouville}}) : si $f$ est holomorphe bornée sur $\mathbb C$, ses parties réelle et imaginaire sont harmoniques et bornées ({{ha-holomorphes|Harmoniques et holomorphes}}, (i)), donc constantes. La preuve par les moyennes sur des boules remplace les inégalités de Cauchy.
+      - |
+        Une borne d'un seul côté suffit : une fonction harmonique minorée sur $\mathbb R^n$ est encore constante, mais la démonstration demande l'inégalité de Harnack, non démontrée ici. Sans aucune borne, la conclusion tombe : $x^2 - y^2$ est harmonique et non constante. Avec $u = E$, solution élémentaire du nœud {{ds-laplacien|Solution élémentaire du laplacien}}, le théorème montre que deux solutions élémentaires qui tendent vers $0$ à l'infini sont égales, leur différence étant harmonique ({{ha-weyl|Lemme de Weyl}}) et bornée.
+
+  - id: ha-holomorphes
+    etiquette: Harmoniques et holomorphes
+    nature: théorème
+    titre: Fonctions harmoniques du plan et fonctions holomorphes
+    texte: |
+      On identifie $\lex{n-uplet}{\mathbb R^2}$ à $\lex{ensemble-complexes}{\mathbb C}$ par $(x, y) \mapsto x + iy$, comme au nœud {{cv-polaires|Coordonnées polaires}}. Pour une fonction $f = P + iQ$ d'un ouvert $U$ de $\mathbb C$ dans $\mathbb C$, $\partial_x f = \partial_x P + i\,\partial_x Q$, et de même pour $\partial_y f$.
+    enonce: |
+      (i) Si $f$ est [[holomorphe]] sur un ouvert $U$, ses parties réelle et imaginaire sont des [[fonction-harmonique|fonctions harmoniques]] sur $U$, de classe $C^\infty$. De plus $\partial_x f = f'$ et $\partial_y f = i f'$.
+
+      (ii) Si $U$ est un ouvert convexe et $u$ une fonction harmonique réelle sur $U$, il existe $F$ holomorphe sur $U$ telle que $u = \operatorname{Re} F$, et $F' = \partial_x u - i\,\partial_y u$.
+
+      (iii) Sur $U = \mathbb C \setminus \{0\}$, la fonction $\ln|z|$ est harmonique, mais elle n'est la partie réelle d'aucune fonction holomorphe sur $U$.
+    preuve: |
+      (i) *Dérivées partielles.* Le taux d'accroissement $\frac{f(z + h) - f(z)}h$ tend vers $f'(z)$ quand $h \to 0$ dans $\mathbb C$, donc aussi pour $h = t$ réel et pour $h = it$, $t$ réel : $\partial_x f = f'$ et $\partial_y f = i f'$. Ces dérivées sont continues, $f'$ étant holomorphe ({{cx-analytique|Analyticité}}), donc continue ({{cx-holomorphe|Dérivabilité complexe}}, (i)) : $P$ et $Q$ sont de classe $C^1$ ({{gd-classe-ck|Classe Cᵏ}}, (i)).
+
+      *Laplacien.* Appliqué à $f'$, le même calcul donne $\partial_x^2 f = f''$ et $\partial_y^2 f = i \cdot i f'' = -f''$, et les dérivées croisées valent $if''$ : elles sont continues, $P$ et $Q$ sont de classe $C^2$, et $\Delta f = f'' - f'' = 0$, d'où $\Delta P = \Delta Q = 0$. Par récurrence, toutes les dérivées partielles de $f$ sont des multiples de dérivées $f^{(k)}$, continues : $P$ et $Q$ sont de classe $C^\infty$.
+
+      (ii) *Une fonction holomorphe.* La fonction $g = \partial_x u - i\,\partial_y u$ est de classe $C^1$. Par le théorème de Schwarz et $\Delta u = 0$,
+      $$\begin{aligned} \partial_y g &= \partial_x\partial_y u - i\,\partial_y^2 u \\ &= \partial_x\partial_y u + i\,\partial_x^2 u = i\,\partial_x g. \end{aligned}$$
+      Pour $h = a + ib$, la différentielle de $g$ en $z$ est $a\,\partial_x g(z) + b\,\partial_y g(z) = h\,\partial_x g(z)$, et $g(z + h) = g(z) + h\,\partial_x g(z) + o(|h|)$ ({{gd-differentielle|Différentielle}}) : $g$ est holomorphe, de dérivée $\partial_x g$.
+
+      *Une primitive.* Par le théorème de Cauchy pour un ouvert convexe ({{cx-cauchy-convexe|Cauchy, ouverts convexes}}), $g$ a une primitive holomorphe $G = A + iB$. Par (i), $\partial_x G = G' = g$ et $\partial_y G = iG' = ig$, soit
+      $$\begin{aligned} \partial_x A + i\,\partial_x B &= \partial_x u - i\,\partial_y u, \\ \partial_y A + i\,\partial_y B &= \partial_y u + i\,\partial_x u. \end{aligned}$$
+      Les parties réelles donnent $\partial_x(A - u) = \partial_y(A - u) = 0$ : $A - u$ est constante sur le convexe $U$, par les accroissements finis ({{gd-accroissements|Accroissements finis}}). Si $A - u = c$, $F = G - c$ convient.
+
+      (iii) $\ln|z| = \frac12\ln(x^2 + y^2)$ est harmonique ({{ha-harmoniques|Fonctions harmoniques}}, (ii)). Si l'on avait $\ln|z| = \operatorname{Re} F$, avec $F = A + iB$ holomorphe sur $U$, les égalités $\partial_x F = F'$ et $\partial_y F = iF'$ de (i) donneraient $\partial_x B = -\partial_y A$, d'où
+      $$F' = \partial_x A + i\,\partial_x B = \frac{x - iy}{x^2 + y^2} = \frac1z.$$
+      L'intégrale de $F'$ sur le cercle unité serait nulle ({{cx-integrale-chemin|Intégrale curviligne}}, (ii)), alors que celle de $\frac1z$ vaut $2i\pi$ (même nœud, (iii)).
+    remarques:
+      - |
+        Par (i), les parties réelles des polynômes $(x + iy)^k$ sont harmoniques : $1$, $x$, $x^2 - y^2$, $x^3 - 3xy^2$, $x^4 - 6x^2y^2 + y^4$… ; avec les parties imaginaires, elles engendrent les polynômes harmoniques homogènes du plan. Par (ii), toute fonction harmonique sur un disque est, au voisinage de chaque point, somme d'une série de tels polynômes, puisque $F$ est développable en série entière ({{cx-analytique|Analyticité}}).
+      - |
+        Le point (iii) montre que la convexité n'est pas une simple commodité de la preuve : le logarithme du module est harmonique sur le plan épointé, mais son « conjugué » serait un argument continu de $z$, qui n'existe pas sur un lacet autour de $0$. C'est la même obstruction que celle de la cohomologie de de Rham, $H^1(\mathbb R^2 \setminus \{0\}) \cong \mathbb R$ ({{dr-degre1|De Rham en degré 1}}) : la forme $-\partial_y u\,dx + \partial_x u\,dy$, fermée, n'y est pas exacte.
+
+  - id: ha-poisson
+    etiquette: Problème de Dirichlet sur le disque
+    nature: théorème
+    titre: Noyau de Poisson et problème de Dirichlet sur le disque
+    texte: |
+      On identifie $\lex{n-uplet}{\mathbb R^2}$ à $\lex{ensemble-complexes}{\mathbb C}$. Soit $\mathbb D = \{|z| < 1\}$ le disque unité ouvert, dont l'adhérence est le disque fermé et la frontière le cercle unité. Une donnée au bord est une fonction $f : \lex{ensemble-reels}{\mathbb R} \to \mathbb R$ continue et $2\pi$-périodique, la valeur au point $e^{i\theta}$ étant $f(\theta)$.
+
+      Le [[noyau-poisson|noyau de Poisson]] est, pour $0 \leqslant r < 1$ et $t$ réel,
+      $$P(r, t) = \frac{1 - r^2}{1 - 2r\cos t + r^2}.$$
+      On pose, pour $0 \leqslant r < 1$ et $\theta$ réel,
+      $$\begin{aligned} u(re^{i\theta}) &= \frac1{2\pi}\int_{-\pi}^{\pi} P(r, \theta - t)\,f(t)\,dt, \\ u(e^{i\theta}) &= f(\theta). \end{aligned}$$
+    enonce: |
+      (i) $P(r, t) = \operatorname{Re}\dfrac{1 + re^{it}}{1 - re^{it}} > 0$, et $\dfrac1{2\pi}\displaystyle\int_{-\pi}^{\pi} P(r, t)\,dt = 1$. Pour $0 < \delta \leqslant \pi$, $\sup_{\delta \leqslant |t| \leqslant \pi} P(r, t) \to 0$ quand $r \to 1^-$.
+
+      (ii) $u$ est bien définie sur $\bar{\mathbb D}$, et $u = \operatorname{Re} F$ sur $\mathbb D$, où $F$ est la fonction holomorphe
+      $$\begin{aligned} F(z) &= a_0 + 2\sum_{n \geqslant 1} a_n z^n, \\ a_n &= \frac1{2\pi}\int_{-\pi}^{\pi} f(t)\,e^{-int}\,dt. \end{aligned}$$
+
+      (iii) $u$ est continue sur $\bar{\mathbb D}$ et [[fonction-harmonique|harmonique]] sur $\mathbb D$ : c'est l'unique solution du [[probleme-dirichlet|problème de Dirichlet]] sur le disque pour la donnée $f$.
+    preuve: |
+      (i) *Le noyau.* Pour $|w| < 1$, $\frac{1 + w}{1 - w} = \frac{(1 + w)(1 - \bar w)}{|1 - w|^2}$ a pour partie réelle $\frac{1 - |w|^2}{|1 - w|^2}$, $w - \bar w$ étant imaginaire pur. Pour $w = re^{it}$, $|1 - w|^2 = 1 - 2r\cos t + r^2$, et $|1 - w| \geqslant 1 - r > 0$ : $P(r, t) = \operatorname{Re}\frac{1 + w}{1 - w} > 0$.
+
+      *L'intégrale.* La série géométrique donne $\frac{1 + w}{1 - w} = 1 + 2\sum_{n \geqslant 1} w^n$, d'où $P(r, t) = 1 + 2\sum_{n \geqslant 1} r^n\cos(nt)$, puisque $(e^{it})^n = e^{int}$ ({{cx-exponentielle|Exponentielle}}, (ii)). La série converge uniformément en $t$ par le critère de Weierstrass, et s'intègre terme à terme ({{cx-convergence-uniforme|Convergence uniforme}}, (ii) et (iii)). Comme $\sin(\pm n\pi) = \operatorname{Im}\big((-1)^{\pm n}\big) = 0$ ({{cx-pi|Le nombre π}}, (ii)), $\int_{-\pi}^\pi \cos(nt)\,dt = 0$ pour $n \geqslant 1$, et l'intégrale vaut $2\pi$.
+
+      *Concentration.* La fonction continue $t \mapsto |1 - e^{it}|$ ne s'annule pas sur le compact $\{\delta \leqslant |t| \leqslant \pi\}$, qui ne contient aucun multiple de $2\pi$ ({{cx-pi|Le nombre π}}, (ii)) ; elle y atteint un minimum $c_\delta > 0$ ({{tr-compacts|Compacts de ℝ}}, (iii)). Pour $r \geqslant 1 - \frac{c_\delta}2$, $|1 - re^{it}| \geqslant |1 - e^{it}| - (1 - r) \geqslant \frac{c_\delta}2$, et $P(r, t) \leqslant \frac{4(1 - r^2)}{c_\delta^2}$, qui tend vers $0$.
+
+      (ii) *Bonne définition.* Tout point non nul de $\bar{\mathbb D}$ s'écrit $re^{i\theta}$, avec $r = |z|$ et $\theta$ unique modulo $2\pi$ ({{cx-pi|Le nombre π}}, (iii)) ; les deux formules sont $2\pi$-périodiques en $\theta$. En $0$, $P(0, \cdot) = 1$ et $u(0) = \frac1{2\pi}\int f$ ne dépend pas de $\theta$.
+
+      *La fonction $F$.* Pour $|z| \leqslant \rho < 1$, $\frac{e^{it} + z}{e^{it} - z} = 1 + 2\sum_{n \geqslant 1} z^ne^{-int}$, uniformément en $t$. Multipliant par $f(t)$ et intégrant terme à terme, on obtient
+      $$\begin{aligned} \frac1{2\pi}\int_{-\pi}^{\pi}\frac{e^{it} + z}{e^{it} - z}\,f(t)\,dt &= a_0 + 2\sum_{n \geqslant 1} a_n z^n \\ &= F(z). \end{aligned}$$
+      Comme $|a_n| \leqslant \sup|f|$ ({{cx-integrale-chemin|Intégrale curviligne}}, (i)), la série entière a un rayon au moins $1$, et $F$ est holomorphe sur $\mathbb D$ ({{cx-derivation-series|Dérivation terme à terme}}).
+
+      *Partie réelle.* Pour $z = re^{i\theta}$, $\frac{e^{it} + z}{e^{it} - z} = \frac{1 + w}{1 - w}$ avec $w = re^{i(\theta - t)}$, de partie réelle $P(r, \theta - t)$ par (i). La fonction $f$ étant réelle, et l'intégrale d'une fonction complexe étant définie par ses parties réelle et imaginaire, $\operatorname{Re} F(re^{i\theta}) = u(re^{i\theta})$.
+
+      (iii) *Harmonicité.* Par (ii) et le nœud {{ha-holomorphes|Harmoniques et holomorphes}}, (i), $u$ est harmonique, donc continue, sur $\mathbb D$.
+
+      *Une translation.* Si $g$ est continue et $2\pi$-périodique, $c \mapsto \int_{c - \pi}^{c + \pi} g$ a pour dérivée $g(c + \pi) - g(c - \pi) = 0$ ({{ar-tfa|Théorème fondamental}}) : elle est constante. Le changement de variable $s = \theta - t$ et la périodicité de $s \mapsto P(r, s)f(\theta - s)$ donnent alors, avec (i),
+      $$\begin{aligned} &u(re^{i\theta}) - f(\theta) \\ &\ = \frac1{2\pi}\int_{-\pi}^{\pi} P(r, s)\big(f(\theta - s) - f(\theta)\big)\,ds. \end{aligned}$$
+
+      *Convergence uniforme au bord.* Soit $\varepsilon > 0$ et $M = \sup|f|$. La fonction $f$, continue sur le compact $[-3\pi, 3\pi]$, y est uniformément continue ({{me-heine|Heine}}), donc sur $\mathbb R$ par périodicité : il existe $\delta \in \,]0, \pi]$ tel que $|f(a) - f(b)| < \varepsilon$ si $|a - b| < \delta$. Découpant l'intégrale en $|s| < \delta$ et $\delta \leqslant |s| \leqslant \pi$, et utilisant $P > 0$ et (i),
+      $$|u(re^{i\theta}) - f(\theta)| \leqslant \varepsilon + 2M\sup_{\delta \leqslant |s| \leqslant \pi} P(r, s),$$
+      qui est $< 2\varepsilon$ pour tout $\theta$ dès que $r \geqslant r_0$, pour un $r_0 < 1$.
+
+      *Continuité en $e^{i\theta_0}$.* Soit $z = re^{i\theta} \in \bar{\mathbb D}$, avec $\theta$ choisi dans $]\theta_0 - \pi, \theta_0 + \pi]$, et $d = |z - e^{i\theta_0}|$. On a $1 - r \leqslant d$ et $|e^{i\theta} - e^{i\theta_0}| \leqslant (1 - r) + d \leqslant 2d$. Avec la constante $c_\delta$ de (i), si $2d < c_\delta$, alors $|\theta - \theta_0| < \delta$, puisque $|e^{i\theta} - e^{i\theta_0}| = |1 - e^{i(\theta - \theta_0)}|$. Si de plus $d \leqslant 1 - r_0$, alors $r \geqslant r_0$, et
+      $$\begin{aligned} |u(z) - f(\theta_0)| &\leqslant |u(re^{i\theta}) - f(\theta)| \\ &\quad + |f(\theta) - f(\theta_0)| < 3\varepsilon. \end{aligned}$$
+
+      *Unicité.* C'est le principe du maximum ({{ha-maximum|Principe du maximum}}, (iii)) sur l'ouvert borné $\mathbb D$.
+    remarques:
+      - |
+        Pour $f(t) = \cos^2 t = \frac12 + \frac14(e^{2it} + e^{-2it})$, on trouve $a_0 = \frac12$, $a_2 = \frac14$ et $a_n = 0$ pour les autres $n \geqslant 1$, d'où $F(z) = \frac12 + \frac{z^2}2$ et $u(x, y) = \frac12 + \frac{x^2 - y^2}2$. Au point $r = \frac12$, $\theta = \frac\pi3$, l'intégrale de Poisson, calculée numériquement, vaut $0{,}4375 = \frac12 + \frac18\cos\frac{2\pi}3$, comme la formule. La solution est un polynôme harmonique, dont la restriction au cercle est la donnée.
+      - |
+        Les $a_n$ sont, à la normalisation près, les coefficients de Fourier de $f$ ({{fo-coefficients|Coefficients de Fourier}}), et $u(re^{i\theta}) = a_0 + 2\sum_n r^n\operatorname{Re}(a_ne^{in\theta})$ est sa série de Fourier dont le terme de rang $n$ est amorti par $r^n$. La série de Fourier elle-même peut diverger en un point pour une donnée continue ({{fo-divergence|Divergence}}) ; le facteur $r^n$ la fait converger, et (iii) dit que la limite quand $r \to 1$ redonne $f$. C'est le procédé de sommation d'Abel, analogue à celui de Fejér.
+      - |
+        L'erreur la plus répandue est de croire que $u$ tend vers $f$ le long des rayons seulement. Le point (iii) donne la continuité sur le disque fermé : $u(z) \to f(\theta_0)$ quand $z \to e^{i\theta_0}$ par n'importe quel chemin, y compris tangentiellement au cercle. C'est la concentration uniforme du noyau, (i), qui le permet.
+
+  - id: ch-noyau
+    etiquette: Noyau de la chaleur
+    nature: proposition
+    titre: Le noyau de la chaleur
+    texte: |
+      L'[[equation-chaleur|équation de la chaleur]] sur $\lex{ensemble-reels}{\mathbb R}$ est $\partial_t u = \partial_x^2 u$, pour une fonction $u(t, x)$ définie pour $t > 0$ et $x$ réel. Le [[noyau-chaleur|noyau de la chaleur]] est la fonction
+      $$G(t, x) = \frac1{\sqrt{4\pi t}}\exp\Big(-\frac{x^2}{4t}\Big),$$
+      pour $t > 0$ et $x$ réel, avec l'exponentielle du nœud {{cx-exponentielle|Exponentielle}}.
+    enonce: |
+      (i) $G$ est de classe $C^\infty$ et strictement positive sur $]0, +\infty[ \times \mathbb R$, et $\partial_t G = \partial_x^2 G$.
+
+      (ii) $\int_{\mathbb R} G(t, x)\,dx = 1$ pour tout $t > 0$.
+
+      (iii) Pour tout $\delta > 0$, $\int_{|x| \geqslant \delta} G(t, x)\,dx \to 0$ quand $t \to 0^+$.
+
+      (iv) Pour $0 < t_0 < t_1$ et $j, k \in \lex{ensemble-entiers-naturels}{\mathbb N}$, il existe $C$ tel que
+      $$\begin{aligned} &|\partial_t^j\partial_x^k G(t, x)| \\ &\quad \leqslant C\,(1 + |x|)^{2j + k}\exp\Big(-\frac{x^2}{4t_1}\Big) \end{aligned}$$
+      pour $t_0 \leqslant t \leqslant t_1$ et $x$ réel.
+    preuve: |
+      (i) L'exponentielle réelle est de classe $C^\infty$, strictement positive, et $\exp' = \exp$ ({{cx-exponentielle|Exponentielle}}, (i) et (iv)) ; $t \mapsto t^{-1/2}$ est de classe $C^\infty$ sur $]0, +\infty[$ ({{lp-puissances|Puissances réelles}}, (iv)). Par composition et produit, $G$ est de classe $C^\infty$ ({{gd-classe-ck|Classe Cᵏ}}). On calcule
+      $$\begin{aligned} \partial_x G &= -\frac x{2t}\,G, \\ \partial_x^2 G &= \Big(\frac{x^2}{4t^2} - \frac1{2t}\Big)G = \partial_t G. \end{aligned}$$
+
+      (ii) Le changement de variable $x = 2\sqrt t\,v$ ({{cv-changement|Changement de variables}}, (ii)), de jacobien $2\sqrt t$, et l'intégrale de Gauss ({{cv-gaussienne|Intégrale de Gauss}}, (ii)) donnent $\int \exp(-\frac{x^2}{4t})\,dx = 2\sqrt t\int e^{-v^2}\,dv = 2\sqrt{\pi t}$.
+
+      (iii) Le même changement de variable donne
+      $$\begin{aligned} \int_{|x| \geqslant \delta} G(t, x)\,dx &= \frac1{\sqrt\pi}\,J\Big(\frac\delta{2\sqrt t}\Big), \\ J(R) &= \int_{|v| \geqslant R} e^{-v^2}\,dv. \end{aligned}$$
+      La fonction $J$ est décroissante, et $J(k) \to 0$ quand l'entier $k$ tend vers l'infini, par convergence dominée, avec le majorant intégrable $e^{-v^2}$. Donc $J(R) \to 0$ quand $R \to +\infty$.
+
+      (iv) Par récurrence sur $j + k$, $\partial_t^j\partial_x^k G = Q_{j,k}(\frac1t, x)\,G$, où $Q_{j,k}$ est un polynôme en deux variables de degré au plus $2j + k$ en $x$ : c'est vrai pour $Q_{0,0} = 1$, et
+      $$\begin{aligned} \partial_x(QG) &= \Big(\partial_x Q - \frac x{2t}Q\Big)G, \\ \partial_t(QG) &= \Big(\partial_t Q - \frac1{2t}Q + \frac{x^2}{4t^2}Q\Big)G, \end{aligned}$$
+      où $\partial_t Q$, calculé par la règle de la chaîne, ne change pas le degré en $x$. Pour $t_0 \leqslant t \leqslant t_1$, $\frac1t \leqslant \frac1{t_0}$, d'où $|Q_{j,k}(\frac1t, x)| \leqslant C'(1 + |x|)^{2j+k}$ ; $\frac1{\sqrt{4\pi t}} \leqslant \frac1{\sqrt{4\pi t_0}}$, et $\exp(-\frac{x^2}{4t}) \leqslant \exp(-\frac{x^2}{4t_1})$, l'exponentielle étant croissante.
+    remarques:
+      - |
+        $G(t, \cdot)$ est la température à l'instant $t$ d'une barre infinie qui a reçu à l'instant $0$ une quantité de chaleur $1$ concentrée en $0$. Le point (ii) dit que la chaleur totale se conserve ; un calcul formel donne $\int x^2 G(t, x)\,dx = 2t$ et $G(t, 0) = \frac1{2\sqrt{\pi t}}$ : la chaleur s'étale sur une largeur de l'ordre de $\sqrt t$, et le pic s'abaisse d'autant.
+
+        ```schema ch-noyau
+        Le noyau $G(t, \cdot)$ aux instants $t = 0{,}05$ (rouge), $t = 0{,}25$ (bleu) et $t = 1$ (vert). Les trois courbes enferment la même aire $1$ ; leurs maxima en $0$, $\frac1{2\sqrt{\pi t}} \approx 1{,}26$, $0{,}56$ et $0{,}28$, décroissent comme $\frac1{\sqrt t}$, et les points d'inflexion, en $x = \pm\sqrt{2t}$, marqués sur chaque courbe, s'écartent comme $\sqrt t$.
+        ```
+      - |
+        Le noyau est un semi-groupe : $\int G(t, x - y)\,G(s, y)\,dy = G(t + s, x)$, égalité vérifiée par un calcul formel, qui se démontre en complétant le carré dans l'exposant. Laisser diffuser la chaleur pendant $s$, puis pendant $t$, revient à la laisser diffuser pendant $t + s$. Par la transformée de Fourier ({{fo-transformee|Transformée de Fourier}}), l'égalité devient $e^{-t\xi^2}e^{-s\xi^2} = e^{-(t+s)\xi^2}$.
+      - |
+        Fourier a fondé l'étude mathématique de la propagation de la chaleur dans sa *Théorie analytique de la chaleur*, publiée en 1822 (W. W. Rouse Ball, *A Short Account of the History of Mathematics*, 1908) ; c'est pour la résoudre sur un intervalle qu'il a développé les fonctions en séries trigonométriques.
+
+  - id: ch-cauchy
+    etiquette: Problème de Cauchy
+    nature: théorème
+    titre: Problème de Cauchy pour l'équation de la chaleur
+    texte: |
+      Soit $f : \lex{ensemble-reels}{\mathbb R} \to \mathbb R$ continue et bornée, et $M = \sup|f|$. On pose, pour $t > 0$ et $x$ réel,
+      $$u(t, x) = \int_{\mathbb R} G(t, x - y)\,f(y)\,dy,$$
+      avec le [[noyau-chaleur|noyau de la chaleur]] $G$, et $u(0, x) = f(x)$.
+    enonce: |
+      (i) $u$ est de classe $C^\infty$ sur $]0, +\infty[ \times \mathbb R$, vérifie l'[[equation-chaleur|équation de la chaleur]] $\partial_t u = \partial_x^2 u$, et $|u| \leqslant M$.
+
+      (ii) $u$ est continue sur $[0, +\infty[ \times \mathbb R$ : $u(t, x) \to f(x_0)$ quand $(t, x) \to (0, x_0)$ avec $t > 0$.
+
+      (iii) Si $f \geqslant 0$ et $f$ n'est pas identiquement nulle, alors $u(t, x) > 0$ pour tout $t > 0$ et tout $x$.
+    preuve: |
+      (i) *Domination.* Appliquons le nœud {{ds-parametre|Intégrales à paramètre}}, (i), avec $W = \,]0, +\infty[ \times \mathbb R$, $A = \mathbb R$, $k = \infty$ et $h((t, x), y) = G(t, x - y)\,f(y)$. Une boule fermée $L$ de $W$ est contenue dans un rectangle $[t_0, t_1] \times [-X, X]$ avec $t_0 > 0$. Par le nœud {{ch-noyau|Noyau de la chaleur}}, (iv), chaque dérivée $\partial^\beta h$ est majorée, pour $(t, x) \in L$, par $MC(1 + |x - y|)^N\exp\big(-\frac{(x - y)^2}{4t_1}\big)$, avec $\beta = (j, l)$ et $N = 2j + l$.
+
+      Pour $|y| \geqslant 2X$, on a $|x - y| \geqslant \frac{|y|}2$ et $1 + |x - y| \leqslant 1 + 2|y|$ ; pour $|y| < 2X$, l'expression est au plus $(1 + 3X)^N$. Comme $e^s \geqslant \frac{s^m}{m!}$ pour $s \geqslant 0$, tous les termes de la série de l'exponentielle étant positifs ({{cx-exponentielle|Exponentielle}}), on a $\exp(-\frac{y^2}{16t_1}) \leqslant m!\,(16t_1)^my^{-2m}$. Avec $2m \geqslant N + 2$, la fonction
+      $$\begin{aligned} \frac{g(y)}{MC} = {}&(1 + 3X)^N\,\mathbf 1_{\{|y| < 2X\}} \\ &+ (1 + 2|y|)^N e^{-y^2/(16t_1)} \end{aligned}$$
+      est majorée par une constante fois $y^{-2}$ pour $|y| \geqslant 1$, donc intégrable, puisque $\int_1^k y^{-2}\,dy = 1 - \frac1k$ et par convergence monotone.
+
+      *Conclusion.* $u$ est de classe $C^\infty$, et
+      $$\begin{aligned} &\partial_t u - \partial_x^2 u \\ &\ = \int (\partial_t G - \partial_x^2 G)(t, x - y)\,f(y)\,dy \\ &\ = 0. \end{aligned}$$
+      Enfin $|u(t, x)| \leqslant M\int G(t, x - y)\,dy = M$, par le nœud {{ch-noyau|Noyau de la chaleur}}, (ii), et l'invariance de $\lambda$ par translation et par $y \mapsto -y$.
+
+      (ii) Le changement de variable $y \mapsto x - y$ et $\int G(t, \cdot) = 1$ donnent
+      $$\begin{aligned} &u(t, x) - f(x_0) \\ &\quad = \int_{\mathbb R} G(t, y)\big(f(x - y) - f(x_0)\big)\,dy. \end{aligned}$$
+      Soit $\varepsilon > 0$, et $\eta > 0$ tel que $|f(z) - f(x_0)| < \varepsilon$ pour $|z - x_0| < \eta$. Si $|x - x_0| < \frac\eta2$ et $|y| < \frac\eta2$, alors $|x - y - x_0| < \eta$ : cette partie de l'intégrale est majorée par $\varepsilon\int G = \varepsilon$. Le reste est majoré par $2M\int_{|y| \geqslant \eta/2} G(t, y)\,dy$, qui est $< \varepsilon$ pour $t$ assez petit ({{ch-noyau|Noyau de la chaleur}}, (iii)). Ainsi $|u(t, x) - f(x_0)| < 2\varepsilon$ dès que $|x - x_0| < \frac\eta2$ et que $t$ est assez petit. La continuité en un point où $t > 0$ découle de (i).
+
+      (iii) Il existe $y_0$ tel que $f(y_0) > 0$, donc, par continuité, un intervalle $[y_0 - \eta, y_0 + \eta]$ où $f \geqslant \frac{f(y_0)}2$. Comme $G > 0$ est continue, l'intégrande est positive, et minorée sur cet intervalle par une constante strictement positive : $u(t, x) > 0$.
+    remarques:
+      - |
+        Pour $f = \cos$, un calcul formel donne $u(t, x) = e^{-t}\cos x$ : chaque fréquence est amortie exponentiellement, d'autant plus vite qu'elle est élevée, puisque $\cos(kx)$ donne $e^{-k^2t}\cos(kx)$. On le vérifie aussi sans intégrer : $e^{-t}\cos x$ est une solution bornée de donnée $\cos$, et l'unicité du nœud {{ch-maximum|Principe du maximum parabolique}}, (iii), l'identifie à $u$.
+      - |
+        Le point (iii) dit que la chaleur se propage à vitesse infinie : une donnée nulle hors de $[-1, 1]$ donne, à tout instant $t > 0$, une température strictement positive en tout point, aussi loin soit-il. C'est une différence profonde avec l'équation des ondes, et une limite du modèle physique.
+      - |
+        L'erreur la plus répandue est de croire que la donnée initiale suffit à déterminer la solution. *Admis ici* : il existe des solutions de l'équation de la chaleur sur $]0, +\infty[ \times \mathbb R$, continues jusqu'en $t = 0$, de donnée initiale nulle et non identiquement nulles ; elles croissent très vite en $|x|$. La construction de Tychonoff est la série $\sum_k g^{(k)}(t)\frac{x^{2k}}{(2k)!}$, avec $g(t) = e^{-1/t^2}$ pour $t > 0$, dont les dérivées vérifient des majorations assez fines (de type Gevrey d'ordre $\frac32$) pour que la série converge (A. Tychonoff, « Théorèmes d'unicité pour l'équation de la chaleur », Mat. Sb. 42, 1935, p. 199-216). C'est la borne $|u| \leqslant M$ qui rend la solution de (i) unique ({{ch-maximum|Principe du maximum parabolique}}).
+
+  - id: ch-maximum
+    etiquette: Principe du maximum parabolique
+    nature: théorème
+    titre: Principe du maximum pour l'équation de la chaleur et unicité
+    texte: |
+      Soit $a < b$ et $T > 0$. Le **bord parabolique** du rectangle $\bar Q = [0, T] \times [a, b]$ est la réunion $\Gamma$ du côté $\{0\} \times [a, b]$ et des deux côtés $[0, T] \times \{a\}$ et $[0, T] \times \{b\}$ ; le côté $\{T\} \times\, ]a, b[$ n'en fait pas partie.
+    enonce: |
+      (i) *Principe faible.* Soit $u$ continue sur $\bar Q$, telle que $\partial_t u$ et $\partial_x^2 u$ existent sur $]0, T] \times \,]a, b[$, la dérivée en $t = T$ étant à gauche, et que $\partial_t u - \partial_x^2 u \leqslant 0$. Alors $\max_{\bar Q} u = \max_\Gamma u$.
+
+      (ii) *Unicité sur un segment.* Deux solutions de l'[[equation-chaleur|équation de la chaleur]] sur $]0, T] \times \,]a, b[$, continues sur $\bar Q$ et égales sur $\Gamma$, sont égales.
+
+      (iii) *Unicité des solutions bornées.* Si $u$ est continue et bornée sur $[0, +\infty[ \times \lex{ensemble-reels}{\mathbb R}$, de classe $C^2$ sur $]0, +\infty[ \times \mathbb R$, solution de l'équation de la chaleur et nulle en $t = 0$, alors $u = 0$. En particulier, la fonction du nœud {{ch-cauchy|Problème de Cauchy}} est l'unique solution bornée de donnée initiale $f$.
+    preuve: |
+      (i) *Une perturbation.* Soit $\varepsilon > 0$ et $v = u - \varepsilon t$, continue sur le compact $\bar Q$, où elle atteint son maximum en $(t^*, x^*)$ ({{tr-compacts|Compacts de ℝ}}, (iii)). Sur $]0, T] \times \,]a, b[$, $\partial_t v - \partial_x^2 v \leqslant -\varepsilon < 0$.
+
+      *Le maximum est sur $\Gamma$.* Supposons $t^* > 0$ et $a < x^* < b$. La fonction $g(x) = v(t^*, x)$ est deux fois dérivable sur $]a, b[$ et y a un maximum en $x^*$, donc $g'(x^*) = 0$ ({{de-extremum|Extremum local}}). Si l'on avait $g''(x^*) > 0$, le développement à l'ordre $1$ de $g'$ ({{de-dl1|DL à l'ordre 1}}) donnerait $g' > 0$ sur un intervalle $]x^*, x^* + h]$, où $g$ serait strictement croissante ({{de-monotonie|Signe de la dérivée}}, (iii)) : ainsi $\partial_x^2 v(t^*, x^*) \leqslant 0$. La fonction $t \mapsto v(t, x^*)$ est maximale en $t^*$ sur $[0, t^*]$ : ses taux d'accroissement à gauche sont positifs, et $\partial_t v(t^*, x^*) \geqslant 0$. Alors $\partial_t v - \partial_x^2 v \geqslant 0$ en ce point, ce qui est exclu. Donc $(t^*, x^*) \in \Gamma$.
+
+      *Conclusion.* $\max_{\bar Q} u \leqslant \max_{\bar Q} v + \varepsilon T = \max_\Gamma v + \varepsilon T \leqslant \max_\Gamma u + \varepsilon T$, et l'on fait tendre $\varepsilon$ vers $0$.
+
+      (ii) La différence $w$ des deux solutions et son opposée vérifient (i), et sont nulles sur $\Gamma$ : $w \leqslant 0$ et $-w \leqslant 0$.
+
+      (iii) *Comparaison.* Soit $K$ tel que $|u| \leqslant K$, $L > 0$, $T > 0$, et
+      $$v(t, x) = \frac K{L^2}\,(x^2 + 2t),$$
+      qui vérifie $\partial_t v = \partial_x^2 v = \frac{2K}{L^2}$. La fonction $w = u - v$ est solution de l'équation de la chaleur sur $]0, T] \times \,]{-L}, L[$, et, sur le bord parabolique de $[0, T] \times [-L, L]$ : $w(0, x) = -\frac{Kx^2}{L^2} \leqslant 0$, et $w(t, \pm L) = u(t, \pm L) - K - \frac{2Kt}{L^2} \leqslant 0$.
+
+      *Conclusion.* Par (i), $w \leqslant 0$, soit $u(t, x) \leqslant \frac K{L^2}(x^2 + 2t)$ pour $|x| \leqslant L$ et $t \leqslant T$. À $(t, x)$ fixé, on fait tendre $L$ vers l'infini : $u(t, x) \leqslant 0$. Le même argument appliqué à $-u$ donne $u \geqslant 0$. La dernière affirmation s'applique à la différence de deux solutions bornées de même donnée, la solution du nœud {{ch-cauchy|Problème de Cauchy}} étant bornée par (i) de ce nœud.
+    remarques:
+      - |
+        Le maximum peut être atteint sur le côté supérieur $t = T$, mais il y est alors déjà atteint sur $\Gamma$ : la chaleur ne crée pas de point chaud. Pour $u(t, x) = e^{-t}\sin x$ sur $[0, T] \times [0, \pi]$, solution vérifiée par le calcul, le maximum $1$ est atteint en $(0, \frac\pi2)$, sur le bord parabolique, et la température en $x = \frac\pi2$ décroît ensuite comme $e^{-t}$.
+
+        ```schema ch-maximum
+        Le rectangle $[0, T] \times [a, b]$, avec le temps en ordonnée. Le bord parabolique $\Gamma$, en rouge, est formé du côté inférieur, la donnée initiale, et des deux côtés verticaux, les valeurs aux extrémités de la barre. Le côté supérieur, en pointillé gris, n'en fait pas partie : le maximum de $u - \varepsilon t$ ne peut s'y trouver qu'avec $\partial_t \geqslant 0$ et $\partial_x^2 \leqslant 0$, ce que l'inégalité stricte interdit.
+        ```
+      - |
+        La preuve de (iii) compare $u$ à la solution explicite $\frac K{L^2}(x^2 + 2t)$, qui domine $u$ au bord du grand rectangle et devient petite en chaque point quand $L$ grandit. C'est le même principe que pour le théorème de Liouville ({{ha-liouville|Liouville harmonique}}) : une borne globale, jointe à un principe de comparaison local, force la nullité.
+
+aretes:
+  - [ha-boule, ha-moyenne]
+  - [ha-harmoniques, ha-moyenne]
+  - [ha-moyenne, ha-regularite]
+  - [ha-regularite, ha-weyl]
+  - [ha-moyenne, ha-maximum]
+  - [ha-moyenne, ha-liouville]
+  - [ha-harmoniques, ha-holomorphes]
+  - [ha-holomorphes, ha-poisson]
+  - [ha-maximum, ha-poisson]
+  - [ch-noyau, ch-cauchy]
+  - [ch-cauchy, ch-maximum]
