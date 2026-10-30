@@ -208,16 +208,17 @@ const licenceKatex = fs.readFileSync(path.join(path.dirname(dist), 'LICENSE'), '
 css = `/*! KaTeX ${require('katex/package.json').version} (feuille de style et polices)\n${licenceKatex}\n*/\n` + css;
 if (/url\(fonts\//.test(css)) { console.error('ERREUR : une police KaTeX n\'a pas été embarquée'); process.exit(1); }
 
-const json = JSON.stringify(D).replace(/</g, '\\u003c');
-let page = fs.readFileSync('gabarit.html', 'utf8');
-page = page.replace('/*KATEX*/', () => css).replace('"__DONNEES__"', () => json);
-fs.writeFileSync('construction/atlas.html', page);
-console.log(`Page écrite : construction/atlas.html (${(page.length / 1024).toFixed(0)} Ko)`);
+// Les grandes chaînes (données sérialisées, page) restent dans un bloc : elles sont libérées avant la suite,
+// sans quoi le tas par défaut de Node ne suffit plus.
+{
+  const json = JSON.stringify(D).replace(/</g, '\\u003c');
+  const page = fs.readFileSync('gabarit.html', 'utf8').replace('/*KATEX*/', () => css).replace('"__DONNEES__"', () => json);
+  fs.writeFileSync('construction/atlas.html', page);
+  console.log(`Page écrite : construction/atlas.html (${(page.length / 1024).toFixed(0)} Ko)`);
+}
 
 // Version autonome pour l'hébergement (GitHub Pages) : document HTML complet.
 // atlas.html sert à l'aperçu dans Claude, qui ajoute lui-même l'enveloppe du document.
-const coupure = page.indexOf('<div class="app">');
-const tete = page.slice(0, coupure), corps = page.slice(coupure);
 
 // ---- Site publié : découpage par branche.
 // La page ne contient que les graphes, le lexique et les textes de l'édifice ; les textes des fiches
@@ -228,7 +229,7 @@ const CHAMPS = ['texte', 'enonce', 'preuve', 'remarques'];
 fs.rmSync('site/branches', { recursive: true, force: true });
 fs.mkdirSync('site/branches', { recursive: true });
 fs.mkdirSync('site/fonts', { recursive: true });
-const Dsite = JSON.parse(JSON.stringify(D));
+const Dsite = structuredClone(D);
 Dsite.aCharger = {};
 for (const gid of Object.keys(D.graphes)) {
   if (gid === D.racine) continue;
