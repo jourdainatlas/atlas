@@ -893,3 +893,14 @@ Farah, Karagila, « Hilbert spaces without the Countable Axiom of Choice », Mü
 7.0.4 (cités avant Brunner-Svozil-Baaz 1996, dont une affirmation sur Riesz est réfutée) ; Fremlin, Measure Theory
 5, 561I ; Arrondo, arXiv:2009.02837 ; Hodges 1976 et 1979. Relu deux fois (géométrie algébrique : trois fautes de
 justification ; analyse : hypothèse de complétude superflue mais citée, σ-finitude omise, deux citations).
+
+## 60. Disposition : départage par la largeur réelle (30 octobre 2026)
+
+Signalé par l'auteur : ar-topo faisait 1745 px de large, tr-ultrafiltres (source isolée) descendant au rang le plus
+bas, loin à droite, avec une longue flèche horizontale vers tr-tychonov. Dans `disposer`, les trois rangements
+candidats (au plus tôt, au plus tard, médian) étaient départagés par le seul nombre de croisements, puis par
+l'ordre de la liste (au plus tôt). Désormais, parmi ceux de moindre nombre de croisements, on calcule la
+disposition complète de chacun (fonction `placer`) et l'on garde la moins large, puis celle aux arêtes les plus
+courtes. Aucun nombre de croisements ne change ; aucune largeur n'augmente ; ar-topo passe à 990 px, et 21 autres
+graphes rétrécissent (ac-modules 926 → 690, fourier 1030 → 837, rel 779 → 675, top 840 → 718…). Le graphe de
+l'édifice garde le seul rangement au plus tôt (le rang affiché y est le plus long chemin).

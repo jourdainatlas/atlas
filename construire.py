@@ -319,7 +319,8 @@ def disposer(gid):
 
     # Autres rangements possibles (29 oct. 2026) : au plus tard, et un rangement qui raccourcit les
     # arêtes (chaque nœud libre va à la médiane des rangs que lui imposent ses voisins). On garde celui
-    # qui donne le moins de croisements ; à égalité, le rangement au plus tôt d'origine.
+    # qui donne le moins de croisements ; à égalité, celui dont les arêtes sont les plus courtes, puis le
+    # rangement au plus tôt d'origine.
     def fixe(v): return v.startswith('↑')
     def bornes(rg, v):
         lo = max([0 if fixe(v) else plancher] + [rg[p] + 1 for p in r.predecessors(v)])
@@ -347,100 +348,113 @@ def disposer(gid):
     # Dans le graphe de l'édifice, le rang affiché est la longueur du plus long chemin depuis la logique
     # (texte d'accueil) : seul le rangement au plus tôt le respecte.
     if gid == racines[0]['graphe']: candidats = [rang]
-    meilleur_essai = None
-    for k_, rg in enumerate(candidats):
-        e_ = essai(rg)
-        if meilleur_essai is None or e_[-1] < meilleur_essai[-1]: meilleur_essai = e_
-    rang, couches, chaines, nmax, voisins_bas, voisins_haut, ordre, score = meilleur_essai
-
-    dims = {}
-    for v in rang:
-        if v.startswith('·'): dims[v] = (0, 0)
-        elif v.startswith('↑'): dims[v] = taille(noeuds[v[1:]], entree=True)
-        else: dims[v] = taille(noeuds[v])
-    def sep(a, b):
-        fict = a.startswith('·') or b.startswith('·')
-        return (dims[a][0] + dims[b][0]) / 2 + (SEP_FICTIF if fict else SEP_NOEUDS)
-    x = {}
-    for t, c in ordre.items():
-        cur = 0
-        for i, v in enumerate(c):
-            if i: cur += sep(c[i - 1], v)
-            x[v] = cur
-    for it in range(60):
-        rng = range(nmax + 1) if it % 2 == 0 else range(nmax, -1, -1)
-        for t in rng:
-            c = ordre[t]
-            voulu = []
-            for v in c:
-                vs = voisins_bas[v] + voisins_haut[v]
-                poids = [3 if (w.startswith('·') or v.startswith('·')) else 1 for w in vs]
-                # Une feuille posée au-dessus (nœud sans successeur) suit son parent sans l'attirer :
-                # sinon chaque embranchement décale la chaîne principale, et les décalages s'accumulent.
-                poids = [p * (0.2 if (w in voisins_haut[v] and not voisins_haut[w] and len(vs) > 1) else 1)
-                         for w, p in zip(vs, poids)]
-                voulu.append(sum(x[w] * p for w, p in zip(vs, poids)) / sum(poids) if vs else x[v])
-            # placement au plus près des positions voulues, ordre et écarts respectés
-            g_ = list(voulu)
-            for i in range(1, len(c)): g_[i] = max(g_[i], g_[i - 1] + sep(c[i - 1], c[i]))
-            d_ = list(voulu)
-            for i in range(len(c) - 2, -1, -1): d_[i] = min(d_[i], d_[i + 1] - sep(c[i], c[i + 1]))
-            moy = [(a + b) / 2 for a, b in zip(g_, d_)]
-            for i in range(1, len(c)): moy[i] = max(moy[i], moy[i - 1] + sep(c[i - 1], c[i]))
-            for i, v in enumerate(c): x[v] = moy[i]
-    # Redressement : une couche réduite à un seul nœud, de parent unique, est alignée sur ce parent,
-    # et tout ce qui est au-dessus suit. Toute arête qui traverse la couche passe par ce nœud
-    # (les arêtes longues y auraient un nœud fictif), donc aucune autre arête n'est déformée.
-    for t in range(1, nmax + 1):
-        c = ordre[t]
-        if len(c) == 1 and len(voisins_bas[c[0]]) == 1:
-            d = x[voisins_bas[c[0]][0]] - x[c[0]]
-            for v in x:
-                if rang[v] >= t: x[v] += d
-    # Centrage de l'édifice (demande de l'auteur, 28 oct. 2026) : chaque couche est translatée pour que
-    # le milieu de ses bulles soit à l'aplomb de la source (la logique). Une translation d'une couche
-    # entière, nœuds fictifs compris, garde l'ordre dans chaque couche, donc le nombre de croisements ;
-    # la vérification « aucune arête ne traverse un nœud », plus bas, porte sur le tracé obtenu.
-    if gid == racines[0]['graphe']:
-        sources = [v for v in ordre[0] if not v.startswith('·')]
-        axe = (min(x[v] - dims[v][0] / 2 for v in sources) + max(x[v] + dims[v][0] / 2 for v in sources)) / 2
+    def longueur(rg): return sum(rg[b] - rg[a] - 1 for a, b in r.edges())
+    def placer(e_):
+        rang, couches, chaines, nmax, voisins_bas, voisins_haut, ordre, score = e_
+        dims = {}
+        for v in rang:
+            if v.startswith('·'): dims[v] = (0, 0)
+            elif v.startswith('↑'): dims[v] = taille(noeuds[v[1:]], entree=True)
+            else: dims[v] = taille(noeuds[v])
+        def sep(a, b):
+            fict = a.startswith('·') or b.startswith('·')
+            return (dims[a][0] + dims[b][0]) / 2 + (SEP_FICTIF if fict else SEP_NOEUDS)
+        x = {}
+        for t, c in ordre.items():
+            cur = 0
+            for i, v in enumerate(c):
+                if i: cur += sep(c[i - 1], v)
+                x[v] = cur
+        for it in range(60):
+            rng = range(nmax + 1) if it % 2 == 0 else range(nmax, -1, -1)
+            for t in rng:
+                c = ordre[t]
+                voulu = []
+                for v in c:
+                    vs = voisins_bas[v] + voisins_haut[v]
+                    poids = [3 if (w.startswith('·') or v.startswith('·')) else 1 for w in vs]
+                    # Une feuille posée au-dessus (nœud sans successeur) suit son parent sans l'attirer :
+                    # sinon chaque embranchement décale la chaîne principale, et les décalages s'accumulent.
+                    poids = [p * (0.2 if (w in voisins_haut[v] and not voisins_haut[w] and len(vs) > 1) else 1)
+                             for w, p in zip(vs, poids)]
+                    voulu.append(sum(x[w] * p for w, p in zip(vs, poids)) / sum(poids) if vs else x[v])
+                # placement au plus près des positions voulues, ordre et écarts respectés
+                g_ = list(voulu)
+                for i in range(1, len(c)): g_[i] = max(g_[i], g_[i - 1] + sep(c[i - 1], c[i]))
+                d_ = list(voulu)
+                for i in range(len(c) - 2, -1, -1): d_[i] = min(d_[i], d_[i + 1] - sep(c[i], c[i + 1]))
+                moy = [(a + b) / 2 for a, b in zip(g_, d_)]
+                for i in range(1, len(c)): moy[i] = max(moy[i], moy[i - 1] + sep(c[i - 1], c[i]))
+                for i, v in enumerate(c): x[v] = moy[i]
+        # Redressement : une couche réduite à un seul nœud, de parent unique, est alignée sur ce parent,
+        # et tout ce qui est au-dessus suit. Toute arête qui traverse la couche passe par ce nœud
+        # (les arêtes longues y auraient un nœud fictif), donc aucune autre arête n'est déformée.
         for t in range(1, nmax + 1):
-            vrais = [v for v in ordre[t] if not v.startswith('·')]
-            if not vrais: continue
-            milieu = (min(x[v] - dims[v][0] / 2 for v in vrais) + max(x[v] + dims[v][0] / 2 for v in vrais)) / 2
-            for v in ordre[t]: x[v] += axe - milieu
-    # Routage des arêtes en pistes (28 oct. 2026, demande de l'auteur : pouvoir suivre chaque flèche).
-    # 1. Redressement des arêtes longues : leurs nœuds fictifs sont alignés à la verticale aussi longtemps
-    #    que les voisins de couche le permettent (ordre et écarts gardés, donc croisements inchangés).
-    # 2. Ports : chaque arête part d'un point distinct du haut de sa bulle et arrive en un point distinct
-    #    du bas de sa cible, rangés de gauche à droite comme leurs destinations.
-    # 3. Pistes : entre deux couches, chaque changement d'abscisse se fait sur une horizontale qui lui
-    #    est propre (coins arrondis) ; deux horizontales qui se recouvrent sont sur deux pistes
-    #    différentes, ordonnées pour ne pas se croiser sans nécessité ; la bande s'élargit au besoin.
-    #    Deux arêtes ne se superposent donc jamais : elles ne peuvent que se croiser à angle droit.
-    pos = {v: i for t_ in range(nmax + 1) for i, v in enumerate(ordre[t_])}
-    def intervalle(f):
-        c = ordre[rang[f]]; i = pos[f]
-        lo = x[c[i - 1]] + sep(c[i - 1], f) if i > 0 else -1e9
-        hi = x[c[i + 1]] - sep(f, c[i + 1]) if i < len(c) - 1 else 1e9
-        return lo, hi
-    for _ in range(4):
-        for ch in sorted(chaines, key=lambda ch: -len(ch)):
-            fs = ch[1:-1]
-            if not fs: continue
-            a_, b_ = ch[0], ch[-1]
-            i, prec = 0, x[a_]
-            while i < len(fs):
-                lo, hi = intervalle(fs[i]); j = i + 1
-                while j < len(fs):
-                    l2, h2 = intervalle(fs[j])
-                    if max(lo, l2) <= min(hi, h2): lo, hi = max(lo, l2), min(hi, h2); j += 1
-                    else: break
-                if i == 0 and lo <= x[a_] <= hi: val = x[a_]
-                elif j == len(fs) and lo <= x[b_] <= hi: val = x[b_]
-                else: val = min(max(prec, lo), hi)
-                for k in range(i, j): x[fs[k]] = val
-                prec, i = val, j
+            c = ordre[t]
+            if len(c) == 1 and len(voisins_bas[c[0]]) == 1:
+                d = x[voisins_bas[c[0]][0]] - x[c[0]]
+                for v in x:
+                    if rang[v] >= t: x[v] += d
+        # Centrage de l'édifice (demande de l'auteur, 28 oct. 2026) : chaque couche est translatée pour que
+        # le milieu de ses bulles soit à l'aplomb de la source (la logique). Une translation d'une couche
+        # entière, nœuds fictifs compris, garde l'ordre dans chaque couche, donc le nombre de croisements ;
+        # la vérification « aucune arête ne traverse un nœud », plus bas, porte sur le tracé obtenu.
+        if gid == racines[0]['graphe']:
+            sources = [v for v in ordre[0] if not v.startswith('·')]
+            axe = (min(x[v] - dims[v][0] / 2 for v in sources) + max(x[v] + dims[v][0] / 2 for v in sources)) / 2
+            for t in range(1, nmax + 1):
+                vrais = [v for v in ordre[t] if not v.startswith('·')]
+                if not vrais: continue
+                milieu = (min(x[v] - dims[v][0] / 2 for v in vrais) + max(x[v] + dims[v][0] / 2 for v in vrais)) / 2
+                for v in ordre[t]: x[v] += axe - milieu
+        # Routage des arêtes en pistes (28 oct. 2026, demande de l'auteur : pouvoir suivre chaque flèche).
+        # 1. Redressement des arêtes longues : leurs nœuds fictifs sont alignés à la verticale aussi longtemps
+        #    que les voisins de couche le permettent (ordre et écarts gardés, donc croisements inchangés).
+        # 2. Ports : chaque arête part d'un point distinct du haut de sa bulle et arrive en un point distinct
+        #    du bas de sa cible, rangés de gauche à droite comme leurs destinations.
+        # 3. Pistes : entre deux couches, chaque changement d'abscisse se fait sur une horizontale qui lui
+        #    est propre (coins arrondis) ; deux horizontales qui se recouvrent sont sur deux pistes
+        #    différentes, ordonnées pour ne pas se croiser sans nécessité ; la bande s'élargit au besoin.
+        #    Deux arêtes ne se superposent donc jamais : elles ne peuvent que se croiser à angle droit.
+        pos = {v: i for t_ in range(nmax + 1) for i, v in enumerate(ordre[t_])}
+        def intervalle(f):
+            c = ordre[rang[f]]; i = pos[f]
+            lo = x[c[i - 1]] + sep(c[i - 1], f) if i > 0 else -1e9
+            hi = x[c[i + 1]] - sep(f, c[i + 1]) if i < len(c) - 1 else 1e9
+            return lo, hi
+        for _ in range(4):
+            for ch in sorted(chaines, key=lambda ch: -len(ch)):
+                fs = ch[1:-1]
+                if not fs: continue
+                a_, b_ = ch[0], ch[-1]
+                i, prec = 0, x[a_]
+                while i < len(fs):
+                    lo, hi = intervalle(fs[i]); j = i + 1
+                    while j < len(fs):
+                        l2, h2 = intervalle(fs[j])
+                        if max(lo, l2) <= min(hi, h2): lo, hi = max(lo, l2), min(hi, h2); j += 1
+                        else: break
+                    if i == 0 and lo <= x[a_] <= hi: val = x[a_]
+                    elif j == len(fs) and lo <= x[b_] <= hi: val = x[b_]
+                    else: val = min(max(prec, lo), hi)
+                    for k in range(i, j): x[fs[k]] = val
+                    prec, i = val, j
+        return rang, couches, chaines, nmax, voisins_bas, voisins_haut, ordre, score, dims, sep, x, pos, intervalle
+    # Parmi les rangements de moindre nombre de croisements, on garde celui dont la disposition finale est
+    # la moins large, puis celui dont les arêtes sont les plus courtes (moins de nœuds fictifs), puis le
+    # rangement au plus tôt (30 oct. 2026 : une source isolée descendait au rang le plus bas et étirait le
+    # graphe ar-topo sur 1745 px).
+    essais = [(essai(rg), longueur(rg), k_) for k_, rg in enumerate(candidats)]
+    mini = min(e_[-1] for e_, _, _ in essais)
+    meilleure_cle, place = None, None
+    for e_, lg, k_ in essais:
+        if e_[-1] != mini: continue
+        pl = placer(e_)
+        xs, ds = pl[10], pl[8]
+        larg = max(xs[v] + ds[v][0] / 2 for v in xs) - min(xs[v] - ds[v][0] / 2 for v in xs)
+        cle = (round(larg), lg, k_)
+        if meilleure_cle is None or cle < meilleure_cle: meilleure_cle, place = cle, pl
+    rang, couches, chaines, nmax, voisins_bas, voisins_haut, ordre, score, dims, sep, x, pos, intervalle = place
     xmin = min(x[v] - dims[v][0] / 2 for v in x)
     xmax = max(x[v] + dims[v][0] / 2 for v in x)
     decal = MARGE - xmin
