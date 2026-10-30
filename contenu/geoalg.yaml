@@ -2,7 +2,11 @@
 # Deux volets : le spectre d'un anneau commutatif et sa topologie de Zariski, puis les ensembles
 # algébriques de K^n et le Nullstellensatz, qui relie les deux ; sa forme faible repose sur le lemme de
 # Zariski, démontré par l'algèbre linéaire (28 oct. 2026). Les anneaux sont commutatifs.
-# Les énoncés qui demandent un idéal maximal ou premier reposent sur le lemme de Zorn et sont marqués ⋆.
+# Les énoncés qui demandent un idéal maximal ou premier reposent sur le lemme de Zorn et sont marqués ⋆ pour
+# un anneau quelconque ; pour un anneau de polynômes en un nombre fini d'indéterminées sur un corps et ses
+# quotients, ga-krull-polynomes
+# (30 oct. 2026) fournit l'idéal maximal sans choix, si bien que le Nullstellensatz, faible et fort, et le
+# dictionnaire sont démontrés dans ZF.
 
 graphe: geoalg
 titre: Géométrie algébrique
@@ -11,9 +15,9 @@ conteneur: geoalg
 entrees:
   alg: [ga-spectre]
   top: [ga-zariski]
-  z: [ga-zeros, ga-lemme-zariski]
+  z: [ga-zeros, ga-lemme-zariski, ga-krull-polynomes]
   ordin: [ga-krull]
-  alglin: [ga-lemme-zariski]
+  alglin: [ga-lemme-zariski, ga-krull-polynomes]
   ac: [ga-zeros]
 
 noeuds:
@@ -59,7 +63,7 @@ noeuds:
     nature: proposition
     titre: Adhérence d'un point, points fermés
     choix: |
-      Le sens « point fermé ⇒ idéal maximal » utilise le théorème de Krull, donc le lemme de Zorn.
+      Pour un anneau quelconque, le sens « point fermé ⇒ idéal maximal » de (ii) utilise le théorème de Krull, donc le lemme de Zorn, et il ne se démontre pas dans $\mathsf{ZF}$ seul. W. Hodges a construit un modèle de $\mathsf{ZF}$ où un anneau principal $A$ n'a aucun idéal maximal (« Läuchli's algebraic closure of Q », *Math. Proc. Cambridge Philos. Soc.* 79, 1976, p. 289-297, corollaire 10) ; ses idéaux premiers non nuls seraient maximaux ({{ac-principaux|Principal ⇒ factoriel}}, (i)), donc $\operatorname{Spec} A = \{(0)\}$, et $(0)$ y est un point fermé sans être maximal, $A$ n'étant pas un corps. Pour un quotient $A$ d'un anneau de polynômes en un nombre fini d'indéterminées sur un corps, ce sens n'utilise aucun choix, comme on le verra : l'idéal $J$ de la preuve est contenu dans un idéal maximal de $A$ par {{ga-krull-polynomes|Krull sans choix}}, (ii), qui remplace le théorème de Krull ; le cas de $K[X_1, \dots, X_n]$ lui-même est traité au nœud {{ga-correspondance|Dictionnaire}}.
     enonce: |
       (i) L'adhérence de $\{\mathfrak p\}$ dans $\lex{spectre-premier}{\operatorname{Spec}} A$ est $\lex{partie-v-spectre}{V}(\mathfrak p)$.
 
@@ -92,13 +96,79 @@ noeuds:
       L'ensemble $\mathcal E$ des idéaux $J \neq A$ contenant $I$, ordonné par inclusion, contient $I$. Il est [[inductif-ordre|inductif]] : la réunion d'une chaîne non vide d'idéaux est un idéal, puisque deux éléments de la réunion appartiennent à un même membre de la chaîne, et elle ne contient pas $1$, puisqu'aucun membre ne le contient ({{a-ideal|Idéal}}) ; la chaîne vide est majorée par $I$.
 
       Le [[lemme-zorn|lemme de Zorn]] ({{o-zorn|Lemme de Zorn}}) fournit un élément maximal de $\mathcal E$, qui est un idéal maximal. Si $A \neq \{0\}$, on l'applique à $I = \{0\}$ ; si $x$ n'est pas inversible, on l'applique à $xA$, qui est différent de $A$.
+    remarques:
+      - |
+        Le choix ne sert ici qu'à traiter un anneau quelconque. Pour un anneau de polynômes $K[X_1, \dots, X_n]$ sur un corps et pour ses quotients, qui sont les anneaux du Nullstellensatz, le nœud {{ga-krull-polynomes|Krull sans choix}} construit un idéal maximal sans aucune forme du choix.
+
+        Le caractère noethérien de ces anneaux ({{ac-hilbert|Base de Hilbert}}) ne suffit pas à lui seul. Un anneau principal est noethérien ({{ac-noetheriens|Anneaux noethériens}}, (iii)), et pourtant W. Hodges a construit un modèle de $\mathsf{ZF}$ où un anneau principal n'a aucun idéal maximal (« Läuchli's algebraic closure of Q », *Math. Proc. Cambridge Philos. Soc.* 79, 1976, p. 289-297, corollaire 10) : pour les anneaux noethériens, $\mathsf{ZF}$ seul ne suffit pas, alors que le choix dépendant suffit, par la condition maximale de {{ac-noetheriens|Anneaux noethériens}}, (ii).
+
+  - id: ga-krull-polynomes
+    etiquette: Krull sans choix
+    nature: théorème
+    titre: Idéaux maximaux d'un anneau de polynômes sur un corps
+    texte: |
+      Soit $K$ un [[corps]]. Pour $n \geqslant 1$, on écrit $\lex{anneau-polynomes}{K[X_1, \dots, X_n]} = K[X'][X_n]$, avec $K[X'] = K[X_1, \dots, X_{n-1}]$ ({{pol-evaluation|Évaluation}}, (iii)) ; le **degré en $X_n$** d'un polynôme est son degré comme polynôme en $X_n$ à coefficients dans $K[X']$. Pour $n = 0$, l'anneau $K[X_1, \dots, X_0]$ est $K$.
+    enonce: |
+      (i) Pour tout $n \in \lex{ensemble-entiers-naturels}{\mathbb N}$, tout idéal $J \neq K[X_1, \dots, X_n]$ est contenu dans un [[ideal-maximal|idéal maximal]].
+
+      (ii) Soit $I$ un idéal de $K[X_1, \dots, X_n]$ et $\pi$ la surjection canonique sur $A = K[X_1, \dots, X_n]/I$. Pour tout idéal maximal $\mathfrak M \supset I$, $\pi(\mathfrak M)$ est un idéal maximal de $A$, et $\pi^{-1}(\pi(\mathfrak M)) = \mathfrak M$. Par suite, tout idéal $J \neq A$ de $A$ est contenu dans un idéal maximal de $A$.
+    preuve: |
+      (i) Par récurrence sur $n$. Pour $n = 0$, le seul idéal de $K$ différent de $K$ est $\{0\}$ ({{a-corps|Corps}}, (ii)), et il est maximal. Soit $n \geqslant 1$ et $J \neq K[X_1, \dots, X_n]$, que l'on note $K[X]$.
+
+      *Un élément de $J$ unitaire en $X_n$ à une constante près.* Si $J = \{0\}$, on le remplace par l'idéal $X_nK[X]$, qui le contient et ne contient pas $1$, puisque ses éléments $X_nQ$ ont un coefficient nul en degré $0$ en $X_n$. On peut donc prendre $f \in J$ non nul.
+
+      En développant les coefficients de $f$ en $X_n$, puis ceux-ci, par récurrence, on écrit $f = \sum_{e \in E} c_e X_1^{e_1} \cdots X_n^{e_n}$, où $E \subset \mathbb N^n$ est fini et non vide et les $c_e \in K$ sont non nuls. Soit $r$ un entier strictement supérieur à tous les $e_i$, et
+      $$w(e) = e_n + e_1r + e_2r^2 + \cdots + e_{n-1}r^{n-1}.$$
+
+      Deux éléments distincts de $E$ ont des poids distincts. En effet, $w(e)$ s'écrit en base $r$ avec les chiffres $e_n, e_1, \dots, e_{n-1}$, tous strictement inférieurs à $r$. Si $r^k$ est la plus haute puissance dont les chiffres diffèrent, l'écart sur ce chiffre contribue au moins $r^k$ à la différence des poids, et les écarts sur les chiffres inférieurs au plus $(r - 1)(1 + r + \cdots + r^{k-1}) = r^k - 1$.
+
+      Soit $\varphi$ le morphisme d'anneaux de $K[X]$ dans lui-même qui fixe $K$, envoie $X_i$ sur $X_i + X_n^{r^i}$ pour $i < n$, et $X_n$ sur $X_n$ ({{pol-evaluation|Évaluation}}, (iii)), et $\psi$ celui qui envoie $X_i$ sur $X_i - X_n^{r^i}$. Les composées $\psi \circ \varphi$ et $\varphi \circ \psi$ fixent $K$ et chaque $X_i$, donc sont l'identité par unicité : $\varphi$ est un automorphisme.
+
+      Comme polynôme en $X_n$ à coefficients dans $K[X']$, $X_i + X_n^{r^i}$ est unitaire de degré $r^i$. L'image $\varphi(X_1^{e_1} \cdots X_n^{e_n})$ est donc un produit de polynômes unitaires, unitaire de degré $w(e)$ ({{pol-anneau|Anneau A[X]}}, (ii)). Si $e^*$ est l'élément de $E$ de plus grand poids $N = w(e^*)$, on obtient
+      $$\varphi(f) = c\,X_n^N + \sum_{k < N} g_k X_n^k,$$
+      avec $c = c_{e^*} \neq 0$ et $g_k \in K[X']$.
+
+      L'idéal $\varphi(J)$ est différent de $K[X]$ et contient $\varphi(f)$. S'il est contenu dans un idéal maximal $\mathfrak M$, alors $J \subset \varphi^{-1}(\mathfrak M)$, idéal maximal, puisque $\varphi$ induit un isomorphisme de $K[X]/\varphi^{-1}(\mathfrak M)$ sur le corps $K[X]/\mathfrak M$ ({{a-anneau-quotient|Anneau quotient}}, {{a-premier-maximal|Idéaux premiers, maximaux}}, (ii)). On peut donc supposer que $J$ contient un polynôme $f = cX_n^N + \sum_{k<N} g_kX_n^k$, avec $c \in K^\times$.
+
+      *Une variable de moins.* L'ensemble $J' = J \cap K[X']$ est un idéal de $K[X']$ qui ne contient pas $1$ ; par hypothèse de récurrence, il est contenu dans un idéal maximal $\mathfrak m'$ de $K[X']$. Soit $Q$ l'idéal de $K[X]$ engendré par $J$ et $\mathfrak m'$, formé des sommes $j + \sum_i a_ih_i$ avec $j \in J$, $a_i \in \mathfrak m'$ et $h_i \in K[X]$.
+
+      Le quotient $M = K[X]/J$ est un $K[X']$-[[module|module]] ({{a-module|Module}}). La division euclidienne par $c^{-1}f$, unitaire en $X_n$ ({{pol-division|Division des polynômes}}, (i)), écrit tout $P \in K[X]$ comme un multiple de $f$ plus un polynôme de degré en $X_n$ inférieur à $N$ : $M$ est engendré par les classes $u_k$ de $X_n^k$, $0 \leqslant k < N$.
+
+      *L'idéal $Q$ ne contient pas $1$.* Montrons d'abord, par récurrence sur $m$, le fait suivant, pour un anneau $R$, un idéal $\mathfrak a$ de $R$ et un $R$-module $V = Rv_1 + \cdots + Rv_m$ : si tout élément de $V$ s'écrit $\sum_j b_jy_j$ avec $b_j \in \mathfrak a$ et $y_j \in V$, il existe $a \in \mathfrak a$ tel que $(1 - a)V = \{0\}$. Pour $m = 0$, $V = \{0\}$ et $a = 0$ convient.
+
+      Pour $m \geqslant 1$, le module quotient $V/Rv_m$ est engendré par $m - 1$ éléments et vérifie la même hypothèse : il existe $b \in \mathfrak a$ tel que $(1 - b)V \subset Rv_m$. En développant sur les $v_l$, on écrit $v_m = \sum_l a_lv_l$ avec des $a_l \in \mathfrak a$, d'où $(1 - b)v_m = \sum_l a_l(1 - b)v_l = c'v_m$ avec $c' \in \mathfrak a$, puisque chaque $(1 - b)v_l$ est dans $Rv_m$.
+
+      Ainsi $(1 - b - c')v_m = 0$, puis $(1 - b - c')(1 - b)V \subset (1 - b - c')Rv_m = \{0\}$, et $(1 - b - c')(1 - b)$ s'écrit $1 - a$ avec $a \in \mathfrak a$.
+
+      Si l'on avait $1 \in Q$, tout $P \in K[X]$ s'écrirait $j + \sum_i a_ih_i$, et la classe de $P$ dans $M$ serait $\sum_i a_i\bar h_i$, avec $a_i \in \mathfrak m'$. Le fait précédent, pour $R = K[X']$, $\mathfrak a = \mathfrak m'$, $V = M$ et les générateurs $u_0, \dots, u_{N-1}$, donnerait $a \in \mathfrak m'$ avec $(1 - a)\bar 1 = 0$, c'est-à-dire $1 - a \in J \cap K[X'] = J' \subset \mathfrak m'$, puis $1 \in \mathfrak m'$, ce qui est exclu.
+
+      *Un idéal maximal contenant $Q$.* L'anneau $B = K[X]/Q$ n'est pas nul, et l'action de $a \in K[X']$ par multiplication n'y dépend que de la classe de $a$ modulo $\mathfrak m'$, puisque $\mathfrak m' \subset Q$ : $B$ est un espace vectoriel sur le corps $F = K[X']/\mathfrak m'$ ({{a-premier-maximal|Idéaux premiers, maximaux}}, (ii)), engendré par les classes de $1, X_n, \dots, X_n^{N-1}$, donc de dimension finie sur $F$, au plus $N$ ({{v-dimension|Dimension}}, (ii)), et ses idéaux en sont des sous-espaces.
+
+      Les dimensions sur $F$ des idéaux de $B$ différents de $B$ forment une partie de $\{0, \dots, N - 1\}$ ({{v-dimension|Dimension}}, (iii)), non vide puisqu'elle contient celle de $\{0\}$. Soit $\mathfrak n$ un tel idéal de dimension maximale. Un idéal $\mathfrak n' \neq B$ qui contiendrait strictement $\mathfrak n$ serait de dimension strictement plus grande ({{v-dimension|Dimension}}, (iii)) : $\mathfrak n$ est un idéal maximal de $B$.
+
+      L'image réciproque $\mathfrak M$ de $\mathfrak n$ dans $K[X]$ est le noyau de la surjection composée $K[X] \to B \to B/\mathfrak n$, à valeurs dans un corps : $\mathfrak M$ est un idéal maximal ({{a-anneau-quotient|Anneau quotient}}, {{a-premier-maximal|Idéaux premiers, maximaux}}, (ii)), et il contient $Q \supset J$.
+
+      (ii) Comme $\pi$ est surjective, $\pi(\mathfrak M)$ est un idéal de $A$ : $\pi(m)\pi(x) = \pi(mx)$. Un élément $x$ tel que $\pi(x) \in \pi(\mathfrak M)$ s'écrit $m + i$ avec $m \in \mathfrak M$ et $i \in I \subset \mathfrak M$ : $\pi^{-1}(\pi(\mathfrak M)) = \mathfrak M$, et $\pi(\mathfrak M) \neq A$ puisque $1 \notin \mathfrak M$.
+
+      Si $\mathfrak N \neq A$ est un idéal qui contient $\pi(\mathfrak M)$, son image réciproque est un idéal qui contient $\mathfrak M$ et ne contient pas $1$ ; elle vaut $\mathfrak M$, et $\mathfrak N = \pi(\pi^{-1}(\mathfrak N)) = \pi(\mathfrak M)$ : $\pi(\mathfrak M)$ est maximal.
+
+      Enfin, si $J \neq A$, l'idéal $\pi^{-1}(J)$ contient $I$ et ne contient pas $1$ ; par (i), il est contenu dans un idéal maximal $\mathfrak M$, et $J = \pi(\pi^{-1}(J)) \subset \pi(\mathfrak M)$.
+    remarques:
+      - |
+        La démonstration n'utilise aucune forme de l'axiome du choix. Elle ne choisit qu'un nombre fini d'objets, dont l'existence est établie : un polynôme non nul $f$, un idéal maximal de $K[X']$, un idéal de dimension maximale parmi des sous-espaces d'un espace de dimension finie. La récurrence porte sur l'énoncé « pour tout idéal $J \neq K[X_1, \dots, X_n]$, il existe un idéal maximal $\mathfrak M \supset J$ », et l'hypothèse de récurrence n'est appliquée qu'à l'idéal $J'$ ; on ne choisit jamais une infinité d'objets à la fois, ce que fait la preuve générale de {{ga-krull|Krull}} en invoquant le lemme de Zorn.
+      - |
+        Le changement de variables $X_i \mapsto X_i + X_n^{r^i}$ est attribué à Nagata. Il fait de $K[X]/J$ un module engendré par un nombre fini d'éléments sur $K[X']$, et c'est ce qui permet de remonter un idéal maximal de $K[X']$.
+
+        Pour $J = (X_1X_2 - 1)$ dans $K[X_1, X_2]$, on a $r = 2$ et $\varphi(X_1X_2 - 1) = X_2^3 + X_1X_2 - 1$, unitaire en $X_2$. Sans changement de variables, la remontée peut échouer : l'idéal maximal $(X_1)$ de $K[X_1]$ contient $J \cap K[X_1] = \{0\}$, mais $J + (X_1)$ contient $1 = X_1X_2 - (X_1X_2 - 1)$.
+
+        E. Arrondo donne une autre démonstration sans choix, elle aussi par récurrence sur le nombre d'indéterminées, mais par d'autres moyens (ordre lexicographique, résultant, facteur irréductible en une variable) et sans argument de dimension : « The Nullstellensatz without the Axiom of Choice » (arXiv:2009.02837, 2020).
 
   - id: ga-quasi-compact
     etiquette: Quasi-compacité
     nature: théorème
     titre: Le spectre est quasi-compact
     choix: |
-      La démonstration utilise le théorème de Krull, donc le lemme de Zorn.
+      La démonstration utilise le théorème de Krull, donc le lemme de Zorn. Pour un quotient $A$ d'un anneau de polynômes en un nombre fini d'indéterminées sur un corps, elle n'utilise aucun choix, comme on le verra : l'idéal maximal qui contiendrait $J$ est alors fourni par {{ga-krull-polynomes|Krull sans choix}}, (ii), qui remplace le théorème de Krull.
     enonce: |
       Un espace topologique est [[quasi-compact|quasi-compact]] si de tout recouvrement par des ouverts on peut extraire un recouvrement fini. Pour tout anneau commutatif $A$, l'espace $\lex{spectre-premier}{\operatorname{Spec}} A$ est quasi-compact.
     preuve: |
@@ -118,13 +188,15 @@ noeuds:
     nature: théorème
     titre: Radical d'un idéal et intersection des idéaux premiers
     choix: |
-      La démonstration utilise le lemme de Zorn.
+      Pour un anneau quelconque, la démonstration de (i), et donc de (ii), utilise le lemme de Zorn, et (i) ne se démontre pas dans $\mathsf{ZF}$ seul : dans le modèle de Hodges où un anneau principal $A$ n'a pas d'idéal maximal ({{ga-points|Points fermés}}), un élément $a$ non nul et non inversible n'appartient à aucun idéal premier, alors que $1 \notin \sqrt{aA}$. Le point (iii) n'utilise aucun choix, et il rend (i) et (ii) démontrables sans choix pour les quotients d'anneaux de polynômes en un nombre fini d'indéterminées sur un corps.
     texte: |
       Le [[radical-ideal|radical]] d'un idéal $I$ est $\sqrt I = \{x \in A : x^n \in I \text{ pour un } n \in \lex{ensemble-entiers-naturels}{\mathbb N}\}$ ; le radical de $\{0\}$, ensemble des éléments nilpotents, est le **nilradical**. Un idéal est **radical** s'il est égal à son radical.
     enonce: |
       (i) $\sqrt I$ est l'intersection des idéaux premiers qui contiennent $I$ ; c'est donc un idéal.
 
       (ii) $\lex{partie-v-spectre}{V}(I) \subset V(J)$ si et seulement si $\sqrt J \subset \sqrt I$. Les fermés de $\lex{spectre-premier}{\operatorname{Spec}} A$ correspondent ainsi bijectivement aux idéaux radicaux, par $I \mapsto V(I)$.
+
+      (iii) Soit $K$ un corps, $I$ un idéal de $\lex{anneau-polynomes}{K[X_1, \dots, X_n]}$ et $A = K[X_1, \dots, X_n]/I$. Pour tout idéal $J$ de $A$, $\sqrt J$ est l'intersection des idéaux maximaux de $A$ qui contiennent $J$.
     preuve: |
       (i) Si $x^n \in I \subset \mathfrak p$ avec $\mathfrak p$ premier, alors $x \in \mathfrak p$, par récurrence sur $n$.
 
@@ -135,7 +207,21 @@ noeuds:
       Ainsi $x$ n'appartient pas à l'idéal premier $\mathfrak p \supset I$.
 
       (ii) Les idéaux premiers contenant $I$ sont les éléments de $V(I)$. Si $V(I) \subset V(J)$, l'intersection sur $V(J)$ est contenue dans l'intersection sur $V(I)$, soit $\sqrt J \subset \sqrt I$ par (i). Réciproquement, un premier qui contient $I$ contient $\sqrt I \supset \sqrt J \supset J$. Comme $V(I) = V(\sqrt I)$, deux idéaux radicaux distincts ont des fermés distincts.
+
+      (iii) Un idéal maximal est premier ({{a-premier-maximal|Idéaux premiers, maximaux}}, (iii)) : le premier paragraphe de la preuve de (i), qui ne fait aucun choix, montre que $\sqrt J$ est contenu dans l'intersection. Notons $K[X] = K[X_1, \dots, X_n]$ et $\pi : K[X] \to A$ la surjection canonique ; soit $P \in K[X]$ dont la classe $x = \pi(P)$ n'est pas dans $\sqrt J$. L'idéal $J_0 = \pi^{-1}(J)$ contient $I$, et aucune puissance $P^m$ n'y appartient, puisque $x^m \notin J$ ; en particulier $P \neq 0$.
+
+      Dans $K[X][T] = K[X_1, \dots, X_n, T]$, l'idéal $J_1$ engendré par $J_0$ et $1 - TP$ ne contient pas $1$. Sinon, on écrirait
+      $$1 = \sum_k G_k Q_k + H\,(1 - TP)$$
+      avec $Q_k \in J_0$. Évaluons en $T = 1/P$, dans le corps des fractions de l'anneau intègre $K[X]$ ({{a-fractions|Corps des fractions}}, {{pol-anneau|Anneau A[X]}}, (iii)), par la propriété universelle ({{pol-evaluation|Évaluation}}, (i)) : $1 = \sum_k G_k(X, 1/P)\, Q_k$. En multipliant par une puissance $P^N$ assez grande pour chasser les dénominateurs, on obtient $P^N \in J_0$, ce qui est exclu.
+
+      Par {{ga-krull-polynomes|Krull sans choix}}, (i), $J_1$ est contenu dans un idéal maximal $\mathfrak M_1$ de $K[X][T]$. Dans le corps $L = K[X][T]/\mathfrak M_1$, la restriction à $K$ de la surjection canonique est injective ({{a-corps|Corps}}, (iii)), et l'on identifie $K$ à son image, sous-corps de $L$. Alors $L$ est engendré comme $K$-algèbre par les classes des $X_i$ et de $T$, donc de dimension finie sur $K$ ({{ga-lemme-zariski|Lemme de Zariski}}).
+
+      Soit $\mathfrak M = \mathfrak M_1 \cap K[X]$, noyau du morphisme $K[X] \to L$. Son image $D \cong K[X]/\mathfrak M$ ({{a-anneau-quotient|Anneau quotient}}) est un sous-anneau intègre de $L$ qui contient $K$, sous-espace de $L$, donc de dimension finie sur $K$ ({{v-dimension|Dimension}}, (iii)) ; pour $y \neq 0$ dans $D$, la multiplication par $y$ est linéaire et injective de $D$ dans $D$, donc surjective ({{v-rang|Théorème du rang}}), et $y$ est inversible dans $D$. Ainsi $D$ est un corps, et $\mathfrak M$ un idéal maximal ({{a-premier-maximal|Idéaux premiers, maximaux}}, (ii)).
+
+      Il contient $J_0 \supset I$, et pas $P$, sans quoi $1 = TP + (1 - TP)$ serait dans $\mathfrak M_1$. Par {{ga-krull-polynomes|Krull sans choix}}, (ii), $\pi(\mathfrak M)$ est un idéal maximal de $A$, qui contient $\pi(J_0) = J$, et pas $x$, puisque $\pi^{-1}(\pi(\mathfrak M)) = \mathfrak M$.
     remarques:
+      - |
+        L'astuce de la variable supplémentaire $T$, dans (iii), est due à Rabinowitsch (1929). Elle transforme « aucune puissance de $P$ n'est dans $J_0$ » en « un certain idéal ne contient pas $1$ », auquel s'applique l'existence d'idéaux maximaux ; le {{ga-nullstellensatz|Nullstellensatz}} en tirera sa forme forte.
       - |
         Dans $\lex{ensemble-entiers-relatifs}{\mathbb Z}$, le radical de $12\mathbb Z$ est $6\mathbb Z$ : un entier dont une puissance est multiple de $12 = 2^2 \cdot 3$ est multiple de $2$ et de $3$. Les fermés $V(12\mathbb Z)$ et $V(6\mathbb Z)$ sont égaux, réduits aux deux points $2\mathbb Z$ et $3\mathbb Z$ : le spectre ne voit pas les multiplicités.
 
@@ -246,8 +332,6 @@ noeuds:
     etiquette: Nullstellensatz
     nature: théorème
     titre: Théorème des zéros de Hilbert
-    choix: |
-      La seconde assertion de (i), qu'un idéal propre a un zéro, utilise le théorème de Krull, donc le lemme de Zorn ; la forme forte en dépend. La description des idéaux maximaux, elle, n'utilise aucun choix.
     texte: |
       Un corps $K$ est [[corps-algebriquement-clos|algébriquement clos]] si tout polynôme non constant de $\lex{anneau-polynomes}{K[X]}$ a une racine dans $K$. Pour $a \in \lex{n-uplet}{K^n}$, on note $\mathfrak m_a$ l'idéal engendré par $X_1 - a_1, \dots, X_n - a_n$.
     enonce: |
@@ -270,20 +354,18 @@ noeuds:
 
       Ainsi $X_i - a_i \in \mathfrak m$ pour tout $i$, d'où $\mathfrak m_a \subset \mathfrak m$, et $\mathfrak m = \mathfrak m_a$ par maximalité de $\mathfrak m_a$, puisque $\mathfrak m \neq K[X]$.
 
-      Enfin, si $J \neq K[X]$, il est contenu dans un idéal maximal ({{ga-krull|Théorème de Krull}}), de la forme $\mathfrak m_a$, et $a \in Z(J)$.
+      Enfin, si $J \neq K[X]$, il est contenu dans un idéal maximal ({{ga-krull-polynomes|Krull sans choix}}, (i)), de la forme $\mathfrak m_a$, et $a \in Z(J)$.
 
       (ii) Si $P^m \in J$, $P$ s'annule là où $P^m$ s'annule : $\sqrt J \subset I(Z(J))$.
 
-      Réciproquement, soit $P \in I(Z(J))$, non nul. Dans $K[X_1, \dots, X_n, T]$, l'idéal engendré par $J$ et $1 - TP$ n'a pas de zéro, puisqu'en un zéro de $J$, $P$ s'annule et $1 - TP$ vaut $1$. Par (i), cet idéal est l'anneau entier, et l'on écrit
-      $$1 = \sum_k G_k Q_k + H\,(1 - TP)$$
-      avec $Q_k \in J$.
+      Réciproquement, soit $P \in I(Z(J))$. Par (i), un idéal maximal qui contient $J$ est de la forme $\mathfrak m_a$, noyau de l'évaluation en $a$ ; il contient $J$, donc $a \in Z(J)$, puis $P(a) = 0$ et $P \in \mathfrak m_a$.
 
-      Évaluons dans le corps des fractions de $K[X]$ ({{a-fractions|Corps des fractions}}) en $T = 1/P$, par la propriété universelle des polynômes :
-      $$1 = \sum_k G_k(X, 1/P)\, Q_k.$$
-      En multipliant par une puissance $P^N$ assez grande pour chasser les dénominateurs, on obtient $P^N \in J$.
+      Ainsi $P$ appartient à tous les idéaux maximaux qui contiennent $J$, et leur intersection est $\sqrt J$ ({{ga-nilradical|Nilradical}}, (iii), avec $I = \{0\}$).
     remarques:
       - |
-        L'astuce de la variable supplémentaire $T$ est due à Rabinowitsch (1929) : elle ramène la forme forte à la forme faible, en transformant « $P$ s'annule sur $Z(J)$ » en « un certain idéal n'a pas de zéro ».
+        La forme forte se ramène ainsi à la forme faible par l'astuce de Rabinowitsch (1929), mise en œuvre au nœud {{ga-nilradical|Nilradical}}, (iii) : grâce à la variable supplémentaire $T$, un polynôme dont aucune puissance n'est dans $J$ évite un idéal maximal qui contient $J$, c'est-à-dire, par la forme faible, ne s'annule pas en un point de $Z(J)$.
+      - |
+        Aucune forme du choix n'intervient dans ce nœud : l'idéal maximal qui contient un idéal propre est fourni par {{ga-krull-polynomes|Krull sans choix}}, et non par le théorème de Krull général.
       - |
         Le corps {{c|$\mathbb C$}} est algébriquement clos ; c'est le cadre classique de la géométrie algébrique. L'hypothèse est indispensable, comme le montre l'exemple de $X^2 + 1$ sur $\mathbb R$ ({{ga-zeros|Ensembles algébriques}}).
 
@@ -291,8 +373,6 @@ noeuds:
     etiquette: Dictionnaire
     nature: corollaire
     titre: Le dictionnaire entre algèbre et géométrie
-    choix: |
-      Le point (i) repose sur la forme forte du Nullstellensatz ({{ga-nullstellensatz|Nullstellensatz}}, (ii)), et l'identification des idéaux maximaux aux points fermés, dans (ii), sur le sens « point fermé ⇒ idéal maximal » de {{ga-points|Points fermés}}, (ii) : tous deux utilisent le théorème de Krull, donc le [[lemme-zorn|lemme de Zorn]]. La bijection $a \mapsto \mathfrak m_a$ elle-même n'en fait aucun, la description des idéaux maximaux par la forme faible étant sans choix.
     enonce: |
       Soit $K$ algébriquement clos.
 
@@ -302,7 +382,9 @@ noeuds:
     preuve: |
       (i) Si $J$ est radical, $I(Z(J)) = \sqrt J = J$ par le Nullstellensatz ; si $Y$ est algébrique, $Z(I(Y)) = Y$ ({{ga-zeros|Ensembles algébriques}}). Les deux applications renversent l'inclusion par définition.
 
-      (ii) La forme faible du Nullstellensatz donne la surjectivité ; $\mathfrak m_a = \mathfrak m_b$ entraîne $b \in Z(\mathfrak m_a) = \{a\}$, d'où l'injectivité. Les idéaux maximaux sont les points fermés ({{ga-points|Points fermés}}). Enfin $a \in Z(J)$ signifie que $J$ est contenu dans le noyau de l'évaluation en $a$, qui est $\mathfrak m_a$.
+      (ii) La forme faible du Nullstellensatz donne la surjectivité ; $\mathfrak m_a = \mathfrak m_b$ entraîne $b \in Z(\mathfrak m_a) = \{a\}$, d'où l'injectivité. Un idéal maximal est un point fermé ({{ga-points|Points fermés}}, (ii), sens direct, sans choix). Réciproquement, soit $\mathfrak p$ un point fermé de $\lex{spectre-premier}{\operatorname{Spec}} K[X]$ ; s'il n'était pas maximal, il serait strictement contenu dans un idéal $J \neq K[X]$, lui-même contenu dans un idéal maximal $\mathfrak M$ ({{ga-krull-polynomes|Krull sans choix}}, (i)), qui est premier ({{a-premier-maximal|Idéaux premiers, maximaux}}, (iii)) et différent de $\mathfrak p$ : on aurait $V(\mathfrak p) \neq \{\mathfrak p\}$, alors que $V(\mathfrak p)$ est l'adhérence de $\mathfrak p$ ({{ga-points|Points fermés}}, (i)). Ce sens n'utilise donc aucun choix.
+
+      Enfin $a \in Z(J)$ signifie que $J$ est contenu dans le noyau de l'évaluation en $a$, qui est $\mathfrak m_a$.
     remarques:
       - |
         Ce dictionnaire est la raison d'être du spectre : il identifie l'espace géométrique $K^n$ aux points fermés de $\operatorname{Spec} K[X]$, et chaque ensemble algébrique à un fermé de Zariski. Grothendieck a pris le spectre de n'importe quel anneau commutatif comme espace de départ ; recollés, ces spectres forment les schémas.
@@ -318,8 +400,8 @@ aretes:
   - [ga-krull, ga-nilradical]
   - [ga-zariski, ga-nilradical]
   - [ga-zeros, ga-nullstellensatz]
-  - [ga-krull, ga-nullstellensatz]
-  - [ga-lemme-zariski, ga-nullstellensatz]
+  - [ga-krull-polynomes, ga-nilradical]
+  - [ga-lemme-zariski, ga-nilradical]
+  - [ga-nilradical, ga-nullstellensatz]
   - [ga-nullstellensatz, ga-correspondance]
-  - [ga-nilradical, ga-correspondance]
   - [ga-points, ga-correspondance]

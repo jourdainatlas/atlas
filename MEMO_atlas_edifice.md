@@ -847,7 +847,8 @@ gras ou « c'est-à-dire »).
 
 Décision de l'auteur, précisée le même jour : on ne retire un ⋆ que si cela change le **statut** d'un résultat,
 c'est-à-dire si, compte tenu de tout ce dont il dépend réellement, il devient démontrable dans ZF, ou s'il ne
-demande plus qu'une forme strictement plus faible du choix (Zorn ou ultrafiltre → dépendant → dénombrable → rien).
+demande plus qu'une forme strictement plus faible du choix (par exemple Zorn → lemme de l'ultrafiltre, ou
+Zorn → dépendant → dénombrable → rien ; l'ultrafiltre et le choix dépendant ne sont pas comparables).
 Éviter un second usage du choix dans un résultat qui dépend de toute façon d'un choix inévitable en amont n'apporte
 rien : on ne réécrit pas la preuve, et le ⋆ hérité est signalé une fois (convention de la mesure de Lebesgue, dont
 dépend toute l'analyse sur ℝ ou 𝕋 avec λ). Un résultat n'hérite que de ce qu'il utilise vraiment, non de tout
@@ -872,3 +873,23 @@ Convention de l'auteur : on écrit **extrema**, **maxima**, **minima** (pluriel 
 « extremums », « maximums », « minimums ». Appliqué à tout le texte de l'édifice, au lexique, aux libellés de liens
 et aux titres des schémas (de-extremum, el-lagrange, el-second-ordre régénérés). Les identifiants (fq-extremums,
 fq-extremums-2) ne changent pas : ils sont cités par les rubriques.
+
+## 59. Moins de choix : géométrie algébrique et analyse sur espaces donnés (30 octobre 2026)
+
+Selon le critère du §57 (changer le statut d'un résultat). Géométrie algébrique : nouvelle fiche ga-krull-polynomes
+(tout idéal propre de K[X₁, …, Xₙ], puis d'un quotient, est dans un idéal maximal, sans choix : changement de
+variables attribué à Nagata, Nakayama sans anneau local, idéal propre de dimension maximale) ; deviennent sans choix,
+pour les quotients d'anneaux de polynômes en un nombre fini d'indéterminées : Nullstellensatz faible et fort,
+correspondance (point fermé ⇔ maximal démontré directement), ga-nilradical (iii) (Rabinowitsch), ga-points et
+ga-quasi-compact en note ; Krull reste ⋆ pour un anneau quelconque, inévitable (Hodges 1979) ; l'anneau principal
+de Hodges 1976 sans idéal maximal réfute ga-points (ii) et ga-nilradical (i) dans ZF. Analyse : f-lp (v) suite
+dense explicite et complétude de L¹, L² sans choix quand la tribu est engendrée par une suite de parties et la
+mesure σ-finie ; f-hilbert (iv) projection sans choix si H a une suite dense, ou si C est complet avec une suite
+dense (H seulement préhilbertien) ; f-riesz (ii) ; Banach-Steinhaus (ii) et application ouverte (iv) pour un
+Banach à suite dense (le graphe fermé reste ⋆) ; lp-von-neumann (ii), lp-radon-nikodym (iv), lp-dual (iii),
+mt-conditionnelle (v), mt-martingales sous la même hypothèse ; **fo-divergence perd son ⋆** (C(𝕋) a une suite dense
+par Fejér, et la preuve ne passe que par des intégrales de Riemann de fonctions continues). Sources : Blackadar,
+Farah, Karagila, « Hilbert spaces without the Countable Axiom of Choice », Münster J. Math. (2024), 2.0.4, 6.0.6,
+7.0.4 (cités avant Brunner-Svozil-Baaz 1996, dont une affirmation sur Riesz est réfutée) ; Fremlin, Measure Theory
+5, 561I ; Arrondo, arXiv:2009.02837 ; Hodges 1976 et 1979. Relu deux fois (géométrie algébrique : trois fautes de
+justification ; analyse : hypothèse de complétude superflue mais citée, σ-finitude omise, deux citations).
