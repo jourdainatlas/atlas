@@ -756,3 +756,87 @@ def fq_extremums_2():
     S.texte(R(0.95, 0.95**2) + [10, 6], 'y = x^2', 'b', ancre='start', taille=15)
     S.texte(R(0.62, 1.42), 'y = 2x^2', 'b', ancre='end', taille=15)
     return S
+
+
+@schema('el-lagrange')
+def el_lagrange():
+    # f = xy sur le cercle g = x² + y² − 2 = 0 : extremums en (±1, ±1), λ = ±1/2 ; point non critique (7/5, 1/5).
+    x, y, l = sp.symbols('x y lambda', real=True)
+    f, g = x * y, x**2 + y**2 - 2
+    sol = sp.solve([sp.diff(f, x) - l * sp.diff(g, x), sp.diff(f, y) - l * sp.diff(g, y), g], [x, y, l], dict=True)
+    assert {(s[x], s[y], s[l]) for s in sol} == {(1, 1, sp.Rational(1, 2)), (-1, -1, sp.Rational(1, 2)),
+                                                  (1, -1, -sp.Rational(1, 2)), (-1, 1, -sp.Rational(1, 2))}
+    # xy = ±1 ne rencontre le cercle qu'aux points extrémaux (tangence) ; xy = 7/25 le coupe en quatre points
+    for c, n in ((1, 2), (-1, 2), (sp.Rational(7, 25), 4)):
+        assert len(sp.solve([x * y - c, g], [x, y], dict=True)) == n
+    P = (Fr(7, 5), Fr(1, 5))
+    assert P[0]**2 + P[1]**2 == 2 and P[0] * P[1] == Fr(7, 25)
+    gf, gg = (P[1], P[0]), (2 * P[0], 2 * P[1])
+    assert gf[0] * gg[1] - gf[1] * gg[0] != 0                      # gradients non colinéaires en P
+    S = Schema(500, 440, 'Lignes de niveau de xy et cercle x² + y² = 2 : tangence aux extremums, gradients colinéaires')
+    R = Repere(-2.25, 2.95, -2.2, 2.2, 10, 24, 452, 382)
+    R.axes(S, 'x', 'y')
+    xs = np.linspace(-2.25, 2.95, 1201)
+    for c, cl, ep in ((1, 'r', 2.2), (0.5, 'r', 1.1), (7 / 25, 'r', 1.1), (-0.5, 'b', 1.1), (-1, 'b', 2.2)):
+        for sg in (1, -1):
+            xx = xs[(sg * xs > 0)]
+            yy = c / xx
+            garde = (np.abs(yy) <= 2.2) & (np.abs(xx) > 1e-9)
+            for m in morceaux(np.stack([xx, yy], 1), garde):
+                S.poly(R(m[:, 0], m[:, 1]), cl, l=ep)
+    S.poly(cercle_pts(R, rayon=math.sqrt(2)), 't', l=2)
+    # gradients à l'échelle 1/2
+    for (px, py), cl, (vx, vy) in (((1, 1), 't', (2, 2)), ((1, 1), 'r', (1, 1)),
+                                   ((1.4, 0.2), 't', (2.8, 0.4)), ((1.4, 0.2), 'v', (0.2, 1.4))):
+        S.fleche(R(px, py), R(px + vx / 2, py + vy / 2), cl, l=2)
+    for p in ((1, 1), (-1, -1), (1, -1), (-1, 1)):
+        S.point(R(*p), 't', r=4.2)
+    S.point(R(1.4, 0.2), 'v', r=4.2)
+    S.texte(R(1, 1) + [-12, 16], '(1, 1)', ancre='end', taille=15)
+    S.texte(R(1.4, 0.2) + [6, 18], '(7/5, 1/5)', 'v', ancre='start', taille=15)
+    S.texte(R(2.0, 2.0) + [10, 0], '∇g', 't', ancre='start', taille=16)
+    S.texte(R(1.5, 1.5) + [-10, -8], '∇f', 'r', ancre='end', taille=16)
+    S.texte(R(1.5, 0.9) + [6, -6], '∇f', 'v', ancre='start', taille=16)
+    S.texte(R(2.8, 0.4) + [0, -16], '∇g', 't', ancre='middle', taille=16)
+    S.texte(R(-1.95, 2.0), 'xy = −1', 'b', ancre='start', taille=15)
+    S.texte(R(-1.95, -2.0), 'xy = 1', 'r', ancre='start', taille=15)
+    return S
+
+
+@schema('el-second-ordre')
+def el_second_ordre():
+    # Parabole y = x², b = (0, 3/2) ; f = distance² à b. Minimums (±1, 1), maximum local (0, 0).
+    x = sp.symbols('x', real=True)
+    f_par = sp.expand(x**2 + (x**2 - sp.Rational(3, 2))**2)
+    assert sp.expand(f_par - sp.Rational(5, 4) - (x**2 - 1)**2) == 0          # ≥ 5/4, égalité en x = ±1
+    assert sp.expand(f_par - sp.Rational(9, 4) - x**2 * (x**2 - 2)) == 0      # < 9/4 pour 0 < |x| < √2
+    b = np.array([0.0, 1.5])
+    S = Schema(500, 436, 'Distance d’un point à une parabole : deux minimums et un maximum local')
+    R = Repere(-2.3, 2.3, -0.55, 3.55, 16, 34, 458, 394)
+    def disque(r, cl, d=False, ep=None):
+        t = np.linspace(0, 2 * math.pi, 721)
+        X = np.stack([b[0] + r * np.cos(t), b[1] + r * np.sin(t)], 1)
+        garde = (np.abs(X[:, 0]) <= 2.3) & (X[:, 1] >= -0.55) & (X[:, 1] <= 3.55)
+        for m in morceaux(X, garde):
+            S.poly(R(m[:, 0], m[:, 1]), cl, d, l=ep)
+    for r in (0.45, 0.8, 1.9):
+        disque(r, 'g', d=True, ep=1)
+    disque(math.sqrt(5) / 2, 'b', ep=1.9)
+    disque(1.5, 'r', ep=1.9)
+    R.axes(S, 'x', 'y')
+    xs = np.linspace(-1.87, 1.87, 601)
+    S.poly(R(xs, xs**2), 't', l=2.4)
+    # tangence : gradient de la distance² colinéaire à celui de g = y − x²
+    for (px, py) in ((1, 1), (-1, 1), (0, 0)):
+        gf = (2 * px, 2 * (py - 1.5)); gg = (-2 * px, 1)
+        assert abs(gf[0] * gg[1] - gf[1] * gg[0]) < 1e-12
+    S.point(R(*b), 't', r=4)
+    S.texte(R(*b) + [10, -12], 'b', ancre='start')
+    for p in ((1, 1), (-1, 1)):
+        S.point(R(*p), 'b', r=4.4)
+    S.point(R(0, 0), 'r', r=4.4)
+    S.point(R(0, 0.5), 't', r=3.6, creux=True)
+    S.texte(R(1, 1) + [12, 10], '(1, 1)', 'b', ancre='start', taille=15)
+    S.texte(R(0, 0) + [10, 14], '(0, 0)', 'r', ancre='start', taille=15)
+    S.texte(R(1.87, 1.87**2) + [-6, 10], 'y = x^2', ancre='end', taille=15)
+    return S

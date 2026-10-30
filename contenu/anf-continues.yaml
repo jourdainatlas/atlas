@@ -1,0 +1,486 @@
+# Niveau 2 : structure interne du chapitre « Espaces de fonctions continues » (nœud anf-continues du graphe
+# anf, créé le 30 oct. 2026).
+# Sur un espace compact K : l'espace C(K, ℝᵖ) et la convergence uniforme ; théorème de Dini (et la suite
+# récurrente de polynômes qui tend vers √t) ; équicontinuité (uniforme sur un compact métrique, par le nombre
+# de Lebesgue) ; parties précompactes de C(K, ℝᵖ) et théorème d'Ascoli, y compris la forme séquentielle ;
+# polynômes de Bernstein (moments, estimation L/(2√n) pour une fonction L-lipschitzienne) et théorème de
+# Weierstrass ; lemme des treillis, théorème de Stone-Weierstrass (sous-algèbres séparantes, variante des
+# fonctions nulles en un point) ; densité des polynômes sur un compact de ℝⁿ et sur le cercle, des fonctions
+# lipschitziennes ; séparabilité de C(K).
+# Ni ℂ ni la trigonométrie ne sont des ancêtres de ce graphe : la version complexe de Stone-Weierstrass et
+# les polynômes trigonométriques sont en remarque, avec renvoi à l'analyse de Fourier. Le théorème de Peano,
+# application d'Ascoli, est démontré dans le graphe edo (ed-peano), en aval.
+# Choix : Dini, le lemme des treillis et Stone-Weierstrass ne font que des choix en nombre fini (les
+# recouvrements sont indexés par des entiers pour Dini, par des fonctions pour le lemme des treillis, jamais
+# par un objet choisi en chaque point) ; Bernstein et Weierstrass n'emploient aucun recouvrement. Ascoli : « bornée et
+# équicontinue ⇒ précompacte » et la forme séquentielle sont sans choix (les réseaux d'une suite sont pris
+# parmi ses termes, au plus petit indice) ; « précompacte ⇒ adhérence compacte » pour une partie quelconque
+# choisit un réseau par rayon (choix dénombrable), et la réciproque de fc-ascoli (iii) en hérite. Séparabilité : sans choix pour un compact de ℝⁿ, avec le
+# choix dénombrable pour un compact métrique quelconque (il n'est pas démontrable dans ZF).
+
+graphe: anf-continues
+titre: Espaces de fonctions continues
+conteneur: anf-continues
+
+entrees:
+  f-evn: [fc-uniforme]
+
+noeuds:
+  - id: fc-uniforme
+    etiquette: Convergence uniforme
+    nature: définition
+    titre: Convergence uniforme sur un compact
+    texte: |
+      Soit $K$ un espace [[compact]] et $p \geqslant 1$ un entier. On munit $\lex{n-uplet}{\mathbb R^p}$ de la norme $\|\cdot\|_\infty$ ({{gd-normes|Normes}}), et l'on note $C(K, \mathbb R^p)$ l'ensemble des applications continues de $K$ dans $\mathbb R^p$, et $C(K) = C(K, \mathbb R)$. Une application $f : K \to \mathbb R^p$ est continue si et seulement si ses $p$ coordonnées $f_1, \dots, f_p$ le sont, puisque la topologie de $\mathbb R^p$ est la [[topologie-produit]] ({{t-produit|Topologie produit}}). On pose
+      $$\|f\|_\infty = \sup_{x \in K} \|f(x)\|_\infty.$$
+
+      Une suite $(f_n)$ d'applications de $K$ dans $\mathbb R^p$ **converge simplement** vers $f$ si $f_n(x) \to f(x)$ pour tout $x \in K$. Elle **converge uniformément** vers $f$ si $\sup_{x \in K} \|f_n(x) - f(x)\|_\infty$ tend vers $0$ : le même rang convient alors pour tous les points.
+    enonce: |
+      (i) Pour $f \in C(K, \mathbb R^p)$, le nombre $\|f\|_\infty$ est fini, avec la convention $\|f\|_\infty = 0$ si $K$ est vide ; si $K$ n'est pas vide, c'est un maximum, égal à $\max_i \|f_i\|_\infty$. C'est une norme sur l'espace vectoriel $C(K, \mathbb R^p)$.
+
+      (ii) Une suite de $C(K, \mathbb R^p)$ converge vers $f$ pour cette norme si et seulement si elle converge uniformément vers $f$ ; elle converge alors simplement vers $f$.
+
+      (iii) Si une suite de $C(K, \mathbb R^p)$ converge uniformément vers une application $f : K \to \mathbb R^p$, alors $f$ est continue.
+
+      (iv) Muni de $\|\cdot\|_\infty$, l'espace $C(K, \mathbb R^p)$ est un [[banach|espace de Banach]].
+    preuve: |
+      (i) Supposons $K$ non vide. L'application continue $x \mapsto \|f(x)\|_\infty$ ({{me-topologie|Topologie d'une distance}}, (iv)) envoie le compact $K$ sur une partie compacte de $\lex{ensemble-reels}{\mathbb R}$ ({{t-compact-prop|Parties compactes}}, (iii)), qui a un plus grand élément ({{tr-compacts|Compacts de ℝ}}, (ii)) : la borne supérieure est atteinte. Comme $\|f(x)\|_\infty = \max_i |f_i(x)|$, elle vaut $\max_i \|f_i\|_\infty$.
+
+      Les sommes et les multiples de fonctions continues sont continus, et les axiomes de norme se vérifient en chaque point $x$, avant de passer à la borne supérieure.
+
+      (ii) La première affirmation est la définition de la norme. Pour la seconde, $\|f_n(x) - f(x)\|_\infty \leqslant \|f_n - f\|_\infty$ en chaque point $x$.
+
+      (iii) Soit $a \in K$ et $\varepsilon > 0$. Soit $n$ tel que $\|f_n(x) - f(x)\|_\infty < \varepsilon$ pour tout $x \in K$, et $V$ un [[voisinage]] de $a$ sur lequel $\|f_n(x) - f_n(a)\|_\infty < \varepsilon$. Pour $x \in V$,
+      $$\begin{aligned} &\|f(x) - f(a)\|_\infty \\ &\quad \leqslant \|f(x) - f_n(x)\|_\infty \\ &\qquad + \|f_n(x) - f_n(a)\|_\infty \\ &\qquad + \|f_n(a) - f(a)\|_\infty < 3\varepsilon : \end{aligned}$$
+      l'image réciproque de toute boule $B(f(a), 3\varepsilon)$ est un voisinage de $a$, et $f$ est continue en $a$.
+
+      (iv) Soit $(f_n)$ une suite de Cauchy. Pour chaque $x$, la suite $(f_n(x))$ est de Cauchy dans $\mathbb R^p$, puisque $\|f_n(x) - f_m(x)\|_\infty \leqslant \|f_n - f_m\|_\infty$ ; elle converge vers un point $f(x)$, $\mathbb R^p$ étant complet ({{me-rn|L'espace ℝⁿ}}, (ii)).
+
+      Soit $\varepsilon > 0$ et $N$ tel que $\|f_n - f_m\|_\infty \leqslant \varepsilon$ pour $n, m \geqslant N$. Pour $n \geqslant N$ et $x \in K$, on fait tendre $m$ vers l'infini dans $\|f_n(x) - f_m(x)\|_\infty \leqslant \varepsilon$, la norme étant continue : $\|f_n(x) - f(x)\|_\infty \leqslant \varepsilon$.
+
+      La convergence est donc uniforme, $f$ est continue par (iii), et $\|f_n - f\|_\infty \leqslant \varepsilon$ pour $n \geqslant N$ : la suite converge dans $C(K, \mathbb R^p)$.
+    remarques:
+      - |
+        Pour $p = 1$, on retrouve l'espace $C(K)$ du nœud {{f-exemples|Exemples d'espaces de Banach}}, vu comme sous-espace fermé de l'espace des fonctions bornées. Le point (iv) en redonne la complétude, et l'étend aux fonctions à valeurs vectorielles, dont les équations différentielles ont besoin : leurs solutions sont des applications d'un segment dans $\mathbb R^n$ ({{ed-peano|Théorème de Peano}}).
+      - |
+        L'erreur la plus répandue est de confondre les deux convergences. Sur $K = [0, 1]$, les fonctions $f_n(x) = x^n$ convergent simplement vers la fonction nulle sur $[0, 1[$ et égale à $1$ en $1$, qui n'est pas continue : par (iii), la convergence n'est pas uniforme.
+
+        Sur $[0, \frac12]$, au contraire, $\sup |f_n| = 2^{-n}$ tend vers $0$, et la convergence est uniforme. Ce qui se passe près de $1$, où $f_n$ reste proche de $1$ sur un intervalle de plus en plus court, est l'objet du nœud {{fc-equicontinuite|Équicontinuité}}.
+      - |
+        Toute la suite du chapitre travaille dans l'espace de Banach $C(K, \mathbb R^p)$ : le théorème d'Ascoli y décrit les parties compactes, celui de Stone-Weierstrass, pour $p = 1$, les parties denses.
+
+  - id: fc-dini
+    etiquette: Théorème de Dini
+    nature: théorème
+    titre: Théorème de Dini
+    enonce: |
+      (i) Soit $K$ un espace [[compact]] et $(f_n)$ une suite de $C(K)$, croissante, c'est-à-dire telle que $f_n \leqslant f_{n+1}$, qui converge simplement vers une fonction $f$ continue. Alors la convergence est uniforme. Il en est de même pour une suite décroissante.
+
+      (ii) La suite de fonctions polynomiales définie par $p_0 = 0$ et
+      $$p_{n+1}(t) = p_n(t) + \frac12\big(t - p_n(t)^2\big)$$
+      vérifie $0 \leqslant p_n(t) \leqslant p_{n+1}(t) \leqslant \sqrt t$ et $p_n(0) = 0$, et elle converge uniformément vers $t \mapsto \sqrt t$ sur $[0, 1]$. Par suite, les fonctions polynomiales $q_n(s) = p_n(s^2)$, nulles en $0$, convergent uniformément vers $s \mapsto |s|$ sur $[-1, 1]$.
+    preuve: |
+      (i) Soit $\varepsilon > 0$. Les ensembles
+      $$U_n = \{x \in K : f(x) - f_n(x) < \varepsilon\}$$
+      sont ouverts, puisque $f - f_n$ est continue, et croissants, puisque $f - f_{n+1} \leqslant f - f_n$.
+
+      Ils recouvrent $K$, puisque $f_n(x) \to f(x)$ pour chaque $x$. Un nombre fini d'entre eux suffit, et le plus grand indice $N$ de ce nombre fini donne $U_N = K$ ; si $K$ est vide, $N = 0$ convient.
+
+      Pour $n \geqslant N$ et $x \in K$, on a donc $0 \leqslant f(x) - f_n(x) \leqslant f(x) - f_N(x) < \varepsilon$, la positivité venant de la croissance de la suite $(f_n(x))$, qui tend vers $f(x)$ ({{su-monotone|Limite monotone}}). Pour une suite décroissante, on applique ce qui précède à $(-f_n)$.
+
+      (ii) Fixons $t \in [0, 1]$ et montrons par récurrence que $0 \leqslant p_n(t) \leqslant \sqrt t$, ce qui est vrai pour $n = 0$. Si c'est vrai au rang $n$, alors $t - p_n(t)^2 \geqslant 0$, donc $p_{n+1}(t) \geqslant p_n(t) \geqslant 0$, et
+      $$\begin{aligned} &\sqrt t - p_{n+1}(t) \\ &\quad = \big(\sqrt t - p_n(t)\big) \\ &\qquad - \tfrac12\big(\sqrt t - p_n(t)\big)\big(\sqrt t + p_n(t)\big) \\ &\quad = \big(\sqrt t - p_n(t)\big)\Big(1 - \frac{\sqrt t + p_n(t)}{2}\Big), \end{aligned}$$
+      qui est positif, puisque $\sqrt t + p_n(t) \leqslant 2\sqrt t \leqslant 2$.
+
+      La suite $(p_n(t))$ est croissante et majorée : elle converge vers un réel $\ell \in [0, \sqrt t]$ ({{su-monotone|Limite monotone}}). En passant à la limite dans la relation de récurrence ({{su-operations|Opérations sur les limites}}), $t - \ell^2 = 0$, et $\ell = \sqrt t$ par l'unicité de la racine carrée positive ({{me-espace|Espaces métriques}}, (i)).
+
+      Par récurrence encore, $p_n$ est une fonction polynomiale nulle en $0$. La fonction $t \mapsto \sqrt t$ est continue sur $[0, 1]$, comme réciproque de la bijection continue strictement croissante $s \mapsto s^2$ de $[0, 1]$ sur lui-même ({{c-bijection|Bijection continue}}). Le segment $[0, 1]$ étant compact ({{tr-borel-lebesgue|Borel-Lebesgue}}), (i) donne la convergence uniforme.
+
+      Enfin $|s| = \sqrt{s^2}$, et, quand $s$ parcourt $[-1, 1]$, $s^2$ parcourt $[0, 1]$ : la borne supérieure de $\big||s| - q_n(s)\big|$ sur $[-1, 1]$ est celle de $|\sqrt t - p_n(t)|$ sur $[0, 1]$. La fonction $q_n$ est polynomiale, et $q_n(0) = p_n(0) = 0$.
+    remarques:
+      - |
+        Aucun choix n'intervient : le recouvrement de (i) est formé de tous les ouverts $U_n$, indexés par les entiers, et le sous-recouvrement fini fournit directement le rang $N$.
+      - |
+        Les trois hypothèses sont indispensables, et l'erreur la plus répandue est d'oublier l'une d'elles. Sur $[0, 1]$, la suite décroissante $x \mapsto x^n$ converge simplement vers une limite qui n'est pas continue, et la convergence n'est pas uniforme ({{fc-uniforme|Convergence uniforme}}).
+
+        Sur $[0, 1[$, qui n'est pas compact, la même suite converge vers la fonction nulle, continue, mais $\sup_{[0, 1[} x^n = 1$. Enfin, sans monotonie, les bosses $b_n(x) = \max(0, 1 - |nx - 2|)$, nulles hors de $[\frac1n, \frac3n]$ et égales à $1$ en $\frac2n$, convergent simplement vers $0$ sur $[0, 1]$ sans converger uniformément.
+      - |
+        La suite $(p_n)$ converge lentement, et ses degrés croissent très vite : pour $n \geqslant 1$, $p_{n+1}$ est de degré double de celui de $p_n$, puisque son terme dominant est $-\frac12$ fois le carré de celui de $p_n$, si bien que $q_n$ est de degré $2^n$.
+
+        Un calcul numérique donne $\sup_{[0, 1]} (\sqrt t - p_n) \approx 0{,}055$ pour $n = 10$ et $\approx 0{,}0056$ pour $n = 100$, l'écart maximal étant atteint près de $0$ : il faut le polynôme $q_{10}$, de degré $1024$, pour approcher $|s|$ à $0{,}055$ près sur $[-1, 1]$. Au même degré $1024$, le polynôme de Bernstein de $|s|$ sur $[-1, 1]$ fait une erreur deux fois moindre, d'environ $0{,}025$ ; aux petits degrés, c'est l'inverse, par exemple $0{,}134$ pour $q_4$ contre $0{,}196$ au degré $16$ ({{fc-bernstein|Polynômes de Bernstein}}).
+      - |
+        Les polynômes $q_n$, nuls en $0$, approchent la valeur absolue sans passer par le théorème de Weierstrass. Ils peuvent remplacer celui-ci dans la démonstration du nœud {{fc-stone-weierstrass|Stone-Weierstrass}}, (i), qui n'a besoin que d'approcher $|t|$ sur un segment $[-M, M]$ par des polynômes sans terme constant : $t \mapsto M q_n(t/M)$ convient.
+      - |
+        U. Dini a publié le théorème (i) en 1878, dans ses *Fondamenti per la teorica delle funzioni di variabili reali* (Pise).
+
+  - id: fc-equicontinuite
+    etiquette: Équicontinuité
+    nature: définition
+    titre: Parties équicontinues
+    texte: |
+      Soit $(K, d)$ un espace métrique et $A$ une partie de l'ensemble $C(K, \lex{n-uplet}{\mathbb R^p})$ des applications continues de $K$ dans $\mathbb R^p$ ; si $K$ n'est pas compact, cet ensemble n'est muni d'aucune norme. La partie $A$ est **équicontinue en** $x \in K$ si
+      $$\begin{gathered} \forall \varepsilon > 0,\ \exists \delta > 0,\ \forall f \in A,\ \forall y \in K, \\ d(x, y) < \delta \ \Longrightarrow\ \|f(y) - f(x)\|_\infty < \varepsilon : \end{gathered}$$
+      le même $\delta$ convient pour toutes les fonctions de $A$. Elle est [[equicontinue|équicontinue]] si elle l'est en tout point, et **uniformément équicontinue** si, de plus, $\delta$ ne dépend pas de $x$.
+    enonce: |
+      (i) Une partie finie de $C(K, \mathbb R^p)$ est équicontinue. Si $K$ est compact, elle est uniformément équicontinue.
+
+      (ii) Soit $k \geqslant 0$. L'ensemble des applications $k$-lipschitziennes de $K$ dans $\mathbb R^p$ est uniformément équicontinu.
+
+      (iii) Si $K$ est [[compact]], toute partie équicontinue de $C(K, \mathbb R^p)$ est uniformément équicontinue : pour tout $\varepsilon > 0$, il existe $\eta > 0$ tel que
+      $$\|f(x) - f(y)\|_\infty \leqslant \varepsilon$$
+      pour toute $f \in A$ et tous $x, y \in K$ tels que $d(x, y) < \eta$.
+
+      (iv) Sur $K = [0, 1]$, la partie $\{x \mapsto x^n : n \in \lex{ensemble-entiers-naturels}{\mathbb N}\}$ est équicontinue en tout point de $[0, 1[$, mais pas en $1$.
+    preuve: |
+      (i) Pour $\varepsilon > 0$ et $x \in K$, chacune des fonctions $f_1, \dots, f_m$ fournit un $\delta_j$ ({{me-topologie|Topologie d'une distance}}, (iv)), et le plus petit d'entre eux convient pour toutes ; si $K$ est compact, chaque $f_j$ est uniformément continue ({{me-heine|Théorème de Heine}}), et le même argument vaut avec un $\delta_j$ indépendant de $x$. Ces choix sont en nombre fini.
+
+      (ii) Si $d(x, y) < \varepsilon/(k + 1)$, alors $\|f(x) - f(y)\|_\infty \leqslant k\,d(x, y) < \varepsilon$ pour toute $f$ $k$-lipschitzienne.
+
+      (iii) On peut supposer $K$ non vide. Soit $\varepsilon > 0$, et $\mathcal U$ la famille de tous les ouverts $V$ de $K$ tels que $\|f(y) - f(z)\|_\infty \leqslant \varepsilon$ pour toute $f \in A$ et tous $y, z \in V$.
+
+      Elle recouvre $K$. En effet, si $x \in K$, l'équicontinuité en $x$, avec $\frac\varepsilon2$, fournit $\delta > 0$, et pour $y, z \in B(x, \delta)$,
+      $$\begin{aligned} &\|f(y) - f(z)\|_\infty \\ &\quad \leqslant \|f(y) - f(x)\|_\infty + \|f(x) - f(z)\|_\infty \\ &\quad < \varepsilon : \end{aligned}$$
+      la boule $B(x, \delta)$, ouverte, appartient à $\mathcal U$.
+
+      Soit $\eta$ un nombre de Lebesgue de $\mathcal U$ ({{me-lebesgue|Nombre de Lebesgue}}). Si $d(x, y) < \eta$, la partie $\{x, y\}$, de diamètre $< \eta$, est contenue dans un élément de $\mathcal U$, d'où $\|f(x) - f(y)\|_\infty \leqslant \varepsilon$ pour toute $f \in A$.
+
+      (iv) Soit $x_0 \in [0, 1[$ et $c = \frac{1 + x_0}2 < 1$. Pour $x, y \in [0, c]$, l'identité $x^n - y^n = (x - y)\sum_{j < n} x^j y^{n-1-j}$ donne
+      $$|x^n - y^n| \leqslant n c^{n-1} |x - y|,$$
+      et la suite $(nc^{n-1})$ est bornée, par un réel $k$. En effet, pour $n \geqslant 1$, le quotient de deux termes consécutifs, $\frac{n+1}{n}c$, est au plus $\frac{1 + c}2 < 1$ dès que $n \geqslant \frac{2c}{1 - c}$ : la suite est décroissante à partir du rang $N = \lceil \frac{2c}{1 - c} \rceil$, donc majorée par le plus grand de ses termes d'indice au plus $N$. Sur $[0, c]$, les fonctions $x \mapsto x^n$ sont donc toutes $k$-lipschitziennes, et l'on conclut par (ii), avec $\delta$ au plus $c - x_0$ pour rester dans $[0, c]$.
+
+      En $1$, prenons $\varepsilon = \frac12$ et $\delta \in \,]0, 2[$, ce qu'on peut toujours supposer en diminuant $\delta$. Le point $y = 1 - \frac\delta2$ est dans $[0, 1]$, à distance $< \delta$ de $1$, et $y^n \to 0$ ({{su-infinies|Limites infinies}}) : pour $n$ assez grand, $|1^n - y^n| > \frac12$. Aucun $\delta$ ne convient pour toute la famille.
+
+      ```schema fc-equicontinuite
+      Les fonctions $x \mapsto x^n$ (bleu), pour $n = 1, 2, 4, 8, 16, 32$ et $64$, valent toutes $1$ en $x = 1$. Pour $\delta = 0{,}1$, en $y = 1 - \frac\delta2 = 0{,}95$ (trait rouge, dans la bande grise $[1 - \delta, 1]$), elles prennent les valeurs $0{,}95$, $0{,}90$, $0{,}81$, $0{,}66$, $0{,}44$, $0{,}19$ et $0{,}04$ : l'écart à la valeur en $1$ dépasse $\frac12$ dès $n = 16$, et aucun $\delta$ ne convient pour toute la famille. En $x_0 = \frac12$ (pointillé), au contraire, les pentes $n2^{1-n}$ des courbes sont toutes au plus $1$.
+      ```
+    remarques:
+      - |
+        L'équicontinuité est une continuité « en bloc ». Chaque fonction $x \mapsto x^n$ est continue en $1$, mais la pente près de $1$ croît avec $n$, et il faut un $\delta$ de plus en plus petit : c'est ce défaut d'uniformité par rapport à la fonction que l'équicontinuité interdit, comme la continuité uniforme interdit le défaut d'uniformité par rapport au point.
+      - |
+        L'hypothèse de compacité de (iii) ne peut pas être omise : sur $]0, 1]$, qui n'est pas compact et où $C(]0, 1], \mathbb R)$ n'est qu'un ensemble de fonctions, la partie formée de la seule fonction $x \mapsto \frac1x$ est équicontinue, par (i), sans être uniformément équicontinue, comme le montre le nœud {{me-heine|Théorème de Heine}}. Le point (iii) est d'ailleurs, pour une famille, la même démonstration que le théorème de Heine.
+
+  - id: fc-precompacite
+    etiquette: Précompacité dans C(K)
+    nature: lemme
+    titre: Parties précompactes de C(K, ℝᵖ)
+    enonce: |
+      Soit $K$ un espace métrique [[compact]] et $A$ une partie de $C(K, \lex{n-uplet}{\mathbb R^p})$, muni de la norme $\|\cdot\|_\infty$.
+
+      (i) Si $A$ est [[partie-precompacte|précompacte]], elle est bornée et uniformément [[equicontinue|équicontinue]].
+
+      (ii) Si $A$ est bornée et équicontinue, elle est précompacte. Plus précisément, soit $\varepsilon > 0$, $M$ un majorant des $\|f\|_\infty$ pour $f \in A$, $\eta$ associé à $\varepsilon$ par le point (iii) du nœud {{fc-equicontinuite|Équicontinuité}}, et $x_1, \dots, x_m$ des points de $K$ tels que $K$ soit la réunion des boules $B(x_i, \eta)$. Alors $A$ est contenue dans la réunion d'un nombre fini de boules de rayon $4\varepsilon$ centrées en des éléments de $A$.
+    preuve: |
+      (i) Soit $\varepsilon > 0$ et $g_1, \dots, g_m$ des éléments de $C(K, \mathbb R^p)$ tels que $A$ soit contenue dans la réunion des boules $B(g_j, \varepsilon)$. Toute $f \in A$ vérifie $\|f\|_\infty < \varepsilon + \max_j \|g_j\|_\infty$ : $A$ est bornée.
+
+      La famille finie des $g_j$ est uniformément équicontinue ({{fc-equicontinuite|Équicontinuité}}, (i)) : il existe $\eta > 0$ tel que $d(x, y) < \eta$ entraîne $\|g_j(x) - g_j(y)\|_\infty < \varepsilon$ pour tout $j$. Pour $f \in A$, soit $j$ tel que $\|f - g_j\|_\infty < \varepsilon$ ; alors
+      $$\begin{aligned} &\|f(x) - f(y)\|_\infty \\ &\quad \leqslant \|f(x) - g_j(x)\|_\infty \\ &\qquad + \|g_j(x) - g_j(y)\|_\infty \\ &\qquad + \|g_j(y) - f(y)\|_\infty < 3\varepsilon. \end{aligned}$$
+
+      (ii) Les points $x_i$ existent : les boules $B(x, \eta)$, $x \in K$, recouvrent le compact $K$, et un nombre fini d'entre elles suffit. Si $K$ est vide, $A$ a au plus un élément et il n'y a rien à démontrer.
+
+      Par la propriété d'Archimède, tout réel $t$ tel que $|t| \leqslant M$ est à distance au plus $\frac\varepsilon2$ d'un multiple $j\varepsilon$, avec $j \in \lex{ensemble-entiers-relatifs}{\mathbb Z}$ et $|j\varepsilon| \leqslant M + \varepsilon$. Notons $G$ l'ensemble fini des points de $\mathbb R^p$ dont les coordonnées sont de tels multiples : tout point $v$ de $\mathbb R^p$ tel que $\|v\|_\infty \leqslant M$ est à distance au plus $\frac\varepsilon2$ d'un point de $G$.
+
+      Pour $c = (c_1, \dots, c_m) \in G^m$, soit $A_c$ l'ensemble des $f \in A$ telles que $\|f(x_i) - c_i\|_\infty \leqslant \frac\varepsilon2$ pour tout $i$. Ces parties sont en nombre fini, et elles recouvrent $A$, puisque chaque $f(x_i)$ est à distance au plus $\frac\varepsilon2$ d'un point de $G$.
+
+      ```schema fc-precompacite
+      Sur $K = [0, 1]$, recouvert par les boules de rayon $\eta = 0{,}15$ centrées en $x_1, \dots, x_4$ (pointillés, sous les courbes), et pour $\varepsilon = 0{,}2$, deux fonctions $f$ (bleu) et $g$ (vert) d'une même partie $A_c$ passent, en chaque $x_i$, dans le même intervalle de longueur $\varepsilon$ (rouge), centré en un point $c_i$ de la grille $\varepsilon\mathbb Z$. L'équicontinuité les empêche de s'écarter beaucoup entre deux points $x_i$ : elles restent à distance au plus $3\varepsilon$ l'une de l'autre sur tout le segment.
+      ```
+
+      Soient $f, g \in A_c$ et $x \in K$, et $i$ tel que $d(x, x_i) < \eta$. Alors
+      $$\begin{aligned} &\|f(x) - g(x)\|_\infty \\ &\quad \leqslant \|f(x) - f(x_i)\|_\infty + \|f(x_i) - c_i\|_\infty \\ &\qquad + \|c_i - g(x_i)\|_\infty + \|g(x_i) - g(x)\|_\infty \\ &\quad \leqslant \varepsilon + \tfrac\varepsilon2 + \tfrac\varepsilon2 + \varepsilon = 3\varepsilon. \end{aligned}$$
+
+      Pour chaque $c$ tel que $A_c$ ne soit pas vide, prenons un élément $g_c$ de $A_c$ ; ces choix sont en nombre fini. Toute $f \in A$ appartient à l'un des $A_c$, et $\|f - g_c\|_\infty \leqslant 3\varepsilon < 4\varepsilon$. Comme $\varepsilon$ est arbitraire, $A$ est précompacte.
+    remarques:
+      - |
+        Le lemme ne fait que des choix en nombre fini, pour un $\varepsilon$ donné : un sous-recouvrement fini de $K$, puis un élément de chaque partie $A_c$ non vide. Il ne choisit pas de réseau pour une suite de rayons, ce qui demanderait le [[choix-denombrable]].
+      - |
+        Le mécanisme est celui de la dimension finie. L'équicontinuité ramène une fonction de $A$, à $\varepsilon$ près, au vecteur $(f(x_1), \dots, f(x_m))$ de ses valeurs en un nombre fini de points, et le caractère borné place ce vecteur dans une partie bornée de $(\mathbb R^p)^m$, que la grille $G^m$ découpe en un nombre fini de morceaux.
+
+  - id: fc-ascoli
+    etiquette: Théorème d'Ascoli
+    nature: théorème
+    titre: Théorème d'Ascoli
+    texte: |
+      Une partie d'un espace topologique séparé est [[partie-relativement-compacte|relativement compacte]] si son adhérence est compacte.
+    choix: |
+      L'implication « précompacte $\Rightarrow$ relativement compacte » de (i) passe par le point (iii) du nœud {{me-precompacts|Parties précompactes}}, qui choisit un réseau de $A$ pour chaque rayon $2^{-k}$ : c'est le [[choix-denombrable]]. La réciproque de (iii), qui passe par (i), en hérite, ainsi que la compacité de l'ensemble $L$ de la deuxième remarque. Les autres implications de (i), le sens direct de (iii) et tout (ii) n'en font aucun.
+
+      La démonstration usuelle de (ii), par extraction diagonale sur une suite dense de $K$, demande de disposer d'une telle suite, et un compact métrique n'en fournit pas de façon canonique : en choisir une est encore un usage du choix dénombrable ({{fc-separabilite|Séparabilité}}). On l'évite ici, parce que la suite $(f_n)$ fournit elle-même ses réseaux, désignés par le plus petit indice.
+    enonce: |
+      Soit $K$ un espace métrique [[compact]] et $A$ une partie de l'espace de Banach $C(K, \lex{n-uplet}{\mathbb R^p})$.
+
+      (i) *Ascoli.* Les propriétés suivantes sont équivalentes : $A$ est relativement compacte ; $A$ est [[partie-precompacte|précompacte]] ; $A$ est bornée et [[equicontinue|équicontinue]].
+
+      (ii) *Forme séquentielle.* Toute suite bornée et équicontinue de $C(K, \mathbb R^p)$ a une suite extraite qui converge uniformément.
+
+      (iii) Une partie de $C(K, \mathbb R^p)$ est compacte si et seulement si elle est fermée, bornée et équicontinue.
+    preuve: |
+      (i) Si $\bar A$ est compacte, elle est précompacte, et $A$ aussi, comme partie de $\bar A$ ({{me-precompacts|Parties précompactes}}, (i)). L'équivalence entre précompacte et bornée équicontinue est le lemme du nœud {{fc-precompacite|Précompacité dans C(K)}}. Enfin, si $A$ est précompacte, son adhérence est compacte, puisque $C(K, \mathbb R^p)$ est complet ({{fc-uniforme|Convergence uniforme}}, (iv), et {{me-precompacts|Parties précompactes}}, (iii)).
+
+      (ii) Soit $(f_n)$ une suite bornée et équicontinue, et $A = \{f_n : n \in \lex{ensemble-entiers-naturels}{\mathbb N}\}$, qui est précompacte par le nœud {{fc-precompacite|Précompacité dans C(K)}}, (ii).
+
+      *Les réseaux sont pris parmi les termes.* Soit $r > 0$, et $a_1, \dots, a_q$ des centres de boules de rayon $\frac r2$ qui recouvrent $A$. Pour chaque $i$ tel que $B(a_i, \frac r2)$ contienne un terme de la suite, soit $n_i$ le plus petit indice tel que $f_{n_i} \in B(a_i, \frac r2)$ ; tout terme $f_n$ est dans l'une de ces boules, et à distance $< r$ du $f_{n_i}$ correspondant.
+
+      Il existe donc un entier $m$ tel que $f_0, \dots, f_m$ soit un $r$-réseau de $A$, et l'on note $m_k$ le plus petit entier qui convient pour $r = 2^{-k-1}$. La suite des familles finies $(f_0, \dots, f_{m_k})$ est ainsi définie sans aucun choix ; par le point (i) du nœud {{me-precompacts|Parties précompactes}}, chacune est un $2^{-k}$-réseau de l'adhérence $\bar A$.
+
+      *Conclusion.* L'adhérence $\bar A$ est fermée dans l'espace complet $C(K, \mathbb R^p)$, et le point (ii) du nœud {{me-precompacts|Parties précompactes}} montre qu'elle est compacte. La suite $(f_n)$, à valeurs dans le compact métrique $\bar A$, a une suite extraite qui converge dans $\bar A$ ({{me-compacite-sequentielle|Compacité séquentielle}}, sens direct, sans choix), c'est-à-dire uniformément ({{fc-uniforme|Convergence uniforme}}, (ii)).
+
+      (iii) Une partie compacte de l'espace séparé $C(K, \mathbb R^p)$ est fermée ({{t-compact-prop|Parties compactes}}, (ii)), donc égale à son adhérence, et elle est bornée et équicontinue par (i). Réciproquement, une partie fermée, bornée et équicontinue est égale à son adhérence, qui est compacte par (i).
+    remarques:
+      - |
+        L'erreur la plus répandue est de croire qu'en dimension infinie, comme dans $\mathbb R^n$, les fermés bornés sont compacts. Dans $C([0, 1])$, la suite $x \mapsto x^n$ est bornée, mais elle n'est pas équicontinue en $1$ ({{fc-equicontinuite|Équicontinuité}}, (iv)), et elle n'a aucune suite extraite qui converge uniformément : la limite serait continue, et égale à la limite simple, qui ne l'est pas. La boule unité fermée de $C([0, 1])$ n'est donc pas compacte.
+      - |
+        Une condition sur les pentes donne l'équicontinuité. L'ensemble $L$ des fonctions $f : [0, 1] \to \mathbb R$ qui sont $1$-lipschitziennes et vérifient $|f(0)| \leqslant 1$ est borné, puisque $|f(x)| \leqslant 1 + x \leqslant 2$, et équicontinu ({{fc-equicontinuite|Équicontinuité}}, (ii)). Il est fermé, car les inégalités $|f(x) - f(y)| \leqslant |x - y|$ et $|f(0)| \leqslant 1$ passent à la limite uniforme : par (iii), il est compact.
+
+        L'opérateur $V f(x) = \int_0^x f$ envoie la boule unité de $C([0, 1])$ dans $L$, puisque $|Vf(x) - Vf(y)| \leqslant |x - y|$ et $Vf(0) = 0$ : l'adhérence de l'image de la boule est une partie fermée de $L$, donc compacte, et $V$ est un [[operateur-compact|opérateur compact]] de $C([0, 1])$ au sens du nœud {{f-compacts|Opérateurs compacts}}.
+      - |
+        La suite des fonctions $x \mapsto \sin(nx)$ sur $[0, 2\pi]$, que l'{{anc|analyse complexe}} permet de définir, est bornée, et aucune de ses suites extraites ne converge uniformément ; par (ii), elle n'est donc pas équicontinue. En effet, pour des entiers $m \neq n$ au moins égaux à $1$, l'orthogonalité du nœud {{fo-coefficients|Coefficients de Fourier}} donne $\int_0^{2\pi} (\sin mx - \sin nx)^2\,dx = 2\pi$, si bien que $\|\sin m\cdot - \sin n\cdot\|_\infty \geqslant 1$, et aucune suite extraite n'est de Cauchy.
+      - |
+        G. Ascoli et C. Arzelà ont introduit l'équicontinuité. Ascoli a établi la condition suffisante de compacité pour les fonctions d'une variable réelle (« Le curve limite di una varietà data di curve », *Memorie della R. Accademia dei Lincei* (3) 18, 1883-1884, p. 521-586). C. Arzelà a établi la condition nécessaire et donné un énoncé net en 1895 (« Sulle funzioni di linee », *Memorie della R. Accademia delle Scienze dell'Istituto di Bologna* (5) 5), et M. Fréchet l'a étendu en 1906 aux fonctions sur un espace métrique compact.
+
+  - id: fc-bernstein
+    etiquette: Polynômes de Bernstein
+    nature: proposition
+    titre: Polynômes de Bernstein
+    texte: |
+      Soit $f : [0, 1] \to \lex{ensemble-reels}{\mathbb R}$ et $n \geqslant 1$ un entier. Le [[polynomes-bernstein|polynôme de Bernstein]] d'indice $n$ de $f$ est la fonction polynomiale
+      $$B_nf(x) = \sum_{k=0}^n f\Big(\frac kn\Big)\, b_{n,k}(x),$$
+      où $b_{n,k}(x) = \binom nk x^k(1 - x)^{n-k}$, les $\binom nk$ étant les [[coefficient-binomial|coefficients binomiaux]] ({{pol-binome|Binôme de Newton}}) et $x^0 = 1$ même pour $x = 0$.
+    enonce: |
+      (i) Pour $x \in [0, 1]$, les poids $b_{n,k}(x)$ sont positifs, et
+      $$\begin{gathered} \sum_k b_{n,k}(x) = 1, \quad \sum_k k\, b_{n,k}(x) = nx, \\ \sum_k (k - nx)^2\, b_{n,k}(x) = nx(1 - x). \end{gathered}$$
+
+      (ii) L'application $f \mapsto B_nf$ est linéaire et positive : si $f \geqslant 0$, alors $B_nf \geqslant 0$. Elle laisse fixes les fonctions affines, et $B_nf(0) = f(0)$, $B_nf(1) = f(1)$.
+
+      (iii) Si $f$ est $L$-lipschitzienne, alors, pour tout $x \in [0, 1]$,
+      $$\begin{aligned} |B_nf(x) - f(x)| &\leqslant L\sqrt{\frac{x(1 - x)}n} \\ &\leqslant \frac{L}{2\sqrt n}. \end{aligned}$$
+    preuve: |
+      (i) Chaque poids $b_{n,k}(x)$ est un produit de facteurs positifs, un entier naturel, $x^k$ et $(1 - x)^{n-k}$, puisque $x$ et $1 - x$ sont positifs : il est positif. Le binôme de Newton dans $\mathbb R$ ({{pol-binome|Binôme de Newton}}, (ii)), appliqué à $x$ et $1 - x$, donne $\sum_k b_{n,k}(x) = (x + 1 - x)^n = 1$, pour tout $n \geqslant 0$.
+
+      Pour $1 \leqslant k \leqslant n$, la relation $(k + 1)\binom{n+1}{k+1} = (n + 1)\binom nk$ du même nœud, (i), écrite aux rangs $n - 1$ et $k - 1$, donne $k\binom nk = n\binom{n-1}{k-1}$, d'où
+      $$k\, b_{n,k}(x) = nx\, b_{n-1,k-1}(x),$$
+      et, en sommant sur $k$ de $1$ à $n$, $\sum_k k\, b_{n,k}(x) = nx$.
+
+      De même, pour $n \geqslant 2$ et $2 \leqslant k \leqslant n$, deux applications de cette relation donnent $k(k - 1)\, b_{n,k}(x) = n(n - 1)x^2\, b_{n-2,k-2}(x)$, d'où $\sum_k k(k - 1)\, b_{n,k}(x) = n(n - 1)x^2$, égalité vraie aussi pour $n = 1$, où les deux membres sont nuls. En développant $(k - nx)^2 = k(k - 1) + k - 2nxk + n^2x^2$,
+      $$\begin{aligned} &\sum_k (k - nx)^2 b_{n,k}(x) \\ &\quad = n(n - 1)x^2 + nx - 2n^2x^2 + n^2x^2 \\ &\quad = nx(1 - x). \end{aligned}$$
+
+      (ii) La linéarité et la positivité viennent de la formule et de (i). Pour la fonction constante $1$, $B_n1 = \sum_k b_{n,k} = 1$, et pour $f(x) = x$, $B_nf(x) = \frac1n\sum_k k\,b_{n,k}(x) = x$. Enfin $b_{n,k}(0)$ vaut $1$ pour $k = 0$ et $0$ sinon, et de même en $1$ pour $k = n$.
+
+      (iii) Fixons $x$ et posons $u_k = |\frac kn - x|$. Par (i),
+      $$\begin{aligned} &|B_nf(x) - f(x)| \\ &\quad = \Big|\sum_k \Big(f\Big(\frac kn\Big) - f(x)\Big) b_{n,k}(x)\Big| \\ &\quad \leqslant L\sum_k u_k\, b_{n,k}(x). \end{aligned}$$
+
+      Soit $m = \sum_k u_k\, b_{n,k}(x)$. Comme les poids sont positifs, de somme $1$,
+      $$\begin{aligned} 0 &\leqslant \sum_k (u_k - m)^2 b_{n,k}(x) \\ &= \sum_k u_k^2\, b_{n,k}(x) - m^2, \end{aligned}$$
+      et le dernier point de (i), divisé par $n^2$, donne $m^2 \leqslant \frac{x(1 - x)}n$. Enfin $x(1 - x) = \frac14 - (x - \frac12)^2 \leqslant \frac14$.
+    remarques:
+      - |
+        Pour $f(x) = |x - \frac12|$, qui est $1$-lipschitzienne, l'écart maximal est atteint en $\frac12$. On calcule exactement $B_{10}f(\frac12) = \frac{63}{512} \approx 0{,}123$ et $B_{100}f(\frac12) \approx 0{,}0398$, pour des majorations $\frac1{2\sqrt n}$ égales à $0{,}158$ et $0{,}05$.
+
+        Le produit de l'écart par $\sqrt n$ vaut $0{,}389$ pour $n = 10$ et $0{,}398$ pour $n = 100$ : il se stabilise, et l'ordre $\frac1{\sqrt n}$ de la majoration est le bon pour cette fonction. Multiplier le degré par $100$ ne divise l'erreur que par $10$.
+
+        ```schema fc-bernstein
+        La fonction $f(x) = |x - \frac12|$ (noir) et ses polynômes de Bernstein $B_4f$ (bleu), $B_{10}f$ (vert) et $B_{40}f$ (rouge), qui sont tous au-dessus de $f$ et la rejoignent en $0$ et en $1$. L'écart, maximal au point anguleux, vaut $0{,}1875$, $0{,}123$ et $0{,}063$ ; le pointillé gris, à la hauteur $\frac1{2\sqrt{10}} \approx 0{,}158$ au-dessus de $f$, est la majoration (iii) pour $n = 10$, que $B_{10}f$ ne franchit pas.
+        ```
+      - |
+        Pour une fonction moins régulière, l'estimation se dégrade. La fonction $f(x) = \sqrt x$ vérifie $|\sqrt u - \sqrt v| \leqslant \sqrt{|u - v|}$, puisque, pour $u \geqslant v \geqslant 0$, $(\sqrt u - \sqrt v)^2 \leqslant (\sqrt u - \sqrt v)(\sqrt u + \sqrt v) = u - v$.
+
+        L'argument de (iii), appliqué deux fois, donne alors $|B_nf - f| \leqslant (4n)^{-1/4}$, soit $0{,}40$ pour $n = 10$ et $0{,}22$ pour $n = 100$. Les écarts réels, mesurés numériquement, sont bien plus petits, $0{,}086$ et $0{,}027$, atteints près de $0$ : la majoration générale est pessimiste.
+      - |
+        Le poids $b_{n,k}(x)$ est la probabilité d'obtenir $k$ succès en $n$ épreuves indépendantes de probabilité $x$, et (i) donne l'espérance $nx$ et la variance $nx(1 - x)$ du nombre de succès : c'est la lecture probabiliste de S. Bernstein (« Démonstration du théorème de Weierstrass fondée sur le calcul des probabilités », *Communications de la Société mathématique de Kharkov* (2) 13, 1912, p. 1-2), reprise au nœud {{p-loi-faible|Loi faible des grands nombres}}. Ici, aucune probabilité n'intervient : ce sont des identités entre polynômes.
+
+  - id: fc-weierstrass
+    etiquette: Théorème de Weierstrass
+    nature: théorème
+    titre: Théorème d'approximation de Weierstrass
+    enonce: |
+      (i) Pour toute $f \in C([0, 1])$, la suite $(B_nf)$ converge uniformément vers $f$. Plus précisément, si $\varepsilon > 0$ et $\delta > 0$ sont tels que $|u - v| < \delta$ entraîne $|f(u) - f(v)| \leqslant \varepsilon$, alors
+      $$\|B_nf - f\|_\infty \leqslant \varepsilon + \frac{\|f\|_\infty}{2n\delta^2}.$$
+
+      (ii) *Weierstrass.* Sur un segment $[a, b]$, avec $a < b$, toute fonction continue est limite uniforme de fonctions polynomiales : ces fonctions forment une partie dense de $C([a, b])$.
+
+      (iii) Pour tous $M > 0$ et $\varepsilon > 0$, il existe une fonction polynomiale $Q$ telle que $Q(0) = 0$ et $\big||t| - Q(t)\big| \leqslant \varepsilon$ pour tout $t \in [-M, M]$.
+    preuve: |
+      (i) Le segment $[0, 1]$ est compact, et $f$ est uniformément continue ({{me-heine|Théorème de Heine}}) : de tels $\varepsilon$ et $\delta$ existent pour tout $\varepsilon > 0$. Fixons $x \in [0, 1]$ et séparons les indices $k$ selon que $|\frac kn - x| < \delta$ ou non.
+
+      Dans le premier cas, $|f(\frac kn) - f(x)| \leqslant \varepsilon$ ; dans le second, $|f(\frac kn) - f(x)| \leqslant 2\|f\|_\infty \leqslant 2\|f\|_\infty \frac{(k/n - x)^2}{\delta^2}$. Par le point (i) du nœud {{fc-bernstein|Polynômes de Bernstein}},
+      $$\begin{aligned} &|B_nf(x) - f(x)| \\ &\quad \leqslant \sum_k \Big|f\Big(\frac kn\Big) - f(x)\Big|\, b_{n,k}(x) \\ &\quad \leqslant \varepsilon + \frac{2\|f\|_\infty}{\delta^2}\cdot\frac{x(1 - x)}n, \end{aligned}$$
+      et $x(1 - x) \leqslant \frac14$. La majoration ne dépend pas de $x$, et elle est au plus $2\varepsilon$ dès que $n \geqslant \|f\|_\infty/(2\varepsilon\delta^2)$.
+
+      (ii) Soit $f \in C([a, b])$ et $\varphi(s) = a + (b - a)s$, bijection affine de $[0, 1]$ sur $[a, b]$. La fonction $f \circ \varphi$ est continue sur $[0, 1]$, et, par (i), $\|B_n(f \circ \varphi) - f \circ \varphi\|_\infty \to 0$.
+
+      Or $P_n = B_n(f \circ \varphi) \circ \varphi^{-1}$ est polynomiale, comme composée d'une fonction polynomiale et de la fonction affine $\varphi^{-1}(x) = \frac{x - a}{b - a}$, et $\sup_{[a, b]} |P_n - f| = \sup_{[0, 1]} |B_n(f \circ \varphi) - f \circ \varphi|$.
+
+      (iii) Par (ii), il existe une fonction polynomiale $P$ telle que $\big||t| - P(t)\big| \leqslant \frac\varepsilon2$ sur $[-M, M]$. En $t = 0$, on obtient $|P(0)| \leqslant \frac\varepsilon2$, et $Q = P - P(0)$ convient.
+    remarques:
+      - |
+        Le théorème est propre aux segments. Sur $\lex{ensemble-reels}{\mathbb R}$ tout entier, une fonction polynomiale bornée est constante, puisque, si $P$ est de degré $d \geqslant 1$ et de coefficient dominant $a_d$, le quotient $P(x)/x^d$ tend vers $a_d \neq 0$.
+
+        Si une fonction polynomiale $P$ vérifiait $|P(x) - \frac1{1 + x^2}| \leqslant \frac14$ pour tout réel $x$, elle serait bornée, donc constante, égale à $c$, et l'on aurait à la fois $|c - 1| \leqslant \frac14$, en $x = 0$, et $|c| \leqslant \frac14 + \frac1{1 + x^2}$ pour tout $x$, donc $|c| \leqslant \frac14$ : c'est impossible.
+      - |
+        K. Weierstrass a publié le théorème en 1885 (« Über die analytische Darstellbarkeit sogenannter willkürlicher Functionen einer reellen Veränderlichen », *Sitzungsberichte der Akademie der Wissenschaften zu Berlin*, p. 633-639 et 789-805), par une démonstration qui régularise $f$ par un noyau gaussien. Les polynômes de Bernstein, de 1912, ont l'avantage d'être explicites, et le théorème de Stone-Weierstrass étend le résultat à tout espace compact ({{fc-stone-weierstrass|Stone-Weierstrass}}).
+
+  - id: fc-treillis
+    etiquette: Lemme des treillis
+    nature: lemme
+    titre: Approximation par un treillis de fonctions
+    texte: |
+      Soit $K$ un espace [[compact]] non vide. Une partie $L$ de $C(K)$ est un [[treillis-fonctions|treillis de fonctions]] si $\max(f, g)$ et $\min(f, g)$ appartiennent à $L$ dès que $f$ et $g$ y appartiennent ; par récurrence, $L$ contient alors le maximum et le minimum de toute famille finie non vide de ses éléments.
+    enonce: |
+      Soit $L$ un treillis de fonctions de $C(K)$ qui **interpole en deux points** : pour tous $x, y \in K$ et tous réels $a, b$, avec $a = b$ si $x = y$, il existe $h \in L$ telle que $h(x) = a$ et $h(y) = b$. Alors $L$ est dense dans $C(K)$ : pour toute $f \in C(K)$ et tout $\varepsilon > 0$, il existe $g \in L$ telle que $\|f - g\|_\infty < \varepsilon$.
+    preuve: |
+      Soit $f \in C(K)$ et $\varepsilon > 0$.
+
+      *Étape 1 : pour tout $x \in K$, il existe $\varphi \in L$ telle que $\varphi(x) = f(x)$ et $\varphi > f - \varepsilon$ sur $K$.* Fixons $x$, et considérons la famille $\mathcal V_x$ des ouverts
+      $$V_h = \{z \in K : h(z) > f(z) - \varepsilon\},$$
+      pour toutes les $h \in L$ telles que $h(x) = f(x)$. Ce sont des ouverts, puisque $h - f$ est continue.
+
+      Ils recouvrent $K$ : pour $y \in K$, il existe $h \in L$ telle que $h(x) = f(x)$ et $h(y) = f(y)$, et $y \in V_h$. Par compacité, $K$ est la réunion d'un nombre fini d'entre eux, $V_{h_1}, \dots, V_{h_m}$, et $\varphi = \max(h_1, \dots, h_m)$ convient : $\varphi(x) = f(x)$, et tout point $z$ appartient à un $V_{h_j}$, où $\varphi(z) \geqslant h_j(z) > f(z) - \varepsilon$.
+
+      *Étape 2.* Considérons la famille des ouverts
+      $$W_\varphi = \{z \in K : \varphi(z) < f(z) + \varepsilon\},$$
+      pour toutes les $\varphi \in L$ telles que $\varphi > f - \varepsilon$ sur $K$. Par l'étape 1, chaque point $x$ appartient à l'un d'eux. Un nombre fini, $W_{\varphi_1}, \dots, W_{\varphi_q}$, recouvre $K$, et $g = \min(\varphi_1, \dots, \varphi_q) \in L$ vérifie $f - \varepsilon < g < f + \varepsilon$ en tout point.
+
+      ```schema fc-treillis
+      Ici $L$ est le treillis des fonctions continues affines par morceaux sur $[0, 1]$, et $\varepsilon = 0{,}1$. En haut, l'étape 1 pour $x = 0{,}3$ : trois fonctions affines (bleu) passent par le point $(x, f(x))$, et chacune par un autre point du graphe de $f$ (noir) ; leur maximum $\varphi$ (rouge) reste au-dessus de $f - \varepsilon$ (pointillé gris) sur tout le segment, et vaut $f(x)$ en $x$. En bas, l'étape 2 : trois telles fonctions $\varphi$ (bleu), construites en $x = 0$, $0{,}2$ et $1$, et leur minimum $g$ (rouge), qui reste entre $f - \varepsilon$ et $f + \varepsilon$.
+      ```
+
+      La fonction continue $|f - g|$ atteint son maximum sur le compact $K$ ({{t-compact-prop|Parties compactes}}, (iii), et {{tr-compacts|Compacts de ℝ}}, (iii)), qui est donc $< \varepsilon$.
+    remarques:
+      - |
+        Aucun choix infini n'intervient. Les recouvrements sont indexés par **toutes** les fonctions de $L$ qui conviennent, et non par une fonction choisie pour chaque point, ce qui serait une infinité de choix. Seuls les $m$ ou $q$ éléments du sous-recouvrement fini sont désignés, en nombre fini.
+      - |
+        Le lemme dit qu'un treillis de fonctions est dense dès qu'il l'est « en deux points ». Le mécanisme est celui du dessin : le maximum relève la fonction partout au-dessus de $f - \varepsilon$ sans la modifier en $x$, et le minimum la rabaisse partout au-dessous de $f + \varepsilon$ sans détruire la minoration. Les fonctions affines par morceaux continues sur $[0, 1]$ forment un tel treillis, et l'on retrouve leur densité dans $C([0, 1])$.
+
+  - id: fc-stone-weierstrass
+    etiquette: Stone-Weierstrass
+    nature: théorème
+    titre: Théorème de Stone-Weierstrass
+    texte: |
+      Soit $K$ un espace [[compact]]. Une [[sous-algebre-fonctions|sous-algèbre]] de $C(K)$ est un sous-espace vectoriel $A$ stable par produit : si $f, g \in A$, alors $fg \in A$. Elle [[separe-points|sépare les points]] de $K$ si, pour tous $x \neq y$ dans $K$, il existe $g \in A$ telle que $g(x) \neq g(y)$.
+    enonce: |
+      (i) L'adhérence $\bar A$ d'une sous-algèbre $A$ est une sous-algèbre. Pour $f, g \in \bar A$, les fonctions $|f|$, $\max(f, g)$ et $\min(f, g)$ appartiennent à $\bar A$.
+
+      (ii) Soit $A$ une sous-algèbre qui sépare les points et telle que, pour tout $x \in K$, une fonction de $A$ ne s'annule pas en $x$. Pour tous $x \neq y$ dans $K$ et tous réels $a, b$, il existe $g \in A$ telle que $g(x) = a$ et $g(y) = b$ ; pour tout $x$ et tout réel $a$, il existe $g \in A$ telle que $g(x) = a$.
+
+      (iii) *Stone-Weierstrass.* Une sous-algèbre qui vérifie les hypothèses de (ii) est dense dans $C(K)$. C'est le cas, en particulier, d'une sous-algèbre qui contient les fonctions constantes et sépare les points.
+
+      (iv) Soit $x_0 \in K$ et $A$ une sous-algèbre qui sépare les points et dont toutes les fonctions s'annulent en $x_0$. Alors $\bar A = \{f \in C(K) : f(x_0) = 0\}$.
+    preuve: |
+      (i) $\bar A$ est un sous-espace vectoriel ({{f-evn|Espaces normés}}, (ii)). Soient $f, g \in \bar A$ et $\varepsilon > 0$, et $\eta \in \,]0, 1]$ tel que $\eta(\|f\|_\infty + \|g\|_\infty + 1) < \varepsilon$. Les boules de rayon $\eta$ centrées en $f$ et en $g$ rencontrent $A$ ({{me-topologie|Topologie d'une distance}}, (ii)) en des fonctions $f'$ et $g'$, et
+      $$\begin{aligned} &\|fg - f'g'\|_\infty \\ &\quad \leqslant \|f\|_\infty\|g - g'\|_\infty + \|g'\|_\infty\|f - f'\|_\infty \\ &\quad < \eta\|f\|_\infty + (\|g\|_\infty + 1)\eta < \varepsilon. \end{aligned}$$
+      Toute boule centrée en $fg$ rencontre $A$ : $fg \in \bar A$.
+
+      Soit $f \in \bar A$, $M = \|f\|_\infty + 1$ et $\varepsilon > 0$. Par le théorème de Weierstrass ({{fc-weierstrass|Théorème de Weierstrass}}, (iii)), il existe une fonction polynomiale $Q(t) = \sum_{k=1}^d q_k t^k$, sans terme constant, telle que $\big||t| - Q(t)\big| \leqslant \varepsilon$ sur $[-M, M]$.
+
+      La fonction $\sum_{k=1}^d q_k f^k$ appartient à la sous-algèbre $\bar A$, sans qu'il faille y supposer les constantes, et elle est à distance au plus $\varepsilon$ de $|f|$, puisque $f$ prend ses valeurs dans $[-M, M]$. Ainsi $|f|$ est adhérente à $\bar A$, qui est fermée : $|f| \in \bar A$. Enfin
+      $$\begin{gathered} \max(f, g) = \frac{f + g + |f - g|}2, \\ \min(f, g) = \frac{f + g - |f - g|}2. \end{gathered}$$
+
+      (ii) Soient $x \neq y$. L'ensemble $V = \{(g(x), g(y)) : g \in A\}$ est un sous-espace vectoriel de $\lex{n-uplet}{\mathbb R^2}$, stable par le produit coordonnée par coordonnée. Supposons $V \neq \mathbb R^2$ : il est de [[dimension]] au plus $1$ ({{v-dimension|Dimension}}), et non nul, puisqu'une fonction de $A$ ne s'annule pas en $x$. C'est donc la droite engendrée par un vecteur $(\alpha, \beta) \neq (0, 0)$.
+
+      Le produit $(\alpha^2, \beta^2)$ appartient à $V$ : il existe un réel $\lambda$ tel que $\alpha^2 = \lambda\alpha$ et $\beta^2 = \lambda\beta$. Si $\alpha = 0$, toutes les fonctions de $A$ s'annulent en $x$ ; si $\beta = 0$, en $y$ ; sinon $\alpha = \lambda = \beta$, et toutes prennent la même valeur en $x$ et en $y$. Les trois cas sont exclus : $V = \mathbb R^2$.
+
+      Pour un seul point $x$, l'ensemble $\{g(x) : g \in A\}$ est un sous-espace non nul de $\mathbb R$, donc $\mathbb R$.
+
+      (iii) Si $K$ est vide, il n'y a rien à démontrer. Sinon, par (i), $\bar A$ est un treillis de fonctions, et il interpole en deux points par (ii), puisqu'il contient $A$. Par le lemme des treillis ({{fc-treillis|Lemme des treillis}}), $\bar A$ est dense dans $C(K)$ ; comme il est fermé, il est égal à $C(K)$. Si $A$ contient les constantes, la fonction $1$ ne s'annule nulle part.
+
+      (iv) L'évaluation $f \mapsto f(x_0)$ est $1$-lipschitzienne, donc continue, et $\{f : f(x_0) = 0\}$ est un fermé qui contient $A$, donc $\bar A$.
+
+      Réciproquement, l'ensemble $B$ des fonctions $g + c$, avec $g \in A$ et $c$ constante, est une sous-algèbre qui contient les constantes et sépare les points. Soit $f$ continue, nulle en $x_0$, et $\varepsilon > 0$. Par (iii), il existe $g \in A$ et un réel $c$ tels que $\|f - g - c\|_\infty < \varepsilon$ ; en $x_0$, on obtient $|c| < \varepsilon$, d'où $\|f - g\|_\infty < 2\varepsilon$. Ainsi $f \in \bar A$.
+    remarques:
+      - |
+        Aucun choix infini n'intervient : la démonstration passe par le lemme des treillis ({{fc-treillis|Lemme des treillis}}), qui ne désigne qu'un nombre fini de fonctions, et par l'adhérence, décrite par les boules qu'elle rencontre plutôt que par des suites.
+      - |
+        La séparation des points est indispensable, et l'erreur la plus répandue est de l'oublier. Sur $K = [-1, 1]$, les fonctions polynomiales paires forment une sous-algèbre qui contient les constantes, mais qui ne sépare pas $x$ de $-x$. Son adhérence est formée de fonctions paires, puisque l'ensemble des fonctions paires est fermé, et la fonction $x \mapsto x$ n'en fait pas partie.
+      - |
+        Sur $K = [0, 1]$, les fonctions polynomiales sans terme constant forment une sous-algèbre qui sépare les points, et dont toutes les fonctions s'annulent en $0$. Par (iv), leur adhérence est formée des fonctions continues nulles en $0$ : on n'approche pas la constante $1$, puisque toutes ces fonctions valent $0$ en $0$.
+      - |
+        Le théorème vaut pour les fonctions à valeurs dans $\lex{ensemble-complexes}{\mathbb C}$, qui n'est pas un ancêtre de cette branche, à condition d'ajouter une hypothèse : la sous-algèbre doit être stable par conjugaison. Elle contient alors les parties réelles $\frac12(f + \bar f)$ et imaginaires de ses fonctions, auxquelles s'applique la version réelle.
+
+        Sans cette hypothèse, le théorème tombe : sur le disque unité fermé, les polynômes en $z$ séparent les points et contiennent les constantes, mais $z \mapsto \bar z$ n'est pas limite uniforme de polynômes. En effet, l'intégrale d'un polynôme sur le cercle unité est nulle, puisqu'il a une primitive ({{cx-integrale-chemin|Intégrale curviligne}}), alors que celle de $\bar z = 1/z$ vaut $2i\pi$, et l'intégrale passe à la limite uniforme.
+      - |
+        M. H. Stone a obtenu le théorème en 1937, dans un long mémoire sur les anneaux booléens (« Applications of the theory of Boolean rings to general topology », *Trans. Amer. Math. Soc.* 41, p. 375-481), et en a donné l'exposé par les treillis suivi ici en 1948 (« The generalized Weierstrass approximation theorem », *Math. Magazine* 21, p. 167-183 et 237-254).
+
+  - id: fc-polynomes
+    etiquette: Applications
+    nature: corollaire
+    titre: Polynômes de plusieurs variables, fonctions lipschitziennes
+    texte: |
+      Une **fonction polynomiale** sur $\lex{n-uplet}{\mathbb R^n}$ est une combinaison linéaire finie de monômes $x \mapsto x_1^{a_1} \cdots x_n^{a_n}$, où $a_1, \dots, a_n$ sont des entiers naturels.
+    enonce: |
+      (i) Pour toute partie compacte $K$ de $\mathbb R^n$, les restrictions à $K$ des fonctions polynomiales forment une partie dense de $C(K)$.
+
+      (ii) En particulier, les restrictions au cercle unité $\lex{sphere-unite}{S^1}$ de $\mathbb R^2$ des fonctions polynomiales en $(x, y)$ sont denses dans $C(S^1)$.
+
+      (iii) Sur un espace métrique compact $K$, les fonctions lipschitziennes de $K$ dans $\lex{ensemble-reels}{\mathbb R}$ forment une partie dense de $C(K)$.
+    preuve: |
+      (i) Les fonctions coordonnées sont continues sur $\mathbb R^n$ ({{t-produit|Topologie produit}}), et les sommes et produits de fonctions continues réelles le sont : les restrictions des fonctions polynomiales forment une sous-algèbre de $C(K)$ qui contient les constantes. Elle sépare les points, puisque deux points distincts de $K$ diffèrent par l'une de leurs coordonnées. Le théorème de Stone-Weierstrass ({{fc-stone-weierstrass|Stone-Weierstrass}}, (iii)) conclut.
+
+      (ii) Le cercle $S^1$ est une partie compacte de $\mathbb R^2$ ({{tr-sphere|Sphère unité Sⁿ}}), et l'on applique (i).
+
+      (iii) Les fonctions lipschitziennes forment un sous-espace vectoriel de $C(K)$, qui contient les constantes. Si $f$ et $g$ sont lipschitziennes, de rapports $k$ et $l$, elles sont bornées sur le compact $K$, et
+      $$\begin{aligned} &|f(x)g(x) - f(y)g(y)| \\ &\quad \leqslant \|f\|_\infty|g(x) - g(y)| \\ &\qquad + \|g\|_\infty|f(x) - f(y)| \\ &\quad \leqslant (l\|f\|_\infty + k\|g\|_\infty)\, d(x, y) : \end{aligned}$$
+      c'est une sous-algèbre. Pour $a \neq y$, la fonction $x \mapsto d(a, x)$, $1$-lipschitzienne ({{me-topologie|Topologie d'une distance}}, (iv)), vaut $0$ en $a$ et $d(a, y) > 0$ en $y$ : elle sépare les points. Le théorème de Stone-Weierstrass conclut.
+    remarques:
+      - |
+        Composées avec $t \mapsto (\cos t, \sin t)$, que construit l'{{anc|analyse complexe}}, les fonctions polynomiales en $(x, y)$ deviennent des combinaisons linéaires de $\cos(kt)$ et de $\sin(kt)$, par les formules qui linéarisent les produits : ce sont les polynômes trigonométriques. Le point (ii) redonne ainsi leur densité dans les fonctions continues $2\pi$-périodiques, que le théorème de Fejér obtient avec une approximation explicite ({{fo-fejer|Théorème de Fejér}}).
+      - |
+        Pour $n = 1$ et $K = [a, b]$, le point (i) redonne le théorème de Weierstrass ({{fc-weierstrass|Théorème de Weierstrass}}, (ii)), mais sans approximation explicite : la démonstration de Stone-Weierstrass, par compacité, ne dit pas quel polynôme convient, ni de quel degré.
+      - |
+        La densité des fonctions lipschitziennes permet d'établir une propriété sur ces fonctions, où les estimations sont faciles, puis de l'étendre aux fonctions continues. Ainsi, $B_n$ est linéaire et vérifie $\|B_nf\|_\infty \leqslant \|f\|_\infty$, par positivité et parce que $B_n1 = 1$ ({{fc-bernstein|Polynômes de Bernstein}}, (ii)).
+
+        Si $g$ est $L$-lipschitzienne et $\|f - g\|_\infty \leqslant \varepsilon$, l'estimation ({{fc-bernstein|Polynômes de Bernstein}}, (iii)) donne
+        $$\begin{aligned} &\|B_nf - f\|_\infty \\ &\quad \leqslant \|B_n(f - g)\|_\infty + \|B_ng - g\|_\infty \\ &\qquad + \|g - f\|_\infty \\ &\quad \leqslant 2\varepsilon + \frac{L}{2\sqrt n}, \end{aligned}$$
+        ce qui redonne le théorème de Weierstrass sur $[0, 1]$ ({{fc-weierstrass|Théorème de Weierstrass}}, (i)).
+
+  - id: fc-separabilite
+    etiquette: Séparabilité
+    nature: proposition
+    titre: Séparabilité de C(K)
+    texte: |
+      Un espace topologique $X$ est [[espace-separable|séparable]] s'il existe une suite $(x_j)_{j \in \lex{ensemble-entiers-naturels}{\mathbb N}}$ d'éléments de $X$ dont l'ensemble des termes est [[partie-dense|dense]].
+    choix: |
+      Les points (i) et (ii) n'utilisent aucun choix : les suites denses y sont définies à partir des données. Le point (iii) choisit, pour chaque $k$, un $2^{-k}$-réseau fini de $K$ parmi tous ceux qui existent : c'est le [[choix-denombrable]]. Une forme du choix est nécessaire, comme le montre la seconde remarque.
+    enonce: |
+      (i) Pour toute partie compacte $K$ de $\lex{n-uplet}{\mathbb R^n}$, les restrictions à $K$ des fonctions polynomiales à coefficients rationnels sont les termes d'une suite dense de $C(K)$ : $C(K)$ est séparable.
+
+      (ii) Soit $K$ un espace métrique compact, et supposons donnée, pour chaque $k \in \mathbb N$, une famille finie $(x_{k,1}, \dots, x_{k,m_k})$ de points de $K$ telle que $K$ soit la réunion des boules $B(x_{k,i}, 2^{-k})$. Alors $C(K)$ est séparable.
+
+      (iii) Pour tout espace métrique compact $K$, l'espace $C(K)$ est séparable.
+    preuve: |
+      (i) *Une suite.* Pour chaque entier $m \geqslant 1$, le nœud {{q-denombrable|ℚ est dénombrable}} fournit une bijection de $\mathbb N$ sur $\lex{ensemble-rationnels}{\mathbb Q}^m$, définie explicitement, par récurrence sur $m$, sans choix. Une fonction polynomiale de degré au plus $d$ en chaque variable est donnée par la famille de ses $(d + 1)^n$ coefficients, indexés par les monômes rangés dans l'ordre lexicographique.
+
+      En composant la bijection $\mathbb N \to \mathbb N \times \mathbb N$ du même nœud avec, pour chaque $d$, la bijection $\mathbb N \to \mathbb Q^{(d+1)^n}$, on obtient une suite $(P_j)$ dont les termes sont exactement les fonctions polynomiales à coefficients rationnels.
+
+      *Elle est dense.* Soit $f \in C(K)$ et $\varepsilon > 0$. Par le nœud {{fc-polynomes|Applications}}, (i), il existe une fonction polynomiale $P = \sum_\alpha c_\alpha x^\alpha$ telle que $\|f - P\|_\infty < \varepsilon$, la somme portant sur $N$ monômes $x^\alpha$. Chaque monôme est continu, donc borné sur $K$, par un réel $R \geqslant 1$ commun.
+
+      Par densité de $\mathbb Q$ ({{tr-dense|Densité de ℚ}}), on remplace chaque $c_\alpha$ par un rationnel $r_\alpha$ tel que $|c_\alpha - r_\alpha| < \frac{\varepsilon}{NR}$ ; ce sont $N$ choix, en nombre fini. Le polynôme $Q = \sum_\alpha r_\alpha x^\alpha$, qui est l'un des $P_j$, vérifie $\|P - Q\|_\infty < \varepsilon$, donc $\|f - Q\|_\infty < 2\varepsilon$.
+
+      (ii) Si $K$ est vide, $C(K)$ n'a qu'un élément. Sinon, les couples $(k, i)$ tels que $1 \leqslant i \leqslant m_k$ se rangent en une suite, par l'ordre lexicographique, et l'on note $(\varphi_l)$ la suite correspondante des fonctions $x \mapsto d(x_{k,i}, x)$, continues ({{me-topologie|Topologie d'une distance}}, (iv)).
+
+      Elles séparent les points. Si $x \neq y$, soit $k$ tel que $2^{-k} < \frac12 d(x, y)$, et $i$ tel que $d(x_{k,i}, x) < 2^{-k}$. Alors
+      $$\begin{aligned} d(x_{k,i}, y) &\geqslant d(x, y) - d(x_{k,i}, x) \\ &> \tfrac12 d(x, y) > d(x_{k,i}, x). \end{aligned}$$
+
+      Les fonctions polynomiales en $\varphi_0, \dots, \varphi_L$, pour tous les $L$, forment une sous-algèbre qui contient les constantes et sépare les points : elle est dense ({{fc-stone-weierstrass|Stone-Weierstrass}}, (iii)). Celles qui sont à coefficients rationnels sont les termes d'une suite, et elles l'approchent, par le même argument qu'en (i).
+
+      (iii) Le compact $K$ est précompact ({{me-precompacts|Parties précompactes}}, (i)) : pour chaque $k$, il existe un $2^{-k}$-réseau fini de $K$, que l'on peut prendre formé de points de $K$, par la démonstration de ce même point. On en choisit un pour chaque $k$, et l'on applique (ii).
+    remarques:
+      - |
+        Pour $K = [0, 1]$, la suite de (i) est formée des polynômes à coefficients rationnels, et le théorème de Weierstrass suffit ({{fc-weierstrass|Théorème de Weierstrass}}). L'espace $C([0, 1])$, de dimension infinie, est ainsi « petit » : une suite le remplit à $\varepsilon$ près.
+
+        L'espace $\mathcal B([0, 1])$ des fonctions bornées, au contraire, n'est pas séparable. Ses indicatrices de singletons sont deux à deux à distance $1$ ; une suite dense $(g_j)$ en approcherait chacune à moins de $\frac12$, et le plus petit $j$ qui convient pour $\mathbf 1_{\{x\}}$ définirait une injection de $[0, 1]$ dans $\mathbb N$, ce que le théorème de Cantor interdit ({{r-cantor|Théorème de Cantor}}).
+      - |
+        Le point (iii) n'est pas démontrable dans $\mathsf{ZF}$. Supposons donnée une suite $(P_n)$ d'ensembles à deux éléments $a_n$, $b_n$, deux à deux disjoints, sans fonction de choix, ce que $\mathsf{ZF}$ ne permet pas d'exclure : de tels modèles de $\mathsf{ZF}$ se construisent par la méthode du forcing de P. Cohen, ce qui est admis ici. Sur la réunion $K$ des $P_n$ et d'un point $\infty$, on pose $r(x) = 2^{-n}$ pour $x \in P_n$, $r(\infty) = 0$, et $d(x, y) = \max(r(x), r(y))$ pour $x \neq y$ : c'est une distance, et $K$ est compact, puisqu'un ouvert contenant $\infty$ contient tous les $P_n$ sauf un nombre fini.
+
+        Chaque $a_n$ est isolé, si bien que l'indicatrice de $\{a_n\}$ est continue. Si $(g_j)$ était une suite dense de $C(K)$, le plus petit $j$ tel que $\|g_j - \mathbf 1_{\{a_n\}}\|_\infty < \frac13$ désignerait, dans chaque $P_n$, l'unique point où $g_j$ dépasse $\frac23$ : ce serait une fonction de choix. De même, tous les points autres que $\infty$ sont isolés, si bien qu'une suite dense de $K$ contiendrait tous les $a_n$ et $b_n$, et que le premier de ses termes rencontré dans chaque $P_n$ donnerait une fonction de choix. Ni $C(K)$ ni $K$ ne sont donc séparables dans un tel modèle.
+
+aretes:
+  - [fc-uniforme, fc-dini]
+  - [fc-uniforme, fc-equicontinuite]
+  - [fc-equicontinuite, fc-precompacite]
+  - [fc-precompacite, fc-ascoli]
+  - [fc-uniforme, fc-bernstein]
+  - [fc-bernstein, fc-weierstrass]
+  - [fc-uniforme, fc-treillis]
+  - [fc-weierstrass, fc-stone-weierstrass]
+  - [fc-treillis, fc-stone-weierstrass]
+  - [fc-stone-weierstrass, fc-polynomes]
+  - [fc-polynomes, fc-separabilite]

@@ -1458,3 +1458,180 @@ def mk_riesz_markov():
         S.texte(R(u[k], y) + [-10, 0], f'F_{k + 1}', 'r', ancre='end', taille=14)
     S.texte(R(0.5, 1) + [26, -6], 'f', 't', ancre='start')
     return S
+
+
+# ================================================================ anf-continues (Ascoli, Stone-Weierstrass)
+
+def _bernstein(f, n, x):
+    x = np.asarray(x, float)
+    k = np.arange(n + 1)
+    w = np.array([math.comb(n, j) for j in k], float)
+    return (w * x[:, None] ** k * (1 - x[:, None]) ** (n - k) * f(k / n)).sum(axis=1)
+
+
+@schema('fc-equicontinuite')
+def fc_equicontinuite():
+    ns = [1, 2, 4, 8, 16, 32, 64]
+    delta = 0.1
+    y = 1 - delta / 2
+    vals = [y ** n for n in ns]
+    attendu = ['0,95', '0,90', '0,81', '0,66', '0,44', '0,19', '0,04']
+    for v, s in zip(vals, attendu):
+        assert f'{v:.2f}'.replace('.', ',') == s
+    assert 1 - y ** 16 > 0.5 and 1 - y ** 8 < 0.5                     # l'écart dépasse 1/2 dès n = 16
+    assert max(n * 0.5 ** (n - 1) for n in range(1, 200)) == 1        # pentes en 1/2 au plus 1
+    S = Schema(500, 330, 'Les fonctions x puissance n ne sont pas équicontinues en 1')
+    R = Repere(-0.04, 1.1, -0.08, 1.12, 30, 12, 400, 290)
+    R.axes(S, 'x', '')
+    xs = np.linspace(0, 1, 801)
+    for n in ns:
+        S.poly(R(xs, xs ** n), 'b', l=1.5)
+    # fenêtre [1 - δ, 1] et le point y = 1 - δ/2
+    S.surface(np.vstack([R(1 - delta, 0), R(1, 0), R(1, 1), R(1 - delta, 1)]), 'g')
+    S.ligne(R(y, 0), R(y, 1), 'r', l=1.6)
+    for v in vals:
+        S.point(R(y, v), 'r', r=3.4)
+    S.point(R(1, 1), 't', r=4)
+    for n, v in zip(ns, vals):
+        if n in (1, 8, 16, 32, 64):
+            S.texte(R(1, v) + [12, 2], f'n = {n}' if n == 1 else f'{n}', 'b', ancre='start', taille=14)
+    S.texte(R(y, 0) + [0, 18], '0,95', 'r', taille=14)
+    S.texte(R(1 - delta, 1) + [-6, -12], '1 − δ', 'g', ancre='end', taille=14)
+    S.ligne(R(0.5, 0), R(0.5, 0.55), 'g', d=True)
+    S.texte(R(0.5, 0) + [0, 18], '1/2', 'g', taille=14)
+    S.texte(R(0, 1) + [-8, 0], '1', 'g', ancre='end', taille=14)
+    S.ligne(R(0, 1) + [-3, 0], R(0, 1) + [3, 0], 'g')
+    S.ligne(R(0, 1), R(1, 1), 'g', d=True)
+    return S
+
+
+@schema('fc-precompacite')
+def fc_precompacite():
+    eps, eta = 0.2, 0.15
+    xi = [0.125, 0.375, 0.625, 0.875]
+    xs = np.linspace(0, 1, 2001)
+    assert all(min(abs(x - c) for c in xi) < eta for x in xs)          # les boules B(x_i, η) recouvrent [0, 1]
+    f = lambda x: 0.3 + 0.6 * x - 0.08 * x * (1 - x)
+    g = lambda x: 0.39 + 0.42 * x + 0.1 * x * (1 - x)
+    c = [round(f(x) / eps) * eps for x in xi]
+    for x, ci in zip(xi, c):
+        assert abs(f(x) - ci) <= eps / 2 and abs(g(x) - ci) <= eps / 2
+    # oscillation de f et g sur chaque boule au plus ε (équicontinuité au sens du lemme)
+    for x0 in xi:
+        m = np.abs(xs - x0) < eta
+        for h in (f, g):
+            v = h(xs[m])
+            assert v.max() - v.min() <= eps
+    assert np.max(np.abs(f(xs) - g(xs))) <= 3 * eps
+    S = Schema(500, 330, 'Deux fonctions d’une même partie A_c')
+    R = Repere(-0.04, 1.1, -0.1, 1.12, 30, 12, 400, 290)
+    R.axes(S, 'x', '')
+    for j in range(1, 6):
+        S.ligne(R(0, j * eps), R(1, j * eps), 'g', d=True)
+        S.texte(R(0, j * eps) + [-8, 0], f'{j * eps:.1f}'.replace('.', ','), 'g', ancre='end', taille=13)
+    assert len(set(c)) == 3                                            # les c_i ne sont pas tous égaux
+    for i, x in enumerate(xi):
+        yb = 0.06 if i % 2 == 0 else 0.11                               # boules B(x_i, η), en quinconce
+        S.ligne(R(max(x - eta, 0), yb), R(min(x + eta, 1), yb), 'g', d=True, l=1.4)
+        S.point(R(x, 0), 'g', r=3)
+    for i, (x, ci) in enumerate(zip(xi, c)):
+        S.ligne(R(x, ci - eps / 2), R(x, ci + eps / 2), 'r', l=5)
+        S.point(R(x, ci), 'r', r=3.6)
+        S.texte(R(x, 0) + [0, 20], f'x_{i + 1}', 'g', taille=14)
+        S.texte(R(x, ci + eps / 2) + [0, -12], f'c_{i + 1}', 'r', taille=14)
+    S.poly(R(xs, f(xs)), 'b', l=2)
+    S.poly(R(xs, g(xs)), 'v', l=2)
+    S.texte(R(1, f(1)) + [8, -2], 'f', 'b', ancre='start')
+    S.texte(R(1, g(1)) + [8, 14], 'g', 'v', ancre='start')
+    S.texte(R(1, 0.085) + [8, 0], 'η', 'g', ancre='start', taille=14)
+    return S
+
+
+@schema('fc-bernstein')
+def fc_bernstein():
+    f = lambda t: np.abs(np.asarray(t, float) - 0.5)
+    xs = np.linspace(0, 1, 2001)
+    B = {n: _bernstein(f, n, xs) for n in (4, 10, 40)}
+    for n, e in [(4, 0.1875), (10, 63 / 512), (40, 0.0627)]:
+        assert np.all(B[n] >= f(xs) - 1e-12)
+        assert abs(B[n][1000] - e) < 5e-5 and np.argmax(B[n] - f(xs)) == 1000
+        assert abs(B[n][0] - f(0)) < 1e-12 and abs(B[n][-1] - f(1)) < 1e-12
+    borne = 1 / (2 * math.sqrt(10))
+    assert np.all(B[10] <= f(xs) + borne) and abs(borne - 0.158) < 5e-4
+    S = Schema(500, 320, 'Polynômes de Bernstein de |x − 1/2|')
+    R = Repere(-0.04, 1.1, -0.06, 0.72, 30, 12, 400, 280)
+    R.axes(S, 'x', '')
+    S.poly(R(xs, f(xs) + borne), 'g', d=True)
+    S.poly(R(xs, f(xs)), 't', l=2.2)
+    for n, c in [(4, 'b'), (10, 'v'), (40, 'r')]:
+        S.poly(R(xs, B[n]), c, l=1.8)
+    S.texte(R(0.16, f(0.16) + borne) + [-4, -12], 'f + 0,158', 'g', taille=14)
+    S.texte(R(0.5, 0) + [0, 18], '1/2', 'g', taille=14)
+    S.texte(R(1, 0) + [0, 18], '1', 'g', taille=14)
+    # légende, dans la partie haute, libre, entre les deux branches du pointillé
+    for j, (lab, c) in enumerate([('f', 't'), ('B_4f', 'b'), ('B_{10}f', 'v'), ('B_{40}f', 'r')]):
+        p = R(0.44, 0.66) + [0, 22 * j]
+        S.ligne(p + [-30, 0], p + [-8, 0], c, l=2)
+        S.texte(p, lab, c, ancre='start', taille=14)
+    m = (xs > 0.34) & (xs < 0.62)
+    assert np.all(f(xs[m]) + borne < 0.66 - 3 * 22 * 0.78 / 280 - 0.03)   # le pointillé passe sous la légende
+    return S
+
+
+@schema('fc-treillis')
+def fc_treillis():
+    f = lambda t: 0.5 - 3 * t + 9 * t ** 2 - 6 * t ** 3
+    eps = 0.1
+    xs = np.linspace(0, 1, 2001)
+    fx = f(xs)
+
+    def corde(x, y):
+        s = (f(y) - f(x)) / (y - x)
+        return f(x) + s * (xs - x)
+
+    # étape 1 en x = 0,3 : trois cordes, leur maximum reste au-dessus de f - ε
+    x1, ys1 = 0.3, [0.0, 0.4, 1.0]
+    H = [corde(x1, y) for y in ys1]
+    phi = np.max(H, axis=0)
+    assert (phi - fx).min() > -eps and abs(phi[600] - f(x1)) < 1e-12
+    assert (phi - fx).min() < -0.05                                    # la marge sert vraiment
+    # étape 2 : φ_x pour x = 0, 0,2 et 1 (maximum des cordes vers les points de pas 0,05)
+    grille = np.round(np.arange(0, 1.0001, 0.05), 2)
+    X2 = [0.0, 0.2, 1.0]
+    P = [np.max([corde(x, y) for y in grille if abs(y - x) > 1e-9], axis=0) for x in X2]
+    for p, x in zip(P, X2):
+        assert (p - fx).min() > -eps and abs(p[int(round(x * 2000))] - f(x)) < 1e-12
+    g = np.min(P, axis=0)
+    assert np.all(np.abs(g - fx) < eps)
+    S = Schema(500, 560, 'Les deux étapes du lemme des treillis')
+    for haut, panneau in [(0, 1), (280, 2)]:
+        R = Repere(-0.04, 1.08, 0.05, 1.0, 30, 12 + haut, 420, 250)
+        S.fleche(R(-0.04, 0.1), R(1.07, 0.1), 'g')
+        S.texte(R(1.07, 0.1) + [10, 0], 'x', 'g', ancre='start')
+        S.poly(R(xs, fx - eps), 'g', d=True)
+        if panneau == 2:
+            S.poly(R(xs, fx + eps), 'g', d=True)
+        if panneau == 1:
+            for h in H:
+                m = (h > 0.05) & (h < 1.0)
+                S.poly(R(xs[m], h[m]), 'b', l=1.3)
+            S.poly(R(xs, phi), 'r', l=2.4)
+            S.poly(R(xs, fx), 't', l=2)
+            S.point(R(x1, f(x1)), 'r', r=4)
+            for y in ys1:
+                S.point(R(y, f(y)), 'b', r=3.4)
+            S.texte(R(x1, 0.1) + [0, 16], 'x = 0,3', 'r', taille=14)
+            S.texte(R(0.9, phi[1800]) + [-10, -16], 'φ', 'r', ancre='end', taille=15)
+            S.texte(R(1, f(1) - eps) + [8, 6], 'f − ε', 'g', ancre='start', taille=14)
+        else:
+            for p in P:
+                m = (p > 0.05) & (p < 1.0)
+                S.poly(R(xs[m], p[m]), 'b', l=1.3)
+            S.poly(R(xs, fx), 't', l=2)
+            S.poly(R(xs, g), 'r', l=2.4)
+            for x in X2:
+                S.point(R(x, f(x)), 'b', r=3.4)
+            S.texte(R(1, f(1) + eps) + [8, -4], 'f + ε', 'g', ancre='start', taille=14)
+            S.texte(R(0.75, g[1500]) + [8, 14], 'g', 'r', ancre='start', taille=15)
+        S.texte(R(0.05, f(0.05)) + [0, -16], 'f', 't')
+    return S

@@ -1,5 +1,6 @@
 # Niveau 1 : structure interne du nœud « Équations différentielles ».
 # Point fixe dans un espace métrique complet et théorème de Cauchy-Lipschitz (Picard),
+# théorème d'existence de Peano (30 oct. 2026 : polygones d'Euler et forme séquentielle d'Ascoli, sans choix),
 # lemme de Grönwall, solutions maximales et critère d'explosion, systèmes linéaires et
 # exponentielle de matrices, flot d'un champ de vecteurs, courbes intégrales sur une variété.
 # Sortie des compacts, domaine du flot (ouvert, continuité), différentiabilité du flot par
@@ -69,9 +70,53 @@ noeuds:
         Toutes ces fonctions résolvent $y' = 2\sqrt{|y|}$ avec $y(0) = 0$ : la fonction nulle, en bleu, la fonction $t^2$, en rouge, et, pour chaque $\tau > 0$, la fonction nulle sur $[0, \tau]$ puis égale à $(t - \tau)^2$, qui se raccorde à la fonction nulle avec une dérivée nulle en $\tau$.
         ```
 
-        Sans elle, le théorème de Peano assure encore l'existence, par un argument de compacité ; il est admis ici.
+        Sans elle, le théorème de Peano assure encore l'existence, par un argument de compacité : c'est le nœud {{ed-peano|Théorème de Peano}}, qui applique le théorème d'Ascoli à des solutions approchées.
       - |
         Les itérés de Picard sont un algorithme. Pour $y' = y$, $y(0) = 1$, ils valent $1$, $1 + t$, $1 + t + \frac{t^2}2$, … : ce sont les sommes partielles de la série de l'exponentielle de l'{{anc|analyse complexe}}, retrouvée comme solution d'une équation différentielle.
+
+  - id: ed-peano
+    etiquette: Théorème de Peano
+    nature: théorème
+    titre: Théorème d'existence de Peano
+    texte: |
+      Les notations sont celles du nœud {{ed-cauchy-lipschitz|Cauchy-Lipschitz}} : $\Omega$ est un ouvert de $\lex{ensemble-reels}{\mathbb R} \times \lex{n-uplet}{\mathbb R^n}$, $F : \Omega \to \mathbb R^n$ est continue, et $\mathbb R^n$ est muni de $\|\cdot\|_\infty$, notée $\|\cdot\|$. Aucune condition de Lipschitz n'est supposée.
+    enonce: |
+      Soit $(t_0, y_0) \in \Omega$, et $C = [t_0 - a, t_0 + a] \times \bar B(y_0, r) \subset \Omega$ un cylindre, avec $a, r > 0$, sur lequel $\|F\| \leqslant M$, où $M > 0$. Pour $h = \min(a, r/M)$, il existe une solution $y : [t_0 - h, t_0 + h] \to \mathbb R^n$ de $y' = F(t, y)$ telle que $y(t_0) = y_0$.
+    preuve: |
+      Soit $J = [t_0 - h, t_0 + h]$. Le cylindre $C$ est fermé et borné dans $\mathbb R^{n+1}$, donc compact ({{me-rn|L'espace ℝⁿ}}, (iii)) ; $F$ y est bornée et uniformément continue ({{me-heine|Théorème de Heine}}), pour la distance $d_\infty$ de $\mathbb R^{n+1}$.
+
+      *Les polygones d'Euler.* Pour un entier $N \geqslant 1$, posons $t_k = t_0 + \frac{kh}N$ pour $-N \leqslant k \leqslant N$. On définit $y_N$ sur $J$, de proche en proche à partir de $t_0$, par $y_N(t_0) = y_0$ et, sur chaque segment $[t_k, t_{k+1}]$ avec $k \geqslant 0$, et sur chaque segment $[t_{k-1}, t_k]$ avec $k \leqslant 0$,
+      $$y_N(t) = y_N(t_k) + (t - t_k)\,F\big(t_k, y_N(t_k)\big).$$
+      C'est possible, et $\|y_N(t) - y_0\| \leqslant M|t - t_0| \leqslant r$ sur $J$ : par récurrence sur $|k|$, si $\|y_N(t_k) - y_0\| \leqslant M|t_k - t_0|$, le point $(t_k, y_N(t_k))$ est dans $C$, la pente $F(t_k, y_N(t_k))$ est de norme au plus $M$, et l'inégalité s'étend au segment suivant, puisque $|t - t_0| = |t_k - t_0| + |t - t_k|$ sur ce segment.
+
+      ```schema ed-peano
+      Pour $F(t, y) = 1 - y^2$, $(t_0, y_0) = (0, 0)$, $a = 1$ et $r = 1$, on a $M = 1$ et $h = 1$. Les polygones d'Euler $y_2$ (bleu), $y_4$ (vert) et $y_{16}$ (noir, en tirets) restent dans le cône de pente $M$ issu de $(t_0, y_0)$, en pointillé : ils sont tous $M$-lipschitziens, donc équicontinus, et bornés. Ils se rapprochent de la solution (rouge), ici $y(t) = \frac{1 - e^{-2t}}{1 + e^{-2t}}$, que la démonstration obtient comme limite uniforme d'une suite extraite.
+      ```
+
+      Notons, pour $s \in J$, $\tau_N(s)$ celle des extrémités du segment $[t_k, t_{k+1}]$ ou $[t_{k-1}, t_k]$ contenant $s$ qui est la plus proche de $t_0$, en convenant de prendre le segment le plus proche de $t_0$ aux points $t_k$. La fonction $g_N(s) = F\big(\tau_N(s), y_N(\tau_N(s))\big)$ est en escalier, coordonnée par coordonnée, et la relation de Chasles donne, pour $t \in J$,
+      $$y_N(t) = y_0 + \int_{t_0}^t g_N(s)\,ds.$$
+      Comme $\|g_N\| \leqslant M$, on en tire $\|y_N(t) - y_N(t')\| \leqslant M|t - t'|$ ({{ri-proprietes|Propriétés de l'intégrale}}, (v)).
+
+      *Une suite extraite convergente.* Dans l'espace $C(J, \mathbb R^n)$, la suite $(y_N)_{N \geqslant 1}$ est bornée, par $\|y_0\| + r$, et équicontinue, ses termes étant tous $M$-lipschitziens ({{fc-equicontinuite|Équicontinuité}}, (ii)). Par la forme séquentielle du théorème d'Ascoli ({{fc-ascoli|Théorème d'Ascoli}}, (ii)), une suite extraite $(y_{N_j})$ converge uniformément vers une fonction continue $y : J \to \mathbb R^n$. Comme les $y_N(t)$ appartiennent à la boule fermée $\bar B(y_0, r)$, leur limite $y(t)$ aussi.
+
+      *Passage à la limite.* Soit $\varepsilon > 0$ et $\delta > 0$ tel que deux points de $C$ à distance $d_\infty$ inférieure à $\delta$ aient des images par $F$ distantes de moins de $\varepsilon$. Pour $s \in J$, on a $|\tau_N(s) - s| \leqslant \frac hN$, et
+      $$\begin{aligned} &\|y_N(\tau_N(s)) - y(s)\| \\ &\quad \leqslant \|y_N(\tau_N(s)) - y_N(s)\| \\ &\qquad + \|y_N(s) - y(s)\| \\ &\quad \leqslant \frac{Mh}N + \|y_N - y\|_\infty. \end{aligned}$$
+      Comme $N_j \geqslant j$ et $\|y_{N_j} - y\|_\infty \to 0$, les deux nombres $\frac h{N_j}$ et $\frac{Mh}{N_j} + \|y_{N_j} - y\|_\infty$ sont inférieurs à $\delta$ pour $j$ assez grand. Les points $\big(\tau_{N_j}(s), y_{N_j}(\tau_{N_j}(s))\big)$ et $(s, y(s))$ de $C$ sont alors à distance $d_\infty$ inférieure à $\delta$, et $\|g_{N_j}(s) - F(s, y(s))\| < \varepsilon$ pour tout $s \in J$.
+
+      La fonction $s \mapsto F(s, y(s))$ est continue, donc intégrable ({{ri-continues|Fonctions continues}}), et, pour $t \in J$,
+      $$\Big\|y_{N_j}(t) - y_0 - \int_{t_0}^t F(s, y(s))\,ds\Big\| \leqslant \varepsilon h.$$
+      En faisant tendre $j$ vers l'infini puis $\varepsilon$ vers $0$, on obtient
+      $$y(t) = y_0 + \int_{t_0}^t F(s, y(s))\,ds,$$
+      et $y$ est une solution telle que $y(t_0) = y_0$, par le théorème fondamental appliqué à chaque coordonnée ({{ar-tfa|Théorème fondamental}}), comme dans la forme intégrale du nœud {{ed-cauchy-lipschitz|Cauchy-Lipschitz}}.
+    remarques:
+      - |
+        La démonstration ne fait aucun choix. Les solutions approchées sont définies explicitement, et la suite extraite convergente est fournie par la forme séquentielle du théorème d'Ascoli, qui prend ses réseaux parmi les termes de la suite, au plus petit indice ({{fc-ascoli|Théorème d'Ascoli}}, (ii)), puis par le sens direct, sans choix, du théorème de compacité séquentielle.
+      - |
+        L'erreur la plus répandue est de croire que le théorème donne aussi l'unicité. Pour $y' = 2\sqrt{|y|}$ et $y(0) = 0$, l'équation a une infinité de solutions ({{ed-cauchy-lipschitz|Cauchy-Lipschitz}}). Les polygones d'Euler sont ici tous nuls, puisque $F(t, 0) = 0$, et la démonstration trouve la solution nulle ; les autres solutions, comme $t \mapsto t^2$ pour $t \geqslant 0$, lui échappent.
+      - |
+        Le théorème ne donne aucune estimation de la vitesse de convergence : la compacité fournit une limite, sans dire à partir de quel rang les polygones en sont proches. C'est la différence essentielle avec la méthode de Picard du nœud {{ed-cauchy-lipschitz|Cauchy-Lipschitz}}, qui, grâce à la condition de Lipschitz, contracte et majore l'erreur.
+      - |
+        G. Peano a publié un premier énoncé en 1886 (« Sull'integrabilità delle equazioni differenziali del primo ordine », *Atti della R. Accademia delle Scienze di Torino* 21), avec une démonstration incorrecte, puis une démonstration correcte en 1890 (« Démonstration de l'intégrabilité des équations différentielles ordinaires », *Math. Ann.* 37, p. 182-228). Dans ce second mémoire, p. 210, il remarque qu'« on ne peut pas appliquer une infinité de fois une loi arbitraire » : c'est l'une des premières mentions explicites de la difficulté que l'axiome du choix formalisera, et la démonstration ci-dessus s'en dispense.
 
   - id: ed-gronwall
     etiquette: Grönwall
@@ -494,6 +539,7 @@ noeuds:
       Le chapitre est placé ici parce que la théorie des équations différentielles est la première de l'édifice dont la mesure, le calcul différentiel, l'algèbre linéaire et l'analyse complexe, qui fournit $\cos$, $\sin$ et $\pi$, soient tous des ancêtres. Appliquée au flot d'un champ de vecteurs, la formule donne le théorème de Liouville : le flot d'un champ de divergence nulle conserve le volume. Aucune forme du choix n'intervient, en dehors du choix dénombrable que demande la mesure de Lebesgue elle-même.
 
 aretes:
+  - [ed-cauchy-lipschitz, ed-peano]
   - [ed-cauchy-lipschitz, ed-gronwall]
   - [ed-cauchy-lipschitz, ed-maximales]
   - [ed-gronwall, ed-maximales]

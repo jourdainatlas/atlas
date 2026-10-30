@@ -696,3 +696,29 @@ Relu par un agent indépendant : six fautes (rôle du ε dans mk-construction, r
 d'intervalles non disjointe, σ-finitude omise dans deux textes, intervalle négligeable, Dieudonné sans « Admis
 ici ») et une quinzaine de retouches. Non vérifiés : le passage de von Neumann (Ann. of Math. 41, 1940,
 p. 94-161), la date de Minkowski (non donnée). 639 nœuds, 371 termes, 53 graphes ; anf 1 croisement.
+
+## 48. Ascoli, Stone-Weierstrass, Peano, extremums liés ; mémoire du rendu (30 octobre 2026)
+
+Chapitre `anf-continues` « Espaces de fonctions continues » (contenu/anf-continues.yaml, arête f-evn →
+anf-continues ; C(K, ℝᵖ) posé sur place, comme anf-riesz-markov, pour ne pas dépendre de f-exemples) : onze fiches
+fc-* — convergence uniforme et complétude, Dini (et la suite p_{n+1} = p_n + (t − p_n²)/2 → √t), équicontinuité,
+précompacité par une grille, Ascoli (trois formes), polynômes de Bernstein et Weierstrass, lemme des treillis,
+Stone-Weierstrass (et variante nulle en un point), polynômes de plusieurs variables, cercle, lipschitziennes,
+séparabilité de C(K). Choix : Ascoli ensembliste et la réciproque de (iii) ⋆ (me-precompacts (iii)) ; forme
+séquentielle sans choix (réseaux pris parmi les termes de la suite au plus petit indice, pas d'extraction
+diagonale) ; Dini, Bernstein, Stone-Weierstrass sans choix ; séparabilité ⋆ pour un compact métrique quelconque,
+non démontrable dans ZF (remarque, modèle admis ici). Fiche ed-peano dans edo (arête ed-cauchy-lipschitz →
+ed-peano), sans choix ; la remarque « Peano admis ici » de ed-cauchy-lipschitz y renvoie. Relu : trois fautes (⋆ de
+la réciproque d'Ascoli, « métrique » oublié dans f-exemples, numéro de point) et onze retouches.
+
+Chapitre `cdiff-lagrange` « Extremums liés » (contenu/cdiff-lagrange.yaml, arêtes gd-submersions → cdiff-lagrange
+et cdiff-quadratiques → cdiff-lagrange) : el-niveau (T_aΓ = Ker dg(a) par les vitesses des courbes), el-lagrange
+(multiplicateurs, contre-exemple x³ = y²), el-second-ordre (lemme sur la hessienne de f∘ψ, conditions nécessaire
+et suffisante ; hessienne bordée démontrée pour n = 2, p = 1, admise en général : Mann 1943, Debreu 1952),
+el-exemples (moyennes arithmético-géométriques, ᵗxAx sur la sphère, distance). Aucun choix. Relu : aucune faute
+mathématique, une notion non définie (« centre de courbure », retirée) et douze retouches.
+
+Mémoire : rendu.mjs dépassait le tas par défaut de Node (≈ 2 Go ; atlas.html fait 182 Mo). Les grandes chaînes de la
+page d'aperçu sont désormais dans un bloc libéré avant la suite, les tranches `tete`/`corps` inutilisées sont
+supprimées et la copie profonde passe par structuredClone (sans chaîne intermédiaire) : le rendu tient dans
+1,8 Go. construire.sh passe --max-old-space-size=4096 pour la marge. 657 nœuds, 382 termes, 55 graphes.

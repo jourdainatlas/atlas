@@ -1504,3 +1504,59 @@ def cv_liouville():
     S.texte(R(0.5 - 0.42, 0.5 / 3 + 0.5) + [-6, -4], 'φ_{1/2}(Δ)', 'b', ancre='end', taille=15)
     S.texte(R(1.5, 1.08) + [8, 0], 'φ_1(Δ)', 'r', ancre='start', taille=15)
     return S
+
+
+@schema('ed-peano')
+def ed_peano():
+    # y' = 1 - y², (t0, y0) = (0, 0), a = r = 1 : M = 1, h = 1 ; solution th t = (1 - e^{-2t})/(1 + e^{-2t})
+    F = lambda t, y: 1 - y ** 2
+    t0, y0, a, r = 0.0, 0.0, 1.0, 1.0
+    yy = np.linspace(-1, 1, 2001)
+    M = float(np.max(np.abs(F(0, yy))))
+    assert M == 1.0
+    h = min(a, r / M)
+    assert h == 1.0
+    sol = lambda t: (1 - np.exp(-2 * t)) / (1 + np.exp(-2 * t))
+    ts = np.linspace(-h, h, 2001)
+    assert np.allclose(np.gradient(sol(ts), ts)[5:-5], F(ts, sol(ts))[5:-5], atol=1e-5)
+
+    def euler(N):
+        noeuds = [t0 + k * h / N for k in range(-N, N + 1)]
+        val = {0: y0}
+        for k in range(N):                          # vers la droite
+            val[k + 1] = val[k] + (h / N) * F(noeuds[N + k], val[k])
+        for k in range(0, -N, -1):                  # vers la gauche
+            val[k - 1] = val[k] - (h / N) * F(noeuds[N + k], val[k])
+        return np.array(noeuds), np.array([val[k] for k in range(-N, N + 1)])
+
+    S = Schema(500, 330, 'Polygones d’Euler dans le cône de pente M')
+    R = Repere(-1.15, 1.25, -1.15, 1.15, 30, 12, 430, 300)
+    S.fleche(R(-1.15, 0), R(1.22, 0), 'g')
+    S.fleche(R(0, -1.15), R(0, 1.13), 'g')
+    S.texte(R(1.22, 0) + [8, 0], 't', 'g', ancre='start')
+    S.texte(R(0, 1.13) + [12, 4], 'y', 'g', ancre='start')
+    S.rect(*R(t0 - a, y0 + r), *(R(t0 + a, y0 - r) - R(t0 - a, y0 + r)), 'g', rempli='g')
+    S.texte(R(t0 - a, y0 + r) + [10, 16], 'C', 'g', ancre='start')
+    for sg in (-1, 1):
+        S.ligne(R(t0, y0), R(t0 + sg * h, y0 + M * h), 'g', d=True)
+        S.ligne(R(t0, y0), R(t0 + sg * h, y0 - M * h), 'g', d=True)
+    for N, c in [(2, 'b'), (4, 'v'), (16, 't')]:
+        tk, yk = euler(N)
+        assert np.all(np.abs(yk - y0) <= M * np.abs(tk - t0) + 1e-12)          # dans le cône
+        assert np.all(np.abs(np.diff(yk)) <= M * h / N + 1e-12)                # M-lipschitzien
+        S.poly(R(tk, yk), c, l=1.8, d=(N == 16))
+        for p in zip(tk, yk):
+            if N < 16:
+                S.point(R(*p), c, r=2.6)
+    e2 = np.abs(euler(2)[1] - sol(euler(2)[0])).max()
+    e16 = np.abs(euler(16)[1] - sol(euler(16)[0])).max()
+    assert e16 < e2 / 4                                                         # ils se rapprochent
+    S.poly(R(ts, sol(ts)), 'r', l=2.4)
+    S.point(R(t0, y0), 'r', r=4)
+    t2, y2 = euler(2)
+    S.texte(R(t2[-1], y2[-1]) + [8, -4], 'y_2', 'b', ancre='start', taille=14)
+    S.texte(R(1, sol(1.0)) + [8, 8], 'y', 'r', ancre='start', taille=15)
+    S.texte(R(t0 + h, 0) + [6, 17], 't_0 + h', 'g', ancre='start', taille=14)
+    S.texte(R(t0 - h, 0) + [-6, 17], 't_0 − h', 'g', ancre='end', taille=14)
+    S.texte(R(0.55, 0.55) + [-6, -10], '`pente` M', 'g', ancre='end', taille=14)
+    return S
