@@ -203,7 +203,7 @@ def de_extremum():
     assert dg(1) == 0 and dg(-1) == 0 and g(1) == 0.5 and g(-1) == -0.5
     xs = np.linspace(-6, 6, 4001)
     assert np.all(g(xs) <= 0.5 + 1e-15) and np.all(g(xs) >= -0.5 - 1e-15)
-    S = Schema(520, 270, 'Extremums de x/(1+x²) et point critique sans extremum de x³')
+    S = Schema(520, 270, 'Extrema de x/(1+x²) et point critique sans extremum de x³')
     # à gauche
     R = Repere(-3.3, 3.3, -0.75, 0.8, 15, 25, 230, 210)
     S.fleche(R(-3.3, 0), R(3.25, 0), 'g')

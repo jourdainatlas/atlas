@@ -711,7 +711,7 @@ non démontrable dans ZF (remarque, modèle admis ici). Fiche ed-peano dans edo 
 ed-peano), sans choix ; la remarque « Peano admis ici » de ed-cauchy-lipschitz y renvoie. Relu : trois fautes (⋆ de
 la réciproque d'Ascoli, « métrique » oublié dans f-exemples, numéro de point) et onze retouches.
 
-Chapitre `cdiff-lagrange` « Extremums liés » (contenu/cdiff-lagrange.yaml, arêtes gd-submersions → cdiff-lagrange
+Chapitre `cdiff-lagrange` « Extrema liés » (contenu/cdiff-lagrange.yaml, arêtes gd-submersions → cdiff-lagrange
 et cdiff-quadratiques → cdiff-lagrange) : el-niveau (T_aΓ = Ker dg(a) par les vitesses des courbes), el-lagrange
 (multiplicateurs, contre-exemple x³ = y²), el-second-ordre (lemme sur la hessienne de f∘ψ, conditions nécessaire
 et suffisante ; hessienne bordée démontrée pour n = 2, p = 1, admise en général : Mann 1943, Debreu 1952),
@@ -865,3 +865,10 @@ suite dense est donnée ; f-lp (iv), complétude pour une suite de fonctions don
 projection, Riesz, Radon-Nikodym et espérance conditionnelle sur des espaces donnés (au moins séparables) ;
 Nullstellensatz sans Krull pour les anneaux de polynômes. Pistes écartées : tout ce qui vit sur la mesure de
 Lebesgue.
+
+## 58. Pluriels latins (30 octobre 2026)
+
+Convention de l'auteur : on écrit **extrema**, **maxima**, **minima** (pluriel latin traditionnel) et non
+« extremums », « maximums », « minimums ». Appliqué à tout le texte de l'édifice, au lexique, aux libellés de liens
+et aux titres des schémas (de-extremum, el-lagrange, el-second-ordre régénérés). Les identifiants (fq-extremums,
+fq-extremums-2) ne changent pas : ils sont cités par les rubriques.

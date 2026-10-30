@@ -1181,7 +1181,7 @@ def f_spectral_fini():
     cer = np.stack([np.cos(t), np.sin(t)], axis=1)
     qs = np.einsum('ij,jk,ik->i', cer, A, cer)
     assert abs(q(v6) - 6) < 1e-12 and abs(q(v1) - 1) < 1e-12
-    assert qs.max() <= 6 + 1e-12 and qs.min() >= 1 - 1e-12                  # extremums sur le cercle
+    assert qs.max() <= 6 + 1e-12 and qs.min() >= 1 - 1e-12                  # extrema sur le cercle
     assert abs(qs.max() - 6) < 1e-4 and abs(qs.min() - 1) < 1e-4
     assert np.linalg.norm(cer[qs.argmax()] - v6) < 1e-2 or np.linalg.norm(cer[qs.argmax()] + v6) < 1e-2
     assert np.linalg.norm(cer[qs.argmin()] - v1) < 1e-2 or np.linalg.norm(cer[qs.argmin()] + v1) < 1e-2

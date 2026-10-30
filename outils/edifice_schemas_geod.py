@@ -760,7 +760,7 @@ def fq_extremums_2():
 
 @schema('el-lagrange')
 def el_lagrange():
-    # f = xy sur le cercle g = x² + y² − 2 = 0 : extremums en (±1, ±1), λ = ±1/2 ; point non critique (7/5, 1/5).
+    # f = xy sur le cercle g = x² + y² − 2 = 0 : extrema en (±1, ±1), λ = ±1/2 ; point non critique (7/5, 1/5).
     x, y, l = sp.symbols('x y lambda', real=True)
     f, g = x * y, x**2 + y**2 - 2
     sol = sp.solve([sp.diff(f, x) - l * sp.diff(g, x), sp.diff(f, y) - l * sp.diff(g, y), g], [x, y, l], dict=True)
@@ -773,7 +773,7 @@ def el_lagrange():
     assert P[0]**2 + P[1]**2 == 2 and P[0] * P[1] == Fr(7, 25)
     gf, gg = (P[1], P[0]), (2 * P[0], 2 * P[1])
     assert gf[0] * gg[1] - gf[1] * gg[0] != 0                      # gradients non colinéaires en P
-    S = Schema(500, 440, 'Lignes de niveau de xy et cercle x² + y² = 2 : tangence aux extremums, gradients colinéaires')
+    S = Schema(500, 440, 'Lignes de niveau de xy et cercle x² + y² = 2 : tangence aux extrema, gradients colinéaires')
     R = Repere(-2.25, 2.95, -2.2, 2.2, 10, 24, 452, 382)
     R.axes(S, 'x', 'y')
     xs = np.linspace(-2.25, 2.95, 1201)
@@ -811,7 +811,7 @@ def el_second_ordre():
     assert sp.expand(f_par - sp.Rational(5, 4) - (x**2 - 1)**2) == 0          # ≥ 5/4, égalité en x = ±1
     assert sp.expand(f_par - sp.Rational(9, 4) - x**2 * (x**2 - 2)) == 0      # < 9/4 pour 0 < |x| < √2
     b = np.array([0.0, 1.5])
-    S = Schema(500, 436, 'Distance d’un point à une parabole : deux minimums et un maximum local')
+    S = Schema(500, 436, 'Distance d’un point à une parabole : deux minima et un maximum local')
     R = Repere(-2.3, 2.3, -0.55, 3.55, 16, 34, 458, 394)
     def disque(r, cl, d=False, ep=None):
         t = np.linspace(0, 2 * math.pi, 721)
