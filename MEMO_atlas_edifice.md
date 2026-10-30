@@ -675,3 +675,24 @@ factoriel). Relu deux fois : la première relecture a fourni l'argument sans cho
 ma propre récurrence colonne/ligne était fausse : les opérations d'une colonne dérangent les précédentes) et deux
 autres fautes ; la seconde, ciblée sur md-pivot, un exemple mal attribué et une référence. 619 nœuds, 357 termes,
 51 graphes ; ac et ac-modules 0 croisement.
+
+## 47. Lᵖ, Radon-Nikodym, dual de Lᵖ, Riesz-Markov (30 octobre 2026)
+
+Deux chapitres de anf (18 fiches, scindés à partir de quinze) : `anf-lp` (contenu/anf-lp.yaml, arête f-riesz →
+anf-lp, entrées f-lp et f-riesz) et `anf-riesz-markov` (contenu/anf-riesz-markov.yaml, arête f-evn →
+anf-riesz-markov ; C(K) et sa norme sont posés sur place pour ne pas dépendre de f-exemples, qui ajoutait un
+croisement). anf-lp : puissances réelles (ln x = ∫₁ˣ dt/t ; l'exponentielle de anc n'est pas ancêtre de anf, et
+aucun ancêtre ne les définit : pas de doublon, vérifié par le relecteur), Young, Lᵖ et ‖·‖_∞, Hölder (cas
+d'égalité), Minkowski, complétude (⋆ comme f-lp), inclusions, densité (étagées, continues nulles hors d'un segment
+par λ* seule), absolue continuité, lemme de von Neumann (Riesz dans L²(μ+ν)), Radon-Nikodym-Lebesgue σ-fini et
+règle de la chaîne, formes positives, dual (Lᵖ)' ≅ L^q pour 1 ⩽ p < ∞ et μ σ-finie. anf-riesz-markov : sur un
+compact métrique, Urysohn par la distance, formes positives, mesure extérieure des ouverts, Carathéodory et
+régularité, représentation par tranches, unicité par Dynkin ; exemples Dirac et Riemann → λ. Choix : ⋆ dénombrable
+pour Riesz-Markov, inévitable (dans le modèle de Feferman-Lévy, la forme de Riemann n'a pas de mesure de Riesz) ;
+Radon-Nikodym et le dual héritent du choix de f-riesz ; σ-finitude fixée une fois, sans choix. Admis en remarque :
+version localement compacte, dual sans σ-finitude, mesure de Dieudonné (⋆, régularité de ω₁). Renvois ajoutés dans
+f-lp, f-riesz, f-exemples, p-poisson-exp, mt-conditionnelle, fo-densite ; n₋₁ = −1 posé aussi dans f-lp et f-evn.
+Relu par un agent indépendant : six fautes (rôle du ε dans mk-construction, régularité héritant du choix, réunion
+d'intervalles non disjointe, σ-finitude omise dans deux textes, intervalle négligeable, Dieudonné sans « Admis
+ici ») et une quinzaine de retouches. Non vérifiés : le passage de von Neumann (Ann. of Math. 41, 1940,
+p. 94-161), la date de Minkowski (non donnée). 639 nœuds, 371 termes, 53 graphes ; anf 1 croisement.

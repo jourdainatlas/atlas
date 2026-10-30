@@ -1,0 +1,669 @@
+# Niveau 2 : structure interne du chapitre « Espaces Lᵖ, Radon-Nikodym et dualité » (nœud anf-lp du
+# graphe anf, créé le 30 oct. 2026).
+# Puissances réelles construites par ln x = ∫₁ˣ dt/t (l'exponentielle de l'analyse complexe n'est pas un
+# ancêtre de anf) ; inégalité de Young et cas d'égalité ; espaces ℒᵖ et Lᵖ, 1 ⩽ p ⩽ ∞, borne supérieure
+# essentielle ; Hölder (cas d'égalité), Minkowski, complétude (Riesz-Fischer pour tout p) ; inclusions sur une
+# mesure finie et contre-exemples sur ℝ ; densité des fonctions étagées intégrables et des fonctions continues
+# nulles hors d'un segment ; mesures à densité, absolue continuité, mesures étrangères ; décomposition de
+# Lebesgue et théorème de Radon-Nikodym (preuve de von Neumann par le théorème de Riesz dans L²(μ + ν), puis
+# cas σ-fini par un poids w > 0 d'intégrale finie), règle de la chaîne ; décomposition d'une forme continue sur
+# Lᵖ en différence de formes positives, et dual (Lᵖ)' ≅ L^q pour 1 ⩽ p < ∞ et μ σ-finie.
+# Choix : le choix dénombrable des représentants (complétude de Lᵖ, comme f-lp), et celui que hérite
+# Radon-Nikodym du théorème de Riesz (projection, complétude de L²) ; le dual en hérite à son tour. Une suite
+# de parties de mesure finie, pour une mesure σ-finie, est fixée une fois : aucun choix. (L^∞)' ≠ L¹ passe par
+# Hahn-Banach (Zorn), en remarque.
+
+graphe: anf-lp
+titre: Espaces Lᵖ, Radon-Nikodym et dualité
+conteneur: anf-lp
+
+entrees:
+  f-lp: [lp-espaces, lp-completude]
+  f-riesz: [lp-von-neumann]
+
+noeuds:
+  - id: lp-puissances
+    etiquette: Puissances réelles
+    nature: proposition
+    titre: Logarithme, exponentielle et puissances réelles
+    texte: |
+      Les espaces $L^p$ demandent les [[puissance-reelle|puissances réelles]] $t^p$, et l'exponentielle n'est pas un ancêtre de ce chapitre : elle est construite en analyse complexe, comme somme d'une série entière. L'intégrale de Riemann suffit pourtant à les obtenir. Pour $x > 0$, on pose
+      $$\ln x = \int_1^x \frac{dt}{t},$$
+      intégrale orientée ({{ri-proprietes|Propriétés de l'intégrale}}, (v)) de la fonction continue $t \mapsto 1/t$ sur le segment d'extrémités $1$ et $x$.
+    enonce: |
+      (i) La fonction $\ln$ est [[derivable]] sur $]0, +\infty[$, de dérivée $x \mapsto 1/x$. Elle est strictement croissante, vérifie $\ln 1 = 0$ et $\ln(xy) = \ln x + \ln y$, et c'est une [[bijection]] de $]0, +\infty[$ sur $\lex{ensemble-reels}{\mathbb R}$.
+
+      (ii) Sa réciproque $\exp : \mathbb R \to \,]0, +\infty[$ est strictement croissante et dérivable, de dérivée $\exp$ ; on a $\exp 0 = 1$ et $\exp(a + b) = \exp a \exp b$.
+
+      (iii) Pour $x > 0$ et $p$ réel, on pose $x^p = \exp(p \ln x)$, et $0^p = 0$ si $p > 0$. Pour $x, y > 0$ et $p, q$ réels,
+      $$\begin{aligned} \ln(x^p) &= p \ln x, & x^{p+q} &= x^p x^q, \\ (x^p)^q &= x^{pq}, & (xy)^p &= x^p y^p, \end{aligned}$$
+      et $x^{-p} = 1/x^p$. Pour $n$ entier naturel, $x^n$ est le produit de $n$ facteurs égaux à $x$, et $x^{1/2} = \sqrt x$.
+
+      (iv) Sur $]0, +\infty[$, la fonction $x \mapsto x^p$ est dérivable, de dérivée $p\,x^{p-1}$. Pour $p > 0$, la fonction $t \mapsto t^p$ est continue et strictement croissante sur $[0, +\infty[$ ; c'est une bijection de $[0, +\infty[$ sur lui-même, de réciproque $t \mapsto t^{1/p}$. En particulier $t \mapsto |t|^p$ est continue sur $\mathbb R$.
+
+      (v) Prolongée par $(+\infty)^p = +\infty$, pour $p > 0$, elle envoie toute suite croissante de $\lex{demi-droite-achevee}{[0, +\infty]}$ de limite $\ell$ sur une suite croissante de limite $\ell^p$.
+
+      (vi) Pour $0 < p \leqslant s$, on a $t^s \leqslant t^p$ si $0 \leqslant t \leqslant 1$, et $t^p \leqslant t^s$ si $t \geqslant 1$.
+    preuve: |
+      (i) Le {{ar-tfa|théorème fondamental de l'analyse}}, appliqué sur l'intervalle $]0, +\infty[$ à la fonction continue $t \mapsto 1/t$, montre que $\ln$ est dérivable, de dérivée $1/x > 0$ ; elle est donc strictement croissante ({{de-monotonie|Signe de la dérivée}}, (iii)). On a $\ln 1 = 0$ par convention.
+
+      Fixons $y > 0$. La fonction $\varphi(x) = \ln(xy) - \ln x$ est dérivable ({{de-composee|Dérivée d'une composée}}), de dérivée $y \cdot \frac1{xy} - \frac1x = 0$ : elle est constante ({{de-monotonie|Signe de la dérivée}}, (ii)), égale à $\varphi(1) = \ln y$.
+
+      Par récurrence, $\ln(2^n) = n \ln 2$, et $\ln(2^{-n}) = -n\ln 2$ puisque $\ln(2^n) + \ln(2^{-n}) = \ln 1 = 0$. Or $\ln 2 > \ln 1 = 0$.
+
+      Par le théorème de la bijection ({{c-bijection|Bijection continue}}), l'image de $\ln$ est un intervalle. Pour tout réel $y$, il existe un entier $n$ tel que $n \ln 2 > |y|$, $\mathbb R$ étant [[archimedien]] ; l'intervalle image contient $-n\ln 2$ et $n \ln 2$, donc $y$. Ainsi $\ln$ est une bijection sur $\mathbb R$.
+
+      (ii) Le théorème de la bijection donne la continuité et la stricte croissance de $\exp$, et le nœud {{de-reciproque|Dérivée d'une réciproque}}, (i), sa dérivabilité :
+      $$\exp'(y) = \frac{1}{\ln'(\exp y)} = \exp y.$$
+      On a $\exp 0 = 1$ car $\ln 1 = 0$, et $\ln(\exp a \exp b) = a + b$ par (i), d'où $\exp(a + b) = \exp a \exp b$.
+
+      (iii) $\ln(x^p) = \ln \exp(p \ln x) = p \ln x$. Les trois autres égalités s'en déduisent par (ii) :
+      $$\begin{aligned} x^{p+q} &= \exp(p\ln x + q\ln x) = x^px^q, \\ (x^p)^q &= \exp(q \ln(x^p)) = x^{pq}, \\ (xy)^p &= \exp(p \ln x + p \ln y) = x^py^p. \end{aligned}$$
+      Puis $x^p x^{-p} = x^0 = \exp 0 = 1$, $x^1 = \exp \ln x = x$, et $x^{n+1} = x^n x$ donne le cas entier par récurrence. Enfin $x^{1/2} > 0$ et $(x^{1/2})^2 = x^1 = x$ : c'est $\sqrt x$, par l'unicité du nœud {{me-espace|Espaces métriques}}, (i).
+
+      (iv) Par la dérivée d'une composée et (ii), la dérivée de $\exp(p \ln x)$ est
+      $$\exp(p\ln x) \cdot \frac px = p\,x^p x^{-1} = p\,x^{p-1}.$$
+      Pour $p > 0$, elle est strictement positive, et $t \mapsto t^p$ est strictement croissante sur $]0, +\infty[$, à valeurs strictement positives ; avec $0^p = 0$, elle l'est sur $[0, +\infty[$.
+
+      Elle est continue en $0$ : pour $\varepsilon > 0$ et $0 \leqslant t < \varepsilon^{1/p}$, on a $t^p < (\varepsilon^{1/p})^p = \varepsilon$.
+
+      Pour $t \geqslant 0$, $(t^{1/p})^p = t$ par (iii) : la fonction est surjective, injective par stricte croissance, de réciproque $t \mapsto t^{1/p}$. Enfin $t \mapsto |t|^p$ est la composée de deux fonctions continues.
+
+      (v) La suite des puissances croît, par (iv). Si $\ell$ est fini, sa limite est $\ell^p$ par continuité. Si $\ell = +\infty$ et $M > 0$, les termes finissent par dépasser $M^{1/p}$, et leurs puissances $p$-ièmes par dépasser $M$.
+
+      (vi) Pour $t > 0$, $t^s = t^p\,t^{s-p}$ par (iii), et $t^{s-p}$ est au plus $1^{s-p} = 1$ si $t \leqslant 1$, au moins $1$ si $t \geqslant 1$, par la croissance de (iv) quand $s > p$ ; le cas $s = p$ et le cas $t = 0$ sont immédiats.
+    remarques:
+      - |
+        L'erreur la plus répandue est d'appliquer la règle $(x^p)^q = x^{pq}$ à une base négative. Avec $x = -1$, $p = 2$ et $q = \frac12$, on obtiendrait $\big((-1)^2\big)^{1/2} = 1$, alors que $(-1)^1 = -1$. C'est pourquoi la puissance réelle n'est définie que pour une base positive, et pourquoi la théorie des espaces $L^p$ porte toujours sur $|f|^p$.
+      - |
+        L'exponentielle obtenue ici est la restriction à $\mathbb R$ de celle que l'analyse complexe construit par une série entière ({{cx-exponentielle|Exponentielle}}). Deux fonctions $E_1$ et $E_2$ dérivables sur $\mathbb R$, égales à leur dérivée, valant $1$ en $0$, et dont la seconde ne s'annule pas, coïncident : le quotient $E_1/E_2$ a pour dérivée $(E_1'E_2 - E_1E_2')/E_2^2 = 0$, donc il est constant, égal à $1$.
+
+  - id: lp-young
+    etiquette: Inégalité de Young
+    nature: lemme
+    titre: Exposants conjugués et inégalité de Young
+    texte: |
+      Deux réels $p, q > 1$ sont des [[exposants-conjugues|exposants conjugués]] si $\frac1p + \frac1q = 1$, c'est-à-dire $q = \frac{p}{p - 1}$. On convient aussi que $1$ et $+\infty$ sont conjugués. Pour $p = 2$, on trouve $q = 2$.
+    enonce: |
+      Soient $p, q > 1$ conjugués. Pour tous réels $a, b \geqslant 0$,
+      $$ab \leqslant \frac{a^p}{p} + \frac{b^q}{q},$$
+      avec égalité si et seulement si $a^p = b^q$.
+    preuve: |
+      De $\frac1p + \frac1q = 1$ on tire $p + q = pq$, d'où
+      $$(p - 1)(q - 1) = pq - p - q + 1 = 1,$$
+      et $(q - 1)p = q$.
+
+      Si $b = 0$, l'inégalité s'écrit $0 \leqslant a^p/p$, avec égalité si et seulement si $a = 0$, c'est-à-dire $a^p = 0 = b^q$.
+
+      Supposons $b > 0$, et posons, pour $a \geqslant 0$,
+      $$\varphi(a) = \frac{a^p}{p} + \frac{b^q}{q} - ab.$$
+      Elle est continue sur $[0, +\infty[$ et dérivable sur $]0, +\infty[$, de dérivée $a^{p-1} - b$ ({{lp-puissances|Puissances réelles}}, (iv)). Soit $a_0 = b^{q-1}$ ; comme $(q - 1)(p - 1) = 1$, on a $a_0^{p-1} = b$.
+
+      La fonction $a \mapsto a^{p-1}$ étant strictement croissante, $\varphi'$ est strictement négative sur $]0, a_0[$ et strictement positive sur $]a_0, +\infty[$. Par le nœud {{de-monotonie|Signe de la dérivée}}, (iii), $\varphi$ est strictement décroissante sur $[0, a_0]$ et strictement croissante sur $[a_0, +\infty[$ : elle atteint en $a_0$, et en $a_0$ seulement, son minimum.
+
+      Ce minimum est nul. En effet $a_0^p = b^{(q-1)p} = b^q$ et $a_0 b = b^{q-1}b = b^q$, d'où
+      $$\varphi(a_0) = b^q\Big(\frac1p + \frac1q - 1\Big) = 0.$$
+      Ainsi $\varphi \geqslant 0$, avec égalité exactement en $a = a_0$. Enfin $a = a_0$ équivaut à $a^p = a_0^p = b^q$, puisque $t \mapsto t^p$ est injective sur $[0, +\infty[$.
+    remarques:
+      - |
+        L'inégalité a une lecture géométrique. La courbe $y = x^{p-1}$ est aussi la courbe $x = y^{q-1}$, puisque $(p - 1)(q - 1) = 1$. L'aire comprise entre elle et l'axe des abscisses, de $0$ à $a$, vaut $\frac{a^p}{p}$, et l'aire comprise entre elle et l'axe des ordonnées, de $0$ à $b$, vaut $\frac{b^q}{q}$. Ces deux régions recouvrent le rectangle $[0, a] \times [0, b]$.
+
+        ```schema lp-young
+        Pour $p = 3$ et $q = \frac32$, avec $a = b = \frac32$ : l'aire sous la courbe $y = x^2$, de $0$ à $a$, vaut $\frac{a^3}{3} = \frac98$ ; elle se compose de la région bleue, sa partie contenue dans le rectangle, et de la région rouge, qui dépasse au-dessus, d'aire $\approx 0{,}100$. La région verte, à gauche de la courbe, a pour aire $\frac{b^{3/2}}{3/2} = \sqrt{3/2} \approx 1{,}225$. Bleu et vert pavent exactement le rectangle d'aire $ab = \frac94$ ; le rouge est l'excès de la somme des deux aires sur $ab$. Le débordement disparaît exactement quand le coin $(a, b)$ est sur la courbe, c'est-à-dire quand $a^3 = b^{3/2}$.
+        ```
+
+        L'égalité $a^p = b^q$ dit que le point $(a, b)$ est sur la courbe : le rectangle est alors exactement recouvert.
+      - |
+        Pour $p = q = 2$, l'inégalité est $ab \leqslant \frac{a^2 + b^2}2$, conséquence de $(a - b)^2 \geqslant 0$, déjà employée pour l'inégalité de Cauchy-Schwarz au nœud {{f-lp|Espaces L¹ et L²}}.
+      - |
+        L'inégalité porte le nom de W. H. Young, qui l'a publiée en 1912 (« On classes of summable functions and their Fourier series », *Proc. Roy. Soc. London A* 87, p. 225-229).
+
+  - id: lp-espaces
+    etiquette: Espaces Lᵖ
+    nature: définition
+    titre: Les espaces Lᵖ pour 1 ⩽ p ⩽ ∞
+    texte: |
+      Soit $(X, \mathcal A, \mu)$ un espace mesuré et $1 \leqslant p < +\infty$. Pour $f$ [[fonction-mesurable|mesurable]], on pose
+      $$\|f\|_p = \Big(\int |f|^p \, d\mu\Big)^{1/p},$$
+      élément de $\lex{demi-droite-achevee}{[0, +\infty]}$, avec $(+\infty)^{1/p} = +\infty$. On note $\mathcal L^p(\mu)$ l'ensemble des fonctions mesurables $f : X \to \lex{ensemble-reels}{\mathbb R}$ telles que $\|f\|_p < +\infty$.
+
+      Une fonction mesurable $f$ est **essentiellement bornée** s'il existe un réel $M$ tel que $|f| \leqslant M$ [[presque-partout|presque partout]].
+
+      On note $\mathcal L^\infty(\mu)$ l'ensemble de ces fonctions, et la **borne supérieure essentielle** de $f$ est
+      $$\|f\|_\infty = \inf\{M \geqslant 0 : |f| \leqslant M \text{ p.p.}\}.$$
+      Si $f$ n'est pas essentiellement bornée, cet ensemble est vide, et sa borne inférieure dans $[0, +\infty]$ est $\|f\|_\infty = +\infty$.
+
+      L'[[espace-Lp|espace]] $\lex{espace-Lp}{L^p}(\mu)$, pour $1 \leqslant p < +\infty$, et l'[[espace-L-infini|espace]] $\lex{espace-L-infini}{L^\infty}(\mu)$ sont formés des classes de ces fonctions pour l'égalité presque partout.
+
+      Pour la mesure de comptage sur $\lex{ensemble-entiers-naturels}{\mathbb N}$, seul le vide est [[negligeable|négligeable]] : on obtient l'espace $\ell^p$ des suites telles que $\sum_n |a_n|^p < +\infty$, et l'espace $\ell^\infty$ des suites bornées, muni de $\sup_n |a_n|$.
+    enonce: |
+      (i) Pour $f$ mesurable, $|f|^p$ est mesurable. Pour $1 \leqslant p \leqslant +\infty$, $\mathcal L^p(\mu)$ est un espace vectoriel ; pour $p$ fini et $f, g$ mesurables,
+      $$|f + g|^p \leqslant 2^p\big(|f|^p + |g|^p\big).$$
+
+      (ii) Si $f \in \mathcal L^\infty(\mu)$, alors $|f| \leqslant \|f\|_\infty$ presque partout : la borne inférieure est atteinte.
+
+      (iii) Pour $1 \leqslant p \leqslant +\infty$ et $f$ mesurable, $\|cf\|_p = |c|\,\|f\|_p$ pour tout réel $c$ ; $\|f\|_p = 0$ si et seulement si $f = 0$ presque partout ; si $|f| \leqslant |g|$ presque partout, alors $\|f\|_p \leqslant \|g\|_p$. En particulier $\|f\|_p$ ne dépend que de la classe de $f$, et $L^p(\mu)$ est un espace vectoriel sur lequel $\|\cdot\|_p$ est bien définie.
+
+      (iv) Pour $p = 1$ et $p = 2$, on retrouve les espaces $\lex{espace-L1}{L^1}(\mu)$ et $\lex{espace-L2}{L^2}(\mu)$ du nœud {{f-lp|Espaces L¹ et L²}}, avec leurs normes.
+    preuve: |
+      (i) La fonction $t \mapsto |t|^p$ est continue ({{lp-puissances|Puissances réelles}}, (iv)), donc $|f|^p$ est mesurable ({{m-mesurables|Fonctions mesurables}}, (iii)).
+
+      Pour $p$ fini, $|f + g| \leqslant 2\max(|f|, |g|)$, et la croissance de $t \mapsto t^p$ donne
+      $$\begin{aligned} |f + g|^p &\leqslant 2^p\max(|f|^p, |g|^p) \\ &\leqslant 2^p\big(|f|^p + |g|^p\big). \end{aligned}$$
+      En intégrant, $f + g \in \mathcal L^p$ si $f$ et $g$ y sont.
+
+      Pour $p = +\infty$, si $|f| \leqslant M$ hors d'un négligeable $N$ et $|g| \leqslant M'$ hors d'un négligeable $N'$, alors $|f + g| \leqslant M + M'$ hors de $N \cup N'$, négligeable. La stabilité par multiplication par un scalaire est immédiate.
+
+      (ii) Pour tout $n$, le réel $\|f\|_\infty + \frac1{n+1}$ dépasse la borne inférieure : il existe $M < \|f\|_\infty + \frac1{n+1}$ tel que $|f| \leqslant M$ presque partout, et l'ensemble $\{|f| > \|f\|_\infty + \frac1{n+1}\}$, contenu dans $\{|f| > M\}$, est négligeable. Leur réunion
+      $$\begin{aligned} &\{|f| > \|f\|_\infty\} \\ &\quad = \bigcup_n \Big\{|f| > \|f\|_\infty + \frac1{n+1}\Big\} \end{aligned}$$
+      l'est donc aussi ({{m-mesures|Mesures}}, (ii)). Aucun choix n'intervient : on ne désigne aucun $M$, on constate seulement que chaque ensemble est négligeable.
+
+      (iii) Pour $p$ fini, $|cf|^p = |c|^p|f|^p$, d'où
+      $$\|cf\|_p = \big(|c|^p\big)^{1/p}\|f\|_p = |c|\,\|f\|_p$$
+      par les règles de calcul du nœud {{lp-puissances|Puissances réelles}}, (iii), le cas $c = 0$ étant immédiat.
+
+      Puis $\|f\|_p = 0$ équivaut à $\int |f|^p = 0$, c'est-à-dire à $|f|^p = 0$ presque partout ({{m-integrale|Intégrale positive}}, (iv)).
+
+      Si $|f| \leqslant |g|$ presque partout, alors $|f|^p \leqslant |g|^p$ hors d'un négligeable $N$. Comme $|f|^p\mathbf 1_N$ est nulle presque partout, donc d'intégrale nulle ({{m-integrale|Intégrale positive}}, (iv)), l'additivité ({{m-beppo-levi|Convergence monotone}}, (i)) donne $\int |f|^p = \int |f|^p\mathbf 1_{X \setminus N}$, et de même pour $g$ ; la croissance de l'intégrale ({{m-integrale|Intégrale positive}}, (ii)) donne $\int |f|^p \leqslant \int |g|^p$.
+
+      On conclut par la croissance de $t \mapsto t^{1/p}$, prolongée par $(+\infty)^{1/p} = +\infty$ ({{lp-puissances|Puissances réelles}}, (iv) et (v)).
+
+      Pour $p = +\infty$ : $|cf| \leqslant |c|M$ presque partout si et seulement si $|f| \leqslant M$ presque partout, pour $c \neq 0$ ; $\|f\|_\infty = 0$ équivaut, par (ii), à $|f| \leqslant 0$ presque partout ; et tout $M$ qui majore $|g|$ presque partout majore $|f|$ presque partout.
+
+      (iv) Pour $p = 2$, $|f|^2 = f^2$ et la racine carrée est $t^{1/2}$ ({{lp-puissances|Puissances réelles}}, (iii)) ; pour $p = 1$, $|f|^1 = |f|$.
+    remarques:
+      - |
+        L'erreur la plus répandue est de confondre la borne supérieure essentielle avec la borne supérieure. Pour la mesure de Lebesgue sur $[0, 1]$, la fonction $\mathbf 1_{\lex{ensemble-rationnels}{\mathbb Q}}$ a pour borne supérieure $1$, mais pour borne supérieure essentielle $0$, puisque $\mathbb Q$ est négligeable : c'est la fonction nulle de $L^\infty$.
+      - |
+        L'inégalité (i) suffit à faire de $\mathcal L^p$ un espace vectoriel, mais pas à faire de $\|\cdot\|_p$ une norme : l'inégalité triangulaire demande davantage, l'inégalité de Hölder, puis celle de Minkowski, établies aux deux nœuds suivants.
+      - |
+        Ces espaces ont été introduits par F. Riesz en 1910, dans un mémoire où il en décrit aussi le dual (« Untersuchungen über Systeme integrierbarer Funktionen », *Math. Ann.* 69, p. 449-497).
+
+  - id: lp-holder
+    etiquette: Inégalité de Hölder
+    nature: théorème
+    titre: Inégalité de Hölder et cas d'égalité
+    enonce: |
+      Soient $p$ et $q$ des [[exposants-conjugues|exposants conjugués]], $1 \leqslant p \leqslant +\infty$, et $f \in \lex{espace-Lp}{\mathcal L^p}(\mu)$, $g \in \mathcal L^q(\mu)$.
+
+      (i) *[[inegalite-holder|Inégalité de Hölder]].* Le produit $fg$ est [[integrable-lebesgue|intégrable]], et
+      $$\int |fg| \, d\mu \leqslant \|f\|_p\,\|g\|_q.$$
+
+      (ii) *Cas d'égalité, $1 < p < +\infty$.* Si $\|f\|_p$ et $\|g\|_q$ ne sont pas nuls, l'égalité a lieu si et seulement si
+      $$\frac{|f|^p}{\|f\|_p^p} = \frac{|g|^q}{\|g\|_q^q} \quad \text{presque partout.}$$
+
+      (iii) *Cas d'égalité, $p = 1$.* L'égalité $\int |fg| = \|f\|_1\|g\|_\infty$ a lieu si et seulement si $|g| = \|g\|_\infty$ presque partout sur $\{f \neq 0\}$. Par symétrie, pour $p = +\infty$, l'égalité $\int |fg| = \|f\|_\infty\|g\|_1$ a lieu si et seulement si $|f| = \|f\|_\infty$ presque partout sur $\{g \neq 0\}$.
+    preuve: |
+      (i) Le produit $fg$ est mesurable ({{m-mesurables|Fonctions mesurables}}, (iii)). Pour $p = 1$ et $q = +\infty$, on a $|fg| \leqslant |f|\,\|g\|_\infty$ presque partout ({{lp-espaces|Espaces Lᵖ}}, (ii)), et l'on intègre. Le cas $p = +\infty$ s'en déduit en échangeant les rôles.
+
+      Soit $1 < p < +\infty$, $A = \|f\|_p$ et $B = \|g\|_q$. Si $A = 0$, alors $f = 0$ presque partout, $fg$ aussi, et l'inégalité est vraie ; de même si $B = 0$.
+
+      Sinon, posons $F = |f|/A$ et $G = |g|/B$, de sorte que $\int F^p = \int G^q = 1$. L'inégalité de Young ({{lp-young|Inégalité de Young}}) donne en tout point
+      $$FG \leqslant \frac{F^p}p + \frac{G^q}q,$$
+      et, en intégrant, $\int FG \leqslant \frac1p + \frac1q = 1$, c'est-à-dire $\int |fg| \leqslant AB$.
+
+      (ii) L'égalité $\int |fg| = AB$ équivaut à $\int FG = 1$, donc à
+      $$\int \Big(\frac{F^p}p + \frac{G^q}q - FG\Big) d\mu = 0.$$
+      La fonction intégrée est positive ; son intégrale est nulle si et seulement si elle est nulle presque partout ({{m-integrale|Intégrale positive}}, (iv)), c'est-à-dire, par le cas d'égalité de Young, si et seulement si $F^p = G^q$ presque partout. C'est la condition annoncée.
+
+      (iii) L'égalité s'écrit $\int (\|g\|_\infty - |g|)\,|f| \, d\mu = 0$. La fonction intégrée est positive presque partout ; elle est donc nulle presque partout, ce qui signifie exactement que $|g| = \|g\|_\infty$ presque partout là où $f \neq 0$. La réciproque est immédiate.
+    remarques:
+      - |
+        Pour $p = q = 2$, c'est l'inégalité de Cauchy-Schwarz du nœud {{f-lp|Espaces L¹ et L²}}. Le cas d'égalité dit que, pour $1 < p < +\infty$, l'inégalité n'est une égalité que si $|g|^q$ est proportionnelle à $|f|^p$ : $|g|$ doit être proportionnelle à $|f|^{p-1}$.
+      - |
+        Sur $[0, 1]$ muni de la mesure de Lebesgue, avec $p = 3$ et $q = \frac32$, prenons $f(x) = x$. Pour $g(x) = x^2$, on a $|g|^{3/2} = x^3 = |f|^3$, et l'égalité doit avoir lieu : en effet $\int_0^1 x^3 \, dx = \frac14$, et
+        $$\|f\|_3\,\|g\|_{3/2} = \Big(\frac14\Big)^{1/3}\Big(\frac14\Big)^{2/3} = \frac14.$$
+
+        Pour $g = 1$, en revanche, $\int_0^1 x \, dx = \frac12$, alors que $\|f\|_3\,\|1\|_{3/2} = 4^{-1/3} \approx 0{,}630$ : l'inégalité est stricte, parce que $1$ n'est pas proportionnelle à $x^2$. L'écart mesure à quel point $g$ s'éloigne de la forme extrémale.
+      - |
+        L'inégalité porte le nom d'O. Hölder, qui l'a publiée en 1889 (« Ueber einen Mittelwerthsatz », *Nachr. Ges. Wiss. Göttingen*, p. 38-47) ; L. J. Rogers en avait donné une forme voisine l'année précédente (« An extension of a certain theorem in inequalities », *Messenger of Math.* 17, 1888, p. 145-150).
+
+  - id: lp-minkowski
+    etiquette: Inégalité de Minkowski
+    nature: théorème
+    titre: Inégalité de Minkowski ; Lᵖ est un espace normé
+    enonce: |
+      Soit $1 \leqslant p \leqslant +\infty$. Pour $f, g \in \lex{espace-Lp}{\mathcal L^p}(\mu)$,
+      $$\|f + g\|_p \leqslant \|f\|_p + \|g\|_p.$$
+      C'est l'[[inegalite-minkowski|inégalité de Minkowski]]. Par conséquent $\|\cdot\|_p$ est une [[norme]] sur $L^p(\mu)$, qui est un [[espace-norme|espace vectoriel normé]].
+    preuve: |
+      Pour $p = 1$, on intègre $|f + g| \leqslant |f| + |g|$. Pour $p = +\infty$, $|f + g| \leqslant \|f\|_\infty + \|g\|_\infty$ hors de la réunion de deux négligeables ({{lp-espaces|Espaces Lᵖ}}, (ii)).
+
+      Soit $1 < p < +\infty$, $q$ l'exposant conjugué, et $S = \int |f + g|^p$, qui est fini ({{lp-espaces|Espaces Lᵖ}}, (i)). Si $S = 0$, il n'y a rien à démontrer. Sinon, écrivons
+      $$\begin{aligned} |f + g|^p &= |f + g|\,|f + g|^{p-1} \\ &\leqslant |f|\,h + |g|\,h, \end{aligned}$$
+      où $h = |f + g|^{p-1}$. Comme $(p - 1)q = p$, on a $h^q = |f + g|^p$ : la fonction $h$ est dans $\mathcal L^q$, et $\|h\|_q = S^{1/q}$.
+
+      L'inégalité de Hölder ({{lp-holder|Inégalité de Hölder}}) donne
+      $$S \leqslant \big(\|f\|_p + \|g\|_p\big)\,S^{1/q}.$$
+      En divisant par $S^{1/q} > 0$, il vient $S^{1 - 1/q} = S^{1/p} \leqslant \|f\|_p + \|g\|_p$, ce qui est l'inégalité.
+
+      Avec le point (iii) du nœud {{lp-espaces|Espaces Lᵖ}}, les trois axiomes d'une norme sont vérifiés sur $L^p(\mu)$.
+    remarques:
+      - |
+        Sur $\lex{n-uplet}{\mathbb R^2}$, vu comme l'espace des fonctions sur $\{1, 2\}$ muni de la mesure de comptage, la norme $\|x\|_p = (|x_1|^p + |x_2|^p)^{1/p}$ redonne les distances $d_1$ et $d_2$ du nœud {{me-espace|Espaces métriques}}, et $\|x\|_\infty$ la distance $d_\infty$.
+
+        ```schema lp-minkowski
+        Les boules unités $\{\|x\|_p \leqslant 1\}$ de $\mathbb R^2$ pour $p = 1$ (losange vert), $p = 2$ (cercle bleu), $p = 4$ (en gris) et $p = \infty$ (carré rouge) grossissent avec $p$ et sont toutes convexes. Pour $p = \frac12$, en pointillé, la courbe $\sqrt{|x_1|} + \sqrt{|x_2|} = 1$ se creuse vers l'origine : les points $(1, 0)$ et $(0, 1)$ en font partie, mais pas leur milieu $(\frac12, \frac12)$.
+        ```
+
+        L'inégalité de Minkowski équivaut à la convexité de la boule unité : si $\|x\|_p \leqslant 1$ et $\|y\|_p \leqslant 1$, alors $\|tx + (1 - t)y\|_p \leqslant t + (1 - t) = 1$.
+      - |
+        L'erreur la plus répandue est d'étendre la définition à $0 < p < 1$ en espérant une norme. Pour $p = \frac12$, les vecteurs $x = (1, 0)$ et $y = (0, 1)$ ont pour « norme » $1$, mais
+        $$\|x + y\|_{1/2} = \big(1 + 1\big)^2 = 4 > 2.$$
+        La boule unité n'est plus convexe, et l'inégalité triangulaire tombe.
+      - |
+        L'inégalité porte le nom d'H. Minkowski, qui l'a rencontrée en géométrie des nombres, où la convexité des boules unités joue le premier rôle.
+
+  - id: lp-completude
+    etiquette: Complétude de Lᵖ
+    nature: théorème
+    titre: Riesz-Fischer pour tout p
+    choix: |
+      Comme au nœud {{f-lp|Espaces L¹ et L²}}, la démonstration part d'une suite de Cauchy de classes et choisit un représentant de chacune : c'est un usage du [[choix-denombrable]]. Il disparaît si la suite est donnée par des fonctions.
+    enonce: |
+      (i) Pour $1 \leqslant p < +\infty$, $\lex{espace-Lp}{L^p}(\mu)$ est un [[banach|espace de Banach]], et toute suite qui converge dans $L^p$ a une suite extraite qui converge presque partout vers la même limite.
+
+      (ii) $\lex{espace-L-infini}{L^\infty}(\mu)$ est un espace de Banach. Une suite $(f_n)$ converge vers $f$ dans $L^\infty$ si et seulement s'il existe un négligeable $N$ hors duquel $f_n$ converge uniformément vers $f$.
+    preuve: |
+      (i) C'est la démonstration du nœud {{f-lp|Espaces L¹ et L²}}, (ii) et (iii), où l'inégalité triangulaire est celle de Minkowski ({{lp-minkowski|Inégalité de Minkowski}}). Rappelons-la. Soit $(f_n)$ de Cauchy, dont on fixe des représentants. Posons $n_{-1} = -1$, et, pour $k \geqslant 0$, soit $n_k$ le plus petit entier $n > n_{k-1}$ tel que $\|f_m - f_{m'}\|_p \leqslant 2^{-k}$ pour $m, m' \geqslant n$.
+
+      Les sommes partielles $g_K$ de la série $g = \sum_k |f_{n_{k+1}} - f_{n_k}|$ vérifient $\|g_K\|_p \leqslant \sum_k 2^{-k} = 2$ par Minkowski. Comme $g_K^p$ croît vers $g^p$ ({{lp-puissances|Puissances réelles}}, (v)), la convergence monotone donne $\int g^p \leqslant 2^p$.
+
+      Donc $g < +\infty$ presque partout, et la série $f_{n_0} + \sum_k (f_{n_{k+1}} - f_{n_k})$ converge absolument presque partout vers une fonction $f$, prise nulle sur le négligeable restant.
+
+      Hors de ce négligeable,
+      $$|f - f_{n_k}| \leqslant \sum_{j \geqslant k} |f_{n_{j+1}} - f_{n_j}|,$$
+      dont la norme $p$ est au plus $2^{1-k}$ par le même argument. Ainsi $f \in \mathcal L^p$, $f_{n_k} \to f$ presque partout et dans $L^p$, et la suite de Cauchy $(f_n)$, qui a une suite extraite convergente, converge ({{me-cauchy|Espaces complets}}, (i)).
+
+      Si enfin $f_n \to h$ dans $L^p$, la suite est de Cauchy, et la construction fournit une suite extraite qui converge presque partout vers une limite $f$ ; comme $f_{n_k}$ tend vers $h$ et vers $f$ dans $L^p$, on a $f = h$ presque partout.
+
+      (ii) Si $f_n \to f$ dans $L^\infty$, la réunion $N$ des ensembles $\{|f_n - f| > \|f_n - f\|_\infty\}$, négligeables ({{lp-espaces|Espaces Lᵖ}}, (ii)), est négligeable, et $\sup_{X \setminus N} |f_n - f| \leqslant \|f_n - f\|_\infty \to 0$. La réciproque vient de ce que $\|f_n - f\|_\infty$ est au plus la borne supérieure de $|f_n - f|$ hors de $N$.
+
+      Soit $(f_n)$ de Cauchy dans $L^\infty$, dont on fixe des représentants. La réunion $N$ des ensembles $\{|f_n| > \|f_n\|_\infty\}$ et $\{|f_m - f_n| > \|f_m - f_n\|_\infty\}$, pour $m, n \in \mathbb N$, est négligeable ; hors de $N$, chaque $f_n$ est bornée, et la suite est uniformément de Cauchy.
+
+      En chaque point de $X \setminus N$, la suite $(f_n(x))$ est de Cauchy, donc converge ({{ar-cauchy|Complétude}}) vers un réel $f(x)$ ; on pose $f = 0$ sur $N$, et $f$ est mesurable ({{m-mesurables|Fonctions mesurables}}, (ii)).
+
+      Pour $\varepsilon > 0$, soit $n_0$ tel que $|f_m - f_n| \leqslant \varepsilon$ sur $X \setminus N$ pour $m, n \geqslant n_0$. En faisant tendre $m$ vers l'infini, $|f - f_n| \leqslant \varepsilon$ sur $X \setminus N$ pour $n \geqslant n_0$. Ainsi $f$ est essentiellement bornée, et $\|f_n - f\|_\infty \to 0$.
+    remarques:
+      - |
+        Dans $L^\infty$, c'est la suite entière, et non une suite extraite, qui converge presque partout. Pour $p$ fini, l'extraction est nécessaire : la « machine à écrire » du nœud {{p-convergences|Modes de convergence}} tend vers $0$ dans tout $L^p$, $p < +\infty$, sans converger en aucun point.
+
+  - id: lp-inclusions
+    etiquette: Inclusions
+    nature: proposition
+    titre: Inclusions entre les espaces Lᵖ
+    enonce: |
+      (i) *Mesure finie.* Si $\mu(X) < +\infty$ et $1 \leqslant r < p \leqslant +\infty$, alors $\lex{espace-Lp}{L^p}(\mu) \subset L^r(\mu)$, et
+      $$\|f\|_r \leqslant \mu(X)^{\frac1r - \frac1p}\,\|f\|_p,$$
+      avec $\frac1\infty = 0$.
+
+      (ii) *Suites.* Si $1 \leqslant r < p \leqslant +\infty$, alors $\ell^r \subset \ell^p$, et $\|a\|_p \leqslant \|a\|_r$.
+
+      (iii) *Sur $\mathbb R$.* Pour la [[mesure-lebesgue|mesure de Lebesgue]] et $s > 0$, la fonction $x^{-s}$ est intégrable sur $]0, 1]$ si et seulement si $s < 1$, et sur $[1, +\infty[$ si et seulement si $s > 1$.
+
+      Pour $1 \leqslant p < r < +\infty$,
+      $$\begin{aligned} x^{-1/r}\,\mathbf 1_{]0, 1]} &\in L^p \setminus L^r, \\ x^{-1/p}\,\mathbf 1_{[1, +\infty[} &\in L^r \setminus L^p, \end{aligned}$$
+      et aucun des espaces $L^p(\lambda)$, $1 \leqslant p \leqslant +\infty$, n'est contenu dans un autre.
+
+      (iv) *Interpolation.* Si $1 \leqslant p < s < r \leqslant +\infty$, alors $L^p(\mu) \cap L^r(\mu) \subset L^s(\mu)$, pour toute mesure $\mu$.
+    preuve: |
+      (i) Pour $p = +\infty$, $|f|^r \leqslant \|f\|_\infty^r$ presque partout, et l'on intègre.
+
+      Pour $p$ fini, posons $P = p/r > 1$ et $Q$ son conjugué, de sorte que $\frac1Q = 1 - \frac rp$. La fonction $|f|^r$ est dans $\mathcal L^P$, puisque $(|f|^r)^P = |f|^p$, et la constante $1$ dans $\mathcal L^Q$, puisque $\mu$ est finie.
+
+      L'inégalité de Hölder ({{lp-holder|Inégalité de Hölder}}) donne
+      $$\int |f|^r \leqslant \Big(\int |f|^p\Big)^{r/p}\mu(X)^{1 - r/p},$$
+      et l'on élève à la puissance $\frac1r$ ({{lp-puissances|Puissances réelles}}, (iii)).
+
+      (ii) Soit $a \in \ell^r$ non nulle ; quitte à la diviser par $\|a\|_r$, on peut supposer $\|a\|_r = 1$. Alors $|a_n| \leqslant 1$ pour tout $n$, d'où $|a_n|^p \leqslant |a_n|^r$ ({{lp-puissances|Puissances réelles}}, (vi)) et $\sum_n |a_n|^p \leqslant 1$ ; pour $p = +\infty$, $\sup |a_n| \leqslant 1$.
+
+      (iii) Pour $s \neq 1$, la fonction $x \mapsto \frac{x^{1-s}}{1-s}$ a pour dérivée $x^{-s}$ sur $]0, +\infty[$ ({{lp-puissances|Puissances réelles}}, (iv)), et $\ln$ a pour dérivée $\frac1x$. Le théorème fondamental ({{ar-tfa|Théorème fondamental}}) et le point (ii) du nœud {{de-monotonie|Signe de la dérivée}} donnent, pour $0 < \varepsilon < 1$,
+      $$\begin{aligned} \int_\varepsilon^1 x^{-s}\,dx &= \frac{1 - \varepsilon^{1-s}}{1 - s}, \\ \int_\varepsilon^1 \frac{dx}x &= -\ln \varepsilon. \end{aligned}$$
+
+      Ce sont aussi des intégrales pour $\lambda$ ({{m-riemann|Riemann et Lebesgue}}). Pour $\varepsilon = \frac1n$, les fonctions $x^{-s}\mathbf 1_{[1/n, 1]}$ croissent vers $x^{-s}\mathbf 1_{]0, 1]}$, et la convergence monotone donne la limite des intégrales.
+
+      Si $s < 1$, $(\frac1n)^{1-s} \to 0$ par continuité en $0$, et l'intégrale vaut $\frac1{1-s}$.
+
+      Si $s > 1$, $(\frac1n)^{1-s} = n^{s-1}$ n'est pas bornée, $t \mapsto t^{s-1}$ étant une bijection croissante de $[0, +\infty[$ sur lui-même ; si $s = 1$, $-\ln \frac1n = \ln n$ ne l'est pas non plus.
+
+      Sur $[1, +\infty[$, le même calcul avec $\int_1^n$ donne $\frac{n^{1-s} - 1}{1 - s}$ et $\ln n$, bornés si et seulement si $s > 1$.
+
+      Comme $|x^{-\alpha}|^r = x^{-\alpha r}$, la fonction $x^{-1/r}\mathbf 1_{]0, 1]}$ est dans $L^p$ car $\frac pr < 1$, et pas dans $L^r$ ; la fonction $x^{-1/p}\mathbf 1_{[1, +\infty[}$ est dans $L^r$ car $\frac rp > 1$, et pas dans $L^p$.
+
+      Pour $r = +\infty$, la constante $1$ est dans $L^\infty$ et dans aucun $L^p$, $p$ fini, puisque $\lambda(\mathbb R) = +\infty$ ; et $x^{-1/(2p)}\mathbf 1_{]0, 1]}$ est dans $L^p$ sans être essentiellement bornée, puisqu'elle dépasse tout $M$ sur un intervalle non vide.
+
+      (iv) Si $r = +\infty$, $|f|^s = |f|^p|f|^{s-p} \leqslant \|f\|_\infty^{s-p}|f|^p$ presque partout. Si $r$ est fini, $|f|^s \leqslant |f|^p$ là où $|f| \leqslant 1$, et $|f|^s \leqslant |f|^r$ ailleurs ({{lp-puissances|Puissances réelles}}, (vi)) ; donc $|f|^s \leqslant |f|^p + |f|^r$, que l'on intègre.
+    remarques:
+      - |
+        Les deux inclusions (i) et (ii) vont en sens contraires, et c'est l'erreur la plus répandue de les confondre. Sur une mesure finie, ce qui empêche une fonction d'être dans $L^p$ pour $p$ grand, c'est une singularité locale, que les puissances élevées aggravent : $L^p$ décroît quand $p$ croît.
+
+        Pour la mesure de comptage, au contraire, les termes d'une suite sommable sont petits, et les puissances élevées les rendent plus petits encore : $\ell^p$ croît avec $p$. Sur $\mathbb R$, les deux phénomènes coexistent, en $0$ et à l'infini, et aucune inclusion n'a lieu.
+      - |
+        Pour $f(x) = x^{-1/3}$ sur $]0, 1]$, le calcul de (iii) donne $\|f\|_1 = \frac{1}{1 - 1/3} = \frac32$ et $\|f\|_2^2 = \frac1{1 - 2/3} = 3$, soit $\|f\|_2 = \sqrt3 \approx 1{,}732$. L'inégalité (i), avec $\mu([0, 1]) = 1$, dit $\frac32 \leqslant \sqrt 3$ ; et $f \notin L^3$, puisque $|f|^3 = x^{-1}$.
+
+  - id: lp-densite
+    etiquette: Densité
+    nature: proposition
+    titre: Parties denses de Lᵖ
+    choix: |
+      Le point (iii) hérite du [[choix-denombrable]] sur lequel repose la construction de la {{m-lebesgue|mesure de Lebesgue}} ; sa démonstration n'en ajoute aucun, l'existence d'un recouvrement presque optimal n'étant invoquée qu'une fois, pour une partie et un $\varepsilon$ donnés. Les points (i) et (ii) ne font aucun choix.
+    enonce: |
+      (i) Pour $1 \leqslant p < +\infty$, les [[fonction-etagee|fonctions étagées]] $s$ telles que $\mu(\{s \neq 0\}) < +\infty$ sont denses dans $\lex{espace-Lp}{L^p}(\mu)$.
+
+      (ii) Les fonctions étagées sont denses dans $\lex{espace-L-infini}{L^\infty}(\mu)$.
+
+      (iii) Pour la tribu de Lebesgue et la [[mesure-lebesgue|mesure de Lebesgue]] sur $\lex{ensemble-reels}{\mathbb R}$, et $1 \leqslant p < +\infty$, les fonctions continues nulles hors d'un segment sont denses dans $L^p(\lambda)$.
+
+      Plus précisément, pour toute partie $A$ mesurable au sens de Lebesgue, de mesure finie, et tout $\varepsilon > 0$, il existe une réunion finie $E$ d'intervalles $]a, b]$ telle que $\lambda(A \,\triangle\, E) < \varepsilon$.
+    preuve: |
+      (i) Soit $f \in \mathcal L^p$ positive, et $(s_n)$ la suite croissante d'étagées positives de limite $f$ du nœud {{m-etagees|Fonctions étagées}}. Comme $0 \leqslant s_n \leqslant f$, on a $\{s_n \neq 0\} \subset \{f \geqslant 2^{-n}\}$, dont la mesure est au plus $2^{np}\int f^p$ par l'inégalité de Markov ({{m-integrale|Intégrale positive}}, (iii)) appliquée à $f^p$ : elle est finie.
+
+      Enfin $|f - s_n|^p \leqslant f^p$, intégrable, et $|f - s_n|^p \to 0$ en tout point : par convergence dominée ({{m-convergence-dominee|Convergence dominée}}), $\|f - s_n\|_p \to 0$.
+
+      Pour $f$ quelconque, on approche $f^+$ et $f^-$, et l'on conclut par l'inégalité de Minkowski ({{lp-minkowski|Inégalité de Minkowski}}).
+
+      (ii) Soit $f \in \mathcal L^\infty$ et $N = \{|f| > \|f\|_\infty\}$, négligeable ({{lp-espaces|Espaces Lᵖ}}, (ii)). La fonction $g = f\mathbf 1_{X \setminus N}$ est égale à $f$ presque partout et bornée par $M = \|f\|_\infty$. Les étagées $s_n'$ et $s_n''$ associées à $g^+$ et à $g^-$ par le nœud {{m-etagees|Fonctions étagées}} les approchent uniformément, puisque ces fonctions sont bornées ; donc $\|g - (s_n' - s_n'')\|_\infty \to 0$.
+
+      (iii) Par définition de la mesure extérieure ({{m-lebesgue|Mesure de Lebesgue}}), il existe une suite d'intervalles $]a_k, b_k]$ qui recouvre $A$ et dont la longueur totale est au plus $\lambda(A) + \frac\varepsilon2$. Leur réunion $U$ est borélienne, contient $A$, et $\lambda(U) \leqslant \lambda(A) + \frac\varepsilon2$ par sous-additivité ; comme $\lambda(A)$ est fini, $\lambda(U \setminus A) \leqslant \frac\varepsilon2$.
+
+      Les réunions finies $E_N = \bigcup_{k < N} \,]a_k, b_k]$ croissent vers $U$, de mesure finie, donc $\lambda(U \setminus E_N) \to 0$ ({{m-mesures|Mesures}}, (iii)). Comme $E_N$ et $A$ sont contenus dans $U$,
+      $$A \,\triangle\, E_N \subset (U \setminus A) \cup (U \setminus E_N),$$
+      de mesure $< \varepsilon$ pour $N$ grand.
+
+      Alors $\|\mathbf 1_A - \mathbf 1_{E_N}\|_p = \lambda(A \,\triangle\, E_N)^{1/p}$ est petit.
+
+      Les intervalles qui composent $E_N$ peuvent se chevaucher ; mais, en rangeant par ordre croissant les extrémités $c_0 < c_1 < \cdots < c_m$ de tous ces intervalles, $E_N$ est la réunion disjointe de ceux des intervalles $]c_{i-1}, c_i]$ qu'il contient, puisque chacun des $]a_k, b_k]$ est la réunion disjointe des $]c_{i-1}, c_i]$ compris entre $a_k$ et $b_k$.
+
+      L'indicatrice $\mathbf 1_{E_N}$ est donc une somme finie d'indicatrices d'intervalles $]a, b]$.
+
+      Pour un tel intervalle, l'indicatrice de $]a, b]$ est à distance au plus $(2\delta)^{1/p}$, dans $L^p$, de la fonction continue $\varphi_\delta$ qui vaut $1$ sur $[a + \delta, b]$, $0$ hors de $]a, b + \delta[$, et qui est affine entre ces deux segments, pour $0 < \delta < b - a$ : les deux fonctions, comprises entre $0$ et $1$, ne diffèrent que sur deux intervalles de longueur $\delta$.
+
+      Par Minkowski, toute combinaison linéaire finie d'indicatrices de parties de mesure finie, donc, par (i), tout élément de $L^p$, est limite de fonctions continues nulles hors d'un segment.
+    remarques:
+      - |
+        La démonstration de (iii) ne fait aucun choix : pour une partie $A$ et un $\varepsilon$ donnés, elle invoque une seule fois l'existence d'un recouvrement presque optimal. C'est la construction de $\lambda$ elle-même qui utilise le choix dénombrable. Pour la tribu borélienne, le nœud {{fo-densite|Densité}} de l'analyse de Fourier obtient (iii), pour $p = 1$ et $p = 2$, par le lemme de Dynkin.
+      - |
+        Le point (iii) est faux pour $p = +\infty$ : l'indicatrice de $[0, 1]$ est à distance au moins $\frac12$ de toute fonction continue $\varphi$. Si l'on avait $\|\mathbf 1_{[0, 1]} - \varphi\|_\infty = \delta < \frac12$, l'inégalité $\varphi \geqslant 1 - \delta$ aurait lieu presque partout sur $[0, 1]$, et $\varphi \leqslant \delta$ presque partout sur $]1, 2]$.
+
+        Un ensemble négligeable ne contient aucun intervalle non réduit à un point ; les points où ces inégalités ont lieu sont donc denses dans chacun des deux intervalles, et, par continuité, elles ont lieu partout, $[1, 2]$ compris pour la seconde. En $x = 1$, on obtiendrait $1 - \delta \leqslant \varphi(1) \leqslant \delta$, c'est-à-dire $\delta \geqslant \frac12$ : contradiction.
+
+  - id: lp-absolue-continuite
+    etiquette: Absolue continuité
+    nature: définition
+    titre: Mesures à densité, absolue continuité, mesures étrangères
+    texte: |
+      Soient $\mu$ et $\nu$ deux [[mesure|mesures]] sur un espace mesurable $(X, \mathcal A)$. Pour $f : X \to [0, +\infty[$ mesurable, la [[mesure-densite|mesure de densité]] $f$ par rapport à $\mu$ est
+      $$(f\cdot\mu)(A) = \int_A f \, d\mu, \quad A \in \mathcal A ;$$
+      c'est une mesure ({{m-beppo-levi|Convergence monotone}}, (iii)).
+
+      La mesure $\nu$ est [[absolument-continue|absolument continue]] par rapport à $\mu$, ce que l'on note $\nu \ll \mu$, si toute partie $\mu$-[[negligeable|négligeable]] est $\nu$-négligeable. Les mesures $\mu$ et $\nu$ sont [[mesures-etrangeres|étrangères]], ce que l'on note $\nu \perp \mu$, s'il existe $S \in \mathcal A$ tel que $\mu(S) = 0$ et $\nu(X \setminus S) = 0$ : elles vivent sur deux parties disjointes.
+    enonce: |
+      (i) *Intégration.* Pour $g : X \to \lex{demi-droite-achevee}{[0, +\infty]}$ mesurable,
+      $$\int g \, d(f\cdot\mu) = \int g f \, d\mu.$$
+      Une fonction réelle mesurable $g$ est intégrable pour $f\cdot\mu$ si et seulement si $gf$ l'est pour $\mu$, et les intégrales sont alors égales. De même, pour deux mesures $\mu$ et $\nu$, $\int g \, d(\mu + \nu) = \int g \, d\mu + \int g \, d\nu$.
+
+      (ii) *Composition.* Pour $g : X \to [0, +\infty[$ mesurable, $g\cdot(f\cdot\mu) = (gf)\cdot\mu$.
+
+      (iii) $f\cdot\mu \ll \mu$. Si $\nu \ll \mu$ et $\nu \perp \mu$, alors $\nu = 0$.
+
+      (iv) *Unicité de la densité.* Si $\mu$ est σ-finie et si $f\cdot\mu = g\cdot\mu$, alors $f = g$ $\mu$-presque partout.
+    preuve: |
+      (i) Pour $g = \mathbf 1_A$, c'est la définition. Pour $g$ étagée positive, $g = \sum_i c_i\mathbf 1_{A_i}$ en écriture canonique, la linéarité de l'intégrale ({{m-beppo-levi|Convergence monotone}}, (i)) donne
+      $$\begin{aligned} \int g \, d(f\cdot\mu) &= \sum_i c_i \int \mathbf 1_{A_i} f \, d\mu \\ &= \int g f \, d\mu. \end{aligned}$$
+
+      Pour $g$ mesurable positive, soit $(s_n)$ une suite croissante d'étagées positives de limite $g$ ({{m-etagees|Fonctions étagées}}) ; $(s_n f)$ croît vers $gf$, avec la convention $0 \cdot (+\infty) = 0$, puisque $f$ est finie et positive. La convergence monotone, appliquée des deux côtés, conclut.
+
+      Pour $g$ réelle, $(gf)^\pm = g^\pm f$ et $|gf| = |g|f$ ; on applique ce qui précède à $|g|$, $g^+$ et $g^-$. L'égalité relative à $\mu + \nu$, mesure évidente, se démontre de la même façon, à partir des indicatrices.
+
+      (ii) Pour $A \in \mathcal A$, par (i) appliqué à $\mathbf 1_A g$,
+      $$\begin{aligned} \big(g\cdot(f\cdot\mu)\big)(A) &= \int \mathbf 1_A g f \, d\mu \\ &= \big((gf)\cdot\mu\big)(A). \end{aligned}$$
+
+      (iii) Si $\mu(A) = 0$, la fonction $\mathbf 1_A f$ est nulle presque partout, donc d'intégrale nulle ({{m-integrale|Intégrale positive}}, (iv)). Si $\nu \ll \mu$ et si $S$ est comme dans la définition, $\nu(S) = 0$ puisque $\mu(S) = 0$, et $\nu(X) = \nu(S) + \nu(X \setminus S) = 0$.
+
+      (iv) Fixons une suite croissante $(X_n)$ de parties de mesure finie, de réunion $X$. Soit $A_n = \{f > g\} \cap X_n \cap \{f \leqslant n\}$. Alors $\int_{A_n} g \, d\mu = \int_{A_n} f \, d\mu \leqslant n\,\mu(X_n)$ est fini ; les fonctions $f\mathbf 1_{A_n}$ et $g\mathbf 1_{A_n}$ sont intégrables, et la linéarité ({{m-integrables|Fonctions intégrables}}, (i)) donne $\int (f - g)\mathbf 1_{A_n} \, d\mu = 0$.
+
+      La fonction $(f - g)\mathbf 1_{A_n}$, positive, est donc nulle presque partout ; comme elle est strictement positive sur $A_n$, $\mu(A_n) = 0$. Les $A_n$ croissent vers $\{f > g\}$, puisque $f$ est finie, et $\mu(\{f > g\}) = 0$. On échange $f$ et $g$.
+    remarques:
+      - |
+        Une probabilité $P$ sur $\mathbb R$ qui a une densité $f$ au sens du nœud {{p-poisson-exp|Poisson, exponentielle}} est la mesure $f\cdot\lambda$, absolument continue par rapport à la mesure de Lebesgue. Une mesure de Dirac $\delta_a$ est au contraire étrangère à $\lambda$ : avec $S = \{a\}$, on a $\lambda(S) = 0$ et $\delta_a(\mathbb R \setminus S) = 0$.
+      - |
+        L'hypothèse de σ-finitude ne peut pas être omise en (iv). Sur $X = \{0\}$, avec $\mu(\{0\}) = +\infty$, les densités $1$ et $2$ donnent la même mesure, puisque $1 \cdot (+\infty) = 2 \cdot (+\infty) = +\infty$. Une densité n'est déterminée que là où la mesure laisse la voir sur des parties de mesure finie.
+
+  - id: lp-von-neumann
+    etiquette: Lemme de von Neumann
+    nature: théorème
+    titre: Décomposition de Lebesgue pour des mesures finies (von Neumann)
+    choix: |
+      La démonstration applique le théorème de Riesz ({{f-riesz|Théorème de Riesz}}) dans $L^2(\mu + \nu)$ ; il repose sur le théorème de projection, qui choisit une suite minimisante, et sur la complétude de $L^2$, qui choisit des représentants : ce sont des usages du [[choix-denombrable]]. Choisir ensuite un représentant de la classe obtenue est une seule existence invoquée, sans choix.
+    enonce: |
+      Soient $\mu$ et $\nu$ deux mesures finies sur $(X, \mathcal A)$. Il existe $S \in \mathcal A$ tel que $\mu(S) = 0$, et une fonction mesurable $f : X \to [0, +\infty[$, intégrable pour $\mu$, telles que, pour tout $A \in \mathcal A$,
+      $$\nu(A) = \int_A f \, d\mu + \nu(A \cap S).$$
+      En particulier, si $\nu$ est [[absolument-continue|absolument continue]] par rapport à $\mu$, alors $\nu = f\cdot\mu$.
+    preuve: |
+      *Étape 1 : une forme linéaire continue.* Soit $\rho = \mu + \nu$, mesure finie. Pour $g \in \mathcal L^2(\rho)$, l'inégalité de Cauchy-Schwarz avec la constante $1$ ({{f-lp|Espaces L¹ et L²}}, (i)) et l'égalité $\int |g| \, d\rho = \int |g| \, d\mu + \int |g| \, d\nu$ ({{lp-absolue-continuite|Absolue continuité}}, (i)) donnent
+      $$\int |g| \, d\nu \leqslant \int |g| \, d\rho \leqslant \rho(X)^{1/2}\|g\|_{L^2(\rho)}.$$
+
+      Si $g = g'$ $\rho$-presque partout, alors $\nu$-presque partout. La forme $g \mapsto \int g \, d\nu$ est donc bien définie sur $L^2(\rho)$, linéaire et continue.
+
+      $L^2(\rho)$ est un [[espace-hilbert|espace de Hilbert]] ({{f-lp|Espaces L¹ et L²}}, (ii)). Par le théorème de Riesz ({{f-riesz|Théorème de Riesz}}), il existe $h \in \mathcal L^2(\rho)$ tel que
+      $$\int g \, d\nu = \int g h \, d\rho \quad \text{pour tout } g \in \mathcal L^2(\rho). \tag{*}$$
+
+      *Étape 2 : $0 \leqslant h \leqslant 1$.* Pour $A \in \mathcal A$, l'indicatrice $\mathbf 1_A$ est dans $\mathcal L^2(\rho)$, et $(*)$ donne $\nu(A) = \int_A h \, d\rho$.
+
+      Pour $A = \{h < 0\}$, la fonction $-h\mathbf 1_A$ est positive et d'intégrale $-\nu(A) \leqslant 0$ : elle est nulle presque partout, et $\rho(A) = 0$. Pour $A = \{h > 1\}$, la fonction positive $(h - 1)\mathbf 1_A$ a pour intégrale $\nu(A) - \rho(A) = -\mu(A) \leqslant 0$, et de même $\rho(A) = 0$.
+
+      Quitte à remplacer $h$ par $0$ sur ces deux ensembles, ce qui ne change pas $(*)$, on a $0 \leqslant h \leqslant 1$ partout.
+
+      *Étape 3.* Pour $g$ mesurable bornée positive, $(*)$ s'écrit $\int g \, d\nu = \int gh \, d\mu + \int gh \, d\nu$, trois quantités finies, d'où
+      $$\int g(1 - h) \, d\nu = \int g h \, d\mu.$$
+      Pour $g$ mesurable positive quelconque, on applique cette égalité à $\min(g, n)$, et la convergence monotone, des deux côtés, l'étend à $g$.
+
+      *Étape 4.* Soit $S = \{h = 1\}$. L'étape 3 avec $g = \mathbf 1_S$ donne $0 = \int_S h \, d\mu = \mu(S)$.
+
+      *Étape 5.* Soit $A \in \mathcal A$ et $n \in \lex{ensemble-entiers-naturels}{\mathbb N}$. L'étape 3 avec $g = \mathbf 1_{A \setminus S}(1 + h + \cdots + h^n)$ donne
+      $$\begin{aligned} &\int_{A \setminus S} (1 - h^{n+1}) \, d\nu \\ &\quad = \int_{A \setminus S} (h + h^2 + \cdots + h^{n+1}) \, d\mu. \end{aligned}$$
+      Hors de $S$, $0 \leqslant h < 1$ : la fonction $1 - h^{n+1}$ croît vers $1$, et $h + \cdots + h^{n+1}$ croît vers $\frac{h}{1 - h}$.
+
+      Posons $f = \frac{h}{1 - h}$ hors de $S$ et $f = 0$ sur $S$. C'est une fonction mesurable, finie et positive, et la convergence monotone donne
+      $$\nu(A \setminus S) = \int_{A \setminus S} f \, d\mu = \int_A f \, d\mu.$$
+      Ainsi $\nu(A) = \int_A f \, d\mu + \nu(A \cap S)$, et $\int f \, d\mu = \nu(X \setminus S)$ est fini.
+
+      Enfin, si $\nu \ll \mu$, alors $\nu(A \cap S) = 0$ puisque $\mu(A \cap S) = 0$, et $\nu = f\cdot\mu$.
+    remarques:
+      - |
+        La fonction $h$ est la proportion de $\nu$ dans $\rho = \mu + \nu$, et $f = \frac h{1 - h}$ le rapport de la part de $\nu$ à celle de $\mu$. Là où $h = 1$, la mesure $\rho$ est faite de $\nu$ seule : c'est l'ensemble $S$, où vit la partie de $\nu$ que $\mu$ ne voit pas.
+
+        Soit $\mu = \lambda$ sur $[0, 1]$, et $\nu = \mathbf 1_{[0, 1/2[}\cdot\lambda + \frac12\delta_{1/2}$, la loi de $\min(U, \frac12)$ pour $U$ uniforme sur $[0, 1]$. Alors $h$ vaut $\frac12$ sur $[0, \frac12[$, où $\rho = 2\lambda$ et $\nu = \lambda$ ; $1$ au point $\frac12$, que seule $\nu$ charge ; et $0$ sur $]\frac12, 1]$. On trouve $S = \{\frac12\}$, et $f = \frac{1/2}{1/2} = 1$ sur $[0, \frac12[$, $0$ ailleurs.
+      - |
+        Cette démonstration est due à J. von Neumann (« On rings of operators III », *Ann. of Math.* (2) 41, 1940, p. 94-161). Elle remplace l'analyse délicate des mesures par un seul appel à la géométrie d'un espace de Hilbert, et c'est par elle que le théorème de Riesz, dont l'intérêt pouvait sembler limité aux espaces $L^2$, porte sur toutes les mesures.
+
+  - id: lp-radon-nikodym
+    etiquette: Radon-Nikodym
+    nature: théorème
+    titre: Théorème de Lebesgue-Radon-Nikodym
+    texte: |
+      Soient $\mu$ et $\nu$ deux mesures sur $(X, \mathcal A)$. Une [[decomposition-lebesgue|décomposition de Lebesgue]] de $\nu$ par rapport à $\mu$ est une écriture $\nu = \nu_a + \nu_s$, où $\nu_a$ et $\nu_s$ sont des mesures, $\nu_a \ll \mu$ et $\nu_s \perp \mu$.
+    choix: |
+      La démonstration fixe une suite de parties de mesure finie, pour $\mu$ et pour $\nu$ : la σ-finitude en affirme l'existence, et une seule existence invoquée n'est pas un usage du choix. Elle applique ensuite une seule fois le nœud {{lp-von-neumann|Lemme de von Neumann}}, dont elle hérite le [[choix-denombrable]].
+    enonce: |
+      Soient $\mu$ et $\nu$ deux mesures σ-finies sur $(X, \mathcal A)$.
+
+      (i) *Décomposition de Lebesgue.* $\nu$ a une unique décomposition de Lebesgue $\nu = \nu_a + \nu_s$ par rapport à $\mu$, et il existe une fonction mesurable $f : X \to [0, +\infty[$, unique $\mu$-presque partout, telle que $\nu_a = f\cdot\mu$.
+
+      (ii) *Radon-Nikodym.* $\nu \ll \mu$ si et seulement s'il existe une fonction mesurable $f : X \to [0, +\infty[$ telle que $\nu = f\cdot\mu$. Elle est unique presque partout, et c'est la [[derivee-radon-nikodym|dérivée de Radon-Nikodym]] $\frac{d\nu}{d\mu}$ ; pour $g$ mesurable positive,
+      $$\int g \, d\nu = \int g\,\frac{d\nu}{d\mu} \, d\mu.$$
+
+      (iii) *Règle de la chaîne.* Si $\pi$ est une troisième mesure σ-finie et si $\pi \ll \nu \ll \mu$, alors
+      $$\frac{d\pi}{d\mu} = \frac{d\pi}{d\nu}\,\frac{d\nu}{d\mu} \quad \mu\text{-presque partout.}$$
+      En particulier, si $\mu \ll \nu \ll \mu$, alors $\frac{d\mu}{d\nu}\,\frac{d\nu}{d\mu} = 1$ $\mu$-presque partout.
+    preuve: |
+      (i) *Un poids.* Fixons des suites croissantes $(X_n)$ et $(Y_n)$ de parties de mesures finies pour $\mu$ et pour $\nu$, de réunion $X$.
+
+      Les $Z_n = X_n \cap Y_n$ croissent, et leur réunion est $X$, puisqu'un point de $X_m$ et de $Y_k$ est dans $Z_{\max(m, k)}$. Posons
+      $$w = \sum_n \frac{2^{-n-1}\,\mathbf 1_{Z_n}}{1 + \mu(Z_n) + \nu(Z_n)}.$$
+      C'est une fonction mesurable, à valeurs dans $]0, 1]$, et $\int w \, d\mu \leqslant \sum_n 2^{-n-1} = 1$, de même pour $\nu$.
+
+      Les mesures $\mu' = w\cdot\mu$ et $\nu' = w\cdot\nu$ sont donc finies, et elles ont les mêmes négligeables que $\mu$ et $\nu$ : comme $w > 0$, $\int_A w \, d\mu = 0$ équivaut à $\mu(A) = 0$ ({{m-integrale|Intégrale positive}}, (iv)). Par composition des densités ({{lp-absolue-continuite|Absolue continuité}}, (ii)), $\frac1w\cdot\nu' = \nu$.
+
+      *Existence.* Le nœud {{lp-von-neumann|Lemme de von Neumann}} fournit $S$ avec $\mu'(S) = 0$, donc $\mu(S) = 0$, et $f'$ telle que $\nu'(A \setminus S) = \int_A f' \, d\mu'$ pour tout $A$.
+
+      Autrement dit, $\mathbf 1_{X \setminus S}\cdot\nu' = f'\cdot\mu'$, et la composition des densités donne
+      $$\begin{aligned} \mathbf 1_{X \setminus S}\cdot\nu &= \tfrac1w\cdot(\mathbf 1_{X \setminus S}\cdot\nu') \\ &= \tfrac1w\cdot\big(f'\cdot(w\cdot\mu)\big) = f'\cdot\mu. \end{aligned}$$
+
+      Posons $\nu_a = \nu(\cdot \setminus S) = f'\cdot\mu$, absolument continue par rapport à $\mu$ ({{lp-absolue-continuite|Absolue continuité}}, (iii)), et $\nu_s = \nu(\cdot \cap S)$, étrangère à $\mu$ puisque $\mu(S) = 0$ et $\nu_s(X \setminus S) = 0$. On prend $f = f'$.
+
+      *Unicité.* Soit $\nu = \nu_a' + \nu_s'$ une autre décomposition, $S'$ un ensemble tel que $\mu(S') = 0$ et $\nu_s'(X \setminus S') = 0$, et $T = S \cup S'$, négligeable pour $\mu$, donc pour $\nu_a$ et $\nu_a'$.
+
+      Pour $A \in \mathcal A$, on a $\nu_s(A \setminus T) = 0$ et $\nu_a(A \cap T) = 0$, d'où
+      $$\nu_s(A) = \nu_s(A \cap T) = \nu(A \cap T),$$
+      et de même $\nu_s'(A) = \nu(A \cap T)$ : $\nu_s = \nu_s'$. De même $\nu_a(A) = \nu(A \setminus T) = \nu_a'(A)$.
+
+      Si enfin $\nu_a = g\cdot\mu$, alors $f\cdot\mu = g\cdot\mu$ et $f = g$ presque partout, $\mu$ étant σ-finie ({{lp-absolue-continuite|Absolue continuité}}, (iv)).
+
+      (ii) Une mesure $f\cdot\mu$ est absolument continue par rapport à $\mu$. Réciproquement, si $\nu \ll \mu$, la partie $\nu_s$ de (i) vérifie $\nu_s \leqslant \nu$, donc $\nu_s \ll \mu$, et $\nu_s \perp \mu$ : elle est nulle ({{lp-absolue-continuite|Absolue continuité}}, (iii)), et $\nu = f\cdot\mu$. L'unicité est celle de (i), et la formule d'intégration est le point (i) du nœud {{lp-absolue-continuite|Absolue continuité}}.
+
+      (iii) Avec $g = \frac{d\pi}{d\nu}$ et $f = \frac{d\nu}{d\mu}$, la composition des densités donne $\pi = g\cdot(f\cdot\mu) = (gf)\cdot\mu$, et l'unicité de (ii) conclut. Pour $\pi = \mu$, on a $\frac{d\mu}{d\mu} = 1$.
+    remarques:
+      - |
+        Soit $U$ uniforme sur $[0, 1]$ et $Y = \min(U, \frac12)$. Sa loi $\nu$ vérifie $\nu(]a, b]) = \lambda(]a, b] \cap [0, \frac12[) + \frac12\mathbf 1_{]a, b]}(\frac12)$ : c'est une mesure mixte, ni à densité ni discrète. Sa décomposition de Lebesgue par rapport à $\lambda$ est
+        $$\nu_a = \mathbf 1_{[0, 1/2[}\cdot\lambda, \qquad \nu_s = \tfrac12\,\delta_{1/2}.$$
+
+        ```schema lp-radon-nikodym
+        La fonction de répartition $F(x) = \nu(]{-\infty}, x])$ de $Y = \min(U, \frac12)$, en trait plein, monte avec la pente $1$ jusqu'à $\frac12$, puis saute de $\frac12$ à $1$. Elle est la somme de $F_a$, en bleu, primitive de la densité $\mathbf 1_{[0, 1/2[}$, et de $F_s$, en rouge, qui ne varie que par un saut, au point $\frac12$ que la mesure de Lebesgue ne voit pas.
+        ```
+
+        La partie absolument continue a pour densité $1$ sur $[0, \frac12[$, et la partie étrangère est portée par le point $\frac12$, que la mesure de Lebesgue ne charge pas. On retrouve l'ensemble $S = \{\frac12\}$ et la densité calculés au nœud {{lp-von-neumann|Lemme de von Neumann}}.
+      - |
+        Pour une loi à densité, la dérivée de Radon-Nikodym est la densité. Si $U$ est uniforme sur $[0, 1]$, la loi $\nu$ de $U^2$ vérifie, pour $0 \leqslant a \leqslant b \leqslant 1$,
+        $$\begin{aligned} \nu(]a, b]) &= \lambda\big(]\sqrt a, \sqrt b]\big) \\ &= \sqrt b - \sqrt a = \int_a^b \frac{dt}{2\sqrt t}. \end{aligned}$$
+
+        Soit $f(t) = \frac1{2\sqrt t}$ sur $]0, 1]$ et $f = 0$ ailleurs. Pour tous réels $a < b$, les deux mesures $\nu$ et $f\cdot\lambda$ donnent à $]a, b]$ la valeur $G(b) - G(a)$, où $G(t) = \sqrt{\min(\max(t, 0), 1)}$ est la fonction de répartition de $U^2$, puisque toutes deux sont portées par $]0, 1]$.
+
+        Elles coïncident donc sur le π-système formé du vide et des $]a, b]$, avec des masses finies égales sur les $]{-n}, n]$, et le lemme de Dynkin ({{m-dynkin|Classes monotones}}, (ii)) donne $\nu = f\cdot\lambda$ : $\frac{d\nu}{d\lambda} = f$.
+
+        La densité n'est pas bornée près de $0$, et pourtant la masse qui s'y trouve est petite : $U^2$ tombe souvent près de $0$, mais l'intervalle $]0, \varepsilon]$ ne reçoit que la masse $\sqrt\varepsilon$. Une densité grande sur un intervalle court peut porter peu de masse.
+      - |
+        La règle de la chaîne se lit sur les lois exponentielles. Si $\nu$ a pour densité $e^{-x}$ et $\pi$ pour densité $2e^{-2x}$ sur $[0, +\infty[$, alors $\frac{d\pi}{d\nu}(x) = 2e^{-x}$, et le produit $2e^{-x} \cdot e^{-x} = 2e^{-2x}$ redonne bien $\frac{d\pi}{d\lambda}$. La loi $\pi$ tombe plus tôt que $\nu$ : le rapport $2e^{-x}$ vaut $2$ en $0$ et tend vers $0$.
+      - |
+        L'hypothèse de σ-finitude est indispensable. Sur $[0, 1]$ muni des boréliens, soit $\mu$ la mesure de comptage : seul le vide est $\mu$-négligeable, si bien que $\lambda \ll \mu$. Si l'on avait $\lambda = f\cdot\mu$, alors, pour tout $x$, $0 = \lambda(\{x\}) = f(x)$, et $\lambda = 0$ : absurde. La mesure de comptage d'un ensemble non dénombrable n'est pas σ-finie.
+      - |
+        Le théorème porte les noms de J. Radon, qui l'a établi en 1913 pour les fonctions d'ensemble sur $\mathbb R^n$ (« Theorie und Anwendungen der absolut additiven Mengenfunktionen », *Sitzungsber. Akad. Wiss. Wien* 122, p. 1295-1438), et d'O. Nikodym, qui l'a étendu aux espaces mesurés abstraits en 1930 (« Sur une généralisation des intégrales de M. J. Radon », *Fund. Math.* 15, p. 131-179).
+      - |
+        En probabilités, le théorème donne une autre construction de l'espérance conditionnelle sachant une sous-tribu $\mathcal G$ ({{mt-conditionnelle|Espérance conditionnelle}}). Pour une variable $X$ intégrable et positive, c'est la dérivée de Radon-Nikodym de la mesure $A \mapsto E[X\mathbf 1_A]$ par rapport à $P$, ces deux mesures étant restreintes à $\mathcal G$ ; le cas d'une variable intégrable quelconque s'en déduit en écrivant $X = X^+ - X^-$.
+
+  - id: lp-formes-positives
+    etiquette: Formes positives sur Lᵖ
+    nature: lemme
+    titre: Une forme continue sur Lᵖ est différence de deux formes positives
+    texte: |
+      Sur $\lex{espace-Lp}{L^p}(\mu)$, $1 \leqslant p \leqslant +\infty$, on écrit $f \leqslant g$ si $f \leqslant g$ presque partout, ce qui ne dépend pas des représentants. Une forme linéaire $\psi$ sur $L^p(\mu)$ est **positive** si $\psi(f) \geqslant 0$ pour tout $f \geqslant 0$.
+    enonce: |
+      Toute forme linéaire continue $\varphi$ sur $L^p(\mu)$ est la différence $\varphi = \varphi^+ - \varphi^-$ de deux formes linéaires continues positives, avec $|||\varphi^\pm||| \leqslant |||\varphi|||$. Pour $f \geqslant 0$, on peut prendre
+      $$\varphi^+(f) = \sup\{\varphi(h) : 0 \leqslant h \leqslant f\}.$$
+    preuve: |
+      *Finitude.* Si $0 \leqslant h \leqslant f$, alors $\|h\|_p \leqslant \|f\|_p$ ({{lp-espaces|Espaces Lᵖ}}, (iii)), et $\varphi(h) \leqslant |||\varphi|||\,\|f\|_p$ ({{f-operateurs|Opérateurs continus}}, (i)). Ainsi $\varphi^+(f)$ est un réel, compris entre $\max(0, \varphi(f))$, valeurs prises en $h = 0$ et $h = f$, et $|||\varphi|||\,\|f\|_p$.
+
+      *Homogénéité.* Pour $c > 0$, $h \mapsto ch$ est une bijection de $\{0 \leqslant h \leqslant f\}$ sur $\{0 \leqslant h \leqslant cf\}$, d'où $\varphi^+(cf) = c\,\varphi^+(f)$ ; et $\varphi^+(0) = 0$.
+
+      *Additivité.* Soient $f_1, f_2 \geqslant 0$. Si $0 \leqslant h_i \leqslant f_i$, alors $0 \leqslant h_1 + h_2 \leqslant f_1 + f_2$, d'où $\varphi^+(f_1) + \varphi^+(f_2) \leqslant \varphi^+(f_1 + f_2)$.
+
+      Réciproquement, si $0 \leqslant h \leqslant f_1 + f_2$, posons $h_1 = \min(h, f_1)$ et $h_2 = h - h_1$. Alors $0 \leqslant h_1 \leqslant f_1$, et $0 \leqslant h_2 \leqslant f_2$ : là où $h \leqslant f_1$, $h_2 = 0$, et ailleurs $h_2 = h - f_1 \leqslant f_2$. Donc $\varphi(h) = \varphi(h_1) + \varphi(h_2) \leqslant \varphi^+(f_1) + \varphi^+(f_2)$.
+
+      *Prolongement.* Pour $f$ quelconque, posons $\varphi^+(f) = \varphi^+(f^+) - \varphi^+(f^-)$. Si $f = a - b$ avec $a, b \geqslant 0$, alors $f^+ + b = f^- + a$, et l'additivité donne $\varphi^+(f) = \varphi^+(a) - \varphi^+(b)$. Comme $f + g = (f^+ + g^+) - (f^- + g^-)$, $\varphi^+$ est additive ; elle commute aux multiplications par $c > 0$, et par $-1$, qui échange $f^+$ et $f^-$ : elle est linéaire.
+
+      *Continuité.* Pour tout $f$, $|\varphi^+(f)| \leqslant \max\big(\varphi^+(f^+), \varphi^+(f^-)\big) \leqslant |||\varphi|||\,\|f\|_p$, puisque $\|f^\pm\|_p \leqslant \|f\|_p$.
+
+      *Partie négative.* Soit $\varphi^- = \varphi^+ - \varphi$, linéaire et continue. Pour $f \geqslant 0$, $\varphi^-(f) \geqslant 0$, puisque $\varphi^+(f) \geqslant \varphi(f)$.
+
+      Enfin, pour $f \geqslant 0$, le changement $h' = f - h$ donne
+      $$\begin{aligned} \varphi^-(f) &= \sup_{0 \leqslant h \leqslant f}\varphi(h - f) \\ &= \sup_{0 \leqslant h' \leqslant f}(-\varphi)(h'), \end{aligned}$$
+      c'est-à-dire $\varphi^- = (-\varphi)^+$, et la borne de continuité vaut aussi pour $\varphi^-$.
+    remarques:
+      - |
+        Le lemme dit que la positivité, propriété d'ordre, suffit à décrire toutes les formes continues : il ramène l'étude du dual à celle des formes positives, qui donnent des mesures. C'est le même mouvement qu'au théorème de {{anf-riesz-markov|Riesz-Markov}}, où les formes positives sur les fonctions continues sont des intégrales.
+
+  - id: lp-dual
+    etiquette: Dual de Lᵖ
+    nature: théorème
+    titre: Le dual de Lᵖ est L^q pour 1 ⩽ p < ∞
+    choix: |
+      La démonstration de (ii) applique deux fois le nœud {{lp-von-neumann|Lemme de von Neumann}}, une fois pour chacune des formes positives $\varphi^+$ et $\varphi^-$, et en hérite le [[choix-denombrable]]. La suite de parties de mesure finie qui définit le poids $w$ est fixée une fois, sans choix.
+    enonce: |
+      Soient $1 \leqslant p < +\infty$, $q$ l'[[exposants-conjugues|exposant conjugué]], et, pour $g \in L^q(\mu)$, $\Phi(g) : f \mapsto \int fg \, d\mu$ sur $L^p(\mu)$.
+
+      (i) $\Phi(g)$ est une forme linéaire continue sur $L^p(\mu)$, et $|||\Phi(g)||| \leqslant \|g\|_q$, avec égalité si $1 < p < +\infty$, ou si $p = 1$ et $\mu$ est σ-finie.
+
+      (ii) Si $\mu$ est σ-finie, $\Phi$ est une bijection linéaire isométrique de $L^q(\mu)$ sur le [[dual-topologique|dual]] $L^p(\mu)'$.
+    preuve: |
+      (i) Le produit $fg$ est intégrable par l'inégalité de Hölder ({{lp-holder|Inégalité de Hölder}}), qui donne $|\Phi(g)(f)| \leqslant \|g\|_q\|f\|_p$ ; l'intégrale ne dépend pas des représentants, et elle est linéaire en $f$.
+
+      Notons $\sigma = \mathbf 1_{\{g > 0\}} - \mathbf 1_{\{g < 0\}}$, de sorte que $\sigma g = |g|$. Pour $1 < p < +\infty$, soit $f = \sigma|g|^{q-1}$. Comme $(q - 1)p = q$, on a $\|f\|_p^p = \int |g|^q$, et $\Phi(g)(f) = \int |g|^q = \|g\|_q^q$. Si $g \neq 0$,
+      $$\frac{\Phi(g)(f)}{\|f\|_p} = \|g\|_q^{\,q - q/p} = \|g\|_q.$$
+
+      Pour $p = 1$, $\mu$ σ-finie et $0 < \varepsilon < \|g\|_\infty$, l'ensemble $A = \{|g| > \|g\|_\infty - \varepsilon\}$ n'est pas négligeable. Si $(X_n)$ est une suite croissante de parties de mesure finie de réunion $X$, l'un des $A \cap X_n$ est de mesure strictement positive et finie, par continuité croissante. Avec $f = \sigma\mathbf 1_{A \cap X_n}$, on a $\Phi(g)(f) \geqslant (\|g\|_\infty - \varepsilon)\|f\|_1$.
+
+      (ii) $\Phi$ est linéaire, isométrique par (i), donc injective. Reste la surjectivité. Soit $\varphi \in L^p(\mu)'$.
+
+      *Cas d'une mesure finie et d'une forme positive.* Supposons $\mu$ finie et $\varphi$ positive. Pour $A \in \mathcal A$, $\mathbf 1_A \in \mathcal L^p$ ; posons $\nu(A) = \varphi(\mathbf 1_A)$. On a $\nu \geqslant 0$, $\nu(\varnothing) = 0$, et $\nu$ est additive par linéarité.
+
+      Si les $A_k$ sont disjoints, de réunion $A$, et $B_n = A_0 \cup \cdots \cup A_{n-1}$, alors
+      $$\|\mathbf 1_A - \mathbf 1_{B_n}\|_p = \mu(A \setminus B_n)^{1/p} \to 0,$$
+      par continuité de $\mu$, finie, et parce que $p$ est fini. La continuité de $\varphi$ donne $\nu(A) = \lim \nu(B_n) = \sum_k \nu(A_k)$ : $\nu$ est une mesure finie.
+
+      Si $\mu(A) = 0$, $\mathbf 1_A = 0$ dans $L^p$ et $\nu(A) = 0$ : $\nu \ll \mu$.
+
+      Le nœud {{lp-von-neumann|Lemme de von Neumann}} donne $g \geqslant 0$ mesurable, finie, avec $\nu = g\cdot\mu$. Par linéarité, $\varphi(s) = \int sg \, d\mu$ pour toute étagée $s$.
+
+      Si $f \in \mathcal L^p$ est positive, et $s_n$ les étagées croissantes de limite $f$ ({{m-etagees|Fonctions étagées}}), alors $s_n \to f$ dans $L^p$ par convergence dominée, puisque $|f - s_n|^p \leqslant f^p$ ; donc $\varphi(s_n) \to \varphi(f)$. Et $\int s_n g \to \int fg$ par convergence monotone. Ainsi $\varphi(f) = \int fg \, d\mu$ pour $f \geqslant 0$, puis pour tout $f = f^+ - f^-$.
+
+      Montrons que $g \in \mathcal L^q$, avec $\|g\|_q \leqslant |||\varphi|||$. Si $p = 1$ et $M > |||\varphi|||$, l'ensemble $A = \{g > M\}$ vérifie
+      $$\begin{aligned} M\mu(A) &\leqslant \int_A g \, d\mu = \varphi(\mathbf 1_A) \\ &\leqslant |||\varphi|||\,\mu(A), \end{aligned}$$
+      donc $\mu(A) = 0$, et $\|g\|_\infty \leqslant |||\varphi|||$.
+
+      Si $p > 1$, soit $f_n = g^{q-1}\mathbf 1_{\{g \leqslant n\}}$, bornée, donc dans $\mathcal L^p$ puisque $\mu$ est finie, et $I_n = \int_{\{g \leqslant n\}} g^q \, d\mu$, fini. Comme $(q - 1)p = q$,
+      $$I_n = \varphi(f_n) \leqslant |||\varphi|||\,I_n^{1/p},$$
+      d'où $I_n^{1/q} \leqslant |||\varphi|||$ si $I_n > 0$. La convergence monotone donne $\|g\|_q \leqslant |||\varphi|||$.
+
+      *Mesure finie, forme quelconque.* Par le nœud {{lp-formes-positives|Formes positives sur Lᵖ}}, $\varphi = \varphi^+ - \varphi^-$, différence de formes continues positives, représentées par $g^+_\varphi$ et $g^-_\varphi$ dans $\mathcal L^q$ ; alors $\varphi = \Phi(g^+_\varphi - g^-_\varphi)$.
+
+      *Mesure σ-finie.* Fixons une suite croissante $(X_n)$ de parties de mesure finie, de réunion $X$, et posons, comme au nœud {{lp-radon-nikodym|Radon-Nikodym}},
+      $$w = \sum_n \frac{2^{-n-1}\,\mathbf 1_{X_n}}{1 + \mu(X_n)},$$
+      fonction mesurable à valeurs dans $]0, 1]$, d'intégrale au plus $1$. La mesure $\mu' = w\cdot\mu$ est finie, et a les mêmes négligeables que $\mu$.
+
+      L'application $T(f) = w^{-1/p}f$ est une bijection linéaire isométrique de $L^p(\mu)$ sur $L^p(\mu')$, puisque
+      $$\int |w^{-1/p}f|^p w \, d\mu = \int |f|^p \, d\mu$$
+      ({{lp-absolue-continuite|Absolue continuité}}, (i)).
+
+      La forme $\varphi \circ T^{-1}$ est continue sur $L^p(\mu')$ ; par le cas fini, elle s'écrit $h \mapsto \int hG \, d\mu'$, avec $G \in \mathcal L^q(\mu')$. Pour $f \in L^p(\mu)$,
+      $$\varphi(f) = \int w^{-1/p}fG\,w \, d\mu = \int fg \, d\mu,$$
+      avec $g = G\,w^{1/q}$, puisque $1 - \frac1p = \frac1q$.
+
+      Si $p = 1$, $g = G$, essentiellement bornée pour $\mu$ comme pour $\mu'$ ; si $p > 1$, $\int |g|^q \, d\mu = \int |G|^q \, d\mu'$ est fini. Ainsi $\varphi = \Phi(g)$.
+    remarques:
+      - |
+        Pour $p = 2$, le théorème redit celui de Riesz ({{f-riesz|Théorème de Riesz}}), dont il dépend. Pour $p = 3$ et $g(x) = x$ sur $[0, 1]$, le vecteur qui réalise la norme de $\Phi(g)$ est $f = |g|^{q-1} = x^{1/2}$ : on calcule $\Phi(g)(f) = \int_0^1 x^{3/2}\,dx = \frac25$ et $\|f\|_3 = (\frac25)^{1/3}$, dont le quotient $(\frac25)^{2/3}$ est bien $\|g\|_{3/2} = \big(\int_0^1 x^{3/2}\,dx\big)^{2/3}$.
+      - |
+        L'hypothèse de σ-finitude intervient pour $p = 1$. Sur $X = \{0\}$, avec $\mu(\{0\}) = +\infty$, l'espace $L^1(\mu)$ est réduit à $\{0\}$, son dual aussi, alors que $L^\infty(\mu)$ est la droite des constantes : $\Phi$ n'est pas injective. Pour $1 < p < +\infty$, le théorème reste vrai sans σ-finitude : c'est admis ici, la démonstration usuelle passant par l'uniforme convexité de $L^p$, qui n'est pas traitée.
+      - |
+        Le théorème est faux pour $p = +\infty$ : le dual de $L^\infty$ est strictement plus gros que $L^1$. Sur $[0, 1]$ muni de $\lambda$, la forme $u \mapsto u(0)$ est définie sur le sous-espace des classes de fonctions continues, puisque deux fonctions continues égales presque partout sont égales. Elle est de norme $1$, puisque la borne supérieure essentielle d'une fonction continue est sa borne supérieure.
+
+        Le théorème de Hahn-Banach ({{f-hahn-banach|Hahn-Banach}}) la prolonge en une forme $\ell$ de norme $1$ sur $L^\infty$. Si l'on avait $\ell = \Phi(g)$ avec $g \in L^1$, les fonctions continues $f_n(x) = \max(0, 1 - nx)$ donneraient $1 = f_n(0) = \int f_ng$, qui tend vers $0$ par convergence dominée.
+
+        Le choix est exactement là : le prolongement de Hahn-Banach repose sur le lemme de Zorn, et la forme $\ell$ n'est pas explicite. Le dual de $L^1$ est $L^\infty$, mais $L^1$ n'est pas le dual de $L^\infty$ ; le dual de $\ell^1$ est de même $\ell^\infty$, comme l'annonçait la remarque du nœud {{f-riesz|Théorème de Riesz}}.
+      - |
+        F. Riesz a décrit le dual de $L^p([a, b])$, $1 < p < +\infty$, dès son mémoire de 1910 où il introduit ces espaces (*Math. Ann.* 69, p. 449-497).
+
+aretes:
+  - [lp-puissances, lp-young]
+  - [lp-puissances, lp-espaces]
+  - [lp-young, lp-holder]
+  - [lp-espaces, lp-holder]
+  - [lp-holder, lp-minkowski]
+  - [lp-holder, lp-inclusions]
+  - [lp-minkowski, lp-completude]
+  - [lp-minkowski, lp-densite]
+  - [lp-minkowski, lp-formes-positives]
+  - [lp-absolue-continuite, lp-von-neumann]
+  - [lp-von-neumann, lp-radon-nikodym]
+  - [lp-formes-positives, lp-dual]
+  - [lp-radon-nikodym, lp-dual]

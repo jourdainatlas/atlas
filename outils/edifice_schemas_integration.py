@@ -1226,3 +1226,235 @@ def f_spectral_fini():
     S.ligne(R(*pe), R(*lab) + [-4, 0], 'b', l=0.8)
     S.texte(R(*lab), '⟨Ax, x⟩ = 1', 'b', ancre='start', taille=15)
     return S
+
+
+# ================================================================ anf-lp et anf-riesz-markov (30 oct. 2026)
+
+@schema('lp-young')
+def lp_young():
+    # p = 3, q = 3/2, a = b = 3/2 ; courbe y = x^{p-1} = x^2, soit x = y^{q-1} = sqrt(y).
+    p, q, a, b = 3.0, 1.5, 1.5, 1.5
+    assert abs(1 / p + 1 / q - 1) < 1e-15
+    xs = np.linspace(0, a, 2001)
+    ys = np.linspace(0, b, 2001)
+    aire_b = np.trapezoid(xs ** (p - 1), xs)                  # a^p / p
+    aire_v = np.trapezoid(ys ** (q - 1), ys)                  # b^q / q
+    assert abs(aire_b - a ** p / p) < 1e-5 and abs(aire_v - b ** q / q) < 1e-4
+    assert abs(a ** p / p - 9 / 8) < 1e-12 and abs(b ** q / q - math.sqrt(1.5)) < 1e-12
+    x1 = math.sqrt(b)                                         # la courbe sort du rectangle par le haut
+    xr = np.linspace(x1, a, 801)
+    exces = np.trapezoid(xr ** 2 - b, xr)
+    assert abs(exces - (a ** p / p + b ** q / q - a * b)) < 1e-5 and abs(exces - 0.0997) < 1e-3
+    assert a ** p != b ** q                                   # hors du cas d'égalité
+
+    S = Schema(500, 380, 'Inégalité de Young : deux aires recouvrent le rectangle')
+    R = Repere(-0.12, 1.95, -0.12, 2.45, 34, 12, 420, 340)
+    # région bleue : sous la courbe, de 0 à a (partie dans le rectangle) ; rouge : partie au-dessus de b
+    xb = np.linspace(0, x1, 400)
+    S.surface(np.vstack([R(xb, xb ** 2), R(a, b), R(a, 0), R(0, 0)]), 'b')
+    S.surface(np.vstack([R(xr, xr ** 2), R(a, b), R(x1, b)]), 'r')
+    # région verte : à gauche de la courbe, de 0 à b
+    S.surface(np.vstack([R(xb, xb ** 2), R(0, b), R(0, 0)]), 'v')
+    S.rect(*R(0, b), *(R(a, 0) - R(0, b)), 't')
+    R.graphe(S, lambda x: x ** 2, 0, 1.56, 't', l=2)
+    R.axes(S, 'x', 'y')
+    S.texte(R(1.56, 1.56 ** 2) + [10, 6], 'y = x^2', 't', ancre='start', taille=16)
+    S.texte(R(a, 0) + [0, 18], 'a', 't')
+    S.texte(R(0, b) + [-12, 0], 'b', 't', ancre='end')
+    S.ligne(R(a, 0) + [0, 4], R(a, 0) + [0, -4], 't')
+    S.texte(R(1.0, 0.33), 'a^3/3', 'b', taille=16)
+    S.texte(R(0.33, 1.05), 'b^{3/2}/(3/2)', 'v', ancre='start', taille=16)
+    pr = R(1.42, 2.04)
+    S.ligne(R(1.36, 1.68), pr + [-4, 8], 'r', l=0.8)
+    S.texte(pr + [0, -8], 'excès ≈ 0,100', 'r', ancre='start', taille=15, ui=True)
+    S.texte(R(0.75, b) + [0, -14], 'ab = 9/4', 't', taille=15)
+    return S
+
+
+@schema('lp-minkowski')
+def lp_minkowski():
+    t = np.linspace(0, 2 * math.pi, 1441)
+    c, s = np.cos(t), np.sin(t)
+    def boule(p):
+        # |x|^p + |y|^p = 1 paramétrée par x = sgn(c)|c|^{2/p}, y = sgn(s)|s|^{2/p}
+        return np.stack([np.sign(c) * np.abs(c) ** (2 / p), np.sign(s) * np.abs(s) ** (2 / p)], axis=1)
+    bords = {1: boule(1), 2: boule(2), 4: boule(4)}
+    for p, P in bords.items():
+        assert np.allclose(np.abs(P[:, 0]) ** p + np.abs(P[:, 1]) ** p, 1)
+    # convexité : tout milieu de deux points du bord est dans la boule (p ⩾ 1)
+    rng = np.random.default_rng(0)
+    for p, P in bords.items():
+        i, j = rng.integers(0, len(P), 400), rng.integers(0, len(P), 400)
+        m = (P[i] + P[j]) / 2
+        assert np.all(np.abs(m[:, 0]) ** p + np.abs(m[:, 1]) ** p <= 1 + 1e-12)
+    # p = 1/2 : sqrt|x| + sqrt|y| = 1, par x = u^2, y = (1-u)^2 dans le premier quadrant
+    u = np.linspace(0, 1, 301)
+    q1 = np.stack([u ** 2, (1 - u) ** 2], axis=1)
+    assert np.allclose(np.sqrt(q1[:, 0]) + np.sqrt(q1[:, 1]), 1)
+    assert math.sqrt(0.5) + math.sqrt(0.5) > 1                     # milieu de (1,0) et (0,1) hors de la « boule »
+    demi = np.vstack([q1, q1[::-1] * [1, -1], q1 * [-1, -1], q1[::-1] * [-1, 1]])
+    assert np.max(np.linalg.norm(np.diff(demi, axis=0), axis=1)) < 0.02          # courbe sans saut
+
+    S = Schema(500, 430, 'Boules unités des normes p dans le plan')
+    R = Repere(-1.45, 1.45, -1.3, 1.3, 40, 40, 420, 376)
+    R.axes(S, 'x_1', 'x_2')
+    S.poly(R(demi[:, 0], demi[:, 1]), 't', d=True, ferme=True, l=1.3)
+    S.poly(R(bords[1][:, 0], bords[1][:, 1]), 'v', ferme=True, l=1.8)
+    S.poly(R(bords[2][:, 0], bords[2][:, 1]), 'b', ferme=True, l=1.8)
+    S.poly(R(bords[4][:, 0], bords[4][:, 1]), 'g', ferme=True, l=1.6)
+    S.rect(*R(-1, 1), *(R(1, -1) - R(-1, 1)), 'r', rempli=None)
+    S.point(R(0.5, 0.5), 't', r=3.6)
+    S.ligne(R(1, 0), R(0, 1), 't', d=True)
+    S.point(R(1, 0), 't', r=3.2)
+    S.point(R(0, 1), 't', r=3.2)
+    # étiquette hors du carré p = ∞, reliée au milieu par un trait fin (elle chevauchait le cercle bleu)
+    lab = np.array([1.06, 0.62])
+    assert lab[0] > 1                                                         # à droite du carré
+    S.ligne(R(0.5, 0.5) + [4, -1], R(*lab) + [-3, 0], 't', l=0.8)
+    S.texte(R(*lab), '(1/2, 1/2)', 't', ancre='start', taille=15)
+    S.texte(R(-1, 1) + [-6, -12], 'p = ∞', 'r', ancre='end', taille=15, roman=False)
+    S.texte(R(-0.5, -0.5) + [-14, 14], 'p = 1', 'v', ancre='end', taille=15)
+    S.texte(R(-0.71, 0.71) + [-14, -6], 'p = 2', 'b', ancre='end', taille=15)
+    k4 = 2 ** (-1 / 4)
+    S.texte(R(k4, -k4) + [12, 10], 'p = 4', 'g', ancre='start', taille=15)
+    S.texte(R(0.25, -0.25) + [6, 14], 'p = 1/2', 't', ancre='start', taille=15)
+    return S
+
+
+@schema('lp-radon-nikodym')
+def lp_radon_nikodym():
+    # X = min(U, 1/2) : F(x) = 0 (x < 0), x (0 ⩽ x < 1/2), 1 (x ⩾ 1/2) ; F_a = min(max(x,0),1/2), F_s = (1/2)1_{x ⩾ 1/2}
+    Fa = lambda x: np.clip(x, 0, 0.5)
+    Fs = lambda x: 0.5 * (np.asarray(x) >= 0.5)
+    F = lambda x: np.where(np.asarray(x) < 0, 0.0, np.where(np.asarray(x) < 0.5, x, 1.0))
+    xs = np.linspace(-0.3, 1.3, 3201)
+    assert np.allclose(F(xs), Fa(xs) + Fs(xs))
+    assert abs(F(0.5) - F(0.5 - 1e-12) - 0.5) < 1e-9                       # saut 1/2 = ν({1/2})
+
+    S = Schema(500, 330, 'Fonction de répartition d’une loi mixte et sa décomposition')
+    R = Repere(-0.3, 1.3, -0.1, 1.15, 30, 14, 430, 286)
+    R.axes(S, 'x', '')
+    # F en trait plein (encre)
+    S.poly(R([-0.3, 0, 0.5], [0, 0, 0.5]), 't', l=3)
+    S.poly(R([0.5, 1.3], [1, 1]), 't', l=3)
+    S.point(R(0.5, 0.5), 't', r=4, creux=True)
+    S.point(R(0.5, 1), 't', r=4)
+    # F_a en bleu
+    S.poly(R([-0.3, 0, 0.5, 1.3], [0, 0, 0.5, 0.5]) + [0, 7], 'b', l=1.8)
+    # F_s en rouge
+    S.poly(R([-0.3, 0.5], [0, 0]) + [0, 3], 'r', l=1.8)
+    S.poly(R([0.5, 1.3], [0.5, 0.5]) + [0, -6], 'r', l=1.8)
+    S.point(R(0.5, 0) + [0, 3], 'r', r=3.6, creux=True)
+    S.point(R(0.5, 0.5) + [0, -6], 'r', r=3.6)
+    S.ligne(R(0.5, 0.5), R(0.5, 1), 'g', d=True)
+    S.texte(R(0.95, 1) + [0, -16], 'F', 't')
+    S.texte(R(1.05, 0.5) + [0, 22], 'F_a', 'b')
+    S.texte(R(1.05, 0.5) + [0, -24], 'F_s', 'r')
+    for xv, lab in [(0, '0'), (0.5, '1/2'), (1, '1')]:
+        S.ligne(R(xv, 0) + [0, -4], R(xv, 0) + [0, 4], 'g')
+        S.texte(R(xv, 0) + [0, 20], lab, 'g', taille=15)
+    for yv, lab in [(0.5, '1/2'), (1, '1')]:
+        S.ligne(R(0, yv) + [-4, 0], R(0, yv) + [4, 0], 'g')
+        S.texte(R(0, yv) + [-8, 0], lab, 'g', ancre='end', taille=15)
+    S.ligne(R(0, 1), R(0.5, 1), 'g', d=True)
+    return S
+
+
+@schema('mk-urysohn')
+def mk_urysohn():
+    U = [(0.1, 0.45), (0.3, 0.7), (0.55, 0.9)]
+    F = (0.2, 0.8)
+    def g(i, x):
+        a, b = U[i]
+        return np.clip(np.minimum(x - a, b - x), 0, None)          # distance au complémentaire de ]a, b[ dans [0, 1]
+    xs = np.linspace(0, 1, 4001)
+    G = sum(g(i, xs) for i in range(3))
+    surF = (xs >= F[0] - 1e-12) & (xs <= F[1] + 1e-12)
+    delta = G[surF].min()
+    assert abs(delta - 0.1) < 1e-9
+    assert abs(G[np.argmin(np.abs(xs - 0.2))] - 0.1) < 1e-9 and abs(G[np.argmin(np.abs(xs - 0.8))] - 0.1) < 1e-9
+    H = [g(i, xs) / np.maximum(G, delta) for i in range(3)]
+    somme = sum(H)
+    assert np.allclose(somme[surF], 1) and somme.max() <= 1 + 1e-12
+    for i, (a, b) in enumerate(U):
+        assert np.all(H[i][(xs <= a) | (xs >= b)] == 0)
+    S = Schema(500, 330, 'Partition de l’unité sur un fermé recouvert par trois ouverts')
+    R = Repere(-0.04, 1.08, -0.42, 1.12, 26, 10, 440, 300)
+    R.axes(S, 'x', '')
+    for Hi, c in zip(H, ['b', 'v', 'g']):
+        S.poly(R(xs, Hi), c, l=1.8)
+    S.poly(R(xs, somme), 'r', l=2.6)
+    # le fermé F et les ouverts, sous l'axe
+    S.ligne(R(F[0], -0.1), R(F[1], -0.1), 'r', l=5)
+    S.texte(R(F[1], -0.1) + [10, 0], 'F', 'r', ancre='start')
+    for (a, b), c, y, nom in zip(U, ['b', 'v', 'g'], [-0.22, -0.3, -0.22], ['U_1', 'U_2', 'U_3']):
+        S.ligne(R(a, y), R(b, y), c, l=2.4)
+        S.point(R(a, y), c, r=3.4, creux=True)
+        S.point(R(b, y), c, r=3.4, creux=True)
+        if nom == 'U_2':
+            S.texte(R((a + b) / 2, y) + [0, 15], nom, c, taille=15)
+        elif nom == 'U_1':
+            S.texte(R(a, y) + [-9, 0], nom, c, ancre='end', taille=15)
+        else:
+            S.texte(R(b, y) + [9, 0], nom, c, ancre='start', taille=15)
+    for xv, lab in [(0, '0'), (1, '1')]:
+        S.ligne(R(xv, 0) + [0, -4], R(xv, 0) + [0, 4], 'g')
+        S.texte(R(xv, 0) + [-2, 16], lab, 'g', taille=15)
+    S.ligne(R(0, 1) + [-4, 0], R(0, 1) + [4, 0], 'g')
+    S.texte(R(0, 1) + [-8, 0], '1', 'g', ancre='end', taille=15)
+    S.texte(R(0.5, 1) + [0, -16], 'h_1 + h_2 + h_3', 'r', taille=15)
+    assert abs(H[0][np.argmin(np.abs(xs - 0.25))] - 1) < 1e-9 and H[1][np.argmin(np.abs(xs - 0.25))] == 0
+    assert abs(H[2][np.argmin(np.abs(xs - 0.75))] - 1) < 1e-9 and H[1][np.argmin(np.abs(xs - 0.75))] == 0
+    S.texte(R(0.245, 0.8), 'h_1', 'b', taille=15)
+    S.texte(R(0.5, 0.82), 'h_2', 'v', taille=15)
+    S.texte(R(0.755, 0.8), 'h_3', 'g', taille=15)
+    return S
+
+
+@schema('mk-riesz-markov')
+def mk_riesz_markov():
+    n = 4
+    f = lambda x: 16 * x ** 2 * (1 - x) ** 2
+    xs = np.linspace(0, 1, 4001)
+    fx = f(xs)
+    assert abs(fx.max() - 1) < 1e-9
+    fk = [np.clip(n * fx - (k - 1), 0, 1) for k in range(1, n + 1)]
+    assert np.allclose(sum(fk) / n, fx)
+    # U_k = {f > (k-1)/n} = ]u_k, 1 - u_k[, F_k = {f ⩾ k/n} = [v_k, 1 - v_k] ; f = c ⇔ x(1-x) = sqrt(c)/4
+    def pied(c):
+        return (1 - math.sqrt(1 - math.sqrt(c))) / 2            # plus petite racine de x(1 - x) = sqrt(c)/4
+    for c in [0.25, 0.5, 0.75, 1.0]:
+        assert abs(f(pied(c)) - c) < 1e-12
+    u = [pied((k - 1) / n) for k in range(1, n + 1)]
+    v = [pied(k / n) for k in range(1, n + 1)]
+    for k in range(n):
+        assert u[k] <= v[k]                                      # F_k ⊂ U_k
+        if k + 1 < n:
+            assert v[k] <= u[k + 1]                              # U_{k+1} ⊂ F_k
+    S = Schema(500, 400, 'Découpage d’une fonction en tranches horizontales')
+    R = Repere(-0.06, 1.1, -0.62, 1.1, 30, 8, 430, 372)
+    cols = ['v', 'g', 'v', 'g']                                   # tranches : vert et gris (le bleu est pour les U_k)
+    for k in range(n):
+        bas, haut = k / n, (k + 1) / n
+        m = fx > bas
+        x0, x1 = u[k], 1 - u[k]
+        xx = np.linspace(x0, x1, 800)
+        yy = np.clip(f(xx), bas, haut)
+        S.surface(np.vstack([R(xx, yy), R(x1, bas), R(x0, bas)]), cols[k])
+        S.ligne(R(0, haut), R(1, haut), 'g', d=True)
+        S.texte(R(0, haut) + [-8, 0], f'{k + 1}/4', 'g', ancre='end', taille=14)
+    R.graphe(S, f, 0, 1, 't', l=2)
+    R.axes(S, 'x', '')
+    for k in range(n):
+        y = -0.12 - 0.12 * k
+        S.ligne(R(u[k], y), R(1 - u[k], y), 'b', l=2.4)
+        S.point(R(u[k], y), 'b', r=3.2, creux=True)
+        S.point(R(1 - u[k], y), 'b', r=3.2, creux=True)
+        if v[k] < 1 - v[k]:
+            S.ligne(R(v[k], y), R(1 - v[k], y), 'r', l=5)
+        else:
+            S.point(R(0.5, y), 'r', r=4)
+        S.texte(R(1 - u[k], y) + [12, 0], f'U_{k + 1}', 'b', ancre='start', taille=14)
+        S.texte(R(u[k], y) + [-10, 0], f'F_{k + 1}', 'r', ancre='end', taille=14)
+    S.texte(R(0.5, 1) + [26, -6], 'f', 't', ancre='start')
+    return S
