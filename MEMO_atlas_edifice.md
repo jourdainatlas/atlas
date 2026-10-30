@@ -995,3 +995,16 @@ désignée, et seule la surjectivité passe par Montel et Hurwitz. Les hypothès
 « ouverte » sans connexité dans le texte du chapitre, attribution Fejér-Riesz/Radó), schéma de Schwarz refait avec une
 fonction injective, remarques scindées. Pagination de Koebe 1912 non donnée (EuDML et St Andrews divergent).
 843 nœuds, 504 termes, 71 graphes ; edifice 16 croisements, chapitre 0.
+
+## 67. Cyclotomie et constructions (30 octobre 2026)
+
+Chapitre galois-cyclotomie (13 fiches), sous galois, arête gs-abel-ruffini → galois-cyclotomie. Élément primitif (cas
+fini par la cyclicité de K^×, cas infini par le PGCD), polynômes cyclotomiques (récurrence portant aussi sur
+deg Φ_d = φ(d)), réduction modulo p, irréductibilité sur ℚ (Dedekind 1857), Gal(ℚ(ζ_n)/ℚ) ≅ (ℤ/nℤ)^×, tours
+quadratiques, points et nombres constructibles, Wantzel (cube, trisection), nombres de Fermat, Gauss-Wantzel,
+heptadécagone (périodes de Gauss, formule de 16 cos(2π/17) en remarque). **Placement** : anc n'est pas en amont de
+galois, donc ni exponentielle ni π dans les énoncés : les racines de l'unité de ℂ sont construites par étages de
+racines carrées quand φ(n) est une puissance de 2, le polygone régulier est défini sans trigonométrie, et cos, e^{2iπ/n}
+n'apparaissent qu'en remarque annoncée. Aucun choix. Relu : quatre fautes (degré de Φ_n, passage au quotient,
+𝔽_{p²} hors amont, Cramer non défini) et une quinzaine de retouches (Kronecker et « abélien » au sens cyclique, Weber
+1882). 857 nœuds, 510 termes, 72 graphes ; galois 1 croisement, chapitre 0, edifice 16.

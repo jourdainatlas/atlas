@@ -1,0 +1,620 @@
+# Niveau 2 : structure interne du chapitre « Cyclotomie et constructions » (nœud galois-cyclotomie du graphe
+# galois, créé le 30 oct. 2026). Théorème de l'élément primitif (corps fini par le groupe multiplicatif, corps
+# infini par le PGCD) ; racines de l'unité, polynômes cyclotomiques définis dans ℤ[X] par récurrence,
+# X^n − 1 = ∏ Φ_d ; lemme de réduction modulo p (Frobenius sur 𝔽_p[X], X^n − 1 sans facteur carré si p ∤ n) ;
+# irréductibilité de Φ_n sur ℚ (Dedekind) ; Gal(ℚ(ζ)/ℚ) ≅ (ℤ/nℤ)^× ; points constructibles, constructions
+# élémentaires, corps des nombres constructibles ; théorème de Wantzel (tour d'extensions quadratiques) ;
+# duplication du cube et trisection de 60° impossibles ; plongement dans ℂ d'une tour quadratique abélienne ;
+# arithmétique des nombres de Fermat ; théorème de Gauss-Wantzel ; l'heptadécagone par les périodes de Gauss.
+# Les racines de l'unité sont prises dans un corps de décomposition abstrait sur ℚ ; dans ℂ, elles ne sont
+# obtenues que par des racines carrées (c-racines-carrees), sans d'Alembert-Gauss (admis dans c) ni exponentielle
+# (anc n'est pas un ancêtre de galois). Aucune forme du choix. Seul admis : la transcendance de π (Lindemann),
+# en remarque.
+
+graphe: galois-cyclotomie
+titre: Cyclotomie et constructions
+conteneur: galois-cyclotomie
+
+entrees:
+  gs-abel-ruffini: [gc-element-primitif, gc-cyclotomiques, gc-reduction, gc-galois-cyclotomique, gc-tours-quadratiques]
+
+noeuds:
+  - id: gc-element-primitif
+    etiquette: Élément primitif
+    nature: théorème
+    titre: Théorème de l'élément primitif
+    texte: |
+      Une [[extension-corps|extension]] $L/K$ est **algébrique** si tout élément de $L$ est algébrique sur $K$ ; elle est [[extension-separable|séparable]] si, de plus, le [[polynome-minimal|polynôme minimal]] sur $K$ de tout élément de $L$ est [[polynome-separable|séparable]] ({{gs-separabilite|Séparabilité}}). Un élément $\gamma \in L$ tel que $L = \lex{corps-engendre}{K(\gamma)}$ est un [[element-primitif|élément primitif]] de l'extension, que l'on dit alors **simple**.
+    enonce: |
+      (i) Soit $K$ un corps infini et $L = K(\alpha, \beta)$ une extension finie, avec $\beta$ séparable sur $K$. Alors $L = K(\alpha + c\beta)$ pour tout $c \in K$, sauf un nombre fini.
+
+      (ii) Toute extension finie séparable est simple.
+
+      (iii) En caractéristique nulle, toute extension finie est simple.
+    preuve: |
+      (i) Soit $\Omega$ un [[corps-decomposition|corps de décomposition]] sur $L$ du produit $\mu_\alpha\mu_\beta$ des polynômes minimaux de $\alpha$ et de $\beta$ sur $K$ ({{gs-decomposition|Corps de décomposition}}, (i)). Notons $\alpha_1 = \alpha, \dots, \alpha_r$ les racines de $\mu_\alpha$ dans $\Omega$, et $\beta_1 = \beta, \dots, \beta_s$ celles de $\mu_\beta$, deux à deux distinctes puisque $\mu_\beta$ est séparable.
+
+      Pour $1 \leqslant i \leqslant r$ et $2 \leqslant j \leqslant s$, l'équation $\alpha_i + c\beta_j = \alpha + c\beta$ a au plus une solution $c \in K$, puisque $\beta_j \neq \beta$. Comme $K$ est infini, il existe donc des $c \in K$, tous sauf un nombre fini, tels que $c \neq 0$ et
+      $$\alpha + c\beta \neq \alpha_i + c\beta_j \quad \text{pour tous } i \text{ et } j \geqslant 2.$$
+
+      Fixons un tel $c$, et posons $\gamma = \alpha + c\beta$ et $F = K(\gamma) \subset L$. Le polynôme $h(X) = \mu_\alpha(\gamma - cX)$ est à coefficients dans $F$ ; il est de degré $\deg\mu_\alpha \geqslant 1$ puisque $c \neq 0$, donc non nul. Il s'annule en $\beta$, puisque $h(\beta) = \mu_\alpha(\alpha) = 0$, mais en aucun $\beta_j$ avec $j \geqslant 2$, car $\gamma - c\beta_j$ n'est aucun des $\alpha_i$.
+
+      Soit $D$ le PGCD de $h$ et de $\mu_\beta$ dans $F[X]$ ; c'est aussi leur PGCD dans $\Omega[X]$ ({{pol-principal|K[X] principal}}, (ii) et (iv)). Dans $\Omega[X]$, le polynôme $X - \beta$ divise $h$ et $\mu_\beta$ ({{pol-racines|Racines}}, (i)), donc $D$.
+
+      Inversement, $D$ divise
+      $$\mu_\beta = \prod_{j=1}^s (X - \beta_j),$$
+      et, par unicité de la factorisation dans $\Omega[X]$ ({{pol-irreductibles|Irréductibles}}, (ii)), $D$, unitaire, est le produit de certains des $X - \beta_j$. Chacun de ces $\beta_j$ est racine de $D$, donc de $h$, ce qui impose $j = 1$ : $D = X - \beta$.
+
+      Comme $D \in F[X]$, on a $\beta \in F$, puis $\alpha = \gamma - c\beta \in F$. Ainsi $L = K(\alpha, \beta) \subset F \subset L$.
+
+      (ii) Si $K$ est fini, $L$, de dimension finie sur $K$, est fini, et son groupe multiplicatif est cyclique ({{gf-multiplicatif|Groupe multiplicatif}}, (iii)) ; un générateur $\gamma$ de $L^\times$ vérifie $L = K(\gamma)$, puisque tout élément non nul de $L$ en est une puissance.
+
+      Si $K$ est infini, soit $(e_1, \dots, e_m)$ une base de $L$ sur $K$, de sorte que $L = K(e_1, \dots, e_m)$. Par récurrence sur $k$, $K(e_1, \dots, e_k)$ est de la forme $K(\gamma_k)$ : c'est clair pour $k = 1$, et
+      $$\begin{aligned} K(e_1, \dots, e_{k+1}) &= K(\gamma_k, e_{k+1}) \\ &= K(\gamma_{k+1}) \end{aligned}$$
+      par (i), appliqué à $\alpha = \gamma_k$ et à $\beta = e_{k+1}$, séparable puisque l'extension l'est.
+
+      (iii) Toute extension finie est algébrique ({{gs-algebriques|Polynôme minimal}}, (iv)). En caractéristique nulle, un polynôme minimal, irréductible, est séparable ({{gs-separabilite|Séparabilité}}, (iv)) : l'extension est séparable, et l'on applique (ii).
+    remarques:
+      - |
+        Le corps de décomposition $L = \mathbb Q(\alpha, j)$ de $X^3 - 2$, où $\alpha = \sqrt[3]2$ et $j = \frac{-1 + i\sqrt 3}2$ dans $\lex{ensemble-complexes}{\mathbb C}$, est de degré $6$ ({{gs-decomposition|Corps de décomposition}}). La valeur $c = 1$ convient : le polynôme minimal de $\alpha + j$ sur $\mathbb Q$ est
+        $$X^6 + 3X^5 + 6X^4 + 3X^3 + 9X + 9,$$
+        de degré $6$, si bien que $L = \mathbb Q(\alpha + j)$. Un seul nombre suffit donc à engendrer ce corps, ce qui n'a rien d'évident sur la forme $\mathbb Q(\alpha, j)$.
+      - |
+        L'hypothèse de séparabilité ne peut pas être omise. Pour $p$ premier, $k = \mathbb F_p(S^p, T^p)$ et $L = \mathbb F_p(S, T)$ dans le corps des fractions rationnelles en deux indéterminées, tout $\gamma \in L$ vérifie $\gamma^p \in k$, puisque le Frobenius est un morphisme ({{pol-binome|Binôme de Newton}}, (iv)) ; donc $[k(\gamma):k] \leqslant p$. Or $[L:k] = p^2$, ce qu'on admet ici : aucun élément n'engendre $L$.
+      - |
+        Une autre démonstration part du fait qu'une extension finie séparable n'a qu'un nombre fini de corps intermédiaires, ce que la correspondance de Galois établit pour une extension galoisienne ({{gs-correspondance|Théorème fondamental}}). Pour une extension séparable qui n'est pas galoisienne, on la plonge d'abord dans une extension galoisienne : le corps de décomposition sur $K$ du produit des polynômes minimaux des éléments d'une base, dont les corps intermédiaires, en nombre fini, contiennent ceux de $L/K$. Un espace vectoriel sur un corps infini n'est pas réunion finie de sous-espaces stricts : un élément hors de tous les corps intermédiaires stricts est primitif.
+
+  - id: gc-cyclotomiques
+    etiquette: Polynômes cyclotomiques
+    nature: théorème
+    titre: Racines de l'unité et polynômes cyclotomiques
+    texte: |
+      Soit $K$ un [[corps]] et $n \geqslant 1$. Une **racine $n$-ième de l'unité** dans $K$ est un $x \in K$ tel que $x^n = 1$ ; elles forment un sous-groupe $\mu_n(K)$ de $K^\times$, qui a au plus $n$ éléments ({{pol-racines|Racines}}, (iii)). Une [[racine-unite|racine primitive $n$-ième de l'unité]] est un élément d'ordre exactement $n$ du groupe $K^\times$.
+
+      Les [[polynome-cyclotomique|polynômes cyclotomiques]] $\Phi_n \in \lex{ensemble-entiers-relatifs}{\mathbb Z}[X]$ sont définis par récurrence forte. On pose $\Phi_1 = X - 1$. Pour $n \geqslant 2$, si les $\Phi_d$, $d < n$, sont définis, unitaires et de degrés $\deg\Phi_d = \varphi(d)$, le produit
+      $$\Psi_n = \prod_{d \mid n,\ d < n} \Phi_d$$
+      est unitaire, de degré $\sum_{d \mid n,\, d < n}\varphi(d) = n - \varphi(n) < n$ ({{gf-multiplicatif|Groupe multiplicatif}}, (i)). Alors $\Phi_n$ est le quotient de la division euclidienne de $X^n - 1$ par $\Psi_n$ dans $\mathbb Z[X]$ ({{pol-division|Division des polynômes}}, (i)) ; il est unitaire de degré $n - \deg\Psi_n = \varphi(n)$, ce qui propage l'hypothèse de récurrence.
+
+      Un élément de $\mathbb Z[X]$ a une image dans $K[X]$, obtenue en remplaçant chaque coefficient $a$ par $a \cdot 1_K$ ({{pol-evaluation|Évaluation}}, (i)) ; on la note de la même façon.
+    enonce: |
+      (i) Si $K$ contient une racine primitive $n$-ième de l'unité $\zeta$, alors $\mu_n(K) = \{1, \zeta, \dots, \zeta^{n-1}\}$ a $n$ éléments,
+      $$X^n - 1 = \prod_{k=0}^{n-1}(X - \zeta^k)$$
+      dans $K[X]$, et les racines primitives $n$-ièmes de l'unité de $K$ sont les $\zeta^k$ avec $k \wedge n = 1$, au nombre de $\varphi(n)$.
+
+      (ii) Dans ce cas, l'image de $\Phi_n$ dans $K[X]$ est $\prod (X - \xi)$, produit étendu aux racines primitives $n$-ièmes de l'unité $\xi$ de $K$ ; en particulier $\Phi_n(\zeta) = 0$.
+
+      (iii) Si $K$ est de caractéristique nulle, ou de caractéristique $p$ ne divisant pas $n$, le polynôme $X^n - 1$ est séparable sur $K$, et un corps de décomposition de $X^n - 1$ sur $K$ contient une racine primitive $n$-ième de l'unité.
+
+      (iv) Dans $\mathbb Z[X]$,
+      $$X^n - 1 = \prod_{d \mid n} \Phi_d,$$
+      et $\Phi_n$ est unitaire de degré $\varphi(n)$.
+    preuve: |
+      (i) Le sous-groupe $\langle\zeta\rangle$ a $n$ éléments $1, \zeta, \dots, \zeta^{n-1}$, tous racines de $X^n - 1$ ({{gf-cycliques|Groupes cycliques}}, (i)). Comme $X^n - 1$ a au plus $n$ racines dans $K$, $\mu_n(K) = \langle\zeta\rangle$. Le produit des $X - \zeta^k$ divise $X^n - 1$ ({{pol-racines|Racines}}, (iii)) ; les deux sont unitaires de degré $n$, donc égaux. La dernière assertion est le point (iii) du nœud {{gf-cycliques|Groupes cycliques}}.
+
+      (ii) Par récurrence forte sur $n$, pour tous les corps $K$ à la fois. Pour $n = 1$, le seul élément d'ordre $1$ est $1$, et $\Phi_1 = X - 1$. Soit $n \geqslant 2$. Pour $d \mid n$, notons $P_d = \prod (X - \xi)$, le produit portant sur les $\xi \in \mu_n(K)$ d'ordre $d$. L'ordre de tout élément de $\mu_n(K)$ divise $n$ : en regroupant les facteurs de (i) selon l'ordre de $\zeta^k$,
+      $$X^n - 1 = \prod_{d \mid n} P_d.$$
+
+      Pour $d \mid n$ avec $d < n$, l'élément $\zeta^{n/d}$ est d'ordre $d$ ({{gf-cycliques|Groupes cycliques}}, (iii)) : $K$ contient une racine primitive $d$-ième de l'unité. Tout élément d'ordre $d$ de $K^\times$ vérifie $x^n = 1$, donc appartient à $\mu_n(K)$ ; ainsi $P_d$ est le produit des $X - \xi$ sur les racines primitives $d$-ièmes de $K$, et il est l'image de $\Phi_d$ par l'hypothèse de récurrence.
+
+      Il vient $X^n - 1 = \Psi_n \cdot P_n$ dans $K[X]$, où $\Psi_n$ désigne son image. Par ailleurs, $X^n - 1 = \Psi_n\Phi_n + R$ dans $\mathbb Z[X]$, avec $\deg R < \deg\Psi_n$ ; l'image de cette égalité est une division euclidienne par le polynôme unitaire $\Psi_n$ dans $K[X]$. Par unicité ({{pol-division|Division des polynômes}}, (i)), l'image de $\Phi_n$ est $P_n$, et celle de $R$ est nulle.
+
+      (iii) La dérivée de $P = X^n - 1$ est $P' = n X^{n-1}$, et $n \cdot 1_K \neq 0$ par hypothèse ; alors
+      $$(n \cdot 1_K)^{-1}X \cdot P' - P = 1,$$
+      et $P$ est premier avec $P'$, donc séparable ({{gs-separabilite|Séparabilité}}, (ii)). Dans un corps de décomposition $\Omega$, $P$ a donc $n$ racines distinctes : $\mu_n(\Omega)$ a $n$ éléments. C'est un sous-groupe fini de $\Omega^\times$, donc il est cyclique ({{gf-multiplicatif|Groupe multiplicatif}}, (iii)), et un générateur est d'ordre $n$.
+
+      (iv) Soit $\Omega$ un corps de décomposition de $X^n - 1$ sur $\lex{ensemble-rationnels}{\mathbb Q}$ ; il est de caractéristique nulle, et le morphisme $\mathbb Z \to \Omega$ est injectif ({{gs-separabilite|Séparabilité}}, (iii)). Par (iii), $\Omega$ contient une racine primitive $n$-ième de l'unité, et la preuve de (ii) montre que l'image de $R$ dans $\Omega[X]$ est nulle ; comme $\mathbb Z \to \Omega$ est injectif, $R = 0$, et $X^n - 1 = \Psi_n\Phi_n = \prod_{d \mid n} \Phi_d$.
+
+      Le degré $\varphi(n)$ et le caractère unitaire de $\Phi_n$ ont été établis avec sa définition.
+    remarques:
+      - |
+        Les premiers polynômes sont $\Phi_2 = X + 1$, $\Phi_3 = X^2 + X + 1$, $\Phi_4 = X^2 + 1$, $\Phi_6 = X^2 - X + 1$ et
+        $$\Phi_{12} = X^4 - X^2 + 1.$$
+        Pour $p$ premier, $X^p - 1 = \Phi_1\Phi_p$ donne $\Phi_p = X^{p-1} + \cdots + X + 1$ : c'est le polynôme dont le nœud {{pol-eisenstein|Eisenstein}} a déjà établi l'irréductibilité.
+
+        ```schema gc-cyclotomiques
+        Les douze racines de $X^{12} - 1$ dans $\mathbb C$ s'écrivent avec des racines carrées seulement : $\pm 1$, $\pm i$, $\frac{\pm 1 \pm i\sqrt 3}2$ et $\frac{\pm\sqrt 3 \pm i}2$. Elles sont groupées selon leur ordre $d$, diviseur de $12$ ; chaque groupe est l'ensemble des racines de $\Phi_d$, et les six groupes, de cardinaux $\varphi(d)$, donnent $X^{12} - 1 = \Phi_1\Phi_2\Phi_3\Phi_4\Phi_6\Phi_{12}$. Les racines primitives douzièmes, en rouge, sont les sommets d'un rectangle de côtés $1$ et $\sqrt 3$.
+        ```
+      - |
+        Pour $n \leqslant 104$, tous les coefficients de $\Phi_n$ valent $-1$, $0$ ou $1$, ce qu'on vérifie par le calcul ; jusqu'à $n = 30$, on le lit sur les polynômes eux-mêmes, comme $\Phi_{30} = X^8 + X^7 - X^5 - X^4 - X^3 + X + 1$.
+
+        Il serait tentant d'en faire une règle, et c'est une erreur : $\Phi_{105}$, de degré $\varphi(105) = 48$, a pour coefficients de $X^7$ et de $X^{41}$ la valeur $-2$. Le nombre $105 = 3 \cdot 5 \cdot 7$ est le plus petit produit de trois nombres premiers impairs distincts ; pour un produit de deux nombres premiers, on montre que les coefficients restent dans $\{-1, 0, 1\}$, ce qui est admis ici.
+      - |
+        Le point (iii) exige que la caractéristique ne divise pas $n$. Dans $\mathbb F_p[X]$, on a $X^p - 1 = (X - 1)^p$ ({{pol-binome|Binôme de Newton}}, (iv)) : la seule racine $p$-ième de l'unité est $1$, et il n'y a pas de racine primitive $p$-ième. C'est l'hypothèse $p \nmid n$ qui servira au nœud {{gc-reduction|Réduction modulo p}}.
+
+  - id: gc-reduction
+    etiquette: Réduction modulo p
+    nature: lemme
+    titre: Réduction modulo p et Frobenius
+    texte: |
+      Soit $p$ un [[nombre-premier|nombre premier]] et $\pi : \lex{ensemble-entiers-relatifs}{\mathbb Z}[X] \to \mathbb F_p[X]$ la réduction modulo $p$ ({{pol-gauss|Lemme de Gauss}}), où l'on note $\mathbb F_p$ le corps $\lex{anneau-zn}{\mathbb Z/p\mathbb Z}$ ({{z-zn|ℤ/nℤ}}).
+    enonce: |
+      (i) Pour tout $G \in \mathbb F_p[X]$, on a $G(X^p) = G^p$. Par suite $\pi\big(g(X^p)\big) = \pi(g)^p$ pour tout $g \in \mathbb Z[X]$.
+
+      (ii) Si $p$ ne divise pas $n$, le polynôme $X^n - 1$ n'a pas de facteur carré dans $\mathbb F_p[X]$ : si $H^2$ le divise, $H$ est constant.
+
+      (iii) Si $A, B \in \mathbb Z[X]$, avec $B$ unitaire, et si $B$ divise $A$ dans $\lex{ensemble-rationnels}{\mathbb Q}[X]$, alors le quotient est dans $\mathbb Z[X]$, et $\pi(B)$ divise $\pi(A)$.
+    preuve: |
+      (i) Dans l'anneau $\mathbb F_p[X]$, où $p \cdot 1 = 0$, l'application $F \mapsto F^p$ est un morphisme d'anneaux, le **Frobenius** ({{pol-binome|Binôme de Newton}}, (iv)). Pour $G = \sum_k a_kX^k$, il vient
+      $$G^p = \sum_k a_k^p X^{kp}.$$
+
+      Pour $a \in \mathbb F_p$ non nul, $a^{p-1} = 1$, puisque le groupe $\mathbb F_p^\times$ est d'ordre $p - 1$ ({{gf-cycliques|Groupes cycliques}}, (i)) ; donc $a^p = a$ pour tout $a \in \mathbb F_p$, et $G^p = \sum_k a_kX^{kp} = G(X^p)$.
+
+      La réduction remplace chaque coefficient par sa classe ; elle commute donc à la substitution de $X^p$ à $X$, et $\pi\big(g(X^p)\big) = \pi(g)(X^p) = \pi(g)^p$.
+
+      (ii) Soit $P = X^n - 1$, de dérivée $P' = \bar n X^{n-1}$, avec $\bar n \neq 0$ dans le corps $\mathbb F_p$ puisque $p \nmid n$. Si $P = H^2Q$, la règle du produit ({{pol-derivee|Dérivée formelle}}, (i)) donne
+      $$P' = H\,(2H'Q + HQ'),$$
+      si bien que $H$ divise $P$ et $P'$, donc
+      $$\bar n^{-1}X \cdot P' - P = 1.$$
+      Un diviseur de $1$ est constant ({{pol-anneau|Anneau A[X]}}, (iii)).
+
+      (iii) La division euclidienne de $A$ par le polynôme unitaire $B$ se fait dans $\mathbb Z[X]$ : $A = BQ + R$ avec $\deg R < \deg B$. C'est aussi la division dans $\mathbb Q[X]$ ({{pol-division|Division des polynômes}}, (iii)), où le reste est nul par hypothèse. Ainsi $A = BQ$ avec $Q \in \mathbb Z[X]$, et $\pi(A) = \pi(B)\pi(Q)$, $\pi$ étant un morphisme.
+    remarques:
+      - |
+        Dans $\mathbb F_3[X]$, $(X^2 + X + 1)^3 = X^6 + X^3 + 1$, comme l'annonce (i) : les coefficients binomiaux intermédiaires $3$ et $6$ sont nuls modulo $3$. Sur $\mathbb Z$, le cube de $X^2 + X + 1$ a sept termes, et (i) n'est vrai que modulo $p$.
+      - |
+        L'erreur la plus répandue est d'oublier l'hypothèse $p \nmid n$ dans (ii). Modulo $3$, $X^3 - 1 = (X - 1)^3$ a un facteur carré, et c'est pour cette raison que la démonstration d'irréductibilité du nœud suivant ne réduit que modulo les nombres premiers qui ne divisent pas $n$.
+
+  - id: gc-irreductibilite
+    etiquette: Irréductibilité de Φₙ
+    nature: théorème
+    titre: Irréductibilité des polynômes cyclotomiques sur ℚ
+    enonce: |
+      Pour tout $n \geqslant 1$, le [[polynome-cyclotomique|polynôme cyclotomique]] $\Phi_n$ est irréductible dans $\lex{ensemble-rationnels}{\mathbb Q}[X]$.
+
+      Par conséquent, si $\zeta$ est une [[racine-unite|racine primitive $n$-ième de l'unité]] dans un corps de caractéristique nulle, $\Phi_n$ est son polynôme minimal sur $\mathbb Q$, et $[\mathbb Q(\zeta):\mathbb Q] = \varphi(n)$.
+    preuve: |
+      Soit $\Omega$ un corps de décomposition de $X^n - 1$ sur $\mathbb Q$ ; il contient une racine primitive $n$-ième de l'unité ({{gc-cyclotomiques|Polynômes cyclotomiques}}, (iii)). Soit $\xi$ l'une d'elles, et $f$ son polynôme minimal sur $\mathbb Q$. Comme $\Phi_n(\xi) = 0$ (même nœud, (ii)), $f$ divise $\Phi_n$ ({{gs-algebriques|Polynôme minimal}}, (i)) : $\Phi_n = fg$ dans $\mathbb Q[X]$, avec $g$ unitaire.
+
+      *Les facteurs sont entiers.* Écrivons $f = \lambda f_0$ et $g = \mu g_0$, avec $f_0, g_0 \in \mathbb Z[X]$ primitifs ({{pol-gauss|Lemme de Gauss}}, (iii)). Alors $\Phi_n = \lambda\mu\,f_0g_0$, où $f_0g_0$ est primitif (même nœud, (ii)), de même que $\Phi_n$, qui est unitaire ; l'unicité de (iii) donne $\lambda\mu = \pm 1$.
+
+      Les coefficients dominants $a$ de $f_0$ et $b$ de $g_0$ vérifient donc $ab = \pm 1$, d'où $a = \pm 1$ ; comme $f = \lambda f_0$ est unitaire, $\lambda a = 1$ et $\lambda = \pm 1$ : $f \in \mathbb Z[X]$, puis $g \in \mathbb Z[X]$ ({{gc-reduction|Réduction modulo p}}, (iii)).
+
+      *Si $p$ est premier et ne divise pas $n$, alors $f(\xi^p) = 0$.* L'élément $\xi^p$ est d'ordre $n/(n \wedge p) = n$ ({{gf-cycliques|Groupes cycliques}}, (iii)), donc racine de $\Phi_n$. Supposons $f(\xi^p) \neq 0$ ; alors $g(\xi^p) = 0$, puisque $\Omega$ est intègre.
+
+      Ainsi $\xi$ est racine de $h = g(X^p) \in \mathbb Z[X]$, et $f$ divise $h$ dans $\mathbb Q[X]$. Par le lemme de réduction ({{gc-reduction|Réduction modulo p}}, (iii) puis (i)), $\pi(f)$ divise
+      $$\pi(h) = \pi(g)^p.$$
+
+      Le polynôme $\pi(f)$ est unitaire de degré $\deg f \geqslant 1$ ; soit $u$ l'un de ses facteurs irréductibles dans $\mathbb F_p[X]$ ({{pol-irreductibles|Irréductibles}}, (ii)). Il divise $\pi(g)^p$, donc $\pi(g)$ par le lemme d'Euclide (même nœud, (i)).
+
+      Alors $u^2$ divise $\pi(f)\pi(g) = \pi(\Phi_n)$, qui divise $\pi(X^n - 1)$, puisque $\Phi_n$ divise $X^n - 1$ dans $\mathbb Z[X]$ ({{gc-cyclotomiques|Polynômes cyclotomiques}}, (iv)). C'est impossible, $X^n - 1$ n'ayant pas de facteur carré dans $\mathbb F_p[X]$ ({{gc-reduction|Réduction modulo p}}, (ii)).
+
+      *Toutes les racines primitives sont racines de $f$.* L'argument précédent vaut pour toute racine primitive $\xi'$ de $\Omega$ telle que $f(\xi') = 0$, puisque $f$, unitaire et irréductible, est alors aussi le polynôme minimal de $\xi'$. Toute racine primitive de $\Omega$ s'écrit $\xi^k$ avec $k \geqslant 1$ et $k \wedge n = 1$ ({{gc-cyclotomiques|Polynômes cyclotomiques}}, (i)), et $k$ est un produit $p_1 \cdots p_m$ de nombres premiers qui ne divisent pas $n$.
+
+      En appliquant l'argument successivement à $\xi$, $\xi^{p_1}$, $\xi^{p_1p_2}$, …, toutes racines primitives, on obtient $f(\xi^k) = 0$. Ainsi $f$ a au moins $\varphi(n)$ racines distinctes, $\deg f \geqslant \varphi(n) = \deg\Phi_n$, et $f$, unitaire, divisant $\Phi_n$, lui est égal.
+
+      *Conséquence.* Si $\zeta$ est une racine primitive dans un corps $K$ de caractéristique nulle, qui contient $\mathbb Q$ ({{gs-separabilite|Séparabilité}}, (iii)), alors $\Phi_n(\zeta) = 0$ ({{gc-cyclotomiques|Polynômes cyclotomiques}}, (ii)), et le polynôme unitaire irréductible $\Phi_n$ est le polynôme minimal de $\zeta$ ; son degré est $\varphi(n)$ ({{gs-algebriques|Polynôme minimal}}, (ii)).
+    remarques:
+      - |
+        Pour $n$ premier, l'irréductibilité est due à Gauss (*Disquisitiones arithmeticae*, 1801, art. 341), et le nœud {{pol-eisenstein|Eisenstein}} l'a obtenue par le critère d'Eisenstein. Le cas général a été démontré par Kronecker en 1854 (*J. math. pures appl.* 19), puis par Dedekind (« Beweis für die Irreductibilität der Kreistheilungs-Gleichungen », *J. reine angew. Math.* 54, 1857, p. 27-30), dont la preuve par réduction modulo $p$ est celle qu'on vient de lire.
+
+        La forme ramassée, qui passe par $\pi(g(X^p)) = \pi(g)^p$, est attribuée à van der Waerden par S. H. Weintraub (*Several proofs of the irreducibility of the cyclotomic polynomials*). Landau en a donné une autre preuve très courte (*Math. Z.* 29, 1929, p. 462), par les restes des divisions de $f(X^j)$ par $f$, qui sont en nombre fini, et une borne sur leurs coefficients.
+      - |
+        L'erreur la plus répandue est de croire que l'irréductibilité sur $\mathbb Q$ se lit modulo un nombre premier. C'est faux : $\Phi_8 = X^4 + 1$ est irréductible sur $\mathbb Q$, mais réductible modulo tout nombre premier $p$.
+
+        Pour $p = 2$, $X^4 + 1 = (X + 1)^4$ ; pour $p$ impair, $8$ divise $p^2 - 1$, et le corps $\mathbb F_{p^2}$ à $p^2$ éléments ({{gs-corps-finis|Corps finis}}, (iii)) a un groupe multiplicatif cyclique ({{gf-multiplicatif|Groupe multiplicatif}}, (iii)) d'ordre $p^2 - 1$, qui contient donc un élément $\zeta$ d'ordre $8$ ({{gf-cycliques|Groupes cycliques}}, (iii)), racine de $\Phi_8$, et son polynôme minimal sur $\mathbb F_p$ est de degré au plus $2$. Ainsi, modulo $3$,
+        $$X^4 + 1 = (X^2 + X - 1)(X^2 - X - 1).$$
+        La preuve de Dedekind n'emploie la réduction que pour comparer deux facteurs déjà trouvés sur $\mathbb Q$.
+
+  - id: gc-galois-cyclotomique
+    etiquette: Gal(ℚ(ζ)/ℚ)
+    nature: théorème
+    titre: Le groupe de Galois d'un corps cyclotomique
+    texte: |
+      Dans ce nœud, $\zeta$ est une [[racine-unite|racine primitive $n$-ième de l'unité]] dans un corps de caractéristique nulle, par exemple dans un corps de décomposition de $X^n - 1$ sur $\lex{ensemble-rationnels}{\mathbb Q}$ ({{gc-cyclotomiques|Polynômes cyclotomiques}}, (iii)). Comme $\zeta^n = 1$, la puissance $\zeta^a$ ne dépend que de la classe de $a$ dans $\lex{anneau-zn}{\mathbb Z/n\mathbb Z}$.
+    enonce: |
+      (i) $\mathbb Q(\zeta)$ est un corps de décomposition de $X^n - 1$, et de $\Phi_n$, sur $\mathbb Q$ ; l'extension $\mathbb Q(\zeta)/\mathbb Q$ est galoisienne de degré $\varphi(n)$.
+
+      (ii) Pour tout $\sigma \in \lex{groupe-galois}{\operatorname{Gal}}(\mathbb Q(\zeta)/\mathbb Q)$, il existe une unique classe $a_\sigma \in (\mathbb Z/n\mathbb Z)^\times$ telle que $\sigma(\zeta) = \zeta^{a_\sigma}$, et l'application $\sigma \mapsto a_\sigma$ est un isomorphisme de groupes de $\operatorname{Gal}(\mathbb Q(\zeta)/\mathbb Q)$ sur $(\mathbb Z/n\mathbb Z)^\times$. En particulier, ce groupe est abélien.
+
+      (iii) Si $n = p$ est premier, ce groupe est cyclique d'ordre $p - 1$, et, pour chaque diviseur $d$ de $p - 1$, $\mathbb Q(\zeta)$ a un unique sous-corps de degré $d$ sur $\mathbb Q$.
+    preuve: |
+      (i) Le corps $\mathbb Q(\zeta)$ contient les $n$ racines $\zeta^k$ de $X^n - 1$, qui y est donc scindé ({{gc-cyclotomiques|Polynômes cyclotomiques}}, (i)), et il est engendré par l'une d'elles : c'est un corps de décomposition de $X^n - 1$. Il est de même engendré par les racines de $\Phi_n$, qui sont les racines primitives (même nœud, (ii)), parmi lesquelles $\zeta$.
+
+      Le polynôme $X^n - 1$ est séparable en caractéristique nulle (même nœud, (iii)), donc l'extension est galoisienne ({{gs-galoisiennes|Extensions galoisiennes}}, (a)). Son degré est $\varphi(n)$ ({{gc-irreductibilite|Irréductibilité de Φₙ}}).
+
+      (ii) Comme $\sigma$ est un morphisme injectif, $\sigma(\zeta)^k = \sigma(\zeta^k)$ vaut $1$ si et seulement si $\zeta^k = 1$ : $\sigma(\zeta)$ est encore d'ordre $n$, donc de la forme $\zeta^a$ avec $a \wedge n = 1$ ({{gc-cyclotomiques|Polynômes cyclotomiques}}, (i)). La classe de $a$ modulo $n$ est unique, puisque $\zeta^a = \zeta^b$ équivaut à $n \mid a - b$ ({{gf-cycliques|Groupes cycliques}}, (i)).
+
+      Elle est inversible dans $\mathbb Z/n\mathbb Z$ : une relation de Bézout $au + nv = 1$ ({{z-bezout|PGCD, Bézout}}, (ii)) donne $\bar a\,\bar u = \bar 1$. Réciproquement, si $\bar a\,\bar u = \bar 1$, alors $au + nv = 1$ pour un entier $v$, et $a \wedge n = 1$ : le groupe $(\mathbb Z/n\mathbb Z)^\times$ a $\varphi(n)$ éléments.
+
+      Pour $\sigma, \tau$ dans le groupe,
+      $$(\sigma\tau)(\zeta) = \sigma(\zeta^{a_\tau}) = \sigma(\zeta)^{a_\tau} = \zeta^{a_\sigma a_\tau},$$
+      donc $a_{\sigma\tau} = a_\sigma a_\tau$. Un automorphisme qui fixe $\mathbb Q$ est déterminé par l'image de $\zeta$, puisque $\mathbb Q(\zeta) = \mathbb Q[\zeta]$ ({{gs-algebriques|Polynôme minimal}}, (ii)) : le morphisme est injectif.
+
+      Le groupe de Galois a $[\mathbb Q(\zeta):\mathbb Q] = \varphi(n)$ éléments ({{gs-galoisiennes|Extensions galoisiennes}}, (b)), autant que $(\mathbb Z/n\mathbb Z)^\times$ : le morphisme injectif est bijectif.
+
+      (iii) Pour $p$ premier, $(\mathbb Z/p\mathbb Z)^\times$ est cyclique d'ordre $p - 1$ ({{gf-multiplicatif|Groupe multiplicatif}}, (iii)). Un groupe cyclique a un unique sous-groupe de chaque ordre divisant le sien ({{gf-cycliques|Groupes cycliques}}, (iii)), donc un unique sous-groupe d'indice $d$. Par la correspondance de Galois ({{gs-correspondance|Théorème fondamental}}, (i)), les sous-corps de degré $d$ correspondent aux sous-groupes d'indice $d$.
+    remarques:
+      - |
+        Pour $n = 5$, soit $\eta = \zeta + \zeta^4$ et $\eta' = \zeta^2 + \zeta^3$. Alors $\eta + \eta' = -1$, puisque $\Phi_5(\zeta) = 0$, et
+        $$\begin{aligned} \eta\eta' &= \zeta^3 + \zeta^4 + \zeta^6 + \zeta^7 \\ &= \zeta^3 + \zeta^4 + \zeta + \zeta^2 = -1. \end{aligned}$$
+        Donc $\eta^2 + \eta - 1 = 0$ : le sous-corps quadratique de $\mathbb Q(\zeta)$, unique par (iii), est $\mathbb Q(\eta) = \mathbb Q(\sqrt 5)$, puisque $(2\eta + 1)^2 = 5$. C'est le sous-corps fixé par $\sigma : \zeta \mapsto \zeta^4$, qui échange $\zeta$ et $\zeta^4$.
+      - |
+        Le groupe n'est pas toujours cyclique. Pour $n = 8$, $(\mathbb Z/8\mathbb Z)^\times = \{\bar 1, \bar 3, \bar 5, \bar 7\}$ n'est pas cyclique, puisque $3^2$, $5^2$ et $7^2$ sont congrus à $1$ modulo $8$ : aucun élément n'est d'ordre $4$. Ce groupe d'ordre $4$ est donc isomorphe à $(\mathbb Z/2\mathbb Z)^2$ ({{gf-ordres-pq|Ordres p, p², 2p, pq}}), et $\mathbb Q(\zeta)$ a trois sous-corps quadratiques.
+
+        Comme $\zeta^4 = -1$, on trouve $(\zeta^2)^2 = -1$, puis
+        $$\begin{aligned} (\zeta + \zeta^{-1})^2 &= \zeta^2 + 2 + \zeta^{-2} = 2, \\ (\zeta - \zeta^{-1})^2 &= \zeta^2 - 2 + \zeta^{-2} = -2, \end{aligned}$$
+        puisque $\zeta^2 + \zeta^{-2} = \zeta^{-2}(\zeta^4 + 1) = 0$. Les trois sous-corps sont engendrés par des racines carrées de $-1$, $2$ et $-2$, et ils sont fixés respectivement par $\zeta \mapsto \zeta^5$, $\zeta \mapsto \zeta^7$ et $\zeta \mapsto \zeta^3$.
+      - |
+        Pour $q$ premier impair, le chapitre {{tan-reciprocite|Réciprocité quadratique}} de la théorie algébrique des nombres construit une somme de Gauss $\tau$, combinaison des $\zeta^a$, telle que $\tau^2 = (-1)^{\frac{q-1}2}q$ ({{rq-sommes-gauss|Sommes de Gauss}}). Il travaille dans un corps fini $\mathbb F_{p^n}$, mais le calcul de $\tau^2$ n'emploie qu'un élément $\zeta$ d'ordre $q$ et le fait que $q$ n'est pas nul dans le corps : il vaut mot pour mot en caractéristique nulle, dans $\mathbb Q(\zeta_q)$. Avec (iii), cela identifie l'unique sous-corps quadratique de $\mathbb Q(\zeta_q)$ : c'est le corps engendré par une racine carrée de $(-1)^{\frac{q-1}2}q$, et l'on retrouve $\mathbb Q(\sqrt 5)$ pour $q = 5$.
+      - |
+        Abel a montré (« Mémoire sur une classe particulière d'équations résolubles algébriquement », *J. reine angew. Math.* 4, 1829, p. 131-156) que les équations dont toutes les racines s'expriment rationnellement en fonction de l'une d'elles, ces expressions commutant entre elles, sont résolubles par radicaux ; les équations de la division du cercle en sont le modèle. Kronecker a appelé « abéliennes » (*Abelsche Gleichungen*), en 1853, des équations qui, en termes modernes, ont un groupe de Galois cyclique ; l'emploi du mot pour les groupes commutatifs apparaît chez Weber en 1882, d'après J. Miller (*Earliest Known Uses of Some of the Words of Mathematics*).
+
+        Le théorème de Kronecker-Weber, admis ici, affirme réciproquement que toute extension finie galoisienne de $\mathbb Q$ de groupe abélien est contenue dans un corps $\mathbb Q(\zeta)$.
+
+  - id: gc-constructibles
+    etiquette: Points constructibles
+    nature: lemme
+    titre: Points constructibles et constructions élémentaires
+    texte: |
+      On identifie le plan à $\lex{ensemble-complexes}{\mathbb C}$, le point $(a, b)$ au nombre $a + ib$, et la distance de $z$ à $w$ est $|z - w|$ ({{c-calcul|Conjugué, module}}). Soit $E \subset \mathbb C$.
+
+      Une **droite de $E$** est une partie
+      $$\{a + t(b - a) : t \in \lex{ensemble-reels}{\mathbb R}\}$$
+      avec $a, b \in E$ distincts : c'est la droite tracée à la règle par $a$ et $b$, notée $(ab)$. Un **cercle de $E$** est une partie $\{z : |z - c| = |d - e|\}$ avec $c, d, e \in E$ et $d \neq e$ : c'est le cercle tracé au compas, de centre $c$, avec l'écartement $|d - e|$.
+
+      Un point $z$ est [[point-constructible|constructible]] s'il existe une suite finie $z_0 = 0$, $z_1 = 1$, $z_2, \dots, z_m = z$ telle que, pour $2 \leqslant k \leqslant m$, $z_k$ soit un point commun à deux droites distinctes, à une droite et un cercle, ou à deux cercles distincts de l'ensemble $\{z_0, \dots, z_{k-1}\}$. On note $\mathcal C$ l'ensemble des points constructibles ; il contient $0$ et $1$.
+    enonce: |
+      (i) Si $E \subset \mathcal C$ est fini, tout point commun à deux droites distinctes, à une droite et un cercle, ou à deux cercles distincts de $E$ est constructible.
+
+      Dans la suite, $a$, $b$ et $c$ sont constructibles, et $a \neq b$.
+
+      (ii) Le symétrique $2b - a$ de $a$ par rapport à $b$ est constructible.
+
+      (iii) Les deux points
+      $$u_\pm = a + \Big(\frac12 \pm i\,\frac{\sqrt 3}2\Big)(b - a),$$
+      sommets des deux triangles équilatéraux de base $[a, b]$, et le milieu $\frac{a + b}2$, sont constructibles.
+
+      (iv) Le projeté orthogonal de $c$ sur $(ab)$, c'est-à-dire le point $a + t(b - a)$ avec
+      $$t = \frac{\operatorname{Re}\big((c - a)\overline{(b - a)}\big)}{|b - a|^2},$$
+      est constructible.
+    preuve: |
+      (i) Mettons bout à bout des suites de construction des points de $E$, en ne gardant qu'une fois les deux premiers termes $0$ et $1$ : on obtient une suite de construction, puisque l'ensemble des points déjà construits ne fait que grandir. Le point considéré peut être ajouté à la fin.
+
+      (ii) Un point $a + s(b - a)$ de $(ab)$, avec $s$ réel, est sur le cercle de centre $b$ d'écartement $|a - b|$ si et seulement si $|s - 1|\,|b - a| = |b - a|$, c'est-à-dire $s = 0$ ou $s = 2$. Le point $s = 2$, commun à une droite et à un cercle de $\{a, b\}$, est $2b - a$ ; il est constructible par (i).
+
+      (iii) Écrivons un point $z$ sous la forme $a + w(b - a)$. Il est sur les cercles de centres $a$ et $b$ d'écartement $|b - a|$ si et seulement si $|w| = 1$ et $|w - 1| = 1$.
+
+      La seconde condition s'écrit $|w|^2 - 2\operatorname{Re} w + 1 = 1$ : elle impose $\operatorname{Re} w = \frac12$, puis $(\operatorname{Im} w)^2 = \frac34$, d'où $w = \frac12 \pm i\frac{\sqrt 3}2$ ({{c-racine-reelle|Racine carrée réelle}}). Ces deux cercles sont distincts, $a$ étant sur le second et pas sur le premier ; $u_+$ et $u_-$ sont constructibles par (i).
+
+      La droite $(u_+u_-)$ est formée des points
+      $$a + \Big(\frac12 + i\sqrt 3\,\big(\tfrac12 - s\big)\Big)(b - a), \quad s \in \mathbb R.$$
+      Un tel point est sur $(ab)$, où les points s'écrivent $a + t(b - a)$ avec $t$ réel, si et seulement si $\frac12 + i\sqrt3(\frac12 - s) = t$, c'est-à-dire $s = t = \frac12$, par unicité de l'écriture d'un complexe ({{c-construction|Construction de ℂ}}). Les deux droites sont distinctes, et leur point commun $\frac{a + b}2$ est constructible par (i).
+
+      (iv) Si $c = a$, alors $t = 0$ et le projeté est $a$. Sinon, un point $a + s(b - a)$ de $(ab)$ est sur le cercle de centre $c$ d'écartement $|c - a|$ si et seulement si
+      $$|a - c + s(b - a)|^2 = |a - c|^2,$$
+      c'est-à-dire, en développant comme au nœud {{c-calcul|Conjugué, module}}, (iv),
+      $$s^2|b - a|^2 - 2s\operatorname{Re}\big((c - a)\overline{(b - a)}\big) = 0,$$
+      soit $s = 0$ ou $s = 2t$.
+
+      Si $t = 0$, le projeté est $a$. Sinon, le point $a' = a + 2t(b - a)$ est constructible par (i), et le projeté est le milieu de $a$ et $a'$, constructible par (iii).
+    remarques:
+      - |
+        Le compas employé ici garde son écartement quand on le déplace. Le compas d'Euclide se referme dès qu'on le lève, et ne trace que des cercles de centre $c$ passant par un point donné ; la proposition 2 du livre I des *Éléments* montre qu'il permet néanmoins de reporter une longueur, si bien que les deux définitions donnent les mêmes points constructibles.
+
+        ```schema gc-constructibles
+        Les deux cercles de centres $a$ et $b$ et de rayon $|b - a|$ se coupent en $u_+$ et $u_-$ ; la droite qui les joint est la médiatrice de $[a, b]$, qui coupe $(ab)$ en son milieu $m$. Le symétrique $2b - a$ est le second point commun à $(ab)$ et au cercle de centre $b$.
+        ```
+      - |
+        On ne suppose pas que les intersections soient « visibles » : un cercle et une droite tangents n'ont qu'un point commun, et deux cercles disjoints aucun. La définition ne retient que les points communs effectivement présents, et c'est pourquoi la preuve de (iv) distingue le cas $t = 0$, où la droite est tangente au cercle.
+
+  - id: gc-corps-constructibles
+    etiquette: Corps des constructibles
+    nature: théorème
+    titre: Le corps des nombres constructibles
+    enonce: |
+      (i) L'ensemble $\mathcal C$ des [[point-constructible|points constructibles]] est un sous-corps de $\lex{ensemble-complexes}{\mathbb C}$, qui contient $i$ et qui est stable par conjugaison.
+
+      (ii) Un complexe $z$ est constructible si et seulement si $\operatorname{Re} z$ et $\operatorname{Im} z$ le sont.
+
+      (iii) Toute racine carrée d'un élément de $\mathcal C$ appartient à $\mathcal C$.
+    preuve: |
+      Les renvois (i) à (iv) sans autre précision sont ceux du nœud {{gc-constructibles|Points constructibles}}.
+
+      *Somme et opposé.* Pour $z \in \mathcal C$ non nul, $-z$ est le symétrique de $z$ par rapport à $0$, constructible par (ii). Pour $z, w \in \mathcal C$, le milieu $m = \frac{z + w}2$ est constructible par (iii), ou vaut $z$ si $z = w$. Alors $z + w$ est le symétrique de $0$ par rapport à $m$ si $m \neq 0$, et vaut $0$ sinon : il est constructible.
+
+      *Les axes et $i$.* Le point $-1$, symétrique de $1$ par rapport à $0$, est constructible. Les points $u_\pm$ de (iii) pour $a = -1$ et $b = 1$ sont $\pm i\sqrt 3$ ; la droite qui les joint est l'axe $i\lex{ensemble-reels}{\mathbb R}$, et elle coupe le cercle de centre $0$ d'écartement $|1 - 0|$ en $i$ et $-i$, qui sont constructibles par (i).
+
+      *Parties réelle et imaginaire.* Pour $z \in \mathcal C$, le projeté de $z$ sur la droite $(0\,1) = \mathbb R$ est $\operatorname{Re} z$, et son projeté sur $(0\,i) = i\mathbb R$ est $i\operatorname{Im} z$, par la formule de (iv) ; ils sont constructibles.
+
+      Pour $x$ réel non nul, le cercle de centre $0$ d'écartement $|x - 0|$ coupe $i\mathbb R$ en $\pm ix$, et celui d'écartement $|ix - 0|$ coupe $\mathbb R$ en $\pm x$ ; ces points sont constructibles par (i) dès que $x$, ou $ix$, l'est. Ainsi $x \in \mathcal C$ si et seulement si $ix \in \mathcal C$, et (ii) en découle, avec la somme : $z = \operatorname{Re} z + i\operatorname{Im} z$.
+
+      *Produit et inverse des réels.* Soient $x, y$ réels constructibles non nuls. Le point $x + iy - 1$ est constructible ; la droite qui le joint à $x$ est formée des points
+      $$x + s(iy - 1) = (x - s) + isy, \quad s \in \mathbb R,$$
+      et elle coupe $i\mathbb R$, dont elle est distincte puisque $x \notin i\mathbb R$, pour $s = x$, au point $ixy$, constructible par (i). Ainsi $xy \in \mathcal C$.
+
+      De même, la droite qui joint $1$ au point constructible $1 + i - x$ est formée des points $(1 - sx) + is$, et elle coupe $i\mathbb R$ pour $s = \frac1x$ : le point $\frac ix$, donc $\frac1x$, est constructible.
+
+      *Corps.* Pour $z = x + iy$ et $w = u + iv$ constructibles, les réels $x, y, u, v$ le sont, donc aussi $xu - yv$ et $xv + yu$, et $zw = (xu - yv) + i(xv + yu)$ par (ii). De même $\bar z = x + i(-y) \in \mathcal C$, et, pour $z \neq 0$,
+      $$\frac1z = \bar z \cdot \frac1{x^2 + y^2}$$
+      ({{c-calcul|Conjugué, module}}, (iii)) est constructible. Avec $0$ et $1$, cela démontre (i).
+
+      *Racines carrées.* Soit $r \geqslant 0$ réel constructible ; si $r = 0$, $\sqrt r = 0$. Supposons $r > 0$, et soit $c = \frac{r - 1}2 \in \mathcal C$. Le cercle de centre $c$ d'écartement $|r - c| = \frac{r + 1}2$, qui passe par $r$ et $-1$, rencontre $i\mathbb R$ aux points $iy$ tels que
+      $$c^2 + y^2 = \Big(\frac{r + 1}2\Big)^2,$$
+      c'est-à-dire $y^2 = r$ : le point $i\sqrt r$, donc $\sqrt r$, est constructible.
+
+      Pour $z = a + ib \in \mathcal C$, les réels $|z| = \sqrt{a^2 + b^2}$ puis $\sqrt{\frac{|z| + a}2}$ et $\sqrt{\frac{|z| - a}2}$ sont donc constructibles, et la racine carrée $w$ de $z$ donnée par le nœud {{c-racines-carrees|Racines carrées complexes}}, (i), l'est aussi, ainsi que $-w$ ; ce sont toutes les racines carrées de $z$.
+    remarques:
+      - |
+        Les constructions de la preuve sont celles du théorème de Thalès et du cercle de diamètre $[-1, r]$, dans lequel la hauteur issue de l'angle droit mesure $\sqrt r$.
+
+        ```schema gc-corps-constructibles
+        À gauche, pour $x = 1{,}6$ et $y = 1{,}25$, la droite rouge, parallèle à la droite qui joint $1$ à $iy$ et menée par $x$, coupe l'axe imaginaire en $ixy = 2i$ : les triangles sont semblables dans le rapport $x$. À droite, pour $r = 3$, le cercle de diamètre $[-1, r]$ coupe l'axe imaginaire en $\pm i\sqrt r$.
+        ```
+      - |
+        L'erreur la plus répandue est de croire que $\mathcal C$ ne contient que des longueurs « dessinables » simples. Il contient $\sqrt{2 + \sqrt 2}$, $\sqrt[4]{5}$, et tous les nombres obtenus à partir des entiers par les quatre opérations et des racines carrées emboîtées, en nombre quelconque ; le nœud suivant montre qu'il ne contient rien d'autre.
+
+  - id: gc-wantzel
+    etiquette: Wantzel
+    nature: théorème
+    titre: Théorème de Wantzel
+    texte: |
+      On note $\lex{ensemble-rationnels}{\mathbb Q}$ le sous-corps de $\lex{ensemble-complexes}{\mathbb C}$ engendré par $1$ ({{gs-separabilite|Séparabilité}}, (iii)) ; il est contenu dans tout sous-corps de $\mathbb C$, en particulier dans $\mathcal C$.
+    enonce: |
+      Pour $z \in \mathbb C$, les conditions suivantes sont équivalentes :
+
+      (a) $z$ est [[point-constructible|constructible]] ;
+
+      (b) il existe des sous-corps $\mathbb Q = K_0 \subset K_1 \subset \cdots \subset K_r$ de $\mathbb C$ tels que $[K_j : K_{j-1}] = 2$ pour $1 \leqslant j \leqslant r$, et $z \in K_r$.
+
+      En particulier, un nombre constructible est algébrique sur $\mathbb Q$, et le degré $[\mathbb Q(z):\mathbb Q]$ est une puissance de $2$.
+    preuve: |
+      *(b) ⇒ (a).* Montrons $K_j \subset \mathcal C$ par récurrence sur $j$ ; c'est vrai pour $K_0 = \mathbb Q$, puisque $\mathcal C$ est un corps ({{gc-corps-constructibles|Corps des constructibles}}, (i)).
+
+      Soit $\alpha \in K_j \setminus K_{j-1}$. Le degré $[K_{j-1}(\alpha) : K_{j-1}]$ divise $2$ et n'est pas $1$ ({{gs-extensions|Extensions, degré}}) : il vaut $2$, donc $K_j = K_{j-1}(\alpha)$, et le polynôme minimal de $\alpha$ sur $K_{j-1}$ s'écrit $X^2 + \beta X + \gamma$ ({{gs-algebriques|Polynôme minimal}}, (ii)).
+
+      Alors $\delta = 2\alpha + \beta$ vérifie
+      $$\delta^2 = \beta^2 - 4\gamma \in K_{j-1} \subset \mathcal C ;$$
+      c'est une racine carrée d'un élément de $\mathcal C$, donc $\delta \in \mathcal C$ ({{gc-corps-constructibles|Corps des constructibles}}, (iii)), puis $\alpha = \frac{\delta - \beta}2 \in \mathcal C$ et $K_j = K_{j-1} + K_{j-1}\alpha \subset \mathcal C$.
+
+      *(a) ⇒ (b).* Soit $z_0 = 0, z_1 = 1, \dots, z_m = z$ une suite de construction. Posons $F_1 = \mathbb Q(i)$, de degré $2$ sur $\mathbb Q$, puisque $X^2 + 1$ n'a pas de racine rationnelle ; et, pour $2 \leqslant k \leqslant m$,
+      $$F_k = F_{k-1}(\operatorname{Re} z_k, \operatorname{Im} z_k).$$
+      Montrons par récurrence sur $k \geqslant 1$ que $F_k$ contient $i$ et $z_0, \dots, z_k$, est stable par la conjugaison, et vérifie $[F_k : F_{k-1}] \leqslant 2$ pour $k \geqslant 2$.
+
+      C'est clair pour $F_1$. Soit $k \geqslant 2$, $F = F_{k-1}$ et $R = F \cap \lex{ensemble-reels}{\mathbb R}$, sous-corps de $F$. Pour $a \in F$, on a $\bar a \in F$, donc $\operatorname{Re} a = \frac{a + \bar a}2$ et $\operatorname{Im} a = \frac{a - \bar a}{2i}$ sont dans $R$.
+
+      *Équations.* Un point $x + iy$ est sur la droite $(ab)$, avec $a, b \in F$ distincts, si et seulement si $(z - a)\overline{(b - a)}$ est réel, puisque $\frac1{b - a} = \frac{\overline{b - a}}{|b - a|^2}$ ({{c-calcul|Conjugué, module}}, (iii)). En écrivant que sa partie imaginaire est nulle, la droite est l'ensemble des solutions d'une équation
+      $$ux + vy + w = 0,$$
+      avec $u, v, w \in R$ et $(u, v) \neq (0, 0)$.
+
+      Le cercle de centre $c \in F$ d'écartement $|d - e|$, avec $d, e \in F$, est l'ensemble des solutions de $(x - \operatorname{Re} c)^2 + (y - \operatorname{Im} c)^2 = |d - e|^2$, soit
+      $$x^2 + y^2 + ux + vy + w = 0,$$
+      avec $u, v, w \in R$.
+      Deux droites, ou deux cercles, qui ont la même équation sont égaux.
+
+      *Intersections.* Écrivons $z_k = x + iy$. Si $z_k$ est commun à deux droites distinctes, les couples $(u, v)$ et $(u', v')$ de leurs équations ne sont pas proportionnels. En effet, si $(u', v') = \lambda(u, v)$, alors $w' = -\lambda(ux + vy) = \lambda w$, puisque $z_k$ vérifie les deux équations ; la seconde serait $\lambda$ fois la première, et les deux droites seraient égales.
+
+      Le déterminant $\Delta = uv' - u'v$ est donc non nul, et la résolution du système $ux + vy = -w$, $u'x + v'y = -w'$ par combinaisons des deux équations donne
+      $$x = \frac{vw' - v'w}\Delta, \qquad y = \frac{u'w - uw'}\Delta,$$
+      qui sont dans $R$ : $F_k = F$.
+
+      Si $z_k$ est commun à une droite d'équation $ux + vy + w = 0$ et à un cercle d'équation $x^2 + y^2 + u'x + v'y + w' = 0$, et si $v \neq 0$, alors $y = -\frac{ux + w}v \in R(x)$, et, en reportant dans l'équation du cercle, $x$ est racine d'un polynôme de degré $2$ à coefficients dans $R$, de coefficient dominant $1 + \frac{u^2}{v^2}$. Si $v = 0$, alors $x = -\frac wu \in R$, et $y$ est racine d'un polynôme unitaire de degré $2$ à coefficients dans $R$. Dans les deux cas, $F_k = F(t)$ avec $t \in \{x, y\}$ réel, racine d'un polynôme non nul de degré au plus $2$ de $R[X] \subset F[X]$ : $[F_k : F] \leqslant 2$.
+
+      Si $z_k$ est commun à deux cercles distincts, d'équations $x^2 + y^2 + ux + vy + w = 0$ et $x^2 + y^2 + u'x + v'y + w' = 0$, la différence de leurs équations est $(u - u')x + (v - v')y + (w - w') = 0$. Si l'on avait $u = u'$ et $v = v'$, alors $w \neq w'$, les cercles étant distincts, et cette équation n'aurait pas de solution ; c'est donc l'équation d'une droite qui passe par $z_k$, et l'on est ramené au cas précédent.
+
+      *Stabilité.* Dans tous les cas, $F_k = F(t)$ avec $t$ réel algébrique sur $F$, et $F(t) = F[t]$ ({{gs-algebriques|Polynôme minimal}}, (ii)). La conjugaison est un automorphisme de $\mathbb C$ ({{c-calcul|Conjugué, module}}, (ii)) qui envoie $P(t)$, pour $P \in F[X]$, sur $\bar P(t)$, où $\bar P$ a pour coefficients les conjugués de ceux de $P$, qui sont dans $F$ : $F_k$ est stable. Il contient $i$, $F$ et $z_k$.
+
+      *Conclusion.* En supprimant les répétitions dans la suite $\mathbb Q \subset F_1 \subset \cdots \subset F_m$, on obtient une suite de sous-corps de degrés successifs exactement $2$, dont le dernier, $F_m$, contient $z$.
+
+      *Degré.* Par multiplicativité ({{gs-extensions|Extensions, degré}}), $[K_r : \mathbb Q] = 2^r$. Le nombre $z \in K_r$ est algébrique ({{gs-algebriques|Polynôme minimal}}, (iv)), et $[\mathbb Q(z) : \mathbb Q]$ divise $2^r$ ; par unicité de la décomposition en facteurs premiers ({{z-premiers|Nombres premiers}}, (ii)), c'est une puissance de $2$.
+    remarques:
+      - |
+        Wantzel a publié ce critère en 1837 (« Recherches sur les moyens de reconnaître si un problème de géométrie peut se résoudre avec la règle et le compas », *J. math. pures appl.*, 1re série, 2, p. 366-372), et en a tiré l'impossibilité de la duplication du cube et de la trisection de l'angle, que traite le nœud suivant.
+      - |
+        L'erreur la plus répandue est de lire la dernière assertion comme une équivalence. Un nombre de degré $4$ sur $\mathbb Q$ n'est pas forcément constructible : il faut une tour de corps de degré $2$ qui le contienne, et non seulement un degré puissance de $2$. Pour les racines de l'unité, la théorie de Galois répare cette différence, parce que le groupe de Galois est abélien ({{gc-galois-cyclotomique|Gal(ℚ(ζ)/ℚ)}}) : c'est l'objet du nœud {{gc-tours-quadratiques|Tours quadratiques}}.
+
+  - id: gc-cube-trisection
+    etiquette: Cube, trisection
+    nature: corollaire
+    titre: Duplication du cube et trisection de l'angle
+    enonce: |
+      (i) *Duplication du cube.* Aucun nombre constructible $x$ ne vérifie $x^3 = 2$.
+
+      (ii) *Trisection de l'angle de 60°.* Le point $u = \frac{1 + i\sqrt 3}2$, qui forme avec $0$ et $1$ un triangle équilatéral, est constructible ; mais aucun nombre constructible $w$ ne vérifie $w^3 = u$.
+    preuve: |
+      (i) Le polynôme $X^3 - 2$ est irréductible sur $\lex{ensemble-rationnels}{\mathbb Q}$ par le critère d'Eisenstein avec $p = 2$ ({{pol-eisenstein|Eisenstein}}, (i)). Si $x^3 = 2$, il est donc le polynôme minimal de $x$, et $[\mathbb Q(x):\mathbb Q] = 3$, qui n'est pas une puissance de $2$ : $x$ n'est pas constructible ({{gc-wantzel|Wantzel}}).
+
+      (ii) Le point $u$ est constructible, $\mathcal C$ étant un corps qui contient $i$ ({{gc-corps-constructibles|Corps des constructibles}}, (i)) et $\sqrt 3$ (même nœud, (iii)) ; on a $|u| = |u - 1| = 1$.
+
+      Supposons $w \in \mathcal C$ et $w^3 = u$. Alors $|w|^3 = |u| = 1$, donc $|w| = 1$, la fonction $t \mapsto t^3$ étant strictement croissante sur les réels positifs, et $\bar w = w^{-1}$ ({{c-calcul|Conjugué, module}}, (iii)). Le réel $t = w + w^{-1}$ est constructible, et
+      $$\begin{aligned} t^3 &= w^3 + 3w + 3w^{-1} + w^{-3} \\ &= u + \bar u + 3t = 1 + 3t. \end{aligned}$$
+
+      Le polynôme $X^3 - 3X - 1$ n'a pas de racine rationnelle. Si $\frac ab$, avec $b \geqslant 1$ et $a \wedge b = 1$, en était une, on aurait $a^3 = b^2(3a + b)$ : un facteur premier de $b$ diviserait $a^3$, donc $a$ par le lemme d'Euclide ({{z-premiers|Nombres premiers}}, (i)), ce qui est exclu ; donc $b = 1$, puis $a(a^2 - 3) = 1$ et $a = \pm 1$, alors que $1 - 3 - 1 = -3$ et $-1 + 3 - 1 = 1$ ne sont pas nuls.
+
+      De degré $3$ sans racine dans $\mathbb Q$, il est irréductible ({{pol-irreductibles|Irréductibles}}, (iii)), et $[\mathbb Q(t):\mathbb Q] = 3$ : $t$ n'est pas constructible, contradiction.
+    remarques:
+      - |
+        Si l'on dispose des fonctions trigonométriques, que l'analyse complexe construira, $u = e^{i\pi/3}$, et une racine cubique de $u$ de module $1$ est $w = e^{i\pi/9}$, d'angle 20° : alors $t = 2\cos 20°$, et $c = \cos 20°$ vérifie $8c^3 - 6c - 1 = 0$, polynôme minimal de $c$ à un facteur près. L'impossibilité porte sur l'angle de 60° ; certains angles se trisectent, comme l'angle droit, puisque le point $\frac{\sqrt 3 + i}2$, d'angle 30°, est constructible.
+      - |
+        La quadrature du cercle demande de construire $\sqrt\pi$, côté d'un carré de même aire que le disque unité. Elle est impossible, parce que $\pi$ n'est algébrique sur $\mathbb Q$ d'aucun degré : c'est le théorème de Lindemann (« Ueber die Zahl π », *Math. Ann.* 20, 1882, p. 213-225), qui est admis ici, sa démonstration demandant des estimations d'intégrales étrangères à l'algèbre. Un nombre constructible est algébrique ({{gc-wantzel|Wantzel}}), et $\sqrt\pi$ ne l'est pas, sans quoi $\pi$ le serait.
+
+  - id: gc-tours-quadratiques
+    etiquette: Tours quadratiques
+    nature: lemme
+    titre: Plongement dans ℂ d'une tour quadratique
+    enonce: |
+      Soit $L/\lex{ensemble-rationnels}{\mathbb Q}$ une [[extension-galoisienne|extension galoisienne]] dont le groupe de Galois $G$ est abélien, d'ordre $2^s$.
+
+      (i) Il existe des corps intermédiaires $\mathbb Q = L_0 \subset L_1 \subset \cdots \subset L_s = L$ tels que $[L_j : L_{j-1}] = 2$ pour $1 \leqslant j \leqslant s$.
+
+      (ii) Il existe un morphisme de corps $\sigma : L \to \lex{ensemble-complexes}{\mathbb C}$, et $\sigma(L)$ est contenu dans le corps $\mathcal C$ des [[point-constructible|nombres constructibles]].
+    preuve: |
+      (i) *Un groupe abélien d'ordre $2^k$, $k \geqslant 1$, a un sous-groupe d'indice $2$.* Il est isomorphe à un produit $\mathbb Z/2^{k_1}\mathbb Z \times K$ avec $k_1 \geqslant 1$ ({{gf-abeliens|Groupes abéliens finis}}, (ii)). Dans $\mathbb Z/2^{k_1}\mathbb Z$, le sous-groupe engendré par $\bar 2$ a $2^{k_1 - 1}$ éléments ({{gf-cycliques|Groupes cycliques}}, (iii)) ; son produit par $K$ est d'indice $2$.
+
+      Par récurrence, on obtient des sous-groupes $G = H_0 \supset H_1 \supset \cdots \supset H_s = \{\mathrm{id}\}$, avec $|H_j| = 2^{s-j}$, chacun étant pris d'indice $2$ dans le précédent, abélien comme lui. Posons $L_j = L^{H_j}$. Par la correspondance de Galois ({{gs-correspondance|Théorème fondamental}}, (i)), $L_0 = \mathbb Q$, $L_s = L$, $L_{j-1} \subset L_j$ et
+      $$[L_j : L_{j-1}] = \frac{[L : L_{j-1}]}{[L : L_j]} = \frac{|H_{j-1}|}{|H_j|} = 2.$$
+
+      (ii) Construisons par récurrence sur $j$ des morphismes de corps $\sigma_j : L_j \to \mathbb C$, chacun prolongeant le précédent. Pour $j = 0$, $\sigma_0$ est l'identification de $\mathbb Q$ au sous-corps de $\mathbb C$ engendré par $1$ ({{gs-separabilite|Séparabilité}}, (iii)).
+
+      Soit $\alpha \in L_j \setminus L_{j-1}$ ; comme dans la preuve du nœud {{gc-wantzel|Wantzel}}, $L_j = L_{j-1}(\alpha)$ et le polynôme minimal de $\alpha$ sur $L_{j-1}$ est $\mu = X^2 + \beta X + \gamma$. Son transporté $X^2 + \sigma_{j-1}(\beta)X + \sigma_{j-1}(\gamma)$ a une racine $\alpha'$ dans $\mathbb C$, par la résolution du second degré ({{c-racines-carrees|Racines carrées complexes}}, (ii)).
+
+      L'application $P \mapsto P^{\sigma_{j-1}}(\alpha')$, qui applique $\sigma_{j-1}$ aux coefficients puis évalue en $\alpha'$, est un morphisme d'anneaux de $L_{j-1}[X]$ dans $\mathbb C$ ({{pol-evaluation|Évaluation}}, (i)), nul sur $\mu$, donc sur l'idéal $(\mu)$. Son noyau est un idéal propre, puisque $1 \mapsto 1$, qui contient l'idéal $(\mu)$ ; celui-ci est maximal, $\mu$ étant irréductible ({{gs-algebriques|Polynôme minimal}}, preuve de (ii)), donc le noyau est $(\mu)$. Le morphisme passe au quotient en un morphisme injectif $L_{j-1}[X]/(\mu) \to \mathbb C$ ({{a-anneau-quotient|Anneau quotient}}), que l'on compose avec l'isomorphisme $L_j = L_{j-1}[\alpha] \cong L_{j-1}[X]/(\mu)$ ({{gs-algebriques|Polynôme minimal}}, (ii)) : c'est $\sigma_j$, défini par
+      $$\sigma_j\big(P(\alpha)\big) = P^{\sigma_{j-1}}(\alpha'),$$
+      qui prolonge $\sigma_{j-1}$ et envoie $\alpha$ sur $\alpha'$.
+
+      Soit $\sigma = \sigma_s$, injectif comme tout morphisme issu d'un corps. Les corps $\sigma(L_j)$ forment une suite croissante de sous-corps de $\mathbb C$, avec $\sigma(L_0) = \mathbb Q$ et $[\sigma(L_j) : \sigma(L_{j-1})] = 2$, puisque $\sigma$ transporte une base de $L_j$ sur $L_{j-1}$ en une base de $\sigma(L_j)$ sur $\sigma(L_{j-1})$. Par le théorème de Wantzel ({{gc-wantzel|Wantzel}}, (b) ⇒ (a)), tout élément de $\sigma(L) = \sigma(L_s)$ est constructible.
+    remarques:
+      - |
+        Ce lemme est l'endroit où l'on évite le théorème de {{c-dalembert|d'Alembert-Gauss}}, admis au chapitre des nombres complexes. Avec lui, tout corps de décomposition sur $\mathbb Q$ se plongerait directement dans $\mathbb C$ ; ici, on ne plonge que des étages de degré $2$, et le second degré suffit. Les racines de l'unité qu'on obtient ainsi dans $\mathbb C$ sont donc construites, et non seulement affirmées.
+      - |
+        L'hypothèse « abélien » sert seulement à trouver les sous-groupes $H_j$. Elle peut être levée : tout groupe $G$ d'ordre $2^s$, $s \geqslant 1$, a une suite de sous-groupes emboîtés d'indices $2$, et les ingrédients sont en amont. Pour l'action de $G$ sur lui-même par conjugaison, les points fixes forment le centre $Z$, et $|Z| \equiv |G| \equiv 0$ modulo $2$ ({{gf-actions|Actions de groupe}}, (iv)) : $Z$ n'est pas réduit à $\{e\}$, et contient un élément $z$ d'ordre $2$ ({{gs-cauchy|Cauchy}}). Le sous-groupe $\langle z \rangle$ est distingué, et une suite pour $G/\langle z \rangle$, obtenue par récurrence, se relève en une suite de $G$ à $\langle z \rangle$ par images réciproques ({{jh-isomorphismes|Isomorphismes, correspondance}}), que l'on termine par $\{e\}$. On obtient alors le critère général : un nombre algébrique est constructible si et seulement si le degré de la clôture galoisienne qu'il engendre est une puissance de $2$.
+
+  - id: gc-fermat
+    etiquette: Nombres de Fermat
+    nature: proposition
+    titre: L'indicatrice d'Euler et les nombres premiers de Fermat
+    texte: |
+      Pour $n \geqslant 1$, $\varphi(n)$ est le nombre d'entiers $k \in \{1, \dots, n\}$ premiers à $n$ ({{gf-cycliques|Groupes cycliques}}). Les **nombres de Fermat** sont les entiers $F_j = 2^{2^j} + 1$, pour $j \in \lex{ensemble-entiers-naturels}{\mathbb N}$ ; un [[nombre-fermat|nombre premier de Fermat]] est un nombre de Fermat qui est premier.
+    enonce: |
+      (i) Si $m \wedge n = 1$, alors $\varphi(mn) = \varphi(m)\varphi(n)$. Pour $p$ premier et $a \geqslant 1$, $\varphi(p^a) = p^{a-1}(p - 1)$.
+
+      (ii) Si $2^m + 1$ est premier, avec $m \geqslant 1$, alors $m$ est une puissance de $2$.
+
+      (iii) L'entier $\varphi(n)$ est une puissance de $2$ si et seulement si $n = 2^k p_1 \cdots p_r$, avec $k, r \geqslant 0$ et des nombres premiers de Fermat $p_1, \dots, p_r$ deux à deux distincts.
+    preuve: |
+      (i) Dans le groupe cyclique $\lex{anneau-zn}{\mathbb Z/n\mathbb Z}$, les générateurs sont au nombre de $\varphi(n)$, et ce sont les éléments d'ordre $n$ ({{gf-cycliques|Groupes cycliques}}, (iii)). Si $m \wedge n = 1$, le groupe $\mathbb Z/mn\mathbb Z$ est isomorphe à $\mathbb Z/m\mathbb Z \times \mathbb Z/n\mathbb Z$ (même nœud, (iv)), et un isomorphisme conserve l'ordre des éléments.
+
+      Dans le produit, soit $(x, y)$ avec $x$ d'ordre $d \mid m$ et $y$ d'ordre $d' \mid n$ ; un diviseur commun à $d$ et $d'$ divise $m$ et $n$, donc $d \wedge d' = 1$. On a $k(x, y) = 0$ si et seulement si $d \mid k$ et $d' \mid k$, c'est-à-dire $dd' \mid k$, par le lemme de Gauss ({{z-bezout|PGCD, Bézout}}, (iii)). L'ordre de $(x, y)$ est donc $dd'$, et il vaut $mn$ si et seulement si $d = m$ et $d' = n$ : il y a $\varphi(m)\varphi(n)$ éléments d'ordre $mn$.
+
+      Pour $p$ premier, un entier $k$ est premier à $p^a$ si et seulement si $p \nmid k$. En effet, un diviseur premier commun à $k$ et à $p^a$ divise $p$ par le lemme d'Euclide ({{z-premiers|Nombres premiers}}, (i)), donc vaut $p$. Les multiples de $p$ dans $\{1, \dots, p^a\}$ sont les $p^{a-1}$ entiers $p, 2p, \dots, p^{a-1}p$, d'où $\varphi(p^a) = p^a - p^{a-1}$.
+
+      (ii) Si $m$ avait un diviseur impair $q > 1$, avec $m = qr$, l'identité
+      $$x^q + 1 = (x + 1)\sum_{k=0}^{q-1}(-x)^k,$$
+      valable pour $q$ impair, appliquée à $x = 2^r$, montrerait que $2^r + 1$ divise $2^m + 1$, avec $1 < 2^r + 1 < 2^m + 1$. Donc $m$ n'a pas de facteur premier impair, et c'est une puissance de $2$ ({{z-premiers|Nombres premiers}}, (ii)).
+
+      (iii) Écrivons $n = 2^k p_1^{a_1} \cdots p_r^{a_r}$, avec des nombres premiers impairs $p_i$ distincts et $a_i \geqslant 1$. Par (i), appliqué de proche en proche aux facteurs, deux à deux premiers entre eux,
+      $$\varphi(n) = \varphi(2^k) \prod_{i=1}^r p_i^{a_i - 1}(p_i - 1),$$
+      avec $\varphi(2^k) = 2^{k-1}$ si $k \geqslant 1$ et $\varphi(1) = 1$.
+
+      Par unicité de la décomposition en facteurs premiers, ce produit est une puissance de $2$ si et seulement si chaque facteur en est une, c'est-à-dire si chaque $a_i$ vaut $1$ et si chaque $p_i - 1$ est une puissance $2^{m_i}$, avec $m_i \geqslant 1$. Par (ii), $p_i = 2^{m_i} + 1$ est alors un nombre premier de Fermat. Réciproquement, pour un nombre premier de Fermat $p$, $p - 1 = 2^{2^j}$.
+    remarques:
+      - |
+        Les nombres $F_0 = 3$, $F_1 = 5$, $F_2 = 17$, $F_3 = 257$ et $F_4 = 65\,537$ sont premiers. Fermat pensait qu'ils l'étaient tous, mais Euler a montré en 1732 que
+        $$F_5 = 2^{32} + 1 = 641 \times 6\,700\,417.$$
+        On ne connaît aucun autre nombre premier de Fermat que les cinq premiers.
+      - |
+        La réciproque de (ii) est fausse : $m = 32$ est une puissance de $2$, et $2^{32} + 1 = F_5$ n'est pas premier. L'erreur la plus répandue est de lire (iii) comme « $n$ produit d'une puissance de $2$ et de nombres de Fermat » : les nombres de Fermat doivent être premiers et distincts, si bien que $9 = 3^2$ et $F_5$ sont exclus.
+
+  - id: gc-gauss-wantzel
+    etiquette: Gauss-Wantzel
+    nature: théorème
+    titre: Polygones réguliers constructibles
+    texte: |
+      Soit $n \geqslant 3$. Si $z \in \lex{ensemble-complexes}{\mathbb C}$ est une [[racine-unite|racine primitive $n$-ième de l'unité]], alors $|z|^n = |z^n| = 1$, donc $|z| = 1$ ; les $n$ points distincts $1, z, \dots, z^{n-1}$ sont sur le cercle unité, et la multiplication par $z$, qui conserve les distances puisque $|zu - zv| = |u - v|$, envoie chacun sur le suivant : ils sont les sommets d'un polygone régulier à $n$ côtés de longueur $|z - 1|$.
+
+      On dit que le **polygone régulier à $n$ côtés est constructible** si $\mathbb C$ contient une racine primitive $n$-ième de l'unité constructible. Ses puissances sont alors constructibles, et ce sont toutes les racines $n$-ièmes de l'unité de $\mathbb C$ ({{gc-cyclotomiques|Polynômes cyclotomiques}}, (i)) : la condition ne dépend pas de la racine primitive considérée. Deux racines primitives $z$ et $z^k$ donnent les mêmes sommets, parcourus dans un ordre différent : selon $k$, on obtient un polygone convexe ou un polygone étoilé, dont les côtés ont une autre longueur, $|z^k - 1|$ au lieu de $|z - 1|$.
+
+      Que $\mathbb C$ contienne une racine primitive $n$-ième de l'unité pour tout $n$ découle de l'exponentielle complexe, construite en analyse complexe, ou du théorème de {{c-dalembert|d'Alembert-Gauss}}, admis au chapitre des nombres complexes ; le théorème qui suit n'en a pas besoin, puisqu'il construit lui-même ces racines quand elles sont constructibles.
+    enonce: |
+      Pour $n \geqslant 3$, les conditions suivantes sont équivalentes :
+
+      (a) le polygone régulier à $n$ côtés est constructible ;
+
+      (b) $\varphi(n)$ est une puissance de $2$ ;
+
+      (c) $n = 2^k p_1 \cdots p_r$, où $p_1, \dots, p_r$ sont des [[nombre-fermat|nombres premiers de Fermat]] deux à deux distincts.
+    preuve: |
+      *(a) ⇒ (b).* Soit $z \in \mathcal C$ une racine primitive $n$-ième de l'unité. Par irréductibilité de $\Phi_n$ ({{gc-irreductibilite|Irréductibilité de Φₙ}}), $[\lex{ensemble-rationnels}{\mathbb Q}(z):\mathbb Q] = \varphi(n)$, et c'est une puissance de $2$ par le théorème de Wantzel ({{gc-wantzel|Wantzel}}).
+
+      *(b) ⇒ (a).* Soit $\Omega$ un corps de décomposition de $X^n - 1$ sur $\mathbb Q$, et $\zeta \in \Omega$ une racine primitive $n$-ième de l'unité ({{gc-cyclotomiques|Polynômes cyclotomiques}}, (iii)). L'extension $L = \mathbb Q(\zeta)$ est galoisienne, de groupe isomorphe à $(\mathbb Z/n\mathbb Z)^\times$, abélien d'ordre $\varphi(n)$ ({{gc-galois-cyclotomique|Gal(ℚ(ζ)/ℚ)}}).
+
+      Si $\varphi(n)$ est une puissance de $2$, il existe un morphisme de corps $\sigma : L \to \mathbb C$ tel que $\sigma(L) \subset \mathcal C$ ({{gc-tours-quadratiques|Tours quadratiques}}). Comme $\sigma$ est injectif, $\sigma(\zeta)^k = 1$ si et seulement si $\zeta^k = 1$ : $\sigma(\zeta)$ est une racine primitive $n$-ième de l'unité de $\mathbb C$, et elle est constructible.
+
+      *(b) ⇔ (c).* C'est le point (iii) du nœud {{gc-fermat|Nombres de Fermat}}.
+    remarques:
+      - |
+        Pour $3 \leqslant n \leqslant 30$, les polygones constructibles sont ceux à $3, 4, 5, 6, 8, 10, 12, 15, 16, 17, 20, 24$ et $30$ côtés. Les autres ne le sont pas ; par exemple, pour $n = 7$, $\varphi(7) = 6$, et, pour $n = 9$, $\varphi(9) = 6$ : le polygone à neuf côtés n'est pas constructible, ce qui donne une seconde preuve que l'angle de 120° ne se trisecte pas.
+      - |
+        Avec les cinq nombres premiers de Fermat connus, on obtient $2^5 - 1 = 31$ polygones constructibles à nombre impair de côtés, le plus grand ayant
+        $$3 \cdot 5 \cdot 17 \cdot 257 \cdot 65\,537 = 2^{32} - 1$$
+        côtés ; tous les autres s'en déduisent en multipliant le nombre de côtés par une puissance de $2$, à quoi s'ajoutent les polygones à $2^k$ côtés, $k \geqslant 2$.
+      - |
+        La condition suffisante est due à Gauss, qui l'exposa dans la section VII des *Disquisitiones arithmeticae* (1801, art. 365 et 366), en affirmant sans la démontrer la nécessité de la condition ; la découverte de l'heptadécagone, qui en fut le point de départ, est datée au nœud {{gc-heptadecagone|Heptadécagone}}. La nécessité a été établie par Wantzel en 1837.
+
+        Si l'on dispose de l'exponentielle complexe, que l'analyse complexe construira, $e^{2i\pi/n}$ est l'une des racines primitives de la définition, et l'on retrouve le polygone convexe habituel.
+
+  - id: gc-heptadecagone
+    etiquette: Heptadécagone
+    nature: proposition
+    titre: L'heptadécagone par les périodes de Gauss
+    texte: |
+      Soit $\zeta$ une [[racine-unite|racine primitive $17$-ième de l'unité]] dans un corps de caractéristique nulle. La classe de $3$ engendre $(\lex{anneau-zn}{\mathbb Z/17\mathbb Z})^\times$, puisque ses puissances successives sont
+      $$\begin{aligned} &1, 3, 9, 10, 13, 5, 15, 11, \\ &16, 14, 8, 7, 4, 12, 2, 6. \end{aligned}$$
+      Les sous-groupes d'ordres $8$, $4$ et $2$ sont formés des puissances de $3^2$, de $3^4$ et de $3^8$ ({{gf-cycliques|Groupes cycliques}}, (iii)). Les **périodes de Gauss** sont les sommes de $\zeta^k$ sur leurs classes :
+      $$\begin{aligned} \eta_0 &= \zeta + \zeta^2 + \zeta^4 + \zeta^8 \\ &\quad + \zeta^9 + \zeta^{13} + \zeta^{15} + \zeta^{16}, \\ \eta_1 &= \zeta^3 + \zeta^5 + \zeta^6 + \zeta^7 \\ &\quad + \zeta^{10} + \zeta^{11} + \zeta^{12} + \zeta^{14}, \end{aligned}$$
+      puis $y_0 = \zeta + \zeta^4 + \zeta^{13} + \zeta^{16}$, $y_1 = \zeta^3 + \zeta^5 + \zeta^{12} + \zeta^{14}$, $y_2 = \zeta^2 + \zeta^8 + \zeta^9 + \zeta^{15}$ et $y_3 = \zeta^6 + \zeta^7 + \zeta^{10} + \zeta^{11}$, et enfin $x_0 = \zeta + \zeta^{16}$, $x_4 = \zeta^4 + \zeta^{13}$.
+    enonce: |
+      (i) $\eta_0 + \eta_1 = -1$ et $\eta_0\eta_1 = -4$.
+
+      (ii) $y_0 + y_2 = \eta_0$, $y_0y_2 = -1$, $y_1 + y_3 = \eta_1$ et $y_1y_3 = -1$.
+
+      (iii) $x_0 + x_4 = y_0$ et $x_0x_4 = y_1$.
+
+      (iv) $\zeta^2 - x_0\zeta + 1 = 0$.
+
+      (v) Les corps $\mathbb Q(\eta_0)$, $\mathbb Q(y_0)$ et $\mathbb Q(x_0)$ sont les corps fixés par les sous-groupes d'ordres $8$, $4$ et $2$ du groupe de Galois de $\mathbb Q(\zeta)/\mathbb Q$, et
+      $$\mathbb Q \subset \mathbb Q(\eta_0) \subset \mathbb Q(y_0) \subset \mathbb Q(x_0) \subset \mathbb Q(\zeta)$$
+      est une tour d'extensions de degré $2$, dont chaque étage est obtenu par l'une des équations $T^2 + T - 4 = 0$, $T^2 - \eta_0T - 1 = 0$, $T^2 - y_0T + y_1 = 0$ et $X^2 - x_0X + 1 = 0$, à coefficients dans l'étage précédent.
+    preuve: |
+      Comme $\Phi_{17} = 1 + X + \cdots + X^{16}$ ({{gc-cyclotomiques|Polynômes cyclotomiques}}) s'annule en $\zeta$ (même nœud, (ii)), la somme des $\zeta^c$ sur les seize classes $c$ non nulles modulo $17$ vaut $-1$. Les exposants ne comptent que modulo $17$.
+
+      (i) La première égalité est cette somme. Soit $H = \{1, 2, 4, 8, 9, 13, 15, 16\}$, sous-groupe d'indice $2$ des puissances paires de $3$, et $N$ son complémentaire, formé des puissances impaires : $\eta_0 = \sum_{a \in H}\zeta^a$ et $\eta_1 = \sum_{b \in N}\zeta^b$.
+
+      Le produit $\eta_0\eta_1$ est la somme des $64$ termes $\zeta^{a+b}$, $(a, b) \in H \times N$. Pour une classe $c$, notons $N(c)$ le nombre de couples tels que $a + b \equiv c$. Comme $-1 \equiv 16 \in H$, la relation $a + b \equiv 0$ donnerait $b \equiv -a \in H$ : $N(0) = 0$.
+
+      Pour $s \in H$, $(a, b) \mapsto (sa, sb)$ envoie bijectivement les couples de somme $c$ sur ceux de somme $sc$ ; pour $t \in N$, $(a, b) \mapsto (tb, ta)$ envoie de même les couples de somme $c$ sur ceux de somme $tc$, puisque le produit de deux puissances impaires de $3$ est une puissance paire. Ainsi $N(c)$ est le même pour les seize classes non nulles, qui forment le groupe $H \cup N$, et vaut $\frac{64}{16} = 4$. Donc
+      $$\eta_0\eta_1 = 4\sum_{c \neq 0}\zeta^c = -4.$$
+
+      (ii) Les égalités sur les sommes viennent des définitions. Les seize exposants $a + b$, pour $a \in \{1, 4, 13, 16\}$ et $b \in \{2, 8, 9, 15\}$, sont, modulo $17$,
+      $$\begin{aligned} &3, 9, 10, 16, \quad 6, 12, 13, 2, \\ &15, 4, 5, 11, \quad 1, 7, 8, 14 : \end{aligned}$$
+      chaque classe non nulle apparaît une fois, et $y_0y_2 = -1$. De même, pour $a \in \{3, 5, 12, 14\}$ et $b \in \{6, 7, 10, 11\}$, on trouve
+      $$\begin{aligned} &9, 10, 13, 14, \quad 11, 12, 15, 16, \\ &1, 2, 5, 6, \quad 3, 4, 7, 8, \end{aligned}$$
+      et $y_1y_3 = -1$.
+
+      (iii) La somme vient des définitions, et
+      $$\begin{aligned} x_0x_4 &= \zeta^5 + \zeta^{14} + \zeta^{20} + \zeta^{29} \\ &= \zeta^5 + \zeta^{14} + \zeta^3 + \zeta^{12} = y_1. \end{aligned}$$
+
+      (iv) $\zeta^2 - (\zeta + \zeta^{16})\zeta + 1 = 1 - \zeta^{17} = 0$.
+
+      *Les corps fixes.* Soit $\tau$ l'automorphisme de $\mathbb Q(\zeta)$ tel que $\tau(\zeta) = \zeta^3$ ; il existe, et il engendre le groupe de Galois, isomorphe à $(\mathbb Z/17\mathbb Z)^\times$ par $\tau^k \mapsto \bar 3^k$ ({{gc-galois-cyclotomique|Gal(ℚ(ζ)/ℚ)}}, (ii)). Notons $M_8$, $M_4$ et $M_2$ les corps fixés par $\langle\tau^2\rangle$, $\langle\tau^4\rangle$ et $\langle\tau^8\rangle$, d'ordres $8$, $4$ et $2$. Par la correspondance de Galois ({{gs-correspondance|Théorème fondamental}}, (i)), $\mathbb Q \subset M_8 \subset M_4 \subset M_2 \subset \mathbb Q(\zeta)$, chaque inclusion étant de degré $2$.
+
+      Les automorphismes $\tau^2$, $\tau^4$ et $\tau^8$ multiplient les exposants par $3^2 = 9$, $3^4 \equiv 13$ et $3^8 \equiv 16$, éléments des sous-groupes d'ordres $8$, $4$ et $2$ ; la multiplication par un élément d'un sous-groupe envoie chaque classe modulo ce sous-groupe sur elle-même. Ainsi $\eta_0, \eta_1 \in M_8$, les $y_j$ sont dans $M_4$, et $x_0, x_4 \in M_2$.
+
+      Les seize éléments $\zeta, \zeta^2, \dots, \zeta^{16}$ engendrent $\mathbb Q(\zeta)$, puisque $1 = -(\zeta + \cdots + \zeta^{16})$ et que $(1, \zeta, \dots, \zeta^{15})$ en est une base, $\Phi_{17}$, de degré $16$, étant le polynôme minimal de $\zeta$ ({{gc-irreductibilite|Irréductibilité de Φₙ}}, et {{gs-algebriques|Polynôme minimal}}, (ii)) ; ils en forment donc une base ({{v-dimension|Dimension}}, (ii)). Deux sommes de $\zeta^k$ sur des ensembles d'exposants disjoints non vides sont donc distinctes.
+
+      Or $\tau(\eta_0) = \eta_1$, $\tau^2(y_0) = y_2$, la multiplication par $9$ envoyant $\{1, 4, 13, 16\}$ sur $\{9, 2, 15, 8\}$, $\tau^4(x_0) = x_4$, puisque $13 \cdot 1 \equiv 13$ et $13 \cdot 16 \equiv 4$, et $\tau^8(\zeta) = \zeta^{16}$. Ainsi $\eta_0 \notin \mathbb Q$, $y_0 \notin M_8$, $x_0 \notin M_4$ et $\zeta \notin M_2$.
+
+      *La tour.* Comme $\mathbb Q \subsetneq \mathbb Q(\eta_0) \subset M_8$ et $[M_8 : \mathbb Q] = 2$, on a $\mathbb Q(\eta_0) = M_8$. Par (ii), $y_2 = -y_0^{-1}$, donc $\eta_0 = y_0 - y_0^{-1} \in \mathbb Q(y_0)$ ; ainsi $M_8 \subsetneq \mathbb Q(y_0) \subset M_4$, et $\mathbb Q(y_0) = M_4$.
+
+      Comme $x_0^2 - 2 = \zeta^2 + \zeta^{-2}$, puis $(x_0^2 - 2)^2 - 2 = \zeta^4 + \zeta^{-4} = x_4$, on a $y_0 = x_0 + x_4 \in \mathbb Q(x_0)$ ; ainsi $M_4 \subsetneq \mathbb Q(x_0) \subset M_2$, et $\mathbb Q(x_0) = M_2$.
+
+      Enfin, $\eta_0$ est racine de $T^2 + T - 4$ par (i), $y_0$ de $T^2 - \eta_0T - 1$ par (ii), $x_0$ de $T^2 - y_0T + y_1$ par (iii), avec $y_1 \in M_4 = \mathbb Q(y_0)$, et $\zeta$ de $X^2 - x_0X + 1$ par (iv).
+    remarques:
+      - |
+        Dans $\lex{ensemble-complexes}{\mathbb C}$, avec $\zeta = e^{2i\pi/17}$ que l'analyse complexe construira, $x_0 = 2\cos\frac{2\pi}{17}$, et les périodes sont réelles. Les signes se lisent sur les valeurs approchées $\eta_0 \approx 1{,}562$, $\eta_1 \approx -2{,}562$, $y_0 \approx 2{,}049$, $y_1 \approx 0{,}344$, $x_0 \approx 1{,}865$ : en résolvant les équations du second degré de bas en haut, et en posant $a = \sqrt{17}$, $b = \sqrt{34 - 2a}$ et $c = \sqrt{34 + 2a}$, on obtient
+        $$\begin{aligned} 16\cos\tfrac{2\pi}{17} &= -1 + a + b \\ &\quad + 2\sqrt{17 + 3a - b - 2c}, \end{aligned}$$
+        égalité vérifiée numériquement à vingt décimales : les deux membres valent environ $14{,}919\,555\,670$, et $\cos\frac{2\pi}{17} \approx 0{,}932\,472\,229\,4$.
+
+        ```schema gc-heptadecagone
+        Les sommets $\zeta^k$ de l'heptadécagone, pour $\zeta = e^{2i\pi/17}$, sont colorés selon la période $y_j$ à laquelle ils appartiennent : $y_0$ en rouge, $y_2$ en bleu, $y_1$ en vert, $y_3$ en gris. Chaque période est symétrique par rapport à l'axe réel, ce qui la rend réelle ; $\eta_0 = y_0 + y_2$ réunit le rouge et le bleu. Le sommet $\zeta^0 = 1$, dans la couleur du trait, n'appartient à aucune période. Le point $x_0 = \zeta + \zeta^{16} = 2\cos\frac{2\pi}{17}$ est le quatrième sommet du losange, en pointillé, construit sur $0$, $\zeta$ et $\zeta^{16}$.
+        ```
+      - |
+        La tour de (v) est celle que le nœud {{gc-tours-quadratiques|Tours quadratiques}} construit en général, rendue explicite : chaque période est la somme des $\zeta^k$ sur une classe modulo un sous-groupe, et c'est le sous-groupe qui la fixe.
+
+        ```schema gc-heptadecagone-2
+        À gauche, les sous-groupes de $(\mathbb Z/17\mathbb Z)^\times$, chacun d'indice $2$ dans le précédent, identifiés par leurs éléments ; à droite, les corps qu'ils fixent, à la même hauteur, avec l'équation du second degré qui fait monter d'un étage. Le plus grand groupe fixe le plus petit corps : les inclusions sont renversées, comme dans la correspondance de Galois.
+        ```
+
+        Gauss a noté la découverte de cette construction le 30 mars 1796, première entrée de son journal, et l'a exposée en 1801 dans les *Disquisitiones arithmeticae* (art. 365), où la formule imprimée comporte une faute de signe.
+
+aretes:
+  - [gc-cyclotomiques, gc-irreductibilite]
+  - [gc-reduction, gc-irreductibilite]
+  - [gc-irreductibilite, gc-galois-cyclotomique]
+  - [gc-constructibles, gc-corps-constructibles]
+  - [gc-corps-constructibles, gc-wantzel]
+  - [gc-wantzel, gc-cube-trisection]
+  - [gc-wantzel, gc-tours-quadratiques]
+  - [gc-galois-cyclotomique, gc-gauss-wantzel]
+  - [gc-tours-quadratiques, gc-gauss-wantzel]
+  - [gc-fermat, gc-gauss-wantzel]
+  - [gc-gauss-wantzel, gc-heptadecagone]
