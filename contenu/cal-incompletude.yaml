@@ -1,0 +1,176 @@
+# Niveau 2 : structure interne du chapitre « Calculabilité et incomplétude » (nœud cal-incompletude du
+# graphe calc). Fonction β de Gödel, définissabilité des ensembles récursivement énumérables dans ℕ,
+# théorèmes d'une théorie récursivement axiomatisée, vérité arithmétique non récursivement énumérable et
+# incomplétude des théories dont les axiomes sont vrais dans ℕ. Relie la calculabilité au nœud
+# l-incompletude du graphe log, sans en réécrire la preuve.
+
+graphe: cal-incompletude
+titre: Calculabilité et incomplétude
+conteneur: cal-incompletude
+
+entrees:
+  cal-arret: [cal-beta, cal-theoremes]
+
+noeuds:
+  - id: cal-beta
+    etiquette: Fonction β
+    nature: lemme
+    titre: La fonction β de Gödel
+    texte: |
+      La [[fonction-beta|fonction β de Gödel]] est la fonction primitive récursive
+      $$\beta(a, b, i) = r\big(a,\ 1 + (i + 1)b\big),$$
+      reste de la [[division-euclidienne|division euclidienne]] de $a$ par $1 + (i + 1)b$.
+    enonce: |
+      Pour toute suite finie $(k_0, \dots, k_n)$ d'entiers, il existe des entiers $a$ et $b$ tels que $\beta(a, b, i) = k_i$ pour tout $i \leqslant n$.
+    preuve: |
+      Soit $s = \max(n, k_0, \dots, k_n) + 1$, $b = s!$, et $m_i = 1 + (i + 1)b$ pour $i \leqslant n$. On a $m_i > b \geqslant s > k_i$.
+
+      *Les $m_i$ sont premiers entre eux deux à deux.* Soit $i < j \leqslant n$ et $p$ un [[nombre-premier|nombre premier]] qui divise $m_i$ et $m_j$. Il divise $m_j - m_i = (j - i)b$. Il ne divise pas $b$, sinon il diviserait $m_i - (i + 1)b = 1$ ; par le lemme d'Euclide ({{z-premiers|Nombres premiers}}, (i)), il divise donc $j - i$. Mais $1 \leqslant j - i \leqslant n < s$, donc $j - i$ divise $s! = b$, et $p$ diviserait $b$.
+
+      Ainsi $m_i$ et $m_j$ n'ont aucun diviseur premier commun ; comme tout entier $d \geqslant 2$ a un diviseur premier, $m_i \wedge m_j = 1$.
+
+      *Restes chinois.* Montrons par récurrence sur $l \leqslant n$ qu'il existe $a_l \in \lex{ensemble-entiers-relatifs}{\mathbb Z}$ tel que $a_l \equiv k_i$ modulo $m_i$, c'est-à-dire que $m_i$ divise $a_l - k_i$, pour tout $i \leqslant l$. On prend $a_0 = k_0$.
+
+      Supposons $a_l$ construit, avec $l < n$, et soit $M = m_0 \cdots m_l$. Un diviseur premier commun à $M$ et à $m_{l+1}$ diviserait l'un des $m_i$, par le lemme d'Euclide ; donc $M \wedge m_{l+1} = 1$, et Bézout ({{z-bezout|PGCD, Bézout}}, (ii)) donne $u, v \in \mathbb Z$ tels que $uM + vm_{l+1} = 1$. On pose
+      $$a_{l+1} = a_l + (k_{l+1} - a_l)\, uM.$$
+      Modulo chaque $m_i$, $i \leqslant l$, on a $a_{l+1} \equiv a_l$ ; modulo $m_{l+1}$, $uM \equiv 1$ et $a_{l+1} \equiv k_{l+1}$.
+
+      Soit enfin $a \in \lex{ensemble-entiers-naturels}{\mathbb N}$ le reste de la division de $a_n$ par $m_0 \cdots m_n$. Pour chaque $i$, $a \equiv k_i$ modulo $m_i$ et $0 \leqslant k_i < m_i$ : par unicité de la division euclidienne, $k_i$ est le reste de $a$ par $m_i$, c'est-à-dire $\beta(a, b, i)$.
+    remarques:
+      - |
+        Pour la suite $(2, 0, 3)$, on trouve $s = 4$, $b = 24$, et les modules $25$, $49$ et $73$, premiers entre eux deux à deux. La construction de la preuve donne $a = 64\,827$, dont les restes par $25$, $49$ et $73$ sont bien $2$, $0$ et $3$ ; c'est le seul qui convienne entre $0$ et le produit des modules, $89\,425$. Même pour une suite aussi courte, le code est grand devant ses termes.
+      - |
+        La fonction $\beta$ remplace le codage $\langle k_0, \dots, k_n \rangle$ de {{cal-pr-codage|Codages}}, qui emploie l'exponentiation : elle ne demande que l'addition, la multiplication et la division euclidienne, qui s'expriment avec les seuls symboles $0$, $S$, $+$ et $\times$. Gödel l'a introduite dans son article de 1931 sur l'incomplétude (lemme 1), et lui a donné le nom $\beta$ dans ses leçons de 1934.
+
+  - id: cal-definissable
+    etiquette: Définissabilité
+    nature: théorème
+    titre: Les ensembles récursivement énumérables sont définissables dans ℕ
+    texte: |
+      On note $\mathcal N$ la [[structure]] de domaine $\lex{ensemble-entiers-naturels}{\mathbb N}$ pour la signature $\{0, S, +, \times\}$ de l'arithmétique ({{l-langage|Langage, signature}}), où les symboles ont leur sens usuel.
+
+      Une partie $A \subset \lex{n-uplet}{\mathbb N^n}$ est [[ensemble-definissable|définissable]] s'il existe une [[formule]] $\varphi$ et des variables distinctes $v_1, \dots, v_n$, contenant les variables libres de $\varphi$, telles que, pour toute valuation $s$,
+      $$\mathcal N \models \varphi\,[s] \iff \big(s(v_1), \dots, s(v_n)\big) \in A.$$
+      Une fonction partielle est définissable si son graphe $\{(x, y) : f(x)\!\downarrow \text{ et } f(x) = y\}$ l'est.
+    enonce: |
+      (i) Les parties définissables sont stables par réunion, intersection, complémentaire et projection. Elles contiennent les graphes de l'addition, de la multiplication, du successeur et de la constante $0$, ainsi que l'égalité. Si $A \subset \mathbb N^n$ est définissable et $\alpha : \{1, \dots, n\} \to \{1, \dots, m\}$ une application, la partie $\{y \in \mathbb N^m : (y_{\alpha(1)}, \dots, y_{\alpha(n)}) \in A\}$ est définissable.
+
+      (ii) Toute [[fonction-recursive|fonction récursive]] est définissable.
+
+      (iii) Toute relation récursive et toute partie [[ensemble-recursivement-enumerable|récursivement énumérable]] de $\mathbb N^n$ sont définissables. En particulier, l'ensemble $K$ de l'{{cal-arret|arrêt}} est défini par une formule dont la seule variable libre est une variable $v$.
+    preuve: |
+      (i) Changement de variables. Soit $A$ défini par $\varphi$ et $v_1, \dots, v_n$, et soit $w_1, \dots, w_m$ des variables distinctes qui ne figurent pas dans $\varphi$ et sont distinctes de $v_1, \dots, v_n$. La formule
+      $$\begin{aligned} &\exists v_1 \cdots \exists v_n\, \big(v_1 = w_{\alpha(1)} \wedge \cdots \\ &\qquad \wedge v_n = w_{\alpha(n)} \wedge \varphi\big), \end{aligned}$$
+      avec les variables $w_1, \dots, w_m$, définit la partie annoncée, par la définition de la {{l-satisfaction|satisfaction}} et le {{l-coincidence|lemme de coïncidence}}. Aucune substitution n'intervient, donc aucune capture.
+
+      Avec $\alpha$ l'identité, on peut ainsi écrire deux parties définissables de $\mathbb N^n$ avec les mêmes variables ; la conjonction, la disjonction et la négation donnent alors l'intersection, la réunion et le complémentaire. Si $B \subset \mathbb N^{n+1}$ est défini par $\psi$ et $v_1, \dots, v_{n+1}$, sa projection est définie par $\exists v_{n+1}\, \psi$ et $v_1, \dots, v_n$, par le lemme de coïncidence.
+
+      Les formules atomiques $v_3 = +\, v_1\, v_2$, $v_3 = \times\, v_1\, v_2$, $v_2 = S\, v_1$, $v_1 = 0$ et $v_1 = v_2$ définissent les parties annoncées.
+
+      (ii) L'ordre strict est définissable, puisque $x < y \iff \exists z\, (x + S(z) = y)$. Le graphe de $\beta$ aussi, puisque, par l'unicité du reste, la relation $v = \beta(a, b, i)$ équivaut à l'existence de $q$ et de $m$ tels que $m = S(S(i) \times b)$, $a = q \times m + v$ et $v < m$. Chacune de ces écritures se ramène à (i).
+
+      L'ensemble des fonctions partielles définissables contient les fonctions de base, définies par $y = 0$, $y = S(x)$ et $y = x_i$. Il est stable par composition, puisque
+      $$\begin{aligned} &h(x) = y \iff \exists z_1 \cdots \exists z_m \\ &\quad \Big(\bigwedge_{l} g_l(x) = z_l \wedge f(z) = y\Big). \end{aligned}$$
+
+      Il est stable par minimisation, puisque $\mu y\, [f(x, y) = 0] = y$ équivaut à
+      $$\begin{aligned} &f(x, y) = 0 \wedge \forall z\, \big(z < y \to {} \\ &\qquad \exists w\, (f(x, z) = w \wedge w \neq 0)\big). \end{aligned}$$
+
+      Il est stable par récurrence primitive. En effet, $h(x, y) = v$ équivaut à l'existence de $a$ et $b$ tels que
+      $$\begin{aligned} &\beta(a, b, 0) = f(x), \\ &\forall i < y\ \ \beta(a, b, i + 1) = g\big(x, i, \beta(a, b, i)\big), \\ &\beta(a, b, y) = v, \end{aligned}$$
+      chaque égalité entre valeurs de fonctions s'écrivant avec des quantificateurs existentiels comme pour la composition. Sans paramètre, $f(x)$ est remplacé par l'entier initial $c$ de la récurrence, et la partie $\{c\}$ est définie par $v_1 = S \cdots S\, 0$, avec $c$ symboles $S$.
+
+      Si $h(x, y) = v$, les valeurs $h(x, 0), \dots, h(x, y)$ sont définies, et le {{cal-beta|lemme de la fonction β}} fournit $a$ et $b$ qui les codent. Réciproquement, si $a$ et $b$ conviennent, on montre par récurrence sur $i \leqslant y$ que $h(x, i)$ est défini et égal à $\beta(a, b, i)$.
+
+      (iii) Une relation récursive $R$ est l'ensemble $\{x : \chi_R(x) = 1\}$, définissable par (ii) et (i). Une partie récursivement énumérable est la projection d'une relation récursive. Pour $K$, on applique (i) avec $m = 1$ pour choisir la variable.
+    remarques:
+      - |
+        La définissabilité est une propriété de la structure $\mathcal N$, non d'une théorie : elle dit qu'une formule a le bon sens dans $\mathbb N$, et non qu'une théorie démontre quoi que ce soit à son sujet. La preuve de Gödel demande davantage, la **représentabilité** des fonctions récursives dans une théorie faible comme l'arithmétique de Robinson ; c'est la difficulté contournée au nœud {{l-incompletude|Incomplétude}}.
+      - |
+        Les formules obtenues n'emploient que des quantificateurs existentiels et des quantificateurs bornés $\forall i < y$ : en les regroupant, on montrerait qu'un ensemble récursivement énumérable est défini par une formule de la forme $\exists y\, \varphi$, où $\varphi$ n'a que des quantificateurs bornés. Ce travail supplémentaire n'est pas nécessaire ici, où seule compte l'existence d'une formule.
+
+  - id: cal-theoremes
+    etiquette: Théorèmes r.e.
+    nature: proposition
+    titre: Les théorèmes d'une théorie récursivement axiomatisée
+    texte: |
+      On énumère l'alphabet du langage de l'arithmétique par $a_0 = {=}$, $a_1 = \neg$, $a_2 = {\to}$, $a_3 = \forall$, $a_4 = 0$, $a_5 = S$, $a_6 = +$, $a_7 = \times$, puis $a_{8+i} = x_i$ pour les variables. Le **code** $\ulcorner w \urcorner$ d'un mot $a_{k_0} \cdots a_{k_{m-1}}$ est l'entier $\langle k_0, \dots, k_{m-1} \rangle$, codage du point (iii) de l'{{hk-temoins|extension par témoins}} repris dans {{cal-pr-codage|Codages}}.
+
+      L'**arithmétique de Peano** $\mathsf{PA}$ est la théorie dont les axiomes sont
+      $$\begin{aligned} &\forall x\, \neg(S\,x = 0), \\ &\forall x\, \forall y\, (S\,x = S\,y \to x = y), \\ &\forall x\, (x + 0 = x), \\ &\forall x\, \forall y\, \big(x + S\,y = S(x + y)\big), \\ &\forall x\, (x \times 0 = 0), \\ &\forall x\, \forall y\, \big(x \times S\,y = x \times y + x\big), \end{aligned}$$
+      et, pour toute formule $\varphi$ et toute variable $x$, la clôture universelle de
+      $$\big(\varphi[0/x] \wedge \forall x\, (\varphi \to \varphi[S\,x/x])\big) \to \forall x\, \varphi,$$
+      écrite en notation préfixée avec les seuls connecteurs $\neg$ et $\to$.
+    enonce: |
+      (i) Les ensembles des codes des formules, des énoncés, des axiomes logiques de {{l-deduction|Démonstrations formelles}} et des axiomes de $\mathsf{PA}$ sont [[ensemble-recursif|récursifs]].
+
+      (ii) La relation « $\chi$ se déduit de $\varphi$ et $\psi$ par modus ponens » est primitive récursive sur les codes.
+
+      (iii) Soit $T$ une théorie sur cette signature dont l'ensemble des codes des axiomes est [[ensemble-recursivement-enumerable|récursivement énumérable]]. L'ensemble des codes des énoncés $\sigma$ tels que $T \vdash \sigma$ est récursivement énumérable. C'est le cas pour $\mathsf{PA}$. Ce point dépend de (i), admis ici.
+    preuve: |
+      (i) *Admis ici.* Chacun de ces ensembles est défini par une récurrence sur la longueur des mots, comme la lecture unique ({{l-lecture|Lecture unique}}), les variables libres et la substitution. La difficulté contournée est l'écriture, longue mais sans idée nouvelle, de ces récurrences comme des fonctions primitives récursives sur les codes, en particulier la substituabilité et la reconnaissance des instances de tautologies, qui demande d'examiner toutes les lignes d'une table de vérité.
+
+      (ii) En notation préfixée, $\psi$ est le mot $\to \varphi\, \chi$. La relation est donc $\ulcorner \psi \urcorner = \mathrm{conc}\big(\mathrm{conc}(\langle 2 \rangle, \ulcorner \varphi \urcorner), \ulcorner \chi \urcorner\big)$, primitive récursive par {{cal-pr-codage|Codages}}.
+
+      (iii) Soit $R$ une relation récursive telle que $a$ soit le code d'un axiome de $T$ si et seulement si $\exists y\, R(a, y)$. Une démonstration formelle $\gamma_0, \dots, \gamma_{l-1}$ se code par la suite $\langle \ulcorner \gamma_0 \urcorner, \dots, \ulcorner \gamma_{l-1} \urcorner \rangle$. La preuve qui suit dépend de (i), admis ici.
+
+      Considérons la relation $D(p, w, c)$ : l'entier $c$ code un énoncé, $\mathrm{lg}(p) \geqslant 1$ et $(p)^{\mathrm{lg}(p) - 1} = c$.
+
+      De plus, pour tout $j < \mathrm{lg}(p)$, l'une des trois conditions suivantes est remplie : $(p)^j$ code un axiome logique ; $R\big((p)^j, (w)_j\big)$ ; il existe $i, i' < j$ tels que $(p)^j$ se déduise de $(p)^i$ et $(p)^{i'}$ par modus ponens.
+
+      Elle est récursive, par (i), (ii) et les quantifications bornées ({{cal-recursives|Fonctions récursives}}, (ii)).
+
+      Si $T \vdash \sigma$, soit $p$ le code d'une démonstration de $\sigma$ ; pour chaque $j$ tel que $(p)^j$ code un axiome de $T$, soit $y_j$ le plus petit $y$ tel que $R((p)^j, y)$, et $y_j = 0$ sinon. Alors $D(p, w, \ulcorner \sigma \urcorner)$ pour $w = \prod_{j} p_j^{y_j}$. Réciproquement, $D(p, w, c)$ dit que $p$ code une démonstration de l'énoncé de code $c$. Ainsi
+      $$T \vdash \sigma \iff \exists p\ \exists w\ D(p, w, \ulcorner \sigma \urcorner),$$
+      et l'on conclut par le point (iv) de {{cal-ensembles|Récursif, r.e.}}. Pour $\mathsf{PA}$, l'ensemble des codes des axiomes est récursif par (i), donc récursivement énumérable.
+    remarques:
+      - |
+        Le témoin $y_j$ est le plus petit qui convienne : il n'y a rien à choisir, et la preuve n'emploie aucune forme de l'axiome du choix.
+      - |
+        L'ensemble des théorèmes est récursivement énumérable, mais il n'a aucune raison d'être récursif ; pour $\mathsf{PA}$, il ne l'est pas, résultat plus fort que l'on n'établit pas ici. Savoir si un énoncé est démontrable, c'est attendre qu'une démonstration apparaisse dans l'énumération, sans savoir s'il faut cesser d'attendre.
+
+  - id: cal-tarski
+    etiquette: Vérité et incomplétude
+    nature: théorème
+    titre: La vérité arithmétique n'est pas récursivement énumérable
+    texte: |
+      Pour un entier $n$, on note $\underline n$ le terme clos $S \cdots S\, 0$, avec $n$ occurrences de $S$ ; sa valeur dans $\mathcal N$ est $n$, par récurrence sur $n$.
+    enonce: |
+      (i) L'ensemble des codes des énoncés vrais dans $\mathcal N$ n'est pas [[ensemble-recursivement-enumerable|récursivement énumérable]] ; il n'est donc pas [[ensemble-recursif|récursif]].
+
+      (ii) Soit $T$ une théorie sur la signature de l'arithmétique, dont l'ensemble des codes des axiomes est récursivement énumérable et dont tous les axiomes sont vrais dans $\mathcal N$. Il existe un énoncé $\sigma$ vrai dans $\mathcal N$ tel que $T \nvdash \sigma$ et $T \nvdash \neg\sigma$.
+
+      (iii) En particulier, l'arithmétique de Peano $\mathsf{PA}$ n'est pas complète.
+
+      Les points (ii) et (iii) admettent la récursivité du codage de la syntaxe ({{cal-theoremes|Théorèmes r.e.}}, (i)) ; le point (i) est entièrement démontré.
+    preuve: |
+      (i) Par le point (iii) de {{cal-definissable|Définissabilité}}, l'ensemble $K$ de l'arrêt est défini par une formule $\varphi_K$ dont la seule variable libre est $v$. Pour $n \in \lex{ensemble-entiers-naturels}{\mathbb N}$, considérons l'énoncé
+      $$\sigma_n = \forall v\, \big(v = \underline n \to \neg\varphi_K\big),$$
+      c'est-à-dire, en notation préfixée, le mot $\forall\, v \to {=}\, v\, \underline n\ \neg\, \varphi_K$.
+
+      Par la définition de la satisfaction et le lemme de coïncidence, $\mathcal N \models \sigma_n$ si et seulement si $\mathcal N \not\models \varphi_K\,[v \mapsto n]$, c'est-à-dire $n \notin K$.
+
+      Le code de $\sigma_n$ est
+      $$\begin{aligned} g(n) = \mathrm{conc}\Big(&\mathrm{conc}\big(\ulcorner \forall v \to {=}\, v \urcorner, \ulcorner \underline n \urcorner\big), \\ &\ulcorner \neg\varphi_K \urcorner\Big), \end{aligned}$$
+      où le premier et le dernier codes sont fixes, et $\ulcorner \underline n \urcorner$ se calcule par récurrence primitive : $\ulcorner \underline 0 \urcorner = \langle 4 \rangle$ et $\ulcorner \underline{n + 1} \urcorner = \mathrm{conc}(\langle 5 \rangle, \ulcorner \underline n \urcorner)$. La fonction $g$ est primitive récursive ({{cal-pr-codage|Codages}}).
+
+      Si l'ensemble $V$ des codes des énoncés vrais était récursivement énumérable, $\mathbb N \setminus K = g^{-1}(V)$ le serait aussi ({{cal-ensembles|Récursif, r.e.}}, (iii)), contrairement au point (iii) de l'{{cal-arret|indécidabilité de l'arrêt}}.
+
+      (ii) Ce point et le suivant admettent le point (i) de {{cal-theoremes|Théorèmes r.e.}}, récursivité du codage de la syntaxe, alors que (i) est entièrement démontré.
+
+      Comme $\mathcal N$ est un modèle de $T$, le {{l-correction|théorème de correction}} montre que tout énoncé démontrable dans $T$ est vrai dans $\mathcal N$. Si $T$ démontrait tous les énoncés vrais dans $\mathcal N$, l'ensemble $V$ serait celui des codes des énoncés démontrables dans $T$, récursivement énumérable par le point (iii) de {{cal-theoremes|Théorèmes r.e.}}, ce que (i) exclut.
+
+      Il existe donc un énoncé $\sigma$ vrai dans $\mathcal N$ tel que $T \nvdash \sigma$. L'énoncé $\neg\sigma$ est faux dans $\mathcal N$ ; il n'est donc pas démontrable non plus.
+
+      (iii) Les axiomes de $\mathsf{PA}$ sont vrais dans $\mathcal N$. Les six premiers sont les {{n-peano|axiomes de Peano}} et les égalités qui définissent les {{n-operations|opérations}}. Pour un axiome de récurrence et une valuation $s$, l'ensemble des $n$ tels que $\mathcal N \models \varphi\,[s(x \mid n)]$ contient $0$ et est stable par successeur, par le {{l-substitution|lemme de substitution}} ; c'est donc $\mathbb N$ tout entier ({{n-recurrence|Récurrence}}). On applique (ii).
+    remarques:
+      - |
+        Cette forme de l'incomplétude suppose les axiomes **vrais** dans $\mathbb N$, et non seulement la cohérence de $T$ comme au {{l-incompletude|théorème de Gödel et Rosser}} ; elle ne s'applique donc pas à une théorie cohérente qui démontrerait des énoncés faux. En revanche, elle n'exige aucune représentation des fonctions récursives dans $T$, seulement leur définissabilité dans $\mathcal N$.
+      - |
+        L'énoncé $\sigma$ n'est pas exhibé : la preuve montre seulement que l'un des $\sigma_n$, avec $n \notin K$, n'est pas démontrable. La preuve de Gödel construit au contraire un énoncé explicite, qui dit de lui-même qu'il n'est pas démontrable.
+      - |
+        Le point (i) est une forme faible du théorème de Tarski, selon lequel l'ensemble des codes des énoncés vrais n'est même pas définissable dans $\mathcal N$ : la vérité arithmétique ne se définit pas dans le langage de l'arithmétique, comme l'annonçait la remarque de {{l-satisfaction|Satisfaction (Tarski)}}.
+
+aretes:
+  - [cal-beta, cal-definissable]
+  - [cal-definissable, cal-tarski]
+  - [cal-theoremes, cal-tarski]

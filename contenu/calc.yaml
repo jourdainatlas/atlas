@@ -1,0 +1,393 @@
+# Niveau 1 : structure interne de la théorie « Calculabilité ».
+# Fonctions primitives récursives (chapitre), fonctions récursives, ensembles récursifs et récursivement
+# énumérables, machines à registres, équivalence avec les fonctions récursives, forme normale de Kleene,
+# fonction universelle, s-m-n, arrêt, Rice ; lien avec l'incomplétude (chapitre).
+# Les entiers sont ceux de ZF ; l'arithmétique (division, nombres premiers, Bézout) vient de z.
+# Aucune forme de l'axiome du choix n'est employée. Les identifiants commencent par « cal- ».
+
+graphe: calc
+titre: Calculabilité
+conteneur: calc
+
+entrees:
+  z: [cal-primitives]
+
+noeuds:
+  - id: cal-primitives
+    etiquette: Primitives récursives
+    nature: chapitre
+    titre: Fonctions primitives récursives
+    sous: cal-primitives
+    texte: |
+      Les fonctions primitives récursives sont obtenues à partir de fonctions élémentaires par composition et par récurrence primitive. Elles contiennent toute l'arithmétique usuelle et les codages des suites finies par des entiers, sur lesquels repose toute la théorie.
+
+      Toutes sont totales, et elles ne suffisent pas à décrire tous les calculs : la fonction d'Ackermann, calculable par un procédé évident, croît plus vite que chacune d'elles.
+
+  - id: cal-recursives
+    etiquette: Fonctions récursives
+    nature: définition
+    titre: Fonctions récursives partielles
+    texte: |
+      Un calcul peut chercher sans fin un entier qui n'existe pas. Pour en rendre compte, on ajoute aux opérations de {{cal-pr-definition|Primitives récursives}} une recherche non bornée, et l'on admet des fonctions qui ne sont pas définies partout.
+    enonce: |
+      Une [[fonction-partielle|fonction partielle]] $f : \lex{n-uplet}{\mathbb N^n} \rightharpoonup \mathbb N$ est une application d'une partie $D(f)$ de $\mathbb N^n$, son domaine de définition, dans $\lex{ensemble-entiers-naturels}{\mathbb N}$. On écrit $f(x)\!\downarrow$ si $x \in D(f)$ et $f(x)\!\uparrow$ sinon. L'écriture $f(x) \simeq g(x)$ signifie que les deux membres sont indéfinis, ou qu'ils sont définis et égaux. La fonction est **totale** si $D(f) = \mathbb N^n$.
+
+      La composée $h(x) \simeq f(g_1(x), \dots, g_m(x))$ est définie si et seulement si chaque $g_j(x)$ l'est et si $f$ est définie en $(g_1(x), \dots, g_m(x))$. La récurrence primitive $h(x, 0) \simeq f(x)$, $h(x, y + 1) \simeq g(x, y, h(x, y))$ définit $h(x, y + 1)$ si et seulement si $h(x, y)$ est défini et $g$ est définie en $(x, y, h(x, y))$.
+
+      **Minimisation.** Pour $f : \mathbb N^{n+1} \rightharpoonup \mathbb N$, on note $\mu y\, [f(x, y) = 0]$ le plus petit entier $y$ tel que $f(x, y) = 0$ et que $f(x, z)$ soit défini et non nul pour tout $z < y$ ; s'il n'y en a pas, $\mu y\, [f(x, y) = 0]$ n'est pas défini.
+
+      Les [[fonction-recursive|fonctions récursives]] forment le plus petit ensemble de fonctions partielles qui contient les fonctions de base et qui est stable par composition, récurrence primitive et minimisation. Une relation $R \subset \mathbb N^n$ est **récursive** si sa fonction caractéristique l'est.
+
+      (i) Toute fonction primitive récursive est récursive et totale.
+
+      (ii) Les fonctions récursives totales et les relations récursives ont les propriétés de clôture (i) à (v) de {{cal-pr-cloture|Clôture}}.
+
+      (iii) Si $R \subset \mathbb N^{n+1}$ est une relation récursive, la fonction $x \mapsto \mu y\, R(x, y)$, plus petit $y$ tel que $R(x, y)$, est récursive ; elle est totale si, pour tout $x$, un tel $y$ existe.
+    preuve: |
+      La récurrence primitive sur des fonctions partielles se ramène au cas total : on adjoint à $\mathbb N$ un élément $\bot$ qui n'est pas un entier, par exemple $\omega$ lui-même, qui n'appartient pas à $\omega$ ({{n-ordre|Bon ordre sur ℕ}}), on prolonge $g$ en lui donnant la valeur $\bot$ dès qu'elle n'est pas définie ou qu'un argument vaut $\bot$, et l'on applique la construction de {{cal-pr-definition|Primitives récursives}} dans $\mathbb N \times (\mathbb N \cup \{\bot\})$, en partant de $(0, \bot)$ si $f(x)\!\uparrow$ ; $h(x, y)$ est indéfini quand la valeur obtenue est $\bot$.
+
+      (i) L'ensemble des fonctions récursives totales contient les fonctions de base, et il est stable par composition et par récurrence primitive, qui ne produisent que des fonctions totales à partir de fonctions totales. Il contient donc toutes les fonctions primitives récursives.
+
+      (ii) Les démonstrations de {{cal-pr-cloture|Clôture}} n'emploient que les fonctions de base, les exemples de {{cal-pr-definition|Primitives récursives}}, la composition et la récurrence primitive, appliquées à des fonctions totales. Elles valent mot pour mot pour les fonctions récursives totales.
+
+      (iii) La fonction $(x, y) \mapsto 1 \mathbin{\dot{-}} \chi_R(x, y)$ est récursive et totale, et elle s'annule exactement sur $R$. Comme elle est définie partout, la minimisation donne
+      $$\mu y\, R(x, y) \simeq \mu y\, \big[1 \mathbin{\dot{-}} \chi_R(x, y) = 0\big].$$
+    remarques:
+      - |
+        L'exigence que $f(x, z)$ soit **défini** pour tout $z < y$ n'est pas un détail. Le procédé de calcul évalue $f(x, 0)$, puis $f(x, 1)$, et ainsi de suite ; si l'une de ces évaluations ne termine pas, la recherche ne va jamais plus loin. L'erreur la plus répandue est de définir $\mu y$ comme le plus petit zéro de $f(x, \cdot)$ sans cette condition : la classe obtenue contiendrait des fonctions qu'aucun procédé ne calcule.
+      - |
+        Une fonction récursive totale peut avoir été construite à l'aide de fonctions partielles ; c'est la fonction obtenue, et non sa construction, qui est totale. Inversement, aucune règle syntaxique simple ne reconnaît les constructions qui donnent des fonctions totales : c'est l'un des visages de l'{{cal-arret|indécidabilité de l'arrêt}}.
+
+  - id: cal-ackermann-recursive
+    etiquette: Ackermann est récursive
+    nature: proposition
+    titre: La fonction d'Ackermann est récursive
+    texte: |
+      Le calcul de la [[fonction-ackermann|fonction d'Ackermann]] se mène sur une pile, suite finie d'entiers dont on ne modifie que la fin. Une **étape** transforme une pile $u\, m\, n$, où $u$ est une suite et $m$, $n$ ses deux derniers termes, selon la définition de $A$ :
+      $$\begin{aligned} u\, 0\, n &\longmapsto u\, (n + 1), \\ u\, (m + 1)\, 0 &\longmapsto u\, m\, 1, \\ u\, (m + 1)\, (n + 1) &\longmapsto u\, m\, (m + 1)\, n, \end{aligned}$$
+      et laisse inchangée une pile de longueur au plus $1$.
+    enonce: |
+      (i) Pour toute suite $u$ et tous $m$, $n$, la pile $u\, m\, n$ devient, après un nombre fini d'étapes, la pile $u\, A(m, n)$, et toutes les piles intermédiaires s'écrivent $u\, v$ avec $v$ de longueur au moins $2$.
+
+      (ii) La fonction d'Ackermann est [[fonction-recursive|récursive]] et totale. L'inclusion des [[fonction-primitive-recursive|fonctions primitives récursives]] dans les fonctions récursives totales est stricte.
+    preuve: |
+      (i) Par récurrence sur $m$, et, pour chaque $m$, par récurrence sur $n$, l'énoncé portant sur toutes les suites $u$.
+
+      Pour $m = 0$, une étape mène à $u\, (n + 1) = u\, A(0, n)$.
+
+      Pour $m + 1$ et $n = 0$, une étape mène à $u\, m\, 1$ ; l'hypothèse de récurrence sur $m$ la conduit à $u\, A(m, 1) = u\, A(m + 1, 0)$, en passant par des piles $u\, v$ avec $v$ de longueur au moins $2$.
+
+      Pour $m + 1$ et $n + 1$, une étape mène à $u\, m\, (m + 1)\, n$. L'hypothèse de récurrence sur $n$, appliquée à la suite $u\, m$, conduit à $u\, m\, A(m + 1, n)$ ; l'hypothèse sur $m$, appliquée à la suite $u$, conduit enfin à
+      $$\begin{aligned} &u\, A\big(m, A(m + 1, n)\big) \\ &\quad = u\, A(m + 1, n + 1). \end{aligned}$$
+      Les piles intermédiaires s'écrivent $u\, m\, v$ puis $u\, v'$, avec $v$ et $v'$ de longueur au moins $2$.
+
+      (ii) Codons les piles par les codes de suites de {{cal-pr-codage|Codages}}. La fonction $E$ qui envoie le code d'une pile sur celui de la pile obtenue après une étape est primitive récursive : avec les notations de ce nœud, si $N$ code $u\, m\, n$, alors $n = \mathrm{dr}(N)$, $m = \mathrm{dr}(\mathrm{dbt}(N))$, et $u$ a pour code $\mathrm{dbt}(\mathrm{dbt}(N))$. Les trois cas, et le cas $\mathrm{lg}(N) \leqslant 1$, sont des relations primitives récursives, et dans chacun le résultat s'obtient par la fonction d'ajout ; on conclut par la définition par cas ({{cal-pr-cloture|Clôture}}, (ii)).
+
+      Les itérés $E^t(N)$, définis par récurrence primitive sur $t$, sont primitifs récursifs en $(N, t)$. D'après (i), appliqué à la suite vide, la pile $\langle m, n \rangle$ atteint $\langle A(m, n) \rangle$, et c'est la première pile de longueur $1$ qu'elle rencontre. Ainsi
+      $$A(m, n) = \mathrm{dr}\Big(E^{\tau}\big(\langle m, n \rangle\big)\Big),$$
+      avec $\tau = \mu t\, \big[\mathrm{lg}\big(E^t(\langle m, n \rangle)\big) = 1\big]$, qui existe toujours. C'est une fonction récursive totale par le point (iii) de {{cal-recursives|Fonctions récursives}}. Elle n'est pas primitive récursive ({{cal-ackermann|Ackermann}}).
+    remarques:
+      - |
+        Pour $A(1, 2)$, la pile passe par
+        $$\begin{aligned} &1\,2 \to 0\,1\,1 \to 0\,0\,1\,0 \to 0\,0\,0\,1 \\ &\to 0\,0\,2 \to 0\,3 \to 4, \end{aligned}$$
+        soit six étapes, et l'on retrouve $A(1, 2) = 4$. Le calcul de $A(2, 3) = 9$ en demande $44$, et celui de $A(3, 3) = 61$ en demande $2\,432$ : le nombre d'étapes croît comme la fonction elle-même.
+      - |
+        La récurrence de (i) porte sur les couples $(m, n)$ rangés dans l'ordre lexicographique, qui est un bon ordre ; c'est ce qui garantit l'arrêt du calcul. Aucune borne primitive récursive du nombre d'étapes n'existe, sans quoi la minimisation pourrait être bornée et $A$ serait primitive récursive.
+
+  - id: cal-ensembles
+    etiquette: Récursif, r.e.
+    nature: définition
+    titre: Ensembles récursifs et récursivement énumérables
+    enonce: |
+      Une partie $A \subset \lex{n-uplet}{\mathbb N^n}$ est un [[ensemble-recursif|ensemble récursif]], ou décidable, si c'est une relation récursive. Elle est un [[ensemble-recursivement-enumerable|ensemble récursivement énumérable]] s'il existe une relation récursive $R \subset \mathbb N^{n+1}$ telle que
+      $$x \in A \iff \exists y\ R(x, y).$$
+
+      (i) Tout ensemble récursif est récursivement énumérable.
+
+      (ii) Un ensemble $A$ est récursif si et seulement si $A$ et son complémentaire sont récursivement énumérables.
+
+      (iii) La réunion et l'intersection de deux ensembles récursivement énumérables le sont. Si $g : \mathbb N^m \to \mathbb N^n$ a des composantes récursives totales et si $A$ est récursif, resp. récursivement énumérable, l'image réciproque $g^{-1}(A)$ l'est aussi.
+
+      (iv) Si $B \subset \mathbb N^{n+1}$ est récursivement énumérable, sa projection $\{x : \exists y\ (x, y) \in B\}$ l'est aussi.
+    preuve: |
+      (i) Si $A$ est récursif, on prend $R(x, y) \iff x \in A$, qui ne dépend pas de $y$.
+
+      (ii) Si $A$ est récursif, son complémentaire l'est, de fonction caractéristique $1 \mathbin{\dot{-}} \chi_A$, et (i) conclut. Réciproquement, soit $x \in A \iff \exists y\, R(x, y)$ et $x \notin A \iff \exists y\, R'(x, y)$. Tout $x$ est dans $A$ ou dans son complémentaire ; par le point (iii) de {{cal-recursives|Fonctions récursives}}, la fonction
+      $$f(x) = \mu y\, \big(R(x, y) \vee R'(x, y)\big)$$
+      est récursive et totale. Si $x \in A$, aucun $y$ ne vérifie $R'(x, y)$, donc $R(x, f(x))$ ; si $x \notin A$, aucun $y$ ne vérifie $R(x, y)$. Ainsi $\chi_A(x) = \chi_R(x, f(x))$, qui est récursive.
+
+      (iii) et (iv) On emploie les exposants $(w)_i$ de {{cal-pr-codage|Codages}} pour réunir deux témoins en un seul : tout couple $(y, z)$ est égal à $((w)_0, (w)_1)$ pour $w = 2^y 3^z$. Si $A$ et $A'$ sont donnés par $R$ et $R'$,
+      $$\begin{aligned} &x \in A \cup A' \\ &\quad \iff \exists y\, \big(R(x, y) \vee R'(x, y)\big), \\ &x \in A \cap A' \\ &\quad \iff \exists w\, \big(R(x, (w)_0) \wedge R'(x, (w)_1)\big). \end{aligned}$$
+      Puis $x \in g^{-1}(A) \iff \exists y\, R(g(x), y)$, et $\chi_{g^{-1}(A)} = \chi_A \circ g$ dans le cas récursif. Enfin, si $(x, y) \in B \iff \exists z\, R(x, y, z)$, alors $\exists y\, (x, y) \in B \iff \exists w\, R(x, (w)_0, (w)_1)$.
+
+      Toutes les relations écrites entre parenthèses sont récursives par le point (ii) de {{cal-recursives|Fonctions récursives}}.
+    remarques:
+      - |
+        Le complémentaire d'un ensemble récursivement énumérable ne l'est pas toujours : le point (ii) dit précisément que cela n'arrive que pour les ensembles récursifs, et le nœud {{cal-arret|Arrêt}} donnera un ensemble récursivement énumérable non récursif. L'asymétrie est celle d'une recherche : on peut constater qu'un témoin existe en le trouvant, jamais qu'il n'existe pas.
+      - |
+        L'étude systématique de ces ensembles remonte à Emil Post (« Recursively enumerable sets of positive integers and their decision problems », *Bulletin of the American Mathematical Society* 50, 1944). Le nom s'explique au nœud {{cal-re|Caractérisations des r.e.}} : un ensemble non vide est récursivement énumérable si et seulement si une fonction récursive totale en énumère les éléments.
+
+  - id: cal-machines
+    etiquette: Machines à registres
+    nature: définition
+    titre: Machines à registres
+    enonce: |
+      Une [[machine-registres|machine à registres]] dispose de registres $R_0, R_1, R_2, \dots$, contenant chacun un entier. Un **programme** est une suite finie $I_0, \dots, I_{L-1}$ d'instructions de deux sortes :
+
+      $\mathrm{INC}(i)$ ajoute $1$ au contenu de $R_i$ et passe à l'instruction suivante ;
+
+      $\mathrm{DEC}(i, j)$, si $R_i$ contient un entier non nul, lui retire $1$ et passe à l'instruction suivante ; sinon, elle passe à l'instruction de numéro $j$.
+
+      Une **configuration** est un couple $(\ell, r)$ formé d'un numéro d'instruction $\ell \in \lex{ensemble-entiers-naturels}{\mathbb N}$ et d'une application $r : \mathbb N \to \mathbb N$ nulle sauf en un nombre fini de points, $r(i)$ étant le contenu de $R_i$. Elle est **terminale** si $\ell \geqslant L$ ; sinon, l'instruction $I_\ell$ la transforme comme on vient de le dire en une configuration suivante.
+
+      Soit $n \geqslant 1$. Le **calcul** de $P$ sur $x \in \lex{n-uplet}{\mathbb N^n}$ est la suite des configurations issue de $(0, r_x)$, où $r_x(i) = x_i$ pour $1 \leqslant i \leqslant n$ et $r_x(i) = 0$ sinon. S'il atteint une configuration terminale $(\ell, r)$, on pose $f_P^{(n)}(x) = r(0)$ ; sinon, $f_P^{(n)}(x)$ n'est pas défini. Une [[fonction-partielle|fonction partielle]] est **calculable par machine** si elle est l'une des $f_P^{(n)}$.
+    remarques:
+      - |
+        Le programme suivant calcule l'addition. Le registre $R_3$ reste nul, si bien que $\mathrm{DEC}(3, j)$ est un saut inconditionnel vers l'instruction $j$ :
+        $$\begin{array}{ll} I_0 = \mathrm{DEC}(1, 3) & I_3 = \mathrm{DEC}(2, 6) \\ I_1 = \mathrm{INC}(0) & I_4 = \mathrm{INC}(0) \\ I_2 = \mathrm{DEC}(3, 0) & I_5 = \mathrm{DEC}(3, 3) \end{array}$$
+        La première boucle vide $R_1$ dans $R_0$, la seconde vide $R_2$ dans $R_0$, et le calcul s'arrête au numéro $6 = L$.
+
+        ```schema cal-machines
+        Le programme de l'addition : les flèches grises mènent à l'instruction suivante, après un incrément ou quand le registre testé est non nul, et les flèches rouges sont les sauts pris quand il est nul. Les deux sauts inconditionnels, en pointillé, ramènent au début de chaque boucle, dont l'effet est indiqué en bleu.
+        ```
+
+        ```schema cal-machines-2
+        L'exécution sur $x = (2, 1)$ : chaque ligne donne le numéro de l'instruction à exécuter et le contenu des registres après $t$ étapes. Le registre $R_0$, en rouge, reçoit une unité à chaque passage par $I_1$ ou $I_4$, et la machine s'arrête au bout de $11$ étapes avec $R_0 = 3$.
+        ```
+
+        Une vérification exhaustive pour $x, y \leqslant 5$ montre que le calcul s'arrête toujours, en $3x + 3y + 2$ étapes, avec $R_0 = x + y$.
+      - |
+        Ce modèle est volontairement pauvre : deux instructions, aucune mémoire autre que des entiers. Les machines de Turing, introduites par Alan Turing (« On computable numbers, with an application to the Entscheidungsproblem », *Proceedings of the London Mathematical Society* 42, 1936-1937), lisent et écrivent des symboles sur un ruban ; elles calculent exactement les mêmes fonctions, mais l'équivalence demande un codage plus long. L'erreur serait de croire que la pauvreté du modèle limite ce qu'il calcule : le nœud {{cal-kleene|Kleene}} montre qu'il calcule toutes les fonctions récursives, et rien de plus.
+
+  - id: cal-vers-machines
+    etiquette: Récursive ⇒ machine
+    nature: théorème
+    titre: Les fonctions récursives sont calculables par machine
+    enonce: |
+      Toute [[fonction-recursive|fonction récursive]] $f : \lex{n-uplet}{\mathbb N^n} \rightharpoonup \mathbb N$ est calculable par une [[machine-registres|machine à registres]] : il existe un programme $P$ tel que $f(x) \simeq f_P^{(n)}(x)$ pour tout $x$.
+    preuve: |
+      **Trois faits.** Disons qu'un programme **mentionne** les registres qui figurent dans ses instructions.
+
+      (a) *Localité.* Un programme ne modifie que les registres qu'il mentionne, et son calcul ne dépend que de leur contenu : c'est vrai d'une étape, donc de toutes, par récurrence.
+
+      (b) *Renommage.* Si $\sigma$ est une injection de $\mathbb N$ dans $\mathbb N$, le programme $P^\sigma$, où chaque registre $i$ est remplacé par $\sigma(i)$, fait sur les registres $\sigma(i)$ exactement ce que $P$ fait sur les registres $i$.
+
+      (c) *Enchaînement.* Soit $P$ et $Q$ de longueurs $L$ et $L'$. Le programme $P ; Q$ s'obtient en remplaçant, dans $P$, tout saut vers un numéro $j \geqslant L$ par un saut vers $L$, puis en écrivant à la suite $Q$, dont chaque saut vers $j$ devient un saut vers $j + L$. Son calcul est celui de $P$, suivi, si $P$ s'arrête, de celui de $Q$ à partir de la configuration atteinte ; il s'arrête si et seulement si les deux s'arrêtent.
+
+      **Macro-instructions.** Dans un programme, on réserve un registre $z$ que rien n'incrémente et qui vaut donc toujours $0$ ; alors $\mathrm{DEC}(z, j)$ est un saut inconditionnel vers $j$. Avec lui, on écrit des programmes, enchaînés par (c) :
+
+      $\mathrm{EFF}(i)$, qui vide $R_i$ en le décrémentant jusqu'à $0$ ;
+
+      $\mathrm{TRANS}(i \to j)$, qui ajoute le contenu de $R_i$ à $R_j$ et vide $R_i$, par une boucle qui décrémente $R_i$ et incrémente $R_j$ ;
+
+      $\mathrm{COPIE}(i \to j)$, qui place dans $R_j$ le contenu de $R_i$ sans changer celui-ci : on vide $R_j$ et un registre auxiliaire $t$, on transfère $R_i$ à la fois dans $R_j$ et dans $R_t$, puis $R_t$ dans $R_i$.
+
+      **Appel.** Soit $Q$ un programme qui calcule $g : \mathbb N^k \rightharpoonup \mathbb N$ et ne mentionne que des registres d'indices inférieurs à $m$, avec $m > k$. Pour des registres $a_1, \dots, a_k$ et $b$ et un décalage $s$, l'appel $\mathrm{APP}(Q ; a_1, \dots, a_k \to b)$ vide les registres $s, \dots, s + m - 1$, copie $R_{a_l}$ dans $R_{s+l}$ pour $l = 1, \dots, k$, exécute $Q$ renommé par $i \mapsto s + i$, puis copie $R_s$ dans $R_b$.
+
+      Par (a) et (b), le programme renommé opère sur le bloc $s, \dots, s + m - 1$ comme $Q$ sur une configuration initiale : l'appel s'arrête si et seulement si $g(R_{a_1}, \dots, R_{a_k})$ est défini, et place alors cette valeur dans $R_b$. On choisit toujours $s$, $t$ et $z$ au-delà de tous les registres qui portent des données, les registres $t$ et $z$ distincts entre eux et hors du bloc $s, \dots, s + m - 1$, si bien qu'un appel ne modifie que $R_b$ et des registres auxiliaires.
+
+      **Récurrence sur les fonctions récursives.** L'ensemble des fonctions partielles calculables par machine contient les fonctions de base et il est stable par les trois opérations ; il contient donc toutes les fonctions récursives.
+
+      *Base.* Le programme vide calcule $Z$, puisque $R_0$ vaut $0$ au départ. $\mathrm{TRANS}(1 \to 0)$ suivi de $\mathrm{INC}(0)$ calcule $S$, et $\mathrm{TRANS}(i \to 0)$ calcule $P^n_i$.
+
+      *Composition.* Pour $h = f(g_1, \dots, g_m)$, on enchaîne les appels qui placent $g_l(R_1, \dots, R_n)$ dans des registres neufs $y_l$, puis l'appel qui place $f(R_{y_1}, \dots, R_{y_m})$ dans $R_0$. Si l'un des $g_l(x)$ n'est pas défini, ou si $f$ ne l'est pas en $(g_1(x), \dots, g_m(x))$, l'appel correspondant ne s'arrête pas.
+
+      *Récurrence primitive.* Pour $h(x, 0) \simeq f(x)$ et $h(x, y + 1) \simeq g(x, y, h(x, y))$, avec $y$ dans $R_{n+1}$, on place d'abord $f(x)$ dans un registre neuf $v$.
+
+      Puis, tant que $\mathrm{DEC}(n + 1, \cdot)$ trouve $R_{n+1}$ non nul, on place $g(R_1, \dots, R_n, R_c, R_v)$ dans un registre neuf $v'$, on vide $R_v$, on transfère $R_{v'}$ dans $R_v$ et l'on incrémente un compteur $R_c$, initialement nul ; enfin on transfère $R_v$ dans $R_0$.
+
+      Au début du tour de rang $k$, compté à partir de $0$, $R_c = k$ et $R_v = h(x, k)$, par récurrence sur $k$ ; la boucle fait $y$ tours. Sans paramètre, on place d'abord l'entier $a$ dans $R_v$ par $a$ instructions $\mathrm{INC}(v)$.
+
+      *Minimisation.* Pour $h(x) \simeq \mu y\, [f(x, y) = 0]$ : on place $f(R_1, \dots, R_n, R_c)$ dans un registre neuf $w$ ; si $\mathrm{DEC}(w, \cdot)$ trouve $R_w$ nul, on transfère $R_c$ dans $R_0$ et l'on s'arrête ; sinon on incrémente $R_c$ et l'on recommence. Le calcul s'arrête si et seulement si $f(x, 0), \dots, f(x, y)$ sont définis, les premiers non nuls et le dernier nul, et il rend alors $y$ : c'est exactement la définition de la minimisation.
+    remarques:
+      - |
+        La preuve est celle d'un compilateur : chaque opération de construction d'une fonction récursive se traduit en un morceau de programme, et l'appel joue le rôle d'un sous-programme, dont les registres de travail sont tenus à l'écart de ceux de l'appelant. Le seul point délicat est cette séparation, qui repose sur la localité (a).
+      - |
+        La réciproque, objet du nœud {{cal-kleene|Kleene}}, demande de coder les programmes et leurs calculs par des entiers ; les deux sens ensemble montrent que les deux définitions de la calculabilité coïncident.
+
+  - id: cal-kleene
+    etiquette: Forme normale (Kleene)
+    nature: théorème
+    titre: Forme normale de Kleene et fonction universelle
+    texte: |
+      On code l'instruction $\mathrm{INC}(i)$ par $2i$, l'instruction $\mathrm{DEC}(i, j)$ par $2^{i+1}3^j + 1$, et un programme $I_0, \dots, I_{L-1}$ par le code $\langle c_0, \dots, c_{L-1} \rangle$ de la suite des codes de ses instructions ({{cal-pr-codage|Codages}}).
+
+      Réciproquement, tout entier $e$ est le code d'une unique suite $(c_0, \dots, c_{L-1})$, et l'on note $P_e$ le programme dont l'instruction $I_l$ est $\mathrm{INC}(c_l / 2)$ si $c_l$ est pair, et $\mathrm{DEC}\big((c_l - 1)_0 \mathbin{\dot{-}} 1,\ (c_l - 1)_1\big)$ sinon. Si $e$ est le code d'un programme $P$, alors $P_e = P$. On note
+      $$\varphi_e^{(n)} = f_{P_e}^{(n)},$$
+      et l'on dit que $e$ est un **indice** de cette fonction ; on écrit $\varphi_e$ pour $\varphi_e^{(1)}$.
+    enonce: |
+      Pour tout $n \geqslant 1$, il existe une relation primitive récursive $T_n \subset \mathbb N^{n+2}$ et une fonction primitive récursive $U_n : \mathbb N^{n+2} \to \mathbb N$ telles que, pour tous $e$ et $x \in \lex{n-uplet}{\mathbb N^n}$,
+      $$\varphi_e^{(n)}(x) \simeq U_n\big(e, x, \mu t\, T_n(e, x, t)\big).$$
+
+      (i) Toute fonction calculable par machine est [[fonction-recursive|récursive]]. Avec {{cal-vers-machines|Récursive ⇒ machine}}, les fonctions récursives d'arité $n$ sont exactement les $\varphi_e^{(n)}$, pour $e \in \lex{ensemble-entiers-naturels}{\mathbb N}$.
+
+      (ii) **Fonction universelle.** La fonction partielle $(e, x) \mapsto \varphi_e^{(n)}(x)$ est récursive.
+
+      (iii) Toute fonction récursive s'écrit avec une seule minimisation.
+    preuve: |
+      **Configurations.** On code une configuration $(\ell, r)$ par l'entier $2^\ell 3^{\rho(r)}$, où $\rho(r) = \prod_i p_i^{r(i)}$, produit fini sur les $i$ tels que $r(i) \neq 0$. Par l'unicité de la décomposition en facteurs premiers ({{z-premiers|Nombres premiers}}, (ii)), $(\rho(r))_i = r(i)$ pour tout $i$ : le code détermine la configuration.
+
+      Dans ce codage, $\mathrm{INC}(i)$ multiplie $\rho(r)$ par $p_i$ ; $\mathrm{DEC}(i, j)$ teste si $p_i$ divise $\rho(r)$, et, si oui, divise par $p_i$.
+
+      **Une étape.** Soit $\mathrm{Et}(e, c)$ défini ainsi, avec $\ell = (c)_0$, $\rho = (c)_1$ et $L = \mathrm{lg}(e)$ : si $\ell \geqslant L$, $\mathrm{Et}(e, c) = c$. Sinon, soit $k = (e)^\ell$ le code de l'instruction $I_\ell$ de $P_e$.
+
+      Si $k$ est pair et $i = k/2$, on pose $\mathrm{Et}(e, c) = 2^{\ell+1} 3^{\rho p_i}$. Si $k$ est impair, avec $i = (k - 1)_0 \mathbin{\dot{-}} 1$ et $j = (k - 1)_1$, on pose $\mathrm{Et}(e, c) = 2^{\ell+1} 3^{q(\rho, p_i)}$ si $p_i \mid \rho$, et $\mathrm{Et}(e, c) = 2^j 3^{\rho}$ sinon.
+
+      C'est une définition par cas, à partir des fonctions primitives récursives de {{cal-pr-cloture|Clôture}} et de {{cal-pr-codage|Codages}} ; $\mathrm{Et}$ est primitive récursive. Si $c$ code une configuration non terminale de $P_e$, $\mathrm{Et}(e, c)$ code la configuration suivante ; si elle est terminale, elle ne change plus.
+
+      **Le calcul.** Posons $\mathrm{Ini}(x) = 3^{p_1^{x_1} \cdots p_n^{x_n}}$, code de la configuration initiale, puis, par récurrence primitive sur $t$,
+      $$\begin{aligned} \mathrm{Cf}(e, x, 0) &= \mathrm{Ini}(x), \\ \mathrm{Cf}(e, x, t + 1) &= \mathrm{Et}\big(e, \mathrm{Cf}(e, x, t)\big). \end{aligned}$$
+      Par récurrence sur $t$, $\mathrm{Cf}(e, x, t)$ code la configuration atteinte après $t$ étapes du calcul de $P_e$ sur $x$, ou la configuration terminale si le calcul s'est arrêté avant.
+
+      On pose $T_n(e, x, t) \iff (\mathrm{Cf}(e, x, t))_0 \geqslant \mathrm{lg}(e)$, « le calcul est arrêté au temps $t$ », et $U_n(e, x, t) = \big((\mathrm{Cf}(e, x, t))_1\big)_0$, contenu de $R_0$. Si le calcul s'arrête, $\mu t\, T_n(e, x, t)$ est le nombre de ses étapes, et $U_n$ lit le contenu final de $R_0$ ; sinon, aucun $t$ ne vérifie $T_n$, et les deux membres sont indéfinis.
+
+      (i), (ii) et (iii) en découlent : le second membre est une fonction récursive de $(e, x)$, obtenue par une seule minimisation, et toute fonction récursive est l'une des $\varphi_e^{(n)}$ par {{cal-vers-machines|Récursive ⇒ machine}}.
+    remarques:
+      - |
+        Le théorème de forme normale est dû à Stephen Kleene (« General recursive functions of natural numbers », *Mathematische Annalen* 112, 1936), dans le cadre des fonctions récursives générales que Gödel avait définies dans ses leçons de Princeton de 1934, à partir d'une suggestion de Herbrand. La même année, Alonzo Church (*American Journal of Mathematics* 58, 1936) et Alan Turing proposaient, chacun par un modèle différent, de définir ainsi les fonctions calculables.
+      - |
+        **Thèse de Church-Turing.** Toute fonction de $\mathbb N^n$ dans $\mathbb N$ calculable par un procédé mécanique, au sens intuitif, est récursive. C'est une [[these-church-turing|thèse]], et non un théorème : la notion intuitive de procédé mécanique n'a pas de définition mathématique, et rien ne peut donc être démontré à son sujet.
+
+        Elle s'appuie sur l'expérience : tous les modèles de calcul proposés, fonctions récursives, machines de Turing, machines à registres, λ-calcul de Church, calculent exactement les mêmes fonctions. Elle ne sert jamais dans les démonstrations de cette théorie, où chaque fonction est montrée récursive par construction.
+      - |
+        Une même fonction a une infinité d'indices : ajouter à la fin d'un programme l'instruction $\mathrm{INC}(1)$ ne change pas la fonction calculée, puisqu'elle s'exécute au plus une fois, au moment où le calcul atteindrait l'arrêt, et ne touche pas $R_0$. Il faut s'en garder : le calcul atteint toujours l'instruction de numéro $L$ quand il s'arrête, si bien qu'ajouter $\mathrm{INC}(0)$ au programme de l'addition donnerait $x + y + 1$. L'erreur la plus répandue est de confondre la fonction $\varphi_e$ et le programme $P_e$ ; le {{cal-rice|théorème de Rice}} montre qu'aucune propriété non triviale de la fonction ne se lit de façon décidable sur le programme.
+
+  - id: cal-re
+    etiquette: Caractérisations des r.e.
+    nature: proposition
+    titre: Caractérisations des ensembles récursivement énumérables
+    enonce: |
+      Pour une partie $A \subset \lex{ensemble-entiers-naturels}{\mathbb N}$, les conditions suivantes sont équivalentes :
+
+      (a) $A$ est [[ensemble-recursivement-enumerable|récursivement énumérable]] ;
+
+      (b) $A$ est le domaine de définition d'une [[fonction-recursive|fonction récursive]] ;
+
+      (c) $A$ est vide, ou image d'une fonction primitive récursive d'une variable ;
+
+      (d) $A$ est l'image d'une fonction récursive d'une variable.
+
+      En particulier, les ensembles $W_e = D(\varphi_e)$, pour $e \in \mathbb N$, sont exactement les parties récursivement énumérables de $\mathbb N$.
+    preuve: |
+      (a) ⇒ (b). Si $x \in A \iff \exists y\, R(x, y)$, la fonction $x \mapsto \mu y\, R(x, y)$ est récursive ({{cal-recursives|Fonctions récursives}}, (iii)) et définie exactement sur $A$.
+
+      (b) ⇒ (a) et (c). Si $A = D(f)$, avec $f = \varphi_e$ ({{cal-kleene|Kleene}}, (i)), alors $x \in A \iff \exists t\, T_1(e, x, t)$, avec $T_1$ primitive récursive. Si $A$ contient un élément $a$, la fonction
+      $$g(w) = \begin{cases} (w)_0 & \text{si } T_1\big(e, (w)_0, (w)_1\big), \\ a & \text{sinon,} \end{cases}$$
+      est primitive récursive, et son image est $A$ : tout $x \in A$ est l'image de $w = 2^x 3^t$, pour un $t$ tel que $T_1(e, x, t)$.
+
+      (c) ⇒ (d). Une fonction primitive récursive est récursive ({{cal-recursives|Fonctions récursives}}, (i)). L'ensemble vide est l'image de la fonction $x \mapsto \mu y\, [S(y) = 0]$, définie nulle part, qui est récursive.
+
+      (d) ⇒ (a). Soit $A$ l'image de $\varphi_e$. Une configuration terminale ne change plus ; ainsi, pour tout $t$ tel que $T_1(e, x, t)$, on a $\varphi_e(x) = U_1(e, x, t)$. Donc
+      $$\begin{aligned} y \in A \iff{} &\exists w\ \Big(T_1\big(e, (w)_0, (w)_1\big) \\ &\wedge U_1\big(e, (w)_0, (w)_1\big) = y\Big), \end{aligned}$$
+      relation primitive récursive sous le quantificateur.
+
+      La dernière assertion est l'équivalence de (a) et (b), puisque les fonctions récursives d'une variable sont les $\varphi_e$.
+    remarques:
+      - |
+        Le point (c) justifie le nom : un ensemble récursivement énumérable non vide est la liste $g(0), g(1), g(2), \dots$ produite par un procédé de calcul, avec d'éventuelles répétitions et sans ordre. Savoir qu'un entier y figure, c'est l'attendre dans la liste, et un entier qui n'y figure pas ne s'y montre jamais.
+      - |
+        La fonction $g$ de la preuve parcourt tous les couples $(x, t)$, entrée et durée, au lieu de faire tourner un calcul après l'autre : elle ne reste jamais bloquée sur un calcul qui ne s'arrête pas. C'est la technique de l'entrelacement des calculs.
+
+  - id: cal-smn
+    etiquette: s-m-n
+    nature: théorème
+    titre: Théorème s-m-n
+    enonce: |
+      Pour tous $m, n \geqslant 1$, il existe une fonction primitive récursive $s : \lex{n-uplet}{\mathbb N^{1+m}} \to \mathbb N$ telle que, pour tous $e$, $x \in \mathbb N^m$ et $y \in \mathbb N^n$,
+      $$\varphi^{(n)}_{s(e, x)}(y) \simeq \varphi^{(m+n)}_e(x, y).$$
+    preuve: |
+      Soit $\delta = m + n + 1$ ; ce registre est vide dans la configuration initiale de $y$, et aucune des instructions ci-dessous ne l'incrémente. On fait précéder $P_e$ d'un préfixe $Q_x$ qui transforme la configuration initiale de $y$ en celle de $(x, y)$.
+
+      Pour $k = n, n - 1, \dots, 1$, dans cet ordre, $Q_x$ transfère $R_k$ dans $R_{m+k}$, par la boucle $\mathrm{DEC}(k, \cdot)$, $\mathrm{INC}(m + k)$, $\mathrm{DEC}(\delta, \cdot)$ ; comme $m \geqslant 1$, les registres d'arrivée sont vides quand on y transfère, ceux d'indice supérieur à $k$ ayant déjà été vidés. Puis $Q_x$ contient, pour $k = 1, \dots, m$, $x_k$ instructions $\mathrm{INC}(k)$.
+
+      Le programme $P_{s(e, x)}$ est $Q_x$ suivi de $P_e$, dont chaque saut $\mathrm{DEC}(i, j)$ devient $\mathrm{DEC}(i, j + L_0)$, où $L_0$ est la longueur de $Q_x$ ; un saut de $P_e$ vers $j \geqslant \mathrm{lg}(e)$ devient un saut au-delà de la fin, et arrête encore le calcul. Le calcul de $P_{s(e, x)}$ sur $y$ est celui de $P_e$ sur $(x, y)$, précédé de celui de $Q_x$, qui s'arrête toujours.
+
+      Le code $s(e, x)$ est primitif récursif. Le code de $Q_x$ s'obtient par la fonction d'ajout de {{cal-pr-codage|Codages}}, les $x_k$ instructions $\mathrm{INC}(k)$ par récurrence primitive sur $x_k$. Le code du programme décalé s'obtient par récurrence primitive sur le rang, en ajoutant, pour chaque terme $c = (e)^l$, le terme $c$ s'il est pair, et $2^{i+1}3^{j + L_0} + 1$ sinon, avec $i = (c - 1)_0 \mathbin{\dot{-}} 1$ et $j = (c - 1)_1$. On conclut par la concaténation.
+    remarques:
+      - |
+        Le théorème dit qu'on peut fixer une partie des données d'un programme, et que le programme spécialisé se calcule à partir du programme initial et des données fixées. C'est l'outil qui permet de transformer une famille de questions en une seule, comme dans la preuve du {{cal-rice|théorème de Rice}}.
+      - |
+        Il est dû à Kleene ; les sources ne s'accordent pas sur la date, 1938 (« On notation for ordinal numbers », *Journal of Symbolic Logic* 3) selon Odifreddi, 1943 selon d'autres. Sa preuve est ici élémentaire parce que le modèle est une machine : fixer une donnée, c'est écrire quelques instructions au début du programme.
+
+  - id: cal-arret
+    etiquette: Arrêt
+    nature: théorème
+    titre: Indécidabilité du problème de l'arrêt
+    texte: |
+      On pose $K = \{e \in \lex{ensemble-entiers-naturels}{\mathbb N} : \varphi_e(e)\!\downarrow\}$, l'ensemble des indices des programmes qui s'arrêtent sur leur propre indice, et
+      $$H = \{(e, x) : \varphi_e(x)\!\downarrow\}.$$
+      Décider si $(e, x) \in H$, c'est le [[probleme-arret|problème de l'arrêt]].
+    enonce: |
+      (i) Les ensembles $K$ et $H$ sont [[ensemble-recursivement-enumerable|récursivement énumérables]].
+
+      (ii) L'ensemble $K$ n'est pas [[ensemble-recursif|récursif]], et $H$ non plus : le problème de l'arrêt est indécidable.
+
+      (iii) Le complémentaire $\mathbb N \setminus K$ n'est pas récursivement énumérable.
+    preuve: |
+      (i) Par la forme normale ({{cal-kleene|Kleene}}), $e \in K \iff \exists t\, T_1(e, e, t)$ et $(e, x) \in H \iff \exists t\, T_1(e, x, t)$, relations primitives récursives sous le quantificateur.
+
+      (ii) Supposons $K$ récursif. La fonction
+      $$g(e) \simeq \mu y\, \big[\chi_K(e) = 0\big]$$
+      est récursive ; elle vaut $0$ si $e \notin K$, et n'est pas définie si $e \in K$. Par le point (i) de {{cal-kleene|Kleene}}, elle a un indice $d$ : $g = \varphi_d$. Alors
+      $$\begin{aligned} d \in K &\iff \varphi_d(d)\!\downarrow \\ &\iff g(d)\!\downarrow \iff d \notin K, \end{aligned}$$
+      ce qui est absurde.
+
+      Si $H$ était récursif, $K$, image réciproque de $H$ par $e \mapsto (e, e)$, le serait aussi ({{cal-ensembles|Récursif, r.e.}}, (iii)).
+
+      (iii) Si $\mathbb N \setminus K$ était récursivement énumérable, $K$ serait récursif par le point (ii) de {{cal-ensembles|Récursif, r.e.}}, puisqu'il l'est par (i).
+
+      ```schema cal-arret
+      Le tableau des calculs de $P_e$ sur $x$ pour $e, x \leqslant 11$, obtenus en décodant $e$ : un point vert quand le calcul s'arrête, une croix grise quand une configuration se répète, ce qui prouve qu'il boucle ; seul $P_{11} = \mathrm{DEC}(1, 0)$ change de comportement selon $x$. La fonction $g$ de la preuve, en rouge, fait le contraire de chaque ligne sur la diagonale : elle ne peut être aucune des lignes du tableau complet.
+      ```
+    remarques:
+      - |
+        La preuve est la diagonale de Cantor ({{r-cantor|Théorème de Cantor}}) appliquée au tableau infini des $\varphi_e(x)$ : $g$ diffère de la ligne $e$ en sa case diagonale. Ce n'est pas l'existence de $g$ qui pose problème, puisque c'est une fonction, mais sa calculabilité, qui viendrait de celle de $K$.
+      - |
+        Turing a établi en 1936 l'indécidabilité d'un problème voisin, savoir si une machine imprime indéfiniment des chiffres ; la formulation en termes d'arrêt est postérieure. L'énoncé ne dit pas qu'on ignore si tel programme s'arrête, mais qu'aucun programme ne répond à cette question pour tous les programmes à la fois.
+
+  - id: cal-rice
+    etiquette: Théorème de Rice
+    nature: théorème
+    titre: Théorème de Rice
+    enonce: |
+      Soit $\mathcal C$ un ensemble de [[fonction-recursive|fonctions récursives]] d'une variable, qui n'est ni vide ni l'ensemble de toutes. Alors l'ensemble $\{e \in \lex{ensemble-entiers-naturels}{\mathbb N} : \varphi_e \in \mathcal C\}$ n'est pas [[ensemble-recursif|récursif]].
+    preuve: |
+      Notons $I_{\mathcal C}$ cet ensemble et $\varnothing$ la fonction définie nulle part. Comme $I_{\mathcal C}$ et $\mathbb N \setminus I_{\mathcal C} = I_{\mathcal C'}$, où $\mathcal C'$ est le complémentaire de $\mathcal C$, sont récursifs en même temps, et que $\mathcal C'$ vérifie les mêmes hypothèses, on peut supposer que $\varnothing \notin \mathcal C$. Soit $\psi \in \mathcal C$.
+
+      La fonction de deux variables
+      $$\theta(e, x) \simeq P^2_1\big(\psi(x), \varphi_e(e)\big)$$
+      est récursive, par la fonction universelle ({{cal-kleene|Kleene}}, (ii)) et la composition ; elle vaut $\psi(x)$ si $e \in K$, et n'est définie nulle part en $x$ si $e \notin K$. Soit $b$ un indice de $\theta$ ; par le {{cal-smn|théorème s-m-n}}, il existe une fonction primitive récursive $e \mapsto s(b, e)$ telle que $\varphi_{s(b, e)}(x) \simeq \theta(e, x)$.
+
+      Ainsi $\varphi_{s(b, e)} = \psi \in \mathcal C$ si $e \in K$, et $\varphi_{s(b, e)} = \varnothing \notin \mathcal C$ sinon :
+      $$e \in K \iff s(b, e) \in I_{\mathcal C}.$$
+      Si $I_{\mathcal C}$ était récursif, $K$, son image réciproque par une fonction primitive récursive, le serait aussi ({{cal-ensembles|Récursif, r.e.}}, (iii)), contrairement à l'{{cal-arret|indécidabilité de l'arrêt}}.
+    remarques:
+      - |
+        On ne peut donc décider, à la lecture d'un programme, ni s'il calcule une fonction totale, ni s'il calcule le doublement $x \mapsto 2x$, ni si $W_e$ est vide. Le théorème porte sur la fonction calculée, non sur le texte du programme : savoir si $P_e$ a moins de dix instructions est décidable, puisque cela se lit sur $\mathrm{lg}(e)$.
+      - |
+        Henry Gordon Rice l'a publié en 1953 (« Classes of recursively enumerable sets and their decision problems », *Transactions of the American Mathematical Society* 74), sous une forme qui porte sur les classes d'ensembles récursivement énumérables.
+
+  - id: cal-incompletude
+    etiquette: Calculabilité et incomplétude
+    nature: chapitre
+    titre: Calculabilité et incomplétude
+    sous: cal-incompletude
+    texte: |
+      Tout ensemble récursivement énumérable se définit par une formule de l'arithmétique, grâce à la fonction $\beta$ de Gödel, qui code les suites finies avec l'addition et la multiplication seules. L'ensemble $K$ de l'arrêt se définit donc ainsi, et l'ensemble des énoncés vrais dans $\mathbb N$ ne peut pas être récursivement énumérable.
+
+      Comme les théorèmes d'une théorie dont les axiomes forment un ensemble récursivement énumérable en forment un aussi, une telle théorie, si ses axiomes sont vrais dans $\mathbb N$, ne démontre pas tous les énoncés vrais : c'est une forme du {{l-incompletude|premier théorème d'incomplétude}}. Ce dernier pas admet la récursivité du codage de la syntaxe (formules, axiomes logiques), dont l'écriture détaillée est longue ; l'énoncé sur la vérité arithmétique est, lui, entièrement démontré.
+
+aretes:
+  - [cal-primitives, cal-recursives]
+  - [cal-recursives, cal-ackermann-recursive]
+  - [cal-recursives, cal-ensembles]
+  - [cal-recursives, cal-machines]
+  - [cal-machines, cal-vers-machines]
+  - [cal-vers-machines, cal-kleene]
+  - [cal-kleene, cal-re]
+  - [cal-ensembles, cal-re]
+  - [cal-kleene, cal-smn]
+  - [cal-re, cal-arret]
+  - [cal-arret, cal-rice]
+  - [cal-smn, cal-rice]
+  - [cal-arret, cal-incompletude]

@@ -919,3 +919,18 @@ invariante (unique parmi les mesures finies non nulles), π(x) = 1/E_x[T_x], Ehr
 excursions, convergence vers π par le couplage de Doeblin (π construite comme limite de μQⁿ, sans Perron-Frobenius).
 Relu : quatre fautes (renvoi à un nœud frère dans la loi forte, mesure ≡ +∞, P_x sans chaîne donnée, formule
 vérifiée seulement numériquement) et onze retouches.
+
+## 62. Calculabilité (30 octobre 2026)
+
+Théorie nouvelle `calc` « Calculabilité » (famille fond), arête z → calc dans l'édifice (log est la racine et n vient
+après lui : un chapitre de log n'avait pas les entiers ; l'édifice reste à 16 croisements, 36 théories). Trois
+graphes : calc (12 nœuds : fonctions récursives partielles, Ackermann récursive par une pile, ensembles récursifs et
+r.e. et leurs quatre caractérisations, machines à registres, compilateur « récursive ⇒ calculable », forme normale
+de Kleene et fonction universelle, s-m-n, arrêt, Rice), cal-primitives (5 : primitives récursives, clôture,
+codages par hk-temoins, lemme de croissance, Ackermann non primitive récursive), cal-incompletude (4 : lemme β par
+les restes chinois, r.e. ⇒ définissable dans ℕ, théorèmes d'une théorie r.e., Tarski : la vérité arithmétique n'est
+pas r.e., d'où l'incomplétude des théories r.e. à axiomes vrais). Admis ici : la récursivité des codes des formules,
+énoncés et axiomes (écriture des récurrences syntaxiques), dont dépendent cal-theoremes (iii) et cal-tarski (ii), (iii),
+signalé à chaque endroit. Thèse de Church-Turing énoncée comme thèse. Aucun choix. Relu : six fautes (remarque fausse
+sur l'instruction ajoutée, capture de variable, deux trous de rédaction, admis non signalé là où il agit, comparaison
+inexacte avec Gödel-Rosser).
