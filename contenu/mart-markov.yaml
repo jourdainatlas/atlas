@@ -1,0 +1,707 @@
+# Niveau 2 : structure interne du chapitre « Chaînes de Markov » (nœud mart-markov du graphe mart, créé le
+# 30 oct. 2026). Espace d'états I fini ou dénombrable ; notations de l'arbre : P probabilité, E espérance, la
+# matrice de transition étant notée Q. Matrices de transition et chemins ; chaînes par les lois
+# fini-dimensionnelles, tribu des trajectoires, unicité de la loi (Dynkin) ; construction X_{n+1} = f(X_n, U_{n+1})
+# à partir d'uniformes indépendantes (sans théorème d'extension de Kolmogorov) et à horizon fini sur I^{m+1} ;
+# propriétés de Markov simple et forte ; classes, irréductibilité, période ; récurrence et transience (nombre de
+# visites géométrique, critère Σ Qⁿ(x, x)) ; encadrements élémentaires de coefficients binomiaux et trinomiaux
+# (sans Stirling) et théorème de Pólya (d = 1, 2 récurrente, d = 3 transiente) ; ruine du joueur par arrêt
+# borné ; mesures invariantes (existence et unicité pour une chaîne irréductible récurrente) ; récurrence
+# positive, π(x) = 1/E_x[T_x] ; théorème ergodique (loi forte de Kolmogorov, nœud mt-loi-forte) ; convergence
+# vers π d'une chaîne finie irréductible apériodique par le couplage de Doeblin, sans Perron-Frobenius.
+# Placement : dans mart, parce que les temps d'arrêt et l'arrêt borné (mt-martingales) et la loi forte pour des
+# variables seulement intégrables (mt-loi-forte, par l’inégalité maximale de Kolmogorov-Doob)
+# y sont des ancêtres. Aucune arête nouvelle dans l'édifice.
+# Choix : le seul est l'existence d'une chaîne sur [0, 1[ (mk-existence (iii)), héritée de la mesure de
+# Lebesgue (choix dénombrable) par p-suites-iid ; les énoncés portent sur des chaînes données, et le couplage
+# se fait sur un ensemble fini (mk-existence (ii)), sans aucun choix.
+
+graphe: mart-markov
+titre: Chaînes de Markov
+conteneur: mart-markov
+
+entrees:
+  mt-martingales: [mk-markov-forte, mk-ruine]
+  mt-loi-forte: [mk-ergodique]
+
+noeuds:
+  - id: mk-transition
+    etiquette: Matrices de transition
+    nature: définition
+    titre: Matrices de transition et chemins
+    texte: |
+      Dans tout ce chapitre, $I$ est un ensemble fini ou [[denombrable]], l'**espace des états**, muni de toutes ses parties ; on en fixe une fois pour toutes une énumération $y_0, y_1, \dots$, indexée par $\{0, \dots, m - 1\}$ ou par $\lex{ensemble-entiers-naturels}{\mathbb N}$. Les sommes de familles positives indexées par $I$ sont celles du nœud {{m-droite-achevee|Sommes dans [0, +∞]}} : elles ne dépendent d'aucun ordre.
+
+      Une **mesure** sur $I$ est une famille $\lambda = (\lambda(x))_{x \in I}$ d'éléments de $[0, +\infty]$, identifiée à la mesure $A \mapsto \sum_{x \in A}\lambda(x)$ sur les parties de $I$ ; c'est une **probabilité** si $\sum_{x \in I}\lambda(x) = 1$.
+
+      Une [[matrice-transition|matrice de transition]] sur $I$ est une famille $Q = (Q(x, y))_{(x, y) \in I \times I}$ de réels positifs telle que, pour tout $x \in I$,
+      $$\sum_{y \in I} Q(x, y) = 1 :$$
+      la ligne $Q(x, \cdot)$ est une probabilité sur $I$, la loi du pas suivant depuis l'état $x$. La lettre $P$ reste réservée aux probabilités, comme dans le reste de l'atlas.
+
+      Pour deux matrices de transition $Q$ et $R$, une mesure $\lambda$ et des états $x$, $z$, on pose
+      $$\begin{aligned} (QR)(x, z) &= \sum_{y \in I} Q(x, y)R(y, z), \\ (\lambda Q)(z) &= \sum_{y \in I} \lambda(y)Q(y, z), \end{aligned}$$
+      puis $Q^0(x, y) = 1$ si $x = y$ et $0$ sinon, et $Q^{n+1} = Q^nQ$.
+    enonce: |
+      (i) $QR$ est une matrice de transition, et le produit est associatif : $(QR)S = Q(RS)$. Par suite, $Q^{m+n} = Q^mQ^n$ pour tous $m, n \in \mathbb N$.
+
+      (ii) Pour toute mesure $\lambda$, $(\lambda Q)R = \lambda(QR)$, et $\lambda Q$ a la même masse totale que $\lambda$ ; en particulier, si $\lambda$ est une probabilité, $\lambda Q$ en est une.
+
+      (iii) *Chemins.* Pour $n \geqslant 1$,
+      $$\begin{aligned} Q^n(x, y) = \sum_{x_1, \dots, x_{n-1}} &Q(x, x_1)Q(x_1, x_2) \\ &\cdots Q(x_{n-1}, y), \end{aligned}$$
+      somme sur les chemins $x \to x_1 \to \cdots \to x_{n-1} \to y$ de longueur $n$. En particulier, $Q^{m+n}(x, z) \geqslant Q^m(x, y)\,Q^n(y, z)$ pour tout état $y$.
+    preuve: |
+      (i) Les termes étant positifs, la sommation par paquets ({{m-droite-achevee|Sommes dans [0, +∞]}}, (iv)) permet d'intervertir les sommes, et un facteur constant sort d'une somme par le point (ii) du même nœud. Ainsi
+      $$\begin{aligned} \sum_z (QR)(x, z) &= \sum_y Q(x, y)\sum_z R(y, z) \\ &= \sum_y Q(x, y) = 1, \end{aligned}$$
+      ce qui montre aussi que chaque $(QR)(x, z)$ est un réel de $[0, 1]$.
+
+      De même, les deux membres de l'associativité, évalués en $(x, w)$, valent la somme sur $I \times I$ des termes $Q(x, y)R(y, z)S(z, w)$.
+
+      La formule $Q^{m+n} = Q^mQ^n$ vaut pour $n = 0$, puisque $Q^0$ est neutre pour le produit ; si elle vaut pour $n$, l'associativité donne
+      $$\begin{aligned} Q^{m+n+1} &= (Q^mQ^n)Q \\ &= Q^m(Q^nQ) = Q^mQ^{n+1}. \end{aligned}$$
+
+      (ii) C'est le même calcul, la mesure $\lambda$ jouant le rôle d'une ligne ; la masse totale de $\lambda Q$ est $\sum_y \lambda(y)\sum_z Q(y, z) = \sum_y \lambda(y)$.
+
+      (iii) Pour $n = 1$, il n'y a rien à démontrer. Si la formule vaut pour $n$, on écrit $Q^{n+1}(x, y) = \sum_{x_n} Q^n(x, x_n)Q(x_n, y)$, on remplace $Q^n(x, x_n)$ par sa somme sur les chemins, et l'on regroupe par paquets.
+
+      Enfin $Q^{m+n}(x, z) = \sum_{y'} Q^m(x, y')Q^n(y', z)$ par (i), et cette somme de termes positifs majore son terme d'indice $y$.
+    remarques:
+      - |
+        Sur $I = \{1, 2, 3\}$, la matrice
+        $$Q = \begin{pmatrix} \frac12 & \frac12 & 0 \\[2pt] \frac14 & \frac12 & \frac14 \\[2pt] 0 & \frac13 & \frac23 \end{pmatrix}$$
+        se lit sur son **graphe de transition**, qui a une flèche de $x$ vers $y$ chaque fois que $Q(x, y) > 0$.
+
+        ```schema mk-transition
+        Le graphe de transition de $Q$ : la flèche de $x$ vers $y$ porte $Q(x, y)$, et les nombres qui sortent d'un même état ont pour somme $1$. Le seul chemin de longueur $2$ de $1$ à $3$, en rouge, passe par $2$, d'où $Q^2(1, 3) = \frac12 \cdot \frac14 = \frac18$, conformément à (iii).
+        ```
+
+        Cette matrice sert d'exemple dans tout le chapitre ; on verra au nœud {{mk-recurrence-positive|Récurrence positive}} que sa probabilité invariante est $(\frac29, \frac49, \frac13)$.
+      - |
+        Quand $I = \{1, \dots, m\}$ est fini, $Q$ est une matrice carrée ({{v-matrices|Matrices}}), et les produits ci-dessus sont les produits matriciels : une mesure est un vecteur ligne, que $Q$ multiplie à droite. L'erreur la plus répandue est d'écrire $Q\lambda$ au lieu de $\lambda Q$. Le produit $Q\mathbf 1$ par la colonne dont toutes les coordonnées valent $1$ vaut $\mathbf 1$, puisque les lignes sont de somme $1$ ; il dit que $1$ est valeur propre de $Q$, mais rien sur l'évolution des lois.
+
+  - id: mk-chaines
+    etiquette: Chaînes de Markov
+    nature: définition
+    titre: Chaînes de Markov et lois fini-dimensionnelles
+    texte: |
+      Soit $(\Omega, \mathcal A, P)$ un espace probabilisé. Une **variable à valeurs dans $I$** est une application $X : \Omega \to I$ telle que $\{X = x\} \in \mathcal A$ pour tout $x \in I$ ; sa loi est la probabilité $x \mapsto P(X = x)$ sur $I$.
+
+      Soient $\mu$ une probabilité et $Q$ une [[matrice-transition|matrice de transition]] sur $I$. Une suite $(X_n)_{n \in \mathbb N}$ de variables à valeurs dans $I$ est une [[chaine-markov|chaîne de Markov]] de loi initiale $\mu$ et de matrice $Q$, ou **chaîne $(\mu, Q)$**, si pour tout $n \in \lex{ensemble-entiers-naturels}{\mathbb N}$ et tous $x_0, \dots, x_n \in I$,
+      $$\begin{aligned} &P(X_0 = x_0, \dots, X_n = x_n) \\ &= \mu(x_0)Q(x_0, x_1)\cdots Q(x_{n-1}, x_n). \end{aligned}$$
+
+      Si cette égalité n'est demandée que pour $n \leqslant m$, on parle de chaîne $(\mu, Q)$ **jusqu'à l'instant $m$**. Une chaîne **issue de $x$** est une chaîne $(\delta_x, Q)$, où $\delta_x(x) = 1$ et $\delta_x(y) = 0$ pour $y \neq x$.
+
+      Sur l'ensemble $I^{\mathbb N}$ des suites d'états, la **tribu des trajectoires** $\mathcal C$ est la tribu engendrée par les **cylindres**
+      $$\begin{aligned} &C(x_0, \dots, x_n) \\ &= \{w \in I^{\mathbb N} : w_0 = x_0, \dots, w_n = x_n\}. \end{aligned}$$
+    enonce: |
+      (i) *Forme conditionnelle.* $(X_n)$ est une chaîne $(\mu, Q)$ si et seulement si $P(X_0 = x) = \mu(x)$ pour tout $x$ et, pour tous $n$ et $x_0, \dots, x_{n+1}$ tels que $P(X_0 = x_0, \dots, X_n = x_n) > 0$,
+      $$\begin{aligned} &P(X_{n+1} = x_{n+1} \mid X_0 = x_0, \dots, \\ &\qquad X_n = x_n) = Q(x_n, x_{n+1}). \end{aligned}$$
+
+      (ii) Pour $m \leqslant n$ et $x_0, \dots, x_m, y \in I$,
+      $$\begin{aligned} &P(X_0 = x_0, \dots, X_m = x_m, X_n = y) \\ &= P(X_0 = x_0, \dots, X_m = x_m) \\ &\quad \cdot Q^{n-m}(x_m, y). \end{aligned}$$
+      En particulier, la loi de $X_n$ est $\mu Q^n$.
+
+      (iii) L'application $X : \Omega \to I^{\mathbb N}$, $\omega \mapsto (X_n(\omega))_n$, est mesurable pour $\mathcal C$, et sa loi $B \mapsto P(X \in B)$ sur $\mathcal C$ ne dépend que de $\mu$ et de $Q$. Pour une chaîne issue de $x$, on la note $P_x(X \in B)$, et $E_x$ l'espérance correspondante.
+
+      La notation $P_x$ suppose qu'il existe une chaîne issue de $x$. Une chaîne $(\mu, Q)$ donnée en fournit une, sans aucun choix, pour chaque état $x$ tel que $P(X_n = x) > 0$ pour un $n$ (propriété de Markov, nœud suivant, (ii)) ; si $Q$ est irréductible, c'est le cas de tous les états. À défaut d'une chaîne donnée, le théorème d'existence du nœud suivant, (iii), en construit une, au prix du choix dénombrable (⋆).
+    preuve: |
+      (i) Si $(X_n)$ est une chaîne $(\mu, Q)$, le quotient des formules aux rangs $n + 1$ et $n$ est $Q(x_n, x_{n+1})$.
+
+      Réciproquement, montrons la formule par récurrence sur $n$ ; elle vaut pour $n = 0$. Si $P(X_0 = x_0, \dots, X_n = x_n) > 0$, on la multiplie par la probabilité conditionnelle donnée. Sinon, l'événement de rang $n + 1$, contenu dans celui de rang $n$, est de probabilité nulle, et le second membre aussi, puisque $\mu(x_0)\cdots Q(x_{n-1}, x_n) = 0$ par l'hypothèse de récurrence.
+
+      (ii) L'événement du premier membre est la réunion disjointe, indexée par $I^{n-m-1}$, qui est dénombrable ({{q-denombrable|ℚ est dénombrable}}) ou fini, des événements où l'on fixe aussi $X_{m+1}, \dots, X_{n-1}$ ; pour $n = m$ ou $n = m + 1$, il n'y a rien à sommer.
+
+      Par σ-additivité, par la définition et par la formule des chemins ({{mk-transition|Matrices de transition}}, (iii)) appliquée de $x_m$ à $y$, sa probabilité est
+      $$\mu(x_0)\cdots Q(x_{m-1}, x_m)\,Q^{n-m}(x_m, y),$$
+      ce qui est le second membre. Avec $m = 0$ et en sommant sur $x_0$, on obtient $P(X_n = y) = (\mu Q^n)(y)$.
+
+      (iii) L'image réciproque du cylindre $C(x_0, \dots, x_n)$ est $\{X_0 = x_0, \dots, X_n = x_n\} \in \mathcal A$. Les parties $B$ de $I^{\mathbb N}$ telles que $X^{-1}(B) \in \mathcal A$ forment une tribu qui contient les cylindres, donc $\mathcal C$.
+
+      Deux cylindres sont disjoints, ou l'un contient l'autre : les cylindres, $\varnothing$ et $I^{\mathbb N}$ forment un π-système, qui engendre $\mathcal C$. Les lois de deux chaînes $(\mu, Q)$ y coïncident, par la définition, et elles ont la même masse $1$ ; elles sont donc égales, par le lemme de Dynkin ({{m-dynkin|Classes monotones}}, (ii)).
+    remarques:
+      - |
+        Pour deux états et $Q = \begin{pmatrix} 1 - a & a \\ b & 1 - b \end{pmatrix}$, avec $a, b \in [0, 1]$ et $a + b > 0$, la relation $Q^{n+1}(1, 1) = (1 - a - b)\,Q^n(1, 1) + b$ donne, par récurrence,
+        $$Q^n(1, 1) = \frac{b}{a + b} + \frac{a}{a + b}(1 - a - b)^n.$$
+
+        Pour $a = 0{,}3$ et $b = 0{,}1$, $Q^n(1, 1) = \frac14 + \frac34 \cdot 0{,}6^n$, qui vaut déjà $0{,}2545$ pour $n = 10$ : la chaîne oublie vite son point de départ, et la probabilité d'être en $1$ se stabilise vers $\frac14$. Pour $a = b = 1$, au contraire, la chaîne alterne entre les deux états, et $Q^n(1, 1)$, qui vaut $1$ ou $0$ selon la parité de $n$, n'a pas de limite ; c'est le phénomène de période du nœud {{mk-classes|Classes, période}}.
+      - |
+        L'erreur la plus répandue est de croire qu'une fonction d'une chaîne de Markov en est encore une. Sur $\{1, 2, 3\}$, la chaîne déterministe $1 \to 2 \to 3 \to 1$ issue d'un état tiré uniformément est une chaîne de Markov ; avec $f(1) = f(2) = a$ et $f(3) = b$, la suite $Y_n = f(X_n)$ vérifie
+        $$\begin{aligned} P(Y_2 = b \mid Y_0 = a, Y_1 = a) &= 1, \\ P(Y_2 = b \mid Y_0 = b, Y_1 = a) &= 0, \end{aligned}$$
+        puisque le premier conditionnement impose $X_0 = 1$, $X_1 = 2$ et le second $X_0 = 3$, $X_1 = 1$. Le présent $Y_1 = a$ ne suffit plus à prédire l'avenir.
+      - |
+        Markov a introduit ces suites en 1906, dans un article sur l'extension de la loi des grands nombres à des grandeurs dépendantes, publié dans les *Izvestiia* de la Société physico-mathématique de Kazan. Kolmogorov a développé en 1936 la théorie des chaînes à une infinité dénombrable d'états (*Anfangsgründe der Theorie der Markoffschen Ketten mit unendlich vielen möglichen Zuständen*, Recueil mathématique de Moscou), qui est le cadre de ce chapitre.
+
+  - id: mk-existence
+    etiquette: Existence
+    nature: théorème
+    titre: Construction d'une chaîne à partir de variables uniformes
+    texte: |
+      Soient $\mu$ une probabilité et $Q$ une matrice de transition sur $I$, dont les états sont énumérés $y_0, y_1, \dots$ Pour $x \in I$ et $u$ réel, on pose $f(x, u) = y_k$, où $k$ est le plus petit indice tel que
+      $$u \leqslant Q(x, y_0) + \cdots + Q(x, y_k),$$
+      si $0 < u \leqslant 1$ et si un tel indice existe, et $f(x, u) = y_0$ sinon. On définit de même $g(u)$ à partir des $\mu(y_k)$.
+    choix: |
+      Le point (iii) hérite du [[choix-denombrable]] dont dépend la {{m-lebesgue|mesure de Lebesgue}}, par la suite de variables uniformes indépendantes du nœud {{p-suites-iid|Suites indépendantes}} ; c'est le seul usage du choix dans ce chapitre, signalé ici une fois. Les points (i) et (ii) n'en font aucun : l'énumération de $I$ est fixée une fois, et les constructions sont explicites. Les fiches suivantes énoncent des propriétés de chaînes données ; plusieurs, comme la récurrence, la mesure $\gamma_x$ ou la formule $\pi(x) = 1/E_x[T_x]$, ne portent que sur $Q$, mais s'écrivent avec $P_x$, qui suppose une chaîne issue de $x$. Une chaîne irréductible donnée en fournit une pour chaque état sans aucun choix ({{mk-markov|Propriété de Markov}}, (ii)) ; à défaut, (iii) en donne une, et ces énoncés héritent alors de ce ⋆. Le couplage du nœud {{mk-couplage|Convergence vers l'équilibre}}, points (i) et (ii), reste sans choix : il se fait sur un ensemble fini, par (ii).
+    enonce: |
+      (i) Soient, sur un espace probabilisé quelconque, $U_0, U_1, \dots$ des variables indépendantes de loi uniforme sur $[0, 1]$. La suite définie par
+      $$X_0 = g(U_0), \qquad X_{n+1} = f(X_n, U_{n+1})$$
+      est une chaîne $(\mu, Q)$. Pour tout $x \in I$, la suite $X^x_0 = x$, $X^x_{n+1} = f(X^x_n, U_{n+1})$ est une chaîne issue de $x$.
+
+      (ii) *Horizon fini.* Pour $m \in \mathbb N$, la formule
+      $$\begin{aligned} &p(x_0, \dots, x_m) \\ &= \mu(x_0)Q(x_0, x_1)\cdots Q(x_{m-1}, x_m) \end{aligned}$$
+      définit une probabilité sur l'ensemble fini ou dénombrable $I^{m+1}$, muni de toutes ses parties, sous laquelle les coordonnées forment une chaîne $(\mu, Q)$ jusqu'à l'instant $m$.
+
+      (iii) Il existe une chaîne $(\mu, Q)$ sur $[0, 1[$ muni de la mesure de Lebesgue.
+    preuve: |
+      (i) *La loi d'un pas.* Fixons $x$, posons $s_{-1} = 0$ et $s_k = Q(x, y_0) + \cdots + Q(x, y_k)$. Pour $k \geqslant 1$, on a $f(x, u) = y_k$ si et seulement si $0 < u \leqslant 1$ et $s_{k-1} < u \leqslant s_k$.
+
+      Si $0 < u < 1$, un indice $k$ tel que $u \leqslant s_k$ existe, puisque les $s_k$ croissent vers $1$ ; l'ensemble des $u$ où $f(x, u) = y_0$ est donc $]0, s_0]$, augmenté d'une partie de $\lex{ensemble-reels}{\mathbb R} \setminus \,]0, 1[$.
+
+      Si $U$ est uniforme sur $[0, 1]$, $P(a < U \leqslant b) = b - a$ pour $0 \leqslant a \leqslant b \leqslant 1$ et $P(U \notin \,]0, 1[) = 0$ ; donc $f(x, U)$ est une variable à valeurs dans $I$, et $P(f(x, U) = y_k) = s_k - s_{k-1} = Q(x, y_k)$. De même, $g(U)$ a pour loi $\mu$.
+
+      *La récurrence.* Par récurrence sur $n$, $X_n$ est une variable à valeurs dans $I$, mesurable pour $\sigma(U_0, \dots, U_n)$, puisque
+      $$\begin{aligned} &\{X_{n+1} = y\} \\ &= \bigcup_{x \in I}\big(\{X_n = x\} \cap \{f(x, U_{n+1}) = y\}\big). \end{aligned}$$
+
+      L'événement $A = \{X_0 = x_0, \dots, X_n = x_n\}$ appartient donc à $\sigma(U_0, \dots, U_n)$, qui est indépendante de $U_{n+1}$ par regroupement ({{p-independance|Indépendance}}, (ii)). Ainsi
+      $$\begin{aligned} &P(A \cap \{X_{n+1} = x_{n+1}\}) \\ &= P\big(A \cap \{f(x_n, U_{n+1}) = x_{n+1}\}\big) \\ &= P(A)\,Q(x_n, x_{n+1}), \end{aligned}$$
+      et la formule de définition s'obtient par récurrence, à partir de $P(X_0 = x_0) = \mu(x_0)$. Le cas de $X^x$ est identique, avec $X^x_0 = x$.
+
+      (ii) Les poids sont positifs. En sommant d'abord sur $x_m$, puis sur $x_{m-1}$, et ainsi de suite, par paquets ({{m-droite-achevee|Sommes dans [0, +∞]}}, (iv)), chaque somme sur une ligne de $Q$ vaut $1$, puis $\sum \mu = 1$ : la masse totale est $1$, et $A \mapsto \sum_{w \in A}p(w)$ est une probabilité, σ-additive par sommation par paquets.
+
+      Pour $n \leqslant m$, la même sommation sur $x_{n+1}, \dots, x_m$ seulement donne $P(X_0 = x_0, \dots, X_n = x_n) = \mu(x_0)\cdots Q(x_{n-1}, x_n)$.
+
+      (iii) Le nœud {{p-suites-iid|Suites indépendantes}}, (i), fournit sur $[0, 1[$ une suite de variables indépendantes de loi uniforme ; on applique (i).
+    remarques:
+      - |
+        La construction évite tout théorème d'extension de Kolmogorov ou d'Ionescu Tulcea, qui construirait directement une probabilité sur $(I^{\mathbb N}, \mathcal C)$ : la chaîne est une fonction explicite d'une suite de variables uniformes. C'est aussi la façon dont on simule une chaîne, chaque pas tirant un nombre au hasard dans $[0, 1]$ et cherchant dans quel intervalle de longueurs $Q(x, y_0), Q(x, y_1), \dots$ il tombe. Pour des espaces d'états non dénombrables, ces théorèmes deviennent nécessaires ; ils sont admis ici.
+      - |
+        Les chaînes $X^x$ et $X^y$ de (i), issues de deux états, sont construites sur les mêmes variables $U_n$. L'erreur serait de les croire indépendantes : dès qu'elles se rencontrent, elles restent égales, puisque chaque pas applique la même fonction $f$ au même $U_{n+1}$. Faire marcher deux chaînes ensemble jusqu'à ce qu'elles se rejoignent est l'idée du couplage, que le nœud {{mk-couplage|Convergence vers l'équilibre}} mettra en œuvre avec deux chaînes indépendantes jusqu'à leur rencontre.
+
+  - id: mk-markov
+    etiquette: Propriété de Markov
+    nature: théorème
+    titre: Propriété de Markov
+    texte: |
+      Soit $(X_n)$ une chaîne $(\mu, Q)$. On note $\mathcal F_n = \sigma(X_0, \dots, X_n)$ la tribu engendrée par les événements $\{X_k = x\}$, pour $k \leqslant n$ et $x \in I$, et $\theta_nX = (X_{n+k})_{k \in \mathbb N}$ la chaîne décalée de $n$ instants.
+    enonce: |
+      (i) Les événements de $\mathcal F_n$ sont les $\{(X_0, \dots, X_n) \in D\}$, pour $D \subset I^{n+1}$.
+
+      (ii) Soient $n \in \lex{ensemble-entiers-naturels}{\mathbb N}$ et $x \in I$ tels que $P(X_n = x) > 0$. Pour tout $A \in \mathcal F_n$ et tout $B \in \mathcal C$,
+      $$\begin{aligned} &P\big(A \cap \{X_n = x\} \cap \{\theta_nX \in B\}\big) \\ &= P(A \cap \{X_n = x\})\,P_x(X \in B). \end{aligned}$$
+      Autrement dit, sous la probabilité $P(\cdot \mid X_n = x)$, la suite $\theta_nX$ est une chaîne issue de $x$, indépendante de $\mathcal F_n$.
+
+      (iii) Pour toute fonction $F : I^{\mathbb N} \to [0, +\infty]$ mesurable pour $\mathcal C$, et avec les mêmes $n$, $x$ et $A$,
+      $$\begin{aligned} &E\big[\mathbf 1_{A \cap \{X_n = x\}}\,F(\theta_nX)\big] \\ &= P(A \cap \{X_n = x\})\,E_x[F(X)]. \end{aligned}$$
+    preuve: |
+      (i) Ces événements forment une tribu, puisque l'image réciproque par $(X_0, \dots, X_n)$ respecte complémentaires et réunions ; elle contient les générateurs de $\mathcal F_n$. Elle est contenue dans $\mathcal F_n$, car $D$ est fini ou dénombrable et chaque $\{X_0 = x_0, \dots, X_n = x_n\}$ appartient à $\mathcal F_n$.
+
+      (ii) *Cylindres.* Soit $A = \{X_0 = x_0, \dots, X_n = x_n\}$ avec $x_n = x$, et $B = C(z_0, \dots, z_k)$. Si $z_0 \neq x$, le premier membre est nul. Sinon, la définition donne
+      $$\begin{aligned} &P(A \cap \{X_{n+1} = z_1, \dots, X_{n+k} = z_k\}) \\ &= P(A)\,Q(x, z_1)\cdots Q(z_{k-1}, z_k). \end{aligned}$$
+      Par (i) et la σ-additivité, on passe de ces événements $A$ à tout événement de $\mathcal F_n$, ceux pour lesquels $x_n \neq x$ ne contribuant à aucun des deux membres.
+
+      *La chaîne décalée.* Avec $A = \Omega$, on vient de voir que $P(\theta_nX \in C(z_0, \dots, z_k) \mid X_n = x)$ vaut $\delta_x(z_0)Q(z_0, z_1)\cdots Q(z_{k-1}, z_k)$ : sous $P(\cdot \mid X_n = x)$, $\theta_nX$ est une chaîne issue de $x$. Il en existe donc une, et $P_x$ est bien défini ({{mk-chaines|Chaînes de Markov}}, (iii)) ; la formule de (ii) vaut ainsi pour les cylindres.
+
+      *Toute la tribu.* Pour $A$ fixé, les deux membres sont, comme fonctions de $B$, des mesures finies sur $\mathcal C$, puisque $\{\theta_nX \in B\}$ est un événement : $\theta_nX$ est mesurable par l'argument de {{mk-chaines|Chaînes de Markov}}, (iii). Elles coïncident sur le π-système des cylindres, de $\varnothing$ et de $I^{\mathbb N}$, qui engendre $\mathcal C$, donc partout par le lemme de Dynkin ({{m-dynkin|Classes monotones}}, (ii)).
+
+      (iii) Pour $F = \mathbf 1_B$, c'est (ii) ; par linéarité, la formule vaut pour les fonctions étagées positives, puis pour $F$ mesurable positive, limite croissante de fonctions étagées ({{m-etagees|Fonctions étagées}}), par convergence monotone ({{m-beppo-levi|Convergence monotone}}).
+    remarques:
+      - |
+        La propriété dit que, le présent étant connu, le futur ne dépend pas du passé. Elle relie les chaînes aux martingales : si $h : I \to \lex{ensemble-reels}{\mathbb R}$ est bornée et vérifie
+        $$h(x) = \sum_{y \in I} Q(x, y)h(y)$$
+        pour tout $x$, (iii), appliquée à $F(w) = h(w_1)$ séparée en parties positive et négative, donne $E[h(X_{n+1})\mathbf 1_G] = E[h(X_n)\mathbf 1_G]$ pour tout $G \in \mathcal F_n$ : la suite $h(X_n)$ est une martingale ({{mt-martingales|Martingales}}). Ces fonctions $h$ sont dites **harmoniques** ; c'est par elles que le nœud {{mk-ruine|Ruine du joueur}} calcule des probabilités d'atteinte.
+
+  - id: mk-markov-forte
+    etiquette: Markov forte
+    nature: théorème
+    titre: Propriété de Markov forte
+    texte: |
+      Un **temps d'arrêt** de la chaîne est un temps d'arrêt pour la filtration $(\mathcal F_n)$ ({{mt-martingales|Martingales}}) : une variable $T$ à valeurs dans $\mathbb N \cup \{+\infty\}$ telle que $\{T = n\} \in \mathcal F_n$ pour tout $n$. La **tribu du passé avant $T$** est
+      $$\mathcal F_T = \{A \in \mathcal A : A \cap \{T = n\} \in \mathcal F_n \ \forall n\}.$$
+      Sur $\{T < +\infty\}$, on note $X_T = X_{T(\omega)}(\omega)$ et $\theta_TX = (X_{T+k})_{k \in \mathbb N}$.
+
+      Pour $y \in I$, le **temps d'atteinte** de $y$ est $H_y = \inf\{n \geqslant 0 : X_n = y\}$ et son **temps de retour** est $T_y = \inf\{n \geqslant 1 : X_n = y\}$, avec $\inf \varnothing = +\infty$.
+    enonce: |
+      (i) $H_y$ et $T_y$ sont des temps d'arrêt. Pour un temps d'arrêt $T$, $\mathcal F_T$ est une tribu, qui contient les événements $\{T = n\}$ et $\{T < +\infty, X_T = x\}$.
+
+      (ii) *Markov forte.* Soient $T$ un temps d'arrêt, $x \in I$ tel que $P(T < +\infty, X_T = x) > 0$, $A \in \mathcal F_T$, et $G = A \cap \{T < +\infty, X_T = x\}$. Pour tout $B \in \mathcal C$,
+      $$\begin{aligned} &P(G \cap \{\theta_TX \in B\}) \\ &= P(G)\,P_x(X \in B), \end{aligned}$$
+      et, pour toute $F : I^{\mathbb N} \to [0, +\infty]$ mesurable pour $\mathcal C$, $E[\mathbf 1_G\,F(\theta_TX)] = P(G)\,E_x[F(X)]$. Sous $P(\cdot \mid T < +\infty, X_T = x)$, la suite $\theta_TX$ est donc une chaîne issue de $x$, indépendante de $\mathcal F_T$.
+    preuve: |
+      (i) On a $\{H_y = n\} = \{X_0 \neq y, \dots, X_{n-1} \neq y, X_n = y\} \in \mathcal F_n$, et de même pour $T_y$ en commençant à l'instant $1$.
+
+      La partie $\mathcal F_T$ contient $\Omega$ ; elle est stable par complémentaire, puisque $A^c \cap \{T = n\} = \{T = n\} \setminus (A \cap \{T = n\})$, et par réunion dénombrable. L'intersection $\{T = m\} \cap \{T = n\}$ est vide ou égale à $\{T = n\}$, et
+      $$\begin{aligned} &\{T < +\infty, X_T = x\} \cap \{T = n\} \\ &= \{T = n\} \cap \{X_n = x\}, \end{aligned}$$
+      qui appartient à $\mathcal F_n$.
+
+      (ii) Posons $A_n = A \cap \{T = n\} \in \mathcal F_n$. L'événement $G$ est la réunion disjointe des $A_n \cap \{X_n = x\}$, et, sur $\{T = n\}$, $\theta_TX = \theta_nX$ ; ainsi $G \cap \{\theta_TX \in B\}$ est la réunion disjointe des $A_n \cap \{X_n = x\} \cap \{\theta_nX \in B\}$, qui sont des événements.
+
+      Par la propriété de Markov ({{mk-markov|Propriété de Markov}}, (ii)), appliquée pour chaque $n$ tel que $P(X_n = x) > 0$, les autres termes étant nuls,
+      $$\begin{aligned} &P(A_n \cap \{X_n = x\} \cap \{\theta_nX \in B\}) \\ &= P(A_n \cap \{X_n = x\})\,P_x(X \in B). \end{aligned}$$
+      On somme sur $n$, par σ-additivité. La formule pour $F$ s'en déduit comme au point (iii) du même nœud.
+    remarques:
+      - |
+        L'hypothèse que $T$ est un temps d'arrêt ne peut pas être levée. Pour la chaîne de l'exemple du nœud {{mk-transition|Matrices de transition}}, issue de $1$, soit $L$ le dernier instant $n \leqslant 10$ tel que $X_n = 1$. Si $L < 10$, alors $X_{L+1} \neq 1$, donc $X_{L+1} = 2$, puisque depuis $1$ on ne peut aller qu'en $1$ ou en $2$ ; comme $\theta_LX$ part de $1$ et que, si $L = 10$, $X_{11}$ vaut $2$ avec probabilité $\frac12$, la propriété de Markov à l'instant $10$ donne
+        $$\begin{aligned} P(X_{L+1} = 2) &= P(L < 10) + \tfrac12P(L = 10) \\ &> \tfrac12, \end{aligned}$$
+        puisque $P(L < 10) \geqslant P(X_1 = 2, \dots, X_{10} = 2) > 0$, alors qu'une chaîne issue de $1$ fait son premier pas vers $2$ avec probabilité $\frac12$. L'événement $\{L = n\}$ dépend de l'avenir après $n$.
+      - |
+        La propriété de Markov forte découpe une trajectoire, à chaque passage par un état $x$, en morceaux indépendants et de même loi, les **excursions** hors de $x$. C'est elle qui donne la loi géométrique du nombre de visites au nœud {{mk-recurrence|Récurrence et transience}}, et qui, jointe à la loi forte des grands nombres, donne le théorème ergodique ({{mk-ergodique|Théorème ergodique}}).
+
+  - id: mk-classes
+    etiquette: Classes, période
+    nature: définition
+    titre: Classes de communication, irréductibilité et période
+    texte: |
+      On dit que $x$ **mène à** $y$, et l'on écrit $x \to y$, s'il existe $n \in \mathbb N$ tel que $Q^n(x, y) > 0$ ; $x$ et $y$ **communiquent**, ce que l'on note $x \leftrightarrow y$, si $x \to y$ et $y \to x$. Les classes d'équivalence de $\leftrightarrow$ sont les **classes de communication** ; une classe $C$ est **fermée** si $x \in C$ et $x \to y$ entraînent $y \in C$. La matrice $Q$, ou toute chaîne de matrice $Q$, est [[chaine-irreductible|irréductible]] s'il n'y a qu'une classe.
+
+      Soit $x$ un état tel que l'ensemble $R(x) = \{n \geqslant 1 : Q^n(x, x) > 0\}$ soit non vide. Le sous-groupe de $\lex{ensemble-entiers-relatifs}{\mathbb Z}$ engendré par $R(x)$, formé des combinaisons $a_1s_1 + \cdots + a_rs_r$ à coefficients entiers d'éléments de $R(x)$, s'écrit $d\mathbb Z$ pour un unique entier $d \geqslant 1$ ({{z-ideaux|Idéaux de ℤ}}) : c'est le [[pgcd|plus grand commun diviseur]] des éléments de $R(x)$, et on l'appelle la [[periode-etat|période]] $d(x)$ de $x$. L'état est **apériodique** si $d(x) = 1$.
+    enonce: |
+      (i) $\leftrightarrow$ est une [[relation-equivalence|relation d'équivalence]] sur $I$.
+
+      (ii) Si $x \neq y$ communiquent, $R(x)$ et $R(y)$ sont non vides, et $x$ et $y$ ont la même période. En particulier, si $Q$ est irréductible, $R(x)$ est non vide pour tout $x$, et tous les états ont la même période.
+
+      (iii) Si $x$ est apériodique, il existe $N$ tel que $Q^n(x, x) > 0$ pour tout $n \geqslant N$. Si $I$ est fini et $Q$ irréductible et apériodique, il existe $N$ tel que $Q^n(x, y) > 0$ pour tous $x, y \in I$ et tout $n \geqslant N$.
+    preuve: |
+      (i) La relation est réflexive, puisque $Q^0(x, x) = 1$, symétrique par définition, et transitive par l'inégalité $Q^{m+n}(x, z) \geqslant Q^m(x, y)\,Q^n(y, z)$ ({{mk-transition|Matrices de transition}}, (iii)).
+
+      (ii) Si $I = \{x\}$, alors $Q(x, x) = 1$ et $1 \in R(x)$. Sinon, soit $y \neq x$ ; il existe $a, b \geqslant 1$ tels que $Q^a(x, y) > 0$ et $Q^b(y, x) > 0$, et $Q^{a+b}(x, x) \geqslant Q^a(x, y)Q^b(y, x) > 0$ : $a + b \in R(x)$, et de même $a + b \in R(y)$.
+
+      Pour $n \in R(y)$, on a de même
+      $$\begin{aligned} &Q^{a+n+b}(x, x) \\ &\geqslant Q^a(x, y)Q^n(y, y)Q^b(y, x) > 0, \end{aligned}$$
+      donc $a + n + b \in R(x)$. L'entier $d(x)$ divise $a + b$ et $a + n + b$, donc $n$ : il divise tout élément de $R(y)$, donc tout élément du sous-groupe $d(y)\mathbb Z$ qu'ils engendrent, et $d(x) \mid d(y)$. Par symétrie, $d(y) \mid d(x)$, et ces entiers positifs sont égaux.
+
+      (iii) $R(x)$ est stable par addition, puisque $Q^{m+n}(x, x) \geqslant Q^m(x, x)Q^n(x, x)$. Comme $1$ appartient au sous-groupe engendré, écrivons $1 = a_1s_1 + \cdots + a_rs_r$ avec $s_i \in R(x)$, et séparons les coefficients positifs et négatifs : $1 = A - B$, où $A$ et $B$ sont des sommes, éventuellement vides, d'éléments de $R(x)$.
+
+      Si $B = 0$, alors $1 = A \in R(x)$, et tout $n \geqslant 1$ est dans $R(x)$. Sinon, $B$ et $B + 1 = A$ sont dans $R(x)$. Pour $n \geqslant B^2$, la [[division-euclidienne|division euclidienne]] donne $n = qB + r$ avec $0 \leqslant r < B \leqslant q$, et
+      $$n = (q - r)B + r(B + 1)$$
+      est une somme d'éléments de $R(x)$, puisque $q - r \geqslant 1$. On prend $N = B^2$.
+
+      Si $I$ est fini et $Q$ irréductible et apériodique, chaque $x$ a un tel $N_x$, et pour tous $x, y$ il existe $a_{xy}$ tel que $Q^{a_{xy}}(x, y) > 0$. Pour $n \geqslant N_x + a_{xy}$,
+      $$Q^n(x, y) \geqslant Q^{n - a_{xy}}(x, x)\,Q^{a_{xy}}(x, y) > 0,$$
+      et l'on prend pour $N$ le plus grand des entiers $N_x + a_{xy}$, en nombre fini.
+    remarques:
+      - |
+        Sur $\{0, \dots, m - 1\}$, avec $m \geqslant 3$, la **marche sur le cycle** va de $x$ à $x + 1$ ou à $x - 1$ modulo $m$ avec probabilité $\frac12$. Elle est irréductible. Un chemin de $0$ à $0$ qui fait $p$ pas en avant et $q$ en arrière a pour longueur $p + q$, et $m$ divise $p - q$.
+
+        Si $m$ est pair, $p - q$ est pair, donc la longueur $p + q = (p - q) + 2q$ aussi : $R(0) \subset 2\mathbb Z$, et comme $2 \in R(0)$, la période vaut $2$. Si $m$ est impair, $2$ et $m$ sont dans $R(0)$, et la période divise $2 \wedge m = 1$.
+
+        ```schema mk-classes
+        Les marches sur les cycles à $6$ et à $5$ états, chaque arête étant parcourue dans les deux sens avec probabilité $\frac12$. Sur le cycle pair, les états alternent entre rouge et bleu, et chaque pas change de couleur : un retour demande un nombre pair de pas. Sur le cycle impair, aucune telle coloration n'existe, puisque le tour complet, en rouge, revient au départ en $5$ pas.
+        ```
+      - |
+        L'erreur la plus répandue est de croire qu'une chaîne irréductible finie oublie toujours son point de départ. Pour la marche sur un cycle pair, $Q^n(0, 0) = 0$ pour tout $n$ impair : la loi de $X_n$ oscille et ne converge pas. Le nœud {{mk-couplage|Convergence vers l'équilibre}} montre que l'apériodicité suffit à rétablir la convergence ; il suffit pour l'obtenir d'un seul état $x$ tel que $Q(x, x) > 0$, puisqu'alors $1 \in R(x)$.
+
+  - id: mk-recurrence
+    etiquette: Récurrence et transience
+    nature: théorème
+    titre: États récurrents et transients
+    texte: |
+      Pour $x \in I$, soit $T_x$ le temps de retour en $x$ ({{mk-markov-forte|Markov forte}}) et $N_x = \sum_{n \geqslant 0}\mathbf 1_{\{X_n = x\}}$ le **nombre de visites** en $x$, à valeurs dans $\mathbb N \cup \{+\infty\}$. L'état $x$ est [[etat-recurrent|récurrent]] si $P_x(T_x < +\infty) = 1$, et [[etat-transient|transient]] sinon : partant de $x$, une chaîne revient presque sûrement en $x$, ou bien elle a une probabilité non nulle de n'y jamais revenir.
+    enonce: |
+      (i) Soit $f_x = P_x(T_x < +\infty)$. Pour tout $k \in \mathbb N$, $P_x(N_x > k) = f_x^k$, et
+      $$E_x[N_x] = \sum_{n \geqslant 0} Q^n(x, x) = \frac{1}{1 - f_x},$$
+      ce nombre valant $+\infty$ si $f_x = 1$.
+
+      (ii) L'état $x$ est récurrent si et seulement si $\sum_n Q^n(x, x) = +\infty$, et alors $N_x = +\infty$, $P_x$-presque sûrement. Il est transient si et seulement si cette série converge, et alors $N_x < +\infty$, $P_x$-presque sûrement.
+
+      (iii) Si $x$ est récurrent et $x \to y$, alors $y \to x$ et $y$ est récurrent : la récurrence est une propriété de classe, et une classe récurrente est fermée.
+
+      (iv) Une classe fermée finie est récurrente. En particulier, une chaîne irréductible sur un ensemble fini est récurrente.
+
+      (v) Si $Q$ est irréductible et récurrente, toute chaîne $(\mu, Q)$ visite chaque état une infinité de fois, presque sûrement.
+    preuve: |
+      (i) Soient $T^{(0)} = 0$ et $T^{(k+1)} = \inf\{n > T^{(k)} : X_n = x\}$ les instants successifs de passage en $x$. Ce sont des temps d'arrêt : par récurrence,
+      $$\begin{aligned} &\{T^{(k+1)} = n\} = \bigcup_{l < n}\big(\{T^{(k)} = l\} \\ &\cap \{X_n = x\} \cap \{X_j \neq x,\ l < j < n\}\big). \end{aligned}$$
+
+      Sous $P_x$, $X_0 = x$, si bien que $N_x > k$ équivaut à $T^{(k)} < +\infty$. Sur cet événement, $X_{T^{(k)}} = x$, et $T^{(k+1)} - T^{(k)}$ est le temps de retour en $x$ de la chaîne décalée $\theta_{T^{(k)}}X$.
+
+      La propriété de Markov forte ({{mk-markov-forte|Markov forte}}, (ii)), avec $A = \Omega$ et l'ensemble $B$ des suites $w$ telles que $w_n = x$ pour un $n \geqslant 1$, réunion dénombrable de cylindres, donne
+      $$P_x(T^{(k+1)} < +\infty) = P_x(T^{(k)} < +\infty)\,f_x,$$
+      les deux membres étant nuls si $P_x(T^{(k)} < +\infty) = 0$. D'où $P_x(N_x > k) = f_x^k$ par récurrence.
+
+      Comme $N_x = \sum_{k \geqslant 0}\mathbf 1_{\{N_x > k\}}$, la convergence monotone ({{m-beppo-levi|Convergence monotone}}) donne $E_x[N_x] = \sum_k f_x^k$, qui vaut $\frac1{1 - f_x}$ si $f_x < 1$ et $+\infty$ si $f_x = 1$. Elle donne aussi $E_x[N_x] = \sum_n P_x(X_n = x) = \sum_n Q^n(x, x)$ ({{mk-chaines|Chaînes de Markov}}, (ii)).
+
+      (ii) Si $f_x = 1$, les événements $\{N_x > k\}$, de probabilité $1$, décroissent vers $\{N_x = +\infty\}$, qui est donc de probabilité $1$, et la série diverge par (i). Si $f_x < 1$, la série converge par (i), et $N_x$, d'espérance finie, est presque sûrement fini ({{m-integrale|Intégrale}}, (iv)).
+
+      (iii) Soit $x$ récurrent et $m$ tel que $Q^m(x, y) > 0$. Si l'on avait $y \not\to x$, une chaîne issue de $y$ ne visiterait jamais $x$, puisque $P_y(X_k = x) = Q^k(y, x) = 0$ pour tout $k$. La propriété de Markov à l'instant $m$ ({{mk-markov|Propriété de Markov}}, (ii)) donnerait alors
+      $$\begin{aligned} &P_x(X_m = y,\ X_k \neq x \ \forall k \geqslant m) \\ &= Q^m(x, y)\,P_y(H_x = +\infty) \\ &= Q^m(x, y) > 0, \end{aligned}$$
+      alors que sur cet événement $N_x \leqslant m$, ce qui contredit (ii).
+
+      Donc $y \to x$ ; soit $b$ tel que $Q^b(y, x) > 0$. Pour tout $n$,
+      $$\begin{aligned} &Q^{b+n+m}(y, y) \\ &\geqslant Q^b(y, x)\,Q^n(x, x)\,Q^m(x, y), \end{aligned}$$
+      et la série des $Q^n(y, y)$ diverge avec celle des $Q^n(x, x)$ : $y$ est récurrent par (ii). Enfin, si $x$ est dans une classe récurrente $C$ et $x \to y$, alors $y \to x$, donc $y \in C$ : la classe est fermée.
+
+      (iv) Soit $C$ une classe fermée finie et $x \in C$. Pour tout $n$, $Q^n(x, y) = 0$ si $y \notin C$, donc $\sum_{y \in C} Q^n(x, y) = 1$, et
+      $$\sum_{y \in C}\sum_{n \geqslant 0} Q^n(x, y) = +\infty.$$
+      La somme sur $y$ étant finie, il existe $y \in C$ tel que $\sum_n Q^n(x, y) = +\infty$. Comme $y \leftrightarrow x$, il existe $b$ tel que $Q^b(y, x) > 0$, et $Q^{b+n}(y, y) \geqslant Q^b(y, x)Q^n(x, y)$ : la série des $Q^n(y, y)$ diverge, $y$ est récurrent, et toute la classe aussi par (iii).
+
+      (v) Soient $x, y \in I$ et $m$ tel que $Q^m(y, x) > 0$. Comme $y$ est récurrent, une chaîne issue de $y$ repasse en $y$ après l'instant $m$, presque sûrement, par (ii). En décomposant selon la valeur de $X_m$ et par la propriété de Markov à l'instant $m$,
+      $$1 = \sum_z Q^m(y, z)\,P_z(T_y < +\infty),$$
+      la somme portant sur les $z$ tels que $Q^m(y, z) > 0$. Comme $\sum_z Q^m(y, z) = 1$ et que chaque $P_z(T_y < +\infty)$ vaut au plus $1$, tous valent $1$, en particulier pour $z = x$ : $P_x(H_y < +\infty) = 1$.
+
+      Pour une chaîne $(\mu, Q)$, la propriété de Markov à l'instant $0$ donne alors $P(H_y < +\infty) = \sum_x \mu(x)\,P_x(H_y < +\infty) = 1$, et la propriété de Markov forte au temps $H_y$ montre que $N_y = +\infty$ presque sûrement, puisque $P_y(N_y = +\infty) = 1$.
+    remarques:
+      - |
+        Pour la marche sur $\mathbb Z$ qui fait un pas $+1$ avec probabilité $p$ et $-1$ avec probabilité $q = 1 - p$, un retour en $0$ en $2n$ pas demande $n$ pas dans chaque sens, d'où $Q^{2n}(0, 0) = \binom{2n}{n}(pq)^n \leqslant (4pq)^n$, puisque $\binom{2n}n \leqslant (1 + 1)^{2n}$ par la formule du binôme ({{pol-binome|Binôme de Newton}}).
+
+        Si $p \neq \frac12$, alors $4pq = 1 - (p - q)^2 < 1$, la série converge et $0$ est transient : la marche dérive vers l'infini. Le nœud {{mk-ruine|Ruine du joueur}} calcule la probabilité de retour, $f_0 = 1 - |p - q|$, soit $0{,}8$ pour $p = 0{,}6$ : le marcheur a une chance sur cinq de ne jamais revenir, et (i) donne $E_0[N_0] = \frac1{|p - q|} = 5$. Pour $p = \frac12$, la majoration ne dit rien, et il faut l'encadrement plus fin du nœud {{mk-binomiaux|Coefficients multinomiaux}}.
+      - |
+        La dichotomie de (ii) est un tout ou rien : un état est visité presque sûrement une infinité de fois, ou presque sûrement un nombre fini de fois, sans cas intermédiaire. L'erreur la plus répandue est de confondre récurrence et retour en un temps borné : la marche simple sur $\mathbb Z$ est récurrente ({{mk-polya|Théorème de Pólya}}), mais l'espérance de son temps de retour est infinie, comme on le verra au nœud {{mk-recurrence-positive|Récurrence positive}}.
+
+  - id: mk-binomiaux
+    etiquette: Coefficients multinomiaux
+    nature: lemme
+    titre: Encadrements de coefficients binomiaux et trinomiaux
+    texte: |
+      Pour $n \in \mathbb N$, on pose
+      $$c_n = \frac{(2n)!}{(n!)^2\,4^n},$$
+      et, pour des entiers $i, j, k \geqslant 0$ de somme $n$,
+      $$t_n(i, j, k) = \frac{n!}{i!\,j!\,k!\,3^n},$$
+      et $M_n$ est le plus grand des nombres $t_n(i, j, k)$, pour $i + j + k = n$.
+    enonce: |
+      (i) *Dénombrement.* Si $m_1 + \cdots + m_r = m$, le nombre de mots de longueur $m$ sur l'alphabet $\{1, \dots, r\}$ qui contiennent exactement $m_a$ fois la lettre $a$, pour chaque $a$, est
+      $$\frac{m!}{m_1!\cdots m_r!}.$$
+      En particulier $\binom nk = \frac{n!}{k!\,(n - k)!}$ pour $k \leqslant n$, et $\sum_{i + j + k = n} t_n(i, j, k) = 1$.
+
+      (ii) Pour $n \geqslant 1$, $\dfrac1{4n} \leqslant c_n^2 \leqslant \dfrac1{2n + 1}$.
+
+      (iii) $\displaystyle \sum_{i=0}^n \binom ni^2 = \binom{2n}n$.
+
+      (iv) $M_{n+1} \leqslant M_n$ pour tout $n$ ; $M_{3m} = t_{3m}(m, m, m) \leqslant \frac2{7m}$ pour $m \geqslant 1$ ; et $M_n \leqslant \frac{18}{7n}$ pour $n \geqslant 3$.
+    preuve: |
+      (i) *Coefficients binomiaux.* Montrons $\binom nk\,k!\,(n - k)! = n!$ pour $k \leqslant n$, par récurrence sur $n$. Pour $k = 0$, c'est $\binom n0 = 1$. Pour $k + 1 \leqslant n + 1$, la relation $(k + 1)\binom{n+1}{k+1} = (n + 1)\binom nk$ ({{pol-binome|Binôme de Newton}}, (i)) et l'hypothèse de récurrence donnent
+      $$\begin{aligned} &\binom{n+1}{k+1}(k + 1)!\,(n - k)! \\ &= (n + 1)\binom nk\,k!\,(n - k)! = (n + 1)!. \end{aligned}$$
+
+      *Mots.* Récurrence sur $r$ ; pour $r = 1$, il y a un seul mot, et $m!/m! = 1$. Pour $r \geqslant 2$, un mot est déterminé par l'ensemble des $m_r$ positions de la lettre $r$, partie à $m_r$ éléments de $\{1, \dots, m\}$, et par le mot sur $\{1, \dots, r - 1\}$ lu sur les autres positions. Il y a $\binom m{m_r}$ telles parties ({{pol-binome|Binôme de Newton}}, (v)), d'où le nombre
+      $$\frac{m!}{m_r!\,(m - m_r)!}\cdot\frac{(m - m_r)!}{m_1!\cdots m_{r-1}!}.$$
+
+      Enfin les $3^n$ mots de longueur $n$ sur trois lettres se répartissent selon leurs nombres $(i, j, k)$ de chaque lettre, d'où $\sum n!/(i!j!k!) = 3^n$.
+
+      (ii) On a $c_1 = \frac12$ et
+      $$\frac{c_{n+1}}{c_n} = \frac{(2n + 1)(2n + 2)}{4(n + 1)^2} = \frac{2n + 1}{2n + 2}.$$
+      Posons $u_n = (2n + 1)c_n^2$ et $v_n = 4n\,c_n^2$. Alors
+      $$\begin{aligned} \frac{u_{n+1}}{u_n} &= \frac{(2n + 1)(2n + 3)}{(2n + 2)^2} < 1, \\ \frac{v_{n+1}}{v_n} &= \frac{(2n + 1)^2}{4n(n + 1)} > 1, \end{aligned}$$
+      puisque $(2n + 1)(2n + 3) = (2n + 2)^2 - 1$ et $(2n + 1)^2 = 4n(n + 1) + 1$. Comme $u_0 = 1$ et $v_1 = 1$, on a $u_n \leqslant 1 \leqslant v_n$ pour $n \geqslant 1$.
+
+      (iii) Comptons les parties à $n$ éléments de $\{1, \dots, 2n\}$ selon le nombre $i$ de leurs éléments dans $\{1, \dots, n\}$ : une telle partie est la réunion d'une partie à $i$ éléments de $\{1, \dots, n\}$ et d'une partie à $n - i$ éléments de $\{n + 1, \dots, 2n\}$. Il y en a $\binom ni\binom n{n-i} = \binom ni^2$, par la formule de (i), et au total $\binom{2n}n$.
+
+      (iv) *Décroissance.* En convenant que $t_n$ est nul si un indice est négatif, on vérifie, en réduisant au même dénominateur, que
+      $$\begin{aligned} &t_{n+1}(i, j, k) \\ &= \tfrac13\big(t_n(i - 1, j, k) + t_n(i, j - 1, k) \\ &\qquad + t_n(i, j, k - 1)\big), \end{aligned}$$
+      le second membre valant $\frac{n!}{i!j!k!3^{n+1}}(i + j + k)$ ; c'est une moyenne de trois nombres au plus égaux à $M_n$.
+
+      *Le maximum.* Si $i \geqslant j + 2$, alors
+      $$\frac{t_n(i - 1, j + 1, k)}{t_n(i, j, k)} = \frac{i}{j + 1} > 1 ;$$
+      un triplet où le maximum est atteint, sur l'ensemble fini des triplets, a donc ses coordonnées deux à deux distantes d'au plus $1$, de la forme $a$ ou $a + 1$. Pour $n = 3m$, leur somme $3m = 3a + s$, où $s \in \{0, 1, 2\}$ est le nombre de coordonnées égales à $a + 1$, impose $s = 0$ et $a = m$.
+
+      *La majoration.* Soit $b_m = m\,t_{3m}(m, m, m)$. On a $b_1 = \frac{3!}{27} = \frac29$ et
+      $$\frac{b_{m+1}}{b_m} = \frac{(3m + 1)(3m + 2)}{9m(m + 1)} = 1 + x_m,$$
+      avec $x_m = \frac{2}{9m(m + 1)} \in [0, 1[$. Comme $1 + x \leqslant \frac1{1 - x}$, puisque $(1 + x)(1 - x) \leqslant 1$, et que $\prod_j(1 - x_j) \geqslant 1 - \sum_j x_j$ par récurrence, on obtient
+      $$\begin{aligned} b_m &= b_1\prod_{j < m}(1 + x_j) \leqslant \frac{b_1}{\prod_{j < m}(1 - x_j)} \\ &\leqslant \frac{b_1}{1 - \sum_{j \geqslant 1} x_j} = \frac{2/9}{1 - 2/9} = \frac27, \end{aligned}$$
+      la somme $\sum_{j \geqslant 1} x_j = \frac29\sum_j\big(\frac1j - \frac1{j + 1}\big) = \frac29$ étant télescopique.
+
+      Enfin, pour $n \geqslant 3$, soit $m \geqslant 1$ le quotient de $n$ par $3$ : $3m \geqslant n - 2 \geqslant \frac n3$, et par la décroissance, $M_n \leqslant M_{3m} \leqslant \frac2{7m} \leqslant \frac{18}{7n}$.
+    remarques:
+      - |
+        La formule de Stirling, qui n'est pas démontrée ici, donne $c_n^2 \sim \frac1{\pi n}$ et $M_{3m} \sim \frac{\sqrt3}{2\pi m}$. Les encadrements élémentaires de (ii) placent $\pi n c_n^2$ entre $\frac\pi4 \approx 0{,}785$ et $\frac\pi2 \approx 1{,}571$ ; numériquement, $n c_n^2$ vaut $0{,}3105$ pour $n = 10$ et $0{,}3175$ pour $n = 100$, contre $\frac1\pi \approx 0{,}3183$. La borne $\frac27 \approx 0{,}2857$ de $m M_{3m}$ est presque optimale : la limite vaut $\frac{\sqrt 3}{2\pi} \approx 0{,}2757$, et $mM_{3m}$ vaut déjà $0{,}2696$ pour $m = 10$. Pour le théorème de Pólya, seuls les ordres de grandeur comptent, et ces encadrements suffisent.
+
+  - id: mk-polya
+    etiquette: Théorème de Pólya
+    nature: théorème
+    titre: Marche aléatoire simple sur ℤᵈ
+    texte: |
+      Soit $d \geqslant 1$ et $e_1, \dots, e_d$ les vecteurs de la base canonique de $\lex{ensemble-entiers-relatifs}{\mathbb Z}^d$, ensemble dénombrable ({{q-denombrable|ℚ est dénombrable}}). La **marche aléatoire simple** sur $\mathbb Z^d$ est la chaîne de matrice
+      $$Q(x, x + e_i) = Q(x, x - e_i) = \frac1{2d},$$
+      pour $1 \leqslant i \leqslant d$, et $Q(x, y) = 0$ pour les autres $y$ : à chaque pas, le marcheur va vers l'un de ses $2d$ voisins, choisi uniformément.
+    enonce: |
+      (i) $Q^{2n+1}(0, 0) = 0$, et, avec les notations du nœud {{mk-binomiaux|Coefficients multinomiaux}},
+      $$Q^{2n}(0, 0) = \begin{cases} c_n & \text{si } d = 1, \\ c_n^2 & \text{si } d = 2, \end{cases}$$
+      tandis que, pour $d = 3$,
+      $$\begin{aligned} Q^{2n}(0, 0) &= c_n\sum_{i+j+k=n} t_n(i, j, k)^2 \\ &\leqslant c_n M_n. \end{aligned}$$
+
+      (ii) *Pólya.* La marche simple est irréductible ; elle est récurrente pour $d = 1$ et $d = 2$, et transiente pour $d = 3$.
+    preuve: |
+      (i) Un chemin de longueur $l$ issu de $0$ est un mot de longueur $l$ sur l'alphabet des $2d$ directions $\pm e_i$, de probabilité $(2d)^{-l}$ par la formule des chemins ({{mk-transition|Matrices de transition}}, (iii)). Il revient en $0$ si et seulement si, pour chaque $i$, il comporte autant de pas $+e_i$ que de pas $-e_i$ ; sa longueur est alors paire.
+
+      Pour $d = 1$ et $l = 2n$, il y a $\frac{(2n)!}{n!\,n!}$ tels mots ({{mk-binomiaux|Coefficients multinomiaux}}, (i)), d'où $Q^{2n}(0, 0) = c_n$.
+
+      Pour $d = 2$, en notant $i$ et $j$ les nombres de pas $+e_1$ et $+e_2$, avec $i + j = n$,
+      $$\begin{aligned} Q^{2n}(0, 0) &= \sum_{i+j=n}\frac{(2n)!}{i!^2\,j!^2\,16^n} \\ &= \frac{(2n)!}{(n!)^2\,16^n}\sum_{i=0}^n\binom ni^2 = c_n^2, \end{aligned}$$
+      par le point (iii) du même nœud.
+
+      Pour $d = 3$, de même,
+      $$\begin{aligned} Q^{2n}(0, 0) &= \sum_{i+j+k=n}\frac{(2n)!}{i!^2\,j!^2\,k!^2\,36^n} \\ &= c_n\sum_{i+j+k=n} t_n(i, j, k)^2, \end{aligned}$$
+      et $\sum t_n^2 \leqslant M_n\sum t_n = M_n$.
+
+      (ii) *Irréductibilité.* De $x$, on atteint $x \pm e_i$ en un pas, donc tout point de $\mathbb Z^d$ par un chemin. Comme $Q(x + z, y + z) = Q(x, y)$, la formule des chemins donne $Q^n(x, x) = Q^n(0, 0)$ : tous les états sont de même nature, et il suffit d'étudier $0$ par le critère du nœud {{mk-recurrence|Récurrence et transience}}, (ii).
+
+      *$d = 1$ et $d = 2$.* Comme $c_n \leqslant 1$, on a $c_n \geqslant c_n^2 \geqslant \frac1{4n}$ ({{mk-binomiaux|Coefficients multinomiaux}}, (ii)). La série harmonique diverge, puisque ses termes d'indices $2^k < n \leqslant 2^{k+1}$ ont une somme au moins égale à $\frac12$ ; donc $\sum_n Q^{2n}(0, 0) = +\infty$.
+
+      *$d = 3$.* Pour $n \geqslant 3$, $c_n \leqslant \frac1{\sqrt{2n + 1}} \leqslant \frac1{\sqrt n}$ et $M_n \leqslant \frac{18}{7n}$, d'où $Q^{2n}(0, 0) \leqslant \frac{18}7\,n^{-3/2}$. Pour $n \geqslant 2$,
+      $$\begin{aligned} &\frac1{\sqrt{n - 1}} - \frac1{\sqrt n} \\ &= \frac{1}{\sqrt n\sqrt{n - 1}\,(\sqrt n + \sqrt{n - 1})} \\ &\geqslant \frac{1}{2n^{3/2}}, \end{aligned}$$
+      si bien que les sommes partielles de $\sum n^{-3/2}$ sont majorées par $1 + 2$, par télescopage. La série $\sum_n Q^{2n}(0, 0)$ converge.
+    remarques:
+      - |
+        Une trajectoire de la marche dans le plan revient sans cesse à l'origine, mais à des instants de plus en plus espacés.
+
+        ```schema mk-polya
+        Les $5000$ premiers pas d'une marche simple sur $\mathbb Z^2$, en rouge, issue de l'origine, marquée en bleu ; le point noir est la position $X_{5000}$. La marche repasse $6$ fois par l'origine, la dernière fois au pas $4324$, après une longue excursion qui l'a menée, au pas $2549$, à plus de $80$ unités de l'origine à vol d'oiseau. La récurrence assure qu'elle y reviendra encore, presque sûrement, mais rien ne borne l'attente.
+        ```
+      - |
+        Pour $d = 3$, la série converge, mais lentement : ses $40$ premiers termes donnent $0{,}443$, et sa somme vaut $0{,}5164$, valeur que l'on obtient par une formule close tirée de l'analyse de Fourier, non démontrée ici. Par le point (i) du nœud {{mk-recurrence|Récurrence et transience}}, $E_0[N_0] \approx 1{,}5164$, et la probabilité de retour vaut $f_0 = 1 - \frac1{1{,}5164} \approx 0{,}340$ : un marcheur de l'espace a environ deux chances sur trois de ne jamais revenir à son point de départ.
+
+        Pour $d \geqslant 4$, la marche est encore transiente, ce que l'on démontre de même avec des coefficients à $d$ termes ; ce n'est pas fait ici.
+      - |
+        Pólya a établi ce théorème en 1921 (*Über eine Aufgabe der Wahrscheinlichkeitsrechnung betreffend die Irrfahrt im Straßennetz*, Mathematische Annalen 84). La démonstration usuelle passe par la formule de Stirling ; elle est remplacée ici par des comparaisons de quotients successifs, qui suffisent parce que seuls comptent les exposants $\frac12$, $1$ et $\frac32$ de $n$.
+
+  - id: mk-ruine
+    etiquette: Ruine du joueur
+    nature: proposition
+    titre: Ruine du joueur
+    texte: |
+      Soient $N \geqslant 1$ un entier, $x \in \{0, \dots, N\}$, $p \in \,]0, 1[$, $q = 1 - p$, et $(\varepsilon_k)_{k \geqslant 1}$ des variables indépendantes valant $1$ avec probabilité $p$ et $-1$ avec probabilité $q$. La fortune d'un joueur qui part de $x$ et gagne ou perd une unité à chaque partie est
+      $$S_n = x + \varepsilon_1 + \cdots + \varepsilon_n,$$
+      et $T = \inf\{n \geqslant 0 : S_n \in \{0, N\}\}$ est l'instant où il est ruiné ou atteint son objectif $N$. On note $\mathcal F_n = \sigma(\varepsilon_1, \dots, \varepsilon_n)$, $\mathcal F_0$ étant la tribu triviale.
+    enonce: |
+      (i) La suite $X_n = S_{\min(n, T)}$ est une chaîne issue de $x$ sur $\{0, \dots, N\}$, de matrice $Q(y, y + 1) = p$ et $Q(y, y - 1) = q$ pour $0 < y < N$, et $Q(0, 0) = Q(N, N) = 1$.
+
+      (ii) $T$ est un temps d'arrêt pour $(\mathcal F_n)$, et $E[T] < +\infty$ ; en particulier $T < +\infty$ presque sûrement.
+
+      (iii) Si $p = \frac12$, $P(S_T = N) = \frac xN$ et $E[T] = x(N - x)$.
+
+      (iv) Si $p \neq \frac12$, avec $r = q/p$,
+      $$\begin{aligned} P(S_T = N) &= \frac{1 - r^x}{1 - r^N}, \\ E[T] &= \frac{x - N\,P(S_T = N)}{q - p}. \end{aligned}$$
+    preuve: |
+      (i) Soient $x_0 = x, x_1, \dots, x_n$ tels que $A = \{X_0 = x_0, \dots, X_n = x_n\}$ soit de probabilité non nulle ; c'est un événement de $\mathcal F_n$. Si $x_n \in \{0, N\}$, alors $T \leqslant n$ sur $A$ et $X_{n+1} = x_n$. Sinon $T > n$ sur $A$, et $X_{n+1} = x_n + \varepsilon_{n+1}$, où $\varepsilon_{n+1}$ est indépendante de $\mathcal F_n$ par regroupement ({{p-independance|Indépendance}}, (ii)). Dans les deux cas, $P(X_{n+1} = y \mid A) = Q(x_n, y)$, et l'on conclut par la forme conditionnelle ({{mk-chaines|Chaînes de Markov}}, (i)).
+
+      (ii) $\{T = n\} = \{S_0, \dots, S_{n-1} \notin \{0, N\},\ S_n \in \{0, N\}\} \in \mathcal F_n$. Si $x \in \{0, N\}$, alors $T = 0$ et il n'y a rien à démontrer. Si $0 < x < N$, sur l'événement $\{T > jN\}$, qui appartient à $\mathcal F_{jN}$, la fortune vaut au moins $1$ à l'instant $jN$ ; si les $N$ parties suivantes sont gagnées, elle atteint $N$ avant l'instant $(j + 1)N$. Ces $N$ parties étant indépendantes de $\mathcal F_{jN}$,
+      $$\begin{aligned} &P(T > (j + 1)N) \\ &\leqslant (1 - p^N)\,P(T > jN), \end{aligned}$$
+      d'où $P(T > jN) \leqslant (1 - p^N)^j$. Comme $T = \sum_{k \geqslant 0}\mathbf 1_{\{T > k\}}$, la convergence monotone ({{m-beppo-levi|Convergence monotone}}) donne, en majorant chacun des $N$ termes $P(T > k)$, $jN \leqslant k < (j + 1)N$, par $P(T > jN)$,
+      $$\begin{aligned} E[T] &= \sum_{k \geqslant 0} P(T > k) \\ &\leqslant N\sum_{j \geqslant 0}(1 - p^N)^j = \frac{N}{p^N}. \end{aligned}$$
+
+      (iii) *Stratégie.* Pour chaque martingale $(M_n)$ ci-dessous, $\min(T, n)$ est un temps d'arrêt borné par $n$, car $\{\min(T, n) = n\} = \{T \leqslant n - 1\}^c \in \mathcal F_n$, et l'arrêt borné ({{mt-martingales|Martingales}}, (iii)) donne $E[M_{\min(T, n)}] = E[M_0]$ ; on fait ensuite tendre $n$ vers l'infini.
+
+      La suite $S_n$ est une martingale ({{mt-martingales|Martingales}}, (i), première assertion, la constante $x$ ne changeant rien). Comme $0 \leqslant S_{\min(T, n)} \leqslant N$ et que $S_{\min(T, n)} \to S_T$ presque sûrement, la convergence dominée ({{m-convergence-dominee|Convergence dominée}}, (i)) donne $E[S_T] = x$. Or $S_T \in \{0, N\}$, donc $N\,P(S_T = N) = x$.
+
+      La suite $S_n^2 - n$ est aussi une martingale : $S_n$ étant bornée par $|x| + n$ et $\mathcal F_n$-mesurable, et $\varepsilon_{n+1}$ indépendante de $\mathcal F_n$ ({{mt-conditionnelle|Espérance conditionnelle}}, (iv)),
+      $$\begin{aligned} &E[S_{n+1}^2 \mid \mathcal F_n] \\ &= S_n^2 + 2S_nE[\varepsilon_{n+1}] + E[\varepsilon_{n+1}^2] = S_n^2 + 1. \end{aligned}$$
+      Donc $E[S_{\min(T, n)}^2] = x^2 + E[\min(T, n)]$. Quand $n \to \infty$, le premier membre tend vers $E[S_T^2] = N^2\cdot\frac xN = Nx$ par convergence dominée, le second vers $x^2 + E[T]$ par convergence monotone, d'où $E[T] = x(N - x)$.
+
+      (iv) De même, $r^{S_n}$ est une martingale, puisque $E[r^{\varepsilon}] = p\,\frac qp + q\,\frac pq = 1$ et que $r^{S_n}$ est bornée et $\mathcal F_n$-mesurable ; et $0 < r^{S_{\min(T, n)}} \leqslant \max(1, r^N)$. Avec $h = P(S_T = N)$, l'arrêt borné et la convergence dominée donnent
+      $$h\,r^N + (1 - h) = r^x,$$
+      d'où la valeur de $h$, puisque $r \neq 1$. Enfin $S_n - n(p - q)$ est une martingale, et $E[S_T] - (p - q)E[T] = x$, soit $Nh - (p - q)E[T] = x$.
+    remarques:
+      - |
+        Pour $N = 10$ et $x = 3$, le joueur d'un jeu équitable atteint son objectif avec probabilité $0{,}3$, après $21$ parties en moyenne. Avec une probabilité de gain de $0{,}45$ au lieu de $0{,}5$ à chaque partie, la probabilité tombe à $0{,}128$ et la durée moyenne à $17{,}17$ : un léger biais suffit à diviser ses chances par plus de deux.
+
+        ```schema mk-ruine
+        La probabilité $P(S_T = N)$ d'atteindre $N = 10$ en fonction de la fortune initiale $x$ : en bleu pour un jeu équitable, où elle vaut $\frac x{10}$, en rouge pour $p = 0{,}45$. La courbe rouge reste très en dessous de la droite, sauf tout près de l'objectif ; au point $x = 3$, marqué, les deux valeurs sont $0{,}3$ et $0{,}128$.
+        ```
+      - |
+        La fonction $h(y) = P(S_T = N)$, vue comme fonction de la fortune initiale $y$, vérifie $h(y) = p\,h(y + 1) + q\,h(y - 1)$ pour $0 < y < N$, avec $h(0) = 0$ et $h(N) = 1$ : elle est harmonique pour la chaîne de (i), au sens du nœud {{mk-markov|Propriété de Markov}}. Les martingales employées ci-dessus sont les suites $h(X_n)$ et leurs analogues. Pour cette chaîne, les états $0$ et $N$ forment chacun une classe fermée récurrente, et les autres sont transients, puisqu'ils mènent à $0$ sans que $0$ mène à eux ({{mk-recurrence|Récurrence et transience}}, (iii)).
+      - |
+        En faisant tendre $N$ vers l'infini, on obtient la probabilité de retour en $0$ de la marche sur $\mathbb Z$ issue de $0$, de pas $+1$ avec probabilité $p > \frac12$ et $-1$ avec probabilité $q$, annoncée au nœud {{mk-recurrence|Récurrence et transience}}. Partant de $1$, l'événement « atteindre $0$ avant $N$ » croît avec $N$, et sa réunion est l'événement « atteindre $0$ », puisqu'une trajectoire qui atteint $0$ est bornée avant de l'atteindre. Par (iv) avec $x = 1$ et $r = q/p < 1$, sa probabilité est
+        $$1 - \frac{1 - r}{1 - r^N} \longrightarrow r = \frac qp.$$
+
+        Partant de $-1$, on retourne la droite et l'on translate de $N$ : atteindre $0$ avant $-N$ revient, pour une fortune initiale $N - 1$, à atteindre $N$ avant $0$, de probabilité $\frac{1 - r^{N-1}}{1 - r^N} \to 1$. Par la propriété de Markov à l'instant $1$, la probabilité de retour est donc $f_0 = p\cdot\frac qp + q \cdot 1 = 2q = 1 - (p - q)$, et, par symétrie, $f_0 = 1 - |p - q|$ pour tout $p \neq \frac12$. Pour $p = 0{,}6$, $f_0 = 0{,}8$, et $E_0[N_0] = \frac1{1 - f_0} = 5$.
+
+  - id: mk-invariante
+    etiquette: Mesures invariantes
+    nature: théorème
+    titre: Existence et unicité d'une mesure invariante
+    texte: |
+      Une [[mesure-invariante|mesure invariante]] pour $Q$ est une mesure $\lambda$ sur $I$ telle que $\lambda Q = \lambda$, c'est-à-dire
+      $$\lambda(y) = \sum_{z \in I}\lambda(z)Q(z, y)$$
+      pour tout $y \in I$.
+      Une **probabilité invariante** est une mesure invariante de masse $1$. Si $X_0$ a pour loi une probabilité invariante $\pi$, alors $X_n$ a pour loi $\pi Q^n = \pi$ pour tout $n$ ({{mk-chaines|Chaînes de Markov}}, (ii)) : la chaîne est en **équilibre**.
+
+      Pour $x \in I$, soit $\gamma_x(y)$ le nombre moyen de visites en $y$ pendant une excursion hors de $x$ :
+      $$\gamma_x(y) = E_x\Big[\sum_{n=0}^{T_x - 1}\mathbf 1_{\{X_n = y\}}\Big].$$
+    enonce: |
+      Soit $Q$ irréductible et récurrente, et $x \in I$.
+
+      (i) $\gamma_x(x) = 1$, $\gamma_x$ est une mesure invariante, et $0 < \gamma_x(y) < +\infty$ pour tout $y$.
+
+      (ii) Toute mesure invariante $\lambda$ telle que $\lambda(x) = 1$ est égale à $\gamma_x$. Une mesure invariante qui prend la valeur $+\infty$ en un état la prend en tous, par irréductibilité ; les mesures invariantes non nulles et à valeurs finies sont donc les multiples $c\,\gamma_x$, $c > 0$.
+
+      (iii) $\sum_{y \in I}\gamma_x(y) = E_x[T_x]$.
+    preuve: |
+      (i) *Une autre écriture.* Sous $P_x$, $T_x < +\infty$ presque sûrement, et $X_{T_x} = x = X_0$ ; on peut donc compter les visites aux instants $1, \dots, T_x$ au lieu de $0, \dots, T_x - 1$, et, par convergence monotone,
+      $$\gamma_x(y) = \sum_{n \geqslant 1} P_x(X_n = y,\ n \leqslant T_x).$$
+
+      Pour $n \geqslant 1$, l'événement $\{n \leqslant T_x\}$ est le complémentaire de $\{T_x \leqslant n - 1\}$, donc appartient à $\mathcal F_{n-1}$ ; la propriété de Markov à l'instant $n - 1$ ({{mk-markov|Propriété de Markov}}, (ii)) donne
+      $$\begin{aligned} &P_x(X_{n-1} = z,\ X_n = y,\ n \leqslant T_x) \\ &= P_x(X_{n-1} = z,\ n - 1 < T_x)\,Q(z, y). \end{aligned}$$
+
+      *Invariance.* En sommant sur $z$, puis sur $n \geqslant 1$, par paquets,
+      $$\begin{aligned} \gamma_x(y) &= \sum_z\Big(\sum_{m \geqslant 0}P_x(X_m = z,\ m < T_x)\Big) \\ &\qquad \cdot Q(z, y) \\ &= \sum_z \gamma_x(z)\,Q(z, y). \end{aligned}$$
+      Comme $X_n \neq x$ pour $0 < n < T_x$, seule la visite de l'instant $0$ compte dans $\gamma_x(x)$, qui vaut $1$.
+
+      *Positivité et finitude.* Par récurrence, $\gamma_x = \gamma_xQ^n$ pour tout $n$. Soient $m$ et $r$ tels que $Q^m(x, y) > 0$ et $Q^r(y, x) > 0$ ; alors $\gamma_x(y) \geqslant \gamma_x(x)Q^m(x, y) > 0$, et $1 = \gamma_x(x) \geqslant \gamma_x(y)Q^r(y, x)$, d'où $\gamma_x(y) < +\infty$.
+
+      (ii) *Minoration.* En remplaçant, dans $\lambda(y) = Q(x, y) + \sum_{z_1 \neq x}\lambda(z_1)Q(z_1, y)$, chaque $\lambda(z_1)$ par sa propre expression, et ainsi de suite $k$ fois, on obtient
+      $$\begin{aligned} \lambda(y) = {}&\sum_{n=1}^{k}\ \sum_{z_1, \dots, z_{n-1} \neq x} Q(x, z_{n-1}) \\ &\qquad \cdots Q(z_1, y) + R_k(y), \end{aligned}$$
+      où $R_k(y) \geqslant 0$ est la somme des termes contenant encore $\lambda$. Par la formule des chemins, le terme d'indice $n$ est $P_x(X_n = y,\ n \leqslant T_x)$ ; donc $\lambda(y) \geqslant \sum_{n=1}^k P_x(X_n = y,\ n \leqslant T_x)$ pour tout $k$, et $\lambda \geqslant \gamma_x$ par l'écriture de (i).
+
+      *Égalité.* $\lambda$ est finie, comme $\gamma_x$ en (i), puisque $1 = \lambda(x) \geqslant \lambda(y)Q^r(y, x)$. La différence $\nu = \lambda - \gamma_x$ est donc une mesure invariante, nulle en $x$. Pour tout $y$, $0 = \nu(x) \geqslant \nu(y)Q^r(y, x)$, d'où $\nu(y) = 0$.
+
+      *Les autres mesures invariantes.* Si $\lambda$ est invariante et $\lambda(y) = +\infty$, alors $\lambda(z) \geqslant \lambda(y)Q^m(y, z) = +\infty$ pour tout $z$, $m$ étant choisi tel que $Q^m(y, z) > 0$ ; la mesure identiquement égale à $+\infty$ est d'ailleurs invariante. Si $\lambda$ est non nulle et à valeurs finies, $\lambda(z) > 0$ pour un $z$, et $\lambda(x) \geqslant \lambda(z)Q^r(z, x) > 0$ ; la mesure $\lambda/\lambda(x)$ vaut $1$ en $x$, donc égale $\gamma_x$.
+
+      (iii) Par convergence monotone, en sommant d'abord sur $y$ :
+      $$\begin{aligned} \sum_y\gamma_x(y) &= E_x\Big[\sum_{n=0}^{T_x - 1}\sum_y\mathbf 1_{\{X_n = y\}}\Big] \\ &= E_x[T_x]. \end{aligned}$$
+    remarques:
+      - |
+        L'hypothèse de récurrence ne peut pas être levée dans (ii). Pour la marche sur $\mathbb Z$ qui fait un pas $+1$ avec probabilité $p \neq \frac12$ et $-1$ avec probabilité $q$, transiente ({{mk-recurrence|Récurrence et transience}}), la mesure de comptage est invariante, puisque $p + q = 1$, et la mesure $\lambda(y) = (p/q)^y$ aussi :
+        $$\lambda(y - 1)\,p + \lambda(y + 1)\,q = \Big(\frac pq\Big)^y(q + p).$$
+        Ces deux mesures invariantes ne sont pas proportionnelles.
+      - |
+        La mesure $\gamma_x$ a un sens intuitif : la proportion du temps passé en $y$ pendant une excursion hors de $x$. Le théorème dit que ces proportions ne dépendent de $x$ qu'à un facteur près, celui qui ramène $\gamma_x(x)$ à $1$ ; c'est ce qui permettra, au nœud suivant, de lire la mesure invariante sur les temps de retour.
+
+  - id: mk-recurrence-positive
+    etiquette: Récurrence positive
+    nature: théorème
+    titre: Récurrence positive et probabilité invariante
+    texte: |
+      Un état $x$ est [[recurrent-positif|récurrent positif]] si $E_x[T_x] < +\infty$, et **récurrent nul** s'il est récurrent et que $E_x[T_x] = +\infty$. Un état récurrent positif est récurrent, puisque $T_x$ est alors presque sûrement fini.
+    enonce: |
+      Soit $Q$ irréductible. Les conditions suivantes sont équivalentes :
+
+      (a) un état est récurrent positif ;
+
+      (b) tous les états sont récurrents positifs ;
+
+      (c) $Q$ a une probabilité invariante $\pi$.
+
+      Elles ont lieu si $I$ est fini. La probabilité invariante est alors unique, et
+      $$\pi(x) = \frac1{E_x[T_x]} \quad \text{pour tout } x \in I.$$
+    preuve: |
+      *(a) entraîne (c).* Si $x$ est récurrent positif, il est récurrent, donc $Q$ l'est ({{mk-recurrence|Récurrence et transience}}, (iii)). La mesure $\gamma_x$ est invariante, de masse $E_x[T_x] < +\infty$ ({{mk-invariante|Mesures invariantes}}), et $\pi = \gamma_x/E_x[T_x]$ est une probabilité invariante.
+
+      *(c) entraîne (b).* Soit $\pi$ une probabilité invariante. Elle charge un état $x$, et pour tout $y$, $\pi(y) = (\pi Q^m)(y) \geqslant \pi(x)Q^m(x, y) > 0$ pour un $m$ convenable.
+
+      Supposons $Q$ non récurrente : tous ses états sont alors transients ({{mk-recurrence|Récurrence et transience}}, (iii)). Pour tous $x, y$, soit $r$ tel que $Q^r(y, x) > 0$ ; alors $Q^{n+r}(y, y) \geqslant Q^r(y, x)\,Q^n(x, y)$, et la série des $Q^n(x, y)$ converge avec celle des $Q^n(y, y)$ ({{mk-recurrence|Récurrence et transience}}, (ii)) : $Q^n(x, y) \to 0$. Par convergence dominée pour la mesure de comptage sur $I$ ({{m-convergence-dominee|Convergence dominée}}, (i)), les termes $\pi(x)Q^n(x, y)$ étant majorés par $\pi(x)$, de somme $1$,
+      $$\pi(y) = \sum_x \pi(x)\,Q^n(x, y) \longrightarrow 0,$$
+      ce qui contredit $\pi(y) > 0$. Donc $Q$ est récurrente.
+
+      Pour tout $x$, la mesure $\pi/\pi(x)$ est invariante et vaut $1$ en $x$ ; elle est donc égale à $\gamma_x$ ({{mk-invariante|Mesures invariantes}}, (ii)), et sa masse est
+      $$E_x[T_x] = \frac1{\pi(x)} < +\infty.$$
+      Cela donne (b), l'unicité de $\pi$ et la formule.
+
+      *Le cas fini.* Une chaîne irréductible sur un ensemble fini est récurrente ({{mk-recurrence|Récurrence et transience}}, (iv)), et la masse de $\gamma_x$, somme finie de réels, est finie : (a) a lieu. Enfin (b) entraîne (a) trivialement.
+    remarques:
+      - |
+        Pour la chaîne à trois états du nœud {{mk-transition|Matrices de transition}}, on résout $\pi Q = \pi$ : la première équation, $\pi(1) = \frac12\pi(1) + \frac14\pi(2)$, donne $\pi(2) = 2\pi(1)$, la troisième $\pi(3) = \frac34\pi(2)$, et la normalisation $\pi = (\frac29, \frac49, \frac13)$. Partant de $1$, la chaîne y revient donc en $\frac92$ pas en moyenne, ce que confirme la résolution exacte du système des temps moyens d'atteinte.
+      - |
+        Dans le modèle proposé par les Ehrenfest pour discuter les objections faites à Boltzmann, $N$ boules sont réparties entre deux urnes, et à chaque instant on choisit une boule uniformément pour la changer d'urne. Le nombre $X_n$ de boules de la première urne est une chaîne irréductible sur $\{0, \dots, N\}$, avec $Q(k, k - 1) = \frac kN$ et $Q(k, k + 1) = \frac{N - k}N$, de période $2$ puisque chaque pas change la parité de $X_n$. La loi binomiale $\pi(k) = \binom Nk 2^{-N}$ est invariante, puisque $\binom N{k-1}(N - k + 1) = \binom Nk k$ et $\binom N{k+1}(k + 1) = \binom Nk(N - k)$ ({{mk-binomiaux|Coefficients multinomiaux}}, (i)).
+
+        Le temps moyen de retour à l'état où toutes les boules sont dans la seconde urne vaut donc $E_0[T_0] = 2^N$, soit $1024$ pour $N = 10$ et environ $1{,}27 \cdot 10^{30}$ pour $N = 100$, alors que le retour à l'état équilibré $5$, pour $N = 10$, ne demande en moyenne que $\frac{1024}{252} \approx 4{,}06$ pas. Le modèle a été proposé en 1907 (*Über zwei bekannte Einwände gegen das Boltzmannsche H-Theorem*, Physikalische Zeitschrift 8) ; le calcul ci-dessus éclaire l'objection de récurrence : le retour à un état très ordonné est certain, mais son attente dépasse toute échelle physique.
+      - |
+        Pour la marche simple sur $\mathbb Z$, récurrente ({{mk-polya|Théorème de Pólya}}), la mesure de comptage est invariante, de masse infinie ; par (ii) du nœud {{mk-invariante|Mesures invariantes}}, toute mesure invariante non nulle et à valeurs finies en est un multiple, et il n'y a pas de probabilité invariante. La marche est donc récurrente nulle : elle revient presque sûrement en $0$, mais $E_0[T_0] = +\infty$.
+      - |
+        Kac a démontré en 1947 (*On the notion of recurrence in discrete stochastic processes*, Bulletin of the AMS 53) une formule de même nature pour les suites stationnaires : partant d'un ensemble $A$, le temps moyen de retour dans $A$ est l'inverse de la probabilité de $A$ sous la loi stationnaire, sous une hypothèse d'ergodicité.
+
+  - id: mk-ergodique
+    etiquette: Théorème ergodique
+    nature: théorème
+    titre: Théorème ergodique pour les chaînes de Markov
+    texte: |
+      Pour une chaîne $(X_n)$ et $y \in I$, soit $V_n(y) = \sum_{k=0}^{n-1}\mathbf 1_{\{X_k = y\}}$ le nombre de visites en $y$ avant l'instant $n$, et $m_y = E_y[T_y] \in [1, +\infty]$ le temps moyen de retour, avec la convention $\frac1{+\infty} = 0$.
+    enonce: |
+      Soit $Q$ irréductible et $(X_n)$ une chaîne $(\mu, Q)$, pour une loi initiale $\mu$ quelconque.
+
+      (i) *Excursions.* Si $Q$ est récurrente, soient $y \in I$, $R_0 = H_y$ et $R_{r+1} = \inf\{n > R_r : X_n = y\}$. Les $R_r$ sont finis presque sûrement, et les longueurs $S_r = R_r - R_{r-1}$, $r \geqslant 1$, sont des variables indépendantes, de même loi que $T_y$ sous $P_y$.
+
+      (ii) Pour tout $y \in I$, presque sûrement,
+      $$\frac{V_n(y)}{n} \longrightarrow \frac1{m_y}.$$
+
+      (iii) Si $Q$ est récurrente positive, de probabilité invariante $\pi$, pour toute fonction bornée $f : I \to \lex{ensemble-reels}{\mathbb R}$, presque sûrement,
+      $$\frac1n\sum_{k=0}^{n-1}f(X_k) \longrightarrow \sum_{y \in I}\pi(y)f(y).$$
+    preuve: |
+      (i) Les $R_r$ sont des temps d'arrêt, comme au point (i) du nœud {{mk-recurrence|Récurrence et transience}}, et ils sont finis presque sûrement, puisque $y$ est visité une infinité de fois (même nœud, (v)).
+
+      Montrons par récurrence sur $r$ que, pour tous entiers $a_0 \geqslant 0$ et $a_1, \dots, a_r \geqslant 1$,
+      $$\begin{aligned} &P(R_0 = a_0, S_1 = a_1, \dots, S_r = a_r) \\ &= P(R_0 = a_0)\prod_{i=1}^r P_y(T_y = a_i). \end{aligned}$$
+      L'événement $G = \{R_0 = a_0, S_1 = a_1, \dots, S_{r-1} = a_{r-1}\}$ appartient à $\mathcal F_{R_{r-1}}$, puisque son intersection avec $\{R_{r-1} = n\}$ ne dépend que de $X_0, \dots, X_n$ ; sur $G$, $X_{R_{r-1}} = y$ et $S_r$ est le temps de retour en $y$ de $\theta_{R_{r-1}}X$. La propriété de Markov forte ({{mk-markov-forte|Markov forte}}, (ii)) donne $P(G \cap \{S_r = a_r\}) = P(G)\,P_y(T_y = a_r)$.
+
+      En sommant sur $a_0$ et sur les $a_i$ omis, la formule produit vaut pour toute sous-famille finie des $S_r$. Les événements $\{S_r = a\}$, avec $\varnothing$, forment un π-système qui engendre $\sigma(S_r)$, et les $S_r$ sont indépendantes ({{p-independance|Indépendance}}, (i)).
+
+      (ii) *Cas transient.* Si $Q$ est transiente, $P_y(T_y = +\infty) > 0$, donc $m_y = +\infty$. Par la propriété de Markov forte au temps $H_y$ et le point (ii) du nœud {{mk-recurrence|Récurrence et transience}}, le nombre total de visites $N_y$ est presque sûrement fini, et $V_n(y) \leqslant N_y$ donne $V_n(y)/n \to 0$.
+
+      *Cas récurrent.* Par (i), $R_r = R_0 + S_1 + \cdots + S_r$, où les $S_i$ sont indépendantes, de même loi, à valeurs entières $\geqslant 1$, d'espérance $m_y$. La loi forte de Kolmogorov ({{mt-loi-forte|Loi forte de Kolmogorov}}, (ii) si $m_y < +\infty$, (iii) sinon) donne $R_r/r \to m_y$ presque sûrement, puisque $R_0/r \to 0$.
+
+      Pour $n > R_0$, on a $V_n(y) \geqslant 1$, et la $V_n(y)$-ième visite a lieu avant $n$, la suivante après : $R_{V_n(y) - 1} < n \leqslant R_{V_n(y)}$. Donc
+      $$\frac{R_{V_n(y)-1}}{V_n(y)} < \frac n{V_n(y)} \leqslant \frac{R_{V_n(y)}}{V_n(y)}.$$
+      Comme $V_n(y) \to +\infty$ presque sûrement, les deux bornes tendent vers $m_y$, et $n/V_n(y) \to m_y$, ce qui est l'énoncé, y compris si $m_y = +\infty$.
+
+      (iii) Par le nœud {{mk-recurrence-positive|Récurrence positive}}, $\pi(y) = 1/m_y$. L'intersection $\Omega_0$ des événements $\{V_n(y)/n \to \pi(y)\}$, indexée par l'ensemble dénombrable $I$, est de probabilité $1$. Soient $\omega \in \Omega_0$, $c$ un majorant de $|f|$, $\varepsilon > 0$, et $J \subset I$ fini tel que $\pi(I \setminus J) < \varepsilon$, formé des premiers états de l'énumération.
+
+      Comme $\sum_y V_n(y)/n = 1 = \sum_y \pi(y)$,
+      $$\begin{aligned} \sum_{y \notin J}\frac{V_n(y)}n &= \sum_{y \in J}\Big(\pi(y) - \frac{V_n(y)}n\Big) \\ &\quad + \pi(I \setminus J) \\ &\leqslant \delta_n + \varepsilon, \end{aligned}$$
+      où $\delta_n = \sum_{y \in J}|V_n(y)/n - \pi(y)|$ tend vers $0$. Donc
+      $$\begin{aligned} &\Big|\frac1n\sum_{k<n}f(X_k) - \sum_y\pi(y)f(y)\Big| \\ &= \Big|\sum_y\Big(\frac{V_n(y)}n - \pi(y)\Big)f(y)\Big| \\ &\leqslant c\,\delta_n + c\,(\delta_n + \varepsilon) + c\,\varepsilon, \end{aligned}$$
+      dont la limite supérieure est au plus $2c\varepsilon$.
+    remarques:
+      - |
+        Le théorème dit que la moyenne dans le temps, le long d'une seule trajectoire, est égale à la moyenne sous la loi d'équilibre : la fraction du temps passé en $y$ tend vers $\pi(y)$, quel que soit le point de départ.
+
+        ```schema mk-ergodique
+        Pour une trajectoire de la chaîne à trois états prise pour exemple, issue de $1$, les fréquences de visite $V_n(y)/n$ des états $1$, $2$ et $3$, en rouge, bleu et vert, l'axe des temps étant gradué en échelle logarithmique jusqu'à $n = 10^5$. Elles fluctuent d'abord fortement, puis se rapprochent des valeurs $\frac29$, $\frac49$ et $\frac13$, en pointillé.
+        ```
+      - |
+        L'apériodicité n'est pas demandée. Pour le modèle d'Ehrenfest, de période $2$, la loi de $X_n$ ne converge pas, mais la fraction du temps passé en $k$ tend vers $\binom Nk2^{-N}$. C'est la différence entre la convergence des moyennes, toujours vraie, et celle des lois, qui demande l'apériodicité ({{mk-couplage|Convergence vers l'équilibre}}).
+
+  - id: mk-couplage
+    etiquette: Convergence vers l'équilibre
+    nature: théorème
+    titre: Convergence vers l'équilibre par couplage
+    texte: |
+      Soit $I$ fini et $Q$ irréductible et apériodique. Soient $N \geqslant 1$ tel que $Q^N(x, y) > 0$ pour tous $x, y$ ({{mk-classes|Classes, période}}, (iii)) et $\delta = \min_{x, y}Q^N(x, y) > 0$.
+    enonce: |
+      (i) Pour toutes probabilités $\mu$ et $\nu$ sur $I$ et tout $n \in \mathbb N$,
+      $$\begin{aligned} &\sum_{y \in I}\big|(\mu Q^n)(y) - (\nu Q^n)(y)\big| \\ &\leqslant 2(1 - \delta)^{\lfloor n/N\rfloor}. \end{aligned}$$
+
+      (ii) $Q$ a une unique probabilité invariante $\pi$, et, pour toute probabilité $\mu$,
+      $$\sum_{y \in I}\big|(\mu Q^n)(y) - \pi(y)\big| \leqslant 2(1 - \delta)^{\lfloor n/N\rfloor}.$$
+      En particulier, pour toute chaîne $(\mu, Q)$, $P(X_n = y) \to \pi(y)$ pour tout $y$, à vitesse géométrique.
+    preuve: |
+      (i) *Le couplage.* Fixons $n$. Sur l'ensemble fini $\Omega = I^{n+1} \times I^{n+1}$, muni de toutes ses parties, soit $P$ la probabilité de poids
+      $$\begin{aligned} &p(x_0, \dots, x_n;\ y_0, \dots, y_n) \\ &= \mu(x_0)Q(x_0, x_1)\cdots Q(x_{n-1}, x_n) \\ &\quad \cdot \nu(y_0)Q(y_0, y_1)\cdots Q(y_{n-1}, y_n), \end{aligned}$$
+      produit des poids de deux chaînes à horizon fini ({{mk-existence|Existence}}, (ii)). En sommant sur l'autre composante, les coordonnées $X_k$ forment une chaîne $(\mu, Q)$ jusqu'à l'instant $n$, et les $Y_k$ une chaîne $(\nu, Q)$ ; donc $P(X_n = y) = (\mu Q^n)(y)$ et $P(Y_n = y) = (\nu Q^n)(y)$ ({{mk-chaines|Chaînes de Markov}}, (ii)). Soit $T = \min\{k \leqslant n : X_k = Y_k\}$, et $T = +\infty$ s'il n'y en a pas.
+
+      *Après la rencontre.* Pour $t \leqslant n$ et $z, y \in I$, l'événement $\{T = t, X_t = Y_t = z\}$ ne porte que sur les coordonnées d'indices $\leqslant t$. En sommant les poids sur les coordonnées d'indices $> t$, sauf $x_n = y$, le facteur de la première chaîne donne $Q^{n-t}(z, y)$ par la formule des chemins, celui de la seconde donne $1$, d'où
+      $$\begin{aligned} &P(T = t,\ X_t = z,\ X_n = y) \\ &= P(T = t,\ X_t = z)\,Q^{n-t}(z, y), \end{aligned}$$
+      et la même formule pour $Y$, par symétrie. En sommant sur $t \leqslant n$ et $z$, $P(X_n = y,\ T \leqslant n) = P(Y_n = y,\ T \leqslant n)$, puis
+      $$\begin{aligned} &\sum_y\big|(\mu Q^n)(y) - (\nu Q^n)(y)\big| \\ &= \sum_y\big|P(X_n = y,\ T > n) \\ &\qquad - P(Y_n = y,\ T > n)\big| \\ &\leqslant 2P(T > n). \end{aligned}$$
+
+      *La rencontre.* Soit $j$ tel que $(j + 1)N \leqslant n$. Par le même calcul, appliqué à l'instant $jN$ et aux événements $\{T > jN, X_{jN} = a, Y_{jN} = b\}$, avec $a \neq b$, la probabilité que les deux chaînes soient au même point à l'instant $(j + 1)N$ sachant cet événement est
+      $$\begin{aligned} \sum_{z \in I}Q^N(a, z)\,Q^N(b, z) &\geqslant \delta\sum_z Q^N(b, z) \\ &= \delta. \end{aligned}$$
+      Comme $\{T > (j + 1)N\}$ est contenu dans $\{T > jN\} \cap \{X_{(j+1)N} \neq Y_{(j+1)N}\}$, en sommant sur les couples $(a, b)$ on obtient $P(T > (j + 1)N) \leqslant (1 - \delta)\,P(T > jN)$, et, par récurrence, $P(T > n) \leqslant P(T > jN) \leqslant (1 - \delta)^j$ pour $j = \lfloor n/N\rfloor$.
+
+      (ii) *Existence.* Soit $\mu$ une probabilité. Appliqué à $\nu = \mu Q^k$, pour $k \in \mathbb N$, le point (i) donne $|(\mu Q^n)(y) - (\mu Q^{n+k})(y)| \leqslant 2(1 - \delta)^{\lfloor n/N\rfloor}$ : pour chaque $y$, la suite $((\mu Q^n)(y))_n$ est de Cauchy, donc converge vers un réel $\pi(y)$ ({{ar-cauchy|Complétude}}). Les sommes sur $I$ étant finies, $\pi$ est une probabilité, et
+      $$\pi Q = \lim_n\,(\mu Q^n)Q = \lim_n \mu Q^{n+1} = \pi.$$
+
+      *Unicité et vitesse.* Pour une probabilité invariante $\pi'$, $\pi'Q^n = \pi'$, et (i), appliqué à $\mu$ et à $\nu = \pi'$, donne l'inégalité annoncée avec $\pi'$ ; en la prenant pour $\mu = \pi$, invariante, son premier membre vaut $\sum_y|\pi(y) - \pi'(y)|$ pour tout $n$, et tend vers $0$ : $\pi = \pi'$.
+    remarques:
+      - |
+        Pour la chaîne à trois états du nœud {{mk-transition|Matrices de transition}}, $Q^2$ a tous ses coefficients non nuls, le plus petit étant $Q^2(3, 1) = \frac1{12}$ ; on peut prendre $N = 2$ et $\delta = \frac1{12}$.
+
+        ```schema mk-couplage
+        À gauche, les probabilités $P(X_n = y)$ pour la chaîne à trois états issue de $1$, en rouge, bleu et vert pour $y = 1, 2, 3$ : elles s'approchent des valeurs $\frac29$, $\frac49$ et $\frac13$ de $\pi$, en pointillé. À droite, en échelle logarithmique, l'écart total $\sum_y|P(X_n = y) - \pi(y)|$, en rouge, et la borne $2(1 - \frac1{12})^{\lfloor n/2\rfloor}$ du théorème, en gris : toutes deux décroissent géométriquement, mais la borne beaucoup plus lentement.
+        ```
+
+        L'écart vaut $0{,}0068$ pour $n = 10$, alors que la borne vaut $1{,}29$ ; le vrai taux, $\frac13 + \frac{\sqrt{10}}{12} \approx 0{,}597$ par pas, est le plus grand module des valeurs propres de $Q$ autres que $1$. Le couplage donne la convergence et sa nature géométrique sans aucune algèbre linéaire, mais pas la meilleure constante.
+      - |
+        L'idée de faire marcher deux copies indépendantes de la chaîne jusqu'à leur rencontre est due à Doeblin, dans son exposé de 1938 sur les chaînes à un nombre fini d'états (*Exposé de la théorie des chaînes simples constantes de Markoff à un nombre fini d'états*, Revue mathématique de l'Union interbalkanique 2).      - |
+        Le couplage est construit ici sur un ensemble fini, à horizon $n$ fixé, et la probabilité invariante est obtenue comme limite des lois $\mu Q^n$, sans passer par les temps de retour : le théorème ne demande ni suite infinie de variables indépendantes ni mesure de Lebesgue, et il est démontré sans aucune forme du choix. Par le nœud {{mk-recurrence-positive|Récurrence positive}}, on a de plus $\pi(x) = 1/E_x[T_x]$. Une autre démonstration passe par le théorème de Perron-Frobenius sur les matrices à coefficients positifs, qui n'est pas établi dans l'atlas.
+
+aretes:
+  - [mk-transition, mk-chaines]
+  - [mk-chaines, mk-existence]
+  - [mk-chaines, mk-markov]
+  - [mk-markov, mk-markov-forte]
+  - [mk-chaines, mk-classes]
+  - [mk-markov-forte, mk-recurrence]
+  - [mk-classes, mk-recurrence]
+  - [mk-binomiaux, mk-polya]
+  - [mk-recurrence, mk-polya]
+  - [mk-recurrence, mk-ruine]
+  - [mk-recurrence, mk-invariante]
+  - [mk-invariante, mk-recurrence-positive]
+  - [mk-recurrence-positive, mk-ergodique]
+  - [mk-recurrence-positive, mk-couplage]
+  - [mk-existence, mk-couplage]

@@ -904,3 +904,18 @@ disposition complète de chacun (fonction `placer`) et l'on garde la moins large
 courtes. Aucun nombre de croisements ne change ; aucune largeur n'augmente ; ar-topo passe à 990 px, et 21 autres
 graphes rétrécissent (ac-modules 926 → 690, fourier 1030 → 837, rel 779 → 675, top 840 → 718…). Le graphe de
 l'édifice garde le seul rangement au plus tôt (le rang affiché y est le plus long chemin).
+
+## 61. Chaînes de Markov (30 octobre 2026)
+
+Chapitre `mart-markov` (contenu/mart-markov.yaml) dans mart, qui fournit temps d'arrêt et arrêt borné ; arêtes
+mt-doob → mt-loi-forte → mart-markov. Nouvelle fiche mt-loi-forte : loi forte de Kolmogorov pour des variables iid
+intégrables, par l'inégalité maximale, sans complétude de L² et sans choix (p-loi-forte y renvoie ; seule la version
+d'Etemadi reste admise). Quatorze fiches mk-* : matrices de transition, chaînes (loi unique par Dynkin), existence
+par X_{n+1} = f(X_n, U_{n+1}) (⋆ hérité de λ par p-suites-iid, seul ⋆ du chapitre ; P_x suppose une chaîne issue de
+x, fournie sans choix par une chaîne irréductible donnée), propriétés de Markov simple et forte, classes et période,
+récurrence (loi géométrique des visites, critère Σ Qⁿ(x, x)), encadrements des binomiaux et trinomiaux sans Stirling,
+Pólya (d = 1, 2 récurrente, d = 3 transiente), ruine du joueur (et f₀ = 1 − |p − q| pour la marche biaisée), mesure
+invariante (unique parmi les mesures finies non nulles), π(x) = 1/E_x[T_x], Ehrenfest, théorème ergodique par
+excursions, convergence vers π par le couplage de Doeblin (π construite comme limite de μQⁿ, sans Perron-Frobenius).
+Relu : quatre fautes (renvoi à un nœud frère dans la loi forte, mesure ≡ +∞, P_x sans chaîne donnée, formule
+vérifiée seulement numériquement) et onze retouches.

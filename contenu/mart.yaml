@@ -2,7 +2,9 @@
 # Espérance conditionnelle comme projection orthogonale dans L², prolongée à L¹ ;
 # martingales, temps d'arrêt et arrêt borné ; inégalité maximale de Kolmogorov-Doob ;
 # convergence des martingales bornées dans L² ; montées de Doob et convergence presque sûre des
-# martingales bornées dans L¹ (démontrées le 29 oct. 2026) ; série harmonique aléatoire et urne de Pólya.
+# martingales bornées dans L¹ (démontrées le 29 oct. 2026) ; série harmonique aléatoire et urne de Pólya ;
+# loi forte de Kolmogorov pour des variables intégrables (mt-loi-forte, 30 oct. 2026) et chapitre « Chaînes de
+# Markov » (sous-graphe mart-markov, 30 oct. 2026).
 # Choix : espérance conditionnelle sans choix pour une sous-tribu engendrée par une suite d'événements
 # (mt-conditionnelle (v), par f-lp (v) et f-hilbert (iv)) ; choix dénombrable pour une sous-tribu quelconque.
 
@@ -144,11 +146,11 @@ noeuds:
       $$\begin{aligned} &E[(M_n - M_m)^2] \\ &= \sum_{m < k \leqslant n} E[(M_k - M_{k-1})^2] : \end{aligned}$$
       la suite est de Cauchy dans $L^2$, qui est complet ({{f-lp|Espaces L¹ et L²}}), et converge vers $M_\infty$.
 
-      Pour $m$ fixé, $(M_{m+j} - M_m)_{j \geqslant 0}$ est une martingale ; l'inégalité maximale et la continuité croissante donnent
-      $$\begin{aligned} &P\Big(\sup_{n \geqslant m}|M_n - M_m| \geqslant \varepsilon\Big) \\ &\leqslant \frac{1}{\varepsilon^2}\sum_{k > m} E\big[(M_k - M_{k-1})^2\big], \end{aligned}$$
+      Pour $m$ fixé, $(M_{m+j} - M_m)_{j \geqslant 0}$ est une martingale ; l'inégalité maximale, et la continuité croissante appliquée à la réunion croissante en $n'$ des événements $\{\max_{m \leqslant n \leqslant n'}|M_n - M_m| > \varepsilon\}$, donnent
+      $$\begin{aligned} &P\Big(\sup_{n \geqslant m}|M_n - M_m| > \varepsilon\Big) \\ &\leqslant \frac{1}{\varepsilon^2}\sum_{k > m} E\big[(M_k - M_{k-1})^2\big], \end{aligned}$$
       qui tend vers $0$ quand $m \to \infty$.
 
-      Les événements $\{\sup_{n, n' \geqslant m}|M_n - M_{n'}| \geqslant 2\varepsilon\}$ décroissent donc vers un événement négligeable.
+      Les événements $\{\sup_{n, n' \geqslant m}|M_n - M_{n'}| > 2\varepsilon\}$, contenus dans les précédents, décroissent donc vers un événement négligeable.
 
       Avec $\varepsilon = 1/(j + 1)$, $j \in \lex{ensemble-entiers-naturels}{\mathbb N}$, la suite est presque sûrement de Cauchy, donc converge presque sûrement, vers une limite égale à $M_\infty$ presque sûrement, une suite extraite convergeant presque sûrement vers $M_\infty$.
 
@@ -157,6 +159,56 @@ noeuds:
     remarques:
       - |
         Le théorème de Doob affirme plus : une martingale bornée dans $\lex{espace-L1}{L^1}$ converge presque sûrement. Sa démonstration, qui compte les **montées** de la martingale entre deux niveaux, fait l'objet des deux nœuds suivants, {{mt-montees|Montées}} et {{mt-doob-l1|Martingales bornées dans L¹}}.
+
+  - id: mt-loi-forte
+    etiquette: Loi forte de Kolmogorov
+    nature: théorème
+    titre: Loi forte des grands nombres pour des variables intégrables
+    enonce: |
+      (i) *Cesàro, Kronecker.* Si une suite réelle $(a_n)_{n \geqslant 1}$ tend vers $\ell$, alors $\frac1n\sum_{k=1}^n a_k \to \ell$. Si la série $\sum_{k \geqslant 1} a_k/k$ converge, alors $\frac1n\sum_{k=1}^n a_k \to 0$.
+
+      (ii) Soient $X_1, X_2, \dots$ des variables indépendantes, de même loi, intégrables, $\mu = E[X_1]$ et $S_n = X_1 + \cdots + X_n$. Alors, presque sûrement,
+      $$\frac{S_n}{n} \longrightarrow \mu.$$
+
+      (iii) Si les $X_k$ sont indépendantes, de même loi, positives, et si $E[X_1] = +\infty$, alors $S_n/n \to +\infty$ presque sûrement.
+    preuve: |
+      (i) *Cesàro.* Soit $\varepsilon > 0$ et $K$ tel que $|a_k - \ell| \leqslant \varepsilon$ pour $k > K$. Pour $n > K$,
+      $$\Big|\frac1n\sum_{k=1}^n a_k - \ell\Big| \leqslant \frac1n\sum_{k=1}^K|a_k - \ell| + \varepsilon,$$
+      dont la limite supérieure est au plus $\varepsilon$.
+
+      *Kronecker.* Soit $r_k = \sum_{j > k} a_j/j$ le reste de la série, qui tend vers $0$ ; alors $a_k = k(r_{k-1} - r_k)$ pour $k \geqslant 1$, et une transformation d'Abel donne
+      $$\begin{aligned} \sum_{k=1}^n a_k &= \sum_{k=0}^{n-1}(k + 1)r_k - \sum_{k=1}^n k\,r_k \\ &= \sum_{k=0}^{n-1} r_k - n\,r_n. \end{aligned}$$
+      Divisé par $n$, le premier terme tend vers $0$ par Cesàro, et le second est $r_n \to 0$.
+
+      (ii) *Troncature.* Posons $Y_k = X_k\mathbf 1_{\{|X_k| \leqslant k\}}$. Les $Y_k$ sont indépendantes, puisque $\sigma(Y_k) \subset \sigma(X_k)$ et que des sous-tribus de tribus indépendantes sont indépendantes, comme au nœud {{p-suites-iid|Suites indépendantes}}, (iii). Comme $\sum_{k \geqslant 1}\mathbf 1_{\{|X_1| > k\}} \leqslant |X_1|$, le nombre d'entiers $k \geqslant 1$ inférieurs à $|X_1|$ étant au plus $|X_1|$, la convergence monotone donne
+      $$\begin{aligned} \sum_{k \geqslant 1}P(Y_k \neq X_k) &= \sum_{k \geqslant 1}P(|X_1| > k) \\ &\leqslant E[|X_1|]. \end{aligned}$$
+      Par Borel-Cantelli ({{p-borel-cantelli|Borel-Cantelli}}, (i)), presque sûrement $X_k = Y_k$ à partir d'un certain rang, et alors $\frac1n\sum_{k \leqslant n}(X_k - Y_k) \to 0$, la somme n'ayant qu'un nombre fini de termes non nuls.
+
+      *Variances.* Pour tout entier $p \geqslant 1$,
+      $$\sum_{k \geqslant p}\frac1{k^2} \leqslant \frac1{p^2} + \sum_{k > p}\Big(\frac1{k - 1} - \frac1k\Big) \leqslant \frac2p.$$
+      Si $p$ est le plus petit entier $\geqslant \max(1, |X_1|)$, il vient $X_1^2\sum_{k \geqslant p}\frac1{k^2} \leqslant \frac{2X_1^2}{\max(1, |X_1|)} \leqslant 2|X_1|$, et, par convergence monotone,
+      $$\begin{aligned} \sum_{k \geqslant 1}\frac{E[Y_k^2]}{k^2} &= E\Big[X_1^2\sum_{k \geqslant 1}\frac{\mathbf 1_{\{|X_1| \leqslant k\}}}{k^2}\Big] \\ &\leqslant 2E[|X_1|], \end{aligned}$$
+      puisque les $X_k$ ont la loi de $X_1$ ({{p-esperance|Espérance, variance}}, (i)).
+
+      *Convergence de la série.* Les variables $Z_k = (Y_k - E[Y_k])/k$ sont indépendantes, bornées et centrées, et $E[Z_k^2] \leqslant E[Y_k^2]/k^2$. Leurs sommes partielles $M_n$ forment une martingale pour la filtration $\sigma(Z_1, \dots, Z_n)$ ({{mt-martingales|Martingales}}, (i), première assertion), et, pour $m < n$, l'indépendance donne directement ({{p-esperance|Espérance, variance}}, (iv))
+      $$E[(M_n - M_m)^2] = \sum_{m < k \leqslant n}E[Z_k^2].$$
+
+      L'inégalité maximale ({{mt-doob|Inégalité maximale}}), appliquée à la martingale $(M_{m+j} - M_m)_{j \geqslant 0}$, donne, pour $n > m$,
+      $$\begin{aligned} &P\Big(\max_{m \leqslant k \leqslant n}|M_k - M_m| > \varepsilon\Big) \\ &\leqslant \frac1{\varepsilon^2}\sum_{m < k \leqslant n}E[Z_k^2]. \end{aligned}$$
+      L'événement $\{\sup_{k \geqslant m}|M_k - M_m| > \varepsilon\}$ est la réunion croissante, en $n$, de ces événements ; par continuité croissante, sa probabilité est au plus $\frac1{\varepsilon^2}\sum_{k > m}E[Z_k^2]$, qui tend vers $0$ quand $m \to \infty$, puisque $\sum_k E[Z_k^2] \leqslant 2E[|X_1|]$.
+
+      Pour $\varepsilon > 0$ fixé, l'événement $B_\varepsilon = \bigcap_m\{\sup_{k \geqslant m}|M_k - M_m| > \varepsilon\}$ est donc négligeable, ainsi que la réunion $B$ des $B_{1/(j+1)}$, $j \in \lex{ensemble-entiers-naturels}{\mathbb N}$. Hors de $B$, pour tout $j$, il existe $m$ tel que $|M_k - M_m| \leqslant \frac1{j + 1}$ pour $k \geqslant m$, d'où $|M_k - M_l| \leqslant \frac2{j + 1}$ pour $k, l \geqslant m$ : la suite $(M_n)$ est de Cauchy dans $\lex{ensemble-reels}{\mathbb R}$, donc converge ({{ar-cauchy|Complétude}}). On n'a besoin ni d'une limite dans $\lex{espace-L2}{L^2}$, ni de la complétude de cet espace. La série $\sum_k (Y_k - E[Y_k])/k$ converge donc presque sûrement, et (i) donne $\frac1n\sum_{k \leqslant n}(Y_k - E[Y_k]) \to 0$.
+
+      *Espérances.* $E[Y_k] = E[X_1\mathbf 1_{\{|X_1| \leqslant k\}}] \to \mu$ par convergence dominée ({{m-convergence-dominee|Convergence dominée}}, (i)), la domination étant $|X_1|$, et $\frac1n\sum_{k \leqslant n}E[Y_k] \to \mu$ par Cesàro. En rassemblant les trois limites, $S_n/n \to \mu$ presque sûrement.
+
+      (iii) Pour tout entier $c \geqslant 1$, les variables $\min(X_k, c)$ sont indépendantes, de même loi, bornées ; par (ii), presque sûrement,
+      $$\begin{aligned} \liminf_n \frac{S_n}n &\geqslant \lim_n\frac1n\sum_{k \leqslant n}\min(X_k, c) \\ &= E[\min(X_1, c)]. \end{aligned}$$
+      L'intersection de ces événements, pour $c \in \lex{ensemble-entiers-naturels}{\mathbb N}$, est de probabilité $1$, et $E[\min(X_1, c)] \to E[X_1] = +\infty$ par convergence monotone.
+    remarques:
+      - |
+        Le nœud {{p-loi-forte|Loi forte}} supposait un moment d'ordre $4$ ; l'intégrabilité suffit, et elle est nécessaire. Si $E[|X_1|] = +\infty$, alors $\sum_n P(|X_1| > n) = +\infty$, puisque $|X_1| \leqslant 2 + \sum_{n \geqslant 1}\mathbf 1_{\{|X_1| > n\}}$, et le second lemme de Borel-Cantelli ({{p-borel-cantelli|Borel-Cantelli}}, (ii)) montre que $|X_n| > n$ pour une infinité de $n$, presque sûrement. Or, si $S_n/n$ convergeait vers une limite finie, $X_n/n = S_n/n - \frac{n - 1}n\cdot\frac{S_{n-1}}{n - 1}$ tendrait vers $0$.
+      - |
+        La partie (iii) sert au théorème ergodique des {{mart-markov|chaînes de Markov}}, où les temps de retour d'une chaîne récurrente nulle sont d'espérance infinie : la fréquence des visites tend alors vers $0$.
 
   - id: mt-montees
     etiquette: Montées
@@ -259,7 +311,21 @@ noeuds:
         Les sommes partielles $\sum_{k \leqslant n}\varepsilon_k/k$ pour quatre tirages des signes, en rouge, et celles de la série alternée, en pointillé : chaque trajectoire se stabilise, mais vers une limite qui dépend du tirage.
         ```
 
+  - id: mart-markov
+    etiquette: Chaînes de Markov
+    nature: chapitre
+    titre: Chaînes de Markov à espace d'états fini ou dénombrable
+    sous: mart-markov
+    texte: |
+      Une chaîne de Markov est une suite de variables à valeurs dans un ensemble fini ou dénombrable d'états, dont chaque pas suit une loi qui ne dépend que de l'état présent, donnée par une matrice de transition. Le chapitre construit ces chaînes à partir d'une suite de variables uniformes indépendantes, sans théorème d'extension, et établit les propriétés de Markov simple et forte, cette dernière en un temps d'arrêt.
+
+      Il classe les états : classes de communication, période, récurrence et transience, caractérisées par la divergence de la série $\sum_n Q^n(x, x)$. La marche aléatoire simple sur $\lex{ensemble-entiers-relatifs}{\mathbb Z}^d$ est récurrente en dimensions $1$ et $2$ et transiente en dimension $3$ (Pólya), par des encadrements élémentaires de coefficients binomiaux et trinomiaux qui remplacent la formule de Stirling. Une chaîne irréductible récurrente a une mesure invariante non nulle à valeurs finies, unique à un facteur près parmi celles-ci ; elle a une probabilité invariante $\pi$ si et seulement si ses temps de retour sont d'espérance finie, et alors $\pi(x) = 1/E_x[T_x]$.
+
+      Le chapitre est placé dans la branche des martingales parce qu'il en emploie trois outils : les temps d'arrêt, l'arrêt borné, qui résout la ruine du joueur, et la loi forte des grands nombres pour des variables seulement intégrables, qui donne le théorème ergodique : la fréquence des visites en un état $x$ tend vers $\pi(x)$. Pour une chaîne finie irréductible et apériodique, la loi de $X_n$ converge vers $\pi$ à vitesse géométrique, par le couplage de Doeblin, sans le théorème de Perron-Frobenius. Aucune forme du choix n'intervient, en dehors de l'existence de variables uniformes indépendantes sur $[0, 1[$, qui dépend de la mesure de Lebesgue. Les énoncés écrits avec $P_x$ supposent une chaîne issue de $x$ : une chaîne irréductible donnée en fournit une pour chaque état sans choix, et, à défaut, cette existence les rend tributaires du choix dénombrable ; la convergence vers l'équilibre par couplage, construite sur un ensemble fini, reste sans choix.
+
 aretes:
+  - [mt-doob, mt-loi-forte]
+  - [mt-loi-forte, mart-markov]
   - [mt-conditionnelle, mt-martingales]
   - [mt-martingales, mt-doob]
   - [mt-doob, mt-convergence]
