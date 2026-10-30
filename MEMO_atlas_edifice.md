@@ -759,3 +759,14 @@ Sylow, dénombrement : le « restent admis : 𝔄₅ simple » du §39 est levé
 sans isomorphisme), résolubilité par les facteurs. Admis en remarque : 𝔄ₙ simple pour n ⩾ 6, unicité du groupe
 simple d'ordre 60. Aucun choix. gf reste à 6 croisements. Relu : aucune faute, douze retouches (deux renvois vers
 le mauvais nœud, la lettre e à la fois point et neutre).
+
+## 52. Stabilité de Liapounov (30 octobre 2026)
+
+Chapitre `edo-liapounov` « Stabilité des équilibres » (contenu/edo-liapounov.yaml, arête ed-variationnelle →
+edo-liapounov) : neuf fiches ly-* — définitions (exemple attractif non stable r′ = r(1 − r), θ′ = 1 − cos θ),
+trigonalisation dans M_n(ℂ) avec χ_B défini par Leibniz dans ℂ[X] (ac-reduction n'est pas ancêtre de edo ;
+d'Alembert-Gauss par cx-liouville, ancêtre) et mise à l'échelle, systèmes linéaires (|||e^{tA}||| ⩽ Ce^{γt} pour
+γ > μ(A)), théorèmes de Liapounov, équation ᵗAP + PA = −I, LaSalle sans suite extraite (et Barbachine-Krasovski),
+linéarisation, instabilité si μ(A) > 0 dans le cas non linéaire, pendule amorti. Aucun choix. Remarques non
+démontrées : vitesse optimale κ < −μ(A), cycle limite de van der Pol, variété stable. Relu : aucune faute bloquante,
+deux affirmations inexactes en remarque et treize retouches. edo et edo-liapounov à 0 croisement.

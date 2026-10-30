@@ -1,0 +1,518 @@
+# Niveau 2 : structure interne du chapitre « Stabilité des équilibres » (nœud edo-liapounov du graphe edo,
+# créé le 30 oct. 2026). Équilibres, stabilité au sens de Liapounov, attractivité, stabilité asymptotique
+# (attractif n'entraîne pas stable) ; valeurs propres complexes et trigonalisation sur ℂ par d'Alembert-Gauss,
+# forme presque diagonale R⁻¹AR = D + N avec N petit ; critère de stabilité des systèmes linéaires à
+# coefficients constants (|||e^{tA}||| ⩽ C e^{γt} pour tout γ > max Re λ) ; théorème de Liapounov (fonctions
+# de Liapounov, stabilité et stabilité asymptotique) ; équation de Liapounov ᵗAP + PA = −I et
+# P = ∫ e^{sᵗA}e^{sA} ds ; ensembles ω-limites, principe d'invariance de LaSalle et théorème de
+# Barbachine-Krasovski ; stabilité par linéarisation (dφ_t(a) = e^{tA}) ; instabilité dès qu'une valeur propre
+# du linéarisé est de partie réelle > 0 ; pendule amorti.
+# Placement : la réduction des endomorphismes (ac-reduction : polynôme caractéristique, Dunford, Jordan) n'est
+# pas un ancêtre de edo ; on n'en a pas besoin : d'Alembert-Gauss (cx-liouville, dans anc) suffit à trigonaliser
+# sur ℂ, et un changement d'échelle diagonal rend la partie nilpotente aussi petite qu'on veut. Le chapitre
+# pend de ed-variationnelle, parce que la différentielle du flot en un équilibre est e^{tA}, A = dX(a).
+# Choix : aucun. La trigonalisation ne fait qu'un nombre fini de choix (une valeur propre et un vecteur propre
+# par étape) ; les ensembles ω-limites sont des intersections de fermés, sans suite extraite.
+
+graphe: edo-liapounov
+titre: Stabilité des équilibres
+conteneur: edo-liapounov
+
+entrees:
+  ed-variationnelle: [ly-equilibres]
+
+noeuds:
+  - id: ly-equilibres
+    etiquette: Équilibres
+    nature: définition
+    titre: Équilibres, stabilité et stabilité asymptotique
+    texte: |
+      Soit $U$ un ouvert de $\lex{n-uplet}{\mathbb R^n}$, $X : U \to \mathbb R^n$ un champ de classe $C^1$ et $\varphi$ son [[flot|flot]] ({{ed-flot|Flot}}) : la courbe intégrale issue de $x$ est définie sur $]\alpha(x), \beta(x)[$. On munit $\mathbb R^n$ d'une norme $\|\cdot\|$.
+
+      Un [[equilibre|équilibre]] de $X$ est un point $a \in U$ tel que $X(a) = 0$.
+
+      Un équilibre $a$ est [[equilibre-stable|stable]], ou stable au sens de Liapounov, si pour tout $\varepsilon > 0$ il existe $\delta > 0$ tel que, pour tout $x \in U$ vérifiant $\|x - a\| < \delta$, la courbe intégrale issue de $x$ soit définie sur $[0, +\infty[$ et vérifie
+      $$\|\varphi_t(x) - a\| < \varepsilon \quad \text{pour tout } t \geqslant 0.$$
+      Il est **instable** s'il n'est pas stable.
+
+      Il est **attractif** s'il existe $\eta > 0$ tel que, pour tout $x \in U$ vérifiant $\|x - a\| < \eta$, la courbe intégrale issue de $x$ soit définie sur $[0, +\infty[$ et tende vers $a$ quand $t \to +\infty$. Il est [[asymptotiquement-stable|asymptotiquement stable]] s'il est à la fois stable et attractif.
+    enonce: |
+      (i) Un point $a \in U$ est un équilibre si et seulement si la courbe intégrale issue de $a$ est constante. Elle est alors définie sur $\lex{ensemble-reels}{\mathbb R}$, et $\varphi_t(a) = a$ pour tout $t$.
+
+      (ii) Les notions d'équilibre stable, attractif et asymptotiquement stable ne dépendent pas de la norme choisie sur $\mathbb R^n$.
+
+      (iii) Si la courbe intégrale issue de $x$ est définie sur $[0, +\infty[$ et a une limite $b \in U$ quand $t \to +\infty$, alors $b$ est un équilibre.
+    preuve: |
+      (i) Si $X(a) = 0$, la fonction constante égale à $a$, définie sur $\mathbb R$, est solution de $y' = X(y)$. Étant définie sur $\mathbb R$ tout entier, elle n'est la restriction d'aucune autre solution : c'est la solution maximale issue de $a$ ({{ed-maximales|Solutions maximales}}, (ii)). Réciproquement, si la courbe issue de $a$ est constante, sa dérivée est nulle, et elle vaut $X(a)$ en $t = 0$.
+
+      (ii) Soit $N$ et $N'$ deux normes sur $\mathbb R^n$. Elles sont équivalentes ({{gd-equivalence|Normes en dimension finie}}, (i)) : il existe $c, C > 0$ tels que $cN \leqslant N' \leqslant CN$.
+
+      Supposons $a$ stable pour $N$, et soit $\varepsilon > 0$. Soit $\delta$ associé à $\varepsilon / C$ pour la norme $N$. Si $N'(x - a) < c\delta$, alors $N(x - a) < \delta$ ; la courbe issue de $x$ est définie sur $[0, +\infty[$, et
+      $$N'(\varphi_t(x) - a) \leqslant C\,N(\varphi_t(x) - a) < \varepsilon.$$
+      Le nombre $c\delta$ convient donc pour $N'$. De même, si $\eta$ convient dans la définition de l'attractivité pour $N$, le nombre $c\eta$ convient pour $N'$, puisque l'encadrement montre qu'une fonction tend vers $a$ pour $N$ si et seulement si elle y tend pour $N'$. En échangeant les rôles de $N$ et $N'$, on obtient les réciproques.
+
+      (iii) Toutes les normes de $\mathbb R^n$ étant équivalentes ({{gd-equivalence|Normes en dimension finie}}, (i)), la convergence ne dépend pas de la norme, et l'on peut prendre $\|\cdot\| = \|\cdot\|_\infty$. Supposons $X(b) \neq 0$ : il existe un indice $i$ tel que $c = |X_i(b)| > 0$ ; soit $\sigma \in \{-1, 1\}$ le signe de $X_i(b)$. Par continuité de $X_i$ en $b$, et puisque $U$ est ouvert, il existe $r > 0$ tel que $B(b, r) \subset U$ et que $\sigma X_i(y) > \frac c2$ pour tout $y \in B(b, r)$.
+
+      Il existe $T \geqslant 0$ tel que $y(t) = \varphi_t(x)$ appartienne à $B(b, r)$ pour tout $t \geqslant T$. La fonction $g = \sigma y_i$ a pour dérivée $\sigma X_i(y(t)) > \frac c2$ sur $[T, +\infty[$, et l'égalité des accroissements finis ({{de-taf|Égalité des accroissements finis}}) donne
+      $$g(t) \geqslant g(T) + \frac c2\,(t - T).$$
+      Or $|g(t) - \sigma b_i| \leqslant \|y(t) - b\|_\infty < r$ pour $t \geqslant T$ : $g$ est bornée sur $[T, +\infty[$, ce qui est absurde. Donc $X(b) = 0$.
+    remarques:
+      - |
+        Sur $\mathbb R$, les trois équations $y' = -y$, $y' = 0$ et $y' = y$ montrent les trois comportements. Pour la première, $\varphi_t(x) = xe^{-t}$, et $0$ est asymptotiquement stable. Pour la deuxième, tout point est un équilibre stable, avec $\delta = \varepsilon$, mais aucun n'est attractif. Pour la troisième, $\varphi_t(x) = xe^t$ s'éloigne de $0$ dès que $x \neq 0$ : l'équilibre $0$ est instable.
+      - |
+        L'erreur la plus répandue est de croire qu'un équilibre attractif est stable. Sur l'ouvert $U = \mathbb R^2 \setminus \{0\}$, considérons le champ qui s'écrit, en coordonnées polaires,
+        $$r' = r(1 - r), \qquad \theta' = 1 - \cos\theta,$$
+        soit $X(x, y) = \big(x(1 - r) - y(1 - \frac xr),\ y(1 - r) + x(1 - \frac xr)\big)$ avec $r = \sqrt{x^2 + y^2}$. Le point $a = (1, 0)$ est un équilibre, et toute courbe intégrale tend vers $a$ : le rayon tend vers $1$, et l'angle croît jusqu'au multiple de $2\pi$ suivant, puisque $\cot\frac\theta2$ décroît d'une unité par unité de temps.
+
+        ```schema ly-equilibres
+        La courbe issue d'un point $x$ du cercle unité, en bleu, aussi proche qu'on veut de $a$ et dans le disque pointillé de rayon $\delta$, fait tout le tour du cercle avant de revenir vers $a$ : elle passe en $(-1, 0)$, à distance $2$ de $a$. La courbe verte, issue de l'intérieur, s'enroule vers le cercle et rejoint elle aussi $a$ par en dessous. L'équilibre $a$ est attractif, mais pas stable.
+        ```
+
+        Pour $\varepsilon = 1$, aucun $\delta$ ne convient donc dans la définition de la stabilité, bien que $a$ attire tous les points de $U$. La stabilité est une propriété uniforme sur les temps, que la seule convergence ne donne pas.
+      - |
+        L'exemple précédent profite du trou de $U$ en $0$. Un exemple d'équilibre attractif instable pour un champ rationnel défini sur tout le plan est attribué à R. È. Vinograd, dans un article de 1957 sur l'insuffisance de la méthode des exposants caractéristiques pour les équations non linéaires (*Mat. Sbornik* 41 (83), p. 431-438) ; il n'est pas reproduit ici.
+      - |
+        Les notions ne portent que sur les temps positifs. Le changement de $X$ en $-X$ renverse le temps ({{ed-domaine-flot|Domaine du flot}}, (i)) : pour $y' = y$, l'équilibre $0$, instable, devient asymptotiquement stable pour $y' = -y$. Un équilibre n'est donc pas stable « en soi », mais relativement au sens du temps.
+      - |
+        Les définitions remontent à A. M. Liapounov, qui, dans sa thèse « Problème général de la stabilité du mouvement », définit la stabilité d'un mouvement par rapport à des quantités données ; celles qu'on a posées en sont le cas d'un équilibre et des coordonnées. La thèse a été imprimée en 1892 par la Société mathématique de Kharkov et soutenue la même année à l'université de Moscou ; sa traduction française par Édouard Davaux, revue par l'auteur, a paru dans les *Annales de la Faculté des sciences de Toulouse* (2ᵉ série, tome 9, 1907, p. 203-474).
+
+  - id: ly-triangulaire
+    etiquette: Trigonalisation sur ℂ
+    nature: lemme
+    titre: Valeurs propres complexes et trigonalisation sur ℂ
+    texte: |
+      Soit $n \geqslant 1$. Les [[valeur-propre|valeurs propres]] d'une matrice $B \in \lex{espace-matrices}{\mathcal M_n}(\lex{ensemble-complexes}{\mathbb C})$ sont celles de l'endomorphisme $z \mapsto Bz$ de l'espace vectoriel $\mathbb C^n$ sur le corps $\mathbb C$ ({{v-valeurs-propres|Valeurs propres}}). Les **valeurs propres complexes** d'une matrice réelle $A \in \mathcal M_n(\lex{ensemble-reels}{\mathbb R})$ sont celles de $A$ vue comme élément de $\mathcal M_n(\mathbb C)$.
+
+      Une matrice $T$ est **triangulaire supérieure** si $t_{ij} = 0$ pour $i > j$, et **strictement** triangulaire supérieure si de plus ses coefficients diagonaux sont nuls.
+
+      Pour $z, w \in \mathbb C^n$, on pose ({{c-calcul|Conjugaison et module}})
+      $$\langle z, w \rangle = \sum_{i=1}^n \bar z_i w_i,$$
+      $$|z| = \Big(\sum_{i=1}^n |z_i|^2\Big)^{1/2}.$$
+    enonce: |
+      Soit $B \in \mathcal M_n(\mathbb C)$.
+
+      (i) *Existence.* Il existe un polynôme unitaire $\chi_B \in \lex{anneau-polynomes}{\mathbb C[X]}$ de degré $n$ tel que $\det(\lambda I - B) = \chi_B(\lambda)$ pour tout $\lambda \in \mathbb C$. Les valeurs propres de $B$ sont les racines de $\chi_B$ ; il y en a au moins une, et au plus $n$.
+
+      (ii) *Trigonalisation.* Soit $\Lambda$ une partie de $\mathbb C$. Il existe une matrice inversible $P \in \mathcal M_n(\mathbb C)$ telle que $T = P^{-1}BP$ soit triangulaire supérieure, que ses coefficients diagonaux soient exactement les valeurs propres de $B$, et que ceux d'entre eux qui appartiennent à $\Lambda$ précèdent tous les autres.
+
+      (iii) *Forme presque diagonale.* Pour toute matrice $T = P^{-1}BP$ fournie par (ii), pour une partie $\Lambda$ donnée, et pour tout $\eta > 0$, il existe une matrice inversible $R$ telle que
+      $$R^{-1}BR = D + N,$$
+      où $D$ est diagonale, de mêmes coefficients diagonaux que $T$ et dans le même ordre, $N$ est strictement triangulaire supérieure, et, pour tous $z, z' \in \mathbb C^n$,
+      $$|\langle z', Nz \rangle| \leqslant \eta\,|z'|\,|z|.$$
+    preuve: |
+      (i) Notons $\delta_{ij} = 1$ si $i = j$ et $0$ sinon, et posons
+      $$\chi_B = \sum_{\sigma \in \mathfrak S_n} \varepsilon(\sigma) \prod_{j=1}^n \big(\delta_{\sigma(j)j}X - b_{\sigma(j)j}\big).$$
+      L'évaluation en $\lambda$ est un morphisme d'anneaux ({{pol-evaluation|Évaluation}}, (i)) ; elle donne la formule du déterminant de $\lambda I - B$ ({{v-det-matrice|Déterminant d'une matrice}}), d'où $\chi_B(\lambda) = \det(\lambda I - B)$.
+
+      Pour $\sigma = \mathrm{id}$, le produit est $\prod_j (X - b_{jj})$, unitaire de degré $n$ ({{pol-anneau|L'anneau A[X]}}, (ii)). Pour $\sigma \neq \mathrm{id}$, un indice $j$ vérifie $\sigma(j) \neq j$ ; le facteur correspondant est constant, et le produit, de $n$ facteurs de degré au plus $1$ dont l'un est constant, est de degré au plus $n - 1$. Le coefficient de $X^n$ dans $\chi_B$ est donc $1$, et les autres termes sont de degré au plus $n - 1$ : $\chi_B$ est unitaire de degré $n$.
+
+      Par le théorème de d'Alembert-Gauss ({{cx-liouville|Liouville, d'Alembert-Gauss}}, (ii)), le polynôme non constant $\chi_B$ a une racine. Enfin, $\det(B - \lambda I) = (-1)^n\det(\lambda I - B)$, par la multilinéarité par rapport aux lignes ({{v-det-matrice|Déterminant d'une matrice}}, (iii)), et $\lambda$ est valeur propre si et seulement si ce déterminant est nul ({{v-valeurs-propres|Valeurs propres}}, (i), avec {{v-det-matrice|Déterminant d'une matrice}}, (i)) ; les valeurs propres sont au plus $n$ (même nœud, (ii)).
+
+      (ii) *Matrices triangulaires.* Si $T$ est triangulaire supérieure, un produit $\prod_j t_{\sigma(j)j}$ non nul demande $\sigma(j) \leqslant j$ pour tout $j$. Par récurrence sur $j$, cela impose $\sigma(j) = j$ : $\sigma(1) \leqslant 1$, et si $\sigma(i) = i$ pour $i < j$, l'injectivité interdit $\sigma(j) < j$. Seule l'identité contribue, et
+      $$\det(\lambda I - T) = \prod_{j=1}^n (\lambda - t_{jj}).$$
+      Comme $\det(\lambda I - P^{-1}BP) = \det\big(P^{-1}(\lambda I - B)P\big) = \det(\lambda I - B)$ ({{v-det-matrice|Déterminant d'une matrice}}, (ii)), les valeurs propres de $B$ sont exactement les $t_{jj}$ dès que $P^{-1}BP = T$.
+
+      *Existence, par récurrence sur $n$.* Pour $n = 1$, $P = I$ convient. Soit $n \geqslant 2$, l'énoncé étant acquis en dimension $n - 1$. Si $B$ a une valeur propre dans $\Lambda$, soit $\lambda_1$ l'une d'elles ; sinon, soit $\lambda_1$ une valeur propre quelconque, qui existe par (i).
+
+      Soit $v_1 \neq 0$ tel que $Bv_1 = \lambda_1 v_1$, complété en une base $(v_1, \dots, v_n)$ de $\mathbb C^n$ ({{v-dimension|Dimension}}, (iii)), et $Q$ la matrice de colonnes $v_1, \dots, v_n$, inversible puisque $z \mapsto Qz$ envoie la base canonique sur une base ({{v-libre|Familles libres, bases}}, (iii)). Comme $BQe_1 = \lambda_1Qe_1$, la première colonne de $Q^{-1}BQ$ est $\lambda_1 e_1$, et
+      $$Q^{-1}BQ = \begin{pmatrix} \lambda_1 & \ell \\ 0 & B' \end{pmatrix},$$
+      avec $B' \in \mathcal M_{n-1}(\mathbb C)$ et $\ell$ une ligne.
+
+      En développant selon la première colonne ({{v-comatrice|Comatrice}}), $\det(\lambda I - B) = (\lambda - \lambda_1)\det(\lambda I - B')$ : les valeurs propres de $B$ sont $\lambda_1$ et celles de $B'$. L'hypothèse de récurrence, appliquée à $B'$ et à $\Lambda$, fournit $P'$ inversible telle que $T' = P'^{-1}B'P'$ convienne.
+
+      La matrice $P = Q\begin{pmatrix} 1 & 0 \\ 0 & P' \end{pmatrix}$ est inversible, et le produit par blocs donne
+      $$P^{-1}BP = \begin{pmatrix} \lambda_1 & \ell P' \\ 0 & T' \end{pmatrix},$$
+      triangulaire supérieure. Si $\lambda_1 \in \Lambda$, il vient en tête, suivi des coefficients de $T'$, rangés comme il faut. Si $\lambda_1 \notin \Lambda$, $B$ n'a aucune valeur propre dans $\Lambda$, ni donc $B'$, et aucun coefficient diagonal n'est dans $\Lambda$ : la condition d'ordre est vide.
+
+      (iii) Soit $T = P^{-1}BP$ comme en (ii), $m = \max_{i,j}|t_{ij}|$, $0 < \varepsilon \leqslant 1$, $S$ la matrice diagonale de coefficients $1, \varepsilon, \dots, \varepsilon^{n-1}$, et $R = PS$. Le coefficient $(i, j)$ de $R^{-1}BR = S^{-1}TS$ est $\varepsilon^{j-i}t_{ij}$.
+
+      Il est nul pour $i > j$, égal à $t_{ii}$ pour $i = j$, et de module au plus $\varepsilon m$ pour $i < j$, puisque $j - i \geqslant 1$. Ainsi $S^{-1}TS = D + N$, avec $D$ diagonale de coefficients $t_{ii}$ et $N$ strictement triangulaire supérieure, de coefficients de module au plus $\varepsilon m$.
+
+      Pour $z, z' \in \mathbb C^n$, comme $|z_j| \leqslant |z|$ et $|z'_i| \leqslant |z'|$,
+      $$\begin{aligned} |\langle z', Nz \rangle| &\leqslant \sum_{i,j} |n_{ij}|\,|z'_i|\,|z_j| \\ &\leqslant \varepsilon m n^2\,|z'|\,|z|. \end{aligned}$$
+      Le choix $\varepsilon = \min\big(1, \frac{\eta}{1 + mn^2}\big)$ convient.
+    remarques:
+      - |
+        Le polynôme $\chi_B$ est le polynôme caractéristique du chapitre {{ac-reduction|Réduction des endomorphismes}}, où la décomposition de Dunford et la forme de Jordan décrivent exactement les matrices. Ce chapitre n'est pas un ancêtre des équations différentielles, et le lemme s'en passe : d'Alembert-Gauss suffit pour trigonaliser, et l'on n'a besoin de rien de plus pour majorer $e^{tA}$.
+      - |
+        La trigonalisation demande les nombres complexes. La rotation $J = \begin{pmatrix} 0 & -1 \\ 1 & 0 \end{pmatrix}$ a pour valeurs propres complexes $\pm i$, avec $J(1, -i) = (i, 1) = i\,(1, -i)$. Elle n'est semblable à aucune matrice réelle triangulaire supérieure, dont les coefficients diagonaux seraient des valeurs propres réelles, alors que $\det(\lambda I - J) = \lambda^2 + 1$ ne s'annule pas sur $\mathbb R$.
+      - |
+        Le point (iii) a un prix : la matrice $S^{-1}$ a pour plus grand coefficient $\varepsilon^{-(n-1)}$, et les constantes qui font passer de $|R^{-1}y|$ à $\|y\|$ explosent quand $\eta$ tend vers $0$. Pour $T = \begin{pmatrix} -1 & 1 \\ 0 & -1 \end{pmatrix}$, on obtient $\begin{pmatrix} -1 & \varepsilon \\ 0 & -1 \end{pmatrix}$, presque diagonale, mais au prix d'un changement de base de plus en plus déformant. C'est ce qui empêchera, au nœud {{ly-lineaire|Systèmes linéaires stables}}, d'atteindre la vitesse de décroissance limite.
+      - |
+        La démonstration ne fait qu'un nombre fini de choix, une valeur propre et un vecteur propre à chaque étape : aucune forme de l'axiome du choix n'intervient.
+
+  - id: ly-lineaire
+    etiquette: Systèmes linéaires stables
+    nature: théorème
+    titre: Stabilité de l'origine pour un système linéaire à coefficients constants
+    texte: |
+      Soit $A \in \lex{espace-matrices}{\mathcal M_n}(\lex{ensemble-reels}{\mathbb R})$. L'origine est un [[equilibre|équilibre]] du champ $X(y) = Ay$, dont le [[flot|flot]] $\varphi_t(y) = e^{tA}y$ est défini pour tout $t$ réel ({{ed-lineaires|Systèmes linéaires}}, (i) et (ii)).
+
+      On note $\mu(A)$ le plus grand des réels $\operatorname{Re}\lambda$, où $\lambda$ décrit l'ensemble fini et non vide des valeurs propres complexes de $A$ ({{ly-triangulaire|Trigonalisation sur ℂ}}, (i)). On munit $\lex{n-uplet}{\mathbb R^n}$ de $\|\cdot\|_\infty$, notée $\|\cdot\|$, et les matrices de la norme subordonnée $|||\cdot|||$.
+    enonce: |
+      (i) *Estimation.* Pour tout réel $\gamma > \mu(A)$, il existe $C \geqslant 1$ tel que
+      $$|||e^{tA}||| \leqslant C\,e^{\gamma t} \quad \text{pour tout } t \geqslant 0.$$
+
+      (ii) *Critère.* L'origine est [[asymptotiquement-stable|asymptotiquement stable]] si et seulement si $\mu(A) < 0$. Dans ce cas, pour tout $\beta \in \,]0, -\mu(A)[$, il existe $C$ tel que $\|e^{tA}y\| \leqslant Ce^{-\beta t}\|y\|$ pour tous $t \geqslant 0$ et $y \in \mathbb R^n$ : toutes les solutions tendent vers $0$, exponentiellement vite.
+
+      (iii) *Instabilité.* Si $\mu(A) > 0$, l'origine est instable : il existe des solutions issues de points arbitrairement proches de $0$ qui ne sont pas bornées sur $[0, +\infty[$.
+    preuve: |
+      (i) Soit $\eta = \gamma - \mu(A) > 0$, et $R$ fournie par {{ly-triangulaire|Trigonalisation sur ℂ}}, (iii) : $R^{-1}AR = D + N$, où les coefficients diagonaux $d_k$ de $D$ sont des valeurs propres de $A$, donc vérifient $\operatorname{Re} d_k \leqslant \mu(A)$, et où $|\langle z', Nz \rangle| \leqslant \eta|z'||z|$.
+
+      *Coordonnées complexes.* Soit $y_0 \in \mathbb R^n$, $y(t) = e^{tA}y_0$, et $w(t) = R^{-1}y(t) \in \mathbb C^n$. Chaque $w_k$ est une combinaison linéaire à coefficients complexes constants des $y_l$ : ses parties réelle et imaginaire sont dérivables, et
+      $$w' = R^{-1}Ay = R^{-1}AR\,w = (D + N)w.$$
+
+      *Croissance de $|w|^2$.* Posons $h(t) = |w(t)|^2$. Pour $w_k = u_k + iv_k$, la dérivée de $|w_k|^2 = u_k^2 + v_k^2$ est $2(u_ku_k' + v_kv_k') = 2\operatorname{Re}(\bar w_k w_k')$ ; d'où
+      $$h' = 2\operatorname{Re}\langle w, Dw \rangle + 2\operatorname{Re}\langle w, Nw \rangle.$$
+      Le premier terme vaut $2\sum_k \operatorname{Re}(d_k)|w_k|^2 \leqslant 2\mu(A)h$, le second est au plus $2\eta h$, et $h' \leqslant 2\gamma h$.
+
+      La fonction $he^{-2\gamma t}$ a donc une dérivée négative ; elle décroît ({{de-monotonie|Signe de la dérivée}}), et $h(t) \leqslant e^{2\gamma t}h(0)$ pour $t \geqslant 0$.
+
+      *Retour à $\|\cdot\|$.* Soit $\rho$ et $\rho'$ les plus grandes sommes $\sum_l |r_{kl}|$ et $\sum_l |r'_{kl}|$ sur les lignes de $R$ et de $R^{-1} = (r'_{kl})$. Comme $|w_l| \leqslant |w|$, on a $|y_k| \leqslant \sum_l |r_{kl}||w_l| \leqslant \rho|w|$ ; et $|w_k| \leqslant \rho'\|y\|$, d'où $|w|^2 \leqslant n\rho'^2\|y\|^2$. Il vient
+      $$\|y(t)\| \leqslant \rho\sqrt{h(t)} \leqslant \rho\rho'\sqrt n\, e^{\gamma t}\|y_0\|,$$
+      et $C = \max(1, \rho\rho'\sqrt n)$ convient.
+
+      (ii) *Si $\mu(A) < 0$.* Pour $\beta \in \,]0, -\mu(A)[$, le point (i) avec $\gamma = -\beta$ donne $\|e^{tA}y\| \leqslant Ce^{-\beta t}\|y\| \leqslant C\|y\|$. L'origine est stable, avec $\delta = \varepsilon/C$, et attractive, toute solution tendant vers $0$.
+
+      *Si $\mu(A) \geqslant 0$.* Soit $\lambda = a + ib$ une valeur propre complexe telle que $a = \mu(A) \geqslant 0$, et $v \in \mathbb C^n$ non nul tel que $Av = \lambda v$. Quitte à remplacer $v$ par $-iv$, qui est encore un vecteur propre, on peut supposer que sa partie réelle $p$ n'est pas nulle ; notons $q$ sa partie imaginaire.
+
+      La fonction $z(t) = \exp(\lambda t)v$ est dérivable, de dérivée $\lambda z$ : pour $\lambda \neq 0$, le taux d'accroissement $\frac{\exp(\lambda(t + s)) - \exp(\lambda t)}{s}$ vaut $\lambda\exp(\lambda t)\,\frac{\exp(\lambda s) - 1}{\lambda s}$, qui tend vers $\lambda\exp(\lambda t)$ ({{cx-exponentielle|Exponentielle}}, (i) et (ii)) ; pour $\lambda = 0$, $z$ est constante. Donc $z' = \lambda z = Az$, et, $A$ étant réelle, $y = \operatorname{Re} z$ vérifie $y' = Ay$, avec $y(0) = p$ et
+      $$y(t) = e^{at}\big(\cos(bt)\,p - \sin(bt)\,q\big).$$
+
+      Posons $t_k = k$ si $b = 0$, et $t_k = \frac{2\pi k}{|b|}$ sinon, pour $k \in \mathbb N$. Comme $\exp(2i\pi k) = 1$ ({{cx-pi|Le nombre π}}, (ii)), on a $\cos(bt_k) = 1$ et $\sin(bt_k) = 0$, donc $y(t_k) = e^{at_k}p$ et $\|y(t_k)\| \geqslant \|p\| > 0$.
+
+      Pour $s > 0$, la solution issue de $sp$ est $sy$, qui ne tend pas vers $0$ puisque $\|sy(t_k)\| \geqslant s\|p\|$ et que $t_k \to +\infty$. Le point $sp$ est aussi proche de $0$ qu'on veut : l'origine n'est pas attractive.
+
+      (iii) Si $\mu(A) > 0$, la même construction donne $\|sy(t_k)\| = se^{at_k}\|p\|$, qui tend vers $+\infty$ : la solution issue de $sp$ n'est pas bornée, et, pour $\varepsilon = 1$, aucun $\delta$ ne convient dans la définition de la stabilité.
+    remarques:
+      - |
+        Pour $A = \begin{pmatrix} -1/2 & 4 \\ -1 & -1/2 \end{pmatrix}$, les valeurs propres sont $-\frac12 \pm 2i$, et l'on vérifie que
+        $$e^{tA} = e^{-t/2}\begin{pmatrix} \cos 2t & 2\sin 2t \\ -\frac12\sin 2t & \cos 2t \end{pmatrix},$$
+        puisque cette matrice résout $Y' = AY$ avec $Y(0) = I$. L'origine est asymptotiquement stable, mais la décroissance n'est pas immédiate.
+
+        ```schema ly-lineaire
+        La solution issue de $(0, 1)$, en rouge, sort du disque unité pointillé : sa norme euclidienne atteint $1{,}41$ vers $t = 0{,}62$, avant de décroître comme $e^{-t/2}$. Celle qui part de $(1, 0)$, en bleu, reste au contraire dans le disque. Pour $\gamma \leqslant 0$, la constante $C$ de (i) ne peut donc pas être prise égale à $1$, ni pour la norme euclidienne, ni pour $\|\cdot\|_\infty$ : en $t = \frac\pi4$, la première coordonnée de la solution rouge vaut $2e^{-\pi/8} \approx 1{,}35$.
+        ```
+
+        Le point (i) ne promet rien de plus qu'une décroissance à terme ; une norme adaptée à $A$ décroît, elle, dès l'instant $0$, comme le montre le nœud {{ly-equation|Équation de Liapounov}}.
+      - |
+        L'erreur la plus répandue est de croire que l'on peut prendre $\beta = -\mu(A)$. Pour $A = \begin{pmatrix} -1 & 1 \\ 0 & -1 \end{pmatrix}$, on a $\mu(A) = -1$ et
+        $$e^{tA} = e^{-t}\begin{pmatrix} 1 & t \\ 0 & 1 \end{pmatrix},$$
+        si bien que $e^t\,|||e^{tA}||| = 1 + t$ n'est pas borné. Le facteur polynomial vient du bloc de Jordan $J_2(-1)$ ({{rd-jordan|Forme de Jordan}}) ; c'est lui que la forme presque diagonale de {{ly-triangulaire|Trigonalisation sur ℂ}} sacrifie à la constante.
+      - |
+        Quand $\mu(A) = 0$, tout peut arriver. Pour la rotation $A = \begin{pmatrix} 0 & -1 \\ 1 & 0 \end{pmatrix}$, $e^{tA}$ conserve la norme euclidienne ({{ed-lineaires|Systèmes linéaires}}) : l'origine est stable, sans être attractive. Pour $A = \begin{pmatrix} 0 & 1 \\ 0 & 0 \end{pmatrix}$, la solution issue de $(0, s)$ est $(st, s)$, qui n'est pas bornée : l'origine est instable, bien que les deux valeurs propres soient nulles.
+      - |
+        La trace de $A$ est celle de la matrice triangulaire $P^{-1}AP$ ({{v-trace|Trace}}, (iii)), c'est-à-dire la somme des valeurs propres comptées sur la diagonale. Si $\mu(A) < 0$, on a donc $\operatorname{tr}A < 0$, et $\det e^{tA} = e^{t\operatorname{tr}A}$ ({{ed-lineaires|Systèmes linéaires}}, (iii)) tend vers $0$ : le flot contracte les volumes, comme le précisera le théorème de Liouville ({{cv-liouville|Conservation du volume}}). Un champ linéaire de divergence nulle n'a, à l'inverse, jamais l'origine pour équilibre asymptotiquement stable, puisque ses valeurs propres ont des parties réelles de somme nulle.
+
+  - id: ly-liapounov
+    etiquette: Fonctions de Liapounov
+    nature: théorème
+    titre: Théorème de stabilité de Liapounov
+    texte: |
+      On garde les notations du nœud {{ly-equilibres|Équilibres}} : $X : U \to \lex{n-uplet}{\mathbb R^n}$ est de classe $C^1$, $\varphi$ est son [[flot|flot]], et $\mathbb R^n$ est muni d'une norme $\|\cdot\|$. Soit $W \subset U$ un ouvert et $V : W \to \lex{ensemble-reels}{\mathbb R}$ de classe $C^1$. La **dérivée de $V$ le long du champ** est la fonction continue
+      $$\dot V(x) = dV(x)\big(X(x)\big), \qquad x \in W.$$
+
+      Si $a \in W$ est un [[equilibre|équilibre]], $V$ est une [[fonction-liapounov|fonction de Liapounov]] pour $a$ si $V(a) = 0$, si $V(x) > 0$ pour $x \in W \setminus \{a\}$, et si $\dot V(x) \leqslant 0$ pour tout $x \in W$. Elle est **stricte** si de plus $\dot V(x) < 0$ pour $x \in W \setminus \{a\}$.
+    enonce: |
+      (i) Soit $x \in W$ et $J$ un intervalle contenu dans $]\alpha(x), \beta(x)[$ sur lequel $\varphi_t(x) \in W$. La fonction $t \mapsto V(\varphi_t(x))$ est dérivable sur $J$, de dérivée $\dot V(\varphi_t(x))$.
+
+      (ii) *Stabilité.* S'il existe une fonction de Liapounov pour $a$, l'équilibre $a$ est [[equilibre-stable|stable]]. Plus précisément, si $r > 0$ est tel que la boule fermée $\bar B(a, r)$ soit contenue dans $W$, le minimum $m$ de $V$ sur la sphère $S(a, r) = \{x : \|x - a\| = r\}$ est strictement positif, et toute courbe intégrale issue d'un point $x \in B(a, r)$ tel que $V(x) < m$ est définie sur $[0, +\infty[$ et reste dans $B(a, r)$.
+
+      (iii) *Stabilité asymptotique.* S'il existe une fonction de Liapounov stricte pour $a$, l'équilibre $a$ est [[asymptotiquement-stable|asymptotiquement stable]] ; avec les notations de (ii), toute courbe intégrale issue d'un point $x \in B(a, r)$ tel que $V(x) < m$ tend vers $a$.
+    preuve: |
+      (i) La fonction $t \mapsto \varphi_t(x)$ est dérivable, de dérivée $X(\varphi_t(x))$, et $V$ est différentiable : la règle de la chaîne ({{gd-differentielle|Différentielle}}, (ii) et (iv)) donne la dérivée $dV(\varphi_t(x))\big(X(\varphi_t(x))\big)$.
+
+      (ii) *Le minimum $m$.* La sphère $S(a, r)$ est fermée et bornée, et non vide puisqu'elle contient $a + \frac{r}{\|e_1\|}e_1$ ; elle est compacte ({{gd-equivalence|Normes en dimension finie}}, (ii)). Elle est contenue dans $W \setminus \{a\}$, où $V$ est continue et strictement positive : son minimum $m$ est atteint ({{tr-compacts|Compacts de ℝ}}, (iii)), et $m > 0$.
+
+      *La courbe ne sort pas.* Soit $x \in B(a, r)$ tel que $V(x) < m$, et supposons qu'il existe $t \in [0, \beta(x)[$ tel que $\|\varphi_t(x) - a\| \geqslant r$. L'ensemble de ces $t$ est fermé dans $[0, \beta(x)[$, par continuité ; sa borne inférieure $\tau$ lui appartient donc, et $\tau > 0$ puisque $\|x - a\| < r$. Pour $s < \tau$, on a $\|\varphi_s(x) - a\| < r$ ; par continuité, $\|\varphi_\tau(x) - a\| = r$.
+
+      Sur $[0, \tau]$, la courbe reste dans $\bar B(a, r) \subset W$ ; par (i), $g(s) = V(\varphi_s(x))$ y a une dérivée $\dot V(\varphi_s(x)) \leqslant 0$, et décroît ({{de-monotonie|Signe de la dérivée}}). D'où $g(\tau) \leqslant V(x) < m$, alors que $\varphi_\tau(x) \in S(a, r)$ impose $g(\tau) \geqslant m$ : c'est absurde.
+
+      La courbe reste donc dans $B(a, r)$ sur $[0, \beta(x)[$, et en particulier dans le compact $\bar B(a, r)$ de $U$. Le nœud {{ed-compacts|Sortie des compacts}}, (iii), interdit alors $\beta(x) < +\infty$.
+
+      *Stabilité.* Soit $\varepsilon > 0$. L'ouvert $W$ contient une boule $B(a, r_0)$ ; posons $r = \min(\varepsilon, \frac{r_0}2)$, de sorte que $\bar B(a, r) \subset W$. Comme $V$ est continue en $a$ et nulle en $a$, il existe $\delta \in \,]0, r]$ tel que $V(x) < m$ pour $\|x - a\| < \delta$. Toute courbe issue d'un tel $x$ est définie sur $[0, +\infty[$ et reste dans $B(a, r) \subset B(a, \varepsilon)$.
+
+      (iii) L'équilibre est stable par (ii). Soit $x \in B(a, r)$ tel que $V(x) < m$ ; la courbe issue de $x$ reste dans $B(a, r)$, et $g(t) = V(\varphi_t(x))$ est décroissante et positive sur $[0, +\infty[$. Soit $\ell \geqslant 0$ sa borne inférieure ; pour tout $\varepsilon' > 0$, il existe $T$ tel que $g(T) < \ell + \varepsilon'$, et alors $\ell \leqslant g(t) < \ell + \varepsilon'$ pour $t \geqslant T$ : $g$ tend vers $\ell$.
+
+      *La limite est nulle.* Supposons $\ell > 0$. Par continuité de $V$ en $a$, il existe $\rho \in \,]0, r[$ tel que $V < \ell$ sur $B(a, \rho)$. Comme $g \geqslant \ell$, la courbe reste dans $K = \{y : \rho \leqslant \|y - a\| \leqslant r\}$, compact et contenu dans $W \setminus \{a\}$.
+
+      La fonction continue $-\dot V$ y est strictement positive, et atteint un minimum $c > 0$. Alors $g' \leqslant -c$, la fonction $g + ct$ décroît, et $g(t) \leqslant g(0) - ct$ est strictement négatif pour $t > g(0)/c$ : c'est absurde. Donc $\ell = 0$.
+
+      *Convergence.* Soit $\eta \in \,]0, r[$, et $m_\eta > 0$ le minimum de $V$ sur le compact $\{y : \eta \leqslant \|y - a\| \leqslant r\}$. Il existe $T$ tel que $g(t) < m_\eta$ pour $t \geqslant T$ ; pour ces $t$, $\varphi_t(x)$ est dans $B(a, r)$ mais pas dans ce compact, donc $\|\varphi_t(x) - a\| < \eta$. Ainsi $\varphi_t(x) \to a$, et le nombre $\delta$ de (ii) convient dans la définition de l'attractivité.
+    remarques:
+      - |
+        On peut voir $V$ comme une altitude, ou une énergie : la condition $\dot V \leqslant 0$ dit que les trajectoires ne remontent jamais. Une trajectoire partie sous le niveau $m$, qui est l'altitude la plus basse du bord de la boule, ne peut donc pas atteindre ce bord.
+      - |
+        Pour le champ $X(x, y) = (-y - x^3,\ x - y^3)$ et $V(x, y) = x^2 + y^2$, on trouve $\dot V = 2x(-y - x^3) + 2y(x - y^3) = -2(x^4 + y^4)$ : $V$ est une fonction de Liapounov stricte pour $0$, qui est asymptotiquement stable.
+
+        ```schema ly-liapounov
+        Pour la norme $\|\cdot\|_\infty$ et $r = 1$, la sphère $S(a, r)$ est le carré noir, et le minimum de $V$ sur ce carré est $m = 1$, atteint au milieu des côtés. L'ensemble $V < m$ est le disque ouvert bordé de rouge, qui contient le carré bleu $B(a, \delta)$ pour $\delta = \frac{1}{\sqrt2}$. La trajectoire verte, issue d'un point $x$ de ce carré, traverse les cercles $V = $ constante vers l'intérieur et ne peut pas sortir du disque.
+        ```
+
+        La décroissance est lente : comme $\frac{(x^2 + y^2)^2}2 \leqslant x^4 + y^4 \leqslant (x^2 + y^2)^2$, on a $-2V^2 \leqslant \dot V \leqslant -V^2$, donc $1 \leqslant (1/V)' \leqslant 2$ et
+        $$\frac{V_0}{1 + 2V_0t} \leqslant V(t) \leqslant \frac{V_0}{1 + V_0t}.$$
+        Pour $V_0 = 1$ et $t = 200$, l'intégration numérique donne $V \approx 0{,}0033$, entre $0{,}0025$ et $0{,}0050$ : la convergence n'est pas exponentielle, contrairement à celle du nœud {{ly-lineaire|Systèmes linéaires stables}}.
+      - |
+        L'hypothèse que $V$ est strictement positive hors de $a$ ne peut pas être omise. Pour $y' = y$ sur $\mathbb R$, la fonction $V(y) = -y^2$ est nulle en $0$ et vérifie $\dot V = -2y^2 \leqslant 0$, alors que l'équilibre $0$ est instable. Une fonction qui décroît le long des trajectoires ne dit rien si elle n'a pas de minimum strict en $a$.
+      - |
+        Ce théorème est ce que l'on appelle la seconde méthode, ou méthode directe, de Liapounov : elle conclut sans résoudre l'équation, à partir de la seule fonction $V$. Elle est exposée dans la thèse de 1892 citée au nœud {{ly-equilibres|Équilibres}}, dont la traduction française a paru à Toulouse en 1907.
+
+  - id: ly-equation
+    etiquette: Équation de Liapounov
+    nature: théorème
+    titre: Fonction de Liapounov quadratique et équation de Liapounov
+    texte: |
+      Soit $A \in \lex{espace-matrices}{\mathcal M_n}(\lex{ensemble-reels}{\mathbb R})$ et $\mu(A)$ le plus grand des réels $\operatorname{Re}\lambda$, $\lambda$ valeur propre complexe de $A$ ({{ly-lineaire|Systèmes linéaires stables}}). On note $\|x\|_2^2 = {}^txx$ pour $x \in \lex{n-uplet}{\mathbb R^n}$.
+
+      Pour une fonction continue $f : [0, +\infty[ \to \mathbb R$, on dit que $\int_0^{+\infty} f$ converge si $\int_0^T f$ a une limite finie quand $T \to +\infty$ ; on note $\int_0^{+\infty} f$ cette limite. Pour une fonction à valeurs matricielles, on intègre coefficient par coefficient.
+
+      L'[[equation-liapounov|équation de Liapounov]] associée à $A$ est l'équation
+      $${}^tAQ + QA = -I,$$
+      d'inconnue $Q \in \mathcal M_n(\mathbb R)$.
+    enonce: |
+      (i) Si $\mu(A) < 0$, l'intégrale
+      $$P = \int_0^{+\infty} e^{s\,{}^tA}e^{sA}\,ds$$
+      converge, $P$ est symétrique et [[forme-definie-positive|définie positive]], et c'est l'unique solution de l'équation de Liapounov.
+
+      (ii) La forme quadratique $V(y) = {}^tyPy$ est alors une [[fonction-liapounov|fonction de Liapounov]] stricte pour l'origine du champ $X(y) = Ay$, sur $W = \mathbb R^n$, et $\dot V(y) = -\|y\|_2^2$.
+
+      (iii) Réciproquement, s'il existe une matrice symétrique définie positive $P$ telle que ${}^tAP + PA$ soit définie négative, alors $\mu(A) < 0$.
+    preuve: |
+      (i) *Transposition.* Les sommes partielles de $e^{s\,{}^tA}$ sont les transposées de celles de $e^{sA}$, puisque ${}^t(A^k) = ({}^tA)^k$ ; la transposition, linéaire en dimension finie, est continue ({{gd-equivalence|Normes en dimension finie}}, (iv)), et ${}^t(e^{sA}) = e^{s\,{}^tA}$. La matrice $M(s) = e^{s\,{}^tA}e^{sA} = {}^tE\,E$, où $E = e^{sA}$, est donc symétrique.
+
+      *Majoration.* Soit $\beta \in \,]0, -\mu(A)[$ et $C$ fourni par {{ly-lineaire|Systèmes linéaires stables}}, (ii). Chaque coefficient de $e^{sA}$ est majoré en module par $|||e^{sA}||| \leqslant Ce^{-\beta s}$, pour la norme subordonnée à $\|\cdot\|_\infty$, et
+      $$|m_{ij}(s)| = \Big|\sum_k e_{ki}e_{kj}\Big| \leqslant nC^2e^{-2\beta s}.$$
+
+      *Convergence.* La fonction $m_{ij}$ est continue. Pour $0 \leqslant T \leqslant T'$, la croissance de l'intégrale ({{ri-proprietes|Propriétés de l'intégrale}}, (ii) et (iv)) et la primitive $-\frac{e^{-2\beta s}}{2\beta}$ ({{cx-convergence-uniforme|Convergence uniforme}}, (iv)) donnent
+      $$\Big|\int_T^{T'} m_{ij}\Big| \leqslant \frac{nC^2}{2\beta}\,e^{-2\beta T}.$$
+      La suite $u_N = \int_0^N m_{ij}$ est donc de Cauchy ; elle converge vers un réel $p_{ij}$ ({{ar-cauchy|Complétude}}), et, en faisant tendre $T'$ vers l'infini parmi les entiers, $|\int_0^T m_{ij} - p_{ij}| \leqslant \frac{nC^2}{\beta}e^{-2\beta N}$ pour $T \geqslant N$. Ainsi $\int_0^T m_{ij} \to p_{ij}$, et $P = (p_{ij})$ est symétrique.
+
+      *L'équation.* La dérivée de $e^{sA}$ est $Ae^{sA} = e^{sA}A$, puisque $A$ commute avec les sommes partielles ; celle de $e^{s\,{}^tA}$ est ${}^tAe^{s\,{}^tA}$ ({{ed-lineaires|Systèmes linéaires}}, (ii)). La dérivée d'un produit se calculant coefficient par coefficient ({{de-operations|Opérations}}),
+      $$M'(s) = {}^tA\,M(s) + M(s)\,A,$$
+      qui est continue. Pour $T > 0$, notons $P_T = \int_0^T M$. Par linéarité de l'intégrale et par {{cx-convergence-uniforme|Convergence uniforme}}, (iv),
+      $${}^tAP_T + P_TA = \int_0^T M' = M(T) - I.$$
+      Quand $T \to +\infty$, $P_T \to P$ et $M(T) \to 0$, d'où ${}^tAP + PA = -I$.
+
+      *Positivité.* Pour $x \in \mathbb R^n$, ${}^txM(s)x = \|e^{sA}x\|_2^2 \geqslant 0$, et ${}^txP_Tx = \int_0^T \|e^{sA}x\|_2^2\,ds$ croît avec $T$ ; donc ${}^txPx \geqslant \int_0^1 \|e^{sA}x\|_2^2\,ds$. Si $x \neq 0$, la fonction continue intégrée vaut $\|x\|_2^2 > 0$ en $0$ ; elle est au moins $\frac12\|x\|_2^2$ sur un segment $[0, s_0]$, avec $0 < s_0 \leqslant 1$, et ${}^txPx \geqslant \frac{s_0}2\|x\|_2^2 > 0$.
+
+      *Unicité.* Si $Q$ est une autre solution, $\Delta = P - Q$ vérifie ${}^tA\Delta + \Delta A = 0$. La fonction $G(s) = e^{s\,{}^tA}\Delta\,e^{sA}$ a pour dérivée $e^{s\,{}^tA}({}^tA\Delta + \Delta A)e^{sA} = 0$ ; elle est constante ({{de-monotonie|Signe de la dérivée}}, (ii)), égale à $G(0) = \Delta$. Ses coefficients sont majorés par $n^2C^2e^{-2\beta s}\max_{i,j}|\delta_{ij}|$, qui tend vers $0$ : donc $\Delta = 0$.
+
+      (ii) La fonction $V(y) = \sum_{i,j} p_{ij}y_iy_j$ est polynomiale, donc de classe $C^1$ ({{gd-classe-ck|Classe Cᵏ}}, (iii)) ; elle est nulle en $0$ et strictement positive ailleurs. Comme $(y, z) \mapsto {}^tyPz$ est bilinéaire et $P$ symétrique, $dV(y)k = 2\,{}^tyPk$ ({{gd-differentielle|Différentielle}}, (iii)). Le scalaire ${}^tyPAy$ étant égal à sa transposée ${}^ty\,{}^tAPy$,
+      $$\begin{aligned} \dot V(y) &= 2\,{}^tyPAy \\ &= {}^ty({}^tAP + PA)y = -\|y\|_2^2. \end{aligned}$$
+
+      (iii) La fonction $V(y) = {}^tyPy$ est, comme en (ii), de classe $C^1$, strictement positive hors de $0$, et $\dot V(y) = {}^ty({}^tAP + PA)y < 0$ pour $y \neq 0$. C'est une fonction de Liapounov stricte sur $\mathbb R^n$ ; l'origine est asymptotiquement stable ({{ly-liapounov|Fonctions de Liapounov}}, (iii)), et $\mu(A) < 0$ par {{ly-lineaire|Systèmes linéaires stables}}, (ii).
+    remarques:
+      - |
+        Pour $A = \begin{pmatrix} -1/2 & 4 \\ -1 & -1/2 \end{pmatrix}$, de valeurs propres $-\frac12 \pm 2i$, la résolution du système linéaire de trois inconnues que forme l'équation de Liapounov donne
+        $$P = \frac1{17}\begin{pmatrix} 11 & 3 \\ 3 & 41 \end{pmatrix},$$
+        définie positive par le critère des mineurs ({{fq-mineurs|Critère des mineurs}}, (i)) : $11 > 0$ et $11 \times 41 - 9 = 442 > 0$. On vérifie que ${}^tAP + PA = -I$, et l'intégration numérique de $e^{s\,{}^tA}e^{sA}$ sur $[0, 40]$ redonne $P$ à $10^{-6}$ près.
+
+        ```schema ly-equation
+        Les ellipses grises sont des niveaux de $V(y) = {}^tyPy$ ; l'ellipse bleue est celle qui passe par $(0, 1)$, de niveau $\frac{41}{17}$. La solution issue de $(0, 1)$, en rouge, est celle du nœud {{ly-lineaire|Systèmes linéaires stables}} : elle sort du disque unité pointillé, mais traverse chaque ellipse une seule fois, vers l'intérieur.
+        ```
+
+        Pour la norme euclidienne, la solution s'éloigne d'abord de l'origine ; pour la quantité $\sqrt{V}$, elle s'en rapproche dès l'instant $0$. La fonction de Liapounov fournit la norme adaptée au système.
+      - |
+        La formule intégrale a un sens concret : ${}^txPx = \int_0^{+\infty} \|e^{sA}x\|_2^2\,ds$ mesure l'énergie totale de la solution issue de $x$. Si $\mu(A) < 0$, elle est finie pour tout $x$, par (i). Si au contraire $\mu(A) \geqslant 0$, la solution issue du point $p$ construit dans la démonstration de {{ly-lineaire|Systèmes linéaires stables}}, (ii), vérifie $\|y(t_k)\| \geqslant \|p\|$ en des instants $t_k$ régulièrement espacés ; par continuité, elle reste au-dessus de $\frac12\|p\|$ sur des intervalles de même longueur autour d'eux, et son énergie est infinie.
+      - |
+        En pratique, on ne calcule pas l'intégrale : l'équation de Liapounov est un système linéaire de $\frac{n(n+1)}2$ inconnues, les coefficients de la matrice symétrique $Q$, et l'unicité garantit que sa solution est $P$. C'est la fonction $V$ ainsi obtenue que le nœud {{ly-linearisation|Linéarisation}} emploie pour un champ non linéaire.
+
+  - id: ly-lasalle
+    etiquette: Principe de LaSalle
+    nature: théorème
+    titre: Ensembles ω-limites et principe d'invariance de LaSalle
+    texte: |
+      On garde les notations des nœuds {{ly-equilibres|Équilibres}} et {{ly-liapounov|Fonctions de Liapounov}}. Pour $x \in U$ tel que $\beta(x) = +\infty$, l'[[ensemble-omega-limite|ensemble ω-limite]] de $x$ est
+      $$\omega(x) = \bigcap_{T \geqslant 0} \overline{\{\varphi_t(x) : t \geqslant T\}},$$
+      l'adhérence étant prise dans $\lex{n-uplet}{\mathbb R^n}$. Une partie $M$ de $U$ est **positivement invariante** si, pour tout $y \in M$, $\varphi_s(y)$ est défini et appartient à $M$ pour tout $s \geqslant 0$.
+    enonce: |
+      Soit $W \subset U$ un ouvert et $V : W \to \lex{ensemble-reels}{\mathbb R}$ de classe $C^1$ telle que $\dot V \leqslant 0$ sur $W$. Soit $x \in W$ tel que la courbe $\{\varphi_t(x) : 0 \leqslant t < \beta(x)\}$ soit contenue dans un [[compact|compact]] $K \subset W$.
+
+      (i) On a $\beta(x) = +\infty$, et $\omega(x)$ est un compact non vide contenu dans $K$. Pour tout ouvert $O$ contenant $\omega(x)$, $\varphi_t(x) \in O$ pour $t$ assez grand.
+
+      (ii) $\omega(x)$ est positivement invariant, $V$ y est constante, et $\omega(x)$ est contenu dans $E = \{y \in K : \dot V(y) = 0\}$.
+
+      (iii) *Principe d'invariance.* Si tout point $y$ de $E$ tel que $\varphi_s(y)$ soit défini et appartienne à $E$ pour tout $s \geqslant 0$ est égal à un même point $a$, alors $\varphi_t(x) \to a$ quand $t \to +\infty$.
+
+      (iv) *Barbachine-Krasovski.* Soit $V$ une [[fonction-liapounov|fonction de Liapounov]] pour un équilibre $a$, et $r > 0$ tel que $\bar B(a, r) \subset W$. Si $a$ est le seul point de $\bar B(a, r)$ dont la courbe intégrale soit définie sur $[0, +\infty[$ et reste dans $\{y \in \bar B(a, r) : \dot V(y) = 0\}$, l'équilibre $a$ est [[asymptotiquement-stable|asymptotiquement stable]].
+    preuve: |
+      (i) La courbe reste dans le compact $K$ de $U$, et le nœud {{ed-compacts|Sortie des compacts}}, (iii), donne $\beta(x) = +\infty$. Notons $F_T$ l'adhérence de $\{\varphi_t(x) : t \geqslant T\}$. Le compact $K$ est fermé ({{t-compact-prop|Parties compactes}}, (ii)), donc $F_T \subset K$ ; les $F_T$ sont fermés, non vides, et décroissants en $T$.
+
+      Une intersection finie $F_{T_1} \cap \dots \cap F_{T_k}$ est égale à $F_{\max T_i}$, non vide. Par la compacité de $K$, sous la forme des fermés ({{t-compact|Compacité}}), l'intersection $\omega(x)$ n'est pas vide ; c'est un fermé de $K$, donc un compact ({{t-compact-prop|Parties compactes}}, (i)).
+
+      Soit $O$ un ouvert contenant $\omega(x)$, et supposons que, pour tout $T$, il existe $t \geqslant T$ tel que $\varphi_t(x) \notin O$. Les fermés $G_T = F_T \setminus O$ de $K$ sont alors non vides et décroissants ; leur intersection, non vide par le même argument, est formée de points de $\omega(x)$ hors de $O$, ce qui est absurde. Aucune suite n'est extraite, et aucun choix n'intervient.
+
+      (ii) *$V$ est constante.* Par {{ly-liapounov|Fonctions de Liapounov}}, (i), $g(t) = V(\varphi_t(x))$ est décroissante ({{de-monotonie|Signe de la dérivée}}) ; elle est minorée par le minimum de $V$ sur $K$ ({{tr-compacts|Compacts de ℝ}}, (iii)). Soit $\ell$ sa borne inférieure, qui est sa limite.
+
+      Pour $T \geqslant 0$, l'ensemble $\{z \in K : \ell \leqslant V(z) \leqslant g(T)\}$ est fermé, $V$ étant continue, et contient les $\varphi_t(x)$ pour $t \geqslant T$ ; il contient donc $F_T$. Tout $y \in \omega(x)$ vérifie ainsi $\ell \leqslant V(y) \leqslant g(T)$ pour tout $T$, d'où $V(y) = \ell$.
+
+      *Invariance.* Soit $y \in \omega(x)$, $s \in [0, \beta(y)[$ et $\varepsilon > 0$. Le domaine du flot est ouvert et le flot y est continu ({{ed-domaine-flot|Domaine du flot}}, (iii)) : il existe $\rho > 0$ tel que, pour $\|z - y\| < \rho$, $\varphi_s(z)$ soit défini et $\|\varphi_s(z) - \varphi_s(y)\| < \varepsilon$.
+
+      Pour tout $T$, comme $y \in F_T$, il existe $t \geqslant T$ tel que $\|\varphi_t(x) - y\| < \rho$ ; alors $\varphi_{s+t}(x) = \varphi_s(\varphi_t(x))$ ({{ed-flot|Flot}}, (i)) est à distance au plus $\varepsilon$ de $\varphi_s(y)$, avec $s + t \geqslant T$. Ainsi $\varphi_s(y)$ est adhérent à $\{\varphi_u(x) : u \geqslant T\}$ pour tout $T$ : $\varphi_s(y) \in \omega(x)$.
+
+      La courbe issue de $y$ reste donc dans $\omega(x) \subset K$ sur $[0, \beta(y)[$, et le nœud {{ed-compacts|Sortie des compacts}}, (iii), donne $\beta(y) = +\infty$ : $\omega(x)$ est positivement invariant.
+
+      *Inclusion dans $E$.* Pour $y \in \omega(x)$, la fonction $s \mapsto V(\varphi_s(y))$ est constante, égale à $\ell$, sur $[0, +\infty[$. Sa dérivée en $0$, qui est sa dérivée à droite, est nulle ; c'est $\dot V(y)$ par {{ly-liapounov|Fonctions de Liapounov}}, (i).
+
+      (iii) Tout point $y$ de $\omega(x)$ a, par (ii), sa courbe intégrale définie sur $[0, +\infty[$ et contenue dans $\omega(x) \subset E$ ; donc $y = a$. Comme $\omega(x)$ n'est pas vide, $\omega(x) = \{a\}$, et (i), appliqué aux boules $O = B(a, \eta)$, donne $\varphi_t(x) \to a$.
+
+      (iv) L'équilibre est stable ({{ly-liapounov|Fonctions de Liapounov}}, (ii)). Avec les notations de ce point, toute courbe issue d'un point $x \in B(a, r)$ tel que $V(x) < m$ reste dans le compact $K = \bar B(a, r)$, contenu dans $W$. L'hypothèse dit exactement que (iii) s'applique avec ce compact : $\varphi_t(x) \to a$. Par continuité de $V$ en $a$, ces points $x$ forment un voisinage de $a$, et l'équilibre est attractif.
+    remarques:
+      - |
+        Le principe d'invariance tire parti de ce que la dérivée de $V$ ne voit pas. Là où $\dot V = 0$, la fonction $V$ ne renseigne plus ; mais une trajectoire ne peut s'accumuler que sur des points dont toute la trajectoire reste dans $E$, et la dynamique élimine souvent tous les points de $E$ sauf l'équilibre. Le nœud {{ly-pendule|Pendule amorti}} en donne l'exemple type.
+      - |
+        L'hypothèse de compacité ne peut pas être omise. Pour $y' = -y^2$ sur $\mathbb R$ et $V(y) = y$, on a $\dot V = -y^2 \leqslant 0$ et $E = \{0\}$ ; la courbe issue de $x = -1$ est $\frac{-1}{1 - t}$, qui tend vers $-\infty$ en temps fini. Elle ne reste dans aucun compact, et ne s'accumule nulle part.
+      - |
+        Le point (iv) ne demande pas $\dot V < 0$ hors de $a$ : c'est ce qui le distingue du théorème de Liapounov, et c'est ce qui le rend utile, l'énergie d'un système mécanique dissipatif ne décroissant d'ordinaire que là où la vitesse n'est pas nulle.
+      - |
+        E. A. Barbachine et N. N. Krasovski ont publié en 1952 la version globale de (iv), pour une fonction $V$ définie sur tout $\mathbb R^n$ et tendant vers $+\infty$ à l'infini, qui donne l'attraction de tous les points ; le point (iv) en est la version locale. Leur article est « Sur la stabilité du mouvement dans son ensemble » (*Doklady Akad. Nauk SSSR* 86, p. 453-456). Le principe général est dû à Krasovski, dans son livre de 1959 sur les problèmes de la théorie de la stabilité du mouvement, et, indépendamment, à J. P. LaSalle, « Some extensions of Liapunov's second method » (*IRE Transactions on Circuit Theory* CT-7, 1960, p. 520-527).
+
+  - id: ly-linearisation
+    etiquette: Linéarisation
+    nature: théorème
+    titre: Stabilité par linéarisation
+    texte: |
+      Soit $X : U \to \lex{n-uplet}{\mathbb R^n}$ de classe $C^1$ sur un ouvert $U$, $\varphi$ son [[flot|flot]], et $a \in U$ un [[equilibre|équilibre]]. Soit $A = dX(a)$, identifiée à la matrice jacobienne. Le système linéaire $h' = Ah$ est le [[systeme-linearise|système linéarisé]] de $X$ en $a$.
+
+      On note $\mu(A)$ le plus grand des réels $\operatorname{Re}\lambda$, $\lambda$ valeur propre complexe de $A$ ({{ly-lineaire|Systèmes linéaires stables}}). On munit $\mathbb R^n$ de $\|\cdot\|_\infty$, notée $\|\cdot\|$, et l'on note $\|h\|_2^2 = {}^thh$.
+    enonce: |
+      (i) *Équation variationnelle.* Pour tout réel $t$, $d\varphi_t(a) = e^{tA}$.
+
+      (ii) *Stabilité.* Si $\mu(A) < 0$, l'équilibre $a$ est [[asymptotiquement-stable|asymptotiquement stable]], et la convergence est exponentielle : il existe $\delta > 0$, $C \geqslant 1$ et $\kappa > 0$ tels que, pour $\|x - a\| < \delta$ et $t \geqslant 0$,
+      $$\|\varphi_t(x) - a\| \leqslant C\,e^{-\kappa t}\,\|x - a\|.$$
+    preuve: |
+      (i) Comme $\varphi_s(a) = a$ ({{ly-equilibres|Équilibres}}, (i)), la courbe issue de $a$ est définie sur $\mathbb R$, et l'équation variationnelle le long de cette courbe est $Z' = AZ$, $Z(0) = I$. La fonction $e^{sA}$ en est la solution ({{ed-lineaires|Systèmes linéaires}}, (ii)), unique colonne par colonne, et le nœud {{ed-variationnelle|Équation variationnelle}}, (i), donne $d\varphi_t(a) = e^{tA}$.
+
+      (ii) *La fonction $V$.* Soit $P$ la solution de l'équation de Liapounov ${}^tAP + PA = -I$ ({{ly-equation|Équation de Liapounov}}, (i)), et $V(y) = {}^t(y - a)P(y - a)$ sur $U$. Par la minoration des formes définies positives ({{fq-positives|Formes positives}}, (iv)), il existe $c_1 > 0$ tel que $V(y) \geqslant c_1\|y - a\|^2$ ; et $V(y) \leqslant c_2\|y - a\|^2$ pour $c_2 = \sum_{i,j}|p_{ij}|$.
+
+      *Sa dérivée.* Comme au nœud {{ly-equation|Équation de Liapounov}}, (ii), $\dot V(y) = 2\,{}^thPX(y)$ avec $h = y - a$. Par différentiabilité de $X$ en $a$, où $X(a) = 0$, on a $X(a + h) = Ah + \|h\|\,\varepsilon(h)$, avec $\varepsilon(h) \to 0$ ({{gd-differentielle|Différentielle}}). Il vient
+      $$\dot V(y) = -\|h\|_2^2 + 2\|h\|\,{}^thP\varepsilon(h).$$
+
+      On a $|{}^thP\varepsilon(h)| \leqslant c_2\|h\|\,\|\varepsilon(h)\|$ et $\|h\|_2^2 \geqslant \|h\|^2$. Soit $r_0 > 0$ tel que $B(a, r_0) \subset U$ et $\|\varepsilon(h)\| \leqslant \frac{1}{4c_2}$ pour $\|h\| < r_0$. Sur $W = B(a, r_0)$,
+      $$\dot V(y) \leqslant -\tfrac12\|y - a\|^2 \leqslant -\frac{1}{2c_2}\,V(y).$$
+      En particulier, $V$ est une fonction de Liapounov stricte pour $a$ sur $W$, et $a$ est asymptotiquement stable ({{ly-liapounov|Fonctions de Liapounov}}, (iii)).
+
+      *Vitesse.* Soit $r = \frac{r_0}2$, $m$ le minimum de $V$ sur la sphère $S(a, r)$, et $\delta \in \,]0, r]$ tel que $c_2\delta^2 < m$. Pour $\|x - a\| < \delta$, on a $V(x) < m$, et la courbe issue de $x$ reste dans $B(a, r) \subset W$ ({{ly-liapounov|Fonctions de Liapounov}}, (ii)).
+
+      La fonction $g(t) = V(\varphi_t(x))$ vérifie alors $g' \leqslant -\frac{g}{2c_2}$ ; $g\,e^{t/(2c_2)}$ décroît ({{de-monotonie|Signe de la dérivée}}), et
+      $$\begin{aligned} c_1\|\varphi_t(x) - a\|^2 &\leqslant g(t) \\ &\leqslant c_2\|x - a\|^2e^{-t/(2c_2)}. \end{aligned}$$
+      On conclut avec $\kappa = \frac{1}{4c_2}$ et $C = \max\big(1, \sqrt{c_2/c_1}\big)$.
+    remarques:
+      - |
+        Le point (i) explique le théorème : près de $a$, $\varphi_t(x) - a$ est approché par $e^{tA}(x - a)$, et la décroissance exponentielle du linéarisé se transmet au système. Mais l'approximation ne vaut qu'à $t$ fixé ; c'est la fonction de Liapounov du linéarisé, encore valable pour le champ non linéaire au voisinage de $a$, qui la rend uniforme sur $[0, +\infty[$.
+      - |
+        L'erreur la plus répandue est de conclure quand $\mu(A) = 0$. Les champs $(-y - x^3,\ x - y^3)$ et $(-y + x^3,\ x + y^3)$ ont le même linéarisé en $0$, la rotation $\begin{pmatrix} 0 & -1 \\ 1 & 0 \end{pmatrix}$. Pour le premier, $V = x^2 + y^2$ décroît, et $0$ est asymptotiquement stable ({{ly-liapounov|Fonctions de Liapounov}}) ; pour le second, $\dot V = 2(x^4 + y^4) \geqslant V^2$, donc $(1/V)' \leqslant -1$ le long d'une trajectoire issue de $x \neq 0$, et $V$ explose avant l'instant $1/V(x)$, si bien que $0$ est instable. Le linéarisé ne voit pas les termes cubiques qui décident.
+      - |
+        La vitesse $\kappa$ obtenue est médiocre. En reprenant la démonstration du nœud {{ly-lineaire|Systèmes linéaires stables}}, (i), avec la quantité $|R^{-1}(y - a)|^2$ à la place de $V$, on obtient l'estimation pour tout $\kappa < -\mu(A)$ ; on ne le détaille pas ici. Le reste $\|h\|\,\varepsilon(h)$ ne fait qu'ajouter à $\eta$ un terme qui tend vers $0$ avec $h$, comme dans la preuve du nœud {{ly-instabilite|Instabilité}}.
+      - |
+        Ce critère est connu comme le théorème de stabilité « en première approximation » de Liapounov, dont la thèse de 1892 est citée au nœud {{ly-equilibres|Équilibres}}. La démonstration donnée ici, par une fonction de Liapounov quadratique, relève de la seconde méthode du nœud {{ly-liapounov|Fonctions de Liapounov}}.
+
+  - id: ly-instabilite
+    etiquette: Instabilité
+    nature: théorème
+    titre: Instabilité par linéarisation
+    texte: |
+      On garde les notations du nœud {{ly-linearisation|Linéarisation}} : $a$ est un [[equilibre|équilibre]] du champ $X$, de classe $C^1$ sur l'ouvert $U$, $A = dX(a)$, et $\mu(A)$ est la plus grande partie réelle d'une valeur propre complexe de $A$. Pour $z, w \in \mathbb C^n$, $\langle z, w \rangle$ et $|z|$ sont définis comme au nœud {{ly-triangulaire|Trigonalisation sur ℂ}}.
+    enonce: |
+      Si $\mu(A) > 0$, c'est-à-dire si $A$ a une valeur propre complexe de partie réelle strictement positive, l'équilibre $a$ est instable.
+    preuve: |
+      *Les constantes.* Les parties réelles des valeurs propres sont en nombre fini ({{ly-triangulaire|Trigonalisation sur ℂ}}, (i)). Parmi les $n + 1$ réels $\frac{k\mu(A)}{n + 2}$, $1 \leqslant k \leqslant n + 1$, l'un au moins n'est pas une partie réelle de valeur propre ; soit $s$ le plus petit de ceux qui ne le sont pas. Alors $0 < s < \mu(A)$, et $\kappa = \min_\lambda |\operatorname{Re}\lambda - s| > 0$.
+
+      Soit $R$ fournie par {{ly-triangulaire|Trigonalisation sur ℂ}}, (ii) et (iii), avec $\Lambda = \{\lambda : \operatorname{Re}\lambda > s\}$ et $\eta = \frac\kappa4$ : $R^{-1}AR = D + N$, et les coefficients diagonaux $d_1, \dots, d_n$ de $D$ vérifient $\operatorname{Re} d_k > s$ pour $k \leqslant q$ et $\operatorname{Re} d_k < s$ pour $k > q$, avec $q \geqslant 1$, puisque toute valeur propre figure sur la diagonale. Posons $\sigma_k = 1$ pour $k \leqslant q$, $\sigma_k = -1$ sinon, et, pour $z \in \mathbb C^n$ et $y \in \mathbb R^n$,
+      $$\begin{aligned} H(z) &= \sum_{k=1}^n \sigma_k\,\big|(R^{-1}z)_k\big|^2, \\ V(y) &= H(y - a). \end{aligned}$$
+
+      *$V$ prend des valeurs positives près de $a$.* Soit $u = Re_1$ ; comme $(D + N)e_1 = d_1e_1$, on a $Au = d_1u$. La matrice $A$ étant réelle, $A\bar u = \bar d_1\bar u$, et $\operatorname{Re}\bar d_1 = \operatorname{Re} d_1 > s$.
+
+      Soit $w = R^{-1}\bar u \neq 0$ et $j$ le plus grand indice tel que $w_j \neq 0$. La ligne $j$ de $(D + N)w = \bar d_1 w$ se réduit, $D + N$ étant triangulaire supérieure, à $d_jw_j = \bar d_1w_j$ : donc $d_j = \bar d_1$, $j \leqslant q$, et $w$ n'a de coordonnées non nulles que d'indice au plus $q$. Ainsi $H(\bar u) = |w|^2 > 0$, et $H(u) = |e_1|^2 = 1$.
+
+      Écrivons $u = u_1 + iu_2$ avec $u_1, u_2 \in \mathbb R^n$. Pour deux complexes $\alpha, \beta$, $|\alpha + i\beta|^2 + |\alpha - i\beta|^2 = 2|\alpha|^2 + 2|\beta|^2$ ; appliqué aux coordonnées de $R^{-1}u_1$ et $R^{-1}u_2$, cela donne
+      $$H(u) + H(\bar u) = 2H(u_1) + 2H(u_2).$$
+      L'un des vecteurs réels $u_1, u_2$, notons-le $h_0$, vérifie donc $H(h_0) > 0$, et $V(a + \tau h_0) = \tau^2H(h_0) > 0$ pour tout réel $\tau \neq 0$.
+
+      *Croissance de $V$.* Soit $\rho$ et $\rho'$ comme dans la preuve de {{ly-lineaire|Systèmes linéaires stables}}, (i), de sorte que $\|h\| \leqslant \rho|R^{-1}h|$ et $|R^{-1}h|^2 \leqslant n\rho'^2\|h\|^2$. Écrivons $X(a + h) = Ah + \|h\|\varepsilon(h)$, avec $\varepsilon(h) \to 0$, et soit $r_0 > 0$ tel que $B(a, r_0) \subset U$ et $2n\sqrt n\,\rho\rho'\|\varepsilon(h)\| \leqslant \frac\kappa2$ pour $\|h\| < r_0$.
+
+      Le long d'une courbe intégrale qui reste dans $B(a, r_0)$, posons $h = \varphi_t(x) - a$, $w = R^{-1}h$, $\tilde w = (\sigma_kw_k)_k$ et $g(t) = V(\varphi_t(x))$. On a
+      $$w' = (D + N)w + \|h\|\,R^{-1}\varepsilon(h),$$
+      et, comme dans la preuve de {{ly-lineaire|Systèmes linéaires stables}}, (i), $g' = 2\operatorname{Re}\langle \tilde w, w' \rangle$.
+
+      Le terme diagonal vaut
+      $$\begin{aligned} &2\sum_k \sigma_k\operatorname{Re}(d_k)|w_k|^2 \\ &\quad = 2sg + 2\sum_k \sigma_k(\operatorname{Re} d_k - s)|w_k|^2 \\ &\quad \geqslant 2sg + 2\kappa|w|^2, \end{aligned}$$
+      puisque $\sigma_k(\operatorname{Re} d_k - s) = |\operatorname{Re} d_k - s|$. Le terme en $N$ est au plus $2\eta|w|^2 = \frac\kappa2|w|^2$ en valeur absolue, puisque $|\tilde w| = |w|$.
+
+      Pour le reste, $|\langle \tilde w, z \rangle| \leqslant \sum_k |w_k||z_k| \leqslant n|w||z|$, avec $|R^{-1}\varepsilon(h)| \leqslant \sqrt n\rho'\|\varepsilon(h)\|$ et $\|h\| \leqslant \rho|w|$ ; il est au plus $2n\sqrt n\rho\rho'\|\varepsilon(h)\|\,|w|^2 \leqslant \frac\kappa2|w|^2$. Au total,
+      $$g' \geqslant 2sg + \kappa|w|^2 \geqslant 2sg.$$
+
+      *Conclusion.* Supposons $a$ stable, et soit $\delta$ associé à $\varepsilon = r_0$. Soit $\tau > 0$ tel que $\|\tau h_0\| < \delta$, et $x = a + \tau h_0$. La courbe issue de $x$ est définie sur $[0, +\infty[$ et reste dans $B(a, r_0)$ ; la fonction $g\,e^{-2st}$ y croît ({{de-monotonie|Signe de la dérivée}}), et $g(t) \geqslant V(x)e^{2st}$ tend vers $+\infty$, puisque $V(x) > 0$. Or $g(t) \leqslant |w(t)|^2 \leqslant n\rho'^2r_0^2$ : c'est absurde, et $a$ est instable.
+    remarques:
+      - |
+        Pour un champ linéaire, le point (iii) du nœud {{ly-lineaire|Systèmes linéaires stables}} donnait le résultat par un vecteur propre. Pour un champ non linéaire, la solution issue d'un vecteur propre n'est plus connue, et c'est la fonction $V$, différence des carrés des composantes « instables » et « stables », qui la remplace : le cône $\{V > 0\}$ repousse les trajectoires hors de toute petite boule.
+      - |
+        La réciproque est fausse : un équilibre peut être instable avec $\mu(A) = 0$. Pour $y' = y^2$ sur $\mathbb R$, $A = 0$, et la solution issue de $x > 0$ explose en temps fini ({{ed-maximales|Solutions maximales}}) ; pour le champ $(-y + x^3,\ x + y^3)$ du nœud {{ly-linearisation|Linéarisation}}, le linéarisé est une rotation, et $V = x^2 + y^2$ vérifie $\dot V = 2(x^4 + y^4) \geqslant V^2$, donc $(1/V)' \leqslant -1$ : $V$ explose avant l'instant $1/V(x)$.
+      - |
+        Lorsque aucune valeur propre n'a de partie réelle nulle, l'équilibre est dit hyperbolique, et les deux nœuds {{ly-linearisation|Linéarisation}} et {{ly-instabilite|Instabilité}} décident entièrement de sa stabilité. On montre davantage, et ce n'est pas démontré ici : les points dont la trajectoire reste dans un petit voisinage de $a$ forment, près de $a$, une sous-variété tangente à la somme des sous-espaces caractéristiques des valeurs propres de partie réelle négative ; c'est le théorème de la variété stable.
+
+  - id: ly-pendule
+    etiquette: Pendule amorti
+    nature: proposition
+    titre: Le pendule amorti
+    texte: |
+      Le pendule amorti est l'équation $\theta'' + k\theta' + \sin\theta = 0$, avec $k \geqslant 0$. Il s'écrit comme le système autonome $y' = X(y)$ sur $\lex{n-uplet}{\mathbb R^2}$, pour $y = (\theta, v)$, avec
+      $$X(\theta, v) = (v,\ -\sin\theta - kv),$$
+      champ de classe $C^1$, ses dérivées partielles étant continues ({{cx-exponentielle|Exponentielle}}, (iv) ; {{gd-classe-ck|Classe Cᵏ}}, (i)). Son **énergie** est
+      $$E(\theta, v) = \frac{v^2}2 + 1 - \cos\theta.$$
+    enonce: |
+      (i) Les [[equilibre|équilibres]] sont les points $(j\pi, 0)$, $j \in \mathbb Z$, et $\dot E(\theta, v) = -kv^2$.
+
+      (ii) Si $k > 0$, toute courbe intégrale issue d'un point $(\theta, v)$ tel que $|\theta| < \pi$ et $E(\theta, v) < 2$ tend vers $(0, 0)$. L'équilibre $(0, 0)$ est [[asymptotiquement-stable|asymptotiquement stable]], et la convergence est exponentielle.
+
+      (iii) Si $k = 0$, l'équilibre $(0, 0)$ est [[equilibre-stable|stable]], mais pas asymptotiquement stable.
+
+      (iv) Pour tout $k \geqslant 0$, l'équilibre $(\pi, 0)$ est instable.
+    preuve: |
+      (i) $X(\theta, v) = 0$ équivaut à $v = 0$ et $\sin\theta = 0$. Comme $\cos^2 + \sin^2 = 1$, $\sin\theta = 0$ équivaut à $\exp(i\theta) = \pm1$, donc à $\exp(2i\theta) = 1$, c'est-à-dire à $\theta \in \pi\mathbb Z$ ({{cx-pi|Le nombre π}}, (ii)). Les dérivées partielles de $E$ sont $\sin\theta$ et $v$, d'où
+      $$\dot E = v\sin\theta + v(-\sin\theta - kv) = -kv^2.$$
+
+      *Une fonction de Liapounov.* Sur $W = \,]{-\pi}, \pi[ \times \mathbb R$, $E$ est nulle en $(0, 0)$ et strictement positive ailleurs : $1 - \cos\theta \geqslant 0$, avec égalité seulement si $\cos\theta = 1$, donc $\sin\theta = 0$ et $\exp(i\theta) = 1$, c'est-à-dire $\theta \in 2\pi\mathbb Z$, soit $\theta = 0$ sur $]{-\pi}, \pi[$. Comme $\dot E \leqslant 0$, $E$ est une [[fonction-liapounov|fonction de Liapounov]] pour $(0, 0)$ sur $W$.
+
+      (ii) *Un compact positivement invariant.* Soit $x = (\theta_0, v_0)$ avec $|\theta_0| < \pi$ et $c = E(x) < 2$, et $K = \{(\theta, v) : |\theta| \leqslant \pi,\ E(\theta, v) \leqslant c\}$. C'est un fermé, borné puisque $v^2 \leqslant 2c$, donc un compact ({{me-rn|L'espace ℝⁿ}}, (iii)) ; il est contenu dans $W$, puisque $E \geqslant 1 - \cos\pi = 2 > c$ quand $|\theta| = \pi$.
+
+      La fonction $E(\varphi_t(x))$ décroît ({{ly-liapounov|Fonctions de Liapounov}}, (i), avec $W = \mathbb R^2$), donc reste au plus $c$. Si la première coordonnée $\theta(t)$ atteignait $\pm\pi$, ce serait, par le théorème des valeurs intermédiaires ({{c-tvi|Valeurs intermédiaires}}), en un instant où $E \geqslant 2 > c$ : la courbe reste dans $K$.
+
+      *LaSalle.* Le principe d'invariance s'applique à $E$, à $W$ et à $K$ ({{ly-lasalle|Principe de LaSalle}}, (iii)), avec $\{y \in K : \dot E(y) = 0\} = \{(\theta, 0) \in K\}$. Si la courbe issue d'un point $y$ y reste pour $s \geqslant 0$, sa vitesse $v(s)$ est constamment nulle, donc $v' = -\sin\theta(s) = 0$ ; comme $|\theta(s)| < \pi$, $\theta(s) = 0$, et $y = (0, 0)$. Ainsi $\varphi_t(x) \to (0, 0)$.
+
+      *Stabilité asymptotique.* L'équilibre est stable ({{ly-liapounov|Fonctions de Liapounov}}, (ii)). Comme $E$ est continue et nulle en $(0, 0)$, il existe $\eta \in \,]0, \pi[$ tel que $E < 2$ sur la boule $B((0, 0), \eta)$ : tous ses points sont attirés.
+
+      *Vitesse.* La matrice jacobienne en $(0, 0)$ est $A = \begin{pmatrix} 0 & 1 \\ -1 & -k \end{pmatrix}$, et $\det(\lambda I - A) = \lambda^2 + k\lambda + 1$. Pour $k < 2$, les racines sont $\frac{-k \pm i\sqrt{4 - k^2}}2$, de partie réelle $-\frac k2$ ; pour $k \geqslant 2$, ce sont $\frac{-k \pm \sqrt{k^2 - 4}}2$, toutes deux strictement négatives. Donc $\mu(A) < 0$, et la convergence est exponentielle ({{ly-linearisation|Linéarisation}}, (ii)).
+
+      (iii) Pour $k = 0$, $E$ est une fonction de Liapounov, et $(0, 0)$ est stable. Comme $\dot E = 0$, $E$ est constante le long des trajectoires ({{de-monotonie|Signe de la dérivée}}, (ii)). Pour $x \in W$ différent de $(0, 0)$, on a $E(\varphi_t(x)) = E(x) > 0$, alors que $\varphi_t(x) \to (0, 0)$ imposerait $E(\varphi_t(x)) \to 0$ par continuité : l'équilibre n'est pas attractif.
+
+      (iv) En $(\pi, 0)$, la matrice jacobienne est $\begin{pmatrix} 0 & 1 \\ 1 & -k \end{pmatrix}$, puisque $-\cos\pi = 1$. Son polynôme $\lambda^2 + k\lambda - 1$ a la racine $\frac{-k + \sqrt{k^2 + 4}}2 > 0$, puisque $\sqrt{k^2 + 4} > k$, et le nœud {{ly-instabilite|Instabilité}} conclut.
+    remarques:
+      - |
+        Pour $k = 0{,}4$, les valeurs propres en $(0, 0)$ sont $-0{,}2 \pm 0{,}980\,i$ : le pendule oscille avec une pseudo-période voisine de $2\pi/0{,}98 \approx 6{,}4$, et son amplitude décroît comme $e^{-0{,}2t}$. En $(\pi, 0)$, la valeur propre positive vaut environ $0{,}820$.
+
+        ```schema ly-pendule
+        Dans le plan $(\theta, v)$, les courbes grises sont des niveaux de l'énergie $E$, et le niveau $E = 2$, en tirets, passe par les équilibres instables $(\pm\pi, 0)$, marqués de cercles creux de la couleur du texte. Les deux trajectoires, rouge et bleue, calculées par intégration numérique pour $k = 0{,}4$, traversent les niveaux vers le bas en spiralant vers $(0, 0)$ ; la bleue part même au-dessus du niveau $2$ sans franchir $\theta = \pm\pi$, cas que le point (ii) ne couvre pas.
+        ```
+
+        L'énergie décroît le long des trajectoires, mais seulement au sens large : elle stationne aux instants où la vitesse s'annule, aux extrémités des oscillations. C'est pourquoi le théorème de Liapounov sous sa forme stricte ne s'applique pas à $E$, et pourquoi le principe d'invariance est nécessaire.
+      - |
+        Pour un frottement non linéaire, $\theta'' + \theta'^3 + \sin\theta = 0$, la même énergie vérifie $\dot E = -v^4$, et la démonstration de la convergence en (ii), hors la vitesse exponentielle, s'applique mot pour mot. Le linéarisé en $(0, 0)$ est alors la rotation $\begin{pmatrix} 0 & 1 \\ -1 & 0 \end{pmatrix}$, dont les valeurs propres $\pm i$ sont de partie réelle nulle : seul le principe d'invariance conclut.
+      - |
+        La divergence du champ vaut $-k$ : par le théorème de Liouville ({{cv-liouville|Conservation du volume}}), le flot du pendule amorti multiplie les aires par $e^{-kt}$, alors que celui du pendule sans frottement les conserve. C'est cohérent avec (iii) : un flot qui conserve les aires n'a pas d'équilibre asymptotiquement stable. Si l'équilibre $a$ attirait une boule $B$, les parties $B_T$ de $B$ formées des points restés dans $B(a, \varepsilon)$ après l'instant $T$ croîtraient vers $B$ ; leurs images $\varphi_t(B_T)$, pour $t \geqslant T$, seraient contenues dans $B(a, \varepsilon)$ tout en gardant l'aire de $B_T$, proche de celle de $B$ pour $T$ grand, ce qui est impossible dès que $B(a, \varepsilon)$ a une aire plus petite que $B$.
+      - |
+        L'oscillateur de van der Pol, $x'' - \epsilon(1 - x^2)x' + x = 0$ avec $\epsilon > 0$, montre l'autre visage du frottement. Au voisinage de l'origine, le frottement est négatif : le linéarisé a pour polynôme $\lambda^2 - \epsilon\lambda + 1$, dont les racines ont une partie réelle $\frac\epsilon2 > 0$ pour $\epsilon < 2$, positive aussi pour $\epsilon \geqslant 2$, et l'origine est instable. Les trajectoires s'enroulent vers une orbite périodique, dont l'existence n'est pas démontrée ici ; pour $\epsilon = 1$, l'intégration numérique, qu'on parte de $(0{,}01, 0)$ ou de $(4, 0)$, donne une amplitude limite de $2{,}0086$.
+      - |
+        Pour le système proie-prédateur de Lotka-Volterra, $x' = x(\alpha - \beta y)$ et $y' = y(\delta x - \gamma)$ sur $]0, +\infty[^2$, avec $\alpha, \beta, \gamma, \delta > 0$, l'équilibre $(\frac\gamma\delta, \frac\alpha\beta)$ a pour linéarisé une matrice de valeurs propres $\pm i\sqrt{\alpha\gamma}$ : la linéarisation ne décide rien. La fonction $H = \delta x - \gamma\ln x + \beta y - \alpha\ln y$ vérifie $\dot H = (\delta x - \gamma)(\alpha - \beta y) + (\beta y - \alpha)(\delta x - \gamma) = 0$, et $H - H(\frac\gamma\delta, \frac\alpha\beta)$ est une fonction de Liapounov, chaque terme ayant un minimum strict à l'équilibre. L'équilibre est donc stable, sans être asymptotiquement stable, puisque $H$ est constante sur les trajectoires, comme l'énergie au point (iii) du pendule sans frottement.
+
+aretes:
+  - [ly-equilibres, ly-liapounov]
+  - [ly-equilibres, ly-lineaire]
+  - [ly-triangulaire, ly-lineaire]
+  - [ly-lineaire, ly-equation]
+  - [ly-liapounov, ly-equation]
+  - [ly-liapounov, ly-lasalle]
+  - [ly-equation, ly-linearisation]
+  - [ly-linearisation, ly-instabilite]
+  - [ly-lasalle, ly-pendule]
+  - [ly-instabilite, ly-pendule]
