@@ -1,0 +1,651 @@
+# Niveau 2 : structure interne du chapitre « Classification des revêtements » (nœud topalg-revetements du graphe
+# topalg, créé le 30 oct. 2026), après le chapitre de Seifert-van Kampen.
+# Action du groupe fondamental sur la fibre, injectivité de p_* et indice ; espaces localement connexes par arcs ;
+# critère de relèvement d'une application ; morphismes de revêtements ; automorphismes, Aut ≅ N(H)/H ; revêtements
+# galoisiens ; espaces semi-localement simplement connexes et bons ouverts ; construction des revêtements X_H par les
+# classes de chemins (le revêtement universel pour H = 1) ; correspondance entre sous-groupes et revêtements connexes
+# pointés. Exemples : revêtements du cercle (z ↦ zⁿ), tore ℝ² → T, espaces projectifs réels (π₁(ℝPⁿ) = ℤ/2ℤ pour
+# n ⩾ 2), revêtement universel et revêtement non galoisien à trois feuillets du bouquet de deux cercles.
+# Aucune forme de l'axiome du choix : la topologie de X_H est définie par la base formée de TOUS les ensembles U_ξ,
+# pour tous les bons ouverts U et tous les points ξ au-dessus de U, sans choisir un voisinage par point ; le
+# relèvement du critère est défini par son graphe, sans choisir de chemin. Admis en remarque : cercle de Varsovie,
+# identification du revêtement universel du bouquet avec l'arbre de Cayley, modèle carré de ℝP².
+
+graphe: topalg-revetements
+titre: Classification des revêtements
+conteneur: topalg-revetements
+
+entrees:
+  topalg-van-kampen: [rv-locale]
+
+noeuds:
+  - id: rv-monodromie
+    etiquette: Action sur la fibre
+    nature: proposition
+    titre: Action du groupe fondamental sur la fibre
+    texte: |
+      Dans tout le chapitre, $p : E \to B$ est un [[revetement|revêtement]], $b_0$ un point de $B$, et $F = p^{-1}(b_0)$ la **fibre** au-dessus de $b_0$. Pour un [[chemin]] $\gamma$ de $B$ et un point $e$ de $p^{-1}(\gamma(0))$, on note $\tilde\gamma_e$ l'unique relèvement de $\gamma$ issu de $e$ ({{ta-relevement-chemins|Relèvement des chemins}}).
+
+      Pour $e \in F$ et $g = [\gamma] \in \lex{groupe-fondamental}{\pi_1}(B, b_0)$, on pose
+      $$e \cdot g = \tilde\gamma_e(1).$$
+      Ce point ne dépend que de la classe $g$, et non du lacet $\gamma$ qui la représente, puisque deux lacets homotopes ont des relèvements issus de $e$ de même extrémité ({{ta-relevement-homotopies|Relèvement des homotopies}}). C'est l'[[monodromie|action de monodromie]] du groupe fondamental sur la fibre.
+    enonce: |
+      (i) Pour $e \in F$ et $g, h \in \pi_1(B, b_0)$, on a $e \cdot g \in F$, $e \cdot 1 = e$ et
+      $$(e \cdot g) \cdot h = e \cdot (gh).$$
+      Chaque application $e \mapsto e \cdot g$ est donc une bijection de $F$, de réciproque $e \mapsto e \cdot g^{-1}$.
+
+      (ii) Pour $e_0 \in F$, le morphisme $p_* : \pi_1(E, e_0) \to \pi_1(B, b_0)$ est injectif, et son image est l'ensemble des $g$ tels que $e_0 \cdot g = e_0$. Autrement dit, la classe d'un lacet $\gamma$ de $B$ en $b_0$ appartient à $p_*(\pi_1(E, e_0))$ si et seulement si son relèvement issu de $e_0$ est un lacet.
+
+      (iii) Si $E$ est [[connexe-par-arcs|connexe par arcs]], pour tous $e_0, e \in F$, il existe $g \in \pi_1(B, b_0)$ tel que $e_0 \cdot g = e$.
+    preuve: |
+      (i) Le point $\tilde\gamma_e(1)$ est au-dessus de $\gamma(1) = b_0$. Le chemin constant $c_e$ relève le lacet constant $c_{b_0}$, donc $e \cdot 1 = e$ par unicité du relèvement.
+
+      Soient $g = [\gamma]$, $h = [\delta]$ et $e' = \tilde\gamma_e(1)$. Le chemin $\tilde\gamma_e \cdot \tilde\delta_{e'}$ est défini et continu ({{ta-chemins|Chemins}}, (ii)), il part de $e$, et sa composée avec $p$ est $\gamma \cdot \delta$ : c'est le relèvement de $\gamma \cdot \delta$ issu de $e$. Son extrémité est $\tilde\delta_{e'}(1) = e' \cdot h$, d'où $e \cdot (gh) = (e \cdot g) \cdot h$.
+
+      Enfin $(e \cdot g) \cdot g^{-1} = e \cdot 1 = e$, et de même en échangeant $g$ et $g^{-1}$.
+
+      (ii) *Injectivité.* Soit $\alpha$ un lacet de $E$ en $e_0$ tel que $p \circ \alpha \simeq c_{b_0}$, et $G$ une homotopie de $p \circ \alpha$ à $c_{b_0}$. Soit $\tilde G$ son relèvement tel que $\tilde G(0, 0) = e_0$ ({{ta-relevement-homotopies|Relèvement des homotopies}}).
+
+      Les applications $t \mapsto \tilde G(0, t)$, $t \mapsto \tilde G(1, t)$ et $s \mapsto \tilde G(s, 1)$ relèvent des chemins constants ; un chemin constant en est aussi un relèvement, et elles sont constantes par unicité ({{ta-revetement|Revêtements}}). Le chemin $s \mapsto \tilde G(s, 0)$ relève $p \circ \alpha$ à partir de $e_0$ : c'est $\alpha$.
+
+      Il vient $\tilde G(1, t) = \alpha(1) = e_0$, puis $\tilde G(s, 1) = \tilde G(0, 1) = e_0$ : $\tilde G$ est une homotopie de $\alpha$ au lacet constant $c_{e_0}$ dans $E$.
+
+      *Image.* Si $g = p_*([\alpha])$ pour un lacet $\alpha$ de $E$ en $e_0$, alors $\alpha$ est le relèvement de $p \circ \alpha$ issu de $e_0$, et $e_0 \cdot g = \alpha(1) = e_0$. Réciproquement, si $e_0 \cdot [\gamma] = e_0$, le relèvement $\tilde\gamma_{e_0}$ est un lacet en $e_0$, et $[\gamma] = p_*([\tilde\gamma_{e_0}])$.
+
+      (iii) Soit $\alpha$ un chemin de $E$ de $e_0$ à $e$. Le chemin $\gamma = p \circ \alpha$ est un lacet en $b_0$, puisque ses deux extrémités sont dans $F$, et son relèvement issu de $e_0$ est $\alpha$. Donc $e_0 \cdot [\gamma] = \alpha(1) = e$.
+    remarques:
+      - |
+        L'ordre des facteurs dans (i) vient de la convention de concaténation du nœud {{ta-chemins|Chemins}} : $\gamma \cdot \delta$ parcourt d'abord $\gamma$. Le groupe agit donc à droite. L'erreur la plus répandue est d'écrire $g \cdot e$ et de croire que $(gh) \cdot e = g \cdot (h \cdot e)$ ; c'est faux en général, et l'on obtiendrait une action à gauche en posant $g \cdot e = e \cdot g^{-1}$.
+      - |
+        Pour la projection $p : \mathbb R \to \mathbb R/\mathbb Z$, la fibre au-dessus de $p(0)$ est $\mathbb Z$, et le relèvement d'un lacet $\gamma$ issu de $k$ est $k + \tilde\gamma_0$, comme on l'a vu au nœud {{ta-cercle|Groupe fondamental du cercle}}. L'action est donc la translation $k \cdot [\gamma] = k + \deg\gamma$ : elle est transitive, et seul le neutre fixe un point, ce qui redit que $p_*$ est injectif d'image triviale, $\mathbb R$ étant simplement connexe.
+      - |
+        Le mot vient de l'analyse complexe : en prolongeant une détermination de $\sqrt z$ le long d'un lacet qui fait une fois le tour de $0$, on revient avec la détermination opposée. Les déterminations au-dessus d'un point forment la fibre d'un revêtement, et le lacet les permute.
+
+  - id: rv-fibre
+    etiquette: Fibre et indice
+    nature: proposition
+    titre: La fibre, l'indice et les conjugués
+    texte: |
+      Soit $H$ un sous-groupe d'un [[groupe]] $G$. La relation $g \sim g' \iff g'g^{-1} \in H$ est une relation d'équivalence sur $G$ : $gg^{-1} = 1 \in H$, l'inverse de $g'g^{-1}$ est $gg'^{-1}$, et $(g''g'^{-1})(g'g^{-1}) = g''g^{-1}$. La classe de $g$ est la **classe à droite** $Hg = \{hg : h \in H\}$, puisque $g' \sim g$ équivaut à $g' = hg$ avec $h = g'g^{-1}$ ; c'est l'analogue des classes à gauche du nœud {{a-distingue|Sous-groupe distingué}}. On note $H\backslash G$ l'ensemble quotient et, pour $g \in G$, $g^{-1}Hg = \{g^{-1}hg : h \in H\}$ le **conjugué** de $H$ par $g$.
+
+      Lorsque $H\backslash G$ est [[ensemble-fini|fini]], son nombre d'éléments est l'[[indice-sous-groupe|indice]] de $H$ dans $G$, noté $[G : H]$.
+    enonce: |
+      (i) Supposons $E$ connexe par arcs, soit $e_0 \in F$ et $H = p_*(\lex{groupe-fondamental}{\pi_1}(E, e_0))$. L'application
+      $$H\backslash \pi_1(B, b_0) \to F, \qquad Hg \mapsto e_0 \cdot g,$$
+      est bien définie et bijective. En particulier, si la fibre a $d$ éléments, $H$ est d'indice $d$ ; si $E$ est [[simplement-connexe|simplement connexe]], $g \mapsto e_0 \cdot g$ est une bijection de $\pi_1(B, b_0)$ sur $F$.
+
+      (ii) Sous les mêmes hypothèses, $p_*(\pi_1(E, e_0 \cdot g)) = g^{-1}Hg$ pour tout $g$. Les sous-groupes $p_*(\pi_1(E, e))$, pour $e \in F$, sont exactement les conjugués de $H$.
+
+      (iii) Si $\alpha$ est un chemin de $B$ de $b_0$ à $b_1$, l'application $e \mapsto \tilde\alpha_e(1)$ est une bijection de $F$ sur $p^{-1}(b_1)$. Lorsque $B$ est connexe par arcs, toutes les fibres sont donc en bijection ; si elles sont finies, leur nombre commun d'éléments est le **nombre de feuillets** du revêtement.
+    preuve: |
+      (i) *L'application est bien définie.* Si $Hg = Hg'$, on a $g' = hg$ avec $h \in H$, et $e_0 \cdot h = e_0$ ({{rv-monodromie|Action sur la fibre}}, (ii)). Donc
+      $$e_0 \cdot g' = (e_0 \cdot h) \cdot g = e_0 \cdot g.$$
+
+      *Injectivité.* Si $e_0 \cdot g = e_0 \cdot g'$, on agit par $g^{-1}$ des deux côtés : $e_0 = e_0 \cdot (g'g^{-1})$ par le point (i) du même nœud. Donc $g'g^{-1} \in H$ par (ii), et $Hg = Hg'$.
+
+      *Surjectivité.* C'est le point (iii) du même nœud. Si $E$ est simplement connexe, $\pi_1(E, e_0)$ est trivial, $H$ aussi, et chaque classe $Hg$ est réduite à $\{g\}$.
+
+      (ii) Pour $k \in \pi_1(B, b_0)$, on a $(e_0 \cdot g) \cdot k = e_0 \cdot g$ si et seulement si $e_0 \cdot (gkg^{-1}) = e_0$, en agissant par $g^{-1}$, c'est-à-dire si et seulement si $gkg^{-1} \in H$, ou encore $k \in g^{-1}Hg$.
+
+      Par le point (ii) du nœud {{rv-monodromie|Action sur la fibre}}, appliqué au point $e_0 \cdot g$, le premier ensemble est $p_*(\pi_1(E, e_0 \cdot g))$. Tout point de $F$ s'écrit $e_0 \cdot g$, par (i), et tout conjugué de $H$ est donc atteint.
+
+      (iii) Le chemin inverse de $\tilde\alpha_e$ part de $\tilde\alpha_e(1)$ et relève $\bar\alpha$ : c'est $\tilde{\bar\alpha}_{\tilde\alpha_e(1)}$, par unicité, et il se termine en $e$. L'application $e' \mapsto \tilde{\bar\alpha}_{e'}(1)$, de $p^{-1}(b_1)$ dans $F$, est donc une réciproque à gauche ; en échangeant $\alpha$ et $\bar\alpha$, c'en est aussi une à droite.
+    remarques:
+      - |
+        L'erreur la plus répandue est de parler « du » sous-groupe d'un revêtement sans préciser le point de la fibre. Le point (ii) montre qu'il ne change qu'à conjugaison près, et qu'il n'en est indépendant que si tous ses conjugués lui sont égaux, c'est-à-dire s'il est distingué : c'est la situation des revêtements galoisiens, au nœud {{rv-galoisiens|Revêtements galoisiens}}.
+      - |
+        Pour le revêtement $\mathbb R \to \mathbb R/\mathbb Z$, le point (i) redonne la bijection $\deg$ du groupe fondamental du cercle sur la fibre $\mathbb Z$ : un revêtement par un espace simplement connexe permet de **lire** le groupe fondamental de la base sur une fibre. Le nœud {{rv-automorphismes|Automorphismes}} y ajoutera la loi de groupe.
+
+  - id: rv-locale
+    etiquette: Connexité locale par arcs
+    nature: proposition
+    titre: Espaces localement connexes par arcs
+    texte: |
+      Un espace topologique $X$ est [[localement-connexe-par-arcs|localement connexe par arcs]] si, pour tout point $x$ et tout [[voisinage]] $V$ de $x$, il existe un [[ouvert]] connexe par arcs $O$ tel que $x \in O \subset V$.
+
+      De façon équivalente, les ouverts connexes par arcs forment une [[base-topologie|base]] de la topologie. Tout ouvert est alors la réunion de **tous** les ouverts connexes par arcs qu'il contient, sans qu'il faille en choisir un autour de chaque point.
+    enonce: |
+      (i) Soit $X$ localement connexe par arcs, $O$ un ouvert de $X$ et $x \in O$. L'ensemble $O_x$ des points de $O$ reliés à $x$ par un chemin contenu dans $O$ est ouvert. Si $X$ est [[connexe]], il est connexe par arcs.
+
+      (ii) Si tout point de $X$ a un voisinage ouvert [[homeomorphisme|homéomorphe]] à un ouvert d'un espace localement connexe par arcs, $X$ est localement connexe par arcs. Les ouverts d'un espace localement connexe par arcs le sont, en particulier les ouverts de $\lex{n-uplet}{\mathbb R^n}$, ainsi que les sphères $\lex{sphere-unite}{S^n}$ pour $n \geqslant 1$. Toute partie convexe de $\mathbb R^n$, comme $I$ ou $I \times I$, est localement connexe par arcs.
+
+      (iii) Si $p : E \to B$ est un [[revetement|revêtement]], $E$ est localement connexe par arcs si et seulement si $B$ l'est.
+    preuve: |
+      (i) Soit $y \in O_x$, et $W$ un ouvert connexe par arcs tel que $y \in W \subset O$. Tout point $z$ de $W$ est relié à $y$ dans $W$, donc à $x$ dans $O$, en mettant bout à bout un chemin de $x$ à $y$ dans $O$ et un chemin de $y$ à $z$ dans $W$ ({{ta-chemins|Chemins}}, (ii)). Ainsi $W \subset O_x$, et $O_x$, voisinage de chacun de ses points, est ouvert ({{t-voisinages|Voisinages}}).
+
+      Prenons $O = X$, supposé connexe et non vide, et $x \in X$. Les ensembles $X_y$, pour $y \notin X_x$, sont ouverts et disjoints de $X_x$, puisqu'un point commun relierait $y$ à $x$ ; leur réunion est le complémentaire de $X_x$, qui est donc ouvert.
+
+      L'ensemble $X_x$ est ainsi ouvert, fermé et non vide, donc égal à $X$ ({{t-connexe|Connexité}}, (b)) : tout point est relié à $x$. L'espace vide est connexe par arcs.
+
+      (ii) Soient $x \in X$, $V$ un voisinage de $x$, $O''$ un ouvert tel que $x \in O'' \subset V$, et $h : O' \to \Omega$ un homéomorphisme d'un voisinage ouvert $O'$ de $x$ sur un ouvert $\Omega$ d'un espace $Y$ localement connexe par arcs.
+
+      L'ensemble $h(O' \cap O'')$ est ouvert dans $\Omega$, donc dans $Y$, puisque $\Omega$ est ouvert ({{t-induite|Topologie induite}}). Il contient un ouvert $P$ connexe par arcs qui contient $h(x)$. Alors $h^{-1}(P)$ est ouvert dans $O'$, donc dans $X$, contient $x$, est contenu dans $V$, et il est connexe par arcs : l'image d'un chemin par $h^{-1}$ est un chemin.
+
+      Un ouvert d'un espace localement connexe par arcs vérifie l'hypothèse avec l'identité. Dans $\mathbb R^n$, muni de $d_\infty$, les boules $B_\infty(a, r)$ sont des produits d'intervalles, donc convexes et connexes par arcs ({{ta-simplement-connexe|Simple connexité}}), et tout voisinage de $a$ en contient une ({{me-rn|L'espace ℝⁿ}}, (i)) : $\mathbb R^n$ est localement connexe par arcs.
+
+      Si $C$ est une partie convexe de $\mathbb R^n$ et $a \in C$, tout voisinage de $a$ dans $C$ contient une partie $C \cap B_\infty(a, r)$, ouverte dans $C$ ({{t-induite|Topologie induite}}) ; elle est convexe, comme intersection de deux convexes, donc connexe par arcs. Ainsi $C$ est localement connexe par arcs.
+
+      Enfin $S^n$ est la réunion des ouverts $S^n \setminus \{N\}$ et $S^n \setminus \{S\}$, homéomorphes à $\mathbb R^n$ par la projection stéréographique ; la démonstration du nœud {{vk-spheres|Sphères Sⁿ, n ⩾ 2}} établit ces homéomorphismes sans se servir de $n \geqslant 2$.
+
+      (iii) Supposons $B$ localement connexe par arcs. Pour $e \in E$, soit $U$ un ouvert uniformément couvert contenant $p(e)$, et $S$ le feuillet qui contient $e$ : c'est un voisinage ouvert de $e$, homéomorphe par $p$ à l'ouvert $U$ de $B$, et l'on applique (ii).
+
+      Réciproquement, supposons $E$ localement connexe par arcs. Pour $b \in B$, soit $U$ un ouvert uniformément couvert contenant $b$. Comme $p$ est surjective, $b = p(e)$ pour un point $e$ de $p^{-1}(U)$, qui appartient à un feuillet $S$ ; la réciproque de $p|_S$ est un homéomorphisme de $U$ sur l'ouvert $S$ de $E$, et l'on applique (ii).
+    remarques:
+      - |
+        Être connexe par arcs n'entraîne pas la connexité locale par arcs. Le **peigne**, réunion dans $\mathbb R^2$ du segment $[0, 1] \times \{0\}$, du segment $\{0\} \times [0, 1]$ et des segments $\{\frac1n\} \times [0, 1]$ pour $n \geqslant 1$, est connexe par arcs, puisque tout point rejoint $(0, 0)$ en descendant son segment vertical puis en longeant la base.
+
+        En revanche, la boule $B_\infty((0, 1), \frac12)$ ne contient aucun ouvert connexe par arcs autour de $(0, 1)$. Un tel ouvert contiendrait un point $(\frac1m, 1)$, pour $m$ assez grand, et un chemin de $(0, 1)$ à ce point, contenu dans la boule, ne toucherait pas la base : son abscisse serait une fonction continue sur $I$ à valeurs dans $\{0\} \cup \{\frac1k : k \geqslant 1\}$, qui ne contient aucun intervalle non réduit à un point, et elle ne pourrait pas passer de $0$ à $\frac1m$. L'espace connexe du nœud {{ta-chemins|Chemins}}, adhérence du graphe de $\sin(1/x)$, n'est même pas connexe par arcs ; par (i), il n'est pas localement connexe par arcs.
+      - |
+        Cette hypothèse sera exigée de l'espace de départ dans le critère de relèvement, et de la base dans la classification des revêtements. Elle ne restreint guère les exemples : les ouverts de $\mathbb R^n$, les sphères, le cercle et tous les revêtements de ces espaces sont localement connexes par arcs, par (ii) et (iii). Le tore l'est aussi, par (iii), une fois établi au nœud {{rv-tore|Tore}} que $\mathbb R^2 \to T$ est un revêtement.
+
+  - id: rv-critere
+    etiquette: Critère de relèvement
+    nature: théorème
+    titre: Critère de relèvement d'une application
+    texte: |
+      Dans ce nœud, $Y$ est un espace [[connexe]] et [[localement-connexe-par-arcs|localement connexe par arcs]], donc connexe par arcs ({{rv-locale|Connexité locale par arcs}}, (i)). On se donne une application continue $f : Y \to B$, un point $y_0 \in Y$, et l'on prend $b_0 = f(y_0)$ et $e_0 \in F$.
+    enonce: |
+      (i) L'application $f$ admet un relèvement $\tilde f$ tel que $\tilde f(y_0) = e_0$ si et seulement si
+      $$f_*\big(\lex{groupe-fondamental}{\pi_1}(Y, y_0)\big) \subset p_*\big(\pi_1(E, e_0)\big).$$
+      Ce relèvement est alors unique.
+
+      (ii) En particulier, si $Y$ est [[simplement-connexe|simplement connexe]] et localement connexe par arcs, toute application continue $f : Y \to B$ admet un unique relèvement qui envoie $y_0$ sur $e_0$.
+    preuve: |
+      *Unicité et nécessité.* L'unicité vient du nœud {{ta-revetement|Revêtements}}, $Y$ étant connexe. Si $\tilde f$ existe, alors $f_* = p_* \circ \tilde f_*$ ({{ta-fonctorialite|Fonctorialité}}, (i)), et l'image de $f_*$ est contenue dans celle de $p_*$.
+
+      *Un point bien défini.* Supposons l'inclusion vraie. Pour un chemin $\alpha$ de $Y$ issu de $y_0$, notons $e(\alpha)$ l'extrémité du relèvement de $f \circ \alpha$ issu de $e_0$. Soient $\alpha$ et $\beta$ deux chemins de $y_0$ à un même point $y$, et $e' = e(\alpha)$.
+
+      Le lacet $\alpha \cdot \bar\beta$ a une classe dans $\pi_1(Y, y_0)$ ; celle de son image $(f \circ \alpha) \cdot (f \circ \bar\beta)$ est donc dans $p_*(\pi_1(E, e_0))$, et son relèvement issu de $e_0$ est un lacet ({{rv-monodromie|Action sur la fibre}}, (ii)).
+
+      Ce relèvement parcourt le relèvement de $f \circ \alpha$ issu de $e_0$, puis le relèvement $\mu$ de $f \circ \bar\beta$ issu de $e'$ ; ainsi $\mu$ se termine en $e_0$. Le chemin inverse $\bar\mu$ part de $e_0$ et relève $f \circ \beta$ : c'est le relèvement de $f \circ \beta$ issu de $e_0$, et il se termine en $\mu(0) = e'$. Donc $e(\beta) = e(\alpha)$.
+
+      *Définition de $\tilde f$.* La relation
+      $$\begin{aligned} \{(y, e) \in Y \times E :\ &\text{il existe un} \\ &\text{chemin } \alpha \text{ de } y_0 \text{ à } y \\ &\text{tel que } e = e(\alpha)\} \end{aligned}$$
+      est donc le graphe d'une application $\tilde f : Y \to E$, définie partout puisque $Y$ est connexe par arcs, sans qu'aucun chemin soit choisi. On a $p \circ \tilde f = f$, puisque $e(\alpha)$ est au-dessus de $f(\alpha(1))$, et $\tilde f(y_0) = e_0$, par le chemin constant.
+
+      *Continuité.* Soient $y \in Y$, $\alpha$ un chemin de $y_0$ à $y$, $U$ un ouvert uniformément couvert contenant $f(y)$, et $S$ le feuillet qui contient $\tilde f(y)$. Comme $Y$ est localement connexe par arcs, il existe un ouvert $V$ connexe par arcs tel que $y \in V \subset f^{-1}(U)$.
+
+      Pour $y' \in V$, soit $\beta$ un chemin de $y$ à $y'$ dans $V$. Le relèvement de $f \circ (\alpha \cdot \beta)$ issu de $e_0$ parcourt celui de $f \circ \alpha$, jusqu'à $\tilde f(y)$, puis le relèvement de $f \circ \beta$ issu de $\tilde f(y)$. Ce dernier est le chemin $(p|_S)^{-1} \circ f \circ \beta$, continu, à valeurs dans $S$, qui part de $\tilde f(y)$ et relève $f \circ \beta$. Il vient
+      $$\tilde f(y') = (p|_S)^{-1}\big(f(y')\big).$$
+
+      Ainsi $\tilde f$ coïncide sur l'ouvert $V$ avec l'application continue $(p|_S)^{-1} \circ f$ : elle est continue en chaque point, donc continue.
+
+      (ii) Le groupe $\pi_1(Y, y_0)$ est trivial, et son image aussi.
+    remarques:
+      - |
+        Pour $Y = I$ ou $Y = I \times I$, convexes, donc simplement connexes, et localement connexes par arcs ({{rv-locale|Connexité locale par arcs}}, (ii)), le point (ii) redonne le relèvement des chemins et celui des homotopies. Ce n'en est pas une nouvelle démonstration : celle du critère les utilise toutes deux.
+      - |
+        Le critère redonne le point (ii) du nœud {{ta-consequences|Conséquences}}. L'identité de $\mathbb R/\mathbb Z$ ne se relève pas à $\mathbb R$, puisque son morphisme induit a pour image $\pi_1(\mathbb R/\mathbb Z) \cong \mathbb Z$, alors que celui de la projection a une image triviale.
+      - |
+        L'hypothèse de connexité locale par arcs ne peut pas être omise. Le « cercle de Varsovie », formé de l'adhérence du graphe de $x \mapsto \sin(1/x)$ sur $]0, 1]$ et d'un arc qui relie ses deux extrémités, est connexe par arcs et de groupe fondamental trivial ; pourtant, l'application qui l'enroule une fois sur le cercle ne se relève pas à $\mathbb R$. Ce contre-exemple est admis ici : il demande d'étudier les chemins d'un espace qui n'est pas localement connexe par arcs, où la définition de $\tilde f$ par les chemins ne donne plus une application continue.
+
+  - id: rv-morphismes
+    etiquette: Morphismes
+    nature: proposition
+    titre: Morphismes de revêtements
+    texte: |
+      Soient $p_1 : E_1 \to B$ et $p_2 : E_2 \to B$ deux [[revetement|revêtements]] de la même base. Un [[morphisme-revetements|morphisme]] de $p_1$ dans $p_2$ est une application continue $\varphi : E_1 \to E_2$ telle que $p_2 \circ \varphi = p_1$ ; c'est un **isomorphisme** s'il est bijectif et si $\varphi^{-1}$ est continue, auquel cas $\varphi^{-1}$ est un morphisme de $p_2$ dans $p_1$.
+
+      Un **revêtement pointé** de $(B, b_0)$ est un revêtement muni d'un point de la fibre au-dessus de $b_0$. Pour des revêtements pointés $(E_1, e_1)$ et $(E_2, e_2)$, on note $H_i = p_{i*}(\lex{groupe-fondamental}{\pi_1}(E_i, e_i))$.
+    enonce: |
+      (i) Un morphisme $\varphi$ envoie la fibre de $p_1$ au-dessus de $b_0$ dans celle de $p_2$, et $\varphi(e \cdot g) = \varphi(e) \cdot g$ pour tous $e$ et $g \in \pi_1(B, b_0)$. Si $E_1$ est [[connexe]], deux morphismes qui coïncident en un point sont égaux.
+
+      (ii) Si $E_1$ est connexe et [[localement-connexe-par-arcs|localement connexe par arcs]], il existe un morphisme $\varphi$ tel que $\varphi(e_1) = e_2$ si et seulement si $H_1 \subset H_2$.
+
+      (iii) Si $E_1$ et $E_2$ sont connexes et localement connexes par arcs, il existe un isomorphisme $\varphi$ tel que $\varphi(e_1) = e_2$ si et seulement si $H_1 = H_2$. Il existe un isomorphisme de $p_1$ sur $p_2$ si et seulement si $H_1$ et $H_2$ sont conjugués dans $\pi_1(B, b_0)$.
+    preuve: |
+      (i) On a $p_2(\varphi(e)) = p_1(e) = b_0$. Si $g = [\gamma]$, le chemin $\varphi \circ \tilde\gamma_e$ part de $\varphi(e)$, et $p_2 \circ \varphi \circ \tilde\gamma_e = p_1 \circ \tilde\gamma_e = \gamma$ : c'est le relèvement de $\gamma$ à $E_2$ issu de $\varphi(e)$, dont l'extrémité est à la fois $\varphi(e) \cdot g$ et $\varphi(\tilde\gamma_e(1)) = \varphi(e \cdot g)$.
+
+      Deux morphismes sont deux relèvements de $p_1$ au revêtement $p_2$ ; s'ils coïncident en un point, ils sont égaux ({{ta-revetement|Revêtements}}).
+
+      (ii) Les morphismes $\varphi$ tels que $\varphi(e_1) = e_2$ sont les relèvements de $p_1$ au revêtement $p_2$ qui envoient $e_1$ sur $e_2$. Par le critère de relèvement ({{rv-critere|Critère de relèvement}}), appliqué à $Y = E_1$ et $f = p_1$, il en existe si et seulement si $p_{1*}(\pi_1(E_1, e_1)) \subset p_{2*}(\pi_1(E_2, e_2))$.
+
+      (iii) Si $H_1 = H_2$, le point (ii) fournit des morphismes $\varphi$ de $(E_1, e_1)$ dans $(E_2, e_2)$ et $\psi$ en sens inverse. La composée $\psi \circ \varphi$ est un morphisme de $p_1$ dans lui-même qui fixe $e_1$, comme l'identité : elle lui est égale par (i). De même $\varphi \circ \psi = \mathrm{id}$, et $\varphi$ est un isomorphisme.
+
+      Réciproquement, un isomorphisme $\varphi$ tel que $\varphi(e_1) = e_2$ et sa réciproque sont des morphismes qui échangent $e_1$ et $e_2$ ; par (ii), $H_1 \subset H_2$ et $H_2 \subset H_1$.
+
+      Pour la dernière affirmation, $E_2$ est connexe par arcs ({{rv-locale|Connexité locale par arcs}}, (i)). Si $\varphi$ est un isomorphisme, $H_1 = p_{2*}(\pi_1(E_2, \varphi(e_1)))$ par ce qui précède, et c'est un conjugué de $H_2$ ({{rv-fibre|Fibre et indice}}, (ii)).
+
+      Réciproquement, si $H_1 = g^{-1}H_2\,g$, alors $H_1 = p_{2*}(\pi_1(E_2, e_2 \cdot g))$ par le même point, et il existe un isomorphisme qui envoie $e_1$ sur $e_2 \cdot g$.
+    remarques:
+      - |
+        Le point (i) exprime une rigidité : un morphisme entre revêtements connexes est déterminé par l'image d'un seul point. C'est l'unicité des relèvements, appliquée à $p_1$ lui-même ; elle ne demande aucune hypothèse locale.
+      - |
+        L'erreur la plus répandue est de croire que deux revêtements connexes qui ont le même nombre de feuillets sont isomorphes. Le tore en donne deux, à deux feuillets chacun, qui ne le sont pas ({{rv-tore|Tore}}) : c'est le sous-groupe, à conjugaison près, qui classe les revêtements, et non le seul indice.
+
+  - id: rv-automorphismes
+    etiquette: Automorphismes
+    nature: théorème
+    titre: Automorphismes d'un revêtement
+    texte: |
+      Un [[automorphisme-revetement|automorphisme]] du revêtement $p : E \to B$, ou **transformation du revêtement**, est un isomorphisme de $p$ sur lui-même : un [[homeomorphisme|homéomorphisme]] $\varphi$ de $E$ tel que $p \circ \varphi = p$. Ils forment un groupe pour la composition, noté $\operatorname{Aut}(E/B)$.
+
+      Le [[normalisateur]] d'un sous-groupe $H$ d'un groupe $G$ est $N_G(H) = \{g \in G : g^{-1}Hg = H\}$.
+
+      Dans ce nœud, $E$ est [[connexe]] et [[localement-connexe-par-arcs|localement connexe par arcs]], $e_0 \in F$, $H = p_*(\lex{groupe-fondamental}{\pi_1}(E, e_0))$, et $G = \pi_1(B, b_0)$.
+    enonce: |
+      (i) $N_G(H)$ est un sous-groupe de $G$ qui contient $H$, et $H$ y est [[sous-groupe-distingue|distingué]].
+
+      (ii) Un automorphisme distinct de l'identité n'a aucun point fixe. Pour $e \in F$, il existe un automorphisme $\varphi$ tel que $\varphi(e_0) = e$ si et seulement si $p_*(\pi_1(E, e)) = H$.
+
+      (iii) Pour $g \in N_G(H)$, il existe un unique automorphisme $\varphi_g$ tel que $\varphi_g(e_0) = e_0 \cdot g$, et $g \mapsto \varphi_g$ est un morphisme surjectif de $N_G(H)$ sur $\operatorname{Aut}(E/B)$, de noyau $H$. Par suite
+      $$\operatorname{Aut}(E/B) \cong N_G(H)/H.$$
+
+      (iv) Si $E$ est [[simplement-connexe|simplement connexe]], $\operatorname{Aut}(E/B) \cong \pi_1(B, b_0)$, et, pour tout $e \in F$, l'application $\varphi \mapsto \varphi(e)$ est une bijection de $\operatorname{Aut}(E/B)$ sur $F$.
+    preuve: |
+      (i) Pour $g \in G$, la conjugaison $x \mapsto g^{-1}xg$ est un morphisme bijectif de $G$, de réciproque $x \mapsto gxg^{-1}$. Le neutre est dans $N_G(H)$. Si $g, k \in N_G(H)$, alors
+      $$(gk)^{-1}H(gk) = k^{-1}(g^{-1}Hg)k = H,$$
+      et $gHg^{-1} = g(g^{-1}Hg)g^{-1} = H$ montre que $g^{-1} \in N_G(H)$.
+
+      Pour $h \in H$, on a $h^{-1}Hh \subset H$, et $H = h^{-1}(hHh^{-1})h \subset h^{-1}Hh$ : ainsi $H \subset N_G(H)$. Enfin, pour $g \in N_G(H)$, l'égalité $gHg^{-1} = H$ dit que $ghg^{-1} \in H$ pour tout $h \in H$.
+
+      (ii) Un automorphisme qui fixe un point coïncide en ce point avec l'identité, et lui est égal ({{rv-morphismes|Morphismes}}, (i)). La seconde affirmation est le point (iii) du même nœud, appliqué à $(E, e_0)$ et $(E, e)$.
+
+      (iii) Pour $g \in N_G(H)$, on a $p_*(\pi_1(E, e_0 \cdot g)) = g^{-1}Hg = H$ ({{rv-fibre|Fibre et indice}}, (ii)), et (ii) fournit $\varphi_g$. Il est unique : deux automorphismes $\varphi$, $\psi$ qui coïncident en $e_0$ donnent l'automorphisme $\psi^{-1} \circ \varphi$, qui fixe $e_0$.
+
+      *Morphisme.* Par le point (i) du nœud {{rv-morphismes|Morphismes}} et celui du nœud {{rv-monodromie|Action sur la fibre}},
+      $$\begin{aligned} \varphi_g(\varphi_k(e_0)) &= \varphi_g(e_0 \cdot k) = \varphi_g(e_0) \cdot k \\ &= (e_0 \cdot g) \cdot k = e_0 \cdot (gk), \end{aligned}$$
+      et donc $\varphi_g \circ \varphi_k = \varphi_{gk}$ par unicité.
+
+      *Surjectivité.* Soit $\varphi$ un automorphisme. L'espace $E$ est connexe par arcs ({{rv-locale|Connexité locale par arcs}}, (i)), et $\varphi(e_0) = e_0 \cdot g$ pour un $g \in G$ ({{rv-monodromie|Action sur la fibre}}, (iii)). Par (ii), $p_*(\pi_1(E, e_0 \cdot g)) = H$, et ce sous-groupe vaut aussi $g^{-1}Hg$ : donc $g \in N_G(H)$, et $\varphi = \varphi_g$.
+
+      *Noyau.* On a $\varphi_g = \mathrm{id}$ si et seulement si $e_0 \cdot g = e_0$, c'est-à-dire $g \in H$ ({{rv-monodromie|Action sur la fibre}}, (ii)). Le théorème d'isomorphisme ({{a-isomorphisme|Théorème d'isomorphisme}}) conclut.
+
+      (iv) Ici $H$ est trivial, $N_G(H) = G$, et la projection de $G$ sur $G/\{1\}$ est un isomorphisme. Pour $e, e' \in F$, les sous-groupes $p_*(\pi_1(E, e))$ et $p_*(\pi_1(E, e'))$ sont triviaux, et (ii), appliqué au point $e$, donne $\varphi$ tel que $\varphi(e) = e'$ ; il est unique, puisque deux automorphismes qui coïncident en $e$ sont égaux.
+    remarques:
+      - |
+        La notation $N_G(H)$ ne doit pas être confondue avec le sous-groupe distingué engendré $N(A)$ du nœud {{vk-presentations|Présentations}} : le normalisateur est le plus grand sous-groupe dans lequel $H$ est distingué, le sous-groupe distingué engendré le plus petit sous-groupe distingué qui contient $A$. En effet, si $H$ est distingué dans un sous-groupe $K$ et si $k \in K$, les inclusions $k^{-1}Hk \subset H$ et $kHk^{-1} \subset H$ donnent $k^{-1}Hk = H$, donc $K \subset N_G(H)$ ; et $H$ est distingué dans $N_G(H)$ par (i).
+      - |
+        Le groupe des automorphismes agit sur $E$ tout entier, à gauche, par composition, alors que $\pi_1(B, b_0)$ n'agit que sur la fibre, à droite. Le morphisme $g \mapsto \varphi_g$ les relie, mais l'automorphisme $\varphi_g$ n'est pas « l'action de $g$ » sur la fibre : $\varphi_g(e_0 \cdot k) = e_0 \cdot (gk)$, et non $e_0 \cdot (kg)$. Les deux coïncident lorsque $\pi_1(B, b_0)$ est commutatif.
+      - |
+        Le point (iv) est souvent le moyen le plus rapide de calculer un groupe fondamental : on exhibe un revêtement simplement connexe et ses automorphismes. Les nœuds {{rv-cercle|Revêtements du cercle}}, {{rv-tore|Tore}} et {{rv-projectif|Espaces projectifs}} en donnent trois exemples.
+
+  - id: rv-galoisiens
+    etiquette: Revêtements galoisiens
+    nature: proposition
+    titre: Revêtements galoisiens
+    texte: |
+      Dans ce nœud, $E$ est [[connexe]] et [[localement-connexe-par-arcs|localement connexe par arcs]], $e_0 \in F$ et $H = p_*(\lex{groupe-fondamental}{\pi_1}(E, e_0))$. Le revêtement $p$ est [[revetement-galoisien|galoisien]], ou **régulier**, si le groupe $\operatorname{Aut}(E/B)$ agit transitivement sur la fibre $F$ : pour tous $e, e' \in F$, il existe un automorphisme $\varphi$ tel que $\varphi(e) = e'$.
+    enonce: |
+      (i) Les conditions suivantes sont équivalentes :
+
+      (a) $p$ est galoisien ;
+
+      (b) $H$ est [[sous-groupe-distingue|distingué]] dans $\pi_1(B, b_0)$ ;
+
+      (c) le sous-groupe $p_*(\pi_1(E, e))$ est le même pour tous les points $e$ de $F$ ;
+
+      (d) pour un lacet $\gamma$ de $B$ en $b_0$, si l'un des relèvements de $\gamma$ issus de $F$ est un lacet, tous le sont.
+
+      Alors $\operatorname{Aut}(E/B) \cong \pi_1(B, b_0)/H$, et $\varphi \mapsto \varphi(e_0)$ est une bijection de $\operatorname{Aut}(E/B)$ sur $F$.
+
+      (ii) Si $p$ est galoisien, $\operatorname{Aut}(E/B)$ agit transitivement sur chaque fibre $p^{-1}(b)$, et l'application $\bar p$ du quotient $E/\operatorname{Aut}(E/B)$, muni de la [[topologie-quotient|topologie quotient]], dans $B$, induite par $p$, est un [[homeomorphisme|homéomorphisme]]. Le quotient est celui de la relation $e \sim e' \iff e' = \varphi(e)$ pour un automorphisme $\varphi$.
+
+      (iii) Un sous-groupe d'indice $2$ est distingué. Par suite, un revêtement connexe et localement connexe par arcs à deux feuillets est galoisien ; un revêtement par un espace [[simplement-connexe|simplement connexe]] et localement connexe par arcs l'est aussi.
+    preuve: |
+      (i) *(b) ⇔ (c).* Par le point (ii) du nœud {{rv-fibre|Fibre et indice}}, les sous-groupes de (c) sont les conjugués $g^{-1}Hg$, pour $g \in \pi_1(B, b_0)$. Ils sont tous égaux à $H$ si et seulement si $g^{-1}Hg \subset H$ pour tout $g$, puisque l'inclusion pour $g^{-1}$ donne $H \subset g^{-1}Hg$ ; c'est la définition d'un sous-groupe distingué ({{a-distingue|Sous-groupe distingué}}).
+
+      *(a) ⇔ (c).* Si $p$ est galoisien, chaque $e \in F$ s'écrit $\varphi(e_0)$, et $p_*(\pi_1(E, e)) = H$ ({{rv-automorphismes|Automorphismes}}, (ii)). Réciproquement, sous (c), deux points $e, e'$ de $F$ ont le même sous-groupe, et un isomorphisme envoie $e$ sur $e'$ ({{rv-morphismes|Morphismes}}, (iii)).
+
+      *(c) ⇔ (d).* Par le point (ii) du nœud {{rv-monodromie|Action sur la fibre}}, le relèvement de $\gamma$ issu de $e$ est un lacet si et seulement si $[\gamma] \in p_*(\pi_1(E, e))$. La condition (d) dit que ces sous-groupes ont les mêmes éléments.
+
+      Sous ces conditions, le normalisateur $N_G(H)$, où $G = \pi_1(B, b_0)$, est le groupe entier, et le point (iii) du nœud {{rv-automorphismes|Automorphismes}} donne l'isomorphisme. L'application $\varphi \mapsto \varphi(e_0)$ est surjective par définition, et injective puisqu'un automorphisme qui coïncide en $e_0$ avec un autre lui est égal.
+
+      (ii) L'espace $B = p(E)$ est connexe par arcs, comme image de l'espace connexe par arcs $E$ ({{rv-locale|Connexité locale par arcs}}, (i)). Soient $b \in B$ et $\alpha$ un chemin de $b_0$ à $b$ ; l'application $T(e) = \tilde\alpha_e(1)$ est une bijection de $F$ sur $p^{-1}(b)$ ({{rv-fibre|Fibre et indice}}, (iii)).
+
+      Pour un automorphisme $\varphi$, le chemin $\varphi \circ \tilde\alpha_e$ relève $\alpha$ à partir de $\varphi(e)$, d'où $\varphi(T(e)) = T(\varphi(e))$. La transitivité sur $F$ se transporte donc à $p^{-1}(b)$.
+
+      *L'homéomorphisme.* La relation $\sim$ est une relation d'équivalence, puisque les automorphismes forment un groupe. Comme $p \circ \varphi = p$, l'application $p$ est constante sur les classes, et induit $\bar p$, continue ({{t-quotient|Topologie quotient}}). Elle est surjective comme $p$, et injective, puisque deux points de la même fibre sont envoyés l'un sur l'autre par un automorphisme.
+
+      L'application $p$ est ouverte : pour un ouvert $W$ de $E$ et $e \in W$, soit $U$ un ouvert uniformément couvert contenant $p(e)$, et $S$ le feuillet qui contient $e$. L'ensemble $p(W \cap S)$ est ouvert dans $U$, image d'un ouvert de $S$ par l'homéomorphisme $p|_S$, donc ouvert dans $B$, et il contient $p(e)$. Ainsi $p(W)$ est voisinage de chacun de ses points, donc ouvert ({{t-voisinages|Voisinages}}).
+
+      Pour un ouvert $O$ du quotient, d'image réciproque $W$ par la projection, on a $\bar p(O) = p(W)$, qui est ouvert : $\bar p^{-1}$ est continue.
+
+      (iii) Soit $H$ d'indice $2$ dans $G$. Les classes à droite sont $H$ et $G \setminus H$. Soient $g \notin H$ et $h \in H$. Si $g^{-1}hg \notin H$, alors $g^{-1}hg \in Hg$, et $g^{-1}hg = h'g$ avec $h' \in H$ ; il vient $g^{-1} = h'h^{-1} \in H$, puis $g \in H$, ce qui est exclu. Donc $g^{-1}Hg \subset H$ pour tout $g$, et $H$ est distingué.
+
+      Un revêtement à deux feuillets a un sous-groupe d'indice $2$ ({{rv-fibre|Fibre et indice}}, (i)), qui est distingué. Un revêtement simplement connexe a un sous-groupe trivial, qui est distingué.
+    remarques:
+      - |
+        L'erreur la plus répandue est de croire que tout revêtement connexe est galoisien. Au-dessus du cercle, du tore ou d'un espace projectif, dont les groupes fondamentaux sont commutatifs, c'est vrai, puisque tout sous-groupe d'un groupe commutatif est distingué ; mais le bouquet de deux cercles a un revêtement connexe à trois feuillets qui ne l'est pas ({{rv-bouquet|Bouquet de deux cercles}}, (ii)).
+      - |
+        Le nom vient de l'analogie avec la théorie de Galois ({{galois|Théorie de Galois}}), développée dans une autre branche de l'édifice : les revêtements intermédiaires entre le revêtement universel et la base correspondent aux sous-groupes de $\pi_1(B, b_0)$, comme les corps intermédiaires d'une extension galoisienne correspondent aux sous-groupes de son groupe de Galois, et les revêtements galoisiens aux sous-groupes distingués, comme les extensions galoisiennes intermédiaires.
+      - |
+        Le point (ii) dit qu'un revêtement galoisien est le quotient de $E$ par un groupe d'homéomorphismes sans point fixe. On retrouve ainsi $\mathbb R/\mathbb Z$ comme quotient de $\mathbb R$ par les translations entières, et c'est ainsi que les espaces projectifs seront définis au nœud {{rv-projectif|Espaces projectifs}}.
+
+  - id: rv-slsc
+    etiquette: Semi-locale simple connexité
+    nature: proposition
+    titre: Espaces semi-localement simplement connexes
+    texte: |
+      Un espace $X$ est [[semi-localement-simplement-connexe|semi-localement simplement connexe]] si tout point $x$ a un voisinage $V$ tel que tout lacet de $V$ en $x$ soit [[homotopie-chemins|homotope]], **dans $X$**, au lacet constant.
+
+      Un **bon ouvert** de $X$ est un ouvert $U$ [[connexe-par-arcs|connexe par arcs]] tel que tout lacet contenu dans $U$ soit homotope dans $X$ à un lacet constant.
+    enonce: |
+      (i) Si $B$ admet un revêtement $p : E \to B$ par un espace [[simplement-connexe|simplement connexe]], tout lacet contenu dans un ouvert uniformément couvert est homotope dans $B$ à un lacet constant ; en particulier, $B$ est semi-localement simplement connexe.
+
+      (ii) Si $X$ est [[localement-connexe-par-arcs|localement connexe par arcs]] et semi-localement simplement connexe, les bons ouverts forment une [[base-topologie|base]] de sa topologie : pour tout point $x$ et tout voisinage $W$ de $x$, il existe un bon ouvert $U$ tel que $x \in U \subset W$.
+
+      (iii) Dans un bon ouvert $U$, deux chemins qui ont les mêmes extrémités sont homotopes dans $X$.
+    preuve: |
+      (i) Soit $U$ un ouvert uniformément couvert et $\gamma$ un lacet de $U$ en un point $u$. Comme $p$ est surjective, $u = p(e)$ pour un point $e$ d'un feuillet $S$ au-dessus de $U$. Le lacet $\tilde\gamma = (p|_S)^{-1} \circ \gamma$ de $E$ en $e$ est homotope au lacet constant par une homotopie $G$, puisque $E$ est simplement connexe, et $p \circ G$ est une homotopie de $\gamma$ au lacet constant dans $B$.
+
+      Tout point de $B$ appartient à un ouvert uniformément couvert, qui convient comme voisinage $V$.
+
+      (ii) Soient $x$ et $W$. Soit $V$ un voisinage de $x$ comme dans la définition ; $V \cap W$ est un voisinage de $x$, qui contient un ouvert $U$ connexe par arcs contenant $x$.
+
+      Soit $\delta$ un lacet de $U$ en un point $y$, et $\alpha$ un chemin de $x$ à $y$ dans $U$. Le lacet $(\alpha \cdot \delta) \cdot \bar\alpha$, contenu dans $V$, est homotope dans $X$ au lacet constant.
+
+      L'isomorphisme $[\gamma] \mapsto [\bar\alpha \cdot \gamma \cdot \alpha]$ de $\lex{groupe-fondamental}{\pi_1}(X, x)$ sur $\pi_1(X, y)$ ({{ta-fonctorialite|Fonctorialité}}, (ii)) envoie le neutre sur le neutre, et la classe de ce lacet sur celle de $\bar\alpha \cdot \alpha \cdot \delta \cdot \bar\alpha \cdot \alpha$, qui est $[\delta]$. Donc $[\delta]$ est le neutre, et $U$ est un bon ouvert.
+
+      (iii) Si $\alpha$ et $\beta$ vont de $u$ à $v$ dans $U$, le lacet $\alpha \cdot \bar\beta$ est homotope dans $X$ au lacet constant $c_u$. Par les règles de calcul sur les chemins quelconques ({{ta-fonctorialite|Fonctorialité}}, (ii), et {{ta-groupe-fondamental|Groupe fondamental}}),
+      $$\alpha \simeq \alpha \cdot (\bar\beta \cdot \beta) \simeq (\alpha \cdot \bar\beta) \cdot \beta \simeq c_u \cdot \beta \simeq \beta.$$
+    remarques:
+      - |
+        Le mot « semi-localement » rappelle que l'homotopie se fait dans $X$ tout entier, et non dans $V$. Un espace dont chaque point a un voisinage simplement connexe l'est, en particulier tout ouvert de $\mathbb R^n$, dont les boules sont convexes.
+      - |
+        L'exemple classique d'espace qui ne l'est pas est la **boucle d'oreille hawaïenne** $\mathcal H$, réunion dans $\mathbb R^2$ des cercles $C_k$ de centre $(\frac1k, 0)$ et de rayon $\frac1k$, pour $k \geqslant 1$. Deux d'entre eux ne se rencontrent qu'en $0$, puisque $x^2 + y^2 = \frac{2x}k = \frac{2x}j$ force $x = 0$, puis $y = 0$. Chaque $C_k$ est homéomorphe au cercle unité par une homothétie et une translation, donc à $\mathbb R/\mathbb Z$ (dernière remarque du nœud {{ta-cercle|Groupe fondamental du cercle}} et troisième remarque du nœud {{vk-bouquet|Bouquet de deux cercles}}).
+
+        L'application $r_k : \mathcal H \to C_k$, égale à l'identité sur $C_k$ et à $0$ sur les autres cercles, est continue, par recollement ({{ta-chemins|Chemins}}, (i)), appliqué aux deux fermés $C_k$ et $\bigcup_{j \neq k} C_j$, sur lesquels les deux formules coïncident en $0$. D'une part $C_k$, fermé et borné dans $\mathbb R^2$, est compact, donc fermé dans $\mathcal H$. D'autre part la réunion des $C_j$ pour $j \neq k$ est fermée dans $\mathcal H$ : un point $z \neq 0$ de $C_k$, de norme $\delta$, est à distance au moins $\frac\delta2$ des cercles $C_j$ tels que $\frac2j \leqslant \frac\delta2$, contenus dans la boule fermée de rayon $\frac\delta2$, et hors des autres $C_j$, $j \neq k$, qui sont en nombre fini et compacts, donc fermés. Il a donc un voisinage qui ne rencontre aucun $C_j$, $j \neq k$, et le complémentaire de leur réunion dans $\mathcal H$, à savoir $C_k \setminus \{0\}$, est ouvert.
+
+        Soit $h_k : \mathbb R/\mathbb Z \to C_k$ un homéomorphisme tel que $h_k(p(0)) = 0$ (on compose au besoin par une translation de $\mathbb R/\mathbb Z$), et $\lambda_k = h_k \circ \alpha$, où $\alpha(s) = p(s)$ : c'est un lacet en $0$, dont la classe dans $\pi_1(C_k, 0)$ n'est pas triviale, puisque $(h_k)_*$ est un isomorphisme ({{ta-fonctorialite|Fonctorialité}}, (i)) et que $[\alpha]$ est de degré $1$. Comme $r_k \circ \lambda_k = \lambda_k$, une homotopie de $\lambda_k$ au lacet constant dans $\mathcal H$ donnerait, composée avec $r_k$, une homotopie dans $C_k$ : $\lambda_k$ n'est donc pas homotope au lacet constant dans $\mathcal H$. Or tout voisinage de $0$ contient un cercle $C_k$, puisque $C_k$ est dans la boule de rayon $\frac2k$. Ainsi $\mathcal H$ n'est pas semi-localement simplement connexe, et, par (i), il n'a aucun revêtement simplement connexe.
+      - |
+        Le point (ii) est fait sans choix : on ne choisit pas un bon ouvert par point, on constate que l'ensemble de **tous** les bons ouverts est une base. C'est sous cette forme qu'il servira à définir la topologie du revêtement universel au nœud suivant.
+
+  - id: rv-construction
+    etiquette: Construction
+    nature: proposition
+    titre: Construction d'un revêtement par les classes de chemins
+    texte: |
+      Dans ce nœud et les suivants, $B$ est [[connexe]], [[localement-connexe-par-arcs|localement connexe par arcs]], donc [[connexe-par-arcs|connexe par arcs]] ({{rv-locale|Connexité locale par arcs}}, (i)), et [[semi-localement-simplement-connexe|semi-localement simplement connexe]]. On fixe $b_0 \in B$ et un sous-groupe $H$ de $\lex{groupe-fondamental}{\pi_1}(B, b_0)$.
+
+      Soit $\mathcal C$ l'ensemble des [[chemin|chemins]] de $B$ issus de $b_0$, partie de l'ensemble des applications de $I$ dans $B$. Pour $\gamma, \gamma' \in \mathcal C$, on pose
+      $$\begin{aligned} \gamma \sim_H \gamma' \iff\ &\gamma(1) = \gamma'(1) \\ &\text{et } [\gamma \cdot \bar\gamma'] \in H. \end{aligned}$$
+      On note $X_H = \mathcal C/\!\sim_H$ l'ensemble quotient, $[\gamma]_H$ la classe de $\gamma$, et $p_H([\gamma]_H) = \gamma(1)$.
+
+      Pour un bon ouvert $U$ ({{rv-slsc|Semi-locale simple connexité}}) et un point $\xi = [\gamma]_H$ tel que $\gamma(1) \in U$, on pose
+      $$\begin{aligned} U_\xi = \{[\gamma \cdot \eta]_H :\ &\eta \text{ chemin de } U \\ &\text{issu de } \gamma(1)\}. \end{aligned}$$
+      On note $\mathcal B_H$ l'ensemble de **tous** ces ensembles $U_\xi$, pour tous les bons ouverts $U$ et tous les points $\xi$ au-dessus de $U$.
+    enonce: |
+      (i) $\sim_H$ est une relation d'équivalence ; deux chemins homotopes sont équivalents ; si $\gamma \sim_H \gamma'$ et si $\eta$ est un chemin issu de $\gamma(1)$, alors $\gamma \cdot \eta \sim_H \gamma' \cdot \eta$. L'application $p_H$ est bien définie, et $U_\xi$ ne dépend pas du représentant $\gamma$ de $\xi$.
+
+      (ii) Si $\xi' \in U_\xi$, alors $U_{\xi'} = U_\xi$. La restriction de $p_H$ à $U_\xi$ est une bijection sur $U$.
+
+      (iii) $\mathcal B_H$ est la base d'une topologie sur $X_H$.
+
+      (iv) Pour cette topologie, $p_H$ est un [[revetement|revêtement]]. Chaque bon ouvert $U$ est uniformément couvert : $p_H^{-1}(U)$ est la réunion des $U_\xi$, pour $\xi \in p_H^{-1}(U)$, et deux d'entre eux sont égaux ou disjoints.
+    preuve: |
+      Les règles de calcul sur les classes de chemins quelconques ({{ta-fonctorialite|Fonctorialité}}, (ii)) permettent d'oublier les parenthèses et de simplifier les allers-retours $\bar\eta \cdot \eta$ à homotopie près.
+
+      (i) *Équivalence.* On a $[\gamma \cdot \bar\gamma] = 1 \in H$. L'inverse de $[\gamma \cdot \bar\gamma']$ est $[\gamma' \cdot \bar\gamma]$, et
+      $$[\gamma \cdot \bar\gamma''] = [\gamma \cdot \bar\gamma'][\gamma' \cdot \bar\gamma''] ;$$
+      $H$ étant un sous-groupe, on obtient la symétrie et la transitivité.
+
+      Si $\gamma \simeq \gamma'$, alors $\gamma \cdot \bar\gamma' \simeq \gamma \cdot \bar\gamma \simeq c_{b_0}$, de classe $1 \in H$. Enfin
+      $$(\gamma \cdot \eta) \cdot \overline{(\gamma' \cdot \eta)} = \gamma \cdot \eta \cdot \bar\eta \cdot \bar\gamma' \simeq \gamma \cdot \bar\gamma'.$$
+      Les deux dernières affirmations s'en déduisent.
+
+      (ii) Soit $\xi' = [\gamma \cdot \eta_0]_H$, avec $\eta_0$ dans $U$. Pour $\eta$ dans $U$ issu de $\eta_0(1)$, on a $[(\gamma \cdot \eta_0) \cdot \eta]_H = [\gamma \cdot (\eta_0 \cdot \eta)]_H$, et $\eta_0 \cdot \eta$ est dans $U$ : $U_{\xi'} \subset U_\xi$. Inversement, $[\gamma \cdot \eta]_H = [(\gamma \cdot \eta_0) \cdot (\bar\eta_0 \cdot \eta)]_H$ appartient à $U_{\xi'}$.
+
+      L'application $p_H$ envoie $U_\xi$ dans $U$. Elle est surjective, car $U$ est connexe par arcs : tout $x \in U$ est l'extrémité d'un chemin $\eta$ de $U$ issu de $\gamma(1)$. Elle est injective : si $\eta$ et $\eta'$ sont deux chemins de $U$ de $\gamma(1)$ au même point, ils sont homotopes dans $B$ ({{rv-slsc|Semi-locale simple connexité}}, (iii)), donc $\gamma \cdot \eta \simeq \gamma \cdot \eta'$, et ces deux chemins sont équivalents par (i).
+
+      ```schema rv-construction
+      Le point $\xi = [\gamma]_H$ est un chemin issu de $b_0$, à équivalence près, dont l'extrémité est dans le bon ouvert $U$, en bleu. Les points de $U_\xi$ sont les classes des chemins $\gamma \cdot \eta$, où $\eta$, en rouge, reste dans $U$ ; ils sont au-dessus des points de $U$, chacun une fois. Le chemin $\gamma'$, qui passe de l'autre côté du trou gris, aboutit au même point de $U$, mais pour $H = \{1\}$ sa classe est un autre point de la fibre : $U_{[\gamma']}$ est un autre feuillet.
+      ```
+
+      (iii) *Recouvrement.* Tout point $\xi$ de $X_H$ appartient à $U_\xi$, où $U$ est un bon ouvert contenant $p_H(\xi)$, qui existe par le point (ii) du nœud {{rv-slsc|Semi-locale simple connexité}}, appliqué à $W = B$.
+
+      *Intersections.* Si $\xi \in U_{\xi_1} \cap V_{\xi_2}$, alors $U_{\xi_1} = U_\xi$ et $V_{\xi_2} = V_\xi$ par (ii). Soit $W$ un bon ouvert tel que $p_H(\xi) \in W \subset U \cap V$, qui existe par le même point. Un chemin de $W$ est un chemin de $U$ et de $V$, donc $\xi \in W_\xi \subset U_\xi \cap V_\xi$. Le critère des bases ({{t-base|Bases d'une topologie}}) s'applique.
+
+      (iv) *Continuité.* Soit $O$ un ouvert de $B$ et $\xi \in p_H^{-1}(O)$. Il existe un bon ouvert $W$ tel que $p_H(\xi) \in W \subset O$, et $W_\xi \subset p_H^{-1}(O)$, puisque $p_H(W_\xi) = W$ par (ii). Ainsi $p_H^{-1}(O)$ est la réunion de tous les éléments de la base qu'il contient, donc ouvert.
+
+      *Ouverture.* L'image d'un élément $W_\zeta$ de la base est le bon ouvert $W$, par (ii). Les images des ouverts, réunions d'éléments de la base, sont donc ouvertes.
+
+      *Feuillets.* Soit $U$ un bon ouvert. Tout point $\xi$ de $p_H^{-1}(U)$ appartient à $U_\xi$, contenu dans $p_H^{-1}(U)$. Si $\zeta \in U_\xi \cap U_{\xi'}$, alors $U_\xi = U_\zeta = U_{\xi'}$ par (ii) : deux de ces ensembles sont égaux ou disjoints. Chacun est ouvert, et $p_H$ en est une bijection continue et ouverte sur $U$, donc un homéomorphisme.
+
+      *Surjectivité.* Tout point $b$ de $B$ est l'extrémité d'un chemin issu de $b_0$, puisque $B$ est connexe par arcs. Enfin les bons ouverts recouvrent $B$, et $p_H$ est un revêtement.
+    remarques:
+      - |
+        La construction ne choisit rien. Ni un voisinage autour de chaque point, puisque la base est formée de tous les $U_\xi$ possibles ; ni un chemin dans chaque classe, puisque $X_H$ est un ensemble quotient ; ni les feuillets au-dessus de $U$, qui sont les ensembles $U_\xi$ eux-mêmes, deux à deux égaux ou disjoints, sans qu'il faille les indexer. Elle reste dans $\mathsf{ZF}$, comme la construction de $\pi_1$ ({{ta-groupe-fondamental|Groupe fondamental}}).
+      - |
+        L'hypothèse de semi-locale simple connexité fournit les bons ouverts ({{rv-slsc|Semi-locale simple connexité}}, (ii)), et c'est dans l'injectivité de $p_H$ sur $U_\xi$ qu'elle intervient de façon essentielle. Sans elle, deux chemins de $U$ de mêmes extrémités pourraient donner deux points distincts de $U_\xi$ au-dessus du même point de $U$ : l'ensemble $U_\xi$ ne serait plus un feuillet.
+
+  - id: rv-universel
+    etiquette: Revêtement universel
+    nature: théorème
+    titre: Existence du revêtement universel
+    texte: |
+      Un [[revetement-universel|revêtement universel]] de $B$ est un revêtement $p : \tilde B \to B$ dont l'espace $\tilde B$ est [[simplement-connexe|simplement connexe]]. Les notations $X_H$, $p_H$ sont celles du nœud {{rv-construction|Construction}}, et $\xi_0 = [c_{b_0}]_H$.
+    enonce: |
+      (i) Pour $\gamma \in \mathcal C$ et $s \in I$, soit $\gamma_s(t) = \gamma(st)$. Le chemin $\hat\gamma : s \mapsto [\gamma_s]_H$ est le relèvement de $\gamma$ issu de $\xi_0$ ; il se termine en $[\gamma]_H$. L'espace $X_H$ est [[connexe-par-arcs|connexe par arcs]] et [[localement-connexe-par-arcs|localement connexe par arcs]].
+
+      (ii) On a $p_{H*}\big(\lex{groupe-fondamental}{\pi_1}(X_H, \xi_0)\big) = H$.
+
+      (iii) $X_{\{1\}}$ est simplement connexe : $B$ a un revêtement universel. Si $p : \tilde B \to B$ en est un, et si $q : E \to B$ est un revêtement par un espace connexe, pour tous $\tilde b \in p^{-1}(b_0)$ et $e \in q^{-1}(b_0)$, il existe un unique morphisme de $p$ dans $q$ qui envoie $\tilde b$ sur $e$. Deux revêtements universels de $B$ sont isomorphes.
+
+      (iv) Un espace connexe et localement connexe par arcs a un revêtement universel si et seulement s'il est [[semi-localement-simplement-connexe|semi-localement simplement connexe]].
+    preuve: |
+      (i) *Continuité de $\hat\gamma$.* Soient $s_0 \in I$, $\xi = \hat\gamma(s_0)$ et $U$ un bon ouvert contenant $\gamma(s_0)$. Par continuité de $\gamma$, il existe un intervalle $J$, voisinage de $s_0$ dans $I$, tel que $\gamma(J) \subset U$. Pour $s \in J$, le chemin $\eta(t) = \gamma(s_0 + t(s - s_0))$ reste dans $U$ et va de $\gamma(s_0)$ à $\gamma(s)$.
+
+      Les chemins $\gamma_s$ et $\gamma_{s_0} \cdot \eta$ s'écrivent $\gamma \circ \lambda$ et $\gamma \circ \psi$, où $\lambda(t) = st$, et où $\psi$ va de $0$ à $s_0$ sur $[0, \frac12]$, puis de $s_0$ à $s$ sur $[\frac12, 1]$, affinement. L'application
+      $$K(t, u) = \gamma\big((1 - u)\psi(t) + u\lambda(t)\big)$$
+      est une homotopie de l'un à l'autre : le point $(1 - u)\psi(t) + u\lambda(t)$ reste dans $I$, comme moyenne pondérée de deux points de $I$, et vaut $0$ pour $t = 0$ et $s$ pour $t = 1$.
+
+      Donc $\hat\gamma(s) = [\gamma_{s_0} \cdot \eta]_H \in U_\xi$ ({{rv-construction|Construction}}, (i)), et sur $J$,
+      $$\hat\gamma = (p_H|_{U_\xi})^{-1} \circ \gamma,$$
+      qui est continue. Ainsi $\hat\gamma$ est continue en chaque point de $I$.
+
+      *Relèvement.* On a $p_H(\hat\gamma(s)) = \gamma_s(1) = \gamma(s)$, $\hat\gamma(0) = [c_{b_0}]_H = \xi_0$ et $\hat\gamma(1) = [\gamma]_H$ ; c'est le relèvement issu de $\xi_0$, par unicité. Tout point $[\gamma]_H$ est donc relié à $\xi_0$ par un chemin, et $X_H$ est connexe par arcs ; il est localement connexe par arcs comme revêtement de $B$ ({{rv-locale|Connexité locale par arcs}}, (iii)).
+
+      (ii) Pour un lacet $\gamma$ en $b_0$, son relèvement issu de $\xi_0$ se termine, par (i), en $[\gamma]_H$, qui est égal à $\xi_0 = [c_{b_0}]_H$ si et seulement si $[\gamma \cdot \bar c_{b_0}] = [\gamma]$ appartient à $H$. On conclut par le point (ii) du nœud {{rv-monodromie|Action sur la fibre}}.
+
+      (iii) Pour $H = \{1\}$, le morphisme injectif $p_*$ a une image triviale ({{rv-monodromie|Action sur la fibre}}, (ii)) : $\pi_1(X_{\{1\}}, \xi_0)$ est trivial, et $X_{\{1\}}$ est connexe par arcs.
+
+      Soit $p : \tilde B \to B$ un revêtement universel. L'espace $\tilde B$ est connexe et localement connexe par arcs, comme revêtement de $B$, et son sous-groupe est trivial, donc contenu dans celui de $q$ : le morphisme existe et il est unique ({{rv-morphismes|Morphismes}}, (i) et (ii)). Deux revêtements universels ont le même sous-groupe trivial, et ils sont isomorphes par le point (iii) du même nœud.
+
+      (iv) La condition est suffisante par (iii), et nécessaire par le point (i) du nœud {{rv-slsc|Semi-locale simple connexité}}.
+    remarques:
+      - |
+        Le nom de revêtement universel vient de (iii) : il se projette sur tout revêtement connexe de $B$. Pour $\mathbb R/\mathbb Z$, c'est $\mathbb R$ ; pour le tore, $\mathbb R^2$ ; pour $\mathbb RP^n$ avec $n \geqslant 2$, la sphère $S^n$ (nœuds {{rv-cercle|Revêtements du cercle}}, {{rv-tore|Tore}}, {{rv-projectif|Espaces projectifs}}).
+      - |
+        La construction réalise le revêtement universel comme l'espace des chemins issus de $b_0$, à homotopie près, l'extrémité donnant la projection. Le relèvement d'un chemin $\gamma$ n'est autre que la famille de ses débuts $\gamma_s$ : on remonte $\gamma$ en se souvenant du chemin parcouru, et un lacet se relève en lacet exactement lorsque ce souvenir s'efface, c'est-à-dire lorsque le lacet est homotope au lacet constant.
+      - |
+        L'idée de la surface de recouvrement universelle remonte à H. A. Schwarz (1882) ; H. Poincaré en reconnut aussitôt la portée et s'en servit pour l'uniformisation des surfaces de Riemann ; H. Weyl, dans *Die Idee der Riemannschen Fläche* (Teubner, 1913), présente déjà les notions de revêtement, de groupe des transformations du revêtement et de simple connexité (R. Remmert, *From Riemann surfaces to complex spaces*, Séminaires et Congrès 3, SMF, 1998). Le groupe fondamental lui-même avait été défini par Poincaré dans *Analysis situs* (J. Éc. Polytech. (2) 1, 1895, p. 1-123).
+
+  - id: rv-correspondance
+    etiquette: Classification
+    nature: théorème
+    titre: Classification des revêtements connexes
+    texte: |
+      Les hypothèses sur $B$ et $b_0$ sont celles du nœud {{rv-construction|Construction}} : $B$ est [[connexe]], [[localement-connexe-par-arcs|localement connexe par arcs]] et [[semi-localement-simplement-connexe|semi-localement simplement connexe]]. On parle de revêtement connexe pointé $(E, e_0)$ lorsque $E$ est connexe et $e_0$ est au-dessus de $b_0$ ; un tel $E$ est localement connexe par arcs ({{rv-locale|Connexité locale par arcs}}, (iii)).
+    enonce: |
+      (i) *Correspondance.* Pour tout sous-groupe $H$ de $\lex{groupe-fondamental}{\pi_1}(B, b_0)$, il existe un revêtement connexe pointé $(E, e_0)$ tel que $p_*(\pi_1(E, e_0)) = H$, à savoir $(X_H, \xi_0)$. Deux revêtements connexes pointés sont isomorphes, par un isomorphisme qui respecte les points, si et seulement s'ils ont le même sous-groupe.
+
+      (ii) *Ordre.* Il existe un morphisme de $(E_1, e_1)$ dans $(E_2, e_2)$ si et seulement si $H_1 \subset H_2$. Le revêtement universel correspond au sous-groupe trivial, et l'identité de $B$ au groupe entier.
+
+      (iii) *Sans point base.* Deux revêtements connexes sont isomorphes si et seulement si leurs sous-groupes sont conjugués. Le nombre de feuillets d'un revêtement connexe est l'[[indice-sous-groupe|indice]] de son sous-groupe, lorsque l'un des deux est fini ; il est [[revetement-galoisien|galoisien]] si et seulement si son sous-groupe est [[sous-groupe-distingue|distingué]], et son groupe d'automorphismes est alors isomorphe au quotient.
+    preuve: |
+      (i) L'existence est le point (ii) du nœud {{rv-universel|Revêtement universel}}, l'espace $X_H$ étant connexe par arcs. L'unicité est le point (iii) du nœud {{rv-morphismes|Morphismes}}, qui s'applique puisque les espaces sont connexes et localement connexes par arcs.
+
+      (ii) La première affirmation est le point (ii) du nœud {{rv-morphismes|Morphismes}}. Le revêtement universel a un sous-groupe trivial. L'identité de $B$ est un revêtement, dont l'espace $B$ est connexe, et dont le morphisme induit est l'identité de $\pi_1(B, b_0)$.
+
+      (iii) La première affirmation est le point (iii) du nœud {{rv-morphismes|Morphismes}}, la deuxième le point (i) du nœud {{rv-fibre|Fibre et indice}}, l'espace étant connexe par arcs, la dernière le point (i) du nœud {{rv-galoisiens|Revêtements galoisiens}}.
+    remarques:
+      - |
+        On ne peut pas parler de l'ensemble de tous les revêtements de $B$ : ils ne forment pas un ensemble, puisque l'espace $E$ peut être pris parmi tous les ensembles. L'énoncé (i) dit donc, sans former cet ensemble, que l'application $(E, e_0) \mapsto p_*(\pi_1(E, e_0))$ est « bijective à isomorphisme près » : tout sous-groupe est atteint, et deux revêtements de même sous-groupe sont isomorphes. Les revêtements $X_H$ en sont des représentants explicites, construits sans choix.
+      - |
+        La correspondance renverse l'ordre de façon familière : plus le sous-groupe est petit, plus le revêtement est « gros ». Un morphisme $X_{H_1} \to X_{H_2}$ pour $H_1 \subset H_2$ est lui-même un revêtement, de fibre en bijection avec $H_1\backslash H_2$ ; on peut voir $X_H$ comme le quotient du revêtement universel par l'action de $H$ par automorphismes. Ces deux affirmations ne sont pas démontrées ici.
+      - |
+        K. Reidemeister a consacré à ce lien une note, *Fundamentalgruppe und Überlagerungsräume* (Nachr. Ges. Wiss. Göttingen, Math.-Phys. Kl., 1928, p. 69-76). L'exposé d'ensemble des revêtements, avec la correspondance entre revêtements et sous-groupes du groupe fondamental, le revêtement universel et les revêtements réguliers, forme le chapitre 8 du *Lehrbuch der Topologie* de H. Seifert et W. Threlfall (Teubner, 1934, §53 à 58).
+
+  - id: rv-cercle
+    etiquette: Revêtements du cercle
+    nature: proposition
+    titre: Les revêtements du cercle
+    texte: |
+      Soit $\lex{cercle-quotient}{S^1} = \mathbb R/\mathbb Z$, de projection $p$, et $e = p(0)$ ({{ta-cercle|Groupe fondamental du cercle}}). Pour un entier $n \geqslant 1$, on note $p_n : S^1 \to S^1$ l'application $p(x) \mapsto p(nx)$, bien définie puisque $x - y \in \mathbb Z$ entraîne $nx - ny \in \mathbb Z$, et continue ({{t-quotient|Topologie quotient}}). On identifie $\lex{groupe-fondamental}{\pi_1}(S^1, e)$ à $\mathbb Z$ par le degré.
+    enonce: |
+      (i) $p : \mathbb R \to S^1$ est un [[revetement-universel|revêtement universel]]. Ses automorphismes sont les translations $\tau_k : x \mapsto x + k$, pour $k \in \mathbb Z$, et $k \mapsto \tau_k$ est un isomorphisme de $\mathbb Z$ sur $\operatorname{Aut}(\mathbb R/S^1)$.
+
+      (ii) $p_n$ est un revêtement à $n$ feuillets, dont l'espace $S^1$ est connexe, et $p_{n*}(\pi_1(S^1, e)) = n\mathbb Z$. Il est [[revetement-galoisien|galoisien]], et son groupe d'automorphismes, isomorphe à $\mathbb Z/n\mathbb Z$, est engendré par la rotation $\rho(p(x)) = p(x + \frac1n)$.
+
+      (iii) Tout revêtement connexe de $S^1$ est isomorphe à $p$ ou à l'un des $p_n$.
+    preuve: |
+      (i) $p$ est un revêtement ({{ta-cercle|Groupe fondamental du cercle}}, (i)) et $\mathbb R$ est simplement connexe et localement connexe par arcs ({{ta-simplement-connexe|Simple connexité}}, {{rv-locale|Connexité locale par arcs}}). Chaque $\tau_k$ est un homéomorphisme tel que $p \circ \tau_k = p$, et $\tau_k \circ \tau_l = \tau_{k + l}$.
+
+      Un automorphisme $\varphi$ envoie $0$ dans la fibre $\mathbb Z$, et coïncide en $0$ avec $\tau_{\varphi(0)}$ : il lui est égal ({{rv-automorphismes|Automorphismes}}, (ii)). Ainsi $k \mapsto \tau_k$ est un morphisme bijectif.
+
+      ```schema rv-cercle
+      Le revêtement universel $\mathbb R \to S^1$ dessiné comme une hélice au-dessus du cercle : la projection écrase l'hélice sur le cercle de base. La fibre au-dessus de $e$, en rouge, est formée des entiers, un par spire ; le lacet qui fait un tour se relève à partir de $0$ en une spire entière, en bleu, de $0$ à $1$, et l'automorphisme $\tau_1$ fait monter l'hélice d'une spire.
+      ```
+
+      (ii) *Revêtement.* Pour $y \in \mathbb R$, soit $J = \,]y - \frac12, y + \frac12[$ et $U = p(J)$, uniformément couvert par $p$. Pour $0 \leqslant k < n$, posons $J_k = \frac{J + k}n$, intervalle ouvert de longueur $\frac1n$. Comme $p_n \circ p = p \circ m_n$, où $m_n(x) = nx$, un réel $x$ vérifie $p_n(p(x)) \in U$ si et seulement si $nx \in J + m$ pour un entier $m$, c'est-à-dire, en écrivant $m = qn + k$, si $x \in J_k + q$.
+
+      Donc $p_n^{-1}(U)$ est la réunion des ouverts $V_k = p(J_k)$. Ils sont deux à deux disjoints, puisque les intervalles $\frac{J + m}n$, $m \in \mathbb Z$, le sont et que $V_k = p(J_k + \mathbb Z)$.
+
+      Sur $V_k$, l'application $p_n$ est la composée de la réciproque de $p|_{J_k}$, de $m_n$, homéomorphisme de $J_k$ sur $J + k$, et de $p|_{J + k}$ : trois homéomorphismes, puisque $p$ est injective, continue et ouverte sur tout intervalle ouvert de longueur au plus $1$ ({{ta-cercle|Groupe fondamental du cercle}}, preuve de (i)). C'est donc un homéomorphisme de $V_k$ sur $U$, et $p_n$ est un revêtement, surjectif puisque $p_n(p(x/n)) = p(x)$.
+
+      *Fibre et sous-groupe.* La fibre au-dessus de $e$ est formée des $n$ points distincts $p(\frac kn)$, $0 \leqslant k < n$. Le lacet $\alpha_m(s) = p(ms)$, de degré $m$, se relève par $p_n$ à partir de $e$ en $s \mapsto p(\frac{ms}n)$, qui est un lacet si et seulement si $n$ divise $m$. Par le point (ii) du nœud {{rv-monodromie|Action sur la fibre}}, $p_{n*}(\pi_1(S^1, e)) = n\mathbb Z$.
+
+      ```schema rv-cercle-2
+      Pour $n = 3$, chaque cercle représente $\mathbb R/\mathbb Z$, le point $p(x)$, pour $x \in [0, 1[$, étant placé à la fraction $x$ d'un tour ; $p_3$ envoie le cercle du haut sur celui du bas en triplant le nombre de tours. Le point vert $p(x)$ de la base a trois antécédents $p(\frac{x + k}3)$, en vert, et la fibre de $e$ est formée des trois points rouges. Le lacet $\alpha_1$, qui fait un tour en bas, se relève à partir de $e$ en un tiers de tour, en bleu, qui s'arrête en $p(\frac13)$ et n'est pas un lacet.
+      ```
+
+      *Automorphismes.* Le groupe $\mathbb Z$ est commutatif, donc $n\mathbb Z$ y est distingué ({{a-distingue|Sous-groupe distingué}}, (iii)), et $p_n$ est galoisien, de groupe $\mathbb Z/n\mathbb Z$ ({{rv-galoisiens|Revêtements galoisiens}}, (i)). La rotation $\rho$ vérifie $p_n \circ \rho = p_n$ ; elle est continue, de réciproque $p(x) \mapsto p(x - \frac1n)$, et c'est l'automorphisme $\varphi_1$ du nœud {{rv-automorphismes|Automorphismes}}, puisque le relèvement de $\alpha_1$ issu de $e$ se termine en $p(\frac1n) = \rho(e)$. Elle engendre donc le groupe, image de $1$, qui engendre $\mathbb Z$.
+
+      (iii) $S^1$ est connexe, comme image de $\mathbb R$, localement connexe par arcs ({{rv-locale|Connexité locale par arcs}}, (iii)) et semi-localement simplement connexe ({{rv-slsc|Semi-locale simple connexité}}, (i)), par (i). Les sous-groupes de $\mathbb Z$ sont les $n\mathbb Z$, $n \in \mathbb N$ ({{z-ideaux|Idéaux de ℤ}}), deux à deux non conjugués puisque $\mathbb Z$ est commutatif. Par la classification ({{rv-correspondance|Classification}}, (iii)), un revêtement connexe correspond à l'un d'eux : $\{0\}$ pour $p$, $n\mathbb Z$ pour $p_n$ si $n \geqslant 1$.
+    remarques:
+      - |
+        Le point (i) redonne $\pi_1(S^1) \cong \mathbb Z$ par le point (iv) du nœud {{rv-automorphismes|Automorphismes}}, sans calcul de degré ; mais il utilise le fait que $p$ est un revêtement, qui était le cœur du nœud {{ta-cercle|Groupe fondamental du cercle}}.
+      - |
+        Dans le modèle du cercle unité de $\mathbb C$, où $p(x)$ correspond à $e^{2i\pi x}$ ({{cx-pi|Le nombre π}}), l'application $p_n$ devient $z \mapsto z^n$ et la rotation $\rho$ la multiplication par $e^{2i\pi/n}$. C'est le revêtement qui gouverne les déterminations des racines $n$-ièmes en analyse complexe.
+      - |
+        Le classement est complet : à isomorphisme près, le cercle n'a qu'un revêtement connexe par nombre fini de feuillets, et un seul revêtement connexe infini. L'erreur la plus répandue est d'oublier les revêtements non triviaux de $S^1$ par lui-même, les $p_n$ pour $n \geqslant 2$ ; $p_1$ est l'identité, revêtement trivial.
+
+  - id: rv-tore
+    etiquette: Tore
+    nature: proposition
+    titre: Le revêtement universel du tore
+    texte: |
+      Soit $\lex{tore}{T} = S^1 \times S^1$ et $P : \lex{n-uplet}{\mathbb R^2} \to T$, $P(u, v) = (p(u), p(v))$, comme au nœud {{vk-tore-ouverts|Ouverts du tore}}.
+    enonce: |
+      (i) $P$ est un [[revetement-universel|revêtement universel]].
+
+      (ii) Ses automorphismes sont les translations $\tau_{k,l}(u, v) = (u + k, v + l)$, pour $(k, l) \in \mathbb Z^2$, et $(k, l) \mapsto \tau_{k,l}$ est un isomorphisme de $\mathbb Z^2$ sur $\operatorname{Aut}(\mathbb R^2/T)$. Par suite, $\lex{groupe-fondamental}{\pi_1}(T) \cong \mathbb Z^2$.
+    preuve: |
+      (i) Soit $(p(x), p(y)) \in T$, et $J_1 = \,]x - \frac12, x + \frac12[$, $J_2 = \,]y - \frac12, y + \frac12[$. L'ouvert $U = p(J_1) \times p(J_2)$ a pour image réciproque la réunion des produits $(J_1 + k) \times (J_2 + l)$, ouverts et deux à deux disjoints. Sur chacun, $P$ est le produit de deux homéomorphismes sur $p(J_1)$ et $p(J_2)$ ({{ta-cercle|Groupe fondamental du cercle}}, preuve de (i)), donc un homéomorphisme sur $U$, de réciproque le produit des réciproques ({{t-produit|Topologie produit}}).
+
+      Ainsi $P$ est un revêtement, surjectif comme $p$. L'espace $\mathbb R^2$ est convexe, donc simplement connexe, et localement connexe par arcs ({{rv-locale|Connexité locale par arcs}}, (ii)).
+
+      (ii) Chaque $\tau_{k,l}$ est un homéomorphisme tel que $P \circ \tau_{k,l} = P$, et $\tau_{k,l} \circ \tau_{k',l'} = \tau_{k+k', l+l'}$. Un automorphisme $\varphi$ envoie $(0, 0)$ dans la fibre $P^{-1}(P(0, 0)) = \mathbb Z^2$, et coïncide en $(0, 0)$ avec la translation de vecteur $\varphi(0, 0)$ : il lui est égal ({{rv-automorphismes|Automorphismes}}, (ii)). La dernière affirmation est le point (iv) du même nœud.
+    remarques:
+      - |
+        On retrouve le résultat du nœud {{vk-tore|Tore}}, obtenu par le théorème de Seifert-van Kampen. Les deux démonstrations n'ont rien en commun : l'une recolle des ouverts, l'autre déroule le tore sur le plan, où chaque lacet se lit par l'extrémité $(m, n)$ de son relèvement issu de $(0, 0)$, son **bidegré**.
+      - |
+        Deux revêtements connexes à deux feuillets du tore ne sont pas isomorphes. Les applications $Q_1(p(u), p(v)) = (p(2u), p(v))$ et $Q_2(p(u), p(v)) = (p(u), p(2v))$ sont des revêtements de $T$ par $T$. Pour $Q_1$, avec $U = p(J_1) \times p(J_2)$ comme en (i), l'image réciproque $Q_1^{-1}(U)$ est la réunion des deux ouverts disjoints $p(\frac{J_1 + k}2) \times p(J_2)$, $k = 0, 1$ : un réel $u$ vérifie $p(2u) \in p(J_1)$ si et seulement si $2u \in J_1 + m$ pour un entier $m$, c'est-à-dire $u \in \frac{J_1 + k}2 + q$ avec $m = 2q + k$. Sur chacun, $Q_1$ est le produit de l'identité de $p(J_2)$ et de la composée de la réciproque de $p$ sur $\frac{J_1 + k}2$, de $u \mapsto 2u$ et de $p$ sur $J_1 + k$, trois homéomorphismes. De même pour $Q_2$. Si $(\tilde u, \tilde v)$ est le relèvement par $P$, issu de $(0, 0)$, d'un lacet $\gamma$ de bidegré $(m, n)$, le chemin $s \mapsto (p(\tilde u(s)/2), p(\tilde v(s)))$ relève $\gamma$ par $Q_1$ à partir de $(e, e)$, et se termine en $(p(\frac m2), e)$ : c'est un lacet si et seulement si $m$ est pair. De même, par $Q_2$, si et seulement si $n$ est pair.
+
+        Leurs sous-groupes sont donc $2\mathbb Z \times \mathbb Z$ et $\mathbb Z \times 2\mathbb Z$, distincts, et non conjugués puisque $\mathbb Z^2$ est commutatif : par le point (iii) du nœud {{rv-morphismes|Morphismes}}, $Q_1$ et $Q_2$ ne sont pas isomorphes, bien qu'ils aient le même nombre de feuillets.
+
+  - id: rv-projectif
+    etiquette: Espaces projectifs
+    nature: théorème
+    titre: Les espaces projectifs réels
+    texte: |
+      Pour $n \geqslant 1$, l'[[espace-projectif-reel|espace projectif réel]] $\mathbb RP^n$ est le quotient de la sphère $\lex{sphere-unite}{S^n}$ par la relation $x \sim y \iff y = x$ ou $y = -x$, muni de la [[topologie-quotient|topologie quotient]] ; on note $q : S^n \to \mathbb RP^n$ la projection. Pour $x, y \in \mathbb R^{n+1}$, on pose $\langle x, y \rangle = x_1y_1 + \cdots + x_{n+1}y_{n+1}$.
+    enonce: |
+      (i) $q$ est un [[revetement|revêtement]] à deux feuillets.
+
+      (ii) Pour $n \geqslant 2$, $q$ est un [[revetement-universel|revêtement universel]], et $\lex{groupe-fondamental}{\pi_1}(\mathbb RP^n)$ est isomorphe à $\mathbb Z/2\mathbb Z$. Si $x_0 \in S^n$ et si $\gamma$ est un chemin de $S^n$ de $x_0$ à $-x_0$, la classe du lacet $q \circ \gamma$ en est l'élément non trivial.
+    preuve: |
+      (i) L'application $a(x) = -x$ est continue de $S^n$ dans $S^n$, ses coordonnées étant polynomiales ({{tr-sphere|Sphère unité Sⁿ}}, (i), et {{t-induite|Topologie induite}}), et c'est sa propre réciproque : un homéomorphisme. L'application $q$ est continue ({{t-quotient|Topologie quotient}}) et ouverte, puisque pour un ouvert $V$,
+      $$q^{-1}(q(V)) = V \cup a(V)$$
+      est ouvert.
+
+      Pour $x \in S^n$, soit $U_x = \{y \in S^n : \langle x, y \rangle > 0\}$, ouvert par continuité de $y \mapsto \langle x, y \rangle$. On a $a(U_x) = U_{-x}$, disjoint de $U_x$, et $q^{-1}(q(U_x)) = U_x \cup U_{-x}$.
+
+      La restriction de $q$ à $U_x$ est continue, ouverte, et injective, puisque $y$ et $-y$ ne sont pas tous deux dans $U_x$ : c'est un homéomorphisme sur l'ouvert $q(U_x)$, et de même pour $U_{-x}$, puisque $q(U_{-x}) = q(U_x)$. Ainsi $q(U_x)$ est uniformément couvert, et la fibre $\{x, -x\}$ a deux points.
+
+      ```schema rv-projectif
+      Pour $n = 1$, au-dessus de l'ouvert $q(U_x)$, l'image réciproque est formée de deux arcs ouverts antipodaux : $U_x$, en rouge, où $\langle x, y \rangle > 0$, et $U_{-x}$, en bleu. L'application $a$ échange les deux feuillets, et la fibre de chaque point est une paire $\{y, -y\}$.
+      ```
+
+      (ii) La sphère $S^n$ est simplement connexe ({{vk-spheres|Sphères Sⁿ, n ⩾ 2}}) et localement connexe par arcs ({{rv-locale|Connexité locale par arcs}}, (ii)). L'identité et $a$ sont des automorphismes, puisque $q \circ a = q$.
+
+      Un automorphisme $\varphi$ envoie $x_0$ sur $x_0$ ou sur $-x_0$, et coïncide alors en $x_0$ avec l'identité ou avec $a$ : il lui est égal ({{rv-automorphismes|Automorphismes}}, (ii)). Le groupe $\operatorname{Aut}(S^n/\mathbb RP^n)$ a donc deux éléments, comme $\pi_1(\mathbb RP^n, q(x_0))$, qui lui est isomorphe (même nœud, (iv)).
+
+      Un groupe à deux éléments $\{1, g\}$ vérifie $g^2 = 1$, puisque $g^2 = g$ entraînerait $g = 1$ ; l'application $\bar 0 \mapsto 1$, $\bar 1 \mapsto g$ est donc un isomorphisme de $\mathbb Z/2\mathbb Z$ sur lui.
+
+      Enfin $\gamma$ est le relèvement de $q \circ \gamma$ issu de $x_0$, et ce n'est pas un lacet : par le point (ii) du nœud {{rv-monodromie|Action sur la fibre}}, $[q \circ \gamma]$ n'appartient pas au sous-groupe trivial $q_*(\pi_1(S^n, x_0))$.
+    remarques:
+      - |
+        Le lacet $q \circ \gamma$ de (ii) est de carré trivial, alors que lui-même ne l'est pas : parcouru deux fois, il se relève en un chemin de $x_0$ à $-x_0$, puis de $-x_0$ à $x_0$, qui est un lacet. C'est un lacet qui ne se contracte pas, mais dont le double se contracte, phénomène impossible dans le cercle ou le tore, dont les groupes fondamentaux $\mathbb Z$ et $\mathbb Z^2$ n'ont aucun élément d'ordre $2$.
+      - |
+        Le plan projectif $\mathbb RP^2$ n'est donc homéomorphe ni à $S^2$, simplement connexe, ni au tore, ni au cercle, de groupes fondamentaux infinis. La dernière remarque du nœud {{vk-tore|Tore}} annonçait le même groupe pour le carré dont on identifie les points antipodaux du bord ; que ce carré recollé soit homéomorphe à $\mathbb RP^2$ n'est pas démontré ici, et le calcul fait par Seifert-van Kampen pour lui reste admis.
+      - |
+        Pour $n = 1$, la sphère $S^1$ n'est pas simplement connexe, et (ii) ne s'applique pas : $\mathbb RP^1$ est homéomorphe au cercle, et $q$ correspond au revêtement $z \mapsto z^2$ du nœud {{rv-cercle|Revêtements du cercle}}. Ce n'est pas démontré ici ; il faudrait identifier le cercle unité de $\mathbb R^2$ à $\mathbb R/\mathbb Z$ par une application compatible avec $x \mapsto -x$.
+
+  - id: rv-bouquet
+    etiquette: Bouquet de deux cercles
+    nature: proposition
+    titre: Revêtements du bouquet de deux cercles
+    texte: |
+      Soit $\lex{bouquet-cercles}{W} = (S^1 \times \{e\}) \cup (\{e\} \times S^1)$ le bouquet de deux cercles, $x_0 = (e, e)$, et $a$, $b$ ses deux lacets, comme au nœud {{vk-bouquet|Bouquet de deux cercles}} ; on note $\Theta : F(a, b) \to \lex{groupe-fondamental}{\pi_1}(W, x_0)$ l'isomorphisme qui y est construit.
+
+      Pour l'ensemble $E = \{1, 2, 3\}$, on note $\tau_{12}$ et $\tau_{23}$ les transpositions de $\mathfrak S(E)$ ({{a-groupe|Groupe}}), et $\sigma : F(a, b) \to \mathfrak S(E)$ le morphisme tel que $\sigma(a) = \tau_{12}$ et $\sigma(b) = \tau_{23}$ ({{vk-groupe-libre|Groupe libre}}, (ii)). Soit $K = \{w \in F(a, b) : \sigma(w)(1) = 1\}$.
+    enonce: |
+      (i) $W$ est connexe, [[localement-connexe-par-arcs|localement connexe par arcs]] et [[semi-localement-simplement-connexe|semi-localement simplement connexe]]. Il a donc un [[revetement-universel|revêtement universel]] $\tilde W \to W$, dont la fibre au-dessus de $x_0$ et le groupe d'automorphismes sont en bijection avec le groupe libre $F(a, b)$.
+
+      (ii) Le sous-groupe $\Theta(K)$ est d'[[indice-sous-groupe|indice]] $3$, et il n'est pas distingué. Le revêtement connexe correspondant, $X_{\Theta(K)}$, a trois feuillets et n'est pas [[revetement-galoisien|galoisien]].
+    preuve: |
+      (i) *Connexité.* $W$ est connexe par arcs ({{vk-bouquet|Bouquet de deux cercles}}, preuve de (ii)), donc connexe.
+
+      *Hors de $x_0$.* Soient $A_1 = S^1 \times \{e\}$ et $A_2 = \{e\} \times S^1$, fermés. L'ensemble $A_1 \setminus \{x_0\} = W \setminus A_2$ est un ouvert de $W$, homéomorphe par la première projection à $S^1 \setminus \{e\}$, lui-même homéomorphe par $p$ à l'intervalle $]0, 1[$ : la restriction de $p$ à $]0, 1[$ est continue, ouverte et injective, d'image $S^1 \setminus \{e\}$. Cet ouvert de $W$ est donc simplement connexe, puisque $]0, 1[$ est convexe ({{ta-simplement-connexe|Simple connexité}}) et qu'un homéomorphisme induit un isomorphisme ({{ta-fonctorialite|Fonctorialité}}, (i)), et localement connexe par arcs ({{rv-locale|Connexité locale par arcs}}, (ii)) ; de même pour $A_2 \setminus \{x_0\}$.
+
+      Pour un point $w$ de $A_1 \setminus \{x_0\}$ et un voisinage $V$ de $w$ dans $W$, l'ensemble $V \cap (A_1 \setminus \{x_0\})$ est un voisinage de $w$ dans cet ouvert ; il contient un ouvert connexe par arcs autour de $w$, qui est aussi ouvert dans $W$.
+
+      *Autour de $x_0$.* Pour $0 < \varepsilon \leqslant \frac12$, soit $J_\varepsilon = \,]{-\varepsilon}, \varepsilon[$ et
+      $$N_\varepsilon = W \cap \big(p(J_\varepsilon) \times p(J_\varepsilon)\big),$$
+      ouvert de $W$, réunion des deux arcs $p(J_\varepsilon) \times \{e\}$ et $\{e\} \times p(J_\varepsilon)$, connexes par arcs comme images de $J_\varepsilon$, qui se rencontrent en $x_0$.
+
+      Tout voisinage de $x_0$ dans $W$ contient l'intersection avec $W$ d'un produit d'ouverts $G_1 \times G_2$ de $T$ contenant $(e, e)$ ; les ouverts $p^{-1}(G_1)$ et $p^{-1}(G_2)$ de $\mathbb R$ contiennent des intervalles $J_{\varepsilon_1}$ et $J_{\varepsilon_2}$, et $N_\varepsilon$, pour $\varepsilon = \min(\varepsilon_1, \varepsilon_2, \frac12)$, est dans le voisinage. Avec l'alinéa précédent, $W$ est localement connexe par arcs.
+
+      *Lacets.* Comme $p(\frac12) \notin p(J_\varepsilon)$, l'ouvert $N_\varepsilon$ ne contient pas les points $q_1$, $q_2$ du nœud {{vk-bouquet|Bouquet de deux cercles}}, et il est contenu dans $U \cap V = W \setminus \{q_1, q_2\}$, simplement connexe puisque $\{x_0\}$ en est un rétracte par déformation (même nœud, et {{vk-retractes|Rétractes par déformation}}, (ii)). Tout lacet de $N_\varepsilon$ est donc homotope au lacet constant dans $U \cap V$, et dans $W$. Avec les ouverts simplement connexes $A_i \setminus \{x_0\}$, tout point a un voisinage du type voulu.
+
+      *Conclusion.* Le nœud {{rv-universel|Revêtement universel}} fournit $\tilde W$, et le nœud {{rv-automorphismes|Automorphismes}}, (iv), les deux bijections, avec $\pi_1(W, x_0) \cong F(a, b)$.
+
+      (ii) *Indice.* Pour $g, g' \in F(a, b)$, on a $Kg = Kg'$ si et seulement si $\sigma(g'g^{-1})(1) = 1$, c'est-à-dire $\sigma(g)^{-1}(1) = \sigma(g')^{-1}(1)$. L'application $Kg \mapsto \sigma(g)^{-1}(1)$ est donc bien définie et injective, de $K\backslash F(a, b)$ dans $E$ ; elle est surjective, puisque $\sigma(1)^{-1}(1) = 1$, $\sigma(a)^{-1}(1) = 2$ et $\sigma(ab)^{-1}(1) = \tau_{23}(\tau_{12}(1)) = 3$. L'indice de $K$ est $3$, comme celui de $\Theta(K)$, puisque $\Theta$ est un isomorphisme.
+
+      *Non distingué.* On a $b \in K$, puisque $\tau_{23}$ fixe $1$. Mais $\sigma(a^{-1}ba) = \tau_{12} \circ \tau_{23} \circ \tau_{12}$ envoie $1$ sur $\tau_{12}(\tau_{23}(2)) = \tau_{12}(3) = 3$ : $a^{-1}ba \notin K$, et $K$ n'est pas distingué, ni $\Theta(K)$.
+
+      *Le revêtement.* Par la classification ({{rv-correspondance|Classification}}), $X_{\Theta(K)}$ est un revêtement connexe de sous-groupe $\Theta(K)$, à trois feuillets ({{rv-fibre|Fibre et indice}}, (i)), et non galoisien ({{rv-galoisiens|Revêtements galoisiens}}, (i)).
+    remarques:
+      - |
+        ```schema rv-bouquet
+        Un morceau de l'arbre de Cayley de $F(a, b)$ : ses sommets sont les mots réduits, ici ceux de longueur au plus $3$, et chaque sommet $w$ est relié à $wa$ et $wa^{-1}$ par des arêtes horizontales, rouges, à $wb$ et $wb^{-1}$ par des arêtes verticales, bleues. Les arêtes raccourcissent de moitié à chaque génération, de sorte que l'arbre ne se recoupe jamais ; chaque arête horizontale s'enroule sur le lacet $a$, chaque arête verticale sur le lacet $b$.
+        ```
+
+        On peut décrire $\tilde W$ comme cet arbre : la fibre au-dessus de $x_0$ est l'ensemble de ses sommets, c'est-à-dire $F(a, b)$, chaque sommet a quatre arêtes, et les automorphismes sont les multiplications à gauche $w \mapsto uw$, qui respectent les arêtes. Cette identification est admise ici : elle demande de munir un graphe d'une topologie et de montrer qu'un arbre est simplement connexe, ce que l'atlas ne fait pas.
+      - |
+        Le revêtement de (ii) se lit sur sa fibre. Par le point (i) du nœud {{rv-fibre|Fibre et indice}} et la bijection de la démonstration, le point $\xi_0 \cdot \Theta(g)$ de la fibre correspond à l'entier $i = \sigma(g)^{-1}(1)$, et l'action de $\Theta(a)$ l'envoie sur le point qui correspond à $\sigma(ga)^{-1}(1) = \tau_{12}(i)$ ; de même, $\Theta(b)$ agit par $\tau_{23}$.
+
+        On dessine donc trois points $1$, $2$, $3$ au-dessus de $x_0$, reliés par les relèvements de $a$, qui échangent $1$ et $2$ et bouclent en $3$, et par ceux de $b$, qui échangent $2$ et $3$ et bouclent en $1$. Le lacet $b$ se relève en un lacet à partir du point $1$, mais pas à partir du point $2$ : c'est la condition (d) du nœud {{rv-galoisiens|Revêtements galoisiens}} qui échoue.
+      - |
+        Ce revêtement n'a pas d'autre automorphisme que l'identité. Le sous-groupe du point qui correspond à $i$ est, par le calcul de la démonstration, l'image par $\Theta$ de $K_i = \{w : \sigma(w)(i) = i\}$. Ces trois sous-groupes sont distincts : $a$ appartient à $K_3$ mais ni à $K_1$ ni à $K_2$, et $b$ appartient à $K_1$ mais pas à $K_2$. Par le point (ii) du nœud {{rv-automorphismes|Automorphismes}}, aucun automorphisme n'envoie un point de la fibre sur un autre.
+
+aretes:
+  - [rv-monodromie, rv-fibre]
+  - [rv-monodromie, rv-critere]
+  - [rv-locale, rv-critere]
+  - [rv-critere, rv-morphismes]
+  - [rv-fibre, rv-morphismes]
+  - [rv-morphismes, rv-automorphismes]
+  - [rv-automorphismes, rv-galoisiens]
+  - [rv-locale, rv-slsc]
+  - [rv-slsc, rv-construction]
+  - [rv-construction, rv-universel]
+  - [rv-morphismes, rv-universel]
+  - [rv-universel, rv-correspondance]
+  - [rv-galoisiens, rv-correspondance]
+  - [rv-correspondance, rv-cercle]
+  - [rv-correspondance, rv-tore]
+  - [rv-correspondance, rv-projectif]
+  - [rv-correspondance, rv-bouquet]

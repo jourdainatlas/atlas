@@ -967,3 +967,17 @@ coordonnées polaires centrées en un sommet (point (i) en intégrales de Rieman
 (invariance de la courbure abstraite admise). Admis en remarque : Gauss-Bonnet global, tangentes tournantes de Hopf.
 edo-surfaces garde 1 croisement (minimum trouvé). Relu : trois fautes (normale non constante, ⋆ en double,
 Gauss-Bonnet énoncé trop généralement) et une vingtaine de retouches. 814 nœuds, 487 termes, 69 graphes.
+
+## 65. Revêtements (30 octobre 2026)
+
+Chapitre topalg-revetements (15 fiches), sous topalg, arête topalg-van-kampen → topalg-revetements. Monodromie
+(action à droite de π₁ sur la fibre, p_* injectif, image = stabilisateur, fibre ≅ H\π₁), espaces localement connexes
+par arcs (parties convexes de ℝⁿ, sphères), critère de relèvement (relevé défini par son graphe, sans choisir de
+chemin), morphismes et rigidité, automorphismes (Aut ≅ N(H)/H), revêtements galoisiens, semi-locale simple connexité
+(boucle d'oreille hawaïenne en remarque), construction de X_H par classes de chemins et classification (revêtement
+universel ⇔ semi-localement simplement connexe), exemples : cercle (p_n, classés par les idéaux de ℤ), tore, ℝPⁿ
+(π₁ = ℤ/2ℤ pour n ⩾ 2), bouquet de deux cercles (revêtement de degré 3 non galoisien, arbre de Cayley). Aucun choix.
+Relu : aucune erreur de fond ; quatre fautes mineures (renvoi insuffisant pour I et I×I, renvoi à un frère dans
+rv-tore, trous dans la remarque hawaïenne, maximalité du normalisateur non prouvée) et une dizaine de retouches.
+Lot commis seul (hunks de edifice.yaml et lexique.yaml séparés, construction vérifiée dans un worktree) :
+830 nœuds, 497 termes, 70 graphes ; edifice 16 croisements, chapitre 0.
