@@ -551,3 +551,208 @@ def gd_poincare():
     S.point(R(0, 0), 't', r=4)
     S.texte(R(0, 0) + [10, 16], '0', ancre='start')
     return S
+
+
+# ------------------------------------------------------------------ chapitre cdiff-quadratiques
+def _clip_droite(R, p, d):
+    """Segment de la droite p + t d contenu dans la fenêtre du repère R."""
+    ts = []
+    for k, (lo, hi) in enumerate(((R.xmin, R.xmax), (R.ymin, R.ymax))):
+        if abs(d[k]) > 1e-12:
+            ts += [(lo - p[k]) / d[k], (hi - p[k]) / d[k]]
+    ts = sorted(ts)
+    pts = [np.asarray(p, float) + t * np.asarray(d, float) for t in ts]
+    dedans = [q for q in pts if R.xmin - 1e-9 <= q[0] <= R.xmax + 1e-9 and R.ymin - 1e-9 <= q[1] <= R.ymax + 1e-9]
+    return dedans[0], dedans[-1]
+
+
+@schema('fq-orthogonalite')
+def fq_orthogonalite():
+    # b(x, y) = x1 y1 − x2 y2 sur ℝ² ; u = (1, 1) isotrope, v = (2, 1), v^⊥ dirigé par (1, 2).
+    b = lambda x, y: x[0] * y[0] - x[1] * y[1]
+    u, v, w = np.array([1, 1]), np.array([2, 1]), np.array([1, 2])
+    assert b(u, u) == 0 and b(v, v) == 3 and b(v, w) == 0
+    assert np.linalg.det(np.array([v, w])) != 0                    # ℝv ⊕ v^⊥ = ℝ²
+    assert (w == v[::-1]).all()                                     # symétrique par rapport à la diagonale
+    S = Schema(480, 420, 'Cône isotrope de x1² − x2², orthogonal d’un vecteur non isotrope et d’un vecteur isotrope')
+    R = Repere(-2.6, 2.6, -2.3, 2.3, 18, 34, 420, 372)
+    R.axes(S, 'x_1', 'x_2')
+    S.ligne(*[R(*p) for p in _clip_droite(R, (0, 0), v)], 'b', l=1.1)
+    S.ligne(*[R(*p) for p in _clip_droite(R, (0, 0), w)], 'b', d=True)
+    for d in ((1, 1), (1, -1)):
+        S.ligne(*[R(*p) for p in _clip_droite(R, (0, 0), d)], 'r')
+    S.fleche(R(0, 0), R(*v), 'b', l=2)
+    S.fleche(R(0, 0), R(*u), 'r', l=2)
+    S.texte(R(*v) + [10, 12], 'v', 'b', ancre='start')
+    S.texte(R(*u) + [-12, -10], 'u', 'r', ancre='end')
+    S.texte(R(*(1.05 * w)) + [-10, 0], 'v^⊥', 'b', ancre='end')
+    S.texte(R(2.3, -1.75) + [8, 0], 'q = 0', 'r', ancre='start', taille=15)
+    S.point(R(0, 0), 't', r=3.6)
+    return S
+
+
+@schema('fq-bases-orthogonales')
+def fq_bases_orthogonales():
+    # q = x² + 4xy + y² ; base orthogonale e1 = (1, 0), e2 = (−2, 1) ; vecteurs propres (1, 1) et (1, −1).
+    A = np.array([[1.0, 2.0], [2.0, 1.0]])
+    q = lambda x: x @ A @ x
+    e1, e2 = np.array([1.0, 0.0]), np.array([-2.0, 1.0])
+    assert q(e1) == 1 and q(e2) == -3 and e1 @ A @ e2 == 0
+    grad = 2 * A @ e1                                               # normale à q = 1 en e1
+    assert grad @ e2 == 0                                           # e2 dirige la tangente en e1
+    f1, f2 = np.array([1.0, 1.0]) / math.sqrt(2), np.array([1.0, -1.0]) / math.sqrt(2)
+    assert np.allclose(A @ f1, 3 * f1) and np.allclose(A @ f2, -f2)
+    # q(s f1 + t f2) = 3 s² − t² : q = 1 pour s = ±cosh(w)/√3, t = sinh(w) ; q = −3 pour t = ±√3 cosh(w), s = sinh(w)
+    W = np.linspace(-2.2, 2.2, 400)
+    S = Schema(480, 440, 'Hyperboles q = 1 et q = −3, base orthogonale de Gauss et base orthonormée propre')
+    R = Repere(-3.1, 3.1, -2.6, 3.0, 14, 34, 420, 392)
+    R.axes(S, 'x_1', 'x_2')
+    def trace(br, c, d=False):
+        P = np.outer(br[0], f1) + np.outer(br[1], f2)
+        assert np.allclose([q(p) for p in P], q(P[0]))
+        g = (P[:, 0] >= R.xmin) & (P[:, 0] <= R.xmax) & (P[:, 1] >= R.ymin) & (P[:, 1] <= R.ymax)
+        for m in morceaux(P, g):
+            S.poly(R(m[:, 0], m[:, 1]), c, d, l=1.5)
+    for sg in (1, -1):
+        trace((sg * np.cosh(W) / math.sqrt(3), np.sinh(W)), 't')
+        trace((np.sinh(W), sg * math.sqrt(3) * np.cosh(W)), 't', d=True)
+    a, bb = _clip_droite(R, e1, e2)
+    S.ligne(R(*a), R(*bb), 'g', l=0.9)
+    S.fleche(R(0, 0), R(*f1), 'r', l=2)
+    S.fleche(R(0, 0), R(*f2), 'r', l=2)
+    S.fleche(R(0, 0), R(*e1), 'b', l=2)
+    S.fleche(R(0, 0), R(*e2), 'b', l=2)
+    S.point(R(*e1), 'b', r=3.8); S.point(R(*e2), 'b', r=3.8)
+    S.texte(R(*e1) + [8, 16], 'e_1', 'b', ancre='start')
+    S.texte(R(*e2) + [-8, -14], 'e_2', 'b', ancre='end')
+    S.texte(R(*f1) + [6, -12], 'f_1', 'r', ancre='start')
+    S.texte(R(*f2) + [6, 12], 'f_2', 'r', ancre='start')
+    S.texte(R(2.95, 2.0), 'q = 1', 't', ancre='end', taille=15)
+    assert q(np.array([1.95, -2.35])) < -3                         # étiquette au-delà de la branche q = −3
+    S.texte(R(1.95, -2.35), 'q = −3', 't', ancre='start', taille=15)
+    return S
+
+
+@schema('fq-signature')
+def fq_signature():
+    # Trois formes du plan et la courbe q = 1, selon la signature ; quatrième case : signature (0, 2), courbe vide.
+    formes = [((5.0, 2.0, 2.0), '(2, 0)'), ((1.0, 2.0, 1.0), '(1, 1)'), ((1.0, 1.0, 1.0), '(1, 0)'), ((-1.0, 0.0, -1.0), '(0, 2)')]
+    for (a, b_, c), lab in formes:
+        ev = np.linalg.eigvalsh(np.array([[a, b_], [b_, c]]))
+        sig = (int((ev > 1e-12).sum()), int((ev < -1e-12).sum()))
+        assert f'({sig[0]}, {sig[1]})' == lab
+    S = Schema(480, 470, 'Courbes q = 1 de quatre formes quadratiques du plan, selon leur signature')
+    cases = [(0, 0), (240, 0), (0, 235), (240, 235)]
+    t = np.linspace(0, 2 * math.pi, 721)
+    W = np.linspace(-2.6, 2.6, 400)
+    for ((a, b_, c), lab), (ox, oy) in zip(formes, cases):
+        R = Repere(-1.75, 1.75, -1.6, 1.6, ox + 14, oy + 30, 212, 194)
+        R.axes(S, '', '')
+        A = np.array([[a, b_], [b_, c]])
+        ev, P = np.linalg.eigh(A)
+        q = lambda X: np.einsum('ij,jk,ik->i', X, A, X)
+        def dessine(X, cl, d=False):
+            g = (np.abs(X[:, 0]) <= 1.75) & (np.abs(X[:, 1]) <= 1.6)
+            for m in morceaux(X, g):
+                S.poly(R(m[:, 0], m[:, 1]), cl, d, l=1.7)
+        if lab == '(2, 0)':
+            X = np.outer(np.cos(t) / math.sqrt(ev[0]), P[:, 0]) + np.outer(np.sin(t) / math.sqrt(ev[1]), P[:, 1])
+            assert np.allclose(q(X), 1)
+            dessine(X, 'r')
+        elif lab == '(1, 1)':
+            lp, ln = ev[1], ev[0]                                   # 3 et −1
+            for sg in (1, -1):
+                X = np.outer(sg * np.cosh(W) / math.sqrt(lp), P[:, 1]) + np.outer(np.sinh(W) / math.sqrt(-ln), P[:, 0])
+                assert np.allclose(q(X), 1)
+                dessine(X, 'b')
+            for sg in (1, -1):                                      # asymptotes : cône isotrope
+                d = P[:, 1] / math.sqrt(lp) + sg * P[:, 0] / math.sqrt(-ln)
+                assert abs(d @ A @ d) < 1e-12
+                dessine(np.outer(np.linspace(-3, 3, 50), d), 'g', d=True)
+        elif lab == '(1, 0)':
+            for sg in (1, -1):                                      # x + y = ±1
+                X = np.stack([np.linspace(-3, 3, 50), sg - np.linspace(-3, 3, 50)], 1)
+                assert np.allclose(q(X), 1)
+                dessine(X, 'v')
+            dessine(np.stack([np.linspace(-3, 3, 50), -np.linspace(-3, 3, 50)], 1), 'g', d=True)  # noyau
+        else:
+            G = np.stack(np.meshgrid(np.linspace(-2, 2, 41), np.linspace(-2, 2, 41)), -1).reshape(-1, 2)
+            assert (q(G) <= 0).all()                                # q = 1 n'a pas de solution
+            S.texte(R(0.9, -0.95), 'q = 1 vide', 'g', ui=True, taille=14)
+        cl = {'(2, 0)': 'r', '(1, 1)': 'b', '(1, 0)': 'v', '(0, 2)': 'g'}[lab]
+        S.texte((ox + 18, oy + 22), lab, cl, ancre='start', taille=16)
+    return S
+
+
+@schema('fq-extremums')
+def fq_extremums():
+    # f = x³ + y³ − 3xy : col en (0, 0), minimum −1 en (1, 1).
+    import contourpy
+    x, y = sp.symbols('x y', real=True)
+    f = x**3 + y**3 - 3 * x * y
+    crit = sp.solve([sp.diff(f, x), sp.diff(f, y)], [x, y], dict=True)
+    assert {(s[x], s[y]) for s in crit if s[x].is_real and s[y].is_real} == {(0, 0), (1, 1)}
+    H = sp.hessian(f, (x, y))
+    assert H.subs({x: 0, y: 0}).det() == -9
+    assert H.subs({x: 1, y: 1}).det() == 27 and H.subs({x: 1, y: 1})[0, 0] == 6 and f.subs({x: 1, y: 1}) == -1
+    fn = sp.lambdify((x, y), f, 'numpy')
+    xmin, xmax, ymin, ymax = -1.45, 2.05, -1.45, 2.05
+    X, Y = np.meshgrid(np.linspace(xmin, xmax, 701), np.linspace(ymin, ymax, 701))
+    Z = fn(X, Y)
+    gen = contourpy.contour_generator(X, Y, Z)
+    S = Schema(470, 470, 'Lignes de niveau de x³ + y³ − 3xy autour d’un col et d’un minimum')
+    R = Repere(xmin, xmax, ymin, ymax, 14, 32, 420, 424)
+    R.axes(S, 'x', 'y')
+    niveaux = [(-0.9, 'b'), (-0.6, 'b'), (-0.3, 'b'), (0.0, 't'), (0.3, 'r'), (0.8, 'r'), (1.5, 'r')]
+    fermees = []
+    for c, cl in niveaux:
+        for L in gen.lines(c):
+            if len(L) < 3:
+                continue
+            assert np.allclose(fn(L[:, 0], L[:, 1]), c, atol=2e-2)
+            S.poly(R(L[:, 0], L[:, 1]), cl, l=1.9 if c == 0 else 1.3)
+            if c < 0 and np.allclose(L[0], L[-1]):
+                ctr = L.mean(0)
+                if np.linalg.norm(ctr - [1, 1]) < 0.15:
+                    fermees.append(c)
+    assert sorted(fermees) == [-0.9, -0.6, -0.3]                    # courbes fermées autour du minimum
+    # le folium passe par l'origine, et f change de signe d'un quadrant à l'autre
+    e = 0.05
+    assert fn(e, e) < 0 and fn(-e, -e) < 0 and fn(e, -e) > 0 and fn(-e, e) > 0
+    S.point(R(0, 0), 't', r=4.2)
+    S.point(R(1, 1), 't', r=4.2)
+    S.texte(R(0, 0) + [-10, 18], 'col', 't', ancre='end', ui=True, taille=14)
+    return S
+
+
+@schema('fq-extremums-2')
+def fq_extremums_2():
+    # Peano : f = (y − x²)(y − 2x²), négative entre les paraboles ; minimum strict sur chaque droite.
+    f = lambda x, y: (y - x**2) * (y - 2 * x**2)
+    xmin, xmax, ymin, ymax = -1.25, 1.25, -0.35, 1.55
+    S = Schema(480, 380, 'Région où la fonction de Peano est négative, droites issues de l’origine et parabole intermédiaire')
+    R = Repere(xmin, xmax, ymin, ymax, 14, 32, 430, 330)
+    xs = np.linspace(xmin, xmax, 801)
+    haut = np.minimum(2 * xs**2, ymax)
+    bas = np.minimum(xs**2, ymax)
+    S.surface(np.vstack([R(xs, bas), R(xs[::-1], haut[::-1])]), 'b')
+    R.axes(S, 'x', 'y')
+    for k in (1, 2):
+        g = k * xs**2 <= ymax
+        S.poly(R(xs[g], k * xs[g]**2), 'b', l=1.4)
+    pentes = [0.5, 1.0, 2.0, -0.5, -1.0, -2.0]
+    for m in pentes:
+        a, b = _clip_droite(R, (0, 0), (1, m))
+        S.ligne(R(*a), R(*b), 'g', l=0.9)
+        # sur la droite y = m x, f(x, m x) = x²(m − x)(m − 2x) > 0 pour 0 < |x| < |m|/2
+        tt = np.linspace(1e-3, abs(m) / 2 - 1e-3, 50) * np.sign(m)
+        assert (f(tt, m * tt) > 0).all() and (f(-tt, -m * tt) > 0).all()
+    ts = np.linspace(1e-3, 1, 50)
+    assert (f(ts, 0 * ts) > 0).all() and (f(0 * ts, ts) > 0).all()  # les deux axes
+    g = 1.5 * xs**2 <= ymax
+    assert (f(xs[g & (xs != 0)], 1.5 * xs[g & (xs != 0)]**2) < 0).all()
+    S.poly(R(xs[g], 1.5 * xs[g]**2), 't', d=True, l=1.5)
+    S.point(R(0, 0), 't', r=4)
+    S.texte(R(0.95, 0.95**2) + [10, 6], 'y = x^2', 'b', ancre='start', taille=15)
+    S.texte(R(0.62, 1.42), 'y = 2x^2', 'b', ancre='end', taille=15)
+    return S

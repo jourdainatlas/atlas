@@ -1,0 +1,634 @@
+# Niveau 2 : structure interne du chapitre « Formes quadratiques » (nœud cdiff-quadratiques du graphe cdiff,
+# créé le 30 oct. 2026). D'abord sur un corps K où 2 est inversible : formes bilinéaires symétriques et formes
+# quadratiques (polarisation, matrice, congruence), rang, noyau et non-dégénérescence, orthogonalité (formule de
+# dimension, vecteurs isotropes, E = F ⊕ F^⊥ quand la restriction à F est non dégénérée), existence de bases
+# orthogonales, réduction de Gauss (avec et sans terme carré), classification quand tout élément est un carré.
+# Puis sur ℝ : loi d'inertie de Sylvester, signature, classification ; formes positives, Cauchy-Schwarz,
+# minoration par ‖h‖∞² ; critère des mineurs principaux dominants, et critère de positivité par tous les
+# mineurs principaux (développement de det(A + εI)). Enfin l'application au calcul différentiel : formule de
+# Taylor-Young à l'ordre 2 pour une fonction C² de n variables, hessienne, conditions nécessaires et suffisantes
+# d'extremum local, points cols, cas dégénérés (exemple de Peano).
+# Placement : l'algèbre linéaire n'a ni ℚ ni ℝ pour ancêtres ; le calcul différentiel (descendant de l'analyse
+# réelle, de l'algèbre linéaire et des espaces métriques) est la première théorie qui dispose à la fois des
+# formes quadratiques réelles et de la formule de Taylor, et c'est l'application aux extremums qui justifie le
+# chapitre. Aucune arête nouvelle dans l'édifice : le chapitre est un nœud de cdiff, après Schwarz.
+# La réduction en base orthonormée (théorème spectral) est au nœud f-spectral-fini de l'analyse fonctionnelle,
+# qui n'est pas un ancêtre : elle n'est citée qu'en remarque. Hors du chapitre, en remarque seulement : théorème
+# de Witt, lemme de Morse, classification sur les corps finis, extrema liés.
+# Aucune forme du choix n'intervient.
+
+graphe: cdiff-quadratiques
+titre: Formes quadratiques
+conteneur: cdiff-quadratiques
+
+entrees:
+  gd-schwarz: [fq-taylor-young]
+
+noeuds:
+  - id: fq-formes
+    etiquette: Formes quadratiques
+    nature: définition
+    titre: Formes bilinéaires symétriques et formes quadratiques
+    texte: |
+      Dans tout le chapitre, $K$ est un corps commutatif dans lequel $2 = 1 + 1$ n'est pas nul, donc est inversible, et $E$ est un $K$-espace vectoriel de [[dimension]] finie $n$. Le corps $\lex{ensemble-reels}{\mathbb R}$ en est l'exemple qui servira au calcul différentiel.
+
+      Une **forme bilinéaire** sur $E$ est une application $b : E \times E \to K$ linéaire par rapport à chacune de ses deux variables, l'autre étant fixée. Elle est [[forme-bilineaire-symetrique|symétrique]] si $b(x, y) = b(y, x)$ pour tous $x, y \in E$.
+
+      Une [[forme-quadratique|forme quadratique]] sur $E$ est une application $q : E \to K$ pour laquelle il existe une forme bilinéaire $b$, symétrique ou non, telle que $q(x) = b(x, x)$ pour tout $x \in E$.
+
+      Si $\mathcal B = (e_1, \dots, e_n)$ est une base de $E$, la **matrice** de $b$ dans $\mathcal B$ est la matrice $A = \big(b(e_i, e_j)\big)_{i,j}$ de $\lex{espace-matrices}{\mathcal M_n}(K)$. Une matrice carrée $A$ est **symétrique** si ${}^tA = A$. On note $X \in \lex{n-uplet}{K^n}$ la colonne des coordonnées de $x$ dans $\mathcal B$, et $Y$ celle de $y$.
+
+      Deux formes quadratiques, $q$ sur $E$ et $q'$ sur $E'$, sont **équivalentes** s'il existe un isomorphisme $u : E \to E'$ tel que $q'(u(x)) = q(x)$ pour tout $x \in E$. Deux matrices $A$ et $A'$ de $\mathcal M_n(K)$ sont [[matrices-congruentes|congruentes]] s'il existe une matrice inversible $P$ telle que
+      $$A' = {}^tP\,A\,P.$$
+    enonce: |
+      (i) *Polarisation.* Pour toute forme quadratique $q$, il existe une unique forme bilinéaire symétrique $b$ telle que $q(x) = b(x, x)$ pour tout $x$ : c'est la [[forme-polaire|forme polaire]] de $q$, donnée par
+      $$b(x, y) = \frac12\big(q(x + y) - q(x) - q(y)\big).$$
+      De plus, $q(\lambda x) = \lambda^2 q(x)$ pour tout $\lambda \in K$.
+
+      (ii) *Matrice.* Si $A$ est la matrice de la forme bilinéaire $b$ dans $\mathcal B$, alors $b(x, y) = {}^tX A Y$. L'application $b \mapsto A$ est une bijection de l'ensemble des formes bilinéaires sur $E$ sur $\mathcal M_n(K)$, et $b$ est symétrique si et seulement si $A$ l'est. Dans ce cas,
+      $$q(x) = \sum_i a_{ii} x_i^2 + 2\sum_{i < j} a_{ij} x_i x_j.$$
+      Réciproquement, pour tous scalaires $c_{ij}$, $i \leqslant j$, l'application $x \mapsto \sum_{i \leqslant j} c_{ij} x_i x_j$ est une forme quadratique, dont la forme polaire a pour matrice $a_{ii} = c_{ii}$ et $a_{ij} = a_{ji} = c_{ij}/2$ pour $i < j$.
+
+      (iii) *Changement de base.* Si $\mathcal B'$ est une autre base et $P = \operatorname{Mat}_{\mathcal B', \mathcal B}(\mathrm{id})$, la matrice de $b$ dans $\mathcal B'$ est ${}^tP A P$. Toute matrice inversible $P$ s'obtient ainsi, si bien que les matrices de $b$ dans les différentes bases de $E$ sont exactement les matrices congruentes à $A$.
+
+      (iv) Deux formes quadratiques sur des espaces de même dimension $n$ sont équivalentes si et seulement si les matrices de leurs formes polaires, dans des bases quelconques, sont congruentes.
+    preuve: |
+      (i) *Existence.* Si $q(x) = c(x, x)$ avec $c$ bilinéaire, la forme $b(x, y) = \frac12\big(c(x, y) + c(y, x)\big)$ est bilinéaire, symétrique, et $b(x, x) = c(x, x) = q(x)$.
+
+      *Unicité et formule.* Si $b$ est symétrique et $q(x) = b(x, x)$, la bilinéarité et la symétrie donnent
+      $$q(x + y) = q(x) + 2\,b(x, y) + q(y),$$
+      et l'on divise par $2$ : $b$ est déterminée par $q$. Enfin $q(\lambda x) = b(\lambda x, \lambda x) = \lambda^2 b(x, x)$.
+
+      (ii) Par bilinéarité, $b(x, y) = \sum_{i,j} x_i y_j\, b(e_i, e_j)$, qui est le produit ${}^tX A Y$. Une forme bilinéaire est donc déterminée par sa matrice ; inversement, pour toute matrice $A$, l'application $(x, y) \mapsto {}^tX A Y$ est bilinéaire, et sa matrice est $A$, puisque $X$ et $Y$ valent $\delta_i$ et $\delta_j$ en $e_i$ et $e_j$.
+
+      Si $b$ est symétrique, $a_{ij} = b(e_i, e_j) = b(e_j, e_i) = a_{ji}$. Si $A$ est symétrique, ${}^tX A Y = \sum_{i,j} a_{ij} x_i y_j = \sum_{i,j} a_{ji} y_j x_i = {}^tY A X$. La formule de $q$ s'obtient en séparant, dans $\sum_{i,j} a_{ij} x_i x_j$, les termes diagonaux et les paires $\{i, j\}$, qui apparaissent deux fois.
+
+      Pour la réciproque, la matrice $A$ décrite est symétrique, et la formule précédente redonne $\sum_{i \leqslant j} c_{ij} x_i x_j = {}^tX A X$ ; la division par $2$ est permise puisque $2$ est inversible.
+
+      (iii) Les colonnes de $P$ sont les coordonnées dans $\mathcal B$ des vecteurs $e'_j$ de $\mathcal B'$. Si $X'$ est la colonne des coordonnées de $x$ dans $\mathcal B'$, alors
+      $$x = \sum_j x'_j e'_j = \sum_j x'_j \sum_i p_{ij} e_i,$$
+      c'est-à-dire $X = PX'$, et de même $Y = PY'$.
+
+      La transposée d'un produit est le produit des transposées dans l'ordre inverse, comme on le voit sur les coefficients ; en particulier ${}^t(PX') = {}^tX'\,{}^tP$. Le produit étant associatif ({{v-matrices|Matrices}}, (iii)),
+      $$b(x, y) = {}^tX'\,\big({}^tP A P\big)\, Y',$$
+      et ${}^tP A P$ est la matrice de $b$ dans $\mathcal B'$ par l'unicité vue en (ii).
+
+      Inversement, si $P$ est inversible, l'application $X \mapsto PX$ est bijective ({{v-det-matrice|Déterminant d'une matrice}}, (ii)) ; elle envoie la base canonique sur les colonnes de $P$, qui forment donc une base de $K^n$. Les vecteurs de $E$ qui ont ces colonnes pour coordonnées forment une base $\mathcal B'$, et $P = \operatorname{Mat}_{\mathcal B', \mathcal B}(\mathrm{id})$.
+
+      (iv) Soient $q$ sur $E$ et $q'$ sur $E'$, de formes polaires $b$ et $b'$. Si $u$ est un isomorphisme tel que $q' \circ u = q$, alors $(x, y) \mapsto b'(u(x), u(y))$ est une forme bilinéaire symétrique de forme quadratique $q$ ; par l'unicité de (i), c'est $b$. Pour une base $\mathcal B$ de $E$, la matrice de $b'$ dans la base $u(\mathcal B)$ de $E'$ est donc celle de $b$ dans $\mathcal B$, et (iii) donne la congruence dans des bases quelconques.
+
+      Réciproquement, soient $A$ et $A'$ les matrices de $b$ et de $b'$ dans des bases $\mathcal B$ et $\mathcal C'$, avec $A' = {}^tPAP$. Par (iii), $A'$ est la matrice de $b$ dans une base $\mathcal B'$ de $E$. L'isomorphisme $u$ qui envoie $\mathcal B'$ sur $\mathcal C'$ vérifie $b'(u(e'_i), u(e'_j)) = a'_{ij} = b(e'_i, e'_j)$, donc $b'(u(x), u(y)) = b(x, y)$ par bilinéarité, et $q' \circ u = q$.
+    remarques:
+      - |
+        La première faute à éviter porte sur la matrice elle-même. La forme $q(x) = x_1^2 + 4x_1x_2 + x_2^2$ de $\mathbb R^2$ a pour matrice
+        $$A = \begin{pmatrix} 1 & 2 \\ 2 & 1 \end{pmatrix},$$
+        avec $2$ et non $4$ hors de la diagonale : le terme croisé se partage entre les places $(1, 2)$ et $(2, 1)$.
+
+        Dans la base $e'_1 = (1, 1)$, $e'_2 = (1, -1)$, on a $P = \begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix}$ et ${}^tPAP = \begin{pmatrix} 6 & 0 \\ 0 & -2 \end{pmatrix}$ : en effet, si $x_1 = s + t$ et $x_2 = s - t$, alors $q(x) = 6s^2 - 2t^2$.
+
+        La congruence n'est pas la similitude : la matrice $P^{-1}AP$ de l'endomorphisme $X \mapsto AX$ dans la même base est $\begin{pmatrix} 3 & 0 \\ 0 & -1 \end{pmatrix}$, de trace $2$ comme $A$ ({{v-trace|Trace}}, (iii)), alors que ${}^tPAP$ a pour trace $4$. Une forme bilinéaire et un endomorphisme ont tous deux une matrice, mais elles ne changent pas de la même façon avec la base.
+      - |
+        Tout repose sur la division par $2$, et c'est en caractéristique $2$ que tout casse. Sur le corps $\mathbb Z/2\mathbb Z$, où $1 + 1 = 0$, la forme quadratique $q(x) = x_1x_2$ de $K^2$, égale à $b(x, x)$ pour la forme non symétrique $b(x, y) = x_1y_2$, n'est $b(x, x)$ pour aucune forme symétrique.
+
+        En effet, une forme symétrique s'écrit $a\,x_1y_1 + c\,(x_1y_2 + x_2y_1) + d\,x_2y_2$, et sa forme quadratique vaut $a\,x_1^2 + d\,x_2^2$. Elle ne s'annule en $(1, 0)$ et en $(0, 1)$, comme $q$, que si $a = d = 0$ ; elle est alors nulle, alors que $q(1, 1) = 1$.
+
+        La polarisation ne rend pas davantage $q$ : $q(x + y) - q(x) - q(y) = x_1y_2 + x_2y_1$ est une forme symétrique nulle sur la diagonale. En caractéristique $2$, formes quadratiques et formes bilinéaires symétriques forment deux théories distinctes, et le chapitre l'écarte.
+
+  - id: fq-rang
+    etiquette: Rang, noyau
+    nature: proposition
+    titre: Rang, noyau et non-dégénérescence
+    texte: |
+      Soit $b$ une [[forme-bilineaire-symetrique|forme bilinéaire symétrique]] sur $E$, de [[forme-quadratique|forme quadratique]] $q$. L'application $\varphi_b : E \to \lex{espace-dual}{E^*}$, qui envoie $x$ sur la forme linéaire $b(x, \cdot)$, est linéaire.
+
+      Le **noyau** de $b$, ou de $q$, est
+      $$\begin{aligned} \operatorname{Ker} b = \{x \in E :{} &b(x, y) = 0 \\ &\text{pour tout } y\}, \end{aligned}$$
+      c'est-à-dire $\operatorname{Ker} \varphi_b$. Le **rang** de $b$, ou de $q$, est le [[rang]] de $\varphi_b$, noté $\operatorname{rg} b$. La forme $b$, ou $q$, est [[forme-non-degeneree|non dégénérée]] si son noyau est nul.
+
+      Le rang d'une matrice $A \in \lex{espace-matrices}{\mathcal M_{p,n}}(K)$ est celui de l'application linéaire $X \mapsto AX$ de $\lex{n-uplet}{K^n}$ dans $K^p$.
+    enonce: |
+      (i) Le rang d'une application linéaire $u : E \to F$ entre espaces de dimension finie est le rang de sa matrice dans des bases quelconques.
+
+      (ii) Si $A$ est la matrice de $b$ dans une base $\mathcal B$, la matrice de $\varphi_b$ dans $\mathcal B$ et dans la base duale $\mathcal B^*$ est $A$. Par suite $\operatorname{rg} b = \operatorname{rg} A$, et
+      $$\dim \operatorname{Ker} b = n - \operatorname{rg} b.$$
+
+      (iii) Deux matrices congruentes ont le même rang, et $\det({}^tPAP) = (\det P)^2 \det A$.
+
+      (iv) Les conditions suivantes sont équivalentes : $b$ est non dégénérée ; $\varphi_b$ est un isomorphisme ; $\operatorname{rg} b = n$ ; la matrice de $b$ dans une base, ou dans toutes, a un déterminant non nul.
+    preuve: |
+      (i) Soient $(e_j)$ et $(f_i)$ des bases de $E$ et de $F$, $A$ la matrice de $u$, et $\psi : E \to K^n$, $\chi : F \to K^p$ les isomorphismes qui associent à un vecteur ses coordonnées. Par linéarité,
+      $$u(x) = \sum_j x_j\, u(e_j) = \sum_i \Big(\sum_j a_{ij} x_j\Big) f_i,$$
+      c'est-à-dire $\chi(u(x)) = A\,\psi(x)$. L'image de $X \mapsto AX$ est donc $\chi(\operatorname{Im} u)$, de même dimension que $\operatorname{Im} u$, puisqu'un isomorphisme envoie une base sur une base.
+
+      (ii) Toute forme $\ell$ s'écrit $\sum_i \ell(e_i)\, e_i^*$ ({{v-dual|Dualité}}, (i)). Les coordonnées de $\varphi_b(e_j)$ dans $\mathcal B^*$ sont donc les $b(e_j, e_i) = a_{ij}$, et la $j$-ième colonne de la matrice de $\varphi_b$ est celle de $A$. Le point (i) donne $\operatorname{rg} b = \operatorname{rg} A$, et le théorème du rang ({{v-rang|Théorème du rang}}) la formule de dimension.
+
+      (iii) Si $A' = {}^tPAP$ avec $P$ inversible, $A$ et $A'$ sont les matrices d'une même forme $b$ dans deux bases ({{fq-formes|Formes quadratiques}}, (iii)), et (ii) donne $\operatorname{rg} A = \operatorname{rg} b = \operatorname{rg} A'$. La formule des déterminants vient de la multiplicativité et de l'invariance par transposition ({{v-det-matrice|Déterminant d'une matrice}}, (ii) et (iii)).
+
+      (iv) La forme $b$ est non dégénérée si et seulement si $\varphi_b$ est injective. Comme $\dim E^* = \dim E$ ({{v-dual|Dualité}}, (i)), c'est le cas si et seulement si $\varphi_b$ est bijective, et si et seulement si son rang est $n$ ({{v-rang|Théorème du rang}}). Par (i), cela équivaut à la bijectivité de $X \mapsto AX$, c'est-à-dire à $\det A \neq 0$ ({{v-det-matrice|Déterminant d'une matrice}}, (ii)), dans n'importe quelle base.
+    remarques:
+      - |
+        Une forme quadratique ne voit pas son noyau. Si $k \in \operatorname{Ker} b$, alors
+        $$q(x + k) = q(x) + 2\,b(x, k) + q(k) = q(x),$$
+        puisque $b(x, k) = 0$ et $q(k) = b(k, k) = 0$. Ainsi $q(x) = (x_1 + x_2)^2$ sur $K^2$, de matrice $\begin{pmatrix} 1 & 1 \\ 1 & 1 \end{pmatrix}$, est de rang $1$, de noyau la droite engendrée par $(1, -1)$, et elle est constante sur chaque parallèle à cette droite : c'est en réalité une forme sur la droite quotient.
+      - |
+        Le déterminant de la matrice n'est pas un invariant de la forme : par (iii), il est multiplié par le carré $(\det P)^2$ quand on change de base. Seule sa classe modulo les carrés non nuls en est un. Sur $\mathbb R$, c'est son signe, qui sera relié à la signature au nœud {{fq-signature|Classification réelle}}.
+      - |
+        Une forme non dégénérée peut avoir une restriction dégénérée à un sous-espace. La forme $x_1^2 - x_2^2$ de $\mathbb R^2$ est non dégénérée, de matrice $\begin{pmatrix} 1 & 0 \\ 0 & -1 \end{pmatrix}$, mais sa restriction à la droite engendrée par $(1, 1)$ est nulle. C'est l'objet du nœud suivant.
+
+  - id: fq-orthogonalite
+    etiquette: Orthogonalité
+    nature: théorème
+    titre: Orthogonalité relative à une forme bilinéaire symétrique
+    texte: |
+      Soit $b$ une forme bilinéaire symétrique sur $E$, de forme quadratique $q$. Deux vecteurs $x$ et $y$ sont **orthogonaux** pour $b$ si $b(x, y) = 0$. L'**orthogonal** d'une partie $A$ de $E$ est le sous-espace
+      $$\begin{aligned} A^\perp = \{x \in E :{} &b(x, a) = 0 \\ &\text{pour tout } a \in A\} ; \end{aligned}$$
+      on note $x^\perp$ pour $\{x\}^\perp$.
+
+      Un [[vecteur-isotrope|vecteur isotrope]] est un vecteur $x \neq 0$ tel que $q(x) = 0$ ; avec $0$, ils forment le **cône isotrope** $\{x : q(x) = 0\}$. La **restriction** de $b$ à un sous-espace $F$ est la forme $b_F$ induite sur $F \times F$.
+    enonce: |
+      (i) Pour tout sous-espace $F$, $\dim F^\perp \geqslant n - \dim F$. De plus $F \cap F^\perp$ est le noyau de $b_F$, et $\operatorname{Ker} b = E^\perp$ est contenu dans $F^\perp$.
+
+      (ii) Si $b$ est non dégénérée, alors $\dim F^\perp = n - \dim F$ et $(F^\perp)^\perp = F$ pour tout sous-espace $F$.
+
+      (iii) On a $E = F \oplus F^\perp$ si et seulement si $b_F$ est non dégénérée. En particulier, si $q(x) \neq 0$, alors $E = Kx \oplus x^\perp$, et $\dim x^\perp = n - 1$.
+    preuve: |
+      (i) Soit $\rho : E \to F^*$ l'application linéaire qui envoie $x$ sur la restriction à $F$ de la forme $b(x, \cdot)$. Son noyau est $F^\perp$, et son image est contenue dans $F^*$, de dimension $\dim F$ ({{v-dual|Dualité}}, (i)). Le théorème du rang ({{v-rang|Théorème du rang}}) donne
+      $$\dim F^\perp = n - \operatorname{rg} \rho \geqslant n - \dim F.$$
+
+      Un vecteur de $F \cap F^\perp$ est un $x \in F$ tel que $b(x, y) = 0$ pour tout $y \in F$ : c'est la définition du noyau de $b_F$. Enfin $E^\perp = \operatorname{Ker} b$ par définition, et un vecteur orthogonal à tout $E$ l'est à $F$.
+
+      (ii) Montrons que $\rho$ est surjective. Soit $\psi \in F^*$ et $(f_1, \dots, f_k)$ une base de $F$, complétée en une base de $E$ ({{v-dimension|Dimension}}, (iii)). La forme $\Psi \in E^*$ qui prolonge $\psi$ et s'annule sur les vecteurs ajoutés existe par la propriété universelle des bases ({{v-libre|Familles libres, bases}}).
+
+      Comme $b$ est non dégénérée, $\varphi_b$ est un isomorphisme ({{fq-rang|Rang, noyau}}, (iv)), et $\Psi = b(x, \cdot)$ pour un $x \in E$ ; alors $\rho(x) = \psi$. Le rang de $\rho$ est donc $\dim F$, et $\dim F^\perp = n - \dim F$.
+
+      Par symétrie de $b$, tout vecteur de $F$ est orthogonal à $F^\perp$, donc $F \subset (F^\perp)^\perp$. Ce dernier est de dimension $n - (n - \dim F) = \dim F$, et l'inclusion est une égalité ({{v-dimension|Dimension}}, (iii)).
+
+      (iii) Si $b_F$ est non dégénérée, $F \cap F^\perp = \{0\}$ par (i), et la somme $F + F^\perp$ est directe ({{v-somme-directe|Sommes directes}}, (i)). Par la formule de Grassmann ({{v-rang|Théorème du rang}}) et par (i), elle est de dimension $\dim F + \dim F^\perp \geqslant n$ : c'est $E$.
+
+      Réciproquement, si $E = F \oplus F^\perp$, l'intersection $F \cap F^\perp$, qui est le noyau de $b_F$, est nulle. Pour $F = Kx$ avec $x \neq 0$, la matrice de $b_F$ dans la base $(x)$ est $\big(q(x)\big)$, non dégénérée si et seulement si $q(x) \neq 0$ ({{fq-rang|Rang, noyau}}, (iv)). La dimension de $x^\perp$ vient alors de la formule de Grassmann.
+    remarques:
+      - |
+        L'erreur la plus répandue, avec les formes quadratiques, est de croire qu'un sous-espace et son orthogonal sont toujours supplémentaires, comme pour un produit scalaire. Pour la forme non dégénérée $q(x) = x_1^2 - x_2^2$ de $\mathbb R^2$, de forme polaire $b(x, y) = x_1y_1 - x_2y_2$, le vecteur $u = (1, 1)$ est isotrope, et l'orthogonal de la droite $\mathbb Ru$ est cette droite elle-même.
+
+        ```schema fq-orthogonalite
+        Le cône isotrope de $x_1^2 - x_2^2$ est formé des deux diagonales, en rouge. L'orthogonal du vecteur $v = (2, 1)$, non isotrope, est la droite bleue en pointillé dirigée par $(1, 2)$, symétrique de $\mathbb R v$ par rapport à la diagonale ; elle est supplémentaire de $\mathbb Rv$. Le vecteur isotrope $u = (1, 1)$ est orthogonal à lui-même : la droite $\mathbb Ru$ est son propre orthogonal.
+        ```
+
+        La formule de dimension de (ii) reste vraie, $1 + 1 = 2$, mais $F \cap F^\perp = F$ : c'est la condition de (iii) qui fait défaut, la restriction de $q$ à $F$ étant nulle.
+      - |
+        Sans non-dégénérescence, le point (ii) tombe. Pour $q(x) = x_1^2$ sur $K^2$ et $F = K e_1$, on trouve $F^\perp = K e_2$, puis $(F^\perp)^\perp = E$, qui contient strictement $F$ : le noyau $K e_2$ est orthogonal à tout.
+      - |
+        Pour un produit scalaire réel, aucun vecteur n'est isotrope ; la restriction à tout sous-espace $F$ est encore non dégénérée, et (iii) donne $E = F \oplus F^\perp$ pour tout $F$. C'est, en dimension finie et sans suite minimisante, la décomposition orthogonale que le théorème de projection établit dans les espaces de Hilbert ({{f-hilbert|Espaces de Hilbert}}, (iii)).
+
+  - id: fq-bases-orthogonales
+    etiquette: Bases orthogonales
+    nature: théorème
+    titre: Existence de bases orthogonales
+    texte: |
+      Une base $(e_1, \dots, e_n)$ de $E$ est [[base-orthogonale|orthogonale]] pour la forme bilinéaire symétrique $b$ si $b(e_i, e_j) = 0$ pour $i \neq j$, c'est-à-dire si la matrice de $b$ dans cette base est diagonale.
+    enonce: |
+      (i) Toute forme bilinéaire symétrique sur $E$ admet une base orthogonale. De façon équivalente, toute matrice symétrique de $\lex{espace-matrices}{\mathcal M_n}(K)$ est [[matrices-congruentes|congruente]] à une matrice diagonale.
+
+      (ii) Si $(e_i)$ est une base orthogonale et $d_i = q(e_i)$, alors, en notant $(e_i^*)$ la base duale,
+      $$q(x) = \sum_i d_i x_i^2 = \sum_i d_i\, e_i^*(x)^2.$$
+      Le rang de $q$ est le nombre des $d_i$ non nuls, et les $e_i$ tels que $d_i = 0$ forment une base de $\operatorname{Ker} b$.
+
+      (iii) Réciproquement, si $q = \sum_{k=1}^r d_k \ell_k^2$, où $\ell_1, \dots, \ell_r$ sont des formes linéaires linéairement indépendantes et les $d_k$ des scalaires non nuls, il existe une base orthogonale $(e_1, \dots, e_n)$ telle que $\ell_k = e_k^*$ pour $k \leqslant r$, $q(e_k) = d_k$ pour $k \leqslant r$ et $q(e_k) = 0$ pour $k > r$. En particulier $\operatorname{rg} q = r$.
+    preuve: |
+      (i) Par récurrence sur $n$, l'énoncé portant sur tous les espaces de dimension $n$ et toutes les formes. Si $n = 0$, la base vide convient ; si $n = 1$, toute base convient.
+
+      Soit $n \geqslant 2$. Si $q$ est nulle, $b$ l'est aussi par la polarisation ({{fq-formes|Formes quadratiques}}, (i)), et toute base est orthogonale. Sinon, il existe $x$ tel que $q(x) \neq 0$, et
+      $$E = Kx \oplus x^\perp,$$
+      avec $\dim x^\perp = n - 1$ ({{fq-orthogonalite|Orthogonalité}}, (iii)).
+
+      L'hypothèse de récurrence, appliquée à la restriction de $b$ à $x^\perp$, fournit une base $(e_2, \dots, e_n)$ de $x^\perp$ orthogonale pour $b$. Avec $e_1 = x$, la famille $(e_1, \dots, e_n)$ engendre $E$ et a $n$ éléments : c'est une base ({{v-dimension|Dimension}}, (ii)), orthogonale puisque $e_2, \dots, e_n \in x^\perp$.
+
+      La forme matricielle vient de ce que les matrices de $b$ dans les différentes bases sont les matrices congruentes à l'une d'elles ({{fq-formes|Formes quadratiques}}, (iii)).
+
+      (ii) Par bilinéarité, $q(x) = \sum_{i,j} x_i x_j\, b(e_i, e_j) = \sum_i d_i x_i^2$, et $x_i = e_i^*(x)$. La matrice de $b$ est la matrice diagonale $D$ de coefficients $d_i$ ; l'image de $X \mapsto DX$ est engendrée par les $d_i\delta_i$ non nuls, qui sont libres, et son rang est leur nombre ({{fq-rang|Rang, noyau}}, (ii)).
+
+      Le vecteur $x$ est dans le noyau si et seulement si $\varphi_b(x) = 0$, c'est-à-dire, par le point (ii) du même nœud, si $DX = 0$ : si et seulement si $x_i = 0$ pour tout $i$ tel que $d_i \neq 0$.
+
+      (iii) Complétons $(\ell_1, \dots, \ell_r)$ en une base $(\ell_1, \dots, \ell_n)$ de $E^*$, qui est de dimension $n$ ({{v-dual|Dualité}}, (i) ; {{v-dimension|Dimension}}, (iii)). L'application $L : E \to K^n$, $x \mapsto (\ell_1(x), \dots, \ell_n(x))$, est linéaire.
+
+      Elle est injective : si $L(x) = 0$, toute forme linéaire, combinaison des $\ell_i$, s'annule en $x$, et $x = 0$ par l'injectivité de $E \to E^{**}$ ({{v-dual|Dualité}}, (ii)). Elle est donc bijective ({{v-rang|Théorème du rang}}). Posons $e_j = L^{-1}(\delta_j)$ : c'est une base, et $\ell_i(e_j)$ vaut $1$ si $i = j$, $0$ sinon.
+
+      Ainsi $\ell_i = e_i^*$ et $x = \sum_j \ell_j(x)\, e_j$, puisque les deux membres ont même image par $L$. Dans cette base, $q(x) = \sum_{k \leqslant r} d_k x_k^2$, et la polarisation donne $b(x, y) = \sum_{k \leqslant r} d_k x_k y_k$ : la matrice est diagonale, de coefficients $d_1, \dots, d_r, 0, \dots, 0$, et (ii) s'applique.
+    remarques:
+      - |
+        Une base orthogonale est loin d'être unique, et les coefficients diagonaux non plus. Pour $q(x) = x_1^2 + 4x_1x_2 + x_2^2$, la base $(1, 1)$, $(1, -1)$ donne les coefficients $6$ et $-2$ ({{fq-formes|Formes quadratiques}}) ; la base $e_1 = (1, 0)$, $e_2 = (-2, 1)$ est aussi orthogonale, puisque $b(e_1, e_2) = -2 + 2 = 0$, et donne $q(e_1) = 1$ et $q(e_2) = 4 - 8 + 1 = -3$, soit
+        $$q(x) = (x_1 + 2x_2)^2 - 3x_2^2.$$
+        Les coefficients changent ; leurs signes, un positif et un négatif, se conservent, ce que la loi d'inertie établira.
+
+        ```schema fq-bases-orthogonales
+        Les hyperboles $q = 1$ et $q = -3$ sont tracées en trait plein et en pointillé. La base orthogonale $e_1 = (1, 0)$, $e_2 = (-2, 1)$, en bleu, a $e_1$ sur la première et $e_2$ sur la seconde ; $e_2$ est parallèle à la tangente à $q = 1$ en $e_1$, en gris : être orthogonal pour $b$, c'est être dans la direction conjuguée. La base orthonormée de vecteurs propres, en rouge, est portée par les axes des hyperboles.
+        ```
+      - |
+        Sur $\mathbb R$, muni d'un produit scalaire, le théorème spectral fournit une base orthogonale pour $q$ qui est de plus orthonormée pour le produit scalaire, et les coefficients diagonaux sont alors les valeurs propres ({{f-spectral-fini|Théorème spectral}}, (ii)). Il demande davantage : un produit scalaire, et l'existence d'une valeur propre, obtenue par compacité. L'existence d'une base orthogonale seule est purement algébrique et vaut sur tout corps où $2$ est inversible.
+      - |
+        En caractéristique $2$, le point (i) est faux. Sur $\mathbb Z/2\mathbb Z$, la forme $b(x, y) = x_1y_2 + x_2y_1$ est symétrique et non nulle, mais $b(x, x) = 2x_1x_2 = 0$ pour tout $x$ : dans une base orthogonale, la matrice serait diagonale de coefficients $b(e_i, e_i) = 0$, donc nulle.
+
+  - id: fq-gauss
+    etiquette: Réduction de Gauss
+    nature: théorème
+    titre: Réduction de Gauss en somme de carrés
+    texte: |
+      On identifie $E$ à $\lex{n-uplet}{K^n}$ par une base, et l'on écrit la forme quadratique comme un polynôme homogène de degré $2$, $q(x) = \sum_{i \leqslant j} c_{ij} x_i x_j$ ({{fq-formes|Formes quadratiques}}, (ii)). La [[reduction-gauss|réduction de Gauss]] est l'algorithme suivant.
+
+      *Premier cas : un terme carré.* Si l'un des $c_{ii}$ n'est pas nul, on renumérote les variables pour que $a = c_{11} \neq 0$. On regroupe les termes qui contiennent $x_1$ : $q = a x_1^2 + x_1 L(x') + q'(x')$, où $x' = (x_2, \dots, x_n)$, $L$ est une forme linéaire et $q'$ une forme quadratique en $x'$. Alors
+      $$q = a\Big(x_1 + \frac{L(x')}{2a}\Big)^2 + q_1(x'),$$
+      avec $q_1 = q' - L^2/(4a)$, et l'on recommence avec $q_1$, qui ne dépend plus que de $n - 1$ variables.
+
+      *Second cas : aucun terme carré.* Si tous les $c_{ii}$ sont nuls mais que $q$ ne l'est pas, on renumérote pour que $c = c_{12} \neq 0$, et l'on écrit $q = c\,x_1x_2 + x_1 L_1(x'') + x_2 L_2(x'') + q''(x'')$, où $x'' = (x_3, \dots, x_n)$. Alors
+      $$q = c\,uv + q_2(x''),$$
+      avec $u = x_1 + L_2/c$, $v = x_2 + L_1/c$ et $q_2 = q'' - L_1L_2/c$. Enfin
+      $$c\,uv = \frac c4 (u + v)^2 - \frac c4 (u - v)^2,$$
+      et l'on recommence avec $q_2$, qui ne dépend plus que de $n - 2$ variables.
+
+      *Arrêt.* On s'arrête quand la forme qui reste est nulle, en particulier quand il ne reste aucune variable.
+    enonce: |
+      L'algorithme s'arrête après au plus $n$ étapes, et il écrit
+      $$q = \sum_{k=1}^r d_k\, \ell_k^2,$$
+      où les $d_k$ sont des scalaires non nuls et les $\ell_k$ des formes linéaires linéairement indépendantes. Par suite $r = \operatorname{rg} q$. Il existe des bases $(e_i)$ de $E$ telles que $e_k^* = \ell_k$ pour $k \leqslant r$, et toute base de cette sorte est orthogonale pour $q$.
+    preuve: |
+      *Les identités.* Dans le premier cas, en développant,
+      $$a\Big(x_1 + \frac{L}{2a}\Big)^2 = a x_1^2 + x_1 L + \frac{L^2}{4a}.$$
+      Dans le second, $c\,(x_1 + L_2/c)(x_2 + L_1/c) = c\,x_1x_2 + x_1L_1 + x_2L_2 + L_1L_2/c$, et $(u + v)^2 - (u - v)^2 = 4uv$. La division par $2$ et par $4$ est permise, $2$ étant inversible.
+
+      *Arrêt.* Chaque étape fait disparaître une ou deux variables, et elle produit un ou deux carrés de coefficients $a$, ou $c/4$ et $-c/4$, qui ne sont pas nuls.
+
+      *Indépendance.* Par récurrence sur $n$. Dans le premier cas, la forme $\ell_1 = x_1 + L(x')/(2a)$ vaut $1$ en $\delta_1$, tandis que les formes produites ensuite ne dépendent que de $x'$ et s'annulent en $\delta_1$. Si $\lambda_1 \ell_1 + \sum_{k \geqslant 2} \lambda_k \ell_k = 0$, l'évaluation en $\delta_1$ donne $\lambda_1 = 0$, et l'hypothèse de récurrence, appliquée aux formes en $x'$, donne les autres $\lambda_k$ nuls.
+
+      Dans le second cas, $\ell_1 = u + v$ et $\ell_2 = u - v$ valent $1$ et $1$ en $\delta_1$, $1$ et $-1$ en $\delta_2$, et les formes suivantes s'annulent en $\delta_1$ et $\delta_2$. Une relation $\lambda_1 \ell_1 + \lambda_2 \ell_2 + \sum_{k \geqslant 3} \lambda_k \ell_k = 0$ donne, en ces deux points, $\lambda_1 + \lambda_2 = 0$ et $\lambda_1 - \lambda_2 = 0$, d'où $2\lambda_1 = 0$, puis $\lambda_1 = \lambda_2 = 0$ ; on conclut comme dans le premier cas.
+
+      *Conséquences.* Le rang et l'existence d'une telle base sont le point (iii) du nœud {{fq-bases-orthogonales|Bases orthogonales}}. Si $(e_i)$ est une base quelconque telle que $e_k^* = \ell_k$ pour $k \leqslant r$, les coordonnées de $x$ y sont les $e_i^*(x)$, et $q(x) = \sum_{k \leqslant r} d_k x_k^2$ ; la polarisation donne $b(x, y) = \sum_{k \leqslant r} d_k x_k y_k$ ({{fq-formes|Formes quadratiques}}, (i)), dont la matrice est diagonale : la base est orthogonale.
+    remarques:
+      - |
+        Pour la forme de $\mathbb R^4$, en les variables $x, y, z, t$,
+        $$\begin{aligned} q &= x^2 + y^2 + z^2 + 2xy \\ &\quad + 2xz + 4yz + 4yt, \end{aligned}$$
+        le premier cas s'applique à $x$ : $x^2 + 2x(y + z) = (x + y + z)^2 - (y + z)^2$, et il reste $2yz + 4yt$, qui n'a plus de terme carré.
+
+        Le second cas s'applique alors à $y$ et $z$, avec $c = 2$, $L_1 = 4t$, $L_2 = 0$ et $q'' = 0$ : $2yz + 4yt = 2y(z + 2t)$, avec $u = y$ et $v = z + 2t$. On obtient
+        $$\begin{aligned} q &= (x + y + z)^2 + \tfrac12 (y + z + 2t)^2 \\ &\quad - \tfrac12 (y - z - 2t)^2. \end{aligned}$$
+
+        Les trois formes sont indépendantes : $q$ est de rang $3$, et son noyau, intersection de leurs noyaux, est la droite engendrée par $(2, 0, -2, 1)$. Le calcul a été vérifié en développant ; deux carrés sont affectés d'un coefficient positif et un d'un coefficient négatif, ce que le nœud {{fq-sylvester|Loi d'inertie}} interprétera.
+      - |
+        Un piège fréquent consiste à écrire $q$ comme une somme de carrés de formes qui ne sont pas indépendantes, puis à en tirer des conclusions. L'identité $2xy = (x + y)^2 - x^2 - y^2$ est juste, mais elle fait apparaître un carré positif et deux négatifs, alors que la réduction de Gauss donne $2xy = \frac12(x + y)^2 - \frac12(x - y)^2$, un de chaque signe.
+
+        Les formes $x + y$, $x$ et $y$ sont liées, et la première écriture ne dit rien du rang ni des signes : seule une décomposition en formes indépendantes donne une base orthogonale.
+      - |
+        La réduction n'emploie que des opérations rationnelles sur les coefficients : sur $\mathbb Q$, elle reste dans $\mathbb Q$. Les coefficients $d_k$ ne sont pas des valeurs propres, que le théorème spectral obtient au prix d'une compacité ({{f-spectral-fini|Théorème spectral}}).
+
+        L'Encyclopaedia of Mathematics (article « Lagrange method ») attribue cette méthode de réduction à une somme de carrés à Lagrange, en 1759, sans citer d'ouvrage. Le mémoire que Lagrange publie cette année-là sur les extremums est « Recherches sur la méthode de maximis et minimis » (*Miscellanea Taurinensia*, t. 1, 1759 ; *Œuvres*, t. I, p. 3-20). C'est le nom de Gauss qui est resté à la méthode dans l'enseignement français.
+
+  - id: fq-carres
+    etiquette: Rang, invariant complet
+    nature: théorème
+    titre: Classification quand tout élément est un carré
+    enonce: |
+      On suppose que tout élément de $K$ est un carré.
+
+      (i) Toute forme quadratique de rang $r$ sur $E$ s'écrit, dans une base convenable,
+      $$q(x) = x_1^2 + \cdots + x_r^2.$$
+
+      (ii) Deux formes quadratiques sur des espaces de même dimension sont équivalentes si et seulement si elles ont le même rang. Toute matrice symétrique de rang $r$ est congruente à la matrice diagonale dont les $r$ premiers coefficients valent $1$ et les autres $0$.
+    preuve: |
+      (i) Soit $(e_i)$ une base orthogonale ({{fq-bases-orthogonales|Bases orthogonales}}, (i)), numérotée pour que $d_i = q(e_i)$ soit non nul exactement pour $i \leqslant r$ ; ce nombre est le rang, par le point (ii) du même nœud. Pour $i \leqslant r$, écrivons $d_i = c_i^2$, avec $c_i \neq 0$, et posons $e'_i = e_i/c_i$, puis $e'_i = e_i$ pour $i > r$.
+
+      La base $(e'_i)$ est encore orthogonale, et $q(e'_i) = d_i/c_i^2 = 1$ pour $i \leqslant r$ ({{fq-formes|Formes quadratiques}}, (i)). Par le point (ii) de {{fq-bases-orthogonales|Bases orthogonales}}, $q(x) = x_1^2 + \cdots + x_r^2$.
+
+      (ii) Deux formes équivalentes ont des matrices congruentes ({{fq-formes|Formes quadratiques}}, (iv)), donc le même rang ({{fq-rang|Rang, noyau}}, (iii)). Réciproquement, par (i), deux formes de rang $r$ sur des espaces de dimension $n$ ont, dans des bases convenables, la même matrice diagonale, et elles sont équivalentes ({{fq-formes|Formes quadratiques}}, (iv)), $I_n$ convenant pour $P$.
+    remarques:
+      - |
+        Le corps des nombres complexes vérifie l'hypothèse, puisque tout complexe a une racine carrée ({{c-racines-carrees|Racines carrées}}) : sur $\mathbb C$, le rang est le seul invariant des formes quadratiques. Le corps $\mathbb C$ n'est pas un ancêtre de ce chapitre, et c'est la seule raison pour laquelle l'énoncé est formulé sans lui.
+      - |
+        Sur $\mathbb R$, l'énoncé est faux : les formes $x_1^2$ et $-x_1^2$ de $\mathbb R$ sont de rang $1$, mais la première ne prend que des valeurs positives et la seconde que des valeurs négatives, si bien qu'aucun isomorphisme ne les échange. Le rang ne suffit plus ; il faut lui adjoindre la signature, au nœud {{fq-sylvester|Loi d'inertie}}.
+      - |
+        Sur un corps fini $\mathbb F_p$, $p$ premier impair, la moitié seulement des éléments non nuls sont des carrés. On montre alors, ce qui n'est pas fait ici, que deux formes non dégénérées de même dimension sont équivalentes si et seulement si les déterminants de leurs matrices diffèrent d'un facteur carré.
+
+        Sur $\mathbb Z/3\mathbb Z$, par exemple, $x_1^2 + x_2^2$ et $x_1^2 - x_2^2$ ont pour déterminants $1$ et $-1$, et $-1$ n'est pas un carré modulo $3$. Elles ne sont pas équivalentes : la seconde a le vecteur isotrope $(1, 1)$, alors que $x_1^2 + x_2^2$ ne s'annule qu'en $0$, les carrés modulo $3$ étant $0$ et $1$.
+
+  - id: fq-sylvester
+    etiquette: Loi d'inertie
+    nature: théorème
+    titre: Loi d'inertie de Sylvester
+    texte: |
+      Dans ce nœud et, sauf mention contraire, dans les suivants, $K = \lex{ensemble-reels}{\mathbb R}$. Une forme quadratique $q$ sur $E$ est **définie positive sur** un sous-espace $F$ si $q(x) > 0$ pour tout $x \in F$ non nul, et **définie négative sur** $F$ si $q(x) < 0$ pour tout $x \in F$ non nul.
+    enonce: |
+      Soit $q$ une forme quadratique sur un espace réel $E$ de dimension $n$, et $(e_1, \dots, e_n)$ une [[base-orthogonale|base orthogonale]].
+
+      (i) Le nombre $s_+$ des indices $i$ tels que $q(e_i) > 0$ est la plus grande dimension d'un sous-espace sur lequel $q$ est définie positive. Le nombre $s_-$ des indices tels que $q(e_i) < 0$ est la plus grande dimension d'un sous-espace sur lequel $q$ est définie négative. En particulier, $s_+$ et $s_-$ ne dépendent pas de la base orthogonale.
+
+      (ii) On a $s_+ + s_- = \operatorname{rg} q$. Le couple $(s_+, s_-)$ est la [[signature-forme-quadratique|signature]] de $q$.
+
+      (iii) Si $q = \sum_{k=1}^r d_k \ell_k^2$, avec des formes linéaires $\ell_k$ indépendantes et des réels $d_k$ non nuls, par exemple au terme de la réduction de Gauss, alors $s_+$ est le nombre des $d_k$ positifs et $s_-$ celui des $d_k$ négatifs.
+    preuve: |
+      (i) Notons $d_i = q(e_i)$, $F_+$ le sous-espace engendré par les $e_i$ tels que $d_i > 0$, et $G$ celui qu'engendrent les autres. Pour $x = \sum_i x_i e_i$, on a $q(x) = \sum_i d_i x_i^2$ ({{fq-bases-orthogonales|Bases orthogonales}}, (ii)).
+
+      Si $x \in F_+$ n'est pas nul, cette somme ne porte que sur des $d_i > 0$ et l'un des $x_i$ au moins n'est pas nul : $q(x) > 0$. Ainsi $q$ est définie positive sur $F_+$, de dimension $s_+$. Si $x \in G$, la somme ne porte que sur des $d_i \leqslant 0$, et $q(x) \leqslant 0$.
+
+      Soit $F$ un sous-espace sur lequel $q$ est définie positive. Un vecteur non nul de $F \cap G$ vérifierait $q(x) > 0$ et $q(x) \leqslant 0$ : donc $F \cap G = \{0\}$. Par la formule de Grassmann ({{v-rang|Théorème du rang}}),
+      $$\dim F + \dim G = \dim(F + G) \leqslant n,$$
+      et $\dim F \leqslant n - (n - s_+) = s_+$.
+
+      Le nombre $s_+$ est donc la plus grande dimension cherchée, qui ne fait intervenir aucune base. Pour $s_-$, on applique ce qui précède à $-q$, qui a les mêmes bases orthogonales, et pour laquelle $-q(e_i) > 0$ équivaut à $q(e_i) < 0$.
+
+      (ii) Le rang est le nombre des $d_i$ non nuls ({{fq-bases-orthogonales|Bases orthogonales}}, (ii)).
+
+      (iii) Par le point (iii) du même nœud, il existe une base orthogonale telle que $q(e_k) = d_k$ pour $k \leqslant r$ et $q(e_k) = 0$ pour $k > r$, et l'on applique (i).
+    remarques:
+      - |
+        Seuls les signes sont invariants, non les valeurs : les bases orthogonales du nœud {{fq-bases-orthogonales|Bases orthogonales}} donnent, pour $x_1^2 + 4x_1x_2 + x_2^2$, les coefficients $(6, -2)$ et $(1, -3)$, et la signature $(1, 1)$ dans les deux cas. Pour la forme de $\mathbb R^4$ réduite au nœud {{fq-gauss|Réduction de Gauss}}, la signature est $(2, 1)$ ; un calcul numérique des valeurs propres de sa matrice donne en effet deux valeurs positives, une négative et $0$.
+
+        C'est la réduction en base orthonormée du théorème spectral ({{f-spectral-fini|Théorème spectral}}, (ii)) qui le garantit : une base orthonormée de vecteurs propres est orthogonale pour $q$, avec $q(e_i) = \lambda_i$. Ainsi $s_+$ et $s_-$ sont les nombres de valeurs propres strictement positives et strictement négatives d'une matrice symétrique réelle, comptées avec multiplicité.
+      - |
+        Sylvester énonce le théorème en 1852, sans le démontrer (« this is easily proved »), dans « A demonstration of the theorem that every homogeneous quadratic polynomial is reducible by real orthogonal substitutions to the form of a sum of positive and negative squares » (*Philosophical Magazine*, 4ᵉ série, vol. 4, n° 23, 1852, p. 138-142) ; il lui donne dès cet article le nom de « Law of Inertia for Quadratic Forms ». La démonstration paraît en 1853, dans les *Philosophical Transactions* (vol. 143), où il écrit l'avoir « enunciated before » et en publier « for the first time » la preuve. Jacobi l'avait démontré de son côté ; sa preuve, restée inédite, ne parut qu'en 1857, après sa mort (É. Ghys et A. Ranicki, *Signatures in algebra, topology and dynamics*, 2016, qui rapportent aussi la part d'Hermite).
+      - |
+        L'argument de dimension de (i) est celui qu'on retrouve dans les caractérisations « min-max » des valeurs propres : on compare un sous-espace où $q$ est positive à un sous-espace où elle ne l'est pas, et la formule de Grassmann les force à se couper.
+
+  - id: fq-signature
+    etiquette: Classification réelle
+    nature: théorème
+    titre: Classification des formes quadratiques réelles
+    enonce: |
+      (i) Une forme quadratique réelle de [[signature-forme-quadratique|signature]] $(s_+, s_-)$ s'écrit, dans une base convenable, avec $r = s_+ + s_-$,
+      $$\begin{aligned} q(x) &= x_1^2 + \cdots + x_{s_+}^2 \\ &\quad - x_{s_+ + 1}^2 - \cdots - x_r^2. \end{aligned}$$
+
+      (ii) Deux formes quadratiques réelles sur des espaces de même dimension $n$ sont équivalentes si et seulement si elles ont la même signature. Il y a ainsi $(n + 1)(n + 2)/2$ classes de formes quadratiques sur $\lex{n-uplet}{\mathbb R^n}$.
+
+      (iii) Si $q$ est non dégénérée, le déterminant de sa matrice dans n'importe quelle base est du signe de $(-1)^{s_-}$.
+    preuve: |
+      (i) Soit $(e_i)$ une base orthogonale ({{fq-bases-orthogonales|Bases orthogonales}}, (i)), numérotée pour que $d_i = q(e_i)$ soit strictement positif pour $i \leqslant s_+$, strictement négatif pour $s_+ < i \leqslant r$ et nul ensuite ({{fq-sylvester|Loi d'inertie}}). Posons $e'_i = e_i/\sqrt{|d_i|}$ pour $i \leqslant r$, la racine carrée existant par le nœud {{me-espace|Espaces métriques}}, (i), et $e'_i = e_i$ pour $i > r$.
+
+      La base $(e'_i)$ est orthogonale, et $q(e'_i) = d_i/|d_i|$ vaut $1$ ou $-1$ selon le signe de $d_i$. Le point (ii) de {{fq-bases-orthogonales|Bases orthogonales}} donne la formule.
+
+      (ii) Si $u$ est un isomorphisme tel que $q' \circ u = q$, il envoie tout sous-espace sur lequel $q$ est définie positive sur un sous-espace de même dimension sur lequel $q'$ est définie positive, et $u^{-1}$ fait de même en sens inverse. Les plus grandes dimensions sont donc égales, de même pour les sous-espaces où les formes sont définies négatives, et la loi d'inertie ({{fq-sylvester|Loi d'inertie}}, (i)) donne l'égalité des signatures.
+
+      Réciproquement, deux formes de même signature ont, par (i), la même matrice dans des bases convenables, et sont équivalentes ({{fq-formes|Formes quadratiques}}, (iv)). Les signatures possibles sont les couples d'entiers positifs de somme $r \leqslant n$, et chacun est atteint : la forme $x_1^2 + \cdots + x_{s_+}^2 - x_{s_+ + 1}^2 - \cdots - x_r^2$ de $\mathbb R^n$ a pour signature $(s_+, s_-)$ ({{fq-sylvester|Loi d'inertie}}, (iii)). Il y a $r + 1$ couples pour chaque $r$, et
+      $$\sum_{r=0}^n (r + 1) = \frac{(n + 1)(n + 2)}{2}.$$
+
+      (iii) Si $q$ est non dégénérée, $r = n$ ({{fq-rang|Rang, noyau}}, (iv)). Dans la base de (i), la matrice $D$ est diagonale de coefficients $\pm 1$, de déterminant $(-1)^{s_-}$. Dans toute autre base, la matrice est ${}^tPDP$, de déterminant $(\det P)^2 (-1)^{s_-}$ ({{fq-rang|Rang, noyau}}, (iii)), avec $\det P \neq 0$.
+    remarques:
+      - |
+        Dans le plan, la signature décide de l'allure de la courbe $q = 1$. Les six signatures possibles sont $(2, 0)$, $(1, 1)$, $(1, 0)$, $(0, 2)$, $(0, 1)$ et $(0, 0)$ ; pour les trois dernières, $q$ ne prend aucune valeur positive, et la courbe $q = 1$ est vide.
+
+        ```schema fq-signature
+        Pour $5x^2 + 4xy + 2y^2$, de signature $(2, 0)$, la courbe $q = 1$ est une ellipse ; pour $x^2 + 4xy + y^2$, de signature $(1, 1)$, une hyperbole dont les asymptotes, en pointillé, forment le cône isotrope ; pour $(x + y)^2$, de signature $(1, 0)$, deux droites parallèles au noyau, en gris pointillé ; pour $-x^2 - y^2$, de signature $(0, 2)$, la dernière case reste vide. Par (i), chacune des trois premières courbes est l'image par une application linéaire bijective du cercle $x^2 + y^2 = 1$, de l'hyperbole $x^2 - y^2 = 1$ ou des droites $x = \pm 1$.
+        ```
+
+        On classe ainsi les courbes d'équation $q = 1$ dans le plan, à un changement de base linéaire près : il n'y en a que trois sortes non vides, l'ellipse, l'hyperbole et la paire de droites parallèles.
+      - |
+        Sur $\mathbb C$, le rang est le seul invariant ({{fq-carres|Rang, invariant complet}}) ; sur $\mathbb R$, il faut le couple $(s_+, s_-)$. La différence vient de ce que $-1$ n'est pas un carré réel : un carré réel est positif, et c'est ce signe que la signature enregistre.
+      - |
+        Le point (ii) contient une règle de simplification : si $q \oplus q_1$ et $q \oplus q_2$, formées sur des sommes directes orthogonales, sont équivalentes, alors $q_1$ et $q_2$ le sont, puisque les signatures s'ajoutent. Sur un corps quelconque où $2$ est inversible, cette simplification reste vraie, mais elle demande le théorème de Witt (E. Witt, « Theorie der quadratischen Formen in beliebigen Körpern », *J. reine angew. Math.* 176, 1937, p. 31-44), qui n'est pas démontré ici.
+
+  - id: fq-positives
+    etiquette: Formes positives
+    nature: théorème
+    titre: Formes positives et définies positives
+    texte: |
+      Une forme quadratique réelle $q$ sur $E$ est [[forme-positive|positive]] si $q(x) \geqslant 0$ pour tout $x$, et [[forme-definie-positive|définie positive]] si $q(x) > 0$ pour tout $x \neq 0$. Elle est **négative**, ou **définie négative**, si $-q$ est positive, ou définie positive. Elle est **indéfinie** si elle prend des valeurs strictement positives et des valeurs strictement négatives.
+
+      Un **produit scalaire** sur $E$ est une forme bilinéaire symétrique dont la forme quadratique est définie positive. Une matrice symétrique réelle $A$ est positive, ou définie positive, si la forme $X \mapsto {}^tXAX$ l'est.
+    enonce: |
+      Soit $q$ une forme quadratique réelle sur $E$, de forme polaire $b$ et de signature $(s_+, s_-)$.
+
+      (i) *Cauchy-Schwarz.* Si $q$ est positive, alors pour tous $x, y$
+      $$b(x, y)^2 \leqslant q(x)\, q(y).$$
+
+      (ii) Si $q$ est positive, ses vecteurs isotropes sont exactement les vecteurs non nuls de son noyau ; $q$ est définie positive si et seulement si elle est positive et non dégénérée. De plus, $q$ est positive si et seulement si $s_- = 0$, définie positive si et seulement si $s_+ = n$, et indéfinie si et seulement si $s_+ \geqslant 1$ et $s_- \geqslant 1$.
+
+      (iii) Si $q$ est définie positive, l'égalité dans (i) n'a lieu que si $x$ et $y$ sont liés, et $N(x) = \sqrt{q(x)}$ est une norme sur $E$.
+
+      (iv) *Minoration.* Si $q$ est une forme définie positive sur $\lex{n-uplet}{\mathbb R^n}$, il existe $c > 0$ tel que $q(h) \geqslant c\,\|h\|_\infty^2$ pour tout $h$.
+
+      (v) La restriction d'une forme positive, ou définie positive, à un sous-espace l'est encore. La matrice d'une forme positive a, dans toute base, un déterminant positif ; celle d'une forme définie positive, un déterminant strictement positif.
+    preuve: |
+      (i) Pour tout réel $t$,
+      $$\begin{aligned} 0 &\leqslant q(x + ty) \\ &= q(x) + 2t\,b(x, y) + t^2 q(y). \end{aligned}$$
+      Si $q(y) > 0$, la valeur $t = -b(x, y)/q(y)$ donne $q(x) - b(x, y)^2/q(y) \geqslant 0$, d'où l'inégalité. Si $q(y) = 0$ et $b(x, y) \neq 0$, la valeur $t = -\big(q(x) + 1\big)/\big(2b(x, y)\big)$ rend le second membre égal à $-1$, ce qui est exclu : donc $b(x, y) = 0$, et l'inégalité est vraie.
+
+      (ii) Si $q(x) = 0$, (i) donne $b(x, y)^2 \leqslant 0$, donc $b(x, y) = 0$ pour tout $y$ : $x \in \operatorname{Ker} b$. Inversement, $q(x) = b(x, x) = 0$ pour $x \in \operatorname{Ker} b$. Une forme positive non dégénérée n'a donc pas de vecteur isotrope, et elle est définie positive ; une forme définie positive est positive et n'a pas de vecteur isotrope, a fortiori pas de noyau non nul.
+
+      Dans une base orthogonale, $q(x) = \sum_i d_i x_i^2$ ({{fq-bases-orthogonales|Bases orthogonales}}, (ii)). Si tous les $d_i$ sont positifs, $q$ l'est ; si $d_i < 0$, $q(e_i) < 0$. Donc $q$ est positive si et seulement si $s_- = 0$, et de même $q(x) > 0$ pour tout $x \neq 0$ si et seulement si tous les $d_i$ sont strictement positifs, c'est-à-dire $s_+ = n$. Enfin $q$ prend une valeur strictement positive si et seulement si $s_+ \geqslant 1$, en $e_i$ avec $d_i > 0$, et une valeur strictement négative si et seulement si $s_- \geqslant 1$.
+
+      (iii) Si $b(x, y)^2 = q(x)q(y)$ avec $y \neq 0$, donc $q(y) > 0$, la valeur $t = -b(x, y)/q(y)$ de (i) donne $q(x + ty) = 0$, puis $x + ty = 0$.
+
+      Pour la norme, la racine carrée existe ({{me-espace|Espaces métriques}}, (i)) ; $N(x) = 0$ entraîne $x = 0$, et $N(\lambda x) = |\lambda| N(x)$ par la polarisation ({{fq-formes|Formes quadratiques}}, (i)). Enfin, par (i),
+      $$\begin{aligned} N(x + y)^2 &= q(x) + 2b(x, y) + q(y) \\ &\leqslant \big(N(x) + N(y)\big)^2, \end{aligned}$$
+      et la croissance de la racine carrée conclut.
+
+      (iv) Si $n = 0$, il n'y a que $h = 0$, et tout $c > 0$ convient. Sinon, soit $(e_i)$ une base orthogonale, $d_i = q(e_i) > 0$ par (ii), $d$ le plus petit des $d_i$, et $P$ la matrice dont les colonnes sont les vecteurs $e_i$, inversible puisque ses colonnes forment une base. Si $h = Py$, alors $q(h) = \sum_i d_i y_i^2 \geqslant d\,\|y\|_\infty^2$, le plus grand des $y_i^2$ figurant dans la somme.
+
+      D'autre part, $|h_i| = \big|\sum_j p_{ij} y_j\big| \leqslant C\,\|y\|_\infty$, avec $C = \max_i \sum_j |p_{ij}|$, qui est strictement positif puisque $P$ n'est pas nulle. Ainsi $\|h\|_\infty \leqslant C\|y\|_\infty$, et $c = d/C^2$ convient.
+
+      (v) La première affirmation est immédiate. Si $q$ est positive, et $(e_i)$ une base orthogonale, la matrice $D$ de $q$ dans cette base est diagonale, de coefficients $d_i \geqslant 0$ par (ii), et de déterminant $\prod_i d_i \geqslant 0$. Dans toute autre base, la matrice est ${}^tPDP$, de déterminant $(\det P)^2 \prod_i d_i$ ({{fq-rang|Rang, noyau}}, (iii)), positif, et strictement positif si tous les $d_i$ le sont.
+    remarques:
+      - |
+        L'inégalité de Cauchy-Schwarz demande la positivité. Pour $q(x) = x_1^2 - x_2^2$ et les vecteurs $x = (1, 0)$, $y = (1, 1)$, on trouve $b(x, y) = 1$ alors que $q(x)\,q(y) = 1 \cdot 0 = 0$.
+      - |
+        Le point (i) étend l'inégalité du nœud {{f-hilbert|Espaces de Hilbert}} aux formes seulement positives, et le point (ii) dit que leur noyau est formé des vecteurs de « longueur » nulle. C'est la situation de la semi-norme de $L^2$ avant le passage au quotient : les fonctions de norme nulle sont celles qui sont nulles presque partout, et on les identifie à $0$.
+      - |
+        En dimension finie, la minoration (iv) découle aussi de l'équivalence des normes ({{gd-equivalence|Équivalence des normes}}), $\sqrt q$ étant une norme par (iii) : elle a été démontrée ici par le seul calcul, sans la compacité de la sphère sur laquelle repose cette équivalence.
+
+  - id: fq-mineurs
+    etiquette: Critère de Sylvester
+    nature: théorème
+    titre: Critère des mineurs principaux
+    texte: |
+      Soit $A = (a_{ij}) \in \lex{espace-matrices}{\mathcal M_n}(K)$. Pour une partie non vide $S$ de $\{1, \dots, n\}$, la **sous-matrice principale** $A_S$ est la matrice $(a_{ij})_{i, j \in S}$, et son déterminant est un **mineur principal** de $A$ ; on convient que $\det A_\varnothing = 1$. Pour $S = \{1, \dots, k\}$, on obtient le **mineur principal dominant** $\Delta_k$.
+    enonce: |
+      (i) *Critère de Sylvester.* Une matrice symétrique réelle $A$ est définie positive si et seulement si $\Delta_k > 0$ pour $k = 1, \dots, n$. Elle est définie négative si et seulement si $(-1)^k \Delta_k > 0$ pour $k = 1, \dots, n$.
+
+      (ii) Pour tout $\varepsilon \in K$,
+      $$\det(A + \varepsilon I_n) = \sum_{S \subset \{1, \dots, n\}} \varepsilon^{n - |S|} \det A_S.$$
+
+      (iii) Une matrice symétrique réelle est positive si et seulement si tous ses mineurs principaux, et non seulement les dominants, sont positifs ou nuls.
+    preuve: |
+      Notons $q(x) = {}^tXAX$, de forme polaire $b$, $(\delta_1, \dots, \delta_n)$ la base canonique de $\mathbb R^n$, notée comme au nœud {{fq-formes|Formes quadratiques}} (la lettre $\varepsilon$ est réservée au scalaire de (ii)), et $E_S$ le sous-espace engendré par les $\delta_i$, $i \in S$. Comme $b(\delta_i, \delta_j) = a_{ij}$, la matrice de la restriction de $b$ à $E_S$, dans la base $(\delta_i)_{i \in S}$, est $A_S$.
+
+      (i) *Condition nécessaire.* Si $A$ est définie positive, la restriction de $q$ à $E_{\{1, \dots, k\}}$ l'est aussi, et son déterminant $\Delta_k$ est strictement positif ({{fq-positives|Formes positives}}, (v)).
+
+      *Condition suffisante.* Par récurrence sur $n$. Pour $n = 1$, $q(x) = a_{11} x_1^2$ avec $a_{11} = \Delta_1 > 0$. Soit $n \geqslant 2$, et $F = E_{\{1, \dots, n-1\}}$. Les mineurs principaux dominants de $A_{\{1, \dots, n-1\}}$ sont $\Delta_1, \dots, \Delta_{n-1}$ : par l'hypothèse de récurrence, la restriction de $q$ à $F$ est définie positive, donc non dégénérée ({{fq-positives|Formes positives}}, (ii)).
+
+      Ainsi $E = F \oplus F^\perp$ ({{fq-orthogonalite|Orthogonalité}}, (iii)), et $F^\perp$ est de dimension $n - (n - 1) = 1$ par la formule de Grassmann : c'est une droite, engendrée par un vecteur $v$. Dans la base $(\delta_1, \dots, \delta_{n-1}, v)$, la matrice $M$ de $b$ a pour bloc $A_{\{1, \dots, n-1\}}$, une dernière colonne et une dernière ligne nulles sauf le coefficient $q(v)$, puisque $b(\delta_i, v) = 0$.
+
+      En développant suivant la dernière colonne ({{v-comatrice|Comatrice}}), $\det M = q(v)\,\Delta_{n-1}$. Par ailleurs $M = {}^tPAP$ avec $P$ inversible, et $\det M = (\det P)^2 \Delta_n$ ({{fq-rang|Rang, noyau}}, (iii)). Donc
+      $$q(v) = \frac{(\det P)^2\, \Delta_n}{\Delta_{n-1}} > 0.$$
+
+      Tout $x \in E$ s'écrit $y + tv$ avec $y \in F$, et $q(x) = q(y) + 2t\,b(y, v) + t^2 q(v) = q(y) + t^2 q(v)$, strictement positif sauf si $y = 0$ et $t = 0$.
+
+      *Matrices définies négatives.* $A$ est définie négative si et seulement si $-A$ est définie positive, et le mineur principal dominant d'ordre $k$ de $-A$ est $(-1)^k \Delta_k$, le déterminant étant linéaire par rapport à chacune des $k$ colonnes ({{v-formes-alternees|Formes alternées}}, (ii)).
+
+      (ii) La colonne $j$ de $A + \varepsilon I_n$ est $a_j + \varepsilon \delta_j$, où $a_j$ est la colonne $j$ de $A$. En développant le déterminant par multilinéarité, colonne après colonne ({{v-formes-alternees|Formes alternées}}, (ii)), on obtient
+      $$\det(A + \varepsilon I_n) = \sum_{T} \varepsilon^{|T|} \det M_T,$$
+      où $T$ parcourt les parties de $\{1, \dots, n\}$ et $M_T$ est la matrice obtenue en remplaçant, pour $j \in T$, la colonne $a_j$ par $\delta_j$.
+
+      Montrons, par récurrence sur $|T|$ et pour toutes les tailles de matrices à la fois, que $\det M_T = \det A_S$, avec $S = \{1, \dots, n\} \setminus T$. Si $T$ est vide, $M_T = A$. Sinon, soit $j \in T$ ; le développement suivant la colonne $j$, qui est $\delta_j$ ({{v-comatrice|Comatrice}}), réduit $\det M_T$ au seul cofacteur d'indice $(j, j)$, de signe $(-1)^{2j} = 1$.
+
+      Ce cofacteur est le déterminant de la matrice obtenue en supprimant la ligne et la colonne $j$ de $M_T$. C'est la matrice construite de la même façon à partir de $A_{\{1, \dots, n\} \setminus \{j\}}$ et de $T \setminus \{j\}$, car la suppression de la ligne $j$ change chaque $\delta_k$, $k \neq j$, en le vecteur de base de même indice. L'hypothèse de récurrence conclut, et l'on obtient (ii) puisque $|T| = n - |S|$.
+
+      (iii) *Condition nécessaire.* Si $A$ est positive, la restriction de $q$ à $E_S$ est positive, et son déterminant $\det A_S$ est positif ({{fq-positives|Formes positives}}, (v)).
+
+      *Condition suffisante.* Soit $\varepsilon > 0$. Le mineur principal dominant d'ordre $k$ de $A + \varepsilon I_n$ est $\det(A_{\{1, \dots, k\}} + \varepsilon I_k)$. Les sous-matrices principales de $A_{\{1, \dots, k\}}$ étant des sous-matrices principales de $A$, (ii) donne
+      $$\det(A_{\{1, \dots, k\}} + \varepsilon I_k) \geqslant \varepsilon^k > 0,$$
+      le terme $S = \varnothing$ valant $\varepsilon^k$ et les autres étant positifs.
+
+      Par (i), $A + \varepsilon I_n$ est définie positive : $q(x) + \varepsilon \sum_i x_i^2 > 0$ pour tout $x \neq 0$ et tout $\varepsilon > 0$. Si l'on avait $q(x) < 0$, la valeur $\varepsilon = -q(x)/\sum_i x_i^2$ donnerait $0 > 0$. Donc $q(x) \geqslant 0$ pour tout $x$.
+    remarques:
+      - |
+        Des mineurs dominants positifs ou nuls ne suffisent pas à la positivité, contrairement à ce que (i) pourrait laisser croire. Pour
+        $$A = \begin{pmatrix} 0 & 0 \\ 0 & -1 \end{pmatrix},$$
+        on a $\Delta_1 = 0$ et $\Delta_2 = 0$, mais $q(\delta_2) = -1$. Le mineur principal $\det A_{\{2\}} = -1$, qui n'est pas dominant, le détecte, conformément à (iii).
+
+        Le défaut subsiste avec une matrice sans coefficient diagonal négatif : pour $A = \begin{pmatrix} 1 & 1 & 1 \\ 1 & 1 & 1 \\ 1 & 1 & 0 \end{pmatrix}$, les mineurs dominants valent $1$, $0$ et $0$, mais $q(0, 1, -1) = 1 + 0 - 2 = -1$, et le mineur $\det A_{\{2, 3\}} = -1$ est négatif.
+      - |
+        La matrice $\begin{pmatrix} 2 & 1 & 1 \\ 1 & 2 & 1 \\ 1 & 1 & 2 \end{pmatrix}$ a pour mineurs dominants $2$, $3$ et $4$ : elle est définie positive, ce que confirment ses valeurs propres $4$, $1$ et $1$, calculées au nœud {{f-spectral-fini|Théorème spectral}}. Le critère ne demande que des déterminants, donc des opérations rationnelles, quand le calcul des valeurs propres demande les racines d'un polynôme.
+      - |
+        La forme $x_1^2 + 4x_1x_2 + x_2^2$, de matrice $\begin{pmatrix} 1 & 2 \\ 2 & 1 \end{pmatrix}$, a $\Delta_1 = 1 > 0$ et $\Delta_2 = -3 < 0$ : elle n'est ni définie positive ni définie négative. Le signe de $\Delta_2 = \det A$ est d'ailleurs $(-1)^{s_-}$ ({{fq-signature|Classification réelle}}, (iii)), ce qui donne $s_- = 1$, et la signature $(1, 1)$.
+
+  - id: fq-taylor-young
+    etiquette: Taylor-Young
+    nature: théorème
+    titre: Formule de Taylor-Young à l'ordre 2 et matrice hessienne
+    texte: |
+      Soit $U$ un ouvert de $\lex{n-uplet}{\mathbb R^n}$ et $f : U \to \mathbb R$ de [[classe-ck|classe $C^2$]]. L'application $df$, de matrice $(\partial_1 f, \dots, \partial_n f)$, est de classe $C^1$ : ses composantes $\partial_j f$ le sont ({{gd-classe-ck|Classe Cᵏ}}, (ii)), si bien que les dérivées secondes $\partial_i\partial_j f = \partial_i(\partial_j f)$ existent et sont continues sur $U$ (même nœud, (i)).
+
+      La [[matrice-hessienne|matrice hessienne]] de $f$ en $a$ est
+      $$H_f(a) = \big(\partial_i\partial_j f(a)\big)_{i,j}.$$
+      Elle est symétrique par le théorème de Schwarz ({{gd-schwarz|Schwarz, intégrales à paramètre}}, (i)). La **forme hessienne** de $f$ en $a$ est la [[forme-quadratique|forme quadratique]] $h \mapsto {}^th\,H_f(a)\,h = \sum_{i,j} \partial_i\partial_j f(a)\, h_i h_j$, dont la forme polaire a pour matrice $H_f(a)$.
+    enonce: |
+      Soit $a \in U$.
+
+      (i) *Taylor-Lagrange.* Si le segment $[a, a + h]$ est contenu dans $U$, il existe $\theta \in \,]0, 1[$ tel que
+      $$\begin{aligned} f(a + h) &= f(a) + df(a)h \\ &\quad + \tfrac12\, {}^th\, H_f(a + \theta h)\, h. \end{aligned}$$
+
+      (ii) *Taylor-Young.* Pour toute norme sur $\mathbb R^n$, il existe une fonction $\varepsilon$, définie au voisinage de $0$, nulle et continue en $0$, telle que
+      $$\begin{aligned} f(a + h) &= f(a) + df(a)h \\ &\quad + \tfrac12\, {}^th\, H_f(a)\, h \\ &\quad + \|h\|^2\, \varepsilon(h). \end{aligned}$$
+      C'est la [[formule-taylor-young|formule de Taylor-Young]] à l'ordre $2$.
+    preuve: |
+      (i) L'ensemble des réels $t$ tels que $a + th \in U$ est ouvert, comme image réciproque de $U$ par une application continue, et il contient $[0, 1]$. Sur cet ensemble, $\varphi(t) = f(a + th)$ est dérivable, de dérivée
+      $$\begin{aligned} \varphi'(t) &= df(a + th)(h) \\ &= \sum_j h_j\, \partial_j f(a + th), \end{aligned}$$
+      par la règle de la chaîne ({{gd-differentielle|Différentielle}}, (ii) et (iv)).
+
+      Chaque $\partial_j f$ étant de classe $C^1$, la même règle montre que $t \mapsto \partial_j f(a + th)$ est dérivable, de dérivée $\sum_i h_i\, \partial_i\partial_j f(a + th)$. Ainsi $\varphi$ est deux fois dérivable sur $[0, 1]$, et
+      $$\varphi''(t) = {}^th\, H_f(a + th)\, h.$$
+      La formule de Taylor-Lagrange à l'ordre $1$ ({{de-taylor|Taylor-Lagrange}}), entre $0$ et $1$, fournit $\theta \in \,]0, 1[$ tel que $\varphi(1) = \varphi(0) + \varphi'(0) + \frac12 \varphi''(\theta)$, ce qui est (i).
+
+      (ii) Traitons d'abord la norme $\|\cdot\|_\infty$. Soit $r > 0$ tel que la boule $B_\infty(a, r)$ soit contenue dans $U$ ; elle est convexe. Pour $0 < \|h\|_\infty < r$, définissons $\varepsilon(h)$ par
+      $$\begin{aligned} \|h\|_\infty^2\, \varepsilon(h) &= f(a + h) - f(a) \\ &\quad - df(a)h - \tfrac12\, {}^thH_f(a)h, \end{aligned}$$
+      et posons $\varepsilon(0) = 0$. Par (i), le second membre vaut, pour un $\theta \in \,]0, 1[$,
+      $$\frac12 \sum_{i,j} \big(\partial_i\partial_j f(a + \theta h) - \partial_i\partial_j f(a)\big) h_i h_j.$$
+
+      Soit $\eta > 0$. Les $n^2$ fonctions $\partial_i\partial_j f$ étant continues en $a$, il existe $\delta \in \,]0, r]$ tel que $|\partial_i\partial_j f(z) - \partial_i\partial_j f(a)| < \eta$ pour tous $i, j$ dès que $\|z - a\|_\infty < \delta$. Si $0 < \|h\|_\infty < \delta$, le point $a + \theta h$ est dans cette boule, et, chaque $|h_ih_j|$ étant au plus $\|h\|_\infty^2$,
+      $$|\varepsilon(h)| \leqslant \frac{n^2 \eta}{2}.$$
+      Donc $\varepsilon$ tend vers $0$ en $0$. Aucun choix n'intervient : $\varepsilon(h)$ est défini par une formule, et le réel $\theta$ ne sert qu'à le majorer.
+
+      Pour une autre norme, il existe $\beta > 0$ tel que $\|h\|_\infty \leqslant \beta\|h\|$ ({{gd-equivalence|Équivalence des normes}}, (i)), et l'on remplace $\varepsilon(h)$ par $\varepsilon(h)\,\|h\|_\infty^2/\|h\|^2$, de valeur absolue au plus $\beta^2|\varepsilon(h)|$.
+    remarques:
+      - |
+        Pour $f(x, y) = x^3 + y^3 - 3xy$ au point $a = (1, 1)$, on a $f(a) = -1$, $df(a) = 0$ et
+        $$H_f(a) = \begin{pmatrix} 6 & -3 \\ -3 & 6 \end{pmatrix}.$$
+        Le développement exact est
+        $$\begin{aligned} f(1 + h, 1 + k) &= -1 + 3h^2 - 3hk + 3k^2 \\ &\quad + h^3 + k^3, \end{aligned}$$
+        et la partie quadratique $3h^2 - 3hk + 3k^2$ est bien la moitié de la forme hessienne $6h^2 - 6hk + 6k^2$.
+      - |
+        Un oubli fréquent est celui du facteur $\frac12$ : la matrice de la partie quadratique du développement est $\frac12 H_f(a)$, non $H_f(a)$. Pour $n = 1$, la formule redevient $f(a + h) = f(a) + f'(a)h + \frac12 f''(a)h^2 + h^2\varepsilon(h)$, et le $\frac12$ est celui du polynôme de Taylor du nœud {{de-taylor|Taylor-Lagrange}}.
+      - |
+        La formule de Taylor elle-même n'a pas besoin du théorème de Schwarz : la démonstration de (i) n'en fait pas usage. Il sert à l'interpréter. Sans lui, la forme $h \mapsto {}^thH_f(a)h$ serait encore une forme quadratique, mais la matrice de sa forme polaire serait $\frac12\big(H_f(a) + {}^tH_f(a)\big)$, et non $H_f(a)$. C'est la symétrie de la hessienne qui permet de lire sur ses coefficients la forme polaire du second ordre, puis de lui appliquer les critères des nœuds précédents.
+
+  - id: fq-points-critiques
+    etiquette: Points critiques
+    nature: proposition
+    titre: Points critiques et conditions nécessaires d'extremum
+    texte: |
+      Soit $U$ un ouvert de $\lex{n-uplet}{\mathbb R^n}$, $f : U \to \lex{ensemble-reels}{\mathbb R}$ et $a \in U$. Comme en dimension $1$ ({{de-extremum|Extremum local}}), $f$ admet un **maximum local** en $a$ s'il existe $r > 0$ tel que $f(x) \leqslant f(a)$ pour tout $x \in U$ vérifiant $\|x - a\| < r$, et un **minimum local** si l'inégalité inverse est vraie ; l'[[extremum-local|extremum local]] est **strict** si l'inégalité est stricte pour $x \neq a$. Par l'équivalence des normes, ces notions ne dépendent pas de la norme.
+
+      Le point $a$ est un [[point-critique|point critique]] de $f$ si $f$ est différentiable en $a$ et si $df(a) = 0$, c'est-à-dire si toutes les dérivées partielles de $f$ s'annulent en $a$.
+    enonce: |
+      (i) Si $f$ admet un extremum local en $a$ et si $f$ est différentiable en $a$, alors $a$ est un point critique.
+
+      (ii) Si $f$ est de classe $C^2$ et admet un minimum local en $a$, sa forme hessienne en $a$ est [[forme-positive|positive]]. Si $f$ admet un maximum local en $a$, elle est négative.
+    preuve: |
+      (i) Supposons que $f$ admette un maximum local en $a$, de rayon $r$ pour $\|\cdot\|_\infty$, et fixons $j$. L'ensemble des $t$ tels que $a + te_j \in U$ est un ouvert de $\mathbb R$ contenant $0$, donc contient un intervalle $]{-\rho}, \rho[$, avec $\rho \leqslant r$.
+
+      Sur cet intervalle, $g(t) = f(a + te_j)$ admet en $0$, qui n'en est pas une extrémité, un maximum local, et elle y est dérivable, de dérivée $\partial_j f(a)$ ({{gd-differentielle|Différentielle}}, (ii)). Donc $\partial_j f(a) = 0$ ({{de-extremum|Extremum local}}). La matrice de $df(a)$ est nulle, et $df(a) = 0$. Le cas d'un minimum s'en déduit en remplaçant $f$ par $-f$.
+
+      (ii) Par (i), $df(a) = 0$. Soit $h \neq 0$. Par la formule de Taylor-Young ({{fq-taylor-young|Taylor-Young}}, (ii)), pour $t \neq 0$ assez petit,
+      $$\begin{aligned} 0 &\leqslant f(a + th) - f(a) \\ &= t^2 \Big(\tfrac12\, {}^thH_f(a)h + \|h\|^2 \varepsilon(th)\Big). \end{aligned}$$
+      En divisant par $t^2 > 0$ et en faisant tendre $t$ vers $0$, $\varepsilon(th)$ tend vers $0$, et le passage à la limite dans les inégalités ({{de-limite|Limite en un point}}, (vi)) donne ${}^thH_f(a)h \geqslant 0$. Pour un maximum, on applique ce qui précède à $-f$.
+    remarques:
+      - |
+        Les réciproques sont fausses. La fonction $f(x, y) = x^2 + y^3$ a un point critique en $(0, 0)$, où sa hessienne $\begin{pmatrix} 2 & 0 \\ 0 & 0 \end{pmatrix}$ est positive ; pourtant $f(0, y) = y^3$ prend des valeurs strictement négatives arbitrairement près de l'origine, et $f$ n'y a pas d'extremum. Comme en dimension $1$ avec $x^3$, un point critique n'est qu'un candidat.
+      - |
+        L'ouverture de $U$ est indispensable, comme l'était, en dimension $1$, l'hypothèse que $a$ n'est pas une extrémité. Sur le carré fermé $[0, 1]^2$, la fonction $f(x, y) = x$ atteint son minimum en tout point du côté $x = 0$, où $\partial_1 f = 1$.
+
+  - id: fq-extremums
+    etiquette: Extremums
+    nature: théorème
+    titre: Conditions suffisantes d'extremum et points cols
+    texte: |
+      Soit $U$ un ouvert de $\lex{n-uplet}{\mathbb R^n}$ et $f : U \to \mathbb R$ de classe $C^2$. Un [[point-critique|point critique]] $a$ de $f$ est un [[point-col|point col]], ou point selle, si la forme hessienne de $f$ en $a$ est indéfinie.
+    enonce: |
+      Soit $a$ un point critique de $f$.
+
+      (i) Si la forme hessienne en $a$ est [[forme-definie-positive|définie positive]], $f$ admet en $a$ un minimum local strict ; si elle est définie négative, un maximum local strict.
+
+      (ii) Si $a$ est un point col, $f$ n'admet pas d'extremum local en $a$. Plus précisément, si ${}^thH_f(a)h > 0$ et ${}^tkH_f(a)k < 0$, alors $f(a + th) > f(a)$ et $f(a + tk) < f(a)$ pour tout $t \neq 0$ assez petit.
+
+      (iii) *Dimension $2$.* Notons $\alpha = \partial_1^2 f(a)$, $\beta = \partial_1\partial_2 f(a)$ et $\gamma = \partial_2^2 f(a)$. Si $\alpha\gamma - \beta^2 > 0$ et $\alpha > 0$, $f$ admet en $a$ un minimum local strict ; si $\alpha\gamma - \beta^2 > 0$ et $\alpha < 0$, un maximum local strict ; si $\alpha\gamma - \beta^2 < 0$, $a$ est un point col.
+    preuve: |
+      (i) Par la minoration des formes définies positives ({{fq-positives|Formes positives}}, (iv)), il existe $c > 0$ tel que ${}^thH_f(a)h \geqslant c\,\|h\|_\infty^2$. La formule de Taylor-Young ({{fq-taylor-young|Taylor-Young}}, (ii)), pour la norme $\|\cdot\|_\infty$, donne
+      $$\begin{aligned} f(a + h) - f(a) &\geqslant \Big(\frac c2 - |\varepsilon(h)|\Big)\|h\|_\infty^2. \end{aligned}$$
+      Il existe $\delta > 0$ tel que $|\varepsilon(h)| < c/4$ pour $\|h\|_\infty < \delta$, et alors $f(a + h) - f(a) \geqslant \frac c4 \|h\|_\infty^2 > 0$ pour $0 < \|h\|_\infty < \delta$. Le cas défini négatif s'en déduit en remplaçant $f$ par $-f$.
+
+      (ii) Par la formule de Taylor-Young, pour $t \neq 0$ petit,
+      $$\begin{aligned} &f(a + th) - f(a) \\ &\quad = t^2 \Big(\tfrac12\, {}^thH_f(a)h + \|h\|^2 \varepsilon(th)\Big). \end{aligned}$$
+      Comme $\varepsilon(th)$ tend vers $0$ avec $t$, la parenthèse est strictement positive pour $0 < |t| < \tau$, pour un certain $\tau > 0$ ; de même pour $k$, avec le signe opposé. Tout voisinage de $a$ contient des points $a + th$ et $a + tk$ de cette sorte, si bien que $f$ n'a en $a$ ni maximum ni minimum local.
+
+      (iii) La matrice hessienne est $\begin{pmatrix} \alpha & \beta \\ \beta & \gamma \end{pmatrix}$, de mineurs principaux dominants $\Delta_1 = \alpha$ et $\Delta_2 = \alpha\gamma - \beta^2$. Les deux premiers cas sont le critère de Sylvester ({{fq-mineurs|Critère de Sylvester}}, (i)) joint à (i).
+
+      Si $\alpha\gamma - \beta^2 < 0$, la forme hessienne est non dégénérée ({{fq-rang|Rang, noyau}}, (iv)), et son déterminant est du signe de $(-1)^{s_-}$ ({{fq-signature|Classification réelle}}, (iii)). Donc $s_-$ est impair, $s_- = 1$, et $s_+ = 2 - 1 = 1$ : la forme est indéfinie ({{fq-positives|Formes positives}}, (ii)), et (ii) s'applique.
+    remarques:
+      - |
+        Pour $f(x, y) = x^3 + y^3 - 3xy$, les points critiques sont les solutions de $x^2 = y$ et $y^2 = x$, à savoir $(0, 0)$ et $(1, 1)$. En $(0, 0)$, la hessienne $\begin{pmatrix} 0 & -3 \\ -3 & 0 \end{pmatrix}$ a pour déterminant $-9$ : c'est un point col. En $(1, 1)$, $\alpha = 6$ et $\alpha\gamma - \beta^2 = 27$ : c'est un minimum local strict, où $f$ vaut $-1$.
+
+        ```schema fq-extremums
+        Lignes de niveau de $f(x, y) = x^3 + y^3 - 3xy$, en rouge où $f > 0$ et en bleu où $f < 0$ ; la ligne de niveau $0$, en noir, est le folium de Descartes. Au col $(0, 0)$, elle se croise elle-même, et $f$ change de signe d'un quadrant à l'autre ; autour du minimum $(1, 1)$, les lignes de niveau $-0{,}9$, $-0{,}6$ et $-0{,}3$ sont des courbes fermées emboîtées, voisines des ellipses de la forme hessienne.
+        ```
+
+        Le minimum n'est que local : $f(x, 0) = x^3$ tend vers $-\infty$ quand $x$ tend vers $-\infty$.
+      - |
+        Quand la hessienne est dégénérée, elle ne permet pas de conclure. Les fonctions $x^2 + y^4$, $x^2 - y^4$ et $x^2 + y^3$ ont toutes en $(0, 0)$ un point critique de hessienne $\begin{pmatrix} 2 & 0 \\ 0 & 0 \end{pmatrix}$, positive et dégénérée. La première y a un minimum strict ; la deuxième est négative sur l'axe des $y$ privé de l'origine et positive sur celui des $x$, comme en un col ; la troisième n'a pas d'extremum non plus, puisqu'elle vaut $y^3$ sur l'axe des $y$, mais elle est positive au voisinage de l'origine sur toute autre droite qui y passe.
+
+        Les fonctions $x^4 + y^4$, $-(x^4 + y^4)$ et $x^4 - y^4$, de hessienne nulle, ont respectivement un minimum, un maximum et aucun extremum : il faut alors examiner les termes d'ordre supérieur.
+      - |
+        Une fonction peut même avoir un minimum local strict en $0$ le long de chaque droite passant par l'origine, sans avoir de minimum local en $0$. Pour $f(x, y) = (y - x^2)(y - 2x^2) = y^2 - 3x^2y + 2x^4$, on trouve, sur la droite dirigée par $(a, b)$,
+        $$f(as, bs) = b^2 s^2 - 3a^2 b\, s^3 + 2a^4 s^4,$$
+        strictement positif pour $s \neq 0$ assez petit, que $b$ soit nul ou non. Pourtant $f(x, \frac32 x^2) = -\frac{x^4}{4} < 0$.
+
+        ```schema fq-extremums-2
+        La fonction $(y - x^2)(y - 2x^2)$ est négative entre les deux paraboles, dans la région bleue, et positive ailleurs. Chaque droite passant par l'origine, en gris, n'entre dans la région bleue qu'à distance de $0$, si bien que $f$ y est positive au voisinage de l'origine ; mais la parabole $y = \frac32 x^2$, en pointillé, reste dans la région bleue et approche l'origine par des valeurs négatives.
+        ```
+
+        La hessienne $\begin{pmatrix} 0 & 0 \\ 0 & 2 \end{pmatrix}$ est positive et dégénérée. Au signe près, c'est la « surface de Peano », que Peano opposa à une condition d'extremum erronée de Serret, dans l'édition allemande qu'il donna du cours de Genocchi (A. Genocchi, *Differentialrechnung und Grundzüge der Integralrechnung*, éd. G. Peano, Teubner, 1899, p. 332) ; l'édition italienne de 1884 contenait déjà ses notes sur les conditions d'extremum.
+      - |
+        La suite naturelle de ce chapitre est l'étude des extremums liés : chercher les extremums de $f$ sur un ensemble de niveau $\{g = 0\}$. Lorsque $dg(a)$ est surjective, les fonctions implicites ({{gd-submersions|Submersions}}) paramètrent localement cet ensemble, et l'on montre que, si $a$ est un extremum local de $f$ sur cet ensemble, $df(a)$ s'annule sur $\operatorname{Ker} dg(a)$, c'est-à-dire est combinaison linéaire des différentielles des composantes de $g$ : ce sont les multiplicateurs de Lagrange, qui ne sont pas traités ici.
+      - |
+        Le lemme de Morse va plus loin que (i) et (ii) : en un point critique où la hessienne est non dégénérée, une fonction de classe $C^\infty$ s'écrit, dans des coordonnées locales convenables, exactement $f(a) + x_1^2 + \cdots + x_{s_+}^2 - x_{s_+ + 1}^2 - \cdots - x_n^2$, sans reste. Il remonte à M. Morse, « Relations between the critical points of a real function of n independent variables » (*Trans. Amer. Math. Soc.* 27, 1925, p. 345-396), et n'est pas démontré ici.
+
+aretes:
+  - [fq-formes, fq-rang]
+  - [fq-rang, fq-orthogonalite]
+  - [fq-orthogonalite, fq-bases-orthogonales]
+  - [fq-bases-orthogonales, fq-gauss]
+  - [fq-bases-orthogonales, fq-carres]
+  - [fq-bases-orthogonales, fq-sylvester]
+  - [fq-sylvester, fq-signature]
+  - [fq-signature, fq-positives]
+  - [fq-positives, fq-mineurs]
+  - [fq-formes, fq-taylor-young]
+  - [fq-taylor-young, fq-points-critiques]
+  - [fq-positives, fq-points-critiques]
+  - [fq-points-critiques, fq-extremums]
+  - [fq-mineurs, fq-extremums]

@@ -642,3 +642,19 @@ gd-orientation, gd-integrale-curviligne et à la théorie geod ; textes de derha
 jour. Relu par un agent indépendant (18 points) : attributions corrigées (Green 1828, Ostrogradski, Cauchy et
 Riemann pour Green-Riemann), remarque de gd-orientation et texte de geod rectifiés, notations unifiées, convention
 pour le pavé de ℝ⁰. Aucun choix nouveau. derham : 0 croisement ; édifice : 16. 591 nœuds, 330 termes, 49 graphes.
+
+## 45. Formes quadratiques (30 octobre 2026)
+
+Sous-graphe `cdiff-quadratiques` (contenu/cdiff-quadratiques.yaml), ouvert par le nœud chapitre `cdiff-quadratiques`
+de cdiff (arête gd-schwarz → cdiff-quadratiques ; entrée gd-schwarz → fq-taylor-young). Placement : alglin n'a ni q
+ni r pour ancêtres, anf n'a pas le calcul différentiel ; cdiff a ℝ, l'algèbre linéaire, et donne l'application aux
+extremums. Treize fiches fq-* : sur un corps où 2 est inversible, formes et congruence, rang et noyau,
+orthogonalité, bases orthogonales, algorithme de Gauss (cas sans terme carré compris), classification quand tout
+élément est un carré ; sur ℝ, loi d'inertie, forme normale et (n+1)(n+2)/2 classes, formes positives (minoration
+sans compacité), critère des mineurs (dominants pour défini positif, tous les principaux pour positif) ; puis
+Taylor-Young à l'ordre 2 dans ℝⁿ (absente jusque-là), points critiques, conditions suffisantes, cols, surface de
+Peano. Le théorème spectral (f-spectral-fini) n'est pas redémontré : ses remarques renvoient au chapitre. Hors du
+lot, en remarque : Witt, Morse, corps finis, extrema liés. Aucun choix. cdiff passe à 1 croisement (entrée met →
+gd-inversion-locale gardée visible : c'est la dépendance au point fixe). Relu par un agent indépendant : une faute
+historique (Sylvester nomme la loi d'inertie dès 1852 et la démontre en 1853) et treize retouches. Douteux : la
+source de Peano (Genocchi-Peano 1899, p. 332) ne repose que sur Wikipedia. 605 nœuds, 345 termes, 50 graphes.
