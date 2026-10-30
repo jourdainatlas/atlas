@@ -1,0 +1,778 @@
+# Niveau 2 : structure interne du chapitre « Modules sur un anneau principal » (nœud ac-modules du graphe ac,
+# créé le 30 oct. 2026). Modules libres et rang (par le corps des fractions), torsion ; sous-modules d'un module
+# libre sur un anneau principal ; matrices équivalentes, opérations élémentaires et matrices de Bézout ; lemme du
+# pivot ; forme normale de Smith ; base adaptée ; théorème de structure ; unicité du rang et des facteurs invariants (par les
+# idéaux de mineurs calculés dans le corps des fractions) ; diviseurs élémentaires (lemme chinois, dimensions
+# des A/(p)-espaces p^j M / p^{j+1} M) ; groupes abéliens de type fini ; module associé à un endomorphisme, matrices compagnons,
+# forme de Frobenius, critère de similitude et descente des similitudes.
+# Choix (⋆) : seule l'existence des diviseurs élémentaires, qui demande la factorisation de ac-principaux
+# (inévitable dans ZF, Hodges 1976), l'utilise pour un anneau principal quelconque. Tout le reste est sans choix :
+# sous-modules d'un module libre (récurrence sur n), lemme du pivot (suite canonique d'idéaux, condition de type
+# Kaplansky), forme de Smith, base adaptée, structure, unicité (idéaux de mineurs calculés dans le corps des
+# fractions, et comparaison de deux présentations). Pour ℤ et K[X], les diviseurs élémentaires aussi.
+
+graphe: ac-modules
+titre: Modules sur un anneau principal
+conteneur: ac-modules
+
+entrees:
+  ac-principaux: [md-pivot, md-elementaires]
+  ac-chinois: [md-elementaires]
+  ac-reduction: [md-endomorphismes]
+
+noeuds:
+  - id: md-libres
+    etiquette: Modules libres
+    nature: proposition
+    titre: Modules libres, rang, torsion
+    texte: |
+      Dans ce chapitre, les anneaux sont commutatifs, et $M$ désigne un [[module|$A$-module]] ({{a-module|Module}}).
+
+      Une famille finie $(x_1, \dots, x_n)$ d'éléments de $M$ est **génératrice** si tout élément de $M$ s'écrit $\sum_i a_ix_i$ avec des $a_i \in A$. Elle est **libre** si $\sum_i a_ix_i = 0$ entraîne que tous les $a_i$ sont nuls, et c'est une **base** si elle est libre et génératrice.
+
+      Le module $M$ est [[module-type-fini|de type fini]] s'il a une famille génératrice finie, et [[module-libre|libre]] s'il a une base finie ; la famille vide est une base du module nul. Dans ce chapitre, « libre » s'entend toujours avec une base finie.
+
+      Pour $n \in \lex{ensemble-entiers-naturels}{\mathbb N}$, $A^n$ est l'ensemble des colonnes $(a_1, \dots, a_n)$ d'éléments de $A$, muni des lois composante par composante. C'est un module libre, de **base canonique** $(e_1, \dots, e_n)$, où $e_j$ a pour seule composante non nulle un $1$ en place $j$. Plus généralement, la **somme directe** $M_1 \oplus \cdots \oplus M_s$ de modules est leur produit cartésien, muni des lois composante par composante.
+
+      Les matrices à coefficients dans $A$, leur ensemble $\lex{espace-matrices}{\mathcal M_{m,n}}(A)$ et leur produit se définissent par les mêmes formules que sur un corps ({{v-matrices|Matrices}}). Une matrice $P \in \mathcal M_n(A)$ est **inversible** s'il existe $Q \in \mathcal M_n(A)$ telle que $PQ = QP = I_n$ ; ces matrices forment l'ensemble $\mathrm{GL}_n(A)$.
+
+      Si $A$ est [[anneau-integre|intègre]], un élément $x$ de $M$ est **de torsion** s'il existe $a \neq 0$ tel que $ax = 0$. On note $T(M)$ l'ensemble de ces éléments, le [[sous-module-torsion|sous-module de torsion]] de $M$, et $M$ est **sans torsion** si $T(M) = \{0\}$.
+    enonce: |
+      (i) Une famille $(x_1, \dots, x_n)$ de $M$ est une base si et seulement si l'application $\varphi : A^n \to M$, $a \mapsto \sum_i a_ix_i$, est bijective ; c'est alors un isomorphisme de modules. Le module $M$ est de type fini si et seulement s'il existe une application $A$-linéaire surjective $\varphi : A^n \to M$, et alors $M \cong A^n/\operatorname{Ker}\varphi$.
+
+      (ii) Les applications $A$-linéaires de $A^n$ dans $A^m$ sont les $x \mapsto Px$, pour une unique $P \in \mathcal M_{m,n}(A)$, dont la $j$-ième colonne est l'image de $e_j$. La composée correspond au produit, le produit est associatif, et $x \mapsto Px$ est un isomorphisme de $A^n$ sur lui-même si et seulement si $P \in \mathrm{GL}_n(A)$.
+
+      (iii) Si $A$ est intègre, deux bases d'un module libre ont le même nombre d'éléments, le [[rang-module|rang]] du module. En particulier, $A^m \cong A^n$ entraîne $m = n$.
+
+      (iv) Si $A$ est intègre, $T(M)$ est un sous-module de $M$, le quotient $M/T(M)$ est sans torsion, et tout module libre est sans torsion.
+
+      (v) Si $N_1, \dots, N_s$ sont des sous-modules de $M$ tels que tout élément de $M$ s'écrive de façon unique $y_1 + \cdots + y_s$ avec $y_i \in N_i$, l'application $(y_1, \dots, y_s) \mapsto y_1 + \cdots + y_s$ est un isomorphisme de $N_1 \oplus \cdots \oplus N_s$ sur $M$. On dit alors que $M$ est **somme directe** des $N_i$.
+    preuve: |
+      (i) L'application $\varphi$ est $A$-linéaire, par les axiomes de module. Elle est surjective si et seulement si la famille est génératrice. Comme $\varphi(a) = \varphi(b)$ équivaut à $\varphi(a - b) = 0$, elle est injective si et seulement si la seule combinaison nulle est la combinaison triviale, c'est-à-dire si la famille est libre.
+
+      La réciproque d'une application $A$-linéaire bijective $f$ est $A$-linéaire : $f(f^{-1}(x) + f^{-1}(y)) = x + y$ et $f(af^{-1}(x)) = ax$, et l'on applique $f^{-1}$.
+
+      Si $M$ est engendré par $x_1, \dots, x_n$, l'application $\varphi$ associée est surjective ; réciproquement, si $\varphi : A^n \to M$ est linéaire et surjective, les $\varphi(e_j)$ engendrent $M$.
+
+      Le noyau de $\varphi$ est un sous-module. Le théorème d'isomorphisme des groupes ({{a-isomorphisme|Théorème d'isomorphisme}}) fournit un isomorphisme de groupes $\bar\varphi : A^n/\operatorname{Ker}\varphi \to M$, avec $\bar\varphi(a + \operatorname{Ker}\varphi) = \varphi(a)$ ; il est $A$-linéaire, puisque $\bar\varphi(ca + \operatorname{Ker}\varphi) = \varphi(ca) = c\varphi(a)$.
+
+      (ii) Pour $x = \sum_j x_je_j$, la linéarité donne $f(x) = \sum_j x_jf(e_j)$, qui est $Px$ lorsque la $j$-ième colonne de $P$ est $f(e_j)$ ; et $P$ est déterminée par $f$, puisque $Pe_j$ est sa $j$-ième colonne.
+
+      Le calcul du nœud {{v-matrices|Matrices}}, (ii), n'emploie que les règles de calcul d'un anneau commutatif : il montre que $x \mapsto P(Qx)$ a pour matrice $PQ$. La composition des applications étant associative, l'unicité de la matrice donne l'associativité du produit.
+
+      Si $x \mapsto Px$ est bijective, sa réciproque est linéaire, comme en (i), de matrice $Q$ ; les deux composées sont l'identité, de matrice $I_n$, d'où $PQ = QP = I_n$. Réciproquement, si $PQ = QP = I_n$, l'application $x \mapsto Qx$ est la réciproque de $x \mapsto Px$.
+
+      (iii) Soient $(x_1, \dots, x_m)$ et $(y_1, \dots, y_n)$ deux bases de $M$, et $\varphi : A^m \to M$, $\psi : A^n \to M$ les isomorphismes de (i). L'isomorphisme $\psi^{-1} \circ \varphi$ de $A^m$ sur $A^n$ a une matrice $P \in \mathcal M_{n,m}(A)$, sa réciproque une matrice $Q \in \mathcal M_{m,n}(A)$, et (ii) donne $QP = I_m$ et $PQ = I_n$.
+
+      Soit $K$ le [[corps-fractions|corps des fractions]] de $A$ ({{a-fractions|Corps des fractions}}), où l'on identifie $a$ à $a/1$. Ce plongement respecte les sommes et les produits : les égalités $QP = I_m$ et $PQ = I_n$ valent encore entre matrices à coefficients dans $K$.
+
+      L'application $x \mapsto Px$ de $K^m$ dans $K^n$ est donc linéaire et bijective, et le théorème du rang ({{v-rang|Théorème du rang}}) donne $m = 0 + n$.
+
+      (iv) Si $ax = 0$ et $by = 0$ avec $a, b$ non nuls, alors $ab(x - y) = 0$ et $a(cx) = c(ax) = 0$, avec $ab \neq 0$ par intégrité : $T(M)$ est un sous-module.
+
+      Si $a \neq 0$ et $a(x + T(M)) = T(M)$, alors $ax \in T(M)$, et $b(ax) = 0$ pour un $b \neq 0$ ; comme $ba \neq 0$, $x \in T(M)$. Enfin, si $a \neq 0$ et $a(a_1, \dots, a_n) = 0$, chaque $aa_i$ est nul, donc chaque $a_i$ : $A^n$ est sans torsion, et tout module libre aussi, par (i).
+
+      (v) L'application est $A$-linéaire. Elle est surjective, puisque tout élément est une telle somme, et son noyau est nul, puisque $0 = 0 + \cdots + 0$ est la seule écriture de $0$.
+    remarques:
+      - |
+        L'erreur la plus répandue est de transposer l'algèbre linéaire, où toute famille libre se complète en une base et toute famille génératrice en contient une ({{v-dimension|Dimension}}). Dans $\lex{ensemble-entiers-relatifs}{\mathbb Z}$, la famille $(2)$ est libre, mais aucune base de $\mathbb Z$ ne la contient : une base a un seul élément, par (iii), et $2$ n'engendre pas $1$.
+
+        La famille $(2, 3)$ engendre $\mathbb Z$, puisque $1 = 3 - 2$, et pourtant aucune de ses sous-familles n'est une base : $(2)$ et $(3)$ n'engendrent que $2\mathbb Z$ et $3\mathbb Z$, et $(2, 3)$ n'est pas libre, puisque $3 \cdot 2 - 2 \cdot 3 = 0$.
+      - |
+        Un module de type fini n'est pas libre en général. Le $\mathbb Z$-module $\lex{anneau-zn}{\mathbb Z/2\mathbb Z}$ est engendré par $\bar 1$, mais tous ses éléments sont de torsion, puisque $2x = 0$ ; par (iv), il n'est pas libre, n'étant pas nul.
+
+        Un sous-module d'un module de type fini n'est pas non plus toujours de type fini. L'anneau $A$ de la remarque du nœud {{ac-noetheriens|Anneaux noethériens}}, formé des polynômes $P$ à coefficients dans le corps des fractions de $\mathbb Z$ tels que $P(0) \in \mathbb Z$, est engendré par $1$ comme module sur lui-même. La réunion de la suite croissante, non stationnaire, des idéaux $\frac X{2^n}A$ est un sous-module qui n'est pas de type fini, sans quoi ses générateurs seraient tous dans l'un de ces idéaux, et la suite serait stationnaire. Le nœud suivant montre que rien de tel n'arrive sur un anneau principal.
+      - |
+        Le corps des fractions ramène la question du rang à l'algèbre linéaire, ce qui n'est possible que pour un anneau intègre. Sur un anneau commutatif non nul quelconque, le rang d'un module libre est encore bien défini, et cela sans aucune forme du choix ; on ne le démontre pas ici. Le passage au quotient par un idéal maximal, souvent proposé, demanderait en revanche le lemme de Zorn pour obtenir cet idéal ({{geoalg|géométrie algébrique}}) : ce n'est pas la bonne voie.
+
+  - id: md-sous-modules
+    etiquette: Sous-modules de Aⁿ
+    nature: théorème
+    titre: Sous-modules d'un module libre sur un anneau principal
+    texte: |
+      Dans ce nœud, $A$ est un [[anneau-principal|anneau principal]] ({{z-ideaux|Idéaux de ℤ}}) : il est intègre, et tout idéal s'écrit $aA$.
+    enonce: |
+      (i) Tout sous-module $L$ de $A^n$ est [[module-libre|libre]], de [[rang-module|rang]] au plus $n$.
+
+      (ii) Si $M$ est engendré par $n$ éléments, tout sous-module de $M$ est engendré par au plus $n$ éléments ; en particulier, il est [[module-type-fini|de type fini]].
+
+      (iii) Tout $A$-module de type fini sans torsion est libre.
+    preuve: |
+      (i) Par récurrence sur $n$. Si $n = 0$, $L = \{0\}$ a pour base la famille vide.
+
+      Soit $n \geqslant 1$, et $\pi : A^n \to A$ la dernière coordonnée, qui est $A$-linéaire. L'image $\pi(L)$ est un idéal de $A$, donc s'écrit $aA$. Le sous-module $L' = L \cap \operatorname{Ker}\pi$ est formé d'éléments dont la dernière coordonnée est nulle ; il s'identifie à un sous-module de $A^{n-1}$, et l'hypothèse de récurrence lui donne une base $(y_1, \dots, y_k)$ avec $k \leqslant n - 1$.
+
+      Si $a = 0$, alors $L = L'$, et c'est fini. Sinon, soit $x \in L$ tel que $\pi(x) = a$. Montrons que $(y_1, \dots, y_k, x)$ est une base de $L$, ce qui donne un rang $k + 1 \leqslant n$.
+
+      Elle engendre $L$ : pour $z \in L$, écrivons $\pi(z) = ca$ ; alors $z - cx$ appartient à $L$ et à $\operatorname{Ker}\pi$, donc à $L'$, et s'écrit $\sum_i b_iy_i$.
+
+      Elle est libre : si $\sum_i b_iy_i + bx = 0$, l'application de $\pi$ donne $ba = 0$, donc $b = 0$ puisque $a \neq 0$ et que $A$ est intègre ; il reste $\sum_i b_iy_i = 0$, et les $b_i$ sont nuls.
+
+      (ii) Soit $\varphi : A^n \to M$ linéaire et surjective ({{md-libres|Modules libres}}, (i)), et $N$ un sous-module de $M$. L'image réciproque $L = \varphi^{-1}(N)$ est un sous-module de $A^n$, de base $(z_1, \dots, z_k)$ avec $k \leqslant n$ par (i). Comme $\varphi(L) = N$, les $\varphi(z_j)$ engendrent $N$.
+
+      (iii) Soit $M$ engendré par $x_1, \dots, x_n$, et sans torsion. Parmi les parties $J$ de $\{1, \dots, n\}$ telles que la famille $(x_j)_{j \in J}$ soit libre, qui sont en nombre fini et comprennent la partie vide, prenons-en une de cardinal maximal, et notons $F$ le sous-module, libre, engendré par les $x_j$, $j \in J$.
+
+      Pour $i \notin J$, la famille $(x_j)_{j \in J \cup \{i\}}$ est liée : il existe une relation $b_ix_i + \sum_{j \in J} c_jx_j = 0$ à coefficients non tous nuls, et $b_i \neq 0$, puisque la famille indexée par $J$ est libre. Ainsi $b_ix_i \in F$ ; pour $i \in J$, on pose $b_i = 1$.
+
+      Le produit $c = b_1 \cdots b_n$ est non nul, et $cx_i \in F$ pour tout $i$, donc $cM \subset F$. L'application $x \mapsto cx$ de $M$ dans $F$ est linéaire, et injective puisque $M$ est sans torsion : $M$ est isomorphe au sous-module $cM$ de $F \cong A^{|J|}$, qui est libre par (i).
+    remarques:
+      - |
+        Aucune forme du choix n'intervient. Chaque étape de la récurrence de (i) fait deux choix, un générateur $a$ de l'idéal $\pi(L)$ et un antécédent $x$, et la récurrence porte sur l'entier $n$ : il n'y a qu'un nombre fini de choix. De même, (iii) choisit une relation pour chaque indice, en nombre fini.
+      - |
+        Soit $L$ le sous-module de $\mathbb Z^2$ engendré par $(6, 5)$ et $(10, 9)$. Les secondes coordonnées $5$ et $9$ engendrent l'idéal $\mathbb Z$, puisque $1 = 2 \cdot 5 - 9$, et $x = 2(6, 5) - (10, 9) = (2, 1)$ relève le générateur $a = 1$.
+
+        Le sous-module $L'$ des points de $L$ situés sur l'axe horizontal est $4\mathbb Z \times \{0\}$, engendré par $(4, 0) = 9(6, 5) - 5(10, 9)$. La preuve donne la base $\big((4, 0), (2, 1)\big)$ de $L$.
+
+        ```schema md-sous-modules
+        Les points de $\mathbb Z^2$ sont en gris, ceux de $L$ en rouge. La seconde coordonnée envoie $L$ sur $\mathbb Z$ ; le vecteur $x = (2, 1)$, en bleu, relève le générateur $1$. Chaque ligne horizontale de hauteur $k$ porte les points $kx + L'$, translatés de $L' = 4\mathbb Z \times \{0\}$ : c'est l'écriture $L = L' \oplus \mathbb Zx$ de la preuve.
+        ```
+      - |
+        L'hypothèse « principal » ne peut pas être omise. Dans un anneau intègre, deux éléments $f$ et $g$ d'un idéal vérifient $g \cdot f - f \cdot g = 0$ : une base d'un idéal a au plus un élément, et un idéal libre est principal.
+
+        Dans $\mathbb Z[X]$, l'idéal engendré par $2$ et $X$, qui n'est pas principal ({{pol-principal|K[X] principal}}), est donc un sous-module du module libre $\mathbb Z[X]$ qui n'est pas libre.
+      - |
+        L'hypothèse « de type fini » de (iii) non plus. Le corps des fractions $F$ de $\mathbb Z$ est un $\mathbb Z$-module sans torsion. Deux éléments non nuls $\frac ab$ et $\frac cd$ y vérifient $bc \cdot \frac ab - ad \cdot \frac cd = 0$, avec $bc \neq 0$ : une base aurait au plus un élément.
+
+        Or $F = \mathbb Zx$ est impossible, puisque $\frac x2 = kx$ imposerait $(1 - 2k)x = 0$, puis $x = 0$ : $F$ n'est pas libre, et (iii) montre qu'il n'est pas de type fini.
+
+  - id: md-equivalence
+    etiquette: Opérations élémentaires
+    nature: proposition
+    titre: Matrices équivalentes, opérations élémentaires
+    texte: |
+      Deux matrices $M, N \in \lex{espace-matrices}{\mathcal M_{m,n}}(A)$ sont [[matrices-equivalentes|équivalentes]] s'il existe $P \in \mathrm{GL}_m(A)$ et $Q \in \mathrm{GL}_n(A)$ telles que $N = PMQ$. On note $M(A^n)$ l'image de l'application $x \mapsto Mx$, sous-module de $A^m$.
+
+      Notons $E_{ij}$ la matrice dont le seul coefficient non nul est un $1$ en place $(i, j)$. Les matrices **élémentaires** de taille $m$ sont les **transvections** $I_m + cE_{ij}$, avec $i \neq j$ et $c \in A$, les matrices de **permutation** qui échangent deux vecteurs de la base canonique, et les **dilatations**, obtenues en remplaçant un coefficient diagonal de $I_m$ par un inversible $u$.
+
+      Une matrice de **Bézout** s'obtient à partir de $I_m$ en plaçant, aux intersections des lignes et des colonnes d'indices $i < j$, les coefficients d'une matrice
+      $$\begin{pmatrix} \alpha & \beta \\ \gamma & \delta \end{pmatrix}, \qquad \alpha\delta - \beta\gamma = 1.$$
+
+      Un anneau intègre $A$ est [[anneau-euclidien|euclidien]] s'il existe une application $\nu : A \setminus \{0\} \to \lex{ensemble-entiers-naturels}{\mathbb N}$, le **stathme**, telle que pour tous $a \in A$ et $b \neq 0$ on puisse écrire $a = bq + r$ avec $r = 0$ ou $\nu(r) < \nu(b)$. C'est le cas de $\lex{ensemble-entiers-relatifs}{\mathbb Z}$, avec la valeur absolue ({{z-division|Division euclidienne}}), et de $\lex{anneau-polynomes}{K[X]}$ pour un corps $K$, avec le degré ({{pol-division|Division des polynômes}}, (ii)).
+    enonce: |
+      (i) L'équivalence est une relation d'équivalence sur $\mathcal M_{m,n}(A)$, et les matrices élémentaires et de Bézout sont inversibles.
+
+      Multiplier $M$ à gauche par $I_m + cE_{ij}$ ajoute à la ligne $i$ la ligne $j$ multipliée par $c$ ; par une permutation, échange deux lignes ; par une dilatation, multiplie une ligne par $u$ ; par la matrice de Bézout ci-dessus, remplace les lignes $L_i$ et $L_j$ par $\alpha L_i + \beta L_j$ et $\gamma L_i + \delta L_j$.
+
+      À droite, ces matrices agissent de même sur les colonnes : $M(I_n + cE_{ij})$ ajoute à la colonne $j$ la colonne $i$ multipliée par $c$, et la matrice de Bézout remplace les colonnes $C_i$ et $C_j$ par $\alpha C_i + \gamma C_j$ et $\beta C_i + \delta C_j$.
+
+      (ii) Deux matrices équivalentes engendrent le même idéal par leurs coefficients.
+
+      (iii) Soit $A$ [[anneau-principal|principal]], et $a, b \in A$ non tous deux nuls. Il existe $d$ tel que $dA = aA + bA$, et une matrice de Bézout $B \in \mathrm{GL}_2(A)$ telle que
+      $$\begin{aligned} \begin{pmatrix} a & b \end{pmatrix} B &= \begin{pmatrix} d & 0 \end{pmatrix}, \\ {}^tB \begin{pmatrix} a \\ b \end{pmatrix} &= \begin{pmatrix} d \\ 0 \end{pmatrix}. \end{aligned}$$
+
+      (iv) Un anneau euclidien est principal. Dans (iii), on peut alors remplacer $B$ par un produit de transvections et de permutations.
+
+      (v) Si $N = PMQ$ avec $P \in \mathrm{GL}_m(A)$ et $Q \in \mathrm{GL}_n(A)$, l'application $x \mapsto Px$ induit un isomorphisme de modules de $A^m/M(A^n)$ sur $A^m/N(A^n)$.
+    preuve: |
+      (i) La relation est réflexive, avec $P = I_m$ et $Q = I_n$ ; symétrique, puisque $M = P^{-1}NQ^{-1}$ ; transitive, puisque le produit de deux matrices inversibles l'est, d'inverse le produit des inverses dans l'ordre contraire.
+
+      Le coefficient $(k, l)$ de $EM$ est $\sum_s e_{ks}m_{sl}$. Pour $E = I_m + cE_{ij}$, il vaut $m_{kl}$ si $k \neq i$, et $m_{il} + cm_{jl}$ si $k = i$. Les autres effets se lisent de même, et ceux de la multiplication à droite par le calcul symétrique, sur les colonnes.
+
+      Les inverses sont $I_m - cE_{ij}$, puisque $E_{ij}E_{ij} = 0$ pour $i \neq j$ ; la permutation elle-même ; la dilatation par $u^{-1}$ ; et la matrice de Bézout de bloc $\begin{pmatrix} \delta & -\beta \\ -\gamma & \alpha \end{pmatrix}$, puisque le produit de deux matrices de cette forme a pour bloc le produit des blocs, et que
+      $$\begin{pmatrix} \alpha & \beta \\ \gamma & \delta \end{pmatrix}\begin{pmatrix} \delta & -\beta \\ -\gamma & \alpha \end{pmatrix} = (\alpha\delta - \beta\gamma)\,I_2,$$
+      et de même dans l'autre ordre.
+
+      (ii) Les coefficients de $PMQ$ sont des sommes de produits $p_{ik}m_{kl}q_{lj}$ : ils appartiennent à l'idéal engendré par les coefficients de $M$. L'inclusion inverse vient de $M = P^{-1}(PMQ)Q^{-1}$.
+
+      (iii) L'idéal $aA + bA$ s'écrit $dA$, et $d \neq 0$ puisque $a$ ou $b$ est non nul. Écrivons $d = ua + vb$, $a = da'$ et $b = db'$. Alors $d = d(ua' + vb')$, et l'intégrité donne $ua' + vb' = 1$. La matrice
+      $$B = \begin{pmatrix} u & -b' \\ v & a' \end{pmatrix}$$
+      vérifie $ua' - (-b')v = 1$, et $(a, b)B = (ua + vb,\ -ab' + ba') = (d, -da'b' + db'a') = (d, 0)$. La seconde égalité est la transposée de la première.
+
+      (iv) L'idéal nul est $0A$. Soit $I$ un idéal non nul, et $b \in I$ non nul de stathme minimal ({{n-ordre|Bon ordre sur ℕ}}). Pour $a \in I$, écrivons $a = bq + r$ ; alors $r = a - bq \in I$, et la minimalité impose $r = 0$ : $I = bA$.
+
+      Pour la seconde assertion, montrons par récurrence forte sur $\nu(b)$, pour $b \neq 0$, qu'un produit $B$ de transvections et de permutations envoie la colonne $(a, b)$ sur une colonne $(d, 0)$ ; le cas $b = 0$ est clair, avec $B = I_2$.
+
+      Écrivons $a = bq + r$. La transvection qui retranche à la première ligne $q$ fois la seconde donne $(r, b)$, puis la permutation donne $(b, r)$. Si $r = 0$, c'est fini ; sinon $\nu(r) < \nu(b)$, et l'hypothèse de récurrence s'applique à $(b, r)$.
+
+      Par (ii), appliqué à la colonne $(a, b)$, l'idéal $dA$ est bien $aA + bA$. Pour les lignes, on transpose : la transposée d'une transvection ou d'une permutation en est une.
+
+      (v) Comme $x \mapsto Qx$ est une bijection de $A^n$ ({{md-libres|Modules libres}}, (ii)), $N(A^n) = PM(A^n)$. L'application $x \mapsto Px$ est un automorphisme de $A^m$ qui envoie $M(A^n)$ sur $N(A^n)$.
+
+      Sa composée avec la surjection canonique de $A^m$ sur $A^m/N(A^n)$ est linéaire, surjective, de noyau l'image réciproque de $N(A^n)$, qui est $M(A^n)$. Le théorème d'isomorphisme, comme au nœud {{md-libres|Modules libres}}, (i), conclut.
+    remarques:
+      - |
+        Pour $a = 12$ et $b = 42$ dans $\mathbb Z$, on a $d = 6 = 4 \cdot 12 - 42$, avec $a' = 2$ et $b' = 7$, d'où
+        $$B = \begin{pmatrix} 4 & -7 \\ -1 & 2 \end{pmatrix},$$
+        de coefficient $4 \cdot 2 - (-7)(-1) = 1$. On vérifie que $(12, 42)B = (48 - 42,\ -84 + 84) = (6, 0)$.
+
+        L'algorithme d'Euclide de (iv) y parvient sans matrice de Bézout : $(12, 42)$ donne $(42, 12)$, puis $(12, 6)$, puis $(6, 0)$, par trois divisions.
+      - |
+        L'erreur la plus répandue est de compléter la ligne $(u, v)$ de Bézout n'importe comment. La matrice $\begin{pmatrix} u & 0 \\ v & 1 \end{pmatrix}$ envoie bien $(a, b)$ sur $(d, b)$, mais elle n'est inversible que si $u$ l'est : c'est la seconde colonne $(-b', a')$, imposée par la condition $ua' + vb' = 1$, qui rend l'opération réversible et ne fait rien perdre de l'information.
+      - |
+        Les matrices de Bézout ne sont pas un luxe. Dans un anneau principal qui n'est pas euclidien, les matrices élémentaires peuvent ne pas engendrer $\mathrm{GL}_2(A)$.
+
+        P. M. Cohn l'a montré pour les anneaux d'entiers des corps quadratiques imaginaires $\mathbb Q(\sqrt{-d})$, avec $d > 0$ sans facteur carré, sauf pour $d = 1, 2, 3, 7, 11$, qui sont euclidiens (« On the structure of the $\mathrm{GL}_2$ of a ring », *Publ. Math. IHÉS* 30, 1966, p. 5-53). Pour $d = 19$, l'anneau $\mathbb Z\big[\frac{1 + \sqrt{-19}}2\big]$ est principal, ce qui est admis ici : c'est un anneau principal où la réduction par transvections seules ne suffit pas toujours.
+
+  - id: md-pivot
+    etiquette: Lemme du pivot
+    nature: lemme
+    titre: Lemme du pivot sur un anneau principal
+    texte: |
+      Dans ce nœud, $A$ est un [[anneau-principal|anneau principal]]. Un vecteur de $A^n$ est **unimodulaire** si ses coordonnées engendrent l'idéal $A$. Pour une matrice $M$, on note $I(M)$ l'idéal engendré par ses coefficients ; il ne change pas quand on remplace $M$ par une matrice [[matrices-equivalentes|équivalente]] ({{md-equivalence|Opérations élémentaires}}, (ii)).
+    enonce: |
+      (i) Si $sA + cA = A$ et $g \neq 0$, il existe $k \in A$ tel que $(s + ck)A + gA = A$.
+
+      (ii) Si $aA + bA + cA = A$, il existe $p, q \in A$ tels que $pA + qA = A$ et $(pa + qb)A + qcA = A$.
+
+      (iii) Si $M \in \lex{espace-matrices}{\mathcal M_{m,n}}(A)$ vérifie $I(M) = A$, il existe $y \in A^n$ unimodulaire tel que $My$ soit unimodulaire.
+
+      (iv) Tout vecteur unimodulaire $y$ de $A^n$ s'envoie sur $e_1$ par une matrice de $\mathrm{GL}_n(A)$ ; c'est donc la première colonne d'une matrice de $\mathrm{GL}_n(A)$.
+
+      (v) Si $M \neq 0$ et $I(M) = \delta A$, la matrice $M$ est équivalente à une matrice dont le coefficient $(1, 1)$ est $\delta$.
+
+      Aucune forme du choix n'intervient.
+    preuve: |
+      *Deux faits sur la comaximalité.* Si $xA + hA = A$ et $xA + tA = A$, alors $xA + htA = A$ : en multipliant $1 = \lambda x + \mu h$ et $1 = \lambda' x + \mu' t$, on obtient $1 = x(\dots) + \mu\mu'\,ht$. Par récurrence, $xA + cA = A$ entraîne $xA + c^NA = A$ pour tout $N$. Enfin, si $t \mid c^N$, alors $c^NA \subset tA$, et $xA + c^NA = A$ entraîne $xA + tA = A$.
+
+      (i) *Une suite canonique d'idéaux.* Pour un idéal $I$, posons $\varphi(I) = \{x \in A : x(I + cA) \subset I\}$. C'est un idéal, puisque la condition $x(I + cA) \subset I$ est stable par somme et par multiplication par un élément de $A$ ; il contient $I$, puisque $I$ est un idéal. La suite $I_0 = gA$, $I_{i+1} = \varphi(I_i)$ est définie par récurrence sans aucun choix ; elle est croissante, donc stationnaire ({{ac-noetheriens|Anneaux noethériens}}, (i) et (iii)) : $I_{N+1} = I_N$ pour un $N$.
+
+      Écrivons $I_N = hA$ ; on a $h \neq 0$, puisque $g \in I_N$. Soit $hA + cA = eA$ et $h = eh'$. Alors $h'(hA + cA) = h'eA = hA \subset hA$, donc $h' \in \varphi(hA) = hA$, et $h' = hy$. Il vient $h = ehy$, puis $ey = 1$ par intégrité : $hA + cA = A$.
+
+      Pour $x \in I_{i+1}$, on a $xc \in I_i$ par définition de $\varphi$. Comme $h \in I_N$, une récurrence sur $j$ donne $c^jh \in I_{N-j}$ pour $0 \leqslant j \leqslant N$, et en particulier $c^Nh \in I_0 = gA$. Comme $gA \subset hA$, écrivons $g = h\ell$ ; alors $c^Nh = gw = h\ell w$, et $c^N = \ell w$ par intégrité : $\ell \mid c^N$.
+
+      Écrivons $1 = \alpha c + \beta h$, et posons $k = \alpha(1 - s)$. Alors
+      $$\begin{aligned} s + ck &= s + (1 - \beta h)(1 - s) \\ &= 1 - \beta h(1 - s), \end{aligned}$$
+      de sorte que $(s + ck)A + hA = A$.
+
+      D'autre part, $(s + ck)A + cA = sA + cA = A$ ; par les faits ci-dessus, appliqués à $t = \ell$, $(s + ck)A + \ell A = A$, puis $(s + ck)A + h\ell A = A$, c'est-à-dire $(s + ck)A + gA = A$.
+
+      (ii) Si $a = b = 0$, alors $cA = A$, et $p = 0$, $q = 1$ conviennent. Sinon, soit $gA = aA + bA$, avec $g \neq 0$, et $a = ga'$, $b = gb'$ ; comme au nœud {{md-equivalence|Opérations élémentaires}}, (iii), il existe $s, t$ tels que $sa' + tb' = 1$.
+
+      Pour tout $k$, les éléments $p = s + b'k$ et $q = t - a'k$ vérifient $pa' + qb' = 1$, donc $pA + qA = A$ et $pa + qb = g$. Cette première condition est d'ailleurs redondante : un diviseur commun de $p$ et $q$ diviserait $pa + qb$ et $qc$. Comme $tA + a'A = A$, le point (i), appliqué à $t$, $-a'$ et $g$, fournit $k$ tel que $qA + gA = A$.
+
+      Par ailleurs $gA + cA = aA + bA + cA = A$. Par le premier des faits ci-dessus, $gA + qcA = A$, c'est-à-dire $(pa + qb)A + qcA = A$.
+
+      (iii) Par récurrence sur $n$. Si $n = 1$, $M$ est une colonne et $y = (1)$ convient.
+
+      *Le cas de deux colonnes* $u$ et $w$. Les matrices de Bézout de {{md-equivalence|Opérations élémentaires}}, (iii), appliquées aux lignes $1$ et $i$ pour $i = 2, \dots, m$, donnent $P \in \mathrm{GL}_m(A)$ telle que $Pu = (a, 0, \dots, 0)$ ; on saute les $i$ pour lesquels les deux coefficients sont nuls. On traite de même les lignes $2$ à $m$ de $Pw$, sans toucher à $Pu$, dont ces coordonnées sont nulles. On obtient $P' \in \mathrm{GL}_m(A)$ telle que $P'u = (a, 0, \dots, 0)$ et $P'w = (b, c, 0, \dots, 0)$, avec $c = 0$ si $m = 1$.
+
+      Comme $I(P'M) = I(M) = A$, on a $aA + bA + cA = A$. Le point (ii) donne $p$, $q$, avec $pA + qA = A$, tels que $P'(pu + qw) = (pa + qb, qc, 0, \dots, 0)$ soit unimodulaire. Alors $pu + qw$ l'est aussi, puisque $P'$ est inversible, et $y = (p, q)$ convient.
+
+      *Le cas général*, $n \geqslant 2$. Soit $N$ la matrice des $n - 1$ premières colonnes, $w$ la dernière, et $eA = I(N)$. Si $e = 0$, alors $I(w) = A$ et $y = e_n$ convient. Sinon, $N = eN'$ avec $I(N') = A$, et l'hypothèse de récurrence fournit $z \in A^{n-1}$ unimodulaire tel que $v = N'z$ soit unimodulaire.
+
+      La matrice à deux colonnes $ev$ et $w$ vérifie $I = eA + I(w) = I(N) + I(w) = A$. Par le cas de deux colonnes, il existe $p$, $q$, avec $pA + qA = A$, tels que $pev + qw$ soit unimodulaire.
+
+      Posons $y = (pz_1, \dots, pz_{n-1}, q)$. Alors $My = pNz + qw = pev + qw$ est unimodulaire, et $y$ l'est aussi : l'idéal de ses coordonnées contient $p \sum_i \lambda_iz_i = p$, si $\sum_i \lambda_iz_i = 1$, et $q$.
+
+      (iv) Comme dans le cas de deux colonnes, des matrices de Bézout donnent $P \in \mathrm{GL}_n(A)$ telle que $Py = (d, 0, \dots, 0)$, avec $dA = I(y) = A$ ; $d$ est inversible, et une dilatation le remplace par $1$. Si $P'y = e_1$ avec $P'$ inversible, $y = P'^{-1}e_1$ est la première colonne de $P'^{-1}$.
+
+      (v) Comme $\delta \neq 0$, chaque coefficient s'écrit de façon unique $m_{ij} = \delta m'_{ij}$, et $I(M) = \delta I(M')$ donne $I(M') = A$ après simplification par $\delta$. Soit $y$ comme en (iii) pour $M'$, et $Q \in \mathrm{GL}_n(A)$ de première colonne $y$, par (iv). La première colonne de $M'Q$ est $M'y$, unimodulaire, et (iv) donne $P \in \mathrm{GL}_m(A)$ telle que $PM'y = e_1$. Le coefficient $(1, 1)$ de $PM'Q$ vaut $1$, et celui de $PMQ = \delta\,PM'Q$ vaut $\delta$.
+    remarques:
+      - |
+        Pour $s = 3$, $c = 2$ et $g = 12$ dans $\mathbb Z$, on a $3 \wedge 12 = 3$ : il faut corriger $s$. La suite de (i) est $I_0 = 12\mathbb Z$, $I_1 = 6\mathbb Z$, $I_2 = 3\mathbb Z$, stationnaire, puisque $3$ est premier à $2$ ; donc $h = 3$, $\ell = 4$ divise $c^2 = 4$, et $1 = 2 \cdot 2 - 3$ donne $\alpha = 2$, $k = 2(1 - 3) = -4$. On trouve $s + ck = -5$, premier à $12$.
+
+        En général, $\varphi(hA)$ est engendré par $h/(h \wedge c)$ : la suite retire de $g$ ses facteurs communs avec $c$, et $h$ est la partie de $g$ première à $c$.
+      - |
+        Pour $M = \operatorname{diag}(2, 3)$ dans $\mathbb Z$, dont les coefficients engendrent $\mathbb Z$, la preuve donne, par exemple, $y = (1, 1)$ et $My = (2, 3)$, unimodulaire puisque $3 - 2 = 1$. Ajouter la seconde colonne à la première donne $\begin{pmatrix} 2 & 0 \\ 3 & 3 \end{pmatrix}$ ; la matrice de Bézout $\begin{pmatrix} -1 & 1 \\ -3 & 2 \end{pmatrix}$, appliquée aux lignes, donne $\begin{pmatrix} 1 & 3 \\ 0 & 6 \end{pmatrix}$, avec le pivot $1$ en place $(1, 1)$.
+
+        C'est ce qu'aucune opération sur la seule première ligne ou la seule première colonne ne peut faire : le pivot doit mélanger lignes et colonnes, et le vecteur $y$ dit comment.
+      - |
+        Le point (ii) est, aux notations près, la condition par laquelle I. Kaplansky a ramené la diagonalisation des matrices sur un anneau où tout idéal de type fini est principal au cas des petites matrices (« Elementary divisors and modules », *Trans. Amer. Math. Soc.* 66, 1949, p. 464-491). G. Cano, C. Cohen, M. Dénès, A. Mörtberg et V. Siles en ont formalisé la théorie en Coq, avec des algorithmes certifiés pour les anneaux euclidiens et les anneaux principaux constructifs (« Formalized linear algebra over elementary divisor rings in Coq », *Logical Methods in Computer Science* 12(2:7), 2016, DOI 10.2168/LMCS-12(2:7)2016 ; arXiv:1601.07472).
+
+        Ici, l'essentiel est que la suite $(I_i)$ porte sur des idéaux, objets canoniques, et non sur des générateurs : sa stationnarité s'applique sans construire de suite par choix successifs.
+
+  - id: md-smith
+    etiquette: Forme de Smith
+    nature: théorème
+    titre: Forme normale de Smith
+    texte: |
+      Dans ce nœud, $A$ est un [[anneau-principal|anneau principal]]. Une matrice $D \in \lex{espace-matrices}{\mathcal M_{m,n}}(A)$ est en [[forme-smith|forme normale de Smith]] si ses coefficients $d_{ij}$ sont nuls pour $i \neq j$, et si ses coefficients diagonaux $d_1 = d_{11}, \dots, d_s = d_{ss}$, où $s = \min(m, n)$, vérifient
+      $$d_1 \mid d_2 \mid \cdots \mid d_s.$$
+      Comme $0$ ne divise que $0$, les coefficients diagonaux nuls viennent en dernier.
+    enonce: |
+      (i) Toute matrice de $\mathcal M_{m,n}(A)$ est [[matrices-equivalentes|équivalente]] à une matrice en forme normale de Smith.
+
+      (ii) Si $A$ est [[anneau-euclidien|euclidien]], cette forme s'obtient en multipliant à gauche et à droite par des produits de matrices élémentaires.
+
+      (iii) Si $D$ est une forme de Smith de $M$, l'idéal engendré par les coefficients de $M$ est $d_1A$.
+
+      Aucune forme du choix n'intervient.
+    preuve: |
+      Notons $\mathcal G_m$ l'ensemble $\mathrm{GL}_m(A)$ pour (i), et l'ensemble des produits de matrices élémentaires de taille $m$ pour (ii). C'est un groupe pour le produit, puisque l'inverse d'une matrice élémentaire est élémentaire ({{md-equivalence|Opérations élémentaires}}, (i)). On dit que $N$ est **accessible** depuis $M$ si $N = PMQ$ avec $P \in \mathcal G_m$ et $Q \in \mathcal G_n$.
+
+      *Étape 1 : un bon pivot.* Supposons $M \neq 0$. Montrons qu'il existe $N$ accessible depuis $M$, avec $a = N_{11} \neq 0$, ayant la propriété suivante : pour toute matrice $N'$ accessible depuis $M$ dont le coefficient $(1, 1)$ est $a$, l'élément $a$ divise tous les coefficients de la première ligne et de la première colonne de $N'$.
+
+      Pour (i), soit $\delta A$ l'idéal engendré par les coefficients de $M$, avec $\delta \neq 0$. Le lemme du pivot ({{md-pivot|Lemme du pivot}}, (v)) fournit $N$ équivalente à $M$ avec $N_{11} = \delta$. Les coefficients de toute matrice équivalente à $M$ engendrent $\delta A$ ({{md-equivalence|Opérations élémentaires}}, (ii)) : $\delta$ les divise tous, ce qui est plus que la propriété demandée.
+
+      Pour (ii), soit $\nu$ le stathme. L'ensemble des $\nu(c)$, pour $c$ coefficient non nul d'une matrice accessible depuis $M$, est une partie non vide de $\mathbb N$ ; il a un plus petit élément ({{n-ordre|Bon ordre sur ℕ}}), atteint par un coefficient d'une matrice accessible, qu'une permutation amène en place $(1, 1)$.
+
+      Soit $N'$ accessible, de coefficient $(1, 1)$ égal à $a$, et $b = N'_{1j}$. Écrivons $b = aq + r$. La transvection qui retranche à la colonne $j$ la colonne $1$ multipliée par $q$ donne une matrice accessible de coefficient $(1, j)$ égal à $r$ ; si $r$ n'était pas nul, on aurait $\nu(r) < \nu(a)$, contre la minimalité. Donc $a \mid b$, et de même pour la première colonne.
+
+      *Étape 2 : le pivot divise tout.* Soit $N$ comme à l'étape 1. Des transvections, qui retranchent à chaque colonne $j \geqslant 2$ un multiple de la première, puis à chaque ligne $i \geqslant 2$ un multiple de la première, donnent une matrice accessible
+      $$N'' = \begin{pmatrix} a & 0 \\ 0 & N_1 \end{pmatrix},$$
+      où $N_1 \in \mathcal M_{m-1,n-1}(A)$.
+
+      Soit $c$ le coefficient de $N''$ en place $(i, j)$, avec $i, j \geqslant 2$. Ajouter la ligne $i$ à la première ligne ne change pas le coefficient $(1, 1)$, puisque la ligne $i$ commence par $0$, et place $c$ en position $(1, j)$ ; par l'étape 1, $a \mid c$. Ainsi $a$ divise tous les coefficients de $N_1$.
+
+      *Étape 3 : récurrence.* Montrons (i) et (ii) par récurrence sur $\min(m, n)$. Si $\min(m, n) = 0$, ou si $M = 0$, la matrice $M$ est déjà en forme de Smith. Sinon, les étapes 1 et 2 donnent $N''$ accessible depuis $M$.
+
+      Par hypothèse de récurrence, $P_1N_1Q_1 = D_1$ est en forme de Smith pour des $P_1 \in \mathcal G_{m-1}$, $Q_1 \in \mathcal G_{n-1}$. Les coefficients de $D_1$ engendrent le même idéal que ceux de $N_1$ ({{md-equivalence|Opérations élémentaires}}, (ii)), contenu dans $aA$ : $a$ divise le premier coefficient diagonal de $D_1$.
+
+      Les matrices diagonales par blocs $\operatorname{diag}(1, P_1)$ et $\operatorname{diag}(1, Q_1)$ appartiennent à $\mathcal G$, et
+      $$\operatorname{diag}(1, P_1)\,N''\,\operatorname{diag}(1, Q_1) = \begin{pmatrix} a & 0 \\ 0 & D_1 \end{pmatrix}$$
+      est en forme de Smith.
+
+      La récurrence porte sur un entier, et chaque étape ne fait qu'un nombre fini de choix : aucune forme du choix n'intervient.
+
+      (iii) Par {{md-equivalence|Opérations élémentaires}}, (ii), l'idéal engendré par les coefficients de $M$ est celui des coefficients de $D$, c'est-à-dire $d_1A + \cdots + d_sA = d_1A$, puisque $d_1$ divise tous les $d_i$.
+    remarques:
+      - |
+        Pour $M = \begin{pmatrix} 4 & 6 \\ 6 & 4 \end{pmatrix}$ dans $\mathbb Z$, quatre opérations élémentaires suffisent. Retrancher la première colonne de la seconde donne $\begin{pmatrix} 4 & 2 \\ 6 & -2 \end{pmatrix}$ ; échanger les colonnes, $\begin{pmatrix} 2 & 4 \\ -2 & 6 \end{pmatrix}$ ; retrancher à la seconde colonne deux fois la première, $\begin{pmatrix} 2 & 0 \\ -2 & 10 \end{pmatrix}$ ; ajouter la première ligne à la seconde, $\begin{pmatrix} 2 & 0 \\ 0 & 10 \end{pmatrix}$.
+
+        Le pivot $2$ est le coefficient de plus petite valeur absolue qu'on puisse atteindre, et il divise $10$. On retrouve $|{\det M}| = 20 = 2 \cdot 10$.
+      - |
+        Pour la matrice
+        $$M = \begin{pmatrix} 2 & 4 & 4 \\ -6 & 6 & 12 \\ 10 & -4 & -16 \end{pmatrix},$$
+        un calcul formel donne la forme de Smith $\operatorname{diag}(2, 6, 12)$. Le coefficient $2$ est le PGCD des coefficients, comme le veut (iii). Le produit $2 \cdot 6 = 12$ est le PGCD des mineurs de taille $2$, et $2 \cdot 6 \cdot 12 = 144 = |{\det M}|$.
+
+        C'est la caractérisation par les mineurs : $d_1 \cdots d_i$ engendre l'idéal des mineurs de taille $i$, ce que démontrera le nœud {{md-unicite|Unicité}}, (iii), en calculant les déterminants dans le corps des fractions.
+      - |
+        L'algorithme usuel cache du choix dépendant dans sa terminaison. On fait remonter le PGCD de la première ligne en place $(1, 1)$, puis celui de la première colonne, et l'on recommence : les idéaux engendrés par le coefficient $(1, 1)$ croissent, et l'on conclut parce qu'une suite croissante d'idéaux est stationnaire. Mais chaque tour choisit des coefficients de Bézout, qui ne sont pas canoniques : la preuve usuelle de terminaison, qui fabrique la suite infinie qu'il faudrait contredire, fait une infinité de choix successifs.
+
+        Un nombre fini de tours, fixé d'avance, ne suffit pas. Le coefficient obtenu après une passe sur la première colonne puis sur la première ligne n'est que le PGCD d'une ligne : pour $\operatorname{diag}(2, 3)$ dans $\mathbb Z$, ces deux passes ne changent rien, et le pivot $2$ ne divise pas $3$.
+
+        Le lemme du pivot évite les deux écueils. Sa seule suite infinie, celle des idéaux $I_i$, est définie sans choix, et c'est à elle que s'applique la stationnarité. Pour $\mathbb Z$ et $K[X]$, la valeur absolue et le degré donnent en outre le point (ii), qui n'emploie que des matrices élémentaires : sur un anneau principal non euclidien, celles-ci ne suffisent pas toujours ({{md-equivalence|Opérations élémentaires}}).
+      - |
+        H. J. S. Smith a établi cette réduction pour les matrices à coefficients entiers dans « On systems of linear indeterminate equations and congruences » (*Philosophical Transactions of the Royal Society* 151, 1861, p. 293-326), lu devant la Royal Society le 31 janvier 1861. Frobenius a repris la question des matrices entières dans « Theorie der linearen Formen mit ganzen Coefficienten » (*J. reine angew. Math.* 86, 1879, p. 146-208).
+
+  - id: md-base-adaptee
+    etiquette: Base adaptée
+    nature: théorème
+    titre: Théorème de la base adaptée
+    enonce: |
+      Soit $A$ un [[anneau-principal|anneau principal]] et $L$ un sous-module de $A^n$. Il existe une base $(f_1, \dots, f_n)$ de $A^n$, un entier $k \leqslant n$ et des éléments non nuls $d_1 \mid d_2 \mid \cdots \mid d_k$ de $A$ tels que $(d_1f_1, \dots, d_kf_k)$ soit une base de $L$. On dit que $(f_1, \dots, f_n)$ est une [[base-adaptee|base adaptée]] à $L$. Aucune forme du choix n'intervient.
+    preuve: |
+      Par {{md-sous-modules|Sous-modules de Aⁿ}}, (i), $L$ a une base $(y_1, \dots, y_k)$ avec $k \leqslant n$. Soit $M \in \mathcal M_{n,k}(A)$ la matrice de colonnes $y_1, \dots, y_k$ : l'application $x \mapsto Mx$ envoie la base canonique de $A^k$ sur celle de $L$, et c'est donc un isomorphisme de $A^k$ sur $L$ ({{md-libres|Modules libres}}, (i)).
+
+      Par {{md-smith|Forme de Smith}}, il existe $P \in \mathrm{GL}_n(A)$ et $Q \in \mathrm{GL}_k(A)$ telles que $D = PMQ$ soit en forme de Smith, de coefficients diagonaux $d_1 \mid \cdots \mid d_k$ ; on a $De_i = d_ie_i$ pour $i \leqslant k$.
+
+      L'application $x \mapsto Dx$ est injective, comme composée des applications injectives $x \mapsto Qx$, $x \mapsto Mx$ et $x \mapsto Px$ ; donc $d_ie_i = De_i \neq 0$, et $d_i \neq 0$.
+
+      Posons $f_i = P^{-1}e_i$. Comme $x \mapsto P^{-1}x$ est un automorphisme de $A^n$, $(f_1, \dots, f_n)$ est une base de $A^n$ ({{md-libres|Modules libres}}, (i) et (ii)).
+
+      Enfin $M = P^{-1}DQ^{-1}$, et $x \mapsto Q^{-1}x$ est une bijection de $A^k$, d'où
+      $$L = M(A^k) = P^{-1}D(A^k).$$
+      L'application $x \mapsto P^{-1}Dx$ est injective, et envoie $e_i$ sur $d_iP^{-1}e_i = d_if_i$ : la famille $(d_1f_1, \dots, d_kf_k)$ engendre $L$ et est libre.
+    remarques:
+      - |
+        Pour le sous-module $L$ de $\mathbb Z^2$ engendré par $y_1 = (6, 5)$ et $y_2 = (10, 9)$, déjà rencontré au nœud {{md-sous-modules|Sous-modules de Aⁿ}}, la matrice $\begin{pmatrix} 6 & 10 \\ 5 & 9 \end{pmatrix}$ a pour forme de Smith $\operatorname{diag}(1, 4)$.
+
+        Une base adaptée est $f_1 = (2, 1)$, $f_2 = (1, 1)$ : la matrice $\begin{pmatrix} 2 & 1 \\ 1 & 1 \end{pmatrix}$ de ses colonnes a pour inverse $\begin{pmatrix} 1 & -1 \\ -1 & 2 \end{pmatrix}$, à coefficients entiers. On a $y_1 = f_1 + 4f_2$ et $y_2 = f_1 + 2 \cdot 4f_2$, et la matrice $\begin{pmatrix} 1 & 1 \\ 1 & 2 \end{pmatrix}$, d'inverse $\begin{pmatrix} 2 & -1 \\ -1 & 1 \end{pmatrix}$, fait passer de $(f_1, 4f_2)$ à $(y_1, y_2)$. Ainsi $L = \mathbb Zf_1 \oplus 4\mathbb Zf_2$, et $\mathbb Z^2/L \cong \mathbb Z/4\mathbb Z$.
+
+        ```schema md-base-adaptee
+        En gris les points de $\mathbb Z^2$, en rouge ceux de $L$ ; les générateurs donnés $y_1$ et $y_2$ sont cerclés de gris. La base adaptée $f_1 = (2, 1)$, $f_2 = (1, 1)$ est en bleu, et $L$ a pour base $f_1$ et $4f_2 = (4, 4)$. Le parallélogramme construit sur $f_1$ et $4f_2$, les deux côtés issus de l'origine compris et les deux autres exclus, contient exactement quatre points de $\mathbb Z^2$, les points $0$, $f_2$, $2f_2$ et $3f_2$, les trois derniers cerclés de bleu : ils représentent les quatre classes de $\mathbb Z^2/L$, cyclique d'ordre $d_1d_2 = 4$ engendré par la classe de $f_2$.
+        ```
+      - |
+        L'erreur la plus répandue est de croire qu'on peut compléter une base de $L$ en une base de $A^n$, comme pour un sous-espace vectoriel. Le sous-module $2\mathbb Z$ de $\mathbb Z$ a pour base $(2)$, qui ne se complète pas. Le théorème fait l'inverse : il choisit d'abord la base de $A^n$, puis prend des multiples de ses vecteurs.
+      - |
+        Les idéaux $d_iA$ ne dépendent que de $L$ : le quotient $A^n/L$ est isomorphe à $A^{n-k} \oplus A/(d_1) \oplus \cdots \oplus A/(d_k)$, comme le montrera le nœud suivant, et le nœud {{md-unicite|Unicité}} établira que ces données sont déterminées par la classe d'isomorphisme du quotient.
+
+  - id: md-structure
+    etiquette: Théorème de structure
+    nature: théorème
+    titre: Structure des modules de type fini sur un anneau principal
+    texte: |
+      Dans ce nœud, $A$ est un [[anneau-principal|anneau principal]]. Pour $d \in A$, on note $A/(d)$ le module quotient $A/dA$ ({{a-module|Module}}) ; il est nul si et seulement si $d$ est inversible. L'**annulateur** d'un module $M$ est l'idéal des $a$ tels que $ax = 0$ pour tout $x \in M$.
+    enonce: |
+      (i) Si $D \in \mathcal M_{m,n}(A)$ est en [[forme-smith|forme de Smith]], de coefficients diagonaux non nuls $d_1, \dots, d_t$ et les autres nuls, alors
+      $$\begin{aligned} A^m/D(A^n) &\cong A/(d_1) \oplus \cdots \oplus A/(d_t) \\ &\quad \oplus A^{m-t}. \end{aligned}$$
+
+      (ii) Tout $A$-module [[module-type-fini|de type fini]] $M$ est isomorphe à
+      $$A^r \oplus A/(d_1) \oplus \cdots \oplus A/(d_k),$$
+      avec $r, k \in \mathbb N$ et des éléments $d_i$ non nuls et non inversibles tels que $d_1 \mid d_2 \mid \cdots \mid d_k$.
+
+      (iii) Pour tout $A$-module de type fini $M$, le [[sous-module-torsion|sous-module de torsion]] $T(M)$ est de type fini, le quotient $M/T(M)$ est libre de rang fini $r$, et $M$ est somme directe de $T(M)$ et d'un sous-module isomorphe à $A^r$.
+
+      (iv) Dans un isomorphisme comme en (ii), $T(M)$ correspond à $A/(d_1) \oplus \cdots \oplus A/(d_k)$, l'entier $r$ est le rang de $M/T(M)$, et l'annulateur de $T(M)$ est $d_kA$ (ou $A$ si $k = 0$).
+    preuve: |
+      (i) L'image $D(A^n)$ est formée des colonnes $(d_1a_1, \dots, d_ta_t, 0, \dots, 0)$, $a_i \in A$. L'application de $A^m$ dans $A/(d_1) \oplus \cdots \oplus A/(d_t) \oplus A^{m-t}$ qui envoie $(x_1, \dots, x_m)$ sur $(\bar x_1, \dots, \bar x_t, x_{t+1}, \dots, x_m)$ est linéaire et surjective, et son noyau est exactement $D(A^n)$. Le théorème d'isomorphisme, comme au nœud {{md-libres|Modules libres}}, (i), conclut.
+
+      (ii) Par {{md-libres|Modules libres}}, (i), $M \cong A^n/L$ pour un sous-module $L$ de $A^n$.
+
+      Par {{md-base-adaptee|Base adaptée}}, $L$ a une base $(d_1f_1, \dots, d_tf_t)$, où $(f_1, \dots, f_n)$ est une base de $A^n$ et $d_1 \mid \cdots \mid d_t$ sont non nuls. Soit $P$ la matrice de colonnes $f_1, \dots, f_n$, inversible ({{md-libres|Modules libres}}, (ii)), et $D$ la matrice de taille $n \times t$ de coefficients diagonaux $d_1, \dots, d_t$, en forme de Smith ; alors $L = PD(A^t)$.
+
+      Par {{md-equivalence|Opérations élémentaires}}, (v), appliqué à $PD = P \cdot D \cdot I_t$, et par (i),
+      $$A^n/L \cong A/(d_1) \oplus \cdots \oplus A/(d_t) \oplus A^{n-t}.$$
+
+      Si $d_{i+1}$ est inversible, $d_i$, qui le divise, l'est aussi : les $d_i$ inversibles viennent en premier, et leurs termes $A/(d_i)$ sont nuls. On les supprime, ce qui laisse les $d_i$ non inversibles, et l'on place $A^{n-t}$ en tête, ce qui ne change pas le module à isomorphisme près : $r = n - t$.
+
+      (iii) Le sous-module $T(M)$ est de type fini par {{md-sous-modules|Sous-modules de Aⁿ}}, (ii). Le quotient $M/T(M)$ est engendré par les classes des générateurs de $M$, et il est sans torsion ({{md-libres|Modules libres}}, (iv)) ; il est donc libre ({{md-sous-modules|Sous-modules de Aⁿ}}, (iii)), d'une base $(\bar e_1, \dots, \bar e_r)$.
+
+      Choisissons des représentants $e_1, \dots, e_r$, en nombre fini, et soit $F$ le sous-module qu'ils engendrent. Pour $x \in M$, écrivons $\bar x = \sum_i a_i\bar e_i$ : alors $x - \sum_i a_ie_i \in T(M)$, et $M = T(M) + F$.
+
+      Si $\sum_i a_ie_i \in T(M)$, alors $\sum_i a_i\bar e_i = 0$ et tous les $a_i$ sont nuls. Ceci montre à la fois que $(e_1, \dots, e_r)$ est libre, donc que $F \cong A^r$, et que $T(M) \cap F = \{0\}$, d'où l'unicité des écritures $t + f$ ; on conclut par {{md-libres|Modules libres}}, (v).
+
+      (iv) Dans $N = A^r \oplus A/(d_1) \oplus \cdots \oplus A/(d_k)$, un élément $(x, y)$ est de torsion si et seulement si $x = 0$. En effet, si $a(x, y) = 0$ avec $a \neq 0$, alors $ax = 0$ dans $A^r$, sans torsion, et $x = 0$ ; réciproquement, $d_k$ annule chaque $A/(d_i)$, puisque $d_i \mid d_k$, et $d_k \neq 0$.
+
+      Un isomorphisme envoie les éléments de torsion sur les éléments de torsion, d'où la première assertion, et $M/T(M) \cong N/T(N) \cong A^r$.
+
+      Enfin $d_k$ annule $T(N)$, et un élément $a$ qui l'annule annule la classe de $1$ dans $A/(d_k)$, c'est-à-dire $a \in d_kA$.
+    remarques:
+      - |
+        Pour la matrice $M$ de taille $3$ du nœud {{md-smith|Forme de Smith}}, de forme de Smith $\operatorname{diag}(2, 6, 12)$, le point (i) et {{md-equivalence|Opérations élémentaires}}, (v), donnent
+        $$\mathbb Z^3/M(\mathbb Z^3) \cong \mathbb Z/2\mathbb Z \oplus \mathbb Z/6\mathbb Z \oplus \mathbb Z/12\mathbb Z,$$
+        groupe à $144$ éléments, dont l'annulateur est $12\mathbb Z$ : tout élément est tué par $12$, et l'un d'eux est d'ordre $12$ exactement.
+      - |
+        Le sous-module de torsion est canonique, mais son supplémentaire ne l'est pas. Dans $\mathbb Z \oplus \mathbb Z/2\mathbb Z$, les sous-modules engendrés par $(1, \bar 0)$ et par $(1, \bar 1)$ sont deux supplémentaires distincts de $T = \{0\} \oplus \mathbb Z/2\mathbb Z$, tous deux isomorphes à $\mathbb Z$. Seul le quotient $M/T(M)$ est intrinsèque.
+      - |
+        Aucune forme du choix n'intervient dans ce nœud. La partie libre se sépare par (iii), puisque le quotient sans torsion est libre par une récurrence finie ; la partie de torsion se décompose par la forme de Smith, que le lemme du pivot obtient sans choix.
+
+  - id: md-unicite
+    etiquette: Unicité
+    nature: théorème
+    titre: Unicité de la forme de Smith et des facteurs invariants
+    texte: |
+      Dans ce nœud, $A$ est un [[anneau-principal|anneau principal]] et $K$ son [[corps-fractions|corps des fractions]], où l'on identifie $a$ à $a/1$.
+
+      Soit $M \in \lex{espace-matrices}{\mathcal M_{m,n}}(A)$ et $1 \leqslant i \leqslant \min(m, n)$. Un **mineur de taille $i$** de $M$ est le [[determinant|déterminant]], calculé dans $K$ ({{v-det-matrice|Déterminant d'une matrice}}), d'une matrice carrée extraite de $M$ en gardant $i$ lignes et $i$ colonnes. La formule du déterminant n'emploie que des sommes, des produits et des signes : un mineur appartient à $A$, comme au nœud {{rd-caracteristique|Polynôme caractéristique}}, (i). On note $\Delta_i(M)$ l'idéal de $A$ engendré par les mineurs de taille $i$.
+    enonce: |
+      (i) Pour toute $P \in \mathcal M_m(A)$, chaque mineur de taille $i$ de $PM$ est une combinaison, à coefficients dans $A$, de mineurs de taille $i$ de $M$ ; de même pour $MQ$, avec $Q \in \mathcal M_n(A)$. Par suite, deux matrices [[matrices-equivalentes|équivalentes]] ont les mêmes idéaux $\Delta_i$.
+
+      (ii) Si $D$ est en [[forme-smith|forme de Smith]], de coefficients diagonaux $d_1, \dots, d_s$, alors $\Delta_i(D) = d_1 \cdots d_iA$ pour $1 \leqslant i \leqslant s$.
+
+      (iii) Deux matrices en forme de Smith équivalentes ont les mêmes coefficients diagonaux, à des inversibles près. Si $D$ est une forme de Smith de $M$, le produit $d_1 \cdots d_i$ engendre l'idéal des mineurs de taille $i$ de $M$.
+
+      (iv) Soient $D, D' \in \mathcal M_n(A)$ telles que $x \mapsto Dx$ et $x \mapsto D'x$ soient injectives. Si les modules $A^n/D(A^n)$ et $A^n/D'(A^n)$ sont isomorphes, les matrices de taille $2n$
+      $$\begin{pmatrix} D & 0 \\ 0 & I_n \end{pmatrix}, \qquad \begin{pmatrix} I_n & 0 \\ 0 & D' \end{pmatrix}$$
+      sont équivalentes.
+
+      (v) Si $A^r \oplus A/(d_1) \oplus \cdots \oplus A/(d_k) \cong A^{r'} \oplus A/(d'_1) \oplus \cdots \oplus A/(d'_{k'})$, avec des éléments non nuls et non inversibles tels que $d_1 \mid \cdots \mid d_k$ et $d'_1 \mid \cdots \mid d'_{k'}$, alors $r = r'$, $k = k'$, et $d_iA = d'_iA$ pour tout $i$.
+
+      Pour un module [[module-type-fini|de type fini]] $M$, les idéaux $d_iA$ de {{md-structure|Théorème de structure}}, (ii), ne dépendent donc que de $M$ : ce sont ses [[facteurs-invariants|facteurs invariants]]. Avec le rang $r$, ils déterminent $M$ à isomorphisme près.
+
+      Aucune forme du choix n'intervient dans ce nœud.
+    preuve: |
+      (i) La ligne $\rho$ de $PM$ est $\sum_k p_{\rho k}L_k$, où $L_k$ est la ligne $k$ de $M$. Fixons des lignes $\rho_1 < \cdots < \rho_i$ et un ensemble $J$ de $i$ colonnes, et notons $L_k^J$ la ligne $L_k$ restreinte à $J$.
+
+      Le déterminant étant multilinéaire par rapport aux lignes ({{v-det-matrice|Déterminant d'une matrice}}, (iii)), le mineur correspondant de $PM$ vaut
+      $$\sum_{k_1, \dots, k_i} p_{\rho_1k_1} \cdots p_{\rho_ik_i}\,\det\big(L_{k_1}^J, \dots, L_{k_i}^J\big),$$
+      la somme portant sur les suites d'indices de lignes de $M$.
+
+      Si deux des $k_t$ sont égaux, le déterminant a deux lignes égales et il est nul (même nœud, (iii)). Sinon, ranger les $k_t$ dans l'ordre croissant change le déterminant en son produit par $\pm 1$ ({{v-formes-alternees|Formes alternées}}, (i), appliqué aux lignes par transposition), et l'on obtient $\pm$ un mineur de taille $i$ de $M$.
+
+      Pour $MQ$, on passe aux transposées : ${}^t(MQ) = {}^tQ\,{}^tM$, et une matrice carrée a le même déterminant que sa transposée (même nœud, (iii)), de sorte que les mineurs de ${}^tM$ sont ceux de $M$.
+
+      Si $N = PMQ$, on en tire $\Delta_i(N) \subset \Delta_i(M)$, et l'inclusion inverse vient de $M = P^{-1}NQ^{-1}$.
+
+      (ii) Soient $I$ et $J$ deux ensembles de $i$ indices, de lignes et de colonnes. Si $I \neq J$, il existe $j \in J \setminus I$ ; la colonne d'indice $j$ de la matrice extraite ne contient que des $d_{\rho j}$ avec $\rho \neq j$, tous nuls, et le mineur est nul par linéarité en cette colonne.
+
+      Si $I = J = \{l_1 < \cdots < l_i\}$, la matrice extraite est diagonale, de déterminant $d_{l_1} \cdots d_{l_i}$ ({{rd-stables|Sous-espaces stables}}, (ii)). Comme $l_t \geqslant t$, $d_t$ divise $d_{l_t}$, et ce produit est multiple de $d_1 \cdots d_i$, obtenu pour $I = \{1, \dots, i\}$.
+
+      (iii) Soient $D$ et $D'$ en forme de Smith, équivalentes. Par (i) et (ii), $d_1 \cdots d_iA = d'_1 \cdots d'_iA$ pour tout $i$. Montrons par récurrence sur $i$ que $d_i$ et $d'_i$ sont associés.
+
+      Si le produit $c = d_1 \cdots d_{i-1}$ est nul, un $d_t$ antérieur est nul, donc $d_i = 0$ ; par hypothèse de récurrence, le $d'_t$ correspondant est nul aussi, et $d'_i = 0$. Sinon, l'hypothèse de récurrence donne $d'_1 \cdots d'_{i-1} = uc$ avec $u$ inversible, puis $cd_i = w\,ucd'_i$ avec $w$ inversible, et $d_i = wud'_i$ après simplification par $c$.
+
+      La seconde assertion est (i) et (ii), appliqués à $M$ et à $D$.
+
+      (iv) Notons $U = D(A^n)$, $V = D'(A^n)$, $\pi$ et $\pi'$ les surjections canoniques, et $f$ un isomorphisme de $A^n/U$ sur $A^n/V$. Pour chaque $j$, choisissons un antécédent par $\pi'$ de $f(\pi(e_j))$ : ce sont $n$ choix, et ils définissent une application linéaire $F$ de $A^n$ dans lui-même telle que $\pi' \circ F = f \circ \pi$ ({{md-libres|Modules libres}}, (ii)). On construit de même $G$ avec $\pi \circ G = f^{-1} \circ \pi'$.
+
+      Alors $F(U) \subset V$, puisque $\pi'(F(x)) = f(\pi(x)) = 0$ pour $x \in U$, et de même $G(V) \subset U$. De plus $\pi(GF(x)) = f^{-1}(f(\pi(x))) = \pi(x)$, donc $(GF - I)(A^n) \subset U$ ; de même $(FG - I)(A^n) \subset V$.
+
+      Soit $\Theta$ l'application de $A^n \oplus A^n$ dans lui-même définie par
+      $$\Theta(x, y) = \big(x - Gy,\ Fx + (I - FG)y\big).$$
+      C'est la composée de $(x, y) \mapsto (x - Gy, y)$ et de $(x, y) \mapsto (x, Fx + y)$, toutes deux bijectives, de réciproques $(x, y) \mapsto (x + Gy, y)$ et $(x, y) \mapsto (x, y - Fx)$ : par {{md-libres|Modules libres}}, (ii), sa matrice $T$ est inversible.
+
+      Montrons que $\Theta$ envoie $U \oplus A^n$ sur $A^n \oplus V$. Pour $x \in U$, $Fx \in V$, et $(I - FG)y \in V$ : l'image est contenue dans $A^n \oplus V$. Réciproquement, pour $z \in A^n$ et $w \in V$, le couple $y = w - Fz$, $x = z + Gy = (I - GF)z + Gw$ vérifie $x \in U$ et
+      $$\Theta(x, y) = (z,\ Fz + y) = (z, w).$$
+
+      Soient $N_1 = T\operatorname{diag}(D, I_n)$ et $N_2 = \operatorname{diag}(I_n, D')$. Ces matrices définissent des applications injectives de même image $A^n \oplus V$. Chaque colonne de $N_2$ s'écrit donc $N_1q_j$ pour un unique $q_j$ ; la matrice $Q$ de colonnes $q_j$ vérifie $N_2 = N_1Q$, et de même $N_1 = N_2Q'$. L'injectivité donne $QQ' = I_{2n}$ et $Q'Q = I_{2n}$, d'où $N_2 = T\operatorname{diag}(D, I_n)\,Q$.
+
+      (v) Les sous-modules de torsion se correspondent, et $A^r \cong A^{r'}$ ({{md-structure|Théorème de structure}}, (iv)), d'où $r = r'$ ({{md-libres|Modules libres}}, (iii)). Les parties de torsion $\bigoplus_i A/(d_i)$ et $\bigoplus_j A/(d'_j)$ sont isomorphes.
+
+      Posons $n = k + k'$, et soient $D = \operatorname{diag}(1, \dots, 1, d_1, \dots, d_k)$ et $D' = \operatorname{diag}(1, \dots, 1, d'_1, \dots, d'_{k'})$ dans $\mathcal M_n(A)$, en forme de Smith. Elles définissent des applications injectives, leurs coefficients diagonaux étant non nuls, et, par {{md-structure|Théorème de structure}}, (i), où les termes $A/(1)$ sont nuls, $A^n/D(A^n)$ et $A^n/D'(A^n)$ sont isomorphes aux deux parties de torsion.
+
+      Par (iv), $\operatorname{diag}(D, I_n)$ et $\operatorname{diag}(I_n, D')$ sont équivalentes. La seconde, $\operatorname{diag}(1, \dots, 1, d'_1, \dots, d'_{k'})$, est déjà en forme de Smith. Une permutation des lignes et la même permutation des colonnes de la première, c'est-à-dire la multiplication par une matrice de permutation et par son inverse, rangent ses coefficients diagonaux en $\operatorname{diag}(1, \dots, 1, d_1, \dots, d_k)$, de taille $2n$ : on obtient deux formes de Smith équivalentes. Par (iii), elles ont autant de coefficients non inversibles, d'où $k = k'$, et $d_i$ est associé à $d'_i$.
+    remarques:
+      - |
+        Pour la matrice
+        $$M = \begin{pmatrix} 2 & 4 & 4 \\ -6 & 6 & 12 \\ 10 & -4 & -16 \end{pmatrix}$$
+        du nœud {{md-smith|Forme de Smith}}, un calcul formel donne $\Delta_1 = 2\mathbb Z$, $\Delta_2 = 12\mathbb Z$ et $\Delta_3 = 144\mathbb Z$. Par (iii), les coefficients de sa forme de Smith sont $2$, $12/2 = 6$ et $144/12 = 12$, sans aucune réduction : les mineurs suffisent à lire la forme de Smith.
+      - |
+        L'erreur la plus répandue est d'oublier la condition de divisibilité. Le groupe $\mathbb Z/2\mathbb Z \oplus \mathbb Z/3\mathbb Z$ est isomorphe à $\mathbb Z/6\mathbb Z$ ({{ac-chinois|Lemme chinois}}) : la famille $(2, 3)$ n'est pas une suite de facteurs invariants, et l'unicité ne porte que sur les suites $d_1 \mid \cdots \mid d_k$. La matrice $\operatorname{diag}(2, 3)$ n'est d'ailleurs pas en forme de Smith ; ses idéaux sont $\Delta_1 = \mathbb Z$ et $\Delta_2 = 6\mathbb Z$, ceux de $\operatorname{diag}(1, 6)$.
+      - |
+        Le point (iv) dit que deux présentations d'un même module deviennent équivalentes une fois complétées par des blocs identité. C'est ce qui rend les facteurs invariants intrinsèques, sans passer par la factorisation : la démonstration ne fait que des choix en nombre fini, les relèvements $F(e_j)$ et $G(e_j)$. Avec le lemme du pivot, les facteurs invariants existent et sont uniques sans choix.
+
+        La décomposition en diviseurs élémentaires du nœud suivant, elle, demande la factorisation, et le choix ne peut pas y être entièrement évité.
+
+  - id: md-elementaires
+    etiquette: Diviseurs élémentaires
+    nature: théorème
+    titre: Diviseurs élémentaires
+    choix: |
+      L'existence dans (iv) et le point (v), qui la suppose, demandent la décomposition des facteurs invariants en irréductibles ({{ac-principaux|Principal ⇒ factoriel}}, (ii)), donc le choix dépendant pour un anneau principal quelconque, mais pas pour $\mathbb Z$ ni $K[X]$, dont les éléments se décomposent sans choix ({{z-premiers|Nombres premiers}}, {{pol-irreductibles|Irréductibles}}). Les points (i) à (iii), et l'unicité dans (iv), n'utilisent aucun choix.
+    texte: |
+      Dans ce nœud, $A$ est un [[anneau-principal|anneau principal]] et $p$ un [[element-irreductible|élément irréductible]] de $A$. L'idéal $pA$ est maximal ({{ac-principaux|Principal ⇒ factoriel}}, (i)), et $k_p = A/pA$ est un [[corps]] ({{a-premier-maximal|Idéaux premiers, maximaux}}).
+
+      Pour un module $M$ et $j \in \mathbb N$, $p^jM = \{p^jx : x \in M\}$ est un sous-module. Le quotient
+      $$V_j(M) = p^jM/p^{j+1}M$$
+      est annulé par $p$ ; la loi $(a + pA) \cdot \bar x = a\bar x$ y est donc bien définie, et fait de $V_j(M)$ un $k_p$-[[espace-vectoriel|espace vectoriel]], les axiomes se lisant sur ceux du module.
+    enonce: |
+      (i) Pour $d \neq 0$, les entiers $v$ tels que $p^v \mid d$ forment un ensemble $\{0, 1, \dots, v_p(d)\}$ ; l'entier $v_p(d)$ est la **valuation** de $d$ en $p$. Si $p \nmid e$, alors $p^mA + eA = A$ pour tout $m \geqslant 1$.
+
+      (ii) Si $M = A^r \oplus A/(d_1) \oplus \cdots \oplus A/(d_k)$ avec des $d_i$ non nuls, alors pour tout $j \in \mathbb N$
+      $$\dim_{k_p} V_j(M) = r + \big|\{i : v_p(d_i) > j\}\big|.$$
+
+      (iii) Soient $p_1, \dots, p_s$ des irréductibles deux à deux non associés, $a_1, \dots, a_s \geqslant 1$, $u$ inversible et $d = u\,p_1^{a_1} \cdots p_s^{a_s}$. Alors
+      $$A/(d) \cong A/(p_1^{a_1}) \oplus \cdots \oplus A/(p_s^{a_s}),$$
+      isomorphisme d'anneaux et de $A$-modules.
+
+      (iv) ⋆ Tout $A$-module [[module-type-fini|de type fini]] $M$ est isomorphe à
+      $$A^r \oplus A/(q_1^{b_1}) \oplus \cdots \oplus A/(q_t^{b_t}),$$
+      où les $q_l$ sont irréductibles et les $b_l \geqslant 1$. La famille des idéaux $q_l^{b_l}A$, comptés avec répétition et à l'ordre près, ne dépend que de $M$ : ce sont ses [[diviseurs-elementaires|diviseurs élémentaires]].
+
+      (v) ⋆ Si $d_1 \mid \cdots \mid d_k$ sont les [[facteurs-invariants|facteurs invariants]] de $M$, ses diviseurs élémentaires sont les $p^{v_p(d_i)}$, pour $i \leqslant k$ et $p$ parcourant les irréductibles à association près, avec $v_p(d_i) \geqslant 1$. Réciproquement, $d_k$ est associé au produit, sur les irréductibles, des plus grandes puissances, $d_{k-1}$ celui des suivantes, et ainsi de suite.
+    preuve: |
+      (i) *Une suite canonique.* Supposons que $p^v$ divise $d$ pour tout $v$, et écrivons $d = p^vc_v$ ; le quotient $c_v$ est unique, puisque $A$ est intègre et $p^v \neq 0$. De $p^{v+1}c_{v+1} = p^vc_v$, on tire $c_v = pc_{v+1}$ : la suite d'idéaux $c_0A \subset c_1A \subset \cdots$ est croissante, et elle est définie sans aucun choix.
+
+      Elle est stationnaire ({{ac-noetheriens|Anneaux noethériens}}, (i) et (iii)) : $c_{N+1} = ec_N = epc_{N+1}$ pour un $N$ et un $e \in A$. Comme $c_{N+1} \neq 0$, puisque $d \neq 0$, l'intégrité donne $ep = 1$, alors que $p$ n'est pas inversible.
+
+      Il existe donc un $v$ tel que $p^v \nmid d$, et aucun $w \geqslant v$ ne convient, puisque $p^v$ divise $p^w$. Les entiers qui conviennent forment ainsi une partie finie de $\mathbb N$, qui contient $0$ et tout entier inférieur à l'un de ses éléments : c'est un ensemble $\{0, \dots, v_p(d)\}$.
+
+      *Comaximalité.* Si $p \nmid e$, alors $e \notin pA$ et $pA$ est maximal, donc $pA + eA = A$, et $1 = \alpha p + \beta e$. Si $1 = x_mp^m + y_me$, le produit de ces deux écritures de $1$ donne $1 = x_m\alpha\,p^{m+1} + e\,(\dots)$, et l'on conclut par récurrence sur $m$.
+
+      (ii) Pour une somme directe, $p^j(M_1 \oplus M_2) = p^jM_1 \oplus p^jM_2$, et $V_j(M_1 \oplus M_2)$ est isomorphe, comme $k_p$-espace, à $V_j(M_1) \oplus V_j(M_2)$, dont la dimension est la somme des dimensions. Il suffit de traiter $A$ et les $A/(d)$.
+
+      Pour $A$, l'application $a \mapsto p^ja + p^{j+1}A$ est surjective de $A$ sur $V_j(A)$, de noyau $pA$, après simplification par $p^j$ : $V_j(A) \cong k_p$ est de dimension $1$.
+
+      Pour $A/(d)$, soit $v = v_p(d)$ et $d = p^ve$, avec $p \nmid e$ par maximalité de $v$. L'application de $p^jA$ dans $V_j(A/(d))$ qui envoie $y$ sur la classe de $\bar y$ est surjective, de noyau $p^jA \cap (p^{j+1}A + dA)$.
+
+      Si $j < v$, alors $dA \subset p^{j+1}A$, le noyau est $p^{j+1}A$, et $V_j(A/(d)) \cong p^jA/p^{j+1}A \cong V_j(A)$ est de dimension $1$.
+
+      Si $j \geqslant v$, la comaximalité de (i) donne $p^{j+1-v}A + eA = A$, d'où, en multipliant par $p^v$,
+      $$p^{j+1}A + dA = p^vA \supset p^jA :$$
+      le noyau est $p^jA$ tout entier, et $V_j(A/(d)) = \{0\}$.
+
+      (iii) Pour $l \neq m$, $p_l$ ne divise pas $p_m$ : sinon $p_m = p_lc$, et l'irréductibilité de $p_m$ rendrait $c$ inversible, $p_l$ et $p_m$ seraient associés. Comme $p_l$ est premier ({{ac-principaux|Principal ⇒ factoriel}}, (i), et {{ac-divisibilite|Divisibilité}}, (ii)), il ne divise pas non plus $p_m^{a_m}$.
+
+      La comaximalité de (i), appliquée à $p = p_l$ et $e = p_m^{a_m}$, donne $p_l^{a_l}A + p_m^{a_m}A = A$ : les idéaux $p_l^{a_l}A$ sont deux à deux comaximaux.
+
+      Leur produit est l'idéal engendré par les produits $x_1 \cdots x_s$ avec $x_l \in p_l^{a_l}A$ ({{ac-chinois|Lemme chinois}}), c'est-à-dire $p_1^{a_1} \cdots p_s^{a_s}A = dA$. Le lemme chinois fournit l'isomorphisme d'anneaux $A/(d) \cong \prod_l A/(p_l^{a_l})$. Il est $A$-linéaire, puisque $a$ agit sur chaque quotient par multiplication par sa classe, et qu'un morphisme d'anneaux respecte les produits.
+
+      (iv) *Existence.* Par {{md-structure|Théorème de structure}}, (ii), $M \cong A^r \oplus \bigoplus_i A/(d_i)$. On décompose chaque $d_i$ en irréductibles ⋆, on regroupe les facteurs associés, et l'on applique (iii).
+
+      *Unicité.* Fixons un irréductible $p$. Si $q$ est associé à $p$, $v_p(q^b) = b$, puisque $p^{b+1} \mid p^b$ rendrait $p$ inversible. Si $q$ n'est pas associé à $p$, $p$ ne divise pas $q^b$, comme en (iii), et $v_p(q^b) = 0$.
+
+      Par (ii),
+      $$\dim_{k_p} V_j(M) = r + \big|\{l : q_l \sim p,\ b_l > j\}\big|,$$
+      où $q \sim p$ signifie « associé ». Un isomorphisme $f : M \to M'$ envoie $p^jM$ sur $p^jM'$, et induit un isomorphisme de $k_p$-espaces de $V_j(M)$ sur $V_j(M')$ : ces dimensions ne dépendent que de $M$.
+
+      L'entier $r$ est le rang de $M/T(M)$ ({{md-structure|Théorème de structure}}, (iv)), qui ne dépend que de $M$. Les dimensions déterminent donc, pour chaque $j$, le nombre de $l$ tels que $q_l \sim p$ et $b_l > j$, puis, par différence, le nombre de ceux pour lesquels $b_l = j + 1$. Comme $q_l^{b_l}A = p^{b_l}A$ lorsque $q_l \sim p$, la famille des idéaux est déterminée.
+
+      (v) La décomposition de chaque $d_i$ et le point (iii) fournissent une décomposition comme en (iv), dont les termes sont les $A/(p^{v_p(d_i)})$ ; par l'unicité de (iv), ce sont les diviseurs élémentaires. La réciproque vient de ce que $v_p(d_1) \leqslant \cdots \leqslant v_p(d_k)$ pour chaque $p$, puisque $d_i \mid d_{i+1}$.
+    remarques:
+      - |
+        Les facteurs invariants $2$, $6$, $12$ de $M = \mathbb Z/2\mathbb Z \oplus \mathbb Z/6\mathbb Z \oplus \mathbb Z/12\mathbb Z$ donnent les diviseurs élémentaires $2$ ; $2, 3$ ; $4, 3$, d'où
+        $$M \cong (\mathbb Z/2\mathbb Z)^2 \oplus \mathbb Z/4\mathbb Z \oplus (\mathbb Z/3\mathbb Z)^2.$$
+
+        En sens inverse, on range par premier, en décroissant : $4, 2, 2$ pour $2$, et $3, 3$ pour $3$. Les produits colonne par colonne redonnent $d_3 = 4 \cdot 3$, $d_2 = 2 \cdot 3$ et $d_1 = 2$.
+
+        Les dimensions des $V_j(M)$ le confirment : sur $\mathbb Z/2\mathbb Z$, elles valent $3$, $1$, $0$ pour $j = 0, 1, 2$, et sur $\mathbb Z/3\mathbb Z$, $2$ puis $0$. Elles se lisent sur des cardinaux : $V_0(M) = M/2M$ a $8 = 2^3$ éléments.
+      - |
+        Pour un groupe abélien fini, on retrouve ainsi l'écriture en produit de groupes cycliques d'ordres puissances de nombres premiers, établie par une autre voie au nœud {{gf-abeliens|Groupes abéliens finis}}, où le quotient $|p^tG|/|p^{t+1}G| = p^{c_t}$ joue le rôle de la dimension de $V_t(G)$. Pour un endomorphisme dont le polynôme caractéristique est scindé, les diviseurs élémentaires seront les puissances $(X - \lambda)^m$ qui donnent les blocs de Jordan ({{md-similitude|Critère de similitude}}).
+      - |
+        L'existence dans (iv) entraîne la factorisation : si $A/(a)$, avec $a$ non nul et non inversible, se décompose comme en (iv), on a $r = 0$, puisque $A/(a)$ est de torsion, et son annulateur $aA$ est engendré par le produit, sur les irréductibles qui apparaissent, des plus grandes puissances, et $a$ est associé à un produit d'irréductibles.
+
+        Or W. Hodges a montré que ZF seul ne démontre pas que tout anneau principal est factoriel, ni que tout anneau principal a un idéal maximal (« Läuchli's algebraic closure of Q », *Math. Proc. Cambridge Philos. Soc.* 79, 1976, p. 289-297, corollaire 10). Le point (iv) ne se démontre donc pas dans ZF seul pour tous les anneaux principaux, alors que les facteurs invariants, eux, existent et sont uniques sans choix ({{md-smith|Forme de Smith}}, {{md-unicite|Unicité}}).
+
+  - id: md-abeliens
+    etiquette: Groupes abéliens de type fini
+    nature: théorème
+    titre: Groupes abéliens de type fini
+    texte: |
+      Soit $G$ un groupe abélien, noté additivement. Pour $x \in G$ et $n \in \lex{ensemble-entiers-relatifs}{\mathbb Z}$, le multiple $nx$ est défini par récurrence pour $n \geqslant 0$, avec $0x = 0$ et $(n + 1)x = nx + x$, et par $(-n)x = -(nx)$. Les règles $(m + n)x = mx + nx$, $(mn)x = m(nx)$, $n(x + y) = nx + ny$ et $1x = x$ s'obtiennent par récurrence sur $n \geqslant 0$, puis par passage aux opposés, la troisième grâce à la commutativité.
+
+      Elles font de $G$ un [[module|$\mathbb Z$-module]], dont les sous-modules sont les sous-groupes. Le groupe $G$ est **de type fini** s'il est engendré par une partie finie, c'est-à-dire s'il est un $\mathbb Z$-module [[module-type-fini|de type fini]]. Un élément $x$ est **d'ordre fini** si $nx = 0$ pour un $n \neq 0$, c'est-à-dire s'il est de torsion.
+    enonce: |
+      (i) Tout groupe abélien de type fini $G$ est isomorphe à
+      $$\mathbb Z^r \times \mathbb Z/d_1\mathbb Z \times \cdots \times \mathbb Z/d_k\mathbb Z,$$
+      avec des entiers $d_i \geqslant 2$ tels que $d_1 \mid d_2 \mid \cdots \mid d_k$. Les entiers $r$, $k$ et $d_1, \dots, d_k$ sont uniques.
+
+      (ii) Les éléments d'ordre fini forment un sous-groupe fini de cardinal $d_1 \cdots d_k$, et $G$ est fini si et seulement si $r = 0$.
+
+      (iii) Tout sous-groupe de $\mathbb Z^n$ est isomorphe à $\mathbb Z^k$ pour un $k \leqslant n$, et tout sous-groupe d'un groupe abélien de type fini est de type fini.
+
+      (iv) Tout groupe abélien de type fini est isomorphe à un produit $\mathbb Z^r \times \prod_l \mathbb Z/p_l^{b_l}\mathbb Z$, avec des $p_l$ premiers et des $b_l \geqslant 1$, de façon unique à l'ordre près.
+
+      Aucune forme du choix n'intervient.
+    preuve: |
+      L'anneau $\mathbb Z$ est euclidien pour la valeur absolue ({{z-division|Division euclidienne}}), donc principal ({{md-equivalence|Opérations élémentaires}}, (iv)), et ses éléments se décomposent sans choix en produits de nombres premiers ({{z-premiers|Nombres premiers}}).
+
+      (i) {{md-structure|Théorème de structure}}, (ii), donne l'existence sans choix, et {{md-unicite|Unicité}}, (v), l'unicité, aussi sans choix. Les associés de $d$ sont $\pm d$ : on choisit $d_i > 0$, et un entier positif non nul non inversible est au moins $2$.
+
+      (ii) Par {{md-structure|Théorème de structure}}, (iv), le sous-groupe de torsion correspond à $\prod_i \mathbb Z/d_i\mathbb Z$, qui a $d_1 \cdots d_k$ éléments ({{z-zn|ℤ/nℤ}}). Si $r \geqslant 1$, les éléments $(m, 0, \dots, 0)$, $m \in \mathbb Z$, sont deux à deux distincts, et $G$ est infini.
+
+      (iii) C'est {{md-sous-modules|Sous-modules de Aⁿ}}, (i) et (ii), pour $A = \mathbb Z$.
+
+      (iv) C'est {{md-elementaires|Diviseurs élémentaires}}, (iv), dont l'existence est ici sans choix, et dont les irréductibles sont, au signe près, les nombres premiers.
+    remarques:
+      - |
+        Le sous-groupe de $\mathbb Z^2$ engendré par $(2, 4)$ a pour base adaptée $f_1 = (1, 2)$, $f_2 = (0, 1)$, puisque $(2, 4) = 2f_1$. Donc $\mathbb Z^2/\mathbb Z(2, 4) \cong \mathbb Z/2\mathbb Z \times \mathbb Z$ : la classe de $(1, 2)$ est d'ordre $2$, celle de $(0, 1)$ d'ordre infini.
+
+        L'erreur la plus répandue est de lire le quotient sur les coordonnées, comme s'il valait $\mathbb Z/2\mathbb Z \times \mathbb Z/4\mathbb Z$ : c'est la base adaptée, et non la base canonique, qui découpe le quotient.
+      - |
+        Pour les groupes finis, (i) et (iv) redonnent la classification du nœud {{gf-abeliens|Groupes abéliens finis}}, démontrée là sans module, par le lemme du supplémentaire d'un élément d'ordre maximal. La remarque de ce nœud sur les facteurs invariants y trouve sa démonstration.
+
+        Par exemple, les groupes abéliens d'ordre $144 = 2^4 \cdot 3^2$ correspondent aux couples formés d'une partition de $4$ et d'une partition de $2$ : il y en a $5 \times 2 = 10$, dont $\mathbb Z/2\mathbb Z \times \mathbb Z/6\mathbb Z \times \mathbb Z/12\mathbb Z$, celui du nœud {{md-structure|Théorème de structure}}.
+      - |
+        La finitude du type est indispensable. Le groupe additif du corps des fractions de $\mathbb Z$ n'est pas de type fini ({{md-sous-modules|Sous-modules de Aⁿ}}) ; il est sans torsion sans être isomorphe à aucun $\mathbb Z^r$.
+
+  - id: md-endomorphismes
+    etiquette: Module d'un endomorphisme
+    nature: proposition
+    titre: Le K[X]-module associé à un endomorphisme
+    texte: |
+      Dans ce nœud et les suivants, $K$ est un [[corps]], $E$ un $K$-espace vectoriel de [[dimension]] finie $n \geqslant 1$, et $u \in \lex{espace-applications-lineaires}{\mathcal L}(E)$ ; l'anneau est $\lex{anneau-polynomes}{K[X]}$, et les lettres $A$, $B$ désignent des matrices de $\lex{espace-matrices}{\mathcal M_n}(K)$.
+
+      On note $E_u$ l'ensemble $E$ muni de la loi $P \cdot x = P(u)(x)$, pour $P \in K[X]$ ({{rd-polynomes-endo|Polynômes d'endomorphismes}}). Pour une matrice $A$, on note $E_A$ le module obtenu sur $K^n$ avec $x \mapsto Ax$.
+
+      Pour un polynôme unitaire $P = X^d + c_{d-1}X^{d-1} + \cdots + c_0$ de degré $d \geqslant 1$, la [[matrice-compagnon|matrice compagnon]] $C(P) \in \mathcal M_d(K)$ a des coefficients $1$ en places $(i + 1, i)$ pour $1 \leqslant i < d$, la dernière colonne $(-c_0, \dots, -c_{d-1})$, et des $0$ ailleurs :
+      $$C(P) = \begin{pmatrix} 0 & & & -c_0 \\ 1 & \ddots & & -c_1 \\ & \ddots & 0 & \vdots \\ & & 1 & -c_{d-1} \end{pmatrix}.$$
+    enonce: |
+      (i) $E_u$ est un $K[X]$-module [[module-type-fini|de type fini]], annulé par le polynôme minimal $\mu_u$. Ses sous-modules sont les sous-espaces stables par $u$. Pour un autre espace $E'$ et $u' \in \mathcal L(E')$, les applications $K[X]$-linéaires de $E_u$ dans $E'_{u'}$ sont les applications $K$-linéaires $f$ telles que $f \circ u = u' \circ f$. En particulier, $E_A \cong E_B$ si et seulement si $A$ et $B$ sont semblables.
+
+      (ii) Pour $P$ unitaire de degré $d \geqslant 1$, le module $K[X]/(P)$ a pour base sur $K$ les classes de $1, X, \dots, X^{d-1}$, et la multiplication par $X$ y a pour matrice $C(P)$. Le polynôme minimal et le polynôme caractéristique de $C(P)$ sont égaux à $P$.
+
+      (iii) Soit $(\varepsilon_1, \dots, \varepsilon_n)$ la base canonique de $K^n$. L'application
+      $$\begin{aligned} \Phi : K[X]^n &\to E_A, \\ (P_1, \dots, P_n) &\mapsto \textstyle\sum_j P_j(A)\,\varepsilon_j \end{aligned}$$
+      est $K[X]$-linéaire et surjective, et son noyau est l'image de la matrice $XI_n - A \in \mathcal M_n(K[X])$. Ainsi $E_A \cong K[X]^n/(XI_n - A)(K[X]^n)$.
+    preuve: |
+      (i) L'application $P \mapsto P(u)$ est un morphisme d'anneaux ({{rd-polynomes-endo|Polynômes d'endomorphismes}}, (i)) : $(PQ) \cdot x = P(u)(Q(u)(x))$, $(P + Q) \cdot x = P \cdot x + Q \cdot x$, $1 \cdot x = x$, et $P \cdot (x + y) = P \cdot x + P \cdot y$ par linéarité de $P(u)$. Les constantes agissent comme les scalaires : une base de $E$ engendre $E_u$, et $\mu_u \cdot x = 0$ pour tout $x$.
+
+      Un sous-module est un sous-espace, stable par $X \cdot$, c'est-à-dire par $u$ ; réciproquement, un sous-espace stable par $u$ l'est par les $u^k$, donc par les $P(u)$.
+
+      Une application $K[X]$-linéaire est $K$-linéaire et vérifie $f(u(x)) = f(X \cdot x) = X \cdot f(x) = u'(f(x))$. Réciproquement, si $f \circ u = u' \circ f$, alors $f \circ u^k = u'^k \circ f$ par récurrence, puis $f \circ P(u) = P(u') \circ f$ par linéarité.
+
+      Un isomorphisme $E_A \to E_B$ est donc $x \mapsto Sx$ avec $S$ inversible et $SA = BS$, c'est-à-dire $B = SAS^{-1}$.
+
+      (ii) La division par $P$ ({{pol-division|Division des polynômes}}, (ii)) donne, dans chaque classe, un unique représentant de degré $< d$ : les classes de $1, X, \dots, X^{d-1}$ forment une base. La multiplication par $X$ envoie $\bar X^i$ sur $\bar X^{i+1}$ pour $i < d - 1$, et $\bar X^{d-1}$ sur
+      $$\bar X^d = -c_0 - c_1\bar X - \cdots - c_{d-1}\bar X^{d-1},$$
+      d'où la matrice $C(P)$.
+
+      Si $m$ désigne la multiplication par $X$, on a $Q(m)(\bar 1) = \bar Q$ ; donc $Q(m) = 0$ si et seulement si $P \mid Q$, et le polynôme minimal de $m$, c'est-à-dire de $C(P)$, est $P$ ({{rd-polynomes-endo|Polynômes d'endomorphismes}}, (iii) et (v)).
+
+      Le polynôme caractéristique est unitaire de degré $d$ ({{rd-caracteristique|Polynôme caractéristique}}, (ii)) et multiple de $P$ ({{rd-cayley-hamilton|Cayley-Hamilton}}, (ii)), unitaire de même degré : il lui est égal.
+
+      (iii) La linéarité vient de $\Phi(Q \cdot (P_j)_j) = \sum_j Q(A)P_j(A)\varepsilon_j = Q(A)\Phi((P_j)_j)$, et $\Phi$ est surjective, puisqu'elle envoie un vecteur constant $c$ sur $c$.
+
+      La $j$-ième colonne de $XI_n - A$ est $X\varepsilon_j - \sum_i a_{ij}\varepsilon_i$, d'image $A\varepsilon_j - \sum_i a_{ij}\varepsilon_i = 0$ : l'image $R$ de $XI_n - A$ est contenue dans le noyau.
+
+      Réciproquement, $X\varepsilon_j \equiv \sum_i a_{ij}\varepsilon_i$ modulo $R$, c'est-à-dire $X \cdot c \equiv Ac$ pour tout vecteur constant $c$ ; par récurrence, $X^k \cdot c \equiv A^kc$, puis $P \cdot c \equiv P(A)c$. Tout élément $\sum_j P_j\varepsilon_j$ est donc congru au vecteur constant $\sum_j P_j(A)\varepsilon_j$, qui est son image par $\Phi$. S'il est dans le noyau, il est congru à $0$, c'est-à-dire qu'il appartient à $R$.
+    remarques:
+      - |
+        Pour la rotation $J = \begin{pmatrix} 0 & -1 \\ 1 & 0 \end{pmatrix}$, on a $J^2 = -I_2$ : $J$ est la matrice compagnon de $X^2 + 1$, et $E_J \cong K[X]/(X^2 + 1)$. Le vecteur $\varepsilon_1$ et son image $J\varepsilon_1 = \varepsilon_2$ forment la base de (ii).
+
+        À l'opposé, pour $u = \lambda\,\mathrm{id}_E$, chaque droite est un sous-module, et $E_u \cong (K[X]/(X - \lambda))^n$.
+      - |
+        Le module $E_u$ est de type fini sans être libre : il est de torsion, puisque $\mu_u$ l'annule, alors qu'un $K[X]$-module libre non nul est sans torsion ({{md-libres|Modules libres}}, (iv)). Les nœuds précédents sur les modules de torsion s'appliquent donc pleinement, avec $r = 0$.
+      - |
+        Ce point de vue était annoncé au nœud {{rd-noyaux|Lemme des noyaux}} : les sous-espaces stables sont les sous-modules, et la décomposition en noyaux est la décomposition de $E_u$ selon le lemme chinois.
+
+  - id: md-frobenius
+    etiquette: Forme de Frobenius
+    nature: théorème
+    titre: Facteurs invariants d'un endomorphisme, forme de Frobenius
+    texte: |
+      Les notations sont celles du nœud {{md-endomorphismes|Module d'un endomorphisme}}, et $A$ est la matrice de $u$ dans une base de $E$. Aucune forme du choix n'intervient dans ce nœud : $K[X]$ est euclidien, et ses polynômes se décomposent sans choix.
+    enonce: |
+      (i) Il existe des polynômes unitaires non constants $P_1 \mid P_2 \mid \cdots \mid P_k$, uniques, tels que
+      $$E_u \cong K[X]/(P_1) \oplus \cdots \oplus K[X]/(P_k).$$
+      Ce sont les [[facteurs-invariants|facteurs invariants]] de $u$, ou de $A$.
+
+      (ii) Il existe une base de $E$ dans laquelle la matrice de $u$ est diagonale par blocs, de blocs $C(P_1), \dots, C(P_k)$ : c'est la [[forme-frobenius|forme de Frobenius]] de $u$. Si, dans une base, la matrice de $u$ est diagonale par blocs $C(Q_1), \dots, C(Q_l)$, avec des $Q_i$ unitaires non constants tels que $Q_1 \mid \cdots \mid Q_l$, alors $l = k$ et $Q_i = P_i$ pour tout $i$.
+
+      (iii) On a $\mu_u = P_k$ et $\chi_u = P_1 \cdots P_k$ ; en particulier $\deg P_1 + \cdots + \deg P_k = n$.
+
+      (iv) La matrice $XI_n - A$ est [[matrices-equivalentes|équivalente]], dans $\mathcal M_n(K[X])$, à la matrice diagonale $\operatorname{diag}(1, \dots, 1, P_1, \dots, P_k)$.
+    preuve: |
+      (i) et (iv). L'anneau $K[X]$ est euclidien pour le degré ({{md-equivalence|Opérations élémentaires}}). Par {{md-smith|Forme de Smith}}, (ii), $XI_n - A$ est équivalente, sans choix, à une matrice $D = \operatorname{diag}(\delta_1, \dots, \delta_n)$ en forme de Smith.
+
+      Par {{md-endomorphismes|Module d'un endomorphisme}}, (iii), {{md-equivalence|Opérations élémentaires}}, (v), et {{md-structure|Théorème de structure}}, (i), $E_A$ est isomorphe à la somme directe des $K[X]/(\delta_i)$ pour $\delta_i \neq 0$, et d'une copie de $K[X]$ par $\delta_i$ nul.
+
+      Aucun $\delta_i$ n'est nul : $E_A$ est de torsion, alors que l'élément $1$ d'une copie de $K[X]$ ne l'est pas. Les $\delta_i$ constants, qui viennent en premier, donnent des termes nuls ; des dilatations les ramènent à $1$, et ramènent les autres à des polynômes unitaires $P_1 \mid \cdots \mid P_k$, puisque deux polynômes associés diffèrent d'une constante non nulle ({{pol-principal|K[X] principal}}, (i)). Cela donne l'existence dans (i), et (iv).
+
+      L'unicité vient de {{md-unicite|Unicité}}, (v), et de ce que deux polynômes unitaires associés sont égaux.
+
+      (ii) Soit $g$ un isomorphisme de $\bigoplus_i K[X]/(P_i)$ sur $E_u$, et $E_i$ l'image du $i$-ième terme. Les $E_i$ sont des sous-espaces stables par $u$ ({{md-endomorphismes|Module d'un endomorphisme}}, (i)), et $E$ est leur somme directe ({{md-libres|Modules libres}}, (v)).
+
+      L'image par $g$ de la base de $K[X]/(P_i)$ décrite en {{md-endomorphismes|Module d'un endomorphisme}}, (ii), est une base de $E_i$ dans laquelle la restriction de $u$ a pour matrice $C(P_i)$, puisque $g$ échange la multiplication par $X$ et $u$. Ces bases mises bout à bout forment une base de $E$ ({{rd-stables|Sous-espaces stables}}, (i)), dans laquelle la matrice est diagonale par blocs.
+
+      Réciproquement, si la matrice de $u$ dans une base est diagonale par blocs $C(Q_i)$, soit $F_i$ le sous-espace engendré par les vecteurs du $i$-ième bloc, stable par $u$.
+
+      L'application $K$-linéaire de $K[X]/(Q_i)$ dans $F_i$ qui envoie $\bar X^j$ sur le $(j+1)$-ième vecteur de ce bloc est bijective, et elle échange la multiplication par $X$ et $u$, qui ont la même matrice $C(Q_i)$ : c'est un isomorphisme de modules. Ainsi $E_u \cong \bigoplus_i K[X]/(Q_i)$, et l'unicité de (i) donne $l = k$ et $Q_i = P_i$.
+
+      (iii) L'annulateur de $E_u$ est l'idéal des polynômes annulateurs de $u$, engendré par $\mu_u$ ({{rd-polynomes-endo|Polynômes d'endomorphismes}}, (iii)). Celui de $\bigoplus_i K[X]/(P_i)$ est $(P_k)$ ({{md-structure|Théorème de structure}}, (iv)). Les deux générateurs sont unitaires, donc $\mu_u = P_k$.
+
+      Par {{rd-stables|Sous-espaces stables}}, (iii), le polynôme caractéristique d'une matrice diagonale par blocs est le produit de ceux des blocs, qui sont les $P_i$ par {{md-endomorphismes|Module d'un endomorphisme}}, (ii). Les degrés donnent la dernière égalité.
+    remarques:
+      - |
+        Pour la matrice $A = \begin{pmatrix} 2 & 1 & 1 \\ 0 & 2 & 1 \\ 0 & 0 & 3 \end{pmatrix}$ du nœud {{rd-jordan|Forme de Jordan}}, un calcul formel donne la forme de Smith $\operatorname{diag}(1, 1, P)$ de $XI_3 - A$, avec
+        $$\begin{aligned} P &= (X - 2)^2(X - 3) \\ &= X^3 - 7X^2 + 16X - 12. \end{aligned}$$
+
+        Il n'y a qu'un facteur invariant : $\mu_A = \chi_A$, et $E_A$ est isomorphe à $K[X]/(P)$. Le vecteur $\varepsilon_3$ est **cyclique** : $(\varepsilon_3, A\varepsilon_3, A^2\varepsilon_3) = \big((0, 0, 1), (1, 1, 3), (6, 5, 9)\big)$ est une base, de déterminant $-1$, dans laquelle la matrice de $A$ est
+        $$C(P) = \begin{pmatrix} 0 & 0 & 12 \\ 1 & 0 & -16 \\ 0 & 1 & 7 \end{pmatrix}.$$
+      - |
+        Sur le corps des fractions de $\mathbb Z$, la matrice
+        $$B = \begin{pmatrix} 1 & -1 & 1 & 0 \\ 0 & 1 & -1 & 1 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 1 & 0 \end{pmatrix}$$
+        a pour facteurs invariants $X - 1$ et $(X - 1)(X^2 + 1) = X^3 - X^2 + X - 1$, ce qu'un calcul formel confirme. Une base de Frobenius est formée du vecteur propre $(1, 0, 0, 0)$, puis de $y = (1, 1, 0, 0)$, $By = (0, 1, 1, 0)$ et $B^2y = (0, 0, 1, 1)$.
+
+        Ici $\chi_B = (X - 1)^2(X^2 + 1)$ n'est pas scindé : $B$ n'a pas de forme de Jordan sur ce corps, mais elle a une forme de Frobenius, qui existe sur tout corps.
+
+        ```schema md-frobenius
+        La forme de Frobenius de $B$ : un bloc $C(X - 1) = (1)$ puis le bloc compagnon de $X^3 - X^2 + X - 1$, en bleu ; au-dessus de chaque colonne, le vecteur de base correspondant, $v = (1, 0, 0, 0)$ puis la chaîne $y, By, B^2y$. Dans chaque bloc, les $1$ gris de la sous-diagonale disent que chaque vecteur est envoyé sur le suivant ; la dernière colonne, en rouge, porte les opposés des coefficients du polynôme, ici $1, -1, 1$, et dit comment $B^3y$ s'exprime sur la chaîne.
+        ```
+      - |
+        L'erreur la plus répandue est de confondre facteurs invariants et diviseurs élémentaires. Les blocs compagnons de la forme de Frobenius correspondent aux facteurs invariants, rangés par divisibilité. On peut aussi prendre un bloc compagnon par diviseur élémentaire, au sens du nœud voisin {{md-elementaires|Diviseurs élémentaires}}, qui ne précède pas celui-ci dans l'arbre : on obtient une autre forme réduite, plus fine, mais dont les blocs ne se divisent plus les uns les autres.
+
+  - id: md-similitude
+    etiquette: Critère de similitude
+    nature: théorème
+    titre: Similitude et facteurs invariants
+    texte: |
+      Les notations sont celles du nœud {{md-endomorphismes|Module d'un endomorphisme}}. Deux matrices $A, B \in \lex{espace-matrices}{\mathcal M_n}(K)$ sont **semblables** s'il existe $S$ inversible telle que $B = S^{-1}AS$ ({{v-trace|Trace}}, (iii)) ; les [[facteurs-invariants|facteurs invariants]] de $A$ sont ceux de $x \mapsto Ax$.
+    enonce: |
+      (i) Les conditions suivantes sont équivalentes : $A$ et $B$ sont semblables ; elles ont les mêmes facteurs invariants ; les modules $E_A$ et $E_B$ sont isomorphes ; les matrices $XI_n - A$ et $XI_n - B$ sont [[matrices-equivalentes|équivalentes]] dans $\mathcal M_n(K[X])$.
+
+      (ii) Si $K$ est un sous-corps d'un corps $L$, les facteurs invariants de $A$, vue comme matrice de $\mathcal M_n(L)$, sont ceux de $A$ sur $K$. Deux matrices de $\mathcal M_n(K)$ semblables dans $\mathcal M_n(L)$ le sont dans $\mathcal M_n(K)$.
+
+      Aucune forme du choix n'intervient.
+    preuve: |
+      (i) La similitude de $A$ et $B$ équivaut à $E_A \cong E_B$ par {{md-endomorphismes|Module d'un endomorphisme}}, (i). L'égalité des facteurs invariants équivaut à $E_A \cong E_B$ : dans un sens par l'unicité de {{md-frobenius|Forme de Frobenius}}, (i), et dans l'autre parce que les deux modules sont alors isomorphes à la même somme $\bigoplus_i K[X]/(P_i)$.
+
+      Si $B = S^{-1}AS$, alors $XI_n - B = S^{-1}(XI_n - A)S$, et $S$, inversible dans $\mathcal M_n(K)$, l'est dans $\mathcal M_n(K[X])$ : les deux matrices sont équivalentes.
+
+      Si $XI_n - A$ et $XI_n - B$ sont équivalentes, les quotients de $K[X]^n$ par leurs images sont isomorphes ({{md-equivalence|Opérations élémentaires}}, (v)), c'est-à-dire $E_A \cong E_B$ ({{md-endomorphismes|Module d'un endomorphisme}}, (iii)).
+
+      (ii) Soient $P_1 \mid \cdots \mid P_k$ les facteurs invariants de $A$ sur $K$. Par {{md-frobenius|Forme de Frobenius}}, (ii), il existe $S$ inversible dans $\mathcal M_n(K)$ telle que $S^{-1}AS = F$ soit diagonale par blocs $C(P_1), \dots, C(P_k)$.
+
+      Cette égalité vaut dans $\mathcal M_n(L)$, puisque $K$ est un sous-anneau de $L$. Les $P_i$ restent unitaires, non constants, et chacun divise le suivant dans $L[X]$ ; la matrice $C(P_i)$ ne dépend que des coefficients de $P_i$. L'unicité de {{md-frobenius|Forme de Frobenius}}, (ii), appliquée sur le corps $L$, montre que les $P_i$ sont les facteurs invariants de $A$ sur $L$.
+
+      Si $A$ et $B$ sont semblables dans $\mathcal M_n(L)$, elles ont les mêmes facteurs invariants sur $L$ par (i), appliqué sur $L$, donc les mêmes sur $K$, et elles sont semblables dans $\mathcal M_n(K)$ par (i).
+    remarques:
+      - |
+        Les matrices $\operatorname{diag}(J_2, J_2)$ et $\operatorname{diag}(J_2, J_1, J_1)$ du nœud {{rd-jordan|Forme de Jordan}}, qui ont mêmes polynômes caractéristique et minimal, ont pour facteurs invariants $(X^2, X^2)$ et $(X, X, X^2)$ : elles ne sont pas semblables, et les facteurs invariants le voient, sans aucune hypothèse sur le polynôme caractéristique.
+      - |
+        Lorsque $\chi_A$ est scindé, les diviseurs élémentaires de $E_A$, au sens du nœud voisin {{md-elementaires|Diviseurs élémentaires}}, qui ne précède pas celui-ci dans l'arbre, sont des puissances $(X - \lambda)^m$. Dans $K[X]/((X - \lambda)^m)$, la base
+        $$f_i = (X - \lambda)^{m-i}, \qquad 1 \leqslant i \leqslant m,$$
+        vérifie $Xf_1 = \lambda f_1$ et $Xf_i = \lambda f_i + f_{i-1}$ pour $i \geqslant 2$ : la multiplication par $X$ y a pour matrice le bloc de Jordan $J_m(\lambda)$.
+
+        La forme de Jordan du nœud {{rd-jordan|Forme de Jordan}} est donc la décomposition de $E_A$ en diviseurs élémentaires, et son unicité est un cas particulier de celle des diviseurs élémentaires. On ne la redémontre pas ici : le chapitre de réduction l'a établie directement, par les noyaux itérés.
+      - |
+        Le point (ii) est remarquable : pour $K = \mathbb R$ et $L = \mathbb C$, deux matrices réelles semblables sur $\mathbb C$, ce qu'on décide souvent par la forme de Jordan complexe, sont semblables sur $\mathbb R$. La matrice de passage complexe n'est pas réelle en général ; c'est l'invariance des facteurs invariants, calculés par l'algorithme d'Euclide dans $K[X]$, qui fait le travail.
+      - |
+        L'erreur la plus répandue est de confondre équivalence et similitude. Sur un corps, deux matrices de même taille sont équivalentes si et seulement si elles ont le même rang, ce qui est bien plus grossier. Le point (i) remplace la similitude sur $K$ par l'équivalence sur l'anneau $K[X]$, que la forme de Smith sait décider.
+
+aretes:
+  - [md-libres, md-sous-modules]
+  - [md-libres, md-equivalence]
+  - [md-libres, md-endomorphismes]
+  - [md-equivalence, md-pivot]
+  - [md-pivot, md-smith]
+  - [md-smith, md-base-adaptee]
+  - [md-sous-modules, md-base-adaptee]
+  - [md-base-adaptee, md-structure]
+  - [md-structure, md-unicite]
+  - [md-unicite, md-elementaires]
+  - [md-elementaires, md-abeliens]
+  - [md-unicite, md-frobenius]
+  - [md-endomorphismes, md-frobenius]
+  - [md-frobenius, md-similitude]

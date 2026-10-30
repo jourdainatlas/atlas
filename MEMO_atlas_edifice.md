@@ -658,3 +658,20 @@ lot, en remarque : Witt, Morse, corps finis, extrema liés. Aucun choix. cdiff p
 gd-inversion-locale gardée visible : c'est la dépendance au point fixe). Relu par un agent indépendant : une faute
 historique (Sylvester nomme la loi d'inertie dès 1852 et la démontre en 1853) et treize retouches. Douteux : la
 source de Peano (Genocchi-Peano 1899, p. 332) ne repose que sur Wikipedia. 605 nœuds, 345 termes, 50 graphes.
+
+## 46. Modules de type fini sur un anneau principal (30 octobre 2026)
+
+Sous-graphe `ac-modules` (contenu/ac-modules.yaml), ouvert par le nœud chapitre `ac-modules` de ac (arêtes
+ac-principaux → ac-modules, ac-reduction → ac-modules ; entrées ac-principaux, ac-chinois, ac-reduction). Treize
+fiches md-* : modules libres et rang (corps des fractions), sous-modules de Aⁿ (récurrence finie), matrices
+équivalentes et matrices de Bézout, lemme du pivot, forme de Smith, base adaptée, théorème de structure, unicité
+(idéaux de mineurs calculés dans Frac(A), indépendance de la présentation par la matrice Θ), diviseurs élémentaires,
+groupes abéliens de type fini, K[X]-module d'un endomorphisme, forme de Frobenius, critère de similitude et descente
+de L à K. Choix : la forme de Smith existe dans ZF pour tout anneau principal (md-pivot : la suite canonique
+I_{i+1} = {x : x(I_i + cA) ⊂ I_i}, stationnaire par ac-noetheriens (i), donne la condition de Kaplansky ;
+Kaplansky 1949, Cano et al. LMCS 2016) ; l'algorithme usuel, lui, cache une suite de choix de Bézout. Seule
+l'existence des diviseurs élémentaires est ⋆ (factorisation ; Hodges 1976 : ZF ne prouve pas que tout principal est
+factoriel). Relu deux fois : la première relecture a fourni l'argument sans choix (l'auteur et moi avions gardé ⋆,
+ma propre récurrence colonne/ligne était fausse : les opérations d'une colonne dérangent les précédentes) et deux
+autres fautes ; la seconde, ciblée sur md-pivot, un exemple mal attribué et une référence. 619 nœuds, 357 termes,
+51 graphes ; ac et ac-modules 0 croisement.
