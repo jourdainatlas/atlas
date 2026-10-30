@@ -365,3 +365,117 @@ def gf_moins_de_60():
     S.texte([bx + bw / 2, by - 20], 'le 2-Sylow : 8 éléments', 'b', taille=13, ui=True)
     S.texte([bx + bw / 2, by + bh + 22], 'le neutre et sept éléments d’ordre 2', 'b', taille=13, ui=True)
     return S
+
+
+# ------------------------------------------------------------------ jh-zassenhaus (chapitre gf-jordan-holder)
+@schema('jh-zassenhaus')
+def jh_zassenhaus():
+    # Exemple de contrôle dans Z/1800Z (cyclique : un sous-groupe par diviseur d, l'intersection a pour ordre
+    # le pgcd, le produit le ppcm) : A d'ordre 72, A' d'ordre 9, B d'ordre 300, B' d'ordre 10.
+    n = 1800
+    sg = lambda d: frozenset(range(0, n, n // d))
+    inter = lambda X, Y: X & Y
+    prod = lambda X, Y: frozenset((x + y) % n for x in X for y in Y)
+    A, A1, B, B1 = sg(72), sg(9), sg(300), sg(10)
+    assert A1 <= A and B1 <= B
+    G = {'A': A, 'B': B, 'AB': inter(A, B),
+         'L': prod(A1, inter(A, B)), 'R': prod(B1, inter(A, B)),
+         'Ls': prod(A1, inter(A, B1)), 'Rs': prod(B1, inter(A1, B)),
+         'D': prod(inter(A1, B), inter(A, B1)),
+         'A1': A1, 'B1': B1, 'A1B': inter(A1, B), 'AB1': inter(A, B1)}
+    assert len(set(G.values())) == 12                     # les douze sous-groupes sont distincts
+    noms = {'A': 'A', 'B': 'B', 'AB': 'A∩B', 'L': 'A′(A∩B)', 'R': 'B′(A∩B)', 'Ls': 'A′(A∩B′)',
+            'Rs': 'B′(A′∩B)', 'D': 'D', 'A1': 'A′', 'B1': 'B′', 'A1B': 'A′∩B', 'AB1': 'A∩B′'}
+    pos = {'A': (85, 30), 'B': (435, 30),
+           'L': (85, 112), 'R': (435, 112),
+           'AB': (260, 162),
+           'Ls': (85, 212), 'Rs': (435, 212),
+           'D': (260, 262),
+           'A1': (85, 294), 'B1': (435, 294),
+           'A1B': (200, 344), 'AB1': (320, 344)}
+    for h, b in [('A', 'L'), ('L', 'AB'), ('L', 'Ls'), ('AB', 'D'), ('Ls', 'D'), ('Ls', 'A1'), ('D', 'A1B'),
+                 ('A1', 'A1B')]:
+        assert pos[b][1] > pos[h][1]                      # le contenant est toujours plus haut
+    rouges = [('L', 'Ls'), ('AB', 'D'), ('R', 'Rs')]
+    gris = [('A', 'L'), ('B', 'R'), ('L', 'AB'), ('R', 'AB'), ('Ls', 'D'), ('Rs', 'D'),
+            ('Ls', 'A1'), ('Rs', 'B1'), ('D', 'A1B'), ('D', 'AB1'), ('A1', 'A1B'), ('B1', 'AB1')]
+    for h, b in rouges + gris:                            # chaque trait est une inclusion stricte
+        assert G[b] < G[h], (h, b)
+    for h, b in rouges:                                   # les trois quotients ont le même ordre
+        assert len(G[h]) // len(G[b]) == len(G['AB']) // len(G['D'])
+    assert len(G['AB']) // len(G['D']) == 2
+    S = Schema(520, 366, 'Le papillon de Zassenhaus : les trois quotients isomorphes')
+
+    def degage(p, u, nom):
+        # avance depuis le centre de l'étiquette jusqu'au bord de sa boîte (demi-largeur estimée, demi-hauteur 12)
+        hw, hh = 4.6 * len(nom) + 5, 13
+        t = min(hw / abs(u[0]) if abs(u[0]) > 1e-9 else 1e9, hh / abs(u[1]) if abs(u[1]) > 1e-9 else 1e9)
+        return p + t * u
+
+    for h, b in gris + rouges:
+        p, q = np.array(pos[h], float), np.array(pos[b], float)
+        u = (q - p) / np.linalg.norm(q - p)
+        c = 'r' if (h, b) in rouges else 'g'
+        S.ligne(degage(p, u, noms[h]), degage(q, -u, noms[b]), c, l=2.6 if c == 'r' else None)
+    for k, p in pos.items():
+        c = 'r' if k in ('L', 'Ls', 'AB', 'D', 'R', 'Rs') else 't'
+        S.texte(p, noms[k], c, taille=16)
+    S.texte((272, 212), 'corps', 'r', ancre='start', taille=13, ui=True)
+    S.texte((74, 162), 'aile', 'r', ancre='end', taille=13, ui=True)
+    S.texte((446, 162), 'aile', 'r', ancre='start', taille=13, ui=True)
+    return S
+
+
+# ------------------------------------------------------------------ jh-exemples
+@schema('jh-exemples')
+def jh_exemples():
+    n = 12
+    sg = {d: frozenset(range(0, n, n // d)) for d in (1, 2, 3, 4, 6, 12)}
+    # suites de composition : chaînes de diviseurs à quotients premiers, calculées
+    premier = lambda k: k > 1 and all(k % m for m in range(2, k))
+    def chaines(d):
+        if d == 1:
+            return [[1]]
+        return [[d] + c for e in sorted(sg, reverse=True) if d % e == 0 and premier(d // e) for c in chaines(e)]
+    ch = chaines(12)
+    assert ch == [[12, 6, 3, 1], [12, 6, 2, 1], [12, 4, 2, 1]]
+    for c in ch:
+        assert all(sg[b] < sg[a] for a, b in zip(c, c[1:]))
+        assert sorted(a // b for a, b in zip(c, c[1:])) == [2, 2, 3]
+    noms = {12: 'ℤ/12', 6: '⟨2⟩', 4: '⟨3⟩', 3: '⟨4⟩', 2: '⟨6⟩', 1: '{0}'}
+    for d in sg:
+        if d not in (1, 12):
+            assert sg[d] == frozenset((k * (n // d)) % n for k in range(n)) and int(noms[d][1]) == n // d
+    cx = 180
+    pos = {12: np.array([cx, 40]), 6: np.array([cx - 105, 135]), 4: np.array([cx + 105, 135]),
+           3: np.array([cx - 105, 230]), 2: np.array([cx + 105, 230]), 1: np.array([cx, 325])}
+
+    def bord(p, u):
+        # point de sortie de la boîte (68 × 30, marge 4) dans la direction u
+        t = min(38 / abs(u[0]) if abs(u[0]) > 1e-9 else 1e9, 19 / abs(u[1]) if abs(u[1]) > 1e-9 else 1e9)
+        return p + t * u
+    couleurs = ['r', 'b', 'v']
+    S = Schema(520, 370, 'Les trois suites de composition de ℤ/12ℤ')
+    for a, b in sorted({(a, b) for c in ch for a, b in zip(c, c[1:])}):
+        qui = [k for k, c in enumerate(ch) if any((x, y) == (a, b) for x, y in zip(c, c[1:]))]
+        p, q = pos[a], pos[b]
+        u = (q - p) / np.linalg.norm(q - p)
+        nrm = np.array([-u[1], u[0]])
+        p1, q1 = bord(p, u), bord(q, -u)
+        for r, k in enumerate(qui):
+            dec = (r - (len(qui) - 1) / 2) * 5
+            S.ligne(p1 + dec * nrm, q1 + dec * nrm, couleurs[k], l=2.4)
+        m = (p + q) / 2
+        ecart = 14 if (a, b) == (6, 2) else 22          # le trait diagonal ⟨2⟩–⟨6⟩ : étiquette au plus près
+        lab = m + ecart * nrm * (1 if (m[0] - cx) * nrm[0] >= 0 else -1)
+        S.texte(lab, f'ℤ/{a // b}', 'g', taille=15)
+    for d, p in pos.items():
+        S.rect(p[0] - 34, p[1] - 15, 68, 30, 't', rempli='g', rx=7)
+        S.texte(p, noms[d], 't', taille=15)
+    x0, y0 = 360, 40
+    S.texte([x0, y0], 'ordres des facteurs', 'g', ancre='start', taille=13, ui=True)
+    for k, c in enumerate(ch):
+        y = y0 + 30 + 30 * k
+        S.ligne([x0, y], [x0 + 22, y], couleurs[k], l=2.4)
+        S.texte([x0 + 30, y], ', '.join(str(a // b) for a, b in zip(c, c[1:])), couleurs[k], ancre='start', taille=15)
+    return S

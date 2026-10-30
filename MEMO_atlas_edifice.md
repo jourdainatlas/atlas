@@ -748,3 +748,14 @@ fait désormais suivre au contenu d'un chapitre aussi les entrées qui visent so
 seulement ; vérifié par le relecteur). galois passe à 2 croisements. Relu : une attribution non vérifiée (lettres
 de Frobenius, réduite) et une dépendance à un admis non signalée (d'Alembert-Gauss), douze retouches.
 679 nœuds, 394 termes, 57 graphes.
+
+## 51. Jordan-Hölder (30 octobre 2026)
+
+Chapitre `gf-jordan-holder` (contenu/gf-jordan-holder.yaml, arête gf-moins-de-60 → gf-jordan-holder) : sept fiches
+jh-* — deuxième et troisième théorèmes d'isomorphisme et correspondance (alg n'avait que le premier), papillon de
+Zassenhaus, Schreier (groupes quelconques, longueurs ⩾ 1), suites de composition (existence pour un groupe fini,
+sous-groupe distingué propre d'ordre maximal, sans choix), Jordan-Hölder par Schreier, simplicité de 𝔄₅ (Cauchy,
+Sylow, dénombrement : le « restent admis : 𝔄₅ simple » du §39 est levé), exemples (ℤ/12ℤ, 𝔖₄, 𝔖₅, mêmes facteurs
+sans isomorphisme), résolubilité par les facteurs. Admis en remarque : 𝔄ₙ simple pour n ⩾ 6, unicité du groupe
+simple d'ordre 60. Aucun choix. gf reste à 6 croisements. Relu : aucune faute, douze retouches (deux renvois vers
+le mauvais nœud, la lettre e à la fois point et neutre).
