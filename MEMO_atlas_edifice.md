@@ -800,3 +800,16 @@ mineurs (image d'un sous-groupe engendré, découpage énoncé pour des lacets),
 dizaine de retouches. 725 nœuds, 420 termes, 61 graphes ; topalg et le chapitre à 0 croisement.
 
 Avec ce lot, la liste du §41 est épuisée.
+
+## 55. Outil de diagnostic de l'ordre logique (30 octobre 2026)
+
+`outils/edifice_diagnostic.py [--detail] [graphe …]` écrit `construction/diagnostic.md` et un bilan. Il ne bloque
+rien et complète construire.py (qui garantit déjà liens et termes balisés vers l'amont) par six familles de
+candidats : A, notations sans balise employées hors de l'aval de leur fiche de définition (exp, ln, sin, π nombre,
+ℂ, ℝ, ℚ, det, √, mesure de Lebesgue, intégrale, dérivée, lim, valeur propre ; dictionnaire NOTATIONS à enrichir) ;
+B, numéros de point cités absents de la fiche visée ; C, « même nœud, (x) » dont le nœud désigné (le dernier cité)
+n'a pas ce point ; D, fiche sans champ choix qui cite hors remarque une fiche ⋆ (D2 : points cités disjoints de
+ceux qui utilisent le choix, ou convention de la mesure de Lebesgue) ; E, citation hors remarque d'une fiche admise
+sans le dire ; F, terme du lexique (plusieurs mots) écrit en clair avant sa fiche de définition. Premier passage
+(725 nœuds) : A 5, B 0 (sur 1514 citations de points), C 2, D 30, D2 10, E 0, F 27 — candidats, non erreurs
+certaines. À lancer avant chaque relecture de lot.
