@@ -1020,3 +1020,16 @@ d'arrêt de Doob, identités de Wald (seule la première attribuée à Wald 1944
 sur la ruine (p = ½ oublié ; martingales dominées et non bornées), attributions historiques corrigées (Jessen puis
 Kolmogorov chez Lévy ; le mot « martingale » chez Ville 1939, que Lévy ignorait en 1937, d'après Mazliak),
 neuf retouches. 865 nœuds, 515 termes, 73 graphes ; edifice 16 croisements, chapitre 0.
+
+## 69. Diagnostic : version affinée (30 octobre 2026)
+
+outils/edifice_diagnostic.py reçoit les améliorations proposées au §56 : option `--racine <dossier>` (diagnostiquer
+une archive), catégories D3 (choix hérité en cascade) et D4 (résultat ⋆ cité par son nom en clair), citations ⋆
+écartées quand la fiche citée déclare le point sans choix ; en F, sont écartés les termes définis en gras sur place ou
+en amont (adjectif en gras compris), suivis de « c'est-à-dire », annoncés (« construira », « les nœuds qui
+suivent »…), ou homonymes d'un terme du lexique défini en amont. Contrôle de non-régression sur l'archive d'avant le
+§56 (752c3de^) : A 5 et C 2 identiques à l'ancien outil ; F passe de 27 à 12 candidats, et les vraies erreurs
+corrigées au §56 restent détectées. Une règle « terme suivi de “ : ” = définition sur place » écartait f-autoadjoints
+(« sa forme quadratique : »), vraie erreur : elle est retirée. État actuel : A 1, B 0, C 0, D 5, D2 33, D3 11, D4 0,
+E 1, F 6 (homonymes : fonction caractéristique d'une relation, mesure invariante), déjà jugés faux positifs ou à
+trancher au prochain passage.
