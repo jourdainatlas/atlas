@@ -843,12 +843,25 @@ positive » homonyme (quadratique / linéaire) ; entrée de lexique `choix-depen
 l'outil proposées par les agents (négations dans les champs choix, héritage transitif, homonymes, définitions en
 gras ou « c'est-à-dire »).
 
-## 57. Politique : le moins de choix possible (30 octobre 2026)
+## 57. Politique : le moins de choix possible, au sens du statut des résultats (30 octobre 2026)
 
-Décision de l'auteur : utiliser le moins possible l'axiome du choix, surtout quand une démonstration sans choix
-n'est pas trop complexe. En pratique : un ⋆ évitable est retiré en réécrivant la preuve (au plus une fois et demie
-plus longue, sans outil lourd nouveau), l'ancienne preuve pouvant rester en remarque avec son choix ; si la version
-sans choix demande une hypothèse (séparabilité avec suite dense donnée, signature dénombrable, anneau de
-polynômes…), on énonce le cas sans choix et le cas général ⋆, et l'aval cite le premier quand il suffit. Un ⋆
-inévitable (énoncé non démontrable dans ZF) est gardé, avec la bonne forme de choix et, si possible, une source.
-Premier exemple : Heine et bornes atteintes par la borne supérieure, chaîne de Fourier (§56).
+Décision de l'auteur, précisée le même jour : on ne retire un ⋆ que si cela change le **statut** d'un résultat,
+c'est-à-dire si, compte tenu de tout ce dont il dépend réellement, il devient démontrable dans ZF, ou s'il ne
+demande plus qu'une forme strictement plus faible du choix (Zorn ou ultrafiltre → dépendant → dénombrable → rien).
+Éviter un second usage du choix dans un résultat qui dépend de toute façon d'un choix inévitable en amont n'apporte
+rien : on ne réécrit pas la preuve, et le ⋆ hérité est signalé une fois (convention de la mesure de Lebesgue, dont
+dépend toute l'analyse sur ℝ ou 𝕋 avec λ). Un résultat n'hérite que de ce qu'il utilise vraiment, non de tout
+l'amont de l'arbre ; un énoncé sur un espace mesuré, un Hilbert ou un anneau **donnés** en hypothèse ne dépend pas
+de l'existence de la mesure de Lebesgue. Quand la version sans choix demande une hypothèse (suite dense donnée,
+signature dénombrable, anneau de polynômes), on énonce les deux cas et l'aval cite le premier quand il suffit.
+Un ⋆ inévitable est gardé, avec la bonne forme et, si possible, une source vérifiée.
+
+Bilan au regard de ce critère : Heine et bornes atteintes par la borne supérieure (§56) changent réellement le
+statut de toute l'intégration des fonctions continues et du calcul différentiel qui ne passe pas par la mesure ; la
+réécriture de la chaîne de Fourier sur ℝ (§56) ne change pas son statut (elle dépend de λ) — elle a seulement montré
+que son unique besoin de choix vient de la mesure, et comblé deux trous. Pistes retenues : Baire et Banach-Steinhaus
+pour un espace séparable (fait pour Baire : f-baire (ii), avec me-cauchy (v), fermés emboîtés sans choix quand une
+suite dense est donnée ; f-lp (iv), complétude pour une suite de fonctions donnée, sans choix) ; théorème de
+projection, Riesz, Radon-Nikodym et espérance conditionnelle sur des espaces donnés (au moins séparables) ;
+Nullstellensatz sans Krull pour les anneaux de polynômes. Pistes écartées : tout ce qui vit sur la mesure de
+Lebesgue.
