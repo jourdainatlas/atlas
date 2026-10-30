@@ -221,7 +221,7 @@ npm ci                            # KaTeX 0.16.22
 sh construire.sh
 ```
 
-Sorties : `construction/atlas.html` (aperçu Claude) et `site/index.html` (site autonome).
+Sorties : `site/index.html` (site autonome) et, seulement si `ATLAS_APERCU=1`, `construction/atlas.html` (aperçu en un fichier, plus de 180 Mo, non publié ; supprimé de la construction par défaut le 30 octobre 2026 pour la mémoire du rendu).
 Méthode attendue, comme pour les cours : construire jusqu'à zéro erreur, **regarder le rendu**
 (clair et sombre, largeur de bureau et de téléphone), vérifier les démonstrations, puis livrer en
 signalant les points douteux.

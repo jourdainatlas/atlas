@@ -722,3 +722,9 @@ Mémoire : rendu.mjs dépassait le tas par défaut de Node (≈ 2 Go ; atlas.htm
 page d'aperçu sont désormais dans un bloc libéré avant la suite, les tranches `tete`/`corps` inutilisées sont
 supprimées et la copie profonde passe par structuredClone (sans chaîne intermédiaire) : le rendu tient dans
 1,8 Go. construire.sh passe --max-old-space-size=4096 pour la marge. 657 nœuds, 382 termes, 55 graphes.
+
+## 49. Page d'aperçu à la demande (30 octobre 2026)
+
+`construction/atlas.html` (182 Mo, inutilisé par le site publié) n'est plus écrit par défaut : `ATLAS_APERCU=1 sh
+construire.sh` le produit. Le rendu tient alors dans 0,9 Go de tas au lieu de 1,8 Go (limite fixée à 4 Go). Si la
+mémoire redevenait un souci, le levier suivant est de rendre et d'écrire branche par branche dans rendu.mjs.

@@ -3,7 +3,7 @@
 // Lit construction/donnees.json (produit par construire.py), convertit la syntaxe
 // des fiches en HTML, compose les formules avec KaTeX (toute erreur de LaTeX arrête
 // la construction), puis insère les données et la feuille de style KaTeX, avec ses
-// polices embarquées, dans gabarit.html. Écrit construction/atlas.html.
+// polices embarquées, dans gabarit.html. Écrit le site (site/) et, si ATLAS_APERCU=1, construction/atlas.html.
 //
 // Syntaxe des fiches :
 //   $...$  et  $$...$$     formules LaTeX
@@ -208,9 +208,10 @@ const licenceKatex = fs.readFileSync(path.join(path.dirname(dist), 'LICENSE'), '
 css = `/*! KaTeX ${require('katex/package.json').version} (feuille de style et polices)\n${licenceKatex}\n*/\n` + css;
 if (/url\(fonts\//.test(css)) { console.error('ERREUR : une police KaTeX n\'a pas été embarquée'); process.exit(1); }
 
-// Les grandes chaînes (données sérialisées, page) restent dans un bloc : elles sont libérées avant la suite,
-// sans quoi le tas par défaut de Node ne suffit plus.
-{
+// Page d'aperçu en un seul fichier (construction/atlas.html, plus de 180 Mo) : le site publié ne s'en sert pas,
+// et elle double presque la mémoire du rendu. Elle n'est donc écrite qu'à la demande : ATLAS_APERCU=1 sh construire.sh.
+// Les grandes chaînes restent dans un bloc, libérées avant la suite.
+if (process.env.ATLAS_APERCU === '1') {
   const json = JSON.stringify(D).replace(/</g, '\\u003c');
   const page = fs.readFileSync('gabarit.html', 'utf8').replace('/*KATEX*/', () => css).replace('"__DONNEES__"', () => json);
   fs.writeFileSync('construction/atlas.html', page);
