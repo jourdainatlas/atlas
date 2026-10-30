@@ -842,3 +842,13 @@ uniforme » rattachée au lexique à cx-convergence-uniforme alors que fc-unifor
 positive » homonyme (quadratique / linéaire) ; entrée de lexique `choix-dependant` absente ; améliorations de
 l'outil proposées par les agents (négations dans les champs choix, héritage transitif, homonymes, définitions en
 gras ou « c'est-à-dire »).
+
+## 57. Politique : le moins de choix possible (30 octobre 2026)
+
+Décision de l'auteur : utiliser le moins possible l'axiome du choix, surtout quand une démonstration sans choix
+n'est pas trop complexe. En pratique : un ⋆ évitable est retiré en réécrivant la preuve (au plus une fois et demie
+plus longue, sans outil lourd nouveau), l'ancienne preuve pouvant rester en remarque avec son choix ; si la version
+sans choix demande une hypothèse (séparabilité avec suite dense donnée, signature dénombrable, anneau de
+polynômes…), on énonce le cas sans choix et le cas général ⋆, et l'aval cite le premier quand il suffit. Un ⋆
+inévitable (énoncé non démontrable dans ZF) est gardé, avec la bonne forme de choix et, si possible, une source.
+Premier exemple : Heine et bornes atteintes par la borne supérieure, chaîne de Fourier (§56).
