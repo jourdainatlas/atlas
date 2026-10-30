@@ -770,3 +770,16 @@ d'Alembert-Gauss par cx-liouville, ancêtre) et mise à l'échelle, systèmes li
 linéarisation, instabilité si μ(A) > 0 dans le cas non linéaire, pendule amorti. Aucun choix. Remarques non
 démontrées : vitesse optimale κ < −μ(A), cycle limite de van der Pol, variété stable. Relu : aucune faute bloquante,
 deux affirmations inexactes en remarque et treize retouches. edo et edo-liapounov à 0 croisement.
+
+## 53. Théorème de Jordan et Jordan-Brouwer (30 octobre 2026)
+
+Chapitre `hom-jordan` (contenu/hom-jordan.yaml, arête h-applications → hom-jordan) : onze fiches hj-* — homologie
+réduite (complexe augmenté, degré −1 pour le vide), Mayer-Vietoris réduite, compacité des classes dans une réunion
+croissante d'ouverts, calottes et projection stéréographique, composantes d'un ouvert de Sⁿ, cellules (Hatcher
+2B.1 a, segments emboîtés par une règle explicite), sphères plongées (cas k = n : injective Sⁿ → Sⁿ surjective),
+Jordan-Brouwer dans Sⁿ (deux composantes, Fr U = Fr V = Σ, séparateur minimal) et dans ℝⁿ, Jordan dans le plan
+(lacet simple par le bord du carré, sans trigonométrie), invariance du domaine (l'« admise ici » de h-applications
+est levé : le mémo §35 qui la range parmi les admis est périmé). Aucun choix. Admis en remarque : critère de parité
+des polygones, Schoenflies, sphère cornue, dualité d'Alexander. Brouwer daté 1912 (Math. Ann. 71). Relu : six
+fautes (lexique faux pour le vide, « caractérise la sphère » faux — tore de S³ —, parité incomplète et présentée
+comme démontrée dans la légende, sin et mesure de Lebesgue non annoncés) et une quinzaine de retouches.

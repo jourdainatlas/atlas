@@ -1,0 +1,447 @@
+# Niveau 2 : structure interne du chapitre « Théorème de Jordan-Brouwer » (nœud hom-jordan du graphe hom,
+# créé le 30 oct. 2026). Homologie réduite (complexe augmenté, degré −1 qui détecte le vide), Mayer-Vietoris
+# réduite sans hypothèse sur l'intersection, homologie d'une réunion croissante d'ouverts (une chaîne est une
+# somme finie de simplexes, chacun d'image compacte), calottes de la sphère (projection stéréographique depuis
+# un point quelconque, boule fermée et cube), composantes connexes par arcs des ouverts de Sⁿ ; puis la
+# démonstration homologique classique (Hatcher, Algebraic Topology, prop. 2B.1) : le complémentaire d'une
+# cellule de dimension k dans Sⁿ a une homologie réduite nulle (récurrence sur k, découpage du cube en deux
+# moitiés, segments emboîtés), celui d'une sphère topologique de dimension k a l'homologie réduite de S^{n−k−1} ;
+# séparation de Jordan-Brouwer dans Sⁿ, la sphère étant la frontière de chaque composante ; passage à ℝⁿ
+# (n ⩾ 2 : une composante bornée, une non bornée) ; théorème de Jordan pour les lacets simples du plan ;
+# invariance du domaine. Admis en remarque : Schoenflies dans le plan, sphère cornue d'Alexander, dualité
+# d'Alexander, courbe d'Osgood.
+# Choix : aucun. Les segments emboîtés sont définis par une règle explicite (la moitié gauche quand elle
+# convient), et l'argument de compacité ne fixe qu'un représentant et une chaîne dont il affirme l'existence.
+
+graphe: hom-jordan
+titre: Théorème de Jordan-Brouwer
+conteneur: hom-jordan
+
+entrees:
+  h-degre0: [hj-reduite]
+  h-mayer-vietoris: [hj-mv-reduite]
+  h-spheres: [hj-calottes]
+  h-applications: [hj-spheres-plongees]
+
+noeuds:
+  - id: hj-reduite
+    etiquette: Homologie réduite
+    nature: définition
+    titre: Homologie réduite
+    texte: |
+      Pour un espace $X$, le **complexe augmenté** $\tilde C(X)$ est défini par $\tilde C_n(X) = C_n(X)$ pour $n \geqslant 0$, $\tilde C_{-1}(X) = \lex{ensemble-entiers-relatifs}{\mathbb Z}$ et $\tilde C_n(X) = 0$ pour $n \leqslant -2$.
+
+      Son bord est celui de $C(X)$ en degré $n \geqslant 1$. En degré $0$, c'est l'**augmentation** $\varepsilon : C_0(X) \to \mathbb Z$, le morphisme qui envoie chaque point de $X$ sur $1$ ({{h-complexes|Complexes de chaînes}}, (i)), de sorte que $\varepsilon\big(\sum n_x x\big) = \sum n_x$.
+
+      C'est un complexe : pour un simplexe $\sigma$ de dimension $1$, $\partial\sigma = \sigma \circ \delta_0 - \sigma \circ \delta_1$ est la différence de deux points, et $\varepsilon(\partial\sigma) = 1 - 1 = 0$.
+
+      L'[[homologie-reduite|homologie réduite]] de $X$ est
+      $$\lex{homologie-reduite}{\tilde H_n}(X) = H_n\big(\tilde C(X)\big), \quad n \in \mathbb Z.$$
+
+      Pour $f : X \to Y$ continue, le morphisme $f_\#$ prolongé par l'identité de $\mathbb Z$ en degré $-1$ est un morphisme de complexes, puisque $\varepsilon(f \circ \sigma) = 1$ pour tout point $\sigma$ ; il induit des morphismes $f_* : \tilde H_n(X) \to \tilde H_n(Y)$, avec $(g \circ f)_* = g_* \circ f_*$ ({{h-complexes|Complexes de chaînes}}, (ii)).
+    enonce: |
+      (i) $\tilde H_n(X) = \lex{homologie-singuliere}{H_n}(X)$ pour $n \geqslant 1$, et $\tilde H_n(X) = 0$ pour $n \leqslant -2$. Le groupe $\tilde H_{-1}(X)$ est nul si $X$ n'est pas vide, et vaut $\mathbb Z$ si $X$ est vide.
+
+      (ii) Si $X$ n'est pas vide, $\tilde H_0(X)$ est nul si et seulement si $X$ est [[connexe-par-arcs|connexe par arcs]], et isomorphe à $\mathbb Z$ si et seulement si $X$ a exactement deux [[composante-connexe-par-arcs|composantes connexes par arcs]].
+
+      (iii) Deux applications homotopes induisent les mêmes morphismes en homologie réduite, et une [[equivalence-homotopie|équivalence d'homotopie]] induit des isomorphismes. En particulier, l'homologie réduite d'un espace contractile, par exemple d'une partie étoilée non vide de $\lex{n-uplet}{\mathbb R^n}$, est nulle en tout degré.
+    preuve: |
+      (i) En degré $n \geqslant 2$, les deux complexes ont les mêmes groupes et les mêmes bords. En degré $1$, les cycles $\operatorname{Ker}\partial_1$ et les bords $\operatorname{Im}\partial_2$ sont les mêmes. En degré $-1$, tout élément de $\mathbb Z$ est un cycle, et les bords forment $\varepsilon(C_0(X))$.
+
+      Si $X$ contient un point $x$, $\varepsilon(x) = 1$ et $\varepsilon(C_0(X)) = \mathbb Z$, d'où $\tilde H_{-1}(X) = 0$ ; si $X$ est vide, $C_0(X) = 0$ et $\tilde H_{-1}(X) = \mathbb Z$.
+
+      (ii) Soit $\Pi$ l'ensemble des composantes connexes par arcs de $X$. La preuve de {{h-degre0|Degré 0, point}}, (ii), fournit un morphisme surjectif $\bar\varepsilon : C_0(X) \to \mathbb Z^{(\Pi)}$, qui envoie un point sur sa composante, de noyau $B_0$. Si $s : \mathbb Z^{(\Pi)} \to \mathbb Z$ est la somme des coefficients, on a $\varepsilon = s \circ \bar\varepsilon$.
+
+      L'isomorphisme $C_0(X)/B_0 \to \mathbb Z^{(\Pi)}$ induit par $\bar\varepsilon$ envoie donc $\tilde H_0(X) = \operatorname{Ker}\varepsilon / B_0$ sur $\bar\varepsilon(\operatorname{Ker}\varepsilon)$, qui est $\operatorname{Ker} s$ : si $s(y) = 0$ et $y = \bar\varepsilon(c)$, alors $\varepsilon(c) = 0$.
+
+      Fixons $\pi_0 \in \Pi$, qui existe puisque $X$ n'est pas vide. Un élément $\sum n_\pi \pi$ de $\operatorname{Ker} s$ vérifie $n_{\pi_0} = -\sum_{\pi \neq \pi_0} n_\pi$, donc s'écrit de façon unique
+      $$\sum_{\pi \neq \pi_0} n_\pi\, (\pi - \pi_0),$$
+      et $\operatorname{Ker} s$ est isomorphe à $\mathbb Z^{(T)}$, avec $T = \Pi \setminus \{\pi_0\}$. Il est nul si et seulement si $T$ est vide, c'est-à-dire si $X$ est connexe par arcs.
+
+      Reste à voir que $\mathbb Z^{(T)} \cong \mathbb Z$ si et seulement si $T$ a un seul élément. La classe de $\sum n_\tau \tau$ modulo $2\mathbb Z^{(T)}$ ne dépend que de la parité des $n_\tau$ : le quotient a $2^t$ éléments si $T$ en a $t$, et il est infini si $T$ est infini. Un isomorphisme $\mathbb Z^{(T)} \to \mathbb Z$ envoie $2\mathbb Z^{(T)}$ sur $2\mathbb Z$ et induit une bijection sur les quotients ; comme $\mathbb Z/2\mathbb Z$ a deux éléments, $2^t = 2$ et $t = 1$. Réciproquement, si $T = \{\tau\}$, $\mathbb Z^{(T)} = \mathbb Z\tau$ est isomorphe à $\mathbb Z$ par $n\tau \mapsto n$.
+
+      (iii) Soient $f$ et $g$ homotopes. En degré $n \geqslant 1$, les groupes et les morphismes induits sont ceux de l'homologie singulière, et $f_* = g_*$ ({{h-homotopie|Invariance par homotopie}}, (i)).
+
+      En degré $0$, $\tilde H_0(X) = \operatorname{Ker}\varepsilon / B_0$ est un sous-groupe de $H_0(X) = C_0(X)/B_0$, et $f_*$ y est la restriction du morphisme induit sur $H_0(X)$ ; elle ne change pas quand on remplace $f$ par $g$. En degré $-1$, $f_*$ et $g_*$ sont induits par l'identité de $\mathbb Z$.
+
+      Le cas d'une équivalence d'homotopie s'en déduit comme dans {{h-homotopie|Invariance par homotopie}}, (ii). Enfin l'homologie réduite d'un point est nulle : en degré $n \geqslant 1$ par {{h-degre0|Degré 0, point}}, (i), en degré $0$ par (ii), en degré $-1$ par (i).
+    remarques:
+      - |
+        L'homologie réduite d'un point est nulle en tout degré, alors que son homologie vaut $\mathbb Z$ en degré $0$. Les énoncés de ce chapitre, qui affirment qu'un complémentaire « n'a pas d'homologie », s'écrivent ainsi sans exception pour le degré $0$.
+      - |
+        Le degré $-1$ ne sert qu'à détecter le vide, mais il rend des services : avec la convention $\tilde H_{-1}(\varnothing) = \mathbb Z$, la suite de Mayer-Vietoris réduite vaudra sans hypothèse sur l'intersection ({{hj-mv-reduite|Mayer-Vietoris réduite}}), et un calcul d'homologie démontrera qu'un ensemble est vide, ou qu'il ne l'est pas. L'erreur la plus répandue est d'oublier cette convention en lisant d'autres ouvrages, dont beaucoup ne définissent $\tilde H$ que pour les espaces non vides.
+
+  - id: hj-mv-reduite
+    etiquette: Mayer-Vietoris réduite
+    nature: proposition
+    titre: Petites chaînes et Mayer-Vietoris en homologie réduite
+    texte: |
+      Soit $X = U \cup V$, avec $U$ et $V$ ouverts. On augmente le complexe $C^{U,V}(X)$ du nœud {{h-mayer-vietoris|Mayer-Vietoris}} par $\mathbb Z$ en degré $-1$ et par $\varepsilon$ en degré $0$ ; on obtient un sous-complexe $\tilde C^{U,V}(X)$ de $\tilde C(X)$.
+    enonce: |
+      (i) L'inclusion $\jmath : \tilde C^{U,V}(X) \to \tilde C(X)$ induit des isomorphismes en homologie.
+
+      (ii) Il existe une suite exacte longue, formée des mêmes morphismes qu'au nœud {{h-mayer-vietoris|Mayer-Vietoris}},
+      $$\begin{aligned} \cdots \to {}&\lex{homologie-reduite}{\tilde H_n}(U \cap V) \\ &\to \tilde H_n(U) \oplus \tilde H_n(V) \\ &\to \tilde H_n(X) \\ &\xrightarrow{\delta} \tilde H_{n-1}(U \cap V) \to \cdots \\ &\to \tilde H_{-1}(X) \to 0, \end{aligned}$$
+      sans aucune hypothèse sur $U \cap V$, qui peut être vide.
+
+      (iii) En particulier, si $\tilde H_{n+1}(X) = 0$, le morphisme $\tilde H_n(U \cap V) \to \tilde H_n(U) \oplus \tilde H_n(V)$ est injectif. Si l'homologie réduite de $U$ et celle de $V$ sont nulles en tout degré, $\delta : \tilde H_{n+1}(X) \to \tilde H_n(U \cap V)$ est un isomorphisme pour tout $n$.
+    preuve: |
+      (i) Soient $\rho : C(X) \to C^{U,V}(X)$ et $D : C_n(X) \to C_{n+1}(X)$ les morphismes construits au nœud {{h-petites-chaines|Petites chaînes}} pour $\mathcal U = \{U, V\}$ : $\rho \circ \jmath = \mathrm{id}$ et $\rho = \mathrm{id} - \partial D - D\partial$. On les prolonge en degré $-1$ par $\rho = \mathrm{id}_{\mathbb Z}$ et $D = 0$, et l'on note $\tilde\partial$ le bord augmenté.
+
+      En degré $0$, le bord non augmenté de $C_0(X)$ est nul, donc $\rho = \mathrm{id} - \partial D$ sur $C_0(X)$ ; comme $\varepsilon \circ \partial = 0$ sur $C_1(X)$, il vient $\varepsilon \circ \rho = \varepsilon$. Ainsi $\rho$ est un morphisme de complexes augmentés.
+
+      Vérifions que $\mathrm{id} - \jmath \circ \rho = \tilde\partial D + D\tilde\partial$. En degré $n \geqslant 1$, c'est l'identité de {{h-petites-chaines|Petites chaînes}}. En degré $0$, $D\tilde\partial = D \circ \varepsilon = 0$, puisque $D$ est nul en degré $-1$, et il reste $\partial D = \mathrm{id} - \rho$. En degré $-1$, les deux membres sont nuls.
+
+      Par {{h-complexes|Complexes de chaînes}}, (ii) et (iii), $\rho_* \circ \jmath_* = \mathrm{id}$ et $\jmath_* \circ \rho_* = \mathrm{id}$.
+
+      (ii) La suite
+      $$\begin{aligned} 0 \to {}&\tilde C(U \cap V) \to \tilde C(U) \oplus \tilde C(V) \\ &\to \tilde C^{U,V}(X) \to 0 \end{aligned}$$
+      est exacte en degré $n \geqslant 0$ ({{h-mayer-vietoris|Mayer-Vietoris}}, (ii)). En degré $-1$, elle s'écrit $\mathbb Z \to \mathbb Z \oplus \mathbb Z \to \mathbb Z$, avec $a \mapsto (a, a)$ et $(a, b) \mapsto a - b$ : la première flèche est injective, la seconde surjective, et le noyau de la seconde est la diagonale, image de la première.
+
+      Ces flèches commutent aux augmentations, puisque chaque point compte pour $1$ dans tous les espaces. On applique la suite exacte longue ({{h-suite-exacte|Suite exacte longue}}), puis (i) pour remplacer l'homologie de $\tilde C^{U,V}(X)$ par celle de $X$ ; la suite s'arrête à $\tilde H_{-1}(X) \to 0$, puisque $\tilde H_{-2}(U \cap V) = 0$.
+
+      (iii) Dans la suite exacte, le noyau de $\tilde H_n(U \cap V) \to \tilde H_n(U) \oplus \tilde H_n(V)$ est l'image de $\delta$, qui part de $\tilde H_{n+1}(X)$. Si les groupes de $U$ et de $V$ sont nuls, $\delta$ est entouré de deux groupes nuls, donc injectif et surjectif.
+    remarques:
+      - |
+        Quand $U \cap V$ est vide, la suite contient $\tilde H_0(U) \oplus \tilde H_0(V) \to \tilde H_0(X) \to \tilde H_{-1}(\varnothing) = \mathbb Z \to \tilde H_{-1}(U) \oplus \tilde H_{-1}(V)$. Si $U$ et $V$ sont non vides et connexes par arcs, les deux groupes extrêmes sont nuls et $\tilde H_0(X) \cong \mathbb Z$ : une réunion disjointe de deux ouverts connexes par arcs a deux composantes connexes par arcs, ce que dit aussi {{hj-reduite|Homologie réduite}}, (ii).
+      - |
+        Lorsque $U \cap V$ n'est pas vide, on pourrait déduire la suite réduite de la suite non réduite, en séparant un facteur $\mathbb Z$ en degré $0$. Le complexe augmenté évite cette comptabilité, et c'est la forme (iii) qui servira dans tout le chapitre.
+
+  - id: hj-compacite
+    etiquette: Réunion croissante
+    nature: lemme
+    titre: Homologie d'une réunion croissante d'ouverts
+    texte: |
+      Pour une partie $A$ d'un espace $O$, un simplexe singulier de $A$ est un simplexe singulier de $O$ à valeurs dans $A$ ({{t-induite|Topologie induite}}). L'inclusion identifie ainsi $\tilde C(A)$ à un sous-complexe de $\tilde C(O)$, le bord d'une chaîne de $A$ étant le même dans les deux complexes.
+    enonce: |
+      Soit $O$ un espace topologique et $(O_m)_{m \in \lex{ensemble-entiers-naturels}{\mathbb N}}$ une suite croissante d'ouverts de réunion $O$.
+
+      (i) Pour tout $n \geqslant 0$, toute chaîne de $C_n(O)$ est une chaîne de l'un des $O_M$.
+
+      (ii) Si une classe $\alpha \in \lex{homologie-reduite}{\tilde H_n}(O_m)$ a une image nulle dans $\tilde H_n(O)$, il existe $M \geqslant m$ tel que son image dans $\tilde H_n(O_M)$ soit déjà nulle.
+    preuve: |
+      (i) Soit $\sigma : \Delta_n \to O$ un simplexe. Les ouverts $\sigma^{-1}(O_m)$ forment une suite croissante qui recouvre $\Delta_n$, compact ({{h-petites-chaines|Petites chaînes}}). On en extrait un recouvrement fini ; comme la suite est croissante, $\Delta_n$ est égal à celui de ces ouverts qui a le plus grand indice. Il existe donc des entiers $m$ tels que $\sigma(\Delta_n) \subset O_m$, et l'on note $M_\sigma$ le plus petit ({{n-ordre|Bon ordre sur ℕ}}).
+
+      Une chaîne est une somme finie de simplexes ; le plus grand $M$ des $M_\sigma$ correspondants convient, puisque la suite $(O_m)$ est croissante.
+
+      (ii) Il n'y a rien à démontrer si $n \leqslant -2$. Sinon, $\alpha$ est la classe d'un cycle $z$ de $\tilde C_n(O_m)$, et l'hypothèse dit que $z = \tilde\partial c$ pour une chaîne $c \in \tilde C_{n+1}(O)$, avec $n + 1 \geqslant 0$.
+
+      Par (i), $c$ est une chaîne de l'un des $O_M$, que l'on peut prendre avec $M \geqslant m$. Son bord, calculé dans $O_M$, est encore $z$ : l'image de $\alpha$ dans $\tilde H_n(O_M)$, classe de $z$, est nulle.
+    remarques:
+      - |
+        Tout repose sur le fait qu'une chaîne est une somme finie de simplexes, chacun d'image compacte : l'homologie ne voit que des morceaux compacts de l'espace. Aucun choix n'intervient, puisqu'on ne fixe qu'un cycle $z$ et une chaîne $c$ dont on affirme l'existence, et que $M$ est le plus petit entier qui convient.
+      - |
+        L'hypothèse que les $O_m$ sont ouverts est indispensable. Dans $\mathbb R$, les fermés $O_m = \left]-\infty, 0\right] \cup \left[\frac1m, +\infty\right[$, pour $m \geqslant 1$, croissent et ont pour réunion $\mathbb R$ ; la classe de $1 - (-1)$ est non nulle dans chaque $\tilde H_0(O_m)$, puisque $-1$ et $1$ n'y sont pas reliés par un chemin, et elle est nulle dans $\tilde H_0(\mathbb R)$. Le segment de $-1$ à $1$ n'est contenu dans aucun $O_m$.
+
+  - id: hj-calottes
+    etiquette: Calottes
+    nature: lemme
+    titre: Calottes de la sphère, boules et cubes
+    texte: |
+      Sur $\lex{n-uplet}{\mathbb R^{m+1}}$, on note $\langle x, y \rangle = \sum x_iy_i$, de sorte que $\|x\| = \|x\|_2 = \langle x, x \rangle^{1/2}$ ({{gd-normes|Normes}}). Soit $N = (0, \dots, 0, 1)$ et $S = -N$, les pôles de la sphère $\lex{sphere-unite}{S^m}$.
+
+      Pour $p \in S^m$ et $0 < \varepsilon < 2$, la [[calotte|calotte]] ouverte et la calotte fermée de centre $p$ et de rayon $\varepsilon$ sont
+      $$\begin{aligned} C(p, \varepsilon) &= \{y \in S^m : \|y - p\| < \varepsilon\}, \\ K(p, \varepsilon) &= \{y \in S^m : \|y - p\| \leqslant \varepsilon\}. \end{aligned}$$
+
+      On note $D^m$ la boule unité fermée de $\mathbb R^m$ ({{h-applications|Brouwer, dimension}}) et $I = [0, 1]$. Par convention, $\mathbb R^0$, $D^0$ et $I^0$ sont réduits à un point.
+    enonce: |
+      (i) *Projections stéréographiques.* Pour $m \geqslant 1$ et $p \in S^m$, il existe un [[homeomorphisme|homéomorphisme]] $\varphi_p$ de $S^m \setminus \{-p\}$ sur $\mathbb R^m$ tel que $\varphi_p(p) = 0$ et, pour $0 < \varepsilon < 2$,
+      $$\begin{aligned} \varphi_p\big(C(p, \varepsilon)\big) &= B(0, r), \\ \varphi_p\big(K(p, \varepsilon)\big) &= \bar B(0, r), \end{aligned}$$
+      où $r = \frac{\varepsilon}{\sqrt{4 - \varepsilon^2}}$.
+      En particulier, la sphère privée d'un point quelconque est homéomorphe à $\mathbb R^m$.
+
+      (ii) *Calottes fermées.* L'application $x \mapsto \frac{\|x\|_2}{\|x\|_\infty}\,x$, prolongée par $0 \mapsto 0$, est un homéomorphisme de $D^m$ sur $[-1, 1]^m$. Toute calotte fermée est homéomorphe à $D^m$, et donc à $I^m$. Le complémentaire dans $S^m$ de la calotte ouverte $C(p, \varepsilon)$ est la calotte fermée $K\big(-p, \sqrt{4 - \varepsilon^2}\big)$, et les hémisphères fermés $\{x_{m+1} \geqslant 0\}$ et $\{x_{m+1} \leqslant 0\}$ sont $K(N, \sqrt 2)$ et $K(S, \sqrt 2)$.
+
+      (iii) *Calottes ouvertes.* Toute calotte ouverte est connexe par arcs. Si $m \geqslant 2$, la calotte ouverte privée de son centre, $C(p, \varepsilon) \setminus \{p\}$, l'est aussi.
+    preuve: |
+      (i) *Le cas $p = S$.* La projection stéréographique $\pi$ est un homéomorphisme de $S^m \setminus \{N\}$ sur $\mathbb R^m$ ({{h-spheres|Homologie des sphères}}), et $\pi(S) = 0$. Pour $x \in S^m$, on a $\|x - S\|^2 = \|x\|^2 + 2x_{m+1} + 1 = 2 + 2x_{m+1}$, et, si $x \neq N$,
+      $$\|\pi(x)\|^2 = \frac{1 - x_{m+1}^2}{(1 - x_{m+1})^2} = \frac{1 + x_{m+1}}{1 - x_{m+1}}.$$
+
+      La fonction $g(t) = \frac{1 + t}{1 - t} = -1 + \frac{2}{1 - t}$ est strictement croissante sur $[-1, 1[$. Donc, pour $x \neq N$, $\|x - S\| < \varepsilon$ équivaut à $x_{m+1} < \frac{\varepsilon^2}2 - 1$, puis à
+      $$\|\pi(x)\|^2 < g\Big(\frac{\varepsilon^2}2 - 1\Big) = \frac{\varepsilon^2}{4 - \varepsilon^2},$$
+      et de même avec des inégalités larges. Comme $\|N - S\| = 2 > \varepsilon$, le point $N$ n'est dans aucune des deux calottes, et la bijection $\pi$ envoie $C(S, \varepsilon)$ sur $B(0, r)$ et $K(S, \varepsilon)$ sur $\bar B(0, r)$.
+
+      *Le cas général.* Pour $p \neq S$, posons $u = p - S \neq 0$ et
+      $$R(x) = x - 2\,\frac{\langle x, u\rangle}{\langle u, u\rangle}\,u.$$
+      C'est une application linéaire, continue, et, en développant par bilinéarité,
+      $$\begin{aligned} \langle R(x), R(y)\rangle &= \langle x, y\rangle - 4\frac{\langle x, u\rangle\langle y, u\rangle}{\langle u, u\rangle} \\ &\quad + 4\frac{\langle x, u\rangle\langle y, u\rangle}{\langle u, u\rangle} \\ &= \langle x, y\rangle. \end{aligned}$$
+      De même $\langle R(x), u\rangle = \langle x, u\rangle - 2\langle x, u\rangle = -\langle x, u\rangle$, d'où $R(R(x)) = R(x) + 2\frac{\langle x, u\rangle}{\langle u, u\rangle}u = x$ : $R$ est une bijection de $S^m$ sur $S^m$ qui conserve les distances.
+
+      Comme $\|p\| = \|S\| = 1$, on a $\langle u, u \rangle = 2 - 2\langle p, S\rangle = 2\langle p, u\rangle$, donc $R(p) = p - u = S$, et $R(-p) = N$ par linéarité. On pose $R = \mathrm{id}$ si $p = S$, et $\varphi_p = \pi \circ R$, homéomorphisme de $S^m \setminus \{-p\}$ sur $\mathbb R^m$. Puisque $\|y - p\| = \|R(y) - S\|$, $R$ envoie $C(p, \varepsilon)$ sur $C(S, \varepsilon)$ et $K(p, \varepsilon)$ sur $K(S, \varepsilon)$, et l'on conclut par le premier cas.
+
+      Enfin $S^m \setminus \{q\}$ est homéomorphe à $\mathbb R^m$ par $\varphi_{-q}$.
+
+      (ii) Les normes sont $1$-lipschitziennes, donc continues ({{me-topologie|Topologie d'une distance}}, (iv)). L'application $f(x) = \frac{\|x\|_2}{\|x\|_\infty}x$ est donc continue hors de $0$, et elle l'est en $0$ puisque $\|f(x)\|_\infty = \|x\|_2$. De même, $g(y) = \frac{\|y\|_\infty}{\|y\|_2}y$, prolongée par $g(0) = 0$, est continue et vérifie $\|g(y)\|_2 = \|y\|_\infty$.
+
+      Ainsi $f(D^m) \subset [-1, 1]^m$ et $g([-1, 1]^m) \subset D^m$. Pour $x \neq 0$, $f(x)$ est un multiple positif de $x$, avec $\|f(x)\|_\infty = \|x\|_2$ et $\|f(x)\|_2 = \frac{\|x\|_2^2}{\|x\|_\infty}$, donc
+      $$g(f(x)) = \frac{\|x\|_\infty}{\|x\|_2}\cdot\frac{\|x\|_2}{\|x\|_\infty}\,x = x,$$
+      et de même $f \circ g = \mathrm{id}$. Enfin $y \mapsto \frac12\big(y + (1, \dots, 1)\big)$ est un homéomorphisme de $[-1, 1]^m$ sur $I^m$.
+
+      Pour $m \geqslant 1$, $K(p, \varepsilon)$ est homéomorphe à $\bar B(0, r)$ par (i), puis à $D^m$ par $z \mapsto z/r$. Pour $m = 0$, $S^0 = \{p, -p\}$ et $\|{-p} - p\| = 2 > \varepsilon$, donc $K(p, \varepsilon) = \{p\}$ est un point, comme $D^0$.
+
+      Pour $y \in S^m$, $\|y - p\|^2 + \|y + p\|^2 = 2\|y\|^2 + 2\|p\|^2 = 4$. Ainsi $\|y - p\| \geqslant \varepsilon$ équivaut à $\|y + p\| \leqslant \sqrt{4 - \varepsilon^2}$, nombre compris strictement entre $0$ et $2$. De même $\|x - N\|^2 = 2 - 2x_{m+1}$ est au plus $2$ si et seulement si $x_{m+1} \geqslant 0$, et l'on raisonne de même avec $S$.
+
+      (iii) Pour $m = 0$, $C(p, \varepsilon) = \{p\}$. Pour $m \geqslant 1$, $C(p, \varepsilon)$ est l'image par $\varphi_p^{-1}$ de la boule $B(0, r)$, qui est convexe : deux de ses points y sont joints par un segment ({{ta-chemins|Chemins}}, (ii)), dont l'image est un chemin.
+
+      Pour $m \geqslant 2$, $C(p, \varepsilon) \setminus \{p\}$ est l'image de $B(0, r) \setminus \{0\}$. Pour $z$ dans cette boule épointée, le segment
+      $$t \mapsto \Big((1 - t) + t\,\frac{r}{2\|z\|}\Big)\,z$$
+      joint $z$ au point $\frac{r}{2\|z\|}z$ sans quitter la boule épointée, la norme restant entre $\|z\|$ et $\frac r2$. La sphère $\{\|z\| = \frac r2\}$, image de $S^{m-1}$ par $z \mapsto \frac r2 z$, est connexe par arcs, puisque $m - 1 \geqslant 1$ ({{h-spheres|Homologie des sphères}}).
+    remarques:
+      - |
+        Une calotte est la partie de la sphère découpée par un demi-espace : après la réflexion $R$, la calotte $C(S, \varepsilon)$ est l'ensemble des points de $S^m$ situés sous l'hyperplan $x_{m+1} = \frac{\varepsilon^2}2 - 1$. La projection stéréographique l'aplatit en une boule, ce qui ramène toute question locale sur la sphère à une question dans $\mathbb R^m$.
+      - |
+        Le point (iii) est faux pour $m = 1$ : un arc ouvert du cercle privé d'un point a deux morceaux, comme un intervalle privé d'un point intérieur. C'est la raison pour laquelle le passage de la sphère à $\mathbb R^n$, au nœud {{hj-jordan-brouwer|Jordan-Brouwer dans ℝⁿ}}, exige $n \geqslant 2$.
+
+  - id: hj-ouverts-sphere
+    etiquette: Ouverts de Sⁿ
+    nature: proposition
+    titre: Composantes connexes par arcs des ouverts de la sphère
+    texte: |
+      La [[frontiere|frontière]] d'une partie $A$ d'un espace topologique est $\lex{frontiere}{\operatorname{Fr}} A = \overline A \setminus \mathring A$, ensemble des points adhérents à $A$ qui ne sont pas intérieurs à $A$ ({{t-adherence|Intérieur, adhérence}}). On la note ainsi pour ne pas la confondre avec le bord $\partial$ des chaînes.
+    enonce: |
+      Soit $n \geqslant 1$ et $O$ un ouvert de $\lex{sphere-unite}{S^n}$. Chaque [[composante-connexe-par-arcs|composante connexe par arcs]] $W$ de $O$ est ouverte dans $S^n$, et $\overline W \cap O = W$. Par suite, $\operatorname{Fr} W \subset S^n \setminus O$.
+    preuve: |
+      La topologie de $S^n$ est celle de la distance induite par $\mathbb R^{n+1}$ ({{me-topologie|Topologie d'une distance}}, (iii)). Pour $x \in W$, l'ouvert $O$ contient donc une calotte ouverte $C(x, \varepsilon)$, avec $0 < \varepsilon < 2$. Elle est connexe par arcs ({{hj-calottes|Calottes}}, (iii)) et contient $x$ : tous ses points sont reliés à $x$ par un chemin dans $O$, et $C(x, \varepsilon) \subset W$. Donc $W$ est ouverte.
+
+      Soit $y \in O \cap \overline W$, et $C(y, \varepsilon) \subset O$ une calotte. C'est un voisinage de $y$ ; elle rencontre donc $W$ ({{t-adherence|Intérieur, adhérence}}, (iii)) en un point $w$, et $y$ est relié à $w$ par un chemin dans $C(y, \varepsilon) \subset O$ : $y \in W$.
+
+      Ainsi $\overline W \setminus W \subset S^n \setminus O$. Comme $W$ est ouverte, $\mathring W = W$, et $\operatorname{Fr} W = \overline W \setminus W$.
+    remarques:
+      - |
+        L'énoncé est faux pour un espace quelconque. L'adhérence dans le plan du graphe de $x \mapsto \sin\frac1x$ sur $]0, 1]$, où $\sin$ est la fonction que l'analyse complexe construira ({{cx-exponentielle|Exponentielle}}), a deux composantes connexes par arcs ({{ta-chemins|Chemins}}), et le segment vertical ajouté au graphe n'est pas ouvert dans cet espace : tout voisinage d'un de ses points rencontre le graphe. Ce qui sauve les ouverts de la sphère, c'est que chaque point y a une calotte connexe par arcs pour voisinage.
+
+  - id: hj-cellules
+    etiquette: Complémentaire d'une cellule
+    nature: théorème
+    titre: Le complémentaire d'une cellule n'a pas d'homologie
+    enonce: |
+      Soit $n \geqslant 1$, $k \geqslant 0$, et $E$ une partie de $\lex{sphere-unite}{S^n}$ homéomorphe à $I^k$, ou, ce qui revient au même, à $D^k$ ({{hj-calottes|Calottes}}, (ii)). Alors
+      $$\lex{homologie-reduite}{\tilde H_i}(S^n \setminus E) = 0 \quad \text{pour tout } i \in \mathbb Z.$$
+      En particulier, $S^n \setminus E$ est non vide et connexe par arcs.
+    preuve: |
+      *Réduction.* Si $h : I^k \to S^n$ est continue et injective, $h(I^k)$ est homéomorphe à $I^k$, puisque $I^k$ est compact ({{t-produit-fini|Produit fini de compacts}}) et $S^n$ séparé ({{t-bij-compact|Bijection d'un compact}}). Réciproquement, un homéomorphisme de $I^k$ sur $E$ est continu et injectif. Montrons donc, par récurrence sur $k$, la propriété $P(k)$ : pour toute application continue injective $h : I^k \to S^n$, l'homologie réduite de $S^n \setminus h(I^k)$ est nulle en tout degré. Le dernier énoncé découle alors de {{hj-reduite|Homologie réduite}}, (i) et (ii).
+
+      *Initialisation.* Pour $k = 0$, $h(I^0)$ est un point $q$, et $S^n \setminus \{q\}$ est homéomorphe à $\mathbb R^n$ ({{hj-calottes|Calottes}}, (i)), qui est étoilé : son homologie réduite est nulle ({{hj-reduite|Homologie réduite}}, (iii)).
+
+      *Les ouverts.* Supposons $P(k - 1)$ vraie, avec $k \geqslant 1$, et soit $h : I^k \to S^n$ continue et injective. Pour un segment $J \subset I$, posons
+      $$E_J = I^{k-1} \times J, \qquad O_J = S^n \setminus h(E_J).$$
+      Pour $k = 1$, on identifie $I^0 \times J$ à $J$. La partie $E_J$, image réciproque de $J$ par la dernière coordonnée, est fermée dans le compact $I^k$, donc compacte ; $h(E_J)$ l'est aussi, donc fermé dans le séparé $S^n$ ({{t-compact-prop|Parties compactes}}), et $O_J$ est ouvert. Pour $c \in I$, on note de même $O_c = S^n \setminus h(I^{k-1} \times \{c\})$ ; l'application $y \mapsto h(y, c)$ est continue et injective sur $I^{k-1}$, et $P(k-1)$ donne $\tilde H_i(O_c) = 0$ pour tout $i$.
+
+      *Un découpage.* Soit $J = [a, b]$, $c = \frac{a + b}2$, $J' = [a, c]$ et $J'' = [c, b]$. On a $E_J = E_{J'} \cup E_{J''}$ et $E_{J'} \cap E_{J''} = I^{k-1} \times \{c\}$. Comme $h$ est injective, $h(E_{J'}) \cap h(E_{J''}) = h(E_{J'} \cap E_{J''})$, et, en passant aux complémentaires,
+      $$O_{J'} \cap O_{J''} = O_J, \qquad O_{J'} \cup O_{J''} = O_c.$$
+
+      Puisque $\tilde H_{i+1}(O_c) = 0$, le morphisme $\tilde H_i(O_J) \to \tilde H_i(O_{J'}) \oplus \tilde H_i(O_{J''})$ est injectif ({{hj-mv-reduite|Mayer-Vietoris réduite}}, (iii)) : une classe non nulle de $\tilde H_i(O_J)$ a une image non nulle dans $\tilde H_i(O_{J'})$ ou dans $\tilde H_i(O_{J''})$.
+
+      *Des segments emboîtés.* Supposons qu'une classe $\alpha \in \tilde H_i(O_I)$ soit non nulle. Définissons par récurrence ({{n-recdef|Définition par récurrence}}) $J_0 = I$, puis $J_{m+1}$ égal à la moitié gauche de $J_m$ si l'image de $\alpha$ dans l'homologie de l'ouvert correspondant est non nulle, à la moitié droite sinon.
+
+      Si $J \subset J_*$, alors $E_J \subset E_{J_*}$ et $O_{J_*} \subset O_J$ : les inclusions $O_I \subset O_{J_1} \subset O_{J_2} \subset \cdots$ induisent des morphismes qui se composent. Par récurrence sur $m$, l'image $\alpha_m$ de $\alpha$ dans $\tilde H_i(O_{J_m})$ est non nulle : si $\alpha_m \neq 0$, le découpage montre que l'une des deux moitiés reçoit une image non nulle, et la règle choisit une telle moitié.
+
+      ```schema hj-cellules
+      Pour $k = 2$, à gauche, les bandes $E_{J_m} = I \times J_m$ du carré se resserrent vers le segment rouge $I \times \{p\}$ ; la moitié gardée à chaque étape est celle où la classe $\alpha$ reste non nulle (ici en haut, en bas, en haut, en bas). À droite, leurs images par $h$ dans la sphère : les complémentaires $O_{J_m}$ croissent et ont pour réunion le complémentaire de l'arc rouge $h(I \times \{p\})$.
+      ```
+
+      *Passage à la limite.* Écrivons $J_m = [a_m, b_m]$. La suite $(a_m)$ croît, $(b_m)$ décroît, et $b_m - a_m = 2^{-m}$ tend vers $0$ ({{su-infinies|Limites infinies}}, (iv)) : elles sont adjacentes, de limite commune $p$, avec $a_m \leqslant p \leqslant b_m$ ({{su-adjacentes|Suites adjacentes}}). Un point $t$ de tous les $J_m$ vérifie $|t - p| \leqslant 2^{-m}$ pour tout $m$, donc $\bigcap_m J_m = \{p\}$ et $\bigcap_m E_{J_m} = I^{k-1} \times \{p\}$.
+
+      Par injectivité de $h$, un point $y$ qui appartient à tous les $h(E_{J_m})$ a un unique antécédent, qui appartient à tous les $E_{J_m}$ : $\bigcap_m h(E_{J_m}) = h(I^{k-1} \times \{p\})$. En passant aux complémentaires, les ouverts $O_{J_m}$ forment une suite croissante de réunion $O_p$.
+
+      *Conclusion.* Par $P(k - 1)$, $\tilde H_i(O_p) = 0$, et l'image de $\alpha$ dans $\tilde H_i(O_p)$ est nulle. Le lemme {{hj-compacite|Réunion croissante}}, (ii), appliqué à la suite $(O_{J_m})$ de réunion $O_p$ et à $\alpha \in \tilde H_i(O_{J_0})$, fournit un $M$ tel que $\alpha_M = 0$, ce qui est absurde. Donc $\tilde H_i(O_I) = 0$ pour tout $i$, ce qui est $P(k)$.
+    remarques:
+      - |
+        Le cœur de la preuve est l'argument de compacité : un cycle qui borde dans la limite $O_p$ borde déjà dans l'un des $O_{J_m}$, parce qu'une chaîne n'occupe qu'une partie compacte de l'espace. Aucun choix n'intervient : la suite $(J_m)$ est définie par une règle explicite, qui prend la moitié gauche quand elle convient, et le lemme {{hj-compacite|Réunion croissante}} ne fixe qu'un cycle et une chaîne dont il affirme l'existence.
+      - |
+        La nullité de l'homologie ne dit pas que le complémentaire soit simple. La boule cornue d'Alexander, partie de $S^3$ homéomorphe à $D^3$, a un complémentaire dont l'homologie réduite est nulle, comme l'exige ce théorème, mais qui n'est pas [[simplement-connexe|simplement connexe]] (admis ici : J. W. Alexander, « An example of a simply connected surface bounding a region which is not simply connected », *Proc. Nat. Acad. Sci.* 10, 1924, p. 8-10). La difficulté contournée est le calcul du groupe fondamental de ce complémentaire, que l'homologie ne voit pas.
+
+  - id: hj-spheres-plongees
+    etiquette: Complémentaire d'une sphère
+    nature: théorème
+    titre: Homologie du complémentaire d'une sphère topologique
+    texte: |
+      Une [[sphere-topologique|sphère topologique]] de dimension $k$ dans un espace $X$ est une partie $\Sigma$ de $X$ homéomorphe à $\lex{sphere-unite}{S^k}$. Si $X$ est séparé et si $h : S^k \to X$ est continue et injective, $h(S^k)$ en est une, puisque $S^k$ est compacte ({{tr-sphere|Sphère unité Sⁿ}}, (ii) ; {{t-bij-compact|Bijection d'un compact}}).
+    enonce: |
+      Soit $n \geqslant 1$, $0 \leqslant k \leqslant n$, et $\Sigma \subset S^n$ une sphère topologique de dimension $k$.
+
+      (i) $\lex{homologie-reduite}{\tilde H_i}(S^n \setminus \Sigma) \cong \mathbb Z$ si $i = n - k - 1$, et $\tilde H_i(S^n \setminus \Sigma) = 0$ sinon.
+
+      (ii) Si $k \leqslant n - 2$, $S^n \setminus \Sigma$ est non vide et connexe par arcs. Si $k = n - 1$, il a exactement deux [[composante-connexe-par-arcs|composantes connexes par arcs]]. Si $k = n$, $\Sigma = S^n$ : une application continue injective de $S^n$ dans $S^n$ est surjective.
+    preuve: |
+      (i) Montrons, par récurrence sur $k$, l'énoncé pour toute application continue injective $h : S^k \to S^n$ et $\Sigma = h(S^k)$, ce qui suffit.
+
+      *Le cas $k = 0$.* $\Sigma = \{q, q'\}$ avec $q \neq q'$. Par $\varphi_{-q}$ ({{hj-calottes|Calottes}}, (i)), $S^n \setminus \{q\}$ est homéomorphe à $\mathbb R^n$, et $S^n \setminus \Sigma$ à $\mathbb R^n$ privé d'un point $w$, puis à $\mathbb R^n \setminus \{0\}$ par translation.
+
+      La preuve de {{h-applications|Brouwer, dimension}}, (iii), montre que l'inclusion de $S^{n-1}$ dans $\mathbb R^n \setminus \{0\}$ est une équivalence d'homotopie, d'inverse $x \mapsto x/\|x\|$. Donc $S^n \setminus \Sigma$ a l'homologie réduite de $S^{n-1}$ ({{hj-reduite|Homologie réduite}}, (iii)).
+
+      Si $n \geqslant 2$, $\tilde H_{n-1}(S^{n-1}) \cong \mathbb Z$, les autres groupes étant nuls ({{h-spheres|Homologie des sphères}} et {{hj-reduite|Homologie réduite}}, (i) et (ii), $S^{n-1}$ étant connexe par arcs). Si $n = 1$, $S^0$ a deux points : $\tilde H_0(S^0) \cong \mathbb Z$, et $H_k(S^0) = 0$ pour $k \geqslant 1$ ({{h-spheres|Homologie des sphères}}), les autres groupes étant nuls. Dans les deux cas, le seul groupe non nul est en degré $n - 1 = n - k - 1$.
+
+      *Le pas de récurrence.* Soit $k \geqslant 1$, et supposons l'énoncé établi en dimension $k - 1$. Les hémisphères fermés $D_+ = \{x_{k+1} \geqslant 0\}$ et $D_- = \{x_{k+1} \leqslant 0\}$ de $S^k$ sont homéomorphes à $I^k$ ({{hj-calottes|Calottes}}, (ii)), et leur intersection est l'équateur, image de $S^{k-1}$ par $e(y) = (y, 0)$.
+
+      Posons $A = S^n \setminus h(D_+)$ et $B = S^n \setminus h(D_-)$, ouverts puisque $h(D_\pm)$ est compact. Par {{hj-cellules|Complémentaire d'une cellule}}, appliqué aux restrictions de $h$, leur homologie réduite est nulle.
+
+      Par injectivité de $h$, $h(D_+) \cap h(D_-) = h(D_+ \cap D_-)$, d'où
+      $$\begin{aligned} A \cap B &= S^n \setminus \Sigma, \\ A \cup B &= S^n \setminus h\big(e(S^{k-1})\big). \end{aligned}$$
+
+      Par {{hj-mv-reduite|Mayer-Vietoris réduite}}, (iii), $\delta : \tilde H_{i+1}(A \cup B) \to \tilde H_i(A \cap B)$ est un isomorphisme pour tout $i$. Or $h \circ e : S^{k-1} \to S^n$ est continue et injective, avec $k - 1 \leqslant n$ : par hypothèse de récurrence, $\tilde H_{i+1}(A \cup B) \cong \mathbb Z$ si $i + 1 = n - (k - 1) - 1$, c'est-à-dire si $i = n - k - 1$, et il est nul sinon.
+
+      (ii) On lit (i) avec {{hj-reduite|Homologie réduite}}, (i) et (ii). Si $k \leqslant n - 2$, $n - k - 1 \geqslant 1$ et $\tilde H_{-1} = \tilde H_0 = 0$. Si $k = n - 1$, $\tilde H_{-1} = 0$ et $\tilde H_0 \cong \mathbb Z$. Si $k = n$, $\tilde H_{-1} \cong \mathbb Z$ : le complémentaire est vide.
+    remarques:
+      - |
+        L'homologie du complémentaire ne dépend que de $k$, et pas de la façon dont $\Sigma$ est placée. Un cercle noué dans $S^3$ a un complémentaire de même homologie que le cercle rond, $\tilde H_1 \cong \mathbb Z$, alors que les groupes fondamentaux des deux complémentaires diffèrent pour le nœud de trèfle (admis ici : le calcul demande van Kampen et une présentation par générateurs et relations). L'homologie ne voit pas les nœuds.
+      - |
+        Le cas $k = n$ est l'analogue topologique d'un fait d'algèbre linéaire : une application linéaire injective de $\mathbb R^n$ dans lui-même est surjective. L'erreur serait de le transposer à $\mathbb R^n$ : l'application $x \mapsto \frac{x}{1 + \|x\|}$ est continue et injective, mais son image est la boule ouverte $B(0, 1)$. La compacité de la sphère est ce qui fait la différence.
+      - |
+        J. W. Alexander a généralisé ce calcul à des parties de la sphère bien plus générales, en reliant les nombres de Betti modulo $2$ du complémentaire à ceux de la partie (« A proof and extension of the Jordan-Brouwer separation theorem », *Trans. Amer. Math. Soc.* 23, 1922, p. 333-349). La forme actuelle de cette dualité d'Alexander, qui relie l'homologie réduite du complémentaire d'un compact à la cohomologie du compact, doit beaucoup à Alexandrov, Pontriaguine et Čech ; elle est admise ici, la cohomologie n'étant pas construite dans l'atlas.
+
+  - id: hj-jordan-brouwer-sphere
+    etiquette: Jordan-Brouwer dans Sⁿ
+    nature: théorème
+    titre: Séparation de Jordan-Brouwer dans la sphère
+    enonce: |
+      Soit $n \geqslant 1$ et $\Sigma \subset \lex{sphere-unite}{S^n}$ une [[sphere-topologique|sphère topologique]] de dimension $n - 1$.
+
+      (i) $S^n \setminus \Sigma$ a exactement deux [[composante-connexe-par-arcs|composantes connexes par arcs]] $U$ et $V$. Elles sont ouvertes dans $S^n$, et $\Sigma$ est la [[frontiere|frontière]] de chacune :
+      $$\operatorname{Fr} U = \operatorname{Fr} V = \Sigma.$$
+
+      (ii) Pour toute partie fermée $F$ de $S^n$ strictement contenue dans $\Sigma$, $S^n \setminus F$ est connexe par arcs : aucune partie fermée stricte de $\Sigma$ ne sépare la sphère.
+    preuve: |
+      (i) *Deux composantes ouvertes.* Le nombre de composantes est donné par {{hj-spheres-plongees|Complémentaire d'une sphère}}, (ii). Elles sont ouvertes, et $\operatorname{Fr} U$ et $\operatorname{Fr} V$ sont contenues dans $\Sigma$, par {{hj-ouverts-sphere|Ouverts de Sⁿ}} appliqué à l'ouvert $S^n \setminus \Sigma$.
+
+      *Tout point de $\Sigma$ est adhérent à $U$.* Soit $h : S^{n-1} \to \Sigma$ un homéomorphisme, $x \in \Sigma$, $s = h^{-1}(x)$, et $W$ un ouvert de $S^n$ contenant $x$. Il s'agit de montrer que $W$ rencontre $U$.
+
+      L'ouvert $h^{-1}(W \cap \Sigma)$ de $S^{n-1}$ contient $s$, donc une calotte $C(s, \varepsilon)$, avec $0 < \varepsilon < 2$. Son complémentaire $K$ dans $S^{n-1}$ est une calotte fermée, homéomorphe à $I^{n-1}$ ({{hj-calottes|Calottes}}, (ii)), et $h(K)$ aussi.
+
+      Par {{hj-cellules|Complémentaire d'une cellule}}, $S^n \setminus h(K)$ est connexe par arcs. Il contient $U$ et $V$ ; soit $\gamma : I \to S^n \setminus h(K)$ un chemin d'un point $u \in U$ à un point $v \in V$.
+
+      ```schema hj-jordan-brouwer-sphere
+      Le chemin bleu va de $u$, dans $U$, à $v$, dans $V$, en évitant $h(K)$, toute la courbe sauf l'arc rouge $h(C(s, \varepsilon))$, contenu dans le voisinage $W$ de $x$. Il ne peut donc traverser $\Sigma$ que par l'arc rouge, et son premier point hors de $U$, le point $\gamma(t^*)$, est un point de $W$ adhérent à $U$.
+      ```
+
+      L'ensemble $T = \gamma^{-1}(S^n \setminus U)$ est fermé dans $I$, puisque $U$ est ouvert, donc compact ; il contient $1$, et il a un plus petit élément $t^*$ ({{tr-compacts|Compacts de ℝ}}, (ii)). Comme $\gamma(0) \in U$, $t^* > 0$, et $\gamma([0, t^*[) \subset U$.
+
+      Le fermé $\gamma^{-1}(\overline U)$ contient $[0, t^*[$, donc $t^*$, qui lui est adhérent, et $\gamma(t^*) \in \overline U \setminus U = \operatorname{Fr} U \subset \Sigma$. Comme $\gamma(t^*) \notin h(K)$, il appartient à $h(C(s, \varepsilon)) \subset W$. Ainsi $W$ est un voisinage d'un point adhérent à $U$, et il rencontre $U$ ({{t-adherence|Intérieur, adhérence}}, (iii)).
+
+      Donc $\Sigma \subset \overline U$, et, comme $\Sigma \cap U = \varnothing$, $\Sigma \subset \operatorname{Fr} U$. Le même raisonnement, où l'on échange $U$ et $V$, donne $\Sigma \subset \operatorname{Fr} V$.
+
+      (ii) Soit $x \in \Sigma \setminus F$, et $s = h^{-1}(x)$. L'ouvert $h^{-1}(S^n \setminus F)$ contient une calotte $C(s, \varepsilon)$, de complémentaire $K$ ; ainsi $F \subset h(K)$, et l'on vient de voir que $S^n \setminus h(K)$ est connexe par arcs. Cette partie de $S^n \setminus F$ contient $U$ et $V$, qui sont donc reliées dans $S^n \setminus F$.
+
+      Reste à relier un point $y \in \Sigma \setminus F$ à l'une de ces composantes. L'ouvert $S^n \setminus F$ contient une calotte $C(y, \eta)$, connexe par arcs ({{hj-calottes|Calottes}}, (iii)), qui rencontre $U$ puisque $y \in \operatorname{Fr} U$ : $y$ est relié à un point de $U$ dans $S^n \setminus F$.
+    remarques:
+      - |
+        L'affirmation sur la frontière est la partie la plus souvent omise du théorème, et elle n'a rien d'automatique. Une partie fermée qui sépare la sphère peut avoir des points qui ne sont sur la frontière que d'une seule composante, ou d'aucune. Un cercle muni d'un rayon intérieur sépare le plan en deux composantes, mais les points du rayon, hormis son extrémité sur le cercle, ne bordent que la composante intérieure. Une couronne fermée $\{1 \leqslant \|x\| \leqslant 2\}$ sépare aussi le plan en deux composantes, et les points de son intérieur, tels que $\|x\| = \frac32$, ne bordent aucune des deux. Une sphère topologique, elle, borde ses deux composantes en chacun de ses points.
+      - |
+        Le point (ii) dit que $\Sigma$ est un séparateur minimal : elle sépare la sphère, et aucune de ses parties fermées strictes ne la sépare. La réciproque est fausse en dimension $3$, où un tore standard de $S^3$ est aussi un séparateur minimal ; elle n'est pas traitée ici.
+
+  - id: hj-jordan-brouwer
+    etiquette: Jordan-Brouwer dans ℝⁿ
+    nature: théorème
+    titre: Théorème de séparation de Jordan-Brouwer
+    enonce: |
+      Soit $n \geqslant 2$ et $\Sigma \subset \lex{n-uplet}{\mathbb R^n}$ une [[sphere-topologique|sphère topologique]] de dimension $n - 1$. Alors $\mathbb R^n \setminus \Sigma$ a exactement deux [[composante-connexe-par-arcs|composantes connexes par arcs]]. Elles sont ouvertes ; l'une est bornée, l'autre ne l'est pas ; et $\Sigma$ est la [[frontiere|frontière]] de chacune.
+    preuve: |
+      *Passage à la sphère.* Soit $\psi = \varphi_S^{-1}$, l'inverse de la projection stéréographique ({{hj-calottes|Calottes}}, (i)) : c'est un homéomorphisme de $\mathbb R^n$ sur l'ouvert $S^n \setminus \{N\}$. Alors $\Sigma' = \psi(\Sigma)$ est une sphère topologique de dimension $n - 1$ dans $S^n$, qui ne contient pas $N$.
+
+      Par {{hj-jordan-brouwer-sphere|Jordan-Brouwer dans Sⁿ}}, $S^n \setminus \Sigma'$ a deux composantes ouvertes $U'$ et $V'$, de frontière $\Sigma'$ ; notons $V'$ celle qui contient $N$.
+
+      *Retrait du point $N$.* Montrons que $V' \setminus \{N\}$ est connexe par arcs ; c'est ici que sert l'hypothèse $n \geqslant 2$. L'ouvert $V'$ de $S^n$ contient une calotte $C = C(N, \varepsilon)$, avec $0 < \varepsilon < 2$ ({{me-topologie|Topologie d'une distance}}, (iii)). Les parties $V' \setminus \{N\}$ et $C$ sont ouvertes, puisque les points sont fermés dans l'espace séparé $S^n$, et leur réunion est $V'$.
+
+      Leur intersection $C \setminus \{N\}$ est non vide et connexe par arcs ({{hj-calottes|Calottes}}, (iii)) : son homologie réduite est nulle en degrés $-1$ et $0$ ({{hj-reduite|Homologie réduite}}). La suite de Mayer-Vietoris réduite ({{hj-mv-reduite|Mayer-Vietoris réduite}}) contient
+      $$\begin{aligned} \lex{homologie-reduite}{\tilde H_0}(C \setminus \{N\}) &\to \tilde H_0(V' \setminus \{N\}) \oplus \tilde H_0(C) \\ &\to \tilde H_0(V'). \end{aligned}$$
+
+      Le groupe de droite est nul, puisque $V'$ est connexe par arcs ; le groupe du milieu est donc l'image de celui de gauche, qui est nul. Ainsi $\tilde H_0(V' \setminus \{N\}) = 0$, et $V' \setminus \{N\}$, qui contient $C \setminus \{N\}$, est non vide et connexe par arcs.
+
+      *Les composantes.* L'application $\psi$ est un homéomorphisme de $\mathbb R^n \setminus \Sigma$ sur $(S^n \setminus \Sigma') \setminus \{N\} = U' \cup (V' \setminus \{N\})$. Ces deux parties sont connexes par arcs et disjointes, et un chemin de $(S^n \setminus \Sigma') \setminus \{N\}$ reste dans l'une des composantes $U'$, $V'$ de $S^n \setminus \Sigma'$ : ce sont ses deux composantes. Celles de $\mathbb R^n \setminus \Sigma$ sont donc $U = \psi^{-1}(U')$ et $V = \psi^{-1}(V' \setminus \{N\})$, ouvertes puisque $\psi$ est continue.
+
+      *Les frontières.* Les voisinages de $x$ dans $\mathbb R^n$ sont les images réciproques par $\psi$ des voisinages de $\psi(x)$ dans $S^n$ : un voisinage de $\psi(x)$ dans l'ouvert $S^n \setminus \{N\}$ en est un dans $S^n$, et un voisinage dans $S^n$ le reste quand on lui retire $N \neq \psi(x)$. Ainsi $x$ est adhérent à $U$ si et seulement si $\psi(x)$ est adhérent à $U'$, et à $V$ si et seulement si $\psi(x)$ est adhérent à $V' \setminus \{N\}$. Être adhérent à $V' \setminus \{N\}$ revient à être adhérent à $V'$, puisque tout voisinage $W$ de $\psi(x) \neq N$ contient le voisinage $W \setminus \{N\}$, le point $N$ étant fermé.
+
+      Comme $U$ et $V$ sont ouverts, $\operatorname{Fr} U = \overline U \setminus U = \psi^{-1}(\overline{U'} \setminus U') = \psi^{-1}(\Sigma') = \Sigma$, et de même $\operatorname{Fr} V = \psi^{-1}(\overline{V'} \setminus V') = \Sigma$, en utilisant $\psi(x) \neq N$.
+
+      *Bornée et non bornée.* La partie $\Sigma$ est compacte, donc bornée ({{me-rn|L'espace ℝⁿ}}, (iii)) : $\Sigma \subset \bar B(0, \rho)$ pour un $\rho > 0$. L'ensemble $G = \{x : \|x\| > \rho\}$ est l'image de $S^{n-1} \times \left]\rho, +\infty\right[$ par $(u, t) \mapsto tu$, et ce produit est connexe par arcs, puisque $S^{n-1}$ l'est pour $n \geqslant 2$ : il suffit de prendre un chemin dans chaque facteur.
+
+      Ainsi $G$ est connexe par arcs, disjoint de $\Sigma$, et contenu dans l'une des composantes, qui n'est pas bornée. L'autre composante, disjointe de $G$, est contenue dans $\bar B(0, \rho)$ : elle est bornée.
+    remarques:
+      - |
+        Le théorème est faux pour $n = 1$ : une sphère topologique de dimension $0$ de $\mathbb R$ est formée de deux points, et son complémentaire a trois composantes, dont deux non bornées. Dans $S^1$, deux points ne délimitent que deux arcs ; c'est le retrait du point à l'infini $N$ qui en crée une troisième. La démonstration le montre : pour $n = 1$, la calotte épointée $C \setminus \{N\}$ a deux composantes, et $\tilde H_0(C \setminus \{N\}) \cong \mathbb Z$ peut se reporter sur $\tilde H_0(V' \setminus \{N\})$.
+      - |
+        L'erreur la plus répandue est d'appeler la composante bornée « l'intérieur de $\Sigma$ », puis de la confondre avec l'[[interieur|intérieur]] topologique de $\Sigma$. Celui-ci est vide : tout point de $\Sigma$ est adhérent à $U$, qui ne rencontre pas $\Sigma$, et aucun ouvert non vide n'est contenu dans $\Sigma$.
+      - |
+        En dimension $3$, la sphère cornue d'Alexander est une sphère topologique de $\mathbb R^3$ dont la composante non bornée du complémentaire n'est pas [[simplement-connexe|simplement connexe]], alors que celle d'une sphère ronde l'est (admis ici : J. W. Alexander, *Proc. Nat. Acad. Sci.* 10, 1924, p. 8-10 ; la difficulté contournée est la construction de la sphère et le calcul du groupe fondamental). Le théorème de Schoenflies, qui affirme dans le plan que la courbe et ses deux composantes se ramènent par un homéomorphisme de $\mathbb R^2$ au cercle unité et à ses deux composantes ({{hj-jordan|Théorème de Jordan}}), est donc faux en dimension $3$. Il redevient vrai en toute dimension sous une hypothèse de régularité du plongement : B. Mazur l'a établi en 1959 sous une hypothèse supplémentaire, levée ensuite par M. Morse, et M. Brown en 1960 pour les sphères bicollées (admis ici).
+
+  - id: hj-jordan
+    etiquette: Théorème de Jordan
+    nature: théorème
+    titre: Théorème de Jordan pour les courbes du plan
+    texte: |
+      Un **lacet simple** du plan est un lacet $\gamma : I \to \lex{n-uplet}{\mathbb R^2}$ ({{ta-chemins|Chemins}}) tel que, pour $s < t$, l'égalité $\gamma(s) = \gamma(t)$ n'ait lieu que pour $s = 0$ et $t = 1$. Son image est une [[courbe-jordan|courbe de Jordan]].
+    enonce: |
+      (i) Une courbe de Jordan est une [[sphere-topologique|sphère topologique]] de dimension $1$, c'est-à-dire une partie de $\mathbb R^2$ homéomorphe au cercle $\lex{sphere-unite}{S^1}$.
+
+      (ii) *Théorème de Jordan.* Si $\Gamma$ est une courbe de Jordan, $\mathbb R^2 \setminus \Gamma$ a exactement deux [[composante-connexe-par-arcs|composantes connexes par arcs]], ouvertes, l'une bornée et l'autre non. La courbe $\Gamma$ est la [[frontiere|frontière]] de chacune.
+    preuve: |
+      (i) *Un paramétrage du cercle.* Soit $c : I \to \mathbb R^2$ l'application affine sur chacun des segments $[0, \frac18]$, $[\frac18, \frac38]$, $[\frac38, \frac58]$, $[\frac58, \frac78]$, $[\frac78, 1]$, qui passe aux instants $0, \frac18, \frac38, \frac58, \frac78, 1$ par les points $(1, 0)$, $(1, 1)$, $(-1, 1)$, $(-1, -1)$, $(1, -1)$, $(1, 0)$. Elle est continue par recollement ({{ta-chemins|Chemins}}, (i)), et son image est le bord $\{\|x\|_\infty = 1\}$ du carré. Elle est injective sur chacun des cinq segments de temps, où elle est affine et non constante. Les quatre côtés privés de leurs extrémités sont disjoints, et les coins ne sont atteints qu'aux instants $\frac18, \frac38, \frac58, \frac78$. Restent le premier et le dernier segment, tous deux sur la droite $x_1 = 1$, l'un dans $\{x_2 \geqslant 0\}$, l'autre dans $\{x_2 \leqslant 0\}$ : ils ne se rencontrent qu'en $(1, 0)$, atteint aux instants $0$ et $1$. Ainsi $c(s) = c(t)$ avec $s < t$ n'a lieu que pour $s = 0$, $t = 1$.
+
+      Sur ce bord, $x \mapsto x/\|x\|_2$ est une bijection sur $S^1$, de réciproque $u \mapsto u/\|u\|_\infty$. L'application $q = c/\|c\|_2 : I \to S^1$ est donc continue, surjective, et $q(s) = q(t)$ avec $s < t$ n'a lieu que pour $s = 0$, $t = 1$.
+
+      *L'homéomorphisme.* Soit $\gamma$ un lacet simple d'image $\Gamma$. Les mêmes instants étant identifiés par $q$ et par $\gamma$, la formule $h(q(t)) = \gamma(t)$ définit une bijection $h : S^1 \to \Gamma$.
+
+      Elle est continue : pour un fermé $F$ de $\mathbb R^2$, $\gamma^{-1}(F)$ est fermé dans le compact $I$, donc compact, et $h^{-1}(F) = q(\gamma^{-1}(F))$ est compact, donc fermé dans $S^1$ ({{t-compact-prop|Parties compactes}}). Une bijection continue du compact $S^1$ sur le séparé $\Gamma$ est un homéomorphisme ({{t-bij-compact|Bijection d'un compact}}).
+
+      (ii) C'est le théorème {{hj-jordan-brouwer|Jordan-Brouwer dans ℝⁿ}} pour $n = 2$, appliqué à $\Gamma$ grâce à (i).
+    remarques:
+      - |
+        Pour une ligne polygonale fermée sans point double, on sait dire de quel côté se trouve un point : on compte les points où une demi-droite issue de ce point, qui ne passe par aucun sommet, coupe la ligne. Un nombre impair désigne la composante bornée, un nombre pair l'autre. Ce critère n'est pas démontré ici ; il repose sur trois faits : la parité ne change pas quand on déplace le point sans traverser la ligne, elle change quand on traverse une arête une fois, et le nombre est nul loin de la ligne. Les deux premiers donnent deux régions de parités différentes, le troisième place la parité paire sur la composante non bornée ; la seule difficulté est de traiter les demi-droites qui passent par un sommet.
+
+        ```schema hj-jordan
+        Une ligne polygonale fermée en spirale. La composante bornée, en bleu, est un couloir qui s'enroule ; la composante non bornée, blanche, s'enroule entre ses spires. La demi-droite issue du point $x$ coupe la ligne en $5$ points, nombre impair : $x$ est dans la composante bornée. Celle qui est issue de $y$ la coupe en $6$ points : $y$ est dans la composante non bornée, bien qu'il soit au cœur de la figure (critère de parité, admis dans la remarque).
+        ```
+      - |
+        L'énoncé paraît évident, et c'est la figure ci-dessus qui en montre la difficulté : rien ne dit à l'œil, au cœur d'une spirale, de quel côté l'on se trouve. Pour un lacet seulement continu, la courbe peut même avoir une aire strictement positive, au sens de la mesure de Lebesgue, que construit la {{mes|théorie de la mesure}} (W. F. Osgood, « A Jordan curve of positive area », *Trans. Amer. Math. Soc.* 4, 1903, p. 107-112 ; admis ici). Aucune hypothèse de régularité n'est faite dans le théorème, et la démonstration homologique n'en a pas besoin.
+      - |
+        Camille Jordan a énoncé et démontré le théorème dans son *Cours d'analyse de l'École polytechnique*, tome III, 1887, p. 587-594. Sa preuve a longtemps été jugée incomplète, et l'on a souvent attribué la première preuve rigoureuse à O. Veblen (« Theory on plane curves in non-metrical analysis situs », *Trans. Amer. Math. Soc.* 6, 1905, p. 83-98) ; T. C. Hales l'a relue et la juge pour l'essentiel correcte (« Jordan's proof of the Jordan curve theorem », *Studies in Logic, Grammar and Rhetoric* 10 (23), 2007, p. 45-60). Le même auteur en a fait vérifier une démonstration complète par l'ordinateur, dans le système HOL Light (« The Jordan curve theorem, formally and informally », *Amer. Math. Monthly* 114, 2007, p. 882-894).
+      - |
+        Dans le plan, on sait davantage : il existe un homéomorphisme de $\mathbb R^2$ sur lui-même qui envoie $\Gamma$ sur le cercle unité, de sorte que la composante bornée est homéomorphe à un disque ouvert (théorème de Schoenflies : A. Schoenflies, « Beiträge zur Theorie der Punktmengen III », *Math. Ann.* 62, 1906, p. 286-328 ; admis ici). La difficulté contournée est la construction de l'homéomorphisme, qui ne se lit pas sur l'homologie ; l'énoncé analogue est faux en dimension $3$ ({{hj-jordan-brouwer|Jordan-Brouwer dans ℝⁿ}}).
+      - |
+        Pour un lacet simple de classe $C^1$ par morceaux, l'indice du chapitre {{anc-residus|Théorème des résidus}} est constant sur chacune des deux composantes, et nul sur la composante non bornée ({{rs-indice|Indice d'un lacet}}, (iii) et (iv)). Qu'il vaille $\pm 1$ sur la composante bornée est une information de plus, que le théorème de Jordan seul ne donne pas, et qui reste admise ici.
+
+  - id: hj-invariance-domaine
+    etiquette: Invariance du domaine
+    nature: théorème
+    titre: Invariance du domaine
+    enonce: |
+      (i) *Brouwer.* Soit $U$ un [[ouvert]] de $\lex{n-uplet}{\mathbb R^n}$ et $f : U \to \mathbb R^n$ continue et injective. Alors $f(U)$ est ouvert dans $\mathbb R^n$, et $f$ est un [[homeomorphisme|homéomorphisme]] de $U$ sur $f(U)$.
+
+      (ii) Si un ouvert non vide de $\mathbb R^m$ est homéomorphe à un ouvert de $\mathbb R^n$, alors $m = n$.
+    preuve: |
+      (i) Si $n = 0$, $\mathbb R^0$ est un point, $U$ est vide ou égal à ce point, et $f$ est l'identité ou l'application vide : tout est ouvert. Soit $n \geqslant 1$, $x \in U$, et $r > 0$ tel que la boule fermée $D = \bar B(x, r)$ soit contenue dans $U$. Notons $B = B(x, r)$ la boule ouverte et $\Sigma_0 = D \setminus B$ la sphère de centre $x$ et de rayon $r$. L'application $y \mapsto x + ry$ envoie $D^n$ sur $D$ et $S^{n-1}$ sur $\Sigma_0$.
+
+      Soit $\psi : \mathbb R^n \to S^n \setminus \{N\}$ l'inverse de la projection stéréographique ({{hj-calottes|Calottes}}, (i)), et $g = \psi \circ f$, continue et injective. Alors $g(D)$ est homéomorphe à $D^n$, donc à $I^n$, et $g(\Sigma_0)$ est une sphère topologique de dimension $n - 1$ ({{t-bij-compact|Bijection d'un compact}}).
+
+      Par injectivité de $g$, $S^n \setminus g(\Sigma_0)$ est la réunion disjointe de $S^n \setminus g(D)$ et de $g(B)$. Le premier ensemble est non vide et connexe par arcs ({{hj-cellules|Complémentaire d'une cellule}}) ; le second aussi, image de la boule convexe $B$.
+
+      Or $S^n \setminus g(\Sigma_0)$ a exactement deux composantes connexes par arcs, qui sont ouvertes ({{hj-jordan-brouwer-sphere|Jordan-Brouwer dans Sⁿ}}). Chacun des deux ensembles, connexe par arcs, est contenu dans une composante ; s'ils l'étaient dans la même, l'autre composante serait vide. Ce sont donc les deux composantes, et $g(B)$ est ouvert dans $S^n$.
+
+      Ainsi $f(B) = \psi^{-1}(g(B))$ est ouvert dans $\mathbb R^n$, contient $f(x)$ et est contenu dans $f(U)$ : $f(U)$ est voisinage de chacun de ses points, donc ouvert.
+
+      Appliqué à la restriction de $f$ à un ouvert quelconque $U' \subset U$, ce raisonnement montre que $f(U')$ est ouvert : la réciproque $f^{-1} : f(U) \to U$ est continue.
+
+      (ii) Supposons $m < n$, et soit $f$ un homéomorphisme d'un ouvert non vide $V$ de $\mathbb R^n$ sur un ouvert de $\mathbb R^m$. Avec $j(y) = (y, 0)$, de $\mathbb R^m$ dans $\mathbb R^n$, l'application $j \circ f : V \to \mathbb R^n$ est continue et injective ; son image est ouverte par (i) et non vide, donc contient une boule $B(z, \eta)$.
+
+      Mais le point $z + \frac\eta2(0, \dots, 0, 1)$ de cette boule a une dernière coordonnée non nulle, alors que l'image est contenue dans $\mathbb R^m \times \{0\}$ : contradiction. Le cas $m > n$ s'en déduit en échangeant les rôles.
+    remarques:
+      - |
+        L'injectivité et l'égalité des dimensions sont indispensables. Sans injectivité, $t \mapsto t^2$, de $\mathbb R$ dans $\mathbb R$, a pour image $[0, +\infty[$, qui n'est pas ouverte ; entre dimensions différentes, l'application $t \mapsto (t, 0)$ de $\mathbb R$ dans $\mathbb R^2$ est continue et injective, d'image non ouverte. En dimension infinie, le théorème est faux : sur l'espace $\ell^2$ de l'{{anf|analyse fonctionnelle}}, le décalage $(x_0, x_1, \dots) \mapsto (0, x_0, x_1, \dots)$ est linéaire, isométrique, donc continu et injectif, mais son image, l'hyperplan fermé $\{x_0 = 0\}$, n'a aucun point intérieur.
+      - |
+        Le point (ii) généralise {{h-applications|Brouwer, dimension}}, (iii), qui ne traitait que les espaces entiers $\mathbb R^m$ et $\mathbb R^n$. Il donne un sens à la dimension d'une variété topologique, ce que la {{geod|géométrie différentielle}} obtenait plus facilement, pour les difféomorphismes, par la différentielle.
+      - |
+        L. E. J. Brouwer a publié l'invariance du domaine (« Beweis der Invarianz des n-dimensionalen Gebiets », *Math. Ann.* 71, 1912, p. 305-313) et, juste après dans le même volume, la séparation de l'espace par une sphère topologique (« Beweis des Jordanschen Satzes für den n-dimensionalen Raum », *Math. Ann.* 71, 1912, p. 314-319). La voie suivie ici, par l'homologie singulière et la suite de Mayer-Vietoris, est celle des manuels actuels (A. Hatcher, *Algebraic Topology*, Cambridge University Press, 2002, proposition 2B.1).
+
+aretes:
+  - [hj-reduite, hj-mv-reduite]
+  - [hj-reduite, hj-compacite]
+  - [hj-mv-reduite, hj-cellules]
+  - [hj-compacite, hj-cellules]
+  - [hj-calottes, hj-cellules]
+  - [hj-calottes, hj-ouverts-sphere]
+  - [hj-cellules, hj-spheres-plongees]
+  - [hj-spheres-plongees, hj-jordan-brouwer-sphere]
+  - [hj-ouverts-sphere, hj-jordan-brouwer-sphere]
+  - [hj-jordan-brouwer-sphere, hj-jordan-brouwer]
+  - [hj-jordan-brouwer, hj-jordan]
+  - [hj-jordan-brouwer-sphere, hj-invariance-domaine]

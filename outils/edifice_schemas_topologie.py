@@ -1161,3 +1161,206 @@ def ta_revetement_0():
     S.fleche([X(0.75), yl + 40], [O[0] - R0 - 20, O[1] - 30], 'g', retrait=4)
     S.texte([X(0.55), yl + 92], 'p', 'g', taille=17)
     return S
+
+
+# ---------------------------------------------------------------- hom-jordan : théorème de Jordan-Brouwer
+def _segments_se_coupent(a, b, c, d):
+    o = lambda p, q, r: np.sign((q[0] - p[0]) * (r[1] - p[1]) - (q[1] - p[1]) * (r[0] - p[0]))
+    return o(a, b, c) * o(a, b, d) <= 0 and o(c, d, a) * o(c, d, b) <= 0
+
+
+@schema('hj-cellules')
+def hj_cellules():
+    # moitiés gardées : en haut, en bas, en haut, en bas (chiffres binaires de p = 2/3)
+    J = [(Fr(0), Fr(1))]
+    for haut in (True, False, True, False):
+        a, b = J[-1]
+        c = (a + b) / 2
+        J.append((c, b) if haut else (a, c))
+    p = Fr(2, 3)
+    assert all(a <= p <= b and b - a == Fr(1, 2 ** m) for m, (a, b) in enumerate(J))
+    assert J[-1] == (Fr(5, 8), Fr(11, 16))
+    # h = B ∘ A, avec A(x, y) = (x + 0,35 y², y) et B(u, v) = (u, v + 0,25 sin πu), toutes deux injectives
+    def h(x, y):
+        u = x + 0.35 * y ** 2
+        return np.stack([u, y + 0.25 * np.sin(np.pi * u)], -1)
+    g = np.linspace(0, 1, 41)
+    X, Y = np.meshgrid(g, g)
+    im = h(X.ravel(), Y.ravel())
+    d = np.linalg.norm(im[:, None] - im[None], axis=-1) + np.eye(len(im))
+    assert d.min() > 1e-3                                     # injective sur la grille
+    S = Schema(520, 285, 'Bandes emboîtées du cube et leurs images dans la sphère')
+    G = Repere(0, 1, 0, 1, 34, 50, 170, 170)
+    D = Repere(-0.05, 1.45, -0.3, 1.5, 318, 22, 190, 228)
+
+    def bande(R, a, b, image):
+        xs = np.linspace(0, 1, 60)
+        a, b = float(a), float(b)
+        bord = np.concatenate([np.stack([xs, np.full(60, a)], -1),
+                               np.stack([np.full(30, 1.0), np.linspace(a, b, 30)], -1),
+                               np.stack([xs[::-1], np.full(60, b)], -1),
+                               np.stack([np.zeros(30), np.linspace(b, a, 30)], -1)])
+        pts = h(bord[:, 0], bord[:, 1]) if image else bord
+        return R(pts[:, 0], pts[:, 1])
+    for a, b in J[1:4]:
+        S.surface(bande(G, a, b, False), 'b')
+        S.surface(bande(D, a, b, True), 'b')
+    S.poly(bande(G, 0, 1, False), 't', ferme=True)
+    S.poly(bande(D, 0, 1, True), 't', ferme=True)
+    xs = np.linspace(0, 1, 80)
+    S.poly(G(xs, np.full(80, float(p))), 'r', l=3)
+    S.poly(D(*h(xs, np.full(80, float(p))).T), 'r', l=3)
+    for m, (a, b) in enumerate(J[1:], 1):                     # crochets des J_m, à droite du carré
+        xm = 1.06 + 0.07 * (m - 1)
+        S.ligne(G(xm, float(a)), G(xm, float(b)), 'g', l=1.6)
+        S.ligne(G(xm - 0.025, float(a)), G(xm, float(a)), 'g', l=1.6)
+        S.ligne(G(xm - 0.025, float(b)), G(xm, float(b)), 'g', l=1.6)
+    S.texte(G(1.06, 1.0) + [0, -14], 'J_1', 'g', taille=15)
+    S.texte(G(1.3, float(p)) + [4, 0], 'p', 'r', ancre='start', taille=16)
+    S.texte(G(0.5, 0) + [0, 22], 'I^{k−1}', 't', taille=16)
+    S.texte(G(0, 0.4) + [-10, 0], 'I', 't', ancre='end', taille=16)
+    ya = G(0, 0.25)[1]
+    S.fleche([G(1.3, 0)[0], ya], [D(-0.05, 0)[0] - 6, ya], 'g', retrait=2)
+    S.texte([(G(1.3, 0)[0] + D(-0.05, 0)[0]) / 2, ya - 14], 'h', 'g', taille=17)
+    S.texte(D(0.65, -0.08) + [0, 12], 'h(I^k)', 't', taille=16)
+    S.texte(D(-0.02, 1.42), 'h(I^{k−1}×{p})', 'r', ancre='start', taille=15)
+    return S
+
+
+@schema('hj-jordan-brouwer-sphere')
+def hj_jordan_brouwer_sphere():
+    th = np.linspace(0, 2 * np.pi, 1441)
+    rayon = lambda t: 1 + 0.28 * np.cos(3 * t) + 0.08 * np.sin(2 * t)
+    courbe = np.stack([rayon(th) * np.cos(th), rayon(th) * np.sin(th)], -1)
+    t0 = 0.95
+    x = np.array([rayon(t0) * np.cos(t0), rayon(t0) * np.sin(t0)])
+    rho = 0.42
+    proche = np.linalg.norm(courbe - x, axis=1) < 0.8 * rho
+    i0 = int(np.argmin(np.abs(th - t0)))
+    i1 = i0
+    while proche[i1 - 1]:
+        i1 -= 1
+    i2 = i0
+    while proche[i2 + 1]:
+        i2 += 1
+    arc = courbe[i1:i2 + 1]                                   # h(C(s, ε)) : arc autour de x, contenu dans W
+    assert np.all(np.linalg.norm(arc - x, axis=1) < rho)
+    reste = np.concatenate([courbe[i2:], courbe[1:i1 + 1]])  # h(K)
+    u, v = np.array([-0.2, -0.3]), np.array([1.75, 1.2])
+    t1 = t0 - 0.16                                             # point de traversée, sur l'arc rouge
+    m = np.array([rayon(t1) * np.cos(t1), rayon(t1) * np.sin(t1)]) * 1.01
+    ctrl = 2 * m - (u + v) / 2                                 # Bézier quadratique passant par m en t = 1/2
+    ts = np.linspace(0, 1, 801)[:, None]
+    gam = (1 - ts) ** 2 * u + 2 * ts * (1 - ts) * ctrl + ts ** 2 * v
+    assert np.allclose(gam[400], m)
+    # le chemin ne coupe la courbe qu'une fois, sur l'arc rouge, et évite h(K)
+    coupes = [(k, j) for k in range(800) for j in range(1440)
+              if np.linalg.norm(gam[k] - courbe[j]) < 0.2
+              and _segments_se_coupent(gam[k], gam[k + 1], courbe[j], courbe[j + 1])]
+    assert len({k for k, _ in coupes}) == 1 and all(i1 <= j < i2 for _, j in coupes)
+    assert np.linalg.norm(gam[:, None] - reste[None], axis=-1).min() > 0.03
+    dedans_courbe = lambda q: np.hypot(*q) < rayon(np.arctan2(q[1], q[0]))
+    assert dedans_courbe(u) and not dedans_courbe(v)
+    et = gam[coupes[0][0]]
+    S = Schema(480, 380, 'Le chemin de U à V ne traverse la sphère que dans le voisinage W de x')
+    e = 125.0                                                  # pixels par unité, dans les deux directions
+    R = Repere(-1.3, 2.05, -1.35, 1.45, 30, 15, 3.35 * e, 2.8 * e)
+    S.cercle(R(*x), rho * e, 'g', d=True)
+    S.poly(R(reste[:, 0], reste[:, 1]), 't', l=2.4)
+    S.poly(R(arc[:, 0], arc[:, 1]), 'r', l=4)
+    S.poly(R(gam[:, 0], gam[:, 1]), 'b', l=2.2)
+    S.pointe(R(*gam[620]), R(*(gam[621] - gam[619])) - R(0, 0), 'b', taille=11, largeur=5)
+    S.point(R(*u), 'b', r=4)
+    S.texte(R(*u) + [-10, 4], 'u', 'b', ancre='end')
+    S.point(R(*v), 'b', r=4)
+    S.texte(R(*v) + [10, 4], 'v', 'b', ancre='start')
+    S.point(R(*et), 'r', r=4.4)
+    S.texte(R(*et) + [-2, 34], 'γ(t^*)', 'r', ancre='start', taille=15)
+    S.point(R(*x), 't', r=3.4)
+    S.texte(R(*x) + [-6, -16], 'x', 't', ancre='end')
+    S.texte(R(*(x + rho * np.array([-0.8, 0.75]))) + [-12, -10], 'W', 'g', ancre='end')
+    S.texte(R(-0.45, 0.25), 'U', 't', taille=18)
+    S.texte(R(1.6, -0.9), 'V', 't', taille=18)
+    q = courbe[int(np.argmin(np.abs(th - 3.9)))]
+    S.texte(R(*q) + [-6, 8], 'h(K)', 't', ancre='end', taille=16)
+    return S
+
+
+@schema('hj-jordan')
+def hj_jordan():
+    C = np.array([(0, 0), (12, 0), (12, 10), (2, 10), (2, 2), (10, 2), (10, 8), (4, 8), (4, 4), (8, 4),
+                  (8, 6), (6, 6)], float)                      # axe d'un couloir de largeur 1, en spirale
+    gauche = lambda d: np.array([-d[1], d[0]])
+    dirs = [(C[i + 1] - C[i]) / np.linalg.norm(C[i + 1] - C[i]) for i in range(len(C) - 1)]
+    L = [C[0] + 0.5 * gauche(dirs[0])]
+    Rt = [C[0] - 0.5 * gauche(dirs[0])]
+    for i in range(1, len(C) - 1):
+        n = gauche(dirs[i - 1]) + gauche(dirs[i])
+        L.append(C[i] + 0.5 * n)
+        Rt.append(C[i] - 0.5 * n)
+    L.append(C[-1] + 0.5 * gauche(dirs[-1]))
+    Rt.append(C[-1] - 0.5 * gauche(dirs[-1]))
+    P = np.array(L + Rt[::-1])
+    n = len(P)
+    seg = [(P[i], P[(i + 1) % n]) for i in range(n)]
+    for i in range(n):                                         # ligne polygonale sans point double
+        for j in range(i + 2, n):
+            if i == 0 and j == n - 1:
+                continue
+            assert not _segments_se_coupent(*seg[i], *seg[j]), (i, j)
+
+    def coupures(p):
+        assert all(abs(q[1] - p[1]) > 1e-9 for q in P)         # la demi-droite évite les sommets
+        res = []
+        for a, b in seg:
+            if (a[1] > p[1]) != (b[1] > p[1]):
+                xc = a[0] + (p[1] - a[1]) / (b[1] - a[1]) * (b[0] - a[0])
+                if xc > p[0]:
+                    res.append(xc)
+        return sorted(res)
+    x, y = np.array([6.8, 6.1]), np.array([5.6, 5.0])
+    cx, cy = coupures(x), coupures(y)
+    assert len(cx) == 5 and len(cy) == 6
+    # composantes par remplissage, sans parité : grille de pas 0,1, cases trop proches de la ligne exclues,
+    # propagation depuis un coin du cadre [−1, 14] × [−1, 11]
+    pas = 0.1
+    gx = np.arange(-1, 14 + pas / 2, pas)
+    gy = np.arange(-1, 11 + pas / 2, pas)
+    QX, QY = np.meshgrid(gx, gy, indexing='ij')
+    Q = np.stack([QX.ravel(), QY.ravel()], -1)
+    dmin = np.full(len(Q), np.inf)
+    for a, b in seg:
+        t = np.clip(((Q - a) @ (b - a)) / ((b - a) @ (b - a)), 0, 1)
+        dmin = np.minimum(dmin, np.linalg.norm(Q - (a + t[:, None] * (b - a)), axis=1))
+    libre = (dmin > 0.06).reshape(QX.shape)
+
+    def remplir(i0, j0):
+        vu = np.zeros_like(libre)
+        pile = [(i0, j0)]
+        vu[i0, j0] = True
+        while pile:
+            i, j = pile.pop()
+            for k, l in ((i + 1, j), (i - 1, j), (i, j + 1), (i, j - 1)):
+                if 0 <= k < libre.shape[0] and 0 <= l < libre.shape[1] and libre[k, l] and not vu[k, l]:
+                    vu[k, l] = True
+                    pile.append((k, l))
+        return vu
+    case = lambda p: (int(round((p[0] + 1) / pas)), int(round((p[1] + 1) / pas)))
+    dehors = remplir(0, 0)                                      # composante qui touche le bord du cadre
+    assert dehors[case(y)] and not dehors[case(x)]
+    interieur = remplir(*case(x))
+    assert not (interieur[0, :].any() or interieur[-1, :].any() or interieur[:, 0].any() or interieur[:, -1].any())
+    assert libre.sum() == dehors.sum() + interieur.sum()       # exactement deux composantes
+    S = Schema(500, 390, 'Une courbe de Jordan polygonale en spirale et ses deux composantes')
+    R = Repere(-1, 14, -1, 11, 20, 15, 450, 360)
+    S.poly(R(P[:, 0], P[:, 1]), 't', ferme=True, rempli='b', l=1.8)
+    for p, cs in ((x, cx), (y, cy)):
+        S.ligne(R(*p), R(13.6, p[1]), 'g', d=True, l=1.4)
+        S.pointe(R(13.8, p[1]), [1, 0], 'g', taille=9, largeur=4)
+        for xc in cs:
+            S.point(R(xc, p[1]), 'r', r=3.4)
+    S.point(R(*x), 't', r=4)
+    S.texte(R(*x) + [0, -14], 'x', 't')
+    S.point(R(*y), 't', r=4)
+    S.texte(R(*y) + [-10, 0], 'y', 't', ancre='end')
+    return S
