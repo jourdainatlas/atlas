@@ -299,6 +299,11 @@ const index = `<!doctype html>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="ATLAS">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#f4f5f7">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ATLAS">
@@ -391,6 +396,8 @@ for (const n of Object.values(D.noeuds)) {
 }
 console.log(`Pages de partage : ${nbPartage}`);
 // Icônes et image d'aperçu (fabriquées par identite/fabriquer-icones.mjs).
-for (const f of ['favicon.svg', 'favicon-32.png', 'apple-touch-icon.png', 'icone-512.png', 'apercu.png', 'portrait.jpg'])
+for (const f of ['favicon.svg', 'favicon-32.png', 'apple-touch-icon.png', 'icone-192.png', 'icone-512.png', 'icone-masquable-512.png', 'apercu.png', 'portrait.jpg', 'site.webmanifest'])
   fs.copyFileSync(`identite/${f}`, `site/${f}`);
+// Application installable : service worker, dont la version change à chaque publication (voir identite/sw.js).
+fs.writeFileSync('site/sw.js', fs.readFileSync('identite/sw.js', 'utf8').replace("'atlas-__VERSION__'", `'atlas-${empreinte(index)}'`));
 console.log(`Site écrit : site/index.html (${(index.length / 1024).toFixed(0)} Ko)`);

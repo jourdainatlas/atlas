@@ -826,6 +826,21 @@ span.case:hover { border-style: dashed; color: inherit; }
 .tiroir dt { color: var(--encre-3); }
 .tiroir dd { margin: 0; }
 
+/* ---- application installable : invitation à installer */
+.appli-encart {
+  position: fixed; z-index: 60; left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  max-width: 520px; margin: 0 auto; display: flex; align-items: center; gap: 12px; padding: 12px 12px 12px 14px;
+  background: var(--surface); color: var(--encre); border: 1px solid var(--filet); border-radius: 12px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, .18); font-size: 14px; line-height: 1.4; animation: ae-entree .2s ease-out;
+}
+.appli-encart img { border-radius: 9px; flex: none; }
+.appli-encart p { margin: 0; flex: 1; }
+.appli-encart .ae-partage { width: 17px; height: 17px; vertical-align: -3px; color: #0a84ff; }
+.appli-encart .ae-installer { flex: none; font: inherit; font-weight: 600; padding: 7px 14px; border-radius: 8px; border: 0; background: var(--encre); color: var(--papier); cursor: pointer; }
+.appli-encart .ae-fermer { flex: none; width: 30px; height: 30px; border-radius: 8px; border: 0; background: transparent; color: var(--encre-2); font-size: 22px; line-height: 1; cursor: pointer; }
+@keyframes ae-entree { from { transform: translateY(16px); opacity: 0; } to { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .appli-encart { animation: none; } }
+
 /* ---- à propos */
 .apropos { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 32px; align-items: start; }
 .profil { padding: 22px; text-align: center; position: sticky; top: 16px; }
@@ -2708,6 +2723,32 @@ boutonTheme.addEventListener('click', () => {
 });
 sombreSysteme.addEventListener?.('change', majBoutonTheme);
 majBoutonTheme();
+/* ---- Application installable (service worker et invitation à installer ; fichiers dans identite/) */
+// Le service worker n'est enregistré que sur le site publié (ou en local), jamais dans l'aperçu Claude.
+const appliSite = /(^|\.)atlasjourdain\.fr$/.test(location.hostname) || location.hostname === 'localhost';
+if ('serviceWorker' in navigator && appliSite) addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {}));
+const appliInstallee = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+const appliIos = /iPhone|iPad|iPod/.test(navigator.userAgent) || (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
+function appliRefusee() { try { return localStorage.getItem('atlas-appli') === 'non'; } catch (e) { return false; } }
+function appliEncart(texte, bouton, action) {
+  if (!appliSite || appliInstallee() || appliRefusee() || $('#appli-encart')) return;
+  const e = document.createElement('aside');
+  e.id = 'appli-encart'; e.className = 'appli-encart'; e.setAttribute('role', 'dialog'); e.setAttribute('aria-label', 'Installer ATLAS');
+  e.innerHTML = `<img src="icone-192.png" alt="" width="40" height="40"><p>${texte}</p>${bouton ? `<button type="button" class="ae-installer">${bouton}</button>` : ''}<button type="button" class="ae-fermer" aria-label="Fermer">×</button>`;
+  e.querySelector('.ae-fermer').addEventListener('click', () => { try { localStorage.setItem('atlas-appli', 'non'); } catch (er) {} e.remove(); });
+  if (bouton) e.querySelector('.ae-installer').addEventListener('click', () => { e.remove(); action(); });
+  document.body.append(e);
+}
+// Android et navigateurs Chromium : le navigateur signale que le site est installable.
+let appliInvite = null;
+addEventListener('beforeinstallprompt', ev => {
+  ev.preventDefault(); appliInvite = ev;
+  setTimeout(() => appliEncart('Installez ATLAS sur votre téléphone : il s\'ouvrira comme une application, en plein écran.', 'Installer', () => appliInvite.prompt()), 4000);
+});
+addEventListener('appinstalled', () => $('#appli-encart')?.remove());
+// iPhone et iPad : Safari ne propose pas l'installation de lui-même ; on explique le geste.
+if (appliIos && matchMedia('(max-width: 1100px)').matches) setTimeout(() => appliEncart(
+  'Installez ATLAS sur votre écran d\'accueil : touchez <svg class="ae-partage" viewBox="0 0 24 24" aria-label="Partager"><path d="M12 3v12M7.5 7.5 12 3l4.5 4.5M6 11H5v10h14V11h-1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg> <b>Partager</b>, puis <b>Sur l\'écran d\'accueil</b>.'), 4000);
 addEventListener('hashchange', depuisAncre);
 remplirLexique();
 depuisAncre();

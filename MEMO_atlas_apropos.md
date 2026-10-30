@@ -54,3 +54,27 @@ compte de chapitres, pour ne pas vieillir à chaque dépôt.
 
 **Points ouverts.** Année sabbatique 2014-2015 et projet de thèse,
 laissés de côté en attendant l'avis de l'auteur.
+
+### 34. Application installable (30 oct. 2026)
+
+ATLAS est une application web progressive : sur Android, le navigateur propose de l'installer ; sur
+iPhone, Partager › « Sur l'écran d'accueil ». Elle s'ouvre en plein écran et affiche toujours la version
+publiée : aucune publication en magasin, aucune mise à jour à faire par les utilisateurs.
+
+- **Fichiers (domaine À propos, `identite/`)** : `site.webmanifest` (nom, couleurs, icônes),
+  `icone-192.png`, `icone-masquable-512.png` (plein cadre, graphe dans le disque central de 80 %), fabriquées
+  par `fabriquer-icones.mjs` (les autres icônes en sortent identiques à l'octet), et `sw.js`.
+- **`sw.js`** : réseau d'abord, copie gardée pour le hors-ligne ; PDF (`documents/`) jamais en cache ; polices
+  Google en cache d'abord ; hors ligne, une page jamais visitée renvoie à l'accueil gardé. `rendu.mjs` le
+  copie dans `site/sw.js` en remplaçant `'atlas-__VERSION__'` par l'empreinte de la page : chaque
+  publication installe un nouveau service worker, qui efface le cache précédent.
+- **`rendu.mjs`** : balises `manifest` et `apple-mobile-web-app-*` dans la tête de `site/index.html`, copie
+  des fichiers ci-dessus.
+- **`gabarit.html`** (bloc « Application installable », fonctions `appli…`, styles `.appli-encart`) :
+  enregistrement du service worker seulement sur atlasjourdain.fr ou localhost (jamais dans l'aperçu
+  Claude) ; encart d'invitation après 4 s, sur Android (événement `beforeinstallprompt`, bouton
+  « Installer ») et sur iPhone ou iPad (explication du geste) ; jamais dans l'application installée ni sur
+  ordinateur ; fermé, il ne revient plus (`localStorage`, clé `atlas-appli`).
+- Vérifié en local (Chromium) : manifeste et icônes servis, page contrôlée, rubriques lisibles hors ligne,
+  encart sur iPhone émulé et absent sur ordinateur. Reste à confirmer sur un vrai iPhone.
+

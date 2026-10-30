@@ -45,6 +45,10 @@ const tirer = async (nom, w, h, html, fond) => {
 await tirer('apercu.png', 1200, 630, apercu, '#121418');
 await tirer('apple-touch-icon.png', 180, 180, `<div style="width:180px;height:180px">${tuile(false)}</div>`);
 await tirer('icone-512.png', 512, 512, `<div style="width:512px;height:512px">${tuile(true)}</div>`);
+// Application installable (manifeste site.webmanifest) : icône 192 px, et icône « masquable » plein cadre
+// (le graphe tient dans le disque central de 80 % que les lanceurs Android ne rognent jamais).
+await tirer('icone-192.png', 192, 192, `<div style="width:192px;height:192px">${tuile(true)}</div>`);
+await tirer('icone-masquable-512.png', 512, 512, `<div style="width:512px;height:512px">${tuile(false)}</div>`, '#1d2027');
 await tirer('favicon-32.png', 32, 32, favicon.replace('<svg ', '<svg width="32" height="32" '));
 await nav.close();
 console.log(await (await import('fs')).readdirSync('.').filter(x => /png|svg/.test(x)));
