@@ -1,0 +1,670 @@
+# Niveau 2 : structure interne du chapitre « Surfaces » (nœud edo-surfaces du graphe edo, créé le 30 oct. 2026).
+# Surfaces paramétrées régulières de ℝ³ et sous-variétés de dimension 2 ; première forme fondamentale, longueurs,
+# angles, isométries ; aire (mesure de Lebesgue, invariance par changement de paramètres) ; application de Gauss,
+# seconde forme fondamentale, endomorphisme de Weingarten, théorème de Meusnier ; courbures principales, formule
+# d'Euler, courbures de Gauss et moyenne, position par rapport au plan tangent ; exemples (plan, sphère, cylindre,
+# graphes, selle, tore, caténoïde) ; symboles de Christoffel ; Theorema egregium par la formule de Brioschi ;
+# géodésiques (équation, existence et unicité par Cauchy-Lipschitz, grands cercles, hélices du cylindre) ;
+# application exponentielle, coordonnées polaires géodésiques et lemme de Gauss, minimisation locale de la longueur ;
+# courbure géodésique et sa formule en coordonnées polaires ; Gauss-Bonnet pour un triangle géodésique dont un sommet
+# est le centre de coordonnées polaires géodésiques ; métriques riemanniennes, en ouverture.
+# Placement : voir edo-courbes. La régularité C^∞ du flot (ed-flot-ck) fait de l'exponentielle une application lisse ;
+# le changement de variables (edo-changement) rend l'aire indépendante du paramétrage.
+# Choix : seule la mesure de Lebesgue de ℝ² en demande (choix dénombrable, nœud m-lebesgue) ; ce signe est porté
+# par sf-aire et par le point (ii) de sf-gauss-bonnet, qui en héritent. Le point (i) de Gauss-Bonnet est énoncé
+# par des intégrales de Riemann itérées de fonctions continues, sans choix.
+# Admis ici : le théorème de Gauss-Bonnet global (triangulation et caractéristique d'Euler-Poincaré absentes), et
+# l'invariance par changement de carte de la courbure d'une métrique riemannienne abstraite.
+
+graphe: edo-surfaces
+titre: Surfaces
+conteneur: edo-surfaces
+
+entrees:
+  edo-courbes: [sf-surfaces]
+  edo-changement: [sf-aire]
+  ed-flot-ck: [sf-exponentielle]
+
+noeuds:
+  - id: sf-surfaces
+    etiquette: Surfaces paramétrées
+    nature: définition
+    titre: Surfaces paramétrées régulières
+    texte: |
+      Soit $U$ un ouvert de $\lex{n-uplet}{\mathbb R^2}$, dont on note $(u, v)$ les points. Une [[surface-parametree|surface paramétrée régulière]] est une application $x : U \to \mathbb R^3$ de [[classe-ck|classe $C^\infty$]] telle que les dérivées partielles $x_u = \partial_u x$ et $x_v = \partial_v x$ vérifient $x_u \wedge x_v \neq 0$ en tout point ([[produit-vectoriel|produit vectoriel]]) ; de façon équivalente, $dx(u, v)$ est injective ({{cb-frenet|Repère de Frenet}}, (i)).
+
+      Le **plan tangent** en $(u, v)$ est l'image $P(u, v) = \operatorname{Im} dx(u, v)$, engendrée par $x_u$ et $x_v$. Un **changement de paramètres** est un [[diffeomorphisme|$C^\infty$-difféomorphisme]] $\varphi$ d'un ouvert $\tilde U$ sur $U$ ; la surface $\tilde x = x \circ \varphi$ est une autre paramétrisation du même morceau de surface.
+    enonce: |
+      (i) *Changement de paramètres.* $\tilde x = x \circ \varphi$ est régulière, a les mêmes plans tangents, et
+      $$\tilde x_{\tilde u} \wedge \tilde x_{\tilde v} = (\det d\varphi)\,(x_u \wedge x_v) \circ \varphi.$$
+
+      (ii) *Morceaux de sous-variété.* Tout point de $U$ a un voisinage ouvert $V$ tel que $x(V)$ soit une [[sous-variete|sous-variété]] de dimension $2$ de $\mathbb R^3$, que $x$ induise un homéomorphisme de $V$ sur $x(V)$, et que sa réciproque soit la restriction à $x(V)$ d'une application de classe $C^\infty$ sur un ouvert de $\mathbb R^3$. Pour $(u, v) \in V$, $\lex{espace-tangent-sv}{T_{x(u, v)}}x(V) = P(u, v)$.
+
+      (iii) *Réciproque.* Si $S$ est une sous-variété de dimension $2$ de $\mathbb R^3$ et $a \in S$, il existe une surface paramétrée régulière qui induit un homéomorphisme d'un ouvert de $\mathbb R^2$ sur un voisinage ouvert de $a$ dans $S$.
+
+      (iv) *Graphes.* Pour $h : U \to \mathbb R$ de classe $C^\infty$, $x(u, v) = (u, v, h(u, v))$ est régulière, et $x_u \wedge x_v = (-h_u, -h_v, 1)$.
+    preuve: |
+      (i) Notons $\begin{pmatrix} a & b \\ c & d \end{pmatrix}$ la matrice jacobienne de $\varphi$. La règle de la chaîne ({{gd-differentielle|Différentielle}}, (iv)) donne $\tilde x_{\tilde u} = a\,x_u + c\,x_v$ et $\tilde x_{\tilde v} = b\,x_u + d\,x_v$, évalués en $\varphi$ ; par bilinéarité et antisymétrie,
+      $$\tilde x_{\tilde u} \wedge \tilde x_{\tilde v} = (ad - bc)\,x_u \wedge x_v.$$
+      Ce vecteur ne s'annule pas, et $\operatorname{Im} d\tilde x = dx\big(\operatorname{Im} d\varphi\big) = \operatorname{Im} dx$, puisque $d\varphi$ est inversible.
+
+      (ii) Soit $(u_0, v_0) \in U$ et $n_0 = x_u \wedge x_v$ en ce point. L'application $\Phi(u, v, w) = x(u, v) + w\,n_0$, de $U \times \mathbb R$ dans $\mathbb R^3$, est de classe $C^\infty$, et sa matrice jacobienne en $(u_0, v_0, 0)$ a pour colonnes $x_u$, $x_v$, $n_0$, de déterminant $\langle x_u \wedge x_v, n_0 \rangle = \|n_0\|^2 \neq 0$.
+
+      Par le théorème d'{{gd-inversion-locale|inversion locale}}, $\Phi$ induit un $C^\infty$-difféomorphisme d'un ouvert contenant $(u_0, v_0, 0)$ sur un ouvert de $\mathbb R^3$ ; cet ouvert contient un produit $V \times \,]{-\eta}, \eta[$, avec $V$ ouvert contenant $(u_0, v_0)$ et $\eta > 0$. Soit $O = \Phi\big(V \times \,]{-\eta}, \eta[\big)$, ouvert, et $\Psi : O \to V \times \,]{-\eta}, \eta[$ la réciproque.
+
+      Pour $y \in O$, $y \in x(V)$ équivaut à $\Psi(y) \in V \times \{0\}$ : si $y = x(u, v) = \Phi(u, v, 0)$ avec $(u, v) \in V$, alors $\Psi(y) = (u, v, 0)$, et la réciproque est claire. Ainsi $\Psi\big(O \cap x(V)\big) = \Psi(O) \cap \big(\mathbb R^2 \times \{0\}\big)$, et $x(V) \subset O$ est une sous-variété de dimension $2$, redressée par $\Psi$ en chacun de ses points.
+
+      L'application $x|_V$ est une bijection continue de $V$ sur $x(V)$, de réciproque $p \circ \Psi|_{x(V)}$, où $p(u, v, w) = (u, v)$ : c'est la restriction de l'application $C^\infty$ $p \circ \Psi$. Enfin, $T_{x(u, v)}x(V) = d\Psi(y)^{-1}\big(\mathbb R^2 \times \{0\}\big)$ ({{gd-tangent-sm|Tangent à une sous-variété}}), et $d\Psi(y)^{-1} = d\Phi(u, v, 0)$ envoie $\mathbb R^2 \times \{0\}$ sur $\operatorname{Im} dx(u, v)$.
+
+      (iii) Par le nœud {{gd-exemples-varietes|Exemples de variétés}}, (i), si $\Phi$ redresse $S$ sur un ouvert $W$ contenant $a$, l'application $x(z) = \Phi^{-1}(z, 0)$, définie sur l'ouvert $\Omega = \{z \in \mathbb R^2 : (z, 0) \in \Phi(W)\}$, est la réciproque d'une carte : un homéomorphisme de $\Omega$ sur l'ouvert $W \cap S$ de $S$. Elle est de classe $C^\infty$, et $dx(z)$ est la restriction à $\mathbb R^2 \times \{0\}$ de l'isomorphisme $d(\Phi^{-1})(z, 0)$, donc injective.
+
+      (iv) $x_u = (1, 0, h_u)$, $x_v = (0, 1, h_v)$, et la formule du produit vectoriel donne $(-h_u, -h_v, 1)$, qui n'est jamais nul.
+    remarques:
+      - |
+        L'erreur la plus répandue est d'oublier que (ii) est local. Une surface paramétrée régulière n'est pas toujours injective : $(u, v) \mapsto (\cos u, \sin u, v)$ enroule le plan $\mathbb R^2$ sur le cylindre une infinité de fois. Même injective, son image n'est pas toujours une sous-variété : pour $u \in \,]0, 2\pi[$, $(u, v) \mapsto (\sin 2u, \sin u, v)$ est injective et régulière, mais son image, le cylindre construit sur une courbe en huit, contient la droite $\{(0, 0)\} \times \mathbb R$, au voisinage de laquelle trois nappes s'accumulent.
+      - |
+        Toutes les notions de ce chapitre se calculent dans un paramétrage, puis l'on vérifie, par (i), qu'elles ne dépendent pas de lui, ou comment elles en dépendent. C'est le même principe que pour les variétés abstraites ({{gd-varietes|Variétés différentiables}}), où les changements de cartes jouent le rôle des changements de paramètres.
+
+  - id: sf-premiere-forme
+    etiquette: Première forme
+    nature: définition
+    titre: Première forme fondamentale, longueurs et angles
+    texte: |
+      Soit $x : U \to \lex{n-uplet}{\mathbb R^3}$ une [[surface-parametree|surface paramétrée régulière]]. La [[premiere-forme-fondamentale|première forme fondamentale]] en $(u, v)$ est la restriction au plan tangent $P(u, v)$ de la forme quadratique $w \mapsto \langle w, w \rangle$. Dans la base $(x_u, x_v)$, elle s'écrit
+      $$I(a\,x_u + b\,x_v) = Ea^2 + 2Fab + Gb^2,$$
+      avec les fonctions de classe $C^\infty$
+      $$\begin{aligned} E &= \langle x_u, x_u \rangle, \\ F &= \langle x_u, x_v \rangle, \\ G &= \langle x_v, x_v \rangle. \end{aligned}$$
+
+      Deux surfaces paramétrées régulières $x$ et $y$ définies sur le même ouvert $U$ sont **isométriques** si elles ont les mêmes fonctions $E$, $F$ et $G$.
+    enonce: |
+      (i) $EG - F^2 = \|x_u \wedge x_v\|^2 > 0$ : la matrice $\begin{pmatrix} E & F \\ F & G \end{pmatrix}$ est symétrique et [[forme-definie-positive|définie positive]].
+
+      (ii) *Longueurs.* Si $\beta = (u, v) : I \to U$ est une courbe de classe $C^1$, la courbe $c = x \circ \beta$ tracée sur la surface a pour longueur entre $a$ et $b$
+      $$L_a^b(c) = \int_a^b \sqrt{I\big(c'(t)\big)}\,dt,$$
+      avec $I(c') = Eu'^2 + 2Fu'v' + Gv'^2$, les coefficients étant évalués en $\beta(t)$.
+
+      (iii) *Changement de paramètres.* Pour $\tilde x = x \circ \varphi$, de matrice jacobienne $J_\varphi$,
+      $$\begin{pmatrix} \tilde E & \tilde F \\ \tilde F & \tilde G \end{pmatrix} = {}^tJ_\varphi \begin{pmatrix} E & F \\ F & G \end{pmatrix}\!\circ \varphi\; J_\varphi.$$
+
+      (iv) *Isométries.* $x$ et $y$ sont isométriques si et seulement si, pour toute courbe $\beta$ de classe $C^1$ dans $U$, les courbes $x \circ \beta$ et $y \circ \beta$ ont même longueur.
+
+      (v) *Angles.* La fonction $\cos$ est une bijection strictement décroissante de $[0, \pi]$ sur $[-1, 1]$, et $\sin > 0$ sur $]0, \pi[$. L'**angle** de deux vecteurs non nuls $w_1$ et $w_2$ est l'unique $\vartheta \in [0, \pi]$ tel que $\cos\vartheta = \frac{\langle w_1, w_2 \rangle}{\|w_1\|\,\|w_2\|}$.
+    preuve: |
+      (i) C'est l'identité de Lagrange ({{cb-frenet|Repère de Frenet}}, (i)). La forme $I$ est définie positive sur $P(u, v)$, donc sa matrice dans une base l'est.
+
+      (ii) Par la règle de la chaîne, $c' = u'x_u + v'x_v$, et $\|c'\|^2 = I(c')$ ; on applique la définition de la longueur ({{cb-courbes|Courbes et longueur}}).
+
+      (iii) Par la démonstration du nœud {{sf-surfaces|Surfaces paramétrées}}, (i), les colonnes de la matrice de $(\tilde x_{\tilde u}, \tilde x_{\tilde v})$ dans la base $(x_u, x_v)$ sont celles de $J_\varphi$ ; la matrice d'une forme bilinéaire change par congruence.
+
+      (iv) Si $E$, $F$, $G$ coïncident, (ii) donne les mêmes longueurs. Réciproquement, soit $(u_0, v_0) \in U$, $h \in \mathbb R^2$ et $\beta(t) = (u_0, v_0) + th$, défini pour $|t|$ petit. La longueur entre $0$ et $t$ de $x \circ \beta$ est une fonction dérivable de $t$, de dérivée en $0$ égale à $\sqrt{I_x(h)}$, où $I_x(h) = Eh_1^2 + 2Fh_1h_2 + Gh_2^2$ en $(u_0, v_0)$ ({{ar-tfa|Théorème fondamental}}). L'égalité des longueurs donne donc $I_x(h) = I_y(h)$ pour tout $h$. Deux formes quadratiques égales ont la même forme polaire, donc les mêmes coefficients.
+
+      (v) Par définition de $\pi$, $\cos > 0$ sur $[0, \frac\pi2[$ et $\cos\frac\pi2 = 0$ ({{cx-pi|Le nombre π}}). Comme $\sin' = \cos$ et $\sin 0 = 0$, $\sin$ est strictement croissante sur $[0, \frac\pi2]$, donc $\sin > 0$ sur $]0, \frac\pi2]$ ; alors $\cos' = -\sin < 0$ sur $]0, \frac\pi2]$, et $\cos$ décroît strictement de $1$ à $0$ sur $[0, \frac\pi2]$ ({{de-monotonie|Monotonie}}, (iii)).
+
+      De $\exp(i\pi) = -1$ et $\exp(i(\pi - t)) = \exp(i\pi)\exp(-it)$ on tire $\cos(\pi - t) = -\cos t$ et $\sin(\pi - t) = \sin t$ : $\cos$ décroît strictement de $0$ à $-1$ sur $[\frac\pi2, \pi]$, et $\sin > 0$ sur $]0, \pi[$. Continue et strictement décroissante, $\cos$ est une bijection de $[0, \pi]$ sur $[-1, 1]$ ({{c-tvi|Valeurs intermédiaires}}). Le quotient qui définit l'angle est dans $[-1, 1]$ par l'inégalité de Cauchy-Schwarz ({{f-hilbert|Espaces de Hilbert}}, (i)).
+    remarques:
+      - |
+        Le plan $x(u, v) = (u, v, 0)$ et le cylindre $y(u, v) = (\cos u, \sin u, v)$ ont tous deux $E = G = 1$ et $F = 0$ : ils sont isométriques. C'est le fait familier qu'on enroule une feuille de papier en cylindre sans la froisser ni la déchirer, et que les longueurs tracées sur la feuille ne changent pas.
+      - |
+        La sphère de rayon $R$, paramétrée par la latitude $u \in \,]{-\frac\pi2}, \frac\pi2[$ et la longitude $v$, $x(u, v) = (R\cos u\cos v, R\cos u\sin v, R\sin u)$, a $E = R^2$, $F = 0$ et $G = R^2\cos^2 u$. Le coefficient $G$ dit qu'un degré de longitude est plus court près des pôles qu'à l'équateur. Le Theorema egregium ({{sf-egregium|Theorema egregium}}) montrera qu'aucun paramétrage d'un morceau de sphère n'a les coefficients du plan.
+      - |
+        La première forme est une métrique au sens de Riemann : la donnée, en chaque point, d'un produit scalaire sur le plan tangent. Le nœud {{sf-riemann|Métriques riemanniennes}} détache cette notion de l'espace ambiant.
+
+  - id: sf-aire
+    etiquette: Aire
+    nature: proposition
+    titre: Aire d'une surface paramétrée
+    choix: |
+      La mesure de Lebesgue de $\lex{n-uplet}{\mathbb R^2}$ repose sur le [[choix-denombrable|choix dénombrable]] ({{m-lebesgue|Mesure de Lebesgue}}). L'aire définie ici, et tout ce qui l'emploie dans ce chapitre, en hérite ; ce signe est indiqué ici une fois. Le point (ii) montre que l'aire d'un rectangle de paramètres est une intégrale de Riemann itérée d'une fonction continue, nombre que l'on définit sans aucun choix.
+    texte: |
+      Soit $x : U \to \lex{n-uplet}{\mathbb R^3}$ une [[surface-parametree|surface paramétrée régulière]] et $D \subset U$ un borélien. L'[[aire-surface|aire]] de $x$ sur $D$ est
+      $$\begin{aligned} \mathcal A_x(D) &= \int_D \|x_u \wedge x_v\|\,d\lambda \\ &= \int_D \sqrt{EG - F^2}\,d\lambda, \end{aligned}$$
+      où $\lambda$ est la [[mesure-lebesgue|mesure de Lebesgue]] de $\mathbb R^2$ ({{cv-lebesgue-rn|Lebesgue sur ℝⁿ}}). Plus généralement, pour $f : U \to [0, +\infty]$ borélienne, on note $\int_D f\,dA = \int_D f\,\sqrt{EG - F^2}\,d\lambda$, et de même pour $f$ intégrable.
+    enonce: |
+      (i) *Invariance.* Si $\varphi : \tilde U \to U$ est un changement de paramètres et $\tilde x = x \circ \varphi$, alors $\mathcal A_{\tilde x}\big(\varphi^{-1}(D)\big) = \mathcal A_x(D)$, et de même $\int_{\varphi^{-1}(D)} f \circ \varphi\,d\tilde A = \int_D f\,dA$.
+
+      (ii) *Rectangles.* Si $D = [a, b] \times [c, d] \subset U$,
+      $$\mathcal A_x(D) = \int_a^b\!\Big(\int_c^d \|x_u \wedge x_v\|\,dv\Big)du.$$
+
+      (iii) *Exemples.* Le paramétrage de la sphère de rayon $R$ par la latitude et la longitude, sur $]{-\frac\pi2}, \frac\pi2[ \times \,]{-\pi}, \pi[$, est injectif, d'image la sphère privée d'un demi-méridien fermé, et d'aire $4\pi R^2$. Le tore $x(u, v) = \big((R + r\cos u)\cos v, (R + r\cos u)\sin v, r\sin u\big)$, $0 < r < R$, sur $]{-\pi}, \pi[^2$, a pour aire $4\pi^2Rr$.
+    preuve: |
+      (i) Par le nœud {{sf-surfaces|Surfaces paramétrées}}, (i), $\|\tilde x_{\tilde u} \wedge \tilde x_{\tilde v}\| = |\det d\varphi|\;\|x_u \wedge x_v\| \circ \varphi$. L'ensemble $\varphi^{-1}(D)$ est borélien, puisque $\varphi$ est continue ({{cv-lebesgue-rn|Lebesgue sur ℝⁿ}}, (i)). La formule du changement de variables ({{cv-changement|Changement de variables}}, (ii)), appliquée à la fonction borélienne positive $g = \mathbf 1_D\,f\,\|x_u \wedge x_v\|$ sur $U$, donne
+      $$\int_U g\,d\lambda = \int_{\tilde U} (g \circ \varphi)\,|\det d\varphi|\,d\lambda,$$
+      et $(g \circ \varphi)\,|\det d\varphi| = \mathbf 1_{\varphi^{-1}(D)}\,(f \circ \varphi)\,\|\tilde x_{\tilde u} \wedge \tilde x_{\tilde v}\|$. Le cas intégrable s'en déduit par les parties positive et négative.
+
+      (ii) La fonction $\|x_u \wedge x_v\|$ est continue, donc bornée sur le compact $D$ et intégrable sur $D$. Le théorème de Fubini ({{m-fubini|Tonelli, Fubini}}), pour $\lambda_2 = \lambda_1 \otimes \lambda_1$, puis l'égalité des intégrales de Lebesgue et de Riemann pour les fonctions continues sur un segment ({{m-riemann|Riemann et Lebesgue}}) donnent l'intégrale itérée.
+
+      (iii) *Sphère.* L'injectivité vient de l'écriture unique d'un complexe non nul $z = |z|\exp(iv)$ avec $v \in \,]{-\pi}, \pi]$ ({{cx-pi|Le nombre π}}, (iii)), appliquée à $(x_1 + ix_2)/(R\cos u)$, et de la bijectivité de $\sin$ de $]{-\frac\pi2}, \frac\pi2[$ sur $]{-1}, 1[$, qui se déduit du nœud {{sf-premiere-forme|Première forme}}, (v), par $\sin u = \cos(\frac\pi2 - u)$. Les points exclus sont les pôles et ceux de longitude $\pi$.
+
+      Ici $\sqrt{EG - F^2} = R^2\cos u$ ({{sf-premiere-forme|Première forme}}, remarques), et les bords du rectangle, contenus dans des droites, sont négligeables ({{cv-lebesgue-rn|Lebesgue sur ℝⁿ}}, (iv)). Par (ii) appliqué aux rectangles $[{-\frac\pi2} + \frac1k, \frac\pi2 - \frac1k] \times [{-\pi} + \frac1k, \pi - \frac1k]$ et par convergence monotone ({{m-beppo-levi|Beppo Levi}}),
+      $$\mathcal A = \int_{-\pi}^{\pi}\!\int_{-\pi/2}^{\pi/2} R^2\cos u\,du\,dv = 2\pi R^2 \cdot 2.$$
+
+      *Tore.* $x_u \wedge x_v = -r(R + r\cos u)\,(\cos u\cos v, \cos u\sin v, \sin u)$, de norme $r(R + r\cos u)$, et le même passage à la limite donne $\int_{-\pi}^{\pi}\int_{-\pi}^{\pi} r(R + r\cos u)\,du\,dv = 4\pi^2Rr$.
+    remarques:
+      - |
+        L'aire est celle d'un morceau paramétré, comptée avec multiplicité si $x$ n'est pas injectif. Pour le paramétrage $(\cos u, \sin u, v)$ du cylindre, l'aire de $x$ sur $\mathbb R \times [0, 1]$ est infinie, alors que la bande du cylindre qu'il recouvre, une infinité de fois, a pour aire $2\pi$. Pour l'aire d'une surface entière, couverte par plusieurs paramétrages, il faudrait découper la surface en morceaux disjoints et additionner ; ce n'est pas fait ici.
+      - |
+        La formule $\sqrt{EG - F^2}$ se lit sur un petit rectangle de paramètres $[u, u + h] \times [v, v + k]$ : son image est presque le parallélogramme construit sur $h\,x_u$ et $k\,x_v$, dont l'aire est $hk\,\|x_u \wedge x_v\|$. Le demi-méridien exclu au point (iii) est l'image d'un côté du rectangle de paramètres, ensemble négligeable : c'est pourquoi l'on attribue d'habitude à la sphère entière l'aire $4\pi R^2$, bien que, comme le dit la remarque précédente, l'aire d'une surface entière ne soit pas définie ici.
+
+  - id: sf-gauss
+    etiquette: Application de Gauss
+    nature: théorème
+    titre: Application de Gauss, seconde forme fondamentale et théorème de Meusnier
+    texte: |
+      Soit $x : U \to \lex{n-uplet}{\mathbb R^3}$ une [[surface-parametree|surface paramétrée régulière]]. Son [[application-gauss|application de Gauss]] est le champ normal unitaire
+      $$N = \frac{x_u \wedge x_v}{\|x_u \wedge x_v\|} : U \to \lex{sphere-unite}{S^2},$$
+      de classe $C^\infty$. La [[seconde-forme-fondamentale|seconde forme fondamentale]] a pour coefficients les fonctions
+      $$\begin{aligned} e &= \langle x_{uu}, N \rangle, \\ f &= \langle x_{uv}, N \rangle, \\ g &= \langle x_{vv}, N \rangle, \end{aligned}$$
+      et s'écrit $I\!I(a\,x_u + b\,x_v) = ea^2 + 2fab + gb^2$ sur le plan tangent $P(u, v)$.
+
+      L'[[endomorphisme-weingarten|endomorphisme de Weingarten]] $W$ en $(u, v)$ est l'application linéaire de $P(u, v)$ dans $\mathbb R^3$ définie par $W(x_u) = -N_u$ et $W(x_v) = -N_v$, c'est-à-dire $W \circ dx = -dN$.
+    enonce: |
+      (i) $N_u$ et $N_v$ appartiennent à $P(u, v)$ : $W$ est un endomorphisme du plan tangent.
+
+      (ii) $W$ est [[operateur-autoadjoint|autoadjoint]] pour le produit scalaire de $P(u, v)$, et $I\!I(w) = \langle W(w), w \rangle$. Plus précisément,
+      $$\begin{aligned} \langle W x_u, x_u \rangle &= e, \\ \langle W x_u, x_v \rangle &= \langle W x_v, x_u \rangle = f, \\ \langle W x_v, x_v \rangle &= g, \end{aligned}$$
+      et la matrice de $W$ dans la base $(x_u, x_v)$ est $\begin{pmatrix} E & F \\ F & G \end{pmatrix}^{-1}\begin{pmatrix} e & f \\ f & g \end{pmatrix}$.
+
+      (iii) *Changement de paramètres.* Pour $\tilde x = x \circ \varphi$, $\epsilon = \operatorname{signe}(\det d\varphi)$ est localement constant, $\tilde N = \epsilon\,N \circ \varphi$, et l'endomorphisme de Weingarten de $\tilde x$ en $\tilde p$ est $\epsilon$ fois celui de $x$ en $\varphi(\tilde p)$.
+
+      (iv) *Théorème de Meusnier.* Soit $c = x \circ \beta$, avec $\beta : I \to U$ de classe $C^2$, une courbe tracée sur la surface et paramétrée par la longueur. Alors
+      $$\langle c'', N \rangle = I\!I(c').$$
+      Si $c''$ ne s'annule pas, et si l'on note $\kappa = \|c''\|$ et $n_c = c''/\kappa$, alors $\kappa\,\langle n_c, N \rangle = I\!I(c')$ : toutes les courbes de la surface qui ont en un point la même tangente unitaire $c'$ y ont la même **courbure normale** $I\!I(c')$.
+    preuve: |
+      (i) En dérivant $\langle N, N \rangle = 1$, on obtient $\langle N_u, N \rangle = \langle N_v, N \rangle = 0$. Or $N$ est orthogonal à $x_u$ et à $x_v$ ({{cb-frenet|Repère de Frenet}}, (i)), donc l'orthogonal de $N$, de dimension $2$, contient $P(u, v)$, de dimension $2$ : il lui est égal ({{v-dimension|Dimension}}).
+
+      (ii) Dérivons $\langle x_u, N \rangle = 0$ par rapport à $u$ : $\langle x_{uu}, N \rangle + \langle x_u, N_u \rangle = 0$, soit $\langle W x_u, x_u \rangle = -\langle N_u, x_u \rangle = e$. Les dérivées de $\langle x_u, N \rangle = 0$ par rapport à $v$ et de $\langle x_v, N \rangle = 0$ par rapport à $u$ et à $v$ donnent de même
+      $$\begin{aligned} \langle W x_v, x_u \rangle &= \langle x_{uv}, N \rangle, \\ \langle W x_u, x_v \rangle &= \langle x_{vu}, N \rangle, \\ \langle W x_v, x_v \rangle &= g, \end{aligned}$$
+      et $x_{uv} = x_{vu}$ par le théorème de Schwarz ({{gd-schwarz|Schwarz}}, (i)). Par bilinéarité, $\langle W(w), w' \rangle = \langle w, W(w') \rangle$ pour tous $w, w'$ de $P(u, v)$, et $\langle W(w), w \rangle = I\!I(w)$.
+
+      Écrivons $W x_u = \alpha\,x_u + \gamma\,x_v$. Les produits scalaires avec $x_u$ et $x_v$ donnent $E\alpha + F\gamma = e$ et $F\alpha + G\gamma = f$ ; de même pour $W x_v$. Ainsi le produit de la matrice $\begin{pmatrix} E & F \\ F & G \end{pmatrix}$, inversible, par celle de $W$ est $\begin{pmatrix} e & f \\ f & g \end{pmatrix}$.
+
+      (iii) Par le nœud {{sf-surfaces|Surfaces paramétrées}}, (i), $\tilde N = \epsilon\,N \circ \varphi$. La fonction $\det d\varphi$ est continue et ne s'annule pas : son signe est localement constant. Au voisinage d'un point, la règle de la chaîne donne $d\tilde N = \epsilon\,dN(\varphi) \circ d\varphi$, et, comme $d\tilde x = dx(\varphi) \circ d\varphi$,
+      $$-d\tilde N = \epsilon\,W \circ dx(\varphi) \circ d\varphi = \epsilon\,W \circ d\tilde x.$$
+
+      (iv) Le vecteur $c' = u'x_u + v'x_v$ appartient à $P(\beta)$, donc $\langle c', N \circ \beta \rangle = 0$. En dérivant,
+      $$\begin{aligned} \langle c'', N \circ \beta \rangle &= -\langle c', (N \circ \beta)' \rangle \\ &= -\langle c', u'N_u + v'N_v \rangle, \end{aligned}$$
+      et $-(u'N_u + v'N_v) = W(c')$. Donc $\langle c'', N \rangle = \langle c', W(c') \rangle = I\!I(c')$. Si $c''$ ne s'annule pas, $c'' = \kappa\,n_c$ par définition ; quand $\beta$ est de classe $C^3$, ce sont la courbure et la normale principale du nœud {{cb-frenet|Repère de Frenet}}.
+    remarques:
+      - |
+        J.-B. Meusnier a lu son *Mémoire sur la courbure des surfaces* à l'Académie des sciences en 1776 ; il a paru en 1785 dans les *Mémoires de mathématique et de physique présentés par divers savans*, t. 10, p. 477-510 (*Dictionary of Scientific Biography*, notice « Meusnier de la Place »). Son théorème dit que, parmi les sections planes d'une surface qui ont la même tangente, la section normale est la moins courbée : $\kappa = \frac{I\!I(c')}{\cos\phi}$, où $\phi$ est l'angle de $n_c$ avec $N$.
+      - |
+        L'application de Gauss dépend du sens de $N$, donc de l'ordre des paramètres : échanger $u$ et $v$ change $N$ en $-N$, $I\!I$ en $-I\!I$ et $W$ en $-W$. Seules les quantités paires en $W$, comme la courbure de Gauss du nœud suivant, n'en dépendent pas.
+
+  - id: sf-courbures
+    etiquette: Courbures
+    nature: théorème
+    titre: Courbures principales, courbure de Gauss et courbure moyenne
+    texte: |
+      Soit $x$ une [[surface-parametree|surface paramétrée régulière]], $(u, v) \in U$ et $W$ l'[[endomorphisme-weingarten|endomorphisme de Weingarten]] en ce point, autoadjoint sur le plan $P(u, v)$ ({{sf-gauss|Application de Gauss}}). Ses deux [[valeur-propre|valeurs propres]] $k_1 \geqslant k_2$ sont les [[courbures-principales|courbures principales]], et des vecteurs propres associés sont des **directions principales**. La [[courbure-gauss|courbure de Gauss]] et la [[courbure-moyenne|courbure moyenne]] sont
+      $$\begin{aligned} K &= \det W = k_1k_2, \\ H &= \tfrac12\operatorname{tr} W = \tfrac12(k_1 + k_2). \end{aligned}$$
+      Le point est **ombilic** si $k_1 = k_2$.
+    enonce: |
+      (i) *Formule d'Euler.* Il existe une base orthonormée $(e_1, e_2)$ de $P(u, v)$ telle que $W e_i = k_i e_i$, et, pour $w = \cos\theta\,e_1 + \sin\theta\,e_2$,
+      $$I\!I(w) = k_1\cos^2\theta + k_2\sin^2\theta.$$
+      Les courbures principales sont le maximum et le minimum de la courbure normale $I\!I(w)$ sur les vecteurs tangents unitaires.
+
+      (ii) *Calcul.* $\displaystyle K = \frac{eg - f^2}{EG - F^2}$ et $\displaystyle H = \frac{eG - 2fF + gE}{2(EG - F^2)}$.
+
+      (iii) *Changement de paramètres.* Pour $\tilde x = x \circ \varphi$, $\tilde K = K \circ \varphi$ et $\tilde H = \epsilon\,H \circ \varphi$, avec $\epsilon = \operatorname{signe}(\det d\varphi)$.
+
+      (iv) *Position par rapport au plan tangent.* Soit $p = x(u_0, v_0)$ et $N_0 = N(u_0, v_0)$. Alors
+      $$\begin{aligned} &\langle x(u_0 + h, v_0 + k) - p, N_0 \rangle \\ &\quad = \tfrac12\,I\!I(h\,x_u + k\,x_v) + o(h^2 + k^2). \end{aligned}$$
+      Si $K(u_0, v_0) > 0$, il existe un voisinage $V$ de $(u_0, v_0)$ tel que $x(V) \setminus \{p\}$ soit strictement d'un seul côté du plan tangent affine $p + P(u_0, v_0)$. Si $K(u_0, v_0) < 0$, $x(V)$ rencontre les deux côtés pour tout voisinage $V$.
+    preuve: |
+      (i) Le plan $P(u, v)$, muni du produit scalaire de $\mathbb R^3$, est un espace euclidien de dimension $2$ ; le théorème spectral ({{f-spectral-fini|Théorème spectral}}, (ii)) fournit la base orthonormée de vecteurs propres, et $I\!I(w) = \langle W w, w \rangle = k_1\cos^2\theta + k_2\sin^2\theta$. Cette quantité est comprise entre $k_2$ et $k_1$, et vaut $k_1$ pour $\theta = 0$, $k_2$ pour $\theta = \frac\pi2$.
+
+      (ii) Le déterminant et la trace d'un endomorphisme se lisent sur sa matrice dans n'importe quelle base ({{v-det-matrice|Déterminant d'une matrice}}, (i), {{v-trace|Trace}}). Dans la base $(x_u, x_v)$, cette matrice est $M = \begin{pmatrix} E & F \\ F & G \end{pmatrix}^{-1}\begin{pmatrix} e & f \\ f & g \end{pmatrix}$ ({{sf-gauss|Application de Gauss}}, (ii)), d'où $\det M = \frac{eg - f^2}{EG - F^2}$ par multiplicativité. Avec l'inverse $\frac{1}{EG - F^2}\begin{pmatrix} G & -F \\ -F & E \end{pmatrix}$ ({{v-comatrice|Comatrice}}), la trace de $M$ est $\frac{Ge - Ff - Ff + Eg}{EG - F^2}$.
+
+      (iii) Par le nœud {{sf-gauss|Application de Gauss}}, (iii), l'endomorphisme de $\tilde x$ est $\epsilon W$, et $\det(\epsilon W) = \epsilon^2\det W$ en dimension $2$, $\operatorname{tr}(\epsilon W) = \epsilon\operatorname{tr} W$.
+
+      (iv) La fonction $\psi(h, k) = \langle x(u_0 + h, v_0 + k) - p, N_0 \rangle$ est de classe $C^\infty$, nulle en $0$, de différentielle nulle en $0$ puisque $x_u$ et $x_v$ sont orthogonaux à $N_0$, et de matrice hessienne $\begin{pmatrix} e & f \\ f & g \end{pmatrix}$ en $0$. La formule de Taylor-Young ({{fq-taylor-young|Taylor-Young}}, (ii)) donne le développement.
+
+      Si $K > 0$, alors $eg - f^2 > 0$ et la forme $q(h, k) = eh^2 + 2fhk + gk^2$ est définie positive ou définie négative ({{fq-mineurs|Critère des mineurs}}) ; quitte à changer $N_0$ en $-N_0$, elle est définie positive, et il existe $c_0 > 0$ tel que $q(h, k) \geqslant c_0\max(|h|, |k|)^2$ ({{fq-positives|Formes positives}}, (iv)) ; comme $h^2 + k^2 \leqslant 2\max(|h|, |k|)^2$, on a $q(h, k) \geqslant m(h^2 + k^2)$ avec $m = \frac{c_0}2$. Pour $(h, k)$ assez petit et non nul, le reste est inférieur à $\frac m4(h^2 + k^2)$, et $\psi(h, k) > 0$. Comme $x$ est injectif près de $(u_0, v_0)$ ({{sf-surfaces|Surfaces paramétrées}}, (ii)), seul $(0, 0)$ donne le point $p$.
+
+      Si $K < 0$, la forme $q$, de déterminant strictement négatif, prend des valeurs strictement positives et strictement négatives : il existe $w_+$ et $w_-$ avec $q(w_+) > 0 > q(w_-)$. Pour $t$ réel non nul assez petit, $\psi(tw_\pm) = t^2\big(\frac12 q(w_\pm) + o(1)\big)$ a le signe de $q(w_\pm)$.
+    remarques:
+      - |
+        ```schema sf-courbures
+        La selle $z = \frac12(x^2 - y^2)$ près de l'origine, vue de biais en projection parallèle. Au-dessus du plan tangent horizontal, la section par le plan $y = 0$, en rouge, est la parabole $z = \frac{x^2}2$, de courbure $k_1 = 1$ ; en dessous, la section par $x = 0$, en bleu, est $z = -\frac{y^2}2$, de courbure $k_2 = -1$. La surface traverse son plan tangent, comme l'annonce $K = -1 < 0$.
+        ```
+        L. Euler a étudié les courbures des sections normales dans « Recherches sur la courbure des surfaces », *Mémoires de l'Académie des sciences de Berlin*, t. 16, paru en 1767, p. 119-143 ; il y montre que leurs courbures extrêmes sont atteintes dans deux directions orthogonales. La formule (i) porte son nom.
+      - |
+        L'erreur la plus répandue est de croire qu'une surface de courbure de Gauss nulle est plane. Le cylindre a $K = 0$ en tout point, mais une courbure principale non nulle : il est courbé dans une direction seulement. La courbure de Gauss nulle dit autre chose, que le nœud {{sf-egregium|Theorema egregium}} rendra précis : le cylindre se déroule sur le plan sans changer les longueurs.
+      - |
+        Le signe de $K$ ne dépend pas de l'orientation, celui de $H$ si. On parle de point **elliptique** si $K > 0$, comme sur une sphère ou un œuf, **hyperbolique** si $K < 0$, comme au col d'une selle, et **parabolique** si $K = 0$ sans que $W$ soit nul. Le point (iv) est l'analogue, pour une surface, du critère des extrema par la hessienne ({{fq-extremums|Conditions suffisantes d'extremum}}) : un point hyperbolique est un point col de la hauteur au-dessus du plan tangent.
+
+  - id: sf-exemples
+    etiquette: Premiers exemples
+    nature: proposition
+    titre: Plan, sphère, cylindre, graphes et selle
+    enonce: |
+      (i) *Plan.* Pour un morceau de plan, $N$ est constante, $W = 0$, et $K = H = 0$.
+
+      (ii) *Sphère.* Pour toute surface paramétrée régulière $x$ à valeurs dans la sphère de centre $0$ et de rayon $R$, $N = \frac{\epsilon}{R}\,x$ avec $\epsilon \in \{-1, 1\}$ localement constant, et $W = -\frac{\epsilon}{R}\,\mathrm{id}$ : tous les points sont ombilics, $K = \frac1{R^2}$ et $H = -\frac{\epsilon}{R}$.
+
+      (iii) *Cylindre.* Pour $x(u, v) = (R\cos u, R\sin u, v)$, $N = (\cos u, \sin u, 0)$ pointe vers l'extérieur, les courbures principales sont $0$, dans la direction des génératrices, et $-\frac1R$, dans celle des cercles ; $K = 0$ et $H = -\frac1{2R}$.
+
+      (iv) *Graphes.* Pour $x(u, v) = (u, v, h(u, v))$, en notant $\Delta = 1 + h_u^2 + h_v^2$,
+      $$K = \frac{h_{uu}h_{vv} - h_{uv}^2}{\Delta^2}.$$
+      Si $h(0, 0) = 0$ et $dh(0, 0) = 0$, alors en $(0, 0)$, $E = G = 1$, $F = 0$, $N = (0, 0, 1)$, et la matrice de $W$ dans la base canonique est la hessienne de $h$.
+
+      (v) *Selles.* Pour $h = \frac12(u^2 - v^2)$, l'origine a pour courbures principales $1$ et $-1$, de directions $x_u$ et $x_v$ : $K = -1$ et $H = 0$. Pour $h = uv$, de même $K = -1$ et $H = 0$, les directions principales étant les bissectrices $x_u \pm x_v$.
+    preuve: |
+      (i) Si $x$ prend ses valeurs dans un plan affine de vecteur normal unitaire $n$, alors $x_u$ et $x_v$ sont orthogonaux à $n$, et $N = \pm n$ ; continue, $\langle N, n \rangle$ est localement constant, donc $N$ aussi, et $W = -dN \circ dx^{-1} = 0$.
+
+      (ii) Comme $\langle x, x \rangle = R^2$, la dérivation donne $\langle x_u, x \rangle = \langle x_v, x \rangle = 0$ : $x$ est orthogonal à $P(u, v)$, comme $N$, donc $N = \pm\frac xR$. La fonction $\langle N, x \rangle$, continue et à valeurs dans $\{-R, R\}$, est localement constante. Alors $dN = \frac\epsilon R\,dx$, $W = -\frac\epsilon R\,\mathrm{id}$, $K = \frac1{R^2}$ et $H = -\frac\epsilon R$.
+
+      (iii) $x_u = (-R\sin u, R\cos u, 0)$, $x_v = (0, 0, 1)$ et $x_u \wedge x_v = (R\cos u, R\sin u, 0)$, de norme $R$. Alors $N_u = (-\sin u, \cos u, 0) = \frac1R x_u$ et $N_v = 0$ : $W x_u = -\frac1R x_u$ et $W x_v = 0$.
+
+      (iv) Par le nœud {{sf-surfaces|Surfaces paramétrées}}, (iv), $x_u \wedge x_v = (-h_u, -h_v, 1)$, de norme $\sqrt\Delta$, et $EG - F^2 = \Delta$ ({{sf-premiere-forme|Première forme}}, (i)). Comme $x_{uu} = (0, 0, h_{uu})$, $x_{uv} = (0, 0, h_{uv})$ et $x_{vv} = (0, 0, h_{vv})$, on a $e = \frac{h_{uu}}{\sqrt\Delta}$, $f = \frac{h_{uv}}{\sqrt\Delta}$, $g = \frac{h_{vv}}{\sqrt\Delta}$, et le nœud {{sf-courbures|Courbures}}, (ii), donne $K$. Si $dh(0, 0) = 0$, alors $\Delta = 1$, $x_u = (1, 0, 0)$, $x_v = (0, 1, 0)$, et la matrice de $W$ est $\begin{pmatrix} e & f \\ f & g \end{pmatrix}$ ({{sf-gauss|Application de Gauss}}, (ii)).
+
+      (v) Pour $h = \frac12(u^2 - v^2)$, la hessienne en $0$ est $\operatorname{diag}(1, -1)$. Pour $h = uv$, c'est $\begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}$, de valeurs propres $1$ et $-1$, de vecteurs propres $(1, 1)$ et $(1, -1)$. On applique (iv).
+    remarques:
+      - |
+        La selle $z = uv$ est la selle $z = \frac12(u^2 - v^2)$ tournée d'un huitième de tour autour de l'axe vertical : si $u = \frac{s + t}{\sqrt 2}$ et $v = \frac{s - t}{\sqrt 2}$, alors $uv = \frac12(s^2 - t^2)$. Les courbures, invariantes par déplacement, sont les mêmes ; seules les directions principales tournent.
+      - |
+        Réciproquement, une surface paramétrée sur un ouvert connexe dont tous les points sont ombilics, avec $K > 0$, est contenue dans une sphère. Si $W = k\,\mathrm{id}$, alors $N_u = -k\,x_u$ et $N_v = -k\,x_v$ ; l'égalité des dérivées croisées donne $k_v\,x_u = k_u\,x_v$, donc $k_u = k_v = 0$, et $k$ est constante. Alors $x + \frac1k N$ est de différentielle nulle, donc égal à un point $a$, et $\|x - a\| = \frac1{|k|}$. Le résultat n'est pas utilisé ici.
+
+  - id: sf-tore-catenoide
+    etiquette: Tore et caténoïde
+    nature: proposition
+    titre: Le tore et la caténoïde
+    texte: |
+      On note $\cosh t = \frac12(e^t + e^{-t})$ et $\sinh t = \frac12(e^t - e^{-t})$, de dérivées $\sinh$ et $\cosh$, avec $\cosh^2 - \sinh^2 = 1$ et $\cosh \geqslant 1$. Une surface est dite [[surface-minimale|minimale]] si sa courbure moyenne est identiquement nulle.
+    enonce: |
+      (i) *Tore.* Pour $0 < r < R$, $x(u, v) = \big((R + r\cos u)\cos v, (R + r\cos u)\sin v, r\sin u\big)$ sur $\lex{n-uplet}{\mathbb R^2}$ a pour coefficients $E = r^2$, $F = 0$, $G = (R + r\cos u)^2$, pour normale $N = -(\cos u\cos v, \cos u\sin v, \sin u)$, qui pointe vers l'âme du tore, et pour seconde forme $e = r$, $f = 0$ et
+      $$g = (R + r\cos u)\cos u.$$
+      Ses courbures principales sont $\frac1r$, le long des méridiens, et $\frac{\cos u}{R + r\cos u}$, le long des parallèles, d'où
+      $$K = \frac{\cos u}{r(R + r\cos u)}.$$
+      $K$ est strictement positive sur la partie extérieure ($\cos u > 0$), strictement négative sur la partie intérieure, nulle sur les deux cercles $u = \pm\frac\pi2$, et $K\sqrt{EG - F^2} = \cos u$.
+
+      (ii) *Caténoïde.* Pour $c > 0$, $x(u, v) = \big(c\cosh\frac uc\cos v, c\cosh\frac uc\sin v, u\big)$ a pour coefficients $F = 0$ et
+      $$E = \cosh^2\tfrac uc, \qquad G = c^2\cosh^2\tfrac uc,$$
+      et $e = -\frac1c$, $f = 0$, $g = c$. Ses courbures principales sont $\pm\frac{1}{c\cosh^2(u/c)}$ : la caténoïde est minimale, et
+      $$K = -\frac{1}{c^2\cosh^4(u/c)}.$$
+    preuve: |
+      (i) Un calcul direct donne
+      $$\begin{aligned} x_u &= r(-\sin u\cos v, -\sin u\sin v, \cos u), \\ x_v &= (R + r\cos u)(-\sin v, \cos v, 0), \end{aligned}$$
+      d'où $E$, $F$, $G$, puis $x_u \wedge x_v = -r(R + r\cos u)(\cos u\cos v, \cos u\sin v, \sin u)$, de norme $r(R + r\cos u)$, puisque $R + r\cos u > 0$. Avec
+      $$\begin{aligned} x_{uu} &= -r(\cos u\cos v, \cos u\sin v, \sin u), \\ x_{uv} &= r\sin u\,(\sin v, -\cos v, 0), \\ x_{vv} &= -(R + r\cos u)(\cos v, \sin v, 0), \end{aligned}$$
+      on obtient $e$, $f$, $g$. Comme $F = f = 0$, la matrice de $W$ est diagonale ({{sf-gauss|Application de Gauss}}, (ii)), de coefficients $\frac eE$ et $\frac gG$, qui sont les courbures principales, et $K$ est leur produit.
+
+      Les signes viennent de celui de $\cos u$, et $K\sqrt{EG - F^2} = \frac{\cos u}{r(R + r\cos u)}\cdot r(R + r\cos u) = \cos u$.
+
+      (ii) Notons $\mathrm{ch}$ et $\mathrm{sh}$ les valeurs de $\cosh$ et $\sinh$ en $\frac uc$. Alors
+      $$\begin{aligned} x_u &= (\mathrm{sh}\cos v, \mathrm{sh}\sin v, 1), \\ x_v &= c\,\mathrm{ch}\,(-\sin v, \cos v, 0), \end{aligned}$$
+      d'où $E = \mathrm{sh}^2 + 1 = \mathrm{ch}^2$, $F = 0$ et $G = c^2\mathrm{ch}^2$. Puis $x_u \wedge x_v = c\,\mathrm{ch}\,(-\cos v, -\sin v, \mathrm{sh})$, de norme $c\,\mathrm{ch}^2$, et $N = \frac{1}{\mathrm{ch}}(-\cos v, -\sin v, \mathrm{sh})$. Avec
+      $$\begin{aligned} x_{uu} &= \tfrac1c\,\mathrm{ch}\,(\cos v, \sin v, 0), \\ x_{uv} &= \mathrm{sh}\,(-\sin v, \cos v, 0), \\ x_{vv} &= -c\,\mathrm{ch}\,(\cos v, \sin v, 0), \end{aligned}$$
+      on trouve $e = -\frac1c$, $f = 0$ et $g = c$. Les courbures principales sont $\frac eE = -\frac{1}{c\,\mathrm{ch}^2}$ et $\frac gG = \frac{1}{c\,\mathrm{ch}^2}$ ; leur somme est nulle et leur produit est $K$.
+    remarques:
+      - |
+        Sur le carré $]{-\pi}, \pi[^2$, qui paramètre le tore privé de deux cercles, l'intégrale de la courbure pour l'aire ({{sf-aire|Aire}}) vaut $\int_{-\pi}^{\pi}\int_{-\pi}^{\pi}\cos u\,du\,dv = 0$, puisque $\sin\pi = \sin(-\pi) = 0$. Ce n'est pas un hasard de calcul : la partie extérieure, de courbure positive, compense exactement la partie intérieure. Le théorème de Gauss-Bonnet global, que le nœud {{sf-gauss-bonnet|Gauss-Bonnet}} énoncera en remarque, affirme que l'intégrale de $K$ sur une surface compacte ne dépend que de sa topologie : elle vaut $4\pi$ pour toute surface difféomorphe à une sphère, $0$ pour tout tore.
+      - |
+        Meusnier a rencontré la caténoïde, avec l'hélicoïde, comme solution de l'équation des surfaces minimales de Lagrange, dans le mémoire cité au nœud {{sf-gauss|Application de Gauss}}. Le nom vient de ce que la caténoïde est engendrée par la rotation d'une chaînette, $r = c\cosh\frac zc$. Une surface minimale a en chaque point des courbures principales opposées, donc $K \leqslant 0$ : c'est la forme que prend un film de savon tendu entre deux cercles coaxiaux assez proches.
+
+  - id: sf-christoffel
+    etiquette: Symboles de Christoffel
+    nature: lemme
+    titre: Symboles de Christoffel
+    texte: |
+      Soit $x : U \to \lex{n-uplet}{\mathbb R^3}$ une [[surface-parametree|surface paramétrée régulière]]. En chaque point, $(x_u, x_v, N)$ est une base de $\mathbb R^3$, et les dérivées secondes s'y décomposent : par définition de $e$, $f$, $g$ ({{sf-gauss|Application de Gauss}}),
+      $$\begin{aligned} x_{uu} &= \Gamma^1_{11}\,x_u + \Gamma^2_{11}\,x_v + e\,N, \\ x_{uv} &= \Gamma^1_{12}\,x_u + \Gamma^2_{12}\,x_v + f\,N, \\ x_{vv} &= \Gamma^1_{22}\,x_u + \Gamma^2_{22}\,x_v + g\,N. \end{aligned}$$
+      Les fonctions $\Gamma^k_{ij}$ sont les [[symboles-christoffel|symboles de Christoffel]] ; on pose $\Gamma^k_{21} = \Gamma^k_{12}$.
+    enonce: |
+      (i) Les produits scalaires des dérivées secondes avec $x_u$ et $x_v$ ne dépendent que de la première forme :
+      $$\begin{aligned} \langle x_{uu}, x_u \rangle &= \tfrac12 E_u, \\ \langle x_{uv}, x_u \rangle &= \tfrac12 E_v, \\ \langle x_{vv}, x_u \rangle &= F_v - \tfrac12 G_u, \end{aligned}$$
+      et
+      $$\begin{aligned} \langle x_{uu}, x_v \rangle &= F_u - \tfrac12 E_v, \\ \langle x_{uv}, x_v \rangle &= \tfrac12 G_u, \\ \langle x_{vv}, x_v \rangle &= \tfrac12 G_v. \end{aligned}$$
+
+      (ii) Les symboles de Christoffel sont les solutions des systèmes
+      $$\begin{pmatrix} E & F \\ F & G \end{pmatrix}\begin{pmatrix} \Gamma^1_{ij} \\ \Gamma^2_{ij} \end{pmatrix} = \begin{pmatrix} \langle x_{ij}, x_u \rangle \\ \langle x_{ij}, x_v \rangle \end{pmatrix},$$
+      où $x_{11} = x_{uu}$, $x_{12} = x_{uv}$, $x_{22} = x_{vv}$. Ce sont des fonctions de classe $C^\infty$, qui ne dépendent que de $E$, $F$, $G$ et de leurs dérivées premières : deux surfaces isométriques ont les mêmes.
+
+      (iii) *Coordonnées orthogonales.* Si $F = 0$,
+      $$\begin{aligned} \Gamma^1_{11} &= \frac{E_u}{2E}, & \Gamma^2_{11} &= -\frac{E_v}{2G}, & \Gamma^1_{12} &= \frac{E_v}{2E}, \\ \Gamma^2_{12} &= \frac{G_u}{2G}, & \Gamma^1_{22} &= -\frac{G_u}{2E}, & \Gamma^2_{22} &= \frac{G_v}{2G}. \end{aligned}$$
+    preuve: |
+      (i) En dérivant $E = \langle x_u, x_u \rangle$, $G = \langle x_v, x_v \rangle$ et $F = \langle x_u, x_v \rangle$, et en utilisant $x_{uv} = x_{vu}$ ({{gd-schwarz|Schwarz}}, (i)) :
+      $$\begin{aligned} E_u &= 2\langle x_{uu}, x_u \rangle, & E_v &= 2\langle x_{uv}, x_u \rangle, \\ G_u &= 2\langle x_{uv}, x_v \rangle, & G_v &= 2\langle x_{vv}, x_v \rangle, \end{aligned}$$
+      et
+      $$\begin{aligned} F_u &= \langle x_{uu}, x_v \rangle + \langle x_u, x_{uv} \rangle, \\ F_v &= \langle x_{uv}, x_v \rangle + \langle x_u, x_{vv} \rangle. \end{aligned}$$
+      Les deux dernières, avec les précédentes, donnent $\langle x_{uu}, x_v \rangle$ et $\langle x_{vv}, x_u \rangle$.
+
+      (ii) On prend le produit scalaire de chaque décomposition avec $x_u$ et $x_v$, orthogonaux à $N$. La matrice $\begin{pmatrix} E & F \\ F & G \end{pmatrix}$ est inversible ({{sf-premiere-forme|Première forme}}, (i)), et son inverse $\frac{1}{EG - F^2}\begin{pmatrix} G & -F \\ -F & E \end{pmatrix}$ est de classe $C^\infty$ ; les seconds membres sont donnés par (i).
+
+      (iii) La matrice est diagonale, et l'on divise par $E$ ou par $G$ les seconds membres de (i), où $F_u = F_v = 0$.
+    remarques:
+      - |
+        Pour le plan paramétré par $(u, v) \mapsto (u, v, 0)$ et pour le cylindre $(\cos u, \sin u, v)$, $E$, $F$ et $G$ sont constants, et tous les symboles sont nuls. Pour la sphère paramétrée par la latitude et la longitude, $E = R^2$, $F = 0$, $G = R^2\cos^2 u$, et les seuls symboles non nuls sont $\Gamma^1_{22} = \sin u\cos u$ et $\Gamma^2_{12} = -\frac{\sin u}{\cos u}$.
+      - |
+        La partie tangente de $x_{uu}$, qu'on vient de calculer sans connaître la surface, est l'accélération qu'un habitant de la surface mesurerait. C'est ce qui rend possibles le Theorema egregium ({{sf-egregium|Theorema egregium}}) et l'équation des géodésiques ({{sf-geodesiques|Géodésiques}}), qui ne font intervenir que ces symboles.
+
+  - id: sf-egregium
+    etiquette: Theorema egregium
+    nature: théorème
+    titre: Theorema egregium de Gauss
+    texte: |
+      Soit $x : U \to \lex{n-uplet}{\mathbb R^3}$ une [[surface-parametree|surface paramétrée régulière]], de [[premiere-forme-fondamentale|première forme fondamentale]] $E$, $F$, $G$, et $K$ sa [[courbure-gauss|courbure de Gauss]] ({{sf-courbures|Courbures}}). Les indices désignent des dérivées partielles.
+    enonce: |
+      (i) *Formule de Brioschi.* $K\,(EG - F^2)^2 = \det M_1 - \det M_2$, où, en notant $m = -\frac12 E_{vv} + F_{uv} - \frac12 G_{uu}$, $s_1 = F_u - \frac12 E_v$ et $s_2 = F_v - \frac12 G_u$,
+      $$M_1 = \begin{pmatrix} m & \frac12 E_u & s_1 \\ s_2 & E & F \\ \frac12 G_v & F & G \end{pmatrix},$$
+      $$M_2 = \begin{pmatrix} 0 & \frac12 E_v & \frac12 G_u \\ \frac12 E_v & E & F \\ \frac12 G_u & F & G \end{pmatrix}.$$
+
+      (ii) *Theorema egregium.* La courbure de Gauss ne dépend que de $E$, $F$, $G$ et de leurs dérivées partielles d'ordre au plus $2$. Deux surfaces paramétrées isométriques ont la même courbure de Gauss en chaque point de $U$.
+
+      (iii) *Coordonnées orthogonales.* Si $F = 0$,
+      $$\begin{aligned} 4E^2G^2K &= -2EG\,(E_{vv} + G_{uu}) \\ &\quad + E_uG_uG + EE_vG_v \\ &\quad + E_v^2G + EG_u^2. \end{aligned}$$
+      Si de plus $E = 1$, alors $\displaystyle K = -\frac{(\sqrt G)_{uu}}{\sqrt G}$.
+    preuve: |
+      (i) *Étape 1 : déterminants.* Pour tout vecteur $a$, $\langle a, x_u \wedge x_v \rangle = \det(x_u, x_v, a) = \det(a, x_u, x_v)$ ({{cb-frenet|Repère de Frenet}}, (i)). Comme $N = \frac{x_u \wedge x_v}{\sqrt{EG - F^2}}$ ({{sf-premiere-forme|Première forme}}, (i)), on obtient, en notant $D(a) = \det(a, x_u, x_v)$,
+      $$e\sqrt{EG - F^2} = D(x_{uu}),$$
+      et de même $f\sqrt{EG - F^2} = D(x_{uv})$, $g\sqrt{EG - F^2} = D(x_{vv})$. Par le nœud {{sf-courbures|Courbures}}, (ii),
+      $$\begin{aligned} &K(EG - F^2)^2 = (eg - f^2)(EG - F^2) \\ &\quad = D(x_{uu})\,D(x_{vv}) - D(x_{uv})^2. \end{aligned}$$
+
+      *Étape 2 : matrices de Gram.* Pour deux matrices carrées $A$ et $B$, $\det A\,\det B = \det({}^tAB)$ ({{v-det-matrice|Déterminant d'une matrice}}, (ii) et (iii)), et ${}^tAB$ est la matrice des produits scalaires des colonnes de $A$ par celles de $B$. Avec les colonnes $(x_{uu}, x_u, x_v)$ et $(x_{vv}, x_u, x_v)$, puis $(x_{uv}, x_u, x_v)$ deux fois, et le lemme {{sf-christoffel|Symboles de Christoffel}}, (i), on obtient $\det M_1'$ et $\det M_2'$, où $M_1'$ et $M_2'$ sont $M_1$ et $M_2$ dans lesquelles le coefficient en haut à gauche est remplacé par $\langle x_{uu}, x_{vv} \rangle$ et $\langle x_{uv}, x_{uv} \rangle$.
+
+      *Étape 3 : le seul terme suspect.* Développons selon la première ligne ({{v-comatrice|Comatrice}}) : le cofacteur du coefficient en haut à gauche vaut $EG - F^2$ dans les deux matrices, et les autres termes ne dépendent pas de ce coefficient. Donc
+      $$\begin{aligned} &\det M_1' - \det M_2' - (\det M_1 - \det M_2) \\ &\quad = (EG - F^2)\Big(\langle x_{uu}, x_{vv} \rangle - \|x_{uv}\|^2 \\ &\qquad\quad - \big(F_{uv} - \tfrac12 E_{vv} - \tfrac12 G_{uu}\big)\Big). \end{aligned}$$
+
+      Or, $x$ étant de classe $C^3$, le théorème de Schwarz permet de dériver dans l'ordre que l'on veut, et
+      $$\begin{aligned} \langle x_{uu}, x_v \rangle_v &= \langle x_{uuv}, x_v \rangle + \langle x_{uu}, x_{vv} \rangle, \\ \langle x_{uv}, x_v \rangle_u &= \langle x_{uuv}, x_v \rangle + \|x_{uv}\|^2. \end{aligned}$$
+      La différence est $\langle x_{uu}, x_{vv} \rangle - \|x_{uv}\|^2 = \big(F_u - \frac12 E_v\big)_v - \big(\frac12 G_u\big)_u$, par le lemme cité, (i) : la parenthèse est nulle.
+
+      (ii) Les coefficients de $M_1$ et $M_2$ ne font intervenir que $E$, $F$, $G$ et leurs dérivées d'ordre au plus $2$, et $EG - F^2 > 0$. Des surfaces isométriques ont les mêmes $E$, $F$, $G$ sur $U$, donc les mêmes dérivées et la même courbure.
+
+      (iii) Pour $F = 0$, on développe les deux déterminants selon leur première ligne :
+      $$\begin{aligned} \det M_1 &= -\tfrac12(E_{vv} + G_{uu})EG \\ &\quad + \tfrac14 E_uG_uG + \tfrac14 EE_vG_v, \\ \det M_2 &= -\tfrac14 E_v^2G - \tfrac14 EG_u^2. \end{aligned}$$
+      On multiplie la différence par $4$. Si de plus $E = 1$, il reste $4G^2K = -2GG_{uu} + G_u^2$. En posant $h = \sqrt G > 0$, $G_u = 2hh_u$ et $G_{uu} = 2h_u^2 + 2hh_{uu}$, d'où $4h^4K = -4h^3h_{uu}$.
+    remarques:
+      - |
+        C. F. Gauss a présenté les *Disquisitiones generales circa superficies curvas* à la Société royale de Göttingen le 8 octobre 1827 ; elles ont paru en 1828 dans les *Commentationes Societatis Regiae Scientiarum Gottingensis Recentiores*, t. 6, p. 99-146. Le théorème est à l'article 12, sous la forme : si une surface est appliquée sur une autre, la mesure de courbure en chaque point reste inchangée. Gauss l'appelle *theorema egregium*, « théorème remarquable », parce que $K$, défini par la normale, donc par la façon dont la surface est placée dans l'espace, se révèle intrinsèque.
+      - |
+        *Cartographie.* Pour la sphère de rayon $R$ en latitude et longitude, $E = R^2$, $F = 0$, $G = R^2\cos^2 u$, et (iii) redonne $K = \frac1{R^2}$, déjà obtenu au nœud {{sf-exemples|Premiers exemples}}. Une carte plane qui respecterait toutes les longueurs d'une région de la Terre serait un paramétrage de cette région isométrique au plan, de courbure nulle : il n'en existe pas. Toute carte déforme donc les distances, et les cartographes choisissent ce qu'ils sacrifient (angles, aires ou distances le long de certaines lignes).
+      - |
+        La formule (iii) s'écrit aussi
+        $$K = -\frac{1}{2\sqrt{EG}}\Big[\Big(\frac{E_v}{\sqrt{EG}}\Big)_v + \Big(\frac{G_u}{\sqrt{EG}}\Big)_u\Big],$$
+        comme on le vérifie en développant les deux dérivées.
+      - |
+        Le cas $E = 1$, $F = 0$ est celui des coordonnées polaires géodésiques ({{sf-polaires|Coordonnées polaires géodésiques}}), où $K = -\frac{(\sqrt G)_{rr}}{\sqrt G}$ dit comment la courbure fait diverger ou converger les géodésiques issues d'un point : sur la sphère unité, $\sqrt G = \sin r$ et $K = 1$.
+
+  - id: sf-geodesiques
+    etiquette: Géodésiques
+    nature: théorème
+    titre: Géodésiques d'une surface
+    texte: |
+      Soit $x : U \to \lex{n-uplet}{\mathbb R^3}$ une [[surface-parametree|surface paramétrée régulière]]. Une [[geodesique|géodésique]] de $x$ est une courbe $\beta = (u, v) : I \to U$ de classe $C^2$, sur un intervalle ouvert $I$, telle que l'accélération de $c = x \circ \beta$ soit normale à la surface : $c''(t) \perp P(\beta(t))$ pour tout $t$. Par abus, on dit aussi que $c$ est une géodésique.
+    enonce: |
+      (i) *Vitesse constante.* Le long d'une géodésique, $\|c'\|$ est constant.
+
+      (ii) *Équation.* $\beta$ est une géodésique si et seulement si, les [[symboles-christoffel|symboles de Christoffel]] étant évalués en $\beta(t)$,
+      $$\begin{aligned} u'' + \Gamma^1_{11}u'^2 + 2\Gamma^1_{12}u'v' + \Gamma^1_{22}v'^2 &= 0, \\ v'' + \Gamma^2_{11}u'^2 + 2\Gamma^2_{12}u'v' + \Gamma^2_{22}v'^2 &= 0. \end{aligned}$$
+      En particulier, deux surfaces isométriques ont les mêmes géodésiques $\beta$.
+
+      (iii) *Existence et unicité.* Pour tout $m \in U$ et tout $w \in \mathbb R^2$, il existe une unique géodésique maximale $\beta_w$ telle que $\beta_w(0) = m$ et $\beta_w'(0) = w$ ; elle est définie sur un intervalle ouvert contenant $0$, et de classe $C^\infty$.
+
+      (iv) *Changement d'échelle.* Si $\beta$ est une géodésique, $t \mapsto \beta(\lambda t + \mu)$ en est une pour tous réels $\lambda$ et $\mu$. En particulier $\beta_{\lambda w}(t) = \beta_w(\lambda t)$, l'une étant définie dès que l'autre l'est.
+
+      (v) *Exemples.* Les géodésiques du plan sont les droites parcourues à vitesse constante. Celles du cylindre $(\cos u, \sin u, v)$ sont les courbes $u = at + b$, $v = ct + d$ : génératrices, cercles et hélices. Sur la sphère unité, pour $p \in S^2$ et $w \perp p$ unitaire, le grand cercle $c(t) = \cos t\,p + \sin t\,w$ a une accélération normale.
+    preuve: |
+      (i) $c' = u'x_u + v'x_v$ appartient à $P(\beta)$, donc $\langle c', c' \rangle' = 2\langle c'', c' \rangle = 0$.
+
+      (ii) En dérivant $c' = u'x_u + v'x_v$ par la règle de la chaîne, puis en remplaçant $x_{uu}$, $x_{uv}$, $x_{vv}$ par leurs décompositions ({{sf-christoffel|Symboles de Christoffel}}),
+      $$\begin{aligned} c'' &= u''x_u + v''x_v + u'^2x_{uu} \\ &\quad + 2u'v'x_{uv} + v'^2x_{vv} \\ &= \big(u'' + \textstyle\sum_{i, j}\Gamma^1_{ij}\,u_i'u_j'\big)x_u \\ &\quad + \big(v'' + \textstyle\sum_{i, j}\Gamma^2_{ij}\,u_i'u_j'\big)x_v \\ &\quad + I\!I(c')\,N, \end{aligned}$$
+      où $(u_1, u_2) = (u, v)$. L'accélération est normale si et seulement si ses composantes sur $x_u$ et $x_v$, base de $P(\beta)$, sont nulles. Les symboles ne dépendent que de $E$, $F$, $G$ (même lemme, (ii)).
+
+      (iii) Pour $(m, p, q) \in U \times \mathbb R^2$ et $k \in \{1, 2\}$, posons $Q^k = \sum_{i, j}\Gamma^k_{ij}(m)\,p_ip_j$, avec $(p_1, p_2) = (p, q)$, et
+      $$Z(m, p, q) = \big(p,\ q,\ -Q^1,\ -Q^2\big).$$
+      C'est un champ de vecteurs de classe $C^\infty$ sur l'ouvert $U \times \mathbb R^2$ de $\mathbb R^4$, et $\beta$ est une géodésique si et seulement si $(\beta, \beta')$ est une courbe intégrale de $Z$. Le théorème des solutions maximales ({{ed-maximales|Solutions maximales}}, (ii)) donne l'existence et l'unicité de la courbe intégrale maximale issue de $(m, w)$, sur un intervalle ouvert. Si une courbe intégrale $Y$ est de classe $C^k$, $Y' = Z(Y)$ l'est aussi : par récurrence, $Y$ est de classe $C^\infty$.
+
+      (iv) Pour $\tilde\beta(t) = \beta(\lambda t + \mu)$, $\tilde\beta' = \lambda\beta'$ et $\tilde\beta'' = \lambda^2\beta''$ : les deux membres de (ii) sont multipliés par $\lambda^2$. Ainsi $t \mapsto \beta_w(\lambda t)$ est une géodésique de vitesse initiale $\lambda w$ ; par unicité, c'est la restriction de $\beta_{\lambda w}$, et la maximalité donne l'égalité des intervalles pour $\lambda \neq 0$.
+
+      (v) Pour le plan $(u, v, 0)$ et le cylindre, $E$, $F$, $G$ sont constants, donc les symboles sont nuls, et (ii) se réduit à $u'' = v'' = 0$. Sur le cylindre, $c(t) = (\cos(at + b), \sin(at + b), ct + d)$ est une génératrice si $a = 0$, un cercle si $c = 0$, une hélice sinon ({{cb-helice|Hélice circulaire}}). Pour le grand cercle, $\|c\|^2 = \cos^2 t + \sin^2 t = 1$, et $c'' = -c$ est orthogonal au plan tangent de la sphère en $c(t)$, qui est l'orthogonal de $c(t)$ ({{gd-tangent-sm|Tangent à une sous-variété}}).
+    remarques:
+      - |
+        Pour une géodésique paramétrée par la longueur, l'accélération est $I\!I(c')\,N$ : sa courbure de courbe de l'espace est $|I\!I(c')|$, la valeur absolue de la courbure normale, et, là où elle ne s'annule pas, sa normale principale est $\pm N$. Un mobile qui glisse sans frottement sur la surface, soumis à la seule réaction normale, décrit une géodésique à vitesse constante.
+      - |
+        Pour un morceau de sphère paramétré par $x$, injectif et réciproque d'une carte, le point (iii) montre que toute géodésique est, par unicité, l'image d'un arc de grand cercle : la courbe $x^{-1} \circ c$ est de classe $C^\infty$ par le nœud {{sf-surfaces|Surfaces paramétrées}}, (ii), et le grand cercle a la vitesse initiale voulue. Les navigateurs aériens suivent ces « orthodromies ».
+      - |
+        L'erreur la plus répandue est de définir une géodésique comme « le plus court chemin ». Une géodésique ne minimise la longueur que localement ({{sf-minimisation|Minimisation locale}}) : un grand cercle qui fait plus d'un demi-tour de sphère n'est plus le plus court chemin entre ses extrémités, l'autre arc étant plus court.
+
+  - id: sf-exponentielle
+    etiquette: Exponentielle
+    nature: proposition
+    titre: Application exponentielle
+    texte: |
+      Soit $x : U \to \lex{n-uplet}{\mathbb R^3}$ une [[surface-parametree|surface paramétrée régulière]], $m \in U$, et, pour $w \in \mathbb R^2$, $\beta_w$ la [[geodesique|géodésique]] maximale telle que $\beta_w(0) = m$ et $\beta_w'(0) = w$ ({{sf-geodesiques|Géodésiques}}, (iii)). On note $\|w\|_m = \sqrt{E w_1^2 + 2F w_1w_2 + G w_2^2} = \|dx(m)w\|$, les coefficients étant pris en $m$ : c'est une norme sur $\mathbb R^2$ ({{sf-premiere-forme|Première forme}}, (i)).
+
+      L'[[application-exponentielle|application exponentielle]] en $m$ est $\operatorname{Exp}_m(w) = \beta_w(1)$, définie sur l'ensemble $O_m$ des $w$ tels que $\beta_w$ soit définie en $1$.
+    enonce: |
+      (i) $O_m$ est un ouvert de $\mathbb R^2$ contenant $0$. Si $w \in O_m$ et $t \in [0, 1]$, alors $tw \in O_m$ et $\operatorname{Exp}_m(tw) = \beta_w(t)$.
+
+      (ii) $\operatorname{Exp}_m$ est de classe $C^\infty$ sur $O_m$, et $d\operatorname{Exp}_m(0) = \mathrm{id}$.
+
+      (iii) Il existe $\varepsilon > 0$ tel que la boule $B_m(0, \varepsilon)$ de la norme $\|\cdot\|_m$ soit contenue dans $O_m$ et que $\operatorname{Exp}_m$ induise un [[diffeomorphisme|$C^\infty$-difféomorphisme]] de $B_m(0, \varepsilon)$ sur un ouvert de $U$.
+    preuve: |
+      (i) Soit $Z$ le champ de vecteurs sur $U \times \mathbb R^2$ de la démonstration du nœud {{sf-geodesiques|Géodésiques}}, (iii), $\phi$ son flot et $D$ le domaine de ce flot. La courbe intégrale issue de $(m, 0)$ est constante, définie sur $\mathbb R$. Le nœud {{ed-domaine-flot|Domaine du flot}}, (iii), dit que $D$ est ouvert ; et $\operatorname{Exp}_m(w)$ est formé des deux premières coordonnées de $\phi_1(m, w)$, si bien que $O_m = \{w : (1, (m, w)) \in D\}$, image réciproque d'un ouvert par une application continue, est ouvert et contient $0$.
+
+      Si $w \in O_m$ et $t \in [0, 1]$, le changement d'échelle ({{sf-geodesiques|Géodésiques}}, (iv)) donne $\beta_{tw}(s) = \beta_w(ts)$, et $ts$ parcourt $[0, t] \subset [0, 1]$ quand $s$ parcourt $[0, 1]$ : $\beta_{tw}$ est définie en $1$, et $\operatorname{Exp}_m(tw) = \beta_w(t)$. Pour $t = 0$, $\beta_0$ est constante.
+
+      (ii) Le champ $Z$ est de classe $C^\infty$, donc le flot $(t, y) \mapsto \phi_t(y)$ l'est sur $D$ ({{ed-flot-ck|Flot de classe Cᵏ}}), et $\operatorname{Exp}_m$ aussi, comme composée. Pour $w$ fixé, $t \mapsto \operatorname{Exp}_m(tw) = \beta_w(t)$ a pour dérivée en $0$ le vecteur $w$, et, par la règle de la chaîne, $d\operatorname{Exp}_m(0)w$ : donc $d\operatorname{Exp}_m(0) = \mathrm{id}$.
+
+      (iii) Le théorème d'{{gd-inversion-locale|inversion locale}} fournit un ouvert $V \subset O_m$ contenant $0$ sur lequel $\operatorname{Exp}_m$ induit un $C^\infty$-difféomorphisme sur un ouvert. Toutes les normes de $\mathbb R^2$ étant équivalentes ({{gd-equivalence|Normes en dimension finie}}), $V$ contient une boule $B_m(0, \varepsilon)$, dont l'image est ouverte.
+    remarques:
+      - |
+        L'exponentielle envoie les droites issues de $0$ sur les géodésiques issues de $m$, parcourues à vitesse constante : c'est une carte de la surface au voisinage de $m$, adaptée à sa géométrie. Le nom vient des groupes de Lie, où les géodésiques issues de l'élément neutre, pour une métrique invariante convenable, sont les $t \mapsto e^{tA}$ ({{lie|Groupes de Lie}}).
+      - |
+        Sur la sphère unité, avec la projection stéréographique depuis le pôle sud ({{gd-exemples-varietes|Exemples de variétés}}, (ii)), les géodésiques issues du pôle nord sont les grands cercles, qui atteignent le pôle sud, absent de la carte, au temps $\pi$ : $O_m$ est la boule ouverte de rayon $\pi$, et l'exponentielle y est injective. Le rayon maximal $\varepsilon$ dépend du point et de la surface.
+
+  - id: sf-polaires
+    etiquette: Polaires géodésiques
+    nature: théorème
+    titre: Coordonnées polaires géodésiques et lemme de Gauss
+    texte: |
+      Soit $x : U \to \lex{n-uplet}{\mathbb R^3}$ une [[surface-parametree|surface paramétrée régulière]], $m \in U$, $p = x(m)$, et $\varepsilon > 0$ tel que la boule $B_m(0, \varepsilon)$ soit contenue dans le domaine de l'[[application-exponentielle|application exponentielle]] $\operatorname{Exp}_m$ et que $d\operatorname{Exp}_m$ soit inversible en chacun de ses points ({{sf-exponentielle|Exponentielle}}). Soit $(\eta_1, \eta_2)$ une base de $\mathbb R^2$ telle que $e_1 = dx(m)\eta_1$ et $e_2 = dx(m)\eta_2$ forment une base orthonormée de $P(m)$, et
+      $$\omega(\theta) = \cos\theta\,\eta_1 + \sin\theta\,\eta_2.$$
+
+      Les [[coordonnees-polaires-geodesiques|coordonnées polaires géodésiques]] centrées en $p$ sont données par
+      $$X(r, \theta) = x\big(\operatorname{Exp}_m(r\,\omega(\theta))\big),$$
+      pour $|r| < \varepsilon$ et $\theta \in \lex{ensemble-reels}{\mathbb R}$.
+      On note $G = \|X_\theta\|^2$ et $K(r, \theta)$ la [[courbure-gauss|courbure de Gauss]] de $x$ au point $\operatorname{Exp}_m(r\,\omega(\theta))$.
+    enonce: |
+      (i) $X$ est de classe $C^\infty$, et, pour chaque $\theta$, $r \mapsto X(r, \theta)$ est la géodésique de vitesse initiale $\cos\theta\,e_1 + \sin\theta\,e_2$ : $\|X_r\| = 1$, et $X_{rr}$ est normal à la surface.
+
+      (ii) *Lemme de Gauss.* $\langle X_r, X_\theta \rangle = 0$.
+
+      (iii) Il existe une fonction $h > 0$ de classe $C^\infty$ sur $]{-\varepsilon}, \varepsilon[ \times \mathbb R$, avec $h(0, \theta) = 1$, telle que $\|X_\theta\| = |r|\,h$. Pour $0 < r < \varepsilon$, $X$ est une surface paramétrée régulière, de première forme $E = 1$, $F = 0$, $G$, et $\sqrt G = rh$ se prolonge en une fonction de classe $C^\infty$ sur $]{-\varepsilon}, \varepsilon[ \times \mathbb R$ telle que
+      $$\sqrt G(0, \theta) = 0, \qquad (\sqrt G)_r(0, \theta) = 1.$$
+
+      (iv) Pour $0 \leqslant r < \varepsilon$,
+      $$K\,\sqrt G = -(\sqrt G)_{rr},$$
+      et en particulier $(\sqrt G)_{rr}(0, \theta) = 0$.
+
+      (v) *Sphère.* Sur la sphère unité, avec $p$ le pôle nord, $X(r, \theta) = \cos r\,p + \sin r\,(\cos\theta\,e_1 + \sin\theta\,e_2)$ et $\sqrt G = \sin r$, pour $0 \leqslant r < \pi$.
+    preuve: |
+      La base $(\eta_1, \eta_2)$ existe : on prend une base orthonormée $(e_1, e_2)$ du plan $P(m)$ et ses antécédents par l'isomorphisme $dx(m)$ de $\mathbb R^2$ sur $P(m)$.
+
+      (i) $X$ est de classe $C^\infty$ comme composée ({{sf-exponentielle|Exponentielle}}, (ii)). Par le même nœud, (i), et le changement d'échelle des géodésiques, $\operatorname{Exp}_m(r\,\omega(\theta)) = \beta_{\omega(\theta)}(r)$ pour $|r| < \varepsilon$ ; $r \mapsto X(r, \theta)$ est donc une géodésique, de vitesse initiale $dx(m)\,\omega(\theta) = \cos\theta\,e_1 + \sin\theta\,e_2$, unitaire. Sa vitesse reste unitaire ({{sf-geodesiques|Géodésiques}}, (i)), et son accélération $X_{rr}$ est normale.
+
+      (ii) Comme $X_{rr}$ est normal et $X_\theta$ tangent, et que $X_{r\theta} = X_{\theta r}$ ({{gd-schwarz|Schwarz}}),
+      $$\begin{aligned} \partial_r\langle X_r, X_\theta \rangle &= \langle X_{rr}, X_\theta \rangle + \langle X_r, X_{\theta r} \rangle \\ &= 0 + \tfrac12\partial_\theta\|X_r\|^2 = 0. \end{aligned}$$
+      Or $X(0, \theta) = p$ pour tout $\theta$, donc $X_\theta(0, \theta) = 0$. La fonction $\langle X_r, X_\theta \rangle$, de dérivée nulle en $r$ et nulle en $r = 0$, est nulle.
+
+      (iii) Soit $\Xi = x \circ \operatorname{Exp}_m$, de classe $C^\infty$ sur $B_m(0, \varepsilon)$. Par la règle de la chaîne, $X_\theta(r, \theta) = d\Xi(r\,\omega(\theta))\big(r\,\omega'(\theta)\big) = r\,Y(r, \theta)$, avec
+      $$Y(r, \theta) = d\Xi\big(r\,\omega(\theta)\big)\,\omega'(\theta),$$
+      fonction de classe $C^\infty$. Comme $d\Xi = dx \circ d\operatorname{Exp}_m$ est injective sur la boule et $\omega'(\theta) \neq 0$, $Y$ ne s'annule pas, et $h = \|Y\|$ est de classe $C^\infty$ et strictement positive. En $r = 0$, $Y = dx(m)\,\omega'(\theta) = -\sin\theta\,e_1 + \cos\theta\,e_2$, de norme $1$.
+
+      Pour $r > 0$, $X_r$ et $X_\theta$ sont orthogonaux par (ii) et non nuls, donc $X_r \wedge X_\theta \neq 0$, et $E = \|X_r\|^2 = 1$, $F = 0$, $\sqrt G = rh$. Enfin $(rh)_r = h + rh_r$ vaut $1$ en $r = 0$.
+
+      (iv) Pour $0 < r_0 < \varepsilon$ et $\theta_0$ réel, l'application $\Pi(r, \theta) = \operatorname{Exp}_m(r\,\omega(\theta))$ a une différentielle inversible en $(r_0, \theta_0)$, composée de $d\operatorname{Exp}_m$ et de la différentielle de $(r, \theta) \mapsto r\,\omega(\theta)$, de déterminant $r_0\det(\eta_1, \eta_2) \neq 0$. Par l'inversion locale, $\Pi$ est un changement de paramètres d'un voisinage de $(r_0, \theta_0)$ sur un ouvert, et $X = x \circ \Pi$ y a la courbure $K$ ({{sf-courbures|Courbures}}, (iii)). Le Theorema egregium ({{sf-egregium|Theorema egregium}}, (iii)), pour $E = 1$, $F = 0$, donne $K = -\frac{(\sqrt G)_{rr}}{\sqrt G}$.
+
+      En $r = 0$ : la fonction $(\sqrt G)_{rr}$ est continue, et, pour $r > 0$, elle vaut $-K\,rh$, qui tend vers $0$ quand $r \to 0$ puisque $K$ est continue. Donc $(\sqrt G)_{rr}(0, \theta) = 0 = K\,\sqrt G(0, \theta)$.
+
+      (v) On paramètre la sphère privée du pôle sud par la réciproque de la projection stéréographique ({{gd-exemples-varietes|Exemples de variétés}}, (ii)). Pour $e(\theta) = \cos\theta\,e_1 + \sin\theta\,e_2$, le grand cercle $r \mapsto \cos r\,p + \sin r\,e(\theta)$ a une accélération normale ({{sf-geodesiques|Géodésiques}}, (v)), la vitesse initiale $e(\theta)$, et reste dans la carte tant que $|r| < \pi$ ; par unicité, c'est $r \mapsto X(r, \theta)$. Alors $X_\theta = \sin r\,(-\sin\theta\,e_1 + \cos\theta\,e_2)$, de norme $|\sin r|$, et $\sin r > 0$ sur $]0, \pi[$ ({{sf-premiere-forme|Première forme}}, (v)). Pour $0 < r < \pi$, $X_r$ est unitaire et $X_\theta$, non nul, lui est orthogonal : la différentielle de $x \circ \operatorname{Exp}_m$ envoie la base $(\omega(\theta), \omega'(\theta))$ sur une famille libre, et celle de l'exponentielle est inversible. On peut donc prendre $\varepsilon = \pi$ (voir aussi la remarque du nœud {{sf-exponentielle|Exponentielle}}).
+    remarques:
+      - |
+        Le lemme de Gauss dit que les « cercles géodésiques » $r = $ constante coupent à angle droit les géodésiques issues de $p$. Dans le plan, ce sont les cercles et les rayons ; sur la Terre, centrée au pôle nord, ce sont les parallèles et les méridiens.
+      - |
+        La fonction $\sqrt G(r, \theta)$ est la longueur infinitésimale du cercle géodésique de rayon $r$ : celui-ci a pour longueur $\int_0^{2\pi}\sqrt G(r, \theta)\,d\theta$. Le point (iv) donne $\sqrt G = r - \frac{K(0)}{6}r^3 + o(r^3)$, donc une longueur $2\pi r - \frac\pi3K(0)\,r^3 + o(r^3)$ : un habitant de la surface mesure sa courbure en comparant le périmètre de ses cercles à $2\pi r$. Sur la sphère unité, $2\pi\sin r < 2\pi r$.
+
+  - id: sf-minimisation
+    etiquette: Minimisation locale
+    nature: théorème
+    titre: Les géodésiques minimisent localement la longueur
+    texte: |
+      On reprend les notations du nœud {{sf-polaires|Coordonnées polaires géodésiques}}, en supposant de plus que l'[[application-exponentielle|exponentielle]] $\operatorname{Exp}_m$ est injective sur $B_m(0, \varepsilon)$, ce qui est possible ({{sf-exponentielle|Exponentielle}}, (iii)).
+    enonce: |
+      Soit $0 < \rho < \varepsilon$, $\theta_0$ réel et $q = \operatorname{Exp}_m(\rho\,\omega(\theta_0))$. Pour toute courbe $\beta : [0, 1] \to U$ de classe $C^1$ telle que $\beta(0) = m$ et $\beta(1) = q$, la longueur de $x \circ \beta$ est au moins $\rho$, qui est la longueur de la [[geodesique|géodésique]] radiale $t \mapsto X(t\rho, \theta_0)$, $t \in [0, 1]$.
+    preuve: |
+      Notons $\mathcal B = \operatorname{Exp}_m\big(B_m(0, \varepsilon)\big)$, ouvert de $U$, et, pour $y \in \mathcal B$, $\varrho(y) = \|\operatorname{Exp}_m^{-1}(y)\|_m$. La fonction $\varrho$ est continue sur $\mathcal B$, et de classe $C^1$ là où elle ne s'annule pas, la norme $\|\cdot\|_m$ provenant d'un produit scalaire.
+
+      *Le premier passage à la distance $\rho$.* Soit $\mathcal B_\rho = \operatorname{Exp}_m(B_m(0, \rho))$, ouvert, et $K_\rho = \operatorname{Exp}_m(\bar B_m(0, \rho))$, compact comme image continue d'un compact, donc fermé dans $U$. Par injectivité, $q \notin \mathcal B_\rho$. Soit $t_1 = \inf\{t : \beta(t) \notin \mathcal B_\rho\}$ ; comme $\beta(0) = m \in \mathcal B_\rho$, ouvert, $t_1 > 0$. Pour $t < t_1$, $\beta(t) \in \mathcal B_\rho \subset K_\rho$, donc $\beta(t_1) \in K_\rho$ ; et $\beta(t_1) \notin \mathcal B_\rho$, sans quoi, $\mathcal B_\rho$ étant ouvert, $\beta$ y resterait un peu après $t_1$, ou bien $t_1 = 1$ et $\beta(1) = q \in \mathcal B_\rho$. Donc $\varrho(\beta(t_1)) = \rho$.
+
+      *Le dernier passage en $m$.* Soit $t_0$ le plus grand $t \in [0, t_1]$ tel que $\beta(t) = m$, qui existe car cet ensemble est fermé et non vide. Sur $]t_0, t_1]$, $\beta$ reste dans $K_\rho \setminus \{m\} \subset \mathcal B$, et $\varrho \circ \beta$ est strictement positive et de classe $C^1$.
+
+      *Comparaison.* Soit $t \in \,]t_0, t_1]$. Au voisinage de $\beta(t)$, la démonstration du nœud {{sf-polaires|Coordonnées polaires géodésiques}}, (iv), fournit des fonctions $r = \varrho \circ \beta$ et $\theta$ de classe $C^1$ telles que $\beta = \operatorname{Exp}_m(r\,\omega(\theta))$, donc $x \circ \beta = X(r, \theta)$. Par le lemme de Gauss et $\|X_r\| = 1$,
+      $$\begin{aligned} \|(x \circ \beta)'\|^2 &= \|r'X_r + \theta'X_\theta\|^2 \\ &= r'^2 + G\theta'^2 \geqslant r'^2. \end{aligned}$$
+      Pour $t_0 < s < t_1$, il vient
+      $$\int_s^{t_1}\|(x \circ \beta)'\| \geqslant \int_s^{t_1} r' = \rho - r(s).$$
+      Quand $s \to t_0$, $r(s) \to \varrho(m) = 0$ par continuité, et l'intégrale de gauche tend vers $\int_{t_0}^{t_1}$, majorée par la longueur totale.
+    remarques:
+      - |
+        Le résultat est local, et ne peut pas être meilleur. Sur la sphère unité, au-delà d'un demi-tour, le grand cercle n'est plus le plus court chemin, et l'exponentielle cesse d'être injective. Dans le plan privé de l'origine, deux points opposés n'ont pas de plus court chemin, bien que des chemins de longueur aussi proche qu'on veut de leur distance existent.
+      - |
+        La démonstration ne compare la courbe qu'à la seule fonction $r$, la distance à $p$ lue dans l'exponentielle : toute la géométrie est dans le lemme de Gauss, qui dit que le gradient de cette distance est le vecteur unitaire $X_r$. C'est la version, sur une surface, de l'inégalité de la corde ({{cb-courbes|Courbes et longueur}}, (iii)).
+
+  - id: sf-courbure-geodesique
+    etiquette: Courbure géodésique
+    nature: proposition
+    titre: Courbure géodésique et formule en coordonnées polaires
+    texte: |
+      Soit $x$ une [[surface-parametree|surface paramétrée régulière]], d'[[application-gauss|application de Gauss]] $N$, et $c = x \circ \beta$ une courbe de classe $C^2$ tracée sur la surface et paramétrée par la longueur. Le vecteur $N \wedge c'$ est unitaire et tangent ; la [[courbure-geodesique|courbure géodésique]] de $c$ est
+      $$k_g = \langle c'', N \wedge c' \rangle.$$
+    enonce: |
+      (i) $c'' = k_g\,N \wedge c' + I\!I(c')\,N$, et $c$ est une [[geodesique|géodésique]] si et seulement si $k_g = 0$.
+
+      (ii) *En coordonnées polaires géodésiques.* On reprend les notations du nœud {{sf-polaires|Coordonnées polaires géodésiques}} ; pour $0 < r < \varepsilon$, on oriente la surface $X$ par $N = \frac{X_r \wedge X_\theta}{\|X_r \wedge X_\theta\|}$, et l'on note $e_\theta = \frac{X_\theta}{\sqrt G}$. Soit $c(s) = X(r(s), \theta(s))$, avec $r$ et $\theta$ de classe $C^2$, $0 < r < \varepsilon$, une courbe paramétrée par la longueur. Il existe une fonction $\psi$ de classe $C^1$ telle que
+      $$c' = \cos\psi\,X_r + \sin\psi\,e_\theta,$$
+      et, pour toute telle fonction,
+      $$k_g = \psi' + (\sqrt G)_r\,\theta'.$$
+      En particulier, le long d'une géodésique, $\psi' = -(\sqrt G)_r\,\theta'$.
+    preuve: |
+      (i) $N$ et $c'$ sont unitaires et orthogonaux, donc $(c', N \wedge c', N)$ est une base orthonormée ({{cb-frenet|Repère de Frenet}}, (i)), et $N \wedge c'$ est orthogonal à $N$, donc tangent. Comme $\|c'\| = 1$, $c''$ est orthogonal à $c'$, d'où
+      $$c'' = \langle c'', N \wedge c' \rangle\,N \wedge c' + \langle c'', N \rangle\,N,$$
+      et $\langle c'', N \rangle = I\!I(c')$ ({{sf-gauss|Application de Gauss}}, (iv)). L'accélération est normale si et seulement si sa composante sur le vecteur tangent $N \wedge c'$ est nulle.
+
+      (ii) Par le lemme de Gauss, $(X_r, e_\theta)$ est une base orthonormée du plan tangent, et $N = X_r \wedge e_\theta$. Les coordonnées $(\langle c', X_r \rangle, \langle c', e_\theta \rangle)$ forment un vecteur unitaire de classe $C^1$ de $\mathbb R^2$ ; un angle initial $\psi_0$ tel que ce vecteur vaille $(\cos\psi_0, \sin\psi_0)$ en $0$ existe ({{cx-pi|Le nombre π}}, (iii)), et le relèvement ({{cb-courbure-plane|Courbure plane}}, (ii)) fournit $\psi$. Comme $c' = r'X_r + \theta'X_\theta$, on a $r' = \cos\psi$ et $\sqrt G\,\theta' = \sin\psi$.
+
+      Par le nœud {{cb-frenet|Repère de Frenet}}, (i), $N \wedge X_r = e_\theta$ et $N \wedge e_\theta = -X_r$, donc $N \wedge c' = -\sin\psi\,X_r + \cos\psi\,e_\theta$. Notons $\dot X_r$ et $\dot e_\theta$ les dérivées de $s \mapsto X_r(r(s), \theta(s))$ et $s \mapsto e_\theta(r(s), \theta(s))$. Alors
+      $$\begin{aligned} c'' &= \psi'(-\sin\psi\,X_r + \cos\psi\,e_\theta) \\ &\quad + \cos\psi\,\dot X_r + \sin\psi\,\dot e_\theta. \end{aligned}$$
+
+      En dérivant $\|X_r\|^2 = \|e_\theta\|^2 = 1$ et $\langle X_r, e_\theta \rangle = 0$, on obtient $\langle \dot X_r, X_r \rangle = \langle \dot e_\theta, e_\theta \rangle = 0$ et $\langle \dot e_\theta, X_r \rangle = -\langle \dot X_r, e_\theta \rangle$. En notant $A = \langle \dot X_r, e_\theta \rangle$,
+      $$\begin{aligned} k_g &= \psi' + \cos^2\psi\,A + \sin^2\psi\,A \\ &= \psi' + A. \end{aligned}$$
+
+      Enfin $\dot X_r = r'X_{rr} + \theta'X_{r\theta}$, avec $X_{rr}$ normal ({{sf-polaires|Coordonnées polaires géodésiques}}, (i)) et $X_{r\theta} = X_{\theta r}$, d'où
+      $$A = \frac{\theta'\,\langle X_{\theta r}, X_\theta \rangle}{\sqrt G} = \frac{\theta'\,G_r}{2\sqrt G} = \theta'\,(\sqrt G)_r.$$
+    remarques:
+      - |
+        Dans le plan, avec $N = (0, 0, 1)$, la courbure géodésique est la courbure algébrique du nœud {{cb-courbure-plane|Courbure plane}}, et la formule (ii), avec $\sqrt G = r$, dit que la courbure est la vitesse de rotation de la tangente, mesurée par rapport au rayon, plus celle du rayon lui-même. Sur une surface, $(\sqrt G)_r$ remplace $1$ : le repère polaire tourne plus ou moins vite que dans le plan, selon la courbure.
+      - |
+        Selon la notice de MacTutor consacrée à O. Bonnet, c'est la courbure géodésique qui lui a permis d'étendre le théorème de Gauss sur les triangles géodésiques aux régions dont les côtés ne sont pas des géodésiques. Le nœud suivant démontre le cas des triangles géodésiques.
+
+  - id: sf-gauss-bonnet
+    etiquette: Gauss-Bonnet
+    nature: théorème
+    titre: Formule de Gauss-Bonnet pour un triangle géodésique
+    texte: |
+      On reprend les notations du nœud {{sf-polaires|Coordonnées polaires géodésiques}}. Soit $\alpha \in \,]0, \pi[$ et $c : [0, \ell] \to \lex{n-uplet}{\mathbb R^3}$ la restriction à $[0, \ell]$ d'une [[geodesique|géodésique]] paramétrée par la longueur, de la forme $c(s) = X(r(s), \theta(s))$, avec $r$ et $\theta$ de classe $C^2$, $0 < r < \varepsilon$, $\theta(0) = 0$, $\theta(\ell) = \alpha$ et $\theta' > 0$. On note $\varrho = r \circ \theta^{-1} : [0, \alpha] \to \,]0, \varepsilon[$.
+
+      Le [[triangle-geodesique|triangle géodésique]] $\mathcal T$ de sommets $p$, $q_1 = c(0)$ et $q_2 = c(\ell)$ est l'ensemble des $X(r, \theta)$ pour $0 \leqslant \theta \leqslant \alpha$ et $0 \leqslant r \leqslant \varrho(\theta)$. Ses côtés sont les géodésiques radiales $\theta = 0$ et $\theta = \alpha$ et l'arc $c$. Ses **angles** ({{sf-premiere-forme|Première forme}}, (v)) sont : en $p$, celui des vitesses initiales $e_1$ et $\cos\alpha\,e_1 + \sin\alpha\,e_2$ des côtés radiaux, soit $\alpha$ ; en $q_1$, l'angle $\beta_1$ de $-X_r$ et de $c'(0)$ ; en $q_2$, l'angle $\beta_2$ de $-X_r$ et de $-c'(\ell)$.
+    enonce: |
+      (i) *Gauss-Bonnet.*
+      $$\begin{aligned} &\alpha + \beta_1 + \beta_2 - \pi \\ &\quad = \int_0^\alpha\!\Big(\int_0^{\varrho(\theta)} K\,\sqrt G\,dr\Big)\,d\theta, \end{aligned}$$
+      où $K(r, \theta)$ est la [[courbure-gauss|courbure de Gauss]] au point $X(r, \theta)$, et où $K$ et $\sqrt G$ sont évalués en $(r, \theta)$.
+
+      (ii) *Par l'aire.* Le second membre est l'intégrale $\int_D K_x\,dA$ de la courbure de Gauss $K_x$ de $x$ sur l'ensemble $D = \{\operatorname{Exp}_m(r\,\omega(\theta)) : 0 < \theta < \alpha,\ 0 < r < \varrho(\theta)\}$, si $\operatorname{Exp}_m$ est injective sur $B_m(0, \varepsilon)$.
+
+      (iii) La somme des angles est strictement supérieure à $\pi$ si $K > 0$ sur $\mathcal T$, strictement inférieure si $K < 0$, égale à $\pi$ si $K = 0$. Sur la sphère unité, l'excès $\alpha + \beta_1 + \beta_2 - \pi$ est l'aire du triangle.
+    preuve: |
+      (i) *Les angles.* Soit $\psi$ une fonction du nœud {{sf-courbure-geodesique|Courbure géodésique}}, (ii) : $c' = \cos\psi\,X_r + \sin\psi\,e_\theta$, avec $\sin\psi = \sqrt G\,\theta' > 0$. Soit $\psi_0 \in \,]0, \pi[$ tel que $\cos\psi_0 = \cos\psi(0)$ ({{sf-premiere-forme|Première forme}}, (v)) ; les sinus de $\psi_0$ et de $\psi(0)$ sont positifs et de même carré, donc égaux, et $\psi(0) - \psi_0 \in 2\pi\lex{ensemble-entiers-relatifs}{\mathbb Z}$ ({{cx-pi|Le nombre π}}, (ii)). Quitte à retrancher cette constante à $\psi$, $\psi(0) = \psi_0$. Alors $\psi(s) \in \,]0, \pi[$ pour tout $s$, sans quoi, par les valeurs intermédiaires, $\psi$ passerait par $0$ ou par $\pi$, où le sinus s'annule.
+
+      En $q_1$, $\cos\beta_1 = \langle -X_r, c'(0) \rangle = -\cos\psi(0) = \cos(\pi - \psi(0))$, et $\pi - \psi(0) \in \,]0, \pi[$ : par l'injectivité de $\cos$ sur $[0, \pi]$, $\beta_1 = \pi - \psi(0)$. En $q_2$, $\cos\beta_2 = \langle -X_r, -c'(\ell) \rangle = \cos\psi(\ell)$, d'où $\beta_2 = \psi(\ell)$. En $p$, $\cos$ de l'angle vaut $\langle e_1, \cos\alpha\,e_1 + \sin\alpha\,e_2 \rangle = \cos\alpha$, et $\alpha \in \,]0, \pi[$.
+
+      *La rotation le long du côté géodésique.* Comme $c$ est une géodésique, $\psi' = -(\sqrt G)_r\,\theta'$ (même nœud), et le changement de variable $\vartheta = \theta(s)$ ({{cb-courbes|Courbes et longueur}}, (i)), avec $r(s) = \varrho(\theta(s))$, donne
+      $$\begin{aligned} &\beta_1 + \beta_2 - \pi = \psi(\ell) - \psi(0) \\ &\ = -\int_0^\ell (\sqrt G)_r\big(r(s), \theta(s)\big)\,\theta'(s)\,ds \\ &\ = -\int_0^\alpha (\sqrt G)_r\big(\varrho(\vartheta), \vartheta\big)\,d\vartheta. \end{aligned}$$
+
+      *L'intégrale de la courbure.* Par le nœud {{sf-polaires|Coordonnées polaires géodésiques}}, (iii) et (iv), $K\sqrt G = -(\sqrt G)_{rr}$ sur $[0, \varepsilon[ \times \mathbb R$, fonction continue, et $(\sqrt G)_r(0, \theta) = 1$. Le théorème fondamental de l'analyse donne, pour chaque $\theta$,
+      $$\int_0^{\varrho(\theta)} K\sqrt G\,dr = 1 - (\sqrt G)_r\big(\varrho(\theta), \theta\big),$$
+      fonction continue de $\theta$, puisque $\varrho = r \circ \theta^{-1}$ l'est : $\theta$ est continue et strictement croissante, de dérivée non nulle, et sa réciproque est dérivable ({{de-reciproque|Dérivée d'une réciproque}}, (i)). En intégrant sur $[0, \alpha]$, on obtient $\alpha + \beta_1 + \beta_2 - \pi$.
+
+      (ii) Le point (i) ne fait intervenir que des intégrales de Riemann de fonctions continues ; ce point-ci, qui passe par l'aire, dépend de la mesure de Lebesgue, avec le choix signalé au nœud {{sf-aire|Aire}}.
+
+      Sur $\Delta = \{(r, \theta) : 0 < \theta < \alpha,\ 0 < r < \varrho(\theta)\}$, ouvert puisque $\varrho$ est continue, l'application $\Pi(r, \theta) = \operatorname{Exp}_m(r\,\omega(\theta))$ est injective, car $\operatorname{Exp}_m$ l'est et $(r, \theta) \mapsto r\,\omega(\theta)$ l'est pour $r > 0$ et $0 < \theta < \alpha < 2\pi$ ({{cx-pi|Le nombre π}}, (iii)) ; sa différentielle est inversible (démonstration du nœud {{sf-polaires|Coordonnées polaires géodésiques}}, (iv)). C'est donc un changement de paramètres de $\Delta$ sur $D = \Pi(\Delta)$, ouvert, la réciproque étant de classe $C^\infty$ par l'inversion locale.
+
+      Le nœud {{sf-aire|Aire}}, (i), donne $\int_D K_x\,dA = \int_\Delta K\,\|X_r \wedge X_\theta\|\,d\lambda = \int_\Delta K\sqrt G\,d\lambda$, la fonction étant continue et bornée sur $\Delta$, d'adhérence compacte. Le théorème de Fubini ({{m-fubini|Tonelli, Fubini}}) et l'égalité des intégrales de Lebesgue et de Riemann ({{m-riemann|Riemann et Lebesgue}}) ramènent cette intégrale à l'intégrale itérée de (i).
+
+      (iii) L'intégrale itérée d'une fonction continue strictement positive est strictement positive ({{ri-moyenne|Inégalité de la moyenne}}, (iii)), et de même pour le signe négatif. Sur la sphère unité, $K = 1$, et le second membre de (i) est l'aire du triangle, par (ii).
+    remarques:
+      - |
+        ```schema sf-gauss-bonnet
+        Sur la sphère unité vue de biais en projection parallèle, le triangle géodésique de sommets le pôle nord $p$, $q_1$ et $q_2$, de côtés des arcs de grands cercles ; les côtés issus de $p$ ont pour longueurs $70^\circ$ et $50^\circ$. Les angles, calculés sur les vecteurs tangents, sont $\alpha = 60^\circ$, $\beta_1 \approx 54{,}5^\circ$ et $\beta_2 \approx 92{,}8^\circ$ ; leur somme dépasse $180^\circ$ de $27{,}3^\circ$, soit $0{,}477$ radian, et c'est l'aire du triangle, calculée par l'intégrale de (i).
+        ```
+        Le triangle de la sphère unité dont les sommets sont le pôle nord et deux points de l'équateur séparés par $90^\circ$ de longitude a trois angles droits. Son excès est $\frac\pi2$, et c'est bien le huitième de l'aire $4\pi$ de la sphère ({{sf-aire|Aire}}, (iii)).
+      - |
+        Gauss a énoncé ce théorème à l'article 20 des *Disquisitiones* citées au nœud {{sf-egregium|Theorema egregium}} : l'excès sur deux droits de la somme des angles d'un triangle formé de lignes les plus courtes est la courbure totale du triangle. O. Bonnet l'a étendu aux régions bordées par des courbes quelconques, en ajoutant au premier membre l'intégrale de la courbure géodésique du bord, dans le *Mémoire sur la théorie générale des surfaces*, *Journal de l'École polytechnique* 19 (1848), p. 1-133 (notices de MacTutor sur Bonnet).
+      - |
+        L'hypothèse $\theta' > 0$ n'est pas restrictive lorsque l'exponentielle est injective sur $B_m(0, \varepsilon)$. Si $\theta'$ s'annulait en $s_0$, $c'(s_0)$ serait colinéaire à $X_r$, et, par l'unicité des géodésiques ({{sf-geodesiques|Géodésiques}}, (iii)), $c$ suivrait la géodésique radiale $\theta = \theta(s_0)$ : $\theta$ serait constante, alors qu'elle va de $0$ à $\alpha$. Donc $\theta'$ ne s'annule pas, et garde le signe positif imposé par $\theta(\ell) = \alpha > 0$. Ce qui compte vraiment est que le triangle tienne dans le domaine des coordonnées polaires centrées en l'un de ses sommets ; cela évite le théorème des tangentes tournantes ({{cb-courbure-plane|Courbure plane}}, remarques), qui sert à traiter un bord quelconque par la formule de Green-Riemann.
+      - |
+        *Gauss-Bonnet global, admis ici.* Pour une surface compacte $S$ de $\mathbb R^3$, sous-variété de dimension $2$, $\int_S K\,dA = 2\pi\chi(S)$, où $\chi(S) = s - a + f$ est la caractéristique d'Euler-Poincaré d'une triangulation quelconque. On l'obtient en sommant la formule de Bonnet sur les triangles : les intégrales de courbure géodésique des côtés intérieurs se compensent, et les angles se regroupent autour des sommets. La difficulté contournée est double : l'existence d'une triangulation par des triangles assez petits, et l'indépendance de $\chi$ vis-à-vis de la triangulation, qui relève de l'{{hom|homologie}}, théorie qui n'est pas un ancêtre de celle-ci. La sphère ($\chi = 2$) donne $4\pi$, le tore ($\chi = 0$) donne $0$, comme le calcul direct du nœud {{sf-tore-catenoide|Tore et caténoïde}}.
+
+  - id: sf-riemann
+    etiquette: Métriques riemanniennes
+    nature: définition
+    titre: Métriques riemanniennes
+    texte: |
+      Soit $M$ une [[variete-differentiable|variété différentiable]] de dimension $d$. Une [[metrique-riemannienne|métrique riemannienne]] sur $M$ est la donnée, pour chaque [[carte]] $(U, \varphi)$ d'un atlas de $M$, d'une application $g^\varphi$ de classe $C^\infty$ de $\varphi(U)$ dans les matrices symétriques définies positives de taille $d$, telles que, pour deux cartes $(U, \varphi)$ et $(V, \psi)$ de l'atlas, en notant $\tau = \psi \circ \varphi^{-1}$ et $J = J_\tau(z)$,
+      $$g^\varphi(z) = {}^tJ\,g^\psi\big(\tau(z)\big)\,J$$
+      pour $z \in \varphi(U \cap V)$.
+      C'est la donnée d'un produit scalaire sur chaque espace tangent, lu dans les cartes, qui varie de façon $C^\infty$. La **longueur** d'une courbe $c : [a, b] \to U$ de classe $C^1$, contenue dans le domaine d'une carte, est
+      $$L(c) = \int_a^b \sqrt{{}^t\gamma'\,g^\varphi(\gamma)\,\gamma'}\,dt,$$
+      où $\gamma = \varphi \circ c$ et où $\gamma$, $\gamma'$ sont évalués en $t$.
+    enonce: |
+      (i) *Cohérence.* La longueur ne dépend pas de la carte qui contient la courbe.
+
+      (ii) *Métrique induite.* Si $M$ est une [[sous-variete|sous-variété]] de dimension $d$ de $\lex{n-uplet}{\mathbb R^n}$, munie de l'atlas du nœud {{gd-exemples-varietes|Exemples de variétés}}, (i), les matrices $g^\varphi(z) = {}^tJ_{\varphi^{-1}}(z)\,J_{\varphi^{-1}}(z)$ définissent une métrique riemannienne, et la longueur d'une courbe est sa longueur dans $\mathbb R^n$. Pour une surface de $\mathbb R^3$, $g^\varphi$ est la matrice de la [[premiere-forme-fondamentale|première forme fondamentale]] du paramétrage $\varphi^{-1}$.
+
+      (iii) *Demi-plan de Poincaré.* Sur $\mathbb H = \{(u, v) \in \mathbb R^2 : v > 0\}$, la matrice $g = \frac{1}{v^2}I_2$ définit une métrique riemannienne. L'expression de Brioschi du nœud {{sf-egregium|Theorema egregium}}, $\mathcal K = \frac{\det M_1 - \det M_2}{(EG - F^2)^2}$, calculée avec $E = G = \frac1{v^2}$ et $F = 0$, vaut $-1$ en tout point.
+    preuve: |
+      (i) Soit $(V, \psi)$ une autre carte contenant la courbe. Alors $\psi \circ c = \tau \circ \gamma$, et la règle de la chaîne donne $(\psi \circ c)' = J_\tau(\gamma)\,\gamma'$. Donc
+      $$\begin{aligned} &{}^t(\psi \circ c)'\,g^\psi(\psi \circ c)\,(\psi \circ c)' \\ &\quad = {}^t\gamma'\,{}^tJ\,g^\psi(\tau \circ \gamma)\,J\,\gamma' = {}^t\gamma'\,g^\varphi(\gamma)\,\gamma'. \end{aligned}$$
+
+      (ii) La réciproque d'une carte de l'atlas cité est $z \mapsto \Phi^{-1}(z, 0)$, de classe $C^\infty$, de différentielle injective ; $g^\varphi$ est donc de classe $C^\infty$, symétrique, et ${}^th\,g^\varphi h = \|J_{\varphi^{-1}}h\|^2 > 0$ pour $h \neq 0$. De $\varphi^{-1} = \psi^{-1} \circ \tau$ on tire $J_{\varphi^{-1}} = J_{\psi^{-1}}(\tau)\,J_\tau$, d'où la relation de compatibilité. Enfin $c = \varphi^{-1} \circ \gamma$ donne $c' = J_{\varphi^{-1}}(\gamma)\,\gamma'$ et $\|c'\|^2 = {}^t\gamma'\,g^\varphi(\gamma)\,\gamma'$.
+
+      (iii) $\mathbb H$ est un ouvert de $\mathbb R^2$, variété d'atlas $\{\mathrm{id}\}$, et $g$ est de classe $C^\infty$ et définie positive. Avec $E = G = v^{-2}$ et $F = 0$, $E_u = G_u = 0$, $E_v = G_v = -2v^{-3}$ et $E_{vv} = 6v^{-4}$. La formule développée du nœud {{sf-egregium|Theorema egregium}}, (iii), conséquence algébrique de l'expression de Brioschi, donne
+      $$\begin{aligned} 4v^{-8}\mathcal K &= -2v^{-4}\cdot 6v^{-4} \\ &\quad + v^{-2}\cdot 4v^{-6} + 4v^{-6}\cdot v^{-2}, \end{aligned}$$
+      soit $4v^{-8}\mathcal K = -4v^{-8}$, et $\mathcal K = -1$.
+    remarques:
+      - |
+        B. Riemann a exposé cette notion dans sa leçon d'habilitation « Über die Hypothesen, welche der Geometrie zu Grunde liegen », prononcée à Göttingen le 10 juin 1854, et publiée après sa mort par R. Dedekind au tome 13 des *Abhandlungen der Königlichen Gesellschaft der Wissenschaften zu Göttingen*. Il y détache la géométrie de l'espace ambiant : la variété et sa métrique suffisent.
+      - |
+        *Courbure d'une métrique abstraite, admis ici.* Le Theorema egregium montre que l'expression de Brioschi est la courbure de Gauss lorsque la métrique provient d'une surface de $\mathbb R^3$. Pour une métrique quelconque de dimension $2$, on la prend pour définition de la courbure ; qu'elle ne dépende pas de la carte n'est pas démontré ici. La difficulté contournée est un calcul de changement de variables portant sur les dérivées secondes des coefficients, que l'on évite d'ordinaire en définissant la courbure par la connexion de Levi-Civita.
+      - |
+        Le demi-plan de Poincaré n'est pas un artifice : ses géodésiques sont les demi-droites verticales et les demi-cercles centrés sur l'axe réel, et il réalise la géométrie non euclidienne de Lobatchevski et Bolyai, où la somme des angles d'un triangle est inférieure à $\pi$, comme le prédirait la formule de Gauss-Bonnet pour une courbure $-1$. Celle-ci n'est démontrée ici ({{sf-gauss-bonnet|Gauss-Bonnet}}, (iii)) que pour les surfaces de $\mathbb R^3$.
+
+aretes:
+  - [sf-surfaces, sf-premiere-forme]
+  - [sf-premiere-forme, sf-aire]
+  - [sf-premiere-forme, sf-gauss]
+  - [sf-gauss, sf-courbures]
+  - [sf-courbures, sf-exemples]
+  - [sf-courbures, sf-tore-catenoide]
+  - [sf-gauss, sf-christoffel]
+  - [sf-christoffel, sf-egregium]
+  - [sf-courbures, sf-egregium]
+  - [sf-christoffel, sf-geodesiques]
+  - [sf-geodesiques, sf-exponentielle]
+  - [sf-exponentielle, sf-polaires]
+  - [sf-egregium, sf-polaires]
+  - [sf-polaires, sf-minimisation]
+  - [sf-polaires, sf-courbure-geodesique]
+  - [sf-courbure-geodesique, sf-gauss-bonnet]
+  - [sf-aire, sf-gauss-bonnet]
+  - [sf-egregium, sf-riemann]

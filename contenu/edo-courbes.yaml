@@ -1,0 +1,346 @@
+# Niveau 2 : structure interne du chapitre « Courbes » (nœud edo-courbes du graphe edo, créé le 30 oct. 2026).
+# Courbes paramétrées régulières, reparamétrages, changement de variable dans l'intégrale de Riemann, longueur
+# (invariance, inégalité de la corde et cas d'égalité) ; abscisse curviligne ; courbure algébrique d'une courbe
+# plane, repère de Frenet du plan, relèvement d'un vecteur unitaire de classe C¹ par un angle de classe C¹ ;
+# théorème fondamental des courbes planes (la courbure détermine la courbe à déplacement près, cercles et droites) ;
+# produit vectoriel, repère de Frenet de l'espace, formules de Frenet-Serret, formules de la courbure et de la
+# torsion dans un paramétrage quelconque, courbes planes ⇔ torsion nulle ; l'hélice circulaire ; théorème
+# fondamental des courbes de l'espace, par un système linéaire (ed-lineaires) dont la matrice antisymétrique
+# conserve l'orthonormalité.
+# Placement : chapitre de edo plutôt que théorie nouvelle. Les ingrédients sont tous en amont de edo (cos, sin et π
+# par anc, Cauchy-Lipschitz linéaire, calcul différentiel et sous-variétés par geod) et nulle part ailleurs à la
+# fois : geod n'a ni cos ni sin, et une théorie nouvelle « Courbes et surfaces » sous edo ajoutait un croisement
+# au graphe de l'édifice (17 au lieu de 16, mesuré le 30 oct. 2026), alors que ce chapitre ne change rien.
+# Choix : aucun. Toutes les intégrales sont des intégrales de Riemann de fonctions continues.
+# Le théorème de Hopf (tangentes tournantes) est seulement énoncé, en remarque, « Admis ici ».
+
+graphe: edo-courbes
+titre: Courbes
+conteneur: edo-courbes
+
+entrees:
+  ed-lineaires: [cb-fondamental]
+
+noeuds:
+  - id: cb-courbes
+    etiquette: Courbes et longueur
+    nature: définition
+    titre: Courbes paramétrées, reparamétrages et longueur
+    texte: |
+      On munit $\lex{n-uplet}{\mathbb R^n}$ du produit scalaire usuel $\langle x, y \rangle = \sum_i x_iy_i$ et de la norme associée $\|x\| = \|x\|_2$ ({{gd-normes|Normes}}).
+
+      Soit $k \geqslant 1$, éventuellement infini. Une [[courbe-parametree|courbe paramétrée]] de classe $C^k$ est une application $\gamma : I \to \mathbb R^n$ de [[classe-ck|classe $C^k$]] sur un [[intervalle]] ouvert non vide $I$ de $\lex{ensemble-reels}{\mathbb R}$ ; ses dérivées se calculent coordonnée par coordonnée. Elle est **régulière** si $\gamma'(t) \neq 0$ pour tout $t \in I$.
+
+      Un **reparamétrage** de classe $C^k$ est une bijection $\varphi : J \to I$ de classe $C^k$ entre intervalles ouverts dont la dérivée ne s'annule pas ; la courbe $\gamma \circ \varphi$ est alors une autre paramétrisation du même arc.
+
+      Pour $a < b$ dans $I$, la [[longueur-courbe|longueur]] de $\gamma$ entre $a$ et $b$ est
+      $$L_a^b(\gamma) = \int_a^b \|\gamma'(t)\|\,dt,$$
+      intégrale de Riemann d'une fonction continue ({{ri-continues|Intégrabilité des fonctions continues}}, (ii)).
+    enonce: |
+      (i) *Changement de variable.* Soit $f$ continue sur $I$ et $\varphi : [c, d] \to I$ dérivable, de dérivée continue. Alors
+      $$\int_{\varphi(c)}^{\varphi(d)} f(t)\,dt = \int_c^d f\big(\varphi(u)\big)\,\varphi'(u)\,du.$$
+
+      (ii) *Invariance.* Si $\varphi : J \to I$ est un reparamétrage de classe $C^1$, $c < d$ dans $J$, et si $a < b$ sont les extrémités de $\varphi([c, d])$, alors $L_c^d(\gamma \circ \varphi) = L_a^b(\gamma)$.
+
+      (iii) *Inégalité de la corde.* $L_a^b(\gamma) \geqslant \|\gamma(b) - \gamma(a)\|$. Si $\gamma$ est régulière, l'égalité a lieu si et seulement s'il existe un vecteur unitaire $u$ tel que $\gamma'(t) = \|\gamma'(t)\|\,u$ pour tout $t \in [a, b]$ : la courbe parcourt alors le segment $[\gamma(a), \gamma(b)]$ sans jamais revenir en arrière.
+    preuve: |
+      (i) La fonction $F(x) = \int_{\varphi(c)}^x f$ est une primitive de $f$ sur $I$ ({{ar-tfa|Théorème fondamental de l'analyse}}). Par la dérivée d'une composée ({{de-composee|Dérivée d'une composée}}), $F \circ \varphi$ a pour dérivée la fonction continue $g = (f \circ \varphi)\,\varphi'$.
+
+      La fonction $G(u) = \int_c^u g$ a aussi pour dérivée $g$, si bien que $F \circ \varphi - G$ est de dérivée nulle, donc constante ({{de-monotonie|Signe de la dérivée et monotonie}}, (ii)). Elle est nulle en $c$, et en $d$ on obtient $F(\varphi(d)) = G(d)$, qui est l'égalité annoncée.
+
+      (ii) La fonction $\varphi'$ est continue et ne s'annule pas sur l'intervalle $J$ : elle y garde un signe constant ({{c-tvi|Valeurs intermédiaires}}). Par la dérivée d'une composée, coordonnée par coordonnée,
+      $$\|(\gamma \circ \varphi)'(u)\| = \|\gamma'(\varphi(u))\|\,|\varphi'(u)|.$$
+
+      Si $\varphi' > 0$, $\varphi$ est croissante, $\varphi(c) = a$, $\varphi(d) = b$, et (i), appliqué à $f = \|\gamma'\|$, donne l'égalité. Si $\varphi' < 0$, $\varphi(c) = b$ et $\varphi(d) = a$, et (i) donne
+      $$\begin{aligned} &\int_c^d \|\gamma'(\varphi(u))\|\,\big(-\varphi'(u)\big)\,du \\ &\quad = -\int_b^a \|\gamma'\| = \int_a^b \|\gamma'\|. \end{aligned}$$
+
+      (iii) Si $\gamma(b) = \gamma(a)$, il n'y a rien à démontrer pour l'inégalité. Sinon, soit $u = \frac{\gamma(b) - \gamma(a)}{\|\gamma(b) - \gamma(a)\|}$. La fonction $t \mapsto \langle \gamma(t), u \rangle$ a pour dérivée $\langle \gamma'(t), u \rangle$, d'où, par le théorème fondamental et l'inégalité de Cauchy-Schwarz ({{f-hilbert|Espaces de Hilbert}}, (i)),
+      $$\begin{aligned} \|\gamma(b) - \gamma(a)\| &= \int_a^b \langle \gamma'(t), u \rangle\,dt \\ &\leqslant \int_a^b \|\gamma'(t)\|\,dt. \end{aligned}$$
+
+      *Cas d'égalité.* Si $\gamma' = \|\gamma'\|\,u$ sur $[a, b]$, alors $\gamma(b) - \gamma(a) = L_a^b(\gamma)\,u$, et l'égalité a lieu. Réciproquement, supposons l'égalité et $\gamma$ régulière. Alors $L_a^b(\gamma) > 0$, donc $\gamma(b) \neq \gamma(a)$, et la fonction continue et positive $\|\gamma'\| - \langle \gamma', u \rangle$ est d'intégrale nulle sur $[a, b]$ : elle est nulle ({{ri-moyenne|Inégalité de la moyenne}}, (iii)). On en déduit
+      $$\begin{aligned} \big\|\gamma' - \|\gamma'\|\,u\big\|^2 &= 2\|\gamma'\|^2 - 2\|\gamma'\|\,\langle \gamma', u \rangle \\ &= 0. \end{aligned}$$
+    remarques:
+      - |
+        La régularité est ce qui interdit les pointes. La courbe $\gamma(t) = (t^2, t^3)$ est de classe $C^\infty$, mais sa vitesse s'annule en $t = 0$, et son image, la parabole semi-cubique $y^2 = x^3$, y présente un point de rebroussement. L'erreur la plus répandue est de croire qu'une paramétrisation lisse a une image lisse : c'est faux tant qu'on ne demande pas $\gamma' \neq 0$.
+      - |
+        L'inégalité de la corde dit que, dans $\mathbb R^n$, le segment est le plus court chemin entre deux points. Sur une surface, le rôle des segments est tenu par les géodésiques, dont le chapitre {{edo-surfaces|Surfaces}} montrera qu'elles ne minimisent la longueur que localement.
+
+  - id: cb-abscisse
+    etiquette: Abscisse curviligne
+    nature: proposition
+    titre: Abscisse curviligne et paramétrage par la longueur
+    texte: |
+      Soit $\gamma : I \to \lex{n-uplet}{\mathbb R^n}$ une [[courbe-parametree|courbe paramétrée]] régulière de classe $C^k$, $k \geqslant 1$, et $t_0 \in I$. L'[[abscisse-curviligne|abscisse curviligne]] d'origine $t_0$ est
+      $$s(t) = \int_{t_0}^t \|\gamma'(u)\|\,du,$$
+      longueur algébrique de l'arc entre $t_0$ et $t$ ({{cb-courbes|Courbes et longueur}}).
+    enonce: |
+      (i) $s$ est un [[diffeomorphisme|$C^k$-difféomorphisme]] de $I$ sur un intervalle ouvert $J$, et $s' = \|\gamma'\| > 0$.
+
+      (ii) La courbe $\delta = \gamma \circ s^{-1} : J \to \mathbb R^n$ est de classe $C^k$ et vérifie $\|\delta'(\sigma)\| = 1$ pour tout $\sigma \in J$ ; on dit qu'elle est **paramétrée par la longueur**. Sa longueur entre $\sigma_1 < \sigma_2$ est $\sigma_2 - \sigma_1$.
+
+      (iii) *Unicité.* Si $\varphi : J' \to I$ est un reparamétrage de classe $C^1$ tel que $\|(\gamma \circ \varphi)'\| = 1$, il existe $\epsilon \in \{-1, 1\}$ et une constante $c$ tels que $s(\varphi(\sigma)) = \epsilon\sigma + c$ pour tout $\sigma \in J'$.
+
+      (iv) *Cercle.* Pour $R > 0$, le cercle $\gamma(t) = (R\cos t, R\sin t)$, $t \in \mathbb R$, a pour abscisse curviligne d'origine $0$ la fonction $s(t) = Rt$ ; il est parcouru à vitesse unité par $\delta(\sigma) = \big(R\cos\frac\sigma R, R\sin\frac\sigma R\big)$, et sa longueur entre $0$ et $2\pi$ est $2\pi R$.
+    preuve: |
+      (i) La fonction $\|\gamma'\|^2 = \sum_i (\gamma_i')^2$ est de classe $C^{k-1}$ et strictement positive, et la racine carrée est de classe $C^\infty$ sur $]0, +\infty[$ ({{de-reciproque|Dérivée d'une réciproque}}, par récurrence) : $\|\gamma'\|$ est de classe $C^{k-1}$ ({{gd-classe-ck|Classe Cᵏ}}, (iii)). Par le théorème fondamental ({{ar-tfa|Théorème fondamental}}), $s$ est dérivable de dérivée $\|\gamma'\|$, donc de classe $C^k$.
+
+      Comme $s' > 0$, $s$ est strictement croissante ({{de-monotonie|Monotonie}}, (iii)) et continue ; son image $J$ est un intervalle ({{c-tvi|Valeurs intermédiaires}}), ouvert puisque $s$ est strictement croissante sur l'intervalle ouvert $I$. En tout point, $s'(t) \neq 0$ : le théorème d'inversion locale ({{gd-inversion-locale|Inversion locale}}), en dimension $1$, donne un intervalle ouvert autour de $t$ sur lequel $s$ induit un $C^k$-difféomorphisme. La réciproque globale $s^{-1}$ coïncide au voisinage de chaque point de $J$ avec ces réciproques locales : elle est de classe $C^k$.
+
+      (ii) $\delta$ est de classe $C^k$ comme composée ({{gd-classe-ck|Classe Cᵏ}}, (iii)). Pour $\sigma = s(t)$, la dérivée d'une composée et celle d'une réciproque donnent
+      $$\delta'(\sigma) = \gamma'(t)\,(s^{-1})'(\sigma) = \frac{\gamma'(t)}{\|\gamma'(t)\|}.$$
+      La longueur de $\delta$ entre $\sigma_1$ et $\sigma_2$ est donc $\int_{\sigma_1}^{\sigma_2} 1 = \sigma_2 - \sigma_1$.
+
+      (iii) La fonction $g = s \circ \varphi$ est dérivable, de dérivée $s'(\varphi(\sigma))\,\varphi'(\sigma) = \|\gamma'(\varphi(\sigma))\|\,\varphi'(\sigma)$, dont la valeur absolue est $\|(\gamma \circ \varphi)'(\sigma)\| = 1$. Continue sur l'intervalle $J'$ et à valeurs dans $\{-1, 1\}$, $g'$ est constante ({{c-tvi|Valeurs intermédiaires}}), égale à $\epsilon$ ; alors $g - \epsilon\,\mathrm{id}$ est de dérivée nulle, donc constante.
+
+      (iv) $\gamma'(t) = (-R\sin t, R\cos t)$ a pour norme $R$, puisque $\cos^2 + \sin^2 = 1$ ({{cx-exponentielle|Exponentielle}}, (iii) et (iv)). Donc $s(t) = Rt$, $s^{-1}(\sigma) = \sigma/R$, et la longueur entre $0$ et $2\pi$ est $s(2\pi) = 2\pi R$.
+    remarques:
+      - |
+        Le point (iv) relie deux définitions de $\pi$. Au nœud {{cx-pi|Le nombre π}}, $\pi$ est la demi-période de $t \mapsto \exp(it)$, sans aucune géométrie ; ici, $2\pi$ est la longueur du cercle unité, de même que le chapitre « Changement de variables » des équations différentielles en fait l'aire du disque unité.
+      - |
+        L'abscisse curviligne existe toujours, mais elle se calcule rarement. Pour l'ellipse $(a\cos t, b\sin t)$ avec $a \neq b$, $s(t) = \int_0^t \sqrt{a^2\sin^2 u + b^2\cos^2 u}\,du$ est une intégrale elliptique, qui ne s'exprime pas par les fonctions usuelles. On s'en sert donc pour démontrer, et l'on calcule dans un paramétrage quelconque, par les formules des nœuds suivants.
+
+  - id: cb-courbure-plane
+    etiquette: Courbure plane
+    nature: définition
+    titre: Courbure d'une courbe plane et repère de Frenet du plan
+    texte: |
+      On se place dans $\lex{n-uplet}{\mathbb R^2}$ et l'on note $j(x, y) = (-y, x)$ la rotation d'un quart de tour, qui conserve la norme et vérifie $\det(w, j(w)) = \|w\|^2$.
+
+      Soit $\delta : I \to \mathbb R^2$ une courbe de classe $C^2$ paramétrée par la longueur ({{cb-abscisse|Abscisse curviligne}}). Son [[repere-frenet|repère de Frenet]] en $\sigma$ est le couple orthonormé $(T, N)$, avec $T = \delta'$ et $N = j(T)$.
+
+      Comme $\langle T, T \rangle = 1$, la dérivée donne $\langle T', T \rangle = 0$ : $T'$ est colinéaire à $N$. La [[courbure-courbe|courbure]] (algébrique) de $\delta$ est la fonction continue $\kappa$ telle que $T' = \kappa N$, soit
+      $$\kappa = \langle T', N \rangle = \det(\delta', \delta'').$$
+
+      Pour une courbe régulière $\gamma$ de classe $C^2$, paramétrée de façon quelconque, la courbure en $t$ est celle de $\delta = \gamma \circ s^{-1}$ au point $s(t)$, où $s$ est une abscisse curviligne.
+    enonce: |
+      (i) *Formules de Frenet du plan.* $T' = \kappa N$ et $N' = -\kappa T$.
+
+      (ii) *Relèvement.* Soit $w : I \to \mathbb R^2$ de classe $C^1$ telle que $\|w(t)\| = 1$ pour tout $t$, $t_0 \in I$ et $\theta_0$ réel tel que $w(t_0) = (\cos\theta_0, \sin\theta_0)$. Il existe une unique fonction $\theta : I \to \mathbb R$ de classe $C^1$ telle que $\theta(t_0) = \theta_0$ et $w = (\cos\theta, \sin\theta)$ ; elle vérifie $\theta' = \det(w, w')$.
+
+      En particulier, si $T = (\cos\theta, \sin\theta)$ avec $\theta$ de classe $C^1$, alors $\theta' = \kappa$ : la courbure est la vitesse de rotation de la tangente.
+
+      (iii) *Paramétrage quelconque.* Si $\gamma$ est régulière de classe $C^2$, sa courbure en $t$ est
+      $$\kappa(t) = \frac{\det\big(\gamma'(t), \gamma''(t)\big)}{\|\gamma'(t)\|^3}.$$
+
+      (iv) Une droite a une courbure nulle. Le cercle de rayon $R$ parcouru dans le sens direct, $t \mapsto (R\cos t, R\sin t)$, a la courbure constante $\frac1R$ ; parcouru dans l'autre sens, $-\frac1R$.
+    preuve: |
+      (i) $T' = \kappa N$ par définition. Comme $j$ est linéaire, $N' = j(T') = \kappa\, j(N) = \kappa\, j(j(T)) = -\kappa T$.
+
+      (ii) *Existence.* Posons $\theta(t) = \theta_0 + \int_{t_0}^t \det(w, w')$ ; c'est une fonction de classe $C^1$ de dérivée $\det(w, w') = w_1w_2' - w_2w_1'$ ({{ar-tfa|Théorème fondamental}}). On identifie $\mathbb R^2$ à $\lex{ensemble-complexes}{\mathbb C}$ et l'on pose $z = w_1 + iw_2$, $e = \cos\theta - i\sin\theta$. De $w_1^2 + w_2^2 = 1$ on tire $w_1w_1' = -w_2w_2'$, et un développement direct donne
+      $$i\theta' z = w_1' + iw_2' = z'.$$
+
+      Par ailleurs, $\cos' = -\sin$ et $\sin' = \cos$ ({{cx-exponentielle|Exponentielle}}, (iv)) donnent $e' = -i\theta' e$. Donc $(ze)' = i\theta' ze - i\theta' ze = 0$ : la fonction $ze$ est constante, égale à sa valeur en $t_0$, qui vaut $\cos^2\theta_0 + \sin^2\theta_0 = 1$. Comme $e\,(\cos\theta + i\sin\theta) = 1$, on obtient $z = \cos\theta + i\sin\theta$.
+
+      *Unicité.* Si $\tilde\theta$ convient aussi, $\exp\big(i(\theta - \tilde\theta)\big) = 1$, donc $\theta - \tilde\theta$ prend ses valeurs dans $2\pi\lex{ensemble-entiers-relatifs}{\mathbb Z}$ ({{cx-pi|Le nombre π}}, (ii)). Continue sur l'intervalle $I$, elle est constante, sans quoi elle prendrait une valeur intermédiaire hors de $2\pi\mathbb Z$ ({{c-tvi|Valeurs intermédiaires}}), et elle est nulle en $t_0$.
+
+      Enfin, pour $w = T$, $\theta' = \det(T, T') = \det(T, \kappa N) = \kappa\det(T, j(T)) = \kappa$.
+
+      (iii) Soit $s$ une abscisse curviligne et $\delta = \gamma \circ s^{-1}$, de classe $C^2$ ({{cb-abscisse|Abscisse curviligne}}). De $\gamma = \delta \circ s$ on tire, en notant $T$, $N$ et $\kappa$ en $s(t)$,
+      $$\begin{aligned} \gamma' &= s'\,T, \\ \gamma'' &= s''\,T + s'^2\kappa\,N. \end{aligned}$$
+      Le déterminant étant bilinéaire et alterné, $\det(\gamma', \gamma'') = s'^3\kappa\det(T, N) = s'^3\kappa$, et $s' = \|\gamma'\|$.
+
+      (iv) Pour une droite parcourue à vitesse unité, $T$ est constant et $\kappa = 0$. Pour le cercle, $\gamma'(t) = (-R\sin t, R\cos t)$ et $\gamma''(t) = (-R\cos t, -R\sin t)$ ; donc $\det(\gamma', \gamma'') = R^2$, $\|\gamma'\| = R$, et (iii) donne $\kappa = \frac1R$. Changer le sens de parcours change le signe de $\gamma'$ sans changer $\gamma''$ (on remplace $t$ par $-t$), donc celui de $\kappa$.
+    remarques:
+      - |
+        La courbure est algébrique : son signe dit de quel côté la courbe tourne, à gauche quand $\kappa > 0$, à droite quand $\kappa < 0$. Il dépend du sens de parcours, mais non du paramétrage qui le respecte. Dans l'espace, il n'y a plus de côté privilégié, et la courbure sera un nombre positif ({{cb-frenet|Repère de Frenet}}).
+      - |
+        Le relèvement (ii) est l'énoncé différentiable qui remplace la fonction « argument », laquelle n'existe pas continûment sur tout le cercle. Il ne dit pas que $\theta$ revient à sa valeur initiale le long d'une courbe fermée. Pour une courbe $\delta$ de période $L$, $T(\sigma + L) = T(\sigma)$, et, comme dans la preuve de l'unicité de (ii), $\theta(\sigma + L) - \theta(\sigma) \in 2\pi\mathbb Z$ ({{cx-pi|Le nombre π}}, (ii)) : la **courbure totale** $\int_0^L \kappa$ est un multiple entier de $2\pi$, le nombre de tours de la tangente.
+      - |
+        *Théorème des tangentes tournantes, admis ici.* Si la courbe fermée $\delta$ est simple, c'est-à-dire injective sur une période, la courbure totale vaut $2\pi$ ou $-2\pi$. H. Hopf l'a démontré en 1935 (« Über die Drehung der Tangenten und Sehnen ebener Kurven », *Compositio Mathematica* 2, p. 50-62) en déformant la tangente en la direction des cordes $\delta(\sigma_2) - \delta(\sigma_1)$ sur un triangle de paramètres. La difficulté contournée est topologique : il faut l'invariance du nombre de tours par homotopie, qui relève du {{topalg|groupe fondamental}}, théorie qui n'est pas un ancêtre de celle-ci.
+
+  - id: cb-planes
+    etiquette: Courbes planes
+    nature: théorème
+    titre: Théorème fondamental des courbes planes
+    texte: |
+      Un **déplacement** du plan est une application $x \mapsto Ax + c$, où $c \in \lex{n-uplet}{\mathbb R^2}$ et $A$ est une rotation
+      $$A = \begin{pmatrix} \cos\varphi & -\sin\varphi \\ \sin\varphi & \cos\varphi \end{pmatrix}.$$
+      Une rotation conserve la norme et le déterminant, et commute avec $j$ ({{cb-courbure-plane|Courbure plane}}).
+    enonce: |
+      Soit $I$ un intervalle ouvert, $\kappa : I \to \lex{ensemble-reels}{\mathbb R}$ continue, $\sigma_0 \in I$, $p_0 \in \mathbb R^2$ et $\theta_0$ réel.
+
+      (i) *Existence et unicité.* Il existe une unique courbe $\delta : I \to \mathbb R^2$ de classe $C^2$, paramétrée par la longueur, de [[courbure-courbe|courbure]] $\kappa$, telle que $\delta(\sigma_0) = p_0$ et $\delta'(\sigma_0) = (\cos\theta_0, \sin\theta_0)$. Elle est donnée par
+      $$\begin{aligned} \theta(\sigma) &= \theta_0 + \int_{\sigma_0}^\sigma \kappa, \\ \delta(\sigma) &= p_0 + \int_{\sigma_0}^\sigma e\big(\theta(u)\big)\,du, \end{aligned}$$
+      où $e(\vartheta) = (\cos\vartheta, \sin\vartheta)$.
+
+      (ii) *À déplacement près.* Deux courbes de classe $C^2$ paramétrées par la longueur sur $I$, de même courbure, se déduisent l'une de l'autre par un déplacement.
+
+      (iii) Une courbe de courbure constante $\kappa_0 \neq 0$ est un arc du cercle de rayon $\frac1{|\kappa_0|}$ ; une courbe de courbure nulle est un segment de droite.
+    preuve: |
+      (i) *Existence.* La fonction $\theta$ est de classe $C^1$, de dérivée $\kappa$ ({{ar-tfa|Théorème fondamental}}) ; $\delta$ est de classe $C^2$, et $\delta' = (\cos\theta, \sin\theta)$ est unitaire. Alors
+      $$T' = \theta'\,(-\sin\theta, \cos\theta) = \kappa\, j(T),$$
+      donc $\delta$ a pour courbure $\kappa$ ; les conditions en $\sigma_0$ sont satisfaites.
+
+      *Unicité.* Soit $\tilde\delta$ une courbe qui convient. Le relèvement ({{cb-courbure-plane|Courbure plane}}, (ii)) écrit $\tilde\delta' = (\cos\tilde\theta, \sin\tilde\theta)$ avec $\tilde\theta$ de classe $C^1$, $\tilde\theta(\sigma_0) = \theta_0$ et $\tilde\theta' = \kappa$. Donc $\tilde\theta - \theta$ est de dérivée nulle et nulle en $\sigma_0$ : $\tilde\theta = \theta$. Alors $\tilde\delta'= \delta'$ et $\tilde\delta(\sigma_0) = \delta(\sigma_0)$, d'où $\tilde\delta = \delta$.
+
+      (ii) Soient $\delta$ et $\tilde\delta$ deux telles courbes, et $\theta_0$, $\tilde\theta_0$ tels que $\delta'(\sigma_0) = (\cos\theta_0, \sin\theta_0)$ et $\tilde\delta'(\sigma_0) = (\cos\tilde\theta_0, \sin\tilde\theta_0)$ ({{cx-pi|Le nombre π}}, (iii)). Soit $A$ la rotation d'angle $\varphi = \tilde\theta_0 - \theta_0$ et $c = \tilde\delta(\sigma_0) - A\delta(\sigma_0)$.
+
+      La courbe $A\delta + c$ est paramétrée par la longueur, et sa courbure est $\det(A\delta', A\delta'') = \det A\,\det(\delta', \delta'') = \kappa$. Par les formules d'addition, parties réelle et imaginaire de $\exp(i(\theta_0 + \varphi)) = \exp(i\theta_0)\exp(i\varphi)$, on a $A\delta'(\sigma_0) = \tilde\delta'(\sigma_0)$, et $A\delta(\sigma_0) + c = \tilde\delta(\sigma_0)$. L'unicité de (i) donne $A\delta + c = \tilde\delta$.
+
+      (iii) Si $\kappa = \kappa_0 \neq 0$, alors $\theta(\sigma) = \theta_0 + \kappa_0(\sigma - \sigma_0)$, et la fonction
+      $$\eta(\sigma) = \frac1{\kappa_0}\big(\sin\theta(\sigma), -\cos\theta(\sigma)\big)$$
+      a pour dérivée $(\cos\theta, \sin\theta) = \delta'$. Donc $\delta - \eta$ est constante, égale à un point $m$, et $\|\delta(\sigma) - m\| = \|\eta(\sigma)\| = \frac1{|\kappa_0|}$. Si $\kappa = 0$, $\theta$ est constante, et $\delta(\sigma) = p_0 + (\sigma - \sigma_0)(\cos\theta_0, \sin\theta_0)$.
+    remarques:
+      - |
+        Le théorème dit que la courbure, fonction de l'abscisse curviligne, est un invariant complet des courbes planes à déplacement près : c'est une « équation intrinsèque ». La courbe de courbure $\kappa(\sigma) = \sigma$, par exemple, est la clothoïde, dont les ingénieurs se servent pour raccorder une ligne droite à un virage sans à-coup de l'accélération latérale.
+      - |
+        L'erreur la plus répandue est d'oublier l'hypothèse « paramétrée par la longueur ». Une fonction $\kappa(t)$ donnée en fonction d'un paramètre quelconque ne détermine rien : la même courbe a autant de fonctions de courbure que de paramétrages.
+      - |
+        Dans l'espace, la courbure seule ne suffit plus : l'hélice et le cercle ont tous deux une courbure constante. Il faut un second invariant, la torsion, et l'intégration explicite est remplacée par un système différentiel linéaire ({{cb-fondamental|Théorème fondamental des courbes}}).
+
+  - id: cb-frenet
+    etiquette: Repère de Frenet
+    nature: théorème
+    titre: Repère de Frenet et formules de Frenet-Serret
+    texte: |
+      Dans $\lex{n-uplet}{\mathbb R^3}$, le [[produit-vectoriel|produit vectoriel]] de $u$ et $v$ est
+      $$\begin{aligned} u \wedge v = (&u_2v_3 - u_3v_2,\ u_3v_1 - u_1v_3, \\ &u_1v_2 - u_2v_1). \end{aligned}$$
+      Une base orthonormée $(e_1, e_2, e_3)$ est **directe** si $\det(e_1, e_2, e_3) = 1$.
+
+      Soit $\delta : I \to \mathbb R^3$ une courbe de classe $C^3$ paramétrée par la longueur ({{cb-abscisse|Abscisse curviligne}}). Elle est **birégulière** si $\delta''$ ne s'annule pas. Sa [[courbure-courbe|courbure]] est alors $\kappa = \|\delta''\| > 0$, et son [[repere-frenet|repère de Frenet]] est formé de
+      $$T = \delta', \quad N = \frac{\delta''}{\kappa}, \quad B = T \wedge N,$$
+      la tangente, la normale principale et la binormale. Sa [[torsion-courbe|torsion]] est $\tau = \langle N', B \rangle$.
+
+      Pour une courbe régulière $\gamma$ de classe $C^3$, paramétrée de façon quelconque, $\kappa$ et $\tau$ en $t$ sont ceux de $\gamma \circ s^{-1}$ en $s(t)$, $s$ étant une abscisse curviligne.
+    enonce: |
+      (i) *Produit vectoriel.* Il est bilinéaire et antisymétrique, et $\langle u \wedge v, w \rangle = \det(u, v, w)$ ; en particulier $u \wedge v$ est orthogonal à $u$ et à $v$. On a
+      $$\|u \wedge v\|^2 = \|u\|^2\|v\|^2 - \langle u, v \rangle^2,$$
+      et $u \wedge v = 0$ si et seulement si $(u, v)$ est liée. Si $(u, v)$ est orthonormée, $(u, v, u \wedge v)$ est une base orthonormée directe, et $(u \wedge v) \wedge u = v$, $(u \wedge v) \wedge v = -u$. Pour $A$ orthogonale de déterminant $1$, $A(u \wedge v) = Au \wedge Av$.
+
+      (ii) *Frenet-Serret.* Si $\delta$ est birégulière, $(T, N, B)$ est en tout point une base orthonormée directe, ces trois fonctions sont de classe $C^1$, et
+      $$\begin{aligned} T' &= \kappa N, \\ N' &= -\kappa T + \tau B, \\ B' &= -\tau N. \end{aligned}$$
+
+      (iii) *Paramétrage quelconque.* Si $\gamma$ est régulière de classe $C^3$, elle est birégulière après reparamétrage par la longueur si et seulement si $\gamma' \wedge \gamma''$ ne s'annule pas, et alors
+      $$\begin{aligned} \kappa &= \frac{\|\gamma' \wedge \gamma''\|}{\|\gamma'\|^3}, \\ \tau &= \frac{\det(\gamma', \gamma'', \gamma''')}{\|\gamma' \wedge \gamma''\|^2}. \end{aligned}$$
+
+      (iv) *Courbes planes.* Une courbe birégulière est contenue dans un plan affine si et seulement si sa torsion est identiquement nulle.
+    preuve: |
+      (i) La bilinéarité et l'antisymétrie se lisent sur la formule. Le développement du déterminant de $(u, v, w)$ selon sa troisième colonne ({{v-comatrice|Comatrice}}) est exactement $\sum_i w_i\,(u \wedge v)_i$ ; donc $\langle u \wedge v, u \rangle = \det(u, v, u) = 0$, et de même pour $v$.
+
+      Les deux membres de l'identité de Lagrange valent $\sum_{i < j}(u_iv_j - u_jv_i)^2$ : à gauche, ce sont les carrés des trois coordonnées ; à droite,
+      $$\begin{aligned} &\sum_{i, j} u_i^2v_j^2 - \sum_{i, j} u_iv_iu_jv_j \\ &\quad = \tfrac12\sum_{i, j}(u_iv_j - u_jv_i)^2. \end{aligned}$$
+
+      Si $(u, v)$ est libre, on la complète en une base $(u, v, w)$, et $\langle u \wedge v, w \rangle = \det(u, v, w) \neq 0$ ({{v-det-matrice|Déterminant d'une matrice}}, (ii)) ; si elle est liée, $\det(u, v, w) = 0$ pour tout $w$, et $u \wedge v$, orthogonal à tout vecteur, est nul.
+
+      Si $(u, v)$ est orthonormée, $u \wedge v$ est orthogonal à $u$ et $v$, de norme $1$ par l'identité de Lagrange, et $\det(u, v, u \wedge v) = \|u \wedge v\|^2 = 1$. Le vecteur $(u \wedge v) \wedge u$ est unitaire et orthogonal à $u \wedge v$ et à $u$, donc égal à $\pm v$ ; et $\langle (u \wedge v) \wedge u, v \rangle = \det(u \wedge v, u, v) = \det(u, v, u \wedge v) = 1$, une permutation circulaire étant paire. De même $\langle (u \wedge v) \wedge v, u \rangle = \det(u \wedge v, v, u) = -1$.
+
+      Enfin, pour $A$ orthogonale de déterminant $1$ et tout $w$, $\det(Au, Av, w) = \det A\,\det(u, v, {}^tAw)$, d'où
+      $$\begin{aligned} \langle Au \wedge Av, w \rangle &= \langle u \wedge v, {}^tAw \rangle \\ &= \langle A(u \wedge v), w \rangle. \end{aligned}$$
+
+      (ii) $\delta''$ est de classe $C^1$ et ne s'annule pas, donc $\kappa = \|\delta''\|$ et $N$ sont de classe $C^1$ (comme au nœud {{cb-abscisse|Abscisse curviligne}}, (i)), et $B$ aussi. De $\langle T, T \rangle = 1$ on tire $\langle T', T \rangle = 0$ : $N$ est unitaire et orthogonal à $T$, et (i) fait de $(T, N, B)$ une base orthonormée directe.
+
+      Notons $(e_1, e_2, e_3) = (T, N, B)$ et $a_{ij} = \langle e_i', e_j \rangle$. En dérivant $\langle e_i, e_j \rangle$, constant, on obtient $a_{ij} + a_{ji} = 0$. Or $a_{12} = \langle \kappa N, N \rangle = \kappa$, $a_{13} = \langle \kappa N, B \rangle = 0$ et $a_{23} = \tau$ par définition. La décomposition $e_i' = \sum_j a_{ij}e_j$ dans la base orthonormée donne les trois formules.
+
+      (iii) Soit $s$ une abscisse curviligne et $\delta = \gamma \circ s^{-1}$, de classe $C^3$. En dérivant $\gamma = \delta \circ s$, avec $\delta'' = \kappa N$ et, si $\kappa > 0$, les formules (ii),
+      $$\begin{aligned} \gamma' &= s'T, \\ \gamma'' &= s''T + s'^2\kappa N, \\ \gamma''' &= (s''' - s'^3\kappa^2)T + (3s's''\kappa + s'^3\kappa')N \\ &\quad + s'^3\kappa\tau B. \end{aligned}$$
+      La deuxième ligne vaut sans hypothèse sur $\kappa$, en écrivant $\delta''$ au lieu de $\kappa N$ : $\gamma' \wedge \gamma'' = s'^3\,T \wedge \delta''$, de norme $s'^3\|\delta''\|$ puisque $\delta'' \perp T$. Ce produit ne s'annule donc que là où $\delta''$ s'annule.
+
+      Si $\kappa > 0$, $\gamma' \wedge \gamma'' = s'^3\kappa B$, d'où la formule de $\kappa$, avec $s' = \|\gamma'\|$. Seule la composante de $\gamma'''$ sur $B$ compte dans le produit scalaire avec $B$, et $\det(\gamma', \gamma'', \gamma''') = \langle \gamma' \wedge \gamma'', \gamma''' \rangle = s'^6\kappa^2\tau$, d'où la formule de $\tau$.
+
+      (iv) Si $\tau = 0$, alors $B' = 0$ : $B$ est un vecteur constant $B_0$. La fonction $\langle \delta(\sigma) - \delta(\sigma_0), B_0 \rangle$ a pour dérivée $\langle T, B_0 \rangle = 0$ et s'annule en $\sigma_0$ : $\delta$ reste dans le plan passant par $\delta(\sigma_0)$ et orthogonal à $B_0$.
+
+      Réciproquement, si $\langle \delta - p, n \rangle = 0$ pour un point $p$ et un vecteur unitaire $n$, deux dérivations donnent $\langle T, n \rangle = \langle N, n \rangle = 0$. Le vecteur $n$ est unitaire et orthogonal à $T$ et $N$, comme $B$ : donc $B = \pm n$. La fonction continue $\langle B, n \rangle$, à valeurs dans $\{-1, 1\}$, est constante ({{c-tvi|Valeurs intermédiaires}}) ; $B$ est constant, et $\tau = -\langle B', N \rangle = 0$.
+    remarques:
+      - |
+        F. Frenet a introduit ce repère dans sa thèse, présentée à la Faculté des sciences de Toulouse le 10 juillet 1847, dont il a publié la partie sur les courbes en 1852 (« Sur les courbes à double courbure », *Journal de mathématiques pures et appliquées* 17, p. 437-447). J.-A. Serret avait publié les formules indépendamment en 1851 (« Sur quelques formules relatives à la théorie des courbes à double courbure », même journal, 16, p. 193-207). Selon la notice de MacTutor, Frenet en donnait six, Serret les neuf.
+      - |
+        La torsion mesure la vitesse à laquelle le plan osculateur, engendré par $T$ et $N$, tourne autour de la tangente : $B' = -\tau N$. Une courbe plane a un plan osculateur fixe, ce que dit (iv).
+      - |
+        L'hypothèse de birégularité est indispensable. Pour la courbe plane $t \mapsto (t, t^3, 0)$, la normale principale vaut $\frac{(-3t^2, 1, 0)}{\sqrt{1 + 9t^4}}$ pour $t > 0$ et l'opposé pour $t < 0$ : elle tend vers $(0, 1, 0)$ à droite de l'origine et vers $(0, -1, 0)$ à gauche, et saute donc au point d'inflexion, où $\delta''$ s'annule, et le repère de Frenet n'y a pas de limite.
+
+  - id: cb-helice
+    etiquette: Hélice circulaire
+    nature: proposition
+    titre: L'hélice circulaire
+    texte: |
+      Pour $a > 0$ et $b$ réel, l'**hélice circulaire** est la courbe $\gamma(t) = (a\cos t, a\sin t, bt)$, $t \in \lex{ensemble-reels}{\mathbb R}$, tracée sur le cylindre de rayon $a$ d'axe $Oz$, dont elle monte de $2\pi b$ à chaque tour. On note $w = \sqrt{a^2 + b^2}$.
+    enonce: |
+      (i) $\gamma$ est régulière, d'abscisse curviligne $s(t) = wt$ à partir de $0$.
+
+      (ii) Sa [[courbure-courbe|courbure]] et sa [[torsion-courbe|torsion]] sont constantes :
+      $$\kappa = \frac{a}{a^2 + b^2}, \qquad \tau = \frac{b}{a^2 + b^2}.$$
+
+      (iii) Son [[repere-frenet|repère de Frenet]] en $t$ est
+      $$\begin{aligned} T &= \tfrac1w(-a\sin t, a\cos t, b), \\ N &= (-\cos t, -\sin t, 0), \\ B &= \tfrac1w(b\sin t, -b\cos t, a). \end{aligned}$$
+      La normale principale est horizontale et pointe vers l'axe ; la tangente et la binormale font avec l'axe des angles constants.
+
+      (iv) Pour $\kappa_0 > 0$ et $\tau_0$ réel, l'hélice de paramètres $a = \frac{\kappa_0}{\kappa_0^2 + \tau_0^2}$ et $b = \frac{\tau_0}{\kappa_0^2 + \tau_0^2}$ a pour courbure $\kappa_0$ et pour torsion $\tau_0$.
+    preuve: |
+      (i) Par $\cos' = -\sin$ et $\sin' = \cos$ ({{cx-exponentielle|Exponentielle}}, (iv)),
+      $$\begin{aligned} \gamma' &= (-a\sin t, a\cos t, b), \\ \gamma'' &= (-a\cos t, -a\sin t, 0), \\ \gamma''' &= (a\sin t, -a\cos t, 0), \end{aligned}$$
+      et $\|\gamma'\| = w$ puisque $\cos^2 + \sin^2 = 1$. Donc $\gamma' \neq 0$ et $s(t) = wt$.
+
+      (ii) Un calcul direct donne $\gamma' \wedge \gamma'' = (ab\sin t, -ab\cos t, a^2)$, de norme $a\sqrt{b^2 + a^2} = aw$, qui ne s'annule pas. Le déterminant vaut
+      $$\begin{aligned} \langle \gamma' \wedge \gamma'', \gamma''' \rangle &= a^2b\sin^2 t + a^2b\cos^2 t \\ &= a^2b. \end{aligned}$$
+      Les formules du nœud {{cb-frenet|Repère de Frenet}}, (iii), donnent $\kappa = \frac{aw}{w^3} = \frac{a}{w^2}$ et $\tau = \frac{a^2b}{a^2w^2} = \frac{b}{w^2}$.
+
+      (iii) Dans la démonstration du point (iii) du nœud {{cb-frenet|Repère de Frenet}}, $T = \gamma'/s'$ et $\gamma' \wedge \gamma'' = s'^3\kappa B$, avec $s' = w$ : on obtient $T$ et $B$, puis $N = B \wedge T$ ({{cb-frenet|Repère de Frenet}}, (i)), soit
+      $$N = \tfrac{a^2 + b^2}{w^2}\,(-\cos t, -\sin t, 0),$$
+      qui est la valeur annoncée, puisque $w^2 = a^2 + b^2$.
+      Les troisièmes coordonnées de $T$ et $B$, $\frac bw$ et $\frac aw$, sont les cosinus d'angles constants avec l'axe.
+
+      (iv) Pour ces valeurs, $a^2 + b^2 = \frac{1}{\kappa_0^2 + \tau_0^2}$, donc $\frac{a}{a^2 + b^2} = \kappa_0$ et $\frac{b}{a^2 + b^2} = \tau_0$ ; on applique (ii).
+    remarques:
+      - |
+        ```schema cb-helice
+        L'hélice $a = 1$, $b = 0{,}25$, vue de biais en projection parallèle, la partie située derrière l'axe étant en gris, avec son repère de Frenet en deux points : $T$ en rouge, $N$ en bleu, $B$ en vert. La normale $N$ est toujours horizontale et pointe vers l'axe vertical, en pointillé ; $T$ et $B$ gardent la même inclinaison, ici $\kappa = \frac{16}{17}$ et $\tau = \frac{4}{17}$.
+        ```
+        Le signe de la torsion distingue les hélices droites ($b > 0$, comme les vis ordinaires) des hélices gauches ($b < 0$), images les unes des autres dans un miroir. La courbure, elle, ne voit pas cette différence.
+      - |
+        Le cas $b = 0$ est le cercle de rayon $a$ : $\kappa = \frac1a$ et $\tau = 0$, comme en dimension $2$ ({{cb-courbure-plane|Courbure plane}}). Quand $a \to 0$ à $b$ fixé, l'hélice s'enroule sur son axe et $\kappa \to 0$ : la courbure d'une hélice de rayon petit devant son pas est faible, parce qu'elle ressemble à une droite.
+      - |
+        L'hélice est une géodésique du cylindre : quand on déroule le cylindre sur le plan, elle devient une droite, ce que montrera le nœud {{sf-geodesiques|Géodésiques}}. C'est pourquoi un fil tendu entre deux points d'une bobine prend la forme d'un arc d'hélice.
+
+  - id: cb-fondamental
+    etiquette: Théorème fondamental
+    nature: théorème
+    titre: Théorème fondamental des courbes de l'espace
+    texte: |
+      Un [[deplacement|déplacement]] de $\lex{n-uplet}{\mathbb R^3}$ est une application $x \mapsto Ax + c$, où $c \in \mathbb R^3$ et $A$ est une [[matrice-orthogonale|matrice orthogonale]] de déterminant $1$. Il conserve les distances, les produits scalaires des vecteurs et, par le nœud {{cb-frenet|Repère de Frenet}}, (i), le produit vectoriel.
+    enonce: |
+      Soit $I$ un intervalle ouvert, $\kappa : I \to \,]0, +\infty[$ de classe $C^1$, $\tau : I \to \lex{ensemble-reels}{\mathbb R}$ continue, $\sigma_0 \in I$, $p_0 \in \mathbb R^3$ et $(T_0, N_0, B_0)$ une base orthonormée directe.
+
+      (i) *Existence et unicité.* Il existe une unique courbe birégulière $\delta : I \to \mathbb R^3$ de classe $C^3$, paramétrée par la longueur, de [[courbure-courbe|courbure]] $\kappa$ et de [[torsion-courbe|torsion]] $\tau$, telle que $\delta(\sigma_0) = p_0$ et que son repère de Frenet en $\sigma_0$ soit $(T_0, N_0, B_0)$.
+
+      (ii) *À déplacement près.* Deux courbes birégulières de classe $C^3$, paramétrées par la longueur sur $I$, de mêmes courbure et torsion, se déduisent l'une de l'autre par un unique déplacement.
+
+      (iii) Une courbe birégulière de courbure constante $\kappa_0 > 0$ et de torsion constante $\tau_0$ est, à déplacement près, un arc de l'hélice du nœud {{cb-helice|Hélice circulaire}}, (iv), parcourue par la longueur ; c'est un arc de cercle si $\tau_0 = 0$.
+    preuve: |
+      (i) *Unicité.* Pour une courbe qui convient, le repère de Frenet $Y = (T, N, B)$, vu comme fonction à valeurs dans $\mathbb R^9$, est solution du système linéaire
+      $$\begin{aligned} T' &= \kappa N, \\ N' &= -\kappa T + \tau B, \\ B' &= -\tau N \end{aligned}$$
+      ({{cb-frenet|Repère de Frenet}}, (ii)), à coefficients continus, avec la donnée $Y(\sigma_0) = (T_0, N_0, B_0)$. Ce système a une unique solution sur $I$ ({{ed-lineaires|Systèmes linéaires}}, (i)) ; $T$ est donc déterminé, et $\delta(\sigma) = p_0 + \int_{\sigma_0}^\sigma T$ aussi.
+
+      *Existence.* Soit $(T, N, B)$ la solution du système sur $I$ de donnée initiale $(T_0, N_0, B_0)$. Écrivons-le $e_i' = \sum_j k_{ij}e_j$, où la matrice
+      $$K = \begin{pmatrix} 0 & \kappa & 0 \\ -\kappa & 0 & \tau \\ 0 & -\tau & 0 \end{pmatrix}$$
+      est antisymétrique. La matrice de Gram $P = (\langle e_i, e_j \rangle)$ vérifie alors
+      $$P' = KP + P\,{}^tK = KP - PK,$$
+      système linéaire en $P \in \mathbb R^9$ dont la fonction constante $I_3$ est aussi solution, avec la même valeur en $\sigma_0$. Par unicité, $P = I_3$ : la base $(T, N, B)$ reste orthonormée.
+
+      Son déterminant, continu, à valeurs dans $\{-1, 1\}$ et égal à $1$ en $\sigma_0$, vaut toujours $1$ ({{c-tvi|Valeurs intermédiaires}}). Comme $T \wedge N$ est unitaire, orthogonal à $T$ et à $N$, $B = \pm T \wedge N$, et $\langle T \wedge N, B \rangle = \det(T, N, B) = 1$ donne $B = T \wedge N$.
+
+      Posons $\delta(\sigma) = p_0 + \int_{\sigma_0}^\sigma T$. Alors $\delta' = T$ est unitaire et de classe $C^1$, $\delta'' = \kappa N$ ne s'annule pas, et $\|\delta''\| = \kappa$ : la normale principale est $N$, la binormale $T \wedge N = B$. Comme $N' = -\kappa T + \tau B$ est continue, $N$ est de classe $C^1$ et $\delta''' = \kappa'N + \kappa N'$ est continue : $\delta$ est de classe $C^3$. Enfin la torsion est $\langle N', B \rangle = \tau$.
+
+      (ii) Soient $\delta$ et $\tilde\delta$ deux telles courbes, de repères de Frenet $(T, N, B)$ et $(\tilde T, \tilde N, \tilde B)$. Soit $A$ la matrice qui envoie $(T, N, B)(\sigma_0)$ sur $(\tilde T, \tilde N, \tilde B)(\sigma_0)$ : produit de la matrice des colonnes $\tilde T, \tilde N, \tilde B$ par la transposée de celle des colonnes $T, N, B$, elle est orthogonale de déterminant $1$. Posons $c = \tilde\delta(\sigma_0) - A\delta(\sigma_0)$.
+
+      La courbe $A\delta + c$ est paramétrée par la longueur, et $(A\delta)'' = A\delta''$ : sa courbure est $\kappa$, sa normale principale $AN$, sa binormale $AT \wedge AN = AB$, et sa torsion $\langle AN', AB \rangle = \langle N', B \rangle = \tau$. Elle a en $\sigma_0$ le point et le repère de $\tilde\delta$ ; par l'unicité de (i), $A\delta + c = \tilde\delta$.
+
+      Une isométrie indirecte, $x \mapsto Ax + c$ avec $\det A = -1$, conserverait la courbure mais changerait le signe de la torsion, puisque $A(u \wedge v) = -Au \wedge Av$ : c'est pourquoi l'énoncé porte sur les déplacements, et l'unicité s'entend parmi eux.
+
+      Si deux déplacements $(A, c)$ et $(A', c')$ conviennent, $A\delta + c = A'\delta + c'$. En dérivant une fois puis deux fois, $AT = A'T$ et $AN = A'N$, puis $AB = AT \wedge AN = A'B$ : les matrices $A$ et $A'$ coïncident sur une base, donc sont égales, et $c = c'$.
+
+      (iii) Soit $\gamma$ l'hélice de paramètres $a$ et $b$ du nœud {{cb-helice|Hélice circulaire}}, (iv), et $\eta(\sigma) = \gamma\big(\frac{\sigma - \sigma_0}{w}\big)$, avec $w = \sqrt{a^2 + b^2}$ : $\eta$ est paramétrée par la longueur et a pour courbure $\kappa_0$ et pour torsion $\tau_0$ (même nœud, (i) et (ii)). Par (ii), toute courbe de mêmes invariants sur $I$ s'en déduit par un déplacement. Si $\tau_0 = 0$, $b = 0$ et $\gamma$ est un cercle.
+    remarques:
+      - |
+        La démonstration a la même structure qu'en dimension $2$ ({{cb-planes|Courbes planes}}), mais l'angle de la tangente, qu'on intégrait explicitement, est remplacé par une matrice orthogonale, que seule une équation différentielle linéaire fournit. L'antisymétrie de $K$ est ce qui garantit que la solution reste orthonormée : c'est la version infinitésimale du groupe des rotations.
+      - |
+        Le théorème ne dit rien des courbes dont la courbure s'annule. Là, le repère de Frenet n'est pas défini, et deux arcs plans, contenus dans deux plans différents, peuvent se raccorder en un point d'inflexion : la courbe obtenue a une torsion nulle partout où elle est définie sans être plane.
+      - |
+        L'analogue pour les surfaces est plus subtil : la première et la seconde forme fondamentales, que définira le chapitre {{edo-surfaces|Surfaces}}, déterminent une surface à déplacement près, mais on ne peut pas les choisir arbitrairement, car elles seront liées par l'équation de Gauss, qu'exprimera le Theorema egregium, et par les équations de Codazzi. Cet énoncé n'est pas traité ici.
+
+aretes:
+  - [cb-courbes, cb-abscisse]
+  - [cb-abscisse, cb-courbure-plane]
+  - [cb-courbure-plane, cb-planes]
+  - [cb-courbure-plane, cb-frenet]
+  - [cb-frenet, cb-helice]
+  - [cb-helice, cb-fondamental]

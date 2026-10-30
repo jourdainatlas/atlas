@@ -951,3 +951,19 @@ bornées. Admis : distributions à support ponctuel d'ordre quelconque, non-unic
 Mat. Sb. 42, 1935). Le ⋆ de λ est signalé une fois au nœud de la théorie. Relu : six fautes locales (support utilisé
 avant d'être démontré, trois remarques fausses, Tychonoff, argument de suite dense faux) et une vingtaine de
 retouches.
+
+## 64. Courbes et surfaces (30 octobre 2026)
+
+Deux chapitres de edo (une théorie nouvelle sous edo coûtait 17 croisements) : edo est la première théorie qui ait à
+la fois cos, sin, π, Cauchy-Lipschitz, le flot Cᵏ, le changement de variables et les sous-variétés. Arêtes internes :
+ed-lineaires → edo-courbes, ed-flot-ck → edo-surfaces, edo-changement → edo-surfaces, edo-courbes → edo-surfaces.
+edo-courbes (7) : courbes régulières, abscisse curviligne, relèvement C¹ d'un vecteur unitaire, courbure et théorème
+fondamental plan, Frenet-Serret, hélice, théorème fondamental dans l'espace (système antisymétrique, conservation de
+la matrice de Gram ; unicité à déplacement direct près). edo-surfaces (16) : première forme, aire (⋆ de λ signalé une
+fois, à sf-aire), application de Gauss, Weingarten, Meusnier, Euler, exemples (sphère, cylindre, tore, caténoïde,
+selles), Christoffel, Theorema egregium par Brioschi, géodésiques, exponentielle, coordonnées polaires et lemme de
+Gauss, minimisation locale, courbure géodésique, Gauss-Bonnet pour un triangle géodésique contenu dans des
+coordonnées polaires centrées en un sommet (point (i) en intégrales de Riemann, sans choix), métrique abstraite
+(invariance de la courbure abstraite admise). Admis en remarque : Gauss-Bonnet global, tangentes tournantes de Hopf.
+edo-surfaces garde 1 croisement (minimum trouvé). Relu : trois fautes (normale non constante, ⋆ en double,
+Gauss-Bonnet énoncé trop généralement) et une vingtaine de retouches. 814 nœuds, 487 termes, 69 graphes.
