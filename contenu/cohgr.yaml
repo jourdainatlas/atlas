@@ -1,0 +1,578 @@
+# Niveau 1 : structure interne du nœud « Cohomologie des groupes » (créé le 31 oct. 2026, théorie décidée par
+# l'auteur, placée entre les groupes finis et la théorie de Galois).
+# G-modules et invariants ; cochaînes inhomogènes de tout degré, d ∘ d = 0 par les cochaînes homogènes, Hⁿ(G, A) ;
+# H¹ (action triviale, groupe cyclique) ; H¹ et classes de conjugaison de compléments dans A ⋊ G ; H² et extensions
+# de G par A (extensions munies d'une section ; section fournie sans choix si G est fini) ; fonctorialité et
+# morphisme de liaison, suite exacte longue (G fini) ; inflation-restriction en degré 1 ; annulation de Hⁿ par |G|
+# (moyenne) ; Schur-Zassenhaus : cas abélien (existence et conjugaison), argument de Frattini, existence en général
+# par récurrence, conjugaison quand N est résoluble.
+# Choix : aucun. Les seuls relèvements (section d'une extension, relèvement d'une cochaîne) portent sur un groupe
+# fini et ne demandent qu'un nombre fini de choix ; pour un groupe infini, les énoncés supposent la section donnée.
+# Admis : la conjugaison des compléments dans le cas général (Feit-Thompson, ou G/N résoluble), en remarque.
+
+graphe: cohgr
+titre: Cohomologie des groupes
+conteneur: cohgr
+
+entrees:
+  gf: [cg-modules, cg-frattini]
+
+noeuds:
+  - id: cg-modules
+    etiquette: G-modules
+    nature: définition
+    titre: G-modules et invariants
+    texte: |
+      Dans toute cette théorie, $G$ est un [[groupe]] noté multiplicativement, de neutre $e$, et les groupes abéliens sont notés additivement, sauf mention contraire.
+
+      Un [[g-module|$G$-module]] est un groupe abélien $A$ muni d'une [[action-groupe|action]] de $G$, $(g, a) \mapsto g \cdot a$, telle que chaque application $a \mapsto g \cdot a$ soit un morphisme de groupes : $g \cdot (a + b) = g \cdot a + g \cdot b$. On écrit souvent $ga$ pour $g \cdot a$. L'action est **triviale** si $ga = a$ pour tous $g$ et $a$.
+
+      Un **morphisme de $G$-modules** $u : A \to B$ est un morphisme de groupes qui commute à l'action : $u(ga) = g\,u(a)$. Un **sous-module** de $A$ est un sous-groupe stable par l'action.
+
+      Une suite de morphismes de groupes $G_0 \to G_1 \to \cdots \to G_k$ est une [[suite-exacte-groupes|suite exacte]] si l'image de chacun est le noyau du suivant.
+
+      Les **invariants** de $A$ sont les éléments fixés par tout le groupe :
+      $$A^G = \{a \in A : ga = a \text{ pour tout } g \in G\}.$$
+      Pour un sous-groupe $H$ de $G$, on note de même $A^H$ l'ensemble des éléments fixés par tout élément de $H$.
+    enonce: |
+      (i) Se donner une structure de $G$-module sur un groupe abélien $A$ revient à se donner un morphisme de groupes $\rho : G \to \operatorname{Aut}(A)$, par la formule $ga = \rho(g)(a)$.
+
+      (ii) $A^G$ est un sous-groupe de $A$. Le noyau et l'image d'un morphisme de $G$-modules $u : A \to B$ sont des sous-modules, et $u$ envoie $A^G$ dans $B^G$.
+
+      (iii) Si $B$ est un sous-module de $A$, le groupe quotient $A/B$ est un $G$-module pour $g(a + B) = ga + B$, et la surjection canonique est un morphisme de $G$-modules.
+
+      (iv) Soit $N$ un sous-groupe distingué et abélien d'un groupe $E$. L'action par conjugaison, $x \cdot n = xnx^{-1}$, fait de $N$ un $E$-module, sur lequel les éléments de $N$ agissent trivialement, et la formule $(xN) \cdot n = xnx^{-1}$ fait de $N$ un $E/N$-module.
+    preuve: |
+      (i) Si $A$ est un $G$-module, l'application $\rho(g) : a \mapsto ga$ est un morphisme de groupes, bijectif de réciproque $\rho(g^{-1})$, puisque $g^{-1}(ga) = (g^{-1}g)a = a$ et de même $g(g^{-1}a) = a$ : c'est un élément de $\operatorname{Aut}(A)$ ({{gf-produits|Produits semi-directs}}). La relation $g(ha) = (gh)a$ dit que $\rho(gh) = \rho(g) \circ \rho(h)$, et $\rho$ est un morphisme.
+
+      Réciproquement, si $\rho$ est un morphisme, $\rho(e)$ est le neutre $\mathrm{id}_A$ de $\operatorname{Aut}(A)$, donc $ea = a$, et $g(ha) = \rho(g)(\rho(h)(a)) = \rho(gh)(a) = (gh)a$ : la formule définit une action, et chaque $\rho(g)$ est un morphisme de groupes.
+
+      (ii) On a $g0 = 0$, l'application $a \mapsto ga$ étant un morphisme, donc $0 \in A^G$ ; si $a, b \in A^G$, alors $g(a - b) = ga - gb = a - b$, et $A^G$ est un sous-groupe ({{a-sous-groupe|Sous-groupe}}, (i)).
+
+      Le noyau et l'image de $u$ sont des sous-groupes ({{a-morphisme|Morphisme}}). Si $u(a) = 0$, alors $u(ga) = g\,u(a) = g0 = 0$ ; et $g\,u(a) = u(ga)$ appartient à l'image. Enfin, si $a \in A^G$, alors $g\,u(a) = u(ga) = u(a)$.
+
+      (iii) Si $a + B = a' + B$, alors $a - a' \in B$, donc $ga - ga' = g(a - a') \in B$ puisque $B$ est stable, et $ga + B = ga' + B$ : la formule a un sens. Les axiomes d'une action par morphismes se lisent sur les représentants, et la surjection canonique $a \mapsto a + B$ commute à l'action par construction.
+
+      (iv) Comme $N$ est distingué, la conjugaison $n \mapsto xnx^{-1}$ envoie $N$ dans $N$ ; c'est un morphisme, puisque $x(nm)x^{-1} = (xnx^{-1})(xmx^{-1})$. On a $e \cdot n = n$ et $x \cdot (y \cdot n) = x(yny^{-1})x^{-1}$, c'est-à-dire $x \cdot (y \cdot n) = (xy) \cdot n$, puisque $(xy)^{-1} = y^{-1}x^{-1}$. C'est donc une action par morphismes du groupe abélien $N$, noté ici multiplicativement.
+
+      Pour $y \in N$, on a $yny^{-1} = n$ puisque $N$ est abélien. Si $xN = x'N$, alors $x' = xy$ avec $y \in N$, et $x'nx'^{-1} = x(yny^{-1})x^{-1} = xnx^{-1}$ : l'action passe au quotient, et elle vérifie les axiomes d'une action de $E/N$, puisque $(xN)(yN) = xyN$.
+    remarques:
+      - |
+        Le groupe symétrique $\lex{groupe-symetrique}{\mathfrak S_n}$ agit sur $\lex{ensemble-entiers-relatifs}{\mathbb Z}$ par la signature ({{v-permutations|Permutations, signature}}), $\sigma \cdot a = \varepsilon(\sigma)\,a$ : c'est un $\mathfrak S_n$-module, et ses invariants sont réduits à $\{0\}$ dès que $n \geqslant 2$, car une transposition envoie $a$ sur $-a$. Le même groupe $\mathbb Z$, muni de l'action triviale, a pour invariants $\mathbb Z$ tout entier : un $G$-module est un groupe **et** une action, et la cohomologie verra la différence.
+      - |
+        L'erreur la plus répandue est d'oublier que l'action doit respecter l'addition. Un groupe abélien $A$ agit sur lui-même par translation, $g \cdot a = g + a$ ; c'est une action, mais pas une action par morphismes dès que $A \neq \{0\}$, car $g \cdot 0 = g$ n'est pas nul pour $g \neq 0$. Ce n'est donc pas une structure de $A$-module sur $A$.
+      - |
+        Le point (iv) est la source des $G$-modules de la théorie des groupes : dans un groupe $E$, un sous-groupe distingué abélien $N$ devient un module sur le quotient $E/N$. C'est par ce biais que la cohomologie décrira les extensions ({{cg-extensions|Extensions et H²}}) et démontrera le théorème de Schur-Zassenhaus ({{cg-schur-zassenhaus|Schur-Zassenhaus}}).
+      - |
+        Si $G$ est un groupe d'automorphismes d'un [[corps]] $L$, le groupe additif $L$ et le groupe multiplicatif $L^\times$ sont des $G$-modules, pour $\sigma \cdot x = \sigma(x)$ ; dans le second, noté multiplicativement, l'action respecte le produit. Leurs invariants forment le corps fixe de la théorie de Galois. Le chapitre {{galois-hilbert90|Hilbert 90, Kummer}} y calcule leur premier groupe de cohomologie.
+
+  - id: cg-cochaines
+    etiquette: Cochaînes, cohomologie
+    nature: définition
+    titre: Cochaînes, cocycles, cobords et groupes de cohomologie
+    texte: |
+      Soit $A$ un [[g-module|$G$-module]] et $n \in \lex{ensemble-entiers-naturels}{\mathbb N}$. Une **cochaîne** de degré $n$ est une application $f : \lex{n-uplet}{G^n} \to A$, où $G^n$ est l'ensemble des $n$-uplets d'éléments de $G$ ; l'ensemble $G^0$ n'a qu'un élément, le $0$-uplet vide, et une cochaîne de degré $0$ s'identifie à un élément de $A$. Les cochaînes de degré $n$ forment un groupe abélien $C^n(G, A)$ pour l'addition des valeurs.
+
+      La **différentielle** $d^n : C^n(G, A) \to C^{n+1}(G, A)$ est définie par
+      $$\begin{aligned} &(d^nf)(g_1, \dots, g_{n+1}) \\ &\quad = g_1\,f(g_2, \dots, g_{n+1}) \\ &\quad\ + \sum_{i=1}^{n} (-1)^i f(\dots, g_ig_{i+1}, \dots) \\ &\quad\ + (-1)^{n+1} f(g_1, \dots, g_n), \end{aligned}$$
+      où le $i$-ième terme de la somme remplace les deux arguments $g_i, g_{i+1}$ par leur produit. Chaque terme est additif en $f$, puisque $g_1$ agit par morphisme : $d^n$ est un morphisme de groupes.
+
+      Les [[cocycle-groupe|cocycles]] de degré $n$ forment le noyau $Z^n(G, A)$ de $d^n$, et les [[cobord-groupe|cobords]] l'image $B^n(G, A)$ de $d^{n-1}$, avec $B^0(G, A) = \{0\}$. Le [[cohomologie-groupes|groupe de cohomologie]] de degré $n$ est le quotient
+      $$H^n(G, A) = Z^n(G, A)/B^n(G, A),$$
+      qui a un sens par le point (i) de l'énoncé ; on note $[f]$ la classe d'un cocycle $f$.
+
+      En bas degrés, pour $a \in A$ et des cochaînes $f$ et $c$ de degrés $1$ et $2$, la formule s'écrit
+      $$\begin{aligned} (d^0a)(g) &= ga - a, \\ (d^1f)(g, h) &= g\,f(h) - f(gh) + f(g), \\ (d^2c)(g, h, k) &= g\,c(h, k) - c(gh, k) \\ &\quad + c(g, hk) - c(g, h). \end{aligned}$$
+      Un cocycle de degré $1$ est donc une application $f : G \to A$ telle que $f(gh) = f(g) + g\,f(h)$ ; on l'appelle aussi un [[homomorphisme-croise|homomorphisme croisé]]. Un cobord de degré $1$ est une application de la forme $g \mapsto ga - a$.
+    enonce: |
+      (i) Pour tout $n$, on a $d^{n+1} \circ d^n = 0$. Ainsi $B^n(G, A) \subset Z^n(G, A)$, et $H^n(G, A)$ est un groupe abélien.
+
+      (ii) $H^0(G, A) = A^G$.
+
+      (iii) Tout cocycle $f$ de degré $1$ vérifie $f(e) = 0$. Tout cocycle $c$ de degré $2$ vérifie $c(e, h) = c(e, e)$ et $c(g, e) = g\,c(e, e)$ pour tous $g, h \in G$.
+    preuve: |
+      (i) *Cochaînes homogènes.* Appelons cochaîne homogène de degré $n$ une application $F : G^{n+1} \to A$ telle que $F(gx_0, \dots, gx_n) = g\,F(x_0, \dots, x_n)$ pour tous $g, x_0, \dots, x_n$, et posons
+      $$\begin{aligned} &(\partial F)(x_0, \dots, x_{n+1}) \\ &\quad = \sum_{i=0}^{n+1} (-1)^i F(x_0, \dots, \widehat{x_i}, \dots, x_{n+1}), \end{aligned}$$
+      où le chapeau signale l'argument omis. Chaque terme est homogène, $g$ agissant par morphisme, donc $\partial F$ est une cochaîne homogène de degré $n + 1$.
+
+      *On a $\partial \circ \partial = 0$.* Chaque terme de $\partial(\partial F)(x_0, \dots, x_{n+2})$ omet deux arguments $x_i$ et $x_j$, avec $i < j$, et il apparaît deux fois. Si l'on omet d'abord $x_j$, qui est au rang $j$, puis $x_i$, toujours au rang $i$, le signe est $(-1)^{j + i}$. Si l'on omet d'abord $x_i$, puis $x_j$, qui est alors descendu au rang $j - 1$, le signe est $(-1)^{i + j - 1}$. Les deux termes se compensent.
+
+      ```schema cg-cochaines
+      Pour $n = 1$, le terme de $\partial(\partial F)(x_0, x_1, x_2, x_3)$ qui omet $x_1$ et $x_2$ s'obtient par deux chemins. À gauche, on omet $x_2$, au rang $2$, puis $x_1$, au rang $1$ ; à droite, on omet $x_1$, au rang $1$, puis $x_2$, descendu au rang $1$. Les produits des signes, $(-1)^{2+1}$ et $(-1)^{1+1}$, sont opposés, et les deux termes $F(x_0, x_3)$ s'annulent.
+      ```
+
+      *Correspondance.* À une cochaîne homogène $F$ de degré $n$ associons la cochaîne $\Phi(F) \in C^n(G, A)$ définie par
+      $$\begin{aligned} &\Phi(F)(g_1, \dots, g_n) \\ &\quad = F(e, g_1, g_1g_2, \dots, g_1g_2\cdots g_n). \end{aligned}$$
+      C'est un morphisme de groupes, bijectif. Sa réciproque $\Psi$ associe à $f$ la cochaîne
+      $$\begin{aligned} &\Psi(f)(x_0, \dots, x_n) \\ &\quad = x_0\,f(x_0^{-1}x_1, x_1^{-1}x_2, \dots, x_{n-1}^{-1}x_n), \end{aligned}$$
+      qui est homogène, puisque $(gx_{k-1})^{-1}(gx_k) = x_{k-1}^{-1}x_k$.
+
+      On a $\Phi(\Psi(f)) = f$, car les quotients successifs de $(e, g_1, g_1g_2, \dots)$ sont $g_1, g_2, \dots$. On a $\Psi(\Phi(F)) = F$, car l'homogénéité donne $F(x_0, \dots, x_n) = x_0\,F(e, x_0^{-1}x_1, \dots, x_0^{-1}x_n)$, et $x_0^{-1}x_k$ est le produit $(x_0^{-1}x_1)(x_1^{-1}x_2)\cdots(x_{k-1}^{-1}x_k)$.
+
+      *Les différentielles se correspondent : $\Phi(\partial F) = d^n\Phi(F)$.* Posons $x_0 = e$ et $x_k = g_1\cdots g_k$, de sorte que $\Phi(\partial F)(g_1, \dots, g_{n+1}) = (\partial F)(x_0, \dots, x_{n+1})$.
+
+      Le terme $i = 0$ est $F(x_1, \dots, x_{n+1})$. Par homogénéité, avec $x_1 = g_1$, il vaut $g_1\,F(e, g_2, g_2g_3, \dots, g_2\cdots g_{n+1})$, c'est-à-dire $g_1\,\Phi(F)(g_2, \dots, g_{n+1})$.
+
+      Pour $1 \leqslant i \leqslant n$, omettre $x_i$ laisse un uplet qui commence par $e$ et dont les quotients successifs sont $g_1, \dots, g_ig_{i+1}, \dots, g_{n+1}$, puisque $x_{i-1}^{-1}x_{i+1} = g_ig_{i+1}$ : le terme vaut $(-1)^i\,\Phi(F)(g_1, \dots, g_ig_{i+1}, \dots, g_{n+1})$. Enfin, omettre $x_{n+1}$ donne $(-1)^{n+1}\,\Phi(F)(g_1, \dots, g_n)$. On retrouve terme à terme la formule de $d^n$.
+
+      *Conclusion.* On a donc $d^n = \Phi \circ \partial \circ \Psi$ en chaque degré, d'où
+      $$d^{n+1} \circ d^n = \Phi \circ \partial \circ \partial \circ \Psi = 0.$$
+      Ainsi l'image de $d^{n-1}$ est contenue dans le noyau de $d^n$, et le quotient $H^n(G, A)$ est un groupe abélien ({{a-quotient|Groupe quotient}}).
+
+      (ii) On a $B^0(G, A) = \{0\}$, et $a \in Z^0(G, A)$ si et seulement si $ga - a = 0$ pour tout $g$, c'est-à-dire $a \in A^G$.
+
+      (iii) Si $f$ est un cocycle de degré $1$, alors $f(e) = f(ee) = f(e) + e\,f(e) = 2f(e)$, donc $f(e) = 0$.
+
+      Si $c$ est un cocycle de degré $2$, la relation $(d^2c)(e, e, h) = 0$ s'écrit $c(e, h) - c(e, h) + c(e, h) - c(e, e) = 0$, d'où $c(e, h) = c(e, e)$. La relation $(d^2c)(g, e, e) = 0$ s'écrit $g\,c(e, e) - c(g, e) + c(g, e) - c(g, e) = 0$, d'où $c(g, e) = g\,c(e, e)$.
+    remarques:
+      - |
+        En degré $0$, le calcul direct est instructif :
+        $$\begin{aligned} d^1(d^0a)(g, h) = {}& g(ha - a) - (gha - a) \\ &+ (ga - a) = 0. \end{aligned}$$
+        Le terme $g(ha - a)$ demande que $g$ agisse par morphisme ; c'est là que sert l'hypothèse de la définition d'un $G$-module.
+      - |
+        L'erreur la plus répandue est d'oublier le facteur $g$ devant $f(h)$ dans $d^1f$. Sans lui, la condition $d^1f = 0$ serait celle d'un morphisme de groupes, qui ne convient que pour l'action triviale ; avec lui, $f$ est un homomorphisme croisé, notion qui tient compte de l'action, comme le montrera le nœud {{cg-complements|Compléments et H¹}}.
+      - |
+        Les degrés $1$ et $2$ sont apparus avant la définition générale : les homomorphismes croisés dans le théorème 90 de Hilbert, les cocycles de degré $2$ dans l'étude des extensions. La définition de $H^n(G, A)$ en tout degré, par les cochaînes homogènes et inhomogènes, est due à Eilenberg et Mac Lane (« Cohomology theory in abstract groups. I », *Annals of Mathematics*, 1947). Cette théorie s'en tient pour l'essentiel aux degrés $0$, $1$ et $2$, où les groupes de cohomologie ont une interprétation directe.
+
+  - id: cg-h1
+    etiquette: Le groupe H¹
+    nature: proposition
+    titre: Le premier groupe de cohomologie
+    texte: |
+      Pour un groupe $G$ et un groupe abélien $A$, les morphismes de groupes de $G$ dans $A$ forment un groupe abélien $\operatorname{Hom}(G, A)$ pour l'addition des valeurs.
+
+      Si $G = \langle \sigma \rangle$ est cyclique d'ordre $n$ ({{gf-cycliques|Groupes cycliques}}) et $A$ un [[g-module|$G$-module]], on note $N_\sigma : A \to A$ le morphisme $a \mapsto a + \sigma a + \cdots + \sigma^{n-1}a$, et $(\sigma - 1)A$ le sous-groupe des $\sigma b - b$, pour $b \in A$.
+    enonce: |
+      (i) Si $G$ agit trivialement sur $A$, alors $\lex{cohomologie-groupes}{H^1}(G, A) = Z^1(G, A) = \operatorname{Hom}(G, A)$.
+
+      (ii) Si $G = \langle \sigma \rangle$ est cyclique d'ordre $n$, l'application $f \mapsto f(\sigma)$ est un isomorphisme de $Z^1(G, A)$ sur le noyau de $N_\sigma$, qui envoie $B^1(G, A)$ sur $(\sigma - 1)A$. Par suite,
+      $$H^1(G, A) \cong \operatorname{Ker} N_\sigma/(\sigma - 1)A.$$
+    preuve: |
+      (i) Si l'action est triviale, $(d^0a)(g) = a - a = 0$, donc $B^1(G, A) = \{0\}$, et la condition de cocycle $f(gh) = f(g) + f(h)$ est celle d'un morphisme ({{cg-cochaines|Cochaînes, cohomologie}}).
+
+      (ii) Soit $f \in Z^1(G, A)$. Montrons par récurrence sur $k \in \mathbb N$ que
+      $$f(\sigma^k) = \sum_{j=0}^{k-1} \sigma^j f(\sigma).$$
+      Pour $k = 0$, c'est $f(e) = 0$ (même nœud, (iii)) ; et $f(\sigma^{k+1}) = f(\sigma^k\sigma) = f(\sigma^k) + \sigma^kf(\sigma)$.
+
+      Pour $k = n$, comme $\sigma^n = e$, on obtient $N_\sigma(f(\sigma)) = f(e) = 0$. Tout élément de $G$ étant un $\sigma^k$ ({{gf-cycliques|Groupes cycliques}}, (i)), $f$ est déterminé par $f(\sigma)$ : l'application $f \mapsto f(\sigma)$, qui est un morphisme, est injective et prend ses valeurs dans $\operatorname{Ker} N_\sigma$.
+
+      *Surjectivité.* Soit $a \in \operatorname{Ker} N_\sigma$, et $F(m) = \sum_{j<m} \sigma^ja$ pour $m \in \mathbb N$. On a $F(k + l) = F(k) + \sigma^kF(l)$ en découpant la somme, et en particulier
+      $$F(m + n) = N_\sigma(a) + \sigma^nF(m) = F(m).$$
+      Comme $\sigma^k = \sigma^{k'}$ seulement si $n$ divise $k - k'$ (même nœud, (i)), la formule $f(\sigma^k) = F(k)$ définit une application $f : G \to A$. La relation $F(k + l) = F(k) + \sigma^kF(l)$ dit que $f$ est un cocycle, et $f(\sigma) = F(1) = a$.
+
+      *Cobords.* Pour $b \in A$, le cobord $d^0b$ envoie $\sigma$ sur $\sigma b - b$ : l'image de $B^1(G, A)$ est $(\sigma - 1)A$, qui est donc contenu dans $\operatorname{Ker} N_\sigma$. Composons l'isomorphisme avec la surjection canonique sur $\operatorname{Ker} N_\sigma/(\sigma - 1)A$ : on obtient un morphisme surjectif dont le noyau est formé des cocycles $f$ tels que $f(\sigma) \in (\sigma - 1)A$, c'est-à-dire, par injectivité, des cobords. Le théorème d'isomorphisme ({{a-isomorphisme|Théorème d'isomorphisme}}) conclut.
+    remarques:
+      - |
+        Soit $G = \{e, s\}$ d'ordre $2$, agissant sur $\lex{ensemble-entiers-relatifs}{\mathbb Z}$ par $s \cdot a = -a$. Alors $N_s(a) = a - a = 0$ pour tout $a$, et $(s - 1)\mathbb Z = \{-2b\} = 2\mathbb Z$ : on trouve $H^1(G, \mathbb Z) \cong \mathbb Z/2\mathbb Z$. Les homomorphismes croisés sont les $f$ avec $f(s)$ quelconque, et ceux qui viennent d'un $b$ sont ceux pour lesquels $f(s)$ est pair.
+
+        Pour l'action triviale, au contraire, $H^1(G, \mathbb Z) = \operatorname{Hom}(G, \mathbb Z)$ est nul : un morphisme $f$ vérifie $2f(s) = f(s^2) = f(e) = 0$, donc $f(s) = 0$. La cohomologie dépend de l'action, et pas seulement des groupes.
+      - |
+        De même, pour $G = \{e, s\}$ agissant sur $\lex{anneau-zn}{\mathbb Z/4\mathbb Z}$ par $s \cdot a = -a$, le noyau de $N_s$ est $\mathbb Z/4\mathbb Z$ tout entier et $(s - 1)A = \{\bar 0, \bar 2\}$ : $H^1(G, \mathbb Z/4\mathbb Z)$ a deux éléments. Un dénombrement direct le confirme : quatre cocycles, deux cobords. Ce groupe classera les compléments dans le groupe diédral $\mathcal D_4$ au nœud suivant.
+      - |
+        Le point (ii) est la forme sous laquelle la cohomologie sert dans les extensions cycliques de corps : appliqué au groupe multiplicatif d'un corps, il donne la forme classique du théorème 90 de Hilbert ({{h90-cyclique|Forme cyclique}}), où $N_\sigma$ devient la norme.
+
+  - id: cg-complements
+    etiquette: Compléments et H¹
+    nature: théorème
+    titre: H¹ et les compléments dans un produit semi-direct
+    texte: |
+      Soit $N$ un [[sous-groupe-distingue|sous-groupe distingué]] d'un groupe $E$. Un [[complement-groupe|complément]] de $N$ est un sous-groupe $H$ de $E$ tel que $N \cap H = \{e\}$ et $NH = E$, où $NH = \{nh : n \in N,\ h \in H\}$.
+
+      Soit $A$ un [[g-module|$G$-module]] et $\rho : G \to \operatorname{Aut}(A)$ le morphisme associé ({{cg-modules|G-modules}}, (i)). On note $E = A \rtimes G$ le [[produit-semi-direct|produit semi-direct]] $A \rtimes_\rho G$ ({{gf-produits|Produits semi-directs}}), dont la loi s'écrit, $A$ étant noté additivement,
+      $$(a, g)(b, h) = (a + gb,\ gh).$$
+      On identifie $A$ au sous-groupe distingué $A \times \{e\}$. Pour une application $f : G \to A$, on pose $H_f = \{(f(g), g) : g \in G\}$.
+    enonce: |
+      (i) $H_f$ est un complément de $A$ dans $E$ si et seulement si $f \in Z^1(G, A)$. Tout complément de $A$ dans $E$ est de la forme $H_f$ pour une unique application $f$.
+
+      (ii) Pour $b \in A$, on a $(b, e)\,H_f\,(b, e)^{-1} = H_{f - d^0b}$. Pour $f, f' \in Z^1(G, A)$, les sous-groupes $H_f$ et $H_{f'}$ sont conjugués dans $E$ si et seulement s'ils le sont par un élément de $A$, si et seulement si $f - f' \in B^1(G, A)$.
+
+      (iii) L'application qui envoie $H_f$ sur la classe $[f]$ induit une bijection de l'ensemble des classes de conjugaison de compléments de $A$ dans $E$ sur $\lex{cohomologie-groupes}{H^1}(G, A)$. En particulier, tous les compléments de $A$ sont conjugués si et seulement si $H^1(G, A) = 0$.
+    preuve: |
+      (i) Dans $E$, on a $(f(g), g)(f(h), h) = (f(g) + g\,f(h),\ gh)$, et le seul élément de $H_f$ dont la seconde coordonnée est $gh$ est $(f(gh), gh)$. Ainsi $H_f$ est stable par produit si et seulement si $f(gh) = f(g) + g\,f(h)$ pour tous $g, h$, c'est-à-dire si $f$ est un cocycle.
+
+      Supposons $f \in Z^1(G, A)$. Alors $H_f$ contient $(f(e), e) = (0, e)$ ({{cg-cochaines|Cochaînes, cohomologie}}, (iii)). L'inverse de $(f(g), g)$ dans $E$ est $(-g^{-1}f(g),\ g^{-1})$, comme le montre la loi, puisque $(f(g), g)(-g^{-1}f(g),\ g^{-1}) = (0, e)$ ; et la relation $0 = f(g^{-1}g) = f(g^{-1}) + g^{-1}f(g)$ montre que c'est $(f(g^{-1}), g^{-1})$, élément de $H_f$ : $H_f$ est un sous-groupe.
+
+      Si $(a, e) \in H_f$, alors $a = f(e) = 0$ : $A \cap H_f = \{(0, e)\}$. Enfin $(a, g) = (a - f(g), e)(f(g), g)$, donc $E = A\,H_f$.
+
+      Soit $H$ un complément de $A$, et $g \in G$. Comme $E = AH$, l'élément $(0, g)$ s'écrit $(b, e)(c, h) = (b + c, h)$ avec $(c, h) \in H$ : $h = g$, et $H$ contient un élément de seconde coordonnée $g$. Si $(a, g)$ et $(a', g)$ sont dans $H$, alors
+      $$\begin{aligned} (a, g)(a', g)^{-1} &= (a, g)(-g^{-1}a',\ g^{-1}) \\ &= (a - a', e) \end{aligned}$$
+      appartient à $A \cap H$, donc $a = a'$. L'ensemble $H$ est ainsi le graphe d'une application $f : G \to A$, unique, et $H = H_f$ ; c'est un cocycle par ce qui précède.
+
+      (ii) On calcule
+      $$\begin{aligned} &(b, e)(f(g), g)(-b, e) \\ &\quad = (b + f(g), g)(-b, e) \\ &\quad = \big(f(g) - (gb - b),\ g\big), \end{aligned}$$
+      ce qui donne $(b, e)\,H_f\,(b, e)^{-1} = H_{f - d^0b}$.
+
+      Si $xH_fx^{-1} = H_{f'}$ avec $x \in E$, écrivons $x = (b, e)\,y$ avec $y \in H_f$, ce que permet $E = AH_f$. Alors $yH_fy^{-1} = H_f$, donc $H_{f'} = (b, e)\,H_f\,(b, e)^{-1} = H_{f - d^0b}$ : les deux sous-groupes sont conjugués par un élément de $A$, et $f' = f - d^0b$ par l'unicité de (i), donc $f - f' \in B^1(G, A)$. Réciproquement, si $f - f' = d^0b$, la formule montre que $(b, e)$ conjugue $H_f$ en $H_{f'}$.
+
+      (iii) Par (ii), l'application est bien définie sur les classes de conjugaison et injective ; elle est surjective par (i).
+    remarques:
+      - |
+        Prenons $G = \{e, s\}$ d'ordre $2$ agissant sur $A = \lex{anneau-zn}{\mathbb Z/4\mathbb Z}$ par $s \cdot a = -a$ : le produit semi-direct $E$ est le groupe diédral $\mathcal D_4$ ({{gf-diedraux|Diédraux, quaternions}}), groupe des isométries d'un carré, où $A$ est le sous-groupe des rotations. Les cocycles sont déterminés par $f(s) \in \mathbb Z/4\mathbb Z$ quelconque ({{cg-h1|Le groupe H¹}}, remarque), d'où quatre compléments, formés de l'identité et d'une symétrie $(f(s), s)$.
+
+        Les cobords sont les $f$ avec $f(s) \in \{\bar 0, \bar 2\}$, et $H^1(G, A)$ a deux éléments : les quatre compléments forment deux classes de conjugaison.
+
+        ```schema cg-complements
+        À gauche, les huit éléments $(a, g)$ de $\mathbb Z/4\mathbb Z \rtimes \{e, s\}$, en quatre lignes et deux colonnes. Chaque complément est le graphe d'un cocycle, un point dans chaque colonne, issu du neutre $(0, e)$ : en rouge ceux pour lesquels $f(s)$ est pair, en bleu ceux pour lesquels $f(s)$ est impair, en trait plein pour $f(s) \in \{\bar 0, \bar 1\}$ et en pointillé pour $f(s) \in \{\bar 2, \bar 3\}$. À droite, les axes des symétries correspondantes du carré, numérotés par $f(s)$ et tracés de même : les médianes $0$ et $2$, en rouge, et les diagonales $1$ et $3$, en bleu. Deux symétries sont conjuguées exactement quand leurs axes sont de même nature, ce qui redonne les deux éléments de $H^1$.
+        ```
+      - |
+        Pour $G = \{e, s\}$ agissant sur $\mathbb Z/3\mathbb Z$ par $s \cdot a = -a$, le produit semi-direct est $\mathfrak S_3$ ({{gf-produits|Produits semi-directs}}, remarque). Ici $(s - 1)A = \{-2b\} = A$, donc $H^1(G, A) = 0$ : les trois compléments, engendrés par les trois transpositions, sont conjugués, comme le disent aussi les théorèmes de Sylow.
+      - |
+        L'erreur la plus répandue est de confondre complément et facteur direct. Un complément n'est pas distingué en général : dans $\mathfrak S_3$, aucun des sous-groupes engendrés par une transposition ne l'est. Lorsqu'un complément $H$ est distingué, la reconnaissance du nœud {{gf-produits|Produits semi-directs}}, (ii), donne $E \cong A \times H$, et l'action est triviale.
+
+  - id: cg-extensions
+    etiquette: Extensions et H²
+    nature: théorème
+    titre: H² et les extensions de groupes
+    texte: |
+      Soit $A$ un [[g-module|$G$-module]]. Une [[extension-groupes|extension]] de $G$ par $A$ est une [[suite-exacte-groupes|suite exacte]] ({{cg-modules|G-modules}})
+      $$0 \longrightarrow A \xrightarrow{\ i\ } E \xrightarrow{\ p\ } G \longrightarrow 1,$$
+      où $0$ et $1$ désignent le groupe trivial, telle que $x\,i(a)\,x^{-1} = i(p(x)\,a)$ pour tous $x \in E$ et $a \in A$. Autrement dit, $i$ est injectif, $p$ est surjectif de noyau $i(A)$, et la conjugaison dans $E$ induit l'action donnée de $G$ sur $A$. Le groupe $E$ est noté multiplicativement.
+
+      Deux extensions $(E, i, p)$ et $(E', i', p')$ de $G$ par $A$ sont **équivalentes** s'il existe un morphisme $\theta : E \to E'$ tel que $\theta \circ i = i'$ et $p' \circ \theta = p$, c'est-à-dire tel que le diagramme suivant commute.
+      $$\begin{CD} A @>{i}>> E @>{p}>> G \\ @| @VV{\theta}V @| \\ A @>{i'}>> E' @>{p'}>> G \end{CD}$$
+      Une **section** de $p$ est une application $s : G \to E$ telle que $p \circ s = \mathrm{id}_G$. L'extension est **scindée** si $p$ a une section qui est un morphisme.
+
+      Une cochaîne $c$ de degré $2$ est **normalisée** si $c(e, h) = c(g, e) = 0$ pour tous $g, h$.
+    enonce: |
+      (i) *Classe d'une extension.* Soit $s$ une section de $p$. Pour $g, h \in G$, il existe un unique $c_s(g, h) \in A$ tel que
+      $$s(g)\,s(h) = i\big(c_s(g, h)\big)\,s(gh),$$
+      et $c_s$ est un cocycle. Sa classe dans $\lex{cohomologie-groupes}{H^2}(G, A)$ ne dépend pas de la section, et deux extensions équivalentes, munies chacune d'une section, ont la même classe.
+
+      (ii) *Construction.* Toute classe de $H^2(G, A)$ contient un cocycle normalisé. Pour un tel cocycle $c$, l'ensemble $A \times G$ muni de la loi
+      $$(a, g)(b, h) = \big(a + gb + c(g, h),\ gh\big)$$
+      est un groupe $E_c$ ; avec $i(a) = (a, e)$ et $p(a, g) = g$, c'est une extension de $G$ par $A$, et la section $s(g) = (0, g)$ vérifie $c_s = c$.
+
+      (iii) *Classification.* Deux extensions munies de sections sont équivalentes si et seulement si elles ont la même classe, et toute équivalence est un isomorphisme. Toute classe de $H^2(G, A)$ est celle d'une extension.
+
+      (iv) Une extension munie d'une section est scindée si et seulement si sa classe est nulle ; $p$ a alors une section $s$ qui est un morphisme, $s(G)$ est un [[complement-groupe|complément]] de $i(A)$, et $E$ est isomorphe à $A \rtimes G$.
+
+      (v) Si $G$ est fini, $p$ a une section, sans aucune forme de l'axiome du choix. Ainsi toute extension d'un groupe fini a une classe, et (iii) classe toutes les extensions de $G$ par $A$, à équivalence près.
+    preuve: |
+      (i) On a $p\big(s(g)s(h)s(gh)^{-1}\big) = gh(gh)^{-1} = e$, donc $s(g)s(h)s(gh)^{-1}$ appartient au noyau $i(A)$ de $p$ et s'écrit $i(c)$ pour un unique $c$, puisque $i$ est injectif.
+
+      Comme $p(s(g)) = g$, la condition d'extension donne $s(g)\,i(a) = i(ga)\,s(g)$. Développons les deux parenthésages de $s(g)s(h)s(k)$, en abrégeant $c_s$ en $c$ :
+      $$\begin{aligned} &\big(s(g)s(h)\big)s(k) \\ &\quad = i\big(c(g, h)\big)\,s(gh)\,s(k) \\ &\quad = i\big(c(g, h) + c(gh, k)\big)\,s(ghk), \end{aligned}$$
+      $$\begin{aligned} &s(g)\big(s(h)s(k)\big) \\ &\quad = s(g)\,i\big(c(h, k)\big)\,s(hk) \\ &\quad = i\big(g\,c(h, k) + c(g, hk)\big)\,s(ghk). \end{aligned}$$
+      L'associativité et l'injectivité de $i$ donnent $c(g, h) + c(gh, k) = g\,c(h, k) + c(g, hk)$, c'est-à-dire $d^2c = 0$ ({{cg-cochaines|Cochaînes, cohomologie}}).
+
+      *Autre section.* Une autre section $s'$ vérifie $p(s'(g)) = p(s(g))$, donc $s'(g) = i(b(g))\,s(g)$ pour une unique cochaîne $b$ de degré $1$. Alors
+      $$\begin{aligned} &s'(g)s'(h) \\ &\quad = i\big(b(g) + g\,b(h)\big)\,s(g)s(h) \\ &\quad = i\big(b(g) + g\,b(h) + c_s(g, h) \\ &\qquad\quad - b(gh)\big)\,s'(gh), \end{aligned}$$
+      donc $c_{s'} = c_s + d^1b$, qui a la même classe que $c_s$.
+
+      *Extensions équivalentes.* Si $\theta$ est une équivalence de $E$ vers $E'$, alors $\theta \circ s$ est une section de $p'$, puisque $p' \circ \theta \circ s = p \circ s$, et l'image par $\theta$ de la relation de définition donne $c_{\theta \circ s} = c_s$. Par ce qui précède, la classe de $E'$, calculée avec n'importe quelle section, est celle de $E$.
+
+      (ii) *Normalisation.* Soit $c \in Z^2(G, A)$, et $b$ la cochaîne constante égale à $c(e, e)$. Alors $(d^1b)(g, h) = g\,c(e, e)$, et le cocycle $c - d^1b$, de même classe, est normalisé par le point (iii) du nœud {{cg-cochaines|Cochaînes, cohomologie}}.
+
+      *Le groupe $E_c$.* Le premier membre de $\big((a, g)(b, h)\big)(a', k)$ vaut $a + gb + c(g, h) + gh\,a' + c(gh, k)$, et celui de $(a, g)\big((b, h)(a', k)\big)$ vaut $a + gb + gh\,a' + g\,c(h, k) + c(g, hk)$ : ils sont égaux, puisque $c$ est un cocycle, et la loi est associative.
+
+      Comme $c$ est normalisé, $(0, e)$ est neutre. L'élément $(a, g)$ a pour inverse à droite $\big(-g^{-1}(a + c(g, g^{-1})),\ g^{-1}\big)$. Or, si tout élément d'un monoïde a un inverse à droite, c'est un groupe : si $xy = e$ et $yz = e$, alors $x = x(yz) = (xy)z = z$, donc $yx = e$.
+
+      *L'extension.* L'application $i$ est un morphisme injectif, car $(a, e)(b, e) = (a + b + c(e, e), e) = (a + b, e)$, et $p$ est un morphisme surjectif de noyau $i(A)$. On a $(0, g)(a, e) = (ga, g) = (ga, e)(0, g)$, d'où $(0, g)\,i(a)\,(0, g)^{-1} = i(ga)$ ; tout $x = (b, g)$ s'écrit $i(b)\,(0, g)$, et $i(b)$ commute à $i(ga)$, $A$ étant abélien : $x\,i(a)\,x^{-1} = i(p(x)a)$. Enfin $(0, g)(0, h) = (c(g, h), gh) = i(c(g, h))\,(0, gh)$, donc $c_s = c$.
+
+      (iii) Soient $E$ et $E'$ munies de sections $s$ et $s'$, de même classe : $c_{s'} = c_s + d^1b$. Par le calcul de (i), la section $g \mapsto i'(-b(g))\,s'(g)$ a pour cocycle $c_s$ ; on peut donc supposer $c_{s'} = c_s = c$.
+
+      Tout $x \in E$ s'écrit de façon unique $i(a)\,s(g)$, avec $g = p(x)$, puisque $x\,s(g)^{-1} \in i(A)$. Posons $\theta(i(a)s(g)) = i'(a)s'(g)$. Le produit
+      $$\begin{aligned} &i(a)s(g)\,i(b)s(h) \\ &\quad = i\big(a + gb + c(g, h)\big)\,s(gh) \end{aligned}$$
+      a la même expression dans $E'$ : $\theta$ est un morphisme, bijectif, avec $\theta \circ i = i'$ et $p' \circ \theta = p$.
+
+      Réciproquement, deux extensions équivalentes ont la même classe par (i). Une équivalence $\theta$ est injective : si $\theta(x) = e$, alors $p(x) = p'(\theta(x)) = e$, donc $x = i(a)$, et $i'(a) = e$ donne $a = 0$. Elle est surjective : $\theta \circ s$ est une section de $p'$, et tout $y \in E'$ s'écrit $i'(a)\,\theta(s(g)) = \theta(i(a)s(g))$. Toute classe est atteinte par (ii).
+
+      (iv) Si $s$ est un morphisme, $c_s = 0$. Si la classe est nulle, $c_s = d^1b$, et la section $s'(g) = i(-b(g))\,s(g)$ a un cocycle nul : $s'(g)s'(h) = s'(gh)$, et $s'$ est un morphisme.
+
+      Alors $H = s'(G)$ est un sous-groupe. Si $s'(g) \in i(A)$, alors $g = p(s'(g)) = e$, donc $H \cap i(A) = \{e\}$ ; et tout $x$ s'écrit $i(a)\,s'(p(x))$, donc $i(A)H = E$. Par {{gf-produits|Produits semi-directs}}, (ii), $E$ est isomorphe au produit semi-direct de $i(A)$ par $H$ pour la conjugaison, et le transport du point (iii) du même nœud, par $i$ et $s'$, l'identifie à $A \rtimes G$, puisque $s'(g)\,i(a)\,s'(g)^{-1} = i(ga)$.
+
+      (v) Soit $n = |G|$ et $g_1, \dots, g_n$ une énumération de $G$. Chaque fibre $p^{-1}(g_k)$ est non vide, $p$ étant surjectif ; on choisit un élément $x_k$ de $p^{-1}(g_k)$ par récurrence sur $k$, ce qui ne demande qu'un nombre fini de choix, et l'on pose $s(g_k) = x_k$.
+    remarques:
+      - |
+        Pour $G = \{e, s\}$ d'ordre $2$ et $A = \lex{anneau-zn}{\mathbb Z/2\mathbb Z}$ avec l'action triviale, un cocycle normalisé est déterminé par $c(s, s) \in A$, et un cobord normalisé $d^1b$, avec $b(e) = 0$, vérifie $(d^1b)(s, s) = 2b(s) = 0$. Le groupe $H^2(G, A)$ a donc deux éléments, ce que confirme un dénombrement direct, avec quatre cocycles et deux cobords.
+
+        La classe nulle est celle du produit direct $\mathbb Z/2\mathbb Z \times \mathbb Z/2\mathbb Z$. L'autre est celle de $\mathbb Z/4\mathbb Z$ : $A$ y est $\{\bar 0, \bar 2\}$, la section $s(s) = \bar 1$ donne $s(s) + s(s) = \bar 2$, et $c(s, s)$ est l'élément non nul de $A$. L'extension ne se scinde pas, puisque $\mathbb Z/4\mathbb Z$ n'a qu'un élément d'ordre $2$, qui est dans $A$.
+      - |
+        L'erreur la plus répandue est de confondre équivalence d'extensions et isomorphisme de groupes. Pour $G = A = \mathbb Z/3\mathbb Z$ avec l'action triviale, $H^2(G, A)$ a trois éléments, le dénombrement donnant $27$ cocycles et $9$ cobords ; la classe nulle est celle de $(\mathbb Z/3\mathbb Z)^2$, et les deux autres sont toutes deux réalisées par $\mathbb Z/9\mathbb Z$. Ces deux extensions ne sont pas équivalentes : elles diffèrent par l'automorphisme $a \mapsto -a$ de $A$, qu'une équivalence doit fixer.
+      - |
+        Pour un groupe $G$ infini, le point (v) demanderait de choisir un élément dans chacune des fibres de $p$, c'est-à-dire dans chaque classe de $E$ modulo $i(A)$ : c'est l'axiome du choix sous la forme du nœud {{a-transversal|Transversale}}. Les énoncés (i) à (iv) l'évitent en ne considérant que des extensions munies d'une section, et la construction (ii) en fournit une d'emblée.
+      - |
+        Le point (i) ne parle pas de l'ensemble de toutes les extensions de $G$ par $A$, qui n'est pas un ensemble, puisque $E$ peut être réalisé sur n'importe quel ensemble en bijection avec $A \times G$. Il attache à chaque extension munie d'une section un invariant, la classe, qui détermine l'extension à équivalence près.
+
+  - id: cg-connectant
+    etiquette: Morphisme de liaison
+    nature: proposition
+    titre: Fonctorialité et morphisme de liaison
+    texte: |
+      Une suite $0 \to A \xrightarrow{u} B \xrightarrow{v} C \to 0$ de morphismes de [[g-module|$G$-modules]] est une **suite exacte courte** si $u$ est injectif, $v$ surjectif, et si l'image de $u$ est le noyau de $v$ ; c'est une [[suite-exacte-groupes|suite exacte]] de groupes formée de morphismes de $G$-modules.
+
+      Pour un morphisme $u : A \to B$ et une cochaîne $f \in C^n(G, A)$, on note $u_*f = u \circ f \in C^n(G, B)$. Lorsque le groupe $G$ est fixé, on abrège $C^n(G, A)$ en $C^n(A)$.
+    enonce: |
+      (i) *Fonctorialité.* Pour un morphisme de $G$-modules $u : A \to B$, on a $d^n(u_*f) = u_*(d^nf)$. Par suite $u_*$ envoie cocycles sur cocycles et cobords sur cobords, et induit un morphisme $u_* : \lex{cohomologie-groupes}{H^n}(G, A) \to H^n(G, B)$, avec $(v \circ u)_* = v_* \circ u_*$.
+
+      (ii) Soit $G$ fini et $0 \to A \xrightarrow{u} B \xrightarrow{v} C \to 0$ une suite exacte courte de $G$-modules. Pour tout $n$, la suite
+      $$0 \to C^n(A) \xrightarrow{u_*} C^n(B) \xrightarrow{v_*} C^n(C) \to 0$$
+      est exacte.
+
+      (iii) *Morphisme de liaison.* Sous les hypothèses de (ii), soit $c \in Z^n(G, C)$ et $b \in C^n(G, B)$ tel que $v_*b = c$. Il existe un unique $a \in C^{n+1}(G, A)$ tel que $u_*a = d^nb$ ; c'est un cocycle, et sa classe ne dépend que de celle de $c$. La formule $\delta[c] = [a]$ définit un morphisme
+      $$\delta : H^n(G, C) \to H^{n+1}(G, A).$$
+    preuve: |
+      (i) On applique $u$ à chaque terme de la formule de $d^nf$ ({{cg-cochaines|Cochaînes, cohomologie}}) : $u$ est additif et $u(g_1x) = g_1u(x)$. Si $d^nf = 0$, alors $d^n(u_*f) = 0$, et $u_*(d^{n-1}f') = d^{n-1}(u_*f')$ est un cobord. L'application $Z^n(G, A) \to H^n(G, B)$, $f \mapsto [u_*f]$, est un morphisme nul sur $B^n(G, A)$ ; elle passe au quotient ({{a-isomorphisme|Théorème d'isomorphisme}}). La formule $(v \circ u)_* = v_* \circ u_*$ est l'associativité de la composition.
+
+      (ii) L'application $u_*$ est injective, puisque $u$ l'est. On a $v_* \circ u_* = (v \circ u)_* = 0$. Si $v_*b = 0$, chaque valeur $b(x)$ appartient au noyau de $v$, égal à l'image de $u$, et s'écrit $u(a(x))$ pour un unique $a(x) \in A$ : on obtient une cochaîne $a$ telle que $b = u_*a$.
+
+      Soit enfin $c \in C^n(G, C)$. L'ensemble $G^n$ est fini, et pour chacun de ses éléments $x$, la fibre $v^{-1}(c(x))$ est non vide, $v$ étant surjectif. On choisit un élément $b(x)$ dans chacune, par récurrence sur une énumération de $G^n$ : ce n'est qu'un nombre fini de choix, et $v_*b = c$.
+
+      (iii) On a $v_*(d^nb) = d^n(v_*b) = d^nc = 0$ par (i), donc, par (ii), $d^nb = u_*a$ pour un unique $a \in C^{n+1}(G, A)$. Alors
+      $$u_*(d^{n+1}a) = d^{n+1}(u_*a) = d^{n+1}d^nb = 0,$$
+      et $d^{n+1}a = 0$ par injectivité de $u_*$ : $a$ est un cocycle.
+
+      *Indépendance.* Soit $c' = c + d^{n-1}\gamma$ un autre cocycle de la même classe, avec $\gamma \in C^{n-1}(G, C)$ (pour $n = 0$, $c' = c$), et $b'$ un relèvement de $c'$. Relevons $\gamma$ en $\beta$ par (ii). Alors $b + d^{n-1}\beta$ relève $c'$, comme $b'$, et leur différence est dans le noyau de $v_*$ : $b' = b + d^{n-1}\beta + u_*\alpha$ avec $\alpha \in C^n(G, A)$.
+
+      Il vient $d^nb' = d^nb + u_*(d^n\alpha) = u_*(a + d^n\alpha)$ : le cocycle associé à $b'$ est $a + d^n\alpha$, de même classe que $a$.
+
+      *Morphisme.* Si $b$ et $b_1$ relèvent $c$ et $c_1$, alors $b + b_1$ relève $c + c_1$, et les cocycles associés s'ajoutent.
+    remarques:
+      - |
+        La construction de $\delta$ se lit sur le diagramme suivant, dont la ligne du haut est en degré $n$ et celle du bas en degré $n + 1$ : on part de $c \in Z^n(G, C)$, on remonte en $b \in C^n(G, B)$ par $v_*$, ce que permet l'exactitude de (ii), on descend par $d^n$, et l'on revient en $a \in C^{n+1}(G, A)$ par $u_*$, ce que permet la commutation de (i), puisque $v_*(d^nb) = d^nc = 0$.
+        $$\begin{CD} @. b @>{v_*}>> c \\ @. @V{d^n}VV @. \\ a @>{u_*}>> d^nb @. \end{CD}$$
+        C'est le seul endroit où la cohomologie change de degré, et c'est ce qui rendra la suite du nœud suivant longue.
+      - |
+        Pour un groupe $G$ infini, le point (ii) demande, en général, de choisir un antécédent de $c(x)$ pour chacun des éléments $x$ de l'ensemble infini $G^n$, ce qui est une forme de l'axiome du choix. Il n'en demande aucune si $v$ a une section donnée $t : C \to B$, application telle que $v \circ t = \mathrm{id}_C$ : on prend $b = t \circ c$. C'est pourquoi la suite exacte longue est énoncée ici pour $G$ fini.
+
+  - id: cg-suite-exacte
+    etiquette: Suite exacte longue
+    nature: théorème
+    titre: La suite exacte longue de cohomologie
+    enonce: |
+      Soit $G$ un groupe fini et $0 \to A \xrightarrow{u} B \xrightarrow{v} C \to 0$ une suite exacte courte de [[g-module|$G$-modules]]. La suite
+      $$\begin{aligned} 0 &\to A^G \xrightarrow{u_*} B^G \xrightarrow{v_*} C^G \\ &\xrightarrow{\delta} H^1(G, A) \xrightarrow{u_*} H^1(G, B) \\ &\xrightarrow{v_*} H^1(G, C) \xrightarrow{\delta} H^2(G, A) \\ &\xrightarrow{u_*} H^2(G, B) \xrightarrow{v_*} H^2(G, C) \\ &\xrightarrow{\delta} \cdots \end{aligned}$$
+      est une [[suite-exacte-groupes|suite exacte]] : $u_*$ est injectif sur $H^0(G, A) = A^G$, et, pour tout $n$, la suite est exacte en $\lex{cohomologie-groupes}{H^n}(G, B)$, en $H^n(G, C)$ et en $H^{n+1}(G, A)$.
+    preuve: |
+      Les morphismes $u_*$, $v_*$ et $\delta$ sont ceux du nœud {{cg-connectant|Morphisme de liaison}}, dont on reprend les notations ; $H^0 = Z^0$ est le groupe des invariants ({{cg-cochaines|Cochaînes, cohomologie}}, (ii)).
+
+      *Injectivité en degré $0$.* Sur $A^G$, $u_*$ est la restriction de $u$, qui est injectif.
+
+      *Exactitude en $H^n(G, B)$.* On a $v_* \circ u_* = (v \circ u)_* = 0$. Soit $b \in Z^n(G, B)$ tel que $[v_*b] = 0$, c'est-à-dire $v_*b = d^{n-1}\gamma$ avec $\gamma \in C^{n-1}(G, C)$, et $\gamma = 0$ si $n = 0$. Relevons $\gamma$ en $\beta \in C^{n-1}(G, B)$.
+
+      Alors $v_*(b - d^{n-1}\beta) = 0$, donc $b - d^{n-1}\beta = u_*a$ avec $a \in C^n(G, A)$ ; et $u_*(d^na) = d^nb = 0$, donc $a$ est un cocycle, et $u_*[a] = [b]$.
+
+      *Exactitude en $H^n(G, C)$.* Si $c = v_*b$ avec $b$ cocycle, on peut relever $c$ par $b$ lui-même ; alors $d^nb = 0 = u_*0$, et $\delta[c] = 0$. Réciproquement, si $\delta[c] = 0$, le cocycle $a$ tel que $u_*a = d^nb$ s'écrit $a = d^n\alpha$ avec $\alpha \in C^n(G, A)$.
+
+      La cochaîne $b - u_*\alpha$ est alors un cocycle, puisque $d^n(b - u_*\alpha) = u_*a - u_*a = 0$, et $v_*(b - u_*\alpha) = c$ : $[c] = v_*[b - u_*\alpha]$.
+
+      *Exactitude en $H^{n+1}(G, A)$.* On a $u_*\delta[c] = [u_*a] = [d^nb] = 0$. Réciproquement, si $a \in Z^{n+1}(G, A)$ vérifie $[u_*a] = 0$, alors $u_*a = d^nb$ avec $b \in C^n(G, B)$. La cochaîne $c = v_*b$ vérifie $d^nc = v_*(d^nb) = v_*u_*a = 0$ ; c'est un cocycle, que $b$ relève, et $\delta[c] = [a]$ par construction.
+    remarques:
+      - |
+        Soit $m \geqslant 1$ et $G$ un groupe fini agissant trivialement sur la suite exacte courte $0 \to \lex{ensemble-entiers-relatifs}{\mathbb Z} \xrightarrow{\times m} \mathbb Z \to \lex{anneau-zn}{\mathbb Z/m\mathbb Z} \to 0$. Le groupe $H^1(G, \mathbb Z) = \operatorname{Hom}(G, \mathbb Z)$ est nul : l'image d'un élément $g$ d'ordre $k$ vérifie $k\,f(g) = 0$ dans $\mathbb Z$, donc $f(g) = 0$.
+
+        La suite exacte donne alors
+        $$\begin{aligned} 0 &\to H^1(G, \mathbb Z/m\mathbb Z) \xrightarrow{\delta} H^2(G, \mathbb Z) \\ &\xrightarrow{\times m} H^2(G, \mathbb Z). \end{aligned}$$
+        Si $|G| = m$, la multiplication par $m$ est nulle sur $H^2(G, \mathbb Z)$ ({{cg-annulation|Annulation par l'ordre}}), et $\delta$ identifie $\operatorname{Hom}(G, \mathbb Z/m\mathbb Z)$ à $H^2(G, \mathbb Z)$.
+
+        Pour $G = \mathbb Z/m\mathbb Z$, on trouve $H^2(G, \mathbb Z) \cong \mathbb Z/m\mathbb Z$, ce que confirme pour $m = 2, 3, 4$ un calcul de forme normale de Smith sur les matrices des différentielles. L'image par $\delta$ de l'identité est représentée par le cocycle des retenues : en relevant $\bar g$ en son représentant $g \in \{0, \dots, m - 1\}$, $d^1$ du relèvement vaut $m$ si $g + h \geqslant m$ et $0$ sinon.
+      - |
+        L'erreur la plus répandue est de croire qu'un morphisme injectif reste injectif en cohomologie. Ce n'est vrai qu'en degré $0$. Pour $G = \{e, s\}$ agissant trivialement, le morphisme $u : \mathbb Z/2\mathbb Z \to \mathbb Z/4\mathbb Z$, $\bar a \mapsto \overline{2a}$, envoie le cocycle normalisé $c(s, s) = \bar 1$, de classe non nulle ({{cg-extensions|Extensions et H²}}, remarque), sur le cocycle $u_*c(s, s) = \bar 2$, qui est le cobord $d^1b$ pour $b(e) = \bar 0$ et $b(s) = \bar 1$. L'extension $\mathbb Z/4\mathbb Z$ de $\mathbb Z/2\mathbb Z$ par $\mathbb Z/2\mathbb Z$ devient scindée quand on agrandit $A$.
+
+  - id: cg-inflation
+    etiquette: Inflation-restriction
+    nature: proposition
+    titre: La suite d'inflation-restriction en degré 1
+    texte: |
+      Soit $A$ un [[g-module|$G$-module]], $N$ un sous-groupe distingué de $G$ et $\pi : G \to G/N$ la surjection canonique. La **restriction** d'une cochaîne $f : G \to A$ est sa restriction $f|_N$ à $N$, et l'**inflation** d'une application $\varphi : G/N \to A^N$ est la composée $\varphi \circ \pi : G \to A$.
+    enonce: |
+      (i) $A^N$ est un sous-module de $A$, et la formule $(gN) \cdot a = ga$ en fait un $G/N$-module.
+
+      (ii) La restriction envoie $Z^1(G, A)$ dans $Z^1(N, A)$ et $B^1(G, A)$ dans $B^1(N, A)$ ; l'inflation envoie $Z^1(G/N, A^N)$ dans $Z^1(G, A)$ et $B^1(G/N, A^N)$ dans $B^1(G, A)$. Elles induisent des morphismes
+      $$\begin{aligned} \mathrm{res} &: H^1(G, A) \to H^1(N, A), \\ \mathrm{inf} &: H^1(G/N, A^N) \to H^1(G, A). \end{aligned}$$
+
+      (iii) La suite
+      $$\begin{aligned} 0 &\to H^1(G/N, A^N) \xrightarrow{\mathrm{inf}} \lex{cohomologie-groupes}{H^1}(G, A) \\ &\xrightarrow{\mathrm{res}} H^1(N, A) \end{aligned}$$
+      est exacte : l'inflation est injective, et son image est le noyau de la restriction.
+    preuve: |
+      (i) Pour $a \in A^N$, $g \in G$ et $n \in N$, on a $n(ga) = g\,(g^{-1}ng)\,a = ga$, puisque $g^{-1}ng \in N$ : $ga \in A^N$, qui est un sous-groupe stable ({{cg-modules|G-modules}}, (ii)). Si $gN = g'N$, alors $g' = gn$ avec $n \in N$, et $g'a = g(na) = ga$ : la formule a un sens, et elle définit une action par morphismes, puisque $(gN)(hN) = ghN$.
+
+      (ii) Les formules de $d^0$ et $d^1$ ({{cg-cochaines|Cochaînes, cohomologie}}) restreintes à $N$ sont celles du groupe $N$, et, composées avec $\pi$, celles du groupe $G$ agissant sur $A^N$ à travers $G/N$. Ces applications sont des morphismes, et l'on passe aux quotients par le théorème d'isomorphisme ({{a-isomorphisme|Théorème d'isomorphisme}}).
+
+      (iii) *Injectivité de l'inflation.* Soit $\varphi \in Z^1(G/N, A^N)$ dont l'inflation est un cobord : $\varphi(gN) = gb - b$ pour un $b \in A$. Pour $n \in N$, on a $nb - b = \varphi(N) = 0$ ({{cg-cochaines|Cochaînes, cohomologie}}, (iii)), donc $b \in A^N$, et $\varphi = d^0b$ dans $C^1(G/N, A^N)$.
+
+      *La composée est nulle.* Pour $n \in N$, l'inflation de $\varphi$ vaut $\varphi(nN) = \varphi(N) = 0$.
+
+      *Le noyau de la restriction est dans l'image de l'inflation.* Soit $f \in Z^1(G, A)$ dont la restriction est un cobord : $f(n) = nb - b$ pour $n \in N$. Le cocycle $f' = f - d^0b$, de même classe, est nul sur $N$.
+
+      Pour $g \in G$ et $n \in N$, on a $f'(gn) = f'(g) + g\,f'(n) = f'(g)$ : $f'$ est constant sur chaque classe $gN$. D'autre part $ng = g(g^{-1}ng)$, donc $f'(ng) = f'(g)$, alors que $f'(ng) = f'(n) + n\,f'(g) = n\,f'(g)$ : ainsi $f'(g) \in A^N$.
+
+      La formule $\varphi(gN) = f'(g)$ définit donc une application $\varphi : G/N \to A^N$, qui est un cocycle, puisque $\varphi(gN\,hN) = f'(gh) = f'(g) + g\,f'(h)$ ; et $[f] = [f'] = \mathrm{inf}[\varphi]$.
+    remarques:
+      - |
+        La restriction n'est pas surjective en général. Pour $G = \lex{anneau-zn}{\mathbb Z/4\mathbb Z}$, $N = \{\bar 0, \bar 2\}$ et $A = \mathbb Z/2\mathbb Z$ avec l'action triviale, le groupe $H^1(G, A) = \operatorname{Hom}(\mathbb Z/4\mathbb Z, \mathbb Z/2\mathbb Z)$ a deux éléments, et le morphisme non nul $f$ vérifie $f(\bar 2) = 2f(\bar 1) = 0$ : la restriction est nulle, alors que $H^1(N, A)$ a deux éléments. L'exactitude dit ici que tout $H^1(G, A)$ provient de $G/N$, ce qui est bien le cas.
+      - |
+        La suite sert de dévissage : si $H^1(G/N, A^N)$ et $H^1(N, A)$ sont nuls, alors $H^1(G, A)$ l'est aussi. Hochschild et Serre l'ont prolongée en degrés supérieurs (« Cohomology of group extensions », *Trans. Amer. Math. Soc.* 74, 1953, p. 110-134). Pour une extension galoisienne $L/K$ et un corps intermédiaire $M$ galoisien sur $K$, elle relie les groupes de Galois de $L/K$, $L/M$ et $M/K$ agissant sur $L^\times$, dont le corps des invariants sous $\operatorname{Gal}(L/M)$ est $M$ ; le théorème 90 de Hilbert ({{h90-multiplicatif|Hilbert 90}}) rend les trois groupes nuls.
+
+  - id: cg-annulation
+    etiquette: Annulation par l'ordre
+    nature: théorème
+    titre: L'ordre du groupe annule la cohomologie
+    enonce: |
+      Soit $G$ un groupe fini d'ordre $m$, $A$ un [[g-module|$G$-module]] et $n \geqslant 1$.
+
+      (i) Pour $f \in Z^n(G, A)$, soit $b \in C^{n-1}(G, A)$ la cochaîne
+      $$\begin{aligned} &b(g_1, \dots, g_{n-1}) \\ &\quad = \sum_{h \in G} f(g_1, \dots, g_{n-1}, h). \end{aligned}$$
+      Alors $mf = (-1)^n\,d^{n-1}b$. En particulier, $m$ annule $\lex{cohomologie-groupes}{H^n}(G, A)$ : $m\,x = 0$ pour tout $x \in H^n(G, A)$.
+
+      (ii) Si l'application $a \mapsto ma$ est bijective sur $A$, alors $H^n(G, A) = 0$.
+
+      (iii) Si $A$ est fini d'ordre premier à $m$, alors $H^n(G, A) = 0$.
+    preuve: |
+      (i) Écrivons la relation $(d^nf)(g_1, \dots, g_n, h) = 0$ ({{cg-cochaines|Cochaînes, cohomologie}}) et sommons-la sur $h \in G$. Le premier terme donne $g_1\,b(g_2, \dots, g_n)$, l'action de $g_1$ étant additive.
+
+      Pour $1 \leqslant i \leqslant n - 1$, le terme qui remplace $g_i, g_{i+1}$ par $g_ig_{i+1}$ donne $(-1)^i\,b(g_1, \dots, g_ig_{i+1}, \dots, g_n)$.
+
+      Le terme $i = n$ est $(-1)^n f(g_1, \dots, g_{n-1}, g_nh)$ ; comme $h \mapsto g_nh$ est une bijection de $G$, sa somme vaut $(-1)^n\,b(g_1, \dots, g_{n-1})$. Le dernier terme, $(-1)^{n+1}f(g_1, \dots, g_n)$, ne dépend pas de $h$, et sa somme vaut $(-1)^{n+1}m\,f(g_1, \dots, g_n)$.
+
+      Les trois premières contributions forment exactement $(d^{n-1}b)(g_1, \dots, g_n)$, d'où
+      $$d^{n-1}b + (-1)^{n+1}m f = 0,$$
+      c'est-à-dire $mf = (-1)^n\,d^{n-1}b$. Ainsi $mf$ est un cobord, et $m[f] = [mf] = 0$.
+
+      (ii) Soit $\mu : a \mapsto ma$. Il commute à l'action, $g(ma) = m(ga)$, et sa réciproque $\mu^{-1}$ aussi, puisque $\mu(g\,\mu^{-1}(a)) = g\,a$. Pour $f \in Z^n(G, A)$, la cochaîne $f' = \mu^{-1} \circ f$ est un cocycle, car $d^n(\mu^{-1} \circ f) = \mu^{-1} \circ d^nf$, $\mu^{-1}$ étant additif et compatible à l'action.
+
+      Par (i), $f = mf' = (-1)^n\,d^{n-1}b'$, où $b'$ est la cochaîne associée à $f'$ : $f$ est un cobord.
+
+      (iii) Soit $k = |A|$, premier à $m$, et $uk + vm = 1$ une relation de Bézout ({{z-bezout|PGCD, Bézout}}). Tout $a \in A$ vérifie $ka = 0$ ({{gf-cycliques|Groupes cycliques}}, (i)), donc $a = vm\,a = m(va)$ : la multiplication par $m$ est surjective, et elle est injective, puisque $ma = 0$ entraîne $a = v(ma) = 0$. On conclut par (ii).
+    remarques:
+      - |
+        Le groupe $H^1(\{e, s\}, \mathbb Z/4\mathbb Z)$, pour l'action $s \cdot a = -a$, a deux éléments ({{cg-h1|Le groupe H¹}}, remarque) : il est annulé par $|G| = 2$ sans être nul, ce que permet $4 \wedge 2 = 2$. Au contraire, pour $G$ d'ordre $3$ agissant trivialement sur $\mathbb Z/2\mathbb Z$, le point (iii) donne $H^2(G, \mathbb Z/2\mathbb Z) = 0$, et le dénombrement direct trouve en effet huit cocycles, qui sont tous des cobords.
+      - |
+        La démonstration est un argument de moyenne : on somme sur le groupe une relation, comme dans la démonstration du théorème de Maschke ({{rp-maschke|Maschke}}), où l'on moyenne un projecteur. Les deux arguments demandent que $|G|$ soit inversible pour conclure, ici dans $A$, là dans le corps.
+      - |
+        L'erreur la plus répandue est d'appliquer le point (i) à un groupe infini. Pour $G = \mathbb Z$, agissant trivialement sur $\mathbb Z$, le groupe $H^1(G, \mathbb Z) = \operatorname{Hom}(\mathbb Z, \mathbb Z)$ contient l'identité, qui n'est annulée par aucun entier non nul : la somme sur $h \in G$ n'a plus de sens.
+
+  - id: cg-frattini
+    etiquette: Argument de Frattini
+    nature: lemme
+    titre: L'argument de Frattini
+    texte: |
+      Pour un sous-groupe $P$ d'un groupe $G$, le normalisateur de $P$ dans $G$ est $N_G(P) = \{g \in G : gPg^{-1} = P\}$ ({{gf-sylow|Sylow}}).
+    enonce: |
+      Soit $G$ un groupe fini, $N$ un sous-groupe distingué de $G$, $p$ un nombre premier et $P$ un $p$-sous-groupe de Sylow de $N$. Alors $G = N\,N_G(P)$.
+    preuve: |
+      Soit $g \in G$. Comme $N$ est distingué, $gPg^{-1}$ est contenu dans $gNg^{-1} = N$, et il a le même nombre d'éléments que $P$ : c'est un $p$-sous-groupe de Sylow de $N$.
+
+      Par le théorème de conjugaison de Sylow appliqué dans $N$ ({{gf-sylow|Sylow}}, (ii)), il existe $n \in N$ tel que $gPg^{-1} = nPn^{-1}$. Alors $(n^{-1}g)P(n^{-1}g)^{-1} = P$, c'est-à-dire $n^{-1}g \in N_G(P)$, et $g = n\,(n^{-1}g) \in N\,N_G(P)$.
+    remarques:
+      - |
+        Dans $\lex{groupe-symetrique}{\mathfrak S_4}$, prenons $N = \mathfrak A_4$, distingué, et $P$ le $3$-Sylow engendré par $(1\ 2\ 3)$. Son normalisateur dans $\mathfrak S_4$ est le sous-groupe à six éléments des permutations qui fixent $4$, et il rencontre $\mathfrak A_4$ suivant $P$. Le produit $\mathfrak A_4\,N_G(P)$ a donc $12 \times 6/3 = 24$ éléments, c'est tout $\mathfrak S_4$.
+
+        Le lemme dit ce que signifie ce calcul : la conjugaison des Sylow à l'intérieur de $N$ absorbe tout ce qui est hors de $N$, sauf le normalisateur.
+      - |
+        L'hypothèse « $N$ distingué » est indispensable. Dans $\mathfrak S_3$, le sous-groupe $N = \langle (1\ 2) \rangle$ n'est pas distingué ; il est son propre $2$-Sylow et son propre normalisateur, et $N\,N_G(N) = N$ n'est pas $\mathfrak S_3$.
+
+  - id: cg-sz-abelien
+    etiquette: Schur-Zassenhaus abélien
+    nature: théorème
+    titre: Théorème de Schur-Zassenhaus, cas abélien
+    enonce: |
+      Soit $G$ un groupe fini et $N$ un sous-groupe distingué abélien de $G$, d'ordre premier à son indice $|G/N|$.
+
+      (i) $N$ a un [[complement-groupe|complément]] dans $G$.
+
+      (ii) Deux compléments de $N$ sont conjugués par un élément de $N$.
+    preuve: |
+      Soit $Q = G/N$ et $\pi : G \to Q$ la surjection canonique. Par le point (iv) du nœud {{cg-modules|G-modules}}, $N$, noté additivement, est un $Q$-module pour l'action $(xN) \cdot n = xnx^{-1}$.
+
+      (i) La suite $1 \to N \to G \xrightarrow{\pi} Q \to 1$, où $N \to G$ est l'inclusion, est une [[extension-groupes|extension]] de $Q$ par ce module : la conjugaison dans $G$ induit l'action par définition. Comme $Q$ est fini, elle a une section et une classe dans $\lex{cohomologie-groupes}{H^2}(Q, N)$ ({{cg-extensions|Extensions et H²}}, (v)).
+
+      Or $N$ est fini d'ordre premier à $|Q|$, donc $H^2(Q, N) = 0$ ({{cg-annulation|Annulation par l'ordre}}, (iii)). L'extension est scindée, et $\pi$ a une section $s$ qui est un morphisme, dont l'image est un complément de $N$ (même nœud {{cg-extensions|Extensions et H²}}, (iv)).
+
+      (ii) Soit $H$ un complément de $N$, et $s : Q \to H$ la réciproque de la restriction de $\pi$ à $H$, qui est un isomorphisme : elle est injective, puisque $H \cap N = \{e\}$, et surjective, puisque $NH = G$. L'application
+      $$\theta : N \rtimes Q \to G, \qquad (n, q) \mapsto n\,s(q),$$
+      où le produit semi-direct est celui du $Q$-module $N$, est un morphisme : $n\,s(q)\,n'\,s(q') = n\,\big(s(q)n's(q)^{-1}\big)\,s(qq')$ et $s(q)n's(q)^{-1} = q \cdot n'$. Elle est injective, car $n\,s(q) = e$ entraîne $s(q) = n^{-1} \in N \cap H = \{e\}$, donc $q = e$ et $n = e$ ; elle est surjective, car $G = NH$ ; et $\theta(n, e) = n$.
+
+      Ainsi $\theta$ met en bijection les compléments de $N \times \{e\}$ dans $N \rtimes Q$ et ceux de $N$ dans $G$, et respecte la conjugaison par les éléments de $N$. Comme $H^1(Q, N) = 0$ ({{cg-annulation|Annulation par l'ordre}}, (iii)), deux compléments de $N \times \{e\}$ sont conjugués par un élément de $N \times \{e\}$ ({{cg-complements|Compléments et H¹}}, (ii) et (iii)). Il en va de même dans $G$.
+    remarques:
+      - |
+        Dans le groupe alterné $\mathfrak A_4$, le sous-groupe $V$ formé de l'identité et des trois doubles transpositions est distingué, abélien d'ordre $4$, d'indice $3$. Ses compléments sont les sous-groupes d'ordre $3$, au nombre de quatre, un par point fixé, et ils sont bien conjugués entre eux, comme le dénombrement le confirme.
+      - |
+        L'hypothèse sur les ordres est indispensable à l'existence. Dans $\lex{anneau-zn}{\mathbb Z/4\mathbb Z}$, le sous-groupe $N = \{\bar 0, \bar 2\}$, d'ordre $2$ et d'indice $2$, n'a pas de complément, puisque $\bar 2$ est le seul élément d'ordre $2$ : la classe de cette extension est l'élément non nul de $H^2$ ({{cg-extensions|Extensions et H²}}, remarque).
+
+        Elle l'est aussi à la conjugaison. Dans le groupe diédral $\mathcal D_4$, le sous-groupe des rotations a des compléments qui ne sont pas conjugués ({{cg-complements|Compléments et H¹}}, remarque).
+      - |
+        Le cas où $N$ est central, $xn = nx$ pour tous $x$ et $n$, se déduit des travaux de Schur sur les représentations projectives (« Über die Darstellung der endlichen Gruppen durch gebrochene lineare Substitutionen », *J. reine angew. Math.* 127, 1904, p. 20-50), où l'énoncé n'apparaît pas explicitement. L'énoncé général est donné par Zassenhaus dans son *Lehrbuch der Gruppentheorie* (1937), qui l'attribue à Schur.
+
+  - id: cg-schur-zassenhaus
+    etiquette: Schur-Zassenhaus
+    nature: théorème
+    titre: Théorème de Schur-Zassenhaus
+    enonce: |
+      Soit $G$ un groupe fini et $N$ un sous-groupe distingué de $G$, d'ordre premier à son indice $m = |G/N|$.
+
+      (i) Un sous-groupe $H$ de $G$ est un [[complement-groupe|complément]] de $N$ si et seulement si $|H| = m$.
+
+      (ii) $N$ a un complément dans $G$.
+    preuve: |
+      (i) Pour un sous-groupe $H$, le deuxième théorème d'isomorphisme donne $NH/N \cong H/(H \cap N)$ ({{jh-isomorphismes|Isomorphismes, correspondance}}, (i) et (ii)), d'où, par le théorème de Lagrange,
+      $$|NH| \cdot |H \cap N| = |N| \cdot |H|.$$
+      Si $H$ est un complément, $|G| = |N| \cdot |H|$, donc $|H| = m$. Réciproquement, si $|H| = m$, l'ordre de $H \cap N$ divise $|H|$ et $|N|$, premiers entre eux : $H \cap N = \{e\}$, puis $|NH| = |N|m = |G|$ et $NH = G$.
+
+      (ii) Raisonnons par récurrence forte sur $|G|$, l'énoncé portant sur tous les couples $(G, N)$ qui vérifient les hypothèses. Si $N = \{e\}$, le groupe $G$ convient. Sinon, soit $p$ un nombre premier qui divise $|N|$ ({{z-premiers|Nombres premiers}}, (ii)), $P$ un $p$-sous-groupe de Sylow de $N$ ({{gf-sylow|Sylow}}, (i)), et $L = N_G(P)$ son normalisateur dans $G$. Par l'argument de Frattini ({{cg-frattini|Argument de Frattini}}), $G = NL$.
+
+      *Premier cas : $L \neq G$.* Le sous-groupe $M = N \cap L$ est distingué dans $L$, et le deuxième théorème d'isomorphisme donne $L/M \cong NL/N = G/N$ : $|L/M| = m$, et $|M|$, qui divise $|N|$, est premier à $m$. Comme $|L| < |G|$, l'hypothèse de récurrence fournit un complément $H$ de $M$ dans $L$, d'ordre $|L/M| = m$ par (i) appliqué au couple $(L, M)$ ; c'est un complément de $N$ dans $G$ par (i) appliqué au couple $(G, N)$.
+
+      *Second cas : $L = G$.* Alors $P$ est distingué dans $G$. Soit $Z$ son centre, contenu dans $P \subset N$, qui n'est pas réduit à $\{e\}$, puisque $P$ est un $p$-groupe ({{gf-actions|Actions de groupe}}, (iv)). Pour $g \in G$, la conjugaison par $g$ est un automorphisme de $P$ ; elle envoie un élément qui commute à tout $P$ sur un élément qui commute à tout $P$, donc $gZg^{-1} = Z$ : $Z$ est distingué dans $G$, et il est abélien.
+
+      Dans $\bar G = G/Z$, le sous-groupe $\bar N = N/Z$ est distingué, d'ordre $|N|/|Z|$, et d'indice $m$ par le troisième théorème d'isomorphisme ({{jh-isomorphismes|Isomorphismes, correspondance}}, (iv)). Comme $|\bar G| < |G|$, l'hypothèse de récurrence fournit un complément $\bar K$ de $\bar N$ dans $\bar G$, d'ordre $m$ par (i) appliqué au couple $(\bar G, \bar N)$.
+
+      Son image réciproque $K$ dans $G$ est un sous-groupe contenant $Z$, d'ordre $m|Z|$ (même nœud, (iii)). Le sous-groupe $Z$ est distingué et abélien dans $K$, d'ordre une puissance de $p$, donc premier à son indice $m$. Le cas abélien ({{cg-sz-abelien|Schur-Zassenhaus abélien}}, (i)) fournit un sous-groupe $H$ de $K$ d'ordre $m$, qui est un complément de $N$ dans $G$ par (i).
+
+      ```schema cg-schur-zassenhaus
+      Les deux cas de la récurrence. À gauche, si le normalisateur $L$ du Sylow $P$ n'est pas $G$, les quotients $G/N$ et $L/M$, avec $M = N \cap L$, ont le même ordre $m$, et un complément de $M$ dans $L$, trouvé par récurrence, convient. À droite, si $P$ est distingué, on passe au quotient par son centre $Z$, on y trouve par récurrence un sous-groupe $K/Z$ d'ordre $m$, et le cas abélien fournit dans $K$ un complément $H$ de $Z$, qui est un complément de $N$ ; les traits marqués $m$ relient des sous-groupes d'indice $m$ l'un dans l'autre.
+      ```
+    remarques:
+      - |
+        La démonstration ne fait appel à la cohomologie qu'à travers le cas abélien ; la récurrence la ramène à ce cas par deux réductions, le passage à un sous-groupe plus petit et le passage au quotient par un sous-groupe abélien. Les théorèmes de Sylow, l'argument de Frattini et le centre non trivial d'un $p$-groupe font tout le reste.
+      - |
+        Prenons $G = \mathfrak A_4 \times \mathbb Z/5\mathbb Z$ et $N = \mathfrak A_4 \times \{\bar 0\}$, d'ordre $12$ et d'indice $5$. Pour $p = 3$, un $3$-Sylow $P$ de $N$ n'est pas distingué, et son normalisateur est $L = P \times \mathbb Z/5\mathbb Z$, d'ordre $15$ : c'est le premier cas, avec $M = P$, et le complément $\{e\} \times \mathbb Z/5\mathbb Z$ se trouve dans $L$.
+      - |
+        L'erreur la plus répandue est de croire qu'un sous-groupe distingué a toujours un complément. Le groupe des quaternions $\mathcal Q_8$ ({{gf-diedraux|Diédraux, quaternions}}) a pour seul élément d'ordre $2$ l'élément $-I$ : son sous-groupe distingué $\{\pm I\}$, d'indice $4$, n'a pas de complément, puisqu'un sous-groupe d'ordre $4$ contient un élément d'ordre $2$. L'ordre $2$ n'est pas premier à l'indice $4$, et le théorème ne dit rien.
+
+  - id: cg-conjugaison
+    etiquette: Conjugaison des compléments
+    nature: théorème
+    titre: Conjugaison des compléments quand N est résoluble
+    texte: |
+      Le [[groupe-derive|groupe dérivé]] $D(N)$ d'un groupe $N$ est le sous-groupe engendré ({{a-sous-groupe|Sous-groupe}}, (iii)) par les commutateurs $[x, y] = xyx^{-1}y^{-1}$ ({{gs-resolubles|Groupes résolubles}}).
+    enonce: |
+      (i) Tout automorphisme de $N$ envoie $D(N)$ sur lui-même ; si $N$ est distingué dans un groupe $G$, $D(N)$ l'est aussi. Si $N$ est [[groupe-resoluble|résoluble]] et non réduit à $\{e\}$, alors $D(N) \neq N$, et $D(N)$ est résoluble.
+
+      (ii) Soit $G$ un groupe fini et $N$ un sous-groupe distingué résoluble de $G$, d'ordre premier à son indice. Deux [[complement-groupe|compléments]] de $N$ sont conjugués dans $G$.
+    preuve: |
+      (i) Un automorphisme $\alpha$ de $N$ vérifie $\alpha([x, y]) = [\alpha(x), \alpha(y)]$, et tout commutateur s'écrit $[x, y] = \alpha([\alpha^{-1}(x), \alpha^{-1}(y)])$. Le sous-groupe $\alpha(D(N))$ contient donc tous les commutateurs, et $D(N) \subset \alpha(D(N))$ ; le même argument pour $\alpha^{-1}$ donne $D(N) \subset \alpha^{-1}(D(N))$, puis l'égalité. Si $N$ est distingué dans $G$, la conjugaison par $g \in G$ restreinte à $N$ en est un automorphisme, donc $gD(N)g^{-1} = D(N)$.
+
+      Soit $N = N_0 \supset N_1 \supset \cdots \supset N_r = \{e\}$ une suite de résolubilité de $N$ ({{gs-resolubles|Groupes résolubles}}), et $i$ le plus petit indice tel que $N_i \neq N$, qui existe puisque $N_r \neq N$. Alors $N_{i-1} = N$, le quotient $N/N_i$ est abélien, et $N_i$ contient tous les commutateurs (même nœud, (i)) : $D(N) \subset N_i \neq N$. Enfin $D(N)$ est résoluble, comme tout sous-groupe d'un groupe résoluble ({{jh-resolubles|Résolubilité, facteurs}}, (i)).
+
+      (ii) Récurrence forte sur $|N|$. Si $N$ est abélien, ce qui couvre $N = \{e\}$, c'est le point (ii) du nœud {{cg-sz-abelien|Schur-Zassenhaus abélien}}.
+
+      Sinon, soit $D = D(N)$. Il n'est pas réduit à $\{e\}$, sans quoi tous les commutateurs seraient triviaux et $N$ abélien, et $D \neq N$ par (i). Soient $H$ et $K$ deux compléments de $N$, d'ordre $m = |G/N|$ ({{cg-schur-zassenhaus|Schur-Zassenhaus}}, (i)).
+
+      *Passage au quotient.* Soit $\pi : G \to G/D$, distingué par (i). Le sous-groupe $N/D$ est distingué dans $G/D$, abélien ({{gs-resolubles|Groupes résolubles}}, (i)), d'ordre divisant $|N|$ et d'indice $m$ ({{jh-isomorphismes|Isomorphismes, correspondance}}, (iv)). Comme $H \cap D \subset H \cap N = \{e\}$, le sous-groupe $\pi(H) \cong H/(H \cap D)$ est d'ordre $m$ (même nœud, (ii)), donc un complément de $N/D$ ({{cg-schur-zassenhaus|Schur-Zassenhaus}}, (i)) ; de même $\pi(K)$.
+
+      Par le cas abélien, il existe $g \in G$ tel que $\pi(g)\pi(H)\pi(g)^{-1} = \pi(K)$. Posons $H' = gHg^{-1}$ : alors $\pi(H') = \pi(K)$, et, en prenant les images réciproques ({{jh-isomorphismes|Isomorphismes, correspondance}}, (iii)), $H'D = KD$, puisque l'image réciproque de $\pi(X)$ est $XD$ pour tout sous-groupe $X$.
+
+      *Récurrence.* Soit $J = KD$. Le sous-groupe $D$ y est distingué, résoluble, d'ordre divisant $|N|$, et $|J| = |K| \cdot |D|$ puisque $K \cap D = \{e\}$, donc l'indice de $D$ dans $J$ est $m$, premier à $|D|$. Les sous-groupes $H'$ et $K$ de $J$ sont d'ordre $m$, donc des compléments de $D$ dans $J$ (même nœud, (i)).
+
+      Comme $|D| < |N|$, l'hypothèse de récurrence donne $j \in J$ tel que $jH'j^{-1} = K$, et $(jg)H(jg)^{-1} = K$.
+    remarques:
+      - |
+        La conjugaison des compléments vaut sans l'hypothèse « $N$ résoluble », mais toutes les démonstrations connues passent par le théorème de Feit et Thompson (1963), selon lequel tout groupe fini d'ordre impair est résoluble, qui n'est pas démontré ici et dépasse de loin le cadre de cet atlas. Comme $|N|$ et $|G/N|$ sont premiers entre eux, l'un des deux est impair, donc résoluble : si c'est $N$, le point (ii) s'applique ; si c'est $G/N$, il faut le cas « $G/N$ résoluble », traité par Zassenhaus (1937) et non démontré ici. Le cas général est donc **admis ici**, et rien dans l'atlas ne l'utilise.
+      - |
+        Le groupe dérivé reviendra dans le chapitre {{galois-representations|Représentations}} de la théorie de Galois, où l'on montre qu'il est formé des produits finis de commutateurs, et que les caractères de degré $1$ d'un groupe fini sont ceux de son quotient par le groupe dérivé ({{rp-lineaires|Caractères linéaires}}).
+
+aretes:
+  - [cg-modules, cg-cochaines]
+  - [cg-cochaines, cg-h1]
+  - [cg-h1, cg-complements]
+  - [cg-complements, cg-extensions]
+  - [cg-cochaines, cg-connectant]
+  - [cg-connectant, cg-suite-exacte]
+  - [cg-h1, cg-inflation]
+  - [cg-cochaines, cg-annulation]
+  - [cg-extensions, cg-sz-abelien]
+  - [cg-annulation, cg-sz-abelien]
+  - [cg-sz-abelien, cg-schur-zassenhaus]
+  - [cg-frattini, cg-schur-zassenhaus]
+  - [cg-schur-zassenhaus, cg-conjugaison]

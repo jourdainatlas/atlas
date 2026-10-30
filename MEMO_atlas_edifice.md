@@ -1033,3 +1033,20 @@ corrigées au §56 restent détectées. Une règle « terme suivi de “ : ” =
 (« sa forme quadratique : »), vraie erreur : elle est retirée. État actuel : A 1, B 0, C 0, D 5, D2 33, D3 11, D4 0,
 E 1, F 6 (homonymes : fonction caractéristique d'une relation, mesure invariante), déjà jugés faux positifs ou à
 trancher au prochain passage.
+
+## 70. Cohomologie des groupes ; Hilbert 90 (31 octobre 2026)
+
+Théorie nouvelle `cohgr` (13 fiches), placée entre gf et galois (arêtes [gf, cohgr], [cohgr, galois] ; [gf, galois]
+gardée). Essai de placement préalable : au-dessus de gf et de galois, 19 croisements et +193 px ; entre les deux,
+16 croisements comme avant (retenu par l'auteur du site). Contenu : G-modules, cochaînes inhomogènes (d∘d = 0 par les
+cochaînes homogènes), H⁰, H¹ (action triviale, groupe cyclique), compléments de A ⋊ G et H¹, extensions et H² (à
+équivalence près), morphisme de liaison et suite exacte longue (G fini), inflation-restriction, annulation par |G|,
+Frattini, Schur-Zassenhaus (existence en général ; conjugaison si N est résoluble, par le groupe dérivé ; cas général
+admis en remarque, Feit-Thompson). Aucun choix : sections et relèvements finis pour G fini, section supposée donnée
+pour G infini. Chapitre galois-hilbert90 (8 fiches, sous galois-cyclotomie, entrée cohgr) : norme et trace, Hilbert 90
+multiplicatif et additif, forme cyclique, Kummer, Artin-Schreier, triplets pythagoriciens, et h90-radicaux : la
+réciproque du théorème de Galois en caractéristique nulle (groupe résoluble ⇒ résoluble par radicaux), jusqu'ici
+admise (§35), désormais démontrée ; la remarque de gs-radicaux y renvoie. « Groupe dérivé » : défini dans
+cg-conjugaison ; rp-lineaires (galois-representations, qui ne reçoit pas cohgr : l'entrée coûtait 3 croisements) le
+rappelle en gras sur place et renvoie en remarque. Relu : trois fautes mineures (ordre du lexique, borne de
+|Aut(ℚ(i)/ℚ)|, appellation « théorème de Noether » non confirmée). 888 nœuds, 526 termes, 75 graphes ; edifice 16.
