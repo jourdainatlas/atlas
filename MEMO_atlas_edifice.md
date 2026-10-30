@@ -728,3 +728,23 @@ supprimées et la copie profonde passe par structuredClone (sans chaîne interm�
 `construction/atlas.html` (182 Mo, inutilisé par le site publié) n'est plus écrit par défaut : `ATLAS_APERCU=1 sh
 construire.sh` le produit. Le rendu tient alors dans 0,9 Go de tas au lieu de 1,8 Go (limite fixée à 4 Go). Si la
 mémoire redevenait un souci, le levier suivant est de rendre et d'écrire branche par branche dans rendu.mjs.
+
+## 50. Réciprocité quadratique ; représentations des groupes finis (30 octobre 2026)
+
+Chapitre `tan-reciprocite` (contenu/tan-reciprocite.yaml, arête an-gauss → tan-reciprocite) : huit fiches rq-* —
+Euler et Fermat (absents jusque-là), Wilson et réciproque, Legendre et critère d'Euler (par pol-racines), lemme de
+Gauss et (2/p), lemme d'Eisenstein (parties entières par division euclidienne), réciprocité par le comptage, dû à
+Eisenstein, des points d'un réseau, seconde preuve par les sommes de Gauss dans F_{p^n}, applications. Aucun choix.
+Relu : une faute d'ordre (ζ = e^{2iπ/q}, anc non ancêtre, désormais annoncé) et huit retouches (Euler 1736 rédigé,
+publié en 1741).
+
+Chapitre `galois-representations` (contenu/galois-representations.yaml) : douze fiches rp-* — représentations,
+Maschke, Schur (d'Alembert-Gauss admis dans c-dalembert : le dire), caractères (χ(g⁻¹) = conj χ(g) par une forme
+hermitienne moyennée, sans valeur propre), invariants, orthogonalité, régulière, base des fonctions centrales,
+caractères linéaires, tables de 𝔖₃, 𝔖₄, 𝒟₄/𝒬₈ (indicateur de Frobenius-Schur admis). Admis : d | |G| (intégralité),
+Burnside. Placement : galois est la seule théorie fille à la fois de gf et de c ; une théorie nouvelle portait
+l'édifice à 19 croisements. Le chapitre n'a pas de parent dans galois, seulement les entrées gf et c : construire.py
+fait désormais suivre au contenu d'un chapitre aussi les entrées qui visent son nœud (ajout d'arêtes d'ordre
+seulement ; vérifié par le relecteur). galois passe à 2 croisements. Relu : une attribution non vérifiée (lettres
+de Frobenius, réduite) et une dépendance à un admis non signalée (d'Alembert-Gauss), douze retouches.
+679 nœuds, 394 termes, 57 graphes.

@@ -158,9 +158,13 @@ for g in graphes:
         for c in cibles: ORDRE.add_edge(e, c)
     if g['conteneur']:
         k = g['conteneur']
+        P = noeuds[k]['graphe']
+        # Parents du conteneur : ses prédécesseurs dans son graphe, et les entrées de ce graphe qui le visent
+        # (30 oct. 2026 : un chapitre peut n'être alimenté que par des entrées, comme galois-representations).
+        amont = list(D[P].predecessors(k)) + [e for e, cs in G[P].get('entrees', {}).items() if k in cs]
         for n in g['noeuds']:
             ORDRE.add_edge(n['id'], k)                 # le contenu précède son conteneur...
-            for p in D[noeuds[k]['graphe']].predecessors(k):
+            for p in amont:
                 ORDRE.add_edge(p, n['id'])             # ...et suit les parents de ce conteneur
 if not nx.is_directed_acyclic_graph(ORDRE):
     erreur(f"ordre global : cycle {nx.find_cycle(ORDRE)}")

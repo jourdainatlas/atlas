@@ -1,0 +1,642 @@
+# Niveau 2 : structure interne du chapitre « Représentations des groupes finis » (nœud galois-representations
+# du graphe galois, créé le 30 oct. 2026). Représentations, sous-représentations, morphismes ; théorème de
+# Maschke (|G| inversible dans le corps, moyenne d'un projecteur) ; lemme de Schur (valeur propre sur ℂ par
+# d'Alembert-Gauss) ; caractères, forme hermitienne invariante et χ(g⁻¹) = conj χ(g) ; invariants et moyenne ;
+# relations d'orthogonalité ; représentation régulière et Σ d² = |G| ; base orthonormée des fonctions centrales,
+# nombre d'irréductibles égal au nombre de classes, orthogonalité des colonnes ; caractères linéaires et
+# abélianisé ; tables de 𝔖₃, 𝔖₄, et de 𝒟₄ et 𝒬₈ (la même). Tout est en dimension finie : aucune forme du choix.
+# Placement : la théorie de Galois est la seule théorie qui ait à la fois les groupes finis et ℂ pour parents ;
+# une théorie nouvelle de l'édifice, avec les arêtes gf → et c →, faisait passer les croisements de 16 à 19.
+# Le chapitre n'a pas de parent dans le graphe galois : il est alimenté par les entrées gf et c de ce graphe.
+
+graphe: galois-representations
+titre: Représentations des groupes finis
+conteneur: galois-representations
+
+noeuds:
+  - id: rp-representations
+    etiquette: Représentations
+    nature: proposition
+    titre: Représentations, sous-représentations, morphismes
+    texte: |
+      Dans ce chapitre, $G$ est un [[groupe]] fini, de neutre $e$, et $K$ un [[corps]]. Pour un espace vectoriel $V$ sur $K$, de dimension finie, on note $GL(V)$ le groupe, pour la composition, des applications linéaires bijectives de $V$ dans $V$ ; la réciproque d'une telle application est linéaire ({{v-applications|Applications linéaires}}, (ii)).
+
+      Une [[representation-groupe|représentation]] de $G$ sur $K$ est un couple $(V, \rho)$ formé d'un espace vectoriel $V$ de dimension finie sur $K$ et d'un [[morphisme-groupes|morphisme de groupes]] $\rho : G \to GL(V)$ ; son **degré** est $\dim V$. On écrit souvent $V$ pour $(V, \rho)$.
+
+      Dans une base de $V$, de dimension $d$, la représentation devient le morphisme $g \mapsto \operatorname{Mat}\rho(g)$ de $G$ dans le groupe $GL_d(K)$ des matrices inversibles de $\lex{espace-matrices}{\mathcal M_d}(K)$ ({{v-matrices|Matrices}}, (ii)).
+
+      Un sous-espace $W$ de $V$ est **stable** si $\rho(g)(W) \subset W$ pour tout $g \in G$. La représentation est [[representation-irreductible|irréductible]] si $V \neq \{0\}$ et si ses seuls sous-espaces stables sont $\{0\}$ et $V$.
+
+      Un **morphisme** de $(V, \rho)$ dans $(V', \rho')$ est une application linéaire $f : V \to V'$ telle que $f \circ \rho(g) = \rho'(g) \circ f$ pour tout $g$.
+
+      L'ensemble des morphismes, sous-espace de $\lex{espace-applications-lineaires}{\mathcal L}(V, V')$, est noté $\operatorname{Hom}_G(V, V')$. Un **isomorphisme** de représentations est un morphisme bijectif.
+
+      La **somme directe** de $(V, \rho)$ et $(V', \rho')$ est $V \times V'$, muni de
+      $$(\rho \oplus \rho')(g)(x, x') = \big(\rho(g)x,\ \rho'(g)x'\big).$$
+
+      Pour un entier $n \geqslant 0$, on note $n \cdot 1_K$ la somme de $n$ termes égaux à $1$ dans $K$.
+
+      Premier exemple, la représentation **triviale** est $V = K$, avec $\rho(g) = \mathrm{id}$ pour tout $g$.
+
+      Soit ensuite une [[action-groupe|action]] de $G$ sur un ensemble fini non vide $X$ ({{gf-actions|Actions de groupe}}). On note $K^X$ l'espace des familles $(a_x)_{x \in X}$ d'éléments de $K$, de base $(e_x)_{x \in X}$, où $e_x$ a pour seule coordonnée non nulle un $1$ en $x$. La **représentation de permutation** $\rho_X$ sur cet espace est définie en (iii).
+
+      La [[representation-reguliere|représentation régulière]] est celle de l'action de $G$ sur lui-même par translation à gauche, $g \cdot h = gh$, sur l'espace $K^G$ de base $(e_h)_{h \in G}$.
+    enonce: |
+      (i) Le noyau et l'image d'un morphisme de représentations sont stables, et la réciproque d'un isomorphisme est un morphisme. Si $W$ est stable, chaque $\rho(g)$ induit un élément $\rho_W(g)$ de $GL(W)$, et $(W, \rho_W)$ est une représentation, appelée **sous-représentation**.
+
+      (ii) La somme directe est une représentation de degré $\dim V + \dim V'$. Si $V = W \oplus W'$ avec $W$ et $W'$ stables, l'application $(w, w') \mapsto w + w'$ est un isomorphisme de la somme directe de $W$ et $W'$ sur $V$. Une représentation de degré $1$ est irréductible.
+
+      (iii) Il existe une unique représentation $\rho_X$ de $G$ sur $K^X$ telle que $\rho_X(g)e_x = e_{g \cdot x}$ pour tous $g$ et $x$. La droite $Ks$ engendrée par $s = \sum_{x \in X} e_x$ est stable, et chaque $\rho_X(g)$ y est l'identité ; l'hyperplan
+      $$H = \Big\{\sum_x a_xe_x : \sum_x a_x = 0\Big\}$$
+      est stable. Si $|X| \cdot 1_K \neq 0$, alors $K^X = Ks \oplus H$.
+
+      (iv) Pour $n \geqslant 1$, la [[signature-permutation|signature]] $\varepsilon$, vue dans $K$, définit une représentation de degré $1$ de $\lex{groupe-symetrique}{\mathfrak S_n}$, $\rho(\sigma) = \varepsilon(\sigma)\,\mathrm{id}_K$.
+    preuve: |
+      (i) Si $f(x) = 0$, alors $f(\rho(g)x) = \rho'(g)f(x) = 0$ ; et $\rho'(g)f(x) = f(\rho(g)x)$ appartient à l'image. Si $f$ est bijective, en composant l'égalité $f \circ \rho(g) = \rho'(g) \circ f$ par $f^{-1}$ à gauche et à droite, on obtient $\rho(g) \circ f^{-1} = f^{-1} \circ \rho'(g)$.
+
+      Si $W$ est stable, la restriction de $\rho(g)$ envoie $W$ dans $W$ et y est linéaire et injective, donc bijective, $W$ étant de dimension finie ({{v-rang|Théorème du rang}}) ; on a $\rho_W(g)\rho_W(h) = \rho_W(gh)$, puisque c'est vrai pour $\rho$.
+
+      (ii) L'application $(\rho \oplus \rho')(g)$ est linéaire, se compose composante par composante, et a pour réciproque $(\rho \oplus \rho')(g^{-1})$ ; la dimension de $V \times V'$ est $\dim V + \dim V'$ ({{v-rang|Théorème du rang}}).
+
+      L'application $(w, w') \mapsto w + w'$ est linéaire, bijective par définition d'une somme directe, et
+      $$\rho(g)(w + w') = \rho(g)w + \rho(g)w',$$
+      avec $\rho(g)w \in W$ et $\rho(g)w' \in W'$ : c'est un morphisme. Enfin, les sous-espaces d'une droite sont $\{0\}$ et la droite elle-même ({{v-dimension|Dimension}}, (iii)).
+
+      (iii) Pour chaque $g$, une application linéaire est déterminée par les images des vecteurs d'une base, qui peuvent être données arbitrairement ({{v-libre|Familles libres, bases}}) : d'où l'existence et l'unicité de l'application linéaire $\rho_X(g)$. On a
+      $$\begin{aligned} \rho_X(g)\rho_X(h)e_x &= e_{g \cdot (h \cdot x)} \\ &= e_{(gh) \cdot x} = \rho_X(gh)e_x, \end{aligned}$$
+      et $\rho_X(e) = \mathrm{id}$ ; donc $\rho_X(g)$ est bijective, de réciproque $\rho_X(g^{-1})$, et $\rho_X$ est un morphisme.
+
+      L'application $x \mapsto g \cdot x$ est une bijection de $X$, de réciproque $x \mapsto g^{-1} \cdot x$ ; par suite $\rho_X(g)s = \sum_x e_{g \cdot x} = s$, et
+      $$\rho_X(g)\Big(\sum_x a_xe_x\Big) = \sum_y a_{g^{-1} \cdot y}\,e_y$$
+      a la même somme de coordonnées que $\sum_x a_xe_x$ : $H$ est stable.
+
+      L'hyperplan $H$ est le noyau de la forme linéaire non nulle $\sum_x a_xe_x \mapsto \sum_x a_x$, donc de dimension $|X| - 1$ ({{v-rang|Théorème du rang}}). La somme des coordonnées de $s$ est $|X| \cdot 1_K$ ; si elle n'est pas nulle, $Ks \cap H = \{0\}$, la somme $Ks + H$ est directe ({{v-somme-directe|Sommes directes}}, (i)) et de dimension $|X|$, donc égale à $K^X$ ({{v-dimension|Dimension}}, (iii)).
+
+      (iv) La signature est un morphisme de $\mathfrak S_n$ dans $\{1, -1\}$ ({{v-permutations|Permutations, signature}}, (ii)), et $c \mapsto c\,\mathrm{id}_K$ est un morphisme du groupe multiplicatif $K \setminus \{0\}$ dans $GL(K)$.
+    remarques:
+      - |
+        Pour l'action de $\mathfrak S_3$ sur $\{1, 2, 3\}$, la représentation de permutation est $\lex{ensemble-complexes}{\mathbb C}^3$, où $\sigma$ envoie $e_i$ sur $e_{\sigma(i)}$ : sa matrice est la matrice de permutation de $\sigma$. Le point (iii) donne la décomposition
+        $$\mathbb C^3 = \mathbb C(1, 1, 1) \oplus \{x + y + z = 0\},$$
+        et le nœud {{rp-s3|Table de 𝔖₃}} montrera que le plan $\{x + y + z = 0\}$ est irréductible.
+      - |
+        Une représentation n'est rien d'autre qu'une action de $G$ sur $V$ par des applications linéaires. La représentation régulière linéarise le théorème de Cayley ({{gf-actions|Actions de groupe}}, (ii)) : comme $\rho_{\mathrm{reg}}(g)e_e = e_g$, le morphisme $\rho_{\mathrm{reg}}$ est injectif, et tout groupe fini est isomorphe à un groupe de matrices de permutation.
+      - |
+        L'erreur la plus répandue est de croire que l'irréductibilité ne dépend que du groupe et de l'espace. Elle dépend du corps.
+
+        Le groupe $\mathbb Z/4\mathbb Z$ agit sur $\lex{ensemble-reels}{\mathbb R}^2$ par la rotation $J$ d'un quart de tour, $\bar k \mapsto J^k$ ; aucune droite réelle n'est stable, $J$ n'ayant pas de valeur propre réelle ({{v-valeurs-propres|Valeurs propres}}), et la représentation est irréductible sur $\mathbb R$.
+
+        Sur $\mathbb C$, les droites engendrées par $(1, -i)$ et $(1, i)$, sur lesquelles $J$ agit par $i$ et $-i$, sont stables.
+
+  - id: rp-maschke
+    etiquette: Maschke
+    nature: théorème
+    titre: Théorème de Maschke
+    texte: |
+      On dit que $V$ est **somme directe** des sous-espaces $W_1, \dots, W_k$, et l'on écrit $V = W_1 \oplus \cdots \oplus W_k$, si $V = W_1 \oplus V'$ avec $V'$ somme directe de $W_2, \dots, W_k$, la somme directe d'un seul sous-espace $W_1$ étant $W_1$ lui-même. Tout vecteur de $V$ s'écrit alors de manière unique $w_1 + \cdots + w_k$ avec $w_i \in W_i$, et $\dim V = \sum_i \dim W_i$ ({{v-rang|Théorème du rang}}).
+
+      L'entier $n \cdot 1_K$ est défini au nœud {{rp-representations|Représentations}}. Sur $\lex{ensemble-complexes}{\mathbb C}$, qui contient $\lex{ensemble-entiers-naturels}{\mathbb N}$, on a $n \cdot 1 = n \neq 0$ pour tout $n \geqslant 1$.
+    enonce: |
+      Soit $(V, \rho)$ une représentation du groupe fini $G$ sur le corps $K$, et supposons $|G| \cdot 1_K \neq 0$.
+
+      (i) Tout sous-espace stable $W$ de $V$ a un [[supplementaire|supplémentaire]] stable.
+
+      (ii) Si $V \neq \{0\}$, $V$ est somme directe d'un nombre fini de sous-espaces stables sur lesquels les sous-représentations sont irréductibles.
+
+      En particulier, ces deux énoncés valent pour toute représentation complexe.
+    preuve: |
+      (i) Complétons une base de $W$ en une base de $V$ ({{v-dimension|Dimension}}, (iii)) : les vecteurs ajoutés engendrent un supplémentaire $W'$ de $W$. Soit $p$ le projecteur sur $W$ parallèlement à $W'$ ({{v-somme-directe|Sommes directes}}, (ii)). Notons $N = |G| \cdot 1_K$, qui est inversible, et posons
+      $$q = N^{-1} \sum_{g \in G} \rho(g) \circ p \circ \rho(g)^{-1}.$$
+
+      *L'image de $q$ est contenue dans $W$.* Pour $x \in V$, $p(\rho(g)^{-1}x)$ appartient à $W$, donc aussi $\rho(g)p(\rho(g)^{-1}x)$, $W$ étant stable.
+
+      *$q$ fixe $W$.* Pour $w \in W$, $\rho(g)^{-1}w = \rho(g^{-1})w$ appartient à $W$ et $p$ le fixe : chacun des $|G|$ termes vaut $w$, et $q(w) = N^{-1}N\,w = w$.
+
+      Par suite $q \circ q = q$ et $\operatorname{Im} q = W$, et $V = W \oplus \operatorname{Ker} q$ ({{v-somme-directe|Sommes directes}}, (iii)).
+
+      *$q$ est un morphisme.* Pour $h \in G$, l'application $g \mapsto hg$ étant une bijection de $G$,
+      $$\begin{aligned} &\rho(h) \circ q \circ \rho(h)^{-1} \\ &\quad = N^{-1} \sum_g \rho(hg) \circ p \circ \rho(hg)^{-1} \\ &\quad = q. \end{aligned}$$
+      Son noyau est donc stable ({{rp-representations|Représentations}}, (i)) : c'est un supplémentaire stable de $W$.
+
+      (ii) Par récurrence sur $\dim V \geqslant 1$. Si $V$ est irréductible, il suffit de prendre $k = 1$. Sinon, il a un sous-espace stable $W$ avec $\{0\} \neq W \neq V$, et (i) fournit un supplémentaire stable $W'$ ; tous deux sont non nuls et de dimension strictement inférieure à $\dim V$.
+
+      L'hypothèse de récurrence, appliquée aux sous-représentations $W$ et $W'$, les écrit comme sommes directes $W = W_1 \oplus \cdots \oplus W_a$ et $W' = W'_1 \oplus \cdots \oplus W'_b$ de sous-espaces stables irréductibles, qui sont aussi stables dans $V$.
+
+      Par récurrence sur $a$, $V = W_1 \oplus (W_2 \oplus \cdots \oplus W_a \oplus W')$ : en effet $V = W \oplus W'$, et tout vecteur de $V$ s'écrit de manière unique $w_1 + (w_2 + \cdots + w_a + w')$ avec $w_i \in W_i$ et $w' \in W'$, ce qui donne une somme directe de deux sous-espaces ({{v-somme-directe|Sommes directes}}, (i)).
+
+      Ainsi $V = W_1 \oplus \cdots \oplus W_a \oplus W'_1 \oplus \cdots \oplus W'_b$. Seules des bases finies interviennent, et aucune forme du choix.
+
+      Enfin, sur $\mathbb C$, $|G| \cdot 1 = |G| \neq 0$.
+    remarques:
+      - |
+        L'hypothèse sur $|G|$ est indispensable.
+
+        Soit $\ell$ premier, $K = \lex{anneau-zn}{\mathbb Z/\ell\mathbb Z}$, où $\ell \cdot 1_K = 0$, et $G = \mathbb Z/\ell\mathbb Z$. Comme
+        $$\begin{pmatrix} 1 & a \\ 0 & 1 \end{pmatrix}\begin{pmatrix} 1 & b \\ 0 & 1 \end{pmatrix} = \begin{pmatrix} 1 & a + b \\ 0 & 1 \end{pmatrix},$$
+        l'application $\rho(\bar k) = \begin{pmatrix} 1 & \bar k \\ 0 & 1 \end{pmatrix}$ est une représentation de degré $2$, bien définie puisque la classe $\bar k$ ne dépend que de $k$ modulo $\ell$.
+
+        Une droite stable est engendrée par un vecteur propre de $\rho(\bar 1)$, dont la seule valeur propre est $1$, de sous-espace propre la droite $Ke_1$. Celle-ci est donc la seule droite stable, et elle n'a pas de supplémentaire stable.
+
+        ```schema rp-maschke
+        Le plan $(\mathbb Z/3\mathbb Z)^2$ a neuf points et quatre droites passant par l'origine. L'application $(x, y) \mapsto (x + y, y)$, image de $\bar 1$, déplace chaque point le long de sa rangée horizontale. Elle fixe la droite $y = 0$, en rouge, et fait tourner les trois autres, en bleu : $x = 0$ va sur $y = x$, qui va sur $y = 2x$, qui revient sur $x = 0$. Aucune d'elles ne peut servir de supplémentaire stable.
+        ```
+      - |
+        L'argument est une moyenne sur le groupe, et c'est la finitude de $G$ qui permet de la former. Pour le groupe infini $\mathbb Z$, agissant sur $\mathbb C^2$ par $k \mapsto \begin{pmatrix} 1 & k \\ 0 & 1 \end{pmatrix}$, la droite $\mathbb Ce_1$ est encore stable sans supplémentaire stable. Pour un groupe compact, la moyenne se fait par l'intégrale contre la mesure de Haar ({{grtop|Groupes topologiques}}), et le théorème subsiste pour les représentations continues, ce qui est admis ici.
+      - |
+        Le théorème porte le nom de Heinrich Maschke, qui l'a démontré pour les groupes finis de substitutions linéaires à coefficients complexes dans « Beweis des Satzes, dass diejenigen endlichen linearen Substitutionsgruppen, in welchen einige durchgehends verschwindende Coefficienten auftreten, intransitiv sind » (*Math. Ann.* 52, 1899, p. 363-368), après un cas particulier paru l'année précédente (*Math. Ann.* 50, 1898, p. 492-498).
+
+  - id: rp-schur
+    etiquette: Schur
+    nature: lemme
+    titre: Lemme de Schur
+    texte: |
+      Pour un endomorphisme $u$ d'un espace vectoriel $E$ sur $K$ et $P = \sum_k a_kX^k \in \lex{anneau-polynomes}{K[X]}$, on pose $P(u) = \sum_k a_ku^k$, avec $u^0 = \mathrm{id}_E$ et $u^{k+1} = u \circ u^k$.
+    enonce: |
+      (i) Sur un corps quelconque, un morphisme entre deux représentations irréductibles est nul ou est un isomorphisme.
+
+      (ii) Tout endomorphisme $u$ d'un espace vectoriel complexe $E \neq \{0\}$ de dimension finie a une [[valeur-propre|valeur propre]].
+
+      (iii) Sur $\lex{ensemble-complexes}{\mathbb C}$, si $V$ est irréductible, $\operatorname{Hom}_G(V, V)$ est formé des homothéties $\lambda\,\mathrm{id}_V$. Si $V$ et $V'$ sont irréductibles, $\operatorname{Hom}_G(V, V')$ est de dimension $1$ si $V$ et $V'$ sont isomorphes, et réduit à $\{0\}$ sinon.
+
+      (iv) Sur $\mathbb C$, toute représentation irréductible d'un groupe abélien est de degré $1$.
+    preuve: |
+      (i) Soit $f : V \to V'$ un morphisme. Son noyau est stable ({{rp-representations|Représentations}}, (i)), donc égal à $\{0\}$ ou à $V$. Dans le second cas $f = 0$. Dans le premier, $f$ est injective, son image est stable et non nulle, puisque $V \neq \{0\}$, donc égale à $V'$ : $f$ est bijective.
+
+      (ii) Soit $n = \dim E \geqslant 1$. L'espace $\mathcal L(E)$ est de dimension $n^2$ ({{v-matrices|Matrices}}, (i)), donc les $n^2 + 1$ endomorphismes $\mathrm{id}_E, u, \dots, u^{n^2}$ sont liés ({{v-dimension|Dimension}}, (ii)) : il existe $P \neq 0$ dans $\mathbb C[X]$ tel que $P(u) = 0$.
+
+      L'ensemble $B$ des $\sum_k a_ku^k$ est stable par somme et par composition, puisque $u^k \circ u^l = u^{k+l}$, et contient $\mathrm{id}_E$ ; c'est un anneau commutatif pour la composition, $u^k$ et $u^l$ commutant. Par la propriété universelle ({{pol-evaluation|Évaluation}}, (i)), appliquée au morphisme $a \mapsto a\,\mathrm{id}_E$ de $\mathbb C$ dans $B$, l'application $Q \mapsto Q(u)$ est un morphisme d'anneaux de $\mathbb C[X]$ dans $B$.
+
+      Le polynôme $P$ n'est pas constant, car $c\,\mathrm{id}_E \neq 0$ pour $c \neq 0$, $E$ n'étant pas nul. Par le théorème de d'Alembert-Gauss ({{c-dalembert|D'Alembert-Gauss}}, (i)), $P = c(X - z_1)\cdots(X - z_m)$ avec $c \neq 0$ et $m \geqslant 1$, d'où
+      $$\begin{aligned} 0 = P(u) = c\,&(u - z_1\mathrm{id}_E) \circ \cdots \\ &\circ (u - z_m\mathrm{id}_E). \end{aligned}$$
+
+      Si chaque $u - z_i\mathrm{id}_E$ était injectif, il serait bijectif ({{v-rang|Théorème du rang}}), et le membre de droite aussi, ce qui contredit sa nullité. L'un des $u - z_i\mathrm{id}_E$ n'est donc pas injectif : $z_i$ est une valeur propre de $u$.
+
+      (iii) Soit $f \in \operatorname{Hom}_G(V, V)$ et $\lambda$ une valeur propre de $f$, qui existe par (ii). L'application $f - \lambda\,\mathrm{id}_V$ est un morphisme non injectif ; par (i), elle est nulle.
+
+      Si $V$ et $V'$ ne sont pas isomorphes, tout morphisme de $V$ dans $V'$ est nul par (i). S'ils le sont, par un isomorphisme $\varphi$, l'application $f \mapsto \varphi^{-1} \circ f$ est une bijection linéaire de $\operatorname{Hom}_G(V, V')$ sur $\operatorname{Hom}_G(V, V)$, de réciproque $f \mapsto \varphi \circ f$, et ce dernier espace est la droite engendrée par $\mathrm{id}_V \neq 0$.
+
+      (iv) Si $G$ est abélien, $\rho(g)\rho(h) = \rho(gh) = \rho(hg) = \rho(h)\rho(g)$ : chaque $\rho(g)$ appartient à $\operatorname{Hom}_G(V, V)$, donc est une homothétie par (iii). Toute droite de $V$ est alors stable ; comme $V$ est irréductible et non nul, $V$ est cette droite.
+    remarques:
+      - |
+        Le point (iii) tombe en défaut sur $\lex{ensemble-reels}{\mathbb R}$. Pour la représentation irréductible de $\mathbb Z/4\mathbb Z$ sur $\mathbb R^2$ par la rotation $J$ ({{rp-representations|Représentations}}), $J$ commute à toutes les $J^k$ sans être une homothétie : $\operatorname{Hom}_G(\mathbb R^2, \mathbb R^2)$ contient les $aI_2 + bJ$, qui forment un corps isomorphe à $\mathbb C$, de dimension $2$ sur $\mathbb R$.
+
+        Le groupe $\mathbb Z/4\mathbb Z$, abélien, a donc sur $\mathbb R$ une représentation irréductible de degré $2$, contrairement à (iv).
+      - |
+        Le point (ii) est le seul endroit des démonstrations du chapitre où intervient l'analyse. Le théorème de d'Alembert-Gauss y est admis au nœud {{c-dalembert|D'Alembert-Gauss}} de la branche $\mathbb C$, et démontré en analyse complexe par le théorème de Liouville ({{cx-liouville|Liouville}}), qui n'est pas un ancêtre de ce chapitre. La preuve donnée évite le polynôme caractéristique, construit au chapitre {{ac-reduction|Réduction des endomorphismes}}, qui n'est pas un ancêtre de ce chapitre.
+      - |
+        Issai Schur a réorganisé en 1905 la théorie des caractères de Frobenius dans « Neue Begründung der Theorie der Gruppencharaktere » (*Sitzungsberichte* de l'Académie de Berlin), en partant des représentations et non plus des caractères ; le lemme qui porte son nom y est l'outil principal, et c'est l'ordre que suit ce chapitre.
+
+  - id: rp-caracteres
+    etiquette: Caractères
+    nature: proposition
+    titre: Caractère d'une représentation
+    texte: |
+      Désormais, sauf mention contraire, les représentations sont complexes : $K = \lex{ensemble-complexes}{\mathbb C}$.
+
+      Le [[caractere-representation|caractère]] d'une représentation $(V, \rho)$ est la fonction $\chi_V : G \to \mathbb C$, $\chi_V(g) = \operatorname{tr} \rho(g)$, [[trace]] de l'endomorphisme $\rho(g)$ ({{v-trace|Trace}}, (iii)). Un **caractère irréductible** est le caractère d'une représentation irréductible.
+
+      Une fonction $f : G \to \mathbb C$ est [[fonction-centrale|centrale]] si $f(hgh^{-1}) = f(g)$ pour tous $g, h \in G$, c'est-à-dire si elle est constante sur chaque classe de conjugaison ({{gf-actions|Actions de groupe}}).
+
+      Une application linéaire de $\mathbb C$ dans $\mathbb C$ est la multiplication par un nombre $c$, de trace $c$ ; une représentation de degré $1$ s'identifie donc à un morphisme de $G$ dans le groupe multiplicatif $\mathbb C^\times = \mathbb C \setminus \{0\}$, qui est son caractère. Ces morphismes sont les [[caractere-lineaire|caractères linéaires]] de $G$.
+
+      Pour $A = (a_{ij}) \in \lex{espace-matrices}{\mathcal M_{p,n}}(\mathbb C)$, on note $A^* = (\overline{a_{ji}}) \in \mathcal M_{n,p}(\mathbb C)$ la matrice transposée et conjuguée. En suivant les coefficients, $(AB)^* = B^*A^*$ ({{c-calcul|Conjugué, module}}, (ii)), et, pour $x \in \mathbb C^n$, identifié à une colonne, $x^*x = \sum_i |x_i|^2$ ({{c-calcul|Conjugué, module}}, (iii)) est un réel positif, nul seulement si $x = 0$.
+    enonce: |
+      Soient $(V, \rho)$ et $(V', \rho')$ deux représentations complexes de $G$.
+
+      (i) $\chi_V(e) = \dim V$, et $\chi_V$ est une fonction centrale. Deux représentations isomorphes ont le même caractère.
+
+      (ii) Le caractère de la somme directe est $\chi_V + \chi_{V'}$.
+
+      (iii) Pour tout $g \in G$, on a $\chi_V(g^{-1}) = \overline{\chi_V(g)}$.
+
+      (iv) Un caractère linéaire $\lambda$ vérifie $\lambda(gh) = \lambda(g)\lambda(h)$, $\lambda(g)^m = 1$ si $g$ est d'ordre $m$, $|\lambda(g)| = 1$, et $\lambda(g^{-1}) = \overline{\lambda(g)} = \lambda(g)^{-1}$.
+
+      (v) Le caractère de la représentation de permutation d'une action sur $X$ ({{rp-representations|Représentations}}, (iii)) est le nombre de points fixes, $\chi(g) = |\{x \in X : g \cdot x = x\}|$, et celui de l'hyperplan stable $H$ est $\chi(g) - 1$. Le caractère de la représentation régulière vaut $|G|$ en $e$ et $0$ ailleurs.
+    preuve: |
+      (i) Comme $\rho$ est un morphisme, $\rho(e) = \mathrm{id}_V$, de trace $\dim V$. Ensuite $\rho(hgh^{-1}) = \rho(h)\rho(g)\rho(h)^{-1}$ ; dans une base, de matrices $P$ pour $\rho(h)$ et $A$ pour $\rho(g)$, on a
+      $$\operatorname{tr}(PAP^{-1}) = \operatorname{tr}(AP^{-1}P) = \operatorname{tr} A$$
+      ({{v-trace|Trace}}, (ii)).
+
+      Si $f : V \to V'$ est un isomorphisme et $(b_j)$ une base de $V$, alors $(f(b_j))$ est une base de $V'$, et $\rho'(g)f(b_j) = f(\rho(g)b_j)$ : si $\rho(g)b_j = \sum_i a_{ij}b_i$, alors $\rho'(g)f(b_j) = \sum_i a_{ij}f(b_i)$. Les deux endomorphismes ont la même matrice dans ces bases, donc la même trace.
+
+      (ii) Dans la base de $V \times V'$ formée des $(b_j, 0)$ et des $(0, b'_k)$, la matrice de $(\rho \oplus \rho')(g)$ est diagonale par blocs, de blocs les matrices de $\rho(g)$ et de $\rho'(g)$ ; sa trace est la somme des deux traces.
+
+      (iii) *Une forme hermitienne invariante.* Fixons une base de $V$, de dimension $d$, et notons $A_g$ la matrice de $\rho(g)$, de sorte que $A_{gh} = A_gA_h$. Posons
+      $$Q = \sum_{h \in G} A_h^*A_h \in \mathcal M_d(\mathbb C).$$
+
+      Pour $x \neq 0$ dans $\mathbb C^d$, on a, en notant $y_h = A_hx$,
+      $$x^*Qx = \sum_h y_h^*y_h \geqslant y_e^*y_e = x^*x > 0,$$
+      chaque terme étant un réel positif. Donc $Qx \neq 0$ : $Q$ est injective, donc inversible ({{v-rang|Théorème du rang}}).
+
+      Puisque $h \mapsto hg$ est une bijection de $G$,
+      $$\begin{aligned} A_g^*QA_g &= \sum_h (A_hA_g)^*(A_hA_g) \\ &= \sum_h A_{hg}^*A_{hg} = Q. \end{aligned}$$
+      En multipliant à gauche par $Q^{-1}$ et à droite par $A_g^{-1}$, on obtient $A_g^{-1} = Q^{-1}A_g^*Q$.
+
+      *Conclusion.* Par (ii) du nœud {{v-trace|Trace}},
+      $$\begin{aligned} \chi_V(g^{-1}) &= \operatorname{tr}(Q^{-1}A_g^*Q) = \operatorname{tr}(A_g^*) \\ &= \sum_i \overline{a_{ii}} = \overline{\chi_V(g)}, \end{aligned}$$
+      la conjugaison étant additive ({{c-calcul|Conjugué, module}}, (ii)).
+
+      (iv) Le morphisme $\rho$ est ici la multiplication par $\lambda(g)$, d'où $\lambda(gh) = \lambda(g)\lambda(h)$, puis $\lambda(g)^m = \lambda(g^m) = \lambda(e) = 1$ ({{gf-cycliques|Groupes cycliques}}, (i)).
+
+      Le réel positif $t = |\lambda(g)|$ vérifie $t^m = 1$ ({{c-calcul|Conjugué, module}}, (iii)) ; si $t > 1$, on aurait $t^m > 1$, et si $t < 1$, $t^m < 1$, donc $t = 1$. Enfin $\lambda(g)\overline{\lambda(g)} = 1$ et $\lambda(g)\lambda(g^{-1}) = \lambda(e) = 1$.
+
+      (v) Dans la base $(e_x)$, le coefficient diagonal d'indice $x$ de la matrice de $\rho_X(g)$ vaut $1$ si $g \cdot x = x$ et $0$ sinon : la trace compte les points fixes. Comme $K^X = \mathbb Cs \oplus H$, par (ii) et par {{rp-representations|Représentations}}, (ii), on a $\chi = 1 + \chi_H$, la droite $\mathbb Cs$ portant la représentation triviale. Pour la représentation régulière, $gh = h$ équivaut à $g = e$.
+    remarques:
+      - |
+        Pour la représentation de permutation de $\mathfrak S_3$ sur $\mathbb C^3$, le caractère vaut $3$ en l'identité, $1$ en chaque transposition, qui fixe un point, et $0$ en chaque permutation circulaire. Sur le plan $\{x + y + z = 0\}$, il vaut donc $2$, $0$ et $-1$. Ces trois nombres, un par classe de conjugaison, suffiront à montrer que ce plan est irréductible et à décomposer toute représentation de $\mathfrak S_3$.
+      - |
+        Le point (iii) dit que chaque $\rho(g)$ conserve la forme hermitienne $(x, y) \mapsto x^*Qy$ : obtenue, comme au théorème de Maschke, par une moyenne sur le groupe, elle rend toutes les matrices $A_g$ unitaires pour elle.
+
+        ```schema rp-caracteres
+        La matrice réelle $A$, de colonnes $(0, 1)$ et $(-1, -1)$, vérifie $A^3 = I$ sans conserver le cercle unité, en pointillé : elle envoie $x = (1, 0)$ sur $Ax = (0, 1)$, puis sur $A^2x = (-1, -1)$, qui n'est pas sur le cercle. Les trois points sont sur l'ellipse $\{y : {}^ty\,Qy = 4\}$, en rouge, où $Q = I + {}^tAA + {}^t(A^2)A^2$ a pour lignes $(4, -2)$ et $(-2, 4)$ : $A$ conserve cette ellipse et, en bleu, y fait tourner les trois points.
+        ```
+      - |
+        L'erreur la plus répandue est de traiter le caractère comme un morphisme. Il ne l'est qu'en degré $1$ : sur le plan $\{x + y + z = 0\}$ de $\mathfrak S_3$, une transposition $\tau$ vérifie $\tau^2 = e$, mais $\chi(\tau)^2 = 0$ alors que $\chi(e) = 2$. La trace d'un produit n'est pas le produit des traces ({{v-trace|Trace}}).
+
+  - id: rp-invariants
+    etiquette: Invariants
+    nature: lemme
+    titre: Invariants et moyenne sur le groupe
+    texte: |
+      Pour une représentation complexe $(V, \rho)$, le sous-espace des **invariants** est $V^G = \{x \in V : \rho(g)x = x \text{ pour tout } g\}$.
+
+      Pour deux représentations $(V, \rho)$ et $(V', \rho')$, on munit l'espace $\lex{espace-applications-lineaires}{\mathcal L}(V, V')$ des applications
+      $$\sigma(g)(f) = \rho'(g) \circ f \circ \rho(g)^{-1}.$$
+    enonce: |
+      (i) L'endomorphisme $p = \frac{1}{|G|}\sum_{g \in G} \rho(g)$ est un projecteur d'image $V^G$, et
+      $$\dim V^G = \frac{1}{|G|}\sum_{g \in G} \chi_V(g).$$
+
+      (ii) $(\mathcal L(V, V'), \sigma)$ est une représentation, dont les invariants sont les éléments de $\operatorname{Hom}_G(V, V')$, et dont le caractère est $g \mapsto \overline{\chi_V(g)}\,\chi_{V'}(g)$.
+
+      (iii) Par suite,
+      $$\begin{aligned} &\dim \operatorname{Hom}_G(V, V') \\ &\quad = \frac{1}{|G|}\sum_{g \in G} \chi_{V'}(g)\,\overline{\chi_V(g)}. \end{aligned}$$
+    preuve: |
+      (i) Pour $h \in G$, $\rho(h) \circ p = \frac{1}{|G|}\sum_g \rho(hg) = p$, $g \mapsto hg$ étant une bijection : l'image de $p$ est contenue dans $V^G$. Pour $x \in V^G$, chaque $\rho(g)x$ vaut $x$, et $p(x) = x$. Donc $p \circ p = p$ et $\operatorname{Im} p = V^G$.
+
+      Par {{v-somme-directe|Sommes directes}}, (iii), $V = V^G \oplus \operatorname{Ker} p$. Dans une base formée d'une base de $V^G$, à $r$ éléments, et d'une base de $\operatorname{Ker} p$, la matrice de $p$ est diagonale, de coefficients $1$ ($r$ fois) puis $0$ : $\operatorname{tr} p = r = \dim V^G$.
+
+      D'autre part, la trace d'un endomorphisme est celle de sa matrice, qui dépend linéairement de lui ({{v-matrices|Matrices}}, (i), et {{v-trace|Trace}}, (i)) : $\operatorname{tr} p = \frac{1}{|G|}\sum_g \chi_V(g)$.
+
+      (ii) Chaque $\sigma(g)$ est linéaire en $f$, $\sigma(e) = \mathrm{id}$, et
+      $$\begin{aligned} \sigma(g)\sigma(h)(f) &= \rho'(g)\rho'(h) f \rho(h)^{-1}\rho(g)^{-1} \\ &= \sigma(gh)(f) ; \end{aligned}$$
+      donc $\sigma(g)$ est bijective, de réciproque $\sigma(g^{-1})$, et $\sigma$ est un morphisme. L'égalité $\sigma(g)(f) = f$ pour tout $g$ s'écrit $\rho'(g) \circ f = f \circ \rho(g)$ : les invariants sont les morphismes.
+
+      Pour le caractère, fixons des bases de $V$ et $V'$, de dimensions $d$ et $d'$, et soient $A$ et $B$ les matrices de $\rho(g)$ et $\rho'(g)$, et $C = A^{-1}$.
+
+      Par {{v-matrices|Matrices}}, (i) et (ii), $\sigma(g)$ devient l'application $F \mapsto BFC$ de $\mathcal M_{d',d}(\mathbb C)$.
+
+      On en calcule la trace dans la base des matrices élémentaires : $E_{ij}$, pour $1 \leqslant i \leqslant d'$ et $1 \leqslant j \leqslant d$, a pour seul coefficient non nul un $1$ en position $(i, j)$, et ces matrices forment une base de $\mathcal M_{d',d}(\mathbb C)$, toute matrice s'écrivant de manière unique $\sum_{i,j} f_{ij}E_{ij}$ ({{v-libre|Familles libres, bases}}).
+
+      Le coefficient d'indice $(k, l)$ de $BE_{ij}C$ est $b_{ki}c_{jl}$ ; la coordonnée de $BE_{ij}C$ sur $E_{ij}$ est donc $b_{ii}c_{jj}$, et
+      $$\operatorname{tr}\sigma(g) = \sum_{i, j} b_{ii}c_{jj} = \operatorname{tr} B \cdot \operatorname{tr} A^{-1}.$$
+      Or $\operatorname{tr} B = \chi_{V'}(g)$, et $\operatorname{tr} A^{-1} = \chi_V(g^{-1}) = \overline{\chi_V(g)}$ ({{rp-caracteres|Caractères}}, (iii)).
+
+      (iii) On applique (i) à la représentation de (ii).
+    remarques:
+      - |
+        Pour un caractère linéaire $\lambda$ non trivial, la droite qu'il définit n'a pas d'invariant non nul, et (i) donne $\sum_g \lambda(g) = 0$. Pour $G = \mathbb Z/3\mathbb Z$ et $\lambda(\bar k) = j^k$, où $j = \frac{-1 + i\sqrt 3}{2}$ vérifie $j^3 = 1$ et $j \neq 1$, c'est l'identité $1 + j + j^2 = 0$.
+
+        L'erreur la plus répandue est de croire que la moyenne d'un caractère peut être un nombre complexe quelconque : c'est toujours un entier naturel, la dimension d'un espace.
+      - |
+        La moyenne sur le groupe est l'unique outil du chapitre. Le théorème de Maschke moyenne un projecteur, la forme hermitienne de {{rp-caracteres|Caractères}} moyenne une forme positive, et (i) moyenne la représentation elle-même ; la trace transforme alors une moyenne d'endomorphismes en une moyenne de nombres, que le seul caractère permet de calculer.
+
+  - id: rp-orthogonalite
+    etiquette: Orthogonalité
+    nature: théorème
+    titre: Relations d'orthogonalité des caractères
+    texte: |
+      Sur l'espace $\mathbb C^G$ des fonctions de $G$ dans $\lex{ensemble-complexes}{\mathbb C}$, on pose
+      $$\langle \varphi, \psi \rangle = \frac{1}{|G|}\sum_{g \in G} \varphi(g)\,\overline{\psi(g)}.$$
+
+
+      Cette expression est linéaire en $\varphi$, vérifie $\langle \psi, \varphi \rangle = \overline{\langle \varphi, \psi \rangle}$, et $\langle \varphi, \varphi \rangle = \frac{1}{|G|}\sum_g |\varphi(g)|^2$ est un réel strictement positif si $\varphi \neq 0$ ({{c-calcul|Conjugué, module}}).
+    enonce: |
+      (i) Pour deux représentations $V$ et $V'$, $\langle \chi_{V'}, \chi_V \rangle = \dim \operatorname{Hom}_G(V, V')$. Si $V$ et $V'$ sont irréductibles, $\langle \chi_V, \chi_{V'} \rangle$ vaut $1$ si elles sont isomorphes et $0$ sinon.
+
+      (ii) *Multiplicités.* Si $V = W_1 \oplus \cdots \oplus W_k$ avec des sous-représentations $W_i$ irréductibles, alors, pour toute représentation irréductible $W$, le nombre des indices $i$ tels que $W_i \cong W$ vaut $\langle \chi_V, \chi_W \rangle$. Il ne dépend pas de la décomposition : c'est la **multiplicité** de $W$ dans $V$.
+
+      (iii) Deux représentations qui ont le même caractère sont isomorphes.
+
+      (iv) $V$ est irréductible si et seulement si $\langle \chi_V, \chi_V \rangle = 1$.
+    preuve: |
+      (i) La première égalité est {{rp-invariants|Invariants}}, (iii). Pour $V$ et $V'$ irréductibles, c'est le lemme de Schur ({{rp-schur|Schur}}, (iii)), et la valeur, $0$ ou $1$, est réelle, donc égale à sa conjuguée $\langle \chi_V, \chi_{V'} \rangle$.
+
+      (ii) Par {{rp-caracteres|Caractères}}, (ii), et {{rp-representations|Représentations}}, (ii), appliqués de proche en proche à la définition de la somme directe, $\chi_V = \sum_i \chi_{W_i}$. La linéarité en la première variable et (i) donnent
+      $$\begin{aligned} \langle \chi_V, \chi_W \rangle &= \sum_i \langle \chi_{W_i}, \chi_W \rangle \\ &= |\{i : W_i \cong W\}|. \end{aligned}$$
+
+      (iii) Soient $V$ et $V'$ de même caractère. Si $\chi_V(e) = \dim V = 0$, les deux sont nuls. Sinon, écrivons-les comme sommes directes d'irréductibles par le théorème de Maschke ({{rp-maschke|Maschke}}, (ii)), $V = W_1 \oplus \cdots \oplus W_k$ et $V' = W'_1 \oplus \cdots \oplus W'_{k'}$.
+
+      Par (ii), chaque classe d'isomorphisme de représentations irréductibles apparaît le même nombre de fois parmi les $W_i$ et parmi les $W'_j$ ; en particulier $k = k'$, et il existe une bijection $\tau$ de $\{1, \dots, k\}$ sur lui-même telle que $W_i \cong W'_{\tau(i)}$ pour chaque $i$.
+
+      L'application qui envoie $w_1 + \cdots + w_k$ sur $\sum_i \varphi_i(w_i)$, où $\varphi_i : W_i \to W'_{\tau(i)}$ est un isomorphisme, est un isomorphisme de $V$ sur $V'$ : il est bijectif par unicité des écritures, et respecte chaque $\rho(g)$ terme à terme.
+
+      (iv) Regroupons les $W_i$ d'une décomposition de $V \neq \{0\}$ par classes d'isomorphisme : $s$ classes deux à deux distinctes, de représentants $U_1, \dots, U_s$ et de multiplicités $m_1, \dots, m_s \geqslant 1$. Alors $\chi_V = \sum_j m_j\chi_{U_j}$, et (i) donne
+      $$\langle \chi_V, \chi_V \rangle = \sum_{j=1}^s m_j^2.$$
+
+
+      Cette somme vaut $1$ si et seulement si $s = 1$ et $m_1 = 1$, c'est-à-dire $k = 1$ et $V = W_1$ irréductible. Pour $V = \{0\}$, $\langle \chi_V, \chi_V \rangle = 0$.
+    remarques:
+      - |
+        Pour le plan $\{x + y + z = 0\}$ de $\mathfrak S_3$, de caractère $2$, $0$, $-1$ sur les classes à $1$, $3$ et $2$ éléments, on trouve
+        $$\langle \chi, \chi \rangle = \frac{4 + 3 \cdot 0 + 2 \cdot 1}{6} = 1 :$$
+        le plan est irréductible. Pour $\mathbb C^3$ entier, de caractère $3$, $1$, $0$, on trouve $\frac{9 + 3}{6} = 2 = 1^2 + 1^2$ : deux constituants irréductibles non isomorphes, la droite triviale et le plan.
+      - |
+        L'erreur la plus répandue est de croire que les sous-espaces d'une décomposition sont uniques. Seules les multiplicités le sont. Pour $G$ agissant trivialement sur $\mathbb C^2$, tout couple de droites distinctes fournit une décomposition en deux représentations triviales : il y en a une infinité, toutes de multiplicité $2$ pour la représentation triviale.
+      - |
+        Les caractères irréductibles se comportent comme une famille orthonormée d'un espace hermitien, et la multiplicité $\langle \chi_V, \chi_W \rangle$ est la coordonnée de $\chi_V$ sur $\chi_W$. Pour $G = \mathbb Z/n\mathbb Z$, ce sont les fonctions $\bar k \mapsto \zeta^{jk}$, où $\zeta$ est une racine primitive $n$-ième de l'unité ({{rp-lineaires|Caractères linéaires}}), et les relations d'orthogonalité sont celles de la transformée de Fourier discrète, version finie des bases hilbertiennes de l'{{fourier|analyse de Fourier}}.
+
+  - id: rp-reguliere
+    etiquette: Représentation régulière
+    nature: théorème
+    titre: La représentation régulière et la somme des carrés des degrés
+    enonce: |
+      (i) Toute représentation irréductible $W$ de $G$ apparaît dans la [[representation-reguliere|représentation régulière]] avec la multiplicité $\dim W$.
+
+      (ii) Il n'y a qu'un nombre fini de classes d'isomorphisme de représentations irréductibles de $G$. Si $W_1, \dots, W_r$ en sont des représentants, de degrés $d_1, \dots, d_r$ et de caractères $\chi_1, \dots, \chi_r$, alors $\chi_{\mathrm{reg}} = \sum_i d_i\chi_i$, d'où
+      $$\sum_{i=1}^r d_i^2 = |G|$$
+      et, pour tout $g \neq e$,
+      $$\sum_{i=1}^r d_i\,\chi_i(g) = 0.$$
+    preuve: |
+      (i) Le caractère régulier vaut $|G|$ en $e$ et $0$ ailleurs ({{rp-caracteres|Caractères}}, (v)) ; donc
+      $$\langle \chi_{\mathrm{reg}}, \chi_W \rangle = \frac{1}{|G|}\,|G|\,\overline{\chi_W(e)} = \dim W,$$
+      et l'on conclut par {{rp-orthogonalite|Orthogonalité}}, (ii).
+
+      (ii) Fixons une décomposition $\mathbb C^G = U_1 \oplus \cdots \oplus U_k$ en irréductibles ({{rp-maschke|Maschke}}, (ii)). Par (i), toute représentation irréductible $W$, de multiplicité $\dim W \geqslant 1$, est isomorphe à l'un des $U_j$ : les classes d'isomorphisme sont parmi celles des $U_j$, en nombre fini. On prend pour $W_i$ le premier $U_j$ de chaque classe.
+
+      En regroupant les $U_j$ par classes, $\chi_{\mathrm{reg}} = \sum_i d_i\chi_i$ par (i). L'évaluation en $e$ donne $|G| = \sum_i d_i \cdot d_i$, et l'évaluation en $g \neq e$ donne $0 = \sum_i d_i\chi_i(g)$.
+    remarques:
+      - |
+        Pour $\mathfrak S_3$, la représentation triviale, la signature et le plan $\{x + y + z = 0\}$ sont irréductibles et deux à deux non isomorphes, leurs caractères étant distincts. Comme $1^2 + 1^2 + 2^2 = 6 = |\mathfrak S_3|$, il n'y en a pas d'autre : une quatrième classe ajouterait au moins $1$ à la somme.
+      - |
+        Un théorème plus fin, dû à Frobenius (« Über die Primfactoren der Gruppendeterminante », 1896, §12), affirme que chaque degré $d_i$ divise $|G|$ ; il est admis ici.
+
+        La difficulté contournée est arithmétique. Il faut savoir que les sommes et les produits d'entiers algébriques, racines de polynômes unitaires à coefficients entiers, sont encore des entiers algébriques, ce que démontre l'argument du déterminant sur un $\lex{ensemble-entiers-relatifs}{\mathbb Z}$-module de type fini.
+
+        Il faut ensuite que les $\chi_i(g)$ et leurs conjugués en soient, comme sommes de racines de l'unité, valeurs propres de $\rho(g)$, qui vérifie $\rho(g)^m = \mathrm{id}$ si $g$ est d'ordre $m$, et que $\frac{|C|\chi_i(g)}{d_i}$ en soit un pour toute classe $C$ de représentant $g$.
+
+        Enfin
+        $$\frac{|G|}{d_i} = \sum_{C} \frac{|C|\chi_i(g_C)}{d_i}\,\overline{\chi_i(g_C)},$$
+        rationnel et entier algébrique, est un entier. Rien de cela n'est un ancêtre de ce chapitre.
+      - |
+        Les caractères ont aussi des conséquences sur la structure des groupes. Burnside a démontré dans « On groups of order $p^\alpha q^\beta$ » (*Proc. London Math. Soc.* (2) 1, 1904, p. 388-392) que tout groupe d'ordre $p^aq^b$, avec $p$ et $q$ premiers, est [[groupe-resoluble|résoluble]], par un argument d'intégralité de cette nature.
+
+        Ce théorème, admis ici, donnerait d'un coup les ordres $12$, $24$, $36$, $48$ et $56$ du nœud {{gf-moins-de-60|Ordres < 60}}, mais pas l'ordre $30$ ; des démonstrations sans caractères n'ont été trouvées qu'entre 1970 et 1973 (Goldschmidt, Bender, Matsuyama).
+
+  - id: rp-classes
+    etiquette: Fonctions centrales
+    nature: théorème
+    titre: Les caractères irréductibles, base des fonctions centrales
+    texte: |
+      On garde les notations $W_1, \dots, W_r$, $d_i$ et $\chi_i$ du nœud {{rp-reguliere|Représentation régulière}}. La [[table-caracteres|table des caractères]] de $G$ est le tableau des valeurs $\chi_i(g_C)$, où $g_C$ parcourt un système de représentants des classes de conjugaison $C$ ; on y indique le cardinal de chaque classe. On note $C(g)$ le centralisateur de $g$ ({{gf-actions|Actions de groupe}}).
+    enonce: |
+      (i) Les caractères irréductibles $\chi_1, \dots, \chi_r$ forment une base orthonormée de l'espace des [[fonction-centrale|fonctions centrales]] sur $G$. En particulier, $r$ est le nombre de classes de conjugaison de $G$, et toute fonction centrale $f$ s'écrit $f = \sum_i \langle f, \chi_i \rangle \chi_i$.
+
+      (ii) *Orthogonalité des colonnes.* Pour $g, h \in G$,
+      $$\sum_{i=1}^r \chi_i(g)\,\overline{\chi_i(h)}$$
+      vaut $|C(g)|$ si $g$ et $h$ sont conjugués, et $0$ sinon.
+    preuve: |
+      (i) Les fonctions centrales forment un sous-espace de $\mathbb C^G$. Les classes de conjugaison $C_1, \dots, C_s$ forment une partition de $G$ ({{gf-actions|Actions de groupe}}, (i)), et leurs fonctions indicatrices $1_{C_j}$ en forment une base : une fonction centrale $f$ s'écrit $\sum_j f(g_{C_j})1_{C_j}$, et ces fonctions, à supports disjoints, sont libres. Cet espace est donc de dimension $s$.
+
+      Les $\chi_i$ sont centrales ({{rp-caracteres|Caractères}}, (i)) et orthonormées ({{rp-orthogonalite|Orthogonalité}}, (i)) ; une relation $\sum_i a_i\chi_i = 0$, à laquelle on applique $\langle \cdot, \chi_j \rangle$, donne $a_j = 0$ : elles sont libres.
+
+      *Elles engendrent.* Soit $f$ centrale et $f' = f - \sum_i \langle f, \chi_i \rangle \chi_i$, centrale et orthogonale à chaque $\chi_j$.
+
+      Pour toute représentation $(V, \rho)$, posons
+      $$u_V = \sum_{g \in G} \overline{f'(g)}\,\rho(g).$$
+      Pour $h \in G$, en posant $g' = hgh^{-1}$ et en utilisant $f'(h^{-1}g'h) = f'(g')$,
+      $$\begin{aligned} \rho(h)\,u_V\,\rho(h)^{-1} &= \sum_g \overline{f'(g)}\,\rho(hgh^{-1}) \\ &= \sum_{g'} \overline{f'(g')}\,\rho(g') = u_V : \end{aligned}$$
+      $u_V$ est un morphisme de $V$ dans $V$.
+
+      Si $V = W_i$, le lemme de Schur ({{rp-schur|Schur}}, (iii)) donne $u_V = \lambda\,\mathrm{id}$, et
+      $$\begin{aligned} \lambda d_i &= \operatorname{tr} u_V = \sum_g \overline{f'(g)}\,\chi_i(g) \\ &= |G|\,\overline{\langle f', \chi_i \rangle} = 0, \end{aligned}$$
+      d'où $\lambda = 0$.
+
+      Si $V$ est irréductible et $\varphi : W_i \to V$ un isomorphisme, $u_V = \varphi \circ u_{W_i} \circ \varphi^{-1} = 0$. Pour $V$ quelconque, chaque sous-espace stable irréductible $U$ d'une décomposition de Maschke est stable par $u_V$, qui y induit $u_U = 0$ : donc $u_V = 0$.
+
+      Pour la représentation régulière, $u(e_e) = \sum_g \overline{f'(g)}\,e_g = 0$, et, les $e_g$ formant une base, $f' = 0$. Les $\chi_i$ forment donc une base, et $r = s$ ; la nullité de $f'$ est l'écriture annoncée de $f$.
+
+      (ii) Soit $C$ la classe de $h$. Par (i), puisque
+      $$\langle 1_C, \chi_i \rangle = \frac{1}{|G|}\sum_{g \in C} \overline{\chi_i(g)} = \frac{|C|}{|G|}\,\overline{\chi_i(h)},$$
+      on a $1_C = \frac{|C|}{|G|}\sum_i \overline{\chi_i(h)}\,\chi_i$. En évaluant en $g$, la somme cherchée vaut $\frac{|G|}{|C|}\,1_C(g)$.
+
+      Enfin, si $g \in C$, $\frac{|G|}{|C|} = |C(g)|$, le cardinal de l'orbite de $g$ pour la conjugaison étant l'indice de son stabilisateur ({{gf-actions|Actions de groupe}}, (i) et (iii)).
+    remarques:
+      - |
+        Pour un groupe abélien, les classes de conjugaison sont des singletons : il y a $|G|$ caractères irréductibles, tous de degré $1$ par le lemme de Schur, et la somme des carrés des degrés vaut bien $|G|$. Pour $\mathfrak S_3$, trois classes, celles de l'identité, des transpositions et des permutations circulaires, donnent trois caractères irréductibles.
+      - |
+        Les deux relations sont une seule propriété d'une matrice carrée. La matrice d'indices $(i, C)$ et de coefficients $\chi_i(g_C)\sqrt{|C|/|G|}$ a, par {{rp-orthogonalite|Orthogonalité}}, des lignes orthonormées pour le produit hermitien usuel ; une matrice carrée $U$ telle que $UU^* = I$ vérifie aussi $U^*U = I$, ce qui exprime (ii).
+      - |
+        L'erreur la plus répandue est de chercher une correspondance naturelle entre classes de conjugaison et caractères irréductibles : (i) dit seulement qu'ils sont en même nombre. Pour le groupe symétrique, les deux familles sont indexées par les partitions de $n$, ce qui est admis ici, mais pour un groupe quelconque il n'existe pas de bijection canonique.
+
+  - id: rp-lineaires
+    etiquette: Caractères linéaires
+    nature: proposition
+    titre: Caractères linéaires et abélianisé
+    texte: |
+      Le [[groupe-derive|groupe dérivé]] $D(G)$ est l'ensemble des produits finis de commutateurs $[x, y] = xyx^{-1}y^{-1}$ ({{gs-resolubles|Groupes résolubles}}), le produit vide valant $e$. Le quotient $G/D(G)$ est l'**abélianisé** de $G$.
+    enonce: |
+      (i) $D(G)$ est un [[sous-groupe-distingue|sous-groupe distingué]] de $G$, le quotient $G/D(G)$ est abélien, et tout sous-groupe distingué $N$ tel que $G/N$ soit abélien contient $D(G)$.
+
+      (ii) Si $\pi : G \to G/D(G)$ est la projection, l'application $\mu \mapsto \mu \circ \pi$ est une bijection de l'ensemble des [[caractere-lineaire|caractères linéaires]] de $G/D(G)$ sur celui des caractères linéaires de $G$.
+
+      (iii) Un groupe abélien fini $A$ a exactement $|A|$ caractères linéaires, qui sont tous ses caractères irréductibles. Par suite, $G$ a exactement $|G/D(G)|$ caractères linéaires.
+
+      (iv) Si $(V, \rho)$ est une représentation complexe et $\lambda$ un caractère linéaire, $g \mapsto \lambda(g)\rho(g)$ est une représentation sur $V$, de caractère $\lambda\chi_V$ ; elle est irréductible si et seulement si $V$ l'est.
+    preuve: |
+      (i) On a $[x, y]^{-1} = yxy^{-1}x^{-1} = [y, x]$ ; l'inverse d'un produit de commutateurs est le produit, dans l'ordre inverse, de leurs inverses, encore des commutateurs. L'ensemble $D(G)$ contient $e$ et est stable par produit : c'est un sous-groupe.
+
+      Il est distingué, puisque
+      $$g[x, y]g^{-1} = [gxg^{-1}, gyg^{-1}],$$
+      et que la conjugaison par $g$ respecte les produits. Par {{gs-resolubles|Groupes résolubles}}, (i), $G/N$ est abélien si et seulement si $N$ contient tous les commutateurs, donc tous leurs produits.
+
+      (ii) Un caractère linéaire $\lambda$ est un morphisme vers le groupe abélien $\mathbb C^\times$ : $\lambda([x, y]) = \lambda(x)\lambda(y)\lambda(x)^{-1}\lambda(y)^{-1} = 1$, et $D(G) \subset \operatorname{Ker} \lambda$. Il passe donc au quotient en un unique morphisme $\mu$ tel que $\lambda = \mu \circ \pi$ ({{a-isomorphisme|Théorème d'isomorphisme}}).
+
+      Réciproquement, $\mu \circ \pi$ est un morphisme de $G$ dans $\mathbb C^\times$, et $\mu$ est déterminé par $\mu \circ \pi$, $\pi$ étant surjective.
+
+      (iii) Dans un groupe abélien, $hgh^{-1} = g$ : les classes de conjugaison sont les singletons, au nombre de $|A|$, et $A$ a $|A|$ caractères irréductibles deux à deux distincts ({{rp-classes|Fonctions centrales}}, (i)), tous de degré $1$ par le lemme de Schur ({{rp-schur|Schur}}, (iv)). Ce sont donc des caractères linéaires ; réciproquement, un caractère linéaire est irréductible ({{rp-representations|Représentations}}, (ii)). La dernière assertion découle de (ii) appliqué au groupe abélien $G/D(G)$.
+
+      (iv) Les scalaires commutent aux endomorphismes, donc
+      $$\lambda(gh)\rho(gh) = \lambda(g)\rho(g)\,\lambda(h)\rho(h),$$
+      et $\lambda(g)\rho(g)$ est inversible puisque $\lambda(g) \neq 0$. Sa trace est $\lambda(g)\chi_V(g)$. Comme $|\lambda(g)| = 1$ ({{rp-caracteres|Caractères}}, (iv)),
+      $$\begin{aligned} \langle \lambda\chi_V, \lambda\chi_V \rangle &= \frac{1}{|G|}\sum_g |\lambda(g)|^2|\chi_V(g)|^2 \\ &= \langle \chi_V, \chi_V \rangle, \end{aligned}$$
+      et l'on conclut par {{rp-orthogonalite|Orthogonalité}}, (iv).
+    remarques:
+      - |
+        Pour $G = \mathbb Z/n\mathbb Z$, les caractères linéaires sont donnés par les racines $n$-ièmes de l'unité. Le polynôme $X^n - 1$ se factorise dans $\mathbb C[X]$ en facteurs de degré $1$ ({{c-dalembert|D'Alembert-Gauss}}, (i)), et ses racines sont simples : une racine multiple $z$ annulerait la dérivée $nX^{n-1}$ ({{pol-derivee|Dérivée formelle}}, (ii)), donc vaudrait $0$, qui n'est pas racine.
+
+        Les $n$ racines forment un sous-groupe de $\mathbb C^\times$, cyclique ({{gf-multiplicatif|Groupe multiplicatif}}, (iii)) ; si $\zeta$ l'engendre, les caractères sont les $\bar k \mapsto \zeta^{jk}$, pour $0 \leqslant j < n$, bien définis puisque $\zeta^n = 1$.
+      - |
+        Pour $\mathfrak S_3$ et $\mathfrak S_4$, le groupe dérivé est le groupe alterné, et les seuls caractères linéaires sont la représentation triviale et la signature. En effet, $\varepsilon$ prend ses valeurs dans le groupe abélien $\{1, -1\}$ et s'annule sur les commutateurs, donc $D(\mathfrak S_n) \subset \mathfrak A_n$.
+
+        Inversement, en composant de droite à gauche, $[(1\ 2), (1\ 3)] = (1\ 2\ 3)$, et, pour toute permutation $\sigma$, $\sigma(a\ b\ c)\sigma^{-1} = (\sigma(a)\ \sigma(b)\ \sigma(c))$, comme on le voit en suivant les images : tous les $3$-cycles sont des commutateurs. Ils engendrent $\mathfrak A_3$, et aussi $\mathfrak A_4$, dont les doubles transpositions sont des produits de deux $3$-cycles ({{gf-alterne-4|Le groupe 𝔄₄}}, (i)).
+      - |
+        L'erreur la plus répandue est d'oublier que les caractères linéaires ne voient que l'abélianisé. Pour $\mathfrak S_3$, $|G/D(G)| = 2$ : deux caractères linéaires seulement, et les $6 - 2 = 4$ unités restantes de la somme $\sum_i d_i^2$ forcent un caractère irréductible de degré $2$.
+
+  - id: rp-s3
+    etiquette: Table de 𝔖₃
+    nature: proposition
+    titre: La table des caractères de 𝔖₃
+    texte: |
+      Les permutations se composent de droite à gauche. Pour toute permutation $\sigma$ et des éléments distincts $a, b, c$, on a
+      $$\begin{aligned} \sigma(a\ b)\sigma^{-1} &= (\sigma(a)\ \sigma(b)), \\ \sigma(a\ b\ c)\sigma^{-1} &= (\sigma(a)\ \sigma(b)\ \sigma(c)), \end{aligned}$$
+      comme on le voit en suivant les images : le membre de gauche envoie $\sigma(a)$ sur $\sigma(b)$, et fixe tout élément qui n'est pas l'image d'un élément déplacé.
+    enonce: |
+      Le groupe $\lex{groupe-symetrique}{\mathfrak S_3}$ a trois classes de conjugaison : l'identité, les trois transpositions et les deux $3$-cycles. Sa [[table-caracteres|table des caractères]] est la suivante, où $\varepsilon$ est la signature et $\chi_H$ le caractère du plan $H = \{x + y + z = 0\}$ de la représentation de permutation :
+
+      ```tableau
+      Caractère ¦ $\mathrm{id}$ (1) ¦ $(1\ 2)$ (3) ¦ $(1\ 2\ 3)$ (2)
+      $1$ ¦ $1$ ¦ $1$ ¦ $1$
+      $\varepsilon$ ¦ $1$ ¦ $-1$ ¦ $1$
+      $\chi_H$ ¦ $2$ ¦ $0$ ¦ $-1$
+      ```
+
+      Ces trois caractères sont les caractères irréductibles de $\mathfrak S_3$ ; entre parenthèses, le nombre d'éléments de chaque classe.
+    preuve: |
+      *Classes.* Les éléments de $\mathfrak S_3$ sont l'identité, les trois transpositions et les deux $3$-cycles $(1\ 2\ 3)$ et $(1\ 3\ 2)$, soit les $6 = 3!$ bijections de $\{1, 2, 3\}$. Par les formules ci-dessus, le conjugué d'une transposition est une transposition, et celui d'un $3$-cycle un $3$-cycle.
+
+      Inversement, pour deux transpositions $(a\ b)$ et $(a'\ b')$, une permutation $\sigma$ qui envoie $a$ sur $a'$ et $b$ sur $b'$ les conjugue ; de même pour deux $3$-cycles $(a\ b\ c)$ et $(a'\ b'\ c')$, avec $\sigma(a) = a'$, $\sigma(b) = b'$, $\sigma(c) = c'$.
+
+      *Caractères.* La représentation triviale et la signature sont de degré $1$, donc irréductibles ({{rp-representations|Représentations}}, (ii)) ; une transposition a pour signature $-1$ et un $3$-cycle, produit de deux transpositions, $1$ ({{v-permutations|Permutations, signature}}).
+
+      Par {{rp-caracteres|Caractères}}, (v), $\chi_H$ est le nombre de points fixes diminué de $1$ : $3 - 1$, $1 - 1$ et $0 - 1$. Son carré scalaire vaut $\frac{4 + 0 + 2}{6} = 1$, et $H$ est irréductible ({{rp-orthogonalite|Orthogonalité}}, (iv)).
+
+      Les trois caractères sont distincts, donc ceux de représentations non isomorphes ({{rp-caracteres|Caractères}}, (i)) ; comme il y a trois classes, il n'y a pas d'autre caractère irréductible ({{rp-classes|Fonctions centrales}}, (i)).
+    remarques:
+      - |
+        Les relations d'orthogonalité se lisent sur la table. Les lignes de $\varepsilon$ et $\chi_H$ donnent $\frac{2 + 0 - 2}{6} = 0$. La colonne de $(1\ 2)$ donne $1^2 + (-1)^2 + 0^2 = 2$, cardinal du centralisateur $\{\mathrm{id}, (1\ 2)\}$, et celle de $(1\ 2\ 3)$ donne $1 + 1 + 1 = 3$, cardinal de $\langle (1\ 2\ 3) \rangle$, qui est son centralisateur.
+      - |
+        Le plan $H$ réalise $\mathfrak S_3$ comme groupe de symétries d'un triangle équilatéral, comme le montre la figure, calculée dans la base orthonormée de $H$ formée de $\frac{1}{\sqrt 2}(1, -1, 0)$ et $\frac{1}{\sqrt 6}(1, 1, -2)$.
+
+        ```schema rp-s3
+        Le dessin est fait dans le plan réel $\{x + y + z = 0\}$ de $\mathbb R^3$. Les projections $p_1, p_2, p_3$ des vecteurs de base forment un triangle équilatéral centré en $0$. La transposition $(1\ 2)$, de trace $0$, est la symétrie d'axe la droite qui passe par $p_3$, en bleu ; le $3$-cycle $(1\ 2\ 3)$, de trace $-1$, fait tourner le triangle d'un tiers de tour, $p_1 \mapsto p_2 \mapsto p_3$, en rouge.
+        ```
+
+  - id: rp-s4
+    etiquette: Table de 𝔖₄
+    nature: proposition
+    titre: La table des caractères de 𝔖₄
+    texte: |
+      Pour des éléments distincts $a, b, c, d$ de $\{1, 2, 3, 4\}$, le **$4$-cycle** $(a\ b\ c\ d)$ envoie $a$ sur $b$, $b$ sur $c$, $c$ sur $d$ et $d$ sur $a$. Comme au nœud {{rp-s3|Table de 𝔖₃}}, en suivant les images,
+      $$\sigma(a\ b\ c\ d)\sigma^{-1} = (\sigma(a)\ \sigma(b)\ \sigma(c)\ \sigma(d)),$$
+      et le conjugué d'une double transposition $(a\ b)(c\ d)$ est $(\sigma(a)\ \sigma(b))(\sigma(c)\ \sigma(d))$.
+    enonce: |
+      Le groupe $\lex{groupe-symetrique}{\mathfrak S_4}$ a cinq classes de conjugaison, et sa table des caractères est la suivante, où $\chi_H$ est le caractère de l'hyperplan $H = \{x_1 + x_2 + x_3 + x_4 = 0\}$ de la représentation de permutation :
+
+      ```tableau
+      Caractère ¦ $\mathrm{id}$ (1) ¦ $(1\ 2)$ (6) ¦ $(1\ 2)(3\ 4)$ (3) ¦ $(1\ 2\ 3)$ (8) ¦ $(1\ 2\ 3\ 4)$ (6)
+      $1$ ¦ $1$ ¦ $1$ ¦ $1$ ¦ $1$ ¦ $1$
+      $\varepsilon$ ¦ $1$ ¦ $-1$ ¦ $1$ ¦ $1$ ¦ $-1$
+      $\chi_2$ ¦ $2$ ¦ $0$ ¦ $2$ ¦ $-1$ ¦ $0$
+      $\chi_H$ ¦ $3$ ¦ $1$ ¦ $-1$ ¦ $0$ ¦ $-1$
+      $\varepsilon\chi_H$ ¦ $3$ ¦ $-1$ ¦ $-1$ ¦ $0$ ¦ $1$
+      ```
+
+      Le caractère $\chi_2$, de degré $2$, est déterminé par les quatre autres.
+    preuve: |
+      *Les éléments.* Il y a $\binom 42 = 6$ transpositions, $3$ doubles transpositions et $8$ $3$-cycles ({{gf-alterne-4|Le groupe 𝔄₄}}, (i)). Un $4$-cycle s'écrit de manière unique $(1\ b\ c\ d)$, puisque $b$, $c$, $d$ sont les images successives de $1$ ; il y en a $3! = 6$.
+
+      Ces $1 + 6 + 3 + 8 + 6 = 24$ permutations sont distinctes : l'identité a quatre points fixes, une transposition deux, un $3$-cycle un, et les deux derniers types aucun ; une double transposition $\tau$ vérifie $\tau^2 = \mathrm{id}$, tandis qu'un $4$-cycle envoie $1$ sur $b$ puis sur $c \neq 1$. Comme $|\mathfrak S_4| = 24$ (même nœud), ce sont toutes les permutations.
+
+      *Les classes.* Par les formules de conjugaison, chacun des cinq types est stable par conjugaison ; et deux permutations du même type sont conjuguées par une permutation $\sigma$ qui envoie, dans l'ordre, les éléments écrits dans l'une sur ceux écrits dans l'autre. Les cinq types sont donc les cinq classes.
+
+      *Quatre caractères irréductibles.* La signature vaut $-1$ sur les transpositions, $1$ sur les doubles transpositions et les $3$-cycles, produits de deux transpositions, et $-1$ sur les $4$-cycles, puisque $(a\ b\ c\ d) = (a\ d)(a\ c)(a\ b)$ ({{v-permutations|Permutations, signature}}, (iii)).
+
+      Par {{rp-caracteres|Caractères}}, (v), $\chi_H$ vaut $4 - 1$, $2 - 1$, $0 - 1$, $1 - 1$ et $0 - 1$ ; son carré scalaire est $\frac{9 + 6 + 3 + 0 + 6}{24} = 1$, et $H$ est irréductible ({{rp-orthogonalite|Orthogonalité}}, (iv)).
+
+      La représentation $\varepsilon\rho_H$ est irréductible de caractère $\varepsilon\chi_H$ ({{rp-lineaires|Caractères linéaires}}, (iv)), distinct de $\chi_H$. Les quatre caractères $1$, $\varepsilon$, $\chi_H$ et $\varepsilon\chi_H$ sont distincts, donc deux à deux orthogonaux.
+
+      *Le cinquième.* Il y a cinq caractères irréductibles ({{rp-classes|Fonctions centrales}}, (i)). Le degré $d$ du dernier vérifie
+      $$1 + 1 + d^2 + 9 + 9 = 24$$
+      ({{rp-reguliere|Représentation régulière}}, (ii)), donc $d = 2$.
+
+      La relation $\sum_i d_i\chi_i(g) = 0$ pour $g \neq e$ (même nœud) donne
+      $$\begin{aligned} 2\chi_2(g) = -\big(&1 + \varepsilon(g) \\ &+ 3\chi_H(g) + 3\varepsilon(g)\chi_H(g)\big). \end{aligned}$$
+      La parenthèse vaut $0$, $-4$, $2$ et $0$ sur les classes de $(1\ 2)$, $(1\ 2)(3\ 4)$, $(1\ 2\ 3)$ et $(1\ 2\ 3\ 4)$, d'où les valeurs $0$, $2$, $-1$ et $0$ de $\chi_2$.
+    remarques:
+      - |
+        Le calcul détermine $\chi_2$ sans construire la représentation, dont l'existence est garantie par {{rp-classes|Fonctions centrales}}.
+
+        On la retrouve ainsi : $\mathfrak S_4$ agit par conjugaison sur ses trois doubles transpositions, ce qui fournit un morphisme $\mathfrak S_4 \to \mathfrak S_3$, en les numérotant, de noyau le groupe $V$ formé de l'identité et des doubles transpositions. En le composant avec le plan $H$ de $\mathfrak S_3$, on obtient une représentation de degré $2$ dont le caractère, calculé classe par classe, est $\chi_2$ ; un programme le confirme, ainsi que toutes les relations d'orthogonalité de la table.
+      - |
+        La colonne de $(1\ 2)(3\ 4)$ donne $1 + 1 + 4 + 1 + 1 = 8 = \frac{24}{3}$, cardinal du centralisateur d'une double transposition, et le carré scalaire de $\chi_2$ vaut $\frac{4 + 0 + 3 \cdot 4 + 8 \cdot 1 + 0}{24} = 1$, comme il se doit.
+      - |
+        Frobenius a défini les caractères dans des lettres à Dedekind d'avril 1896, et calculé dès ce moment ceux de petits groupes ; sa note « Über Gruppencharaktere » parut dans les *Sitzungsberichte* de l'Académie de Berlin de 1896 (p. 985-1021). Les caractères y sont introduits sans représentations, qui n'apparaissent dans son œuvre que l'année suivante.
+
+  - id: rp-quaternions
+    etiquette: 𝒟₄ et 𝒬₈
+    nature: proposition
+    titre: Le groupe diédral 𝒟₄ et le groupe des quaternions ont la même table
+    texte: |
+      On reprend le [[groupe-diedral|groupe diédral]] $\mathcal D_4$, d'éléments $r^m$ et $r^ms$, et le groupe $\mathcal Q_8 = \{\pm I, \pm i, \pm j, \pm k\}$ du nœud {{gf-diedraux|Diédraux, quaternions}}. Dans $\mathcal D_4$, $sr^m = r^{-m}s$ et $s^2 = e$ ; dans $\mathcal Q_8$, $i^2 = j^2 = k^2 = -I$, $ji = -ij$, et $-I$ commute à tout élément.
+    enonce: |
+      (i) Les classes de conjugaison de $\mathcal D_4$ sont $\{e\}$, $\{r^2\}$, $\{r, r^3\}$, $\{s, r^2s\}$ et $\{rs, r^3s\}$ ; celles de $\mathcal Q_8$ sont $\{I\}$, $\{-I\}$, $\{\pm i\}$, $\{\pm j\}$ et $\{\pm k\}$.
+
+      (ii) $D(\mathcal D_4) = \{e, r^2\}$ et $D(\mathcal Q_8) = \{\pm I\}$. Chacun des deux groupes a quatre caractères linéaires : ceux de $\mathcal D_4$ sont déterminés par $\lambda(r), \lambda(s) \in \{1, -1\}$, ceux de $\mathcal Q_8$ par $\lambda(i), \lambda(j) \in \{1, -1\}$, les quatre couples de signes étant atteints.
+
+      (iii) En faisant correspondre les classes dans l'ordre de (i), les deux groupes ont la même table des caractères :
+
+      ```tableau
+      Caractère ¦ $e$ ; $I$ (1) ¦ $r^2$ ; $-I$ (1) ¦ $r$ ; $\pm i$ (2) ¦ $s$ ; $\pm j$ (2) ¦ $rs$ ; $\pm k$ (2)
+      $\lambda_{++}$ ¦ $1$ ¦ $1$ ¦ $1$ ¦ $1$ ¦ $1$
+      $\lambda_{+-}$ ¦ $1$ ¦ $1$ ¦ $1$ ¦ $-1$ ¦ $-1$
+      $\lambda_{-+}$ ¦ $1$ ¦ $1$ ¦ $-1$ ¦ $1$ ¦ $-1$
+      $\lambda_{--}$ ¦ $1$ ¦ $1$ ¦ $-1$ ¦ $-1$ ¦ $1$
+      $\chi$ ¦ $2$ ¦ $-2$ ¦ $0$ ¦ $0$ ¦ $0$
+      ```
+
+      L'indice de $\lambda$ donne les signes de ses valeurs en $r$ et $s$, ou en $i$ et $j$. Pourtant $\mathcal D_4$ et $\mathcal Q_8$ ne sont pas isomorphes ({{gf-ordre-8|Groupes d'ordre 8}}).
+    preuve: |
+      (i) *Dans $\mathcal D_4$.* Le conjugué de $x$ par $r^m$ est $r^mxr^{-m}$, et par $r^ms$ c'est $r^m(sxs^{-1})r^{-m}$. Avec la règle $sr^m = r^{-m}s$, on trouve $sr^ks^{-1} = r^{-k}$ et
+      $$\begin{aligned} r^m(r^ks)r^{-m} &= r^{k + 2m}s, \\ s(r^ks)s^{-1} &= r^{-k}s. \end{aligned}$$
+
+      La classe de $r^k$ est donc $\{r^k, r^{-k}\}$, ce qui donne $\{e\}$, $\{r^2\}$ et $\{r, r^3\}$. Celle de $r^ks$ est formée des $r^{k'}s$ avec $k' \equiv \pm k + 2m \pmod 4$, c'est-à-dire de même parité que $k$ : $\{s, r^2s\}$ et $\{rs, r^3s\}$.
+
+      *Dans $\mathcal Q_8$.* L'élément $-I$ commute à tout élément, et forme avec $I$ deux classes à un élément. On a $jij^{-1} = i^{-1} = -i$ ({{gf-diedraux|Diédraux, quaternions}}, (iii)), et de même $iji^{-1} = -j$ et $iki^{-1} = -k$, par $ji = -ij$ ; la classe de $u \in \{i, j, k\}$ contient donc $\pm u$.
+
+      Le centralisateur de $u$ contient $\langle u \rangle = \{\pm I, \pm u\}$, d'ordre $4$, et n'est pas $\mathcal Q_8$ ; il est donc d'ordre $4$ par le théorème de Lagrange, et la classe de $u$ a $\frac{8}{4} = 2$ éléments ({{gf-actions|Actions de groupe}}, (i)) : c'est $\{\pm u\}$.
+
+      (ii) On a $[r, s] = rsr^{-1}s^{-1} = r \cdot r = r^2$ et
+      $$[i, j] = ij(-i)(-j) = (ij)^2 = k^2 = -I.$$
+      Le quotient par $\{e, r^2\}$, resp. $\{\pm I\}$, est d'ordre $4$, donc abélien ({{gf-ordres-pq|Ordres p, p², 2p, pq}}, (ii)) ; par {{rp-lineaires|Caractères linéaires}}, (i), le groupe dérivé est contenu dans ce sous-groupe d'ordre $2$, et le contient : il lui est égal. Il y a donc quatre caractères linéaires ({{rp-lineaires|Caractères linéaires}}, (iii)).
+
+      Un caractère linéaire $\lambda$ de $\mathcal D_4$ vaut $1$ sur $D(\mathcal D_4)$, d'où $\lambda(r)^2 = \lambda(r^2) = 1$ et $\lambda(s)^2 = \lambda(s^2) = 1$ : $\lambda(r), \lambda(s) \in \{1, -1\}$, et $\lambda(r^ms^b) = \lambda(r)^m\lambda(s)^b$.
+
+      Le couple $(\lambda(r), \lambda(s))$ détermine $\lambda$ ; quatre caractères pour quatre couples, tous sont atteints. Le même raisonnement vaut pour $\mathcal Q_8$, avec $\lambda(k) = \lambda(i)\lambda(j)$ et $\lambda(-I) = \lambda(i)^2 = 1$.
+
+      (iii) Les lignes des caractères linéaires se lisent sur (ii). Il y a cinq caractères irréductibles ({{rp-classes|Fonctions centrales}}, (i)), et le cinquième est de degré $d$ avec $4 + d^2 = 8$ ({{rp-reguliere|Représentation régulière}}, (ii)), soit $d = 2$. Pour $g \neq e$, la même relation donne $2\chi(g) = -\sum_\lambda \lambda(g)$.
+
+      En $r^2$, ou en $-I$, les quatre caractères linéaires valent $1$, et $\chi = -2$. Sur chacune des trois autres classes, les valeurs des quatre caractères linéaires sont deux fois $1$ et deux fois $-1$, comme on le lit sur les lignes ; leur somme est nulle, et $\chi = 0$. Le calcul est le même pour les deux groupes.
+    remarques:
+      - |
+        L'erreur la plus répandue est de croire que la table des caractères détermine le groupe. Elle donne le nombre de classes, leurs cardinaux, les degrés, l'abélianisé, mais pas la loi de groupe : $\mathcal D_4$ a cinq éléments d'ordre $2$ et $\mathcal Q_8$ un seul.
+
+        Ce qui les sépare est le comportement de $g \mapsto g^2$, absent de la table. La moyenne $\frac{1}{8}\sum_g \chi(g^2)$ vaut $1$ pour $\mathcal D_4$ et $-1$ pour $\mathcal Q_8$.
+
+        Dans $\mathcal D_4$, $g^2$ vaut $e$ pour six éléments et $r^2$ pour $r$ et $r^3$, d'où $\frac{6 \cdot 2 - 2 \cdot 2}{8} = 1$. Dans $\mathcal Q_8$, il vaut $I$ pour $\pm I$ et $-I$ pour les six autres, d'où $\frac{2 \cdot 2 - 6 \cdot 2}{8} = -1$.
+
+        C'est l'indicateur de Frobenius-Schur d'un caractère irréductible $\chi$. Il vaut $1$ si la représentation est réalisable par des matrices réelles, $-1$ si $\chi$ est réel sans que la représentation le soit, et $0$ si $\chi$ n'est pas à valeurs réelles ; ces trois cas sont admis ici.
+      - |
+        Les deux représentations de degré $2$ se réalisent par des matrices complexes. Pour $\mathcal D_4$, les matrices $R = \begin{pmatrix} 0 & -1 \\ 1 & 0 \end{pmatrix}$ et $S = \begin{pmatrix} 1 & 0 \\ 0 & -1 \end{pmatrix}$ vérifient $R^4 = S^2 = I$ et $SRS^{-1} = R^{-1}$, et engendrent un groupe d'ordre $8$ isomorphe à $\mathcal D_4$ ({{gf-diedraux|Diédraux, quaternions}}, (ii)).
+
+        Pour $\mathcal Q_8$, on prend, le $i$ des coefficients étant le nombre complexe,
+        $$\rho(i) = \begin{pmatrix} i & 0 \\ 0 & -i \end{pmatrix}, \quad \rho(j) = \begin{pmatrix} 0 & -1 \\ 1 & 0 \end{pmatrix}.$$
+
+
+        Ces deux matrices vérifient les relations de (iv) du même nœud et engendrent un groupe d'ordre $8$, formé de $\pm I$, $\pm\rho(i)$, $\pm\rho(j)$ et $\pm\rho(i)\rho(j)$, isomorphe à $\mathcal Q_8$ ; d'où la représentation $\rho$.
+
+        Les traces, $2$, $-2$ et $0$, redonnent la dernière ligne de la table, ce qu'un calcul exact confirme.
+
+aretes:
+  - [rp-representations, rp-maschke]
+  - [rp-representations, rp-schur]
+  - [rp-representations, rp-caracteres]
+  - [rp-caracteres, rp-invariants]
+  - [rp-maschke, rp-orthogonalite]
+  - [rp-schur, rp-orthogonalite]
+  - [rp-invariants, rp-orthogonalite]
+  - [rp-orthogonalite, rp-reguliere]
+  - [rp-reguliere, rp-classes]
+  - [rp-classes, rp-lineaires]
+  - [rp-classes, rp-s3]
+  - [rp-lineaires, rp-s4]
+  - [rp-s3, rp-s4]
+  - [rp-lineaires, rp-quaternions]
