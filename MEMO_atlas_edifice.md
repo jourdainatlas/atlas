@@ -813,3 +813,32 @@ ceux qui utilisent le choix, ou convention de la mesure de Lebesgue) ; E, citati
 sans le dire ; F, terme du lexique (plusieurs mots) écrit en clair avant sa fiche de définition. Premier passage
 (725 nœuds) : A 5, B 0 (sur 1514 citations de points), C 2, D 30, D2 10, E 0, F 27 — candidats, non erreurs
 certaines. À lancer avant chaque relecture de lot.
+
+## 56. Premier passage du diagnostic : corrections (30 octobre 2026)
+
+Cinq agents (algèbre ; analyse fonctionnelle et mesure ; Fourier et probabilités ; topologie, géométrie, analyse
+réelle ; logique et fondements) ont tranché les quelque 70 candidats du §55 : 33 vraies erreurs corrigées, le reste
+faux positifs ; puis deux relectures indépendantes (d'ensemble, puis ciblée). Principales corrections :
+- notations ou notions avant leur définition : gs-radicaux (e^{iπ/3} retiré), nb-chebyshev (ln : arête
+  nb-logarithme → nb-chebyshev), gs-separabilite (corps de décomposition : arête gs-decomposition →
+  gs-separabilite, retrait de gs-algebriques → gs-separabilite et gs-decomposition → gs-galoisiennes), hk-temoins
+  (codage 2^{code(w)}(2k+1) au lieu des nombres premiers), l-lowenheim, a-groupe, v-applications, de-operations,
+  f-hilbert, f-hahn-banach, f-autoadjoints, fq-sylvester, gd-de-rham (ouverts de ℝ^m ; variétés en remarque),
+  gt-translations (schéma en remarque), rm-positives ; « même nœud » faux dans jh-composition et h-petites-chaines ;
+- choix : c-heine et c-bornes ont désormais des démonstrations sans choix, par la borne supérieure (les preuves
+  séquentielles restent en remarque, avec leur choix dénombrable) — ce qui rend sans choix toute l'intégration des
+  fonctions continues (ri-continues est découpée en (i) uniformément continue, (ii) continue, toutes deux sans
+  choix) ; la chaîne de Fourier jusqu'au TCL est réécrite sans convergence dominée à paramètre continu
+  (fo-transformee par majoration directe et Taylor-Lagrange, fo-inversion par découpage, ε = 1/k) ;
+  m-convergence-dominee est numérotée (i) suites, sans choix, (ii) continuité et (iii) dérivation à paramètre, ⋆ ;
+  champs choix ajoutés à f-evn, f-banach-steinhaus, m-convergence-dominee, ga-correspondance, mt-martingales,
+  fo-divergence ;
+- trous comblés au passage : fo-inversion (ii) (égalité aux points de continuité), fo-plancherel (L² complexe
+  ramené aux parties réelle et imaginaire), ri-sommes (ii) (hypothèse « intégrable »).
+Diagnostic après passage : A, B, C, E à 0 ; D 21, D2 22, F 18, tous jugés faux positifs (points sans choix cités,
+définitions sur place, homonymes du lexique). Croisements : galois 2 → 1, nban 1 → 2, édifice 16. Restent signalés,
+non traités : « espace tangent » défini trois fois (el-niveau, gd-tangent-sm, gd-espace-tangent) ; « convergence
+uniforme » rattachée au lexique à cx-convergence-uniforme alors que fc-uniforme la définit plus tôt ; « forme
+positive » homonyme (quadratique / linéaire) ; entrée de lexique `choix-dependant` absente ; améliorations de
+l'outil proposées par les agents (négations dans les champs choix, héritage transitif, homonymes, définitions en
+gras ou « c'est-à-dire »).
