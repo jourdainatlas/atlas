@@ -174,3 +174,231 @@ def dr_chaines():
     S.fleche(P(1, 0.5) + [62, 0], [X0 - 16, Y0 + C * 0.45], 't', l=1.4)
     S.texte([(P(1, 0.5)[0] + 62 + X0 - 16) / 2, Y0 + C * 0.45 - 16], 'H', 't', taille=16)
     return S
+
+
+def _iota(i, eps, t):
+    """Insère eps en position i (1 ≤ i ≤ k) dans le (k−1)-uplet t."""
+    t = list(t)
+    return tuple(t[:i - 1] + [eps] + t[i - 1:])
+
+
+@schema('dr-cubes')
+def dr_cubes():
+    # Faces du carré I² : ι_{i,ε}(s) insère ε en position i ; signe (−1)^{i+ε}.
+    # Le bord, chaque face parcourue dans son sens (s croissant) ou à rebours selon le signe,
+    # doit faire le tour du carré dans le sens direct (aire orientée > 0).
+    faces = {}
+    for i in (1, 2):
+        for e in (0, 1):
+            a, b = np.array(_iota(i, e, (0,)), float), np.array(_iota(i, e, (1,)), float)
+            sg = (-1) ** (i + e)
+            faces[(i, e)] = (a, b, sg)
+    aire = 0.0
+    for a, b, sg in faces.values():
+        p, q = (a, b) if sg > 0 else (b, a)
+        aire += p[0] * q[1] - q[0] * p[1]
+    assert abs(aire / 2 - 1) < 1e-12                      # contour direct, aire du carré
+    assert faces[(2, 0)][2] == 1 and faces[(1, 1)][2] == 1 and faces[(2, 1)][2] == -1 and faces[(1, 0)][2] == -1
+    S = Schema(520, 345, 'Bord orienté du carré unité : quatre faces et leurs signes')
+    x0, y0, c = 160, 72, 200
+    P = lambda u, v: np.array([x0 + u * c, y0 + (1 - v) * c])
+    S.poly([P(0, 0), P(1, 0), P(1, 1), P(0, 1)], 'r', ferme=True, rempli='g', l=2.4)
+    for (i, e), (a, b, sg) in faces.items():
+        m = (a + b) / 2
+        d = (b - a) * sg                                    # sens de parcours dans le bord
+        S.pointe(P(*m) + 7 * np.array([d[0], -d[1]]), [d[0], -d[1]], 'r', taille=12, largeur=5.5)
+        # flèche grise : sens de la paramétrisation de la face (s croissant), décalée vers l'extérieur
+        nrm = np.array([0.0, 0.0])
+        nrm[i - 1] = 1 if e == 1 else -1                   # normale sortante (coordonnées du carré)
+        off = np.array([nrm[0], -nrm[1]]) * 26
+        S.fleche(P(*(a + 0.2 * (b - a))) + off, P(*(a + 0.8 * (b - a))) + off, 'g', l=1.4)
+        lab = P(*m) + np.array([nrm[0], -nrm[1]]) * 54
+        signe = '+' if sg > 0 else '−'
+        if i == 1:      # côtés verticaux : étiquette à côté
+            S.texte(lab + [0, -12], f'ι_{{{i},{e}}}', 'g', taille=16)
+            S.texte(lab + [0, 14], signe, 'r', taille=18)
+        else:
+            S.texte(lab + [-16, 0], f'ι_{{{i},{e}}}', 'g', taille=16)
+            S.texte(lab + [18, 0], signe, 'r', taille=18)
+    S.texte(P(0, 0) + [-8, 16], '0', 'g', ancre='end', taille=15)
+    S.texte(P(1, 1) + [8, -14], '(1, 1)', 'g', ancre='start', taille=15)
+    S.texte(P(0.5, 0.5), 'I^2', 't', taille=18)
+    # petit repère
+    o = np.array([40.0, 318.0])
+    S.fleche(o, o + [34, 0], 'g', l=1.2); S.texte(o + [44, 0], 't_1', 'g', ancre='start', taille=15)
+    S.fleche(o, o + [0, -34], 'g', l=1.2); S.texte(o + [0, -46], 't_2', 'g', taille=15)
+    return S
+
+
+def _oblique(x, y, z, O=(150.0, 300.0), vx=(150, 0), vy=(70, -50), vz=(0, -150)):
+    """Projection oblique : x vers la droite, y fuyant vers le haut à droite, z vers le haut."""
+    return np.array([O[0] + vx[0] * x + vy[0] * y + vz[0] * z, O[1] + vx[1] * x + vy[1] * y + vz[1] * z])
+
+
+def _visee(vx, vy, vz):
+    """Direction de visée (vers l'intérieur de l'image, composante y positive) : noyau de la projection."""
+    M = np.array([vx, vy, vz], float).T
+    v = np.cross(M[0], M[1])
+    return v if v[1] > 0 else -v
+
+
+@schema('dr-cubes-2')
+def dr_cubes_2():
+    # Faces {t_i = ε} du cube I³, signe (−1)^{i+ε} ; ce signe est celui de det(ν, ∂_1 φ, ∂_2 φ),
+    # où ν est la normale sortante et φ = ι_{i,ε} la paramétrisation de la face.
+    E = np.eye(3)
+    vis_dir = _visee((150, 0), (70, -50), (0, -150))
+    O = (170.0, 330.0)
+    P = lambda p: _oblique(*p, O=O)
+    # (longueur de la normale, décalage de l'étiquette, ancre)
+    place = {(1, 0): (0.5, [-10, 0], 'end'), (1, 1): (0.5, [10, 0], 'start'),
+             (2, 0): (1.0, [-14, 14], 'end'), (2, 1): (1.1, [10, -6], 'start'),
+             (3, 0): (0.55, [0, 18], 'middle'), (3, 1): (0.55, [0, -16], 'middle')}
+    S = Schema(540, 425, 'Le cube unité, ses six faces, leurs normales sortantes et leurs signes')
+    V = {k: P(k) for k in np.ndindex(2, 2, 2)}
+    # sommet caché : celui dont les trois faces sont invisibles
+    cache = None
+    for k in V:
+        normales = [(1 if k[a] else -1) * E[a] for a in range(3)]
+        if all(nv @ vis_dir > 0 for nv in normales):
+            cache = k
+    assert cache == (0, 1, 0)
+    S.surface([V[(0, 0, 0)], V[(1, 0, 0)], V[(1, 0, 1)], V[(0, 0, 1)]], 'g')
+    for u in V:
+        for w in V:
+            if u < w and sum(abs(np.array(u) - np.array(w))) == 1:
+                S.ligne(V[u], V[w], 't', d=(cache in (u, w)), l=1.6)
+    for i in (1, 2, 3):
+        for e in (0, 1):
+            nu = (1 if e == 1 else -1) * E[i - 1]
+            cols = [E[l] for l in range(3) if l != i - 1]      # ι_{i,ε} envoie e_1, e_2 sur ces vecteurs
+            sg = (-1) ** (i + e)
+            assert np.sign(np.linalg.det(np.array([nu] + cols).T)) == sg
+            centre = np.array(_iota(i, e, (0.5, 0.5)), float)
+            vis = nu @ vis_dir < 0
+            assert vis == ((i, e) in {(2, 0), (1, 1), (3, 1)})
+            col = 'b' if sg > 0 else 'v'
+            L, dec, anc = place[(i, e)]
+            p, q = P(centre), P(centre + L * nu)
+            S.point(p, col, r=3.2)
+            S.fleche(p, q, col, d=not vis, l=1.8)
+            S.texte(q + dec, f't_{i} = {e}   ' + ('+' if sg > 0 else '−'), col, ancre=anc, taille=15)
+    o = (40.0, 405.0)
+    for k, nom in ((0, 't_1'), (1, 't_2'), (2, 't_3')):
+        a = _oblique(0, 0, 0, O=o)
+        b = _oblique(*(0.22 * E[k]), O=o)
+        S.fleche(a, b, 'g', l=1.2)
+        S.texte(b + (b - a) / np.linalg.norm(b - a) * 12 + [4, 0], nom, 'g', ancre='start', taille=14)
+    return S
+
+
+@schema('dr-stokes')
+def dr_stokes():
+    # c(u, v, w) = (u, uv, uvw) : image du cube = tétraèdre {0 ≤ z ≤ y ≤ x ≤ 1}.
+    import itertools
+    c = lambda u, v, w: np.array([u, u * v, u * v * w])
+    O, A, B, C = (np.array(p, float) for p in ((0, 0, 0), (1, 0, 0), (1, 1, 0), (1, 1, 1)))
+    coins = {tuple(c(*k)) for k in np.ndindex(2, 2, 2)}
+    assert coins == {tuple(O), tuple(A), tuple(B), tuple(C)}
+    g = np.linspace(0, 1, 7)
+    for a in g:
+        for b in g:
+            assert np.allclose(c(0, a, b), O)                      # face u = 0 : un point
+            assert np.allclose(c(a, 0, b), [a, 0, 0])              # face v = 0 : segment [O, A]
+            assert abs(c(1, a, b)[0] - 1) < 1e-12                  # face u = 1 : plan x = 1
+            p = c(a, 1, b); assert abs(p[0] - p[1]) < 1e-12        # face v = 1 : plan y = x
+            p = c(a, b, 1); assert abs(p[1] - p[2]) < 1e-12        # face w = 1 : plan z = y
+            p = c(a, b, 0); assert abs(p[2]) < 1e-12               # face w = 0 : plan z = 0
+    # volume ∫ u²v = 1/6 ; flux de (x, 0, 0) : +1/2 (face x = 1), −1/3 (face y = x : coefficient u²)
+    n = 200
+    s = (np.arange(n) + 0.5) / n
+    U, W = np.meshgrid(s, s, indexing='ij')
+    flux_v1 = (U * U).mean()
+    vol = (U ** 2 * W).mean()
+    assert abs(flux_v1 - 1 / 3) < 1e-4 and abs(vol - 1 / 6) < 1e-4 and abs(0.5 - flux_v1 - vol) < 1e-4
+    # faces w = 0 et w = 1 : (y, z) = (uv, 0) et (uv, uv) ; le jacobien ∂(y, z)/∂(u, v) est nul, donc x dy∧dz aussi
+    for w in (0.0, 1.0):
+        for uu in g:
+            for vv in g:
+                Jyz = np.array([[vv, uu], [vv * w, uu * w]])           # lignes y, z ; colonnes ∂u, ∂v
+                assert abs(np.linalg.det(Jyz)) < 1e-12
+    proj = dict(vx=(170, 25), vy=(95, -45), vz=(0, -160))
+    vis_dir = _visee(proj['vx'], proj['vy'], proj['vz'])
+    faces = {'x=1': ((A, B, C), np.array([1, 0, 0])), 'y=x': ((O, B, C), np.array([-1, 1, 0])),
+             'z=0': ((O, A, B), np.array([0, 0, -1])), 'z=y': ((O, A, C), np.array([0, -1, 1]))}
+    centre = (O + A + B + C) / 4
+    vis = {}
+    for k, (pts, nv) in faces.items():
+        assert nv @ (sum(pts) / 3 - centre) > 0                  # normale sortante
+        vis[k] = nv @ vis_dir < 0
+    assert vis == {'x=1': True, 'y=x': False, 'z=0': False, 'z=y': True}
+    Oe = (150.0, 262.0)
+    P = lambda p: _oblique(*p, O=Oe, **proj)
+    S = Schema(520, 320, 'Le tétraèdre image du cube par (u, v, w) ↦ (u, uv, uvw)')
+    S.surface([P(O), P(B), P(C)], 'v')
+    S.surface([P(A), P(B), P(C)], 'b')
+    for p, q in itertools.combinations((O, A, B, C), 2):
+        arete_cachee = not any(vis[k] for k, (pts, _) in faces.items()
+                               if any(np.array_equal(p, x) for x in pts) and any(np.array_equal(q, x) for x in pts))
+        S.ligne(P(p), P(q), 't', d=arete_cachee, l=1.6)
+    S.ligne(P(O), P(A), 'r', l=3.4)
+    S.point(P(O), 'r', r=5)
+    S.texte(P(O) + [-12, 10], '0', 't', ancre='end', taille=15)
+    S.texte(P(A) + [8, 14], '(1, 0, 0)', 't', ancre='start', taille=15)
+    S.texte(P(B) + [12, 6], '(1, 1, 0)', 't', ancre='start', taille=15)
+    S.texte(P(C) + [12, -4], '(1, 1, 1)', 't', ancre='start', taille=15)
+    mBC = (P(B) + P(C)) / 2
+    gb = P((A + B + C) / 3)
+    S.ligne(gb, mBC + [14, 0], 'b', d=True)
+    S.texte(mBC + [20, -10], 'x = 1', 'b', ancre='start', taille=15)
+    S.texte(mBC + [20, 12], '+1/2', 'b', ancre='start', taille=16)
+    gv = P((O + B + C) / 3)
+    lab = gv + [-110, -50]
+    S.ligne(lab + [4, 8], gv, 'v', d=True)
+    S.texte(lab + [0, -12], 'y = x', 'v', ancre='end', taille=15)
+    S.texte(lab + [0, 10], '−1/3', 'v', ancre='end', taille=16)
+    o = (40.0, 300.0)
+    for k, nom in ((0, 'x'), (1, 'y'), (2, 'z')):
+        E = np.eye(3)[k]
+        a = _oblique(0, 0, 0, O=o, **proj); b = _oblique(*(0.2 * E), O=o, **proj)
+        S.fleche(a, b, 'g', l=1.2)
+        S.texte(b + (b - a) / np.linalg.norm(b - a) * 12, nom, 'g', taille=14)
+    return S
+
+
+@schema('dr-green')
+def dr_green():
+    # c(s, t) = (s, t(1 + s²)) ; aire ∫ det dc = 4/3 ; ∫_{∂c} x dy : droite +2, arc −2/3.
+    c = lambda s, t: np.array([s, t * (1 + s ** 2)])
+    n = 400
+    u = (np.arange(n) + 0.5) / n
+    assert abs((1 + u ** 2).mean() - 4 / 3) < 1e-5
+    droite = (1 * 2 * np.ones(n)).mean()                           # c(1, t) = (1, 2t) : x dy = 2 dt
+    arc_ = (u * 2 * u).mean()                                      # c(s, 1) : x dy = 2s² ds
+    assert abs(droite - 2) < 1e-12 and abs(arc_ - 2 / 3) < 1e-5 and abs(droite - arc_ - 4 / 3) < 1e-5
+    R = Repere(-0.25, 1.55, -0.25, 2.25, 40, 34, 300, 300)
+    S = Schema(520, 350, 'Le domaine image du carré par c(s, t) = (s, t(1 + s²)) et son bord orienté')
+    R.axes(S, 'x', 'y')
+    ts = np.linspace(0, 1, 120)
+    contour = np.vstack([R(*c(ts, 0 * ts)), R(*c(1 + 0 * ts, ts)), R(*c(ts[::-1], 1 + 0 * ts)),
+                         R(*c(0 * ts, ts[::-1]))])
+    S.surface(contour, 'r')
+    for q in (0.25, 0.5, 0.75):
+        S.poly(R(*c(q + 0 * ts, ts)), 'g', l=1)
+        S.poly(R(*c(ts, q + 0 * ts)), 'g', l=1)
+    S.poly(contour, 'r', ferme=True, l=2.4)
+    # pointes : sens du bord (bas →, droite ↑, arc ←, gauche ↓)
+    for (s0, t0), (ds, dt) in (((0.5, 0), (1, 0)), ((1, 0.5), (0, 1)), ((0.5, 1), (-1, 0)), ((0, 0.5), (0, -1))):
+        p = R(*c(s0, t0))
+        q = R(*c(s0 + 1e-3 * ds, t0 + 1e-3 * dt))
+        d = (q - p) / np.linalg.norm(q - p)
+        S.pointe(p + 7 * d, d, 'r', taille=12, largeur=5.5)
+    S.texte(R(1, 1) + [12, 0], '+2', 'r', ancre='start', taille=16)
+    S.texte(R(*c(0.55, 1)) + [-6, -22], '−2/3', 'r', ancre='end', taille=16)
+    S.texte(R(1, 2) + [10, -4], 'y = 1 + x^2', 't', ancre='start', taille=15)
+    S.texte(R(*c(0.375, 0.375)), 'D', 't', taille=18)
+    S.texte(R(1, 0) + [0, 16], '1', 'g', taille=14)
+    S.texte(R(0, 1) + [-8, 0], '1', 'g', ancre='end', taille=14)
+    S.texte(R(0, 2) + [-8, 0], '2', 'g', ancre='end', taille=14)
+    S.ligne(R(1, 2), R(0, 2), 'g', d=True)
+    return S

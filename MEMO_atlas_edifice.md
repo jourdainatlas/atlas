@@ -624,4 +624,21 @@ finis, point fixe de Banach), mesure de l'image d'un cube (Heine), changement de
 régularité), polaires (aire du disque, π du cosinus), intégrale de Gauss, Liouville (det Z = e^{∫ div}). Aucun
 choix nouveau ; ⋆ sur la remarque de non-complétude (Vitali). J désigne ici le déterminant jacobien (mise en garde :
 matrice jacobienne dans gd-differentielle). Relu par un agent indépendant (deux trous, onze retouches). Source :
-Liouville, J. Math. Pures Appl. 3 (1838), p. 342-349. Stokes reste à faire. 584 nœuds, 328 termes, 49 graphes.
+Liouville, J. Math. Pures Appl. 3 (1838), p. 342-349. Stokes : voir §44. 584 nœuds, 328 termes, 49 graphes.
+
+## 44. Formule de Stokes (30 octobre 2026)
+
+Sept fiches ajoutées au sous-graphe `derham` (contenu/derham.yaml) : intégrales itérées de Riemann sur un pavé
+(dr-iterees), Fubini pour les fonctions continues (dr-fubini), cubes singuliers, faces ι_{i,t} et bord (dr-cubes),
+intégrale sur une chaîne cubique (dr-integrale-cubes), formule de Stokes ∫_c dω = ∫_{∂c} ω (dr-stokes), formes
+exactes et cycles (dr-fermees), Green-Riemann et divergence (dr-green). Choix de méthode : mes n'est pas ancêtre de
+derham, et l'intégrale se fait donc par intégrales itérées de Riemann, Fubini continu démontré sur place ; la
+formule sur le cube unité se ramène à Fubini et au théorème fondamental, puis passe aux cubes par image réciproque.
+Arête d'entrée geod → dr-integrale-cubes. Non démontré, et dit dans une remarque de dr-stokes : la version sur une
+variété compacte orientée à bord (il manque les variétés à bord, le changement de variables n'est pas ancêtre, et
+la partition de l'unité subordonnée à un atlas n'est pas faite). Lexique : cube-singulier, formule-stokes. Quatre
+schémas (outils/edifice_schemas_derham.py) : dr-cubes, dr-cubes-2, dr-stokes, dr-green. Remarques ajoutées à
+gd-orientation, gd-integrale-curviligne et à la théorie geod ; textes de derham et geod dans edifice.yaml mis à
+jour. Relu par un agent indépendant (18 points) : attributions corrigées (Green 1828, Ostrogradski, Cauchy et
+Riemann pour Green-Riemann), remarque de gd-orientation et texte de geod rectifiés, notations unifiées, convention
+pour le pavé de ℝ⁰. Aucun choix nouveau. derham : 0 croisement ; édifice : 16. 591 nœuds, 330 termes, 49 graphes.

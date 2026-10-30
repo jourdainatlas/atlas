@@ -6,13 +6,20 @@
 # Surjectivité démontrée le 29 oct. 2026 : exponentielle par l'intégrale, fonctions plateau, recouvrement
 # localement fini par des cubes, partition de l'unité, chaînes d'accès et périodes locales, recollement ;
 # les cycles sont ramenés aux petites chaînes, sans Mayer-Vietoris. Aucun choix.
+# Formule de Stokes en tout degré (30 oct. 2026) : intégrales itérées de fonctions continues sur un pavé et
+# Fubini (par le théorème de Heine, sans mesure), cubes singuliers lisses, chaînes cubiques et ∂∂ = 0,
+# intégrale d'une k-forme sur une chaîne, ∫_c dω = ∫_∂c ω par Fubini et le théorème fondamental sur le cube
+# unité ; corollaires : intégrale d'une forme exacte sur un cycle, critère de fermeture (dω comme limite
+# d'intégrales sur le bord de petits cubes), Green-Riemann (rectangle, image d'un carré), divergence sur un
+# pavé. La version pour une variété compacte orientée à bord n'est pas traitée : variétés à bord et
+# changement de variables (chapitre edo-changement) ne sont pas des ancêtres. Aucun choix.
 
 graphe: derham
 titre: Théorème de de Rham
 conteneur: derham
 
 entrees:
-  geod: [dr-primitives, dr-integrale, dr-degre1]
+  geod: [dr-primitives, dr-integrale, dr-degre1, dr-integrale-cubes]
   hom: [dr-chaines, dr-surjectivite, dr-degre1]
 
 noeuds:
@@ -136,6 +143,8 @@ noeuds:
     remarques:
       - |
         L'intégration est un accouplement entre formes et chaînes : c'est pourquoi le théorème compare $H^1$ à un **dual** de l'homologie, et non à l'homologie elle-même. Comme l'intégrale est réelle alors que les chaînes sont à coefficients entiers, ce dual est $\operatorname{Hom}(H_1(U), \mathbb R)$.
+      - |
+        Lorsque $\tau$ se prolonge en une application de classe $C^\infty$, l'application $H$ de la démonstration, qui contient déjà $\tau$, est un cube singulier lisse, dont le bord est $\partial\tau$ diminué d'un chemin constant, et le point (i) devient un cas de la formule de Stokes : l'intégrale d'une forme fermée sur un bord est celle de sa différentielle, qui est nulle. Cette formule est démontrée en tout degré, pour des cubes plutôt que des simplexes, au nœud {{dr-stokes|Formule de Stokes}} ; la démonstration donnée ici, par les primitives locales, a l'avantage de ne demander que la continuité de $\tau$.
 
   - id: dr-exp
     etiquette: Une exponentielle réelle
@@ -509,6 +518,379 @@ noeuds:
       - |
         L'erreur la plus répandue est d'oublier que $U$ peut avoir plusieurs morceaux. Sur la réunion de deux disques disjoints, toute forme fermée est exacte, mais une primitive n'est déterminée qu'à une constante près **sur chaque disque** : c'est $H^0$, de dimension $2$, qui compte les morceaux, et non $H^1$. La preuve de (i) construit une primitive sur chaque classe de points liés, avec un point de base fixé sans choix.
 
+  - id: dr-iterees
+    etiquette: Intégrales itérées
+    nature: proposition
+    titre: Intégrale itérée d'une fonction continue sur un pavé
+    texte: |
+      Les nœuds qui suivent établissent la formule de Stokes en tout degré. Il faut d'abord intégrer une fonction de plusieurs variables ; la théorie de la mesure n'étant pas un ancêtre de cette branche, on le fait par des intégrales de Riemann successives, ce qui suffit pour les fonctions continues.
+
+      Un **pavé** de $\lex{n-uplet}{\mathbb R^n}$, $n \geqslant 1$, est un produit $P = \prod_{i=1}^n [a_i, b_i]$ de segments, avec $a_i < b_i$ ; son **volume** est $v(P) = \prod_i (b_i - a_i)$. Le **cube unité** est $I^n = [0, 1]^n$. Par convention, $\mathbb R^0$ est réduit à un point, ainsi que tout pavé de $\mathbb R^0$, en particulier $I^0$, et l'intégrale d'une fonction sur un tel pavé est sa valeur en ce point.
+
+      Soit $g$ une fonction réelle continue sur $P$, muni de la topologie induite. On pose $g_0 = g$ et, pour $1 \leqslant j \leqslant n$,
+      $$\begin{aligned} &g_j(x_{j+1}, \dots, x_n) \\ &\quad = \int_{a_j}^{b_j} g_{j-1}(t, x_{j+1}, \dots, x_n)\,dt, \end{aligned}$$
+      fonction définie sur le pavé $\prod_{i > j}[a_i, b_i]$, et réduite à un nombre pour $j = n$.
+
+      L'**intégrale itérée** de $g$ sur $P$ est ce nombre :
+      $$\int_P g = g_n.$$
+      On intègre d'abord par rapport à $x_1$, puis à $x_2$, et ainsi de suite ; le nœud suivant montrera que l'ordre est indifférent.
+    enonce: |
+      (i) *Intégrales à paramètre.* Soit $K$ une partie compacte de $\mathbb R^q$ et $h$ une fonction continue sur $[a, b] \times K$. La fonction $x \mapsto \int_a^b h(t, x)\,dt$ est continue sur $K$. Par suite, chaque $g_j$ est bien définie et continue, et $\int_P g$ a un sens ; ce nombre ne dépend que des valeurs de $g$ sur $P$.
+
+      (ii) L'intégrale itérée est linéaire et croissante en $g$, et $\int_P 1 = v(P)$. Si $m \leqslant g \leqslant M$ sur $P$, alors
+      $$m\,v(P) \leqslant \int_P g \leqslant M\,v(P).$$
+
+      (iii) *Changement de variable affine.* Soit $\alpha_P(t) = \big(a_1 + (b_1 - a_1)t_1, \dots, a_n + (b_n - a_n)t_n\big)$, qui envoie $I^n$ sur $P$. Alors
+      $$\int_P g = v(P)\int_{I^n} g \circ \alpha_P.$$
+    preuve: |
+      (i) Le produit $[a, b] \times K$ est fermé et borné dans $\mathbb R^{q+1}$, donc compact ({{me-rn|L'espace ℝⁿ}}, (iii)). Par le théorème de Heine ({{me-heine|Théorème de Heine}}), appliqué pour la distance $d_\infty$, à tout $\varepsilon > 0$ correspond $\delta > 0$ tel que $|h(t, x) - h(t, x')| < \varepsilon$ dès que $\|x - x'\|_\infty < \delta$, quel que soit $t \in [a, b]$.
+
+      Chaque fonction $t \mapsto h(t, x)$ est continue, donc intégrable ({{ri-continues|Fonctions continues}}). Pour $x, x' \in K$ tels que $\|x - x'\|_\infty < \delta$, l'inégalité de la moyenne ({{ri-moyenne|Inégalité de la moyenne}}, (i)), appliquée à la différence, donne
+      $$\begin{aligned} &\Big|\int_a^b h(t, x)\,dt - \int_a^b h(t, x')\,dt\Big| \\ &\quad \leqslant (b - a)\,\varepsilon. \end{aligned}$$
+
+      Supposons $g_{j-1}$ continue sur $[a_j, b_j] \times K_j$, où $K_j = \prod_{i > j}[a_i, b_i]$ est compact pour la même raison. Ce qui précède montre que $g_j$ est définie et continue sur $K_j$ ; pour $j = n$, $K_n$ est un point et $g_n$ est l'intégrale d'une fonction continue d'une variable. Par récurrence, toutes les $g_j$ sont définies et continues.
+
+      Enfin $g_j$ ne fait intervenir $g_{j-1}$ que sur $[a_j, b_j] \times K_j$ : par récurrence, seules comptent les valeurs de $g$ sur $P$.
+
+      (ii) Si $g \leqslant g'$ sur $P$, alors $g_j \leqslant g'_j$ pour tout $j$, par récurrence et par croissance de l'intégrale ({{ri-proprietes|Propriétés de l'intégrale}}, (ii)) ; la linéarité passe de même d'une étape à la suivante (même nœud, (i)).
+
+      Pour $g = 1$, on trouve $g_j = \prod_{i \leqslant j}(b_i - a_i)$, et $g_n = v(P)$. L'encadrement vient de la croissance appliquée à $m \leqslant g \leqslant M$.
+
+      (iii) *En une variable.* Soit $\varphi$ continue sur $[a, b]$. La fonction
+      $$\begin{aligned} s \mapsto &\int_a^{a + (b - a)s} \varphi \\ &- (b - a)\int_0^s \varphi\big(a + (b - a)u\big)\,du \end{aligned}$$
+      est dérivable sur $[0, 1]$, de dérivée $(b - a)\varphi(a + (b - a)s) - (b - a)\varphi(a + (b - a)s) = 0$, par le théorème fondamental ({{ar-tfa|Théorème fondamental}}) et la dérivée d'une composée ({{de-composee|Dérivée d'une composée}}).
+
+      Elle est nulle en $0$, donc nulle ({{de-monotonie|Signe de la dérivée}}, (ii)), et sa valeur en $s = 1$ donne
+      $$\int_a^b \varphi = (b - a)\int_0^1 \varphi\big(a + (b - a)u\big)\,du.$$
+
+      *En $n$ variables.* Notons $\alpha_i(t) = a_i + (b_i - a_i)t$ et $\tilde g = g \circ \alpha_P$, continue sur $I^n$. Montrons par récurrence sur $j$ que
+      $$\begin{aligned} &\tilde g_j(t_{j+1}, \dots, t_n) \\ &\quad = \frac{g_j\big(\alpha_{j+1}(t_{j+1}), \dots, \alpha_n(t_n)\big)}{\prod_{i \leqslant j}(b_i - a_i)}. \end{aligned}$$
+      C'est clair pour $j = 0$. Le passage de $j - 1$ à $j$ est la formule en une variable, appliquée sur $[a_j, b_j]$ à la fonction $x \mapsto g_{j-1}\big(x, \alpha_{j+1}(t_{j+1}), \dots, \alpha_n(t_n)\big)$. Pour $j = n$, c'est l'égalité annoncée.
+    remarques:
+      - |
+        Pour $g(x, y) = x + y$ sur $P = [0, 1] \times [0, 2]$, on trouve $g_1(y) = \frac12 + y$, puis $\int_P g = \int_0^2 \big(\frac12 + y\big)\,dy = 3$. Rapporté au volume $v(P) = 2$, c'est la valeur moyenne $\frac32$ de $g$ sur $P$, qui est ici sa valeur au centre $\big(\frac12, 1\big)$, puisque $g$ est affine.
+      - |
+        Pour les fonctions continues sur un pavé, l'intégrale itérée coïncide avec l'intégrale de Lebesgue, par le théorème de Fubini de la théorie de la mesure ({{m-fubini|Tonelli, Fubini}}). Ce théorème n'est pas un ancêtre de cette branche, et rien ici n'en dépend : la formule de Stokes ne demande que des fonctions continues sur un cube, que l'intégrale de Riemann suffit à traiter.
+      - |
+        L'erreur la plus répandue est d'appliquer la définition à une fonction qui n'est continue que sur une partie du pavé. Pour $g(x, y) = \frac{x - y}{(x + y)^3}$ sur $[0, 1]^2 \setminus \{(0, 0)\}$, qui n'est bornée sur aucun voisinage de l'origine, les intégrales successives ont encore un sens, la première pour $y > 0$, la seconde après prolongement par continuité en $0$, mais leur valeur dépend de l'ordre ; c'est l'objet de la première remarque du nœud {{dr-fubini|Fubini pour les fonctions continues}}.
+
+  - id: dr-fubini
+    etiquette: Fubini (fonctions continues)
+    nature: théorème
+    titre: Fubini pour les fonctions continues
+    enonce: |
+      (i) *Deux variables.* Si $h$ est continue sur $[\alpha, \beta] \times [\gamma, \delta]$, alors
+      $$\begin{aligned} &\int_\gamma^\delta\Big(\int_\alpha^\beta h(s, t)\,ds\Big)dt \\ &\quad = \int_\alpha^\beta\Big(\int_\gamma^\delta h(s, t)\,dt\Big)ds. \end{aligned}$$
+
+      (ii) *Ordre quelconque.* Soit $P$ un pavé de $\lex{n-uplet}{\mathbb R^n}$ et $g$ continue sur $P$. Pour toute bijection $\pi$ de $\{1, \dots, n\}$ sur lui-même, l'intégrale itérée obtenue en intégrant d'abord par rapport à $x_{\pi(1)}$, puis à $x_{\pi(2)}$, et ainsi de suite, est bien définie et égale à $\int_P g$.
+
+      (iii) En particulier, pour $1 \leqslant i \leqslant n$, notons $P'_i = \prod_{l \neq i}[a_l, b_l]$, pavé de $\mathbb R^{n-1}$, $\iota_{i,t}(y)$ le point $(y_1, \dots, y_{i-1}, t, y_i, \dots, y_{n-1})$ de $\mathbb R^n$, obtenu en insérant $t$ en position $i$, et
+      $$G_i(y) = \int_{a_i}^{b_i} g\big(\iota_{i,t}(y)\big)\,dt.$$
+      Alors $G_i$ est continue sur $P'_i$, et $\int_P g = \int_{P'_i} G_i$ : on peut intégrer d'abord par rapport à la variable $x_i$.
+    preuve: |
+      (i) Pour $u \in [\alpha, \beta]$ et $t \in [\gamma, \delta]$, posons
+      $$\begin{aligned} K(u, t) &= \int_\alpha^u h(s, t)\,ds, \\ H(s) &= \int_\gamma^\delta h(s, t)\,dt. \end{aligned}$$
+      Pour $u > \alpha$, la fonction $t \mapsto K(u, t)$ est continue, par le nœud {{dr-iterees|Intégrales itérées}}, (i), appliqué sur $[\alpha, u] \times [\gamma, \delta]$ ; pour $u = \alpha$, elle est nulle. On peut donc poser $A(u) = \int_\gamma^\delta K(u, t)\,dt$, et l'on veut montrer que $A(\beta) = B(\beta)$, où $B(u) = \int_\alpha^u H$.
+
+      *Dérivée de $B$.* $H$ est continue sur $[\alpha, \beta]$ (même nœud, (i)), et le théorème fondamental ({{ar-tfa|Théorème fondamental}}) donne $B' = H$.
+
+      *Dérivée de $A$.* Soit $\varepsilon > 0$. La fonction $h$ est uniformément continue sur le compact $[\alpha, \beta] \times [\gamma, \delta]$ ({{me-heine|Théorème de Heine}}) : il existe $\eta > 0$ tel que $|h(\xi, t) - h(u, t)| < \varepsilon$ dès que $|\xi - u| < \eta$, quel que soit $t$.
+
+      Pour $u$ et $u + s$ dans $[\alpha, \beta]$, avec $0 < |s| < \eta$, la relation de Chasles ({{ri-proprietes|Propriétés de l'intégrale}}, (v)) donne, pour tout $t$,
+      $$\begin{aligned} &K(u + s, t) - K(u, t) - s\,h(u, t) \\ &\quad = \int_u^{u+s} \big(h(\xi, t) - h(u, t)\big)\,d\xi, \end{aligned}$$
+      quantité majorée en valeur absolue par $|s|\,\varepsilon$ ({{ri-moyenne|Inégalité de la moyenne}}, (i)). En intégrant en $t$,
+      $$\begin{aligned} &\big|A(u + s) - A(u) - s\,H(u)\big| \\ &\quad \leqslant (\delta - \gamma)\,|s|\,\varepsilon. \end{aligned}$$
+
+      Ainsi $A$ est continue sur $[\alpha, \beta]$, et dérivable de dérivée $H(u)$ en tout point intérieur. La fonction $A - B$ est donc continue, de dérivée nulle sur $]\alpha, \beta[$, et nulle en $\alpha$ : elle est nulle ({{de-monotonie|Signe de la dérivée}}, (ii)), et $A(\beta) = B(\beta)$.
+
+      (ii) *Définition.* À chaque étape, on intègre une fonction continue des variables restantes, qui décrivent un produit de segments, par rapport à l'une d'elles : la preuve du nœud {{dr-iterees|Intégrales itérées}}, (i), s'applique telle quelle, l'ordre des coordonnées ne jouant aucun rôle. Toutes les fonctions intermédiaires sont donc définies et continues.
+
+      *Échange de deux intégrations consécutives.* Soient $\pi$ et $\pi'$ deux ordres qui ne diffèrent que par l'échange des positions $p$ et $p + 1$. Les $p - 1$ premières intégrations sont les mêmes, et fournissent une fonction continue $\varphi$ des variables restantes.
+
+      Fixons toutes ces variables sauf $x_{\pi(p)}$ et $x_{\pi(p+1)}$ : par (i), intégrer $\varphi$ par rapport à l'une puis à l'autre, ou dans l'ordre inverse, donne le même nombre. Les deux ordres produisent donc la même fonction des variables non encore intégrées, et les intégrations suivantes, communes, donnent le même résultat.
+
+      *Conclusion.* On passe de l'ordre $\pi$ à l'ordre naturel par un nombre fini de tels échanges : on amène d'abord la variable $x_1$ en première position en l'échangeant successivement avec celles qui la précèdent, puis $x_2$ en deuxième position, et ainsi de suite. L'intégrale ne change à aucune étape.
+
+      (iii) L'ordre $(i, 1, \dots, i - 1, i + 1, \dots, n)$ commence par l'intégration en $x_i$, qui produit la fonction $G_i$ des variables restantes, rangées dans l'ordre et renommées $y_1, \dots, y_{n-1}$, continue par {{dr-iterees|Intégrales itérées}}, (i). Les intégrations suivantes calculent $\int_{P'_i} G_i$, et (ii) conclut.
+    remarques:
+      - |
+        La continuité sur le pavé fermé ne peut pas être omise. Pour $g(x, y) = \frac{x - y}{(x + y)^3}$ sur $[0, 1]^2 \setminus \{(0, 0)\}$, on a, pour $y > 0$,
+        $$\int_0^1 \frac{x - y}{(x + y)^3}\,dx = -\frac{1}{(1 + y)^2},$$
+        comme on le vérifie en dérivant $x \mapsto -\frac{x}{(x + y)^2}$. En intégrant ensuite en $y$, on trouve $-\frac12$ ; dans l'autre ordre, par symétrie, $+\frac12$.
+
+        La fonction n'est pas définie à l'origine et n'est bornée sur aucun voisinage de l'origine : l'hypothèse de (i) n'est pas satisfaite, et c'est le théorème de Heine qui manque à la démonstration. Le résultat est cohérent avec la symétrie : échanger $x$ et $y$ change $g$ en $-g$ et échange les deux ordres d'intégration. Si l'interversion était permise, les deux valeurs, opposées l'une de l'autre, seraient égales, donc nulles.
+      - |
+        La démonstration de (i) dérive par rapport à la borne : c'est un argument voisin de celui qui, au nœud {{gd-schwarz|Schwarz, intégrales à paramètre}}, établit la dérivation sous l'intégrale, mais sur un segment fermé plutôt que sur un ouvert, ce qui permet d'appliquer directement le théorème de Heine sur le compact $[\alpha, \beta] \times [\gamma, \delta]$.
+
+  - id: dr-cubes
+    etiquette: Cubes singuliers
+    nature: définition
+    titre: Cubes singuliers lisses, chaînes cubiques et leur bord
+    texte: |
+      Soit $U$ un ouvert de $\lex{n-uplet}{\mathbb R^n}$ et $k \in \lex{ensemble-entiers-naturels}{\mathbb N}$. Un [[cube-singulier|cube singulier lisse]] de dimension $k$ de $U$ est une application $c : I^k \to U$ qui est la restriction d'une application $\tilde c : W \to U$ de classe $C^\infty$, définie sur un ouvert $W$ de $\mathbb R^k$ contenant $I^k$ ; on dit que $\tilde c$ **prolonge** $c$. Pour $k = 0$, c'est un point de $U$.
+
+      Le mot « singulier » signifie qu'on n'exige de $c$ ni l'injectivité ni une différentielle de rang $k$ : un cube singulier peut écraser $I^k$ sur une courbe, ou sur un point.
+
+      Le groupe des **chaînes cubiques** $Q_k(U)$ est le groupe abélien libre sur l'ensemble des cubes singuliers lisses de dimension $k$ ({{h-complexes|Complexes de chaînes}}) ; on pose $Q_k(U) = 0$ pour $k < 0$.
+
+      Pour $k \geqslant 1$, $1 \leqslant i \leqslant k$ et $\varepsilon \in \{0, 1\}$, l'application affine $\iota_{i,\varepsilon} : \mathbb R^{k-1} \to \mathbb R^k$,
+      $$\begin{aligned} &\iota_{i,\varepsilon}(t_1, \dots, t_{k-1}) \\ &\quad = (t_1, \dots, t_{i-1}, \varepsilon, t_i, \dots, t_{k-1}), \end{aligned}$$
+      insère $\varepsilon$ en position $i$ ; elle envoie $I^{k-1}$ sur la face $\{t_i = \varepsilon\}$ de $I^k$.
+
+      La **face** $(i, \varepsilon)$ de $c$ est $c_{i,\varepsilon} = c \circ \iota_{i,\varepsilon}$, et le **bord** de $c$ est
+      $$\partial c = \sum_{i=1}^k \sum_{\varepsilon = 0}^{1} (-1)^{i+\varepsilon}\, c_{i,\varepsilon}.$$
+      Il se prolonge en un morphisme $\partial : Q_k(U) \to Q_{k-1}(U)$, et l'on pose $\partial = 0$ sur $Q_0(U)$.
+    enonce: |
+      (i) Les faces d'un cube singulier lisse sont des cubes singuliers lisses. Pour $1 \leqslant i \leqslant j \leqslant k - 1$ et $\varepsilon, \eta \in \{0, 1\}$,
+      $$\iota_{i,\varepsilon} \circ \iota_{j,\eta} = \iota_{j+1,\eta} \circ \iota_{i,\varepsilon}.$$
+
+      (ii) $\partial \circ \partial = 0$ : les $Q_k(U)$ forment un [[complexe-chaines|complexe de chaînes]].
+
+      (iii) Si $\varphi : U \to V$ est de classe $C^\infty$, où $V$ est un ouvert de $\mathbb R^m$, la formule $\varphi_\#(c) = \varphi \circ c$ définit des morphismes $Q_k(U) \to Q_k(V)$ qui commutent au bord.
+
+      En particulier, si $\tilde c : W \to U$ prolonge $c$ et si $\mathbf 1_k$ désigne le cube de $W$ donné par l'inclusion de $I^k$, alors $c = \tilde c_\#(\mathbf 1_k)$ et $\partial c = \tilde c_\#(\partial \mathbf 1_k)$.
+    preuve: |
+      (i) Si $\tilde c : W \to U$ prolonge $c$, l'ouvert $\iota_{i,\varepsilon}^{-1}(W)$ de $\mathbb R^{k-1}$ contient $I^{k-1}$, et $\tilde c \circ \iota_{i,\varepsilon}$, composée d'une application affine et d'une application de classe $C^\infty$, est de classe $C^\infty$ ({{gd-classe-ck|Classe Cᵏ}}, (ii) et (iii)) ; elle prolonge $c_{i,\varepsilon}$.
+
+      Les deux membres de l'identité envoient $(t_1, \dots, t_{k-2})$ sur le point qui a $\varepsilon$ en position $i$, $\eta$ en position $j + 1$, et les $t_l$ dans l'ordre aux autres places. À gauche, $\iota_{j,\eta}$ place $\eta$ en position $j$, puis $\iota_{i,\varepsilon}$ insère $\varepsilon$ en position $i \leqslant j$, ce qui décale $\eta$ en position $j + 1$. À droite, $\iota_{i,\varepsilon}$ place $\varepsilon$ en position $i$, puis $\iota_{j+1,\eta}$ insère $\eta$ en position $j + 1 > i$, sans déplacer $\varepsilon$.
+
+      (ii) Pour $k \leqslant 1$, $\partial\partial c$ appartient à $Q_{k-2}(U) = 0$. Pour $k \geqslant 2$,
+      $$\begin{aligned} &\partial\partial c = \sum_{i=1}^{k}\sum_{j=1}^{k-1}\sum_{\varepsilon, \eta} \\ &\quad (-1)^{i+\varepsilon+j+\eta}\, c \circ \iota_{i,\varepsilon} \circ \iota_{j,\eta}. \end{aligned}$$
+
+      Séparons les termes où $i \leqslant j$ de ceux où $i > j$. L'application $(i, \varepsilon, j, \eta) \mapsto (j + 1, \eta, i, \varepsilon)$ est une bijection des premiers sur les seconds, de réciproque $(i', \varepsilon', j', \eta') \mapsto (j', \eta', i' - 1, \varepsilon')$.
+
+      Par (i), elle associe à chaque terme un terme de même cube, $c \circ \iota_{j+1,\eta} \circ \iota_{i,\varepsilon} = c \circ \iota_{i,\varepsilon} \circ \iota_{j,\eta}$, et de signe $(-1)^{(j+1)+\eta+i+\varepsilon}$, opposé. Les termes se compensent deux à deux, et $\partial\partial = 0$ sur les chaînes par linéarité.
+
+      (iii) Si $\tilde c$ prolonge $c$, $\varphi \circ \tilde c$ prolonge $\varphi \circ c$ et est de classe $C^\infty$ ({{gd-classe-ck|Classe Cᵏ}}, (iii)) ; les faces de $\varphi \circ c$ sont les $\varphi \circ c_{i,\varepsilon}$. On prolonge $\varphi_\#$ en un morphisme ({{h-complexes|Complexes de chaînes}}, (i)), qui commute au bord, puisque c'est le cas sur chaque cube.
+
+      Enfin $\mathbf 1_k$ est prolongé par l'identité de $W$, ses faces sont les $\iota_{i,\varepsilon}$ restreintes à $I^{k-1}$, et $\tilde c \circ \iota_{i,\varepsilon} = c_{i,\varepsilon}$ sur $I^{k-1}$.
+    remarques:
+      - |
+        Pour $k = 2$, le bord s'écrit $\partial c = c_{2,0} + c_{1,1} - c_{2,1} - c_{1,0}$ : le côté du bas et celui de droite, parcourus dans le sens des coordonnées croissantes, puis le haut et la gauche, affectés du signe moins, c'est-à-dire parcourus en sens inverse. On retrouve le contour du carré dans le sens direct, avec les mêmes signes que les quatre chemins $\beta + \rho - \theta - \lambda$ du nœud {{dr-homotopie|Invariance par homotopie}}.
+
+        ```schema dr-cubes
+        Chaque côté du carré $I^2$ est paramétré par $I^1$ dans le sens des coordonnées croissantes (flèches grises) et porte le signe $(-1)^{i+\varepsilon}$. Les deux côtés de signe moins, le haut et la gauche, sont parcourus à rebours : le bord $\partial\mathbf 1_2$, en rouge, fait le tour du carré dans le sens direct.
+        ```
+      - |
+        En dimension $k$, le signe $(-1)^{i+\varepsilon}$ est exactement celui qui oriente chaque face par la normale sortante. La normale sortante à la face $\{t_i = \varepsilon\}$ est $\nu = (-1)^{\varepsilon+1}e_i$, et la paramétrisation $\iota_{i,\varepsilon}$ envoie la base canonique de $\mathbb R^{k-1}$ sur les $e_l$, $l \neq i$, dans l'ordre. Le déterminant de la famille $(\nu, e_1, \dots, e_{i-1}, e_{i+1}, \dots, e_k)$ vaut $(-1)^{\varepsilon+1}(-1)^{i-1} = (-1)^{i+\varepsilon}$, puisque ramener $e_i$ en tête coûte $i - 1$ transpositions.
+
+        ```schema dr-cubes-2
+        Les six faces du cube $I^3$, avec leur normale sortante et le signe $(-1)^{i+\varepsilon}$ qu'elles portent dans $\partial\mathbf 1_3$. Une face de signe $+$ est paramétrée dans le sens que fixe la normale sortante, une face de signe $-$ dans le sens contraire : le bord du cube est sa surface orientée vers l'extérieur. La face $t_2 = 0$, tournée vers le lecteur, est grisée.
+        ```
+      - |
+        L'erreur la plus tentante est de croire que l'homologie du complexe $Q$ est l'homologie singulière. Pour $U = \mathbb R^0$, réduit à un point, il y a un seul cube $c_k$ de chaque dimension, constant, et ses faces $(i, 0)$ et $(i, 1)$ sont toutes deux le cube constant de dimension $k - 1$, avec des signes opposés : $\partial c_k = 0$. L'homologie de ce complexe vaut donc $\lex{ensemble-entiers-relatifs}{\mathbb Z}$ en chaque degré, alors que celle d'un point est nulle en degré $k \geqslant 1$ ({{h-degre0|Degré 0, point}}).
+
+        On corrige ce défaut en quotientant par les cubes **dégénérés**, qui ne dépendent pas de l'une des variables ; on retrouve alors l'homologie singulière, ce qui est admis ici, la preuve demandant de passer des cubes lisses aux cubes seulement continus, puis de comparer cubes et simplexes. L'intégration, seule utile ici, ne voit pas ce défaut : elle est nulle sur les cubes dégénérés ({{dr-integrale-cubes|Intégrale sur une chaîne}}, (v)).
+
+  - id: dr-integrale-cubes
+    etiquette: Intégrale sur une chaîne
+    nature: proposition
+    titre: Intégrale d'une forme sur une chaîne cubique
+    texte: |
+      Soit $U$ un ouvert de $\lex{n-uplet}{\mathbb R^n}$, $\omega$ une [[forme-differentielle|forme différentielle]] de degré $k \geqslant 1$ sur $U$, et $c$ un cube singulier lisse de dimension $k$ de $U$, prolongé par $\tilde c : W \to U$ ({{dr-cubes|Cubes singuliers}}).
+
+      L'image réciproque $\tilde c^*\omega$ ({{gd-formes|Formes différentielles}}) est une forme de degré $k$ sur l'ouvert $W$ de $\mathbb R^k$ ; elle s'écrit $g\,dt_1 \wedge \cdots \wedge dt_k$, avec $g$ de classe $C^\infty$ sur $W$. On pose
+      $$\int_c \omega = \int_{I^k} g,$$
+      intégrale itérée du nœud {{dr-iterees|Intégrales itérées}}.
+
+      Pour $k = 0$, $\omega$ est une fonction $f$, $c$ est un point, et $\int_c f = f(c)$. On prolonge $c \mapsto \int_c \omega$ en un morphisme $Q_k(U) \to \lex{ensemble-reels}{\mathbb R}$, noté $z \mapsto \int_z \omega$ ({{h-complexes|Complexes de chaînes}}, (i)).
+    enonce: |
+      (i) Si $\omega = \sum_J a_J\,dx_J$, la somme portant sur les suites $J = (j_1 < \cdots < j_k)$,
+      $$g = \sum_J (a_J \circ \tilde c)\,\det\big(\partial_r \tilde c_{j_s}\big)_{1 \leqslant s, r \leqslant k}.$$
+      La restriction de $g$ à $I^k$ ne dépend pas du prolongement $\tilde c$ : l'intégrale est bien définie.
+
+      (ii) $\int_z \omega$ est linéaire en $\omega$ et en $z$.
+
+      (iii) Pour $k = 1$, $\int_c \omega = \int_0^1 \omega_{c(t)}\big(c'(t)\big)\,dt$ : c'est l'intégrale du nœud {{gd-integrale-curviligne|Intégrale d'une 1-forme}} le long du chemin $c$, de classe $C^1$.
+
+      (iv) Si $\varphi : U \to V$ est de classe $C^\infty$, où $V$ est un ouvert de $\mathbb R^m$, et si $\eta$ est une forme de degré $k$ sur $V$, alors
+      $$\int_{\varphi_\# z} \eta = \int_z \varphi^*\eta$$
+      pour toute chaîne $z \in Q_k(U)$.
+
+      (v) Si $c$ est **dégénéré**, c'est-à-dire ne dépend pas de l'une des variables $t_i$ sur $I^k$, alors $\int_c \omega = 0$.
+    preuve: |
+      (i) Par {{gd-formes|Formes différentielles}}, (iii), $\tilde c^*(a_J\,dx_J) = (a_J \circ \tilde c)\,d\tilde c_{j_1} \wedge \cdots \wedge d\tilde c_{j_k}$, avec $d\tilde c_j = \sum_r \partial_r \tilde c_j\,dt_r$. Le coefficient de $dt_1 \wedge \cdots \wedge dt_k$ est la valeur de cette forme sur la base canonique ({{v-algebre-exterieure|Algèbre extérieure}}, (i)), qui est le déterminant annoncé (même nœud, (ii)).
+
+      *Indépendance.* En un point $x$ du cube ouvert $]0, 1[^k$, la dérivée partielle $\partial_r \tilde c(x)$ est la limite de $\frac{c(x + se_r) - c(x)}{s}$ quand $s \to 0$, et $x + se_r$ reste dans $]0, 1[^k$ pour $s$ petit : elle ne dépend que de $c$. Il en va donc de même de $g(x)$.
+
+      Tout point $p$ de $I^k$ est limite de la suite $p_m = \big(1 - \frac1m\big)p + \frac1{2m}(1, \dots, 1)$, dont les termes, pour $m \geqslant 2$, ont leurs coordonnées dans $\big[\frac1{2m}, 1 - \frac1{2m}\big]$, donc sont dans $]0, 1[^k$. Par continuité de $g$, $g(p)$ est la limite des $g(p_m)$ et ne dépend que de $c$. L'intégrale itérée ne dépendant que des valeurs sur $I^k$ ({{dr-iterees|Intégrales itérées}}, (i)), elle est bien définie.
+
+      (ii) L'image réciproque $\tilde c^*$ est linéaire, ainsi que l'intégrale itérée ({{dr-iterees|Intégrales itérées}}, (ii)) ; la linéarité en $z$ vient de la définition.
+
+      (iii) Pour $k = 1$, (i) donne $g(t) = \sum_j a_j(c(t))\,c_j'(t) = \omega_{c(t)}(c'(t))$ pour $t \in [0, 1]$, et $c$, restriction d'une application $C^\infty$, est de classe $C^1$. L'intégrale itérée sur $I^1$ est l'intégrale de Riemann sur $[0, 1]$.
+
+      (iv) Pour un cube $c$ prolongé par $\tilde c$, $\varphi \circ \tilde c$ prolonge $\varphi \circ c$, et $(\varphi \circ \tilde c)^*\eta = \tilde c^*(\varphi^*\eta)$ ({{gd-formes|Formes différentielles}}, (iii)) : les deux intégrales ont le même coefficient $g$. Pour $k = 0$, $\eta(\varphi(c)) = (\varphi^*\eta)(c)$, puisque $\varphi^*\eta = \eta \circ \varphi$. On conclut par linéarité.
+
+      (v) Si $c$ ne dépend pas de $t_i$, la dérivée partielle $\partial_i \tilde c$ est nulle sur $]0, 1[^k$, par le calcul de l'indépendance. La colonne d'indice $i$ de chaque déterminant de (i) est nulle : $g = 0$ sur $]0, 1[^k$, donc sur $I^k$ par continuité.
+    remarques:
+      - |
+        L'intégrale dépend de la paramétrisation par son orientation. Remplacer $c$ par $c \circ \rho$, où $\rho(t) = (1 - t_1, t_2, \dots, t_k)$, change $\tilde c^*\omega$ en $\rho^*(\tilde c^*\omega)$, dont le coefficient est $-g \circ \rho$. Dans l'intégration en $t_1$, qui vient en premier, $\int_0^1 \varphi(1 - u)\,du = \int_0^1 \varphi$ par le même argument qu'au nœud {{dr-iterees|Intégrales itérées}}, (iii) : l'intégrale change de signe.
+
+        En revanche, l'invariance par un difféomorphisme quelconque $\rho$ de $I^k$ sur lui-même, de jacobien positif, demande la formule du changement de variables ({{cv-changement|Changement de variables}}), qui n'est pas un ancêtre de cette branche ; elle est admise ici pour $k \geqslant 2$. Pour $k = 1$, c'est la règle de substitution, qui découle du théorème fondamental.
+      - |
+        Pour une forme **fermée** de degré $1$ et un cube lisse $c$ de dimension $1$, l'intégrale de (iii) est aussi celle du nœud {{dr-integrale|Intégrale le long d'un chemin continu}}, (ii) : les deux constructions s'accordent sur les chemins lisses.
+
+        Elles ne font pas le même travail. Celle du nœud {{dr-chaines|Intégration sur les chaînes}} intègre des formes fermées sur des chemins seulement continus, grâce aux primitives locales ; celle-ci intègre des formes quelconques, de tout degré, mais seulement sur des cubes lisses, puisqu'elle dérive $\tilde c$. L'erreur à éviter est de chercher à intégrer une forme qui n'est pas fermée le long d'un chemin seulement continu : aucune des deux définitions ne s'applique.
+      - |
+        Le point (v) traduit qu'un cube dégénéré n'a pas de volume de dimension $k$ : son image est balayée par une famille de dimension au plus $k - 1$, et la forme $\tilde c^*\omega$, de degré $k$, s'y annule.
+
+  - id: dr-stokes
+    etiquette: Formule de Stokes
+    nature: théorème
+    titre: Formule de Stokes pour les chaînes cubiques
+    enonce: |
+      Soit $U$ un ouvert de $\lex{n-uplet}{\mathbb R^n}$, $k \geqslant 1$ et $\omega$ une forme différentielle de degré $k - 1$ sur $U$. Pour toute chaîne cubique $z \in Q_k(U)$,
+      $$\int_z d\omega = \int_{\partial z} \omega.$$
+      C'est la [[formule-stokes|formule de Stokes]]. Pour $k = 1$ et un cube $c$, elle s'écrit $\int_c df = f(c(1)) - f(c(0))$.
+    preuve: |
+      *Le cube unité.* Soit $W$ un ouvert de $\mathbb R^k$ contenant $I^k$, $\eta$ une forme de degré $k - 1$ sur $W$, et $\mathbf 1_k$ le cube de $W$ donné par l'inclusion de $I^k$ ({{dr-cubes|Cubes singuliers}}). Montrons que $\int_{\mathbf 1_k} d\eta = \int_{\partial \mathbf 1_k} \eta$.
+
+      Par {{v-algebre-exterieure|Algèbre extérieure}}, (i), $\eta$ s'écrit $\sum_{i=1}^k f_i\,dx_1 \wedge \cdots \wedge \widehat{dx_i} \wedge \cdots \wedge dx_k$, où le chapeau signale le facteur omis, avec des $f_i$ de classe $C^\infty$ sur $W$. Les deux membres étant linéaires en $\eta$ ({{gd-formes|Formes différentielles}}, (i), et {{dr-integrale-cubes|Intégrale sur une chaîne}}, (ii)), il suffit de traiter $\eta = f\,dx_1 \wedge \cdots \wedge \widehat{dx_i} \wedge \cdots \wedge dx_k$.
+
+      *Premier membre.* Dans $d\eta = \sum_j \partial_j f\,dx_j \wedge dx_1 \wedge \cdots \wedge \widehat{dx_i} \wedge \cdots \wedge dx_k$, seul le terme $j = i$ subsiste, les autres contenant deux fois le même $dx_j$. Ramener $dx_i$ à sa place coûte $i - 1$ transpositions :
+      $$d\eta = (-1)^{i-1}\,\partial_i f\,dx_1 \wedge \cdots \wedge dx_k.$$
+
+      L'image réciproque par l'inclusion ne change pas le coefficient, et le nœud {{dr-fubini|Fubini pour les fonctions continues}}, (iii), permet d'intégrer d'abord en $x_i$.
+
+      Pour $y$ fixé, la fonction $t \mapsto \int_0^t \partial_i f(\iota_{i,s}(y))\,ds - f(\iota_{i,t}(y))$, avec la notation $\iota_{i,s}(y)$ du nœud {{dr-fubini|Fubini pour les fonctions continues}}, (iii), a une dérivée nulle ({{ar-tfa|Théorème fondamental}}), donc est constante ({{de-monotonie|Signe de la dérivée}}, (ii)). Ainsi
+      $$\begin{aligned} &\int_0^1 \partial_i f\big(\iota_{i,s}(y)\big)\,ds \\ &\quad = f\big(\iota_{i,1}(y)\big) - f\big(\iota_{i,0}(y)\big), \end{aligned}$$
+      d'où
+      $$\int_{\mathbf 1_k} d\eta = (-1)^{i-1}\int_{I^{k-1}} \big(f \circ \iota_{i,1} - f \circ \iota_{i,0}\big).$$
+
+      *Second membre.* La face $(j, \varepsilon)$ de $\mathbf 1_k$ est prolongée par $\iota_{j,\varepsilon}$, et $\iota_{j,\varepsilon}^*(dx_l) = d(\iota_{j,\varepsilon})_l$ ({{gd-formes|Formes différentielles}}, (iii)) vaut $dt_l$ si $l < j$, $0$ si $l = j$, et $dt_{l-1}$ si $l > j$.
+
+      Si $j \neq i$, le facteur $dx_j$ figure dans $\eta$, dont l'image réciproque est donc nulle. Si $j = i$, il ne reste que
+      $$\iota_{i,\varepsilon}^*\eta = (f \circ \iota_{i,\varepsilon})\,dt_1 \wedge \cdots \wedge dt_{k-1}.$$
+      Par conséquent
+      $$\begin{aligned} \int_{\partial\mathbf 1_k} \eta &= \sum_{\varepsilon = 0}^1 (-1)^{i+\varepsilon}\int_{I^{k-1}} f \circ \iota_{i,\varepsilon} \\ &= (-1)^{i+1}\int_{I^{k-1}} \big(f \circ \iota_{i,1} - f \circ \iota_{i,0}\big), \end{aligned}$$
+      qui est le premier membre, puisque $(-1)^{i+1} = (-1)^{i-1}$. Pour $k = 1$, $\eta = f$ est une fonction, les faces sont les points $0$ et $1$, et les deux membres valent $f(1) - f(0)$.
+
+      *Cas général.* Soit $c$ un cube singulier lisse de dimension $k$ de $U$, prolongé par $\tilde c : W \to U$. Par {{dr-cubes|Cubes singuliers}}, (iii), $c = \tilde c_\#(\mathbf 1_k)$ et $\partial c = \tilde c_\#(\partial \mathbf 1_k)$.
+
+      Par {{dr-integrale-cubes|Intégrale sur une chaîne}}, (iv), et la commutation $\tilde c^* d = d\,\tilde c^*$ ({{gd-formes|Formes différentielles}}, (iii)),
+      $$\begin{aligned} \int_c d\omega &= \int_{\mathbf 1_k} \tilde c^*(d\omega) = \int_{\mathbf 1_k} d(\tilde c^*\omega) \\ &= \int_{\partial\mathbf 1_k} \tilde c^*\omega = \int_{\partial c} \omega. \end{aligned}$$
+      Les deux membres de la formule sont additifs en $z$, et $\partial$ est un morphisme : elle vaut pour toutes les chaînes.
+
+      Aucun choix n'intervient.
+    remarques:
+      - |
+        Le cube singulier $c(u, v, w) = (u, uv, uvw)$ de $\mathbb R^3$ envoie $I^3$ sur le tétraèdre $\{0 \leqslant z \leqslant y \leqslant x \leqslant 1\}$ ; deux de ses faces sont dégénérées, la face $u = 0$ écrasée sur l'origine et la face $v = 0$ sur un segment de l'axe des $x$.
+
+        Pour $\omega = x\,dy \wedge dz$, on a $d\omega = dx \wedge dy \wedge dz$, et (i) du nœud {{dr-integrale-cubes|Intégrale sur une chaîne}} donne $g = \det dc = u^2v$, d'où $\int_c d\omega = \int_{I^3} u^2v = \frac16$, qui est le volume du tétraèdre.
+
+        Au bord, seules contribuent la face $u = 1$, partie du plan $x = 1$, pour $+\frac12$, et la face $v = 1$, partie du plan $y = x$, pour $-\frac13$ ; les faces $w = 0$ et $w = 1$, contenues dans les plans $z = 0$ et $z = y$, où $dy \wedge dz$ a une image réciproque nulle, et les deux faces dégénérées donnent $0$. On retrouve bien $\frac12 - \frac13 = \frac16$ : c'est le flux du champ $(x, 0, 0)$ à travers la surface du tétraèdre, qui entre par la face oblique et sort par la face $x = 1$. Ces nombres ont été vérifiés par un calcul formel.
+
+        ```schema dr-stokes
+        Le tétraèdre image du cube par $c(u, v, w) = (u, uv, uvw)$. Les faces $x = 1$, en bleu, et $y = x$, en vert, sont les seules qui portent un flux du champ $(x, 0, 0)$ : $+\frac12$ et $-\frac13$. La face $u = 0$ du cube est écrasée sur l'origine, la face $v = 0$ sur le segment rouge de l'axe des $x$ ; ces faces dégénérées ne contribuent pas.
+        ```
+      - |
+        La démonstration ne contient qu'une idée : sur le cube unité, $d\eta$ ne fait intervenir que la dérivée de chaque coefficient dans la direction manquante, et le théorème fondamental de l'analyse, appliqué dans cette direction après Fubini, transforme son intégrale en une différence entre deux faces opposées. Le cas d'un cube singulier s'y ramène par image réciproque, parce que $d$ commute à $\tilde c^*$. C'est la présentation de Spivak (*Calculus on Manifolds*, 1965, chapitre 4), qui intègre sur des cubes plutôt que sur des simplexes, parce que Fubini s'y applique directement.
+      - |
+        La formule porte le nom de Stokes, qui l'a posée en février 1854 à l'examen du prix Smith de Cambridge ; elle figurait dans une lettre de William Thomson à Stokes du 2 juillet 1850. Volterra (1889) puis Poincaré (1899) ont énoncé la forme générale en dimension quelconque, et Élie Cartan l'a écrite avec les formes différentielles extérieures (*Les systèmes différentiels extérieurs et leurs applications géométriques*, 1945). Sources : V. J. Katz, *The History of Stokes' Theorem*, Mathematics Magazine 52 (1979), n° 3.
+      - |
+        La forme classique de la formule porte sur une variété compacte orientée à bord $M$ de dimension $k$ et une forme $\omega$ de degré $k - 1$ : $\int_M d\omega = \int_{\partial M} \omega$. Elle n'est pas démontrée dans l'atlas, et trois choses manquent pour l'obtenir à partir d'ici.
+
+        La première est la notion même de variété à bord, modelée sur le demi-espace $\{x_k \geqslant 0\}$, avec l'orientation induite sur le bord ; la géométrie différentielle ({{gd-varietes|Variétés}}) ne définit que des variétés sans bord.
+
+        La deuxième est l'intégrale d'une forme de degré maximal sur une variété orientée : définie carte par carte, elle ne dépend pas des cartes grâce à la formule du changement de variables pour un jacobien positif ({{cv-changement|Changement de variables}}), qui n'est pas un ancêtre de cette branche.
+
+        La troisième est une partition de l'unité subordonnée à un atlas, qui se construit comme celle du nœud {{dr-partition|Partition de l'unité}}, faite ici pour les ouverts de $\mathbb R^n$.
+
+        Avec ces outils, la preuve se ramène, carte par carte, au calcul fait ici sur le cube unité : pour une forme à support compact dans un demi-espace, le théorème fondamental appliqué dans la direction $x_k$ ne laisse que l'intégrale sur l'hyperplan $x_k = 0$.
+
+  - id: dr-fermees
+    etiquette: Formes exactes et cycles
+    nature: corollaire
+    titre: Formes exactes sur les cycles, critère de fermeture
+    enonce: |
+      Soit $U$ un ouvert de $\lex{n-uplet}{\mathbb R^n}$ et $\omega$ une forme différentielle de degré $k \geqslant 0$ sur $U$.
+
+      (i) Si $k \geqslant 1$ et si $\omega = d\eta$ est exacte, alors $\int_z \omega = 0$ pour tout cycle $z \in Q_k(U)$, c'est-à-dire toute chaîne de bord nul. En degré $1$, un cube $c$ de dimension $1$ tel que $c(0) = c(1)$, lacet lisse, est un cycle, et l'intégrale d'une forme exacte le long d'un tel lacet est nulle.
+
+      (ii) $\omega$ est fermée si et seulement si $\int_{\partial c} \omega = 0$ pour tout cube singulier lisse $c$ de dimension $k + 1$ de $U$.
+
+      (iii) Plus précisément, écrivons $d\omega = \sum_J b_J\,dx_J$. Soit $x \in U$, $J = (j_0 < \cdots < j_k)$, et, pour $r > 0$ assez petit, $c_r$ le cube $t \mapsto x + r\sum_{l=0}^{k} t_{l+1}\,e_{j_l}$, de côté $r$, construit sur les directions de $J$. Alors
+      $$b_J(x) = \lim_{r \to 0}\ \frac{1}{r^{k+1}}\int_{\partial c_r} \omega.$$
+    preuve: |
+      (i) Par la formule de Stokes ({{dr-stokes|Formule de Stokes}}), $\int_z d\eta = \int_{\partial z} \eta = 0$, puisque $\partial z = 0$. Pour un cube $c$ de dimension $1$, $\partial c = c(1) - c(0)$, nul si $c(0) = c(1)$.
+
+      (iii) Soit $r_0 > 0$ tel que $B_\infty(x, r_0) \subset U$. Pour $0 < r < r_0$, l'application affine $\tilde c_r(t) = x + r\sum_l t_{l+1} e_{j_l}$, de classe $C^\infty$ sur $\mathbb R^{k+1}$, envoie $I^{k+1}$ dans $B_\infty(x, r_0)$, puisque les coordonnées de $\tilde c_r(t) - x$ sont dans $[0, r]$ ; sa restriction à l'ouvert $\tilde c_r^{-1}(U)$, qui contient $I^{k+1}$, prolonge $c_r$.
+
+      On a $\tilde c_r^*(dx_{j_l}) = r\,dt_{l+1}$, et $\tilde c_r^*(dx_j) = 0$ si $j$ n'est pas dans $J$ ({{gd-formes|Formes différentielles}}, (iii)). Toute suite $J' \neq J$ de $k + 1$ indices contient un indice hors de $J$, de sorte que
+      $$\tilde c_r^*(d\omega) = r^{k+1}\,(b_J \circ \tilde c_r)\,dt_1 \wedge \cdots \wedge dt_{k+1}.$$
+
+      Soit $\varepsilon > 0$, et $\rho > 0$ tel que $|b_J(y) - b_J(x)| < \varepsilon$ pour $\|y - x\|_\infty < \rho$. Pour $r < \min(r_0, \rho)$, l'encadrement du nœud {{dr-iterees|Intégrales itérées}}, (ii), donne
+      $$\begin{aligned} &\Big|\frac{1}{r^{k+1}}\int_{c_r} d\omega - b_J(x)\Big| \\ &\quad = \Big|\int_{I^{k+1}} \big(b_J \circ \tilde c_r - b_J(x)\big)\Big| \leqslant \varepsilon. \end{aligned}$$
+      La formule de Stokes remplace $\int_{c_r} d\omega$ par $\int_{\partial c_r} \omega$.
+
+      (ii) Si $\omega$ est fermée, $\int_{\partial c} \omega = \int_c d\omega = 0$ par la formule de Stokes. Réciproquement, si toutes ces intégrales sont nulles, (iii) donne $b_J(x) = 0$ pour tout $J$ et tout $x$ : $d\omega = 0$.
+    remarques:
+      - |
+        Pour $\omega = x^2\,dy$ sur $\mathbb R^2$, on a $d\omega = 2x\,dx \wedge dy$. Au point $(1, 0)$, le carré $c_r(t) = (1 + rt_1, rt_2)$ donne $\int_{\partial c_r} \omega = r\big((1 + r)^2 - 1\big) = r^2(2 + r)$, seuls les côtés verticaux contribuant ; divisé par $r^2$, cela tend vers $2$, coefficient de $d\omega$ en ce point.
+
+        Le point (iii) donne ainsi un sens géométrique à la différentielle extérieure, sans dériver les coefficients : $d\omega$ mesure, par unité de volume, l'intégrale de $\omega$ sur le bord d'un petit cube. En dimension $2$, c'est la circulation par unité d'aire, que la physique appelle rotationnel.
+      - |
+        En degré $1$, le point (i) redonne la nullité de l'intégrale d'une forme exacte sur un lacet ({{gd-integrale-curviligne|Intégrale d'une 1-forme}}, (i)) ; la formule $\int_c df = f(c(1)) - f(c(0))$ elle-même est le cas $k = 1$ de la formule de Stokes. Le point (ii), pour un cube $c$ de dimension $2$, dit que l'intégrale d'une forme fermée sur $\partial c = \beta + \rho - \theta - \lambda$ est nulle. C'est le nœud {{dr-homotopie|Invariance par homotopie}}, (i), dans le cas lisse.
+
+        Le nœud {{dr-homotopie|Invariance par homotopie}} va plus loin d'un côté, puisqu'il ne demande à l'homotopie que d'être continue ; la formule de Stokes va plus loin de l'autre, puisqu'elle s'applique à toute forme et donne la valeur $\int_c d\omega$ lorsque la forme n'est pas fermée.
+      - |
+        Le piège est de voir dans $\partial \circ \partial = 0$ une seconde démonstration de $d \circ d = 0$. Pour toute chaîne $c$, la formule de Stokes donne bien $\int_c d(d\eta) = \int_{\partial\partial c} \eta = 0$, d'où $d(d\eta) = 0$ par (ii) ; mais la démonstration de la formule utilise la commutation $\tilde c^* d = d\,\tilde c^*$, qui repose elle-même sur $d \circ d = 0$ ({{gd-formes|Formes différentielles}}, (iii)). Les deux identités sont duales l'une de l'autre par l'intégration ; aucune ne démontre l'autre ici.
+      - |
+        Par (ii) et la formule de Stokes, l'intégrale d'une forme fermée de degré $k$ est nulle sur les bords, et l'intégrale sur un cycle ne dépend que de sa classe modulo les bords : on obtient, comme en degré $1$ au nœud {{dr-chaines|Intégration sur les chaînes}}, une application de $\lex{cohomologie-de-rham}{H^k}(U)$ dans le dual de l'homologie du complexe $Q$. Que cette application soit un isomorphisme en tout degré, une fois les cubes dégénérés quotientés, est une forme du théorème de de Rham, qui n'est démontré ici qu'en degré $1$, avec des simplexes.
+
+  - id: dr-green
+    etiquette: Green-Riemann, divergence
+    nature: corollaire
+    titre: Formule de Green-Riemann et théorème de la divergence
+    enonce: |
+      (i) *Green-Riemann sur un rectangle.* Soit $R = [a_1, b_1] \times [a_2, b_2]$ et $P$, $Q$ deux fonctions de classe $C^\infty$ sur un ouvert de $\lex{n-uplet}{\mathbb R^2}$ contenant $R$. Alors
+      $$\begin{aligned} &\int_R (\partial_x Q - \partial_y P) \\ &\quad = \int_{a_1}^{b_1} P(x, a_2)\,dx \\ &\qquad + \int_{a_2}^{b_2} Q(b_1, y)\,dy \\ &\qquad - \int_{a_1}^{b_1} P(x, b_2)\,dx \\ &\qquad - \int_{a_2}^{b_2} Q(a_1, y)\,dy. \end{aligned}$$
+      Le second membre est $\int_{\partial \alpha_R} (P\,dx + Q\,dy)$, intégrale le long du bord de $R$ parcouru dans le sens direct, où $\alpha_R$ est le cube affine du nœud {{dr-iterees|Intégrales itérées}}, (iii).
+
+      (ii) *Domaine image d'un carré.* Soit $c$ un cube singulier lisse de dimension $2$ d'un ouvert $U$ de $\mathbb R^2$, prolongé par $\tilde c$, et $P$, $Q$ de classe $C^\infty$ sur $U$. Notons $\det d\tilde c = \partial_s \tilde c_1\,\partial_t \tilde c_2 - \partial_t \tilde c_1\,\partial_s \tilde c_2$. Alors
+      $$\begin{aligned} &\int_{I^2} \big((\partial_x Q - \partial_y P) \circ c\big)\,\det d\tilde c \\ &\quad = \int_{\partial c} (P\,dx + Q\,dy). \end{aligned}$$
+      En particulier,
+      $$\int_{I^2} \det d\tilde c = \int_{\partial c} x\,dy = -\int_{\partial c} y\,dx.$$
+
+      (iii) *Divergence sur un pavé.* Soit $K = \prod_{i=1}^n [a_i, b_i]$ un pavé et $F = (F_1, \dots, F_n)$ de classe $C^\infty$ sur un ouvert contenant $K$, de divergence $\operatorname{div} F = \sum_i \partial_i F_i$. Notons $K'_i = \prod_{l \neq i} [a_l, b_l]$ et $\iota_{i,s}(y) = (y_1, \dots, y_{i-1}, s, y_i, \dots, y_{n-1})$, comme au nœud {{dr-fubini|Fubini pour les fonctions continues}}, (iii). Alors
+      $$\begin{aligned} &\int_K \operatorname{div} F \\ &\quad = \sum_{i=1}^n \int_{K'_i} \big(F_i \circ \iota_{i,b_i} - F_i \circ \iota_{i,a_i}\big). \end{aligned}$$
+      Pour $n = 3$, le second membre est le flux sortant de $F$ à travers les six faces du pavé.
+    preuve: |
+      (iii) Posons $\omega = \sum_{i=1}^n (-1)^{i-1} F_i\,dx_1 \wedge \cdots \wedge \widehat{dx_i} \wedge \cdots \wedge dx_n$ ; pour $n = 1$, c'est la fonction $F_1$. Comme dans la preuve de la formule de Stokes ({{dr-stokes|Formule de Stokes}}), ramener $dx_i$ à sa place coûte $(-1)^{i-1}$, et
+      $$d\omega = \Big(\sum_i \partial_i F_i\Big)\,dx_1 \wedge \cdots \wedge dx_n.$$
+
+      *Intérieur.* L'application affine $\alpha_K$ ({{dr-iterees|Intégrales itérées}}, (iii)), restreinte à l'image réciproque de l'ouvert de définition de $F$, prolonge un cube singulier lisse de dimension $n$. Comme $\alpha_K^*(dx_l) = (b_l - a_l)\,dt_l$, on a $\alpha_K^*(dx_1 \wedge \cdots \wedge dx_n) = v(K)\,dt_1 \wedge \cdots \wedge dt_n$, et
+      $$\begin{aligned} \int_{\alpha_K} d\omega &= v(K)\int_{I^n} (\operatorname{div} F) \circ \alpha_K \\ &= \int_K \operatorname{div} F. \end{aligned}$$
+
+      *Faces.* Sur la face $\alpha_K \circ \iota_{l,\varepsilon}$, la coordonnée $l$ est constante, et l'image réciproque de $dx_l$ est nulle : seul subsiste le terme $i = l$ de $\omega$. Or $\alpha_K \circ \iota_{i,\varepsilon} = \iota_{i,s} \circ \alpha_{K'_i}$, avec $s = a_i$ si $\varepsilon = 0$ et $s = b_i$ si $\varepsilon = 1$, et l'image réciproque de $dx_1 \wedge \cdots \wedge \widehat{dx_i} \wedge \cdots \wedge dx_n$ est $v(K'_i)\,dt_1 \wedge \cdots \wedge dt_{n-1}$.
+
+      Le même changement de variable affine, sur $K'_i$, donne
+      $$\int_{\alpha_K \circ \iota_{i,\varepsilon}} \omega = (-1)^{i-1}\int_{K'_i} F_i \circ \iota_{i,s}.$$
+      Avec le signe $(-1)^{i+\varepsilon}$ du bord, le facteur total est $(-1)^{\varepsilon+1}$ : $+$ pour la face $x_i = b_i$, $-$ pour la face $x_i = a_i$. La formule de Stokes, $\int_{\alpha_K} d\omega = \int_{\partial\alpha_K} \omega$, est l'égalité annoncée ; pour $n = 1$, c'est le théorème fondamental.
+
+      (i) C'est (iii) pour $n = 2$ et $F = (Q, -P)$, dont la divergence est $\partial_x Q - \partial_y P$. La forme $\omega$ de la preuve de (iii) est alors $Q\,dy + P\,dx$, et la formule de Stokes identifie le second membre à $\int_{\partial\alpha_R} (P\,dx + Q\,dy)$.
+
+      (ii) Pour $\omega = P\,dx + Q\,dy$, $d\omega = (\partial_x Q - \partial_y P)\,dx \wedge dy$, et le nœud {{dr-integrale-cubes|Intégrale sur une chaîne}}, (i), donne $\tilde c^*(dx \wedge dy) = \det d\tilde c\;ds \wedge dt$. La formule de Stokes conclut. Pour $P = 0$ et $Q = x$, ou pour $P = -y$ et $Q = 0$, on a $d\omega = dx \wedge dy$.
+    remarques:
+      - |
+        Le cube $c(s, t) = \big(s, t(1 + s^2)\big)$ envoie le carré sur le domaine $D$ situé entre l'axe des $x$ et l'arc de parabole $y = 1 + x^2$, pour $0 \leqslant x \leqslant 1$. Son jacobien vaut $1 + s^2$, et $\int_{I^2} (1 + s^2) = \frac43$, qui est aussi $\int_0^1 (1 + x^2)\,dx$, l'aire de $D$ au sens de l'intégrale de Riemann.
+
+        Par le bord, $\int_{\partial c} x\,dy$ ne reçoit que la contribution $+2$ du côté droit $c(1, t) = (1, 2t)$ et $-\frac23$ de l'arc $c(s, 1) = (s, 1 + s^2)$, sur lequel $x\,dy = 2s^2\,ds$ ; les deux autres côtés donnent $0$. On retrouve $2 - \frac23 = \frac43$ : l'aire a été calculée sans regarder l'intérieur du domaine. Ces valeurs ont été vérifiées par un calcul formel.
+
+        ```schema dr-green
+        Le domaine $D$, image du carré par $c(s, t) = (s, t(1 + s^2))$, avec les images des segments $s = \frac14, \frac12, \frac34$ et $t = \frac14, \frac12, \frac34$, en gris. Le bord $\partial c$, en rouge, fait le tour de $D$ dans le sens direct : le bas et le côté droit dans le sens de $s$ et de $t$ croissants, l'arc de parabole et le côté gauche à rebours. Pour la forme $x\,dy$, seuls le côté droit et l'arc contribuent, pour $2$ et $-\frac23$.
+        ```
+      - |
+        L'erreur la plus répandue est de parcourir les quatre côtés dans le sens des coordonnées croissantes, en oubliant les signes $(-1)^{i+\varepsilon}$. Dans l'exemple précédent, on trouverait $2 + \frac23 = \frac83$ au lieu de $\frac43$. Ce sont les signes du bord qui font des quatre côtés un contour fermé, parcouru d'un seul tenant.
+      - |
+        Lorsque $c$ est un difféomorphisme de jacobien positif de l'intérieur du carré sur son image, le premier membre de (ii) est l'intégrale de $\partial_x Q - \partial_y P$ sur le domaine $c(I^2)$, par la formule du changement de variables ({{cv-changement|Changement de variables}}), qui n'est pas un ancêtre de cette branche. En particulier, $\int_{\partial c} x\,dy$ est alors l'aire du domaine ; c'est le principe du planimètre, instrument qui mesure une aire en suivant son contour.
+      - |
+        Sur $K = [0, 1] \times [0, 2] \times [0, 3]$, le champ $F = (xy, yz, zx)$ a pour divergence $x + y + z$, d'intégrale $18$ : le volume $6$ multiplié par la valeur $3$ de la divergence au centre, puisqu'elle est affine. Le flux sort par les trois faces $x = 1$, $y = 2$ et $z = 3$, pour $6$, $9$ et $3$, et il est nul à travers les trois autres, où la composante normale s'annule. La somme vaut bien $18$.
+
+        La divergence est celle du théorème de Liouville ({{cv-liouville|Liouville}}) : un champ de divergence nulle a un flux total nul à travers le bord de tout pavé, ce qui est la forme intégrale de la conservation du volume par son flot.
+      - |
+        La formule plane apparaît sans démonstration dans une note de Cauchy aux *Comptes rendus* (1846), puis, démontrée, dans la thèse de Riemann (1851) ; George Green avait établi en 1828, dans un *Essay on the Application of Mathematical Analysis to the Theories of Electricity and Magnetism* publié à compte d'auteur, une identité pour les fonctions de trois variables sur un solide. Le théorème de la divergence a été présenté par Ostrogradski à Paris en 1826, dans un manuscrit, et publié en 1831 à Saint-Pétersbourg (V. J. Katz, *The History of Stokes' Theorem*, Mathematics Magazine 52, 1979).
+
 aretes:
   - [dr-primitives, dr-integrale]
   - [dr-integrale, dr-homotopie]
@@ -522,3 +904,10 @@ aretes:
   - [dr-cocycle, dr-surjectivite]
   - [dr-chaines, dr-surjectivite]
   - [dr-surjectivite, dr-degre1]
+  - [dr-iterees, dr-fubini]
+  - [dr-iterees, dr-integrale-cubes]
+  - [dr-cubes, dr-integrale-cubes]
+  - [dr-fubini, dr-stokes]
+  - [dr-integrale-cubes, dr-stokes]
+  - [dr-stokes, dr-fermees]
+  - [dr-stokes, dr-green]
