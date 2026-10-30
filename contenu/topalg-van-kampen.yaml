@@ -1,0 +1,645 @@
+# Niveau 2 : structure interne du chapitre « Théorème de Seifert-van Kampen » (nœud topalg-van-kampen du
+# graphe topalg, créé le 30 oct. 2026), après ta-consequences.
+# Partie algébrique : mots et forme réduite (action de van der Waerden sur les mots réduits), groupe libre sur
+# un ensemble quelconque et propriété universelle (ℤ est libre sur {1}, ce qui définit les puissances gⁿ),
+# sous-groupe distingué engendré et présentations (⟨a, b | aba⁻¹b⁻¹⟩ ≅ ℤ², ⟨a | aⁿ⟩ ≅ ℤ/nℤ), produit libre,
+# produit amalgamé. Elle est placée ici : alg n'a pas les entiers, et gf n'est pas un ancêtre de topalg.
+# Partie topologique : découpage des chemins et des homotopies par le nombre de Lebesgue (me-lebesgue),
+# engendrement de π₁(U ∪ V), π₁(Sⁿ) = 1 pour n ⩾ 2, lemme des factorisations (grille de carrés et
+# escaliers), théorème de Seifert-van Kampen, lemme du carré et rétractes par déformation, bouquet de deux
+# cercles (groupe libre de rang 2), tore (ℤ², par une décomposition en ouverts et le recollement du carré).
+# Aucune forme de l'axiome du choix n'intervient : les seuls choix sont en nombre fini. Admis en remarque :
+# forme normale dans un produit libre, Nielsen-Schreier (⋆), plan projectif réel.
+
+graphe: topalg-van-kampen
+titre: Théorème de Seifert-van Kampen
+conteneur: topalg-van-kampen
+
+entrees:
+  ta-consequences: [vk-decoupage]
+  ta-cercle: [vk-bouquet]
+
+noeuds:
+  - id: vk-mots
+    etiquette: Mots réduits
+    nature: lemme
+    titre: Mots, réduction et action de van der Waerden
+    texte: |
+      Soit $S$ un ensemble. Une **lettre** sur $S$ est un élément de $S \times \{1, -1\}$ ; on écrit $s$ pour la lettre $(s, 1)$ et $s^{-1}$ pour la lettre $(s, -1)$. L'**inverse** de la lettre $x = (s, \varepsilon)$ est $x^{-1} = (s, -\varepsilon)$, de sorte que $(x^{-1})^{-1} = x$ et $x^{-1} \neq x$.
+
+      Un **mot** de longueur $n \geqslant 1$ est un [[n-uplet|$n$-uplet]] de lettres $(x_1, \dots, x_n)$, qu'on écrit $x_1 x_2 \cdots x_n$ ; le **mot vide**, noté $1$, est l'unique mot de longueur $0$. L'ensemble $\mathcal W(S)$ des mots existe, comme réunion des ensembles de $n$-uplets de lettres pour $n \in \lex{ensemble-entiers-naturels}{\mathbb N}$.
+
+      La **concaténation** $uv$ de deux mots est le mot formé des lettres de $u$ suivies de celles de $v$ ; elle est associative et admet le mot vide pour neutre.
+
+      Un mot est [[mot-reduit|réduit]] si aucune de ses lettres n'est immédiatement suivie de son inverse. Un **mouvement élémentaire** remplace un mot $u\,xx^{-1}\,v$ par $uv$, ou inversement $uv$ par $u\,xx^{-1}\,v$. On note $u \approx v$ s'il existe une suite finie de mouvements élémentaires qui mène de $u$ à $v$.
+
+      Notons $\mathcal R$ l'ensemble des mots réduits. Pour une lettre $x$, on définit une application $\sigma_x$ de $\mathcal R$ dans $\mathcal W(S)$ par
+      $$\sigma_x(w) = \begin{cases} w' & \text{si } w = x^{-1}w', \\ xw & \text{sinon.} \end{cases}$$
+      La lettre $x$ s'ajoute en tête du mot, sauf si elle s'y simplifie avec la première lettre.
+    enonce: |
+      (i) La relation $\approx$ est une relation d'équivalence sur $\mathcal W(S)$, compatible avec la concaténation : si $u \approx u'$ et $v \approx v'$, alors $uv \approx u'v'$.
+
+      (ii) Tout mot est équivalent à un mot réduit.
+
+      (iii) *Action de van der Waerden.* Pour toute lettre $x$, l'application $\sigma_x$ est à valeurs dans $\mathcal R$, et c'est une bijection de $\mathcal R$, de réciproque $\sigma_{x^{-1}}$.
+
+      (iv) Deux mots réduits équivalents sont égaux. Toute classe pour $\approx$ contient donc un unique mot réduit, sa **forme réduite**.
+    preuve: |
+      (i) La suite vide de mouvements donne $u \approx u$. Une suite lue à l'envers, où chaque mouvement est remplacé par le mouvement inverse, donne la symétrie ; deux suites mises bout à bout donnent la transitivité.
+
+      Un mouvement qui transforme $u$ en $u'$ porte sur un facteur $xx^{-1}$ de $u$, qui reste un facteur de $uv$ : le même mouvement transforme $uv$ en $u'v$. De même à droite, et donc $uv \approx u'v \approx u'v'$.
+
+      (ii) Par récurrence sur la longueur. Un mot qui n'est pas réduit s'écrit $u\,xx^{-1}\,v$ ; il est équivalent à $uv$, plus court de deux lettres, lui-même équivalent à un mot réduit par l'hypothèse de récurrence.
+
+      (iii) Le mot $\sigma_x(w)$ est réduit : si $w = x^{-1}w'$, le mot $w'$ est la fin d'un mot réduit ; sinon, $xw$ est réduit, puisque $w$ l'est et ne commence pas par $x^{-1}$.
+
+      Montrons que $\sigma_{x^{-1}} \circ \sigma_x$ est l'identité. Si $w = x^{-1}w'$, le mot $w'$ ne commence pas par $x$, puisque $w$ est réduit, et donc $\sigma_{x^{-1}}(w') = x^{-1}w' = w$. Sinon, $\sigma_x(w) = xw$ commence par $x = (x^{-1})^{-1}$, et $\sigma_{x^{-1}}(xw) = w$.
+
+      En échangeant les rôles de $x$ et de $x^{-1}$, on obtient aussi $\sigma_x \circ \sigma_{x^{-1}} = \mathrm{id}$.
+
+      (iv) Notons $\mathcal B$ l'ensemble des bijections de $\mathcal R$ et $\mathcal W_n$ celui des mots de longueur au plus $n$. Par récurrence sur $n$ ({{n-recdef|Définition par récurrence}}), à valeurs dans l'ensemble fixe des parties de $\mathcal W(S) \times \mathcal B$, on définit une suite d'applications $\Sigma_n : \mathcal W_n \to \mathcal B$ : $\Sigma_0(1) = \mathrm{id}$, et $\Sigma_{n+1}$ prolonge $\Sigma_n$ par $\Sigma_{n+1}(xw) = \sigma_x \circ \Sigma_n(w)$ pour $w$ de longueur $n$. Leur réunion est une application $\Sigma : \mathcal W(S) \to \mathcal B$, telle que $\Sigma(1) = \mathrm{id}$, $\Sigma(xw) = \sigma_x \circ \Sigma(w)$, et
+      $$\Sigma(x_1 \cdots x_n) = \sigma_{x_1} \circ \cdots \circ \sigma_{x_n}.$$
+      Par récurrence sur la longueur de $u$, on a $\Sigma(uv) = \Sigma(u) \circ \Sigma(v)$.
+
+      Par (iii), il vient
+      $$\begin{aligned} \Sigma(u\,xx^{-1}\,v) &= \Sigma(u) \circ \sigma_x \circ \sigma_{x^{-1}} \circ \Sigma(v) \\ &= \Sigma(uv) : \end{aligned}$$
+      $\Sigma$ est invariante par mouvement élémentaire, donc constante sur chaque classe.
+
+      Pour un mot réduit $w$, on a $\Sigma(w)(1) = w$, par récurrence sur la longueur : si $w = xw'$, le mot $w'$ est réduit et ne commence pas par $x^{-1}$, donc $\Sigma(w)(1) = \sigma_x(w') = xw' = w$.
+
+      Si $w$ et $w'$ sont réduits et équivalents, on a donc $w = \Sigma(w)(1) = \Sigma(w')(1) = w'$. Avec (ii), chaque classe contient exactement un mot réduit.
+    remarques:
+      - |
+        La difficulté que l'action contourne est qu'un mot se réduit en général de plusieurs façons. Dans $aa^{-1}a$, on peut supprimer $aa^{-1}$ ou $a^{-1}a$ ; les deux chemins mènent ici à $a$, mais montrer directement que toutes les suites de suppressions aboutissent au même mot demande une analyse de leurs croisements. L'action de van der Waerden remplace cette analyse par un calcul : on lit le mot de droite à gauche en l'appliquant au mot vide.
+
+        Pour $w = abb^{-1}a^{-1}b$, on trouve successivement $\sigma_b(1) = b$, puis $a^{-1}b$, puis $b^{-1}a^{-1}b$, puis $a^{-1}b$, et enfin $\sigma_a(a^{-1}b) = b$ : la forme réduite de $w$ est $b$. Chaque lettre s'empile en tête ou dépile la lettre de tête, comme sur une pile.
+      - |
+        L'argument a été publié par B. L. van der Waerden pour les produits libres (*Free products of groups*, Amer. J. Math. 70, 1948, p. 527-528). Il ne demande aucun ordre sur $S$ ni aucun choix : l'ensemble $S$ est quelconque, et tout se fait par récurrence sur la longueur des mots.
+      - |
+        L'erreur la plus répandue est de croire qu'un mot réduit est court ou « simple ». Le mot $aba^{-1}b^{-1}$ est réduit et non vide : il n'est donc pas équivalent au mot vide. C'est ce mot, le commutateur de $a$ et $b$, qui distinguera le bouquet de deux cercles du tore, à la fin du chapitre.
+
+  - id: vk-groupe-libre
+    etiquette: Groupe libre
+    nature: théorème
+    titre: Le groupe libre sur un ensemble
+    texte: |
+      Le [[groupe-libre|groupe libre]] sur $S$ est l'ensemble quotient $F(S) = \mathcal W(S)/\!\approx$, muni de la loi $[u][v] = [uv]$, bien définie par le point (i) du nœud {{vk-mots|Mots réduits}}, sans qu'aucun représentant soit choisi ({{r-factorisation|Passage au quotient}}). On note $\iota : S \to F(S)$ l'application $s \mapsto [s]$. Si $S = \{a, b\}$ avec $a \neq b$, on écrit $F(a, b)$.
+
+      Soit $\varphi$ une application de $S$ dans un [[groupe]] $G$. On pose $\varphi(s^{-1}) = \varphi(s)^{-1}$, de sorte que $\varphi(x^{-1}) = \varphi(x)^{-1}$ pour toute lettre $x$, puis, par récurrence sur la longueur, en définissant comme au point (iv) du nœud {{vk-mots|Mots réduits}} les restrictions aux mots de longueur au plus $n$, $\tilde\varphi(1) = e$ et $\tilde\varphi(xw) = \varphi(x)\,\tilde\varphi(w)$ :
+      $$\tilde\varphi(x_1 \cdots x_n) = \varphi(x_1) \cdots \varphi(x_n).$$
+    enonce: |
+      (i) $F(S)$ est un groupe, de neutre $[1]$, et
+      $$[x_1 \cdots x_n]^{-1} = [x_n^{-1} \cdots x_1^{-1}].$$
+      Il est engendré par $\iota(S)$, l'application $\iota$ est injective, et chaque élément est la classe d'un unique mot réduit.
+
+      (ii) *Propriété universelle.* Pour toute application $\varphi$ de $S$ dans un groupe $G$, il existe un unique [[morphisme-groupes|morphisme]] $\bar\varphi : F(S) \to G$ tel que $\bar\varphi \circ \iota = \varphi$ ; il est donné par $\bar\varphi([w]) = \tilde\varphi(w)$.
+
+      (iii) *$\lex{ensemble-entiers-relatifs}{\mathbb Z}$ est libre sur $\{1\}$.* Le morphisme $\theta : F(\{s\}) \to \mathbb Z$ tel que $\theta([s]) = 1$ est un isomorphisme. Par suite, pour tout élément $g$ d'un groupe $G$, il existe un unique morphisme de $\mathbb Z$ dans $G$ qui envoie $1$ sur $g$ ; on note $g^n$ l'image de $n$. On a $g^1 = g$, $g^{m + n} = g^m g^n$, et $f(g^n) = f(g)^n$ pour tout morphisme $f$.
+
+      (iv) Si $s$ et $t$ sont deux éléments distincts de $S$, alors $[s][t] \neq [t][s]$ : $F(S)$ n'est pas commutatif.
+    preuve: |
+      (i) La loi est associative et $[1]$ est neutre, comme pour la concaténation. On a $[x][x^{-1}] = [xx^{-1}] = [1]$, et de même $[x^{-1}][x] = [1]$, puisque $(x^{-1})^{-1} = x$.
+
+      Comme $[x_1 \cdots x_n] = [x_1] \cdots [x_n]$ est un produit d'éléments inversibles, il est inversible, d'inverse $[x_n^{-1}] \cdots [x_1^{-1}]$ ({{a-monoide|Monoïde}}, (ii)) : le monoïde $F(S)$ est un groupe ({{a-groupe|Groupe}}, (i)).
+
+      Un sous-groupe qui contient $\iota(S)$ contient les $[s]^{-1} = [s^{-1}]$, donc les classes de toutes les lettres, puis, par récurrence sur la longueur, celles de tous les mots. Enfin deux éléments distincts de $S$ sont deux mots réduits distincts, de classes distinctes, et chaque classe contient un unique mot réduit ({{vk-mots|Mots réduits}}, (iv)).
+
+      (ii) Par récurrence sur la longueur de $u$, $\tilde\varphi(uv) = \tilde\varphi(u)\tilde\varphi(v)$. Par suite
+      $$\begin{aligned} \tilde\varphi(u\,xx^{-1}\,v) &= \tilde\varphi(u)\,\varphi(x)\varphi(x)^{-1}\,\tilde\varphi(v) \\ &= \tilde\varphi(uv), \end{aligned}$$
+      et $\tilde\varphi$ est constante sur les classes. Elle passe au quotient en une application $\bar\varphi$, qui est un morphisme par la multiplicativité de $\tilde\varphi$, et $\bar\varphi([s]) = \varphi(s)$.
+
+      Deux morphismes qui coïncident sur $\iota(S)$ coïncident sur l'ensemble où ils sont égaux, qui est un sous-groupe ({{a-sous-groupe|Sous-groupe}}, (i)) contenant $\iota(S)$, c'est-à-dire sur $F(S)$ tout entier.
+
+      (iii) Dans un mot réduit sur la seule lettre $s$, deux lettres consécutives sont égales, puisque $ss^{-1}$ et $s^{-1}s$ sont exclus : toutes ses lettres sont égales. Les mots réduits sont donc le mot vide $w_0$ et, pour $n \geqslant 1$, le mot $w_n$ formé de $n$ lettres $s$ et le mot $w_{-n}$ formé de $n$ lettres $s^{-1}$.
+
+      Par récurrence sur $n$, $\theta([w_n]) = n$ pour tout $n \in \mathbb Z$. Comme chaque élément de $F(\{s\})$ est la classe d'un unique $w_n$, par (i), $\theta$ est bijective.
+
+      Pour $g \in G$, soit $\varphi(s) = g$ ; alors $\bar\varphi \circ \theta^{-1}$ est un morphisme de $\mathbb Z$ dans $G$ qui envoie $1$ sur $g$. Si deux morphismes $f$, $f'$ de $\mathbb Z$ dans $G$ coïncident en $1$, alors $f \circ \theta$ et $f' \circ \theta$ coïncident en $[s]$, donc sont égaux par (ii), et $f = f'$.
+
+      Les règles de calcul en découlent : $n \mapsto g^n$ est un morphisme, et $n \mapsto f(g^n)$ et $n \mapsto f(g)^n$ sont deux morphismes qui envoient $1$ sur $f(g)$.
+
+      (iv) Les mots $st$ et $ts$ sont réduits et distincts ; leurs classes sont distinctes par (i).
+    remarques:
+      - |
+        Le groupe libre ne vérifie aucune relation autre que celles qu'impose la définition d'un groupe : c'est ce que dit la propriété universelle, puisqu'on peut envoyer $S$ n'importe où. Le point (iii) en tire, sans aucune distinction de cas selon le signe, les puissances entières dans un groupe quelconque, que la théorie des structures algébriques, construite avant les entiers, ne pouvait pas définir.
+      - |
+        Le groupe abélien libre $\mathbb Z^{(S)}$, qui servira au chapitre d'{{hom|homologie}} à construire les chaînes, en est l'analogue commutatif. Pour $S$ à deux éléments, les deux groupes diffèrent déjà : l'un est commutatif, l'autre ne l'est pas, par (iv).
+      - |
+        Tout sous-groupe d'un groupe libre est libre : c'est le théorème de Nielsen-Schreier, démontré par J. Nielsen pour les sous-groupes de type fini (1921), puis par O. Schreier en général (*Die Untergruppen der freien Gruppen*, Abh. Math. Sem. Univ. Hamburg 5, 1927, p. 161-183). Il n'est pas démontré ici. Le cas général est un énoncé ⋆ : ses démonstrations connues utilisent l'axiome du choix, et il n'est pas démontrable dans $\mathsf{ZF}$ seul (H. Läuchli, Comment. Math. Helv. 37, 1962, p. 1-18, dans un modèle à atomes, transféré à $\mathsf{ZF}$ par le théorème de Jech-Sochor). Il entraîne même le choix pour les familles d'ensembles finis non vides (P. E. Howard, J. Symbolic Logic 50, 1985, p. 458-467 ; démonstration plus courte par P. Kleppmann, 2015).
+
+  - id: vk-presentations
+    etiquette: Présentations
+    nature: proposition
+    titre: Sous-groupe distingué engendré, présentations
+    texte: |
+      Soit $A$ une partie d'un groupe $G$. Le [[sous-groupe-distingue-engendre|sous-groupe distingué engendré]] par $A$, noté $N(A)$, est l'intersection des [[sous-groupe-distingue|sous-groupes distingués]] de $G$ qui contiennent $A$ ; cet ensemble de sous-groupes existe par séparation et contient $G$.
+
+      Soit $S$ un ensemble et $R$ une partie de $F(S)$, dont les éléments sont appelés **relations**. Le groupe de [[presentation-groupe|présentation]] $\langle S \mid R \rangle$ est le [[groupe-quotient|groupe quotient]]
+      $$\langle S \mid R \rangle = F(S)/N(R).$$
+      On désigne une relation par l'un de ses mots, et l'on écrit par exemple $\langle a, b \mid aba^{-1}b^{-1} \rangle$, ou $\langle a \mid a^n \rangle$ pour la classe du mot formé de $n$ lettres $a$, qui est la puissance $[a]^n$.
+    enonce: |
+      (i) $N(A)$ est le plus petit sous-groupe distingué de $G$ qui contienne $A$. C'est le sous-groupe engendré par les conjugués $gag^{-1}$, pour $g \in G$ et $a \in A$. Si $A \subset B \subset N(A)$, alors $N(B) = N(A)$ ; et pour tout isomorphisme $f : G \to G'$, on a $f(N(A)) = N(f(A))$.
+
+      (ii) *Propriété universelle.* Soit $\varphi$ une application de $S$ dans un groupe $G$ telle que $\bar\varphi(r) = e$ pour toute relation $r \in R$. Il existe un unique morphisme $\langle S \mid R \rangle \to G$ qui envoie la classe de $[s]$ sur $\varphi(s)$ pour tout $s$. Le groupe $\langle S \mid R \rangle$ est engendré par les classes des $[s]$.
+
+      (iii) Le morphisme de $\langle a, b \mid aba^{-1}b^{-1} \rangle$ dans $\lex{n-uplet}{\mathbb Z^2}$ qui envoie les classes de $a$ et de $b$ sur $(1, 0)$ et $(0, 1)$ est un isomorphisme.
+
+      (iv) Pour $n \geqslant 1$, $\langle a \mid a^n \rangle$ est isomorphe au groupe additif de $\lex{anneau-zn}{\mathbb Z/n\mathbb Z}$.
+    preuve: |
+      (i) Une intersection de sous-groupes distingués est un sous-groupe ({{a-sous-groupe|Sous-groupe}}, (ii)), stable par conjugaison : c'est le plus petit sous-groupe distingué contenant $A$.
+
+      Soit $C$ le sous-groupe engendré par les conjugués des éléments de $A$. Il est contenu dans $N(A)$, qui contient ces conjugués. Pour $g \in G$, la conjugaison $c_g : x \mapsto gxg^{-1}$ est un morphisme, et $c_g^{-1}(C)$ est un sous-groupe ({{a-morphisme|Morphisme}}, (iii)) qui contient les conjugués des éléments de $A$, puisque $c_g$ envoie un conjugué sur un conjugué ; il contient donc $C$, c'est-à-dire $c_g(C) \subset C$. Ainsi $C$ est distingué, contient $A$, et $N(A) \subset C$.
+
+      Si $A \subset B \subset N(A)$, alors $N(A)$ est un sous-groupe distingué qui contient $B$, donc $N(B) \subset N(A)$ ; l'inclusion inverse vient de $A \subset B$. Enfin un isomorphisme $f$ met en bijection les sous-groupes distingués de $G$ qui contiennent $A$ et ceux de $G'$ qui contiennent $f(A)$.
+
+      (ii) Le noyau de $\bar\varphi$ ({{vk-groupe-libre|Groupe libre}}, (ii)) est un sous-groupe distingué ({{a-distingue|Sous-groupe distingué}}, (iii)) qui contient $R$, donc $N(R)$. Le morphisme $\bar\varphi$ se factorise par le quotient ({{a-isomorphisme|Théorème d'isomorphisme}}), et la factorisation envoie la classe de $[s]$ sur $\varphi(s)$.
+
+      Le quotient est engendré par les images des $[s]$, puisque $F(S)$ l'est par les $[s]$ et que la projection est un morphisme surjectif ; l'unicité s'ensuit comme au nœud {{vk-groupe-libre|Groupe libre}}.
+
+      (iii) Le groupe $\mathbb Z^2$ est muni de l'addition coordonnée par coordonnée, qui en fait un groupe commutatif. Notons $Q$ le groupe présenté, $A$ et $B$ les classes de $a$ et de $b$, et $\bar\theta : Q \to \mathbb Z^2$ le morphisme fourni par (ii), qui existe parce que $\mathbb Z^2$ est commutatif. Dans $Q$, la relation donne $AB = BA$.
+
+      L'ensemble des éléments de $Q$ qui commutent avec $A$ est un sous-groupe, qui contient $B$, donc toutes les puissances $B^n$ : son image réciproque par le morphisme $n \mapsto B^n$ ({{vk-groupe-libre|Groupe libre}}, (iii)) est un sous-groupe de $\mathbb Z$ qui contient $1$, donc $\mathbb Z$ tout entier, puisque $\mathbb Z$ est engendré par $1$ (même nœud, (i) et (iii)). De même, les $A^m$ commutent avec chaque $B^n$.
+
+      L'application $\mu(m, n) = A^m B^n$ est donc un morphisme de $\mathbb Z^2$ dans $Q$ :
+      $$\begin{aligned} A^m B^n A^{m'} B^{n'} &= A^m A^{m'} B^n B^{n'} \\ &= A^{m + m'} B^{n + n'}. \end{aligned}$$
+
+      On a $\bar\theta(A^m) = \bar\theta(A)^m = (m, 0)$, puisque $m \mapsto (m, 0)$ est le morphisme de $\mathbb Z$ dans $\mathbb Z^2$ qui envoie $1$ sur $(1, 0)$ ; de même pour $B$. Donc $\bar\theta \circ \mu = \mathrm{id}$.
+
+      Les morphismes $\mu \circ \bar\theta$ et $\mathrm{id}_Q$ coïncident en $A$ et en $B$, qui engendrent $Q$ : ils sont égaux, et $\bar\theta$ est un isomorphisme de réciproque $\mu$.
+
+      (iv) Soit $\theta : F(\{a\}) \to \mathbb Z$ l'isomorphisme du nœud {{vk-groupe-libre|Groupe libre}}, (iii) ; il envoie $[a]^n$ sur $n$. Par (i), $\theta(N([a]^n))$ est le sous-groupe distingué de $\mathbb Z$ engendré par $n$. Comme $\mathbb Z$ est commutatif, c'est le plus petit sous-groupe contenant $n$, à savoir $n\mathbb Z$, qui est un sous-groupe et qui est contenu, par récurrence, dans tout sous-groupe contenant $n$.
+
+      L'isomorphisme $\theta$ induit donc un isomorphisme de $F(\{a\})/N([a]^n)$ sur $\mathbb Z/n\mathbb Z$ ({{a-isomorphisme|Théorème d'isomorphisme}}, appliqué à la composée de $\theta$ et de la projection, de noyau $\theta^{-1}(n\mathbb Z) = N([a]^n)$).
+    remarques:
+      - |
+        Tout groupe $G$ a une présentation, sans aucun choix : l'identité de $G$ se prolonge en un morphisme surjectif $F(G) \to G$, et $G \cong \langle G \mid K \rangle$, où $K$ en est le noyau. Une présentation n'est utile que lorsqu'elle est petite, comme celles de (iii) et (iv). La première étude systématique des groupes donnés par générateurs et relations est due à W. Dyck (*Gruppentheoretische Studien*, Math. Ann. 20, 1882, p. 1-44) ; on trouvait déjà des présentations isolées chez Hamilton, en 1856.
+      - |
+        L'erreur la plus répandue est de croire qu'on lit un groupe sur sa présentation. Décider si une relation donnée est triviale dans $\langle S \mid R \rangle$, c'est-à-dire si un mot appartient à $N(R)$, est en général très difficile ; les démonstrations de (iii) et (iv) n'y parviennent qu'en exhibant un groupe connu et deux morphismes réciproques.
+
+  - id: vk-produit-libre
+    etiquette: Produit libre
+    nature: proposition
+    titre: Produit libre de deux groupes
+    texte: |
+      Soient $G_1$ et $G_2$ deux groupes, et $S = (\{1\} \times G_1) \cup (\{2\} \times G_2)$ leur réunion disjointe ; on note $\underline g_\nu$ l'élément $(\nu, g)$ de $S$. Le [[produit-libre|produit libre]] de $G_1$ et $G_2$ est le groupe
+      $$G_1 * G_2 = \langle S \mid \underline g_\nu\,\underline h_\nu\,(\underline{gh}_\nu)^{-1} \rangle,$$
+      où $\nu \in \{1, 2\}$ et $g, h \in G_\nu$. On note $\iota_\nu : G_\nu \to G_1 * G_2$ l'application qui envoie $g$ sur la classe de $\underline g_\nu$.
+    enonce: |
+      (i) $\iota_1$ et $\iota_2$ sont des morphismes, et tout élément de $G_1 * G_2$ est un produit fini d'éléments de $\iota_1(G_1) \cup \iota_2(G_2)$.
+
+      (ii) *Propriété universelle.* Pour tous morphismes $\varphi_1 : G_1 \to L$ et $\varphi_2 : G_2 \to L$, il existe un unique morphisme $\varphi : G_1 * G_2 \to L$ tel que $\varphi \circ \iota_1 = \varphi_1$ et $\varphi \circ \iota_2 = \varphi_2$.
+
+      (iii) $\iota_1$ et $\iota_2$ sont injectifs.
+
+      (iv) Si $\alpha_\nu : G_\nu \to G'_\nu$ sont deux isomorphismes, le morphisme $G_1 * G_2 \to G'_1 * G'_2$ qui prolonge $\iota'_1 \circ \alpha_1$ et $\iota'_2 \circ \alpha_2$ est un isomorphisme.
+
+      (v) Le morphisme $\mathbb Z * \mathbb Z \to F(a, b)$ qui prolonge $n \mapsto [a]^n$ et $n \mapsto [b]^n$ est un isomorphisme.
+    preuve: |
+      (i) La relation donne $\iota_\nu(g)\iota_\nu(h) = \iota_\nu(gh)$. Les images $\iota_\nu(G_\nu)$ sont des sous-groupes ({{a-morphisme|Morphisme}}, (iii)) qui engendrent $G_1 * G_2$ ({{vk-presentations|Présentations}}, (ii)).
+
+      L'ensemble $P$ des produits finis d'éléments de $\iota_1(G_1) \cup \iota_2(G_2)$, définis par récurrence sur le nombre de facteurs, contient $e$, est stable par produit, et par passage à l'inverse puisque $(y_1 \cdots y_k)^{-1} = y_k^{-1} \cdots y_1^{-1}$ et que chaque $y_i^{-1}$ appartient au même sous-groupe que $y_i$. C'est un sous-groupe qui contient les deux images et qui est contenu dans tout sous-groupe les contenant : c'est le groupe entier.
+
+      (ii) L'application de $S$ dans $L$ qui envoie $\underline g_\nu$ sur $\varphi_\nu(g)$ annule les relations, puisque $\varphi_\nu(g)\varphi_\nu(h)\varphi_\nu(gh)^{-1} = e$ ; on applique {{vk-presentations|Présentations}}, (ii).
+
+      (iii) On applique (ii) à $\varphi_1 = \mathrm{id}_{G_1}$ et au morphisme $\varphi_2$ qui envoie tout sur $e$ : alors $\varphi \circ \iota_1 = \mathrm{id}_{G_1}$, et $\iota_1$ est injectif. De même pour $\iota_2$.
+
+      (iv) Soient $\varphi$ ce morphisme et $\varphi'$ celui qui prolonge $\iota_1 \circ \alpha_1^{-1}$ et $\iota_2 \circ \alpha_2^{-1}$. Le morphisme $\varphi' \circ \varphi$ prolonge $\iota_1$ et $\iota_2$, comme l'identité : par l'unicité dans (ii), $\varphi' \circ \varphi = \mathrm{id}$. De même, $\varphi \circ \varphi' = \mathrm{id}$.
+
+      (v) Soit $\varphi$ ce morphisme, et $\psi : F(a, b) \to \mathbb Z * \mathbb Z$ le morphisme tel que $\psi([a]) = \iota_1(1)$ et $\psi([b]) = \iota_2(1)$ ({{vk-groupe-libre|Groupe libre}}, (ii)).
+
+      Les morphismes $\psi \circ \varphi \circ \iota_1$ et $\iota_1$, de $\mathbb Z$ dans $\mathbb Z * \mathbb Z$, envoient tous deux $1$ sur $\iota_1(1)$ : ils sont égaux ({{vk-groupe-libre|Groupe libre}}, (iii)). De même avec $\iota_2$, et $\psi \circ \varphi = \mathrm{id}$ par (ii).
+
+      Enfin $\varphi \circ \psi$ fixe $[a]$ et $[b]$, donc vaut l'identité par la propriété universelle du groupe libre.
+    remarques:
+      - |
+        L'erreur la plus répandue est de confondre le produit libre et le produit direct. Dans $G_1 \times G_2$, les éléments $(g, e)$ et $(e, h)$ commutent toujours ; dans $\mathbb Z * \mathbb Z \cong F(a, b)$, les images des deux générateurs ne commutent pas ({{vk-groupe-libre|Groupe libre}}, (iv)).
+      - |
+        On peut montrer, par une action sur les suites alternées comme celle du nœud {{vk-mots|Mots réduits}}, que tout élément de $G_1 * G_2$ s'écrit de façon unique $\iota_{\nu_1}(g_1) \cdots \iota_{\nu_k}(g_k)$, avec des $g_i \neq e$ et des indices consécutifs distincts ; c'est ce que van der Waerden établit dans l'article cité. Cette forme normale est admise ici, car le chapitre ne s'en sert pas. Elle montre par exemple que $\mathbb Z/2\mathbb Z * \mathbb Z/2\mathbb Z$ est infini, bien que ses deux facteurs aient deux éléments.
+
+  - id: vk-amalgame
+    etiquette: Produit amalgamé
+    nature: proposition
+    titre: Produit amalgamé
+    texte: |
+      Soient $K$, $G_1$, $G_2$ trois groupes et $i_1 : K \to G_1$, $i_2 : K \to G_2$ deux morphismes. Le [[produit-amalgame|produit amalgamé]] est le quotient
+      $$G_1 *_K G_2 = (G_1 * G_2)/N,$$
+      où $N$ est le sous-groupe distingué engendré par les éléments $\iota_1(i_1(k))\,\iota_2(i_2(k))^{-1}$, pour $k \in K$. On note $\pi$ la projection et $j_\nu = \pi \circ \iota_\nu$. On identifie dans $G_1 *_K G_2$ l'image de $k$ dans $G_1$ et son image dans $G_2$.
+    enonce: |
+      (i) $j_1 \circ i_1 = j_2 \circ i_2$, et tout élément de $G_1 *_K G_2$ est un produit fini d'éléments de $j_1(G_1) \cup j_2(G_2)$.
+
+      (ii) *Propriété universelle.* Pour tous morphismes $\varphi_\nu : G_\nu \to L$ tels que $\varphi_1 \circ i_1 = \varphi_2 \circ i_2$, il existe un unique morphisme $\varphi : G_1 *_K G_2 \to L$ tel que $\varphi \circ j_\nu = \varphi_\nu$ pour $\nu = 1, 2$.
+      $$\begin{CD} K @>{i_1}>> G_1 \\ @V{i_2}VV @VV{j_1}V \\ G_2 @>{j_2}>> G_1 *_K G_2 \end{CD}$$
+      Le carré commute, et tout autre carré commutatif de même forme, de sommet $L$, s'en déduit par un unique morphisme $\varphi$.
+
+      (iii) Si $K$ est réduit à son neutre, $\pi$ est un isomorphisme : $G_1 *_K G_2 \cong G_1 * G_2$.
+
+      (iv) Si $G_2$ est réduit à son neutre, $j_1$ est surjectif, de noyau $N(i_1(K))$, et induit un isomorphisme $G_1/N(i_1(K)) \cong G_1 *_K G_2$. Si une partie $C$ engendre $K$, alors $N(i_1(K)) = N(i_1(C))$.
+    preuve: |
+      (i) L'élément $\iota_1(i_1(k))\,\iota_2(i_2(k))^{-1}$ appartient à $N = \operatorname{Ker} \pi$, d'où $j_1(i_1(k)) = j_2(i_2(k))$. La seconde affirmation vient du point (i) du nœud {{vk-produit-libre|Produit libre}}, appliqué à un antécédent par la projection surjective $\pi$.
+
+      (ii) Soit $\psi : G_1 * G_2 \to L$ le morphisme qui prolonge $\varphi_1$ et $\varphi_2$ ({{vk-produit-libre|Produit libre}}, (ii)). Il envoie chaque générateur de $N$ sur $\varphi_1(i_1(k))\,\varphi_2(i_2(k))^{-1} = e$ ; son noyau, distingué, contient donc $N$, et $\psi$ se factorise par $\pi$ ({{a-isomorphisme|Théorème d'isomorphisme}}). L'unicité vient de ce que $G_1 *_K G_2$ est engendré par $j_1(G_1) \cup j_2(G_2)$.
+
+      (iii) Le seul générateur de $N$ est alors $\iota_1(e)\,\iota_2(e)^{-1} = e$, et $N = \{e\}$, qui est distingué. La projection $\pi$, de noyau $\{e\}$, est injective.
+
+      (iv) Ici $j_2$ est trivial, et $j_1(i_1(k)) = j_2(i_2(k)) = e$ : le noyau de $j_1$ contient $i_1(K)$, donc $N(i_1(K))$, et $j_1$ induit un morphisme $\beta : G_1/N(i_1(K)) \to G_1 *_K G_2$ tel que $\beta \circ p = j_1$, où $p$ est la projection.
+
+      Inversement, $p$ et le morphisme trivial de $G_2$ vérifient $p \circ i_1 = e$, et (ii) fournit $\gamma$ tel que $\gamma \circ j_1 = p$. Alors $\gamma \circ \beta \circ p = p$, donc $\gamma \circ \beta = \mathrm{id}$, puisque $p$ est surjective. Et $\beta \circ \gamma$ prolonge $j_1$ et $j_2$, comme l'identité, donc $\beta \circ \gamma = \mathrm{id}$ par l'unicité dans (ii).
+
+      Ainsi $\beta$ est un isomorphisme, $j_1 = \beta \circ p$ est surjectif et son noyau est celui de $p$, c'est-à-dire $N(i_1(K))$. Enfin, si $C$ engendre $K$, l'image réciproque $i_1^{-1}(N(i_1(C)))$ est un sous-groupe ({{a-morphisme|Morphisme}}, (iii)) qui contient $C$, donc $K$ ; ainsi $i_1(C) \subset i_1(K) \subset N(i_1(C))$ ; on conclut par {{vk-presentations|Présentations}}, (i).
+    remarques:
+      - |
+        Les morphismes $j_\nu$ ne sont pas injectifs en général. Pour $K = G_1 = \mathbb Z$, $i_1 = \mathrm{id}$ et $G_2$ trivial, le point (iv) donne $G_1 *_K G_2 \cong \mathbb Z/\mathbb Z$, groupe trivial : tout $G_1$ a été écrasé, parce qu'on l'a identifié, à travers $K$, à un groupe réduit au neutre.
+      - |
+        Le théorème de Seifert-van Kampen identifiera le groupe fondamental d'une réunion $U \cup V$ au produit amalgamé de ceux de $U$ et de $V$ au-dessus de celui de $U \cap V$ : le carré de (ii) y deviendra le carré des morphismes induits par les inclusions.
+
+  - id: vk-decoupage
+    etiquette: Découpage
+    nature: lemme
+    titre: Découpage des chemins et des homotopies
+    texte: |
+      Pour des [[chemin|chemins]] $\gamma_1, \dots, \gamma_m$ tels que $\gamma_k(1) = \gamma_{k+1}(0)$, le **produit équilibré** $\gamma_1 \star \cdots \star \gamma_m$ est le chemin qui parcourt $\gamma_k$ sur $[\frac{k - 1}m, \frac km]$ :
+      $$(\gamma_1 \star \cdots \star \gamma_m)(s) = \gamma_k(ms - k + 1).$$
+      Il est continu par le recollement ({{ta-chemins|Chemins}}, (i)), appliqué $m - 1$ fois à des intervalles fermés qui se touchent en un point où les deux formules coïncident.
+    enonce: |
+      (i) Pour des chemins, $\gamma_1 \star \cdots \star \gamma_m \simeq (\cdots(\gamma_1 \cdot \gamma_2) \cdots) \cdot \gamma_m$. En particulier, si les $\gamma_k$ sont des lacets en $x$, alors $[\gamma_1 \star \cdots \star \gamma_m] = [\gamma_1] \cdots [\gamma_m]$ dans $\lex{groupe-fondamental}{\pi_1}(X, x)$. Pour un chemin $\gamma$ et $m \geqslant 1$, on a $\gamma = \gamma_1 \star \cdots \star \gamma_m$, où $\gamma_k(s) = \gamma\big(\frac{k - 1 + s}m\big)$.
+
+      (ii) *Découpage.* Soit $X = U \cup V$, avec $U$ et $V$ ouverts. Pour tout chemin $\gamma : I \to X$, il existe un entier $m_0 \geqslant 1$ tel que, pour tout $m \geqslant m_0$, chaque $\gamma([\frac{k - 1}m, \frac km])$ soit contenu dans $U$ ou dans $V$. De même, pour toute application continue $H : I \times I \to X$, il existe $N_0$ tel que, pour tout $N \geqslant N_0$, l'image par $H$ de chaque carré
+      $$\Big[\frac{i - 1}N, \frac iN\Big] \times \Big[\frac{j - 1}N, \frac jN\Big]$$
+      soit contenue dans $U$ ou dans $V$.
+
+      (iii) Dans une partie convexe $C$ de $\lex{n-uplet}{\mathbb R^n}$, deux chemins de mêmes extrémités sont [[homotopie-chemins|homotopes]].
+    preuve: |
+      (i) Par récurrence sur $m$, le cas $m = 1$ étant clair. Pour $m \geqslant 2$, notons $A = \gamma_1 \star \cdots \star \gamma_{m-1}$. On vérifie sur les formules que
+      $$A \cdot \gamma_m = (\gamma_1 \star \cdots \star \gamma_m) \circ \varphi,$$
+      où $\varphi$ envoie affinement $[0, \frac12]$ sur $[0, \frac{m - 1}m]$ et $[\frac12, 1]$ sur $[\frac{m - 1}m, 1]$ : pour $s \leqslant \frac12$, les deux membres valent $\gamma_k(2(m - 1)s - k + 1)$ sur l'intervalle où $2(m - 1)s \in [k - 1, k]$, et pour $s \geqslant \frac12$, ils valent $\gamma_m(2s - 1)$.
+
+      Cette fonction $\varphi$ est continue par recollement, croissante, et fixe $0$ et $1$ : par le reparamétrage ({{ta-homotopie|Homotopie}}, (ii)), $A \cdot \gamma_m \simeq \gamma_1 \star \cdots \star \gamma_m$. Par l'hypothèse de récurrence et le point (iii) du même nœud, $(\cdots(\gamma_1 \cdot \gamma_2) \cdots) \cdot \gamma_m \simeq A \cdot \gamma_m$. Pour des lacets, la définition de la loi de $\pi_1$ ({{ta-groupe-fondamental|Groupe fondamental}}) donne l'égalité des classes. La seconde affirmation se vérifie sur la formule : pour $s \in [\frac{k - 1}m, \frac km]$, $\gamma_k(ms - k + 1) = \gamma(s)$.
+
+      (ii) On munit $K = I$, ou $K = I \times I$, de la distance $d_\infty$, qui définit sa topologie ; $K$ est fermé et borné, donc [[compact]] ({{me-rn|L'espace ℝⁿ}}, (i) et (iii)). Les images réciproques de $U$ et de $V$ forment un [[recouvrement]] ouvert de $K$, qui admet un [[nombre-lebesgue|nombre de Lebesgue]] $\eta$ ({{me-lebesgue|Nombre de Lebesgue}}).
+
+      Soit $m_0$ le plus petit entier $m \geqslant 1$ tel que $\frac1m < \eta$, qui existe par la propriété d'Archimède ({{ar-archimede|Archimède}}) et le bon ordre de $\mathbb N$. Pour $m \geqslant m_0$, chaque intervalle $[\frac{k - 1}m, \frac km]$, de diamètre $\frac1m < \eta$, est contenu dans l'image réciproque de $U$ ou dans celle de $V$. Le cas des carrés, de diamètre $\frac1N$ pour $d_\infty$, est identique.
+
+      (iii) Si $\alpha$ et $\beta$ vont de $a$ à $b$ dans $C$, l'application
+      $$H(s, t) = (1 - t)\,\alpha(s) + t\,\beta(s)$$
+      est continue ({{ta-chemins|Chemins}}, (ii)), reste dans $C$ par convexité, vaut $\alpha$ pour $t = 0$, $\beta$ pour $t = 1$, et $a$, $b$ pour $s = 0$, $s = 1$.
+    remarques:
+      - |
+        Le lemme ne fait aucun choix : $\eta$ est le minimum d'une fonction continue, et $m_0$ le plus petit entier qui convient. C'est la même compacité qui a servi à relever les chemins et les homotopies ({{ta-relevement-homotopies|Relèvement des homotopies}}) ; on découpe ici en morceaux qui restent chacun dans l'un des deux ouverts, au lieu d'ouverts uniformément couverts.
+      - |
+        Le produit équilibré évite de parenthéser : la concaténation $\gamma \cdot \delta$ n'est associative qu'à homotopie près, et le point (i) dit que le choix des parenthèses n'importe pas, une fois passé aux classes.
+
+  - id: vk-engendrement
+    etiquette: Engendrement
+    nature: théorème
+    titre: Le groupe fondamental d'une réunion est engendré par ceux des morceaux
+    texte: |
+      Dans ce nœud et les suivants, $X = U \cup V$, où $U$ et $V$ sont des ouverts [[connexe-par-arcs|connexes par arcs]], tels que $U \cap V$ soit connexe par arcs et non vide, et $x_0 \in U \cap V$. On note $j_U : \lex{groupe-fondamental}{\pi_1}(U, x_0) \to \pi_1(X, x_0)$ et $j_V$ les morphismes induits par les inclusions ({{ta-fonctorialite|Fonctorialité}}).
+    enonce: |
+      Tout élément de $\pi_1(X, x_0)$ est un produit fini d'éléments de $j_U(\pi_1(U, x_0)) \cup j_V(\pi_1(V, x_0))$. En particulier, si $U$ et $V$ sont [[simplement-connexe|simplement connexes]], $X$ l'est.
+    preuve: |
+      Soit $\gamma$ un lacet en $x_0$. Par le découpage ({{vk-decoupage|Découpage}}, (ii)), il existe $m \geqslant 1$ tel que chaque $\gamma([s_{k-1}, s_k])$, où $s_k = \frac km$, soit contenu dans $U$ ou dans $V$ ; on note $W_k = U$ s'il est contenu dans $U$, et $W_k = V$ sinon.
+
+      Pour $0 < k < m$, le point $\gamma(s_k)$ appartient à $W_k \cap W_{k+1}$, qui vaut $U$, $V$ ou $U \cap V$, trois espaces connexes par arcs contenant $x_0$. On prend un chemin $\alpha_k$ de $x_0$ à $\gamma(s_k)$ dans $W_k \cap W_{k+1}$ ; ce ne sont qu'un nombre fini de choix, qui se font par récurrence sur $k$. On pose $\alpha_0 = \alpha_m = c_{x_0}$.
+
+      ```schema vk-engendrement
+      Le lacet $\gamma$ est découpé en morceaux $\gamma_k$, chacun contenu dans $U$ ou dans $V$. Chaque point de coupure $\gamma(s_k)$ est relié à $x_0$ par un chemin $\alpha_k$, en tirets, pris dans $U \cap V$ quand les deux morceaux voisins sont dans des ouverts différents ; le lacet $\alpha_{k-1} \cdot \gamma_k \cdot \bar\alpha_k$ reste alors dans un seul ouvert.
+      ```
+
+      Avec $\gamma_k(s) = \gamma\big(\frac{k - 1 + s}m\big)$, le chemin
+      $$\delta_k = \alpha_{k-1} \star \gamma_k \star \bar\alpha_k$$
+      est un lacet en $x_0$ contenu dans $W_k$, puisque $\alpha_{k-1}$ et $\alpha_k$ y sont. C'est donc un lacet de l'espace $W_k$ ({{t-induite|Topologie induite}}).
+
+      Dans $X$, le chemin $\delta_1 \star \cdots \star \delta_m$ est homotope à $\gamma_1 \star \cdots \star \gamma_m = \gamma$ : les allers-retours $\bar\alpha_k \cdot \alpha_k$ sont homotopes à des chemins constants, et la concaténation de chemins quelconques est associative à homotopie près ({{ta-fonctorialite|Fonctorialité}}, (ii)). Par le point (i) du nœud {{vk-decoupage|Découpage}},
+      $$[\gamma] = [\delta_1 \star \cdots \star \delta_m] = [\delta_1] \cdots [\delta_m].$$
+
+      Chaque $[\delta_k]$ est l'image par $j_{W_k}$ de la classe de $\delta_k$ dans $\pi_1(W_k, x_0)$, d'où la première affirmation.
+
+      Si $U$ et $V$ sont simplement connexes, ces images sont triviales, et $\pi_1(X, x_0)$ aussi. L'espace $X$ est connexe par arcs, puisque tout point est relié à $x_0$ dans $U$ ou dans $V$.
+    remarques:
+      - |
+        L'hypothèse que $U \cap V$ est connexe par arcs est essentielle, et c'est à cet endroit qu'elle sert : sans elle, on ne pourrait pas ramener à $x_0$ un point de coupure situé dans $U \cap V$ par un chemin qui reste à la fois dans $U$ et dans $V$. Le cercle est la réunion de deux arcs ouverts simplement connexes, mais leur intersection a deux morceaux, et son groupe fondamental, $\mathbb Z$, n'est pas trivial ({{ta-cercle|Groupe fondamental du cercle}}).
+
+  - id: vk-spheres
+    etiquette: Sphères Sⁿ, n ⩾ 2
+    nature: corollaire
+    titre: Les sphères de dimension au moins 2 sont simplement connexes
+    enonce: |
+      Pour $n \geqslant 2$, la sphère $\lex{sphere-unite}{S^n}$ est [[simplement-connexe|simplement connexe]].
+    preuve: |
+      Notons $\|y\|^2 = y_1^2 + \cdots + y_n^2$ pour $y \in \lex{n-uplet}{\mathbb R^n}$, et de même $\|x\|^2 = x_1^2 + \cdots + x_{n+1}^2$ pour $x \in \mathbb R^{n+1}$, $N = (0, \dots, 0, 1)$ et $S = -N$ ; on écrit $x = (x', x_{n+1})$ un point de $\mathbb R^{n+1}$, avec $x' \in \mathbb R^n$.
+
+      *Projection stéréographique.* Les applications
+      $$\begin{aligned} \sigma(x) &= \frac{x'}{1 - x_{n+1}}, \\ \tau(y) &= \Big(\frac{2y}{\|y\|^2 + 1}, \frac{\|y\|^2 - 1}{\|y\|^2 + 1}\Big) \end{aligned}$$
+      sont continues, de $S^n \setminus \{N\}$ dans $\mathbb R^n$ et de $\mathbb R^n$ dans $S^n \setminus \{N\}$. En effet, leurs coordonnées sont des quotients de fonctions polynomiales ({{tr-sphere|Sphère unité Sⁿ}}, (i)) par des fonctions qui ne s'annulent pas, et $u \mapsto \frac1u$ est continue sur $\mathbb R \setminus \{0\}$ ({{de-limite|Limite en un point}}, (ii) et (iv)).
+
+      Elles sont réciproques l'une de l'autre. D'une part $\|\tau(y)\|^2 = 1$ et $\tau(y)_{n+1} \neq 1$, et $1 - \tau(y)_{n+1} = \frac{2}{\|y\|^2 + 1}$ donne $\sigma(\tau(y)) = y$. D'autre part, si $x \in S^n \setminus \{N\}$ et $y = \sigma(x)$, alors $\|y\|^2 = \frac{1 - x_{n+1}^2}{(1 - x_{n+1})^2} = \frac{1 + x_{n+1}}{1 - x_{n+1}}$, d'où $\|y\|^2 + 1 = \frac{2}{1 - x_{n+1}}$, et l'on trouve $\tau(y) = x$.
+
+      *Les ouverts.* Soient $U = S^n \setminus \{N\}$ et $V = S^n \setminus \{S\}$, ouverts puisque les points sont fermés. L'espace $U$ est homéomorphe à $\mathbb R^n$, qui est convexe, donc simplement connexe ({{ta-simplement-connexe|Simple connexité}}, {{ta-fonctorialite|Fonctorialité}}) ; il en va de même de $V$, image de $U$ par l'homéomorphisme $(x', x_{n+1}) \mapsto (x', -x_{n+1})$.
+
+      *L'intersection.* Comme $\sigma(S) = 0$, l'homéomorphisme $\sigma$ envoie $U \cap V$ sur $\mathbb R^n \setminus \{0\}$, qu'il suffit de montrer connexe par arcs. Soient $a, b \neq 0$. Si le segment $[a, b]$ évite $0$, il convient.
+
+      Sinon, $b$ est un multiple de $a$. Comme $n \geqslant 2$, l'un des vecteurs de base $e_1, e_2$ n'est pas multiple de $a$ ; notons-le $c$. Le segment $[a, c]$ évite $0$, car $(1 - t)a + tc = 0$ forcerait $t \neq 0$, puis $c = -\frac{1 - t}{t}a$ ; de même pour $[c, b]$. Le chemin qui suit $[a, c]$ puis $[c, b]$ convient.
+
+      *Conclusion.* Le théorème du nœud {{vk-engendrement|Engendrement}} s'applique : $S^n$ est connexe par arcs et simplement connexe.
+    remarques:
+      - |
+        Pour $n = 1$, la même décomposition échoue exactement là où le nœud précédent l'annonçait : $S^1$ privé de ses deux pôles est formé de deux arcs disjoints, et l'intersection n'est pas connexe. Le groupe fondamental du cercle est $\mathbb Z$, et non le groupe trivial.
+      - |
+        Le groupe fondamental ne distingue donc pas $S^2$ de $S^3$. C'est l'homologie qui le fera, par le calcul $H_k(S^n)$ du nœud {{h-spheres|Homologie des sphères}}, qui reprend les mêmes ouverts $U$ et $V$.
+      - |
+        En revanche, il distingue déjà $S^2$ du cercle et, au nœud {{vk-tore|Tore}}, du tore, dont les groupes fondamentaux ne sont pas triviaux : ces surfaces ne sont pas homéomorphes à la sphère.
+
+  - id: vk-factorisations
+    etiquette: Factorisations
+    nature: lemme
+    titre: Lemme des factorisations
+    texte: |
+      Les notations $X = U \cup V$, $x_0$, $j_U$ et $j_V$ sont celles du nœud {{vk-engendrement|Engendrement}}. On note $i_U : \lex{groupe-fondamental}{\pi_1}(U \cap V, x_0) \to \pi_1(U, x_0)$ et $i_V$ les morphismes induits par les inclusions, et
+      $$Q = \pi_1(U, x_0) *_{\pi_1(U \cap V, x_0)} \pi_1(V, x_0),$$
+      avec ses morphismes canoniques $\kappa_U$ et $\kappa_V$ ({{vk-amalgame|Produit amalgamé}}). Pour un lacet $f$ en $x_0$ contenu dans $W \in \{U, V\}$, on note $[f]_W$ sa classe dans $\pi_1(W, x_0)$.
+
+      Une **factorisation** est une suite finie $F = ((f_1, W_1), \dots, (f_k, W_k))$, avec $k \geqslant 1$, où chaque $f_i$ est un lacet en $x_0$ contenu dans $W_i \in \{U, V\}$. Son **lacet** est le produit équilibré $f_1 \star \cdots \star f_k$, lacet de $X$, et sa **valeur** est
+      $$\psi(F) = \kappa_{W_1}([f_1]_{W_1}) \cdots \kappa_{W_k}([f_k]_{W_k}) \in Q.$$
+    enonce: |
+      (i) Si $f$ est contenu dans $U \cap V$, alors $\kappa_U([f]_U) = \kappa_V([f]_V)$ : on peut changer l'ouvert attaché à un tel lacet sans changer la valeur.
+
+      (ii) Si deux factorisations ont des lacets homotopes dans $X$, elles ont la même valeur.
+    preuve: |
+      (i) On a $[f]_U = i_U([f]_{U \cap V})$ et $[f]_V = i_V([f]_{U \cap V})$, et $\kappa_U \circ i_U = \kappa_V \circ i_V$ ({{vk-amalgame|Produit amalgamé}}, (i)).
+
+      (ii) Soient $F = ((f_r, W_r))_{r \leqslant k}$ et $F' = ((f'_r, W'_r))_{r \leqslant l}$, et $H$ une homotopie de $f = f_1 \star \cdots \star f_k$ à $f' = f'_1 \star \cdots \star f'_l$. Ainsi $H(s, 0) = f(s)$, $H(s, 1) = f'(s)$, et $H(0, t) = H(1, t) = x_0$.
+
+      *La grille.* Par le découpage ({{vk-decoupage|Découpage}}, (ii)), il existe un multiple $N$ de $k$ et de $l$ tel que $H$ envoie chaque carré $R_{ij} = [\frac{i - 1}N, \frac iN] \times [\frac{j - 1}N, \frac jN]$ dans $U$ ou dans $V$ ; on lui attache $U$ si $H(R_{ij}) \subset U$, et $V$ sinon.
+
+      *Les sommets.* Pour un sommet $v$ de la grille, soit $\Omega(v)$ l'intersection des ouverts attachés aux carrés qui contiennent $v$ et, si $v$ est sur le côté inférieur, des ouverts $W_r$ des intervalles $[\frac{r - 1}k, \frac rk] \times \{0\}$ qui le contiennent ; de même sur le côté supérieur avec les $W'_r$.
+
+      L'ensemble $\Omega(v)$ vaut $U$, $V$ ou $U \cap V$ ; il est connexe par arcs et contient $x_0$ et $H(v)$. On prend un chemin $g_v$ de $x_0$ à $H(v)$ dans $\Omega(v)$, constant lorsque $H(v) = x_0$ est imposé, c'est-à-dire sur les côtés verticaux et aux points $(\frac rk, 0)$ et $(\frac rl, 1)$. Ce sont des choix en nombre fini.
+
+      *Les arêtes.* Pour une arête $e$ de la grille, parcourue de gauche à droite ou de haut en bas d'un sommet $v$ à un sommet $w$, soit $H_e(s) = H((1 - s)v + sw)$, et
+      $$\hat g_e = g_v \star H_e \star \bar g_w.$$
+      C'est un lacet en $x_0$, contenu dans l'ouvert attaché à tout carré qui contient $e$, et, pour une arête du côté inférieur ou supérieur, dans l'ouvert $W_r$ ou $W'_r$ correspondant : ces ouverts contiennent $\Omega(v)$, $\Omega(w)$ et $H(e)$. On les appelle les ouverts **admissibles** pour $e$.
+
+      *Les escaliers.* Pour $1 \leqslant j \leqslant N$ et $0 \leqslant i \leqslant N$, l'escalier $P_{j,i}$ est la suite d'arêtes qui va, à la hauteur $\frac jN$, de l'abscisse $0$ à l'abscisse $\frac iN$, descend à la hauteur $\frac{j - 1}N$, puis va jusqu'à l'abscisse $1$. Sa valeur $\psi(P_{j,i})$ est celle de la factorisation formée des $\hat g_e$, chacun muni d'un ouvert admissible ; par (i), elle ne dépend pas de ces ouverts, puisque si deux ouverts admissibles diffèrent, $\hat g_e$ est contenu dans $U \cap V$.
+
+      ```schema vk-factorisations
+      Pour $N = 4$, l'escalier $P_{2,1}$, en rouge, longe le haut du carré $R_{12}$, descend, puis longe le bas de la deuxième rangée. Le suivant, $P_{2,2}$, en bleu, ne diffère que par le carré $R_{22}$, en gris : il passe par son côté supérieur et son côté droit au lieu de son côté gauche et de son côté inférieur. Les deux chemins sont homotopes dans ce carré, dont l'image par $H$ est dans un seul ouvert.
+      ```
+
+      *Passage d'un escalier au suivant.* Les escaliers $P_{j,i-1}$ et $P_{j,i}$ ne diffèrent que par deux arêtes consécutives : le côté gauche puis le côté inférieur du carré $R = R_{ij}$ pour le premier, son côté supérieur puis son côté droit pour le second. Soit $W$ l'ouvert attaché à $R$, admissible pour ces quatre arêtes, et $v$, $w$ les coins supérieur gauche et inférieur droit de $R$.
+
+      Dans $\pi_1(W, x_0)$, les allers-retours $\bar g \star g$ disparaissent, et le produit des deux premières classes est celui de $g_v \star (H_{\text{gauche}} \star H_{\text{bas}}) \star \bar g_w$, le produit des deux autres celui de $g_v \star (H_{\text{haut}} \star H_{\text{droite}}) \star \bar g_w$. Les deux chemins de $v$ à $w$ qui longent le bord de $R$ sont homotopes dans le convexe $R$ ({{vk-decoupage|Découpage}}, (iii)), et leurs images par $H$ le sont dans $W$.
+
+      Les deux produits sont donc égaux dans $\pi_1(W, x_0)$ ; comme $\kappa_W$ est un morphisme, $\psi(P_{j,i-1}) = \psi(P_{j,i})$.
+
+      De $P_{j,N}$ à $P_{j+1,0}$, seules changent une arête du côté droit et une arête du côté gauche, où $H$ et les $g_v$ sont constants : leurs lacets $\hat g_e$ sont homotopes au lacet constant, de valeur triviale. Les arêtes horizontales communes ont la même valeur, quel que soit l'ouvert admissible choisi. Donc $\psi(P_{j,N}) = \psi(P_{j+1,0})$.
+
+      *Les deux bouts.* L'escalier $P_{1,0}$ est formé d'une arête du côté gauche, de valeur triviale, puis des arêtes du bas, regroupées en $k$ paquets de $\frac Nk$ arêtes. Les arêtes du $r$-ième paquet admettent l'ouvert $W_r$, et les chemins $g$ sont constants aux deux bouts du paquet.
+
+      Dans $\pi_1(W_r, x_0)$, le produit des classes du paquet est donc la classe du produit équilibré des $H_e$, qui est exactement $f_r$, puisque $H(s, 0) = f(s)$. Ainsi $\psi(P_{1,0}) = \psi(F)$, et de même $\psi(P_{N,N}) = \psi(F')$.
+
+      En enchaînant $P_{1,0}, P_{1,1}, \dots, P_{1,N}, P_{2,0}, \dots, P_{N,N}$, on obtient $\psi(F) = \psi(F')$.
+    remarques:
+      - |
+        Le cœur de la démonstration est que l'homotopie $H$ ne se déforme pas d'un seul coup, mais carré par carré, et que chaque carré ne voit qu'un seul ouvert. C'est le même découpage que pour le relèvement des homotopies ({{ta-relevement-homotopies|Relèvement des homotopies}}), où chaque carré ne voyait qu'un seul feuillet.
+      - |
+        L'erreur la plus répandue est de croire que les chemins $g_v$ peuvent être pris quelconques. Un sommet commun à un carré envoyé dans $U$ et à un carré envoyé dans $V$ doit être relié à $x_0$ dans $U \cap V$ ; sinon, le lacet $\hat g_e$ d'une arête ne serait pas contenu dans l'ouvert attaché au carré voisin, et le passage d'un escalier au suivant ne pourrait plus se faire dans un seul groupe $\pi_1(W, x_0)$.
+
+  - id: vk-van-kampen
+    etiquette: Seifert-van Kampen
+    nature: théorème
+    titre: Théorème de Seifert-van Kampen
+    texte: |
+      Les notations sont celles des nœuds {{vk-engendrement|Engendrement}} et {{vk-factorisations|Factorisations}}. Le carré des morphismes induits par les inclusions commute, par la fonctorialité :
+      $$\begin{CD} \pi_1(U \cap V, x_0) @>{i_U}>> \pi_1(U, x_0) \\ @V{i_V}VV @VV{j_U}V \\ \pi_1(V, x_0) @>{j_V}>> \pi_1(X, x_0) \end{CD}$$
+      Les deux composées sont induites par l'inclusion de $U \cap V$ dans $X$. Par la propriété universelle du produit amalgamé, il existe donc un unique morphisme $\Phi : Q \to \lex{groupe-fondamental}{\pi_1}(X, x_0)$ tel que $\Phi \circ \kappa_U = j_U$ et $\Phi \circ \kappa_V = j_V$.
+    enonce: |
+      (i) *[[theoreme-van-kampen|Théorème de Seifert-van Kampen]].* Soit $X = U \cup V$, avec $U$, $V$ ouverts connexes par arcs, $U \cap V$ connexe par arcs et non vide, et $x_0 \in U \cap V$. Le morphisme $\Phi$ est un isomorphisme :
+      $$\begin{aligned} \pi_1(X, x_0) &\cong \pi_1(U, x_0) \\ &\qquad *_{\pi_1(U \cap V, x_0)} \pi_1(V, x_0). \end{aligned}$$
+
+      (ii) Si $U \cap V$ est [[simplement-connexe|simplement connexe]], $\pi_1(X, x_0) \cong \pi_1(U, x_0) * \pi_1(V, x_0)$, par le morphisme qui prolonge $j_U$ et $j_V$.
+
+      (iii) Si $V$ est simplement connexe, $j_U$ est surjectif, et son noyau est le sous-groupe distingué engendré par $i_U(\pi_1(U \cap V, x_0))$. Si ce dernier groupe est engendré par la classe d'un lacet $c$, ce noyau est $N(\{i_U([c])\})$.
+    preuve: |
+      (i) *Surjectivité.* L'image de $\Phi$ est un sous-groupe qui contient $j_U(\pi_1(U, x_0))$ et $j_V(\pi_1(V, x_0))$, donc tout $\pi_1(X, x_0)$ ({{vk-engendrement|Engendrement}}).
+
+      *Injectivité.* Tout élément de $Q$ est un produit fini d'éléments de $\kappa_U(\pi_1(U, x_0)) \cup \kappa_V(\pi_1(V, x_0))$ ({{vk-amalgame|Produit amalgamé}}, (i)). En prenant un lacet dans chacune de ces classes, en nombre fini, on l'écrit comme la valeur $\psi(F)$ d'une factorisation, le neutre étant la valeur de $((c_{x_0}, U))$ $F = ((f_r, W_r))_{r \leqslant k}$. Son image est
+      $$\begin{aligned} \Phi(\psi(F)) &= j_{W_1}([f_1]_{W_1}) \cdots j_{W_k}([f_k]_{W_k}) \\ &= [f_1 \star \cdots \star f_k], \end{aligned}$$
+      par le point (i) du nœud {{vk-decoupage|Découpage}}.
+
+      Si deux éléments $\psi(F)$ et $\psi(F')$ ont la même image, les lacets de $F$ et de $F'$ sont homotopes dans $X$, et $\psi(F) = \psi(F')$ par le lemme des factorisations ({{vk-factorisations|Factorisations}}, (ii)).
+
+      (ii) Le groupe $\pi_1(U \cap V, x_0)$ est réduit à son neutre, et le point (iii) du nœud {{vk-amalgame|Produit amalgamé}} identifie $Q$ au produit libre, les morphismes canoniques se correspondant.
+
+      (iii) Le groupe $\pi_1(V, x_0)$ est réduit à son neutre. Le point (iv) du nœud {{vk-amalgame|Produit amalgamé}} montre que $\kappa_U$ est surjectif, de noyau $N(i_U(\pi_1(U \cap V, x_0)))$ ; comme $j_U = \Phi \circ \kappa_U$ et que $\Phi$ est un isomorphisme, $j_U$ a la même image et le même noyau. Le dernier point vient du même nœud.
+    remarques:
+      - |
+        H. Seifert l'a établi dans *Konstruktion dreidimensionaler geschlossener Räume* (Ber. Sächs. Akad. Wiss. Leipzig, Math.-Phys. Kl. 83, 1931, p. 26-66), et E. R. van Kampen, indépendamment, dans *On the connection between the fundamental groups of some related spaces* (Amer. J. Math. 55, 1933, p. 261-267). La démonstration par les factorisations et la grille de carrés est celle des manuels modernes.
+      - |
+        Le théorème calcule un groupe à partir de groupes plus simples, mais le résultat est donné par générateurs et relations, et l'on a vu ({{vk-presentations|Présentations}}) qu'une présentation ne se lit pas toujours facilement. Les deux nœuds suivants en sont des exemples où le calcul aboutit : le bouquet de deux cercles, où l'amalgame est un produit libre, et le tore, où l'un des ouverts est simplement connexe.
+      - |
+        Les hypothèses de connexité ne sont pas décoratives. Le cercle est la réunion de deux arcs ouverts simplement connexes dont l'intersection a deux morceaux ; si l'on prend $x_0$ dans l'un d'eux, le produit amalgamé est trivial, alors que le groupe fondamental du cercle est $\lex{ensemble-entiers-relatifs}{\mathbb Z}$.
+      - |
+        La suite de Mayer-Vietoris ({{h-mayer-vietoris|Mayer-Vietoris}}) est l'analogue homologique du théorème : elle calcule l'homologie de $U \cup V$ à partir de celles de $U$, de $V$ et de $U \cap V$, mais par une suite exacte de groupes abéliens, plus maniable qu'un produit amalgamé.
+
+  - id: vk-retractes
+    etiquette: Rétractes par déformation
+    nature: proposition
+    titre: Lemme du carré, rétractes par déformation
+    texte: |
+      Une partie $A$ d'un espace $X$ est un [[retracte-deformation|rétracte par déformation]] de $X$ s'il existe une application continue $H : X \times I \to X$ telle que, pour tous $x \in X$, $a \in A$ et $t \in I$,
+      $$\begin{gathered} H(x, 0) = x, \qquad H(x, 1) \in A, \\ H(a, t) = a. \end{gathered}$$
+      On déforme continûment l'espace sur la partie $A$, sans jamais bouger les points de $A$.
+    enonce: |
+      (i) *Lemme du carré.* Soit $F : I \times I \to X$ continue, et $b(s) = F(s, 0)$, $h(s) = F(s, 1)$, $g(t) = F(0, t)$, $d(t) = F(1, t)$. Alors $b \simeq g \cdot h \cdot \bar d$. En particulier, si $g = d$, on a $[b] = [g \cdot h \cdot \bar g]$.
+
+      (ii) Si $A$ est un rétracte par déformation de $X$ et $a \in A$, l'inclusion induit un isomorphisme de $\lex{groupe-fondamental}{\pi_1}(A, a)$ sur $\pi_1(X, a)$. Si de plus $A$ est connexe par arcs, $X$ l'est.
+    preuve: |
+      (i) Dans le carré $I \times I$, les chemins $s \mapsto (s, 0)$ et $\tilde g \cdot \tilde h \cdot \bar{\tilde d}$, où $\tilde g(t) = (0, t)$, $\tilde h(s) = (s, 1)$ et $\tilde d(t) = (1, t)$, vont tous deux de $(0, 0)$ à $(1, 0)$. Ils sont homotopes, le carré étant convexe ({{vk-decoupage|Découpage}}, (iii)).
+
+      En composant cette homotopie avec $F$, on obtient une homotopie de $b$ à $g \cdot h \cdot \bar d$, puisque $F \circ \tilde g = g$, $F \circ \tilde h = h$ et $F \circ \tilde d = d$.
+
+      (ii) Soit $r(x) = H(x, 1)$, application continue de $X$ dans $A$ ({{t-induite|Topologie induite}}), et $\iota$ l'inclusion. Comme $r \circ \iota = \mathrm{id}_A$, on a $r_* \circ \iota_* = \mathrm{id}$, et $\iota_*$ est injectif.
+
+      Soit $\gamma$ un lacet de $X$ en $a$. L'application $G(s, t) = H(\gamma(s), t)$ est continue ({{t-produit|Topologie produit}}), et vérifie $G(s, 0) = \gamma(s)$, $G(s, 1) = \iota(r(\gamma(s)))$ et $G(0, t) = G(1, t) = H(a, t) = a$. C'est une homotopie de $\gamma$ à $\iota \circ r \circ \gamma$, et $[\gamma] = \iota_*([r \circ \gamma])$ : $\iota_*$ est surjectif.
+
+      Enfin tout $x \in X$ est relié au point $H(x, 1)$ de $A$ par le chemin $t \mapsto H(x, t)$.
+    remarques:
+      - |
+        Un point $\{a\}$ est un rétracte par déformation de toute partie convexe $C$ qui le contient, par $H(x, t) = (1 - t)x + ta$ : on retrouve que les convexes sont simplement connexes. Plus généralement, le point (ii) ramène le calcul d'un groupe fondamental à celui d'une partie plus petite, et c'est ainsi qu'on l'emploiera pour le bouquet et pour le tore.
+      - |
+        Le lemme du carré dit comment un lacet change lorsqu'on le déforme en laissant bouger son point de base : il est conjugué par le chemin que suit le point de base. C'est le changement de point de base du nœud {{ta-fonctorialite|Fonctorialité}}, et c'est par lui que le calcul du tore reliera deux points de base différents.
+
+  - id: vk-bouquet
+    etiquette: Bouquet de deux cercles
+    nature: théorème
+    titre: Le bouquet de deux cercles a pour groupe fondamental le groupe libre de rang 2
+    texte: |
+      Soit $\lex{cercle-quotient}{S^1} = \mathbb R/\mathbb Z$, de projection $p$ ({{ta-cercle|Groupe fondamental du cercle}}), et $e = p(0)$. Le [[tore]] est $T = S^1 \times S^1$, muni de la [[topologie-produit|topologie produit]]. Le [[bouquet-cercles|bouquet de deux cercles]] est la partie
+      $$W = (S^1 \times \{e\}) \cup (\{e\} \times S^1)$$
+      de $T$, munie de la topologie induite : deux cercles qui se touchent au point $x_0 = (e, e)$. On y considère les deux lacets $a(s) = (p(s), e)$ et $b(s) = (e, p(s))$, pour $s \in I$.
+
+      Pour $s \in \lex{ensemble-reels}{\mathbb R}$, on note $d(s)$ la distance de $s$ à $\lex{ensemble-entiers-relatifs}{\mathbb Z}$, borne inférieure des $|s - k|$ pour $k \in \mathbb Z$.
+    enonce: |
+      (i) $S^1$ est [[separe|séparé]] et [[compact]], et l'application $\kappa$ définie par $\kappa(p(s)) = (d(s), d(s + \frac14))$ est un [[homeomorphisme|homéomorphisme]] de $S^1$ sur le losange
+      $$\big\{(u, v) \in \lex{n-uplet}{\mathbb R^2} : |u - \tfrac14| + |v - \tfrac14| = \tfrac14\big\},$$
+      de sommets $(0, \frac14)$, $(\frac14, \frac12)$, $(\frac12, \frac14)$ et $(\frac14, 0)$. Le tore $T$ est compact.
+
+      (ii) Le morphisme de $F(a, b)$ dans $\lex{groupe-fondamental}{\pi_1}(W, x_0)$ qui envoie les lettres $a$ et $b$ sur les classes des lacets $a$ et $b$ est un isomorphisme. En particulier $[a][b] \neq [b][a]$.
+    preuve: |
+      (i) La fonction $d$ est bien définie, $1$-périodique, puisque $k \mapsto k - 1$ permute $\mathbb Z$, et $1$-lipschitzienne, puisque $|s - k| \leqslant |s' - k| + |s - s'|$ pour tout $k$. Sur $[0, 1]$, on a $d(s) = \min(s, 1 - s)$, car $|s - k| \geqslant s$ pour $k \leqslant 0$ et $|s - k| \geqslant 1 - s$ pour $k \geqslant 1$.
+
+      L'application $\tilde\kappa(s) = (d(s), d(s + \frac14))$ est donc continue et $1$-périodique ; elle passe au quotient en $\kappa$, continue ({{t-quotient|Topologie quotient}}). Sur les intervalles $[0, \frac14]$, $[\frac14, \frac12]$, $[\frac12, \frac34]$ et $[\frac34, 1[$, elle vaut successivement
+      $$\begin{aligned} &(s, s + \tfrac14), \quad (s, \tfrac34 - s), \\ &(1 - s, \tfrac34 - s), \quad (1 - s, s - \tfrac34). \end{aligned}$$
+
+      Elle parcourt ainsi les quatre côtés du losange, qui correspondent aux quatre combinaisons de signes de $u - \frac14$ et $v - \frac14$, et dont la réunion est le losange entier. Sur ces côtés, $u - v$ ou $u + v$ est constant, égal à $-\frac14$, $\frac34$, $\frac14$, $\frac14$, tandis que l'autre quantité varie strictement avec $s$ ; les côtés ne se rencontrent qu'en leurs extrémités communes.
+
+      Donc $\tilde\kappa$ est injective sur $[0, 1[$, et $\kappa$ est une bijection de $S^1$ sur le losange, tout réel s'écrivant de façon unique $k + r$ avec $k \in \mathbb Z$ et $r \in [0, 1[$ ({{ar-archimede|Archimède}}).
+
+      Si $p(s) \neq p(s')$, des ouverts disjoints de $\mathbb R^2$ autour de $\kappa(p(s))$ et $\kappa(p(s'))$ ont des images réciproques disjointes et ouvertes : $S^1$ est séparé. Comme $S^1 = p([0, 1])$ et que $[0, 1]$ est compact ({{tr-borel-lebesgue|Borel-Lebesgue}}), $S^1$ est compact ({{t-compact-prop|Parties compactes}}, (iii)).
+
+      La bijection continue $\kappa$ de $S^1$ sur le losange est alors un homéomorphisme ({{t-bij-compact|Bijection d'un compact}}), et $T$ est compact ({{t-produit-fini|Produit fini de compacts}}).
+
+      (ii) *Les ouverts.* L'espace $T$ est séparé comme produit de deux espaces séparés, par l'argument du nœud {{t-produit-fini|Produit fini de compacts}} ; ses points sont donc fermés. Soient $q_1 = (p(\frac12), e)$, $q_2 = (e, p(\frac12))$, et
+      $$U = W \setminus \{q_2\}, \qquad V = W \setminus \{q_1\},$$
+      ouverts de $W$ qui le recouvrent, d'intersection $W \setminus \{q_1, q_2\}$, contenant $x_0$.
+
+      *Rétractions.* Soit $J = \,]{-\frac12}, \frac12[$. La restriction de $p$ à $J$ est continue, ouverte, comme on l'a vu en démontrant le point (i) du nœud {{ta-cercle|Groupe fondamental du cercle}}, et injective, et $p(J) = S^1 \setminus \{p(\frac12)\}$ : c'est un homéomorphisme, de réciproque notée $\sigma$, avec $\sigma(e) = 0$.
+
+      Soient $A_1 = S^1 \times \{e\}$ et $A_2 = \{e\} \times S^1$, fermés dans $T$ : le complémentaire de $A_1$ est l'ouvert $S^1 \times (S^1 \setminus \{e\})$. On pose $H((x, e), t) = (x, e)$ sur $A_1 \times I$, et
+      $$H((e, z), t) = \big(e, p((1 - t)\sigma(z))\big)$$
+      sur $(A_2 \cap U) \times I$. Les deux formules valent $x_0$ en $x_0$, et ces deux parties sont fermées dans $U \times I$ : $H$ est continue par recollement ({{ta-chemins|Chemins}}, (i)), et fait de $A_1$ un rétracte par déformation de $U$.
+
+      De même, $A_2$ est un rétracte par déformation de $V$, et $\{x_0\}$ en est un de $U \cap V$, en contractant les deux arcs par la même formule.
+
+      *Groupes.* L'application $x \mapsto (x, e)$ est un homéomorphisme de $S^1$ sur $A_1$, de réciproque la première projection. Par le nœud {{ta-cercle|Groupe fondamental du cercle}}, $\pi_1(S^1, e) \cong \mathbb Z$ par le degré, et le lacet $s \mapsto p(s)$, de degré $1$, l'engendre, puisque $1$ engendre $\mathbb Z$.
+
+      Avec le nœud {{vk-retractes|Rétractes par déformation}}, (ii), le morphisme $\alpha : \mathbb Z \to \pi_1(U, x_0)$ qui envoie $1$ sur $[a]_U$ est donc un isomorphisme ; de même $\beta : \mathbb Z \to \pi_1(V, x_0)$, qui envoie $1$ sur $[b]_V$. L'espace $U \cap V$ est simplement connexe, et $U$, $V$, $U \cap V$ sont connexes par arcs. L'espace $W$ l'est aussi : c'est la réunion des deux cercles $A_1$ et $A_2$, images continues de $I$ par $a$ et par $b$, donc connexes par arcs, qui se rencontrent en $x_0$.
+
+      *Conclusion.* Par le théorème de Seifert-van Kampen ({{vk-van-kampen|Seifert-van Kampen}}, (ii)), le morphisme qui prolonge $j_U$ et $j_V$ est un isomorphisme de $\pi_1(U, x_0) * \pi_1(V, x_0)$ sur $\pi_1(W, x_0)$.
+
+      On le compose avec l'isomorphisme $\alpha * \beta$ ({{vk-produit-libre|Produit libre}}, (iv)) et avec celui de $F(a, b)$ sur $\mathbb Z * \mathbb Z$ (même nœud, (v)). La composée envoie la lettre $a$ sur $\iota_1(1)$, puis sur $\iota_1([a]_U)$, puis sur $[a]$ ; de même pour $b$. Le dernier point vient de {{vk-groupe-libre|Groupe libre}}, (iv).
+    remarques:
+      - |
+        ```schema vk-bouquet
+        En haut, le bouquet $W$, dessiné comme deux cercles qui se touchent en $x_0$ : le lacet $a$, en rouge, parcourt le premier, le lacet $b$, en bleu, le second. En bas, les points retirés sont creux : l'ouvert $U$, en rouge, est $W$ privé de $q_2$ et se rétracte sur le cercle de $a$ ; l'ouvert $V$, en bleu, est $W$ privé de $q_1$ et se rétracte sur celui de $b$ ; leur intersection, en vert, formée de deux arcs qui se croisent en $x_0$, se rétracte sur ce point.
+        ```
+
+        Le lacet $a \cdot b \cdot \bar a \cdot \bar b$ fait le tour du premier cercle, puis du second, puis les deux tours en sens inverse. Il n'est pas homotope au lacet constant, puisque le mot $aba^{-1}b^{-1}$ est réduit et non vide ; on ne peut pas « défaire » les tours dans le désordre.
+      - |
+        Le bouquet n'est donc homéomorphe ni au cercle, de groupe fondamental $\mathbb Z$, ni au tore, dont le nœud suivant montre que le groupe fondamental est commutatif.
+      - |
+        Le point (i) donne aussi, sans trigonométrie, le cercle unité de $\mathbb R^2$ : le losange translaté de centre $0$, $D = \{(u, v) : |u| + |v| = \frac14\}$, est homéomorphe au cercle unité $\{y : y_1^2 + y_2^2 = 1\}$ par $z \mapsto z/\|z\|_2$, de réciproque $y \mapsto y/(4\|y\|_1)$, toutes deux continues comme quotients de fonctions continues qui ne s'annulent pas. Le groupe fondamental du cercle unité est donc $\mathbb Z$ lui aussi.
+      - |
+        Le plan privé de deux points se rétracte par déformation sur une figure en forme de huit, homéomorphe au bouquet : c'est pourquoi, comme l'annonçait le nœud {{ta-groupe-fondamental|Groupe fondamental}}, les lacets autour des deux points ne commutent pas. Cette rétraction n'est pas construite ici.
+
+  - id: vk-tore-ouverts
+    etiquette: Ouverts du tore
+    nature: lemme
+    titre: Le tore, recollement du carré
+    texte: |
+      Soit $P : \lex{n-uplet}{\mathbb R^2} \to T$, $P(u, v) = (p(u), p(v))$, et $C = I \times I$ le carré unité, d'intérieur $C^\circ = \,]0, 1[^2$ et de centre $c = (\frac12, \frac12)$. On note $\|z\|_\infty = \max(|z_1|, |z_2|)$, et $\partial C = \{z : \|z - c\|_\infty = \frac12\}$ le bord de $C$.
+
+      Soient $q = P(c)$, $C' = [\frac14, \frac34]^2$, de bord $\partial C' = \{z : \|z - c\|_\infty = \frac14\}$, et $x_0 = P(\frac14, \frac14)$. On pose
+      $$U = T \setminus \{q\}, \qquad V = P(C^\circ).$$
+      Enfin $\lambda$ est le lacet qui parcourt $\partial C'$ dans le sens direct à partir de $(\frac14, \frac14)$ : le produit équilibré des quatre côtés, de $(\frac14, \frac14)$ à $(\frac34, \frac14)$, puis à $(\frac34, \frac34)$, à $(\frac14, \frac34)$, et retour.
+    enonce: |
+      (i) $P$ est continue et ouverte ; $P(C) = T$ et $P(\partial C) = W$ ; $P$ est injective sur $C^\circ$, et $V = T \setminus W$ est un ouvert, homéomorphe à $C^\circ$ par $P$.
+
+      (ii) Le bouquet $W$ est un [[retracte-deformation|rétracte par déformation]] de $U$, par l'application $H$ définie par
+      $$\begin{aligned} H(P(z), t) &= P\big(z + t\,(r(z) - z)\big), \\ r(z) &= c + \frac{z - c}{2\|z - c\|_\infty}, \end{aligned}$$
+      pour $z \in C \setminus \{c\}$ et $t \in I$.
+
+      (iii) $V$ est simplement connexe ; $U \cap V = P(C^\circ \setminus \{c\})$ est connexe par arcs, et $\lex{groupe-fondamental}{\pi_1}(U \cap V, x_0)$ est engendré par la classe de $P \circ \lambda$.
+    preuve: |
+      (i) $P$ est continue ({{t-produit|Topologie produit}}). L'image d'un produit d'ouverts $O_1 \times O_2$ est $p(O_1) \times p(O_2)$, ouvert puisque $p$ est ouverte ; tout ouvert de $\mathbb R^2$ étant réunion de tels produits, $P$ est ouverte.
+
+      Comme $p([0, 1]) = S^1$, on a $P(C) = T$. Un point de $\partial C$ a une coordonnée égale à $0$ ou $1$, d'image $e$, et inversement $(x, e) = P(u, 0)$ si $x = p(u)$ : $P(\partial C) = W$. Deux points de $]0, 1[$ qui diffèrent d'un entier sont égaux, et $p(u) = e$ équivaut à $u \in \mathbb Z$ : $P$ est injective sur $C^\circ$, et $P(C^\circ)$ ne rencontre pas $W$.
+
+      Donc $V = T \setminus W$, ouvert comme image de l'ouvert $C^\circ$ ; la restriction de $P$ à $C^\circ$ est une bijection continue et ouverte sur $V$, donc un homéomorphisme.
+
+      (ii) *Le carré.* Pour $z \in C \setminus \{c\}$ et $t \in I$, posons $\rho(z, t) = c + \mu\,(z - c)$, avec $\mu = 1 + t\big(\frac{1}{2\|z - c\|_\infty} - 1\big)$. La fonction $z \mapsto \|z - c\|_\infty$ est lipschitzienne, donc continue, et ne s'annule pas ; $\rho$ est continue ({{de-limite|Limite en un point}}, (iv)).
+
+      Comme $\mu$ est compris entre $1$ et $\frac{1}{2\|z - c\|_\infty}$, la quantité $\|\rho(z, t) - c\|_\infty = \mu\,\|z - c\|_\infty$ est comprise entre $\|z - c\|_\infty > 0$ et $\frac12$ : $\rho$ reste dans $C \setminus \{c\}$. De plus $\rho(z, 0) = z$, $\rho(z, 1) = r(z) \in \partial C$, et $\rho(z, t) = z$ si $z \in \partial C$.
+
+      *Passage au tore.* Si $P(z) = P(z')$ avec $z \neq z'$ dans $C$, les deux points sont dans $\partial C$, par (i), et $P(\rho(z, t)) = P(z) = P(z') = P(\rho(z', t))$. De même, $P(z) = q$ n'a lieu que pour $z = c$. La formule de l'énoncé définit donc une application $H : U \times I \to U$, sans aucun choix, comme au nœud {{a-quotient|Groupe quotient}}.
+
+      Elle est continue. L'application $\Pi : C \times I \to T \times I$, $(z, t) \mapsto (P(z), t)$, est continue, surjective, et fermée, puisque $C \times I$ est compact et $T \times I$ séparé ({{t-compact-prop|Parties compactes}}). Pour un ouvert $O$ de $U$, l'image réciproque par $\Pi$ de $H^{-1}(O)$ est $\{(z, t) : P(\rho(z, t)) \in O\}$, ouverte dans $(C \setminus \{c\}) \times I$, donc dans $C \times I$.
+
+      Le complémentaire de cette image réciproque est fermé, et son image par $\Pi$, qui est le complémentaire de $H^{-1}(O)$ dans $T \times I$ puisque $\Pi$ est surjective, est fermée. Ainsi $H^{-1}(O)$ est ouvert.
+
+      Enfin $H(x, 0) = x$, $H(x, 1) \in P(\partial C) = W$, et $H(w, t) = w$ pour $w \in W$.
+
+      (iii) $V$ est homéomorphe au convexe $C^\circ$, donc simplement connexe. L'ensemble $U \cap V = V \setminus \{q\}$ est l'image par l'homéomorphisme de (i) de $C^\circ \setminus \{c\}$.
+
+      Dans $C^\circ \setminus \{c\}$, la formule de $\rho$, où l'on remplace $\frac12$ par $\frac14$, fait de $\partial C'$ un rétracte par déformation : les points restent à une distance de $c$ comprise entre $\|z - c\|_\infty$ et $\frac14$, donc dans $C^\circ \setminus \{c\}$.
+
+      Le bord $\partial C'$ est homéomorphe à $S^1$. Posons $L(u, v) = c + (u + v - \frac12, u - v)$ ; avec $w = (u - \frac14, v - \frac14)$, on a $L(u, v) - c = (w_1 + w_2, w_1 - w_2)$, et
+      $$\max(|w_1 + w_2|, |w_1 - w_2|) = |w_1| + |w_2|.$$
+      L'application affine $L$, injective, envoie donc le losange du nœud {{vk-bouquet|Bouquet de deux cercles}}, où $|w_1| + |w_2| = \frac14$, dans $\partial C'$. Elle l'envoie sur $\partial C'$ : un point $y$ de $\partial C'$, avec $(\alpha, \beta) = y - c$, est l'image du point où $w_1 = \frac{\alpha + \beta}2$ et $w_2 = \frac{\alpha - \beta}2$, qui vérifie $|w_1| + |w_2| = \max(|\alpha|, |\beta|) = \frac14$. Ainsi $L \circ \kappa$ est une bijection continue du compact $S^1$ sur $\partial C'$, donc un homéomorphisme.
+
+      Le calcul donne $L(\kappa(p(s))) = \lambda(s)$ pour $s \in I$ : par exemple, pour $s \leqslant \frac14$, $L(s, s + \frac14) = (\frac14 + 2s, \frac14)$. Comme $s \mapsto p(s)$ engendre $\pi_1(S^1, e)$, la classe de $\lambda$ engendre $\pi_1(\partial C', (\frac14, \frac14))$.
+
+      Par le nœud {{vk-retractes|Rétractes par déformation}}, (ii), puis par $P$, la classe de $P \circ \lambda$ engendre $\pi_1(U \cap V, x_0)$, et $U \cap V$ est connexe par arcs.
+    remarques:
+      - |
+        On a démontré en passant que $T$ est le carré dont on recolle les côtés opposés. La restriction de $P$ à $C$ est fermée et surjective, par l'argument de (ii) sans le facteur $I$ : une partie de $T$ est donc ouverte si et seulement si son image réciproque dans $C$ l'est, et $T$ porte la topologie quotient de $C$ par la relation qui identifie $(u, 0)$ à $(u, 1)$ et $(0, v)$ à $(1, v)$. C'est la description du tore annoncée au nœud {{t-quotient|Topologie quotient}}.
+      - |
+        L'erreur la plus répandue serait de vérifier la continuité de $H$ « sur le carré » sans justifier le passage au tore. C'est la compacité de $C \times I$ qui permet de transporter les ouverts, par l'argument de l'application fermée ; sans elle, une application continue constante sur les fibres de $\Pi$ ne descend pas toujours en une application continue.
+
+  - id: vk-tore
+    etiquette: Tore
+    nature: théorème
+    titre: Le groupe fondamental du tore est ℤ²
+    enonce: |
+      Le morphisme de $F(a, b)$ dans $\lex{groupe-fondamental}{\pi_1}(T, (e, e))$ qui envoie les lettres $a$ et $b$ sur les classes des lacets $a$ et $b$ est surjectif, de noyau le sous-groupe distingué engendré par $aba^{-1}b^{-1}$. Par suite,
+      $$\pi_1(T) \cong \langle a, b \mid aba^{-1}b^{-1} \rangle \cong \lex{n-uplet}{\mathbb Z^2}.$$
+    preuve: |
+      *Les ouverts.* Avec les notations du nœud {{vk-tore-ouverts|Ouverts du tore}}, $U$ et $V$ sont ouverts, $U \cup V = T$, puisque $q \in V$, et $x_0 \in U \cap V$. L'espace $U$ est connexe par arcs, comme $W$ dont il est un rétracte ({{vk-retractes|Rétractes par déformation}}, (ii)), et $V$, $U \cap V$ le sont.
+
+      *L'image du petit lacet.* Soit $K(s, t) = H(P(\lambda(s)), t)$. Pour $t = 0$, c'est $P \circ \lambda$. Pour $t = 1$, comme $\|\lambda(s) - c\|_\infty = \frac14$, on a $r(\lambda(s)) = c + 2(\lambda(s) - c)$, qui parcourt le bord de $C$ de $(0, 0)$ à $(1, 0)$, $(1, 1)$, $(0, 1)$ et retour, et donc
+      $$P \circ r \circ \lambda = a \star b \star \bar a \star \bar b.$$
+
+      ```schema vk-tore
+      Le tore est le carré $C$ dont on identifie les côtés opposés : les côtés horizontaux deviennent le lacet $a$, les côtés verticaux le lacet $b$. Le petit lacet $\lambda$, en rouge, entoure le point $q$ retiré. La rétraction $H$ pousse chaque point le long de la demi-droite issue du centre, en gris, jusqu'au bord : elle envoie $\lambda$ sur le bord parcouru dans l'ordre $a$, $b$, $a$ à l'envers, $b$ à l'envers, tandis que le point de base $x_0$ glisse jusqu'au coin le long du chemin $\delta$, en bleu.
+      ```
+
+      Pour $s = 0$ et $s = 1$, $K(s, t) = P\big(\frac{1 - t}4, \frac{1 - t}4\big) = \delta(t)$, chemin de $x_0$ à $(e, e)$ dans $U$. Le lemme du carré ({{vk-retractes|Rétractes par déformation}}, (i)) donne, dans $U$,
+      $$P \circ \lambda \simeq \delta \cdot (a \star b \star \bar a \star \bar b) \cdot \bar\delta.$$
+
+      *Le groupe de $U$.* Soit $\Theta : F(a, b) \to \pi_1(U, (e, e))$ le morphisme qui envoie $a$ et $b$ sur les classes des lacets $a$ et $b$. C'est un isomorphisme, composé de celui du nœud {{vk-bouquet|Bouquet de deux cercles}} et de celui qu'induit l'inclusion de $W$ dans $U$. Soit $\beta$ l'isomorphisme $[\gamma] \mapsto [\delta \cdot \gamma \cdot \bar\delta]$ de $\pi_1(U, (e, e))$ sur $\pi_1(U, x_0)$ ({{ta-fonctorialite|Fonctorialité}}, (ii)).
+
+      Par le point (i) du nœud {{vk-decoupage|Découpage}}, la relation précédente s'écrit
+      $$i_U([P \circ \lambda]) = \beta\big(\Theta(aba^{-1}b^{-1})\big).$$
+
+      *Seifert-van Kampen.* Comme $V$ est simplement connexe et que $\pi_1(U \cap V, x_0)$ est engendré par $[P \circ \lambda]$, le point (iii) du nœud {{vk-van-kampen|Seifert-van Kampen}} montre que $j_U : \pi_1(U, x_0) \to \pi_1(T, x_0)$ est surjectif, de noyau $N(\{\beta\Theta(aba^{-1}b^{-1})\}) = \beta\Theta\big(N(\{aba^{-1}b^{-1}\})\big)$ ({{vk-presentations|Présentations}}, (i)).
+
+      Soit $j'_U : \pi_1(U, (e, e)) \to \pi_1(T, (e, e))$ le morphisme induit par l'inclusion, et $\beta_T$ le changement de point de base par $\delta$ dans $T$, défini comme $\beta$. Par leurs formules, $j_U \circ \beta = \beta_T \circ j'_U$.
+
+      Le morphisme de l'énoncé est $j'_U \circ \Theta = \beta_T^{-1} \circ j_U \circ \beta \circ \Theta$. Il est surjectif comme $j_U$, et son noyau est $(\beta\Theta)^{-1}(\operatorname{Ker} j_U) = N(\{aba^{-1}b^{-1}\})$.
+
+      *Conclusion.* Par le théorème d'isomorphisme ({{a-isomorphisme|Théorème d'isomorphisme}}), $\pi_1(T, (e, e)) \cong \langle a, b \mid aba^{-1}b^{-1} \rangle$, isomorphe à $\mathbb Z^2$ ({{vk-presentations|Présentations}}, (iii)).
+    remarques:
+      - |
+        Le commutateur $aba^{-1}b^{-1}$, non trivial dans le bouquet ({{vk-bouquet|Bouquet de deux cercles}}), devient trivial dans le tore : le carré $C$ remplit le lacet $a \cdot b \cdot \bar a \cdot \bar b$, qui en est le bord. Recoller le carré le long de ce lacet tue exactement le sous-groupe distingué engendré par sa classe, et rien de plus : c'est le contenu du point (iii) du théorème de Seifert-van Kampen.
+      - |
+        On retrouve le même groupe par un argument direct. Pour deux espaces $X$ et $Y$, l'application $[\gamma] \mapsto ([p_X \circ \gamma], [p_Y \circ \gamma])$ est un morphisme de $\pi_1(X \times Y)$ dans $\pi_1(X) \times \pi_1(Y)$ ; sa réciproque envoie un couple de classes $([\gamma_1], [\gamma_2])$ sur la classe de $s \mapsto (\gamma_1(s), \gamma_2(s))$, bien définie puisqu'un couple d'homotopies est une homotopie dans le produit. Pour $X = Y = S^1$, on obtient $\mathbb Z \times \mathbb Z$.
+      - |
+        Le tore n'est homéomorphe ni à la sphère $S^2$, simplement connexe ({{vk-spheres|Sphères Sⁿ, n ⩾ 2}}), ni au bouquet, de groupe non commutatif, ni au cercle : $\mathbb Z^2$ n'est pas engendré par un seul élément : si $(1, 0) = k(m, n)$ et $(0, 1) = k'(m, n)$, la première égalité donne $n = 0$ et $m = \pm 1$, et la seconde devient impossible.
+      - |
+        La même méthode, appliquée au carré dont on identifie chaque point du bord à son symétrique par rapport au centre, donne le plan projectif réel, de groupe fondamental $\langle a \mid a^2 \rangle \cong \mathbb Z/2\mathbb Z$ ({{vk-presentations|Présentations}}, (iv)) : le bord est parcouru deux fois dans le même sens. Ce calcul est admis ici ; il demande de montrer que ce quotient du carré est séparé et de reprendre pour lui les arguments du nœud {{vk-tore-ouverts|Ouverts du tore}}. De même, la surface fermée orientable à $g$ trous, recollement d'un polygone à $4g$ côtés, a pour groupe fondamental $\langle a_1, b_1, \dots, a_g, b_g \mid a_1b_1a_1^{-1}b_1^{-1} \cdots a_gb_ga_g^{-1}b_g^{-1} \rangle$, admis ici également.
+
+aretes:
+  - [vk-mots, vk-groupe-libre]
+  - [vk-groupe-libre, vk-presentations]
+  - [vk-presentations, vk-produit-libre]
+  - [vk-produit-libre, vk-amalgame]
+  - [vk-decoupage, vk-engendrement]
+  - [vk-engendrement, vk-spheres]
+  - [vk-engendrement, vk-factorisations]
+  - [vk-amalgame, vk-factorisations]
+  - [vk-factorisations, vk-van-kampen]
+  - [vk-decoupage, vk-retractes]
+  - [vk-retractes, vk-bouquet]
+  - [vk-van-kampen, vk-bouquet]
+  - [vk-bouquet, vk-tore-ouverts]
+  - [vk-tore-ouverts, vk-tore]

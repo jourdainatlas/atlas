@@ -783,3 +783,20 @@ est levé : le mémo §35 qui la range parmi les admis est périmé). Aucun choi
 des polygones, Schoenflies, sphère cornue, dualité d'Alexander. Brouwer daté 1912 (Math. Ann. 71). Relu : six
 fautes (lexique faux pour le vide, « caractérise la sphère » faux — tore de S³ —, parité incomplète et présentée
 comme démontrée dans la légende, sin et mesure de Lebesgue non annoncés) et une quinzaine de retouches.
+
+## 54. Seifert-van Kampen (30 octobre 2026)
+
+Chapitre `topalg-van-kampen` (contenu/topalg-van-kampen.yaml, sous ta-consequences ; entrées ta-consequences →
+vk-decoupage, ta-cercle → vk-bouquet) : quatorze fiches vk-* — partie algébrique (alg n'a pas les entiers, gf n'est
+pas ancêtre de topalg) : mots réduits par l'action de van der Waerden, groupe libre (ℤ libre sur {1} définit les
+puissances gⁿ), sous-groupe distingué engendré et présentations, produit libre (inclusions injectives par la
+propriété universelle, forme normale admise), produit amalgamé ; partie topologique : découpage par Lebesgue
+(pour des chemins), surjectivité, π₁(Sⁿ) = 1 pour n ⩾ 2 (projection stéréographique démontrée ici ; h-spheres et
+hj-calottes y renvoient), noyau par grille et escaliers, théorème, rétractes par déformation, bouquet ≅ F₂ (ℝ/ℤ
+séparé, losange, sans trigonométrie), tore ≅ ℤ². Aucun choix ; Nielsen-Schreier ⋆ en remarque (choix pour les
+familles d'ensembles finis : Läuchli 1962, Howard 1985). Seifert : Ber. Sächs. Akad. 83 (1931), et non Math. Ann.
+104 (Threlfall-Seifert). Relu : une référence fausse (Schreier 1927, « freien Gruppen », p. 161-183), deux trous
+mineurs (image d'un sous-groupe engendré, découpage énoncé pour des lacets), W connexe par arcs non établi, une
+dizaine de retouches. 725 nœuds, 420 termes, 61 graphes ; topalg et le chapitre à 0 croisement.
+
+Avec ce lot, la liste du §41 est épuisée.
