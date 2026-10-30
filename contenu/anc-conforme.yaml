@@ -1,0 +1,564 @@
+# Niveau 2 : structure interne du chapitre « Représentation conforme » (nœud anc-conforme du graphe anc, créé le
+# 30 oct. 2026). Moyenne sur un cercle, principe du maximum (forme locale, ouvert borné) et du minimum ; théorème
+# de l'application ouverte et inversion holomorphe (par Rouché) ; lemme de Schwarz ; automorphismes du disque et
+# application de Cayley ; Schwarz-Pick ; convergence uniforme sur tout compact et dérivées ; Hurwitz ; Montel (par
+# les inégalités de Cauchy et une extraction diagonale sur les points à coordonnées rationnelles, sans Ascoli) ;
+# logarithmes et racines carrées holomorphes, propriété de la racine carrée ; plongement dans le disque, pas de
+# Koebe ; théorème de Riemann pour un ouvert connexe non vide distinct de ℂ qui a la propriété de la racine carrée.
+# Placement : anc, après anc-residus (Rouché sert à l'application ouverte et à Hurwitz). La topologie algébrique
+# n'étant pas un ancêtre de anc, la simple connexité n'apparaît qu'en remarque ; l'hypothèse « toute fonction
+# holomorphe sans zéro a une racine carrée holomorphe » la remplace, et le théorème en fait une caractérisation.
+# Choix : aucun. Montel extrait par la méthode diagonale avec des extractions désignées (ar-bw) le long d'une
+# énumération explicite de ℚ + iℚ ; Riemann est démontré par l'itération de Koebe (1912), où chaque terme est
+# désigné à partir du précédent, au lieu de la suite maximisante de la preuve extrémale, qui utilise le choix
+# dénombrable (signalé en remarque).
+
+graphe: anc-conforme
+titre: Représentation conforme
+conteneur: anc-conforme
+
+entrees:
+  anc-residus: [cf-maximum, cf-ouverte, cf-compacte]
+
+noeuds:
+  - id: cf-maximum
+    etiquette: Principe du maximum
+    nature: théorème
+    titre: Moyenne sur un cercle et principe du maximum
+    texte: |
+      Soit $U$ un [[ouvert]] de $\lex{ensemble-complexes}{\mathbb C}$. On note $\overline U$ son [[adherence|adhérence]] et, lorsque $U$ est borné, on appelle **bord** de $U$ l'ensemble $\partial U = \overline U \setminus U$.
+    enonce: |
+      (i) *Moyenne sur un cercle.* Si $f$ est [[holomorphe]] sur $U$ et si $\overline D(c, r) \subset U$, alors
+      $$f(c) = \frac{1}{2\pi}\int_0^{2\pi} f\big(c + r\exp(it)\big)\,dt.$$
+
+      (ii) *Forme locale.* Si $f$ est holomorphe sur $U$ et s'il existe un disque $D(c, R) \subset U$ sur lequel $|f(z)| \leqslant |f(c)|$, alors $f$ est constante sur $D(c, R)$. Si de plus $U$ est [[connexe]], $f$ est constante sur $U$.
+
+      (iii) *Ouvert borné.* Soit $U$ un ouvert connexe, borné et non vide, et $f$ continue sur $\overline U$ et holomorphe sur $U$. Alors $\partial U$ est compact et non vide, $|f|$ atteint son maximum sur $\overline U$, et
+      $$\max_{\overline U} |f| = \max_{\partial U} |f|.$$
+      Si ce maximum est atteint en un point de $U$, $f$ est constante sur $\overline U$.
+
+      (iv) *Principe du minimum.* Si $f$ est holomorphe et sans zéro sur l'ouvert connexe $U$, et si $|f(z)| \geqslant |f(c)|$ sur un disque $D(c, R) \subset U$, alors $f$ est constante. Si $U$ est connexe, borné et non vide, et si $f$ est continue sur $\overline U$, holomorphe et sans zéro sur $U$, alors $\min_{\overline U} |f| = \min_{\partial U} |f|$.
+    preuve: |
+      (i) C'est la formule de Cauchy ({{cx-formule-cauchy|Formule de Cauchy}}, (ii)) au point $z = c$. Avec $w = c + r\exp(it)$, on a $w - c = r\exp(it)$ et $w'(t) = ir\exp(it)$, de sorte que
+      $$\begin{aligned} &\frac{1}{2i\pi}\int_{C(c, r)} \frac{f(w)}{w - c}\,dw \\ &\quad = \frac{1}{2i\pi}\int_0^{2\pi} f\big(c + r\exp(it)\big)\,i\,dt. \end{aligned}$$
+
+      (ii) Si $f(c) = 0$, $f$ est nulle sur le disque. Sinon, écrivons $f(c) = |f(c)|\exp(i\theta)$ ({{cx-pi|Le nombre π}}, (iii)), et fixons $r \in \,]0, R[$, de sorte que $\overline D(c, r) \subset U$. Posons $u(t) = \exp(-i\theta)\,f\big(c + r\exp(it)\big)$ et
+      $$\varphi(t) = |f(c)| - \operatorname{Re} u(t).$$
+
+      Cette fonction est continue, et positive, puisque la partie réelle d'un complexe est majorée par son module et que $|\exp(-i\theta)| = 1$ ({{cx-exponentielle|Exponentielle}}, (iii)) : $\varphi(t) \geqslant |f(c)| - |f(c + r\exp(it))| \geqslant 0$.
+
+      En multipliant (i) par $\exp(-i\theta)$, on obtient $|f(c)| = \frac{1}{2\pi}\int_0^{2\pi} \exp(-i\theta) f(c + r\exp(it))\,dt$. La partie réelle de l'intégrale étant l'intégrale de la partie réelle ({{cx-convergence-uniforme|Convergence uniforme}}), il vient $\int_0^{2\pi} \varphi = 0$, et $\varphi$ est nulle ({{ri-moyenne|Inégalité de la moyenne}}, (iii)).
+
+      Pour tout $t$, le complexe $u(t)$ vérifie donc $\operatorname{Re} u(t) = |f(c)| \geqslant |u(t)|$. Comme $|u(t)|^2 = (\operatorname{Re} u(t))^2 + (\operatorname{Im} u(t))^2$, on a $\operatorname{Im} u(t) = 0$ et $u(t) = |f(c)|$, c'est-à-dire $f(\zeta) = f(c)$ au point $\zeta = c + r\exp(it)$.
+
+      Tout point de $D(c, R)$ autre que $c$ est sur l'un de ces cercles : $f$ vaut $f(c)$ sur tout le disque. Si $U$ est connexe, la fonction $f - f(c)$ s'annule sur ce disque, dont chaque point est un [[point-accumulation|point d'accumulation]] ; elle est nulle sur $U$ ({{cx-zeros-isoles|Zéros isolés}}).
+
+      (iii) *Le bord.* Si $U \subset \overline D(0, M)$, qui est fermé, alors $\overline U \subset \overline D(0, M)$ : $\overline U$ est fermé et borné, donc compact ({{cx-suites|Suites et séries complexes}}, (iv)), et $\partial U = \overline U \cap (\mathbb C \setminus U)$ l'est aussi, comme partie fermée.
+
+      Le plan $\mathbb C$ est connexe : c'est la réunion des segments $[0, z]$, images de $[0, 1]$, connexe ({{tr-connexes|Connexes de ℝ}}), par les applications continues $t \mapsto tz$, et ces segments ont le point $0$ en commun ({{t-connexe-prop|Stabilité de la connexité}}, (i) et (ii)). Si $\partial U$ était vide, $U = \overline U$ serait une partie ouverte et fermée de $\mathbb C$, non vide, et distincte de $\mathbb C$ puisque bornée, ce que la connexité interdit ({{t-connexe|Connexité}}, (b)).
+
+      *Le maximum.* La fonction continue $|f|$ atteint son maximum sur le compact non vide $\overline U$ en un point $z^*$, et son maximum sur $\partial U$, qui lui est inférieur ou égal ({{tr-compacts|Compacts de ℝ}}, (iii)). Si $z^* \in \partial U$, les deux maxima sont égaux.
+
+      Sinon, $z^* \in U$, et $|f(z)| \leqslant |f(z^*)|$ sur tout disque centré en $z^*$ contenu dans $U$ : par (ii), $f$ est constante sur $U$, égale à $f(z^*)$. L'ensemble des $z \in \overline U$ tels que $f(z) = f(z^*)$ est alors fermé, par continuité, et contient $U$ ; il contient donc $\overline U$, et $|f|$ atteint aussi son maximum sur $\partial U$.
+
+      (iv) La fonction $\frac1f$ est holomorphe sur $U$ ({{cx-holomorphe|Fonctions holomorphes}}, (ii)), et $\big|\frac1f\big| \leqslant \big|\frac1{f(c)}\big|$ sur le disque : (ii) s'applique.
+
+      Dans le cas borné, si $f$ s'annule en un point de $\overline U$, ce point est sur le bord, et les deux minima sont nuls. Sinon, $\frac1f$ est continue sur $\overline U$ et holomorphe sur $U$, et (iii) appliqué à $\frac1f$ donne l'égalité des minima de $|f|$.
+    remarques:
+      - |
+        L'intuition est dans (i) : $f(c)$ est la moyenne des valeurs de $f$ sur chaque cercle centré en $c$, et une moyenne ne peut dépasser en module toutes les valeurs moyennées que si elles sont toutes égales. La partie réelle d'une fonction holomorphe est harmonique, et le chapitre {{edp-laplace|Équations de Laplace et de la chaleur}} établit le même principe pour les fonctions harmoniques de $n$ variables ({{ha-maximum|Principe du maximum}}), par une égalité de moyenne analogue, sur les boules.
+      - |
+        L'erreur la plus répandue est d'appliquer (iii) à un ouvert non borné. Sur la bande $\{z : |\operatorname{Im} z| < \frac\pi2\}$, la fonction $f(z) = \exp(\exp z)$ est continue jusqu'au bord, où $|f| = 1$ : pour $z = x \pm i\frac\pi2$, on a $\exp z = \pm i\exp x$ ({{cx-pi|Le nombre π}}, (ii)), et $|\exp(\pm i\exp x)| = 1$. Pourtant $f(x) = \exp(\exp x)$ tend vers l'infini le long de l'axe réel.
+      - |
+        Le principe du minimum ne vaut que sans zéro : $f(z) = z$ a un module égal à $1$ sur le cercle unité et nul au centre.
+      - |
+        Ensemble, (iii) et (iv) disent qu'une fonction holomorphe non constante sur un ouvert borné connexe, continue jusqu'au bord, dont le module est constant sur le bord, s'annule à l'intérieur : sinon ses minimum et maximum sur $\overline U$ seraient égaux, et elle serait constante.
+
+  - id: cf-ouverte
+    etiquette: Application ouverte
+    nature: théorème
+    titre: Théorème de l'application ouverte et inversion holomorphe
+    texte: |
+      Soient $U$ et $V$ deux ouverts de $\lex{ensemble-complexes}{\mathbb C}$. Une application $f : U \to V$ est [[biholomorphe]] si elle est bijective, [[holomorphe]], et si sa réciproque est holomorphe ; on dit alors que $U$ et $V$ sont biholomorphes. Une application $f : U \to \mathbb C$ est **ouverte** si l'image par $f$ de tout ouvert contenu dans $U$ est ouverte.
+    enonce: |
+      (i) *Structure locale.* Soit $f$ holomorphe sur $U$, $a \in U$ et $w_0 = f(a)$, et supposons que $f - w_0$ ne soit identiquement nulle sur aucun disque centré en $a$. Soit $k$ l'ordre du zéro $a$ de $f - w_0$. Il existe $r > 0$ et $\delta > 0$ tels que $\overline D(a, r) \subset U$ et que, pour tout $w$ vérifiant $0 < |w - w_0| < \delta$, l'équation $f(z) = w$ ait exactement $k$ solutions dans $D(a, r)$, toutes simples. En particulier, $D(w_0, \delta) \subset f\big(D(a, r)\big)$.
+
+      (ii) *Application ouverte.* Une fonction holomorphe non constante sur un ouvert [[connexe]] est ouverte.
+
+      (iii) *Inversion.* Si $f$ est holomorphe et injective sur $U$, alors $f'$ ne s'annule pas sur $U$, $f(U)$ est ouvert, et $f$ est une application biholomorphe de $U$ sur $f(U)$, dont la réciproque $g$ vérifie
+      $$g'(w) = \frac{1}{f'(g(w))}.$$
+    preuve: |
+      (i) *Le voisinage de $a$.* Soit $\rho > 0$ tel que $D(a, \rho) \subset U$. Comme $f - w_0$ n'est pas nulle sur ce disque, le zéro $a$ a un ordre fini $k \geqslant 1$, et $f(z) - w_0 = (z - a)^k u(z)$ avec $u$ holomorphe sur $D(a, \rho)$ et $u(a) \neq 0$ ({{rs-singularites|Singularités isolées}}, (i)). En dérivant,
+      $$f'(z) = (z - a)^{k-1}\,v(z),$$
+      où $v(z) = k\,u(z) + (z - a)u'(z)$ vaut $k\,u(a) \neq 0$ en $a$.
+
+      Par continuité, il existe $r_0 \in \,]0, \rho]$ tel que $u$ et $v$ ne s'annulent pas sur $D(a, r_0)$. Sur $D(a, r_0) \setminus \{a\}$, ni $f - w_0$ ni $f'$ ne s'annulent. Posons $r = \frac{r_0}{2}$, de sorte que $\overline D(a, r) \subset U$.
+
+      *Rouché.* Le minimum $\delta$ de $|f - w_0|$ sur le cercle $C(a, r)$ existe et est strictement positif ({{tr-compacts|Compacts de ℝ}}, (iii), appliqué à $t \mapsto |f(a + r\exp(it)) - w_0|$ sur $[0, 2\pi]$). Pour $|w - w_0| < \delta$, les fonctions $F = f - w_0$ et $G = f - w$ vérifient sur le cercle
+      $$|F - G| = |w - w_0| < \delta \leqslant |F|.$$
+
+      Par le théorème de Rouché ({{rs-rouche|Théorème de Rouché}}, (i)), $G$ a dans $D(a, r)$ autant de zéros que $F$, comptés avec leurs ordres, c'est-à-dire $k$, puisque le seul zéro de $F$ dans ce disque est $a$, d'ordre $k$. Si $w \neq w_0$, aucun de ces zéros n'est $a$, et $G' = f'$ ne s'y annule pas : ils sont simples, donc au nombre de $k$ exactement. Pour $w = w_0$, le point $a$ est solution.
+
+      (ii) Soit $f$ holomorphe et non constante sur l'ouvert connexe $U$, $O \subset U$ un ouvert et $a \in O$. Si $f - f(a)$ était nulle sur un disque centré en $a$, elle serait nulle sur $U$ ({{cx-zeros-isoles|Zéros isolés}}), et $f$ serait constante. Soit $t > 0$ tel que $D(a, t) \subset O$ : le point (i), appliqué à la restriction de $f$ à ce disque, fournit $\delta > 0$ tel que $D(f(a), \delta) \subset f(O)$. Donc $f(O)$ est ouvert ({{me-topologie|Topologie d'une distance}}, (i)).
+
+      (iii) *Dérivée non nulle.* Soit $a \in U$. La fonction $f - f(a)$ n'est nulle sur aucun disque centré en $a$, puisqu'un disque a plus d'un point et que $f$ est injective. Si l'ordre $k$ du zéro $a$ était au moins $2$, (i) fournirait des valeurs $w$ prises $k$ fois. Donc $k = 1$, c'est-à-dire $f'(a) \neq 0$.
+
+      *Image ouverte, réciproque continue.* Le même argument qu'en (ii), appliqué sur des disques contenus dans un ouvert $O \subset U$, montre que $f(O)$ est ouvert. En particulier $f(U)$ est ouvert, et la réciproque $g : f(U) \to U$ est continue, puisque l'image réciproque par $g$ d'un ouvert $O$ de $U$ est $f(O)$ ({{t-continue|Applications continues}}).
+
+      *Dérivée de la réciproque.* Soit $w_1 \in f(U)$ et $z_1 = g(w_1)$. Pour $w \in f(U)$, $w \neq w_1$, on a $g(w) \neq z_1$ et
+      $$\frac{g(w) - g(w_1)}{w - w_1} = \Big(\frac{f(g(w)) - f(z_1)}{g(w) - z_1}\Big)^{-1}.$$
+      Quand $w \to w_1$, $g(w) \to z_1$ par continuité, et le quotient entre parenthèses tend vers $f'(z_1) \neq 0$ : la limite est $\frac{1}{f'(z_1)}$.
+    remarques:
+      - |
+        Le point (i) dit qu'au voisinage d'un zéro d'ordre $k$ de $f - w_0$, la fonction $f$ se comporte comme $z \mapsto w_0 + z^k$ : chaque valeur voisine de $w_0$ est prise $k$ fois. Pour $f(z) = z^2$ et $a = 0$, on a $k = 2$, et tout $w \neq 0$ a deux racines carrées opposées ({{c-racines-carrees|Racines carrées complexes}}).
+      - |
+        Rien de tel en analyse réelle. La fonction $x \mapsto x^2$ envoie $\mathbb R$ sur $[0, +\infty[$, qui n'est pas ouvert ; la fonction $x \mapsto x^3$ est injective, mais sa dérivée s'annule en $0$, et sa réciproque n'y est pas dérivable. Pour une fonction holomorphe, l'injectivité suffit à tout.
+      - |
+        Une fonction holomorphe de dérivée non nulle conserve les angles orientés entre les courbes, d'où le nom de **représentation conforme** donné aux applications biholomorphes. Si deux chemins dérivables passent par $z_0$ avec des vitesses $v_1$ et $v_2$ non nulles, leurs images passent par $f(z_0)$ avec les vitesses $f'(z_0)v_1$ et $f'(z_0)v_2$ ({{cx-holomorphe|Fonctions holomorphes}}, (iii)) ; le quotient $v_2/v_1$, dont l'argument est l'angle des deux courbes, n'a pas changé.
+
+  - id: cf-schwarz
+    etiquette: Lemme de Schwarz
+    nature: théorème
+    titre: Lemme de Schwarz
+    texte: |
+      On note $\mathbb D = D(0, 1)$ le disque unité ouvert de $\lex{ensemble-complexes}{\mathbb C}$.
+    enonce: |
+      Soit $f$ [[holomorphe]] sur $\mathbb D$, à valeurs dans $\mathbb D$, avec $f(0) = 0$.
+
+      (i) Pour tout $z \in \mathbb D$, $|f(z)| \leqslant |z|$ ; de plus, $|f'(0)| \leqslant 1$.
+
+      (ii) S'il existe $z_0 \neq 0$ tel que $|f(z_0)| = |z_0|$, ou si $|f'(0)| = 1$, alors il existe $\lambda$ de module $1$ tel que $f(z) = \lambda z$ pour tout $z \in \mathbb D$.
+    preuve: |
+      *Le quotient.* La fonction $g(z) = \frac{f(z)}{z}$ est holomorphe sur $\mathbb D \setminus \{0\}$, et $z\,g(z) = f(z)$ tend vers $f(0) = 0$ quand $z \to 0$. Par le théorème de prolongement de Riemann ({{rs-singularites|Singularités isolées}}, (ii), (d) ⇒ (b)), $g$ se prolonge en une fonction holomorphe sur $\mathbb D$, dont la valeur en $0$ est la limite de $\frac{f(z) - f(0)}{z - 0}$, c'est-à-dire $f'(0)$.
+
+      *La majoration.* Fixons $r \in \,]0, 1[$ et appliquons le principe du maximum ({{cf-maximum|Principe du maximum}}, (iii)) à $g$ sur le disque $D(0, r)$, ouvert borné non vide, connexe comme tout disque (réunion des segments issus de son centre, comme au point (iii) du même nœud). Son adhérence est contenue dans le disque fermé $\overline D(0, r)$, donc son bord dans le cercle $|z| = r$, où $|g(z)| = \frac{|f(z)|}{r} < \frac1r$. Ainsi $|g(z)| \leqslant \frac1r$ pour $|z| < r$.
+
+      Pour $z \in \mathbb D$ fixé, cette majoration vaut pour tout $r \in \,]|z|, 1[$ ; en faisant tendre $r$ vers $1$, on obtient $|g(z)| \leqslant 1$. C'est (i), puisque $g(0) = f'(0)$.
+
+      (ii) Dans les deux cas, $|g|$ atteint la valeur $1$ en un point de $\mathbb D$, en $z_0$ ou en $0$, alors que $|g| \leqslant 1$ sur $\mathbb D$, qui est connexe. Par la forme locale du principe du maximum ({{cf-maximum|Principe du maximum}}, (ii)), $g$ est une constante $\lambda$, de module $1$.
+
+      ```schema cf-schwarz
+      Les cercles gris de rayons $0{,}3$, $0{,}6$ et $0{,}9$, et leurs images en rouge par la fonction injective $f(z) = \frac{z}{2 - z}$, qui envoie $\mathbb D$ dans $\mathbb D$, puisque $|2 - z| > 1 > |z|$, et fixe $0$ ; ce sont des cercles. Chaque image reste dans le disque gris correspondant, comme l'impose $|f(z)| \leqslant |z|$ ; l'écart est grand près de $0$, où $f(z) \approx \frac z2$ puisque $f'(0) = \frac12$, et faible pour le rayon $0{,}9$.
+      ```
+    remarques:
+      - |
+        L'hypothèse $f(0) = 0$ est indispensable : la fonction constante égale à $\frac12$ envoie $\mathbb D$ dans $\mathbb D$, et $|f(z)| \leqslant |z|$ est faux près de $0$. Le nœud suivant ramène le cas général à celui-ci en composant par un automorphisme du disque qui envoie $f(0)$ sur $0$.
+      - |
+        Le même argument, sur un disque de rayon $R$ au lieu de $1$, redonne le théorème de Liouville ({{cx-liouville|Liouville}}) : si $|f| \leqslant M$ sur $\mathbb C$ et $f(0) = 0$, alors $|f(z)| \leqslant \frac{M|z|}{R}$ pour tout $R > |z|$, donc $f = 0$. Le lemme de Schwarz est la version quantitative, sur un disque, de cette rigidité.
+      - |
+        Schwarz a établi l'inégalité pour des applications injectives, dans des leçons publiées dans ses *Gesammelte Mathematische Abhandlungen* (t. II, 1890) ; Carathéodory en a donné la forme générale et le nom dans « Untersuchungen über die konformen Abbildungen von festen und veränderlichen Gebieten », *Math. Ann.* 72 (1912), p. 107-144, avec la démonstration par le quotient $f(z)/z$, qu'il attribue à E. Schmidt (K. Broder, « The Schwarz Lemma: An Odyssey », arXiv:2110.04989 ; H. P. Boas, « Julius and Julia: Mastering the art of the Schwarz lemma », arXiv:1001.0559).
+
+  - id: cf-automorphismes
+    etiquette: Automorphismes du disque
+    nature: théorème
+    titre: Automorphismes du disque et application de Cayley
+    texte: |
+      Pour $a \in \mathbb D$, on pose
+      $$\varphi_a(z) = \frac{z - a}{1 - \bar a z}.$$
+      Les [[automorphismes-disque|automorphismes du disque]] sont les applications [[biholomorphe|biholomorphes]] de $\mathbb D$ sur $\mathbb D$. On note $\mathbb H = \{z : \operatorname{Im} z > 0\}$ le demi-plan supérieur.
+    enonce: |
+      (i) La fonction $\varphi_a$ est holomorphe sur l'ouvert $\{z : \bar a z \neq 1\}$, qui contient le disque fermé $\overline D(0, 1)$, et pour tout $z$ de cet ouvert,
+      $$1 - |\varphi_a(z)|^2 = \frac{(1 - |a|^2)(1 - |z|^2)}{|1 - \bar a z|^2}.$$
+      Elle envoie $\mathbb D$ dans $\mathbb D$ et le cercle unité dans lui-même, et $\varphi_a \circ \varphi_{-a}$ est l'identité de $\mathbb D$ : $\varphi_a$ est un automorphisme du disque, de réciproque $\varphi_{-a}$. Enfin $\varphi_a(a) = 0$, $\varphi_a(0) = -a$ et
+      $$\varphi_a'(z) = \frac{1 - |a|^2}{(1 - \bar a z)^2},$$
+      d'où $\varphi_a'(0) = 1 - |a|^2$ et $\varphi_a'(a) = \frac{1}{1 - |a|^2}$.
+
+      (ii) Les automorphismes du disque sont exactement les applications $z \mapsto \lambda\varphi_a(z)$, où $a \in \mathbb D$ et $|\lambda| = 1$. Ceux qui fixent $0$ sont les rotations $z \mapsto \lambda z$.
+
+      (iii) Le seul automorphisme $T$ du disque tel que $T(0) = 0$ et que $T'(0)$ soit un réel strictement positif est l'identité.
+
+      (iv) *Application de Cayley.* La fonction $C(z) = \frac{z - i}{z + i}$ est une application biholomorphe de $\mathbb H$ sur $\mathbb D$, de réciproque $w \mapsto i\frac{1 + w}{1 - w}$, et
+      $$1 - |C(z)|^2 = \frac{4\operatorname{Im} z}{|z + i|^2}.$$
+    preuve: |
+      (i) L'ensemble $\{z : \bar a z \neq 1\}$ est ouvert, comme image réciproque d'un ouvert par une fonction continue, et contient le disque fermé, puisque $|\bar a z| \leqslant |a| < 1$ pour $|z| \leqslant 1$ ; $\varphi_a$ y est holomorphe, comme quotient ({{cx-holomorphe|Fonctions holomorphes}}, (ii)).
+
+      *L'identité.* En développant les modules par $|w|^2 = w\bar w$ ({{c-calcul|Conjugué, module}}), les termes croisés $-\bar a z - a\bar z$ apparaissent avec le même signe dans les deux carrés, et
+      $$\begin{aligned} &|1 - \bar a z|^2 - |z - a|^2 \\ &\quad = (1 - |a|^2)(1 - |z|^2). \end{aligned}$$
+      On divise par $|1 - \bar a z|^2$. Pour $z \in \mathbb D$, le membre de droite est strictement positif, donc $|\varphi_a(z)| < 1$ ; pour $|z| = 1$, il est nul, donc $|\varphi_a(z)| = 1$.
+
+      *La réciproque.* Pour $z \in \mathbb D$, $\varphi_{-a}(z) = \frac{z + a}{1 + \bar a z}$ est dans $\mathbb D$, et en multipliant numérateur et dénominateur par $1 + \bar a z$,
+      $$\begin{aligned} \varphi_a\big(\varphi_{-a}(z)\big) &= \frac{(z + a) - a(1 + \bar a z)}{(1 + \bar a z) - \bar a(z + a)} \\ &= \frac{(1 - |a|^2)z}{1 - |a|^2} = z. \end{aligned}$$
+      En échangeant $a$ et $-a$, $\varphi_{-a} \circ \varphi_a$ est aussi l'identité de $\mathbb D$. La dérivée d'un quotient donne $\varphi_a'$, puis ses valeurs en $0$ et en $a$.
+
+      (ii) Une rotation $z \mapsto \lambda z$ est un automorphisme, de réciproque $z \mapsto \bar\lambda z$, et la composée de deux automorphismes en est un : les $\lambda\varphi_a$ sont des automorphismes.
+
+      Réciproquement, soit $T$ un automorphisme et $a = T^{-1}(0)$. La composée $S = T \circ \varphi_{-a}$ est un automorphisme, et $S(0) = T(a) = 0$. Le lemme de Schwarz ({{cf-schwarz|Lemme de Schwarz}}, (i)) appliqué à $S$ et à $S^{-1}$, qui fixe aussi $0$, donne $|S(z)| \leqslant |z|$ et $|z| = |S^{-1}(S(z))| \leqslant |S(z)|$.
+
+      Ainsi $|S(z)| = |z|$ pour tout $z$, et $S(z) = \lambda z$ avec $|\lambda| = 1$ (même nœud, (ii)). Alors $T = S \circ \varphi_a$, c'est-à-dire $T(z) = \lambda\varphi_a(z)$. Si de plus $T(0) = 0$, alors $-\lambda a = 0$, donc $a = 0$ et $T$ est une rotation.
+
+      (iii) Par (ii), $T(z) = \lambda z$, et $T'(0) = \lambda$ est un réel strictement positif de module $1$ : $\lambda = 1$.
+
+      (iv) Pour $z = x + iy$, on a $|z + i|^2 - |z - i|^2 = (y + 1)^2 - (y - 1)^2 = 4y$, d'où la formule, en divisant par $|z + i|^2$, non nul sur $\mathbb H$. Par suite, $C$ est holomorphe sur $\mathbb H$ et l'envoie dans $\mathbb D$.
+
+      La fonction $K(w) = i\frac{1 + w}{1 - w}$ est holomorphe sur $\mathbb D$, et en multipliant par $1 - \bar w$,
+      $$K(w) = i\,\frac{1 - |w|^2 + w - \bar w}{|1 - w|^2},$$
+      et, puisque $w - \bar w = 2i\operatorname{Im} w$ est imaginaire pur, $\operatorname{Im} K(w) = \frac{1 - |w|^2}{|1 - w|^2} > 0$. Donc $K$ envoie $\mathbb D$ dans $\mathbb H$. Enfin, en multipliant numérateur et dénominateur par $1 - w$, puis par $z + i$,
+      $$\begin{aligned} C(K(w)) &= \frac{i(1 + w) - i(1 - w)}{i(1 + w) + i(1 - w)} = w, \\ K(C(z)) &= i\,\frac{(z + i) + (z - i)}{(z + i) - (z - i)} = z. \end{aligned}$$
+
+      ```schema cf-automorphismes
+      À gauche, des droites horizontales $\operatorname{Im} z = c$ du demi-plan $\mathbb H$, en bleu, et des demi-droites verticales $\operatorname{Re} z = t$, en rouge. À droite, leurs images par $C$ : des cercles tangents en $1$ au cercle unité, de centre $\frac{c}{1 + c}$ et de rayon $\frac{1}{1 + c}$ ; pour $t = \pm 1$, des arcs de cercles passant par $1$ qui coupent le cercle unité à angle droit, et pour $t = 0$ le diamètre $]{-1}, 1[$. Les deux familles se coupent encore à angle droit, et le point $i$ va au centre $0$.
+      ```
+    remarques:
+      - |
+        L'erreur la plus répandue est d'oublier l'hypothèse $|a| < 1$. Pour $|a| > 1$, la même formule définit une fonction holomorphe sur $\mathbb D$ privé du point $\frac{1}{\bar a}$, qui est dans $\mathbb D$ et où elle a un pôle ; ailleurs dans $\mathbb D$, l'identité de (i) change de signe, et $|\varphi_a| > 1$ : elle envoie $\mathbb D$ privé de ce pôle hors du disque fermé.
+      - |
+        Le point (ii) dit qu'un automorphisme du disque est déterminé par trois nombres réels : les deux coordonnées du point $a$ envoyé sur $0$, et l'angle de la rotation. Le point (iii) en est la forme normalisée : on fixe l'image d'un point et la direction de la dérivée en ce point. C'est exactement cette normalisation qui rendra unique l'application du théorème de Riemann ({{cf-riemann|Théorème de Riemann}}).
+      - |
+        Le point (iv) montre qu'un ouvert non borné peut être biholomorphe au disque, ce qui n'est pas le cas de $\mathbb C$ tout entier : une application biholomorphe de $\mathbb C$ sur $\mathbb D$ serait une fonction entière bornée, donc constante ({{cx-liouville|Liouville}}). Comme $C(i) = 0$ et $C'(i) = \frac{1}{2i}$, l'application normalisée de $\mathbb H$ sur $\mathbb D$ en $a = i$ est $z \mapsto iC(z)$, de dérivée $\frac12$ en $i$ ; ces valeurs ont été vérifiées par un calcul formel, comme l'identité de (i).
+
+  - id: cf-schwarz-pick
+    etiquette: Schwarz-Pick
+    nature: théorème
+    titre: Lemme de Schwarz-Pick
+    enonce: |
+      Soit $f$ holomorphe sur $\mathbb D$, à valeurs dans $\mathbb D$.
+
+      (i) Pour tous $z, w \in \mathbb D$, $|\varphi_{f(z)}(f(w))| \leqslant |\varphi_z(w)|$, c'est-à-dire
+      $$\Big|\frac{f(w) - f(z)}{1 - \overline{f(z)}\,f(w)}\Big| \leqslant \Big|\frac{w - z}{1 - \bar z w}\Big|.$$
+
+      (ii) Pour tout $z \in \mathbb D$,
+      $$|f'(z)| \leqslant \frac{1 - |f(z)|^2}{1 - |z|^2}.$$
+
+      (iii) S'il y a égalité dans (i) pour un couple $z \neq w$, ou dans (ii) pour un point $z$, alors $f$ est un [[automorphismes-disque|automorphisme du disque]]. Réciproquement, un automorphisme réalise l'égalité dans (i) et (ii) en tout point.
+    preuve: |
+      Fixons $z \in \mathbb D$ et posons $F = \varphi_{f(z)} \circ f \circ \varphi_{-z}$. C'est une fonction holomorphe de $\mathbb D$ dans $\mathbb D$ ({{cf-automorphismes|Automorphismes du disque}}, (i)), et $F(0) = \varphi_{f(z)}(f(z)) = 0$.
+
+      (i) Pour $w \in \mathbb D$, posons $\zeta = \varphi_z(w)$, de sorte que $\varphi_{-z}(\zeta) = w$. Le lemme de Schwarz ({{cf-schwarz|Lemme de Schwarz}}, (i)) donne $|F(\zeta)| \leqslant |\zeta|$, c'est-à-dire l'inégalité annoncée.
+
+      (ii) Par la dérivée d'une composée et les valeurs du nœud {{cf-automorphismes|Automorphismes du disque}}, (i),
+      $$\begin{aligned} F'(0) &= \varphi_{f(z)}'(f(z))\,f'(z)\,\varphi_{-z}'(0) \\ &= \frac{f'(z)(1 - |z|^2)}{1 - |f(z)|^2}, \end{aligned}$$
+      et le lemme de Schwarz donne $|F'(0)| \leqslant 1$.
+
+      (iii) Dans les deux cas d'égalité, $F$ vérifie l'une des hypothèses du point (ii) du lemme de Schwarz : $F(\zeta) = \lambda\zeta$ avec $|\lambda| = 1$, et $f = \varphi_{-f(z)} \circ F \circ \varphi_z$ est une composée d'automorphismes.
+
+      Réciproquement, si $f$ est un automorphisme, (i) appliqué à $f^{-1}$ aux points $f(z)$ et $f(w)$ donne l'inégalité inverse. Pour (ii), $F$ est alors un automorphisme qui fixe $0$, donc une rotation ({{cf-automorphismes|Automorphismes du disque}}, (ii)), et $|F'(0)| = 1$.
+    remarques:
+      - |
+        La quantité $|\varphi_z(w)| = \big|\frac{w - z}{1 - \bar z w}\big|$ est la distance pseudo-hyperbolique de $z$ à $w$ ; elle est symétrique, et invariante par les automorphismes du disque, d'après (iii). Le point (i) dit qu'une fonction holomorphe du disque dans lui-même diminue cette distance, et que les automorphismes en sont les isométries. C'est le point de vue de G. Pick, « Über eine Eigenschaft der konformen Abbildung kreisförmiger Bereiche », *Math. Ann.* 77 (1916), p. 1-6.
+      - |
+        Pour $f(z) = z^2$ et $z = \frac12$, on a $|f'(\frac12)| = 1$, alors que la borne (ii) vaut $\frac{1 - 1/16}{1 - 1/4} = \frac54$ : l'inégalité est stricte, comme elle doit l'être pour une fonction qui n'est pas injective. En $z = 0$, (ii) se lit $|f'(0)| \leqslant 1 - |f(0)|^2$, ce qui précise le lemme de Schwarz quand $f(0) \neq 0$.
+
+  - id: cf-compacte
+    etiquette: Convergence sur les compacts
+    nature: théorème
+    titre: Convergence uniforme sur tout compact et dérivées
+    texte: |
+      Soit $U$ un [[ouvert]] de $\lex{ensemble-complexes}{\mathbb C}$ et $(g_k)$ une suite de fonctions de $U$ dans $\mathbb C$. Elle [[convergence-compacte|converge uniformément sur tout compact]] de $U$ vers $g$ si, pour toute partie [[compact|compacte]] non vide $K \subset U$,
+      $$\sup_{z \in K} |g_k(z) - g(z)| \xrightarrow[k \to +\infty]{} 0.$$
+    enonce: |
+      (i) La suite $(g_k)$ converge uniformément sur tout compact de $U$ vers $g$ si et seulement si tout point de $U$ est le centre d'un disque ouvert contenu dans $U$ sur lequel la convergence est uniforme.
+
+      (ii) Si les $g_k$ sont [[holomorphe|holomorphes]] et convergent uniformément sur tout compact de $U$ vers $g$, alors $g$ est holomorphe sur $U$.
+
+      (iii) Dans ce cas, $g_k' \to g'$ uniformément sur tout compact de $U$ ; plus précisément, si $\overline D(c, r) \subset U$,
+      $$\sup_{\overline D(c, r/2)} |g_k' - g'| \leqslant \frac2r\,\sup_{\overline D(c, r)} |g_k - g|.$$
+    preuve: |
+      (i) Supposons la convergence uniforme sur tout compact. Pour $z \in U$, il existe $r > 0$ tel que $D(z, 2r) \subset U$ ({{me-topologie|Topologie d'une distance}}, (i)) ; le disque fermé $\overline D(z, r)$ est compact ({{cx-suites|Suites et séries complexes}}, (iv)), et la convergence est uniforme sur $D(z, r)$.
+
+      Réciproquement, soit $K$ une partie compacte non vide de $U$. Les disques ouverts contenus dans $U$ sur lesquels la convergence est uniforme recouvrent $K$ ; un nombre fini d'entre eux, $D_1, \dots, D_m$, suffit. Alors $\sup_K |g_k - g| \leqslant \max_j \sup_{D_j} |g_k - g|$, maximum de $m$ suites qui tendent vers $0$. Aucun choix n'intervient : la famille de tous ces disques est définie sans en désigner un pour chaque point.
+
+      (ii) La fonction $g$ est continue sur chaque disque de (i), comme limite uniforme de fonctions continues ({{cx-convergence-uniforme|Convergence uniforme}}, (i)). Soit $\overline D(c, r) \subset U$ et $|z - c| < r$. Par la formule de Cauchy ({{cx-formule-cauchy|Formule de Cauchy}}, (ii)),
+      $$g_k(z) = \frac{1}{2i\pi}\int_{C(c, r)} \frac{g_k(w)}{w - z}\,dw.$$
+
+      Sur le cercle, compact, $g_k \to g$ uniformément, et $|w - z| \geqslant r - |z - c| > 0$ : les intégrandes convergent uniformément, et les intégrales aussi ({{cx-convergence-uniforme|Convergence uniforme}}, (iii)). Donc $g(z) = \frac{1}{2i\pi}\int_{C(c, r)} \frac{g(w)}{w - z}\,dw$.
+
+      La démonstration du nœud {{cx-analytique|Analyticité}} n'utilise de $f$, dans cette formule, que sa continuité sur le cercle : elle s'applique telle quelle et donne $g(z) = \sum_n c_n(z - c)^n$ sur $D(c, r)$. Une série entière est holomorphe ({{cx-derivation-series|Dérivation terme à terme}}), donc $g$ l'est au voisinage de chaque point de $U$.
+
+      (iii) Soit $|\zeta - c| \leqslant \frac r2$ et $t \in \,]0, \frac r2[$, de sorte que $\overline D(\zeta, t) \subset \overline D(c, r) \subset U$. L'inégalité de Cauchy pour le coefficient $c_1 = (g_k - g)'(\zeta)$ ({{cx-analytique|Analyticité}}), appliquée à la fonction holomorphe $g_k - g$, donne
+      $$|g_k'(\zeta) - g'(\zeta)| \leqslant \frac1t \sup_{\overline D(c, r)} |g_k - g|.$$
+      On fait tendre $t$ vers $\frac r2$. Le second membre tend vers $0$, le disque fermé étant compact : la convergence des dérivées est uniforme sur $D(c, \frac r2)$, et (i) conclut.
+    remarques:
+      - |
+        La suite $z^k$ converge vers $0$ uniformément sur tout compact de $\mathbb D$, puisqu'un compact de $\mathbb D$ est contenu dans un disque $\overline D(0, \rho)$ avec $\rho < 1$, où $|z^k| \leqslant \rho^k$. Elle ne converge pas uniformément sur $\mathbb D$, où $\sup |z^k| = 1$ pour tout $k$. C'est pourquoi l'on demande la convergence sur les compacts, et non sur l'ouvert entier.
+      - |
+        En analyse réelle, une limite uniforme de fonctions dérivables n'est pas toujours dérivable : $\sqrt{x^2 + 1/k}$ converge uniformément vers $|x|$ sur $\mathbb R$, l'écart étant au plus $\frac{1}{\sqrt k}$. Le point (ii) n'a donc pas d'équivalent réel ; il tient à ce que la formule de Cauchy exprime $g_k$ par ses valeurs sur un cercle.
+      - |
+        L'erreur la plus répandue est de croire que la convergence uniforme sur la droite réelle suffit. La suite $\frac{\exp(ikz)}{k}$ tend vers $0$ uniformément sur $\mathbb R$, où son module vaut $\frac1k$, mais ses dérivées $i\exp(ikx)$ sont de module $1$. Il n'y a pas de contradiction avec (iii) : au point $-iy$, avec $y > 0$, le module vaut $\frac{\exp(ky)}{k}$, et la suite ne converge uniformément sur aucun disque centré en un point réel.
+
+  - id: cf-hurwitz
+    etiquette: Théorème de Hurwitz
+    nature: théorème
+    titre: Zéros d'une limite de fonctions holomorphes
+    enonce: |
+      Soit $U$ un ouvert [[connexe]] et $(g_k)$ une suite de fonctions holomorphes sur $U$ qui [[convergence-compacte|converge uniformément sur tout compact]] vers $g$, holomorphe ({{cf-compacte|Convergence sur les compacts}}, (ii)).
+
+      (i) Si $g$ n'est pas identiquement nulle, si $a$ est un zéro d'ordre $m$ de $g$ et si $r > 0$ vérifie $\overline D(a, r) \subset U$ et $g(z) \neq 0$ pour $0 < |z - a| \leqslant r$, alors, pour $k$ assez grand, $g_k$ a exactement $m$ zéros dans $D(a, r)$, comptés avec leurs ordres.
+
+      (ii) Si aucune $g_k$ ne s'annule sur $U$, alors $g$ ne s'annule pas sur $U$, ou elle y est identiquement nulle.
+
+      (iii) Si toutes les $g_k$ sont injectives, $g$ est injective ou constante.
+    preuve: |
+      (i) Le minimum $\delta$ de $|g|$ sur le cercle $C(a, r)$ existe et est strictement positif ({{tr-compacts|Compacts de ℝ}}, (iii)). Le cercle étant compact, il existe $N$ tel que $|g_k - g| < \delta \leqslant |g|$ sur le cercle pour $k \geqslant N$.
+
+      Le théorème de Rouché ({{rs-rouche|Théorème de Rouché}}, (i)), appliqué à $g$ et $g_k$ sur l'ouvert $U$, qui contient le disque fermé, dit que $g_k$ a dans $D(a, r)$ autant de zéros que $g$, comptés avec leurs ordres. Le seul zéro de $g$ dans ce disque est $a$, d'ordre $m$.
+
+      (ii) Supposons $g$ non identiquement nulle et $g(a) = 0$. Le zéro $a$ est isolé ({{cx-zeros-isoles|Zéros isolés}}) : il existe $\rho > 0$ tel que $D(a, \rho) \subset U$ et que $a$ soit le seul zéro de $g$ dans ce disque. Son ordre $m$ est fini et au moins $1$ ({{rs-singularites|Singularités isolées}}, (i)). Avec $r = \frac\rho2$, (i) fournit, pour $k$ assez grand, des zéros de $g_k$ : c'est contraire à l'hypothèse.
+
+      (iii) Supposons $g$ non constante, et $g(z_1) = g(z_2) = w$ avec $z_1 \neq z_2$. La fonction $g - w$ n'est pas identiquement nulle, et ses zéros $z_1$ et $z_2$ sont isolés : il existe $r > 0$, inférieur à $\frac{|z_1 - z_2|}{2}$, tel que les disques fermés $\overline D(z_j, r)$ soient contenus dans $U$ et que $g - w$ ne s'y annule qu'en leurs centres.
+
+      La suite $g_k - w$ converge vers $g - w$ uniformément sur tout compact. Par (i), appliqué en $z_1$ puis en $z_2$, pour $k$ assez grand, $g_k - w$ a un zéro dans $D(z_1, r)$ et un zéro dans $D(z_2, r)$. Ces disques étant disjoints, $g_k$ prend deux fois la valeur $w$, ce qui contredit son injectivité.
+    remarques:
+      - |
+        Les deux issues « identiquement nulle » et « constante » se produisent : les fonctions $\frac{\exp z}{k}$ ne s'annulent pas et tendent vers $0$, et les fonctions injectives $\frac zk$ tendent vers la constante $0$. C'est pourquoi le théorème de Riemann devra vérifier séparément que la limite qu'il construit n'est pas constante.
+      - |
+        La connexité est indispensable. Sur la réunion des disques disjoints $D(0, 1)$ et $D(3, 1)$, la fonction égale à $\frac{1}{k+1}$ sur le premier et à $1$ sur le second ne s'annule pas ; sa limite, nulle sur le premier disque et égale à $1$ sur le second, s'annule sans être identiquement nulle.
+      - |
+        Le théorème porte le nom d'Adolf Hurwitz.
+      - |
+        Le point (i) dit davantage que (ii) : les zéros de $g_k$ proches de $a$ convergent vers $a$, puisque le rayon $r$ peut être pris aussi petit qu'on veut.
+
+  - id: cf-montel
+    etiquette: Théorème de Montel
+    nature: théorème
+    titre: Théorème de Montel
+    texte: |
+      Soit $U$ un [[ouvert]] de $\lex{ensemble-complexes}{\mathbb C}$ et $\mathcal F$ un ensemble de fonctions [[holomorphe|holomorphes]] sur $U$. C'est une [[famille-localement-bornee|famille localement bornée]] si, pour toute partie [[compact|compacte]] $K$ de $U$, il existe un réel $M$ tel que $|f(z)| \leqslant M$ pour toute $f \in \mathcal F$ et tout $z \in K$. C'est une [[famille-normale|famille normale]] si toute suite d'éléments de $\mathcal F$ a une [[suite-extraite]] qui [[convergence-compacte|converge uniformément sur tout compact]] de $U$.
+    enonce: |
+      Toute famille localement bornée de fonctions holomorphes sur $U$ est normale. Les limites sont holomorphes, et les dérivées des suites extraites convergent uniformément sur tout compact de $U$ vers leurs dérivées.
+    preuve: |
+      Soit $(f_n)$ une suite d'éléments de $\mathcal F$ ; on peut supposer $U$ non vide. La dernière phrase de l'énoncé est le nœud {{cf-compacte|Convergence sur les compacts}}, (ii) et (iii).
+
+      *Étape 1 : des bornes uniformes sur les dérivées.* Pour $z \in U$, soit $\delta(z)$ la borne supérieure des $t \in \,]0, 1]$ tels que $\overline D(z, t) \subset U$, et $s = \frac{\delta(z)}{2}$. Le disque $K_z = \overline D(z, s)$ est contenu dans $U$ et compact ; soit $M_z$ la borne supérieure des $|f(\zeta)|$, pour $f \in \mathcal F$ et $\zeta \in K_z$, finie par hypothèse.
+
+      Pour $\zeta \in D(z, \frac s2)$ et $t < \frac s2$, le disque $\overline D(\zeta, t)$ est contenu dans $K_z$, et l'inégalité de Cauchy ({{cx-analytique|Analyticité}}) donne $|f'(\zeta)| \leqslant \frac{M_z}{t}$ pour toute $f \in \mathcal F$ ; en faisant tendre $t$ vers $\frac s2$, $|f'(\zeta)| \leqslant L_z$, avec $L_z = \frac{2M_z}{s}$.
+
+      Pour $\zeta, \zeta' \in D(z, \frac s2)$, le segment $[\zeta', \zeta]$ est dans ce disque convexe, et $f$ est une primitive de $f'$ ({{cx-integrale-chemin|Intégrale curviligne}}, (i) et (ii)) :
+      $$|f(\zeta) - f(\zeta')| \leqslant L_z\,|\zeta - \zeta'|.$$
+
+      *Étape 2 : extraction diagonale.* L'application $x + iy \mapsto (x, y)$ et le nœud {{q-denombrable|ℚ est dénombrable}}, (ii), fournissent une injection de $\mathbb Q + i\mathbb Q$ dans $\mathbb N$. L'ensemble $P$ des points de $U$ à coordonnées rationnelles est infini, puisque $U$ contient un disque et que $\mathbb Q$ est dense dans $\mathbb R$ ({{tr-dense|Densité de ℚ}}) ; on note $p_0, p_1, \dots$ ses éléments, rangés selon les valeurs croissantes de cette injection.
+
+      Toute suite bornée $(u_n)$ de complexes a une suite extraite convergente, désignée sans choix : la démonstration du nœud {{ar-bw|Bolzano-Weierstrass}} désigne une extraction $\alpha$ de $(\operatorname{Re} u_n)$ qui converge, puis une extraction $\beta$ de $(\operatorname{Im} u_{\alpha(n)})$, et $(u_{\alpha(\beta(n))})$ converge ({{cx-suites|Suites et séries complexes}}, (i)). Notons $E(u) = \alpha \circ \beta$.
+
+      La suite $(f_n(p_m))_n$ est bornée par $M_{p_m}$. On définit par récurrence ({{n-recdef|Définition par récurrence}}) $\sigma_0 = E\big((f_n(p_0))_n\big)$ et $\sigma_{m+1} = \sigma_m \circ E\big((f_{\sigma_m(n)}(p_{m+1}))_n\big)$, puis $\tau(k) = \sigma_k(k)$.
+
+      Chaque $\sigma_{k+1}$ s'écrit $\sigma_k \circ e$, avec $e$ strictement croissante, donc $e(k + 1) \geqslant k + 1$ ({{su-extraites|Suites extraites}}), et $\tau(k + 1) = \sigma_k(e(k + 1)) > \sigma_k(k) = \tau(k)$. De même, pour $k \geqslant m$, $\tau(k)$ est de la forme $\sigma_m(e_m(k))$ avec $e_m$ strictement croissante : $(f_{\tau(k)}(p_m))_{k \geqslant m}$ est extraite de la suite convergente $(f_{\sigma_m(n)}(p_m))_n$. Posons $g_k = f_{\tau(k)}$ : la suite $(g_k(p))$ converge en tout point $p$ de $P$.
+
+      *Étape 3 : convergence uniforme près de chaque point.* Soit $z \in U$, $s$ et $L_z$ comme à l'étape 1, $L = L_z + 1$, et $\varepsilon > 0$. Soit $h$ un rationnel strictement positif, inférieur à $\frac s8$ et à $\frac{\varepsilon}{12L}$. Les points $h(j + i\,m')$, $j, m' \in \mathbb Z$, qui sont dans $D(z, \frac s2)$ forment une partie finie $\Gamma$ de $P$. Pour chaque $p \in \Gamma$, la suite $(g_k(p))$ est de Cauchy ; soit $N_p$ le plus petit entier tel que $|g_k(p) - g_l(p)| < \frac\varepsilon3$ pour $k, l \geqslant N_p$, et $N = \max_{p \in \Gamma} N_p$.
+
+      Soit $\zeta \in D(z, \frac s4)$. Le point $p = h(j + i\,m')$, où $j$ et $m'$ sont les parties entières de $\frac{\operatorname{Re}\zeta}{h}$ et de $\frac{\operatorname{Im}\zeta}{h}$, qui existent parce que $\mathbb R$ est [[archimedien]], vérifie $|\zeta - p| < h\sqrt2 < 2h$, donc $|p - z| < 2h + \frac s4 \leqslant \frac s2$, et $p \in \Gamma$. Pour $k, l \geqslant N$, l'étape 1 donne
+      $$\begin{aligned} &|g_k(\zeta) - g_l(\zeta)| \\ &\quad \leqslant |g_k(\zeta) - g_k(p)| \\ &\qquad + |g_k(p) - g_l(p)| \\ &\qquad + |g_l(p) - g_l(\zeta)| \\ &\quad < 4Lh + \frac\varepsilon3 < \varepsilon. \end{aligned}$$
+
+      Ainsi $(g_k(\zeta))$ est de Cauchy et converge ({{cx-suites|Suites et séries complexes}}, (i)) vers un complexe $g(\zeta)$ ; en faisant tendre $l$ vers l'infini, $|g_k(\zeta) - g(\zeta)| \leqslant \varepsilon$ pour $k \geqslant N$ et tout $\zeta \in D(z, \frac s4)$. La convergence est uniforme sur ce disque, et tout point de $U$ en est le centre d'un : par le nœud {{cf-compacte|Convergence sur les compacts}}, (i), $(g_k)$ converge uniformément sur tout compact de $U$.
+    remarques:
+      - |
+        C'est l'argument du théorème d'Ascoli ({{fc-ascoli|Théorème d'Ascoli}}), qui ne vient pas avant ce chapitre dans l'arbre : l'étape 1 dit que la famille est équicontinue sur chaque petit disque, et cette équicontinuité vient gratuitement des inégalités de Cauchy. Pour des fonctions seulement continues, une famille bornée n'a aucune raison d'être normale.
+      - |
+        Aucune forme du choix n'intervient. L'extraction diagonale fait une infinité dénombrable d'extractions, mais chacune est désignée : la démonstration du théorème de Bolzano-Weierstrass prend chaque fois le plus petit entier qui convient, les points rationnels sont énumérés par une injection explicite, et les bornes $M_z$, $\delta(z)$ sont des bornes supérieures, non des valeurs choisies. Comparer avec la réciproque du nœud {{me-compacite-sequentielle|Compacité séquentielle}}, qui demande le choix dépendant pour un espace métrique quelconque.
+      - |
+        L'hypothèse ne peut pas être affaiblie en une borne ponctuelle sans uniformité. Les fonctions $f_k(z) = kz$ sur $\mathbb D$ ne forment pas une famille localement bornée, et aucune suite extraite ne converge au point $\frac12$.
+      - |
+        La conclusion, de son côté, porte sur les compacts : la suite $z^k$ du nœud {{cf-compacte|Convergence sur les compacts}} est bornée par $1$ sur $\mathbb D$, sa seule limite possible est $0$, et la convergence n'est pas uniforme sur $\mathbb D$.
+      - |
+        Le théorème est le point de départ de la thèse de Paul Montel, « Sur les suites infinies de fonctions », *Annales scientifiques de l'École normale supérieure*, 3e série, t. 24 (1907), p. 233-334.
+
+  - id: cf-racines
+    etiquette: Racines carrées holomorphes
+    nature: proposition
+    titre: Logarithmes et racines carrées holomorphes
+    texte: |
+      Soit $U$ un [[ouvert]] et $g$ une fonction [[holomorphe]] sur $U$. Un [[logarithme-holomorphe|logarithme holomorphe]] de $g$ est une fonction $L$ holomorphe sur $U$ telle que $\exp \circ L = g$ ; une **racine carrée holomorphe** de $g$ est une fonction $h$ holomorphe sur $U$ telle que $h^2 = g$. On dit que $U$ a la [[propriete-racine-carree|propriété de la racine carrée]] si toute fonction holomorphe sur $U$ qui ne s'annule pas y a une racine carrée holomorphe.
+    enonce: |
+      (i) Sur un ouvert [[connexe]], une fonction holomorphe de dérivée nulle est constante.
+
+      (ii) Si $U$ est connexe et si $h_1$ et $h_2$ sont deux racines carrées holomorphes de $g$, alors $h_2 = h_1$ ou $h_2 = -h_1$.
+
+      (iii) Si $U$ est connexe et si toute fonction holomorphe sur $U$ a une primitive holomorphe, toute fonction holomorphe sans zéro $g$ sur $U$ a un logarithme holomorphe $L$, et $\exp(L/2)$ en est une racine carrée : $U$ a la propriété de la racine carrée. C'est le cas de tout ouvert convexe, en particulier du disque $\mathbb D$ et du demi-plan $\mathbb H$.
+
+      (iv) Si $U$ a la propriété de la racine carrée et si $V$ est biholomorphe à $U$, alors $V$ l'a aussi.
+
+      (v) L'ouvert $\mathbb C \setminus \{0\}$ n'a pas la propriété : la fonction $z \mapsto z$ n'y a pas de racine carrée holomorphe.
+    preuve: |
+      (i) Soit $F$ holomorphe de dérivée nulle sur l'ouvert connexe $U$, et $a \in U$. Si $D(c, t) \subset U$ et $z \in D(c, t)$, le segment $[c, z]$ est dans ce disque, et $F(z) - F(c) = \int_{[c, z]} F' = 0$ ({{cx-integrale-chemin|Intégrale curviligne}}, (ii)).
+
+      L'ensemble des $z \in U$ tels que $F(z) = F(a)$ est donc ouvert ; il est fermé dans $U$, par continuité, et non vide. Il est égal à $U$ ({{t-connexe|Connexité}}, (b)).
+
+      (ii) On a $(h_1 - h_2)(h_1 + h_2) = h_1^2 - h_2^2 = 0$. Si $h_1 - h_2$ n'est pas identiquement nulle, elle est non nulle en un point $c$, donc sur un disque $D(c, t) \subset U$, par continuité ; sur ce disque, $h_1 + h_2 = 0$. Chaque point de ce disque étant un point d'accumulation, $h_1 + h_2$ est nulle sur $U$ ({{cx-zeros-isoles|Zéros isolés}}).
+
+      (iii) *Une primitive de $g'/g$.* La dérivée $g'$ est holomorphe ({{cx-analytique|Analyticité}}), et $\frac{g'}{g}$ aussi ; soit $L_0$ une primitive holomorphe. La fonction $F = g\exp(-L_0)$ a pour dérivée $g'\exp(-L_0) - gL_0'\exp(-L_0) = 0$ ({{cx-exponentielle|Exponentielle}}, (i) ; {{cx-holomorphe|Fonctions holomorphes}}, (ii)). Par (i), elle est égale à une constante $\kappa$, non nulle puisque ni $g$ ni $\exp$ ne s'annulent.
+
+      *La constante est une exponentielle.* Écrivons $\kappa = |\kappa|\exp(i\theta)$ ({{cx-pi|Le nombre π}}, (iii)). Sur $\mathbb R$, l'exponentielle est continue, vérifie $\exp x \geqslant 1 + x$ pour $x \geqslant 0$, tous les termes de la série étant positifs, et $\exp(-x) = \frac{1}{\exp x}$ : elle prend des valeurs arbitrairement grandes et arbitrairement proches de $0$, et le théorème des valeurs intermédiaires ({{c-tvi|Valeurs intermédiaires}}) fournit $x$ réel avec $\exp x = |\kappa|$. Alors $\mu = x + i\theta$ vérifie $\exp\mu = \kappa$ ({{cx-exponentielle|Exponentielle}}, (ii)).
+
+      *Conclusion.* $L = L_0 + \mu$ vérifie $\exp L = \exp(L_0)\,\kappa = g$, et $h = \exp(L/2)$ vérifie $h^2 = \exp L = g$. Un ouvert convexe non vide est connexe : c'est la réunion des segments issus de l'un de ses points, images de $[0, 1]$ ({{tr-connexes|Connexes de ℝ}}) par des applications continues, qui ont ce point en commun ({{t-connexe-prop|Stabilité de la connexité}}, (i) et (ii)). Sur un ouvert convexe, toute fonction holomorphe a une primitive ({{cx-cauchy-convexe|Cauchy, ouverts convexes}}, avec pour $p$ un point quelconque). Le disque $\mathbb D$ est convexe par l'inégalité triangulaire, et $\mathbb H$ parce que $z \mapsto \operatorname{Im} z$ est $\mathbb R$-linéaire.
+
+      (iv) Soit $\varphi$ une application biholomorphe de $U$ sur $V$, et $G$ holomorphe et sans zéro sur $V$. La composée $G \circ \varphi$ est holomorphe et sans zéro sur $U$ ; soit $H$ une racine carrée holomorphe. Alors $H \circ \varphi^{-1}$ est holomorphe sur $V$, et son carré est $G \circ \varphi \circ \varphi^{-1} = G$.
+
+      (v) Supposons $h$ holomorphe sur $W = \mathbb C \setminus \{0\}$ avec $h(z)^2 = z$. Alors $h$ ne s'annule pas, et $2hh' = 1$, d'où $\frac{h'}{h} = \frac{hh'}{h^2} = \frac{1}{2z}$. Le long du cercle $C(0, 1)$, le principe de l'argument ({{rs-argument|Principe de l'argument}}, (i)) dit que $\frac{1}{2i\pi}\int_{C(0, 1)} \frac{h'}{h}$ est un indice, donc un entier ({{rs-indice|Indice d'un lacet}}, (ii)). Or cette intégrale vaut $\frac{1}{2i\pi}\int_{C(0, 1)} \frac{dz}{2z} = \frac12$ ({{cx-integrale-chemin|Intégrale curviligne}}, (iii)) : contradiction.
+    remarques:
+      - |
+        Pour un ouvert connexe $U$ du plan, la propriété de la racine carrée équivaut à chacune des suivantes : toute fonction holomorphe sur $U$ a une primitive ; $\operatorname{Ind}_\gamma(w) = 0$ pour tout lacet $\gamma$ de $U$ et tout $w \notin U$ ({{rs-indice|Indice d'un lacet}}) ; $U$ est [[simplement-connexe|simplement connexe]] au sens de la {{ta-simplement-connexe|topologie algébrique}}.
+
+        Le théorème de Riemann ({{cf-riemann|Théorème de Riemann}}) donne une partie de ces équivalences : un ouvert connexe non vide qui a la propriété est $\mathbb C$ ou est biholomorphe au disque, donc homéomorphe à un convexe. Le reste est admis ici.
+
+        La difficulté contournée est le théorème de Cauchy pour un lacet homotope à un point, c'est-à-dire l'invariance de l'intégrale par homotopie, que la topologie algébrique, qui n'est pas un ancêtre de ce chapitre, permettrait d'établir en découpant l'homotopie comme le nœud {{rs-couronne|Cauchy sur une couronne}} découpe la couronne.
+      - |
+        L'erreur la plus répandue est d'oublier la connexité dans (ii). Sur la réunion de deux disques disjoints, la fonction constante $1$ a quatre racines carrées holomorphes : $\pm 1$ sur chaque disque, indépendamment.
+      - |
+        Un ouvert étoilé par rapport à un point a la propriété, puisque le théorème de Cauchy y vaut encore (remarque du nœud {{rs-theoreme|Théorème des résidus}}). C'est le cas du plan fendu $\mathbb C \setminus \,]{-\infty}, 0]$, étoilé par rapport à $1$, et du disque fendu $\mathbb D \setminus \,]{-1}, -\frac14]$, étoilé par rapport à $0$, que le nœud {{cf-koebe|Pas de Koebe}} prend pour exemple. Le point (v) montre au contraire que l'on ne peut pas retirer un point isolé, et le même calcul sur le cercle $C(0, \frac32)$ exclut la couronne $\{1 < |z| < 2\}$.
+
+  - id: cf-plongement
+    etiquette: Plongement dans le disque
+    nature: lemme
+    titre: Plongement d'un ouvert dans le disque unité
+    texte: |
+      Dans ce nœud et les deux suivants, $\Omega$ est un ouvert [[connexe]] non vide, distinct de $\lex{ensemble-complexes}{\mathbb C}$, qui a la [[propriete-racine-carree|propriété de la racine carrée]], et $a \in \Omega$. On note $\mathcal F_a$ l'ensemble des fonctions holomorphes et injectives $f : \Omega \to \mathbb D$ telles que $f(a) = 0$ et que $f'(a)$ soit un réel strictement positif.
+    enonce: |
+      (i) *Normalisation.* Si $u : \Omega \to \mathbb D$ est holomorphe et injective, il existe un unique $\lambda$ de module $1$ tel que $\lambda\,\varphi_{u(a)} \circ u$ appartienne à $\mathcal F_a$.
+
+      (ii) L'ensemble $\mathcal F_a$ n'est pas vide.
+
+      (iii) Si $D(a, \rho) \subset \Omega$, alors $f'(a) \leqslant \frac1\rho$ pour toute $f \in \mathcal F_a$.
+    preuve: |
+      (i) La fonction $v = \varphi_{u(a)} \circ u$ est holomorphe, injective comme composée d'injections, à valeurs dans $\mathbb D$, et $v(a) = 0$ ({{cf-automorphismes|Automorphismes du disque}}, (i)). Sa dérivée en $a$ est
+      $$v'(a) = \varphi_{u(a)}'(u(a))\,u'(a) = \frac{u'(a)}{1 - |u(a)|^2},$$
+      non nulle, puisque $u'(a) \neq 0$ ({{cf-ouverte|Application ouverte}}, (iii)). Pour $|\lambda| = 1$, le produit $\lambda v'(a)$ est un réel strictement positif si et seulement s'il est égal à son module $|v'(a)|$, c'est-à-dire si $\lambda = \frac{|v'(a)|}{v'(a)}$.
+
+      (ii) *Une racine carrée injective.* Soit $b \in \mathbb C \setminus \Omega$. La fonction $z \mapsto z - b$ ne s'annule pas sur $\Omega$ ; soit $h_0$ une racine carrée holomorphe, $h_0(z)^2 = z - b$. Si $h_0(z_1) = \pm h_0(z_2)$, les carrés donnent $z_1 - b = z_2 - b$, donc $z_1 = z_2$.
+
+      Ainsi $h_0$ est injective, et $h_0$ ne prend jamais deux valeurs opposées : $h_0(z_1) = -h_0(z_2)$ entraînerait $z_1 = z_2$, puis $h_0(z_1) = 0$, et $z_1 = b$, qui n'est pas dans $\Omega$.
+
+      *Un disque évité.* L'image $h_0(\Omega)$ est ouverte ({{cf-ouverte|Application ouverte}}, (iii)) : elle contient un disque $D(h_0(a), s)$, avec $s > 0$. Pour $z \in \Omega$, on a $|h_0(z) + h_0(a)| \geqslant s$ : sinon $-h_0(z)$ serait dans ce disque, donc égal à $h_0(z')$ pour un $z' \in \Omega$.
+
+      ```schema cf-plongement
+      À gauche, le plan fendu $\Omega = \mathbb C \setminus \,]{-\infty}, 0]$, avec $a = 1$ et le point $b = -1$, pris hors de $\Omega$. À droite, l'image de $\Omega$ par la racine carrée $h_0$ de $z + 1$ qui vaut $\sqrt2$ en $a$ : le demi-plan $\operatorname{Re} w > 0$ privé du segment $]0, 1]$, en bleu. Elle contient le disque bleu $D(\sqrt2, s)$, avec $s = \sqrt2 - 1$, et évite donc le disque rouge opposé $D(-\sqrt2, s)$ : la fonction $u = \frac{s}{2(h_0 + \sqrt2)}$ est de module au plus $\frac12$.
+      ```
+
+      *Le plongement.* La fonction $u = \frac{s}{2(h_0 + h_0(a))}$ est donc holomorphe sur $\Omega$, de module au plus $\frac12$, et injective, puisque $h_0$ l'est. Le point (i) la transforme en un élément de $\mathcal F_a$.
+
+      (iii) Pour $\rho' < \rho$, le disque fermé $\overline D(a, \rho')$ est contenu dans $\Omega$, et $|f| < 1$ : l'inégalité de Cauchy ({{cx-analytique|Analyticité}}) donne $|f'(a)| \leqslant \frac{1}{\rho'}$. On fait tendre $\rho'$ vers $\rho$.
+    remarques:
+      - |
+        C'est la première idée de Koebe : la racine carrée « replie » $\Omega$ sur la moitié de son image possible, puisque $h_0(\Omega)$ et $-h_0(\Omega)$ sont disjoints ; un disque contenu dans l'une est exclu de l'autre, et une homographie envoie le complémentaire d'un disque dans un disque borné. L'hypothèse $\Omega \neq \mathbb C$ sert à trouver le point $b$, et la propriété de la racine carrée à extraire la racine.
+      - |
+        Le point (iii) est la borne qui rend le problème raisonnable : une fonction de $\mathcal F_a$ ne peut pas dilater indéfiniment au voisinage de $a$, puisqu'elle doit loger dans le disque unité l'image d'un disque de rayon $\rho$. Le nœud suivant montre comment augmenter $f'(a)$ tant que $f$ n'est pas surjective.
+
+  - id: cf-koebe
+    etiquette: Pas de Koebe
+    nature: lemme
+    titre: "Le pas de Koebe : agrandir la dérivée par une racine carrée"
+    texte: |
+      On garde les hypothèses et les notations du nœud {{cf-plongement|Plongement dans le disque}}. Pour $f \in \mathcal F_a$ non surjective sur $\mathbb D$, on note
+      $$r(f) = \inf\{|w| : w \in \mathbb D \setminus f(\Omega)\},$$
+      et l'on pose $q(r) = \frac{1 + r}{2\sqrt r}$ pour $0 < r \leqslant 1$.
+    enonce: |
+      Soit $f \in \mathcal F_a$, non surjective, et $r = r(f)$.
+
+      (i) On a $0 < r < 1$ et $D(0, r) \subset f(\Omega)$. L'ensemble des $\theta \in [0, 2\pi[$ tels que $r\exp(i\theta) \notin f(\Omega)$ a un plus petit élément $\theta_f$ ; on pose $w_f = r\exp(i\theta_f)$.
+
+      (ii) Soit $w \in \mathbb D \setminus f(\Omega)$ avec $|w| = r$. Il existe une et une seule fonction $g \in \mathcal F_a$ de la forme $g = \lambda\,\varphi_c \circ h$, où $h$ est une racine carrée holomorphe de $\varphi_w \circ f$, $c = h(a)$ et $|\lambda| = 1$. Elle vérifie
+      $$g'(a) = q(r)\,f'(a).$$
+
+      (iii) $q(r) = 1 + \frac{(1 - \sqrt r)^2}{2\sqrt r} \geqslant 1 + \frac{(1 - \sqrt r)^2}{2}$ ; en particulier $q(r) > 1$.
+
+      On note $K(f)$ la fonction $g$ de (ii) pour $w = w_f$. L'application $K$ est ainsi définie, sans aucun choix, sur l'ensemble des $f \in \mathcal F_a$ non surjectives.
+    preuve: |
+      (i) L'image $f(\Omega)$ est ouverte ({{cf-ouverte|Application ouverte}}, (iii)) et contient $0 = f(a)$ : elle contient un disque $D(0, t)$, et $r \geqslant t > 0$. L'ensemble $\mathbb D \setminus f(\Omega)$ n'est pas vide, et ses éléments sont de module $< 1$, donc $r < 1$. Par définition de la borne inférieure, tout point de $\mathbb D$ de module $< r$ appartient à $f(\Omega)$.
+
+      *La borne est atteinte.* L'ensemble $Q = \{w : |w| \leqslant \frac{1 + r}{2}\} \setminus f(\Omega)$ est fermé et borné, donc compact ({{cx-suites|Suites et séries complexes}}, (iv)), et non vide : il contient les points de $\mathbb D \setminus f(\Omega)$ de module $< \frac{1 + r}{2}$, qui existent puisque $r < \frac{1 + r}{2}$. Le minimum de $|w|$ sur $Q$ ({{tr-compacts|Compacts de ℝ}}, (iii)) est la borne inférieure $r$, les autres points de $\mathbb D \setminus f(\Omega)$ étant de module $> \frac{1 + r}{2}$ : le cercle $|w| = r$ rencontre $\mathbb D \setminus f(\Omega)$.
+
+      L'ensemble $A$ des $\theta \in [0, 2\pi]$ tels que $r\exp(i\theta) \notin f(\Omega)$ est donc non vide, borné, et fermé, comme image réciproque d'un fermé par une application continue ; il a un plus petit élément ({{tr-compacts|Compacts de ℝ}}, (ii)), qui n'est pas $2\pi$, puisque $\exp(2i\pi) = \exp 0$.
+
+      (ii) *Existence.* Comme $w \notin f(\Omega)$, la fonction $\varphi_w \circ f$ ne s'annule pas sur $\Omega$ ; soit $h$ une racine carrée holomorphe. On a $|h|^2 = |\varphi_w \circ f| < 1$, et $h$ est injective : $h(z_1) = h(z_2)$ entraîne $\varphi_w(f(z_1)) = \varphi_w(f(z_2))$, puis $z_1 = z_2$. Le point $c = h(a)$ vérifie $c^2 = \varphi_w(0) = -w$, donc $|c| = \sqrt r$.
+
+      La fonction $G = \varphi_c \circ h$ est holomorphe, injective, à valeurs dans $\mathbb D$, et $G(a) = 0$. En dérivant $h^2 = \varphi_w \circ f$ en $a$, $2c\,h'(a) = \varphi_w'(0)f'(a) = (1 - r^2)f'(a)$ ({{cf-automorphismes|Automorphismes du disque}}, (i)). Puis
+      $$\begin{aligned} G'(a) &= \varphi_c'(c)\,h'(a) = \frac{h'(a)}{1 - |c|^2} \\ &= \frac{(1 - r^2)f'(a)}{2c\,(1 - r)}, \end{aligned}$$
+      dont le module est $\frac{(1 + r)f'(a)}{2\sqrt r} = q(r)f'(a)$. Avec $\lambda = \frac{|G'(a)|}{G'(a)}$, la fonction $g = \lambda G$ est dans $\mathcal F_a$, et $g'(a) = q(r)f'(a)$.
+
+      *Unicité.* Les racines carrées holomorphes de $\varphi_w \circ f$ sur l'ouvert connexe $\Omega$ sont $h$ et $-h$ ({{cf-racines|Racines carrées holomorphes}}, (ii)). En remplaçant $h$ par $-h$, on remplace $c$ par $-c$, et
+      $$\varphi_{-c}(-h) = \frac{-h + c}{1 - \bar c h} = -\varphi_c(h) :$$
+      $G$ devient $-G$. Les fonctions de la forme considérée sont donc les $\lambda G$, $|\lambda| = 1$, et une seule a une dérivée réelle strictement positive en $a$, comme au point (i) du nœud {{cf-plongement|Plongement dans le disque}}.
+
+      (iii) $1 + r - 2\sqrt r = (1 - \sqrt r)^2$, et $2\sqrt r \leqslant 2$.
+
+      ```schema cf-koebe
+      Un pas de Koebe pour le disque fendu $\Omega = \mathbb D \setminus \,]{-1}, -\frac14]$, $a = 0$ et $f$ l'identité. À gauche, $r(f) = \frac14$ et $w_f = -\frac14$, au bout de la fente rouge. À droite, l'image $K(f)(\Omega)$ : le disque privé de la lunule grise, bordée par l'image de la fente, un arc du cercle de centre $-\frac54$ et de rayon $\frac34$. Le nouveau rayon vaut $\frac12$ : le bord manquant s'est éloigné de $0$, et la dérivée en $0$ a été multipliée par $q(\frac14) = \frac54$.
+      ```
+    remarques:
+      - |
+        Pourquoi la dérivée augmente : on a $f = Q \circ g$, avec $Q = \varphi_{-w} \circ S \circ \varphi_{-c} \circ \bar\lambda$, où $S(z) = z^2$ et $\bar\lambda$ désigne la multiplication par $\bar\lambda$. La fonction $Q$ envoie $\mathbb D$ dans $\mathbb D$, fixe $0$, et n'est pas injective, à cause du carré : par le lemme de Schwarz ({{cf-schwarz|Lemme de Schwarz}}), $|Q'(0)| < 1$, et $f'(a) = |Q'(0)|\,g'(a) < g'(a)$. Le point (ii) calcule exactement $|Q'(0)| = \frac{1}{q(r)} = \frac{2\sqrt r}{1 + r}$.
+      - |
+        L'exemple de la figure a été calculé exactement. Le disque fendu est étoilé par rapport à $0$, donc a la propriété de la racine carrée ({{cf-racines|Racines carrées holomorphes}}). On a $\varphi_{-1/4}(z) = \frac{z + 1/4}{1 + z/4}$, qui envoie $\Omega$ sur $\mathbb D \setminus \,]{-1}, 0]$ ; la racine carrée principale l'envoie sur le demi-disque $\{|z| < 1, \operatorname{Re} z > 0\}$, avec $c = \frac12$ ; et $\varphi_{1/2}$ envoie ce demi-disque sur $\mathbb D$ privé de l'image du demi-disque gauche, la lunule, dont le point le plus proche de $0$ est $\varphi_{1/2}(0) = -\frac12$. Ici $\lambda = 1$, et $g'(0) = \frac54$, valeur contrôlée par un calcul formel.
+      - |
+        Le choix du point $w_f$ ne joue aucun rôle dans le calcul de (ii) ; seul compte son module. Le désigner par le plus petit argument sert uniquement à définir $K(f)$ sans faire appel à l'axiome du choix, ce que demande l'itération du nœud suivant.
+
+  - id: cf-riemann
+    etiquette: Théorème de Riemann
+    nature: théorème
+    titre: Théorème de représentation conforme de Riemann
+    enonce: |
+      (i) Soit $\Omega$ un ouvert [[connexe]] non vide de $\lex{ensemble-complexes}{\mathbb C}$, distinct de $\mathbb C$, qui a la [[propriete-racine-carree|propriété de la racine carrée]], et $a \in \Omega$. Il existe une et une seule application [[biholomorphe]] $f$ de $\Omega$ sur $\mathbb D$ telle que $f(a) = 0$ et que $f'(a)$ soit un réel strictement positif.
+
+      (ii) Un ouvert connexe non vide de $\mathbb C$ est biholomorphe au disque $\mathbb D$ si et seulement s'il est distinct de $\mathbb C$ et a la propriété de la racine carrée. En particulier, tout ouvert convexe non vide distinct de $\mathbb C$ est biholomorphe au disque.
+    preuve: |
+      (i) On reprend les notations des nœuds {{cf-plongement|Plongement dans le disque}} et {{cf-koebe|Pas de Koebe}}.
+
+      *La suite de Koebe.* Soit $f_0 \in \mathcal F_a$ ({{cf-plongement|Plongement dans le disque}}, (ii)). On définit par récurrence ({{n-recdef|Définition par récurrence}}) $f_{n+1} = K(f_n)$ si $f_n$ n'est pas surjective, et $f_{n+1} = f_n$ sinon. Si l'une des $f_n$ est surjective, c'est une application biholomorphe de $\Omega$ sur $\mathbb D$ ({{cf-ouverte|Application ouverte}}, (iii)), et l'existence est acquise. Supposons désormais qu'aucune ne l'est, et notons $r_n = r(f_n)$.
+
+      *Les rayons tendent vers $1$.* Soit $\rho > 0$ tel que $D(a, \rho) \subset \Omega$. Par le pas de Koebe ({{cf-koebe|Pas de Koebe}}, (ii) et (iii)), $f_n'(a) = f_0'(a)\prod_{k < n} q(r_k)$, et chaque facteur est au moins $1 + \varepsilon_k$, avec $\varepsilon_k = \frac{(1 - \sqrt{r_k})^2}{2}$. Un produit de facteurs $1 + \varepsilon_k$, $\varepsilon_k \geqslant 0$, est au moins $1 + \sum \varepsilon_k$, en développant ; et $f_n'(a) \leqslant \frac1\rho$ ({{cf-plongement|Plongement dans le disque}}, (iii)). Donc
+      $$\sum_{k < n} \varepsilon_k \leqslant \frac{1}{\rho\,f_0'(a)} - 1$$
+      pour tout $n$ : la série $\sum \varepsilon_k$ converge, son terme général tend vers $0$, et $r_k \to 1$.
+
+      La suite $(f_n'(a))$ est croissante et majorée ; elle converge vers un réel $\ell \geqslant f_0'(a) > 0$ ({{su-monotone|Limite monotone}}).
+
+      *La limite.* Les $f_n$ sont bornées par $1$ : elles forment une famille localement bornée, et le théorème de Montel ({{cf-montel|Théorème de Montel}}) fournit une suite extraite $(f_{\sigma(n)})$ qui converge uniformément sur tout compact de $\Omega$ vers une fonction $f$ holomorphe, avec $f(a) = 0$ et $f'(a) = \lim f_{\sigma(n)}'(a) = \ell > 0$ ({{cf-compacte|Convergence sur les compacts}}, (iii)).
+
+      Ainsi $f$ n'est pas constante ; elle est injective par le théorème de Hurwitz ({{cf-hurwitz|Théorème de Hurwitz}}, (iii)), et $|f| \leqslant 1$ comme limite. Si $|f(z)| = 1$ en un point, $|f|$ aurait en ce point un maximum, et $f$ serait constante ({{cf-maximum|Principe du maximum}}, (ii)) : donc $f$ est à valeurs dans $\mathbb D$, et $f \in \mathcal F_a$.
+
+      *La limite est surjective.* Soit $w \in \mathbb D$, et $t$ tel que $|w| < t < 1$. Comme $r_n \to 1$, il existe $n_0$ tel que $D(0, t) \subset D(0, r_n) \subset f_n(\Omega)$ pour $n \geqslant n_0$ ({{cf-koebe|Pas de Koebe}}, (i)). Chaque $f_n$ est une application biholomorphe de $\Omega$ sur l'ouvert $f_n(\Omega)$ ({{cf-ouverte|Application ouverte}}, (iii)), et la fonction
+      $$k_n = f_0 \circ f_n^{-1},$$
+      définie sur $D(0, t)$ pour $n \geqslant n_0$, est holomorphe, à valeurs dans $f_0(\Omega) \subset \mathbb D$, avec $k_n(0) = 0$ et $k_n'(0) = \frac{f_0'(a)}{f_n'(a)}$.
+
+      Le théorème de Montel, appliqué sur $D(0, t)$ à la suite $(k_{\sigma(n)})_{n \geqslant n_0}$, bornée par $1$, en fournit une suite extraite $(k_{\nu(j)})$, où $\nu(j)$ est un terme de la suite $\sigma(n)$, qui converge uniformément sur tout compact de $D(0, t)$ vers une fonction holomorphe $k$. Elle vérifie $k'(0) = \frac{f_0'(a)}{\ell} > 0$ : $k$ n'est pas constante.
+
+      Pour tout $b \notin f_0(\Omega)$, les fonctions $k_{\nu(j)} - b$ ne s'annulent pas sur le disque, connexe, et leur limite $k - b$ n'est pas identiquement nulle : par le théorème de Hurwitz ({{cf-hurwitz|Théorème de Hurwitz}}, (ii)), elle ne s'annule pas. Donc $k(w) \in f_0(\Omega)$, et l'on pose $z^* = f_0^{-1}(k(w)) \in \Omega$.
+
+      Les points $z_j = f_{\nu(j)}^{-1}(w) = f_0^{-1}(k_{\nu(j)}(w))$ tendent vers $z^*$, par continuité de $f_0^{-1}$ ({{cf-ouverte|Application ouverte}}, (iii)). Soit $s > 0$ tel que $\overline D(z^*, s) \subset \Omega$ ; pour $j$ assez grand, $z_j$ est dans ce disque, et
+      $$\begin{aligned} &|w - f(z^*)| = |f_{\nu(j)}(z_j) - f(z^*)| \\ &\quad \leqslant \sup_{\overline D(z^*, s)} |f_{\nu(j)} - f| \\ &\qquad + |f(z_j) - f(z^*)|. \end{aligned}$$
+      Le premier terme tend vers $0$, la suite $(f_{\nu(j)})$ étant extraite de $(f_{\sigma(n)})$, et le second par continuité de $f$ : $f(z^*) = w$.
+
+      L'application $f$ est donc une bijection holomorphe de $\Omega$ sur $\mathbb D$, biholomorphe ({{cf-ouverte|Application ouverte}}, (iii)).
+
+      *Unicité.* Si $f$ et $g$ conviennent, $T = g \circ f^{-1}$ est un automorphisme du disque, $T(0) = 0$, et $T'(0) = \frac{g'(a)}{f'(a)} > 0$ : $T$ est l'identité ({{cf-automorphismes|Automorphismes du disque}}, (iii)), et $g = f$.
+
+      (ii) Si $\Omega$ vérifie les hypothèses, (i) s'applique.
+
+      Réciproquement, si $\varphi : \mathbb D \to \Omega$ est biholomorphe, $\Omega$ a la propriété de la racine carrée, puisque le disque l'a ({{cf-racines|Racines carrées holomorphes}}, (iii) et (iv)).
+
+      Et $\Omega \neq \mathbb C$ : si $F$ était une application holomorphe injective de $\mathbb C$ dans $\mathbb D$, l'inégalité de Cauchy sur le disque $\overline D(c, R)$ ({{cx-analytique|Analyticité}}) donnerait $|F'(c)| \leqslant \frac1R$ pour tout $c$ et tout $R > 0$, donc $F' = 0$, et $F$ serait constante ({{cf-racines|Racines carrées holomorphes}}, (i)) ; c'est l'argument du théorème de Liouville.
+
+      Enfin, un ouvert convexe non vide a la propriété et est connexe ({{cf-racines|Racines carrées holomorphes}}, (iii) et sa démonstration).
+    remarques:
+      - |
+        La démonstration usuelle est extrémale ; c'est celle de Fejér et F. Riesz (1922), publiée par T. Radó : $f'(a)$ est majoré sur $\mathcal F_a$ ({{cf-plongement|Plongement dans le disque}}, (iii)), on prend une suite $f_n \in \mathcal F_a$ telle que $f_n'(a)$ tende vers la borne supérieure, on en extrait par le théorème de Montel une limite qui atteint la borne, et le pas de Koebe montre qu'une fonction non surjective n'est pas maximale. Prendre une telle suite, c'est choisir, pour chaque $n$, une fonction parmi une infinité de candidates : c'est le [[choix-denombrable]].
+
+        L'itération employée ici désigne au contraire $f_{n+1} = K(f_n)$ à partir de $f_n$, et le point $w_{f_n}$ par son plus petit argument : le théorème est démontrable dans $\mathsf{ZF}$. La propriété extrémale en découle après coup, sans choix : si $g \in \mathcal F_a$, la fonction $g \circ f^{-1}$ envoie $\mathbb D$ dans $\mathbb D$ et fixe $0$, et le lemme de Schwarz ({{cf-schwarz|Lemme de Schwarz}}) donne $g'(a) \leqslant f'(a)$.
+      - |
+        Les deux hypothèses sont nécessaires, d'après (ii). Le plan $\mathbb C$ a la propriété de la racine carrée, puisqu'il est convexe, mais n'est pas biholomorphe au disque.
+
+        La couronne $\{1 < |z| < 2\}$ est distincte de $\mathbb C$, mais n'a pas la propriété ({{cf-racines|Racines carrées holomorphes}}, remarque).
+
+        L'énoncé classique dit « simplement connexe » ({{ta-simplement-connexe|Simplement connexe}}) ; l'équivalence des deux hypothèses pour un ouvert connexe du plan est admise ici, comme l'explique la remarque du nœud {{cf-racines|Racines carrées holomorphes}}.
+      - |
+        Exemples explicites, contrôlés par un calcul formel. Pour le demi-plan $\mathbb H$ et $a = i$, l'application normalisée est $z \mapsto i\,\frac{z - i}{z + i}$, de dérivée $\frac12$ en $i$ ({{cf-automorphismes|Automorphismes du disque}}, (iv)).
+
+        Pour la bande $B = \{|\operatorname{Im} z| < \frac\pi2\}$ et $a = 0$, c'est $z \mapsto \frac{\exp z - 1}{\exp z + 1}$, de dérivée $\frac12$ en $0$. L'exponentielle est une bijection de $B$ sur le demi-plan $\{\operatorname{Re} w > 0\}$. Elle y envoie $B$, puisque $\exp(x + iy) = \exp(x)(\cos y + i\sin y)$ avec $\cos y > 0$. Elle est injective sur $B$, car $\exp z_1 = \exp z_2$ impose $z_1 - z_2 \in 2i\pi\mathbb Z$ ({{cx-pi|Le nombre π}}, (ii)), alors que les parties imaginaires diffèrent de moins de $\pi$. Elle est surjective, car tout $w$ de partie réelle $> 0$ s'écrit $|w|\exp(i\theta)$ avec $\theta \in \,]{-\frac\pi2}, \frac\pi2[$ ({{cx-pi|Le nombre π}}, (iii)), et $|w| = \exp x$ pour un réel $x$. Enfin $w \mapsto \frac{w - 1}{w + 1}$ envoie ce demi-plan sur $\mathbb D$, comme $C$ envoie $\mathbb H$.
+
+        Le théorème dit qu'il en existe une pour des ouverts bien plus irréguliers, dont le bord peut n'être pas une courbe, sans en donner de formule.
+      - |
+        Riemann a énoncé le théorème dans sa thèse de 1851, *Grundlagen für eine allgemeine Theorie der Functionen einer veränderlichen complexen Grösse* (Göttingen), pour des ouverts bordés par des courbes régulières par morceaux, avec une démonstration fondée sur le principe de Dirichlet, que Weierstrass a ensuite mis en défaut. La première démonstration rigoureuse est de W. F. Osgood, *Trans. Amer. Math. Soc.* 1 (1900), p. 310-314 ; la première par les seules méthodes de la théorie des fonctions est de C. Carathéodory, *Math. Ann.* 72 (1912), p. 107-144, avec les familles de Montel. P. Koebe a introduit la même année l'itération par racines carrées suivie ici (« Über eine neue Methode der konformen Abbildung und Uniformisierung », *Nachr. Ges. Wiss. Göttingen*, 1912) ; la notice que lui consacre le *Dictionary of Scientific Biography* fait remonter l'idée de la racine carrée à ses travaux de 1907. La démonstration extrémale courte est due à L. Fejér et F. Riesz (1922) ; elle a été publiée par T. Radó, « Über die Fundamentalabbildung schlichter Gebiete », *Acta Sci. Math. (Szeged)* 1 (1922-1923), p. 240-251. Sur cette histoire, voir J. L. Walsh, « History of the Riemann mapping theorem », *Amer. Math. Monthly* 80 (1973), p. 270-276.
+      - |
+        Le théorème ne dit rien du bord. Carathéodory a montré en 1913 que, si le bord de $\Omega$ est une courbe fermée simple, l'application se prolonge en un homéomorphisme de $\overline\Omega$ sur le disque fermé ; ce prolongement est admis ici. La difficulté contournée est l'étude fine du comportement de $f$ près du bord, qui s'appuie sur le théorème de Jordan ({{hj-jordan|Théorème de Jordan}}), absent des ancêtres de ce chapitre.
+
+aretes:
+  - [cf-maximum, cf-schwarz]
+  - [cf-schwarz, cf-automorphismes]
+  - [cf-ouverte, cf-automorphismes]
+  - [cf-automorphismes, cf-schwarz-pick]
+  - [cf-compacte, cf-hurwitz]
+  - [cf-compacte, cf-montel]
+  - [cf-ouverte, cf-racines]
+  - [cf-racines, cf-plongement]
+  - [cf-automorphismes, cf-plongement]
+  - [cf-plongement, cf-koebe]
+  - [cf-koebe, cf-riemann]
+  - [cf-montel, cf-riemann]
+  - [cf-hurwitz, cf-riemann]

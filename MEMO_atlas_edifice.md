@@ -981,3 +981,17 @@ Relu : aucune erreur de fond ; quatre fautes mineures (renvoi insuffisant pour I
 rv-tore, trous dans la remarque hawaïenne, maximalité du normalisateur non prouvée) et une dizaine de retouches.
 Lot commis seul (hunks de edifice.yaml et lexique.yaml séparés, construction vérifiée dans un worktree) :
 830 nœuds, 497 termes, 70 graphes ; edifice 16 croisements, chapitre 0.
+
+## 66. Représentation conforme (30 octobre 2026)
+
+Chapitre anc-conforme (12 fiches), sous anc, arête anc-residus → anc-conforme. Principe du maximum, application
+ouverte et inversion locale, lemme de Schwarz, automorphismes du disque, Schwarz-Pick, transformation de Cayley,
+convergence sur les compacts, Hurwitz, Montel (extraction diagonale sur ℚ + iℚ énuméré, aucun choix), racines carrées
+et logarithmes sur un ouvert à propriété de la racine carrée, plongement dans le disque, pas de Koebe, théorème de
+Riemann. **Riemann est démontré dans ZF** : la preuve extrémale usuelle (Fejér-Riesz, publiée par Radó, Acta Sci.
+Math. Szeged 1, 1922-1923, p. 240-251) prend une suite maximisante ; ici la suite f_{n+1} = K(f_n) des pas de Koebe est
+désignée, et seule la surjectivité passe par Montel et Hurwitz. Les hypothèses sont la propriété de la racine carrée
+(la simple connexité et Jordan ne sont qu'en remarque). Relu : quatre fautes (|a| > 1 dans φ_a, connexité d'un convexe,
+« ouverte » sans connexité dans le texte du chapitre, attribution Fejér-Riesz/Radó), schéma de Schwarz refait avec une
+fonction injective, remarques scindées. Pagination de Koebe 1912 non donnée (EuDML et St Andrews divergent).
+843 nœuds, 504 termes, 71 graphes ; edifice 16 croisements, chapitre 0.
