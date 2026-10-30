@@ -1008,3 +1008,15 @@ racines carrées quand φ(n) est une puissance de 2, le polygone régulier est d
 n'apparaissent qu'en remarque annoncée. Aucun choix. Relu : quatre fautes (degré de Φ_n, passage au quotient,
 𝔽_{p²} hors amont, Cramer non défini) et une quinzaine de retouches (Kronecker et « abélien » au sens cyclique, Weber
 1882). 857 nœuds, 510 termes, 72 graphes ; galois 1 croisement, chapitre 0, edifice 16.
+
+## 68. Théorème d'arrêt et uniforme intégrabilité (30 octobre 2026)
+
+Chapitre mart-arret (7 fiches), sous mart, arête mt-doob-l1 → mart-arret. Tribu du passé 𝓕_T (A ∈ 𝓕_∞ exigé, ce qui
+donne 𝓕_T ⊂ 𝓕_∞ ; mk-markov-forte aligné sur cette définition), martingale arrêtée et arrêt borné, uniforme
+intégrabilité (caractérisation, de la Vallée-Poussin avec φ construite sans choix), Vitali, martingales fermées
+(UI ⇔ convergence L¹ ⇔ fermée), Lévy (identification par Dynkin ; ⋆ hérité de l'existence des espérances
+conditionnelles, signalé une fois, au champ choix de mu-levy, sans changement de statut au sens du §57), théorème
+d'arrêt de Doob, identités de Wald (seule la première attribuée à Wald 1944). Relu : deux fautes dans les remarques
+sur la ruine (p = ½ oublié ; martingales dominées et non bornées), attributions historiques corrigées (Jessen puis
+Kolmogorov chez Lévy ; le mot « martingale » chez Ville 1939, que Lévy ignorait en 1937, d'après Mazliak),
+neuf retouches. 865 nœuds, 515 termes, 73 graphes ; edifice 16 croisements, chapitre 0.

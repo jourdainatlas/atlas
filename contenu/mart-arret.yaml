@@ -1,0 +1,374 @@
+# Niveau 2 : structure interne du chapitre « Théorème d'arrêt et uniforme intégrabilité » (nœud mart-arret du
+# graphe mart, créé le 30 oct. 2026). Tribu du passé avant un temps d'arrêt, martingale arrêtée, arrêt entre deux
+# temps bornés (mu-arret, qui étend mt-martingales (iii)) ; uniforme intégrabilité et ses critères (domination,
+# borne dans Lᵖ, de la Vallée-Poussin, espérances conditionnelles d'une même variable) ; théorème de Vitali ;
+# convergence dans L¹ et martingales fermées ; théorème de Lévy et loi du 0-1 de Lévy ; théorème d'arrêt de Doob
+# pour une martingale uniformément intégrable et des temps d'arrêt quelconques, contre-exemple de la marche simple
+# arrêtée en 1 ; identités de Wald et temps moyen d'atteinte.
+# Placement : chapitre de mart (sept fiches), après mt-doob-l1, dont il emploie la convergence presque sûre ; aucune
+# arête nouvelle dans l'édifice.
+# Choix : aucun usage propre. Les énoncés portent sur des martingales et des espérances conditionnelles données ;
+# seul le théorème de Lévy suppose l'existence des E[X | F_n], qui hérite du choix dénombrable par mt-conditionnelle
+# (i), (ii), sauf pour des tribus engendrées par des suites d'événements (mt-conditionnelle (v)) : signalé une fois,
+# dans mu-levy.
+
+graphe: mart-arret
+titre: Théorème d'arrêt et uniforme intégrabilité
+conteneur: mart-arret
+
+entrees:
+  mt-martingales: [mu-arret, mu-wald]
+  mt-conditionnelle: [mu-ui]
+  mt-doob-l1: [mu-fermees]
+
+noeuds:
+  - id: mu-arret
+    etiquette: Martingale arrêtée
+    nature: théorème
+    titre: Tribu du passé, martingale arrêtée, arrêt borné
+    texte: |
+      Dans tout ce chapitre, $(\Omega, \mathcal A, P)$ est un espace probabilisé muni d'une filtration $(\mathcal F_n)_{n \in \lex{ensemble-entiers-naturels}{\mathbb N}}$, et $\mathcal F_\infty$ est la tribu engendrée par la réunion des $\mathcal F_n$. Un [[temps-arret|temps d'arrêt]] est, comme au nœud {{mt-martingales|Martingales}}, une variable $T$ à valeurs dans $\mathbb N \cup \{+\infty\}$ telle que $\{T = n\} \in \mathcal F_n$ pour tout $n$. On note $T \wedge n = \min(T, n)$.
+
+      La [[tribu-passe|tribu du passé]] avant $T$ est
+      $$\begin{aligned} \mathcal F_T = \{A \in \mathcal F_\infty :\ &A \cap \{T = n\} \in \mathcal F_n \\ &\text{pour tout } n \in \mathbb N\}. \end{aligned}$$
+      Un événement $A$ en fait partie quand, sur chaque événement $\{T = n\}$, on sait à l'instant $n$ s'il est réalisé.
+
+      Soit $(M_n)$ une suite de variables, chaque $M_n$ étant $\mathcal F_n$-mesurable. Sur $\{T < +\infty\}$, on note $M_T$ la variable $\omega \mapsto M_{T(\omega)}(\omega)$, et la **suite arrêtée** en $T$ est
+      $$M^T_n = M_{T \wedge n}, \qquad n \in \mathbb N.$$
+    enonce: |
+      (i) Si $T$ est un temps d'arrêt, $\{T \leqslant n\}$ et $\{T > n\}$ appartiennent à $\mathcal F_n$, et $T \wedge n$ est un temps d'arrêt. $\mathcal F_T$ est une tribu, pour laquelle $T$ est mesurable. Si $S \leqslant T$ sont deux temps d'arrêt, $\mathcal F_S \subset \mathcal F_T$. Si $T$ est borné, $M_T$ est $\mathcal F_T$-mesurable.
+
+      (ii) Si $(M_n)$ est une [[martingale]] et $T$ un temps d'arrêt, la suite arrêtée $(M^T_n)$ est une martingale, la [[martingale-arretee|martingale arrêtée]] en $T$.
+
+      (iii) *Arrêt borné.* Soient $(M_n)$ une martingale et $S \leqslant T$ deux temps d'arrêt bornés par un entier $N$. Alors $M_S$ et $M_T$ sont intégrables et, pour tout $A \in \mathcal F_S$,
+      $$E[M_T\mathbf 1_A] = E[M_S\mathbf 1_A],$$
+      c'est-à-dire $E[M_T \mid \mathcal F_S] = M_S$. En particulier $E[M_T] = E[M_0]$.
+    preuve: |
+      (i) On a $\{T \leqslant n\} = \bigcup_{k \leqslant n}\{T = k\}$, réunion finie d'événements de $\mathcal F_k \subset \mathcal F_n$, et $\{T > n\}$ est son complémentaire. Pour $T \wedge n$, l'événement $\{T \wedge n = k\}$ vaut $\{T = k\}$ si $k < n$, $\{T > n - 1\} \in \mathcal F_{n-1}$ si $k = n \geqslant 1$, $\Omega$ si $k = n = 0$, et $\varnothing$ si $k > n$.
+
+      La partie $\mathcal F_T$ contient $\Omega$, puisque $\{T = n\} \in \mathcal F_n$. Elle est stable par complémentaire, car
+      $$\begin{aligned} &A^c \cap \{T = n\} \\ &= \{T = n\} \setminus (A \cap \{T = n\}), \end{aligned}$$
+      et par réunion dénombrable, l'intersection avec $\{T = n\}$ se distribuant sur la réunion ; le complémentaire et la réunion restent dans $\mathcal F_\infty$, qui est une tribu.
+
+      Pour $m \in \mathbb N$, l'intersection $\{T = m\} \cap \{T = n\}$ est vide ou égale à $\{T = n\}$, donc $\{T = m\} \in \mathcal F_T$ ; $\{T = +\infty\}$ est le complémentaire de leur réunion. Comme $T$ ne prend qu'un nombre dénombrable de valeurs, l'image réciproque de toute partie de $\mathbb N \cup \{+\infty\}$ est une réunion dénombrable de ces événements : $T$ est $\mathcal F_T$-mesurable.
+
+      Si $S \leqslant T$ et $A \in \mathcal F_S$, on a $S \leqslant n$ sur $\{T = n\}$, d'où
+      $$\begin{aligned} &A \cap \{T = n\} \\ &= \bigcup_{k \leqslant n}\big(A \cap \{S = k\}\big) \cap \{T = n\}, \end{aligned}$$
+      qui appartient à $\mathcal F_n$ ; donc $A \in \mathcal F_T$.
+
+      Si $T \leqslant N$ et $B$ est un borélien, $\{M_T \in B\} \cap \{T = n\} = \{M_n \in B\} \cap \{T = n\}$ appartient à $\mathcal F_n$ ; la réunion de ces événements pour $n \leqslant N$ est $\{M_T \in B\}$, qui est donc dans $\mathcal F_\infty$, puis dans $\mathcal F_T$.
+
+      (ii) Pour tout $n$,
+      $$\begin{aligned} M_{T \wedge n} &= M_0 \\ &\quad + \sum_{k=0}^{n-1}\mathbf 1_{\{T > k\}}(M_{k+1} - M_k), \end{aligned}$$
+      variable $\mathcal F_n$-mesurable, et intégrable, puisque $|M_{T \wedge n}| \leqslant |M_0| + \cdots + |M_n|$.
+
+      Pour $G \in \mathcal F_n$, l'événement $G \cap \{T > n\}$ appartient à $\mathcal F_n$, et la propriété caractéristique de $E[M_{n+1} \mid \mathcal F_n] = M_n$ ({{mt-conditionnelle|Espérance conditionnelle}}, (ii)) donne
+      $$\begin{aligned} &E\big[(M_{T \wedge (n+1)} - M_{T \wedge n})\mathbf 1_G\big] \\ &= E\big[(M_{n+1} - M_n)\mathbf 1_{G \cap \{T > n\}}\big] = 0. \end{aligned}$$
+
+      (iii) Les variables $M_S$ et $M_T$ sont majorées en valeur absolue par $|M_0| + \cdots + |M_N|$, donc intégrables. Soit $A \in \mathcal F_S$. Pour $k \leqslant N$, l'événement $A \cap \{S = k\}$ appartient à $\mathcal F_k$, et $E[M_N \mid \mathcal F_k] = M_k$ ({{mt-martingales|Martingales}}, (ii)) ; ainsi
+      $$\begin{aligned} E\big[M_N\mathbf 1_{A \cap \{S = k\}}\big] &= E\big[M_k\mathbf 1_{A \cap \{S = k\}}\big] \\ &= E\big[M_S\mathbf 1_{A \cap \{S = k\}}\big]. \end{aligned}$$
+      En sommant sur $k \in \{0, \dots, N\}$, on obtient $E[M_N\mathbf 1_A] = E[M_S\mathbf 1_A]$.
+
+      Comme $A \in \mathcal F_T$ par (i), le même calcul, fait avec $T$, donne $E[M_N\mathbf 1_A] = E[M_T\mathbf 1_A]$, d'où l'égalité annoncée. La variable $M_S$ est $\mathcal F_S$-mesurable par (i) : c'est bien l'espérance conditionnelle de $M_T$ sachant $\mathcal F_S$. Avec $S = 0$ et $A = \Omega$, on obtient $E[M_T] = E[M_0]$.
+    remarques:
+      - |
+        Le point (iii) avec $S = 0$ est l'arrêt borné déjà démontré au nœud {{mt-martingales|Martingales}}, (iii), par la même écriture télescopique qu'en (ii). Il est étendu ici à deux temps d'arrêt et conditionné par $\mathcal F_S$ : entre deux instants de décision bornés, un jeu équitable reste équitable, quel que soit le passé connu au premier.
+
+        ```schema mu-arret
+        Une trajectoire de la marche simple $M_n$, somme de signes $\pm 1$ indépendants, et le temps d'arrêt $T$, premier instant où elle sort de l'intervalle $]{-4}, 3[$ ; ici $T = 31$ et $M_T = 3$. La martingale arrêtée, en rouge, suit la trajectoire jusqu'à $T$ puis reste constante ; la suite de la trajectoire, en gris, n'intervient plus.
+        ```
+      - |
+        L'erreur la plus répandue est de confondre $\mathcal F_T$ avec la tribu engendrée par $T$ et $M_T$ : $\mathcal F_T$ contient toute l'histoire de la trajectoire avant $T$. Pour la marche simple $S_n$ et le premier instant $T$ où $|S_n| = 2$, l'événement $A = \{S_1 = 1\}$ appartient à $\mathcal F_T$, puisque $A \cap \{T = n\}$ est vide pour $n = 0$ et appartient à $\mathcal F_n$ pour $n \geqslant 1$.
+
+        Pourtant $A$ n'est pas déterminé par $T$ et $S_T$. Sur l'événement $\{T = 4, S_T = 2\}$, de probabilité $\frac2{16}$, les deux trajectoires possibles passent par $S_2 = 0$, l'une par $S_1 = 1$, l'autre par $S_1 = -1$, et $P(A \mid T = 4, S_T = 2) = \frac12$.
+      - |
+        Le nœud {{mk-markov-forte|Markov forte}} du chapitre des chaînes de Markov emploie la même définition. Si l'on demandait seulement $A \in \mathcal A$, on obtiendrait une tribu en général plus grande, mais qui a les mêmes traces sur $\{T < +\infty\}$, la seule partie qui intervienne dans la propriété de Markov forte.
+
+        Exiger $A \in \mathcal F_\infty$ garantit $\mathcal F_T \subset \mathcal F_\infty$, et en particulier $\mathcal F_T = \mathcal F_\infty$ quand $T$ vaut identiquement $+\infty$ : la tribu du passé avant un temps infini est toute l'information de la filtration, et non toute la tribu $\mathcal A$. C'est ce qui permet d'écrire $M_T = E[X \mid \mathcal F_T]$ pour une martingale fermée par une variable $X$ qui n'est pas $\mathcal F_\infty$-mesurable ({{mu-arret-doob|Théorème d'arrêt}}, {{mu-levy|Théorème de Lévy}}) ; avec $A \in \mathcal A$, l'égalité serait fausse pour $T \equiv +\infty$.
+
+  - id: mu-ui
+    etiquette: Uniforme intégrabilité
+    nature: définition
+    titre: Uniforme intégrabilité et ses critères
+    texte: |
+      Une famille $(X_i)_{i \in I}$ de variables intégrables est [[uniformement-integrable|uniformément intégrable]] si
+      $$\sup_{i \in I} E\big[|X_i|\mathbf 1_{\{|X_i| > a\}}\big] \underset{a \to +\infty}{\longrightarrow} 0.$$
+      Le sup, élément de $[0, +\infty]$, décroît quand $a$ croît : la condition demande que les queues des $X_i$ contribuent toutes peu à l'espérance, au-delà d'un même seuil.
+    enonce: |
+      (i) *Une variable.* Si $X$ est intégrable, $E\big[|X|\mathbf 1_{\{|X| > a\}}\big] \to 0$ quand $a \to +\infty$, et pour tout $\varepsilon > 0$ il existe $\delta > 0$ tel que $P(A) < \delta$ entraîne $E[|X|\mathbf 1_A] < \varepsilon$. Toute famille finie de variables intégrables est uniformément intégrable.
+
+      (ii) *Caractérisation.* Une famille $(X_i)$ est uniformément intégrable si et seulement si elle est bornée dans $\lex{espace-L1}{L^1}$, c'est-à-dire $\sup_i E[|X_i|] < +\infty$, et si pour tout $\varepsilon > 0$ il existe $\delta > 0$ tel que, pour tout événement $A$,
+      $$P(A) < \delta \implies \sup_i E[|X_i|\mathbf 1_A] \leqslant \varepsilon.$$
+
+      (iii) *Domination.* S'il existe $Y$ intégrable telle que $|X_i| \leqslant Y$ pour tout $i$, la famille est uniformément intégrable.
+
+      (iv) *Borne dans $L^p$.* S'il existe $p > 1$ tel que $K = \sup_i E[|X_i|^p] < +\infty$, la famille est uniformément intégrable, et
+      $$E\big[|X_i|\mathbf 1_{\{|X_i| > a\}}\big] \leqslant \frac{K}{a^{p-1}}.$$
+
+      (v) *Critère de de la Vallée-Poussin.* La famille est uniformément intégrable si et seulement s'il existe une fonction croissante $\varphi : [0, +\infty[ \to [0, +\infty[$ telle que $\varphi(x)/x \to +\infty$ quand $x \to +\infty$ et $\sup_i E[\varphi(|X_i|)] < +\infty$.
+
+      (vi) *Espérances conditionnelles.* Soit $X$ intégrable et, pour chaque $i \in I$, une sous-tribu $\mathcal G_i$ et une variable $Y_i$ telle que $Y_i = E[X \mid \mathcal G_i]$. Alors $E[|Y_i|] \leqslant E[|X|]$ et la famille $(Y_i)$ est uniformément intégrable.
+    preuve: |
+      (i) Les variables $|X|\mathbf 1_{\{|X| > k\}}$, $k \in \mathbb N$, tendent simplement vers $0$, puisque $X$ est à valeurs réelles, et sont dominées par $|X|$ : par convergence dominée ({{m-convergence-dominee|Convergence dominée}}, (i)), leurs espérances tendent vers $0$, et, par croissance, il en va de même pour un seuil réel $a \to +\infty$.
+
+      Soit $\varepsilon > 0$, et $a > 0$ tel que $E[|X|\mathbf 1_{\{|X| > a\}}] < \frac\varepsilon2$. Pour tout événement $A$,
+      $$E[|X|\mathbf 1_A] \leqslant a\,P(A) + E\big[|X|\mathbf 1_{\{|X| > a\}}\big],$$
+      et $\delta = \varepsilon/(2a)$ convient. Pour une famille finie, le sup est un maximum de quantités qui tendent vers $0$.
+
+      (ii) Si la famille est uniformément intégrable, soit $a > 0$ tel que le sup soit au plus $1$ : alors $E[|X_i|] \leqslant a + 1$ pour tout $i$. Pour $\varepsilon > 0$, soit $a > 0$ tel que le sup soit au plus $\frac\varepsilon2$ ; la majoration de (i), écrite pour chaque $X_i$ avec ce seuil commun, montre que $\delta = \varepsilon/(2a)$ convient pour tous les $X_i$.
+
+      Réciproquement, soit $K = \sup_i E[|X_i|]$, $\varepsilon > 0$ et $\delta$ associé. Pour $a > K/\delta$, l'inégalité de Markov ({{p-esperance|Espérance, variance}}, (iii)) donne $P(|X_i| > a) \leqslant K/a < \delta$, donc $E[|X_i|\mathbf 1_{\{|X_i| > a\}}] \leqslant \varepsilon$ pour tout $i$.
+
+      (iii) On a $|X_i|\mathbf 1_{\{|X_i| > a\}} \leqslant Y\mathbf 1_{\{Y > a\}}$, et l'on applique (i) à $Y$.
+
+      (iv) Sur $\{|X_i| > a\}$, on a $|X_i| = |X_i|^p/|X_i|^{p-1} \leqslant |X_i|^p/a^{p-1}$ ; on prend l'espérance.
+
+      (v) *La condition suffit.* Soit $C = \sup_i E[\varphi(|X_i|)]$ et $m > 0$. Il existe $c$ tel que $\varphi(x) \geqslant m\,x$ pour $x \geqslant c$ ; pour $a \geqslant c$, on a $|X_i|\mathbf 1_{\{|X_i| > a\}} \leqslant \varphi(|X_i|)/m$, d'où un sup au plus $C/m$. La fonction $\varphi$, croissante, est borélienne, puisque chaque $\{\varphi > t\}$ est un intervalle.
+
+      *Elle est nécessaire.* Posons $a_0 = 0$ et, pour $k \geqslant 1$, soit $a_k$ le plus petit entier $a \geqslant a_{k-1} + 1$ tel que
+      $$\sup_i E\big[|X_i|\mathbf 1_{\{|X_i| > a\}}\big] \leqslant 2^{-k},$$
+      qui existe par hypothèse ; aucun choix n'intervient, et $a_k \geqslant k$. On pose $\varphi(x) = \sum_{k \geqslant 1}(x - a_k)^+$, somme finie pour chaque $x$, puisque ses termes sont nuls dès que $a_k \geqslant x$ ; $\varphi$ est croissante et positive.
+
+      Comme $(|X_i| - a_k)^+ \leqslant |X_i|\mathbf 1_{\{|X_i| > a_k\}}$, la convergence monotone ({{m-beppo-levi|Convergence monotone}}, (ii)) donne $E[\varphi(|X_i|)] \leqslant \sum_k 2^{-k} = 1$ pour tout $i$. Enfin, pour $K \geqslant 1$ et $x \geqslant 2a_K$, chacun des $K$ premiers termes vaut au moins $x - a_K \geqslant \frac x2$, d'où $\varphi(x) \geqslant \frac{K}{2}\,x$ : $\varphi(x)/x \to +\infty$.
+
+      (vi) L'événement $\{Y_i > a\}$ appartient à $\mathcal G_i$, et la propriété caractéristique ({{mt-conditionnelle|Espérance conditionnelle}}, (ii)) donne $E[Y_i\mathbf 1_{\{Y_i > a\}}] = E[X\mathbf 1_{\{Y_i > a\}}]$ ; de même avec $\{Y_i < -a\}$. Pour $a \geqslant 0$, on en tire
+      $$\begin{aligned} &E\big[|Y_i|\mathbf 1_{\{|Y_i| > a\}}\big] \\ &= E\big[X(\mathbf 1_{\{Y_i > a\}} - \mathbf 1_{\{Y_i < -a\}})\big] \\ &\leqslant E\big[|X|\mathbf 1_{\{|Y_i| > a\}}\big]. \end{aligned}$$
+
+      Avec $a = 0$, cela donne $E[|Y_i|] \leqslant E[|X|]$, puis $P(|Y_i| > a) \leqslant E[|X|]/a$ par l'inégalité de Markov. Pour $\varepsilon > 0$, soit $\delta$ associé à $X$ par (i) : dès que $a > E[|X|]/\delta$, le second membre est majoré par $\varepsilon$ pour tout $i$. Aucune existence d'espérance conditionnelle n'est employée : les $Y_i$ sont données.
+    remarques:
+      - |
+        Sur $[0, 1[$ muni de la mesure de Lebesgue, la suite $X_n = n\,\mathbf 1_{[0, 1/n[}$ est bornée dans $L^1$, puisque $E[X_n] = 1$, mais n'est pas uniformément intégrable : pour $n > a$, $E[X_n\mathbf 1_{\{X_n > a\}}] = 1$. Toute sa masse est portée par un événement de plus en plus petit, où elle prend des valeurs de plus en plus grandes. L'erreur la plus répandue est de croire qu'une borne dans $L^1$ suffit ; le point (iv) demande un exposant $p > 1$, et cet exemple montre qu'il ne peut pas être égal à $1$.
+
+        La suite $\sqrt n\,\mathbf 1_{[0, 1/n[}$, au contraire, vérifie $E[X_n^2] = 1$ : elle est uniformément intégrable par (iv), et $E[X_n] = 1/\sqrt n$ tend vers $0$. La martingale produit du nœud {{mt-doob-l1|Martingales bornées dans L¹}}, qui vaut $2^n$ sur un événement de probabilité $2^{-n}$, se comporte comme le premier exemple.
+      - |
+        Le critère (v) est dû à de la Vallée-Poussin, dans son mémoire *Sur l'intégrale de Lebesgue* (Transactions of the American Mathematical Society 16, 1915). Il contient (iv), avec $\varphi(x) = x^p$. Il dit qu'une famille uniformément intégrable vérifie toujours une borne un peu plus forte qu'une borne dans $L^1$, mesurée par une fonction $\varphi$ à peine plus rapide que l'identité : c'est par ce critère qu'on vérifie le plus souvent l'uniforme intégrabilité en pratique.
+
+  - id: mu-vitali
+    etiquette: Théorème de Vitali
+    nature: théorème
+    titre: Théorème de Vitali
+    enonce: |
+      (i) Soient $(X_n)$ des variables intégrables et $X$ une variable. La suite $(X_n)$ converge vers $X$ dans $\lex{espace-L1}{L^1}$, c'est-à-dire $X$ est intégrable et $E[|X_n - X|] \to 0$, si et seulement si $X_n \to X$ en probabilité et $(X_n)$ est [[uniformement-integrable|uniformément intégrable]].
+
+      (ii) En particulier, si $X_n \to X$ presque sûrement et si $(X_n)$ est uniformément intégrable, $X$ est intégrable et $E[X_n] \to E[X]$.
+    preuve: |
+      (i) *La condition est nécessaire.* La convergence en moyenne entraîne la convergence en probabilité ({{p-convergences|Modes de convergence}}, (ii)). La suite des $E[|X_n - X|]$, convergente, est bornée, et $E[|X_n|] \leqslant E[|X|] + E[|X_n - X|]$ : la suite est bornée dans $L^1$.
+
+      Soit $\varepsilon > 0$ et $N$ tel que $E[|X_n - X|] < \frac\varepsilon2$ pour $n \geqslant N$. La famille finie $X, X_0, \dots, X_{N-1}$ fournit un $\delta$ tel que $P(A) < \delta$ entraîne $E[|X|\mathbf 1_A] < \frac\varepsilon2$ et $E[|X_n|\mathbf 1_A] < \varepsilon$ pour $n < N$ ({{mu-ui|Uniforme intégrabilité}}, (i) et (ii)). Pour $n \geqslant N$,
+      $$\begin{aligned} E[|X_n|\mathbf 1_A] &\leqslant E[|X|\mathbf 1_A] + E[|X_n - X|] \\ &< \varepsilon. \end{aligned}$$
+      La caractérisation de {{mu-ui|Uniforme intégrabilité}}, (ii), conclut.
+
+      *Elle est suffisante.* Une suite extraite $(X_{n_k})$ converge presque sûrement vers $X$ ({{p-convergences|Modes de convergence}}, (iii)) ; par le lemme de Fatou ({{m-fatou|Lemme de Fatou}}),
+      $$E[|X|] \leqslant \liminf_k E[|X_{n_k}|] \leqslant \sup_n E[|X_n|],$$
+      qui est fini par {{mu-ui|Uniforme intégrabilité}}, (ii) : $X$ est intégrable.
+
+      Soit $\varepsilon > 0$, et $\delta$ tel que $P(A) < \delta$ entraîne $E[|X_n|\mathbf 1_A] \leqslant \varepsilon$ pour tout $n$ et $E[|X|\mathbf 1_A] \leqslant \varepsilon$ : on prend le plus petit des deux nombres que fournissent (ii) pour la suite et (i) pour $X$, dans le même nœud. Avec $A_n = \{|X_n - X| > \varepsilon\}$,
+      $$\begin{aligned} &E[|X_n - X|] \\ &\leqslant \varepsilon + E\big[|X_n - X|\mathbf 1_{A_n}\big] \\ &\leqslant \varepsilon + E[|X_n|\mathbf 1_{A_n}] + E[|X|\mathbf 1_{A_n}]. \end{aligned}$$
+      Comme $P(A_n) \to 0$, on a $P(A_n) < \delta$ pour $n$ assez grand, et alors $E[|X_n - X|] \leqslant 3\varepsilon$.
+
+      (ii) La convergence presque sûre entraîne la convergence en probabilité ({{p-convergences|Modes de convergence}}, (i)), et $|E[X_n] - E[X]| \leqslant E[|X_n - X|]$.
+    remarques:
+      - |
+        Le théorème contient la convergence dominée ({{m-convergence-dominee|Convergence dominée}}, (i)) pour une probabilité, puisqu'une suite dominée est uniformément intégrable ({{mu-ui|Uniforme intégrabilité}}, (iii)), et il va plus loin. Sur $[0, 1[$ muni de la mesure de Lebesgue, soit, pour $n \geqslant 1$, $X_n = n\,\mathbf 1_{I_n}$, où $I_n = [\frac1{n+1}, \frac1n[$ est de longueur $\frac1{n(n+1)}$. Chaque $\omega$ est dans un $I_n$ au plus, donc $X_n \to 0$ partout, et $E[X_n] = \frac1{n+1} \to 0$.
+
+        La suite est uniformément intégrable : pour $n \leqslant a$, $X_n\mathbf 1_{\{X_n > a\}} = 0$, et pour $n > a$, $E[X_n\mathbf 1_{\{X_n > a\}}] = \frac1{n+1} < \frac1a$. Mais aucune variable intégrable ne la domine : $\sup_n X_n = \sum_n n\,\mathbf 1_{I_n}$ a pour espérance $\sum_n \frac1{n+1} = +\infty$. Vitali s'applique, la convergence dominée non.
+      - |
+        Vitali a énoncé ce passage à la limite sous l'intégrale en 1907, dans *Sull'integrazione per serie*, pour une suite de fonctions qui converge presque partout et dont les intégrales sont uniformément petites sur les ensembles de petite mesure, la condition de {{mu-ui|Uniforme intégrabilité}}, (ii). C'est la forme du théorème que les martingales emploient : la convergence presque sûre est donnée par le théorème de Doob, et l'uniforme intégrabilité la transforme en convergence dans $L^1$.
+
+  - id: mu-fermees
+    etiquette: Martingales fermées
+    nature: théorème
+    titre: Convergence dans L¹ des martingales, martingales fermées
+    enonce: |
+      Soit $(M_n)$ une [[martingale]]. Les conditions suivantes sont équivalentes :
+
+      (a) $(M_n)$ est [[uniformement-integrable|uniformément intégrable]] ;
+
+      (b) $(M_n)$ converge dans $\lex{espace-L1}{L^1}$ ;
+
+      (c) il existe une variable intégrable $X$ telle que $M_n = E[X \mid \mathcal F_n]$ pour tout $n$.
+
+      Elles entraînent que $(M_n)$ converge presque sûrement et dans $L^1$ vers une variable $M_\infty$ intégrable et $\mathcal F_\infty$-mesurable, et que $M_n = E[M_\infty \mid \mathcal F_n]$ pour tout $n$. On dit alors que la martingale est [[martingale-fermee|fermée]] par $M_\infty$.
+    preuve: |
+      *(a) entraîne (b).* Une famille uniformément intégrable est bornée dans $L^1$ ({{mu-ui|Uniforme intégrabilité}}, (ii)). Par le théorème de Doob ({{mt-doob-l1|Martingales bornées dans L¹}}), $(M_n)$ converge presque sûrement vers une variable intégrable $M_\infty$, donc en probabilité ({{p-convergences|Modes de convergence}}, (i)), puis dans $L^1$ par le théorème de Vitali ({{mu-vitali|Théorème de Vitali}}).
+
+      La variable $M_\infty$ construite par ce théorème vaut $\limsup_n M_n$ sur l'événement où la suite converge dans $\mathbb R$, et $0$ ailleurs ; cet événement et cette limite supérieure ne font intervenir que les $M_n$, qui sont $\mathcal F_\infty$-mesurables, si bien que $M_\infty$ l'est aussi.
+
+      *(b) entraîne (c).* Soit $X$ la limite dans $L^1$. Pour $G \in \mathcal F_n$ et $m \geqslant n$, on a $E[M_m\mathbf 1_G] = E[M_n\mathbf 1_G]$ ({{mt-martingales|Martingales}}, (ii)), et
+      $$\begin{aligned} \big|E[M_m\mathbf 1_G] - E[X\mathbf 1_G]\big| &\leqslant E[|M_m - X|] \\ &\longrightarrow 0. \end{aligned}$$
+      Donc $E[X\mathbf 1_G] = E[M_n\mathbf 1_G]$ pour tout $G \in \mathcal F_n$ : la variable $M_n$, qui est $\mathcal F_n$-mesurable et intégrable, est l'espérance conditionnelle de $X$ sachant $\mathcal F_n$ ({{mt-conditionnelle|Espérance conditionnelle}}, (ii)).
+
+      *(c) entraîne (a).* C'est le point (vi) du nœud {{mu-ui|Uniforme intégrabilité}}.
+
+      *Conclusion.* Sous ces conditions, la démonstration de (a) entraîne (b) donne la convergence presque sûre et dans $L^1$ vers $M_\infty$, $\mathcal F_\infty$-mesurable ; celle de (b) entraîne (c), avec $X = M_\infty$, donne $M_n = E[M_\infty \mid \mathcal F_n]$.
+    remarques:
+      - |
+        Une martingale bornée dans $L^2$ est uniformément intégrable ({{mu-ui|Uniforme intégrabilité}}, (iv), avec $p = 2$) : on retrouve la conclusion $M_n = E[M_\infty \mid \mathcal F_n]$ du nœud {{mt-convergence|Convergence des martingales}}. La martingale produit du nœud {{mt-doob-l1|Martingales bornées dans L¹}}, au contraire, converge presque sûrement vers $0$ en restant d'espérance $1$ : elle n'est pas fermée, puisqu'elle devrait sinon être égale à $E[0 \mid \mathcal F_n] = 0$. Une borne dans $L^1$ ne suffit pas.
+      - |
+        Une martingale fermée est entièrement déterminée par sa limite : $M_n$ est la meilleure prévision de $M_\infty$ connaissant $\mathcal F_n$, et l'information s'accumule jusqu'à la révéler. Le point (c) ne demande pas que $X$ soit $\mathcal F_\infty$-mesurable ; le nœud suivant, {{mu-levy|Théorème de Lévy}}, identifie alors $M_\infty$ à $E[X \mid \mathcal F_\infty]$.
+
+  - id: mu-levy
+    etiquette: Théorème de Lévy
+    nature: théorème
+    titre: Théorème de Lévy et loi du 0-1 de Lévy
+    choix: |
+      Les points (i) et (ii) supposent données les espérances conditionnelles $E[X \mid \mathcal F_n]$, c'est-à-dire une suite $(M_n)$ de variables telle que $M_n = E[X \mid \mathcal F_n]$ ; leur existence hérite, pour une filtration quelconque, du [[choix-denombrable]] par {{mt-conditionnelle|Espérance conditionnelle}}, (i) et (ii), et n'en demande aucun quand chaque $\mathcal F_n$ est engendrée par une suite d'événements (point (v) du même nœud). C'est le seul ⋆ du chapitre, hérité et signalé ici une fois : les autres fiches portent sur des martingales et des variables données. La démonstration n'en fait aucun, et elle construit $E[X \mid \mathcal F_\infty]$ sans autre choix. Si l'on ne dispose que des classes de $L^1$, passer à une suite de représentants est un choix dénombrable de même forme que celui hérité : le statut du résultat n'en change pas. Le point (iii) n'emploie aucune existence : l'espérance conditionnelle y est une constante explicite.
+    enonce: |
+      (i) *Théorème de Lévy.* Soient $X$ une variable intégrable et $(M_n)$ une suite de variables telle que $M_n = E[X \mid \mathcal F_n]$ pour tout $n$. Alors $(M_n)$ converge presque sûrement et dans $\lex{espace-L1}{L^1}$ vers une variable $M_\infty$, $\mathcal F_\infty$-mesurable, qui vérifie $E[M_\infty\mathbf 1_G] = E[X\mathbf 1_G]$ pour tout $G \in \mathcal F_\infty$ :
+      $$E[X \mid \mathcal F_n] \longrightarrow E[X \mid \mathcal F_\infty].$$
+      En particulier, si $X$ est $\mathcal F_\infty$-mesurable, $E[X \mid \mathcal F_n] \to X$ presque sûrement et dans $L^1$.
+
+      (ii) *Loi du 0-1 de Lévy.* Si $A \in \mathcal F_\infty$, la suite $P(A \mid \mathcal F_n) = E[\mathbf 1_A \mid \mathcal F_n]$ tend presque sûrement vers $\mathbf 1_A$.
+
+      (iii) Si les variables $(X_k)_{k \geqslant 1}$ sont indépendantes et $\mathcal F_n = \sigma(X_1, \dots, X_n)$, tout événement de la tribu asymptotique $\mathcal T$ a pour probabilité $0$ ou $1$.
+    preuve: |
+      (i) La suite $(M_n)$ est une martingale ({{mt-martingales|Martingales}}, (i), seconde assertion), qui vérifie la condition (c) du nœud {{mu-fermees|Martingales fermées}} : elle converge presque sûrement et dans $L^1$ vers $M_\infty$, $\mathcal F_\infty$-mesurable, et $M_n = E[M_\infty \mid \mathcal F_n]$. Pour $G \in \mathcal F_n$, on a donc
+      $$E[M_\infty\mathbf 1_G] = E[M_n\mathbf 1_G] = E[X\mathbf 1_G].$$
+
+      La réunion $\mathcal C$ des $\mathcal F_n$ est un π-système, puisque deux de ses éléments appartiennent à une même tribu $\mathcal F_n$, la suite étant croissante ; elle contient $\Omega$ et engendre $\mathcal F_\infty$. Posons, pour $G \in \mathcal F_\infty$,
+      $$\begin{aligned} \mu(G) &= E\big[(M_\infty^+ + X^-)\mathbf 1_G\big], \\ \nu(G) &= E\big[(X^+ + M_\infty^-)\mathbf 1_G\big]. \end{aligned}$$
+      Ce sont des mesures finies sur $\mathcal F_\infty$ ({{m-beppo-levi|Convergence monotone}}, (iii)), égales sur $\mathcal C$ par l'égalité précédente, dont tous les termes sont finis. Par le lemme de Dynkin ({{m-dynkin|Classes monotones}}, (ii)), avec la suite constante égale à $\Omega$, elles sont égales sur $\mathcal F_\infty$, d'où $E[M_\infty\mathbf 1_G] = E[X\mathbf 1_G]$ pour tout $G \in \mathcal F_\infty$.
+
+      Si $X$ est $\mathcal F_\infty$-mesurable, l'événement $G = \{M_\infty > X\}$ appartient à $\mathcal F_\infty$, et $E[(M_\infty - X)\mathbf 1_G] = 0$ ; la variable positive $(M_\infty - X)\mathbf 1_G$ est donc nulle presque sûrement ({{m-integrale|Intégrale}}, (iv)), c'est-à-dire $P(G) = 0$. De même $P(M_\infty < X) = 0$, et $M_\infty = X$ presque sûrement.
+
+      (ii) On applique (i) à $X = \mathbf 1_A$, qui est $\mathcal F_\infty$-mesurable.
+
+      (iii) Soit $A \in \mathcal T$. Par regroupement ({{p-independance|Indépendance}}, (ii)), $\mathcal F_n$ est indépendante de $\sigma(X_k : k > n)$, qui contient $A$ ; pour $G \in \mathcal F_n$, $E[\mathbf 1_A\mathbf 1_G] = P(A)P(G)$, si bien que la constante $P(A)$ est $E[\mathbf 1_A \mid \mathcal F_n]$.
+
+      Comme $A \in \mathcal T \subset \sigma(X_k : k \geqslant 1) = \mathcal F_\infty$, (ii) donne $P(A) = \mathbf 1_A$ presque sûrement, ce qui n'est possible que si $P(A) \in \{0, 1\}$.
+    remarques:
+      - |
+        Sur $\Omega = [0, 1[$, muni de la tribu borélienne et de la mesure de Lebesgue, soit $\mathcal F_n$ la tribu engendrée par les intervalles dyadiques $[k2^{-n}, (k + 1)2^{-n}[$. Pour $f$ intégrable, $E[f \mid \mathcal F_n]$ vaut, sur chacun de ces intervalles, la moyenne de $f$ sur l'intervalle ({{mt-conditionnelle|Espérance conditionnelle}}, première remarque). Tout intervalle ouvert est réunion dénombrable d'intervalles dyadiques, donc $\mathcal F_\infty$ est la tribu borélienne, et (i) dit que les moyennes de $f$ sur les intervalles dyadiques qui contiennent $\omega$ tendent vers $f(\omega)$ pour presque tout $\omega$. C'est une forme dyadique du théorème de différentiation de Lebesgue, dont la forme générale, pour des intervalles centrés en $\omega$, n'est pas démontrée ici.
+
+        Pour $f(\omega) = \omega$, la moyenne est le milieu de l'intervalle, et $E\big[|f - E[f \mid \mathcal F_n]|\big] = 2^{-n}/4$, soit $0{,}125$ pour $n = 1$ et environ $0{,}000244$ pour $n = 10$ : l'erreur est le quart de la longueur des intervalles.
+      - |
+        L'erreur la plus répandue est de croire que $E[X \mid \mathcal F_n]$ tend toujours vers $X$. La limite est $E[X \mid \mathcal F_\infty]$ : si $X$ est indépendante de toutes les $\mathcal F_n$, par exemple si la filtration est triviale, la suite est constante, égale à $E[X]$. On ne retrouve $X$ que si l'information accumulée la détermine.
+      - |
+        Lévy a énoncé la loi (ii) en 1935, puis l'a reprise sous une forme générale dans son traité *Théorie de l'addition des variables aléatoires* (1937, §41), en remarquant qu'elle contient une loi du 0-1, qu'il attribuait à Jessen en 1935 et rattache à Kolmogorov dans le traité : c'est le point (iii), qui redémontre la loi du 0-1 du nœud {{p-zero-un|Loi du 0-1}}.
+
+        Le mot de martingale vient de Ville, qui en donne deux définitions dans sa thèse (1939). Lévy écrivait plus tard qu'il ne connaissait pas ce mot en 1937 ; il voyait dans ces suites celles qu'il avait étudiées dès 1935, et s'est peu intéressé ensuite à la théorie qu'elles ont fait naître, dont Doob a montré la puissance.
+
+  - id: mu-arret-doob
+    etiquette: Théorème d'arrêt
+    nature: théorème
+    titre: Théorème d'arrêt de Doob
+    texte: |
+      Soit $(M_n)$ une [[martingale]] [[uniformement-integrable|uniformément intégrable]], et $M_\infty$ la variable $\mathcal F_\infty$-mesurable qui la ferme ({{mu-fermees|Martingales fermées}}). Pour un [[temps-arret|temps d'arrêt]] $T$, on pose $M_T = M_{T(\omega)}(\omega)$ sur $\{T < +\infty\}$ et $M_T = M_\infty$ sur $\{T = +\infty\}$.
+    enonce: |
+      (i) Pour tout temps d'arrêt $T$, la variable $M_T$ est intégrable, $\mathcal F_T$-mesurable, vérifie $E[|M_T|] \leqslant E[|M_\infty|]$, et
+      $$M_T = E[M_\infty \mid \mathcal F_T].$$
+
+      (ii) *Théorème d'arrêt.* Si $S \leqslant T$ sont deux temps d'arrêt, $E[M_T \mid \mathcal F_S] = M_S$. En particulier $E[M_T] = E[M_0]$.
+
+      (iii) *Critère pratique.* Soit $(M_n)$ une martingale quelconque et $T$ un temps d'arrêt fini presque sûrement. Si la [[martingale-arretee|martingale arrêtée]] $(M_{T \wedge n})$ est uniformément intégrable, par exemple si $|M_{T \wedge n}| \leqslant Y$ pour tout $n$, avec $Y$ intégrable, alors $M_T$ est intégrable et $E[M_T] = E[M_0]$.
+
+      (iv) *Contre-exemple.* Soient $(\varepsilon_k)_{k \geqslant 1}$ des signes indépendants, égaux à $1$ ou $-1$ avec probabilité $\frac12$, $S_n = \varepsilon_1 + \cdots + \varepsilon_n$, $\mathcal F_n = \sigma(\varepsilon_1, \dots, \varepsilon_n)$, et $T = \inf\{n : S_n = 1\}$. Alors $T$ est fini presque sûrement, la martingale arrêtée $(S_{T \wedge n})$ converge presque sûrement vers $1$ sans être uniformément intégrable, et
+      $$E[S_T] = 1 \neq 0 = E[S_0].$$
+    preuve: |
+      (i) *Mesurabilité.* Pour un borélien $B$ et $n \in \mathbb N$, $\{M_T \in B\} \cap \{T = n\} = \{M_n \in B\} \cap \{T = n\}$ appartient à $\mathcal F_n$. L'événement $\{M_T \in B\}$ est la réunion de ces événements et de $\{M_\infty \in B\} \cap \{T = +\infty\}$, qui sont tous dans $\mathcal F_\infty$ : il appartient à $\mathcal F_T$.
+
+      *Intégrabilité.* Par {{mu-fermees|Martingales fermées}}, $E[M_n\mathbf 1_G] = E[M_\infty\mathbf 1_G]$ pour $G \in \mathcal F_n$. Avec $G = \{T = n, M_n > 0\}$ puis $G = \{T = n, M_n < 0\}$, il vient
+      $$E\big[|M_n|\mathbf 1_{\{T = n\}}\big] \leqslant E\big[|M_\infty|\mathbf 1_{\{T = n\}}\big].$$
+      En sommant sur $n \in \mathbb N$ par convergence monotone ({{m-beppo-levi|Convergence monotone}}, (ii)), et en ajoutant le terme de $\{T = +\infty\}$, où $M_T = M_\infty$, on obtient $E[|M_T|] \leqslant E[|M_\infty|]$.
+
+      *Propriété caractéristique.* Soit $A \in \mathcal F_T$. Pour $n \in \mathbb N$, $A \cap \{T = n\} \in \mathcal F_n$, donc
+      $$E\big[M_T\mathbf 1_{A \cap \{T = n\}}\big] = E\big[M_\infty\mathbf 1_{A \cap \{T = n\}}\big],$$
+      et l'égalité est triviale sur $A \cap \{T = +\infty\}$. Les sommes partielles $M_T\mathbf 1_{A \cap \{T \leqslant n\}}$ sont dominées par $|M_T|$, celles de $M_\infty$ par $|M_\infty|$ ; par convergence dominée ({{m-convergence-dominee|Convergence dominée}}, (i)), on peut sommer sur $n$, d'où $E[M_T\mathbf 1_A] = E[M_\infty\mathbf 1_A]$.
+
+      (ii) Soit $A \in \mathcal F_S$. Comme $\mathcal F_S \subset \mathcal F_T$ ({{mu-arret|Martingale arrêtée}}, (i)), (i) appliqué à $T$ puis à $S$ donne
+      $$E[M_T\mathbf 1_A] = E[M_\infty\mathbf 1_A] = E[M_S\mathbf 1_A],$$
+      et $M_S$ est $\mathcal F_S$-mesurable et intégrable par (i). Le temps constant $0$ est un temps d'arrêt ; avec $S = 0$ et $A = \Omega$, on obtient $E[M_T] = E[M_0]$.
+
+      (iii) La variable $M_T$ est définie presque sûrement, puisque $T$ est fini presque sûrement. La martingale arrêtée est une martingale ({{mu-arret|Martingale arrêtée}}, (ii)) ; si elle est uniformément intégrable, elle converge dans $L^1$ vers sa limite presque sûre ({{mu-fermees|Martingales fermées}}). Comme $T$ est fini presque sûrement, $M_{T \wedge n} = M_T$ dès que $n \geqslant T$, et cette limite est $M_T$. Donc $M_T$ est intégrable et
+      $$E[M_T] = \lim_n E[M_{T \wedge n}] = E[M_0],$$
+      puisque $E[M_{T \wedge n}] = E[M_0]$ ({{mt-martingales|Martingales}}, (ii)). Une suite dominée par une variable intégrable est uniformément intégrable ({{mu-ui|Uniforme intégrabilité}}, (iii)).
+
+      (iv) La suite $(S_n)$ est une martingale ({{mt-martingales|Martingales}}, (i), première assertion), et $T$ un temps d'arrêt, puisque $\{T = n\} = \{S_1 \neq 1, \dots, S_{n-1} \neq 1, S_n = 1\}$. La martingale arrêtée $M_n = S_{T \wedge n}$ ({{mu-arret|Martingale arrêtée}}, (ii)) vérifie $M_n \leqslant 1$, puisque les pas valent $\pm 1$ et que la marche part de $0$, et $E[M_n] = 0$. Donc
+      $$E[|M_n|] = 2E[M_n^+] - E[M_n] \leqslant 2 :$$
+      la martingale est bornée dans $L^1$, et elle converge presque sûrement ({{mt-doob-l1|Martingales bornées dans L¹}}).
+
+      Sur $\{T = +\infty\}$, on a $M_n = S_n$ et $|M_{n+1} - M_n| = 1$ pour tout $n$ : la suite n'y est pas de Cauchy, et cet événement est donc négligeable. Ainsi $T < +\infty$ presque sûrement, et $M_n \to S_T = 1$ presque sûrement.
+
+      Si $(M_n)$ était uniformément intégrable, elle convergerait dans $L^1$ vers $1$ ({{mu-fermees|Martingales fermées}}), et $E[M_n] = 0$ tendrait vers $1$ : c'est impossible.
+    remarques:
+      - |
+        Le contre-exemple se lit sur la loi exacte de $M_n = S_{T \wedge n}$. Pour $n = 100$, la marche a déjà atteint $1$ avec probabilité $0{,}920$ environ ; sur l'événement restant, de probabilité $0{,}080$, la moyenne de $M_{100}$ vaut environ $-11{,}56$, et ces deux contributions s'annulent dans $E[M_{100}] = 0$. Quand $n$ croît, une masse de plus en plus petite part vers des valeurs de plus en plus négatives : c'est exactement le défaut d'uniforme intégrabilité.
+
+        ```schema mu-arret-doob
+        Huit trajectoires de la marche simple arrêtée au premier passage en $1$, sur $200$ pas. Six d'entre elles, en rouge, ont atteint $1$ et y restent ; les deux autres, en bleu, sont encore en route et se trouvent loin sous $0$. À chaque instant la moyenne exacte vaut $0$, alors qu'à l'instant $200$ la marche a déjà atteint $1$ avec probabilité $0{,}944$ environ.
+        ```
+      - |
+        La stratégie du doublement, au nœud {{mt-martingales|Martingales}}, est le même phénomène : $T$ est fini presque sûrement, la fortune arrêtée vaut $1$, mais les pertes accumulées avant $T$ ne sont pas uniformément intégrables. Le point (iii) dit ce qui manque.
+      - |
+        La marche $(S_n)$ elle-même n'est pas uniformément intégrable, sans quoi (ii) donnerait $E[S_T] = 0$. Elle n'est même pas bornée dans $L^1$ : sinon elle convergerait presque sûrement ({{mt-doob-l1|Martingales bornées dans L¹}}), alors que $|S_{n+1} - S_n| = 1$ pour tout $n$.
+      - |
+        Dans la ruine du joueur ({{mk-ruine|Ruine du joueur}}), pour un jeu équitable ($p = \frac12$), la fortune arrêtée $S_{T \wedge n}$ reste entre $0$ et $N$ : elle est dominée par la constante $N$, et le point (iii) donne directement $E[S_T] = x$, puis $P(S_T = N) = \frac xN$. Le chapitre des chaînes de Markov obtient la même égalité par l'arrêt borné et la convergence dominée ; c'est la démonstration du point (iii) dans ce cas particulier.
+      - |
+        Doob a établi les propriétés fondamentales des martingales et leurs théorèmes de convergence dans *Regularity properties of certain families of chance variables* (Transactions of the American Mathematical Society 47, 1940), et en a exposé la théorie dans son livre *Stochastic Processes* (Wiley, 1953), la référence classique du théorème d'arrêt, qui porte son nom.
+
+  - id: mu-wald
+    etiquette: Identités de Wald
+    nature: théorème
+    titre: Identités de Wald et temps moyen d'atteinte
+    texte: |
+      Soient $(X_k)_{k \geqslant 1}$ des variables intégrables de même loi, chaque $X_k$ étant $\mathcal F_k$-mesurable et indépendante de $\mathcal F_{k-1}$ ; c'est le cas de variables indépendantes de même loi, avec $\mathcal F_n = \sigma(X_1, \dots, X_n)$ et $\mathcal F_0$ triviale. On pose $S_0 = 0$ et $S_n = X_1 + \cdots + X_n$ ; pour un [[temps-arret|temps d'arrêt]] $T$, $S_T$ est défini sur $\{T < +\infty\}$, et l'on pose $S_T = 0$ ailleurs.
+    enonce: |
+      (i) *Première identité.* Si $T$ est un temps d'arrêt d'espérance finie, $S_T$ est intégrable et
+      $$E[S_T] = E[T]\,E[X_1].$$
+
+      (ii) *Seconde identité.* Si de plus $E[X_1] = 0$ et $\sigma^2 = E[X_1^2] < +\infty$, alors $E[S_T^2] = \sigma^2E[T]$.
+
+      (iii) *Temps d'atteinte d'une marche biaisée.* Soient $p \in \,]\frac12, 1[$, $q = 1 - p$, des $X_k$ égales à $1$ avec probabilité $p$ et à $-1$ avec probabilité $q$, un entier $b \geqslant 1$ et $T_b = \inf\{n : S_n = b\}$. Alors
+      $$E[T_b] = \frac{b}{p - q}.$$
+
+      (iv) Pour $p = \frac12$, le temps $T_1$ est d'espérance infinie.
+    preuve: |
+      (i) Pour $k \geqslant 1$, l'événement $\{T \geqslant k\} = \{T > k - 1\}$ appartient à $\mathcal F_{k-1}$ ({{mu-arret|Martingale arrêtée}}, (i)), et $X_k$ en est indépendante. Les variables ayant même loi ({{p-esperance|Espérance, variance}}, (i) et (iv)),
+      $$E\big[|X_k|\mathbf 1_{\{T \geqslant k\}}\big] = E[|X_1|]\,P(T \geqslant k),$$
+      et de même, sans valeur absolue, $E[X_k\mathbf 1_{\{T \geqslant k\}}] = E[X_1]\,P(T \geqslant k)$.
+
+      Comme $T = \sum_{k \geqslant 1}\mathbf 1_{\{T \geqslant k\}}$, la convergence monotone ({{m-beppo-levi|Convergence monotone}}, (ii)) donne $E[T] = \sum_{k \geqslant 1}P(T \geqslant k)$, et la variable $Z = \sum_{k \geqslant 1}|X_k|\mathbf 1_{\{T \geqslant k\}}$ est d'espérance $E[|X_1|]\,E[T] < +\infty$.
+
+      Comme $E[T] < +\infty$, $T$ est fini presque sûrement ({{m-integrale|Intégrale}}, (iv)), et alors
+      $$S_{T \wedge n} = \sum_{k=1}^n X_k\mathbf 1_{\{T \geqslant k\}} \longrightarrow S_T,$$
+      ces sommes étant dominées par $Z$. Par convergence dominée ({{m-convergence-dominee|Convergence dominée}}, (i)), $S_T$ est intégrable et
+      $$\begin{aligned} E[S_T] &= \lim_n \sum_{k=1}^n E[X_1]\,P(T \geqslant k) \\ &= E[X_1]\,E[T]. \end{aligned}$$
+
+      (ii) Pour $j < k$, la variable $Y = X_j\mathbf 1_{\{T \geqslant j\}}\mathbf 1_{\{T \geqslant k\}}$ est $\mathcal F_{k-1}$-mesurable et de carré intégrable, et $X_k$ est indépendante de $\mathcal F_{k-1}$ et centrée : $E[YX_k] = E[Y]\,E[X_k] = 0$ ({{p-esperance|Espérance, variance}}, (ii) et (iv)). De même, $E[X_k^2\mathbf 1_{\{T \geqslant k\}}] = \sigma^2P(T \geqslant k)$. En développant le carré, pour $m < n$,
+      $$\begin{aligned} &E\big[(S_{T \wedge n} - S_{T \wedge m})^2\big] \\ &= \sigma^2\sum_{k = m+1}^n P(T \geqslant k), \end{aligned}$$
+      et, avec $m = 0$, $E[S_{T \wedge n}^2] = \sigma^2\,E[T \wedge n]$.
+
+      Quand $n \to \infty$, $S_{T \wedge n} \to S_T$ presque sûrement. Le lemme de Fatou ({{m-fatou|Lemme de Fatou}}) donne d'abord $E[S_T^2] \leqslant \sigma^2E[T] < +\infty$, puis
+      $$E\big[(S_T - S_{T \wedge m})^2\big] \leqslant \sigma^2\sum_{k > m}P(T \geqslant k),$$
+      reste d'une série convergente, qui tend vers $0$ quand $m \to \infty$.
+
+      On écrit $S_T^2 - S_{T \wedge m}^2 = (S_T - S_{T \wedge m})(S_T + S_{T \wedge m})$. Par l'inégalité de Cauchy-Schwarz ({{p-esperance|Espérance, variance}}, (ii)), et comme $(u + v)^2 \leqslant 2u^2 + 2v^2$,
+      $$\begin{aligned} &\big|E[S_T^2] - E[S_{T \wedge m}^2]\big| \\ &\leqslant E\big[(S_T - S_{T \wedge m})^2\big]^{1/2} \cdot \big(4\sigma^2E[T]\big)^{1/2}, \end{aligned}$$
+      qui tend vers $0$. Donc $E[S_T^2] = \lim_m \sigma^2E[T \wedge m] = \sigma^2E[T]$, par convergence monotone.
+
+      (iii) On a $E[X_1] = p - q > 0$, et $T_b$ est un temps d'arrêt, puisque $\{T_b = n\} = \{S_1 \neq b, \dots, S_{n-1} \neq b, S_n = b\}$. Les pas valant $\pm 1$ et la marche partant de $0 < b$, on a $S_k < b$ pour $k < T_b$, donc $S_{T_b \wedge n} \leqslant b$ pour tout $n$.
+
+      Le temps d'arrêt $T_b \wedge n$ ({{mu-arret|Martingale arrêtée}}, (i)) est borné, et (i) donne
+      $$(p - q)\,E[T_b \wedge n] = E[S_{T_b \wedge n}] \leqslant b.$$
+      Par convergence monotone, $E[T_b] \leqslant b/(p - q) < +\infty$. On peut alors appliquer (i) à $T_b$ lui-même : comme $S_{T_b} = b$ presque sûrement, $b = (p - q)\,E[T_b]$.
+
+      (iv) Si $E[T_1]$ était fini, $T_1$ serait fini presque sûrement, et (i) donnerait $E[S_{T_1}] = E[T_1] \cdot 0 = 0$, alors que $S_{T_1} = 1$ presque sûrement.
+    remarques:
+      - |
+        Pour $p = 0{,}6$ et $b = 5$, la formule donne $E[T_b] = 25$ ; une simulation de $200\,000$ marches donne une moyenne de $24{,}99$. La marche avance en moyenne de $p - q = 0{,}2$ par pas, et met en moyenne le temps qu'il faudrait à un mobile de vitesse constante $0{,}2$ pour parcourir la distance $b$ : la première identité est une loi des grands nombres en un temps aléatoire.
+      - |
+        La seconde identité donne le temps moyen de la ruine du joueur ({{mk-ruine|Ruine du joueur}}) pour un jeu équitable. Pour une fortune initiale $x$ et l'objectif $N$, le temps $T$ y est d'espérance finie, et $S_T - x$ vaut $N - x$ avec probabilité $\frac xN$ et $-x$ sinon ; (ii), appliqué aux gains successifs, donne
+        $$\begin{aligned} E[T] &= (N - x)^2\frac xN + x^2\,\frac{N - x}N \\ &= x(N - x), \end{aligned}$$
+        soit $21$ pour $x = 3$ et $N = 10$. Pour un jeu biaisé, la première identité donne de même $E[S_T] - x = (p - q)\,E[T]$, qui est la seconde formule de {{mk-ruine|Ruine du joueur}}, (iv).
+      - |
+        L'hypothèse $E[T] < +\infty$ ne peut pas être levée. Pour la marche simple symétrique, $T_1$ est fini presque sûrement ({{mu-arret-doob|Théorème d'arrêt}}, (iv)), et pourtant $E[S_{T_1}] = 1$, alors que la formule donnerait $0$ : le point (iv) montre que c'est $E[T_1]$ qui est infini. La marche simple est récurrente nulle, ce que le nœud {{mk-recurrence-positive|Récurrence positive}} établit par l'absence de probabilité invariante ; Wald le retrouve. Partant de $0$, la marche fait un premier pas vers $\pm 1$, puis met pour revenir en $0$ un temps qui a, par symétrie, la loi de $T_1$ : $E_0[T_0] = 1 + E[T_1] = +\infty$.
+      - |
+        Wald a établi la première identité en 1944, dans *On cumulative sums of random variables* (Annals of Mathematical Statistics 15), pour l'analyse séquentielle, où l'on observe des données une à une et où le nombre d'observations est un temps d'arrêt. La seconde porte aussi son nom dans l'usage ; on ne lui en attribue pas ici la date.
+
+aretes:
+  - [mu-ui, mu-vitali]
+  - [mu-vitali, mu-fermees]
+  - [mu-fermees, mu-levy]
+  - [mu-fermees, mu-arret-doob]
+  - [mu-arret, mu-arret-doob]
+  - [mu-arret, mu-wald]
