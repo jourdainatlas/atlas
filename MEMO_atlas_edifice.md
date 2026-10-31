@@ -1127,3 +1127,16 @@ de ℝ³ est définie (sf-aire) ; en-têtes de derham et topalg). Accueil : ⋆ 
 les théories dont un théorème central équivaut au choix (convention de edifice.yaml, rappelée). §35 annoté.
 Signalés, non modifiés : étoiles des théories hom, derham, analyse-reelle (absentes par convention) ; renvoi indirect
 de edo vers la boule chevelue ; sf-gauss-bonnet pourrait renvoyer à cw-euler en remarque.
+
+## 76. Théorème de Dedekind (31 octobre 2026)
+
+Deux fiches dans hom-cohomologie, chaîne cs-division → cs-dedekind → cs-coefficients-universels (0 croisement ;
+hom inchangé ; aucune entrée nouvelle). cs-division : plus grand élément d'une partie finie d'un ordre total,
+hauteur, réduction « sous i » par une division euclidienne transfinie (principe d'induction de od-bon-ordre (ii),
+sans récursion transfinie). cs-dedekind : pour I bien ordonné, tout sous-groupe H de ℤ^(I) est libre, de base
+canonique (h_i) indexée par les pivots (n_i > 0), h_i unique relèvement réduit : aucun choix, pas de ⋆.
+cs-coefficients-universels (ii) : l'« Admis ici » est levé ; ⋆ restants : Zermelo (bon ordre des simplexes) et les
+antécédents (libre ⇒ projectif). Statut : Blass 1979, exemple 7.1, donne un contre-exemple dans un modèle de
+permutation de ZFA seulement ; l'indémontrabilité dans ZF n'est pas affirmée (Kleppmann 2015, §6.1, non vérifié).
+Lexique base-groupe-abelien ; schéma cs-dedekind (module topologie). Relu : source Blass (ZFA et non ZF), notations.
+966 nœuds, 563 termes, 82 graphes.

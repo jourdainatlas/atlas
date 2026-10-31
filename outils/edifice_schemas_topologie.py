@@ -1364,3 +1364,61 @@ def hj_jordan():
     S.point(R(*y), 't', r=4)
     S.texte(R(*y) + [-10, 0], 'y', 't', ancre='end')
     return S
+
+
+@schema('cs-dedekind')
+def cs_dedekind():
+    """Sous-groupe H de ℤ² engendré par (4, 2) et (5, 4) ; base canonique h_0 = (3, 0), h_1 = (1, 2)."""
+    from itertools import product
+    gens = [(4, 2), (5, 4)]
+    X, Y = range(-3, 7), range(-1, 5)
+    # appartenance à H : résolution exacte de c·(4, 2) + d·(5, 4) = (a, b) (déterminant 6)
+    def dans_H(a, b):
+        c, d = Fr(4 * a - 5 * b, 6), Fr(-2 * a + 4 * b, 6)     # inverse de [[4, 5], [2, 4]]
+        return c.denominator == 1 and d.denominator == 1
+    assert all(dans_H(*g) for g in gens)
+    H = [(a, b) for a, b in product(X, Y) if dans_H(a, b)]
+    # n_0 : H ∩ ℤe_0 = 3ℤe_0 ; n_1 : secondes coordonnées de H = 2ℤ (vérifié sur une fenêtre large)
+    larges = [(a, b) for a, b in product(range(-30, 31), repeat=2) if dans_H(a, b)]
+    n0 = min(abs(a) for a, b in larges if b == 0 and a != 0)
+    n1 = min(abs(b) for a, b in larges if b != 0)
+    assert (n0, n1) == (3, 2)
+    assert all(a % 3 == 0 for a, b in larges if b == 0) and all(b % 2 == 0 for a, b in larges)
+    # relèvements de n_1 dans la fenêtre, et l'unique réduit (0 ⩽ a < 3)
+    rel = [a for a in X if dans_H(a, 2)]
+    assert rel == [-2, 1, 4]
+    red = [a for a in rel if 0 <= a < n0]
+    assert red == [1]
+    h0, h1 = (3, 0), (1, 2)
+    assert dans_H(*h0) and dans_H(*h1) and h0[0] * h1[1] - h0[1] * h1[0] == 6
+    assert (h0[0] + h1[0], h0[1] + h1[1]) == (4, 2) and (h0[0] + 2 * h1[0], h0[1] + 2 * h1[1]) == (5, 4)
+    S = Schema(500, 350, 'Un sous-groupe de ℤ² et sa base canonique triangulaire')
+    R = Repere(-3.6, 6.6, -1.6, 4.9, 20, 18, 460, 304)
+    # bande de réduction 0 ⩽ a < 3 (verte), bords : a = 0 inclus (trait), a = 3 exclu (pointillé)
+    S.surface([R(0, -1.6), R(3, -1.6), R(3, 4.9), R(0, 4.9)], 'v')
+    S.ligne(R(0, -1.6), R(0, 4.9), 'v', l=1.2)
+    S.ligne(R(3, -1.6), R(3, 4.9), 'v', d=True, l=1.2)
+    S.texte(R(1.5, 4.9) + [0, 14], '0 ⩽ a < 3', 'v', taille=15)
+    # droite des multiples de e_0 et ligne b = 2
+    S.ligne(R(-3.6, 0), R(6.6, 0), 'g', l=1.2)
+    S.ligne(R(-3.6, 2), R(6.6, 2), 'g', d=True, l=1.0)
+    for a, b in product(X, Y):
+        if (a, b) not in H:
+            S.point(R(a, b), 'g', r=2.2)
+    for a, b in H:
+        S.point(R(a, b), 't', r=3.6)
+    for a in rel:
+        S.cercle(R(a, 2), 8.5, 'b')
+    o = R(0, 0)
+    for g in gens:
+        S.fleche(o, R(*g), 'b', retrait=5, l=1.6)
+    S.texte(R(4, 2) + [12, 16], '(4, 2)', 'b', ancre='start', taille=15)
+    S.texte(R(5, 4) + [0, -20], '(5, 4)', 'b', taille=15)
+    S.fleche(o, R(*h0), 'r', retrait=5, l=2.8)
+    S.fleche(o, R(*h1), 'r', retrait=5, l=2.8)
+    S.texte(R(*h0) + [6, 18], 'h_0', 'r', ancre='start', taille=17)
+    S.texte(R(*h1) + [-10, -16], 'h_1', 'r', ancre='end', taille=17)
+    S.texte(o + [-8, 16], '0', ancre='end', taille=15)
+    S.texte(R(6.6, 0) + [-4, 16], 'ℤe_0', 'g', ancre='end', taille=15)
+    S.texte(R(-3.6, 2) + [2, -14], 'b = 2', 'g', ancre='start', taille=15)
+    return S
