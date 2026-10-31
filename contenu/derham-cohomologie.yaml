@@ -1,0 +1,313 @@
+# Niveau 2 : structure interne du chapitre « Mayer-Vietoris et homotopie » (nœud derham-cohomologie du
+# graphe derham, créé le 31 oct. 2026). Calcul de la cohomologie de de Rham des ouverts de ℝⁿ en tout degré :
+# formule d'homotopie (opérateur d'intégration dans la direction du temps) et invariance par homotopie lisse ;
+# partition de l'unité subordonnée à deux ouverts, construite sans choix à partir des cubes du nœud
+# dr-recouvrement ; suite exacte courte des formes et suite exacte longue de Mayer-Vietoris, avec la formule
+# δ[η] = [dχ_V ∧ η] ; cohomologie de ℝⁿ ∖ {0} (récurrence sur n, deux ouverts étoilés) ; forme angle solide,
+# fermée et non exacte, d'intégrale non nulle sur le bord d'un cube ; champs de vecteurs tangents aux sphères
+# (version lisse du théorème de la boule chevelue).
+# Choix : aucun.
+
+graphe: derham-cohomologie
+titre: Mayer-Vietoris et homotopie
+conteneur: derham-cohomologie
+
+entrees:
+  dr-degre1: [dc-epointe]
+  dr-partition: [dc-partition]
+  dr-fermees: [dc-angle-solide]
+
+noeuds:
+  - id: dc-homotopie
+    etiquette: Formule d'homotopie
+    nature: théorème
+    titre: Formule d'homotopie et invariance de la cohomologie
+    texte: |
+      Dans ce chapitre, $U$ est un ouvert de $\lex{n-uplet}{\mathbb R^n}$, $V$ un ouvert de $\mathbb R^m$, et $\Omega^k(U)$ désigne l'espace vectoriel des formes différentielles de degré $k$ sur $U$ ({{gd-formes|Formes différentielles}}). Pour $s$ réel, $j_s : \mathbb R^n \to \mathbb R^{n+1}$ est l'application $x \mapsto (x, s)$.
+
+      Deux applications $f_0, f_1 : U \to V$ de classe $C^\infty$ sont **lissement homotopes** s'il existe un ouvert $W$ de $\mathbb R^{n+1}$ contenant $U \times [0, 1]$ et une application $F : W \to V$ de classe $C^\infty$ telle que $F \circ j_0 = f_0$ et $F \circ j_1 = f_1$ sur $U$. On dit que $F$ est une [[homotopie-lisse|homotopie lisse]] de $f_0$ à $f_1$.
+
+      Sur $W$, on note $(x_1, \dots, x_n, t)$ les coordonnées. Par {{v-algebre-exterieure|Algèbre extérieure}}, (i), une forme $\omega$ de degré $k$ sur $W$ s'écrit de manière unique
+      $$\omega = \sum_I a_I\,dx_I + \sum_J b_J\,dt \wedge dx_J,$$
+      où $I$ décrit les suites strictement croissantes de $k$ indices de $\{1, \dots, n\}$, et $J$ celles de $k - 1$ indices. On pose, pour $x \in U$,
+      $$(K\omega)_x = \sum_J \Big(\int_0^1 b_J(x, t)\,dt\Big)\,dx_J,$$
+      et $K\omega = 0$ si $k = 0$. C'est une forme de degré $k - 1$ sur $U$ : on intègre en $t$ la partie de $\omega$ qui contient $dt$.
+    enonce: |
+      (i) *Formule d'homotopie.* $K\omega$ est de classe $C^\infty$ sur $U$, $K$ est linéaire, et
+      $$j_1^*\omega - j_0^*\omega = d(K\omega) + K(d\omega).$$
+
+      (ii) *Invariance.* Si $f_0$ et $f_1$ sont lissement homotopes, elles induisent la même application $f_0^* = f_1^* : \lex{cohomologie-de-rham}{H^k}(V) \to H^k(U)$, pour tout $k$.
+
+      (iii) Si $f : U \to V$ et $g : V \to U$ sont de classe $C^\infty$, et si $g \circ f$ et $f \circ g$ sont lissement homotopes aux identités, $f^*$ est un isomorphisme de $H^k(V)$ sur $H^k(U)$. En particulier, la projection $p : U \times \mathbb R \to U$ induit des isomorphismes $H^k(U) \cong H^k(U \times \mathbb R)$.
+    preuve: |
+      (i) *Régularité.* La fonction $(t, x) \mapsto b_J(x, t)$ est continue sur $[0, 1] \times U$, ainsi que toutes ses dérivées partielles en $x$, puisque $b_J$ est de classe $C^\infty$ sur $W$. Par le nœud {{gd-schwarz|Schwarz, intégrales à paramètre}}, (ii), $x \mapsto \int_0^1 b_J(x, t)\,dt$ est de classe $C^\infty$, et l'on peut dériver sous l'intégrale.
+
+      *Réduction.* Les deux membres sont linéaires en $\omega$, puisque $d$, $K$ et les images réciproques le sont. L'application $j_s$, affine, vérifie $j_s^*(dx_l) = dx_l$ et $j_s^*(dt) = 0$ ({{gd-formes|Formes différentielles}}, (iii)). Il suffit de traiter deux types de formes. Notons aussi que, par linéarité, $K(c\,dt \wedge \beta) = \big(\int_0^1 c\,dt\big)\,\beta$ pour toute forme $\beta$ à coefficients constants en les seuls $dx_l$, et que $K$ est nulle sur les formes qui ne contiennent pas $dt$.
+
+      *Premier type : $\omega = a\,dx_I$.* Alors $j_s^*\omega = a(x, s)\,dx_I$ et $K\omega = 0$. D'autre part
+      $$d\omega = \sum_l \partial_{x_l}a\,dx_l \wedge dx_I + \partial_t a\,dt \wedge dx_I,$$
+      dont seul le dernier terme contient $dt$. Pour $x$ fixé, $t \mapsto a(x, t)$ est de classe $C^1$ sur $[0, 1]$, et le théorème fondamental ({{ar-tfa|Théorème fondamental}}) donne
+      $$\begin{aligned} K(d\omega) &= \big(a(x, 1) - a(x, 0)\big)\,dx_I \\ &= j_1^*\omega - j_0^*\omega. \end{aligned}$$
+
+      *Second type : $\omega = b\,dt \wedge dx_J$.* Alors $j_s^*\omega = 0$, puisque $j_s^*(dt) = 0$. Avec $B(x) = \int_0^1 b(x, t)\,dt$, on a $K\omega = B\,dx_J$, et, en dérivant sous l'intégrale,
+      $$d(K\omega) = \sum_l \Big(\int_0^1 \partial_{x_l}b\,dt\Big)\,dx_l \wedge dx_J.$$
+      D'autre part, $dt \wedge dt = 0$ et $dx_l \wedge dt = -dt \wedge dx_l$ ({{v-algebre-exterieure|Algèbre extérieure}}, (ii)), d'où
+      $$d\omega = -\sum_l \partial_{x_l}b\,dt \wedge dx_l \wedge dx_J,$$
+      et $K(d\omega)$ est exactement l'opposé de $d(K\omega)$. La somme est nulle, comme $j_1^*\omega - j_0^*\omega$.
+
+      (ii) Soit $F$ une homotopie lisse de $f_0$ à $f_1$. Pour $s \in [0, 1]$, $j_s$ envoie $U$ dans $W$, et $f_s = F \circ j_s$, donc $f_s^* = j_s^* \circ F^*$ ({{gd-formes|Formes différentielles}}, (iii)). Pour une forme fermée $\omega$ sur $V$, $F^*\omega$ est fermée, puisque $F^*$ commute à $d$, et (i) donne
+      $$f_1^*\omega - f_0^*\omega = d(KF^*\omega).$$
+      Les deux formes $f_1^*\omega$ et $f_0^*\omega$ ont donc la même classe.
+
+      (iii) Par (ii) et la fonctorialité du nœud {{gd-de-rham|Cohomologie de de Rham}}, (iv), $f^* \circ g^* = (g \circ f)^*$ et $g^* \circ f^* = (f \circ g)^*$ sont les identités, et $f^*$ est bijective.
+
+      Pour la projection $p(x, u) = x$, soit $s_0(x) = (x, 0)$. On a $p \circ s_0 = \mathrm{id}_U$, et $s_0 \circ p$ est lissement homotope à l'identité de $U \times \mathbb R$ par
+      $$F\big((x, u), t\big) = (x, tu),$$
+      définie et de classe $C^\infty$ sur l'ouvert $W = (U \times \mathbb R) \times \mathbb R$ de $\mathbb R^{n+2}$.
+    remarques:
+      - |
+        Le lemme de Poincaré ({{gd-poincare|Lemme de Poincaré}}) en est un cas particulier. Si $U$ est étoilé par rapport à $0$, l'application $F(x, t) = tx$ est définie sur l'ouvert $W = \{(x, t) \in U \times \mathbb R : tx \in U\}$, qui contient $U \times [0, 1]$, et c'est une homotopie lisse de l'application constante nulle à l'identité. L'image réciproque d'une forme de degré $k \geqslant 1$ par une application constante est nulle, et (i) donne, pour $\omega$ fermée, $\omega = d(KF^*\omega)$.
+
+        L'opérateur $KF^*$ est celui de la démonstration du nœud {{gd-poincare|Lemme de Poincaré}} : comme $F^*(dx_i) = t\,dx_i + x_i\,dt$, la partie de $F^*(a\,dx_I)$ qui contient $dt$ est $\sum_r (-1)^{r-1}\,t^{k-1}a(tx)\,x_{i_r}\,dt \wedge dx_{I \setminus i_r}$, et l'intégrer en $t$ redonne la formule de ce nœud.
+      - |
+        La formule (i) est l'analogue, pour les formes, de l'opérateur prisme du nœud {{h-homotopie|Invariance par homotopie}} : le prisme fabrique, à partir d'une chaîne, la chaîne balayée pendant l'homotopie, et $K$ intègre une forme le long de ce balayage. Dans les deux cas, la formule obtenue, $\partial P + P\partial = g_\# - f_\#$ ou $dK + Kd = j_1^* - j_0^*$, est une homotopie au sens des complexes ({{h-complexes|Complexes de chaînes}}, (iii)).
+      - |
+        L'erreur la plus répandue est d'oublier que l'homotopie doit être lisse, et définie sur un ouvert qui contient $U \times [0, 1]$, pour que $F^*\omega$ ait un sens. L'énoncé reste vrai pour deux applications lisses reliées par une homotopie seulement continue, mais la démonstration demande alors d'approcher l'homotopie par une homotopie lisse, ce qui n'est pas fait ici. Dans tous les exemples de ce chapitre, l'homotopie est donnée par une formule explicite.
+
+  - id: dc-partition
+    etiquette: Partition pour deux ouverts
+    nature: proposition
+    titre: Partition de l'unité subordonnée à deux ouverts
+    texte: |
+      Soit $U$ et $V$ deux ouverts de $\lex{n-uplet}{\mathbb R^n}$ et $X = U \cup V$. Pour un ouvert $A \neq \mathbb R^n$, on note
+      $$d_A(x) = \inf_{a \notin A}\,\|x - a\|_\infty.$$
+
+      Une fonction $\chi$ sur $X$ est **nulle près** d'une partie $P$ de $X$ si tout point de $P$ a un voisinage ouvert dans $X$ sur lequel $\chi$ est nulle.
+    enonce: |
+      (i) Il existe deux fonctions $\chi_U, \chi_V : X \to [0, 1]$ de classe $C^\infty$, de somme $1$, telles que $\chi_U$ soit nulle près de $X \setminus U$ et $\chi_V$ nulle près de $X \setminus V$. Elles sont construites ci-dessous sans aucun choix.
+
+      (ii) Si $\eta$ est une forme de degré $k$ sur $U \cap V$, la forme égale à $\chi_V\,\eta$ sur $U \cap V$ et à $0$ sur $U \setminus V$ est de classe $C^\infty$ sur $U$. De même, la forme égale à $\chi_U\,\eta$ sur $U \cap V$ et à $0$ sur $V \setminus U$ est de classe $C^\infty$ sur $V$.
+    preuve: |
+      (i) *Cas dégénérés.* Si $U = \mathbb R^n$ ou $V = \varnothing$, on prend $\chi_U = 1$ et $\chi_V = 0$ : la partie $X \setminus U$ est vide, et $\chi_V$ est nulle partout. On procède de même, en échangeant les rôles, si $V = \mathbb R^n$ ou $U = \varnothing$. On suppose désormais $U$ et $V$ non vides et distincts de $\mathbb R^n$.
+
+      *Une jauge adaptée aux deux ouverts.* Posons
+      $$\delta'(x) = \min\Big(1, \max\big(d_U(x), d_V(x)\big)\Big).$$
+      Pour $a \notin U$, $\|x - a\|_\infty \leqslant \|x - y\|_\infty + \|y - a\|_\infty$, et, en passant à la borne inférieure, $d_U(x) \leqslant \|x - y\|_\infty + d_U(y)$ : $d_U$, et de même $d_V$, sont $1$-lipschitziennes. Comme $|\max(a, b) - \max(a', b')| \leqslant \max(|a - a'|, |b - b'|)$ et que $s \mapsto \min(1, s)$ est $1$-lipschitzienne, $\delta'$ l'est aussi.
+
+      Soit $x \in X$. Il appartient à $U$ ou à $V$, et cet ouvert contient une boule de centre $x$ : la distance correspondante est strictement positive, et $\delta'(x) > 0$. Soit $A$ celui des deux ouverts pour lequel $d_A(x) = \max(d_U(x), d_V(x))$, $U$ en cas d'égalité. Tout $y$ tel que $\|y - x\|_\infty < \delta'(x) \leqslant d_A(x)$ est dans $A$, sans quoi $d_A(x) \leqslant \|x - y\|_\infty$ : ainsi $B_\infty(x, \delta'(x)) \subset A \subset X$. Si $x \notin X$, le choix $a = x$ donne $d_U(x) = d_V(x) = 0$, et $\delta'(x) = 0$.
+
+      La fonction $\delta'$, à valeurs dans $[0, 1]$, a donc, pour l'ouvert $X$, toutes les propriétés de la fonction $\delta$ énoncées au nœud {{dr-recouvrement|Recouvrement par des cubes}}, (i). Comme le précise ce nœud, ses énoncés (ii) à (v), et ceux du nœud {{dr-partition|Partition de l'unité}}, ne reposent que sur ces propriétés : ils valent pour la famille de cubes $B_i = B_\infty(p_i, r_i)$, $i \in I$, et la partition de l'unité $(\chi_i)$ construites avec $\delta'$ à la place de $\delta$.
+
+      *Répartition des cubes.* Soit $I_U$ l'ensemble des $i$ tels que $d_U(p_i) \geqslant d_V(p_i)$, et $I_V = I \setminus I_U$. Pour $i \in I_U$, on a $r_i < \delta'(p_i) \leqslant d_U(p_i)$ ; le cube fermé $\{y : \|y - p_i\|_\infty \leqslant r_i\}$ est donc contenu dans $U$, par l'argument précédent. De même, pour $i \in I_V$, il est contenu dans $V$. On pose
+      $$\chi_U = \sum_{i \in I_U} \chi_i, \qquad \chi_V = \sum_{i \in I_V} \chi_i.$$
+
+      Sur chaque voisinage $W_x$ du nœud {{dr-recouvrement|Recouvrement par des cubes}}, (iii), ces sommes n'ont qu'un nombre fini de termes non nuls : elles sont de classe $C^\infty$ sur $X$ ({{dr-partition|Partition de l'unité}}, (i)), positives, et de somme $\sum_i \chi_i = 1$, ce qui les place dans $[0, 1]$.
+
+      *Nullité près du complémentaire.* Soit $x \in X \setminus U$. Les cubes qui rencontrent $W_x$ sont en nombre fini. Pour ceux dont l'indice est dans $I_U$, le cube fermé est contenu dans $U$ et ne contient pas $x$ : $\|x - p_i\|_\infty > r_i$. Soit $\varepsilon > 0$ plus petit que $\delta'(x)/4$ et que les nombres $\|x - p_i\|_\infty - r_i$ correspondants. La boule $B_\infty(x, \varepsilon)$, contenue dans $W_x$, ne rencontre aucun cube d'indice dans $I_U$, et $\chi_U$ y est nulle, chaque $\chi_i$ étant nulle hors de $B_i$. Le cas de $\chi_V$ est symétrique.
+
+      (ii) Soit $O$ l'ensemble des points de $U$ qui ont un voisinage ouvert sur lequel $\chi_V$ est nulle. C'est un ouvert, qui contient $U \setminus V$ par (i), de sorte que $U = (U \cap V) \cup O$. La forme $\tilde\eta$ de l'énoncé est égale à $\chi_V\,\eta$, de classe $C^\infty$, sur $U \cap V$, et à $0$ sur $O$ : sur $O \cap V$, les deux expressions coïncident, puisque $\chi_V$ y est nulle.
+
+      Ses coefficients sont donc de classe $C^\infty$ sur deux ouverts de réunion $U$, et ils le sont sur $U$ ({{dr-partition|Partition de l'unité}}, (i)). Le second cas est symétrique.
+    remarques:
+      - |
+        Pour $X = \mathbb R$, $U = \,]{-\infty}, 1[$ et $V = \,]0, +\infty[$, on a $d_U(x) = \max(0, 1 - x)$ et $d_V(x) = \max(0, x)$, si bien que $\delta' = 1$ hors de $[0, 1]$ et $\delta'(x) = \max(1 - x, x)$ sur $[0, 1]$. Les cubes sont des intervalles : ceux de rayon $\frac18$ centrés en tous les points de $\frac1{16}\lex{ensemble-entiers-relatifs}{\mathbb Z}$, ceux de rayon $\frac1{16}$ centrés en $\frac1{32}\mathbb Z$, et un seul de rayon $\frac1{32}$, centré en $\frac12$, seul point où $\delta' = \frac12$. Un centre $p$ est attribué à $U$ si et seulement si $p \leqslant \frac12$.
+
+        ```schema dc-partition
+        Les fonctions $\chi_U$, en bleu, et $\chi_V$, en vert, calculées à partir de ces intervalles. La fonction $\chi_U$ vaut $1$ jusqu'à $x = \frac7{16}$ et s'annule à partir de $x = \frac58$, bien avant le point $1$, seul point de $X \setminus U$ au bord de $U$ ; la transition se fait sans angle, mais très vite, à cause de la platitude de la fonction $\theta$.
+        ```
+      - |
+        L'erreur la plus répandue est de se contenter de « $\chi_U$ nulle hors de $U$ ». Avec $U$ et $V$ comme ci-dessus et $\eta(x) = 1/x$ sur $U \cap V = \,]0, 1[$, une fonction $\chi_V$ qui serait nulle sur $]{-\infty}, 0]$ et vaudrait $x$ près de $0^+$ donnerait $\chi_V\,\eta = 1$ près de $0^+$, qui ne se prolonge pas par $0$ en une fonction continue sur $U$. C'est la nullité **près** du complémentaire, et non sur lui seul, qui permet le prolongement de (ii), quel que soit le comportement de $\eta$ au bord de $U \cap V$.
+      - |
+        Aucun choix n'intervient : la famille de cubes est donnée par une formule, et chaque cube est attribué à $U$ ou à $V$ par la comparaison de deux nombres. La même construction fournirait une partition de l'unité subordonnée à un nombre fini d'ouverts, avec la jauge $\min(1, \max_A d_A)$.
+
+  - id: dc-mayer-vietoris
+    etiquette: Mayer-Vietoris
+    nature: théorème
+    titre: Suite exacte de Mayer-Vietoris pour les formes
+    texte: |
+      Soit $U$ et $V$ deux ouverts de $\lex{n-uplet}{\mathbb R^n}$, $X = U \cup V$, et $\chi_U$, $\chi_V$ la partition de l'unité du nœud {{dc-partition|Partition pour deux ouverts}}. On note $\omega|_A$ la restriction d'une forme à un ouvert $A$.
+    enonce: |
+      (i) Pour tout $k$, la suite
+      $$\begin{aligned} 0 \to \Omega^k(X) &\xrightarrow{\ r\ } \Omega^k(U) \oplus \Omega^k(V) \\ &\xrightarrow{\ s\ } \Omega^k(U \cap V) \to 0, \end{aligned}$$
+      où $r(\omega) = (\omega|_U, \omega|_V)$ et $s(\alpha, \beta) = \alpha|_{U \cap V} - \beta|_{U \cap V}$, est une [[suite-exacte|suite exacte]], et $r$, $s$ commutent à $d$.
+
+      (ii) Il existe une suite exacte longue d'applications linéaires
+      $$\begin{aligned} 0 &\to \lex{cohomologie-de-rham}{H^0}(X) \to H^0(U) \oplus H^0(V) \\ &\to \cdots \to H^k(X) \\ &\xrightarrow{r^*} H^k(U) \oplus H^k(V) \\ &\xrightarrow{s^*} H^k(U \cap V) \\ &\xrightarrow{\ \delta\ } H^{k+1}(X) \to \cdots \end{aligned}$$
+      où $r^*$ et $s^*$ sont induites par $r$ et $s$. C'est la **suite de Mayer-Vietoris** des formes.
+
+      (iii) Pour une forme fermée $\eta$ de degré $k$ sur $U \cap V$, $\delta[\eta]$ est la classe de la forme $\omega$ sur $X$ égale à $d\chi_V \wedge \eta$ sur $U \cap V$ et à $0$ ailleurs.
+    preuve: |
+      (i) *Injectivité de $r$.* Si $\omega|_U = 0$ et $\omega|_V = 0$, alors $\omega = 0$ sur $U \cup V = X$.
+
+      *Exactitude au milieu.* $s \circ r = 0$. Réciproquement, si $\alpha|_{U \cap V} = \beta|_{U \cap V}$, la forme égale à $\alpha$ sur $U$ et à $\beta$ sur $V$ est bien définie ; ses coefficients sont de classe $C^\infty$ sur $U$ et sur $V$, donc sur $X$ ({{dr-partition|Partition de l'unité}}, (i)), et son image par $r$ est $(\alpha, \beta)$.
+
+      *Surjectivité de $s$.* Soit $\eta \in \Omega^k(U \cap V)$. Par {{dc-partition|Partition pour deux ouverts}}, (ii), la forme $\alpha$ égale à $\chi_V\,\eta$ sur $U \cap V$ et à $0$ sur $U \setminus V$ est dans $\Omega^k(U)$, et la forme $\beta$ égale à $-\chi_U\,\eta$ sur $U \cap V$ et à $0$ sur $V \setminus U$ est dans $\Omega^k(V)$. Alors
+      $$s(\alpha, \beta) = (\chi_V + \chi_U)\,\eta = \eta.$$
+
+      *Commutation.* La différentielle extérieure d'une forme ne fait intervenir, en chaque point, que les dérivées de ses coefficients en ce point : elle commute à la restriction, donc à $r$ et à $s$.
+
+      (ii) Posons $C_m = \Omega^{-m}(X)$, nul pour $m > 0$, et $\partial = d : C_m \to C_{m-1}$. C'est un complexe de chaînes au sens du nœud {{h-complexes|Complexes de chaînes}}, dont l'homologie en degré $m = -k$ est $Z^k(X)/B^k(X) = H^k(X)$, avec $B^0(X) = \{0\}$. Il en va de même pour $U$, $V$ et $U \cap V$. Par (i), $r$ et $s$ forment une suite exacte courte de complexes, et le nœud {{h-suite-exacte|Suite exacte longue}} donne une suite exacte longue.
+
+      Le morphisme de connexion va de l'homologie en degré $m = -k$ de $\Omega(U \cap V)$, soit $H^k(U \cap V)$, à celle de $\Omega(X)$ en degré $m - 1$, soit $H^{k+1}(X)$. La suite commence par $0 \to H^0(X)$, puisque $H^{-1}(U \cap V) = 0$. Les applications $r^*$ et $s^*$ sont linéaires, et $\delta$ aussi, par la formule de (iii).
+
+      (iii) On suit la définition du nœud {{h-suite-exacte|Suite exacte longue}}. Le couple $(\alpha, \beta)$ de la preuve de (i) relève $\eta$, et $\delta[\eta] = [\omega]$, où $\omega$ est l'unique forme sur $X$ telle que $r(\omega) = (d\alpha, d\beta)$.
+
+      Sur $U \cap V$, $d\alpha = d\chi_V \wedge \eta + \chi_V\,d\eta = d\chi_V \wedge \eta$ ({{gd-formes|Formes différentielles}}, (i)), puisque $d\eta = 0$. Sur l'ouvert de $U$ où $\chi_V$ est localement nulle, $\alpha = 0$ et $d\alpha = 0$.
+
+      De même $d\beta = -d\chi_U \wedge \eta$ sur $U \cap V$, et $d\chi_U = -d\chi_V$, puisque $\chi_U + \chi_V = 1$ ; et $d\beta = 0$ près de $V \setminus U$. La forme $\omega$ est donc $d\chi_V \wedge \eta$ sur $U \cap V$, et $0$ ailleurs.
+    remarques:
+      - |
+        C'est l'analogue, pour les formes, de la suite de Mayer-Vietoris de l'homologie ({{h-mayer-vietoris|Mayer-Vietoris}}), avec les flèches renversées : les formes se restreignent d'un grand ouvert vers un petit, alors que les chaînes vont d'un petit vers un grand. La difficulté change aussi de place. En homologie, c'est la surjectivité à droite qui est immédiate et l'identification de $C^{U,V}(X)$ à $C(X)$ qui demande les petites chaînes ; ici, c'est la surjectivité de $s$ qui demande un outil, la partition de l'unité.
+      - |
+        L'erreur la plus répandue porte sur le signe de $s$. Avec $s(\alpha, \beta) = \alpha + \beta$, la suite n'est plus exacte au milieu : $s(r(\omega)) = 2\,\omega|_{U \cap V}$ n'est pas nul. C'est la différence qui exprime qu'un couple de formes « se recolle ».
+      - |
+        La formule (iii) dit ce que fait le morphisme de connexion. En degré $0$, $\eta$ est une fonction localement constante sur $U \cap V$ : si $U \cap V$ a deux morceaux et que $\eta$ vaut $1$ sur l'un et $0$ sur l'autre, la forme $d\chi_V\,\eta$ est la différentielle d'une fonction qui passe de $0$ à $1$ là où $\chi_V$ passe de $0$ à $1$, sur un seul des deux morceaux. Elle est localement exacte, mais pas exacte en général : le nœud {{dc-epointe|ℝⁿ privé de l'origine}} le vérifie sur le plan épointé.
+
+  - id: dc-epointe
+    etiquette: ℝⁿ privé de l'origine
+    nature: théorème
+    titre: Cohomologie de de Rham de ℝⁿ privé de l'origine
+    texte: |
+      Pour $n \geqslant 1$, notons $X_n = \lex{n-uplet}{\mathbb R^n} \setminus \{0\}$. Pour $n \geqslant 2$, on écrit $x = (x', x_n)$ avec $x' \in \mathbb R^{n-1}$, on note $e_n$ le dernier vecteur de la base canonique,
+      $$L_\pm = \{(0, s) : \pm s \geqslant 0\}$$
+      les deux demi-axes fermés portés par $e_n$, et $U = \mathbb R^n \setminus L_-$, $V = \mathbb R^n \setminus L_+$ : ce sont deux ouverts, de réunion $X_n$.
+    enonce: |
+      (i) Pour $n = 1$, $\lex{cohomologie-de-rham}{H^0}(X_1)$ est de dimension $2$, et $H^k(X_1) = \{0\}$ pour $k \geqslant 1$.
+
+      (ii) Pour $n \geqslant 2$, $H^0(X_n)$ et $H^{n-1}(X_n)$ sont de dimension $1$, et $H^k(X_n) = \{0\}$ pour tout autre $k \geqslant 1$.
+
+      (iii) Pour $n \geqslant 2$, $U$ et $V$ sont étoilés, par rapport à $e_n$ et à $-e_n$ ; leur intersection est $X_{n-1} \times \mathbb R$, et le morphisme de connexion $\delta : H^k(U \cap V) \to H^{k+1}(X_n)$ est un isomorphisme pour tout $k \geqslant 1$.
+    preuve: |
+      (i) $X_1$ est la réunion des deux intervalles ouverts disjoints $]{-\infty}, 0[$ et $]0, +\infty[$, qui en sont les composantes connexes : $H^0(X_1)$ est de dimension $2$ ({{gd-de-rham|Cohomologie de de Rham}}, (i)). Une forme de degré $k \geqslant 2$ sur un ouvert de $\mathbb R$ est nulle ({{v-algebre-exterieure|Algèbre extérieure}}, (i)). Une forme de degré $1$ y est fermée, et elle a une primitive sur chaque intervalle, qui est étoilé ({{gd-poincare|Lemme de Poincaré}}, après translation) ; la fonction égale à l'une sur $]{-\infty}, 0[$ et à l'autre sur $]0, +\infty[$ est une primitive sur $X_1$.
+
+      (iii) *$U$ est étoilé par rapport à $e_n$.* Soit $x \in U$, $t \in [0, 1]$ et $y = e_n + t(x - e_n)$. Si $y$ était dans $L_-$, on aurait $tx' = 0$ et $1 + t(x_n - 1) \leqslant 0$ ; alors $t \neq 0$, donc $x' = 0$, et $x_n \leqslant 1 - \frac1t \leqslant 0$, c'est-à-dire $x \in L_-$, ce qui est exclu.
+
+      La symétrie $(x', x_n) \mapsto (x', -x_n)$ échange $U$ et $V$, et $V$ est étoilé par rapport à $-e_n$. Par translation ({{gd-de-rham|Cohomologie de de Rham}}, (iv)), puis par (ii) de ce même nœud, $H^k(U) = H^k(V) = \{0\}$ pour $k \geqslant 1$, et $H^0(U) \cong H^0(V) \cong \mathbb R$, formé des fonctions constantes.
+
+      Un point est dans $U \cap V$ si et seulement s'il n'est pas sur l'axe porté par $e_n$, c'est-à-dire si $x' \neq 0$ : $U \cap V = X_{n-1} \times \mathbb R$.
+
+      Pour $k \geqslant 1$, la suite de Mayer-Vietoris ({{dc-mayer-vietoris|Mayer-Vietoris}}, (ii)) contient le segment
+      $$\begin{aligned} 0 &= H^k(U) \oplus H^k(V) \to H^k(U \cap V) \\ &\xrightarrow{\delta} H^{k+1}(X_n) \\ &\to H^{k+1}(U) \oplus H^{k+1}(V) = 0, \end{aligned}$$
+      et l'exactitude rend $\delta$ injectif et surjectif.
+
+      (ii) Par {{dc-homotopie|Formule d'homotopie}}, (iii), $H^k(U \cap V) \cong H^k(X_{n-1})$ pour tout $k$. Le début de la suite de Mayer-Vietoris est
+      $$\begin{aligned} 0 \to H^0(X_n) &\to \mathbb R^2 \xrightarrow{s^*} H^0(U \cap V) \\ &\xrightarrow{\delta} H^1(X_n) \to 0, \end{aligned}$$
+      puisque $H^1(U) \oplus H^1(V) = 0$, où $s^*$ envoie $(a, b)$ sur la fonction constante $a - b$. Par exactitude, $H^0(X_n)$ est isomorphe au noyau de $s^*$, et $\delta$ induit un isomorphisme du quotient de $H^0(U \cap V)$ par l'image de $s^*$ sur $H^1(X_n)$ ({{v-quotient|Espace quotient}}).
+
+      *Cas $n = 2$.* $U \cap V$ est la réunion des deux demi-plans ouverts $x_1 < 0$ et $x_1 > 0$, et $H^0(U \cap V)$ est de dimension $2$. L'image de $s^*$ est formée des fonctions constantes, de dimension $1$, et son noyau, $\{a = b\}$, aussi. Donc $H^0(X_2)$ et $H^1(X_2)$ sont de dimension $1$. Pour $k \geqslant 1$, $H^{k+1}(X_2) \cong H^k(X_1) = \{0\}$ par (iii) et (i).
+
+      *Récurrence.* Supposons l'énoncé vrai pour $n - 1 \geqslant 2$. Alors $H^0(U \cap V) \cong H^0(X_{n-1})$ est de dimension $1$ : c'est l'espace des fonctions constantes, et $s^*$ est surjective, de noyau de dimension $1$. Donc $H^0(X_n)$ est de dimension $1$ et $H^1(X_n) = \{0\}$.
+
+      Pour $k \geqslant 1$, (iii) donne $H^{k+1}(X_n) \cong H^k(X_{n-1})$, de dimension $1$ si $k = n - 2$ et nul sinon. Les degrés $j = k + 1 \geqslant 2$ couvrent tous les degrés restants : $H^j(X_n)$ est de dimension $1$ si $j = n - 1$, et nul sinon.
+    remarques:
+      - |
+        Pour $n = 2$, on retrouve $\dim H^1(\mathbb R^2 \setminus \{0\}) = 1$, établi au nœud {{dr-degre1|De Rham en degré 1}} par la comparaison avec l'homologie. La démonstration est ici purement différentielle : deux ouverts étoilés, une partition de l'unité et l'algèbre de la suite exacte.
+
+        ```schema dc-epointe
+        Pour $n = 2$, l'ouvert $U$ est le plan privé du demi-axe $L_-$, tracé en bleu, et $V$ le plan privé de $L_+$, tracé en vert : chacun est étoilé, par rapport à $e_2$ et à $-e_2$, dont les segments vers trois points sont tracés. Leur intersection est formée des deux demi-plans $x_1 < 0$ et $x_1 > 0$ ; la fonction $\eta$ vaut $1$ sur le demi-plan grisé et $0$ sur l'autre.
+        ```
+      - |
+        Le morphisme de connexion se calcule. Pour $n = 2$, soit $\eta$ la fonction égale à $1$ sur le demi-plan $x_1 > 0$ et à $0$ sur $x_1 < 0$. Par {{dc-mayer-vietoris|Mayer-Vietoris}}, (iii), $\delta[\eta]$ est la classe de la forme $\omega$, égale à $d(\chi_V\eta)$ sur $U$ et à $-d(\chi_U\eta)$ sur $V$, ces fonctions étant prolongées par $0$.
+
+        Parcourons le bord du carré $[-1, 1]^2$ dans le sens direct en partant de $P = (0, -1)$, qui est dans $V$. On passe par $R = (1, 0)$, puis par $Q = (0, 1)$, qui est dans $U$, et par $L = (-1, 0)$ : de $P$ à $R$ et de $L$ à $P$, on reste dans $V$ ; de $R$ à $L$ en passant par $Q$, dans $U$. Avec les primitives $f_U = \chi_V\eta$ et $f_V = -\chi_U\eta$, et puisque $f_U - f_V = \eta$ sur $U \cap V$, l'intégrale de $\omega$ vaut ({{gd-integrale-curviligne|Intégrale d'une 1-forme}}, (i))
+        $$\begin{aligned} &\big(f_V(R) - f_V(P)\big) + \big(f_U(L) - f_U(R)\big) \\ &\quad + \big(f_V(P) - f_V(L)\big) \\ &= -\eta(R) + \eta(L) = -1. \end{aligned}$$
+        La forme $\omega$ n'est donc pas exacte : le saut de $\eta$, étalé par la partition de l'unité dans le demi-plan $x_1 > 0$, là où $\chi_V$ passe de $0$ à $1$, est devenu une période. Avec la jauge du nœud {{dc-partition|Partition pour deux ouverts}}, un cube de centre $p$ est attribué à $V$ si $d_V(p) > d_U(p)$, c'est-à-dire si $p_2 < -|p_1|$ : dans ce demi-plan, la transition se fait le long de la demi-diagonale $x_2 = -x_1$, et $\chi_V$ est nulle près de $L_+$.
+      - |
+        Le résultat (ii) peut surprendre : en degré $n$, toutes les formes de $X_n$ sont fermées, et elles sont toutes exactes, alors que l'origine a été retirée. Le trou est vu en degré $n - 1$, celui des formes qu'on intègre sur une sphère qui l'entoure, comme en homologie, où $X_n$ a l'homologie de $\lex{sphere-unite}{S^{n-1}}$ ({{h-applications|Brouwer, dimension}}, preuve de (iii)).
+
+  - id: dc-angle-solide
+    etiquette: Forme angle solide
+    nature: proposition
+    titre: La forme angle solide, fermée et non exacte
+    texte: |
+      Soit $n \geqslant 2$ et $X_n = \lex{n-uplet}{\mathbb R^n} \setminus \{0\}$. On note $|x| = \big(\sum_i x_i^2\big)^{1/2}$ et $F_i(x) = x_i\,|x|^{-n}$. La [[forme-angle-solide|forme angle solide]] est
+      $$\begin{aligned} \sigma_n = \sum_{i=1}^n (-1)^{i-1}F_i\,&dx_1 \wedge \cdots \wedge \widehat{dx_i} \\ &\wedge \cdots \wedge dx_n, \end{aligned}$$
+      où le chapeau signale le facteur omis.
+
+      Soit $K = [-1, 1]^n$ et $\alpha_K$ le cube affine du nœud {{dr-iterees|Intégrales itérées}}, (iii). Ses faces $c_{i,\varepsilon} = \alpha_K \circ \iota_{i,\varepsilon}$ ({{dr-cubes|Cubes singuliers}}) ont leur image dans le bord de $K$, qui évite $0$ : ce sont des cubes singuliers lisses de $X_n$, prolongés par l'application affine $\alpha_K \circ \iota_{i,\varepsilon}$ restreinte à l'image réciproque de $X_n$. On pose
+      $$z_n = \sum_{i=1}^n \sum_{\varepsilon = 0}^1 (-1)^{i+\varepsilon}\,c_{i,\varepsilon},$$
+      chaîne de $X_n$ que l'on appelle le **bord du cube**.
+    enonce: |
+      (i) $\sigma_n$ est une forme fermée de degré $n - 1$ sur $X_n$. Pour $n = 2$, c'est la forme $\frac{x\,dy - y\,dx}{x^2 + y^2}$ du nœud {{gd-integrale-curviligne|Intégrale d'une 1-forme}}.
+
+      (ii) $z_n$ est un cycle de $X_n$, et, en notant $|y|$ la norme euclidienne de $\mathbb R^{n-1}$,
+      $$\begin{aligned} \int_{z_n} \sigma_n &= 2n\int_{[-1, 1]^{n-1}} \big(1 + |y|^2\big)^{-n/2} \\ &> 0. \end{aligned}$$
+
+      (iii) $\sigma_n$ n'est pas exacte, et sa classe engendre $\lex{cohomologie-de-rham}{H^{n-1}}(X_n)$. Une forme fermée $\omega$ de degré $n - 1$ sur $X_n$ s'écrit $\omega = c\,\sigma_n + d\eta$, avec
+      $$c = \frac{\int_{z_n} \omega}{\int_{z_n} \sigma_n},$$
+      et elle est exacte si et seulement si $\int_{z_n} \omega = 0$.
+    preuve: |
+      (i) *Régularité.* La fonction $u \mapsto \sqrt u$ est dérivable sur $]0, +\infty[$, de dérivée $\frac1{2\sqrt u}$ ({{de-reciproque|Dérivée d'une réciproque}}) ; si elle est de classe $C^k$, sa dérivée, produit de constantes et de la composée de $u \mapsto 1/u$ avec elle, l'est aussi, et elle est de classe $C^{k+1}$. La fonction $|x|$, composée de la racine et d'un polynôme strictement positif sur $X_n$, est donc de classe $C^\infty$ et ne s'annule pas ; les $F_i$ aussi ({{gd-classe-ck|Classe Cᵏ}}, (iii)).
+
+      *Fermeture.* Dans $d(F_i\,dx_1 \wedge \cdots \wedge \widehat{dx_i} \wedge \cdots \wedge dx_n)$, seul le terme $\partial_iF_i\,dx_i \wedge \cdots$ subsiste, les autres contenant deux fois le même $dx_j$ ; ramener $dx_i$ à sa place coûte $i - 1$ transpositions ({{v-algebre-exterieure|Algèbre extérieure}}, (ii)), d'où
+      $$d\sigma_n = \Big(\sum_i \partial_iF_i\Big)\,dx_1 \wedge \cdots \wedge dx_n.$$
+      Or $\partial_i|x| = x_i/|x|$, d'où $\partial_iF_i = |x|^{-n} - n\,x_i^2\,|x|^{-n-2}$, et
+      $$\sum_i \partial_iF_i = n\,|x|^{-n} - n\,|x|^2\,|x|^{-n-2} = 0.$$
+      Pour $n = 2$, $\sigma_2 = (x_1\,dx_2 - x_2\,dx_1)/|x|^2$.
+
+      (ii) *Cycle.* L'inclusion $X_n \to \mathbb R^n$ induit un morphisme $Q(X_n) \to Q(\mathbb R^n)$ qui commute au bord ({{dr-cubes|Cubes singuliers}}, (iii)) ; il est injectif, puisque deux cubes distincts de $X_n$ restent distincts dans $\mathbb R^n$. Il envoie $z_n$ sur $\partial\alpha_K$, où $\alpha_K$, prolongé par l'application affine définie sur $\mathbb R^n$ tout entier, est un cube de $\mathbb R^n$. Donc $\partial z_n$ a pour image $\partial\partial\alpha_K = 0$ ({{dr-cubes|Cubes singuliers}}, (ii)), et $\partial z_n = 0$.
+
+      *Intégrale sur une face.* Soit $s = 2\varepsilon - 1$ et $K' = [-1, 1]^{n-1}$. La face $c_{i,\varepsilon}$ envoie $t \in I^{n-1}$ sur le point de coordonnée $s$ en position $i$ et de coordonnées $2t_l - 1$ aux autres places, dans l'ordre. L'image réciproque de $dx_i$ est nulle, et celle de chaque autre $dx_l$ est $2\,dt_{l'}$, où $l'$ est le rang de $l$ parmi les indices autres que $i$. Seul le terme d'indice $i$ de $\sigma_n$ subsiste, et
+      $$\begin{aligned} c_{i,\varepsilon}^*\sigma_n &= (-1)^{i-1}\,2^{n-1}\,(F_i \circ c_{i,\varepsilon}) \\ &\quad dt_1 \wedge \cdots \wedge dt_{n-1}. \end{aligned}$$
+
+      Par le changement de variable affine du nœud {{dr-iterees|Intégrales itérées}}, (iii), avec $v(K') = 2^{n-1}$, et en notant $\iota_{i,s}(y)$ le point obtenu en insérant $s$ en position $i$ dans $y \in K'$,
+      $$\int_{c_{i,\varepsilon}} \sigma_n = (-1)^{i-1}\int_{K'} F_i \circ \iota_{i,s}.$$
+      Or $|\iota_{i,s}(y)|^2 = 1 + |y|^2$, et $F_i(\iota_{i,s}(y)) = s\,(1 + |y|^2)^{-n/2}$.
+
+      *Somme.* Le coefficient de cette face dans $z_n$ est $(-1)^{i+\varepsilon}$, et $(-1)^{i+\varepsilon}(-1)^{i-1}s = (-1)^{\varepsilon+1}(2\varepsilon - 1) = 1$ pour $\varepsilon = 0$ comme pour $\varepsilon = 1$. Chacune des $2n$ faces contribue donc pour $J_n = \int_{K'}(1 + |y|^2)^{-n/2}$.
+
+      Sur $K'$, $|y|^2 \leqslant n - 1$ et l'intégrande est minorée par $n^{-n/2} > 0$ ; par {{dr-iterees|Intégrales itérées}}, (ii), $J_n \geqslant 2^{n-1}n^{-n/2} > 0$.
+
+      (iii) Si $\sigma_n = d\eta$, son intégrale sur le cycle $z_n$ serait nulle ({{dr-fermees|Formes exactes et cycles}}, (i)), ce que (ii) interdit. La classe $[\sigma_n]$ n'est donc pas nulle, et elle engendre $H^{n-1}(X_n)$, qui est de dimension $1$ ({{dc-epointe|ℝⁿ privé de l'origine}}, (ii)).
+
+      Pour $\omega$ fermée, il existe donc un réel $c$ tel que $\omega - c\,\sigma_n = d\eta$. Intégrons sur $z_n$ : le terme $\int_{z_n} d\eta$ est nul, d'où la valeur de $c$. Enfin $\omega$ est exacte si et seulement si $c = 0$, c'est-à-dire si et seulement si $\int_{z_n} \omega = 0$.
+    remarques:
+      - |
+        Pour $n = 2$, $\int_{z_2} \sigma_2 = 4\int_{-1}^1 \frac{dt}{1 + t^2}$, l'intégrale du nœud {{dr-degre1|De Rham en degré 1}}. Pour $n = 3$, on trouve numériquement $6J_3 \approx 12{,}566$, et pour $n = 4$, $8J_4 \approx 19{,}739$ : ce sont, à la précision du calcul, $4\pi$ et $2\pi^2$, aires des sphères $S^2$ et $S^3$, le nombre $\pi$ étant défini en {{anc|analyse complexe}}, qui n'est pas un ancêtre de cette branche. L'intégrale de $\sigma_n$ sur le bord du cube est l'aire de la sphère unité, parce que $\sigma_n$ « projette » chaque face sur la sphère, depuis l'origine.
+      - |
+        La valeur de $\sigma_n$ en $x$ sur des vecteurs $v_1, \dots, v_{n-1}$ est $\det(x, v_1, \dots, v_{n-1})/|x|^n$. Sur la sphère unité, c'est le volume du parallélépipède construit sur la normale $x$ et sur les $v_l$ : pour $n = 3$, on retrouve la forme volume de $S^2$ du nœud {{gd-formes-varietes|Formes sur une variété}}. Le champ $F = x/|x|^n$, dont $\sigma_n$ est le flux, est le champ électrique d'une charge ponctuelle pour $n = 3$, et (iii) est une forme de la loi de Gauss de l'électrostatique : toute $(n-1)$-forme fermée a, sur le bord du cube $[-1, 1]^n$ qui entoure la charge, un flux qui détermine sa classe. Que le flux de $F$ soit le même à travers toute surface fermée entourant la charge, comme l'affirme la loi physique, demanderait d'intégrer sur d'autres cycles que $z_n$ ; ce n'est pas démontré ici.
+      - |
+        L'erreur la plus tentante est d'appliquer la formule de la divergence ({{dr-green|Green-Riemann, divergence}}, (iii)) sur $K$ tout entier : la divergence de $F$ est nulle, et l'on conclurait à un flux nul. Mais $F$ n'est pas défini en $0$, qui est dans $K$, et la formule ne s'applique pas ; c'est précisément ce défaut que mesure la classe de $\sigma_n$.
+
+  - id: dc-chevelue
+    etiquette: Champs tangents aux sphères
+    nature: théorème
+    titre: Champs de vecteurs tangents aux sphères de dimension paire
+    enonce: |
+      Soit $n \geqslant 2$ et $v : \lex{sphere-unite}{S^{n-1}} \to \lex{n-uplet}{\mathbb R^n}$ la restriction d'une application de classe $C^\infty$ définie sur un ouvert contenant $S^{n-1}$. Si $v(x)$ est orthogonal à $x$ et non nul en tout point $x$ de $S^{n-1}$, alors $n$ est pair.
+
+      Autrement dit, sur une sphère de dimension paire, $S^2$, $S^4$, et ainsi de suite, tout champ de vecteurs tangent de classe $C^\infty$ s'annule en au moins un point.
+    preuve: |
+      Notons $\langle x, y \rangle = \sum_i x_iy_i$, $|x| = \langle x, x \rangle^{1/2}$, $X_n = \mathbb R^n \setminus \{0\}$, et $\tilde v : O \to \mathbb R^n$ l'application qui prolonge $v$.
+
+      *Un champ homogène.* Pour $x \in X_n$, le point $x/|x|$ est sur la sphère, et $v(x/|x|) \neq 0$. Posons
+      $$w(x) = |x|\,\frac{\tilde v(x/|x|)}{|\tilde v(x/|x|)|}.$$
+      C'est une application de classe $C^\infty$ sur $X_n$, par composition ({{gd-classe-ck|Classe Cᵏ}}, (iii)) et parce que la norme est de classe $C^\infty$ hors de $0$ ({{dc-angle-solide|Forme angle solide}}, preuve de (i)). Elle vérifie $\langle x, w(x) \rangle = 0$ et $|w(x)| = |x|$.
+
+      *Une homotopie de l'identité à la symétrie.* Sur $W = X_n \times \mathbb R$, posons
+      $$F(x, t) = (1 - 2t)\,x + 2t(1 - t)\,w(x).$$
+      Comme $x$ et $w(x)$ sont orthogonaux et de même norme,
+      $$\begin{aligned} |F(x, t)|^2 &= \Big((1 - 2t)^2 + 4t^2(1 - t)^2\Big) \\ &\quad \times |x|^2. \end{aligned}$$
+      Le facteur entre parenthèses ne s'annule pas : le premier terme n'est nul que pour $t = \frac12$, où le second vaut $\frac14$. Ainsi $F$ est à valeurs dans $X_n$ ; c'est une [[homotopie-lisse|homotopie lisse]] de l'identité de $X_n$ à la symétrie $x \mapsto -x$.
+
+      *Conclusion.* Par {{dc-homotopie|Formule d'homotopie}}, (ii), la symétrie $\varsigma(x) = -x$ induit l'identité sur $\lex{cohomologie-de-rham}{H^{n-1}}(X_n)$. Or $\varsigma^*(x_i) = -x_i$, $\varsigma^*(dx_i) = -dx_i$ ({{gd-formes|Formes différentielles}}, (iii)) et $|\varsigma(x)| = |x|$ ; chaque terme de la forme angle solide contient une coordonnée et $n - 1$ différentielles, d'où
+      $$\varsigma^*\sigma_n = (-1)^n\,\sigma_n.$$
+      Les classes $[\sigma_n]$ et $(-1)^n[\sigma_n]$ sont donc égales. Comme $[\sigma_n] \neq 0$ ({{dc-angle-solide|Forme angle solide}}, (iii)), $(-1)^n = 1$, et $n$ est pair.
+    remarques:
+      - |
+        Pour $n$ pair, la réciproque est vraie : le champ $v(x) = (-x_2, x_1, -x_4, x_3, \dots, -x_n, x_{n-1})$ est polynomial, orthogonal à $x$, et de même norme que $x$, donc non nul sur la sphère. Pour $n = 2$, c'est le champ des rotations du cercle, tracé au nœud {{gd-fibre-tangent|Fibré tangent}}.
+
+        ```schema dc-chevelue
+        Pour $n = 2$ et le champ des rotations, le chemin $t \mapsto F(x, t)$, en rouge, va du point $x$ au point $-x$ en contournant l'origine du côté de $w(x)$, en bleu, sans jamais passer par $0$. Tous ces chemins, issus des différents points du cercle, tournent dans le même sens : c'est ce qui rend la symétrie homotope à l'identité, ce qu'aucun champ ne permet sur $S^2$.
+        ```
+      - |
+        Le théorème a été démontré par Poincaré pour la sphère $S^2$, en 1885, et étendu par Brouwer aux sphères de dimension paire en 1912. Il vaut pour les champs seulement continus ; ce cas se ramène au cas lisse en approchant le champ par un champ lisse, ce qui demande un théorème d'approximation qui n'est pas un ancêtre de cette branche, et il est admis ici.
+      - |
+        Sur la sphère terrestre, à chaque instant, la composante horizontale du vent est un champ tangent continu : par le cas continu du théorème, admis ici, elle s'annule en au moins un point. Ce n'est pas une affirmation météorologique, mais topologique : l'argument ne connaît ni la physique de l'atmosphère ni la régularité du vent au-delà de la continuité, et il ne dit pas où se trouve ce point.
+
+aretes:
+  - [dc-partition, dc-mayer-vietoris]
+  - [dc-homotopie, dc-epointe]
+  - [dc-mayer-vietoris, dc-epointe]
+  - [dc-epointe, dc-angle-solide]
+  - [dc-angle-solide, dc-chevelue]

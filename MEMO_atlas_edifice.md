@@ -1066,3 +1066,18 @@ Hᵏ(ℝPⁿ) = 0 pour k > n (Mayer-Vietoris, rétraction de ℝPⁿ privé d'un
 Borsuk-Ulam. Relu : un trou (Dedekind, désormais admis), « scindée » précisé, Baer 1934 avant Eilenberg-Mac Lane
 1942, « demande le choix » → « emploie le choix ». Pas d'homologie cellulaire, ni Künneth, ni anneau du tore.
 904 nœuds, 533 termes, 77 graphes.
+
+## 72. Cohomologie de de Rham en tout degré ; dualité de Poincaré (31 octobre 2026)
+
+Le nœud `derham` devient « Cohomologie de de Rham » (texte récrit) ; trois chapitres nouveaux. derham-cohomologie
+(6 fiches dc-*) : homotopie lisse, Mayer-Vietoris, H^k(ℝⁿ ∖ {0}) (forme angle solide), théorème de la boule chevelue
+en dimension paire. derham-tout-degre (8 fiches dt-*) : de Rham en tout degré pour les ouverts de ℝⁿ par la méthode de
+Weil (nerf du recouvrement par cubes, deux complexes doubles), sans choix, sauf dt-dualite (⋆ Zorn : dual de
+l'homologie lisse en degré k ≥ 1, injectivité en degré 1 exceptée) ; l'identification cochaînes lisses / continues est
+admise. Dépend de hom-cohomologie (dt-cochaines cite cs-cochaines et complexe-cochaines) : publié après §71.
+derham-poincare (9 fiches pc-*) : cohomologie à support compact, H^n_c(ℝⁿ) ≅ ℝ, dualité de Poincaré pour tout ouvert
+de ℝⁿ sans choix (réunions finies de pavés, puis passage à la limite par Mittag-Leffler avec la norme minimale).
+dr-recouvrement (ii) passé à r_i/4. Relu : statut du choix en degré 1 surestimé, remarque fausse sur L₊,
+identification lisse/continue présentée à tort comme démontrée, quatre fautes mineures, historique Poincaré
+1893/1895 et Heegaard 1898. Non traités : variétés compactes, cohomologie des sphères Sⁿ elles-mêmes (remarques).
+930 nœuds, 540 termes, 80 graphes ; edifice 16, derham et ses chapitres 0.

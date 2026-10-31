@@ -1,0 +1,392 @@
+# Niveau 2 : structure interne du chapitre « Théorème de de Rham en tout degré » (nœud derham-tout-degre du
+# graphe derham, créé le 31 oct. 2026). Pour un ouvert U de ℝⁿ : simplexes singuliers lisses, intégration
+# d'une k-forme sur un simplexe par l'application q_k : I^k → Δ_k (celle du nœud dr-chaines pour k = 2),
+# formule de Stokes pour les simplexes (les faces dégénérées de q_k ne comptent pas) ; cochaînes lisses à
+# valeurs réelles, petites chaînes et homotopies lisses ; lemme du complexe double (rangées exactes ⇒
+# l'augmentation est un quasi-isomorphisme) ; partition de l'unité à supports dans des demi-cubes ; complexe
+# de Čech-de Rham du recouvrement par les cubes du nœud dr-recouvrement, de nerf ordonné, et son analogue
+# pour les cochaînes lisses (homotopie par le plus petit indice) ; théorème : l'intégration induit un
+# isomorphisme de H^k_dR(U) sur la cohomologie des cochaînes lisses (démonstration de Weil, 1952) ; dualité
+# avec l'homologie lisse, ⋆ (prolongement de morphismes à valeurs dans ℝ par le lemme de Zorn).
+# Choix : aucun jusqu'au théorème ; lemme de Zorn pour la forme duale (dt-dualite) en degré k ⩾ 1, sauf pour
+# l'injectivité en degré 1 ; le degré 0 s'en passe. dr-degre1 donne sans choix l'énoncé dual en degré 1 pour
+# l'homologie singulière continue (le passage lisse/continu est admis).
+
+graphe: derham-tout-degre
+titre: Théorème de de Rham en tout degré
+conteneur: derham-tout-degre
+
+entrees:
+  derham-cohomologie: [dt-cochaines, dt-theoreme]
+  dr-degre1: [dt-dualite]
+
+noeuds:
+  - id: dt-simplexes
+    etiquette: Simplexes lisses
+    nature: proposition
+    titre: Simplexes singuliers lisses et formule de Stokes
+    texte: |
+      Soit $U$ un ouvert de $\lex{n-uplet}{\mathbb R^n}$ et $k \in \lex{ensemble-entiers-naturels}{\mathbb N}$. Un [[simplexe-lisse|simplexe singulier lisse]] de dimension $k$ de $U$ est un simplexe singulier $\sigma : \Delta_k \to U$ ({{h-singuliere|Homologie singulière}}) qui est la restriction d'une application $\tilde\sigma : W \to U$ de classe $C^\infty$, définie sur un ouvert $W$ de $\mathbb R^{k+1}$ contenant $\Delta_k$. On note $C^\infty_k(U)$ le sous-groupe de $C_k(U)$ qu'ils engendrent.
+
+      Pour $k \geqslant 1$, soit $q_k : \mathbb R^k \to \mathbb R^{k+1}$ l'application polynomiale $s \mapsto (t_0, \dots, t_k)$ définie par $t_0 = 1 - s_1$, $t_k = s_1 \cdots s_k$ et, pour $1 \leqslant m \leqslant k - 1$,
+      $$t_m = s_1 \cdots s_m\,(1 - s_{m+1}).$$
+      Pour $k = 0$, $q_0$ est le point $e_0 = 1$ de $\mathbb R^1$.
+
+      Pour une forme différentielle $\omega$ de degré $k$ sur $U$, on pose
+      $$\int_\sigma \omega = \int_{\sigma \circ q_k} \omega,$$
+      intégrale sur un cube singulier lisse ({{dr-integrale-cubes|Intégrale sur une chaîne}}), et l'on prolonge en un morphisme $C^\infty_k(U) \to \lex{ensemble-reels}{\mathbb R}$ ({{h-complexes|Complexes de chaînes}}, (i)).
+    enonce: |
+      (i) Si $\mu : \Delta_m \to \Delta_k$ est la restriction d'une application affine de $\mathbb R^{m+1}$ dans $\mathbb R^{k+1}$, par exemple une face $\delta_i$ ou un simplexe affine $[w_0, \dots, w_m]$ de $\Delta_k$ ({{h-subdivision|Subdivision barycentrique}}), et si $\sigma$ est lisse, $\sigma \circ \mu$ est lisse. En particulier, $C^\infty(U)$ est un sous-complexe de $C(U)$. Si $\varphi : U \to V$ est de classe $C^\infty$, $\varphi \circ \sigma$ est lisse.
+
+      (ii) $q_k$ envoie $I^k$ dans $\Delta_k$, et $\sigma \circ q_k$ est un cube singulier lisse. Pour $k \geqslant 1$,
+      $$\begin{aligned} \partial(\sigma \circ q_k) &= \sum_{i=0}^k (-1)^i\,(\sigma \circ \delta_i) \circ q_{k-1} \\ &\quad + \sum_{j=1}^{k-1} (-1)^j\,c_j, \end{aligned}$$
+      où $c_j = \sigma \circ q_k \circ \iota_{j,0}$ est, pour $k \geqslant 2$, un cube dégénéré au sens du nœud {{dr-integrale-cubes|Intégrale sur une chaîne}}, (v).
+
+      (iii) *Formule de Stokes.* Pour $k \geqslant 1$, toute forme $\omega$ de degré $k - 1$ sur $U$ et toute chaîne $z \in C^\infty_k(U)$,
+      $$\int_z d\omega = \int_{\partial z} \omega.$$
+
+      (iv) Pour $k = 0$, $\int_\sigma f = f(\sigma(e_0))$. Pour $k = 1$, $q_1(s) = (1 - s, s)$, et si $\omega$ est fermée, $\int_\sigma \omega$ est l'intégrale du nœud {{dr-chaines|Intégration sur les chaînes}}.
+    preuve: |
+      (i) Soit $\tilde\mu$ l'application affine qui prolonge $\mu$. L'ouvert $\tilde\mu^{-1}(W)$ contient $\Delta_m$, puisque $\mu(\Delta_m) \subset \Delta_k \subset W$, et $\tilde\sigma \circ \tilde\mu$, composée d'applications de classe $C^\infty$, l'est ({{gd-classe-ck|Classe Cᵏ}}, (iii)) ; elle prolonge $\sigma \circ \mu$. Les faces $\delta_i$, qui insèrent un $0$, sont des restrictions d'applications linéaires : le bord d'un simplexe lisse est une chaîne lisse. Enfin $\varphi \circ \tilde\sigma$ prolonge $\varphi \circ \sigma$.
+
+      (ii) *Image.* Pour $s \in I^k$, les $t_m$ sont positifs, et leur somme est télescopique :
+      $$\begin{aligned} &(1 - s_1) + s_1(1 - s_2) + \cdots \\ &\quad + s_1 \cdots s_k = 1. \end{aligned}$$
+      Donc $q_k(I^k) \subset \Delta_k \subset W$, et $\tilde\sigma \circ q_k$, définie sur l'ouvert $q_k^{-1}(W)$ qui contient $I^k$, prolonge $\sigma \circ q_k$.
+
+      *Les faces.* La face $(i, \varepsilon)$ du cube $q_k$ est $q_k \circ \iota_{i,\varepsilon}$, de signe $(-1)^{i+\varepsilon}$ dans le bord ({{dr-cubes|Cubes singuliers}}). Notons $u = (u_1, \dots, u_{k-1})$ la variable de la face.
+
+      Face $(1, 1)$, de signe $+$ : $s_1 = 1$ donne $t_0 = 0$, et les autres coordonnées sont celles de $q_{k-1}(u)$ avec $u = (s_2, \dots, s_k)$ : c'est $\delta_0 \circ q_{k-1}$.
+
+      Face $(j, 1)$, pour $2 \leqslant j \leqslant k$, de signe $(-1)^{j+1} = (-1)^{j-1}$ : $s_j = 1$ donne $t_{j-1} = 0$. Avec $u = (s_1, \dots, \widehat{s_j}, \dots, s_k)$, on a $t_m = q_{k-1}(u)_m$ pour $m \leqslant j - 2$ et $t_m = q_{k-1}(u)_{m-1}$ pour $m \geqslant j$, puisque le facteur $s_j = 1$ disparaît des produits : c'est $\delta_{j-1} \circ q_{k-1}$.
+
+      Face $(k, 0)$, de signe $(-1)^k$ : $s_k = 0$ donne $t_k = 0$ et $t_{k-1} = s_1 \cdots s_{k-1}$, les autres coordonnées étant inchangées : c'est $\delta_k \circ q_{k-1}$.
+
+      Face $(j, 0)$, pour $1 \leqslant j \leqslant k - 1$, de signe $(-1)^j$ : $s_j = 0$ annule $t_m$ pour $m \geqslant j$, et $t_{j-1} = s_1 \cdots s_{j-1}$. Le résultat ne dépend pas des variables $u_j, \dots, u_{k-1}$ de la face, qui existent puisque $j \leqslant k - 1$ : le cube $c_j$ est dégénéré.
+
+      Toutes ces égalités sont des égalités d'applications $I^{k-1} \to \Delta_k$, et l'on compose par $\sigma$. Le calcul a été vérifié par un calcul formel pour $k \leqslant 4$.
+
+      (iii) Soit $\sigma$ un simplexe lisse de dimension $k \geqslant 1$. Par la formule de Stokes pour les cubes ({{dr-stokes|Formule de Stokes}}) et (ii),
+      $$\begin{aligned} \int_\sigma d\omega &= \int_{\partial(\sigma \circ q_k)} \omega \\ &= \sum_{i=0}^k (-1)^i\int_{\sigma \circ \delta_i} \omega \\ &\quad + \sum_{j=1}^{k-1} (-1)^j\int_{c_j} \omega. \end{aligned}$$
+      Pour $k \geqslant 2$, les cubes $c_j$, de dimension $k - 1 \geqslant 1$, sont dégénérés, et les intégrales correspondantes sont nulles ({{dr-integrale-cubes|Intégrale sur une chaîne}}, (v)) ; pour $k = 1$, la seconde somme est vide. Il reste $\int_{\partial\sigma} \omega$, puisque $\partial\sigma = \sum_i (-1)^i\,\sigma \circ \delta_i$. On conclut par linéarité.
+
+      (iv) Pour $k = 0$, $\sigma \circ q_0$ est le point $\sigma(e_0)$, et l'intégrale d'une fonction sur un cube de dimension $0$ est sa valeur ({{dr-integrale-cubes|Intégrale sur une chaîne}}). Pour $k = 1$, le chemin $\sigma \circ q_1$ est le chemin $\sigma \circ \alpha$ du nœud {{dr-chaines|Intégration sur les chaînes}}, et les deux intégrales coïncident sur un chemin de classe $C^1$ ({{dr-integrale-cubes|Intégrale sur une chaîne}}, (iii), et {{dr-integrale|Intégrale le long d'un chemin continu}}, (ii)).
+    remarques:
+      - |
+        Pour $k = 2$, $q_2(s, t) = (1 - s, s(1 - t), st)$ est l'application qui a servi, au nœud {{dr-chaines|Intégration sur les chaînes}}, à ramener le bord d'un triangle à celui d'un carré : le côté gauche du carré est écrasé sur le sommet $e_0$, et c'est la face dégénérée $c_1$. Pour $k = 3$, l'application $q_3$ écrase la face $s_1 = 0$ du cube sur le sommet $e_0$ et la face $s_2 = 0$ sur l'arête de $e_0$ à $e_1$ ; les quatre autres faces deviennent les quatre faces du tétraèdre, avec les signes du bord simplicial.
+      - |
+        On intègre sur des simplexes, et non directement sur des cubes, parce que l'homologie singulière du chapitre {{hom|Homologie}} est faite de simplexes : subdivision barycentrique, petites chaînes et opérateur prisme y sont déjà démontrés, et les points (i) et (ii) permettent de les reprendre pour les simplexes lisses. Le cube ne sert qu'à intégrer, où le théorème de Fubini s'applique directement.
+      - |
+        L'erreur à éviter est de croire que $\sigma \circ q_k$ paramètre l'image de $\sigma$ « une seule fois ». L'application $q_k$ n'est pas injective sur $I^k$ : elle écrase des faces entières. Cela n'affecte pas l'intégrale, puisque les parties écrasées sont de dimension inférieure et que les cubes dégénérés ne portent aucune intégrale.
+
+  - id: dt-cochaines
+    etiquette: Cochaînes lisses
+    nature: proposition
+    titre: Cochaînes lisses, intégration, petites chaînes et homotopies
+    texte: |
+      Un [[complexe-cochaines|complexe de cochaînes]] ({{cs-cochaines|Complexes de cochaînes}}) est ici formé d'espaces vectoriels réels $C^k$ et d'applications linéaires $\delta : C^k \to C^{k+1}$ telles que $\delta \circ \delta = 0$ ; sa cohomologie est $H^k = \operatorname{Ker}\delta / \operatorname{Im}\delta$, en degré $k$. En posant $C_m = C^{-m}$, c'est un [[complexe-chaines|complexe de chaînes]], et les nœuds {{h-complexes|Complexes de chaînes}} et {{h-suite-exacte|Suite exacte longue}} s'y appliquent ; les formes différentielles, avec $d$, en sont un exemple.
+
+      Soit $U$ un ouvert de $\lex{n-uplet}{\mathbb R^n}$. On note $C^k(U)$ l'espace des fonctions réelles sur l'ensemble des simplexes singuliers lisses de dimension $k$ de $U$ ({{dt-simplexes|Simplexes lisses}}), identifié à celui des morphismes $C^\infty_k(U) \to \mathbb R$ ({{h-complexes|Complexes de chaînes}}, (i)), avec $C^k(U) = 0$ pour $k < 0$, et $\delta f = f \circ \partial$. Sa cohomologie $H^k_\infty(U)$ est la **cohomologie singulière lisse** de $U$, à coefficients réels.
+
+      Pour un ensemble $\mathcal U$ d'ouverts de réunion $U$, $C^{\infty,\mathcal U}(U)$ est le sous-complexe de $C^\infty(U)$ engendré par les simplexes lisses à valeurs dans un élément de $\mathcal U$, $C^k_{\mathcal U}(U)$ l'espace des fonctions sur ces simplexes, et $R : C^k(U) \to C^k_{\mathcal U}(U)$ la restriction.
+
+      L'**intégration** est l'application $I : \Omega^k(U) \to C^k(U)$, $I(\omega)(\sigma) = \int_\sigma \omega$.
+    enonce: |
+      (i) $\delta \circ \delta = 0$, et $I$ est un morphisme de complexes : $I(d\omega) = \delta I(\omega)$. Il commute à la restriction à un ouvert $U' \subset U$, et induit des applications linéaires $I_* : \lex{cohomologie-de-rham}{H^k}(U) \to H^k_\infty(U)$.
+
+      (ii) *Petites chaînes.* $R$ induit des isomorphismes de $H^k_\infty(U)$ sur la cohomologie de $C^*_{\mathcal U}(U)$.
+
+      (iii) *Homotopies.* Soit $F : W \to V$ une [[homotopie-lisse|homotopie lisse]] de $f_0$ à $f_1 : U \to V$. Il existe des morphismes $P : C^\infty_k(U) \to C^\infty_{k+1}(V)$ tels que $\partial P + P\partial = f_{1\#} - f_{0\#}$. Par suite, $f_0$ et $f_1$ induisent la même application de $H^k_\infty(V)$ dans $H^k_\infty(U)$, où $f^*g = g \circ f_\#$.
+
+      (iv) *Convexes.* Soit $B$ un ouvert convexe et $b \in B$. Notons $\kappa_q$ le simplexe constant égal à $b$, de dimension $q$, $\mathbf 1_q \in C^q(B)$ la cochaîne qui vaut $1$ sur tout simplexe, et $P$ l'opérateur de (iii) pour l'homotopie $F(x, t) = b + t(x - b)$. Un $0$-cocycle de $B$ est constant sur les points. Pour $q \geqslant 1$, tout $q$-cocycle $f$ est le cobord de la cochaîne explicite
+      $$g = f \circ P + \epsilon_q\,f(\kappa_q)\,\mathbf 1_{q-1},$$
+      où $\epsilon_q$ vaut $1$ si $q$ est pair et $0$ s'il est impair.
+    preuve: |
+      (i) $\delta\delta f = f \circ \partial \circ \partial = 0$. Pour un simplexe lisse $\sigma$, la formule de Stokes ({{dt-simplexes|Simplexes lisses}}, (iii)) donne
+      $$I(d\omega)(\sigma) = \int_{\partial\sigma} \omega = (\delta I\omega)(\sigma).$$
+      Un simplexe lisse de $U'$ est un simplexe lisse de $U$, et l'intégrale ne dépend que des valeurs de la forme sur son image. Un morphisme de complexes induit des applications en cohomologie ({{h-complexes|Complexes de chaînes}}, (ii)), linéaires puisque $I$ l'est.
+
+      (ii) Le nœud {{h-petites-chaines|Petites chaînes}} fournit, sur $C(U)$, des morphismes $D$ et $\rho = \mathrm{id} - \partial D - D\partial$, avec $D\sigma = \sum_{i < m(\sigma)} TS^i\sigma$. Par {{h-subdivision|Subdivision barycentrique}}, (iii), les simplexes de $S^i\sigma$ et de $TS^i\sigma$ sont de la forme $\sigma \circ \mu$, avec $\mu$ affine : ils sont lisses si $\sigma$ l'est, par {{dt-simplexes|Simplexes lisses}}, (i). Donc $D$ et $\rho$ envoient $C^\infty(U)$ dans lui-même, et $\rho$ l'envoie dans $C^{\infty,\mathcal U}(U)$, une chaîne de $C^{\mathcal U}(U)$ formée de simplexes lisses étant une combinaison de simplexes lisses à valeurs dans des éléments de $\mathcal U$.
+
+      Avec l'inclusion $\jmath : C^{\infty,\mathcal U}(U) \to C^\infty(U)$, on a $\rho\jmath = \mathrm{id}$ et $\jmath\rho = \mathrm{id} - \partial D - D\partial$. Pour $f \in C^k(U)$, notons $D^*f = f \circ D$ et, pour $f \in C^k_{\mathcal U}(U)$, $\rho^*f = f \circ \rho$. Alors $R\rho^* = \mathrm{id}$ et
+      $$\rho^*R f = f - (\delta f) \circ D - \delta(f \circ D),$$
+      c'est-à-dire $\rho^*R = \mathrm{id} - D^*\delta - \delta D^*$. Par {{h-complexes|Complexes de chaînes}}, (iii), lu pour les cochaînes, $R$ et $\rho^*$ induisent des applications réciproques en cohomologie.
+
+      (iii) L'opérateur prisme du nœud {{h-homotopie|Invariance par homotopie}}, appliqué à la restriction de $F$ à $U \times [0, 1]$, associe à $\sigma$ la chaîne $\sum_i (-1)^i F \circ (\sigma \times \mathrm{id}) \circ \lambda_i$, où les $\lambda_i$ sont des simplexes affines de $\Delta_k \times [0, 1] \subset \mathbb R^{k+2}$. Si $\sigma$ est lisse, $F \circ (\tilde\sigma \times \mathrm{id}) \circ \tilde\lambda_i$ est de classe $C^\infty$ sur un ouvert de $\mathbb R^{k+2}$ qui contient $\Delta_{k+1}$ : chaque terme est un simplexe lisse.
+
+      L'identité $\partial P + P\partial = f_{1\#} - f_{0\#}$ est celle de ce nœud. En composant par une cochaîne $g$, $f_1^*g - f_0^*g = (\delta g) \circ P + \delta(g \circ P)$, et l'on conclut comme en (ii).
+
+      (iv) L'application $F$ est définie sur l'ouvert $W = \{(x, t) : b + t(x - b) \in B\}$, qui contient $B \times [0, 1]$ par convexité ; c'est une homotopie lisse de l'application constante $c_b$ à l'identité. Pour toute cochaîne $f$ de degré $q$,
+      $$f - f \circ c_{b\#} = (\delta f) \circ P + \delta(f \circ P).$$
+      Comme $c_b \circ \gamma = \kappa_q$ pour tout simplexe $\gamma$ de dimension $q$, on a $f \circ c_{b\#} = f(\kappa_q)\,\mathbf 1_q$.
+
+      Pour $q = 0$, $P\partial = 0$, et un cocycle vérifie $f(x) - f(b) = (\delta f)(Px) = 0$ pour tout point $x$. Pour $q \geqslant 1$ et $\delta f = 0$, il reste $f = f(\kappa_q)\,\mathbf 1_q + \delta(f \circ P)$.
+
+      Or $(\delta\mathbf 1_{q-1})(\gamma) = \sum_{i=0}^q (-1)^i$ vaut $1$ si $q$ est pair et $0$ sinon : pour $q$ pair, $\mathbf 1_q = \delta\mathbf 1_{q-1}$. Pour $q$ impair, $\partial\kappa_{q+1} = \sum_{i=0}^{q+1} (-1)^i\kappa_q = \kappa_q$, et $f(\kappa_q) = (\delta f)(\kappa_{q+1}) = 0$. Dans les deux cas, $f = \delta g$.
+    remarques:
+      - |
+        Le point (iv) dit que $H^0_\infty(B) \cong \mathbb R$ et $H^q_\infty(B) = 0$ pour $q \geqslant 1$, comme pour la cohomologie de de Rham d'un convexe ({{gd-de-rham|Cohomologie de de Rham}}, (ii)). Ce qui compte pour la suite est que le cobord $g$ soit donné par une formule : il faudra en produire simultanément pour une infinité de convexes, et une formule évite d'en choisir un pour chacun.
+      - |
+        L'inclusion $C^\infty(U) \to C(U)$ induit des isomorphismes de l'homologie lisse sur l'homologie singulière : tout cycle est homologue à un cycle lisse. C'est admis ici. La démonstration reprend les arguments de ce chapitre pour les simplexes continus, avec un complexe double en homologie, ou approche les simplexes continus par des simplexes lisses.
+
+  - id: dt-complexe-double
+    etiquette: Complexe double
+    nature: lemme
+    titre: Le lemme du complexe double
+    texte: |
+      Un [[complexe-double|complexe double]] $K$ est une famille d'espaces vectoriels réels $K^{p,q}$, pour $p, q \in \lex{ensemble-entiers-naturels}{\mathbb N}$, munie d'applications linéaires $\delta : K^{p,q} \to K^{p+1,q}$ et $d : K^{p,q} \to K^{p,q+1}$ telles que $\delta\delta = 0$, $dd = 0$ et $\delta d = d\delta$. On pose $K^{p,q} = 0$ si $p$ ou $q$ est négatif. Le **complexe total** est
+      $$\operatorname{Tot}^n K = \bigoplus_{p+q=n} K^{p,q},$$
+      muni de la différentielle $D$ égale à $\delta + (-1)^p d$ sur $K^{p,q}$.
+
+      Une **augmentation des rangées** est un complexe de cochaînes $(A^q, d_A)$ et des applications linéaires $r : A^q \to K^{0,q}$ telles que $dr = rd_A$. Les rangées sont **exactes** si, pour tout $q$, la suite
+      $$\begin{aligned} 0 \to A^q &\xrightarrow{r} K^{0,q} \xrightarrow{\delta} K^{1,q} \\ &\xrightarrow{\delta} K^{2,q} \to \cdots \end{aligned}$$
+      est exacte. De même, une **augmentation des colonnes** est un complexe $(E^p, \delta_E)$ et des $e : E^p \to K^{p,0}$ avec $\delta e = e\delta_E$ ; les colonnes sont exactes si les suites $0 \to E^p \to K^{p,0} \xrightarrow{d} K^{p,1} \to \cdots$ le sont.
+    enonce: |
+      (i) $D \circ D = 0$. Si les rangées sont exactes, $r$ est un morphisme de complexes de $A$ dans $\operatorname{Tot} K$ ; si les colonnes le sont, $e$ en est un de $E$ dans $\operatorname{Tot} K$.
+
+      (ii) Si les rangées sont exactes, $r$ induit des isomorphismes $H^n(A) \to H^n(\operatorname{Tot} K)$ pour tout $n$.
+
+      (iii) Si les colonnes sont exactes, $e$ induit des isomorphismes $H^n(E) \to H^n(\operatorname{Tot} K)$.
+
+      (iv) Si les deux le sont, $e_*^{-1} \circ r_*$ est un isomorphisme de $H^n(A)$ sur $H^n(E)$.
+    preuve: |
+      (i) Pour $x \in K^{p,q}$,
+      $$\begin{aligned} D^2x &= \delta\delta x + (-1)^{p+1}d\delta x \\ &\quad + (-1)^p\delta dx + dd x = 0, \end{aligned}$$
+      puisque $d\delta = \delta d$. Si les rangées sont exactes, $\delta r(a) = 0$ pour $a \in A^q$, et $Dr(a) = dr(a) = r(d_Aa)$. Si les colonnes sont exactes, $de(c) = 0$ pour $c \in E^p$, et $De(c) = \delta e(c) = e(\delta_Ec)$.
+
+      (ii) Écrivons $x \in \operatorname{Tot}^n K$ sous la forme $x = \sum_{p=0}^n x_p$, avec $x_p \in K^{p,n-p}$. La composante de $Dx$ dans $K^{p,n+1-p}$ est $\delta x_{p-1} + (-1)^p dx_p$, avec $x_{-1} = x_{n+1} = 0$.
+
+      *Surjectivité.* Soit $x$ un cocycle, et $m \geqslant 1$ tel que $x_p = 0$ pour $p > m$. La composante de $Dx$ dans $K^{m+1,n-m}$ se réduit à $\delta x_m$, qui est donc nul ; par exactitude de la rangée en $K^{m,n-m}$, $x_m = \delta y$ pour un $y \in K^{m-1,n-m}$. Le cocycle $x - Dy$, cohomologue à $x$, a ses composantes nulles pour $p \geqslant m$, puisque $Dy = \delta y + (-1)^{m-1}dy$.
+
+      En répétant ce pas pour $m = n, n - 1, \dots, 1$, on se ramène à un cocycle $x = x_0 \in K^{0,n}$. Alors $\delta x_0 = 0$ et $dx_0 = 0$. Par exactitude, $x_0 = r(a)$, et $r(d_Aa) = dx_0 = 0$, d'où $d_Aa = 0$, $r$ étant injective : $[x] = r_*[a]$.
+
+      *Injectivité.* Soit $a \in A^n$ un cocycle tel que $r(a) = Dz$, avec $z \in \operatorname{Tot}^{n-1}K$. Si $n = 0$, $z = 0$, et $a = 0$ par injectivité de $r$. Sinon, les composantes de $Dz$ d'indice $p \geqslant 1$ sont nulles, et le même pas, appliqué à $z$, remplace $z$ par $z - Dy$, qui a le même cobord, jusqu'à $z = z_0 \in K^{0,n-1}$. Alors $\delta z_0 = 0$, donc $z_0 = r(b)$, et $r(a) = dz_0 = r(d_Ab)$ : $a = d_Ab$, et $[a] = 0$.
+
+      (iii) Soit $K^\top$ le complexe double transposé, $(K^\top)^{q,p} = K^{p,q}$, où $d$ joue le rôle de $\delta$ et inversement. Ses rangées sont les colonnes de $K$, augmentées par $E$, et elles sont exactes.
+
+      Les espaces $\operatorname{Tot}^n K$ et $\operatorname{Tot}^n K^\top$ sont les mêmes, avec les différentielles $D$ et $D^\top = d + (-1)^q\delta$ sur $K^{p,q}$. L'application $\varphi(x) = (-1)^{pq}x$ sur $K^{p,q}$ vérifie $\varphi D = D^\top\varphi$ : pour $x \in K^{p,q}$, les deux membres valent
+      $$(-1)^{pq}dx + (-1)^{(p+1)q}\delta x.$$
+      C'est donc un isomorphisme de complexes, et $\varphi \circ e = e$, puisque $e$ est à valeurs dans les $K^{p,0}$. Par (ii) appliqué à $K^\top$, $e$ induit des isomorphismes de $H^n(E)$ sur $H^n(\operatorname{Tot}K^\top)$, donc sur $H^n(\operatorname{Tot}K)$.
+
+      (iv) découle de (ii) et (iii).
+    remarques:
+      - |
+        La démonstration de (ii) est une descente en escalier : on pousse un cocycle de l'extrémité droite de sa diagonale vers la colonne $p = 0$, en retranchant à chaque marche un cobord, jusqu'à ce qu'il soit l'image d'un élément de $A$.
+
+        ```schema dt-complexe-double
+        Les espaces $K^{p,q}$ sont aux points du quadrillage, $\delta$ va vers la droite et $d$ vers le haut. Un élément de $\operatorname{Tot}^3$ a ses composantes sur la diagonale $p + q = 3$, en rouge. La composante $x_3$ est un $\delta$ ; on la retire par le cobord de l'élément $y$ situé à sa gauche, qui modifie la composante suivante, et ainsi de suite jusqu'à la colonne $p = 0$, que la flèche bleue $r$ relie à $A$.
+        ```
+      - |
+        Aucun choix n'intervient : chaque pas affirme l'existence d'un seul élément $y$, et il y a au plus $n$ pas. Lorsque les rangées sont exactes « par une formule », c'est-à-dire qu'une application linéaire $h$ fournit les antécédents, la démonstration donne même une formule pour l'inverse de $r_*$.
+      - |
+        Le lemme dit que $A$ et $E$, qui n'ont rien de commun a priori, ont la même cohomologie dès qu'ils sont tous deux « résolus » par un même complexe double. C'est ainsi que la théorie des faisceaux compare les cohomologies, et c'est l'idée de la démonstration du théorème de de Rham qui suit, avec $A$ les formes, $E$ les cochaînes de Čech, et $K$ les formes sur les intersections des ouverts d'un recouvrement.
+
+  - id: dt-demi-cubes
+    etiquette: Supports dans les cubes
+    nature: lemme
+    titre: Une partition de l'unité à supports dans les cubes
+    texte: |
+      Soit $U$ un ouvert non vide de $\lex{n-uplet}{\mathbb R^n}$, et $B_i = B_\infty(p_i, r_i)$, $i \in I$, les cubes du nœud {{dr-recouvrement|Recouvrement par des cubes}}. On note $B'_i = B_\infty(p_i, r_i/2)$, $\overline{B}{}'_i = \{y : \|y - p_i\|_\infty \leqslant r_i/2\}$, et $\psi'_i = \psi_{p_i, r_i/2}$ la fonction plateau du nœud {{dr-plateau|Fonctions plateau}}.
+    enonce: |
+      (i) Les demi-cubes $B'_i$ recouvrent $U$.
+
+      (ii) La fonction $S' = \sum_i \psi'_i$ est bien définie, de classe $C^\infty$ et strictement positive sur $U$. Les fonctions $\chi'_i = \psi'_i/S'$ forment une [[partition-unite|partition de l'unité]] subordonnée à $(B_i)$ ; $\chi'_i$ est nulle hors de $\overline{B}{}'_i$, qui est contenu dans $B_i$.
+
+      (iii) Soit $O$ un ouvert contenu dans $U$ et, pour chaque $i$, une forme $\eta_i$ de degré $k$ sur $O \cap B_i$. Notons $\chi'_i\eta_i$ la forme sur $O$ égale à $\chi'_i\eta_i$ sur $O \cap B_i$ et à $0$ ailleurs. C'est une forme de classe $C^\infty$ sur $O$, la somme $\sum_i \chi'_i\eta_i$ n'a, au voisinage de chaque point, qu'un nombre fini de termes non nuls, et c'est une forme de classe $C^\infty$ sur $O$.
+    preuve: |
+      (i) Par {{dr-recouvrement|Recouvrement par des cubes}}, (ii), tout point $x$ de $U$ vérifie $\|x - p_i\|_\infty \leqslant r_i/4 < r_i/2$ pour un indice $i$.
+
+      (ii) La fonction $\psi'_i$ est de classe $C^\infty$, strictement positive sur $B'_i$ et nulle ailleurs ({{dr-plateau|Fonctions plateau}}, (ii)). Comme $B'_i \subset B_i$, sur chaque voisinage $W_x$ du nœud {{dr-recouvrement|Recouvrement par des cubes}}, (iii), seuls un nombre fini de $\psi'_i$ ne sont pas nulles. La démonstration du nœud {{dr-partition|Partition de l'unité}}, (ii) et (iii), s'applique alors mot pour mot, la positivité de $S'$ venant de (i). Enfin $\psi'_i$, donc $\chi'_i$, est nulle hors de $B'_i \subset \overline{B}{}'_i$, et $\overline{B}{}'_i \subset B_i$ puisque $r_i/2 < r_i$.
+
+      (iii) Les ouverts $O \cap B_i$ et $O \setminus \overline{B}{}'_i$ recouvrent $O$. Sur le premier, la forme vaut $\chi'_i\eta_i$, de classe $C^\infty$ ; sur le second, elle vaut $0$ ; et sur leur intersection, $\chi'_i$ est nulle, si bien que les deux expressions coïncident. Elle est donc de classe $C^\infty$ sur $O$ ({{dr-partition|Partition de l'unité}}, (i)).
+
+      Pour la somme, chaque point $x$ de $O$ a le voisinage ouvert $W_x \cap O$, sur lequel seuls un nombre fini de $\chi'_i$ ne sont pas nulles : la somme y est finie, donc de classe $C^\infty$, et l'on conclut par le même point (i) du nœud {{dr-partition|Partition de l'unité}}.
+    remarques:
+      - |
+        La partition $(\chi_i)$ du nœud {{dr-partition|Partition de l'unité}} ne suffit pas ici. Elle est strictement positive sur tout le cube $B_i$ : si $\eta_i$ explose au bord de $B_i$, par exemple comme l'inverse de la distance à ce bord, le produit $\chi_i\eta_i$ n'a aucune raison de se prolonger par $0$. Le demi-cube laisse une marge entre le support de $\chi'_i$ et le bord de $B_i$, et c'est cette marge qui permet le prolongement.
+
+  - id: dt-cech-de-rham
+    etiquette: Čech-de Rham
+    nature: théorème
+    titre: Le complexe de Čech-de Rham d'un recouvrement par des cubes
+    texte: |
+      Soit $U$ un ouvert non vide de $\lex{n-uplet}{\mathbb R^n}$ et $B_i$, $i \in I$, les cubes du nœud {{dr-recouvrement|Recouvrement par des cubes}}. Pour $\sigma = (i_0, \dots, i_p) \in I^{p+1}$, on note $B_\sigma = B_{i_0} \cap \cdots \cap B_{i_p}$. Le [[nerf-recouvrement|nerf]] (ordonné) du recouvrement est la suite des ensembles
+      $$N_p = \{\sigma \in I^{p+1} : B_\sigma \neq \varnothing\}.$$
+      Pour $\sigma \in N_p$ et $0 \leqslant l \leqslant p$, $\sigma^{(l)}$ désigne la suite privée de son terme d'indice $l$ ; elle est dans $N_{p-1}$, puisque $B_\sigma \subset B_{\sigma^{(l)}}$.
+
+      Chaque $B_\sigma$ est un pavé ouvert $\prod_m\,]a_m, b_m[$, intersection de produits d'intervalles ouverts, donc convexe ; on note $b_\sigma$ son centre, de coordonnées $(a_m + b_m)/2$.
+
+      Les **cochaînes de Čech** sont les éléments de $\check C^p$, espace des fonctions réelles sur $N_p$, avec, pour $\sigma \in N_{p+1}$,
+      $$(\delta c)(\sigma) = \sum_{l=0}^{p+1} (-1)^l\,c(\sigma^{(l)}).$$
+      Le complexe double de Čech-de Rham est formé des $K^{p,q} = \prod_{\sigma \in N_p} \Omega^q(B_\sigma)$, familles $\omega = (\omega_\sigma)$, avec
+      $$(\delta\omega)_\sigma = \sum_{l=0}^{p+1} (-1)^l\,\omega_{\sigma^{(l)}}|_{B_\sigma},$$
+      et $d$ composante par composante. Les augmentations sont $r : \Omega^q(U) \to K^{0,q}$, $r(\omega) = (\omega|_{B_i})_i$, et $e : \check C^p \to K^{p,0}$, qui envoie $c$ sur la famille des fonctions constantes égales à $c(\sigma)$ sur $B_\sigma$.
+    enonce: |
+      (i) $\check C$ est un complexe de cochaînes, $K$ un [[complexe-double|complexe double]], et $r$, $e$ des augmentations de ses rangées et de ses colonnes.
+
+      (ii) Les rangées sont exactes. Plus précisément, avec la partition de l'unité $(\chi'_j)$ du nœud {{dt-demi-cubes|Supports dans les cubes}}, l'application $h : K^{p,q} \to K^{p-1,q}$ définie par
+      $$(h\omega)_\tau = \sum_{j \in I} \chi'_j\,\omega_{j\tau}, \qquad \tau \in N_{p-1},$$
+      où $j\tau = (j, i_0, \dots, i_{p-1})$, et par $h\omega = \sum_j \chi'_j\omega_j \in \Omega^q(U)$ pour $p = 0$, vérifie $hr = \mathrm{id}$, $rh + h\delta = \mathrm{id}$ sur $K^{0,q}$ et $\delta h + h\delta = \mathrm{id}$ sur $K^{p,q}$ pour $p \geqslant 1$.
+
+      (iii) Les colonnes sont exactes.
+
+      (iv) Par conséquent, $\lex{cohomologie-de-rham}{H^k}(U) \cong H^k(\check C)$ pour tout $k$, sans aucun choix.
+    preuve: |
+      (i) *$\delta\delta = 0$.* Pour $m < l$, retirer le terme d'indice $l$, puis celui d'indice $m$, revient à retirer celui d'indice $m$, puis celui d'indice $l - 1$ : $(\sigma^{(l)})^{(m)} = (\sigma^{(m)})^{(l-1)}$. Dans $\delta\delta c(\sigma) = \sum_{l,m} (-1)^{l+m}c\big((\sigma^{(l)})^{(m)}\big)$, le terme $(l, m)$ avec $m < l$ et le terme $(m, l - 1)$ sont donc égaux et de signes opposés, comme au nœud {{h-singuliere|Homologie singulière}}, (i) ; ils se compensent, et tous les termes sont ainsi appariés. Le même calcul vaut dans $K$, les restrictions étant compatibles.
+
+      *Le reste.* $d$ commute aux restrictions, donc à $\delta$, et $dr = rd$. Les fonctions de $e(c)$ sont constantes, et $(\delta e(c))_\sigma$ est la constante $\sum_l (-1)^l c(\sigma^{(l)}) = (\delta c)(\sigma)$.
+
+      (ii) *$h$ est bien défini.* Le terme $\chi'_j\omega_{j\tau}$ est la forme sur $B_\tau$ égale à $\chi'_j\omega_{j\tau}$ sur $B_j \cap B_\tau$ et à $0$ ailleurs, nulle si $j\tau \notin N_p$. Par {{dt-demi-cubes|Supports dans les cubes}}, (iii), appliqué à l'ouvert $O = B_\tau$, la somme est une forme de classe $C^\infty$ sur $B_\tau$.
+
+      *Les identités.* On les vérifie en un point $x$ de $B_\sigma$, où seuls comptent les $j$ tels que $\chi'_j(x) \neq 0$, donc tels que $x \in B_j$ et $j\sigma \in N_{p+1}$. Pour $p \geqslant 1$, la suite $j\sigma$ privée de son premier terme est $\sigma$, et privée du terme d'indice $l + 1$, c'est $j\sigma^{(l)}$ ; donc
+      $$(\delta\omega)_{j\sigma} = \omega_\sigma - \sum_{l=0}^p (-1)^l\,\omega_{j\sigma^{(l)}}.$$
+      Multiplions par $\chi'_j(x)$ et sommons en $j$ : on obtient $(h\delta\omega)_\sigma = \omega_\sigma - (\delta h\omega)_\sigma$, puisque $\sum_j \chi'_j = 1$.
+
+      Pour $p = 0$ et $\sigma = (i)$, $(\delta\omega)_{ji} = \omega_i - \omega_j$, d'où $(h\delta\omega)_i = \omega_i - \sum_j \chi'_j\omega_j = \omega_i - (rh\omega)_i$. Enfin $hr(\omega) = \sum_j \chi'_j\,\omega = \omega$.
+
+      *Exactitude.* $r$ est injective, puisque $hr = \mathrm{id}$, et $\delta r = 0$, la famille $r(\omega)$ ayant des restrictions égales. Si $\omega \in K^{0,q}$ et $\delta\omega = 0$, alors $\omega = r(h\omega)$. Si $\omega \in K^{p,q}$, $p \geqslant 1$, et $\delta\omega = 0$, alors $\omega = \delta(h\omega)$.
+
+      (iii) $e$ est injective, chaque $B_\sigma$ étant non vide. Une fonction de différentielle nulle sur le convexe $B_\sigma$ est constante ({{gd-accroissements|Accroissements finis}}, (ii), avec $M = 0$) : le noyau de $d$ sur $K^{p,0}$ est l'image de $e$.
+
+      Pour $q \geqslant 1$, soit $T_\sigma(x) = x + b_\sigma$, qui envoie l'ouvert $B_\sigma - b_\sigma$, étoilé par rapport à $0$, sur $B_\sigma$, et $K_0$ l'opérateur de la démonstration du nœud {{gd-poincare|Lemme de Poincaré}} sur $B_\sigma - b_\sigma$, qui vérifie $dK_0 + K_0d = \mathrm{id}$ en degré $q \geqslant 1$. L'opérateur
+      $$K_\sigma = (T_\sigma^{-1})^* \circ K_0 \circ T_\sigma^*$$
+      vérifie la même identité sur $B_\sigma$, les images réciproques commutant à $d$ ({{gd-formes|Formes différentielles}}, (iii)). Si $\omega \in K^{p,q}$ et $d\omega = 0$, la famille $(K_\sigma\omega_\sigma)_\sigma$ est un élément de $K^{p,q-1}$ de différentielle $\omega$.
+
+      (iv) Le lemme du complexe double ({{dt-complexe-double|Complexe double}}, (iv)) donne l'isomorphisme $e_*^{-1}r_*$. Aucun choix n'intervient : le nerf, la partition de l'unité, les centres $b_\sigma$ et les opérateurs $h$ et $K_\sigma$ sont donnés par des formules.
+    remarques:
+      - |
+        Le degré $1$ a déjà été traité ainsi, sans le dire. Au nœud {{dr-cocycle|Périodes locales}}, les nombres $a_{ij}$ forment un $1$-cocycle de Čech, $a_{ij} + a_{jl} = a_{il}$ ; au nœud {{dr-surjectivite|Surjectivité}}, les primitives locales $g_i = \sum_j a_{ij}\chi_j$ sont, au signe près, l'image de ce cocycle par l'opérateur $h$, et la forme $\omega = dg_i$ est l'élément de $\Omega^1(U)$ qui lui correspond. La partition $(\chi_j)$ suffisait là, parce que les $a_{ij}$ sont des constantes, qui se prolongent sans difficulté.
+
+        ```schema dt-cech-de-rham
+        Trois cubes pour la norme $\|\cdot\|_\infty$, de centres $p_i$, $p_j$, $p_l$, comme ceux du recouvrement mais de rayons quelconques, qui se rencontrent deux à deux et tous trois : $(i, j, l)$ est dans $N_2$. L'intersection $B_{ijl}$, grisée, est un pavé ouvert, convexe, de centre $b_{ijl}$ en rouge, par rapport auquel l'opérateur de Poincaré fournit les primitives sur ce pavé.
+        ```
+      - |
+        Cette démonstration est celle d'André Weil (« Sur les théorèmes de de Rham », *Commentarii Mathematici Helvetici* 26, 1952, p. 119-145), qui compare la cohomologie de de Rham et celle du nerf d'un recouvrement dont toutes les intersections finies sont contractiles. Bott et Tu la présentent sous le nom de « principe de Mayer-Vietoris généralisé » (*Differential Forms in Algebraic Topology*, 1982). La suite exacte de Mayer-Vietoris du nœud {{dc-mayer-vietoris|Mayer-Vietoris}} est le cas d'un recouvrement par deux ouverts : $h$ y est, au signe près selon l'ordre des deux ouverts, l'opérateur $\eta \mapsto (\chi_V\eta, -\chi_U\eta)$ de la démonstration de ce nœud.
+      - |
+        L'erreur la plus répandue est d'oublier l'hypothèse sur les intersections. Pour le recouvrement de $\mathbb R^2 \setminus \{0\}$ par les deux ouverts $U$ et $V$ du nœud {{dc-epointe|ℝⁿ privé de l'origine}}, étoilés, l'intersection $U \cap V$ a deux morceaux : la colonne correspondante n'est pas exacte en degré $0$, et le nerf, réduit à deux sommets et une arête, a une cohomologie nulle en degré $1$, alors que $H^1(\mathbb R^2 \setminus \{0\})$ ne l'est pas. Les intersections des cubes, elles, sont des pavés, toujours convexes.
+
+  - id: dt-cech-singulier
+    etiquette: Čech et cochaînes lisses
+    nature: proposition
+    titre: Le complexe de Čech des cochaînes lisses
+    texte: |
+      On garde les notations des nœuds {{dt-cech-de-rham|Čech-de Rham}} et {{dt-cochaines|Cochaînes lisses}}, avec $\mathcal U = \{B_i : i \in I\}$. Un simplexe lisse de $B_\sigma$ est un simplexe lisse de $B_{\sigma^{(l)}}$, et une cochaîne sur $B_{\sigma^{(l)}}$ se restreint à $B_\sigma$.
+
+      Le complexe double $K'$ est formé des $K'^{p,q} = \prod_{\sigma \in N_p} C^q(B_\sigma)$, avec la différentielle de Čech $\delta'$, donnée par la même formule qu'au nœud {{dt-cech-de-rham|Čech-de Rham}}, et le cobord $\delta$ des cochaînes en guise de différentielle verticale. Ses augmentations sont $r' : C^q_{\mathcal U}(U) \to K'^{0,q}$, qui restreint une cochaîne aux simplexes de chaque $B_i$, et $e' : \check C^p \to K'^{p,0}$, qui envoie $c$ sur la famille des $0$-cochaînes constantes égales à $c(\sigma)$ sur les points de $B_\sigma$.
+
+      Pour un simplexe lisse $\gamma$ de $U$ à valeurs dans un cube, on note $m(\gamma)$ le plus petit indice $i$, pour l'ordre du nœud {{dr-recouvrement|Recouvrement par des cubes}}, (v), tel que $\gamma$ soit à valeurs dans $B_i$.
+    enonce: |
+      (i) $K'$ est un [[complexe-double|complexe double]], et $r'$, $e'$ sont des augmentations de ses rangées et de ses colonnes.
+
+      (ii) Les rangées sont exactes : l'application $h' : K'^{p,q} \to K'^{p-1,q}$, définie par $(h'f)_\tau(\gamma) = f_{m(\gamma)\tau}(\gamma)$ pour $\tau \in N_{p-1}$ et $\gamma$ simplexe de $B_\tau$, et par $(h'f)(\gamma) = f_{m(\gamma)}(\gamma)$ pour $p = 0$, vérifie les mêmes identités que l'application $h$ du nœud {{dt-cech-de-rham|Čech-de Rham}}.
+
+      (iii) Les colonnes sont exactes.
+
+      (iv) L'intégration, composante par composante, est un morphisme de complexes doubles $I : K \to K'$, et
+      $$I \circ r = r' \circ R \circ I, \qquad I \circ e = e',$$
+      où, à droite de la première égalité, $I : \Omega^q(U) \to C^q(U)$ et $R$ est la restriction aux petits simplexes.
+    preuve: |
+      (i) Le calcul $\delta'\delta' = 0$ est celui du nœud {{dt-cech-de-rham|Čech-de Rham}}, (i). Le cobord $\delta f = f \circ \partial$ commute aux restrictions, puisque le bord d'un simplexe de $B_\sigma$ est une chaîne de $B_\sigma$ ; donc $\delta\delta' = \delta'\delta$, et $\delta r' = r'\delta$. Les cochaînes de $e'(c)$ sont constantes sur les points, et $\delta'e' = e'\delta$ comme pour $e$.
+
+      (ii) *$h'$ est bien défini.* Si $\gamma$ est un simplexe de $B_\tau$, il est à valeurs dans $B_{m(\gamma)} \cap B_\tau$, de sorte que $m(\gamma)\tau \in N_p$ et que $\gamma$ est un simplexe de $B_{m(\gamma)\tau}$.
+
+      *Les identités.* Fixons $\gamma$, et notons $m = m(\gamma)$. Pour $p \geqslant 1$ et $\sigma \in N_p$, le calcul du nœud {{dt-cech-de-rham|Čech-de Rham}}, (ii), fait avec $m$ à la place de $j$, donne
+      $$(\delta'f)_{m\sigma}(\gamma) = f_\sigma(\gamma) - \sum_{l=0}^p (-1)^l\,f_{m\sigma^{(l)}}(\gamma),$$
+      c'est-à-dire $(h'\delta'f)_\sigma(\gamma) = f_\sigma(\gamma) - (\delta'h'f)_\sigma(\gamma)$. Pour $p = 0$, $(h'\delta'f)_i(\gamma) = f_i(\gamma) - f_m(\gamma) = f_i(\gamma) - (r'h'f)_i(\gamma)$, et $h'r'f(\gamma) = f(\gamma)$. L'exactitude s'en déduit comme au même nœud.
+
+      (iii) $e'$ est injective. Pour chaque $\sigma$, le nœud {{dt-cochaines|Cochaînes lisses}}, (iv), appliqué au convexe $B_\sigma$ et à son centre $b_\sigma$, montre qu'un $0$-cocycle est constant, et fournit pour tout $q$-cocycle, $q \geqslant 1$, un antécédent $g_\sigma$ donné par une formule ; la famille $(g_\sigma)_\sigma$ est un antécédent dans $K'^{p,q-1}$.
+
+      (iv) L'intégration commute à la restriction et à la différentielle ({{dt-cochaines|Cochaînes lisses}}, (i)), donc à $\delta'$ et à la différentielle verticale. Pour $\omega \in \Omega^q(U)$, $I(\omega|_{B_i})$ est la restriction de $I(\omega)$ aux simplexes de $B_i$. Enfin, l'intégrale d'une constante sur un point est cette constante ({{dt-simplexes|Simplexes lisses}}, (iv)).
+    remarques:
+      - |
+        L'opérateur $h'$ est plus simple que $h$ : là où les formes demandaient une partition de l'unité, pour répartir une forme entre les cubes, une cochaîne se contente d'attribuer chaque simplexe à un seul cube, le premier qui le contient. Cette attribution est sans choix, grâce à l'ordre fixé sur $I$ ; prendre « un cube qui contient $\gamma$ » pour chacun des simplexes serait un usage de l'axiome du choix.
+
+  - id: dt-theoreme
+    etiquette: De Rham en tout degré
+    nature: théorème
+    titre: Théorème de de Rham pour les ouverts de ℝⁿ
+    enonce: |
+      Soit $U$ un ouvert de $\lex{n-uplet}{\mathbb R^n}$. Pour tout $k$, l'intégration induit un isomorphisme
+      $$I_* : \lex{cohomologie-de-rham}{H^k}(U) \to H^k_\infty(U)$$
+      de la cohomologie de de Rham sur la cohomologie singulière lisse à coefficients réels ({{dt-cochaines|Cochaînes lisses}}). Autrement dit :
+
+      (i) une forme fermée $\omega$ de degré $k$ sur $U$ est exacte si et seulement si la cochaîne $\sigma \mapsto \int_\sigma \omega$ est un cobord $\delta g$ ;
+
+      (ii) pour toute cochaîne lisse $f$ de degré $k$ telle que $f(\partial\gamma) = 0$ pour tout simplexe lisse $\gamma$ de dimension $k + 1$, il existe une forme fermée $\omega$ et une cochaîne $g$ telles que $\int_\sigma \omega = f(\sigma) + g(\partial\sigma)$ pour tout simplexe lisse $\sigma$ de dimension $k$.
+
+      (iii) Pour $n \geqslant 2$, $H^{n-1}_\infty(\mathbb R^n \setminus \{0\})$ est de dimension $1$, engendré par la classe de la cochaîne $\gamma \mapsto \int_\gamma \sigma_n$, intégrale de la forme angle solide.
+
+      Aucun choix n'intervient.
+    preuve: |
+      Si $U$ est vide, tous les espaces sont nuls. Sinon, on reprend les complexes doubles $K$ et $K'$ des nœuds {{dt-cech-de-rham|Čech-de Rham}} et {{dt-cech-singulier|Čech et cochaînes lisses}}, et l'on note $\operatorname{Tot}I$ le morphisme induit par $I : K \to K'$ sur les complexes totaux.
+
+      *Le diagramme.* Par le nœud {{dt-cech-singulier|Čech et cochaînes lisses}}, (iv),
+      $$\begin{CD} \Omega(U) @>r>> \operatorname{Tot}K @<e<< \check C \\ @V{RI}VV @VV{\operatorname{Tot}I}V @| \\ C_{\mathcal U}(U) @>r'>> \operatorname{Tot}K' @<e'<< \check C \end{CD}$$
+      est commutatif : chaque carré exprime l'une des deux égalités de ce point.
+
+      *Les flèches horizontales.* Les rangées et les colonnes de $K$ et de $K'$ sont exactes ({{dt-cech-de-rham|Čech-de Rham}}, (ii) et (iii), et {{dt-cech-singulier|Čech et cochaînes lisses}}, (ii) et (iii)). Par le lemme du complexe double ({{dt-complexe-double|Complexe double}}), $r$, $e$, $r'$ et $e'$ induisent des isomorphismes en cohomologie.
+
+      *Conclusion.* Le carré de droite donne $(\operatorname{Tot}I)_* = e'_* \circ e_*^{-1}$, qui est un isomorphisme ; celui de gauche, $(RI)_* = r'^{-1}_* \circ (\operatorname{Tot}I)_* \circ r_*$, qui en est un aussi. Enfin $R$ induit un isomorphisme ({{dt-cochaines|Cochaînes lisses}}, (ii)), et $I_* = R_*^{-1} \circ (RI)_*$.
+
+      *Reformulations.* (i) est l'injectivité de $I_*$, le sens direct venant de $I(d\eta) = \delta I(\eta)$. (ii) est sa surjectivité : $[f] = I_*[\omega]$ signifie $I(\omega) - f = \delta g$.
+
+      (iii) Par {{dc-angle-solide|Forme angle solide}}, (iii), $H^{n-1}(\mathbb R^n \setminus \{0\})$ est de dimension $1$, engendré par $[\sigma_n]$, et $I_*$ est un isomorphisme.
+    remarques:
+      - |
+        Le théorème réunit deux mondes. À gauche, des objets différentiels, formes et dérivées ; à droite, des objets combinatoires, des fonctions sur des simplexes. La seule passerelle est l'intégration, et le théorème dit qu'elle ne perd ni ne crée d'information en cohomologie : tout ce que l'on sait des « trous » de $U$ par les simplexes se lit dans les formes, et réciproquement.
+
+        Par exemple, (iii) et le nœud {{dc-epointe|ℝⁿ privé de l'origine}} donnent la cohomologie singulière lisse de $\mathbb R^n \setminus \{0\}$, sans aucun calcul sur les simplexes.
+      - |
+        Georges de Rham a démontré en 1931, pour les variétés compactes, que l'on peut prescrire les périodes d'une forme fermée sur les cycles, et qu'une forme fermée dont toutes les périodes sont nulles est exacte (« Sur l'analysis situs des variétés à n dimensions », thèse, *Journal de mathématiques pures et appliquées* (9) 10, 1931, p. 115-200). La démonstration par un complexe double est celle de Weil (1952), citée au nœud {{dt-cech-de-rham|Čech-de Rham}}.
+      - |
+        Le degré $1$ a été traité au nœud {{dr-degre1|De Rham en degré 1}}, avec l'homologie singulière continue et sous la forme duale, que le nœud suivant étend à tout degré. Pour une variété, la même démonstration s'applique à un recouvrement dont toutes les intersections finies sont difféomorphes à des convexes ; il faut alors des partitions de l'unité sur la variété, comme le signale le nœud {{gd-formes-varietes|Formes sur une variété}}. La cohomologie à support compact, qui mène à la dualité de Poincaré, n'est pas traitée ici.
+
+  - id: dt-dualite
+    etiquette: Périodes sur les cycles
+    nature: corollaire
+    titre: Formes fermées et périodes sur les cycles lisses
+    choix: |
+      Le point (ii), et par lui le point (iii) en degré $k \geqslant 1$, utilisent le [[lemme-zorn|lemme de Zorn]] ({{o-zorn|Lemme de Zorn}}), pour prolonger des morphismes à valeurs dans $\mathbb R$. Le point (i), le théorème qui précède, le point (iii) en degré $0$ et, en degré $1$, l'injectivité de (iii) n'utilisent aucun choix ; la surjectivité en degré $1$ passe par le lemme de Zorn.
+    texte: |
+      Soit $U$ un ouvert de $\lex{n-uplet}{\mathbb R^n}$. On note $H^\infty_k(U)$ l'homologie du complexe $C^\infty(U)$ des chaînes lisses ({{dt-simplexes|Simplexes lisses}}), et, pour une forme fermée $\omega$ de degré $k$, $\Phi[\omega]$ l'application $[z] \mapsto \int_z \omega$, définie sur $H^\infty_k(U)$.
+    enonce: |
+      (i) $\Phi[\omega]$ est un morphisme bien défini, et $\Phi : \lex{cohomologie-de-rham}{H^k}(U) \to \operatorname{Hom}(H^\infty_k(U), \mathbb R)$ est une application linéaire.
+
+      (ii) Soit $C$ un groupe abélien, $A$ un sous-groupe et $f : A \to \lex{ensemble-reels}{\mathbb R}$ un morphisme. Il existe un morphisme $C \to \mathbb R$ qui prolonge $f$.
+
+      (iii) $\Phi$ est un isomorphisme : une forme fermée dont l'intégrale est nulle sur tout cycle lisse est exacte, et tout morphisme $H^\infty_k(U) \to \mathbb R$ est de la forme $\Phi[\omega]$.
+
+      (iv) Pour $k = 1$, le nœud {{dr-degre1|De Rham en degré 1}} établit sans choix l'énoncé analogue pour l'homologie singulière $H_1(U)$, et l'injectivité de (iii) en découle sans choix.
+    preuve: |
+      (i) Si $z$ est un cycle, et $z' = z + \partial c$, la formule de Stokes ({{dt-simplexes|Simplexes lisses}}, (iii)) donne $\int_{\partial c} \omega = \int_c d\omega = 0$ ; si $\omega = d\eta$, $\int_z \omega = \int_{\partial z} \eta = 0$. L'application est linéaire en $\omega$ et additive en $z$.
+
+      (ii) Soit $\mathcal E$ l'ensemble des couples $(B, g)$, où $B$ est un sous-groupe de $C$ contenant $A$ et $g : B \to \mathbb R$ un morphisme qui prolonge $f$, ordonné par prolongement. Il contient $(A, f)$, qui majore la chaîne vide, et il est inductif : une chaîne non vide a pour majorant la réunion de ses domaines, munie du morphisme qui les prolonge tous. Le lemme de Zorn ({{o-zorn|Lemme de Zorn}}) fournit un élément maximal $(B, g)$.
+
+      Supposons $B \neq C$, et soit $x \in C \setminus B$. Les entiers $m$ tels que $mx \in B$ forment un sous-groupe $m_0\mathbb Z$ de $\mathbb Z$. Posons $\lambda = g(m_0x)/m_0$ si $m_0 > 0$, et $\lambda = 0$ si $m_0 = 0$, et $g'(b + mx) = g(b) + m\lambda$ sur $B + \mathbb Zx$.
+
+      C'est bien défini : si $b + mx = b' + m'x$, alors $(m - m')x = b' - b \in B$, donc $m - m' = m_0l$, et $g(b' - b) = l\,g(m_0x) = (m - m')\lambda$. C'est un morphisme qui prolonge $g$ strictement, ce qui contredit la maximalité. Donc $B = C$.
+
+      (iii) Par le théorème ({{dt-theoreme|De Rham en tout degré}}), $I_*$ est un isomorphisme, et $\Phi = \mathrm{ev} \circ I_*$, où $\mathrm{ev}[f]([z]) = f(z)$ ; il suffit de montrer que $\mathrm{ev} : H^k_\infty(U) \to \operatorname{Hom}(H^\infty_k(U), \mathbb R)$ est bijective. Notons $Z_k$ et $B_k$ les cycles et les bords de $C^\infty(U)$.
+
+      En degré $0$, tout élément de $C^\infty_0(U)$ est un cycle, et $B_{-1} = 0$ : la surjectivité prend $f = \varphi \circ [\cdot]$, et un cocycle nul sur $Z_0$ est nul, sans prolongement ni choix. On suppose désormais $k \geqslant 1$.
+
+      *Surjectivité.* Soit $\varphi$ un morphisme de $H^\infty_k(U)$ dans $\mathbb R$. Par (ii), le morphisme $z \mapsto \varphi([z])$ de $Z_k$ se prolonge en une cochaîne $f \in C^k(U)$. Pour $\gamma$ de dimension $k + 1$, $(\delta f)(\gamma) = \varphi([\partial\gamma]) = 0$ : $f$ est un cocycle, et $\mathrm{ev}[f] = \varphi$.
+
+      *Injectivité.* Soit $f$ un cocycle nul sur $Z_k$. La formule $g(\partial c) = f(c)$ définit un morphisme sur $B_{k-1}$ : si $\partial c = \partial c'$, $c - c'$ est un cycle, et $f(c) = f(c')$. Par (ii), $g$ se prolonge à $C^\infty_{k-1}(U)$, et $f = g \circ \partial = \delta g$ est un cobord.
+
+      (iv) La démonstration de l'injectivité au nœud {{dr-degre1|De Rham en degré 1}} n'intègre que sur des cycles formés de segments, qui sont des chaînes lisses ; l'intégrale du nœud {{dr-chaines|Intégration sur les chaînes}} y coïncide avec celle de ce chapitre ({{dt-simplexes|Simplexes lisses}}, (iv)). Une forme fermée de degré $1$ dont l'intégrale est nulle sur tout cycle lisse est donc exacte, sans choix.
+    remarques:
+      - |
+        Le choix n'intervient que pour passer de la cohomologie des cochaînes au dual de l'homologie, et pas dans la comparaison des formes et des cochaînes. Il n'est sans doute pas indispensable : les chaînes du nerf du nœud {{dt-cech-de-rham|Čech-de Rham}} forment des groupes libres sur des ensembles dénombrables, qu'une bijection fixée avec $\mathbb N$ ordonne, et le prolongement de (ii) s'y fait par récurrence, sans choix. Une comparaison de l'homologie lisse avec celle du nerf, par un complexe double en homologie, permettrait d'en déduire (iii) sans choix ; elle n'est pas faite ici.
+      - |
+        L'erreur la plus répandue est de croire que la surjectivité de (iii) est évidente, parce qu'« on prescrit les intégrales sur une base des cycles ». Les cycles ne forment pas un espace vectoriel muni d'une base donnée ; prolonger une forme linéaire depuis les cycles jusqu'à toutes les chaînes est exactement ce que fait le point (ii), et c'est là qu'est le lemme de Zorn.
+      - |
+        Pour $U = \mathbb R^n \setminus \{0\}$ et $k = n - 1$, (iii) dit qu'une forme fermée de degré $n - 1$ est exacte si et seulement si son intégrale est nulle sur tout cycle lisse. Le nœud {{dc-angle-solide|Forme angle solide}} donne mieux, et sans choix : il suffit de tester sur un seul cycle cubique, le bord du cube $[-1, 1]^n$.
+
+aretes:
+  - [dt-simplexes, dt-cochaines]
+  - [dt-cochaines, dt-cech-singulier]
+  - [dt-complexe-double, dt-cech-de-rham]
+  - [dt-demi-cubes, dt-cech-de-rham]
+  - [dt-cech-de-rham, dt-cech-singulier]
+  - [dt-cech-singulier, dt-theoreme]
+  - [dt-theoreme, dt-dualite]
