@@ -193,3 +193,19 @@ exercices », c'est-à-dire la vue « Par exercice » filtrée sur ce niveau. Le
    avec le texte du PDF dans les deux sens (seuls doivent manquer les en-têtes, les pieds de page, les
    césures et les étiquettes des figures) ; enfin regarder sur le site les tableaux, les figures et
    les images, en clair et en sombre, sur ordinateur et sur téléphone.
+
+### 23. Page d'un cours : colonne de droite et raccourci sur téléphone (31 oct. 2026)
+
+Sur ordinateur, `.cote` (sommaire, Dans l'atlas, chapitres liés, exercices, fichiers) est collante
+(`top: 16px`) et a son propre défilement (`max-height: calc(100dvh - 104px); overflow-y: auto;
+overscroll-behavior: contain`) : on atteint le bas de la colonne sans faire défiler le PDF. Le
+`.lecteur` passe de `overflow: hidden` à `overflow: clip`, sans quoi l'élément collant du téléphone
+ne colle pas.
+
+Sur téléphone (≤ 860 px), la colonne reprend sa place sous le PDF, sans hauteur maximale.
+`pageChapitre` ajoute dans le lecteur un `.lecteur-raccourci` (bouton « Sommaire et liens ↓ »,
+`data-vers-cote`), collant en bas à droite du visualiseur avec une hauteur nulle, donc sans masquer
+la lecture hors de son coin. En tête de la colonne, `.cote-retour` (« ↑ Revenir au PDF »,
+`data-vers-lecteur`) ramène à la position mémorisée dans `posLecture` (remise à zéro à chaque
+`pageChapitre`). Les deux sont gérés dans l'écouteur de clic de `#rubrique`. Pour tester sans pdf.js
+(qui ne dessine pas en mode sans tête), on remplace `.lecteur-pages` par de fausses pages de 900 px.
