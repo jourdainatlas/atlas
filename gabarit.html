@@ -592,7 +592,7 @@ a.acc-etape:hover { background: var(--trame); }
 
 /* ---- cours : lecture d'un chapitre */
 .lecture { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 24px; align-items: start; }
-.lecteur { overflow: hidden; }
+.lecteur { overflow: hidden; overflow: clip; }   /* clip : coins arrondis sans bloquer le bouton collant */
 .lecteur-barre {
   display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between;
   padding: 8px 10px; border-bottom: 1px solid var(--filet); font-size: 13px; color: var(--encre-2);
@@ -609,7 +609,12 @@ a.acc-etape:hover { background: var(--trame); }
 .feuille-a4 .fa-ligne { height: 7px; border-radius: 3px; background: #e6e8ec; }
 .feuille-a4 .fa-cadre { border-left: 3px double #c00; padding: 8px 10px; display: grid; gap: 7px; }
 .feuille-a4 .fa-note { margin-top: auto; text-align: center; font-family: var(--f-ui); font-size: 12.5px; color: #7c838e; }
-.cote { display: grid; gap: 14px; position: sticky; top: 16px; }
+.cote { display: grid; gap: 14px; position: sticky; top: 16px; align-content: start;
+  /* Colonne défilable à part : on atteint le bas sans faire défiler tout le PDF. */
+  max-height: calc(100vh - 104px); max-height: calc(100dvh - 104px); overflow-y: auto; overscroll-behavior: contain;
+  scrollbar-width: thin; padding: 2px 4px 2px 2px; margin: -2px -4px -2px -2px; }
+/* Téléphone : bouton posé sur le visualiseur, qui mène au sommaire et aux liens placés sous le PDF. */
+.lecteur-raccourci, .cote-retour { display: none; }
 .cote .carte { padding: 14px 16px; }
 .sommaire { margin: 0; padding-left: 20px; font-family: var(--f-texte); font-size: 15.5px; display: grid; gap: 4px; }
 .cours-lies { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: 14.5px; }
@@ -893,6 +898,11 @@ span.case:hover { border-style: dashed; color: inherit; }
   .chapitre .ch-theories, .chapitre .statut { grid-column: 2; }
   .lecture, .banque, .apropos { grid-template-columns: minmax(0, 1fr); }
   .cote, .filtres, .profil { position: static; }
+  .cote { max-height: none; overflow: visible; padding: 0; margin: 0; }
+  .lecteur-raccourci { display: flex; justify-content: flex-end; align-items: flex-start; position: sticky; bottom: 14px; height: 0; padding-right: 12px; z-index: 2; pointer-events: none; }
+  .lecteur-raccourci button { flex: none; white-space: nowrap; pointer-events: auto; transform: translateY(-100%); border: 1px solid var(--filet); background: var(--surface); color: var(--encre);
+    opacity: .94; border-radius: 999px; padding: 7px 13px; font-family: var(--f-ui); font-size: 13px; box-shadow: var(--ombre); cursor: pointer; }
+  .cote-retour { display: block; justify-self: start; border: 1px solid var(--filet); background: var(--surface); color: var(--encre-2); border-radius: 999px; padding: 5px 12px; font-family: var(--f-ui); font-size: 13px; cursor: pointer; }
   .apropos-epreuves { grid-template-columns: minmax(0, 1fr); }
   .apropos-frise li { grid-template-columns: minmax(0, 1fr); }
   .af-periode { grid-row: auto; padding-top: 0; }
@@ -1826,6 +1836,7 @@ function coursLies(c, tous) {
     .sort((a, b) => (ordre.indexOf(a.niveau) - ordre.indexOf(b.niveau)) || ((a.chapitre || 0) - (b.chapitre || 0)));
 }
 function pageChapitre(c, tous) {
+  posLecture = null;
   const meme = tous.filter(x => x.niveau === c.niveau);
   const i = meme.indexOf(c), prec = meme[i - 1], suiv = meme[i + 1];
   const feuille = (R.exercices?.feuilles || []).find(f => f.id === c.exercices);
@@ -1837,7 +1848,8 @@ function pageChapitre(c, tous) {
   h += `<div class="groupe"><a class="bouton"${c.pdf ? ` href="${c.pdf}" target="_blank" rel="noopener"` : actif}>Ouvrir le PDF</a>${c.pdf ? `<a class="bouton" href="${c.pdf}" download>Télécharger</a>` : ''}${c.tex ? `<a class="bouton" href="${c.tex}" download>Source .tex</a>` : ''}</div></div>`;
   h += c.pdf ? `<div class="lecteur-fond lecteur-pages" data-pdf="${c.pdf}"><p class="vide-note">Chargement du PDF…</p></div>`
     : `<div class="lecteur-fond"><div class="feuille-a4" aria-hidden="true"><div class="fa-titre">Chapitre ${c.chapitre || ''} — ${c.titre.replace(/<[^>]+>/g, '')}</div>${'<div class="fa-ligne"></div>'.repeat(4)}<div class="fa-cadre">${'<div class="fa-ligne"></div>'.repeat(3)}</div>${'<div class="fa-ligne"></div>'.repeat(6)}<div class="fa-note">Le PDF du chapitre s'affichera ici.</div></div></div>`;
-  h += `</div><aside class="cote">`;
+  if (c.pdf) h += `<div class="lecteur-raccourci"><button type="button" data-vers-cote aria-label="Aller au sommaire, aux liens et aux exercices du chapitre">Sommaire et liens ↓</button></div>`;
+  h += `</div><aside class="cote"><button type="button" class="cote-retour" data-vers-lecteur>↑ Revenir au PDF</button>`;
   h += `<div class="carte"><h3 class="titre-bloc">Sommaire</h3>${c.sommaire ? `<ol class="sommaire">${c.sommaire.map(x => `<li>${x}</li>`).join('')}</ol>` : '<p class="vide-note">Tiré du PDF une fois déposé.</p>'}</div>`;
   h += `<div class="carte"><h3 class="titre-bloc">Dans l'atlas</h3><div class="puces">${(c.theories || []).map(t => puce(t)).join('')}</div>`;
   if ((c.notions || []).length) h += `<p style="margin:10px 0 0;font-size:13.5px">Notions : ${(c.notions).map(terme).join(', ')}</p>`;
@@ -2562,6 +2574,7 @@ function rafraichirRubrique() {
   brancherDefilAnnales(z);
   z.scrollTop = y; scrollTo(0, yw);
 }
+let posLecture = null;   // position de lecture du PDF sur téléphone (bouton « Sommaire et liens »)
 $('#rubrique').addEventListener('click', ev => {
   const t = ev.target;
   const b = t.closest('[data-niveau]'); if (b) { pageCours.filtre = b.dataset.niveau; rafraichirRubrique(); return; }
@@ -2592,6 +2605,11 @@ $('#rubrique').addEventListener('click', ev => {
   }
   const fi = t.closest('[data-filiere]'); if (fi) { etatAnn.filiere = fi.dataset.filiere; etatAnn.cle = ''; rafraichirRubrique(); return; }
   const ca = t.closest('.case[data-cle]'); if (ca) { etatAnn.cle = etatAnn.cle === ca.dataset.cle ? '' : ca.dataset.cle; rafraichirRubrique(); const s = $('#rubrique .tiroir'); if (s) s.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); return; }
+  // Téléphone : on mémorise la position de lecture pour y revenir depuis la colonne.
+  if (t.closest('[data-vers-cote]')) { const s = $('#rubrique .cote'); if (s) { posLecture = window.scrollY; s.scrollIntoView({ block: 'start', behavior: 'smooth' }); } return; }
+  if (t.closest('[data-vers-lecteur]')) { const s = $('#rubrique .lecteur');
+    if (posLecture != null) window.scrollTo({ top: posLecture, behavior: 'smooth' }); else if (s) s.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    return; }
   const pas = t.closest('[data-pdf-pas]');
   if (pas && !pas.hasAttribute('aria-disabled')) {
     const num = $('#rubrique .pdf-num'), pages = [...document.querySelectorAll('#rubrique .page-pdf')];
