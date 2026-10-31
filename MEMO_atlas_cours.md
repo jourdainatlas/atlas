@@ -38,6 +38,12 @@ données YAML. Les messages de commit commencent par « Cours : » ou « Exercic
 - **Feuilles en ligne** : `f-t-01` à `f-t-10`, soit 407 exercices transcrits (33, 42, 45, 38, 40, 50,
   38, 36, 42, 43). Les PDF sont dans `documents/exercices/terminale/` (6,7 Mo) et les 143 figures dans
   `documents/figures/` (4,0 Mo).
+- **Master, théorie de Galois** (31 oct. 2026) : le niveau `master` est recréé (dernier de `niveaux`). Cours
+  `m-galois` (64 pages, 7 chapitres, PDF `documents/cours/master/galois.pdf`) et feuille `f-m-galois`
+  (55 exercices sur 4 niveaux d'étoiles, `\etoilesv` = 4 ; préfixe `m-galois`, métadonnées
+  `outils/meta_m_galois.py` ; PDF dans `documents/exercices/master/`). Les sept blocs « Questions de
+  cours » (`\qdc`, un par chapitre, avec leurs réponses dans le corrigé) ne sont pas des exercices
+  numérotés : ils restent dans les PDF et ne sont pas sur le site.
 - **Niveau Master retiré** (27 oct. 2026, demande de l'auteur) : le niveau `master`, la fiche prototype
   `m-homologie` et la feuille annoncée `f-m-galois` sont supprimés, faute de cours prêt. Le même jour, les
   bandeaux « En construction » des pages Cours et Exercices et les badges du menu pour ces deux
