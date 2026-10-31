@@ -507,7 +507,7 @@ relecture pour la preuve réécrite de `ed-flot`), consigne `scratchpad/ch1/cons
 Corrigé aussi : Halpern et Lévy datés de 1971 (anf). 539 nœuds, 302 termes ; croisements inchangés (édifice 16).
 Restent admis, hors de portée : incomplétude de Gödel, Whitney, boule chevelue, invariance du domaine, Hurewicz,
 unités de Dirichlet, Kolmogorov, Carleson, réciproque de `gs-radicaux`, Möbius non orientable, `gd-formes-varietes`
-(réciproque, les outils existent désormais en aval). 𝔄₅ plus petit groupe non résoluble : démontré, voir §39. La partie non borélienne mesurable de `m-riemann` est affirmée sans mention « admis ».
+(réciproque, les outils existent désormais en aval). [Mise à jour du 31 octobre : la boule chevelue (§74, cw-degre), l'invariance du domaine et la réciproque de `gs-radicaux` (§70) sont désormais démontrées.] 𝔄₅ plus petit groupe non résoluble : démontré, voir §39. La partie non borélienne mesurable de `m-riemann` est affirmée sans mention « admis ».
 
 ## 36. Schémas, deuxième passe (29 octobre 2026)
 
@@ -1112,3 +1112,18 @@ démontrée ; faux positif E du diagnostic, attendu) ; H*(X × S¹) ; anneau du 
 égal à det M ; S^m → Tⁿ nulle. Seul ⋆ : ku-croise (iii), Künneth en cohomologie sur un corps (supplémentaires).
 Relus : aucun bloquant ; renvois, cas vide, définition du « C » de CW, battage passé en admis, hypothèses de Tor,
 schéma ku-cercle débordant. 964 nœuds, 562 termes, 82 graphes.
+
+## 75. Audit des renvois périmés ; Tychonov (31 octobre 2026)
+
+Inventaire des « admis » des théories de rang ≤ 12 : le « Admis ici » de `t-tychonov` est le renvoi voulu
+(démonstration à `tr-tychonov`, §35), comme `c-dalembert` et `cup-anneau` (ii). Retouches de `t-tychonov` (choix :
+Łoś et Ryll-Nardzewski 1955, Rubin et Scott 1954 pour les séparés, Kelley 1950 pour le choix ; ultrafiltre contient
+l'espace) et de l'historique de `tr-tychonov` (Tychonoff 1935 énonce ; Čech 1937 publie une démonstration détaillée).
+Audit des phrases périmées : 12 corrections (dualité d'Alexander : la raison est la cohomologie de Čech, non
+l'absence de cohomologie ; fonctions plateau désormais construites et employées en aval ; support compact traité au
+chapitre suivant ; « théorème de de Rham » → « cohomologie de de Rham » ; « admise au chapitre précédent » →
+hom-cup ; « les deux nœuds suivants » de mt-convergence ; théorie appelée chapitre ; mesure de surface : seule l'aire
+de ℝ³ est définie (sf-aire) ; en-têtes de derham et topalg). Accueil : ⋆ marque chaque fiche qui emploie le choix, et
+les théories dont un théorème central équivaut au choix (convention de edifice.yaml, rappelée). §35 annoté.
+Signalés, non modifiés : étoiles des théories hom, derham, analyse-reelle (absentes par convention) ; renvoi indirect
+de edo vers la boule chevelue ; sf-gauss-bonnet pourrait renvoyer à cw-euler en remarque.
