@@ -317,6 +317,13 @@ body.redim .vue { pointer-events: none; }
   background: var(--papier); padding: 0 4px; white-space: nowrap;
 }
 .etoile { color: var(--choix); font-weight: 600; margin-left: 3px; }
+/* † : résultat pas entièrement démontré à cet endroit (champ admis, voir construire.py) */
+.dague { color: var(--encre-2); font-weight: 600; margin-left: 3px; }
+/* dans les bulles, la croix du texte (Spectral) : celle des polices sans empattement est souvent réduite à un petit + surélevé */
+.noeud .dague { font-family: var(--f-titre); font-size: 15px; line-height: 1; }
+.legende-liste .dague, .admis-ici .tete .dague { font-family: var(--f-titre); }
+.admis-ici .tete .dague { margin: 0 2px 0 0; font-size: 13px; }
+.legende-liste .dague { font-size: 16px; }
 .a-interieur::after {
   content: ""; position: absolute; top: -7px; right: -7px; width: 16px; height: 16px; border-radius: 4px;
   background:
@@ -396,6 +403,18 @@ body.redim .vue { pointer-events: none; }
 }
 .choix p { margin: 0; }
 .choix strong.tete { color: var(--choix); display: block; font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 2px; }
+.admis-ici {
+  font-family: var(--f-ui); font-size: 13.5px; line-height: 1.5; background: var(--trame);
+  border-radius: 6px; padding: 10px 12px; margin: 0 0 16px;
+}
+.admis-ici strong.tete { color: var(--encre-2); display: block; font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 2px; }
+.admis-ici ul { margin: 2px 0 4px; padding-left: 18px; }
+.admis-ici li { margin: 2px 0; }
+.admis-ici p { margin: 0; }
+.admis-ici .ai-etat { margin-top: 4px; font-size: 12.5px; }
+.admis-ici .ee-note { color: var(--encre-2); }
+.admis-ici .ai-etat a, .legende-liste a { color: var(--encre-2); text-underline-offset: 3px; text-decoration-color: var(--encre-3); }
+.admis-ici .ai-etat a::after { content: " →"; }
 .enonce {
   border-left: 3px solid var(--c, var(--encre)); padding: 4px 0 4px 16px; margin: 4px 0 18px;
 }
@@ -1077,6 +1096,7 @@ span.case:hover { border-style: dashed; color: inherit; }
           <ul class="legende-liste" style="display: grid; gap: 6px">
             <li><span class="pastille" style="--c: var(--encre-2)"></span>Coin carré : le nœud contient un graphe ; un clic l'ouvre.</li>
             <li><span class="etoile">⋆</span>Fait intervenir l'axiome du choix ou l'une de ses formes faibles.</li>
+            <li><span class="dague">†</span><span>Le résultat n'est pas entièrement démontré à cet endroit : voir l'encadré de la fiche et l'<a href="#edifice/etat">état de l'édifice</a>.</span></li>
             <li><span class="terme" style="cursor: default">terme</span>Survoler pour lire la définition, cliquer pour l'ouvrir.</li>
           </ul>
         </div>
@@ -1213,7 +1233,14 @@ function dessiner(gid) {
       const s = document.createElement('span'); s.className = 'etoile'; s.textContent = '⋆';
       s.setAttribute('aria-label', 'axiome du choix'); b.append(s);
     }
-    b.setAttribute('aria-label', (pl.entree ? 'Niveau supérieur : ' : '') + n.titre + (n.sous ? ', contient un graphe' : ''));
+    // † : n.admis est un booléen de la page (construire.py), disponible sans charger la branche
+    if (n.admis && !pl.entree) {
+      const s = document.createElement('span'); s.className = 'dague'; s.textContent = '†';
+      s.setAttribute('aria-hidden', 'true'); b.append(s);
+    }
+    b.setAttribute('aria-label', (pl.entree ? 'Niveau supérieur : ' : '') + n.titre + (n.sous ? ', contient un graphe' : '')
+      + (!pl.entree && n.choix ? ', fait intervenir l\'axiome du choix' : '')
+      + (!pl.entree && n.admis ? ', résultat pas entièrement démontré ici' : ''));
     plan.append(b);
   }
 }
@@ -1419,9 +1446,10 @@ function fiche() {
   const c = couleurNoeud(n);
   let h = `<article class="fiche" style="--c: ${c}">`;
   h += `<p class="sur-titre"><span class="sorte">${esc(n.sorte)}</span>${rang(n)}${n.graphe !== D.racine ? `<span>${esc(D.graphes[n.graphe].titre)}</span>` : ''}</p>`;
-  h += `<h2>${esc(n.titre)}${n.choix ? ' <span class="etoile">⋆</span>' : ''}${aProposSignalBouton(aProposCheminEdifice(n), `${ADRESSE_SITE}edifice/${n.id}/`)}</h2>`;
+  h += `<h2>${esc(n.titre)}${n.choix ? ' <span class="etoile" title="Fait intervenir l\'axiome du choix" aria-label="axiome du choix">⋆</span>' : ''}${n.admis ? ' <span class="dague" title="Résultat pas entièrement démontré ici : voir l\'encadré « Admis ici »" aria-label="résultat pas entièrement démontré ici">†</span>' : ''}${aProposSignalBouton(aProposCheminEdifice(n), `${ADRESSE_SITE}edifice/${n.id}/`)}</h2>`;
   h += contexte;
   if (n.choix) h += `<div class="choix"><strong class="tete">⋆ Axiome du choix</strong>${n.choix}</div>`;
+  if (n.admis) h += encadreAdmis(n);
   if (n.texte) h += n.texte;
   if (n.enonce) h += `<div class="enonce"><span class="tete">${n.nature === 'chapitre' ? 'Résultat principal' : 'Énoncé'}</span>${n.enonce}</div>`;
   if (n.preuve) h += `<details class="preuve"><summary>Démonstration</summary><div class="contenu">${n.preuve}<span class="cqfd">□</span></div></details>`;
@@ -1446,6 +1474,44 @@ function fiche() {
   $('#panneau').scrollTop = 0;
 }
 
+// Encadré « Admis ici » d'une fiche marquée † : entrées de lieu principal retenues par construire.py
+// (e.signe), tirées de D.admis, présent dans la page même quand les textes des branches sont chargés à la
+// demande. Les entrées qui ne diffèrent que par le lieu (cup-anneau : énoncé et démonstration) sont fusionnées.
+function encadreAdmis(n) {
+  const lien = id => { const m = D.noeuds[id]; return m ? `<a class="lien-noeud" href="#${m.graphe}.${id}" data-n="${id}">${esc(m.titre)}</a>` : esc(id); };
+  const gr = [];
+  for (const e of (D.admis?.entrees || []).filter(e => e.id === n.id && e.signe)) {
+    const g = gr.find(x => x.objet === e.objet && x.statut === e.statut && x.renvoi === e.renvoi);
+    if (g) { if (!g.lieux.includes(e.lieu)) g.lieux.push(e.lieu); } else gr.push({ ...e, lieux: [e.lieu] });
+  }
+  if (!gr.length) return '';
+  // Phrase de liaison neutre en genre (l'objet peut être « Astuce de Rosser », « Théorème… ») et sans
+  // deux-points (l'objet en contient parfois un) ; e.demo : démonstrations d'origine d'une citation.
+  const suite = e => ({
+    aval: `Sa démonstration vient plus loin, dans ${lien(e.renvoi)}`,
+    ailleurs: `Sa démonstration se trouve dans une autre branche, ${lien(e.renvoi)}`,
+    cite: `Repose sur la fiche ${lien(e.renvoi)}, qui l'admet` + ((e.demo || []).length ? `&nbsp;; sa démonstration se trouve dans ${e.demo.map(lien).join(' et ')}` : ''),
+    'a-faire': 'Sa démonstration reste à faire dans l\'atlas',
+    'hors-cadre': 'Sa démonstration sort du cadre de l\'atlas',
+  })[e.statut] || '';
+  // le lieu n'est précisé que pour l'énoncé et la démonstration ; le texte d'une fiche n'en a pas besoin
+  const DANS = { enonce: 'l\'énoncé', preuve: 'la démonstration' };
+  const ou = ls => { ls = ls.filter(l => DANS[l]); return ls.length ? `dans ${ls.map(l => DANS[l]).join(' et ')}` : ''; };
+  const lieux = e => { const o = ou(e.lieux); return o ? ` <span class="ee-note">(${o})</span>` : ''; };
+  // plusieurs lacunes de même statut (l-incompletude : quatre points à faire) : une seule phrase, puis la liste ;
+  // le lieu, s'il est commun, est dit une fois dans la phrase d'introduction
+  const PLUSIEURS = { 'a-faire': 'que l\'atlas ne démontre pas encore', 'hors-cadre': 'qui sortent du cadre de l\'atlas' };
+  const items = Object.keys(PLUSIEURS).map(st => gr.filter(e => e.statut === st)).filter(es => es.length > 1)
+    .map(es => {
+      const communs = [...new Set(es.map(e => e.lieux.join()))].length === 1, o = communs ? ou(es[0].lieux) : '';
+      return `<li>Points admis${o ? ' ' + o : ''}, ${PLUSIEURS[es[0].statut]}&nbsp;:<ul>${es.map(e => `<li>${e.objet}${communs ? '' : lieux(e)}&nbsp;;</li>`).join('').replace(/&nbsp;;<\/li>$/, '.</li>')}</ul></li>`;
+    })
+    .concat(gr.filter(e => !(PLUSIEURS[e.statut] && gr.filter(x => x.statut === e.statut).length > 1))
+      .map(e => `<li>${e.objet}${lieux(e)}. ${suite(e)}.</li>`)).join('');
+  return `<div class="admis-ici"><strong class="tete"><span class="dague" aria-hidden="true">†</span> Admis ici</strong><ul>${items}</ul>`
+    + `<p class="ai-etat"><a href="#edifice/etat">État de l'édifice&nbsp;: tous les résultats admis</a></p></div>`;
+}
+
 function accueil() {
   const g = D.graphes[D.racine];
   const nTheo = g.noeuds.length;
@@ -1462,6 +1528,7 @@ function accueil() {
     <div class="enonce" style="--c: var(--encre)"><span class="tete">Comment lire l'édifice</span>
       <p>L'édifice a trois niveaux. Le graphe principal relie les ${nTheo} théories&nbsp;; une bulle marquée d'un coin carré contient son propre graphe, qu'un clic ouvre. La plupart des théories se découpent ainsi en chapitres, qui s'ouvrent à leur tour sur les définitions, les propositions et les théorèmes qui les composent&nbsp;: ${nGraphes} graphes rassemblent en tout ${nFiches} fiches. Dans un graphe intérieur, les nœuds en pointillés viennent du niveau supérieur, le fil affiché en haut de l'écran dit où l'on se trouve, et le bouton «&nbsp;Remonter&nbsp;» ramène au niveau précédent.</p>
       <p>Une fiche se lit de haut en bas&nbsp;: l'énoncé, puis la démonstration, repliée, qu'un clic déploie, puis des remarques qui signalent un piège, donnent une intuition ou relient la notion à un autre chapitre. Ses deux listes de liens, «&nbsp;Repose sur&nbsp;» et «&nbsp;Sert à&nbsp;», permettent de descendre vers les fondements ou de monter vers les applications sans repasser par le graphe. Chaque proposition et chaque théorème sont démontrés, sauf ceux dont la preuve est explicitement marquée «&nbsp;Admis&nbsp;», avec l'indication de la difficulté contournée.</p>
+      <p>Dans les graphes intérieurs et en tête de fiche, le signe <span class="dague">†</span> désigne les fiches dont le résultat n'est pas entièrement démontré à leur place, parce qu'elles admettent un résultat ou emploient celui qu'une autre fiche admet&nbsp;; un encadré «&nbsp;Admis ici&nbsp;» dit ce qui est admis et, le cas échéant, où cela se démontre.</p>
       <p>Le champ de recherche, au-dessus de la fiche, trouve une notion dans tout l'édifice, par son titre ou par un terme qu'elle définit, y compris dans les graphes qu'on n'a pas encore ouverts. Les termes soulignés en pointillés, comme <span class="terme" data-g="borne-superieure" tabindex="0" role="button">borne supérieure</span>, affichent leur définition au survol&nbsp;; un clic les ouvre dans le lexique, qui indique pour chacun des ${nTermes} termes la fiche où il est défini et celles qui l'emploient.</p>
     </div>
     <div class="enonce" style="--c: var(--encre)"><span class="tete">Par où commencer</span>
@@ -1522,6 +1589,7 @@ function etatEdifice() {
     <h2>État de l'édifice</h2>
     <p>Cette page recense les résultats que les fiches déclarent admis. Dans les fiches, tout résultat utilisé ou cité sans démonstration est dit «&nbsp;admis&nbsp;» en toutes lettres, et la construction du site vérifie que chacune de ces mentions est déclarée dans sa fiche, avec son statut. Un admis est un <em>renvoi en aval</em> quand le résultat est démontré plus loin dans l'arbre, faute d'ingrédients en amont. Il renvoie à une <em>branche parallèle</em> quand le résultat est démontré dans une partie de l'arbre qui ne vient ni avant ni après la fiche&nbsp;: aucune des deux n'est un ancêtre de l'autre. Il est <em>hors du cadre</em> quand l'atlas ne le démontrera pas, et <em>à faire</em> quand c'est une lacune à combler.</p>
     <p>Le lieu compte autant que le statut&nbsp;: un admis dans un énoncé ou une démonstration touche le statut du résultat, alors qu'un admis dans une remarque concerne un fait latéral, dont rien ne dépend. Les entrées sont rangées par rang de théorie, de la logique aux grandes théories.</p>
+    <p>Dans les graphes intérieurs et en tête de fiche, le signe <span class="dague">†</span> marque les ${pl(Object.values(D.noeuds).filter(m => m.admis).length, 'fiche', 'fiches')} dont le résultat n'est pas entièrement démontré à leur place&nbsp;: un admis de leur énoncé, de leur démonstration ou de leur texte, ou l'admis d'une autre fiche qu'elles emploient et ne démontrent pas. Un encadré «&nbsp;Admis ici&nbsp;», sous le titre, en donne le détail. Les admis des remarques ne donnent pas ce signe, et les théories du graphe principal ne le portent pas.</p>
     <div class="ee-chiffres">${chiffre(afaire.length, 'à faire')}${chiffre(hors.length, 'hors du cadre')}${chiffre(aval.length, 'renvois en aval')}${chiffre(ailleurs.length, 'branches parallèles')}${chiffre(choix.length, 'fiches <span class="etoile">⋆</span>')}</div>
     <p class="ee-vide">Les ${pl(afaire.length, 'point', 'points')} à faire se trouvent dans ${pl(fichesAF, 'fiche', 'fiches')}. Parmi les admis hors du cadre, ${horsP.length ? pl(horsP.length, 'figure', 'figurent') : 'aucun ne figure'} dans un énoncé, une démonstration ou un texte. ${nCites ? `Les ${pl(nCites, 'mention', 'mentions')} qui rappellent un admis porté par une autre fiche, ou par un autre endroit de la même fiche, ne sont pas comptées.` : ''}</p>
     <h3 class="ee-titre">À faire</h3>

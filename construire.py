@@ -22,6 +22,8 @@ Champ « admis » d'une fiche (31 oct. 2026) : liste facultative d'entrées
       statut: aval | ailleurs | hors-cadre | a-faire | cite
       objet: courte phrase (formules et liens permis) qui dit ce qui est admis
       renvoi: <id de fiche>                              obligatoire pour aval, ailleurs, cite ; interdit sinon
+      employe: false                                     facultatif, cite seulement : l'admis cité est
+                                                         nommé sans être employé (« non employé »)
   aval        démontré plus loin, en aval dans l'ordre global (ORDRE), faute d'ingrédients en amont ;
               la fiche de renvoi n'a elle-même aucun admis (hors citations) en énoncé, preuve ou texte ;
   ailleurs    démontré dans une branche parallèle, ni en amont ni en aval (même condition sur le renvoi) ;
@@ -38,6 +40,12 @@ un résultat dans son énoncé ou sa preuve exige une entrée de lieu enonce ou 
 sauf si celle-ci est la démonstration de l'admis, la contient, ou vient après elle. Il n'y a pas de statut « historique » :
 une phrase qui relate un admis levé est récrite en renvoi à la démonstration, sans le mot « admis ».
 L'inventaire (sortie['admis']) alimente la page « État de l'édifice » (gabarit : etatEdifice).
+Signe † (graphes intérieurs et titre de fiche) : une fiche le porte si son résultat n'est pas entièrement
+démontré à cet endroit, c'est-à-dire si l'une de ses entrées de lieu texte, enonce ou preuve est d'un statut
+autre que cite, ou bien est une citation employée (sans employe: false) d'une fiche qui porte elle-même le
+signe pour un admis que la fiche citante ne démontre pas (elle n'est ni sa démonstration ni son conteneur).
+Les théories du graphe principal ne le portent pas. Les entrées retenues sont marquées 'signe' dans
+l'inventaire ; le nœud porte le booléen 'admis' (comme 'choix' pour ⋆).
 """
 import os, glob, json, re, sys
 from collections import defaultdict
@@ -254,8 +262,10 @@ for n in noeuds.values():
     for k, a in enumerate(ent):
         ou = f"{v}/admis {k + 1}"
         if not isinstance(a, dict): erreur(f"{ou} : entrée mal formée"); continue
-        for cle in set(a) - {'lieu', 'statut', 'objet', 'renvoi'}: erreur(f"{ou} : clé inconnue « {cle} »")
+        for cle in set(a) - {'lieu', 'statut', 'objet', 'renvoi', 'employe'}: erreur(f"{ou} : clé inconnue « {cle} »")
         lieu, st, r = a.get('lieu'), a.get('statut'), a.get('renvoi')
+        if 'employe' in a and (a['employe'] is not False or st != 'cite'):
+            erreur(f"{ou} : « employe » ne prend que la valeur false, pour une citation")
         if lieu not in LIEUX_ADMIS: erreur(f"{ou} : lieu inconnu « {lieu} » ({', '.join(LIEUX_ADMIS)})"); continue
         if st not in STATUTS_ADMIS: erreur(f"{ou} : statut inconnu « {st} » ({', '.join(sorted(STATUTS_ADMIS))})"); continue
         if not isinstance(a.get('objet'), str) or not a['objet'].strip(): erreur(f"{ou} : objet absent")
@@ -293,8 +303,29 @@ for n in noeuds.values():
     for lieu, k in sorted(vus.items()):
         if declares[lieu] < k:
             erreur(f"{v} : {k} mention(s) « admis » dans « {lieu} », mais {declares[lieu]} entrée(s) de ce lieu dans le champ admis")
+# Signe † : entrées de lieu principal qui font que le résultat de la fiche n'est pas entièrement démontré à
+# cet endroit (voir l'en-tête). Chaque entrée retenue est accompagnée de ses origines : les entrées propres
+# (non citées) d'où vient l'admis, au bout de la chaîne des citations, avec leur renvoi. Une citation compte
+# s'il lui reste une origine que la fiche citante ne démontre pas (elle n'en est ni la démonstration ni le
+# conteneur) ; les rappels d'un admis de la fiche elle-même ne comptent pas (l'entrée propre décide).
+def entrees_signe(v, pile=()):
+    n, res = noeuds[v], []
+    for a in n.get('admis') or []:
+        if not isinstance(a, dict) or a.get('lieu') not in PRINCIPAUX: continue
+        if a.get('statut') != 'cite': res.append((a, [a])); continue
+        r = a.get('renvoi')
+        if a.get('employe') is False or r == v or r not in noeuds or r in pile: continue
+        orig = [b for _, os_ in entrees_signe(r, pile + (v,)) for b in os_
+                if not (b.get('statut') in ('aval', 'ailleurs') and demontre_par(v, b.get('renvoi')))]
+        if orig: res.append((a, list({id(b): b for b in orig}.values())))
+    return res
+for n in noeuds.values():
+    n['_signe_brut'] = entrees_signe(n['id'])
+    n['_signe'] = [a for a, _ in n['_signe_brut']] if n['graphe'] != racines[0]['graphe'] else []
+
 # Transmission : un lien {{x|…}} dans un énoncé ou une preuve vers une fiche x qui admet un résultat dans son
-# énoncé ou sa preuve exige, dans la fiche citante, une entrée de lieu enonce ou preuve (cite, aval, ailleurs…).
+# énoncé ou sa preuve, directement ou par une citation (x porte alors le signe † par cet énoncé ou cette
+# preuve), exige dans la fiche citante une entrée de lieu enonce ou preuve (cite, aval, ailleurs…).
 # Exceptions : la fiche citante est la démonstration de cet admis ou la contient, ou cette démonstration est
 # en amont de la fiche citante (l'admis y est alors levé). Les admis à faire ou hors cadre n'ont pas d'exception.
 if avant:
@@ -303,7 +334,9 @@ if avant:
         if any(a.get('lieu') in ('enonce', 'preuve') for a in n.get('admis') or [] if isinstance(a, dict)): continue
         for x in sorted({t for c in ('enonce', 'preuve') for t in RE_LIEN.findall(n.get(c) or '')}):
             if x == v or x not in noeuds: continue
-            for b in propres(noeuds[x], {'enonce', 'preuve'}):
+            origines = propres(noeuds[x], {'enonce', 'preuve'}) + [
+                b for a, os_ in noeuds[x]['_signe_brut'] if a.get('lieu') in ('enonce', 'preuve') for b in os_]
+            for b in origines:
                 d_ = b.get('renvoi')
                 if d_ in noeuds and (demontre_par(v, d_) or d_ in avant[v]): continue
                 erreur(f"{v} : son énoncé ou sa preuve renvoie à {x}, qui admet « {b.get('objet', '')[:50]} » ; "
@@ -331,7 +364,7 @@ SEP_NOEUDS, SEP_FICTIF = 30, 18
 
 def taille(n, entree=False):
     if n['famille'] in NOMBRES and not entree: return 48, 48
-    lab = n['etiquette'] + (' ⋆' if n.get('choix') else '')
+    lab = n['etiquette'] + (' ⋆' if n.get('choix') else '') + (' †' if n.get('_signe') else '')
     larg = len(lab) * 7.1 + 30
     if larg <= 176: return max(larg, 92), 44
     return 176, 60
@@ -742,7 +775,7 @@ for gid, d in D.items():
             if not os.path.exists(doc.get('fichier', '')):
                 erreur(f"[{gid}] {v} : document introuvable {doc.get('fichier')}")
         sortie['noeuds'][v].update(parents=list(d.predecessors(v)), enfants=list(d.successors(v)),
-                                   amont=amont)
+                                   amont=amont, admis=bool(n.get('_signe')))
 for t, e in lex.items():
     sortie['lexique'][t] = {'id': t, 'terme': e['terme'], 'definition': e['definition'],
                             'emplois': sorted(emplois[t]), 'defini': e['defini_dans'],
@@ -760,7 +793,11 @@ def situe(v):
 cle_inv = lambda e: (noeuds[e['theorie']]['rang'], rang_fichier[e['theorie']], rang_fichier[e['id']])
 sortie['admis'] = {
     'entrees': sorted(({**situe(n['id']), 'lieu': a['lieu'], 'statut': a['statut'], 'objet': a['objet'],
-                        'renvoi': a.get('renvoi')} for n in noeuds.values() for a in n.get('admis') or []),
+                        'renvoi': a.get('renvoi'), 'signe': any(a is b for b in n['_signe']),
+                        # démonstrations d'origine (aval, ailleurs) d'une citation retenue pour le signe †
+                        'demo': sorted({b['renvoi'] for a_, os_ in n['_signe_brut'] if a_ is a for b in os_
+                                        if b.get('statut') in ('aval', 'ailleurs') and b is not a})}
+                       for n in noeuds.values() for a in n.get('admis') or []),
                       key=cle_inv),
     'choix': sorted((situe(n['id']) for n in noeuds.values() if n.get('choix')), key=cle_inv)}
 

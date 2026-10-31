@@ -1203,3 +1203,16 @@ Page `#edifice/etat` (pseudo-fiche, lien depuis accueil(), partage edifice/etat/
 cadre en lieu principal, renvois en aval, branches parallèles, admis de remarques (repliés), fiches ⋆ par théorie ;
 données D.admis dans la page, sans charger les branches (+8,6 Ko compressé). Relu : couverture des formulations
 sans le mot, admis hérité (Schur), statuts (cs-ext, cf-racines…). Nouveauté annoncée.
+
+## 81. Le signe † (31 octobre 2026)
+
+Une fiche porte † (bulle, titre, encadré « Admis ici » sous le titre) si son texte, son énoncé ou sa preuve a une
+entrée `admis` d'un statut autre que cite, ou une citation (non marquée `employe: false`, champ réservé à cite :
+admis nommé mais non employé) d'une fiche elle-même † dont elle n'est ni la démonstration ni le conteneur ; les
+origines (aval/ailleurs et leur renvoi) remontent à tout niveau de la chaîne (champ `demo` de D.admis). Remarques,
+choix et rappels ne comptent pas ; les théories du graphe principal ne sont pas marquées (même convention que ⋆).
+Contrôle de transmission étendu au signe : un lien {{x}} d'énoncé ou de preuve vers une fiche † exige une entrée.
+13 fiches : l-incompletude (à faire) ; c-dalembert, cup-anneau, t-tychonov (aval) ; rp-schur (ailleurs) ;
+rp-orthogonalite, rp-reguliere, rp-classes, rp-lineaires, rp-s3, rp-s4, rp-quaternions, galois-representations
+(cite). Booléen `admis` sur les nœuds (graphes sans charger les branches) ; largeur des bulles comptée avec ' †'.
+Croisements inchangés partout. Relu : rp-reguliere et rp-quaternions oubliés, contrôle de chaîne resserré.
