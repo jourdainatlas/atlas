@@ -865,7 +865,7 @@ if 'nouveautes' in rubriques:
         for l in e.get('liens') or []:
             a = str(l.get('ancre', '')); m = a.split('/')
             if not l.get('nom'): erreur(f"{ou} : lien sans nom ({a})")
-            if a in ('accueil', 'edifice', 'cours', 'exercices', 'annales', 'nouveautes', 'a-propos'): pass
+            if a in ('accueil', 'edifice', 'edifice/etat', 'cours', 'exercices', 'annales', 'nouveautes', 'a-propos'): pass
             elif m[0] == 'cours' and len(m) == 2:
                 if m[1] not in cours_ids: erreur(f"{ou} : cours inconnu {m[1]}")
                 couverts.add(m[1])
