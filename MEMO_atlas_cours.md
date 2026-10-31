@@ -43,7 +43,7 @@ données YAML. Les messages de commit commencent par « Cours : » ou « Exercic
   (55 exercices sur 4 niveaux d'étoiles, `\etoilesv` = 4 ; préfixe `m-galois`, métadonnées
   `outils/meta_m_galois.py` ; PDF dans `documents/exercices/master/`). Les sept blocs « Questions de
   cours » (`\qdc`, un par chapitre, avec leurs réponses dans le corrigé) ne sont pas des exercices
-  numérotés : ils restent dans les PDF et ne sont pas sur le site.
+  numérotés : ils restent dans les PDF et ne sont pas sur le site, par choix de l'auteur (31 oct. 2026).
 - **Niveau Master retiré** (27 oct. 2026, demande de l'auteur) : le niveau `master`, la fiche prototype
   `m-homologie` et la feuille annoncée `f-m-galois` sont supprimés, faute de cours prêt. Le même jour, les
   bandeaux « En construction » des pages Cours et Exercices et les badges du menu pour ces deux
