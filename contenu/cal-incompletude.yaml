@@ -2,7 +2,8 @@
 # graphe calc). Fonction β de Gödel, définissabilité des ensembles récursivement énumérables dans ℕ,
 # théorèmes d'une théorie récursivement axiomatisée, vérité arithmétique non récursivement énumérable et
 # incomplétude des théories dont les axiomes sont vrais dans ℕ. Relie la calculabilité au nœud
-# l-incompletude du graphe log, sans en réécrire la preuve.
+# l-incompletude du graphe log, sans en réécrire la preuve. Le codage de la syntaxe vient du chapitre
+# cal-syntaxe (entrée de cal-theoremes) : rien n'y est admis.
 
 graphe: cal-incompletude
 titre: Calculabilité et incomplétude
@@ -10,6 +11,7 @@ conteneur: cal-incompletude
 
 entrees:
   cal-arret: [cal-beta, cal-theoremes]
+  cal-syntaxe: [cal-theoremes]
 
 noeuds:
   - id: cal-beta
@@ -93,25 +95,39 @@ noeuds:
     nature: proposition
     titre: Les théorèmes d'une théorie récursivement axiomatisée
     texte: |
-      On énumère l'alphabet du langage de l'arithmétique par $a_0 = {=}$, $a_1 = \neg$, $a_2 = {\to}$, $a_3 = \forall$, $a_4 = 0$, $a_5 = S$, $a_6 = +$, $a_7 = \times$, puis $a_{8+i} = x_i$ pour les variables. Le **code** $\ulcorner w \urcorner$ d'un mot $a_{k_0} \cdots a_{k_{m-1}}$ est l'entier $\langle k_0, \dots, k_{m-1} \rangle$, codage du point (iii) de l'{{hk-temoins|extension par témoins}} repris dans {{cal-pr-codage|Codages}}.
+      Les mots du langage de l'arithmétique sont codés comme au nœud {{cal-sx-codage|Codage des mots}} : l'alphabet est énuméré par $a_0 = {=}$, $a_1 = \neg$, $a_2 = {\to}$, $a_3 = \forall$, $a_4 = 0$, $a_5 = S$, $a_6 = +$, $a_7 = \times$, puis $a_{8+i} = x_i$, et le **code** $\ulcorner w \urcorner$ d'un mot $a_{k_0} \cdots a_{k_{m-1}}$ est l'entier $\langle k_0, \dots, k_{m-1} \rangle$.
 
-      L'**arithmétique de Peano** $\mathsf{PA}$ est la théorie dont les axiomes sont
+      L'**arithmétique de Peano** $\mathsf{PA}$ est la théorie dont les axiomes sont, avec $x = x_0$ et $y = x_1$,
       $$\begin{aligned} &\forall x\, \neg(S\,x = 0), \\ &\forall x\, \forall y\, (S\,x = S\,y \to x = y), \\ &\forall x\, (x + 0 = x), \\ &\forall x\, \forall y\, \big(x + S\,y = S(x + y)\big), \\ &\forall x\, (x \times 0 = 0), \\ &\forall x\, \forall y\, \big(x \times S\,y = x \times y + x\big), \end{aligned}$$
       et, pour toute formule $\varphi$ et toute variable $x$, la clôture universelle de
       $$\big(\varphi[0/x] \wedge \forall x\, (\varphi \to \varphi[S\,x/x])\big) \to \forall x\, \varphi,$$
-      écrite en notation préfixée avec les seuls connecteurs $\neg$ et $\to$.
+      écrite en notation préfixée avec les seuls connecteurs $\neg$ et $\to$. C'est bien une formule, puisque $\varphi[0/x]$ et $\varphi[S\,x/x]$ en sont ({{cal-sx-substitution|Substitution}}, (iii)).
+
+      La **clôture universelle** d'une formule $\psi$ dont les variables libres sont $x_{i_1}, \dots, x_{i_g}$, avec $i_1 < \cdots < i_g$, est la formule $\forall x_{i_1} \cdots \forall x_{i_g}\, \psi$. C'est un énoncé : une occurrence libre de $x_{i_m}$ dans $\psi$ se trouve dans la portée du bloc $\forall x_{i_m}$, qui est la formule $\forall x_{i_{m+1}} \cdots \forall x_{i_g}\, \psi$, et une occurrence liée dans $\psi$ le reste ({{cal-sx-libres|Variables libres}}).
     enonce: |
-      (i) Les ensembles des codes des formules, des énoncés, des axiomes logiques de {{l-deduction|Démonstrations formelles}} et des axiomes de $\mathsf{PA}$ sont [[ensemble-recursif|récursifs]].
+      (i) Les ensembles des codes des formules, des énoncés, des axiomes logiques de {{l-deduction|Démonstrations formelles}} et des axiomes de $\mathsf{PA}$ sont primitifs récursifs, donc [[ensemble-recursif|récursifs]].
 
       (ii) La relation « $\chi$ se déduit de $\varphi$ et $\psi$ par modus ponens » est primitive récursive sur les codes.
 
-      (iii) Soit $T$ une théorie sur cette signature dont l'ensemble des codes des axiomes est [[ensemble-recursivement-enumerable|récursivement énumérable]]. L'ensemble des codes des énoncés $\sigma$ tels que $T \vdash \sigma$ est récursivement énumérable. C'est le cas pour $\mathsf{PA}$. Ce point dépend de (i), admis ici.
+      (iii) Soit $T$ une théorie sur cette signature dont l'ensemble des codes des axiomes est [[ensemble-recursivement-enumerable|récursivement énumérable]]. L'ensemble des codes des énoncés $\sigma$ tels que $T \vdash \sigma$ est récursivement énumérable. C'est le cas pour $\mathsf{PA}$.
     preuve: |
-      (i) *Admis ici.* Chacun de ces ensembles est défini par une récurrence sur la longueur des mots, comme la lecture unique ({{l-lecture|Lecture unique}}), les variables libres et la substitution. La difficulté contournée est l'écriture, longue mais sans idée nouvelle, de ces récurrences comme des fonctions primitives récursives sur les codes, en particulier la substituabilité et la reconnaissance des instances de tautologies, qui demande d'examiner toutes les lignes d'une table de vérité.
+      (i) Les formules, les énoncés et les axiomes logiques sont traités au chapitre {{cal-syntaxe|Arithmétisation de la syntaxe}} : {{cal-sx-formules|Formules}}, (ii), {{cal-sx-libres|Variables libres}}, (iv), et {{cal-sx-axiomes|Axiomes logiques}}. Une relation primitive récursive est récursive ({{cal-recursives|Fonctions récursives}}, (i)).
 
-      (ii) En notation préfixée, $\psi$ est le mot $\to \varphi\, \chi$. La relation est donc $\ulcorner \psi \urcorner = \mathrm{conc}\big(\mathrm{conc}(\langle 2 \rangle, \ulcorner \varphi \urcorner), \ulcorner \chi \urcorner\big)$, primitive récursive par {{cal-pr-codage|Codages}}.
+      Restent les axiomes de $\mathsf{PA}$. Les six premiers sont des énoncés fixés, de codes $c_1, \dots, c_6$ : l'ensemble de leurs codes a pour fonction caractéristique $\mathrm{sg}\big(\chi_=(N, c_1) + \cdots + \chi_=(N, c_6)\big)$, primitive récursive.
 
-      (iii) Soit $R$ une relation récursive telle que $a$ soit le code d'un axiome de $T$ si et seulement si $\exists y\, R(a, y)$. Une démonstration formelle $\gamma_0, \dots, \gamma_{l-1}$ se code par la suite $\langle \ulcorner \gamma_0 \urcorner, \dots, \ulcorner \gamma_{l-1} \urcorner \rangle$. La preuve qui suit dépend de (i), admis ici.
+      Pour le schéma de récurrence, $P \wedge Q$ abrège $\neg(P \to \neg Q)$ ({{l-connecteurs|Connecteurs}}), et la formule dont on prend la clôture s'écrit en notation préfixée
+      $$\begin{aligned} &{\to}\, \neg\, {\to}\, \varphi[0/x]\ \neg\, \forall x\, {\to}\, \varphi\ \varphi[S\,x/x] \\ &\quad \forall x\, \varphi. \end{aligned}$$
+      Pour $x = a_k$ et $\varphi$ de code $a$, son code est donc, avec les fonctions de {{cal-sx-codage|Codage des mots}} et de {{cal-sx-substitution|Substitution}},
+      $$\begin{aligned} I(a, k) = \mathrm{cc}\big(&\langle 2, 1, 2 \rangle, \mathrm{Sb}(a, \langle 4 \rangle, k), \\ &\langle 1, 3, k, 2 \rangle, a, \\ &\mathrm{Sb}(a, \langle 5, k \rangle, k), \langle 3, k \rangle, a\big), \end{aligned}$$
+      fonction primitive récursive de $(a, k)$, puisque $\langle 4 \rangle$ et $\langle 5, k \rangle$ sont les codes des termes $0$ et $S\,x$ ; c'est le code d'une formule par le point (iii) de {{cal-sx-substitution|Substitution}}.
+
+      Un entier $M$ code un axiome de récurrence si et seulement s'il existe $a \leqslant M$, $k < M$ et $g < \mathrm{lg}(M) + 1$ tels que $\mathrm{Fm}(a)$, $k \geqslant 8$, $2g \leqslant \mathrm{lg}(M)$, $\mathrm{sm}(M, 2g, \mathrm{lg}(M)) = I(a, k)$, et que les $g$ blocs du début énumèrent, par indices croissants, les variables libres de la formule de code $I(a, k)$. Les bornes viennent de ce que $\varphi$ est un facteur du mot de code $M$ et $a_k$ une de ses lettres ({{cal-sx-codage|Codage des mots}}, (ii) et (iii)).
+
+      La dernière condition s'écrit, avec $J = I(a, k)$ et la relation $\mathrm{VL}$ de {{cal-sx-libres|Variables libres}} : pour tout $m < g$, $(M)^{2m} = 3$, $\mathrm{VL}(J, (M)^{2m+1})$, et $(M)^{2m+1} < (M)^{2m+3}$ si $m + 1 < g$ ; et, pour tout $j < \mathrm{lg}(J)$ tel que $\mathrm{Lib}(J, j)$, il existe $m < g$ tel que $(M)^{2m+1} = (J)^j$. Toutes ces relations sont primitives récursives, et la réunion de deux ensembles primitifs récursifs l'est aussi ({{cal-pr-cloture|Clôture}}, (i)).
+
+      (ii) C'est le point (i) de {{cal-sx-demonstrations|Démonstrations}} : en notation préfixée, $\psi$ est le mot $\to \varphi\, \chi$, et la relation est $\ulcorner \psi \urcorner = \mathrm{conc}\big(\mathrm{conc}(\langle 2 \rangle, \ulcorner \varphi \urcorner), \ulcorner \chi \urcorner\big)$.
+
+      (iii) Soit $R$ une relation récursive telle que $a$ soit le code d'un axiome de $T$ si et seulement si $\exists y\, R(a, y)$. Une démonstration formelle $\gamma_0, \dots, \gamma_{l-1}$ se code par la suite $\langle \ulcorner \gamma_0 \urcorner, \dots, \ulcorner \gamma_{l-1} \urcorner \rangle$, comme au nœud {{cal-sx-demonstrations|Démonstrations}}, où le cas d'un ensemble d'axiomes primitif récursif est traité ; il faut ici des témoins pour les axiomes de $T$.
 
       Considérons la relation $D(p, w, c)$ : l'entier $c$ code un énoncé, $\mathrm{lg}(p) \geqslant 1$ et $(p)^{\mathrm{lg}(p) - 1} = c$.
 
@@ -140,8 +156,6 @@ noeuds:
       (ii) Soit $T$ une théorie sur la signature de l'arithmétique, dont l'ensemble des codes des axiomes est récursivement énumérable et dont tous les axiomes sont vrais dans $\mathcal N$. Il existe un énoncé $\sigma$ vrai dans $\mathcal N$ tel que $T \nvdash \sigma$ et $T \nvdash \neg\sigma$.
 
       (iii) En particulier, l'arithmétique de Peano $\mathsf{PA}$ n'est pas complète.
-
-      Les points (ii) et (iii) admettent la récursivité du codage de la syntaxe ({{cal-theoremes|Théorèmes r.e.}}, (i)) ; le point (i) est entièrement démontré.
     preuve: |
       (i) Par le point (iii) de {{cal-definissable|Définissabilité}}, l'ensemble $K$ de l'arrêt est défini par une formule $\varphi_K$ dont la seule variable libre est $v$. Pour $n \in \lex{ensemble-entiers-naturels}{\mathbb N}$, considérons l'énoncé
       $$\sigma_n = \forall v\, \big(v = \underline n \to \neg\varphi_K\big),$$
@@ -155,9 +169,7 @@ noeuds:
 
       Si l'ensemble $V$ des codes des énoncés vrais était récursivement énumérable, $\mathbb N \setminus K = g^{-1}(V)$ le serait aussi ({{cal-ensembles|Récursif, r.e.}}, (iii)), contrairement au point (iii) de l'{{cal-arret|indécidabilité de l'arrêt}}.
 
-      (ii) Ce point et le suivant admettent le point (i) de {{cal-theoremes|Théorèmes r.e.}}, récursivité du codage de la syntaxe, alors que (i) est entièrement démontré.
-
-      Comme $\mathcal N$ est un modèle de $T$, le {{l-correction|théorème de correction}} montre que tout énoncé démontrable dans $T$ est vrai dans $\mathcal N$. Si $T$ démontrait tous les énoncés vrais dans $\mathcal N$, l'ensemble $V$ serait celui des codes des énoncés démontrables dans $T$, récursivement énumérable par le point (iii) de {{cal-theoremes|Théorèmes r.e.}}, ce que (i) exclut.
+      (ii) Comme $\mathcal N$ est un modèle de $T$, le {{l-correction|théorème de correction}} montre que tout énoncé démontrable dans $T$ est vrai dans $\mathcal N$. Si $T$ démontrait tous les énoncés vrais dans $\mathcal N$, l'ensemble $V$ serait celui des codes des énoncés démontrables dans $T$, récursivement énumérable par le point (iii) de {{cal-theoremes|Théorèmes r.e.}}, ce que (i) exclut.
 
       Il existe donc un énoncé $\sigma$ vrai dans $\mathcal N$ tel que $T \nvdash \sigma$. L'énoncé $\neg\sigma$ est faux dans $\mathcal N$ ; il n'est donc pas démontrable non plus.
 

@@ -1153,3 +1153,19 @@ admise). Remarques mises à jour : h-degre0, h-spheres, cw-surfaces, cw-degre, c
 §13 (via Stillwell), Noether 1925, Seifert-Threlfall 1934 §48, Hurewicz 1935 (« bekannt »). Lexique
 morphisme-hurewicz ; schémas hu-chemins, hu-hurewicz. Relu : aucun bloquant ; renvoi de récurrence, notations.
 971 nœuds, 564 termes, 83 graphes.
+
+## 78. Arithmétisation de la syntaxe (31 octobre 2026)
+
+Chapitre nouveau `cal-syntaxe` dans calc (10 fiches cal-sx-*, arêtes cal-primitives → cal-syntaxe →
+cal-incompletude, entrée cal-syntaxe: [cal-theoremes] ; 0 croisement, édifice 16) : récurrence de valeurs, codage
+et facteurs (code d'un facteur propre plus petit), termes, formules, variables libres et énoncés (le bloc ∀x est un
+seul symbole, convention de l-lecture), substitution, substituabilité et φ[t/x] formule (point (iii), cité par
+cal-sx-axiomes, cal-theoremes ; remarque de renvoi dans l-substitution), instances de tautologies (squelette nommant
+les formules premières par leur code, sans choix), reconnaissance des tautologies, axiomes logiques, démonstrations
+(Dem_T primitive récursive si les axiomes le sont). Levé : l'« Admis ici » de cal-theoremes (i) ; cal-tarski
+démontré de bout en bout jusqu'à l'incomplétude de PA. l-incompletude : définit l'arithmétique de Robinson (texte) ;
+restent admis, explicitement : astuce de Craig (1953), représentation dans T des relations récursives, lemme
+diagonal, Rosser, et pour (ii) les conditions de dérivabilité dans PA. Aucun choix. Historique : Gödel 1931 (45
+notions récursives, la 46e Bew), Péter 1934, Kleene 1936 (Kleene 1981). Relu : relation de démonstration seulement
+r.e. sous l'hypothèse de l'énoncé (Craig), φ[t/x] formule démontrée, lemme des poids cité. 982 nœuds, 566 termes,
+84 graphes.

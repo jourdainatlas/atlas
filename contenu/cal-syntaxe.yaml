@@ -1,0 +1,446 @@
+# Niveau 2 : structure interne du chapitre « Arithmétisation de la syntaxe » (nœud cal-syntaxe du graphe
+# calc). Récurrence de valeurs, codage des mots du langage de l'arithmétique, puis reconnaissance primitive
+# récursive des termes, des formules, des occurrences libres, de la substitution et de la substituabilité,
+# des instances de tautologies, des axiomes logiques et des démonstrations formelles.
+# Ne dépend que des fonctions primitives récursives (chapitre cal-primitives) et de la logique (log).
+# Aucune forme de l'axiome du choix : toutes les recherches sont bornées. Identifiants « cal-sx- ».
+
+graphe: cal-syntaxe
+titre: Arithmétisation de la syntaxe
+conteneur: cal-syntaxe
+
+entrees:
+  cal-primitives: [cal-sx-valeurs, cal-sx-codage]
+
+noeuds:
+  - id: cal-sx-valeurs
+    etiquette: Récurrence de valeurs
+    nature: lemme
+    titre: Récurrence de valeurs
+    texte: |
+      Soit $p \geqslant 0$ et $f : \lex{n-uplet}{\mathbb N^{p+1}} \to \mathbb N$ une fonction. Pour $x \in \mathbb N^p$ et $n \in \mathbb N$, on note
+      $$\bar f(x, n) = \langle f(x, 0), \dots, f(x, n - 1) \rangle$$
+      le code de la suite de ses valeurs avant $n$, au sens de {{cal-pr-codage|Codages}} ; ainsi $\bar f(x, 0) = 0$. Comme $\mathrm{lg}(\bar f(x, n)) = n$, on a $(\bar f(x, n))^m = f(x, m)$ pour tout $m < n$, où $(N, j) \mapsto (N)^j$ est la fonction primitive récursive de {{cal-pr-codage|Codages}}, (iii), définie pour tous $N$ et $j$ par la formule qui y est donnée.
+
+      Pour une relation $R \subset \mathbb N^{p+1}$, on note de même $\bar\chi_R$ pour $\overline{\chi_R}$.
+    enonce: |
+      (i) Soit $G : \mathbb N^{p+2} \to \mathbb N$ une [[fonction-primitive-recursive|fonction primitive récursive]]. Il existe une unique fonction $f : \mathbb N^{p+1} \to \mathbb N$ telle que, pour tous $x$ et $n$,
+      $$f(x, n) = G\big(x, n, \bar f(x, n)\big),$$
+      et elle est primitive récursive.
+
+      (ii) Soit $Q \subset \mathbb N^{p+2}$ une relation primitive récursive. Il existe une unique relation $R \subset \mathbb N^{p+1}$ telle que, pour tous $x$ et $n$,
+      $$R(x, n) \iff Q\big(x, n, \bar\chi_R(x, n)\big),$$
+      et elle est primitive récursive.
+
+      C'est le principe de [[recurrence-valeurs|récurrence de valeurs]] : une fonction dont la valeur en $n$ se calcule, de façon primitive récursive, à partir de toutes ses valeurs en des entiers plus petits que $n$ est primitive récursive.
+    preuve: |
+      (i) *Existence.* Définissons $F : \mathbb N^{p+1} \to \mathbb N$ par récurrence primitive ({{cal-pr-definition|Primitives récursives}}) :
+      $$\begin{aligned} F(x, 0) &= 0, \\ F(x, n + 1) &= \mathrm{aj}\big(F(x, n), \\ &\qquad\quad G(x, n, F(x, n))\big), \end{aligned}$$
+      où $\mathrm{aj}$ est la fonction d'ajout de {{cal-pr-codage|Codages}}. Pour $p = 0$, c'est la récurrence primitive sans paramètre, avec l'entier initial $0$. La fonction $f(x, n) = G(x, n, F(x, n))$ est primitive récursive, par composition.
+
+      Montrons par récurrence sur $n$ que $F(x, n) = \bar f(x, n)$. Pour $n = 0$, les deux membres valent $0$, code de la suite vide. Si $F(x, n) = \bar f(x, n)$, alors $G(x, n, F(x, n)) = f(x, n)$ par définition de $f$, et
+      $$\begin{aligned} F(x, n + 1) &= \mathrm{aj}\big(\bar f(x, n), f(x, n)\big) \\ &= \bar f(x, n + 1), \end{aligned}$$
+      puisque l'ajout place $f(x, n)$ à la fin de la suite codée par $\bar f(x, n)$. Ainsi $f(x, n) = G(x, n, \bar f(x, n))$ pour tous $x$ et $n$.
+
+      *Unicité.* Soit $f'$ une autre fonction qui vérifie la même égalité, et $x$ fixé. Montrons par récurrence forte sur $n$ que $f'(x, n) = f(x, n)$ : si c'est vrai pour tout $m < n$, les suites $(f'(x, 0), \dots, f'(x, n - 1))$ et $(f(x, 0), \dots, f(x, n - 1))$ sont égales, donc $\bar f'(x, n) = \bar f(x, n)$, et les deux égalités donnent $f'(x, n) = f(x, n)$.
+
+      (ii) Appliquons (i) à $G = \chi_Q$ : la fonction $f$ obtenue ne prend que les valeurs $0$ et $1$, et la relation $R = \{(x, n) : f(x, n) = 1\}$ a pour fonction caractéristique $\chi_R = f$. Elle est primitive récursive, et
+      $$\begin{aligned} R(x, n) &\iff f(x, n) = 1 \\ &\iff Q\big(x, n, \bar\chi_R(x, n)\big). \end{aligned}$$
+      Si $R'$ vérifie la même équivalence, $\chi_{R'}$ vérifie l'égalité de (i) avec $G = \chi_Q$, donc $\chi_{R'} = f = \chi_R$ par l'unicité de (i).
+    remarques:
+      - |
+        Dans toutes les applications de ce chapitre, la fonction $G$, ou la relation $Q$, ne lit sa dernière variable $h$ qu'à travers des termes $(h)^m$ pour des entiers $m < n$ ; lorsque $h = \bar f(x, n)$, ce sont les valeurs $f(x, m)$. L'erreur la plus répandue est d'oublier cette condition : une définition qui ferait appel à $f(x, 2n)$ pour calculer $f(x, n)$ n'est pas une récurrence de valeurs, et elle peut n'avoir aucune solution, comme $f(n) = f(2n) + 1$, qui imposerait $f(0) = f(0) + 1$, ou en avoir plusieurs, comme $f(n) = f(2n)$. Les entiers $m$ consultés seront toujours des codes de sous-mots propres, plus petits que $n$ par le point (ii) du {{cal-sx-codage|codage des mots}}.
+      - |
+        La récurrence de valeurs ne sort pas de la classe des fonctions primitives récursives, contrairement à la double récurrence qui définit la {{cal-ackermann|fonction d'Ackermann}}. Elle ne fait que réorganiser une récurrence primitive autour de l'historique $\bar f(x, n)$, que l'on transporte d'une étape à la suivante comme une pile : à chaque étape, on calcule une valeur et on l'ajoute à la fin.
+
+  - id: cal-sx-codage
+    etiquette: Codage des mots
+    nature: proposition
+    titre: Codage des mots du langage de l'arithmétique
+    texte: |
+      Le langage de l'arithmétique a pour signature une constante $0$, un symbole de fonction unaire $S$ et deux symboles de fonctions binaires $+$ et $\times$ ({{l-langage|Langage, signature}}). On énumère son alphabet par
+      $$\begin{aligned} &a_0 = {=},\ a_1 = \neg,\ a_2 = {\to},\ a_3 = \forall, \\ &a_4 = 0,\ a_5 = S,\ a_6 = +,\ a_7 = \times, \end{aligned}$$
+      puis $a_{8+i} = x_i$ pour les variables : la lettre $a_k$ est une variable si et seulement si $k \geqslant 8$.
+
+      Le **code** d'un mot $w = a_{k_0} \cdots a_{k_{m-1}}$ est l'entier $\ulcorner w \urcorner = \langle k_0, \dots, k_{m-1} \rangle$, codage du point (iii) de l'{{hk-temoins|extension par témoins}}, repris dans {{cal-pr-codage|Codages}}. Tout entier est le code d'une unique suite finie d'entiers, donc d'un unique mot ; on parle du « mot de code $N$ », dont la lettre de rang $j$ est $a_{(N)^j}$ pour $j < \mathrm{lg}(N)$.
+
+      Un **facteur** d'un mot $w$ est un mot formé de lettres consécutives de $w$, c'est-à-dire un mot $u$ tel que $w = vuv'$ pour des mots $v$ et $v'$, éventuellement vides. On note $\mathrm{sm}(N, i, j)$ le code du facteur $(N)^i \cdots (N)^{j-1}$, formé des lettres de rangs $i$ à $j - 1$, pour $i \leqslant j \leqslant \mathrm{lg}(N)$.
+
+      Enfin, $\mathrm{cc}(M_1, \dots, M_r)$ désigne le code de la concaténation des mots de codes $M_1, \dots, M_r$, obtenu par $r - 1$ concaténations successives :
+      $$\begin{aligned} &\mathrm{cc}(M_1, \dots, M_r) \\ &\quad = \mathrm{conc}\big(\mathrm{cc}(M_1, \dots, M_{r-1}), M_r\big). \end{aligned}$$
+    enonce: |
+      (i) Les fonctions $\mathrm{sm}$ et $\mathrm{cc}$ sont primitives récursives, de même que $k \mapsto \langle c_1, \dots, c_r, k \rangle$ pour des entiers $c_1, \dots, c_r$ fixés.
+
+      (ii) **Facteurs.** Si $u$ est un facteur de $w$, alors $\ulcorner u \urcorner \leqslant \ulcorner w \urcorner$, et l'inégalité est stricte si $u \neq w$. En particulier, $\mathrm{sm}(N, i, j) < N$ dès que $i \leqslant j \leqslant \mathrm{lg}(N)$ et que $i \geqslant 1$ ou $j < \mathrm{lg}(N)$.
+
+      (iii) Si la lettre $a_k$ figure dans le mot de code $N$, alors $2k + 1 \leqslant N$, donc $k < N$.
+    preuve: |
+      (i) Définissons, par récurrence primitive sur $t$, avec les paramètres $N$ et $i$,
+      $$\begin{aligned} \sigma(N, i, 0) &= 0, \\ \sigma(N, i, t + 1) &= \mathrm{aj}\big(\sigma(N, i, t),\ (N)^{i+t}\big). \end{aligned}$$
+      Par récurrence sur $t$, $\sigma(N, i, t)$ code la suite $(N)^i, \dots, (N)^{i+t-1}$ ; on pose $\mathrm{sm}(N, i, j) = \sigma(N, i, j \mathbin{\dot{-}} i)$. La fonction $\mathrm{cc}$ est une composée de $\mathrm{conc}$, et $\langle c_1, \dots, c_r, k \rangle = \mathrm{aj}(\mathrm{aj}(\cdots\mathrm{aj}(0, c_1) \cdots, c_r), k)$ ; toutes sont primitives récursives par {{cal-pr-codage|Codages}}, (iii).
+
+      (ii) *Préfixes.* Pour un mot $w$ et une lettre $a_k$, on a
+      $$\ulcorner w\, a_k \urcorner = 2^{\ulcorner w \urcorner}(2k + 1) > \ulcorner w \urcorner,$$
+      puisque $2^n > n$ pour tout entier $n$. Par récurrence sur la longueur de $v$, il vient $\ulcorner u \urcorner < \ulcorner u v \urcorner$ si $v$ n'est pas vide.
+
+      *Suffixes.* Montrons $\ulcorner v \urcorner \leqslant \ulcorner u v \urcorner$, avec inégalité stricte si $u$ n'est pas vide, par récurrence sur la longueur de $v$. Si $v$ est vide, $\ulcorner v \urcorner = 0$, et le code d'un mot non vide, de la forme $2^n(2k + 1)$, est au moins $1$. Si $v = v' a_k$, l'hypothèse de récurrence et la croissance stricte de $n \mapsto 2^n$ donnent
+      $$\begin{aligned} \ulcorner v' a_k \urcorner &= 2^{\ulcorner v' \urcorner}(2k + 1) \\ &\leqslant 2^{\ulcorner u v' \urcorner}(2k + 1) = \ulcorner u v' a_k \urcorner, \end{aligned}$$
+      avec inégalité stricte si l'hypothèse l'est.
+
+      Si enfin $w = v u v'$, on a $\ulcorner u \urcorner \leqslant \ulcorner v u \urcorner \leqslant \ulcorner v u v' \urcorner$, et si $u \neq w$, l'un des mots $v$ et $v'$ n'est pas vide, ce qui rend stricte l'une des deux inégalités. Le facteur de code $\mathrm{sm}(N, i, j)$ est différent du mot de code $N$ si $i \geqslant 1$ ou $j < \mathrm{lg}(N)$, puisqu'il est alors plus court.
+
+      (iii) Le mot $a_k$, réduit à une lettre, est un facteur du mot de code $N$, et son code est $\langle k \rangle = 2^0(2k + 1)$ ; on applique (ii).
+    remarques:
+      - |
+        Les premiers codes restent lisibles : $\ulcorner 0 \urcorner = \langle 4 \rangle = 9$, $\ulcorner x_0 \urcorner = 17$, puis
+        $$\ulcorner S\, 0 \urcorner = 2^{\ulcorner S \urcorner} \cdot 9 = 2^{11} \cdot 9 = 18\,432,$$
+        et $\ulcorner {=}\, x_0\, 0 \urcorner = 2^{34} \cdot 9 = 154\,618\,822\,656$, puisque $\ulcorner {=}\, x_0 \urcorner = 2^1 \cdot 17 = 34$. Mais dès cinq lettres, le code de $\forall x_0\, (x_0 = x_0)$ est une tour d'exponentielles dont le premier étage, $2^{2176}$, a déjà $656$ chiffres. Seules comptent ici l'existence de ces entiers et les inégalités du point (ii).
+      - |
+        Le code ne croît pas avec la longueur : $\ulcorner x_{10000} \urcorner = 20\,017$ dépasse $\ulcorner S\, 0 \urcorner = 18\,432$, alors que le premier mot n'a qu'une lettre. Le point (ii) ne compare que des mots dont l'un est facteur de l'autre, et c'est exactement ce dont la {{cal-sx-valeurs|récurrence de valeurs}} a besoin : un mot se reconnaît à partir de ses facteurs propres, qui ont des codes plus petits.
+
+  - id: cal-sx-termes
+    etiquette: Termes
+    nature: proposition
+    titre: Les termes forment un ensemble primitif récursif
+    texte: |
+      On note $\mathrm{Tm}$ l'ensemble des codes des [[terme|termes]] du langage de l'arithmétique ({{l-termes|Termes}}) et $\mathrm{Var}$ l'ensemble des codes des mots réduits à une variable.
+    enonce: |
+      (i) **Inversion.** Un mot est un terme si et seulement s'il est une variable, la constante $0$, ou l'un des mots $S\, t$, $+\, t\, u$ et $\times\, t\, u$, où $t$ et $u$ sont des termes.
+
+      (ii) Les ensembles $\mathrm{Var}$ et $\mathrm{Tm}$ sont primitifs récursifs.
+    preuve: |
+      (i) Soit $E$ l'ensemble des termes et $E'$ l'ensemble des mots de l'une des formes annoncées, avec $t, u \in E$. Comme $E$ contient les variables et $0$ et qu'il est stable par les trois symboles de fonctions, $E' \subset E$.
+
+      Inversement, $E'$ contient les variables et $0$. Il est stable : si $t$ et $u$ sont dans $E'$, ils sont dans $E$, et $S\, t$, $+\, t\, u$, $\times\, t\, u$ sont dans $E'$ par définition. Comme $E$ est le plus petit ensemble qui a ces propriétés, $E \subset E'$.
+
+      (ii) On a $\mathrm{Var}(N) \iff \mathrm{lg}(N) = 1 \wedge (N)^0 \geqslant 8$, relation primitive récursive par {{cal-pr-cloture|Clôture}}, (i), et {{cal-pr-codage|Codages}}.
+
+      Pour $\mathrm{Tm}$, soit $Q(N, h)$ la disjonction des trois conditions suivantes, où $l = \mathrm{lg}(N)$ :
+
+      $l = 1$, et $(N)^0 = 4$ ou $(N)^0 \geqslant 8$ ;
+
+      $(N)^0 = 5$, $l \geqslant 2$ et $(h)^{\mathrm{sm}(N, 1, l)} = 1$ ;
+
+      $(N)^0 = 6$ ou $(N)^0 = 7$, et il existe $j < l$ tel que $j \geqslant 2$, $(h)^{\mathrm{sm}(N, 1, j)} = 1$ et $(h)^{\mathrm{sm}(N, j, l)} = 1$.
+
+      C'est une relation primitive récursive par les points (i) et (iii) de {{cal-pr-cloture|Clôture}}, la quantification étant bornée par $\mathrm{lg}(N)$. La {{cal-sx-valeurs|récurrence de valeurs}}, (ii), fournit une relation primitive récursive $R$ telle que $R(N) \iff Q(N, \bar\chi_R(N))$.
+
+      Montrons par récurrence forte sur $N$ que $R(N)$ si et seulement si $N$ code un terme. Les entiers $\mathrm{sm}(N, 1, l)$, $\mathrm{sm}(N, 1, j)$ et $\mathrm{sm}(N, j, l)$ qui interviennent, avec $1 \leqslant j \leqslant l$, codent des facteurs qui omettent la première lettre ; ils sont strictement plus petits que $N$ par le point (ii) du {{cal-sx-codage|codage des mots}}. Pour un tel entier $M$, on a donc $(\bar\chi_R(N))^M = \chi_R(M)$, qui vaut $1$ si et seulement si $M$ code un terme, par hypothèse de récurrence.
+
+      Ainsi $Q(N, \bar\chi_R(N))$ dit que le mot de code $N$ est une variable ou $0$, ou bien $S$ suivi d'un terme, ou bien $+$ ou $\times$ suivi d'un mot qui se coupe en deux termes non vides, le premier occupant les rangs $1$ à $j - 1$ et le second les rangs $j$ à $l - 1$. Par (i), c'est dire que $N$ code un terme : $R = \mathrm{Tm}$.
+    remarques:
+      - |
+        Pour $N = \ulcorner S\, 0 \urcorner = 18\,432$, on a $\mathrm{lg}(N) = 2$, $(N)^0 = 5$, et le facteur $\mathrm{sm}(N, 1, 2) = \ulcorner 0 \urcorner = 9$ est un code plus petit, de longueur $1$ et de lettre $4$ : la reconnaissance de $18\,432$ consulte la seule valeur déjà acquise $\chi_{\mathrm{Tm}}(9) = 1$, et conclut que $18\,432$ code un terme.
+      - |
+        La reconnaissance n'a pas besoin de la {{l-lecture|lecture unique}} : elle demande seulement s'il existe un découpage en deux termes, sans chercher à savoir s'il est unique. La lecture unique servira à extraire les composantes d'une formule, quand il faudra calculer une valeur de vérité à partir de celles de ses morceaux ({{cal-sx-tautologies|Tautologies}}).
+
+  - id: cal-sx-formules
+    etiquette: Formules
+    nature: proposition
+    titre: Les formules forment un ensemble primitif récursif
+    texte: |
+      On note $\mathrm{At}$ et $\mathrm{Fm}$ les ensembles des codes des formules atomiques et des [[formule|formules]] du langage de l'arithmétique ({{l-formules|Formules, variables libres}}). Ce langage n'a pas de symbole de relation : les formules atomiques sont les mots ${=}\, t\, u$, où $t$ et $u$ sont des termes.
+    enonce: |
+      (i) **Inversion.** Un mot est une formule si et seulement s'il est atomique, ou de l'une des formes $\neg\varphi$, ${\to}\, \varphi\, \psi$ et $\forall x\, \varphi$, où $\varphi$ et $\psi$ sont des formules et $x$ une variable.
+
+      (ii) Les ensembles $\mathrm{At}$ et $\mathrm{Fm}$ sont primitifs récursifs.
+
+      (iii) **Découpage.** La fonction
+      $$\begin{aligned} &\mathrm{dec}(N) = \mu j < l\ \big(j \geqslant 2 \\ &\quad \wedge \mathrm{Fm}(\mathrm{sm}(N, 1, j)) \\ &\quad \wedge \mathrm{Fm}(\mathrm{sm}(N, j, l))\big), \end{aligned}$$
+      où $l = \mathrm{lg}(N)$, est primitive récursive. Si $N$ code une formule ${\to}\, \varphi\, \psi$, alors $\mathrm{sm}(N, 1, \mathrm{dec}(N)) = \ulcorner \varphi \urcorner$ et $\mathrm{sm}(N, \mathrm{dec}(N), \mathrm{lg}(N)) = \ulcorner \psi \urcorner$.
+    preuve: |
+      (i) Comme pour les {{cal-sx-termes|termes}}, soit $E$ l'ensemble des formules et $E'$ celui des mots de l'une des formes annoncées, avec $\varphi, \psi \in E$. On a $E' \subset E$, puisque $E$ contient les formules atomiques et qu'il est stable par les trois règles. Inversement, $E'$ contient les formules atomiques, et il est stable par les trois règles puisque $E' \subset E$ ; d'où $E \subset E'$, par minimalité de $E$.
+
+      (ii) La relation
+      $$\begin{aligned} \mathrm{At}(N) \iff{} &(N)^0 = 0 \wedge \exists j < l\ \big(j \geqslant 2 \\ &\wedge \mathrm{Tm}(\mathrm{sm}(N, 1, j)) \\ &\wedge \mathrm{Tm}(\mathrm{sm}(N, j, l))\big), \end{aligned}$$
+      où $l = \mathrm{lg}(N)$, traduit la définition, et elle est primitive récursive par {{cal-sx-termes|Termes}} et {{cal-pr-cloture|Clôture}}.
+
+      Pour $\mathrm{Fm}$, soit $Q(N, h)$ la disjonction de quatre conditions, où $l = \mathrm{lg}(N)$ :
+
+      $\mathrm{At}(N)$ ;
+
+      $(N)^0 = 1$, $l \geqslant 2$ et $(h)^{\mathrm{sm}(N, 1, l)} = 1$ ;
+
+      $(N)^0 = 2$, et il existe $j < l$ tel que $j \geqslant 2$, $(h)^{\mathrm{sm}(N, 1, j)} = 1$ et $(h)^{\mathrm{sm}(N, j, l)} = 1$ ;
+
+      $(N)^0 = 3$, $l \geqslant 3$, $(N)^1 \geqslant 8$ et $(h)^{\mathrm{sm}(N, 2, l)} = 1$.
+
+      Elle est primitive récursive, et la {{cal-sx-valeurs|récurrence de valeurs}} fournit une relation primitive récursive $R$ telle que $R(N) \iff Q(N, \bar\chi_R(N))$. Les codes consultés sont ceux de facteurs qui omettent la première lettre, plus petits que $N$ ; la même récurrence forte que pour les termes, appuyée sur (i), montre que $R = \mathrm{Fm}$.
+
+      (iii) La fonction $\mathrm{dec}$ est primitive récursive par la minimisation bornée ({{cal-pr-cloture|Clôture}}, (iv)). Si $N$ code ${\to}\, \varphi\, \psi$, l'entier $j_0 = 1 + \mathrm{lg}(\ulcorner \varphi \urcorner)$ vérifie la condition, et $j_0 < \mathrm{lg}(N)$ puisque $\psi$ n'est pas vide.
+
+      Si un entier $j$ la vérifie, le mot de code $N$ s'écrit ${\to}\, \varphi'\, \psi'$, où $\varphi'$ et $\psi'$ sont les formules de codes $\mathrm{sm}(N, 1, j)$ et $\mathrm{sm}(N, j, \mathrm{lg}(N))$. Le {{l-lecture|théorème de lecture unique}} donne $\varphi' = \varphi$, donc $j = j_0$. Ainsi $\mathrm{dec}(N) = j_0$, et les deux facteurs sont $\varphi$ et $\psi$.
+    remarques:
+      - |
+        Le code $N = \ulcorner {=}\, x_0\, 0 \urcorner = 154\,618\,822\,656$ est celui d'une formule atomique : $\mathrm{lg}(N) = 3$, $(N)^0 = 0$, et pour $j = 2$, les facteurs $\mathrm{sm}(N, 1, 2) = 17$ et $\mathrm{sm}(N, 2, 3) = 9$ codent les termes $x_0$ et $0$. Aucune récurrence n'est nécessaire pour les formules atomiques, dont la reconnaissance s'appuie sur celle, déjà acquise, des termes.
+
+        ```schema cal-sx-formules
+        La formule ${\to}\, {=}\, x_0\, 0\, \forall x_0\, {=}\, x_0\, x_1$, c'est-à-dire $x_0 = 0 \to \forall x_0\, (x_0 = x_1)$ : chaque trait couvre les lettres d'un facteur qui est une formule, en noir, ou un terme, en bleu, et repose par un pointillé sur le facteur qui le contient. Chaque facteur a un code strictement plus petit que celui qui le contient, comme l'indiquent les codes calculables ; la reconnaissance de la racine, en rouge, ne consulte donc que des valeurs déjà acquises, et trouve le découpage $j = 4$.
+        ```
+      - |
+        L'erreur la plus répandue est de croire que la règle du quantificateur demande que $x$ figure dans $\varphi$. Elle ne le demande pas : $\forall x_1\, (x_0 = 0)$ est une formule, et la condition du quatrième cas ne porte que sur la lettre qui suit $\forall$, qui doit être une variable. Le mot $\forall\ 0\ {=}\ 0\ 0$, où la lettre qui suit $\forall$ est la constante $0$, n'est pas une formule.
+
+  - id: cal-sx-libres
+    etiquette: Variables libres
+    nature: proposition
+    titre: Occurrences libres et énoncés
+    texte: |
+      On lit sur les positions des lettres la définition de {{l-formules|Formules, variables libres}}. Comme dans la {{l-lecture|lecture unique}}, le bloc $\forall x$ compte pour un seul symbole. Dans une formule, chaque lettre $\forall$ est suivie de la variable de son bloc : les termes ne contiennent pas $\forall$, et la seule règle qui introduit $\forall$ l'écrit suivi d'une variable.
+
+      Une **occurrence** d'une variable $x$ dans un mot $w$ est donc un rang $j$ où figure la lettre $x$, sans que la lettre de rang $j - 1$, s'il y en a une, soit $\forall$. Une **sous-formule** de $w$ est un facteur de $w$ qui est une formule.
+
+      L'occurrence de rang $j$ est dans la portée d'un quantificateur $\forall x$ s'il existe une sous-formule $\forall x\, \psi$ de $w$, commençant au rang $i$, telle que $j$ soit le rang d'une lettre de $\psi$, c'est-à-dire $i + 2 \leqslant j < l'$, où $l'$ est le rang qui suit la dernière lettre de $\psi$. Elle est **liée** si c'est le cas, **libre** sinon ; $x$ est une variable libre de $w$ si elle y a une occurrence libre.
+
+      C'est bien la définition de {{l-formules|Formules, variables libres}} quand $w$ est une formule. Par récurrence sur la construction, chaque lettre $\forall$ d'une formule, au rang $i$, commence une sous-formule $\forall x\, \psi$ issue de la règle du quantificateur, dont $\psi$ est la portée. Par le lemme des poids de la {{l-lecture|lecture unique}}, aucune formule n'est un préfixe propre d'une autre : $\psi$ est donc l'unique facteur commençant au rang $i + 2$ qui soit une formule, et les facteurs considérés ci-dessus sont exactement les portées des quantificateurs.
+    enonce: |
+      Les relations suivantes sont primitives récursives :
+
+      (i) $\mathrm{Oc}(N, j)$ : « $j$ est une occurrence de variable dans le mot de code $N$ » ;
+
+      (ii) $\mathrm{Lib}(N, j)$ : « $j$ est une occurrence libre » ;
+
+      (iii) $\mathrm{VL}(N, k)$ : « $a_k$ est une variable libre du mot de code $N$ » ;
+
+      (iv) l'ensemble $\mathrm{En}$ des codes des [[enonce|énoncés]].
+    preuve: |
+      Les définitions se traduisent mot pour mot, avec $l = \mathrm{lg}(N)$ :
+      $$\begin{aligned} \mathrm{Oc}(N, j) \iff{} &j < l \wedge (N)^j \geqslant 8 \\ &\wedge \big(j = 0 \vee (N)^{j \mathbin{\dot{-}} 1} \neq 3\big). \end{aligned}$$
+
+      L'occurrence $j$ est liée si et seulement si $\mathrm{Li}(N, j)$, où
+      $$\begin{aligned} \mathrm{Li}(N, j) \iff{} &\exists i < j\ \exists l' < l + 1 \\ &\big((N)^i = 3 \\ &\wedge (N)^{i+1} = (N)^j \\ &\wedge i + 2 \leqslant j < l' \\ &\wedge \mathrm{Fm}(\mathrm{sm}(N, i + 2, l'))\big). \end{aligned}$$
+      En effet, une sous-formule $\forall x\, \psi$ commençant au rang $i$ s'écrit avec $(N)^i = 3$, la variable $x$ au rang $i + 1$, et $\psi = \mathrm{sm}(N, i + 2, l')$ ; elle est contenue dans le mot, d'où les bornes $i < j$ et $l' \leqslant l$.
+
+      Puis $\mathrm{Lib}(N, j) \iff \mathrm{Oc}(N, j) \wedge \neg \mathrm{Li}(N, j)$, ensuite
+      $$\begin{aligned} \mathrm{VL}(N, k) \iff \exists j < l\ \big(&\mathrm{Lib}(N, j) \\ &\wedge (N)^j = k\big), \end{aligned}$$
+      et enfin $\mathrm{En}(N) \iff \mathrm{Fm}(N) \wedge \forall j < l\ \neg\mathrm{Lib}(N, j)$.
+
+      Toutes ces relations sont primitives récursives par {{cal-pr-cloture|Clôture}}, (i) et (iii), {{cal-sx-codage|Codage des mots}}, (i), et {{cal-sx-formules|Formules}}.
+    remarques:
+      - |
+        Dans $\varphi = {\to}\, {=}\, x_0\, 0\, \forall x_0\, {=}\, x_0\, x_1$, les occurrences de variables sont aux rangs $2$, $7$ et $8$ ; le rang $5$ est la variable du bloc $\forall x_0$. Le rang $7$ est lié, avec le témoin $i = 4$ et $l' = 9$ ; le rang $2$ est libre, faute de lettre $\forall$ avant lui ; le rang $8$ est libre, car le seul quantificateur porte sur $x_0$. Les variables libres de $\varphi$ sont $x_0$ et $x_1$, et $x_0$ a aussi une occurrence liée, comme dans la remarque de {{l-formules|Formules, variables libres}}.
+
+        ```schema cal-sx-libres
+        Les rangs des lettres de $\varphi$ : la portée du bloc $\forall x_0$ est le facteur des rangs $6$ à $8$, qui est une formule, et l'arc bleu relie le bloc à l'occurrence qu'il lie. Les occurrences libres, en rouge, sont celles qu'aucun témoin $(i, l')$ ne couvre.
+        ```
+      - |
+        L'erreur la plus répandue est de compter la lettre $x$ du bloc $\forall x$ comme une occurrence. L'énoncé $\forall x_0\, (x_0 = x_0)$ aurait alors une occurrence libre de $x_0$, celle du bloc, qui n'est dans la portée d'aucun quantificateur, et ne serait plus un énoncé. C'est pourquoi la relation $\mathrm{Oc}$ écarte les rangs qui suivent une lettre $\forall$.
+      - |
+        La relation $\mathrm{Li}$ ne calcule pas la fin de la portée : elle demande seulement qu'il en existe une qui convienne, ce qu'une quantification bornée exprime. Le lemme des poids garantit qu'il y en a au plus une, et c'est lui qui identifie ce facteur à la portée de {{l-formules|Formules, variables libres}} ; une fois cette identification faite, la relation $\mathrm{Li}$ n'a plus besoin de l'unicité.
+
+  - id: cal-sx-substitution
+    etiquette: Substitution
+    nature: proposition
+    titre: Substitution et substituabilité
+    texte: |
+      On reprend les définitions de {{l-substitution|Substitution}} : $\varphi[t/x]$ est le mot obtenu en remplaçant chaque occurrence libre de $x$ dans $\varphi$ par le terme $t$, et $t$ est substituable à $x$ dans $\varphi$ si aucune occurrence libre de $x$ ne se trouve dans une sous-formule $\forall y\, \psi$ où $y$ est une variable de $t$. Les occurrences et les sous-formules sont celles de {{cal-sx-libres|Variables libres}}.
+    enonce: |
+      (i) Il existe une fonction primitive récursive $\mathrm{Sb}$ telle que, si $N$ code une formule $\varphi$, $T$ un terme $t$ et si $a_k$ est une variable $x$, alors
+      $$\mathrm{Sb}(N, T, k) = \ulcorner \varphi[t/x] \urcorner.$$
+
+      (ii) La relation $\mathrm{Sbl}(T, k, N)$ : « le terme de code $T$ est substituable à la variable $a_k$ dans la formule de code $N$ » est primitive récursive.
+
+      (iii) Soit $t$ un terme et $x$ une variable. Si l'on remplace par $t$ certaines occurrences de $x$, au sens de {{cal-sx-libres|Variables libres}}, dans un terme, on obtient un terme ; dans une formule, on obtient une formule. En particulier, $\varphi[t/x]$ est une formule si $\varphi$ en est une.
+    preuve: |
+      (i) On parcourt les lettres de $\varphi$ de gauche à droite. Par récurrence primitive sur $j$, posons $W(N, T, k, 0) = 0$ et
+      $$\begin{aligned} &W(N, T, k, j + 1) \\ &\ = \begin{cases} \mathrm{conc}\big(W(N, T, k, j), T\big) & \text{si } C, \\ \mathrm{aj}\big(W(N, T, k, j), (N)^j\big) & \text{sinon,} \end{cases} \end{aligned}$$
+      où $C$ est la condition $\mathrm{Lib}(N, j) \wedge (N)^j = k$. C'est une récurrence primitive dont l'étape est une définition par cas ({{cal-pr-cloture|Clôture}}, (ii)), et l'on pose $\mathrm{Sb}(N, T, k) = W(N, T, k, \mathrm{lg}(N))$.
+
+      Par récurrence sur $j$, $W(N, T, k, j)$ code le mot obtenu à partir des $j$ premières lettres de $\varphi$ en remplaçant par $t$ chacune de celles qui sont des occurrences libres de $x$, et en gardant les autres. Pour $j = \mathrm{lg}(N)$, c'est $\varphi[t/x]$.
+
+      (ii) La définition se traduit, avec $l = \mathrm{lg}(N)$, par : pour tout $j < l$, si $\mathrm{Lib}(N, j)$ et $(N)^j = k$, alors il n'existe pas $i < j$ et $l' < l + 1$ tels que $(N)^i = 3$, que la lettre $(N)^{i+1}$ figure dans $t$, c'est-à-dire
+      $$\exists m < \mathrm{lg}(T)\ \ (T)^m = (N)^{i+1},$$
+      que $i + 2 \leqslant j < l'$, et que $\mathrm{Fm}(\mathrm{sm}(N, i + 2, l'))$. Une occurrence libre n'est jamais la variable d'un bloc, et elle n'est pas la lettre $\forall$ ; se trouver dans la sous-formule $\forall y\, \psi$, c'est donc se trouver dans $\psi$. La relation obtenue est primitive récursive par {{cal-sx-libres|Variables libres}} et {{cal-pr-cloture|Clôture}}.
+
+      (iii) Remplacer des lettres d'un mot $w = w_1 w_2$ revient à remplacer celles de $w_1$, puis celles de $w_2$, et à concaténer. De plus, un rang de $w_2$ qui est une occurrence de variable dans $w$ en est encore une dans $w_2$ : la condition sur la lettre qui précède ne peut que s'affaiblir quand on retire $w_1$. On raisonne par récurrence sur la longueur, avec l'inversion de {{cal-sx-termes|Termes}} et de {{cal-sx-formules|Formules}}, (i).
+
+      *Termes.* Une variable devient $t$ ou reste elle-même, et $0$ reste $0$ ; ce sont des termes. Dans $S\, u$, $+\, u\, u'$ ou $\times\, u\, u'$, les rangs remplacés sont dans $u$ ou dans $u'$, et le résultat est $S$, $+$ ou $\times$ suivi des termes que donne l'hypothèse de récurrence : c'est un terme.
+
+      *Formules.* Dans ${=}\, u\, u'$, les rangs remplacés sont dans les termes $u$ et $u'$, et l'on conclut par le cas des termes. Dans $\neg\varphi$ et ${\to}\, \varphi\, \psi$, ils sont dans $\varphi$ ou $\psi$, et l'hypothèse de récurrence conclut. Dans $\forall y\, \varphi$, le rang $0$ porte la lettre $\forall$ et le rang $1$, qui suit $\forall$, n'est pas une occurrence : les rangs remplacés sont dans $\varphi$, et le résultat est $\forall y$ suivi d'une formule.
+
+      Enfin $\varphi[t/x]$ s'obtient en remplaçant les occurrences libres de $x$, qui sont des occurrences de $x$.
+    remarques:
+      - |
+        Pour $\varphi = {\to}\, {=}\, x_0\, 0\, \forall x_0\, {=}\, x_0\, x_1$, le calcul de $\varphi[S\,0/x_0]$ ne remplace que l'occurrence libre de rang $2$, et donne ${\to}\, {=}\, S\, 0\, 0\, \forall x_0\, {=}\, x_0\, x_1$ : l'occurrence de rang $7$ est liée et reste en place.
+
+        Le terme $S\, x_0$ n'est pas substituable à $x_1$ dans $\varphi$ : l'occurrence libre de $x_1$, au rang $8$, se trouve dans la sous-formule $\forall x_0\, {=}\, x_0\, x_1$, et $x_0$ est une variable de $S\, x_0$. Le mot calculé par $\mathrm{Sb}$ se termine alors par $\forall x_0\, {=}\, x_0\, S\, x_0$, c'est-à-dire $\forall x_0\, (x_0 = S\, x_0)$ : c'est la capture décrite au nœud {{l-substitution|Substitution}}.
+      - |
+        La fonction $\mathrm{Sb}$ est définie pour tous les entiers, et non seulement pour les codes de formules, de termes et de variables ; elle ne vérifie pas la substituabilité, qui est une relation à part. Toutes deux serviront à reconnaître les axiomes du groupe (2) de {{l-deduction|Démonstrations formelles}}.
+
+  - id: cal-sx-instances
+    etiquette: Instances de tautologies
+    nature: proposition
+    titre: Instances de tautologies et valuations des formules premières
+    texte: |
+      Une [[formule-premiere|formule première]] est une formule atomique ou une formule de la forme $\forall x\, \psi$. Par l'inversion de {{cal-sx-formules|Formules}}, (i), toute formule est première, ou de la forme $\neg\varphi$, ou de la forme ${\to}\, \varphi\, \psi$ ; ces cas s'excluent, puisque les premières lettres diffèrent, et $\varphi$ et $\psi$ sont uniques par le {{l-lecture|théorème de lecture unique}}.
+
+      Une **valuation des formules premières** est une application $v$ de l'ensemble des formules premières dans $\{0, 1\}$. Comme au nœud {{l-tautologies|Tautologies}}, elle se prolonge de manière unique, par récurrence sur la longueur grâce à la lecture unique, en une application $\bar v$ définie sur toutes les formules, telle que $\bar v(\pi) = v(\pi)$ pour $\pi$ première, $\bar v(\neg\varphi) = 1 - \bar v(\varphi)$, et $\bar v({\to}\, \varphi\, \psi) = 0$ si et seulement si $\bar v(\varphi) = 1$ et $\bar v(\psi) = 0$.
+
+      Si $\tau$ est une formule propositionnelle ({{l-prop-formules|Formules propositionnelles}}) et $\theta$ une application qui associe une formule à chaque lettre propositionnelle, on note $\tau[\theta]$ le mot obtenu en remplaçant chaque occurrence de chaque lettre $P$ par $\theta(P)$. Les **instances de tautologies** de {{l-deduction|Démonstrations formelles}} sont les mots $\tau[\theta]$ où $\tau$ est une [[tautologie]].
+    enonce: |
+      (i) Pour toute formule propositionnelle $\tau$ et toute application $\theta$, $\tau[\theta]$ est une formule, et pour toute valuation $v$ des formules premières,
+      $$\bar v(\tau[\theta]) = \bar u(\tau), \quad\text{où } u(P) = \bar v(\theta(P)).$$
+
+      (ii) La valeur $\bar v(\varphi)$ ne dépend que des valeurs de $v$ sur les formules premières qui sont des facteurs de $\varphi$.
+
+      (iii) Une formule $\varphi$ est une instance de tautologie si et seulement si $\bar v(\varphi) = 1$ pour toute valuation $v$ des formules premières.
+    preuve: |
+      (i) Par induction sur $\tau$ : l'ensemble des formules propositionnelles qui ont la propriété contient les lettres et il est stable par $\neg$ et $\to$, donc il les contient toutes, par la définition de {{l-prop-formules|Formules propositionnelles}}.
+
+      Pour une lettre $P$, $\tau[\theta] = \theta(P)$ est une formule et $\bar v(\theta(P)) = u(P) = \bar u(P)$. Le remplacement se faisant lettre par lettre, $(\neg\tau_1)[\theta] = \neg(\tau_1[\theta])$, qui est une formule, et
+      $$\bar v\big(\neg(\tau_1[\theta])\big) = 1 - \bar u(\tau_1) = \bar u(\neg\tau_1).$$
+
+      De même $({\to}\, \tau_1\, \tau_2)[\theta] = {\to}\, \tau_1[\theta]\, \tau_2[\theta]$ est une formule, dont c'est l'unique décomposition ; elle prend la valeur $0$ sous $\bar v$ si et seulement si $\bar u(\tau_1) = 1$ et $\bar u(\tau_2) = 0$, c'est-à-dire si et seulement si $\bar u({\to}\, \tau_1\, \tau_2) = 0$.
+
+      (ii) Par récurrence sur la longueur : une formule première est un facteur d'elle-même, et les facteurs de $\varphi$ et de $\psi$ sont des facteurs de $\neg\varphi$ et de ${\to}\, \varphi\, \psi$. Le même raisonnement montre que, pour une formule propositionnelle $\tau$, $\bar u(\tau)$ ne dépend que des valeurs de $u$ sur les lettres qui figurent dans $\tau$.
+
+      (iii) Si $\varphi = \tau[\theta]$ avec $\tau$ tautologie, (i) donne $\bar v(\varphi) = \bar u(\tau) = 1$ pour toute valuation $v$.
+
+      Réciproquement, supposons $\bar v(\varphi) = 1$ pour toute $v$. On associe à toute formule $\chi$ une formule propositionnelle $\chi^\circ$, son **squelette**, par récurrence sur la longueur :
+      $$\begin{aligned} \pi^\circ &= P_{\ulcorner \pi \urcorner}, \\ (\neg\chi)^\circ &= \neg\chi^\circ, \\ ({\to}\, \chi\, \chi')^\circ &= {\to}\, \chi^\circ\, \chi'^\circ, \end{aligned}$$
+      pour $\pi$ première, où $\ulcorner \pi \urcorner$ est le code de $\pi$ ({{cal-sx-codage|Codage des mots}}) ; deux formules premières distinctes reçoivent des lettres distinctes.
+
+      Soit $\theta(P_c)$ la formule de code $c$ si $c$ code une formule première, et la formule ${=}\, x_0\, x_0$ sinon. Par récurrence sur la longueur, $\chi^\circ[\theta] = \chi$ pour toute formule $\chi$, et les lettres de $\chi^\circ$ sont des $P_c$ où $c$ code une formule première.
+
+      Montrons que $\varphi^\circ$ est une tautologie. Soit $u$ une valuation booléenne et $v$ la valuation des formules premières définie par $v(\pi) = u(P_{\ulcorner \pi \urcorner})$. Par (i), $1 = \bar v(\varphi) = \bar v(\varphi^\circ[\theta]) = \bar u'(\varphi^\circ)$, où $u'(P) = \bar v(\theta(P))$.
+
+      Pour $c$ code d'une formule première $\pi$, on a $u'(P_c) = v(\pi) = u(P_c)$ : $u$ et $u'$ coïncident sur les lettres de $\varphi^\circ$, et (ii) donne $\bar u(\varphi^\circ) = \bar u'(\varphi^\circ) = 1$. Ainsi $\varphi^\circ$ est une tautologie et $\varphi = \varphi^\circ[\theta]$ en est une instance.
+    remarques:
+      - |
+        La formule ${\to}\, {=}\, x_0\, 0\, {\to}\, \forall x_1\, {=}\, x_1\, x_1\, {=}\, x_0\, 0$, c'est-à-dire $x_0 = 0 \to (\forall x_1\, (x_1 = x_1) \to x_0 = 0)$, a pour squelette $P_a \to (P_b \to P_a)$, avec $a = \ulcorner {=}\, x_0\, 0 \urcorner$ et $b = \ulcorner \forall x_1\, {=}\, x_1\, x_1 \urcorner$. C'est la tautologie étudiée au nœud {{l-tautologies|Tautologies}} : la formule en est une instance.
+      - |
+        L'erreur la plus répandue est d'oublier que $\forall x\, \psi$ est une formule première, opaque pour le calcul propositionnel. La formule $\forall x_0\, (x_0 = 0 \to x_0 = 0)$ a pour squelette une seule lettre : ce n'est pas une instance de tautologie. C'est pourtant un axiome logique, comme généralisation de l'instance $x_0 = 0 \to x_0 = 0$, puisque les axiomes logiques sont toutes les généralisations des formules des cinq groupes.
+      - |
+        Le squelette nomme chaque formule première par son code, ce qui évite d'avoir à numéroter, ou à choisir, les formules premières qui figurent dans $\varphi$ ; aucune forme de l'axiome du choix n'intervient.
+
+  - id: cal-sx-tautologies
+    etiquette: Tautologies
+    nature: proposition
+    titre: Les instances de tautologies forment un ensemble primitif récursif
+    texte: |
+      Pour des entiers $s$ et $c$, le chiffre de rang $c$ de l'écriture de $s$ en base $2$ est
+      $$\mathrm{bit}(s, c) = r\big(q(s, 2^c), 2\big),$$
+      fonction primitive récursive par le point (v) de {{cal-pr-cloture|Clôture}} et parce que $c \mapsto 2^c$ l'est, comme l'exponentielle parmi les exemples de {{cal-pr-definition|Primitives récursives}}. On note $v_s$ la valuation des formules premières définie par $v_s(\pi) = \mathrm{bit}(s, \ulcorner \pi \urcorner)$, et $\bar v_s$ son prolongement ({{cal-sx-instances|Instances de tautologies}}).
+    enonce: |
+      (i) L'ensemble $\mathrm{Prem}$ des codes des formules premières est primitif récursif.
+
+      (ii) Il existe une fonction primitive récursive $\mathrm{Val}$ telle que $\mathrm{Val}(s, \ulcorner \varphi \urcorner) = \bar v_s(\varphi)$ pour tout entier $s$ et toute formule $\varphi$.
+
+      (iii) L'ensemble $\mathrm{Inst}$ des codes des instances de tautologies est primitif récursif :
+      $$\begin{aligned} \mathrm{Inst}(N) \iff{} &\mathrm{Fm}(N) \wedge \forall s < 2^{N+1} \\ &\mathrm{Val}(s, N) = 1. \end{aligned}$$
+    preuve: |
+      (i) $\mathrm{Prem}(N) \iff \mathrm{At}(N) \vee \big(\mathrm{Fm}(N) \wedge (N)^0 = 3\big)$, par {{cal-sx-formules|Formules}}.
+
+      (ii) Notons $l = \mathrm{lg}(N)$ et $d = \mathrm{dec}(N)$ ({{cal-sx-formules|Formules}}, (iii)), et définissons $G(s, N, h)$ par cas :
+
+      $\mathrm{bit}(s, N)$ si $\mathrm{Prem}(N)$ ;
+
+      $1 \mathbin{\dot{-}} (h)^{\mathrm{sm}(N, 1, l)}$ si $\mathrm{Fm}(N)$ et $(N)^0 = 1$ ;
+
+      $1 \mathbin{\dot{-}} \big((h)^{\mathrm{sm}(N, 1, d)} \cdot (1 \mathbin{\dot{-}} (h)^{\mathrm{sm}(N, d, l)})\big)$ si $\mathrm{Fm}(N)$ et $(N)^0 = 2$ ;
+
+      $0$ dans tous les autres cas.
+
+      Ces quatre relations partagent $\mathbb N^3$, et $G$ est primitive récursive par la définition par cas ({{cal-pr-cloture|Clôture}}, (ii)). La {{cal-sx-valeurs|récurrence de valeurs}}, avec le paramètre $s$, fournit une fonction primitive récursive $\mathrm{Val}$ telle que $\mathrm{Val}(s, N) = G(s, N, \overline{\mathrm{Val}}(s, N))$.
+
+      Montrons $\mathrm{Val}(s, \ulcorner \varphi \urcorner) = \bar v_s(\varphi)$ par récurrence forte sur le code. Si $\varphi$ est première, c'est la définition de $v_s$. Si $\varphi = \neg\varphi_1$, le facteur $\mathrm{sm}(N, 1, l)$ est $\ulcorner \varphi_1 \urcorner < N$, et la valeur est $1 - \bar v_s(\varphi_1)$ par hypothèse de récurrence.
+
+      Si $\varphi = {\to}\, \varphi_1\, \varphi_2$, le point (iii) de {{cal-sx-formules|Formules}} donne $\mathrm{sm}(N, 1, d) = \ulcorner \varphi_1 \urcorner$ et $\mathrm{sm}(N, d, l) = \ulcorner \varphi_2 \urcorner$, codes plus petits que $N$. La valeur $1 - a(1 - b)$, avec $a = \bar v_s(\varphi_1)$ et $b = \bar v_s(\varphi_2)$, vaut $0$ si et seulement si $a = 1$ et $b = 0$ : c'est $\bar v_s(\varphi)$.
+
+      (iii) La relation écrite est primitive récursive : la quantification est bornée par la fonction primitive récursive $N \mapsto 2^{N+1}$ ({{cal-pr-cloture|Clôture}}, (i) et (iii)). Montrons qu'elle définit les instances de tautologies.
+
+      Si $\varphi$ en est une, $\bar v(\varphi) = 1$ pour toute valuation $v$ par le point (iii) de {{cal-sx-instances|Instances de tautologies}}, en particulier pour chaque $v_s$, et (ii) conclut.
+
+      Réciproquement, soit $\varphi$ une formule de code $N$ qui vérifie la condition, et $v$ une valuation quelconque des formules premières. Soit $A$ l'ensemble des entiers $c \leqslant N$ qui codent une formule première $\pi$ telle que $v(\pi) = 1$, et
+      $$s = \sum_{c \in A} 2^c \leqslant 2^{N+1} - 1.$$
+
+      Pour $c \leqslant N$, la somme des termes $2^{c'}$, $c' \in A$, $c' < c$, est au plus $2^c - 1$ ; par l'unicité de la division euclidienne, $q(s, 2^c)$ est la somme des $2^{c' - c}$ pour $c' \in A$, $c' \geqslant c$, qui est impaire si et seulement si $c \in A$. Ainsi $v_s(\pi) = v(\pi)$ pour toute formule première $\pi$ de code au plus $N$.
+
+      C'est le cas des formules premières qui sont des facteurs de $\varphi$, par le point (ii) du {{cal-sx-codage|codage des mots}}. Par le point (ii) de {{cal-sx-instances|Instances de tautologies}}, $\bar v(\varphi) = \bar v_s(\varphi) = \mathrm{Val}(s, N) = 1$. Toute valuation donne donc la valeur $1$ à $\varphi$, qui est une instance de tautologie par le point (iii) du même nœud.
+    remarques:
+      - |
+        Le nombre $2^{N+1}$ de valuations examinées est absurde : une formule qui a $r$ facteurs premiers distincts n'a besoin que des $2^r$ lignes de sa table de vérité, comme l'observe la remarque de {{l-tautologies|Tautologies}}. Mais une borne primitive récursive suffit, et celle-ci évite de dénombrer les facteurs premiers. Pour $x_0 = 0 \to (\forall x_1\, (x_1 = x_1) \to x_0 = 0)$, les seules valeurs qui comptent sont celles des deux formules premières ${=}\, x_0\, 0$ et $\forall x_1\, {=}\, x_1\, x_1$ ; le facteur ${=}\, x_1\, x_1$, première lui aussi, n'intervient pas, puisqu'il est enfermé dans le bloc $\forall x_1$.
+      - |
+        La décidabilité des instances de tautologies n'est pas celle de la validité au premier ordre : une formule première comme $\forall x_0\, (x_0 = x_0)$ est universellement valide, mais le calcul de $\mathrm{Val}$ la traite comme une lettre, qui peut valoir $0$. Ce qui est décidé ici est seulement la forme propositionnelle d'une formule, non sa vérité dans toutes les structures.
+
+  - id: cal-sx-axiomes
+    etiquette: Axiomes logiques
+    nature: proposition
+    titre: Les axiomes logiques forment un ensemble primitif récursif
+    texte: |
+      Les axiomes logiques sont ceux du système de {{l-deduction|Démonstrations formelles}} : toutes les généralisations $\forall y_1 \cdots \forall y_g\, \alpha$, avec $g \geqslant 0$, des formules $\alpha$ des cinq groupes. En notation préfixée, les formules des groupes (2) à (5) s'écrivent
+      $$\begin{aligned} &{\to}\, \forall x\, \alpha\ \alpha[t/x], \\ &{\to}\, \forall x\, {\to}\, \alpha\, \beta\, {\to}\, \forall x\, \alpha\ \forall x\, \beta, \\ &{\to}\, \alpha\ \forall x\, \alpha, \\ &{=}\, x\, x \quad\text{et}\quad {\to}\, {=}\, x\, y\, {\to}\, \alpha\ \alpha', \end{aligned}$$
+      sous les conditions de {{l-deduction|Démonstrations formelles}} : $t$ substituable à $x$ dans $\alpha$, $x$ non libre dans $\alpha$, $\alpha$ atomique et $\alpha'$ obtenue en remplaçant certaines occurrences de $x$ par $y$.
+    enonce: |
+      L'ensemble $\mathrm{Ax}$ des codes des axiomes logiques est primitif récursif.
+    preuve: |
+      Notons $\langle 2, 3, k \rangle$, etc., les codes de mots fixés suivis d'une lettre $a_k$, primitifs récursifs en $k$ ({{cal-sx-codage|Codage des mots}}, (i)). Pour chaque groupe, on borne les composantes par $M$, ce que justifie le point (iii) du codage pour les lettres et le point (ii) pour les facteurs.
+
+      *Groupe (1).* C'est l'ensemble $\mathrm{Inst}$ de {{cal-sx-tautologies|Tautologies}}.
+
+      *Groupe (2).* Soit $A_2(M)$ la relation : $\mathrm{Fm}(M)$, et il existe $k < M$, $a \leqslant M$ et $T \leqslant M$ tels que $k \geqslant 8$, $\mathrm{Fm}(a)$, $\mathrm{Tm}(T)$, $\mathrm{Sbl}(T, k, a)$ et
+      $$M = \mathrm{cc}\big(\langle 2, 3, k \rangle, a, \mathrm{Sb}(a, T, k)\big).$$
+      Elle est primitive récursive par {{cal-sx-substitution|Substitution}}.
+
+      Si $M$ code un axiome ${\to}\, \forall x\, \alpha\ \alpha[t/x]$, où $x = a_k$ et $t$ est substituable à $x$ dans $\alpha$, alors $k < M$ et $\ulcorner \alpha \urcorner \leqslant M$, puisque $\alpha$ est un facteur. Si $x$ a une occurrence libre dans $\alpha$, $t$ est un facteur de $\alpha[t/x]$ et $\ulcorner t \urcorner \leqslant M$.
+
+      Sinon, $\alpha[t/x] = \alpha = \alpha[x/x]$, et le terme $x$, de code $2k + 1 \leqslant M$, est substituable à $x$ dans $\alpha$ : une occurrence libre de $x$ ne peut se trouver dans une sous-formule $\forall x\, \psi$, où elle serait liée. Dans les deux cas, $A_2(M)$. Réciproquement, si $A_2(M)$, le mot de code $M$ est ${\to}\, \forall x\, \alpha\ \alpha[t/x]$, avec $t$ substituable à $x$ dans $\alpha$, par le point (i) de {{cal-sx-substitution|Substitution}} : $A_2$ est exactement le groupe (2).
+
+      La condition $\mathrm{Fm}(M)$ est automatique, puisque $\alpha[t/x]$ est une formule par le point (iii) de {{cal-sx-substitution|Substitution}} ; l'écrire ne change pas la relation.
+
+      *Groupe (3).* $A_3(M)$ : il existe $k < M$ et $a, b \leqslant M$ tels que $k \geqslant 8$, $\mathrm{Fm}(a)$, $\mathrm{Fm}(b)$ et
+      $$\begin{aligned} M = \mathrm{cc}\big(&\langle 2, 3, k, 2 \rangle, a, b, \\ &\langle 2, 3, k \rangle, a, \langle 3, k \rangle, b\big). \end{aligned}$$
+
+      *Groupe (4).* $A_4(M)$ : il existe $k < M$ et $a \leqslant M$ tels que $k \geqslant 8$, $\mathrm{Fm}(a)$, $\neg\mathrm{VL}(a, k)$ et $M = \mathrm{cc}(\langle 2 \rangle, a, \langle 3, k \rangle, a)$, avec la relation $\mathrm{VL}$ de {{cal-sx-libres|Variables libres}}.
+
+      *Groupe (5).* $A_5(M)$ : il existe $k < M$ tel que $k \geqslant 8$ et $M = \langle 0, k, k \rangle$ ; ou bien $\mathrm{Fm}(M)$, et il existe $k, k' < M$ et $a, a' \leqslant M$ tels que $k, k' \geqslant 8$, $\mathrm{At}(a)$, $\mathrm{lg}(a') = \mathrm{lg}(a)$,
+      $$\begin{aligned} &\forall j < \mathrm{lg}(a)\ \big((a')^j = (a)^j \\ &\quad\vee ((a)^j = k \wedge (a')^j = k')\big), \end{aligned}$$
+      et $M = \mathrm{cc}(\langle 2, 0, k, k', 2 \rangle, a, a')$. Une formule atomique ne contient pas de lettre $\forall$ : ses occurrences de $x$ sont tous les rangs où figure la lettre $x$, et la condition dit que $\alpha'$ s'obtient en remplaçant certaines d'entre elles par $y$. Ici encore, $\mathrm{Fm}(M)$ est automatique, puisque $\alpha'$ est une formule par le point (iii) de {{cal-sx-substitution|Substitution}}, appliqué au terme $y$.
+
+      *Généralisations.* Enfin, $M$ code un axiome logique si et seulement s'il existe $g < \mathrm{lg}(M) + 1$ tel que $2g \leqslant \mathrm{lg}(M)$,
+      $$\forall m < g\ \big((M)^{2m} = 3 \wedge (M)^{2m+1} \geqslant 8\big),$$
+      et que $\mathrm{sm}(M, 2g, \mathrm{lg}(M))$ appartienne à $\mathrm{Inst}$ ou vérifie l'une des relations $A_2$ à $A_5$. Cette relation est primitive récursive par {{cal-pr-cloture|Clôture}}.
+    remarques:
+      - |
+        La formule ${\to}\, \forall x_1\, \neg\forall x_0\, {=}\, x_0\, x_1\ \neg\forall x_0\, {=}\, x_0\, x_0$, c'est-à-dire $\forall x_1\, \neg\forall x_0\, (x_0 = x_1) \to \neg\forall x_0\, (x_0 = x_0)$, qui équivaut à $\forall x_1\, \exists x_0\, (x_0 \neq x_1) \to \exists x_0\, (x_0 \neq x_0)$, n'est pas un axiome logique : elle a la forme du groupe (2), avec $\alpha = \neg\forall x_0\, {=}\, x_0\, x_1$ et $t = x_0$, mais $x_0$ n'est pas substituable à $x_1$ dans $\alpha$, et elle n'appartient à aucun autre groupe. La relation $\mathrm{Sbl}$ est ce qui l'écarte, et elle doit l'être : la formule est fausse dans toute structure qui a au moins deux éléments.
+      - |
+        Le système de {{l-deduction|Démonstrations formelles}} compense sa règle unique par des axiomes nombreux. Ce choix ne coûte rien ici : chaque schéma se reconnaît par une recherche bornée parmi les facteurs du mot, et l'ensemble infini des axiomes logiques est aussi simple, du point de vue du calcul, qu'un ensemble fini.
+
+  - id: cal-sx-demonstrations
+    etiquette: Démonstrations
+    nature: proposition
+    titre: Démonstrations formelles codées
+    texte: |
+      Une [[demonstration-formelle|démonstration formelle]] $\gamma_0, \dots, \gamma_{l-1}$ se code par l'entier $\langle \ulcorner \gamma_0 \urcorner, \dots, \ulcorner \gamma_{l-1} \urcorner \rangle$, code de la suite des codes de ses formules ({{cal-pr-codage|Codages}}). Tout entier $p$ code ainsi une unique suite de $\mathrm{lg}(p)$ mots, de codes $(p)^0, \dots, (p)^{\mathrm{lg}(p) - 1}$.
+    enonce: |
+      (i) La relation $\mathrm{MP}(a, b, c)$ : « $b$ est le code du mot ${\to}\, \alpha\, \gamma$, où $\alpha$ et $\gamma$ sont les mots de codes $a$ et $c$ », qui dit que $\gamma$ se déduit de $\alpha$ et de $\alpha \to \gamma$ par modus ponens, est primitive récursive.
+
+      (ii) Soit $T$ une [[theorie]] sur la signature de l'arithmétique dont l'ensemble $\mathrm{Ax}_T$ des codes des éléments est primitif récursif. La relation $\mathrm{Dem}_T(p, c)$ : « $p$ code une démonstration formelle à partir de $T$ de la formule de code $c$ » est primitive récursive.
+    preuve: |
+      (i) En notation préfixée, $\alpha \to \gamma$ est le mot ${\to}\, \alpha\, \gamma$. Ainsi $\mathrm{MP}(a, b, c) \iff b = \mathrm{cc}(\langle 2 \rangle, a, c)$, relation primitive récursive par {{cal-sx-codage|Codage des mots}}.
+
+      (ii) La définition de {{l-deduction|Démonstrations formelles}} se traduit, avec $l = \mathrm{lg}(p)$, par
+      $$\begin{aligned} \mathrm{Dem}_T(p, c) \iff{} &l \geqslant 1 \wedge (p)^{l \mathbin{\dot{-}} 1} = c \\ &\wedge \forall j < l\ \big(\mathrm{Fm}((p)^j) \\ &\qquad \wedge D(p, j)\big), \end{aligned}$$
+      où $D(p, j)$ est la disjonction de $\mathrm{Ax}((p)^j)$, de $\mathrm{Ax}_T((p)^j)$ et de
+      $$\exists i < j\ \exists i' < j\ \ \mathrm{MP}\big((p)^i, (p)^{i'}, (p)^j\big).$$
+      Elle dit que la suite codée par $p$ est une suite finie de formules, terminée par la formule de code $c$, dont chacune est un axiome logique, un élément de $T$, ou se déduit de deux formules précédentes par modus ponens. Elle est primitive récursive par (i), par {{cal-sx-axiomes|Axiomes logiques}} et par {{cal-pr-cloture|Clôture}}.
+    remarques:
+      - |
+        Pour $T = \varnothing$, la suite réduite à la formule $x_0 = x_0$, axiome du groupe (5), est une démonstration formelle. Son code est $\langle 2^{34} \cdot 17 \rangle = 2^{35} \cdot 17 + 1 = 584\,115\,552\,257$, et $\mathrm{Dem}_\varnothing(584\,115\,552\,257,\ 2^{34} \cdot 17)$ est vraie.
+      - |
+        La relation « $c$ est le code d'une formule démontrable à partir de $T$ » s'écrit $\exists p\ \mathrm{Dem}_T(p, c)$ : la quantification sur $p$ n'est pas bornée, et rien ne garantit que cette relation soit primitive récursive, ni même récursive. Le nœud {{cal-theoremes|Théorèmes r.e.}} en tire seulement qu'elle est récursivement énumérable.
+      - |
+        Gödel a mené cette arithmétisation dans son article « Über formal unentscheidbare Sätze der Principia Mathematica und verwandter Systeme I » (*Monatshefte für Mathematik und Physik* 38, 1931, p. 173-198). Il y définit successivement quarante-cinq fonctions et relations, qu'il appelle « rekursiv », jusqu'à la relation « $x$ est une démonstration de la formule $y$ » ; la quarante-sixième, « $x$ est démontrable », obtenue par une quantification non bornée comme ci-dessus, est la seule dont il ne puisse affirmer qu'elle le soit. Il codait les suites par les exposants des nombres premiers, et non par le code des mots employé ici.
+
+        Le nom actuel est postérieur : selon Kleene (« Origins of recursive function theory », *Annals of the History of Computing* 3, 1981), la récurrence primitive porte ce nom depuis Rózsa Péter (1934), et les fonctions « récursives » de Gödel sont appelées primitives récursives depuis l'article de Kleene de 1936 sur les fonctions récursives générales.
+
+aretes:
+  - [cal-sx-valeurs, cal-sx-termes]
+  - [cal-sx-codage, cal-sx-termes]
+  - [cal-sx-termes, cal-sx-formules]
+  - [cal-sx-formules, cal-sx-libres]
+  - [cal-sx-formules, cal-sx-instances]
+  - [cal-sx-libres, cal-sx-substitution]
+  - [cal-sx-instances, cal-sx-tautologies]
+  - [cal-sx-substitution, cal-sx-axiomes]
+  - [cal-sx-tautologies, cal-sx-axiomes]
+  - [cal-sx-axiomes, cal-sx-demonstrations]
