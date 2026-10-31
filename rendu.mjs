@@ -160,6 +160,8 @@ for (const e of D.rubriques?.exercices?.exercices || []) {
   e.recherche = sansAccent([e.titre, e.partie, ...(e.mots_cles || []), ...(e.types || []), brut].filter(Boolean).join(' ')).replace(/\s+/g, ' ');
 }
 for (const [nom, r] of Object.entries(D.rubriques || {})) rendreRubrique(r, `rubriques/${nom}`);
+// Inventaire des admis (page « État de l'édifice ») : l'objet de chaque entrée est rendu en ligne.
+for (const e of D.admis?.entrees || []) e.objet = enLigne(e.objet, `${e.id}/admis`);
 
 // Annales : les formules $…$ du titre, de l'aperçu, des noms et des mots-clés des parties sont vérifiées par
 // KaTeX à la construction (une erreur de formule bloque donc la publication). Dans le texte, chaque
@@ -375,6 +377,7 @@ const Rb = D.rubriques || {};
 const niveaux = Object.fromEntries((Rb.cours?.niveaux || []).map(n => [n.id, texteBrut(n.titre)]));
 pagePartage('accueil/', 'accueil', 'Accueil', 'Architecture logique des théories mathématiques ; cours, exercices corrigés, et annales de concours avec recherche par thème.');
 pagePartage('edifice/', 'edifice', 'L\'édifice', 'Le graphe des théories mathématiques, de la logique du premier ordre et de ZFC aux grandes théories.');
+if (!D.noeuds.etat) pagePartage('edifice/etat/', 'edifice/etat', 'État de l\'édifice', 'Inventaire des résultats admis dans l\'édifice, rangés par statut, et des fiches où intervient l\'axiome du choix.');
 pagePartage('cours/', 'cours', 'Cours', texteBrut(Rb.cours?.intro));
 for (const c of Rb.cours?.cours || []) {
   const lieu = `${niveaux[c.niveau] || ''}${c.chapitre ? `, chapitre ${c.chapitre}` : ''}`;

@@ -475,6 +475,29 @@ p code, li code { font-family: ui-monospace, Menlo, Consolas, monospace; font-si
 .vide { color: var(--encre-3); font-size: 13px; }
 .credits p { font-size: 13px; line-height: 1.55; color: var(--encre-2); margin: 0; }
 .credits a { color: inherit; text-underline-offset: 3px; }
+/* État de l'édifice (etatEdifice) et son lien depuis l'accueil de l'édifice */
+.lien-etat-edifice { font-family: var(--f-ui); font-size: 14px; margin: 0 0 18px !important; }
+.lien-etat-edifice a { color: var(--encre-2); text-underline-offset: 3px; text-decoration-color: var(--encre-3); }
+.lien-etat-edifice a::after { content: " →"; }
+.lien-etat-edifice a:hover { color: var(--encre); }
+.ee-chiffres { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 14px 0 10px; font-family: var(--f-ui); }
+.ee-chiffres > div { border: 1px solid var(--filet); border-radius: 8px; padding: 8px 10px; background: var(--surface); }
+.ee-chiffres strong { display: block; font-family: var(--f-titre); font-size: 22px; font-weight: 600; line-height: 1.15; }
+.ee-chiffres span { font-size: 12px; color: var(--encre-2); }
+.ee-titre { font-family: var(--f-ui); font-size: 11.5px; letter-spacing: .07em; text-transform: uppercase; color: var(--encre-3); font-weight: 500; margin: 24px 0 6px; }
+.ee-liste { list-style: none; margin: 0 0 6px; padding: 0; }
+.ee-liste li { padding: 8px 0; border-top: 1px solid var(--filet); }
+.ee-liste li p { margin: 0 !important; }
+.ee-tete { display: flex; flex-wrap: wrap; gap: 2px 10px; align-items: center; font-family: var(--f-ui); }
+.ee-lieu { font-size: 12px; color: var(--encre-3); }
+.ee-fiche { font-size: 16px; }
+.ee-fleche, .ee-note { color: var(--encre-3); }
+.ee-note { font-family: var(--f-ui); font-size: 12.5px; }
+.ee-objet { font-size: 15px; color: var(--encre-2); }
+.ee-objet + .ee-objet { margin-top: 4px !important; }
+.ee-vide { font-family: var(--f-ui); font-size: 13.5px; color: var(--encre-2); }
+.ee-replie { margin-top: 24px; }
+@media (max-width: 600px) { .ee-chiffres { grid-template-columns: repeat(2, 1fr); } .ee-chiffres > div:last-child { grid-column: span 2; } }
 
 .terme {
   color: var(--rouge); cursor: help; border-bottom: 1px dotted currentColor;
@@ -1266,10 +1289,12 @@ function chargerBranche(gid) {
 /* ------------------------------------------------------------ navigation */
 function aller(gid, choisi = null, opts = {}) {
   quitterRubrique();
-  ancreEdifice = gid + (choisi ? '.' + choisi : '');
+  // Pseudo-fiche « État de l'édifice » (#edifice/etat) : graphe principal, inventaire dans le panneau.
+  etat.vue = opts.vue === 'etat' && gid === D.racine && !choisi ? 'etat' : null;
+  ancreEdifice = etat.vue ? 'edifice/etat' : gid + (choisi ? '.' + choisi : '');
   // onglet : la notion affichée (étiquette de la bulle), sinon le graphe ouvert, sinon « L'édifice »
   const nChoisi = choisi && D.noeuds[choisi];
-  document.title = titreOnglet(nChoisi ? (nChoisi.etiquette || nChoisi.titre)
+  document.title = titreOnglet(etat.vue ? 'État de l\'édifice' : nChoisi ? (nChoisi.etiquette || nChoisi.titre)
     : gid === D.racine ? 'L\'édifice' : D.graphes[gid].titre);
   chargerBranche(gid).catch(() => {});   // préchargement : les fiches de ce graphe seront prêtes
   const change = gid !== etat.graphe || !$('#plan').childElementCount;
@@ -1296,7 +1321,7 @@ function aller(gid, choisi = null, opts = {}) {
   montrerOnglet('fiche');
   if (typeof marquerMenu === 'function') marquerMenu('edifice');
   $('#remonter').hidden = !D.graphes[gid].parent;
-  try { history.replaceState(null, '', '#' + gid + (choisi ? '.' + choisi : '')); } catch (e) {}
+  try { history.replaceState(null, '', '#' + ancreEdifice); } catch (e) {}
 }
 
 function chemin(gid) {
@@ -1318,6 +1343,10 @@ function fil() {
       if (k && etat.choisi && etat.choisi !== k) {
         b.classList.add('rappel');
         b.title = `Afficher la fiche « ${D.noeuds[k].titre} »`;
+        b.addEventListener('click', () => aller(g, null, { sansDefilement: true }));
+      } else if (etat.vue === 'etat') {
+        b.classList.add('rappel');
+        b.title = 'Revenir à l\'accueil de l\'édifice';
         b.addEventListener('click', () => aller(g, null, { sansDefilement: true }));
       }
     } else {
@@ -1365,6 +1394,14 @@ function fiche() {
   if (!id && g.conteneur) {
     id = g.conteneur;
     contexte = '<p class="contexte">Vous êtes à l\'intérieur de ce nœud. Choisissez un élément du graphe pour en lire la fiche ; les nœuds en pointillés viennent du niveau supérieur.</p>';
+  }
+  if (!id && etat.vue === 'etat') {
+    o.innerHTML = etatEdifice(); o.scrollTop = 0; $('#panneau').scrollTop = 0;
+    // Sur téléphone, la page défile d'un bloc : on ramène le haut de l'inventaire sous l'en-tête collant du panneau.
+    const tp = document.querySelector('.tete-panneau');
+    const haut = o.firstElementChild.getBoundingClientRect().top - (tp ? tp.getBoundingClientRect().height : 0) - 8;
+    if (haut < 0) window.scrollBy(0, haut);
+    return;
   }
   if (!id) { o.innerHTML = accueil(); return; }
   const n = D.noeuds[id];
@@ -1432,12 +1469,75 @@ function accueil() {
       <p><strong>Partir d'un grand théorème.</strong> On peut aussi choisir un résultat célèbre, puis redescendre vers ce qu'il utilise par la liste «&nbsp;Repose sur&nbsp;» de sa fiche&nbsp;: le ${L('ar-tfa', 'théorème fondamental de l\'analyse')}, le ${L('hj-jordan', 'théorème de Jordan')} pour les courbes du plan, l'existence d'un ${L('gs-abel-ruffini', 'polynôme de degré 5 non résoluble par radicaux')}, ou le ${L('cup-borsuk-ulam', 'théorème de Borsuk-Ulam')}. La descente montre quelles notions chacun mobilise vraiment, et dans quel ordre il faut les apprendre.</p>
       <p><strong>Suivre l'axiome du choix.</strong> L'${L('zf-choix', 'axiome du choix')} est posé avec les axiomes de ZF, ses ${L('r-choix', 'différentes formes')} sont rassemblées avec les relations et les fonctions, et le ${L('o-zorn', 'lemme de Zorn')} est démontré avec les ordinaux. Le signe <span class="etoile">⋆</span> marque ensuite chaque fiche qui en fait usage, avec un encadré qui dit à quel endroit de la preuve il intervient, et, dans le graphe principal, les théories dont un théorème central équivaut à l'axiome du choix ou à l'une de ses formes faibles&nbsp;: on le rencontre par exemple dans l'existence d'une ${L('v-bases-existence', 'base pour tout espace vectoriel')}, dans le ${L('t-tychonov', 'théorème de Tychonov')} ou dans celui de ${L('f-hahn-banach', 'Hahn-Banach')}. On voit du même coup tout ce qui s'en passe.</p>
     </div>
+    ${D.admis ? '<p class="lien-etat-edifice"><a href="#edifice/etat">État de l\'édifice&nbsp;: ce qui reste admis et où intervient l\'axiome du choix</a></p>' : ''}
     <div class="liens credits">
       <div><h3>Licence</h3>
         <p>© 2026 Armand Jourdain. Le contenu d'ATLAS est mis à disposition selon les termes de la licence <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.fr" target="_blank" rel="license noopener">Creative Commons Attribution, Pas d'utilisation commerciale, Partage dans les mêmes conditions 4.0 International</a> (CC BY-NC-SA 4.0)&nbsp;: vous pouvez le reprendre et l'adapter en citant l'auteur, sans usage commercial, et en partageant vos adaptations sous la même licence.</p></div>
       <div><h3>Crédits</h3>
         <p>Formules composées avec <a href="https://katex.org" target="_blank" rel="noopener">KaTeX</a> (licence MIT, © Khan Academy et contributeurs). Polices Spectral et IBM Plex, sous licence SIL Open Font License, servies par Google Fonts.</p></div>
     </div>
+  </article>`;
+}
+
+// Page « État de l'édifice » (#edifice/etat), pseudo-fiche du panneau : inventaire des résultats admis et
+// des fiches ⋆, tiré par construire.py du champ « admis » des fiches (D.admis, présent dans la page même
+// quand les textes des branches sont chargés à la demande). Entrées rangées par rang de la théorie racine.
+function etatEdifice() {
+  const A = D.admis || { entrees: [], choix: [] };
+  const E = A.entrees.filter(e => D.noeuds[e.id]);
+  // Un chapitre porte souvent le titre de son théorème principal : on le précise.
+  const lienN = id => { const n = D.noeuds[id]; return n ? `<a class="lien-noeud" href="#${n.graphe}.${id}" data-n="${id}">${esc(n.titre)}</a>${['chapitre', 'théorie'].includes(n.nature) ? ` <span class="ee-note">(${n.nature})</span>` : ''}` : esc(id); };
+  const LIEU = { texte: 'texte', enonce: 'énoncé', preuve: 'démonstration', choix: 'encadré du choix', remarque: 'remarque' };
+  const principal = e => ['texte', 'enonce', 'preuve'].includes(e.lieu);
+  // Une ligne par fiche et par renvoi : les entrées consécutives qui les partagent sont regroupées, avec
+  // leurs lieux (cup-anneau : énoncé et démonstration) ; un objet répété n'est écrit qu'une fois.
+  const uniques = xs => [...new Set(xs)];
+  const ligne = es => { const e = es[0], lieux = uniques(es.map(x => LIEU[x.lieu] || x.lieu));
+    return `<li><p class="ee-tete">${miniTheorie(e.theorie)}<span class="ee-lieu">${lieux.join(' et ')}</span></p>`
+    + `<p class="ee-fiche">${lienN(e.id)}${e.renvoi && e.statut !== 'cite' ? ` <span class="ee-fleche" title="démontré en">→</span> ${lienN(e.renvoi)}` : ''}</p>`
+    + uniques(es.map(x => x.objet)).map(o => `<p class="ee-objet">${o}</p>`).join('') + '</li>'; };
+  const liste = (es, vide) => {
+    if (!es.length) return `<p class="ee-vide">${vide}</p>`;
+    const gr = [];
+    for (const e of es) { const g = gr[gr.length - 1]; if (g && g[0].id === e.id && g[0].renvoi === e.renvoi) g.push(e); else gr.push([e]); }
+    return `<ul class="ee-liste">${gr.map(ligne).join('')}</ul>`;
+  };
+  const afaire = E.filter(e => e.statut === 'a-faire');
+  const hors = E.filter(e => e.statut === 'hors-cadre');
+  const horsP = hors.filter(principal), horsR = hors.filter(e => !principal(e));
+  const aval = E.filter(e => e.statut === 'aval');
+  const ailleurs = E.filter(e => e.statut === 'ailleurs');
+  const nCites = E.filter(e => e.statut === 'cite').length;
+  const fichesAF = new Set(afaire.map(e => e.id)).size;
+  const choix = (A.choix || []).filter(c => D.noeuds[c.id]);
+  const groupes = [];
+  for (const c of choix) {
+    const g = groupes[groupes.length - 1];
+    if (g && g.t === c.theorie) g.ids.push(c.id); else groupes.push({ t: c.theorie, ids: [c.id] });
+  }
+  const pl = (k, un, plusieurs) => `${k}&nbsp;${k > 1 ? plusieurs : un}`;
+  const chiffre = (k, txt) => `<div><strong>${k}</strong><span>${txt}</span></div>`;
+  return `<article class="fiche etat-edifice">
+    <p class="sur-titre"><span class="sorte">L'édifice</span><span>Inventaire</span></p>
+    <h2>État de l'édifice</h2>
+    <p>Cette page recense les résultats que les fiches déclarent admis. Dans les fiches, tout résultat utilisé ou cité sans démonstration est dit «&nbsp;admis&nbsp;» en toutes lettres, et la construction du site vérifie que chacune de ces mentions est déclarée dans sa fiche, avec son statut. Un admis est un <em>renvoi en aval</em> quand le résultat est démontré plus loin dans l'arbre, faute d'ingrédients en amont. Il renvoie à une <em>branche parallèle</em> quand le résultat est démontré dans une partie de l'arbre qui ne vient ni avant ni après la fiche&nbsp;: aucune des deux n'est un ancêtre de l'autre. Il est <em>hors du cadre</em> quand l'atlas ne le démontrera pas, et <em>à faire</em> quand c'est une lacune à combler.</p>
+    <p>Le lieu compte autant que le statut&nbsp;: un admis dans un énoncé ou une démonstration touche le statut du résultat, alors qu'un admis dans une remarque concerne un fait latéral, dont rien ne dépend. Les entrées sont rangées par rang de théorie, de la logique aux grandes théories.</p>
+    <div class="ee-chiffres">${chiffre(afaire.length, 'à faire')}${chiffre(hors.length, 'hors du cadre')}${chiffre(aval.length, 'renvois en aval')}${chiffre(ailleurs.length, 'branches parallèles')}${chiffre(choix.length, 'fiches <span class="etoile">⋆</span>')}</div>
+    <p class="ee-vide">Les ${pl(afaire.length, 'point', 'points')} à faire se trouvent dans ${pl(fichesAF, 'fiche', 'fiches')}. Parmi les admis hors du cadre, ${horsP.length ? pl(horsP.length, 'figure', 'figurent') : 'aucun ne figure'} dans un énoncé, une démonstration ou un texte. ${nCites ? `Les ${pl(nCites, 'mention', 'mentions')} qui rappellent un admis porté par une autre fiche, ou par un autre endroit de la même fiche, ne sont pas comptées.` : ''}</p>
+    <h3 class="ee-titre">À faire</h3>
+    ${liste(afaire, 'Aucune lacune déclarée.')}
+    <h3 class="ee-titre">Hors du cadre, dans un énoncé ou une démonstration</h3>
+    ${liste(horsP, 'Aucun admis hors du cadre n\'est déclaré dans un énoncé, une démonstration ou un texte.')}
+    <h3 class="ee-titre">Renvois en aval&nbsp;: admis → démonstration</h3>
+    ${liste(aval, 'Aucun.')}
+    <h3 class="ee-titre">Renvois vers une branche parallèle&nbsp;: admis → démonstration</h3>
+    ${liste(ailleurs, 'Aucun.')}
+    <details class="preuve ee-replie"><summary>Admis dans les remarques et les encadrés du choix (${horsR.length})</summary><div class="contenu">
+      <p class="ee-vide">Faits latéraux, cités pour situer une notion ou ouvrir vers la suite&nbsp;; aucune démonstration de l'atlas n'en dépend.</p>
+      ${liste(horsR, 'Aucun.')}</div></details>
+    <h3 class="ee-titre">Fiches où intervient l'axiome du choix <span class="etoile">⋆</span></h3>
+    <p class="ee-vide">${pl(choix.length, 'fiche', 'fiches')}, dans ${pl(groupes.length, 'théorie', 'théories')}. Chacune dit, dans son encadré, quelle forme du choix intervient et à quel endroit.</p>
+    <ul class="ee-liste">${groupes.map(g => `<li><p class="ee-tete">${miniTheorie(g.t)}</p><p class="ee-fiche">${g.ids.map(lienN).join(', ')}</p></li>`).join('')}</ul>
   </article>`;
 }
 
@@ -2737,6 +2837,7 @@ function adressePartage() {
     return `${ADRESSE_SITE}${nom}/`;
   }
   const id = etat.choisi || (etat.graphe !== D.racine ? D.graphes[etat.graphe].conteneur : null);
+  if (!id && etat.vue === 'etat') return `${ADRESSE_SITE}edifice/etat/`;
   return id ? `${ADRESSE_SITE}edifice/${id}/` : `${ADRESSE_SITE}edifice/`;
 }
 $('#partager').addEventListener('click', async () => {
@@ -2781,6 +2882,7 @@ function depuisAncre() {
     if (ch.startsWith('sujet/') || ($('#rubrique').dataset.chemin || '').startsWith('sujet/')) { majFicheAnnales(ch); return; }
   }
   if (RUBRIQUES[r]) { afficherRubrique(r, reste.join('/')); return; }
+  if (h === 'edifice/etat') { aller(D.racine, null, { vue: 'etat' }); return; }
   const [g, n] = h.split('.');
   const valide = n && D.noeuds[n] && (D.noeuds[n].graphe === g || (D.graphes[g] && D.graphes[g].noeuds.some(p => p.id === n && p.entree)));
   if (g && D.graphes[g]) aller(g, valide ? n : null);

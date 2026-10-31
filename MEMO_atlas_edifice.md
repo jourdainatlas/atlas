@@ -1182,3 +1182,24 @@ Schwarz 1885, d'après Kichenassamy 2020) ; schéma calculé. Lexique `produit-s
 occurrence dans une vingtaine de fiches et huit entrées du lexique ; f-hilbert (i) et fq-positives (iii) renvoient
 désormais à la fiche au lieu de redémontrer. me-espace (ii), en amont, garde son calcul de d₂ avec une remarque de
 renvoi. Relu : aucun bloquant. 983 nœuds, 567 termes.
+
+## 80. Admis explicites et page « État de l'édifice » (31 octobre 2026)
+
+Champ `admis:` des fiches (documenté en tête de construire.py) : liste d'entrées {lieu: texte|enonce|preuve|choix|
+remarque, statut: aval|ailleurs|hors-cadre|a-faire|cite, objet, renvoi}. aval = démontré plus loin (renvoi en aval
+dans ORDRE) ; ailleurs = démontré dans une branche parallèle ; cite = citation d'un admis porté par une autre fiche
+(qui doit en déclarer un propre) ; renvoi obligatoire pour aval, ailleurs, cite, interdit sinon. Contrôles (erreurs) :
+toute mention des mots « admis/admise/admises » est couverte, lieu par lieu, par au moins autant d'entrées ; toute
+entrée correspond à une mention ; renvoi en amont = admis périmé ; aval/ailleurs vérifiés dans l'ordre global ;
+citation périmée détectée ; un lien {{x}} dans un énoncé ou une preuve vers une fiche qui admet quelque chose dans
+son énoncé ou sa preuve exige une entrée (sauf démonstration, son conteneur, ou démonstration en amont).
+hors-cadre en lieu principal : avertissement. Règle d'écriture : tout admis actuel se dit « admis ici » ; un admis
+levé se récrit en renvoi à la démonstration, sans le mot. 146 entrées : 92 hors-cadre, 34 cite, 10 à faire
+(l-incompletude ×4, dr-stokes, dt-cochaines, gd-formes-varietes, p-poisson-exp, rq-reciprocite, ac-factoriels),
+5 aval, 5 ailleurs. 31 admis formulés autrement récrits ; rp-schur (ii) et sa cascade (rp-orthogonalite,
+rp-classes, rp-lineaires, rp-s3, rp-s4) déclarent d'Alembert-Gauss (ailleurs → cx-liouville) ; m-riemann déclare la
+partie non borélienne (choix requis : Feferman-Lévy). La ligne « affirmée sans mention admis » du §35 est périmée.
+Page `#edifice/etat` (pseudo-fiche, lien depuis accueil(), partage edifice/etat/) : résumé chiffré, à faire, hors
+cadre en lieu principal, renvois en aval, branches parallèles, admis de remarques (repliés), fiches ⋆ par théorie ;
+données D.admis dans la page, sans charger les branches (+8,6 Ko compressé). Relu : couverture des formulations
+sans le mot, admis hérité (Schur), statuts (cs-ext, cf-racines…). Nouveauté annoncée.

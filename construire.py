@@ -12,8 +12,32 @@ Vérifications bloquantes (le script s'arrête sur erreur) :
     dans le graphe parent, et chaque parent direct du conteneur figure parmi les entrées ;
   - tout terme [[id]] et tout lien {{id|...}} renvoie à une entrée existante ;
   - un lien {{id|...}} dans un texte, un énoncé ou une démonstration renvoie à un nœud antérieur ;
-  - aucune arête tracée ne traverse un nœud.
-Avertissements : termes du lexique jamais employés, arêtes redondantes non tracées.
+  - aucune arête tracée ne traverse un nœud ;
+  - résultats admis : chaque mention est déclarée dans le champ « admis » de sa fiche (ci-dessous).
+Avertissements : termes du lexique jamais employés, arêtes redondantes non tracées, admis hors cadre
+dans un énoncé, une démonstration ou un texte.
+
+Champ « admis » d'une fiche (31 oct. 2026) : liste facultative d'entrées
+    - lieu: texte | enonce | preuve | choix | remarque     champ où figure la mention
+      statut: aval | ailleurs | hors-cadre | a-faire | cite
+      objet: courte phrase (formules et liens permis) qui dit ce qui est admis
+      renvoi: <id de fiche>                              obligatoire pour aval, ailleurs, cite ; interdit sinon
+  aval        démontré plus loin, en aval dans l'ordre global (ORDRE), faute d'ingrédients en amont ;
+              la fiche de renvoi n'a elle-même aucun admis (hors citations) en énoncé, preuve ou texte ;
+  ailleurs    démontré dans une branche parallèle, ni en amont ni en aval (même condition sur le renvoi) ;
+  hors-cadre  résultat que l'atlas ne démontrera pas (permis partout ; avertissement en énoncé, preuve, texte) ;
+  a-faire     lacune réelle, à combler ;
+  cite        la mention rappelle un admis porté par la fiche de renvoi, qui doit avoir une entrée d'un autre
+              statut (renvoi à la fiche elle-même permis : rappel d'un admis déclaré à un autre lieu).
+Une mention est un mot entier « admis », « admise » ou « admises », sans égard à la casse, dans texte,
+enonce, preuve, choix ou une remarque. Chaque lieu porte au moins autant d'entrées que de mentions, et
+toute entrée doit répondre à une mention de son lieu. Un admis formulé autrement (« n'est pas démontré
+ici », « on admet ») est récrit avec le mot « admis ». Une citation est périmée (erreur) si l'admis cité
+est démontré en amont du citant. Un lien {{x|…}} d'un énoncé ou d'une preuve vers une fiche x qui admet
+un résultat dans son énoncé ou sa preuve exige une entrée de lieu enonce ou preuve dans la fiche citante,
+sauf si celle-ci est la démonstration de l'admis, la contient, ou vient après elle. Il n'y a pas de statut « historique » :
+une phrase qui relate un admis levé est récrite en renvoi à la démonstration, sans le mot « admis ».
+L'inventaire (sortie['admis']) alimente la page « État de l'édifice » (gabarit : etatEdifice).
 """
 import os, glob, json, re, sys
 from collections import defaultdict
@@ -198,6 +222,93 @@ if avant and not erreurs:
         if not any(mentionne(x, t) for x in textes(noeuds[d])):
             avert(f"lexique/{t} : le nœud {d}, où il est défini, ne le mentionne pas")
     if renvois: avert(f"renvois en avant dans les remarques ({len(renvois)}) : " + ', '.join(sorted(renvois)))
+
+# ------------------------------------------------------------------ résultats admis
+# Schéma et règles : voir l'en-tête. Le lieu « remarque » couvre toutes les remarques de la fiche.
+RE_ADMIS = re.compile(r'\b(?:admis|admise|admises)\b', re.I)
+LIEUX_ADMIS = ['texte', 'enonce', 'preuve', 'choix', 'remarque']
+PRINCIPAUX = {'texte', 'enonce', 'preuve'}
+STATUTS_ADMIS = {'aval', 'ailleurs', 'hors-cadre', 'a-faire', 'cite'}
+def mentions_admis(n):
+    """Nombre de mentions par lieu."""
+    compte = defaultdict(int)
+    for c in ['texte', 'enonce', 'preuve', 'choix']:
+        compte[c] += len(RE_ADMIS.findall(n.get(c) or ''))
+    compte['remarque'] = sum(len(RE_ADMIS.findall(r)) for r in n['remarques'])
+    return {c: k for c, k in compte.items() if k}
+def propres(n, lieux=None):
+    """Entrées qui portent un admis (toutes sauf les citations), éventuellement restreintes à des lieux."""
+    return [a for a in n.get('admis') or [] if a.get('statut') != 'cite' and (lieux is None or a.get('lieu') in lieux)]
+def contenants(v):
+    """Conteneurs successifs de la fiche v (chapitre, théorie…), jusqu'au graphe racine."""
+    c, g = [], noeuds[v]['graphe']
+    while G[g]['conteneur']: c.append(G[g]['conteneur']); g = noeuds[G[g]['conteneur']]['graphe']
+    return c
+def demontre_par(v, r):
+    """v est la fiche de démonstration r, ou l'un de ses conteneurs."""
+    return v == r or v in contenants(r)
+for n in noeuds.values():
+    v, ent = n['id'], n.get('admis') or []
+    if not isinstance(ent, list): erreur(f"{v} : « admis » doit être une liste"); continue
+    vus = mentions_admis(n)
+    for k, a in enumerate(ent):
+        ou = f"{v}/admis {k + 1}"
+        if not isinstance(a, dict): erreur(f"{ou} : entrée mal formée"); continue
+        for cle in set(a) - {'lieu', 'statut', 'objet', 'renvoi'}: erreur(f"{ou} : clé inconnue « {cle} »")
+        lieu, st, r = a.get('lieu'), a.get('statut'), a.get('renvoi')
+        if lieu not in LIEUX_ADMIS: erreur(f"{ou} : lieu inconnu « {lieu} » ({', '.join(LIEUX_ADMIS)})"); continue
+        if st not in STATUTS_ADMIS: erreur(f"{ou} : statut inconnu « {st} » ({', '.join(sorted(STATUTS_ADMIS))})"); continue
+        if not isinstance(a.get('objet'), str) or not a['objet'].strip(): erreur(f"{ou} : objet absent")
+        else: verifie_refs(a['objet'], ou); verifie_typo(a['objet'], ou)
+        if lieu not in vus: erreur(f"{ou} : aucune mention « admis » dans le lieu « {lieu} » de la fiche")
+        if st in ('aval', 'ailleurs', 'cite'):
+            if r not in noeuds: erreur(f"{ou} : statut {st}, renvoi absent ou inconnu ({r})"); continue
+        elif r is not None: erreur(f"{ou} : statut {st}, renvoi interdit ({r})"); continue
+        if st == 'hors-cadre' and lieu in PRINCIPAUX:
+            avert(f"{ou} : admis hors cadre dans « {lieu} » ({a.get('objet', '')[:60]})")
+        if r is None: continue
+        if st == 'cite':
+            if r == v:
+                if not [b for b in propres(n) if b.get('lieu') != lieu]:
+                    erreur(f"{ou} : rappel d'un admis de la fiche elle-même, mais aucun autre lieu n'en déclare")
+            elif not propres(noeuds[r]):
+                erreur(f"{ou} : cite {r}, qui ne déclare aucun admis (périmé ? écrire un renvoi à la démonstration)")
+            elif avant:
+                # Citation périmée : l'admis cité est démontré en amont du citant (sauf si le citant est cette
+                # démonstration ou la contient).
+                for d_ in sorted({b.get('renvoi') for b in propres(noeuds[r]) if b.get('statut') in ('aval', 'ailleurs')} - {None}):
+                    if d_ in noeuds and d_ in avant[v] and not demontre_par(v, d_):
+                        erreur(f"{ou} : cite {r}, dont l'admis est démontré à {d_}, en amont de {v} : écrire un renvoi à la démonstration")
+            continue
+        if r == v: erreur(f"{ou} : renvoi à la fiche elle-même"); continue
+        if avant:
+            if v in avant[r] and st == 'ailleurs': erreur(f"{ou} : {r} est en aval de {v} : statut aval")
+            if r in avant[v]: erreur(f"{ou} : {r} est en amont de {v} : l'admis est périmé, écrire un renvoi à la démonstration")
+            elif st == 'aval' and v not in avant[r]: erreur(f"{ou} : {r} n'est pas en aval de {v} (statut ailleurs ?)")
+        if propres(noeuds[r], PRINCIPAUX):
+            erreur(f"{ou} : la fiche de renvoi {r} admet elle-même un résultat dans son énoncé, sa preuve ou son texte")
+    declares = defaultdict(int)
+    for a in ent:
+        if isinstance(a, dict): declares[a.get('lieu')] += 1
+    for lieu, k in sorted(vus.items()):
+        if declares[lieu] < k:
+            erreur(f"{v} : {k} mention(s) « admis » dans « {lieu} », mais {declares[lieu]} entrée(s) de ce lieu dans le champ admis")
+# Transmission : un lien {{x|…}} dans un énoncé ou une preuve vers une fiche x qui admet un résultat dans son
+# énoncé ou sa preuve exige, dans la fiche citante, une entrée de lieu enonce ou preuve (cite, aval, ailleurs…).
+# Exceptions : la fiche citante est la démonstration de cet admis ou la contient, ou cette démonstration est
+# en amont de la fiche citante (l'admis y est alors levé). Les admis à faire ou hors cadre n'ont pas d'exception.
+if avant:
+    for n in noeuds.values():
+        v = n['id']
+        if any(a.get('lieu') in ('enonce', 'preuve') for a in n.get('admis') or [] if isinstance(a, dict)): continue
+        for x in sorted({t for c in ('enonce', 'preuve') for t in RE_LIEN.findall(n.get(c) or '')}):
+            if x == v or x not in noeuds: continue
+            for b in propres(noeuds[x], {'enonce', 'preuve'}):
+                d_ = b.get('renvoi')
+                if d_ in noeuds and (demontre_par(v, d_) or d_ in avant[v]): continue
+                erreur(f"{v} : son énoncé ou sa preuve renvoie à {x}, qui admet « {b.get('objet', '')[:50]} » ; "
+                       f"déclarer l'admis transmis (entrée de lieu enonce ou preuve)")
+                break
 
 # ------------------------------------------------------------------ rangs et numéros
 for gid, d in D.items():
@@ -636,6 +747,22 @@ for t, e in lex.items():
     sortie['lexique'][t] = {'id': t, 'terme': e['terme'], 'definition': e['definition'],
                             'emplois': sorted(emplois[t]), 'defini': e['defini_dans'],
                             'voir': e.get('voir', []), 'notation': e.get('notation')}
+# Inventaire des admis et des fiches ⋆ (page « État de l'édifice ») : il reste dans la page même quand
+# les textes des branches sont chargés à la demande. Trié par rang de la théorie racine, puis dans l'ordre
+# des fichiers de contenu.
+def theorie_racine(v):
+    n = noeuds[v]
+    while n['graphe'] != racines[0]['graphe']: n = noeuds[G[n['graphe']]['conteneur']]
+    return n['id']
+rang_fichier = {n['id']: k for k, n in enumerate(n_ for g in graphes for n_ in g['noeuds'])}
+def situe(v):
+    return {'id': v, 'theorie': theorie_racine(v)}
+cle_inv = lambda e: (noeuds[e['theorie']]['rang'], rang_fichier[e['theorie']], rang_fichier[e['id']])
+sortie['admis'] = {
+    'entrees': sorted(({**situe(n['id']), 'lieu': a['lieu'], 'statut': a['statut'], 'objet': a['objet'],
+                        'renvoi': a.get('renvoi')} for n in noeuds.values() for a in n.get('admis') or []),
+                      key=cle_inv),
+    'choix': sorted((situe(n['id']) for n in noeuds.values() if n.get('choix')), key=cle_inv)}
 
 # ------------------------------------------------------------------ rubriques (cours, exercices…)
 # Fichiers rubriques/*.yaml : chaque rubrique est passée telle quelle à la page ; on vérifie
