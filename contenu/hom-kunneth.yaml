@@ -1,0 +1,766 @@
+# Niveau 2 : structure interne du chapitre « Formule de Künneth » (nœud hom-kunneth du graphe hom, créé le
+# 31 oct. 2026, après hom-cup). Produit tensoriel de modules sur un anneau commutatif (propriété universelle,
+# sommes directes, exactitude à droite) ; modules plats (libres, projectifs, lemme de finitude, sous-groupes
+# de groupes abéliens libres et espaces vectoriels plats sans choix) ; Tor par présentation projective ;
+# produit tensoriel de complexes et produit croisé algébrique ; Künneth algébrique (suite exacte sous
+# hypothèse de platitude, Tor et scindage pour des complexes de projectifs, isomorphisme sur un corps) ;
+# cône singulier dans un convexe, contraction du produit tensoriel ; modèles acycliques (contractions
+# explicites, aucune récurrence avec choix) ; Eilenberg-Zilber (Alexander-Whitney explicite, réciproque par
+# modèles) ; Künneth en homologie singulière (entiers, corps, tore) ; produit croisé en cohomologie
+# (a × b = p₁*a ⌣ p₂*b, accouplement) ; commutativité graduée du produit cup, démontrée par modèles
+# (admise jusqu'ici dans cup-anneau) ; cohomologie de X × S¹ par Mayer-Vietoris ; cocycle partie entière
+# du cercle ; anneau du tore, algèbre extérieure ; applications vers le tore (sphères, déterminant).
+# Choix : aucun, sauf le point (iii) de ku-croise (Künneth en cohomologie sur un corps : supplémentaires,
+# lemme de Zorn). La platitude remplace la projectivité des bords, qui demanderait le choix.
+
+graphe: hom-kunneth
+titre: Formule de Künneth
+conteneur: hom-kunneth
+
+entrees:
+  h-complexes: [ku-tenseur]
+  hom-cup: [ku-croise]
+
+noeuds:
+  - id: ku-tenseur
+    etiquette: Produit tensoriel
+    nature: définition
+    titre: Produit tensoriel de modules
+    texte: |
+      Dans ce chapitre, $R$ est un [[anneau]] commutatif. Les deux cas utiles sont $\lex{ensemble-entiers-relatifs}{\mathbb Z}$, pour lequel les $R$-[[module|modules]] sont les groupes abéliens ({{a-module|Module}}), et un corps $K$, pour lequel ce sont les espaces vectoriels. Sauf mention contraire, « module » et « linéaire » s'entendent sur $R$.
+
+      Pour un ensemble $S$, le **module libre** $R^{(S)}$ est l'ensemble des applications de $S$ dans $R$ nulles hors d'une partie finie, avec les lois point par point ; on identifie $s \in S$ à l'application qui vaut $1$ en $s$ et $0$ ailleurs. Comme au nœud {{h-complexes|Complexes de chaînes}}, (i), toute application $s \mapsto m_s$ de $S$ dans un module $M$ se prolonge en une unique application linéaire de $R^{(S)}$ dans $M$, celle qui envoie $\sum r_s s$ sur $\sum r_s m_s$.
+
+      Pour une famille de modules $(M_i)_{i \in I}$, la **somme directe** $\bigoplus_i M_i$ est le module des familles $(x_i)$, avec $x_i \in M_i$, nulles sauf pour un nombre fini d'indices. Ainsi $R^{(S)} = \bigoplus_{s \in S} R$, et l'on note $N^{(S)} = \bigoplus_{s \in S} N$.
+
+      Soient $M$ et $N$ deux modules. Une application $\beta : M \times N \to P$ est **bilinéaire** si elle est linéaire en chaque variable. Le [[produit-tensoriel|produit tensoriel]] $M \lex{produit-tensoriel}{\otimes} N$ est le quotient du module libre $R^{(M \times N)}$ par le sous-module $\mathrm{Rel}(M, N)$ engendré par les éléments
+      $$\begin{aligned} &(x + x', y) - (x, y) - (x', y), \\ &(x, y + y') - (x, y) - (x, y'), \\ &(rx, y) - r(x, y), \quad (x, ry) - r(x, y), \end{aligned}$$
+      pour $x, x' \in M$, $y, y' \in N$ et $r \in R$. La classe de $(x, y)$ est notée $x \otimes y$.
+
+      Tout élément de $M \otimes N$ est une somme finie $\sum_k x_k \otimes y_k$, et cette écriture n'est pas unique. Quand l'anneau doit être précisé, on écrit $M \otimes_R N$.
+
+      Un **complexe de modules** est un complexe de chaînes dont les termes sont des modules et les bords des applications linéaires. Les démonstrations des nœuds {{h-complexes|Complexes de chaînes}} et {{h-suite-exacte|Suite exacte longue}} n'emploient que des sommes, des noyaux, des images et des quotients : elles valent sans changement pour ces complexes, l'homologie étant un module. Le morphisme de connexion est linéaire : si $b$ relève $c$ et $\partial b = i(a)$, alors $rb$ relève $rc$ et $\partial(rb) = i(ra)$, d'où $\delta[rc] = r\,\delta[c]$.
+    enonce: |
+      (i) *Propriété universelle.* L'application $(x, y) \mapsto x \otimes y$ est bilinéaire. Pour toute application bilinéaire $\beta : M \times N \to P$, il existe une unique application linéaire $\bar\beta : M \otimes N \to P$ telle que $\bar\beta(x \otimes y) = \beta(x, y)$.
+
+      (ii) *Fonctorialité.* Deux applications linéaires $u : M \to M'$ et $v : N \to N'$ induisent l'application linéaire $u \otimes v : M \otimes N \to M' \otimes N'$, $x \otimes y \mapsto u(x) \otimes v(y)$. On a $(u' \circ u) \otimes (v' \circ v) = (u' \otimes v') \circ (u \otimes v)$, $\mathrm{id} \otimes \mathrm{id} = \mathrm{id}$, et $(u_1 + u_2) \otimes v = u_1 \otimes v + u_2 \otimes v$, de même en $v$.
+
+      (iii) *Isomorphismes canoniques.* On a $R \otimes N \cong N$ par $r \otimes y \mapsto ry$, et $M \otimes N \cong N \otimes M$ par $x \otimes y \mapsto y \otimes x$. Pour une famille $(M_i)$, l'application qui envoie $(x_i) \otimes y$ sur $(x_i \otimes y)$ est un isomorphisme
+      $$\Big(\bigoplus_i M_i\Big) \otimes N \cong \bigoplus_i (M_i \otimes N).$$
+      En particulier $R^{(S)} \otimes N \cong N^{(S)}$, et $R^{(S)} \otimes R^{(T)}$ est libre de base les $s \otimes t$, c'est-à-dire isomorphe à $R^{(S \times T)}$. Enfin, pour un groupe abélien $A$, le groupe $A \otimes_{\mathbb Z} R$ est un $R$-module pour la loi $r(a \otimes s) = a \otimes rs$, et $\mathbb Z^{(S)} \otimes_{\mathbb Z} R \cong R^{(S)}$.
+
+      (iv) *Exactitude à droite.* Si la suite $M' \xrightarrow{u} M \xrightarrow{v} M'' \to 0$ est exacte, la suite
+      $$\begin{aligned} M' \otimes N &\xrightarrow{u \otimes \mathrm{id}} M \otimes N \\ &\xrightarrow{v \otimes \mathrm{id}} M'' \otimes N \to 0 \end{aligned}$$
+      l'est aussi. En particulier, pour $n \geqslant 1$ et un groupe abélien $A$, on a $(\mathbb Z/n\mathbb Z) \otimes A \cong A/nA$.
+    preuve: |
+      (i) Les relations disent exactement que $(x, y) \mapsto x \otimes y$ est bilinéaire. Soit $\beta$ bilinéaire. L'application linéaire de $R^{(M \times N)}$ dans $P$ qui prolonge $\beta$ est nulle sur les générateurs de $\mathrm{Rel}(M, N)$, par bilinéarité, donc sur ce sous-module ; elle passe au quotient ({{a-module|Module}}) en $\bar\beta$. L'unicité vient de ce que les $x \otimes y$ engendrent $M \otimes N$.
+
+      (ii) L'application $(x, y) \mapsto u(x) \otimes v(y)$ est bilinéaire, et (i) donne $u \otimes v$. Les identités annoncées sont vraies sur les générateurs $x \otimes y$, et deux applications linéaires qui coïncident sur des générateurs sont égales.
+
+      (iii) L'application bilinéaire $(r, y) \mapsto ry$ induit $R \otimes N \to N$, et $y \mapsto 1 \otimes y$ est linéaire, par les relations. Les deux composées sont l'identité sur des générateurs, puisque $r \otimes y = 1 \otimes ry$. La symétrie se traite de même, avec les applications bilinéaires $(x, y) \mapsto y \otimes x$ et $(y, x) \mapsto x \otimes y$.
+
+      Pour les sommes directes, l'application $((x_i), y) \mapsto (x_i \otimes y)$ est bilinéaire, à valeurs dans la somme directe puisque presque tous les $x_i$ sont nuls. En sens inverse, on envoie $x_i \otimes y$, dans le facteur d'indice $i$, sur $\iota_i(x_i) \otimes y$, où $\iota_i$ est l'inclusion de $M_i$ ; les composées sont l'identité sur des générateurs, puisque $(x_i) \otimes y$ est la somme finie des $\iota_i(x_i) \otimes y$.
+
+      Avec $R^{(S)} = \bigoplus_s R$ et $R \otimes N \cong N$, on obtient $R^{(S)} \otimes N \cong N^{(S)}$ ; pour $N = R^{(T)}$, le module $\bigoplus_s R^{(T)}$ est $R^{(S \times T)}$, et $s \otimes t$ correspond à $(s, t)$. De même, $\mathbb Z^{(S)} \otimes_{\mathbb Z} R \cong \bigoplus_s (\mathbb Z \otimes_{\mathbb Z} R) \cong R^{(S)}$, et ces isomorphismes sont $R$-linéaires pour la loi indiquée, bien définie par (ii) appliqué à $\mathrm{id}_A \otimes (s \mapsto rs)$.
+
+      (iv) L'application $v \otimes \mathrm{id}$ est surjective, puisque chaque générateur $x'' \otimes y$ s'écrit $v(x) \otimes y$. La composée $(v \otimes \mathrm{id}) \circ (u \otimes \mathrm{id}) = (v \circ u) \otimes \mathrm{id}$ est nulle. Soit $I$ l'image de $u \otimes \mathrm{id}$ ; il reste à voir que l'application $w : (M \otimes N)/I \to M'' \otimes N$ induite est injective.
+
+      Pour $x'' \in M''$ et $y \in N$, la classe de $x \otimes y$ modulo $I$ est la même pour tous les $x$ tels que $v(x) = x''$ : deux tels éléments diffèrent d'un $u(x')$, et $u(x') \otimes y \in I$. Cette classe définit donc une application de $M'' \times N$ dans $(M \otimes N)/I$, sans qu'il faille choisir d'antécédent ; elle est bilinéaire, et induit par (i) un inverse à gauche de $w$, comme on le vérifie sur des générateurs.
+
+      Pour $\mathbb Z/n\mathbb Z$, on applique ce qui précède à la suite exacte $\mathbb Z \xrightarrow{\times n} \mathbb Z \to \mathbb Z/n\mathbb Z \to 0$ : par (iii), $(\times n) \otimes \mathrm{id}_A$ devient la multiplication par $n$ sur $\mathbb Z \otimes A \cong A$, dont le conoyau est $A/nA$.
+    remarques:
+      - |
+        L'erreur la plus répandue est de croire qu'un tenseur $x \otimes y$ est nul seulement si $x$ ou $y$ l'est. Dans $(\mathbb Z/2\mathbb Z) \otimes (\mathbb Z/3\mathbb Z)$, on a
+        $$\begin{aligned} 1 \otimes 1 &= 3(1 \otimes 1) - 2(1 \otimes 1) \\ &= 1 \otimes 3 - 2 \otimes 1 = 0, \end{aligned}$$
+        et le groupe entier est nul. Plus généralement, (iv) donne $(\mathbb Z/m\mathbb Z) \otimes (\mathbb Z/n\mathbb Z) \cong \mathbb Z/d\mathbb Z$, avec $d$ le pgcd de $m$ et $n$, et $(\mathbb Z/n\mathbb Z) \otimes \mathbb Q = 0$, tout rationnel étant divisible par $n$.
+      - |
+        Le produit tensoriel ne préserve pas l'injectivité. La multiplication par $2$ est injective sur $\mathbb Z$, mais, tensorisée par $\mathbb Z/2\mathbb Z$, elle devient la multiplication par $2$ sur $\mathbb Z/2\mathbb Z$, qui est nulle. Les modules qui ne présentent pas ce défaut sont étudiés au nœud {{ku-plat|Modules plats}}, et le défaut lui-même est mesuré par le groupe $\operatorname{Tor}$ ({{ku-tor|Le groupe Tor}}).
+      - |
+        Le produit tensoriel de deux groupes abéliens a été introduit par Whitney (*Tensor products of Abelian groups*, Duke Math. J. 4, 1938, p. 495-528).
+
+  - id: ku-plat
+    etiquette: Modules plats
+    nature: proposition
+    titre: Modules plats
+    texte: |
+      Un module $F$ est [[module-plat|plat]] si, pour toute application linéaire injective $u : M \to N$, l'application $\mathrm{id}_F \otimes u : F \otimes M \to F \otimes N$ est injective. Par la symétrie du produit tensoriel ({{ku-tenseur|Produit tensoriel}}, (iii)), il revient au même de demander que $u \otimes \mathrm{id}_F$ le soit.
+
+      Pour un complexe de chaînes $D$ de modules ({{ku-tenseur|Produit tensoriel}}), on note $F \otimes D$ le complexe de terme $F \otimes D_n$ et de bord $\mathrm{id} \otimes \partial$.
+    enonce: |
+      (i) *Suites exactes.* Si $F$ est plat, il transforme toute suite exacte courte $0 \to M' \to M \to M'' \to 0$ en une suite exacte courte $0 \to F \otimes M' \to F \otimes M \to F \otimes M'' \to 0$. Pour tout complexe $D$, l'application $x \otimes [z] \mapsto [x \otimes z]$ est un isomorphisme
+      $$F \otimes \lex{groupe-homologie}{H_n}(D) \cong H_n(F \otimes D).$$
+
+      (ii) *Libres, rétractes, projectifs.* Un module libre $R^{(S)}$ est plat. Un rétracte d'un module plat est plat. Pour $R = \mathbb Z$, tout groupe [[groupe-projectif|projectif]] est plat.
+
+      (iii) *Lemme de finitude.* Soient $u : M \to N$ linéaire, $A$ un module et $\xi \in A \otimes M$ tel que $(\mathrm{id} \otimes u)(\xi) = 0$ dans $A \otimes N$. Il existe un sous-module $A_0$ de $A$ engendré par une famille finie et un élément $\xi_0 \in A_0 \otimes M$, d'image $\xi$ dans $A \otimes M$, tels que $(\mathrm{id} \otimes u)(\xi_0) = 0$ dans $A_0 \otimes N$.
+
+      (iv) *Deux cas sans choix.* Tout sous-groupe d'un groupe abélien libre $\mathbb Z^{(S)}$ est plat. Sur un corps $K$, tout espace vectoriel est plat.
+    preuve: |
+      (i) La suite tensorisée est exacte en $F \otimes M$ et en $F \otimes M''$ par l'exactitude à droite ({{ku-tenseur|Produit tensoriel}}, (iv)), et la première flèche est injective puisque $F$ est plat.
+
+      Pour l'homologie, notons $Z_n$ et $B_n$ les cycles et les bords de $D$. La suite $0 \to Z_n \to D_n \xrightarrow{\partial} B_{n-1} \to 0$ est exacte, et devient exacte après tensorisation par $F$ ; de plus, $F \otimes B_{n-1} \to F \otimes D_{n-1}$ est injective. Comme $\mathrm{id} \otimes \partial_n$ est la composée $F \otimes D_n \to F \otimes B_{n-1} \to F \otimes D_{n-1}$, son noyau est l'image de $F \otimes Z_n$, qui s'identifie à $F \otimes Z_n$.
+
+      L'image de $\mathrm{id} \otimes \partial_{n+1}$ est celle de $F \otimes B_n$, puisque $F \otimes D_{n+1} \to F \otimes B_n$ est surjective. Ainsi $H_n(F \otimes D)$ est le conoyau de $F \otimes B_n \to F \otimes Z_n$, c'est-à-dire $F \otimes H_n(D)$, par l'exactitude à droite appliquée à $B_n \to Z_n \to H_n(D) \to 0$.
+
+      (ii) Par {{ku-tenseur|Produit tensoriel}}, (iii), $R^{(S)} \otimes M \cong M^{(S)}$, et $\mathrm{id} \otimes u$ devient l'application qui applique $u$ à chaque coordonnée, injective si $u$ l'est.
+
+      Soient $s : Q \to P$ et $r : P \to Q$ linéaires, avec $r \circ s = \mathrm{id}_Q$ et $P$ plat. Si $(\mathrm{id}_Q \otimes u)(\xi) = 0$, alors
+      $$\begin{aligned} &(\mathrm{id}_P \otimes u)\big((s \otimes \mathrm{id})(\xi)\big) \\ &= (s \otimes \mathrm{id})\big((\mathrm{id}_Q \otimes u)(\xi)\big) = 0, \end{aligned}$$
+      puisque les deux composées valent $s \otimes u$. Donc $(s \otimes \mathrm{id})(\xi) = 0$, et $\xi = (r \otimes \mathrm{id})(s \otimes \mathrm{id})(\xi) = 0$.
+
+      Pour $R = \mathbb Z$, un groupe projectif $P$ est l'image du morphisme canonique $\mathbb Z^{(P)} \to P$, $\sum n_x x \mapsto \sum n_x x$, qui a une section par projectivité ({{cs-projectifs|Groupes projectifs}}, (ii)) : $P$ est un rétracte d'un groupe libre. Aucun choix n'intervient, la projectivité étant l'hypothèse.
+
+      (iii) Écrivons $\xi = \sum_k a_k \otimes m_k$. Dire que $(\mathrm{id} \otimes u)(\xi) = 0$, c'est dire que $\sum_k (a_k, u(m_k))$ appartient à $\mathrm{Rel}(A, N)$, donc est une combinaison finie des générateurs de ce sous-module. Soit $A_0$ le sous-module engendré par les $a_k$ et par les éléments $x$, $x'$ de $A$ qui figurent dans ces générateurs, en nombre fini.
+
+      Chacun de ces générateurs est alors un générateur de $\mathrm{Rel}(A_0, N)$, puisque $x + x'$ et $rx$ appartiennent à $A_0$. L'élément $\xi_0 = \sum_k a_k \otimes m_k$ de $A_0 \otimes M$ convient.
+
+      (iv) Soient $B$ un sous-groupe de $\mathbb Z^{(S)}$, $u : M \to N$ injectif, et $\xi \in B \otimes M$ tel que $(\mathrm{id} \otimes u)(\xi) = 0$. Par (iii), il existe un sous-groupe $B_0$ de $B$ engendré par des éléments $b_1, \dots, b_r$ et un $\xi_0 \in B_0 \otimes M$, d'image $\xi$, tel que $(\mathrm{id} \otimes u)(\xi_0) = 0$.
+
+      Les supports des $b_i$ sont contenus dans une partie finie $S_0$ de $S$, et $B_0$ est un sous-groupe de $\mathbb Z^{(S_0)}$, lui-même isomorphe à un $\lex{n-uplet}{\mathbb Z^k}$ par une numérotation de $S_0$. Par le nœud {{cs-projectifs|Groupes projectifs}}, (iii), $B_0$ est isomorphe à un $\mathbb Z^m$, donc plat par (ii) : $\xi_0 = 0$, et son image $\xi$ est nulle.
+
+      Sur un corps, on raisonne de même : le sous-espace $B_0$ engendré par une famille finie a une base finie ({{v-dimension|Dimension}}, (i)), il est isomorphe à un $K^m$, donc plat.
+    remarques:
+      - |
+        Le groupe $\mathbb Z/n\mathbb Z$ n'est pas plat pour $n \geqslant 2$, d'après la seconde remarque du nœud {{ku-tenseur|Produit tensoriel}}. Le groupe $\mathbb Q$ l'est sans être libre : un sous-groupe de $\mathbb Q$ engendré par $p_1/q, \dots, p_r/q$ est contenu dans $\frac1q\mathbb Z \cong \mathbb Z$, donc isomorphe à $\mathbb Z$ ou nul, et la démonstration de (iv) s'applique.
+      - |
+        Un groupe abélien est plat si et seulement s'il est sans torsion. Si $nx = 0$ avec $x \neq 0$ et $n \geqslant 1$, la multiplication par $n$, injective sur $\mathbb Z$, devient après tensorisation par $F$ la multiplication par $n$ sur $F$, qui n'est pas injective. Réciproquement, par le lemme de finitude (iii), il suffit que les sous-groupes de type fini de $F$ soient plats ; sans torsion, ils sont libres par le théorème de structure des groupes abéliens de type fini, démontré au chapitre {{ac-modules|Modules sur un anneau principal}}, qui n'est pas en amont de ce chapitre : cette réciproque est admise ici.
+      - |
+        Le point (iv) est ce qui permettra d'établir la formule de Künneth sans axiome du choix. La démonstration usuelle demande que les bords $B_n(X)$ du complexe singulier soient libres, ce qui passe par un bon ordre sur l'ensemble des simplexes (théorème de Dedekind, admis au nœud {{cs-coefficients-universels|Coefficients universels}}), et qu'ils soient projectifs, énoncé que Blass a montré équivalent à l'axiome du choix pour les groupes abéliens libres quelconques. La platitude ne demande, elle, que des sous-groupes de type fini, qui vivent dans un nombre fini de coordonnées.
+
+        Il en va de même sur un corps : l'existence d'une base dans tout espace vectoriel équivaut à l'axiome du choix (Blass, *Existence of bases implies the axiom of choice*, Contemp. Math. 31, 1984, p. 31-33 ; voir {{v-bases-existence|Existence de bases}}), alors que la platitude n'utilise que des bases de sous-espaces de dimension finie.
+
+  - id: ku-tor
+    etiquette: Le groupe Tor
+    nature: définition
+    titre: Le groupe Tor
+    texte: |
+      Dans ce nœud, $R = \mathbb Z$. Soit $0 \to L \xrightarrow{\iota} P \xrightarrow{\pi} A \to 0$ une présentation projective d'un groupe abélien $A$, au sens du nœud {{cs-ext|Le groupe Ext}} : une suite exacte courte où $P$ est [[groupe-projectif|projectif]]. Pour un groupe abélien $G$, on pose
+      $$\operatorname{Tor}_P(A, G) = \operatorname{Ker}(\iota \otimes \mathrm{id}),$$
+      noyau de $\iota \otimes \mathrm{id} : L \otimes G \to P \otimes G$.
+      Par l'exactitude à droite ({{ku-tenseur|Produit tensoriel}}, (iv)), la suite $L \otimes G \to P \otimes G \to A \otimes G \to 0$ est exacte : ce groupe mesure le défaut d'injectivité de sa première flèche.
+
+      Pour un entier $n \geqslant 1$, on note $G[n] = \{g \in G : ng = 0\}$.
+    enonce: |
+      (i) *Indépendance.* Soient deux présentations projectives de $A$, notées comme ci-dessus et avec des primes. Il existe un morphisme $f : P \to P'$ tel que $\pi' \circ f = \pi$ ; il envoie $L$ dans $L'$, et $f|_L \otimes \mathrm{id}$ induit un isomorphisme de $\operatorname{Tor}_P(A, G)$ sur $\operatorname{Tor}_{P'}(A, G)$, qui ne dépend pas de $f$. On note $\lex{groupe-tor}{\operatorname{Tor}}(A, G)$ ce [[groupe-tor|groupe Tor]], défini à isomorphisme canonique près.
+
+      (ii) *Calculs.* $\operatorname{Tor}(A, G) = 0$ si $A$ est projectif ou si $G$ est [[module-plat|plat]]. Pour $n \geqslant 1$,
+      $$\operatorname{Tor}(\mathbb Z/n\mathbb Z, G) \cong G[n].$$
+      Si $A$ et $A'$ ont des présentations projectives, $\operatorname{Tor}(A \oplus A', G) \cong \operatorname{Tor}(A, G) \oplus \operatorname{Tor}(A', G)$. En particulier $\operatorname{Tor}(\mathbb Z/m\mathbb Z, \mathbb Z/n\mathbb Z) \cong \mathbb Z/d\mathbb Z$, où $d$ est le pgcd de $m$ et $n$.
+    preuve: |
+      (i) Le morphisme $f$ existe parce que $P$ est projectif et $\pi'$ surjectif, et il envoie $L$ dans $L'$ comme au nœud {{cs-ext|Le groupe Ext}}. On identifie $L$ et $L'$ à leurs images. Comme $\iota' \circ f|_L = f \circ \iota$, on a $(\iota' \otimes \mathrm{id}) \circ (f|_L \otimes \mathrm{id}) = (f \otimes \mathrm{id}) \circ (\iota \otimes \mathrm{id})$ ({{ku-tenseur|Produit tensoriel}}, (ii)), et $f|_L \otimes \mathrm{id}$ envoie le noyau de $\iota \otimes \mathrm{id}$ dans celui de $\iota' \otimes \mathrm{id}$.
+
+      Si $g$ est un autre relèvement, $\pi' \circ (f - g) = 0$, et $f - g$ s'écrit $\iota' \circ k$, avec $k : P \to L'$. Alors $f|_L - g|_L = k \circ \iota$, d'où, pour $\xi \in \operatorname{Ker}(\iota \otimes \mathrm{id})$,
+      $$\begin{aligned} &(f|_L \otimes \mathrm{id})(\xi) - (g|_L \otimes \mathrm{id})(\xi) \\ &= (k \otimes \mathrm{id})\big((\iota \otimes \mathrm{id})(\xi)\big) = 0. \end{aligned}$$
+
+      Le morphisme induit ne dépend donc que des deux présentations. La composée de deux relèvements en est un, et l'identité relève $\pi$ ; avec un relèvement $f' : P' \to P$ de $\pi'$, on obtient deux morphismes réciproques l'un de l'autre, comme pour $\operatorname{Ext}$.
+
+      (ii) Si $A$ est projectif, $0 \to 0 \to A \xrightarrow{\mathrm{id}} A \to 0$ est une présentation projective, et $0 \otimes G = 0$. Si $G$ est plat, $\iota \otimes \mathrm{id}$ est injectif, $\iota$ l'étant.
+
+      Pour $\mathbb Z/n\mathbb Z$, on prend la présentation $0 \to \mathbb Z \xrightarrow{\times n} \mathbb Z \to \mathbb Z/n\mathbb Z \to 0$ ; par {{ku-tenseur|Produit tensoriel}}, (iii), $(\times n) \otimes \mathrm{id}_G$ devient la multiplication par $n$ sur $G$, de noyau $G[n]$.
+
+      Pour une somme directe, la somme de deux présentations projectives en est une de $A \oplus A'$ ({{cs-projectifs|Groupes projectifs}}, (i)), le produit tensoriel commute aux sommes directes, et le noyau d'une somme directe de morphismes est la somme directe des noyaux. Enfin, $(\mathbb Z/n\mathbb Z)[m]$ est formé des classes des multiples de $n/d$, et il est cyclique d'ordre $d$.
+    remarques:
+      - |
+        Quelques valeurs : $\operatorname{Tor}(\mathbb Z/2\mathbb Z, \mathbb Z/2\mathbb Z) \cong \mathbb Z/2\mathbb Z$, $\operatorname{Tor}(\mathbb Z/2\mathbb Z, \mathbb Z/3\mathbb Z) = 0$, $\operatorname{Tor}(\mathbb Z/4\mathbb Z, \mathbb Z/6\mathbb Z) \cong \mathbb Z/2\mathbb Z$, et $\operatorname{Tor}(\mathbb Z/n\mathbb Z, \mathbb Q) = 0$, $\mathbb Q$ étant plat. Sur ces exemples, $\operatorname{Tor}(A, G) \cong \operatorname{Tor}(G, A)$ ; c'est vrai en général, ce que l'on ne démontre pas ici. Le groupe ne voit que la torsion des deux arguments.
+      - |
+        La comparaison avec le nœud {{cs-ext|Le groupe Ext}} éclaire les deux constructions : la multiplication par $n$ sur $G$ a pour conoyau $\operatorname{Ext}(\mathbb Z/n\mathbb Z, G) = G/nG$ et pour noyau $\operatorname{Tor}(\mathbb Z/n\mathbb Z, G) = G[n]$. Le groupe $\operatorname{Ext}$ mesure le défaut d'exactitude de $\operatorname{Hom}(-, G)$, le groupe $\operatorname{Tor}$ celui de $- \otimes G$, et la torsion de l'homologie réapparaît dans le second comme dans le premier.
+
+  - id: ku-complexes
+    etiquette: Produit de complexes
+    nature: définition
+    titre: Produit tensoriel de complexes
+    texte: |
+      Dans la suite du chapitre, sauf mention contraire, les complexes sont des complexes de modules, au sens du nœud {{ku-tenseur|Produit tensoriel}}, nuls en degré négatif. Le **produit tensoriel** de deux complexes $C$ et $D$ est le complexe $C \lex{produit-tensoriel}{\otimes} D$ de terme
+      $$(C \otimes D)_n = \bigoplus_{i + j = n} C_i \otimes D_j,$$
+      somme finie, dont le bord est défini sur chaque facteur par la **règle des signes**
+      $$\partial(c \otimes d) = \partial c \otimes d + (-1)^i\, c \otimes \partial d$$
+      pour $c \in C_i$, c'est-à-dire $\partial \otimes \mathrm{id} + (-1)^i\, \mathrm{id} \otimes \partial$ sur $C_i \otimes D_j$ ({{ku-tenseur|Produit tensoriel}}, (ii)). Un module $N$ est vu comme un complexe nul hors du degré $0$ ; alors $C \otimes N$ est le complexe de terme $C_n \otimes N$ et de bord $\partial \otimes \mathrm{id}$.
+    enonce: |
+      (i) $\partial \circ \partial = 0$ sur $C \otimes D$. Si $f : C \to C'$ et $g : D \to D'$ sont des morphismes de complexes, $f \otimes g$, défini par $f_i \otimes g_j$ sur $C_i \otimes D_j$, en est un. Si $P$ est une homotopie de $f$ à $f'$, au sens de {{h-complexes|Complexes de chaînes}}, (iii), alors $P \otimes g$, défini par $c \otimes d \mapsto Pc \otimes g(d)$, est une homotopie de $f \otimes g$ à $f' \otimes g$ ; de même, si $Q$ est une homotopie de $g$ à $g'$, l'application $c \otimes d \mapsto (-1)^i f(c) \otimes Q(d)$, pour $c \in C_i$, est une homotopie de $f \otimes g$ à $f \otimes g'$.
+
+      (ii) *Produit des classes.* Pour des cycles $z \in C_i$ et $w \in D_j$, $z \otimes w$ est un cycle de degré $i + j$, dont la classe ne dépend que de $[z]$ et $[w]$. On obtient une application linéaire, le **produit croisé**,
+      $$\begin{aligned} \times : \lex{groupe-homologie}{H_i}(C) \otimes H_j(D) &\to H_{i+j}(C \otimes D), \\ [z] \otimes [w] &\mapsto [z \otimes w], \end{aligned}$$
+      naturelle : $(f \otimes g)_* \circ \times = \times \circ (f_* \otimes g_*)$.
+    preuve: |
+      (i) Pour $c \in C_i$,
+      $$\begin{aligned} \partial\partial(c \otimes d) &= \partial\partial c \otimes d + (-1)^{i-1}\partial c \otimes \partial d \\ &\quad + (-1)^i\partial c \otimes \partial d + c \otimes \partial\partial d \\ &= 0. \end{aligned}$$
+      Comme $f$ et $g$ conservent les degrés et commutent au bord, $\partial(f(c) \otimes g(d)) = f(\partial c) \otimes g(d) + (-1)^i f(c) \otimes g(\partial d)$, ce qui est l'image de $\partial(c \otimes d)$.
+
+      Pour l'homotopie $P$, qui élève le degré de $1$,
+      $$\begin{aligned} &\partial(Pc \otimes gd) \\ &\quad + (P \otimes g)\big(\partial c \otimes d + (-1)^i c \otimes \partial d\big) \\ &= \partial Pc \otimes gd + (-1)^{i+1} Pc \otimes \partial gd \\ &\quad + P\partial c \otimes gd + (-1)^i Pc \otimes g\partial d, \end{aligned}$$
+      et, comme $\partial g = g\partial$, il reste $(\partial P + P\partial)c \otimes gd = (f'c - fc) \otimes gd$. Le calcul est le même pour $Q$, où le signe $(-1)^i$ compense celui de la règle des signes.
+
+      (ii) $\partial(z \otimes w) = \partial z \otimes w \pm z \otimes \partial w = 0$. Si l'on remplace $z$ par $z + \partial c$, le cycle change de $\partial c \otimes w = \partial(c \otimes w)$ ; si l'on remplace $w$ par $w + \partial d$, il change de $z \otimes \partial d = (-1)^i\partial(z \otimes d)$. L'application $([z], [w]) \mapsto [z \otimes w]$ est donc bien définie et bilinéaire, et l'on applique la propriété universelle ({{ku-tenseur|Produit tensoriel}}, (i)). La naturalité se lit sur $(f \otimes g)(z \otimes w) = f(z) \otimes g(w)$.
+    remarques:
+      - |
+        Sans le signe $(-1)^i$, on aurait $\partial\partial(c \otimes d) = 2\,\partial c \otimes \partial d$, qui n'est pas nul en général : pour le complexe $C = D$ formé de $\mathbb Z$ en degrés $1$ et $0$, de bord l'identité, et $c = d$ le générateur de degré $1$, on trouverait $2\, e \otimes e \neq 0$ dans $\mathbb Z \otimes \mathbb Z \cong \mathbb Z$. La règle des signes est celle du produit extérieur ({{v-algebre-exterieure|Algèbre extérieure}}), où l'échange de deux facteurs de degrés $i$ et $j$ coûte $(-1)^{ij}$.
+      - |
+        Le produit du complexe $C$ formé de $\mathbb Z$ en degrés $0$ et $1$, de bord nul, par lui-même a pour termes $\mathbb Z$, $\mathbb Z^2$, $\mathbb Z$ en degrés $0$, $1$, $2$, et un bord nul. Le complexe $C$ mime le cercle, avec un sommet et une arête ; le produit mime le tore, avec un sommet, deux arêtes et une face. C'est le complexe cellulaire du tore, au sens du chapitre {{hom-cellulaire|Homologie cellulaire}} ; les théorèmes qui suivent justifient cette image pour l'homologie singulière sans passer par lui.
+
+  - id: ku-algebrique
+    etiquette: Künneth algébrique
+    nature: théorème
+    titre: La formule de Künneth algébrique
+    texte: |
+      Soient $C$ et $D$ deux complexes de modules, nuls en degré négatif ; on note $Z_i$ et $B_i$ les cycles et les bords de $C$, et $\iota : B_i \to Z_i$ l'inclusion. On pose
+      $$T_{i,j} = \operatorname{Ker}(\iota \otimes \mathrm{id}),$$
+      noyau de $\iota \otimes \mathrm{id} : B_i \otimes H_j(D) \to Z_i \otimes H_j(D)$.
+    enonce: |
+      (i) Supposons que les $Z_i$, les $B_i$ et les $D_j$ soient [[module-plat|plats]]. Pour tout $n$, la suite
+      $$\begin{aligned} 0 &\to \bigoplus_{i+j=n} \lex{groupe-homologie}{H_i}(C) \otimes H_j(D) \\ &\xrightarrow{\times} H_n(C \otimes D) \\ &\to \bigoplus_{i+j=n-1} T_{i,j} \to 0 \end{aligned}$$
+      est exacte, où $\times$ est le produit croisé algébrique ({{ku-complexes|Produit de complexes}}, (ii)). Elle est naturelle.
+
+      (ii) Le module $T_{i,j}$ est nul si $H_j(D)$ est plat, ou si la projection $Z_i \to H_i(C)$ a une section linéaire, ce qui est le cas pour $R = \mathbb Z$ quand $H_i(C)$ est [[groupe-projectif|projectif]], par exemple isomorphe à un $\lex{n-uplet}{\mathbb Z^k}$. Sur un corps $K$, les hypothèses de (i) sont toujours satisfaites, et $\times$ est un isomorphisme
+      $$\begin{aligned} &\bigoplus_{i+j=n} H_i(C) \otimes_K H_j(D) \\ &\quad \cong H_n(C \otimes_K D). \end{aligned}$$
+
+      (iii) Supposons $R = \mathbb Z$, et que les $C_i$, les $B_i$, les $D_j$ et les bords de $D$ soient projectifs, ce qui est le cas si chaque $C_i$ et chaque $D_j$ est isomorphe à un $\mathbb Z^k$. Alors $T_{i,j} = \lex{groupe-tor}{\operatorname{Tor}}\big(H_i(C), H_j(D)\big)$, et la suite de (i) est scindée :
+      $$\begin{aligned} &H_n(C \otimes D) \\ &\cong \bigoplus_{i+j=n} H_i(C) \otimes H_j(D) \\ &\quad \oplus \bigoplus_{i+j=n-1} \operatorname{Tor}\big(H_i(C), H_j(D)\big). \end{aligned}$$
+    preuve: |
+      (i) *Une suite exacte de complexes.* Soient $Z$ et $B'$ les complexes de bord nul de termes $Z_i$ et $B'_i = B_{i-1}$ en degré $i$. L'inclusion $Z \to C$ et le bord $\partial : C \to B'$ sont des morphismes de complexes, puisque $\partial\partial = 0$, et la suite $0 \to Z \to C \xrightarrow{\partial} B' \to 0$ est exacte en chaque degré.
+
+      Tensorisons par $D$ ({{ku-complexes|Produit de complexes}}, (i)). En bidegré $(i, j)$, la suite $0 \to Z_i \otimes D_j \to C_i \otimes D_j \to B_{i-1} \otimes D_j \to 0$ est exacte, $D_j$ étant plat ({{ku-plat|Modules plats}}, (i)) : on obtient une suite exacte courte de complexes
+      $$0 \to Z \otimes D \to C \otimes D \to B' \otimes D \to 0.$$
+
+      *Homologie des termes extrêmes.* Le complexe $Z \otimes D$ est la somme directe des complexes $Z_i \otimes D$, décalés de $i$, dont le bord est $(-1)^i\, \mathrm{id} \otimes \partial$ ; le signe ne change ni les noyaux ni les images. Comme $Z_i$ est plat, le point (i) du nœud {{ku-plat|Modules plats}} donne
+      $$H_n(Z \otimes D) \cong \bigoplus_{i+j=n} Z_i \otimes H_j(D),$$
+      par $z \otimes [w] \mapsto [z \otimes w]$, et de même $H_n(B' \otimes D) \cong \bigoplus_{i+j=n} B_{i-1} \otimes H_j(D)$.
+
+      *Le morphisme de connexion.* Soient $b = \partial c \in B_{i-1}$, avec $c \in C_i$, et $w$ un cycle de $D_j$. L'élément $c \otimes w$ relève $b \otimes w$, et
+      $$\partial(c \otimes w) = \partial c \otimes w = b \otimes w,$$
+      vu dans $Z_{i-1} \otimes D_j$. Le morphisme de connexion ({{h-suite-exacte|Suite exacte longue}}) envoie donc $b \otimes [w]$ sur $\iota(b) \otimes [w]$ : sur chaque facteur, c'est $\iota \otimes \mathrm{id} : B_{i-1} \otimes H_j(D) \to Z_{i-1} \otimes H_j(D)$, ces éléments engendrant $B_{i-1} \otimes H_j(D)$.
+
+      *Conclusion.* La suite exacte longue donne la suite exacte
+      $$\begin{aligned} 0 &\to \operatorname{Coker}\delta_{n+1} \to H_n(C \otimes D) \\ &\to \operatorname{Ker}\delta_n \to 0. \end{aligned}$$
+      Par l'exactitude à droite appliquée à $B_i \to Z_i \to H_i(C) \to 0$ ({{ku-tenseur|Produit tensoriel}}, (iv)), le conoyau de $\iota \otimes \mathrm{id}$ sur le facteur $(i, j)$ est $H_i(C) \otimes H_j(D)$, et la flèche induite envoie $[z] \otimes [w]$ sur $[z \otimes w]$ : c'est le produit croisé. Le noyau de $\delta_n$ est la somme des $T_{i,j}$ pour $i + j = n - 1$.
+
+      Les deux flèches sont naturelles : la première est le produit croisé, et la seconde est induite par $\partial \otimes \mathrm{id}$.
+
+      (ii) Si $H_j(D)$ est plat, $\iota \otimes \mathrm{id}$ est injectif. Si la projection $q : Z_i \to H_i(C)$ a une section $s$, l'application $r = \mathrm{id} - s \circ q$ envoie $Z_i$ dans $B_i$ et vaut l'identité sur $B_i$, comme au nœud {{cs-projectifs|Groupes projectifs}}, (ii) ; alors $(r \otimes \mathrm{id}) \circ (\iota \otimes \mathrm{id}) = \mathrm{id}$, et $\iota \otimes \mathrm{id}$ est injectif. Pour $R = \mathbb Z$ et $H_i(C)$ projectif, la section existe par ce même point.
+
+      Sur un corps, tous les espaces vectoriels sont plats ({{ku-plat|Modules plats}}, (iv)), et $T_{i,j} = 0$.
+
+      (iii) Comme $B_{i-1}$ est projectif, $\partial : C_i \to B_{i-1}$ a une section, et $Z_i$ est un rétracte de $C_i$ par une application $r_i$ égale à l'identité sur $Z_i$ ({{cs-projectifs|Groupes projectifs}}, (ii)) ; il est projectif (même nœud, (i)). Les $Z_i$, les $B_i$ et les $D_j$ sont donc plats ({{ku-plat|Modules plats}}, (ii)), et (i) s'applique. La suite $0 \to B_i \to Z_i \to H_i(C) \to 0$ est une présentation projective, et $T_{i,j}$ est, par définition, $\operatorname{Tor}(H_i(C), H_j(D))$ ({{ku-tor|Le groupe Tor}}).
+
+      *Scindage.* Soit $\rho_C : C_i \to H_i(C)$ la composée de $r_i$ et de la projection. Pour $c \in C_{i+1}$, $\partial c$ est un bord, donc un cycle, et $\rho_C(\partial c) = [\partial c] = 0$ : $\rho_C$ est un morphisme de $C$ dans le complexe $H(C)$ de bord nul. On construit de même $\rho_D$, les bords de $D$ étant projectifs.
+
+      Le morphisme de complexes $\rho_C \otimes \rho_D : C \otimes D \to H(C) \otimes H(D)$ ({{ku-complexes|Produit de complexes}}, (i)) arrive dans un complexe de bord nul, et induit une application $H_n(C \otimes D) \to \bigoplus_{i+j=n} H_i(C) \otimes H_j(D)$. Elle envoie $[z \otimes w]$ sur $\rho_C(z) \otimes \rho_D(w) = [z] \otimes [w]$, puisque $r_i$ est l'identité sur les cycles : c'est un inverse à gauche du produit croisé.
+    remarques:
+      - |
+        Pour le complexe $C$ formé de $\mathbb Z \xrightarrow{\times 2} \mathbb Z$, en degrés $1$ et $0$, on a $H_0(C) = \mathbb Z/2\mathbb Z$ et $H_1(C) = 0$. Le point (iii) donne $H_0(C \otimes C) \cong \mathbb Z/2\mathbb Z$, $H_1(C \otimes C) \cong \operatorname{Tor}(\mathbb Z/2\mathbb Z, \mathbb Z/2\mathbb Z) \cong \mathbb Z/2\mathbb Z$ et $H_2(C \otimes C) = 0$, ce que confirme le calcul direct par la forme de Smith des matrices du bord de $C \otimes C$.
+
+        La classe de degré $1$ ne vient d'aucun produit de classes : c'est la torsion de $H_0(C)$ qui, croisée avec elle-même, crée de l'homologie un degré plus haut. Sur le corps $\mathbb F_2 = \mathbb Z/2\mathbb Z$, le complexe $C \otimes \mathbb F_2$ a un bord nul, et $(C \otimes \mathbb F_2) \otimes (C \otimes \mathbb F_2)$ a une homologie de dimensions $1$, $2$, $1$, conformément à (ii).
+      - |
+        Le scindage de (iii) n'est pas naturel : il dépend des rétractions $r_i$, comme celui du théorème des coefficients universels ({{cs-coefficients-universels|Coefficients universels}}). C'est pourquoi le théorème s'énonce par une suite exacte, dont les flèches, elles, ne dépendent d'aucun choix de section.
+      - |
+        Aucune forme du choix n'intervient : les hypothèses portent sur les modules, et la démonstration ne fait que des constructions explicites. Le point (i) s'applique au complexe singulier, dont les cycles et les bords sont des sous-groupes de groupes libres, plats sans choix ({{ku-plat|Modules plats}}, (iv)) ; le point (iii) demanderait, pour ce complexe, que les bords soient projectifs, ce qui emploie l'axiome du choix.
+
+  - id: ku-cone
+    etiquette: Cône, contractions
+    nature: lemme
+    titre: Cône dans un convexe et contractions
+    texte: |
+      Une partie $Q$ de $\lex{n-uplet}{\mathbb R^m}$ est **convexe** si $(1 - \lambda)x + \lambda y \in Q$ pour $x, y \in Q$ et $\lambda \in [0, 1]$ ; elle contient alors toute combinaison $\sum_i t_iw_i$ de ses points à coefficients positifs de somme $1$ ({{h-subdivision|Subdivision barycentrique}}). Dans ce nœud, $Q$ est une partie convexe de $[0, 1]^m$ et $b \in Q$.
+
+      Pour un simplexe singulier $\sigma : \Delta_n \to Q$, le **cône** $b \cdot \sigma : \Delta_{n+1} \to Q$ est défini par $(b \cdot \sigma)(e_0) = b$ et, pour $t_0 < 1$,
+      $$(b \cdot \sigma)(t) = t_0\, b + (1 - t_0)\,\sigma\big(s(t)\big),$$
+      où $s(t) = \frac{1}{1 - t_0}(t_1, \dots, t_{n+1})$, point de $\Delta_n$.
+      On note $h : C_n(Q) \to C_{n+1}(Q)$ l'application linéaire qui prolonge $\sigma \mapsto b \cdot \sigma$ ({{h-complexes|Complexes de chaînes}}, (i)).
+
+      Un complexe $C$ de groupes abéliens, nul en degré négatif, est **augmenté** par un morphisme $\varepsilon : C_0 \to \lex{ensemble-entiers-relatifs}{\mathbb Z}$ tel que $\varepsilon \circ \partial_1 = 0$. Une [[contraction-complexe|contraction]] de $C$ est la donnée d'un $v \in C_0$ tel que $\varepsilon(v) = 1$ et de morphismes $h : C_n \to C_{n+1}$ tels que
+      $$\partial h + h\partial = \mathrm{id} - \eta\varepsilon,$$
+      où $\eta\varepsilon$ désigne l'application $c \mapsto \varepsilon(c)\,v$ en degré $0$, et l'application nulle en degré $n \geqslant 1$.
+
+      Le complexe singulier d'un espace est augmenté par $\varepsilon\big(\sum n_x x\big) = \sum n_x$, qui est nulle sur les bords $\gamma(1) - \gamma(0)$. Le produit tensoriel de deux complexes augmentés l'est par $\varepsilon \otimes \varepsilon' : C_0 \otimes D_0 \to \mathbb Z \otimes \mathbb Z \cong \mathbb Z$ ({{ku-tenseur|Produit tensoriel}}, (iii)).
+    enonce: |
+      (i) *Cône.* L'application $b \cdot \sigma$ est continue, à valeurs dans $Q$, et ses faces sont $(b \cdot \sigma) \circ \delta_0 = \sigma$ et, pour $n \geqslant 1$ et $i \geqslant 1$, $(b \cdot \sigma) \circ \delta_i = b \cdot (\sigma \circ \delta_{i-1})$. Par suite,
+      $$\partial(b \cdot \sigma) = \sigma - b \cdot \partial\sigma$$
+      pour $n \geqslant 1$, $\partial(b \cdot x) = x - b$ pour un point $x$, et $(b, h)$ est une contraction de $C(Q)$.
+
+      (ii) *Produit.* Si $(v, h)$ et $(v', h')$ sont des contractions de $C$ et de $D$, alors $(v \otimes v', H)$ en est une de $C \otimes D$, où
+      $$H = h \otimes \mathrm{id} + \eta\varepsilon \otimes h',$$
+      c'est-à-dire $H(c \otimes d) = h(c) \otimes d + \varepsilon(c)\, v \otimes h'(d)$ si $c \in C_0$, et $H(c \otimes d) = h(c) \otimes d$ sinon.
+
+      (iii) *Conséquence.* Dans un complexe muni d'une contraction, tout cycle $z$ de degré $n \geqslant 1$ vérifie $z = \partial h(z)$, et toute chaîne $c$ de degré $0$ telle que $\varepsilon(c) = 0$ vérifie $c = \partial h(c)$.
+
+      (iv) *Modèles.* Le produit $\Delta_p \times \Delta_q$, muni de la topologie produit, s'identifie à une partie convexe de $[0, 1]^{p+q+2}$, munie de la topologie induite. Les complexes $C(\Delta_p \times \Delta_q)$ et $C(\Delta_p) \otimes C(\Delta_q)$ ont donc des contractions, de sommets $(e_0, e_0)$ et $e_0 \otimes e_0$.
+    preuve: |
+      (i) *Continuité.* Sur l'ouvert $\{t_0 < 1\}$ de $\Delta_{n+1}$, le point $s(t)$ a des coordonnées positives de somme $1$, et dépend continûment de $t$ : la formule est continue. Au point $e_0$, chaque coordonnée de
+      $$(b \cdot \sigma)(t) - b = (1 - t_0)\big(\sigma(s(t)) - b\big)$$
+      est majorée en valeur absolue par $1 - t_0 = \sum_{i \geqslant 1} t_i \leqslant (n + 1)\, d_\infty(t, e_0)$, puisque $Q \subset [0, 1]^m$. La distance $d_\infty$ définissant la topologie de $\Delta_{n+1}$ ({{me-rn|L'espace ℝⁿ}}, (i)), $b \cdot \sigma$ est continue en $e_0$. Ses valeurs sont dans $Q$, combinaisons convexes de $b$ et d'un point de $Q$.
+
+      *Faces.* La face $\delta_0$ impose $t_0 = 0$, et $(b \cdot \sigma) \circ \delta_0 = \sigma$. Pour $i \geqslant 1$, $\delta_i$ insère un $0$ en position $i$ : pour $u \in \Delta_n$, le point $\delta_i(u)$ a pour première coordonnée $u_0$, et ses coordonnées suivantes sont celles de $\delta_{i-1}(u_1, \dots, u_n)$. D'où $(b \cdot \sigma)(\delta_i(u)) = (b \cdot (\sigma \circ \delta_{i-1}))(u)$, y compris en $u = e_0$, où les deux valent $b$.
+
+      *Bord.* Pour $n \geqslant 1$,
+      $$\begin{aligned} \partial(b \cdot \sigma) &= \sigma + \sum_{i=1}^{n+1} (-1)^i\, b \cdot (\sigma \circ \delta_{i-1}) \\ &= \sigma - b \cdot \partial\sigma. \end{aligned}$$
+      Pour un point $x$, $b \cdot x$ est le chemin $t \mapsto t_0 b + t_1 x$, de bord $x - b$. Ainsi $\partial h + h\partial = \mathrm{id}$ en degré $n \geqslant 1$, et $\partial h(x) = x - \varepsilon(x)\, b$ en degré $0$, où $\partial = 0$. Enfin $\varepsilon(b) = 1$.
+
+      (ii) Pour $c \in C_i$ et $d \in D_j$, posons $H_1 = h \otimes \mathrm{id}$, sans signe. On a
+      $$\begin{aligned} &\partial H_1(c \otimes d) + H_1\partial(c \otimes d) \\ &= \partial hc \otimes d + (-1)^{i+1} hc \otimes \partial d \\ &\quad + h\partial c \otimes d + (-1)^i hc \otimes \partial d \\ &= (c - \eta\varepsilon c) \otimes d. \end{aligned}$$
+
+      Posons $H_2 = \eta\varepsilon \otimes h'$, nul hors de $C_0 \otimes D$. Comme $\eta\varepsilon(c)$ est de degré $0$, de bord nul, $\partial H_2(c \otimes d) = \eta\varepsilon(c) \otimes \partial h'd$. Dans $H_2\partial(c \otimes d)$, le terme $H_2(\partial c \otimes d)$ est nul, puisque $\varepsilon\partial = 0$ si $i = 1$ et que $\partial c$ n'est pas de degré $0$ sinon, et il reste $\eta\varepsilon(c) \otimes h'\partial d$. Donc
+      $$\begin{aligned} &\partial H_2 + H_2\partial \\ &= \eta\varepsilon \otimes (\partial h' + h'\partial) \\ &= \eta\varepsilon \otimes \mathrm{id} - \eta\varepsilon \otimes \eta'\varepsilon'. \end{aligned}$$
+      En additionnant, $\partial H + H\partial = \mathrm{id} - \eta\varepsilon \otimes \eta'\varepsilon'$, et $\eta\varepsilon \otimes \eta'\varepsilon'$ est $x \mapsto (\varepsilon \otimes \varepsilon')(x)\, v \otimes v'$ en degré $0$. Enfin $(\varepsilon \otimes \varepsilon')(v \otimes v') = 1$.
+
+      (iii) Si $\partial z = 0$ et $n \geqslant 1$, $z = \partial hz + h\partial z = \partial hz$. En degré $0$, $c = \partial hc + \varepsilon(c)v = \partial hc$.
+
+      (iv) Les simplexes $\Delta_p \subset \mathbb R^{p+1}$ et $\Delta_q \subset \mathbb R^{q+1}$ sont convexes et contenus dans des cubes $[0, 1]^{p+1}$ et $[0, 1]^{q+1}$ ; leur produit l'est donc dans $\mathbb R^{p+1} \times \mathbb R^{q+1} = \mathbb R^{p+q+2}$, coordonnée par coordonnée. Les ensembles $(U \cap \Delta_p) \times (V \cap \Delta_q) = (U \times V) \cap (\Delta_p \times \Delta_q)$, pour $U$ et $V$ ouverts, forment une base de chacune des deux topologies ({{t-produit|Topologie produit}}) : elles coïncident.
+
+      On applique (i) à $\Delta_p \times \Delta_q$ et au point $(e_0, e_0)$, puis (i) à $\Delta_p$ et à $\Delta_q$ et (ii) au produit tensoriel.
+    remarques:
+      - |
+        Le cône d'un simplexe affine est affine : $b \cdot [w_0, \dots, w_n] = [b, w_0, \dots, w_n]$, puisque $t_0 b + (1 - t_0)\sum_i \frac{t_{i+1}}{1 - t_0} w_i = t_0 b + \sum_i t_{i+1} w_i$. On retrouve le cône des chaînes linéaires du nœud {{h-subdivision|Subdivision barycentrique}}, étendu ici aux simplexes singuliers.
+
+        ```schema ku-cone
+        Le simplexe $\sigma$, en rouge, est un chemin quelconque du convexe $Q$. Son cône $b \cdot \sigma$ est le triangle courbe balayé par les segments, en gris, qui joignent $b$ aux points de $\sigma$ : la face opposée à $b$ est $\sigma$ elle-même, et les deux autres faces, en bleu, sont les cônes $b \cdot \sigma(e_0)$ et $b \cdot \sigma(e_1)$ des extrémités. D'où $\partial(b \cdot \sigma) = \sigma - b \cdot \partial\sigma$.
+        ```
+      - |
+        L'erreur serait de croire que le cône fournit une construction valable dans tout espace. Il dépend du sommet $b$, et n'a de sens que dans un convexe : il ne commute pas aux applications continues. La méthode des modèles acycliques ({{ku-modeles|Modèles acycliques}}) ne l'emploie que sur les simplexes et leurs produits, puis transporte le résultat partout par naturalité.
+
+  - id: ku-modeles
+    etiquette: Modèles acycliques
+    nature: théorème
+    titre: La méthode des modèles acycliques
+    texte: |
+      Un **couple** est un couple $(X, Y)$ d'espaces topologiques ; un morphisme $(f, g) : (X, Y) \to (X', Y')$ est un couple d'applications continues $f : X \to X'$, $g : Y \to Y'$. Un **foncteur de chaînes** $T$ associe à chaque couple un complexe augmenté $T(X, Y)$ de groupes abéliens, nul en degré négatif, et à chaque morphisme un morphisme de complexes $T(f, g)$, de sorte que
+      $$\begin{aligned} T(\mathrm{id}, \mathrm{id}) &= \mathrm{id}, \\ T(f' \circ f, g' \circ g) &= T(f', g') \circ T(f, g), \end{aligned}$$
+      et que $\varepsilon \circ T(f, g) = \varepsilon$. Une **transformation naturelle** $\Phi : T \to T'$ est une famille de morphismes de complexes $\Phi_{X,Y} : T(X, Y) \to T'(X, Y)$ tels que $\Phi \circ T(f, g) = T'(f, g) \circ \Phi$ ; une **homotopie naturelle** est une famille de morphismes $D_n : T_n(X, Y) \to T'_{n+1}(X, Y)$ qui commutent de même aux $T(f, g)$.
+
+      Les deux foncteurs de ce chapitre sont $\mathsf F(X, Y) = C(X \times Y)$, avec $\mathsf F(f, g) = (f \times g)_\#$, où $f \times g : (x, y) \mapsto (f(x), g(y))$ est continue ({{t-produit|Topologie produit}}), et $\mathsf G(X, Y) = C(X) \otimes C(Y)$, avec $\mathsf G(f, g) = f_\# \otimes g_\#$ ({{ku-complexes|Produit de complexes}}, (i)), augmentés comme au nœud {{ku-cone|Cône, contractions}}.
+
+      Les **modèles** sont les couples $(\Delta_p, \Delta_q)$. Un foncteur $T$ est **libre sur les modèles** si, pour chaque $n$, on s'est donné un ensemble fini $U_n$ d'éléments, chaque $u \in U_n$ appartenant à $T_n(M_u)$ pour un modèle $M_u$, tel que, pour tout couple $(X, Y)$, les éléments $T(f, g)(u)$, pour $u \in U_n$ et $(f, g) : M_u \to (X, Y)$, soient deux à deux distincts et forment une base de $T_n(X, Y)$. Il est **acyclique sur les modèles** si chaque complexe $T(\Delta_p, \Delta_q)$ est muni d'une [[contraction-complexe|contraction]]. C'est la méthode des [[modeles-acycliques|modèles acycliques]].
+    enonce: |
+      (i) Les foncteurs $\mathsf F$ et $\mathsf G$ sont libres et acycliques sur les modèles, avec $U_n = \{d_n\}$ pour $\mathsf F$, où $d_n : \Delta_n \to \Delta_n \times \Delta_n$, $t \mapsto (t, t)$, appartient à $\mathsf F_n(\Delta_n, \Delta_n)$, et $U_n = \{\iota_p \otimes \iota_q : p + q = n\}$ pour $\mathsf G$, où $\iota_p$ est l'identité de $\Delta_p$.
+
+      (ii) *Existence.* Soient $T$ libre et $T'$ acyclique sur les modèles. Toute famille naturelle de morphismes $\Phi_0 : T_0 \to T'_0$ telle que $\varepsilon' \circ \Phi_0 = \varepsilon$ se prolonge en une transformation naturelle $\Phi : T \to T'$.
+
+      (iii) *Unicité à homotopie près.* Sous les mêmes hypothèses, deux transformations naturelles $\Phi, \Phi' : T \to T'$ telles que $\varepsilon' \circ \Phi_0 = \varepsilon' \circ \Phi'_0$ sont naturellement homotopes : il existe une homotopie naturelle $D$ telle que $\partial D + D\partial = \Phi' - \Phi$.
+
+      Les transformations naturelles et les homotopies naturelles sont indexées par tous les couples d'espaces, qui ne forment pas un ensemble. Les points (ii) et (iii) se lisent donc comme des schémas d'énoncés : ils affirment l'existence de familles finies d'éléments $\varphi_u \in T'_n(M_u)$, pour $u \in U_n$ et $n \geqslant 0$, telles que les formules $\Phi_n(T(f, g)u) = T'(f, g)\varphi_u$, et de même pour $D$, définissent, pour chaque couple, des morphismes ayant les propriétés annoncées.
+    preuve: |
+      (i) Un simplexe singulier $\sigma$ de $X \times Y$ est déterminé par ses composantes $\sigma_1 = p_1 \circ \sigma$ et $\sigma_2 = p_2 \circ \sigma$, continues, et tout couple d'applications continues $\Delta_n \to X$, $\Delta_n \to Y$ en définit un ({{t-produit|Topologie produit}}). Comme $(f \times g) \circ d_n = (f, g)$, les éléments $\mathsf F(f, g)(d_n)$ sont exactement les simplexes singuliers de $X \times Y$, chacun une fois : ils forment la base de $C_n(X \times Y)$.
+
+      Pour $\mathsf G$, $C_p(X) \otimes C_q(Y)$ est libre de base les $\sigma \otimes \tau$ ({{ku-tenseur|Produit tensoriel}}, (iii)), et $\sigma \otimes \tau = (\sigma_\# \otimes \tau_\#)(\iota_p \otimes \iota_q)$, puisque $\sigma_\#\iota_p = \sigma$. Les contractions des modèles sont celles du nœud {{ku-cone|Cône, contractions}}, (iv).
+
+      (ii) *Ce qu'il faut construire.* Une transformation naturelle $\Phi_n$, définie sur des bases, est déterminée par les éléments $\varphi_u = \Phi_n(u)$ de $T'_n(M_u)$, $u \in U_n$, puisque nécessairement
+      $$\Phi_n\big(T(f, g)u\big) = T'(f, g)\,\varphi_u.$$
+      Réciproquement, pour toute famille $(\varphi_u)$, cette formule définit sur chaque $T_n(X, Y)$ une application linéaire, et elle est naturelle : pour $(f', g')$, l'élément $T(f', g')T(f, g)u = T(f'f, g'g)u$ a pour image $T'(f'f, g'g)\varphi_u = T'(f', g')T'(f, g)\varphi_u$.
+
+      $$\begin{CD} T_n(M_u) @>{\Phi_n}>> T'_n(M_u) \\ @V{T(f,g)}VV @VV{T'(f,g)}V \\ T_n(X, Y) @>{\Phi_n}>> T'_n(X, Y) \end{CD}$$
+
+      Le carré se lit sur l'élément $u$ : on le transporte par $T(f, g)$ puis on applique $\Phi_n$, ou l'on applique d'abord $\Phi_n$ dans le modèle, et l'on obtient le même élément. Tout se ramène donc à choisir les $\varphi_u$ dans les modèles, ce que la contraction fait sans aucun choix.
+
+      *Récurrence.* Supposons construits $\Phi_0, \dots, \Phi_{n-1}$, naturels, avec $\partial\Phi_k = \Phi_{k-1}\partial$ pour $1 \leqslant k \leqslant n - 1$. Pour $u \in U_n$, de modèle $M$, soit $x = \Phi_{n-1}(\partial u) \in T'_{n-1}(M)$. Si $n \geqslant 2$, $\partial x = \Phi_{n-2}(\partial\partial u) = 0$ ; si $n = 1$, $\varepsilon'(x) = \varepsilon(\partial u) = 0$.
+
+      Par le point (iii) du nœud {{ku-cone|Cône, contractions}}, $x = \partial h(x)$, où $h$ est la contraction donnée de $T'(M)$. On pose $\varphi_u = h(x)$, qui définit $\Phi_n$. Sur un élément de base,
+      $$\begin{aligned} \partial\Phi_n\big(T(f, g)u\big) &= T'(f, g)\,\partial h(x) \\ &= T'(f, g)\,\Phi_{n-1}(\partial u) \\ &= \Phi_{n-1}\big(\partial\, T(f, g)u\big), \end{aligned}$$
+      par la naturalité de $\Phi_{n-1}$, et $\Phi_n$ commute au bord. La récurrence porte sur les familles finies $(\varphi_u)_{u \in U_n}$, chacune définie par une formule à partir des précédentes : c'est une définition par récurrence ({{n-recdef|Définitions par récurrence}}), sous la forme où l'étape dépend de $n$, la suite prenant ses valeurs dans la réunion, sur $n$, des produits $\prod_{u \in U_n} T'_n(M_u)$.
+
+      (iii) On construit $D_n$ de la même façon, par les éléments $D_n(u)$. Pour $u \in U_0$, l'élément $y = \Phi'_0(u) - \Phi_0(u)$ vérifie $\varepsilon'(y) = 0$, et l'on pose $D_0(u) = h(y)$, de sorte que $\partial D_0 = \Phi'_0 - \Phi_0$.
+
+      Pour $n \geqslant 1$ et $u \in U_n$, soit $y = \Phi'_n(u) - \Phi_n(u) - D_{n-1}(\partial u)$. Par hypothèse de récurrence, $\partial D_{n-1} = \Phi'_{n-1} - \Phi_{n-1} - D_{n-2}\partial$, avec $D_{-1} = 0$, d'où
+      $$\begin{aligned} \partial y &= (\Phi'_{n-1} - \Phi_{n-1})(\partial u) - \partial D_{n-1}(\partial u) \\ &= D_{n-2}(\partial\partial u) = 0. \end{aligned}$$
+      On pose $D_n(u) = h(y)$ ; alors $\partial D_n(u) = y$, c'est-à-dire $(\partial D_n + D_{n-1}\partial)(u) = \Phi'_n(u) - \Phi_n(u)$, et cette identité se transporte à tous les éléments de base par naturalité.
+    remarques:
+      - |
+        L'idée tient en une phrase : on ne sait contracter que les modèles, mais la liberté permet de tout définir sur eux. C'était déjà le procédé de la subdivision barycentrique ({{h-subdivision|Subdivision barycentrique}}), où $S$ et $T$ sont définis sur l'identité $\iota_n$ de $\Delta_n$, puis transportés à chaque simplexe $\sigma$ par $\sigma_\#$.
+      - |
+        Une transformation naturelle est une famille indexée par tous les couples d'espaces, qui ne forment pas un ensemble. Comme elle est déterminée par ses valeurs sur les modèles, en nombre fini en chaque degré, tout l'énoncé se ramène à des suites d'éléments de groupes donnés, et la récurrence ne fait intervenir que ces suites.
+      - |
+        La méthode est due à Eilenberg et Mac Lane (*Acyclic models*, Amer. J. Math. 75, 1953, p. 189-199). Elle remplace des formules explicites, souvent inextricables, par un argument d'existence ; ici l'existence est elle-même explicite, chaque élément construit étant l'image d'un cône.
+
+  - id: ku-eilenberg-zilber
+    etiquette: Eilenberg-Zilber
+    nature: théorème
+    titre: Le théorème d'Eilenberg-Zilber
+    texte: |
+      Pour un simplexe $\sigma : \Delta_n \to X \times Y$, on note $\sigma_1 = p_1 \circ \sigma$ et $\sigma_2 = p_2 \circ \sigma$ ses composantes, et l'on reprend la notation $\sigma|[i_0, \dots, i_m]$ du nœud {{cup-produit|Produit cup}}, avec $[a..b] = [a, a + 1, \dots, b]$. L'[[application-alexander-whitney|application d'Alexander-Whitney]] $\mathrm{AW} : C_n(X \times Y) \to (C(X) \otimes C(Y))_n$ est définie par
+      $$\mathrm{AW}(\sigma) = \sum_{i=0}^n \sigma_1|[0..i] \otimes \sigma_2|[i..n] :$$
+      on prend la face avant de la première composante et la face arrière de la seconde, qui partagent le sommet d'indice $i$.
+
+      Pour un anneau commutatif $R$, on note $C(X; R) = C(X) \otimes_{\mathbb Z} R$, complexe de bord $\partial \otimes \mathrm{id}$ ; c'est le $R$-module libre sur les simplexes singuliers ({{ku-tenseur|Produit tensoriel}}, (iii)), avec le même bord.
+    enonce: |
+      (i) $\mathrm{AW}$ est une transformation naturelle $\mathsf F \to \mathsf G$, au sens du nœud {{ku-modeles|Modèles acycliques}}, et $\mathrm{AW}(x, y) = x \otimes y$ en degré $0$.
+
+      (ii) Il existe une transformation naturelle $\mathrm{EZ} : \mathsf G \to \mathsf F$ telle que $\mathrm{EZ}(x \otimes y) = (x, y)$ en degré $0$. Pour toute telle $\mathrm{EZ}$, les composées $\mathrm{AW} \circ \mathrm{EZ}$ et $\mathrm{EZ} \circ \mathrm{AW}$ sont naturellement homotopes aux identités. En particulier,
+      $$\begin{aligned} \mathrm{EZ}_* : {} &\lex{groupe-homologie}{H_n}\big(C(X) \otimes C(Y)\big) \\ &\to \lex{homologie-singuliere}{H_n}(X \times Y) \end{aligned}$$
+      est un isomorphisme, de réciproque $\mathrm{AW}_*$, et il ne dépend pas du choix de $\mathrm{EZ}$.
+
+      (iii) *Coefficients.* Le complexe $(C(X) \otimes C(Y)) \otimes_{\mathbb Z} R$ s'identifie à $C(X; R) \otimes_R C(Y; R)$, et $\mathrm{AW} \otimes \mathrm{id}$ et $\mathrm{EZ} \otimes \mathrm{id}$ sont des applications $R$-linéaires entre $C(X \times Y; R)$ et $C(X; R) \otimes_R C(Y; R)$, dont les composées sont homotopes aux identités par des homotopies $R$-linéaires.
+    preuve: |
+      (i) *Naturalité.* Les composantes de $(f \times g) \circ \sigma$ sont $f \circ \sigma_1$ et $g \circ \sigma_2$, et $(f \circ \sigma_1)|[0..i] = f \circ (\sigma_1|[0..i])$. En degré $0$, $\mathrm{AW}$ envoie le point $(x, y)$ sur $x \otimes y$, et respecte les augmentations.
+
+      *Morphisme de complexes.* Développons
+      $$\begin{aligned} \partial\,\mathrm{AW}(\sigma) &= \sum_i \partial(\sigma_1|[0..i]) \otimes \sigma_2|[i..n] \\ &\quad + \sum_i (-1)^i\, \sigma_1|[0..i] \\ &\qquad \otimes \partial(\sigma_2|[i..n]). \end{aligned}$$
+      Omettre le dernier sommet de la face avant donne $(-1)^i\,\sigma_1|[0..i{-}1] \otimes \sigma_2|[i..n]$, pour $i \geqslant 1$ ; omettre le premier sommet de la face arrière donne $(-1)^i\,\sigma_1|[0..i] \otimes \sigma_2|[i{+}1..n]$, pour $i \leqslant n - 1$. En remplaçant $i$ par $i - 1$ dans les seconds, ces termes se compensent deux à deux.
+
+      Il reste les termes où l'on omet un sommet $j < i$ dans la face avant, de coefficient $(-1)^j$, et ceux où l'on omet un sommet $j > i$ dans la face arrière, de coefficient $(-1)^i(-1)^{j-i} = (-1)^j$ :
+      $$\begin{aligned} &\sum_{j < i} (-1)^j\, \sigma_1|[0..\widehat{j}..i] \otimes \sigma_2|[i..n] \\ &+ \sum_{j > i} (-1)^j\, \sigma_1|[0..i] \otimes \sigma_2|[i..\widehat{j}..n]. \end{aligned}$$
+
+      D'autre part, la face $\sigma \circ \delta_j = \sigma|[0..\widehat{j}..n]$ a pour face avant de dimension $i$ le simplexe $\sigma|[0..\widehat{j}..i{+}1]$ et pour face arrière $\sigma|[i{+}1..n]$ si $j \leqslant i$, et $\sigma|[0..i]$, $\sigma|[i..\widehat{j}..n]$ si $j > i$, par la règle de composition des faces ({{cup-produit|Produit cup}}). Dans $\mathrm{AW}(\partial\sigma) = \sum_j (-1)^j\,\mathrm{AW}(\sigma \circ \delta_j)$, on retrouve les deux sommes, la première après avoir remplacé $i + 1$ par $i$.
+
+      (ii) Par le nœud {{ku-modeles|Modèles acycliques}}, (i), $\mathsf F$ et $\mathsf G$ sont libres et acycliques sur les modèles. L'application $x \otimes y \mapsto (x, y)$ est naturelle et respecte les augmentations ; par le point (ii) de ce nœud, elle se prolonge en une transformation naturelle $\mathrm{EZ}$.
+
+      Les composées $\mathrm{AW} \circ \mathrm{EZ} : \mathsf G \to \mathsf G$ et $\mathrm{EZ} \circ \mathrm{AW} : \mathsf F \to \mathsf F$ sont naturelles et valent l'identité en degré $0$ ; par le point (iii), elles sont naturellement homotopes aux identités. Deux applications homotopes induisant la même application en homologie ({{h-complexes|Complexes de chaînes}}, (iii)), $\mathrm{AW}_*$ et $\mathrm{EZ}_*$ sont réciproques. Deux choix de $\mathrm{EZ}$ sont homotopes, par le point (iii) encore, et induisent le même isomorphisme.
+
+      (iii) Les deux complexes sont des $R$-modules libres de base les couples $(\sigma, \tau)$ de simplexes de $X$ et de $Y$ ({{ku-tenseur|Produit tensoriel}}, (iii)), et la bijection entre les bases commute au bord, donné par la même formule. Si $\partial D + D\partial = \mathrm{id} - \mathrm{AW} \circ \mathrm{EZ}$, alors $D \otimes \mathrm{id}$ vérifie la même identité pour $\mathrm{AW} \otimes \mathrm{id}$ et $\mathrm{EZ} \otimes \mathrm{id}$ ({{ku-complexes|Produit de complexes}}, (i)) ; de même pour l'autre composée.
+    remarques:
+      - |
+        On peut choisir pour $\mathrm{EZ}$ une formule explicite, l'**application de battage** (en anglais *shuffle*). Un battage de type $(p, q)$ est une partition de $\{1, \dots, p + q\}$ en deux suites croissantes $\mu_1 < \cdots < \mu_p$ et $\nu_1 < \cdots < \nu_q$ ; il correspond au chemin de $(0, 0)$ à $(p, q)$ dont le pas numéro $\mu_k$ va vers la droite et le pas numéro $\nu_k$ vers le haut, et ce chemin définit un simplexe affine de dimension $p + q$ de $\Delta_p \times \Delta_q$. Le produit se découpe ainsi en $\binom{p+q}{p}$ simplexes, chacun compté avec la signature de la permutation $(\mu_1, \dots, \mu_p, \nu_1, \dots, \nu_q)$, et $\mathrm{EZ}(\sigma \otimes \tau)$ est l'image par $\sigma \times \tau$ de cette somme. Que ce battage soit une transformation naturelle égale à $(x, y)$ en degré $0$, donc un choix possible au point (ii), est admis ici : c'est un calcul combinatoire sur les faces des simplexes de battage (Eilenberg et Mac Lane, 1953, référence ci-dessous). Pour $p = q = 1$, en notant $v_i = (e_i, e_0)$ et $w_i = (e_i, e_1)$ les sommets du carré,
+        $$\mathrm{EZ}(\iota_1 \otimes \iota_1) = [v_0, v_1, w_1] - [v_0, w_0, w_1],$$
+        l'opposé de l'opérateur prisme du nœud {{h-homotopie|Invariance par homotopie}}.
+
+        ```schema ku-eilenberg-zilber
+        Le carré $\Delta_1 \times \Delta_1$ est découpé par sa diagonale en deux triangles. Le triangle rouge $[v_0, v_1, w_1]$, compté avec le signe $+$, correspond au chemin qui va d'abord à droite puis en haut ; le triangle bleu $[v_0, w_0, w_1]$, compté avec le signe $-$, au chemin qui monte d'abord. La diagonale, parcourue par les deux, disparaît du bord, et il reste le bord du carré, c'est-à-dire $\mathrm{EZ}(\partial(\iota_1 \otimes \iota_1))$.
+        ```
+
+        Un calcul programmé, sur le modèle des simplexes affines à sommets répétés, vérifie que ce battage est un morphisme de complexes pour $p + q \leqslant 4$, et que la construction du point (ii) donne pour $\iota_1 \otimes \iota_1$ ces deux triangles, accompagnés de quatre simplexes dégénérés, de sommets répétés.
+      - |
+        L'erreur la plus répandue est de croire que $\mathrm{AW} \circ \mathrm{EZ}$ est l'identité. Pour le battage, elle l'est aux simplexes dégénérés près : $\mathrm{AW}[v_0, v_1, w_1]$ contient $\iota_1 \otimes \iota_1$, mais aussi $e_0 \otimes [e_0, e_0, e_1]$ et $[e_0, e_1, e_1] \otimes e_1$, qui ne sont pas nuls dans les chaînes singulières. Seule l'homotopie du point (ii) les fait disparaître en homologie.
+      - |
+        Le théorème est dû à Eilenberg et Zilber (*On products of complexes*, Amer. J. Math. 75, 1953, p. 200-204), qui le démontrent par les modèles acycliques ; le produit de battage apparaît chez Eilenberg et Mac Lane (*On the groups H(Π, n). I*, Ann. of Math. 58, 1953, p. 55-106). Le nom d'Alexander-Whitney rappelle que la formule de la face avant et de la face arrière est celle du produit cup ({{cup-produit|Produit cup}}).
+
+  - id: ku-homologie
+    etiquette: Künneth en homologie
+    nature: théorème
+    titre: La formule de Künneth en homologie singulière
+    texte: |
+      L'[[homologie-coefficients|homologie à coefficients]] dans un anneau commutatif $R$ est l'homologie $\lex{homologie-coefficients}{H_n(X; R)}$ du complexe $C(X; R)$ du nœud {{ku-eilenberg-zilber|Eilenberg-Zilber}} ; pour $R = \mathbb Z$, c'est $H_n(X)$. Le **produit croisé** homologique est la composée
+      $$\begin{aligned} &H_i(X; R) \otimes_R H_j(Y; R) \\ &\xrightarrow{\times} H_{i+j}\big(C(X; R) \otimes_R C(Y; R)\big) \\ &\xrightarrow{\mathrm{EZ}_*} H_{i+j}(X \times Y; R) \end{aligned}$$
+      du produit croisé algébrique ({{ku-complexes|Produit de complexes}}, (ii)) et de l'isomorphisme d'Eilenberg-Zilber ; on note $x \times y$ l'image de $x \otimes y$.
+
+      Pour $n \geqslant 1$, le [[tore-n|tore de dimension $n$]] est $T^n = (S^1)^n$, produit de $n$ copies du cercle $\lex{cercle-quotient}{S^1} = \mathbb R/\mathbb Z$ ({{ta-cercle|Groupe fondamental du cercle}}), muni de la topologie produit ; $T^2$ est le [[tore]] du nœud {{vk-bouquet|Bouquet de deux cercles}}. L'application $((x_1, \dots, x_{n-1}), x_n) \mapsto (x_1, \dots, x_n)$ est un homéomorphisme de $T^{n-1} \times S^1$ sur $T^n$, chacune des deux applications réciproques ayant des composantes continues ({{t-produit|Topologie produit}}) : on identifie ces deux espaces.
+    enonce: |
+      (i) *Coefficients entiers.* Pour tous espaces $X$ et $Y$ et tout $n$, la suite
+      $$\begin{aligned} 0 &\to \bigoplus_{i+j=n} H_i(X) \otimes H_j(Y) \\ &\xrightarrow{\times} H_n(X \times Y) \\ &\to \bigoplus_{i+j=n-1} T_{i,j}(X, Y) \to 0 \end{aligned}$$
+      est exacte et naturelle, où $T_{i,j}(X, Y)$ est le noyau de $B_i(X) \otimes H_j(Y) \to Z_i(X) \otimes H_j(Y)$. Ce noyau est nul si $H_j(Y)$ est [[module-plat|plat]], par exemple libre, ou si $H_i(X)$ est isomorphe à un $\lex{n-uplet}{\mathbb Z^k}$. En particulier, si tous les $H_j(Y)$ sont libres,
+      $$H_n(X \times Y) \cong \bigoplus_{i+j=n} H_i(X) \otimes H_j(Y).$$
+
+      (ii) *Corps.* Sur un corps $K$, pour tous espaces $X$ et $Y$, le produit croisé est un isomorphisme
+      $$\begin{aligned} &\bigoplus_{i+j=n} H_i(X; K) \otimes_K H_j(Y; K) \\ &\quad \cong H_n(X \times Y; K). \end{aligned}$$
+
+      (iii) *Tore.* On a $H_0(S^1) \cong H_1(S^1) \cong \mathbb Z$ et $H_k(S^1) = 0$ pour $k \geqslant 2$. Soit $g$ un générateur de $H_1(S^1)$ et $o$ la classe d'un point, qui engendre $H_0(S^1)$. Pour $I \subset \{1, \dots, n\}$, soit $e_I \in H_{|I|}(T^n)$ le produit croisé $c_1 \times \cdots \times c_n$, effectué de gauche à droite, où $c_i = g$ si $i \in I$ et $c_i = o$ sinon. Les $e_I$ tels que $|I| = k$ forment une base de $H_k(T^n)$, qui est libre de rang $\binom nk$, et nul pour $k > n$.
+    preuve: |
+      (i) Par le théorème d'Eilenberg-Zilber ({{ku-eilenberg-zilber|Eilenberg-Zilber}}, (ii)), $H_n(X \times Y) \cong H_n(C(X) \otimes C(Y))$, et l'on applique le nœud {{ku-algebrique|Künneth algébrique}}, (i), à $C = C(X)$ et $D = C(Y)$. Les cycles et les bords de $C(X)$ sont des sous-groupes du groupe libre $C_i(X)$, donc plats sans aucun choix ({{ku-plat|Modules plats}}, (iv)), et les $C_j(Y)$ sont libres, donc plats (même nœud, (ii)).
+
+      L'annulation de $T_{i,j}$ est le point (ii) du nœud {{ku-algebrique|Künneth algébrique}}, $\mathbb Z^k$ étant projectif ({{cs-projectifs|Groupes projectifs}}, (i)). La naturalité vient de celle de la suite algébrique et de celle de $\mathrm{EZ}$.
+
+      (ii) Les espaces vectoriels $C_i(X; K)$ et leurs sous-espaces sont plats ({{ku-plat|Modules plats}}, (iv)) ; on applique le point (ii) du nœud {{ku-algebrique|Künneth algébrique}} à $C(X; K)$ et $C(Y; K)$, puis le point (iii) du nœud {{ku-eilenberg-zilber|Eilenberg-Zilber}}.
+
+      (iii) *Le cercle.* Le nœud {{vk-bouquet|Bouquet de deux cercles}}, (i), donne un homéomorphisme de $S^1$ sur un losange, que la translation de vecteur $(-\frac14, -\frac14)$ envoie sur $L = \{(u, v) : |u| + |v| = \frac14\}$. L'application $y \mapsto y/\|y\|$ est un homéomorphisme de $L$ sur le cercle unité de $\mathbb R^2$, de réciproque $y \mapsto y/(4(|y_1| + |y_2|))$, toutes deux continues comme quotients de fonctions continues qui ne s'annulent pas. Le nœud {{h-spheres|Homologie des sphères}} donne l'homologie de $S^1$ ; comme $S^1$ est connexe par arcs, $H_0(S^1)$ est engendré par $o$ ({{h-degre0|Degré 0, point}}).
+
+      *Récurrence.* Pour $n = 1$, c'est ce qui précède. Pour $n \geqslant 2$, on applique (i) à $X = T^{n-1}$ et $Y = S^1$, dont l'homologie est libre :
+      $$\begin{aligned} H_k(T^n) &\cong H_k(T^{n-1}) \otimes H_0(S^1) \\ &\quad \oplus H_{k-1}(T^{n-1}) \otimes H_1(S^1). \end{aligned}$$
+      Comme $\mathbb Z \otimes A \cong A$, les éléments $e_I \times o$, pour $I \subset \{1, \dots, n - 1\}$ et $|I| = k$, et $e_J \times g$, pour $|J| = k - 1$, forment une base, par l'hypothèse de récurrence. Ce sont les $e_I$ de $T^n$, avec $n \notin I$ ou $n \in I$. Le rang est $\binom{n-1}{k} + \binom{n-1}{k-1} = \binom nk$, par la relation de Pascal ([[coefficient-binomial|coefficients binomiaux]]).
+    remarques:
+      - |
+        Sur le corps $\mathbb Q$, le point (ii) dit que les nombres de Betti $b_n = \dim H_n(-; \mathbb Q)$ d'un produit vérifient $b_n(X \times Y) = \sum_{i+j=n} b_i(X)\, b_j(Y)$ lorsqu'ils sont finis. C'est l'énoncé de Künneth (*Über die Bettischen Zahlen einer Produktmannigfaltigkeit*, Math. Ann. 90, 1923, p. 65-85), complété l'année suivante pour la torsion (*Über die Torsionszahlen von Produktmannigfaltigkeiten*, Math. Ann. 91, 1924, p. 125-134), dans le cadre des variétés combinatoires de l'époque.
+      - |
+        Le terme $T_{i,j}$ est le groupe $\lex{groupe-tor}{\operatorname{Tor}}(H_i(X), H_j(Y))$ dès que les chaînes $C_i(X)$ et les bords $B_i(X)$ sont projectifs pour tout $i$, ce qui rend les cycles $Z_i(X)$ projectifs : ce sont les hypothèses du point (iii) du nœud {{ku-algebrique|Künneth algébrique}} portant sur le premier complexe, celles qui portent sur le second ne servant qu'au scindage. Pour le complexe singulier, la démonstration de ces hypothèses emploie l'axiome du choix, comme au point (ii) du nœud {{cs-coefficients-universels|Coefficients universels}}.
+      - |
+        Un cas se traite pourtant sans choix : si $H_j(Y) = \mathbb Z/2\mathbb Z$, alors $B_i \otimes \mathbb Z/2\mathbb Z \cong B_i/2B_i$ ({{ku-tenseur|Produit tensoriel}}, (iv)), et $T_{i,j}$ est le noyau de $B_i/2B_i \to Z_i/2Z_i$, c'est-à-dire $(B_i \cap 2Z_i)/2B_i$. Comme $Z_i(X)$ est sans torsion, $2z \mapsto [z]$ l'identifie au sous-groupe $H_i(X)[2]$ des classes d'ordre divisant $2$.
+
+        Avec $H_0(\mathbb RP^2) \cong \mathbb Z$, $H_1(\mathbb RP^2) \cong \mathbb Z/2\mathbb Z$ et $H_k(\mathbb RP^2) = 0$ pour $k \geqslant 2$, ce qu'établit le chapitre {{hom-cellulaire|Homologie cellulaire}} ({{cw-projectifs|Homologie de ℝPⁿ}}), on obtient ainsi $H_3(\mathbb RP^2 \times \mathbb RP^2) \cong T_{1,1} \cong \mathbb Z/2\mathbb Z$, les autres termes étant nuls, puisque $H_0$ est libre et que $H_k = 0$ pour $k \geqslant 2$ : une classe de dimension $3$ dans un produit de surfaces sans homologie en degré $2$, qui vient de la seule torsion.
+      - |
+        Pour le tore, (iii) donne $H_*(T^2)$ de rangs $1$, $2$, $1$ et $H_*(T^3)$ de rangs $1$, $3$, $3$, $1$, ce que le produit des complexes « cellulaires » de la seconde remarque du nœud {{ku-complexes|Produit de complexes}} laissait prévoir. Le générateur $e_{\{1, 2\}} = g \times g$ de $H_2(T^2)$ est représenté par l'image du carré découpé en deux triangles de la figure du nœud {{ku-eilenberg-zilber|Eilenberg-Zilber}}, quand on prend pour $\mathrm{EZ}$ le battage, ce qui suppose admis que celui-ci convient (première remarque du nœud {{ku-eilenberg-zilber|Eilenberg-Zilber}}).
+
+  - id: ku-croise
+    etiquette: Produit croisé
+    nature: proposition
+    titre: Le produit croisé en cohomologie
+    choix: |
+      Le point (iii) emploie le lemme de Zorn, par l'existence d'un supplémentaire de tout sous-espace d'un espace vectoriel ({{v-bases-existence|Existence de bases}}, (ii)) : un supplémentaire des cycles dans les chaînes, et des bords dans les chaînes, pour démontrer que la cohomologie à coefficients dans $K$ est le dual de l'homologie. Les points (i) et (ii) n'emploient aucun choix. On n'affirme pas que (iii) soit indémontrable sans choix ; pour $Y = S^1$ ou $Y = T^m$, le nœud {{ku-produit-cercle|Produit par le cercle}} en donne une version sans choix, pour tout anneau de coefficients.
+    texte: |
+      Soit $R$ un anneau commutatif. Pour $a \in \lex{cohomologie-singuliere}{H^k}(X; R)$ et $b \in H^l(Y; R)$, le [[produit-croise|produit croisé]] est
+      $$a \lex{produit-croise}{\times} b = p_1^*a \lex{produit-cup}{\smile} p_2^*b \in H^{k+l}(X \times Y; R),$$
+      où $p_1$ et $p_2$ sont les projections ; on définit de même $\varphi \times \psi = p_1^\#\varphi \smile p_2^\#\psi$ pour des cochaînes.
+
+      Pour $\varphi \in C^k(X; R)$ et $\psi \in C^l(Y; R)$, on note $\varphi \otimes \psi$ la forme linéaire sur $(C(X) \otimes C(Y))_{k+l}$ égale à $c \otimes d \mapsto \varphi(c)\,\psi(d)$ sur $C_k(X) \otimes C_l(Y)$, et nulle sur les autres facteurs ({{ku-tenseur|Produit tensoriel}}, (i)). Une cochaîne à valeurs dans $R$ s'évalue sur une chaîne de $C(X; R)$ par linéarité ; on note $\langle \xi, x \rangle \in R$ l'évaluation d'une classe sur une classe, définie comme au nœud {{cs-singuliere|Cohomologie singulière}}, (iii).
+    enonce: |
+      (i) Pour toutes cochaînes, $\varphi \times \psi = (\varphi \otimes \psi) \circ \mathrm{AW}$, et
+      $$(\varphi \otimes \psi) \circ \partial = \delta\varphi \otimes \psi + (-1)^k \varphi \otimes \delta\psi.$$
+      Le produit croisé est bilinéaire et naturel : $(f \times g)^*(a \times b) = f^*a \times g^*b$. On a $a \times 1 = p_1^*a$ et $1 \times b = p_2^*b$.
+
+      (ii) *Accouplement.* Pour $a \in H^k(X; R)$, $b \in H^l(Y; R)$, $x \in H_{k'}(X; R)$ et $y \in H_{l'}(Y; R)$, avec $k' + l' = k + l$,
+      $$\langle a \times b, x \times y \rangle = \langle a, x \rangle \langle b, y \rangle$$
+      si $(k', l') = (k, l)$, et $0$ sinon.
+
+      (iii) ⋆ *Künneth en cohomologie sur un corps.* Soit $K$ un corps, et supposons que chaque $H_j(Y; K)$ soit de dimension finie. Pour tout espace $X$ et tout $n$, le produit croisé induit un isomorphisme
+      $$\begin{aligned} &\bigoplus_{i+j=n} H^i(X; K) \otimes_K H^j(Y; K) \\ &\quad \cong H^n(X \times Y; K). \end{aligned}$$
+    preuve: |
+      (i) Les composantes de $\sigma$ sont $\sigma_1 = p_1 \circ \sigma$ et $\sigma_2 = p_2 \circ \sigma$, et $(p_1 \circ \sigma)|[0..k] = \sigma_1|[0..k]$. Par définition du produit cup ({{cup-produit|Produit cup}}),
+      $$\begin{aligned} (\varphi \times \psi)(\sigma) &= \varphi\big(\sigma_1|[0..k]\big) \\ &\quad \cdot \psi\big(\sigma_2|[k..k{+}l]\big), \end{aligned}$$
+      et c'est la valeur de $\varphi \otimes \psi$ sur $\mathrm{AW}(\sigma)$, dont seul le terme d'indice $k$ est de bidegré $(k, l)$.
+
+      La formule du bord se vérifie sur $c \otimes d$ : si $c \in C_{k+1}$ et $d \in C_l$, les deux membres valent $\varphi(\partial c)\psi(d)$ ; si $c \in C_k$ et $d \in C_{l+1}$, ils valent $(-1)^k\varphi(c)\psi(\partial d)$ ; ailleurs ils sont nuls.
+
+      La bilinéarité et la naturalité viennent de celles du produit cup ({{cup-produit|Produit cup}}, (iii)) et de $p_1 \circ (f \times g) = f \circ p_1$, $p_2 \circ (f \times g) = g \circ p_2$. Enfin $p_2^*1 = 1$, unité du produit cup.
+
+      (ii) Soient $\varphi$, $\psi$ des cocycles qui représentent $a$ et $b$, et $z$, $w$ des cycles qui représentent $x$ et $y$. Par (i), $(\varphi \otimes \psi) \circ \partial = 0$. Par le théorème d'Eilenberg-Zilber ({{ku-eilenberg-zilber|Eilenberg-Zilber}}, (ii) et (iii)), il existe $D$ tel que $\mathrm{AW} \circ \mathrm{EZ} = \mathrm{id} - \partial D - D\partial$, et, comme $z \otimes w$ est un cycle,
+      $$\begin{aligned} &(\varphi \times \psi)\big(\mathrm{EZ}(z \otimes w)\big) \\ &= (\varphi \otimes \psi)\big(z \otimes w - \partial D(z \otimes w)\big) \\ &= (\varphi \otimes \psi)(z \otimes w). \end{aligned}$$
+      Cette valeur est $\varphi(z)\psi(w)$ si $(k', l') = (k, l)$, et $0$ sinon.
+
+      (iii) *Dualité sur un corps* ⋆. Soit $C$ un complexe de $K$-espaces vectoriels, et $\mathrm{ev} : H^n(\operatorname{Hom}_K(C, K)) \to \operatorname{Hom}_K(H_n(C), K)$ l'évaluation, définie comme au nœud {{cs-cochaines|Complexes de cochaînes}}, (iii). Elle est injective : si un cocycle $\varphi$ est nul sur $Z_n = \operatorname{Ker}\partial_n$, il s'écrit $\psi \circ \partial_n$, avec $\psi$ forme linéaire sur $B_{n-1}$, puisque $\partial_n$ induit un isomorphisme de $C_n/Z_n$ sur $B_{n-1}$ ({{a-isomorphisme|Théorème d'isomorphisme}}) ; $\psi$ se prolonge à $C_{n-1}$ par zéro sur un supplémentaire de $B_{n-1}$, et $\varphi$ est un cobord.
+
+      Elle est surjective : une forme linéaire sur $H_n(C)$, composée avec la projection $Z_n \to H_n(C)$, se prolonge à $C_n$ par zéro sur un supplémentaire de $Z_n$, en un cocycle, puisqu'elle est nulle sur $B_n$. Ces supplémentaires existent par le lemme de Zorn ({{v-bases-existence|Existence de bases}}, (ii)) ⋆. On l'applique à $C(X; K)$, dont les formes linéaires sont les cochaînes à valeurs dans $K$.
+
+      *Conclusion.* Par le point (ii) du nœud {{ku-homologie|Künneth en homologie}}, $H_n(X \times Y; K)$ est la somme directe des $H_i(X; K) \otimes H_j(Y; K)$, $i + j = n$, par le produit croisé. Par (ii), la composée de $\times$ et de l'évaluation envoie $a \otimes b$, pour $a \in H^i(X; K)$ et $b \in H^j(Y; K)$, sur la forme linéaire égale à $x \otimes y \mapsto \langle a, x \rangle \langle b, y \rangle$ sur le facteur $(i, j)$ et nulle sur les autres.
+
+      L'évaluation étant bijective pour $X$, pour $Y$ et pour $X \times Y$, il reste à voir que, pour $V = H_i(X; K)$ quelconque et $W = H_j(Y; K)$ de dimension finie, l'application $\operatorname{Hom}(V, K) \otimes \operatorname{Hom}(W, K) \to \operatorname{Hom}(V \otimes W, K)$ ainsi décrite est bijective. Avec une base $(w_1, \dots, w_r)$ de $W$ et sa base duale ({{v-dual|Dualité}}), $V \otimes W \cong V^r$ et $\operatorname{Hom}(V, K) \otimes \operatorname{Hom}(W, K) \cong \operatorname{Hom}(V, K)^r$ ({{ku-tenseur|Produit tensoriel}}, (iii)), et l'application devient l'identité de $\operatorname{Hom}(V, K)^r$.
+    remarques:
+      - |
+        L'application d'Alexander-Whitney transforme le produit tensoriel des cochaînes, qui vit sur $C(X) \otimes C(Y)$, en une cochaîne de $X \times Y$. L'erreur serait de prendre $\varphi \otimes \psi$ pour une cochaîne du produit : elle n'est définie que sur les produits tensoriels de simplexes, et c'est $\mathrm{AW}$ qui la lit sur les simplexes de $X \times Y$, par la face avant et la face arrière.
+      - |
+        Inversement, le produit cup se déduit du produit croisé : pour $\Delta : X \to X \times X$, $x \mapsto (x, x)$, on a $\Delta^\#(\varphi \times \psi) = \varphi \smile \psi$, puisque les deux composantes de $\Delta \circ \sigma$ sont $\sigma$. Le nœud suivant tire de cette remarque la commutativité graduée.
+
+  - id: ku-commutativite
+    etiquette: Commutativité graduée
+    nature: théorème
+    titre: Commutativité graduée du produit cup
+    texte: |
+      Soient $t : X \times Y \to Y \times X$, $(x, y) \mapsto (y, x)$, et $\Delta : X \to X \times X$, $x \mapsto (x, x)$, continues ({{t-produit|Topologie produit}}). Pour deux complexes $C$ et $D$, on note $\tau : D \otimes C \to C \otimes D$ l'application $d \otimes c \mapsto (-1)^{ij}\, c \otimes d$, pour $c \in C_i$ et $d \in D_j$.
+    enonce: |
+      (i) $\tau$ est un morphisme de complexes. Pour $a \in \lex{cohomologie-singuliere}{H^k}(X; R)$ et $b \in H^l(Y; R)$,
+      $$t^*(b \lex{produit-croise}{\times} a) = (-1)^{kl}\, a \times b.$$
+
+      (ii) Pour $a \in H^k(X; R)$ et $b \in H^l(X; R)$, $a \lex{produit-cup}{\smile} b = \Delta^*(a \times b)$.
+
+      (iii) *Commutativité graduée.* Pour $a \in H^k(X; R)$ et $b \in H^l(X; R)$,
+      $$a \smile b = (-1)^{kl}\, b \smile a.$$
+      C'est le point (ii) du nœud {{cup-anneau|Anneau de cohomologie}}, dont la démonstration y était renvoyée à plus tard.
+    preuve: |
+      (i) Pour $c \in C_i$ et $d \in D_j$, on a $\partial\tau(d \otimes c) = (-1)^{ij}\big(\partial c \otimes d + (-1)^i c \otimes \partial d\big)$ et
+      $$\begin{aligned} \tau\partial(d \otimes c) &= \tau\big(\partial d \otimes c + (-1)^j d \otimes \partial c\big) \\ &= (-1)^{i(j-1)} c \otimes \partial d \\ &\quad + (-1)^{j + (i-1)j} \partial c \otimes d, \end{aligned}$$
+      et les signes coïncident : $(-1)^{i(j-1)} = (-1)^{ij + i}$ et $(-1)^{j + (i-1)j} = (-1)^{ij}$.
+
+      Considérons les deux transformations naturelles $\mathsf F \to \mathsf G$, au sens du nœud {{ku-modeles|Modèles acycliques}},
+      $$\Phi = \mathrm{AW}_{X,Y}, \qquad \Phi' = \tau \circ \mathrm{AW}_{Y,X} \circ t_\#.$$
+      La seconde est naturelle, puisque $t \circ (f \times g) = (g \times f) \circ t$ et que $(f_\# \otimes g_\#) \circ \tau = \tau \circ (g_\# \otimes f_\#)$ ; elle est un morphisme de complexes comme composée de tels morphismes ({{ku-eilenberg-zilber|Eilenberg-Zilber}}, (i)). En degré $0$, les deux envoient le point $(x, y)$ sur $x \otimes y$.
+
+      Par le point (iii) du nœud {{ku-modeles|Modèles acycliques}}, $\mathsf F$ étant libre et $\mathsf G$ acyclique sur les modèles, il existe une homotopie naturelle $P$, notée ainsi pour ne pas la confondre avec le complexe $D$ ci-dessus, telle que $\Phi' - \Phi = \partial P + P\partial$.
+
+      Soient $\varphi$ et $\psi$ des cocycles qui représentent $a$ et $b$. Par le nœud {{ku-croise|Produit croisé}}, (i), $(\varphi \otimes \psi) \circ \Phi = \varphi \times \psi$, et $(\varphi \otimes \psi) \circ \partial = 0$, de sorte que
+      $$(\varphi \otimes \psi) \circ (\Phi' - \Phi) = \delta\big((\varphi \otimes \psi) \circ P\big)$$
+      est un cobord.
+
+      Calculons $(\varphi \otimes \psi) \circ \Phi'$ sur un simplexe $\sigma$ de dimension $n = k + l$, de composantes $\sigma_1$ et $\sigma_2$. Les composantes de $t \circ \sigma$ sont $\sigma_2$ et $\sigma_1$, et
+      $$\begin{aligned} &\tau\,\mathrm{AW}(t \circ \sigma) \\ &= \sum_i (-1)^{i(n-i)}\, \sigma_1|[i..n] \otimes \sigma_2|[0..i]. \end{aligned}$$
+      Seul le terme $i = l$ est de bidegré $(k, l)$, et il donne
+      $$\begin{aligned} &(-1)^{kl}\,\varphi\big(\sigma_1|[l..n]\big)\,\psi\big(\sigma_2|[0..l]\big) \\ &= (-1)^{kl}\,(\psi \times \varphi)(t \circ \sigma) \\ &= (-1)^{kl}\, \big(t^\#(\psi \times \varphi)\big)(\sigma). \end{aligned}$$
+      Ainsi $(-1)^{kl}\, t^\#(\psi \times \varphi) - \varphi \times \psi$ est un cobord, ce qui est l'égalité annoncée.
+
+      (ii) Les deux composantes de $\Delta \circ \sigma$ sont $\sigma$, et la formule du point (i) du nœud {{ku-croise|Produit croisé}} donne $\Delta^\#(\varphi \times \psi)(\sigma) = \varphi(\sigma|[0..k])\,\psi(\sigma|[k..k{+}l]) = (\varphi \smile \psi)(\sigma)$.
+
+      (iii) Comme $t \circ \Delta = \Delta$, (ii) et (i), appliqué à $Y = X$, donnent
+      $$\begin{aligned} a \smile b &= \Delta^*(a \times b) \\ &= (-1)^{kl}\,\Delta^*t^*(b \times a) \\ &= (-1)^{kl}\,(t \circ \Delta)^*(b \times a) \\ &= (-1)^{kl}\, b \smile a. \end{aligned}$$
+    remarques:
+      - |
+        La démonstration ne compare jamais $\varphi \smile \psi$ et $\psi \smile \varphi$ au niveau des cochaînes, où ils diffèrent, comme le montrait la remarque du nœud {{cup-produit|Produit cup}}. Elle compare deux transformations naturelles qui coïncident en degré $0$, et la méthode des modèles fournit l'homotopie que la démonstration classique (A. Hatcher, *Algebraic Topology*, 2002, théorème 3.11) écrit à la main. Sur une triangulation du tore par une grille $4 \times 4$, un calcul programmé confirme que les cochaînes $\alpha_1 \smile \alpha_2$ et $-\alpha_2 \smile \alpha_1$ du nœud {{ku-tore|Anneau du tore}} sont distinctes, mais prennent la même valeur sur le cycle fondamental.
+      - |
+        L'erreur la plus répandue est d'en déduire que $a \smile a = 0$ pour $a$ de degré impair. On obtient seulement $a \smile a = -a \smile a$, c'est-à-dire $2\,(a \smile a) = 0$. Modulo $2$, le signe disparaît, et la classe $\alpha$ de degré $1$ de $\mathbb RP^n$ a un carré non nul pour $n \geqslant 2$ ({{cup-projectif|Anneau de ℝPⁿ}}).
+
+  - id: ku-produit-cercle
+    etiquette: Produit par le cercle
+    nature: théorème
+    titre: Cohomologie d'un produit par le cercle
+    texte: |
+      Soient $\lex{cercle-quotient}{S^1} = \mathbb R/\mathbb Z$, de projection $p$ ({{ta-cercle|Groupe fondamental du cercle}}), et les ouverts
+      $$\begin{aligned} U &= p\big(\,]{-\tfrac12}, \tfrac12[\,\big), \quad V = p\big(\,]0, 1[\,\big), \\ J_1 &= p\big(\,]0, \tfrac12[\,\big), \quad J_2 = p\big(\,]\tfrac12, 1[\,\big). \end{aligned}$$
+      On a $U \cup V = S^1$, et $U \cap V$ est la réunion disjointe des ouverts $J_1$ et $J_2$.
+
+      Pour un espace $X$, on note $\pi : X \times S^1 \to X$ et $q : X \times S^1 \to S^1$ les projections, et l'on écrit encore $\pi$ et $q$ leurs restrictions aux ouverts $X \times W$, pour $W \subset S^1$. Soit $g_1$ la fonction sur $U \cap V$ égale à $1$ sur $J_1$ et à $0$ sur $J_2$, cocycle de degré $0$ ({{cs-singuliere|Cohomologie singulière}}, (ii)), et
+      $$\omega = \kappa[g_1] \in \lex{cohomologie-singuliere}{H^1}(S^1; R),$$
+      où $\kappa$ est le morphisme de connexion de la suite de Mayer-Vietoris de $S^1 = U \cup V$ ({{cs-mayer-vietoris|Mayer-Vietoris}}).
+    enonce: |
+      (i) Pour $W \in \{U, V, J_1, J_2\}$, la projection $\pi : X \times W \to X$ induit des isomorphismes en cohomologie. La cohomologie de $X \times (U \cap V)$ est le produit de celles de $X \times J_1$ et de $X \times J_2$, par les restrictions.
+
+      (ii) *Künneth pour le cercle.* Pour tout espace $X$, tout anneau commutatif $R$ et tout $k$, l'application $\Psi : H^k(X; R) \oplus H^{k-1}(X; R) \to H^k(X \times S^1; R)$ définie par
+      $$\Psi(u, v) = u \lex{produit-croise}{\times} 1 + v \times \omega,$$
+      c'est-à-dire $(u, v) \mapsto \pi^*u + \pi^*v \smile q^*\omega$, est un isomorphisme de $R$-modules, avec $H^{-1} = 0$.
+
+      (iii) *Le cercle.* $H^0(S^1; R) = R \cdot 1$ et $H^1(S^1; R) = R\,\omega$ sont libres de rang $1$, et $H^k(S^1; R) = 0$ pour $k \geqslant 2$.
+    preuve: |
+      (i) La restriction de $p$ à $]{-\frac12}, \frac12[$ est un homéomorphisme sur $U$, comme on l'a vu au nœud {{vk-bouquet|Bouquet de deux cercles}} ; la translation de $\frac12$, qui passe au quotient, envoie $U$ sur $V$, et les restrictions de $p$ à $]0, \frac12[$ et à $]\frac12, 1[$ sont des homéomorphismes sur $J_1$ et $J_2$. Chaque $W$ est ainsi homéomorphe à un intervalle ouvert, convexe, et se contracte sur l'un de ses points $w$ par une homotopie $G$ ({{h-homotopie|Invariance par homotopie}}, (ii)).
+
+      L'application $s : x \mapsto (x, w)$ vérifie $\pi \circ s = \mathrm{id}_X$, et $s \circ \pi$ est homotope à l'identité de $X \times W$ par $((x, y), \lambda) \mapsto (x, G(y, \lambda))$, continue puisque ses composantes le sont. Par le nœud {{cs-homotopie|Invariance par homotopie}}, (ii), $\pi^*$ est un isomorphisme, de réciproque $s^*$.
+
+      Un simplexe singulier de $X \times (U \cap V)$ a une image connexe par arcs, contenue dans la réunion des ouverts disjoints $X \times J_1$ et $X \times J_2$, donc dans l'un d'eux. Les cochaînes de $X \times (U \cap V)$ sont donc les couples de cochaînes de $X \times J_1$ et de $X \times J_2$, avec le cobord composante par composante, comme au nœud {{cs-spheres|Cohomologie des sphères}}.
+
+      (ii) *La suite de Mayer-Vietoris* ({{cs-mayer-vietoris|Mayer-Vietoris}}) du recouvrement de $X \times S^1$ par $X \times U$ et $X \times V$ contient le segment exact suivant, où l'on note $\iota_U$ et $\iota_V$ les inclusions de $X \times U$ et de $X \times V$ dans $X \times S^1$, appelées $k$ et $l$ au nœud cité, pour ne pas les confondre avec le degré $k$ :
+      $$\begin{aligned} &H^{k-1}(X \times U) \oplus H^{k-1}(X \times V) \\ &\xrightarrow{i^* - j^*} H^{k-1}\big(X \times (U \cap V)\big) \\ &\xrightarrow{\kappa} H^k(X \times S^1) \\ &\xrightarrow{(\iota_U^*, \iota_V^*)} H^k(X \times U) \oplus H^k(X \times V) \\ &\xrightarrow{i^* - j^*} H^k\big(X \times (U \cap V)\big). \end{aligned}$$
+      Par (i), un élément de $H^k(X \times U) \oplus H^k(X \times V)$ s'écrit $(\pi^*u, \pi^*u')$, et son image par $i^* - j^*$ est le couple $(\pi^*(u - u'), \pi^*(u - u'))$ sur $X \times J_1$ et $X \times J_2$, puisque $\pi$ commute aux inclusions.
+
+      *Lecture de la suite.* Posons $\lambda(v) = \kappa(\pi^*v, 0)$, pour $v \in H^{k-1}(X)$. L'image de $i^* - j^*$ en degré $k - 1$ est formée des couples $(\pi^*w, \pi^*w)$ : elle ne contient $(\pi^*v, 0)$ que si $v = 0$, et tout couple $(\pi^*v', \pi^*v'')$ lui est congru à $(\pi^*(v' - v''), 0)$. Ainsi $\lambda$ est injective, d'image celle de $\kappa$.
+
+      Soit $s : X \to X \times S^1$, $x \mapsto (x, p(0))$, à valeurs dans $X \times U$. Si $\xi \in H^k(X \times S^1)$, le couple $(\iota_U^*\xi, \iota_V^*\xi)$ est dans le noyau de $i^* - j^*$, donc de la forme $(\pi^*u, \pi^*u)$, avec $u = s^*\xi$ par (i). Le noyau de $(\iota_U^*, \iota_V^*)$, qui est l'image de $\lambda$, est donc celui de $s^*$. Comme $s^* \circ \pi^* = \mathrm{id}$, on obtient
+      $$\begin{aligned} H^k(X \times S^1) &= \pi^*H^k(X) \\ &\quad \oplus \lambda\big(H^{k-1}(X)\big), \end{aligned}$$
+      $\pi^*$ et $\lambda$ étant injectives.
+
+      *Calcul de $\lambda$.* Soit $\varphi$ un cocycle qui représente $v$, et $g$ la fonction sur $U$ égale à $1$ sur $J_1$ et à $0$ ailleurs. Suivons la définition de $\kappa$ ({{cs-cochaines|Complexes de cochaînes}}, (ii), et la démonstration de {{cs-mayer-vietoris|Mayer-Vietoris}}). La cochaîne de $X \times (U \cap V)$ égale à $\pi^\#\varphi$ sur $X \times J_1$ et à $0$ sur $X \times J_2$ représente $(\pi^*v, 0)$ ; elle est l'image du couple
+      $$\ell = \big(\pi^\#\varphi \smile q^\#g,\ 0\big),$$
+      puisque $(\pi^\#\varphi \smile q^\#g)(\sigma) = \varphi(\pi \circ \sigma)\, g(q(\sigma(e_{k-1})))$ vaut $\varphi(\pi \circ \sigma)$ sur $X \times J_1$ et $0$ sur $X \times J_2$.
+
+      Par la formule de Leibniz ({{cup-produit|Produit cup}}, (ii)), $\delta(\pi^\#\varphi \smile q^\#g) = (-1)^{k-1}\pi^\#\varphi \smile q^\#\delta g$. Donc $\lambda(v)$ correspond, dans la cohomologie des petites cochaînes ({{cs-mayer-vietoris|Mayer-Vietoris}}, (i)), à la classe de $(-1)^{k-1}\pi^\#\varphi \smile q^\#c$, où $c$ est la petite cochaîne de degré $1$ de $S^1$ égale à $\delta g$ sur les chemins de $U$ et à $0$ sur ceux de $V$. Elle est bien définie : un chemin de $U \cap V$ reste dans $J_1$ ou dans $J_2$, où $g$ est constante, et $\delta g$ y est nul. Le produit cup de petites cochaînes est défini par la même formule, les faces d'un petit simplexe étant petites.
+
+      Pour $X$ réduit à un point et $\varphi = 1$, le même calcul montre que $c$ représente $\omega = \kappa[g_1]$ dans la cohomologie des petites cochaînes de $S^1$. Soit $w$ un cocycle de $S^1$ qui représente $\omega$ : la restriction $\jmath^\# w$ de $w$ aux petits chemins s'écrit $c + \delta\beta$, avec $\beta$ de degré $0$, toutes les cochaînes de degré $0$ étant petites.
+
+      Comme $\varphi$ est un cocycle, $\pi^\#\varphi \smile q^\#\delta\beta = (-1)^{k-1}\delta(\pi^\#\varphi \smile q^\#\beta)$, et
+      $$\begin{aligned} &(-1)^{k-1}\pi^\#\varphi \smile q^\#c \\ &\equiv (-1)^{k-1}\jmath^\#\big(\pi^\#\varphi \smile q^\#w\big) \end{aligned}$$
+      modulo les cobords de petites cochaînes. Ainsi $\lambda(v) = (-1)^{k-1}\pi^*v \smile q^*\omega$. Puisque $\lambda$ est injective et que le signe ne dépend que de $k$, on conclut que $(u, v) \mapsto \pi^*u + \pi^*v \smile q^*\omega$ est bijective. Toutes les flèches sont $R$-linéaires.
+
+      Enfin $\pi^*u = u \times 1$ et $\pi^*v \smile q^*\omega = v \times \omega$, par définition du produit croisé ({{ku-croise|Produit croisé}}, (i)).
+
+      (iii) On applique (ii) à un point $X$, dont la cohomologie est $R$ en degré $0$ et nulle ailleurs ({{cs-singuliere|Cohomologie singulière}}, (ii)) ; $X \times S^1$ s'identifie à $S^1$, $q$ à l'identité, et $\pi^*1 = 1$.
+    remarques:
+      - |
+        ```schema ku-produit-cercle
+        Le cercle $\mathbb R/\mathbb Z$ est recouvert par $U$, privé du point $p(\frac12)$, en bleu, et par $V$, privé du point $p(0)$, en vert. Leur intersection a deux composantes, $J_1$ et $J_2$ ; la fonction $g_1$ vaut $1$ sur $J_1$, en rouge, et $0$ sur $J_2$. Elle est localement constante sur $U \cap V$, mais ne se prolonge pas en une fonction constante sur $U$ et sur $V$ dont elle serait la différence : c'est ce défaut que mesure $\omega = \kappa[g_1]$.
+        ```
+      - |
+        Le théorème est la formule de Künneth en cohomologie pour un facteur $S^1$, sans hypothèse sur $X$ ni sur l'anneau, et sans aucun choix : la cochaîne $\ell$ est un prolongement par zéro, défini par une règle, et le seul cocycle $w$ est une instance d'existence. On le compare au point (iii) du nœud {{ku-croise|Produit croisé}}, qui demande un corps, des dimensions finies et le lemme de Zorn.
+      - |
+        La même méthode, avec deux calottes de $S^m$ qui se coupent selon un voisinage de l'équateur, donnerait par récurrence sur $m$ la cohomologie de $X \times S^m$ ; on ne la développe pas ici. Le nœud {{ku-tore|Anneau du tore}} itère le cas $m = 1$.
+
+  - id: ku-cercle
+    etiquette: Classe du cercle
+    nature: proposition
+    titre: La classe fondamentale du cercle
+    texte: |
+      Tout réel $x$ s'écrit de façon unique $k + r$ avec $k \in \lex{ensemble-entiers-relatifs}{\mathbb Z}$ et $r \in [0, 1[$, comme au nœud {{vk-bouquet|Bouquet de deux cercles}} ; on note $\lfloor x \rfloor = k$ sa **partie entière**, et l'on a $\lfloor x + m \rfloor = \lfloor x \rfloor + m$ pour $m \in \mathbb Z$.
+
+      Soient $\lex{cercle-quotient}{S^1} = \mathbb R/\mathbb Z$ et $p : \mathbb R \to S^1$. Un simplexe singulier $\gamma : \Delta_1 \to S^1$ est un chemin ({{h-degre0|Degré 0, point}}), qui a des relèvements $\tilde\gamma : \Delta_1 \to \mathbb R$ ({{ta-relevement-chemins|Relèvement des chemins}}). On pose
+      $$a(\gamma) = \big\lfloor \tilde\gamma(e_1) \big\rfloor - \big\lfloor \tilde\gamma(e_0) \big\rfloor,$$
+      et l'on note $z : \Delta_1 \to S^1$ le lacet $(1 - s, s) \mapsto p(s)$, qui fait une fois le tour du cercle.
+
+      Pour $c = (c_1, \dots, c_n) \in \mathbb Z^n$, soit $g_c : T^n \to S^1$ l'application $(p(x_1), \dots, p(x_n)) \mapsto p(\sum_j c_jx_j)$, bien définie puisque changer un $x_j$ d'un entier change la somme d'un entier.
+    enonce: |
+      (i) Le nombre $a(\gamma)$ ne dépend pas du relèvement, et $a$ est un cocycle de $C^1(S^1; \mathbb Z)$. On a $a(z) = 1$.
+
+      (ii) La classe $\theta = [a]$ engendre $\lex{cohomologie-singuliere}{H^1}(S^1; \mathbb Z) \cong \mathbb Z$, la classe $[z]$ engendre $\lex{homologie-singuliere}{H_1}(S^1) \cong \mathbb Z$, et $\langle \theta, [z] \rangle = 1$. La classe $\omega$ du nœud {{ku-produit-cercle|Produit par le cercle}} vaut $\pm\theta$.
+
+      (iii) L'application $g_c$ est continue, et $g_c^*\theta = \sum_j c_j\, p_j^*\theta$ dans $H^1(T^n; \mathbb Z)$, où $p_j$ est la $j$-ième projection.
+
+      Pour un anneau commutatif $R$, on note encore $\theta \in H^1(S^1; R)$ la classe du cocycle $a$, lu dans $R$ ; les points (ii) et (iii) restent vrais, avec $H^1(S^1; R) = R\,\theta$.
+    preuve: |
+      (i) Si $\tilde\gamma$ est un relèvement, $\tilde\gamma + m$ en est un pour tout $m \in \mathbb Z$, puisque $p(y + m) = p(y)$, et c'est le seul qui part de $\tilde\gamma(e_0) + m$ ({{ta-relevement-chemins|Relèvement des chemins}}) ; comme les relèvements partent d'un point de $\tilde\gamma(e_0) + \mathbb Z$, ce sont les $\tilde\gamma + m$, et $a(\gamma)$ n'en dépend pas.
+
+      Soit $\sigma : \Delta_2 \to S^1$. Le simplexe $\Delta_2$, convexe, est simplement connexe et localement connexe par arcs, et $\sigma$ a un relèvement $\tilde\sigma$ ({{rv-critere|Critère de relèvement}}, (ii)), comme au nœud {{cup-transfert|Revêtement double}}. Ses faces relèvent celles de $\sigma$ ; avec $x_i = \tilde\sigma(e_i)$,
+      $$\begin{aligned} (\delta a)(\sigma) &= a(\sigma \circ \delta_0) - a(\sigma \circ \delta_1) \\ &\quad + a(\sigma \circ \delta_2) \\ &= \big(\lfloor x_2 \rfloor - \lfloor x_1 \rfloor\big) \\ &\quad - \big(\lfloor x_2 \rfloor - \lfloor x_0 \rfloor\big) \\ &\quad + \big(\lfloor x_1 \rfloor - \lfloor x_0 \rfloor\big) = 0. \end{aligned}$$
+      Le lacet $z$ a pour relèvement $(1 - s, s) \mapsto s$, d'où $a(z) = \lfloor 1 \rfloor - \lfloor 0 \rfloor = 1$.
+
+      (ii) Le chemin $z$ est un cycle, puisque $\partial z = p(1) - p(0) = 0$. Les groupes $H^1(S^1; \mathbb Z)$ et $H_1(S^1)$ sont isomorphes à $\mathbb Z$ ({{ku-produit-cercle|Produit par le cercle}}, (iii), et {{ku-homologie|Künneth en homologie}}, (iii)). Si $\theta = m\zeta$ pour un générateur $\zeta$, alors $1 = \langle \theta, [z] \rangle = m\langle \zeta, [z] \rangle$, et $m = \pm 1$ ; de même pour $[z]$. Comme $\omega$ engendre aussi $H^1(S^1; \mathbb Z)$, $\omega = \pm\theta$.
+
+      Pour un anneau $R$, la construction de $\omega$ au nœud {{ku-produit-cercle|Produit par le cercle}} est faite avec des cochaînes à valeurs entières, lues dans $R$. La lecture dans $R$, induite par $\mathbb Z \to R$, définit un morphisme de la suite exacte courte des cochaînes de Mayer-Vietoris à coefficients entiers vers celle à coefficients dans $R$ ; par la naturalité du morphisme de connexion ({{cs-cochaines|Complexes de cochaînes}}, (ii)), elle commute à $\kappa$, de sorte qu'un cocycle entier $w$ qui représente $\omega$ à coefficients entiers la représente aussi à coefficients dans $R$. L'égalité $w = \pm a + \delta\beta$ entre cochaînes entières reste vraie dans $R$, et $H^1(S^1; R) = R\,\omega = R\,\theta$.
+
+      (iii) L'application $g_c \circ p^n$, où $p^n : \mathbb R^n \to T^n$ applique $p$ à chaque coordonnée, est $x \mapsto p(\sum_j c_jx_j)$, continue. L'application $p^n$ est continue, surjective et ouverte, puisque $p$ l'est ({{ta-cercle|Groupe fondamental du cercle}}, preuve de (i)) et que l'image d'un produit d'ouverts est le produit des images ; par le critère du nœud {{cup-transfert|Revêtement double}}, $g_c$ est continue.
+
+      Pour $y \in T^n$, posons $f(y) = \lfloor \sum_j c_j\tilde y_j \rfloor - \sum_j c_j\lfloor \tilde y_j \rfloor$, où les $\tilde y_j$ sont des réels d'images $p_j(y)$ : changer $\tilde y_j$ de $m$ change les deux termes de $c_jm$, et $f$ est une $0$-cochaîne bien définie. Pour un chemin $\gamma$ de $T^n$, de composantes relevées en $\tilde\gamma_j$, le chemin $\sum_j c_j\tilde\gamma_j$ relève $g_c \circ \gamma$, et
+      $$\begin{aligned} &(g_c^\# a)(\gamma) - \sum_j c_j\,(p_j^\# a)(\gamma) \\ &= f(\gamma(e_1)) - f(\gamma(e_0)) = (\delta f)(\gamma). \end{aligned}$$
+      Donc $g_c^\# a - \sum_j c_j\, p_j^\# a$ est un cobord. Ces calculs, faits dans $\mathbb Z$, restent vrais dans $R$.
+    remarques:
+      - |
+        Le cocycle $a$ prolonge le degré des lacets à tous les chemins. Sur un lacet en $p(0)$, relevé à partir de $0$, il vaut $\lfloor \deg\gamma \rfloor = \deg\gamma$ ({{ta-cercle|Groupe fondamental du cercle}}) ; sur un chemin quelconque, il compte, avec leur signe, les passages par le point $p(0)$, comptés à l'arrivée. Un calcul sur vingt mille chemins et triangles relevés au hasard confirme l'indépendance du relèvement, la relation $\delta a = 0$ et l'identité de (iii).
+
+        ```schema ku-cercle
+        Le chemin $\gamma$ du cercle, en rouge, se relève en $\tilde\gamma$, qui va de $\tilde\gamma(e_0) = 0{,}6$ à $\tilde\gamma(e_1) = 2{,}3$. Il franchit les entiers $1$ et $2$, en bleu, images de $p(0)$ : $a(\gamma) = \lfloor 2{,}3 \rfloor - \lfloor 0{,}6 \rfloor = 2$. Un autre relèvement, translaté d'un entier, franchit autant d'entiers.
+        ```
+      - |
+        Pour $n = 1$, (iii) dit que l'application $x \mapsto cx$ du cercle dans lui-même multiplie $\theta$ par $c$ : elle est « de degré $c$ ». C'est la forme cohomologique du calcul du nœud {{ta-cercle|Groupe fondamental du cercle}}, où le lacet $s \mapsto p(ns)$ est de degré $n$.
+
+  - id: ku-tore
+    etiquette: Anneau du tore
+    nature: théorème
+    titre: L'anneau de cohomologie du tore
+    texte: |
+      Soient $n \geqslant 1$, $R$ un anneau commutatif, $T^n = (S^1)^n$ le [[tore-n|tore de dimension $n$]], $p_i : T^n \to S^1$ les projections, et $\theta \in H^1(S^1; R)$ la classe du nœud {{ku-cercle|Classe du cercle}}. On pose $\alpha_i = p_i^*\theta \in \lex{cohomologie-singuliere}{H^1}(T^n; R)$ et, pour une partie $I = \{i_1 < \cdots < i_k\}$ de $\{1, \dots, n\}$,
+      $$\alpha_I = \alpha_{i_1} \lex{produit-cup}{\smile} \cdots \smile \alpha_{i_k}, \qquad \alpha_\varnothing = 1.$$
+
+      Pour deux parties disjointes $I$ et $J$, soit $s(I, J) = \pm 1$ la signature ({{v-permutations|Permutations, signature}}) de la permutation qui range par ordre croissant la suite formée des éléments de $I$, puis de ceux de $J$, notée $\varepsilon(I, J)$ au nœud {{v-algebre-exterieure|Algèbre extérieure}} ; on change de lettre pour ne pas la confondre avec les augmentations $\varepsilon$ du chapitre. L'[[algebre-exterieure|algèbre extérieure]] $\lex{algebre-exterieure}{\Lambda_R(n)}$ est le $R$-module libre de base des symboles $e_I$, $I \subset \{1, \dots, n\}$, muni du produit bilinéaire défini par $e_I \cdot e_J = s(I, J)\, e_{I \cup J}$ si $I \cap J = \varnothing$, et $e_I \cdot e_J = 0$ sinon.
+    enonce: |
+      (i) $H^k(T^n; R)$ est un $R$-module libre de base les $\alpha_I$, $|I| = k$ : il est de rang $\binom nk$, et nul pour $k > n$.
+
+      (ii) $\alpha_i \smile \alpha_i = 0$ et $\alpha_i \smile \alpha_j = -\alpha_j \smile \alpha_i$. Plus généralement, $\alpha_I \smile \alpha_J = s(I, J)\, \alpha_{I \cup J}$ si $I \cap J = \varnothing$, et $0$ sinon.
+
+      (iii) L'application $R$-linéaire $e_I \mapsto \alpha_I$ est un isomorphisme d'anneaux de $\Lambda_R(n)$ sur $\lex{anneau-cohomologie}{H^*}(T^n; R)$ ; en particulier, $\Lambda_R(n)$ est un anneau associatif, d'unité $e_\varnothing$. Sur un corps $K$, $H^*(T^n; K)$ est ainsi isomorphe à l'algèbre des formes alternées sur $K^n$, par $e_i^* \mapsto \alpha_i$.
+    preuve: |
+      (i) Récurrence sur $n$. Pour $n = 1$, $H^0(S^1; R) = R \cdot 1$ et $H^1(S^1; R) = R\,\theta$, les autres groupes étant nuls ({{ku-produit-cercle|Produit par le cercle}}, (iii), et {{ku-cercle|Classe du cercle}}, (ii)).
+
+      Pour $n \geqslant 2$, on identifie $T^n$ à $T^{n-1} \times S^1$ ({{ku-homologie|Künneth en homologie}}) ; la projection $\pi$ sur $T^{n-1}$ a pour composantes $p_1, \dots, p_{n-1}$, et la projection $q$ sur $S^1$ est $p_n$. Par le nœud {{ku-produit-cercle|Produit par le cercle}}, (ii), et puisque $\omega = \pm\theta$, $H^k(T^n)$ est la somme directe de $\pi^*H^k(T^{n-1})$ et de $\pi^*H^{k-1}(T^{n-1}) \smile q^*\theta$, les deux applications étant injectives.
+
+      Les classes $\alpha_i$ de $T^{n-1}$ ont pour images par $\pi^*$ les classes $\alpha_i$ de $T^n$, puisque $p_i \circ \pi = p_i$, et $\pi^*$ respecte le produit cup ({{cup-produit|Produit cup}}, (iii)). Par l'hypothèse de récurrence, on obtient la base formée des $\alpha_I$, $I \subset \{1, \dots, n - 1\}$, et des $\alpha_J \smile \alpha_n = \alpha_{J \cup \{n\}}$, $|J| = k - 1$. Le rang vient de la relation de Pascal, comme au nœud {{ku-homologie|Künneth en homologie}}.
+
+      (ii) On a $\alpha_i \smile \alpha_i = p_i^*(\theta \smile \theta)$, et $\theta \smile \theta \in H^2(S^1; R) = 0$. La commutativité graduée ({{ku-commutativite|Commutativité graduée}}, (iii)), pour deux classes de degré $1$, donne $\alpha_i \smile \alpha_j = -\alpha_j \smile \alpha_i$.
+
+      Par associativité, $\alpha_I \smile \alpha_J$ est le produit des $\alpha_i$, pour $i$ parcourant $I$ puis $J$, et échanger deux facteurs voisins le multiplie par $-1$. Si $I$ et $J$ ont un élément commun, on amène les deux facteurs égaux côte à côte, et le produit est nul. Sinon, on range les facteurs par échanges de voisins mal ordonnés ; chacun diminue de $1$ le nombre de paires mal ordonnées, dont le nombre initial est pair si et seulement si $s(I, J) = 1$ ({{v-permutations|Permutations, signature}}), d'où le signe.
+
+      (iii) L'application est une bijection linéaire par (i), elle respecte le produit des éléments de base par (ii), donc tout produit par bilinéarité, et elle envoie $e_\varnothing$ sur $1$. Le produit de $\Lambda_R(n)$, transporté de celui de $H^*(T^n; R)$, est associatif. Sur un corps, les formes $e_I^* = e_{i_1}^* \wedge \cdots \wedge e_{i_k}^*$ forment une base de l'algèbre des formes alternées et vérifient les mêmes règles ({{v-algebre-exterieure|Algèbre extérieure}}, (i) et (ii)).
+    remarques:
+      - |
+        Pour $n = 2$, $H^1(T^2) = R\alpha_1 \oplus R\alpha_2$ et $H^2(T^2) = R\,\alpha_1 \smile \alpha_2$, avec $\alpha_2 \smile \alpha_1 = -\alpha_1 \smile \alpha_2$. Sur une triangulation du tore par une grille $4 \times 4$ dont chaque carré est coupé par sa diagonale, un calcul programmé trouve, avec le cocycle partie entière, des rangs $2$ et $1$ pour $H^1$ et $H^2$, et les valeurs $1$, $-1$, $0$ de $\alpha_1 \smile \alpha_2$, $\alpha_2 \smile \alpha_1$ et $\alpha_i \smile \alpha_i$ sur le cycle fondamental.
+
+        ```schema ku-tore
+        Le tore est le carré dont on identifie les côtés opposés. Le cocycle $\alpha_1$ ne vaut pas $0$ sur les arêtes rouges, qui relient le cercle vertical $\{p(0)\} \times S^1$, côté droit du carré identifié au côté gauche, à la colonne de sommets voisine ; de même, $\alpha_2$ ne vaut pas $0$ sur les arêtes bleues, qui aboutissent au cercle horizontal $S^1 \times \{p(0)\}$, côté haut identifié au côté bas. Le produit $\alpha_1 \smile \alpha_2$ ne vaut pas $0$ sur le seul triangle grisé, dont l'arête avant est rouge et l'arête arrière bleue : sa valeur sur le cycle fondamental est $1$. Les deux cercles générateurs, en vert, parallèles aux côtés, portent l'homologie de degré $1$.
+        ```
+      - |
+        L'anneau du tore est celui des formes différentielles à coefficients constants sur $\mathbb R^n$ : $\alpha_i$ joue le rôle de $dx_i$, et la règle $dx_i \wedge dx_j = -dx_j \wedge dx_i$ est la commutativité graduée. La cohomologie de {{derham|de Rham}} rend ce rapprochement précis.
+      - |
+        Pour $n = 2$, le point (ii) dit que le produit $H^1(T^2) \times H^1(T^2) \to H^2(T^2) \cong R$ est une forme bilinéaire alternée non nulle, de matrice $\begin{pmatrix} 0 & 1 \\ -1 & 0 \end{pmatrix}$ dans la base $(\alpha_1, \alpha_2)$. Aucune donnée des seuls groupes de cohomologie ne la contient ; le nœud suivant en tire des conséquences.
+
+  - id: ku-applications
+    etiquette: Applications vers le tore
+    nature: corollaire
+    titre: Applications à valeurs dans le tore
+    texte: |
+      On garde les notations du nœud {{ku-tore|Anneau du tore}}, avec $R = \mathbb Z$, et l'on note $\alpha_{[n]} = \alpha_1 \smile \cdots \smile \alpha_n$, qui engendre $H^n(T^n; \mathbb Z) \cong \mathbb Z$. Pour une matrice $M = (M_{ij}) \in \mathcal M_n(\mathbb Z)$, soit $f_M : T^n \to T^n$ l'application $(p(x_1), \dots, p(x_n)) \mapsto \big(p(\sum_j M_{1j}x_j), \dots, p(\sum_j M_{nj}x_j)\big)$.
+    enonce: |
+      (i) *Sphères.* Pour $m \geqslant 2$ et toute application continue $f : \lex{sphere-unite}{S^m} \to T^n$, le morphisme $f^* : H^k(T^n; R) \to H^k(S^m; R)$ est nul pour tout $k \geqslant 1$. Pour $m = n \geqslant 2$, $f_* : H_n(S^n) \to H_n(T^n)$ est nul : toute application continue de $S^2$ dans $T^2$ est de degré nul en homologie de degré $2$.
+
+      (ii) *Endomorphismes linéaires.* L'application $f_M$ est continue, $f_M^*\alpha_i = \sum_j M_{ij}\,\alpha_j$, et $f_M^*$ est la multiplication par $\det M$ sur $H^n(T^n; \mathbb Z)$ ; de même, $(f_M)_*$ est la multiplication par $\det M$ sur $H_n(T^n) \cong \mathbb Z$. Si $\det M \neq \pm 1$, $f_M$ n'est pas une équivalence d'homotopie.
+
+      (iii) *Produits non nuls.* Pour $n \geqslant 2$, il n'existe pas d'espace $Y$ et d'applications continues $f : T^n \to Y$, $g : Y \to T^n$ avec $g \circ f$ homotope à l'identité, tels que tout produit $u \smile v$ de deux classes de $H^*(Y; \mathbb Z)$ de degrés strictement positifs soit nul. En particulier, $T^n$ n'est homotopiquement équivalent à aucun tel espace.
+    preuve: |
+      (i) Pour $m \geqslant 2$, $H^1(S^m; R) = 0$ ({{cs-spheres|Cohomologie des sphères}}), donc $f^*\alpha_i = 0$ pour tout $i$. Comme $f^*$ respecte le produit cup ({{cup-produit|Produit cup}}, (iii)), $f^*\alpha_I = 0$ pour $I \neq \varnothing$, et les $\alpha_I$ engendrent $H^k(T^n; R)$ pour $k \geqslant 1$ ({{ku-tore|Anneau du tore}}, (i)).
+
+      Pour l'homologie, soit $e = [z] \times \cdots \times [z]$ le générateur de $H_n(T^n) \cong \mathbb Z$ du nœud {{ku-homologie|Künneth en homologie}}, (iii), où $[z]$ engendre $H_1(S^1)$ ({{ku-cercle|Classe du cercle}}, (ii)). Montrons que $\langle \alpha_{[n]}, e \rangle = 1$, par récurrence sur $n$. Sur $T^n = T^{n-1} \times S^1$, $\alpha_{[n]} = \pi^*\alpha_{[n-1]} \smile q^*\theta = \alpha_{[n-1]} \times \theta$, et $e = e' \times [z]$, où $e'$ est l'élément analogue de $H_{n-1}(T^{n-1})$ ; le point (ii) du nœud {{ku-croise|Produit croisé}} donne
+      $$\langle \alpha_{[n]}, e \rangle = \langle \alpha_{[n-1]}, e' \rangle\, \langle \theta, [z] \rangle = 1,$$
+      par l'hypothèse de récurrence et $\langle \theta, [z] \rangle = 1$.
+
+      Pour $y \in H_n(S^n)$, écrivons $f_*y = c\,e$. Par la naturalité de l'évaluation ({{cs-singuliere|Cohomologie singulière}}, (iii)),
+      $$c = \langle \alpha_{[n]}, f_*y \rangle = \langle f^*\alpha_{[n]}, y \rangle = 0.$$
+
+      (ii) Les composantes $p_i \circ f_M$ sont les applications $g_c$ du nœud {{ku-cercle|Classe du cercle}}, pour $c = (M_{i1}, \dots, M_{in})$ : elles sont continues, donc $f_M$ aussi ({{t-produit|Topologie produit}}), et $f_M^*\alpha_i = (p_i \circ f_M)^*\theta = \sum_j M_{ij}\,\alpha_j$ ({{ku-cercle|Classe du cercle}}, (iii)).
+
+      Développons $f_M^*\alpha_{[n]} = \prod_i \big(\sum_j M_{ij}\alpha_j\big)$ par bilinéarité : c'est la somme, sur les applications $j$ de $\{1, \dots, n\}$ dans lui-même, des $\prod_i M_{i\,j(i)}\, \alpha_{j(1)} \smile \cdots \smile \alpha_{j(n)}$. Par le point (ii) du nœud {{ku-tore|Anneau du tore}}, les termes où $j$ n'est pas injective sont nuls, et, pour une permutation $\sigma$, le produit vaut $\varepsilon(\sigma)\,\alpha_{[n]}$. Donc
+      $$\begin{aligned} f_M^*\alpha_{[n]} &= \Big(\sum_{\sigma \in \mathfrak S_n} \varepsilon(\sigma) \prod_i M_{i\,\sigma(i)}\Big)\,\alpha_{[n]} \\ &= \det M \cdot \alpha_{[n]}, \end{aligned}$$
+      la somme étant le déterminant de la transposée de $M$, égal à $\det M$ ({{v-det-matrice|Déterminant d'une matrice}}, (iii)), calculé dans $\mathbb Q$. En homologie, $(f_M)_*e = c\,e$ avec $c = \langle \alpha_{[n]}, (f_M)_*e \rangle = \langle f_M^*\alpha_{[n]}, e \rangle = \det M$.
+
+      Une équivalence d'homotopie induit un isomorphisme de $H^n(T^n; \mathbb Z) \cong \mathbb Z$ ({{cs-homotopie|Invariance par homotopie}}, (ii)), c'est-à-dire la multiplication par $\pm 1$.
+
+      (iii) Si $g \circ f$ est homotope à l'identité, $f^* \circ g^* = \mathrm{id}$ sur $H^*(T^n; \mathbb Z)$ ({{cs-homotopie|Invariance par homotopie}}, (i)). Alors
+      $$\begin{aligned} \alpha_1 \smile \alpha_2 &= f^*g^*(\alpha_1 \smile \alpha_2) \\ &= f^*\big(g^*\alpha_1 \smile g^*\alpha_2\big) = 0, \end{aligned}$$
+      puisque $g^*\alpha_1$ et $g^*\alpha_2$ sont de degré $1$. Or $\alpha_1 \smile \alpha_2 = \alpha_{\{1, 2\}}$ est un élément de base de $H^2(T^n; \mathbb Z)$ ({{ku-tore|Anneau du tore}}, (i)) : contradiction.
+    remarques:
+      - |
+        Le point (i) se voit aussi par les revêtements : $S^m$ est simplement connexe pour $m \geqslant 2$ ({{topalg-van-kampen|Seifert-van Kampen}}), donc $f$ se relève à $\mathbb R^n$, revêtement de $T^n$, qui est contractile ; $f$ est alors homotope à une constante. La démonstration cohomologique n'utilise que $H^1(S^m) = 0$, et le produit cup transporte cette annulation jusqu'au degré $n$.
+      - |
+        Pour $M = \begin{pmatrix} 2 & 1 \\ 1 & 1 \end{pmatrix}$, de déterminant $1$, $f_M$ est un homéomorphisme du tore, de réciproque $f_{M^{-1}}$, avec $M^{-1} = \begin{pmatrix} 1 & -1 \\ -1 & 2 \end{pmatrix}$ ; pour $M = \begin{pmatrix} 2 & 0 \\ 0 & 1 \end{pmatrix}$, $f_M$ est un revêtement à deux feuillets, de degré $2$. Sur la triangulation du nœud {{ku-tore|Anneau du tore}}, un calcul programmé retrouve la valeur $\det M$ de $f_M^*(\alpha_1 \smile \alpha_2)$ sur le cycle fondamental pour cinq matrices, de déterminants $1$, $2$, $-2$, $-1$ et $-5$.
+      - |
+        Le bouquet $S^1 \vee S^1 \vee S^2$ a la même homologie que $T^2$, et tous les produits de classes de degrés positifs y sont nuls ; le point (iii) l'empêcherait d'être homotopiquement équivalent au tore. Le calcul de son anneau demande la cohomologie d'un bouquet, par Mayer-Vietoris autour du point commun, qui n'est pas faite ici ; et le groupe fondamental suffit déjà à les distinguer, celui du tore étant commutatif. Un exemple classique où l'anneau seul sépare deux espaces simplement connexes de même homologie est celui de $S^2 \times S^2$ et de $S^2 \vee S^2 \vee S^4$ ; il n'est pas démontré ici, l'anneau du bouquet n'étant pas calculé, et celui de $S^2 \times S^2$ demandant soit la variante de Mayer-Vietoris évoquée au nœud {{ku-produit-cercle|Produit par le cercle}}, soit le point (iii) du nœud {{ku-croise|Produit croisé}}, qui emploie le choix.
+
+aretes:
+  - [ku-tenseur, ku-plat]
+  - [ku-plat, ku-tor]
+  - [ku-tenseur, ku-complexes]
+  - [ku-tor, ku-algebrique]
+  - [ku-complexes, ku-algebrique]
+  - [ku-complexes, ku-cone]
+  - [ku-cone, ku-modeles]
+  - [ku-modeles, ku-eilenberg-zilber]
+  - [ku-eilenberg-zilber, ku-homologie]
+  - [ku-algebrique, ku-homologie]
+  - [ku-homologie, ku-croise]
+  - [ku-croise, ku-commutativite]
+  - [ku-croise, ku-produit-cercle]
+  - [ku-produit-cercle, ku-cercle]
+  - [ku-cercle, ku-tore]
+  - [ku-commutativite, ku-tore]
+  - [ku-tore, ku-applications]

@@ -1092,3 +1092,23 @@ lecture d'une fiche, recherche et lexique) et « Par où commencer » (construir
 théorème : ar-tfa, hj-jordan, gs-abel-ruffini, cup-borsuk-ulam ; suivre l'axiome du choix : zf-choix, r-choix, o-zorn,
 puis v-bases-existence, t-tychonov, f-hahn-banach). La légende est gardée telle quelle (version brève, choix de
 l'auteur) ; pas d'encart « Nouveautés ». Si l'un de ces identifiants change, mettre à jour accueil().
+
+## 74. Homologie cellulaire ; formule de Künneth et anneau du tore (31 octobre 2026)
+
+Deux chapitres nouveaux sous `hom` (arêtes hom-jordan → hom-cellulaire, hom-cup → hom-cellulaire,
+hom-cup → hom-kunneth ; aucune arête nouvelle dans l'édifice, 16 croisements ; 0 dans hom et ses chapitres).
+hom-cellulaire (17 fiches cw-*, aucun choix) : homologie relative et naturalité de la connexion, lemme des cinq,
+excision (par les petites chaînes), paires de bon type, (Dⁿ, Sⁿ⁻¹), degré (réflexions −1, antipodie (−1)ⁿ⁺¹) et
+boule chevelue pour les champs continus (admise jusqu'ici, §35 : désormais démontrée ; dc-chevelue et geod y
+renvoient), complexes cellulaires finis (définition intrinsèque et par attachement), H^cell ≅ H, bord en dimension 1,
+le long d'un mot et par hémisphères, surfaces Σ_g, ℝPⁿ entier, χ indépendante de la décomposition (comptage modulo 2,
+sans la notion de rang). Admis ici : formule générale du bord par les degrés locaux, cohomologie cellulaire, ℂPⁿ,
+nature de surface de Σ_g, bouteille de Klein. hom-kunneth (15 fiches ku-*) : produit tensoriel (absent en amont),
+modules plats (sous-groupes de libres et espaces vectoriels plats sans choix, par un lemme de finitude), Tor,
+Künneth algébrique, cônes, modèles acycliques sans choix (antécédents donnés par les cônes ; schémas d'énoncés),
+Eilenberg-Zilber (Alexander-Whitney explicite ; battage admis), Künneth en homologie pour tous espaces, entiers et
+corps, sans choix ; produit croisé ; commutativité graduée du cup (cup-anneau (ii), admise jusqu'ici, désormais
+démontrée ; faux positif E du diagnostic, attendu) ; H*(X × S¹) ; anneau du tore = algèbre extérieure ; degré de f_M
+égal à det M ; S^m → Tⁿ nulle. Seul ⋆ : ku-croise (iii), Künneth en cohomologie sur un corps (supplémentaires).
+Relus : aucun bloquant ; renvois, cas vide, définition du « C » de CW, battage passé en admis, hypothèses de Tor,
+schéma ku-cercle débordant. 964 nœuds, 562 termes, 82 graphes.

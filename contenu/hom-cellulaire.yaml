@@ -1,0 +1,731 @@
+# Niveau 2 : structure interne du chapitre « Homologie cellulaire » (nœud hom-cellulaire du graphe hom,
+# créé le 31 oct. 2026).
+# Outils : recollement d'un espace séparé par un nombre fini d'images de compacts (topologie faible) ;
+# homologie relative, suite exacte d'une paire, naturalité du morphisme de connexion, homotopies de paires,
+# suite réduite ; lemme des cinq ; excision, déduite du théorème des petites chaînes (h-petites-chaines),
+# dont les opérateurs conservent les chaînes d'une partie ; paires de bon type d'un espace compact et
+# isomorphisme H_n(X, A) ≅ H̃_n(X/A) ; paire du disque (Dⁿ, Sⁿ⁻¹) ; degré d'une application Sⁿ → Sⁿ
+# (réflexions, antipode) et boule chevelue continue.
+# Complexes cellulaires finis : définition intrinsèque (espace séparé, squelettes fermés, applications
+# caractéristiques), topologie faible automatique, construction par attachement (quotient séparé) ;
+# exemples : Sⁿ (deux structures), cercle à 4g arcs, ℝPⁿ, tore, surfaces Σ_g (mot a₁b₁a₁⁻¹b₁⁻¹⋯).
+# Homologie : H_k(Xⁿ, Xⁿ⁻¹) libre de base les cellules (collerette et excision), squelettes, complexe
+# cellulaire et théorème H^cell ≅ H ; bord cellulaire en dimension 1, le long d'un mot, par hémisphères
+# avec le degré des réflexions ; tore, Σ_g, ℝPⁿ à coefficients entiers ; caractéristique d'Euler-Poincaré,
+# indépendante de la décomposition, par un comptage modulo 2 (sans la notion de rang, absente de l'amont).
+# Admis en remarque : formule générale du bord par les degrés (Hatcher, Algebraic Topology),
+# cohomologie cellulaire, structure cellulaire de ℂPⁿ, nature de surface de Σ_g.
+# Choix : aucun. Les morphismes de l'excision sont ceux des petites chaînes (plus petit entier qui
+# convient) ; les générateurs ιₙ ne sont fixés qu'en nombre fini.
+
+graphe: hom-cellulaire
+titre: Homologie cellulaire
+conteneur: hom-cellulaire
+
+entrees:
+  hom-jordan: [cw-relative, cw-recollement]
+  hom-cup: [cw-projectifs]
+
+noeuds:
+  - id: cw-recollement
+    etiquette: Recollement de compacts
+    nature: lemme
+    titre: Espaces recouverts par un nombre fini d'images de compacts
+    texte: |
+      Dans ce chapitre, un espace [[compact]] est séparé, comme au nœud {{t-compact-prop|Parties compactes}}, et $I = [0, 1]$. On considère un espace [[separe|séparé]] $Y$ et un nombre fini d'applications continues $f_i : K_i \to Y$, pour $1 \leqslant i \leqslant m$, définies sur des espaces compacts et telles que $Y = \bigcup_i f_i(K_i)$.
+    enonce: |
+      (i) L'espace $Y$ est compact, et une partie $F$ de $Y$ est fermée si et seulement si chaque $f_i^{-1}(F)$ est fermée dans $K_i$.
+
+      (ii) Une application $G : Y \to Z$, à valeurs dans un espace topologique quelconque, est continue si et seulement si chacune des composées $G \circ f_i$ l'est.
+
+      (iii) Les applications $f_i \times \mathrm{id} : K_i \times I \to Y \times I$ vérifient les mêmes hypothèses. En particulier, une application $G : Y \times I \to Z$ est continue si et seulement si chacune des composées $G \circ (f_i \times \mathrm{id})$ l'est.
+    preuve: |
+      (i) Chaque $f_i(K_i)$ est compact ({{t-compact-prop|Parties compactes}}, (iii)). Un recouvrement ouvert de $Y$ induit un recouvrement de chacun d'eux, dont on extrait un sous-recouvrement fini ; la réunion de ces $m$ familles finies recouvre $Y$, qui est donc compact.
+
+      Si $F$ est fermée, chaque $f_i^{-1}(F)$ l'est, par continuité. Réciproquement, supposons chaque $f_i^{-1}(F)$ fermée. C'est une partie compacte de $K_i$ (même nœud, (i)), et son image $f_i(f_i^{-1}(F))$ est compacte, donc fermée dans le séparé $Y$ (même nœud, (ii)). Comme tout point de $F$ s'écrit $f_i(k)$, pour un indice $i$ et un point $k \in f_i^{-1}(F)$, on a
+      $$F = \bigcup_{i=1}^m f_i\big(f_i^{-1}(F)\big),$$
+      réunion finie de fermés.
+
+      (ii) Si $G$ est continue, les composées le sont. Réciproquement, pour un fermé $C$ de $Z$, la partie $f_i^{-1}(G^{-1}(C)) = (G \circ f_i)^{-1}(C)$ est fermée dans $K_i$ pour chaque $i$, et $G^{-1}(C)$ est fermée par (i).
+
+      (iii) Les produits $K_i \times I$ sont compacts ({{t-produit-fini|Produit fini de compacts}}), $Y \times I$ est séparé par l'argument du même nœud, et les images des $f_i \times \mathrm{id}$ recouvrent $Y \times I$. On applique (ii).
+    remarques:
+      - |
+        C'est la forme que prend ici la topologie faible des complexes cellulaires : pour vérifier qu'une application, ou une homotopie, est continue sur un espace obtenu par recollement, il suffit de la composer avec chacune des applications qui paramètrent les morceaux. L'argument de l'application fermée du nœud {{vk-tore-ouverts|Ouverts du tore}}, qui transportait les ouverts du carré au tore, en est un cas particulier.
+      - |
+        La finitude est indispensable. La partie $Y = \{0\} \cup \{\frac1k : k \geqslant 1\}$ de $\mathbb R$ est la réunion des images d'une infinité d'applications définies sur un point, l'une de valeur $0$, les autres de valeurs $\frac1k$. La partie $\{\frac1k : k \geqslant 1\}$ a des images réciproques toutes fermées, puisque ce sont des points ou l'ensemble vide, et elle n'est pourtant pas fermée dans $Y$, le point $0$ lui étant adhérent.
+
+  - id: cw-relative
+    etiquette: Homologie relative
+    nature: définition
+    titre: Homologie relative et suite exacte d'une paire
+    texte: |
+      Une **paire** $(X, A)$ est formée d'un espace topologique $X$ et d'une partie $A$, munie de la topologie induite. Une **application de paires** $f : (X, A) \to (Y, B)$ est une application continue $f : X \to Y$ telle que $f(A) \subset B$. Deux telles applications $f$ et $g$ sont **homotopes comme applications de paires** s'il existe une application continue $F : X \times I \to Y$ telle que $F(x, 0) = f(x)$, $F(x, 1) = g(x)$ et $F(A \times I) \subset B$.
+
+      Le complexe $C(A)$ des chaînes singulières de $A$ est un sous-complexe de $C(X)$ ({{hj-compacite|Réunion croissante}}). Le complexe des **chaînes relatives** est le quotient
+      $$C_n(X, A) = C_n(X)/C_n(A),$$
+      muni du bord induit, bien défini puisque $\partial C_{n+1}(A) \subset C_n(A)$. Comme $C_n(A)$ est engendré par une partie de la base de $C_n(X)$, c'est un groupe abélien libre, de base les classes des simplexes de $X$ qui ne sont pas à valeurs dans $A$.
+
+      L'[[homologie-relative|homologie relative]] de la paire est l'homologie $\lex{homologie-relative}{H_n}(X, A)$ de ce complexe. Une chaîne $c \in C_n(X)$ dont le bord est une chaîne de $A$ est un **cycle relatif** ; sa classe $[c]$ appartient à $H_n(X, A)$, et tout élément de $H_n(X, A)$ est de cette forme. On a $C(X, \varnothing) = C(X)$, donc $H_n(X, \varnothing) = \lex{homologie-singuliere}{H_n}(X)$.
+    enonce: |
+      (i) *Suite exacte de la paire.* Les inclusions $i : A \to X$ et $j : (X, \varnothing) \to (X, A)$ induisent une [[suite-exacte|suite exacte]] longue
+      $$\begin{aligned} \cdots \to H_n(A) &\xrightarrow{i_*} H_n(X) \\ &\xrightarrow{j_*} H_n(X, A) \\ &\xrightarrow{\partial} H_{n-1}(A) \to \cdots \end{aligned}$$
+      dont le morphisme de connexion est donné par $\partial[c] = [\partial c]$ pour tout cycle relatif $c$.
+
+      (ii) *Naturalité.* Soit $(\alpha, \beta, \gamma)$ un morphisme d'une suite exacte courte de complexes $0 \to K \to L \to M \to 0$ vers une autre, $0 \to K' \to L' \to M' \to 0$, c'est-à-dire trois morphismes de complexes qui commutent avec les flèches des deux suites. Les morphismes induits commutent avec ceux des deux suites exactes longues, et, pour les morphismes de connexion, $\delta' \circ \gamma_* = \alpha_* \circ \delta$.
+
+      En particulier, une application de paires $f : (X, A) \to (Y, B)$ induit des morphismes $f_* : H_n(X, A) \to H_n(Y, B)$, avec $(g \circ f)_* = g_* \circ f_*$, qui commutent avec ceux des suites exactes des deux paires : $f_* \circ \partial = \partial \circ f_*$.
+
+      (iii) *Homotopie.* Deux applications de paires homotopes comme applications de paires induisent les mêmes morphismes en homologie relative.
+
+      (iv) *Version réduite.* Pour toute partie $A$ de $X$, vide ou non, il existe une suite exacte longue
+      $$\begin{aligned} \cdots \to \lex{homologie-reduite}{\tilde H_n}(A) &\to \tilde H_n(X) \\ &\to H_n(X, A) \\ &\xrightarrow{\partial} \tilde H_{n-1}(A) \to \cdots \end{aligned}$$
+      formée des mêmes morphismes, et naturelle comme en (ii). En particulier, si l'homologie réduite de $X$ est nulle en tout degré, par exemple si $X$ est une partie étoilée non vide de $\lex{n-uplet}{\mathbb R^m}$, le morphisme $\partial : H_n(X, A) \to \tilde H_{n-1}(A)$ est un isomorphisme pour tout $n$.
+    preuve: |
+      (i) L'inclusion $C(A) \to C(X)$ est injective, et la projection $C(X) \to C(X, A)$ est surjective, de noyau $C(A)$ : on obtient une suite exacte courte de complexes, et l'on applique le nœud {{h-suite-exacte|Suite exacte longue}}.
+
+      Un cycle de $C_n(X, A)$ est la classe d'un cycle relatif $c$, que l'on peut prendre pour relèvement dans la définition du morphisme de connexion ; son bord $\partial c$ est une chaîne de $A$, qui est son propre antécédent par l'inclusion. Donc $\partial[c] = [\partial c]$.
+
+      (ii) Soit $c$ un cycle de $M_n$, $b \in L_n$ un relèvement de $c$ et $a \in K_{n-1}$ tel que $\partial b$ soit l'image de $a$, de sorte que $\delta[c] = [a]$. Alors $\beta(b)$ relève $\gamma(c)$, puisque les flèches commutent, et
+      $$\partial\beta(b) = \beta(\partial b)$$
+      est l'image de $\alpha(a)$ dans $L'_{n-1}$. Donc $\delta'[\gamma(c)] = [\alpha(a)] = \alpha_*\delta[c]$. La commutation des autres carrés vient de la fonctorialité ({{h-complexes|Complexes de chaînes}}, (ii)).
+
+      Pour une application de paires, $f_\#$ envoie $C(A)$ dans $C(B)$, puisque $f \circ \sigma$ est à valeurs dans $B$ si $\sigma$ l'est dans $A$ ; il passe donc au quotient en un morphisme de complexes $C(X, A) \to C(Y, B)$, et l'on obtient un morphisme de suites exactes courtes. La formule $(g \circ f)_\# = g_\# \circ f_\#$ ({{h-singuliere|Homologie singulière}}, (ii)) passe aux quotients.
+
+      (iii) L'opérateur prisme $P$ du nœud {{h-homotopie|Invariance par homotopie}} associe à un simplexe $\sigma$ une combinaison de simplexes $F \circ (\sigma \times \mathrm{id}) \circ \mu$, avec $\mu$ affine. Si $\sigma$ est à valeurs dans $A$, ils sont à valeurs dans $F(A \times I) \subset B$ : $P$ envoie $C(A)$ dans $C(B)$, et passe aux quotients, où l'identité $\partial P + P\partial = g_\# - f_\#$ subsiste. On conclut par {{h-complexes|Complexes de chaînes}}, (iii).
+
+      (iv) Le complexe augmenté $\tilde C(A)$ ({{hj-reduite|Homologie réduite}}) est un sous-complexe de $\tilde C(X)$, avec l'identité de $\mathbb Z$ en degré $-1$, puisqu'un point compte pour $1$ dans les deux augmentations. Le quotient $\tilde C(X)/\tilde C(A)$ vaut $C(X, A)$ en degré $n \geqslant 0$, et $\mathbb Z/\mathbb Z = 0$ en degré $-1$ : c'est le complexe $C(X, A)$.
+
+      La suite exacte courte $0 \to \tilde C(A) \to \tilde C(X) \to C(X, A) \to 0$ donne la suite annoncée, et (ii) sa naturalité. Si $\tilde H(X)$ est nul, $\partial$ est entouré de deux groupes nuls, donc bijectif ; une partie étoilée non vide a une homologie réduite nulle ({{hj-reduite|Homologie réduite}}, (iii)).
+    remarques:
+      - |
+        L'homologie relative compte les chaînes de $X$ « modulo $A$ » : un cycle relatif peut avoir un bord, pourvu que ce bord soit dans $A$. Le segment $[-1, 1]$ parcouru de $-1$ à $1$ n'est pas un cycle, mais c'est un cycle relatif de la paire $([-1, 1], \{-1, 1\})$, et le nœud {{cw-disque|Paire du disque}} montrera qu'il engendre $H_1([-1, 1], \{-1, 1\}) \cong \mathbb Z$.
+      - |
+        L'erreur la plus répandue est de confondre $H_n(X, A)$ avec l'homologie du complémentaire $X \setminus A$. Pour $X = [-1, 1]$ et $A = \{-1, 1\}$, le complémentaire $]{-1}, 1[$ est convexe et n'a que l'homologie d'un point, alors que $H_1(X, A) \cong \mathbb Z$. Le bon intermédiaire est le quotient $X/A$, ici un cercle, comme l'établira le nœud {{cw-bonnes-paires|Paires de bon type}}.
+      - |
+        Aucun choix n'intervient dans la suite exacte : pour un cycle relatif, le relèvement qu'exige la définition du morphisme de connexion ({{h-suite-exacte|Suite exacte longue}}) est la chaîne elle-même.
+
+  - id: cw-cinq
+    etiquette: Lemme des cinq
+    nature: lemme
+    titre: Le lemme des cinq
+    enonce: |
+      Soit un diagramme commutatif de groupes abéliens dont les deux colonnes sont exactes :
+      $$\begin{CD} A_1 @>{f_1}>> B_1 \\ @V{\alpha_1}VV @VV{\beta_1}V \\ A_2 @>{f_2}>> B_2 \\ @V{\alpha_2}VV @VV{\beta_2}V \\ A_3 @>{f_3}>> B_3 \\ @V{\alpha_3}VV @VV{\beta_3}V \\ A_4 @>{f_4}>> B_4 \\ @V{\alpha_4}VV @VV{\beta_4}V \\ A_5 @>{f_5}>> B_5 \end{CD}$$
+      Si $f_2$ et $f_4$ sont des isomorphismes, $f_1$ surjectif et $f_5$ injectif, alors $f_3$ est un isomorphisme. C'est le [[lemme-cinq|lemme des cinq]].
+    preuve: |
+      *Injectivité.* Soit $a_3 \in A_3$ tel que $f_3(a_3) = 0$. Alors $f_4(\alpha_3a_3) = \beta_3f_3(a_3) = 0$, donc $\alpha_3a_3 = 0$, puisque $f_4$ est injectif, et $a_3 = \alpha_2a_2$ pour un $a_2 \in A_2$, par exactitude.
+
+      Comme $\beta_2f_2(a_2) = f_3\alpha_2(a_2) = 0$, on a $f_2(a_2) = \beta_1b_1$ pour un $b_1 \in B_1$, et $b_1 = f_1(a_1)$, $f_1$ étant surjectif. Alors $f_2(a_2) = \beta_1f_1(a_1) = f_2(\alpha_1a_1)$, d'où $a_2 = \alpha_1a_1$ par injectivité de $f_2$, et
+      $$a_3 = \alpha_2\alpha_1a_1 = 0.$$
+
+      *Surjectivité.* Soit $b_3 \in B_3$, et $a_4 \in A_4$ tel que $f_4(a_4) = \beta_3b_3$. Alors $f_5(\alpha_4a_4) = \beta_4\beta_3b_3 = 0$, donc $\alpha_4a_4 = 0$, puisque $f_5$ est injectif, et $a_4 = \alpha_3a_3$ pour un $a_3 \in A_3$.
+
+      On a $\beta_3\big(b_3 - f_3(a_3)\big) = \beta_3b_3 - f_4\alpha_3(a_3) = 0$, donc $b_3 - f_3(a_3) = \beta_2b_2$ pour un $b_2 \in B_2$. Si $b_2 = f_2(a_2)$, il vient $\beta_2b_2 = f_3(\alpha_2a_2)$, et
+      $$b_3 = f_3\big(a_3 + \alpha_2a_2\big).$$
+    remarques:
+      - |
+        L'usage est toujours le même : deux suites exactes longues sont reliées par des morphismes induits par une application, et l'on sait que ces morphismes sont des isomorphismes pour deux termes sur trois ; le lemme le donne pour le troisième. C'est ainsi que le nœud {{cw-bonnes-paires|Paires de bon type}} compare l'homologie de $(X, A)$ à celle de $(X, N)$, lorsque $A$ et $N$ ont la même homologie.
+      - |
+        La démonstration ne fixe que des éléments en nombre fini, dont elle affirme l'existence : aucun choix n'intervient. L'hypothèse de commutativité est indispensable, et l'erreur la plus répandue est de l'oublier : des groupes isomorphes terme à terme, reliés par des isomorphismes qui ne commutent pas avec les flèches, ne permettent aucune conclusion.
+
+  - id: cw-excision
+    etiquette: Excision
+    nature: théorème
+    titre: Le théorème d'excision
+    texte: |
+      Soient $A$ et $B$ deux parties d'un espace $X$ dont les [[interieur|intérieurs]] recouvrent $X$ : $X = \mathring A \cup \mathring B$ ({{t-adherence|Intérieur, adhérence}}). On note $C(A) + C(B)$ le sous-complexe de $C(X)$ engendré par les simplexes à valeurs dans $A$ ou dans $B$.
+    enonce: |
+      (i) L'inclusion $C(A) + C(B) \to C(X)$, et celle qu'elle induit du quotient $\big(C(A) + C(B)\big)/C(A)$ dans $C(X)/C(A) = C(X, A)$, induisent des isomorphismes en homologie.
+
+      (ii) *[[excision|Excision]].* L'inclusion de paires $(B, A \cap B) \to (X, A)$ induit des isomorphismes
+      $$\lex{homologie-relative}{H_n}(B, A \cap B) \cong H_n(X, A).$$
+
+      (iii) De façon équivalente, si $Z \subset A$ est une partie dont l'adhérence est contenue dans l'intérieur de $A$, l'inclusion $(X \setminus Z, A \setminus Z) \to (X, A)$ induit des isomorphismes en homologie relative.
+    preuve: |
+      (i) Appliquons le nœud {{h-petites-chaines|Petites chaînes}} à l'ensemble d'ouverts $\mathcal U = \{\mathring A, \mathring B\}$, de réunion $X$. Il fournit des morphismes $D : C_n(X) \to C_{n+1}(X)$ et un morphisme de complexes $\rho = \mathrm{id} - \partial D - D\partial$, à valeurs dans $C^{\mathcal U}(X)$, contenu dans $C(A) + C(B)$.
+
+      Pour un simplexe $\sigma$, la chaîne $D\sigma = \sum_{i < m(\sigma)} TS^i\sigma$ est une chaîne de l'image de $\sigma$ ({{h-subdivision|Subdivision barycentrique}}, (iii)). Donc $D$ envoie $C(A)$ dans $C(A)$ et $C(B)$ dans $C(B)$ ; il en va de même de $\rho$, puisque $\partial$ conserve ces sous-complexes.
+
+      Notons $E = C(A) + C(B)$ et $\jmath : E \to C(X)$ l'inclusion. On a $\jmath \circ \rho = \mathrm{id} - \partial D - D\partial$ sur $C(X)$, et $\rho \circ \jmath = \mathrm{id} - \partial D - D\partial$ sur $E$, où $D$ envoie $E$ dans $E$. Par {{h-complexes|Complexes de chaînes}}, (iii), $\jmath_*$ et $\rho_*$ sont réciproques l'un de l'autre.
+
+      Comme $\jmath$, $\rho$ et $D$ conservent $C(A)$, ils passent aux quotients $E/C(A)$ et $C(X)/C(A)$, où les deux identités subsistent ; la même conclusion vaut pour ces quotients.
+
+      (ii) L'inclusion $C(B) \subset E$ induit un morphisme de complexes $C(B)/C(A \cap B) \to E/C(A)$, bien défini puisque $C(A \cap B) \subset C(A)$. Il est surjectif, car la classe de $a + b$, avec $a \in C(A)$ et $b \in C(B)$, est celle de $b$. Il est injectif : si $b \in C(B)$ appartient à $C(A)$, chacun des simplexes qui figurent dans $b$ est à valeurs dans $A$ et dans $B$, par unicité de l'écriture dans la base des simplexes, et $b \in C(A \cap B)$.
+
+      C'est donc un isomorphisme de complexes, et sa composée avec l'isomorphisme de (i) est induite par l'inclusion de paires.
+
+      (iii) Posons $B = X \setminus Z$. Son intérieur est $X \setminus \overline Z$, qui contient $X \setminus \mathring A$ ; donc $\mathring A \cup \mathring B = X$, et $A \cap B = A \setminus Z$. Réciproquement, (ii) découle de (iii) appliqué à $Z = X \setminus B$, contenu dans $\mathring A$ et d'adhérence $X \setminus \mathring B \subset \mathring A$.
+    remarques:
+      - |
+        Le nom vient de (iii) : on peut exciser, c'est-à-dire découper, la partie $Z$ sans changer l'homologie relative, pourvu qu'elle reste à l'écart du bord de $A$. Eilenberg et Steenrod ont fait de cette propriété l'un des axiomes d'une théorie de l'homologie (« Axiomatic approach to homology theory », *Proc. Nat. Acad. Sci.* 31, 1945, p. 117-120).
+      - |
+        L'hypothèse sur l'adhérence est indispensable. Dans $X = \mathbb R$, avec $A = Z = [0, +\infty[$, l'adhérence de $Z$ n'est pas contenue dans l'intérieur $]0, +\infty[$ de $A$. La paire excisée $(]{-\infty}, 0[, \varnothing)$ a pour homologie $H_0 \cong \mathbb Z$, tandis que $H_0(\mathbb R, A) = 0$ par la suite réduite ({{cw-relative|Homologie relative}}, (iv)), $\mathbb R$ étant connexe par arcs et $A$ non vide.
+      - |
+        Aucun choix n'intervient : les morphismes $\rho$ et $D$ sont ceux du théorème des petites chaînes, définis à l'aide du plus petit entier qui convient pour chaque simplexe. L'excision n'est donc qu'une relecture de ce théorème, la seule information nouvelle étant que ses opérateurs conservent les chaînes de $A$.
+
+  - id: cw-bonnes-paires
+    etiquette: Paires de bon type
+    nature: proposition
+    titre: Paires de bon type et quotient X/A
+    texte: |
+      Soit $X$ un espace [[compact]] et $A$ une partie fermée non vide de $X$. On dit que $(X, A)$ est une [[paire-bon-type|paire de bon type]] s'il existe une partie fermée $N$ de $X$, dont l'intérieur contient $A$, et dont $A$ est un [[retracte-deformation|rétracte par déformation]] ({{vk-retractes|Rétractes par déformation}}).
+
+      Le quotient $X/A$ est celui de la [[relation-equivalence|relation d'équivalence]] dont les classes sont $A$ et les singletons $\{x\}$, pour $x \notin A$, muni de la [[topologie-quotient|topologie quotient]] ({{t-quotient|Topologie quotient}}). On note $q : X \to X/A$ la projection et $* = q(A)$.
+    enonce: |
+      (i) L'espace $X/A$ est compact, et $q$ induit un [[homeomorphisme|homéomorphisme]] de $X \setminus A$ sur l'ouvert $X/A \setminus \{*\}$.
+
+      (ii) Si $(X, A)$ est de bon type, les inclusions $(X, A) \to (X, N)$ et $(X \setminus A, N \setminus A) \to (X, N)$ induisent des isomorphismes en homologie relative.
+
+      (iii) Si $(X, A)$ est de bon type, $q$ induit des isomorphismes
+      $$\lex{homologie-relative}{H_n}(X, A) \cong H_n(X/A, \{*\}),$$
+      et la suite exacte réduite de la paire $(X/A, \{*\})$ donne un isomorphisme $\lex{homologie-reduite}{\tilde H_n}(X/A) \cong H_n(X/A, \{*\})$.
+    preuve: |
+      (i) *Séparation.* Soient $x \neq y$ deux points hors de $A$, et $U$, $V$ des ouverts disjoints qui les contiennent. Les ouverts $U \setminus A$ et $V \setminus A$ sont saturés, c'est-à-dire réunions de classes ; leurs images par $q$ sont donc des ouverts, disjoints, qui contiennent $q(x)$ et $q(y)$.
+
+      Soit maintenant $x \notin A$. La preuve du point (ii) du nœud {{t-compact-prop|Parties compactes}} fournit un ouvert $V$ contenant $x$ et un ouvert $U$ contenant le compact $A$, disjoints. Tous deux sont saturés, et $q(V)$, $q(U)$ sont des ouverts disjoints qui contiennent $q(x)$ et $*$.
+
+      *Compacité.* $X/A = q(X)$ est l'image du compact $X$ par une application continue à valeurs dans un séparé ({{t-compact-prop|Parties compactes}}, (iii)).
+
+      *L'homéomorphisme.* L'ensemble $X/A \setminus \{*\}$ est ouvert, puisque son image réciproque $X \setminus A$ l'est, et $q$ en est une bijection continue depuis $X \setminus A$. Un ouvert de $X \setminus A$ est ouvert dans $X$ et saturé, de sorte que son image est ouverte : cette bijection est ouverte.
+
+      (ii) Soit $H : N \times I \to N$ une déformation de $N$ sur $A$, et $r = H(\cdot, 1)$. On a $r \circ \iota = \mathrm{id}_A$, où $\iota$ est l'inclusion, et $\iota \circ r$ est homotope à l'identité de $N$ par $H$ : l'inclusion est une [[equivalence-homotopie|équivalence d'homotopie]], et induit des isomorphismes $H_n(A) \to H_n(N)$ ({{h-homotopie|Invariance par homotopie}}, (ii)).
+
+      L'identité de $X$ est une application de paires $(X, A) \to (X, N)$. Par {{cw-relative|Homologie relative}}, (ii), elle relie les deux suites exactes par un diagramme commutatif :
+      $$\begin{CD} H_n(A) @>>> H_n(N) \\ @VVV @VVV \\ H_n(X) @>{=}>> H_n(X) \\ @VVV @VVV \\ H_n(X, A) @>>> H_n(X, N) \\ @VVV @VVV \\ H_{n-1}(A) @>>> H_{n-1}(N) \\ @VVV @VVV \\ H_{n-1}(X) @>{=}>> H_{n-1}(X) \end{CD}$$
+      Les quatre autres flèches horizontales sont des isomorphismes, et le [[lemme-cinq|lemme des cinq]] ({{cw-cinq|Lemme des cinq}}) conclut. Le second isomorphisme est l'excision ({{cw-excision|Excision}}, (iii)), appliquée à $Z = A$ dans la paire $(X, N)$ : $A$ est fermée et contenue dans l'intérieur de $N$.
+
+      (iii) *Dans le quotient.* Notons $X' = X/A$ et $N' = q(N)$, compact donc fermé, qui contient $*$. L'intérieur de $N'$ contient $q(\mathring N)$, ouvert puisque $\mathring N$ est un ouvert saturé, qui contient $A$.
+
+      L'application $H'(q(x), t) = q(H(x, t))$ est bien définie, puisque $H(a, t) = a$ pour $a \in A$. Elle est continue, car $H' \circ (q \times \mathrm{id}) = q \circ H$ l'est, et que $q$ envoie continûment le compact $N$ sur le séparé $N'$ ({{cw-recollement|Recollement de compacts}}, (iii)). C'est une déformation de $N'$ sur $\{*\}$ : la paire $(X', \{*\})$ est de bon type, et (ii) s'y applique.
+
+      *Le diagramme.* Posons $\dot X = X \setminus A$, $\dot N = N \setminus A$, $\dot X' = X' \setminus \{*\}$ et $\dot N' = N' \setminus \{*\}$. Les applications de paires induites par $q$ et les inclusions donnent le diagramme commutatif
+      $$\begin{CD} H_n(X, A) @>{q_*}>> H_n(X', *) \\ @VVV @VVV \\ H_n(X, N) @>{q_*}>> H_n(X', N') \\ @AAA @AAA \\ H_n(\dot X, \dot N) @>{q_*}>> H_n(\dot X', \dot N') \end{CD}$$
+      dont les flèches verticales sont des isomorphismes, par (ii) appliqué aux deux paires. La flèche du bas en est un, puisque $q$ induit un homéomorphisme de $\dot X$ sur $\dot X'$, par (i), qui envoie $\dot N$ sur $\dot N'$. Les deux autres flèches horizontales sont donc des isomorphismes.
+
+      *Homologie réduite.* L'homologie réduite du point $*$ est nulle ({{hj-reduite|Homologie réduite}}, (iii)), et la suite réduite de la paire $(X', \{*\})$ ({{cw-relative|Homologie relative}}, (iv)) montre que $\tilde H_n(X') \to H_n(X', \{*\})$ est un isomorphisme.
+    remarques:
+      - |
+        L'exemple fondamental est celui du disque. Pour $n \geqslant 1$, la sphère $S^{n-1}$ est un rétracte par déformation de la couronne $\{z : \frac12 \leqslant \|z\| \leqslant 1\}$ de $D^n$, par $H(z, t) = (1 - t)z + t\,\frac{z}{\|z\|}$, et l'application caractéristique de la sphère que construira le nœud {{cw-exemples|Exemples}}, (i), passe au quotient en une bijection continue de $D^n/S^{n-1}$ sur $S^n$, donc en un homéomorphisme. Ainsi $H_k(D^n, S^{n-1}) \cong \tilde H_k(S^n)$ ; le nœud {{cw-disque|Paire du disque}} obtient le même groupe par la suite exacte de la paire.
+      - |
+        Le voisinage $N$ sert de tampon. On ne peut pas exciser $A$ lui-même de la paire $(X, A)$, puisque son adhérence n'est pas contenue dans son intérieur, sauf si $A$ est à la fois ouvert et fermé ; on remplace donc $A$ par $N$, sans changer l'homologie grâce à la déformation, puis on excise $A$ de la paire $(X, N)$.
+      - |
+        Aucun choix n'intervient : le lemme des cinq ne fixe que des éléments en nombre fini, dont il affirme l'existence, et les autres isomorphismes sont induits par des applications.
+
+  - id: cw-disque
+    etiquette: Paire du disque
+    nature: proposition
+    titre: L'homologie de la paire (Dⁿ, Sⁿ⁻¹)
+    texte: |
+      Pour $n \geqslant 1$, $D^n$ est la boule unité fermée de $\lex{n-uplet}{\mathbb R^n}$ pour la norme euclidienne, $\lex{sphere-unite}{S^{n-1}}$ son bord ({{h-applications|Brouwer, dimension}}), et $B^n = \{z : \|z\| < 1\}$ la boule ouverte. Par convention, $D^0 = B^0$ est un point ({{hj-calottes|Calottes}}), et $S^{-1} = \varnothing$.
+    enonce: |
+      (i) *Réunion disjointe.* Si $X$ est la réunion d'une famille $(X_j)_{j \in J}$ d'ouverts deux à deux disjoints et si $A \subset X$, les inclusions induisent un isomorphisme
+      $$\bigoplus_{j \in J} \lex{homologie-relative}{H_n}(X_j, A \cap X_j) \to H_n(X, A).$$
+
+      (ii) Pour $n \geqslant 0$, $H_k(D^n, S^{n-1}) \cong \lex{ensemble-entiers-relatifs}{\mathbb Z}$ si $k = n$, et $H_k(D^n, S^{n-1}) = 0$ sinon. Le morphisme de connexion $\partial : H_n(D^n, S^{n-1}) \to \lex{homologie-reduite}{\tilde H_{n-1}}(S^{n-1})$ est un isomorphisme.
+
+      (iii) Le groupe $H_1(D^1, S^0)$ est engendré par la classe du simplexe $\sigma_1 : \Delta_1 \to [-1, 1]$, $(t_0, t_1) \mapsto t_1 - t_0$, qui parcourt le segment de $-1$ à $1$ ; son bord est $[1] - [-1]$.
+
+      On note $\iota_n$ un générateur de $H_n(D^n, S^{n-1})$, et l'on prend pour $\iota_0$ la classe du point et $\iota_1 = [\sigma_1]$.
+    preuve: |
+      (i) L'image d'un simplexe singulier est connexe par arcs, comme la partie convexe $\Delta_n$, donc connexe ({{ta-chemins|Chemins}}, (iii)). Elle rencontre l'ouvert $X_j$ qui contient l'un de ses points, et ne rencontre pas la réunion des autres $X_k$, ouverte et disjointe de $X_j$ : elle est contenue dans $X_j$.
+
+      Ainsi la base des simplexes de $X$ est la réunion disjointe de celles des $X_j$, et $C(X)$ est la somme directe des sous-complexes $C(X_j)$ ; de même pour $C(A)$, d'où $C(X, A) = \bigoplus_j C(X_j, A \cap X_j)$. Les cycles et les bords d'une somme directe de complexes sont les sommes directes des cycles et des bords, et il en va de même de l'homologie.
+
+      (ii) La boule $D^n$ est convexe et non vide : son homologie réduite est nulle ({{hj-reduite|Homologie réduite}}, (iii)), et $\partial : H_k(D^n, S^{n-1}) \to \tilde H_{k-1}(S^{n-1})$ est un isomorphisme pour tout $k$ ({{cw-relative|Homologie relative}}, (iv)).
+
+      Pour $n \geqslant 2$, $\tilde H_{k-1}(S^{n-1})$ vaut $\mathbb Z$ si $k = n$ et $0$ sinon, par {{h-spheres|Homologie des sphères}} et {{hj-reduite|Homologie réduite}}, (i) et (ii), la sphère $S^{n-1}$ étant connexe par arcs. Pour $n = 1$, $S^0$ a deux points : $\tilde H_0(S^0) \cong \mathbb Z$, et les autres groupes sont nuls. Pour $n = 0$, $S^{-1}$ est vide : $\tilde H_{-1}(\varnothing) = \mathbb Z$, et les autres groupes sont nuls.
+
+      (iii) Le simplexe $\sigma_1$ est continu, et il envoie $e_0$ sur $-1$ et $e_1$ sur $1$. Son bord est
+      $$\sigma_1 \circ \delta_0 - \sigma_1 \circ \delta_1 = [1] - [-1],$$
+      chaîne de $S^0$ : c'est un cycle relatif. Par {{cw-relative|Homologie relative}}, (i), $\partial[\sigma_1]$ est la classe de $[1] - [-1]$, qui engendre $\tilde H_0(S^0)$ ({{hj-reduite|Homologie réduite}}, preuve de (ii)) ; comme $\partial$ est un isomorphisme, $[\sigma_1]$ engendre $H_1(D^1, S^0)$.
+    remarques:
+      - |
+        Le générateur $\iota_n$ représente « le disque lui-même », une chaîne dont le bord est sur la sphère. Il y en a deux, opposés, et les énoncés qui suivent valent pour l'un comme pour l'autre. Un énoncé ne fait intervenir qu'un nombre fini de dimensions, et y fixer ces générateurs ne demande qu'un nombre fini de choix, permis sans axiome.
+      - |
+        Le point (i) vaut pour une famille quelconque d'ouverts, la somme directe étant formée des familles nulles sauf pour un nombre fini d'indices. Aucun choix n'intervient : chaque simplexe désigne lui-même l'ouvert qui le contient.
+
+  - id: cw-degre
+    etiquette: Degré
+    nature: définition
+    titre: Degré d'une application de la sphère dans elle-même
+    texte: |
+      Pour $n \geqslant 0$, le groupe $\lex{homologie-reduite}{\tilde H_n}(\lex{sphere-unite}{S^n})$ est isomorphe à $\mathbb Z$ ({{cw-disque|Paire du disque}}, preuve de (ii)). Un morphisme $u$ d'un groupe $G$ isomorphe à $\mathbb Z$ dans lui-même est la multiplication par un unique entier $d$ : si $g$ engendre $G$, on a $u(g) = dg$ pour un entier $d$, unique car $g$ est d'ordre infini, puis $u(mg) = m\,dg$ pour tout $m$, et le même entier convient pour l'autre générateur $-g$.
+
+      Le [[degre-application|degré]] d'une application continue $f : S^n \to S^n$ est l'entier $\deg f$ tel que $f_*$ soit la multiplication par $\deg f$ sur $\tilde H_n(S^n)$. On note $\langle x, y \rangle = \sum_i x_iy_i$, comme au nœud {{hj-calottes|Calottes}}.
+    enonce: |
+      (i) $\deg(g \circ f) = \deg g \cdot \deg f$ et $\deg \mathrm{id} = 1$. Deux applications homotopes ont le même degré, et un homéomorphisme a pour degré $1$ ou $-1$.
+
+      (ii) Pour $1 \leqslant i \leqslant n + 1$, la réflexion $r_i$ de $S^n$ qui change le signe de la $i$-ième coordonnée a pour degré $-1$. L'application antipodale $x \mapsto -x$ a pour degré $(-1)^{n+1}$.
+
+      (iii) Soit $n \geqslant 1$ et $L$ une composée de réflexions $r_i$ de $\lex{n-uplet}{\mathbb R^n}$ ; elle envoie $D^n$ sur $D^n$ et $S^{n-1}$ sur $S^{n-1}$. Alors $L_*$ est la multiplication par $\deg(L|_{S^{n-1}})$ sur $\lex{homologie-relative}{H_n}(D^n, S^{n-1})$.
+
+      (iv) *Boule chevelue.* Si $n$ est pair, toute application continue $v : S^n \to \mathbb R^{n+1}$ telle que $\langle v(x), x \rangle = 0$ pour tout $x$ s'annule en au moins un point.
+    preuve: |
+      (i) Par fonctorialité de l'homologie réduite ({{hj-reduite|Homologie réduite}}), $(g \circ f)_* = g_* \circ f_*$, et l'invariance par homotopie est le point (iii) du même nœud. Si $f$ est un homéomorphisme, $\deg f \cdot \deg f^{-1} = \deg \mathrm{id} = 1$, et un entier inversible vaut $\pm 1$.
+
+      (ii) *La réflexion $r_1$.* Récurrence sur $n$. Pour $n = 0$, $S^0 = \{-1, 1\}$ et $r_1$ échange les deux points ; le groupe $\tilde H_0(S^0)$ est engendré par $[1] - [-1]$ ({{hj-reduite|Homologie réduite}}, preuve de (ii)), que $r_{1*}$ envoie sur son opposé.
+
+      Soit $n \geqslant 1$. Les ouverts $U = S^n \setminus \{N\}$ et $V = S^n \setminus \{S\}$ du nœud {{h-spheres|Homologie des sphères}} sont conservés par $r_1$, qui fixe les pôles $N$ et $S$, de première coordonnée nulle. La réflexion envoie donc la suite exacte courte de Mayer-Vietoris réduite ({{hj-mv-reduite|Mayer-Vietoris réduite}}) sur elle-même, et l'isomorphisme de l'homologie de $\tilde C^{U,V}(S^n)$ sur celle de $S^n$, induit par l'inclusion, commute avec elle. Par la naturalité ({{cw-relative|Homologie relative}}, (ii)),
+      $$\delta \circ r_{1*} = (r_1|_{U \cap V})_* \circ \delta,$$
+      où $\delta : \tilde H_n(S^n) \to \tilde H_{n-1}(U \cap V)$ est un isomorphisme, puisque l'homologie réduite de $U$ et de $V$ est nulle ({{hj-mv-reduite|Mayer-Vietoris réduite}}, (iii)) : ces ouverts sont homéomorphes à $\mathbb R^n$ ({{h-spheres|Homologie des sphères}}), qui est étoilé ({{hj-reduite|Homologie réduite}}, (iii)).
+
+      L'inclusion $\iota : S^{n-1} \to U \cap V$, $y \mapsto (y, 0)$, est une équivalence d'homotopie ({{h-spheres|Homologie des sphères}}, preuve), et $r_1 \circ \iota = \iota \circ r'_1$, où $r'_1$ est la réflexion de la première coordonnée de $S^{n-1}$. Par ces isomorphismes, $r_{1*}$ correspond à $r'_{1*}$, et $\deg r_1 = \deg r'_1 = -1$ par hypothèse de récurrence.
+
+      *Les autres réflexions.* Soit $\tau$ l'homéomorphisme de $S^n$ qui échange les coordonnées $1$ et $i$. Alors $r_i = \tau \circ r_1 \circ \tau$, et, par (i),
+      $$\deg r_i = (\deg \tau)^2 \deg r_1 = -1.$$
+      Enfin l'application antipodale est la composée des $n + 1$ réflexions $r_1, \dots, r_{n+1}$.
+
+      (iii) La suite réduite de la paire $(D^n, S^{n-1})$ est naturelle ({{cw-relative|Homologie relative}}, (iv)) : $\partial \circ L_* = (L|_{S^{n-1}})_* \circ \partial$, où $\partial : H_n(D^n, S^{n-1}) \to \tilde H_{n-1}(S^{n-1})$ est un isomorphisme ({{cw-disque|Paire du disque}}, (ii)). Comme $(L|_{S^{n-1}})_*$ est la multiplication par son degré, $L_*$ l'est aussi.
+
+      (iv) Supposons $v(x) \neq 0$ pour tout $x$, et posons $u(x) = v(x)/\|v(x)\|$, continue, de norme $1$ et orthogonale à $x$. L'application
+      $$F(x, t) = (1 - 2t)\,x + 2\sqrt{t(1 - t)}\;u(x)$$
+      est continue sur $S^n \times I$, et, $x$ et $u(x)$ étant orthogonaux et de norme $1$,
+      $$\|F(x, t)\|^2 = (1 - 2t)^2 + 4t(1 - t) = 1.$$
+      C'est donc une homotopie, dans $S^n$, de l'identité à l'application antipodale. Par (i) et (ii), $(-1)^{n+1} = 1$, et $n$ est impair.
+    remarques:
+      - |
+        Le point (iv) est le théorème de la boule chevelue pour les champs seulement continus. Sa version lisse est démontrée par la cohomologie de de Rham au nœud {{dc-chevelue|Champs tangents aux sphères}}, qui renvoie ici pour la version continue ; le degré la donne directement. Pour $n$ impair, le champ $v(x) = (-x_2, x_1, \dots, -x_{n+1}, x_n)$ est orthogonal à $x$ et ne s'annule pas sur la sphère, et l'homotopie de la preuve fait alors tourner chaque point jusqu'à son antipode.
+      - |
+        L'erreur la plus répandue est de croire que l'application antipodale, qui renverse toutes les directions, renverse l'orientation : elle est la composée de $n + 1$ réflexions, et son degré vaut $1$ sur les sphères de dimension impaire, comme sur le cercle, où elle est la rotation d'un demi-tour.
+      - |
+        Pour $n = 1$, on montrerait que ce degré coïncide avec le degré des lacets du nœud {{ta-cercle|Groupe fondamental du cercle}}, ce qui demande de comparer $\lex{groupe-fondamental}{\pi_1}(S^1)$ à $H_1(S^1)$ ; ce n'est pas fait ici, et ce n'est pas utilisé.
+
+  - id: cw-complexes
+    etiquette: Complexes cellulaires
+    nature: définition
+    titre: Complexes cellulaires finis
+    texte: |
+      Soit $X$ un espace [[separe|séparé]], $Y$ une partie fermée de $X$ et $n \geqslant 0$. On dit que $X$ s'obtient à partir de $Y$ par [[attachement-cellules|attachement de cellules]] de dimension $n$ s'il existe un ensemble fini $J$ et des applications continues $\Phi_j : D^n \to X$, pour $j \in J$, telles que $\Phi_j(S^{n-1}) \subset Y$, que $\Phi_j$ soit injective sur la boule ouverte $B^n$, et que $X \setminus Y$ soit la réunion des **cellules ouvertes** $e_j = \Phi_j(B^n)$, deux à deux disjointes.
+
+      Les $\Phi_j$ sont les **applications caractéristiques**, et leurs restrictions $\varphi_j = \Phi_j|_{S^{n-1}} : S^{n-1} \to Y$ les **applications d'attachement**. Pour $n = 0$, $D^0$ est un point et $S^{-1}$ est vide : on ajoute à $Y$ un nombre fini de points.
+
+      Un [[complexe-cellulaire|complexe cellulaire fini]] est un espace séparé $X$ muni d'une suite finie de parties fermées
+      $$\varnothing = X^{-1} \subset X^0 \subset X^1 \subset \cdots \subset X^N = X$$
+      et, pour chaque $n \in \{0, \dots, N\}$, d'une famille finie d'applications caractéristiques par lesquelles $X^n$ s'obtient à partir de $X^{n-1}$ par attachement de cellules de dimension $n$. La partie $X^n$ est le [[squelette|squelette]] de dimension $n$, les $e_j$ sont les [[cellule|cellules]] de dimension $n$, et l'on note $c_n$ leur nombre ; on pose $X^n = X$ pour $n \geqslant N$.
+    enonce: |
+      (i) Si $X$ s'obtient à partir d'un compact $Y$ par attachement de cellules, $X$ est compact. Une partie $F$ de $X$ est fermée si et seulement si $F \cap Y$ est fermée dans $Y$ et chaque $\Phi_j^{-1}(F)$ fermée dans $D^n$. Une application $G : X \to Z$ est continue si et seulement si sa restriction à $Y$ et ses composées avec les $\Phi_j$ le sont ; de même pour une homotopie $G : X \times I \to Z$, avec $Y \times I$ et les $\Phi_j \times \mathrm{id}$.
+
+      (ii) Sous les mêmes hypothèses, chaque cellule $e_j$ est ouverte dans $X$, et $\Phi_j$ induit un [[homeomorphisme|homéomorphisme]] de $B^n$ sur $e_j$.
+
+      (iii) Un complexe cellulaire fini et tous ses squelettes sont compacts, et le squelette $X^0$ est un ensemble fini muni de la topologie discrète.
+    preuve: |
+      (i) On applique le nœud {{cw-recollement|Recollement de compacts}} à l'inclusion de $Y$ et aux $\Phi_j$, dont les images recouvrent $X$, puisque tout point de $X \setminus Y$ appartient à une cellule $e_j \subset \Phi_j(D^n)$.
+
+      (ii) Soit $W$ un ouvert de $B^n$. Montrons que le complémentaire de $\Phi_j(W)$ dans $X$ est
+      $$Y \cup \bigcup_{i \neq j} \Phi_i(D^n) \cup \Phi_j(D^n \setminus W).$$
+      Un point hors de $Y$ appartient à une seule cellule $e_i$. Si $i \neq j$, il est dans $\Phi_i(D^n)$, et non dans $\Phi_j(W) \subset e_j$. Si $i = j$, il s'écrit $\Phi_j(z)$ pour un unique $z \in B^n$, par injectivité, et il est hors de $\Phi_j(W)$ si et seulement si $z \notin W$.
+
+      Réciproquement, $Y$ et les $\Phi_i(D^n) \subset e_i \cup Y$, pour $i \neq j$, ne rencontrent pas $e_j$. Un point $\Phi_j(z)$ avec $z \notin W$ est dans $Y$ si $\|z\| = 1$, et hors de $\Phi_j(W)$ par injectivité si $z \in B^n$.
+
+      Ces parties sont compactes, $D^n \setminus W$ étant fermée dans $D^n$, donc fermées dans le séparé $X$, et $\Phi_j(W)$ est ouvert. Pour $W = B^n$, on obtient que $e_j$ est ouverte ; et $\Phi_j$ est une bijection continue et ouverte de $B^n$ sur $e_j$.
+
+      (iii) Par récurrence sur $n$, avec (i), à partir de $X^{-1} = \varnothing$. Le squelette $X^0$ est formé d'un nombre fini de points ; dans le séparé $X^0$, toute partie est une réunion finie de points, donc fermée, et toute partie est aussi ouverte.
+    remarques:
+      - |
+        Les complexes cellulaires ont été introduits par J. H. C. Whitehead (« Combinatorial homotopy I », *Bull. Amer. Math. Soc.* 55, 1949, p. 213-245), pour un nombre quelconque de cellules. Leur nom anglais, CW-complexes, vient des deux conditions qu'il faut alors imposer : C, pour *closure finite*, l'adhérence de chaque cellule ne rencontre qu'un nombre fini de cellules ; W, pour *weak topology*, une partie est fermée dès que ses traces sur les cellules fermées le sont. Pour un nombre fini de cellules, la première est automatique et la seconde est le point (i) : c'est pour éviter ces difficultés que le chapitre s'en tient aux complexes finis.
+      - |
+        Sans la topologie faible, une décomposition en cellules ne suffit pas. Le segment $[0, 1]$, découpé par les points $0$ et $\frac1k$, $k \geqslant 1$, en une infinité de segments $[\frac1{k+1}, \frac1k]$, a des cellules convenables. Mais la partie formée des milieux de ces segments rencontre chaque segment fermé en un point au plus, et elle n'est pourtant pas fermée dans $[0, 1]$, puisque $0$ lui est adhérent : la topologie de $[0, 1]$ n'est pas la topologie faible de cette décomposition.
+      - |
+        L'erreur la plus répandue est de croire que l'application caractéristique est injective : elle ne l'est que sur la boule ouverte. Pour la sphère $S^n$, formée d'un point et d'une cellule de dimension $n$ ({{cw-exemples|Exemples}}), elle envoie tout le bord $S^{n-1}$ sur ce point.
+      - |
+        Les applications caractéristiques font partie des données : un complexe cellulaire est un espace muni de ses squelettes et de ses cellules, et aucun choix n'intervient dans ce qui suit. Un même espace porte en général bien des structures, ce que le nœud {{cw-euler|Euler-Poincaré}} mettra à profit.
+
+  - id: cw-attachement
+    etiquette: Attachement de cellules
+    nature: proposition
+    titre: Construction par attachement de cellules
+    texte: |
+      Soit $Y$ un espace compact, $n \geqslant 1$, $J$ un ensemble fini et $\varphi_j : S^{n-1} \to Y$, pour $j \in J$, des applications continues. La **somme** $Y \sqcup (J \times D^n)$ est la réunion disjointe de $Y$ et des copies $\{j\} \times D^n$ du disque ; ses ouverts sont les parties qui rencontrent $Y$ et chacune des copies selon un ouvert.
+
+      On partage cette somme en les singletons $\{(j, z)\}$, pour $j \in J$ et $z \in B^n$, et en les parties
+      $$\{y\} \cup \{(j, z) : z \in S^{n-1},\ \varphi_j(z) = y\},$$
+      pour $y \in Y$. La relation d'équivalence correspondante identifie chaque point $(j, z)$ du bord d'une copie à son image $\varphi_j(z)$. On note $Y \cup_\varphi (J \times D^n)$ le quotient, muni de la [[topologie-quotient|topologie quotient]], $\pi$ la projection, et $\Phi_j(z) = \pi(j, z)$.
+    enonce: |
+      (i) L'espace $X = Y \cup_\varphi (J \times D^n)$ est compact, et $\pi$ induit un homéomorphisme de $Y$ sur une partie fermée de $X$, que l'on identifie à $Y$.
+
+      (ii) $X$ s'obtient à partir de $Y$ par [[attachement-cellules|attachement]] des cellules de dimension $n$ d'applications caractéristiques $\Phi_j$, dont les applications d'attachement sont les $\varphi_j$. Si $Y$ est un [[complexe-cellulaire|complexe cellulaire fini]] de dimension au plus $n - 1$, $X$ en est un, de squelette $X^{n-1} = Y$.
+
+      (iii) Réciproquement, si un espace $X'$ s'obtient à partir d'un compact $Y$ par attachement de cellules $\Phi'_j$ d'applications d'attachement $\varphi_j$, l'application de $Y \cup_\varphi (J \times D^n)$ dans $X'$ égale à l'identité sur $Y$ et à $\Phi'_j \circ \Phi_j^{-1}$ sur chaque cellule ouverte est bien définie, et c'est un homéomorphisme.
+    preuve: |
+      (i) *Séparation.* Distinguons les points $\pi(j, z)$, avec $z \in B^n$, classes réduites à un point, et les points $\pi(y)$, pour $y \in Y$. Il suffit de séparer deux points distincts du quotient par des ouverts saturés disjoints de la somme, dont les images sont alors des ouverts disjoints.
+
+      Deux points $\pi(j, z)$ et $\pi(j', z')$ distincts sont séparés par $\{j\} \times B^n$ et $\{j'\} \times B^n$ si $j \neq j'$, et par deux boules ouvertes disjointes de $B^n$, placées dans la copie $j$, si $j = j'$. Un point $\pi(j, z)$ et un point $\pi(y)$ sont séparés, avec $r = \frac{1 + \|z\|}2 < 1$, par la boule $\{j\} \times \{w : \|w\| < r\}$ et par la réunion de $Y$ et des couronnes $\{i\} \times \{w : r < \|w\| \leqslant 1\}$, saturée puisqu'elle contient $Y$ et tous les points des bords.
+
+      Soient enfin $y \neq y'$ dans $Y$, et $U$, $U'$ des ouverts disjoints de $Y$ qui les contiennent. On pose
+      $$\begin{aligned} \hat U = U \cup \Big\{(j, w) :\ &\|w\| > \tfrac12, \\ &\tfrac{w}{\|w\|} \in \varphi_j^{-1}(U)\Big\}, \end{aligned}$$
+      et de même $\hat U'$. La trace de $\hat U$ sur la copie $j$ est l'image réciproque de l'ouvert $\varphi_j^{-1}(U)$ de $S^{n-1}$ par l'application continue $w \mapsto w/\|w\|$, sur la couronne ouverte $\|w\| > \frac12$ : $\hat U$ est ouvert. Il est saturé, car un point $(j, z)$ du bord est dans $\hat U$ si et seulement si $\varphi_j(z) \in U$, c'est-à-dire si le point de $Y$ de sa classe est dans $U$. Enfin $\hat U$ et $\hat U'$ sont disjoints, comme $U$ et $U'$.
+
+      *Compacité.* $X$ est la réunion des images de $Y$ et des copies de $D^n$ par les applications continues $\pi|_Y$ et $\Phi_j$ ; il est compact ({{cw-recollement|Recollement de compacts}}, (i)). La restriction de $\pi$ à $Y$ est injective, chaque classe contenant au plus un point de $Y$ : c'est une bijection continue du compact $Y$ sur $\pi(Y)$, donc un homéomorphisme ({{t-bij-compact|Bijection d'un compact}}), et $\pi(Y)$, compact, est fermé.
+
+      (ii) On a $\Phi_j(S^{n-1}) \subset \pi(Y)$, puisque $\pi(j, z) = \pi(\varphi_j(z))$ pour $z \in S^{n-1}$ ; $\Phi_j$ est injective sur $B^n$, et $X \setminus \pi(Y)$ est la réunion disjointe des $\Phi_j(B^n)$, par la description des classes. Le second énoncé en découle, en ajoutant aux squelettes de $Y$ le squelette $X^n = X$.
+
+      (iii) L'application $\Psi$ de la somme dans $X'$, égale à l'inclusion sur $Y$ et à $(j, z) \mapsto \Phi'_j(z)$ sur les copies, est continue, et constante sur les classes, puisque $\Phi'_j(z) = \varphi_j(z)$ sur le bord. Elle induit une application continue $\bar\Psi$ du quotient dans $X'$ ({{t-quotient|Topologie quotient}}), qui est celle de l'énoncé. Elle est surjective, par la définition de l'attachement, et injective : elle l'est sur $Y$ et sur chaque cellule, et les cellules de $X'$ sont disjointes entre elles et de $Y$. C'est une bijection continue d'un compact sur un séparé, donc un homéomorphisme.
+    remarques:
+      - |
+        La construction donne autant d'espaces qu'on le souhaite. En attachant $m$ cellules de dimension $1$ à un point, par l'application constante de $S^0$, on obtient un **bouquet de $m$ cercles**. Pour $m = 2$, le point (iii) montre qu'il est homéomorphe au [[bouquet-cercles|bouquet de deux cercles]] du nœud {{vk-bouquet|Bouquet de deux cercles}}, dont le nœud {{cw-exemples|Exemples}} décrit les deux cellules ; ce même nœud attache ensuite à un bouquet de $2g$ cercles une cellule de dimension $2$, le long d'un mot.
+      - |
+        La séparation du quotient n'est pas automatique. Elle repose ici sur celle de $Y$ et sur les collerettes $\hat U$, qui prolongent radialement dans les cellules les ouverts de $Y$. L'erreur serait d'oublier que, dans un quotient, deux points séparés dans la somme ne le sont pas toujours dans le quotient : ce sont des ouverts saturés qu'il faut construire.
+      - |
+        La définition intrinsèque du nœud {{cw-complexes|Complexes cellulaires}} et la construction par quotient décrivent donc les mêmes espaces, par (ii) et (iii) : chaque squelette s'obtient à partir du précédent en recollant des disques le long de leurs bords. On passe de l'une à l'autre sans rien choisir, les applications d'attachement étant données.
+
+  - id: cw-exemples
+    etiquette: Exemples
+    nature: proposition
+    titre: Sphères, cercle découpé, espaces projectifs, tore et surfaces
+    texte: |
+      Pour $0 \leqslant k \leqslant n$, on identifie $S^k$ à la partie de $\lex{sphere-unite}{S^n}$ formée des points dont les $n - k$ dernières coordonnées sont nulles. On pose, pour $k \geqslant 1$ et $z \in D^k$,
+      $$\Phi^k_\pm(z) = \Big(z,\ \pm\sqrt{1 - \|z\|^2}\Big) \in S^k,$$
+      et $\Phi^0_\pm = \pm 1 \in S^0$.
+
+      Soit $Q = [-1, 1]^2$ et $h : D^2 \to Q$ l'homéomorphisme $x \mapsto \frac{\|x\|_2}{\|x\|_\infty}x$ du nœud {{hj-calottes|Calottes}}, (ii) ; comme $\|h(x)\|_\infty = \|x\|_2$, il envoie $S^1$ sur le bord $\partial Q$ du carré et $B^2$ sur son intérieur. Pour $g \geqslant 1$, on parcourt $\partial Q$ dans le sens direct à partir du coin $(-1, -1)$, et l'on partage chacun des quatre côtés en $g$ segments de même longueur ; on obtient $4g$ segments consécutifs, de sommets $w_0, w_1, \dots, w_{4g} = w_0$. On pose, pour $1 \leqslant i \leqslant 4g$ et $s \in [-1, 1]$,
+      $$\begin{aligned} \lambda_i(s) &= \tfrac{1 - s}2\,w_{i-1} + \tfrac{1 + s}2\,w_i, \\ \psi_i &= h^{-1} \circ \lambda_i : D^1 \to S^1. \end{aligned}$$
+    enonce: |
+      (i) *Sphère, deux cellules.* Pour $n \geqslant 1$, $S^n$ s'obtient à partir du point $S = (0, \dots, 0, -1)$ par l'attachement d'une cellule de dimension $n$, d'application caractéristique
+      $$\Phi(z) = \Big(2\sqrt{1 - \|z\|^2}\;z,\ 1 - 2\|z\|^2\Big).$$
+      Avec $X^0 = \cdots = X^{n-1} = \{S\}$, c'est un [[complexe-cellulaire|complexe cellulaire fini]].
+
+      (ii) *Sphère, hémisphères.* Les squelettes $X^k = S^k$, pour $0 \leqslant k \leqslant n$, et les applications $\Phi^k_+$ et $\Phi^k_-$ font de $S^n$ un complexe cellulaire fini à deux cellules en chaque dimension.
+
+      (iii) *Cercle découpé.* Le cercle $S^1$ s'obtient à partir de l'ensemble fini $V = \{h^{-1}(w_i)\}$ par l'attachement des $4g$ cellules $\psi_1, \dots, \psi_{4g}$ de dimension $1$.
+
+      (iv) *Espaces projectifs.* Pour $n \geqslant 1$, l'[[espace-projectif-reel|espace projectif]] $\mathbb RP^n$ est séparé. Les squelettes $X^k = q(S^k)$, pour $0 \leqslant k \leqslant n$, et les applications $\Psi_k = q \circ \Phi^k_+$ en font un complexe cellulaire fini à une cellule en chaque dimension ; pour $k \geqslant 1$, l'application d'attachement de $\Psi_k$ est $z \mapsto q(z)$, sur $S^{k-1}$.
+
+      (v) *Tore.* Avec les notations du nœud {{vk-tore-ouverts|Ouverts du tore}}, le [[tore]] $T$ est un complexe cellulaire fini, de squelettes $X^0 = \{x_0\}$, où $x_0 = P(0, 0) = (e, e)$ est le point base du nœud {{vk-bouquet|Bouquet de deux cercles}}, et non celui du nœud des ouverts du tore, $X^1 = W$ et $X^2 = T$, de cellules de dimension $1$
+      $$\begin{aligned} \Phi_a(s) &= P\big(\tfrac{1+s}2, 0\big), \\ \Phi_b(s) &= P\big(0, \tfrac{1+s}2\big), \end{aligned}$$
+      pour $s \in D^1 = [-1, 1]$, et d'une cellule de dimension $2$, d'application caractéristique $\Phi_c = P \circ A \circ h$, où $A(y) = \frac12\big(y + (1, 1)\big)$ envoie $Q$ sur le carré $C = I \times I$.
+
+      (vi) *Surfaces.* Soit $W_{2g}$ le bouquet de $2g$ cercles obtenu en attachant à un point $x_0$ des cellules $\Phi_{a_1}, \Phi_{b_1}, \dots, \Phi_{a_g}, \Phi_{b_g}$ de dimension $1$ ({{cw-attachement|Attachement de cellules}}). Pour $1 \leqslant k \leqslant g$ et $s \in D^1$, on pose
+      $$\begin{aligned} \varphi(\psi_{4k-3}(s)) &= \Phi_{a_k}(s), \\ \varphi(\psi_{4k-2}(s)) &= \Phi_{b_k}(s), \\ \varphi(\psi_{4k-1}(s)) &= \Phi_{a_k}(-s), \\ \varphi(\psi_{4k}(s)) &= \Phi_{b_k}(-s). \end{aligned}$$
+      Ces formules définissent une application continue $\varphi : S^1 \to W_{2g}$, et la [[surface-genre|surface orientable de genre $g$]] est le complexe cellulaire fini
+      $$\Sigma_g = W_{2g} \cup_\varphi D^2,$$
+      à une cellule de dimension $0$, $2g$ cellules de dimension $1$ et une cellule de dimension $2$, attachée le long du mot $a_1b_1a_1^{-1}b_1^{-1} \cdots a_gb_ga_g^{-1}b_g^{-1}$.
+    preuve: |
+      (i) Pour $z \in D^n$,
+      $$\begin{aligned} \|\Phi(z)\|^2 &= 4(1 - \|z\|^2)\|z\|^2 \\ &\quad + (1 - 2\|z\|^2)^2 = 1, \end{aligned}$$
+      et $\Phi$ est continue, à valeurs dans $S^n$, avec $\Phi(S^{n-1}) = \{S\}$. Soit $y = (y', y_{n+1}) \in S^n$ avec $y_{n+1} > -1$, et $\varrho = \frac{1 - y_{n+1}}2 \in [0, 1[$. Un point $z \in B^n$ vérifie $\Phi(z) = y$ si et seulement si $\|z\|^2 = \varrho$ et $z = \frac{y'}{2\sqrt{1 - \varrho}}$ ; ce point convient, puisque
+      $$\frac{\|y'\|^2}{4(1 - \varrho)} = \frac{(1 - y_{n+1})(1 + y_{n+1})}{2(1 + y_{n+1})} = \varrho.$$
+      Ainsi $\Phi$ est une bijection de $B^n$ sur $S^n \setminus \{S\}$. La sphère est séparée, et $\{S\}$ est fermé ; les squelettes intermédiaires s'obtiennent en n'attachant aucune cellule.
+
+      (ii) Pour $1 \leqslant k \leqslant n$, $S^{k-1}$ est fermée dans $S^k$, et $\Phi^k_\pm$ est continue, à valeurs dans $S^k$, avec $\Phi^k_\pm(S^{k-1}) = S^{k-1}$. Elle est injective, puisque $z$ se lit sur les premières coordonnées. Enfin $S^k \setminus S^{k-1}$ est formé des points de dernière coordonnée $x_{k+1}$ non nulle ; ceux pour lesquels $x_{k+1} > 0$ sont les $\Phi^k_+(z)$, avec $z = (x_1, \dots, x_k) \in B^k$, et ceux pour lesquels $x_{k+1} < 0$ les $\Phi^k_-(z)$. Pour $k = 0$, $S^0$ est formé des deux points $\pm 1$.
+
+      (iii) Les applications $\lambda_i$ sont continues et injectives, et leurs images sont les $4g$ segments, qui recouvrent $\partial Q$ ; deux segments consécutifs ne se rencontrent qu'en leur sommet commun, et deux segments non consécutifs ne se rencontrent pas. Ainsi $\partial Q$ privé des sommets est la réunion disjointe des $\lambda_i(]{-1}, 1[)$. On transporte cette description par l'homéomorphisme $h^{-1}$ ; l'ensemble $V$ est fini, donc fermé.
+
+      (iv) *Séparation.* L'application $x \mapsto (x_ix_j)_{i, j}$, de $S^n$ dans $\mathbb R^{(n+1)^2}$, est continue et constante sur les classes ; elle induit une application continue $M$ sur $\mathbb RP^n$ ({{t-quotient|Topologie quotient}}). Elle est injective : si $x_ix_j = y_iy_j$ pour tous $i, j$, alors, pour chaque $i$,
+      $$\begin{aligned} y_i &= \sum_j y_j\,(y_jy_i) = \sum_j y_jx_jx_i \\ &= \langle x, y \rangle\,x_i, \end{aligned}$$
+      de sorte que $y = \langle x, y \rangle x$, avec $|\langle x, y \rangle| = \|y\| = 1$, et $y = \pm x$. Deux points distincts de $\mathbb RP^n$ ont donc des images distinctes, séparées par des ouverts disjoints dont les images réciproques par $M$ sont ouvertes et disjointes.
+
+      *Les cellules.* Chaque $X^k$ est compact, image du compact $S^k$, donc fermé. On a $\Psi_k(S^{k-1}) = q(S^{k-1}) = X^{k-1}$. Si $q(z, s) = q(z', s')$ avec $s, s' > 0$, alors $(z', s') = \pm(z, s)$, et le signe est $+$ : $\Psi_k$ est injective sur $B^k$. Un point de $X^k \setminus X^{k-1}$ est la classe $q(x)$ d'un point $x \in S^k$ de dernière coordonnée $x_{k+1}$ non nulle, propriété qui ne dépend pas du représentant ; celui des deux représentants pour lequel $x_{k+1} > 0$ est un $\Phi^k_+(z)$ avec $z \in B^k$. Enfin $X^0 = q(S^0)$ est un point, et, pour $z \in S^{k-1}$, $\Psi_k(z) = q(z, 0)$.
+
+      (v) Le tore est séparé, et ses parties $\{x_0\}$ et $W$ sont fermées ({{vk-bouquet|Bouquet de deux cercles}}, preuve de (ii)). Les applications $\Phi_a$ et $\Phi_b$ sont continues, envoient $\pm 1$ sur $x_0$, et sont injectives sur $]{-1}, 1[$, puisque $p$ est injective sur $]0, 1[$ ({{vk-tore-ouverts|Ouverts du tore}}, preuve de (i)) ; comme $p(]0, 1[) = S^1 \setminus \{e\}$, l'ensemble $W \setminus \{x_0\}$ est la réunion disjointe de leurs images. L'application $A \circ h$ est un homéomorphisme de $D^2$ sur $C$, qui envoie $S^1$ sur le bord de $C$ et $B^2$ sur son intérieur ; on conclut par le point (i) du nœud {{vk-tore-ouverts|Ouverts du tore}} : $P(\partial C) = W$, $P$ est injective sur l'intérieur de $C$, et l'envoie sur $T \setminus W$.
+
+      (vi) Deux arcs $\psi_i$ ne se rencontrent qu'en des points de $V$, où toutes les formules prennent la valeur $x_0$, puisque $\Phi_\beta(\pm 1) = x_0$ pour chaque cellule $\beta$ du bouquet : $\varphi$ est bien définie. Elle est continue par le nœud {{cw-recollement|Recollement de compacts}}, (ii), $S^1$ étant la réunion des images des $\psi_i$ et chaque composée $\varphi \circ \psi_i$ étant continue. Le bouquet $W_{2g}$ est un complexe cellulaire fini de dimension $1$, et $\Sigma_g$ en est un de dimension $2$ ({{cw-attachement|Attachement de cellules}}, (ii)).
+    remarques:
+      - |
+        La surface $\Sigma_1$ est homéomorphe au tore. Le bouquet $W$ du tore s'obtient à partir de $x_0$ par les cellules $\Phi_a$ et $\Phi_b$ ; par le point (iii) du nœud {{cw-attachement|Attachement de cellules}}, il existe un homéomorphisme $\theta$ de $W$ sur $W_2$ tel que $\theta \circ \Phi_a = \Phi_{a_1}$ et $\theta \circ \Phi_b = \Phi_{b_1}$. L'application d'attachement $\varphi_c$ de $\Phi_c$ suit le même mot $aba^{-1}b^{-1}$ que $\varphi$, comme le calculera le nœud {{cw-surfaces|Tore et surfaces}}, de sorte que $\theta \circ \varphi_c = \varphi$. L'application égale à $\theta^{-1}$ sur $W_2$ et à $\Phi_c$ sur le disque passe donc au quotient $\Sigma_1$ ; c'est une bijection continue du compact $\Sigma_1$ sur le séparé $T$, donc un homéomorphisme.
+      - |
+        Que $\Sigma_g$ soit une surface, c'est-à-dire que chacun de ses points ait un voisinage homéomorphe à un disque ouvert, est admis ici : la difficulté contournée est le point $x_0$, autour duquel il faut recoller les $4g$ coins du carré, dont les secteurs se succèdent dans l'ordre que dicte le mot. Ce n'est pas utilisé ; seule la structure cellulaire sert au calcul de l'homologie.
+      - |
+        La sphère porte ainsi deux structures cellulaires, l'une à deux cellules, l'autre à $2n + 2$. Les nombres de cellules diffèrent, mais pas leur somme alternée, $1 + (-1)^n$ dans les deux cas : c'est le premier exemple du théorème d'Euler-Poincaré ({{cw-euler|Euler-Poincaré}}).
+
+  - id: cw-cellules-relatives
+    etiquette: Homologie d'un attachement
+    nature: théorème
+    titre: Homologie relative d'un attachement de cellules
+    enonce: |
+      Soit $X$ un espace obtenu à partir d'un compact $Y$ par l'[[attachement-cellules|attachement]] de cellules $\Phi_j$, pour $j \in J$, de dimension $n \geqslant 0$. L'application $\Phi : J \times D^n \to X$, $(j, z) \mapsto \Phi_j(z)$, est une application de paires
+      $$(J \times D^n, J \times S^{n-1}) \to (X, Y),$$
+      et elle induit des isomorphismes en homologie relative. Par conséquent, $\lex{homologie-relative}{H_k}(X, Y) = 0$ pour $k \neq n$, et $H_n(X, Y)$ est un groupe abélien libre de base les $\Phi_{j*}(\iota_n)$, $j \in J$.
+    preuve: |
+      Notons $\mathbf D = J \times D^n$ et $\mathbf S = J \times S^{n-1}$, où $J$ porte la topologie discrète ; $\mathbf D$ est la réunion des ouverts disjoints $\{j\} \times D^n$, et, par {{cw-disque|Paire du disque}}, (i) et (ii), $H_k(\mathbf D, \mathbf S)$ est la somme directe des $H_k(D^n, S^{n-1})$, nulle pour $k \neq n$, libre de base les images des $\iota_n$ pour $k = n$. Ces images sont envoyées par $\Phi_*$ sur les $\Phi_{j*}(\iota_n)$ : il suffit de montrer que $\Phi_*$ est un isomorphisme.
+
+      *Le cas $n = 0$.* Les points $e_j = \Phi_j(D^0)$ sont ouverts dans $X$ ({{cw-complexes|Complexes cellulaires}}, (ii)), et $Y$, complémentaire d'un ensemble fini, est ouvert. Par {{cw-disque|Paire du disque}}, (i), $H_k(X, Y)$ est la somme de $H_k(Y, Y) = 0$ et des $H_k(\{e_j\})$, et $\Phi_*$ est un isomorphisme.
+
+      *Une collerette.* Soit $n \geqslant 1$. Si $Y$ est vide, $J$ l'est aussi, puisque $\Phi_j(S^{n-1}) \subset Y$ et que $S^{n-1}$ n'est pas vide ; alors $X$ est vide et il n'y a rien à démontrer. Si $J$ est vide, $X = Y$, et les deux membres sont nuls. On suppose donc $Y$ et $J$ non vides, de sorte que $\mathbf S$ l'est aussi. Soit $K = \{z \in D^n : \frac12 \leqslant \|z\| \leqslant 1\}$ et
+      $$N = Y \cup \bigcup_{j \in J} \Phi_j(K),$$
+      compact comme réunion finie de compacts, donc fermé. La partie $O = X \setminus \bigcup_j \Phi_j\big(\{\|z\| \leqslant \frac12\}\big)$ est ouverte, comme complémentaire d'une réunion finie de compacts. Elle contient $Y$, et elle est contenue dans $N$ : un point de $O \setminus Y$ s'écrit $\Phi_j(z)$ pour un seul couple $(j, z)$ avec $z \in B^n$, et alors $\|z\| > \frac12$. L'intérieur de $N$ contient donc $Y$.
+
+      *La déformation.* Posons $H(y, t) = y$ pour $y \in Y$, et
+      $$H(\Phi_j(z), t) = \Phi_j\Big((1 - t)z + t\,\frac{z}{\|z\|}\Big)$$
+      pour $z \in K$. Un point de $N \setminus Y$ s'écrit $\Phi_j(z)$ pour un seul couple, avec $z \in K \cap B^n$, et, pour $z \in S^{n-1}$, la formule redonne $\Phi_j(z)$ : $H$ est bien définie. La norme de $(1 - t)z + t\frac{z}{\|z\|}$ vaut $(1 - t)\|z\| + t$, comprise entre $\|z\|$ et $1$, de sorte que $H$ est à valeurs dans $N$.
+
+      Elle est continue par le nœud {{cw-recollement|Recollement de compacts}}, (iii), $N$ étant recouvert par $Y$ et les $\Phi_j(K)$, et les composées étant continues. Enfin $H(x, 0) = x$, $H(x, 1) \in Y$, et $H(y, t) = y$ sur $Y$ : la paire $(X, Y)$ est de [[paire-bon-type|bon type]], avec ce voisinage $N$.
+
+      ```schema cw-cellules-relatives
+      Dans chaque cellule, la couronne $K$, en bleu, comprise entre le cercle pointillé $\|z\| = \frac12$ et le bord, est poussée radialement sur ce bord, en rouge, que l'application caractéristique envoie dans $Y$ : c'est la déformation de $N$ sur $Y$. Hors de $N$ ne reste que la petite boule centrale, et l'excision de $Y$ ne garde que l'intérieur de la cellule, avec sa couronne privée du bord.
+      ```
+
+      *Le diagramme.* La paire $(\mathbf D, \mathbf S)$ est le cas particulier où $\Phi_j(z) = (j, z)$, et son voisinage est $\mathbf K = J \times K$. Notons $\mathbf B = J \times B^n$ et $\mathbf K^\circ = J \times (K \cap B^n)$. L'application $\Phi$ envoie $\mathbf K$ dans $N$, et ses restrictions donnent le diagramme commutatif
+      $$\begin{CD} H_k(\mathbf D, \mathbf S) @>{\Phi_*}>> H_k(X, Y) \\ @VVV @VVV \\ H_k(\mathbf D, \mathbf K) @>{\Phi_*}>> H_k(X, N) \\ @AAA @AAA \\ H_k(\mathbf B, \mathbf K^\circ) @>{\Phi_*}>> H_k(X \setminus Y, N \setminus Y) \end{CD}$$
+      dont les flèches verticales sont des isomorphismes ({{cw-bonnes-paires|Paires de bon type}}, (ii)).
+
+      Par {{cw-complexes|Complexes cellulaires}}, (ii), chaque $\Phi_j$ induit un homéomorphisme de $B^n$ sur la cellule ouverte $e_j$ ; les $e_j$ étant des ouverts disjoints de réunion $X \setminus Y$, $\Phi$ induit un homéomorphisme de $\mathbf B$ sur $X \setminus Y$, qui envoie $\mathbf K^\circ$ sur $N \setminus Y$. La flèche du bas est donc un isomorphisme, et celle du haut aussi.
+    remarques:
+      - |
+        Le groupe $H_n(X, Y)$ compte les cellules et ignore la façon dont elles sont attachées. Si l'on attache une cellule de dimension $2$ à un cercle, par l'identité ou par une application constante, $H_2(X, Y) \cong \mathbb Z$ dans les deux cas ; mais on obtient un disque, dont le $H_1$ est nul, ou un espace dont le $H_1$ vaut $\mathbb Z$. L'information sur l'attachement passe tout entière dans le bord du complexe cellulaire ({{cw-complexe-cellulaire|Homologie cellulaire}}).
+      - |
+        La démonstration est celle des paires de bon type, appliquée sans passer au quotient $X/Y$ ; le quotient, qui serait un bouquet de sphères, n'est pas nécessaire. Aucun choix n'intervient : la déformation est donnée par une formule, et chaque point de $X \setminus Y$ désigne lui-même sa cellule.
+
+  - id: cw-squelettes
+    etiquette: Squelettes
+    nature: proposition
+    titre: Homologie des squelettes
+    texte: |
+      Soit $X$ un [[complexe-cellulaire|complexe cellulaire fini]] de dimension $N$, de [[squelette|squelettes]] $X^n$, et, pour chaque cellule $\alpha$ de dimension $n$, d'application caractéristique $\Phi_\alpha$.
+    enonce: |
+      (i) $\lex{homologie-relative}{H_k}(X^n, X^{n-1}) = 0$ pour $k \neq n$, et $H_n(X^n, X^{n-1})$ est libre de base les classes $e_\alpha = \Phi_{\alpha*}(\iota_n)$ des cellules de dimension $n$.
+
+      (ii) $H_k(X^n) = 0$ pour $k > n$ ; en particulier $H_k(X) = 0$ pour $k > N$.
+
+      (iii) L'inclusion $X^n \to X$ induit un isomorphisme $H_k(X^n) \to H_k(X)$ pour $k < n$, et un morphisme surjectif pour $k = n$.
+    preuve: |
+      (i) Le squelette $X^n$ s'obtient à partir du compact $X^{n-1}$ ({{cw-complexes|Complexes cellulaires}}, (iii)) par attachement des cellules de dimension $n$ ; on applique le nœud {{cw-cellules-relatives|Homologie d'un attachement}}.
+
+      (ii) Récurrence sur $n$, à partir de $X^{-1} = \varnothing$, dont l'homologie est nulle. Dans la suite exacte de la paire $(X^n, X^{n-1})$ ({{cw-relative|Homologie relative}}, (i)),
+      $$H_k(X^{n-1}) \to H_k(X^n) \to H_k(X^n, X^{n-1}),$$
+      les deux termes extrêmes sont nuls pour $k > n$, par l'hypothèse de récurrence et par (i). Le terme du milieu l'est donc aussi.
+
+      (iii) Dans la suite exacte de la paire $(X^{n+1}, X^n)$,
+      $$\begin{aligned} H_{k+1}(X^{n+1}, X^n) &\to H_k(X^n) \\ &\to H_k(X^{n+1}) \\ &\to H_k(X^{n+1}, X^n), \end{aligned}$$
+      les deux groupes relatifs sont nuls pour $k < n$, par (i), et le dernier l'est pour $k = n$. L'inclusion $X^n \to X^{n+1}$ induit donc un isomorphisme en degré $k < n$ et une surjection en degré $n$. On compose les inclusions $X^n \subset X^{n+1} \subset \cdots \subset X^N = X$.
+    remarques:
+      - |
+        Le point (ii) dit que l'homologie s'arrête à la dimension. Il généralise le calcul des sphères ({{h-spheres|Homologie des sphères}}) et l'annulation de la cohomologie de $\mathbb RP^n$ au-delà du degré $n$, obtenue au nœud {{cup-projectif-dimension|ℝPⁿ au-delà de n}} par Mayer-Vietoris, sans cellules mais en suivant la même idée de recollement d'une boule.
+      - |
+        Le morphisme $H_n(X^n) \to H_n(X)$ n'est pas injectif en général. Le disque $D^2$ est un complexe cellulaire de squelette $X^1 = S^1$, obtenu à partir d'un point par une cellule de dimension $1$, auquel on attache une cellule de dimension $2$ par l'identité : $H_1(X^1) \cong \mathbb Z$, alors que $H_1(D^2) = 0$. C'est la cellule de dimension $2$ qui tue la classe du cercle.
+
+  - id: cw-complexe-cellulaire
+    etiquette: Homologie cellulaire
+    nature: théorème
+    titre: Le complexe cellulaire calcule l'homologie
+    texte: |
+      Soit $X$ un complexe cellulaire fini. Son **complexe cellulaire** $C^{\mathrm{cell}}(X)$ a pour groupes $C^{\mathrm{cell}}_n(X) = \lex{homologie-relative}{H_n}(X^n, X^{n-1})$, nuls pour $n < 0$, et pour bord la composée
+      $$d_n = j_{n-1} \circ \partial_n,$$
+      où $\partial_n : H_n(X^n, X^{n-1}) \to H_{n-1}(X^{n-1})$ est le morphisme de connexion de la paire $(X^n, X^{n-1})$ et $j_{n-1} : H_{n-1}(X^{n-1}) \to H_{n-1}(X^{n-1}, X^{n-2})$ le morphisme induit par l'inclusion ({{cw-relative|Homologie relative}}, (i)).
+
+      On a $d_{n-1} \circ d_n = j_{n-2} \circ (\partial_{n-1} \circ j_{n-1}) \circ \partial_n = 0$, puisque $\partial_{n-1} \circ j_{n-1}$ est la composée de deux flèches consécutives de la suite exacte de la paire $(X^{n-1}, X^{n-2})$. L'[[homologie-cellulaire|homologie cellulaire]] $H^{\mathrm{cell}}_n(X)$ est l'homologie de ce [[complexe-chaines|complexe]].
+
+      Dans la base $(e_\alpha)$ du nœud {{cw-squelettes|Squelettes}}, (i), la naturalité du morphisme de connexion pour l'application de paires $\Phi_\alpha : (D^n, S^{n-1}) \to (X^n, X^{n-1})$ donne
+      $$d_n(e_\alpha) = j_{n-1}\big(\varphi_{\alpha*}(\partial\iota_n)\big),$$
+      où $\varphi_\alpha$ est l'application d'attachement de la cellule.
+    enonce: |
+      (i) Le morphisme $j_n : H_n(X^n) \to H_n(X^n, X^{n-1})$ est injectif, d'image $\operatorname{Ker} d_n$, et il induit, avec l'inclusion de $X^n$ dans $X$, un isomorphisme
+      $$H^{\mathrm{cell}}_n(X) \cong \lex{homologie-singuliere}{H_n}(X).$$
+
+      (ii) Chaque groupe $C^{\mathrm{cell}}_n(X)$ est isomorphe à $\mathbb Z^{c_n}$. Si $X$ n'a de cellule ni en dimension $n - 1$ ni en dimension $n + 1$, alors $H_n(X) \cong \mathbb Z^{c_n}$.
+    preuve: |
+      (i) *Injectivité.* Dans la suite exacte de la paire $(X^n, X^{n-1})$, $j_n$ est précédé de $H_n(X^{n-1})$, nul par {{cw-squelettes|Squelettes}}, (ii) : il est injectif, et son image est le noyau de $\partial_n$. De même $j_{n-1}$ est injectif, de sorte que
+      $$\operatorname{Ker} d_n = \operatorname{Ker} \partial_n = \operatorname{Im} j_n.$$
+
+      *Les bords.* L'image de $d_{n+1} = j_n \circ \partial_{n+1}$ est $j_n(\operatorname{Im}\partial_{n+1})$. L'isomorphisme $j_n$ de $H_n(X^n)$ sur $\operatorname{Ker} d_n$ induit donc un isomorphisme
+      $$\begin{aligned} &H_n(X^n)/\operatorname{Im}\partial_{n+1} \\ &\quad \cong \operatorname{Ker} d_n/\operatorname{Im} d_{n+1} = H^{\mathrm{cell}}_n(X). \end{aligned}$$
+
+      *Le squelette suivant.* Dans la suite exacte de la paire $(X^{n+1}, X^n)$,
+      $$\begin{aligned} H_{n+1}(X^{n+1}, X^n) &\xrightarrow{\partial_{n+1}} H_n(X^n) \\ &\to H_n(X^{n+1}) \\ &\to H_n(X^{n+1}, X^n) = 0, \end{aligned}$$
+      l'inclusion induit un isomorphisme de $H_n(X^n)/\operatorname{Im}\partial_{n+1}$ sur $H_n(X^{n+1})$ ({{a-isomorphisme|Théorème d'isomorphisme}}), et $H_n(X^{n+1}) \to H_n(X)$ est un isomorphisme ({{cw-squelettes|Squelettes}}, (iii)). On compose ces trois isomorphismes.
+
+      (ii) Le premier point est {{cw-squelettes|Squelettes}}, (i). S'il n'y a pas de cellule en dimension $n - 1$ ni $n + 1$, les groupes $C^{\mathrm{cell}}_{n-1}$ et $C^{\mathrm{cell}}_{n+1}$ sont nuls, $d_n = 0$ et $d_{n+1} = 0$, et $H^{\mathrm{cell}}_n(X) = C^{\mathrm{cell}}_n(X)$.
+    remarques:
+      - |
+        Le complexe cellulaire remplace le groupe gigantesque $C_n(X)$, libre sur tous les simplexes singuliers, par un groupe libre de rang $c_n$, le nombre de cellules. Le calcul de l'homologie d'un complexe cellulaire fini devient un calcul fini sur des matrices d'entiers, dont la forme normale de Smith, établie pour les modules de type fini sur un anneau principal hors de l'amont de cette théorie, donne directement les groupes ; c'est par elle que les exemples de ce chapitre ont été vérifiés.
+      - |
+        L'isomorphisme de (i) est canonique ; seule la base $(e_\alpha)$ dépend des générateurs $\iota_n$. Remplacer $\iota_n$ par $-\iota_n$ change le signe de tous les $e_\alpha$ de dimension $n$, donc des colonnes de la matrice de $d_n$ et des lignes de celle de $d_{n+1}$, sans changer l'homologie. Aucun choix n'intervient.
+      - |
+        Dualement, la cohomologie du complexe $\operatorname{Hom}(C^{\mathrm{cell}}(X), G)$ est isomorphe à la [[cohomologie-singuliere|cohomologie singulière]] $H^n(X; G)$ ({{hom-cohomologie|Cohomologie singulière}}) ; c'est la **cohomologie cellulaire**, admise ici. La difficulté contournée est double : il faut reprendre en cohomologie l'excision et l'homologie des squelettes, ce qui se fait par transposition, comme au chapitre de la cohomologie singulière, puis identifier $H^n(X^n, X^{n-1}; G)$ à $\operatorname{Hom}(H_n(X^n, X^{n-1}), G)$ de façon compatible avec les morphismes de connexion. Le raccourci par le théorème des coefficients universels n'est pas disponible sans choix pour le complexe singulier ({{cs-coefficients-universels|Coefficients universels}}, (ii)).
+
+  - id: cw-bord
+    etiquette: Bord cellulaire
+    nature: proposition
+    titre: Calcul du bord cellulaire
+    texte: |
+      Soit $X$ un complexe cellulaire fini, $e_\alpha$ une cellule de dimension $n$, $\varphi_\alpha$ son application d'attachement, et $e_\beta = \Phi_{\beta*}(\iota_{n-1})$ les éléments de la base de $C^{\mathrm{cell}}_{n-1}(X)$. On reprend les notations $\psi_i$ et $\Phi^{n-1}_\pm$ du nœud {{cw-exemples|Exemples}}.
+    enonce: |
+      (i) *Dimension $1$.* Pour une cellule de dimension $1$, avec $\iota_1 = [\sigma_1]$ ({{cw-disque|Paire du disque}}, (iii)), on a $d_1(e_\alpha) = [\Phi_\alpha(1)] - [\Phi_\alpha(-1)]$ dans $C^{\mathrm{cell}}_0(X) = H_0(X^0)$, groupe abélien libre sur les points de $X^0$.
+
+      (ii) *Réduction.* Si $S'$ est une partie fermée de $S^{n-1}$ telle que $\varphi_\alpha(S') \subset X^{n-2}$, alors
+      $$d_n(e_\alpha) = \varphi_{\alpha*}\big(j'(\partial\iota_n)\big),$$
+      où $j' : H_{n-1}(S^{n-1}) \to H_{n-1}(S^{n-1}, S')$ est induit par l'inclusion, et où $\varphi_\alpha$ est vue comme une application de paires $(S^{n-1}, S') \to (X^{n-1}, X^{n-2})$.
+
+      (iii) *Le long d'un mot.* Soit $n = 2$, $g \geqslant 1$, et supposons que, pour $1 \leqslant i \leqslant 4g$, $\varphi_\alpha \circ \psi_i(s) = \Phi_{\beta_i}(\varepsilon_is)$, avec $\beta_i$ une cellule de dimension $1$ et $\varepsilon_i = \pm 1$. Alors
+      $$d_2(e_\alpha) = \eta \sum_{i=1}^{4g} \varepsilon_i\,e_{\beta_i},$$
+      où $\eta = \pm 1$ ne dépend que de $\iota_2$ et des arcs $\psi_i$, et non de la cellule.
+
+      (iv) *Par hémisphères.* Soit $n \geqslant 2$, et supposons que $\varphi_\alpha$ envoie l'équateur $S^{n-2}$ de $S^{n-1}$ dans $X^{n-2}$, et que $\varphi_\alpha \circ \Phi^{n-1}_\pm = \Phi_{\beta_\pm} \circ L_\pm$, où $\beta_+$ et $\beta_-$ sont des cellules de dimension $n - 1$ et $L_\pm$ des composées de réflexions de $\mathbb R^{n-1}$. Alors
+      $$\begin{aligned} d_n(e_\alpha) = \eta\,\big(&\deg L_+ \cdot e_{\beta_+} \\ &- \deg L_- \cdot e_{\beta_-}\big), \end{aligned}$$
+      où $\deg L_\pm$ est le [[degre-application|degré]] de la restriction de $L_\pm$ à $S^{n-2}$, et $\eta = \pm 1$ ne dépend que de $n$ et des générateurs $\iota_n$, $\iota_{n-1}$.
+    preuve: |
+      (i) On a $j_0 = \mathrm{id}$, puisque $X^{-1}$ est vide. Par la formule du nœud {{cw-complexe-cellulaire|Homologie cellulaire}}, $d_1(e_\alpha) = \varphi_{\alpha*}(\partial\iota_1)$, et $\partial\iota_1 = [1] - [-1]$ ({{cw-disque|Paire du disque}}, (iii)). Le groupe $H_0(X^0)$ est libre sur les points de l'espace discret $X^0$ ({{h-degre0|Degré 0, point}}, (ii)).
+
+      (ii) L'application $\varphi_\alpha$ est une application de paires de $(S^{n-1}, S')$ dans $(X^{n-1}, X^{n-2})$, et les morphismes induits par les inclusions commutent avec elle ({{cw-relative|Homologie relative}}, (ii)) : $j_{n-1} \circ \varphi_{\alpha*} = \varphi_{\alpha*} \circ j'$ sur $H_{n-1}(S^{n-1})$. On applique la formule du nœud {{cw-complexe-cellulaire|Homologie cellulaire}}.
+
+      (iii) Par le point (iii) du nœud {{cw-exemples|Exemples}}, le cercle s'obtient à partir de l'ensemble fini $V$ par l'attachement des arcs $\psi_i$, et $H_1(S^1, V)$ est libre de base les $u_i = \psi_{i*}(\iota_1)$ ({{cw-cellules-relatives|Homologie d'un attachement}}). Les sommets $v_i = h^{-1}(w_i)$ vérifient $\psi_i(-1) = v_{i-1}$ et $\psi_i(1) = v_i$, les indices étant pris modulo $4g$.
+
+      Dans la suite exacte de la paire $(S^1, V)$, $H_1(V) = 0$, puisque $V$ est fini et discret, réunion de points ouverts disjoints ({{cw-disque|Paire du disque}}, (i), et {{h-degre0|Degré 0, point}}, (i)), et $j'$ est injectif, d'image le noyau de $\partial : H_1(S^1, V) \to H_0(V)$. Comme en (i), $\partial u_i = [v_i] - [v_{i-1}]$, d'où
+      $$\partial\Big(\sum_i c_iu_i\Big) = \sum_i (c_i - c_{i+1})[v_i] ;$$
+      ce bord est nul si et seulement si tous les $c_i$ sont égaux. L'image de $j'$ est donc engendrée par $\sum_i u_i$ ; comme $\partial\iota_2$ engendre $H_1(S^1) \cong \mathbb Z$ ({{cw-disque|Paire du disque}}, (ii)), $j'(\partial\iota_2) = \eta\sum_i u_i$, avec $\eta = \pm 1$.
+
+      On applique (ii) avec $S' = V$, envoyé sur $X^0$ puisque $\Phi_\beta(\pm 1) \in X^0$. La composée $\varphi_\alpha \circ \psi_i$ est $\Phi_{\beta_i} \circ L_i$, avec $L_i(s) = \varepsilon_is$, et $L_{i*}\iota_1 = \varepsilon_i\iota_1$ ({{cw-degre|Degré}}, (iii) et (ii), l'application $-\mathrm{id}$ de $S^0$ étant une réflexion). Donc $\varphi_{\alpha*}(u_i) = \varepsilon_ie_{\beta_i}$.
+
+      (iv) Par le point (ii) du nœud {{cw-exemples|Exemples}}, appliqué à $S^{n-1}$, la sphère $S^{n-1}$ s'obtient à partir de son équateur $S^{n-2}$ par l'attachement des deux hémisphères $\Phi^{n-1}_\pm$, et $H_{n-1}(S^{n-1}, S^{n-2})$ est libre de base $u_\pm = \Phi^{n-1}_{\pm*}(\iota_{n-1})$ ({{cw-cellules-relatives|Homologie d'un attachement}}). Le morphisme $j'$ est injectif, puisque $H_{n-1}(S^{n-2}) = 0$ ({{h-spheres|Homologie des sphères}}, $n - 1 > n - 2$), et son image est le noyau de $\partial'$, morphisme de connexion de la paire.
+
+      Soit $r$ la réflexion de la dernière coordonnée de $\mathbb R^n$, de degré $-1$ sur $S^{n-1}$ ({{cw-degre|Degré}}, (ii)). Elle fixe l'équateur et échange les hémisphères, $r \circ \Phi^{n-1}_\pm = \Phi^{n-1}_\mp$, donc $r_*u_\pm = u_\mp$. Si $j'(\partial\iota_n) = au_+ + bu_-$, alors
+      $$\begin{aligned} au_- + bu_+ &= r_*j'(\partial\iota_n) \\ &= j'(r_*\partial\iota_n) = -au_+ - bu_-, \end{aligned}$$
+      d'où $b = -a$.
+
+      Les deux hémisphères ont la même restriction à $S^{n-2}$, de sorte que $\partial'u_+ = \partial'u_-$ ({{cw-relative|Homologie relative}}, (ii)) : $u_+ - u_-$ appartient au noyau de $\partial'$, donc à l'image de $j'$. Comme $\partial\iota_n$ engendre $H_{n-1}(S^{n-1})$, il existe un entier $c$ tel que $u_+ - u_- = c\,a\,(u_+ - u_-)$, d'où $ca = 1$ et $a = \pm 1$.
+
+      Ainsi $j'(\partial\iota_n) = \eta(u_+ - u_-)$. On applique (ii) avec $S' = S^{n-2}$ : $\varphi_{\alpha*}(u_\pm) = \Phi_{\beta_\pm*}(L_{\pm*}\iota_{n-1}) = \deg L_\pm \cdot e_{\beta_\pm}$ ({{cw-degre|Degré}}, (iii)).
+    remarques:
+      - |
+        Le point (iii) se lit sur le mot d'attachement : on remplace chaque lettre par la cellule correspondante, affectée du signe $+$ ou $-$ selon le sens de parcours, et l'on additionne ; c'est le mot rendu commutatif. Pour le mot $aba^{-1}b$, qui définit la bouteille de Klein, on trouve $d_2 = \pm 2e_b$, d'où $H_1 \cong \mathbb Z \oplus \mathbb Z/2\mathbb Z$ et $H_2 = 0$ : l'espace obtenu, la bouteille de Klein, dont on admet qu'elle est une surface, a de la torsion, ce que la forme normale de Smith de la matrice $\binom{0}{2}$ confirme.
+      - |
+        Dans le cas général, le coefficient de $e_\beta$ dans $d_n(e_\alpha)$ est le degré de la composée de $\varphi_\alpha$ et de la projection de $X^{n-1}$ sur le quotient $X^{n-1}/(X^{n-1} \setminus e_\beta)$, identifié à $S^{n-1}$ ; c'est la formule du bord cellulaire telle que l'énonce A. Hatcher (*Algebraic Topology*, Cambridge University Press, 2002), admise ici. La difficulté contournée est l'identification de ce quotient à une sphère, compatible avec les isomorphismes du nœud {{cw-bonnes-paires|Paires de bon type}}, puis le calcul de ces degrés par des degrés locaux ; les cas (i), (iii) et (iv) suffisent à tous les exemples du chapitre.
+      - |
+        L'erreur la plus répandue, en (iv), est d'oublier le degré de $L_-$ : les deux hémisphères d'une sphère n'ont pas la même orientation vis-à-vis de l'équateur, et c'est la différence $u_+ - u_-$, et non la somme, qui est un cycle.
+
+  - id: cw-surfaces
+    etiquette: Tore et surfaces
+    nature: théorème
+    titre: Homologie des sphères, du tore et des surfaces
+    enonce: |
+      (i) Pour $n \geqslant 1$, la structure à deux cellules de $S^n$ redonne $H_k(S^n) \cong \mathbb Z$ pour $k \in \{0, n\}$, et $H_k(S^n) = 0$ sinon.
+
+      (ii) Pour le [[tore]], $H_0(T) \cong \mathbb Z$, $H_1(T) \cong \mathbb Z^2$, de base les classes des lacets $a$ et $b$ vus comme simplexes de dimension $1$, $H_2(T) \cong \mathbb Z$, et $H_k(T) = 0$ pour $k \geqslant 3$.
+
+      (iii) Pour la [[surface-genre|surface de genre $g$]], $H_0(\Sigma_g) \cong \mathbb Z$, $H_1(\Sigma_g) \cong \mathbb Z^{2g}$, $H_2(\Sigma_g) \cong \mathbb Z$, et $H_k(\Sigma_g) = 0$ pour $k \geqslant 3$. Pour $g \neq g'$, les surfaces $\Sigma_g$ et $\Sigma_{g'}$ ne sont pas homotopiquement équivalentes, et aucune n'est homotopiquement équivalente à $S^2$.
+    preuve: |
+      (i) Le complexe cellulaire a $\mathbb Z$ en degrés $0$ et $n$, et $0$ ailleurs ({{cw-exemples|Exemples}}, (i)). Pour $n \geqslant 2$, tous les bords sont nuls, faute de groupes voisins non nuls ; pour $n = 1$, $d_1(e) = [\Phi(1)] - [\Phi(-1)] = [S] - [S] = 0$ ({{cw-bord|Bord cellulaire}}, (i)). On conclut par {{cw-complexe-cellulaire|Homologie cellulaire}}, (i). Ce calcul n'est pas une nouvelle démonstration de {{h-spheres|Homologie des sphères}}, sur laquelle repose la paire du disque ; il en est une vérification.
+
+      (ii) *Les bords.* Les deux cellules de dimension $1$ ont leurs deux extrémités en $x_0$ : $d_1 = 0$ ({{cw-bord|Bord cellulaire}}, (i)). Pour la cellule $\Phi_c$, avec $g = 1$ et les sommets $(-1, -1)$, $(1, -1)$, $(1, 1)$, $(-1, 1)$ de $Q$, on calcule $\lambda_1(s) = (s, -1)$, $\lambda_2(s) = (1, s)$, $\lambda_3(s) = (-s, 1)$, $\lambda_4(s) = (-1, -s)$, puis
+      $$\begin{aligned} A(\lambda_1(s)) &= \big(\tfrac{1+s}2, 0\big), \\ A(\lambda_2(s)) &= \big(1, \tfrac{1+s}2\big), \\ A(\lambda_3(s)) &= \big(\tfrac{1-s}2, 1\big), \\ A(\lambda_4(s)) &= \big(0, \tfrac{1-s}2\big). \end{aligned}$$
+      Comme $P(1, v) = P(0, v)$ et $P(u, 1) = P(u, 0)$, il vient $\varphi_c \circ \psi_i(s) = \Phi_a(s)$, $\Phi_b(s)$, $\Phi_a(-s)$, $\Phi_b(-s)$ : la cellule est attachée le long du mot $aba^{-1}b^{-1}$, et
+      $$d_2(e_c) = \eta\,(e_a + e_b - e_a - e_b) = 0$$
+      ({{cw-bord|Bord cellulaire}}, (iii)).
+
+      ```schema cw-surfaces
+      Le tore est le carré $C$ dont on recolle les côtés opposés : les deux côtés horizontaux sont la cellule $a$, en rouge, les deux côtés verticaux la cellule $b$, en bleu, et les quatre coins le point $x_0$. En parcourant le bord dans le sens direct à partir du coin inférieur gauche, on lit $a$, $b$, $a^{-1}$, $b^{-1}$ : chaque cellule est rencontrée deux fois, en sens opposés, et le bord cellulaire de la cellule de dimension $2$ est nul.
+      ```
+
+      *L'homologie.* Le complexe cellulaire est $\mathbb Z \xleftarrow{0} \mathbb Z^2 \xleftarrow{0} \mathbb Z$, d'homologie $\mathbb Z$, $\mathbb Z^2$, $\mathbb Z$. Par l'isomorphisme du nœud {{cw-complexe-cellulaire|Homologie cellulaire}}, (i), la base $e_a$, $e_b$ de $H^{\mathrm{cell}}_1$ correspond aux classes, dans $H_1(X^1)$ puis dans $H_1(T)$, des cycles $\Phi_a \circ \sigma_1$ et $\Phi_b \circ \sigma_1$. Or
+      $$\begin{aligned} \Phi_a \circ \sigma_1(t_0, t_1) &= P\big(\tfrac{1 + t_1 - t_0}2, 0\big) \\ &= P(t_1, 0), \end{aligned}$$
+      qui est le lacet $a$, paramétré par $t_1$ comme au nœud {{h-degre0|Degré 0, point}} ; de même pour $b$.
+
+      (iii) La cellule de dimension $0$ étant unique, $d_1 = 0$. La cellule de dimension $2$ est attachée le long du mot $a_1b_1a_1^{-1}b_1^{-1} \cdots a_gb_ga_g^{-1}b_g^{-1}$ ({{cw-exemples|Exemples}}, (vi)), où chaque lettre apparaît deux fois, avec des signes opposés. Par {{cw-bord|Bord cellulaire}}, (iii),
+      $$\begin{aligned} d_2(e) &= \eta\sum_{k=1}^g \big(e_{a_k} + e_{b_k} - e_{a_k} - e_{b_k}\big) \\ &= 0. \end{aligned}$$
+      Le complexe cellulaire est $\mathbb Z \xleftarrow{0} \mathbb Z^{2g} \xleftarrow{0} \mathbb Z$.
+
+      ```schema cw-surfaces-2
+      Pour $g = 2$, les huit segments du bord du carré, envoyés radialement sur le cercle, ont pour extrémités huit points régulièrement espacés : on dessine l'octogone régulier correspondant. Ses côtés sont recollés selon le mot $a_1b_1a_1^{-1}b_1^{-1}a_2b_2a_2^{-1}b_2^{-1}$, lu dans le sens direct à partir du sommet inférieur gauche ; les flèches indiquent le sens de chaque cellule, et les huit sommets sont un seul point.
+      ```
+
+      *Équivalences d'homotopie.* Une équivalence d'homotopie induit des isomorphismes en homologie ({{h-homotopie|Invariance par homotopie}}, (ii)). Or $\mathbb Z^{2g}$ et $\mathbb Z^{2g'}$ ne sont pas isomorphes pour $g \neq g'$, puisque leurs quotients par les sous-groupes des éléments pairs ont $2^{2g}$ et $2^{2g'}$ éléments ({{hj-reduite|Homologie réduite}}, preuve de (ii)) ; et $H_1(S^2) = 0$.
+    remarques:
+      - |
+        Le groupe $H_1(T) \cong \mathbb Z^2$ est le groupe fondamental du tore, qui est commutatif ({{vk-tore|Tore}}). De même, $H_1(\Sigma_g) \cong \mathbb Z^{2g}$ est le groupe $\langle a_1, \dots, b_g \mid a_1b_1a_1^{-1}b_1^{-1} \cdots a_gb_ga_g^{-1}b_g^{-1} \rangle$ rendu commutatif, la relation devenant triviale ; le groupe fondamental de $\Sigma_g$ et le théorème de Hurewicz, qui relierait les deux, sont admis ici.
+      - |
+        Le générateur de $H_2(\Sigma_g)$ est la cellule de dimension $2$ elle-même : son bord est nul parce que chaque côté du polygone est recollé à un autre côté parcouru en sens inverse. C'est la **classe fondamentale** de la surface. Le recollement de la bouteille de Klein, qui identifie deux côtés dans le même sens ({{cw-bord|Bord cellulaire}}), la détruit.
+
+  - id: cw-projectifs
+    etiquette: Homologie de ℝPⁿ
+    nature: théorème
+    titre: Homologie des espaces projectifs réels
+    enonce: |
+      Soit $n \geqslant 1$, et $e_k$ la cellule de dimension $k$ de $\lex{espace-projectif-reel}{\mathbb RP^n}$ ({{cw-exemples|Exemples}}, (iv)).
+
+      (i) Pour $1 \leqslant k \leqslant n$, $d_k(e_k) = \pm\big(1 + (-1)^k\big)\,e_{k-1}$ : le bord est nul en dimension impaire, et vaut $\pm 2e_{k-1}$ en dimension paire.
+
+      (ii) Par conséquent, $H_0(\mathbb RP^n) \cong \mathbb Z$, $H_k(\mathbb RP^n) \cong \mathbb Z/2\mathbb Z$ pour $k$ impair, $0 < k < n$, $H_n(\mathbb RP^n) \cong \mathbb Z$ si $n$ est impair, et $H_k(\mathbb RP^n) = 0$ dans tous les autres cas.
+    preuve: |
+      (i) Pour $k = 1$, $d_1(e_1) = [\Psi_1(1)] - [\Psi_1(-1)] = [q(1, 0)] - [q(-1, 0)] = 0$ ({{cw-bord|Bord cellulaire}}, (i)), les deux points $(\pm 1, 0)$ ayant la même classe.
+
+      Soit $k \geqslant 2$. L'application d'attachement $\varphi$ de $\Psi_k$ est $z \mapsto q(z)$ sur $S^{k-1}$ ({{cw-exemples|Exemples}}, (iv)). Elle envoie l'équateur $S^{k-2}$ sur $q(S^{k-2}) = X^{k-2}$, et, pour $w \in D^{k-1}$,
+      $$\begin{aligned} \varphi\big(\Phi^{k-1}_+(w)\big) &= q\big(w, \sqrt{1 - \|w\|^2}\big) \\ &= \Psi_{k-1}(w), \\ \varphi\big(\Phi^{k-1}_-(w)\big) &= q\big(-w, \sqrt{1 - \|w\|^2}\big) \\ &= \Psi_{k-1}(-w), \end{aligned}$$
+      puisque $q(x) = q(-x)$. Le point (iv) du nœud {{cw-bord|Bord cellulaire}} s'applique, avec $L_+ = \mathrm{id}$ et $L_- = -\mathrm{id}$, de degré $(-1)^{k-1}$ sur $S^{k-2}$ ({{cw-degre|Degré}}, (ii)) :
+      $$\begin{aligned} d_k(e_k) &= \eta\,\big(1 - (-1)^{k-1}\big)\,e_{k-1} \\ &= \eta\,\big(1 + (-1)^k\big)\,e_{k-1}. \end{aligned}$$
+
+      ```schema cw-projectifs
+      Pour $\mathbb RP^2$, le disque est l'hémisphère supérieur de $S^2$ vu d'en haut, image de la cellule de dimension $2$. Son bord est recollé par l'antipodie : l'arc supérieur, en rouge, est la cellule de dimension $1$, et l'arc inférieur, en pointillé, lui est identifié point par point, comme $z$ et $-z$. Les flèches montrent que le bord parcourt deux fois la cellule de dimension $1$ dans le même sens : $d_2(e_2) = \pm 2e_1$.
+      ```
+
+      (ii) Le complexe cellulaire est $\mathbb Z$ en chaque degré $0 \leqslant k \leqslant n$, avec $d_k = 0$ pour $k$ impair et $d_k = \pm 2$ pour $k$ pair. En degré $0$, $H_0 = \mathbb Z$. En degré $k$ impair avec $0 < k < n$, le noyau de $d_k$ est $\mathbb Z$ et l'image de $d_{k+1}$ est $2\mathbb Z$, d'où $\mathbb Z/2\mathbb Z$. En degré $k$ pair, $k \geqslant 2$, le noyau de la multiplication par $\pm 2$ est nul. En degré $n$ impair, il n'y a pas de cellule de dimension $n + 1$, et $H_n = \mathbb Z$. On conclut par {{cw-complexe-cellulaire|Homologie cellulaire}}, (i).
+    remarques:
+      - |
+        Le nœud {{cup-projectif|Anneau de ℝPⁿ}} a obtenu $H^k(\mathbb RP^n; \mathbb F_2) \cong \mathbb F_2$ pour $0 \leqslant k \leqslant n$, sans cellules et sans choix, par la suite exacte du revêtement double. Le théorème des coefficients universels ({{cs-coefficients-universels|Coefficients universels}}), dont la démonstration emploie le choix pour le complexe singulier, prédit ce résultat à partir de (ii) : en degré $k$ impair, $\operatorname{Hom}(H_k, \mathbb F_2) \cong \mathbb F_2$ et $\operatorname{Ext}(H_{k-1}, \mathbb F_2) = 0$, puisque $H_{k-1}$ est nul ou isomorphe à $\mathbb Z$ ; en degré pair $k \geqslant 2$, $\operatorname{Hom}(H_k, \mathbb F_2) = 0$ et $\operatorname{Ext}(\mathbb Z/2\mathbb Z, \mathbb F_2) \cong \mathbb F_2$. Les deux calculs concordent ; seul le premier est sans choix.
+      - |
+        La concordance se voit aussi sur les cellules : réduits modulo $2$, les bords $\pm(1 + (-1)^k)$ sont tous nuls, et le complexe $\operatorname{Hom}(C^{\mathrm{cell}}(\mathbb RP^n), \mathbb F_2)$ a un cobord nul et un $\mathbb F_2$ en chaque degré de $0$ à $n$. L'identification de cette cohomologie cellulaire à la cohomologie singulière est admise ici ({{cw-complexe-cellulaire|Homologie cellulaire}}).
+      - |
+        Le groupe $H_1(\mathbb RP^n) \cong \mathbb Z/2\mathbb Z$, pour $n \geqslant 2$, est le groupe fondamental $\lex{groupe-fondamental}{\pi_1}(\mathbb RP^n)$, commutatif ({{rv-projectif|Espaces projectifs}}) ; pour $n = 1$, $H_1(\mathbb RP^1) \cong \mathbb Z$, comme pour un cercle. Le groupe $H_n(\mathbb RP^n)$ vaut $\mathbb Z$ exactement quand $n$ est impair : c'est le signe homologique de l'orientabilité, que l'on ne développe pas.
+      - |
+        Le même procédé s'applique à l'espace projectif complexe $\mathbb CP^n$, quotient de la sphère unité de $\mathbb C^{n+1}$ par les nombres complexes de module $1$, qui porte une structure cellulaire à une cellule en chaque dimension paire $0, 2, \dots, 2n$. Faute de cellules en dimension impaire, tous les bords sont nuls, et $H_k(\mathbb CP^n) \cong \mathbb Z$ pour $k$ pair au plus $2n$, $0$ sinon ({{cw-complexe-cellulaire|Homologie cellulaire}}, (ii)). La structure cellulaire est admise ici, les nombres complexes n'étant pas en amont de cette théorie.
+
+  - id: cw-euler
+    etiquette: Euler-Poincaré
+    nature: théorème
+    titre: Caractéristique d'Euler-Poincaré
+    texte: |
+      La [[caracteristique-euler|caractéristique d'Euler-Poincaré]] d'un complexe cellulaire fini $X$ de dimension $N$ est
+      $$\lex{caracteristique-euler}{\chi}(X) = \sum_{n=0}^N (-1)^n c_n,$$
+      où $c_n$ est le nombre de cellules de dimension $n$. Pour un groupe abélien $G$, on note $2G = \{2g : g \in G\}$ et $G[2] = \{g \in G : 2g = 0\}$ ; les produits ci-dessous sont des produits finis de nombres rationnels ({{n-sommes|Sommes finies}}).
+    enonce: |
+      (i) *Lagrange.* Si $G$ est un groupe abélien fini et $H$ un sous-groupe, $|G| = |H| \cdot |G/H|$.
+
+      (ii) Si $C$ est un complexe de groupes abéliens finis, nul hors des degrés $0$ à $N$, alors
+      $$\prod_{k=0}^N |C_k|^{(-1)^k} = \prod_{k=0}^N |H_k(C)|^{(-1)^k}.$$
+
+      (iii) Si $C$ est un complexe nul hors des degrés $0$ à $N$, de groupes $C_k \cong \mathbb Z^{c_k}$, les groupes $H_k(C)/2H_k(C)$ et $H_k(C)[2]$ sont finis, et
+      $$\begin{aligned} &2^{\sum_k (-1)^kc_k} \\ &\quad = \prod_{k=0}^N \left(\frac{|H_k(C)/2H_k(C)|}{|H_k(C)[2]|}\right)^{(-1)^k}. \end{aligned}$$
+
+      (iv) Pour un complexe cellulaire fini $X$,
+      $$\begin{aligned} &2^{\chi(X)} \\ &\quad = \prod_{k} \left(\frac{|H_k(X)/2H_k(X)|}{|H_k(X)[2]|}\right)^{(-1)^k}. \end{aligned}$$
+      La caractéristique ne dépend donc que des groupes d'homologie de $X$ : deux structures cellulaires sur un même espace, ou sur des espaces homotopiquement équivalents, ont la même caractéristique.
+
+      (v) $\chi(S^n) = 1 + (-1)^n$, $\chi(T) = 0$, $\chi(\Sigma_g) = 2 - 2g$ et $\chi(\mathbb RP^n) = \frac{1 + (-1)^n}2$.
+    preuve: |
+      (i) Les classes $x + H$ forment une partition de $G$ ({{a-distingue|Sous-groupe distingué}}), et chacune est en bijection avec $H$ par $h \mapsto x + h$. Pour un ensemble fini $E$, la fonction $A \mapsto |A|$ sur les parties de $E$ vérifie la relation qui caractérise $A \mapsto \sum_{e \in A} 1$, puisque $|A \cup \{e\}| = |A| + 1$ pour $e \notin A$ ({{n-fini|Ensembles finis}}, preuve de (iii)) ; donc $|E| = \sum_{e \in E} 1$ ({{n-sommes|Sommes finies}}, (i)). L'associativité généralisée (même nœud, (iii)) donne alors
+      $$\begin{aligned} |G| &= \sum_{x + H \in G/H} |x + H| \\ &= \sum_{c \in G/H} |H| = |G/H| \cdot |H|, \end{aligned}$$
+      la dernière égalité étant la somme d'une constante sur un ensemble à $|G/H|$ éléments.
+
+      (ii) Notons $Z_k$ et $B_k$ les cycles et les bords, avec $B_{-1} = 0$ et $B_N = 0$. Le bord induit un isomorphisme $C_k/Z_k \cong B_{k-1}$ ({{a-isomorphisme|Théorème d'isomorphisme}}), et $H_k = Z_k/B_k$. Par (i), $|C_k| = |Z_k|\,|B_{k-1}|$ et $|Z_k| = |B_k|\,|H_k|$, d'où
+      $$\begin{aligned} \prod_k |C_k|^{(-1)^k} &= \prod_k |H_k|^{(-1)^k} \\ &\quad \times \prod_k \big(|B_k|\,|B_{k-1}|\big)^{(-1)^k}. \end{aligned}$$
+      Dans le dernier produit, chaque $|B_k|$ apparaît avec les exposants $(-1)^k$ et $(-1)^{k+1}$, de somme nulle : il vaut $1$.
+
+      (iii) La multiplication par $2$ est un morphisme de complexes injectif de $C$ dans lui-même, puisque $\mathbb Z^{c_k}$ n'a pas d'élément non nul d'ordre $2$ ; son conoyau est le complexe $C/2C$, de groupes $C_k/2C_k$ à $2^{c_k}$ éléments ({{hj-reduite|Homologie réduite}}, preuve de (ii)). La suite exacte longue ({{h-suite-exacte|Suite exacte longue}}) de $0 \to C \xrightarrow{2} C \to C/2C \to 0$ contient
+      $$\begin{aligned} H_k(C) &\xrightarrow{2} H_k(C) \to H_k(C/2C) \\ &\to H_{k-1}(C) \xrightarrow{2} H_{k-1}(C), \end{aligned}$$
+      d'où une suite exacte courte
+      $$\begin{aligned} 0 \to H_k(C)/2H_k(C) &\to H_k(C/2C) \\ &\to H_{k-1}(C)[2] \to 0. \end{aligned}$$
+
+      Le groupe $H_k(C/2C)$ est fini, comme quotient d'un sous-groupe du groupe fini $C_k/2C_k$ ; les deux autres le sont donc, et $|H_k(C/2C)| = |H_k(C)/2H_k(C)| \cdot |H_{k-1}(C)[2]|$ par (i). On applique (ii) à $C/2C$ : le membre de gauche vaut $2^{\sum_k (-1)^kc_k}$. Dans le membre de droite, chaque $|H_k(C)[2]|$, pour $k \leqslant N - 1$, apparaît avec l'exposant $(-1)^{k+1}$, et $|H_N(C)[2]| = 1$, puisque $H_N(C)$ est un sous-groupe de $C_N \cong \mathbb Z^{c_N}$ ; on obtient la formule annoncée.
+
+      (iv) On applique (iii) au complexe cellulaire, dont les groupes sont les $\mathbb Z^{c_k}$ ({{cw-complexe-cellulaire|Homologie cellulaire}}, (ii)), et dont l'homologie est isomorphe à celle de $X$ (même nœud, (i)). Des groupes isomorphes ont des quotients et des sous-groupes isomorphes, et une équivalence d'homotopie induit des isomorphismes en homologie ({{h-homotopie|Invariance par homotopie}}, (ii)).
+
+      (v) On compte les cellules ({{cw-exemples|Exemples}}) : $1 + (-1)^n$ pour la sphère, $1 - 2 + 1$ pour le tore, $1 - 2g + 1$ pour $\Sigma_g$, et $\sum_{k=0}^n (-1)^k$ pour $\mathbb RP^n$.
+    remarques:
+      - |
+        La structure à deux cellules de $S^n$ et celle des hémisphères, à $2n + 2$ cellules, donnent $1 + (-1)^n$ et $\sum_{k=0}^n 2(-1)^k$, qui sont égaux : c'est l'indépendance de (iv) sur un exemple. Pour la sphère $S^2$, découpée comme le bord d'un polyèdre convexe en $S$ sommets, $A$ arêtes et $F$ faces, on retrouve la relation $S - A + F = 2$, publiée par Euler (*Elementa doctrinae solidorum*, Novi Commentarii Academiae Scientiarum Petropolitanae 4, 1758, p. 109-140, mémoire écrit en 1750) ; que le bord d'un polyèdre convexe soit ainsi un complexe cellulaire homéomorphe à $S^2$ est admis ici.
+      - |
+        Poincaré a relié cette somme alternée aux nombres de Betti, au paragraphe 16 de l'*Analysis situs* (*Journal de l'École polytechnique*, 2e série, 1, 1895). La forme habituelle est $\chi(X) = \sum_k (-1)^k \operatorname{rg} H_k(X)$, où le rang est celui d'un groupe abélien de type fini ; la notion de rang demande le théorème de structure des groupes abéliens de type fini, ou le produit tensoriel par $\mathbb Q$, absents de l'amont de cette théorie, et le comptage modulo $2$ de (iii) la contourne. Les $H_k(X)$ sont bien de type fini, comme quotients de sous-groupes de $\mathbb Z^{c_k}$ ({{cs-projectifs|Groupes projectifs}}, (iii)), mais la démonstration n'en a pas besoin. Le nombre premier $2$ pourrait être remplacé par n'importe quel autre.
+      - |
+        La caractéristique n'est pas un invariant complet : le cercle et le tore ont tous deux une caractéristique nulle, et des groupes $H_1$ différents. L'erreur serait aussi de croire que la torsion y contribue : pour $\mathbb RP^2$, $\chi = 1$, et le facteur $\mathbb Z/2\mathbb Z$ de $H_1$ compte pour $\frac{2}{2} = 1$ dans le produit de (iv).
+
+aretes:
+  - [cw-recollement, cw-bonnes-paires]
+  - [cw-recollement, cw-complexes]
+  - [cw-relative, cw-excision]
+  - [cw-relative, cw-disque]
+  - [cw-excision, cw-bonnes-paires]
+  - [cw-cinq, cw-bonnes-paires]
+  - [cw-disque, cw-degre]
+  - [cw-complexes, cw-attachement]
+  - [cw-attachement, cw-exemples]
+  - [cw-complexes, cw-cellules-relatives]
+  - [cw-bonnes-paires, cw-cellules-relatives]
+  - [cw-disque, cw-cellules-relatives]
+  - [cw-cellules-relatives, cw-squelettes]
+  - [cw-squelettes, cw-complexe-cellulaire]
+  - [cw-complexe-cellulaire, cw-bord]
+  - [cw-degre, cw-bord]
+  - [cw-exemples, cw-bord]
+  - [cw-bord, cw-surfaces]
+  - [cw-bord, cw-projectifs]
+  - [cw-surfaces, cw-euler]
+  - [cw-projectifs, cw-euler]
