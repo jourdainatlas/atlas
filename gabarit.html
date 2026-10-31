@@ -628,7 +628,9 @@ a.acc-etape:hover { background: var(--trame); }
 
 /* ---- exercices */
 .banque { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 24px; align-items: start; }
-.filtres { padding: 14px 16px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; position: sticky; top: 16px; }
+.filtres { padding: 14px 16px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; position: sticky; top: 16px;
+  /* Colonne défilable à part, comme .cote : on atteint le bas des filtres sans faire défiler la banque. */
+  max-height: calc(100vh - 104px); max-height: calc(100dvh - 104px); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
 .filtres > div { min-width: 0; }
 .filtres label { display: flex; gap: 8px; align-items: center; font-size: 13.5px; cursor: pointer; }
 .filtres select { width: 100%; max-width: 100%; font: inherit; font-size: 13.5px; padding: 5px 6px; border: 1px solid var(--filet); border-radius: 6px; background: var(--surface); color: var(--encre); }
@@ -899,6 +901,7 @@ span.case:hover { border-style: dashed; color: inherit; }
   .lecture, .banque, .apropos { grid-template-columns: minmax(0, 1fr); }
   .cote, .filtres, .profil { position: static; }
   .cote { max-height: none; overflow: visible; padding: 0; margin: 0; }
+  .filtres { max-height: none; overflow: visible; }
   .lecteur-raccourci { display: flex; justify-content: flex-end; align-items: flex-start; position: sticky; bottom: 14px; height: 0; padding-right: 12px; z-index: 2; pointer-events: none; }
   .lecteur-raccourci button { flex: none; white-space: nowrap; pointer-events: auto; transform: translateY(-100%); border: 1px solid var(--filet); background: var(--surface); color: var(--encre);
     opacity: .94; border-radius: 999px; padding: 7px 13px; font-family: var(--f-ui); font-size: 13px; box-shadow: var(--ombre); cursor: pointer; }
@@ -1993,14 +1996,14 @@ function vueExercices(E, enChargement) {
   for (const e of tous) for (const m of e.mots_cles || []) compte.set(m, (compte.get(m) || 0) + 1);
   const themes = [...compte.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'fr'));
   const typesPresents = (E.types || []).filter(t => tous.some(e => (e.types || []).includes(t)));
-  let h = '<div class="banque"><aside class="filtres carte" aria-label="Filtres">';
+  let h = '<div class="banque"><aside class="filtres carte" aria-label="Filtres"><button type="button" class="cote-retour" data-vers-resultats>↓ Aller aux exercices</button>';
   h += `<div><h3 class="titre-bloc">Rechercher</h3><input class="recherche-exo" type="search" data-filtre="q" value="${esc(etatExo.q).replace(/"/g, '&quot;')}" placeholder="récurrence, limite, géométrique…" aria-label="Rechercher un exercice par thème" list="themes-exo"><datalist id="themes-exo">${themes.map(([m]) => `<option value="${esc(m)}">`).join('')}</datalist></div>`;
   h += `<div><h3 class="titre-bloc">Thèmes</h3><div class="puces-chips themes">${themes.map(([m, k], i) => `<button type="button" class="chip${i >= 14 && !etatExo.themes.has(m) && !etatExo.tousThemes ? ' cache' : ''}" data-filtre="theme" value="${esc(m)}" aria-pressed="${etatExo.themes.has(m)}">${esc(m)} <span class="compte">${k}</span></button>`).join('')}</div>${themes.length > 14 ? `<button type="button" class="lien-simple plus-themes" data-plus-themes="1">${etatExo.tousThemes ? 'Moins de thèmes' : `Tous les thèmes (${themes.length})`}</button>` : ''}</div>`;
   if (niveaux.length > 1) h += `<div><h3 class="titre-bloc">Niveau</h3>${niveaux.map(n => `<label><input type="checkbox" data-filtre="niveau" value="${n}" ${etatExo.niveaux.has(n) ? 'checked' : ''}> ${niveauDe(n).titre} <span class="compte" style="margin-left:auto;color:var(--encre-3);font-size:12px">${tous.filter(e => feuilleDe(e.feuille).niveau === n).length}</span></label>`).join('')}</div>`;
   h += `<div><h3 class="titre-bloc">Difficulté</h3><div class="niveaux-diff">${[1, 2, 3, 4].map(k => `<button type="button" data-filtre="diff" value="${k}" aria-pressed="${etatExo.diff.has(k)}" title="${['Application directe', 'Mise en œuvre', 'Problème structuré', 'Problème long'][k - 1]} (${tous.filter(e => e.etoiles === k).length})">${difficulte(k)}</button>`).join('')}</div></div>`;
   h += `<div><h3 class="titre-bloc">Type d'activité</h3><div class="puces-chips">${typesPresents.map(t => `<button type="button" class="chip" data-filtre="type" value="${esc(t)}" aria-pressed="${etatExo.types.has(t)}">${esc(t)}</button>`).join('')}</div></div>`;
   h += `<div><h3 class="titre-bloc">Notion de l'atlas</h3><select data-filtre="noeud"><option value="">Toutes</option>${noeudsCites.map(n => `<option value="${n}" ${etatExo.noeud === n ? 'selected' : ''}>${esc(D.noeuds[n].titre)}</option>`).join('')}</select></div>`;
-  h += '</aside><div>';
+  h += '</aside><div class="resultats">';
   const actifs = etatExo.q || etatExo.themes.size || etatExo.diff.size || etatExo.types.size || etatExo.niveaux.size;
   if (etatExo.noeud) h += `<div class="bandeau-filtre">Exercices liés à ${puce(etatExo.noeud)}<a class="lien-simple" href="#exercices" data-effacer="1" style="margin-left:auto">Retirer ce filtre</a></div>`;
   if (etatExo.feuille) h += `<div class="bandeau-filtre">Feuille : ${feuilleDe(etatExo.feuille).titre} (${esc(niveauDe(feuilleDe(etatExo.feuille).niveau).titre)})<a class="lien-simple" href="#exercices" data-effacer="1" style="margin-left:auto">Retirer ce filtre</a></div>`;
@@ -2009,6 +2012,8 @@ function vueExercices(E, enChargement) {
   for (const e of garde.slice(0, etatExo.montres)) h += carteExercice(e, enChargement);
   if (garde.length > etatExo.montres) h += `<p style="text-align:center"><button type="button" class="bouton" data-plus-exos="1">Afficher ${Math.min(15, garde.length - etatExo.montres)} exercices de plus</button></p>`;
   if (!garde.length) h += '<p class="vide-note">Aucun exercice ne correspond à cette recherche.</p>';
+  // Téléphone : bouton posé en bas à droite de la liste, qui remonte aux filtres placés au-dessus.
+  if (garde.length) h += `<div class="lecteur-raccourci"><button type="button" data-vers-filtres aria-label="Remonter à la recherche et aux filtres">Rechercher et filtrer ↑</button></div>`;
   return h + '</div></div>';
 }
 function carteExercice(e, enChargement) {
@@ -2574,7 +2579,8 @@ function rafraichirRubrique() {
   brancherDefilAnnales(z);
   z.scrollTop = y; scrollTo(0, yw);
 }
-let posLecture = null;   // position de lecture du PDF sur téléphone (bouton « Sommaire et liens »)
+let posLecture = null, posExo = null;
+const signatureExo = () => JSON.stringify([etatExo.q, etatExo.noeud, etatExo.feuille, etatExo.ex, ...['niveaux', 'diff', 'types', 'themes'].map(k => [...etatExo[k]].sort())]);   // position de lecture du PDF sur téléphone (bouton « Sommaire et liens »)
 $('#rubrique').addEventListener('click', ev => {
   const t = ev.target;
   const b = t.closest('[data-niveau]'); if (b) { pageCours.filtre = b.dataset.niveau; rafraichirRubrique(); return; }
@@ -2605,6 +2611,12 @@ $('#rubrique').addEventListener('click', ev => {
   }
   const fi = t.closest('[data-filiere]'); if (fi) { etatAnn.filiere = fi.dataset.filiere; etatAnn.cle = ''; rafraichirRubrique(); return; }
   const ca = t.closest('.case[data-cle]'); if (ca) { etatAnn.cle = etatAnn.cle === ca.dataset.cle ? '' : ca.dataset.cle; rafraichirRubrique(); const s = $('#rubrique .tiroir'); if (s) s.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); return; }
+  // Téléphone, banque d'exercices : on revient à la même position si la recherche n'a pas changé.
+  if (t.closest('[data-vers-filtres]')) { const s = $('#rubrique .filtres'); if (s) { posExo = { y: window.scrollY, sig: signatureExo() }; s.scrollIntoView({ block: 'start', behavior: 'smooth' }); } return; }
+  if (t.closest('[data-vers-resultats]')) {
+    if (posExo && posExo.sig === signatureExo()) window.scrollTo({ top: posExo.y, behavior: 'smooth' });
+    else { const s = $('#rubrique .resultats'); if (s) s.scrollIntoView({ block: 'start', behavior: 'smooth' }); }
+    return; }
   // Téléphone : on mémorise la position de lecture pour y revenir depuis la colonne.
   if (t.closest('[data-vers-cote]')) { const s = $('#rubrique .cote'); if (s) { posLecture = window.scrollY; s.scrollIntoView({ block: 'start', behavior: 'smooth' }); } return; }
   if (t.closest('[data-vers-lecteur]')) { const s = $('#rubrique .lecteur');

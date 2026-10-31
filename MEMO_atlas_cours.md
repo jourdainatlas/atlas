@@ -209,3 +209,11 @@ la lecture hors de son coin. En tête de la colonne, `.cote-retour` (« ↑ Reve
 `data-vers-lecteur`) ramène à la position mémorisée dans `posLecture` (remise à zéro à chaque
 `pageChapitre`). Les deux sont gérés dans l'écouteur de clic de `#rubrique`. Pour tester sans pdf.js
 (qui ne dessine pas en mode sans tête), on remplace `.lecteur-pages` par de fausses pages de 900 px.
+
+Même dispositif dans la banque d'exercices (`vueExercices`, 31 oct. 2026). Sur ordinateur, `.filtres`
+est collante avec son propre défilement (même `max-height`). Sur téléphone, les filtres restent
+au-dessus de la liste. La liste s'appelle désormais `.resultats` et se termine par un
+`.lecteur-raccourci` (« Rechercher et filtrer ↑ », `data-vers-filtres`), et les filtres commencent par un
+`.cote-retour` (« ↓ Aller aux exercices », `data-vers-resultats`). Le retour rend la position mémorisée
+dans `posExo` seulement si la recherche n'a pas changé entre-temps (`signatureExo()`). Sinon, il va en
+tête des résultats.
