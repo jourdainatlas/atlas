@@ -114,3 +114,17 @@ Règle d'alimentation et filet de sécurité : `MEMO_atlas.md`, section 0, point
 `construire.py` (bloc « Nouveautés » : forme des entrées et ancres en erreur, oublis en avertissement).
 Onze entrées initiales (25-31 oct.), rédigées d'après l'historique du dépôt.
 
+### 37. Mesure d'audience (31 oct. 2026)
+
+GoatCounter, code de site `atlasjourdain` ; tableau de bord privé de l'auteur
+(https://atlasjourdain.goatcounter.com), option « Allow adding visitor counts » laissée désactivée :
+aucun chiffre n'est affiché sur le site. Bloc « Mesure d'audience » de `gabarit.html` (`AUDIENCE`,
+`audience…`) : script `https://gc.zgo.at/count.js` chargé seulement sur atlasjourdain.fr (jamais en local
+ni dans l'aperçu Claude), `no_onload`, puis une vue par ancre stable depuis une seconde, sous un chemin
+lisible (`#annales/sujet/x` → `/annales/sujet/x`, `#continuite.c-tvi` → `/edifice/continuite/c-tvi`,
+accueil → `/`) ; la provenance n'est transmise qu'à l'arrivée. Sans cookie, donc sans bandeau de
+consentement (CNIL : mesure d'audience exemptée, information des visiteurs) : section « Confidentialité »
+de l'À propos, crédits de l'accueil, `LICENCE.md` (EUPL 1.2 légèrement modifiée). L'auteur exclut ses
+propres visites par `#toggle-goatcounter` sur chaque appareil, ou par son adresse IP (Settings › Tracking).
+Vérifié avec un GoatCounter simulé : chemins et titres justes, aucune requête en local.
+

@@ -1435,7 +1435,7 @@ function accueil() {
       <div><h3>Licence</h3>
         <p>© 2026 Armand Jourdain. Le contenu d'ATLAS est mis à disposition selon les termes de la licence <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.fr" target="_blank" rel="license noopener">Creative Commons Attribution, Pas d'utilisation commerciale, Partage dans les mêmes conditions 4.0 International</a> (CC BY-NC-SA 4.0)&nbsp;: vous pouvez le reprendre et l'adapter en citant l'auteur, sans usage commercial, et en partageant vos adaptations sous la même licence.</p></div>
       <div><h3>Crédits</h3>
-        <p>Formules composées avec <a href="https://katex.org" target="_blank" rel="noopener">KaTeX</a> (licence MIT, © Khan Academy et contributeurs). Polices Spectral et IBM Plex, sous licence SIL Open Font License, servies par Google Fonts.</p></div>
+        <p>Formules composées avec <a href="https://katex.org" target="_blank" rel="noopener">KaTeX</a> (licence MIT, © Khan Academy et contributeurs). Polices Spectral et IBM Plex, sous licence SIL Open Font License, servies par Google Fonts. Mesure d'audience anonyme, sans cookie, par <a href="https://www.goatcounter.com" target="_blank" rel="noopener">GoatCounter</a>.</p></div>
     </div>
   </article>`;
 }
@@ -2933,6 +2933,38 @@ function aProposPlacerSignal() {
 }
 document.addEventListener('scroll', aProposPlacerSignal, { passive: true, capture: true });
 addEventListener('resize', aProposPlacerSignal);
+
+/* ---- Mesure d'audience anonyme (GoatCounter, sans cookie ; tableau de bord privé de l'auteur) */
+// Seulement sur le site publié : ni en local, ni dans l'aperçu Claude. Chaque vue compte une fois :
+// arrivée sur le site, puis chaque changement d'ancre (rubrique, chapitre, fiche), sous la forme d'un
+// chemin lisible (#annales/sujet/x → /annales/sujet/x, #continuite.c-tvi → /edifice/continuite/c-tvi).
+const AUDIENCE = 'https://atlasjourdain.goatcounter.com/count';
+if (/(^|\.)atlasjourdain\.fr$/.test(location.hostname)) {
+  window.goatcounter = { no_onload: true };
+  let audienceDernier = '', audienceMinuteur = 0, audiencePremier = true;
+  const audienceChemin = () => {
+    const h = decodeURIComponent(location.hash.slice(1));
+    if (!h || h === 'accueil') return '/';
+    const tete = h.split('/')[0];
+    return (tete in RUBRIQUES || tete === 'edifice') ? '/' + h : '/edifice/' + h.replace('.', '/');
+  };
+  const audienceCompter = () => {
+    clearTimeout(audienceMinuteur);
+    audienceMinuteur = setTimeout(() => {   // une vue stable depuis une seconde : pas de rafale au fil des clics
+      const chemin = audienceChemin();
+      if (chemin === audienceDernier || !window.goatcounter?.count) return;
+      audienceDernier = chemin;
+      // La provenance (Google, Telegram…) n'a de sens que pour l'arrivée sur le site.
+      window.goatcounter.count({ path: chemin, title: document.title, referrer: audiencePremier ? document.referrer : '' });
+      audiencePremier = false;
+    }, 1000);
+  };
+  const sc = document.createElement('script');
+  sc.async = true; sc.src = 'https://gc.zgo.at/count.js'; sc.dataset.goatcounter = AUDIENCE;
+  sc.onload = audienceCompter;
+  document.head.append(sc);
+  addEventListener('hashchange', audienceCompter);
+}
 
 /* ---- Application installable (service worker et invitation à installer ; fichiers dans identite/) */
 // Le service worker n'est enregistré que sur le site publié (ou en local), jamais dans l'aperçu Claude.

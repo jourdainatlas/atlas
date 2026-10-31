@@ -62,7 +62,7 @@ a poussé entre-temps, un fichier commun réécrit à partir d'une copie périm�
    dans le projet, on relit la copie du projet et on vérifie qu'elle ne contient rien que le dépôt
    n'ait pas. Une nouvelle section commune prend le numéro suivant le plus grand déjà employé, tous
    mémos confondus (sections 17-18 et 27 dans `MEMO_atlas_annales.md`, 19-22 dans `MEMO_atlas_cours.md`,
-   23-26 et 29-33 dans `MEMO_atlas_edifice.md`, 28, 34 à 36 dans `MEMO_atlas_apropos.md` ; prochain numéro libre : 37).
+   23-26 et 29-33 dans `MEMO_atlas_edifice.md`, 28, 34 à 37 dans `MEMO_atlas_apropos.md` ; prochain numéro libre : 38).
 8. **Nouveautés (31 oct. 2026, règle de l'auteur) :** toute conversation qui publie un **ajout complet**
    (nouveau chapitre ou niveau de cours, nouvelle feuille, nouvelle théorie ou nouveau chapitre de
    l'édifice, nouvelle session d'annales, nouvelle fonction du site) ajoute, **dans le même commit**, une
