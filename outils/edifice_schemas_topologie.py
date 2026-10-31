@@ -715,6 +715,101 @@ def h_homotopie():
     return S
 
 
+@schema('hu-chemins')
+def hu_chemins():
+    # τ(t) = (γ·δ)(φ(t)), φ(t) = t_2 + t_1/2 ; faces : δ_2 → γ, δ_0 → δ, δ_1 → γ·δ
+    phi = lambda t: t[2] + t[1] / 2
+    for k in range(9):
+        s = k / 8
+        assert abs(phi(_face(2, (1 - s, s))) - s / 2) < 1e-12              # arête e0e1 : γ(s)
+        assert abs(phi(_face(0, (1 - s, s))) - (1 + s) / 2) < 1e-12        # arête e1e2 : δ(s)
+        assert abs(phi(_face(1, (1 - s, s))) - s) < 1e-12                  # arête e0e2 : γ·δ(s)
+    assert _bord({('e0', 'e1', 'e2'): 1}) == {('e1', 'e2'): 1, ('e0', 'e2'): -1, ('e0', 'e1'): 1}
+    S = Schema(480, 320, 'Le simplexe singulier de la concaténation')
+    E0, E1, E2 = np.array([70.0, 262.0]), np.array([240.0, 52.0]), np.array([410.0, 262.0])
+    P = lambda t: t[0] * E0 + t[1] * E1 + t[2] * E2
+    M = (E0 + E2) / 2
+    S.surface([E0, E1, E2], 'g')
+    # lignes de niveau de φ : segments de l'arête e0e2 vers e0e1 (c ⩽ 1/2) ou e1e2 (c ⩾ 1/2)
+    for k in range(1, 8):
+        c = k / 8
+        bas = P((1 - c, 0, c))
+        haut = P((1 - 2 * c, 2 * c, 0)) if c <= 0.5 else P((0, 2 - 2 * c, 2 * c - 1))
+        t_mil = (np.array((1 - c, 0, c)) + (np.array((1 - 2 * c, 2 * c, 0)) if c <= 0.5
+                 else np.array((0, 2 - 2 * c, 2 * c - 1)))) / 2
+        assert abs(phi(t_mil) - c) < 1e-12                                  # φ constante sur le segment
+        assert abs((haut - bas)[0] * (E1 - M)[1] - (haut - bas)[1] * (E1 - M)[0]) < 1e-9                     # parallèle à la médiane issue de e1
+        S.ligne(bas, haut, 'g', d=(k != 4), l=1.1)
+    S.ligne(E0, E1, 'r', l=2.4); S.ligne(E1, E2, 'b', l=2.4); S.ligne(E0, E2, 't', l=2.2)
+    for p, q, c in [(E0, E1, 'r'), (E1, E2, 'b'), (E0, M, 't'), (M, E2, 't')]:
+        S.pointe((p + q) / 2 + 7 * unit(q - p), q - p, c, taille=12, largeur=5)
+    S.texte((E0 + E1) / 2 + [-16, -8], 'γ', 'r', ancre='end')
+    S.texte((E1 + E2) / 2 + [16, -8], 'δ', 'b', ancre='start')
+    S.texte(M + [0, 26], 'γ · δ', 't')
+    S.point(M, 't', r=3.2)
+    S.texte(M + [10, -14], '½', 't', ancre='start', taille=15)
+    for p, lab, d, an in [(E0, 'e_0', [-10, 10], 'end'), (E1, 'e_1', [0, -18], 'middle'),
+                          (E2, 'e_2', [10, 10], 'start')]:
+        S.point(p, 't', r=3.6)
+        S.texte(p + d, lab, ancre=an)
+    return S
+
+
+@schema('hu-hurewicz')
+def hu_hurewicz():
+    # Le mot λ0 α λ̄1 · λ1 β λ̄2 · (λ0 ε λ̄2)⁻¹ se réduit à rien, par λ̄1 λ1 = 1 et α β = ε (homotopie dans τ).
+    def inv(m):
+        return [(x, -e) for x, e in reversed(m)]
+    def reduit(m):
+        m = list(m)
+        change = True
+        while change:
+            change = False
+            for i in range(len(m) - 1):
+                if m[i][0] == m[i + 1][0] and m[i][1] == -m[i + 1][1]:
+                    del m[i:i + 2]; change = True; break
+                if m[i] == ('α', 1) and m[i + 1] == ('β', 1):
+                    m[i:i + 2] = [('ε', 1)]; change = True; break
+        return m
+    L = lambda k: (f'λ{k}', 1)
+    Lb = lambda k: (f'λ{k}', -1)
+    l2 = [L(0), ('α', 1), Lb(1)]; l0 = [L(1), ('β', 1), Lb(2)]; l1 = [L(0), ('ε', 1), Lb(2)]
+    assert reduit(l2 + l0 + inv(l1)) == []
+    S = Schema(500, 330, 'Le lacet du bord d’un 2-simplexe, ramené au point de base')
+    x0 = np.array([62.0, 190.0])
+    v0, v1, v2 = np.array([262.0, 250.0]), np.array([322.0, 70.0]), np.array([448.0, 214.0])
+    tri = [v0, v1, v2]
+    S.surface(tri, 'r')
+    lam = {0: bezier(x0, [140, 250], [200, 262], v0),
+           1: bezier(x0, [130, 110], [230, 60], v1),
+           2: bezier(x0, [150, 330], [380, 330], v2)}
+    # les chemins λ_k ne pénètrent pas dans le triangle et ne se coupent qu'en x0
+    for k, c in lam.items():
+        assert not dedans(tri, c[2:-2]).any()
+    for i, j in [(0, 1), (0, 2), (1, 2)]:
+        d = np.min(np.linalg.norm(lam[i][8:, None, :] - lam[j][None, 8:, :], axis=-1))
+        assert d > 12
+    for k, c in lam.items():
+        S.poly(c, 'b', l=1.6)
+        m = len(c) // 2
+        S.pointe(c[m + 1], c[m + 1] - c[m - 1], 'b', taille=10, largeur=4.5)
+    S.texte(lam[1][18] + [-6, -14], 'λ_1', 'b', ancre='end')
+    S.texte(lam[0][14] + [6, -18], 'λ_0', 'b')
+    S.texte(lam[2][30] + [0, 18], 'λ_2', 'b')
+    for p, q, lab, d in [(v0, v1, 'α', [-16, 0]), (v1, v2, 'β', [16, -6]), (v0, v2, 'ε', [4, 18])]:
+        S.ligne(p, q, 'r', l=2.2)
+        S.pointe((p + q) / 2 + 7 * unit(q - p), q - p, 'r', taille=12, largeur=5)
+        S.texte((p + q) / 2 + d, lab, 'r', ancre='end' if d[0] < 0 else 'start' if d[0] > 4 else 'middle')
+    S.texte((v0 + v1 + v2) / 3 + [4, 4], 'τ', 'r', taille=20)
+    S.point(x0, 't', r=3.8)
+    S.texte(x0 + [-10, 0], 'x_0', ancre='end')
+    for p, lab, d, an in [(v0, 'v_0', [-8, 16], 'end'), (v1, 'v_1', [8, -14], 'start'),
+                          (v2, 'v_2', [10, 6], 'start')]:
+        S.point(p, 't', r=3.4)
+        S.texte(p + d, lab, ancre=an)
+    return S
+
+
 @schema('h-subdivision')
 def h_subdivision():
     # formules de la fiche : Sλ = b_λ · S(∂λ), avec S[∅] = [∅] ; coordonnées barycentriques exactes

@@ -1140,3 +1140,16 @@ antécédents (libre ⇒ projectif). Statut : Blass 1979, exemple 7.1, donne un 
 permutation de ZFA seulement ; l'indémontrabilité dans ZF n'est pas affirmée (Kleppmann 2015, §6.1, non vérifié).
 Lexique base-groupe-abelien ; schéma cs-dedekind (module topologie). Relu : source Blass (ZFA et non ZF), notations.
 966 nœuds, 563 termes, 82 graphes.
+
+## 77. Théorème de Hurewicz en degré 1 (31 octobre 2026)
+
+Chapitre nouveau `hom-hurewicz` (4 fiches hu-*, arête h-homotopie → hom-hurewicz ; 0 croisement dans hom et le
+chapitre, édifice 16). hu-derive : commutateurs, groupe dérivé (rappelé en gras : cohgr n'est pas un ancêtre de
+hom), abélianisé, F(a,b)^ab ≅ ℤ². hu-chemins : chemin ↦ 1-simplexe, triangles explicites pour la concaténation,
+le chemin constant, l'inverse ; homotopie ⇒ égalité modulo les bords. hu-hurewicz : h : π₁(X,x₀) → H₁(X) morphisme,
+surjectif et de noyau D(π₁) pour X connexe par arcs, sans choix (chemins λ_x fixés pour un nombre fini de points ;
+Φ défini sur ℤ^(S) fini). hu-exemples : S¹, bouquet, tore, ℝPⁿ ; π₁(Σ_g)^ab ≅ ℤ^{2g} en remarque (présentation
+admise). Remarques mises à jour : h-degre0, h-spheres, cw-surfaces, cw-degre, cw-projectifs. Historique : Poincaré
+§13 (via Stillwell), Noether 1925, Seifert-Threlfall 1934 §48, Hurewicz 1935 (« bekannt »). Lexique
+morphisme-hurewicz ; schémas hu-chemins, hu-hurewicz. Relu : aucun bloquant ; renvoi de récurrence, notations.
+971 nœuds, 564 termes, 83 graphes.
