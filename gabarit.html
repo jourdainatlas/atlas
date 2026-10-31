@@ -1764,8 +1764,17 @@ function pageAccueil() {
     : carte('#annales', 'Annales', '—', 'à venir', "Les sujets d'écrit des concours d'ingénieurs et de l'enseignement, rangés par concours, par année et par épreuve, avec leurs rapports de jury.", 'En préparation', true);
   h += `</div></section>`;
 
-  // Un exemple réel du lien entre les rubriques : le premier chapitre en ligne qui a des exercices.
-  const c = cours.find(x => x.exercices && feuilles.some(f => f.id === x.exercices));
+  // Un exemple réel du lien entre les rubriques : le chapitre « PGCD » de Mathématiques expertes, dont le théorème de
+  // Bézout renvoie aux idéaux de ℤ dans l'édifice ; à défaut, le premier chapitre en ligne qui a des exercices.
+  const aExos = x => x.exercices && feuilles.some(f => f.id === x.exercices);
+  const c = cours.find(x => x.id === 'me-07' && aExos(x)) || cours.find(aExos);
+  // Titre de la troisième étape : la fiche seule, ou le nombre de fiches et les graphes qui les contiennent (les fiches
+  // elles-mêmes sont listées dessous).
+  const titreFondements = ids => {
+    if (ids.length === 1) return esc(D.noeuds[ids[0]]?.titre || ids[0]);
+    const gs = [...new Set(ids.map(id => D.noeuds[id]?.graphe).filter(Boolean))].map(g => `«&nbsp;${esc(D.graphes[g].titre)}&nbsp;»`);
+    return `${ids.length} fiches ${gs.length > 1 ? 'des graphes' : 'du graphe'} ${gs.join(', ')}`;
+  };
   if (c) {
     const f = feuilles.find(x => x.id === c.exercices);
     const th = (c.theories || []).filter(id => D.noeuds[id] && D.noeuds[id].graphe !== D.racine).slice(0, 3);
@@ -1775,7 +1784,7 @@ function pageAccueil() {
     h += `<span class="acc-fleche" aria-hidden="true">→</span>`;
     h += `<a class="acc-etape" href="#exercices/feuille/${f.id}"><span class="e-sorte">Ses exercices</span><span class="e-titre">${pl(f.nombre || 0, 'exercice corrigé', 'exercices corrigés')}</span><span class="e-detail">${(f.parties || []).slice(0, 3).map(x => esc(String(x).replace(/<[^>]+>/g, ''))).join(' · ')}</span></a>`;
     h += `<span class="acc-fleche" aria-hidden="true">→</span>`;
-    h += `<a class="acc-etape" href="#${D.noeuds[thAff[0]]?.graphe || D.racine}.${thAff[0] || ''}"><span class="e-sorte">Ses fondements dans l'édifice</span><span class="e-titre">${thAff.map(id => esc(D.noeuds[id]?.titre || id)).join(', ')}</span><span class="e-detail">${thAff.map(miniTheorie).join('')}</span></a>`;
+    h += `<a class="acc-etape" href="#${D.noeuds[thAff[0]]?.graphe || D.racine}.${thAff[0] || ''}"><span class="e-sorte">Ses fondements dans l'édifice</span><span class="e-titre">${titreFondements(thAff)}</span><span class="e-detail">${thAff.map(miniTheorie).join('')}</span></a>`;
     h += `</div><p class="acc-fil-note">Les cours suivent la progression scolaire ; l'édifice suit l'ordre logique. Le passage de l'un à l'autre permet de replacer chaque résultat du cours dans la théorie qui le justifie, et chaque exercice dans les notions qu'il met en jeu.</p></section>`;
   }
   h += `<footer class="acc-pied"><span>ATLAS · ${esc(R.apropos?.auteur || 'Armand Jourdain')}, ${esc((R.apropos?.fonction || '').toLowerCase())}</span><a href="#a-propos">À propos du projet →</a></footer>`;
