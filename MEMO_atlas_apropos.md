@@ -78,3 +78,14 @@ publiée : aucune publication en magasin, aucune mise à jour à faire par les u
 - Vérifié en local (Chromium) : manifeste et icônes servis, page contrôlée, rubriques lisibles hors ligne,
   encart sur iPhone émulé et absent sur ordinateur. Reste à confirmer sur un vrai iPhone.
 
+### 35. Signaler une erreur (31 oct. 2026)
+
+Bouton drapeau dans l'en-tête, entre le thème et « Partager », sur toutes les vues (`#signaler`). Il
+ouvre un petit panneau : la page visée (fil d'Ariane, plus la fiche choisie dans l'édifice, l'exercice ou
+le sujet d'annales ouvert), « Écrire » (`mailto:` vers l'adresse de contact, objet « ATLAS – erreur :
+… » et corps préremplis avec la page et son adresse de partage `adressePartage()`) et « Copier
+l'adresse ». Fermeture par ×, Échap, clic au-dehors ou changement de vue. Code dans `gabarit.html`,
+bloc « Signaler une erreur » (`aProposCourriel`, `aProposSignalCible`, `aProposFermerSignal`), styles
+`.signaler*`. Sur téléphone, la grille de l'en-tête passe à quatre colonnes (marque, thème, drapeau,
+Partager) pour que « Partager » reste sur la première ligne.
+
