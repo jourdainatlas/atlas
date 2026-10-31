@@ -1216,3 +1216,18 @@ Contrôle de transmission étendu au signe : un lien {{x}} d'énoncé ou de preu
 rp-orthogonalite, rp-reguliere, rp-classes, rp-lineaires, rp-s3, rp-s4, rp-quaternions, galois-representations
 (cite). Booléen `admis` sur les nœuds (graphes sans charger les branches) ; largeur des bulles comptée avec ' †'.
 Croisements inchangés partout. Relu : rp-reguliere et rp-quaternions oubliés, contrôle de chaîne resserré.
+
+## 82. Fondements et portée (1er novembre 2026)
+
+Deux boutons au bas de chaque fiche (gabarit.html, fonctions *Noeud*/*Graphe*, calcul dans le navigateur) :
+Fondements = fermeture transitive de « Repose sur » (parents ∪ amont) ; un conteneur atteint compte pour lui-même ;
+un point de départ de son graphe repose sur ce dont dépend son conteneur, récursivement. Portée = sens inverse ; pour
+une fiche intérieure, libellé « Portée dans X », et un groupe à part, replié, pour ce qui emploie X en bloc, avec un
+bouton « Portée de X ». Comptes séparés : fiches intérieures et théories. Surlignage (bulles vives, reste estompé),
+liste groupée par théorie, † sur les puces admises, boutons « Voir dans <graphe ancêtre> », recadrage, effacement par
+second clic, Échap ou autre fiche. Accueil (phrase, exemple Borsuk-Ulam) et légende. Portée de log : 913 fiches et
+37 théories, ~1 ms. Relu : portée intérieure trompeuse, comptes, dépendances de mise en page.
+À trancher : l'entrée gs-abel-ruffini → galois-cyclotomie / galois-hilbert90 est un choix de mise en page (vrais
+appuis : gs-correspondance → cyclotomie, gs-radicaux → hilbert90 : +2 croisements dans galois). Plus largement,
+≈ 390 arcs sur 1353 relient des fiches que la fiche cible ne cite jamais (heuristique, audit.py de la relecture) :
+« Repose sur » n'est pas partout une dépendance logique ; audit à décider.

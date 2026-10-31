@@ -279,6 +279,12 @@ body.redim .vue { pointer-events: none; }
 .plan.focus .noeud { opacity: .4; }
 .plan.focus .noeud.voisin { opacity: 1; }
 .noeud.choisi { box-shadow: 0 0 0 3px var(--surface), 0 0 0 5px var(--c); }
+/* Fondements ou portée d'une fiche (boutons de la fiche) : les bulles de la fermeture restent vives, les
+   autres s'estompent ; le survol d'une bulle à la souris (classe focus) reprend la main tant qu'il dure. */
+.plan.dep:not(.focus) .noeud:not(.dep-oui):not(.dep-origine) { opacity: .25; }
+.plan.dep:not(.focus) .arete:not(.dep-vive) { opacity: .15; }
+.plan.dep:not(.focus) .arete.dep-vive { stroke: var(--arete-vive); stroke-width: 1.8; marker-end: url(#pointe-vive); }
+.noeud.dep-origine { box-shadow: 0 0 0 3px var(--surface), 0 0 0 5px var(--c); }
 
 .fam-fond { --c: var(--c-fond); }
 .fam-ord  { --c: var(--c-ord); }
@@ -492,6 +498,23 @@ p code, li code { font-family: ui-monospace, Menlo, Consolas, monospace; font-si
 .puce:hover { background: color-mix(in srgb, var(--c) 12%, var(--surface)); }
 .puce .niv { color: var(--encre-3); font-size: 11.5px; margin-left: 4px; }
 .vide { color: var(--encre-3); font-size: 13px; }
+.dep-boutons { display: flex; flex-wrap: wrap; gap: 8px; }
+.dep-boutons .bouton[aria-pressed="true"] { background: var(--encre); border-color: var(--encre); color: var(--surface); }
+.dep-boutons .bouton:disabled { color: var(--encre-3); border-style: dashed; cursor: default; }
+.dep-liste { display: grid; gap: 8px; font-size: 13px; margin-top: 10px; }
+.dep-liste[hidden] { display: none; }
+.dep-liste > p { margin: 0; color: var(--encre-2); line-height: 1.5; }
+.dep-groupe > summary { cursor: pointer; display: flex; align-items: center; gap: 8px; padding: 2px 0; list-style: none; }
+.dep-groupe > summary::-webkit-details-marker { display: none; }
+.dep-groupe > summary::before { content: "+"; font-family: var(--f-mono); width: 10px; color: var(--encre-3); }
+.dep-groupe[open] > summary::before { content: "−"; }
+.dep-groupe > summary .dep-n { font-family: var(--f-mono); font-size: 11.5px; color: var(--encre-3); }
+.dep-groupe > .puces { padding: 6px 0 4px 18px; }
+.dep-liste .dep-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+/* portée « en bloc » d'une fiche intérieure : à part, repliée, en retrait */
+.dep-bloc { border-top: 1px dashed var(--filet); padding-top: 6px; }
+.dep-bloc > summary { color: var(--encre-3); flex-wrap: wrap; }
+.dep-bloc-corps { display: grid; gap: 6px; padding: 6px 0 2px 18px; opacity: .8; }
 .credits p { font-size: 13px; line-height: 1.55; color: var(--encre-2); margin: 0; }
 .credits a { color: inherit; text-underline-offset: 3px; }
 /* État de l'édifice (etatEdifice) et son lien depuis l'accueil de l'édifice */
@@ -1098,6 +1121,7 @@ span.case:hover { border-style: dashed; color: inherit; }
             <li><span class="etoile">⋆</span>Fait intervenir l'axiome du choix ou l'une de ses formes faibles.</li>
             <li><span class="dague">†</span><span>Le résultat n'est pas entièrement démontré à cet endroit : voir l'encadré de la fiche et l'<a href="#edifice/etat">état de l'édifice</a>.</span></li>
             <li><span class="terme" style="cursor: default">terme</span>Survoler pour lire la définition, cliquer pour l'ouvrir.</li>
+            <li><span style="display: inline-flex; gap: 3px; flex: none"><span class="pastille" style="--c: var(--encre-2)"></span><span class="pastille" style="--c: var(--encre-2); opacity: .25"></span></span><span>«&nbsp;Fondements&nbsp;» et «&nbsp;Portée&nbsp;», au bas d'une fiche&nbsp;: ce dont elle dépend, ou ce qui dépend d'elle, reste vif, et le reste s'estompe. Un second clic, ou Échap, efface.</span></li>
           </ul>
         </div>
       </div>
@@ -1318,7 +1342,12 @@ function aller(gid, choisi = null, opts = {}) {
   quitterRubrique();
   // Pseudo-fiche « État de l'édifice » (#edifice/etat) : graphe principal, inventaire dans le panneau.
   etat.vue = opts.vue === 'etat' && gid === D.racine && !choisi ? 'etat' : null;
-  ancreEdifice = etat.vue ? 'edifice/etat' : gid + (choisi ? '.' + choisi : '');
+  // Fondements ou portée surlignés (boutons de la fiche) : conservés seulement par « Voir dans l'édifice »
+  // et son retour ; toute autre navigation les efface.
+  etat.dep = opts.dep || null;
+  // Une fiche lue depuis un graphe qui la contient (« Voir dans l'édifice ») : l'ancre désigne sa place.
+  const ici = !choisi || !D.noeuds[choisi] || D.noeuds[choisi].graphe === gid || D.graphes[gid].noeuds.some(p => p.id === choisi);
+  ancreEdifice = etat.vue ? 'edifice/etat' : (ici ? gid : D.noeuds[choisi].graphe) + (choisi ? '.' + choisi : '');
   // onglet : la notion affichée (étiquette de la bulle), sinon le graphe ouvert, sinon « L'édifice »
   const nChoisi = choisi && D.noeuds[choisi];
   document.title = titreOnglet(etat.vue ? 'État de l\'édifice' : nChoisi ? (nChoisi.etiquette || nChoisi.titre)
@@ -1345,6 +1374,7 @@ function aller(gid, choisi = null, opts = {}) {
   }
   fil();
   fiche();
+  surlignerDependancesGraphe();
   montrerOnglet('fiche');
   if (typeof marquerMenu === 'function') marquerMenu('edifice');
   $('#remonter').hidden = !D.graphes[gid].parent;
@@ -1392,7 +1422,179 @@ function remonter() {
 function ouvrirNoeud(id) {
   const n = D.noeuds[id];
   if (!n) return;
-  aller(n.graphe, id);
+  // Rouvrir à sa place la fiche dont les fondements ou la portée sont surlignés (« Voir cette notion à sa
+  // place ») garde le surlignage, comme le bouton « Revenir au graphe » ; toute autre fiche l'efface.
+  aller(n.graphe, id, etat.dep && etat.dep.id === id ? { dep: etat.dep } : {});
+}
+
+/* ------------------------------------------------------------ fondements et portée d'une fiche */
+// Relation « repose sur » : les parents d'une fiche dans son graphe et ses entrées venues du niveau supérieur
+// (n.amont), c'est-à-dire sa liste « Repose sur ». Un point de départ de son graphe, sans parent ni entrée,
+// repose sur ce dont dépend le nœud qui le contient (n-succ, dans ℕ, sur les ordinaux), comme le veut l'ordre
+// global de construire.py. Un chapitre ou une théorie atteint compte pour lui-même, sans son contenu : la
+// relation est déjà déclarée fiche à fiche, et ouvrir toute une théorie dont une seule fiche sert gonflerait
+// la liste de ce qui n'est pas employé. D.noeuds est complet dans la page (titres et liens), même quand les
+// textes des branches sont chargés à la demande : le calcul se fait ici, en quelques millisecondes.
+function appuisNoeud(id) {
+  const n = D.noeuds[id], s = n.parents.concat(n.amont), k = D.graphes[n.graphe].conteneur;
+  return s.length || !k ? s : appuisNoeud(k);
+}
+let appuisInversesNoeud = null, indexNoeuds = null;
+const fermeturesNoeud = { amont: new Map(), aval: new Map() };
+function fermetureNoeud(id, sens) {
+  const memo = fermeturesNoeud[sens];
+  if (memo.has(id)) return memo.get(id);
+  if (sens === 'aval' && !appuisInversesNoeud) {
+    appuisInversesNoeud = {};
+    for (const v in D.noeuds) for (const p of appuisNoeud(v)) (appuisInversesNoeud[p] = appuisInversesNoeud[p] || []).push(v);
+  }
+  const suivants = sens === 'amont' ? appuisNoeud : v => appuisInversesNoeud[v] || [];
+  const vus = new Set(), pile = [id];
+  while (pile.length) for (const p of suivants(pile.pop())) if (p !== id && !vus.has(p)) { vus.add(p); pile.push(p); }
+  memo.set(id, vus);
+  return vus;
+}
+// Groupes par théorie du graphe principal, du rang le plus bas au plus haut ; dans un groupe, la théorie
+// elle-même d'abord, puis l'ordre des fichiers de contenu.
+function groupesDependancesNoeud(ids) {
+  if (!indexNoeuds) { indexNoeuds = {}; Object.keys(D.noeuds).forEach((k, i) => { indexNoeuds[k] = i; }); }
+  const gr = new Map();
+  for (const x of ids) { const t = theorieDe(x).id; if (!gr.has(t)) gr.set(t, []); gr.get(t).push(x); }
+  return [...gr].map(([t, xs]) => ({ t, xs: xs.sort((a, b) => (b === t) - (a === t) || indexNoeuds[a] - indexNoeuds[b]) }))
+    .sort((a, b) => D.noeuds[a.t].rang - D.noeuds[b.t].rang || indexNoeuds[a.t] - indexNoeuds[b.t]);
+}
+const plNoeud = (k, un, plusieurs) => `${k}&nbsp;${k > 1 ? plusieurs : un}`;
+// Comptes : les fiches intérieures et les théories du graphe principal sont dites à part (« 15 fiches et 15 théories »).
+function compteDependancesNoeud(S) {
+  let f = 0, t = 0;
+  for (const x of S) if (D.noeuds[x].graphe === D.racine) t++; else f++;
+  const p = [];
+  if (f) p.push(plNoeud(f, 'fiche', 'fiches'));
+  if (t) p.push(plNoeud(t, 'théorie', 'théories'));
+  return p.length ? p.join(' et ') : 'aucune fiche';
+}
+// Nœuds qui contiennent une fiche, du plus proche à la théorie du graphe principal.
+function conteneursNoeud(id) {
+  const c = [];
+  for (let k = D.graphes[D.noeuds[id].graphe].conteneur; k; k = D.graphes[D.noeuds[k].graphe].conteneur) c.push(k);
+  return c;
+}
+// Nom court d'un nœud dans une phrase : son étiquette, entre guillemets si elle a plusieurs mots (ℕ, « Produit cup »).
+const nomNoeud = id => { const e = D.noeuds[id].etiquette || D.noeuds[id].titre; return /\s/.test(e) ? `«&nbsp;${esc(e)}&nbsp;»` : esc(e); };
+// Portée « en bloc » d'une fiche intérieure : ce qui repose sur un de ses conteneurs sans la désigner elle-même
+// (ℤ emploie ℕ tout entier, sans nommer le principe de récurrence). Montrée à part, repliée, jamais surlignée.
+const blocsNoeud = new Map();
+function blocNoeud(id) {
+  if (blocsNoeud.has(id)) return blocsNoeud.get(id);
+  const c = conteneursNoeud(id), fin = fermetureNoeud(id, 'aval'), B = new Set();
+  for (const k of c) for (const x of fermetureNoeud(k, 'aval')) if (x !== id && !fin.has(x) && !c.includes(x)) B.add(x);
+  blocsNoeud.set(id, B);
+  return B;
+}
+function libelleDependancesNoeud(id, sens) {
+  const S = fermetureNoeud(id, sens), k = D.graphes[D.noeuds[id].graphe].conteneur;
+  return (sens === 'amont' ? 'Fondements' : k ? `Portée dans ${nomNoeud(k)}` : 'Portée') + `&nbsp;: ${compteDependancesNoeud(S)}`;
+}
+// Puce d'une liste de dépendances : le signe † signale une fiche dont le résultat n'est pas entièrement démontré à sa place.
+const puceDependanceNoeud = x => D.noeuds[x].admis && D.noeuds[x].graphe !== D.racine
+  ? puce(x).replace(/<\/button>$/, ' <span class="dague" aria-label="pas entièrement démontré ici">†</span></button>') : puce(x);
+// Groupes par théorie : les théories atteintes pour elles seules forment des rangées de puces, les autres groupes se replient.
+function groupesHtmlNoeud(S, ouvert) {
+  let h = '', rangee = [];
+  const vider = () => { if (rangee.length) h += `<div class="puces">${rangee.map(puceDependanceNoeud).join('')}</div>`; rangee = []; };
+  for (const g of groupesDependancesNoeud(S)) {
+    if (g.xs.length === 1 && g.xs[0] === g.t) { rangee.push(g.t); continue; }
+    vider();
+    h += `<details class="dep-groupe"${ouvert ? ' open' : ''}><summary>${miniTheorie(g.t)}<span class="dep-n">${g.xs.length}</span></summary><div class="puces">${g.xs.map(puceDependanceNoeud).join('')}</div></details>`;
+  }
+  vider();
+  return h;
+}
+function listeDependancesNoeud(id, sens) {
+  const S = fermetureNoeud(id, sens), n = D.noeuds[id], c = conteneursNoeud(id);
+  let h;
+  if (sens === 'amont') {
+    h = '<p>Tout ce dont dépend cette fiche, de proche en proche, en suivant les listes «&nbsp;Repose sur&nbsp;». Une théorie ou un chapitre atteint compte pour sa seule fiche, sans son contenu, et un point de départ de son graphe repose sur ce dont dépend le nœud qui le contient.'
+      + ([...S].some(x => D.noeuds[x].admis && D.noeuds[x].graphe !== D.racine) ? ' Le signe <span class="dague">†</span> marque un fondement qui n\'est pas entièrement démontré à sa place&nbsp;: son encadré «&nbsp;Admis ici&nbsp;» dit ce qui est admis.' : '') + '</p>';
+    h += groupesHtmlNoeud(S, S.size <= 60);
+  } else {
+    h = '<p>Tout ce qui dépend de cette fiche, de proche en proche, en remontant la relation «&nbsp;Repose sur&nbsp;».'
+      + (c.length ? ` Ce qui emploie ${c.map(nomNoeud).join(' ou ')} en bloc, sans désigner de fiche, n'est pas compté ici&nbsp;: voir la portée de ${c.length > 1 ? 'ces nœuds' : nomNoeud(c[0])}.` : '') + '</p>';
+    h += S.size ? groupesHtmlNoeud(S, S.size <= 60) : '<p class="vide">Aucune fiche ne la désigne, directement ou par intermédiaires.</p>';
+    if (c.length) {
+      const B = blocNoeud(id);
+      if (B.size) h += `<details class="dep-groupe dep-bloc"><summary>Par ${c.map(nomNoeud).join(' ou ')} ${c.length > 1 ? 'dans leur ensemble' : 'dans son ensemble'}, sans désigner de fiche&nbsp;: <span class="dep-n">${compteDependancesNoeud(B)}</span></summary><div class="dep-bloc-corps">${groupesHtmlNoeud(B, false)}</div></details>`;
+      h += `<div class="dep-actions">${c.map(k => `<button type="button" class="bouton" data-dep-portee="${k}">Portée de ${nomNoeud(k)} <span aria-hidden="true">→</span></button>`).join('')}</div>`;
+    }
+  }
+  // Un bouton par graphe qui contient la fiche (voir les nœuds atteints à ce niveau), et le retour à son graphe.
+  // Les graphes ancêtres ne sont proposés que si la fermeture sort du graphe de la fiche.
+  const sort = [...S].some(x => D.noeuds[x].graphe !== n.graphe);
+  const gs = chemin(n.graphe).filter(g => g !== etat.graphe && (g === n.graphe || sort)).reverse();
+  if (S.size && gs.length) h += `<div class="dep-actions">${gs.map(g => g === n.graphe
+    ? `<button type="button" class="bouton" data-dep-graphe="${g}"><span aria-hidden="true">←</span> Revenir au graphe «&nbsp;${esc(D.graphes[g].titre)}&nbsp;»</button>`
+    : `<button type="button" class="bouton" data-dep-graphe="${g}">Voir dans ${g === D.racine ? 'l\'édifice' : `«&nbsp;${esc(D.graphes[g].titre)}&nbsp;»`} <span aria-hidden="true">→</span></button>`).join('')}</div>`;
+  return h;
+}
+// Recadre le graphe sur les bulles vives : après un changement de graphe, l'échelle diminue au besoin pour
+// qu'elles tiennent toutes dans la vue (sans descendre sous 0,35) ; sinon on ne fait que les centrer, et
+// seulement si aucune n'est visible.
+function cadrerDependancesGraphe(zoom) {
+  const vue = $('#vue'), bs = [...$('#plan').querySelectorAll('.dep-oui, .dep-origine')];
+  if (!bs.length) return;
+  const rv = vue.getBoundingClientRect();
+  if (!zoom && bs.some(b => { const r = b.getBoundingClientRect(); return r.right > rv.left && r.left < rv.right && r.bottom > rv.top && r.top < rv.bottom; })) return;
+  if (zoom) {
+    let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+    for (const b of bs) { x0 = Math.min(x0, b.offsetLeft); y0 = Math.min(y0, b.offsetTop); x1 = Math.max(x1, b.offsetLeft + b.offsetWidth); y1 = Math.max(y1, b.offsetTop + b.offsetHeight); }
+    etat.echelle = Math.max(0.45, Math.min(etat.echelle, (vue.clientWidth - 32) / (x1 - x0), (vue.clientHeight - 80) / (y1 - y0)));
+    appliquerEchelle();
+  }
+  const boite = els => {
+    let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+    for (const b of els) { const r = b.getBoundingClientRect(); x0 = Math.min(x0, r.left); y0 = Math.min(y0, r.top); x1 = Math.max(x1, r.right); y1 = Math.max(y1, r.bottom); }
+    return { x0, y0, x1, y1 };
+  };
+  // si les bulles vives ne tiennent pas dans la vue (téléphone), on centre sur la fiche de départ ou son conteneur
+  let c = boite(bs);
+  const o = bs.filter(b => b.classList.contains('dep-origine'));
+  if (o.length && (c.x1 - c.x0 > rv.width || c.y1 - c.y0 > rv.height)) c = boite(o);
+  vue.scrollLeft += (c.x0 + c.x1) / 2 - (rv.left + rv.width / 2);
+  vue.scrollTop += (c.y0 + c.y1) / 2 - (rv.top + rv.height / 2);
+}
+// Surlignage dans le graphe affiché : une bulle reste vive si elle est dans la fermeture ou si elle contient
+// un de ses éléments (dans le graphe principal, les théories atteintes) ; la fiche de départ et les nœuds
+// qui la contiennent sont cerclés ; une flèche reste vive quand ses deux extrémités le sont.
+function surlignerDependancesGraphe() {
+  const plan = $('#plan'), d = etat.dep;
+  plan.classList.toggle('dep', !!d);
+  plan.querySelectorAll('.dep-oui, .dep-origine').forEach(e => e.classList.remove('dep-oui', 'dep-origine'));
+  plan.querySelectorAll('.dep-vive').forEach(e => e.classList.remove('dep-vive'));
+  if (!d) return;
+  const vifs = new Set(), origine = new Set();
+  const monter = (x, E) => { for (let m = D.noeuds[x]; m; m = D.noeuds[D.graphes[m.graphe].conteneur]) E.add(m.id); };
+  fermetureNoeud(d.id, d.sens).forEach(x => monter(x, vifs));
+  monter(d.id, origine);
+  plan.querySelectorAll('.noeud').forEach(b => {
+    if (origine.has(b.dataset.id)) b.classList.add('dep-origine'); else if (vifs.has(b.dataset.id)) b.classList.add('dep-oui');
+  });
+  const z = plan.querySelector('.zone-arete');
+  plan.querySelectorAll('.arete').forEach(p => {
+    const a = p.dataset.de, b = p.dataset.vers;
+    if ((vifs.has(a) || origine.has(a)) && (vifs.has(b) || origine.has(b))) { p.classList.add('dep-vive'); if (z) p.parentNode.insertBefore(p, z); }
+  });
+}
+function majDependancesNoeud() {
+  const d = etat.dep;
+  document.querySelectorAll('#onglet-fiche [data-dep]').forEach(b => b.setAttribute('aria-pressed', String(!!d && d.sens === b.dataset.dep)));
+  const l = $('#dep-liste');
+  if (l) { l.hidden = !d; l.innerHTML = d ? listeDependancesNoeud(d.id, d.sens) : ''; }
+  surlignerDependancesGraphe();
+}
+function basculerDependancesNoeud(id, sens) {
+  etat.dep = etat.dep && etat.dep.id === id && etat.dep.sens === sens ? null : { id, sens };
+  majDependancesNoeud();
+  if (etat.dep) cadrerDependancesGraphe(false);
 }
 
 /* ------------------------------------------------------------ fiche */
@@ -1440,7 +1642,10 @@ function fiche() {
       () => { o.innerHTML = '<p class="contexte">Cette branche n\'a pas pu être chargée. Vérifiez la connexion, puis rechargez la page.</p>'; });
     return;
   }
-  if (etat.choisi && n.graphe !== etat.graphe) {
+  if (etat.choisi && n.graphe !== etat.graphe && !chemin(etat.graphe).includes(n.graphe)) {
+    // fiche lue depuis un graphe qui la contient (« Voir dans l'édifice », bouton Fondements ou Portée)
+    contexte = `<p class="contexte">Le graphe affiché est «&nbsp;${esc(g.titre)}&nbsp;»&nbsp;; cette fiche appartient au graphe «&nbsp;${esc(D.graphes[n.graphe].titre)}&nbsp;». <a class="lien-noeud" href="#${n.graphe}.${id}" data-n="${id}">Voir cette notion à sa place</a>.</p>`;
+  } else if (etat.choisi && n.graphe !== etat.graphe) {
     contexte = `<p class="contexte">Cette fiche vient du niveau supérieur, « ${esc(D.graphes[n.graphe].titre)} ». Vous restez dans le graphe « ${esc(g.titre)} » ; <a class="lien-noeud" href="#${n.graphe}.${id}" data-n="${id}">voir cette notion à sa place dans « ${esc(D.graphes[n.graphe].titre)} »</a>.</p>`;
   }
   const c = couleurNoeud(n);
@@ -1468,10 +1673,15 @@ function fiche() {
   const exos = exercicesDuNoeud(id);
   if (exos.length) h += `<div><h3>Exercices</h3><div class="puces"><a class="bouton" href="#exercices/notion/${id}">${exos.length} ${exos.length > 1 ? 'exercices' : 'exercice'} sur cette notion →</a></div></div>`;
   h += `<div><h3>Sert à</h3><div class="puces">${n.enfants.length ? n.enfants.map(p => puce(p)).join('') : '<span class="vide">Aucun nœud de ce graphe ne l\'utilise encore.</span>'}</div></div>`;
+  // Fondements et portée : fermeture de « Repose sur » dans les deux sens, surlignée dans le graphe et listée
+  if (etat.dep && etat.dep.id !== id) etat.dep = null;
+  const boutonDep = (sens, titre) => `<button type="button" class="bouton" data-dep="${sens}" data-n-dep="${id}" aria-pressed="false" aria-controls="dep-liste" title="${titre}"${fermetureNoeud(id, sens).size || (sens === 'aval' && n.graphe !== D.racine) ? '' : ' disabled'}>${libelleDependancesNoeud(id, sens)}</button>`;
+  h += `<div><h3>De proche en proche</h3><div class="dep-boutons">${boutonDep('amont', 'Tout ce dont dépend cette fiche : surligné dans le graphe et listé par théorie')}${boutonDep('aval', 'Tout ce qui dépend de cette fiche : surligné dans le graphe et listé par théorie')}</div><div class="dep-liste" id="dep-liste" hidden></div></div>`;
   h += '</div></article>';
   o.innerHTML = h;
   o.scrollTop = 0;
   $('#panneau').scrollTop = 0;
+  majDependancesNoeud();
 }
 
 // Encadré « Admis ici » d'une fiche marquée † : entrées de lieu principal retenues par construire.py
@@ -1533,7 +1743,7 @@ function accueil() {
     </div>
     <div class="enonce" style="--c: var(--encre)"><span class="tete">Par où commencer</span>
       <p><strong>Construire les nombres.</strong> En partant de la ${L('log', 'logique du premier ordre')} et des ${L('zf', 'axiomes de ZF')}, on suit la construction de ${L('n', 'ℕ')}, puis de ${L('z', 'ℤ')}, de ${L('q', 'ℚ')}, de ${L('r', 'ℝ')} et de ${L('c', 'ℂ')}&nbsp;: chaque théorie fabrique son objet à partir du précédent et démontre qu'il a les propriétés attendues. C'est le chemin le plus court pour voir comment l'édifice part de presque rien.</p>
-      <p><strong>Partir d'un grand théorème.</strong> On peut aussi choisir un résultat célèbre, puis redescendre vers ce qu'il utilise par la liste «&nbsp;Repose sur&nbsp;» de sa fiche&nbsp;: le ${L('ar-tfa', 'théorème fondamental de l\'analyse')}, le ${L('hj-jordan', 'théorème de Jordan')} pour les courbes du plan, l'existence d'un ${L('gs-abel-ruffini', 'polynôme de degré 5 non résoluble par radicaux')}, ou le ${L('cup-borsuk-ulam', 'théorème de Borsuk-Ulam')}. La descente montre quelles notions chacun mobilise vraiment, et dans quel ordre il faut les apprendre.</p>
+      <p><strong>Partir d'un grand théorème.</strong> On peut aussi choisir un résultat célèbre, puis redescendre vers ce qu'il utilise par la liste «&nbsp;Repose sur&nbsp;» de sa fiche&nbsp;: le ${L('ar-tfa', 'théorème fondamental de l\'analyse')}, le ${L('hj-jordan', 'théorème de Jordan')} pour les courbes du plan, l'existence d'un ${L('gs-abel-ruffini', 'polynôme de degré 5 non résoluble par radicaux')}, ou le ${L('cup-borsuk-ulam', 'théorème de Borsuk-Ulam')}. La descente montre quelles notions chacun mobilise vraiment, et dans quel ordre il faut les apprendre. Le bouton «&nbsp;Fondements&nbsp;» de la fiche fait toute la descente d'un coup&nbsp;: pour le ${L('cup-borsuk-ulam', 'théorème de Borsuk-Ulam')}, tout ce dont il dépend, de proche en proche, est surligné dans le graphe et rangé par théorie dans la fiche, et le bouton «&nbsp;Portée&nbsp;» fait le chemin inverse, vers tout ce qui en dépend.</p>
       <p><strong>Suivre l'axiome du choix.</strong> L'${L('zf-choix', 'axiome du choix')} est posé avec les axiomes de ZF, ses ${L('r-choix', 'différentes formes')} sont rassemblées avec les relations et les fonctions, et le ${L('o-zorn', 'lemme de Zorn')} est démontré avec les ordinaux. Le signe <span class="etoile">⋆</span> marque ensuite chaque fiche qui en fait usage, avec un encadré qui dit à quel endroit de la preuve il intervient, et, dans le graphe principal, les théories dont un théorème central équivaut à l'axiome du choix ou à l'une de ses formes faibles&nbsp;: on le rencontre par exemple dans l'existence d'une ${L('v-bases-existence', 'base pour tout espace vectoriel')}, dans le ${L('t-tychonov', 'théorème de Tychonov')} ou dans celui de ${L('f-hahn-banach', 'Hahn-Banach')}. On voit du même coup tout ce qui s'en passe.</p>
     </div>
     ${D.admis ? '<p class="lien-etat-edifice"><a href="#edifice/etat">État de l\'édifice&nbsp;: ce qui reste admis et où intervient l\'axiome du choix</a></p>' : ''}
@@ -1817,6 +2027,26 @@ window.addEventListener('resize', () => document.querySelectorAll('.legende[open
 document.addEventListener('click', ev => {
   const t = ev.target.closest('.terme');
   if (t && t.dataset.g) { ev.preventDefault(); ouvrirTerme(t.dataset.g); return; }
+  // Fondements, Portée (fiche) : un clic surligne, un second efface ; « Voir dans l'édifice » et son retour
+  // changent de graphe en gardant le surlignage.
+  const dp = ev.target.closest('#onglet-fiche [data-dep]');
+  if (dp) { basculerDependancesNoeud(dp.dataset.nDep, dp.dataset.dep); return; }
+  // « Portée de ℕ » (portée d'une fiche intérieure) : la fiche du conteneur, sa portée surlignée
+  const dk = ev.target.closest('#onglet-fiche [data-dep-portee]');
+  if (dk) { const k = dk.dataset.depPortee; aller(D.noeuds[k].graphe, k, { dep: { id: k, sens: 'aval' } }); cadrerDependancesGraphe(true); return; }
+  const dg = ev.target.closest('#onglet-fiche [data-dep-graphe]');
+  if (dg && etat.dep) {
+    const d = etat.dep; aller(dg.dataset.depGraphe, d.id, { dep: d });
+    cadrerDependancesGraphe(true);
+    const b = document.querySelector(`#onglet-fiche [data-dep="${d.sens}"]`);
+    if (b) {
+      b.focus({ preventScroll: true });
+      // sur téléphone (graphe au-dessus de la fiche), on remonte au graphe ; sinon la fiche montre le bouton et la liste
+      if ($('#panneau').getBoundingClientRect().top >= $('#vue').getBoundingClientRect().bottom - 1) window.scrollTo({ top: 0 });
+      else b.scrollIntoView({ block: 'start' });
+    }
+    return;
+  }
   const p = ev.target.closest('.puce, .lien-noeud');
   if (p && p.dataset.n) { ev.preventDefault(); ouvrirNoeud(p.dataset.n); return; }
   const o = ev.target.closest('.ouvrir');
@@ -1827,6 +2057,15 @@ document.addEventListener('keydown', ev => {
   const t = ev.target.closest && ev.target.closest('.terme');
   if (t && (ev.key === 'Enter' || ev.key === ' ')) { ev.preventDefault(); ouvrirTerme(t.dataset.g); }
   if (ev.key === 'Escape') cacherBulle(true);
+  // Échap efface le surlignage des fondements ou de la portée (sauf dans un champ, le menu ou le signalement,
+  // qui ont leur propre usage de la touche)
+  if (ev.key === 'Escape' && etat.dep && !enRubrique() && !(ev.target.closest && ev.target.closest('input, textarea, #menu-rubriques'))
+      && !$('#signaler-panneau')) {
+    const b = document.querySelector('#onglet-fiche [data-dep][aria-pressed="true"]');
+    const dedans = document.activeElement && document.activeElement.closest && document.activeElement.closest('#dep-liste');
+    etat.dep = null; majDependancesNoeud();
+    if (dedans && b) b.focus();
+  }
 });
 document.addEventListener('mouseover', ev => {
   const t = ev.target.closest('.terme');
