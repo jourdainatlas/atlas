@@ -138,6 +138,38 @@ body.en-rubrique .bouton-theme { margin-left: auto; }
 }
 .signaler:hover, .signaler[aria-expanded="true"] { color: var(--encre); background: var(--trame); }
 .signaler:focus-visible { outline: 2px solid var(--encre-3); outline-offset: 2px; }
+/* ---- nouveautés */
+.nouv-filtres { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 26px; }
+.nouv-filtres .chip { display: inline-flex; align-items: center; gap: 7px; }
+.nouv-filtres .chip span { color: var(--encre-3); font-variant-numeric: tabular-nums; }
+.nouv-filtres .chip[aria-pressed="true"] { background: var(--encre); color: var(--papier); border-color: var(--encre); }
+.nouv-filtres .chip[aria-pressed="true"] span { color: inherit; opacity: .7; }
+.nouv-point { width: 8px; height: 8px; border-radius: 50%; background: var(--c); display: inline-block; flex: none; }
+.nouv-fil { list-style: none; margin: 0; padding: 0; }
+.nouv-jour { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 0 28px; padding-bottom: 26px; position: relative; }
+.nouv-jour::before { content: ''; position: absolute; left: 190px; top: 26px; bottom: -26px; width: 1px; background: var(--filet); transform: translateX(13px); }
+.nouv-jour:last-child::before { display: none; }
+.nouv-date { margin: 0; padding: 18px 0 0; font-family: var(--f-ui); font-size: 13px; font-weight: 500; color: var(--encre-2); text-align: right; position: sticky; top: 8px; align-self: start; }
+.nouv-date time { display: inline-block; }
+.nouv-date time::first-letter { text-transform: uppercase; }
+.nouv-date::after { content: ''; position: absolute; left: calc(100% + 13px); top: 22px; width: 9px; height: 9px; border-radius: 50%; background: var(--papier); border: 2px solid var(--encre-3); transform: translateX(-50%); }
+.nouv-entrees { display: grid; gap: 12px; }
+.nouv { padding: 16px 20px 14px; border-left: 3px solid var(--c); }
+.nouv.neuf { box-shadow: 0 0 0 1px var(--c) inset; }
+.nouv-rub { margin: 0 0 4px; display: flex; align-items: center; gap: 8px; font-size: 12px; letter-spacing: .04em; text-transform: uppercase; color: var(--encre-2); }
+.nouv-badge { text-transform: none; letter-spacing: 0; font-size: 11.5px; font-weight: 600; color: var(--papier); background: var(--c); border-radius: 999px; padding: 1px 8px; }
+.nouv h4 { margin: 0 0 6px; font-family: var(--f-titre); font-size: 20px; line-height: 1.3; }
+.nouv-texte { font-family: var(--f-texte); font-size: 16px; line-height: 1.55; color: var(--encre); }
+.nouv-texte p { margin: 0 0 .5em; }
+.nouv-liens { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 6px 0 0; font-size: 14px; }
+.nouv-liens a { color: var(--encre); text-decoration: underline; text-decoration-color: var(--c); text-underline-offset: 3px; text-decoration-thickness: 2px; }
+.m-badge.m-neuf { background: var(--encre); color: var(--papier); border-color: var(--encre); }
+@media (max-width: 860px) {
+  .nouv-jour { grid-template-columns: minmax(0, 1fr); padding-bottom: 18px; }
+  .nouv-jour::before, .nouv-date::after { display: none; }
+  .nouv-date { position: static; text-align: left; padding: 0 0 8px; }
+  .nouv { padding: 14px 16px 12px; }
+}
 .signal-elt {
   display: inline-grid; place-items: center; width: 26px; height: 26px; padding: 0; margin-left: 6px; vertical-align: middle;
   border: 0; border-radius: 6px; background: none; color: var(--encre-3); cursor: pointer; opacity: .55; transition: opacity .15s;
@@ -983,6 +1015,7 @@ span.case:hover { border-style: dashed; color: inherit; }
         <a href="#exercices" data-rubrique="exercices"><span class="m-titre">Exercices</span><span class="m-desc">Feuilles et exercices corrigés, à chercher par notion.</span></a>
         <a href="#annales" data-rubrique="annales"><span class="m-titre">Annales</span><span class="m-desc">Sujets des concours d'ingénieurs et de l'enseignement, et recherche par thème.</span></a>
         <hr>
+        <a href="#nouveautes" data-rubrique="nouveautes"><span class="m-titre">Nouveautés</span><span class="m-badge m-neuf" id="menu-neuf" hidden>nouveau</span><span class="m-desc">Ce qui a été ajouté au site, semaine après semaine.</span></a>
         <a href="#a-propos" data-rubrique="a-propos"><span class="m-titre">À propos – Contact</span><span class="m-desc">L'auteur, le projet, et une adresse pour écrire ou signaler une erreur.</span></a>
       </nav>
     </div>
@@ -1742,6 +1775,7 @@ const RUBRIQUES = {
   cours: { titre: 'Cours', page: pageCours },
   exercices: { titre: 'Exercices', page: pageExercices },
   annales: { titre: 'Annales', page: pageAnnales },
+  nouveautes: { titre: 'Nouveautés', page: pageNouveautes },
   'a-propos': { titre: 'À propos', page: pageAPropos },
 };
 let ancreEdifice = '';
@@ -2770,6 +2804,52 @@ boutonTheme.addEventListener('click', () => {
 });
 sombreSysteme.addEventListener?.('change', majBoutonTheme);
 majBoutonTheme();
+/* ---- Nouveautés (domaine À propos – Contact ; données rubriques/nouveautes.yaml) */
+const NOUV_RUB = { edifice: ["L'édifice", '--c-nb'], cours: ['Cours', '--c-ana'], exercices: ['Exercices', '--c-geo'], annales: ['Annales', '--c-alg'], site: ['Le site', '--encre-3'] };
+const etatNouv = { filtre: '', vuAvant: null };
+function nouvVu() { try { return localStorage.getItem('atlas-nouveautes-vu') || ''; } catch (e) { return ''; } }
+function nouvMarquerVu() {
+  const d = (R.nouveautes?.entrees || [])[0]?.date; if (!d) return;
+  try { localStorage.setItem('atlas-nouveautes-vu', d); } catch (e) {}
+  const b = $('#menu-neuf'); if (b) b.hidden = true;
+}
+function nouvDate(d) {
+  return new Date(d + 'T12:00:00').toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+}
+function pageNouveautes() {
+  const N = R.nouveautes || {}, E = N.entrees || [];
+  if (etatNouv.vuAvant === null) etatNouv.vuAvant = nouvVu();   // date de la visite précédente, figée pour la session
+  const vu = etatNouv.vuAvant;
+  let h = tete('Rubrique', 'Nouveautés', N.intro || '');
+  const nb = k => E.filter(e => e.rubrique === k).length;
+  h += `<div class="nouv-filtres" role="group" aria-label="Filtrer par rubrique"><button type="button" class="chip" data-nouv-filtre="" aria-pressed="${!etatNouv.filtre}">Tout <span>${E.length}</span></button>`
+    + Object.entries(NOUV_RUB).filter(([k]) => nb(k)).map(([k, [t, c]]) => `<button type="button" class="chip" data-nouv-filtre="${k}" aria-pressed="${etatNouv.filtre === k}" style="--c: var(${c})"><i class="nouv-point"></i>${t} <span>${nb(k)}</span></button>`).join('') + `</div>`;
+  const L = E.filter(e => !etatNouv.filtre || e.rubrique === etatNouv.filtre);
+  h += `<ol class="nouv-fil">`;
+  for (const j of [...new Set(L.map(e => e.date))]) {
+    h += `<li class="nouv-jour"><h3 class="nouv-date"><time datetime="${j}">${nouvDate(j)}</time></h3><div class="nouv-entrees">`;
+    for (const e of L.filter(x => x.date === j)) {
+      const [t, c] = NOUV_RUB[e.rubrique] || NOUV_RUB.site;
+      const neuf = vu && e.date > vu;
+      h += `<article class="nouv carte${neuf ? ' neuf' : ''}" style="--c: var(${c})"><p class="nouv-rub"><i class="nouv-point"></i>${t}${neuf ? '<span class="nouv-badge">nouveau</span>' : ''}</p>`
+        + `<h4>${e.titre}</h4><div class="nouv-texte">${e.texte || ''}</div>`
+        + ((e.liens || []).length ? `<p class="nouv-liens">${e.liens.map(l => `<a href="#${esc(l.ancre)}">${esc(l.nom)} →</a>`).join('')}</p>` : '') + `</article>`;
+    }
+    h += `</div></li>`;
+  }
+  h += `</ol>`;
+  setTimeout(nouvMarquerVu, 0);
+  return h;
+}
+document.addEventListener('click', ev => {
+  const b = ev.target.closest('[data-nouv-filtre]'); if (!b) return;
+  etatNouv.filtre = b.dataset.nouvFiltre;
+  const z = $('#rubrique'); if (z?.dataset.nom === 'nouveautes') z.querySelector('.page').innerHTML = pageNouveautes();
+});
+// Pastille « nouveau » dans le menu du logo, tant que la dernière nouveauté n'a pas été vue
+// (jamais à la toute première visite : tout serait « nouveau »).
+(() => { const d = (R.nouveautes?.entrees || [])[0]?.date, vu = nouvVu(), b = $('#menu-neuf'); if (b) b.hidden = !(d && vu && d > vu); })();
+
 /* ---- Signaler une erreur : bouton drapeau de l'en-tête (domaine À propos – Contact) */
 // Le message est prérempli avec le titre de la vue et son adresse de partage ; l'adresse de contact
 // vient de rubriques/apropos.yaml (section contact, champ courriel), assemblée ici comme sur la page À propos.

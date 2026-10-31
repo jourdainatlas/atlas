@@ -336,7 +336,7 @@ const texteBrut = h => String(h || '').replace(/<figure class="schema"[\s\S]*?<\
 const coupe = (t, n = 200) => t.length > n ? t.slice(0, n - 1).replace(/\s+\S*$/, '') + '…' : t;
 const attr = t => String(t).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
 let nbPartage = 0;
-const RUBRIQUES_PARTAGE = { accueil: 'Accueil', edifice: 'L\'édifice', cours: 'Cours', exercices: 'Exercices', annales: 'Annales', 'a-propos': 'À propos' };
+const RUBRIQUES_PARTAGE = { accueil: 'Accueil', edifice: 'L\'édifice', cours: 'Cours', exercices: 'Exercices', annales: 'Annales', nouveautes: 'Nouveautés', 'a-propos': 'À propos' };
 function pagePartage(chemin, ancre, titre, description) {
   const url = ADRESSE + chemin, cible = ADRESSE + '#' + ancre;
   // Titre : « ATLAS – <rubrique> » pour une rubrique, « ATLAS – <rubrique> : <titre> » plus profond.
@@ -387,6 +387,7 @@ for (const e of Rb.exercices?.exercices || []) {
   pagePartage(`exercices/${e.id}/`, `exercices/ex/${e.id}`, `Exercice ${e.numero}${e.titre ? ` (${texteBrut(e.titre)})` : ''} — ${lieu}`, texteBrut(e.enonce));
 }
 pagePartage('annales/', 'annales', 'Annales', texteBrut(Rb.annales?.intro));
+pagePartage('nouveautes/', 'nouveautes', 'Nouveautés', texteBrut(Rb.nouveautes?.intro));
 pagePartage('a-propos/', 'a-propos', 'À propos', 'L\'auteur d\'ATLAS, professeur agrégé de mathématiques, le projet et ses principes de rédaction ; une adresse pour écrire ou signaler une erreur.');
 for (const n of Object.values(D.noeuds)) {
   const ancre = n.sous ? n.sous : `${n.graphe}.${n.id}`;

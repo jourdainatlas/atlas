@@ -97,3 +97,20 @@ survol), inséré par remplacement local dans `fiche()` (titre de la fiche, chem
 (`aProposOuvrirSignal`) sert le drapeau de l'en-tête et ceux des éléments ; le panneau suit son drapeau au
 défilement et se ferme s'il sort de l'écran.
 
+### 36. Nouveautés (31 oct. 2026)
+
+Rubrique `#nouveautes` (menu du logo, entre Annales et À propos ; page de partage `/nouveautes/`).
+Données : `rubriques/nouveautes.yaml` (`intro`, `entrees` : date entre guillemets, sinon PyYAML en fait une
+date que le JSON refuse ; `rubrique` edifice | cours | exercices | annales | site ; `titre` ; `texte` ;
+`liens: [{nom, ancre}]`, champ nommé `nom` et non `texte`, que `rendu.mjs` composerait en paragraphe ;
+`couvre`). Espaces insécables avant ; : ! ? » et après « dans les textes.
+Code : `pageNouveautes` et auxiliaires `nouv…` dans `gabarit.html`, styles `.nouv*` ; chronologie par
+jour, une carte par nouveauté (bord à la couleur de la rubrique : édifice `--c-nb`, cours `--c-ana`,
+exercices `--c-geo`, annales `--c-alg`, site `--encre-3`), filtres par rubrique. Date de la dernière
+visite de la page gardée sur l'appareil (`localStorage`, clé `atlas-nouveautes-vu`) : cartes plus
+récentes marquées « nouveau », pastille « nouveau » dans le menu tant qu'il reste du neuf (jamais à la
+première visite).
+Règle d'alimentation et filet de sécurité : `MEMO_atlas.md`, section 0, point 8 ; vérifications dans
+`construire.py` (bloc « Nouveautés » : forme des entrées et ancres en erreur, oublis en avertissement).
+Onze entrées initiales (25-31 oct.), rédigées d'après l'historique du dépôt.
+

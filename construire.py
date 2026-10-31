@@ -714,6 +714,49 @@ if 'cours' in rubriques:
         if c.get('chapitre'):
             if (c['niveau'], c['chapitre']) in vus: erreur(f"rubriques/cours {c['id']} : chapitre {c['chapitre']} déjà pris au niveau {c['niveau']}")
             vus.add((c['niveau'], c['chapitre']))
+# Nouveautés (domaine À propos – Contact) : forme des entrées, et filet de sécurité contre les ajouts
+# non annoncés. Est « annonçable » : une théorie de l'édifice, un cours ou une feuille déposés, une session
+# d'annales. Un tel élément doit figurer dans le socle (rubriques/nouveautes/socle.yaml : ce qui était en
+# ligne à l'ouverture de la rubrique), ou être couvert par une entrée (champ couvre, ou un de ses liens).
+# Un oubli n'est qu'un avertissement ; une correction ne crée aucun identifiant, donc ne déclenche rien.
+if 'nouveautes' in rubriques:
+    NV = rubriques['nouveautes']; NV.setdefault('entrees', [])
+    RUBS = {'edifice', 'cours', 'exercices', 'annales', 'site'}
+    cours_ids = {c['id'] for c in rubriques.get('cours', {}).get('cours', [])}
+    feuil_ids = {f['id'] for f in rubriques.get('exercices', {}).get('feuilles', [])}
+    racine_ids = {n['id'] for n in yaml.safe_load(open('contenu/edifice.yaml', encoding='utf-8'))['noeuds']}
+    couverts, prec = set(), '9999'
+    for k, e in enumerate(NV['entrees']):
+        ou = f"rubriques/nouveautes entrée {k + 1} ({e.get('titre', '?')})"
+        d = str(e.get('date', ''))
+        if not re.fullmatch(r'\d{4}-\d{2}-\d{2}', d): erreur(f"{ou} : date absente ou mal écrite (\"AAAA-MM-JJ\", entre guillemets)")
+        elif d > prec: erreur(f"{ou} : les entrées vont de la plus récente à la plus ancienne")
+        else: prec = d
+        if e.get('rubrique') not in RUBS: erreur(f"{ou} : rubrique inconnue {e.get('rubrique')}")
+        if not e.get('titre') or not e.get('texte'): erreur(f"{ou} : titre et texte sont obligatoires")
+        couverts.update(e.get('couvre') or [])
+        for l in e.get('liens') or []:
+            a = str(l.get('ancre', '')); m = a.split('/')
+            if not l.get('nom'): erreur(f"{ou} : lien sans nom ({a})")
+            if a in ('accueil', 'edifice', 'cours', 'exercices', 'annales', 'nouveautes', 'a-propos'): pass
+            elif m[0] == 'cours' and len(m) == 2:
+                if m[1] not in cours_ids: erreur(f"{ou} : cours inconnu {m[1]}")
+                couverts.add(m[1])
+            elif m[:2] == ['exercices', 'feuille'] and len(m) == 3:
+                if m[2] not in feuil_ids: erreur(f"{ou} : feuille inconnue {m[2]}")
+                couverts.add(m[2])
+            elif m[0] in ('exercices', 'annales'): pass
+            elif a.split('.')[0] in G or a in noeuds:
+                couverts.add(a.split('.')[-1])
+            else: erreur(f"{ou} : ancre inconnue {a}")
+    socle_f = 'rubriques/nouveautes/socle.yaml'
+    socle = set((yaml.safe_load(open(socle_f, encoding='utf-8')) or {}).get('ids') or []) if os.path.isfile(socle_f) else set()
+    annoncables = set(racine_ids)
+    annoncables |= {c['id'] for c in rubriques.get('cours', {}).get('cours', []) if c.get('statut') == 'depose'}
+    annoncables |= {f['id'] for f in rubriques.get('exercices', {}).get('feuilles', []) if f.get('statut') == 'depose'}
+    annoncables |= {f"annales-{x['annee']}" for x in rubriques.get('annales', {}).get('sujets', []) if x.get('annee')}
+    oublis = sorted(annoncables - socle - couverts)
+    if oublis: avert(f"nouveautés non annoncées (rubriques/nouveautes.yaml, champ couvre) : {', '.join(oublis)}")
 if erreurs:
     print("ERREURS :"); [print("  -", e) for e in erreurs]; sys.exit(1)
 sortie['rubriques'] = rubriques
