@@ -1050,3 +1050,19 @@ admise (§35), désormais démontrée ; la remarque de gs-radicaux y renvoie. «
 cg-conjugaison ; rp-lineaires (galois-representations, qui ne reçoit pas cohgr : l'entrée coûtait 3 croisements) le
 rappelle en gras sur place et renvoie en remarque. Relu : trois fautes mineures (ordre du lexique, borne de
 |Aut(ℚ(i)/ℚ)|, appellation « théorème de Noether » non confirmée). 888 nœuds, 526 termes, 75 graphes ; edifice 16.
+
+## 71. Cohomologie singulière ; produit cup (31 octobre 2026)
+
+Deux chapitres sous `hom` (arêtes internes h-spheres → hom-cohomologie → hom-cup ; aucune arête nouvelle dans
+l'édifice, 16 croisements). hom-cohomologie (8 fiches cs-*) : complexes de cochaînes, Hⁿ(X; G), invariance par
+homotopie et Mayer-Vietoris déduites de l'homologie par transposition (suite courte scindée degré par degré, comme
+suite de groupes), sphères, groupes projectifs, Ext par présentation projective (Ext(ℤ/n, G) = G/nG), coefficients
+universels : (i) sans choix quand les bords et les chaînes sont projectifs (complexes de ℤᵏ), (ii) ⋆ pour un espace
+quelconque, avec « Admis ici » : sous-groupe d'abélien libre est libre (Dedekind, récurrence transfinie contournée) ;
+Blass 1979 : « tout abélien libre est projectif » équivaut au choix. hom-cup (6 fiches cup-*) : produit cup (Leibniz,
+associativité), anneau (commutativité graduée admise, rien n'en dépend), suite du revêtement Sⁿ → ℝPⁿ modulo 2
+(scission par le relèvement de premier sommet positif, non compatible au cobord ; connexion = cup par α),
+Hᵏ(ℝPⁿ) = 0 pour k > n (Mayer-Vietoris, rétraction de ℝPⁿ privé d'un point), H*(ℝPⁿ; 𝔽₂) = 𝔽₂[X]/(X^{n+1}),
+Borsuk-Ulam. Relu : un trou (Dedekind, désormais admis), « scindée » précisé, Baer 1934 avant Eilenberg-Mac Lane
+1942, « demande le choix » → « emploie le choix ». Pas d'homologie cellulaire, ni Künneth, ni anneau du tore.
+904 nœuds, 533 termes, 77 graphes.

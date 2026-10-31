@@ -1,0 +1,348 @@
+# Niveau 2 : structure interne du chapitre « Cohomologie singulière » (nœud hom-cohomologie du graphe hom,
+# créé le 31 oct. 2026). Complexes de cochaînes, dualité Hom(−, G), suite exacte longue naturelle ;
+# cohomologie singulière H^n(X; G), fonctorialité contravariante, degré 0 ; invariance par homotopie et
+# Mayer-Vietoris déduites des résultats d'homologie par transposition (prisme, petites chaînes), la suite
+# courte des cochaînes de Mayer-Vietoris étant scindée degré par degré, comme suite de groupes (non de
+# complexes), par une règle explicite (prolongement par zéro) ;
+# cohomologie des sphères par Mayer-Vietoris ; algèbre homologique sur ℤ : groupes projectifs (ℤ^k,
+# sous-groupes de ℤ^k), Ext par une présentation projective, indépendance, Ext(ℤ/nℤ, G) = G/nG ;
+# théorème des coefficients universels pour un complexe dont les chaînes et les bords sont projectifs.
+# Choix : aucun, sauf le point (ii) de cs-coefficients-universels (complexe singulier d'un espace
+# quelconque : bords libres par un bon ordre, admis ici, groupes libres projectifs, ce second énoncé étant
+# équivalent à l'axiome du choix d'après Blass, Trans. AMS 255, 1979). Rien n'en dépend, hors des remarques.
+
+graphe: hom-cohomologie
+titre: Cohomologie singulière
+conteneur: hom-cohomologie
+
+entrees:
+  h-complexes: [cs-cochaines]
+  h-mayer-vietoris: [cs-mayer-vietoris]
+  h-spheres: [cs-spheres]
+
+noeuds:
+  - id: cs-cochaines
+    etiquette: Complexes de cochaînes
+    nature: définition
+    titre: Complexes de cochaînes et dualité
+    texte: |
+      Pour deux groupes abéliens $A$ et $G$, on note $\operatorname{Hom}(A, G)$ l'ensemble des [[morphisme-groupes|morphismes]] de $A$ dans $G$ ; c'est un groupe abélien pour l'addition point par point, $(\varphi + \psi)(a) = \varphi(a) + \psi(a)$.
+
+      Un morphisme $u : A \to B$ induit le morphisme $u^* : \operatorname{Hom}(B, G) \to \operatorname{Hom}(A, G)$, $\varphi \mapsto \varphi \circ u$. On a $(v \circ u)^* = u^* \circ v^*$ et $\mathrm{id}^* = \mathrm{id}$ : le sens des flèches s'inverse.
+
+      Un [[complexe-cochaines|complexe de cochaînes]] $K$ est une suite $(K^n)_{n \in \lex{ensemble-entiers-relatifs}{\mathbb Z}}$ de groupes abéliens et de morphismes $\delta^n : K^n \to K^{n+1}$, les **cobords**, tels que $\delta^{n+1} \circ \delta^n = 0$. On pose $Z^n = \operatorname{Ker}\delta^n$, les **cocycles**, $B^n = \operatorname{Im}\delta^{n-1} \subset Z^n$, et la **cohomologie** de $K$ est
+      $$H^n(K) = Z^n/B^n.$$
+
+      Un **morphisme** de complexes de cochaînes $f : K \to L$ est une suite de morphismes $f^n : K^n \to L^n$ tels que $\delta f^n = f^{n+1}\delta$ ; une **homotopie** entre deux morphismes $f, g : K \to L$ est une suite de morphismes $Q^n : K^n \to L^{n-1}$ tels que $\delta Q + Q\delta = g - f$.
+
+      Il n'y a là rien de nouveau. En posant $C_n = K^{-n}$ et $\partial_n = \delta^{-n}$, on obtient un [[complexe-chaines|complexe de chaînes]], dont l'homologie est $\lex{groupe-homologie}{H_n}(C) = H^{-n}(K)$ ; morphismes et homotopies se correspondent de même. Tout ce qu'établissent les nœuds {{h-complexes|Complexes de chaînes}} et {{h-suite-exacte|Suite exacte longue}} vaut donc pour les cochaînes.
+
+      Le **complexe dual** d'un complexe de chaînes $C$, à coefficients dans un groupe abélien $G$, est le complexe de cochaînes $\operatorname{Hom}(C, G)$ de terme $\operatorname{Hom}(C_n, G)$ en degré $n$, de cobord $\delta^n = \partial_{n+1}^*$ :
+      $$(\delta\varphi)(c) = \varphi(\partial c), \quad c \in C_{n+1}.$$
+      On a $\delta\delta = (\partial\partial)^* = 0$. On note $H^n(C; G)$ sa cohomologie.
+    enonce: |
+      (i) *Dualité.* Un morphisme de complexes de chaînes $f : C \to D$ induit un morphisme de complexes de cochaînes $f^\# : \operatorname{Hom}(D, G) \to \operatorname{Hom}(C, G)$, $\varphi \mapsto \varphi \circ f$, avec $(g \circ f)^\# = f^\# \circ g^\#$. Si $\partial P + P\partial = g - f$, alors
+      $$\delta P^\# + P^\#\delta = g^\# - f^\#,$$
+      et $f^\#$, $g^\#$ induisent le même morphisme en cohomologie.
+
+      (ii) *Suite exacte longue.* Une suite exacte courte $0 \to K \xrightarrow{i} L \xrightarrow{p} M \to 0$ de complexes de cochaînes induit une suite exacte longue
+      $$\begin{aligned} \cdots \to H^n(K) &\xrightarrow{i^*} H^n(L) \\ &\xrightarrow{p^*} H^n(M) \\ &\xrightarrow{\kappa} H^{n+1}(K) \to \cdots \end{aligned}$$
+      où le morphisme de connexion $\kappa$ est défini ainsi : pour un cocycle $m \in M^n$, on prend $l \in L^n$ tel que $p(l) = m$, et $\kappa[m] = [k]$, où $k$ est l'unique élément de $K^{n+1}$ tel que $i(k) = \delta l$.
+
+      Elle est **naturelle** : si $(\alpha, \beta, \gamma)$ est un morphisme de cette suite courte vers une autre, $0 \to K' \to L' \to M' \to 0$, c'est-à-dire si $\alpha$, $\beta$, $\gamma$ sont des morphismes de complexes qui commutent avec les flèches des deux suites, alors $\kappa' \circ \gamma^* = \alpha^* \circ \kappa$.
+
+      (iii) *Évaluation.* Pour un complexe de chaînes $C$, l'application
+      $$h : H^n(C; G) \to \operatorname{Hom}\big(H_n(C), G\big),$$
+      définie par $h[\varphi]([z]) = \varphi(z)$, est un morphisme bien défini. Il est naturel : $h(f^*\xi) = h(\xi) \circ f_*$ pour tout morphisme de complexes de chaînes $f$.
+    preuve: |
+      (i) Pour $\varphi \in \operatorname{Hom}(D_n, G)$, on a $\delta f^\#\varphi = \varphi \circ f \circ \partial = \varphi \circ \partial \circ f = f^\#\delta\varphi$. La formule de composition vient de $(g \circ f)^* = f^* \circ g^*$.
+
+      Pour $c \in C_n$ et $\varphi \in \operatorname{Hom}(D_n, G)$, on a $(P^\#\delta\varphi)(c) = \varphi(\partial Pc)$ et $(\delta P^\#\varphi)(c) = \varphi(P\partial c)$, dont la somme vaut
+      $$\varphi\big((\partial P + P\partial)c\big) = \varphi(gc) - \varphi(fc).$$
+      Si $\varphi$ est un cocycle, $g^\#\varphi - f^\#\varphi = \delta(P^\#\varphi)$ est un cobord : $[g^\#\varphi] = [f^\#\varphi]$.
+
+      (ii) Par le changement d'indices $C_n = K^{-n}$, la suite courte devient une suite exacte courte de complexes de chaînes, et le nœud {{h-suite-exacte|Suite exacte longue}} donne la suite exacte ; son morphisme de connexion, de $H_{-n}(M) = H^n(M)$ dans $H_{-n-1}(K) = H^{n+1}(K)$, est le $\kappa$ décrit.
+
+      Pour la naturalité, soit $m$ un cocycle, $l$ et $k$ comme dans la définition. Alors $\beta(l)$ relève $\gamma(m)$, puisque $p'\beta(l) = \gamma p(l)$, et
+      $$\delta\beta(l) = \beta(\delta l) = \beta i(k) = i'\alpha(k).$$
+      Donc $\kappa'[\gamma(m)] = [\alpha(k)] = \alpha^*\kappa[m]$.
+
+      (iii) Soit $\varphi$ un cocycle, $z$ un cycle et $c \in C_{n+1}$. On a
+      $$\varphi(z + \partial c) = \varphi(z) + (\delta\varphi)(c) = \varphi(z),$$
+      de sorte que $\varphi$ induit un morphisme sur $H_n(C)$ ; et si $\varphi = \delta\chi$ est un cobord, $\varphi(z) = \chi(\partial z) = 0$. Ainsi $h$ est bien défini, et c'est un morphisme.
+
+      Enfin $h(f^*[\varphi])([z]) = \varphi(f(z)) = h[\varphi](f_*[z])$.
+    remarques:
+      - |
+        L'erreur la plus répandue est de croire que $\operatorname{Hom}(-, G)$ transforme une suite exacte courte en suite exacte courte. Pour $0 \to \mathbb Z \xrightarrow{\times 2} \mathbb Z \to \lex{anneau-zn}{\mathbb Z/2\mathbb Z} \to 0$ et $G = \mathbb Z$, on obtient
+        $$0 \to \operatorname{Hom}(\mathbb Z/2\mathbb Z, \mathbb Z) \to \mathbb Z \xrightarrow{\times 2} \mathbb Z \to 0,$$
+        où le premier groupe est nul, $\mathbb Z$ n'ayant pas d'élément d'ordre $2$, et où la dernière flèche n'est pas surjective. Ce défaut d'exactitude, mesuré par le conoyau $\mathbb Z/2\mathbb Z$, est l'origine du groupe $\operatorname{Ext}$ du nœud {{cs-ext|Le groupe Ext}}.
+      - |
+        Le morphisme $h$ de (iii) n'est pas un isomorphisme en général. Pour le complexe $\mathbb Z \xrightarrow{\times 2} \mathbb Z$, concentré en degrés $1$ et $0$, de la remarque du nœud {{h-complexes|Complexes de chaînes}}, le complexe dual à coefficients dans $\mathbb Z$ est $\mathbb Z \xrightarrow{\times 2} \mathbb Z$, en degrés $0$ et $1$ : sa cohomologie est nulle en degré $0$ et vaut $\mathbb Z/2\mathbb Z$ en degré $1$, alors que $\operatorname{Hom}(H_1(C), \mathbb Z) = 0$. La torsion de $H_0$ réapparaît en degré $1$ ; le théorème des coefficients universels ({{cs-coefficients-universels|Coefficients universels}}) dit qu'il en est toujours ainsi.
+
+  - id: cs-singuliere
+    etiquette: Cohomologie singulière
+    nature: définition
+    titre: Cohomologie singulière
+    texte: |
+      Soit $X$ un espace topologique et $G$ un groupe abélien. Le groupe des **cochaînes singulières** de degré $n \geqslant 0$ est
+      $$C^n(X; G) = \operatorname{Hom}\big(C_n(X), G\big),$$
+      et l'on pose $C^n(X; G) = 0$ pour $n < 0$. Par la propriété universelle des groupes abéliens libres ({{h-complexes|Complexes de chaînes}}, (i)), une cochaîne n'est rien d'autre qu'une application quelconque de l'ensemble des simplexes singuliers de dimension $n$ dans $G$.
+
+      Le cobord est le transposé du bord : pour un simplexe $\sigma$ de dimension $n + 1$,
+      $$(\delta\varphi)(\sigma) = \sum_{i=0}^{n+1} (-1)^i\, \varphi(\sigma \circ \delta_i).$$
+      La [[cohomologie-singuliere|cohomologie singulière]] de $X$ à coefficients dans $G$, notée $\lex{cohomologie-singuliere}{H^n}(X; G)$, est la cohomologie de ce complexe, dual du complexe singulier $C(X)$ au sens du nœud {{cs-cochaines|Complexes de cochaînes}}.
+    enonce: |
+      (i) *Fonctorialité.* Une application continue $f : X \to Y$ induit le morphisme de complexes $f^\# : C^n(Y; G) \to C^n(X; G)$, $(f^\#\varphi)(\sigma) = \varphi(f \circ \sigma)$, donc des morphismes $f^* : H^n(Y; G) \to H^n(X; G)$, avec $(g \circ f)^* = f^* \circ g^*$ et $\mathrm{id}^* = \mathrm{id}$. Deux espaces homéomorphes ont des cohomologies isomorphes.
+
+      (ii) *Degré $0$.* $H^0(X; G)$ est le groupe des applications de $X$ dans $G$ constantes sur chaque [[composante-connexe-par-arcs|composante connexe par arcs]], c'est-à-dire des applications de l'ensemble $\Pi$ de ces composantes dans $G$. Pour un point, $H^0 \cong G$ et $H^n = 0$ pour $n \neq 0$.
+
+      (iii) *Évaluation.* Le morphisme $h : H^n(X; G) \to \operatorname{Hom}\big(\lex{homologie-singuliere}{H_n}(X), G\big)$ du nœud {{cs-cochaines|Complexes de cochaînes}}, (iii), vérifie $h(f^*\xi) = h(\xi) \circ f_*$ pour toute application continue $f$.
+    preuve: |
+      (i) On a $f^\# = (f_\#)^\#$, où $f_\#$ est le morphisme de complexes de chaînes du nœud {{h-singuliere|Homologie singulière}}, (ii) ; on applique {{cs-cochaines|Complexes de cochaînes}}, (i). Un homéomorphisme et sa réciproque induisent des morphismes réciproques l'un de l'autre.
+
+      (ii) Comme $C^{-1}(X; G) = 0$, il n'y a pas de cobord en degré $0$, et $H^0(X; G)$ est le groupe des cocycles. Une $0$-cochaîne est une application $\varphi$ de $X$ dans $G$, un simplexe de dimension $0$ étant un point.
+
+      Un simplexe de dimension $1$ est un [[chemin]] $\gamma$, par l'homéomorphisme $s \mapsto (1 - s, s)$ de $[0, 1]$ sur $\Delta_1$ ({{h-degre0|Degré 0, point}}) ; la face $\delta_0$ a pour image le sommet $e_1$, qui correspond à $s = 1$, et $\delta_1$ le sommet $e_0$. Ainsi
+      $$(\delta\varphi)(\gamma) = \varphi(\gamma(1)) - \varphi(\gamma(0)),$$
+      et $\varphi$ est un cocycle si et seulement si elle prend la même valeur aux deux extrémités de tout chemin, c'est-à-dire si elle est constante sur chaque composante connexe par arcs.
+
+      Pour un point, le complexe singulier est $\mathbb Z$ en chaque degré $m \geqslant 0$, avec $\partial_m = \mathrm{id}$ si $m \geqslant 2$ est pair et $\partial_m = 0$ si $m$ est impair ({{h-degre0|Degré 0, point}}, (i)). Le complexe dual est $G$ en chaque degré $n \geqslant 0$, avec $\delta^n = \partial_{n+1}^*$ égal à $0$ si $n$ est pair et à l'identité si $n$ est impair.
+
+      En degré $0$, on trouve $\operatorname{Ker}\delta^0 = G$. En degré $n$ impair, $\operatorname{Ker}\delta^n = 0$ ; en degré $n \geqslant 2$ pair, $\operatorname{Ker}\delta^n = G = \operatorname{Im}\delta^{n-1}$. D'où $H^n = 0$ pour $n \geqslant 1$.
+
+      (iii) C'est le point (iii) du nœud {{cs-cochaines|Complexes de cochaînes}}, appliqué à $f_\#$.
+    remarques:
+      - |
+        La cohomologie est duale de l'homologie, et les sommes directes y deviennent des produits. Pour l'espace $\lex{ensemble-entiers-naturels}{\mathbb N}$ muni de la topologie discrète, dont les composantes connexes par arcs sont les points, $H_0$ est le groupe $\mathbb Z^{(\mathbb N)}$ des suites d'entiers nulles à partir d'un certain rang, qui est dénombrable, alors que $H^0(\mathbb N; \mathbb Z)$ est le groupe de toutes les suites d'entiers, qui ne l'est pas.
+      - |
+        Une $1$-cochaîne attribue une valeur à chaque chemin, comme le fait l'intégrale d'une forme différentielle de degré $1$ le long d'un chemin. L'intégrale d'une forme fermée sur les simplexes lisses définit ainsi un cocycle à coefficients réels : c'est le point de départ du théorème de {{derham|de Rham}}, qui compare la cohomologie des formes différentielles à la cohomologie singulière.
+
+  - id: cs-homotopie
+    etiquette: Invariance par homotopie
+    nature: théorème
+    titre: Invariance de la cohomologie par homotopie
+    enonce: |
+      (i) Deux applications continues homotopes $f, g : X \to Y$ induisent les mêmes morphismes $f^* = g^* : \lex{cohomologie-singuliere}{H^n}(Y; G) \to H^n(X; G)$.
+
+      (ii) Une [[equivalence-homotopie|équivalence d'homotopie]] induit des isomorphismes en cohomologie. Une partie étoilée non vide de $\lex{n-uplet}{\mathbb R^m}$ a la cohomologie d'un point : $G$ en degré $0$, et $0$ en degré $n \neq 0$.
+    preuve: |
+      (i) La démonstration du nœud {{h-homotopie|Invariance par homotopie}} construit, à partir d'une homotopie de $f$ à $g$, l'opérateur prisme $P : C_n(X) \to C_{n+1}(Y)$, qui vérifie $\partial P + P\partial = g_\# - f_\#$. Par le point (i) du nœud {{cs-cochaines|Complexes de cochaînes}}, $f^\# = (f_\#)^\#$ et $g^\# = (g_\#)^\#$ induisent le même morphisme en cohomologie.
+
+      (ii) Si $g \circ f$ et $f \circ g$ sont homotopes aux identités, $f^* \circ g^*$ et $g^* \circ f^*$ sont les identités, par (i) et par la fonctorialité ({{cs-singuliere|Cohomologie singulière}}, (i)).
+
+      Une partie étoilée par rapport à $a$ se contracte sur $a$ ({{h-homotopie|Invariance par homotopie}}, (ii)) : l'inclusion du point $a$ est une équivalence d'homotopie, et l'on conclut par le point (ii) du nœud {{cs-singuliere|Cohomologie singulière}}.
+    remarques:
+      - |
+        La démonstration ne refait aucun travail géométrique : toute identité entre opérateurs sur les chaînes se transpose en une identité entre cochaînes. Ce sera encore le cas pour les petites chaînes et Mayer-Vietoris ; ce qui est propre à la cohomologie, c'est le renversement des flèches, $f^*$ allant de la cohomologie de l'espace d'arrivée vers celle de l'espace de départ.
+
+  - id: cs-mayer-vietoris
+    etiquette: Mayer-Vietoris
+    nature: théorème
+    titre: Petites cochaînes et suite de Mayer-Vietoris
+    texte: |
+      Soit $\mathcal U$ un ensemble d'ouverts d'un espace $X$, de réunion $X$, et $C^{\mathcal U}(X)$ le complexe des petites chaînes du nœud {{h-petites-chaines|Petites chaînes}}. Son dual $C^n_{\mathcal U}(X; G) = \operatorname{Hom}\big(C^{\mathcal U}_n(X), G\big)$ est formé des applications définies sur les seuls simplexes à valeurs dans un élément de $\mathcal U$, et le transposé $\jmath^\#$ de l'inclusion $\jmath$ est la **restriction** d'une cochaîne à ces simplexes.
+
+      Pour $X = U \cup V$, avec $U$ et $V$ ouverts, on note $C^n_{U,V}(X; G)$ le groupe obtenu pour $\mathcal U = \{U, V\}$, et $i, j, k, l$ les inclusions de $U \cap V$ dans $U$ et $V$, et de $U$ et $V$ dans $X$ ; on ne confondra pas l'inclusion $j$ avec l'inclusion $\jmath$ des petites chaînes, notée sans point. Un simplexe de $U$ s'identifie au simplexe de $X$ à valeurs dans $U$ qu'il définit.
+    enonce: |
+      (i) *Petites cochaînes.* La restriction $\jmath^\#$ induit des isomorphismes de $\lex{cohomologie-singuliere}{H^n}(X; G)$ sur la cohomologie de $C_{\mathcal U}(X; G)$.
+
+      (ii) *Mayer-Vietoris.* Il existe une suite exacte longue
+      $$\begin{aligned} &\cdots \to H^n(X; G) \\ &\xrightarrow{(k^*, l^*)} H^n(U; G) \oplus H^n(V; G) \\ &\xrightarrow{i^* - j^*} H^n(U \cap V; G) \\ &\xrightarrow{\kappa} H^{n+1}(X; G) \to \cdots \end{aligned}$$
+      qui commence par $0 \to H^0(X; G)$.
+    preuve: |
+      (i) Le nœud {{h-petites-chaines|Petites chaînes}} fournit un morphisme de complexes $\rho : C(X) \to C^{\mathcal U}(X)$ et un opérateur $D$ tels que $\rho \circ \jmath = \mathrm{id}$ et $\jmath \circ \rho = \mathrm{id} - \partial D - D\partial$.
+
+      Par transposition ({{cs-cochaines|Complexes de cochaînes}}, (i)), $\jmath^\# \circ \rho^\# = \mathrm{id}$, et $\rho^\# \circ \jmath^\#$ est homotope à l'identité : $\jmath^\#$ et $\rho^\#$ induisent en cohomologie des isomorphismes réciproques.
+
+      (ii) Considérons la suite de complexes de cochaînes
+      $$\begin{aligned} 0 &\to C_{U,V}(X; G) \\ &\xrightarrow{(r_U, r_V)} C(U; G) \oplus C(V; G) \\ &\xrightarrow{r - r} C(U \cap V; G) \to 0, \end{aligned}$$
+      où $r_U$, $r_V$ et $r$ sont les restrictions aux simplexes à valeurs dans $U$, dans $V$ et dans $U \cap V$. Ce sont des morphismes de complexes, puisque les faces d'un simplexe à valeurs dans une partie y sont aussi à valeurs.
+
+      Elle est exacte en chaque degré. Une application définie sur les simplexes à valeurs dans $U$ ou dans $V$ est déterminée par ses restrictions, d'où l'injectivité. La composée est nulle, les deux restrictions d'une même application aux simplexes de $U \cap V$ étant égales.
+
+      Si $(\varphi_U, \varphi_V)$ a une image nulle, $\varphi_U$ et $\varphi_V$ coïncident sur les simplexes à valeurs dans $U \cap V$, et l'application égale à $\varphi_U$ sur les simplexes de $U$ et à $\varphi_V$ sur ceux de $V$ est bien définie : c'est un antécédent.
+
+      Enfin, une cochaîne $\chi$ de $U \cap V$ est l'image de $(\hat\chi, 0)$, où $\hat\chi$ vaut $\chi$ sur les simplexes à valeurs dans $U \cap V$ et $0$ sur les autres simplexes de $U$. Ce prolongement par zéro est défini par une règle, sans aucun choix.
+
+      Le point (ii) du nœud {{cs-cochaines|Complexes de cochaînes}} donne la suite exacte longue. On remplace la cohomologie de $C_{U,V}(X; G)$ par $H^n(X; G)$ grâce à (i) : comme $r_U \circ \jmath^\# = k^\#$ et $r_V \circ \jmath^\# = l^\#$, la première flèche devient $(k^*, l^*)$.
+    remarques:
+      - |
+        La suite des cochaînes est exacte pour une raison simple, alors que $\operatorname{Hom}(-, G)$ ne préserve pas l'exactitude en général (remarque du nœud {{cs-cochaines|Complexes de cochaînes}}) : toutes les cochaînes sont des applications quelconques sur des ensembles de simplexes, et une application définie sur une partie se prolonge par zéro. C'est ce qui manquera au théorème des coefficients universels, où les groupes en jeu ne sont plus libres sur des ensembles donnés.
+      - |
+        Les flèches sont celles de la suite d'homologie du nœud {{h-mayer-vietoris|Mayer-Vietoris}}, renversées : la cohomologie de $X$ s'envoie dans celle des morceaux, puis dans celle de leur intersection, et le morphisme de connexion monte d'un degré.
+
+  - id: cs-spheres
+    etiquette: Cohomologie des sphères
+    nature: théorème
+    titre: Cohomologie des sphères
+    enonce: |
+      Pour $n \geqslant 1$ et tout groupe abélien $G$, $\lex{cohomologie-singuliere}{H^k}(\lex{sphere-unite}{S^n}; G)$ est isomorphe à $G$ si $k = 0$ ou $k = n$, et nul sinon. Pour $n = 0$, $H^0(S^0; G) \cong G^2$ et $H^k(S^0; G) = 0$ pour $k \neq 0$.
+    preuve: |
+      *Le cas $n = 0$.* L'image d'un simplexe singulier est connexe par arcs, comme celle de $\Delta_k$, donc réduite à l'un des deux points de $S^0$. Les cochaînes de $S^0$ sont ainsi les couples de cochaînes des deux points, avec le cobord composante par composante, et sa cohomologie est le produit de celles de deux points ({{cs-singuliere|Cohomologie singulière}}, (ii)).
+
+      *Les ouverts.* Pour $n \geqslant 1$, soient $U = S^n \setminus \{N\}$ et $V = S^n \setminus \{S\}$, comme dans la démonstration du nœud {{h-spheres|Homologie des sphères}}. Ils sont homéomorphes à $\lex{n-uplet}{\mathbb R^n}$ par la projection stéréographique, donc ont la cohomologie d'un point ({{cs-homotopie|Invariance par homotopie}}, (ii)).
+
+      La même démonstration établit que l'inclusion de l'équateur, homéomorphe à $S^{n-1}$, dans $U \cap V$ est une équivalence d'homotopie : $U \cap V$ a la cohomologie de $S^{n-1}$. Elle établit aussi que $U \cap V$ a deux composantes connexes par arcs pour $n = 1$, et une seule pour $n \geqslant 2$.
+
+      *Mayer-Vietoris* ({{cs-mayer-vietoris|Mayer-Vietoris}}). Pour $k \geqslant 2$, les groupes $H^{k-1}(U) \oplus H^{k-1}(V)$ et $H^k(U) \oplus H^k(V)$ sont nuls, et $\kappa$ est un isomorphisme :
+      $$\begin{aligned} H^{k-1}(S^{n-1}; G) &\cong H^{k-1}(U \cap V; G) \\ &\cong H^k(S^n; G). \end{aligned}$$
+
+      En degrés bas, la suite s'écrit
+      $$\begin{aligned} 0 \to H^0(S^n) &\to G \oplus G \\ &\xrightarrow{i^* - j^*} H^0(U \cap V) \\ &\xrightarrow{\kappa} H^1(S^n) \to 0, \end{aligned}$$
+      puisque $H^1(U) \oplus H^1(V) = 0$. Par le point (ii) du nœud {{cs-singuliere|Cohomologie singulière}}, un élément $(a, b)$ de $G \oplus G$ est un couple de fonctions constantes, et son image est la fonction constante $a - b$ sur $U \cap V$.
+
+      Pour $n = 1$, $H^0(U \cap V)$ est formé des couples de valeurs sur les deux composantes, soit $G^2$, et l'image de $i^* - j^*$ est la diagonale $\{(c, c)\}$. Le morphisme $(u, v) \mapsto u - v$ est surjectif de $G^2$ sur $G$, de noyau la diagonale, et $H^1(S^1; G) \cong G$.
+
+      Pour $n \geqslant 2$, $H^0(U \cap V) \cong G$ et $i^* - j^*$ est surjectif : $H^1(S^n; G) = 0$.
+
+      Dans tous les cas, $S^n$ est connexe par arcs et $H^0(S^n; G) \cong G$. Une récurrence sur $n$, au moyen de l'isomorphisme $H^k(S^n) \cong H^{k-1}(S^{n-1})$ pour $k \geqslant 2$, conclut.
+    remarques:
+      - |
+        On retrouve les groupes du nœud {{h-spheres|Homologie des sphères}}, avec $G$ à la place de $\mathbb Z$. Le théorème des coefficients universels ({{cs-coefficients-universels|Coefficients universels}}) l'expliquerait, l'homologie des sphères étant sans torsion, mais sa démonstration emploie l'axiome du choix pour le complexe singulier ; le calcul par Mayer-Vietoris n'en demande aucun.
+      - |
+        La cohomologie suffit aux mêmes applications que l'homologie. Si $r$ était une rétraction de la boule $D^n$ sur $S^{n-1}$, pour $n \geqslant 2$, l'identité de $H^{n-1}(S^{n-1}; \mathbb Z) \cong \mathbb Z$ se factoriserait par $H^{n-1}(D^n; \mathbb Z) = 0$, puisque $\iota^* \circ r^* = (r \circ \iota)^* = \mathrm{id}$ : le renversement des flèches ne change rien à l'argument du nœud {{h-applications|Brouwer, dimension}}.
+
+  - id: cs-projectifs
+    etiquette: Groupes projectifs
+    nature: définition
+    titre: Groupes abéliens projectifs
+    texte: |
+      Un groupe abélien $P$ est [[groupe-projectif|projectif]] si, pour tout morphisme surjectif $p : M \to N$ de groupes abéliens et tout morphisme $u : P \to N$, il existe un morphisme $v : P \to M$ tel que $p \circ v = u$ : tout morphisme défini sur $P$ se **relève** le long de toute surjection.
+
+      Pour $k \in \lex{ensemble-entiers-naturels}{\mathbb N}$, on note $e_1, \dots, e_k$ la base canonique de $\lex{n-uplet}{\mathbb Z^k}$, groupe abélien libre sur $\{1, \dots, k\}$ ({{h-complexes|Complexes de chaînes}}).
+    enonce: |
+      (i) Le groupe $\mathbb Z^k$ est projectif. Un groupe isomorphe à un groupe projectif, une somme directe finie de groupes projectifs, et un **rétracte** $Q$ d'un groupe projectif $P$, c'est-à-dire un groupe pour lequel il existe des morphismes $s : Q \to P$ et $r : P \to Q$ tels que $r \circ s = \mathrm{id}_Q$, sont projectifs.
+
+      (ii) Si $P$ est projectif, tout morphisme surjectif $p : M \to P$ a une **section**, un morphisme $s : P \to M$ tel que $p \circ s = \mathrm{id}_P$. Alors $r = \mathrm{id}_M - s \circ p$ est un morphisme de $M$ dans $\operatorname{Ker} p$ égal à l'identité sur $\operatorname{Ker} p$ : le noyau est un rétracte de $M$.
+
+      (iii) Tout sous-groupe de $\mathbb Z^k$ est isomorphe à un $\mathbb Z^r$ avec $r \leqslant k$ ; il est donc projectif.
+    preuve: |
+      (i) Soient $p : M \to N$ surjectif et $u : \mathbb Z^k \to N$. Pour chaque $j \leqslant k$, $u(e_j)$ a un antécédent $m_j$ par $p$ ; ces $k$ éléments en nombre fini s'obtiennent par une récurrence sur $k$, sans aucun axiome du choix. Le morphisme $v$ qui envoie $e_j$ sur $m_j$ ({{h-complexes|Complexes de chaînes}}, (i)) vérifie $p(v(e_j)) = u(e_j)$, donc $p \circ v = u$.
+
+      Si $\theta : P \to Q$ est un isomorphisme et $P$ est projectif, un morphisme $u : Q \to N$ se relève ainsi : on relève $u \circ \theta$ en $v : P \to M$, et $v \circ \theta^{-1}$ vérifie $p \circ v \circ \theta^{-1} = u$. Pour une somme directe $P \oplus P'$, on relève séparément les restrictions de $u$ à $P$ et à $P'$, et l'on additionne.
+
+      Pour un rétracte, on relève $u \circ r : P \to N$ en $v$, puis l'on pose $v' = v \circ s$ ; alors
+      $$p \circ v' = u \circ r \circ s = u.$$
+
+      (ii) On relève $\mathrm{id}_P$ le long de $p$. Alors $p \circ r = p - p \circ s \circ p = 0$, donc $r(M) \subset \operatorname{Ker} p$, et $r(x) = x$ si $p(x) = 0$.
+
+      (iii) Récurrence sur $k$ ; le cas $k = 0$ est clair. Soit $H$ un sous-groupe de $\mathbb Z^k$, $k \geqslant 1$, et $\pi : \mathbb Z^k \to \mathbb Z$ la dernière coordonnée. Le sous-groupe $\pi(H)$ de $\mathbb Z$ s'écrit $d\mathbb Z$ avec $d \in \mathbb N$ ({{z-ideaux|Idéaux de ℤ}}), et $H' = H \cap \operatorname{Ker}\pi$ est isomorphe à un sous-groupe de $\mathbb Z^{k-1}$, donc, par hypothèse de récurrence, à un $\mathbb Z^{r'}$ avec $r' \leqslant k - 1$, par un isomorphisme $\theta$.
+
+      Si $d = 0$, $H = H'$. Sinon, soit $h \in H$ tel que $\pi(h) = d$. Le morphisme $(a, m) \mapsto \theta(a) + mh$ de $\mathbb Z^{r'} \times \mathbb Z$ dans $H$ est surjectif : si $x \in H$, $\pi(x) = md$ pour un entier $m$, et $x - mh \in H'$. Il est injectif : si $\theta(a) + mh = 0$, alors $md = 0$, d'où $m = 0$ et $a = 0$.
+    remarques:
+      - |
+        Le groupe $\mathbb Z/n\mathbb Z$, pour $n \geqslant 2$, n'est pas projectif. Une section de la surjection $\mathbb Z \to \mathbb Z/n\mathbb Z$ enverrait $\bar 1$ sur un entier $m$ tel que $nm = 0$, donc sur $0$, alors que $\bar 1 \neq 0$. L'erreur la plus répandue est de croire qu'un quotient d'un groupe projectif l'est encore : la torsion l'interdit.
+      - |
+        Pour un groupe abélien libre sur un ensemble infini $S$, la démonstration de (i) doit choisir un antécédent pour chaque élément de $S$ : c'est une instance de l'[[axiome-choix|axiome du choix]], et non plus une récurrence. On ne peut pas s'en passer en général : Blass a montré que l'énoncé « tout groupe abélien libre est projectif » est équivalent, dans $\mathsf{ZF}$, à l'axiome du choix (*Injectivity, projectivity, and the axiom of choice*, Trans. Amer. Math. Soc. 255, 1979, p. 31-59).
+
+        De même, (iii) s'étend aux sous-groupes d'un groupe abélien libre quelconque, mais la démonstration usuelle bien-ordonne la base (S. Lang, *Algebra*, 3e éd., 2002, appendice 2, §2). Ces deux extensions sont les seuls usages du choix dans ce chapitre.
+
+  - id: cs-ext
+    etiquette: Le groupe Ext
+    nature: définition
+    titre: Le groupe Ext
+    texte: |
+      Une **présentation projective** d'un groupe abélien $A$ est une suite exacte courte
+      $$0 \to R \xrightarrow{\iota} P \xrightarrow{\pi} A \to 0$$
+      où $P$ est [[groupe-projectif|projectif]]. Pour un groupe abélien $G$, on pose
+      $$\operatorname{Ext}_P(A, G) = \frac{\operatorname{Hom}(R, G)}{\iota^*\operatorname{Hom}(P, G)} :$$
+      c'est le groupe des morphismes de $R$ dans $G$, modulo ceux qui se prolongent à $P$.
+
+      Tout groupe $A$ de type fini, c'est-à-dire engendré par une famille finie $(a_1, \dots, a_k)$, a une présentation projective : le morphisme $\pi : \mathbb Z^k \to A$ qui envoie $e_j$ sur $a_j$ est surjectif, et $R = \operatorname{Ker}\pi$ ({{cs-projectifs|Groupes projectifs}}, (i)).
+    enonce: |
+      (i) *Indépendance.* Soient $0 \to R \to P \to A \to 0$ et $0 \to R' \to P' \to A \to 0$ deux présentations projectives de $A$. Il existe un morphisme $f : P \to P'$ tel que $\pi' \circ f = \pi$ ; il envoie $R$ dans $R'$, et le morphisme
+      $$f^\flat : \operatorname{Ext}_{P'}(A, G) \to \operatorname{Ext}_P(A, G),$$
+      $[\psi] \mapsto [\psi \circ f|_R]$, ne dépend pas de $f$ et est un isomorphisme. On note $\lex{groupe-ext}{\operatorname{Ext}}(A, G)$ ce groupe, défini à isomorphisme canonique près.
+
+      (ii) *Calculs.* Si $A$ est projectif, $\operatorname{Ext}(A, G) = 0$. Pour $n \geqslant 1$,
+      $$\operatorname{Ext}(\mathbb Z/n\mathbb Z, G) \cong G/nG,$$
+      où $nG = \{ng : g \in G\}$. Si $A$ et $A'$ ont des présentations projectives, $\operatorname{Ext}(A \oplus A', G) \cong \operatorname{Ext}(A, G) \oplus \operatorname{Ext}(A', G)$. En particulier, pour des entiers $n_1, \dots, n_s \geqslant 1$,
+      $$\begin{aligned} &\operatorname{Ext}\Big(\mathbb Z^r \oplus \bigoplus_{i=1}^s \mathbb Z/n_i\mathbb Z,\ G\Big) \\ &\quad \cong \bigoplus_{i=1}^s G/n_iG. \end{aligned}$$
+    preuve: |
+      (i) Comme $P$ est projectif et $\pi'$ surjectif, $\pi$ se relève en $f : P \to P'$ avec $\pi' \circ f = \pi$. On identifie $R$ et $R'$ à leurs images par $\iota$ et $\iota'$. Si $x \in R$, $\pi'(f(x)) = \pi(x) = 0$, donc $f(x) \in R'$.
+
+      $$\begin{CD} R @>{\iota}>> P @>{\pi}>> A \\ @V{f|_R}VV @V{f}VV @| \\ R' @>{\iota'}>> P' @>{\pi'}>> A \end{CD}$$
+
+      Le diagramme commute, et $f|_R$ transporte les morphismes qui se prolongent : si $\psi = \chi \circ \iota'$ avec $\chi \in \operatorname{Hom}(P', G)$, alors $\psi \circ f|_R = (\chi \circ f) \circ \iota$. Le morphisme $f^\flat$ est donc bien défini.
+
+      Si $g$ est un autre relèvement, $\pi' \circ (f - g) = 0$, et $f - g$ est à valeurs dans $R'$. Pour $\psi \in \operatorname{Hom}(R', G)$,
+      $$\psi \circ f|_R - \psi \circ g|_R = \big(\psi \circ (f - g)\big) \circ \iota,$$
+      où $\psi \circ (f - g) \in \operatorname{Hom}(P, G)$ : les deux classes sont égales. Le morphisme $f^\flat$ est ainsi déterminé par les deux présentations, sans qu'il faille choisir de relèvement.
+
+      Si $f' : P' \to P''$ relève $\pi'$ le long de $\pi''$, $f' \circ f$ relève $\pi$, d'où $(f' \circ f)^\flat = f^\flat \circ f'^\flat$ ; l'identité relève $\pi$ le long de lui-même, d'où $\mathrm{id}^\flat = \mathrm{id}$. Avec un relèvement $f' : P' \to P$ de $\pi'$ le long de $\pi$, on obtient $f^\flat \circ f'^\flat = \mathrm{id}$ et $f'^\flat \circ f^\flat = \mathrm{id}$.
+
+      (ii) Si $A$ est projectif, $0 \to 0 \to A \xrightarrow{\mathrm{id}} A \to 0$ est une présentation projective, et $\operatorname{Hom}(0, G) = 0$.
+
+      Pour $\mathbb Z/n\mathbb Z$, on prend la présentation $0 \to \mathbb Z \xrightarrow{\times n} \mathbb Z \to \mathbb Z/n\mathbb Z \to 0$. Un morphisme de $\mathbb Z$ dans $G$ est déterminé par l'image $g$ de $1$ ({{h-complexes|Complexes de chaînes}}, (i)) : $\operatorname{Hom}(\mathbb Z, G) \cong G$. Dans cette identification, $\iota^*$ envoie le morphisme $1 \mapsto g$ sur $1 \mapsto ng$, c'est-à-dire $g$ sur $ng$, et le conoyau est $G/nG$.
+
+      Pour une somme directe, la somme de deux présentations projectives est une présentation projective de $A \oplus A'$ ({{cs-projectifs|Groupes projectifs}}, (i)), et $\operatorname{Hom}(R \oplus R', G) = \operatorname{Hom}(R, G) \times \operatorname{Hom}(R', G)$, de même pour $P \oplus P'$, compatiblement avec $\iota^*$. Le cas particulier s'en déduit, $\mathbb Z^r$ étant projectif.
+    remarques:
+      - |
+        Quelques valeurs, que l'on vérifie sur la formule $G/nG$ : $\operatorname{Ext}(\mathbb Z/n\mathbb Z, \mathbb Z) \cong \mathbb Z/n\mathbb Z$ ; $\operatorname{Ext}(\mathbb Z/2\mathbb Z, \mathbb Z/3\mathbb Z) = 0$, puisque $2$ est inversible modulo $3$ ; $\operatorname{Ext}(\mathbb Z/4\mathbb Z, \mathbb Z/6\mathbb Z) \cong \mathbb Z/2\mathbb Z$, puisque $(\mathbb Z/6\mathbb Z)/4(\mathbb Z/6\mathbb Z) = (\mathbb Z/6\mathbb Z)/2(\mathbb Z/6\mathbb Z)$ ; et $\operatorname{Ext}(\mathbb Z/n\mathbb Z, \mathbb Q) = 0$, tout rationnel étant divisible par $n$. Le groupe $\operatorname{Ext}$ ne voit que la torsion de $A$, et il s'annule quand la multiplication par les ordres de torsion est surjective sur $G$.
+      - |
+        Tout groupe abélien de type fini est isomorphe à un groupe $\mathbb Z^r \oplus \bigoplus_i \mathbb Z/n_i\mathbb Z$, par le théorème de structure des modules de type fini sur un anneau principal, démontré au chapitre {{ac-modules|Modules sur un anneau principal}} : (ii) calcule donc $\operatorname{Ext}(A, G)$ pour tout groupe $A$ de type fini. Pour un groupe quelconque, l'existence d'une présentation projective se démontre ici par la projectivité du groupe libre $\mathbb Z^{(A)}$, qui emploie l'axiome du choix (remarque du nœud {{cs-projectifs|Groupes projectifs}}).
+      - |
+        Le nom vient des extensions : $\operatorname{Ext}(A, G)$ classifie les groupes abéliens $E$ qui contiennent $G$ avec $E/G \cong A$, à une équivalence près. Pour $A = G = \mathbb Z/2\mathbb Z$, les deux classes sont celles de $(\mathbb Z/2\mathbb Z)^2$ et de $\mathbb Z/4\mathbb Z$ ; cette classification est admise ici. Baer a muni ces classes d'une loi de groupe (*Erweiterung von Gruppen und ihren Isomorphismen*, Math. Z. 38, 1934, p. 374-416) ; Eilenberg et Mac Lane les ont reliées à l'homologie (*Group extensions and homology*, Ann. of Math. 43, 1942, p. 757-831), et y démontrent le théorème des coefficients universels du nœud suivant pour les polyèdres.
+
+  - id: cs-coefficients-universels
+    etiquette: Coefficients universels
+    nature: théorème
+    titre: Théorème des coefficients universels
+    choix: |
+      Le point (ii) emploie l'[[axiome-choix|axiome du choix]] pour vérifier les hypothèses de (i) sur le complexe singulier : pour que le sous-groupe $B_n(X)$ du groupe abélien libre $C_n(X)$ soit libre, on bien-ordonne l'ensemble des simplexes singuliers ; pour qu'un groupe abélien libre sur un ensemble infini soit projectif, on choisit un antécédent de l'image de chaque élément de la base. Ce second énoncé, pour tous les groupes abéliens libres, est équivalent à l'axiome du choix (Blass, 1979). Le point (i) n'emploie aucun choix, et ni les calculs de ce chapitre ni ceux du chapitre {{hom-cup|Produit cup}} ne dépendent de (ii). On n'affirme pas ici que (ii) soit indémontrable sans choix.
+    texte: |
+      Dans ce nœud, $C$ est un complexe de chaînes, de cycles $Z_n$, de bords $B_n$ et d'homologie $\lex{groupe-homologie}{H_n}(C)$, et $h : H^n(C; G) \to \operatorname{Hom}(H_n(C), G)$ est le morphisme d'évaluation du nœud {{cs-cochaines|Complexes de cochaînes}}, (iii).
+    enonce: |
+      (i) Supposons que, pour tout $n$, $C_n$ et $B_n$ soient [[groupe-projectif|projectifs]]. Alors $0 \to B_n \to Z_n \to H_n(C) \to 0$ est une présentation projective, et, pour tout $n$ et tout groupe abélien $G$, la suite
+      $$\begin{aligned} 0 &\to \lex{groupe-ext}{\operatorname{Ext}}\big(H_{n-1}(C), G\big) \\ &\xrightarrow{e} H^n(C; G) \\ &\xrightarrow{h} \operatorname{Hom}\big(H_n(C), G\big) \to 0 \end{aligned}$$
+      est exacte, où $e[\psi] = [\psi \circ \partial_n]$ pour $\psi \in \operatorname{Hom}(B_{n-1}, G)$. Elle est scindée : $H^n(C; G)$ est isomorphe à $\operatorname{Ext}(H_{n-1}(C), G) \oplus \operatorname{Hom}(H_n(C), G)$. Les hypothèses sont satisfaites si chaque $C_n$ est isomorphe à un $\lex{n-uplet}{\mathbb Z^k}$.
+
+      (ii) ⋆ Pour tout espace $X$, tout $n$ et tout groupe abélien $G$, la suite
+      $$\begin{aligned} 0 &\to \operatorname{Ext}\big(\lex{homologie-singuliere}{H_{n-1}}(X), G\big) \\ &\to \lex{cohomologie-singuliere}{H^n}(X; G) \\ &\to \operatorname{Hom}\big(H_n(X), G\big) \to 0 \end{aligned}$$
+      est exacte et scindée, avec $H_{-1}(X) = 0$.
+    preuve: |
+      *Le noyau de $h$, sans hypothèse.* Un cocycle de degré $n$ est un $\varphi \in \operatorname{Hom}(C_n, G)$ tel que $\varphi \circ \partial_{n+1} = 0$, c'est-à-dire nul sur $B_n$, et $h[\varphi]$ est la restriction de $\varphi$ à $Z_n$, passée au quotient.
+
+      Si $h[\varphi] = 0$, $\varphi$ est nul sur $Z_n = \operatorname{Ker}\partial_n$ ; comme $\partial_n$ induit un isomorphisme de $C_n/Z_n$ sur $B_{n-1}$ ({{a-isomorphisme|Théorème d'isomorphisme}}), $\varphi = \psi \circ \partial_n$ pour un unique $\psi \in \operatorname{Hom}(B_{n-1}, G)$. Réciproquement, tout $\psi \circ \partial_n$ est un cocycle, nul sur $Z_n$.
+
+      Un tel cocycle est un cobord $\chi \circ \partial_n$, avec $\chi \in \operatorname{Hom}(C_{n-1}, G)$, si et seulement si $\psi$ est la restriction de $\chi$ à $B_{n-1}$, puisque $\partial_n$ est surjectif de $C_n$ sur $B_{n-1}$. Ainsi $\psi \mapsto [\psi \circ \partial_n]$ induit un isomorphisme
+      $$\frac{\operatorname{Hom}(B_{n-1}, G)}{\{\chi|_{B_{n-1}} : \chi \in \operatorname{Hom}(C_{n-1}, G)\}} \cong \operatorname{Ker} h.$$
+
+      *Sous les hypothèses de (i).* Comme $B_{n-2}$ est projectif, la surjection $\partial_{n-1} : C_{n-1} \to B_{n-2}$ a une section, et $Z_{n-1}$ est un rétracte de $C_{n-1}$ par un morphisme $r_{n-1}$ ({{cs-projectifs|Groupes projectifs}}, (ii)). Il est donc projectif (même nœud, (i)), et $0 \to B_{n-1} \to Z_{n-1} \to H_{n-1}(C) \to 0$ est une présentation projective.
+
+      Tout morphisme $\chi'$ de $Z_{n-1}$ dans $G$ se prolonge à $C_{n-1}$, en $\chi' \circ r_{n-1}$. Les restrictions à $B_{n-1}$ des morphismes définis sur $C_{n-1}$ sont donc celles des morphismes définis sur $Z_{n-1}$, et le quotient ci-dessus est $\operatorname{Ext}(H_{n-1}(C), G)$, calculé par cette présentation ({{cs-ext|Le groupe Ext}}). On obtient l'exactitude en $\operatorname{Ext}$ et en $H^n(C; G)$.
+
+      *Surjectivité de $h$.* De même, $Z_n$ est un rétracte de $C_n$ par un morphisme $r_n$, $B_{n-1}$ étant projectif. Pour $\psi \in \operatorname{Hom}(H_n(C), G)$, soit $\psi'$ sa composée avec la projection $Z_n \to H_n(C)$, et $\varphi = \psi' \circ r_n$. Pour $c \in C_{n+1}$, $\partial c \in B_n \subset Z_n$, donc
+      $$\varphi(\partial c) = \psi'(\partial c) = 0 :$$
+      $\varphi$ est un cocycle, et $h[\varphi] = \psi$, puisque $r_n$ est l'identité sur $Z_n$.
+
+      Le morphisme $s : \psi \mapsto [\psi' \circ r_n]$ vérifie $h \circ s = \mathrm{id}$, et $\xi \mapsto (\xi - s(h(\xi)), h(\xi))$ identifie $H^n(C; G)$ à $\operatorname{Ker} h \oplus \operatorname{Hom}(H_n(C), G)$ : la suite est scindée.
+
+      Si chaque $C_n$ est isomorphe à un $\mathbb Z^k$, il est projectif, et $B_n$, sous-groupe de $C_n$, l'est aussi ({{cs-projectifs|Groupes projectifs}}, (i) et (iii)).
+
+      (ii) Le groupe $C_n(X)$ est libre sur l'ensemble $S_n$ des simplexes singuliers. Il est projectif, par l'argument de {{cs-projectifs|Groupes projectifs}}, (i) : pour relever $u : C_n(X) \to N$ le long d'une surjection $p : M \to N$, on choisit, pour chaque $\sigma \in S_n$, un antécédent $m_\sigma$ de $u(\sigma)$, et l'on envoie $\sigma$ sur $m_\sigma$. L'ensemble $S_n$ étant infini en général, ce n'est plus une récurrence finie, mais une application de l'axiome du choix à la famille $\big(p^{-1}(u(\sigma))\big)_{\sigma \in S_n}$ ⋆.
+
+      *Admis ici* : tout sous-groupe d'un groupe abélien libre est libre (Dedekind). La démonstration bien-ordonne la base et procède par récurrence transfinie, ce qui est contourné ; elle emploie, elle aussi, l'axiome du choix. Ainsi $B_n(X)$, sous-groupe de $C_n(X)$, est libre, donc projectif par l'argument précédent, et l'on applique (i).
+    remarques:
+      - |
+        Le complexe $\mathbb Z \xrightarrow{\times 2} \mathbb Z$ de la seconde remarque du nœud {{cs-cochaines|Complexes de cochaînes}} satisfait les hypothèses de (i), avec $B_0 = 2\mathbb Z \cong \mathbb Z$. On a $H_0 = \mathbb Z/2\mathbb Z$ et $H_1 = 0$, et le théorème donne, à coefficients dans $\mathbb Z$,
+        $$H^1 \cong \operatorname{Ext}(\mathbb Z/2\mathbb Z, \mathbb Z) \oplus 0 \cong \mathbb Z/2\mathbb Z$$
+        et $H^0 \cong \operatorname{Hom}(\mathbb Z/2\mathbb Z, \mathbb Z) = 0$, ce que le calcul direct avait donné. L'erreur la plus répandue est de croire que la cohomologie est le dual de l'homologie, degré par degré : la partie libre de $H_n$ se lit bien en degré $n$, mais sa torsion se lit en degré $n + 1$.
+      - |
+        Le scindage de (i) n'est pas naturel : la section $s$ dépend de la rétraction $r_n$, donc d'une section de $\partial_n$. C'est pourquoi on énonce le théorème par une suite exacte, dont les flèches $e$ et $h$, elles, ne dépendent d'aucune section.
+      - |
+        Pour des coefficients $G = \mathbb Q$ ou $\lex{ensemble-reels}{\mathbb R}$, $\operatorname{Ext}(\mathbb Z/n\mathbb Z, G) = G/nG = 0$, et (ii) donne $H^n(X; G) \cong \operatorname{Hom}(H_n(X), G)$ dès que $H_{n-1}(X)$ est de type fini. La théorie {{derham|de Rham}} compare, elle, les formes fermées au dual réel de l'homologie des chaînes lisses ; elle ne passe pas par ce théorème, mais prolonge directement des morphismes à valeurs dans $\mathbb R$, par le lemme de Zorn.
+      - |
+        Le point (i) montre où se loge le choix : uniquement dans la projectivité des bords et des chaînes. Pour un complexe de groupes $\mathbb Z^k$, comme ceux que fournissent les triangulations finies, le théorème est démontré dans $\mathsf{ZF}$ ; pour le complexe singulier, gigantesque, on ne sait pas ici l'établir sans l'axiome du choix.
+
+aretes:
+  - [cs-cochaines, cs-singuliere]
+  - [cs-singuliere, cs-homotopie]
+  - [cs-singuliere, cs-mayer-vietoris]
+  - [cs-homotopie, cs-spheres]
+  - [cs-mayer-vietoris, cs-spheres]
+  - [cs-cochaines, cs-ext]
+  - [cs-projectifs, cs-ext]
+  - [cs-ext, cs-coefficients-universels]
+  - [cs-singuliere, cs-coefficients-universels]

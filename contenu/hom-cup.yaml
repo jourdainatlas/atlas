@@ -1,0 +1,302 @@
+# Niveau 2 : structure interne du chapitre « Produit cup » (nœud hom-cup du graphe hom, créé le 31 oct. 2026).
+# Produit cup des cochaînes singulières à coefficients dans un anneau commutatif (face avant, face arrière),
+# formule de Leibniz, passage à la cohomologie, associativité, unité, naturalité ; anneau de cohomologie
+# (commutativité graduée admise : homotopie entre l'identité et le renversement des sommets) ; anneau des
+# sphères. Puis ℝPⁿ modulo 2 sans homologie cellulaire : suite exacte courte du revêtement double
+# 0 → C(ℝPⁿ) → C(Sⁿ) → C(ℝPⁿ) → 0 à coefficients dans ℤ/2ℤ, scindée degré par degré, comme suite de
+# groupes (non de complexes), par une règle explicite (le
+# relèvement dont le premier sommet a sa première coordonnée non nulle positive) ; annulation au-delà du
+# degré n par Mayer-Vietoris (ℝPⁿ privé d'un point se rétracte sur ℝPⁿ⁻¹) ; le morphisme de connexion est le
+# produit par la classe α = κ(1), d'où H*(ℝPⁿ; ℤ/2ℤ) = (ℤ/2ℤ)[X]/(X^{n+1}) ; théorème de Borsuk-Ulam.
+# Choix : aucun.
+
+graphe: hom-cup
+titre: Produit cup
+conteneur: hom-cup
+
+entrees:
+  hom-cohomologie: [cup-produit, cup-transfert]
+
+noeuds:
+  - id: cup-produit
+    etiquette: Produit cup
+    nature: définition
+    titre: Le produit cup
+    texte: |
+      Dans ce chapitre, $R$ est un [[anneau]] commutatif, par exemple $\lex{ensemble-entiers-relatifs}{\mathbb Z}$ ou $\lex{anneau-zn}{\mathbb Z/n\mathbb Z}$. Les cochaînes $C^n(X; R)$ forment alors un $R$-[[module]] pour la loi $(a\varphi)(\sigma) = a\,\varphi(\sigma)$, le cobord est $R$-linéaire, et $\lex{cohomologie-singuliere}{H^n}(X; R)$ est un $R$-module.
+
+      Pour un simplexe singulier $\sigma : \Delta_n \to X$ et des indices $i_0, \dots, i_m$ entre $0$ et $n$, on note
+      $$\sigma|[i_0, \dots, i_m] = \sigma \circ [e_{i_0}, \dots, e_{i_m}],$$
+      où $[e_{i_0}, \dots, e_{i_m}] : \Delta_m \to \Delta_n$ est le simplexe affine du nœud {{h-subdivision|Subdivision barycentrique}}. Comme une application affine respecte les combinaisons de coefficients de somme $1$, $(\sigma|[i_0, \dots, i_m])|[j_0, \dots, j_p] = \sigma|[i_{j_0}, \dots, i_{j_p}]$ ; et la face $\sigma \circ \delta_i$ est $\sigma|[0, \dots, \widehat{i}, \dots, n]$.
+
+      Pour $\varphi \in C^k(X; R)$ et $\psi \in C^l(X; R)$, le [[produit-cup|produit cup]] $\varphi \lex{produit-cup}{\smile} \psi \in C^{k+l}(X; R)$ est défini, pour un simplexe $\sigma$ de dimension $k + l$, par
+      $$\begin{aligned} (\varphi \smile \psi)(\sigma) &= \varphi\big(\sigma|[0, \dots, k]\big) \\ &\quad \times \psi\big(\sigma|[k, \dots, k + l]\big). \end{aligned}$$
+      On évalue $\varphi$ sur la **face avant** de $\sigma$, de dimension $k$, et $\psi$ sur sa **face arrière**, de dimension $l$ ; elles ont en commun le seul sommet d'indice $k$.
+
+      ```schema cup-produit
+      Pour $k = 1$ et $l = 2$, la valeur de $\varphi \smile \psi$ sur un simplexe de dimension $3$ est le produit de la valeur de $\varphi$ sur l'arête avant, de $e_0$ à $e_1$, en rouge, et de celle de $\psi$ sur la face arrière $[e_1, e_2, e_3]$, en bleu. Les deux faces n'ont en commun que le sommet $e_1$, en rouge, et les arêtes $[e_0, e_2]$ et $[e_0, e_3]$, en gris, n'interviennent pas.
+      ```
+    enonce: |
+      (i) Le produit cup est bilinéaire et associatif ; la cochaîne $1 \in C^0(X; R)$, qui vaut $1$ en chaque point, en est l'unité. Il est naturel : $f^\#(\varphi \smile \psi) = f^\#\varphi \smile f^\#\psi$ pour toute application continue $f$.
+
+      (ii) *Formule de Leibniz.* Pour $\varphi \in C^k(X; R)$ et $\psi \in C^l(X; R)$,
+      $$\delta(\varphi \smile \psi) = \delta\varphi \smile \psi + (-1)^k\, \varphi \smile \delta\psi.$$
+
+      (iii) Le produit de deux cocycles est un cocycle, et sa classe ne dépend que des classes des facteurs. On obtient un produit $H^k(X; R) \times H^l(X; R) \to H^{k+l}(X; R)$, $[\varphi] \smile [\psi] = [\varphi \smile \psi]$, bilinéaire, associatif, d'unité $[1]$, et naturel : $f^*(a \smile b) = f^*a \smile f^*b$.
+    preuve: |
+      (i) La bilinéarité se lit sur la formule. Pour $\chi \in C^m(X; R)$ et $\sigma$ de dimension $k + l + m$, la règle de composition des faces donne
+      $$\begin{aligned} &\big((\varphi \smile \psi) \smile \chi\big)(\sigma) \\ &= \varphi\big(\sigma|[0..k]\big) \\ &\quad \times \psi\big(\sigma|[k..k{+}l]\big) \\ &\quad \times \chi\big(\sigma|[k{+}l..k{+}l{+}m]\big), \end{aligned}$$
+      où $[a..b]$ abrège $[a, a + 1, \dots, b]$, et l'on trouve la même expression pour $\varphi \smile (\psi \smile \chi)$, par l'associativité du produit de $R$.
+
+      Pour l'unité, $(1 \smile \psi)(\sigma) = 1 \cdot \psi(\sigma|[0..l]) = \psi(\sigma)$, et de même à droite. La naturalité vient de $(f \circ \sigma)|[i_0, \dots, i_m] = f \circ (\sigma|[i_0, \dots, i_m])$.
+
+      (ii) Soit $\sigma$ de dimension $k + l + 1$. Par définition du cobord,
+      $$\begin{aligned} &(\delta\varphi \smile \psi)(\sigma) = \sum_{i=0}^{k+1} (-1)^i \\ &\quad \varphi\big(\sigma|[0..\widehat{i}..k{+}1]\big) \\ &\quad \times \psi\big(\sigma|[k{+}1..k{+}l{+}1]\big), \end{aligned}$$
+      $$\begin{aligned} &(-1)^k(\varphi \smile \delta\psi)(\sigma) = \sum_{i=k}^{k+l+1} (-1)^i \\ &\quad \varphi\big(\sigma|[0..k]\big) \\ &\quad \times \psi\big(\sigma|[k..\widehat{i}..k{+}l{+}1]\big). \end{aligned}$$
+
+      Le terme $i = k + 1$ de la première somme et le terme $i = k$ de la seconde sont opposés : ils valent $\pm\varphi(\sigma|[0..k])\,\psi(\sigma|[k{+}1..k{+}l{+}1])$. Il reste les termes $i \leqslant k$ de la première somme et $i \geqslant k + 1$ de la seconde.
+
+      Or, pour $i \leqslant k$, la face $\sigma \circ \delta_i = \sigma|[0..\widehat{i}..k{+}l{+}1]$ a pour face avant $\sigma|[0..\widehat{i}..k{+}1]$ et pour face arrière $\sigma|[k{+}1..k{+}l{+}1]$ ; pour $i \geqslant k + 1$, elle a pour face avant $\sigma|[0..k]$ et pour face arrière $\sigma|[k..\widehat{i}..k{+}l{+}1]$. La somme restante est donc
+      $$\begin{aligned} &\sum_{i=0}^{k+l+1} (-1)^i (\varphi \smile \psi)(\sigma \circ \delta_i) \\ &= \delta(\varphi \smile \psi)(\sigma). \end{aligned}$$
+
+      (iii) Si $\delta\varphi = \delta\psi = 0$, (ii) donne $\delta(\varphi \smile \psi) = 0$. Si de plus $\psi = \delta\chi$, alors $\varphi \smile \delta\chi = (-1)^k\delta(\varphi \smile \chi)$ ; si $\varphi = \delta\chi$, alors $\delta\chi \smile \psi = \delta(\chi \smile \psi)$. Dans les deux cas le produit est un cobord, et la classe du produit ne dépend que des classes des facteurs. Les autres propriétés passent de (i) aux classes.
+    remarques:
+      - |
+        La définition dépend de l'ordre des sommets, et le produit n'est pas commutatif au niveau des cochaînes, même au signe près : pour deux $1$-cochaînes, $(\varphi \smile \psi)(\sigma)$ lit $\varphi$ sur l'arête $[e_0, e_1]$ et $\psi$ sur $[e_1, e_2]$, alors que $(\psi \smile \varphi)(\sigma)$ fait l'inverse. Un calcul le confirme sur un modèle combinatoire : les « simplexes » y sont toutes les suites de sommets pris parmi quatre points, les faces s'obtiennent en supprimant un sommet, et les cochaînes sont tirées au hasard. La formule de Leibniz et l'associativité s'y vérifient exactement, la commutativité au signe près jamais. La commutativité ne vaut qu'en cohomologie, au signe près ({{cup-anneau|Anneau de cohomologie}}).
+      - |
+        Le produit a été introduit entre 1935 et 1938. Alexander et Kolmogorov en ont présenté indépendamment la construction à la première conférence internationale de topologie, à Moscou en 1935 (D. Apushkinskaya, A. Nazarov, G. Sinkevich, *In search of shadows : the first topological conference, Moscow 1935*, 2019, arXiv:1903.02065) ; suivirent les articles de Čech, *Multiplications on a complex* (Ann. of Math. 37, 1936, p. 681-697), et de Whitney, *On products in a complex* (Ann. of Math. 39, 1938, p. 397-432).
+
+  - id: cup-anneau
+    etiquette: Anneau de cohomologie
+    nature: proposition
+    titre: L'anneau de cohomologie
+    texte: |
+      L'[[anneau-cohomologie|anneau de cohomologie]] de $X$ à coefficients dans $R$ est la somme directe
+      $$\lex{anneau-cohomologie}{H^*}(X; R) = \bigoplus_{k \geqslant 0} H^k(X; R),$$
+      formée des suites $(a_k)_{k \geqslant 0}$, avec $a_k \in H^k(X; R)$, nulles à partir d'un certain rang, munie de l'addition terme à terme et du produit
+      $$(a_k) \smile (b_k) = \Big(\sum_{i + j = m} a_i \smile b_j\Big)_m.$$
+      On identifie $a \in H^k(X; R)$ à la suite dont seul le terme d'indice $k$ est non nul ; un tel élément est dit **homogène** de degré $k$.
+    enonce: |
+      (i) $H^*(X; R)$ est un anneau, d'unité $[1]$, et une application continue $f : X \to Y$ induit un morphisme d'anneaux $f^* : H^*(Y; R) \to H^*(X; R)$.
+
+      (ii) *Commutativité graduée.* Pour $a \in H^k(X; R)$ et $b \in H^l(X; R)$, $a \smile b = (-1)^{kl}\, b \smile a$. Ce point est admis ici.
+
+      (iii) *Sphères.* Pour $n \geqslant 1$, $H^n(\lex{sphere-unite}{S^n}; R)$ est un $R$-module isomorphe à $R$ ; soit $\alpha$ l'image de $1$ par un tel isomorphisme. L'application $P \mapsto P(\alpha)$ induit un isomorphisme d'anneaux
+      $$\lex{anneau-polynomes}{R[X]}/(X^2) \cong H^*(S^n; R).$$
+    preuve: |
+      (i) L'associativité et la distributivité de ce produit viennent de la bilinéarité et de l'associativité du produit cup ({{cup-produit|Produit cup}}, (iii)), et $[1]$ est l'unité. Le morphisme $f^*$ respecte la somme et le produit, par la naturalité du produit cup, et envoie $[1]$ sur $[1]$.
+
+      (ii) *Admis ici.* Au niveau des cochaînes, $\varphi \smile \psi$ et $\psi \smile \varphi$ lisent $\varphi$ et $\psi$ sur des faces différentes, et ne sont pas égaux au signe près (remarque du nœud {{cup-produit|Produit cup}}). La démonstration (A. Hatcher, *Algebraic Topology*, 2002, théorème 3.11) introduit l'opérateur qui renverse l'ordre des sommets d'un simplexe, $\sigma \mapsto \varepsilon_n\, \sigma|[n, \dots, 0]$ avec $\varepsilon_n = (-1)^{n(n+1)/2}$, vérifie que c'est un morphisme de complexes qui échange les deux produits au signe $(-1)^{kl}$ près, et construit une homotopie explicite entre lui et l'identité, par des opérateurs de prisme ; c'est cette homotopie, longue à écrire et à vérifier, qui est contournée.
+
+      (iii) Le nœud {{cs-spheres|Cohomologie des sphères}}, appliqué à $G = R$, donne des isomorphismes de groupes $H^0(S^n; R) \cong R$ et $H^n(S^n; R) \cong R$, et $H^k(S^n; R) = 0$ ailleurs. Ils sont $R$-linéaires : toutes les flèches de la démonstration sont induites par des morphismes de complexes de $R$-modules, et le morphisme de connexion d'une suite exacte de tels complexes est $R$-linéaire, par sa définition. L'élément $[1]$ engendre $H^0(S^n; R)$, puisque $S^n$ est connexe par arcs.
+
+      Tout élément de $H^*(S^n; R)$ s'écrit donc $a[1] + b\alpha$ avec $a, b \in R$, et $\alpha \smile \alpha \in H^{2n}(S^n; R) = 0$, puisque $2n \notin \{0, n\}$. Le morphisme d'anneaux $P \mapsto P(\alpha)$ de $R[X]$ dans $H^*(S^n; R)$ est donc surjectif, de noyau formé des polynômes dont les coefficients de $1$ et de $X$ sont nuls, c'est-à-dire l'idéal $X^2R[X]$ ; on conclut par le théorème d'isomorphisme ({{a-anneau-quotient|Anneau quotient}}).
+    remarques:
+      - |
+        Rien de ce qui suit ne dépend de (ii) : l'anneau de cohomologie de $\lex{espace-projectif-reel}{\mathbb RP^n}$, calculé au nœud {{cup-projectif|Anneau de ℝPⁿ}}, est engendré par un seul élément, dont les puissances commutent entre elles par associativité.
+      - |
+        Sur la sphère, tout produit de deux classes de degré strictement positif est nul. Il n'en va pas de même pour $\mathbb RP^n$, dont la classe de degré $1$ a une puissance $n$-ième non nulle : c'est une information que les groupes de cohomologie, pris un à un, ne contiennent pas, et c'est elle qui démontrera le théorème de Borsuk-Ulam ({{cup-borsuk-ulam|Borsuk-Ulam}}).
+
+  - id: cup-transfert
+    etiquette: Revêtement double
+    nature: proposition
+    titre: La suite exacte du revêtement Sⁿ → ℝPⁿ
+    texte: |
+      Dans ce nœud et les suivants, $n \geqslant 1$, $q : \lex{sphere-unite}{S^n} \to \lex{espace-projectif-reel}{\mathbb RP^n}$ est la projection du nœud {{rv-projectif|Espaces projectifs}}, qui est un [[revetement|revêtement]] à deux feuillets, et $a(x) = -x$. On écrit $\mathbb F_2 = \lex{anneau-zn}{\mathbb Z/2\mathbb Z}$ ; une cochaîne à coefficients dans $\mathbb F_2$ est une application de l'ensemble des simplexes dans $\mathbb F_2$.
+
+      Un point $x \neq 0$ de $\lex{n-uplet}{\mathbb R^{n+1}}$ est **positif** si sa première coordonnée non nulle est strictement positive. Exactement l'un des deux points $x$ et $-x$ est positif.
+
+      Si $\pi : A \to B$ est continue, ouverte et surjective, une application $F : B \to C$ est continue dès que $F \circ \pi$ l'est : pour un ouvert $W$ de $C$,
+      $$F^{-1}(W) = \pi\big((F \circ \pi)^{-1}(W)\big)$$
+      est ouvert. C'est le cas de $q$, qui est ouverte ({{rv-projectif|Espaces projectifs}}, preuve de (i)).
+    enonce: |
+      (i) *Relèvements.* Tout simplexe singulier $\sigma$ de $\mathbb RP^n$ a exactement deux relèvements, $\tilde\sigma$ et $a \circ \tilde\sigma$ ; exactement l'un d'eux, noté $\sigma^+$, a un premier sommet $\sigma^+(e_0)$ positif. Les deux relèvements d'une face $\sigma \circ \delta_i$ sont $\tilde\sigma \circ \delta_i$ et $a \circ \tilde\sigma \circ \delta_i$.
+
+      (ii) *Suite exacte.* L'application $\tau^\#$ définie par $(\tau^\#y)(\sigma) = y(\tilde\sigma) + y(a \circ \tilde\sigma)$ est un morphisme de complexes, et la suite
+      $$\begin{aligned} 0 &\to C^\bullet(\mathbb RP^n; \mathbb F_2) \\ &\xrightarrow{q^\#} C^\bullet(S^n; \mathbb F_2) \\ &\xrightarrow{\tau^\#} C^\bullet(\mathbb RP^n; \mathbb F_2) \to 0 \end{aligned}$$
+      est exacte. Elle induit une suite exacte longue
+      $$\begin{aligned} &\cdots \to H^k(\mathbb RP^n; \mathbb F_2) \\ &\xrightarrow{q^*} H^k(S^n; \mathbb F_2) \\ &\xrightarrow{\tau^*} H^k(\mathbb RP^n; \mathbb F_2) \\ &\xrightarrow{\kappa} H^{k+1}(\mathbb RP^n; \mathbb F_2) \to \cdots \end{aligned}$$
+
+      (iii) *Naturalité.* Une application continue $g : S^n \to S^m$, avec $m \geqslant 1$, est [[application-impaire|impaire]] si $g(-x) = -g(x)$ pour tout $x$. Elle induit alors une application continue $\bar g : \mathbb RP^n \to \mathbb RP^m$ telle que $\bar g \circ q = q \circ g$, et, si $\kappa_n$ et $\kappa_m$ désignent les morphismes de connexion des suites de $\mathbb RP^n$ et de $\mathbb RP^m$, $\kappa_n \circ \bar g^* = \bar g^* \circ \kappa_m$.
+    preuve: |
+      (i) Le simplexe $\Delta_k$ est une partie convexe non vide de $\mathbb R^{k+1}$ : il est simplement connexe ({{ta-simplement-connexe|Simple connexité}}), donc connexe par arcs et connexe, et localement connexe par arcs ({{rv-locale|Connexité locale par arcs}}, (ii)). Par le critère de relèvement ({{rv-critere|Critère de relèvement}}, (ii)), pour chacun des deux points $x$ et $-x$ de la fibre de $\sigma(e_0)$, il existe un unique relèvement de $\sigma$ qui y envoie $e_0$.
+
+      Si $\tilde\sigma$ est celui qui envoie $e_0$ sur $x$, $a \circ \tilde\sigma$ est un relèvement, puisque $q \circ a = q$, et il envoie $e_0$ sur $-x$ : c'est l'autre. Un relèvement envoie $e_0$ dans la fibre, et il n'y en a donc pas d'autre. Enfin $\tilde\sigma \circ \delta_i$ et $a \circ \tilde\sigma \circ \delta_i$ sont deux relèvements de $\sigma \circ \delta_i$, distincts puisque $a$ n'a pas de point fixe : ce sont ses deux relèvements.
+
+      (ii) La somme $y(\tilde\sigma) + y(a \circ \tilde\sigma)$ ne dépend pas du relèvement nommé $\tilde\sigma$. Par (i), pour un simplexe $\sigma$ de dimension $k + 1$,
+      $$\begin{aligned} (\delta\tau^\#y)(\sigma) &= \sum_i y(\tilde\sigma \circ \delta_i) \\ &\quad + \sum_i y(a \circ \tilde\sigma \circ \delta_i) \\ &= (\delta y)(\tilde\sigma) + (\delta y)(a \circ \tilde\sigma), \end{aligned}$$
+      les signes étant sans effet modulo $2$ : $\tau^\#$ commute au cobord. Le morphisme $q^\#$ en est un par le nœud {{cs-singuliere|Cohomologie singulière}}, (i).
+
+      *Injectivité de $q^\#$.* Tout simplexe $\sigma$ de $\mathbb RP^n$ est de la forme $q \circ \sigma^+$ ; si $x(\sigma) \neq 0$, alors $(q^\#x)(\sigma^+) = x(\sigma) \neq 0$.
+
+      *La composée est nulle* : $(\tau^\#q^\#x)(\sigma) = x(\sigma) + x(\sigma) = 0$ dans $\mathbb F_2$.
+
+      *Noyau de $\tau^\#$.* Si $\tau^\#y = 0$, $y$ prend la même valeur sur les deux relèvements de chaque simplexe ; avec $x(\sigma) = y(\sigma^+)$, on a $y(\rho) = x(q \circ \rho)$ pour tout simplexe $\rho$ de $S^n$, puisque $\rho$ est l'un des deux relèvements de $q \circ \rho$. Donc $y = q^\#x$.
+
+      *Surjectivité de $\tau^\#$.* Pour $x \in C^k(\mathbb RP^n; \mathbb F_2)$, soit $y$ la cochaîne de $S^n$ égale à $x(q \circ \rho)$ sur les simplexes $\rho$ dont le premier sommet $\rho(e_0)$ est positif, et à $0$ sur les autres. Alors
+      $$\begin{aligned} (\tau^\#y)(\sigma) &= y(\sigma^+) + y(a \circ \sigma^+) \\ &= x(\sigma) + 0. \end{aligned}$$
+      Cette cochaîne est définie par une règle explicite, sans aucun choix.
+
+      La suite exacte longue vient du nœud {{cs-cochaines|Complexes de cochaînes}}, (ii).
+
+      (iii) Si $q(x) = q(y)$, alors $y = \pm x$ et $g(y) = \pm g(x)$, donc $q(g(x)) = q(g(y))$ : l'application $\bar g$ est bien définie par $\bar g(q(x)) = q(g(x))$, et elle est continue, puisque $\bar g \circ q = q \circ g$ l'est.
+
+      On a $q^\#\bar g^\# = g^\#q^\#$. Si $\tilde\sigma$ relève $\sigma$, $g \circ \tilde\sigma$ relève $\bar g \circ \sigma$, et l'autre relèvement est $g \circ a \circ \tilde\sigma = a \circ g \circ \tilde\sigma$, puisque $g$ est impaire. D'où, pour $y \in C^k(S^m; \mathbb F_2)$,
+      $$\begin{aligned} (\tau^\#g^\#y)(\sigma) &= y(g \circ \tilde\sigma) + y(a \circ g \circ \tilde\sigma) \\ &= (\bar g^\#\tau^\#y)(\sigma). \end{aligned}$$
+      Ainsi $(\bar g^\#, g^\#, \bar g^\#)$ est un morphisme de la suite exacte courte de $\mathbb RP^m$ vers celle de $\mathbb RP^n$, et la naturalité du morphisme de connexion ({{cs-cochaines|Complexes de cochaînes}}, (ii)) donne $\kappa_n \circ \bar g^* = \bar g^* \circ \kappa_m$.
+    remarques:
+      - |
+        La cochaîne $y$ de la preuve de (ii) scinde la suite degré par degré, comme suite de groupes, et non comme suite de complexes. Pour cela, il fallait désigner l'un des deux relèvements de chaque simplexe, ce qui, pour une famille quelconque de paires, demanderait l'axiome du choix. Ici la géométrie de $\mathbb R^{n+1}$ fait le choix : on prend le relèvement dont le premier sommet est positif.
+
+        Aucune scission ne peut commuter au cobord : une section qui serait un morphisme de complexes donnerait $\kappa = 0$, puisque la cochaîne relevée d'un cocycle serait alors un cocycle, alors que $\kappa[1] = \alpha \neq 0$ ({{cup-projectif|Anneau de ℝPⁿ}}).
+
+        ```schema cup-transfert
+        Pour $n = 1$, les points positifs du cercle sont ceux d'abscisse strictement positive, en rouge, et le point $(0, 1)$ ; les autres, en bleu, sont leurs opposés. Le chemin $\gamma^+$ part d'un point positif et finit en un point qui ne l'est pas : son opposé $a \circ \gamma^+$, en pointillé, fait l'inverse. La cochaîne $y$ vaut $x(q \circ \gamma^+)$ sur le premier et $0$ sur le second.
+        ```
+      - |
+        L'erreur serait de croire que la cochaîne $y$ de la démonstration est un cocycle quand $x$ en est un : le relèvement positif d'un simplexe et celui de ses faces ne se raccordent pas toujours, comme sur la figure. C'est précisément ce défaut que mesure le morphisme de connexion, calculé au nœud {{cup-projectif|Anneau de ℝPⁿ}}.
+
+  - id: cup-projectif-dimension
+    etiquette: ℝPⁿ au-delà de n
+    nature: proposition
+    titre: La cohomologie de ℝPⁿ s'arrête au degré n
+    texte: |
+      On note $\mathbb RP^0$ le quotient de $\lex{sphere-unite}{S^0} = \{-1, 1\}$ par $x \sim -x$, qui est un point, et l'on écrit $x = (x', x_{n+1})$ un point de $\lex{n-uplet}{\mathbb R^{n+1}}$, avec $x' \in \mathbb R^n$. Soient $N = (0, \dots, 0, 1)$, $B$ la boule unité ouverte de $\mathbb R^n$ pour la norme euclidienne $\|\cdot\|$, et
+      $$\begin{aligned} U &= q\big(\{x \in S^n : x' \neq 0\}\big), \\ V &= q\big(\{x \in S^n : x_{n+1} > 0\}\big). \end{aligned}$$
+      L'ouvert $U$ est le complémentaire du point $q(N)$, et $V$ en est un voisinage ouvert, $q$ étant ouverte.
+    enonce: |
+      (i) L'application $\phi : B \to V$, $z \mapsto q\big(z, \sqrt{1 - \|z\|^2}\big)$, est un homéomorphisme, qui envoie $B \setminus \{0\}$ sur $U \cap V$. L'ouvert $V$ a la cohomologie d'un point, et $U \cap V$ celle de $S^{n-1}$.
+
+      (ii) L'ouvert $U$ a la cohomologie de $\mathbb RP^{n-1}$.
+
+      (iii) Pour tout $n \geqslant 0$ et tout groupe abélien $G$, $\lex{cohomologie-singuliere}{H^k}(\mathbb RP^n; G) = 0$ pour $k > n$. Pour $n \geqslant 1$, $H^0(\mathbb RP^n; G) \cong G$.
+    preuve: |
+      (i) L'application $\phi$ est continue, à valeurs dans $V$. Chaque point de $V$ a un unique représentant $x$ tel que $x_{n+1} > 0$, de la forme $(z, \sqrt{1 - \|z\|^2})$ avec $z = x' \in B$ : $\phi$ est bijective.
+
+      Sa réciproque envoie $q(x)$ sur $x'$ si $x_{n+1} > 0$ et sur $-x'$ si $x_{n+1} < 0$ ; sa composée avec $q$, définie sur l'ouvert $\{x \in S^n : x_{n+1} \neq 0\}$, est continue, et la restriction de $q$ à cet ouvert est continue, ouverte et surjective sur $V$. Par le critère du nœud {{cup-transfert|Revêtement double}}, $\phi^{-1}$ est continue. Enfin $\phi(z) \in U$ si et seulement si $z \neq 0$.
+
+      La boule $B$ est convexe : $V$ a la cohomologie d'un point ({{cs-homotopie|Invariance par homotopie}}, (ii)).
+
+      L'inclusion $\iota : S^{n-1} \to B \setminus \{0\}$, $x \mapsto \frac12 x$, et $r(z) = z/\|z\|$ vérifient $r \circ \iota = \mathrm{id}$, et $\iota \circ r$ est homotope à l'identité par
+      $$F(z, t) = \frac{z}{(1 - t) + 2t\|z\|},$$
+      qui reste dans $B \setminus \{0\}$ : pour $0 < \|z\| < 1$,
+      $$\begin{aligned} &(1 - t) + 2t\|z\| - \|z\| \\ &= (1 - t)(1 - \|z\|) + t\|z\| > 0. \end{aligned}$$
+      Donc $U \cap V$, homéomorphe à $B \setminus \{0\}$, a la cohomologie de $S^{n-1}$.
+
+      (ii) Soit $W = \{x \in S^n : x' \neq 0\}$, ouvert, et $H : U \times [0, 1] \to U$ définie par
+      $$H\big(q(x), t\big) = q\left(\frac{(x', (1 - t)x_{n+1})}{\|(x', (1 - t)x_{n+1})\|}\right).$$
+      Elle est bien définie, l'expression étant impaire en $x$, et à valeurs dans $U$, puisque $x' \neq 0$. L'application $(x, t) \mapsto (q(x), t)$ de $W \times [0, 1]$ sur $U \times [0, 1]$ est continue, surjective et ouverte, l'image d'un produit d'ouverts étant un produit d'ouverts ; $H$ est donc continue.
+
+      On a $H(\cdot, 0) = \mathrm{id}_U$, et $H(q(x), 1) = q(x'/\|x'\|, 0)$. Pour $n \geqslant 2$, on note encore $q$ la projection de $S^{n-1}$ sur $\mathbb RP^{n-1}$, et l'on pose $\theta : \mathbb RP^{n-1} \to U$, $q(y) \mapsto q(y, 0)$, et $\varrho : U \to \mathbb RP^{n-1}$, $q(x) \mapsto q(x'/\|x'\|)$ ; elles sont bien définies et continues par le même critère. On a $\varrho \circ \theta = \mathrm{id}$ et $\theta \circ \varrho = H(\cdot, 1)$, homotope à l'identité : $\theta$ est une équivalence d'homotopie, et l'on applique le nœud {{cs-homotopie|Invariance par homotopie}}, (ii).
+
+      Pour $n = 1$, $x'/|x'| = \pm 1$, et $H(\cdot, 1)$ est constante, de valeur $q(1, 0)$. L'inclusion du point $q(1, 0)$ dans $U$ est donc une équivalence d'homotopie, l'application constante de $U$ sur ce point lui servant d'inverse : $U$ a la cohomologie d'un point, c'est-à-dire de $\mathbb RP^0$.
+
+      (iii) Récurrence sur $n$. Pour $n = 0$, $\mathbb RP^0$ est un point ({{cs-singuliere|Cohomologie singulière}}, (ii)). Soit $n \geqslant 1$ et $k > n$. Comme $U \cup V = \mathbb RP^n$, la suite de Mayer-Vietoris ({{cs-mayer-vietoris|Mayer-Vietoris}}) contient le segment exact
+      $$\begin{aligned} &H^{k-1}(U \cap V; G) \\ &\xrightarrow{\kappa} H^k(\mathbb RP^n; G) \\ &\to H^k(U; G) \oplus H^k(V; G). \end{aligned}$$
+      Par (i), $H^{k-1}(U \cap V; G) \cong H^{k-1}(S^{n-1}; G)$, nul puisque $k - 1 \geqslant n \geqslant 1$ ({{cs-spheres|Cohomologie des sphères}}). Par (ii) et l'hypothèse de récurrence, $H^k(U; G) = 0$, puisque $k > n - 1$, et $H^k(V; G) = 0$ par (i). Donc $H^k(\mathbb RP^n; G) = 0$.
+
+      Enfin $\mathbb RP^n = q(S^n)$ est connexe par arcs, comme image continue de $S^n$, et $H^0(\mathbb RP^n; G) \cong G$.
+    remarques:
+      - |
+        La démonstration décrit $\mathbb RP^n$ comme $\mathbb RP^{n-1}$ auquel on recolle une boule ouverte de dimension $n$, l'ouvert $V$. C'est sa structure de complexe cellulaire, avec une cellule en chaque dimension de $0$ à $n$ ; l'homologie cellulaire, qui n'est pas développée ici, lirait directement sur cette structure l'annulation au-delà du degré $n$.
+
+        ```schema cup-projectif-dimension
+        Pour $n = 2$, on voit l'hémisphère supérieur d'en haut : c'est le disque $B$, en vert, homéomorphe à $V$. Le centre, en rouge, est le point $q(N)$ retiré pour former $U$. Sur $U \cap V$, l'homotopie $H$ pousse chaque point le long de son rayon jusqu'au bord, où les points opposés, comme les deux points bleus $z$ et $-z$, ont la même image : le bord recollé est $\mathbb RP^1$, sur lequel $U$ se rétracte.
+        ```
+      - |
+        L'annulation pour $k > n$ ne vient pas de la suite exacte du revêtement double ({{cup-transfert|Revêtement double}}), qui, au-delà du degré $n$, se réduit à des isomorphismes $H^k(\mathbb RP^n) \cong H^{k+1}(\mathbb RP^n)$ et ne dit pas qu'ils relient des groupes nuls. Il faut une information sur la dimension, que donne ici Mayer-Vietoris.
+
+  - id: cup-projectif
+    etiquette: Anneau de ℝPⁿ
+    nature: théorème
+    titre: L'anneau de cohomologie de ℝPⁿ modulo 2
+    texte: |
+      Avec les notations du nœud {{cup-transfert|Revêtement double}}, soit $w \in C^1(\lex{espace-projectif-reel}{\mathbb RP^n}; \mathbb F_2)$ la cochaîne qui vaut $0$ sur un chemin $\gamma$ si l'extrémité $\gamma^+(e_1)$ de son relèvement positif est un point positif, et $1$ sinon. Autrement dit, $w(\gamma) = 1$ si et seulement si exactement l'un des deux sommets d'un relèvement de $\gamma$ est positif, condition qui ne dépend pas du relèvement.
+    enonce: |
+      (i) Pour tout cocycle $x \in C^k(\mathbb RP^n; \mathbb F_2)$, le morphisme de connexion de la suite du revêtement double vérifie $\kappa[x] = [w \smile x]$. En particulier, $w$ est un cocycle, sa classe $\alpha = [w]$ est $\kappa[1]$, et
+      $$\kappa(\xi) = \alpha \smile \xi$$
+      pour tout $\xi \in \lex{cohomologie-singuliere}{H^k}(\mathbb RP^n; \mathbb F_2)$.
+
+      (ii) Pour $0 \leqslant k \leqslant n$, $H^k(\mathbb RP^n; \mathbb F_2)$ a deux éléments, $0$ et $\alpha^k$ ; pour $k > n$, il est nul. L'application $P \mapsto P(\alpha)$ induit un isomorphisme d'anneaux
+      $$\lex{anneau-polynomes}{\mathbb F_2[X]}/(X^{n+1}) \cong \lex{anneau-cohomologie}{H^*}(\mathbb RP^n; \mathbb F_2).$$
+    preuve: |
+      (i) Suivons la définition de $\kappa$ ({{cs-cochaines|Complexes de cochaînes}}, (ii)). La cochaîne $y$ de $S^n$ égale à $x(q \circ \rho)$ sur les simplexes $\rho$ de premier sommet positif, et à $0$ sur les autres, vérifie $\tau^\#y = x$ ({{cup-transfert|Revêtement double}}, preuve de (ii)).
+
+      Soit $\rho$ un simplexe de $S^n$ de dimension $k + 1$, et $\varepsilon$, $\varepsilon'$ les éléments de $\mathbb F_2$ qui valent $1$ si $\rho(e_0)$, respectivement $\rho(e_1)$, est positif, et $0$ sinon. Pour $i \geqslant 1$, la face $\rho \circ \delta_i$ a pour premier sommet $\rho(e_0)$ ; la face $\rho \circ \delta_0$ a pour premier sommet $\rho(e_1)$. Donc, modulo $2$,
+      $$(\delta y)(\rho) = \varepsilon \sum_{i \geqslant 1} x(q\rho \circ \delta_i) + \varepsilon'\, x(q\rho \circ \delta_0).$$
+
+      Comme $x$ est un cocycle, $\sum_{i=0}^{k+1} x(q\rho \circ \delta_i) = (\delta x)(q \circ \rho) = 0$, et la première somme vaut $x(q\rho \circ \delta_0)$. Il vient
+      $$(\delta y)(\rho) = (\varepsilon + \varepsilon')\, x(q\rho \circ \delta_0).$$
+
+      Or $\varepsilon + \varepsilon' = 1$ exactement quand l'un seul des sommets $\rho(e_0)$, $\rho(e_1)$ est positif, c'est-à-dire quand $w$ vaut $1$ sur l'arête $(q \circ \rho)|[0, 1]$, dont $\rho|[0, 1]$ est un relèvement ; et $q\rho \circ \delta_0 = (q \circ \rho)|[1, \dots, k + 1]$ est la face arrière. Ainsi
+      $$(\delta y)(\rho) = (w \smile x)(q \circ \rho),$$
+      c'est-à-dire $\delta y = q^\#(w \smile x)$, et, par définition, $\kappa[x] = [w \smile x]$.
+
+      Pour $x = 1$, cocycle de degré $0$, on trouve $\delta y = q^\#w$ ; alors $q^\#(\delta w) = \delta\delta y = 0$, et $\delta w = 0$ par injectivité de $q^\#$. Donc $\alpha = [w] = \kappa[1]$, et $\kappa(\xi) = \alpha \smile \xi$ par définition du produit des classes ({{cup-produit|Produit cup}}, (iii)).
+
+      (ii) On lit la suite exacte longue du nœud {{cup-transfert|Revêtement double}}, en sachant que $H^k(S^n; \mathbb F_2)$ vaut $\mathbb F_2$ pour $k \in \{0, n\}$ et $0$ sinon ({{cs-spheres|Cohomologie des sphères}}), et que $H^k(\mathbb RP^n; \mathbb F_2) = 0$ pour $k > n$ ({{cup-projectif-dimension|ℝPⁿ au-delà de n}}).
+
+      *Degré $0$.* $H^0(\mathbb RP^n; \mathbb F_2) = \{0, [1]\}$ et $H^0(S^n; \mathbb F_2) = \{0, [1]\}$, les deux espaces étant connexes par arcs, et $q^*[1] = [1] \neq 0$ : $q^*$ est bijectif en degré $0$. Par exactitude, $\tau^* = 0$ sur $H^0(S^n)$, et $\kappa : H^0(\mathbb RP^n) \to H^1(\mathbb RP^n)$ est injectif.
+
+      *Degrés intermédiaires.* Pour $1 \leqslant k \leqslant n - 1$, $H^k(S^n) = 0$, donc $\tau^* = 0$ sur $H^k(S^n)$ et $\kappa$ est injectif sur $H^k(\mathbb RP^n)$. Pour $0 \leqslant k \leqslant n - 2$, $H^{k+1}(S^n) = 0$, donc $q^* = 0$ en degré $k + 1$ et $\kappa : H^k(\mathbb RP^n) \to H^{k+1}(\mathbb RP^n)$ est surjectif. Ainsi $\kappa$ est bijectif de $H^k$ sur $H^{k+1}$ pour $0 \leqslant k \leqslant n - 2$, et injectif de $H^{n-1}$ dans $H^n$.
+
+      Par récurrence, $\kappa^k$ est bijectif de $H^0 = \{0, [1]\}$ sur $H^k$ pour $0 \leqslant k \leqslant n - 1$ : chacun de ces groupes a deux éléments, en particulier $H^{n-1}$.
+
+      *Degré $n$.* Le segment $H^n(S^n) \xrightarrow{\tau^*} H^n(\mathbb RP^n) \xrightarrow{\kappa} H^{n+1}(\mathbb RP^n) = 0$ montre que $\tau^*$ est surjectif, et $H^n(\mathbb RP^n)$ a au plus deux éléments. Il contient l'image de $H^{n-1}$ par $\kappa$, injectif, qui en a deux : $\kappa$ est aussi bijectif de $H^{n-1}$ sur $H^n$.
+
+      Ainsi $\kappa^k$ est bijectif de $H^0$ sur $H^k$ pour $0 \leqslant k \leqslant n$, et, par (i) et l'associativité, $\kappa^k[1] = \alpha \smile \kappa^{k-1}[1] = \alpha^k$. Donc $H^k(\mathbb RP^n; \mathbb F_2) = \{0, \alpha^k\}$, avec $\alpha^k \neq 0$, et $\alpha^{n+1} \in H^{n+1} = 0$.
+
+      Les puissances de $\alpha$ commutant entre elles, $P \mapsto P(\alpha)$ est un morphisme d'anneaux de $\mathbb F_2[X]$ dans $H^*(\mathbb RP^n; \mathbb F_2)$. Il est surjectif, et $\sum_k c_k\alpha^k = 0$ si et seulement si $c_k = 0$ pour $k \leqslant n$, puisque les $\alpha^k$ sont de degrés distincts et non nuls : le noyau est l'idéal $X^{n+1}\mathbb F_2[X]$, et l'on conclut par le théorème d'isomorphisme ({{a-anneau-quotient|Anneau quotient}}).
+    remarques:
+      - |
+        La classe $\alpha$ a un sens géométrique. Sur un lacet $\gamma$ de $\mathbb RP^n$, vu comme simplexe de dimension $1$, $w(\gamma) = 1$ si et seulement si le relèvement de $\gamma$ issu d'un point positif finit en un point qui ne l'est pas, c'est-à-dire si ce relèvement n'est pas un lacet. Pour $n \geqslant 2$, c'est exactement dire que la classe de $\gamma$ est l'élément non trivial de $\lex{groupe-fondamental}{\pi_1}(\mathbb RP^n) \cong \mathbb Z/2\mathbb Z$ ({{rv-projectif|Espaces projectifs}}, (ii)) : $\alpha$ détecte la parité du relèvement.
+      - |
+        Les groupes seuls ne disent pas que $\alpha^k \neq 0$ : ce qui le prouve, c'est l'identité $\kappa = \alpha \smile {\cdot}$, qui fait du morphisme de connexion, bijectif jusqu'au degré $n$, une multiplication. En termes classiques, $\alpha$ est la première classe de Stiefel-Whitney du revêtement double, et (i) est un cas de la suite de Gysin, que l'on ne développe pas.
+      - |
+        Le résultat est cohérent avec le théorème des coefficients universels ({{cs-coefficients-universels|Coefficients universels}}), dont la démonstration emploie le choix. Si l'on admet que $H_1(\mathbb RP^2) \cong \mathbb Z/2\mathbb Z$, ce que donne le théorème de Hurewicz, et que $H_2(\mathbb RP^2) = 0$, il prédit $H^1(\mathbb RP^2; \mathbb F_2) \cong \operatorname{Hom}(\mathbb Z/2\mathbb Z, \mathbb F_2) \cong \mathbb F_2$ et $H^2(\mathbb RP^2; \mathbb F_2) \cong \operatorname{Ext}(\mathbb Z/2\mathbb Z, \mathbb F_2) \cong \mathbb F_2$ : la torsion de $H_1$ se lit en degré $2$, et c'est elle qui porte $\alpha^2$. Un calcul programmé sur la triangulation de $\mathbb RP^2$ à six sommets, dont on admet qu'elle réalise bien cet espace, donne une cohomologie modulo $2$ de dimension $1$ en degrés $0$, $1$, $2$, et $\alpha^2$ non nul.
+
+  - id: cup-borsuk-ulam
+    etiquette: Borsuk-Ulam
+    nature: théorème
+    titre: Le théorème de Borsuk-Ulam
+    enonce: |
+      (i) Pour $n \geqslant 1$, il n'existe pas d'[[application-impaire|application impaire]] continue de $\lex{sphere-unite}{S^n}$ dans $S^{n-1}$.
+
+      (ii) *Borsuk-Ulam.* Pour $n \geqslant 1$ et toute application continue $f : S^n \to \lex{n-uplet}{\mathbb R^n}$, il existe $x \in S^n$ tel que $f(x) = f(-x)$.
+
+      (iii) Pour $n \geqslant 1$, aucune partie de $\mathbb R^n$ n'est homéomorphe à $S^n$.
+    preuve: |
+      (i) Pour $n = 1$, une application continue $g$ de $S^1$, connexe, dans $S^0 = \{-1, 1\}$, discret, est constante, ce qui contredit $g(-x) = -g(x)$.
+
+      Soit $n \geqslant 2$, $m = n - 1 \geqslant 1$, et $g : S^n \to S^m$ continue et impaire. Notons $\alpha_n$ et $\alpha_m$ les classes de degré $1$ de $\mathbb RP^n$ et $\mathbb RP^m$ ({{cup-projectif|Anneau de ℝPⁿ}}). L'application $\bar g : \mathbb RP^n \to \mathbb RP^m$ vérifie $\bar g^* \circ \kappa_m = \kappa_n \circ \bar g^*$ ({{cup-transfert|Revêtement double}}, (iii)), et $\bar g^*[1] = [1]$. Donc
+      $$\bar g^*(\alpha_m) = \bar g^*\kappa_m[1] = \kappa_n\,\bar g^*[1] = \alpha_n.$$
+
+      Comme $\bar g^*$ est un morphisme d'anneaux ({{cup-anneau|Anneau de cohomologie}}, (i) ; seul le point (ii) de ce nœud est admis, et il ne sert pas ici),
+      $$\alpha_n^n = \bar g^*(\alpha_m)^n = \bar g^*(\alpha_m^n).$$
+      Or $\alpha_m^n$ appartient à $H^n(\mathbb RP^m; \mathbb F_2)$, nul puisque $n > m$ ({{cup-projectif-dimension|ℝPⁿ au-delà de n}}). Donc $\alpha_n^n = 0$, ce qui contredit le nœud {{cup-projectif|Anneau de ℝPⁿ}}, (ii).
+
+      (ii) Supposons $f(x) \neq f(-x)$ pour tout $x$. L'application
+      $$g(x) = \frac{f(x) - f(-x)}{\|f(x) - f(-x)\|}$$
+      est continue de $S^n$ dans $S^{n-1}$, et impaire, ce que (i) interdit.
+
+      (iii) Un homéomorphisme de $S^n$ sur une partie de $\mathbb R^n$ serait une application continue et injective $f : S^n \to \mathbb R^n$. Par (ii), $f(x) = f(-x)$ pour un $x$, alors que $x \neq -x$.
+    remarques:
+      - |
+        Pour $f(x) = (x_1 + x_2^2 + x_1x_2x_3,\ x_2 - x_3 + x_1^2)$ sur $S^2$, on a
+        $$f(x) - f(-x) = 2\big(x_1(1 + x_2x_3),\ x_2 - x_3\big).$$
+        Sur la sphère, $|x_2x_3| \leqslant \frac12(x_2^2 + x_3^2) \leqslant \frac12$, donc $x_1 = 0$ et $x_2 = x_3 = \pm\frac1{\sqrt2}$. La seule paire de points opposés de même image est $\pm\big(0, \frac1{\sqrt2}, \frac1{\sqrt2}\big)$, de valeur commune $\big(\frac12, 0\big)$, ce que confirme un calcul formel. Le théorème garantit l'existence d'une telle paire ; il ne dit rien de leur nombre.
+      - |
+        L'interprétation classique : si la température et la pression varient continûment à la surface de la Terre, assimilée à $S^2$, il existe à tout instant deux points antipodaux où elles sont toutes deux égales.
+      - |
+        La démonstration n'aurait pas abouti avec les seuls groupes de cohomologie : en degré $n$, $\bar g^*$ va du groupe nul $H^n(\mathbb RP^{n-1})$ dans $H^n(\mathbb RP^n)$, et sa nullité ne contredit rien. C'est le produit qui transporte l'information du degré $1$, où $\bar g^*$ est bijectif, jusqu'au degré $n$.
+      - |
+        Le point (iii) complète l'invariance de la dimension ({{h-applications|Brouwer, dimension}}) : une sphère de dimension $n$ ne se plonge même pas dans $\mathbb R^n$. On en déduit aussi le théorème du sandwich au jambon, selon lequel $n$ parties mesurables bornées de $\mathbb R^n$ peuvent être coupées chacune en deux moitiés de même mesure par un seul hyperplan ; il n'est pas démontré ici.
+      - |
+        L'énoncé apparaît pour la première fois chez Lusternik et Schnirelmann (1930), sous une forme équivalente : si $S^n$ est recouverte par $n + 1$ fermés, l'un d'eux contient deux points opposés ; Borsuk en a publié la première démonstration (*Drei Sätze über die n-dimensionale euklidische Sphäre*, Fund. Math. 20, 1933, p. 177-190), la question étant attribuée à Ulam. La démonstration par l'anneau de cohomologie modulo $2$ de $\mathbb RP^n$ est celle des manuels modernes, où la structure d'anneau est en général établie par l'homologie cellulaire ; ici, elle vient de la suite exacte du revêtement double.
+
+aretes:
+  - [cup-produit, cup-anneau]
+  - [cup-anneau, cup-projectif]
+  - [cup-transfert, cup-projectif-dimension]
+  - [cup-projectif-dimension, cup-projectif]
+  - [cup-projectif, cup-borsuk-ulam]
