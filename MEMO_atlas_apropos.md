@@ -89,3 +89,11 @@ bloc « Signaler une erreur » (`aProposCourriel`, `aProposSignalCible`, `aPropo
 `.signaler*`. Sur téléphone, la grille de l'en-tête passe à quatre colonnes (marque, thème, drapeau,
 Partager) pour que « Partager » reste sur la première ligne.
 
+Extension à toutes les rubriques (31 oct. 2026, accord de l'auteur) : un petit drapeau propre à chaque
+élément, par `aProposSignalBouton(cible, url)` (bouton `.signal-elt`, discret à 55 % d'opacité, plein au
+survol), inséré par remplacement local dans `fiche()` (titre de la fiche, chemin complet par
+`aProposCheminEdifice`), `pageChapitre` (barre du lecteur PDF), `carteExercice` (tête de la carte) et
+`ficheSujetHTML` (liens du sujet, donc grille, liste et panneau). Un seul gestionnaire délégué
+(`aProposOuvrirSignal`) sert le drapeau de l'en-tête et ceux des éléments ; le panneau suit son drapeau au
+défilement et se ferme s'il sort de l'écran.
+

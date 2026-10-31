@@ -40,6 +40,9 @@ a poussé entre-temps, un fichier commun réécrit à partir d'une copie périm�
    dans ses propres fonctions (`pageAnnales`, `pageCours`, `pageChapitre`, `pageExercices`…) ; toute
    nouvelle fonction porte le nom de sa rubrique, pour que les modifications ne se chevauchent pas.
    `pageAccueil` est commune : on n'y touche que la carte de sa rubrique.
+   Drapeau « Signaler une erreur » (31 oct. 2026) : `fiche()`, `pageChapitre`, `carteExercice` et
+   `ficheSujetHTML` appellent `aProposSignalBouton(cible, url)` ; un nouvel élément à signaler (carte,
+   fiche) peut l'appeler de même (voir `MEMO_atlas_apropos.md`, section 35).
 3. **Juste avant chaque commit :** `git fetch origin main && git rebase origin/main` (le clone est
    superficiel : ne jamais pousser depuis une copie périmée), puis `sh construire.sh` à nouveau sur la
    version rebasée, jusqu'à zéro erreur. Un conflit de rebase se résout à la main, en conservant les

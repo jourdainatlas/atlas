@@ -138,6 +138,15 @@ body.en-rubrique .bouton-theme { margin-left: auto; }
 }
 .signaler:hover, .signaler[aria-expanded="true"] { color: var(--encre); background: var(--trame); }
 .signaler:focus-visible { outline: 2px solid var(--encre-3); outline-offset: 2px; }
+.signal-elt {
+  display: inline-grid; place-items: center; width: 26px; height: 26px; padding: 0; margin-left: 6px; vertical-align: middle;
+  border: 0; border-radius: 6px; background: none; color: var(--encre-3); cursor: pointer; opacity: .55; transition: opacity .15s;
+}
+.signal-elt:hover, .signal-elt:focus-visible, .signal-elt[aria-expanded="true"] { opacity: 1; color: var(--encre); background: var(--trame); }
+.signal-elt:focus-visible { outline: 2px solid var(--encre-3); outline-offset: 1px; }
+.exo-tete .signal-elt { margin-left: auto; }
+.fiche h2 .signal-elt { position: relative; top: -2px; }
+@media (hover: none) { .signal-elt { opacity: .8; } }
 .signaler-panneau {
   position: fixed; z-index: 70; width: min(340px, calc(100vw - 24px)); padding: 16px 16px 14px;
   background: var(--surface); color: var(--encre); border: 1px solid var(--filet); border-radius: 12px;
@@ -1339,7 +1348,7 @@ function fiche() {
   const c = couleurNoeud(n);
   let h = `<article class="fiche" style="--c: ${c}">`;
   h += `<p class="sur-titre"><span class="sorte">${esc(n.sorte)}</span>${rang(n)}${n.graphe !== D.racine ? `<span>${esc(D.graphes[n.graphe].titre)}</span>` : ''}</p>`;
-  h += `<h2>${esc(n.titre)}${n.choix ? ' <span class="etoile">⋆</span>' : ''}</h2>`;
+  h += `<h2>${esc(n.titre)}${n.choix ? ' <span class="etoile">⋆</span>' : ''}${aProposSignalBouton(aProposCheminEdifice(n), `${ADRESSE_SITE}edifice/${n.id}/`)}</h2>`;
   h += contexte;
   if (n.choix) h += `<div class="choix"><strong class="tete">⋆ Axiome du choix</strong>${n.choix}</div>`;
   if (n.texte) h += n.texte;
@@ -1871,7 +1880,7 @@ function pageChapitre(c, tous) {
   h += `<div class="lecture"><div class="lecteur carte">`;
   const actif = c.pdf ? '' : ' aria-disabled="true"';
   h += `<div class="lecteur-barre"><div class="groupe"><button type="button" class="bouton" data-pdf-pas="-1"${actif} aria-label="Page précédente">‹</button><span>page <span class="pdf-num">${c.pdf ? 1 : '—'}</span> / ${c.pages || '—'}</span><button type="button" class="bouton" data-pdf-pas="1"${actif} aria-label="Page suivante">›</button></div>`;
-  h += `<div class="groupe"><a class="bouton"${c.pdf ? ` href="${c.pdf}" target="_blank" rel="noopener"` : actif}>Ouvrir le PDF</a>${c.pdf ? `<a class="bouton" href="${c.pdf}" download>Télécharger</a>` : ''}${c.tex ? `<a class="bouton" href="${c.tex}" download>Source .tex</a>` : ''}</div></div>`;
+  h += `<div class="groupe"><a class="bouton"${c.pdf ? ` href="${c.pdf}" target="_blank" rel="noopener"` : actif}>Ouvrir le PDF</a>${c.pdf ? `<a class="bouton" href="${c.pdf}" download>Télécharger</a>` : ''}${aProposSignalBouton(`Cours › ${niveauDe(c.niveau).titre}${c.chapitre ? `, chapitre ${c.chapitre}` : ''} — ${c.titre}`, `${ADRESSE_SITE}cours/${c.id}/`)}${c.tex ? `<a class="bouton" href="${c.tex}" download>Source .tex</a>` : ''}</div></div>`;
   h += c.pdf ? `<div class="lecteur-fond lecteur-pages" data-pdf="${c.pdf}"><p class="vide-note">Chargement du PDF…</p></div>`
     : `<div class="lecteur-fond"><div class="feuille-a4" aria-hidden="true"><div class="fa-titre">Chapitre ${c.chapitre || ''} — ${c.titre.replace(/<[^>]+>/g, '')}</div>${'<div class="fa-ligne"></div>'.repeat(4)}<div class="fa-cadre">${'<div class="fa-ligne"></div>'.repeat(3)}</div>${'<div class="fa-ligne"></div>'.repeat(6)}<div class="fa-note">Le PDF du chapitre s'affichera ici.</div></div></div>`;
   if (c.pdf) h += `<div class="lecteur-raccourci"><button type="button" data-vers-cote aria-label="Aller au sommaire, aux liens et aux exercices du chapitre">Sommaire et liens ↓</button></div>`;
@@ -2041,7 +2050,7 @@ function vueExercices(E, enChargement) {
 }
 function carteExercice(e, enChargement) {
   const f = feuilleDe(e.feuille);
-  let h = `<article class="exo carte" id="ex-${e.id}"><div class="exo-tete"><h3><a class="lien-exo" href="#exercices/ex/${e.id}" title="Lien vers cet exercice">Exercice ${e.numero}</a>${e.titre ? ` <span class="exo-titre">${e.titre}</span>` : ''}</h3>${e.etoiles ? difficulte(e.etoiles) : ''}${(e.types || []).map(t => `<span class="etiquette-type">${esc(t)}</span>`).join('')}</div>`;
+  let h = `<article class="exo carte" id="ex-${e.id}"><div class="exo-tete"><h3><a class="lien-exo" href="#exercices/ex/${e.id}" title="Lien vers cet exercice">Exercice ${e.numero}</a>${e.titre ? ` <span class="exo-titre">${e.titre}</span>` : ''}</h3>${e.etoiles ? difficulte(e.etoiles) : ''}${(e.types || []).map(t => `<span class="etiquette-type">${esc(t)}</span>`).join('')}${aProposSignalBouton(`Exercice ${e.numero} (${e.id}) — ${niveauDe(f.niveau).titre}${f.chapitre ? `, chapitre ${f.chapitre}` : ''}, ${f.titre}`, `${ADRESSE_SITE}exercices/${e.id}/`)}</div>`;
   h += `<div class="exo-meta">${esc(niveauDe(f.niveau).titre)}${f.chapitre ? `, chapitre ${f.chapitre}` : ''} — ${f.titre}${e.partie ? ` · ${e.partie}` : ''}</div>`;
   h += e.enonce ? `<div class="exo-enonce">${e.enonce}</div>` : `<p class="vide-note">${enChargement ? 'Chargement de l\'énoncé…' : ''}</p>`;
   if (e.source) h += `<p class="source-exo">Source : ${esc(e.source)}</p>`;
@@ -2147,6 +2156,7 @@ function ficheSujetHTML(x, complet) {
   if (x.sujet) h += `<a class="bouton plein fa-pdf" href="${esc(x.sujet)}" target="_blank" rel="noopener">Sujet (PDF)</a>`;
   if (x.rapport) h += `<a class="bouton" href="${esc(x.rapport)}" target="_blank" rel="noopener">Rapport du jury</a>`;
   if (!complet && d) h += `<a class="bouton" href="#annales/sujet/${sl}" title="Contenu du sujet, partie par partie (adresse à partager)">Contenu</a>`;
+  h += aProposSignalBouton(`Annales › ${titreConc}`, `${ADRESSE_SITE}#annales/sujet/${sl}`);
   h += `</span></div>`;
   if (x.source) h += `<p class="fa-source">PDF hébergé hors du site officiel — source : <a href="${esc(x.source.url)}" target="_blank" rel="noopener">${esc(x.source.nom)}</a></p>`;
   if (x.attente) h += `<p class="fa-source">${esc(x.attente)}</p>`;
@@ -2775,36 +2785,74 @@ function aProposSignalCible() {
   else if ($('#rubrique').dataset.nom === 'annales' && ($('#rubrique').dataset.chemin || '').startsWith('sujet/')) fil.push($('#rubrique').dataset.chemin.slice(6));
   return [...new Set(fil)].join(' › ') || 'Accueil';
 }
-function aProposFermerSignal() { $('#signaler-panneau')?.remove(); $('#signaler').setAttribute('aria-expanded', 'false'); }
-$('#signaler').addEventListener('click', ev => {
-  ev.stopPropagation();
-  if ($('#signaler-panneau')) return aProposFermerSignal();
-  const adr = aProposCourriel(), cible = aProposSignalCible(), url = adressePartage();
+// Drapeau propre à un élément (fiche de l'édifice, exercice, sujet d'annales) : même panneau, visant cet élément.
+const SIGNAL_SVG = '<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><path d="M5 21V4M5 4.5c2.2-1.3 4.4-1.3 6.6 0s4.4 1.3 6.6 0v8.4c-2.2 1.3-4.4 1.3-6.6 0s-4.4-1.3-6.6 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+function aProposSignalBouton(cible, url) {
+  const c = String(cible || '').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+  return `<button type="button" class="signal-elt" data-signal-cible="${esc(c)}" data-signal-url="${esc(url || '')}" aria-haspopup="dialog" title="Signaler une erreur sur cet élément" aria-label="Signaler une erreur : ${esc(c)}">${SIGNAL_SVG}</button>`;
+}
+// Chemin d'un nœud dans l'édifice : « L'édifice › Analyse réelle › Continuité › Valeurs intermédiaires ».
+function aProposCheminEdifice(n) {
+  const ch = [n.titre];
+  for (let g = D.graphes[n.graphe], k = 0; g && g.conteneur && k < 20; k++) {
+    ch.unshift(g.titre); g = D.graphes[(D.noeuds[g.conteneur] || {}).graphe];
+  }
+  return ["L'édifice", ...ch].join(' › ');
+}
+let signalSource = null;
+function aProposFermerSignal() {
+  $('#signaler-panneau')?.remove();
+  signalSource?.setAttribute('aria-expanded', 'false'); signalSource = null;
+}
+function aProposOuvrirSignal(source, cible, url) {
+  const adr = aProposCourriel();
   const sujet = `ATLAS – erreur : ${cible}`.slice(0, 140);
   const corps = `Page : ${cible}\nAdresse : ${url}\n\nL'erreur repérée (coquille, calcul faux, démonstration incomplète…) :\n\n`;
   const p = document.createElement('div');
   p.id = 'signaler-panneau'; p.className = 'signaler-panneau'; p.setAttribute('role', 'dialog'); p.setAttribute('aria-label', 'Signaler une erreur');
   p.innerHTML = `<button type="button" class="sp-fermer" aria-label="Fermer">×</button><h3>Signaler une erreur</h3>`
     + `<p class="sp-cible">Sur : <b>${esc(cible)}</b></p>`
-    + `<p>Un message s'ouvre avec le titre et l'adresse de cette page : il ne reste qu'à décrire l'erreur. Merci !</p>`
+    + `<p>Un message s'ouvre, déjà adressé et renvoyant à ce passage : il ne reste qu'à décrire l'erreur. Merci !</p>`
     + `<div class="sp-actions"><a class="sp-ecrire" href="${'mai' + 'lto:' + esc(adr)}?subject=${encodeURIComponent(sujet)}&amp;body=${encodeURIComponent(corps)}">Écrire</a>`
     + `<button type="button" class="sp-copier">Copier l'adresse</button></div>`;
   document.body.append(p);
-  const r = $('#signaler').getBoundingClientRect();
-  p.style.top = `${r.bottom + 8}px`;
-  p.style.left = `${Math.max(12, Math.min(r.right - p.offsetWidth, innerWidth - p.offsetWidth - 12))}px`;
-  $('#signaler').setAttribute('aria-expanded', 'true');
+  signalSource = source; source.setAttribute('aria-expanded', 'true');
+  aProposPlacerSignal();
   p.querySelector('.sp-fermer').addEventListener('click', aProposFermerSignal);
   p.querySelector('.sp-ecrire').addEventListener('click', () => setTimeout(aProposFermerSignal, 300));
   p.querySelector('.sp-copier').addEventListener('click', ev2 => {
     const b = ev2.currentTarget;
     (navigator.clipboard?.writeText(adr) || Promise.reject()).then(() => { b.textContent = 'Adresse copiée'; }, () => { b.textContent = adr; });
   });
-  p.querySelector('.sp-ecrire').focus();
-});
-document.addEventListener('click', ev => { if ($('#signaler-panneau') && !ev.target.closest('#signaler-panneau, #signaler')) aProposFermerSignal(); });
-document.addEventListener('keydown', ev => { if (ev.key === 'Escape' && $('#signaler-panneau')) { aProposFermerSignal(); $('#signaler').focus(); } });
+  p.querySelector('.sp-ecrire').focus({ preventScroll: true });
+}
+document.addEventListener('click', ev => {
+  const b = ev.target.closest('#signaler, .signal-elt');
+  if (b) {
+    ev.preventDefault(); ev.stopPropagation();
+    const memeSource = signalSource === b;
+    aProposFermerSignal();
+    if (memeSource) return;
+    if (b.id === 'signaler') aProposOuvrirSignal(b, aProposSignalCible(), adressePartage());
+    else aProposOuvrirSignal(b, b.dataset.signalCible, b.dataset.signalUrl || adressePartage());
+    return;
+  }
+  if ($('#signaler-panneau') && !ev.target.closest('#signaler-panneau')) aProposFermerSignal();
+}, true);
+document.addEventListener('keydown', ev => { if (ev.key === 'Escape' && $('#signaler-panneau')) { const s = signalSource; aProposFermerSignal(); s?.focus(); } });
 addEventListener('hashchange', aProposFermerSignal);
+// Le panneau suit son drapeau quand la page défile ; il se ferme si le drapeau sort de l'écran.
+function aProposPlacerSignal() {
+  const p = $('#signaler-panneau'); if (!p || !signalSource) return;
+  const r = signalSource.getBoundingClientRect();
+  if (!signalSource.isConnected || r.bottom < 0 || r.top > innerHeight) return aProposFermerSignal();
+  // Sous le drapeau, aligné à droite sur lui ; au-dessus s'il n'y a pas la place en bas.
+  const haut = r.bottom + 8 + p.offsetHeight > innerHeight - 8 ? Math.max(8, r.top - 8 - p.offsetHeight) : r.bottom + 8;
+  p.style.top = `${haut}px`;
+  p.style.left = `${Math.max(12, Math.min(r.right - p.offsetWidth, innerWidth - p.offsetWidth - 12))}px`;
+}
+document.addEventListener('scroll', aProposPlacerSignal, { passive: true, capture: true });
+addEventListener('resize', aProposPlacerSignal);
 
 /* ---- Application installable (service worker et invitation à installer ; fichiers dans identite/) */
 // Le service worker n'est enregistré que sur le site publié (ou en local), jamais dans l'aperçu Claude.
