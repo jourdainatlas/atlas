@@ -114,10 +114,17 @@ Règle d'alimentation et filet de sécurité : `MEMO_atlas.md`, section 0, point
 `construire.py` (bloc « Nouveautés » : forme des entrées et ancres en erreur, oublis en avertissement).
 Onze entrées initiales (25-31 oct.), rédigées d'après l'historique du dépôt.
 
-### 37. Mesure d'audience (31 oct. 2026, retirée le même jour)
+### 37. Mesure d'audience (31 oct. 2026)
 
-Essayée avec GoatCounter (code de site `atlasjourdain`, tableau de bord privé), puis retirée à la demande
-de l'auteur, qui désactive son compte : plus de script, plus de section « Confidentialité » dans l'À
-propos, plus de mention dans les crédits de l'accueil ni dans `LICENCE.md` (commit « À propos : mesure
-d'audience retirée »). Pour la rétablir, reprendre le commit dd852f7 (bloc « Mesure d'audience » de
-`gabarit.html`) et la mention d'information des visiteurs.
+GoatCounter, code de site `atlasjourdain` ; tableau de bord privé de l'auteur
+(https://atlasjourdain.goatcounter.com), option « Allow adding visitor counts » désactivée : aucun chiffre
+affiché. Bloc « Mesure d'audience » de `gabarit.html` (`AUDIENCE`, `audience…`) : script
+`https://gc.zgo.at/count.js` chargé seulement sur atlasjourdain.fr (jamais en local ni dans l'aperçu
+Claude), `no_onload`, puis une vue par ancre stable depuis une seconde, sous un chemin lisible
+(`#annales/sujet/x` → `/annales/sujet/x`, `#continuite.c-tvi` → `/edifice/continuite/c-tvi`, accueil → `/`) ;
+provenance transmise seulement à l'arrivée. Retiré puis rétabli le même soir à la demande de l'auteur.
+Information des visiteurs (CNIL), choix de l'auteur : une seule ligne discrète en pied de l'À propos, sans
+nommer l'outil (`mention:` dans `apropos.yaml`, classe `.apropos-mention`) : « Ce site mesure sa
+fréquentation de façon anonyme, sans cookie ni suivi d'un site à l'autre. » Pas de mention dans les
+crédits de l'accueil ; l'outil est cité dans `LICENCE.md` seulement. L'auteur exclut ses propres visites
+par `#toggle-goatcounter` sur chaque appareil, ou par son adresse IP (Settings › Tracking).

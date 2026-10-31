@@ -32,4 +32,5 @@ tous droits réservés, sauf autorisation de l'auteur.
 |---|---|---|
 | [KaTeX](https://katex.org) 0.16.22 | composition des formules ; sa feuille de style et ses polices sont incluses dans la page | MIT, © 2013-2020 Khan Academy et contributeurs ; la mention de licence figure dans la page |
 | Polices Spectral et IBM Plex | typographie, chargées depuis Google Fonts | SIL Open Font License 1.1 |
+| [GoatCounter](https://www.goatcounter.com) | mesure d'audience anonyme, sans cookie ; script `count.js` chargé depuis gc.zgo.at, sur le site publié seulement ; cité ici seulement, pas sur le site (choix de l'auteur) | EUPL 1.2, version légèrement modifiée (logiciel) ; service hébergé gratuit pour un usage non commercial |
 | NetworkX, PyYAML | utilisés seulement pour construire le site, non distribués | BSD-3-Clause, MIT |
