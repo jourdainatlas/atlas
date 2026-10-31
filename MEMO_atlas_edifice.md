@@ -1081,3 +1081,14 @@ dr-recouvrement (ii) passé à r_i/4. Relu : statut du choix en degré 1 suresti
 identification lisse/continue présentée à tort comme démontrée, quatre fautes mineures, historique Poincaré
 1893/1895 et Heegaard 1898. Non traités : variétés compactes, cohomologie des sphères Sⁿ elles-mêmes (remarques).
 930 nœuds, 540 termes, 80 graphes ; edifice 16, derham et ses chapitres 0.
+
+## 73. Page d'accueil de l'édifice (31 octobre 2026)
+
+`accueil()` dans gabarit.html, récrite à la demande de l'auteur du site. L'ancien encadré « Utilisation » (liste des
+branches en dur, remplacements {{x}}, de Rham « en degré 1 ») est supprimé. Les nombres (théories, fiches, graphes,
+termes) sont calculés à l'affichage à partir de D ; les liens passent par L(id, texte), qui pointe vers
+#<graphe>.<nœud> et rend le texte seul si le nœud disparaît. Deux encadrés : « Comment lire l'édifice » (trois niveaux,
+lecture d'une fiche, recherche et lexique) et « Par où commencer » (construire les nombres ; partir d'un grand
+théorème : ar-tfa, hj-jordan, gs-abel-ruffini, cup-borsuk-ulam ; suivre l'axiome du choix : zf-choix, r-choix, o-zorn,
+puis v-bases-existence, t-tychonov, f-hahn-banach). La légende est gardée telle quelle (version brève, choix de
+l'auteur) ; pas d'encart « Nouveautés ». Si l'un de ces identifiants change, mettre à jour accueil().

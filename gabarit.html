@@ -1333,58 +1333,33 @@ function fiche() {
 function accueil() {
   const g = D.graphes[D.racine];
   const nTheo = g.noeuds.length;
+  const nFiches = Object.keys(D.noeuds).length;
+  const nGraphes = Object.keys(D.graphes).length;
+  const nTermes = Object.keys(D.lexique).length;
+  // Lien vers un nœud de l'édifice, à sa place dans son graphe ; le texte seul si le nœud n'existe plus.
+  const L = (id, txt) => D.noeuds[id] ? `<a class="lien-noeud" href="#${D.noeuds[id].graphe}.${id}" data-n="${id}">${txt}</a>` : txt;
   return `<article class="fiche">
-    <p class="sur-titre"><span class="sorte">L'édifice</span><span>${nTheo} théories</span><span>${Object.keys(D.lexique).length} termes</span></p>
+    <p class="sur-titre"><span class="sorte">L'édifice</span><span>${nTheo} théories</span><span>${nFiches} fiches</span><span>${nTermes} termes</span></p>
     <h2>L'édifice, de la logique aux grandes théories</h2>
-    <p>Chaque bulle est une théorie, et chaque flèche va d'une notion vers celle dont la définition l'utilise. Le graphe se lit de bas en haut : le <em>rang</em> d'une théorie est la longueur du plus long chemin qui la relie à la logique.</p>
+    <p>Chaque bulle est une théorie, et chaque flèche va d'une notion vers celle dont la définition l'utilise. Le graphe se lit de bas en haut&nbsp;: le <em>rang</em> d'une théorie est la longueur du plus long chemin qui la relie à la logique.</p>
     <p>Seules les dépendances immédiates sont tracées. Une flèche absente ne signifie pas qu'une théorie est indépendante d'une autre, mais que le lien passe par un intermédiaire.</p>
-    <div class="enonce" style="--c: var(--encre)"><span class="tete">Utilisation</span>
-      <p>Cliquez une bulle pour lire sa fiche. Les bulles marquées d'un coin carré contiennent un graphe : un clic l'ouvre. Trente-cinq branches sont développées : la {{log}}, les {{zf}}, les {{rel}}, les {{ord}}, les {{alg}}, les {{ordin}}, la construction de {{n}}, de {{z}}, de {{q}}, de {{r}} et de {{c}}, l'{{alglin}}, l'{{ac}}, les {{met}}, les {{grtop}}, la {{geoalg}}, la {{topalg}}, le {{cdiff}}, la {{geod}}, l'{{anc}}, la {{mes}}, les {{proba}}, l'{{anf}}, la {{nban}}, l'{{hom}}, les {{gf}}, la {{galois}}, l'{{fourier}}, les {{edo}}, les {{lie}}, les {{mart}}, la {{tan}}, les {{top}}, et l'{{ar}}, dont les cinq chapitres, des suites réelles à l'intégrale de Riemann en passant par la {{co}}, ont chacun leur graphe. Le {{derham}}, qui relie la géométrie différentielle à l'homologie, est démontré en degré 1 pour les ouverts de ℝⁿ. Chaque proposition et chaque théorème y sont démontrés, sauf ceux dont la preuve est explicitement marquée « Admis », avec l'indication de la difficulté contournée.</p>
-      <p>Les termes soulignés en pointillés, comme <span class="terme" data-g="borne-superieure" tabindex="0" role="button">borne supérieure</span>, affichent leur définition au survol ; un clic les ouvre dans le lexique.</p>
+    <div class="enonce" style="--c: var(--encre)"><span class="tete">Comment lire l'édifice</span>
+      <p>L'édifice a trois niveaux. Le graphe principal relie les ${nTheo} théories&nbsp;; une bulle marquée d'un coin carré contient son propre graphe, qu'un clic ouvre. La plupart des théories se découpent ainsi en chapitres, qui s'ouvrent à leur tour sur les définitions, les propositions et les théorèmes qui les composent&nbsp;: ${nGraphes} graphes rassemblent en tout ${nFiches} fiches. Dans un graphe intérieur, les nœuds en pointillés viennent du niveau supérieur, le fil affiché en haut de l'écran dit où l'on se trouve, et le bouton «&nbsp;Remonter&nbsp;» ramène au niveau précédent.</p>
+      <p>Une fiche se lit de haut en bas&nbsp;: l'énoncé, puis la démonstration, repliée, qu'un clic déploie, puis des remarques qui signalent un piège, donnent une intuition ou relient la notion à un autre chapitre. Ses deux listes de liens, «&nbsp;Repose sur&nbsp;» et «&nbsp;Sert à&nbsp;», permettent de descendre vers les fondements ou de monter vers les applications sans repasser par le graphe. Chaque proposition et chaque théorème sont démontrés, sauf ceux dont la preuve est explicitement marquée «&nbsp;Admis&nbsp;», avec l'indication de la difficulté contournée.</p>
+      <p>Le champ de recherche, au-dessus de la fiche, trouve une notion dans tout l'édifice, par son titre ou par un terme qu'elle définit, y compris dans les graphes qu'on n'a pas encore ouverts. Les termes soulignés en pointillés, comme <span class="terme" data-g="borne-superieure" tabindex="0" role="button">borne supérieure</span>, affichent leur définition au survol&nbsp;; un clic les ouvre dans le lexique, qui indique pour chacun des ${nTermes} termes la fiche où il est défini et celles qui l'emploient.</p>
     </div>
-    <p>Le signe <span class="etoile">⋆</span> marque les théories dont un théorème central équivaut à l'axiome du choix ou à l'une de ses formes faibles.</p>
+    <div class="enonce" style="--c: var(--encre)"><span class="tete">Par où commencer</span>
+      <p><strong>Construire les nombres.</strong> En partant de la ${L('log', 'logique du premier ordre')} et des ${L('zf', 'axiomes de ZF')}, on suit la construction de ${L('n', 'ℕ')}, puis de ${L('z', 'ℤ')}, de ${L('q', 'ℚ')}, de ${L('r', 'ℝ')} et de ${L('c', 'ℂ')}&nbsp;: chaque théorie fabrique son objet à partir du précédent et démontre qu'il a les propriétés attendues. C'est le chemin le plus court pour voir comment l'édifice part de presque rien.</p>
+      <p><strong>Partir d'un grand théorème.</strong> On peut aussi choisir un résultat célèbre, puis redescendre vers ce qu'il utilise par la liste «&nbsp;Repose sur&nbsp;» de sa fiche&nbsp;: le ${L('ar-tfa', 'théorème fondamental de l\'analyse')}, le ${L('hj-jordan', 'théorème de Jordan')} pour les courbes du plan, l'existence d'un ${L('gs-abel-ruffini', 'polynôme de degré 5 non résoluble par radicaux')}, ou le ${L('cup-borsuk-ulam', 'théorème de Borsuk-Ulam')}. La descente montre quelles notions chacun mobilise vraiment, et dans quel ordre il faut les apprendre.</p>
+      <p><strong>Suivre l'axiome du choix.</strong> L'${L('zf-choix', 'axiome du choix')} est posé avec les axiomes de ZF, ses ${L('r-choix', 'différentes formes')} sont rassemblées avec les relations et les fonctions, et le ${L('o-zorn', 'lemme de Zorn')} est démontré avec les ordinaux. Le signe <span class="etoile">⋆</span> marque ensuite chaque théorie et chaque fiche qui en fait usage, et un encadré dit à quel endroit de la preuve il intervient&nbsp;: on le rencontre par exemple dans l'existence d'une ${L('v-bases-existence', 'base pour tout espace vectoriel')}, dans le ${L('t-tychonov', 'théorème de Tychonov')} ou dans celui de ${L('f-hahn-banach', 'Hahn-Banach')}. On voit du même coup tout ce qui s'en passe.</p>
+    </div>
     <div class="liens credits">
       <div><h3>Licence</h3>
-        <p>© 2026 Armand Jourdain. Le contenu d'ATLAS est mis à disposition selon les termes de la licence <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.fr" target="_blank" rel="license noopener">Creative Commons Attribution, Pas d'utilisation commerciale, Partage dans les mêmes conditions 4.0 International</a> (CC BY-NC-SA 4.0) : vous pouvez le reprendre et l'adapter en citant l'auteur, sans usage commercial, et en partageant vos adaptations sous la même licence.</p></div>
+        <p>© 2026 Armand Jourdain. Le contenu d'ATLAS est mis à disposition selon les termes de la licence <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.fr" target="_blank" rel="license noopener">Creative Commons Attribution, Pas d'utilisation commerciale, Partage dans les mêmes conditions 4.0 International</a> (CC BY-NC-SA 4.0)&nbsp;: vous pouvez le reprendre et l'adapter en citant l'auteur, sans usage commercial, et en partageant vos adaptations sous la même licence.</p></div>
       <div><h3>Crédits</h3>
         <p>Formules composées avec <a href="https://katex.org" target="_blank" rel="noopener">KaTeX</a> (licence MIT, © Khan Academy et contributeurs). Polices Spectral et IBM Plex, sous licence SIL Open Font License, servies par Google Fonts.</p></div>
     </div>
-  </article>`.replace('{{ar}}', '<a class="lien-noeud" href="#edifice.analyse-reelle" data-n="analyse-reelle">analyse réelle</a>')
-           .replace('{{co}}', '<a class="lien-noeud" href="#analyse-reelle.continuite" data-n="continuite">Continuité</a>')
-           .replace('{{met}}', '<a class="lien-noeud" href="#edifice.met" data-n="met">espaces métriques et normés</a>')
-           .replace('{{zf}}', '<a class="lien-noeud" href="#edifice.zf" data-n="zf">axiomes de ZF</a>')
-           .replace('{{rel}}', '<a class="lien-noeud" href="#edifice.rel" data-n="rel">relations et fonctions</a>')
-           .replace('{{alg}}', '<a class="lien-noeud" href="#edifice.alg" data-n="alg">structures algébriques</a>')
-           .replace('{{ordin}}', '<a class="lien-noeud" href="#edifice.ordin" data-n="ordin">ordinaux et cardinaux</a>')
-           .replace('{{ord}}', '<a class="lien-noeud" href="#edifice.ord" data-n="ord">structures d\'ordre</a>')
-           .replace('{{z}}', '<a class="lien-noeud" href="#edifice.z" data-n="z">ℤ</a>')
-           .replace('{{q}}', '<a class="lien-noeud" href="#edifice.q" data-n="q">ℚ</a>')
-           .replace('{{r}}', '<a class="lien-noeud" href="#edifice.r" data-n="r">ℝ</a>')
-           .replace('{{alglin}}', '<a class="lien-noeud" href="#edifice.alglin" data-n="alglin">algèbre linéaire</a>')
-           .replace('{{grtop}}', '<a class="lien-noeud" href="#edifice.grtop" data-n="grtop">groupes topologiques</a>')
-           .replace('{{geoalg}}', '<a class="lien-noeud" href="#edifice.geoalg" data-n="geoalg">géométrie algébrique</a>')
-           .replace('{{c}}', '<a class="lien-noeud" href="#edifice.c" data-n="c">ℂ</a>')
-           .replace('{{topalg}}', '<a class="lien-noeud" href="#edifice.topalg" data-n="topalg">topologie algébrique</a>')
-           .replace('{{geod}}', '<a class="lien-noeud" href="#edifice.geod" data-n="geod">géométrie différentielle</a>')
-           .replace('{{cdiff}}', '<a class="lien-noeud" href="#edifice.cdiff" data-n="cdiff">calcul différentiel</a>')
-           .replace('{{gf}}', '<a class="lien-noeud" href="#edifice.gf" data-n="gf">groupes finis</a>')
-           .replace('{{ac}}', '<a class="lien-noeud" href="#edifice.ac" data-n="ac">algèbre commutative</a>')
-           .replace('{{mes}}', '<a class="lien-noeud" href="#edifice.mes" data-n="mes">mesure et intégration</a>')
-           .replace('{{proba}}', '<a class="lien-noeud" href="#edifice.proba" data-n="proba">probabilités</a>')
-           .replace('{{anf}}', '<a class="lien-noeud" href="#edifice.anf" data-n="anf">analyse fonctionnelle</a>')
-           .replace('{{nban}}', '<a class="lien-noeud" href="#edifice.nban" data-n="nban">théorie analytique des nombres</a>')
-           .replace('{{anc}}', '<a class="lien-noeud" href="#edifice.anc" data-n="anc">analyse complexe</a>')
-           .replace('{{n}}', '<a class="lien-noeud" href="#edifice.n" data-n="n">ℕ</a>')
-           .replace('{{top}}', '<a class="lien-noeud" href="#edifice.top" data-n="top">structures topologiques</a>')
-           .replace('{{hom}}', '<a class="lien-noeud" href="#edifice.hom" data-n="hom">homologie singulière</a>')
-           .replace('{{galois}}', '<a class="lien-noeud" href="#edifice.galois" data-n="galois">théorie de Galois</a>')
-           .replace('{{fourier}}', '<a class="lien-noeud" href="#edifice.fourier" data-n="fourier">analyse de Fourier</a>')
-           .replace('{{edo}}', '<a class="lien-noeud" href="#edifice.edo" data-n="edo">équations différentielles</a>')
-           .replace('{{lie}}', '<a class="lien-noeud" href="#edifice.lie" data-n="lie">groupes de Lie</a>')
-           .replace('{{mart}}', '<a class="lien-noeud" href="#edifice.mart" data-n="mart">martingales</a>')
-           .replace('{{tan}}', '<a class="lien-noeud" href="#edifice.tan" data-n="tan">théorie algébrique des nombres</a>')
-           .replace('{{derham}}', '<a class="lien-noeud" href="#edifice.derham" data-n="derham">théorème de de Rham</a>')
-           .replace('{{log}}', '<a class="lien-noeud" href="#edifice.log" data-n="log">logique du premier ordre</a>');
+  </article>`;
 }
 
 /* ------------------------------------------------------------ lexique */
