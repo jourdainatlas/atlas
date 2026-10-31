@@ -1169,3 +1169,16 @@ diagonal, Rosser, et pour (ii) les conditions de dérivabilité dans PA. Aucun c
 notions récursives, la 46e Bew), Péter 1934, Kleene 1936 (Kleene 1981). Relu : relation de démonstration seulement
 r.e. sous l'hypothèse de l'énoncé (Craig), φ[t/x] formule démontrée, lemme des poids cité. 982 nœuds, 566 termes,
 84 graphes.
+
+## 79. Produit scalaire au lexique (31 octobre 2026)
+
+Le terme n'avait pas d'entrée : défini deux fois en gras dans deux théories parallèles de rang 11 (fq-positives,
+f-hilbert). Fiche nouvelle `me-produit-scalaire` dans met (arête gd-normes → me-produit-scalaire) : alglin ne peut
+pas l'accueillir, son corps est quelconque et ℝ n'y est pas en amont ; met est la première théorie qui a ℝ et les
+espaces vectoriels, en amont de cdiff, geod, anf, edo, fourier, mart, lie. Contenu : définition, produit usuel ᵗXY,
+développement et Pythagore, Cauchy-Schwarz et cas d'égalité par projection, norme associée ; remarques (piège
+b = x₁y₁, parallélogramme et ‖·‖∞, projection, formes quadratiques, historique Cauchy 1821, Bunyakovsky 1859,
+Schwarz 1885, d'après Kichenassamy 2020) ; schéma calculé. Lexique `produit-scalaire` ; liens posés à la première
+occurrence dans une vingtaine de fiches et huit entrées du lexique ; f-hilbert (i) et fq-positives (iii) renvoient
+désormais à la fiche au lieu de redémontrer. me-espace (ii), en amont, garde son calcul de d₂ avec une remarque de
+renvoi. Relu : aucun bloquant. 983 nœuds, 567 termes.

@@ -280,3 +280,55 @@ def me_precompacts():
     S.point(R(float(p[0]), float(p[1])), 't', r=5, creux=True)
     S.texte(R(float(p[0]) + 0.03, float(p[1]) + 0.025), 'p', 't', ancre='start', taille=17)
     return S
+
+
+# ------------------------------------------------------------------ me-produit-scalaire
+@schema('me-produit-scalaire')
+def me_produit_scalaire():
+    # Produit scalaire usuel de ℝ² ; x = (2, 3), y = (4, 1). Projection p = t y, t = <x,y>/<y,y> = 11/17,
+    # q = x − p orthogonal à y ; Pythagore et Cauchy-Schwarz : <x,y>² = 121 ⩽ ‖x‖²‖y‖² = 221,
+    # l'écart 100 étant ‖q‖²‖y‖².
+    ps = lambda u, v: u[0] * v[0] + u[1] * v[1]
+    x, y = (Fr(2), Fr(3)), (Fr(4), Fr(1))
+    t = ps(x, y) / ps(y, y)
+    p = (t * y[0], t * y[1])
+    q = (x[0] - p[0], x[1] - p[1])
+    assert t == Fr(11, 17) and p == (Fr(44, 17), Fr(11, 17)) and q == (Fr(-10, 17), Fr(40, 17))
+    assert ps(q, y) == 0
+    assert ps(x, x) == ps(p, p) + ps(q, q)                       # Pythagore
+    assert ps(x, y) ** 2 == 121 and ps(x, x) * ps(y, y) == 221
+    assert ps(x, x) * ps(y, y) - ps(x, y) ** 2 == ps(q, q) * ps(y, y) == 100
+    assert ps(p, p) < ps(x, x)                                   # côté de l'angle droit < hypoténuse
+    # même échelle sur les deux axes (80 px par unité), pour que l'angle droit se voie droit
+    xmin, xmax, ymin, ymax = -0.7, 5.3, -0.5, 3.4
+    L, H = 80 * (xmax - xmin), 80 * (ymax - ymin)
+    S = Schema(520, 352, 'Projection orthogonale de x sur la droite de y, et inégalité de Cauchy-Schwarz')
+    R = Repere(xmin, xmax, ymin, ymax, 20, 20, L, H)
+    assert abs(L - 480) < 1e-9 and abs(H - 312) < 1e-9
+    F = lambda u: (float(u[0]), float(u[1]))
+    # droite de y, prolongée dans le cadre (pointillé gris)
+    a, b = -0.15, 1.28
+    assert xmin < a * 4 and b * 4 < xmax and ymin < a * 1 and b * 1 < ymax
+    S.ligne(R(4 * a, a), R(4 * b, b), 'g', d=True)
+    S.texte(R(4 * b, b) + [-4, 16], 'ℝy', 'g', ancre='end', taille=16)
+    # triangle rectangle 0, p, x : remplissage léger
+    S.surface(R(*np.array([(0, 0), F(p), F(x)], float).T), 'v')
+    # équerre en p : côtés de 12 px selon y et selon q (même échelle : orthogonaux à l'écran)
+    uy = np.array([4, -1], float) / math.sqrt(17)              # y en coordonnées de l'image (axe vertical inversé)
+    uq = np.array([-10, -40], float) / math.sqrt(1700)
+    assert abs(uy @ uq) < 1e-12
+    P = R(*F(p))
+    S.poly([P - 12 * uy, P - 12 * uy + 12 * uq, P + 12 * uq], 'g')
+    # vecteurs
+    S.fleche(R(0, 0), R(*F(x)), 'r', l=2.4)
+    S.fleche(P, R(*F(x)), 'v', l=2.4, retrait=1)
+    S.fleche(R(0, 0), R(*F(y)), 'b', l=2.4)
+    S.point(R(0, 0), 't', r=4)
+    S.point(P, 't', r=4)
+    # étiquettes
+    S.texte(R(0, 0) + [-10, 14], '0', 't', ancre='end', taille=16)
+    S.texte(R(*F(y)) + [12, 6], 'y', 'b', ancre='start', taille=17)
+    S.texte(R(*F(x)) + [-12, -8], 'x', 'r', ancre='end', taille=17)
+    S.texte(P + [10, 16], 'p = (11/17) y', 't', ancre='start', taille=16)
+    S.texte((P + R(*F(x))) / 2 + [12, 0], 'q = x − p', 'v', ancre='start', taille=16)
+    return S
