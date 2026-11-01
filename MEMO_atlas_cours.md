@@ -261,4 +261,6 @@ première, 1re, terminale, tle, expertes, approfondies, mpsi, sup, prépa, ecg, 
 ce cas, « maths », « spé » et « option » sont ignorés. « chapitre N », « chap N » ou « ch N » filtre par
 chapitre. Ainsi « exercice 6 MPSI » ou « MPSI chap 7 ex 3 » s'écrivent sans toucher aux boutons, et les
 deux voies se combinent. Les autres mots sont cherchés dans le texte de l'exercice et dans le titre
-de sa feuille, c'est-à-dire du chapitre (« exercice 6 MPSI logique », « complexes exo 6 »).
+de sa feuille, c'est-à-dire du chapitre (« exercice 6 MPSI logique », « complexes exo 6 »). Dès qu'une
+recherche ou un filtre est actif, un bouton corbeille « Effacer » (`.effacer-recherche-exo`, `data-reinit`)
+apparaît à droite du titre Rechercher et remet tout à zéro.
