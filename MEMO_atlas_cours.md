@@ -133,7 +133,8 @@ exercices », c'est-à-dire la vue « Par exercice » filtrée sur ce niveau. Le
    et non d'après le titre), `sommaire` (sections réelles du PDF), `theories` (nœuds de l'édifice
    effectivement mobilisés), `notions` (termes du lexique), `exercices` (identifiant de la feuille),
    `liens` (identifiants d'autres cours : chapitres liés, affichés dans les deux sens, y compris
-   d'un niveau à l'autre), `pdf`, `pages` (lu par `pdfinfo`), `statut: depose`. Préfixes : `s-` Seconde, `p-`
+   d'un niveau à l'autre), `pdf`, `pages` (lu par `pdfinfo`), `sommaire_pages` (page de début de chaque partie, calculée par
+   `python3 outils/pages_sommaire.py --ecrire <id>` ; relire les lignes signalées « ~ »), `statut: depose`. Préfixes : `s-` Seconde, `p-`
    Première, `t-` Terminale, `me-` Maths expertes, `ap-` Maths approfondies, `ma-` Maths Sup – MPSI
    (niveau `ma`, PDF dans `documents/cours/ma/`), `m-` Master.
 3. `construire.py` vérifie que les fichiers existent, que les renvois aux nœuds, aux termes et aux
@@ -228,3 +229,16 @@ l'instant : les feuilles `f-ma-0N` viendront ensuite et rempliront le champ `exe
 ont été rédigés d'après les introductions, les énoncés numérotés et les bilans des .tex. Le sommaire
 reprend les titres longs des `\section`, introduction historique et bilan compris. Nouveauté annoncée
 le 1er novembre.
+
+### 25. Sommaire cliquable (1er nov. 2026)
+
+Chaque partie du sommaire d'un cours mène à sa page dans le visualiseur (bouton `.vers-page`,
+`data-pdf-page`, avec le numéro de page en petit). La page de début de chaque partie est stockée dans
+`sommaire_pages` (cours.yaml), un entier par partie, croissant, au plus `pages`, ce que vérifie
+`construire.py` (avertissement si un cours déposé a un sommaire sans pages). Les PDF n'ayant pas de
+signets, `outils/pages_sommaire.py` cherche chaque titre dans `pdftotext -layout`. La comparaison ignore
+les lettres f, i, l, parce que pdftotext perd les ligatures (« coecients »), et joint les titres sur deux
+lignes. À défaut, elle accepte un titre de section que le titre du sommaire prolonge, puis le titre
+numéroté le plus proche. Ces cas sont signalés « ~ » et doivent être relus. Les 55 cours ont été remplis
+le 1er novembre et contrôlés contre les titres de section numérotés. Côté page, `allerPage(n)` fait défiler
+jusqu'au canevas `n` ; si pdf.js ne l'a pas encore dessiné, `pageVoulue` est servie dès qu'il l'est.

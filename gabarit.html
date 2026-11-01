@@ -745,6 +745,11 @@ a.acc-etape:hover { background: var(--trame); }
 .lecteur-raccourci, .cote-retour { display: none; }
 .cote .carte { padding: 14px 16px; }
 .sommaire { margin: 0; padding-left: 20px; font-family: var(--f-texte); font-size: 15.5px; display: grid; gap: 4px; }
+/* Partie du sommaire : mène à sa page dans le visualiseur. */
+.sommaire .vers-page { all: unset; cursor: pointer; display: inline; border-radius: 3px; }
+.sommaire .vers-page:hover, .sommaire .vers-page:focus-visible { color: var(--rouge); text-decoration: underline; text-underline-offset: 3px; }
+.sommaire .vers-page:focus-visible { outline: 2px solid var(--rouge); outline-offset: 2px; }
+.sommaire .num-page { font-family: var(--f-ui); font-size: 12px; color: var(--encre-3); margin-left: 6px; white-space: nowrap; }
 .cours-lies { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: 14.5px; }
 .cours-lie { display: block; color: var(--encre); text-decoration: none; }
 .cours-lies .cl-lieu { display: block; font-size: 12px; color: var(--encre-2); letter-spacing: .02em; }
@@ -2327,7 +2332,7 @@ function pageChapitre(c, tous) {
     : `<div class="lecteur-fond"><div class="feuille-a4" aria-hidden="true"><div class="fa-titre">Chapitre ${c.chapitre || ''} — ${c.titre.replace(/<[^>]+>/g, '')}</div>${'<div class="fa-ligne"></div>'.repeat(4)}<div class="fa-cadre">${'<div class="fa-ligne"></div>'.repeat(3)}</div>${'<div class="fa-ligne"></div>'.repeat(6)}<div class="fa-note">Le PDF du chapitre s'affichera ici.</div></div></div>`;
   if (c.pdf) h += `<div class="lecteur-raccourci"><button type="button" data-vers-cote aria-label="Aller au sommaire, aux liens et aux exercices du chapitre">Sommaire et liens ↓</button></div>`;
   h += `</div><aside class="cote"><button type="button" class="cote-retour" data-vers-lecteur>↑ Revenir au PDF</button>`;
-  h += `<div class="carte"><h3 class="titre-bloc">Sommaire</h3>${c.sommaire ? `<ol class="sommaire">${c.sommaire.map(x => `<li>${x}</li>`).join('')}</ol>` : '<p class="vide-note">Tiré du PDF une fois déposé.</p>'}</div>`;
+  h += `<div class="carte"><h3 class="titre-bloc">Sommaire</h3>${c.sommaire ? `<ol class="sommaire">${c.sommaire.map((x, i) => `<li>${c.pdf && c.sommaire_pages ? `<button type="button" class="vers-page" data-pdf-page="${c.sommaire_pages[i]}" title="Aller à la page ${c.sommaire_pages[i]} du PDF">${x}<span class="num-page">p. ${c.sommaire_pages[i]}</span></button>` : x}</li>`).join('')}</ol>` : '<p class="vide-note">Tiré du PDF une fois déposé.</p>'}</div>`;
   h += `<div class="carte"><h3 class="titre-bloc">Dans l'atlas</h3><div class="puces">${(c.theories || []).map(t => puce(t)).join('')}</div>`;
   if ((c.notions || []).length) h += `<p style="margin:10px 0 0;font-size:13.5px">Notions : ${(c.notions).map(terme).join(', ')}</p>`;
   h += `</div>`;
@@ -2958,7 +2963,16 @@ function chargerScript(src) {
     const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = ko; document.head.append(s);
   });
 }
+// Aller à une page du visualiseur ; si elle n'est pas encore dessinée, monterPdf y conduira dès qu'elle le sera.
+let pageVoulue = null;
+function allerPage(n) {
+  const c = document.querySelector(`#rubrique .page-pdf[data-page="${n}"]`);
+  if (!c) { pageVoulue = n; return; }
+  c.scrollIntoView({ block: 'start', behavior: 'smooth' });
+  const num = $('#rubrique .pdf-num'); if (num) num.textContent = n;
+}
 async function monterPdf(z) {
+  pageVoulue = null;
   const zone = z.querySelector('[data-pdf]');
   if (!zone) return;
   const url = zone.dataset.pdf;
@@ -2980,6 +2994,7 @@ async function monterPdf(z) {
       c.className = 'page-pdf'; c.dataset.page = i;
       c.setAttribute('role', 'img'); c.setAttribute('aria-label', `Page ${i}`);
       zone.append(c); vues.push(c);
+      if (pageVoulue === i) { pageVoulue = null; allerPage(i); }
       await page.render({ canvasContext: c.getContext('2d'), viewport: v, transform: dpr !== 1 ? [dpr, 0, 0, dpr, 0, 0] : null }).promise;
       if (!zone.isConnected) return;
     }
@@ -3097,6 +3112,8 @@ $('#rubrique').addEventListener('click', ev => {
   if (t.closest('[data-vers-lecteur]')) { const s = $('#rubrique .lecteur');
     if (posLecture != null) window.scrollTo({ top: posLecture, behavior: 'smooth' }); else if (s) s.scrollIntoView({ block: 'start', behavior: 'smooth' });
     return; }
+  const vp = t.closest('[data-pdf-page]');
+  if (vp) { if (matchMedia('(max-width: 860px)').matches) posLecture = null; allerPage(+vp.dataset.pdfPage); return; }
   const pas = t.closest('[data-pdf-pas]');
   if (pas && !pas.hasAttribute('aria-disabled')) {
     const num = $('#rubrique .pdf-num'), pages = [...document.querySelectorAll('#rubrique .page-pdf')];

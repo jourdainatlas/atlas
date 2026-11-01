@@ -878,6 +878,16 @@ if 'cours' in rubriques:
         if c.get('chapitre'):
             if (c['niveau'], c['chapitre']) in vus: erreur(f"rubriques/cours {c['id']} : chapitre {c['chapitre']} déjà pris au niveau {c['niveau']}")
             vus.add((c['niveau'], c['chapitre']))
+        # Pages de début des parties du sommaire (outils/pages_sommaire.py) : une par partie, croissantes,
+        # dans le PDF. Un PDF déposé avec un sommaire sans ces pages n'est qu'un avertissement.
+        sp = c.get('sommaire_pages')
+        if sp is not None:
+            if not (isinstance(sp, list) and len(sp) == len(c.get('sommaire') or []) and all(isinstance(x, int) for x in sp)):
+                erreur(f"rubriques/cours {c['id']} : sommaire_pages doit donner un entier par partie du sommaire")
+            elif sp != sorted(sp) or sp[0] < 1 or (c.get('pages') and sp[-1] > c['pages']):
+                erreur(f"rubriques/cours {c['id']} : sommaire_pages {sp} non croissant ou hors du PDF")
+        elif c.get('pdf') and c.get('sommaire'):
+            avert(f"rubriques/cours {c['id']} : sommaire sans pages (python3 outils/pages_sommaire.py --ecrire {c['id']})")
 # Nouveautés (domaine À propos – Contact) : forme des entrées, et filet de sécurité contre les ajouts
 # non annoncés. Est « annonçable » : une théorie de l'édifice, un cours ou une feuille déposés, une session
 # d'annales. Un tel élément doit figurer dans le socle (rubriques/nouveautes/socle.yaml : ce qui était en
