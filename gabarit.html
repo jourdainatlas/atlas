@@ -2481,7 +2481,9 @@ function filtrerExercices(tous, sauf) {
     if (nums.length && !nums.includes(e.numero)) return false;
     if (niveaux.size && !niveaux.has(f.niveau)) return false;
     if (chapitres.length && !chapitres.includes(f.chapitre)) return false;
-    const texte = e.recherche || '';
+    // le titre de la feuille (titre du chapitre) compte dans la recherche : « exercice 6 MPSI logique »
+    if (f.rech === undefined) f.rech = sansAccents(f.titre || '');
+    const texte = (e.recherche || '') + ' ' + f.rech;
     return mots.every(m => texte.includes(m));
   });
 }
