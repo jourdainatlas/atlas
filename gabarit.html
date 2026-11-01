@@ -2454,14 +2454,21 @@ function vueNiveauxExos(E) {
 // Recherche : les mots sont cherchés dans le texte de l'exercice ; un nombre seul (« exercice 6 », « n° 6 »,
 // « 6 ») désigne le numéro de l'exercice dans sa feuille. « sauf » ignore un filtre : les compteurs d'un
 // filtre se calculent sur les exercices retenus par tous les autres (recherche à facettes).
+// Mots qui désignent un niveau dans la recherche tapée (« exercice 6 MPSI », « terminale suites »).
+const NIVEAUX_TAPES = { seconde: 'seconde', '2nde': 'seconde', '2de': 'seconde', premiere: 'premiere', '1ere': 'premiere', '1re': 'premiere',
+  terminale: 'terminale', tale: 'terminale', tle: 'terminale', expertes: 'expertes', experte: 'expertes', approfondies: 'approfondies',
+  approfondie: 'approfondies', mpsi: 'ma', sup: 'ma', prepa: 'ma', ecg: 'ecg', master: 'master' };
 function motsRecherche(q) {
-  const t = sansAccents(q).replace(/n\s*°|\bno\b|\bnumeros?\b/g, ' ').split(/[\s,;]+/).filter(Boolean);
+  let t = sansAccents(q).replace(/n\s*°|\bno\b|\bnumeros?\b/g, ' ').replace(/\b(chapitre|chap|ch)\.?\s*(\d+)/g, ' @ch$2 ').split(/[\s,;]+/).filter(Boolean);
+  const niveaux = new Set(t.filter(m => NIVEAUX_TAPES[m]).map(m => NIVEAUX_TAPES[m]));
+  const chapitres = t.filter(m => /^@ch\d+$/.test(m)).map(m => +m.slice(3));
+  t = t.filter(m => !NIVEAUX_TAPES[m] && !/^@ch/.test(m) && !(niveaux.size && /^(maths?|mathematiques|spe|specialite|option)$/.test(m)));
   const nums = t.filter(m => /^\d+$/.test(m)).map(Number);
-  const mots = t.filter(m => !/^\d+$/.test(m) && m.length > 1 && !(nums.length && /^(exercices?|exos?|ex)$/.test(m)));
-  return { mots, nums };
+  const mots = t.filter(m => !/^\d+$/.test(m) && m.length > 1 && !((nums.length || chapitres.length) && /^(exercices?|exos?|ex)$/.test(m)));
+  return { mots, nums, niveaux, chapitres };
 }
 function filtrerExercices(tous, sauf) {
-  const { mots, nums } = motsRecherche(etatExo.q);
+  const { mots, nums, niveaux, chapitres } = motsRecherche(etatExo.q);
   return tous.filter(e => {
     const f = feuilleDe(e.feuille);
     if (etatExo.ex && e.id !== etatExo.ex) return false;
@@ -2472,6 +2479,8 @@ function filtrerExercices(tous, sauf) {
     if (sauf !== 'types' && etatExo.types.size && !(e.types || []).some(t => etatExo.types.has(t))) return false;
     if (sauf !== 'themes') for (const t of etatExo.themes) if (!(e.mots_cles || []).includes(t)) return false;
     if (nums.length && !nums.includes(e.numero)) return false;
+    if (niveaux.size && !niveaux.has(f.niveau)) return false;
+    if (chapitres.length && !chapitres.includes(f.chapitre)) return false;
     const texte = e.recherche || '';
     return mots.every(m => texte.includes(m));
   });
@@ -2493,7 +2502,7 @@ function vueExercices(E, enChargement) {
   const themes = [...compte.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'fr'));
   const typesPresents = (E.types || []).filter(t => etatExo.types.has(t) || sansTypes.some(e => (e.types || []).includes(t)));
   let h = '<div class="banque"><aside class="filtres carte" aria-label="Filtres"><button type="button" class="cote-retour" data-vers-resultats>↓ Aller aux exercices</button>';
-  h += `<div><h3 class="titre-bloc">Rechercher</h3><input class="recherche-exo" type="search" data-filtre="q" value="${esc(etatExo.q).replace(/"/g, '&quot;')}" placeholder="récurrence, limite, exercice 6…" aria-label="Rechercher un exercice par thème, par mot ou par numéro" list="themes-exo"><datalist id="themes-exo">${themes.map(([m]) => `<option value="${esc(m)}">`).join('')}</datalist></div>`;
+  h += `<div><h3 class="titre-bloc">Rechercher</h3><input class="recherche-exo" type="search" data-filtre="q" value="${esc(etatExo.q).replace(/"/g, '&quot;')}" placeholder="suites terminale, exercice 6 MPSI…" aria-label="Rechercher un exercice par thème, par mot ou par numéro" list="themes-exo"><datalist id="themes-exo">${themes.map(([m]) => `<option value="${esc(m)}">`).join('')}</datalist></div>`;
   h += `<div><h3 class="titre-bloc">Thèmes</h3><div class="puces-chips themes">${themes.map(([m, k], i) => `<button type="button" class="chip${i >= 14 && !etatExo.themes.has(m) && !etatExo.tousThemes ? ' cache' : ''}" data-filtre="theme" value="${esc(m)}" aria-pressed="${etatExo.themes.has(m)}">${esc(m)} <span class="compte">${k}</span></button>`).join('')}</div>${themes.length > 14 ? `<button type="button" class="lien-simple plus-themes" data-plus-themes="1">${etatExo.tousThemes ? 'Moins de thèmes' : `Tous les thèmes (${themes.length})`}</button>` : ''}</div>`;
   if (niveaux.length > 1) h += `<div><h3 class="titre-bloc">Niveau</h3>${niveaux.map(n => `<label><input type="checkbox" data-filtre="niveau" value="${n}" ${etatExo.niveaux.has(n) ? 'checked' : ''}> ${niveauDe(n).titre} <span class="compte" style="margin-left:auto;color:var(--encre-3);font-size:12px">${sansNiv.filter(e => feuilleDe(e.feuille).niveau === n).length}</span></label>`).join('')}</div>`;
   h += `<div><h3 class="titre-bloc">Difficulté</h3><div class="niveaux-diff">${[1, 2, 3, 4].map(k => { const nk = sansDiff.filter(e => e.etoiles === k).length; return `<button type="button" data-filtre="diff" value="${k}" aria-pressed="${etatExo.diff.has(k)}"${!nk && !etatExo.diff.has(k) ? ' disabled' : ''} title="${['Application directe', 'Mise en œuvre', 'Problème structuré', 'Problème long'][k - 1]} (${nk})">${difficulte(k)}</button>`; }).join('')}</div></div>`;

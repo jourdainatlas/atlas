@@ -256,4 +256,8 @@ donc les thèmes, les types, les difficultés (boutons grisés à zéro), les no
 ceux de la feuille. Les thèmes sont comptés sur les exercices affichés, et une valeur cochée reste
 visible. « N exercices sur M » compte désormais M dans la feuille, ou l'exercice, en cours. Dans le
 champ de recherche, un nombre seul désigne le numéro de l'exercice dans sa feuille (`motsRecherche` :
-« exercice 6 », « exo 6 », « n° 6 », « 6 »). Les autres mots sont cherchés comme avant.
+« exercice 6 », « exo 6 », « n° 6 », « 6 »). Les mots de niveau (`NIVEAUX_TAPES` : seconde, 2nde,
+première, 1re, terminale, tle, expertes, approfondies, mpsi, sup, prépa, ecg, master) filtrent par niveau. Dans
+ce cas, « maths », « spé » et « option » sont ignorés. « chapitre N », « chap N » ou « ch N » filtre par
+chapitre. Ainsi « exercice 6 MPSI » ou « MPSI chap 7 ex 3 » s'écrivent sans toucher aux boutons, et les
+deux voies se combinent. Les autres mots sont cherchés comme avant.
