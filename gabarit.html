@@ -770,6 +770,7 @@ a.acc-etape:hover { background: var(--trame); }
 .niveaux-diff { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
 .niveaux-diff button { min-width: 0; border: 1px solid var(--filet); background: var(--surface); border-radius: 6px; padding: 6px 0; cursor: pointer; }
 .niveaux-diff button[aria-pressed="true"] { border-color: var(--encre); box-shadow: inset 0 0 0 1px var(--encre); }
+.niveaux-diff button:disabled { opacity: .35; cursor: default; }
 .difficulte { display: inline-flex; gap: 3px; vertical-align: middle; }
 .difficulte i { width: 14px; height: 6px; border-radius: 2px; background: var(--trame); border: 1px solid var(--filet); }
 .difficulte i.plein { background: var(--encre-2); border-color: var(--encre-2); }
@@ -2450,17 +2451,27 @@ function vueNiveauxExos(E) {
   if (aVenir.length) h += `<p class="bientot">Niveaux prévus, sans feuille d'exercices pour l'instant : ${aVenir.map(esc).join(', ')}.</p>`;
   return h;
 }
-function filtrerExercices(tous) {
-  const mots = sansAccents(etatExo.q).split(/[\s,;]+/).filter(m => m.length > 1);
+// Recherche : les mots sont cherchés dans le texte de l'exercice ; un nombre seul (« exercice 6 », « n° 6 »,
+// « 6 ») désigne le numéro de l'exercice dans sa feuille. « sauf » ignore un filtre : les compteurs d'un
+// filtre se calculent sur les exercices retenus par tous les autres (recherche à facettes).
+function motsRecherche(q) {
+  const t = sansAccents(q).replace(/n\s*°|\bno\b|\bnumeros?\b/g, ' ').split(/[\s,;]+/).filter(Boolean);
+  const nums = t.filter(m => /^\d+$/.test(m)).map(Number);
+  const mots = t.filter(m => !/^\d+$/.test(m) && m.length > 1 && !(nums.length && /^(exercices?|exos?|ex)$/.test(m)));
+  return { mots, nums };
+}
+function filtrerExercices(tous, sauf) {
+  const { mots, nums } = motsRecherche(etatExo.q);
   return tous.filter(e => {
     const f = feuilleDe(e.feuille);
     if (etatExo.ex && e.id !== etatExo.ex) return false;
     if (etatExo.feuille && e.feuille !== etatExo.feuille) return false;
-    if (etatExo.noeud && !(e.noeuds || []).includes(etatExo.noeud)) return false;
-    if (etatExo.niveaux.size && !etatExo.niveaux.has(f.niveau)) return false;
-    if (etatExo.diff.size && !etatExo.diff.has(e.etoiles)) return false;
-    if (etatExo.types.size && !(e.types || []).some(t => etatExo.types.has(t))) return false;
-    for (const t of etatExo.themes) if (!(e.mots_cles || []).includes(t)) return false;
+    if (sauf !== 'noeud' && etatExo.noeud && !(e.noeuds || []).includes(etatExo.noeud)) return false;
+    if (sauf !== 'niveaux' && etatExo.niveaux.size && !etatExo.niveaux.has(f.niveau)) return false;
+    if (sauf !== 'diff' && etatExo.diff.size && !etatExo.diff.has(e.etoiles)) return false;
+    if (sauf !== 'types' && etatExo.types.size && !(e.types || []).some(t => etatExo.types.has(t))) return false;
+    if (sauf !== 'themes') for (const t of etatExo.themes) if (!(e.mots_cles || []).includes(t)) return false;
+    if (nums.length && !nums.includes(e.numero)) return false;
     const texte = e.recherche || '';
     return mots.every(m => texte.includes(m));
   });
@@ -2468,26 +2479,32 @@ function filtrerExercices(tous) {
 function vueExercices(E, enChargement) {
   const tous = E.exercices || [];
   const garde = filtrerExercices(tous);
-  const niveaux = [...new Set((E.feuilles || []).filter(f => tous.some(e => e.feuille === f.id)).map(f => f.niveau))];
-  const noeudsCites = [...new Set(tous.flatMap(e => e.noeuds || []))];
-  // thèmes : mots-clés, du plus fréquent au moins fréquent, comptés sur les exercices retenus par les autres filtres
+  // Facettes : chaque filtre ne propose que les valeurs présentes parmi les exercices retenus par les autres
+  // filtres (une feuille choisie restreint ainsi thèmes, types, difficultés et notions à ceux de la feuille),
+  // avec leur nombre ; une valeur cochée reste affichée même si elle ne compte plus aucun exercice.
+  const contexte = tous.filter(e => (!etatExo.feuille || e.feuille === etatExo.feuille) && (!etatExo.ex || e.id === etatExo.ex));
+  const sansNiv = filtrerExercices(tous, 'niveaux'), sansDiff = filtrerExercices(tous, 'diff'), sansTypes = filtrerExercices(tous, 'types'), sansNoeud = filtrerExercices(tous, 'noeud');
+  const niveaux = [...new Set((E.feuilles || []).filter(f => contexte.some(e => e.feuille === f.id)).map(f => f.niveau))];
+  const noeudsCites = [...new Set(sansNoeud.flatMap(e => e.noeuds || []).concat(etatExo.noeud ? [etatExo.noeud] : []))];
+  // thèmes : mots-clés des exercices retenus, du plus fréquent au moins fréquent
   const compte = new Map();
-  for (const e of tous) for (const m of e.mots_cles || []) compte.set(m, (compte.get(m) || 0) + 1);
+  for (const e of garde) for (const m of e.mots_cles || []) compte.set(m, (compte.get(m) || 0) + 1);
+  for (const m of etatExo.themes) if (!compte.has(m)) compte.set(m, 0);
   const themes = [...compte.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'fr'));
-  const typesPresents = (E.types || []).filter(t => tous.some(e => (e.types || []).includes(t)));
+  const typesPresents = (E.types || []).filter(t => etatExo.types.has(t) || sansTypes.some(e => (e.types || []).includes(t)));
   let h = '<div class="banque"><aside class="filtres carte" aria-label="Filtres"><button type="button" class="cote-retour" data-vers-resultats>↓ Aller aux exercices</button>';
-  h += `<div><h3 class="titre-bloc">Rechercher</h3><input class="recherche-exo" type="search" data-filtre="q" value="${esc(etatExo.q).replace(/"/g, '&quot;')}" placeholder="récurrence, limite, géométrique…" aria-label="Rechercher un exercice par thème" list="themes-exo"><datalist id="themes-exo">${themes.map(([m]) => `<option value="${esc(m)}">`).join('')}</datalist></div>`;
+  h += `<div><h3 class="titre-bloc">Rechercher</h3><input class="recherche-exo" type="search" data-filtre="q" value="${esc(etatExo.q).replace(/"/g, '&quot;')}" placeholder="récurrence, limite, exercice 6…" aria-label="Rechercher un exercice par thème, par mot ou par numéro" list="themes-exo"><datalist id="themes-exo">${themes.map(([m]) => `<option value="${esc(m)}">`).join('')}</datalist></div>`;
   h += `<div><h3 class="titre-bloc">Thèmes</h3><div class="puces-chips themes">${themes.map(([m, k], i) => `<button type="button" class="chip${i >= 14 && !etatExo.themes.has(m) && !etatExo.tousThemes ? ' cache' : ''}" data-filtre="theme" value="${esc(m)}" aria-pressed="${etatExo.themes.has(m)}">${esc(m)} <span class="compte">${k}</span></button>`).join('')}</div>${themes.length > 14 ? `<button type="button" class="lien-simple plus-themes" data-plus-themes="1">${etatExo.tousThemes ? 'Moins de thèmes' : `Tous les thèmes (${themes.length})`}</button>` : ''}</div>`;
-  if (niveaux.length > 1) h += `<div><h3 class="titre-bloc">Niveau</h3>${niveaux.map(n => `<label><input type="checkbox" data-filtre="niveau" value="${n}" ${etatExo.niveaux.has(n) ? 'checked' : ''}> ${niveauDe(n).titre} <span class="compte" style="margin-left:auto;color:var(--encre-3);font-size:12px">${tous.filter(e => feuilleDe(e.feuille).niveau === n).length}</span></label>`).join('')}</div>`;
-  h += `<div><h3 class="titre-bloc">Difficulté</h3><div class="niveaux-diff">${[1, 2, 3, 4].map(k => `<button type="button" data-filtre="diff" value="${k}" aria-pressed="${etatExo.diff.has(k)}" title="${['Application directe', 'Mise en œuvre', 'Problème structuré', 'Problème long'][k - 1]} (${tous.filter(e => e.etoiles === k).length})">${difficulte(k)}</button>`).join('')}</div></div>`;
-  h += `<div><h3 class="titre-bloc">Type d'activité</h3><div class="puces-chips">${typesPresents.map(t => `<button type="button" class="chip" data-filtre="type" value="${esc(t)}" aria-pressed="${etatExo.types.has(t)}">${esc(t)}</button>`).join('')}</div></div>`;
+  if (niveaux.length > 1) h += `<div><h3 class="titre-bloc">Niveau</h3>${niveaux.map(n => `<label><input type="checkbox" data-filtre="niveau" value="${n}" ${etatExo.niveaux.has(n) ? 'checked' : ''}> ${niveauDe(n).titre} <span class="compte" style="margin-left:auto;color:var(--encre-3);font-size:12px">${sansNiv.filter(e => feuilleDe(e.feuille).niveau === n).length}</span></label>`).join('')}</div>`;
+  h += `<div><h3 class="titre-bloc">Difficulté</h3><div class="niveaux-diff">${[1, 2, 3, 4].map(k => { const nk = sansDiff.filter(e => e.etoiles === k).length; return `<button type="button" data-filtre="diff" value="${k}" aria-pressed="${etatExo.diff.has(k)}"${!nk && !etatExo.diff.has(k) ? ' disabled' : ''} title="${['Application directe', 'Mise en œuvre', 'Problème structuré', 'Problème long'][k - 1]} (${nk})">${difficulte(k)}</button>`; }).join('')}</div></div>`;
+  h += `<div><h3 class="titre-bloc">Type d'activité</h3><div class="puces-chips">${typesPresents.map(t => `<button type="button" class="chip" data-filtre="type" value="${esc(t)}" aria-pressed="${etatExo.types.has(t)}">${esc(t)} <span class="compte">${sansTypes.filter(e => (e.types || []).includes(t)).length}</span></button>`).join('')}</div></div>`;
   h += `<div><h3 class="titre-bloc">Notion de l'atlas</h3><select data-filtre="noeud"><option value="">Toutes</option>${noeudsCites.map(n => `<option value="${n}" ${etatExo.noeud === n ? 'selected' : ''}>${esc(D.noeuds[n].titre)}</option>`).join('')}</select></div>`;
   h += '</aside><div class="resultats">';
   const actifs = etatExo.q || etatExo.themes.size || etatExo.diff.size || etatExo.types.size || etatExo.niveaux.size;
   if (etatExo.noeud) h += `<div class="bandeau-filtre">Exercices liés à ${puce(etatExo.noeud)}<a class="lien-simple" href="#exercices" data-effacer="1" style="margin-left:auto">Retirer ce filtre</a></div>`;
   if (etatExo.feuille) h += `<div class="bandeau-filtre">Feuille : ${feuilleDe(etatExo.feuille).titre} (${esc(niveauDe(feuilleDe(etatExo.feuille).niveau).titre)})<a class="lien-simple" href="#exercices" data-effacer="1" style="margin-left:auto">Retirer ce filtre</a></div>`;
   if (etatExo.ex) h += `<div class="bandeau-filtre">Un seul exercice affiché<a class="lien-simple" href="#exercices" data-effacer="1" style="margin-left:auto">Voir toute la banque</a></div>`;
-  h += `<div class="resultats-tete"><span>${garde.length} ${garde.length > 1 ? 'exercices' : 'exercice'}${actifs ? ` sur ${tous.length}` : ''}</span>${actifs ? '<button type="button" class="lien-simple" data-reinit="1">Effacer la recherche et les filtres</button>' : ''}</div>`;
+  h += `<div class="resultats-tete"><span>${garde.length} ${garde.length > 1 ? 'exercices' : 'exercice'}${actifs ? ` sur ${contexte.length}` : ''}</span>${actifs ? '<button type="button" class="lien-simple" data-reinit="1">Effacer la recherche et les filtres</button>' : ''}</div>`;
   for (const e of garde.slice(0, etatExo.montres)) h += carteExercice(e, enChargement);
   if (garde.length > etatExo.montres) h += `<p style="text-align:center"><button type="button" class="bouton" data-plus-exos="1">Afficher ${Math.min(15, garde.length - etatExo.montres)} exercices de plus</button></p>`;
   if (!garde.length) h += '<p class="vide-note">Aucun exercice ne correspond à cette recherche.</p>';

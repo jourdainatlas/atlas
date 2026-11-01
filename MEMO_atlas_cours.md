@@ -247,3 +247,13 @@ lignes. À défaut, elle accepte un titre de section que le titre du sommaire pr
 numéroté le plus proche. Ces cas sont signalés « ~ » et doivent être relus. Les 55 cours ont été remplis
 le 1er novembre et contrôlés contre les titres de section numérotés. Côté page, `allerPage(n)` fait défiler
 jusqu'au canevas `n` ; si pdf.js ne l'a pas encore dessiné, `pageVoulue` est servie dès qu'il l'est.
+
+### 26. Banque d'exercices : filtres à facettes et recherche par numéro (1er nov. 2026)
+
+Dans `vueExercices`, chaque filtre ne propose que les valeurs présentes parmi les exercices que retiennent
+les autres filtres (`filtrerExercices(tous, sauf)`), avec leur nombre. Une feuille choisie restreint
+donc les thèmes, les types, les difficultés (boutons grisés à zéro), les notions de l'atlas et les niveaux à
+ceux de la feuille. Les thèmes sont comptés sur les exercices affichés, et une valeur cochée reste
+visible. « N exercices sur M » compte désormais M dans la feuille, ou l'exercice, en cours. Dans le
+champ de recherche, un nombre seul désigne le numéro de l'exercice dans sa feuille (`motsRecherche` :
+« exercice 6 », « exo 6 », « n° 6 », « 6 »). Les autres mots sont cherchés comme avant.
