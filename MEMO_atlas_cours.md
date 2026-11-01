@@ -224,8 +224,13 @@ tête des résultats.
 
 Niveau `ma`, intitulé « Maths Sup – MPSI ». Sept chapitres déposés (`ma-01` à `ma-07` : logique et
 ensembles, applications et relations, calcul algébrique, complexes et trigonométrie, fonctions
-usuelles, primitives et équations différentielles, réels et suites), sans feuille d'exercices pour
-l'instant : les feuilles `f-ma-0N` viendront ensuite et rempliront le champ `exercices`. Les résumés
+usuelles, primitives et équations différentielles, réels et suites), avec leurs feuilles `f-ma-01`
+à `f-ma-07` (354 exercices, versées le 1er novembre ; PDF dans `documents/exercices/ma/`).
+Les métadonnées des feuilles MPSI passent par `outils/meta_ma_commun.py`. Chaque `meta_ma_0N.py` y
+déclare des règles par motif, `R`, et des règles par partie de la feuille, `PARTIES` (intervalle de
+numéros → mot-clé, nœuds, notions). Il déclare aussi `FOND` : les nœuds donnés aux exercices de synthèse
+qu'aucune règle n'atteint. `tex2exos.py` ôte désormais les séparateurs `@{…}` des préambules d'`array`,
+que KaTeX refuse. Les résumés
 ont été rédigés d'après les introductions, les énoncés numérotés et les bilans des .tex. Le sommaire
 reprend les titres longs des `\section`, introduction historique et bilan compris. Nouveauté annoncée
 le 1er novembre.

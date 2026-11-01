@@ -497,7 +497,18 @@ class Conv:
 
     def convertir(s, t):
         t = s.maths(t)
-        return s.restaurer(s.texte(t))
+        return sans_arobase(s.restaurer(s.texte(t)))
+
+def sans_arobase(t):
+    """KaTeX refuse les séparateurs @{…} d'un préambule d'array : on les ôte (« l@{\\qquad}l » devient
+    « ll »), l'espacement entre colonnes revenant à celui de KaTeX."""
+    out, k = [], 0
+    for m in re.finditer(r'\\begin\{array\}\{', t):
+        if m.start() < k: continue
+        i = m.end() - 1; f = accolade(t, i)
+        out.append(t[k:i]); out.append(re.sub(r'@\{(?:[^{}]|\{[^{}]*\})*\}', '', t[i:f])); k = f
+    out.append(t[k:])
+    return ''.join(out)
 
 # ------------------------------------------------------------------ découpage en exercices
 # Deux formes d'en-tête : \exo{N : titre}{\etoiles} (macro des feuilles), ou
