@@ -6,10 +6,9 @@ titre: Continuité
 conteneur: continuite
 
 entrees:
-  ar-corps: [c-tvi, c-monotone]
+  ar-corps: [c-tvi, c-bornes, c-heine, c-monotone]
   ar-suites: [c-sequentielle]
-  ar-bw: [c-bornes, c-heine]
-  ar-topo: [c-bornes]
+  ar-topo: [c-bijection]
 
 noeuds:
   - id: c-point
@@ -67,7 +66,7 @@ noeuds:
     preuve: |
       Soit $u < v$ deux éléments de $f(I)$, $y \in \,]u, v[$, et $a, b \in I$ tels que $f(a) = u$ et $f(b) = v$.
 
-      **Cas $a < b$.** On a $[a,b] \subset I$ puisque $I$ est un intervalle. La partie $A = \{x \in [a,b] : f(x) < y\}$ contient $a$ et est majorée par $b$ ; soit $c = \sup A \in [a,b]$.
+      **Cas $a < b$.** On a $[a,b] \subset I$ puisque $I$ est un intervalle. La partie $A = \{x \in [a,b] : f(x) < y\}$ contient $a$ et est majorée par $b$ ; soit $c = \sup A \in [a,b]$, qui existe par la propriété de la borne supérieure ({{ar-corps|Borne supérieure}}).
 
       ```schema c-tvi
       L'ensemble $A$, en rouge sur l'axe, n'est pas forcément un intervalle : $f$ peut passer plusieurs fois sous le niveau $y$. Sa borne supérieure $c$ est le dernier point où $f$ franchit ce niveau, et c'est en ce point que la preuve établit $f(c) = y$.
@@ -91,7 +90,7 @@ noeuds:
     enonce: |
       Toute fonction continue sur un [[segment]] $[a,b]$ est bornée et atteint ses bornes : il existe $c, d \in [a,b]$ tels que $f(c) = \inf f$ et $f(d) = \sup f$.
     preuve: |
-      Les deux étapes suivent le même schéma, par la borne supérieure. Pour l'intuition, la partie $A$ considérée est un intervalle d'origine $a$, que l'on prolonge au-delà de sa borne supérieure tant que celle-ci n'est pas $b$ ; la démonstration n'a pas besoin de le vérifier.
+      Les deux étapes suivent le même schéma, par la propriété de la borne supérieure ({{ar-corps|Borne supérieure}}). Pour l'intuition, la partie $A$ considérée est un intervalle d'origine $a$, que l'on prolonge au-delà de sa borne supérieure tant que celle-ci n'est pas $b$ ; la démonstration n'a pas besoin de le vérifier.
 
       *La fonction est majorée.* Soit $A$ l'ensemble des $x \in [a,b]$ tels que $f$ soit majorée sur $[a, x]$. Il contient $a$ et il est majoré par $b$ ; soit $s = \sup A \in [a, b]$. Par continuité en $s$, avec $\varepsilon = 1$, il existe $\delta > 0$ tel que $f(t) < f(s) + 1$ pour $t \in [a, b]$ et $|t - s| < \delta$.
 
@@ -125,7 +124,7 @@ noeuds:
     preuve: |
       Soit $f$ continue sur $[a, b]$ et $\varepsilon > 0$. Soit $A$ l'ensemble des $x \in [a, b]$ pour lesquels il existe $\delta > 0$ tel que
       $$\begin{aligned} &\forall s, t \in [a, x], \\ &\quad |s - t| < \delta \Longrightarrow |f(s) - f(t)| < \varepsilon. \end{aligned}$$
-      Il contient $a$ et il est majoré par $b$ ; pour l'intuition, c'est un intervalle d'origine $a$, mais la démonstration n'en a pas besoin. Soit $c = \sup A \in [a, b]$.
+      Il contient $a$ et il est majoré par $b$ ; pour l'intuition, c'est un intervalle d'origine $a$, mais la démonstration n'en a pas besoin. Soit $c = \sup A \in [a, b]$, qui existe par la propriété de la borne supérieure ({{ar-corps|Borne supérieure}}).
 
       Par continuité en $c$, il existe $\eta > 0$ tel que $|f(s) - f(c)| < \frac\varepsilon2$ pour $s \in [a, b]$ et $|s - c| < \eta$. Comme $c - \frac\eta2$ ne majore pas $A$, il existe $x \in A$ tel que $x > c - \frac\eta2$ ; soit $\delta_x$ le nombre associé. Posons $y = \min\big(b, c + \frac\eta2\big)$ et $\delta = \min\big(\delta_x, \frac\eta2\big)$.
 
@@ -149,7 +148,7 @@ noeuds:
     enonce: |
       L'image d'un [[segment]] par une fonction continue est un segment : $f([a,b]) = [m, M]$, avec $m = \min f$ et $M = \max f$.
     preuve: |
-      Par le théorème des bornes atteintes, $m$ et $M$ sont des valeurs de $f$, et $f([a,b]) \subset [m, M]$. Par le théorème des valeurs intermédiaires, $f([a,b])$ est un intervalle ; contenant $m$ et $M$, il contient $[m,M]$.
+      Par le théorème des bornes atteintes ({{c-bornes|Bornes atteintes}}), $m$ et $M$ sont des valeurs de $f$, et $f([a,b]) \subset [m, M]$. Par le théorème des valeurs intermédiaires ({{c-tvi|Valeurs intermédiaires}}), $f([a,b])$ est un intervalle ; contenant $m$ et $M$, il contient $[m,M]$.
 
   - id: c-monotone
     etiquette: Monotone d'image intervalle
@@ -175,9 +174,9 @@ noeuds:
     enonce: |
       Soit $I$ un intervalle et $f : I \to \lex{ensemble-reels}{\mathbb R}$ continue et strictement monotone. Alors $J = f(I)$ est un intervalle, $f$ réalise une [[bijection]] de $I$ sur $J$, et sa réciproque $f^{-1} : J \to I$ est continue, strictement monotone de même sens que $f$.
     preuve: |
-      $J$ est un intervalle par le théorème des valeurs intermédiaires. La stricte monotonie rend $f$ injective, donc bijective de $I$ sur $J$. Si $f$ est strictement croissante et $y < y'$ dans $J$, on ne peut avoir $f^{-1}(y) \geqslant f^{-1}(y')$, sans quoi $y \geqslant y'$ : la réciproque est strictement croissante.
+      $J$ est un intervalle par le théorème des valeurs intermédiaires ({{c-tvi|Valeurs intermédiaires}}). La stricte monotonie rend $f$ injective, donc bijective de $I$ sur $J$. Si $f$ est strictement croissante et $y < y'$ dans $J$, on ne peut avoir $f^{-1}(y) \geqslant f^{-1}(y')$, sans quoi $y \geqslant y'$ : la réciproque est strictement croissante.
 
-      Enfin $f^{-1}$ est monotone sur l'intervalle $J$, et son image $I$ est un intervalle : le lemme sur les fonctions monotones montre qu'elle est continue. Ainsi $f$ est un [[homeomorphisme]] de $I$ sur $J$.
+      Enfin $f^{-1}$ est monotone sur l'intervalle $J$, et son image $I$ est un intervalle : le lemme sur les fonctions monotones ({{c-monotone|Monotone d'image intervalle}}) montre qu'elle est continue. Ainsi $f$ est un [[homeomorphisme]] de $I$ sur $J$, munis des topologies induites par la topologie usuelle de $\mathbb R$ : leurs ouverts se décrivent par les boules ({{tr-ouverts|Topologie usuelle de ℝ}}, (iv)), si bien que la continuité au sens de ce chapitre y est la continuité topologique.
     remarques:
       - |
         C'est ainsi que l'on définit la racine $n$-ième sur $[0, +\infty[$, puis, au niveau supérieur, le logarithme comme réciproque de l'exponentielle.
@@ -186,8 +185,8 @@ aretes:
   - [c-point, c-sequentielle]
   - [c-point, c-tvi]
   - [c-point, c-monotone]
-  - [c-sequentielle, c-bornes]
-  - [c-sequentielle, c-heine]
+  - [c-point, c-bornes]
+  - [c-point, c-heine]
   - [c-uniforme, c-heine]
   - [c-tvi, c-image]
   - [c-bornes, c-image]

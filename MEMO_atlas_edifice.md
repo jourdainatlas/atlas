@@ -1231,3 +1231,20 @@ second clic, Échap ou autre fiche. Accueil (phrase, exemple Borsuk-Ulam) et lé
 appuis : gs-correspondance → cyclotomie, gs-radicaux → hilbert90 : +2 croisements dans galois). Plus largement,
 ≈ 390 arcs sur 1353 relient des fiches que la fiche cible ne cite jamais (heuristique, audit.py de la relecture) :
 « Repose sur » n'est pas partout une dépendance logique ; audit à décider.
+
+## 83. Audit des dépendances « Repose sur » (1er novembre 2026)
+
+But : que le bouton Fondements (§82) suive la logique et non la disposition. Heuristique : 389 arcs (sur 1355, hors
+graphe principal) dont la fiche cible ne cite jamais la source ; quatre lots (consigne et lots dans
+/home/claude/travail/audit-dispo/, non versionnés). Chaque arc lu : vraie dépendance gardée (≈ 108 renvois {{…}}
+ajoutés à l'endroit de l'usage), arc de disposition retiré ou remplacé par les vrais appuis. Relecture indépendante :
+six dépendances perdues en cascade rétablies (fc-weierstrass, cal-theoremes, h90-kummer, p-hoeffding, nb-newman,
+n-recdef). Décision de l'auteur : appliquer les vrais appuis même s'ils ajoutent des croisements dans les graphes
+intérieurs, jamais dans l'édifice (16 inchangé). Croisements : calc 0→1, continuite 2→4, derham 0→1, fourier 1→2,
+gf 6→8, hom-cellulaire 0→1, l-completude 0→1, nban 2→3, ordin 0→1, proba 1→4, topalg 0→1, topalg-revetements 0→1
+(galois 1→3 au §82 bis : entrée de la cyclotomie). Autres choix : hom-cellulaire ne suit plus hom-cup (logique
+gardée, remarques récrites en « chapitre voisin ») ; Ackermann (lien de lexique retiré) ; Kummer : variante la plus
+étroite (h90-norme-trace point de départ, ses fondements incluent la cyclotomie). Non corrigés : an-gauss →
+tan-reciprocite (vrai appui = 0 croisement mais tan 642 → 2798 px, illisible) ; top élargi 718 → 996 px par deux vrais
+appuis (t-connexe, t-tychonov), défilement sur téléphone — à trancher. Règle désormais : une arête ou une entrée
+exprime une dépendance logique ; la disposition se règle par l'ordre, jamais par un faux appui.
