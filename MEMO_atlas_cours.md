@@ -134,7 +134,8 @@ exercices », c'est-à-dire la vue « Par exercice » filtrée sur ce niveau. Le
    effectivement mobilisés), `notions` (termes du lexique), `exercices` (identifiant de la feuille),
    `liens` (identifiants d'autres cours : chapitres liés, affichés dans les deux sens, y compris
    d'un niveau à l'autre), `pdf`, `pages` (lu par `pdfinfo`), `statut: depose`. Préfixes : `s-` Seconde, `p-`
-   Première, `t-` Terminale, `me-` Maths expertes, `ap-` Maths approfondies.
+   Première, `t-` Terminale, `me-` Maths expertes, `ap-` Maths approfondies, `ma-` Maths Sup – MPSI
+   (niveau `ma`, PDF dans `documents/cours/ma/`), `m-` Master.
 3. `construire.py` vérifie que les fichiers existent, que les renvois aux nœuds, aux termes et aux
    feuilles sont valides, que les identifiants sont uniques, que le niveau est déclaré, que chaque
    lien vise un autre cours existant et qu'un numéro de chapitre n'est pas pris deux fois dans un
@@ -217,3 +218,13 @@ au-dessus de la liste. La liste s'appelle désormais `.resultats` et se termine 
 `.cote-retour` (« ↓ Aller aux exercices », `data-vers-resultats`). Le retour rend la position mémorisée
 dans `posExo` seulement si la recherche n'a pas changé entre-temps (`signatureExo()`). Sinon, il va en
 tête des résultats.
+
+### 24. Maths Sup – MPSI (1er nov. 2026)
+
+Niveau `ma`, intitulé « Maths Sup – MPSI ». Sept chapitres déposés (`ma-01` à `ma-07` : logique et
+ensembles, applications et relations, calcul algébrique, complexes et trigonométrie, fonctions
+usuelles, primitives et équations différentielles, réels et suites), sans feuille d'exercices pour
+l'instant : les feuilles `f-ma-0N` viendront ensuite et rempliront le champ `exercices`. Les résumés
+ont été rédigés d'après les introductions, les énoncés numérotés et les bilans des .tex. Le sommaire
+reprend les titres longs des `\section`, introduction historique et bilan compris. Nouveauté annoncée
+le 1er novembre.
