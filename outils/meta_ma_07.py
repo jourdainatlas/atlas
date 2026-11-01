@@ -10,13 +10,13 @@ PARTIES = [
     (38, 44, 'suites récurrentes', ['ar-suites', 'su-monotone'], ['suite']),
 ]
 R = [
-    (r'borne supérieure|borne inférieure|\\sup|\\inf', 'bornes supérieure et inférieure', ['od-sup-propriete'], ['borne-superieure']),
+    (r'borne supérieure|borne inférieure|\\sup|\\inf(?!ty)', 'bornes supérieure et inférieure', ['od-sup-propriete'], ['borne-superieure']),
     (r'majorant|majorée|minorée', 'majorants', ['od-majorants'], ['majorant']),
     (r'archim|partie entière|\\lfloor', "partie entière et propriété d'Archimède", ['ar-archimede'], ['archimedien']),
     (r'dense|densité|rationnels|irrationnel', 'densité', ['tr-dense'], ['partie-dense']),
     (r'valeur absolue|\|x', 'valeur absolue', ['ar-corps'], []),
     (r'converge|limite|\\lim', 'limites de suites', ['su-convergence'], ['limite-suite']),
-    (r'\+\\infty|diverge', 'limites infinies', ['su-infinies'], ['limite-infinie']),
+    (r'= ?[+-]\\infty|diverge|tend vers \$[+-]\\infty', 'limites infinies', ['su-infinies'], ['limite-infinie']),
     (r'encadrement|gendarmes', "théorème d'encadrement", ['su-encadrement'], []),
     (r'monotone|croissante|décroissante', 'suites monotones', ['su-monotone'], []),
     (r'adjacentes', 'suites adjacentes', ['su-adjacentes'], ['suites-adjacentes']),
