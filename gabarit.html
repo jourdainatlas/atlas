@@ -2474,6 +2474,8 @@ function motsRecherche(q) {
 }
 function filtrerExercices(tous, sauf) {
   const { mots, nums, niveaux, chapitres } = motsRecherche(etatExo.q);
+  // chaque mot doit commencer un mot du texte : « termin » trouve « terminale » mais pas « déterminer »
+  const motifs = mots.map(m => new RegExp('(^|[^a-z0-9])' + m.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   return tous.filter(e => {
     const f = feuilleDe(e.feuille);
     if (etatExo.ex && e.id !== etatExo.ex) return false;
@@ -2486,10 +2488,12 @@ function filtrerExercices(tous, sauf) {
     if (nums.length && !nums.includes(e.numero)) return false;
     if (niveaux.size && !niveaux.has(f.niveau)) return false;
     if (chapitres.length && !chapitres.includes(f.chapitre)) return false;
-    // le titre de la feuille (titre du chapitre) compte dans la recherche : « exercice 6 MPSI logique »
-    if (f.rech === undefined) f.rech = sansAccents(f.titre || '');
+    // Le titre de la feuille (titre du chapitre) et le nom du niveau, avec ses abréviations, comptent dans la
+    // recherche : « exercice 6 MPSI logique ». Les mots se comparent par inclusion, de sorte qu'un mot en cours
+    // de frappe (« maths expert », « approf ») trouve déjà les exercices.
+    if (f.rech === undefined) f.rech = sansAccents([f.titre || '', niveauDe(f.niveau).titre || '', ...Object.keys(NIVEAUX_TAPES).filter(k => NIVEAUX_TAPES[k] === f.niveau)].join(' '));
     const texte = (e.recherche || '') + ' ' + f.rech;
-    return mots.every(m => texte.includes(m));
+    return motifs.every(r => r.test(texte));
   });
 }
 function vueExercices(E, enChargement) {

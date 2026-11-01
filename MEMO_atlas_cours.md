@@ -261,6 +261,9 @@ première, 1re, terminale, tle, expertes, approfondies, mpsi, sup, prépa, ecg, 
 ce cas, « maths », « spé » et « option » sont ignorés. « chapitre N », « chap N » ou « ch N » filtre par
 chapitre. Ainsi « exercice 6 MPSI » ou « MPSI chap 7 ex 3 » s'écrivent sans toucher aux boutons, et les
 deux voies se combinent. Les autres mots sont cherchés dans le texte de l'exercice et dans le titre
-de sa feuille, c'est-à-dire du chapitre (« exercice 6 MPSI logique », « complexes exo 6 »). Dès qu'une
+de sa feuille, c'est-à-dire du chapitre (« exercice 6 MPSI logique », « complexes exo 6 »). Le nom du niveau et ses abréviations font aussi partie du texte cherché.
+Chaque mot tapé doit commencer un mot de ce texte, ce qui permet les mots partiels : « maths expert » trouve
+les Maths expertes avant la fin de la frappe, et « termin » trouve « terminale » mais pas « déterminer ».
+Un mot de niveau complet reste un filtre strict. Dès qu'une
 recherche ou un filtre est actif, un bouton corbeille « Effacer » (`.effacer-recherche-exo`, `data-reinit`)
 apparaît à droite du titre Rechercher et remet tout à zéro.
