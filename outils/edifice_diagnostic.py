@@ -49,6 +49,29 @@ d'un énoncé ou d'une démonstration ne visent que l'amont. Ce script cherche c
      G2 lignes du fichier des arcs validés à nettoyer : arc qui n'existe plus, ligne devenue inutile (y emploie
      désormais x), ligne illisible ou en double. Avec --racine, le fichier lu est <dossier>/outils/… s'il existe,
      sinon celui du dépôt.
+  H. notions définies en gras sans entrée de lexique (2 nov. 2026). Dans les fiches, une définition se signale par
+     un passage en gras (**…**, ou \\textbf{…} dans une formule) du texte, de l'énoncé ou de la preuve (les
+     remarques ne sont pas lues). Si ce gras n'est la définition d'aucun terme du lexique, construire.py ne peut
+     pas vérifier l'ordre d'apparition de la notion : il est signalé. La comparaison se fait sur une forme
+     normalisée (casse, accents, pluriel et féminin ôtés, élisions et parenthèse finale du terme ôtées), avec le
+     champ terme et l'id de chaque entrée. Sont écartés (et comptés à part) : un gras sans lettre hors formule ; un
+     titre de paragraphe (« **Existence.** » en tête de ligne) ; un gras fait de mots de liaison ou d'insistance
+     (« **tous** », « **au plus** ») ; un terme du lexique défini dans la fiche, en entier, par sa tête quand les
+     autres mots du terme sont dans la phrase (« un sous-espace F est **stable** » pour « sous-espace stable » ;
+     un gras plus long que le terme, « **sous-groupe engendré** », n'est pas écarté), ou par une variante
+     (« **dérivée** » pour « dérivable ») ; un gras qui est un fragment (partie ou variante) d'un terme défini dans
+     la fiche et lié dans la même phrase ; un terme du lexique défini en amont (rappel), en entier, en partie avec
+     les autres mots du terme, mots entiers, dans la phrase, ou par une variante d'un mot (« adhérent »,
+     « adhérence »). Deux mots sont des variantes s'ils ont un long préfixe commun et des longueurs voisines (à
+     deux lettres près) : « période » et « périodique », homonymes, ne le sont pas. Puis une
+     exception déclarée dans outils/edifice_gras_exceptions.txt (« fiche | texte en gras », ou « * | texte » pour
+     toutes les fiches ; commentaire après « # » : notion locale, insistance, cas tranché). Chaque cas restant dit
+     combien d'autres fiches emploient la notion en clair (texte, énoncé, preuve ; liens, termes balisés et schémas
+     ôtés), en aval et hors de l'aval : une notion employée en aval est à lexicaliser, un emploi hors de l'aval est
+     un défaut d'ordre possible. Un gras qui porte le nom d'une entrée définie plus loin ou ailleurs (homonyme) est
+     signalé comme tel : définition en double, ou entrée mal placée.
+     H2 lignes du fichier des exceptions à nettoyer : ligne illisible, fiche inconnue, doublon, ligne qui n'écarte
+     plus rien (le gras a disparu ou est devenu un lien).
 
 Usage : python3 outils/edifice_diagnostic.py [--detail] [--racine <dossier>] [graphe …]
 --racine lit <dossier>/contenu au lieu du dépôt et écrit <dossier>/construction/diagnostic.md : on s'en sert
@@ -57,7 +80,7 @@ pour rejouer l'outil sur un état antérieur extrait par « git archive <commit>
 Les cas listés sont des candidats : beaucoup sont légitimes (un point de la fiche visée qui n'utilise pas
 le choix, une notation définie localement…) ; chacun demande un regard.
 """
-import glob, re, sys, os
+import glob, re, sys, os, unicodedata
 from collections import defaultdict
 import networkx as nx
 import yaml
@@ -445,7 +468,6 @@ for t, e in lex.items():
     for n in noeuds.values():
         if not FICHE(n) or not retenu(n) or d in avant[n['id']]: continue
         if any(h in avant[n['id']] for h in autres): continue                     # homonyme défini en amont
-        if any(defini_en_gras(mot, i) for i in avant[n['id']] if gras.get(i)): continue   # gras, ici ou en amont
         trouve = None
         for c in CHAMPS:
             s = str(n.get(c) or '')
@@ -458,6 +480,8 @@ for t, e in lex.items():
                 if RE_ANNONCE.search(s[a:b]): continue
                 trouve = (c, s, m); break
             if trouve: break
+        # gras, ici ou en amont (testé après la recherche, qui est bien moins coûteuse)
+        if trouve and any(defini_en_gras(mot, i) for i in avant[n['id']] if gras.get(i)): trouve = None
         if trouve:
             c, s, m = trouve
             note('F', n, f"« {mot} » en clair ({c}), défini plus loin en {d} : …{s[max(0, m.start()-40):m.end()+30]}…".replace('\n', ' '))
@@ -535,19 +559,159 @@ for (x, y), k in sorted(valides.items(), key=lambda e: e[1]):
     if args and gid not in args: continue
     cas['G2'].append((gid, y if y in noeuds else f'ligne {k}', f"ligne {k} « {x} -> {y} » : cet arc n'existe plus ; retirer la ligne"))
 
+# ------------------------------------------------------------------ H. notions définies en gras sans entrée de lexique
+# Un passage en gras (**…**, ou \textbf{…} dans une formule) du texte, de l'énoncé ou de la preuve d'une fiche
+# signale une définition. S'il n'est la définition d'aucun terme du lexique, construire.py ne peut pas vérifier
+# l'ordre d'apparition de la notion : on le signale. Comparaison sur une forme normalisée (casse, accents,
+# pluriel et féminin ôtés, parenthèse finale du terme ôtée), avec le champ terme et l'id de chaque entrée.
+def _sans_accents(s):
+    return ''.join(ch for ch in unicodedata.normalize('NFD', s) if unicodedata.category(ch) != 'Mn')
+def _canon(w):
+    if w.startswith('$'): return w
+    w = _sans_accents(w.lower())
+    if len(w) > 4 and w.endswith('aux'): w = w[:-3] + 'al'
+    if len(w) > 3 and w[-1] in 'sx': w = w[:-1]
+    if len(w) > 3 and w.endswith('e'): w = w[:-1]
+    return w
+RE_JETON = re.compile(r"\$[^$]*\$|[^\W_]+(?:-[^\W_]+)*")
+ELIDES = {'d', 'l', 'qu', 'n', 's', 'c', 'j', 'm'}
+def jetons(s):
+    s = s.replace('’', "'")
+    return [_canon(w) for w in RE_JETON.findall(s) if w.lower() not in ELIDES]
+def cle(s): return ' '.join(jetons(s))
+cles_lex = defaultdict(list)       # forme normalisée -> entrées du lexique
+for e in lexique:
+    for s in {e.get('terme') or '', re.sub(r'\s*\([^)]*\)\s*$', '', e.get('terme') or ''), e['id'].replace('-', ' ')}:
+        if cle(s): cles_lex[cle(s)].append(e)
+mots_lex = {e['id']: cle(re.sub(r'\s*\([^)]*\)\s*$', '', e.get('terme') or '')).split() for e in lexique}
+mots_lex = {i: [w for w in ws if w not in {_canon(v) for v in VIDES}] or ws for i, ws in mots_lex.items()}
+# mots de liaison et d'insistance : un gras qui n'est fait que de ces mots n'est pas une définition
+INSISTANCE = set(jetons("tous toutes tout toute chaque aucun aucune seul seule seulement unique uniquement exactement "
+                        "au plus au moins pas ne non ni et ou même toujours jamais n'importe quel quelle encore aussi "
+                        "deux un une le la les de du des en à pour par sur dans avec sans est sont si alors que qui "
+                        "fois avant après plus moins très bien autre autres jusqu"))
+RE_GRAS = re.compile(r'\*\*(.+?)\*\*|\\textbf\{([^{}]*)\}', re.S)
+RE_TITRE_AV = re.compile(r'(?:^|\n)\s*(?:[-*]\s+|\([ivx]+\)\s*|\d+[.)]\s*)?$')
+
+FICHIER_GRAS = os.path.join('outils', 'edifice_gras_exceptions.txt')
+if not os.path.exists(FICHIER_GRAS): FICHIER_GRAS = os.path.join(OUTILS, 'edifice_gras_exceptions.txt')
+NOM_GRAS = os.path.relpath(FICHIER_GRAS) if not os.path.relpath(FICHIER_GRAS).startswith('..') else FICHIER_GRAS
+exc_gras = {}                      # (fiche ou '*', forme normalisée) -> numéro de ligne
+exc_gras_texte = {}
+if os.path.exists(FICHIER_GRAS):
+    for k, l in enumerate(open(FICHIER_GRAS, encoding='utf-8'), 1):
+        l = l.split('#', 1)[0].strip()
+        if not l: continue
+        m = re.fullmatch(r'(\S+)\s*\|\s*(.+?)', l)
+        if not m or (m.group(1) != '*' and m.group(1) not in noeuds and not args):
+            cas['H2'].append(('?', f'ligne {k}', f"ligne illisible ou fiche inconnue : « {l} » (attendu « fiche | texte en gras » ou « * | texte »)")); continue
+        c_ = (m.group(1), cle(m.group(2)))
+        if c_ in exc_gras:
+            cas['H2'].append(('?', f'ligne {k}', f"doublon de la ligne {exc_gras[c_]}")); continue
+        exc_gras[c_] = k; exc_gras_texte[c_] = l
+exc_gras_vus = set()
+
+def _clair(t):
+    """Texte où chercher un emploi en clair : schémas, termes balisés, \\lex et liens {{x|…}} ôtés (le libellé
+    d'un lien nomme la fiche citée, ce n'est pas un emploi de la notion)."""
+    t = RE_SCHEMA.sub(' ', t)
+    t = re.sub(r'\[\[[^\]]*\]\]', ' ', t); t = re.sub(r'\\lex\{[^}]*\}\{[^}]*\}', ' ', t)
+    t = re.sub(r'\{\{[^}]*\}\}', ' ', t)
+    return t.replace('**', '')
+_jet_fiche = {}
+def jetons_fiche(i):
+    if i not in _jet_fiche:
+        n = noeuds[i]
+        _jet_fiche[i] = ' ' + ' '.join(jetons(' '.join(_clair(str(n.get(c) or '')) for c in CHAMPS))) + ' '
+    return _jet_fiche[i]
+
+def variante(w, v):
+    """Deux formes d'un même mot (« dérivée », « dérivable » ; « adhérent », « adhérence ») : long préfixe commun
+    et longueurs voisines. « période » et « périodique » (homonymes) ne le sont pas."""
+    return abs(len(w) - len(v)) <= 2 and len(os.path.commonprefix([w, v])) >= max(5, min(len(w), len(v)) - 3)
+ecartes_h = defaultdict(int)
+vus_h = set()
+for n in noeuds.values():
+    if not FICHE(n) or not retenu(n): continue
+    ici = {e['id'] for e in lexique if e['defini_dans'] == n['id']}
+    cles_ici = [cle(re.sub(r'\s*\([^)]*\)\s*$', '', lex[t]['terme'])).split() for t in ici]
+    for c in CHAMPS:
+        t = str(n.get(c) or '')
+        for m in RE_GRAS.finditer(t):
+            b = (m.group(1) or m.group(2) or '').strip()
+            k = cle(b); ws = k.split()
+            suite = t[m.end():m.end() + 2]
+            if not ws or not re.search(r'[^\W\d_]', re.sub(r'\$[^$]*\$', '', b)):
+                ecartes_h['formule seule'] += 1; continue
+            if (re.match(r'[A-ZÀ-Ý]', b) and (b.endswith(('.', ':')) or suite[:1] in '.:')
+                    and RE_TITRE_AV.search(t[:m.start()])):
+                ecartes_h['titre de paragraphe'] += 1; continue
+            if all(w in INSISTANCE for w in ws):
+                ecartes_h["mots d'insistance"] += 1; continue
+            es = cles_lex.get(k, [])
+            if any(e['defini_dans'] == n['id'] for e in es):
+                ecartes_h['terme du lexique défini dans la fiche'] += 1; continue
+            a, z = phrase(t, m.start(), m.end())
+            ph = ' ' + cle(lisible(t[a:z])) + ' '
+            # tête d'un terme composé défini dans la fiche, dont les autres mots sont dans la phrase
+            # (« un sous-espace F est **stable** par u ») ; un gras plus long que le terme n'est pas écarté
+            if any(len(ws) < len(ce) and all(w in ce for w in ws) and all(f' {w} ' in ph for w in ce) for ce in cles_ici):
+                ecartes_h['partie d\'un terme du lexique défini dans la fiche'] += 1; continue
+            if len(ws) == 1 and any(variante(w, ws[0]) for ce in cles_ici for w in ce):
+                ecartes_h['variante d\'un terme du lexique défini dans la fiche (dérivée, dérivable)'] += 1; continue
+            # fragment (partie ou variante) d'un terme défini dans la fiche et lié dans la même phrase
+            lies_ici = [u for u in RE_TERME.findall(t[a:z]) + RE_LEX.findall(t[a:z]) if (lex.get(u) or {}).get('defini_dans') == n['id']]
+            if any(all(w in mots_lex[u] for w in ws) or len(ws) == 1 and any(variante(w, ws[0]) for w in mots_lex[u]) for u in lies_ici):
+                ecartes_h['fragment d\'un terme défini dans la fiche et lié dans la phrase'] += 1; continue
+            if any(e['defini_dans'] in avant[n['id']] for e in es):
+                ecartes_h['terme du lexique défini en amont (rappel)'] += 1; continue
+            # rappel partiel d'un terme défini en amont : « un sous-espace F est **stable** par u » (sous-espace
+            # stable), les autres mots du terme étant dans la phrase ; variante d'un mot (adhérent / adhérence)
+            def _rappel(e):
+                ce = mots_lex[e['id']]
+                if len(ce) == 1:
+                    return len(ws) == 1 and variante(ce[0], ws[0])
+                return all(w in ce for w in ws) and all(f' {w} ' in ph for w in ce)
+            if any(_rappel(e) for e in lexique if e['defini_dans'] in avant[n['id']] and e['defini_dans'] != n['id']):
+                ecartes_h['rappel ou variante d\'un terme du lexique défini en amont'] += 1; continue
+            if (n['id'], k) in exc_gras: exc_gras_vus.add((n['id'], k)); ecartes_h['exception déclarée'] += 1; continue
+            if ('*', k) in exc_gras: exc_gras_vus.add(('*', k)); ecartes_h['exception déclarée'] += 1; continue
+            if (n['id'], k) in vus_h: continue
+            vus_h.add((n['id'], k))
+            ext = ' '.join(t[max(a, m.start() - 50):min(z, m.end() + 40)].split())
+            if es:
+                ou = ', '.join(sorted({e['defini_dans'] for e in es}))
+                note('H', n, f"« {b} » ({c}) : homonyme d'une entrée du lexique définie plus loin ou ailleurs ({', '.join(e['id'] for e in es)} en {ou}) : …{ext}…")
+                continue
+            motif = ' ' + k + ' '
+            aval, amont = [], []
+            for i in noeuds:
+                if i == n['id'] or not FICHE(noeuds[i]) or motif not in jetons_fiche(i): continue
+                (aval if n['id'] in avant[i] else amont).append(i)
+            emp = f"employé en clair dans {len(aval)} fiche(s) en aval" + (f" ({', '.join(sorted(aval)[:5])}{'…' if len(aval) > 5 else ''})" if aval else '')
+            if amont: emp += f", et dans {len(amont)} fiche(s) qui ne sont pas en aval ({', '.join(sorted(amont)[:5])}{'…' if len(amont) > 5 else ''})"
+            note('H', n, f"« {b} » ({c}) : {emp} : …{ext}…")
+for c_, k in sorted(exc_gras.items(), key=lambda e: e[1]):
+    if c_ not in exc_gras_vus and (not args or c_[0] == '*' or (c_[0] in noeuds and retenu(noeuds[c_[0]]))):
+        g_ = noeuds[c_[0]]['graphe'] if c_[0] in noeuds else '?'
+        cas['H2'].append((g_, c_[0] if c_[0] in noeuds else f'ligne {k}', f"ligne {k} « {exc_gras_texte[c_]} » : aucun gras de ce texte n'est plus signalé ; retirer la ligne"))
+
 # ------------------------------------------------------------------ rapport
 TITRES = {'A': 'Notations sans définition en amont', 'B': 'Points cités absents de la fiche visée',
           'C': '« même nœud » douteux', 'D': 'Choix non transmis', 'D2': 'Choix non transmis, probablement légitime',
           'D3': 'Choix non transmis, hérité en cascade', 'D4': 'Résultat ⋆ cité par son nom en clair',
           'E': 'Admis non transmis',
           'F': 'Termes en clair avant leur définition',
-          'G': 'Arcs « Repose sur » sans usage visible', 'G2': 'Lignes périmées du fichier des arcs validés'}
-CATS = ['A', 'B', 'C', 'D', 'D2', 'D3', 'D4', 'E', 'F', 'G', 'G2']
+          'G': 'Arcs « Repose sur » sans usage visible', 'G2': 'Lignes périmées du fichier des arcs validés',
+          'H': 'Notions définies en gras sans entrée de lexique', 'H2': 'Lignes périmées du fichier des exceptions du gras'}
+CATS = ['A', 'B', 'C', 'D', 'D2', 'D3', 'D4', 'E', 'F', 'G', 'G2', 'H', 'H2']
 lignes = ['# Diagnostic de l\'ordre logique de l\'édifice', '',
           f'{len(noeuds)} nœuds, {len(lex)} termes. Candidats à examiner, non des erreurs certaines.', '']
 for k in CATS:
     l = sorted(cas[k])
     lignes += [f'## {k}. {TITRES[k]} ({len(l)})', '']
+    if k == 'H' and ecartes_h:
+        lignes += ['Gras écartés sans être listés : ' + ' ; '.join(f'{r} : {v}' for r, v in sorted(ecartes_h.items())) + '.', '']
     if k == 'D2' and ecartes:
         lignes += ['Citations de fiches ⋆ écartées sans être listées : '
                    + ' ; '.join(f'{r} : {v}' for r, v in sorted(ecartes.items())) + '.', '']
@@ -567,7 +731,9 @@ for k in CATS:
     top = ', '.join(f'{g} {v}' for g, v in sorted(par.items(), key=lambda x: -x[1])[:6])
     print(f"  {k}. {TITRES[k]} : {len(cas[k])}" + (f"  [{top}]" if top else ''))
     if DETAIL:
-        for g, i, m in sorted(cas[k]): print(f"      {i} : {m if k in ('G', 'G2') else m[:160]}")
+        for g, i, m in sorted(cas[k]): print(f"      {i} : {m if k in ('G', 'G2', 'H2') else m[:220 if k == 'H' else 160]}")
 if ecartes:
     print("  (citations ⋆ écartées : " + ', '.join(f'{r} {v}' for r, v in sorted(ecartes.items())) + ')')
+if ecartes_h:
+    print("  (gras écartés : " + ', '.join(f'{r} {v}' for r, v in sorted(ecartes_h.items())) + ')')
 print(f"Liste complète : {os.path.join('construction', 'diagnostic.md') if RACINE else ''}")

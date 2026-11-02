@@ -1289,3 +1289,23 @@ fonction-periodique. ≈ 40 remarques périmées corrigées ; gd-formes-varietes
 une variété). « Ajuster » (gabarit) : plancher d'échelle calculé (0,2 à 0,35) et vue remise à l'origine. Schéma
 cx-pi-2 supprimé. Relu : trois relectures, aucune faute bloquante. À faire hors domaine : ≈ 360 étiquettes des
 cours et exercices pointent encore vers cx-exponentielle, cx-pi, nb-logarithme, lp-puissances pour le réel.
+
+## 86. Diagnostic H : notions en gras sans entrée de lexique (3 novembre 2026)
+
+Catégorie H de outils/edifice_diagnostic.py : un gras (`**…**`, `\textbf`) du texte, de l'énoncé ou de la preuve
+qui ne définit aucun terme du lexique (comparaison sans casse, accents, pluriel, féminin, élision, parenthèse finale,
+sur `terme` et `id`). Écartés : gras sans lettre, titres de paragraphe, mots d'insistance, terme défini dans la fiche
+(en entier, tête d'un terme composé dont les autres mots sont dans la phrase, variante d'un mot à deux lettres près),
+rappel d'un terme d'amont, exceptions de outils/edifice_gras_exceptions.txt (« fiche | gras # motif ») ; H2 signale
+les lignes inutiles. Le test du gras de F passe après la recherche (diagnostic 4 min 43 → 40 s, F inchangé).
+Lot : 71 entrées (identité, application croissante, suites monotone et bornée, valeur absolue, inégalité
+triangulaire, somme directe, fonction polynomiale, variable libre, PA, partie étoilée, centralisateur, cofacteur,
+degré, covariance, schéma de récurrence…), ≈ 1 000 liens posés au premier emploi en aval par motifs puis relus un à
+un (46 retirés, 6 reportés après relecture : premiers entre eux au sens polynomial, inégalité triangulaire des normes,
+taux d'accroissement non réels, sommes directes de représentations…). groupe symétrique : defini_dans → a-groupe.
+14 lignes de edifice_arcs_valides.txt devenues inutiles retirées. Reformulations d'ordre : pol-anneau, r-bernstein,
+l-lowenheim, tr-ouverts. Après : H 423 (541 avant le lot ; la hausse depuis 336 vient du resserrement des
+exclusions). Non réglés (déplacement de définition) : convexe (ta-simplement-connexe, employé hors aval dans 13
+fiches), orthonormée (deux définitions parallèles), étoilé (gd-poincare), relèvement, point fixe d'une application,
+« premiers entre eux » des polynômes, 13 gras homonymes d'une entrée définie ailleurs (groupe dérivé, normalisateur,
+Zariski, module libre, produit croisé…). Relu : une relecture complète des 1 005 liens, corrections appliquées.
