@@ -235,6 +235,12 @@ ont été rédigés d'après les introductions, les énoncés numérotés et les
 reprend les titres longs des `\section`, introduction historique et bilan compris. Nouveauté annoncée
 le 1er novembre.
 
+Le 2 novembre : chapitres 1 à 7 mis à jour par l'auteur. Les ajouts sont des encadrés « Méthode », et les
+sections et énoncés numérotés n'ont pas changé, si bien que les résumés restent valables. Les PDF ont été
+remplacés et les pages du sommaire recalculées. Les chapitres 8 (limites et continuité), 9 (dérivabilité et
+convexité) et 10 (analyse asymptotique et développements limités) ont été déposés sans feuille d'exercices
+pour l'instant.
+
 ### 25. Sommaire cliquable (1er nov. 2026)
 
 Chaque partie du sommaire d'un cours mène à sa page dans le visualiseur (bouton `.vers-page`,
