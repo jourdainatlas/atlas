@@ -37,7 +37,7 @@ noeuds:
       Si $\omega'$ vérifie les mêmes propriétés, on a $\omega \subset \omega'$ et $\omega' \subset \omega$, d'où $\omega = \omega'$ par extensionnalité. En particulier, $\omega$ ne dépend pas du choix de $I$.
     remarques:
       - |
-        On ne peut pas définir $\omega$ comme « l'intersection de tous les ensembles inductifs », car la classe des ensembles inductifs n'est pas un ensemble. Le détour par un ensemble inductif fixé $I$ est exactement ce qu'exige le schéma de séparation.
+        La classe des ensembles inductifs n'est pas un ensemble ; son intersection en est pourtant un, mais on ne l'obtient que par séparation dans l'un de ses éléments. C'est exactement le détour par l'ensemble inductif fixé $I$, et la dernière phrase de la preuve montre que le résultat ne dépend pas de $I$.
 
   - id: n-recurrence
     etiquette: Récurrence
@@ -68,10 +68,14 @@ noeuds:
     titre: Les axiomes de Peano sont des théorèmes
     enonce: |
       La fonction $S$ envoie $\omega$ dans $\omega$, elle est [[injection|injective]] sur $\omega$, et $0$ n'est le successeur d'aucun entier. Avec le {{n-recurrence|principe de récurrence}}, ce sont les axiomes de Peano.
+
+      Enfin, tout entier non nul est le successeur d'un entier.
     preuve: |
       $\omega$ est inductif, donc stable par $S$. Comme $n \in S(n)$, le successeur n'est jamais vide.
 
       Supposons $S(n) = S(m)$ avec $n \neq m$. Comme $n \in S(n) = m \cup \{m\}$ et $n \neq m$, on a $n \in m$ ; symétriquement, $m \in n$. Or on ne peut avoir à la fois $n \in m$ et $m \in n$, d'après l'{{zf-bienfonde|axiome de fondation}}.
+
+      Enfin, la propriété « $n = 0$ ou $n = S(n')$ pour un $n' \in \omega$ » est vraie pour $0$, et pour $S(n)$ avec $n' = n$ : elle est vraie pour tout $n$ par {{n-recurrence|récurrence}}.
     remarques:
       - |
         Les axiomes de Peano au second ordre caractérisent $\lex{ensemble-entiers-naturels}{\mathbb N}$ à isomorphisme près (Dedekind, 1888). Leur version au premier ordre, où la récurrence devient un schéma, admet au contraire des modèles non standard, d'après le théorème de compacité.
@@ -94,6 +98,8 @@ noeuds:
       **Bon ordre.** Soit $A \subset \omega$ non vide. Par fondation, il existe $m \in A$ tel que $m \cap A = \varnothing$. Pour tout $a \in A$, on a $a \notin m$, donc $m = a$ ou $m \in a$ par trichotomie : $m$ est le plus petit élément de $A$.
 
       **Inclusion.** Si $m \in n$, alors $m \subset n$ par transitivité, et $m \neq n$ car $n \notin n$. Réciproquement, si $m \subsetneq n$ et que l'on avait $n \in m$ ou $n = m$, on aurait $n \in n$ ou $m = n$.
+
+      **Ordinal.** Tout élément d'un entier est un entier ({{n-transitif|Entiers transitifs}}) : $\omega$ est transitif, et $\in$ y est un bon ordre strict par ce qui précède, donc $\omega$ est un ordinal. Pour la même raison, les éléments de $n$ sont exactement les entiers $m < n$.
     remarques:
       - |
         La démonstration du bon ordre utilise l'axiome de fondation, mais on peut s'en passer : par récurrence, on montre directement que toute partie de $\omega$ sans plus petit élément est vide.
@@ -110,7 +116,7 @@ noeuds:
 
       *Unicité.* Deux approximations $h$ et $h'$ coïncident sur l'intersection de leurs domaines : par récurrence sur $m$, si $m$ est dans les deux domaines, $h(m) = h'(m)$, car $h(0) = a = h'(0)$ et, si $S(m)$ est dans les deux domaines, $m$ l'est aussi, ces domaines étant transitifs, d'où $h(S(m)) = g(h(m)) = g(h'(m)) = h'(S(m))$.
 
-      *Existence.* Par récurrence, pour tout $n$ il existe une approximation de domaine $S(n)$ : pour $n = 0$, c'est $\{(0, a)\}$ ; si $h$ convient pour $n$, alors $h \cup \{(S(n), g(h(n)))\}$ convient pour $S(n)$, l'injectivité de $S$ ({{n-peano|Axiomes de Peano}}) garantissant que la nouvelle condition ne porte que sur le point ajouté.
+      *Existence.* Par récurrence, pour tout $n$ il existe une approximation de domaine $S(n)$ : pour $n = 0$, c'est $\{(0, a)\}$ ; si $h$ convient pour $n$, alors $h \cup \{(S(n), g(h(n)))\}$ est une application de domaine $S(S(n))$, puisque $S(n) \notin S(n)$ ({{zf-bienfonde|fondation}}), et elle convient pour $S(n)$, l'injectivité de $S$ ({{n-peano|Axiomes de Peano}}) garantissant que la nouvelle condition ne porte que sur le point ajouté.
 
       On pose alors $f(n) = h(n)$, pour $h$ une approximation de domaine $S(n)$. Ces approximations forment un ensemble, partie de $\lex{ensemble-parties}{\mathcal P}(\omega \times E)$, et $f$, réunion de leurs graphes, est une application d'après l'unicité. Elle vérifie les deux relations, et toute application qui les vérifie coïncide avec $f$ par récurrence.
 
@@ -128,7 +134,9 @@ noeuds:
     enonce: |
       Pour $m \in \omega$ fixé, le théorème de définition par récurrence fournit des applications $n \mapsto m + n$ et $n \mapsto m \cdot n$ caractérisées par
       $$\begin{aligned} m + 0 &= m, \\ m + S(n) &= S(m + n), \\ m \cdot 0 &= 0, \\ m \cdot S(n) &= m \cdot n + m. \end{aligned}$$
-      On a alors $S(n) = n + 1$.
+      On a alors $S(n) = n + 1$, puisque $n + 1 = n + S(0) = S(n + 0) = S(n)$.
+
+      Ces applications se rassemblent en deux lois sur $\omega$. En effet, $p = m + n$ équivaut à l'existence d'une approximation, au sens de la preuve de {{n-recdef|Définition par récurrence}}, pour $a = m$ et $g = S$, de domaine $S(n)$ et valant $p$ en $n$ : le graphe de l'addition est donc une partie de $(\omega \times \omega) \times \omega$ définie par séparation. Il en va de même pour la multiplication.
     remarques:
       - |
         Les propriétés usuelles s'établissent par récurrence. Par exemple, l'associativité $(k + m) + n = k + (m + n)$ se démontre par récurrence sur $n$ : pour $n = 0$, les deux membres valent $k + m$, et
@@ -153,30 +161,34 @@ noeuds:
     preuve: |
       Toutes les preuves sont des récurrences sur la dernière variable ({{n-recurrence|Récurrence}}), à partir des quatre égalités qui définissent les opérations ({{n-operations|Addition, multiplication}}).
 
-      *(i)* L'associativité est établie dans la remarque du nœud {{n-operations|Addition, multiplication}}. On montre $0 + n = n$, puis $S(m) + n = S(m + n)$, par récurrence sur $n$ : pour $n = 0$ les deux membres valent $S(m)$, et
+      *(i)* L'associativité $(k + m) + n = k + (m + n)$ se démontre par récurrence sur $n$ : pour $n = 0$, les deux membres valent $k + m$, et
+      $$\begin{aligned} (k + m) + S(n) &= S((k+m)+n) \\ &= S(k + (m+n)) \\ &= k + S(m+n) \\ &= k + (m + S(n)). \end{aligned}$$
+
+      On montre $0 + n = n$ par récurrence sur $n$ : $0 + 0 = 0$ et $0 + S(n) = S(0 + n) = S(n)$. Puis $S(m) + n = S(m + n)$, encore par récurrence sur $n$ : pour $n = 0$ les deux membres valent $S(m)$, et
       $$\begin{aligned} S(m) + S(n) &= S(S(m) + n) \\ &= S(S(m + n)) \\ &= S(m + S(n)). \end{aligned}$$
       La commutativité $m + n = n + m$ s'en déduit par récurrence sur $n$, puisque
       $$\begin{aligned} m + S(n) &= S(m + n) \\ &= S(n + m) = S(n) + m. \end{aligned}$$
 
       Pour la simplification, récurrence sur $p$ : si $m + S(p) = n + S(p)$, alors $S(m + p) = S(n + p)$, d'où $m + p = n + p$ par injectivité de $S$ ({{n-peano|Axiomes de Peano}}), puis $m = n$.
 
-      Enfin, si $n = S(n')$, alors $m + n = S(m + n') \neq 0$ ; donc $m + n = 0$ impose $n = 0$, puis $m = 0$.
+      Enfin, si $n \neq 0$, alors $n = S(n')$ ({{n-peano|Axiomes de Peano}}), et $m + n = S(m + n') \neq 0$ ; donc $m + n = 0$ impose $n = 0$, puis $m = m + 0 = 0$.
 
       *(ii)* On montre successivement, par récurrence sur la dernière variable : la distributivité à gauche $m(n + p) = mn + mp$, car
       $$\begin{aligned} m(n + S(p)) &= m\,S(n + p) \\ &= m(n + p) + m \\ &= mn + mp + m \\ &= mn + m\,S(p) ; \end{aligned}$$
       l'associativité $(mn)p = m(np)$, car
       $$\begin{aligned} (mn)S(p) &= (mn)p + mn \\ &= m(np) + mn \\ &= m(np + n) = m(n\,S(p)) ; \end{aligned}$$
-      les égalités $0 \cdot n = 0$ et $S(m)\,n = mn + n$ ; d'où la commutativité, puisque
+      les égalités $0 \cdot n = 0$ et $S(m)\,n = mn + n$, la seconde par récurrence sur $n$, puisque
       $$\begin{aligned} S(m)\,S(n) &= S(m)\,n + S(m) \\ &= mn + n + m + 1 \end{aligned}$$
-      et $m\,S(n) + S(n) = mn + m + n + 1$.
+      et $m\,S(n) + S(n) = mn + m + n + 1$ ; puis la commutativité, par récurrence sur $n$ : $m \cdot 0 = 0 = 0 \cdot m$ et
+      $$\begin{aligned} m\,S(n) &= mn + m \\ &= nm + m = S(n)\,m. \end{aligned}$$
 
-      La distributivité à droite s'en déduit, et $1 \cdot n = n \cdot 1 = n$. Si $n = S(n') \neq 0$ et $mn = 0$, alors $mn' + m = 0$, donc $m = 0$ par (i).
+      La distributivité à droite s'en déduit, et $1 \cdot n = n \cdot 1 = n$. Si $n \neq 0$, alors $n = S(n')$ ({{n-peano|Axiomes de Peano}}) ; si de plus $mn = 0$, alors $mn' + m = 0$, donc $m = 0$ par (i).
 
       *(iii)* Récurrence sur $n$. Pour $n = 0$ : $m \leqslant 0$ équivaut à $m = 0$, et $m + k = 0$ aussi, par (i).
 
       Supposons le résultat vrai pour $n$. Comme $S(n) = n \cup \{n\}$, on a, pour l'ordre défini au nœud {{n-ordre|Bon ordre sur ℕ}}, $m \leqslant S(n)$ si et seulement si $m \leqslant n$ ou $m = S(n)$. Si $m + k = n$, alors $m + S(k) = S(n)$ ; si $m = S(n)$, $k = 0$ convient.
 
-      Réciproquement, si $m + k = S(n)$, ou bien $k = 0$ et $m = S(n)$, ou bien $k = S(k')$, et $S(m + k') = S(n)$ donne $m + k' = n$, donc $m \leqslant n$. L'unicité de $k$ est la simplification de (i), et $k = 0$ équivaut à $m = n$.
+      Réciproquement, si $m + k = S(n)$, ou bien $k = 0$ et $m = S(n)$, ou bien $k \neq 0$, donc $k = S(k')$ ({{n-peano|Axiomes de Peano}}), et $S(m + k') = S(n)$ donne $m + k' = n$, donc $m \leqslant n$. L'unicité de $k$ est la simplification de (i), et $k = 0$ équivaut à $m = n$.
 
       *(iv)* Si $m + k = n$, alors $(m + p) + k = n + p$ et $mp + kp = np$, par commutativité, associativité et distributivité. Si de plus $k \neq 0$ et $p \neq 0$, alors $kp \neq 0$ par (ii), et les inégalités sont strictes par (iii).
     remarques:
@@ -190,7 +202,7 @@ noeuds:
     nature: théorème
     titre: Ensembles finis et principe des tiroirs
     texte: |
-      Un ensemble $E$ est [[ensemble-fini|fini]] s'il est équipotent à un entier $n \in \lex{ensemble-entiers-naturels}{\mathbb N}$, c'est-à-dire à $\{0, 1, \dots, n - 1\}$.
+      Un ensemble $E$ est [[ensemble-fini|fini]] s'il est équipotent à un entier $n \in \lex{ensemble-entiers-naturels}{\mathbb N}$, c'est-à-dire à l'ensemble $\{0, 1, \dots, n - 1\}$ des entiers qui le précèdent, vide si $n = 0$.
     enonce: |
       (i) *Principe des tiroirs.* Pour tout $n \in \mathbb N$, il n'existe pas d'injection de $n + 1$ dans $n$. Plus généralement, si $m > n$, il n'existe pas d'injection de $m$ dans $n$.
 
@@ -208,7 +220,7 @@ noeuds:
       L'injection de $n + 2$ dans $n + 1$ que suppose la preuve par l'absurde n'existe pas ; on montre donc la même construction sur une injection qui existe, de $p + 1$ dans $n + 1$, ici $p = 3$ et $n = 4$, qui atteint $n$ en un point $k < p$ (la preuve l'emploie avec $p = n + 1$). La flèche rouge, de $k$ vers $n$, est remplacée par une flèche de $k$ vers $f(p)$, en bleu comme la flèche issue de $p$ qu'elle reprend, et $p$ est oublié : l'application $g$ obtenue reste injective et n'atteint plus $n$, c'est une injection de $p$ dans $n$.
       ```
 
-      Si $m > n$, alors $n + 1 \leqslant m$ par les points (i) et (iii) du nœud {{n-proprietes|Arithmétique de ℕ}}, donc $n + 1 \subset m$ ({{n-ordre|Bon ordre sur ℕ}}), et une injection de $m$ dans $n$ se restreindrait en une injection de $n + 1$ dans $n$.
+      Si $m > n$, alors $m = n + k$ avec $k \neq 0$ ({{n-proprietes|Propriétés des opérations}}, (iii)), et $k = S(k')$ ({{n-peano|Axiomes de Peano}}) ; ainsi $m = n + (1 + k') = (n + 1) + k'$ par (i) du même nœud, et $n + 1 \leqslant m$, donc $n + 1 \subset m$ ({{n-ordre|Bon ordre sur ℕ}}), et une injection de $m$ dans $n$ se restreindrait en une injection de $n + 1$ dans $n$.
 
       (ii) Si $E$ est équipotent à $m$ et à $n$, alors $m$ et $n$ sont équipotents ({{r-equipotence|Équipotence}}), et (i) interdit $m > n$ comme $n > m$.
 
@@ -219,41 +231,81 @@ noeuds:
       Si $n \in A$, alors $A \setminus \{n\} \subset n$ a $k \leqslant n$ éléments, et l'on prolonge une bijection $k \to A \setminus \{n\}$ en envoyant $k$ sur $n$ : $|A| = k + 1 \leqslant n + 1$, avec égalité seulement si $k = n$, c'est-à-dire, par récurrence, si $A \setminus \{n\} = n$, soit $A = n + 1$.
     remarques:
       - |
-        Le principe des tiroirs est l'énoncé : si l'on range $n + 1$ objets dans $n$ tiroirs, l'un des tiroirs en contient au moins deux. Sa démonstration demande une récurrence, car il caractérise les ensembles finis : $\mathbb N$ s'injecte strictement dans lui-même par le successeur.
+        Le principe des tiroirs est l'énoncé : si l'on range $n + 1$ objets dans $n$ tiroirs, l'un des tiroirs en contient au moins deux. Il dit qu'un ensemble fini n'est équipotent à aucune de ses parties strictes, alors que $\mathbb N$ l'est à $\mathbb N \setminus \{0\}$ par le successeur ; c'est la récurrence qui sépare ces deux comportements.
+      - |
+        L'erreur la plus répandue est de croire que la réciproque va de soi. Qu'un ensemble qui n'est équipotent à aucune de ses parties strictes soit fini demande une forme de l'axiome du choix (le choix dénombrable suffit), et n'est pas démontrable dans $\mathsf{ZF}$ : le principe des tiroirs ne caractérise donc pas, à lui seul, les ensembles finis.
       - |
         Le nombre d'éléments d'un ensemble fini est un [[cardinal]] au sens du nœud {{o-cardinal|Cardinal}} : c'est le plus petit ordinal équipotent à l'ensemble, d'après (i).
 
   - id: n-sommes
     etiquette: Sommes finies
     nature: théorème
-    titre: Sommes et produits finis
+    titre: Sommes, produits et puissances
     texte: |
       Soit $G$ un ensemble muni d'une loi notée $+$, associative et commutative, et d'un élément $0$ tel que $0 + x = x$ pour tout $x$. Pour un [[ensemble-fini|ensemble fini]] $I$ et une famille $(x_i)_{i \in I}$ d'éléments de $G$, on définit ci-dessous la somme $\sum_{i \in I} x_i$. En notation multiplicative, on obtient de même le produit $\prod_{i \in I} x_i$.
+
+      Soit $M$ un ensemble muni d'une loi associative, notée multiplicativement, et d'un élément $1$ tel que $1x = x1 = x$ pour tout $x \in M$. Pour $x \in M$, la [[puissance|puissance]] $x^n$, $n \in \lex{ensemble-entiers-naturels}{\mathbb N}$, est définie par récurrence ({{n-recdef|Définition par récurrence}}) :
+      $$x^0 = 1 \quad \text{et} \quad x^{n+1} = x^n x.$$
+      Ainsi $x^1 = x$ et $x^2 = xx$. Dans $(\mathbb N, \cdot)$, cela définit les puissances $m^n$ des entiers naturels.
+
+      En notation additive, l'élément $1$ étant noté $0$, la puissance se note $n \cdot x$, ou $nx$, et s'appelle le **multiple** de $x$ : $0 \cdot x = 0$ et $(n + 1) \cdot x = n \cdot x + x$. Dans $(\mathbb N, +)$, le multiple $n \cdot m$ est le produit $nm$, qui vérifie les mêmes relations ({{n-proprietes|Propriétés des opérations}}).
 
       Pour un ensemble $A$ et un entier $n \geqslant 1$, on note $A^n$ l'ensemble des familles $(a_1, \dots, a_n)$ d'éléments de $A$ indexées par $\{1, \dots, n\}$ : ce sont les [[n-uplet|$n$-uplets]] d'éléments de $A$, et $a_i$ est la $i$-ième coordonnée.
 
       On identifie $A^1$ à $A$, et $A^2$ au produit cartésien $A \times A$ en associant à la famille $(a_1, a_2)$ le couple $(a_1, a_2)$. Les sommes de coordonnées, comme $a_1 + \cdots + a_n = \sum_{i \in \{1, \dots, n\}} a_i$, relèvent de ce qui suit.
     enonce: |
-      (i) Il existe une unique application $S : \lex{ensemble-parties}{\mathcal P}(I) \to G$ telle que $S(\varnothing) = 0$ et $S(A \cup \{i\}) = S(A) + x_i$ pour $A \subset I$ et $i \in I \setminus A$. On note $\sum_{i \in A} x_i = S(A)$ : cette somme ne dépend d'aucun ordre sur $I$.
+      (i) Il existe une unique application $\sigma : \lex{ensemble-parties}{\mathcal P}(I) \to G$ telle que $\sigma(\varnothing) = 0$ et $\sigma(A \cup \{i\}) = \sigma(A) + x_i$ pour $A \subset I$ et $i \in I \setminus A$. On note $\sum_{i \in A} x_i = \sigma(A)$ : cette somme ne dépend d'aucun ordre sur $I$, ni de l'ensemble $I \supset A$ dans lequel on la calcule.
 
       (ii) $\sum_{i \in I} (x_i + y_i) = \sum_{i \in I} x_i + \sum_{i \in I} y_i$.
 
       (iii) *Associativité généralisée.* Si $I$ est la réunion disjointe de parties $I_1, \dots, I_m$, alors $\sum_{i \in I} x_i = \sum_{k} \sum_{i \in I_k} x_i$. Si $\beta : J \to I$ est une bijection, $\sum_{j \in J} x_{\beta(j)} = \sum_{i \in I} x_i$.
+
+      (iv) *Morphismes.* Soit $G'$ muni d'une loi $+$ associative et commutative et d'un élément $0$ tel que $0 + x = x$, et $\varphi : G \to G'$ telle que $\varphi(0) = 0$ et $\varphi(x + y) = \varphi(x) + \varphi(y)$. Alors
+      $$\varphi\Big(\sum_{i \in I} x_i\Big) = \sum_{i \in I} \varphi(x_i).$$
+
+      (v) *Distributivité.* Supposons $G$ muni d'une seconde loi, notée multiplicativement, telle que $c(x + y) = cx + cy$, $(x + y)c = xc + yc$ et $c0 = 0c = 0$ pour tous $c, x, y \in G$. Alors
+      $$\begin{aligned} c \sum_{i \in I} x_i &= \sum_{i \in I} c\,x_i, \\ \Big(\sum_{i \in I} x_i\Big) c &= \sum_{i \in I} x_i\,c, \end{aligned}$$
+      et, pour une seconde famille finie $(y_j)_{j \in J}$, $\big(\sum_{i \in I} x_i\big)\big(\sum_{j \in J} y_j\big) = \sum_{i \in I} \sum_{j \in J} x_i\,y_j$.
+
+      (vi) *Puissances.* Dans $M$, pour tous $x, y \in M$ et $m, n \in \mathbb N$,
+      $$x^{m+n} = x^m x^n \quad \text{et} \quad (x^m)^n = x^{mn},$$
+      et, si $xy = yx$, $(xy)^n = x^n y^n$. En notation additive, ces règles s'écrivent $(m + n) \cdot x = m \cdot x + n \cdot x$, $n \cdot (m \cdot x) = (mn) \cdot x$ et, la loi étant commutative, $n \cdot (x + y) = n \cdot x + n \cdot y$.
     preuve: |
-      (i) *Unicité.* Si $S$ et $S'$ conviennent, $S(A) = S'(A)$ par récurrence sur le nombre d'éléments de $A$ ({{n-fini|Ensembles finis}}) : c'est vrai pour $\varnothing$, et une partie à $k + 1$ éléments s'écrit $A \cup \{i\}$ avec $A$ à $k$ éléments.
+      (i) *Unicité.* Si $\sigma$ et $\sigma'$ conviennent, $\sigma(A) = \sigma'(A)$ par récurrence sur le nombre d'éléments de $A$ ({{n-fini|Ensembles finis}}) : c'est vrai pour $\varnothing$, et une partie à $k + 1$ éléments s'écrit $A \cup \{i\}$ avec $A$ à $k$ éléments.
 
-      *Existence.* Par récurrence sur le nombre d'éléments de $I$. Pour $I = \varnothing$, $S(\varnothing) = 0$. Si $I = J \cup \{j\}$ avec $j \notin J$, et si $S_J$ convient pour $J$, on pose $S(A) = S_J(A)$ si $j \notin A$ et $S(A) = S_J(A \setminus \{j\}) + x_j$ si $j \in A$.
+      *Existence.* Par récurrence sur le nombre d'éléments de $I$. Pour $I = \varnothing$, $\sigma(\varnothing) = 0$. Si $I = J \cup \{j\}$ avec $j \notin J$, et si $\sigma_J$ convient pour $J$, on pose $\sigma(A) = \sigma_J(A)$ si $j \notin A$ et $\sigma(A) = \sigma_J(A \setminus \{j\}) + x_j$ si $j \in A$.
 
-      Vérifions $S(A \cup \{i\}) = S(A) + x_i$ pour $i \notin A$. Si $i = j$, c'est la définition. Si $i \neq j$ et $j \notin A$, c'est la propriété de $S_J$. Si $i \neq j$ et $j \in A$, alors
-      $$\begin{aligned} S(A \cup \{i\}) &= S_J\big((A \setminus \{j\}) \cup \{i\}\big) \\ &\quad + x_j \\ &= S_J(A \setminus \{j\}) + x_i + x_j \\ &= S(A) + x_i, \end{aligned}$$
+      Vérifions $\sigma(A \cup \{i\}) = \sigma(A) + x_i$ pour $i \notin A$. Si $i = j$, c'est la définition. Si $i \neq j$ et $j \notin A$, c'est la propriété de $\sigma_J$. Si $i \neq j$ et $j \in A$, alors
+      $$\begin{aligned} \sigma(A \cup \{i\}) &= \sigma_J\big((A \setminus \{j\}) \cup \{i\}\big) \\ &\quad + x_j \\ &= \sigma_J(A \setminus \{j\}) + x_i + x_j \\ &= \sigma(A) + x_i, \end{aligned}$$
       par associativité et commutativité. C'est cette commutativité qui rend la somme indépendante de tout ordre.
+
+      Pour $A \subset I$, la restriction de $\sigma$ à $\mathcal P(A)$ vérifie la relation qui caractérise la somme sur $A$ : par unicité, $\sum_{i \in B} x_i$, pour $B \subset A$, ne dépend donc pas de l'ensemble dans lequel on la calcule.
 
       (ii) L'application $A \mapsto \sum_A x_i + \sum_A y_i$ vérifie la relation qui caractérise $A \mapsto \sum_A (x_i + y_i)$ ; par unicité, elles sont égales.
 
       (iii) Pour $m = 2$, l'application $A \mapsto \sum_{A \cap I_1} x_i + \sum_{A \cap I_2} x_i$ vérifie la relation caractéristique de $A \mapsto \sum_A x_i$ ; on conclut par unicité, puis par récurrence sur $m$. Pour une bijection, $B \mapsto \sum_{\beta^{-1}(B)} x_{\beta(j)}$ vérifie la relation caractéristique sur $\mathcal P(I)$.
+
+      (iv) L'application $A \mapsto \varphi\big(\sum_{i \in A} x_i\big)$ vaut $\varphi(0) = 0$ en $\varnothing$ et, pour $i \notin A$,
+      $$\begin{aligned} \varphi\Big(\sum_{A \cup \{i\}} x_k\Big) &= \varphi\Big(\sum_{A} x_k + x_i\Big) \\ &= \varphi\Big(\sum_{A} x_k\Big) + \varphi(x_i). \end{aligned}$$
+      Elle vérifie donc la relation qui caractérise $A \mapsto \sum_{i \in A} \varphi(x_i)$, et lui est égale par l'unicité de (i).
+
+      (v) L'application $x \mapsto cx$ de $G$ dans $G$ envoie $0$ sur $0$ et est additive : (iv) donne la première égalité, et $x \mapsto xc$ la deuxième. Pour la dernière, on applique la deuxième avec $c = \sum_j y_j$, puis la première à chaque terme $x_i \sum_j y_j$.
+
+      (vi) Par récurrence sur $n$, à partir des égalités qui définissent l'addition et la multiplication de $\mathbb N$ ({{n-operations|Addition, multiplication}}). Pour $n = 0$, $x^{m+0} = x^m = x^m \cdot 1 = x^m x^0$ ; puis, par associativité,
+      $$\begin{aligned} x^{m+(n+1)} &= x^{(m+n)+1} = x^{m+n}\,x \\ &= (x^m x^n)\,x = x^m x^{n+1}. \end{aligned}$$
+
+      Pour la deuxième règle, $(x^m)^0 = 1 = x^{m \cdot 0}$, et, par la première,
+      $$\begin{aligned} (x^m)^{n+1} &= (x^m)^n\,x^m = x^{mn}\,x^m \\ &= x^{mn + m} = x^{m(n+1)}. \end{aligned}$$
+
+      Si $xy = yx$, alors $y^n x = x y^n$ par récurrence sur $n$, puisque $y^{n+1}x = y^n\,yx = y^n x\,y = x\,y^{n+1}$. D'où, encore par récurrence,
+      $$\begin{aligned} (xy)^{n+1} &= (xy)^n\,xy = x^n y^n\,x\,y \\ &= x^n x\,y^n y = x^{n+1} y^{n+1}. \end{aligned}$$
     remarques:
       - |
         Cette construction est la seule que l'atlas fasse des sommes finies ; elle sert dans les anneaux, les espaces vectoriels ({{v-combinaisons|Combinaisons linéaires}}), les sommes de réels positifs de la théorie de la {{mes|mesure}} et partout ailleurs. L'erreur la plus répandue est de croire que $\sum_{i=1}^n$ suffit : une somme indexée par un ensemble fini sans ordre privilégié, comme une partie de $\lex{n-uplet}{\mathbb Z^2}$, demande l'indépendance vis-à-vis de l'ordre, qui repose sur la commutativité.
+      - |
+        Le point (v) est la distributivité étendue aux sommes finies : c'est lui qui permet de développer un produit de sommes, comme dans l'associativité du produit des polynômes ({{pol-anneau|Anneau A[X]}}) ou dans la formule du binôme ({{pol-binome|Binôme de Newton}}).
+      - |
+        La règle $(xy)^n = x^n y^n$ demande que $x$ et $y$ commutent, et l'on se trompe souvent en l'appliquant sans le vérifier. Pour les applications de $\{0, 1\}$ dans lui-même, munies de la composition ({{r-composition|Composition}}), soit $s$ l'échange de $0$ et $1$, et $c$ l'application constante égale à $0$. Alors $s \circ c$ est constante égale à $1$, et $(s \circ c)^2 = s \circ c$ aussi, alors que $s^2 \circ c^2 = \mathrm{id} \circ c = c$ est constante égale à $0$.
 
 aretes:
   - [n-succ, n-omega]
