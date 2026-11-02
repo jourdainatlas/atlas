@@ -90,6 +90,13 @@ function rendre(texte, ou) {
   });
   const paragraphes = s.trim().split(/\n\s*\n/);
   return paragraphes.map(p => {
+    // Paragraphe cité, « > … » : raisonnement d'élève à analyser (environnement redaction des feuilles).
+    const cite = /^>\s/.test(p.trim());
+    if (cite) p = p.trim().replace(/^>\s*/, '');
+    const r = rendrePara(p);
+    return cite ? `<blockquote class="redaction">${r}</blockquote>` : r;
+  }).join('');
+  function rendrePara(p) {
     let h = echappe(p.replace(/\s*\n\s*/g, ' ').trim());
     h = h.replace(/\[\[([^\]|]+)(?:\|([^\]]*))?\]\]/g, (m, id, txt) => {
       const e = D.lexique[id];
@@ -116,7 +123,7 @@ function rendre(texte, ou) {
     h = h.replace(/\u0000(\d+)\u0000/g, (m, k) => maths[+k].html);
     h = h.replace(/\u0002(\d+)\u0002/g, (m, k) => enligne[+k]);
     return seul && maths[+seul[1]].affichee ? `<div class="formule${sq ? ' sq' : ''}">${h}</div>` : `<p${sq ? ' class="sq"' : ''}>${h}</p>`;
-  }).join('');
+  }
 }
 
 const NOMS = { 'définition': 'Définition', 'théorème': 'Théorème', 'proposition': 'Proposition',

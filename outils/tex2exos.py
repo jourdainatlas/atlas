@@ -40,8 +40,10 @@ def sans_commentaires(t):
 STRUCTURELLES = {'exo', 'partie', 'etoile', 'etoiles', 'etoilesss', 'etoilesv'}
 def lire_macros(pre):
     M = {}
-    for m in re.finditer(r'\\(?:re)?newcommand\*?\s*\{?\\([A-Za-z]+)\}?\s*(?:\[(\d)\])?', pre):
-        nom, n = m.group(1), int(m.group(2) or 0)
+    # \providecommand (comme \ee dans les feuilles MPSI) ne définit que ce qui ne l'est pas encore
+    for m in re.finditer(r'\\((?:re)?newcommand|providecommand)\*?\s*\{?\\([A-Za-z]+)\}?\s*(?:\[(\d)\])?', pre):
+        if m.group(1) == 'providecommand' and m.group(2) in M: continue
+        nom, n = m.group(2), int(m.group(3) or 0)
         i = m.end()
         while pre[i] in ' \n': i += 1
         if pre[i] != '{': continue
@@ -440,6 +442,8 @@ class Conv:
         return r
 
     def texte(s, t):
+        # Raisonnement d'élève à analyser (environnement redaction des feuilles MPSI) : paragraphe cité « > … »
+        t = re.sub(r'\\begin\{redaction\}(.*?)\\end\{redaction\}', lambda m: '\n\n> ' + re.sub(r'\s*\n\s*', ' ', m.group(1)).strip() + '\n\n', t, flags=re.S)
         t = s.listes(t)
         t = re.sub(r'\\textsc\{([^{}]*)\}', lambda m: m.group(1).upper(), t)  # siècles en petites capitales
         t = re.sub(r'\\textcircled\{([^{}]*)\}', lambda m: cercle_texte(m.group(1)), t)
@@ -522,7 +526,8 @@ def parties(t):
     r = []
     for m in PARTIE.finditer(t):
         f = accolade(t, m.end() - 1)
-        r.append((m.start(), re.sub(r'\s+', ' ', t[m.end():f - 1]).strip()))
+        ti = re.sub(r'\\texorpdfstring\{((?:[^{}]|\{[^{}]*\})*)\}\{[^{}]*\}', r'\1', t[m.end():f - 1])   # titre pour le PDF ignoré
+        r.append((m.start(), re.sub(r'\s+', ' ', ti).strip()))
     return r
 ETOILES = {'etoile': 1, 'etoiles': 2, 'etoilesss': 3, 'etoilesv': 4}
 

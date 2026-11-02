@@ -239,7 +239,11 @@ Le 2 novembre : chapitres 1 à 7 mis à jour par l'auteur. Les ajouts sont des e
 sections et énoncés numérotés n'ont pas changé, si bien que les résumés restent valables. Les PDF ont été
 remplacés et les pages du sommaire recalculées. Les chapitres 8 (limites et continuité), 9 (dérivabilité et
 convexité) et 10 (analyse asymptotique et développements limités) ont été déposés sans feuille d'exercices
-pour l'instant.
+pour l'instant. Le soir même, leurs feuilles `f-ma-08` à `f-ma-10` (158 exercices) ont été versées. Pour cela,
+`tex2exos.py` a reçu trois ajouts. Il lit `\providecommand` (l'exponentielle `\ee`), sauf si la commande est
+déjà définie. Il ôte `\texorpdfstring{A}{B}` des titres de partie, en gardant A. Il convertit l'environnement
+`redaction` (raisonnement d'élève à analyser) en paragraphe cité `> …`, que `rendu.mjs` rend en
+`<blockquote class="redaction">` (filet à gauche, gabarit).
 
 ### 25. Sommaire cliquable (1er nov. 2026)
 
