@@ -633,6 +633,12 @@ def main():
     chemin_meta = os.path.join(os.path.dirname(__file__), f'meta_{pref.replace("-", "_")}.py')
     if os.path.exists(chemin_meta):
         spec = importlib.util.spec_from_file_location('meta', chemin_meta); meta = importlib.util.module_from_spec(spec); spec.loader.exec_module(meta)
+    sys.path.insert(0, os.path.dirname(__file__)); import etiquetage
+    try:   # niveau de la feuille, s'il est déjà déclaré dans rubriques/exercices.yaml
+        import yaml
+        fe_info = next((f for f in yaml.safe_load(open('rubriques/exercices.yaml', encoding='utf-8'))['feuilles'] if f['id'] == fid), {})
+    except Exception:
+        fe_info = {}
     sortie = []
     for x in E:
         c = C.get(x['numero'])
@@ -644,6 +650,11 @@ def main():
         if x['titre']: e['titre'] = x['titre']
         e.update({'partie': x['partie'], 'etoiles': x['etoiles']})
         if meta: e.update(meta.meta(x['numero'], x['titre'], enonce, corrige, x['etoiles']))
+        if meta:   # affinage d'après l'édifice actuel (outils/etiquetage.py), comme outils/reetiqueter.py
+            t = {'id': e['id'], 'enonce': enonce, 'corrige': corrige, 'noeuds': e.get('noeuds', []), 'notions': e.get('notions', [])}
+            etiquetage.affiner(t, fe_info, fe_info.get('niveau', ''))
+            etiquetage.completer(t, [])
+            e['noeuds'], e['notions'] = t['noeuds'], t['notions']
         if x['numero'] in src: e['source'] = src[x['numero']]
         e.update({'page_enonce': pe.get(x['numero']), 'page_corrige': pc.get(x['numero']), 'enonce': enonce, 'corrige': corrige})
         sortie.append(e)

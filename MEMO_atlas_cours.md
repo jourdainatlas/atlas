@@ -277,3 +277,36 @@ les Maths expertes avant la fin de la frappe, et « termin » trouve « terminal
 Un mot de niveau complet reste un filtre strict. Dès qu'une
 recherche ou un filtre est actif, un bouton corbeille « Effacer » (`.effacer-recherche-exo`, `data-reinit`)
 apparaît à droite du titre Rechercher et remet tout à zéro.
+
+### 27. Audit de l'étiquetage d'après l'édifice étendu (2 novembre 2026)
+
+L'édifice est passé d'environ 320 à près de 1000 nœuds depuis le dépôt des premiers cours (26 octobre), et le
+lexique de 257 à 574 termes. L'audit a comparé l'étiquetage des 58 cours et des 2129 exercices à l'édifice
+actuel. Il a relevé quatre défauts.
+1. **Nœuds d'un autre niveau.** L'exponentielle, le logarithme et la trigonométrie réels renvoyaient à
+   l'analyse complexe (`cx-exponentielle`, `cx-pi`) ou à l'analyse des nombres (`nb-logarithme`).
+   L'analyse réelle les construit désormais (`ar-exp` : `ex-*` ; `ar-trigo` : `tg-*`). Le produit
+   scalaire du lycée renvoyait aux espaces de Hilbert (`f-hilbert`), et non à `me-produit-scalaire`.
+   Le déterminant 2 × 2 renvoyait au déterminant d'un endomorphisme (`v-determinant`), et non à
+   `v-det-matrice`.
+2. **Graphes entiers au lieu de nœuds précis** : `ar-deriv`, `ar-suites`, `ar-riemann`, `continuite`,
+   `z-polynomes`, devenus des graphes à nœuds `de-*`, `su-*`, `ri-*`, `c-*`, `pol-*`.
+3. **Nœuds manquants** : chaînes de Markov (`mart-markov`) pour me-09, binôme (`pol-binome`).
+4. **38 exercices sans aucun nœud** (Terminale surtout).
+
+Outils. `outils/etiquetage.py` (`affiner`, `completer`, relecture `MANUELS`) applique ces règles. Les nœuds
+complexes (`cx-*`) restent quand l'énoncé est en contexte complexe, et un graphe entier n'est remplacé que si
+l'énoncé désigne un de ses nœuds. `outils/reetiqueter.py` réécrit les seules lignes `noeuds:` et `notions:`
+des feuilles versées. `tex2exos.py` appelle `affiner` après `meta_<préfixe>.py`, de sorte qu'une
+reconversion redonne le même étiquetage.
+
+Bilan des exercices : 698 réétiquetés, aucun sans nœud. Les nœuds remplacés sont
+`cx-exponentielle` (206 → 57, contexte complexe), `cx-pi` (145 → 51), `nb-logarithme`, `f-hilbert` et
+`ar-riemann` (→ 0), `ar-deriv` (116 → 2), `v-determinant` (55 → 1). `ar-suites`, `continuite` et
+`z-polynomes` restent là où l'énoncé ne désigne aucun nœud précis. Les notions nouvelles du lexique ont été
+ajoutées par motif (cosinus et sinus, nombre e, fonction convexe, produit scalaire, chaîne de Markov,
+mesure invariante…).
+
+Cours : 30 entrées revues à la main dans `cours.yaml` (champ `theories`, notions complétées). Les graphes
+`ar-exp`, `ar-trigo` et `met` remplacent `anc` et `nban` en Première et Terminale. Les cours de MPSI
+reçoivent les nœuds `ex-*`, `tg-*`, `c-point`, `ex-convexite` et `pol-binome` ; Galois reçoit `pol-*`.
