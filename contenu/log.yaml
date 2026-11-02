@@ -15,7 +15,7 @@ noeuds:
     enonce: |
       La logique étudie des **mots**, suites finies de symboles pris dans un alphabet, et des **structures** qui leur donnent un sens. Pour en parler, on s'autorise les notions du raisonnement mathématique ordinaire : ensembles, applications, entiers naturels, récurrence, ensembles finis et dénombrables, pris dans leur sens intuitif. C'est la **métathéorie**.
     texte: |
-      La logique est placée sous la théorie des ensembles, alors que sa sémantique emploie des ensembles : ce n'est pas un cercle, mais un échelonnement. La syntaxe, qui ne manipule que des mots finis, n'exige qu'une arithmétique élémentaire des suites finies. La sémantique, elle, emploie des ensembles intuitifs. Une fois $\mathsf{ZF}$ posée sur cette base, on peut tout recoder à l'intérieur, et c'est ce que fait Gödel pour démontrer l'incomplétude.
+      La logique est placée sous la théorie des ensembles, alors que sa sémantique emploie des ensembles : ce n'est pas un cercle, mais un échelonnement. La syntaxe, qui ne manipule que des mots finis, n'exige qu'une arithmétique élémentaire des suites finies. La sémantique, elle, emploie des ensembles intuitifs. Une fois $\mathsf{ZF}$ posée sur cette base, on peut tout recoder à l'intérieur. Gödel, pour démontrer l'incomplétude, fait un recodage du même genre dans l'arithmétique : les formules et les démonstrations y deviennent des entiers.
     remarques:
       - |
         Les notions de la métathéorie recevront plus loin une définition rigoureuse dans $\mathsf{ZF}$ : applications au nœud {{rel|Relations, fonctions}}, entiers au nœud {{n|ℕ}}. Elles ne sont utilisées ici que dans leur sens intuitif, et jamais comme objets de la théorie étudiée.
@@ -33,7 +33,9 @@ noeuds:
       $$\begin{array}{c|c} P & \neg P \\ \hline 1 & 0 \\ 0 & 1 \end{array} \qquad\qquad \begin{array}{cc|c} P & Q & P \to Q \\ \hline 1 & 1 & 1 \\ 1 & 0 & 0 \\ 0 & 1 & 1 \\ 0 & 0 & 1 \end{array}$$
       Les autres connecteurs sont des **abréviations** : $P \wedge Q$ pour $\neg(P \to \neg Q)$, $P \vee Q$ pour $\neg P \to Q$, et $P \leftrightarrow Q$ pour $(P \to Q) \wedge (Q \to P)$.
 
-      On vérifie sur les tables que $P \wedge Q$ vaut $1$ si et seulement si $P$ et $Q$ valent $1$, que $P \vee Q$ vaut $1$ si et seulement si l'un d'eux au moins vaut $1$, et que $P \leftrightarrow Q$ vaut $1$ si et seulement si $P$ et $Q$ ont même valeur.
+      Ainsi $P \wedge Q$ vaut $1$ si et seulement si $P$ et $Q$ valent $1$, $P \vee Q$ vaut $1$ si et seulement si l'un d'eux au moins vaut $1$, et $P \leftrightarrow Q$ vaut $1$ si et seulement si $P$ et $Q$ ont même valeur.
+
+      En effet, par la table de $\to$, la formule $P \to \neg Q$ ne vaut $0$ que si $P$ vaut $1$ et $\neg Q$ vaut $0$, c'est-à-dire si $P$ et $Q$ valent $1$ : sa négation $P \wedge Q$ vaut donc $1$ exactement dans ce cas. De même, $\neg P \to Q$ ne vaut $0$ que si $P$ et $Q$ valent $0$. Enfin $P \leftrightarrow Q$ vaut $1$ exactement quand les deux implications $P \to Q$ et $Q \to P$ valent $1$, c'est-à-dire quand on n'a ni $P = 1, Q = 0$, ni $P = 0, Q = 1$ : quand $P$ et $Q$ ont même valeur.
     remarques:
       - |
         L'implication est **matérielle** : $P \to Q$ est vraie dès que $P$ est fausse, sans aucun lien de cause entre $P$ et $Q$. L'erreur la plus répandue est d'y lire une causalité ; « si $2 + 2 = 5$, alors la Lune est un fromage » est un énoncé vrai.
@@ -66,7 +68,7 @@ noeuds:
 
       Une [[tautologie]] est une formule $\varphi$ telle que $\bar v(\varphi) = 1$ pour toute valuation $v$.
 
-      **Complétude fonctionnelle.** Pour toute fonction $F : \{0,1\}^n \to \{0,1\}$, il existe une formule $\varphi$ écrite avec les lettres $P_1, \dots, P_n$ et les seuls connecteurs $\neg$ et $\to$, telle que $\bar v(\varphi) = F(v(P_1), \dots, v(P_n))$ pour toute valuation $v$.
+      **Complétude fonctionnelle.** Pour tout entier $n \geqslant 1$ et toute fonction $F : \{0,1\}^n \to \{0,1\}$, il existe une formule $\varphi$ écrite avec les lettres $P_1, \dots, P_n$ et les seuls connecteurs $\neg$ et $\to$, telle que $\bar v(\varphi) = F(v(P_1), \dots, v(P_n))$ pour toute valuation $v$.
     preuve: |
       Le prolongement $\bar v$ est bien défini par récurrence sur les formules, grâce à la {{l-lecture|lecture unique}}, qui garantit que chaque formule non réduite à une lettre s'écrit d'une seule façon $\neg\varphi$ ou $\to \varphi\, \psi$.
 
@@ -75,11 +77,13 @@ noeuds:
       Si $F$ est identiquement nulle, la formule $P_1 \wedge \neg P_1$ convient. Sinon, la disjonction des $C_\varepsilon$ pour les $\varepsilon$ tels que $F(\varepsilon) = 1$ vaut $1$ exactement aux points où $F$ vaut $1$. Comme $\wedge$ et $\vee$ sont des abréviations, cette formule s'écrit avec $\neg$ et $\to$ seuls.
     remarques:
       - |
-        Savoir si une formule à $n$ lettres est une tautologie est un calcul fini : il suffit d'examiner les $2^n$ lignes de sa table. Par exemple, $\varphi \to (\psi \to \varphi)$ ne peut valoir $0$ que si $\varphi$ vaut $1$ et $\psi \to \varphi$ vaut $0$, ce qui exige $\varphi = 0$ : c'est impossible, la formule est une tautologie. Ce caractère décidable disparaît au premier ordre.
+        Savoir si une formule à $n$ lettres est une tautologie est un calcul fini : il suffit d'examiner les $2^n$ lignes de sa table. Par exemple, $\varphi \to (\psi \to \varphi)$ ne peut valoir $0$ que si $\varphi$ vaut $1$ et $\psi \to \varphi$ vaut $0$, ce qui exige $\varphi = 0$ : c'est impossible, la formule est une tautologie.
 
         ```schema l-tautologies
         Arbre de lecture de $\varphi \to (\psi \to \varphi)$, écrite $\to \varphi \to \psi\, \varphi$ ; chaque valeur entourée est imposée par la recherche d'une valuation qui donne $0$ à la racine, la table de $\to$ n'ayant qu'une ligne de valeur $0$. Les deux occurrences de $\varphi$ reçoivent alors $1$ et $0$, en rouge : aucune valuation ne convient.
         ```
+      - |
+        Au premier ordre, il n'existe en général plus de tel procédé : l'ensemble des énoncés universellement valides n'est pas décidable (Church, 1936 ; Turing, 1936), et il ne l'est déjà plus pour une signature qui contient un symbole de relation binaire. La notion de procédé décidable sera précisée par la théorie de la {{calc|calculabilité}}.
 
   - id: l-substitution
     etiquette: Substitution
@@ -92,14 +96,20 @@ noeuds:
       $$\begin{aligned} \mathcal M &\models \varphi[t/x]\,[s] \\ \iff \mathcal M &\models \varphi\,[s(x \mid t^{\mathcal M}[s])], \end{aligned}$$
       où $s(x \mid a)$ désigne la valuation qui coïncide avec $s$ sauf en $x$, où elle vaut $a$.
     preuve: |
-      Pour les termes, on vérifie par récurrence que la valeur de $u[t/x]$ sous $s$ est celle de $u$ sous $s(x \mid t^{\mathcal M}[s])$. Pour les formules, on raisonne par récurrence sur $\varphi$ ; les cas atomiques découlent du cas des termes, et les connecteurs passent directement.
+      Montrons d'abord que, si l'on remplace par $t$ certaines occurrences de $x$ dans un terme, on obtient un terme, et dans une formule, une formule ; en particulier $\varphi[t/x]$ est une formule. On raisonne par récurrence sur la longueur, avec la {{l-lecture|lecture unique}}, en notant que remplacer des lettres d'un mot $w_1 w_2$ revient à remplacer celles de $w_1$, puis celles de $w_2$, et à concaténer.
+
+      Une variable devient $t$ ou reste elle-même, une constante reste elle-même. Dans $f\, u_1 \cdots u_n$, les lettres remplacées sont dans les $u_i$, et le résultat est $f$ suivi de $n$ termes. De même, $= u_1\, u_2$ et $R\, u_1 \cdots u_n$ donnent des formules atomiques, et $\neg\varphi$, $\to \varphi\, \psi$ donnent $\neg$ ou $\to$ suivi de formules. Dans $\forall y\, \varphi$, la lettre $y$ qui suit $\forall$ marque le quantificateur et n'est jamais remplacée : le résultat est $\forall y$ suivi d'une formule.
+
+      Venons au lemme. Posons $s' = s(x \mid t^{\mathcal M}[s])$. Pour les termes, on montre par récurrence sur $u$ que la valeur de $u[t/x]$ sous $s$ est celle de $u$ sous $s'$. Si $u = x$, les deux valent $t^{\mathcal M}[s]$ ; si $u$ est une autre variable ou une constante, $u[t/x] = u$ et $s'$ coïncide avec $s$ sur $u$. Si $u = f\, u_1 \cdots u_n$, alors $u[t/x] = f\, u_1[t/x] \cdots u_n[t/x]$, et l'on applique $f^{\mathcal M}$ aux valeurs, égales par hypothèse de récurrence.
+
+      Pour les formules, on raisonne par récurrence sur $\varphi$ ; les cas atomiques découlent du cas des termes, et les connecteurs passent directement.
 
       Pour $\varphi = \forall y\, \psi$ : si $x$ n'est pas libre dans $\varphi$, la substitution ne change rien et le {{l-coincidence|lemme de coïncidence}} conclut.
 
-      Sinon $y \neq x$, et l'hypothèse de substituabilité impose que $y$ ne figure pas dans $t$ ; ainsi $t$ a la même valeur sous $s$ et sous $s(y \mid a)$ pour tout $a$. On applique alors l'hypothèse de récurrence à $\psi$ sous chaque valuation $s(y \mid a)$, et l'on conclut en quantifiant sur $a$.
+      Sinon $y \neq x$, et l'hypothèse de substituabilité impose que $y$ ne figure pas dans $t$ ; ainsi $t$ a la même valeur sous $s$ et sous $s(y \mid a)$ pour tout $a$. Le terme $t$ est encore substituable à $x$ dans $\psi$, et, $x$ et $y$ étant distincts, $s(y \mid a)(x \mid b) = s(x \mid b)(y \mid a)$ pour tous $a$, $b$. On applique alors l'hypothèse de récurrence à $\psi$ sous chaque valuation $s(y \mid a)$, et l'on conclut en quantifiant sur $a$.
     remarques:
       - |
-        Que $\varphi[t/x]$ soit une formule quand $\varphi$ en est une et que $t$ est un terme se voit par récurrence sur la longueur ; la démonstration détaillée est donnée plus loin, au point (iii) du nœud {{cal-sx-substitution|Substitution}} de la calculabilité.
+        Le premier point de la démonstration est repris plus loin, pour la signature de l'arithmétique et sur les codes des mots, au point (iii) du nœud {{cal-sx-substitution|Substitution}} de la calculabilité, où la substitution devient une fonction primitive récursive des codes.
       - |
         La condition de substituabilité n'est pas une formalité. Dans $\varphi = \exists y\, (y \neq x)$, qui exprime « il existe un élément différent de $x$ », substituer $y$ à $x$ donne $\exists y\, (y \neq y)$, qui est toujours faux : la variable $y$ a été **capturée** par le quantificateur.
 
@@ -113,7 +123,7 @@ noeuds:
     enonce: |
       Une [[structure]] $\mathcal M$ pour la signature $\mathcal L$ est la donnée d'un ensemble **non vide** $M$, son domaine, et d'une interprétation de chaque symbole : un élément $c^{\mathcal M} \in M$ pour chaque constante, une application $f^{\mathcal M} : M^n \to M$ pour chaque symbole de fonction d'arité $n$, une partie $R^{\mathcal M} \subset M^n$ pour chaque symbole de relation d'arité $n$.
 
-      Une **valuation** est une application $s$ de l'ensemble des variables dans $M$. La valeur $t^{\mathcal M}[s]$ d'un terme s'obtient par récurrence : $x^{\mathcal M}[s] = s(x)$, et
+      Une **valuation** est une application $s$ de l'ensemble des variables dans $M$. La valeur $t^{\mathcal M}[s]$ d'un terme s'obtient par récurrence : $x^{\mathcal M}[s] = s(x)$ pour une variable, $c^{\mathcal M}[s] = c^{\mathcal M}$ pour une constante, et
       $$\begin{aligned} &(f\, t_1 \cdots t_n)^{\mathcal M}[s] \\ &\quad = f^{\mathcal M}(t_1^{\mathcal M}[s], \dots, t_n^{\mathcal M}[s]). \end{aligned}$$
     remarques:
       - |
@@ -133,7 +143,7 @@ noeuds:
       $\mathcal M \models \forall x\, \varphi\,[s]$ si $\mathcal M \models \varphi\,[s(x \mid a)]$ pour tout $a \in M$.
     remarques:
       - |
-        La définition est récursive, et le symbole $\forall$ du langage est interprété par le « pour tout » de la métathéorie. Elle ne dit pas ce qu'est la vérité, mais réduit la vérité d'une formule à celle de ses sous-formules ; Tarski a montré en 1933 qu'une telle définition ne peut pas être formulée dans le langage même qu'elle interprète.
+        La définition est récursive, et le symbole $\forall$ du langage est interprété par le « pour tout » de la métathéorie. Elle ne dit pas ce qu'est la vérité, mais réduit la vérité d'une formule à celle de ses sous-formules ; Tarski a montré en 1933 qu'une telle définition ne peut pas être formulée dans le langage même qu'elle interprète, dès que ce langage peut exprimer l'arithmétique ; le nœud {{cal-tarski|Vérité et incomplétude}} en démontre une forme.
 
   - id: l-coincidence
     etiquette: Lemme de coïncidence
@@ -157,7 +167,9 @@ noeuds:
     etiquette: Démonstrations formelles
     nature: définition
     enonce: |
-      On fixe le système de Hilbert suivant, dû à Enderton. Les **axiomes logiques** sont toutes les généralisations $\forall y_1 \cdots \forall y_k\, \alpha$ des formules $\alpha$ suivantes :
+      On fixe le système de Hilbert suivant, tel qu'il est exposé par Enderton (*A Mathematical Introduction to Logic*, 1972, §2.4), dont les deux groupes d'axiomes de l'égalité sont réunis ici en un seul ; l'idée de prendre pour axiomes toutes les généralisations, avec le modus ponens pour seule règle, remonte à Quine (*Mathematical Logic*, 1940).
+
+      Les **axiomes logiques** sont toutes les généralisations $\forall y_1 \cdots \forall y_k\, \alpha$ des formules $\alpha$ suivantes :
 
       (1) les instances de tautologies, c'est-à-dire les formules obtenues en remplaçant les lettres d'une [[tautologie]] propositionnelle par des formules du premier ordre ;
 
@@ -170,6 +182,8 @@ noeuds:
       (5) $x = x$, et $x = y \to (\alpha \to \alpha')$, si $\alpha$ est atomique et si $\alpha'$ s'obtient en remplaçant certaines occurrences de $x$ par $y$.
 
       Une [[demonstration-formelle]] de $\varphi$ à partir de $T$ est une suite finie de formules, terminée par $\varphi$, dont chacune est un axiome logique, un élément de $T$, ou se déduit de deux formules précédentes $\alpha$ et $\alpha \to \beta$ par la seule règle, le **modus ponens**. On note alors $T \vdash \varphi$.
+
+      Plus généralement, on définit de la même façon une démonstration formelle à partir d'un ensemble $\Gamma$ de formules, closes ou non, et l'on note $\Gamma \vdash \varphi$.
     remarques:
       - |
         Le choix de n'avoir qu'une règle, au prix d'axiomes nombreux, simplifie toutes les démonstrations sur le système, qui se font par récurrence sur la longueur des démonstrations formelles. D'autres systèmes, comme la déduction naturelle, sont plus proches du raisonnement usuel ; ils démontrent exactement les mêmes formules.
@@ -183,12 +197,12 @@ noeuds:
     preuve: |
       Montrons, par récurrence sur la longueur d'une démonstration formelle, que chacune de ses formules est satisfaite par tout modèle $\mathcal M$ de $T$, sous toute valuation $s$.
 
-      Les éléments de $T$ sont des énoncés satisfaits par $\mathcal M$. Les axiomes logiques sont valides : (1) par les tables de vérité ; (2) par le {{l-substitution|lemme de substitution}} ; (3) directement ; (4) par le {{l-coincidence|lemme de coïncidence}}, puisque $x$ n'est pas libre dans $\alpha$ ; (5) directement.
+      Les éléments de $T$ sont des énoncés satisfaits par $\mathcal M$. Les axiomes logiques sont valides : (1) parce que, si $v$ attribue à chaque lettre la valeur de vérité sous $s$ de la formule qui la remplace, l'instance est satisfaite sous $s$ si et seulement si $\bar v$ vaut $1$ sur la tautologie, par récurrence sur celle-ci, les clauses de la satisfaction pour $\neg$ et $\to$ étant celles des tables de vérité ; (2) par le {{l-substitution|lemme de substitution}} ; (3) directement ; (4) par le {{l-coincidence|lemme de coïncidence}}, puisque $x$ n'est pas libre dans $\alpha$ ; (5) directement.
 
       Une généralisation d'une formule satisfaite sous toute valuation l'est aussi. Enfin, si $\alpha$ et $\alpha \to \beta$ sont satisfaites sous $s$, alors $\beta$ l'est, par la définition de la satisfaction pour $\to$.
     remarques:
       - |
-        En particulier, une théorie qui a un modèle est cohérente : sinon elle démontrerait $\varphi$ et $\neg\varphi$, qui seraient toutes deux vraies dans ce modèle. C'est la seule méthode générale pour prouver la cohérence d'une théorie, et elle déplace la question vers la cohérence de la théorie où l'on construit le modèle.
+        En particulier, une théorie qui a un modèle est cohérente : sinon elle démontrerait $\varphi$ et $\neg\varphi$, qui seraient toutes deux vraies dans ce modèle. C'est la méthode la plus directe pour prouver la cohérence d'une théorie, et elle déplace la question vers la cohérence de la théorie où l'on construit le modèle. Il existe aussi des preuves syntaxiques de cohérence, comme celle de Gentzen (1936) pour l'arithmétique de Peano, qui raisonne sur les démonstrations elles-mêmes.
 
   - id: l-thm-deduction
     etiquette: Théorème de la déduction
@@ -217,7 +231,7 @@ noeuds:
 
       (ii) si $T \nvdash \varphi$, la théorie $T \cup \{\neg\varphi\}$ est cohérente.
     preuve: |
-      (i) Si $T \vdash \varphi$ et $T \vdash \neg\varphi$, la tautologie $\neg\varphi \to (\varphi \to \chi)$ et deux modus ponens donnent $T \vdash \chi$ pour toute formule $\chi$. La réciproque est claire.
+      (i) Si $T \vdash \varphi$ et $T \vdash \neg\varphi$, la tautologie $\neg\varphi \to (\varphi \to \chi)$ et deux modus ponens donnent $T \vdash \chi$ pour toute formule $\chi$. Réciproquement, si $T$ démontre toutes les formules, elle démontre par exemple $x_0 = x_0$ et $\neg\, x_0 = x_0$ : elle est incohérente.
 
       (ii) Si $T \cup \{\neg\varphi\}$ était incohérente, elle démontrerait $\varphi$ par (i). Le {{l-thm-deduction|théorème de la déduction}} donnerait $T \vdash \neg\varphi \to \varphi$, et la tautologie $(\neg\varphi \to \varphi) \to \varphi$ donnerait $T \vdash \varphi$, ce qui est exclu.
 
@@ -278,20 +292,24 @@ noeuds:
       - |
         D'où le **paradoxe de Skolem** : si $\mathsf{ZFC}$ est cohérente, elle a un modèle dénombrable, bien qu'elle démontre l'existence d'ensembles non dénombrables comme $\mathbb R$. Il n'y a pas de contradiction : dans ce modèle, l'ensemble qui joue le rôle de $\mathbb R$ est dénombrable vu de l'extérieur, mais aucune bijection avec $\mathbb N$ n'appartient au modèle.
       - |
-        La démonstration qui précède n'emploie aucune forme de l'axiome du choix, que le nœud {{zf-choix|Axiome du choix}} posera. La forme générale, qui fournit pour toute structure sur un langage dénombrable une sous-structure élémentaire dénombrable, équivaut au choix dépendant.
+        La démonstration qui précède n'emploie aucune forme de l'axiome du choix, que le nœud {{zf-choix|Axiome du choix}} posera. La forme générale du théorème, qui fournit pour toute structure $\mathcal M$ sur un langage dénombrable une sous-structure **élémentaire** finie ou dénombrable, équivaut au choix dépendant : c'est une partie finie ou dénombrable du domaine, stable par les symboles, qui satisfait exactement les mêmes formules que $\mathcal M$ pour les valuations qui y prennent leurs valeurs.
 
   - id: l-non-standard
     etiquette: Modèles non standard
     nature: corollaire
     titre: Modèles non standard de l'arithmétique
     enonce: |
+      Un **isomorphisme** de deux structures $\mathcal M$ et $\mathcal N$ pour une même signature est une bijection $h : M \to N$ qui respecte l'interprétation de chaque symbole : $h(c^{\mathcal M}) = c^{\mathcal N}$ pour chaque constante,
+      $$\begin{aligned} &h\big(f^{\mathcal M}(a_1, \dots, a_n)\big) \\ &\quad = f^{\mathcal N}\big(h(a_1), \dots, h(a_n)\big) \end{aligned}$$
+      pour chaque symbole de fonction, et $(a_1, \dots, a_n) \in R^{\mathcal M}$ si et seulement si $(h(a_1), \dots, h(a_n)) \in R^{\mathcal N}$ pour chaque symbole de relation, pour tous $a_1, \dots, a_n \in M$.
+
       Soit $\mathrm{Th}(\mathbb N)$ l'ensemble des énoncés du langage $\{0, S, +, \times\}$ vrais dans $\mathbb N$. Il existe un modèle de $\mathrm{Th}(\mathbb N)$ qui n'est pas isomorphe à $\mathbb N$.
     preuve: |
       Pour $n \in \mathbb N$, notons $\underline n$ le terme $S \cdots S\, 0$, avec $n$ occurrences de $S$, dont la valeur dans $\mathbb N$ est $n$. Ajoutons une constante $c$ et considérons
       $$T = \mathrm{Th}(\mathbb N) \cup \{c \neq \underline n : n \in \mathbb N\}.$$
-      Une partie finie de $T$ ne mentionne qu'un nombre fini d'énoncés $c \neq \underline n$ ; en interprétant $c$ dans $\mathbb N$ par un entier plus grand que tous les $n$ concernés, on obtient un modèle. Par {{l-compacite|compacité}}, appliquée à la signature finie $\{0, S, +, \times, c\}$, ce qui n'emploie aucun choix, $T$ a un modèle $\mathcal M$.
+      Une partie finie de $T$ ne mentionne qu'un nombre fini d'énoncés $c \neq \underline n$ ; en interprétant $c$ dans $\mathbb N$ par un entier plus grand que tous les $n$ concernés, on obtient un modèle. Par {{l-compacite|compacité}}, appliquée à la signature finie $\{0, S, +, \times, c\}$, ce qui n'emploie aucun choix, $T$ a un modèle $\mathcal M$. En oubliant l'interprétation de $c$, on obtient une structure $\mathcal M_0$ pour $\{0, S, +, \times\}$, de même domaine, qui est un modèle de $\mathrm{Th}(\mathbb N)$, puisque la satisfaction d'un énoncé où $c$ ne figure pas n'emploie pas $c^{\mathcal M}$.
 
-      Dans $\mathbb N$, tout élément est la valeur d'un terme $\underline n$. Un isomorphisme $h : \mathbb N \to \mathcal M$ enverrait la valeur de $\underline n$ sur celle de $\underline n$ dans $\mathcal M$, et serait donc à valeurs dans l'ensemble de ces valeurs, qui ne contient pas $c^{\mathcal M}$. Il ne serait pas surjectif : $\mathcal M$ n'est pas isomorphe à $\mathbb N$.
+      Dans $\mathbb N$, tout élément est la valeur d'un terme $\underline n$. Un isomorphisme $h : \mathbb N \to \mathcal M_0$ enverrait, par récurrence sur $n$, la valeur de $\underline n$ dans $\mathbb N$ sur sa valeur dans $\mathcal M_0$, et serait donc à valeurs dans l'ensemble de ces valeurs. Celui-ci ne contient pas $c^{\mathcal M}$, puisque $\mathcal M$ satisfait chaque énoncé $c \neq \underline n$. L'application $h$ ne serait pas surjective : $\mathcal M_0$ n'est pas isomorphe à $\mathbb N$.
     remarques:
       - |
         Aucun ensemble d'énoncés du premier ordre ne caractérise donc $\mathbb N$ à isomorphisme près, contrairement aux axiomes de Peano du second ordre, comme le signale le nœud {{n-peano|Axiomes de Peano}}. La récurrence au premier ordre, qui est un schéma portant sur les seules propriétés définissables, est trop faible pour exclure les éléments infiniment grands.
@@ -301,25 +319,35 @@ noeuds:
     nature: théorème
     titre: Théorèmes d'incomplétude
     texte: |
-      L'**arithmétique de Robinson** est la théorie, sur la signature $\{0, S, +, \times\}$, dont les axiomes sont les clôtures universelles de $\neg(S\,x = 0)$, de $S\,x = S\,y \to x = y$, de $\neg(x = 0) \to \exists y\, (x = S\,y)$, de $x + 0 = x$, de $x + S\,y = S(x + y)$, de $x \times 0 = 0$ et de $x \times S\,y = x \times y + x$ : ce sont les six premiers axiomes de l'arithmétique de Peano, définie dans la théorie de la calculabilité, sans le schéma de récurrence, et le troisième, que ce schéma rendrait démontrable. Elle n'est définie qu'ici.
+      L'**arithmétique de Robinson** est la théorie, sur la signature $\{0, S, +, \times\}$, dont les axiomes sont les clôtures universelles de $\neg(S\,x = 0)$, de $S\,x = S\,y \to x = y$, de $\neg(x = 0) \to \exists y\, (x = S\,y)$, de $x + 0 = x$, de $x + S\,y = S(x + y)$, de $x \times 0 = 0$ et de $x \times S\,y = x \times y + x$.
+
+      L'**arithmétique de Peano** a pour axiomes ces clôtures universelles, sauf la troisième, et, pour toute formule $\varphi$ et toute variable $x$, la clôture universelle de
+      $$\big(\varphi[0/x] \wedge \forall x\, (\varphi \to \varphi[S\,x/x])\big) \to \forall x\, \varphi,$$
+      le **schéma de récurrence** ; les termes $0$ et $S\,x$ sont substituables à $x$ dans $\varphi$, puisque les occurrences libres de $x$ ne sont dans la portée d'aucun $\forall x$. Le troisième axiome de Robinson y devient démontrable, par le schéma appliqué à la formule $\neg(x = 0) \to \exists y\, (x = S\,y)$. L'arithmétique de Robinson est donc formée des six axiomes de l'arithmétique de Peano, sans son schéma de récurrence, auxquels s'ajoute le troisième.
+
+      L'énoncé emploie en outre la notion d'ensemble **récursivement énumérable**, appliquée à l'ensemble des codes entiers des axiomes de $T$. Elle n'est définie que plus loin, dans la théorie de la calculabilité, avec le codage des formules par des entiers : elle est admise ici par anticipation, et l'on peut la lire au sens intuitif d'un ensemble dont un procédé mécanique énumère les éléments.
     enonce: |
       Soit $T$ une théorie cohérente, dont l'ensemble des axiomes est récursivement énumérable, et qui contient l'arithmétique de Robinson.
 
       (i) Il existe un énoncé $G$ tel que $T \nvdash G$ et $T \nvdash \neg G$ (Gödel, 1931 ; Rosser, 1936, pour l'hypothèse de simple cohérence).
 
-      (ii) Si $T$ contient de plus l'arithmétique de Peano, elle ne démontre pas l'énoncé $\mathrm{Coh}(T)$ qui exprime sa propre cohérence.
+      (ii) Si $T$ contient de plus l'arithmétique de Peano, elle ne démontre pas l'énoncé $\mathrm{Coh}(T)$ qui exprime sa propre cohérence, construit à partir d'une définition naturelle de l'ensemble de ses axiomes.
     preuve: |
       *Admis ici.* On code les formules et les démonstrations par des entiers, de sorte que la relation « $n$ est le code d'une démonstration à partir de $T$ de la formule de code $m$ » soit récursive lorsque l'ensemble des axiomes de $T$ est récursif ; on s'y ramène, à théorèmes égaux, par l'astuce de Craig (W. Craig, « On axiomatizability within a system », *Journal of Symbolic Logic* 18, 1953, p. 30-32). On exprime ensuite cette relation par une formule de l'arithmétique, et le lemme diagonal fournit un énoncé $G$ équivalent, dans $T$, à « $G$ n'est pas démontrable dans $T$ » ; l'astuce de Rosser le modifie pour n'exiger que la cohérence.
 
       La difficulté contournée est la **représentation** dans $T$ des relations récursives : pour chacune, une formule $\varphi_R$ telle que $T$ démontre $\varphi_R$ appliquée aux termes $S \cdots S\, 0$ des entiers de $R$, et sa négation pour les autres. Il faut pour cela écrire dans le système formel des démonstrations de nombreux énoncés de l'arithmétique de Robinson, sommes et produits d'entiers explicites, puis « $x \leqslant n$ entraîne $x = 0$ ou … ou $x = n$ », et y transporter le lemme de la fonction $\beta$. Le point (ii) demande en outre de refaire cette représentation à l'intérieur de l'arithmétique de Peano, pour que $T$ démontre les propriétés de son propre prédicat de démontrabilité. L'astuce de Craig, qui remplace un ensemble d'axiomes récursivement énumérable par un ensemble récursif ayant les mêmes théorèmes, est elle aussi admise.
     remarques:
       - |
-        Le théorème s'applique à $\mathsf{ZFC}$ : si elle est cohérente, elle ne démontre pas sa propre cohérence, et l'on ne peut pas prouver la solidité de l'édifice tout entier avec ses seuls outils. Il ne contredit pas la complétude : $G$ est vrai dans certains modèles de $T$ et faux dans d'autres.
+        Le théorème s'étend aux théories qui interprètent l'arithmétique de Robinson, comme $\mathsf{ZFC}$ : si elle est cohérente, elle ne démontre pas sa propre cohérence, et l'on ne peut pas prouver la solidité de l'édifice tout entier avec ses seuls outils. Il ne contredit pas la complétude : $G$ est vrai dans certains modèles de $T$ et faux dans d'autres.
       - |
-        Les notions de l'énoncé sont définies plus loin, dans la théorie de la {{calc|calculabilité}} : un ensemble [[ensemble-recursivement-enumerable|récursivement énumérable]] au nœud {{cal-ensembles|Récursif, r.e.}}, l'arithmétique de Peano au nœud {{cal-theoremes|Théorèmes r.e.}}. Le nœud {{cal-tarski|Vérité et incomplétude}} y démontre une forme voisine du point (i), sous une hypothèse différente, par l'indécidabilité de l'arrêt : une théorie dont les axiomes forment un ensemble récursivement énumérable et sont vrais dans $\mathbb N$ ne démontre pas tous les énoncés vrais. Cette voie demande que les axiomes soient vrais, et non seulement cohérents, mais elle n'exige pas l'arithmétique de Robinson et s'applique même à $T = \varnothing$ ; elle évite la représentation des fonctions récursives dans $T$.
+        La notion d'ensemble [[ensemble-recursivement-enumerable|récursivement énumérable]] est définie plus loin, dans la théorie de la {{calc|calculabilité}}, au nœud {{cal-ensembles|Récursif, r.e.}} ; l'arithmétique de Peano définie ci-dessus y est reprise, sur les codes des formules, au nœud {{cal-theoremes|Théorèmes r.e.}}. Le nœud {{cal-tarski|Vérité et incomplétude}} y démontre une forme voisine du point (i), sous une hypothèse différente, par l'indécidabilité de l'arrêt : une théorie dont les axiomes forment un ensemble récursivement énumérable et sont vrais dans $\mathbb N$ ne démontre pas tous les énoncés vrais. Cette voie demande que les axiomes soient vrais, et non seulement cohérents, mais elle n'exige pas l'arithmétique de Robinson et s'applique même à $T = \varnothing$ ; elle évite la représentation des fonctions récursives dans $T$.
 
         Le nœud {{cal-tarski|Vérité et incomplétude}} est entièrement démontré, jusqu'à l'incomplétude de l'arithmétique de Peano. La récursivité du codage de la syntaxe, formules, énoncés, axiomes logiques, démonstrations, qu'emploie la preuve ci-dessus, y est établie au chapitre {{cal-syntaxe|Arithmétisation de la syntaxe}}. Restent admis ici l'astuce de Craig, la représentation des fonctions récursives dans $T$ et ce qui en dépend : le lemme diagonal, l'astuce de Rosser et, pour le point (ii), les propriétés du prédicat de démontrabilité.
     admis:
+      - lieu: texte
+        statut: aval
+        objet: "Notion d'ensemble récursivement énumérable, employée dans l'énoncé avant sa définition"
+        renvoi: cal-ensembles
       - lieu: preuve
         statut: a-faire
         objet: Représentation dans $T$ des relations récursives, et le lemme diagonal qui en dépend
