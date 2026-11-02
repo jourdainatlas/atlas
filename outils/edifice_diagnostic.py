@@ -163,15 +163,19 @@ def note(cat, n, msg): cas[cat].append((n['graphe'], n['id'], msg))
 # ------------------------------------------------------------------ A. notations sans balise
 # Chaque notation a une ou plusieurs fiches de définition ; l'emploi est suspect si aucune n'est en amont.
 NOTATIONS = [
-    ('exponentielle', r'\\exp\b|(?<![A-Za-z\\])e\^\{', ['cx-exponentielle', 'ed-lineaires', 'lp-puissances']),
-    ('logarithme', r'\\ln\b|\\log\b', ['nb-logarithme', 'lp-puissances']),
-    ('sinus, cosinus', r'\\sin\b|\\cos\b|\\tan\b', ['cx-exponentielle']),
-    ('le nombre π', r'(?:\d|(?<![A-Za-z\\])i)\s*\\pi\b|\\pi\s*/\s*\d|\\frac\s*\{\d*\s*\\pi|\\frac\\pi|\\pi\^2|\\pi\}\{\d', ['cx-pi']),
+    # 2 nov. 2026 (lot 3) : exp, ln, cos, sin, tan et π sont définis en analyse réelle (ar-exp, ar-trigo) ;
+    # cx-exponentielle prolonge exp à ℂ (en aval de ex-exponentielle), lp-puissances, dr-exp, nb-logarithme,
+    # cx-pi ne sont plus que des rappels, tous en aval : ils ne sont plus des fiches de définition.
+    ('exponentielle', r'\\exp\b|(?<![A-Za-z\\])e\^\{', ['ex-exponentielle', 'ed-lineaires']),
+    ('logarithme', r'\\ln\b|\\log\b', ['ex-logarithme']),
+    ('sinus, cosinus', r'\\sin\b|\\cos\b', ['tg-prolongement']),
+    ('tangente', r'\\tan\b', ['tg-tangente']),
+    ('le nombre π', r'(?:\d|(?<![A-Za-z\\])i)\s*\\pi\b|\\pi\s*/\s*\d|\\frac\s*\{\d*\s*\\pi|\\frac\\pi|\\pi\^2|\\pi\}\{\d', ['tg-arctan']),
     ('ℂ', r'\\mathbb\s*C\b|ℂ', ['c-construction']),
     ('ℝ', r'\\mathbb\s*R\b|ℝ', ['rr-definition']),
     ('ℚ', r'\\mathbb\s*Q\b|ℚ', ['q-construction']),
     ('déterminant', r'\\det\b|déterminant', ['v-determinant', 'v-det-matrice', 'v-formes-alternees']),
-    ('racine carrée', r'\\sqrt(?!\s*\{?\s*(?:[IJ]|\\mathfrak))\b|racine carrée', ['c-racine-reelle', 'lp-puissances', 'me-espace', 'tr-dense']),
+    ('racine carrée', r'\\sqrt(?!\s*\{?\s*(?:[IJ]|\\mathfrak))\b|racine carrée', ['c-racine-reelle', 'tg-tangente', 'lp-puissances', 'me-espace', 'tr-dense']),
     ('mesure de Lebesgue', r'mesure de Lebesgue', ['m-lebesgue']),
     ('intégrale', r'\\int\b|intégrale', ['ri-integrable', 'ri-sommes', 'ri-integrale-escalier', 'm-integrale', 'cx-integrale-chemin', 'gd-integrale-curviligne', 'dr-iterees']),
     ('dérivée', r"(?<!règles )dérivée(?!s)|dérivable", ['de-derivee', 'pol-derivee', 'gd-differentielle']),

@@ -2107,8 +2107,17 @@ $('#resultats-edifice').addEventListener('click', ev => {
 document.addEventListener('click', ev => { if (!ev.target.closest('.cherche-edifice')) fermerResultatsEdifice(); });
 $('#remonter').addEventListener('click', remonter);
 $('#plus').addEventListener('click', () => { etat.echelle = Math.min(1.6, etat.echelle * 1.15); appliquerEchelle(); });
-$('#moins').addEventListener('click', () => { etat.echelle = Math.max(0.35, etat.echelle / 1.15); appliquerEchelle(); });
-$('#ajuster').addEventListener('click', () => { etat.echelle = Math.max(0.35, Math.min(1, ($('#vue').clientWidth - 8) / D.graphes[etat.graphe].largeur)); appliquerEchelle(); });
+// Plancher d'échelle : 0,35 en général, abaissé (jusqu'à 0,2) quand il le faut pour que la largeur du graphe
+// tienne dans la vue (l'édifice fait 1252 px depuis le 2 nov. 2026 : 0,30 sur un téléphone de 390 px).
+function echelleLargeur() { return ($('#vue').clientWidth - 8) / D.graphes[etat.graphe].largeur; }
+function plancherEchelle() { return Math.max(0.2, Math.min(0.35, echelleLargeur())); }
+$('#moins').addEventListener('click', () => { etat.echelle = Math.max(plancherEchelle(), etat.echelle / 1.15); appliquerEchelle(); });
+$('#ajuster').addEventListener('click', () => {
+  etat.echelle = Math.max(plancherEchelle(), Math.min(1, echelleLargeur()));
+  appliquerEchelle();
+  const vue = $('#vue');
+  vue.scrollLeft = 0; vue.scrollTop = 0;
+});
 
 /* ------------------------------------------------------------ zoom du graphe au pincement */
 // Deux doigts (téléphone, tablette) ou pincement du pavé tactile (Ctrl + molette) : l'échelle suit
@@ -2116,7 +2125,7 @@ $('#ajuster').addEventListener('click', () => { etat.echelle = Math.max(0.35, Ma
 // le milieu des doigts reste sous ce milieu (le glissement à deux doigts déplace aussi le graphe).
 function zoomGraphe(echelle, cx, cy) {
   const plan = $('#plan'), vue = $('#vue');
-  const e0 = etat.echelle, e1 = Math.max(0.35, Math.min(1.6, echelle));
+  const e0 = etat.echelle, e1 = Math.max(plancherEchelle(), Math.min(1.6, echelle));
   const r0 = plan.getBoundingClientRect();
   const px = (cx - r0.left) / e0, py = (cy - r0.top) / e0;      // point du graphe sous le milieu
   etat.echelle = e1;

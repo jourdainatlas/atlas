@@ -612,44 +612,6 @@ def cx_pi():
     return S
 
 
-@schema('cx-pi-2')
-def cx_pi_2():
-    # les quatre arcs i^m exp(ir), 0 <= r < π/2, et les signes qu'examine la preuve de (ii)
-    rs = np.linspace(0, np.pi / 2, 2001)[:-1]
-    e = np.exp(1j * rs)
-    assert np.all(e.real > 0) and np.all(e.imag >= 0)                 # cos r > 0, sin r ⩾ 0
-    assert np.all((1j * e).real <= 0)                                 # m = 1 : partie réelle ⩽ 0
-    assert np.all((-e).real < 0)                                      # m = 2 : partie réelle < 0
-    assert np.all((-1j * e).imag < 0)                                 # m = 3 : partie imaginaire < 0
-    assert np.isclose(e[0], 1) and abs(e[-1] - 1j) < 1e-3             # arc rouge : de 1 (inclus) vers i
-    assert abs(-1j * e[-1] - 1) < 1e-3 and np.all(-1j * e != 1)       # arc m = 3 : s'approche de 1
-    k = 128
-    O = np.array([250.0, 172.0])
-    P = lambda z: O + k * np.array([z.real, -z.imag])
-    S = Schema(500, 344, 'Les quatre arcs i^m exp(ir) du cercle unité')
-    S.fleche(P(-1.42 + 0j), P(1.48 + 0j), 'g')
-    S.fleche(P(-1.3j), P(1.3j), 'g')
-    cols = ['r', 'b', 'b', 'b']
-    for m in range(4):
-        arcpts = [P(1j ** m * np.exp(1j * r)) for r in np.linspace(0, np.pi / 2, 90)]
-        S.poly(arcpts[:-1], cols[m], l=3.2 if m == 0 else 1.8)
-    for m in range(4):
-        S.point(P(1j ** m), cols[m], r=4.4)
-    for m, (lab, dd, an) in enumerate([('1', [8, 14], 'start'), ('i', [10, -12], 'start'),
-                                       ('−1', [-8, 14], 'end'), ('−i', [-10, 12], 'end')]):
-        S.texte(P(1j ** m) + dd, lab, cols[m], ancre=an)
-    r0 = 0.62
-    w0 = np.exp(1j * r0)
-    S.ligne(O, P(w0), 'g')
-    S.point(P(w0), 'r', r=3.6)
-    S.texte(P(w0) + [10, -8], '`exp`(ir)', 'r', ancre='start', taille=16)
-    for m in range(4):
-        p = P(1.27 * 1j ** m * np.exp(1j * (np.pi / 4)))
-        S.texte(p, f'm = {m}', cols[m], taille=15)
-    S.texte(O + [8, 14], '0', 'g', ancre='start')
-    return S
-
-
 @schema('cx-integrale-chemin')
 def cx_integrale_chemin():
     r = 1.0

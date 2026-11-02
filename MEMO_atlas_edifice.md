@@ -1271,3 +1271,21 @@ corrigé : Gentzen, Quine/Enderton, Fraenkel-Skolem, Zermelo 1904/Hartogs, Canto
 Goursat, Erdős/Aigner-Ziegler, Mertens, Newman-Korevaar-Zagier, Euler 1734, Hodges 1976 (sans numéro).
 D2 : +3 (citations de m-lebesgue en fourier, convention §57). Ouvert : ⋆ hérité de λ sur mk-existence et non sur
 p-suites-iid, mt-applications (à trancher).
+
+## 85. Chantier 4 : exponentielle et trigonométrie réelles (2 novembre 2026)
+
+Option A de l'évaluation (/home/claude/travail/expo/, non versionné). Deux chapitres de l'analyse réelle :
+`ar-exp` « Exponentielle et logarithme » (7 fiches ex-* : ln = ∫dt/t, exp réciproque et unicité de f′ = f,
+puissances réelles, croissances comparées, Taylor et (1 + x/n)ⁿ, convexité et cosh t ≤ exp(t²/2), θ = exp(−1/x)
+C^∞) ; `ar-trigo` « Fonctions trigonométriques » (6 fiches tg-* : arctan = ∫dt/(1+t²) et π = 2 sup arctan, tan
+réciproque et cos, sin par la racine carrée reconstruite, limite de la dérivée, prolongement par f(x+π) = −f(x),
+y″ + y = 0, addition, caractérisation (vi) de (cos, sin), cercle et ℝ/2πℤ ≅ S¹). Aucun choix, aucun admis ; limites
+en ±∞ définies dans ces chapitres. Cascade : cx-exponentielle prolonge exp à ℂ et démontre exp(it) = cos t + i sin t
+par tg-addition (vi) ; cx-pi identifie π ; lp-puissances, dr-exp, nb-logarithme, dr-plateau (i) deviennent des
+rappels ; proba s'appuie sur ex-*/tg-* et l'arête anc → proba est retirée (décision de l'auteur, élargissement
+accepté) : édifice 16 → 15 croisements, 1124 → 1252 px ; proba 4 → 1. Lexique : exponentielle, logarithme,
+puissance-reelle, pi déplacés ; nombre-e, fonction-convexe, arc-tangente, fonction-tangente, cosinus-sinus,
+fonction-periodique. ≈ 40 remarques périmées corrigées ; gd-formes-varietes reste admis (partitions de l'unité sur
+une variété). « Ajuster » (gabarit) : plancher d'échelle calculé (0,2 à 0,35) et vue remise à l'origine. Schéma
+cx-pi-2 supprimé. Relu : trois relectures, aucune faute bloquante. À faire hors domaine : ≈ 360 étiquettes des
+cours et exercices pointent encore vers cx-exponentielle, cx-pi, nb-logarithme, lp-puissances pour le réel.
