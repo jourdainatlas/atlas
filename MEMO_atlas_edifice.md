@@ -1248,3 +1248,26 @@ gardée, remarques récrites en « chapitre voisin ») ; Ackermann (lien de lexi
 tan-reciprocite (vrai appui = 0 croisement mais tan 642 → 2798 px, illisible) ; top élargi 718 → 996 px par deux vrais
 appuis (t-connexe, t-tychonov), défilement sur téléphone — à trancher. Règle désormais : une arête ou une entrée
 exprime une dépendance logique ; la disposition se règle par l'ordre, jamais par un faux appui.
+
+## 84. Diagnostic G ; relecture des théories anciennes (2 novembre 2026)
+
+Diagnostic : catégorie G (arc « Repose sur » x → y sans usage visible : y ne cite ni {{x}} ni un terme défini dans
+x, remarques et schémas exclus ; un conteneur vaut pour son contenu) et G2 (lignes périmées) ; les arcs validés
+sans usage visible sont listés dans outils/edifice_arcs_valides.txt (une ligne « x -> y », commentaire après #).
+G = G2 = 0 ; la consigne d'auteur l'exige.
+Relecture ligne à ligne, par huit relecteurs indépendants, des 42 graphes écrits les 27 et 28 octobre (≈ 510
+fiches, consignes dans /home/claude/travail/relecture-anciennes/, non versionnées) : 45 bloquants, 185 mineurs,
+87 de rédaction ; aucun calcul ni schéma faux. Corrigés par huit auteurs, tous les points appliqués (quelques-uns
+autrement que proposé, justifiés). Principaux : inégalité triangulaire (ar-corps), puissances et distributivité
+finie (n-sommes, terme `puissance`), « entier non nul = successeur » (n-peano), axiomes de l'infini et de fondation
+en langage pur, récursion transfinie sur des graphes, isomorphisme de structures (l-non-standard), PA défini dans
+l-incompletude (r.e. déclaré admis, aval → cal-ensembles), chaîne vide (Zorn), échange pour une base infinie,
+produit extérieur en degré 0, idéal engendré (ga-quasi-compact ; lemme de l'ultrafiltre suffisant, déclaré),
+Zariski, entiers algébriques par Gauss, prisme et étoilé (h-homotopie, arête h-subdivision), sphères connexes par
+arcs, Brouwer (Cauchy-Schwarz), Dynkin, coefficients de Cauchy (cx-analytique), Montel « normale », Banach-Tarski,
+espérance conditionnelle (unicité), L² sans choix (mt-convergence), normalité simple (p-normaux), solutions
+maximales (compact, hypothèse localement lipschitzienne au lieu de C¹), flot sur variété (démontré), TS². Historique
+corrigé : Gentzen, Quine/Enderton, Fraenkel-Skolem, Zermelo 1904/Hartogs, Cantor 1874, Gauss 1799, Cauchy-Riemann-
+Goursat, Erdős/Aigner-Ziegler, Mertens, Newman-Korevaar-Zagier, Euler 1734, Hodges 1976 (sans numéro).
+D2 : +3 (citations de m-lebesgue en fourier, convention §57). Ouvert : ⋆ hérité de λ sur mk-existence et non sur
+p-suites-iid, mt-applications (à trancher).

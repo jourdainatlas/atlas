@@ -909,6 +909,55 @@ def fo_fejer():
     return S
 
 
+@schema('fo-divergence')
+def fo_divergence():
+    # Fonction f_η de la preuve de (ii) : paire, 2π-périodique, égale à signe(D_N) hors des intervalles
+    # de longueur η centrés aux 2N zéros de D_N dans ]-π, π[, affine sur chacun d'eux.
+    N, eta = 3, 0.3
+    pi = math.pi
+    D = lambda t: 1 + 2 * sum(np.cos(k * t) for k in range(1, N + 1))
+    zeros = sorted(2 * k * pi / (2 * N + 1) for k in range(-N, N + 1) if k != 0)
+    assert all(abs(D(np.array([z]))[0]) < 1e-12 for z in zeros)
+    assert eta <= pi / (2 * N + 1)                         # intervalles disjoints, dans ]-π, π[
+    assert abs(D(np.array([pi]))[0] - (-1) ** N) < 1e-12
+
+    def f(t):
+        v = np.sign(D(t)).astype(float)
+        for z in zeros:
+            a, b = z - eta / 2, z + eta / 2
+            sa, sb = np.sign(D(np.array([a])))[0], np.sign(D(np.array([b])))[0]
+            assert sa == -sb                                # D_N change de signe en chaque zéro
+            m = (t >= a) & (t <= b)
+            v[m] = sa + (sb - sa) * (t[m] - a) / eta
+        return v
+
+    t = np.linspace(-pi, pi, 200001)
+    ft, Dt = f(t), D(t)
+    assert np.max(np.abs(ft)) <= 1 + 1e-12
+    assert np.max(np.abs(np.diff(ft))) < 1e-3              # continuité
+    assert np.allclose(ft, ft[::-1])                       # parité
+    assert abs(ft[0] - ft[-1]) < 1e-12                     # périodicité
+    L = np.trapezoid(np.abs(Dt), t) / (2 * pi)
+    u = np.trapezoid(ft * Dt, t) / (2 * pi)
+    borne = 2 * N * eta / (2 * pi) * 2 * (2 * N + 1)
+    assert 0 <= L - u <= borne
+    assert abs(L - 1.778) < 1e-3 and abs(u - 1.740) < 1e-3   # valeurs citées dans la légende
+    S = Schema(520, 330, 'Le noyau D_3 et la fonction continue f_η')
+    R = Repere(-3.45, 3.75, -2.3, 7.6, 26, 6, 462, 318)
+    for z in zeros:
+        S.surface(np.vstack([R(z - eta / 2, -2.2), R(z + eta / 2, -2.2), R(z + eta / 2, 7.2), R(z - eta / 2, 7.2)]), 'g')
+    R.axes(S, 't', '')
+    S.poly(R(t, Dt), 'b', l=1.6)
+    S.poly(R(t, ft), 'r', l=2.2)
+    for xv, s in [(-pi, '−π'), (pi, 'π')]:
+        S.ligne(R(xv, 0) + [0, -3], R(xv, 0) + [0, 3], 'g')
+        S.texte(R(xv, 0) + [0, 16], s, 'g', taille=15)
+    S.texte(R(0, 7) + [10, 0], '7', 'b', ancre='start', taille=14)
+    S.texte(R(0.5, 5.0), 'D_3', 'b', ancre='start')
+    S.texte(R(2.55, 1.55), 'f_η', 'r', ancre='start')
+    return S
+
+
 @schema('fo-dirichlet')
 def fo_dirichlet():
     # f(x) = x sur ]-π, π[, prolongée par périodicité ; S_N f = 2 Σ_{n<=N} (-1)^{n+1} sin(nx)/n.
