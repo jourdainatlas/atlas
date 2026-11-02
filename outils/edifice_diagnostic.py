@@ -35,6 +35,20 @@ d'un énoncé ou d'une démonstration ne visent que l'amont. Ce script cherche c
      l'adjectif en gras et le nom dans la phrase) ; une mention annoncée (« construira », « établira »,
      « sera défini », « les nœuds qui suivent »…) ; une preuve « Admis ici » ; un homonyme du lexique (même
      libellé, parenthèse ôtée) défini en amont.
+  G. arcs « Repose sur » sans usage visible (mémo §83 : une arête ou une entrée exprime une dépendance logique,
+     jamais un choix de disposition). Arc x → y : arête interne [x, y] d'un graphe, ou entrée « x: [y, …] » d'un
+     sous-graphe ; les arcs dont la source est un nœud du graphe principal sont ignorés. L'arc a un usage visible
+     si y cite {{x}} ou {{x|…}}, ou emploie un terme du lexique ([[t]], [[t|…]], \\lex{t}{…}) défini dans x
+     (defini_dans: x), dans son texte, son énoncé, sa preuve ou son champ choix ; les remarques et les blocs
+     ```schema (légendes) ne comptent pas. Un conteneur (chapitre, théorie) vaut pour tout son contenu,
+     récursivement : en cible, l'usage peut se trouver dans n'importe quelle fiche de son sous-graphe ; en source,
+     citer une fiche du contenu suffit. Les arcs sans usage visible jugés vraie dépendance (définition employée en
+     clair, notation…) sont listés dans outils/edifice_arcs_valides.txt (« x -> y », commentaire après « # ») et ne
+     sont pas signalés ; seuls les autres le sont : y ajouter un renvoi {{x|…}}, ou une ligne commentée au fichier,
+     ou retirer l'arc. La catégorie doit rester à 0.
+     G2 lignes du fichier des arcs validés à nettoyer : arc qui n'existe plus, ligne devenue inutile (y emploie
+     désormais x), ligne illisible ou en double. Avec --racine, le fichier lu est <dossier>/outils/… s'il existe,
+     sinon celui du dépôt.
 
 Usage : python3 outils/edifice_diagnostic.py [--detail] [--racine <dossier>] [graphe …]
 --racine lit <dossier>/contenu au lieu du dépôt et écrit <dossier>/construction/diagnostic.md : on s'en sert
@@ -49,7 +63,8 @@ import networkx as nx
 import yaml
 
 argv = sys.argv[1:]
-RACINE = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
+RACINE = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
+OUTILS = os.path.dirname(os.path.abspath(__file__))
 if '--racine' in argv:
     k = argv.index('--racine'); RACINE = os.path.abspath(argv[k + 1]); del argv[k:k + 2]
 os.chdir(RACINE)
@@ -57,8 +72,10 @@ os.chdir(RACINE)
 # ------------------------------------------------------------------ lecture et ordre global (comme construire.py)
 lexique = yaml.safe_load(open('contenu/lexique.yaml', encoding='utf-8'))
 lex = {e['id']: e for e in lexique}
-graphes = [yaml.safe_load(open(f, encoding='utf-8'))
-           for f in sorted(glob.glob('contenu/*.yaml')) if not f.endswith('lexique.yaml')]
+graphes = []
+for f in sorted(glob.glob('contenu/*.yaml')):
+    if f.endswith('lexique.yaml'): continue
+    g = yaml.safe_load(open(f, encoding='utf-8')); g['_fichier'] = os.path.basename(f); graphes.append(g)
 noeuds, G, D = {}, {}, {}
 for g in graphes:
     G[g['graphe']] = g
@@ -441,13 +458,87 @@ for t, e in lex.items():
             c, s, m = trouve
             note('F', n, f"« {mot} » en clair ({c}), défini plus loin en {d} : …{s[max(0, m.start()-40):m.end()+30]}…".replace('\n', ' '))
 
+# ------------------------------------------------------------------ G. arcs « Repose sur » sans usage visible
+# Arc x → y : arête interne [x, y] d'un graphe, ou entrée « x: [y, …] » d'un sous-graphe ; on ignore les arcs
+# dont la source est un nœud du graphe principal (l'édifice des théories). Un conteneur (chapitre, théorie)
+# vaut pour tout son contenu, récursivement, en source comme en cible.
+RE_SCHEMA = re.compile(r'```schema.*?```', re.S)
+RE_LIEN_TOUT = re.compile(r'\{\{([^}|]+)(?:\|[^}]*)?\}\}')
+RE_TERME = re.compile(r'\[\[([^\]|]+)(?:\|[^\]]*)?\]\]')
+RE_LEX = re.compile(r'\\lex\{([^}]+)\}')
+RACINE_G = next(g['graphe'] for g in graphes if g['conteneur'] is None)
+sous_graphes = defaultdict(list)
+for g in graphes:
+    if g['conteneur']: sous_graphes[g['conteneur']].append(g['graphe'])
+_contenu = {}
+def contenu(v):
+    """v et, s'il est un conteneur, tout le contenu de ses sous-graphes, récursivement."""
+    if v not in _contenu:
+        s = {v}
+        for sg in sous_graphes.get(v, []):
+            for m in G[sg]['noeuds']: s |= contenu(m['id'])
+        _contenu[v] = frozenset(s)
+    return _contenu[v]
+_usage = {}
+def usage(v):
+    """Nœuds dont v fait usage visible : cités par {{x}} ou {{x|…}}, ou lieu de définition d'un terme employé
+    ([[t]], [[t|…]], \\lex{t}{…}), dans le texte, l'énoncé, la preuve et le choix, schémas ôtés ; pour un
+    conteneur, réunion sur son contenu."""
+    if v not in _usage:
+        s = set()
+        for w in contenu(v):
+            for c in CHAMPS + ['choix']:
+                t = RE_SCHEMA.sub(' ', str(noeuds[w].get(c) or ''))
+                s.update(RE_LIEN_TOUT.findall(t))
+                s.update((lex.get(u) or {}).get('defini_dans') for u in RE_TERME.findall(t) + RE_LEX.findall(t))
+        _usage[v] = s
+    return _usage[v]
+
+arcs = {}                        # (x, y) -> (graphe, description)
+for g in graphes:
+    for x, y in g['aretes']: arcs[(x, y)] = (g['graphe'], f"arête interne de {g['_fichier']}")
+    for x, cs in g['entrees'].items():
+        for y in cs: arcs[(x, y)] = (g['graphe'], f"entrée de {g['_fichier']}")
+FICHIER_VALIDES = os.path.join('outils', 'edifice_arcs_valides.txt')
+if not os.path.exists(FICHIER_VALIDES): FICHIER_VALIDES = os.path.join(OUTILS, 'edifice_arcs_valides.txt')
+valides = {}                     # (x, y) -> numéro de ligne
+if os.path.exists(FICHIER_VALIDES):
+    for k, l in enumerate(open(FICHIER_VALIDES, encoding='utf-8'), 1):
+        l = l.split('#', 1)[0].strip()
+        if not l: continue
+        m = re.fullmatch(r'(\S+)\s*->\s*(\S+)', l)
+        if not m:
+            cas['G2'].append(('?', f'ligne {k}', f"ligne illisible : « {l} » (attendu « x -> y »)")); continue
+        if (m.group(1), m.group(2)) in valides:
+            cas['G2'].append(('?', f'ligne {k}', f"doublon de la ligne {valides[(m.group(1), m.group(2))]}")); continue
+        valides[(m.group(1), m.group(2))] = k
+NOM_VALIDES = os.path.relpath(FICHIER_VALIDES) if not os.path.relpath(FICHIER_VALIDES).startswith('..') else FICHIER_VALIDES
+for (x, y), (gid, quoi) in sorted(arcs.items()):
+    if noeuds[x]['graphe'] == RACINE_G or not retenu(noeuds[y]): continue
+    if contenu(x) & usage(y):
+        if (x, y) in valides:
+            cas['G2'].append((gid, y, f"ligne {valides[(x, y)]} « {x} -> {y} » inutile : {y} emploie désormais {x} (renvoi ou terme)"))
+        continue
+    if (x, y) in valides: continue
+    qui = f"{y} (ni son contenu)" if sous_graphes.get(y) else y
+    quoi_x = f"{x} ni son contenu" if sous_graphes.get(x) else x
+    cas['G'].append((gid, y, f"{x} -> {y} ({quoi}) : {qui} ne cite pas {quoi_x} et n'emploie aucun terme qui y est défini "
+                             f"(texte, énoncé, preuve, choix ; remarques et schémas exclus). Ajouter le renvoi {{{{{x}|…}}}} "
+                             f"là où {x} sert, ou la ligne « {x} -> {y} » à {NOM_VALIDES} avec un commentaire, ou retirer l'arc"))
+for (x, y), k in sorted(valides.items(), key=lambda e: e[1]):
+    if (x, y) in arcs: continue
+    gid = noeuds[y]['graphe'] if y in noeuds else '?'
+    if args and gid not in args: continue
+    cas['G2'].append((gid, y if y in noeuds else f'ligne {k}', f"ligne {k} « {x} -> {y} » : cet arc n'existe plus ; retirer la ligne"))
+
 # ------------------------------------------------------------------ rapport
 TITRES = {'A': 'Notations sans définition en amont', 'B': 'Points cités absents de la fiche visée',
           'C': '« même nœud » douteux', 'D': 'Choix non transmis', 'D2': 'Choix non transmis, probablement légitime',
           'D3': 'Choix non transmis, hérité en cascade', 'D4': 'Résultat ⋆ cité par son nom en clair',
           'E': 'Admis non transmis',
-          'F': 'Termes en clair avant leur définition'}
-CATS = ['A', 'B', 'C', 'D', 'D2', 'D3', 'D4', 'E', 'F']
+          'F': 'Termes en clair avant leur définition',
+          'G': 'Arcs « Repose sur » sans usage visible', 'G2': 'Lignes périmées du fichier des arcs validés'}
+CATS = ['A', 'B', 'C', 'D', 'D2', 'D3', 'D4', 'E', 'F', 'G', 'G2']
 lignes = ['# Diagnostic de l\'ordre logique de l\'édifice', '',
           f'{len(noeuds)} nœuds, {len(lex)} termes. Candidats à examiner, non des erreurs certaines.', '']
 for k in CATS:
@@ -472,7 +563,7 @@ for k in CATS:
     top = ', '.join(f'{g} {v}' for g, v in sorted(par.items(), key=lambda x: -x[1])[:6])
     print(f"  {k}. {TITRES[k]} : {len(cas[k])}" + (f"  [{top}]" if top else ''))
     if DETAIL:
-        for g, i, m in sorted(cas[k]): print(f"      {i} : {m[:160]}")
+        for g, i, m in sorted(cas[k]): print(f"      {i} : {m if k in ('G', 'G2') else m[:160]}")
 if ecartes:
     print("  (citations ⋆ écartées : " + ', '.join(f'{r} {v}' for r, v in sorted(ecartes.items())) + ')')
 print(f"Liste complète : {os.path.join('construction', 'diagnostic.md') if RACINE else ''}")
