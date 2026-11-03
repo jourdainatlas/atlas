@@ -180,3 +180,20 @@ pages de partage leur appartiennent (message proposé à l'auteur le 3 nov.).
 - **Fil RSS** : `site/nouveautes.xml` (RSS 2.0, bloc de `rendu.mjs`), lien `alternate` dans la tête de la
   page ; le lien d'un article vise la page de lecture de son premier lien, sinon l'ancre.
 
+### 41. Poids du site publié (mesure du 3 nov. 2026, après les pages de lecture)
+
+`site/` : 626 Mo, 4 914 fichiers. Limite de GitHub Pages : 1 Go publié, sans offre payante pour la relever
+(les plans payants ne changent que la disponibilité de Pages pour les dépôts privés) ; bande passante
+souple de 100 Go par mois ; déploiement limité à 10 minutes.
+Répartition : `exercices/` (pages de lecture) 138 Mo, `exercices-textes/` (JSON du site interactif) 132,
+`documents/` 124 (annales 35, exercices 43, cours 32, figures 13), `branches/` (JSON de l'édifice) 105,
+`edifice/` (pages de lecture) 105, `annales/` 11.
+Cause principale : les formules sont livrées déjà composées en HTML KaTeX (environ 860 octets par
+formule) : 5 Mo de sources YAML d'exercices donnent 132 Mo de JSON, 5 Mo de sources de l'édifice
+105 Mo ; et ces textes sont présents deux fois, dans le JSON du site interactif et dans les pages de
+lecture. Pistes, de la plus efficace à la plus simple : (1) composer les formules dans le navigateur
+(KaTeX y est déjà) et ne livrer que le TeX, la construction gardant la vérification des formules :
+de l'ordre de 400 Mo de moins ; (2) supprimer le doublon, le site interactif lisant les textes dans les
+pages de lecture : de l'ordre de 240 Mo de moins ; (3) changer d'hébergeur (Cloudflare Pages gratuit :
+pas de limite de taille totale, mais 20 000 fichiers et 25 Mio par fichier). Seuil d'alerte : 800 Mo.
+
