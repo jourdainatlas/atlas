@@ -1497,3 +1497,16 @@ bornée, PA ⊢ φ ↔ ∃y δ pour φ ∈ 𝒮). Contre-modèles de Q vérifié
 (sources secondaires). Aucun choix, aucun terme nouveau. Croisements : édifice 15, calc 1, cal-peano 0. L'a-faire
 de l-incompletude (ii) reste (C2 β et récurrence, C3 syntaxe et Σ₁-complétude formalisées, C4 conclusion).
 Relu : une remarque fausse corrigée (trois lois sont démontrables dans Q), six précisions.
+
+## 99. Chapitre cal-beta-pa : β et récurrence dans PA (3 novembre 2026, Gödel lot C2)
+
+Notes : /home/claude/travail/godel6/ ; devis C3–C4 mis à jour : /home/claude/travail/godel4/DEVIS_C.txt. Fiches :
+cal-bp-modules (bornes strictes ; multiple commun sans factorielle ; modules S(S i × b) étrangers sans premiers —
+la condition K(b, n) est suffisante, non nécessaire) ; cal-bp-beta (B et sa forme Δ₀ B₀, valeur existe et est
+unique) ; cal-bp-prolongement (chinois borné, prolongement d'une β-suite) ; cal-bp-fonctions (définitions
+fonctionnelles dans PA par les formules de cal-rp-forme-sigma (ii) ; équations ; identification (v) ;
+indépendance des variables (vii) ; stabilité de 𝒮 par substitution) ; cal-bp-usuelles ; cal-bp-relations
+(R̂ := ∃w (χ_R(v) = w ∧ ¬(w = 0)), clauses de cal-pr-cloture dans PA). Convention fixée pour C3 : Pr_T(v) :=
+∃p D̂(p, v), D(p, c) ⇔ Dem_{T′}(p, c) et c code un ÉNONCÉ (sans cette clause la formule définit les formules
+démontrables et non Th(T)). Aucun choix, aucun terme nouveau. Croisements : édifice 15, calc 1, chapitre 0.
+Relu : deux erreurs bloquantes corrigées (clause « énoncé », indépendance des variables), dix précisions.
