@@ -1719,8 +1719,8 @@ function fiche() {
   h += '<div class="liens">';
   const amont = n.parents.map(p => puce(p)).concat(n.amont.map(p => puce(p, true)));
   h += `<div><h3>Repose sur</h3><div class="puces">${amont.length ? amont.join('') : '<span class="vide">Rien dans ce graphe : c\'est un point de départ.</span>'}</div></div>`;
-  const exos = exercicesDuNoeud(id);
-  if (exos.length) h += `<div><h3>Exercices</h3><div class="puces"><a class="bouton" href="#exercices/notion/${id}">${exos.length} ${exos.length > 1 ? 'exercices' : 'exercice'} sur cette notion →</a></div></div>`;
+  const nbExo = nombreExosNoeud(id);
+  if (nbExo) h += `<div><h3>Exercices</h3><div class="puces"><a class="bouton" href="#exercices/notion/${id}">${nbExo} ${nbExo > 1 ? 'exercices' : 'exercice'} sur cette notion →</a></div></div>`;
   h += `<div><h3>Sert à</h3><div class="puces">${n.enfants.length ? n.enfants.map(p => puce(p)).join('') : '<span class="vide">Aucun nœud de ce graphe ne l\'utilise encore.</span>'}</div></div>`;
   // Fondements et portée : fermeture de « Repose sur » dans les deux sens, surlignée dans le graphe et listée
   if (etat.dep && etat.dep.id !== id) etat.dep = null;
@@ -2439,7 +2439,7 @@ function pageChapitre(c, tous) {
   }
   if (feuille && (feuille.pdf_enonce || feuille.nombre)) {
     h += `<div class="carte"><h3 class="titre-bloc">Exercices</h3><div style="display:grid;gap:8px">`;
-    if ((R.exercices?.exercices || []).some(e => e.feuille === feuille.id)) h += `<a class="bouton plein" href="#exercices/feuille/${feuille.id}" style="justify-content:center">Les ${feuille.nombre} exercices en ligne →</a>`;
+    if (exosEnLigne(feuille)) h += `<a class="bouton plein" href="#exercices/feuille/${feuille.id}" style="justify-content:center">Les ${feuille.nombre} exercices en ligne →</a>`;
     h += `<div style="display:flex;gap:6px;flex-wrap:wrap">${lienPdf(feuille.pdf_enonce, 0, 'Feuille PDF')}${lienPdf(feuille.pdf_corrige, 0, 'Corrigé PDF')}</div>`;
     // Feuilles complémentaires rattachées au chapitre (champ cours), sans numéro de chapitre.
     for (const f of (R.exercices?.feuilles || []).filter(f => f.cours === c.id && f.id !== feuille.id && f.statut === 'depose'))
@@ -2455,19 +2455,30 @@ function pageChapitre(c, tous) {
 /* ---- Exercices */
 const etatExo = { vue: 'exercice', niveauVu: '', niveaux: new Set(), diff: new Set(), types: new Set(), themes: new Set(), q: '', noeud: '', feuille: '', ex: '', montres: 15 };
 const sansAccents = t => String(t).normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
-function exercicesDuNoeud(id) { return (R.exercices?.exercices || []).filter(e => (e.noeuds || []).includes(id)); }
+// Nombre d'exercices d'un nœud : compté sur l'index s'il est chargé, sinon lu dans le compte gardé dans la page.
+function nombreExosNoeud(id) {
+  const E = R.exercices || {};
+  if ((E.exercices || []).length) return E.exercices.filter(e => (e.noeuds || []).includes(id)).length;
+  return (E.parNoeud || {})[id] || 0;
+}
+const exosEnLigne = f => !!(f && f.nombre);   // la feuille a des exercices en ligne
 const feuilleDe = id => (R.exercices?.feuilles || []).find(f => f.id === id) || {};
 const lienPdf = (url, page, texte) => url ? `<a class="bouton" href="${url}${page ? '#page=' + page : ''}" target="_blank" rel="noopener">${texte}</a>` : '';
 
-// Textes des exercices (site publié) : un fichier par feuille, chargé à la première ouverture.
-let chargementExos = null;
+// Site publié : l'index des exercices (exercices-index.json, R.exercices.indexACharger) puis les textes,
+// un fichier par feuille, sont chargés à la première ouverture de la rubrique. Tant que l'index manque, la
+// rubrique affiche « Chargement… » ; en cas d'échec (hors ligne sans copie gardée), un bouton « Réessayer ».
+let chargementExos = null, chargementIndexExos = null, echecExos = false;
+const indexExosManquant = () => !!R.exercices?.indexACharger;
 function chargerExercices() {
-  const A = R.exercices?.aCharger;
-  if (!A || !Object.keys(A).length) return null;
+  const E = R.exercices, A = E?.aCharger || {};
+  if (!E || (!E.indexACharger && !Object.keys(A).length) || echecExos) return null;   // après un échec : seulement sur « Réessayer »
   if (!chargementExos) {
-    chargementExos = Promise.all(Object.entries(A).map(([fid, url]) => fetch(url).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
-      .then(t => { for (const e of R.exercices.exercices) if (t[e.id]) Object.assign(e, t[e.id]); delete A[fid]; })))
-      .catch(() => { chargementExos = null; });
+    const json = url => fetch(url).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); });
+    const index = chargementIndexExos = E.indexACharger ? json(E.indexACharger).then(l => { E.exercices = l; delete E.indexACharger; }) : Promise.resolve();
+    chargementExos = index.then(() => Promise.all(Object.entries(A).map(([fid, url]) => json(url)
+      .then(t => { for (const e of E.exercices) if (t[e.id]) Object.assign(e, t[e.id]); delete A[fid]; }))))
+      .catch(() => { chargementExos = null; echecExos = true; });
   }
   return chargementExos;
 }
@@ -2483,10 +2494,16 @@ function pageExercices(chemin, premiere) {
     else if (mode === 'niveau') { etatExo.vue = 'niveau'; etatExo.niveauVu = arg || ''; }
   }
   const attente = chargerExercices();
-  if (attente) attente.then(() => { const z = $('#rubrique'); if (enRubrique() && z.dataset.nom === 'exercices') rafraichirRubrique(); });
+  const redessiner = () => { const z = $('#rubrique'); if (enRubrique() && z.dataset.nom === 'exercices') rafraichirRubrique(); };
+  if (attente) attente.then(redessiner);
+  // l'index suffit à la liste et aux filtres : on redessine dès son arrivée, les énoncés suivent
+  if (attente && indexExosManquant() && chargementIndexExos) chargementIndexExos.then(() => { if (!indexExosManquant()) redessiner(); }, () => {});
   let h = tete('Rubrique', 'Exercices', E.intro);
   h += `<div class="resultats-tete" style="margin-bottom:18px"><div class="segments" role="group" aria-label="Affichage"><button type="button" data-vue="exercice" aria-pressed="${etatExo.vue === 'exercice'}">Par exercice</button><button type="button" data-vue="feuille" aria-pressed="${etatExo.vue === 'feuille'}">Par feuille</button><button type="button" data-vue="niveau" aria-pressed="${etatExo.vue === 'niveau'}">Par niveau</button></div></div>`;
-  h += etatExo.vue === 'feuille' ? vueFeuilles(E) : etatExo.vue === 'niveau' ? vueNiveauxExos(E) : vueExercices(E, !!attente);
+  if (etatExo.vue === 'exercice' && indexExosManquant())   // index pas encore là : l'attente, ou l'échec avec « Réessayer »
+    h += echecExos && !attente ? `<p class="vide-note">Les exercices n'ont pas pu être chargés (connexion absente ?). <button type="button" class="lien-simple" data-recharger-exos="1">Réessayer</button></p>`
+      : `<p class="vide-note chargement-exos" role="status">Chargement des ${R.exercices?.nombre || ''} exercices…</p>`;
+  else h += etatExo.vue === 'feuille' ? vueFeuilles(E) : etatExo.vue === 'niveau' ? vueNiveauxExos(E) : vueExercices(E, !!attente);
   return h;
 }
 // Feuilles d'un niveau, ou de tous les niveaux, rangées sous un titre par niveau dans l'ordre de rubriques/cours.yaml.
@@ -2507,7 +2524,7 @@ function vueFeuilles(E, liste) {
     } else h += `<p class="vide-note" style="margin:0">Feuille à venir.</p>`;
     if (f.parties) h += `<ol class="parties">${f.parties.map(x => `<li>${x}</li>`).join('')}</ol>`;
     h += `<div class="actions">${statut(f.statut)}${f.pdf_enonce ? lienPdf(f.pdf_enonce, 0, 'Énoncés PDF') : '<a class="bouton" aria-disabled="true">Énoncés PDF</a>'}${f.pdf_corrige ? lienPdf(f.pdf_corrige, 0, 'Corrigés PDF') : '<a class="bouton" aria-disabled="true">Corrigés PDF</a>'}`;
-    if ((E.exercices || []).some(e => e.feuille === f.id)) h += `<a class="bouton plein" href="#exercices/feuille/${f.id}">Voir les exercices</a>`;
+    if (exosEnLigne(f)) h += `<a class="bouton plein" href="#exercices/feuille/${f.id}">Voir les exercices</a>`;
     if (c) h += `<a class="bouton" href="#cours/${c.id}">Cours</a>`;
     h += `</div></article>`;
   }
@@ -3046,7 +3063,7 @@ $('#rubrique').addEventListener('click', ev => {
 /* ---- À propos */
 function pageAPropos() {
   const P = R.apropos || {};
-  const nbExos = (R.exercices?.exercices || []).length;
+  const nbExos = R.exercices?.nombre ?? (R.exercices?.exercices || []).length;
   const nbCours = (R.cours?.cours || []).filter(c => c.statut === 'depose').length;
   let h = tete('Rubrique', 'À propos', '');
   const aVenir = (P.sections || []).filter(s => s.a_rediger).map(s => s.titre);
@@ -3211,6 +3228,7 @@ $('#rubrique').addEventListener('click', ev => {
     const val = fz.dataset.filtre === 'diff' ? +fz.value : fz.value;
     ens.has(val) ? ens.delete(val) : ens.add(val); etatExo.montres = 15; rafraichirRubrique(); return;
   }
+  if (t.closest('[data-recharger-exos]')) { echecExos = false; rafraichirRubrique(); return; }
   if (t.closest('[data-reinit]')) { etatExo.q = ''; [etatExo.themes, etatExo.diff, etatExo.types, etatExo.niveaux].forEach(x => x.clear()); etatExo.montres = 15; rafraichirRubrique(); return; }
   if (t.closest('[data-plus-exos]')) { etatExo.montres += 15; rafraichirRubrique(); return; }
   if (t.closest('[data-plus-themes]')) { etatExo.tousThemes = !etatExo.tousThemes; rafraichirRubrique(); return; }

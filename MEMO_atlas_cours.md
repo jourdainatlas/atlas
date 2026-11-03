@@ -310,3 +310,33 @@ mesure invariante…).
 Cours : 30 entrées revues à la main dans `cours.yaml` (champ `theories`, notions complétées). Les graphes
 `ar-exp`, `ar-trigo` et `met` remplacent `anc` et `nban` en Première et Terminale. Les cours de MPSI
 reçoivent les nœuds `ex-*`, `tg-*`, `c-point`, `ex-convexite` et `pol-binome` ; Galois reçoit `pol-*`.
+
+### 28. Index des exercices chargé à la demande (3 novembre 2026)
+
+Mesure de l'auteur : les données des exercices pesaient 1,7 Mo sur les 3,7 Mo de `site/index.html`, dont
+911 Ko pour le seul champ `recherche`, et elles ne servaient qu'à la rubrique Exercices. Le tableau
+`rubriques.exercices.exercices` (2129 exercices, sans leurs textes) est désormais écrit par `rendu.mjs` dans
+`site/exercices-index.json`. Son adresse, avec empreinte, est dans `R.exercices.indexACharger`. La page ne garde
+que l'introduction, les types, les feuilles (avec `nombre` et `etoiles`), `nombre` (total) et `parNoeud`
+(compte des exercices par nœud, pour le bouton « N exercices sur cette notion » des fiches).
+
+Gabarit. `chargerExercices` demande l'index, puis les textes des feuilles (`exercices-textes/`). La vue « Par
+exercice » affiche « Chargement des N exercices… » et se redessine dès l'arrivée de l'index ; les énoncés
+suivent. En cas d'échec (hors ligne sans copie), elle affiche « Réessayer » (`data-recharger-exos`), sans
+nouvelle tentative automatique. Les vues par feuille et par niveau, l'accueil, les cours, À propos et les
+fiches de l'édifice n'ont besoin que des feuilles et de `parNoeud` (`nombreExosNoeud`, `exosEnLigne`).
+L'aperçu `construction/atlas.html`, qui garde les exercices dans la page, fonctionne sans changement.
+
+Poids, mesurés à la construction du 3 novembre :
+
+| | Avant | Après |
+|---|---|---|
+| `site/index.html` | 3 841 595 octets (669 Ko compressé) | 2 156 950 octets (394 Ko compressé) |
+| données des exercices dans la page | 1 716 843 octets | 40 803 octets |
+| `site/exercices-index.json` | | 1 680 799 octets (276 Ko compressé) |
+
+Vérifié avec un serveur local et Playwright :
+- l'accueil (2129 exercices) ne demande pas l'index ;
+- la fiche `ex-exponentielle` affiche 106 exercices, le cours `ma-03` affiche « Les 46 exercices en ligne », À propos affiche 2129 ;
+- la recherche (« exercice 6 MPSI logique ») et les filtres (QCM : 29) fonctionnent, ainsi que les adresses `#exercices/ex/ma-08-18` et `#exercices/notion/ex-exponentielle` ouvertes directement ;
+- application installée (service worker actif) : hors ligne, une feuille déjà visitée s'affiche ; une rubrique jamais visitée propose « Réessayer », qui fonctionne au retour du réseau.

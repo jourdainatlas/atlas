@@ -297,6 +297,18 @@ if (Esite) {
     fs.writeFileSync(`site/exercices-textes/${fe.id}.json`, contenu);
     Esite.aCharger[fe.id] = `exercices-textes/${fe.id}.json?v=${empreinte(contenu)}`;
   }
+  // Index des exercices (numéro, partie, étoiles, types, thèmes, nœuds, notions, pages, texte de recherche) :
+  // fichier séparé, chargé à l'ouverture de la rubrique Exercices (gabarit : chargerExercices). La page ne
+  // garde que ce dont l'accueil, les cours et les fiches de l'édifice ont besoin : les feuilles (avec leur
+  // nombre d'exercices et leurs étoiles), le nombre total et le compte des exercices par nœud.
+  const exos = Esite.exercices || [];
+  Esite.nombre = exos.length;
+  Esite.parNoeud = {};
+  for (const e of exos) for (const n of e.noeuds || []) Esite.parNoeud[n] = (Esite.parNoeud[n] || 0) + 1;
+  const contenu = JSON.stringify(exos);
+  fs.writeFileSync('site/exercices-index.json', contenu);
+  Esite.indexACharger = `exercices-index.json?v=${empreinte(contenu)}`;
+  Esite.exercices = [];
 }
 let cssSite = fs.readFileSync(path.join(dist, 'katex.min.css'), 'utf8')
   .replace(/src:url\(fonts\/([^)]+?)\.woff2\) format\("woff2"\)(,url\([^)]+\) format\("[^"]+"\))*/g, (m, f) => {
