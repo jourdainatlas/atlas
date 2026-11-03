@@ -1406,3 +1406,19 @@ Admis levés : dr-stokes (a-faire), dr-integrale-cubes (ailleurs). Restent 4 a-f
 dt-cochaines). Vérifié (sympy, scipy) : signe (−1)ⁿ, disque, boule (cas impair), polaires, cercle, cube.
 Croisements : nouveau graphe 0 (780×632), derham 1 (1062×1066), édifice 15. Nouveautés : entrée du 3 novembre.
 Relu : aucune faute bloquante ; ρ⁻¹ et non ρ (dv-cubes), restriction n ⩾ 2 propagée aux renvois.
+
+## 93. Convention ⋆ des théories écrite et vérifiable (3 novembre 2026)
+
+Décision de l'auteur (remplace la formulation de §35/§75) : une théorie porte ⋆ dans l'édifice si l'un de ses
+théorèmes centraux ne se démontre pas dans ZF — il équivaut à une forme usuelle du choix ou en dépend de façon
+essentielle ; l'héritage de la mesure de Lebesgue ne suffit pas (§57). Une fiche porte ⋆ si elle fait intervenir le
+choix. Écrit dans la légende, l'accueil, la page État, la bulle de l'étoile, le panneau et en tête de edifice.yaml.
+Théories ⋆ (9) : top, log (complétude et compacité ⇔ ultrafiltre, ajouté), ordin (Zorn, Zermelo, comparabilité ⇔
+AC, ajouté), alglin, geoalg, met (équivalences) ; mes (Feferman–Lévy 1963), ac (Hodges 1976), anf (Foreman–Wehrung
+1991 avec Solovay ; Pincus 1972 notice vérifiée seulement) : non-démontrabilité, encadrés complétés. edp perd son
+⋆ (seulement l'héritage de λ, comme fourier, proba ; ds-distributions garde le sien). Panneau de chaque théorie :
+bloc « Axiome du choix » (gabarit `choixTheorieNoeud`), fiches ⋆ de la théorie calculées depuis D.noeuds, groupées
+par chapitre, repliées au-delà de six, phrase conditionnelle sur Lebesgue si mes est dans les fondements. Page État :
+70 fiches intérieures ⋆ dans 19 théories, 9 théories marquées. Non fait faute de donnée : regroupement par forme du
+choix, distinction ⋆ propre / hérité. Relu : une erreur bloquante (convention fausse pour mes, ac, anf, edp),
+tranchée par l'auteur.

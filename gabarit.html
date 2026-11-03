@@ -505,6 +505,9 @@ blockquote.redaction p { margin: 0; }
 .dep-boutons .bouton:disabled { color: var(--encre-3); border-style: dashed; cursor: default; }
 .dep-liste { display: grid; gap: 8px; font-size: 13px; margin-top: 10px; }
 .dep-liste[hidden] { display: none; }
+.choix-theorie > p { margin: 0 0 8px; font-size: 13px; line-height: 1.5; color: var(--encre-2); }
+.choix-theorie > .dep-groupe { font-size: 13px; }
+.choix-theorie > p .etoile { margin-left: 0; }
 .dep-liste > p { margin: 0; color: var(--encre-2); line-height: 1.5; }
 .dep-groupe > summary { cursor: pointer; display: flex; align-items: center; gap: 8px; padding: 2px 0; list-style: none; }
 .dep-groupe > summary::-webkit-details-marker { display: none; }
@@ -1134,7 +1137,7 @@ span.case:hover { border-style: dashed; color: inherit; }
           <h3>Signes</h3>
           <ul class="legende-liste" style="display: grid; gap: 6px">
             <li><span class="pastille" style="--c: var(--encre-2)"></span>Coin carré : le nœud contient un graphe ; un clic l'ouvre.</li>
-            <li><span class="etoile">⋆</span>Fait intervenir l'axiome du choix ou l'une de ses formes faibles.</li>
+            <li><span class="etoile">⋆</span><span>Sur une fiche, le signe indique qu'elle fait intervenir l'axiome du choix ou l'une de ses formes faibles&nbsp;; sur une théorie du graphe principal, il indique seulement que l'un de ses théorèmes centraux ne se démontre pas dans ZF, parce qu'il équivaut à une forme usuelle du choix ou en dépend de façon essentielle, si bien qu'une théorie sans <span class="etoile">⋆</span> peut contenir des fiches <span class="etoile">⋆</span>, que la fiche de la théorie énumère.</span></li>
             <li><span class="dague">†</span><span>Le résultat n'est pas entièrement démontré à cet endroit : voir l'encadré de la fiche et l'<a href="#edifice/etat">état de l'édifice</a>.</span></li>
             <li><span class="terme" style="cursor: default">terme</span>Survoler pour lire la définition, cliquer pour l'ouvrir.</li>
             <li><span style="display: inline-flex; gap: 3px; flex: none"><span class="pastille" style="--c: var(--encre-2)"></span><span class="pastille" style="--c: var(--encre-2); opacity: .25"></span></span><span>«&nbsp;Fondements&nbsp;» et «&nbsp;Portée&nbsp;», au bas d'une fiche&nbsp;: ce dont elle dépend, ou ce qui dépend d'elle, reste vif, et le reste s'estompe. Un second clic, ou Échap, efface.</span></li>
@@ -1312,7 +1315,7 @@ function dessiner(gid) {
       s.setAttribute('aria-hidden', 'true'); b.append(s);
     }
     b.setAttribute('aria-label', (pl.entree ? 'Niveau supérieur : ' : '') + n.titre + (n.sous ? ', contient un graphe' : '')
-      + (!pl.entree && n.choix ? ', fait intervenir l\'axiome du choix' : '')
+      + (!pl.entree && n.choix ? (n.graphe === D.racine ? ', un théorème central ne se démontre pas sans une forme de l\'axiome du choix' : ', fait intervenir l\'axiome du choix') : '')
       + (!pl.entree && n.admis ? ', résultat pas entièrement démontré ici' : ''));
     plan.append(b);
   }
@@ -1700,7 +1703,7 @@ function fiche() {
   const c = couleurNoeud(n);
   let h = `<article class="fiche" style="--c: ${c}">`;
   h += `<p class="sur-titre"><span class="sorte">${esc(n.sorte)}</span>${rang(n)}${n.graphe !== D.racine ? `<span>${esc(D.graphes[n.graphe].titre)}</span>` : ''}</p>`;
-  h += `<h2>${esc(n.titre)}${n.choix ? ' <span class="etoile" title="Fait intervenir l\'axiome du choix" aria-label="axiome du choix">⋆</span>' : ''}${n.admis ? ' <span class="dague" title="Résultat pas entièrement démontré ici : voir l\'encadré « Admis ici »" aria-label="résultat pas entièrement démontré ici">†</span>' : ''}${aProposSignalBouton(aProposCheminEdifice(n), `${ADRESSE_SITE}edifice/${n.id}/`)}</h2>`;
+  h += `<h2>${esc(n.titre)}${n.choix ? ` <span class="etoile" title="${n.graphe === D.racine ? 'Un théorème central de cette théorie ne se démontre pas dans ZF : il équivaut à une forme usuelle de l\'axiome du choix ou en dépend de façon essentielle' : 'Fait intervenir l\'axiome du choix'}" aria-label="axiome du choix">⋆</span>` : ''}${n.admis ? ' <span class="dague" title="Résultat pas entièrement démontré ici : voir l\'encadré « Admis ici »" aria-label="résultat pas entièrement démontré ici">†</span>' : ''}${aProposSignalBouton(aProposCheminEdifice(n), `${ADRESSE_SITE}edifice/${n.id}/`)}</h2>`;
   h += contexte;
   if (n.choix) h += `<div class="choix"><strong class="tete">⋆ Axiome du choix</strong>${n.choix}</div>`;
   if (n.admis) h += encadreAdmis(n);
@@ -1722,6 +1725,7 @@ function fiche() {
   const nbExo = nombreExosNoeud(id);
   if (nbExo) h += `<div><h3>Exercices</h3><div class="puces"><a class="bouton" href="#exercices/notion/${id}">${nbExo} ${nbExo > 1 ? 'exercices' : 'exercice'} sur cette notion →</a></div></div>`;
   h += `<div><h3>Sert à</h3><div class="puces">${n.enfants.length ? n.enfants.map(p => puce(p)).join('') : '<span class="vide">Aucun nœud de ce graphe ne l\'utilise encore.</span>'}</div></div>`;
+  if (n.graphe === D.racine && n.nature === 'théorie') h += choixTheorieNoeud(n);
   // Fondements et portée : fermeture de « Repose sur » dans les deux sens, surlignée dans le graphe et listée
   if (etat.dep && etat.dep.id !== id) etat.dep = null;
   const boutonDep = (sens, titre) => `<button type="button" class="bouton" data-dep="${sens}" data-n-dep="${id}" aria-pressed="false" aria-controls="dep-liste" title="${titre}"${fermetureNoeud(id, sens).size || (sens === 'aval' && n.graphe !== D.racine) ? '' : ' disabled'}>${libelleDependancesNoeud(id, sens)}</button>`;
@@ -1731,6 +1735,53 @@ function fiche() {
   o.scrollTop = 0;
   $('#panneau').scrollTop = 0;
   majDependancesNoeud();
+}
+
+// Fiche d'une théorie du graphe principal : liste des fiches ⋆ de la théorie, calculée sur D.noeuds (le
+// booléen choix y reste quand les branches sont chargées à la demande), rangée par graphe intérieur.
+// Convention (rappelée en tête de contenu/edifice.yaml) : une théorie porte ⋆ si l'un de ses théorèmes
+// centraux ne se démontre pas dans ZF (il équivaut à une forme usuelle du choix ou en dépend de façon
+// essentielle) ; une fiche le porte dès qu'elle fait intervenir le choix. La forme du choix n'est écrite qu'en
+// prose dans l'encadré de chaque fiche : on ne la devine pas ici. Le choix dénombrable de la mesure de
+// Lebesgue n'est signalé qu'une fois (MEMO_atlas_edifice.md, §57) : on le rappelle pour toute théorie qui
+// repose sur mes.
+function choixTheorieNoeud(n) {
+  const ids = Object.values(D.noeuds).filter(m => m.choix && m.graphe !== D.racine && theorieDe(m.id) === n).map(m => m.id);
+  const k = ids.length;
+  const etoile = '<span class="etoile" aria-hidden="true">⋆</span>';
+  // en tête de phrase, un nombre s'écrit en lettres jusqu'à dix ; au-delà, la phrase commence autrement
+  const LETTRES = ['Une', 'Deux', 'Trois', 'Quatre', 'Cinq', 'Six', 'Sept', 'Huit', 'Neuf', 'Dix'];
+  const sujet = k > 10 ? `Parmi ses fiches, ${k}&nbsp;font` : k > 1 ? `${LETTRES[k - 1]}&nbsp;de ses fiches font` : 'Une de ses fiches fait';
+  const detail = k > 1 ? 'chacune dit, dans son encadré, quelle forme intervient et à quel endroit' : 'son encadré dit quelle forme intervient et à quel endroit';
+  let p;
+  if (n.choix) {
+    p = `Cette théorie porte le signe ${etoile} parce que l'un de ses théorèmes centraux ne se démontre pas dans ZF&nbsp;: il équivaut à une forme usuelle de l'axiome du choix ou en dépend de façon essentielle, comme le dit l'encadré en tête de fiche. `
+      + (k ? `${sujet} intervenir le choix et ${k > 1 ? 'portent' : 'porte'} aussi ce signe&nbsp;; ${detail}.`
+        : `Aucune autre de ses fiches ne porte ce signe.`);
+  } else {
+    p = `Cette théorie ne porte pas le signe ${etoile} dans le graphe principal, qui le réserve aux théories dont un théorème central ne se démontre pas dans ZF. `
+      + (k ? `${sujet} intervenir le choix et ${k > 1 ? 'portent' : 'porte'} ce signe&nbsp;; ${detail}.`
+        : 'Aucune de ses fiches ne porte ce signe non plus.');
+  }
+  if (n.id !== 'mes' && D.noeuds.mes && fermetureNoeud(n.id, 'amont').has('mes'))
+    p += ` Si certaines de ses fiches intègrent par rapport à la mesure de Lebesgue, elles en héritent le choix dénombrable, qui n'est pas répété dans chacune&nbsp;: il est signalé une fois, à la ${D.noeuds['m-lebesgue'] ? `<a class="lien-noeud" href="#${D.noeuds['m-lebesgue'].graphe}.m-lebesgue" data-n="m-lebesgue">construction de cette mesure</a>` : 'construction de cette mesure'} ou en tête du chapitre qui l'emploie.`;
+  let l = '';
+  if (k) {
+    const gr = [];
+    for (const x of ids) { const g = D.noeuds[x].graphe, d = gr.find(y => y.g === g); if (d) d.xs.push(x); else gr.push({ g, xs: [x] }); }
+    gr.sort((a, b) => (b.g === n.sous) - (a.g === n.sous));   // le graphe propre de la théorie d'abord
+    // Un chapitre ⋆ dont le graphe a aussi son groupe n'est pas répété en puce dans le groupe parent : le
+    // titre du groupe le désigne, en lien vers sa fiche, suivi du signe.
+    const titres = new Set(gr.map(y => D.graphes[y.g].conteneur).filter(c => ids.includes(c)));
+    for (const y of gr) y.xs = y.xs.filter(x => !titres.has(x));
+    const vus = gr.filter(y => y.xs.length || titres.has(D.graphes[y.g].conteneur));
+    const ouvert = k <= 6;
+    const tete = g => { const c = D.graphes[g].conteneur;
+      return titres.has(c) ? `<a class="lien-noeud" href="#${D.noeuds[c].graphe}.${c}" data-n="${c}">${esc(D.noeuds[c].titre)}</a>${etoile}` : `<span>${esc(D.graphes[g].titre)}</span>`; };
+    if (vus.length === 1 && vus[0].g === n.sous && ouvert) l = `<div class="puces">${vus[0].xs.map(x => puce(x)).join('')}</div>`;
+    else l = vus.map(({ g, xs }) => `<details class="dep-groupe"${ouvert ? ' open' : ''}><summary>${tete(g)}<span class="dep-n">${xs.length + (titres.has(D.graphes[g].conteneur) ? 1 : 0)}</span></summary>${xs.length ? `<div class="puces">${xs.map(x => puce(x)).join('')}</div>` : ''}</details>`).join('');
+  }
+  return `<div class="choix-theorie"><h3>Axiome du choix</h3><p>${p}</p>${l}</div>`;
 }
 
 // Encadré « Admis ici » d'une fiche marquée † : entrées de lieu principal retenues par construire.py
@@ -1793,7 +1844,7 @@ function accueil() {
     <div class="enonce" style="--c: var(--encre)"><span class="tete">Par où commencer</span>
       <p><strong>Construire les nombres.</strong> En partant de la ${L('log', 'logique du premier ordre')} et des ${L('zf', 'axiomes de ZF')}, on suit la construction de ${L('n', 'ℕ')}, puis de ${L('z', 'ℤ')}, de ${L('q', 'ℚ')}, de ${L('r', 'ℝ')} et de ${L('c', 'ℂ')}&nbsp;: chaque théorie fabrique son objet à partir du précédent et démontre qu'il a les propriétés attendues. C'est le chemin le plus court pour voir comment l'édifice part de presque rien.</p>
       <p><strong>Partir d'un grand théorème.</strong> On peut aussi choisir un résultat célèbre, puis redescendre vers ce qu'il utilise par la liste «&nbsp;Repose sur&nbsp;» de sa fiche&nbsp;: le ${L('ar-tfa', 'théorème fondamental de l\'analyse')}, le ${L('hj-jordan', 'théorème de Jordan')} pour les courbes du plan, l'existence d'un ${L('gs-abel-ruffini', 'polynôme de degré 5 non résoluble par radicaux')}, ou le ${L('cup-borsuk-ulam', 'théorème de Borsuk-Ulam')}. La descente montre quelles notions chacun mobilise vraiment, et dans quel ordre il faut les apprendre. Le bouton «&nbsp;Fondements&nbsp;» de la fiche fait toute la descente d'un coup&nbsp;: pour le ${L('cup-borsuk-ulam', 'théorème de Borsuk-Ulam')}, tout ce dont il dépend, de proche en proche, est surligné dans le graphe et rangé par théorie dans la fiche, et le bouton «&nbsp;Portée&nbsp;» fait le chemin inverse, vers tout ce qui en dépend.</p>
-      <p><strong>Suivre l'axiome du choix.</strong> L'${L('zf-choix', 'axiome du choix')} est posé avec les axiomes de ZF, ses ${L('r-choix', 'différentes formes')} sont rassemblées avec les relations et les fonctions, et le ${L('o-zorn', 'lemme de Zorn')} est démontré avec les ordinaux. Le signe <span class="etoile">⋆</span> marque ensuite chaque fiche qui en fait usage, avec un encadré qui dit à quel endroit de la preuve il intervient, et, dans le graphe principal, les théories dont un théorème central équivaut à l'axiome du choix ou à l'une de ses formes faibles&nbsp;: on le rencontre par exemple dans l'existence d'une ${L('v-bases-existence', 'base pour tout espace vectoriel')}, dans le ${L('t-tychonov', 'théorème de Tychonov')} ou dans celui de ${L('f-hahn-banach', 'Hahn-Banach')}. On voit du même coup tout ce qui s'en passe.</p>
+      <p><strong>Suivre l'axiome du choix.</strong> L'${L('zf-choix', 'axiome du choix')} est posé avec les axiomes de ZF, ses ${L('r-choix', 'différentes formes')} sont rassemblées avec les relations et les fonctions, et le ${L('o-zorn', 'lemme de Zorn')} est démontré avec les ordinaux. Le signe <span class="etoile">⋆</span> marque ensuite chaque fiche qui en fait usage, avec un encadré qui dit quelle forme intervient et à quel endroit de la preuve&nbsp;: on le rencontre par exemple dans l'existence d'une ${L('v-bases-existence', 'base pour tout espace vectoriel')}, dans le ${L('t-tychonov', 'théorème de Tychonov')} ou dans celui de ${L('f-hahn-banach', 'Hahn-Banach')}, et les fiches qui ne le portent pas montrent du même coup tout ce qui s'en passe. Dans le graphe principal, le même signe a un sens plus étroit&nbsp;: une théorie ne le porte que si l'un de ses théorèmes centraux ne se démontre pas dans ZF, parce qu'il équivaut à l'axiome du choix ou à l'une de ses formes usuelles, ou qu'il en dépend de façon essentielle, comme l'existence de la ${L('m-lebesgue', 'mesure de Lebesgue')}, si bien qu'une théorie sans <span class="etoile">⋆</span>, comme l'${L('hom', 'homologie')} ou la ${L('derham', 'cohomologie de de Rham')}, peut contenir des fiches <span class="etoile">⋆</span>&nbsp;; la fiche de chaque théorie énumère les siennes.</p>
     </div>
     ${D.admis ? '<p class="lien-etat-edifice"><a href="#edifice/etat">État de l\'édifice&nbsp;: ce qui reste admis et où intervient l\'axiome du choix</a></p>' : ''}
     <div class="liens credits">
@@ -1836,6 +1887,9 @@ function etatEdifice() {
   const nCites = E.filter(e => e.statut === 'cite').length;
   const fichesAF = new Set(afaire.map(e => e.id)).size;
   const choix = (A.choix || []).filter(c => D.noeuds[c.id]);
+  // les deux sens du signe : fiches intérieures (usage du choix) et théories marquées elles-mêmes
+  const choixInt = choix.filter(c => D.noeuds[c.id].graphe !== D.racine);
+  const nTheoChoix = choix.length - choixInt.length, nTheoInt = new Set(choixInt.map(c => c.theorie)).size;
   const groupes = [];
   for (const c of choix) {
     const g = groupes[groupes.length - 1];
@@ -1849,7 +1903,7 @@ function etatEdifice() {
     <p>Cette page recense les résultats que les fiches déclarent admis. Dans les fiches, tout résultat utilisé ou cité sans démonstration est dit «&nbsp;admis&nbsp;» en toutes lettres, et la construction du site vérifie que chacune de ces mentions est déclarée dans sa fiche, avec son statut. Un admis est un <em>renvoi en aval</em> quand le résultat est démontré plus loin dans l'arbre, faute d'ingrédients en amont. Il renvoie à une <em>branche parallèle</em> quand le résultat est démontré dans une partie de l'arbre qui ne vient ni avant ni après la fiche&nbsp;: aucune des deux n'est un ancêtre de l'autre. Il est <em>hors du cadre</em> quand l'atlas ne le démontrera pas, et <em>à faire</em> quand c'est une lacune à combler.</p>
     <p>Le lieu compte autant que le statut&nbsp;: un admis dans un énoncé ou une démonstration touche le statut du résultat, alors qu'un admis dans une remarque concerne un fait latéral, dont rien ne dépend. Les entrées sont rangées par rang de théorie, de la logique aux grandes théories.</p>
     <p>Dans les graphes intérieurs et en tête de fiche, le signe <span class="dague">†</span> marque les ${pl(Object.values(D.noeuds).filter(m => m.admis).length, 'fiche', 'fiches')} dont le résultat n'est pas entièrement démontré à leur place&nbsp;: un admis de leur énoncé, de leur démonstration ou de leur texte, ou l'admis d'une autre fiche qu'elles emploient et ne démontrent pas. Un encadré «&nbsp;Admis ici&nbsp;», sous le titre, en donne le détail. Les admis des remarques ne donnent pas ce signe, et les théories du graphe principal ne le portent pas.</p>
-    <div class="ee-chiffres">${chiffre(afaire.length, 'à faire')}${chiffre(hors.length, 'hors du cadre')}${chiffre(aval.length, 'renvois en aval')}${chiffre(ailleurs.length, 'branches parallèles')}${chiffre(choix.length, 'fiches <span class="etoile">⋆</span>')}</div>
+    <div class="ee-chiffres">${chiffre(afaire.length, 'à faire')}${chiffre(hors.length, 'hors du cadre')}${chiffre(aval.length, 'renvois en aval')}${chiffre(ailleurs.length, 'branches parallèles')}${chiffre(choixInt.length, 'fiches intérieures <span class="etoile">⋆</span>')}</div>
     <p class="ee-vide">Les ${pl(afaire.length, 'point', 'points')} à faire se trouvent dans ${pl(fichesAF, 'fiche', 'fiches')}. Parmi les admis hors du cadre, ${horsP.length ? pl(horsP.length, 'figure', 'figurent') : 'aucun ne figure'} dans un énoncé, une démonstration ou un texte. ${nCites ? `Les ${pl(nCites, 'mention', 'mentions')} qui rappellent un admis porté par une autre fiche, ou par un autre endroit de la même fiche, ne sont pas comptées.` : ''}</p>
     <h3 class="ee-titre">À faire</h3>
     ${liste(afaire, 'Aucune lacune déclarée.')}
@@ -1863,8 +1917,8 @@ function etatEdifice() {
       <p class="ee-vide">Faits latéraux, cités pour situer une notion ou ouvrir vers la suite&nbsp;; aucune démonstration de l'atlas n'en dépend.</p>
       ${liste(horsR, 'Aucun.')}</div></details>
     <h3 class="ee-titre">Fiches où intervient l'axiome du choix <span class="etoile">⋆</span></h3>
-    <p class="ee-vide">${pl(choix.length, 'fiche', 'fiches')}, dans ${pl(groupes.length, 'théorie', 'théories')}. Chacune dit, dans son encadré, quelle forme du choix intervient et à quel endroit.</p>
-    <ul class="ee-liste">${groupes.map(g => `<li><p class="ee-tete">${miniTheorie(g.t)}</p><p class="ee-fiche">${g.ids.map(lienN).join(', ')}</p></li>`).join('')}</ul>
+    <p class="ee-vide">${pl(choixInt.length, 'fiche intérieure', 'fiches intérieures')}, dans ${pl(nTheoInt, 'théorie', 'théories')}, et ${pl(nTheoChoix, 'théorie marquée elle-même', 'théories marquées elles-mêmes')}. Chaque fiche dit, dans son encadré, quelle forme du choix intervient et à quel endroit. Une théorie du graphe principal ne porte elle-même ce signe que si l'un de ses théorèmes centraux ne se démontre pas dans ZF, parce qu'il équivaut à une forme usuelle du choix ou en dépend de façon essentielle&nbsp;; elle figure alors dans sa propre liste, et le nombre indiqué compte ses seules fiches intérieures.</p>
+    <ul class="ee-liste">${groupes.map(g => `<li><p class="ee-tete">${miniTheorie(g.t)}<span class="ee-lieu">${pl(g.ids.filter(x => x !== g.t).length, 'fiche', 'fiches')}</span></p><p class="ee-fiche">${g.ids.map(lienN).join(', ')}</p></li>`).join('')}</ul>
   </article>`;
 }
 
