@@ -53,6 +53,10 @@ body.l-corps { min-height: 100%; margin: 0; display: block; }
 .l-liste a:hover { border-bottom-color: var(--encre-2); }
 .l-liste .l-sorte { color: var(--encre-3); font-size: 12.5px; margin-right: 6px; }
 .l-ouvrir-bas { display: inline-block; margin-top: 26px; }
+.l-page a.terme { text-decoration: none; cursor: pointer; }
+.l-page span.terme { cursor: auto; }
+.l-page span.terme:hover { background: none; }
+.l-404 .l-liste { margin-top: 10px; }
 .l-pied { max-width: 820px; margin: 0 auto; padding: 18px 16px 40px; border-top: 1px solid var(--filet); font-size: 12.5px; color: var(--encre-3); }
 .l-pied a { color: var(--encre-2); }
 .l-ann .l-boutons { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0 14px; font-family: var(--f-ui); }
@@ -87,20 +91,22 @@ body.l-corps { min-height: 100%; margin: 0; display: block; }
 
   // Gabarit commun d'une page de lecture.
   const THEME = `<script>(function(){var t=null;try{t=(document.cookie.match(/(?:^|; )atlas-theme=(light|dark)/)||[])[1]||null}catch(e){}if(!t)try{t=sessionStorage.getItem('atlas-theme')}catch(e){}document.documentElement.dataset.theme=t==='dark'?'dark':'light'})();</script>`;
-  function page({ chemin, titre, description, ancre, corps, fil = [], type = 'article' }) {
+  // fichier : chemin imposé (404.html) ; indexable: false → noindex, ni adresse canonique ni plan du site.
+  function page({ chemin, titre, description, ancre, corps, fil = [], type = 'article', fichier, indexable = true }) {
     const url = ADRESSE + chemin, cible = '/#' + ancre;
     const d = coupe(description || '');
     const filLd = fil.length ? `<script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@type': 'BreadcrumbList',
       itemListElement: [{ name: 'ATLAS', href: '' }, ...fil].map((f, i) => ({ '@type': 'ListItem', position: i + 1, name: f.name, item: ADRESSE + (f.href || '').replace(/^\//, '') })) }).replace(/</g, '\\u003c')}</script>` : '';
-    fs.mkdirSync('site/' + chemin, { recursive: true });
-    fs.writeFileSync(`site/${chemin}index.html`, `<!doctype html>
+    const sortie = fichier ? `site/${fichier}` : `site/${chemin}index.html`;
+    if (!fichier) fs.mkdirSync('site/' + chemin, { recursive: true });
+    fs.writeFileSync(sortie, `<!doctype html>
 <html lang="fr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>${attr(titre)}</title>
 <meta name="description" content="${attr(d)}">
-<link rel="canonical" href="${url}">
+${indexable ? `<link rel="canonical" href="${url}">` : '<meta name="robots" content="noindex">'}
 <meta property="og:type" content="${type}">
 <meta property="og:site_name" content="ATLAS">
 <meta property="og:title" content="${attr(titre)}">
@@ -137,7 +143,7 @@ ${corps}
 </body>
 </html>
 `);
-    urls.push(url);
+    if (indexable && !fichier) urls.push(url);
   }
 
   const N = D.noeuds, racine = D.racine;
@@ -146,8 +152,19 @@ ${corps}
     : ({ 'définition': 'var(--rouge)', 'axiome': 'var(--c-axiome)' }[n.nature] || 'var(--encre)');
   const puce = id => { const n = N[id]; if (!n) return ''; const c = n.graphe === racine ? couleur(n) : 'var(--encre-3)';
     return `<a class="puce" href="${lien(id)}" style="--c: ${c}">${esc(n.titre)}</a>`; };
-  const relier = h => String(h || '')
+  // Termes du lexique (span.terme) : lien vers la page de la fiche qui les définit, avec la définition en
+  // infobulle (texte brut, coupé). Les notations dans les formules (terme-math, à l'intérieur de KaTeX) et
+  // un terme défini dans la fiche même restent des mentions simples.
+  const L = D.lexique || {}, brut = ctx.texteBrut || (t => String(t || '').replace(/<[^>]+>/g, ''));
+  const bulle = {};
+  const infobulle = id => bulle[id] ?? (bulle[id] = coupe(brut(L[id]?.definition), 180));
+  const relier = (h, ici) => String(h || '')
     .replace(/<a class="lien-noeud" href="#[^"]*" data-n="([^"]+)">/g, (m, id) => `<a class="lien-noeud" href="${lien(id)}">`)
+    .replace(/<span class="terme" data-g="([^"]+)" tabindex="0" role="button">([\s\S]*?)<\/span>/g, (m, id, txt) => {
+      const def = L[id]?.defini;
+      if (!def || !N[def] || def === ici) return `<span class="terme">${txt}</span>`;
+      return `<a class="terme" href="${lien(def)}" title="${attr(`${L[id].terme} : ${infobulle(id)}`)}">${txt}</a>`;
+    })
     .replace(/(href|src)="documents\//g, '$1="/documents/');
   return (outilsCache = { page, puce, relier, couleur, lien, esc, urls });
 }
@@ -173,11 +190,11 @@ export function pagesLecture(ctx) {
     let h = `<article class="fiche" style="--c: ${couleur(n)}">`;
     h += `<p class="sur-titre"><span class="sorte">${esc(n.sorte || '')}</span>${n.graphe !== racine ? `<span>${esc(G[n.graphe].titre)}</span>` : ''}</p>`;
     h += `<h1>${esc(n.titre)}${n.choix ? ' <span class="etoile" title="Fait appel à une forme de l\'axiome du choix">⋆</span>' : ''}</h1>`;
-    if (n.choix) h += `<div class="choix"><strong class="tete">⋆ Axiome du choix</strong>${relier(n.choix)}</div>`;
-    if (n.texte) h += relier(n.texte);
-    if (n.enonce) h += `<div class="enonce"><span class="tete">${n.nature === 'chapitre' ? 'Résultat principal' : 'Énoncé'}</span>${relier(n.enonce)}</div>`;
-    if (n.preuve) h += `<details class="preuve" open><summary>Démonstration</summary><div class="contenu">${relier(n.preuve)}<span class="cqfd">□</span></div></details>`;
-    for (const r of n.remarques || []) h += `<div class="remarque"><span class="tete">Remarque</span>${relier(r)}</div>`;
+    if (n.choix) h += `<div class="choix"><strong class="tete">⋆ Axiome du choix</strong>${relier(n.choix, n.id)}</div>`;
+    if (n.texte) h += relier(n.texte, n.id);
+    if (n.enonce) h += `<div class="enonce"><span class="tete">${n.nature === 'chapitre' ? 'Résultat principal' : 'Énoncé'}</span>${relier(n.enonce, n.id)}</div>`;
+    if (n.preuve) h += `<details class="preuve" open><summary>Démonstration</summary><div class="contenu">${relier(n.preuve, n.id)}<span class="cqfd">□</span></div></details>`;
+    for (const r of n.remarques || []) h += `<div class="remarque"><span class="tete">Remarque</span>${relier(r, n.id)}</div>`;
     for (const doc of n.documents || []) h += `<div class="document-fiche"><span class="tete">Document à télécharger</span><p class="doc-titre">${esc(doc.titre)}</p>${doc.description ? `<p class="doc-desc">${esc(doc.description)}</p>` : ''}<div class="doc-actions"><a class="bouton" href="/${String(doc.fichier).replace(/^\//, '')}">Ouvrir le PDF</a></div></div>`;
     const amont = (n.parents || []).concat(n.amont || []);
     h += `<div class="liens"><div><h3>Repose sur</h3><div class="puces">${amont.length ? amont.map(puce).join('') : '<span class="vide">C\'est un point de départ.</span>'}</div></div>`;
@@ -259,5 +276,12 @@ export function pagesLecture(ctx) {
     page({ chemin: 'annales/', titre: 'ATLAS – Annales', description: texteBrut(R.annales?.intro) || 'Sujets d\'écrit de mathématiques des concours d\'ingénieurs et de l\'enseignement, avec leur description par thème.',
       ancre: 'annales', fil: [{ name: 'Annales' }], corps: h });
   }
+  // ---------------------------------------------------------------- page introuvable
+  // GitHub Pages sert site/404.html pour toute adresse inconnue (avec le code 404). Chemins absolus partout.
+  page({ chemin: '', fichier: '404.html', indexable: false, titre: 'ATLAS – Page introuvable', ancre: 'accueil',
+    description: 'Cette adresse ne correspond à aucune page d\'ATLAS.', fil: [],
+    corps: `<article class="fiche l-404"><p class="sur-titre"><span class="sorte">Erreur 404</span></p><h1>Cette page n'existe pas</h1>
+<p>L'adresse demandée ne correspond à aucune page d'ATLAS : elle est peut-être mal recopiée, ou la page a changé de place. Le plus simple est de repartir d'une rubrique ; dans l'atlas interactif, la barre de recherche de l'édifice retrouve une notion par son nom.</p>
+<ul class="l-liste"><li><a href="/">Accueil</a></li><li><a href="/edifice/">L'édifice : les théories et leurs fiches</a></li><li><a href="/#edifice">Chercher une notion dans l'atlas interactif</a></li><li><a href="/cours/">Cours</a></li><li><a href="/exercices/">Exercices</a></li><li><a href="/annales/">Annales</a></li><li><a href="/#nouveautes">Nouveautés</a></li><li><a href="/#a-propos">À propos – Contact</a></li></ul></article>` });
   return urls;
 }

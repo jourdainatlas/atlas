@@ -138,6 +138,22 @@ body.en-rubrique .bouton-theme { margin-left: auto; }
 }
 .signaler:hover, .signaler[aria-expanded="true"] { color: var(--encre); background: var(--trame); }
 .signaler:focus-visible { outline: 2px solid var(--encre-3); outline-offset: 2px; }
+.acc-profils { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.acc-profil { padding: 16px 18px; display: flex; flex-direction: column; gap: 8px; }
+.acc-profil h4 { margin: 0; font-family: var(--f-titre); font-size: 19px; }
+.acc-profil p { margin: 0; font-size: 14px; line-height: 1.5; color: var(--encre-2); }
+.acc-puces { display: flex; flex-wrap: wrap; gap: 6px; }
+.acc-puces .chip { text-decoration: none; font-size: 13px; }
+.acc-profil .acc-profil-liens { margin-top: auto; display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
+.acc-profil-liens a, .acc-nouv-liens a { color: var(--encre); text-decoration: underline; text-decoration-color: var(--filet); text-underline-offset: 3px; }
+.acc-nouv { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.acc-nouv-carte { padding: 14px 16px; border-left: 3px solid var(--c); text-decoration: none; color: var(--encre); display: flex; flex-direction: column; gap: 6px; }
+.acc-nouv-carte:hover { border-color: var(--c); }
+.acc-nouv-titre { font-family: var(--f-titre); font-size: 17px; line-height: 1.3; }
+.acc-nouv-liens { display: flex; flex-wrap: wrap; gap: 6px 20px; margin: 12px 0 0; font-size: 14px; }
+@media (max-width: 1100px) { .acc-profils { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 860px) { .acc-nouv { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 560px) { .acc-profils { grid-template-columns: minmax(0, 1fr); } }
 /* ---- nouveautés */
 .nouv-filtres { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 26px; }
 .nouv-filtres .chip { display: inline-flex; align-items: center; gap: 7px; }
@@ -2390,6 +2406,7 @@ function pageAccueil() {
   h += `<div class="acc-actions"><a class="bouton plein" href="#${D.racine}">Entrer dans l'édifice</a><a class="bouton" href="#cours">Les cours</a><a class="bouton" href="#exercices">Les exercices</a><a class="bouton" href="#annales">Les annales</a></div>`;
   h += `</div><a class="acc-carte-edifice carte" href="#${D.racine}" aria-label="Ouvrir l'édifice">${miniEdifice()}`;
   h += `<div class="acc-legende"><span><b>${nbTheories}</b> théories</span><span><b>${nbEnonces}</b> définitions, axiomes et théorèmes</span><span><b>${nbTermes}</b> termes au lexique</span></div></a></section>`;
+  h += aProposCommencer();   // domaine À propos : guide par profil de lecteur
 
   const carte = (href, titre, chiffre, unite, texte, pied, aVenir) =>
     `<a class="acc-rub carte${aVenir ? ' a-venir' : ''}" href="${href}"><div class="r-tete"><h4>${titre}</h4><span class="r-chiffre">${chiffre}</span></div><div class="r-unite" style="text-align:right">${unite}</div><p>${texte}</p><div class="r-pied"><span>${pied}</span><span class="fleche">→</span></div></a>`;
@@ -2428,6 +2445,7 @@ function pageAccueil() {
     h += `<a class="acc-etape" href="#${D.noeuds[thAff[0]]?.graphe || D.racine}.${thAff[0] || ''}"><span class="e-sorte">Ses fondements dans l'édifice</span><span class="e-titre">${titreFondements(thAff)}</span><span class="e-detail">${thAff.map(miniTheorie).join('')}</span></a>`;
     h += `</div><p class="acc-fil-note">Les cours suivent la progression scolaire ; l'édifice suit l'ordre logique. Le passage de l'un à l'autre permet de replacer chaque résultat du cours dans la théorie qui le justifie, et chaque exercice dans les notions qu'il met en jeu.</p></section>`;
   }
+  h += nouvAccueil();   // domaine À propos : les trois dernières nouveautés
   h += `<footer class="acc-pied"><span>ATLAS · ${esc(R.apropos?.auteur || 'Armand Jourdain')}, ${esc((R.apropos?.fonction || '').toLowerCase())}</span><a href="#a-propos">À propos du projet →</a></footer>`;
   return h;
 }
@@ -3155,7 +3173,9 @@ document.addEventListener('click', ev => {
 });
 
 /* ---- lecteur PDF (PDF.js, chargé à la demande) */
-const PDFJS = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/';
+// Sur le site, PDF.js est servi par le site lui-même (site/pdfjs/, copié par rendu.mjs) ; l'aperçu Claude, fichier
+// unique, garde le CDN.
+const PDFJS = /(^|\.)atlasjourdain\.fr$|^localhost$/.test(location.hostname) ? '/pdfjs/' : 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/';
 function chargerScript(src) {
   return new Promise((ok, ko) => {
     if (window.pdfjsLib) return ok();
@@ -3486,6 +3506,44 @@ document.addEventListener('click', ev => {
 // Pastille « nouveau » dans le menu du logo, tant que la dernière nouveauté n'a pas été vue
 // (jamais à la toute première visite : tout serait « nouveau »).
 (() => { const d = (R.nouveautes?.entrees || [])[0]?.date, vu = nouvVu(), b = $('#menu-neuf'); if (b) b.hidden = !(d && vu && d > vu); })();
+
+/* ---- Accueil : « Par où commencer ? » et dernières nouveautés (domaine À propos – Contact) */
+function aProposCommencer() {
+  const C = R.cours || {}, cours = (C.cours || []).filter(c => c.statut === 'depose');
+  const feuilles = (R.exercices?.feuilles || []).filter(f => f.statut === 'depose');
+  const niv = id => (C.niveaux || []).find(n => n.id === id);
+  const premier = id => cours.filter(c => c.niveau === id).sort((a, b) => (a.chapitre || 0) - (b.chapitre || 0))[0];
+  // Puce d'un niveau : son premier chapitre, ou ses exercices ; absente si le niveau n'a encore rien en ligne.
+  const puceNiveau = (id, vers) => {
+    const n = niv(id); if (!n) return '';
+    if (vers === 'exercices') return feuilles.some(f => f.niveau === id) ? `<a class="chip" href="#exercices/niveau/${id}">${esc(n.titre)}</a>` : '';
+    const c = premier(id); return c ? `<a class="chip" href="#cours/${c.id}">${esc(n.titre)}</a>` : '';
+  };
+  const profil = (titre, texte, puces, liens) => `<div class="carte acc-profil"><h4>${titre}</h4><p>${texte}</p>${puces ? `<div class="acc-puces">${puces}</div>` : ''}<p class="acc-profil-liens">${liens}</p></div>`;
+  const lycee = ['seconde', 'premiere', 'terminale', 'expertes'];
+  const galois = cours.find(c => c.id === 'm-galois');
+  let h = `<section class="acc-section"><h3>Par où commencer ?</h3><div class="acc-profils">`;
+  h += profil('Au lycée', 'Choisissez votre classe : chaque chapitre se lit en ligne ou se télécharge, et sa feuille d\'exercices corrigés permet de s\'entraîner aussitôt.',
+    lycee.map(id => puceNiveau(id)).join(''), `<a href="#cours">Tous les cours →</a><a href="#exercices">Les exercices par niveau →</a>`);
+  h += profil('Vers la prépa, en prépa', 'Les Maths approfondies préparent aux classes préparatoires, et les cours de Maths Sup suivent le programme de MPSI. Les annales des concours d\'ingénieurs montrent où mène ce travail.',
+    ['approfondies', 'ma'].map(id => puceNiveau(id)).join(''), `<a href="#exercices">S'entraîner →</a><a href="#annales">Les sujets de concours →</a>`);
+  h += profil('CAPES, agrégation, Master', 'L\'édifice reprend chaque théorie dans l\'ordre logique, avec des démonstrations complètes ; les annales de l\'enseignement se cherchent par thème, partie par partie.',
+    '', `<a href="#${D.racine}">Entrer dans l'édifice →</a><a href="#annales">Les annales et leur moteur →</a>${galois ? `<a href="#cours/${galois.id}">Le cours de Master →</a>` : ''}`);
+  h += profil('Par curiosité', 'Partez des fondations : la logique du premier ordre et les axiomes de la théorie des ensembles, puis suivez les flèches de l\'édifice jusqu\'aux grandes théories.',
+    '', `<a href="#${D.noeuds.log?.sous || D.racine}">Commencer par la logique →</a><a href="#nouveautes">Ce qui vient de paraître →</a>`);
+  return h + '</div></section>';
+}
+function nouvAccueil() {
+  const E = (R.nouveautes?.entrees || []).slice(0, 3);
+  if (!E.length) return '';
+  const vu = nouvVu();
+  let h = `<section class="acc-section"><h3>Dernières nouveautés</h3><div class="acc-nouv">`;
+  for (const e of E) {
+    const [t, c] = NOUV_RUB[e.rubrique] || NOUV_RUB.site, l = (e.liens || [])[0];
+    h += `<a class="carte acc-nouv-carte" href="#${l ? esc(l.ancre) : 'nouveautes'}" style="--c: var(${c})"><span class="nouv-rub"><i class="nouv-point"></i>${t} · ${esc(nouvDate(e.date).replace(/ \d{4}$/, ''))}${vu && e.date > vu ? '<span class="nouv-badge">nouveau</span>' : ''}</span><span class="acc-nouv-titre">${e.titre}</span></a>`;
+  }
+  return h + `</div><p class="acc-nouv-liens"><a href="#nouveautes">Toutes les nouveautés →</a><a href="nouveautes.xml">S'abonner au fil RSS</a></p></section>`;
+}
 
 /* ---- Signaler une erreur : bouton drapeau de l'en-tête (domaine À propos – Contact) */
 // Le message est prérempli avec le titre de la vue et son adresse de partage ; l'adresse de contact

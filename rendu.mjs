@@ -338,6 +338,7 @@ const index = `<!doctype html>
 <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
+<link rel="alternate" type="application/rss+xml" title="ATLAS – Nouveautés" href="nouveautes.xml">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ATLAS">
@@ -442,6 +443,45 @@ for (const f of ['favicon.svg', 'favicon-32.png', 'apple-touch-icon.png', 'icone
   fs.writeFileSync('site/robots.txt', `User-agent: *\nAllow: /\n\nSitemap: ${ADRESSE}sitemap.xml\n`);
   console.log(`Plan du site : ${new Set(urls).size} adresses`);
 }
+// Fil RSS des nouveautés (domaine À propos) : site/nouveautes.xml, une entrée par nouveauté. Le lien de
+// chaque article vise la page de lecture de son premier lien quand elle existe, sinon l'ancre du site.
+{
+  const E = Rb.nouveautes?.entrees || [];
+  const ecrites = new Set(urlsLecture);
+  const versPage = a => {
+    const m = String(a || '').split('/');
+    const candidates = [m[0] === 'cours' && m[1] ? `cours/${m[1]}/` : '', m[0] === 'exercices' && m[1] === 'feuille' ? `exercices/feuille/${m[2]}/` : '',
+      m[0] === 'annales' && m[1] === 'sujet' ? `annales/sujet/${m[2]}/` : '', ['cours', 'exercices', 'annales', 'edifice'].includes(a) ? `${a}/` : '',
+      D.noeuds[a] ? `edifice/${a}/` : '', D.noeuds[String(a).split('.').pop()] ? `edifice/${String(a).split('.').pop()}/` : ''].filter(Boolean).map(c => ADRESSE + c);
+    return candidates.find(u => ecrites.has(u)) || (a ? `${ADRESSE}#${a}` : `${ADRESSE}#nouveautes`);
+  };
+  const x = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const date = d => new Date(d + 'T12:00:00Z').toUTCString();
+  const items = E.map((e, k) => `  <item>
+    <title>${x(texteBrut(e.titre))}</title>
+    <link>${x(versPage(e.liens?.[0]?.ancre))}</link>
+    <description>${x(texteBrut(e.texte))}</description>
+    <category>${x(e.rubrique)}</category>
+    <pubDate>${date(e.date)}</pubDate>
+    <guid isPermaLink="false">atlas-nouveaute-${e.date}-${E.length - k}</guid>
+  </item>`).join('\n');
+  fs.writeFileSync('site/nouveautes.xml', `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+  <title>ATLAS – Nouveautés</title>
+  <link>${ADRESSE}#nouveautes</link>
+  <atom:link href="${ADRESSE}nouveautes.xml" rel="self" type="application/rss+xml"/>
+  <description>Ce qui a été ajouté au site ATLAS : cours, exercices, théories de l'édifice, annales.</description>
+  <language>fr</language>
+${E[0] ? `  <lastBuildDate>${date(E[0].date)}</lastBuildDate>\n` : ''}${items}
+</channel>
+</rss>
+`);
+}
+// Lecteur PDF des cours : PDF.js 3.11.174 servi par le site lui-même (vendor/, copie exacte de pdfjs-dist sur
+// npm, licence Apache 2.0), et non plus depuis un CDN tiers : rien d'extérieur ne s'exécute dans la page.
+fs.mkdirSync('site/pdfjs', { recursive: true });
+for (const f of ['pdf.min.js', 'pdf.worker.min.js']) fs.copyFileSync(`vendor/pdfjs-3.11.174/${f}`, `site/pdfjs/${f}`);
 // Application installable : service worker, dont la version change à chaque publication (voir identite/sw.js).
 fs.writeFileSync('site/sw.js', fs.readFileSync('identite/sw.js', 'utf8').replace("'atlas-__VERSION__'", `'atlas-${empreinte(index)}'`));
 console.log(`Site écrit : site/index.html (${(index.length / 1024).toFixed(0)} Ko)`);

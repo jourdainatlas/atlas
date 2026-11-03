@@ -162,3 +162,21 @@ de plus dans `site/` (494 Mo au total avant ; la limite conseillée de GitHub Pa
 Restent à faire par leurs conversations : exercices (`/exercices/<id>/`) et cours (`/cours/<id>/`), dont les
 pages de partage leur appartiennent (message proposé à l'auteur le 3 nov.).
 
+### 40. Page introuvable, termes reliés, PDF.js servi par le site, accueil (3 nov. 2026)
+
+- **404** : `site/404.html`, écrite par `lecture.mjs` avec le gabarit des pages de lecture (option
+  `fichier`, `indexable: false` → `noindex`, hors plan du site) : message et liens vers les rubriques.
+- **Termes du lexique** sur les pages de lecture : `relier(html, ici)` change chaque `span.terme` en lien
+  vers la page de la fiche qui le définit (`defini`), avec la définition en infobulle (texte brut, 180
+  caractères) ; un terme défini dans la fiche même et les notations dans les formules restent des
+  mentions. Profite aussi aux pages des cours et des exercices, qui appellent `relier`.
+- **PDF.js** : copie exacte de `pdfjs-dist` 3.11.174 (npm) dans `vendor/pdfjs-3.11.174/` (licence Apache 2.0
+  jointe), copiée par `rendu.mjs` dans `site/pdfjs/` ; le gabarit la charge sur le site, le CDN reste pour
+  l'aperçu Claude. Pas de dépendance npm : `pdfjs-dist` tire `canvas`, module natif optionnel, que `npm ci`
+  tenterait de compiler. Plus aucun script d'un CDN dans le site, hors mesure d'audience. `LICENCE.md`.
+- **Accueil** (`pageAccueil`, deux appels) : `aProposCommencer()` après l'ouverture, quatre profils (lycée,
+  prépa, CAPES-agrégation-Master, curiosité) avec puces calculées sur les niveaux en ligne ;
+  `nouvAccueil()` avant le pied, les trois dernières nouveautés. Styles `.acc-profil*`, `.acc-nouv*`.
+- **Fil RSS** : `site/nouveautes.xml` (RSS 2.0, bloc de `rendu.mjs`), lien `alternate` dans la tête de la
+  page ; le lien d'un article vise la page de lecture de son premier lien, sinon l'ancre.
+
