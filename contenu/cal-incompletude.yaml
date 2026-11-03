@@ -1,9 +1,10 @@
 # Niveau 2 : structure interne du chapitre « Calculabilité et incomplétude » (nœud cal-incompletude du
 # graphe calc). Fonction β de Gödel, définissabilité des ensembles récursivement énumérables dans ℕ,
 # théorèmes d'une théorie récursivement axiomatisée, vérité arithmétique non récursivement énumérable et
-# incomplétude des théories dont les axiomes sont vrais dans ℕ. Relie la calculabilité au nœud
-# l-incompletude du graphe log, sans en réécrire la preuve. Le codage de la syntaxe vient du chapitre
-# cal-syntaxe (entrée de cal-theoremes) : rien n'y est admis.
+# incomplétude des théories dont les axiomes sont vrais dans ℕ ; théorème de Craig (axiomes r.e. remplacés
+# par des axiomes primitifs récursifs, mêmes théorèmes : renvoi aval de l-incompletude). Relie la calculabilité
+# au nœud l-incompletude du graphe log, sans en réécrire la preuve. Le codage de la syntaxe vient du chapitre
+# cal-syntaxe (entrée de cal-theoremes et de cal-craig) : rien n'y est admis.
 
 graphe: cal-incompletude
 titre: Calculabilité et incomplétude
@@ -11,8 +12,9 @@ conteneur: cal-incompletude
 
 entrees:
   cal-arret: [cal-definissable]
-  cal-syntaxe: [cal-theoremes]
-  cal-ensembles: [cal-theoremes]
+  cal-syntaxe: [cal-theoremes, cal-craig]
+  cal-ensembles: [cal-theoremes, cal-craig]
+  cal-kleene: [cal-craig]
 
 noeuds:
   - id: cal-beta
@@ -144,6 +146,64 @@ noeuds:
         Le témoin $y_j$ est le plus petit qui convienne : il n'y a rien à choisir, et la preuve n'emploie aucune forme de l'axiome du choix.
       - |
         L'ensemble des théorèmes est récursivement énumérable, mais il n'a aucune raison d'être récursif ; pour $\mathsf{PA}$, il ne l'est pas, résultat plus fort que l'on n'établit pas ici. Savoir si un énoncé est démontrable, c'est attendre qu'une démonstration apparaisse dans l'énumération, sans savoir s'il faut cesser d'attendre.
+
+  - id: cal-craig
+    etiquette: Théorème de Craig
+    nature: théorème
+    titre: Des axiomes primitifs récursifs pour toute théorie récursivement axiomatisée
+    texte: |
+      Pour une [[formule]] $\sigma$ et un entier $t \in \lex{ensemble-entiers-naturels}{\mathbb N}$, on note $\sigma^{(t)}$ la conjonction de $t + 1$ copies de $\sigma$, définie par récurrence sur $t$ : $\sigma^{(0)} = \sigma$ et $\sigma^{(t+1)} = \sigma \wedge \sigma^{(t)}$. Comme $P \wedge Q$ abrège $\neg(P \to \neg Q)$ ({{l-connecteurs|Connecteurs}}), $\sigma^{(t+1)}$ est, en notation préfixée, le mot $\neg \to \sigma\ \neg\, \sigma^{(t)}$. C'est une formule, par récurrence sur $t$, et son nombre de lettres est $(t + 1)\,\mathrm{lg}(\ulcorner \sigma \urcorner) + 3t$.
+
+      Avec les codes de {{cal-sx-codage|Codage des mots}}, on définit par récurrence primitive sur $t$, avec le paramètre $a$,
+      $$\begin{aligned} c(a, 0) &= a, \\ c(a, t + 1) &= \mathrm{cc}\big(\langle 1, 2 \rangle, a, \langle 1 \rangle, c(a, t)\big). \end{aligned}$$
+      La fonction $c$ est définie par récurrence primitive à partir de $\mathrm{cc}$, qui est primitive récursive par le point (i) de {{cal-sx-codage|Codage des mots}} ; elle est donc primitive récursive. Comme $\langle 1, 2 \rangle$ et $\langle 1 \rangle$ sont les codes des mots $\neg \to$ et $\neg$, on a $c(\ulcorner \sigma \urcorner, t) = \ulcorner \sigma^{(t)} \urcorner$ pour toute formule $\sigma$, par récurrence sur $t$.
+    enonce: |
+      Soit $T$ une [[theorie]] sur la signature de l'arithmétique dont l'ensemble des codes des axiomes est [[ensemble-recursivement-enumerable|récursivement énumérable]].
+
+      (i) Il existe une théorie $T'$ sur la même signature, dont l'ensemble des codes des axiomes est primitif récursif, et qui démontre les mêmes formules que $T$ : pour toute formule $\varphi$, $T \vdash \varphi$ si et seulement si $T' \vdash \varphi$.
+
+      (ii) De plus, la relation $\mathrm{Dem}_{T'}$ de {{cal-sx-demonstrations|Démonstrations}} est primitive récursive, et, pour toute formule $\varphi$,
+      $$T \vdash \varphi \iff \exists p\ \ \mathrm{Dem}_{T'}(p, \ulcorner \varphi \urcorner).$$
+      La théorie $T'$ est [[theorie-coherente|cohérente]] si et seulement si $T$ l'est.
+    preuve: |
+      *Une énumération primitive récursive.* Soit $A$ l'ensemble des codes des axiomes de $T$, et $R$ une relation récursive telle que $a \in A \iff \exists y\ R(a, y)$ ({{cal-ensembles|Récursif, r.e.}}). La fonction $f(a) \simeq \mu y\, R(a, y)$ est récursive ({{cal-recursives|Fonctions récursives}}, (iii)) ; par la définition de la minimisation, elle est définie exactement sur $A$.
+
+      Par le point (i) de la {{cal-kleene|forme normale de Kleene}}, $f$ a un indice $e$. Comme la fonction $U_1$ est totale, $f(a)$ est défini si et seulement s'il existe $t$ tel que $T_1(e, a, t)$. Ainsi
+      $$a \in A \iff \exists t\ \ T_1(e, a, t),$$
+      où la relation $T_1$ est primitive récursive.
+
+      *La théorie $T'$.* Posons
+      $$T' = \big\{\sigma^{(t)} : \sigma \in T,\ t \in \mathbb N,\ T_1(e, \ulcorner \sigma \urcorner, t)\big\}.$$
+      Ses éléments sont des [[enonce|énoncés]]. En effet, $\sigma^{(t)}$ est une formule, et toute occurrence de variable de $\sigma^{(t)}$ se trouve dans l'une des copies de $\sigma$ ; comme $\sigma$ est un énoncé, elle y est dans la portée d'un quantificateur de cette copie, donc liée dans $\sigma^{(t)}$.
+
+      Montrons qu'un entier $N$ est le code d'un élément de $T'$ si et seulement si
+      $$\begin{aligned} &\exists a < N + 1\ \ \exists t < N + 1 \\ &\quad \big(N = c(a, t) \wedge T_1(e, a, t)\big), \end{aligned}$$
+      relation primitive récursive par les points (i) et (iii) de {{cal-pr-cloture|Clôture}}.
+
+      Si $N = c(a, t)$ et $T_1(e, a, t)$, alors $a \in A$ : l'entier $a$ est le code d'un axiome $\sigma$ de $T$, et $N = \ulcorner \sigma^{(t)} \urcorner$, avec $\sigma^{(t)} \in T'$.
+
+      Réciproquement, si $N$ est le code d'un élément de $T'$, il existe, par la définition de $T'$, un axiome $\sigma$ de $T$ et un entier $t$ tels que $T_1(e, \ulcorner \sigma \urcorner, t)$ et $N = \ulcorner \sigma^{(t)} \urcorner$ ; un même mot peut s'écrire $\sigma^{(t)}$ de plusieurs façons, par exemple $\sigma^{(1)} = (\sigma \wedge \sigma)^{(0)}$, et l'on prend ces témoins-là. Les témoins $a = \ulcorner \sigma \urcorner$ et $t$ conviennent, et ils sont au plus égaux à $N$. D'une part, $\sigma$ est un facteur de $\sigma^{(t)}$, donc $\ulcorner \sigma \urcorner \leqslant N$ par le point (ii) de {{cal-sx-codage|Codage des mots}}. D'autre part, par ce même point, les préfixes du mot de code $N$ ont des codes strictement croissants avec leur longueur, à partir du code $0$ du mot vide ; donc $\mathrm{lg}(N) \leqslant N$, et $t \leqslant (t + 1)\,\mathrm{lg}(\ulcorner \sigma \urcorner) + 3t = \mathrm{lg}(N)$.
+
+      *Un lemme de remplacement.* Soit $\Gamma$ et $\Delta$ deux théories telles que chaque élément de $\Delta$ soit démontrable à partir de $\Gamma$. Alors toute formule démontrable à partir de $\Delta$ l'est à partir de $\Gamma$.
+
+      En effet, soit $\gamma_0, \dots, \gamma_{l-1}$ une [[demonstration-formelle|démonstration formelle]] à partir de $\Delta$. Remplaçons chaque $\gamma_j$ qui appartient à $\Delta$ par la démonstration formelle de $\gamma_j$ à partir de $\Gamma$ de plus petit code ({{cal-sx-demonstrations|Démonstrations}}), qui se termine par $\gamma_j$. Dans la suite obtenue, chaque formule est un axiome logique, un élément de $\Gamma$, ou se déduit par modus ponens de deux formules qui la précèdent : c'est le cas à l'intérieur de chaque bloc inséré, et une formule $\gamma_j$ obtenue par modus ponens à partir de $\gamma_i$ et de $\gamma_{i'}$, avec $i, i' < j$, vient encore après ces deux formules, qui figurent toujours dans la suite. C'est une démonstration formelle à partir de $\Gamma$, terminée par $\gamma_{l-1}$.
+
+      *Mêmes théorèmes.* Soit $P$ une lettre propositionnelle et $P^{(t)}$ défini comme $\sigma^{(t)}$. Par récurrence sur $t$ et par la table de $\wedge$ ({{l-connecteurs|Connecteurs}}), $P^{(t)}$ prend la même valeur que $P$ sous toute valuation : les formules $P \to P^{(t)}$ et $P^{(t)} \to P$ sont des [[tautologie|tautologies]]. Le remplacement se faisant lettre par lettre, on obtient $\sigma \to \sigma^{(t)}$ et $\sigma^{(t)} \to \sigma$ en remplaçant $P$ par $\sigma$ : ce sont des instances de tautologies, donc des axiomes logiques du groupe (1) de {{l-deduction|Démonstrations formelles}}.
+
+      Tout élément de $T'$ s'écrit $\sigma^{(t)}$ avec $\sigma \in T$, et la suite $\sigma$, $\sigma \to \sigma^{(t)}$, $\sigma^{(t)}$ est alors une démonstration formelle à partir de $T$. Si $\sigma \in T$, alors $\ulcorner \sigma \urcorner \in A$ ; soit $t$ le plus petit entier tel que $T_1(e, \ulcorner \sigma \urcorner, t)$. Alors $\sigma^{(t)} \in T'$, et la suite $\sigma^{(t)}$, $\sigma^{(t)} \to \sigma$, $\sigma$ est une démonstration formelle à partir de $T'$. Le lemme de remplacement, appliqué dans les deux sens, donne (i).
+
+      (ii) La première assertion est le point (ii) de {{cal-sx-demonstrations|Démonstrations}}, appliqué à $T'$, et l'équivalence en résulte par (i), puisque $T' \vdash \varphi$ signifie qu'une démonstration formelle de $\varphi$ à partir de $T'$ existe. Deux théories qui démontrent les mêmes formules sont cohérentes en même temps, par la définition de la cohérence ({{l-coherence|Cohérence}}).
+    remarques:
+      - |
+        Le principe est le suivant. On ne sait pas décider si un énoncé $\sigma$ est un axiome de $T$, puisque la recherche d'un témoin peut ne jamais aboutir ; mais l'axiome $\sigma^{(t)}$ de $T'$ porte avec lui, dans son nombre de copies, un temps $t$ auquel un calcul qui confirme que $\sigma$ est un axiome est déjà terminé (comme $T_1$ reste vraie au-delà de l'arrêt, $T'$ contient $\sigma^{(t)}$ pour une infinité de $t$), et cette confirmation se vérifie par une recherche bornée. L'erreur la plus répandue est de croire que $T'$ est pour autant plus simple que $T$ : ses axiomes forment un ensemble primitif récursif, mais ses théorèmes sont ceux de $T$, qui ne forment en général qu'un ensemble récursivement énumérable ({{cal-theoremes|Théorèmes r.e.}}, (iii)).
+      - |
+        Pour $\sigma$ la formule atomique ${=}\, 0\, 0$, de trois lettres, $\sigma^{(1)}$ est le mot $\neg \to {=}\, 0\, 0\ \neg\, {=}\, 0\, 0$, de neuf lettres, et $\sigma^{(t)}$ en a $6t + 3$. La longueur croît linéairement avec $t$, ce qui suffit à borner le témoin $t$ par le code de la formule.
+      - |
+        La complexité de l'ensemble des axiomes ne dit rien de la théorie. Notons $\underline n$ le terme clos $S \cdots S\, 0$, avec $n$ symboles $S$, et $K$ l'ensemble de l'{{cal-arret|arrêt}}. L'ensemble des codes des énoncés $\underline n = \underline n$, pour $n \in K$, est récursivement énumérable, par les points (iii) et (iv) de {{cal-ensembles|Récursif, r.e.}}, puisque $n \mapsto \ulcorner {=}\, \underline n\, \underline n \urcorner$ est primitive récursive, par une récurrence primitive avec $\mathrm{cc}$ comme celle de $c$ ci-dessus, et injective, le mot ayant $2n + 3$ lettres ; il n'est pas récursif, sans quoi $K$, son image réciproque par cette fonction, le serait aussi. Pourtant chacun de ces énoncés est démontrable sans aucun axiome ({{hk-egalite|Égalité démontrable}}, (i)) : par le lemme de remplacement, la théorie qu'ils forment ne démontre que des formules démontrables sans axiome, et l'inclusion inverse est évidente, une démonstration sans axiome en étant une à partir de toute théorie : elle démontre exactement les mêmes formules que la théorie vide, dont l'ensemble des axiomes est trivialement primitif récursif.
+      - |
+        Le nœud {{l-incompletude|Incomplétude}} emploie ce théorème pour ramener une théorie dont les axiomes forment un ensemble récursivement énumérable à une théorie dont la relation de démonstration est récursive, comme le demandent la représentation de cette relation dans l'arithmétique et l'astuce de Rosser. Le nœud {{cal-tarski|Vérité et incomplétude}} n'en a pas besoin : il ne lui faut que l'énumérabilité des théorèmes.
+
+        Le résultat est dû à William Craig (« On axiomatizability within a system », *Journal of Symbolic Logic* 18, 1953, p. 30-32) ; il vaut pour tout ensemble récursivement énumérable de formules d'un langage du premier ordre, et non seulement pour l'arithmétique. L'exposé usuel de sa construction remplace chaque énoncé par la conjonction de plusieurs copies de lui-même, le nombre de copies indiquant son rang dans une énumération ; une variante classique, suivie ici, lie ce nombre à un temps d'arrêt d'un calcul de la forme normale, ce qui rend l'ensemble obtenu primitif récursif. La preuve n'emploie aucune forme de l'axiome du choix : elle ne choisit qu'un objet à la fois (la relation $R$, un indice $e$ de $f$ parmi une infinité), ce qui ne relève pas de l'axiome, et les autres objets, démonstration de plus petit code et plus petit témoin $t$, sont déterminés sans choix.
 
   - id: cal-tarski
     etiquette: Vérité et incomplétude

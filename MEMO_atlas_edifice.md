@@ -1360,3 +1360,15 @@ en double ou périmées), outils/edifice_clair_exceptions.txt (1 ligne ; F2). Le
 sont dépassées par celle-ci. Relu : une relecture (aucune faute bloquante ; six injections non signalées, toutes
 signalées après correction ; tests : /home/claude/travail/diagnostic-vide-relecture/outils_relecture/essais.py).
 Reste : homonyme « fonction caractéristique » probabiliste en aval de cal-pr-cloture non détecté (aucun cas).
+
+## 90. Théorème de Craig ; inventaire des admis de Gödel (3 novembre 2026)
+
+Fiche cal-craig (théorème, graphe cal-incompletude ; entrées cal-syntaxe, cal-ensembles, cal-kleene) : une théorie
+à axiomes r.e. démontre les mêmes formules que T′ = {σ^(t) : σ ∈ T, T₁(e, ⌜σ⌝, t)}, σ^(t) conjonction de t + 1
+copies de σ, dont l'ensemble des codes est primitif récursif (recherche bornée par N, lg(N) ≤ N) ; lemme de
+remplacement des démonstrations ; Dem_{T′} primitive récursive ; même cohérence ; sans choix. Craig 1953 (JSL 18,
+30-32) vérifié. Dans l-incompletude, l'admis Craig passe en `aval`. Inventaire des trois autres
+(/home/claude/travail/godel2/bilan.md) : représentation dans Q + Rosser (5 à 6 fiches, par une paire r.e.
+récursivement inséparable, sans lemme diagonal), lemme diagonal (+2), conditions de dérivabilité de
+Hilbert–Bernays–Löb (12 à 20) ; tout sous calc, aucune arête dans l'édifice. Relu : aucune faute bloquante,
+corrections appliquées (témoins de T′, temps d'arrêt plutôt que durée, indice e, exemple justifié).
