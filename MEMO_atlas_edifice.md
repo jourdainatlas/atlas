@@ -1372,3 +1372,19 @@ remplacement des démonstrations ; Dem_{T′} primitive récursive ; même cohé
 récursivement inséparable, sans lemme diagonal), lemme diagonal (+2), conditions de dérivabilité de
 Hilbert–Bernays–Löb (12 à 20) ; tout sous calc, aucune arête dans l'édifice. Relu : aucune faute bloquante,
 corrections appliquées (témoins de T′, temps d'arrêt plutôt que durée, indice e, exemple justifié).
+
+## 91. Partitions de l'unité et forme volume sur une variété (3 novembre 2026, Stokes lot 1)
+
+Voie retenue par l'auteur pour Stokes : changement de variables de Riemann dans derham (sans choix), en deux lots ;
+inventaire /home/claude/travail/stokes/bilan.md. Lot 1 (geod) : gd-partition (familles localement finies,
+fonctions plateau g_{φ,c,r} = ψ_{c,r}∘φ, partitions de l'unité subordonnées au sens fort : adhérence de {χ ≠ 0} ⊂ U ;
+(i) caractère local et sommes localement finies, par la famille de tous les ouverts qui ne rencontrent qu'un nombre
+fini de supports, sans choix point par point ; (iii) compact K ; (iv) exhaustion par compacts par récurrence sur
+(j, K_j) ; (v) suite de cartes donnée, sans choix ; (vi) ⋆ cas général, deux choix dénombrables) ; gd-forme-volume
+(orientation = atlas orienté maximal, forme volume ⇒ orientation, ⋆ orientation ⇒ forme volume positive, sans choix
+si M compacte ou suite de cartes donnée). Schéma gd-partition (S¹, projections stéréographiques, seuils ±3/5).
+Admis de gd-formes-varietes levé. dr-partition corrigé : subordonnée aux cubes doubles (l'ancien « subordonnée aux
+cubes » était faux au sens fort). Termes fonction-plateau, localement-fini, partition-unite déplacés vers
+gd-partition ; forme-volume, variete-orientee. Arêtes gd-applications-lisses → gd-partition → gd-forme-volume ←
+gd-formes-varietes ; édifice inchangé (15), geod 1110 → 1018 px. dr-stokes reste a-faire (variétés à bord,
+intégrale, partition à bord : lot 2). Relu : un choix caché (W_p en chaque point) corrigé, dix retouches.

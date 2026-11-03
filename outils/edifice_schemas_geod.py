@@ -417,6 +417,95 @@ def gd_varietes_2():
     return S
 
 
+# ------------------------------------------------------------------ gd-partition
+def _theta(u):
+    u = np.asarray(u, float)
+    out = np.zeros_like(u)
+    pos = u > 0
+    out[pos] = np.exp(-1.0 / u[pos])
+    return out
+
+
+@schema('gd-partition')
+def gd_partition():
+    # Partition de l'unité sur S¹ : g_± = ψ_{0,2} ∘ σ_±, ψ_{0,2}(z) = θ(4 − z²), χ_± = g_±/(g_+ + g_−).
+    x1, x2, z = sp.symbols('x1 x2 z', real=True)
+    # sur le cercle, σ_+² = x1²/(1 − x2)² = (1 + x2)/(1 − x2), et 4 − σ_+² = (3 − 5x2)/(1 − x2)
+    assert sp.simplify(((1 - x2**2) / (1 - x2)**2) - (1 + x2) / (1 - x2)) == 0
+    assert sp.simplify(4 - (1 + x2) / (1 - x2) - (3 - 5 * x2) / (1 - x2)) == 0
+    assert sp.simplify(4 - (1 - x2) / (1 + x2) - (3 + 5 * x2) / (1 + x2)) == 0
+    # frontières : g_+ > 0 ⇔ x2 < 3/5, g_− > 0 ⇔ x2 > −3/5 ; points (±4/5, ±3/5) sur le cercle
+    assert sp.solve(sp.Eq((1 + x2) / (1 - x2), 4), x2) == [sp.Rational(3, 5)]
+    assert sp.solve(sp.Eq((1 - x2) / (1 + x2), 4), x2) == [sp.Rational(-3, 5)]
+    assert Fr(4, 5)**2 + Fr(3, 5)**2 == 1
+    # σ_+^{-1}(z) = (2z, z² − 1)/(z² + 1) donne bien 4 − z² = (3 − 5x2)/(1 − x2)
+    Y = (z**2 - 1) / (z**2 + 1)
+    assert sp.simplify((3 - 5 * Y) / (1 - Y) - (4 - z**2)) == 0
+
+    def gp(h):
+        h = np.asarray(h, float)
+        return _theta(np.where(h < 1, (3 - 5 * h) / np.where(h < 1, 1 - h, 1), -1.0))
+
+    def gm(h):
+        h = np.asarray(h, float)
+        return _theta(np.where(h > -1, (3 + 5 * h) / np.where(h > -1, 1 + h, 1), -1.0))
+
+    hs = np.linspace(-1, 1, 801)
+    Sg = gp(hs) + gm(hs)
+    assert Sg.min() > 0.5                       # la somme ne s'annule pas
+    cp, cm = gp(hs) / Sg, gm(hs) / Sg
+    assert np.allclose(cp + cm, 1)
+    assert np.all(cp[hs <= -0.6] == 1) and np.all(cp[hs >= 0.6] == 0)
+    assert np.all(cm[hs >= 0.6] == 1) and np.all(cm[hs <= -0.6] == 0)
+    assert abs(gp(0.0) - math.exp(-1 / 3)) < 1e-12 and abs(gm(0.0) - gp(0.0)) < 1e-12
+    assert abs(float(gp(0.0) / (gp(0.0) + gm(0.0))) - 0.5) < 1e-12
+    assert np.all(np.diff(cp) <= 1e-12)          # χ_+ décroît avec la hauteur
+    # vérification directe en des points du cercle, par la carte σ_+
+    for t in np.linspace(-3.0, 3.0, 13):
+        X = np.array([2 * t, t * t - 1]) / (t * t + 1)
+        assert abs(gp(X[1]) - _theta(4 - t * t)) < 1e-12
+        if abs(t) > 1e-9:
+            assert abs(gm(X[1]) - _theta(4 - 1 / (t * t))) < 1e-12   # σ_− = 1/σ_+
+
+    S = Schema(520, 300, 'Partition de l’unité sur le cercle subordonnée aux domaines des deux projections stéréographiques')
+    top, H = 22, 250
+    Rc = Repere(-1.3, 1.3, -1.25, 1.25, 14, top, 260, H)
+    Rg = Repere(-0.05, 1.12, -1.25, 1.25, 320, top, 190, H)
+    # repères alignés : même hauteur à l'écran pour une même valeur de x2
+    for h in (-1, -0.6, 0, 0.6, 1):
+        assert abs(Rc(0, h)[1] - Rg(0, h)[1]) < 1e-9
+    S.poly(cercle_pts(Rc), 'g', l=0.8)
+    t = np.linspace(0, 2 * math.pi, 721)
+    cx, cy = np.cos(t), np.sin(t)
+    for (garde, rr, c) in [(cy < 0.6, 0.93, 'b'), (cy > -0.6, 1.07, 'v')]:
+        for m in morceaux(np.stack([rr * cx, rr * cy], axis=-1), garde):
+            S.poly(Rc(m[:, 0], m[:, 1]), c, l=2.4)
+    for h in (0.6, -0.6):
+        S.ligne(Rc(-1.25, h), Rg(1.1, h), 'g', d=True, l=0.7)
+        for sx in (1, -1):
+            S.point(Rc(sx * 0.8, h), 't', r=3)
+    S.point(Rc(0, 1), 't', r=4); S.texte(Rc(0, 1) + [0, -14], 'N', ancre='middle')
+    S.point(Rc(0, -1), 't', r=4); S.texte(Rc(0, -1) + [0, 15], 'S', ancre='middle')
+    S.texte(Rc(0.8, 0.6) + [10, -12], '(4/5, 3/5)', 'g', ancre='start', taille=13)
+    S.texte(Rc(0.8, -0.6) + [10, 13], '(4/5, −3/5)', 'g', ancre='start', taille=13)
+    S.texte(Rc(0, -0.5), 'χ_+ > 0', 'b', taille=15)
+    S.texte(Rc(0, 0.5), 'χ_− > 0', 'v', taille=15)
+    # graphe : abscisse = valeur, ordonnée = hauteur x2
+    S.ligne(Rg(0, -1.15), Rg(0, 1.15), 'g', l=0.8)
+    S.ligne(Rg(1, -1.05), Rg(1, 1.05), 'g', d=True, l=0.7)
+    S.ligne(Rg(0, -1), Rg(1.08, -1), 'g', l=0.6)
+    S.poly(Rg(cp, hs), 'b', l=2)
+    S.poly(Rg(cm, hs), 'v', l=2)
+    S.texte(Rg(0, -1) + [0, 16], '0', 'g', taille=13)
+    S.texte(Rg(1, -1) + [0, 16], '1', 'g', taille=13)
+    S.texte(Rg(0, 1.15) + [-6, 2], 'x_2', 'g', ancre='end', taille=14)
+    S.texte(Rg(0.5, 0) + [8, -12], '1/2', 'g', ancre='start', taille=13)
+    S.point(Rg(0.5, 0), 't', r=3)
+    S.texte(Rg(0.92, -0.85) + [0, 0], 'χ_+', 'b', ancre='end', taille=15)
+    S.texte(Rg(0.92, 0.85) + [0, 0], 'χ_−', 'v', ancre='end', taille=15)
+    return S
+
+
 # ------------------------------------------------------------------ (32) gd-fibre-tangent
 @schema('gd-fibre-tangent')
 def gd_fibre_tangent():
