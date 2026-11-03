@@ -340,3 +340,34 @@ Vérifié avec un serveur local et Playwright :
 - la fiche `ex-exponentielle` affiche 106 exercices, le cours `ma-03` affiche « Les 46 exercices en ligne », À propos affiche 2129 ;
 - la recherche (« exercice 6 MPSI logique ») et les filtres (QCM : 29) fonctionnent, ainsi que les adresses `#exercices/ex/ma-08-18` et `#exercices/notion/ex-exponentielle` ouvertes directement ;
 - application installée (service worker actif) : hors ligne, une feuille déjà visitée s'affiche ; une rubrique jamais visitée propose « Réessayer », qui fonctionne au retour du réseau.
+
+### 29. Pages de lecture des cours et des exercices (3 novembre 2026)
+
+Demande de l'auteur, dans le prolongement de `lecture.mjs` (MEMO_atlas_apropos.md §39 ; MEMO_atlas.md §13) : les
+pages de partage `cours/` et `exercices/`, qui redirigeaient vers une ancre, sont remplacées par des pages
+complètes, sans redirection, écrites par `lecture-cours.mjs` (fonction `pagesCoursExercices(ctxLecture)`, appelée par
+`rendu.mjs`). L'enveloppe vient de `outilsLecture` : `page()`, `puce()`, `relier()`, le plan du site et `lecture.css`,
+qui reçoit un petit bloc de mise en page propre (sommaire, extraits, précédent et suivant).
+- `/cours/` : les niveaux (ancre `#<niveau>`) et leurs chapitres.
+- `/cours/<id>/` : résumé, boutons PDF du cours, de la feuille et du corrigé, sommaire relié aux pages du PDF
+  (`#page=`), théories de l'édifice (puces vers `/edifice/<id>/`), notions (lien vers la fiche qui les définit),
+  chapitres liés dans les deux sens, chapitres précédent et suivant.
+- `/exercices/` : les niveaux, puis leurs feuilles. `/exercices/feuille/<id>/` : les exercices partie par partie,
+  avec étoiles et un extrait de l'énoncé.
+- `/exercices/<id>/` : sur-titre (niveau, chapitre, feuille, partie), étoiles et types, énoncé composé, corrigé
+  dans un `<details>` replié (dans la classe `exo` du site, pour en reprendre le style), source, PDF à la bonne
+  page, nœuds de l'édifice, thèmes, notions, exercices précédent et suivant.
+
+Textes des descriptions et des extraits : `texteSource` part du Markdown d'origine (`construction/donnees.json`,
+car `rendu.mjs` compose en place et le rendu KaTeX, sans MathML, est illisible une fois réduit en texte). Les
+formules y sont simplifiées par `texSimple` : `\frac{a}{b}` devient a/b, `\pi` devient π, etc.
+
+Partage. `adressePartage` mène à `exercices/feuille/<id>/` pour une feuille ; les adresses `cours/<id>/` et
+`exercices/<id>/` sont inchangées et ouvrent désormais ces pages. Le bandeau des pages de lecture renvoie à
+`/cours/` et `/exercices/`.
+
+Bilan au 3 novembre : 2249 pages (2129 exercices, 60 feuilles, 58 cours, 2 pages d'entrée). Le plan du site
+compte 4005 adresses. Poids de `site/`, en taille réelle : environ 508 Mio avant, 637 Mio après. Les pages
+d'exercices pèsent 132 Mio, soit 63 Ko en moyenne, en dessous du seuil de 800 Mo à signaler. Vérifications : les
+93 394 liens internes des 3 829 pages de lecture mènent tous à une page ou à une ancre existante ; rendu
+regardé en clair et en sombre, sur ordinateur et sur téléphone, sans débordement horizontal.

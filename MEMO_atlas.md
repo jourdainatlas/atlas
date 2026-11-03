@@ -370,6 +370,8 @@ qui redirigent vers l'ancre du site. Le bouton « Partager » de l'en-tête copi
 Cause du problème : tout ce qui suit « # » n'est pas envoyé au serveur, et Telegram gardait un aperçu périmé de l'accueil.
 Pages de lecture (3 nov. 2026) : `/edifice/<nœud>/`, `/edifice/`, `/annales/` et `/annales/sujet/<slug>/` ne redirigent plus ; ce sont des
 pages complètes et indexables écrites par `lecture.mjs` (MEMO_atlas_apropos.md, section 39), avec un bouton « Ouvrir dans l'atlas ».
+De même, `/cours/`, `/cours/<id>/`, `/exercices/`, `/exercices/feuille/<id>/` et `/exercices/<id>/` sont écrits par `lecture-cours.mjs`
+(MEMO_atlas_cours.md, §29) avec les outils de `lecture.mjs` ; les pages de partage qui redirigent ne restent que pour l'accueil, À propos, Nouveautés et l'état de l'édifice.
 Titres (27 oct. 2026) : onglet « ATLAS – <rubrique> » (`titreOnglet` dans `gabarit.html`, appelé par `afficherRubrique` et `aller`) ;
 pages de partage « ATLAS – <rubrique> » ou « ATLAS – <rubrique> : <titre> », la rubrique étant déduite du premier segment du
 chemin (`RUBRIQUES_PARTAGE` dans `rendu.mjs`). Image d'aperçu commune : `apercu.png`.

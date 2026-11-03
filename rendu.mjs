@@ -12,6 +12,7 @@
 //   {{id|texte}}           lien vers un nœud de l'atlas
 //   **gras**  *italique*   ; une ligne vide sépare deux paragraphes
 import { pagesLecture, outilsLecture } from './lecture.mjs';
+import { pagesCoursExercices } from './lecture-cours.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
@@ -416,17 +417,9 @@ const ctxLecture = { fs, D, ADRESSE, attr, coupe, texteBrut, NOMS, empreinte, vC
 const niveaux = Object.fromEntries((Rb.cours?.niveaux || []).map(n => [n.id, texteBrut(n.titre)]));
 pagePartage('accueil/', 'accueil', 'Accueil', 'Architecture logique des théories mathématiques ; cours, exercices corrigés, et annales de concours avec recherche par thème.');
 if (!D.noeuds.etat) pagePartage('edifice/etat/', 'edifice/etat', 'État de l\'édifice', 'Inventaire des résultats admis dans l\'édifice, rangés par statut, et des fiches où intervient l\'axiome du choix.');
-pagePartage('cours/', 'cours', 'Cours', texteBrut(Rb.cours?.intro));
-for (const c of Rb.cours?.cours || []) {
-  const lieu = `${niveaux[c.niveau] || ''}${c.chapitre ? `, chapitre ${c.chapitre}` : ''}`;
-  pagePartage(`cours/${c.id}/`, `cours/${c.id}`, `${texteBrut(c.titre)} — ${lieu}`, texteBrut(c.resume) || `Cours de ${lieu}.`);
-}
-pagePartage('exercices/', 'exercices', 'Exercices', texteBrut(Rb.exercices?.intro));
-for (const e of Rb.exercices?.exercices || []) {
-  const fe = (Rb.exercices.feuilles || []).find(f => f.id === e.feuille) || {};
-  const lieu = `${texteBrut(fe.titre)}, ${niveaux[fe.niveau] || ''}${fe.chapitre ? ` chapitre ${fe.chapitre}` : ''}`;
-  pagePartage(`exercices/${e.id}/`, `exercices/ex/${e.id}`, `Exercice ${e.numero}${e.titre ? ` (${texteBrut(e.titre)})` : ''} — ${lieu}`, texteBrut(e.enonce));
-}
+// Cours et exercices : pages de lecture complètes et indexables (lecture-cours.mjs, MEMO_atlas_cours.md §29),
+// aux adresses de partage cours/, cours/<id>/, exercices/, exercices/feuille/<id>/ et exercices/<id>/.
+console.log(`Pages de lecture des cours et exercices : ${pagesCoursExercices(ctxLecture)}`);
 pagePartage('nouveautes/', 'nouveautes', 'Nouveautés', texteBrut(Rb.nouveautes?.intro));
 pagePartage('a-propos/', 'a-propos', 'À propos', 'L\'auteur d\'ATLAS, professeur agrégé de mathématiques, le projet et ses principes de rédaction ; une adresse pour écrire ou signaler une erreur.');
 // Édifice et annales : pages de lecture complètes et indexables (lecture.mjs), aux adresses de partage.

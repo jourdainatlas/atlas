@@ -62,6 +62,19 @@ body.l-corps { min-height: 100%; margin: 0; display: block; }
 .l-ann .l-partie h3 { margin: 0 0 4px; font-family: var(--f-titre); font-size: 17px; }
 .l-ann .l-partie p { margin: 0; font-family: var(--f-ui); font-size: 13.5px; color: var(--encre-2); }
 .l-ann .l-meta { font-family: var(--f-ui); font-size: 13px; color: var(--encre-3); margin: 0 0 8px; }
+/* rubriques Cours et Exercices (lecture-cours.mjs) */
+.l-sommaire { margin: 0; padding-left: 22px; font-family: var(--f-texte); font-size: 16px; display: grid; gap: 4px; }
+.l-sommaire a { color: var(--encre); }
+.l-exo h1 .l-titre-exo { font-style: italic; font-weight: 400; }
+.l-etiquettes { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.l-notions a { color: var(--encre); text-decoration: underline dotted; text-underline-offset: 3px; }
+.l-exo .exo { padding: 0; margin-bottom: 16px; }
+.l-exos li { display: grid; gap: 2px; padding: 4px 0; }
+.l-exos .difficulte { display: inline-flex; vertical-align: middle; margin-left: 6px; }
+.l-extrait { color: var(--encre-3); font-size: 13px; }
+.l-suite { display: flex; justify-content: space-between; gap: 12px; margin-top: 26px; font-family: var(--f-ui); font-size: 14px; }
+.l-suite a { color: var(--encre-2); text-decoration: none; }
+.l-suite a:hover { color: var(--encre); text-decoration: underline; }
 @media (max-width: 640px) {
   .l-rubriques { display: none; }
   .l-page .fiche h1 { font-size: 25px; }
@@ -113,7 +126,7 @@ ${filLd}
 </head>
 <body class="l-corps">
 <header class="l-tete"><a class="l-marque" href="/"><img src="/icone-192.png" alt="" width="28" height="28">ATLAS</a>
-<nav class="l-rubriques" aria-label="Rubriques"><a href="/edifice/">L'édifice</a><a href="/#cours">Cours</a><a href="/#exercices">Exercices</a><a href="/annales/">Annales</a></nav>
+<nav class="l-rubriques" aria-label="Rubriques"><a href="/edifice/">L'édifice</a><a href="/cours/">Cours</a><a href="/exercices/">Exercices</a><a href="/annales/">Annales</a></nav>
 <a class="l-ouvrir" href="${attr(cible)}">Ouvrir dans l'atlas →</a></header>
 <main class="l-page">
 ${fil.length ? `<nav class="l-fil" aria-label="Position">${fil.map(f => f.href ? `<a href="${attr(f.href)}">${esc(f.name)}</a>` : `<span>${esc(f.name)}</span>`).join('<span aria-hidden="true">›</span>')}</nav>` : ''}
