@@ -1,0 +1,467 @@
+# Niveau 2 : structure interne du chapitre « Intégration sur les variétés et formule de Stokes » (nœud
+# derham-varietes du graphe derham, créé le 3 nov. 2026, lot 2 du chantier Stokes). Décomposition locale d'un
+# difféomorphisme (permutation des coordonnées, application qui garde la dernière coordonnée, difféomorphisme
+# primitif qui ne change qu'elle) ; changement de variables pour l'intégrale de Riemann des fonctions continues à
+# support compact, par localisation, composition et récurrence sur la dimension (plan de Spivak, Calculus on
+# Manifolds, 1965, th. 3-13) ; invariance de l'intégrale sur le cube I^k par un difféomorphisme du cube (lève
+# l'admis de dr-integrale-cubes) ; demi-espace ℍⁿ = {x_n ⩾ 0}, applications lisses sur ses ouverts, invariance
+# du bord, variétés à bord, bord ∂M ; changement de variables sur ℍⁿ (troncature près du bord, minoration
+# τ_n ⩾ c x_n) ; formes et orientation sur une variété à bord, orientation induite (normale sortante en premier :
+# signe (−1)ⁿ) ; partitions de l'unité près d'un compact et intégrale d'une forme de degré maximal à support
+# compact sur une variété orientée ; Stokes sur ℍⁿ, puis sur une variété orientée à bord (lève l'admis de
+# dr-stokes). Choix : aucun ; les partitions de l'unité n'emploient qu'un nombre fini de cartes et de fonctions.
+
+graphe: derham-varietes
+titre: Intégration sur les variétés et formule de Stokes
+conteneur: derham-varietes
+
+entrees:
+  derham-poincare: [dv-changement]
+  dr-fubini: [dv-changement]
+  dr-integrale-cubes: [dv-cubes]
+
+noeuds:
+  - id: dv-primitifs
+    etiquette: Difféomorphismes primitifs
+    nature: lemme
+    titre: Décomposition locale d'un difféomorphisme
+    texte: |
+      Dans ce chapitre, $n \geqslant 1$, et un difféomorphisme est un [[diffeomorphisme|$C^\infty$-difféomorphisme]] entre ouverts de $\lex{n-uplet}{\mathbb R^n}$ ({{gd-inversion-locale|Inversion locale}}). On écrit $x = (x', x_n)$, avec $x' = (x_1, \dots, x_{n-1})$. Un difféomorphisme $h : U \to V$ est [[diffeomorphisme-primitif|primitif]] s'il ne change qu'une coordonnée : il existe un indice $i$ tel que $h_l(x) = x_l$ pour tout $l \neq i$ et tout $x \in U$.
+
+      Pour une bijection $\sigma$ de $\{1, \dots, n\}$ sur lui-même, on note $P_\sigma(x) = (x_{\sigma(1)}, \dots, x_{\sigma(n)})$ la permutation des coordonnées qu'elle définit. C'est un isomorphisme linéaire, de réciproque $P_{\sigma^{-1}}$. Sa matrice a pour lignes celles de la matrice identité, dans un autre ordre ; des échanges de lignes la ramènent à l'identité, et chacun change le signe du [[determinant|déterminant]] ({{v-det-matrice|Déterminant d'une matrice}}, (iii)) : $|\det P_\sigma| = 1$.
+    enonce: |
+      Soit $\tau : U \to V$ un difféomorphisme et $a \in U$. Pour $n \geqslant 2$ et $1 \leqslant j \leqslant n$, on note $M_j(x)$ le déterminant de la matrice carrée d'ordre $n - 1$ obtenue en retirant de la matrice de $d\tau(x)$ sa ligne $j$ et sa colonne $n$.
+
+      (i) $\det d\tau(x) \neq 0$ pour tout $x \in U$. Si $n \geqslant 2$, l'un au moins des nombres $M_1(a), \dots, M_n(a)$ n'est pas nul.
+
+      (ii) Soit $n \geqslant 2$, $j$ un indice tel que $M_j(a) \neq 0$, et $\sigma$ la bijection qui envoie $n$ sur $j$ et $1, \dots, n - 1$ sur les autres indices, rangés dans l'ordre croissant. Posons $\tau' = P_\sigma \circ \tau$, de sorte que $\tau'_n = \tau_j$, et
+      $$k(x) = \big(\tau'_1(x), \dots, \tau'_{n-1}(x), x_n\big).$$
+      Il existe un ouvert $W \subset U$ contenant $a$ et un cube ouvert $C = B_\infty(k(a), r)$ tels que $k$ induise un difféomorphisme de $W$ sur $C$. L'application
+      $$h(y) = \big(y_1, \dots, y_{n-1}, \tau'_n(k^{-1}(y))\big)$$
+      est alors un difféomorphisme primitif de $C$ sur l'ouvert $\tau'(W)$, et
+      $$\tau = P_{\sigma^{-1}} \circ h \circ k \quad \text{sur } W.$$
+      Au voisinage de $a$, $\tau$ est ainsi la composée d'une application qui ne change pas la dernière coordonnée, d'un difféomorphisme primitif qui ne change qu'elle, et d'une permutation des coordonnées.
+    preuve: |
+      (i) La règle de la chaîne ({{gd-differentielle|Différentielle}}, (iv)), appliquée à $\tau^{-1} \circ \tau = \mathrm{id}_U$, montre que $d(\tau^{-1})(\tau(x)) \circ d\tau(x)$ est l'identité : $d\tau(x)$ est inversible, et $\det d\tau(x) \neq 0$ ({{v-det-matrice|Déterminant d'une matrice}}, (ii)). Pour $n \geqslant 2$, développons ce déterminant en $a$ selon la dernière colonne ({{v-comatrice|Comatrice}}) :
+      $$\det d\tau(a) = \sum_{j=1}^n (-1)^{j+n}\,\partial_n\tau_j(a)\,M_j(a).$$
+      Si tous les $M_j(a)$ étaient nuls, ce déterminant le serait.
+
+      (ii) *La différentielle de $k$.* La matrice de $d\tau'(a) = P_\sigma \circ d\tau(a)$ a pour $n - 1$ premières lignes celles de la matrice de $d\tau(a)$ d'indice différent de $j$, dans l'ordre croissant. Ce sont aussi les $n - 1$ premières lignes de la matrice de $dk(a)$, dont la dernière ligne est $(0, \dots, 0, 1)$. En développant le déterminant de la transposée de cette matrice selon sa dernière colonne ({{v-comatrice|Comatrice}}, {{v-det-matrice|Déterminant d'une matrice}}, (iii)), on trouve que $\det dk(a)$ est le déterminant du bloc formé des $n - 1$ premières lignes et des $n - 1$ premières colonnes, c'est-à-dire $M_j(a)$, qui n'est pas nul.
+
+      *Inversion locale.* Par le théorème d'inversion locale ({{gd-inversion-locale|Inversion locale}}), il existe un ouvert $W_0 \subset U$ contenant $a$ tel que $k$ induise un difféomorphisme de $W_0$ sur un ouvert $k(W_0)$ qui contient $k(a)$. Cet ouvert contient un cube $C = B_\infty(k(a), r)$, et $W = W_0 \cap k^{-1}(C)$ est un ouvert contenant $a$, que $k$ envoie bijectivement sur $C$. La restriction de $k$ à $W$ est donc un difféomorphisme de $W$ sur $C$, dont la réciproque est la restriction à $C$ de celle de $k|_{W_0}$.
+
+      *L'application $h$.* Pour $y \in C$ et $x = k^{-1}(y) \in W$, on a $k_l(x) = y_l$ pour $l < n$, donc
+      $$\tau'(x) = \big(y_1, \dots, y_{n-1}, \tau'_n(x)\big) = h(y).$$
+      Ainsi $h = \tau' \circ k^{-1}$ sur $C$ : $h$ est de classe $C^\infty$, injective comme composée de deux injections, et d'image $\tau'(W)$.
+
+      Cette image est ouverte. En effet $\tau'$, composée de $\tau$ et de l'isomorphisme $P_\sigma$, est un difféomorphisme de $U$ sur l'ouvert $P_\sigma(V)$, et l'image de l'ouvert $W$ par $\tau'$ est son image réciproque par l'application continue $\tau'^{-1}$. La réciproque de $h$ est $k \circ \tau'^{-1}$, de classe $C^\infty$ sur $\tau'(W)$. Enfin $h$ ne change que la dernière coordonnée, et, sur $W$, $\tau = P_{\sigma^{-1}} \circ \tau' = P_{\sigma^{-1}} \circ h \circ k$.
+    remarques:
+      - |
+        Pour les coordonnées polaires $\tau(r, t) = (r\cos t, r\sin t)$, de $U = \,]0, +\infty[\, \times \,]{-\pi/2}, \pi/2[$ sur le demi-plan $V = \{(x, y) : x > 0\}$, de réciproque $(x, y) \mapsto \big(\sqrt{x^2 + y^2}, \arctan(y/x)\big)$, la matrice de $d\tau$ est
+        $$\begin{pmatrix} \cos t & -r\sin t \\ \sin t & r\cos t \end{pmatrix},$$
+        d'où $M_1 = \sin t$ et $M_2 = \cos t$. Comme $\cos t > 0$ sur $U$, on peut prendre $j = 2$ et $\sigma = \mathrm{id}$ :
+        $$\begin{aligned} k(r, t) &= (r\cos t, t), \\ h(v, t) &= (v, v\tan t). \end{aligned}$$
+
+        La première application garde l'angle et remplace le rayon par l'abscisse ; la seconde garde l'abscisse et calcule l'ordonnée. Leurs jacobiens, $\cos t$ et $v/\cos^2 t$, ont pour produit, en $v = r\cos t$, le jacobien $r$ des coordonnées polaires, comme le veut la règle de la chaîne. Ici $k$ est même un difféomorphisme de $U$ tout entier sur son image, de réciproque $(v, t) \mapsto (v/\cos t, t)$ ; le lemme ne l'affirme qu'au voisinage de chaque point.
+
+        ```schema dv-primitifs
+        À gauche, un rectangle de l'ouvert $U$ des coordonnées $(r, t)$ ; au milieu, son image par $k$, qui ne déplace les points qu'horizontalement, puisque $t$ est conservé ; à droite, l'image de celle-ci par $h$, qui ne les déplace que verticalement, puisque $v$ est conservé : on obtient le secteur des coordonnées polaires. La cellule rouge est suivie d'un bout à l'autre.
+        ```
+      - |
+        L'erreur la plus tentante est de croire que l'on peut toujours prendre $\sigma = \mathrm{id}$. Pour l'échange $\tau(x, y) = (y, x)$, on a $M_2 = \partial_1\tau_1 = 0$, et l'application $k(x, y) = (\tau_1, y) = (y, y)$ n'est injective sur aucun ouvert. Avec $j = 1$, puisque $M_1 = \partial_1\tau_2 = 1$, on trouve $\tau' = \mathrm{id}$, $k = h = \mathrm{id}$, et $\tau = P_{\sigma^{-1}}$ est la permutation elle-même.
+      - |
+        Rudin appelle *primitives* les applications qui ne changent qu'une coordonnée, et montre qu'un difféomorphisme s'écrit localement comme composée de telles applications et d'échanges de deux coordonnées (*Principles of Mathematical Analysis*, 3e éd., 1976, chapitre 10). Spivak démontre la formule du changement de variables par une décomposition locale de ce genre et une récurrence sur la dimension (*Calculus on Manifolds*, 1965, théorème 3-13, p. 66-69) ; il normalise d'abord le difféomorphisme par sa différentielle en un point, ce qui lui demande aussi la formule pour les applications linéaires, comme le détaillent les notes de cours de R. Jerrard (université de Toronto, MAT257). C'est le plan que suit le nœud suivant, où une permutation des coordonnées remplace cette normalisation : la seule décomposition $\tau = P_{\sigma^{-1}} \circ h \circ k$ suffit, l'application $k$ étant traitée tranche par tranche.
+
+  - id: dv-changement
+    etiquette: Changement de variables
+    nature: théorème
+    titre: Changement de variables pour l'intégrale de Riemann
+    texte: |
+      Soit $U$ un ouvert de $\lex{n-uplet}{\mathbb R^n}$. Pour une fonction continue $f : U \to \lex{ensemble-reels}{\mathbb R}$, on appelle support de $f$ l'adhérence dans $U$ de $\{f \neq 0\}$, et l'on note $C_c(U)$ l'espace des fonctions continues sur $U$ dont le support est [[compact]].
+
+      Pour $f \in C_c(U)$, de support $K$, soit $\tilde f$ la fonction égale à $f$ sur $U$ et à $0$ ailleurs. Elle est continue sur $\mathbb R^n$ : elle l'est sur l'ouvert $U$, et sur l'ouvert $\mathbb R^n \setminus K$, où elle est nulle, le compact $K$ étant fermé dans l'espace séparé $\mathbb R^n$ ({{t-compact-prop|Compacts, fermés et images}}, (ii)) ; ces deux ouverts recouvrent $\mathbb R^n$. Le compact $K$ est borné ({{me-rn|L'espace ℝⁿ}}, (iii)), donc contenu dans un pavé $P$ ({{dr-iterees|Intégrales itérées}}), et l'on pose
+      $$\int_U f = \int_P \tilde f.$$
+      Pour une forme $f\,dx_1 \wedge \cdots \wedge dx_n$ à support compact sur $U$, c'est l'intégrale du nœud {{pc-support|Support compact}}.
+    enonce: |
+      (i) *Propriétés.* Si $P \subset Q$ sont deux pavés et $g$ une fonction continue sur $Q$, nulle sur $Q \setminus P$, alors $\int_Q g = \int_P g$. Par suite, $\int_U f$ ne dépend pas du pavé $P$. L'intégrale est linéaire et [[application-croissante|croissante]] sur $C_c(U)$. Si $U \subset U'$ sont deux ouverts, le prolongement de $f \in C_c(U)$ par $0$ appartient à $C_c(U')$ et a la même intégrale. Enfin, pour une permutation $P_\sigma$ des coordonnées ({{dv-primitifs|Difféomorphismes primitifs}}), $f \circ P_\sigma \in C_c\big(P_\sigma^{-1}(U)\big)$ et $\int_{P_\sigma^{-1}(U)} f \circ P_\sigma = \int_U f$.
+
+      (ii) *Changement de variables.* Soit $\tau : U \to V$ un [[diffeomorphisme|difféomorphisme]] entre ouverts de $\mathbb R^n$ et $f \in C_c(V)$. La fonction $(f \circ \tau)\,|\det d\tau|$ appartient à $C_c(U)$, et
+      $$\int_V f = \int_U (f \circ \tau)\,|\det d\tau|.$$
+    preuve: |
+      (i) *Un lemme de Chasles.* Soit $P = \prod_i [a_i, b_i] \subset Q = \prod_i [c_i, d_i]$. Notons $g_j$ et $g^P_j$ les fonctions du nœud {{dr-iterees|Intégrales itérées}} construites à partir de $g$ sur $Q$ et de sa restriction à $P$. Montrons par récurrence sur $j$ que $g_j(x_{j+1}, \dots, x_n)$ est nulle dès que l'une des coordonnées $x_l$, $l > j$, sort de $[a_l, b_l]$, et égale à $g^P_j(x_{j+1}, \dots, x_n)$ sinon. Pour $j = 0$, c'est l'hypothèse.
+
+      Au rang $j$, si l'une des coordonnées $x_l$, $l > j$, sort de $[a_l, b_l]$, la fonction intégrée $t \mapsto g_{j-1}(t, x_{j+1}, \dots, x_n)$ est nulle. Sinon, elle est nulle hors de $[a_j, b_j]$ et égale à $g^P_{j-1}(t, x_{j+1}, \dots, x_n)$ sur ce segment, et la relation de Chasles ({{ri-proprietes|Propriétés de l'intégrale}}, (v)) ramène son intégrale sur $[c_j, d_j]$ à l'intégrale de $g^P_{j-1}$ sur $[a_j, b_j]$. Pour $j = n$, on obtient $\int_Q g = \int_P g$.
+
+      *Indépendance.* Si $P$ et $P'$ sont deux pavés contenant $K$, le pavé $Q$ de côtés $[\min(a_i, a'_i), \max(b_i, b'_i)]$ les contient tous deux, et $\tilde f$ est nulle sur $Q \setminus P$ et sur $Q \setminus P'$. Le lemme donne $\int_P \tilde f = \int_Q \tilde f = \int_{P'} \tilde f$.
+
+      *Linéarité, croissance, prolongement.* Deux fonctions de $C_c(U)$ ont leurs supports dans un même pavé, sur lequel l'intégrale itérée est linéaire et croissante ({{dr-iterees|Intégrales itérées}}, (ii)). Si $U \subset U'$, le prolongement de $f$ par $0$ à $U'$ est continu, comme restriction de $\tilde f$ ; son support est $K$, compact donc fermé dans $U'$, et son prolongement à $\mathbb R^n$ est encore $\tilde f$.
+
+      *Permutations.* L'application $P_\sigma$ est un homéomorphisme linéaire : $f \circ P_\sigma$ est continue sur l'ouvert $P_\sigma^{-1}(U)$, de support compact $P_\sigma^{-1}(K)$. Si $P = \prod_i [a_i, b_i]$ contient $K$, le pavé $P_\sigma^{-1}(P)$, formé des $x$ tels que $x_{\sigma(i)} \in [a_i, b_i]$ pour tout $i$, contient ce support. Intégrer $\tilde f \circ P_\sigma$ sur $P_\sigma^{-1}(P)$ par rapport à $x_1$, puis à $x_2$, et ainsi de suite, c'est intégrer $\tilde f$ sur $P$ par rapport à $y_{\sigma^{-1}(1)}$, puis à $y_{\sigma^{-1}(2)}$, et ainsi de suite, où $y = P_\sigma(x)$, puisque $x_l = y_{\sigma^{-1}(l)}$ : les fonctions intermédiaires sont les mêmes, à l'écriture des variables près. Le nœud {{dr-fubini|Fubini pour les fonctions continues}}, (ii), conclut.
+
+      (ii) *Le support.* La fonction $\det d\tau$ est continue, et elle ne s'annule pas ({{dv-primitifs|Difféomorphismes primitifs}}, (i)). La fonction $(f \circ \tau)\,|\det d\tau|$ est donc continue, et non nulle exactement sur $\tau^{-1}(\{f \neq 0\})$, contenu dans $\tau^{-1}(K)$. Celui-ci est compact, image de $K$ par l'application continue $\tau^{-1}$ ({{t-compact-prop|Compacts, fermés et images}}, (iii)), donc fermé dans $U$ ; l'adhérence de $\tau^{-1}(\{f \neq 0\})$ y est contenue, et elle est compacte, comme partie fermée d'un compact (même nœud, (i)).
+
+      Disons qu'un difféomorphisme $\tau : U \to V$ vérifie la formule si l'égalité de (ii) a lieu pour toute $f \in C_c(V)$, et notons $(\mathrm{F}_n)$ l'énoncé : tout difféomorphisme entre ouverts de $\mathbb R^n$ vérifie la formule. Établissons d'abord quatre propriétés.
+
+      *Restriction.* Si $\tau$ vérifie la formule et si $U_0 \subset U$ est un ouvert, la restriction de $\tau$ à $U_0$, difféomorphisme de $U_0$ sur l'ouvert $\tau(U_0)$, la vérifie. En effet, une fonction $f \in C_c(\tau(U_0))$ se prolonge par $0$ en une fonction de $C_c(V)$, et le prolongement par $0$ de $(f \circ \tau)\,|\det d\tau|$, de $U_0$ à $U$, est la fonction associée à ce prolongement ; (i) conclut.
+
+      *Composition.* Si $\tau_1 : U \to V$ et $\tau_2 : V \to W$ vérifient la formule, $\tau_2 \circ \tau_1$ la vérifie. Pour $f \in C_c(W)$, la fonction $g = (f \circ \tau_2)\,|\det d\tau_2|$ appartient à $C_c(V)$, et
+      $$\begin{aligned} \int_W f &= \int_V g \\ &= \int_U (f \circ \tau_2 \circ \tau_1) \\ &\qquad \times \big|\det d\tau_2 \circ \tau_1\big|\,|\det d\tau_1| \\ &= \int_U \big(f \circ (\tau_2 \circ \tau_1)\big) \\ &\qquad \times \big|\det d(\tau_2 \circ \tau_1)\big|, \end{aligned}$$
+      par la règle de la chaîne ({{gd-differentielle|Différentielle}}, (iv)) et le déterminant d'un produit ({{v-det-matrice|Déterminant d'une matrice}}, (ii)).
+
+      *Permutations.* Une permutation $P_\sigma$ des coordonnées, de $P_\sigma^{-1}(V)$ sur $V$, vérifie la formule : c'est le dernier point de (i), puisque $|\det P_\sigma| = 1$.
+
+      *Localisation.* Soit $\tau : U \to V$ et $\mathcal W$ l'ensemble des ouverts $W \subset U$ tels que la restriction de $\tau$ à $W$ vérifie la formule. Si $\mathcal W$ recouvre $U$, $\tau$ vérifie la formule. Soit en effet $f \in C_c(V)$, de support $K$. Les ouverts $\tau(W)$, $W \in \mathcal W$, recouvrent $V$, qui est une variété d'atlas $\{\mathrm{id}\}$ ({{gd-exemples-varietes|Exemples de variétés}}, (i)). Le nœud {{gd-partition|Partitions de l'unité}}, (iii), fournit des ouverts $W_1, \dots, W_m$ de $\mathcal W$ et des fonctions $\chi_1, \dots, \chi_m$ de classe $C^\infty$ et positives sur $V$, telles que l'adhérence de $\{\chi_l \neq 0\}$ soit un compact contenu dans $\tau(W_l)$, et que $\sum_l \chi_l = 1$ sur un ouvert contenant $K$.
+
+      Alors $f = \sum_l \chi_l f$ sur $V$ : l'égalité a lieu sur cet ouvert, et hors de $K$ les deux membres sont nuls. La restriction de $\chi_l f$ à $\tau(W_l)$ appartient à $C_c(\tau(W_l))$, son support étant contenu dans l'adhérence de $\{\chi_l \neq 0\}$. Par (i), puis par l'hypothèse sur $W_l$,
+      $$\begin{aligned} \int_V f &= \sum_{l=1}^m \int_{\tau(W_l)} \chi_l f \\ &= \sum_{l=1}^m \int_{W_l} \big((\chi_l f) \circ \tau\big)\,|\det d\tau| \\ &= \int_U (f \circ \tau)\,|\det d\tau|, \end{aligned}$$
+      la dernière égalité parce que $(\chi_l f) \circ \tau$ est nulle hors de $W_l$, et par linéarité.
+
+      *Dimension 1.* Soit $a \in U$ et $J$ un intervalle ouvert contenant $a$ et contenu dans $U$. La dérivée $\tau'$ est continue et ne s'annule pas sur $J$ ; $\tau'(J)$ est un intervalle ({{c-tvi|Valeurs intermédiaires}}) qui ne contient pas $0$, et $\tau'$ garde un signe constant sur $J$. Soit $f \in C_c(\tau(J))$, non nulle, de support $K$. La partie $L = \tau^{-1}(K) \cap J$, image de $K$ par la réciproque, continue, de la restriction de $\tau$ à $J$, est compacte ({{t-compact-prop|Compacts, fermés et images}}, (iii)) ; elle a un plus petit élément $\alpha$ et un plus grand $\beta$ ({{tr-compacts|Compacts de ℝ}}, (ii)), et $\alpha < \beta$, puisque $L$ contient l'ouvert non vide $\tau^{-1}(\{f \neq 0\}) \cap J$.
+
+      La fonction $F(u) = \int_{\tau(\alpha)}^u \tilde f$ est dérivable sur $\mathbb R$, de dérivée $\tilde f$ ({{ar-tfa|Théorème fondamental}}), et $F \circ \tau$ a pour dérivée $(f \circ \tau)\,\tau'$ sur $J$ ({{de-composee|Dérivée d'une composée}}). Cette dérivée est continue ; la fonction $s \mapsto \int_\alpha^s (f \circ \tau)\,\tau' - F(\tau(s))$ a donc une dérivée nulle sur $J$, par le même théorème, et elle est constante sur $[\alpha, \beta]$ ({{de-monotonie|Signe de la dérivée}}, (ii)) :
+      $$\int_\alpha^\beta (f \circ \tau)\,\tau' = F(\tau(\beta)) - F(\tau(\alpha)).$$
+      Si $\tau' > 0$, le second membre est $\int_{\tau(\alpha)}^{\tau(\beta)} \tilde f$, intégrale sur un segment qui contient $\tau([\alpha, \beta]) \supset K$ ; si $\tau' < 0$, c'est l'opposé de l'intégrale sur $[\tau(\beta), \tau(\alpha)]$, et $|\tau'| = -\tau'$. Dans les deux cas,
+      $$\int_J (f \circ \tau)\,|\tau'| = \int_{\tau(J)} f,$$
+      le segment $[\alpha, \beta]$ contenant le support du premier intégrande. Ainsi $J \in \mathcal W$, et la localisation donne $(\mathrm F_1)$.
+
+      *Récurrence.* Soit $n \geqslant 2$ ; supposons $(\mathrm F_{n-1})$, et soit $\tau : U \to V$. Soit $a \in U$, et $W$, $C$, $k$, $h$, $\sigma$ comme au nœud {{dv-primitifs|Difféomorphismes primitifs}}, (ii). Par la composition et les permutations, il suffit de montrer que la restriction de $k$ à $W$, difféomorphisme de $W$ sur $C$, et $h$, difféomorphisme de $C$ sur $\tau'(W)$, vérifient la formule : alors $W \in \mathcal W$, et la localisation conclut.
+
+      *Le difféomorphisme primitif $h$.* Écrivons $C = C' \times J$, avec $C' = B_\infty(c', r) \subset \mathbb R^{n-1}$ et $J = \,]c_n - r, c_n + r[$. Pour $y' \in C'$, l'application $t \mapsto h_n(y', t)$ est un difféomorphisme de $J$ sur l'ouvert $O_{y'} = \{s : (y', s) \in h(C)\}$ : elle est bijective, parce que $h$ l'est et conserve $y'$, et sa réciproque est $s \mapsto (h^{-1})_n(y', s)$, puisque $h^{-1}$ conserve aussi $y'$. De plus $\det dh = \partial_n h_n$, la matrice de $dh$ ayant pour $n - 1$ premières lignes celles de l'identité.
+
+      Soit $f \in C_c(h(C))$, de support $K$, et $g = (f \circ h)\,|\partial_n h_n|$, qui appartient à $C_c(C)$. Prenons un pavé $P = P' \times [\alpha, \beta]$ qui contient les supports de $f$ et de $g$. Par {{dr-fubini|Fubini pour les fonctions continues}}, (iii), en intégrant d'abord par rapport à $x_n$,
+      $$\int_P \tilde f = \int_{P'} F, \qquad \int_P \tilde g = \int_{P'} G,$$
+      avec $F(y') = \int_\alpha^\beta \tilde f(y', s)\,ds$ et $G(y') = \int_\alpha^\beta \tilde g(y', t)\,dt$. Si $y' \notin C'$, $F(y') = G(y') = 0$, aucun point de $C$ ni de $h(C)$ n'ayant $y'$ pour premières coordonnées. Si $y' \in C'$, la fonction $s \mapsto f(y', s)$ appartient à $C_c(O_{y'})$ : son support est contenu dans $\{s : (y', s) \in K\}$, fermé et borné, donc compact, et contenu dans $O_{y'}$. Son intégrale est $F(y')$, et le cas de la dimension $1$, appliqué au difféomorphisme $t \mapsto h_n(y', t)$, donne $F(y') = G(y')$. Ainsi $F = G$ sur $P'$, et $h$ vérifie la formule.
+
+      *L'application $k$.* Pour $t \in \mathbb R$, notons $W_t$ et $C_t$ les ouverts de $\mathbb R^{n-1}$ formés des $x'$ tels que $(x', t) \in W$, respectivement $(x', t) \in C$, et écrivons $k(x', t) = (\kappa(x', t), t)$. Comme $k$ est une bijection de $W$ sur $C$ qui conserve la dernière coordonnée, ainsi que sa réciproque, l'application $k_t : x' \mapsto \kappa(x', t)$ est un difféomorphisme de $W_t$ sur $C_t$, dont la réciproque se lit sur $k^{-1}$. La dernière ligne de la matrice de $dk(x', t)$ étant $(0, \dots, 0, 1)$, $\det dk(x', t) = \det dk_t(x')$, comme dans la preuve du nœud {{dv-primitifs|Difféomorphismes primitifs}}, (ii).
+
+      Soit $f \in C_c(C)$, $g = (f \circ k)\,|\det dk| \in C_c(W)$, et $P = P' \times [\alpha, \beta]$ un pavé qui contient leurs supports. Par définition de l'intégrale itérée, qui intègre en $x_n$ en dernier,
+      $$\begin{aligned} \int_P \tilde f &= \int_\alpha^\beta \Phi(t)\,dt, \\ \int_P \tilde g &= \int_\alpha^\beta \Gamma(t)\,dt, \end{aligned}$$
+      où $\Phi(t)$ et $\Gamma(t)$ sont les intégrales itérées sur $P'$ des fonctions $x' \mapsto \tilde f(x', t)$ et $x' \mapsto \tilde g(x', t)$. Si $C_t$ est vide, $W_t$ aussi, et $\Phi(t) = \Gamma(t) = 0$. Sinon, $x' \mapsto f(x', t)$ appartient à $C_c(C_t)$, d'intégrale $\Phi(t)$, et $x' \mapsto g(x', t) = f(k_t(x'), t)\,|\det dk_t(x')|$ appartient à $C_c(W_t)$, d'intégrale $\Gamma(t)$. L'hypothèse $(\mathrm F_{n-1})$, appliquée à $k_t$, donne $\Phi(t) = \Gamma(t)$. Ainsi $k$ vérifie la formule, ce qui achève la récurrence.
+
+      Aucun choix n'intervient : la localisation ne désigne pas d'ouvert point par point, et la partition de l'unité n'emploie qu'un nombre fini de fonctions.
+    remarques:
+      - |
+        Pour les coordonnées polaires $\tau(r, t) = (r\cos t, r\sin t)$, de $\,]0, +\infty[\, \times \,]{-\pi/2}, \pi/2[$ sur le demi-plan $\{x > 0\}$, et la fonction $f(x, y) = \big(1 - (x - 2)^2 - y^2\big)^2$ sur le disque de centre $(2, 0)$ et de rayon $1$, prolongée par $0$, les deux membres de (ii) valent $\frac\pi3 \approx 1{,}0472$, comme le confirme un calcul numérique de chacun d'eux. Sans le facteur $|\det d\tau| = r$, on trouverait environ $0{,}5323$ : le jacobien mesure la dilatation des petits rectangles $[r, r + dr] \times [t, t + dt]$, dont l'image a pour aire approchée $r\,dr\,dt$.
+      - |
+        L'erreur la plus répandue est d'appliquer la formule à une application seulement localement inversible. Pour $\tau(x) = x^2$, de $\mathbb R \setminus \{0\}$ sur $]0, +\infty[$, de dérivée partout non nulle, on trouve $\int (f \circ \tau)\,|\tau'| = 2\int f$ : chaque point de l'image a deux antécédents, et il est compté deux fois. L'injectivité sert dans la localisation, où l'on découpe $f$ et non $f \circ \tau$.
+      - |
+        La formule du changement de variables est démontrée aussi, pour l'intégrale de Lebesgue et sans régularité sur $f$, au chapitre {{edo-changement|Changement de variables}} des équations différentielles ({{cv-changement|Changement de variables}}), branche parallèle à celle-ci. Ce résultat-là hérite de l'axiome du choix dénombrable par la mesure de Lebesgue ; la version de ce nœud, limitée aux fonctions continues à support compact, n'emploie aucune forme du choix, et c'est elle que demandent l'intégration sur les variétés et la formule de Stokes.
+
+  - id: dv-cubes
+    etiquette: Invariance sur un cube
+    nature: corollaire
+    titre: Intégrale sur un cube et difféomorphismes du cube
+    enonce: |
+      Soit $k \geqslant 1$ et $\rho : I^k \to I^k$ une bijection qui est la restriction d'une application $\tilde\rho$ de classe $C^\infty$, définie sur un ouvert de $\lex{n-uplet}{\mathbb R^k}$ contenant $I^k$, et dont la réciproque est la restriction d'une application $\tilde\sigma$ de même nature. Comme au nœud {{dr-integrale-cubes|Intégrale sur une chaîne}}, (i), la différentielle $d\rho(x) = d\tilde\rho(x)$, pour $x \in I^k$, ne dépend pas du prolongement.
+
+      (i) $\det d\rho$ ne s'annule pas sur $I^k$, et $\rho$ envoie $]0, 1[^k$ sur lui-même, ainsi que $\partial I^k = I^k \setminus \,]0, 1[^k$.
+
+      (ii) Pour toute fonction $g$ continue sur $I^k$,
+      $$\int_{I^k} g = \int_{I^k} (g \circ \rho)\,|\det d\rho|.$$
+
+      (iii) Si $\det d\rho > 0$ sur $I^k$, alors, pour tout [[cube-singulier|cube singulier lisse]] $c$ de dimension $k$ d'un ouvert $U$ de $\mathbb R^n$, $c \circ \rho$ est un cube singulier lisse, et $\int_{c \circ \rho} \omega = \int_c \omega$ pour toute forme $\omega$ de degré $k$ sur $U$.
+    preuve: |
+      (i) Comme $\tilde\rho = \rho$ sur $I^k$, à valeurs dans $I^k$, la composée $\tilde\sigma \circ \tilde\rho$ est l'identité sur $I^k$. En un point de $]0, 1[^k$, la règle de la chaîne donne $d\tilde\sigma(\rho(x)) \circ d\tilde\rho(x) = \mathrm{id}$ ; par continuité, cela vaut sur $I^k$, et $\det d\rho(x) \neq 0$.
+
+      Soit $x \in \,]0, 1[^k$. Par le théorème d'inversion locale ({{gd-inversion-locale|Inversion locale}}), $\tilde\rho$ induit un difféomorphisme d'un ouvert $V \ni x$ sur un ouvert ; quitte à remplacer $V$ par $V \cap \,]0, 1[^k$, l'image $\rho(V)$ est un ouvert qui contient $\rho(x)$ et qui est contenu dans $I^k$. Or un point de $I^k$ dont une coordonnée vaut $0$ ou $1$ n'a aucun voisinage ouvert contenu dans $I^k$ : $\rho(x) \in \,]0, 1[^k$. Le même argument vaut pour $\rho^{-1}$, de sorte que $\rho$ envoie $]0, 1[^k$ sur lui-même, et, étant bijective, $\partial I^k$ sur lui-même.
+
+      (ii) *Une troncature.* Pour $0 < \delta \leqslant \frac12$ et $u \in [0, 1]$, notons $m(u) = \min(u, 1 - u)$ et posons
+      $$\vartheta_\delta(u) = \min\Big(1, \max\Big(0, \frac{2m(u)}{\delta} - 1\Big)\Big),$$
+      fonction continue, nulle là où $m(u) \leqslant \frac\delta2$ et égale à $1$ là où $m(u) \geqslant \delta$, et $\varphi_\delta(x) = \prod_{i=1}^k \vartheta_\delta(x_i)$. On a $\int_0^1 \vartheta_\delta = 1 - \frac{3\delta}2$, et l'intégrale itérée d'un produit de fonctions de variables séparées étant le produit de leurs intégrales,
+      $$\begin{aligned} 0 &\leqslant \int_{I^k} (1 - \varphi_\delta) \\ &= 1 - \Big(1 - \frac{3\delta}2\Big)^k \leqslant \frac{3k\delta}2, \end{aligned}$$
+      par l'inégalité $(1 - u)^k \geqslant 1 - ku$ pour $u \in [0, 1]$, qui se démontre par récurrence sur $k$.
+
+      *Une constante de Lipschitz.* La fonction $x \mapsto |||d\tilde\sigma(x)|||$, pour la norme subordonnée à $\|\cdot\|_\infty$, est continue sur le compact $I^k$, donc majorée par un réel $M$ ({{tr-compacts|Compacts de ℝ}}, (iii)) ; posons $L = M + 1$. Pour $x, x' \in I^k$, le segment $[x, x']$ est contenu dans $I^k$, et chaque coordonnée $u \mapsto \tilde\sigma_l(x + u(x' - x))$ a, sur $[0, 1]$, une dérivée de valeur absolue au plus $M\|x' - x\|_\infty$ ; par l'inégalité des accroissements finis ({{de-iaf|Inégalité des accroissements finis}}, (ii)), $\|\rho^{-1}(x') - \rho^{-1}(x)\|_\infty \leqslant L\|x' - x\|_\infty$.
+
+      *Le bord ne compte pas.* Soit $\delta \leqslant \frac1{4L}$ et $x \in I^k$ tel que $\rho(x) \notin [\delta, 1 - \delta]^k$. Une coordonnée de $y = \rho(x)$ est $< \delta$ ou $> 1 - \delta$ ; en la remplaçant par $0$ ou par $1$, on obtient un point $y_0 \in \partial I^k$ tel que $\|y - y_0\|_\infty < \delta$. Par (i), $x_0 = \rho^{-1}(y_0) \in \partial I^k$, et $\|x - x_0\|_\infty < L\delta$ : une coordonnée de $x$ est $< L\delta$ ou $> 1 - L\delta$, et $\varphi_{2L\delta}(x) = 0$. On a donc, sur $I^k$,
+      $$0 \leqslant 1 - \varphi_\delta \circ \rho \leqslant 1 - \varphi_{2L\delta},$$
+      le premier membre étant nul là où $\rho(x) \in [\delta, 1 - \delta]^k$.
+
+      *Conclusion.* La fonction $g\varphi_\delta$ est nulle hors de $[\frac\delta2, 1 - \frac\delta2]^k$ : sa restriction à $]0, 1[^k$ appartient à $C_c(]0, 1[^k)$, et son intégrale sur $]0, 1[^k$ est son intégrale sur le pavé $I^k$. Le nœud {{dv-changement|Changement de variables}}, (ii), appliqué à la restriction de $\rho$ à $]0, 1[^k$, difféomorphisme de $]0, 1[^k$ sur lui-même par (i), donne
+      $$\int_{I^k} g\varphi_\delta = \int_{I^k} (g \circ \rho)\,(\varphi_\delta \circ \rho)\,|\det d\rho|,$$
+      l'intégrande de droite étant nul sur $\partial I^k$, que $\rho$ envoie dans $\partial I^k$, où $\varphi_\delta$ est nulle. Soit $A$ et $B$ des majorants de $|g|$ et de $|\det d\rho|$ sur $I^k$. Par la croissance de l'intégrale itérée ({{dr-iterees|Intégrales itérées}}, (ii)) et ce qui précède,
+      $$\begin{aligned} &\Big|\int_{I^k} g - \int_{I^k} g\varphi_\delta\Big| \leqslant \frac{3kA\delta}2, \\ &\Big|\int_{I^k} (g \circ \rho)\,|\det d\rho| - \int_{I^k} g\varphi_\delta\Big| \\ &\quad \leqslant AB\int_{I^k} (1 - \varphi_{2L\delta}) \leqslant 3kLAB\,\delta. \end{aligned}$$
+      La différence des deux membres de (ii) est donc au plus $\frac{3k}2(A + 2LAB)\,\delta$ en valeur absolue, pour tout $\delta$ assez petit : elle est nulle.
+
+      (iii) Si $\tilde c : W \to U$ prolonge $c$, l'application $\tilde c \circ \tilde\rho$, définie sur l'ouvert $\tilde\rho^{-1}(W)$ du domaine de $\tilde\rho$, qui contient $I^k$, est de classe $C^\infty$ et prolonge $c \circ \rho$ : c'est un cube singulier lisse. Écrivons $\tilde c^*\omega = g\,dt_1 \wedge \cdots \wedge dt_k$. Par {{gd-formes|Formes différentielles}}, (iii), et {{gd-formes-varietes|Formes sur une variété}}, (ii),
+      $$\begin{aligned} (\tilde c \circ \tilde\rho)^*\omega &= \tilde\rho^*(g\,dt_1 \wedge \cdots \wedge dt_k) \\ &= (g \circ \tilde\rho)\,\det d\tilde\rho\;dt_1 \wedge \cdots \wedge dt_k, \end{aligned}$$
+      et (ii), avec $|\det d\rho| = \det d\rho$, donne $\int_{c \circ \rho} \omega = \int_{I^k} (g \circ \rho)\det d\rho = \int_{I^k} g = \int_c \omega$.
+    remarques:
+      - |
+        Le nœud {{dv-changement|Changement de variables}} ne traite que des fonctions à support compact dans un ouvert, alors qu'une fonction continue sur $I^k$ ne s'annule pas en général sur le bord. La troncature $\varphi_\delta$ ramène à ce cas, et la constante de Lipschitz de $\rho^{-1}$ garantit que les points que $\rho$ envoie près du bord en sont eux-mêmes proches : $\rho^{-1}$ ne fait pas entrer profondément dans le cube une bande voisine du bord, et c'est ce qui permet de négliger, des deux côtés, une bande de largeur proportionnelle à $\delta$.
+
+        Pour $\rho(t_1, t_2) = \big(t_1, \frac{t_2 + t_2^2}2\big)$, de réciproque $(s_1, s_2) \mapsto \big(s_1, \frac{-1 + \sqrt{1 + 8s_2}}2\big)$ et de jacobien $\frac{1 + 2t_2}2 > 0$, et $g(s) = s_1s_2^2 + \cos(s_1 + s_2)$, les deux membres de (ii) valent environ $0{,}66342$ ; l'égalité a été vérifiée par un calcul formel.
+      - |
+        Le point (iii) répond à la question laissée ouverte par la première remarque du nœud {{dr-integrale-cubes|Intégrale sur une chaîne}} : l'intégrale d'une forme sur un cube singulier est invariante par reparamétrage du cube par un difféomorphisme de jacobien positif, et change de signe si le jacobien est négatif, par (ii), comme pour l'application $\rho(t) = (1 - t_1, t_2, \dots, t_k)$ traitée dans ce nœud.
+
+  - id: dv-varietes-bord
+    etiquette: Variétés à bord
+    nature: définition
+    titre: Demi-espace et variétés à bord
+    texte: |
+      Pour $n \geqslant 1$, le [[demi-espace]] est $\mathbb H^n = \{x \in \lex{n-uplet}{\mathbb R^n} : x_n \geqslant 0\}$ ; son bord est l'hyperplan $\partial\mathbb H^n = \{x_n = 0\}$, et $\mathring{\mathbb H}^n = \{x_n > 0\}$ est son [[interieur|intérieur]]. On identifie $\partial\mathbb H^n$ à $\mathbb R^{n-1}$ par $\pi(x', 0) = x'$, de réciproque $\iota(x') = (x', 0)$ ; pour $n = 1$, $\mathbb H^1 = [0, +\infty[$ et $\partial\mathbb H^1 = \{0\}$ est identifié au point $\mathbb R^0$. Un ouvert de $\mathbb H^n$ est un ouvert pour la topologie induite, c'est-à-dire une partie de la forme $O \cap \mathbb H^n$, où $O$ est un ouvert de $\mathbb R^n$.
+
+      Soit $A$ un ouvert de $\mathbb H^n$, ou un ouvert d'un espace $\mathbb R^m$. Une application $f : A \to \mathbb R^p$ est de classe $C^\infty$ si tout point $a \in A$ a un voisinage ouvert $O$ dans l'espace ambiant sur lequel est définie une application $F$ de classe $C^\infty$, égale à $f$ sur $O \cap A$ ; on dit que $F$ prolonge $f$ au voisinage de $a$. Un difféomorphisme entre ouverts de $\mathbb H^n$ est une bijection de classe $C^\infty$ dont la réciproque est de classe $C^\infty$.
+
+      Une *carte à bord* d'un espace topologique $M$ est un couple $(U, \varphi)$, où $U$ est un ouvert de $M$ et $\varphi$ un [[homeomorphisme|homéomorphisme]] de $U$ sur un ouvert de $\mathbb H^n$. Deux cartes à bord sont compatibles si leurs changements de carte $\psi \circ \varphi^{-1}$, de $\varphi(U \cap V)$ sur $\psi(U \cap V)$, et leurs réciproques sont de classe $C^\infty$ ; un atlas est une famille de cartes à bord deux à deux compatibles dont les domaines recouvrent $M$. Une [[variete-a-bord|variété à bord]] de dimension $n$ est un espace topologique [[separe|séparé]], à base au plus dénombrable, muni d'un atlas maximal de cartes à bord, comme au nœud {{gd-varietes|Variétés}}.
+
+      Une [[forme-differentielle|forme différentielle]] de degré $k$ sur un ouvert $A$ de $\mathbb H^n$ est une expression $\omega = \sum_I a_I\,dx_I$ dont les coefficients sont de classe $C^\infty$ sur $A$ ; sa différentielle extérieure et son image réciproque par une application de classe $C^\infty$ sont définies par les formules du nœud {{gd-formes|Formes différentielles}}, les dérivées étant celles de (i) ci-dessous.
+
+      Le [[bord-variete|bord]] $\partial M$ de la variété à bord $M$ est l'ensemble des points $p$ tels que $\varphi(p) \in \partial\mathbb H^n$ pour une carte $(U, \varphi)$ en $p$, et l'on note $\operatorname{int} M = M \setminus \partial M$ ; ce n'est pas, en général, l'intérieur de $M$ au sens topologique, qui est $M$ tout entière.
+    enonce: |
+      (i) *Différentielles.* Soit $f : A \to \mathbb R^p$ de classe $C^\infty$ sur un ouvert $A$ de $\mathbb H^n$. En tout point $a \in A$, la différentielle $dF(a)$ d'un prolongement $F$ de $f$ ne dépend pas de $F$ ; on la note $df(a)$. Les dérivées partielles $\partial_j f$ sont de classe $C^\infty$ sur $A$. La composée de deux applications de classe $C^\infty$, entre ouverts de demi-espaces ou d'espaces $\mathbb R^m$, est de classe $C^\infty$, et la règle de la chaîne vaut ; la différentielle d'un difféomorphisme est inversible en tout point.
+
+      (ii) *Invariance du bord.* Un difféomorphisme $\tau : A \to B$ entre ouverts de $\mathbb H^n$ envoie $A \cap \partial\mathbb H^n$ sur $B \cap \partial\mathbb H^n$ et $A \cap \mathring{\mathbb H}^n$ sur $B \cap \mathring{\mathbb H}^n$. Si $n \geqslant 2$, notons $A' = \{x' : (x', 0) \in A\}$ et $B' = \{y' : (y', 0) \in B\}$, ouverts de $\mathbb R^{n-1}$. Pour $x' \in A'$, on a $\tau_n(x', 0) = 0$, $\partial_j\tau_n(x', 0) = 0$ pour $j < n$, $\partial_n\tau_n(x', 0) > 0$, et
+      $$\det d\tau(x', 0) = \det d\tau'(x')\;\partial_n\tau_n(x', 0),$$
+      où $\tau' = \pi \circ \tau \circ \iota$ est un difféomorphisme de $A'$ sur $B'$.
+
+      (iii) Le bord d'une variété à bord $M$ ne dépend pas de la carte choisie en chaque point ; il est fermé dans $M$, et $\operatorname{int} M$ est ouvert. Tout atlas de cartes à bord est contenu dans un seul atlas maximal.
+
+      (iv) Les restrictions des cartes à $\operatorname{int} M$ font de $\operatorname{int} M$ une [[variete-differentiable|variété]] de dimension $n$. Si $n \geqslant 2$, les cartes $(U \cap \partial M, \pi \circ \varphi)$, où $(U, \varphi)$ parcourt les cartes de $M$, forment un atlas de $\partial M$, qui en fait une variété de dimension $n - 1$.
+
+      (v) Soit $M$ une variété de dimension $n$. Pour une carte $(U, \varphi)$ de $M$ et un réel $t$, notons $U_t = \varphi^{-1}(\{z : z_n > -t\})$ et $\varphi_t = \varphi + t\,e_n$ sur $U_t$. Ces cartes, pour toutes les cartes de $M$ et tous les réels $t$, forment un atlas de cartes à bord, à valeurs dans $\mathring{\mathbb H}^n$. Muni de l'atlas maximal qu'il définit, $M$ est une variété à bord, de bord vide, et la structure de variété de $\operatorname{int} M = M$ donnée par (iv) est celle de départ.
+    preuve: |
+      (i) *Différentielles.* Écrivons $A = \Omega \cap \mathbb H^n$, avec $\Omega$ ouvert. Soient $F$ et $G$ deux prolongements de $f$ au voisinage de $a$, définis sur des ouverts $O$ et $O'$. Il existe $\varepsilon > 0$ tel que la boule $B = B_\infty(a, \varepsilon)$ soit contenue dans $\Omega \cap O \cap O'$. Sur l'ouvert $B \cap \mathring{\mathbb H}^n$ de $\mathbb R^n$, $F$ et $G$ coïncident avec $f$, donc leurs différentielles coïncident, la différentielle en un point ne dépendant que des valeurs au voisinage de ce point ({{gd-differentielle|Différentielle}}). Les points $a + \frac1m e_n$, pour $m$ assez grand, sont dans $B \cap \mathring{\mathbb H}^n$ et tendent vers $a$ ; par continuité de $dF$ et de $dG$, $dF(a) = dG(a)$. Les fonctions $\partial_j F$ prolongent $\partial_j f$ au voisinage de $a$ : elles sont de classe $C^\infty$.
+
+      *Composées.* Soit $f : A \to \mathbb R^p$ et $g : A_1 \to \mathbb R^q$ de classe $C^\infty$, avec $f(A) \subset A_1$. Soit $a \in A$, $G$ un prolongement de $g$ sur un ouvert $O_1$ contenant $f(a)$, et $F$ un prolongement de $f$ sur un ouvert $O$ contenant $a$. L'ouvert $O \cap F^{-1}(O_1)$ contient $a$, et $G \circ F$, de classe $C^\infty$ ({{gd-classe-ck|Classe Cᵏ}}, (iii)), y coïncide avec $g \circ f$ en tout point de $A$, puisque $F = f$ sur $O \cap A$, à valeurs dans $A_1$. La règle de la chaîne pour $G \circ F$ ({{gd-differentielle|Différentielle}}, (iv)) donne celle de $g \circ f$. Si $\tau$ est un difféomorphisme, $\tau^{-1} \circ \tau$ est l'identité de $A$, et $d(\tau^{-1})(\tau(a)) \circ d\tau(a) = \mathrm{id}$, par le calcul en des points de $\mathring{\mathbb H}^n$ voisins de $a$ et par continuité.
+
+      (ii) *Points intérieurs.* Soit $a \in A \cap \mathring{\mathbb H}^n$. L'ouvert $N = A \cap \mathring{\mathbb H}^n$ de $\mathbb R^n$ contient $a$, et $\tau$ y est de classe $C^\infty$ au sens usuel, de différentielle inversible par (i). Par le théorème d'inversion locale ({{gd-inversion-locale|Inversion locale}}), un ouvert $N' \subset N$ contenant $a$ a pour image un ouvert de $\mathbb R^n$, qui contient $\tau(a)$ et qui est contenu dans $B \subset \mathbb H^n$. Si l'on avait $\tau_n(a) = 0$, le point $\tau(a) - s\,e_n$, pour $s > 0$ assez petit, appartiendrait à cet ouvert sans appartenir à $\mathbb H^n$. Donc $\tau(a) \in \mathring{\mathbb H}^n$. Le même argument, appliqué à $\tau^{-1}$, et la bijectivité de $\tau$ donnent les deux égalités.
+
+      *Au bord.* Soit $n \geqslant 2$ et $a = (x', 0)$ avec $x' \in A'$. Comme $A$ est un ouvert de $\mathbb H^n$, les points $a + s\,e_j$, pour $j < n$ et $|s|$ petit, sont dans $A \cap \partial\mathbb H^n$, où $\tau_n$ est nulle ; la dérivée partielle $\partial_j\tau_n(a)$, limite des quotients $\frac{\tau_n(a + s\,e_j) - \tau_n(a)}s$ calculés sur un prolongement, est donc nulle. De même, $\partial_n\tau_n(a)$ est la limite, quand $s$ tend vers $0$ par valeurs positives, de $\frac{\tau_n(a + s\,e_n)}s \geqslant 0$ : elle est positive.
+
+      La dernière ligne de la matrice de $d\tau(a)$ est donc $(0, \dots, 0, \partial_n\tau_n(a))$, et le développement du déterminant de la transposée selon sa dernière colonne ({{v-comatrice|Comatrice}}) donne $\det d\tau(a) = \det D\;\partial_n\tau_n(a)$, où $D$ est la matrice des $\partial_j\tau_l(a)$, $j, l < n$. Ce déterminant n'est pas nul, par (i) : $\partial_n\tau_n(a) > 0$ et $\det D \neq 0$. Enfin $\tau'$ est de classe $C^\infty$ sur $A'$, composée de $\iota$, de $\tau$ et de $\pi$, et sa matrice jacobienne en $x'$ est $D$ ; elle envoie $A'$ dans $B'$ par le premier point, bijectivement, de réciproque $\pi \circ \tau^{-1} \circ \iota$, de classe $C^\infty$.
+
+      (iii) Si $(U, \varphi)$ et $(V, \psi)$ sont deux cartes en $p$, le changement de carte $\psi \circ \varphi^{-1}$ est un difféomorphisme entre les ouverts $\varphi(U \cap V)$ et $\psi(U \cap V)$ de $\mathbb H^n$, et (ii) montre que $\varphi(p) \in \partial\mathbb H^n$ si et seulement si $\psi(p) \in \partial\mathbb H^n$. Pour chaque carte, $U \cap \operatorname{int} M = \varphi^{-1}(\mathring{\mathbb H}^n)$ est ouvert ; $\operatorname{int} M$, réunion de ces ouverts, est ouvert, et $\partial M$ est fermé. La démonstration du nœud {{gd-varietes|Variétés}} s'applique telle quelle à la dernière affirmation : elle n'emploie que la composition des applications de classe $C^\infty$, qui est (i), et le caractère local de cette classe, qui vient de la définition.
+
+      (iv) L'espace $\partial M$ est séparé, et il a une base au plus dénombrable, formée des traces d'une base de $M$. Pour une carte $(U, \varphi)$, écrivons $\varphi(U) = O \cap \mathbb H^n$ ; par (iii), $\varphi(U \cap \partial M) = O \cap \partial\mathbb H^n$, et $\pi \circ \varphi$ est un homéomorphisme de $U \cap \partial M$ sur l'ouvert $\iota^{-1}(O)$ de $\mathbb R^{n-1}$. Ces cartes recouvrent $\partial M$, et leurs changements de carte sont les applications $\tau'$ de (ii), de classe $C^\infty$ ainsi que leurs réciproques. De même, $\varphi$ envoie $U \cap \operatorname{int} M$ sur l'ouvert $\varphi(U) \cap \mathring{\mathbb H}^n$ de $\mathbb R^n$, et les changements de carte sont les restrictions de ceux de $M$, de classe $C^\infty$ au sens usuel sur ces ouverts.
+
+      (v) Chaque $\varphi_t$ est un homéomorphisme de l'ouvert $U_t$ sur l'ouvert $\varphi(U_t) + t\,e_n$ de $\mathbb R^n$, contenu dans $\mathring{\mathbb H}^n$ ; c'est un ouvert de $\mathbb H^n$. Pour $t = 1 - \varphi(p)_n$, le domaine $U_t$ contient $p$ : ces cartes recouvrent $M$. Leurs changements de carte $z \mapsto \psi \circ \varphi^{-1}(z - t\,e_n) + s\,e_n$ sont de classe $C^\infty$, ainsi que leurs réciproques. Aucun point n'est envoyé dans $\partial\mathbb H^n$, et le bord est vide. Enfin les cartes $\varphi_t$ sont compatibles avec l'atlas de $M$, la translation étant un difféomorphisme de $\mathbb R^n$ : la restriction de l'atlas maximal à $\operatorname{int} M = M$ a le même atlas maximal que celui de $M$ ({{gd-varietes|Variétés}}).
+    remarques:
+      - |
+        La boule fermée $\bar B = \{x \in \mathbb R^n : x_1^2 + \cdots + x_n^2 \leqslant 1\}$ est une variété à bord, de bord la sphère $S^{n-1}$. Une carte est la translation $x \mapsto x + 2e_n$ sur la boule ouverte ; au voisinage du bord, sur $\{x \in \bar B : x_i > 0\}$, la carte
+        $$x \mapsto \big(x_1, \dots, \widehat{x_i}, \dots, x_n,\ 1 - \|x\|_2^2\big),$$
+        où le chapeau signale la coordonnée omise, est un homéomorphisme sur l'ouvert $\{u \in \mathbb H^n : u_1^2 + \cdots + u_{n-1}^2 + u_n < 1\}$, de réciproque donnée par $x_i = \sqrt{1 - u_n - u_1^2 - \cdots - u_{n-1}^2}$ ; on fait de même sur $\{x_i < 0\}$. Les changements de carte sont composés de polynômes et de racines carrées de nombres strictement positifs, donc de classe $C^\infty$. Le bord est l'ensemble des points où $u_n = 0$, c'est-à-dire la sphère.
+      - |
+        L'erreur la plus répandue est de confondre le bord d'une variété à bord avec la frontière topologique. La boule ouverte de $\mathbb R^n$ est une variété, de bord vide au sens de (v), alors que sa frontière dans $\mathbb R^n$ est la sphère ; et le bord de $\bar B$ ne se lit pas sur $\bar B$ seule, dont l'intérieur topologique, pour sa propre topologie, est $\bar B$ entière. Le bord est une notion différentielle : il est bien défini grâce à l'invariance (ii), qui repose sur l'inversion locale.
+      - |
+        Le cadre diffère de celui des chaînes du nœud {{dr-cubes|Cubes singuliers}}. Un cube singulier lisse peut écraser $I^k$, et le cube lui-même a des coins, alors que les cartes d'une variété à bord sont modelées sur un demi-espace, qui n'en a pas. Les deux formes de la formule de Stokes sont donc démontrées séparément, la seconde au nœud {{dv-stokes|Formule de Stokes sur une variété}}, mais elles reposent sur le même calcul : le théorème fondamental de l'analyse dans la direction normale à une face.
+
+  - id: dv-demi-espace
+    etiquette: Changement de variables au bord
+    nature: proposition
+    titre: Changement de variables sur le demi-espace
+    texte: |
+      Soit $B$ un ouvert du demi-espace $\mathbb H^n$ ({{dv-varietes-bord|Variétés à bord}}). Comme au nœud {{dv-changement|Changement de variables}}, on note $C_c(B)$ l'espace des fonctions continues sur $B$ dont le support, adhérence dans $B$ de $\{f \neq 0\}$, est [[compact]]. Le prolongement $\hat f$ de $f \in C_c(B)$ par $0$ à $\mathbb H^n$ est continu, pour la même raison qu'en ce nœud, et l'on pose
+      $$\int_B f = \int_P \hat f,$$
+      pour un pavé $P = \prod_{i < n}[a_i, b_i] \times [0, b_n]$ qui contient le support de $f$ ; pour $n = 1$, $P = [0, b_1]$.
+    enonce: |
+      (i) L'intégrale $\int_B f$ ne dépend pas du pavé $P$ ; elle est linéaire et croissante, et ne change pas si l'on prolonge $f$ par $0$ à un ouvert de $\mathbb H^n$ qui contient $B$. Si le support de $f$ est contenu dans $\mathring{\mathbb H}^n$, alors $\int_B f = \int_{B \cap \mathring{\mathbb H}^n} f$, intégrale du nœud {{dv-changement|Changement de variables}}.
+
+      (ii) Soit $\tau : A \to B$ un difféomorphisme entre ouverts de $\mathbb H^n$ et $f \in C_c(B)$. Alors $(f \circ \tau)\,|\det d\tau|$ appartient à $C_c(A)$, et
+      $$\int_B f = \int_A (f \circ \tau)\,|\det d\tau|.$$
+    preuve: |
+      (i) Deux pavés de cette forme qui contiennent le support sont contenus dans un troisième de la même forme, et le lemme de Chasles du nœud {{dv-changement|Changement de variables}}, (i), donne l'indépendance. La linéarité, la croissance et le prolongement s'en déduisent comme en ce nœud. Si le support $K$ de $f$ est contenu dans $\mathring{\mathbb H}^n$, il est le support de la restriction de $f$ à l'ouvert $B \cap \mathring{\mathbb H}^n$ de $\mathbb R^n$, et le prolongement de celle-ci par $0$ à $\mathbb R^n$ coïncide avec $\hat f$ sur $P$.
+
+      (ii) *Le support.* Comme au nœud {{dv-changement|Changement de variables}}, (ii), $\det d\tau$ ne s'annule pas ({{dv-varietes-bord|Variétés à bord}}, (i)), et $g = (f \circ \tau)\,|\det d\tau|$ est continue, de support $L$ contenu dans le compact $\tau^{-1}(K)$, où $K$ est le support de $f$ ; $L$ est donc compact.
+
+      *Une minoration de $\tau_n$.* Posons $q(x) = \tau_n(x)/x_n$ si $x_n > 0$, et $q(x) = \partial_n\tau_n(x)$ si $x_n = 0$. La fonction $q$ est strictement positive sur $A$ : $\tau$ envoie $A \cap \mathring{\mathbb H}^n$ dans $\mathring{\mathbb H}^n$, et $\partial_n\tau_n > 0$ sur $A \cap \partial\mathbb H^n$ ({{dv-varietes-bord|Variétés à bord}}, (ii) ; pour $n = 1$, la même démonstration donne $\tau'(0) > 0$).
+
+      Elle est continue. C'est clair en un point de $A \cap \mathring{\mathbb H}^n$. Soit $a \in A \cap \partial\mathbb H^n$, $T$ un prolongement de $\tau_n$ sur un ouvert $O \ni a$, et $\varepsilon > 0$ tel que $B_\infty(a, \varepsilon) \subset O$ et $B_\infty(a, \varepsilon) \cap \mathbb H^n \subset A$. Pour $x$ dans $B_\infty(a, \varepsilon) \cap \mathbb H^n$, le segment qui joint $(x', 0)$ à $x$ y est contenu, et $T(x', 0) = \tau_n(x', 0) = 0$. Le théorème fondamental ({{ar-tfa|Théorème fondamental}}), appliqué à $s \mapsto T(x', s\,x_n)$, donne, si $x_n > 0$,
+      $$q(x) = \int_0^1 \partial_n T(x', s\,x_n)\,ds,$$
+      par le même argument qu'au nœud {{dr-iterees|Intégrales itérées}}, (iii) (une fonction de dérivée nulle sur un intervalle est constante, {{de-monotonie|Signe de la dérivée}}, (ii)) ; la formule vaut encore si $x_n = 0$. La fonction $(s, x) \mapsto \partial_n T(x', s\,x_n)$ est continue sur le produit de $[0, 1]$ et du compact $\{x \in \mathbb H^n : \|x - a\|_\infty \leqslant \varepsilon/2\}$, et le nœud {{dr-iterees|Intégrales itérées}}, (i), montre que $q$ est continue sur ce compact, donc au voisinage de $a$ dans $A$.
+
+      Si $L$ est vide, tout est nul. Sinon $q$ atteint sur le compact $L$ une borne inférieure $c > 0$ ({{tr-compacts|Compacts de ℝ}}, (iii)), et
+      $$\tau_n(x) \geqslant c\,x_n \quad \text{pour tout } x \in L.$$
+
+      *Troncature.* Pour $\varepsilon > 0$, soit $h_\varepsilon$ la fonction sur $[0, +\infty[$ nulle sur $[0, \varepsilon]$, égale à $\frac{u - \varepsilon}\varepsilon$ sur $[\varepsilon, 2\varepsilon]$ et à $1$ au-delà ; elle est continue et croissante, et $\int_0^b (1 - h_\varepsilon) \leqslant \frac{3\varepsilon}2$ pour tout $b > 0$. La fonction $f_\varepsilon(y) = f(y)\,h_\varepsilon(y_n)$ a son support dans $K \cap \{y_n \geqslant \varepsilon\}$, compact contenu dans l'ouvert $B^\circ = B \cap \mathring{\mathbb H}^n$ de $\mathbb R^n$. Par {{dv-varietes-bord|Variétés à bord}}, (ii), $\tau$ induit un difféomorphisme de $A^\circ = A \cap \mathring{\mathbb H}^n$ sur $B^\circ$, et le nœud {{dv-changement|Changement de variables}}, (ii), avec (i), donne
+      $$\int_B f_\varepsilon = \int_A g\,(h_\varepsilon \circ \tau_n).$$
+
+      *Passage à la limite.* Soit $P = P' \times [0, b]$ et $Q = Q' \times [0, b']$ deux pavés de la forme de la définition, contenant respectivement $K$ et $L$, et $M_f$, $M_g$ des majorants de $|f|$ et de $|g|$. D'une part, par la croissance de l'intégrale,
+      $$\begin{aligned} &\Big|\int_B f - \int_B f_\varepsilon\Big| \\ &\quad \leqslant M_f\,v(P')\int_0^b (1 - h_\varepsilon) \\ &\quad \leqslant \frac32\,M_f\,v(P')\,\varepsilon. \end{aligned}$$
+      D'autre part, pour $x \in L$ tel que $x_n \geqslant 2\varepsilon/c$, on a $\tau_n(x) \geqslant 2\varepsilon$ et $h_\varepsilon(\tau_n(x)) = 1$ ; comme $1 - h_{2\varepsilon/c}(x_n) = 1$ si $x_n \leqslant 2\varepsilon/c$, et que $g$ est nulle hors de $L$,
+      $$\begin{aligned} 0 &\leqslant |g|\,(1 - h_\varepsilon \circ \tau_n) \\ &\leqslant M_g\,\big(1 - h_{2\varepsilon/c}(x_n)\big) \end{aligned}$$
+      sur $A$, d'où
+      $$\begin{aligned} &\Big|\int_A g - \int_A g\,(h_\varepsilon \circ \tau_n)\Big| \\ &\quad \leqslant \frac{3M_g\,v(Q')\,\varepsilon}{c}. \end{aligned}$$
+      Les deux membres de (ii) diffèrent donc d'au plus une constante fois $\varepsilon$, pour tout $\varepsilon > 0$ : ils sont égaux. Aucun choix n'intervient.
+    remarques:
+      - |
+        Pour $n = 1$, $\tau(x) = x + x^2$ est un difféomorphisme de $[0, +\infty[$ sur lui-même, de réciproque $y \mapsto \frac{-1 + \sqrt{1 + 4y}}2$, de classe $C^\infty$ sur $]{-\frac14}, +\infty[$. La fonction $f(y) = (1 - y)^2$ sur $[0, 1]$, nulle au-delà, appartient à $C_c([0, +\infty[)$ sans s'annuler en $0$ : son support touche le bord, et le nœud {{dv-changement|Changement de variables}} ne s'applique pas directement. On trouve $\int f = \frac13$ et, avec $b = \frac{\sqrt5 - 1}2$, racine de $\tau(x) = 1$,
+        $$\int_0^b (1 - x - x^2)^2(1 + 2x)\,dx = \frac13,$$
+        égalité vérifiée par un calcul formel. Ici $q(x) = 1 + x \geqslant 1$, et la minoration vaut avec $c = 1$.
+      - |
+        La minoration $\tau_n \geqslant c\,x_n$ est le cœur de la démonstration. Elle dit qu'un difféomorphisme du demi-espace n'écrase pas une bande voisine du bord plus que d'un facteur borné : l'image réciproque de la bande $\{y_n < \varepsilon\}$ est contenue, sur le support, dans la bande $\{x_n < \varepsilon/c\}$. Sans elle, on saurait que chaque côté néglige une bande, mais pas que ces bandes se correspondent.
+
+  - id: dv-orientation-bord
+    etiquette: Orientation induite
+    nature: définition
+    titre: Formes et orientation sur une variété à bord, orientation induite
+    texte: |
+      Les formes différentielles sur un ouvert $A$ de $\mathbb H^n$ sont celles du nœud {{dv-varietes-bord|Variétés à bord}} ; le produit extérieur s'y définit comme au nœud {{gd-formes|Formes différentielles}}.
+
+      Soit $M$ une [[variete-a-bord|variété à bord]] de dimension $n$. Comme au nœud {{gd-formes-varietes|Formes sur une variété}}, une forme de degré $k$ sur $M$ est une famille de formes $\omega_\varphi$ sur les ouverts $\varphi(U)$ de $\mathbb H^n$, pour les cartes $(U, \varphi)$, telles que $\omega_\varphi = \tau^*\omega_\psi$ sur $\varphi(U \cap V)$, où $\tau = \psi \circ \varphi^{-1}$. Une fonction $f : M \to \lex{ensemble-reels}{\mathbb R}$ est lisse si chaque $f \circ \varphi^{-1}$ est de classe $C^\infty$, et $f\omega$ désigne la forme de composantes $(f \circ \varphi^{-1})\,\omega_\varphi$. Le support de $\omega$ est l'adhérence dans $M$ de l'ensemble des points $p$ tels que $\omega_\varphi$ ne s'annule pas en $\varphi(p)$, pour une carte en $p$, ce qui ne dépend pas de la carte, $d\tau$ étant inversible.
+
+      Notons $j : \partial M \to M$ l'inclusion. Pour $n \geqslant 2$ et une forme $\omega$ sur $M$, la restriction $j^*\omega$ est la forme sur la variété $\partial M$ donnée, dans chaque carte $(U \cap \partial M, \pi \circ \varphi)$ de l'atlas du nœud {{dv-varietes-bord|Variétés à bord}}, (iv), par $(j^*\omega)_{\pi \circ \varphi} = \iota^*\omega_\varphi$, avec $\iota(z') = (z', 0)$.
+
+      Un atlas de $M$ est orienté si tous ses changements de carte $\tau$ vérifient $\det d\tau > 0$ en tout point, y compris aux points de $\partial\mathbb H^n$. Comme au nœud {{gd-forme-volume|Forme volume}}, une [[orientation]] de $M$ est un atlas orienté maximal, ses cartes sont dites directes, et $M$ munie d'une orientation est une variété à bord orientée.
+    enonce: |
+      (i) Les formules du nœud {{gd-formes|Formes différentielles}} valent pour les formes sur les ouverts des demi-espaces. Par suite, $d\omega$, $\omega \wedge \eta$, $f\omega$ et $j^*\omega$ sont des formes sur $M$ et sur $\partial M$ ; $d$ commute à $j^*$ ; le support de $d\omega$ est contenu dans celui de $\omega$, et celui de $j^*\omega$ dans l'intersection du support de $\omega$ avec $\partial M$.
+
+      (ii) Tout atlas orienté de $M$ est contenu dans une seule orientation. Si $M$ est une [[variete-orientee|variété orientée]], d'orientation $\mathcal O$, les cartes $(U_t, \varphi_t)$ du nœud {{dv-varietes-bord|Variétés à bord}}, (v), pour $(U, \varphi) \in \mathcal O$, forment un atlas orienté de cartes à bord ; on munit $M$, vue comme variété à bord, de l'orientation qui le contient.
+
+      (iii) *Orientation induite.* Soit $n \geqslant 2$ et $M$ une variété à bord orientée. Posons $\kappa(z') = \big((-1)^n z_1, z_2, \dots, z_{n-1}\big)$ pour $z' \in \mathbb R^{n-1}$. Les cartes $(U \cap \partial M, \kappa \circ \pi \circ \varphi)$, pour $(U, \varphi)$ directe, forment un atlas orienté de la variété $\partial M$. L'orientation de $\partial M$ qui le contient ({{gd-forme-volume|Forme volume}}, (i)) est l'[[orientation-induite|orientation induite]].
+    preuve: |
+      (i) Pour une forme sur un ouvert $A$ de $\mathbb H^n$, toutes ces opérations se calculent, au voisinage de chaque point, à partir de prolongements de classe $C^\infty$ des coefficients et des applications, définis sur des ouverts d'espaces $\mathbb R^m$, où le nœud {{gd-formes|Formes différentielles}} s'applique. Les deux membres de chaque identité ne font intervenir que les valeurs et les dérivées en ce point, qui ne dépendent pas des prolongements ({{dv-varietes-bord|Variétés à bord}}, (i)). La compatibilité des formes obtenues sur $M$ se démontre alors comme au nœud {{gd-formes-varietes|Formes sur une variété}}, (i).
+
+      Pour $j^*\omega$, le changement de carte entre $\pi \circ \varphi$ et $\pi \circ \psi$ est l'application $\tau'$ du nœud {{dv-varietes-bord|Variétés à bord}}, (ii), et $\tau \circ \iota = \iota \circ \tau'$, puisque $\tau$ envoie $\partial\mathbb H^n$ dans lui-même. Ainsi $\tau'^*(\iota^*\omega_\psi) = \iota^*\tau^*\omega_\psi = \iota^*\omega_\varphi$ : les formes $\iota^*\omega_\varphi$ sont compatibles. Données sur un atlas, elles définissent une forme sur $\partial M$, la forme dans une carte $\chi$ quelconque étant $(\pi \circ \varphi \circ \chi^{-1})^*\iota^*\omega_\varphi$ au voisinage de chaque point. La commutation $d\,\iota^* = \iota^*d$ est celle de (i) pour l'application $\iota$.
+
+      Sur l'ouvert complémentaire du support de $\omega$, $\omega$ est nulle, donc $d\omega$ et $j^*\omega$ aussi. Le support de $j^*\omega$ est donc contenu dans le support de $\omega$, fermé, intersecté avec $\partial M$, fermé ({{dv-varietes-bord|Variétés à bord}}, (iii)).
+
+      (ii) La démonstration du nœud {{gd-forme-volume|Forme volume}}, (i), n'emploie que la règle de la chaîne et le déterminant d'un produit, qui valent ici par {{dv-varietes-bord|Variétés à bord}}, (i) : elle s'applique telle quelle. Les changements de carte entre $\varphi_t$ et $\psi_s$ sont $z \mapsto \psi \circ \varphi^{-1}(z - t\,e_n) + s\,e_n$, de même différentielle que $\psi \circ \varphi^{-1}$, donc de déterminant positif si $\varphi$ et $\psi$ sont directes.
+
+      (iii) Les cartes directes recouvrent $M$ : les cartes proposées recouvrent $\partial M$, et ce sont des cartes de $\partial M$, puisque $\kappa$ est un difféomorphisme linéaire de $\mathbb R^{n-1}$, égal à sa réciproque. Soient $(U, \varphi)$ et $(V, \psi)$ deux cartes directes, $\tau = \psi \circ \varphi^{-1}$, et $x'$ un point de l'ouvert $A'$ du nœud {{dv-varietes-bord|Variétés à bord}}, (ii), pour $A = \varphi(U \cap V)$. Ce nœud donne
+      $$\det d\tau(x', 0) = \det d\tau'(x')\;\partial_n\tau_n(x', 0),$$
+      avec $\det d\tau(x', 0) > 0$, les cartes étant directes, et $\partial_n\tau_n(x', 0) > 0$ : donc $\det d\tau'(x') > 0$. Le changement de carte entre $\kappa \circ \pi \circ \varphi$ et $\kappa \circ \pi \circ \psi$ est $\kappa \circ \tau' \circ \kappa$, de déterminant $(\det \kappa)^2 \det d\tau'(\kappa(z')) > 0$ en $z'$. L'atlas est orienté.
+    remarques:
+      - |
+        La convention se lit sur la normale sortante. En un point de $\partial\mathbb H^n$, un vecteur $v$ sort de $\mathbb H^n$ si $v_n < 0$, et $\nu = -e_n$ est la normale sortante. On convient qu'une base $(v_1, \dots, v_{n-1})$ de l'hyperplan tangent au bord est directe si $(\nu, v_1, \dots, v_{n-1})$ est une base directe de $\mathbb R^n$. Or le signe de $-e_n$ donne un facteur $-1$, et ramener $e_n$ de la première place à la dernière coûte $n - 1$ transpositions :
+        $$\det(-e_n, e_1, \dots, e_{n-1}) = (-1)^n.$$
+        La base $(e_1, \dots, e_{n-1})$ de $\partial\mathbb H^n \cong \mathbb R^{n-1}$ est donc directe si et seulement si $n$ est pair, et $\kappa$ corrige le signe quand $n$ est impair. Ce calcul a été refait à la machine pour $n \leqslant 8$.
+
+        Le signe est celui de la face $(n, 0)$ du cube dans le bord cubique, $(-1)^{n+0}$ ({{dr-cubes|Cubes singuliers}}), qui est la face $\{t_n = 0\}$, posée sur $\partial\mathbb H^n$ : les deux conventions s'accordent. C'est pour cela que l'on a pris $\mathbb H^n = \{x_n \geqslant 0\}$, comme l'annonçait la dernière remarque du nœud {{dr-stokes|Formule de Stokes}}. Avec le demi-espace $\{x_n \leqslant 0\}$, la normale sortante serait $e_n$, le signe $(-1)^{n-1}$, celui de la face $(n, 1)$ ; rien d'autre ne changerait.
+      - |
+        Sur le disque fermé $D$ de $\mathbb R^2$, orienté par l'atlas qui contient la carte translatée $(x, y) \mapsto (x, y + 2)$ de son intérieur, la carte $\varphi(x, y) = (-x, 1 - x^2 - y^2)$, définie sur $D \cap \{y > 0\}$ à valeurs dans $\mathbb H^2$, a pour jacobien $2y > 0$ : elle est directe. Comme $n = 2$ est pair, la carte induite sur le demi-cercle supérieur est $(x, y) \mapsto -x$, qui croît de $-1$ à $1$ quand on va de $(1, 0)$ à $(-1, 0)$ : l'orientation induite sur le cercle est le sens trigonométrique.
+
+        ```schema dv-orientation-bord
+        À gauche, le disque $D$ et le domaine de la carte $\varphi$, en bleu ; au point $p = (\cos\frac\pi3, \sin\frac\pi3)$, la normale sortante $\nu$, en rouge, et le vecteur tangent direct $v$, en bleu, tels que $(\nu, v)$ soit une base directe. À droite, l'image $\varphi(U)$ dans $\mathbb H^2$ : $d\varphi(\nu) = (-\frac12, -2)$ sort du demi-plan, et $d\varphi(v) = (\frac{\sqrt3}2, 0)$ suit $e_1$, direct sur le bord de $\mathbb H^2$ pour $n = 2$. Le cercle orienté, en rouge, est envoyé sur le segment rouge parcouru dans le sens de $e_1$.
+        ```
+
+        Pour la boule fermée de $\mathbb R^3$, la carte $(x, y, z) \mapsto (-x, y, 1 - x^2 - y^2 - z^2)$, sur $\{z > 0\}$, a pour jacobien $2z > 0$, et, $n = 3$ étant impair, la carte induite sur l'hémisphère nord est $\kappa(-x, y) = (x, y)$ : c'est la projection sur le plan horizontal, qui oriente l'hémisphère par la normale dirigée vers le haut, c'est-à-dire sortante.
+      - |
+        En dimension $1$, la définition est trop étroite : le segment $[0, 1]$ n'a aucune orientation au sens de ce nœud, alors qu'il est orientable pour les définitions usuelles. La raison est que, pour $n \geqslant 2$, la réflexion $z \mapsto (-z_1, z_2, \dots, z_n)$ conserve $\mathbb H^n$, si bien que toute carte à bord peut être rendue directe en la composant avec elle, alors que, pour $n = 1$, aucune réflexion de $\mathbb H^1 = [0, +\infty[$ ne renverse l'orientation. Plus précisément, une carte au voisinage de $1$, à valeurs dans $\mathbb H^1$, envoie $1$ sur $0$ et, injective et continue sur un intervalle, elle y est décroissante ; une carte au voisinage de $0$ est de même croissante. Pour une orientation donnée, le signe de la dérivée du changement de carte entre une carte directe en $t \in \,]0, 1[$ et la carte $t \mapsto t$ ne dépend pas de la carte directe, puisque deux cartes directes ont un changement de carte de dérivée positive ; c'est une fonction localement constante sur l'intervalle $]0, 1[$, donc constante ({{c-tvi|Valeurs intermédiaires}}). Elle devrait pourtant être positive près de $0$ et négative près de $1$. On peut admettre aussi, pour $n = 1$, des cartes à valeurs dans $]{-\infty}, 0]$, comme le font par exemple les notes de géométrie différentielle de B. Andrews (Australian National University, chapitre 14) ; ce chapitre ne le fait pas. Pour cette raison, et parce que l'orientation d'une variété de dimension $0$ n'est pas définie dans l'atlas, l'orientation induite et la formule (i) du nœud {{dv-stokes|Stokes sur une variété}} sont réservées à $n \geqslant 2$. En dimension $1$, la formule de Stokes est le théorème fondamental de l'analyse, déjà démontré sous la forme $\int_c df = f(c(1)) - f(c(0))$ ({{dr-stokes|Formule de Stokes}}).
+
+  - id: dv-integrale
+    etiquette: Intégrale sur une variété
+    nature: définition
+    titre: Intégrale d'une forme de degré maximal sur une variété orientée
+    texte: |
+      Soit $M$ une variété à bord orientée de dimension $n \geqslant 1$ ({{dv-orientation-bord|Orientation induite}}), et $\omega$ une forme de degré $n$ sur $M$, dont le support est [[compact]]. Une variété orientée, sans bord, est vue comme variété à bord orientée ({{dv-orientation-bord|Orientation induite}}, (ii)) : ce qui suit s'y applique. Dans une carte directe $(U, \varphi)$, on écrit $\omega_\varphi = a_\varphi\,dz_1 \wedge \cdots \wedge dz_n$ ({{gd-formes-varietes|Formes sur une variété}}, (ii)).
+
+      Si le support de $\omega$ est contenu dans $U$, $a_\varphi$ appartient à $C_c(\varphi(U))$, son support étant l'image par $\varphi$ de celui de $\omega$, et l'on pose
+      $$\int_M \omega = \int_{\varphi(U)} a_\varphi,$$
+      intégrale du nœud {{dv-demi-espace|Changement de variables au bord}}.
+
+      En général, un *système de cartes* pour $\omega$ est la donnée de cartes directes $(U_1, \varphi_1), \dots, (U_m, \varphi_m)$ et de fonctions lisses positives $\chi_1, \dots, \chi_m$ sur $M$, telles que l'adhérence de $\{\chi_l \neq 0\}$ soit un compact contenu dans $U_l$, et que $\sum_l \chi_l = 1$ sur un ouvert contenant le support de $\omega$. Chaque $\chi_l\,\omega$ a son support dans $U_l$, et l'[[integrale-variete|intégrale]] de $\omega$ sur la variété orientée $M$ est
+      $$\int_M \omega = \sum_{l=1}^m \int_M \chi_l\,\omega.$$
+    enonce: |
+      (i) *Partitions de l'unité près d'un compact.* Soit $K$ une partie compacte de $M$ et $(U_\alpha)_{\alpha \in A}$ une famille d'ouverts dont la réunion contient $K$. Il existe une partie finie $F$ de $A$ et des fonctions lisses positives $\chi_\alpha$, $\alpha \in F$, telles que chaque adhérence $\overline{\{\chi_\alpha \neq 0\}}$ soit un compact contenu dans $U_\alpha$, que $\sum_{\alpha \in F} \chi_\alpha \leqslant 1$, et que $\sum_{\alpha \in F} \chi_\alpha = 1$ sur un ouvert contenant $K$. En particulier, toute forme de degré $n$ à support compact a un système de cartes.
+
+      (ii) Si le support de $\omega$ est contenu dans les domaines de deux cartes directes, les deux valeurs de $\int_M \omega$ données par ces cartes sont égales.
+
+      (iii) L'intégrale $\int_M \omega$ ne dépend pas du système de cartes, et elle coïncide avec celle de (ii) si le support de $\omega$ est contenu dans le domaine d'une carte directe. Elle est linéaire en $\omega$.
+
+      (iv) Si $M$ est une [[variete-orientee|variété orientée]], vue comme variété à bord orientée ({{dv-orientation-bord|Orientation induite}}, (ii)), et si le support de $\omega$ est contenu dans le domaine d'une carte directe $(U, \varphi)$ de $M$, à valeurs dans $\mathbb R^n$, alors $\int_M \omega = \int_{\varphi(U)} a_\varphi$, intégrale du nœud {{dv-changement|Changement de variables}}. En particulier, pour un ouvert $U$ de $\mathbb R^n$, muni de la carte $\mathrm{id}$, c'est l'intégrale du nœud {{pc-support|Support compact}}.
+    preuve: |
+      (i) *Des fonctions plateau au bord.* Soit $\psi_{c,r}$ la fonction du nœud {{gd-partition|Partitions de l'unité}}, (ii), de classe $C^\infty$ sur $\mathbb R^n$, strictement positive sur $B_\infty(c, r)$ et nulle ailleurs. Soit $(U, \varphi)$ une carte de $M$ et $C(c, r) = \{y : \|y - c\|_\infty \leqslant r\}$ un cube tel que $C(c, r) \cap \mathbb H^n \subset \varphi(U)$. Notons $g$ la fonction égale à $\psi_{c,r} \circ \varphi$ sur $U$ et à $0$ ailleurs, et $L = \varphi^{-1}\big(C(c, r) \cap \mathbb H^n\big)$. La partie $C(c, r) \cap \mathbb H^n$ est fermée et bornée, donc compacte ; $L$ est compact, image d'un compact par $\varphi^{-1}$, donc fermé dans $M$, qui est séparé ({{t-compact-prop|Compacts, fermés et images}}, (ii) et (iii)). La fonction $g$ est lisse sur $U$, ses expressions dans les cartes étant des composées d'applications de classe $C^\infty$ ({{dv-varietes-bord|Variétés à bord}}, (i)), et nulle sur l'ouvert $M \setminus L$ : elle est lisse. Elle est positive, non nulle exactement sur $\varphi^{-1}(B_\infty(c, r))$, et l'adhérence de $\{g \neq 0\}$ est contenue dans $L$, donc compacte.
+
+      *La construction.* Soit $\mathcal G$ l'ensemble des couples $(g, \alpha)$ formés d'un indice $\alpha$ et d'une telle fonction $g$, construite avec $C(c, r) \cap \mathbb H^n \subset \varphi(U \cap U_\alpha)$. Si $p \in K$ est dans $U_\alpha$ et dans le domaine d'une carte $(U, \varphi)$, l'ouvert $\varphi(U \cap U_\alpha)$ de $\mathbb H^n$ contient $B_\infty(\varphi(p), r_0) \cap \mathbb H^n$ pour un $r_0 > 0$, et le cube $C(\varphi(p), r_0/2)$ fournit un couple $(g, \alpha) \in \mathcal G$ tel que $g(p) > 0$. Les ouverts $\{g > 0\}$, pour $(g, \alpha) \in \mathcal G$, recouvrent donc $K$. La suite de la démonstration du nœud {{gd-partition|Partitions de l'unité}}, (iii), s'applique alors sans changement : un nombre fini de ces ouverts recouvre $K$, la somme $S$ des fonctions correspondantes est strictement positive sur $K$, et les quotients par $S + \theta(\varepsilon - S)$ conviennent. Seul un nombre fini de couples est choisi, ce qui ne demande aucun axiome du choix.
+
+      Les domaines des cartes directes recouvrent $M$, puisqu'une orientation est un atlas ; appliquée au support de $\omega$ et à la famille de ces domaines, la construction fournit un système de cartes.
+
+      (ii) Soient $(U, \varphi)$ et $(V, \psi)$ deux cartes directes dont les domaines contiennent le support de $\omega$, et $\tau = \psi \circ \varphi^{-1}$, difféomorphisme de $\varphi(U \cap V)$ sur $\psi(U \cap V)$, de déterminant jacobien strictement positif. Par {{gd-formes-varietes|Formes sur une variété}}, (ii), valable ici par {{dv-orientation-bord|Orientation induite}}, (i), $a_\varphi = (a_\psi \circ \tau)\,\det d\tau = (a_\psi \circ \tau)\,|\det d\tau|$ sur $\varphi(U \cap V)$. Les supports de $a_\varphi$ et de $a_\psi$ sont contenus dans $\varphi(U \cap V)$ et $\psi(U \cap V)$, et le nœud {{dv-demi-espace|Changement de variables au bord}}, (i) puis (ii), donne
+      $$\begin{aligned} \int_{\varphi(U)} a_\varphi &= \int_{\varphi(U \cap V)} a_\varphi \\ &= \int_{\psi(U \cap V)} a_\psi = \int_{\psi(V)} a_\psi. \end{aligned}$$
+
+      (iii) Pour une forme dont le support est contenu dans le domaine $U$ d'une carte directe, l'intégrale de (ii) est linéaire, comme $a_\varphi$ et l'intégrale du nœud {{dv-demi-espace|Changement de variables au bord}}. Soient $(\chi_l)$ et $(\chi'_k)$ deux systèmes de cartes pour $\omega$. Pour chaque $l$, $\chi_l\,\omega = \sum_k \chi'_k\chi_l\,\omega$ : l'égalité a lieu sur l'ouvert où $\sum_k \chi'_k = 1$, et hors du support de $\omega$ les deux membres sont nuls. Chaque $\chi'_k\chi_l\,\omega$ a son support, compact, dans $U_l \cap U'_k$, et, par linéarité dans la carte $\varphi_l$, puis par (ii),
+      $$\begin{aligned} \sum_l \int_M \chi_l\,\omega &= \sum_l \sum_k \int_M \chi'_k\chi_l\,\omega \\ &= \sum_k \int_M \chi'_k\,\omega, \end{aligned}$$
+      la dernière égalité par le même calcul, les rôles étant échangés. Si le support de $\omega$ est contenu dans le domaine $U$ d'une carte directe et si $(\chi_l)$ est un système de cartes, la valeur de (ii) dans la carte $U$ est, par linéarité, la somme des valeurs dans cette carte des $\chi_l\,\omega$, dont chacune est, par (ii), la valeur dans la carte $U_l$ : les deux définitions coïncident. Pour la linéarité, on prend pour $\omega$ et $\omega'$ un même système de cartes, construit par (i) pour la réunion de leurs supports.
+
+      (iv) Le support $K$ de $\omega$ est compact, et la coordonnée $z_n$ est bornée sur le compact $\varphi(K)$ ({{tr-compacts|Compacts de ℝ}}, (iii)) : il existe un réel $t$ tel que $\varphi(K) \subset \{z_n > -t\}$, et $K \subset U_t$. Dans la carte directe $\varphi_t = \varphi + t\,e_n$, le coefficient de $\omega$ est $a_\varphi(z - t\,e_n)$, la translation ayant pour différentielle l'identité ; son support est contenu dans $\mathring{\mathbb H}^n$. Le nœud {{dv-demi-espace|Changement de variables au bord}}, (i), puis le nœud {{dv-changement|Changement de variables}}, (ii), appliqué à la translation $z \mapsto z - t\,e_n$, de jacobien $1$, donnent $\int_M \omega = \int_{\varphi(U)} a_\varphi$. Pour la carte $\mathrm{id}$ d'un ouvert de $\mathbb R^n$, c'est la définition du nœud {{pc-support|Support compact}}, l'intégrale de $a_{\mathrm{id}}$ sur un pavé contenant son support.
+    remarques:
+      - |
+        Sur le cercle $\lex{sphere-unite}{S^1}$, orienté par l'atlas $\{\sigma_+, \rho \circ \sigma_-\}$ du nœud {{gd-orientation|Orientation}}, (iii), la forme $\omega = x\,dy - y\,dx$ a pour coefficient $\frac2{1 + z^2}$ dans la carte $\sigma_+$ et $\frac2{1 + w^2}$ dans la carte $\rho \circ \sigma_-$ ({{gd-forme-volume|Forme volume}}). Avec la partition de l'unité $(\chi_+, \chi_-)$ du nœud {{gd-partition|Partitions de l'unité}}, chacun des deux termes de la définition vaut $\pi$, par la symétrie qui échange les deux cartes, et $\int_{S^1} \omega = 2\pi$, valeur obtenue aussi par un calcul numérique des deux intégrales. C'est la longueur du cercle : $\omega$ y est la forme de longueur, puisque sa valeur sur le vecteur tangent unitaire direct $(-y, x)$ est $x^2 + y^2 = 1$.
+      - |
+        L'erreur la plus répandue est d'oublier que l'intégrale d'une forme n'est pas l'intégrale d'une fonction : dans une carte qui n'est pas directe, le changement de carte a un jacobien négatif, et le calcul de (ii) donne l'opposé. La formule du changement de variables fait apparaître la valeur absolue du jacobien, la loi de transformation des coefficients d'une forme le jacobien lui-même ; les deux ne s'accordent que pour des changements de carte de jacobien positif, c'est-à-dire entre cartes directes. C'est l'orientation, et non la carte, qui fixe le signe.
+      - |
+        Aucun choix n'intervient : un support compact ne demande qu'un nombre fini de cartes et de fonctions. Pour intégrer une forme à support non compact, ou pour une partition de l'unité subordonnée à un atlas quelconque d'une variété qui n'est pas compacte, il faudrait la version générale du nœud {{gd-partition|Partitions de l'unité}}, (vi), et le choix dénombrable qu'elle emploie, ainsi qu'une notion de convergence de l'intégrale.
+
+  - id: dv-stokes-demi-espace
+    etiquette: Stokes sur le demi-espace
+    nature: lemme
+    titre: Formule de Stokes sur un ouvert du demi-espace
+    enonce: |
+      Soit $A$ un ouvert de $\mathbb H^n$, $n \geqslant 1$, et $\eta$ une forme de degré $n - 1$ sur $A$ ({{dv-varietes-bord|Variétés à bord}}), dont les coefficients sont nuls hors d'une partie compacte $K$ de $A$. Notons $dz_{\hat\imath} = dz_1 \wedge \cdots \wedge \widehat{dz_i} \wedge \cdots \wedge dz_n$, où le chapeau signale le facteur omis, et écrivons
+      $$\eta = \sum_{i=1}^n (-1)^{i-1} f_i\,dz_{\hat\imath} ;$$
+      pour $n = 1$, $\eta = f_1$ est une fonction. Alors $d\eta = \big(\sum_i \partial_i f_i\big)\,dz_1 \wedge \cdots \wedge dz_n$, la fonction $z' \mapsto f_n(z', 0)$ appartient à $C_c(A')$, où $A' = \{z' \in \mathbb R^{n-1} : (z', 0) \in A\}$, et
+      $$\int_A \sum_{i=1}^n \partial_i f_i = -\int_{A'} f_n(z', 0)\,dz',$$
+      où le premier membre est l'intégrale du nœud {{dv-demi-espace|Changement de variables au bord}} et le second celle du nœud {{dv-changement|Changement de variables}}. Le second membre est nul si $A'$ est vide ; pour $n = 1$, il vaut $-f_1(0)$ si $0 \in A$.
+    preuve: |
+      *La différentielle.* Dans $d(f_i\,dz_{\hat\imath}) = \sum_j \partial_j f_i\,dz_j \wedge dz_{\hat\imath}$, seul le terme $j = i$ subsiste, et ramener $dz_i$ à sa place coûte $i - 1$ [[transposition|transpositions]], comme dans la preuve du nœud {{dr-stokes|Formule de Stokes}} : le signe $(-1)^{i-1}$ se compense.
+
+      *Prolongement.* Le prolongement $\hat f_i$ de $f_i$ par $0$ à $\mathbb H^n$ est de classe $C^\infty$, au sens du nœud {{dv-varietes-bord|Variétés à bord}} : il l'est sur l'ouvert $A$ et sur l'ouvert $\mathbb H^n \setminus K$ de $\mathbb H^n$, où il est nul, $K$ étant fermé ; ses dérivées partielles sont les prolongements par $0$ de celles de $f_i$. Le compact $K$ est borné : soit $P = P' \times [0, b]$, avec $P' = \prod_{l < n}[a_l, b_l]$, un pavé tel que $K \subset \prod_{l < n}\,]a_l, b_l[ \times [0, b[$. La fonction $z' \mapsto f_n(z', 0)$ est continue sur $A'$ et nulle hors du compact $\{z' : (z', 0) \in K\}$ : elle appartient à $C_c(A')$, et son intégrale est celle de $z' \mapsto \hat f_n(z', 0)$ sur $P'$.
+
+      *Les directions tangentes.* Soit $i < n$. Par le nœud {{dr-fubini|Fubini pour les fonctions continues}}, (iii), on peut intégrer d'abord par rapport à $z_i$. Les autres variables étant fixées, la fonction $t \mapsto \hat f_i(z_1, \dots, t, \dots, z_n)$ est de classe $C^1$ sur $[a_i, b_i]$, de dérivée $\partial_i\hat f_i$ : la droite parcourue reste dans $\mathbb H^n$, où $\hat f_i$ coïncide avec ses prolongements locaux. Elle est nulle en $a_i$ et en $b_i$, et le théorème fondamental ({{ar-tfa|Théorème fondamental}}) donne $\int_{a_i}^{b_i} \partial_i\hat f_i = 0$. Donc $\int_P \partial_i\hat f_i = 0$.
+
+      *La direction normale.* Intégrons d'abord par rapport à $z_n$, sur $[0, b]$. Pour $z'$ fixé, la fonction $u(t) = \hat f_n(z', t)$ est continue sur $[0, b]$, dérivable sur $]0, b[$, de dérivée $\partial_n\hat f_n(z', t)$, fonction continue sur $[0, b]$. La fonction $t \mapsto \int_0^t \partial_n\hat f_n(z', s)\,ds - u(t)$ est continue sur $[0, b]$, de dérivée nulle sur $]0, b[$ : elle est constante ({{de-monotonie|Signe de la dérivée}}, (ii)). Comme $u(b) = 0$,
+      $$\int_0^b \partial_n\hat f_n(z', t)\,dt = -\hat f_n(z', 0).$$
+      En intégrant sur $P'$, on obtient $\int_P \partial_n\hat f_n = -\int_{P'} \hat f_n(z', 0)\,dz'$, et la somme sur $i$ donne la formule. Pour $n = 1$, $P = [0, b]$, et la direction normale est la seule : on trouve $-\hat f_1(0)$.
+    remarques:
+      - |
+        C'est le calcul du cube unité du nœud {{dr-stokes|Formule de Stokes}}, avec une seule face : les directions tangentes au bord ne donnent rien, parce que la forme s'annule loin, et la direction normale donne l'opposé de la valeur sur l'hyperplan $z_n = 0$. Le signe moins est celui du flux à travers $\partial\mathbb H^n$ du champ $(f_1, \dots, f_n)$, compté selon la normale sortante $-e_n$.
+
+        Si $A$ ne rencontre pas $\partial\mathbb H^n$, $A'$ est vide, et l'on retrouve $\int d\eta = 0$ pour une forme à support compact dans un ouvert de $\mathbb R^n$ ({{pc-support|Support compact}}, (iii)).
+      - |
+        Pour $n = 2$, $A = \mathbb H^2$ et $\eta = -f_2\,dz_1$, avec $f_2(z_1, z_2) = \theta(1 - z_1^2 - z_2^2)$, où $\theta$ est la fonction plate du nœud {{ex-plateau|Fonction plate en 0}}, nulle hors du disque unité, la formule s'écrit
+        $$\int_{\mathbb H^2} \partial_2 f_2 = -\int_{-1}^1 \theta(1 - z_1^2)\,dz_1,$$
+        et les deux membres, calculés numériquement chacun de leur côté, valent environ $-0{,}4440$. Chaque verticale $z_1 = \mathrm{cte}$ apporte $-f_2(z_1, 0)$ : l'intégrale d'une dérivée dans la direction normale ne dépend que des valeurs au bord.
+
+  - id: dv-stokes
+    etiquette: Stokes sur une variété
+    nature: théorème
+    titre: Formule de Stokes sur une variété orientée à bord
+    enonce: |
+      (i) Soit $M$ une [[variete-a-bord|variété à bord]] orientée de dimension $n \geqslant 2$, son bord $\partial M$ étant muni de l'[[orientation-induite|orientation induite]] ({{dv-orientation-bord|Orientation induite}}, (iii)), et $\omega$ une forme de degré $n - 1$ sur $M$ à support compact. Alors $j^*\omega$ est à support compact, et
+      $$\int_M d\omega = \int_{\partial M} j^*\omega,$$
+      ce que l'on écrit $\int_M d\omega = \int_{\partial M} \omega$. C'est la [[formule-stokes|formule de Stokes]]. Si $M$ est compacte, elle vaut pour toute forme de degré $n - 1$.
+
+      (ii) Soit $M$ une variété à bord orientée de dimension $n \geqslant 1$, de bord vide, en particulier une variété orientée vue comme variété à bord orientée ({{dv-varietes-bord|Variétés à bord}}, (v), {{dv-orientation-bord|Orientation induite}}, (ii)). Pour toute forme $\omega$ de degré $n - 1$ sur $M$ à support compact, $\int_M d\omega = 0$.
+    preuve: |
+      (i) *Supports.* Le support de $d\omega$ est contenu dans celui de $\omega$, fermé dans un compact, donc compact ; celui de $j^*\omega$ est contenu dans l'intersection du support de $\omega$ avec le fermé $\partial M$, et il est compact pour la même raison ({{dv-orientation-bord|Orientation induite}}, (i)).
+
+      *Découpage.* Soit $(U_l, \varphi_l)_{1 \leqslant l \leqslant m}$, $(\chi_l)$ un système de cartes pour le support de $\omega$ ({{dv-integrale|Intégrale sur une variété}}, (i)). Alors $\omega = \sum_l \chi_l\,\omega$ : l'égalité a lieu sur l'ouvert où $\sum_l \chi_l = 1$, et hors du support de $\omega$ les deux membres sont nuls. Par linéarité de $d$, de $j^*$ et des intégrales ({{dv-integrale|Intégrale sur une variété}}, (iii)), il suffit d'établir la formule pour chaque forme $\chi_l\,\omega$, dont le support est un compact contenu dans $U_l$.
+
+      *Une carte.* Soit donc $\omega$ à support dans le domaine d'une carte directe $(U, \varphi)$, $A = \varphi(U)$, et, avec la notation $dz_{\hat\imath}$ du nœud {{dv-stokes-demi-espace|Stokes sur le demi-espace}},
+      $$\eta = \omega_\varphi = \sum_{i=1}^n (-1)^{i-1} f_i\,dz_{\hat\imath},$$
+      forme sur $A$ dont les coefficients sont nuls hors du compact $\varphi(\operatorname{supp}\omega)$. Le support de $d\omega$ est dans $U$, et $(d\omega)_\varphi = d\eta = \big(\sum_i \partial_i f_i\big)\,dz_1 \wedge \cdots \wedge dz_n$. Par la définition de l'intégrale ({{dv-integrale|Intégrale sur une variété}}, (iii)) et le nœud {{dv-stokes-demi-espace|Stokes sur le demi-espace}},
+      $$\int_M d\omega = \int_A \sum_i \partial_i f_i = -\int_{A'} f_n(z', 0)\,dz'.$$
+
+      *Le bord.* Le support de $j^*\omega$ est contenu dans $U \cap \partial M$, domaine de la carte $\pi \circ \varphi$ de $\partial M$, à valeurs dans $A'$. Comme $\iota^*dz_n = 0$ et $\iota^*dz_l = dz_l$ pour $l < n$, seul le terme $i = n$ de $\eta$ subsiste :
+      $$\begin{aligned} (j^*\omega)_{\pi \circ \varphi} &= \iota^*\eta \\ &= (-1)^{n-1} f_n(z', 0) \\ &\qquad dz_1 \wedge \cdots \wedge dz_{n-1}. \end{aligned}$$
+      La carte $\kappa \circ \pi \circ \varphi$ est directe pour l'orientation induite, et le changement de carte qui y mène est $\kappa$, égal à sa réciproque, de déterminant $(-1)^n$. Par {{gd-formes-varietes|Formes sur une variété}}, (ii), le coefficient de $j^*\omega$ dans cette carte est
+      $$\begin{aligned} &(-1)^{n-1}(-1)^n f_n(\kappa(w), 0) \\ &\quad = -f_n(\kappa(w), 0), \end{aligned}$$
+      pour $w \in \kappa(A')$. La variété $\partial M$ est sans bord, et le nœud {{dv-integrale|Intégrale sur une variété}}, (iv), puis le nœud {{dv-changement|Changement de variables}}, (ii), appliqué à $\kappa$, de jacobien de valeur absolue $1$, donnent
+      $$\begin{aligned} \int_{\partial M} j^*\omega &= -\int_{\kappa(A')} f_n(\kappa(w), 0)\,dw \\ &= -\int_{A'} f_n(z', 0)\,dz'. \end{aligned}$$
+      Les deux membres sont égaux.
+
+      (ii) Si $\partial M$ est vide, aucune carte n'atteint $\partial\mathbb H^n$, chaque ouvert $A'$ est vide, et le calcul précédent donne $\int_M d(\chi_l\,\omega) = 0$ pour tout $l$, sans qu'il soit question d'orientation induite ; ce calcul vaut pour $n = 1$. Si $M$ est une variété orientée, sa structure de variété à bord a un bord vide ({{dv-varietes-bord|Variétés à bord}}, (v)).
+
+      Aucun choix n'intervient : le système de cartes est fini.
+    remarques:
+      - |
+        Sur le disque fermé $D$, orienté comme au nœud {{dv-orientation-bord|Orientation induite}}, et pour $\omega = x\,dy$, on a $d\omega = dx \wedge dy$ et $\int_D d\omega = \pi$, l'aire du disque. Au bord, dans la carte induite $w = -x$ du demi-cercle supérieur, $x\,dy$ devient $\frac{w^2}{\sqrt{1 - w^2}}\,dw$, d'intégrale $\frac\pi2$ sur $]{-1}, 1[$ ; le demi-cercle inférieur, dans la carte directe $(x, 1 - x^2 - y^2)$, de jacobien $-2y > 0$, donne aussi $\frac\pi2$. Ce calcul par deux demi-cercles ouverts, qui ne recouvrent pas le cercle, n'est pas celui de la définition, qui demande une partition de l'unité ; il redonne néanmoins la valeur $\pi$ qu'impose la formule, chacune des deux intégrales impropres valant $\frac\pi2$.
+
+        Pour la boule fermée $\bar B$ de $\mathbb R^3$ et $\omega = z\,dx \wedge dy$, $d\omega = dx \wedge dy \wedge dz$ et $\int_{\bar B} d\omega = \frac{4\pi}3$. Sur chaque hémisphère, dans les cartes induites $(x, y)$ au nord et $(-x, y)$ au sud, issues des cartes directes $(-x, y, 1 - x^2 - y^2 - z^2)$ sur $\{z > 0\}$ et $(x, y, 1 - x^2 - y^2 - z^2)$ sur $\{z < 0\}$, de jacobiens $2z$ et $-2z$ ({{dv-orientation-bord|Orientation induite}}), le coefficient de $z\,dx \wedge dy$ est $\sqrt{1 - s^2 - t^2}$, d'intégrale $\frac{2\pi}3$ sur le disque unité : le flux sortant du champ $(0, 0, z)$ vaut bien le volume. Ces valeurs ont été vérifiées par un calcul formel ; le signe $(-1)^n$ de l'orientation induite, qui distingue la dimension $2$ de la dimension $3$, est indispensable dans le second calcul.
+      - |
+        Sur une variété compacte orientée sans bord et non vide $M$ de dimension $n \geqslant 1$, une forme volume positive $\omega$ ({{gd-forme-volume|Forme volume}}) a une intégrale strictement positive. Chaque terme $\int_M \chi_l\,\omega$ est l'intégrale sur un pavé d'une fonction continue $g \geqslant 0$, le coefficient de $\chi_l\,\omega$ dans une carte directe, et l'une au moins de ces fonctions est strictement positive en un point $x_0$, que l'on peut prendre hors de $\partial\mathbb H^n$, l'ensemble où elle ne s'annule pas étant un ouvert non vide de $\mathbb H^n$. Par continuité, $g \geqslant g(x_0)/2$ sur un cube $B_\infty(x_0, r)$ contenu dans le pavé, et la croissance de l'intégrale itérée ({{dr-iterees|Intégrales itérées}}, (ii)) donne $\int g \geqslant \frac{g(x_0)}2\int \prod_i \max\big(0, 1 - |x_i - x_{0,i}|/r\big) = \frac{g(x_0)}2\,r^n > 0$, l'intégrale du produit étant le produit des intégrales, chacune égale à $r$. Par (ii), $\omega$ n'est donc pas exacte. Par exemple, la forme $x\,dy - y\,dx$ sur le cercle, d'intégrale $2\pi$ ({{dv-integrale|Intégrale sur une variété}}), n'est la différentielle d'aucune fonction lisse sur le cercle.
+      - |
+        Le livre de Spivak, *Calculus on Manifolds* (1965), culmine sur cet énoncé ; comme ici, une partition de l'unité ramène la formule sur la variété à un calcul local, où elle se réduit au théorème fondamental de l'analyse. L'histoire de la formule, de Thomson et Stokes à Cartan, est rappelée au nœud {{dr-stokes|Formule de Stokes}}.
+
+aretes:
+  - [dv-primitifs, dv-changement]
+  - [dv-changement, dv-cubes]
+  - [dv-changement, dv-demi-espace]
+  - [dv-varietes-bord, dv-demi-espace]
+  - [dv-varietes-bord, dv-orientation-bord]
+  - [dv-demi-espace, dv-integrale]
+  - [dv-orientation-bord, dv-integrale]
+  - [dv-demi-espace, dv-stokes-demi-espace]
+  - [dv-integrale, dv-stokes]
+  - [dv-stokes-demi-espace, dv-stokes]

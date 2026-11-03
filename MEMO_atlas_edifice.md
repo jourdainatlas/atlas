@@ -1388,3 +1388,21 @@ cubes » était faux au sens fort). Termes fonction-plateau, localement-fini, pa
 gd-partition ; forme-volume, variete-orientee. Arêtes gd-applications-lisses → gd-partition → gd-forme-volume ←
 gd-formes-varietes ; édifice inchangé (15), geod 1110 → 1018 px. dr-stokes reste a-faire (variétés à bord,
 intégrale, partition à bord : lot 2). Relu : un choix caché (W_p en chaque point) corrigé, dix retouches.
+
+## 92. Chapitre derham-varietes : changement de variables de Riemann et Stokes (3 novembre 2026, Stokes lot 2)
+
+Notes : /home/claude/travail/stokes/lot2/. Nœud chapitre derham-varietes dans derham (arête derham-poincare →
+derham-varietes ; entrées derham-poincare, dr-fubini → dv-changement, dr-integrale-cubes → dv-cubes). Fiches :
+dv-primitifs (décomposition locale permutation ∘ application gardant x_n ∘ primitif ; Spivak 3-13 p. 66-69
+normalise par la différentielle, ici une permutation) ; dv-changement (Riemann, continues à support compact,
+localisation par gd-partition (iii), récurrence sur la dimension, sans choix) ; dv-cubes (invariance sur un cube,
+lève l'admis `ailleurs` de dr-integrale-cubes) ; dv-varietes-bord (ℍⁿ = {x_n ⩾ 0}, invariance du bord, ∂M) ;
+dv-demi-espace ; dv-orientation-bord (normale sortante −e_n en premier, signe (−1)ⁿ ; n ⩾ 2 : en dimension 1, [0,1]
+n'est pas orientable au sens de l'atlas, faute de réflexion de [0, +∞[ — artefact signalé, Andrews ANU ch. 14) ;
+dv-integrale (partitions de l'unité à bord près d'un compact, indépendance) ; dv-stokes-demi-espace ; dv-stokes
+((i) n ⩾ 2, ∫_M dω = ∫_∂M ω pour ω à support compact ; (ii) bord vide, tout n). Aucun choix. Termes
+diffeomorphisme-primitif, demi-espace, variete-a-bord, bord-variete, orientation-induite, integrale-variete.
+Admis levés : dr-stokes (a-faire), dr-integrale-cubes (ailleurs). Restent 4 a-faire (l-incompletude ×3,
+dt-cochaines). Vérifié (sympy, scipy) : signe (−1)ⁿ, disque, boule (cas impair), polaires, cercle, cube.
+Croisements : nouveau graphe 0 (780×632), derham 1 (1062×1066), édifice 15. Nouveautés : entrée du 3 novembre.
+Relu : aucune faute bloquante ; ρ⁻¹ et non ρ (dv-cubes), restriction n ⩾ 2 propagée aux renvois.
