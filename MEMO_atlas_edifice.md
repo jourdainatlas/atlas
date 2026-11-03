@@ -1468,3 +1468,19 @@ Kleene 1950 (forme symétrique ; sa paire, sur indices doubles, n'est pas celle 
 attribuée), Robinson 1950. Aucun choix. Croisements : édifice 15, calc 1 (586×956), nouveau graphe 0. Restent 2
 a-faire, pour l-incompletude (ii) : lemme diagonal, conditions de dérivabilité dans PA. Nouveautés : entrée du 3
 novembre. Relu : attribution à Kleene corrigée, quatre précisions.
+
+## 97. Chapitre cal-diagonal : lemme diagonal, Tarski, Löb (3 novembre 2026, Gödel lot B)
+
+Notes : /home/claude/travail/godel4/. Nœud chapitre cal-diagonal dans calc (après cal-representation). Fiches :
+cal-dg-fonctions (fonctions récursives totales représentables dans Q par le plus petit témoin ; contre-modèle :
+représenter le graphe ne suffit pas) ; cal-dg-diagonal (d(n) = Sb(n, ⌜n̲⌝, 8) p.r., Q ⊢ G ↔ ψ[⌜G⌝̲/x]) ;
+cal-dg-tarski ; cal-dg-prov (Pr = ∃y δ Σ₁ pour axiomes r.e., D1, Coh_Pr) ; cal-dg-godel (Gödel 1931 th. VI :
+cohérence ⇒ T ⊬ G, G vrai ; ω-cohérence ⇒ T ⊬ ¬G) ; cal-dg-second (Löb et second théorème pour toute formule
+vérifiant D1–D3 dans T ; Pr′ satisfait D1 mais ⊢ ¬Pr′⌜⊥⌝). Pas d'arête prov → second (second n'emploie pas prov).
+l-incompletude : lemme diagonal en aval ; un seul a-faire : la formule naturelle (forme prénexe, équivalente dans
+PA) est une formule de démontrabilité et PA démontre D2, D3 pour elle ; extension à ZFC marquée « Admis ici »
+(hors-cadre). Termes fonction-representable, formule-demontrabilite, theorie-omega-coherente,
+conditions-derivabilite. Sources : Carnap 1934 §35, Tarski 1933/1935, Löb 1955, Henkin 1952 (problème 3),
+Hilbert–Bernays 1939. Devis du lot C (≈ 19 fiches) : C1 arithmétique dans PA (6), C2 β et récurrence dans PA (5),
+C3 syntaxe dans PA, D2 et Σ₁-complétude formalisée (6), C4 Pr_T, D3, second théorème (2) ; voir le rapport de
+l'agent dans godel4/NOTES.txt. Relu : aucune faute bloquante, huit précisions.
