@@ -11,6 +11,7 @@
 //   \lex{id}{...}         dans une formule : notation du lexique (ensembles usuels)
 //   {{id|texte}}           lien vers un nœud de l'atlas
 //   **gras**  *italique*   ; une ligne vide sépare deux paragraphes
+import { pagesLecture } from './lecture.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
@@ -411,7 +412,6 @@ function pagePartage(chemin, ancre, titre, description) {
 const Rb = D.rubriques || {};
 const niveaux = Object.fromEntries((Rb.cours?.niveaux || []).map(n => [n.id, texteBrut(n.titre)]));
 pagePartage('accueil/', 'accueil', 'Accueil', 'Architecture logique des théories mathématiques ; cours, exercices corrigés, et annales de concours avec recherche par thème.');
-pagePartage('edifice/', 'edifice', 'L\'édifice', 'Le graphe des théories mathématiques, de la logique du premier ordre et de ZFC aux grandes théories.');
 if (!D.noeuds.etat) pagePartage('edifice/etat/', 'edifice/etat', 'État de l\'édifice', 'Inventaire des résultats admis dans l\'édifice, rangés par statut, et des fiches où intervient l\'axiome du choix.');
 pagePartage('cours/', 'cours', 'Cours', texteBrut(Rb.cours?.intro));
 for (const c of Rb.cours?.cours || []) {
@@ -424,25 +424,21 @@ for (const e of Rb.exercices?.exercices || []) {
   const lieu = `${texteBrut(fe.titre)}, ${niveaux[fe.niveau] || ''}${fe.chapitre ? ` chapitre ${fe.chapitre}` : ''}`;
   pagePartage(`exercices/${e.id}/`, `exercices/ex/${e.id}`, `Exercice ${e.numero}${e.titre ? ` (${texteBrut(e.titre)})` : ''} — ${lieu}`, texteBrut(e.enonce));
 }
-pagePartage('annales/', 'annales', 'Annales', texteBrut(Rb.annales?.intro));
 pagePartage('nouveautes/', 'nouveautes', 'Nouveautés', texteBrut(Rb.nouveautes?.intro));
 pagePartage('a-propos/', 'a-propos', 'À propos', 'L\'auteur d\'ATLAS, professeur agrégé de mathématiques, le projet et ses principes de rédaction ; une adresse pour écrire ou signaler une erreur.');
-for (const n of Object.values(D.noeuds)) {
-  const ancre = n.sous ? n.sous : `${n.graphe}.${n.id}`;
-  const g = D.graphes[n.graphe];
-  const contexte = n.graphe === D.racine ? 'Théorie de l\'édifice' : `${NOMS[n.nature] || ''} · ${texteBrut(g.titre)}`;
-  pagePartage(`edifice/${n.id}/`, ancre, texteBrut(n.titre), `${contexte}. ${texteBrut(n.texte || n.enonce)}`);
-}
+// Édifice et annales : pages de lecture complètes et indexables (lecture.mjs), aux adresses de partage.
+const urlsLecture = pagesLecture({ fs, D, ADRESSE, attr, coupe, texteBrut, NOMS, empreinte, vCss, gabarit: fs.readFileSync('gabarit.html', 'utf8') });
+console.log(`Pages de lecture : ${urlsLecture.length}`);
 console.log(`Pages de partage : ${nbPartage}`);
 // Icônes et image d'aperçu (fabriquées par identite/fabriquer-icones.mjs).
 for (const f of ['favicon.svg', 'favicon-32.png', 'apple-touch-icon.png', 'icone-192.png', 'icone-512.png', 'icone-masquable-512.png', 'apercu.png', 'portrait.jpg', 'site.webmanifest'])
   fs.copyFileSync(`identite/${f}`, `site/${f}`);
 // Référencement (domaine À propos) : robots.txt et plan du site. Le plan ne liste que de vraies pages :
-// l'accueil et les PDF des cours et des feuilles (Google indexe les PDF). Les pages de partage
+// l'accueil, les pages de lecture de l'édifice et des annales, et les PDF des cours et des feuilles. Les pages de partage
 // (/cours/t-01/…) redirigent vers une ancre : les lister vaudrait des « pages avec redirection » dans la
 // Search Console. Les PDF d'annales, copies de sujets officiels, n'y figurent pas.
 {
-  const urls = [ADRESSE];
+  const urls = [ADRESSE, ...urlsLecture];
   for (const c of Rb.cours?.cours || []) if (c.pdf && c.statut === 'depose') urls.push(ADRESSE + encodeURI(c.pdf));
   for (const f of Rb.exercices?.feuilles || []) if (f.statut === 'depose') for (const k of ['pdf_enonce', 'pdf_corrige']) if (f[k]) urls.push(ADRESSE + encodeURI(f[k]));
   const xml = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');

@@ -140,3 +140,25 @@ licence. L'auteur déclare le domaine dans Google Search Console (enregistrement
 le plan, puis importe le compte dans Bing Webmaster Tools. Suite prévue : « voie A » (pages de lecture
 indexables), qui ajoutera ses pages au plan.
 
+### 39. Pages de lecture indexables : édifice et annales (3 nov. 2026, « voie A »)
+
+`lecture.mjs` (domaine À propos, référencement), appelé par `rendu.mjs` à la place des pages de partage
+de l'édifice : écrit une page complète, sans redirection, pour chaque nœud (`/edifice/<id>/`, 1 013 au
+3 nov.), pour chaque sujet d'annales (`/annales/sujet/<slug>/`, 562 ; slug = `slugSujet` du gabarit) et deux
+pages d'entrée (`/edifice/` : les théories ; `/annales/` : tous les sujets par famille, concours et
+session). Accord de l'auteur : un lien partagé ouvre désormais cette page de lecture, avec un bouton
+« Ouvrir dans l'atlas » vers l'ancre interactive ; pas de redirection automatique (Google n'indexe pas une
+page qui redirige, et le « cloaking » est sanctionné).
+Contenu : texte, énoncé, démonstration (dépliée), remarques, ⋆, documents, « Repose sur » et « Sert à »
+en liens vers les pages voisines, contenu du sous-graphe pour une théorie ou un chapitre ; pour un
+sujet : PDF, rapport, source, aperçu, parties avec thèmes et mots-clés (formules composées depuis `Fh`),
+fiches de l'édifice reliées aux thèmes. Liens `{{nœud}}` du texte réécrits vers `/edifice/<id>/`.
+Fil d'Ariane visible et en données structurées (`BreadcrumbList`). Feuille `site/lecture.css` = style du
+gabarit + mise en page propre (classe `l-corps` sur `body` : la classe `.lecture` existe déjà dans le
+gabarit, pour les chapitres de cours). Thème : même cookie `atlas-theme` que le site.
+Partage : `adressePartage` et le drapeau d'un sujet d'annales visent `/annales/sujet/<slug>/`.
+Plan du site : ces 1 577 pages s'ajoutent à l'accueil et aux PDF (1 756 adresses). Poids : environ 115 Mo
+de plus dans `site/` (494 Mo au total avant ; la limite conseillée de GitHub Pages est 1 Go).
+Restent à faire par leurs conversations : exercices (`/exercices/<id>/`) et cours (`/cours/<id>/`), dont les
+pages de partage leur appartiennent (message proposé à l'auteur le 3 nov.).
+
