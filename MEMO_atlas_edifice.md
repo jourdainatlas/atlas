@@ -1545,3 +1545,23 @@ Lib se réduit à Oc par une propriété locale des lettres. Reste : C3c ≈ 3 f
 (valeurs des termes sous Prf, Σ₁-complétude formalisée, D3, second théorème, levée de l'admis). Aucun choix,
 aucun terme nouveau. Croisements : édifice 15, calc 1, chapitre 0. Relu : aucune faute bloquante, trois
 précisions (capture de p, annonce trop forte du reste, Prf_T au lieu de Pr_T), cinq mineures.
+
+## 102. Chapitre cal-sigma-pa : Σ₁-complétude formalisée, (D3), dernier a-faire levé (3 novembre 2026, Gödel lots C3c et C4)
+
+Notes : /home/claude/travail/godel9/ (verif_sigma.py, base_mots.py) ; DEVIS_C.txt marqué épuisé. Nœud chapitre
+cal-sigma-pa dans calc, entrées cal-instances-pa et cal-diagonal (cette dernière pour cal-sg-d3 (iii), qui applique
+cal-dg-second). Chaîne : cal-sg-gabarits (gabarits à plusieurs places marqués lettre à lettre) → cal-sg-lettres
+(Ab_k, Nq_k, Bl_k : propriété locale des lettres) → cal-sg-substitution (sous Nq_k, Lib se réduit à Oc et Sb est
+lettre à lettre, par la récurrence sur la longueur ; composition des substitutions) → cal-sg-instanciation
+(groupe (2) sur code variable, témoin 9 = ⌜0⌝ ; D1, D2 à r paramètres ; ∃ formalisé) → cal-sg-valeurs (tables
+d'addition et de multiplication sous Prf) → cal-sg-delta0 (variantes propres, Σ₁-complétude formalisée pour Δ₀
+par récurrence sur la borne, puis ∃yδ) → cal-sg-d3 (𝒮, D3 pour Pr_T et ∃yδ, Löb et T ⊬ Coh(T) par cal-dg-second).
+Principe : les paramètres instanciés ne sont quantifiés NULLE PART (variantes propres), ce qui évite la lecture
+unique interne ; Pr_T n'est jamais employée avec un paramètre (variante δ*). l-incompletude (ii) : admis passé en
+aval (renvoi cal-sg-d3) ; il n'y a plus AUCUN admis a-faire dans l'édifice (page #edifice/etat : 0 à faire) ; seule
+l'extension à ZFC reste hors cadre. Attributions vérifiées : Hilbert–Bernays 1939 (D1, D2), Löb 1955 (D3). Les
+remarques peuvent renvoyer vers l'aval (construire.py ne contrôle l'ordre que dans texte, énoncé, preuve) :
+cal-pa-sigma renvoie ainsi à cal-sp-derivabilite et cal-sg-d3. Aucun choix, aucun terme nouveau. Croisements :
+édifice 15, calc 1, chapitre 0. Relu (40 000 tirages indépendants) : aucune faute bloquante, cinq précisions
+(« en partie » périmé, justification fausse d'un renommage, « donc » injustifié sur Coh(T), T hors des τ_i,
+rang j+1), dix mineures. Le lot C (Gödel) est clos.
