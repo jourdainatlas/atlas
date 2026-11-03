@@ -1528,3 +1528,20 @@ Reste (devis) : C3b ≈ 5 fiches (facteurs, num, Sb, instances, reconnaissance d
 des termes sous Pr, Σ₁-complétude formalisée, D3, second théorème). Aucun choix, aucun terme nouveau.
 Croisements : édifice 15, calc 1, chapitre 0. Relu : aucune faute bloquante, onze précisions (dont une
 remarque numérique fausse sur la concaténation et une substitution successive au lieu de simultanée).
+
+## 101. Chapitre cal-instances-pa : substitution et instances dans PA (3 novembre 2026, Gödel lot C3b)
+
+Notes : /home/claude/travail/godel8/ ; devis révisé : /home/claude/travail/godel4/DEVIS_C.txt (section
+« RÉVISION après relecture »). Nœud chapitre cal-instances-pa dans calc (entrée cal-syntaxe-pa seulement ;
+cal-diagonal cité en remarque). Fiches : cal-ip-facteurs (récurrence sur la longueur des codes, associativité de
+conc, inégalités des facteurs) ; cal-ip-formation (règles de formation dans le sens de la formation ; num(x) code
+un terme fait des lettres 4 et 5) ; cal-ip-substitution (gabarits ⟦G⟧(τ), dépliement de Sb pour un mot FIXÉ par
+méta-récurrence et calculs clos) ; cal-ip-instances (termes « inertes » substituables, instances par un chiffre) ;
+cal-ip-instanciation (Prf_T, démontrabilité des FORMULES, équivalente à Pr_T sur les énoncés ; groupe (2) ;
+instanciation formalisée, (D1), (D2) à UN paramètre, introduction de ∃ ; y distincte de la variable liée p).
+Constructions de W et num fixées par convention. Plusieurs paramètres : la relecture a montré que la lecture
+unique interne n'est pas nécessaire si les paramètres ne sont quantifiés nulle part dans φ (cal-bp-fonctions (vi)) :
+Lib se réduit à Oc par une propriété locale des lettres. Reste : C3c ≈ 3 fiches (plusieurs paramètres), C4 ≈ 3–4
+(valeurs des termes sous Prf, Σ₁-complétude formalisée, D3, second théorème, levée de l'admis). Aucun choix,
+aucun terme nouveau. Croisements : édifice 15, calc 1, chapitre 0. Relu : aucune faute bloquante, trois
+précisions (capture de p, annonce trop forte du reste, Prf_T au lieu de Pr_T), cinq mineures.
