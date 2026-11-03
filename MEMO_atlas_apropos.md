@@ -128,3 +128,15 @@ nommer l'outil (`mention:` dans `apropos.yaml`, classe `.apropos-mention`) : « 
 fréquentation de façon anonyme, sans cookie ni suivi d'un site à l'autre. » Pas de mention dans les
 crédits de l'accueil ; l'outil est cité dans `LICENCE.md` seulement. L'auteur exclut ses propres visites
 par `#toggle-goatcounter` sur chaque appareil, ou par son adresse IP (Settings › Tracking).
+
+### 38. Référencement, premiers pas (3 nov. 2026)
+
+`rendu.mjs` (bloc « Référencement ») écrit `site/robots.txt` (tout autorisé, adresse du plan) et
+`site/sitemap.xml` : l'accueil et les PDF déposés des cours et des feuilles (179 adresses au 3 nov.), que
+Google indexe comme documents. Les pages de partage n'y sont pas (elles redirigent vers une ancre :
+« pages avec redirection » dans la Search Console), ni les PDF d'annales (copies de sujets officiels).
+Données structurées `WebSite` (schema.org, JSON-LD) dans la tête de `site/index.html` : nom, auteur,
+licence. L'auteur déclare le domaine dans Google Search Console (enregistrement TXT chez OVH), y soumet
+le plan, puis importe le compte dans Bing Webmaster Tools. Suite prévue : « voie A » (pages de lecture
+indexables), qui ajoutera ses pages au plan.
+

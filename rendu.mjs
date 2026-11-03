@@ -339,6 +339,7 @@ const index = `<!doctype html>
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Logo ATLAS : un graphe orienté de l'alpha à l'oméga">
 <meta property="og:locale" content="fr_FR">
+<script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@type': 'WebSite', name: 'ATLAS', alternateName: 'ATLAS – Architecture des mathématiques', url: ADRESSE, inLanguage: 'fr', description: 'Architecture logique des théories mathématiques ; cours, exercices corrigés, et annales de concours avec recherche par thème.', author: { '@type': 'Person', name: 'Armand Jourdain', jobTitle: 'Professeur agrégé de mathématiques' }, license: 'https://creativecommons.org/licenses/by-nc-sa/4.0/' }).replace(/</g, '\\u003c')}</script>
 <meta name="twitter:card" content="summary_large_image">
 <style>body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
 <link rel="stylesheet" href="katex.css?v=${vCss}">
@@ -424,6 +425,19 @@ console.log(`Pages de partage : ${nbPartage}`);
 // Icônes et image d'aperçu (fabriquées par identite/fabriquer-icones.mjs).
 for (const f of ['favicon.svg', 'favicon-32.png', 'apple-touch-icon.png', 'icone-192.png', 'icone-512.png', 'icone-masquable-512.png', 'apercu.png', 'portrait.jpg', 'site.webmanifest'])
   fs.copyFileSync(`identite/${f}`, `site/${f}`);
+// Référencement (domaine À propos) : robots.txt et plan du site. Le plan ne liste que de vraies pages :
+// l'accueil et les PDF des cours et des feuilles (Google indexe les PDF). Les pages de partage
+// (/cours/t-01/…) redirigent vers une ancre : les lister vaudrait des « pages avec redirection » dans la
+// Search Console. Les PDF d'annales, copies de sujets officiels, n'y figurent pas.
+{
+  const urls = [ADRESSE];
+  for (const c of Rb.cours?.cours || []) if (c.pdf && c.statut === 'depose') urls.push(ADRESSE + encodeURI(c.pdf));
+  for (const f of Rb.exercices?.feuilles || []) if (f.statut === 'depose') for (const k of ['pdf_enonce', 'pdf_corrige']) if (f[k]) urls.push(ADRESSE + encodeURI(f[k]));
+  const xml = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  fs.writeFileSync('site/sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${[...new Set(urls)].map(u => `  <url><loc>${xml(u)}</loc></url>`).join('\n')}\n</urlset>\n`);
+  fs.writeFileSync('site/robots.txt', `User-agent: *\nAllow: /\n\nSitemap: ${ADRESSE}sitemap.xml\n`);
+  console.log(`Plan du site : ${new Set(urls).size} adresses`);
+}
 // Application installable : service worker, dont la version change à chaque publication (voir identite/sw.js).
 fs.writeFileSync('site/sw.js', fs.readFileSync('identite/sw.js', 'utf8').replace("'atlas-__VERSION__'", `'atlas-${empreinte(index)}'`));
 console.log(`Site écrit : site/index.html (${(index.length / 1024).toFixed(0)} Ko)`);
