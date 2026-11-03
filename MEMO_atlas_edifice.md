@@ -1341,3 +1341,22 @@ version cohomologique réelle, qui tiendrait en une fiche). Restent 7 a-faire da
 dr-stokes, gd-formes-varietes, dt-cochaines) ; à reclasser : rq-applications (premiers ≡ 1 mod m, « hors-cadre »
 alors que court par gc-cyclotomiques). Croisements inchangés (édifice 15) ; tan-reciprocite 389 → 534 px.
 Relu : aucune faute bloquante, corrections appliquées.
+
+## 89. Diagnostic A–F vidé (3 novembre 2026)
+
+Notes : /home/claude/travail/diagnostic-vide/. Toutes les catégories à 0 sauf H (423). Contenu : champs `choix`
+nommant les points sans choix (f-lp (i)(iv), f-hilbert (i), m-convergence-dominee (i), me-precompacts (i),
+me-cauchy (i)(ii)(iv), me-sequentielle (i) et sens directs, hk-lindenbaum (iii), mt-martingales (i) première
+assertion) ; citations précisées (lp-espaces, fo-plancherel, fo-inversion → f-lp (iv), gd-point-fixe) ; vrai défaut
+corrigé : ga-correspondance citait comme sans choix le sens de ga-points (ii) qui use de Krull/Zorn — (ii) remis dans
+l'ordre de sa preuve ; mt-conditionnelle sépare existence (choix dénombrable) et caractérisation, (iii) et (iv)
+déclarés sans choix, les citations des martingales disent « caractérisation » ; f-hahn-banach définit « sépare les
+points » ; entrée fonction-caracteristique-relation (cal-pr-cloture, dite aussi indicatrice). Règles : motif exp
+ignore `e` après `_` ; convention λ de §57 appliquée automatiquement (`lebesgue_seul` : proposition qui « hérite »/
+« repose » sans verbe de choix propre ; m-regularite exclue car elle choisit) ; qualificatifs excusés liés à leur
+point ; E fondé sur le champ `admis` (renvoi vers la fiche citante, phrase qui identifie l'énoncé). Exceptions
+indexées par point : outils/edifice_choix_exceptions.txt (3 lignes ; D5 = lignes malformées, sans justification,
+en double ou périmées), outils/edifice_clair_exceptions.txt (1 ligne ; F2). Les descriptions de D2 en §55 et §69
+sont dépassées par celle-ci. Relu : une relecture (aucune faute bloquante ; six injections non signalées, toutes
+signalées après correction ; tests : /home/claude/travail/diagnostic-vide-relecture/outils_relecture/essais.py).
+Reste : homonyme « fonction caractéristique » probabiliste en aval de cal-pr-cloture non détecté (aucun cas).
