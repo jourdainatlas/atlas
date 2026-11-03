@@ -1450,3 +1450,21 @@ H^k(U;ℝ) ≅ H^k_∞(U) sans coefficients universels (qui emploient ⋆) ; auc
 H^k_dR(U) ≅ H^k(U;ℝ). Admis levés : a-faire de dt-cochaines, cite du texte derham (qui, au demeurant, ne passait
 de l'entier au réel que par les coefficients universels, donc avec choix). Vérifié par sympy (signes, contrôles
 négatifs). Restent 3 a-faire, tous dans l-incompletude. Relu : aucune faute bloquante, notations corrigées.
+
+## 96. Chapitre cal-representation : Gödel-Rosser démontré (3 novembre 2026, Gödel lot A)
+
+Notes : /home/claude/travail/godel3/. Nœud chapitre cal-representation dans calc (arête cal-incompletude →
+cal-representation). Fiches : cal-rp-calcul (règles dérivées du système de l-deduction — modus ponens seule règle,
+généralisation dérivée pour les théories — : déduction pour Γ quelconque, instanciation par terme substituable,
+∃-introduction et élimination, renommage, remplacement, égalité) ; cal-rp-calculs-q (Q₁–Q₇, t ≤ u := ∃z (z + t = u) ;
+x ≤ n → ⋁ x = i, x ≤ n ∨ n ≤ x, sans induction interne ; l'ordre t + z = u ferait échouer (vi) dans un modèle de Q,
+vérifié) ; cal-rp-sigma1 (Δ₀, Σ₁, Q décide les Δ₀ clos, Σ₁-complétude) ; cal-rp-forme-sigma (tout r.e. défini par
+∃y δ ; formules de β réécrites) ; cal-rp-inseparables ({φ_e(e) = 0}, {φ_e(e) = 1}) ; cal-rp-rosser (séparation par
+comparaison des témoins, représentabilité) ; cal-rp-godel-rosser (T cohérente démontrant les axiomes de Q :
+Th(T) non récursif, incomplète si axiomes r.e. ; Th(Q), Th(PA) non récursifs). l-incompletude (i) passe en aval,
+énoncé précisé (signature {0, S, +, ×}, « démontre les axiomes de Q »), Craig n'y sert plus. Termes formule-delta0,
+formule-sigma1, ensembles-inseparables, relation-representable, arithmetique-robinson. Sources : Rosser 1936,
+Kleene 1950 (forme symétrique ; sa paire, sur indices doubles, n'est pas celle de l'atlas : seule l'idée lui est
+attribuée), Robinson 1950. Aucun choix. Croisements : édifice 15, calc 1 (586×956), nouveau graphe 0. Restent 2
+a-faire, pour l-incompletude (ii) : lemme diagonal, conditions de dérivabilité dans PA. Nouveautés : entrée du 3
+novembre. Relu : attribution à Kleene corrigée, quatre précisions.

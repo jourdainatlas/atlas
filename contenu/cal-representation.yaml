@@ -1,0 +1,337 @@
+# Niveau 2 : structure interne du chapitre « Représentation et Gödel-Rosser » (nœud cal-representation du
+# graphe calc). Règles dérivées du système de Hilbert pour les formules à variables libres (instanciation par
+# un terme quelconque, quantificateur existentiel, remplacement des égaux) ; calculs dans l'arithmétique de
+# Robinson Q (sommes, produits, inégalités de chiffres, x ≤ n ⇔ x = 0 ∨ … ∨ x = n, x ≤ n ∨ n ≤ x) ; formules
+# Δ₀ et Σ₁-complétude de Q ; forme Σ₁ des ensembles récursivement énumérables ; paire récursivement inséparable
+# {φ_e(e) = 0}, {φ_e(e) = 1} (idée de Kleene 1950, dont la paire est construite autrement) ; séparation de Rosser et représentation des relations récursives ; théorème de Gödel-Rosser
+# (lève les admis « représentation » et « Rosser » du point (i) de l-incompletude, renvoi aval).
+# Tout est démontré dans le système de l-deduction tel qu'il est défini ; ni lemme diagonal ni théorème de
+# Craig. Aucune forme de l'axiome du choix : les témoins sont les plus petits, les maxima sont finis.
+# Identifiants « cal-rp- ».
+
+graphe: cal-representation
+titre: Représentation et Gödel-Rosser
+conteneur: cal-representation
+
+entrees:
+  cal-incompletude: [cal-rp-calculs-q, cal-rp-forme-sigma, cal-rp-godel-rosser]
+  cal-kleene: [cal-rp-inseparables]
+
+noeuds:
+  - id: cal-rp-calcul
+    etiquette: Calcul à variables libres
+    nature: lemme
+    titre: Règles dérivées pour les formules à variables libres
+    texte: |
+      Les {{hk-generalisation|règles dérivées}} et les {{hk-egalite|propriétés démontrables de l'égalité}} établies pour la construction de Henkin ne portent, pour l'instanciation et l'égalité, que sur des [[terme-clos|termes clos]]. Les démonstrations dans l'arithmétique demandent davantage : raisonner sous des hypothèses qui ont des variables libres, instancier une variable par un terme quelconque, introduire et éliminer un quantificateur existentiel, remplacer un terme par un terme égal dans une formule quelconque. Ce lemme établit ces règles dans le système de {{l-deduction|Démonstrations formelles}}, tel qu'il est défini, sans rien y ajouter.
+
+      Dans tout ce chapitre, $\Gamma$ désigne un ensemble de [[formule|formules]], closes ou non, et $T$ une [[theorie]], c'est-à-dire un ensemble d'[[enonce|énoncés]] ; on écrit $\vdash \varphi$ pour $\varnothing \vdash \varphi$. Pour des variables distinctes $x_1, \dots, x_k$ et des [[terme|termes]] $t_1, \dots, t_k$, on note $\alpha[t_1, \dots, t_k / x_1, \dots, x_k]$ le mot obtenu en remplaçant, en une seule fois, chaque [[variable-libre|occurrence libre]] de $x_i$ dans $\alpha$ par $t_i$. Une variable est *quantifiée* dans $\alpha$ si un bloc $\forall w$ de $\alpha$ porte sur elle.
+    enonce: |
+      Soit $\Gamma$ un ensemble de formules, $T$ une théorie, $\alpha$, $\beta$, $\varphi$, $\psi$, $\chi$ des formules, $x$, $y$, $v$ des variables et $t$, $u$, $r$ des termes.
+
+      (i) **Hypothèses.** Si $\Gamma \cup \{\psi\} \vdash \varphi$, alors $\Gamma \vdash \psi \to \varphi$. Si $\Gamma \vdash \alpha_1$, …, $\Gamma \vdash \alpha_n$ et si $\alpha_1 \to (\alpha_2 \to \cdots \to (\alpha_n \to \beta) \cdots)$ est une instance de tautologie, alors $\Gamma \vdash \beta$. Si $\Gamma \subset \Gamma'$ et $\Gamma \vdash \varphi$, alors $\Gamma' \vdash \varphi$.
+
+      (ii) **Instanciation.** Si $T \vdash \alpha$ et si $t$ est [[substituable|substituable]] à $x$ dans $\alpha$, alors $T \vdash \alpha[t/x]$. Si $\alpha$ est sans quantificateur, si $T \vdash \alpha$ et si $x_1, \dots, x_k$ sont des variables distinctes, alors $T \vdash \alpha[t_1, \dots, t_k / x_1, \dots, x_k]$ pour tous termes $t_1, \dots, t_k$.
+
+      (iii) **Quantificateur existentiel.** Si $t$ est substituable à $x$ dans $\alpha$, alors $\vdash \alpha[t/x] \to \exists x\, \alpha$. Si $x$ n'est pas libre dans $\psi$ et si $T \vdash \varphi \to \psi$, alors $T \vdash \exists x\, \varphi \to \psi$ ; si de plus $x$ n'est pas libre dans $\chi$ et si $T \vdash \chi \to (\varphi \to \psi)$, alors $T \vdash \chi \to (\exists x\, \varphi \to \psi)$. Si $y$ ne figure pas dans $\varphi$, alors $\vdash \exists x\, \varphi \to \exists y\, \varphi[y/x]$.
+
+      (iv) **Remplacement d'une variable.** Soit $\alpha'$ la formule obtenue en remplaçant par $y$ certaines occurrences libres de $x$ dans $\alpha$, dont aucune ne se trouve dans une sous-formule $\forall y\, \psi$ de $\alpha$. Alors $\vdash x = y \to (\alpha \to \alpha')$.
+
+      (v) **Remplacement d'un terme.** Si $t$ et $u$ sont substituables à $v$ dans $\varphi$, alors $\vdash t = u \to (\varphi[t/v] \to \varphi[u/v])$.
+
+      (vi) **Égalité.** On a $\vdash t = t$, $\vdash t = u \to u = t$, $\vdash t = u \to (u = r \to t = r)$, et $\vdash t = u \to r[t/v] = r[u/v]$.
+    preuve: |
+      (i) La démonstration du {{l-thm-deduction|théorème de la déduction}} est une récurrence sur une démonstration formelle, qui n'emploie que le modus ponens et des instances de tautologies ; elle n'utilise ni que $\psi$ soit un énoncé, ni que les éléments de l'ensemble d'hypothèses en soient, et vaut donc mot pour mot pour $\Gamma$. La règle des tautologies se démontre comme au point (i) de {{hk-generalisation|Règles dérivées}} : la formule $\alpha_1 \to (\cdots \to (\alpha_n \to \beta) \cdots)$ est un axiome du groupe (1), et $n$ modus ponens donnent $\Gamma \vdash \beta$. Enfin, une démonstration formelle à partir de $\Gamma$ en est une à partir de $\Gamma'$.
+
+      (ii) La généralisation ({{hk-generalisation|Règles dérivées}}, (ii)) donne $T \vdash \forall x\, \alpha$ ; l'axiome (2) $\forall x\, \alpha \to \alpha[t/x]$ et le modus ponens donnent $T \vdash \alpha[t/x]$.
+
+      Pour la substitution simultanée, choisissons des variables distinctes $w_1, \dots, w_k$ qui ne figurent ni dans $\alpha$ ni dans les $t_j$. Dans une formule sans quantificateur, toutes les occurrences sont libres et tout terme est substituable à toute variable. En substituant successivement $w_1$ à $x_1$, …, $w_k$ à $x_k$ par le premier point, on obtient que $T$ démontre la formule où chaque occurrence de $x_i$ est devenue $w_i$, puisque les $w_j$ ne figurent pas dans $\alpha$. En substituant ensuite successivement $t_1$ à $w_1$, …, $t_k$ à $w_k$, chaque étape remplace exactement les lettres $w_i$ venues des occurrences de $x_i$, puisque les $w_j$ ne figurent pas dans les termes $t_l$ déjà placés ; le résultat est $\alpha[t_1, \dots, t_k / x_1, \dots, x_k]$.
+
+      (iii) Les sous-formules $\forall y\, \psi$ de $\neg\alpha$ sont celles de $\alpha$ ; le terme $t$ est donc substituable à $x$ dans $\neg\alpha$, et $(\neg\alpha)[t/x] = \neg\, \alpha[t/x]$. L'axiome (2) donne $\vdash \forall x\, \neg\alpha \to \neg\, \alpha[t/x]$, et l'instance de tautologie $(P \to \neg Q) \to (Q \to \neg P)$ donne $\vdash \alpha[t/x] \to \neg\forall x\, \neg\alpha$, c'est-à-dire $\vdash \alpha[t/x] \to \exists x\, \alpha$ ({{l-quantificateurs|Quantificateurs}}).
+
+      Pour l'élimination, la généralisation donne $T \vdash \forall x\, (\varphi \to \psi)$, et le point (iv) de {{hk-generalisation|Règles dérivées}} donne $T \vdash \exists x\, \varphi \to \psi$. Avec une hypothèse $\chi$, l'instance $(P \to (Q \to R)) \to (Q \to (P \to R))$ donne $T \vdash \varphi \to (\chi \to \psi)$ ; comme $x$ n'est pas libre dans $\chi \to \psi$, ce qui précède donne $T \vdash \exists x\, \varphi \to (\chi \to \psi)$, et la même instance remet les hypothèses dans l'ordre annoncé.
+
+      Pour le renommage, si $y = x$, la variable $x$ ne figure pas dans $\varphi$, $\varphi[y/x] = \varphi$, et la formule est une instance de tautologie. Sinon, posons $\varphi' = \varphi[y/x]$ : la variable $y$, absente de $\varphi$, y est substituable à $x$, et les occurrences libres de $y$ dans $\varphi'$ sont exactement aux places des occurrences libres de $x$ dans $\varphi$, dont aucune n'est dans une sous-formule $\forall x\, \psi$. Ainsi $x$ est substituable à $y$ dans $\varphi'$, et $\varphi'[x/y] = \varphi$. Le premier point donne $\vdash \varphi \to \exists y\, \varphi'$. La variable $x$ n'est pas libre dans $\exists y\, \varphi'$, puisque toutes ses occurrences libres ont été remplacées ; l'élimination donne $\vdash \exists x\, \varphi \to \exists y\, \varphi'$.
+
+      (iv) Montrons d'abord $\vdash x = y \to y = x$. L'axiome (5), appliqué à la formule atomique $x = x$ dont on remplace la première occurrence par $y$, donne $\vdash x = y \to (x = x \to y = x)$ ; avec l'axiome $x = x$ et l'instance $(P \to (Q \to R)) \to (Q \to (P \to R))$, la règle des tautologies conclut.
+
+      On raisonne ensuite par récurrence sur le nombre de symboles de $\alpha$, l'énoncé étant établi pour tous les couples de variables et tous les choix d'occurrences permis. Si aucune occurrence n'est remplacée, $\alpha' = \alpha$, et $x = y \to (\alpha \to \alpha)$ est une instance de tautologie ; on suppose désormais qu'il y en a au moins une. Si $\alpha$ est atomique, toutes ses occurrences sont libres, et $x = y \to (\alpha \to \alpha')$ est un axiome du groupe (5).
+
+      Observons que $\alpha$ s'obtient à son tour à partir de $\alpha'$ en remplaçant par $x$ les occurrences de $y$ qui ont pris la place des occurrences choisies, et que ce remplacement est permis. En effet, on n'a remplacé que des occurrences libres, si bien que les blocs $\forall w$ de $\alpha$ et de $\alpha'$ sont aux mêmes places ; ces occurrences ne sont dans la portée d'aucun $\forall y$, par hypothèse, ni d'aucun $\forall x$, puisque les occurrences de $x$ y étaient libres. Pour une sous-formule propre $\beta$ de $\alpha$ et la sous-formule $\beta'$ correspondante de $\alpha'$, l'hypothèse de récurrence, appliquée dans les deux sens, donne donc $\vdash x = y \to (\beta \to \beta')$ et $\vdash y = x \to (\beta' \to \beta)$, puis $\vdash x = y \to (\beta' \to \beta)$ avec la symétrie établie d'abord.
+
+      Si $\alpha = \neg\beta$, alors $\alpha' = \neg\beta'$, et l'instance $(A \to (B' \to B)) \to (A \to (\neg B \to \neg B'))$ conclut. Si $\alpha = (\beta \to \gamma)$, alors $\alpha' = (\beta' \to \gamma')$, et l'instance
+      $$\begin{aligned} &(A \to (B' \to B)) \to \big((A \to (C \to C')) \\ &\quad \to (A \to ((B \to C) \to (B' \to C')))\big) \end{aligned}$$
+      conclut.
+
+      Si $\alpha = \forall z\, \beta$, les occurrences remplacées, libres dans $\alpha$, sont dans la portée de ce $\forall z$ : donc $z \neq x$, et $z \neq y$ par hypothèse. Elles sont libres dans $\beta$, et $\alpha' = \forall z\, \beta'$. L'hypothèse de récurrence et la généralisation donnent $\vdash \forall z\, (x = y \to (\beta \to \beta'))$, et l'axiome (3) donne $\vdash \forall z\, (x = y) \to \forall z\, (\beta \to \beta')$. Comme $z$ n'est pas libre dans $x = y$, l'axiome (4) donne $\vdash x = y \to \forall z\, (x = y)$, et l'axiome (3) donne encore $\vdash \forall z\, (\beta \to \beta') \to (\forall z\, \beta \to \forall z\, \beta')$. La règle des tautologies enchaîne ces trois implications.
+
+      (v) Choisissons deux variables distinctes $a$ et $b$, différentes de $v$, qui ne figurent ni dans $\varphi$, ni dans $t$, ni dans $u$. Comme $a$ ne figure pas dans $\varphi$, la formule $\varphi[a/v]$ porte la lettre $a$ exactement aux places des occurrences libres de $v$, et ces places ne sont dans la portée d'aucun $\forall a$ ni d'aucun $\forall b$ ; la formule $\varphi[b/v]$ s'obtient en y remplaçant toutes ces occurrences de $a$ par $b$. Par (iv), $\vdash a = b \to (\varphi[a/v] \to \varphi[b/v])$, et la généralisation, en $b$ puis en $a$, donne
+      $$\vdash \forall a\, \forall b\, \big(a = b \to (\varphi[a/v] \to \varphi[b/v])\big).$$
+      Le terme $t$ est substituable à $a$ dans la formule qui suit $\forall a$ : les occurrences libres de $a$ y sont dans $a = b$ et aux places des occurrences libres de $v$ dans $\varphi$ ; la portée de $\forall b$ ne capture rien, puisque $b$ ne figure pas dans $t$, et les autres quantificateurs sont ceux de $\varphi$, où $t$ est substituable à $v$. Comme $a$ est différente de $b$ et ne figure pas dans $\varphi$, l'axiome (2) donne $\vdash \forall b\, \big(t = b \to (\varphi[t/v] \to \varphi[b/v])\big)$. De même, $u$ est substituable à $b$ dans la formule qui suit $\forall b$, où $b$ ne figure ni dans $t$ ni dans $\varphi[t/v]$, et l'axiome (2) donne la conclusion, puisque $(\varphi[b/v])[u/b] = \varphi[u/v]$.
+
+      (vi) L'axiome $x = x$, la généralisation et l'axiome (2) donnent $\vdash t = t$. Soit $w$ une variable qui ne figure ni dans $t$, ni dans $u$, ni dans $r$, et différente de $v$. Le point (v), avec la formule atomique $w = t$, donne $\vdash t = u \to (t = t \to u = t)$, d'où $\vdash t = u \to u = t$ par la règle des tautologies. Avec la formule $w = r$ et les termes $u$ et $t$, il donne $\vdash u = t \to (u = r \to t = r)$, qu'on enchaîne avec $\vdash t = u \to u = t$. Enfin, avec la formule $r[t/v] = r[w/v]$, où $w$ ne figure pas dans le premier membre, il donne
+      $$\begin{aligned} \vdash t = u \to \big(&r[t/v] = r[t/v] \\ &\to r[t/v] = r[u/v]\big), \end{aligned}$$
+      puisque $r[w/v][t/w] = r[t/v]$ et $r[w/v][u/w] = r[u/v]$, et $\vdash r[t/v] = r[t/v]$ conclut.
+    remarques:
+      - |
+        L'hypothèse de (iv) n'est pas une formalité. Dans $\alpha = \exists y\, \neg(y = x)$, qui dit qu'il existe un élément différent de $x$, l'occurrence de $x$ est dans la portée de $\forall y$ ; la remplacer par $y$ donnerait $\exists y\, \neg(y = y)$, toujours fausse, et $x = y \to (\alpha \to \exists y\, \neg(y = y))$ n'est pas valide dans une structure à deux éléments. C'est la capture déjà rencontrée au nœud {{l-substitution|Substitution}}, et l'erreur la plus répandue est d'appliquer la règle d'égalité sans regarder les quantificateurs.
+      - |
+        Les formules dont ce lemme établit la démontrabilité sans hypothèse, celles qui suivent un $\vdash$ seul, sont valides, et le {{l-completude|théorème de complétude}}, qui porte sur des énoncés, en donnerait la démontrabilité par passage à leurs clôtures universelles, suivi d'instanciations. On les dérive pourtant directement : la démonstration obtenue reste dans le système, elle est explicite, et c'est sous cette forme que les démonstrations formelles pourront devenir à leur tour des objets de l'arithmétique, comme au chapitre {{cal-syntaxe|Arithmétisation de la syntaxe}}.
+
+  - id: cal-rp-calculs-q
+    etiquette: Calculs dans Q
+    nature: proposition
+    titre: Calculs dans l'arithmétique de Robinson
+    texte: |
+      L'[[arithmetique-robinson|arithmétique de Robinson]] $\mathsf Q$ est définie avec le théorème d'incomplétude, dans la logique (voir la dernière remarque) ; on en fixe les variables comme pour l'arithmétique de Peano au nœud {{cal-theoremes|Théorèmes r.e.}}. Avec $x = x_0$ et $y = x_1$, ses axiomes sont les sept énoncés
+      $$\begin{aligned} &(\mathrm Q_1)\ \ \forall x\, \neg(S\,x = 0), \\ &(\mathrm Q_2)\ \ \forall x\, \forall y\, (S\,x = S\,y \to x = y), \\ &(\mathrm Q_3)\ \ \forall x\, \big(\neg(x = 0) \to \exists y\, (x = S\,y)\big), \\ &(\mathrm Q_4)\ \ \forall x\, (x + 0 = x), \\ &(\mathrm Q_5)\ \ \forall x\, \forall y\, \big(x + S\,y = S(x + y)\big), \\ &(\mathrm Q_6)\ \ \forall x\, (x \times 0 = 0), \\ &(\mathrm Q_7)\ \ \forall x\, \forall y\, (x \times S\,y = x \times y + x). \end{aligned}$$
+      Comme au nœud {{cal-tarski|Vérité et incomplétude}}, $\underline n$ désigne le terme clos $S \cdots S\, 0$, avec $n$ symboles $S$ ; ainsi $\underline 0 = 0$ et $\underline{n + 1} = S\, \underline n$, et la valeur de $\underline n$ dans $\mathcal N$ est $n$.
+
+      Pour deux termes $t$ et $u$, on écrit $t \leqslant u$ pour l'une quelconque des formules $\exists z\, (z + t = u)$, où $z$ est une variable qui ne figure ni dans $t$ ni dans $u$ ; les énoncés qui suivent valent pour chacune d'elles. Dans $\mathcal N$, cette formule est satisfaite exactement quand la valeur de $t$ est inférieure ou égale à celle de $u$. Pour une variable $x$ et un entier $n$, on note $D_n(x)$ la disjonction $x = \underline 0 \vee \cdots \vee x = \underline n$, définie par $D_0(x) = (x = \underline 0)$ et $D_{n+1}(x) = D_n(x) \vee x = \underline{n + 1}$.
+
+      Par récurrence sur $n$, avec la règle des tautologies et les instances $A \to (A \vee B)$, $B \to (A \vee B)$ et $(A \to C) \to ((B \to C) \to ((A \vee B) \to C))$ : on a $\vdash x = \underline k \to D_n(x)$ pour tout $k \leqslant n$, et, si $\Gamma \vdash x = \underline k \to \chi$ pour tout $k \leqslant n$, alors $\Gamma \vdash D_n(x) \to \chi$. C'est le raisonnement par cas sur $D_n(x)$.
+    enonce: |
+      Pour tous entiers $m$, $n$, $k$ et toutes variables distinctes $x$ et $w$ :
+
+      (i) $\mathsf Q \vdash \underline m + \underline n = \underline{m + n}$ et $\mathsf Q \vdash \underline m \times \underline n = \underline{mn}$ ; plus généralement, $\mathsf Q \vdash t = \underline k$ pour tout terme clos $t$ de valeur $k$ dans $\mathcal N$.
+
+      (ii) Si $m \neq n$, alors $\mathsf Q \vdash \neg(\underline m = \underline n)$.
+
+      (iii) $\mathsf Q \vdash \neg(x = 0) \to \exists w\, (x = S\,w)$ et $\mathsf Q \vdash S\,w + \underline k = w + S\,\underline k$.
+
+      (iv) Si $k \leqslant n$, alors $\mathsf Q \vdash \underline k \leqslant \underline n$.
+
+      (v) $\mathsf Q \vdash x \leqslant \underline n \to D_n(x)$.
+
+      (vi) $\mathsf Q \vdash x \leqslant \underline n \vee \underline n \leqslant x$.
+    preuve: |
+      Par le point (ii) de {{cal-rp-calcul|Calcul à variables libres}}, appliqué après une instanciation de chaque variable par elle-même ({{hk-generalisation|Règles dérivées}}, (iii)), les axiomes sans quantificateur intérieur montrent que, pour tous termes $t$ et $u$, $\mathsf Q$ démontre les formules
+      $$\begin{aligned} &\neg(S\,t = 0), \quad S\,t = S\,u \to t = u, \\ &t + 0 = t, \quad t + S\,u = S(t + u), \\ &t \times 0 = 0, \quad t \times S\,u = t \times u + t. \end{aligned}$$
+      On les appelle des instances de $\mathrm Q_1$, $\mathrm Q_2$, $\mathrm Q_4$ à $\mathrm Q_7$. Les règles d'égalité (réflexivité, symétrie, transitivité, congruence) sont celles du point (vi) du même nœud, le remplacement d'un terme celui du point (v). Dire que, « sous les hypothèses $H_1, \dots, H_p$ », on a $C$, c'est dire que $\mathsf Q \cup \{H_1, \dots, H_p\} \vdash C$ ; le point (i) du même nœud donne alors $\mathsf Q \vdash H_1 \to (\cdots \to (H_p \to C) \cdots)$, et toute formule démontrable dans $\mathsf Q$ peut servir sous ces hypothèses.
+
+      (i) Par récurrence sur $n$. L'instance $\underline m + 0 = \underline m$ de $\mathrm Q_4$ est le cas $n = 0$. Si $\mathsf Q \vdash \underline m + \underline n = \underline{m + n}$, l'instance $\underline m + S\,\underline n = S(\underline m + \underline n)$ de $\mathrm Q_5$, la congruence $S(\underline m + \underline n) = S\,\underline{m + n}$ et la transitivité donnent $\mathsf Q \vdash \underline m + \underline{n + 1} = \underline{m + n + 1}$, puisque $S\,\underline{m + n}$ est le terme $\underline{m + n + 1}$.
+
+      Pour le produit, $\mathrm Q_6$ donne le cas $n = 0$. Si $\mathsf Q \vdash \underline m \times \underline n = \underline{mn}$, l'instance $\underline m \times S\,\underline n = \underline m \times \underline n + \underline m$ de $\mathrm Q_7$, la congruence $\underline m \times \underline n + \underline m = \underline{mn} + \underline m$, le cas de la somme $\underline{mn} + \underline m = \underline{mn + m}$ et la transitivité donnent $\mathsf Q \vdash \underline m \times \underline{n + 1} = \underline{m(n + 1)}$.
+
+      Pour un terme clos quelconque, on raisonne par récurrence sur $t$, grâce à la {{l-lecture|lecture unique}}. Si $t = 0$, la réflexivité conclut. Si $t = S\,t_1$ et $\mathsf Q \vdash t_1 = \underline{k_1}$, la congruence donne $\mathsf Q \vdash S\,t_1 = \underline{k_1 + 1}$. Si $t = t_1 + t_2$, avec $\mathsf Q \vdash t_i = \underline{k_i}$, deux congruences donnent $\mathsf Q \vdash t_1 + t_2 = \underline{k_1} + \underline{k_2}$, et le cas de la somme conclut ; de même pour $\times$.
+
+      (ii) Si $m > n$, il suffit de montrer $\mathsf Q \vdash \neg(\underline n = \underline m)$, puis d'appliquer la symétrie et l'instance $(P \to Q) \to (\neg Q \to \neg P)$. On suppose donc $m < n$, et l'on raisonne par récurrence sur $m$. Si $m = 0$, alors $n = j + 1$ ; l'instance $\neg(S\,\underline j = 0)$ de $\mathrm Q_1$ et la symétrie $0 = S\,\underline j \to S\,\underline j = 0$ donnent $\mathsf Q \vdash \neg(0 = S\,\underline j)$ par contraposition. Si $m = i + 1$, alors $n = j + 1$ avec $i < j$, l'hypothèse de récurrence donne $\mathsf Q \vdash \neg(\underline i = \underline j)$, et l'instance $S\,\underline i = S\,\underline j \to \underline i = \underline j$ de $\mathrm Q_2$ donne $\mathsf Q \vdash \neg(S\,\underline i = S\,\underline j)$ par contraposition.
+
+      (iii) Choisissons une variable $w'$ distincte de $x_0$, $x_1$, $x$ et $w$. L'instanciation de $x_0$ par lui-même et le renommage du point (iii) de {{cal-rp-calcul|Calcul à variables libres}} donnent $\mathsf Q \vdash \neg(x_0 = 0) \to \exists w'\, (x_0 = S\,w')$. La variable $x$ est substituable à $x_0$ dans cette formule, puisque $x \neq w'$, d'où $\mathsf Q \vdash \neg(x = 0) \to \exists w'\, (x = S\,w')$ ; un dernier renommage, permis puisque $w$ ne figure pas dans $x = S\,w'$, donne la première assertion.
+
+      La seconde se démontre par récurrence sur $k$. Pour $k = 0$, les instances $S\,w + 0 = S\,w$ de $\mathrm Q_4$, $w + S\,0 = S(w + 0)$ de $\mathrm Q_5$ et $w + 0 = w$ de $\mathrm Q_4$, la congruence $S(w + 0) = S\,w$, la symétrie et la transitivité donnent $\mathsf Q \vdash S\,w + 0 = w + S\,0$. Si $\mathsf Q \vdash S\,w + \underline k = w + S\,\underline k$, les instances $S\,w + S\,\underline k = S(S\,w + \underline k)$ et $w + S\,S\,\underline k = S(w + S\,\underline k)$ de $\mathrm Q_5$ et la congruence $S(S\,w + \underline k) = S(w + S\,\underline k)$ donnent $\mathsf Q \vdash S\,w + \underline{k + 1} = w + S\,\underline{k + 1}$.
+
+      (iv) Par (i), $\mathsf Q \vdash \underline{n - k} + \underline k = \underline n$, et le point (iii) de {{cal-rp-calcul|Calcul à variables libres}}, avec le terme clos $\underline{n - k}$, donne $\mathsf Q \vdash \exists z\, (z + \underline k = \underline n)$.
+
+      (v) La formule $x \leqslant \underline n$ est $\exists z\, (z + x = \underline n)$, avec $z \neq x$. Comme $z$ n'est pas libre dans $D_n(x)$, il suffit, par l'élimination du point (iii) de {{cal-rp-calcul|Calcul à variables libres}}, de montrer $\mathsf Q \vdash z + x = \underline n \to D_n(x)$, ce que l'on fait par récurrence sur $n$, pour tous les couples de variables distinctes $(x, z)$.
+
+      Soit $w$ une variable distincte de $x$ et de $z$. On a $\vdash x = 0 \to D_n(x)$, puisque $x = \underline 0$ est le premier terme de la disjonction. Montrons que
+      $$\mathsf Q \cup \{x = S\,w,\ z + x = \underline n\} \vdash D_n(x).$$
+      Le point (v) de {{cal-rp-calcul|Calcul à variables libres}}, avec la formule $z + v = \underline n$, donne $z + S\,w = \underline n$ ; l'instance $z + S\,w = S(z + w)$ de $\mathrm Q_5$, la symétrie et la transitivité donnent $S(z + w) = \underline n$.
+
+      Si $n = 0$, l'instance $\neg(S(z + w) = 0)$ de $\mathrm Q_1$ contredit cette formule, et l'instance $P \to (\neg P \to Q)$ donne $D_0(x)$. Si $n = j + 1$, alors $\underline n = S\,\underline j$, et l'instance $S(z + w) = S\,\underline j \to z + w = \underline j$ de $\mathrm Q_2$ donne $z + w = \underline j$, puis $D_j(w)$ par l'hypothèse de récurrence, appliquée au couple $(w, z)$. Pour chaque $i \leqslant j$, la congruence $w = \underline i \to S\,w = S\,\underline i$ et la transitivité donnent $\vdash x = S\,w \to (w = \underline i \to x = \underline{i + 1})$, et $x = \underline{i + 1}$ est un terme de $D_n(x)$ ; le raisonnement par cas sur $D_j(w)$ donne $D_n(x)$.
+
+      Le théorème de la déduction, sous la forme (i) de {{cal-rp-calcul|Calcul à variables libres}}, donne $\mathsf Q \vdash x = S\,w \to (z + x = \underline n \to D_n(x))$. La variable $w$ n'est libre ni dans $z + x = \underline n$ ni dans $D_n(x)$, et l'élimination donne $\mathsf Q \vdash \exists w\, (x = S\,w) \to (z + x = \underline n \to D_n(x))$. Avec $\vdash x = 0 \to D_n(x)$ et la première assertion de (iii), la règle des tautologies donne $\mathsf Q \vdash z + x = \underline n \to D_n(x)$.
+
+      (vi) Par récurrence sur $n$, pour tous les choix des variables liées des deux formules. Pour $n = 0$, l'instance $x + 0 = x$ de $\mathrm Q_4$ et l'introduction de l'existentiel, avec le terme $x$, donnent $\mathsf Q \vdash \exists z'\, (z' + 0 = x)$, c'est-à-dire $\mathsf Q \vdash \underline 0 \leqslant x$, et la disjonction s'en déduit.
+
+      Soit $n = j + 1$. Si $\mathsf Q \vdash x = \underline i \to x \leqslant \underline n$ pour tout $i \leqslant n$, alors, par (v) et le raisonnement par cas, $\mathsf Q \vdash x \leqslant \underline j \to x \leqslant \underline n$. Or, pour $i \leqslant n$, on a $\mathsf Q \vdash \underline i \leqslant \underline n$ par (iv), et le point (v) de {{cal-rp-calcul|Calcul à variables libres}}, appliqué à $\exists z\, (z + v = \underline n)$ avec les termes $\underline i$ et $x$, et la symétrie donnent $\mathsf Q \vdash x = \underline i \to x \leqslant \underline n$.
+
+      Il reste, par l'hypothèse de récurrence, à montrer $\mathsf Q \vdash \exists w\, (w + \underline j = x) \to (x \leqslant \underline n \vee \underline n \leqslant x)$, pour une variable $w$ distincte de $x$ et des variables liées de la conclusion, que l'on note $C$. Comme $w$ n'est pas libre dans $C$, l'élimination du point (iii) de {{cal-rp-calcul|Calcul à variables libres}}, appliquée dans $\mathsf Q$, ramène à $\mathsf Q \vdash w + \underline j = x \to C$, c'est-à-dire, par le théorème de la déduction, à montrer $C$ sous l'hypothèse $w + \underline j = x$. Soit $u$ une variable distincte de $w$, de $x$ et de ces variables liées. Par (iii), $w = 0$ ou $\exists u\, (w = S\,u)$. Sous l'hypothèse $w = 0$, le remplacement donne $0 + \underline j = x$, et (i) donne $0 + \underline j = \underline j$, d'où $x = \underline j$ et $x \leqslant \underline n$ comme ci-dessus. Sous l'hypothèse $w = S\,u$, le remplacement donne $S\,u + \underline j = x$, et (iii) donne $u + S\,\underline j = x$, d'où $\exists z'\, (z' + \underline n = x)$, c'est-à-dire $\underline n \leqslant x$, par introduction de l'existentiel avec le terme $u$. Le théorème de la déduction donne alors $\mathsf Q \vdash w + \underline j = x \to (w = S\,u \to C)$. On ne peut pas éliminer $u$ sous l'hypothèse $w + \underline j = x$, qui a des variables libres ; on applique l'élimination dans $\mathsf Q$, sous la forme avec hypothèse $\chi = (w + \underline j = x)$ du point (iii) de {{cal-rp-calcul|Calcul à variables libres}}, puisque $u$ n'est libre ni dans $\chi$ ni dans $C$ : $\mathsf Q \vdash w + \underline j = x \to (\exists u\, (w = S\,u) \to C)$. Le cas $w = 0$ donne de même $\mathsf Q \vdash w + \underline j = x \to (w = 0 \to C)$, et le raisonnement par cas, avec la première assertion de (iii), donne $\mathsf Q \vdash w + \underline j = x \to C$.
+    remarques:
+      - |
+        Le premier calcul de (i), pour $m = n = 2$, est la démonstration de $2 + 2 = 4$ : l'instance $\underline 2 + 0 = \underline 2$ de $\mathrm Q_4$, puis deux instances de $\mathrm Q_5$, chacune suivie d'une congruence pour le symbole $S$ et d'une transitivité. Chaque pas n'est pas une formule unique mais une petite démonstration formelle, fournie par les règles dérivées ; leur nombre croît linéairement avec $n$, ce qui suffit ici, où seule compte l'existence d'une démonstration.
+      - |
+        L'arithmétique de Robinson ne démontre que des faits sur des chiffres explicites, et non les lois générales qu'ils suggèrent. Soit $\mathcal M$ la structure de domaine $\mathbb N \cup \{a, b\}$, où $a$ et $b$ ne sont pas des entiers, qui prolonge $\mathcal N$ avec $S\,a = a$, $S\,b = b$ ; $x + a = b$ et $x + b = a$ pour tout $x$ ; $a + n = a$ et $b + n = b$ pour $n \in \mathbb N$ ; $x \times 0 = 0$, $a \times n = b$ et $b \times n = a$ pour $n \geqslant 1$ ; $0 \times a = 0 \times b = 0$, $n \times a = n \times b = a$ pour $n \geqslant 1$, $a \times a = a \times b = b$ et $b \times a = b \times b = a$. La structure $\mathcal M$ satisfait les sept axiomes, ce qui se vérifie cas par cas selon que les arguments sont des entiers ou l'un des éléments $a$, $b$ ; par exemple, $\mathrm Q_5$ pour $y = a$ s'écrit $x + a = S(x + a)$, c'est-à-dire $b = S\,b$. Comme $0 + a = b \neq a$, le {{l-correction|théorème de correction}} montre que $\mathsf Q$ ne démontre pas $\forall x\, (0 + x = x)$, alors qu'elle démontre chacune des instances $0 + \underline n = \underline n$.
+      - |
+        L'ordre des termes dans la définition de $t \leqslant u$ par $z + t = u$, le témoin $z$ à gauche, n'est pas indifférent pour (vi). L'axiome $\mathrm Q_5$ ne permet de calculer que sur le second argument d'une somme ; avec ce choix, la récurrence de (vi) porte sur un chiffre, et (iii) ramène $S\,u + \underline j$ à $u + S\,\underline j$ par une récurrence sur $j$. Le point (v), lui, se démontrerait aussi avec l'ordre $t + z = u$, en décomposant le témoin $z$ au lieu de $x$. Mais avec cet ordre, l'énoncé (vi) devient faux dans un modèle de $\mathsf Q$. Soit $\mathcal M'$ la structure de domaine $\mathbb N \cup \{a, b\}$ qui prolonge $\mathcal N$ avec $S\,a = a$, $S\,b = b$ ; $x + a = x + b = b$ pour tout $x$ ; $a + n = a$ et $b + n = b$ pour $n \in \mathbb N$ ; $x \times a = x \times b = b$ pour $x \neq 0$, $0 \times a = 0 \times b = 0$, et $a \times n = b \times n = b$ pour $n \geqslant 1$. Elle satisfait les sept axiomes, ce qui se vérifie cas par cas comme pour $\mathcal M$ ci-dessus. Aucun $z$ n'y vérifie $a + z = \underline 1$ ni $\underline 1 + z = a$, puisque $a + z \in \{a, b\}$ et $1 + z \in \mathbb N \cup \{b\}$ ; la formule $\exists z\, (x + z = \underline 1) \vee \exists z\, (\underline 1 + z = x)$ y est fausse en $x = a$, et le {{l-correction|théorème de correction}} montre que $\mathsf Q$ ne la démontre pas. Avec l'ordre retenu, $\underline 1 \leqslant a$ a le témoin $z = a$, puisque $a + 1 = a$.
+      - |
+        L'arithmétique de Robinson est définie dans le texte du nœud {{l-incompletude|Incomplétude}} de la logique, qui énonce les théorèmes d'incomplétude ; ce chapitre n'en emploie que la définition, et en démontre le premier au nœud {{cal-rp-godel-rosser|Gödel-Rosser}}.
+
+  - id: cal-rp-sigma1
+    etiquette: Σ₁-complétude
+    nature: théorème
+    titre: Formules Δ₀ et Σ₁-complétude de l'arithmétique de Robinson
+    texte: |
+      Les conventions sont celles de {{cal-rp-calculs-q|Calculs dans Q}}. Pour des variables distinctes $x$ et $z$ et un terme $t$ où ne figurent ni $x$ ni $z$, on écrit $\forall x \leqslant t\ \varphi$ pour la formule $\forall x\, \big(\exists z\, (z + x = t) \to \varphi\big)$, et $\exists x \leqslant t\ \varphi$ pour $\neg \forall x \leqslant t\ \neg\varphi$ : ce sont les *quantifications bornées*. Dans $\mathcal N$, par la {{l-satisfaction|satisfaction}} et le {{l-coincidence|lemme de coïncidence}}, $\forall x \leqslant t\ \varphi$ est satisfaite sous $s$ si et seulement si $\varphi$ l'est sous $s(x \mid k)$ pour tout entier $k$ au plus égal à la valeur de $t$ sous $s$, et de même pour $\exists x \leqslant t$ avec « pour un entier ».
+
+      Les [[formule-delta0|formules Δ₀]] forment le plus petit ensemble de formules qui contient les formules atomiques et qui est stable par $\neg$, par $\to$ et par les quantifications bornées $\forall x \leqslant t$. Une [[formule-sigma1|formule Σ₁]] est une formule $\exists y_1 \cdots \exists y_k\ \delta$, où $\delta$ est une formule Δ₀ et $y_1, \dots, y_k$ des variables distinctes, avec $k \geqslant 0$.
+
+      Pour une formule $\varphi$ et une valuation $s$ dans $\mathcal N$, on note $\varphi\langle s \rangle$ l'énoncé obtenu en substituant à chaque variable libre $v$ de $\varphi$ le chiffre $\underline{s(v)}$. Ces termes étant clos, ils sont substituables, ils n'introduisent aucune variable, et l'ordre des substitutions est indifférent ; par le {{l-substitution|lemme de substitution}}, appliqué à chacune, $\mathcal N \models \varphi\langle s \rangle$ si et seulement si $\mathcal N \models \varphi\,[s]$.
+    enonce: |
+      (i) Si $\varphi$ est une formule Δ₀, $v$ une variable et $t$ un terme dont aucune variable n'est quantifiée dans $\varphi$, alors $\varphi[t/v]$ est une formule Δ₀.
+
+      (ii) **Formules Δ₀.** Soit $\varphi$ une formule Δ₀ et $s$ une valuation. Si $\mathcal N \models \varphi\,[s]$, alors $\mathsf Q \vdash \varphi\langle s \rangle$ ; sinon, $\mathsf Q \vdash \neg\varphi\langle s \rangle$. En particulier, $\mathsf Q$ démontre les énoncés Δ₀ vrais dans $\mathcal N$ et réfute les énoncés Δ₀ faux.
+
+      (iii) Tout énoncé Σ₁ vrai dans $\mathcal N$ est démontrable dans $\mathsf Q$ : c'est la Σ₁-complétude de $\mathsf Q$.
+    preuve: |
+      (i) Par récurrence sur la construction des formules Δ₀ : l'ensemble des formules Δ₀ $\varphi$ telles que $\varphi[t/v]$ soit Δ₀ pour tous $v$ et $t$ comme dans l'énoncé contient les formules atomiques, dont les substituées sont atomiques ({{cal-sx-substitution|Substitution}}, (iii)), et il est stable par $\neg$ et $\to$, qui commutent à la substitution. Soit $\varphi = \forall x\, (\exists z\, (z + x = u) \to \psi)$, avec $\psi$ dans cet ensemble. Si $v = x$, la variable $v$ n'est pas libre dans $\varphi$, qui ne change pas. Si $v = z$, ses occurrences dans $\exists z\, (z + x = u)$ sont liées, et $\varphi[t/v] = \forall x\, (\exists z\, (z + x = u) \to \psi[t/z])$. Sinon, $\varphi[t/v] = \forall x\, (\exists z\, (z + x = u[t/v]) \to \psi[t/v])$, et $u[t/v]$ ne contient ni $x$ ni $z$, puisque ni $u$ ni $t$ n'en contiennent, $x$ et $z$ étant quantifiées dans $\varphi$. Dans chaque cas, on obtient une quantification bornée d'une formule Δ₀.
+
+      (ii) Par récurrence sur la construction des formules Δ₀ ; la propriété démontrée porte sur $\varphi$ et sur toutes les valuations à la fois. On note $\vdash_{\mathsf Q}$ la démontrabilité dans $\mathsf Q$ et l'on emploie les règles de {{cal-rp-calcul|Calcul à variables libres}}.
+
+      *Formules atomiques.* Soit $\varphi = (t_1 = t_2)$, de sorte que $\varphi\langle s \rangle$ est $t'_1 = t'_2$, où les $t'_i$ sont des termes clos de valeurs $a$ et $b$, celles de $t_1$ et $t_2$ sous $s$. Par le point (i) de {{cal-rp-calculs-q|Calculs dans Q}}, $\vdash_{\mathsf Q} t'_1 = \underline a$ et $\vdash_{\mathsf Q} t'_2 = \underline b$. Si $a = b$, la symétrie et la transitivité donnent $\vdash_{\mathsf Q} t'_1 = t'_2$. Sinon, ces mêmes règles donnent $\vdash_{\mathsf Q} t'_1 = t'_2 \to \underline a = \underline b$, et le point (ii) de {{cal-rp-calculs-q|Calculs dans Q}} donne $\vdash_{\mathsf Q} \neg(t'_1 = t'_2)$ par contraposition.
+
+      *Connecteurs.* On a $(\neg\varphi)\langle s \rangle = \neg\, \varphi\langle s \rangle$ et $(\varphi \to \psi)\langle s \rangle = \varphi\langle s \rangle \to \psi\langle s \rangle$, puisque substituer un chiffre à une variable non libre ne change rien. Chacun des cas se conclut par la règle des tautologies : de $\varphi\langle s \rangle$ on tire $\neg\neg\varphi\langle s \rangle$ ; de $\neg\varphi\langle s \rangle$ ou de $\psi\langle s \rangle$, on tire $\varphi\langle s \rangle \to \psi\langle s \rangle$ ; de $\varphi\langle s \rangle$ et $\neg\psi\langle s \rangle$, on tire $\neg(\varphi\langle s \rangle \to \psi\langle s \rangle)$.
+
+      *Quantification bornée.* Soit $\varphi = \forall x\, (\exists z\, (z + x = t) \to \psi)$. Substituer un chiffre à une variable libre $v \neq x$ de $\varphi$ traverse $\forall x$ ; si $v = z$, elle ne touche que $\psi$, et $t$ ne contient ni $x$ ni $z$. Ainsi
+      $$\varphi\langle s \rangle = \forall x\, \big(\exists z\, (z + x = t') \to \psi'\big),$$
+      où $t'$ est un terme clos, de valeur $m$, celle de $t$ sous $s$, et où $\psi'$ s'obtient en substituant à chaque variable libre $v \neq x$ de $\psi$ le chiffre $\underline{s(v)}$ ; pour tout entier $k$, $\psi'[\underline k/x] = \psi\langle s(x \mid k) \rangle$. La formule $\varphi$ est satisfaite sous $s$ si et seulement si $\psi$ l'est sous $s(x \mid k)$ pour tout $k \leqslant m$.
+
+      Supposons-le. Par l'hypothèse de récurrence, $\vdash_{\mathsf Q} \psi'[\underline k/x]$ pour tout $k \leqslant m$. Le remplacement d'un terme, appliqué à $\psi'$ avec les termes $x$ et $\underline k$, et la symétrie donnent $\vdash_{\mathsf Q} x = \underline k \to (\psi'[\underline k/x] \to \psi')$, donc $\vdash_{\mathsf Q} x = \underline k \to \psi'$, et le raisonnement par cas donne $\vdash_{\mathsf Q} D_m(x) \to \psi'$. Par (i) de {{cal-rp-calculs-q|Calculs dans Q}}, $\vdash_{\mathsf Q} t' = \underline m$, et le remplacement, appliqué à $\exists z\, (z + x = a)$ pour une variable $a$ nouvelle, donne $\vdash_{\mathsf Q} \exists z\, (z + x = t') \to \exists z\, (z + x = \underline m)$. Le point (v) de {{cal-rp-calculs-q|Calculs dans Q}} enchaîne : $\vdash_{\mathsf Q} \exists z\, (z + x = t') \to \psi'$, et la généralisation donne $\vdash_{\mathsf Q} \varphi\langle s \rangle$.
+
+      Sinon, soit $k \leqslant m$ tel que $\psi$ ne soit pas satisfaite sous $s(x \mid k)$ ; l'hypothèse de récurrence donne $\vdash_{\mathsf Q} \neg\psi'[\underline k/x]$. Par le point (iv) de {{cal-rp-calculs-q|Calculs dans Q}}, $\vdash_{\mathsf Q} \exists z\, (z + \underline k = \underline m)$, d'où $\vdash_{\mathsf Q} \exists z\, (z + \underline k = t')$ par le remplacement et la symétrie. Le chiffre $\underline k$ est clos, et $z \neq x$ : l'axiome (2) donne
+      $$\vdash \varphi\langle s \rangle \to \big(\exists z\, (z + \underline k = t') \to \psi'[\underline k/x]\big),$$
+      et la règle des tautologies donne $\vdash_{\mathsf Q} \neg\varphi\langle s \rangle$.
+
+      (iii) Soit $\sigma = \exists y_1 \cdots \exists y_k\ \delta$ un énoncé Σ₁ vrai dans $\mathcal N$, les $y_i$ distincts et $\delta$ Δ₀. Par la définition de la satisfaction de $\exists = \neg\forall\neg$, il existe des entiers $m_1, \dots, m_k$ tels que $\delta$ soit satisfaite sous toute valuation $s$ qui vaut $m_i$ en $y_i$ ; les variables libres de $\delta$ sont parmi les $y_i$. Par (ii), $\vdash_{\mathsf Q} \delta\langle s \rangle$. Pour $j \leqslant k$, soit $\theta_j$ l'énoncé obtenu en substituant $\underline{m_1}, \dots, \underline{m_j}$ à $y_1, \dots, y_j$ dans $\exists y_{j+1} \cdots \exists y_k\ \delta$ ; ainsi $\theta_k = \delta\langle s \rangle$ et $\theta_0 = \sigma$. Comme les $y_i$ sont distincts, $\theta_{j-1} = \exists y_j\, \chi$, où $\chi$ est une formule telle que $\theta_j = \chi[\underline{m_j}/y_j]$, et l'introduction de l'existentiel donne $\vdash \theta_j \to \theta_{j-1}$. De proche en proche, $\vdash_{\mathsf Q} \sigma$.
+    remarques:
+      - |
+        L'énoncé $\forall x \leqslant \underline 3\ \neg(x \times x = \underline 2)$, qui dit qu'aucun entier au plus égal à $3$ n'a pour carré $2$, est Δ₀ et vrai. La démonstration de (ii) en fournit une démonstration formelle dans $\mathsf Q$ par une vérification cas par cas : $\mathsf Q \vdash x \leqslant \underline 3 \to D_3(x)$, puis, pour $k = 0, 1, 2, 3$, $\mathsf Q \vdash \underline k \times \underline k = \underline{k^2}$ et $\mathsf Q \vdash \neg(\underline{k^2} = \underline 2)$, avec $k^2 \in \{0, 1, 4, 9\}$. La borne est ce qui rend la vérification finie.
+      - |
+        La Σ₁-complétude ne s'étend pas aux énoncés universels : l'énoncé $\forall x\, (0 + x = x)$ est vrai dans $\mathcal N$, et la deuxième remarque de {{cal-rp-calculs-q|Calculs dans Q}} montre que $\mathsf Q$ ne le démontre pas. L'erreur la plus répandue est de croire qu'une théorie qui démontre tous les énoncés Δ₀ vrais démontre leurs généralisations ; la démonstration de (ii) n'examine jamais qu'un nombre fini de cas.
+      - |
+        Les points (ii) et (iii) valent pour toute théorie $T$ qui démontre les axiomes de $\mathsf Q$, par le lemme de remplacement de la preuve de {{cal-craig|Théorème de Craig}}. La {{cal-rp-rosser|séparation de Rosser}} n'emploiera de l'arithmétique que ces deux points et les points (v) et (vi) de {{cal-rp-calculs-q|Calculs dans Q}}.
+
+  - id: cal-rp-forme-sigma
+    etiquette: Forme Σ₁ des r.e.
+    nature: théorème
+    titre: Les ensembles récursivement énumérables sont définis par des formules Σ₁
+    texte: |
+      On reprend la [[ensemble-definissable|définissabilité]] de {{cal-definissable|Définissabilité}} et les formules de {{cal-rp-sigma1|Σ₁-complétude}}. On note $\mathcal S$ le plus petit ensemble de formules qui contient les [[formule-delta0|formules Δ₀]] et qui est stable par $\wedge$, par $\vee$, par les quantifications $\exists x$ et par les quantifications bornées $\forall x \leqslant t$. Deux formules $\varphi$ et $\psi$ sont *équivalentes dans* $\mathcal N$ si $\mathcal N \models \varphi\,[s] \iff \mathcal N \models \psi\,[s]$ pour toute valuation $s$.
+    enonce: |
+      (i) Toute formule $\varphi$ de $\mathcal S$ est équivalente dans $\mathcal N$ à une [[formule-sigma1|formule Σ₁]] $\exists y\, \delta$, à un seul quantificateur, où $\delta$ est Δ₀ et a ses variables libres parmi celles de $\varphi$ et $y$.
+
+      (ii) Toute partie [[ensemble-recursivement-enumerable|récursivement énumérable]] $A \subset \lex{n-uplet}{\mathbb N^n}$ est définie, avec des variables distinctes $v_1, \dots, v_n$, par une formule $\exists y\, \delta$, où $\delta$ est Δ₀ et a ses variables libres parmi $v_1, \dots, v_n$ et $y$, distincte des $v_i$ : pour tout $(a_1, \dots, a_n) \in \mathbb N^n$, on a $(a_1, \dots, a_n) \in A$ si et seulement s'il existe un entier $m$ tel que $\delta$ soit satisfaite sous une valuation qui vaut $a_i$ en $v_i$ et $m$ en $y$.
+    preuve: |
+      (i) *Renommage.* Si $\varphi$ est équivalente à $\exists y\, \delta$ et si $y'$ est une variable qui ne figure pas dans $\delta$, elle l'est à $\exists y'\, \delta[y'/y]$, qui est Σ₁ par le point (i) de {{cal-rp-sigma1|Σ₁-complétude}}. En effet, par le {{l-substitution|lemme de substitution}} et le {{l-coincidence|lemme de coïncidence}}, $\delta[y'/y]$ est satisfaite sous $s(y' \mid m)$ si et seulement si $\delta$ l'est sous $s(y \mid m)$. On peut donc toujours prendre la variable $y$ hors d'un ensemble fini de variables donné. Les variables liées des bornes introduites ci-dessous sont, elles aussi, prises nouvelles.
+
+      On raisonne par récurrence sur la construction de $\mathcal S$. Une formule Δ₀ $\delta$ est équivalente à $\exists y\, \delta$ pour une variable $y$ qui n'y figure pas, par le lemme de coïncidence. Soit $\varphi_1$ et $\varphi_2$ équivalentes à $\exists y_1\, \delta_1$ et $\exists y_2\, \delta_2$, et $w$ une variable nouvelle ; par le renommage, on suppose $y_1$, $y_2$ et $w$ distinctes, $y_1$ absente de $\delta_2$ et $y_2$ absente de $\delta_1$, et aucune de ces trois variables libre dans $\varphi_1$ ou $\varphi_2$. Alors :
+
+      $\varphi_1 \wedge \varphi_2$ est équivalente à $\exists w\ \exists y_1 \leqslant w\ \exists y_2 \leqslant w\ (\delta_1 \wedge \delta_2)$ : si $m_1$ et $m_2$ sont des témoins, $w = \max(m_1, m_2)$ en est un, et la réciproque est immédiate ;
+
+      $\varphi_1 \vee \varphi_2$ est équivalente à $\exists w\, (\delta_1[w/y_1] \vee \delta_2[w/y_2])$ ;
+
+      $\exists x\, \varphi_1$, pour $x \neq y_1$, est équivalente à $\exists w\ \exists x \leqslant w\ \exists y_1 \leqslant w\ \delta_1$, avec le maximum des deux témoins.
+
+      Soit enfin $\varphi = \forall x \leqslant t\ \varphi_1$, où $t$ ne contient ni $x$ ni la variable liée $z$ de la borne, et $y_1$, $w$ absentes de $t$ et distinctes de $x$ et $z$. Elle est équivalente à $\exists w\ \forall x \leqslant t\ \exists y_1 \leqslant w\ \delta_1$. Soit $s$ une valuation et $m$ la valeur de $t$ sous $s$, qui ne dépend ni de $x$ ni de $w$. Si $\varphi$ est satisfaite sous $s$, pour chaque $k \leqslant m$ il existe un entier $j$ tel que $\delta_1$ soit satisfaite sous $s(x \mid k)(y_1 \mid j)$ ; soit $j_k$ le plus petit. L'entier $\max(j_0, \dots, j_m)$ est un témoin pour $w$. La réciproque est immédiate.
+
+      Dans chaque cas, la formule obtenue est Σ₁ à un quantificateur, par la définition des formules Δ₀, et ses variables libres sont parmi celles de $\varphi$ et la variable quantifiée en tête, puisque seules des variables liées ont été ajoutées.
+
+      (ii) *Les graphes des fonctions récursives.* Montrons que le graphe de toute [[fonction-recursive|fonction récursive]] est défini par une formule de $\mathcal S$. Les changements de variables du point (i) de {{cal-definissable|Définissabilité}} se font par une formule $\exists v_1 \cdots \exists v_n\, (v_1 = w_{\alpha(1)} \wedge \cdots \wedge \varphi)$, qui reste dans $\mathcal S$ si $\varphi$ y est ; on peut donc choisir librement les variables, et l'on note $F(x, y)$ une formule de $\mathcal S$ qui définit le graphe de $f$, lu « $f(x) = y$ ». Dans ces notations, $x$ abrège une suite de variables distinctes, et non la variable $x_0$ du langage. Les fonctions de base sont définies, avec des variables distinctes $v_1, \dots, v_n$ et $v$, par les formules atomiques $v = 0$, $v = S\,v_1$ et $v = v_i$. Pour la composition, $h(x) = y$ est défini par $\exists z_1 \cdots \exists z_m\, (G_1(x, z_1) \wedge \cdots \wedge G_m(x, z_m) \wedge F(z, y))$. Pour la minimisation, $\mu y\, [f(x, y) = 0] = y$ est défini par
+      $$\begin{aligned} &\exists w'\, \big(F(x, y, w') \wedge w' = 0\big) \\ &\wedge \forall z \leqslant y\ \big(z = y \vee {} \\ &\qquad \exists w\, (F(x, z, w) \wedge \neg(w = 0))\big), \end{aligned}$$
+      où $F(x, y, w')$ et $F(x, z, w)$ désignent des formules de $\mathcal S$ qui définissent le graphe de $f$ avec les variables indiquées, obtenues par le changement de variables ci-dessus, sans substitution d'un terme.
+
+      Pour la récurrence primitive, soit $B(a, b, i, u)$ la formule
+      $$\begin{aligned} &\exists q\ \exists r\ \big(a = q \times S(S\,i \times b) + u \\ &\qquad \wedge r + u = S\,i \times b\big), \end{aligned}$$
+      qui est dans $\mathcal S$. Dans $\mathcal N$, elle dit que $a = qm + u$ avec $u \leqslant m - 1$, où $m = 1 + (i + 1)b$, c'est-à-dire que $u$ est le reste de la division de $a$ par $m$ : elle définit le graphe de la {{cal-beta|fonction β}}. Alors $h(x, y) = v$ est défini par l'existence de $a$ et $b$ tels que
+      $$\begin{aligned} &\exists u\, \big(F(x, u) \wedge B(a, b, 0, u)\big) \\ &\wedge \forall i \leqslant y\ \big(i = y \vee \exists u\, \exists u' \\ &\qquad (B(a, b, i, u) \wedge B(a, b, S\,i, u') \\ &\qquad \wedge G(x, i, u, u'))\big) \\ &\wedge B(a, b, y, v), \end{aligned}$$
+      et, sans paramètre, la première ligne est remplacée par $B(a, b, 0, \underline c)$. Dans chacune des formules $B(a, b, \dots)$ ainsi écrites, les termes indiqués sont substitués à $i$ et à $u$, et les variables liées $q$ et $r$ de $B$ sont prises distinctes de toutes les autres.
+
+      Dans $\mathcal N$, la formule $\forall z \leqslant y\ (z = y \vee \chi)$ dit que $\chi$ est satisfaite pour tout $z < y$. Chacune de ces formules a donc, dans $\mathcal N$, le sens de la formule correspondante de la preuve du point (ii) de {{cal-definissable|Définissabilité}}, et la vérification qui y est faite s'applique sans changement.
+
+      *Les ensembles récursivement énumérables.* Soit $A \subset \mathbb N^n$, avec $x \in A \iff \exists y\ R(x, y)$ pour une relation récursive $R$, et $\Gamma(v_1, \dots, v_n, y, u)$ une formule de $\mathcal S$ qui définit le graphe de sa [[fonction-caracteristique-relation|fonction caractéristique]]. La formule $\exists y\, \exists u\, (\Gamma \wedge u = S\,0)$ est dans $\mathcal S$ et définit $A$ avec les variables $v_1, \dots, v_n$. Par (i) et le renommage, elle est équivalente à une formule $\exists y\, \delta$ de la forme annoncée, et la définition de la satisfaction de $\exists$ donne la dernière assertion.
+    remarques:
+      - |
+        La preuve ne fait aucun choix : à chaque étape, les témoins sont les plus petits, et le maximum porte sur un nombre fini d'entre eux. Le pas décisif est l'échange $\forall x \leqslant t\ \exists y \iff \exists w\ \forall x \leqslant t\ \exists y \leqslant w$, vrai dans $\mathcal N$ parce que la borne $t$ ne laisse qu'un nombre fini de valeurs de $x$. Il n'est employé que dans $\mathcal N$ : l'erreur la plus répandue serait de croire que $\mathsf Q$ en démontre les instances, alors que la suite ne demande à $\mathsf Q$ que les énoncés Δ₀ et Σ₁ vrais de {{cal-rp-sigma1|Σ₁-complétude}} et les calculs de {{cal-rp-calculs-q|Calculs dans Q}}.
+      - |
+        Ce théorème établit la forme annoncée dans la seconde remarque de {{cal-definissable|Définissabilité}}. Pour l'ensemble $K$ de l'{{cal-arret|arrêt}}, la forme normale de {{cal-kleene|Kleene}} donne directement $e \in K \iff \exists t\ T_1(e, e, t)$ ; la preuve ci-dessus transforme en plus la relation primitive récursive $T_1$ en une formule de $\mathcal S$, et les quantificateurs de celle-ci en un seul quantificateur existentiel.
+
+  - id: cal-rp-inseparables
+    etiquette: Paire inséparable
+    nature: proposition
+    titre: Deux ensembles récursivement énumérables récursivement inséparables
+    texte: |
+      Deux parties disjointes $A$ et $B$ de $\lex{ensemble-entiers-naturels}{\mathbb N}$ sont [[ensembles-inseparables|récursivement inséparables]] s'il n'existe aucun [[ensemble-recursif|ensemble récursif]] $C$ tel que $A \subset C$ et $C \cap B = \varnothing$. Les notations $\varphi_e$, $T_1$ et $U_1$ sont celles de la {{cal-kleene|forme normale de Kleene}}.
+    enonce: |
+      Les ensembles
+      $$\begin{aligned} A_0 &= \{e : \varphi_e(e)\!\downarrow \text{ et } \varphi_e(e) = 0\}, \\ A_1 &= \{e : \varphi_e(e)\!\downarrow \text{ et } \varphi_e(e) = 1\} \end{aligned}$$
+      sont [[ensemble-recursivement-enumerable|récursivement énumérables]], disjoints et récursivement inséparables.
+    preuve: |
+      Par la forme normale de Kleene, $\varphi_e(e) \simeq U_1\big(e, e, \mu t\, T_1(e, e, t)\big)$. Ainsi, pour $i \in \{0, 1\}$,
+      $$\begin{aligned} e \in A_i \iff \exists t\ \big(&T_1(e, e, t) \\ &\wedge \forall t' < t\ \neg T_1(e, e, t') \\ &\wedge U_1(e, e, t) = i\big), \end{aligned}$$
+      et la relation entre parenthèses est primitive récursive, par la quantification bornée ({{cal-pr-cloture|Clôture}}, (iii)), donc récursive ({{cal-recursives|Fonctions récursives}}, (i)) : $A_0$ et $A_1$ sont récursivement énumérables. Ils sont disjoints, puisque $\varphi_e(e)$ a au plus une valeur.
+
+      Soit $C$ un ensemble récursif tel que $A_0 \subset C$ et $C \cap A_1 = \varnothing$. Sa fonction caractéristique $\chi_C$ est récursive et totale ; par le point (i) de la forme normale de Kleene, elle a des indices, et l'on note $d$ le plus petit : $\varphi_d = \chi_C$. Si $d \in C$, alors $\varphi_d(d) = 1$, donc $d \in A_1$, ce qui contredit $C \cap A_1 = \varnothing$. Si $d \notin C$, alors $\varphi_d(d) = 0$, donc $d \in A_0 \subset C$, ce qui est absurde. Un tel $C$ n'existe donc pas.
+    remarques:
+      - |
+        La preuve est la diagonale de l'{{cal-arret|arrêt}}, portée sur les valeurs au lieu de l'arrêt : la fonction $\chi_C$, totale, diffère de chaque $\varphi_e$ là où $\varphi_e(e)$ vaut $0$ ou $1$. Les deux ensembles ne recouvrent pas $\mathbb N$ : un indice $e$ hors de $K$, ou tel que $\varphi_e(e) \geqslant 2$, n'est dans aucun des deux, et c'est cette marge qu'aucun ensemble récursif ne sait répartir.
+      - |
+        Une paire de même nature, construite autrement, sur des indices doubles et par une comparaison des temps d'arrêt à la manière de Rosser, est au cœur de la forme symétrique du théorème d'incomplétude donnée par Kleene (S. C. Kleene, « A symmetric form of Gödel's theorem », *Proceedings of the Koninklijke Nederlandse Akademie van Wetenschappen* 53, 1950, p. 800-802, et *Indagationes Mathematicae* 12, 1950, p. 244-246). La preuve du nœud {{cal-rp-godel-rosser|Gödel-Rosser}} en suit l'idée, avec la paire plus simple de l'énoncé.
+
+  - id: cal-rp-rosser
+    etiquette: Astuce de Rosser
+    nature: théorème
+    titre: Séparation de Rosser et représentation des relations récursives
+    texte: |
+      Pour une formule $\theta$ dont les variables libres sont parmi des variables distinctes $v_1, \dots, v_k$ et pour $a = (a_1, \dots, a_k) \in \lex{n-uplet}{\mathbb N^k}$, on note $\theta(\underline a)$ l'énoncé $\theta\langle s \rangle$ de {{cal-rp-sigma1|Σ₁-complétude}}, pour une valuation $s$ qui vaut $a_i$ en $v_i$. Une relation $R \subset \mathbb N^k$ est [[relation-representable|représentable]] dans une théorie $T$ s'il existe une telle formule $\theta$ avec $T \vdash \theta(\underline a)$ pour $a \in R$ et $T \vdash \neg\theta(\underline a)$ pour $a \notin R$.
+    enonce: |
+      (i) Soit $A$ et $B$ deux parties [[ensemble-recursivement-enumerable|récursivement énumérables]] disjointes de $\mathbb N^k$. Il existe une [[formule-sigma1|formule Σ₁]] $\theta$, de variables libres parmi $v_1, \dots, v_k$, telle que, pour tout $a \in \mathbb N^k$, $\mathsf Q \vdash \theta(\underline a)$ si $a \in A$ et $\mathsf Q \vdash \neg\theta(\underline a)$ si $a \in B$.
+
+      (ii) Toute relation récursive $R \subset \mathbb N^k$ est **représentable** dans $\mathsf Q$, et dans toute théorie qui en démontre les axiomes.
+    preuve: |
+      (i) Par le point (ii) de {{cal-rp-forme-sigma|Forme Σ₁ des r.e.}} et le renommage de sa preuve, $A$ et $B$ sont définis, avec les variables $v_1, \dots, v_k$, par des formules $\exists y\, \alpha$ et $\exists y\, \beta$, avec la même variable $y$, distincte des $v_i$, où $\alpha$ et $\beta$ sont Δ₀ et ont leurs variables libres parmi $v_1, \dots, v_k, y$. Soit $z$ une variable qui ne figure ni dans $\alpha$ ni dans $\beta$ et qui est distincte des $v_i$ et de $y$, et $\beta' = \beta[z/y]$, formule Δ₀ par le point (i) de {{cal-rp-sigma1|Σ₁-complétude}}. On pose
+      $$\theta = \exists y\, \big(\alpha \wedge \forall z \leqslant y\ \neg\beta'\big),$$
+      où la variable liée $u$ de la borne est nouvelle. C'est une formule Σ₁, de variables libres parmi les $v_i$. Fixons $a \in \mathbb N^k$, et notons $\alpha_a$, $\beta'_a$ les formules obtenues en substituant les chiffres $\underline{a_i}$ aux $v_i$ ; ainsi $\theta(\underline a) = \exists y\, (\alpha_a \wedge \forall z \leqslant y\ \neg\beta'_a)$. Par le {{l-substitution|lemme de substitution}}, pour tout entier $j$, l'énoncé $\alpha_a[\underline j/y]$ est vrai dans $\mathcal N$ si et seulement si $\alpha$ est satisfaite sous une valuation qui vaut $a_i$ en $v_i$ et $j$ en $y$, et de même pour $\beta'_a[\underline j/z]$, qui est l'énoncé $\beta_a[\underline j/y]$.
+
+      *Si $a \in A$.* Il existe $m$ tel que $\alpha_a[\underline m/y]$ soit vrai. Comme $a \notin B$, aucun $\beta'_a[\underline j/z]$ n'est vrai ; l'énoncé $(\alpha_a \wedge \forall z \leqslant y\ \neg\beta'_a)[\underline m/y]$ est donc vrai dans $\mathcal N$. Ainsi $\theta(\underline a)$ est vrai ; c'est un énoncé Σ₁, la formule $\alpha_a \wedge \forall z \leqslant y\ \neg\beta'_a$ étant Δ₀ par le point (i) de {{cal-rp-sigma1|Σ₁-complétude}}, et il est démontrable dans $\mathsf Q$ par le point (iii) de {{cal-rp-sigma1|Σ₁-complétude}}.
+
+      *Si $a \in B$.* Il existe $m$ tel que $\beta'_a[\underline m/z]$ soit vrai, donc démontrable dans $\mathsf Q$ par le point (ii) de {{cal-rp-sigma1|Σ₁-complétude}}. Comme $a \notin A$, pour tout $j \leqslant m$, l'énoncé $\alpha_a[\underline j/y]$ est faux, et $\mathsf Q \vdash \neg\alpha_a[\underline j/y]$ par ce même point. Soit $\bot$ l'énoncé $\neg(0 = 0)$, réfuté par $\vdash 0 = 0$. Montrons
+      $$\mathsf Q \cup \{\alpha_a,\ \forall z \leqslant y\ \neg\beta'_a\} \vdash \bot,$$
+      en employant les règles de {{cal-rp-calcul|Calcul à variables libres}}. Par le point (vi) de {{cal-rp-calculs-q|Calculs dans Q}}, $y \leqslant \underline m \vee \underline m \leqslant y$, la seconde formule étant écrite avec la variable liée $u$.
+
+      Sous l'hypothèse $\underline m \leqslant y$, c'est-à-dire $\exists u\, (u + \underline m = y)$ : le chiffre $\underline m$ est clos et $u \neq z$, donc l'axiome (2) donne $\forall z \leqslant y\ \neg\beta'_a \to (\exists u\, (u + \underline m = y) \to \neg\beta'_a[\underline m/z])$, d'où $\neg\beta'_a[\underline m/z]$, qui contredit $\beta'_a[\underline m/z]$.
+
+      Sous l'hypothèse $y \leqslant \underline m$ : par le point (v) de {{cal-rp-calculs-q|Calculs dans Q}}, $D_m(y)$. Pour $j \leqslant m$, le remplacement d'un terme, appliqué à $\alpha_a$ avec les termes $y$ et $\underline j$, donne $\vdash y = \underline j \to (\alpha_a \to \alpha_a[\underline j/y])$, et $\mathsf Q \vdash \neg\alpha_a[\underline j/y]$ : donc $\mathsf Q \vdash y = \underline j \to \neg\alpha_a$, et le raisonnement par cas donne $\neg\alpha_a$, qui contredit l'hypothèse $\alpha_a$.
+
+      Dans les deux cas, on obtient $\bot$ par l'instance $P \to (\neg P \to Q)$, et le raisonnement par cas sur la disjonction conclut. Le théorème de la déduction donne $\mathsf Q \vdash (\alpha_a \wedge \forall z \leqslant y\ \neg\beta'_a) \to \bot$, après l'instance $(P \to (Q \to R)) \to ((P \wedge Q) \to R)$. La variable $y$ n'est pas libre dans $\bot$ : l'élimination donne $\mathsf Q \vdash \theta(\underline a) \to \bot$, et la règle des tautologies, avec $\vdash \neg\bot$, donne $\mathsf Q \vdash \neg\theta(\underline a)$.
+
+      (ii) La relation $R$ et son complémentaire sont récursivement énumérables et disjoints ({{cal-ensembles|Récursif, r.e.}}, (i) et (ii)) ; la formule $\theta$ de (i), pour $A = R$ et $B = \mathbb N^k \setminus R$, représente $R$ dans $\mathsf Q$. Si une théorie $T$ démontre les axiomes de $\mathsf Q$, elle démontre tout ce que démontre $\mathsf Q$, par le lemme de remplacement de la preuve de {{cal-craig|Théorème de Craig}}.
+    remarques:
+      - |
+        La formule $\theta(\underline a)$ dit : il existe un témoin de l'appartenance de $a$ à $A$ qui n'est précédé d'aucun témoin de son appartenance à $B$. La formule plus simple $\exists y\, \alpha$ serait démontrée pour $a \in A$, mais, pour $a \in B$, la réfuter demanderait de démontrer l'énoncé universel $\forall y\, \neg\alpha_a$, ce que $\mathsf Q$ ne sait pas faire en général ; la comparaison des témoins ramène tout à un nombre fini de vérifications, en deçà du témoin $m$.
+
+        ```schema cal-rp-rosser
+        Les témoins de $a$, rangés selon $y$ : en rouge ceux de $\alpha$, en bleu ceux de $\beta$, jamais les deux pour un même $a$. Si $a \in A$, le premier témoin rouge $m$ n'a aucun témoin bleu devant lui, et $\theta(\underline a)$ est un énoncé Σ₁ vrai. Si $a \in B$, un témoin bleu $m$ suffit à réfuter $\theta(\underline a)$ : un éventuel $y \leqslant m$ est l'un des chiffres $\underline 0, \dots, \underline m$, tous réfutés pour $\alpha$, et un $y \geqslant m$ voit le témoin bleu sous sa borne.
+        ```
+      - |
+        L'astuce est due à J. B. Rosser (« Extensions of some theorems of Gödel and Church », *Journal of Symbolic Logic* 1, 1936, p. 87-91), qui la faisait porter sur les démonstrations elles-mêmes : son énoncé dit, en substance, que toute démonstration de lui-même est précédée d'une démonstration de sa négation. Le point (ii) est la représentation des relations récursives qu'admettait encore le nœud {{l-incompletude|Incomplétude}} ; obtenue ici par séparation, elle ne demande ni la représentation des fonctions ni le lemme diagonal.
+
+  - id: cal-rp-godel-rosser
+    etiquette: Gödel-Rosser
+    nature: théorème
+    titre: Théorème de Gödel-Rosser
+    texte: |
+      Pour une théorie $T$ sur la signature de l'arithmétique, on note $\mathrm{Th}(T)$ l'ensemble des codes des énoncés $\sigma$ tels que $T \vdash \sigma$, avec le codage de {{cal-theoremes|Théorèmes r.e.}}. On dit que $T$ *contient* $\mathsf Q$ si $T$ démontre chacun des axiomes de $\mathsf Q$ ; par le lemme de remplacement de la preuve de {{cal-craig|Théorème de Craig}}, $T$ démontre alors tout ce que démontre $\mathsf Q$.
+    enonce: |
+      Soit $T$ une [[theorie-coherente|théorie cohérente]] qui contient $\mathsf Q$.
+
+      (i) L'ensemble $\mathrm{Th}(T)$ n'est pas [[ensemble-recursif|récursif]].
+
+      (ii) Si l'ensemble des codes des axiomes de $T$ est [[ensemble-recursivement-enumerable|récursivement énumérable]], $T$ n'est pas [[theorie-complete|complète]] : il existe un énoncé $G$ tel que $T \nvdash G$ et $T \nvdash \neg G$.
+
+      (iii) Les ensembles $\mathrm{Th}(\mathsf Q)$ et $\mathrm{Th}(\mathsf{PA})$ ne sont pas récursifs, et $\mathsf Q$ n'est pas complète.
+    preuve: |
+      (i) Soit $A_0$ et $A_1$ les ensembles de {{cal-rp-inseparables|Paire inséparable}}, et $\theta$ la formule que fournit le point (i) de {{cal-rp-rosser|Astuce de Rosser}}, avec $k = 1$ et une variable $v_1 = a_l$. Par la définition de $\theta(\underline n)$, le code de $\theta(\underline n)$ est $g(n) = \mathrm{Sb}\big(\ulcorner \theta \urcorner, \ulcorner \underline n \urcorner, l\big)$, avec la fonction $\mathrm{Sb}$ de {{cal-sx-substitution|Substitution}} ; comme au point (i) de {{cal-tarski|Vérité et incomplétude}}, $n \mapsto \ulcorner \underline n \urcorner$ est primitive récursive, et $g$ l'est aussi.
+
+      Si $\mathrm{Th}(T)$ était récursif, $C = g^{-1}(\mathrm{Th}(T)) = \{n : T \vdash \theta(\underline n)\}$ le serait aussi ({{cal-ensembles|Récursif, r.e.}}, (iii)). Si $n \in A_0$, alors $\mathsf Q \vdash \theta(\underline n)$, donc $T \vdash \theta(\underline n)$ : $A_0 \subset C$. Si $n \in A_1$, alors $T \vdash \neg\theta(\underline n)$, et, $T$ étant cohérente, $T \nvdash \theta(\underline n)$ : $C \cap A_1 = \varnothing$. L'ensemble récursif $C$ séparerait $A_0$ et $A_1$, ce que {{cal-rp-inseparables|Paire inséparable}} exclut.
+
+      (ii) Par le point (iii) de {{cal-theoremes|Théorèmes r.e.}}, $\mathrm{Th}(T)$ est récursivement énumérable. Supposons $T$ complète. Pour un entier $N$ qui code un énoncé $\sigma$, on a $N \notin \mathrm{Th}(T)$ si et seulement si $T \vdash \neg\sigma$ : par la complétude dans un sens, par la cohérence dans l'autre. Le code de $\neg\sigma$ est $\mathrm{conc}(\langle 1 \rangle, N)$ ({{cal-sx-codage|Codage des mots}}). Ainsi le complémentaire de $\mathrm{Th}(T)$ est la réunion de l'ensemble des entiers qui ne codent pas un énoncé, récursif par le point (i) de {{cal-theoremes|Théorèmes r.e.}}, et de l'ensemble des codes d'énoncés $N$ tels que $\mathrm{conc}(\langle 1 \rangle, N) \in \mathrm{Th}(T)$, intersection d'un ensemble récursif et d'une image réciproque d'un ensemble récursivement énumérable par une fonction primitive récursive. Il est récursivement énumérable ({{cal-ensembles|Récursif, r.e.}}, (i) et (iii)), et $\mathrm{Th}(T)$ serait récursif par le point (ii) du même nœud, contrairement à (i).
+
+      (iii) Les axiomes de $\mathsf Q$ et de $\mathsf{PA}$ sont vrais dans $\mathcal N$ : pour $\mathsf{PA}$, c'est la preuve du point (iii) de {{cal-tarski|Vérité et incomplétude}}, et $\mathrm Q_3$ l'est puisque tout entier non nul est un successeur ({{n-peano|axiomes de Peano}}). Par le {{l-correction|théorème de correction}}, ces théories sont donc cohérentes : tout ce qu'elles démontrent est satisfait dans $\mathcal N$, et une formule et sa négation ne le sont pas toutes deux. Elles ont un ensemble d'axiomes récursif, donc récursivement énumérable : pour $\mathsf Q$, sept énoncés fixés, comme les six premiers axiomes de $\mathsf{PA}$ au point (i) de {{cal-theoremes|Théorèmes r.e.}} ; pour $\mathsf{PA}$, par ce même point. Il reste à voir que $\mathsf{PA}$ contient $\mathsf Q$ ; seul $\mathrm Q_3$ n'est pas un axiome de $\mathsf{PA}$.
+
+      Soit $\varphi$ la formule $\neg(x = 0) \to \exists y\, (x = S\,y)$, avec $x = x_0$ et $y = x_1$. Comme $\vdash 0 = 0$, la règle des tautologies donne $\vdash \varphi[0/x]$. L'introduction de l'existentiel, avec le terme $x$ substitué à $y$ dans $S\,x = S\,y$, donne $\vdash S\,x = S\,x \to \exists y\, (S\,x = S\,y)$, d'où $\vdash \varphi[S\,x/x]$, puis $\vdash \forall x\, (\varphi \to \varphi[S\,x/x])$ par la règle des tautologies et la généralisation. L'axiome de récurrence pour $\varphi$ et $x$, dont la clôture universelle est la formule elle-même puisque $\varphi$ n'a que $x$ pour variable libre, donne alors $\mathsf{PA} \vdash \forall x\, \varphi$, c'est-à-dire $\mathrm Q_3$. Les points (i) et (ii) concluent.
+    remarques:
+      - |
+        La preuve de (ii) ne désigne pas l'énoncé $G$, mais on peut l'exhiber. Soit $h$ la fonction récursive partielle qui, sur l'entrée $n$, parcourt les couples $(p, w)$ de la preuve du point (iii) de {{cal-theoremes|Théorèmes r.e.}} et s'arrête au premier qui code une démonstration de $\theta(\underline n)$ ou de $\neg\theta(\underline n)$, avec la valeur $1$ dans le premier cas et $0$ dans le second, et $d$ le plus petit indice de $h$. Si $T \vdash \theta(\underline d)$, la cohérence impose $h(d) = 1$, donc $d \in A_1$ et $T \vdash \neg\theta(\underline d)$ ; si $T \vdash \neg\theta(\underline d)$, de même $d \in A_0$ et $T \vdash \theta(\underline d)$. Dans les deux cas $T$ serait incohérente, et $G = \theta(\underline d)$ convient.
+      - |
+        Gödel (1931) supposait la théorie $\omega$-cohérente : aucun énoncé $\exists y\, \psi$ n'y est démontrable quand toutes les négations $\neg\psi[\underline n/y]$ le sont. Rosser (1936) a réduit l'hypothèse à la simple cohérence, par la comparaison des témoins de la {{cal-rp-rosser|séparation de Rosser}}. La présentation suivie ici, par une paire d'ensembles récursivement énumérables récursivement inséparables, suit l'idée de Kleene (1950), sans reprendre sa paire. L'arithmétique $\mathsf Q$ est celle de R. M. Robinson (« An essentially undecidable axiom system », *Proceedings of the International Congress of Mathematicians*, Cambridge (Massachusetts), 1950, vol. 1, American Mathematical Society, 1952, p. 729-730) : le point (i), qui dit qu'aucune théorie cohérente contenant $\mathsf Q$ n'a un ensemble de théorèmes récursif, est l'indécidabilité essentielle du titre.
+      - |
+        Contrairement au point (ii) de {{cal-tarski|Vérité et incomplétude}}, aucun axiome n'est supposé vrai dans $\mathcal N$ : une théorie cohérente qui démontre des énoncés faux, mais qui contient $\mathsf Q$, reste incomplète. En revanche, la théorie doit contenir $\mathsf Q$, alors que la voie de la vérité s'applique même à la théorie vide. Ce théorème démontre le point (i) du nœud {{l-incompletude|Incomplétude}}, dont il a exactement les hypothèses.
+
+aretes:
+  - [cal-rp-calcul, cal-rp-calculs-q]
+  - [cal-rp-calculs-q, cal-rp-sigma1]
+  - [cal-rp-sigma1, cal-rp-forme-sigma]
+  - [cal-rp-forme-sigma, cal-rp-rosser]
+  - [cal-rp-inseparables, cal-rp-godel-rosser]
+  - [cal-rp-rosser, cal-rp-godel-rosser]
