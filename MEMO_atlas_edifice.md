@@ -1438,3 +1438,15 @@ graphes plus étroits, aucun dégradé ; somme des largeurs 64 109 → 52 344 px
 (1234, neuf axiomes sur une rangée), anf (1135), continuite (1116). Arêtes, rangs affichés identiques ;
 déterministe. Construction ≈ 24 à 37 s selon la charge (≈ 20 s avant). L'absence de régression est constatée par
 mesure, non garantie. Relu : rien de bloquant ; fausse lecture de zf corrigée par le critère des faux départs.
+
+## 95. Chaînes lisses et chaînes continues (3 novembre 2026)
+
+Décision de l'auteur : l'édifice doit être entièrement démontré avant tout ajout ; on lève les derniers `a-faire`.
+Fiche dt-lisse-continu (théorème, derham-tout-degre ; arêtes dt-cochaines → dt-lisse-continu → dt-theoreme) : pour U
+ouvert de ℝⁿ, recouvrement 𝒰 de TOUS les ouverts convexes contenus dans U (aucun convexe choisi par simplexe) ;
+α remplace un petit simplexe par le simplexe affine de mêmes sommets ; prisme Ψ_γ = (1−λ)αγ + λγ, ∂Q + Q∂ = id − α ;
+s = ȷ_∞αρ équivalence d'homotopie C^∞(U) ≃ C(U) sur ℤ ; transposition (cs-cochaines (i)) pour tout groupe G, d'où
+H^k(U;ℝ) ≅ H^k_∞(U) sans coefficients universels (qui emploient ⋆) ; aucun choix. dt-theoreme (iv) :
+H^k_dR(U) ≅ H^k(U;ℝ). Admis levés : a-faire de dt-cochaines, cite du texte derham (qui, au demeurant, ne passait
+de l'entier au réel que par les coefficients universels, donc avec choix). Vérifié par sympy (signes, contrôles
+négatifs). Restent 3 a-faire, tous dans l-incompletude. Relu : aucune faute bloquante, notations corrigées.

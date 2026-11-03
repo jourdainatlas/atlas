@@ -586,6 +586,60 @@ def dt_cech_de_rham():
     return S
 
 
+@schema('dt-lisse-continu')
+def dt_lisse_continu():
+    # À gauche : un 2-simplexe courbe γ dans le disque unité ouvert B (convexe), le simplexe affine αγ de mêmes
+    # sommets, et quelques segments de l'homotopie Ψ_γ(x, t) = (1 − t) αγ(x) + t γ(x).
+    P = np.array([[-0.62, -0.42], [0.66, -0.36], [0.02, 0.70]])
+    bosse = np.array([[0.0, -0.55], [0.75, 0.45], [-0.75, 0.40]])   # déplacements des arêtes 01, 12, 20
+    def gam(t):
+        t = np.asarray(t, float)
+        return (t @ P + 1.6 * (t[..., 0] * t[..., 1])[..., None] * bosse[0]
+                + 1.6 * (t[..., 1] * t[..., 2])[..., None] * bosse[1]
+                + 1.6 * (t[..., 2] * t[..., 0])[..., None] * bosse[2])
+    alpha = lambda t: np.asarray(t, float) @ P
+    for j in range(3):
+        e = np.zeros(3); e[j] = 1
+        assert np.allclose(gam(e), P[j]) and np.allclose(alpha(e), P[j])   # mêmes sommets
+    g = np.linspace(0, 1, 61)
+    grille = np.array([(a, b, 1 - a - b) for a in g for b in g if a + b <= 1 + 1e-12])
+    assert np.max(np.linalg.norm(gam(grille), axis=1)) < 0.97                # γ à valeurs dans B
+    s = np.linspace(0, 1, 121)
+    aretes = [np.stack([1 - s, s, 0 * s], 1), np.stack([0 * s, 1 - s, s], 1), np.stack([s, 0 * s, 1 - s], 1)]
+    bordg = np.concatenate([gam(a) for a in aretes])
+    # À droite : le demi-cercle supérieur de (1, 0) à (−1, 0) dans R² \ {0} ; la corde passe par 0
+    th = np.linspace(0, np.pi, 181)
+    demi = np.stack([np.cos(th), np.sin(th)], 1)
+    assert np.min(np.linalg.norm(demi, axis=1)) > 0.999
+    assert np.allclose(0.5 * demi[0] + 0.5 * demi[-1], 0)
+    S = Schema(520, 300, 'Un petit simplexe et le simplexe affine de mêmes sommets')
+    R = Repere(-1.08, 1.08, -1.08, 1.08, 14, 20, 260, 260)
+    c = np.linspace(0, 2 * np.pi, 241)
+    S.poly(R(np.cos(c), np.sin(c)), 'g', d=True, l=1.2)
+    S.texte(R(-0.80, 0.80), 'B', 'g', taille=16)
+    S.surface([R(*p) for p in P], 'r')
+    S.poly([R(*p) for p in P], 'r', ferme=True, l=2)
+    S.poly(R(*bordg.T), 'b', ferme=True, l=2.2)
+    for a in aretes:
+        for u in (0.3, 0.5, 0.7):
+            x = a[int(round(u * 120))]
+            S.ligne(R(*alpha(x)), R(*gam(x)), 'g', d=True, l=1)
+    for p in P:
+        S.point(R(*p), 't', r=3.8)
+    S.texte(R(*gam(aretes[0][60])) + [0, 18], 'γ', 'b', taille=17)
+    S.texte(R(0.02, -0.05), 'αγ', 'r', taille=17)
+    R2 = Repere(-1.25, 1.25, -0.45, 1.25, 300, 70, 210, 143)
+    S.fleche(R2(-1.25, 0), R2(1.25, 0) + [8, 0], 'g', l=0.9)
+    S.poly(R2(*demi.T), 'b', l=2.2)
+    S.ligne(R2(1, 0), R2(-1, 0), 'r', d=True, l=2)
+    S.point(R2(1, 0), 't', r=3.8); S.point(R2(-1, 0), 't', r=3.8)
+    S.point(R2(0, 0), 't', r=4.5, creux=True)
+    S.texte(R2(0, 0) + [0, 18], '0', 't', taille=15)
+    S.texte(R2(0.72, 0.72) + [12, -10], 'γ', 'b', ancre='start', taille=17)
+    S.texte(R2(-0.55, 0) + [0, -16], 'αγ', 'r', taille=17)
+    return S
+
+
 @schema('pc-fibre')
 def pc_fibre():
     # e = ψ_{0,1} / ∫ψ (bosse d'intégrale 1) ; f(t) = e(t − 1.5) − e(t + 1.5), d'intégrale nulle.
