@@ -1323,3 +1323,21 @@ index et un fichier discordants (ancienne page en cache, Pages ignore `?v=`). `o
 mesuré sur la barre collante (titre visible à 390 px). L'aperçu à fichier unique garde le lexique embarqué ; sw.js le
 met en cache comme les branches. Gain : 4G simulée, graphe affiché 2,54 → 1,58 s (médianes) ; 3G lente 6,4 → 4,7 s.
 Relu : une relecture (une erreur bloquante, la discordance, corrigée).
+
+## 88. Trois admis « à faire » démontrés (3 novembre 2026)
+
+Notes : /home/claude/travail/admis-afaire/. (1) Fiche p-cantor : ensemble de Cantor (fermé, négligeable,
+λ(K_N) ≤ (2/3)^N), X = Σ 2d_k 3^{-k} sur les chiffres binaires propres de p-normaux (strictement croissante,
+mesurable), loi μ sans atome, F continue et F(X(ω)) = ω, pas de densité car portée par un négligeable ; schéma de
+l'escalier (edifice_schemas_proba.py, assert) ; arêtes p-poisson-exp → p-cantor, p-normaux → p-cantor ; termes
+ensemble-cantor, loi-cantor ; renvois croisés avec les remarques de m-lebesgue, m-riemann, f-haar. (2) Fiche
+rq-jacobi : définition par z-premiers (ii), multiplicativité, nullité ⇔ pgcd ≠ 1, lois complémentaires,
+réciprocité pour m, n impairs positifs premiers entre eux (par ε, θ multiplicatifs) ; exemples (365/1847) = 1 et
+(2/15) = 1 vérifiés par sympy ; référence Jacobi 1837 (Bericht… Akademie Berlin) et J. reine angew. Math. 30
+(1846) 166-182 ; arête rq-reciprocite → rq-jacobi ; terme symbole-jacobi. (3) ac-principaux (iv) : factoriel et
+Bézout ⇔ principal (élément de longueur ℓ minimale), sans choix ; contre-exemple ℤ[X]. Entrées `admis:` retirées.
+dt-cochaines reste a-faire : homologie entière, 3 à 4 fiches ; défaut d'appariement relevé (derham cite une
+version cohomologique réelle, qui tiendrait en une fiche). Restent 7 a-faire dans 4 fiches (l-incompletude ×4,
+dr-stokes, gd-formes-varietes, dt-cochaines) ; à reclasser : rq-applications (premiers ≡ 1 mod m, « hors-cadre »
+alors que court par gc-cyclotomiques). Croisements inchangés (édifice 15) ; tan-reciprocite 389 → 534 px.
+Relu : aucune faute bloquante, corrections appliquées.

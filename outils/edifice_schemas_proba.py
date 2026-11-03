@@ -219,6 +219,73 @@ def p_poisson_exp():
     return _epaisseurs(S)
 
 
+def _cantor_X(w, N=50):
+    """X(ω) = Σ 2 d_k 3^{-k}, d_k = ⌊2^k ω⌋ − 2⌊2^{k−1} ω⌋ (nœud p-normaux), calcul exact sur Fraction."""
+    w = Fr(w)
+    return sum(Fr(2 * (math.floor(2 ** k * w) - 2 * math.floor(2 ** (k - 1) * w)), 3 ** k) for k in range(1, N + 1))
+
+
+def _cantor_F(t, prof=40):
+    """Fonction de répartition de la loi de Cantor sur [0, 1] (autosimilarité de l'escalier)."""
+    if prof == 0:
+        return 0.5
+    if t <= 0:
+        return 0.0
+    if t >= 1:
+        return 1.0
+    if t < 1 / 3:
+        return _cantor_F(3 * t, prof - 1) / 2
+    if t <= 2 / 3:
+        return 0.5
+    return 0.5 + _cantor_F(3 * t - 2, prof - 1) / 2
+
+
+@schema('p-cantor')
+def p_cantor():
+    # Ce que disent la fiche et la remarque : F(X(ω)) = ω, X(1/2) = 2/3, X(1/3) = 1/4, X(1/4) = 2/9,
+    # F = 1/2 sur [1/3, 2/3], F = 1/4 sur [1/9, 2/9], F(1/4) = 1/3, X strictement croissante.
+    assert _cantor_X(Fr(1, 2)) == Fr(2, 3) and _cantor_X(Fr(1, 4)) == Fr(2, 9)
+    assert abs(float(_cantor_X(Fr(1, 3))) - 0.25) < 1e-20
+    rng = np.random.default_rng(7)
+    ws = np.sort(rng.random(400))
+    xs = [_cantor_X(Fr(float(w)), 45) for w in ws]
+    assert all(a < b for a, b in zip(xs, xs[1:]))
+    assert all(abs(_cantor_F(float(x)) - w) < 1e-9 for x, w in zip(xs, ws))
+    assert abs(_cantor_F(0.25) - 1 / 3) < 1e-12
+    assert all(_cantor_F(t) == 0.5 for t in np.linspace(1 / 3, 2 / 3, 50))
+    assert all(abs(_cantor_F(t) - 0.25) < 1e-15 for t in np.linspace(1 / 9, 2 / 9, 50))
+
+    def segments(N):
+        return [sum(Fr(2 * c[n], 3 ** (n + 1)) for n in range(N)) for c in np.ndindex(*(2,) * N)]
+
+    S = Schema(520, 352, "Escalier de Cantor, fonction de répartition de la loi de Cantor, et les ensembles K_1, K_2, K_3")
+    R = Repere(-0.06, 1.1, 0, 1.06, 46, 14, 440, 226)
+    S.fleche(R(-0.06, 0), R(1.1, 0) + [6, 0], 'g')
+    S.fleche(R(0, 0), R(0, 1.06) + [0, -6], 'g')
+    S.texte(R(1.1, 0) + [10, -12], 'x', 'g', ancre='start')
+    S.ligne(R(0, 1), R(1.1, 1), 'g', d=True)
+    for v, nom in ((0.5, '1/2'), (1, '1')):
+        _tic_y(S, R, 0, v, nom)
+    S.ligne(R(0, 1 / 3), R(0.25, 1 / 3), 'g', d=True)
+    S.ligne(R(0.25, 0), R(0.25, 1 / 3), 'g', d=True)
+    _tic_y(S, R, 0, 1 / 3, '1/3')
+    for t, nom in ((0.25, '1/4'), (1 / 3, '1/3'), (2 / 3, '2/3'), (1, '1')):
+        _tic_x(S, R, t, 0, nom)
+    S.texte(R(0, 0) + [-8, 17], '0', 'g', ancre='end', taille=15)
+    ts = np.linspace(0, 1, 1201)
+    S.poly([R(-0.06, 0)] + [R(t, _cantor_F(t)) for t in ts] + [R(1.1, 1)], 'r', l=2.4)
+    S.point(R(0.25, 1 / 3), 'r', r=4)
+    S.texte(R(0.6, 0.62), 'F', 'r', ancre='end')
+    # Les segments de K_1, K_2, K_3 sous l'axe, à la même échelle horizontale.
+    for N, y in ((1, 282), (2, 306), (3, 330)):
+        segs = segments(N)
+        assert len(segs) == 2 ** N and len(set(segs)) == 2 ** N
+        for a in segs:
+            S.ligne([R(float(a), 0)[0], y], [R(float(a + Fr(1, 3 ** N)), 0)[0], y], 'b', l=4)
+        S.texte([R(0, 0)[0] - 10, y], f'K_{N}', 'b', ancre='end', taille=15)
+    return _epaisseurs(S)
+
+
 @schema('p-normale')
 def p_normale():
     dens = lambda m, s2: (lambda x: np.exp(-(x - m) ** 2 / (2 * s2)) / np.sqrt(2 * np.pi * s2))
