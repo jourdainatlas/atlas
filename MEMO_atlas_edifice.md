@@ -1422,3 +1422,19 @@ par chapitre, repliées au-delà de six, phrase conditionnelle sur Lebesgue si m
 70 fiches intérieures ⋆ dans 19 théories, 9 théories marquées. Non fait faute de donnée : regroupement par forme du
 choix, distinction ⋆ propre / hérité. Relu : une erreur bloquante (convention fausse pour mes, ac, anf, edp),
 tranchée par l'auteur.
+
+## 94. Mise en page plus étroite (3 novembre 2026)
+
+Notes : /home/claude/travail/largeurs/ (tableau_final.txt, NOTES.txt, verifier.py de la relecture). construire.py
+seul (disposer, taille, tracé) : ordres de moindre croisement multiples et miroirs (mémorisés), attraction vers le
+milieu, échanges de voisins, resserrement des rangs des graphes intérieurs (un nœud ne quitte que l'intervalle
+permis par ses dépendances ; l'édifice garde ses rangs, affichés), largeur des bulles de deux lignes par coupure
+équilibrée, repli d'étiquettes au-delà de 1000 px. Garde-fous : l'ancienne règle sert de référence ; une candidate
+n'est retenue que plus étroite (ou aussi large et moins haute), pas plus haute, pas plus croisée, sans
+superposition de tracés ni plus de « faux départs » (arête longue qui longe une bulle étrangère puis tourne au-dessus
+d'elle et semble en partir — cas de zf, « Fondation → Axiome du choix », et de met). Pistes : à abscisse commune,
+l'arête qui finit passe au-dessus de celle qui commence. Résultat : édifice 1252 → 1046 px (15 croisements), 85
+graphes plus étroits, aucun dégradé ; somme des largeurs 64 109 → 52 344 px ; restent > 1000 px : édifice, zf
+(1234, neuf axiomes sur une rangée), anf (1135), continuite (1116). Arêtes, rangs affichés identiques ;
+déterministe. Construction ≈ 24 à 37 s selon la charge (≈ 20 s avant). L'absence de régression est constatée par
+mesure, non garantie. Relu : rien de bloquant ; fausse lecture de zf corrigée par le critère des faux départs.

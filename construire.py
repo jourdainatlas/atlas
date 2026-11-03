@@ -52,6 +52,7 @@ from collections import defaultdict
 import networkx as nx
 import yaml
 import random
+from bisect import bisect_right
 
 NATURES = {'théorie', 'chapitre', 'axiome', 'définition', 'théorème',
            'proposition', 'lemme', 'corollaire'}
@@ -361,15 +362,88 @@ if erreurs:
 # ------------------------------------------------------------------ mise en page
 ECART_Y, MARGE = 108, 36
 SEP_NOEUDS, SEP_FICTIF = 30, 18
+ATTRACTIONS = (0.0, 0.3, 1.0)   # poids de l'attraction vers le milieu essayés par disposer (0 : placement d'origine)
+RESSERRER_ECHANGES = 2          # passes d'échanges de voisins qui rétrécissent un graphe sans le grandir ailleurs
+LARGEUR_CIBLE = 1000            # au-delà, disposer replie sur deux lignes des étiquettes du rang le plus large
+HAUTEUR_REF = {}                # hauteur de la disposition de référence de chaque graphe, sans repli (disposer)
 
-def taille(n, entree=False):
+def taille(n, entree=False, replie=False):
     if n['famille'] in NOMBRES and not entree: return 48, 48
-    lab = n['etiquette'] + (' ⋆' if n.get('choix') else '') + (' †' if n.get('_signe') else '')
+    suffixe = (' ⋆' if n.get('choix') else '') + (' †' if n.get('_signe') else '')
+    lab = n['etiquette'] + suffixe
     larg = len(lab) * 7.1 + 30
-    if larg <= 176: return max(larg, 92), 44
-    return 176, 60
+    mots = n['etiquette'].split(' ')
+    if larg <= 176 and not (replie and len(mots) > 1): return max(larg, 92), 44
+    # Étiquette sur deux lignes (3 nov. 2026) : la bulle prend la largeur de la plus longue des deux lignes de
+    # la coupure la plus équilibrée (aux espaces), plus 6 px de jeu, au lieu de 176 px d'office. Le navigateur
+    # remplit les lignes au plus long : à cette largeur, il ne lui en faut pas plus de deux. Une étiquette qui
+    # tiendrait sur une ligne n'est repliée ainsi (replie) que pour rétrécir un graphe trop large (disposer).
+    if len(mots) < 2: return 176, 60
+    ligne = min(max(len(' '.join(mots[:i])), len(' '.join(mots[i:]))) for i in range(1, len(mots)))
+    return min(176, max(92, (ligne + len(suffixe)) * 7.1 + 36)), 60
 
-def disposer(gid):
+def croisements_bande(ordre, t, voisins_haut):
+    """Croisements entre les couches t et t + 1 pour l'ordre donné (dictionnaire couche → liste)."""
+    bas = {v: i for i, v in enumerate(ordre[t])}
+    haut = {v: i for i, v in enumerate(ordre[t + 1])}
+    # paires de segments de sens opposé = inversions des arrivées, les départs étant triés
+    segs = sorted((bas[u], haut[v]) for u in ordre[t] for v in voisins_haut[u])
+    vus, n_ = [], 0
+    for _, h in segs:
+        k_ = bisect_right(vus, h); n_ += len(vus) - k_; vus.insert(k_, h)
+    return n_
+
+def croisements_autour(ordre, t, voisins_haut, nmax):
+    """Croisements des deux bandes qui touchent la couche t : ceux que change un échange dans cette couche."""
+    return ((croisements_bande(ordre, t - 1, voisins_haut) if t > 0 else 0)
+            + (croisements_bande(ordre, t, voisins_haut) if t < nmax else 0))
+
+ESSAIS = {}   # ordres calculés par disposer, par graphe et rangement (ils ne dépendent pas des largeurs)
+
+def replier(gid, lay):
+    """Bulles d'une ligne à replier sur deux lignes pour rétrécir un graphe trop large (3 nov. 2026). Tant que le
+    rang le plus large de la disposition lay, bulles serrées, ne laisse pas espérer une largeur LARGEUR_CIBLE, on
+    replie celle de ses étiquettes d'au moins deux mots dont le repli fait gagner le plus ; on s'arrête quand ce
+    rang n'en a plus."""
+    racine = gid == racines[0]['graphe']
+    w, rangs, ids = {}, defaultdict(list), {}
+    for p in lay['noeuds']:
+        v = ('↑' if p['entree'] else '') + p['id']
+        w[v] = p['w']; rangs[p['y']].append(v); ids[v] = p
+    plis = set()
+    def plein_(c): return sum(w[v] for v in c) + SEP_NOEUDS * (len(c) - 1) + 2 * MARGE + (64 if racine else 0)
+    # le jeu entre la largeur du graphe et celle de son rang le plus large serré est supposé constant
+    cible = LARGEUR_CIBLE - (lay['largeur'] - max(plein_(c) for c in rangs.values()))
+    while True:
+        c = max(rangs.values(), key=plein_)
+        if plein_(c) <= cible: break
+        gains = []
+        for v in c:
+            n = noeuds[ids[v]['id']]
+            if v in plis or ids[v]['h'] != 44: continue
+            w2 = taille(n, entree=ids[v]['entree'], replie=True)[0]
+            if w2 < w[v] - 1: gains.append((w[v] - w2, v, w2))
+        if not gains: break
+        gain, v, w2 = max(gains, key=lambda g_: (g_[0], g_[1]))
+        plis.add(v); w[v] = w2
+    return frozenset(plis)
+
+def disposer(gid, impose=None, replies=None):
+    # Graphe trop large (3 nov. 2026) : on essaie de replier sur deux lignes des étiquettes de son rang le plus
+    # large ; la disposition repliée n'est gardée que si elle est plus étroite, pas plus haute, ne croise pas
+    # plus et passe les vérifications.
+    if impose is None and replies is None:
+        lay = disposer(gid, replies=frozenset())
+        plis = replier(gid, lay) if lay['largeur'] > LARGEUR_CIBLE else frozenset()
+        if not plis: return lay
+        n_err, haut_ref = len(erreurs), HAUTEUR_REF[gid]
+        lay2 = disposer(gid, replies=plis)
+        if (len(erreurs) == n_err and lay2['largeur'] < lay['largeur'] and lay2['hauteur'] <= haut_ref
+                and lay2['croisements'] <= lay['croisements']):
+            return lay2
+        del erreurs[n_err:]
+        return lay
+    replies = replies or frozenset()
     g = G[gid]
     # Graphe reconstruit dans l'ordre des fichiers de contenu : sans cela, l'ordre de parcours
     # des ensembles, propre à chaque exécution de Python, changeait la disposition d'une fois à l'autre.
@@ -407,26 +481,26 @@ def disposer(gid):
         # Ordre des nœuds dans chaque rang : on minimise les croisements d'arêtes.
         # Heuristique de Sugiyama : balayages par barycentres, puis échanges de voisins (transposition),
         # le tout à partir de plusieurs ordres de départ déterministes ; on garde le meilleur.
-        def croisements_entre(ordre, t):
-            bas = {v: i for i, v in enumerate(ordre[t])}
-            haut = {v: i for i, v in enumerate(ordre[t + 1])}
-            segs = [(bas[u], haut[v]) for u in ordre[t] for v in voisins_haut[u]]
-            return sum(1 for i in range(len(segs)) for j in range(i + 1, len(segs))
-                       if (segs[i][0] - segs[j][0]) * (segs[i][1] - segs[j][1]) < 0)
         def croisements(ordre):
-            return sum(croisements_entre(ordre, t) for t in range(nmax))
-        def autour(ordre, t):
-            return (croisements_entre(ordre, t - 1) if t > 0 else 0) + (croisements_entre(ordre, t) if t < nmax else 0)
+            return sum(croisements_bande(ordre, t, voisins_haut) for t in range(nmax))
         def transposer(ordre):
             for _ in range(30):
                 ameliore = False
                 for t in range(nmax + 1):
                     c = ordre[t]
+                    # Un échange de deux voisins ne change que les croisements entre leurs propres arêtes :
+                    # on compare ceux-ci avant et après (même décision que le recomptage des deux bandes).
+                    ih = {w: j for j, w in enumerate(ordre[t + 1])} if t < nmax else {}
+                    ib = {w: j for j, w in enumerate(ordre[t - 1])} if t > 0 else {}
                     for i in range(len(c) - 1):
-                        avant = autour(ordre, t)
-                        c[i], c[i + 1] = c[i + 1], c[i]
-                        if autour(ordre, t) < avant: ameliore = True
-                        else: c[i], c[i + 1] = c[i + 1], c[i]
+                        u, v = c[i], c[i + 1]
+                        avant = apres = 0
+                        for vois, idx in ((voisins_haut, ih), (voisins_bas, ib)):
+                            for a in vois[u]:
+                                for b in vois[v]:
+                                    if idx[a] > idx[b]: avant += 1
+                                    elif idx[a] < idx[b]: apres += 1
+                        if apres < avant: c[i], c[i + 1] = v, u; ameliore = True
                 if not ameliore: return
         def balayer(ordre):
             meilleur, score = {t: list(c) for t, c in ordre.items()}, croisements(ordre)
@@ -452,14 +526,21 @@ def disposer(gid):
         for graine in range(6):
             hasard = random.Random(graine)
             departs.append({t: hasard.sample(couches[t], len(couches[t])) for t in range(nmax + 1)})
-        ordre, score = None, None
+        ordre, score, obtenus = None, None, []
         for d in departs:
             o, s = balayer(d)
             if score is None or s < score: ordre, score = o, s
-            if score == 0: break
+            obtenus.append((s, o))
+        # Variantes (3 nov. 2026) : tous les ordres distincts de moindre nombre de croisements trouvés par les
+        # départs, et leurs miroirs (chaque couche lue de droite à gauche : mêmes croisements). Le premier est
+        # l'ordre retenu jusqu'ici ; les autres ne servent qu'à départager par la largeur (plus bas).
+        variantes, vus = [], set()
+        for o in [ordre] + [o for s, o in obtenus if s == score]:
+            for o2 in (o, {t: list(reversed(c)) for t, c in o.items()}):
+                cle = tuple(tuple(o2[t]) for t in range(nmax + 1))
+                if cle not in vus: vus.add(cle); variantes.append(o2)
 
-
-        return rang, couches, chaines, nmax, voisins_bas, voisins_haut, ordre, score
+        return rang, couches, chaines, nmax, voisins_bas, voisins_haut, ordre, score, variantes
 
     # Autres rangements possibles (29 oct. 2026) : au plus tard, et un rangement qui raccourcit les
     # arêtes (chaque nœud libre va à la médiane des rangs que lui imposent ses voisins). On garde celui
@@ -489,17 +570,55 @@ def disposer(gid):
             if m != court[v]: court[v] = m; bouge = True
         if not bouge: break
     candidats.append(court)
+    # Rangs resserrés (3 nov. 2026) : quand le rang le plus large borne la largeur, on déplace l'un de ses nœuds
+    # vers un autre rang que ses dépendances permettent (entre ses prédécesseurs et ses successeurs, sans créer de
+    # rang nouveau), celui qui fait le plus baisser la largeur du plus large rang, et l'on recommence. Les rangements
+    # obtenus ne sont que des candidats de plus : ils ne sont retenus (plus bas) que s'ils ne croisent pas plus,
+    # sont plus étroits, et pas plus hauts.
+    def plein(rg):
+        lg = defaultdict(float)
+        for v, t in rg.items():
+            lg[t] += (taille(noeuds[v[1:]], entree=True, replie=v in replies)[0] if fixe(v)
+                      else taille(noeuds[v], replie=v in replies)[0]) + SEP_NOEUDS
+        return lg
+    def resserrer(rg):
+        rg = dict(rg)
+        for _ in range(len(rg)):
+            lg = plein(rg)
+            pire = max(lg.values())
+            meilleur = None
+            for t in sorted(lg, key=lambda t: -lg[t]):
+                if lg[t] < pire: break
+                for v in r.nodes:
+                    if rg[v] != t or fixe(v): continue
+                    lo, hi = bornes(rg, v)
+                    w = plein({v: 0})[0]
+                    for t2 in range(lo, hi + 1):
+                        if t2 == t: continue
+                        nouveau = max([lg[t2] + w, lg[t] - w] + [lg[u] for u in lg if u not in (t, t2)])
+                        c_ = (nouveau, abs(t2 - t), rang_yaml[v], t2)
+                        if nouveau < pire and (meilleur is None or c_ < meilleur[0]): meilleur = (c_, v, t2)
+            if meilleur is None: break
+            rg[meilleur[1]] = meilleur[2]
+        return rg
+    anciens = len(candidats)
+    for rg in (list(candidats) if impose is None and gid != racines[0]['graphe'] else []):
+        rs = resserrer(rg)
+        if all(rs != c_ for c_ in candidats): candidats.append(rs)
     # Dans le graphe de l'édifice, le rang affiché est la longueur du plus long chemin depuis la logique
     # (texte d'accueil) : seul le rangement au plus tôt le respecte.
-    if gid == racines[0]['graphe']: candidats = [rang]
+    if gid == racines[0]['graphe']: candidats, anciens = [rang], 1
     def longueur(rg): return sum(rg[b] - rg[a] - 1 for a, b in r.edges())
-    def placer(e_):
-        rang, couches, chaines, nmax, voisins_bas, voisins_haut, ordre, score = e_
+    def placer(e_, mu=0.0):
+        """Abscisses des nœuds pour l'ordre e_[6]. mu > 0 ajoute à chaque nœud une attraction vers le milieu
+        du graphe (poids mu, à côté des poids 1 et 3 des voisins) : le graphe se resserre au lieu de dériver
+        en escalier ; l'ordre, donc le nombre de croisements, ne change pas."""
+        rang, couches, chaines, nmax, voisins_bas, voisins_haut, ordre, score = e_[:8]
         dims = {}
         for v in rang:
             if v.startswith('·'): dims[v] = (0, 0)
-            elif v.startswith('↑'): dims[v] = taille(noeuds[v[1:]], entree=True)
-            else: dims[v] = taille(noeuds[v])
+            elif v.startswith('↑'): dims[v] = taille(noeuds[v[1:]], entree=True, replie=v in replies)
+            else: dims[v] = taille(noeuds[v], replie=v in replies)
         def sep(a, b):
             fict = a.startswith('·') or b.startswith('·')
             return (dims[a][0] + dims[b][0]) / 2 + (SEP_FICTIF if fict else SEP_NOEUDS)
@@ -509,26 +628,41 @@ def disposer(gid):
             for i, v in enumerate(c):
                 if i: cur += sep(c[i - 1], v)
                 x[v] = cur
+        # voisins, poids et écarts ne dépendent que de l'ordre : calculés une fois pour les 60 balayages
+        attire = {}
+        for v in rang:
+            vs = voisins_bas[v] + voisins_haut[v]
+            poids = [3 if (w.startswith('·') or v.startswith('·')) else 1 for w in vs]
+            # Une feuille posée au-dessus (nœud sans successeur) suit son parent sans l'attirer :
+            # sinon chaque embranchement décale la chaîne principale, et les décalages s'accumulent.
+            poids = [p * (0.2 if (w in voisins_haut[v] and not voisins_haut[w] and len(vs) > 1) else 1)
+                     for w, p in zip(vs, poids)]
+            attire[v] = (list(zip(vs, poids)), sum(poids))
+        ecarts = {t: [sep(c[i - 1], c[i]) for i in range(1, len(c))] for t, c in ordre.items()}
+        # Les balayages alternent de sens. Dès que l'état après un balayage est exactement celui d'il y a deux
+        # balayages, la suite est périodique : on s'arrête, avec l'état qu'aurait donné le 60e (même résultat).
+        precedents = []
         for it in range(60):
+            if len(precedents) == 2 and x == precedents[0]:
+                if (60 - it) % 2: x = precedents[1]
+                break
+            precedents = (precedents + [dict(x)])[-2:]
             rng = range(nmax + 1) if it % 2 == 0 else range(nmax, -1, -1)
+            if mu: centre = (min(x.values()) + max(x.values())) / 2
             for t in rng:
-                c = ordre[t]
+                c, ec = ordre[t], ecarts[t]
                 voulu = []
                 for v in c:
-                    vs = voisins_bas[v] + voisins_haut[v]
-                    poids = [3 if (w.startswith('·') or v.startswith('·')) else 1 for w in vs]
-                    # Une feuille posée au-dessus (nœud sans successeur) suit son parent sans l'attirer :
-                    # sinon chaque embranchement décale la chaîne principale, et les décalages s'accumulent.
-                    poids = [p * (0.2 if (w in voisins_haut[v] and not voisins_haut[w] and len(vs) > 1) else 1)
-                             for w, p in zip(vs, poids)]
-                    voulu.append(sum(x[w] * p for w, p in zip(vs, poids)) / sum(poids) if vs else x[v])
+                    vp, sp = attire[v]
+                    if mu: voulu.append((sum(x[w] * p for w, p in vp) + mu * centre) / (sp + mu))
+                    else: voulu.append(sum(x[w] * p for w, p in vp) / sp if vp else x[v])
                 # placement au plus près des positions voulues, ordre et écarts respectés
                 g_ = list(voulu)
-                for i in range(1, len(c)): g_[i] = max(g_[i], g_[i - 1] + sep(c[i - 1], c[i]))
+                for i in range(1, len(c)): g_[i] = max(g_[i], g_[i - 1] + ec[i - 1])
                 d_ = list(voulu)
-                for i in range(len(c) - 2, -1, -1): d_[i] = min(d_[i], d_[i + 1] - sep(c[i], c[i + 1]))
+                for i in range(len(c) - 2, -1, -1): d_[i] = min(d_[i], d_[i + 1] - ec[i])
                 moy = [(a + b) / 2 for a, b in zip(g_, d_)]
-                for i in range(1, len(c)): moy[i] = max(moy[i], moy[i - 1] + sep(c[i - 1], c[i]))
+                for i in range(1, len(c)): moy[i] = max(moy[i], moy[i - 1] + ec[i - 1])
                 for i, v in enumerate(c): x[v] = moy[i]
         # Redressement : une couche réduite à un seul nœud, de parent unique, est alignée sur ce parent,
         # et tout ce qui est au-dessus suit. Toute arête qui traverse la couche passe par ce nœud
@@ -588,17 +722,96 @@ def disposer(gid):
     # la moins large, puis celui dont les arêtes sont les plus courtes (moins de nœuds fictifs), puis le
     # rangement au plus tôt (30 oct. 2026 : une source isolée descendait au rang le plus bas et étirait le
     # graphe ar-topo sur 1745 px).
-    essais = [(essai(rg), longueur(rg), k_) for k_, rg in enumerate(candidats)]
-    mini = min(e_[-1] for e_, _, _ in essais)
-    meilleure_cle, place = None, None
-    for e_, lg, k_ in essais:
-        if e_[-1] != mini: continue
-        pl = placer(e_)
-        xs, ds = pl[10], pl[8]
-        larg = max(xs[v] + ds[v][0] / 2 for v in xs) - min(xs[v] - ds[v][0] / 2 for v in xs)
-        cle = (round(larg), lg, k_)
-        if meilleure_cle is None or cle < meilleure_cle: meilleure_cle, place = cle, pl
+    # Resserrement (3 nov. 2026) : pour chaque rangement, on essaie aussi les autres ordres de moindre nombre de
+    # croisements (variantes d'essai) et des placements attirés vers le milieu (ATTRACTIONS). La disposition
+    # que donnait la règle précédente (premier ordre, sans attraction) sert de référence ; on retient la plus
+    # étroite des autres si elle n'est pas plus haute que la référence et que son tracé passe les vérifications
+    # (pointes, aucune bulle traversée, pas plus de faux départs). Largeur, hauteur et croisements ne peuvent donc
+    # qu'être conservés ou diminuer par rapport à cette référence. Par rapport à la mise en page antérieure au
+    # 3 nov. 2026 (bulles de deux lignes de 176 px, que `taille` a resserrées), l'absence de régression n'est pas
+    # garantie : elle a été constatée en mesurant tous les graphes avant et après.
+    # Le tracé d'une candidate est obtenu en rappelant disposer avec la disposition imposée.
+    if impose is not None:
+        place, verifier = impose
+    else:
+        def essai_memo(rg):
+            cle = (gid, tuple(sorted(rg.items())))
+            if cle not in ESSAIS: ESSAIS[cle] = essai(rg)
+            return ESSAIS[cle]
+        essais = [(essai_memo(rg), longueur(rg), k_) for k_, rg in enumerate(candidats)]
+        mini = min(e_[7] for e_, _, k_ in essais if k_ < anciens)
+        def etendue(pl):
+            xs, ds = pl[10], pl[8]
+            return round(max(xs[v] + ds[v][0] / 2 for v in xs) - min(xs[v] - ds[v][0] / 2 for v in xs))
+        options = []
+        for e_, lg, k_ in essais:
+            if e_[7] > mini or (k_ < anciens and e_[7] != mini): continue
+            for j, o in enumerate(e_[8]):
+                for a_, mu in enumerate(ATTRACTIONS):
+                    pl = placer(e_[:6] + (o, e_[7]), mu)
+                    options.append(((etendue(pl), lg, k_, j, a_), pl, e_, mu))
+        cle_ref, place, e_ref, _ = min((o_ for o_ in options if o_[0][2] < anciens and o_[0][3] == 0 and o_[0][4] == 0),
+                                       key=lambda o_: o_[0])
+        lay_ref, _, faux_ref = disposer(gid, (place, False))
+        haut_ref = lay_ref['hauteur']
+        if not replies: HAUTEUR_REF[gid] = haut_ref
+        # Avec des étiquettes repliées, la borne est la disposition sans repli (sa hauteur ici, sa largeur dans
+        # l'appel extérieur) : on prend la plus étroite des candidates qui n'est pas plus haute qu'elle, même si
+        # elle est un peu plus large que la référence repliée.
+        borne = cle_ref[0]
+        if replies: haut_ref, borne = HAUTEUR_REF[gid], float('inf')
+        def admissible(pl):
+            lay_, err_, faux_ = disposer(gid, (pl, False))
+            if err_ or lay_['hauteur'] > haut_ref or faux_ > faux_ref: return None
+            lay_, err_, _ = disposer(gid, (pl, True))
+            return None if err_ else lay_
+        choisi = (cle_ref[0], place, e_ref, 0.0, None)
+        for c_, pl, e_, mu in sorted(options, key=lambda o_: o_[0]):
+            if c_[0] >= borne: break
+            lay_ = admissible(pl)
+            if lay_: choisi = (c_[0], pl, e_, mu, lay_); break
+        if choisi[4] is None:
+            # Aucune candidate plus étroite : parmi celles de même largeur que la référence, on ne tente que la
+            # moins haute (une seule vérification complète) ; elle n'est gardée que si elle est strictement moins
+            # haute que la référence.
+            egales = [(disposer(gid, (o_[1], False))[0]['hauteur'], o_[0], o_) for o_ in options
+                      if o_[0][0] == cle_ref[0] and o_[0] != cle_ref]
+            if egales:
+                h_, _, (c_, pl, e_, mu) = min(egales, key=lambda h: (h[0], h[1]))
+                lay_ = admissible(pl) if h_ < haut_ref else None
+                if lay_: choisi = (c_[0], pl, e_, mu, lay_)
+        if RESSERRER_ECHANGES:
+            # Échanges de voisins dans une couche qui ne font pas croiser plus et rétrécissent encore. Le nombre
+            # de croisements est tenu à jour (un échange peut aussi le faire baisser).
+            larg_, pl, e_, mu, lay_ = choisi
+            vh, nm = e_[5], e_[3]
+            score_ = pl[7]
+            o = {t: list(c) for t, c in pl[6].items()}
+            for _ in range(RESSERRER_ECHANGES):
+                ameliore = False
+                for t in range(nm + 1):
+                    c = o[t]
+                    for i in range(len(c) - 1):
+                        avant_ = croisements_autour(o, t, vh, nm)
+                        c[i], c[i + 1] = c[i + 1], c[i]
+                        apres_ = croisements_autour(o, t, vh, nm)
+                        if apres_ <= avant_:
+                            pl2 = placer(e_[:6] + ({t_: list(c_) for t_, c_ in o.items()}, score_ - avant_ + apres_), mu)
+                            w2 = etendue(pl2)
+                            if w2 < larg_:
+                                l2 = admissible(pl2)
+                                if l2:
+                                    larg_, pl, lay_, ameliore = w2, pl2, l2, True
+                                    score_ += apres_ - avant_; continue
+                        c[i], c[i + 1] = c[i + 1], c[i]
+                if not ameliore: break
+            choisi = (larg_, pl, e_, mu, lay_)
+        if choisi[4]: return choisi[4]
+        verifier = True
+    signales = [] if impose is not None else erreurs
+    signaler = signales.append
     rang, couches, chaines, nmax, voisins_bas, voisins_haut, ordre, score, dims, sep, x, pos, intervalle = place
+    x = dict(x)
     xmin = min(x[v] - dims[v][0] / 2 for v in x)
     xmax = max(x[v] + dims[v][0] / 2 for v in x)
     decal = MARGE - xmin
@@ -667,15 +880,45 @@ def disposer(gid):
         # ordre de traitement compatible : vers la droite par abscisse de départ croissante, vers la gauche
         # décroissante ; on alterne les deux familles, qui ne se contraignent pas entre elles.
         segs.sort(key=lambda s: (0, s[2]) if s[3] > s[2] else (1, -s[2]))
-        attribue = {}
-        for s in segs:
-            mini = max([attribue[u] + 1 for u in attribue if dessus(u, s)], default=0)
-            pris = {attribue[u] for u in attribue if recouvre(u, s)}
-            p_ = mini
-            while p_ in pris: p_ += 1
-            attribue[s] = p_
+        # Relais (3 nov. 2026) : si une arête u finit son horizontale à l'abscisse exacte où une autre s part de sa
+        # bulle, la montée de u (de sa piste au haut de la bande) et celle de s (du bas de la bande à sa piste) sont
+        # sur la même verticale ; elles se superposeraient si la piste de u était sous celle de s. u doit donc être
+        # au-dessus de s. (Dans une disposition où l'ordre des pistes convient déjà, rien ne change.)
+        def relais(u, s): return abs(u[3] - s[2]) < 0.5 and u[0] != s[0]
+        # Quand l'arête du dessus n'est traitée qu'après l'autre (sens opposés), on recommence en la traitant
+        # d'abord ; une bande sans relais garde exactement l'attribution d'origine.
+        for _ in range(3):
+            attribue = {}
+            for s in segs:
+                mini = max([attribue[u] + 1 for u in attribue if dessus(u, s) or relais(u, s)], default=0)
+                pris = {attribue[u] for u in attribue if recouvre(u, s)}
+                p_ = mini
+                while p_ in pris: p_ += 1
+                attribue[s] = p_
+            fautifs = [u for u in segs for s in segs if relais(u, s) and attribue[u] >= attribue[s]]
+            if not fautifs: break
+            segs = [u for u in segs if u in fautifs] + [u for u in segs if u not in fautifs]
         for s, p_ in attribue.items(): piste[(s[0], s[1])] = p_
         npistes[t] = max(attribue.values(), default=-1) + 1
+    # Faux départs (3 nov. 2026, relecture : dans zf, la flèche Langage → Axiome du choix montait le long de
+    # Fondation puis passait à l'horizontale juste au-dessus d'elle, et se lisait « Fondation → Axiome du
+    # choix »). Une arête longue qui traverse le rang t par un nœud fictif, puis change d'abscisse dans la bande
+    # au-dessus de ce rang, semble partir de la bulle qu'elle longeait si son horizontale part vers cette bulle et la
+    # surplombe : la verticale passe à quelques pixels de son bord, puis la flèche tourne au-dessus d'elle comme si
+    # elle en sortait. On compte ces cas (la bulle voisine du nœud fictif, du côté où tourne la flèche, n'étant ni
+    # sa source ni sa cible) ; une disposition candidate n'est retenue que si elle n'en a pas plus que la
+    # référence (plus bas, `admissible`). Une horizontale qui surplombe une bulle éloignée de sa verticale ne
+    # trompe pas de la même façon : elle n'est pas comptée.
+    faux_departs = 0
+    for k, ch in enumerate(chaines):
+        for i in range(1, len(ch) - 1):
+            if (k, i) not in piste: continue
+            x0, x1 = abscisse(k, i), abscisse(k, i + 1)
+            c = ordre[rang[ch[i]]]; j = pos[ch[i]] + (1 if x1 > x0 else -1)
+            if not 0 <= j < len(c): continue
+            v = c[j]
+            if v.startswith('·') or v in (ch[0], ch[-1]): continue
+            if min(x0, x1) < x[v] + dims[v][0] / 2 and max(x0, x1) > x[v] - dims[v][0] / 2: faux_departs += 1
     # ordonnées des couches : la bande entre t et t + 1 contient ses pistes
     # DEGAGE : marge sous la couche supérieure, avant la première piste, pour que le dernier segment
     # vertical d'une flèche soit plus long que sa pointe (6 px) et monte toujours vers la bulle.
@@ -721,13 +964,35 @@ def disposer(gid):
                 dernier_y = yk - rc
         fx = port_arr[k]; fy = bord(b, fx, False) + 6
         if dernier_y - fy < 3:
-            erreur(f"[{gid}] la flèche {a}->{b} arrive par un segment trop court ({dernier_y - fy:.1f} px) : sa pointe serait mal orientée")
+            signaler(f"[{gid}] la flèche {a}->{b} arrive par un segment trop court ({dernier_y - fy:.1f} px) : sa pointe serait mal orientée")
         d += f' L{fx:.1f},{fy:.1f}'; poly.append((fx, fy))
         for p0, p1 in zip(poly, poly[1:]): morceaux.append((a, b, 'L', p0, p1))
         aretes.append({'de': a[1:] if a.startswith('↑') else a, 'vers': b,
                        'entree': a.startswith('↑'), 'd': d})
+    # Vérification des candidates (3 nov. 2026, relecture) : deux arêtes ne doivent jamais se superposer. Un port
+    # de départ peut tomber à l'abscisse exacte de la verticale d'arrivée d'une autre arête dans la même bande ;
+    # une telle disposition candidate est écartée (la référence garde le comportement antérieur).
+    if impose is not None and verifier:
+        par_ligne = defaultdict(list)
+        for a, b, _, (x0, y0), (x1, y1) in morceaux:
+            if abs(x0 - x1) < 1e-6 and abs(y0 - y1) > 1e-6: par_ligne[('v', round(x0))].append((a, b, x0, *sorted((y0, y1))))
+            elif abs(y0 - y1) < 1e-6 and abs(x0 - x1) > 1e-6: par_ligne[('h', round(y0))].append((a, b, y0, *sorted((x0, x1))))
+        for (sens_, c_), segs_ in list(par_ligne.items()):
+            voisins_ = segs_ + par_ligne.get((sens_, c_ + 1), [])
+            for i, s in enumerate(segs_):
+                for u in voisins_[i + 1:]:
+                    if (s[0], s[1]) != (u[0], u[1]) and abs(s[2] - u[2]) < 0.5 and min(s[4], u[4]) - max(s[3], u[3]) > 1:
+                        signaler(f"[{gid}] les arêtes {s[0]}->{s[1]} et {u[0]}->{u[1]} se superposent")
+        # Les tracés ne doivent pas se couper plus souvent que l'ordre ne le prévoit (croisements annoncés).
+        hs = [(a, b, y0, *sorted((x0, x1))) for a, b, _, (x0, y0), (x1, y1) in morceaux
+              if abs(y0 - y1) < 1e-6 and abs(x0 - x1) > 1e-6]
+        vs_ = [(a, b, x0, *sorted((y0, y1))) for a, b, _, (x0, y0), (x1, y1) in morceaux
+               if abs(x0 - x1) < 1e-6 and abs(y0 - y1) > 1e-6]
+        coupes = sum(1 for h in hs for v in vs_ if (h[0], h[1]) != (v[0], v[1])
+                     and h[3] + 0.5 < v[2] < h[4] - 0.5 and v[3] + 0.5 < h[2] < v[4] - 0.5)
+        if coupes > score: signaler(f"[{gid}] {coupes} croisements tracés pour {score} annoncés")
     # vérification : aucun tracé ne traverse un nœud autre que ses extrémités
-    for m in morceaux:
+    for m in (morceaux if verifier else []):
         a, b, typ, pts_ = m[0], m[1], m[2], m[3:]
         for i in range(0, 61):
             t = i / 60
@@ -744,13 +1009,14 @@ def disposer(gid):
                 w, h = dims[v]
                 if abs(px - x[v]) < w / 2 + 4 and abs(py - y[v]) < h / 2 + 4:
                     msg = f"[{gid}] l'arête {a}->{b} traverse {v}"
-                    if msg not in erreurs: erreur(msg)
+                    if msg not in signales: signaler(msg)
                     break
     rangs = []
     if gid == racines[0]['graphe']:
         rangs = [{'rang': t, 'y': ycouche[t]} for t in range(nmax + 1)]
-    return {'largeur': round(largeur), 'hauteur': round(hauteur), 'noeuds': places,
-            'aretes': aretes, 'rangs': rangs, 'croisements': score}
+    lay = {'largeur': round(largeur), 'hauteur': round(hauteur), 'noeuds': places,
+           'aretes': aretes, 'rangs': rangs, 'croisements': score}
+    return (lay, signales, faux_departs) if impose is not None else lay
 
 sortie = {'racine': racines[0]['graphe'], 'graphes': {}, 'noeuds': {}, 'lexique': {}}
 for g in graphes:
