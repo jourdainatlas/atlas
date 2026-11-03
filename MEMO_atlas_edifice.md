@@ -1484,3 +1484,16 @@ conditions-derivabilite. Sources : Carnap 1934 §35, Tarski 1933/1935, Löb 1955
 Hilbert–Bernays 1939. Devis du lot C (≈ 19 fiches) : C1 arithmétique dans PA (6), C2 β et récurrence dans PA (5),
 C3 syntaxe dans PA, D2 et Σ₁-complétude formalisée (6), C4 Pr_T, D3, second théorème (2) ; voir le rapport de
 l'agent dans godel4/NOTES.txt. Relu : aucune faute bloquante, huit précisions.
+
+## 98. Chapitre cal-peano : arithmétique dans PA (3 novembre 2026, Gödel lot C1)
+
+Notes : /home/claude/travail/godel5/ ; devis C2–C4 : /home/claude/travail/godel4/DEVIS_C.txt. Nœud chapitre
+cal-peano dans calc (entrée cal-representation). Fiches : cal-pa-recurrence (règles sous hypothèses pour toute
+théorie, récurrence avec paramètres, substitution simultanée — variables auxiliaires distinctes, lacune aussi
+corrigée dans cal-rp-calcul (ii)) ; cal-pa-lois ; cal-pa-ordre ((vii) pas sur les quantificateurs bornés) ;
+cal-pa-division (plus petit élément par récurrence, récurrence forte, division euclidienne) ; cal-pa-bezout
+(congruence sans soustraction, inverse modulo m, Euclide, chinois pour deux modules) ; cal-pa-sigma (collection
+bornée, PA ⊢ φ ↔ ∃y δ pour φ ∈ 𝒮). Contre-modèles de Q vérifiés (𝓜, 𝓜′, variante 0 × a = a). Grassmann 1861
+(sources secondaires). Aucun choix, aucun terme nouveau. Croisements : édifice 15, calc 1, cal-peano 0. L'a-faire
+de l-incompletude (ii) reste (C2 β et récurrence, C3 syntaxe et Σ₁-complétude formalisées, C4 conclusion).
+Relu : une remarque fausse corrigée (trois lois sont démontrables dans Q), six précisions.
