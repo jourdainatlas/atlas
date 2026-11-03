@@ -1510,3 +1510,21 @@ indépendance des variables (vii) ; stabilité de 𝒮 par substitution) ; cal-b
 ∃p D̂(p, v), D(p, c) ⇔ Dem_{T′}(p, c) et c code un ÉNONCÉ (sans cette clause la formule définit les formules
 démontrables et non Th(T)). Aucun choix, aucun terme nouveau. Croisements : édifice 15, calc 1, chapitre 0.
 Relu : deux erreurs bloquantes corrigées (clause « énoncé », indépendance des variables), dix précisions.
+
+## 100. Chapitre cal-syntaxe-pa : syntaxe dans PA et (D2) (3 novembre 2026, Gödel lot C3)
+
+Notes : /home/claude/travail/godel7/ ; devis C3b–C4 mis à jour : /home/claude/travail/godel4/DEVIS_C.txt. Nœud
+chapitre cal-syntaxe-pa dans calc (entrée cal-beta-pa ; cal-diagonal N'EST PAS en amont : ses notions ne sont
+citées qu'en remarque, le titre de cal-sp-derivabilite (i) est « Forme Σ₁ et définissabilité »). Fiches :
+cal-sp-termes (termes avec fonctions p.r., substitution SIMULTANÉE par variables nouvelles, traduction
+déterminée à l'équivalence près ; PA démontre les énoncés vrais de 𝒮 et les calculs clos) ; cal-sp-puissances ;
+cal-sp-ajout (construction de aj fixée par CONVENTION, cal-pr-codage ne la donnant pas ; constructions
+prouvablement égales donnent des définitions équivalentes) ; cal-sp-longueur (extensionnalité) ;
+cal-sp-concatenation ; cal-sp-valeurs (récurrence de valeurs par une récurrence ordinaire sur l'historique) ;
+cal-sp-derivabilite (Pr_T dans 𝒮, définit Th(T), équivalente dans PA à ∃yδ — Pr_T elle-même n'est pas Σ₁ —,
+D1, mise bout à bout de démonstrations et D2 ; on PREND T′ = T pour PA ; R et e de Craig fixés une fois pour
+toutes). l-incompletude : admis aval ajouté (renvoi cal-sp-derivabilite) ; l'a-faire est réduit à (D3).
+Reste (devis) : C3b ≈ 5 fiches (facteurs, num, Sb, instances, reconnaissance des axiomes), C4 ≈ 3–4 (valeur
+des termes sous Pr, Σ₁-complétude formalisée, D3, second théorème). Aucun choix, aucun terme nouveau.
+Croisements : édifice 15, calc 1, chapitre 0. Relu : aucune faute bloquante, onze précisions (dont une
+remarque numérique fausse sur la concaténation et une substitution successive au lieu de simultanée).
