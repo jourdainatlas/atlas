@@ -10,8 +10,17 @@
 // Appelé par rendu.mjs, qui fournit les données composées (D) et ses utilitaires ; renvoie les adresses à
 // mettre dans le plan du site.
 
-export function pagesLecture({ fs, D, ADRESSE, attr, coupe, texteBrut, NOMS, empreinte, vCss, gabarit }) {
-  const R = D.rubriques || {};
+// Gabarit partagé : les autres rubriques (cours, exercices) appellent outilsLecture(ctx) pour écrire leurs
+// propres pages de lecture avec la même enveloppe (en-tête, fil d'Ariane, pied, style, données structurées) :
+//   const L = outilsLecture(ctx);
+//   L.page({ chemin: 'exercices/t-01-07/', titre, description, ancre: 'exercices/ex/t-01-07', fil: [...], corps });
+//   L.puce(idNoeud) → lien vers la page de lecture d'une fiche de l'édifice ; L.relier(html) réécrit les liens
+//   {{nœud}} d'un texte composé ; L.urls : adresses écrites, à ajouter au plan du site.
+// ctx = { fs, D, ADRESSE, attr, coupe, texteBrut, NOMS, empreinte, vCss, gabarit } (fourni par rendu.mjs).
+let outilsCache = null;
+export function outilsLecture(ctx) {
+  if (outilsCache) return outilsCache;
+  const { fs, D, ADRESSE, attr, coupe, empreinte, vCss, gabarit } = ctx;
   const esc = s => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;');
   const urls = [];
 
@@ -118,17 +127,24 @@ ${corps}
     urls.push(url);
   }
 
-  // ---------------------------------------------------------------- édifice
-  const N = D.noeuds, G = D.graphes, racine = D.racine;
+  const N = D.noeuds, racine = D.racine;
   const lien = id => `/edifice/${id}/`;
   const couleur = n => n.graphe === racine ? (n.famille === 'mix' ? 'var(--c-mix)' : `var(--c-${n.famille})`)
     : ({ 'définition': 'var(--rouge)', 'axiome': 'var(--c-axiome)' }[n.nature] || 'var(--encre)');
   const puce = id => { const n = N[id]; if (!n) return ''; const c = n.graphe === racine ? couleur(n) : 'var(--encre-3)';
     return `<a class="puce" href="${lien(id)}" style="--c: ${c}">${esc(n.titre)}</a>`; };
-  // Liens internes du texte composé : #graphe.id → page de lecture de la fiche ; documents en chemin absolu.
   const relier = h => String(h || '')
     .replace(/<a class="lien-noeud" href="#[^"]*" data-n="([^"]+)">/g, (m, id) => `<a class="lien-noeud" href="${lien(id)}">`)
     .replace(/(href|src)="documents\//g, '$1="/documents/');
+  return (outilsCache = { page, puce, relier, couleur, lien, esc, urls });
+}
+
+export function pagesLecture(ctx) {
+  const { D, attr, texteBrut, NOMS } = ctx;
+  const { page, puce, relier, couleur, lien, esc, urls } = outilsLecture(ctx);
+  const R = D.rubriques || {};
+  // ---------------------------------------------------------------- édifice
+  const N = D.noeuds, G = D.graphes, racine = D.racine;
   // Chemin d'un nœud : les graphes qui le contiennent, du plus large au plus étroit.
   const chemin = n => {
     const ch = [];

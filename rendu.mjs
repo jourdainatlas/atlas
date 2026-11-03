@@ -11,7 +11,7 @@
 //   \lex{id}{...}         dans une formule : notation du lexique (ensembles usuels)
 //   {{id|texte}}           lien vers un nœud de l'atlas
 //   **gras**  *italique*   ; une ligne vide sépare deux paragraphes
-import { pagesLecture } from './lecture.mjs';
+import { pagesLecture, outilsLecture } from './lecture.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
@@ -410,6 +410,9 @@ function pagePartage(chemin, ancre, titre, description) {
   nbPartage++;
 }
 const Rb = D.rubriques || {};
+// Contexte des pages de lecture (lecture.mjs) : une rubrique peut écrire les siennes avec
+// outilsLecture(ctxLecture).page({...}) ; leurs adresses entrent d'elles-mêmes dans le plan du site.
+const ctxLecture = { fs, D, ADRESSE, attr, coupe, texteBrut, NOMS, empreinte, vCss, gabarit: fs.readFileSync('gabarit.html', 'utf8') };
 const niveaux = Object.fromEntries((Rb.cours?.niveaux || []).map(n => [n.id, texteBrut(n.titre)]));
 pagePartage('accueil/', 'accueil', 'Accueil', 'Architecture logique des théories mathématiques ; cours, exercices corrigés, et annales de concours avec recherche par thème.');
 if (!D.noeuds.etat) pagePartage('edifice/etat/', 'edifice/etat', 'État de l\'édifice', 'Inventaire des résultats admis dans l\'édifice, rangés par statut, et des fiches où intervient l\'axiome du choix.');
@@ -427,7 +430,7 @@ for (const e of Rb.exercices?.exercices || []) {
 pagePartage('nouveautes/', 'nouveautes', 'Nouveautés', texteBrut(Rb.nouveautes?.intro));
 pagePartage('a-propos/', 'a-propos', 'À propos', 'L\'auteur d\'ATLAS, professeur agrégé de mathématiques, le projet et ses principes de rédaction ; une adresse pour écrire ou signaler une erreur.');
 // Édifice et annales : pages de lecture complètes et indexables (lecture.mjs), aux adresses de partage.
-const urlsLecture = pagesLecture({ fs, D, ADRESSE, attr, coupe, texteBrut, NOMS, empreinte, vCss, gabarit: fs.readFileSync('gabarit.html', 'utf8') });
+const urlsLecture = pagesLecture(ctxLecture);   // même tableau que outilsLecture(ctxLecture).urls
 console.log(`Pages de lecture : ${urlsLecture.length}`);
 console.log(`Pages de partage : ${nbPartage}`);
 // Icônes et image d'aperçu (fabriquées par identite/fabriquer-icones.mjs).
