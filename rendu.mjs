@@ -231,7 +231,7 @@ if (process.env.ATLAS_APERCU === '1') {
 // atlas.html sert à l'aperçu dans Claude, qui ajoute lui-même l'enveloppe du document.
 
 // ---- Site publié : découpage par branche.
-// La page ne contient que les graphes, le lexique et les textes de l'édifice ; les textes des fiches
+// La page ne contient que les graphes, l'index du lexique et les textes de l'édifice ; les textes des fiches
 // de chaque branche sont écrits dans site/branches/<graphe>.json et chargés à la demande. La feuille
 // de style KaTeX et ses polices deviennent des fichiers séparés, mis en cache par le navigateur.
 const empreinte = s => crypto.createHash('sha256').update(s).digest('hex').slice(0, 10);
@@ -253,6 +253,21 @@ for (const gid of Object.keys(D.graphes)) {
   const contenu = JSON.stringify(textes);
   fs.writeFileSync(`site/branches/${gid}.json`, contenu);
   Dsite.aCharger[gid] = `branches/${gid}.json?v=${empreinte(contenu)}`;
+}
+// Lexique : les définitions (HTML KaTeX déjà composé), notations, emplois et renvois « Voir aussi » sont
+// dans site/lexique.json (2,8 Mo), que le gabarit demande dès le démarrage sans retarder l'affichage
+// (chargerLexique). La page ne garde qu'un index id → [terme, nœud où il est défini] (≈ 36 Ko), qui suffit
+// aux libellés, aux comptes de termes et à la recherche dans l'édifice.
+{
+  const complet = {}, indexLex = {};
+  for (const [id, e] of Object.entries(Dsite.lexique)) {
+    indexLex[id] = [e.terme, e.defini];
+    complet[id] = { definition: e.definition, notation: e.notation || null, emplois: e.emplois, voir: e.voir };
+  }
+  const contenu = JSON.stringify(complet);
+  fs.writeFileSync('site/lexique.json', contenu);
+  Dsite.lexique = indexLex;
+  Dsite.lexiqueACharger = `lexique.json?v=${empreinte(contenu)}`;
 }
 // Textes des exercices (énoncé, corrigé) : un fichier par feuille, chargé à l'ouverture des exercices.
 // Index du moteur des annales : fichier séparé, chargé à l'ouverture de la rubrique.

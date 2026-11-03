@@ -1309,3 +1309,17 @@ exclusions). Non réglés (déplacement de définition) : convexe (ta-simplement
 fiches), orthonormée (deux définitions parallèles), étoilé (gd-poincare), relèvement, point fixe d'une application,
 « premiers entre eux » des polynômes, 13 gras homonymes d'une entrée définie ailleurs (groupe dérivé, normalisateur,
 Zariski, module libre, produit croisé…). Relu : une relecture complète des 1 005 liens, corrections appliquées.
+
+## 87. Lexique chargé à part (3 novembre 2026)
+
+Mesure (Playwright, 390 px, CPU ×4, gzip comme Pages) : index.html 7,1 Mo (835 Ko compressés), dont lexique
+2,8 Mo (HTML KaTeX des définitions) ; le fil principal y passait ≈ 1,5 s, dont ≈ 0,6 s pour le seul lexique
+(rubriques et JSON.parse sans effet). `rendu.mjs` écrit désormais `site/lexique.json?v=<empreinte>` ; la page garde
+`D.lexique = {id: [terme, defini]}` (≈ 36 Ko) et `D.lexiqueACharger`. Gabarit : `chargerLexique(explicite)`
+(promesse unique, remise à zéro sur échec, pas de nouvel essai au survol avant 10 s), `estLexiqueCharge`,
+`remplirLexique`/`construireLexique` (onglet construit à la première ouverture), bulle provisoire puis redessinée,
+« réessayer », ancres `#lexique` et `#lexique/<id>` (nouvelles, conservées dans la barre d'adresse). Robuste à un
+index et un fichier discordants (ancienne page en cache, Pages ignore `?v=`). `ouvrirTerme` pose un scroll-margin
+mesuré sur la barre collante (titre visible à 390 px). L'aperçu à fichier unique garde le lexique embarqué ; sw.js le
+met en cache comme les branches. Gain : 4G simulée, graphe affiché 2,54 → 1,58 s (médianes) ; 3G lente 6,4 → 4,7 s.
+Relu : une relecture (une erreur bloquante, la discordance, corrigée).

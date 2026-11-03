@@ -576,6 +576,9 @@ blockquote.redaction p { margin: 0; }
 .bulle p { margin: 0 0 .5em; }
 .bulle .bulle-pied { font-family: var(--f-ui); font-size: 12px; color: var(--encre-3); margin: 6px 0 0; }
 .bulle .formule { margin: .2em 0 .5em; }
+/* lexique pas encore chargé (site publié : lexique.json) : attente discrète, ou échec avec « réessayer » */
+.attente-lexique { font-family: var(--f-ui); font-size: 13.5px; color: var(--encre-3); }
+.reessayer-lexique { font: inherit; color: var(--rouge); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
 
 /* ================================================================ menu des rubriques */
 .marque-menu { position: relative; }
@@ -1188,6 +1191,39 @@ span.case:hover { border-style: dashed; color: inherit; }
 <script>
 const D = "__DONNEES__";
 const $ = s => document.querySelector(s);
+
+/* ------------------------------------------------------------ chargement du lexique */
+// Sur le site publié, la page ne porte qu'un index du lexique, id → [terme, nœud où il est défini] : il
+// suffit aux libellés, aux comptes de termes et à la recherche dans l'édifice. Les définitions, notations,
+// emplois et renvois sont dans lexique.json (adresse D.lexiqueACharger, avec empreinte ?v=), demandé dès le
+// démarrage sans retarder l'affichage ; la bulle et l'onglet Lexique attendent sa promesse. L'aperçu à
+// fichier unique contient déjà tout (pas de D.lexiqueACharger).
+if (D.lexiqueACharger) for (const [id, [terme, defini]] of Object.entries(D.lexique)) D.lexique[id] = { id, terme, defini };
+// Après un échec, un survol ne relance pas la demande (2,7 Mo) avant DELAI_LEXIQUE ; « réessayer » et
+// l'ouverture de l'onglet (appel explicite) la relancent tout de suite. L'index et le fichier peuvent ne pas
+// concorder (ancienne page en cache, terme supprimé ou renommé depuis) : les termes absents du fichier restent
+// sans définition, ceux absents de l'index sont ignorés.
+let chargementLexique = null, echecLexique = 0;
+const DELAI_LEXIQUE = 10000;
+const estLexiqueCharge = () => !D.lexiqueACharger;
+function chargerLexique(explicite = false) {
+  if (estLexiqueCharge()) return Promise.resolve();
+  if (!chargementLexique && !explicite && echecLexique && Date.now() - echecLexique < DELAI_LEXIQUE)
+    return Promise.reject(new Error('lexique : échec récent'));
+  if (!chargementLexique) {
+    chargementLexique = fetch(D.lexiqueACharger)
+      .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(L => {
+        for (const [id, champs] of Object.entries(L)) if (D.lexique[id]) Object.assign(D.lexique[id], champs);
+        delete D.lexiqueACharger; echecLexique = 0;
+        // l'onglet affichait l'échec : le lexique arrivé par une bulle le remplit aussi
+        if (document.querySelector('#lexique [data-lexique-reessayer]')) remplirLexique().catch(() => {});
+      })
+      .catch(e => { chargementLexique = null; echecLexique = Date.now(); throw e; });
+  }
+  return chargementLexique;
+}
+chargerLexique().catch(() => {});
 const etat = { graphe: D.racine, choisi: null, echelle: 1 };
 const FAM = n => n.famille;
 const NOMBRES = new Set(['n', 'z', 'q', 'r', 'c']);
@@ -1833,30 +1869,52 @@ function etatEdifice() {
 }
 
 /* ------------------------------------------------------------ lexique */
+// L'onglet est rempli à sa première ouverture (et non plus au démarrage : plusieurs centaines d'entrées
+// composées), une fois le lexique chargé ; renvoie une promesse. En cas d'échec, un message et un bouton
+// « réessayer ». Ouvrir l'onglet est une demande explicite : elle relance le chargement même juste après un échec.
+let remplissageLexique = null;
 function remplirLexique() {
+  if (remplissageLexique) return remplissageLexique;
+  if (!estLexiqueCharge()) $('#lexique').innerHTML = '<p class="contexte attente-lexique" role="status">Chargement du lexique…</p>';
+  remplissageLexique = chargerLexique(true).then(construireLexique).catch(e => {
+    remplissageLexique = null;
+    $('#lexique').innerHTML = '<p class="contexte attente-lexique" role="alert">Le lexique n\'a pas pu être chargé. Vérifiez la connexion, puis <button type="button" class="reessayer-lexique" data-lexique-reessayer>réessayer</button>.</p>';
+    throw e;
+  });
+  return remplissageLexique;
+}
+function construireLexique() {
   const L = Object.values(D.lexique).sort((a, b) => a.terme.localeCompare(b.terme, 'fr'));
   $('#lexique').innerHTML = L.map(e => `<article class="entree-lex" id="lx-${e.id}" data-t="${esc(e.terme.toLowerCase())}">
-      <h3>${esc(e.terme)}${e.notation ? ` <span class="notation">${e.notation}</span>` : ''}</h3>${e.definition}
-      <div class="emplois">Défini dans ${puce(e.defini)}</div>
-      ${e.emplois.length ? `<div class="emplois">Employé dans ${e.emplois.map(i => puce(i)).join('')}</div>` : ''}
-      ${e.voir.length ? `<div class="emplois">Voir aussi ${e.voir.map(v => `<span class="terme" data-g="${v}" tabindex="0" role="button">${esc(D.lexique[v].terme)}</span>`).join(', ')}</div>` : ''}
+      <h3>${esc(e.terme)}${e.notation ? ` <span class="notation">${e.notation}</span>` : ''}</h3>${e.definition || ''}
+      ${D.noeuds[e.defini] ? `<div class="emplois">Défini dans ${puce(e.defini)}</div>` : ''}
+      ${(e.emplois || []).some(i => D.noeuds[i]) ? `<div class="emplois">Employé dans ${e.emplois.filter(i => D.noeuds[i]).map(i => puce(i)).join('')}</div>` : ''}
+      ${(e.voir || []).some(v => D.lexique[v]) ? `<div class="emplois">Voir aussi ${e.voir.filter(v => D.lexique[v]).map(v => `<span class="terme" data-g="${v}" tabindex="0" role="button">${esc(D.lexique[v].terme)}</span>`).join(', ')}</div>` : ''}
     </article>`).join('');
   // la recherche porte aussi sur la notation (« L2 », « Spec », « Z/nZ »…)
   document.querySelectorAll('.entree-lex').forEach(a => {
     const n = a.querySelector('h3 .notation .katex-html');
     if (n) a.dataset.t += ' ' + n.textContent.replace(/\s+/g, '').toLowerCase();
   });
+  filtrer();   // ce qui a pu être tapé dans le filtre pendant le chargement
 }
 function ouvrirTerme(id) {
   cacherBulle(true);
   if (enRubrique()) aller(etat.graphe || D.racine, etat.choisi);   // le lexique est dans le panneau de l'édifice
+  $('#filtre').value = '';
   montrerOnglet('lexique');
-  $('#filtre').value = ''; filtrer();
-  const e = document.getElementById('lx-' + id);
-  if (!e) return;
-  e.scrollIntoView({ block: 'start' });
-  e.classList.add('eclair');
-  setTimeout(() => e.classList.remove('eclair'), 1400);
+  filtrer();
+  remplirLexique().then(() => {
+    const e = document.getElementById('lx-' + id);
+    if (!e || $('#onglet-lexique').hidden) return;   // onglet quitté pendant le chargement
+    // le titre de l'entrée ne doit pas passer sous la barre collante (recherche et onglets), dont la hauteur
+    // varie avec la largeur : on la mesure
+    const tp = document.querySelector('.tete-panneau');
+    if (tp) e.style.scrollMarginTop = Math.ceil(tp.getBoundingClientRect().height) + 8 + 'px';
+    e.scrollIntoView({ block: 'start' });
+    e.classList.add('eclair');
+    setTimeout(() => e.classList.remove('eclair'), 1400);
+  }, () => {});
 }
 function filtrer() {
   const q = $('#filtre').value.trim().toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu, '');
@@ -1870,6 +1928,7 @@ function montrerOnglet(nom) {
     $('#tab-' + t).setAttribute('aria-selected', String(t === nom));
     $('#onglet-' + t).hidden = t !== nom;
   }
+  if (nom === 'lexique') remplirLexique().catch(() => {});
 }
 
 /* ------------------------------------------------------------ recherche dans tout l'édifice */
@@ -1973,14 +2032,27 @@ function clavierEdifice(ev) {
 
 /* ------------------------------------------------------------ bulle */
 let minuterie = null, termeActif = null;
-function montrerBulle(el) {
+function montrerBulle(el, explicite = false) {
   const e = D.lexique[el.dataset.g];
   if (!e) return;
   clearTimeout(minuterie);
   const b = $('#bulle');
   if (termeActif !== el) {
-    b.innerHTML = `<p class="bulle-terme">${esc(e.terme)}${e.notation ? ` <span class="notation">${e.notation}</span>` : ''}</p>${e.definition}<p class="bulle-pied">Défini au nœud « ${esc(D.noeuds[e.defini].titre)} » · cliquer pour l'ouvrir dans le lexique</p>`;
+    // Lexique pas encore arrivé : le terme et son nœud sont dans l'index, la définition suit.
+    // Lexique arrivé mais terme absent du fichier (index et fichier discordants) : bulle sans définition.
+    const pret = e.definition !== undefined || estLexiqueCharge();
+    const corps = pret ? (e.definition ?? '') : '<p class="attente-lexique" role="status">Chargement de la définition…</p>';
+    b.innerHTML = `<p class="bulle-terme">${esc(e.terme)}${e.notation ? ` <span class="notation">${e.notation}</span>` : ''}</p>${corps}<p class="bulle-pied">Défini au nœud « ${esc(D.noeuds[e.defini].titre)} » · cliquer pour l'ouvrir dans le lexique</p>`;
     termeActif = el;
+    if (!pret) chargerLexique(explicite).then(() => {
+      if (termeActif === el && !b.hidden) { termeActif = null; montrerBulle(el); }
+    }, () => {
+      const a = b.querySelector('.attente-lexique');
+      if (termeActif === el && a) {
+        a.setAttribute('role', 'alert');
+        a.innerHTML = 'La définition n\'a pas pu être chargée. Vérifiez la connexion, puis <button type="button" class="reessayer-lexique" data-lexique-reessayer>réessayer</button>.';
+      }   // un survol ne refait la demande qu'après DELAI_LEXIQUE ; « réessayer » la refait tout de suite
+    });
   }
   b.hidden = false;
   const r = el.getBoundingClientRect(), bw = b.offsetWidth, bh = b.offsetHeight;
@@ -2095,6 +2167,12 @@ document.addEventListener('scroll', () => cacherBulle(true), true);
 
 $('#tab-fiche').addEventListener('click', () => montrerOnglet('fiche'));
 $('#tab-lexique').addEventListener('click', () => montrerOnglet('lexique'));
+// « Réessayer » après un échec du chargement du lexique (onglet Lexique ou bulle d'un terme)
+document.addEventListener('click', ev => {
+  if (!ev.target.closest('[data-lexique-reessayer]')) return;
+  if (ev.target.closest('#bulle')) { const el = termeActif; termeActif = null; if (el && el.isConnected) montrerBulle(el, true); else cacherBulle(true); return; }
+  remplirLexique().catch(() => {});
+});
 $('#filtre').addEventListener('input', filtrer);
 $('#cherche-edifice').addEventListener('input', chercherEdifice);
 $('#cherche-edifice').addEventListener('keydown', clavierEdifice);
@@ -3257,6 +3335,15 @@ function depuisAncre() {
   }
   if (RUBRIQUES[r]) { afficherRubrique(r, reste.join('/')); return; }
   if (h === 'edifice/etat') { aller(D.racine, null, { vue: 'etat' }); return; }
+  // #lexique : l'onglet Lexique du panneau de l'édifice ; #lexique/<id> : ce terme, mis en évidence.
+  if (r === 'lexique') {
+    const ancre = location.hash;
+    aller(etat.graphe || D.racine, etat.choisi);
+    if (reste[0] && D.lexique[reste[0]]) ouvrirTerme(reste[0]); else montrerOnglet('lexique');
+    // aller() a remis l'ancre du graphe : on garde #lexique/<id> dans la barre d'adresse (partage, Précédent)
+    try { history.replaceState(null, '', ancre); } catch (e) {}
+    return;
+  }
   const [g, n] = h.split('.');
   const valide = n && D.noeuds[n] && (D.noeuds[n].graphe === g || (D.graphes[g] && D.graphes[g].noeuds.some(p => p.id === n && p.entree)));
   if (g && D.graphes[g]) aller(g, valide ? n : null);
@@ -3470,6 +3557,5 @@ addEventListener('appinstalled', () => $('#appli-encart')?.remove());
 if (appliIos && matchMedia('(max-width: 1100px)').matches) setTimeout(() => appliEncart(
   'Installez ATLAS sur votre écran d\'accueil : touchez <svg class="ae-partage" viewBox="0 0 24 24" aria-label="Partager"><path d="M12 3v12M7.5 7.5 12 3l4.5 4.5M6 11H5v10h14V11h-1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg> <b>Partager</b>, puis <b>Sur l\'écran d\'accueil</b>.'), 4000);
 addEventListener('hashchange', depuisAncre);
-remplirLexique();
 depuisAncre();
 </script>
