@@ -13,7 +13,9 @@ Vérifications bloquantes (le script s'arrête sur erreur) :
   - tout terme [[id]] et tout lien {{id|...}} renvoie à une entrée existante ;
   - un lien {{id|...}} dans un texte, un énoncé ou une démonstration renvoie à un nœud antérieur ;
   - aucune arête tracée ne traverse un nœud ;
-  - résultats admis : chaque mention est déclarée dans le champ « admis » de sa fiche (ci-dessous).
+  - résultats admis : chaque mention est déclarée dans le champ « admis » de sa fiche (ci-dessous) ;
+  - exemples du lexique (contenu/exemples/<theorie>.yaml) : terme connu, rangé dans le fichier de sa théorie,
+    une seule fois ; schémas nommés lex-<id>-<k>, avec légende ; mêmes renvois et même ordre que les définitions.
 Avertissements : termes du lexique jamais employés, arêtes redondantes non tracées, admis hors cadre
 dans un énoncé, une démonstration ou un texte.
 
@@ -179,17 +181,85 @@ def verifie_refs(texte, ou, lieu=None):
     for t in RE_LIEN.findall(texte):
         if t not in noeuds: erreur(f"{ou} : lien vers un nœud inconnu {{{{{t}}}}}")
 
+# ------------------------------------------------------------------ exemples du lexique
+# Rangés par théorie (5 nov. 2026, mémo de l'édifice § 111) : contenu/exemples/<theorie>.yaml, un fichier par
+# théorie de premier niveau (nœud du graphe racine) ; « theorie » est celle qui contient, à une profondeur
+# quelconque, le nœud defini_dans du terme. Chaque fichier : exemples: → {id du terme: [texte, …]}. Ainsi plusieurs
+# rédacteurs travaillent en parallèle, chacun dans son fichier. Un schéma d'exemple s'appelle lex-<id>-<k>
+# (k : numéro de l'exemple), suivi de -b, -c… s'il y en a plusieurs dans le même exemple.
+class _ChargeurSansDoublon(yaml.SafeLoader):
+    """yaml.safe_load garde silencieusement la dernière de deux clés égales : ici, c'est une erreur."""
+def _table_sans_doublon(chargeur, noeud, deep=False):
+    vues = set()
+    for k, _ in noeud.value:
+        cle = chargeur.construct_object(k, deep=deep)
+        if cle in vues:
+            raise yaml.constructor.ConstructorError(None, None, f"clé en double « {cle} »", k.start_mark)
+        vues.add(cle)
+    return chargeur.construct_mapping(noeud, deep)
+_ChargeurSansDoublon.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, _table_sans_doublon)
+def theorie_de(v):
+    """Théorie de premier niveau (nœud du graphe racine) qui contient le nœud v ; None si la chaîne est rompue."""
+    vus = set()
+    while v in noeuds and v not in vus:
+        vus.add(v)
+        g = noeuds[v]['graphe']
+        if g in G and G[g]['conteneur'] is None: return v
+        v = G[g]['conteneur'] if g in G else None
+    return None
+THEORIES = {n['id'] for g in graphes if g['conteneur'] is None for n in g['noeuds']}
+RE_SCHEMA_EX = re.compile(r'```schema ([\w-]+)\n([\s\S]*?)\n\s*```')
+lieu_exemples = {}                                  # id du terme → fichier qui porte ses exemples
+for e in lex.values():
+    if 'exemples' in e:
+        th = theorie_de(e.get('defini_dans'))
+        erreur(f"lexique/{e['id']} : les exemples ne sont plus dans lexique.yaml ; les ranger dans contenu/exemples/{th or '<theorie>'}.yaml")
+    e['exemples'] = []
+for f in sorted(glob.glob('contenu/exemples/*')):
+    th = os.path.basename(f)[:-5] if f.endswith('.yaml') else None
+    if th not in THEORIES:
+        erreur(f"{f} : le nom doit être celui d'une théorie du graphe racine (<theorie>.yaml : {', '.join(sorted(THEORIES))})"); continue
+    try:
+        donnees = yaml.load(open(f, encoding='utf-8'), Loader=_ChargeurSansDoublon) or {}
+    except yaml.YAMLError as x:
+        erreur(f"{f} : YAML illisible : {x}"); continue
+    if not isinstance(donnees, dict) or set(donnees) - {'exemples'}:
+        erreur(f"{f} : une seule clé attendue, « exemples: »"); continue
+    table = donnees.get('exemples') or {}
+    if not isinstance(table, dict):
+        erreur(f"{f} : « exemples » doit associer à chaque id de terme une liste de textes"); continue
+    for t, ex in table.items():
+        ou = f"{f} : {t}"
+        if t not in lex:
+            erreur(f"{ou} : terme inconnu du lexique"); continue
+        if t in lieu_exemples:
+            erreur(f"{ou} : exemples déjà donnés dans {lieu_exemples[t]}"); continue
+        lieu_exemples[t] = f
+        bon = theorie_de(lex[t].get('defini_dans'))
+        if bon and bon != th:
+            erreur(f"{ou} : terme défini au nœud {lex[t]['defini_dans']}, de la théorie {bon} ; le ranger dans contenu/exemples/{bon}.yaml")
+        if not (isinstance(ex, list) and ex and all(isinstance(x, str) and x.strip() for x in ex)):
+            erreur(f"{ou} : il faut une liste non vide de textes (« - | » puis le texte)"); continue
+        lex[t]['exemples'] = ex
+        for k, x in enumerate(ex):
+            for m in RE_SCHEMA_EX.finditer(x):
+                if not re.fullmatch(rf'lex-{re.escape(t)}-{k + 1}(?:-[b-z])?', m.group(1)):
+                    erreur(f"lexique/{t}/exemple {k + 1} : schéma « {m.group(1)} » ; nom attendu lex-{t}-{k + 1} (puis -b, -c…)")
+                if not m.group(2).strip():
+                    erreur(f"lexique/{t}/exemple {k + 1} : schéma {m.group(1)} sans légende")
+# Schémas d'exemples dessinés mais employés nulle part (souvent un renumérotage oublié) : avertissement.
+noms_ex = {m.group(1) for e in lex.values() for x in e['exemples'] for m in RE_SCHEMA_EX.finditer(x)}
+for f in sorted(glob.glob('contenu/schemas/lex-*.svg')):
+    if os.path.basename(f)[:-4] not in noms_ex: avert(f"{f} : schéma d'exemple employé dans aucun exemple")
+
 for n in noeuds.values():
     for t in textes(n): verifie_refs(t, n['id'], n['id']); verifie_typo(t, n['id'])
 for e in lex.values():
     verifie_refs(e['definition'], f"lexique/{e['id']}"); verifie_typo(e['definition'], f"lexique/{e['id']}")
-    # Exemples (4 nov. 2026) : liste facultative de textes, deux ou trois en principe, mêmes contrôles que la
-    # définition ; ils ne comptent pas comme emplois du terme (ils ne sont visibles que dans l'onglet Lexique).
-    ex = e.get('exemples')
-    if ex is not None and not (isinstance(ex, list) and all(isinstance(x, str) and x.strip() for x in ex)):
-        erreur(f"lexique/{e['id']} : « exemples » doit être une liste de textes non vides")
-        e['exemples'] = ex = []
-    for k, x in enumerate(ex or []):
+    # Exemples : deux ou trois en principe, mêmes contrôles que la définition ; ils ne comptent pas comme
+    # emplois du terme (ils ne sont visibles que dans l'onglet Lexique).
+    ex = e['exemples']
+    for k, x in enumerate(ex):
         verifie_refs(x, f"lexique/{e['id']}/exemple {k + 1}"); verifie_typo(x, f"lexique/{e['id']}/exemple {k + 1}")
     if ex and not 2 <= len(ex) <= 3:
         avert(f"lexique/{e['id']} : {len(ex)} exemple(s), deux ou trois attendus")
@@ -1085,7 +1155,9 @@ for t, e in lex.items():
     sortie['lexique'][t] = {'id': t, 'terme': e['terme'], 'definition': e['definition'],
                             'emplois': sorted(emplois[t]), 'defini': e['defini_dans'],
                             'voir': e.get('voir', []), 'notation': e.get('notation'),
-                            'exemples': e.get('exemples') or []}
+                            'exemples': e['exemples'],
+                            # théorie de premier niveau : le gabarit charge les exemples de cette seule théorie
+                            'theorie': theorie_de(e['defini_dans']) if e['exemples'] else None}
 # Inventaire des admis et des fiches ⋆ (page « État de l'édifice ») : il reste dans la page même quand
 # les textes des branches sont chargés à la demande. Trié par rang de la théorie racine, puis dans l'ordre
 # des fichiers de contenu.

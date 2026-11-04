@@ -1,0 +1,97 @@
+# Exemples du lexique : théorie « Algèbre linéaire » (alglin).
+#
+# Un fichier par théorie de premier niveau de l'édifice (graphe « edifice ») : y figurent les exemples des termes
+# dont le nœud « defini_dans » appartient à cette théorie, à quelque profondeur que ce soit. construire.py refuse un
+# terme rangé dans le mauvais fichier et donne le bon nom. Format (mémo de l'édifice, § 111) :
+#
+#   exemples:
+#     <id du terme>:
+#       - |
+#         Premier exemple, en phrases complètes ([[id]], {{noeud|Titre}}, formules comme dans les fiches).
+#       - |
+#         Deuxième exemple ; un schéma s'y insère par un bloc sur des lignes à part :
+#         ```schema lex-<id>-2
+#         Légende : une ou deux phrases qui disent ce qu'il faut lire sur la figure.
+#         ```
+#
+# Les termes suivent l'ordre du lexique ; deux ou trois exemples par terme.
+
+exemples:
+  matrice:
+    - |
+      Le produit des matrices n'est pas commutatif, même entre matrices carrées. Pour
+      $$A = \begin{pmatrix} 0 & 1 \\ 0 & 0 \end{pmatrix}, \qquad B = \begin{pmatrix} 0 & 0 \\ 1 & 0 \end{pmatrix},$$
+      on trouve
+      $$AB = \begin{pmatrix} 1 & 0 \\ 0 & 0 \end{pmatrix}, \qquad BA = \begin{pmatrix} 0 & 0 \\ 0 & 1 \end{pmatrix}.$$
+      On a même $A^2 = 0$ alors que $A \neq 0$ : un produit de matrices non nulles peut être nul, ce qui interdit de « simplifier » une égalité $AX = AY$ sans autre hypothèse sur $A$.
+    - |
+      Le produit d'une ligne par une colonne et celui de la colonne par la ligne n'ont pas même taille. Pour la ligne et la colonne
+      $$L = \begin{pmatrix} 1 & 1 \end{pmatrix}, \qquad C = \begin{pmatrix} 1 \\ -1 \end{pmatrix},$$
+      on trouve
+      $$LC = \begin{pmatrix} 0 \end{pmatrix}, \qquad CL = \begin{pmatrix} 1 & 1 \\ -1 & -1 \end{pmatrix}.$$
+      Le premier produit est une matrice à une ligne et une colonne, le second une matrice carrée de taille $2$ : les deux produits sont définis, mais ils ne vivent pas dans le même espace, et la question de leur égalité n'a même pas de sens.
+    - |
+      Le produit d'une matrice par une colonne n'est défini que dans un sens. Pour
+      $$M = \begin{pmatrix} 1 & 0 & 1 \\ 0 & 1 & 1 \end{pmatrix}, \qquad x = \begin{pmatrix} 1 \\ 1 \\ 0 \end{pmatrix},$$
+      la matrice $M$ a trois colonnes et $x$ trois lignes, de sorte que $Mx$ est la colonne de coefficients $1$ et $1$, élément de $K^2$. En revanche $xM$ n'est pas défini, puisque $x$ n'a qu'une colonne alors que $M$ a deux lignes. C'est la raison pour laquelle on écrit les vecteurs en colonnes : $x \mapsto Mx$ est alors une application de $K^3$ dans $K^2$.
+
+  matrice-application-lineaire:
+    - |
+      La matrice d'une application dépend des bases choisies. L'endomorphisme $u : (x, y) \mapsto (y, x)$ de $K^2$ échange les coordonnées ; dans la base canonique $(e_1, e_2)$, sa matrice est
+      $$\begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}.$$
+      Dans la base $\mathcal B' = (e_1 + e_2, e_2)$, on a $u(e_1 + e_2) = e_1 + e_2$ et $u(e_2) = e_1 = (e_1 + e_2) - e_2$. Par suite
+      $$\operatorname{Mat}_{\mathcal B'}(u) = \begin{pmatrix} 1 & 1 \\ 0 & -1 \end{pmatrix}.$$
+      Les deux matrices représentent la même application ; seule la façon de lire les coordonnées a changé.
+    - |
+      La matrice de l'identité n'est $I_n$ que si la même base sert au départ et à l'arrivée. Prenons la base canonique $\mathcal B = (e_1, e_2)$ de $K^2$ au départ, et $\mathcal B' = (e_1 + e_2, e_2)$ à l'arrivée. On écrit $e_1 = (e_1 + e_2) - e_2$ et $e_2 = e_2$, d'où
+      $$\operatorname{Mat}_{\mathcal B, \mathcal B'}(\mathrm{id}) = \begin{pmatrix} 1 & 0 \\ -1 & 1 \end{pmatrix}.$$
+      Ce n'est pas $I_2$, alors que l'application est l'identité. C'est l'inverse de la [[matrice-passage|matrice de passage]] de $\mathcal B$ à $\mathcal B'$, celle qui convertit les anciennes coordonnées en nouvelles.
+    - |
+      Une application entre espaces de dimensions différentes a une matrice rectangulaire, dont le nombre de lignes est la dimension de l'espace d'arrivée. Soit $p : (x, y, z) \mapsto (x, y)$ la projection de $K^3$ sur $K^2$, et $i : (x, y) \mapsto (x, y, 0)$ l'injection de $K^2$ dans $K^3$. Dans les bases canoniques, leurs matrices sont
+      $$A = \begin{pmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \end{pmatrix}, \qquad B = \begin{pmatrix} 1 & 0 \\ 0 & 1 \\ 0 & 0 \end{pmatrix}.$$
+      Le produit $AB = I_2$ est la matrice de $p \circ i = \mathrm{id}_{K^2}$. Le produit $BA = \operatorname{diag}(1, 1, 0)$ est celle de $i \circ p$, qui n'est pas l'identité de $K^3$ : la composition se lit sur les matrices, dans le même ordre.
+
+  transposition:
+    - |
+      Deux transpositions dont les supports se rencontrent ne commutent pas. Dans $\mathfrak S_3$, on trouve
+      $$\begin{aligned} (1\ 2)(2\ 3) &= (1\ 2\ 3), \\ (2\ 3)(1\ 2) &= (1\ 3\ 2), \end{aligned}$$
+      en composant de droite à gauche : la première envoie $1$ sur $2$, la seconde sur $3$. Le produit de deux transpositions distinctes de supports non disjoints est ainsi un [[trois-cycle|$3$-cycle]], de signature $1$.
+    - |
+      Toutes les transpositions s'obtiennent les unes à partir des autres par conjugaison. On vérifie, en suivant les trois points, que
+      $$(1\ 2)(2\ 3)(1\ 2) = (1\ 3).$$
+      C'est un cas de la règle générale : pour toute permutation $\sigma$, la permutation $\sigma (a\ b) \sigma^{-1}$ envoie $\sigma(a)$ sur $\sigma(b)$ et $\sigma(b)$ sur $\sigma(a)$, et fixe tout autre point $\sigma(c)$, puisque $(a\ b)$ fixe $c$ ; c'est donc la transposition $(\sigma(a)\ \sigma(b))$. Ici $\sigma = (1\ 2)$ est son propre inverse, et elle envoie $2$ sur $1$ et $3$ sur $3$.
+    - |
+      Être son propre inverse ne suffit pas pour être une transposition. La [[double-transposition|double transposition]] $(1\ 2)(3\ 4)$ de $\mathfrak S_4$ est égale à son inverse, puisque ses deux facteurs, de supports disjoints, commutent et sont chacun leur propre inverse ; mais elle déplace quatre points, et sa signature vaut $(-1)^2 = 1$, alors que celle de toute transposition vaut $-1$.
+
+  forme-lineaire:
+    - |
+      Sur $K^n$, la $i$-ième coordonnée $x \mapsto x_i$ et la somme $x \mapsto x_1 + \cdots + x_n$ sont des formes linéaires. Plus généralement, pour $c_1, \dots, c_n \in K$, l'application $x \mapsto c_1x_1 + \cdots + c_nx_n$ en est une. Toute forme linéaire sur $K^n$ est de ce type, avec $c_i$ l'image du $i$-ième vecteur de la [[base-canonique-kn|base canonique]], puisqu'une application linéaire est déterminée par les images d'une base.
+    - |
+      Sur $K^2$, l'application $(x, y) \mapsto xy$ n'est pas une forme linéaire : elle vaut $0$ en $(1, 0)$ et en $(0, 1)$, mais $1$ en leur somme $(1, 1)$. L'application $(x, y) \mapsto x + 1$ ne l'est pas non plus, puisqu'elle ne s'annule pas en $0$ ; elle est seulement [[application-affine|affine]]. Sur $K^n$, une forme linéaire est une combinaison $c_1x_1 + \cdots + c_nx_n$ des coordonnées (premier exemple), sans terme constant ni produit de coordonnées.
+    - |
+      Une forme coordonnée dépend de toute la base, et non seulement du vecteur auquel elle est associée. Dans $K^2$, de base canonique $(e_1, e_2)$, la forme $e_1^*$ de la [[base-duale|base duale]] est $(x, y) \mapsto x$. Pour la base $(e_1, e_1 + e_2)$, qui a le même premier vecteur, on écrit $(x, y) = (x - y)\,e_1 + y\,(e_1 + e_2)$, et la première forme coordonnée devient $(x, y) \mapsto x - y$. Le piège est de croire que $e_1^*$ ne dépend que de $e_1$.
+
+  endomorphisme:
+    - |
+      Sur $K^2$, l'échange des coordonnées $s : (x, y) \mapsto (y, x)$ est un endomorphisme qui vérifie $s \circ s = \mathrm{id}$. L'endomorphisme $n : (x, y) \mapsto (y, 0)$ vérifie, lui, $n \circ n = 0$ sans être nul : l'ensemble $\mathcal L(K^2)$, muni de la composition, a des éléments non nuls dont le carré est nul.
+    - |
+      L'application $(x, y) \mapsto (x + 1, y)$ de $K^2$ dans lui-même n'est pas un endomorphisme, puisqu'elle n'envoie pas $0$ sur $0$ : c'est une translation, [[application-affine|affine]] et non linéaire. L'application $(x, y) \mapsto x$ de $K^2$ dans $K$ est linéaire, mais ce n'est pas un endomorphisme non plus, car les espaces de départ et d'arrivée diffèrent ; on ne peut d'ailleurs pas la composer avec elle-même.
+    - |
+      Être un endomorphisme de groupe dépend de la loi. Dans un [[groupe-abelien|groupe abélien]] noté additivement, $x \mapsto x + x$ est un endomorphisme, puisque $(x + y) + (x + y) = (x + x) + (y + y)$. Dans le [[groupe-symetrique|groupe symétrique]] de $\{1, 2, 3\}$, l'application $\sigma \mapsto \sigma \circ \sigma$ n'en est pas un : si $\sigma$ échange $1$ et $2$ et $\tau$ échange $2$ et $3$, on a $\sigma \circ \sigma = \tau \circ \tau = \mathrm{id}$, alors que $(\sigma \circ \tau) \circ (\sigma \circ \tau)$ envoie $1$ sur $3$.
+
+  matrice-inversible:
+    - |
+      La matrice
+      $$A = \begin{pmatrix} 1 & 1 \\ 0 & 1 \end{pmatrix}$$
+      est inversible, d'inverse
+      $$A^{-1} = \begin{pmatrix} 1 & -1 \\ 0 & 1 \end{pmatrix},$$
+      comme on le vérifie en calculant les deux produits $AA^{-1}$ et $A^{-1}A$, qui valent tous deux $I_2$. Elle est la matrice, dans la base canonique de $K^2$, de l'application $(x, y) \mapsto (x + y, y)$, dont la réciproque $(x, y) \mapsto (x - y, y)$ a bien pour matrice $A^{-1}$.
+    - |
+      Une matrice carrée non nulle n'est pas forcément inversible, contrairement à un élément non nul d'un corps. Pour
+      $$N = \begin{pmatrix} 1 & 1 \\ 1 & 1 \end{pmatrix},$$
+      la colonne $X$ de coefficients $1$ et $-1$ vérifie $NX = 0$. Si $N$ avait un inverse $B$, on aurait $X = BNX = B \cdot 0 = 0$, ce qui est faux. Plus généralement, une matrice qui annule une colonne non nulle n'est pas inversible, car l'application $x \mapsto Nx$ n'est pas injective.
+    - |
+      Pour des matrices carrées, un inverse d'un seul côté suffit. Si $A, B \in \mathcal M_n(K)$ vérifient $AB = I_n$, tout $x \in K^n$ s'écrit $x = A(Bx)$, donc est combinaison des colonnes de $A$. Ces $n$ colonnes engendrent $K^n$, qui est de dimension $n$ ; elles en forment donc une base ({{v-dimension|Dimension}}, (ii)). L'application $x \mapsto Ax$, qui envoie la base canonique sur cette base, est alors un isomorphisme ({{v-libre|Familles libres, génératrices, bases}}, (iii)). Par suite $A$ est inversible ({{v-matrices|Matrices}}, (iv)), et $B = A^{-1}(AB) = A^{-1}$. L'hypothèse « carrée » est indispensable : pour
+      $$L = \begin{pmatrix} 1 & 0 \end{pmatrix}, \qquad C = \begin{pmatrix} 1 \\ 0 \end{pmatrix},$$
+      on a $LC = I_1$, mais
+      $$CL = \begin{pmatrix} 1 & 0 \\ 0 & 0 \end{pmatrix} \neq I_2.$$

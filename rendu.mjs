@@ -279,22 +279,31 @@ for (const gid of Object.keys(D.graphes)) {
 // (chargerLexique). La page ne garde qu'un index id → [terme, nœud où il est défini] (≈ 36 Ko), qui suffit
 // aux libellés, aux comptes de termes et à la recherche dans l'édifice.
 {
-  // Exemples du lexique (4 nov. 2026) : fichier à part, site/exemples.json, demandé seulement à la première
-  // ouverture d'une pastille « + N exemples » (gabarit : chargerExemples). L'index garde leur nombre en troisième
-  // place, pour la pastille et le pied de la bulle, avant même l'arrivée de lexique.json.
+  // Exemples du lexique (4 nov. 2026 ; par théorie le 5 nov., mémo de l'édifice § 111) : un fichier par théorie de
+  // premier niveau, site/exemples/<theorie>.json, demandé seulement à la première ouverture d'une pastille
+  // « + N exemples » d'un terme de cette théorie (gabarit : chargerExemples). Les schémas des exemples sont dans
+  // leur HTML, donc dans ce fichier et non dans la page. L'index garde le nombre d'exemples et la théorie en
+  // troisième et quatrième places, pour la pastille et le pied de la bulle, avant même l'arrivée de lexique.json ;
+  // Dsite.exemplesACharger associe à chaque théorie l'adresse de son fichier, avec sa propre empreinte.
   const complet = {}, indexLex = {}, exemples = {};
   for (const [id, e] of Object.entries(Dsite.lexique)) {
-    indexLex[id] = e.nex ? [e.terme, e.defini, e.nex] : [e.terme, e.defini];
+    indexLex[id] = e.nex ? [e.terme, e.defini, e.nex, e.theorie] : [e.terme, e.defini];
     complet[id] = { definition: e.definition, notation: e.notation || null, emplois: e.emplois, voir: e.voir };
-    if (e.nex) exemples[id] = e.exemples;
+    if (e.nex) (exemples[e.theorie] ??= {})[id] = e.exemples;
   }
   const contenu = JSON.stringify(complet);
   fs.writeFileSync('site/lexique.json', contenu);
   Dsite.lexique = indexLex;
   Dsite.lexiqueACharger = `lexique.json?v=${empreinte(contenu)}`;
-  const contenuEx = JSON.stringify(exemples);
-  fs.writeFileSync('site/exemples.json', contenuEx);
-  Dsite.exemplesACharger = `exemples.json?v=${empreinte(contenuEx)}`;
+  fs.rmSync('site/exemples', { recursive: true, force: true });
+  fs.rmSync('site/exemples.json', { force: true });
+  fs.mkdirSync('site/exemples', { recursive: true });
+  Dsite.exemplesACharger = {};
+  for (const th of Object.keys(exemples).sort()) {
+    const contenuEx = JSON.stringify(exemples[th]);
+    fs.writeFileSync(`site/exemples/${th}.json`, contenuEx);
+    Dsite.exemplesACharger[th] = `exemples/${th}.json?v=${empreinte(contenuEx)}`;
+  }
 }
 // Extraits de recherche des fiches (champ « cherche », ≈ 350 Ko, 90 Ko compressés) : fichier séparé,
 // demandé au premier usage d'une recherche (champ de l'édifice, recherche globale) ou quand le navigateur

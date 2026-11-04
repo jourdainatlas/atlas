@@ -1466,7 +1466,7 @@ const $ = s => document.querySelector(s);
 // emplois et renvois sont dans lexique.json (adresse D.lexiqueACharger, avec empreinte ?v=), demandé dès le
 // démarrage sans retarder l'affichage ; la bulle et l'onglet Lexique attendent sa promesse. L'aperçu à
 // fichier unique contient déjà tout (pas de D.lexiqueACharger).
-if (D.lexiqueACharger) for (const [id, [terme, defini, nex]] of Object.entries(D.lexique)) D.lexique[id] = nex ? { id, terme, defini, nex } : { id, terme, defini };
+if (D.lexiqueACharger) for (const [id, [terme, defini, nex, th]] of Object.entries(D.lexique)) D.lexique[id] = nex ? { id, terme, defini, nex, th } : { id, terme, defini };
 // Après un échec, un survol ne relance pas la demande (2,7 Mo) avant DELAI_LEXIQUE ; « réessayer » et
 // l'ouverture de l'onglet (appel explicite) la relancent tout de suite. L'index et le fichier peuvent ne pas
 // concorder (ancienne page en cache, terme supprimé ou renommé depuis) : les termes absents du fichier restent
@@ -1501,25 +1501,27 @@ const quandInoccupe = f => {
 quandInoccupe(() => chargerLexique().catch(() => {}));
 
 /* ------------------------------------------------------------ exemples du lexique */
-// Les exemples (HTML composé) sont dans exemples.json (adresse D.exemplesACharger, avec empreinte ?v=), demandé
-// seulement à la première ouverture d'une pastille « + N exemples » de l'onglet Lexique ; leur nombre (nex) est dans
-// l'index de la page. Promesse unique, remise à zéro sur échec (la pastille propose alors de réessayer). L'aperçu à
-// fichier unique les contient déjà (pas de D.exemplesACharger). Un terme absent du fichier (page et fichier
-// discordants) reste sans exemples, avec un message.
-let chargementExemples = null;
-const estExemplesCharges = () => !D.exemplesACharger;
-function chargerExemples() {
-  if (estExemplesCharges()) return Promise.resolve();
-  if (!chargementExemples) {
-    chargementExemples = fetch(D.exemplesACharger)
+// Les exemples (HTML composé, schémas compris) sont rangés par théorie de premier niveau : D.exemplesACharger
+// associe à chaque théorie l'adresse de son fichier, exemples/<theorie>.json?v=<empreinte>, et l'index de la page
+// donne pour chaque terme leur nombre (nex) et sa théorie (th). Un fichier n'est demandé qu'à la première ouverture
+// d'une pastille « + N exemples » d'un terme de sa théorie. Une promesse par théorie, remise à zéro sur échec (la
+// pastille propose alors de réessayer). L'aperçu à fichier unique les contient déjà (pas de D.exemplesACharger).
+// Un terme absent du fichier, ou une théorie absente de la table (page et fichier discordants), reste sans
+// exemples, avec un message.
+const chargementsExemples = {};
+const estExemplesCharges = th => !D.exemplesACharger || !D.exemplesACharger[th];
+function chargerExemples(th) {
+  if (estExemplesCharges(th)) return Promise.resolve();
+  if (!chargementsExemples[th]) {
+    chargementsExemples[th] = fetch(D.exemplesACharger[th])
       .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
       .then(X => {
         for (const [id, xs] of Object.entries(X)) if (D.lexique[id] && Array.isArray(xs)) D.lexique[id].exemples = xs;
-        delete D.exemplesACharger;
+        delete D.exemplesACharger[th];
       })
-      .catch(e => { chargementExemples = null; throw e; });
+      .catch(e => { delete chargementsExemples[th]; throw e; });
   }
-  return chargementExemples;
+  return chargementsExemples[th];
 }
 const nbExemples = e => e.nex || (e.exemples || []).length;
 const libelleExemples = n => `${n} exemple${n > 1 ? 's' : ''}`;
@@ -1527,7 +1529,8 @@ const libelleExemples = n => `${n} exemple${n > 1 ? 's' : ''}`;
 function remplirExemples(d) {
   const corps = d.querySelector('.exemples-corps'), e = D.lexique[d.dataset.ex];
   if (!corps || !e || corps.dataset.rempli) return;
-  if (estExemplesCharges()) {
+  const th = e.th;
+  if (estExemplesCharges(th)) {
     const xs = e.exemples || [];
     corps.innerHTML = xs.length ? `<ol>${xs.map((x, k) => {
       const num = `<span class="ex-num">Exemple ${k + 1}.</span> `;
@@ -1537,9 +1540,12 @@ function remplirExemples(d) {
     return;
   }
   corps.innerHTML = '<p class="attente-lexique" role="status">Chargement des exemples…</p>';
-  chargerExemples().then(() => document.querySelectorAll('#lexique details.exemples-lex[open]').forEach(remplirExemples), () => {
-    document.querySelectorAll('#lexique details.exemples-lex[open] .exemples-corps:not([data-rempli])').forEach(c => {
-      c.innerHTML = '<p class="attente-lexique" role="alert">Les exemples n\'ont pas pu être chargés. Vérifiez la connexion, puis <button type="button" class="reessayer-lexique" data-exemples-reessayer>réessayer</button>.</p>';
+  // à l'arrivée du fichier, ou à son échec, toutes les pastilles ouvertes de la même théorie sont servies
+  const memes = () => [...document.querySelectorAll('#lexique details.exemples-lex[open]')]
+    .filter(x => (D.lexique[x.dataset.ex] || {}).th === th);
+  chargerExemples(th).then(() => memes().forEach(remplirExemples), () => {
+    memes().map(x => x.querySelector('.exemples-corps:not([data-rempli])')).filter(Boolean).forEach(c => {
+      c.innerHTML ='<p class="attente-lexique" role="alert">Les exemples n\'ont pas pu être chargés. Vérifiez la connexion, puis <button type="button" class="reessayer-lexique" data-exemples-reessayer>réessayer</button>.</p>';
     });
   });
 }

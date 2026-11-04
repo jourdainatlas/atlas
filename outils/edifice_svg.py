@@ -244,6 +244,30 @@ class Repere:
         return xs
 
 
+_POLICES = {'KaTeX_Main': 'KaTeX_Main-Regular', 'KaTeX_Math': 'KaTeX_Math-Italic', 'KaTeX_AMS': 'KaTeX_AMS-Regular',
+            'KaTeX_Caligraphic': 'KaTeX_Caligraphic-Regular', 'KaTeX_Fraktur': 'KaTeX_Fraktur-Regular'}
+_METRIQUES = {}
+
+
+def largeur_texte(s, taille=17, roman=False):
+    """Largeur, en pixels, d'une étiquette sans indice ni exposant écrite par Schema.texte, calculée sur les
+    chasses des polices KaTeX (node_modules/katex) : pour placer une boîte, un trait ou une étiquette voisine
+    sans estimer. Un caractère absent de la police compte pour un cadratin (erreur par excès)."""
+    from fontTools.ttLib import TTFont
+    import os
+    racine = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                          'node_modules', 'katex', 'dist', 'fonts')
+    total = 0.0
+    for txt, fam in ([[s, 'KaTeX_Main']] if roman else _morceaux(s)):
+        if fam not in _METRIQUES:
+            fnt = TTFont(os.path.join(racine, _POLICES[fam] + '.ttf'))
+            _METRIQUES[fam] = (fnt.getBestCmap(), fnt['hmtx'], fnt['head'].unitsPerEm)
+        cmap, hmtx, em = _METRIQUES[fam]
+        for ch in txt:
+            total += (hmtx[cmap[ord(ch)]][0] if ord(ch) in cmap else em) / em * taille
+    return total
+
+
 def arc(centre, r, t0, t1, n=60):
     """Points d'un arc de cercle (angles en radians, sens trigonométrique de l'image : y vers le bas
     déjà pris en compte par l'appelant)."""
