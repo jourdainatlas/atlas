@@ -1627,3 +1627,26 @@ fq-orthogonalite « orthogonaux », f-spectral-fini « symétrique », cf-ouvert
 « longueur », mk-transition « mesure », cv-lebesgue-rn « mesure de Lebesgue », gd-normes « boule ouverte »,
 cal-sx-libres « libre », « restriction » (rd-stables, fq-orthogonalite, cg-inflation). Relu : rien de bloquant ;
 convexité de ℂ, huit notions masquées en rappels, bord d'un complexe, renvois périmés corrigés.
+
+## 106. Lexique, lot L4 : analyse et probabilités — H = 0 (4 novembre 2026)
+
+Notes et décisions : /home/claude/travail/lexique-L4/ (NOTES.md, decisions.tsv, liens_poses.txt, outils/diagx.py :
+copie instrumentée du diagnostic qui liste les gras écartés comme rappels). Sections ar-*, met, anc*, anf*, cdiff*,
+edo*, edp, mes, proba, mart*, nban. 120 entrées (921 → 1041 termes), ≈ 540 liens ; homonymes distincts (pavé
+semi-ouvert de ℝⁿ, pavé mesurable, lacet (analyse complexe), mesure de Lebesgue de ℝⁿ, deux fonctions boréliennes,
+deux densités, noyau et rang d'une forme quadratique…). Déplacements : base canonique de Kⁿ → v-libre (jamais
+définie auparavant ; non liée dans ℤᵏ) ; matrices symétrique et triangulaire → v-matrices ; sous-espace stable →
+v-valeurs-propres ; convergence simple → su-convergence (valeurs dans [0, +∞] et la droite achevée comprises) ;
+limites en ±∞ et limites infinies → de-limite ; famille orthonormée → f-hilbert ; convexes d'un espace vectoriel
+réel → gd-normes (ℝ n'est pas en amont de v-applications) ; application ouverte → t-continue ; densité → p-variables ;
+fonction borélienne → m-mesurables ; arc p-poisson-exp → p-cantor retiré. mu-wald (iii) retitré (« Premier passage
+d'une marche biaisée en un niveau »). 5 exceptions locales. H : 138 → 0 ; le diagnostic est à 0 dans toutes ses
+catégories. Relu (504 liens) : rien de bloquant ; convergence simple trop étroite, trois exceptions qui cachaient des
+notions réemployées (ε-réseau, temps d'atteinte, « mène à »), limites en l'infini restreintes à tort, hypothèses
+manquantes (période d'un état, équivalence des formes quadratiques). Reste, pour un lot final : les faux rappels
+d'algèbre et de logique triés par la relecture (rappels_apres.txt et rapport dans NOTES.md de L4) — base, famille
+génératrice et somme directe d'un module, multiplicité algébrique, PGCD et premiers entre eux dans un anneau,
+polynôme primitif sur un factoriel, isomorphisme d'espaces vectoriels, matrice identité, relation primitive
+récursive, sous-G-module, degré et isomorphisme de représentations, degré d'une extension, partition d'un entier,
+supplémentaire dans un groupe abélien, division euclidienne des polynômes, occurrence libre dans un mot ; plus les
+rappels légitimes à lier au lieu du gras, et sous-espace stable non lié dans rd-* et md-*.
