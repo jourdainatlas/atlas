@@ -209,3 +209,16 @@ répondent », dernières nouveautés ; pas sur la miniature de l'édifice, à l
 (classes `p-lycee`, `p-prepa`, `p-concours`, `p-curiosite`). Menu : barre de couleur à gauche de chaque
 entrée ; la rubrique courante sur fond `--trame` (elle avait une barre rouge, le rouge étant réservé).
 
+### 43. Symboles des rubriques (4 nov. 2026)
+
+Sept symboles en aplats de trois nuances de la couleur de leur rubrique, choisis par l'auteur : arbre au
+tronc courbé et aux feuilles en amande (édifice), livre ouvert (cours), stylo à bille sur une feuille
+(exercices), deux sujets empilés avec un sceau (annales), calendrier (nouveautés), silhouette (à propos),
+maison (accueil). Sprite SVG au début de `.app` dans `gabarit.html` (`<symbol id="sym-…">`, feuille
+commune `#sym-fe`), couleurs par variables `--sy-…` (classes `.sy-…`), inversées sous
+`:root[data-theme="dark"]`. Fonction `symbole(nom)` ; placés dans le menu du logo (devant chaque titre,
+par script), sur les cartes des rubriques de l'accueil (`carte()`), en tête du fil d'Ariane de l'en-tête
+(observateur du fil : le symbole de la rubrique courante, `li.fil-icone`, sans séparateur), et dans les
+cartes et filtres des Nouveautés (rubrique « site » → maison). Variantes écartées : arbre au trait,
+ramures, façade ; la ramure penchée reste en réserve (dessin dans la conversation du 4 nov.).
+
