@@ -325,3 +325,7 @@ gauche ; étapes vues estompées, la dernière ramenée à l'écran. Touches : �
 site), Échap quitter (aussi en sortant du plein écran). Couleurs : palettes claire et sombre du site
 reprises dans `.pj` / `.pj.sombre` ; liens et termes non cliquables. Fonctions `pj…`, bloc « Projection »
 du gabarit. Message envoyé à la conversation Exercices (structure des corrigés, espaces insécables).
+Incident de publication (4 nov., 17 h) : la mise en ligne de ed94977 a dépassé le délai de 10 min de
+`deploy-pages` (« updating_pages » sans fin, côté GitHub), puis le relancement manuel a été annulé car il
+portait la même version. Remède : un nouveau commit (une version différente) ; `gh run rerun` est refusé.
+À surveiller : si les délais se répètent, le poids du site (≈ 630 Mo) en est une cause probable (§41).
