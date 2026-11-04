@@ -204,8 +204,8 @@ Une couleur par rubrique de contenu, la même partout (accueil, menu, Nouveauté
 violet), annales `--r-annales` (`--c-alg`, orange) ; accueil, nouveautés et à propos `--r-neutre` (gris).
 Bloc CSS « repères de couleur des rubriques » de `gabarit.html` : sélection par `data-rubrique` (menu) et
 par `href` (cartes de l'accueil), donc sans toucher au code des rubriques. Accueil : bande de 3 px en haut
-des encadrés (cartes des rubriques, miniature de l'édifice, étapes de « Comment les rubriques se
-répondent », dernières nouveautés) ; profils de « Par où commencer ? » en dégradé des rubriques visées
+des encadrés (cartes des rubriques, étapes de « Comment les rubriques se
+répondent », dernières nouveautés ; pas sur la miniature de l'édifice, à la demande de l'auteur) ; profils de « Par où commencer ? » en dégradé des rubriques visées
 (classes `p-lycee`, `p-prepa`, `p-concours`, `p-curiosite`). Menu : barre de couleur à gauche de chaque
 entrée ; la rubrique courante sur fond `--trame` (elle avait une barre rouge, le rouge étant réservé).
 
