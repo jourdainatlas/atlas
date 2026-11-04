@@ -1699,3 +1699,24 @@ hors du premier emploi, fenêtre de cinq mots qui comptait les formules, renvoi 
 Reste signalé (non fait) : endomorphisme jamais défini (≈ 34 fiches) ; matrice de passage, matrice diagonale,
 matrice inversible et GL_n(K) sur un corps, rang d'une matrice sans entrée ; fq-carres « matrices congruentes »
 (matrice d'une forme) non lié ; l-incompletude parle de relations récursives hors aval (preuve admise).
+
+## 109. Lexique, lot L7 : endomorphisme et notions matricielles (4 novembre 2026)
+
+Notes : /home/claude/travail/lexique-L7/ (NOTES.md, decisions.tsv, liens_poses.txt) ; relecture :
+/home/claude/travail/lexique-L7-relecture/. Notions employées sans définition ou avant elle, que le diagnostic ne
+pouvait voir (jamais en gras). Entrées (1073 → 1079) : endomorphisme (v-applications : L(E) = L(E, E), une phrase
+pour les groupes, anneaux et modules) ; en v-matrices : matrice diagonale (notation diag, auparavant introduite
+seulement en cv-elementaires, en aval de 20 fiches qui l'emploient), matrice diagonale par blocs, matrice inversible
+(aussi sur un anneau commutatif), matrice de passage P = Mat_{B′,B}(id_E) — colonnes : les vecteurs de B′ écrits
+dans B ; X = PX′ ; Mat_{B′}(u) = P⁻¹AP ; forme bilinéaire ᵗPAP (vérifié avec sympy, cohérent avec v-trace (iii),
+fq-formes (iii), gd-orientation) —, rang d'une matrice (dimension de l'espace des colonnes, sans v-rang en amont).
+groupe-lineaire élargie à GL_n(K) et GL_n(A) et déplacée de gd-gl à v-matrices (GL_n(ℝ) ouvert et inversion C^∞
+annoncés pour le calcul différentiel). Nouvel énoncé v-matrices (iv), démontré : inversibles en groupe, u
+isomorphisme ⇔ matrice inversible, P inversible et X = PX′ ; remarque sur le piège du sens de passage (exemple
+dans K²). gd-gl, fq-rang, cv-elementaires, md-libres deviennent des rappels ; v-trace (iii) cite (iv). ≈ 115 liens
+dans les fiches, ≈ 50 dans le lexique. Relu : rien de bloquant ; annonce de GL_n(ℝ) ouvert reformulée, GL_n(ℝ) lié
+dans groupe-lie, algebre-lie, crochet-matrices. Signalés, non faits : \lex{groupe-lineaire} dans le nœud théorie lie
+et une remarque de li-cartan ; matrices-equivalentes affirme « même rang ⇔ équivalentes » sur un corps, seulement
+en remarque de md-equivalence ; typographie GL_n / \mathrm{GL}_n mixte ; notions voisines sans entrée : GL(V),
+matrice triangulaire par blocs, sous-matrice et mineur, matrice définie positive, antisymétrique, de Gram, A*, rang
+d'une famille, application linéaire inversible.
