@@ -329,3 +329,9 @@ Incident de publication (4 nov., 17 h) : la mise en ligne de ed94977 a dépassé
 `deploy-pages` (« updating_pages » sans fin, côté GitHub), puis le relancement manuel a été annulé car il
 portait la même version. Remède : un nouveau commit (une version différente) ; `gh run rerun` est refusé.
 À surveiller : si les délais se répètent, le poids du site (≈ 630 Mo) en est une cause probable (§41).
+Accueil, « Par où commencer ? » (4 nov., demande de l'auteur, qui prépare des cours de Maths Spé) : Maths
+approfondies passe dans « Au lycée » (« Choisissez votre classe ou votre option… ») ; le deuxième encadré
+devient « En prépa », texte « Les cours suivent les programmes des classes préparatoires, chapitre par
+chapitre. Le moteur des annales… » ; ses puces sont calculées : tous les niveaux rangés entre
+`approfondies` et `master` dans `cours.yaml` qui ont des chapitres (une Maths Spé y apparaîtra seule). Lien
+raccourci en « Les annales par thème → » pour tenir sur une ligne ; espace insécable avant chaque flèche.

@@ -4132,12 +4132,15 @@ function aProposCommencer() {
     return premier(id) ? `<a class="chip" href="#cours" data-cours-niveau="${id}">${esc(n.titre)}</a>` : '';
   };
   const profil = (cl, titre, texte, puces, liens) => `<div class="carte acc-profil ${cl}"><h4>${symbole(cl)}<span>${titre}</span></h4><p>${texte}</p>${puces ? `<div class="acc-puces">${puces}</div>` : ''}<p class="acc-profil-liens">${liens}</p></div>`;
-  const lycee = ['seconde', 'premiere', 'terminale', 'expertes'];
+  const lycee = ['seconde', 'premiere', 'terminale', 'expertes', 'approfondies'];
+  // Prépa : les niveaux rangés entre les Maths approfondies et le Master (Maths Sup, puis Maths Spé et ECG quand ils auront des chapitres).
+  const ordreNiv = (C.niveaux || []).map(n => n.id);
+  const prepa = ordreNiv.slice(ordreNiv.indexOf('approfondies') + 1, ordreNiv.includes('master') ? ordreNiv.indexOf('master') : undefined);
   let h = `<section class="acc-section"><h3>Par où commencer ?</h3><div class="acc-profils">`;
-  h += profil('p-lycee', 'Au lycée', 'Choisissez votre classe : chaque chapitre se lit en ligne ou se télécharge, et sa feuille d\'exercices corrigés permet de s\'entraîner aussitôt.',
-    lycee.map(id => puceNiveau(id)).join(''), `<a href="#cours" data-cours-niveau="tous">Tous les cours →</a><a href="#exercices">Les exercices par niveau →</a>`);
-  h += profil('p-prepa', 'Vers la prépa, en prépa', 'Les Maths approfondies préparent aux classes préparatoires, et les cours de Maths Sup suivent le programme de MPSI. Le moteur des annales retrouve, par thème, les parties de sujets de concours d\'ingénieurs qui portent sur le chapitre que l\'on vient d\'étudier.',
-    ['approfondies', 'ma'].map(id => puceNiveau(id)).join(''), `<a href="#exercices">S'entraîner →</a><a href="#annales" data-vers-moteur>Chercher un thème dans les annales →</a>`);
+  h += profil('p-lycee', 'Au lycée', 'Choisissez votre classe ou votre option : chaque chapitre se lit en ligne ou se télécharge, et sa feuille d\'exercices corrigés permet de s\'entraîner aussitôt.',
+    lycee.map(id => puceNiveau(id)).join(''), `<a href="#cours" data-cours-niveau="tous">Tous les cours&nbsp;→</a><a href="#exercices">Les exercices par niveau&nbsp;→</a>`);
+  h += profil('p-prepa', 'En prépa', 'Les cours suivent les programmes des classes préparatoires, chapitre par chapitre. Le moteur des annales retrouve, par thème, les parties de sujets de concours d\'ingénieurs qui portent sur le chapitre que l\'on vient d\'étudier.',
+    prepa.map(id => puceNiveau(id)).join(''), `<a href="#exercices">S'entraîner&nbsp;→</a><a href="#annales" data-vers-moteur>Les annales par thème&nbsp;→</a>`);
   h += profil('p-concours', 'CAPES, agrégation, Master', 'L\'édifice reprend chaque théorie dans l\'ordre logique, avec des démonstrations complètes ; les annales de l\'enseignement se cherchent par thème, partie par partie.',
     '', `<a href="#${D.racine}">Entrer dans l'édifice →</a><a href="#annales">Les annales et leur moteur →</a>`);
   h += profil('p-curiosite', 'Par curiosité', 'Partez des fondations : la logique du premier ordre et les axiomes de la théorie des ensembles, puis suivez les flèches de l\'édifice jusqu\'aux grandes théories.',
