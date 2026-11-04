@@ -304,3 +304,6 @@ chemin, adresse, © et licence, date, page / total) ; Safari et Firefox ne les a
 de document qui répète licence et adresse. Une figure ne se coupe pas, ce qui peut laisser un blanc en
 bas de page ; une remarque illustrée peut se couper (`:has(figure)`). Essai : « Les entiers relatifs »,
 9 pages avec démonstrations, 8 sans ; fiche Bézout, 1 page.
+Mise à jour (4 nov., demande de l'auteur) : l'encadré « ⋆ Axiome du choix » des fiches est un `<details
+class="choix">` replié (« + ⋆ Axiome du choix · où et comment il intervient »), ouvert d'un clic ; le ⋆ du
+titre suffit à signaler le choix. Il n'est plus imprimé : la feuille garde seulement le ⋆ après la nature.
