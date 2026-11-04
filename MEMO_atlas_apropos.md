@@ -226,3 +226,9 @@ Alignement des cartes de l'accueil : la ligne de titre (`.acc-rubriques .acc-rub
 (`align-items: center`) et non plus alignée sur la ligne de base, sinon le titre se calait sur le bas du
 grand nombre et paraissait décalé par rapport au symbole. Sélecteur renforcé car la règle d'origine,
 `.acc-rub .r-tete`, vient plus loin dans le fichier.
+Symboles des encadrés « Par où commencer ? » (choix de l'auteur, 4 nov.) : `sym-p-lycee` (cartable vert,
+fermoir violet), `sym-p-prepa` (pile de trois livres vert, violet, orange), `sym-p-concours` (toque bleue,
+gland orange, livre vert), `sym-p-curiosite` (loupe grise sur un petit graphe bleu). Couleurs = celles de la
+bande de l'encadré. Le symbole est calé sur la première ligne du titre (`align-items: flex-start`), car
+« CAPES, agrégation, Master » passe sur deux lignes en quatre colonnes. Variantes écartées : tableau vert,
+marches et fanion, rosette, boussole, lunette.
