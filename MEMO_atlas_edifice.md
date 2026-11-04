@@ -1895,3 +1895,10 @@ Journal des lots.
   faits : « ordre dense » (lexique) parle d'« une infinité » avant ℕ ; « cardinal » (lexique) « l'unique cardinal
   équipotent à A » non énoncé dans o-cardinal ; od-bon-ordre remarque 2 emploie le choix dépendant sans ⋆ ; ajouts
   d'amont proposés : ordres produit et lexicographique dans od-ordre, « α cardinal ⇔ |α| = α » dans o-cardinal.
+- rel : 31 termes, 89 exemples, 7 schémas (relation, image directe, composée, partition, section, relation
+  transitive, fibre). Ajout d'amont démontré : remarque de r-injections, σ : x ↦ x ∪ {x} injective sur un ensemble
+  inductif, n'atteint pas ∅ (citée par equipotent 2 et retraction-application 3). Relu deux fois : bloquants corrigés
+  (un « pas » manquant dans relation 3 ; produit-famille 3 « le produit est B^I » faux pour I = ∅, les applications
+  du site étant des triplets) ; injection 2 et 3 réécrits, ensemble-quotient 3 rendu interne. Signalés, non faits :
+  « bijection » hors amont dans la remarque 2 de r-familles ; dans le lexique, la seconde phrase de « bijection »
+  relève de r-inverses et la neutralité de « identité » de r-composition.
