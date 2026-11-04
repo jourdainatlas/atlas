@@ -335,3 +335,7 @@ devient « En prépa », texte « Les cours suivent les programmes des classes p
 chapitre. Le moteur des annales… » ; ses puces sont calculées : tous les niveaux rangés entre
 `approfondies` et `master` dans `cours.yaml` qui ont des chapitres (une Maths Spé y apparaîtra seule). Lien
 raccourci en « Les annales par thème → » pour tenir sur une ligne ; espace insécable avant chaque flèche.
+En-tête (4 nov., demande de l'auteur) : sur téléphone, loupe, thème et drapeau ont la même boîte de 36 px
+(32 px sous 350 px), 2 px d'écart entre eux, 10 px avant la loupe (elle touchait le chevron du menu à 375 px)
+et 8 px avant Partager ; icône du thème ramenée à 24 px. Sur ordinateur, les trois sont aussi serrés à 4 px
+(marges négatives sur l'écart de 20 px de l'en-tête). Loupe et drapeau du même gris (`--encre-2`).
