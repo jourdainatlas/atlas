@@ -339,3 +339,18 @@ En-tête (4 nov., demande de l'auteur) : sur téléphone, loupe, thème et drape
 (32 px sous 350 px), 2 px d'écart entre eux, 10 px avant la loupe (elle touchait le chevron du menu à 375 px)
 et 8 px avant Partager ; icône du thème ramenée à 24 px. Sur ordinateur, les trois sont aussi serrés à 4 px
 (marges négatives sur l'écart de 20 px de l'en-tête). Loupe et drapeau du même gris (`--encre-2`).
+
+## 50. Cours : symbole et ligne de couleur des chapitres (4 nov. 2026)
+
+Choix de l'auteur : ligne en dégradé (pas en tronçons proportionnels) et un symbole en aplat sous le numéro de
+chaque chapitre de la page Cours. Bloc « Cours : symbole et ligne de couleur » du gabarit :
+`SYM_DESSINS` (45 dessins, viewBox 24, classes `f1` plein, `f2` .55, `f3` .2, `t` trait fin, `t3` trait
+épais, couleur `--c`) et `SYM_CHAPITRES` (id du chapitre → dessin ; les 62 chapitres du 4 nov.). Un même
+sujet garde le même dessin d'un niveau à l'autre (Venn pour ap-01 et ma-01, tangente pour p-04 et ma-05,
+cercle trigonométrique pour p-06 et ma-04, aire pour t-06 et ma-06, convergence pour t-01 et ma-07, matrice
+pour me-03 et ap-09…). Couleur du symbole : la famille de l'édifice la plus représentée parmi les
+`theories` du chapitre (`couleurNoeud(theorieDe(id))`, comme les pastilles) ; ligne de 4 px : dégradé des
+familles distinctes, dans l'ordre de la liste (`bandeChapitre`). Un chapitre absent de `SYM_CHAPITRES`
+n'a que la ligne : **tout nouveau chapitre (Maths Spé…) demande un dessin**, à faire dans cette
+conversation (planche montrée à l'auteur avant publication). Planche de contrôle : script de la
+conversation du 4 nov. (toutes les cartes à 72 px, clair et sombre).
