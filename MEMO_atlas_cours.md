@@ -371,3 +371,21 @@ compte 4005 adresses. Poids de `site/`, en taille réelle : environ 508 Mio avan
 d'exercices pèsent 132 Mio, soit 63 Ko en moyenne, en dessous du seuil de 800 Mo à signaler. Vérifications : les
 93 394 liens internes des 3 829 pages de lecture mènent tous à une page ou à une ancre existante ; rendu
 regardé en clair et en sombre, sur ordinateur et sur téléphone, sans débordement horizontal.
+
+### 30. Projection en classe et espaces insécables (4 novembre 2026)
+
+Projection (conversation « À propos – apparence », MEMO_atlas_apropos.md §49). `carteExercice` appelle `${pjBouton(e)}`
+après le bouton « Signaler une erreur » : ne pas le retirer si l'on retouche l'en-tête des cartes. La projection découpe le
+corrigé en étapes d'après ses blocs de premier niveau. Un paragraphe qui commence par une marque de question
+(« 2. », « (b) », « b) ») ouvre une étape. Pour les feuilles à venir, trois règles :
+- chaque question du corrigé commence un nouveau paragraphe portant son numéro, comme le produit tex2exos ;
+- ne jamais envelopper tout le corrigé dans un seul bloc ;
+- ne pas commencer par un numéro un paragraphe qui n'ouvre pas une question.
+
+Typographie. `tex2exos.typographie` met une espace insécable (U+00A0) avant « : », une espace fine insécable (U+202F)
+avant « ; », « ? », « ! » et à l'intérieur des guillemets. Elle s'applique au texte converti, mais pas aux formules,
+au code en ligne ni aux blocs de code ; les tableaux sont traités comme du texte. Une formule suivie de « : » compte comme
+un mot, et l'indentation n'est jamais touchée. `outils/typographier.py` a appliqué la même règle aux 60 feuilles
+versées, sur 3 550 champs (énoncés, corrigés, titres, sources). Il ne reste aucune espace ordinaire devant ces signes
+hors des formules, contre environ 15 500 auparavant. Sur 40 exercices tirés au hasard, affichés à 360 px de
+large, aucun des 402 signes ne commence une ligne.

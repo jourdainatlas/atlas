@@ -501,7 +501,27 @@ class Conv:
 
     def convertir(s, t):
         t = s.maths(t)
-        return sans_arobase(s.restaurer(s.texte(t)))
+        return typographie(sans_arobase(s.restaurer(s.texte(t))))
+
+# Typographie française : espace insécable (U+00A0) avant « : », espace fine insécable (U+202F) avant « ; »,
+# « ? », « ! » et à l'intérieur des guillemets, pour que le navigateur ne rejette jamais le signe seul en début
+# de ligne (demande du 4 novembre 2026, visible au vidéoprojecteur). Les formules ($…$, $$…$$), le code en ligne
+# et les blocs de code (sauf les tableaux, qui sont du texte) ne sont pas touchés.
+PROTEGE = re.compile(r'```(?!tableau)[\s\S]*?```|`[^`\n]*`|\$\$[\s\S]+?\$\$|\$[^$]+?\$')
+def typographie(t):
+    def texte(x):
+        # (?<=\S) : jamais l'indentation d'une ligne, seulement l'espace qui suit un mot ou une formule
+        x = re.sub(r'(?<=\S)[ \t\u202f\u00a0]+:', '\u00a0:', x)
+        x = re.sub(r'(?<=\S)[ \t\u00a0\u202f]+([;?!])', '\u202f\\1', x)
+        x = re.sub(r'«[ \t\u00a0]+(?=\S)', '«\u202f', x)
+        x = re.sub(r'(?<=\S)[ \t\u00a0]+»', '\u202f»', x)
+        return x
+    # les parties protégées sont remplacées par un jeton (sans espace) le temps de la retouche : une formule
+    # suivie de « : » compte comme un mot, et les jetons gardent les sauts de ligne de ce qu'ils cachent
+    gardes = []
+    def jeton(m): gardes.append(m.group(0)); return '\ue000%d' % (len(gardes) - 1) + '\n' * m.group(0).count('\n') + '\ue001'
+    x = texte(PROTEGE.sub(jeton, t))
+    return re.sub(r'\ue000(\d+)\n*\ue001', lambda m: gardes[int(m.group(1))], x)
 
 def sans_arobase(t):
     """KaTeX refuse les séparateurs @{…} d'un préambule d'array : on les ôte (« l@{\\qquad}l » devient
