@@ -6,6 +6,11 @@
 // hors ligne seulement, on sert la dernière copie gardée. Les PDF (documents/) ne sont jamais mis en cache,
 // pour ne pas remplir le téléphone ; les polices de Google Fonts, immuables, sont servies depuis le cache.
 const CACHE = 'atlas-__VERSION__';
+// Fichiers à empreinte (…?v=<empreinte>) : leur contenu ne change jamais sous une même adresse. Ils sont
+// gardés dans un cache durable, que les nouvelles versions n'effacent pas, et servis depuis ce cache : une
+// visite après une publication ne retélécharge que ce qui a changé. À l'arrivée d'une nouvelle empreinte,
+// l'ancienne copie du même fichier est supprimée.
+const FIXE = 'atlas-fixe';
 const DEPART = ['./', 'katex.css', 'favicon.svg', 'icone-192.png', 'apple-touch-icon.png', 'portrait.jpg'];
 
 self.addEventListener('install', ev => {
@@ -15,7 +20,7 @@ self.addEventListener('install', ev => {
 self.addEventListener('activate', ev => {
   ev.waitUntil(
     caches.keys()
-      .then(noms => Promise.all(noms.filter(n => n.startsWith('atlas-') && n !== CACHE).map(n => caches.delete(n))))
+      .then(noms => Promise.all(noms.filter(n => n.startsWith('atlas-') && n !== CACHE && n !== FIXE).map(n => caches.delete(n))))
       .then(() => self.clients.claim())
   );
 });
@@ -42,6 +47,19 @@ async function cacheDabord(req) {
   return rep;
 }
 
+async function fixe(req) {
+  const cache = await caches.open(FIXE);
+  const garde = await cache.match(req);
+  if (garde) return garde;
+  const rep = await fetch(req);
+  if (rep.ok) {
+    const chemin = new URL(req.url).pathname;
+    for (const k of await cache.keys()) if (new URL(k.url).pathname === chemin) await cache.delete(k);
+    await cache.put(req, rep.clone());
+  }
+  return rep;
+}
+
 self.addEventListener('fetch', ev => {
   const req = ev.request;
   if (req.method !== 'GET') return;
@@ -56,6 +74,7 @@ self.addEventListener('fetch', ev => {
       if (await caches.match('./', { ignoreSearch: true })) return Response.redirect('/', 302);
       throw new Error('hors ligne');
     }));
+    if (url.searchParams.has('v')) return ev.respondWith(fixe(req));
     return ev.respondWith(reseauDabord(req));
   }
   if (url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com') return ev.respondWith(cacheDabord(req));

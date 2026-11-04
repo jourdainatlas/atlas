@@ -1340,7 +1340,14 @@ function chargerLexique(explicite = false) {
   }
   return chargementLexique;
 }
-chargerLexique().catch(() => {});
+// Le lexique (≈ 250 Ko compressés) n'est plus demandé au démarrage, où il disputait la bande passante à la
+// page : on attend que le navigateur soit inoccupé après le chargement (au plus 4 s). Une bulle ou l'onglet
+// Lexique ouverts avant le demandent aussitôt (chargerLexique les fait attendre sa promesse).
+const quandInoccupe = f => {
+  const go = () => (window.requestIdleCallback ? requestIdleCallback(f, { timeout: 4000 }) : setTimeout(f, 1500));
+  document.readyState === 'complete' ? go() : addEventListener('load', go, { once: true });
+};
+quandInoccupe(() => chargerLexique().catch(() => {}));
 const etat = { graphe: D.racine, choisi: null, echelle: 1 };
 const FAM = n => n.famille;
 const NOMBRES = new Set(['n', 'z', 'q', 'r', 'c']);
@@ -2105,6 +2112,22 @@ function montrerOnglet(nom) {
 // (champ « cherche », écrit par rendu.mjs, toujours présent dans la page). Tous les mots doivent figurer.
 const normEdifice = t => String(t || '').normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
 let indexEdificeMemo = null;
+// Extraits de recherche (cherche.json, D.chercheACharger) : demandés au premier usage d'une recherche ou quand
+// le navigateur est inoccupé ; à leur arrivée, l'index est refait et la recherche en cours relancée.
+let chargementCherche = null;
+function chargerCherche() {
+  if (!D.chercheACharger) return Promise.resolve();
+  if (!chargementCherche) chargementCherche = fetch(D.chercheACharger).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(x => {
+      for (const [id, t] of Object.entries(x)) if (D.noeuds[id]) D.noeuds[id].cherche = t;
+      delete D.chercheACharger; indexEdificeMemo = null;
+      if ($('#cherche-edifice')?.value.trim().length >= 2 && !$('#resultats-edifice').hidden) chercherEdifice();
+      if (typeof RG !== 'undefined' && RG.ouvert) rgChercher();
+    })
+    .catch(() => { chargementCherche = null; });
+  return chargementCherche;
+}
+quandInoccupe(() => setTimeout(chargerCherche, 1500));
 function indexEdifice() {
   if (indexEdificeMemo) return indexEdificeMemo;
   const termes = {};
@@ -2344,7 +2367,7 @@ document.addEventListener('click', ev => {
 $('#filtre').addEventListener('input', filtrer);
 $('#cherche-edifice').addEventListener('input', chercherEdifice);
 $('#cherche-edifice').addEventListener('keydown', clavierEdifice);
-$('#cherche-edifice').addEventListener('focus', () => { if ($('#cherche-edifice').value.trim().length > 1) chercherEdifice(); });
+$('#cherche-edifice').addEventListener('focus', () => { chargerCherche(); if ($('#cherche-edifice').value.trim().length > 1) chercherEdifice(); });
 $('#effacer-edifice').addEventListener('click', () => {
   const champ = $('#cherche-edifice');
   champ.value = ''; chercherEdifice(); champ.focus();
@@ -3298,6 +3321,7 @@ function rgElements() {
   return f;
 }
 function rgOuvrir() {
+  chargerCherche();
   const f = rgElements();
   f.hidden = false; RG.ouvert = true;
   $('#chercher-tout').setAttribute('aria-expanded', 'true');

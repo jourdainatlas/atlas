@@ -271,6 +271,16 @@ for (const gid of Object.keys(D.graphes)) {
   Dsite.lexique = indexLex;
   Dsite.lexiqueACharger = `lexique.json?v=${empreinte(contenu)}`;
 }
+// Extraits de recherche des fiches (champ « cherche », ≈ 350 Ko, 90 Ko compressés) : fichier séparé,
+// demandé au premier usage d'une recherche (champ de l'édifice, recherche globale) ou quand le navigateur
+// est inoccupé (gabarit : chargerCherche). Jusque-là, la recherche porte sur les titres et les termes.
+{
+  const extraits = {};
+  for (const n of Object.values(Dsite.noeuds)) { if (n.cherche) extraits[n.id] = n.cherche; delete n.cherche; }
+  const contenu = JSON.stringify(extraits);
+  fs.writeFileSync('site/cherche.json', contenu);
+  Dsite.chercheACharger = `cherche.json?v=${empreinte(contenu)}`;
+}
 // Textes des exercices (énoncé, corrigé) : un fichier par feuille, chargé à l'ouverture des exercices.
 // Index du moteur des annales : fichier séparé, chargé à l'ouverture de la rubrique.
 const AIsite = Dsite.rubriques?.['annales-index'];

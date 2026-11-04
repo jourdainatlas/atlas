@@ -266,3 +266,11 @@ visite restent dans le navigateur ; crédits KaTeX, PDF.js, polices. Liens exter
 propos : syntaxe `[texte](https://…)`, convertie par `aProposLiens` dans le gabarit (le rendu commun n'a
 pas de syntaxe de lien externe). Espaces insécables écrites dans le YAML (U+202F avant « ; », U+00A0
 avant « : »), car le rendu ne les ajoute pas.
+
+## 46. Chargement plus rapide (4 nov. 2026)
+
+Détail au §12 de MEMO_atlas.md : `cherche.json` à part, lexique différé à l'inoccupation, cache durable
+`atlas-fixe` du service worker pour les fichiers `?v=`. Mesure (Playwright, 390 px, 1,6 Mb/s, 150 ms, sans
+service worker, serveur gzip local) : affichage de l'accueil et de l'édifice 2,5 s → 2,0 s. Pistes suivantes,
+non faites car dans le domaine d'autres conversations : résumés KaTeX des cours (26 Ko compressés) et liste
+des sujets d'annales (8 Ko) à charger avec leur rubrique ; tracé des arêtes (`aretes`, 52 Ko) par branche.
