@@ -92,6 +92,15 @@ body.l-corps { min-height: 100%; margin: 0; display: block; }
   // Gabarit commun d'une page de lecture.
   const THEME = `<script>(function(){var t=null;try{t=(document.cookie.match(/(?:^|; )atlas-theme=(light|dark)/)||[])[1]||null}catch(e){}if(!t)try{t=sessionStorage.getItem('atlas-theme')}catch(e){}document.documentElement.dataset.theme=t==='dark'?'dark':'light'})();</script>`;
   // fichier : chemin imposé (404.html) ; indexable: false → noindex, ni adresse canonique ni plan du site.
+  // Image d'aperçu de la rubrique (identite/apercu-<rubrique>.png, fabriquer-apercus.mjs), sinon celle du site.
+  function imageApercu(chemin) {
+    const r = { edifice: 'L’édifice', cours: 'Cours', exercices: 'Exercices', annales: 'Annales', nouveautes: 'Nouveautés', 'a-propos': 'À propos' };
+    const t = String(chemin || '').split('/')[0];
+    return `<meta property="og:image" content="${ADRESSE}${r[t] ? `apercu-${t}.png` : 'apercu.png'}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="${r[t] ? `ATLAS – ${r[t]}` : 'Logo ATLAS : un graphe orienté de l\'alpha à l\'oméga'}">`;
+  }
   function page({ chemin, titre, description, ancre, corps, fil = [], type = 'article', fichier, indexable = true }) {
     const url = ADRESSE + chemin, cible = '/#' + ancre;
     const d = coupe(description || '');
@@ -112,10 +121,7 @@ ${indexable ? `<link rel="canonical" href="${url}">` : '<meta name="robots" cont
 <meta property="og:title" content="${attr(titre)}">
 <meta property="og:description" content="${attr(d)}">
 <meta property="og:url" content="${url}">
-<meta property="og:image" content="${ADRESSE}apercu.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Logo ATLAS : un graphe orienté de l'alpha à l'oméga">
+${imageApercu(chemin)}
 <meta property="og:locale" content="fr_FR">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#f4f5f7">

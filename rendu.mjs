@@ -386,6 +386,7 @@ const texteBrut = h => String(h || '').replace(/<figure class="schema"[\s\S]*?<\
 const coupe = (t, n = 200) => t.length > n ? t.slice(0, n - 1).replace(/\s+\S*$/, '') + '…' : t;
 const attr = t => String(t).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
 let nbPartage = 0;
+const APERCUS = new Set(['edifice', 'cours', 'exercices', 'annales', 'nouveautes', 'a-propos']);   // identite/apercu-<rubrique>.png
 const RUBRIQUES_PARTAGE = { accueil: 'Accueil', edifice: 'L\'édifice', cours: 'Cours', exercices: 'Exercices', annales: 'Annales', nouveautes: 'Nouveautés', 'a-propos': 'À propos' };
 function pagePartage(chemin, ancre, titre, description) {
   const url = ADRESSE + chemin, cible = ADRESSE + '#' + ancre;
@@ -407,10 +408,10 @@ function pagePartage(chemin, ancre, titre, description) {
 <meta property="og:title" content="${attr(t)}">
 <meta property="og:description" content="${attr(d)}">
 <meta property="og:url" content="${url}">
-<meta property="og:image" content="${ADRESSE}apercu.png">
+<meta property="og:image" content="${ADRESSE}${APERCUS.has(tete) ? `apercu-${tete}.png` : 'apercu.png'}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Logo ATLAS : un graphe orienté de l'alpha à l'oméga">
+<meta property="og:image:alt" content="${APERCUS.has(tete) ? `ATLAS – ${RUBRIQUES_PARTAGE[tete].replace("'", '’')}` : 'Logo ATLAS : un graphe orienté de l\'alpha à l\'oméga'}">
 <meta property="og:locale" content="fr_FR">
 <meta name="twitter:card" content="summary_large_image">
 <meta http-equiv="refresh" content="0; url=${attr(cible)}">
@@ -438,7 +439,7 @@ const urlsLecture = pagesLecture(ctxLecture);   // même tableau que outilsLectu
 console.log(`Pages de lecture : ${urlsLecture.length}`);
 console.log(`Pages de partage : ${nbPartage}`);
 // Icônes et image d'aperçu (fabriquées par identite/fabriquer-icones.mjs).
-for (const f of ['favicon.svg', 'favicon-32.png', 'apple-touch-icon.png', 'icone-192.png', 'icone-512.png', 'icone-masquable-512.png', 'apercu.png', 'portrait.jpg', 'site.webmanifest'])
+for (const f of ['favicon.svg', 'favicon-32.png', 'apple-touch-icon.png', 'icone-192.png', 'icone-512.png', 'icone-masquable-512.png', 'apercu.png', ...[...APERCUS].map(r => `apercu-${r}.png`), 'portrait.jpg', 'site.webmanifest'])
   fs.copyFileSync(`identite/${f}`, `site/${f}`);
 // Référencement (domaine À propos) : robots.txt et plan du site. Le plan ne liste que de vraies pages :
 // l'accueil, les pages de lecture de l'édifice et des annales, et les PDF des cours et des feuilles. Les pages de partage
