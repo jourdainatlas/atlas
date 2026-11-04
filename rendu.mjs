@@ -128,8 +128,16 @@ function rendre(texte, ou) {
     h = insecables(h);
     const FIN = '</span></span></span>';
     // (le signe qui suit une formule, précédé de son espace insécable, entre lui aussi dans le dernier bloc de la formule)
-    h = h.replace(/\u0000(\d+)\u0000(\u00a0[:;!?»]|[,.;:)\]]+)/g, (m, k, ponct) => !maths[+k].affichee && maths[+k].html.endsWith(FIN)
-      ? maths[+k].html.slice(0, -FIN.length) + `<span class="ponct">${ponct}</span>` + FIN : m);
+    // (de même, le guillemet ouvrant suivi de son espace insécable entre dans le premier bloc de la formule qui le suit)
+    const DEBUT = '<span class="base">';
+    h = h.replace(/(«\u00a0)?\u0000(\d+)\u0000(\u00a0[:;!?»]|[,.;:)\]]+)?/g, (m, ouvre, k, ponct) => {
+      const f = maths[+k];
+      if (f.affichee || (!ouvre && !ponct)) return m;
+      let html = f.html, avant = '', apres = '';
+      if (ouvre) { const i = html.indexOf(DEBUT); if (i >= 0) html = html.slice(0, i + DEBUT.length) + `<span class="ponct">${ouvre}</span>` + html.slice(i + DEBUT.length); else avant = ouvre; }
+      if (ponct) { if (html.endsWith(FIN)) html = html.slice(0, -FIN.length) + `<span class="ponct">${ponct}</span>` + FIN; else apres = ponct; }
+      return avant + html + apres;
+    });
     h = h.replace(/\u0000(\d+)\u0000/g, (m, k) => maths[+k].html);
     h = h.replace(/\u0002(\d+)\u0002/g, (m, k) => enligne[+k]);
     return seul && maths[+seul[1]].affichee ? `<div class="formule${sq ? ' sq' : ''}">${h}</div>` : `<p${sq ? ' class="sq"' : ''}>${h}</p>`;

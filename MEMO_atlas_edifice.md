@@ -1874,3 +1874,24 @@ Le message « timestamp seems very low » de la mesure des étiquettes est sans 
 pour un terme est une erreur. Relu par un agent indépendant : rien de bloquant ; corrigés : « suite » (défini
 plus loin) dans la légende de lex-topologie-1, échelle égale sur les deux axes et segments bleus sous le rouge
 dans lex-partie-convexe-2.
+
+## 112. Exemples du lexique : déploiement par théorie (à partir du 4 novembre 2026)
+
+Consignes communes des lots, hors dépôt : /home/claude/travail/exemples-lots/CONSIGNE.md (rédaction) et
+RELECTURE.md (relecture indépendante) ; un worktree par agent, un fichier contenu/exemples/<t>.yaml et un module
+de schémas par théorie ; l'intégrateur applique le diff du worktree sur main, construit, écrit ce journal, publie.
+Règles ajoutées en cours de route : un schéma chaque fois qu'un dessin éclaire vraiment l'exemple (demande
+d'Armand : « un schéma pour chaque exemple si c'est possible »), jamais décoratif, avec la raison de chaque refus
+dans les notes du lot ; légendes sans « noir » ni « blanc » (le thème change) ; ∅ dessiné barré, comme dans le texte ;
+⋆ à chaque emploi d'une forme du choix, pas à une simple mention. Rendu : le guillemet ouvrant suivi d'une formule
+entre dans le premier bloc insécable de la formule (rendu.mjs), comme la ponctuation qui la suit.
+
+Journal des lots.
+- ord + ordin : 34 termes, 101 exemples, 6 schémas (Hasse : ordre produit et lexicographique, relations
+  d'équivalence sur {a, b, c}, majorants incomparables, chaîne maximale de 𝒫({a, b, c}), ordinaux, filtre).
+  Avant ℕ, pas d'ensemble infini : propriété de la borne supérieure, cardinal, ordinal limite… n'ont de vrai
+  contre-exemple qu'en ouverture. Relu : bloquant corrigé (ordinal de Hartogs « premier non dénombrable », faux avec
+  dénombrable = équipotent à ℕ) ; contre-exemples finis ajoutés pour bon ordre et type d'ordre. Signalés, non
+  faits : « ordre dense » (lexique) parle d'« une infinité » avant ℕ ; « cardinal » (lexique) « l'unique cardinal
+  équipotent à A » non énoncé dans o-cardinal ; od-bon-ordre remarque 2 emploie le choix dépendant sans ⋆ ; ajouts
+  d'amont proposés : ordres produit et lexicographique dans od-ordre, « α cardinal ⇔ |α| = α » dans o-cardinal.
