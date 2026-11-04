@@ -1912,3 +1912,11 @@ Journal des lots.
   remarques de a-module (idéaux, corps hors amont) ; remarque de a-anneau sur End(G) non démontrée ; lexique :
   groupe-symetrise (« plus petit groupe qui le contienne » non démontré), element-regulier (cite (ℕ, ·) en aval),
   abelianise (« on montre plus loin » sans nœud qui le fasse) ; a-module « de type fini » écrit x₁, …, xₙ avant ℕ.
+- zf + n + log : 56 termes, 140 exemples, 7 schémas (appartenance entre 0…3, choix dépendant, numérotation
+  diagonale de ℕ × ℕ, occurrences libres et liées, arbre de valeur d'un terme, arbre des sous-formules, modèle des
+  termes clos). zf très contraint (sous zf-parties, ni extensionnalité ni ∅ ni paire : exemples dans le langage pur,
+  ∅ en ouverture) ; log à la racine : notions de la métathéorie sans lien, conformément à l-metatheorie. Références
+  vérifiées sur le web : Herrlich-Strecker (CMUC 38, 1997, énoncés (6) et (9), adhérence et non fermés), Blair
+  (1977), Gödel (1938), Cohen (1963-1964). Relu : bloquants corrigés (énoncé prêté à Herrlich-Strecker ; « six
+  premiers » axiomes ambigu ; « valide » hors amont). Signalé, non fait : zf-parties, zf-paire et zf-reunion
+  emploient l'extensionnalité sans arête depuis zf-ext (l'ajout redessine le graphe zf).
