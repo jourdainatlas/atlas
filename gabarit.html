@@ -138,6 +138,16 @@ body.en-rubrique .bouton-theme { margin-left: auto; }
 }
 .signaler:hover, .signaler[aria-expanded="true"] { color: var(--encre); background: var(--trame); }
 .signaler:focus-visible { outline: 2px solid var(--encre-3); outline-offset: 2px; }
+.apropos-repli details { border-top: 1px solid var(--filet); }
+.apropos-repli summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 10px; padding: 12px 0 4px; }
+.apropos-repli summary::-webkit-details-marker { display: none; }
+.apropos-repli summary h3 { margin: 0; font-size: 17px; font-family: var(--f-titre); font-weight: 600; color: var(--encre-2); }
+.apropos-repli summary::before { content: ""; flex: none; width: 7px; height: 7px; border-right: 1.6px solid var(--encre-3); border-bottom: 1.6px solid var(--encre-3); transform: rotate(-45deg); transition: transform .15s; margin-left: 2px; }
+.apropos-repli details[open] summary::before { transform: rotate(45deg); }
+.apropos-repli summary:hover h3 { color: var(--encre); }
+.apropos-repli summary:focus-visible { outline: 2px solid var(--encre-3); outline-offset: 2px; border-radius: 4px; }
+.texte-auteur .apropos-repli .corps-texte { font-size: 14px; line-height: 1.6; color: var(--encre-2); padding-top: 6px; }
+.apropos-repli .corps-texte p { margin: 0 0 8px; }
 section[id^="apropos-"] .corps-texte a { color: var(--encre); text-decoration: underline; text-decoration-color: var(--encre-3); text-underline-offset: 3px; }
 section[id^="apropos-"] .corps-texte a:hover { text-decoration-color: var(--encre); }
 /* Recherche globale (domaine À propos – apparence) : loupe de l'en-tête, Ctrl K ou « / ». */
@@ -3271,6 +3281,8 @@ function pageAPropos() {
 // Lien externe dans un texte de l'À propos : [texte](https://…), seule syntaxe de lien que la page accepte ici.
 const aProposLiens = h => String(h || '').replace(/\[([^\]]+)\]\((https:\/\/[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
 function aProposSection(s) {
+  // Section repliable (champ « repliable ») : un onglet qu'on ouvre, en petits caractères (mentions légales).
+  if (s.repliable) return `<section id="apropos-${esc(s.id)}" class="apropos-repli"><details><summary><h3>${s.titre}</h3></summary><div class="corps-texte">${aProposLiens(s.texte)}</div></details></section>`;
   let h = `<section id="apropos-${esc(s.id)}" class="${s.a_rediger ? 'a-rediger' : ''}"><h3>${s.titre}${s.a_rediger ? ' <span class="statut">À venir</span>' : ''}</h3><div class="corps-texte">${aProposLiens(s.texte)}</div>`;
   if (s.etapes?.length) h += `<ol class="apropos-frise">${s.etapes.map(e => `<li><span class="af-periode">${esc(e.periode || '')}</span><span class="af-titre">${e.titre || ''}</span>${e.lieu ? `<span class="af-lieu">${esc(e.lieu)}</span>` : ''}</li>`).join('')}</ol>`;
   if (s.courriel?.local && s.courriel?.domaine) {
@@ -3292,7 +3304,9 @@ document.addEventListener('click', ev => {
   const a = ev.target.closest('[data-apropos-section]');
   if (!a) return;
   ev.preventDefault();
-  document.getElementById('apropos-' + a.dataset.aproposSection)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const cible = document.getElementById('apropos-' + a.dataset.aproposSection);
+  const repli = cible?.querySelector('details'); if (repli) repli.open = true;
+  cible?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 });
 
 /* ---- Recherche globale (domaine À propos – apparence)

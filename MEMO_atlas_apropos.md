@@ -285,3 +285,6 @@ installées à part). `rendu.mjs` les copie (`APERCUS`) ; `og:image` choisi par 
 l'adresse, dans `page()` de `lecture.mjs` (`imageApercu`, donc aussi pour les pages de cours et
 d'exercices) et dans `pagePartage` ; l'accueil, la 404 et le reste gardent `apercu.png`. Les messageries
 gardent souvent l'ancien aperçu en cache : un lien déjà partagé peut mettre du temps à changer.
+Mise à jour (4 nov., demande de l'auteur) : la section `mentions` porte `repliable: true` ; `aProposSection`
+la rend en `<details>` fermé (classe `apropos-repli`, chevron, titre 17 px gris), texte en 14 px au lieu de
+17 px. Le lien du sommaire de la carte de profil ouvre le repli avant d'y défiler.
