@@ -1565,3 +1565,23 @@ cal-pa-sigma renvoie ainsi à cal-sp-derivabilite et cal-sg-d3. Aucun choix, auc
 édifice 15, calc 1, chapitre 0. Relu (40 000 tirages indépendants) : aucune faute bloquante, cinq précisions
 (« en partie » périmé, justification fausse d'un renommage, « donc » injustifié sur Coh(T), T hors des τ_i,
 rang j+1), dix mineures. Le lot C (Gödel) est clos.
+
+## 103. Lexique, lot L1 : fondements et logique (4 novembre 2026)
+
+Premier de quatre lots de résorption de H (L1 fondements et logique ; L2 algèbre ; L3 topologie, homologie, de Rham ;
+L4 analyse et probabilités), dans l'ordre de l'arbre pour que les liens d'un lot ne heurtent pas ceux d'un autre.
+Notes, tableau des décisions et liens : /home/claude/travail/lexique-L1/ (decisions.tsv, liens_poses.txt, lierL1.py).
+Sections rel, ord, ordin, log, l-syntaxe, l-completude, calc, cal-syntaxe, cal-primitives, cal-incompletude. 50
+entrées (666 → 716 termes), dont des noms distincts pour les mots génériques (graphe d'une application, classe
+d'équivalence, projection d'un produit, section et rétraction d'une application, rétraction d'un espace sur une
+partie — continue, entrée propre —, relation symétrique, ordre dense, valuation, code d'un mot, indice d'une
+fonction calculable) ; « projection » sur un quotient liée à application-canonique ; arité étendue aux fonctions
+de ℕⁿ (nœud Primitives récursives). 10 exceptions (1 insistance, 4 autre, 5 locale) ; 1 gras retiré ; ≈ 435 liens
+dans les fiches (129 candidats rejetés avant pose), 36 dans les définitions du lexique ; 13 lignes inutiles de
+edifice_arcs_valides.txt retirées. Définitions ajoutées à l-formules (occurrence — sans la lettre qui suit ∀ —,
+sous-formule, clôture universelle avec la preuve que c'est un énoncé) : elles étaient employées avant cal-sx-libres
+et cal-theoremes. l-connecteurs ne dit plus « arité » (en amont de l-langage). Signalés, non déplacés : entrées
+ordinal (« type d'ordre »), surjection (« section »), fonction-recursive (« machine à registres »), r-equivalence
+(« surjective ») nomment une notion définie plus loin. H : 423 → 359. Relu (431 liens un à un) : rien de bloquant,
+neuf corrections (rétraction topologique prise pour un rappel, deux « sections » qui sont des morphismes, liens dans
+un titre ou après le premier emploi, arité, Zermelo dans cardinal).
