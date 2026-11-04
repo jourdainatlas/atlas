@@ -436,3 +436,12 @@ Ne jamais changer l'`id` d'un chapitre existant : il perdrait son symbole tant q
 
 État au 4 novembre : les 62 chapitres déposés ont tous un symbole, y compris `ma-11` à `ma-14` (`table`, `blocs`,
 `racines`, `vecteurs`), attribués par la conversation apparence.
+
+Le 4 novembre au soir, à la demande de l'auteur, trois symboles ont été changés, après validation sur planche :
+- `tangente` (`p-04`, `ma-05`) est redessiné. La courbe est une bosse en arc de parabole exact, avec la tangente
+  au flanc droit, calculée par la dérivée. S'y ajoutent l'axe et le pointillé jusqu'à l'abscisse du point.
+- `i2` (« i² = −1 », glyphes en formes pleines, i à tige arrondie) remplace `planComplexe` pour `me-02`.
+- `loi` (deux éléments qui se composent en un troisième) remplace `table` pour `ma-11` et `ap-05`.
+Les dessins `planComplexe` et `table` restent dans `SYM_DESSINS`, sans chapitre pour l'instant.
+Les scripts de planche sont à refaire dans chaque session : on injecte les dessins dans la page `#cours`
+servie localement, pour que les variables de couleur `--c-…` s'y résolvent.
