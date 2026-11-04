@@ -197,3 +197,15 @@ de l'ordre de 400 Mo de moins ; (2) supprimer le doublon, le site interactif lis
 pages de lecture : de l'ordre de 240 Mo de moins ; (3) changer d'hébergeur (Cloudflare Pages gratuit :
 pas de limite de taille totale, mais 20 000 fichiers et 25 Mio par fichier). Seuil d'alerte : 800 Mo.
 
+### 42. Repères de couleur des rubriques (4 nov. 2026)
+
+Une couleur par rubrique de contenu, la même partout (accueil, menu, Nouveautés) : édifice `--r-edifice`
+(= `--c-nb`, bleu), cours `--r-cours` (`--c-ana`, vert d'eau), exercices `--r-exercices` (`--c-geo`,
+violet), annales `--r-annales` (`--c-alg`, orange) ; accueil, nouveautés et à propos `--r-neutre` (gris).
+Bloc CSS « repères de couleur des rubriques » de `gabarit.html` : sélection par `data-rubrique` (menu) et
+par `href` (cartes de l'accueil), donc sans toucher au code des rubriques. Accueil : bande de 3 px en haut
+des encadrés (cartes des rubriques, miniature de l'édifice, étapes de « Comment les rubriques se
+répondent », dernières nouveautés) ; profils de « Par où commencer ? » en dégradé des rubriques visées
+(classes `p-lycee`, `p-prepa`, `p-concours`, `p-curiosite`). Menu : barre de couleur à gauche de chaque
+entrée ; la rubrique courante sur fond `--trame` (elle avait une barre rouge, le rouge étant réservé).
+
