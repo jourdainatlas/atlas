@@ -239,3 +239,30 @@ Accueil, « Par où commencer ? » (4 nov.) : les puces de niveau (Seconde, Prem
 Maths Sup) ouvrent la page Cours filtrée sur ce niveau, et non plus son premier chapitre : lien `#cours`
 avec `data-cours-niveau`, un écouteur en capture pose `pageCours.filtre` avant la navigation ; « Tous les
 cours » remet le filtre sur `tous`. Lien « Le cours de Master » retiré à la demande de l'auteur.
+
+## 44. Recherche globale (4 nov. 2026)
+
+Loupe dans l'en-tête (`#chercher-tout`, entre le fil et le bouton de thème ; grille de l'en-tête du
+téléphone passée à cinq colonnes), raccourcis Ctrl K, ⌘ K et « / ». Panneau `#rg-fond` créé à la première
+ouverture (plein écran sur téléphone). Sans rien charger, il cherche dans : l'édifice (même notation que
+`chercherEdifice`, via `indexEdifice()` ; 6 résultats), le lexique (`D.lexique`, 4 → `#lexique/<id>`), les
+chapitres de cours déposés (titre, niveau, sommaire, résumé ; 4), les feuilles en ligne (4), les sujets
+d'annales (5, seulement si la recherche nomme un concours, une filière ou une année, sinon « maths »
+prendrait tout ; → `#annales/sujet/<slug>`). Deux renvois finissent toujours la liste : la même recherche
+parmi les exercices (pose `etatExo.q`) et dans le moteur des annales (pose `etatRech.q`, remplit `#ann-q`).
+Bonus de titre exact, pluriel compris (« groupe » → Groupes). Fonctions `rg…` dans le bloc « Recherche
+globale » du gabarit. Les exercices un à un ne sont pas indexés ici (l'index pèse 1,7 Mo) : c'est le
+renvoi qui les couvre.
+
+## 45. Mentions légales et licence (4 nov. 2026)
+
+Section `mentions` de `apropos.yaml`, à la troisième personne (registre juridique, comme « Principes ») :
+éditeur personnel et non commercial, directeur de la publication, hébergeur (GitHub, Inc., 88 Colin P.
+Kelly Jr. Street, San Francisco, CA 94107, États-Unis : obligation de la LCEN pour un éditeur non
+professionnel, qui peut taire son adresse), registrar OVH ; licence CC BY-NC-SA 4.0 (choix de l'auteur,
+déjà en §9 de MEMO_atlas.md) étendue explicitement aux cours et feuilles ; sujets et rapports des Annales
+exclus (propriété de leurs auteurs) ; données : aucun cookie, audience anonyme, thème et date de dernière
+visite restent dans le navigateur ; crédits KaTeX, PDF.js, polices. Liens externes dans les textes de l'À
+propos : syntaxe `[texte](https://…)`, convertie par `aProposLiens` dans le gabarit (le rendu commun n'a
+pas de syntaxe de lien externe). Espaces insécables écrites dans le YAML (U+202F avant « ; », U+00A0
+avant « : »), car le rendu ne les ajoute pas.

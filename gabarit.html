@@ -138,6 +138,36 @@ body.en-rubrique .bouton-theme { margin-left: auto; }
 }
 .signaler:hover, .signaler[aria-expanded="true"] { color: var(--encre); background: var(--trame); }
 .signaler:focus-visible { outline: 2px solid var(--encre-3); outline-offset: 2px; }
+section[id^="apropos-"] .corps-texte a { color: var(--encre); text-decoration: underline; text-decoration-color: var(--encre-3); text-underline-offset: 3px; }
+section[id^="apropos-"] .corps-texte a:hover { text-decoration-color: var(--encre); }
+/* Recherche globale (domaine À propos – apparence) : loupe de l'en-tête, Ctrl K ou « / ». */
+.chercher-tout { flex: none; display: grid; place-items: center; width: 30px; height: 30px; padding: 0; border: 0; border-radius: 8px; background: none; color: var(--encre-2); cursor: pointer; }
+body.en-rubrique .chercher-tout { margin-left: auto; }
+body.en-rubrique .chercher-tout ~ .bouton-theme { margin-left: 0; }
+.chercher-tout:hover, .chercher-tout[aria-expanded="true"] { color: var(--encre); background: var(--trame); }
+.chercher-tout:focus-visible { outline: 2px solid var(--encre-3); outline-offset: 2px; }
+.rg-fond { position: fixed; inset: 0; z-index: 50; background: rgb(18 20 24 / .38); display: flex; justify-content: center; align-items: flex-start; padding: 9vh 16px 16px; }
+.rg-fond[hidden] { display: none; }
+.rg-boite { width: min(640px, 100%); max-height: 78vh; display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--filet); border-radius: 12px; box-shadow: 0 18px 50px rgb(0 0 0 / .22); overflow: hidden; }
+.rg-champ { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-bottom: 1px solid var(--filet); color: var(--encre-3); }
+.rg-champ input { flex: 1; min-width: 0; border: 0; outline: 0; background: none; color: var(--encre); font: inherit; font-size: 17px; }
+.rg-champ kbd, .rg-pied kbd { font: inherit; font-size: 11.5px; color: var(--encre-3); border: 1px solid var(--filet); border-radius: 5px; padding: 1px 6px; }
+.rg-champ input::-webkit-search-cancel-button { -webkit-appearance: none; display: none; }
+.rg-fermer { border: 0; background: none; color: var(--encre-3); cursor: pointer; font-size: 13px; padding: 4px 6px; border-radius: 6px; }
+.rg-fermer:hover { background: var(--trame); color: var(--encre); }
+.rg-res { overflow-y: auto; padding: 6px 0 8px; overscroll-behavior: contain; }
+.rg-groupe { display: flex; align-items: center; gap: 7px; margin: 10px 16px 4px; font-size: 11.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--encre-3); }
+.rg-groupe svg.sym { width: 15px; height: 15px; vertical-align: 0; }
+.rg-item { display: block; width: 100%; box-sizing: border-box; text-align: left; border: 0; background: none; color: var(--encre); font: inherit; cursor: pointer; padding: 7px 16px; text-decoration: none; }
+.rg-item[aria-selected="true"], .rg-item:hover { background: var(--trame); }
+.rg-titre { display: block; font-size: 15px; line-height: 1.35; }
+.rg-titre mark { background: none; color: inherit; font-weight: 700; }
+.rg-det { display: block; font-size: 12.5px; color: var(--encre-3); margin-top: 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rg-plus .rg-titre { color: var(--encre-2); }
+.rg-vide { padding: 14px 16px; font-size: 14px; color: var(--encre-2); line-height: 1.5; }
+.rg-vide button { border: 0; background: none; padding: 0; font: inherit; color: var(--encre); text-decoration: underline; text-decoration-color: var(--filet); text-underline-offset: 3px; cursor: pointer; }
+.rg-pied { display: flex; gap: 14px; flex-wrap: wrap; padding: 8px 16px; border-top: 1px solid var(--filet); font-size: 12px; color: var(--encre-3); }
+@media (max-width: 560px) { .rg-fond { padding: 0; } .rg-boite { width: 100%; max-height: none; height: 100%; border-radius: 0; border: 0; } .rg-champ input { font-size: 16px; } .rg-pied { display: none; } }
 .acc-profils { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
 .acc-profil { padding: 16px 18px; display: flex; flex-direction: column; gap: 8px; }
 .acc-profil h4 { margin: 0; font-family: var(--f-titre); font-size: 19px; }
@@ -1144,7 +1174,7 @@ span.case:hover { border-style: dashed; color: inherit; }
   .effacer-edifice span { display: none; }   /* 16 px : pas de zoom automatique sur iOS */
   .resultats-edifice { left: 16px; right: 16px; max-height: 55vh; }
   .marque { font-size: 17px; white-space: normal; }
-  .entete { display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto; align-items: center; }   /* marque, thème, drapeau, Partager */
+  .entete { display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto auto; align-items: center; }   /* marque, loupe, thème, drapeau, Partager */
   .fil { grid-column: 1 / -1; grid-row: 2; }
   .commandes button { min-width: 30px; padding: 0 6px; }
 }
@@ -1188,6 +1218,7 @@ span.case:hover { border-style: dashed; color: inherit; }
       </nav>
     </div>
     <ol class="fil" id="fil" aria-label="Position dans l'atlas"></ol>
+    <button type="button" class="chercher-tout" id="chercher-tout" aria-haspopup="dialog" aria-expanded="false" title="Rechercher dans tout le site (Ctrl K)" aria-label="Rechercher dans tout le site"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><circle cx="10.5" cy="10.5" r="6.2" fill="none" stroke="currentColor" stroke-width="1.9"/><path d="M15.2 15.2 20 20" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"/></svg></button>
     <button type="button" class="bouton-theme" id="theme" aria-pressed="false" title="Passer en mode clair" aria-label="Passer en mode clair"><svg class="icone-soleil" viewBox="0 0 200 200" width="26" height="26" aria-hidden="true" focusable="false"><rect x="4" y="4" width="192" height="192" rx="42" fill="#1d2027" stroke="#3a3f4a" stroke-width="8"/><g stroke="#e7e9ed" stroke-width="13" stroke-linecap="round"><line x1="100" y1="40" x2="100" y2="58" transform="rotate(0 100 100)"/><line x1="100" y1="40" x2="100" y2="58" transform="rotate(45 100 100)"/><line x1="100" y1="40" x2="100" y2="58" transform="rotate(90 100 100)"/><line x1="100" y1="40" x2="100" y2="58" transform="rotate(135 100 100)"/><line x1="100" y1="40" x2="100" y2="58" transform="rotate(180 100 100)"/><line x1="100" y1="40" x2="100" y2="58" transform="rotate(225 100 100)"/><line x1="100" y1="40" x2="100" y2="58" transform="rotate(270 100 100)"/><line x1="100" y1="40" x2="100" y2="58" transform="rotate(315 100 100)"/></g><circle cx="100" cy="100" r="28" fill="#ff6d7d"/></svg><svg class="icone-lune" viewBox="0 0 200 200" width="26" height="26" aria-hidden="true" focusable="false"><rect x="4" y="4" width="192" height="192" rx="42" fill="#1d2027" stroke="#3a3f4a" stroke-width="8"/><path d="M118 48a56 56 0 1 0 38 92A46 46 0 0 1 118 48z" fill="#e7e9ed"/><circle cx="140" cy="62" r="9" fill="#ff6d7d"/></svg></button>
     <button type="button" class="signaler" id="signaler" aria-haspopup="dialog" aria-expanded="false" title="Signaler une erreur sur cette page" aria-label="Signaler une erreur sur cette page"><svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" focusable="false"><path d="M5 21V4M5 4.5c2.2-1.3 4.4-1.3 6.6 0s4.4 1.3 6.6 0v8.4c-2.2 1.3-4.4 1.3-6.6 0s-4.4-1.3-6.6 0" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     <button type="button" class="partager" id="partager" title="Copier une adresse à partager, avec aperçu dans les messageries">Partager</button>
@@ -3214,8 +3245,10 @@ function pageAPropos() {
   h += `<div class="texte-auteur">${(P.sections || []).map(aProposSection).join('')}${P.mention ? `<p class="apropos-mention">${esc(P.mention)}</p>` : ''}</div></div>`;
   return h;
 }
+// Lien externe dans un texte de l'À propos : [texte](https://…), seule syntaxe de lien que la page accepte ici.
+const aProposLiens = h => String(h || '').replace(/\[([^\]]+)\]\((https:\/\/[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
 function aProposSection(s) {
-  let h = `<section id="apropos-${esc(s.id)}" class="${s.a_rediger ? 'a-rediger' : ''}"><h3>${s.titre}${s.a_rediger ? ' <span class="statut">À venir</span>' : ''}</h3><div class="corps-texte">${s.texte || ''}</div>`;
+  let h = `<section id="apropos-${esc(s.id)}" class="${s.a_rediger ? 'a-rediger' : ''}"><h3>${s.titre}${s.a_rediger ? ' <span class="statut">À venir</span>' : ''}</h3><div class="corps-texte">${aProposLiens(s.texte)}</div>`;
   if (s.etapes?.length) h += `<ol class="apropos-frise">${s.etapes.map(e => `<li><span class="af-periode">${esc(e.periode || '')}</span><span class="af-titre">${e.titre || ''}</span>${e.lieu ? `<span class="af-lieu">${esc(e.lieu)}</span>` : ''}</li>`).join('')}</ol>`;
   if (s.courriel?.local && s.courriel?.domaine) {
     const adr = [s.courriel.local, s.courriel.domaine].join('\u0040');
@@ -3237,6 +3270,156 @@ document.addEventListener('click', ev => {
   if (!a) return;
   ev.preventDefault();
   document.getElementById('apropos-' + a.dataset.aproposSection)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
+/* ---- Recherche globale (domaine À propos – apparence)
+   Une loupe dans l'en-tête (ou Ctrl K, ⌘ K, « / ») ouvre un champ qui cherche à la fois dans l'édifice
+   (titres, termes définis, extraits, comme le champ de l'édifice), le lexique, les chapitres de cours, les
+   feuilles d'exercices et les sujets d'annales (concours, filière, année, épreuve), sans rien charger.
+   Deux renvois terminent la liste : la même recherche parmi les exercices, et dans le contenu des sujets. */
+const RG = { ouvert: false, items: [] };
+function rgElements() {
+  let f = document.getElementById('rg-fond');
+  if (f) return f;
+  f = document.createElement('div');
+  f.className = 'rg-fond'; f.id = 'rg-fond'; f.hidden = true;
+  f.innerHTML = `<div class="rg-boite" role="dialog" aria-modal="true" aria-label="Rechercher dans tout le site">
+    <div class="rg-champ"><svg viewBox="0 0 24 24" width="19" height="19" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.2" fill="none" stroke="currentColor" stroke-width="1.9"/><path d="M15.2 15.2 20 20" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"/></svg><input id="rg-q" type="search" autocomplete="off" spellcheck="false" placeholder="Une notion, un terme, un chapitre, un concours…" aria-label="Rechercher dans tout le site" role="combobox" aria-controls="rg-res" aria-expanded="true"><button type="button" class="rg-fermer" data-rg-fermer>Fermer</button></div>
+    <div class="rg-res" id="rg-res" role="listbox"></div>
+    <div class="rg-pied"><span><kbd>↑</kbd> <kbd>↓</kbd> choisir</span><span><kbd>Entrée</kbd> ouvrir</span><span><kbd>Échap</kbd> fermer</span></div></div>`;
+  document.body.appendChild(f);
+  f.addEventListener('click', ev => { if (ev.target === f || ev.target.closest('[data-rg-fermer]')) rgFermer(); });
+  f.querySelector('#rg-q').addEventListener('input', rgChercher);
+  f.querySelector('#rg-q').addEventListener('keydown', rgClavier);
+  f.querySelector('#rg-res').addEventListener('click', ev => {
+    const b = ev.target.closest('[data-rg-i]'); if (b) { ev.preventDefault(); rgAller(+b.dataset.rgI); return; }
+    const ex = ev.target.closest('[data-rg-exemple]'); if (ex) { const q = $('#rg-q'); q.value = ex.dataset.rgExemple; q.focus(); rgChercher(); }
+  });
+  return f;
+}
+function rgOuvrir() {
+  const f = rgElements();
+  f.hidden = false; RG.ouvert = true;
+  $('#chercher-tout').setAttribute('aria-expanded', 'true');
+  const q = $('#rg-q'); q.focus(); q.select(); rgChercher();
+}
+function rgFermer() {
+  const f = document.getElementById('rg-fond'); if (!f || f.hidden) return;
+  f.hidden = true; RG.ouvert = false;
+  const b = $('#chercher-tout'); b.setAttribute('aria-expanded', 'false'); b.focus({ preventScroll: true });
+}
+const rgTexte = h => String(h || '').replace(/<[^>]+>/g, ' ').replace(/\$[^$]*\$/g, ' ').replace(/\s+/g, ' ').trim();
+// Note d'une entrée : chaque mot doit figurer dans le titre (mieux en début de mot) ou dans le détail.
+function rgNote(titre, detail, mots, q) {
+  const t = ' ' + normEdifice(titre), d = normEdifice(detail);
+  let s = 0;
+  for (const m of mots) { if (t.includes(' ' + m)) s += 60; else if (t.includes(m)) s += 40; else if (d.includes(m)) s += 10; else return -1; }
+  const nt = normEdifice(titre).trim();
+  if (nt === q || nt === q + 's') s += 100; else if (nt.startsWith(q)) s += 40;
+  return s;
+}
+function rgChercher() {
+  const boite = $('#rg-res'), brut = $('#rg-q').value;
+  const q = normEdifice(brut).trim(), mots = q.split(/[\s,;'’()]+/).filter(Boolean);
+  RG.items = [];
+  if (q.length < 2) {
+    const ex = ['Bézout', 'théorème des valeurs intermédiaires', 'suites terminale', 'Mines-Ponts 2024'];
+    boite.innerHTML = `<div class="rg-vide">Cherchez une notion de l'édifice, un terme du lexique, un chapitre de cours, une feuille d'exercices ou un sujet d'annales. Par exemple : ${ex.map(e => `<button type="button" data-rg-exemple="${esc(e)}">${esc(e)}</button>`).join(', ')}.</div>`;
+    return;
+  }
+  const groupes = [];
+  const garder = (l, n) => l.filter(x => x.s >= 0).sort((a, b) => b.s - a.s || a.titre.length - b.titre.length).slice(0, n);
+  // Édifice : la notation des fiches de l'édifice (indexEdifice), titre, termes définis, puis extrait du texte.
+  const ed = [];
+  for (const e of indexEdifice()) {
+    let s = 0;
+    const ok = mots.every(m => {
+      if (e.t.includes(' ' + m)) { s += 60; return true; }
+      if (e.t.includes(m)) { s += 40; return true; }
+      if (e.tt.includes(m)) { s += 25; return true; }
+      if (e.x.includes(m)) { s += 8; return true; }
+      return false;
+    });
+    if (!ok) continue;
+    const nt = normEdifice(e.titre); if (nt === q || nt === q + 's') s += 100; else if (nt.startsWith(q)) s += 40;
+    const n = D.noeuds[e.id];
+    ed.push({ s: s - 2 * e.prof, titre: e.titre, det: [n.graphe === D.racine ? 'théorie' : n.nature, ...(e.chemin.length ? [e.chemin.join(' › ')] : [])].join(' · '), href: `#${n.graphe}.${e.id}` });
+  }
+  groupes.push(['edifice', 'L\'édifice', garder(ed, 6)]);
+  const lx = Object.values(D.lexique || {}).map(e => ({ s: rgNote(e.terme, '', mots, q), titre: e.terme, det: e.defini && D.noeuds[e.defini] ? `terme défini dans « ${rgTexte(D.noeuds[e.defini].titre)} »` : 'terme du lexique', href: `#lexique/${e.id}` }));
+  groupes.push(['lexique', 'Lexique', garder(lx, 4)]);
+  const cours = (R.cours?.cours || []).filter(c => c.statut === 'depose').map(c => {
+    const nv = niveauDe(c.niveau).titre || '';
+    const det = `${nv} ${(c.sommaire || []).join(' ')} ${rgTexte(c.resume)}`;
+    return { s: rgNote(c.titre, det, mots, q), titre: rgTexte(c.titre), det: `${nv}${c.chapitre ? ` · chapitre ${c.chapitre}` : ''}`, href: `#cours/${c.id}` };
+  });
+  groupes.push(['cours', 'Cours', garder(cours, 4)]);
+  const feuilles = (R.exercices?.feuilles || []).filter(f => f.statut === 'depose' && exosEnLigne(f)).map(f => {
+    const nv = niveauDe(f.niveau).titre || '';
+    return { s: rgNote(f.titre, `${nv} exercices feuille ${(f.parties || []).map(rgTexte).join(' ')}`, mots, q), titre: rgTexte(f.titre), det: `${nv} · ${f.nombre} exercices corrigés`, href: `#exercices/feuille/${f.id}` };
+  });
+  groupes.push(['exercices', 'Feuilles d\'exercices', garder(feuilles, 4)]);
+  // Annales : seulement si la recherche nomme un concours, une filière ou une année, sinon « maths » prendrait tout.
+  const A = R.annales || {}, titreConc = {};
+  for (const fam of A.familles || []) for (const c of fam.concours || []) titreConc[c.id] = c.titre;
+  const cles = new Set(Object.entries(titreConc).flatMap(([id, t]) => normEdifice(`${id} ${t}`).split(/[\s\-–·]+/)).filter(m => m.length > 1));
+  for (const x of A.sujets || []) if (x.filiere) cles.add(normEdifice(x.filiere));
+  const vise = mots.some(m => /^(19|20)\d\d$/.test(m) || [...cles].some(c => c.startsWith(m) && m.length >= 2));
+  const ann = vise ? (A.sujets || []).filter(x => x.sujet).map(x => {
+    const t = `${titreConc[x.concours] || x.concours}${x.filiere ? ' ' + x.filiere : ''} ${x.annee} · ${x.epreuve}`;
+    const s = rgNote(t, `${x.concours} annales sujet concours`, mots, q);
+    return { s: s < 0 ? s : s + (+x.annee - 2000) / 10, titre: t, det: x.rapport ? 'sujet et rapport du jury' : 'sujet', href: `#annales/sujet/${slugSujet(x)}` };
+  }) : [];
+  groupes.push(['annales', 'Annales', garder(ann, 5)]);
+  let h = '', i = 0;
+  for (const [sym, titre, l] of groupes) {
+    if (!l.length) continue;
+    h += `<div class="rg-groupe" aria-hidden="true">${symbole(sym)}${titre}</div>`;
+    for (const x of l) { RG.items.push({ href: x.href }); h += `<a class="rg-item" role="option" id="rg-${i}" href="${x.href}" data-rg-i="${i}" aria-selected="${i === 0}"><span class="rg-titre">${surligneEdifice(x.titre, mots)}</span><span class="rg-det">${esc(x.det)}</span></a>`; i++; }
+  }
+  if (!i) h += `<div class="rg-vide">Rien ne porte ce nom dans l'édifice, le lexique, les cours ou les sujets. La recherche peut encore se poursuivre dans le texte des exercices ou dans le contenu des sujets d'annales :</div>`;
+  const enc = esc(brut.trim());
+  h += `<div class="rg-groupe" aria-hidden="true">Chercher plus loin</div>`;
+  RG.items.push({ exos: brut.trim() }); h += `<a class="rg-item rg-plus" role="option" id="rg-${i}" href="#exercices" data-rg-i="${i}" aria-selected="${i === 0}"><span class="rg-titre">« ${enc} » parmi les exercices</span><span class="rg-det">énoncés, thèmes et numéros des ${(R.exercices?.feuilles || []).reduce((t, f) => t + (+f.nombre || 0), 0).toLocaleString('fr-FR')} exercices corrigés</span></a>`; i++;
+  RG.items.push({ ann: brut.trim() }); h += `<a class="rg-item rg-plus" role="option" id="rg-${i}" href="#annales" data-rg-i="${i}" aria-selected="false"><span class="rg-titre">« ${enc} » dans le contenu des sujets d'annales</span><span class="rg-det">le moteur des annales, partie par partie</span></a>`;
+  boite.innerHTML = h;
+  boite.scrollTop = 0;
+  $('#rg-q').setAttribute('aria-activedescendant', 'rg-0');
+}
+function rgAller(i) {
+  const x = RG.items[i]; if (!x) return;
+  rgFermer();
+  if (x.exos !== undefined) {
+    Object.assign(etatExo, { vue: 'exercice', q: x.exos, noeud: '', feuille: '', ex: '', montres: 15 });
+    if (location.hash === '#exercices') rafraichirRubrique(); else location.hash = '#exercices';
+    return;
+  }
+  if (x.ann !== undefined) {
+    etatRech.q = x.ann; etatRech.montres = 12;
+    const suite = () => setTimeout(() => { const z = $('#ann-q'); if (z) z.value = etatRech.q; majRechercheAnnales(); $('#rech-ann')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60);
+    if (location.hash === '#annales') suite(); else { addEventListener('hashchange', suite, { once: true }); location.hash = '#annales'; }
+    return;
+  }
+  if (location.hash === x.href) depuisAncre(); else location.hash = x.href;
+}
+function rgClavier(ev) {
+  const items = [...document.querySelectorAll('#rg-res .rg-item')];
+  if (ev.key === 'Escape') { ev.preventDefault(); rgFermer(); return; }
+  if (!items.length) return;
+  let i = Math.max(0, items.findIndex(b => b.getAttribute('aria-selected') === 'true'));
+  if (ev.key === 'ArrowDown' || ev.key === 'ArrowUp') {
+    ev.preventDefault();
+    items[i].setAttribute('aria-selected', 'false');
+    i = (i + (ev.key === 'ArrowDown' ? 1 : items.length - 1)) % items.length;
+    items[i].setAttribute('aria-selected', 'true'); items[i].scrollIntoView({ block: 'nearest' });
+    $('#rg-q').setAttribute('aria-activedescendant', items[i].id);
+  } else if (ev.key === 'Enter') { ev.preventDefault(); rgAller(+items[i].dataset.rgI); }
+}
+$('#chercher-tout').addEventListener('click', () => RG.ouvert ? rgFermer() : rgOuvrir());
+document.addEventListener('keydown', ev => {
+  if ((ev.ctrlKey || ev.metaKey) && !ev.altKey && ev.key.toLowerCase() === 'k') { ev.preventDefault(); RG.ouvert ? rgFermer() : rgOuvrir(); return; }
+  if (ev.key === '/' && !RG.ouvert && !ev.target.closest?.('input, textarea, select, [contenteditable="true"]')) { ev.preventDefault(); rgOuvrir(); }
+  if (ev.key === 'Escape' && RG.ouvert) rgFermer();
 });
 
 /* ---- lecteur PDF (PDF.js, chargé à la demande) */
