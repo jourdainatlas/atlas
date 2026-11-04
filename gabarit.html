@@ -150,6 +150,66 @@ body.en-rubrique .bouton-theme { margin-left: auto; }
 .apropos-repli .corps-texte p { margin: 0 0 8px; }
 section[id^="apropos-"] .corps-texte a { color: var(--encre); text-decoration: underline; text-decoration-color: var(--encre-3); text-underline-offset: 3px; }
 section[id^="apropos-"] .corps-texte a:hover { text-decoration-color: var(--encre); }
+/* Impression des fiches de l'édifice (domaine À propos – apparence) : bouton à côté du drapeau, menu,
+   et feuille d'impression #impression, seule visible à l'impression. Couleurs du thème clair, toujours. */
+.imp-elt { display: inline-grid; place-items: center; width: 26px; height: 26px; padding: 0; margin-left: 0; vertical-align: middle; border: 0; border-radius: 6px; background: none; color: var(--encre-3); cursor: pointer; opacity: .55; transition: opacity .15s; position: relative; top: -2px; }
+.imp-elt:hover, .imp-elt:focus-visible, .imp-elt[aria-expanded="true"] { opacity: 1; color: var(--encre); background: var(--trame); }
+.imp-elt:focus-visible { outline: 2px solid var(--encre-3); outline-offset: 1px; }
+@media (hover: none) { .imp-elt { opacity: .8; } }
+.imp-menu { position: fixed; z-index: 40; width: 290px; background: var(--surface); border: 1px solid var(--filet); border-radius: 10px; box-shadow: 0 10px 30px rgb(0 0 0 / .16); padding: 6px; font: 14px/1.4 var(--f-ui); color: var(--encre); }
+.imp-menu[hidden] { display: none; }
+.imp-menu .imp-t { font-size: 11.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--encre-3); padding: 6px 10px 4px; }
+.imp-menu button { display: block; width: 100%; text-align: left; border: 0; background: none; padding: 7px 10px; border-radius: 6px; font: inherit; color: inherit; cursor: pointer; }
+.imp-menu button:hover, .imp-menu button:focus-visible { background: var(--trame); outline: none; }
+.imp-menu button small { display: block; color: var(--encre-3); font-size: 12.5px; }
+.imp-menu label { display: flex; align-items: center; gap: 8px; padding: 8px 10px 6px; border-top: 1px solid var(--filet); margin-top: 4px; font-size: 13px; color: var(--encre-2); cursor: pointer; }
+.imp-menu .imp-attente { padding: 8px 10px; font-size: 13px; color: var(--encre-2); }
+@media (max-width: 560px) { .imp-menu { left: 0 !important; right: 0; top: auto !important; bottom: 0; width: auto; border-radius: 14px 14px 0 0; padding: 8px 8px max(12px, env(safe-area-inset-bottom)); font-size: 15px; } .imp-menu button { padding: 11px 12px; } }
+#impression { display: none; }
+@media print {
+  :root, :root[data-theme] { color-scheme: light !important; }
+  html, body { height: auto !important; overflow: visible !important; background: #fff !important; }
+  #impression { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body.imprime > *:not(#impression) { display: none !important; }
+  body.imprime #impression { display: block !important; }
+}
+#impression { --papier: #f4f5f7; --surface: #ffffff; --encre: #1b1e24; --encre-2: #4f5561; --encre-3: #858b96; --filet: #d8dbe1; --trame: #e3e6eb; --rouge: #b0001a; --rouge-fond: #fbeef0; --noeud: #ffffff; --arete: #a1a6af; --arete-vive: #1b1e24; --choix: #8a6400; --choix-fond: #fdf5dc; --corrige-fond: #eef6f1; --corrige-filet: #3f8f63; --c-fond: #666b74; --c-ord: #6a7d00; --c-alg: #d26d00; --c-top: #c0007a; --c-nb: #0070c0;      --c-ana: #00866b;     --c-geo: #8a45ab;     --c-mix: #2f343c;     --c-neutre: #2f343c;  --c-axiome: #c00000; color: var(--encre); background: #fff; font-family: var(--f-texte); font-size: 10.5pt; line-height: 1.5; }
+#impression a, #impression .lien-noeud, #impression .terme { color: inherit; text-decoration: none; border: 0; background: none; font: inherit; padding: 0; }
+#impression .ip-couv { border-top: 3px solid var(--c-nb); padding-top: 10mm; margin-bottom: 6mm; }
+#impression .ip-sur { font: 600 9pt var(--f-ui); letter-spacing: .12em; text-transform: uppercase; color: #6b717c; }
+#impression .ip-couv h1 { font-family: var(--f-titre); font-size: 28pt; font-weight: 600; margin: 3mm 0 2mm; line-height: 1.1; }
+#impression .ip-couv p { margin: 0; color: var(--encre-2); }
+#impression .ip-adr { font: 9pt var(--f-ui); color: var(--c-nb); margin-top: 3mm; }
+#impression ol.ip-somm { list-style: none; counter-reset: s; padding: 0; margin: 6mm 0 0; border-top: 1px solid var(--filet); }
+#impression ol.ip-somm li { counter-increment: s; display: flex; gap: 4mm; padding: 1.5mm 0; border-bottom: 1px solid #eceef1; }
+#impression ol.ip-somm li::before { content: counter(s); font: 600 9pt var(--f-ui); color: var(--encre-3); width: 6mm; }
+#impression ol.ip-somm li span { flex: 1; } #impression ol.ip-somm i { font: normal 8.5pt var(--f-ui); color: var(--encre-3); }
+#impression .ip-fiche { position: relative; border-top: 1.5px solid var(--encre); padding-top: 4mm; margin-top: 9mm; }
+#impression.ip-seule .ip-fiche:first-child { border-top: 0; margin-top: 0; padding-top: 0; }
+#impression .ip-couv + .ip-fiche { break-before: page; border-top: 0; margin-top: 0; }
+#impression .ip-num { position: absolute; right: 0; top: 4mm; font: 600 9pt var(--f-ui); color: #b4b9c1; }
+#impression .ip-nat { font: 600 8.5pt var(--f-ui); letter-spacing: .1em; text-transform: uppercase; color: var(--encre-2); }
+#impression .ip-definition .ip-nat, #impression .ip-axiome .ip-nat { color: var(--rouge); }
+#impression h2 { font-family: var(--f-titre); font-size: 17pt; font-weight: 600; margin: 1mm 0 2.5mm; line-height: 1.2; }
+#impression .ip-nat, #impression h2, #impression .ip-liens, #impression .ip-et { break-after: avoid; }
+#impression .ip-liens { font: 8.5pt/1.45 var(--f-ui); color: #5b616c; margin: 0 0 3mm; }
+#impression .ip-liens b { font-weight: 600; color: var(--encre-2); margin-right: 1.5mm; }
+#impression .ip-fiche > .ip-liens:last-child { break-before: avoid; }
+#impression p { margin: 0 0 2mm; orphans: 2; widows: 2; }
+#impression .ip-et { display: block; font: 600 8pt var(--f-ui); letter-spacing: .1em; text-transform: uppercase; color: #6b717c; margin-bottom: 1.5mm; }
+#impression .enonce { border-left: 4px double var(--encre); padding: 2.5mm 3mm 1mm 4mm; margin: 3mm 0; break-inside: avoid; background: #f6f7f9; }
+#impression .ip-definition .enonce, #impression .ip-axiome .enonce { border-left: 3px solid var(--rouge); background: var(--rouge-fond); }
+#impression .enonce > .tete { display: block; font: 600 8pt var(--f-ui); letter-spacing: .1em; text-transform: uppercase; color: #6b717c; margin-bottom: 1.5mm; }
+#impression .choix, #impression .admis { border-left: 3px solid var(--choix); background: var(--choix-fond); padding: 2mm 3mm; margin: 3mm 0; break-inside: avoid; font-size: 10pt; }
+#impression .choix .tete, #impression .admis .tete { display: block; font: 600 8pt var(--f-ui); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 1mm; }
+#impression .ip-preuve { margin: 4mm 0; font-size: 10pt; }
+#impression .cqfd { display: block; text-align: right; margin-top: -5mm; }
+#impression .ip-rq { margin-top: 4mm; border-top: 1px solid var(--filet); padding-top: 3mm; font-size: 10pt; }
+#impression .ip-r { break-inside: avoid; margin-bottom: 2mm; }
+#impression .ip-r:has(figure) { break-inside: auto; }   /* une remarque illustrée peut se couper : sinon elle laisse une page à moitié vide */
+#impression .katex { font-size: 1.06em; } #impression .katex-display { margin: 2mm 0; }
+#impression figure.schema { break-inside: avoid; }
+#impression .ip-pied { margin-top: 10mm; padding-top: 2mm; border-top: 1px solid var(--filet); font: 8pt var(--f-ui); color: var(--encre-3); }
 /* Recherche globale (domaine À propos – apparence) : loupe de l'en-tête, Ctrl K ou « / ». */
 .chercher-tout { flex: none; display: grid; place-items: center; width: 30px; height: 30px; padding: 0; border: 0; border-radius: 8px; background: none; color: var(--encre-2); cursor: pointer; }
 body.en-rubrique .chercher-tout { margin-left: auto; }
@@ -1834,7 +1894,7 @@ function fiche() {
   const c = couleurNoeud(n);
   let h = `<article class="fiche" style="--c: ${c}">`;
   h += `<p class="sur-titre"><span class="sorte">${esc(n.sorte)}</span>${rang(n)}${n.graphe !== D.racine ? `<span>${esc(D.graphes[n.graphe].titre)}</span>` : ''}</p>`;
-  h += `<h2>${esc(n.titre)}${n.choix ? ` <span class="etoile" title="${n.graphe === D.racine ? 'Un théorème central de cette théorie ne se démontre pas dans ZF : il équivaut à une forme usuelle de l\'axiome du choix ou en dépend de façon essentielle' : 'Fait intervenir l\'axiome du choix'}" aria-label="axiome du choix">⋆</span>` : ''}${n.admis ? ' <span class="dague" title="Résultat pas entièrement démontré ici : voir l\'encadré « Admis ici »" aria-label="résultat pas entièrement démontré ici">†</span>' : ''}${aProposSignalBouton(aProposCheminEdifice(n), `${ADRESSE_SITE}edifice/${n.id}/`)}</h2>`;
+  h += `<h2>${esc(n.titre)}${n.choix ? ` <span class="etoile" title="${n.graphe === D.racine ? 'Un théorème central de cette théorie ne se démontre pas dans ZF : il équivaut à une forme usuelle de l\'axiome du choix ou en dépend de façon essentielle' : 'Fait intervenir l\'axiome du choix'}" aria-label="axiome du choix">⋆</span>` : ''}${n.admis ? ' <span class="dague" title="Résultat pas entièrement démontré ici : voir l\'encadré « Admis ici »" aria-label="résultat pas entièrement démontré ici">†</span>' : ''}${aProposSignalBouton(aProposCheminEdifice(n), `${ADRESSE_SITE}edifice/${n.id}/`)}${impBouton(n)}</h2>`;
   h += contexte;
   if (n.choix) h += `<div class="choix"><strong class="tete">⋆ Axiome du choix</strong>${n.choix}</div>`;
   if (n.admis) h += encadreAdmis(n);
@@ -3308,6 +3368,124 @@ document.addEventListener('click', ev => {
   const repli = cible?.querySelector('details'); if (repli) repli.open = true;
   cible?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 });
+
+/* ---- Impression des fiches de l'édifice (domaine À propos – apparence)
+   L'imprimante, à côté du drapeau du titre de chaque fiche, ouvre un menu : cette fiche seule, ou toutes les
+   fiches de la théorie ou du chapitre (le graphe qu'elle ouvre, sinon celui qui la contient), dans l'ordre du
+   graphe ; une case retire les démonstrations. La feuille est composée dans #impression, seule visible à
+   l'impression (règles @media print), puis le navigateur imprime ou enregistre en PDF. En-têtes et pieds de
+   page par les boîtes de marge de @page (Chrome, Edge) ; un pied de document les double ailleurs (Safari). */
+const IMP_ICONE = '<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><path d="M7 9V3.8h10V9M7 17.5H5a2 2 0 0 1-2-2V11a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4.5a2 2 0 0 1-2 2h-2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M7 14h10v6.2H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="17.6" cy="12" r="1" fill="currentColor"/></svg>';
+const impEnsemble = n => {
+  const gid = n.sous && D.graphes[n.sous] ? n.sous : (n.graphe !== D.racine ? n.graphe : null);
+  if (!gid) return null;
+  const ids = Object.values(D.noeuds).filter(m => m.graphe === gid).map(m => m.id);
+  return ids.length > 1 ? { gid, ids } : null;
+};
+function impBouton(n) {
+  return `<button type="button" class="imp-elt" data-imp="${n.id}" aria-haspopup="menu" aria-expanded="false" title="Imprimer ou enregistrer en PDF" aria-label="Imprimer cette fiche ou sa théorie">${IMP_ICONE}</button>`;
+}
+let impSource = null;
+function impMenu() {
+  let m = document.getElementById('imp-menu');
+  if (m) return m;
+  m = document.createElement('div'); m.className = 'imp-menu'; m.id = 'imp-menu'; m.hidden = true; m.setAttribute('role', 'menu');
+  document.body.appendChild(m);
+  m.addEventListener('click', ev => {
+    const b = ev.target.closest('[data-imp-quoi]'); if (!b) return;
+    impImprimer(b.dataset.impQuoi, m.querySelector('#imp-preuves').checked);
+  });
+  return m;
+}
+function impOuvrir(bouton) {
+  const n = D.noeuds[bouton.dataset.imp]; if (!n) return;
+  const m = impMenu(), E = impEnsemble(n), g = E && D.graphes[E.gid];
+  const sorte = g ? (D.noeuds[g.conteneur]?.graphe === D.racine ? 'la théorie' : 'le chapitre') : '';
+  m.innerHTML = `<div class="imp-t">Imprimer</div><button type="button" role="menuitem" data-imp-quoi="fiche">Cette fiche<small>${esc(rgTexte(n.titre))}</small></button>`
+    + (E ? `<button type="button" role="menuitem" data-imp-quoi="tout">Tout${sorte === 'la théorie' ? 'e' : ''} ${sorte} «&nbsp;${esc(rgTexte(g.titre))}&nbsp;»<small>${E.ids.length} fiches dans l'ordre du graphe</small></button>` : '')
+    + `<label><input type="checkbox" id="imp-preuves" checked> Avec les démonstrations</label>`;
+  impSource = { bouton, n, E };
+  m.hidden = false; bouton.setAttribute('aria-expanded', 'true');
+  if (!matchMedia('(max-width: 560px)').matches) {
+    const r = bouton.getBoundingClientRect(), w = m.offsetWidth, h = m.offsetHeight;
+    m.style.left = Math.max(8, Math.min(r.left, innerWidth - w - 8)) + 'px';
+    m.style.top = (r.bottom + 6 + h > innerHeight - 8 ? Math.max(8, r.top - h - 6) : r.bottom + 6) + 'px';
+  }
+  m.querySelector('button')?.focus({ preventScroll: true });
+}
+function impFermer() {
+  const m = document.getElementById('imp-menu'); if (!m || m.hidden) return;
+  m.hidden = true; impSource?.bouton.setAttribute('aria-expanded', 'false');
+}
+document.addEventListener('click', ev => {
+  const b = ev.target.closest('.imp-elt');
+  if (b) { ev.stopPropagation(); (impSource?.bouton === b && !document.getElementById('imp-menu').hidden) ? impFermer() : impOuvrir(b); return; }
+  if (!ev.target.closest('#imp-menu')) impFermer();
+});
+document.addEventListener('keydown', ev => { if (ev.key === 'Escape') impFermer(); });
+addEventListener('hashchange', impFermer);
+$('#panneau')?.addEventListener('scroll', impFermer, { passive: true });
+const impChaine = t => '"' + String(t).replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '"';
+function impFicheHTML(n, k, preuves) {
+  const t = rgTexte;
+  const nat = (n.nature || '').normalize('NFD').replace(/\p{Diacritic}/gu, '');
+  const rep = n.parents.concat(n.amont || []).filter(p => D.noeuds[p]).map(p => esc(t(D.noeuds[p].titre)));
+  const sert = n.enfants.filter(p => D.noeuds[p]).map(p => esc(t(D.noeuds[p].titre)));
+  let h = `<section class="ip-fiche ip-${nat}">${k ? `<div class="ip-num">${k}</div>` : ''}<div class="ip-nat">${esc(n.sorte || n.nature)}${n.choix ? ' ⋆' : ''}${n.admis ? ' †' : ''}</div><h2>${esc(n.titre)}</h2>`;
+  if (rep.length) h += `<p class="ip-liens"><b>Repose sur</b>${rep.join(' · ')}</p>`;
+  if (typeof n.choix === 'string' && n.choix) h += `<div class="choix"><strong class="tete">⋆ Axiome du choix</strong>${n.choix}</div>`;
+  if (n.admis) h += encadreAdmis(n);
+  if (n.texte) h += n.texte;
+  if (n.enonce) h += `<div class="enonce"><span class="tete">${n.nature === 'chapitre' ? 'Résultat principal' : 'Énoncé'}</span>${n.enonce}</div>`;
+  if (preuves && n.preuve) h += `<div class="ip-preuve"><span class="ip-et">Démonstration</span>${n.preuve}<span class="cqfd">□</span></div>`;
+  if ((n.remarques || []).length) h += `<div class="ip-rq"><span class="ip-et">${n.remarques.length > 1 ? 'Remarques' : 'Remarque'}</span>${n.remarques.map(r => `<div class="ip-r">${r}</div>`).join('')}</div>`;
+  if (n.sous && D.graphes[n.sous] && k) h += `<p class="ip-liens">Cette fiche s'ouvre sur son propre graphe, «&nbsp;${esc(t(D.graphes[n.sous].titre))}&nbsp;», qui s'imprime à part.</p>`;
+  if (sert.length) h += `<p class="ip-liens"><b>Sert à</b>${sert.join(' · ')}</p>`;
+  return h + '</section>';
+}
+function impImprimer(quoi, preuves) {
+  const src = impSource; if (!src) return;
+  const m = document.getElementById('imp-menu');
+  const tout = quoi === 'tout' && src.E;
+  const gid = tout ? src.E.gid : src.n.graphe;
+  m.innerHTML = '<div class="imp-attente">Préparation de l\'impression…</div>';
+  chargerBranche(gid).then(() => {
+    impFermer();
+    const ids = tout ? src.E.ids : [src.n.id];
+    const g = D.graphes[gid];
+    const fil = ['L\'édifice', ...chemin(gid).slice(1).map(x => rgTexte(D.graphes[x].titre))];
+    if (!tout && src.n.graphe === D.racine) fil.push(rgTexte(src.n.titre));
+    const adresse = `atlasjourdain.fr/edifice/${tout ? (g.conteneur || src.n.id) : src.n.id}/`;
+    const date = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+    const pied = `© ${new Date().getFullYear()} Armand Jourdain · CC BY-NC-SA 4.0 · imprimé le ${date}`;
+    let h = '';
+    if (tout) {
+      const sorte = D.noeuds[g.conteneur]?.graphe === D.racine ? 'théorie' : 'chapitre';
+      h += `<div class="ip-couv"><div class="ip-sur">ATLAS · ${fil.slice(0, -1).map(esc).join(' › ') || 'L\'édifice'} · ${sorte}</div><h1>${esc(rgTexte(g.titre))}</h1>`
+        + `<p>${ids.length} fiches, dans l'ordre du graphe : chaque fiche ne s'appuie que sur celles qui la précèdent${preuves ? '' : ' ; énoncés et remarques, sans les démonstrations'}.</p><div class="ip-adr">${adresse}</div>`
+        + `<ol class="ip-somm">${ids.map(i => `<li><span>${esc(rgTexte(D.noeuds[i].titre))}</span><i>${esc(D.noeuds[i].sorte || D.noeuds[i].nature)}</i></li>`).join('')}</ol></div>`;
+    }
+    h += ids.map((i, k) => impFicheHTML(D.noeuds[i], tout ? k + 1 : 0, preuves)).join('');
+    h += `<div class="ip-pied">${esc(pied)} · ${adresse}</div>`;
+    let z = document.getElementById('impression');
+    if (!z) { z = document.createElement('div'); z.id = 'impression'; document.body.appendChild(z); }
+    z.className = tout ? '' : 'ip-seule';
+    z.innerHTML = h;
+    let st = document.getElementById('imp-page');
+    if (!st) { st = document.createElement('style'); st.id = 'imp-page'; document.head.appendChild(st); }
+    const marge = c => `font: 8.5pt "IBM Plex Sans", sans-serif; color: #6b717c; content: ${c};`;
+    st.textContent = `@page { size: A4; margin: 18mm 18mm 20mm;
+      @top-left { ${marge(impChaine('ATLAS · ' + fil.join(' › ')))} } @top-right { ${marge(impChaine('atlasjourdain.fr'))} }
+      @bottom-left { ${marge(impChaine(pied))} } @bottom-right { ${marge('counter(page) " / " counter(pages)')} } }`
+      + (tout ? ' @page :first { @top-left { content: none; } @top-right { content: none; } }' : '');
+    const titreAvant = document.title;
+    document.title = `ATLAS – ${rgTexte(tout ? g.titre : src.n.titre)}`;   // nom proposé pour le PDF
+    document.body.classList.add('imprime');
+    const fin = () => { document.body.classList.remove('imprime'); z.innerHTML = ''; document.title = titreAvant; };
+    addEventListener('afterprint', fin, { once: true });
+    (document.fonts?.ready || Promise.resolve()).then(() => setTimeout(() => window.print(), 50));
+  }, () => { m.innerHTML = '<div class="imp-attente">Les textes n\'ont pas pu être chargés. Vérifiez la connexion, puis réessayez.</div>'; });
+}
 
 /* ---- Recherche globale (domaine À propos – apparence)
    Une loupe dans l'en-tête (ou Ctrl K, ⌘ K, « / ») ouvre un champ qui cherche à la fois dans l'édifice

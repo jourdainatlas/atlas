@@ -288,3 +288,19 @@ gardent souvent l'ancien aperçu en cache : un lien déjà partagé peut mettre 
 Mise à jour (4 nov., demande de l'auteur) : la section `mentions` porte `repliable: true` ; `aProposSection`
 la rend en `<details>` fermé (classe `apropos-repli`, chevron, titre 17 px gris), texte en 14 px au lieu de
 17 px. Le lien du sommaire de la carte de profil ouvre le repli avant d'y défiler.
+
+## 48. Impression des fiches de l'édifice (4 nov. 2026)
+
+Choix de l'auteur : imprimante au trait juste après le drapeau du titre de chaque fiche (`.imp-elt`, même
+réglage que `.signal-elt` : 26 px, opacité .55, `top: -2px`), menu « Cette fiche » / « Toute la théorie »
+ou « Tout le chapitre » (graphe que la fiche ouvre, sinon celui qui la contient ; absent pour une théorie
+sans graphe intérieur), case « Avec les démonstrations » cochée par défaut ; feuille montante sur
+téléphone. Couleurs gardées (thème clair imposé à l'impression, même en thème sombre) ; les annales ne
+sont pas concernées. La feuille est composée dans `#impression` (`impImprimer`, après `chargerBranche`),
+seule visible sous `@media print` (classe `body.imprime`) ; couverture et sommaire pour un ensemble ;
+nature, ⋆, †, Repose sur, encadrés choix et Admis, énoncé, démonstration dépliée, remarques, Sert à.
+En-têtes et pieds par les boîtes de marge de `@page` (style `#imp-page` écrit à chaque impression :
+chemin, adresse, © et licence, date, page / total) ; Safari et Firefox ne les affichent pas, d'où un pied
+de document qui répète licence et adresse. Une figure ne se coupe pas, ce qui peut laisser un blanc en
+bas de page ; une remarque illustrée peut se couper (`:has(figure)`). Essai : « Les entiers relatifs »,
+9 pages avec démonstrations, 8 sans ; fiche Bézout, 1 page.
