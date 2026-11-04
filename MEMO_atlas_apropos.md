@@ -222,3 +222,7 @@ par script), sur les cartes des rubriques de l'accueil (`carte()`), en tête du 
 cartes et filtres des Nouveautés (rubrique « site » → maison). Variantes écartées : arbre au trait,
 ramures, façade ; la ramure penchée reste en réserve (dessin dans la conversation du 4 nov.).
 
+Alignement des cartes de l'accueil : la ligne de titre (`.acc-rubriques .acc-rub .r-tete`) est centrée
+(`align-items: center`) et non plus alignée sur la ligne de base, sinon le titre se calait sur le bas du
+grand nombre et paraissait décalé par rapport au symbole. Sélecteur renforcé car la règle d'origine,
+`.acc-rub .r-tete`, vient plus loin dans le fichier.
