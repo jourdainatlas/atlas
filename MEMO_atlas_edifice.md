@@ -1902,3 +1902,13 @@ Journal des lots.
   du site étant des triplets) ; injection 2 et 3 réécrits, ensemble-quotient 3 rendu interne. Signalés, non faits :
   « bijection » hors amont dans la remarque 2 de r-familles ; dans le lexique, la seconde phrase de « bijection »
   relève de r-inverses et la neutralité de « identité » de r-composition.
+- alg : 37 termes, 96 exemples, 4 schémas (les six bijections de {a, b, c}, sous-groupes de 𝔖({a, b, c}),
+  sous-groupes et sous-modules de 𝒫({a, b}), idéaux de 𝒫({a, b, c})). alg ne repose que sur rel : ni ℕ ni finitude ;
+  mots de compte (« six ») admis quand ils abrègent une liste explicite. Ajout d'amont démontré : a-groupe (iv),
+  conjugaison g∘τ_xy∘g⁻¹ = τ_{g(x)g(y)}, les six bijections de {a, b, c}, ρ³ = id, produits d'échanges (cité par
+  quinze exemples). Relu deux fois : bloquants corrigés (element-regulier sans vrai contre-exemple, alors que
+  l'ensemble inductif et s : x ↦ x ∪ {x} en donnent un ; faits sur 𝔖({a, b, c}) affirmés sans preuve ;
+  End(𝒫({a, b})) non entièrement démontré anneau) ; corps 1 du pilote cite a-anneau (v). Signalés, non faits :
+  remarques de a-module (idéaux, corps hors amont) ; remarque de a-anneau sur End(G) non démontrée ; lexique :
+  groupe-symetrise (« plus petit groupe qui le contienne » non démontré), element-regulier (cite (ℕ, ·) en aval),
+  abelianise (« on montre plus loin » sans nœud qui le fasse) ; a-module « de type fini » écrit x₁, …, xₙ avant ℕ.
