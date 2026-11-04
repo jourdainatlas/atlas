@@ -235,3 +235,7 @@ marches et fanion, rosette, boussole, lunette.
 Nouveautés (4 nov.) : les cinq entrées du 3 nov. sur les étapes vers le second théorème d'incomplétude
 (PA, β, syntaxe, instances, Σ₁-complétude) sont fondues en une seule, avec les six liens ; la règle de
 regroupement est ajoutée au point 8 de MEMO_atlas.md §0 et en tête de `nouveautes.yaml`.
+Accueil, « Par où commencer ? » (4 nov.) : les puces de niveau (Seconde, Première…, Maths approfondies,
+Maths Sup) ouvrent la page Cours filtrée sur ce niveau, et non plus son premier chapitre : lien `#cours`
+avec `data-cours-niveau`, un écouteur en capture pose `pageCours.filtre` avant la navigation ; « Tous les
+cours » remet le filtre sur `tous`. Lien « Le cours de Master » retiré à la demande de l'auteur.

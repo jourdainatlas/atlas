@@ -3600,26 +3600,27 @@ function aProposCommencer() {
   const feuilles = (R.exercices?.feuilles || []).filter(f => f.statut === 'depose');
   const niv = id => (C.niveaux || []).find(n => n.id === id);
   const premier = id => cours.filter(c => c.niveau === id).sort((a, b) => (a.chapitre || 0) - (b.chapitre || 0))[0];
-  // Puce d'un niveau : son premier chapitre, ou ses exercices ; absente si le niveau n'a encore rien en ligne.
+  // Puce d'un niveau : la liste de ses chapitres (filtre de la page Cours), ou ses exercices ; absente si le niveau n'a encore rien en ligne.
   const puceNiveau = (id, vers) => {
     const n = niv(id); if (!n) return '';
     if (vers === 'exercices') return feuilles.some(f => f.niveau === id) ? `<a class="chip" href="#exercices/niveau/${id}">${esc(n.titre)}</a>` : '';
-    const c = premier(id); return c ? `<a class="chip" href="#cours/${c.id}">${esc(n.titre)}</a>` : '';
+    return premier(id) ? `<a class="chip" href="#cours" data-cours-niveau="${id}">${esc(n.titre)}</a>` : '';
   };
   const profil = (cl, titre, texte, puces, liens) => `<div class="carte acc-profil ${cl}"><h4>${symbole(cl)}<span>${titre}</span></h4><p>${texte}</p>${puces ? `<div class="acc-puces">${puces}</div>` : ''}<p class="acc-profil-liens">${liens}</p></div>`;
   const lycee = ['seconde', 'premiere', 'terminale', 'expertes'];
-  const galois = cours.find(c => c.id === 'm-galois');
   let h = `<section class="acc-section"><h3>Par où commencer ?</h3><div class="acc-profils">`;
   h += profil('p-lycee', 'Au lycée', 'Choisissez votre classe : chaque chapitre se lit en ligne ou se télécharge, et sa feuille d\'exercices corrigés permet de s\'entraîner aussitôt.',
-    lycee.map(id => puceNiveau(id)).join(''), `<a href="#cours">Tous les cours →</a><a href="#exercices">Les exercices par niveau →</a>`);
+    lycee.map(id => puceNiveau(id)).join(''), `<a href="#cours" data-cours-niveau="tous">Tous les cours →</a><a href="#exercices">Les exercices par niveau →</a>`);
   h += profil('p-prepa', 'Vers la prépa, en prépa', 'Les Maths approfondies préparent aux classes préparatoires, et les cours de Maths Sup suivent le programme de MPSI. Les annales des concours d\'ingénieurs montrent où mène ce travail.',
     ['approfondies', 'ma'].map(id => puceNiveau(id)).join(''), `<a href="#exercices">S'entraîner →</a><a href="#annales">Les sujets de concours →</a>`);
   h += profil('p-concours', 'CAPES, agrégation, Master', 'L\'édifice reprend chaque théorie dans l\'ordre logique, avec des démonstrations complètes ; les annales de l\'enseignement se cherchent par thème, partie par partie.',
-    '', `<a href="#${D.racine}">Entrer dans l'édifice →</a><a href="#annales">Les annales et leur moteur →</a>${galois ? `<a href="#cours/${galois.id}">Le cours de Master →</a>` : ''}`);
+    '', `<a href="#${D.racine}">Entrer dans l'édifice →</a><a href="#annales">Les annales et leur moteur →</a>`);
   h += profil('p-curiosite', 'Par curiosité', 'Partez des fondations : la logique du premier ordre et les axiomes de la théorie des ensembles, puis suivez les flèches de l\'édifice jusqu\'aux grandes théories.',
     '', `<a href="#${D.noeuds.log?.sous || D.racine}">Commencer par la logique →</a><a href="#nouveautes">Ce qui vient de paraître →</a>`);
   return h + '</div></section>';
 }
+// Accueil : une puce de niveau ouvre la page Cours filtrée sur ce niveau (le filtre est posé avant la navigation).
+document.addEventListener('click', e => { const a = e.target.closest?.('a[data-cours-niveau]'); if (a) pageCours.filtre = a.dataset.coursNiveau; }, true);
 function nouvAccueil() {
   const E = (R.nouveautes?.entrees || []).slice(0, 3);
   if (!E.length) return '';
