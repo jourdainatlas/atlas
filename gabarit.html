@@ -154,6 +154,25 @@ body.en-rubrique .bouton-theme { margin-left: auto; }
 @media (max-width: 1100px) { .acc-profils { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 860px) { .acc-nouv { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 560px) { .acc-profils { grid-template-columns: minmax(0, 1fr); } }
+/* ---- repères de couleur des rubriques (accueil et menu) */
+:root { --r-edifice: var(--c-nb); --r-cours: var(--c-ana); --r-exercices: var(--c-geo); --r-annales: var(--c-alg); --r-neutre: var(--encre-3); }
+.menu-rubriques a[data-rubrique="edifice"], .acc-rub[href="#edifice"], .acc-carte-edifice { --r: var(--r-edifice); }
+.menu-rubriques a[data-rubrique="cours"], .acc-rub[href="#cours"], .acc-etape[href^="#cours/"] { --r: var(--r-cours); }
+.menu-rubriques a[data-rubrique="exercices"], .acc-rub[href="#exercices"], .acc-etape[href^="#exercices"] { --r: var(--r-exercices); }
+.menu-rubriques a[data-rubrique="annales"], .acc-rub[href="#annales"] { --r: var(--r-annales); }
+.menu-rubriques a[data-rubrique="accueil"], .menu-rubriques a[data-rubrique="nouveautes"], .menu-rubriques a[data-rubrique="a-propos"] { --r: var(--r-neutre); }
+.acc-fil .acc-etape:last-of-type { --r: var(--r-edifice); }
+/* Bande en haut de l'encadré : couleur de sa rubrique ; dégradé des rubriques vers lesquelles mène un profil. */
+.acc-rub, .acc-carte-edifice, .acc-profil, .acc-nouv-carte, .acc-etape { position: relative; overflow: hidden; }
+.acc-rub::before, .acc-carte-edifice::before, .acc-profil::before, .acc-nouv-carte::before, .acc-etape::before {
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 3px; background: var(--r-bande, var(--r, transparent)); pointer-events: none;
+}
+.acc-nouv-carte { border-left-width: 1px; border-left-color: var(--filet); --r: var(--c); }
+.acc-profil.p-lycee { --r-bande: linear-gradient(90deg, var(--r-cours), var(--r-exercices)); }
+.acc-profil.p-prepa { --r-bande: linear-gradient(90deg, var(--r-cours), var(--r-exercices), var(--r-annales)); }
+.acc-profil.p-concours { --r-bande: linear-gradient(90deg, var(--r-edifice), var(--r-annales), var(--r-cours)); }
+.acc-profil.p-curiosite { --r-bande: linear-gradient(90deg, var(--r-edifice), var(--r-neutre)); }
+
 /* ---- nouveautés */
 .nouv-filtres { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 26px; }
 .nouv-filtres .chip { display: inline-flex; align-items: center; gap: 7px; }
@@ -619,9 +638,13 @@ blockquote.redaction p { margin: 0; }
   color: var(--encre); text-decoration: none; position: relative;
 }
 .menu-rubriques a:hover, .menu-rubriques a:focus-visible { background: var(--papier); outline: none; }
-.menu-rubriques a[aria-current="page"]::before {
-  content: ""; position: absolute; left: 4px; top: 10px; bottom: 10px; width: 3px; border-radius: 2px; background: var(--rouge);
+/* Repère de couleur de chaque rubrique (même couleur que sur l'accueil et dans les Nouveautés) ; la rubrique
+   courante est en plus sur fond teinté. Le rouge reste réservé aux définitions, aux axiomes et au logo. */
+.menu-rubriques a::before {
+  content: ""; position: absolute; left: 4px; top: 10px; bottom: 10px; width: 3px; border-radius: 2px; background: var(--r, var(--filet));
 }
+.menu-rubriques a[aria-current="page"] { background: var(--trame); }
+.menu-rubriques a[aria-current="page"]::before { width: 4px; }
 .menu-rubriques .m-titre { font-size: 14.5px; font-weight: 600; }
 .menu-rubriques .m-desc { grid-column: 1 / -1; font-size: 12.5px; color: var(--encre-2); line-height: 1.4; }
 .menu-rubriques .m-badge {
@@ -3519,17 +3542,17 @@ function aProposCommencer() {
     if (vers === 'exercices') return feuilles.some(f => f.niveau === id) ? `<a class="chip" href="#exercices/niveau/${id}">${esc(n.titre)}</a>` : '';
     const c = premier(id); return c ? `<a class="chip" href="#cours/${c.id}">${esc(n.titre)}</a>` : '';
   };
-  const profil = (titre, texte, puces, liens) => `<div class="carte acc-profil"><h4>${titre}</h4><p>${texte}</p>${puces ? `<div class="acc-puces">${puces}</div>` : ''}<p class="acc-profil-liens">${liens}</p></div>`;
+  const profil = (cl, titre, texte, puces, liens) => `<div class="carte acc-profil ${cl}"><h4>${titre}</h4><p>${texte}</p>${puces ? `<div class="acc-puces">${puces}</div>` : ''}<p class="acc-profil-liens">${liens}</p></div>`;
   const lycee = ['seconde', 'premiere', 'terminale', 'expertes'];
   const galois = cours.find(c => c.id === 'm-galois');
   let h = `<section class="acc-section"><h3>Par où commencer ?</h3><div class="acc-profils">`;
-  h += profil('Au lycée', 'Choisissez votre classe : chaque chapitre se lit en ligne ou se télécharge, et sa feuille d\'exercices corrigés permet de s\'entraîner aussitôt.',
+  h += profil('p-lycee', 'Au lycée', 'Choisissez votre classe : chaque chapitre se lit en ligne ou se télécharge, et sa feuille d\'exercices corrigés permet de s\'entraîner aussitôt.',
     lycee.map(id => puceNiveau(id)).join(''), `<a href="#cours">Tous les cours →</a><a href="#exercices">Les exercices par niveau →</a>`);
-  h += profil('Vers la prépa, en prépa', 'Les Maths approfondies préparent aux classes préparatoires, et les cours de Maths Sup suivent le programme de MPSI. Les annales des concours d\'ingénieurs montrent où mène ce travail.',
+  h += profil('p-prepa', 'Vers la prépa, en prépa', 'Les Maths approfondies préparent aux classes préparatoires, et les cours de Maths Sup suivent le programme de MPSI. Les annales des concours d\'ingénieurs montrent où mène ce travail.',
     ['approfondies', 'ma'].map(id => puceNiveau(id)).join(''), `<a href="#exercices">S'entraîner →</a><a href="#annales">Les sujets de concours →</a>`);
-  h += profil('CAPES, agrégation, Master', 'L\'édifice reprend chaque théorie dans l\'ordre logique, avec des démonstrations complètes ; les annales de l\'enseignement se cherchent par thème, partie par partie.',
+  h += profil('p-concours', 'CAPES, agrégation, Master', 'L\'édifice reprend chaque théorie dans l\'ordre logique, avec des démonstrations complètes ; les annales de l\'enseignement se cherchent par thème, partie par partie.',
     '', `<a href="#${D.racine}">Entrer dans l'édifice →</a><a href="#annales">Les annales et leur moteur →</a>${galois ? `<a href="#cours/${galois.id}">Le cours de Master →</a>` : ''}`);
-  h += profil('Par curiosité', 'Partez des fondations : la logique du premier ordre et les axiomes de la théorie des ensembles, puis suivez les flèches de l\'édifice jusqu\'aux grandes théories.',
+  h += profil('p-curiosite', 'Par curiosité', 'Partez des fondations : la logique du premier ordre et les axiomes de la théorie des ensembles, puis suivez les flèches de l\'édifice jusqu\'aux grandes théories.',
     '', `<a href="#${D.noeuds.log?.sous || D.racine}">Commencer par la logique →</a><a href="#nouveautes">Ce qui vient de paraître →</a>`);
   return h + '</div></section>';
 }
