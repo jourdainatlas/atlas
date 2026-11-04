@@ -245,6 +245,14 @@ déjà définie. Il ôte `\texorpdfstring{A}{B}` des titres de partie, en gardan
 `redaction` (raisonnement d'élève à analyser) en paragraphe cité `> …`, que `rendu.mjs` rend en
 `<blockquote class="redaction">` (filet à gauche, gabarit).
 
+Le 4 novembre : chapitres 11 (structures algébriques usuelles), 12 (arithmétique dans $\mathbb{Z}$), 13 (polynômes
+et fractions rationnelles) et 14 (espaces vectoriels et applications linéaires) déposés avec leurs feuilles
+`f-ma-11` à `f-ma-14` (55, 63, 68 et 82 exercices, soit 268), métadonnées dans `outils/meta_ma_11.py` à
+`meta_ma_14.py`. Aucun ajout au convertisseur n'a été nécessaire. Le sommaire de `ma-14` calculé par
+`pages_sommaire.py` donnait la page 1 (page de titre) pour la première section : corrigé à la main en 2.
+Les avertissements KaTeX « No character metrics » (« », € dans `\text`) viennent de feuilles plus anciennes
+et sont sans effet sur le rendu.
+
 ### 25. Sommaire cliquable (1er nov. 2026)
 
 Chaque partie du sommaire d'un cours mène à sa page dans le visualiseur (bouton `.vers-page`,
