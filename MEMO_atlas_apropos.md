@@ -351,6 +351,8 @@ cercle trigonométrique pour p-06 et ma-04, aire pour t-06 et ma-06, convergence
 pour me-03 et ap-09…). Couleur du symbole : la famille de l'édifice la plus représentée parmi les
 `theories` du chapitre (`couleurNoeud(theorieDe(id))`, comme les pastilles) ; ligne de 4 px : dégradé des
 familles distinctes, dans l'ordre de la liste (`bandeChapitre`). Un chapitre absent de `SYM_CHAPITRES`
-n'a que la ligne : **tout nouveau chapitre (Maths Spé…) demande un dessin**, à faire dans cette
-conversation (planche montrée à l'auteur avant publication). Planche de contrôle : script de la
+n'a que la ligne. **Partage des tâches (décision de l'auteur, 4 nov.)** : les tables `SYM_DESSINS` et
+`SYM_CHAPITRES` passent dans le domaine de la conversation Cours, qui dessine le symbole de chaque nouveau
+chapitre au moment de son dépôt et retouche un symbole à la demande de l'auteur (planche montrée avant
+publication) ; le reste du bloc (CSS, `bandeChapitre`, `symboleChapitre`) reste au domaine apparence. Planche de contrôle : script de la
 conversation du 4 nov. (toutes les cartes à 72 px, clair et sombre).
