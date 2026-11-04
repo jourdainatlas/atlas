@@ -70,6 +70,9 @@ a poussé entre-temps, un fichier commun réécrit à partir d'une copie périm�
    phrases rédigées, liens vers le contenu (le format est décrit en tête du fichier). **Jamais pour une
    correction** (coquille, calcul, démonstration complétée, reformulation, mise en page) ; en cas de
    doute, on s'abstient. Plusieurs ajouts du même jour et de la même rubrique tiennent en une entrée.
+   Une série de chapitres publiés l'un après l'autre vers un même but (ainsi les cinq étapes vers le second
+   théorème d'incomplétude, regroupées le 4 nov. à la demande de l'auteur) **complète l'entrée existante**
+   (texte et liens) au lieu d'en ajouter une nouvelle.
    `construire.py` signale par un **avertissement** (non bloquant) toute théorie de l'édifice, tout cours
    ou toute feuille déposés, toute session d'annales qui n'est ni dans le socle
    (`rubriques/nouveautes/socle.yaml`, ce qui était en ligne le 31 octobre) ni annoncé par une entrée

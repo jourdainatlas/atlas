@@ -232,3 +232,6 @@ gland orange, livre vert), `sym-p-curiosite` (loupe grise sur un petit graphe bl
 bande de l'encadré. Le symbole est calé sur la première ligne du titre (`align-items: flex-start`), car
 « CAPES, agrégation, Master » passe sur deux lignes en quatre colonnes. Variantes écartées : tableau vert,
 marches et fanion, rosette, boussole, lunette.
+Nouveautés (4 nov.) : les cinq entrées du 3 nov. sur les étapes vers le second théorème d'incomplétude
+(PA, β, syntaxe, instances, Σ₁-complétude) sont fondues en une seule, avec les six liens ; la règle de
+regroupement est ajoutée au point 8 de MEMO_atlas.md §0 et en tête de `nouveautes.yaml`.
