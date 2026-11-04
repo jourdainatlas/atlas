@@ -1607,3 +1607,23 @@ abélianisé hors aval de gs-resolubles. Défaut ancien relevé : RE_TERME de co
 reconnaissent pas un lien dont le texte contient des crochets ([[module|$K[X]$-module]]). Relu (tous les liens) :
 rien de bloquant, huit corrections (matrice de permutation, remarque périmée de rp-lineaires, neuf liens hors du
 premier emploi, un lien de mauvais sens, normalisateur caché par une exception, deux violations d'ordre).
+
+## 105. Lexique, lot L3 : topologie, homologie, de Rham (4 novembre 2026)
+
+Notes et décisions : /home/claude/travail/lexique-L3/. Sections top, grtop, lie, topalg*, hom*, derham*, geod.
+98 entrées (823 → 921 termes), termes distincts pour les homonymes (chaîne singulière, bord singulier / d'un complexe
+— opérateur ∂_n nommé en h-complexes —, degré d'un lacet du cercle, complexe cellulaire (chaînes), homotopie de
+complexes, applications homotopes, relèvement d'un morphisme, trois produits croisés, isomorphisme de revêtements,
+image réciproque d'une forme, relation d'une présentation, partie convexe (de ℂ) — ℂ n'est pas ℝ² par construction,
+entrée définie en cx-cauchy-convexe). Déplacements : partie convexe et étoilée → tr-intervalles ; application affine
+→ v-applications ; partie entière → rr-archimede (iii) ; commutateur, groupe dérivé, classes, conjugué → a-distingue
+(D(G) distingué démontré) ; abélianisé → a-quotient (hu-derive et gs-resolubles deviennent des rappels) ; fibre →
+r-images ; formes fermées et exactes en tout degré → gd-formes. ≈ 584 liens. H : 239 → 138.
+FAIBLESSE DU DIAGNOSTIC (relecture) : un gras qui définit une notion NOUVELLE homonyme d'une entrée d'amont est classé
+« rappel » et sort de H. Relevés hors lot à reprendre après L4 (liste dans NOTES.md de L3) : rp-representations et
+gs-extensions « degré », an-quadratiques « trace », md-libres « base », « génératrice », pol-principal et ac-factoriels
+« PGCD », ac-contenu « primitif », an-entiers « unitaire », fq-rang « rang », « noyau », f-compacts-exemples « noyau »,
+fq-orthogonalite « orthogonaux », f-spectral-fini « symétrique », cf-ouverte et tr-ouverts « ouverte », sf-riemann
+« longueur », mk-transition « mesure », cv-lebesgue-rn « mesure de Lebesgue », gd-normes « boule ouverte »,
+cal-sx-libres « libre », « restriction » (rd-stables, fq-orthogonalite, cg-inflation). Relu : rien de bloquant ;
+convexité de ℂ, huit notions masquées en rappels, bord d'un complexe, renvois périmés corrigés.
