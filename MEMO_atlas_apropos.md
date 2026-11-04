@@ -311,3 +311,17 @@ Accueil, encadré « Vers la prépa, en prépa » (4 nov., texte validé par l'a
 moteur des annales retrouve, par thème, les parties de sujets de concours d'ingénieurs qui portent sur le
 chapitre que l'on vient d'étudier. » ; lien « Chercher un thème dans les annales → » (`data-vers-moteur`),
 qui ouvre les Annales sur `#rech-ann` et place le curseur dans le champ (ordinateur seulement).
+
+## 49. Projection d'un exercice en classe (4 nov. 2026)
+
+Choix de l'auteur : projection des exercices seulement (pas des fiches de l'édifice), un exercice à la fois.
+Bouton « écran » au trait à droite du drapeau de chaque carte d'exercice (`pjBouton(e)` dans
+`carteExercice`, masqué sous 760 px). Plein écran (`requestFullscreen`) ; écran 0 : la carte de l'exercice
+en grand (symbole de la rubrique, « Exercice n », barres de difficulté, types, ligne de lieu, énoncé) ;
+puis le corrigé par étapes, une par question (un bloc qui commence par « 2. », « (b) » ou « b) » ouvre une
+étape, les blocs suivants s'y rattachent ; sans marque, une étape par bloc), l'énoncé restant en colonne à
+gauche ; étapes vues estompées, la dernière ramenée à l'écran. Touches : → Espace Entrée Page suivante,
+← Page précédente, C tout le corrigé (sans estomper), E énoncé, T clair ou sombre (départ : thème du
+site), Échap quitter (aussi en sortant du plein écran). Couleurs : palettes claire et sombre du site
+reprises dans `.pj` / `.pj.sombre` ; liens et termes non cliquables. Fonctions `pj…`, bloc « Projection »
+du gabarit. Message envoyé à la conversation Exercices (structure des corrigés, espaces insécables).
