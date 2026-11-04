@@ -4020,8 +4020,8 @@ function aProposCommencer() {
   let h = `<section class="acc-section"><h3>Par où commencer ?</h3><div class="acc-profils">`;
   h += profil('p-lycee', 'Au lycée', 'Choisissez votre classe : chaque chapitre se lit en ligne ou se télécharge, et sa feuille d\'exercices corrigés permet de s\'entraîner aussitôt.',
     lycee.map(id => puceNiveau(id)).join(''), `<a href="#cours" data-cours-niveau="tous">Tous les cours →</a><a href="#exercices">Les exercices par niveau →</a>`);
-  h += profil('p-prepa', 'Vers la prépa, en prépa', 'Les Maths approfondies préparent aux classes préparatoires, et les cours de Maths Sup suivent le programme de MPSI. Les annales des concours d\'ingénieurs montrent où mène ce travail.',
-    ['approfondies', 'ma'].map(id => puceNiveau(id)).join(''), `<a href="#exercices">S'entraîner →</a><a href="#annales">Les sujets de concours →</a>`);
+  h += profil('p-prepa', 'Vers la prépa, en prépa', 'Les Maths approfondies préparent aux classes préparatoires, et les cours de Maths Sup suivent le programme de MPSI. Le moteur des annales retrouve, par thème, les parties de sujets de concours d\'ingénieurs qui portent sur le chapitre que l\'on vient d\'étudier.',
+    ['approfondies', 'ma'].map(id => puceNiveau(id)).join(''), `<a href="#exercices">S'entraîner →</a><a href="#annales" data-vers-moteur>Chercher un thème dans les annales →</a>`);
   h += profil('p-concours', 'CAPES, agrégation, Master', 'L\'édifice reprend chaque théorie dans l\'ordre logique, avec des démonstrations complètes ; les annales de l\'enseignement se cherchent par thème, partie par partie.',
     '', `<a href="#${D.racine}">Entrer dans l'édifice →</a><a href="#annales">Les annales et leur moteur →</a>`);
   h += profil('p-curiosite', 'Par curiosité', 'Partez des fondations : la logique du premier ordre et les axiomes de la théorie des ensembles, puis suivez les flèches de l\'édifice jusqu\'aux grandes théories.',
@@ -4030,6 +4030,11 @@ function aProposCommencer() {
 }
 // Accueil : une puce de niveau ouvre la page Cours filtrée sur ce niveau (le filtre est posé avant la navigation).
 document.addEventListener('click', e => { const a = e.target.closest?.('a[data-cours-niveau]'); if (a) pageCours.filtre = a.dataset.coursNiveau; }, true);
+// Accueil : « Chercher un thème dans les annales » ouvre la rubrique Annales sur son moteur de recherche.
+document.addEventListener('click', e => {
+  if (!e.target.closest?.('a[data-vers-moteur]')) return;
+  addEventListener('hashchange', () => setTimeout(() => { const z = $('#rech-ann'); if (z) z.scrollIntoView({ block: 'start' }); if (matchMedia('(hover: hover)').matches) $('#ann-q')?.focus({ preventScroll: true }); }, 80), { once: true });   // pas de clavier ouvert d'office sur téléphone
+});
 function nouvAccueil() {
   const E = (R.nouveautes?.entrees || []).slice(0, 3);
   if (!E.length) return '';

@@ -307,3 +307,7 @@ bas de page ; une remarque illustrée peut se couper (`:has(figure)`). Essai : �
 Mise à jour (4 nov., demande de l'auteur) : l'encadré « ⋆ Axiome du choix » des fiches est un `<details
 class="choix">` replié (« + ⋆ Axiome du choix · où et comment il intervient »), ouvert d'un clic ; le ⋆ du
 titre suffit à signaler le choix. Il n'est plus imprimé : la feuille garde seulement le ⋆ après la nature.
+Accueil, encadré « Vers la prépa, en prépa » (4 nov., texte validé par l'auteur) : dernière phrase « Le
+moteur des annales retrouve, par thème, les parties de sujets de concours d'ingénieurs qui portent sur le
+chapitre que l'on vient d'étudier. » ; lien « Chercher un thème dans les annales → » (`data-vers-moteur`),
+qui ouvre les Annales sur `#rech-ann` et place le curseur dans le champ (ordinateur seulement).
