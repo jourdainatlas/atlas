@@ -1585,3 +1585,25 @@ ordinal (« type d'ordre »), surjection (« section »), fonction-recursive («
 (« surjective ») nomment une notion définie plus loin. H : 423 → 359. Relu (431 liens un à un) : rien de bloquant,
 neuf corrections (rétraction topologique prise pour un rappel, deux « sections » qui sont des morphismes, liens dans
 un titre ou après le premier emploi, arité, Zermelo dans cardinal).
+
+## 104. Lexique, lot L2 : algèbre (4 novembre 2026)
+
+Notes et décisions : /home/claude/travail/lexique-L2/ (NOTES.md, decisions.tsv, liens_poses.txt, lierL2.py).
+Sections n, q, c, z-polynomes, alg, alglin, gf, gf-jordan-holder, ac, ac-modules, ac-reduction, cohgr, galois,
+galois-cyclotomie, galois-representations, tan, tan-reciprocite, geoalg. 107 entrées (716 → 823 termes), noms
+distincts pour les homonymes (produit d'idéaux / d'anneaux, contenu d'un polynôme, éléments / polynômes associés,
+divisibilité dans un anneau / des polynômes / des entiers, deux conjugués, topologie de Zariski sur Kⁿ). ≈ 440
+liens en aval (225 candidats rejetés), 85 dans des définitions existantes. Déplacements légers (une phrase en amont
+de tout emploi, gras d'origine devenus liens) : polynôme scindé → pol-racines, Frobenius → pol-binome (iv),
+factorielle → n-sommes (suite des couples (k, k!) explicitée), congruence → z-zn, 3-cycle, double transposition,
+groupe alterné → v-permutations, matrices semblables → v-trace, groupe dérivé → gs-resolubles, normalisateur →
+a-distingue (avec la preuve que N_G(H) est un sous-groupe où H est distingué), module de type fini → a-module,
+divisibilité des entiers z-bezout → z-division. Ordre : associativité et commutativité écrites en formules dans
+n-sommes et n-proprietes (avant a-loi) ; « commutateur » remplacé par « l'élément … » dans gf-produits et
+gf-ordres-pq (avant gs-resolubles). matrice-permutation réécrite pour σ quelconque. 3 exceptions (2 locale,
+1 autre). H : 359 → 239. Reporté : base canonique de Kⁿ (jamais définie, ≈ 20 fiches hors aval de md-libres) ;
+liens de divisibilite-entiers dans les fiches gf, cal, pol, h90 ; hu-derive (L3) redéfinit groupe dérivé et
+abélianisé hors aval de gs-resolubles. Défaut ancien relevé : RE_TERME de construire.py et la recherche ne
+reconnaissent pas un lien dont le texte contient des crochets ([[module|$K[X]$-module]]). Relu (tous les liens) :
+rien de bloquant, huit corrections (matrice de permutation, remarque périmée de rp-lineaires, neuf liens hors du
+premier emploi, un lien de mauvais sens, normalisateur caché par une exception, deux violations d'ordre).
