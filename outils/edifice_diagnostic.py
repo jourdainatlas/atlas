@@ -71,14 +71,19 @@ d'un énoncé ou d'une démonstration ne visent que l'amont. Ce script cherche c
      normalisée (casse, accents, pluriel et féminin ôtés, élisions et parenthèse finale du terme ôtées), avec le
      champ terme et l'id de chaque entrée. Sont écartés (et comptés à part) : un gras sans lettre hors formule ; un
      titre de paragraphe (« **Existence.** » en tête de ligne) ; un gras fait de mots de liaison ou d'insistance
-     (« **tous** », « **au plus** ») ; un terme du lexique défini dans la fiche, en entier, par sa tête quand les
-     autres mots du terme sont dans la phrase (« un sous-espace F est **stable** » pour « sous-espace stable » ;
-     un gras plus long que le terme, « **sous-groupe engendré** », n'est pas écarté), ou par une variante
-     (« **dérivée** » pour « dérivable ») ; un gras qui est un fragment (partie ou variante) d'un terme défini dans
-     la fiche et lié dans la même phrase ; un terme du lexique défini en amont (rappel), en entier, en partie avec
+     (« **tous** », « **au plus** ») ; un terme du lexique défini dans la fiche, en entier, ou en partie quand le
+     gras est une suite contiguë des mots du terme et que les mots manquants sont dans la phrase, du même côté du
+     gras que dans le terme et à cinq mots au plus (« un sous-espace F est **stable** » pour « sous-espace
+     stable » ; la parenthèse d'une collection, « entiers naturels (ensemble des) », se lit en tête ; un gras plus
+     long que le terme, « **sous-groupe engendré** », n'est pas écarté, ni « une relation est **récursive** » pour
+     « fonction récursive », ni « un idéal est **radical** » pour « radical d'un idéal »), ou par une variante d'un
+     terme d'un seul mot (« **dérivée** » pour « dérivable ») ; un gras d'un mot, variante du premier mot d'un
+     terme défini dans la fiche et lié dans la même phrase (« **intégrale** » près du lien « intégrable au sens de
+     Riemann », non « **conjugaison** » près du lien « classes de conjugaison ») ; un terme du lexique défini en amont, en entier, en partie avec
      les autres mots du terme, mots entiers, dans la phrase, ou par une variante d'un mot (« adhérent »,
-     « adhérence »). Deux mots sont des variantes s'ils ont un long préfixe commun et des longueurs voisines (à
-     deux lettres près) : « période » et « périodique », homonymes, ne le sont pas. Puis une
+     « adhérence ») : ce dernier gras n'est pas écarté mais versé en H3 (ci-dessous). Deux mots sont des variantes
+     s'ils ont un long préfixe commun et des longueurs voisines (à deux lettres près) : « période » et
+     « périodique », homonymes, ne le sont pas. Sont enfin écartés les gras couverts par une
      exception déclarée dans outils/edifice_gras_exceptions.txt (« fiche | texte en gras », ou « * | texte » pour
      toutes les fiches ; commentaire après « # » : notion locale, insistance, cas tranché). Chaque cas restant dit
      combien d'autres fiches emploient la notion en clair (texte, énoncé, preuve ; liens, termes balisés et schémas
@@ -87,6 +92,12 @@ d'un énoncé ou d'une démonstration ne visent que l'amont. Ce script cherche c
      signalé comme tel : définition en double, ou entrée mal placée.
      H2 lignes du fichier des exceptions à nettoyer : ligne illisible, fiche inconnue, doublon, ligne qui n'écarte
      plus rien (le gras a disparu ou est devenu un lien).
+     H3 gras homonyme (ou fragment, ou variante) d'une entrée définie en amont (4 nov. 2026). Ce peut être un
+     rappel, mais aussi une notion NOUVELLE de même nom (« chaînes » singulières après la chaîne d'un ordre,
+     « degré » d'une extension après celui d'un polynôme), qui échappait jusque-là à H sans avoir d'entrée. Règle :
+     un rappel s'écrit par un lien [[id]], non en gras ; une notion nouvelle reçoit une entrée sous un terme
+     distinct ; un gras gardé à dessein (un lien viserait un autre objet) se déclare dans le fichier des exceptions
+     du gras, famille « rappel », avec sa raison.
 
 Usage : python3 outils/edifice_diagnostic.py [--detail] [--racine <dossier>] [graphe …]
 --racine lit <dossier>/contenu au lieu du dépôt et écrit <dossier>/construction/diagnostic.md : on s'en sert
@@ -730,11 +741,19 @@ def jetons(s):
     s = s.replace('’', "'")
     return [_canon(w) for w in RE_JETON.findall(s) if w.lower() not in ELIDES]
 def cle(s): return ' '.join(jetons(s))
+RE_COLLECTION = re.compile(r'\((?:espace|ensemble|anneau|groupe|corps|module)s?\s+(?:des?|du|d\W)[^)]*\)\s*$')
+def sans_parenthese(t):
+    """Terme sans sa parenthèse finale, qui distingue des homonymes (« lacet (topologie) ») ; une parenthèse qui
+    désigne une collection (« matrices (espace des) », « entiers naturels (ensemble des) ») nomme un autre objet que
+    ses éléments et est gardée : sans quoi l'entrée de l'espace passerait pour celle de la notion (cas de « matrice »,
+    restée sans entrée jusqu'au 4 nov. 2026)."""
+    if RE_COLLECTION.search(t): return t
+    return re.sub(r'\s*\([^)]*\)\s*$', '', t)
 cles_lex = defaultdict(list)       # forme normalisée -> entrées du lexique
 for e in lexique:
-    for s in {e.get('terme') or '', re.sub(r'\s*\([^)]*\)\s*$', '', e.get('terme') or ''), e['id'].replace('-', ' ')}:
+    for s in {e.get('terme') or '', sans_parenthese(e.get('terme') or ''), e['id'].replace('-', ' ')}:
         if cle(s): cles_lex[cle(s)].append(e)
-mots_lex = {e['id']: cle(re.sub(r'\s*\([^)]*\)\s*$', '', e.get('terme') or '')).split() for e in lexique}
+mots_lex = {e['id']: cle(sans_parenthese(e.get('terme') or '')).split() for e in lexique}
 mots_lex = {i: [w for w in ws if w not in {_canon(v) for v in VIDES}] or ws for i, ws in mots_lex.items()}
 # mots de liaison et d'insistance : un gras qui n'est fait que de ces mots n'est pas une définition
 INSISTANCE = set(jetons("tous toutes tout toute chaque aucun aucune seul seule seulement unique uniquement exactement "
@@ -785,7 +804,7 @@ vus_h = set()
 for n in noeuds.values():
     if not FICHE(n) or not retenu(n): continue
     ici = {e['id'] for e in lexique if e['defini_dans'] == n['id']}
-    cles_ici = [cle(re.sub(r'\s*\([^)]*\)\s*$', '', lex[t]['terme'])).split() for t in ici]
+    ici_l = sorted(ici); cles_ici = [cle(sans_parenthese(lex[t]['terme'])).split() for t in ici_l]
     for c in CHAMPS:
         t = str(n.get(c) or '')
         for m in RE_GRAS.finditer(t):
@@ -804,27 +823,61 @@ for n in noeuds.values():
                 ecartes_h['terme du lexique défini dans la fiche'] += 1; continue
             a, z = phrase(t, m.start(), m.end())
             ph = ' ' + cle(lisible(t[a:z])) + ' '
-            # tête d'un terme composé défini dans la fiche, dont les autres mots sont dans la phrase
-            # (« un sous-espace F est **stable** par u ») ; un gras plus long que le terme n'est pas écarté
-            if any(len(ws) < len(ce) and all(w in ce for w in ws) and all(f' {w} ' in ph for w in ce) for ce in cles_ici):
+            # partie d'un terme composé défini dans la fiche (« un sous-espace F est **stable** par u ») : le gras est
+            # une suite contiguë des mots du terme, et les mots manquants sont dans la phrase, du même côté du gras
+            # que dans le terme, à cinq mots au plus (formules ôtées) ; la parenthèse d'une collection (« entiers
+            # naturels (ensemble des) ») se lit en tête. Resserré le 4 nov. 2026 (lot L6) : la règle ne demandait
+            # que les mots du terme quelque part dans la phrase, et masquait « une relation est **récursive** »
+            # (fonction récursive), « un idéal est **radical** » (radical d'un idéal), « **nombres de Fermat** »
+            # (nombre premier de Fermat), « par **conjugaison** » (classe de conjugaison).
+            _avant_g = [w for w in jetons(lisible(t[a:m.start()])) if not w.startswith('$')][-5:]; _apres_g = [w for w in jetons(lisible(t[m.end():z])) if not w.startswith('$')][:5]
+            def _partie(ce, terme):
+                if RE_COLLECTION.search(terme):
+                    k_ = len(cle(re.sub(r'\s*\([^)]*\)\s*$', '', terme)).split()); ce = ce[k_:] + ce[:k_]
+                for i in range(len(ce) - len(ws) + 1):
+                    if ce[i:i + len(ws)] == ws:
+                        return all(w in _avant_g for w in ce[:i]) and all(w in _apres_g for w in ce[i + len(ws):])
+                return False
+            if any(len(ws) < len(ce) and _partie(ce, lex[u]['terme']) for u, ce in zip(ici_l, cles_ici)):
                 ecartes_h['partie d\'un terme du lexique défini dans la fiche'] += 1; continue
-            if len(ws) == 1 and any(variante(w, ws[0]) for ce in cles_ici for w in ce):
+            if len(ws) == 1 and any(variante(ce[0], ws[0]) for ce in cles_ici if len(ce) == 1):
                 ecartes_h['variante d\'un terme du lexique défini dans la fiche (dérivée, dérivable)'] += 1; continue
-            # fragment (partie ou variante) d'un terme défini dans la fiche et lié dans la même phrase
+            # variante du premier mot d'un terme défini dans la fiche et lié dans la même phrase (« son **intégrale** »
+            # après le lien « intégrable au sens de Riemann »). Resserré le 4 nov. 2026 (lot L6) : la règle écartait
+            # aussi tout gras fait de mots du terme lié, ou variante d'un mot quelconque, et masquait « par
+            # **conjugaison** » (lien « classes de conjugaison ») et « une **probabilité** » (lien « espace probabilisé »).
             lies_ici = [u for u in RE_TERME.findall(t[a:z]) + RE_LEX.findall(t[a:z]) if (lex.get(u) or {}).get('defini_dans') == n['id']]
-            if any(all(w in mots_lex[u] for w in ws) or len(ws) == 1 and any(variante(w, ws[0]) for w in mots_lex[u]) for u in lies_ici):
-                ecartes_h['fragment d\'un terme défini dans la fiche et lié dans la phrase'] += 1; continue
-            if any(e['defini_dans'] in avant[n['id']] for e in es):
-                ecartes_h['terme du lexique défini en amont (rappel)'] += 1; continue
-            # rappel partiel d'un terme défini en amont : « un sous-espace F est **stable** par u » (sous-espace
-            # stable), les autres mots du terme étant dans la phrase ; variante d'un mot (adhérent / adhérence)
-            def _rappel(e):
-                ce = mots_lex[e['id']]
-                if len(ce) == 1:
-                    return len(ws) == 1 and variante(ce[0], ws[0])
-                return all(w in ce for w in ws) and all(f' {w} ' in ph for w in ce)
-            if any(_rappel(e) for e in lexique if e['defini_dans'] in avant[n['id']] and e['defini_dans'] != n['id']):
-                ecartes_h['rappel ou variante d\'un terme du lexique défini en amont'] += 1; continue
+            if any(len(ws) == 1 and mots_lex[u] and variante(mots_lex[u][0], ws[0]) for u in lies_ici):
+                ecartes_h['variante du premier mot d\'un terme défini dans la fiche et lié dans la phrase'] += 1; continue
+            # Gras homonyme (ou fragment, ou variante) d'une entrée définie en amont. Ce peut être un rappel, mais
+            # aussi une notion NOUVELLE de même nom (« chaînes » singulières après la chaîne d'un ordre, « degré »
+            # d'une extension après celui d'un polynôme) : elle sortirait de H sans entrée. Règle (MEMO_atlas_edifice
+            # §108) : un rappel s'écrit par un lien, non en gras ; un tel gras va donc en H3, sauf exception déclarée.
+            amont_h = [e for e in es if e['defini_dans'] in avant[n['id']]]
+            if not amont_h:
+                def _rappel(e):
+                    # rappel partiel : « un sous-espace F est **stable** par u » (sous-espace stable), les autres
+                    # mots du terme étant dans la phrase ; variante d'un mot (adhérent / adhérence)
+                    ce = mots_lex[e['id']]
+                    if len(ce) == 1:
+                        return len(ws) == 1 and variante(ce[0], ws[0])
+                    return all(w in ce for w in ws) and all(f' {w} ' in ph for w in ce)
+                amont_h = [e for e in lexique if e['defini_dans'] in avant[n['id']] and e['defini_dans'] != n['id'] and _rappel(e)]
+                genre = 'fragment ou variante'
+            else:
+                genre = 'homonyme'
+            if amont_h:
+                for c_ in ((n['id'], k), ('*', k)):
+                    if c_ in exc_gras:
+                        exc_gras_vus.add(c_); ecartes_h['gras homonyme d\'amont couvert par une exception (H3)'] += 1; break
+                else:
+                    if (n['id'], k, 'H3') not in vus_h:
+                        vus_h.add((n['id'], k, 'H3'))
+                        ext = ' '.join(t[max(a, m.start() - 50):min(z, m.end() + 40)].split())
+                        cibles = ', '.join(f"{e['id']} ({e['defini_dans']})" for e in amont_h[:4])
+                        note('H3', n, f"« {b} » ({c}) : {genre} d'une entrée définie en amont, {cibles} : rappel à écrire "
+                                       f"par un lien, ou notion nouvelle à mettre au lexique sous un terme distinct : …{ext}…")
+                continue
             if (n['id'], k) in exc_gras: exc_gras_vus.add((n['id'], k)); ecartes_h['exception déclarée'] += 1; continue
             if ('*', k) in exc_gras: exc_gras_vus.add(('*', k)); ecartes_h['exception déclarée'] += 1; continue
             if (n['id'], k) in vus_h: continue
@@ -855,8 +908,9 @@ TITRES = {'A': 'Notations sans définition en amont', 'B': 'Points cités absent
           'E': 'Admis non transmis',
           'F': 'Termes en clair avant leur définition', 'F2': 'Lignes périmées du fichier des exceptions du clair',
           'G': 'Arcs « Repose sur » sans usage visible', 'G2': 'Lignes périmées du fichier des arcs validés',
-          'H': 'Notions définies en gras sans entrée de lexique', 'H2': 'Lignes périmées du fichier des exceptions du gras'}
-CATS = ['A', 'B', 'C', 'D', 'D2', 'D3', 'D4', 'D5', 'E', 'F', 'F2', 'G', 'G2', 'H', 'H2']
+          'H': 'Notions définies en gras sans entrée de lexique', 'H2': 'Lignes périmées du fichier des exceptions du gras',
+          'H3': 'Gras homonymes d\'une entrée d\'amont (rappel en gras ou notion nouvelle masquée)'}
+CATS = ['A', 'B', 'C', 'D', 'D2', 'D3', 'D4', 'D5', 'E', 'F', 'F2', 'G', 'G2', 'H', 'H2', 'H3']
 lignes = ['# Diagnostic de l\'ordre logique de l\'édifice', '',
           f'{len(noeuds)} nœuds, {len(lex)} termes. Candidats à examiner, non des erreurs certaines.', '']
 for k in CATS:

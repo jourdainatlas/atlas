@@ -1667,3 +1667,35 @@ tous légitimes (pc-limite « dimension », dt-complexe-double « exactes », dr
 « libre », ku-modeles « couple », t-homeo « topologiques »). Relu (138 liens) : rien de bloquant, six corrections.
 À faire : intégrer à edifice_diagnostic.py un contrôle des faux rappels (rappel homonyme dont la définition de la
 fiche diffère de l'entrée d'amont), pour que H ne masque plus ces cas.
+
+## 108. Diagnostic H3 et règles resserrées ; matrice, topologie, racine, probabilité au lexique (4 novembre 2026)
+
+Notes : /home/claude/travail/lexique-matrice/ et /home/claude/travail/lexique-L6/ (NOTES.md, liens_poses.txt) ;
+relectures : /home/claude/travail/relecture-L6/. Demande d'Armand : « matrice », défini en gras dans v-matrices,
+n'avait pas d'entrée. Cause : l'entrée « matrices (espace des) » perdait sa parenthèse à la normalisation et passait
+pour la définition de la notion. Trois autres masquages du même ordre ont été trouvés et corrigés dans
+outils/edifice_diagnostic.py :
+- H3 (nouvelle catégorie) : un gras homonyme, fragment ou variante d'une entrée définie EN AMONT n'est plus écarté
+  comme « rappel ». RÈGLE : un rappel s'écrit par un lien [[id]], non en gras ; une notion nouvelle de même nom
+  reçoit une entrée sous un terme distinct ; un gras gardé à dessein se déclare dans edifice_gras_exceptions.txt,
+  famille « rappel » (notion définie sur place et propre à la fiche, ou convention locale), avec sa raison.
+- sans_parenthese / RE_COLLECTION : une parenthèse finale qui désigne une collection (« (espace des) »,
+  « (ensemble des) », « (anneau des) »…) est gardée dans la clé : l'espace n'est pas la notion.
+- Variante d'un terme défini dans la fiche : seulement pour un terme d'UN mot (« matrice » passait pour variante de
+  « matrice d'une application linéaire », « topologie » de « base d'une topologie », etc.).
+- Partie d'un terme défini dans la fiche : suite contiguë des mots du terme, mots manquants du même côté, à cinq
+  mots au plus (formules non comptées) ; fragment lié dans la phrase : variante du premier mot du terme lié seulement.
+Tests négatifs de la relecture : neuf cas masqués par les anciennes règles, tous détectés (H ou H3).
+Entrées (1057 → 1073) : matrice ; matrice d'une application linéaire (Mat_{B,C}(u), une ou deux bases, modules
+libres de rang fini) ; matrice d'une forme bilinéaire (ᵗPAP, congruence) ; propriété topologique (t-homeo) ;
+topologie ; racine d'un polynôme ; treillis ; support d'une forme ; vecteur tangent (ensemble de niveau) ; modèle
+(foncteurs de chaînes) ; classe d'idéaux ; relation récursive ; idéal radical ; action par conjugaison ; nombre de
+Fermat ; probabilité (mesure de masse 1, distincte de P(A)). suite-exacte et espace-probabilise élargies. ≈ 240
+liens (matrice ≈ 100, racine 44, topologie 27…), aucun dans les nœuds de nature théorie ou chapitre (convention de
+tous les lots). Exceptions « rappel » : dr-primitives boule, pc-limite dimension, cs-dedekind libre, ku-modeles couple ;
+t-homeo « topologiques » et dt-complexe-double « exactes » sont devenus des liens. ga-zeros (i) reformulé (idéal
+radical avant sa définition). Relu : rien de bloquant ; six fiches sans lien vers la matrice d'une forme, deux liens
+hors du premier emploi, fenêtre de cinq mots qui comptait les formules, renvoi au §108 corrigés.
+Reste signalé (non fait) : endomorphisme jamais défini (≈ 34 fiches) ; matrice de passage, matrice diagonale,
+matrice inversible et GL_n(K) sur un corps, rang d'une matrice sans entrée ; fq-carres « matrices congruentes »
+(matrice d'une forme) non lié ; l-incompletude parle de relations récursives hors aval (preuve admise).
