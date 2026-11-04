@@ -137,6 +137,17 @@ for g in graphes:
 RE_TERME = re.compile(r'\[\[([^\]|]+)(?:\|[^\]]*)?\]\]')
 RE_LIEN = re.compile(r'\{\{([^}|]+)\|[^}]*\}\}')
 RE_LEX = re.compile(r'\\lex\{([^}]+)\}')          # notation du lexique dans une formule
+# Exemples du lexique : phrase qui contient un renvoi {{x|…}} (RE_LIEN) et mots qui l'annoncent comme une ouverture vers la suite.
+RE_ANNONCE = re.compile(r"\b(?:plus loin|montrera|montreront|établira|établiront|verra|verrons|sera (?:démontré|établi|vu|défini)e?s?"
+                        r"|seront (?:démontré|établi|vu|défini)e?s|chapitre suivant|par la suite)\b", re.I)
+def phrase_de(texte, pos):
+    """Phrase de texte qui contient la position pos : du dernier « . », « ! », « ? » ou paragraphe hors formule
+    qui précède pos jusqu'au suivant (les formules sont masquées pour que leurs points ne coupent pas)."""
+    masque = re.sub(r'\$\$.+?\$\$|\$[^$]+\$', lambda m: 'x' * len(m.group(0)), texte, flags=re.S)
+    fins = [m.end() for m in re.finditer(r'[.!?](?=\s)|\n\s*\n', masque)]
+    debut = max([f for f in fins if f <= pos], default=0)
+    fin = min([f for f in fins if f > pos], default=len(texte))
+    return texte[debut:fin]
 
 def termes(texte):
     """Termes du lexique employés : [[id]] dans le texte, \\lex{id}{...} dans les formules."""
@@ -172,6 +183,16 @@ for n in noeuds.values():
     for t in textes(n): verifie_refs(t, n['id'], n['id']); verifie_typo(t, n['id'])
 for e in lex.values():
     verifie_refs(e['definition'], f"lexique/{e['id']}"); verifie_typo(e['definition'], f"lexique/{e['id']}")
+    # Exemples (4 nov. 2026) : liste facultative de textes, deux ou trois en principe, mêmes contrôles que la
+    # définition ; ils ne comptent pas comme emplois du terme (ils ne sont visibles que dans l'onglet Lexique).
+    ex = e.get('exemples')
+    if ex is not None and not (isinstance(ex, list) and all(isinstance(x, str) and x.strip() for x in ex)):
+        erreur(f"lexique/{e['id']} : « exemples » doit être une liste de textes non vides")
+        e['exemples'] = ex = []
+    for k, x in enumerate(ex or []):
+        verifie_refs(x, f"lexique/{e['id']}/exemple {k + 1}"); verifie_typo(x, f"lexique/{e['id']}/exemple {k + 1}")
+    if ex and not 2 <= len(ex) <= 3:
+        avert(f"lexique/{e['id']} : {len(ex)} exemple(s), deux ou trois attendus")
 for t in lex:
     if not emplois[t]:
         cites = [e['id'] for e in lex.values() if mentionne(e['definition'], t)]
@@ -230,6 +251,24 @@ if avant and not erreurs:
                 erreur(f"lexique/{t} (défini au nœud {d}) emploie « {t2} », défini plus loin, au nœud {d2}")
         if not any(mentionne(x, t) for x in textes(noeuds[d])):
             avert(f"lexique/{t} : le nœud {d}, où il est défini, ne le mentionne pas")
+        # Exemples : un terme [[t2]] ou \lex{t2} doit être défini en amont du nœud du terme (ou en ce nœud) ;
+        # un renvoi {{x|…}} vers un nœud qui n'est pas en amont n'ouvre vers la suite que si sa phrase l'annonce
+        # (« Plus loin », « montrera »…), sinon avertissement.
+        # Ouverture (renvoi annoncé vers un nœud hors amont) : au plus un exemple par terme, le dernier (décision du 4 nov. 2026).
+        ouvertures = [k for k, x in enumerate(e.get('exemples') or [])
+                      if any(m.group(1) in noeuds and m.group(1) not in avant[d] for m in RE_LIEN.finditer(x))]
+        if len(ouvertures) > 1 or (ouvertures and ouvertures[0] != len(e['exemples']) - 1):
+            avert(f"lexique/{t} : ouverture vers l'aval dans les exemples {[k + 1 for k in ouvertures]} ; une seule, dans le dernier")
+        for k, x in enumerate(e.get('exemples') or []):
+            ou = f"lexique/{t}/exemple {k + 1} (défini au nœud {d})"
+            for t2 in termes(x):
+                d2 = lex[t2]['defini_dans']
+                if d2 not in avant[d]:
+                    erreur(f"{ou} emploie « {t2} », défini plus loin ou ailleurs, au nœud {d2}")
+            for m in RE_LIEN.finditer(x):
+                v = m.group(1)
+                if v in noeuds and v not in avant[d] and not RE_ANNONCE.search(phrase_de(x, m.start())):
+                    avert(f"{ou} renvoie au nœud {v}, qui n'est pas en amont, sans l'annoncer (« Plus loin… »)")
     if renvois: avert(f"renvois en avant dans les remarques ({len(renvois)}) : " + ', '.join(sorted(renvois)))
 
 # ------------------------------------------------------------------ résultats admis
@@ -1045,7 +1084,8 @@ for gid, d in D.items():
 for t, e in lex.items():
     sortie['lexique'][t] = {'id': t, 'terme': e['terme'], 'definition': e['definition'],
                             'emplois': sorted(emplois[t]), 'defini': e['defini_dans'],
-                            'voir': e.get('voir', []), 'notation': e.get('notation')}
+                            'voir': e.get('voir', []), 'notation': e.get('notation'),
+                            'exemples': e.get('exemples') or []}
 # Inventaire des admis et des fiches ⋆ (page « État de l'édifice ») : il reste dans la page même quand
 # les textes des branches sont chargés à la demande. Trié par rang de la théorie racine, puis dans l'ordre
 # des fichiers de contenu.
@@ -1186,6 +1226,7 @@ if 'nouveautes' in rubriques:
                 if m[2] not in feuil_ids: erreur(f"{ou} : feuille inconnue {m[2]}")
                 couverts.add(m[2])
             elif m[0] in ('exercices', 'annales'): pass
+            elif m[0] == 'lexique' and (len(m) == 1 or (len(m) == 2 and m[1] in lex)): pass   # #lexique, #lexique/<id>
             elif a.split('.')[0] in G or a in noeuds:
                 couverts.add(a.split('.')[-1])
             else: erreur(f"{ou} : ancre inconnue {a}")

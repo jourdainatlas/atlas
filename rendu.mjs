@@ -24,6 +24,9 @@ const D = JSON.parse(fs.readFileSync('construction/donnees.json', 'utf8'));
 const erreurs = [];
 
 const echappe = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+// Espaces insécables avant « : ; ! ? » et « », après « », hors balises HTML (texte déjà échappé, formules en repères).
+const insecTexte = t => t.replace(/ ([:;!?»])/g, '\u00a0$1').replace(/« /g, '«\u00a0');
+const insecables = h => h.replace(/(<[^>]*>)|([^<]+)/g, (m, balise, texte) => balise || insecTexte(texte));
 
 // Dans une formule, \lex{id}{corps} marque une notation définie au lexique (un ensemble usuel,
 // par exemple) : le corps est composé normalement, puis enveloppé comme un terme cliquable.
@@ -119,8 +122,13 @@ function rendre(texte, ou) {
     // Une formule en ligne reste collée à la ponctuation qui la suit : sans cela, le navigateur peut couper
     // la ligne entre la formule et la virgule, qui ouvre alors la ligne suivante. La ponctuation est placée
     // dans le dernier bloc insécable (.base) de la formule, en police du texte (.ponct, gabarit).
+    // Espace insécable de la typographie française (4 nov. 2026) : avant « : ; ! ? » et « », après « », pour que ces
+    // signes n'ouvrent jamais une ligne. Seulement dans le texte : ni dans les balises (attributs), ni dans les formules,
+    // le code en ligne ou les blocs, qui ne sont encore ici que des repères \u0000k\u0000, \u0002k\u0002, \u0001k\u0001.
+    h = insecables(h);
     const FIN = '</span></span></span>';
-    h = h.replace(/\u0000(\d+)\u0000([,.;:)\]]+)/g, (m, k, ponct) => !maths[+k].affichee && maths[+k].html.endsWith(FIN)
+    // (le signe qui suit une formule, précédé de son espace insécable, entre lui aussi dans le dernier bloc de la formule)
+    h = h.replace(/\u0000(\d+)\u0000(\u00a0[:;!?»]|[,.;:)\]]+)/g, (m, k, ponct) => !maths[+k].affichee && maths[+k].html.endsWith(FIN)
       ? maths[+k].html.slice(0, -FIN.length) + `<span class="ponct">${ponct}</span>` + FIN : m);
     h = h.replace(/\u0000(\d+)\u0000/g, (m, k) => maths[+k].html);
     h = h.replace(/\u0002(\d+)\u0002/g, (m, k) => enligne[+k]);
@@ -190,6 +198,8 @@ for (const s of D.rubriques?.['annales-index']?.sujets || []) {
   const ou = `annales-index/${s.sujet}`;
   s.nom = comp(s.nom, `${ou}/nom`);
   s.apercu = comp(s.apercu, `${ou}/apercu`);
+  // même règle d'espaces insécables que rendre() (texte brut, échappé par le gabarit à l'affichage)
+  for (const k of ['nom', 'apercu']) if (typeof s[k] === 'string') s[k] = insecTexte(s[k]);
   for (const [i, b] of (s.blocs || []).entries()) {
     b.nom = comp(b.nom, `${ou}/partie ${i + 1}/nom`);
     b.mots = (b.mots || []).map(m => comp(m, `${ou}/partie ${i + 1}/mots`));
@@ -198,9 +208,17 @@ for (const s of D.rubriques?.['annales-index']?.sujets || []) {
   if (F.length) { s.F = F; s.Ft = Ft; s.Fh = Fh; }
 }
 
+// Titres des nœuds (texte brut, affiché tel quel : fiche, puces, recherche, pages de lecture) : mêmes espaces insécables.
+// L'étiquette des bulles du graphe n'est pas touchée (sa largeur sert à la disposition, calculée par construire.py).
+for (const n of Object.values(D.noeuds)) if (typeof n.titre === 'string') n.titre = insecTexte(n.titre);
 for (const e of Object.values(D.lexique)) {
   e.definition = rendre(e.definition, `lexique/${e.id}`);
   if (e.notation) e.notation = formule(e.notation.trim().replace(/^\$|\$$/g, ''), false, `lexique/${e.id}/notation`);
+  // Exemples (onglet Lexique, pastille repliable) : HTML composé ; nex, leur nombre, reste dans l'index de la page.
+  if (e.exemples && e.exemples.length) {
+    e.exemples = e.exemples.map((x, k) => rendre(x, `lexique/${e.id}/exemple ${k + 1}`));
+    e.nex = e.exemples.length;
+  } else delete e.exemples;
 }
 
 if (erreurs.length) {
@@ -261,15 +279,22 @@ for (const gid of Object.keys(D.graphes)) {
 // (chargerLexique). La page ne garde qu'un index id → [terme, nœud où il est défini] (≈ 36 Ko), qui suffit
 // aux libellés, aux comptes de termes et à la recherche dans l'édifice.
 {
-  const complet = {}, indexLex = {};
+  // Exemples du lexique (4 nov. 2026) : fichier à part, site/exemples.json, demandé seulement à la première
+  // ouverture d'une pastille « + N exemples » (gabarit : chargerExemples). L'index garde leur nombre en troisième
+  // place, pour la pastille et le pied de la bulle, avant même l'arrivée de lexique.json.
+  const complet = {}, indexLex = {}, exemples = {};
   for (const [id, e] of Object.entries(Dsite.lexique)) {
-    indexLex[id] = [e.terme, e.defini];
+    indexLex[id] = e.nex ? [e.terme, e.defini, e.nex] : [e.terme, e.defini];
     complet[id] = { definition: e.definition, notation: e.notation || null, emplois: e.emplois, voir: e.voir };
+    if (e.nex) exemples[id] = e.exemples;
   }
   const contenu = JSON.stringify(complet);
   fs.writeFileSync('site/lexique.json', contenu);
   Dsite.lexique = indexLex;
   Dsite.lexiqueACharger = `lexique.json?v=${empreinte(contenu)}`;
+  const contenuEx = JSON.stringify(exemples);
+  fs.writeFileSync('site/exemples.json', contenuEx);
+  Dsite.exemplesACharger = `exemples.json?v=${empreinte(contenuEx)}`;
 }
 // Extraits de recherche des fiches (champ « cherche », ≈ 350 Ko, 90 Ko compressés) : fichier séparé,
 // demandé au premier usage d'une recherche (champ de l'édifice, recherche globale) ou quand le navigateur

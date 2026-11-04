@@ -791,6 +791,19 @@ blockquote.redaction p { margin: 0; }
 .entree-lex p { margin: 0 0 .5em; }
 .entree-lex .emplois { font-family: var(--f-ui); font-size: 12.5px; color: var(--encre-3); display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 6px; }
 .entree-lex.eclair { background: var(--rouge-fond); }
+/* exemples du lexique : pastille repliable entre la définition et « Défini dans » */
+.intro-lex { font-family: var(--f-ui); font-size: 13px; line-height: 1.5; color: var(--encre-2); margin: -6px 0 10px; max-width: 46rem; }
+.exemples-lex { margin: 4px 0 2px; }
+.exemples-lex > summary { display: inline-flex; align-items: center; gap: 6px; list-style: none; cursor: pointer; font-family: var(--f-ui); font-size: 12.5px; color: var(--encre-2); border: 1px solid var(--filet); border-radius: 999px; padding: 2px 11px 2px 8px; background: var(--surface); user-select: none; }
+.exemples-lex > summary::-webkit-details-marker { display: none; }
+.exemples-lex > summary:hover { border-color: var(--rouge); color: var(--encre); }
+.exemples-lex .signe::before { content: '+'; color: var(--rouge); font-weight: 600; font-size: 14px; line-height: 1; display: inline-block; width: .7em; text-align: center; }
+.exemples-lex[open] .signe::before { content: '\2212'; }
+.exemples-corps { border-left: 2px solid var(--filet); margin: 8px 0 4px 6px; padding: 0 0 0 12px; min-width: 0; }
+.exemples-corps ol { list-style: none; margin: 0; padding: 0; }
+.exemples-corps li { margin: 0 0 .7em; min-width: 0; }
+.exemples-corps li:last-child { margin-bottom: 0; }
+.exemples-corps .ex-num { font-weight: 600; font-family: var(--f-titre); }
 
 /* bulle de définition au survol */
 .bulle {
@@ -1432,6 +1445,7 @@ span.case:hover { border-style: dashed; color: inherit; }
       <div class="onglet" id="onglet-fiche" role="tabpanel" aria-labelledby="tab-fiche"></div>
       <div class="onglet" id="onglet-lexique" role="tabpanel" aria-labelledby="tab-lexique" hidden>
         <input class="recherche" id="filtre" type="search" placeholder="Chercher un terme" aria-label="Chercher un terme">
+        <p class="intro-lex" id="intro-lex" hidden></p>
         <div class="lexique" id="lexique"></div>
       </div>
     </aside>
@@ -1452,7 +1466,7 @@ const $ = s => document.querySelector(s);
 // emplois et renvois sont dans lexique.json (adresse D.lexiqueACharger, avec empreinte ?v=), demandé dès le
 // démarrage sans retarder l'affichage ; la bulle et l'onglet Lexique attendent sa promesse. L'aperçu à
 // fichier unique contient déjà tout (pas de D.lexiqueACharger).
-if (D.lexiqueACharger) for (const [id, [terme, defini]] of Object.entries(D.lexique)) D.lexique[id] = { id, terme, defini };
+if (D.lexiqueACharger) for (const [id, [terme, defini, nex]] of Object.entries(D.lexique)) D.lexique[id] = nex ? { id, terme, defini, nex } : { id, terme, defini };
 // Après un échec, un survol ne relance pas la demande (2,7 Mo) avant DELAI_LEXIQUE ; « réessayer » et
 // l'ouverture de l'onglet (appel explicite) la relancent tout de suite. L'index et le fichier peuvent ne pas
 // concorder (ancienne page en cache, terme supprimé ou renommé depuis) : les termes absents du fichier restent
@@ -1485,6 +1499,50 @@ const quandInoccupe = f => {
   document.readyState === 'complete' ? go() : addEventListener('load', go, { once: true });
 };
 quandInoccupe(() => chargerLexique().catch(() => {}));
+
+/* ------------------------------------------------------------ exemples du lexique */
+// Les exemples (HTML composé) sont dans exemples.json (adresse D.exemplesACharger, avec empreinte ?v=), demandé
+// seulement à la première ouverture d'une pastille « + N exemples » de l'onglet Lexique ; leur nombre (nex) est dans
+// l'index de la page. Promesse unique, remise à zéro sur échec (la pastille propose alors de réessayer). L'aperçu à
+// fichier unique les contient déjà (pas de D.exemplesACharger). Un terme absent du fichier (page et fichier
+// discordants) reste sans exemples, avec un message.
+let chargementExemples = null;
+const estExemplesCharges = () => !D.exemplesACharger;
+function chargerExemples() {
+  if (estExemplesCharges()) return Promise.resolve();
+  if (!chargementExemples) {
+    chargementExemples = fetch(D.exemplesACharger)
+      .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(X => {
+        for (const [id, xs] of Object.entries(X)) if (D.lexique[id] && Array.isArray(xs)) D.lexique[id].exemples = xs;
+        delete D.exemplesACharger;
+      })
+      .catch(e => { chargementExemples = null; throw e; });
+  }
+  return chargementExemples;
+}
+const nbExemples = e => e.nex || (e.exemples || []).length;
+const libelleExemples = n => `${n} exemple${n > 1 ? 's' : ''}`;
+// Corps d'une pastille ouverte : la liste « Exemple k. … », l'attente, ou l'échec avec « réessayer ».
+function remplirExemples(d) {
+  const corps = d.querySelector('.exemples-corps'), e = D.lexique[d.dataset.ex];
+  if (!corps || !e || corps.dataset.rempli) return;
+  if (estExemplesCharges()) {
+    const xs = e.exemples || [];
+    corps.innerHTML = xs.length ? `<ol>${xs.map((x, k) => {
+      const num = `<span class="ex-num">Exemple ${k + 1}.</span> `;
+      return `<li>${/^<p[ >]/.test(x) ? x.replace(/^<p([^>]*)>/, (m, a) => `<p${a}>${num}`) : `<p>${num}</p>${x}`}</li>`;
+    }).join('')}</ol>` : '<p class="attente-lexique">Les exemples de cette entrée ne sont pas disponibles dans cette version de la page&nbsp;; rechargez-la.</p>';
+    corps.dataset.rempli = '1';
+    return;
+  }
+  corps.innerHTML = '<p class="attente-lexique" role="status">Chargement des exemples…</p>';
+  chargerExemples().then(() => document.querySelectorAll('#lexique details.exemples-lex[open]').forEach(remplirExemples), () => {
+    document.querySelectorAll('#lexique details.exemples-lex[open] .exemples-corps:not([data-rempli])').forEach(c => {
+      c.innerHTML = '<p class="attente-lexique" role="alert">Les exemples n\'ont pas pu être chargés. Vérifiez la connexion, puis <button type="button" class="reessayer-lexique" data-exemples-reessayer>réessayer</button>.</p>';
+    });
+  });
+}
 const etat = { graphe: D.racine, choisi: null, echelle: 1 };
 const FAM = n => n.famille;
 const NOMBRES = new Set(['n', 'z', 'q', 'r', 'c']);
@@ -2200,6 +2258,7 @@ function construireLexique() {
   const L = Object.values(D.lexique).sort((a, b) => a.terme.localeCompare(b.terme, 'fr'));
   $('#lexique').innerHTML = L.map(e => `<article class="entree-lex" id="lx-${e.id}" data-t="${esc(e.terme.toLowerCase())}">
       <h3>${esc(e.terme)}${e.notation ? ` <span class="notation">${e.notation}</span>` : ''}</h3>${e.definition || ''}
+      ${nbExemples(e) ? `<details class="exemples-lex" data-ex="${e.id}"><summary><span class="signe" aria-hidden="true"></span>${libelleExemples(nbExemples(e))}</summary><div class="exemples-corps"></div></details>` : ''}
       ${D.noeuds[e.defini] ? `<div class="emplois">Défini dans ${puce(e.defini)}</div>` : ''}
       ${(e.emplois || []).some(i => D.noeuds[i]) ? `<div class="emplois">Employé dans ${e.emplois.filter(i => D.noeuds[i]).map(i => puce(i)).join('')}</div>` : ''}
       ${(e.voir || []).some(v => D.lexique[v]) ? `<div class="emplois">Voir aussi ${e.voir.filter(v => D.lexique[v]).map(v => `<span class="terme" data-g="${v}" tabindex="0" role="button">${esc(D.lexique[v].terme)}</span>`).join(', ')}</div>` : ''}
@@ -2209,9 +2268,17 @@ function construireLexique() {
     const n = a.querySelector('h3 .notation .katex-html');
     if (n) a.dataset.t += ' ' + n.textContent.replace(/\s+/g, '').toLowerCase();
   });
+  // phrase d'introduction : nombres exacts, calculés sur le lexique chargé (rien d'écrit en dur)
+  const avecEx = L.filter(e => nbExemples(e)), nEx = avecEx.reduce((t, e) => t + nbExemples(e), 0), intro = $('#intro-lex');
+  if (intro && avecEx.length) {
+    const nb = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '\u202f');   // 1 079 : espace fine insécable, sans dépendre des données de langue
+    intro.innerHTML = `${avecEx.length === L.length ? 'Toutes les' : nb(avecEx.length) + '&nbsp;sur ' + nb(L.length)} entrées sont suivies d'exemples et de contre-exemples (${nb(nEx)}&nbsp;en tout), que l'on déplie d'un clic sur la pastille «&nbsp;+&nbsp;N exemples&nbsp;» placée sous la définition&nbsp;; ils n'emploient que des notions définies avant la fiche du terme.`;
+    intro.hidden = false;
+  }
   filtrer();   // ce qui a pu être tapé dans le filtre pendant le chargement
 }
-function ouvrirTerme(id) {
+// deplier : la pastille des exemples de l'entrée est ouverte (clic sur un terme, dont la bulle l'annonce).
+function ouvrirTerme(id, deplier = false) {
   cacherBulle(true);
   if (enRubrique()) aller(etat.graphe || D.racine, etat.choisi);   // le lexique est dans le panneau de l'édifice
   $('#filtre').value = '';
@@ -2224,6 +2291,8 @@ function ouvrirTerme(id) {
     // varie avec la largeur : on la mesure
     const tp = document.querySelector('.tete-panneau');
     if (tp) e.style.scrollMarginTop = Math.ceil(tp.getBoundingClientRect().height) + 8 + 'px';
+    const px = deplier && e.querySelector('details.exemples-lex');
+    if (px && !px.open) px.open = true;   // l'événement toggle remplit la pastille
     e.scrollIntoView({ block: 'start' });
     e.classList.add('eclair');
     setTimeout(() => e.classList.remove('eclair'), 1400);
@@ -2248,7 +2317,7 @@ function montrerOnglet(nom) {
 // Chaque nœud de tous les graphes (théories, sous-théories, chapitres) est cherché par son titre et son
 // étiquette, par les termes du lexique qu'il définit, puis par l'extrait de son texte et de son énoncé
 // (champ « cherche », écrit par rendu.mjs, toujours présent dans la page). Tous les mots doivent figurer.
-const normEdifice = t => String(t || '').normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
+const normEdifice = t => String(t || '').replace(/[\u00a0\u202f]/g, ' ').normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
 let indexEdificeMemo = null;
 // Extraits de recherche (cherche.json, D.chercheACharger) : demandés au premier usage d'une recherche ou quand
 // le navigateur est inoccupé ; à leur arrivée, l'index est refait et la recherche en cours relancée.
@@ -2371,7 +2440,9 @@ function montrerBulle(el, explicite = false) {
     // Lexique arrivé mais terme absent du fichier (index et fichier discordants) : bulle sans définition.
     const pret = e.definition !== undefined || estLexiqueCharge();
     const corps = pret ? (e.definition ?? '') : '<p class="attente-lexique" role="status">Chargement de la définition…</p>';
-    b.innerHTML = `<p class="bulle-terme">${esc(e.terme)}${e.notation ? ` <span class="notation">${e.notation}</span>` : ''}</p>${corps}<p class="bulle-pied">Défini au nœud « ${esc(D.noeuds[e.defini].titre)} » · cliquer pour l'ouvrir dans le lexique</p>`;
+    const nx = nbExemples(e);
+    const pied = nx ? `${libelleExemples(nx)} dans le lexique&nbsp;: cliquer pour ${nx > 1 ? 'les' : 'le'} voir` : 'cliquer pour l\'ouvrir dans le lexique';
+    b.innerHTML = `<p class="bulle-terme">${esc(e.terme)}${e.notation ? ` <span class="notation">${e.notation}</span>` : ''}</p>${corps}<p class="bulle-pied">Défini au nœud «&nbsp;${esc(D.noeuds[e.defini].titre)}&nbsp;» · ${pied}</p>`;
     termeActif = el;
     if (!pret) chargerLexique(explicite).then(() => {
       if (termeActif === el && !b.hidden) { termeActif = null; montrerBulle(el); }
@@ -2440,7 +2511,7 @@ document.querySelectorAll('.legende').forEach(d => d.addEventListener('toggle', 
 window.addEventListener('resize', () => document.querySelectorAll('.legende[open]').forEach(placerLegende));
 document.addEventListener('click', ev => {
   const t = ev.target.closest('.terme');
-  if (t && t.dataset.g) { ev.preventDefault(); ouvrirTerme(t.dataset.g); return; }
+  if (t && t.dataset.g) { ev.preventDefault(); ouvrirTerme(t.dataset.g, true); return; }
   // Fondements, Portée (fiche) : un clic surligne, un second efface ; « Voir dans l'édifice » et son retour
   // changent de graphe en gardant le surlignage.
   const dp = ev.target.closest('#onglet-fiche [data-dep]');
@@ -2469,7 +2540,7 @@ document.addEventListener('click', ev => {
 });
 document.addEventListener('keydown', ev => {
   const t = ev.target.closest && ev.target.closest('.terme');
-  if (t && (ev.key === 'Enter' || ev.key === ' ')) { ev.preventDefault(); ouvrirTerme(t.dataset.g); }
+  if (t && (ev.key === 'Enter' || ev.key === ' ')) { ev.preventDefault(); ouvrirTerme(t.dataset.g, true); }
   if (ev.key === 'Escape') cacherBulle(true);
   // Échap efface le surlignage des fondements ou de la portée (sauf dans un champ, le menu ou le signalement,
   // qui ont leur propre usage de la touche)
@@ -2501,6 +2572,17 @@ document.addEventListener('click', ev => {
   if (!ev.target.closest('[data-lexique-reessayer]')) return;
   if (ev.target.closest('#bulle')) { const el = termeActif; termeActif = null; if (el && el.isConnected) montrerBulle(el, true); else cacherBulle(true); return; }
   remplirLexique().catch(() => {});
+});
+// Pastilles des exemples : remplies à leur ouverture (toggle ne remonte pas : écoute en capture) ; « réessayer ».
+$('#lexique').addEventListener('toggle', ev => {
+  const d = ev.target;
+  if (d.matches && d.matches('details.exemples-lex') && d.open) remplirExemples(d);
+}, true);
+document.addEventListener('click', ev => {
+  const b = ev.target.closest('[data-exemples-reessayer]');
+  if (!b) return;
+  const d = b.closest('details.exemples-lex');
+  if (d) remplirExemples(d);
 });
 $('#filtre').addEventListener('input', filtrer);
 $('#cherche-edifice').addEventListener('input', chercherEdifice);
@@ -2760,7 +2842,7 @@ function pageChapitre(c, tous) {
   h += `</div><aside class="cote"><button type="button" class="cote-retour" data-vers-lecteur>↑ Revenir au PDF</button>`;
   h += `<div class="carte"><h3 class="titre-bloc">Sommaire</h3>${c.sommaire ? `<ol class="sommaire">${c.sommaire.map((x, i) => `<li>${c.pdf && c.sommaire_pages ? `<button type="button" class="vers-page" data-pdf-page="${c.sommaire_pages[i]}" title="Aller à la page ${c.sommaire_pages[i]} du PDF">${x}<span class="num-page">p. ${c.sommaire_pages[i]}</span></button>` : x}</li>`).join('')}</ol>` : '<p class="vide-note">Tiré du PDF une fois déposé.</p>'}</div>`;
   h += `<div class="carte"><h3 class="titre-bloc">Dans l'atlas</h3><div class="puces">${(c.theories || []).map(t => puce(t)).join('')}</div>`;
-  if ((c.notions || []).length) h += `<p style="margin:10px 0 0;font-size:13.5px">Notions : ${(c.notions).map(terme).join(', ')}</p>`;
+  if ((c.notions || []).length) h += `<p style="margin:10px 0 0;font-size:13.5px">Notions&nbsp;: ${(c.notions).map(terme).join(', ')}</p>`;
   h += `</div>`;
   const lies = coursLies(c, tous);
   if (lies.length) {
@@ -3041,7 +3123,7 @@ function pageAnnales(chemin) {
         : rap.map(([k, u]) => `<a href="${esc(u)}" target="_blank" rel="noopener">rapport ${k}</a>`).join(' · ');
       // provenance des PDF qui ne viennent pas directement du site officiel
       const srcs = [...new Map(eps.map(ep => (trouver(c, an, ep) || {}).source).filter(Boolean).map(o => [o.url, o])).values()];
-      const provenance = srcs.length ? `<div class="rapports source-ann">source : ${srcs.map(o => `<a href="${esc(o.url)}" target="_blank" rel="noopener">${esc(o.nom)}</a>`).join(' · ')}</div>` : '';
+      const provenance = srcs.length ? `<div class="rapports source-ann">source&nbsp;: ${srcs.map(o => `<a href="${esc(o.url)}" target="_blank" rel="noopener">${esc(o.nom)}</a>`).join(' · ')}</div>` : '';
       // fiches des sujets décrits par thème
       const fiches = eps.map((ep, i) => { const x = trouver(c, an, ep); return x && x.sujet && indexAnnales().parUrl[x.sujet] ? [court(ep, i), slugSujet(x)] : null; }).filter(Boolean);
       const lienFiches = fiches.length ? `<div class="rapports fiches-ann">${fiches.length === 1 && eps.length === 1 ? `<a href="#annales/sujet/${fiches[0][1]}">contenu du sujet</a>` : 'contenu ' + fiches.map(([k, sl]) => `<a href="#annales/sujet/${sl}">${k}</a>`).join(' · ')}</div>` : '';
@@ -3081,7 +3163,7 @@ function ficheSujetHTML(x, complet) {
   if (!complet && d) h += `<a class="bouton" href="#annales/sujet/${sl}" title="Contenu du sujet, partie par partie (adresse à partager)">Contenu</a>`;
   h += aProposSignalBouton(`Annales › ${titreConc}`, `${ADRESSE_SITE}annales/sujet/${sl}/`);
   h += `</span></div>`;
-  if (x.source) h += `<p class="fa-source">PDF hébergé hors du site officiel — source : <a href="${esc(x.source.url)}" target="_blank" rel="noopener">${esc(x.source.nom)}</a></p>`;
+  if (x.source) h += `<p class="fa-source">PDF hébergé hors du site officiel — source&nbsp;: <a href="${esc(x.source.url)}" target="_blank" rel="noopener">${esc(x.source.nom)}</a></p>`;
   if (x.attente) h += `<p class="fa-source">${esc(x.attente)}</p>`;
   if (!d) { h += `<p class="fa-vide">Description par thème à venir : les sujets de cette session n'ont pas encore été étiquetés.</p></article>`; return h; }
   h += `<h4>${annalesF(esc(d.nom || ''), d)}</h4>`;

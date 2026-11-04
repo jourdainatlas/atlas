@@ -1720,3 +1720,53 @@ et une remarque de li-cartan ; matrices-equivalentes affirme « même rang ⇔ �
 en remarque de md-equivalence ; typographie GL_n / \mathrm{GL}_n mixte ; notions voisines sans entrée : GL(V),
 matrice triangulaire par blocs, sous-matrice et mineur, matrice définie positive, antisymétrique, de Gram, A*, rang
 d'une famille, application linéaire inversible.
+
+## 110. Exemples du lexique : mécanisme et lot pilote (4 novembre 2026)
+
+Demande d'Armand : deux ou trois exemples par entrée du lexique, dans l'onglet Lexique seulement (pas dans les fiches),
+par une pastille repliable entre la définition et « Défini dans ». Règles validées par lui : ordre d'apparition strict
+(un exemple n'emploie que des notions définies en amont du nœud defini_dans, liées ou non) ; au plus une ouverture
+vers l'aval par terme, annoncée (« Plus loin… ») et toujours dans le dernier exemple ; au moins un vrai contre-exemple
+quand la notion s'y prête — une hypothèse retirée, et la conclusion tombe ; un cas limite (anneau nul, ensemble vide)
+peut figurer mais ne compte pas comme contre-exemple ; aucun exemple pour les conventions et notations pures ;
+concision, jamais au prix de la clarté ou de la rigueur ; renvoi à un point d'une fiche toujours avec le lien
+({{id|Titre}}, (iii)) ; matrices et calculs en formule centrée, empilés sur téléphone. On peut ajouter dans un nœud
+d'amont un exemple démontré (point d'énoncé, remarque démontrée) pour s'y appuyer dans des exemples plus loin : ainsi
+a-anneau (v), (𝒫(E), △, ∩) anneau commutatif, démontré point par point, sur lequel s'appuient morphisme-anneaux et
+corps.
+
+Mécanisme. Champ `exemples:` (liste de blocs) dans lexique.yaml. construire.py : verifie_refs, verifie_typo, erreur
+pour un [[id]] ou \lex hors amont, avertissement pour un {{x}} vers l'aval non annoncé et pour une ouverture qui
+n'est pas unique et dernière ; ancres lexique/<id> acceptées dans nouveautes.yaml. rendu.mjs écrit
+site/exemples.json?v=<empreinte> ; l'index de la page ne garde que le nombre (nex) ; l'aperçu à fichier unique
+embarque tout. gabarit.html : chargerExemples (promesse unique, remise à zéro sur échec, « réessayer »), pastille
+« + N exemples », pied de bulle « N exemples dans le lexique : cliquer pour les voir » ; le clic sur un terme ouvre
+l'entrée pastille dépliée, l'ancre partagée #lexique/<id> ne la déplie pas (validé : rien ne se charge sans geste).
+Phrase d'introduction calculée (#intro-lex : « 32 sur 1 079 entrées … (96 en tout) »), séparateur de milliers posé à
+la main (U+202F), sans toLocaleString. sw.js inchangé (tout ?v= est déjà en cache durable). Poids : exemples.json
+702 Ko (38 Ko compressés) pour 32 entrées ; à découper par théorie avant le lot 2.
+
+Espace insécable (décision d'Armand). rendu.mjs, rendre() : U+00A0 avant : ; ! ? » et après «, sur les seuls segments
+de texte (jamais balises, formules, code, attributs, URL) ; après une formule KaTeX, le signe entre dans le dernier
+bloc insécable. Aussi : titres de nœuds, index des annales, pied de bulle. Pas les étiquettes du graphe. Texte des
+fiches identique à main une fois U+00A0 ramenée à l'espace. normEdifice ramène U+00A0 et U+202F à l'espace (la
+recherche garde ses bonus). Les libellés écrits en dur dans gabarit.html ne sont pas couverts : ceux du lot, « Notions : »
+et « source : » sont passés en &nbsp; ; les autres restent à faire au fil de l'eau.
+
+Lot pilote : 32 termes (matrice, matrice-inversible, matrice-application-lineaire, application-croissante,
+groupe-abelien, anneau-zn, application-canonique, partie-convexe, racine-polynome, compact, morphisme-anneaux,
+groupe-fondamental, graphe-application, lacet, cycle-complexe, valeur-absolue, topologie, corps, borne-inferieure,
+plus-petit-element, loi-associative, forme-lineaire, endomorphisme, connexe, derivable, pi-systeme, intervalle,
+forme-fermee, divisibilite-anneau, transposition, produit-scalaire, limite-fonction-infini), trois exemples chacun,
+calculs vérifiés (verif.py, 96 contrôles ; relecture, 138). Ce qui gêne : avant ℕ, ℤ, ℝ, on n'a que des ensembles
+finis et 𝒫(E) ; topologie avant ℝ : topologies finies, discrète, grossière ; coefficients 0, ±1 en algèbre linéaire.
+Relu deux fois. Premier passage, corrigé : lacet (lacets « non homotopes dans ℝ² », faux), pi-systeme 3 (ce que
+remplace le π-système est la réunion dénombrable, non le complémentaire), matrice-inversible 3 (un inverse d'un côté
+suffit pour des carrées : démontré, contre-exemple non carré), notions hors amont non liées (plus petit élément,
+quasi-compact, polynôme homogène, inégalité triangulaire, diviseur de zéro, plus fine, ordre opposé, bilinéaire,
+chaîne). Second passage : rien de bloquant ; justifications ajoutées (dim Kⁿ = n et v-libre (iii) dans
+matrice-inversible 3, distributivité dans corps 2). Nouvel outil hors dépôt non_lies.py (travail/exemples-pilote) :
+termes du lexique écrits sans lien et définis hors amont. Contre-exemple faible mais recevable : lacet 1 ; mixte :
+forme-fermee (non-exactitude de la forme angle seulement annoncée).
+
+Suite : environ 15 lots par théorie, termes les plus employés d'abord, après découpage d'exemples.json par théorie.
