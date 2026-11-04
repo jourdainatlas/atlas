@@ -397,3 +397,42 @@ un mot, et l'indentation n'est jamais touchée. `outils/typographier.py` a appli
 versées, sur 3 550 champs (énoncés, corrigés, titres, sources). Il ne reste aucune espace ordinaire devant ces signes
 hors des formules, contre environ 15 500 auparavant. Sur 40 exercices tirés au hasard, affichés à 360 px de
 large, aucun des 402 signes ne commence une ligne.
+
+### 31. Symboles des chapitres de la page Cours (confiés le 4 nov. 2026)
+
+Le bloc « Cours : symbole et ligne de couleur des chapitres » de `gabarit.html` (décrit au §50 de
+`MEMO_atlas_apropos.md`) appartient au domaine apparence, sauf ses deux tables, qui reviennent à la conversation
+Cours : `SYM_DESSINS` (nom → contenu SVG) et `SYM_CHAPITRES` (id du chapitre → nom du dessin). La feuille de style,
+`bandeChapitre`, `symboleChapitre` et les appels dans la ligne qui écrit chaque `<li>` de `ol.chapitres` ne se
+touchent pas. Toujours `git fetch` puis `git rebase origin/main` avant de modifier `gabarit.html`.
+Les couleurs se calculent seules d'après le champ `theories` du chapitre, qui doit donc rester juste.
+
+**À chaque dépôt de chapitre, sans attendre qu'on le demande :**
+
+- *Réutiliser d'abord.* Un même sujet garde le même symbole d'un niveau à l'autre, par exemple `tangente`
+  (dérivation), `cercle` (trigonométrie), `matrice`, `venn`, `aire`, `convergence`, `blocs` (divisibilité),
+  `table` (structures algébriques), `vecteurs`.
+- *Sinon, dessiner* un dessin nouveau, nommé d'après son sujet, qui montre l'idée centrale du chapitre et non son titre.
+- *Faire valider avant de publier.* Montrer à l'auteur une planche, avec le symbole à environ 72 px en clair et en
+  sombre à côté de ses voisins du même niveau, et un aperçu en place sur la page Cours. On ne publie qu'après son accord.
+- *Annoncer* : l'entrée Nouveautés reste due comme d'habitude.
+
+Quand l'auteur demande de changer un symbole, on propose une ou deux variantes sur une planche, en clair et en
+sombre, puis on remplace le dessin choisi. Si le dessin sert à plusieurs chapitres, on demande d'abord s'il faut
+les changer tous ou créer un dessin à part.
+
+**Règles de dessin.**
+
+- *Cadre.* `viewBox 0 0 24 24`, et rien ne dépasse le bord de plus d'1 px.
+- *Couleurs.* Aucune couleur écrite en dur, seulement des classes : `f1` (aplat plein), `f2` (moyen), `f3` (pâle),
+  `t` (trait fin : axes, pointillés avec `stroke-dasharray`), `t3` (trait épais : courbe ou vecteur principal).
+- *Style.* Des formes simples et pleines, deux ou trois éléments au plus. Pas de texte ni de chiffre, sauf un signe
+  mathématique qui est le sujet même (le Σ du calcul algébrique). Jamais d'étoile ⋆, réservée à l'axiome du choix.
+- *Lisibilité.* Le symbole doit se lire à 40 px, sa taille sur la page, en clair comme en sombre.
+- *Justesse.* La figure est mathématiquement exacte : une corde relie deux points de la courbe, une tangente la
+  touche, les racines sont sur l'axe. Les coordonnées se calculent, elles ne s'estiment pas.
+
+Ne jamais changer l'`id` d'un chapitre existant : il perdrait son symbole tant que `SYM_CHAPITRES` ne suit pas.
+
+État au 4 novembre : les 62 chapitres déposés ont tous un symbole, y compris `ma-11` à `ma-14` (`table`, `blocs`,
+`racines`, `vecteurs`), attribués par la conversation apparence.
