@@ -1650,3 +1650,20 @@ polynôme primitif sur un factoriel, isomorphisme d'espaces vectoriels, matrice 
 récursive, sous-G-module, degré et isomorphisme de représentations, degré d'une extension, partition d'un entier,
 supplémentaire dans un groupe abélien, division euclidienne des polynômes, occurrence libre dans un mot ; plus les
 rappels légitimes à lier au lieu du gras, et sous-espace stable non lié dans rd-* et md-*.
+
+## 107. Lexique, lot L5 : faux rappels (4 novembre 2026)
+
+Notes : /home/claude/travail/lexique-L5/. Le diagnostic H classe en « rappel » un gras homonyme d'une entrée d'amont,
+même quand il définit une notion nouvelle ; une copie instrumentée (/home/claude/travail/lexique-L4/outils/diagx.py,
+hors dépôt) liste ces gras. Lot : 16 entrées (1041 → 1057 termes) — famille génératrice et base d'un module,
+multiplicité algébrique, PGCD, polynômes premiers entre eux et division euclidienne des polynômes, PGCD dans un
+anneau intègre (associés, non-existence dans ℤ[√−5] décrit sur place, 6 et 2(1+√−5)), polynôme primitif sur un
+factoriel, matrice identité (« dans toute base, prise au départ et à l'arrivée »), relation primitive récursive,
+sous-G-module, degré, isomorphisme et somme directe de représentations, degré d'une extension, partition d'un
+entier — et 4 élargies (isomorphisme : la réciproque d'un homéomorphisme est exigée continue ; variable-libre aux
+mots quelconques ; supplementaire aux groupes abéliens ; somme-directe aux modules). ≈ 140 liens dont 23
+\lex{matrice-identite}{I_k} ; premier lien dans une légende de schéma (gs-radicaux). diagx.py : 37 → 6 rappels,
+tous légitimes (pc-limite « dimension », dt-complexe-double « exactes », dr-primitives « boule », cs-dedekind
+« libre », ku-modeles « couple », t-homeo « topologiques »). Relu (138 liens) : rien de bloquant, six corrections.
+À faire : intégrer à edifice_diagnostic.py un contrôle des faux rappels (rappel homonyme dont la définition de la
+fiche diffère de l'entrée d'amont), pour que H ne masque plus ces cas.
