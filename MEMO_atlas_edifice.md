@@ -1738,7 +1738,7 @@ corps.
 Mécanisme. Champ `exemples:` (liste de blocs) dans lexique.yaml. construire.py : verifie_refs, verifie_typo, erreur
 pour un [[id]] ou \lex hors amont, avertissement pour un {{x}} vers l'aval non annoncé et pour une ouverture qui
 n'est pas unique et dernière ; ancres lexique/<id> acceptées dans nouveautes.yaml. rendu.mjs écrit
-site/exemples.json?v=<empreinte> ; l'index de la page ne garde que le nombre (nex) ; l'aperçu à fichier unique
+site/exemples.json?v=<empreinte> (remplacé au § 111 par un fichier par théorie) ; l'index de la page ne garde que le nombre (nex) ; l'aperçu à fichier unique
 embarque tout. gabarit.html : chargerExemples (promesse unique, remise à zéro sur échec, « réessayer »), pastille
 « + N exemples », pied de bulle « N exemples dans le lexique : cliquer pour les voir » ; le clic sur un terme ouvre
 l'entrée pastille dépliée, l'ancre partagée #lexique/<id> ne la déplie pas (validé : rien ne se charge sans geste).
@@ -1770,3 +1770,107 @@ termes du lexique écrits sans lien et définis hors amont. Contre-exemple faibl
 forme-fermee (non-exactitude de la forme angle seulement annoncée).
 
 Suite : environ 15 lots par théorie, termes les plus employés d'abord, après découpage d'exemples.json par théorie.
+
+## 111. Exemples du lexique : rangement par théorie, chargement par théorie, schémas, outils (4 novembre 2026)
+
+Préparation du déploiement à tout le lexique (1 079 termes, ≈ 3 000 exemples), pour que plusieurs agents
+rédigent en parallèle, chacun dans son seul fichier, sans conflit git. Aucun exemple nouveau ; les 96 du pilote
+(§ 110) sont migrés sans changement de texte ; deux (topologie 1, partie-convexe 2) reçoivent un schéma d’essai et sa légende.
+
+**Rangement.** Les exemples ne sont plus dans `lexique.yaml` (y laisser un champ `exemples:` est une erreur, qui
+donne le bon fichier). Ils sont dans `contenu/exemples/<theorie>.yaml`, un fichier par théorie de premier niveau
+(les 38 nœuds du graphe racine : top, log, …, alglin, nban, edp), tous créés, vides ou non. La théorie d'un terme
+est celle qui contient, à une profondeur quelconque, son nœud `defini_dans`. Format : en-tête commenté, puis
+
+    exemples:
+      <id du terme>:
+        - |
+          Exemple 1, en phrases complètes ([[id]], \lex{id}{…}, {{nœud|Titre}}, formules comme dans les fiches).
+        - |
+          Exemple 2.
+          ```schema lex-<id>-2
+          Légende : une ou deux phrases complètes qui disent ce qu'il faut lire sur la figure.
+          ```
+
+Les termes suivent l'ordre du lexique, séparés par une ligne vide.
+
+**Contrôles de construire.py** (erreurs sauf mention) : nom du fichier = une théorie du graphe racine ; seule clé
+`exemples:`, qui associe à chaque id une liste non vide de textes ; id connu du lexique ; terme rangé dans le
+fichier de sa théorie (le message donne le bon nom) ; un terme dans un seul fichier, une seule fois (clé en double
+détectée, alors que yaml.safe_load la masque) ; schéma nommé `lex-<id>-<k>`, k = numéro de l'exemple, puis `-b`,
+`-c`… s'il y en a plusieurs dans le même exemple, avec une légende non vide ; SVG présent (rendu.mjs) ; et tous les
+contrôles du pilote : verifie_refs, verifie_typo, [[id]] et \lex hors amont du nœud `defini_dans` = erreur, {{x}}
+vers un nœud hors amont sans annonce = avertissement, ouverture vers l'aval non unique ou pas dans le dernier
+exemple = avertissement, nombre d'exemples hors de 2-3 = avertissement. Nouveau : un `contenu/schemas/lex-*.svg`
+employé par aucun exemple = avertissement. Les contrôles d'ordre ne tournent qu'en l'absence d'autre erreur :
+corriger d'abord les erreurs de rangement. `construction/donnees.json` porte la théorie de chaque terme qui a des
+exemples (`lexique[id].theorie`).
+
+**Chargement.** rendu.mjs écrit `site/exemples/<theorie>.json` (seulement les théories qui ont des exemples),
+chacun avec sa propre empreinte : `D.exemplesACharger = {theorie: 'exemples/<theorie>.json?v=…'}`. L'index de
+la page devient `[terme, defini, nex, theorie]` pour les termes à exemples, `[terme, defini]` sinon. Gabarit :
+`chargerExemples(th)`, une promesse par théorie, remise à zéro sur échec ; `estExemplesCharges(th)` ;
+`remplirExemples` ne demande que la théorie du terme de la pastille ouverte et, à l'arrivée ou à l'échec, sert
+toutes les pastilles ouvertes de cette théorie (« réessayer » sinon). Rien ne se charge avant un geste ; la bulle
+n'annonce que le nombre. Une théorie absente de la table (page et fichiers discordants) donne le message « pas
+disponibles dans cette version de la page ». L'aperçu à fichier unique embarque tout. sw.js inchangé (tout `?v=`
+est en cache durable). Poids : 7,7 Ko de HTML par exemple en moyenne, soit ≈ 2,2 Mo pour hom (95 termes) à trois
+exemples par terme.
+
+**Schémas d'exemples.** Bloc `schema lex-<id>-<k>` dans le texte de l'exemple, légende comme dans les fiches
+(§ 29). Le SVG, écrit dans `contenu/schemas/`, est inséré dans le HTML de l'exemple, donc dans le JSON de la
+théorie et non dans la page. Code : un module par théorie, `outils/edifice_schemas_lex_<theorie>.py` (ainsi
+`edifice_schemas_lex_top.py`, `edifice_schemas_lex_analyse-reelle.py`), découvert automatiquement par le registre
+`outils/edifice_schemas.py` : un agent n'y touche pas. Le registre refuse un nom `lex-…` hors d'un module
+`edifice_schemas_lex_*`, et un autre nom dans un tel module. Régénérer **seulement sa théorie** :
+`python3 outils/edifice_schemas.py --theorie <theorie>` (tout régénérer modifie gf-ordre-8 et ly-equation, de
+façon non déterministe, sans rapport avec le lot). Mêmes classes de couleur que les fiches (t, g, r, b, v, o ;
+s-, f-, p-, x-) : le CSS `svg.schema` / `figure.schema > svg` s'applique dans le lexique, vérifié en clair et en
+sombre. **Largeur** : la colonne des exemples fait 534 px sur bureau et 352 px sur téléphone ; largeur conseillée
+400 à 440 (420 pour les essais), hauteur 300 au plus, étiquettes de 17 (13,7 px à l'écran du téléphone), texte
+d'interface (`ui=True`) réservé à des mots courts. Nouvel auxiliaire `edifice_svg.largeur_texte(s, taille)` :
+largeur d'une étiquette calculée sur les chasses des polices KaTeX, pour placer boîtes et voisins sans estimer.
+Chaque figure calcule ses positions et vérifie par assert ce que dit la légende, comme dans les fiches. Essais :
+lex-topologie-1, lex-partie-convexe-2.
+
+**Outils des lots** (`outils/`, option `--theorie <id>|tout`) :
+- `edifice_exemples_lot.py --theorie T [--sans-exemples] [--premiers N]` : table des termes de la théorie, nœud,
+  nombre d'emplois (comme « Employé dans »), exemples déjà écrits, triés par emplois décroissants (ordre des lots).
+  `--terme id [--fiche] [--preuve] [--lex] [--noeuds]` : contexte d'un terme (définition, exemples existants,
+  fiche du nœud, termes du lexique en amont, nœuds en amont par graphe). `--sortie DOSSIER` : un fichier
+  `<id>.txt` par terme, avec tout, à donner à l'agent de rédaction.
+- `edifice_exemples_non_lies.py` : termes du lexique écrits sans lien et définis hors amont (crible, à juger :
+  sens courant, homonymes).
+- `edifice_exemples_longueurs.py [--max 65]` : phrases de plus de 65 mots.
+- `edifice_exemples_commun.py` : chargement commun (lexique, exemples, ordre global, théorie d'un nœud, emplois).
+
+**Consignes de rédaction** (validées par Armand, § 110, à recopier dans toute consigne d'agent) : deux ou trois
+exemples par entrée, visibles dans l'onglet Lexique seulement. Ordre d'apparition strict : un exemple n'emploie que
+des notions définies en amont du nœud `defini_dans`, liées ou non (non_lies.py pour les non liées). Au plus une
+ouverture vers l'aval par terme, annoncée (« Plus loin… ») et toujours dans le dernier exemple. Au moins un vrai
+contre-exemple quand la notion s'y prête : une hypothèse retirée, et la conclusion tombe ; un cas limite (anneau
+nul, ensemble vide) peut figurer mais ne compte pas comme contre-exemple. Aucun exemple pour les conventions et
+notations pures. Concision, jamais au prix de la clarté ou de la rigueur ; phrases complètes, pas de style
+télégraphique. Renvoi à un point d'une fiche toujours avec le lien ({{id|Titre}}, (iii)). Matrices et calculs en
+formule centrée, empilés sur téléphone. Calculs vérifiés (Python) avant d'être écrits. On peut ajouter dans un
+nœud d'amont un exemple démontré (point d'énoncé, remarque démontrée) pour s'y appuyer plus loin (ainsi a-anneau
+(v)) ; ce n'est plus le fichier de la théorie, et cela se signale à l'auteur. Un schéma seulement s'il éclaire
+vraiment (jamais décoratif), dessiné par le calcul dans le module de la théorie, regardé en clair et en sombre,
+bureau et téléphone. Chaque lot est relu par un second agent indépendant. Ce qui gêne en amont : avant ℕ, ℤ, ℝ,
+seulement des ensembles finis et 𝒫(E) ; topologie avant ℝ : topologies finies, discrète, grossière ; coefficients
+0, ±1 en algèbre linéaire.
+
+**Déroulement d'un lot.** Un agent par théorie : `edifice_exemples_lot.py --theorie T --sans-exemples --premiers
+30 --sortie …` ; rédaction dans `contenu/exemples/T.yaml` et, s'il y a des schémas,
+`outils/edifice_schemas_lex_T.py` et `contenu/schemas/lex-*.svg` ; `edifice_schemas.py --theorie T`,
+`construire.sh` sans erreur, non_lies et longueurs sur T, relecture indépendante, rendu regardé. Aucun autre
+fichier touché, d'où aucun conflit entre agents parallèles.
+
+**Parallélisme, précisions de la relecture.** Un dossier de travail (`git worktree`) par agent : le registre
+charge tous les modules de schémas, et le module à moitié écrit d'un agent ferait échouer ceux des autres dans
+un même dossier. Jamais `edifice_schemas.py` sans `--theorie`. Le mémo n'est écrit que par l'intégrateur ; un
+ajout dans une fiche d'amont est signalé et intégré à part (risque de conflit si deux lots visent la même fiche).
+Le message « timestamp seems very low » de la mesure des étiquettes est sans conséquence. Une théorie introuvable
+pour un terme est une erreur. Relu par un agent indépendant : rien de bloquant ; corrigés : « suite » (défini
+plus loin) dans la légende de lex-topologie-1, échelle égale sur les deux axes et segments bleus sous le rouge
+dans lex-partie-convexe-2.

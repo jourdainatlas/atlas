@@ -26,16 +26,20 @@ def lex_partie_convexe_2():
     assert not dans(((1 - Fr(1, 2)) * a[0], Fr(1, 2) * b[1]))
 
     W, H = 420, 290
-    R = Repere(-1.55, 1.75, -1.0, 1.45, 20, 18, 380, 254)
+    # même échelle sur les deux axes (le segment de (1, 0) à (0, 1) est à 45°)
+    hy = 254; ech = hy / (1.45 - (-1.0)); lx = round(ech * (1.75 - (-1.55)))
+    R = Repere(-1.55, 1.75, -1.0, 1.45, (W - lx) // 2, 18, lx, hy)
+    assert abs(lx / 3.3 - hy / 2.45) < 0.2 and lx <= W - 20
     S = Schema(W, H, 'La réunion des deux axes : étoilée par rapport à l’origine, non convexe')
-    # la partie A, en rouge (objet étudié), prolongée jusqu'au bord du repère
+    # deux segments issus de l'origine, en bleu large sous le rouge : ils restent dans A
+    for p in [(-1.2, 0.0), (0.0, -0.75)]:
+        S.ligne(R(0, 0), R(*p), 'b', l=7)
+    # la partie A, en rouge (objet étudié), prolongée jusqu'au bord du repère, par-dessus
     S.ligne(R(-1.55, 0), R(1.75, 0), 'r')
     S.ligne(R(0, -1.0), R(0, 1.45), 'r')
     # segment [a, b], en pointillé : il sort de A
     S.ligne(R(*map(float, a)), R(*map(float, b)), 'g', d=True)
-    # deux segments issus de l'origine, en bleu : ils restent sur les axes
     for p in [(-1.2, 0.0), (0.0, -0.75)]:
-        S.ligne(R(0, 0), R(*p), 'b')
         S.point(R(*p), 'b')
     S.point(R(*map(float, a)), 't')
     S.point(R(*map(float, b)), 't')

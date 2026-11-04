@@ -236,7 +236,9 @@ for f in sorted(glob.glob('contenu/exemples/*')):
             erreur(f"{ou} : exemples déjà donnés dans {lieu_exemples[t]}"); continue
         lieu_exemples[t] = f
         bon = theorie_de(lex[t].get('defini_dans'))
-        if bon and bon != th:
+        if bon is None:
+            erreur(f"{ou} : la théorie du nœud {lex[t].get('defini_dans')} est introuvable (chaîne de graphes rompue) ; exemples non rangés"); continue
+        if bon != th:
             erreur(f"{ou} : terme défini au nœud {lex[t]['defini_dans']}, de la théorie {bon} ; le ranger dans contenu/exemples/{bon}.yaml")
         if not (isinstance(ex, list) and ex and all(isinstance(x, str) and x.strip() for x in ex)):
             erreur(f"{ou} : il faut une liste non vide de textes (« - | » puis le texte)"); continue
