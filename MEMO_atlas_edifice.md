@@ -2037,3 +2037,13 @@ Journal des lots.
   faux). Les captures « sombres » du rédacteur étaient en clair (le site lit 'light'/'dark') : consigne corrigée.
   Signalés, non faits : lexique, cohomologie-support-compact, orientation-induite, formule-stokes citent l'aval ;
   proposé : la propriété des trois cubes en remarque de dt-cech-de-rham.
+- mes + proba : 47 termes, 139 exemples, 15 schémas. Ordre serré : fonctions mesurables et étagées sans mesure en
+  amont, intégrale et produit sans Lebesgue (ensembles finis, ℕ pondéré, Dirac). ⋆ sur la tribu des parties
+  dénombrables ou co-dénombrables, légitime (sans choix, une réunion dénombrable de parties dénombrables de ℝ peut ne
+  pas l'être : modèle de Feferman-Lévy) ; Lebesgue sans ⋆ (§57). Solovay vérifié : Ann. of Math. (2) 92, n° 1, 1970,
+  p. 1-56. Relu : bloquants corrigés (« bilinéaire » hors amont ; trois exemples appuyés sur un autre exemple au lieu
+  de la convergence monotone). Signalés, non faits : remarques de m-beppo-levi, m-fatou, m-convergence-dominee
+  emploient Lebesgue hors amont ; p-zero-un et l'entrée tribu-asymptotique parlent de variables aléatoires sans
+  p-variables ; espace-fonctions-integrables et m-integrables (i) disent « espace vectoriel » sans algèbre linéaire en
+  amont ; m-integrale affirme sans preuve l'intégrale pour la mesure de comptage. Proposés : ∫ g dδ_b = g(b) en point
+  de m-integrale ; tribu dénombrable/co-dénombrable en remarque de m-tribus.
