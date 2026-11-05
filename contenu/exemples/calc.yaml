@@ -16,4 +16,312 @@
 #
 # Les termes suivent l'ordre du lexique ; deux ou trois exemples par terme.
 
-exemples: {}
+exemples:
+  fonction-primitive-recursive:
+    - |
+      La récurrence primitive définit une fonction dont chaque valeur s'obtient par un nombre d'étapes connu d'avance. La somme $h(y) = 0 + 1 + \dots + (y - 1)$ se définit sans paramètre, avec l'entier initial $0$ et $g(y, z) = z + y$ :
+      $$h(0) = 0, \qquad h(y + 1) = h(y) + y.$$
+      La fonction $g$ est l'addition composée avec les [[projection-produit|projections]], $g(y, z) = P^2_2(y, z) + P^2_1(y, z)$, et elle est primitive récursive comme l'addition ({{cal-pr-definition|Primitives récursives}}, exemples). On trouve $h(4) = 6$, et, par récurrence sur $y$, $h(y) = y(y - 1)/2$.
+    - |
+      Les fonctions primitives récursives croissent déjà très vite. La tour définie par $t(0) = 1$ et $t(y + 1) = 2^{t(y)}$ est une récurrence primitive sans paramètre, où $g(y, z) = 2^z$ est la composée de la puissance $(x, y) \mapsto x^y$ avec la constante $S(S(Z(P^2_1(y, z))))$, égale à $2$, et la projection $P^2_2$. Elle prend les valeurs $1$, $2$, $4$, $16$, $65\,536$, et $t(5) = 2^{65536}$ s'écrit avec $19\,729$ chiffres : la classe contient bien plus que les opérations usuelles.
+    - |
+      Toutes ces fonctions sont totales, et la récurrence primitive ne fait varier que le dernier argument, les autres restant fixés. Plus loin, le théorème {{cal-ackermann|Ackermann}} montrera qu'une double récurrence, où le premier argument change d'un appel à l'autre, sort de la classe : chaque fonction primitive récursive est majorée par une ligne $A(k, \cdot)$ de la fonction d'Ackermann, que la diagonale $x \mapsto A(x, x)$ finit par dépasser.
+
+  fonction-caracteristique-relation:
+    - |
+      La fonction caractéristique traduit une relation en une fonction à valeurs dans $\{0, 1\}$, que l'on peut composer. Pour la relation $x \leqslant y$, la proposition {{cal-pr-cloture|Clôture}} donne $\chi_\leqslant(x, y) = \overline{\mathrm{sg}}(x \mathbin{\dot{-}} y)$ : si $x \leqslant y$, la soustraction tronquée est nulle et $\overline{\mathrm{sg}}(0) = 1$ ; sinon elle est non nulle, et $\overline{\mathrm{sg}}$ la ramène à $0$. L'ensemble des entiers pairs, relation unaire, a de même pour fonction caractéristique $x \mapsto 1 \mathbin{\dot{-}} r(x, 2)$, puisque le reste $r(x, 2)$ de la [[division-euclidienne|division euclidienne]] par $2$ vaut $0$ ou $1$.
+    - |
+      La somme de deux fonctions caractéristiques n'en est pas une en général, et c'est pourquoi la disjonction passe par $\mathrm{sg}$. Pour la relation $R$ « $x$ est pair » et la relation $R'$ « $x$ est multiple de $3$ », la somme $\chi_R + \chi_{R'}$ vaut $2$ en chaque multiple de $6$, valeur qu'aucune fonction caractéristique ne prend ; la fonction $\mathrm{sg}(\chi_R + \chi_{R'})$ est celle de $R \vee R'$. Le produit $\chi_R \cdot \chi_{R'}$ convient tel quel pour la conjonction, puisqu'un produit d'éléments de $\{0, 1\}$ reste dans $\{0, 1\}$.
+    - |
+      Les fonctions caractéristiques servent de sélecteurs dans la définition par cas ({{cal-pr-cloture|Clôture}}, (ii)). Les relations $x \geqslant y$ et $x < y$ partagent $\mathbb N^2$, et
+      $$\max(x, y) = x \cdot \chi_\leqslant(y, x) + y \cdot \chi_<(x, y),$$
+      puisqu'en chaque couple exactement l'une des deux fonctions vaut $1$ : le maximum est primitif récursif.
+
+  fonction-ackermann:
+    - |
+      Le calcul d'une valeur déroule la définition, où le premier argument diminue tandis que le second doit d'abord être calculé. Avec $A(1, y) = y + 2$ ({{cal-ackermann-lemme|Croissance d'Ackermann}}, (iv)), on obtient
+      $$\begin{aligned} A(2, 0) &= A(1, 1) = 3, \\ A(2, 1) &= A\big(1, A(2, 0)\big) \\ &= A(1, 3) = 5. \end{aligned}$$
+      Chaque valeur au rang $x + 1$ demande une valeur au rang $x$ en un point qui dépend d'une autre valeur au rang $x + 1$ : c'est une récurrence sur $x$ dont chaque étape est elle-même une récurrence sur $y$.
+    - |
+      L'inégalité $A(x + 1, y) \geqslant A(x, y + 1)$ du point (iii) de {{cal-ackermann-lemme|Croissance d'Ackermann}} ne peut pas être rendue stricte. Pour $x = 0$, on a $A(1, y) = y + 2 = A(0, y + 1)$ pour tout $y$ : l'égalité a lieu partout. Pour $x = 1$, en revanche, $A(2, y) = 2y + 3$ et $A(1, y + 1) = y + 3$ ne coïncident qu'en $y = 0$, où l'égalité vient de la définition $A(x + 1, 0) = A(x, 1)$.
+    - |
+      La croissance est vertigineuse : $A(3, 10) = 2^{13} - 3 = 8\,189$, $A(4, 1) = 65\,533$, et $A(4, 2) = 2^{65536} - 3$ a $19\,729$ chiffres. Plus loin, le théorème {{cal-ackermann|Ackermann}} en tirera que la fonction d'Ackermann n'est pas primitive récursive, bien qu'un procédé mécanique évident la calcule.
+
+  fonction-partielle:
+    - |
+      La minimisation produit naturellement des fonctions partielles. Soit
+      $$r(x) \simeq \mu y\, \big[(x \mathbin{\dot{-}} y^2) + (y^2 \mathbin{\dot{-}} x) = 0\big].$$
+      La fonction minimisée est totale et s'annule exactement quand $y^2 = x$. Ainsi $r(9) = 3$, et $r(2)\!\uparrow$, puisque la recherche examine $y = 0, 1, 2, \dots$ sans jamais trouver de zéro : $r$ est la racine carrée, de domaine $D(r)$ l'ensemble des carrés.
+    - |
+      L'écriture $\simeq$ compare aussi les domaines. La fonction $h(x) \simeq r(x) \mathbin{\dot{-}} r(x)$, avec $r$ comme ci-dessus, est nulle sur les carrés et indéfinie ailleurs : $h(x) = Z(x)$ pour tout $x \in D(h)$, mais $h(2) \simeq Z(2)$ est faux, le premier membre n'étant pas défini et le second valant $0$. Une composée est indéfinie dès que l'un de ses arguments l'est, même si la fonction extérieure ne le lit pas : $Z(r(x))$ n'est pas défini en $x = 2$.
+
+  fonction-recursive:
+    - |
+      Toute fonction primitive récursive est récursive ({{cal-recursives|Fonctions récursives}}, (i)), et la minimisation en ajoute qui ne sont pas totales. La fonction $e(y) \simeq \mu z\, [\overline{\mathrm{sg}}(y) = 0]$ minimise en $z$ une fonction qui ne dépend que de $y$ : pour $y \geqslant 1$, elle s'annule dès $z = 0$, et $e(y) = 0$ ; pour $y = 0$, elle vaut $1$ partout, et $e(0)\!\uparrow$.
+    - |
+      La minimisation s'arrête au premier argument où la fonction n'est pas définie, même si un zéro vient après. Avec la fonction $e$ de l'exemple précédent, $e(1) = 0$, et pourtant $\mu y\, [e(y) = 0]$ n'est pas défini, puisque $e(0)\!\uparrow$ et que la définition demande $e(z)$ défini et non nul pour tout $z < y$. Le « plus petit zéro » de $e$, qui vaut $1$, n'est pas la valeur de la minimisation : aucun calcul qui évalue $e(0)$, puis $e(1)$, n'atteindrait jamais $e(1)$.
+    - |
+      La minimisation fournit aussi des fonctions totales nouvelles. Plus loin, la proposition {{cal-ackermann-recursive|Ackermann est récursive}} montrera que la fonction d'Ackermann, qui n'est pas primitive récursive, est récursive et totale : son calcul sur une pile s'arrête toujours, et une seule minimisation trouve le nombre d'étapes, qu'aucune fonction primitive récursive ne borne.
+
+  ensemble-recursif:
+    - |
+      Le point (ii) de {{cal-ensembles|Récursif, r.e.}} se suit à la main sur l'ensemble $A$ des carrés. On a $x \in A \iff \exists y\ (y^2 = x)$ et $x \notin A \iff \exists y\ (y^2 < x < (y + 1)^2)$, deux [[relation-primitive-recursive|relations primitives récursives]] sous le quantificateur. La recherche
+      $$f(x) = \mu y\, \big(y^2 = x \vee y^2 < x < (y + 1)^2\big)$$
+      aboutit toujours, au plus grand $y$ tel que $y^2 \leqslant x$, et $\chi_A(x)$ vaut $1$ si et seulement si $f(x)^2 = x$ : $A$ est récursif. Il était déjà primitif récursif, par la quantification bornée $\exists y < x + 1$.
+    - |
+      Un ensemble fini est toujours récursif, même si l'on ne sait pas lequel il est. Soit $A = \{0\}$ si tout entier pair au moins égal à $4$ est somme de deux [[nombre-premier|nombres premiers]], et $A = \varnothing$ sinon. Dans les deux cas, $A$ est récursif, de fonction caractéristique $x \mapsto \chi_=(x, 0)$ ou $Z$ : la définition demande qu'une fonction récursive existe, non que l'on sache l'écrire, et ce qu'on ignore de la conjecture de Goldbach n'y change rien.
+    - |
+      La projection d'un ensemble récursif est récursivement énumérable ({{cal-ensembles|Récursif, r.e.}}, (iv)), mais elle n'est pas récursive en général. Plus loin, le théorème {{cal-arret|Arrêt}} en donnera le contre-exemple : l'ensemble $K$ est la projection de la relation primitive récursive $\{(e, t) : T_1(e, e, t)\}$, et il n'est pas récursif.
+
+  ensemble-recursivement-enumerable:
+    - |
+      L'ensemble $A$ des valeurs de $n \mapsto n^2 + 1$ est récursivement énumérable : $x \in A \iff \exists y\ (y^2 + 1 = x)$, et la relation entre parenthèses est primitive récursive. Le témoin $y$ est ici borné par $x$, et $\exists y < x + 1$ fait de $A$ un ensemble primitif récursif ({{cal-pr-cloture|Clôture}}, (iii)). Ce qui distingue en général un ensemble récursivement énumérable d'un ensemble récursif, c'est précisément l'absence d'une telle borne.
+    - |
+      Deux témoins se ramènent à un seul, comme dans la preuve du point (iv) de {{cal-ensembles|Récursif, r.e.}}. L'ensemble $B$ des sommes de deux carrés vérifie
+      $$\begin{aligned} &x \in B \\ &\iff \exists w\ \big(((w)_0)^2 + ((w)_1)^2 = x\big), \end{aligned}$$
+      où $(w)_0$ et $(w)_1$ sont les exposants de $2$ et de $3$ dans $w$. Pour $x = 5 = 1^2 + 2^2$, le témoin est $w = 2^1 \cdot 3^2 = 18$. L'entier $3$ n'a aucun témoin : les seuls carrés qui ne le dépassent pas sont $0$ et $1$, et aucune somme de deux d'entre eux ne vaut $3$.
+    - |
+      Le complémentaire d'un ensemble récursivement énumérable ne l'est pas toujours. Plus loin, le théorème {{cal-arret|Arrêt}} établira que l'ensemble $K$ des indices $e$ tels que $\varphi_e(e)$ soit défini est récursivement énumérable, alors que $\mathbb N \setminus K$ ne l'est pas : on constate qu'un calcul s'arrête en l'attendant, jamais qu'il ne s'arrête pas.
+
+  machine-registres:
+    - |
+      Une machine à registres ne sait que tester si un registre est vide, et cela suffit pour comparer. Le programme
+      $$\begin{array}{ll} I_0 = \mathrm{DEC}(2, 3) & I_3 = \mathrm{DEC}(1, 6) \\ I_1 = \mathrm{DEC}(1, 0) & I_4 = \mathrm{INC}(0) \\ I_2 = \mathrm{DEC}(3, 0) & I_5 = \mathrm{DEC}(3, 3) \end{array}$$
+      calcule la soustraction tronquée $x \mathbin{\dot{-}} y$. La première boucle retire une unité de $R_2$, puis une de $R_1$ s'il en reste, jusqu'à vider $R_2$ ; la seconde transfère dans $R_0$ ce qui reste de $R_1$. Le registre $R_3$, que rien n'incrémente, sert aux sauts inconditionnels.
+    - |
+      Lire une donnée la détruit. Le programme $I_0 = \mathrm{DEC}(1, 3)$, $I_1 = \mathrm{INC}(0)$, $I_2 = \mathrm{DEC}(2, 0)$ calcule l'identité de $\mathbb N$ en vidant $R_1$ dans $R_0$ : le contenu initial de $R_1$ n'existe plus à la fin. Pour conserver une donnée, on la recopie dans un registre auxiliaire pendant qu'on la vide.
+    - |
+      Le modèle est pauvre, mais il calcule beaucoup. Plus loin, le théorème {{cal-vers-machines|Récursive ⇒ machine}} établira que toute [[fonction-recursive|fonction récursive]] est calculée par une machine à registres, en traduisant chaque opération de construction en un morceau de programme.
+
+  these-church-turing:
+    - |
+      La thèse ne sert jamais de preuve. La fonction $i \mapsto p_i$, qui donne le nombre premier de rang $i$, est calculable au sens intuitif : on teste les entiers un à un. Elle est primitive récursive par le point (i) de {{cal-pr-codage|Codages}}, mais ce sont la borne $v! + 1$ et la minimisation bornée qui le démontrent ; la thèse annonçait le résultat, la construction l'établit.
+    - |
+      La fonction $f$ égale à $\varphi_e(e) + 1$ si $\varphi_e(e)$ est défini et à $0$ sinon est totale, et elle n'est pas récursive. Si $f$ était récursive, elle aurait un indice $d$ par le point (i) de {{cal-kleene|Kleene}} ; la fonction $\varphi_d = f$ serait totale, et $f(d) = \varphi_d(d) + 1 \neq \varphi_d(d)$, ce qui est absurde. La thèse affirme alors qu'aucun procédé mécanique ne calcule $f$, et l'on voit pourquoi : un tel procédé devrait savoir, pour chaque $e$, si le calcul de $\varphi_e(e)$ s'arrête.
+
+  probleme-arret:
+    - |
+      L'indécidabilité ne dit rien d'un programme isolé. Le programme $P_3 = \mathrm{DEC}(0, 0)$, d'[[indice-calculable|indice]] $3$, trouve $R_0$ vide et revient sans fin à son instruction $I_0$ : $(3, x) \notin H$ pour tout $x$. Le programme vide $P_0$ s'arrête aussitôt : $(0, x) \in H$. Toute partie finie de $H$ est récursive, comme tout ensemble fini ; c'est une réponse valable pour tous les couples à la fois qui n'existe pas.
+    - |
+      Le problème borné est décidable. La relation $T_1(e, x, t)$, « le calcul de $P_e$ sur $x$ est arrêté au temps $t$ », est [[relation-primitive-recursive|primitive récursive]] ({{cal-kleene|Kleene}}) : on fait tourner le programme pendant $t$ étapes et l'on regarde. L'ensemble $H$ en est la projection, $(e, x) \in H \iff \exists t\ T_1(e, x, t)$, et c'est l'absence de borne sur $t$ qui rend la question indécidable.
+    - |
+      Plus loin, le {{cal-rice|théorème de Rice}} étendra l'indécidabilité à toute propriété non triviale de la fonction calculée. Ainsi l'ensemble des $e$ tels que $\varphi_e$ soit totale n'est pas récursif : on ne peut pas décider, à la lecture d'un programme, s'il s'arrête sur toutes les données.
+
+  fonction-beta:
+    - |
+      Pour la suite $(1, 2)$, la preuve du lemme {{cal-beta|Fonction β}} prend $s = \max(1, 1, 2) + 1 = 3$ et $b = 3! = 6$, d'où les modules $7$ et $13$, [[premiers-entre-eux|premiers entre eux]]. La relation de Bézout $2 \cdot 7 - 13 = 1$ donne $a = 1 + (2 - 1) \cdot 2 \cdot 7 = 15$, et
+      $$\beta(15, 6, 0) = 1, \qquad \beta(15, 6, 1) = 2,$$
+      restes de $15$ par $7$ et par $13$ ; c'est le seul entier qui convienne entre $0$ et $90$.
+    - |
+      Le couple $(a, b)$ code une suite infinie dont seuls les premiers termes sont prescrits. Ainsi $\beta(15, 6, 2) = 15$, reste de $15$ par $19$, n'a rien à voir avec la suite $(1, 2)$. Le codage n'est pas unique non plus : avec $b = 1$, les modules sont $2$ et $3$, et $\beta(5, 1, 0) = 1$, $\beta(5, 1, 1) = 2$. Le choix $b = s!$ suffit, sans être nécessaire.
+    - |
+      Si les modules ne sont pas premiers entre eux, la conclusion tombe. Avec $b = 1$ et trois termes, les modules sont $2$, $3$ et $4$, et aucun $a$ ne donne la suite $(0, 0, 1)$ : il faudrait $a$ pair et $a \equiv 1$ modulo $4$, ce qui est contradictoire puisque $4$ est pair. C'est pour éviter cela que la preuve prend $b$ multiple de tous les entiers de $1$ à $n$.
+
+  ensemble-definissable:
+    - |
+      Les parties usuelles de $\mathbb N$ se définissent avec $0$, $S$, $+$ et $\times$. L'ensemble des entiers pairs est défini, avec la variable $v_1$, par la [[formule]] $\exists v_2\, (v_2 + v_2 = v_1)$ ; l'ordre strict $v_1 < v_2$ par $\exists v_3\, (v_1 + S\, v_3 = v_2)$ ; l'ensemble des [[nombre-premier|nombres premiers]] par
+      $$\begin{aligned} &\neg(v_1 = 0) \wedge \neg(v_1 = S\,0) \\ &\wedge \forall v_2\, \forall v_3\, \big(v_2 \times v_3 = v_1 \\ &\quad \to (v_2 = S\,0 \vee v_3 = S\,0)\big). \end{aligned}$$
+    - |
+      Être définissable est beaucoup plus faible qu'être récursivement énumérable. Le complémentaire $\mathbb N \setminus K$ de l'ensemble de l'{{cal-arret|arrêt}} est définissable, puisque $K$ l'est ({{cal-definissable|Définissabilité}}, (iii)) et que les parties définissables sont stables par complémentaire (point (i)) ; il n'est pourtant pas récursivement énumérable, par le point (iii) du théorème {{cal-arret|Arrêt}}. La négation, qui ne coûte rien dans une formule, n'a pas d'équivalent pour les calculs.
+    - |
+      Toutes les parties de $\mathbb N$ ne sont pas définissables. Une partie définissable de $\mathbb N$ est déterminée par une formule $\varphi$ et une variable $x_i$, donc par l'entier $2^{\ulcorner \varphi \urcorner} 3^i$. On obtient une application d'une partie de $\mathbb N$ sur l'ensemble des parties définissables ; prolongée par $\varnothing$ ailleurs, elle ne peut atteindre tout $\mathcal P(\mathbb N)$, par le {{r-cantor|théorème de Cantor}}. L'argument n'en désigne aucune ; plus loin, le {{cal-dg-tarski|théorème de Tarski}} en désignera une : l'ensemble des codes des énoncés vrais dans $\mathbb N$.
+
+  formule-delta0:
+    - |
+      La primalité s'écrit par une formule Δ₀. La formule
+      $$\begin{aligned} &\neg(v = 0) \wedge \neg(v = S\,0) \\ &\wedge \forall y \leqslant v\ \forall z \leqslant v\ \big(y \times z = v \\ &\quad \to (y = S\,0 \vee z = S\,0)\big), \end{aligned}$$
+      où les quantifications bornées emploient des variables liées distinctes de $v$, $y$ et $z$, est Δ₀, et elle définit les [[nombre-premier|nombres premiers]]. Par le point (ii) de {{cal-rp-sigma1|Σ₁-complétude}}, l'[[arithmetique-robinson|arithmétique de Robinson]] démontre son instance en $\underline 7$ et réfute son instance en $\underline 6$, sans aucune récurrence.
+    - |
+      La condition que la variable quantifiée ne figure pas dans la borne n'est pas une formalité. La formule $\forall x\, \big(\exists z\, (z + x = S\,x) \to \varphi\big)$ a l'allure d'une quantification bornée, mais sa borne $S\,x$ contient $x$, et ce n'est pas une formule Δ₀. Dans $\mathcal N$, l'entier $z = 1$ témoigne pour tout $x$ : la formule y équivaut à $\forall x\, \varphi$, et la « borne » ne borne rien.
+
+  formule-sigma1:
+    - |
+      Une formule Σ₁ affirme l'existence de témoins, que l'[[arithmetique-robinson|arithmétique de Robinson]] sait exhiber. L'énoncé $\exists y\, (y + y = \underline 6)$ est Σ₁, avec $k = 1$, et vrai dans $\mathcal N$ ; le témoin $y = 3$ et le calcul $\mathsf Q \vdash \underline 3 + \underline 3 = \underline 6$ ({{cal-rp-calculs-q|Calculs dans Q}}, (i)) en donnent une démonstration. De même $\mathsf Q$ démontre $\exists y\, \exists z\, (y \times y + z \times z = \underline 5)$, de témoins $1$ et $2$.
+    - |
+      La Σ₁-complétude ne s'étend pas à la réfutation des énoncés Σ₁ faux. L'énoncé $\exists x\, \neg(0 + x = x)$ est faux dans $\mathcal N$. Dans la structure $\mathcal M$ de la deuxième remarque de {{cal-rp-calculs-q|Calculs dans Q}}, modèle de $\mathsf Q$, il est vrai, avec le témoin $a$, puisque $0 + a = b \neq a$ ; le {{l-correction|théorème de correction}} montre que $\mathsf Q$ ne démontre pas sa négation.
+    - |
+      Plus loin, le théorème {{cal-rp-forme-sigma|Forme Σ₁ des r.e.}} établira que tout ensemble récursivement énumérable est défini par une formule $\exists y\, \delta$, où $\delta$ est Δ₀. Pour l'ensemble $K$ de l'arrêt, $\mathsf Q$ démontre donc l'énoncé « $e \in K$ » pour chaque $e \in K$ ; elle ne peut en revanche le réfuter pour chaque $e \notin K$, sans quoi $K$ serait récursif.
+
+  ensembles-inseparables:
+    - |
+      Les ensembles $A_0$ et $A_1$ de la proposition {{cal-rp-inseparables|Paire inséparable}} laissent une marge entre eux. Le programme vide, d'[[indice-calculable|indice]] $0$, calcule la fonction nulle : $\varphi_0(0) = 0$ et $0 \in A_0$. Le programme $P_1 = \mathrm{INC}(0)$ calcule la constante $1$ : $1 \in A_1$. Mais $\varphi_2(2) = 2$, et $\varphi_3$, de programme $\mathrm{DEC}(0, 0)$, n'est définie nulle part : $2$ et $3$ ne sont dans aucun des deux.
+    - |
+      L'intérêt est que les deux ensembles soient récursivement énumérables. L'ensemble $K$ de l'{{cal-arret|arrêt}} et son complémentaire sont disjoints et récursivement inséparables, puisqu'un ensemble qui contient $K$ et ne rencontre pas $\mathbb N \setminus K$ est $K$ lui-même, qui n'est pas récursif ; mais $\mathbb N \setminus K$ n'est pas récursivement énumérable. À l'inverse, deux ensembles récursifs disjoints $A$ et $B$ sont toujours séparés, par $C = A$.
+    - |
+      Plus loin, le théorème {{cal-rp-godel-rosser|Gödel-Rosser}} emploiera la paire $(A_0, A_1)$ : si l'ensemble des théorèmes d'une théorie cohérente qui contient $\mathsf Q$ était récursif, l'ensemble des $n$ tels que la théorie démontre une certaine formule en $\underline n$ séparerait $A_0$ de $A_1$.
+
+  relation-representable:
+    - |
+      L'égalité est représentée par la [[formule-atomique|formule atomique]] $v_1 = v_2$ : pour $m = n$, l'[[arithmetique-robinson|arithmétique de Robinson]] démontre $\underline m = \underline m$ par réflexivité, et pour $m \neq n$ elle démontre $\neg(\underline m = \underline n)$ ({{cal-rp-calculs-q|Calculs dans Q}}, (ii)). Plus généralement, une [[formule-delta0|formule Δ₀]] représente dans $\mathsf Q$ la relation qu'elle définit dans $\mathcal N$, par le point (ii) de {{cal-rp-sigma1|Σ₁-complétude}} : une formule Δ₀ qui définit les nombres premiers représente leur ensemble.
+    - |
+      L'ensemble $K$ de l'arrêt n'est représentable dans $\mathsf Q$ par aucune formule $\theta$. Sinon, $K$ serait l'ensemble des $n$ tels que $\mathsf Q \vdash \theta(\underline n)$, et son complémentaire celui des $n$ tels que $\mathsf Q \vdash \neg\theta(\underline n)$, puisque $\mathsf Q$ est cohérente. Elle l'est par le {{l-correction|théorème de correction}}, car ses axiomes sont vrais dans $\mathcal N$ : ce sont les six premiers axiomes de $\mathsf{PA}$, traités au point (iii) de {{cal-tarski|Vérité et incomplétude}}, et $\mathrm Q_3$, vrai puisque tout entier non nul est un successeur.
+
+      Ces deux ensembles sont les images réciproques de l'ensemble des théorèmes de $\mathsf Q$, récursivement énumérable ({{cal-theoremes|Théorèmes r.e.}}, (iii)), par des fonctions primitives récursives, qui calculent les codes de $\theta(\underline n)$ et de $\neg\theta(\underline n)$ avec la fonction $\mathrm{Sb}$ de {{cal-sx-substitution|Substitution}} et la fonction $n \mapsto \ulcorner \underline n \urcorner$ de la preuve de {{cal-tarski|Vérité et incomplétude}}. Ils seraient récursivement énumérables, et $K$ serait récursif ({{cal-ensembles|Récursif, r.e.}}, (ii)), contrairement à l'{{cal-arret|indécidabilité de l'arrêt}}.
+    - |
+      Représenter le graphe d'une fonction ne suffit pas à représenter la fonction. Plus loin, la proposition {{cal-dg-fonctions|Représentation des fonctions}} demandera que la théorie démontre en outre l'unicité de la valeur, et l'obtiendra par la clause du plus petit témoin.
+
+  fonction-representable:
+    - |
+      L'addition est représentée dans $\mathsf Q$ par $w = v_1 + v_2$. Pour $a = (m, n)$, il s'agit de démontrer $\forall w\, (w = \underline m + \underline n \leftrightarrow w = \underline{m + n})$. Comme $\mathsf Q \vdash \underline m + \underline n = \underline{m + n}$ ({{cal-rp-calculs-q|Calculs dans Q}}, (i)), la transitivité et la symétrie de l'égalité donnent les deux implications, et la généralisation en $w$ conclut.
+    - |
+      Le prédécesseur, nul en $0$ et égal à $n - 1$ si $n \geqslant 1$, est représenté par $(v_1 = 0 \wedge w = 0) \vee v_1 = S\,w$. En $\underline{k + 1} = S\,\underline k$, $\mathsf Q$ réfute $S\,\underline k = 0$, par $\mathrm Q_1$, et démontre $S\,\underline k = S\,w \leftrightarrow \underline k = w$, par $\mathrm Q_2$ et la congruence : la formule équivaut à $w = \underline k$. En $0$, $\mathsf Q$ réfute $0 = S\,w$ par $\mathrm Q_1$ et la symétrie, et la formule équivaut à $w = 0$.
+    - |
+      Si $\varphi$ représente $f$ dans $T$, elle représente aussi son [[graphe-application|graphe]] au sens de la {{cal-rp-rosser|séparation de Rosser}} : l'instanciation de $w$ par un chiffre $\underline c$ donne $T \vdash \varphi_a[\underline c/w] \leftrightarrow \underline c = \underline{f(a)}$, d'où $\varphi_a[\underline c/w]$ si $c = f(a)$, et sa négation sinon, puisque $\mathsf Q$ réfute alors $\underline c = \underline{f(a)}$. La réciproque est fausse, comme le montre la première remarque de {{cal-dg-fonctions|Représentation des fonctions}}. Plus loin, le {{cal-dg-diagonal|lemme diagonal}} emploiera la représentation de la fonction diagonale $d$, et non seulement celle de son graphe.
+
+  formule-demontrabilite:
+    - |
+      La cohérence se lit sur une formule de démontrabilité ({{cal-dg-prov|Démontrabilité (D1)}}, (iii)). Pour la [[theorie]] vide, qui a un modèle, l'énoncé $\bot$ n'est pas démontrable, et $\mathcal N \models \mathrm{Coh}_{\mathrm{Pr}}$. Pour la théorie $\{\bot\}$, dont l'unique axiome est $\neg(0 = 0)$, tout énoncé est démontrable : $\mathrm{Pr}$ définit alors l'ensemble des codes de tous les énoncés, et $\mathcal N \models \mathrm{Pr}\,\ulcorner \bot \urcorner$.
+    - |
+      Une théorie a beaucoup de formules de démontrabilité. Si $\mathrm{Pr} = \exists y\, \delta$ en est une et si $c = \ulcorner {=}\, 0\, 0 \urcorner = 2\,359\,296$, code d'un énoncé que toute théorie démontre, la formule $\exists y\, \big(\delta \vee v = \underline c\big)$ en est une autre : $\delta \vee v = \underline c$ est Δ₀, et l'ensemble défini ne change pas, puisque $c$ y est déjà. Plus loin, la deuxième remarque de {{cal-dg-second|Löb et second théorème}} montrera que le choix de la formule importe pour le second théorème d'incomplétude.
+
+  theorie-omega-coherente:
+    - |
+      Une théorie dont les axiomes sont vrais dans $\mathcal N$ est ω-cohérente. Si elle démontre $\exists y\, \psi$, cet énoncé est vrai dans $\mathcal N$ par le {{l-correction|théorème de correction}}, et un entier $n$ vérifie $\mathcal N \models \psi[\underline n/y]$ ; la négation $\neg\psi[\underline n/y]$, fausse, n'est pas démontrable. C'est le cas de l'[[arithmetique-robinson|arithmétique de Robinson]] et de l'[[arithmetique-peano|arithmétique de Peano]].
+    - |
+      Une théorie cohérente peut ne pas être ω-cohérente. L'arithmétique de Peano est cohérente, ses axiomes forment un ensemble récursivement énumérable, et elle contient $\mathsf Q$, par la preuve du point (iii) de {{cal-rp-godel-rosser|Gödel-Rosser}}. Soit $G$ l'énoncé du théorème {{cal-dg-godel|Premier théorème (Gödel)}} pour $T = \mathsf{PA}$, et $T' = \mathsf{PA} \cup \{\neg G\}$. Si $T'$ était incohérente, le {{l-thm-deduction|théorème de la déduction}} donnerait $\mathsf{PA} \vdash \neg G \to G$, donc $\mathsf{PA} \vdash G$, ce que le point (i) exclut : $T'$ est cohérente.
+
+      Pourtant $T'$ démontre $\neg G$ et, puisqu'elle contient $\mathsf Q$, l'équivalence $G \leftrightarrow \neg\mathrm{Pr}\,\ulcorner G \urcorner$ ; la règle des tautologies donne $T' \vdash \mathrm{Pr}\,\ulcorner G \urcorner$, c'est-à-dire $T' \vdash \exists y\, \delta_g$. La preuve du point (iii) montre que $\mathsf Q$, donc $T'$, réfute chaque $\delta_g[\underline m/y]$ : la formule $\delta_g$ contredit l'ω-cohérence de $T'$.
+
+  conditions-derivabilite:
+    - |
+      Les trois conditions ne disent pas que la formule parle de démontrabilité. La formule $\mathrm{Pr} = (v = v)$ les satisfait dans toute théorie $T$ qui contient $\mathsf Q$ : chaque $\mathrm{Pr}\,\ulcorner \varphi \urcorner$ est un énoncé $\underline c = \underline c$, démontrable, et (D2) et (D3) sont des implications de conclusion démontrable. Le théorème de Löb devient trivial pour elle, puisque son hypothèse $T \vdash (\underline c = \underline c) \to \varphi$ donne déjà $T \vdash \varphi$, et $\mathrm{Coh}_{\mathrm{Pr}}$ est la négation d'un théorème.
+    - |
+      La condition (D1) ne peut pas être retirée. La formule $\mathrm{Pr} = \neg(v = v)$ satisfait (D2) et (D3) dans toute théorie $T$ qui contient $\mathsf Q$, puisque les antécédents de ces implications, de la forme $\neg(\underline m = \underline m)$ pour des entiers $m$, y sont réfutables. Mais, pour $b = \ulcorner \bot \urcorner$, l'énoncé $\mathrm{Coh}_{\mathrm{Pr}} = \neg\neg(\underline b = \underline b)$ est démontrable dans $T$, même cohérente : la conclusion du second théorème tombe. C'est (D1) qui échoue dès que $T$ est cohérente, puisque $T \vdash 0 = 0$ sans démontrer $\neg(\underline c = \underline c)$ pour $c = \ulcorner {=}\, 0\, 0 \urcorner$.
+    - |
+      Les conditions (D2) et (D3) ont un vrai contenu pour une formule qui transcrit la définition des démonstrations. Plus loin, le théorème {{cal-sg-d3|Troisième condition (D3)}} établira que la formule naturelle de démontrabilité d'une théorie qui démontre les axiomes de $\mathsf{PA}$, et dont les axiomes forment un ensemble récursivement énumérable, satisfait les trois conditions dans cette théorie.
+
+  recurrence-valeurs:
+    - |
+      La suite de Fibonacci, $f(0) = f(1) = 1$ et $f(n) = f(n - 1) + f(n - 2)$ pour $n \geqslant 2$, fait appel à deux valeurs précédentes, ce que la récurrence primitive ne permet pas directement. Avec $G(n, h) = 1$ si $n < 2$ et $G(n, h) = (h)^{n \mathbin{\dot{-}} 1} + (h)^{n \mathbin{\dot{-}} 2}$ sinon, primitive récursive par une définition par cas, elle s'écrit $f(n) = G(n, \bar f(n))$ ; ainsi $\bar f(3) = \langle 1, 1, 2 \rangle = 2^{24} \cdot 5$ et $f(3) = 2 + 1 = 3$.
+    - |
+      Sans la condition qu'elle ne consulte que des valeurs antérieures, une équation de récurrence peut avoir plusieurs solutions. L'équation $f(n) = f(n + 1)$, qui fait appel à une valeur suivante, est satisfaite par toutes les fonctions constantes : elle ne définit rien. Le point (i) de {{cal-sx-valeurs|Récurrence de valeurs}} garantit l'unicité parce que $\bar f(n)$ ne contient que $f(0), \dots, f(n - 1)$.
+    - |
+      Le point (ii) définit de même des relations. L'ensemble $R$ des puissances de $2$ vérifie
+      $$\begin{aligned} R(n) \iff{} &n = 1 \vee \big(n \geqslant 2 \wedge r(n, 2) = 0 \\ &\wedge (\bar\chi_R(n))^{q(n, 2)} = 1\big), \end{aligned}$$
+      où $q(n, 2) < n$ pour $n \geqslant 1$ ; on trouve $R = \{1, 2, 4, 8, \dots\}$. Plus loin, la proposition {{cal-sx-termes|Termes}} reconnaîtra ainsi les codes des termes, en consultant ceux de leurs facteurs propres.
+
+  formule-premiere:
+    - |
+      Les formules premières sont celles que le calcul propositionnel ne décompose pas. La [[formule-atomique|formule atomique]] ${=}\, x_0\, 0$ est première, de même que $\forall x_1\, \neg\, {=}\, x_1\, 0$, bien qu'elle contienne un $\neg$ : celui-ci est sous le quantificateur. En revanche, $\neg\, {=}\, x_0\, 0$ et ${\to}\, {=}\, x_0\, 0\ {=}\, x_0\, 0$ ne sont pas premières ; la seconde a pour squelette $P_a \to P_a$, avec $a = \ulcorner {=}\, x_0\, 0 \urcorner$, et c'est une [[instance-tautologie|instance de tautologie]].
+    - |
+      Mettre le quantificateur dehors ou dedans change tout. La formule $\forall x_0\, \pi \to \forall x_0\, \pi$, pour une formule première $\pi$, est une instance de la [[tautologie]] $P \to P$, avec la lettre $P$ remplacée par $\forall x_0\, \pi$. La formule $\forall x_0\, (\pi \to \pi)$, elle, est première, de squelette une seule lettre, et n'est pas une instance de tautologie ({{cal-sx-instances|Instances de tautologies}}, (iii)).
+
+  programme-machine:
+    - |
+      Le programme
+      $$\begin{array}{ll} I_0 = \mathrm{DEC}(1, 4) & I_2 = \mathrm{INC}(0) \\ I_1 = \mathrm{INC}(0) & I_3 = \mathrm{DEC}(2, 0) \end{array}$$
+      calcule le double $x \mapsto 2x$ : tant que $R_1$ est non nul, il en retire une unité et en ajoute deux à $R_0$ ; quand $R_1$ est vide, $I_0$ saute au numéro $4$, qui est la longueur du programme, et le calcul s'arrête. Le registre $R_2$ reste nul, et $I_3$ est un saut inconditionnel vers $I_0$.
+      ```schema lex-programme-machine-1
+      Le programme du double : les flèches grises mènent à l'instruction suivante, les flèches rouges sont les sauts de $I_0$, pris quand $R_1$ est vide, et de $I_3$, inconditionnel puisque $R_2$ reste nul. Chaque tour de la boucle retire une unité de $R_1$ et en ajoute deux à $R_0$.
+      ```
+    - |
+      Un programme d'une seule instruction peut déjà calculer une fonction partielle. Le programme $I_0 = \mathrm{DEC}(1, 0)$, sur la donnée $x \geqslant 1$, retire une unité de $R_1$ et passe à l'instruction $1$, qui n'existe pas : le calcul s'arrête, avec $R_0 = 0$. Sur la donnée $0$, il saute à l'instruction $0$, trouve encore $R_1$ vide, et recommence sans fin.
+    - |
+      Un saut vers un numéro au moins égal à la longueur arrête le calcul, comme le passage à la suite de la dernière instruction. Le programme $I_0 = \mathrm{DEC}(1, 7)$ s'arrête donc en une étape sur toute donnée, avec $R_0 = 0$ : il calcule la fonction nulle, totale, alors que $\mathrm{DEC}(1, 0)$ ne diffère de lui que par le numéro du saut.
+
+  configuration-machine:
+    - |
+      Le [[calcul-machine|calcul]] du programme du double, $\mathrm{DEC}(1, 4)$, $\mathrm{INC}(0)$, $\mathrm{INC}(0)$, $\mathrm{DEC}(2, 0)$, sur la donnée $2$ passe par les configurations suivantes, notées $(\ell \mid R_0, R_1)$, les autres registres restant nuls :
+      $$\begin{aligned} &(0 \mid 0, 2),\ (1 \mid 0, 1),\ (2 \mid 1, 1), \\ &(3 \mid 2, 1),\ (0 \mid 2, 1),\ (1 \mid 2, 0), \\ &(2 \mid 3, 0),\ (3 \mid 4, 0),\ (0 \mid 4, 0), \\ &(4 \mid 4, 0). \end{aligned}$$
+      La dernière est [[configuration-terminale|terminale]], et $f_P^{(1)}(2) = 4$. Les configurations $(0 \mid 0, 2)$, $(0 \mid 2, 1)$ et $(0 \mid 4, 0)$ ont le même numéro et diffèrent par les registres : le numéro seul ne suffit pas à décrire l'état de la machine.
+    - |
+      La configuration suivante ne dépend que de la configuration présente. Si la configuration atteinte après $i$ étapes se retrouve après $j > i$ étapes, les configurations intermédiaires sont non terminales, et la suite se répète ensuite avec la période $j - i$ : le calcul ne s'arrête jamais. Pour le programme $\mathrm{DEC}(1, 0)$ sur la donnée $0$, la configuration initiale $(0, r)$, où $r$ est nulle, a pour suivante $(0, r)$ elle-même.
+    - |
+      Une instruction ne change le contenu que d'un registre, d'une unité. Une configuration atteinte depuis la configuration initiale, nulle hors des registres $R_1, \dots, R_n$, reste donc nulle sauf en un nombre fini de points, par récurrence sur le nombre d'étapes. Plus loin, la {{cal-kleene|forme normale de Kleene}} codera ainsi chaque configuration $(\ell, r)$ par l'entier $2^\ell 3^{\rho(r)}$, où $\rho(r)$ est un produit fini de puissances de nombres premiers.
+
+  configuration-terminale:
+    - |
+      Une configuration est terminale dès que son numéro atteint ou dépasse la longueur du programme, quel que soit le chemin suivi. Le programme $I_0 = \mathrm{DEC}(1, 9)$, de longueur $1$, atteint la configuration terminale $(1, r)$ si $R_1$ est non nul, et $(9, r)$ sinon : il s'arrête en une étape sur toute donnée, avec $R_0 = 0$.
+    - |
+      Pour le programme vide, de longueur $0$, la configuration initiale $(0, r_x)$ est déjà terminale. Le calcul s'arrête sans aucune étape, et $f^{(n)}(x) = r_x(0) = 0$ : le programme vide calcule la fonction nulle, de n'importe quelle arité.
+    - |
+      Une configuration non terminale peut ne jamais mener à une configuration terminale. Pour le programme $\mathrm{DEC}(1, 0)$, la configuration $(0, r)$ où $r(1) = 0$ n'est pas terminale, puisque $0 < 1$, et elle a pour suivante elle-même : être terminal dépend du seul numéro, non de ce que fera la machine.
+
+  calcul-machine:
+    - |
+      Le calcul du programme du double, $\mathrm{DEC}(1, 4)$, $\mathrm{INC}(0)$, $\mathrm{INC}(0)$, $\mathrm{DEC}(2, 0)$, sur la donnée $x$ comporte $x$ tours de quatre étapes, puis une dernière exécution de $I_0$ qui trouve $R_1$ vide et saute au numéro $4$ : il s'arrête au bout de $4x + 1$ étapes, avec $R_0 = 2x$. Pour $x = 3$, on compte $13$ étapes et $f_P^{(1)}(3) = 6$.
+    - |
+      Le calcul du programme $I_0 = \mathrm{INC}(1)$, $I_1 = \mathrm{DEC}(2, 0)$ ne s'arrête sur aucune donnée : $R_2$ reste vide, $I_1$ ramène toujours à $I_0$, et $R_1$ croît sans fin. Ses configurations sont toutes distinctes, ce qui montre que la répétition d'une configuration n'est pas la seule façon de ne pas s'arrêter. La fonction $f_P^{(1)}$ n'est définie nulle part.
+    - |
+      Le calcul dépend du nombre $n$ de données, qui fixe la configuration initiale. Le programme $P$ de l'addition de {{cal-machines|Machines à registres}} donne $f_P^{(1)}(x) = x$ et $f_P^{(2)}(x, y) = x + y$, mais $f_P^{(3)}(2, 1, 1) = 2$ : la donnée $x_3 = 1$ occupe le registre $R_3$, que le programme suppose vide pour ses sauts inconditionnels, et $\mathrm{DEC}(3, 0)$ décrémente $R_3$ au lieu de sauter, si bien qu'une unité de $R_1$ n'est jamais transférée.
+
+  calculable-machine:
+    - |
+      Le successeur est calculable par machine. Le programme $\mathrm{DEC}(1, 3)$, $\mathrm{INC}(0)$, $\mathrm{DEC}(2, 0)$, $\mathrm{INC}(0)$ vide $R_1$ dans $R_0$, sort de la boucle par le saut de $I_0$ vers $I_3$, puis ajoute une unité : il laisse $x + 1$ dans $R_0$, sur toute donnée $x$.
+    - |
+      La fonction définie nulle part est calculable par machine : le programme $I_0 = \mathrm{DEC}(2, 0)$ trouve $R_2$ vide et revient sans fin à lui-même. La définition porte sur une [[fonction-partielle|fonction partielle]], et elle demande que le calcul ne s'arrête pas là où la fonction n'est pas définie, ce que fait ce programme partout.
+    - |
+      Plus loin, la {{cal-kleene|forme normale de Kleene}} établira que les fonctions calculables par machine sont exactement les fonctions récursives. Il en résulte que la fonction caractéristique de l'ensemble $K$ de l'arrêt, totale, n'est calculable par aucune machine, puisque $K$ n'est pas récursif.
+
+  fonction-totale:
+    - |
+      Une composée de fonctions dont l'une n'est pas totale peut ne pas l'être, même si la fonction extérieure est totale et ne dépend pas de son argument. Avec la racine $r(x) \simeq \mu y\, [(x \mathbin{\dot{-}} y^2) + (y^2 \mathbin{\dot{-}} x) = 0]$, définie sur les seuls carrés, la composée $Z(r(x))$ n'est définie que sur les carrés : elle n'est pas égale à $Z$, qui est totale.
+    - |
+      À l'inverse, une fonction totale peut être construite à l'aide de fonctions partielles. La fonction $u(x, y) \simeq \mu z\, [\mathrm{sg}(y) = 0]$ vaut $0$ en $y = 0$ et n'est définie en aucun $y \geqslant 1$. La minimisation $\mu y\, [u(x, y) = 0]$ s'arrête dès $y = 0$, où $u$ est définie et nulle : elle vaut $0$ pour tout $x$, et c'est une fonction totale.
+
+  indice-calculable:
+    - |
+      Les petits entiers sont les indices de programmes très courts. Avec la convention $(0)_i = 0$ de {{cal-pr-codage|Codages}}, on trouve
+      $$\begin{aligned} P_0 &= \text{programme vide}, & \varphi_0 &= 0, \\ P_1 &= \mathrm{INC}(0), & \varphi_1 &= 1, \\ P_2 &= \mathrm{INC}(0)\, \mathrm{INC}(0), & \varphi_2 &= 2, \\ P_3 &= \mathrm{DEC}(0, 0), & \varphi_3 &\uparrow, \\ P_5 &= \mathrm{INC}(1), & \varphi_5 &= 0, \end{aligned}$$
+      les fonctions étant constantes, ou indéfinie partout pour $\varphi_3$. Le code $c = 1$ de l'instruction de $P_3$ n'est le code d'aucune instruction $\mathrm{DEC}(i, j)$, qui vaut au moins $3$ ; le décodage le lit pourtant, et tout entier est ainsi l'indice d'un programme.
+    - |
+      Un même indice donne une fonction pour chaque arité. Les instructions du programme de l'addition de {{cal-machines|Machines à registres}} ont pour codes $109$, $0$, $17$, $5\,833$, $0$ et $433$ ; son indice $e = \langle 109, 0, 17, 5833, 0, 433 \rangle$ est une tour d'exponentielles. Alors $\varphi_e^{(2)}(x, y) = x + y$, mais $\varphi_e^{(1)}(x) = x$, puisque $R_2$ est vide quand il n'y a qu'une donnée.
+    - |
+      Une même fonction a plusieurs indices : $\varphi_0 = \varphi_5$ est la fonction nulle, puisque $P_5 = \mathrm{INC}(1)$ ne touche pas $R_0$. L'indice est celui d'un programme, et deux programmes différents peuvent calculer la même fonction. Plus loin, le {{cal-rice|théorème de Rice}} montrera qu'on ne peut pas décider, à la lecture de l'indice $e$, si $\varphi_e$ est la fonction nulle.
+
+  code-mot:
+    - |
+      Le code se calcule lettre après lettre par $\ulcorner w\, a_k \urcorner = 2^{\ulcorner w \urcorner}(2k + 1)$, à partir du code $0$ du mot vide. Ainsi $\ulcorner x_1 \urcorner = 2^0 \cdot 19 = 19$, et $\ulcorner S\, x_0 \urcorner = 2^{11} \cdot 17 = 34\,816$, puisque $\ulcorner S \urcorner = 11$. Le décodage suit le chemin inverse : $34\,816 = 2^{11} \cdot 17$ donne la dernière lettre $a_8 = x_0$ et le code $11 = 2^0 \cdot 11$ du début, qui donne la lettre $a_5 = S$ précédée du mot vide.
+    - |
+      Le facteur $2k + 1$, qui vaut au moins $1$ même pour $k = 0$, empêche une lettre de disparaître. Un codage par exposants sans décalage, qui coderait un mot $a_{k_0} \cdots a_{k_{m-1}}$ par $2^{k_0} 3^{k_1} \cdots$, ne serait pas injectif : la lettre $a_0 = {=}$, d'indice $0$, disparaîtrait en fin de mot, et $S$ et $S\, {=}$ auraient le même code $2^5 = 32$. Avec le codage adopté, $\ulcorner S \urcorner = 11$ et $\ulcorner S\, {=} \urcorner = 2^{11} \cdot 1 = 2\,048$. Tout entier code un mot, qui n'a aucune raison d'être un terme ou une formule : $6 = 2^1 \cdot 3$ code le mot ${=}\, \neg$.
+    - |
+      Le code d'une concaténation n'est pas une opération simple sur les codes, et il dépend de l'ordre. On a $\ulcorner S\, 0 \urcorner = 2^{11} \cdot 9 = 18\,432$, alors que $\ulcorner 0\, S \urcorner = 2^9 \cdot 11 = 5\,632$ et que le produit $\ulcorner S \urcorner \cdot \ulcorner 0 \urcorner = 99$ ne code ni l'un ni l'autre. C'est pourquoi la concaténation $\mathrm{conc}$ de {{cal-pr-codage|Codages}} ajoute les lettres une à une.
+
+  facteur-mot:
+    - |
+      Les facteurs du mot $+\, x_0\, 0$, de trois lettres, sont le mot vide, les trois lettres, les deux mots $+\, x_0$ et $x_0\, 0$, et le mot lui-même : six facteurs non vides, un par choix de rangs consécutifs. Leurs codes, $13$, $17$, $9$, $139\,264$ et $1\,179\,648$ pour les facteurs propres non vides, sont tous plus petits que celui du mot, comme le veut le point (ii) de {{cal-sx-codage|Codage des mots}}. Le mot $+\, 0$, formé de lettres prises dans l'ordre mais non consécutives, n'est pas un facteur.
+      ```schema lex-facteur-mot-1
+      Chaque trait couvre les lettres consécutives d'un facteur non vide de $+\, x_0\, 0$, le mot entier en rouge, ses facteurs de deux lettres en bleu et ceux d'une lettre en gris. Les lettres $+$ et $0$, prises seules, ne sont couvertes ensemble que par le trait rouge : $+\, 0$ n'est pas un facteur.
+      ```
+    - |
+      Un facteur est un mot, et il peut figurer à plusieurs places. Dans $S\, S\, 0$, de code $N = 2^{22528} \cdot 9$, le facteur $S$ occupe les rangs $0$ et $1$, et $\mathrm{sm}(N, 0, 1) = \mathrm{sm}(N, 1, 2) = 11$ : la fonction $\mathrm{sm}$ repère une place, le facteur obtenu n'en garde pas la trace. Le facteur $\mathrm{sm}(N, 1, 3) = \ulcorner S\, 0 \urcorner = 18\,432$ est le terme $S\, 0$, sous-terme propre de $S\, S\, 0$.
+
+  valuation-formules-premieres:
+    - |
+      Pour $\varphi = {\to}\, {=}\, x_0\, 0\ \neg\, {=}\, x_0\, 0$, c'est-à-dire $x_0 = 0 \to \neg(x_0 = 0)$, la seule [[formule-premiere|formule première]] en jeu est $\pi = {=}\, x_0\, 0$. Si $v(\pi) = 1$, alors $\bar v(\neg\pi) = 0$ et $\bar v(\varphi) = 0$ ; si $v(\pi) = 0$, alors $\bar v(\varphi) = 1$. La formule n'est donc pas une [[instance-tautologie|instance de tautologie]], et sa valeur ne dépend que de $v(\pi)$, comme le veut le point (ii) de {{cal-sx-instances|Instances de tautologies}}.
+    - |
+      Une valuation des formules premières ignore le sens des formules. La formule atomique ${=}\, x_0\, x_0$ est un axiome logique, satisfaite dans toute structure, et pourtant la valuation qui lui donne la valeur $0$ est permise : ce n'est pas une instance de tautologie. Les axiomes de l'égalité sont précisément là pour fournir ce que le calcul propositionnel ne voit pas.
+    - |
+      Deux formules premières distinctes reçoivent des valeurs indépendantes, même si elles ne diffèrent que par le nom d'une variable liée. La valuation qui donne $1$ à $\forall x_0\, {=}\, x_0\, 0$ et $0$ à $\forall x_1\, {=}\, x_1\, 0$ donne la valeur $0$ à l'implication de la première vers la seconde, qui n'est donc pas une instance de tautologie, bien que les deux formules soient satisfaites dans les mêmes structures.
+
+  fonctions-base:
+    - |
+      Les projections servent à ajuster le nombre d'arguments. La fonction nulle $Z$ n'a qu'un argument ; la fonction nulle de deux variables s'obtient par la composée $Z(P^2_1(x, y))$, et la constante $2$ de deux variables par $S(S(Z(P^2_1(x, y))))$. De même, l'échange des arguments $(x, y) \mapsto g(y, x)$ est la composée $g(P^2_2, P^2_1)$, et la diagonale $x \mapsto g(x, x)$ est $g(P^1_1, P^1_1)$.
+    - |
+      La récurrence primitive exige une fonction $g$ de $n + 2$ variables, et ce sont encore les projections qui la fournissent. Pour l'addition, $g(x, y, z) = S(P^3_3(x, y, z))$ ne lit que le dernier argument, la valeur précédente $x + y$ ; pour le prédécesseur, $g(y, z) = P^2_1(y, z)$ ne lit que le premier.
+    - |
+      Sans les projections, la conclusion tombe : on n'obtient ni l'addition ni aucune fonction de deux variables. Les fonctions $x \mapsto x + k$ et $x \mapsto k$, pour $k \in \mathbb N$, contiennent $Z$ et $S$ et sont stables par composition, puisque toutes ont une seule variable ; la récurrence primitive, qui demande une fonction $g$ d'au moins deux variables, ne s'applique à aucune. Le plus petit ensemble qui contient $Z$ et $S$ et qui est stable par les deux opérations est donc formé de certaines de ces fonctions d'une variable.
+
+  induction-primitives:
+    - |
+      La conservation par récurrence primitive ne peut pas être retirée des hypothèses. La propriété « il existe $k$ tel que $f(x) \leqslant \max(x_1, \dots, x_n) + k$ pour tout $x$ » est vraie des [[fonctions-base|fonctions de base]], avec $k = 0$ ou $k = 1$, et se conserve par composition, les constantes s'ajoutant. Elle ne se conserve pas par récurrence primitive : l'addition, obtenue par une récurrence à partir de $P^1_1$ et du successeur, ne la vérifie pour aucun $k$, puisque $k + 1 + (k + 1) > k + 1 + k$.
+    - |
+      Plus loin, le théorème {{cal-ackermann|Ackermann}} appliquera le principe à la propriété « il existe $k$ tel que $f(x) < A(k, \max(x_1, \dots, x_n))$ pour tout $x$ » : la croissance de la fonction d'Ackermann en chaque variable permet cette fois de la conserver par récurrence primitive, quitte à augmenter $k$.
+
+  relation-primitive-recursive:
+    - |
+      L'ensemble des carrés est primitif récursif : $x$ est un carré si et seulement si $\exists z < x + 1\ (z \cdot z = x)$. La relation $z \cdot z = x$ est primitive récursive par le point (i) de {{cal-pr-cloture|Clôture}}, comme égalité de deux fonctions primitives récursives, et la quantification bornée conserve ce caractère par le point (iii). La borne $x + 1$ est légitime, puisqu'un $z$ tel que $z^2 = x$ vérifie $z \leqslant x$.
+    - |
+      Plusieurs quantifications bornées s'enchaînent. L'ensemble des sommes de deux carrés est défini par
+      $$\begin{aligned} &\exists a < x + 1\ \ \exists b < x + 1 \\ &\quad (a^2 + b^2 = x), \end{aligned}$$
+      relation primitive récursive par deux applications du point (iii) de {{cal-pr-cloture|Clôture}}. On trouve, en dessous de $30$, les entiers 0, 1, 2, 4, 5, 8, 9, 10, 13, 16, 17, 18, 20, 25, 26 et 29 ; les entiers $3$, $7$ et $21$, par exemple, n'en font pas partie.
+    - |
+      Retirer la borne d'une quantification fait sortir de la classe. Plus loin, la {{cal-kleene|forme normale de Kleene}} et l'{{cal-arret|indécidabilité de l'arrêt}} montreront que l'ensemble $K$ s'écrit $\{e : \exists t\ T_1(e, e, t)\}$, avec $T_1$ primitive récursive, et qu'il n'est pas même récursif.
+
+  relation-recursive:
+    - |
+      La fonction caractéristique doit être totale. Pour l'ensemble $R$ des carrés, la fonction $g(x) \simeq S(Z(r(x)))$, où $r$ est la racine carrée partielle $r(x) \simeq \mu y\, [(x \mathbin{\dot{-}} y^2) + (y^2 \mathbin{\dot{-}} x) = 0]$, est récursive, vaut $1$ sur $R$ et n'est pas définie ailleurs. Elle ne permet pas de conclure qu'un entier n'est pas un carré ; $R$ est pourtant récursif, et même primitif récursif, par une quantification bornée.
+    - |
+      Le point (iii) de {{cal-recursives|Fonctions récursives}} donne des fonctions totales dès que la recherche aboutit toujours. Pour la relation récursive $R(x, y)$ : « $y > x$ et $y$ est premier », la fonction $f(x) = \mu y\, R(x, y)$ est totale, puisqu'un diviseur premier de $x! + 1$ est plus grand que $x$, comme dans la preuve de {{cal-pr-codage|Codages}}, (i). Elle donne le plus petit nombre premier qui dépasse $x$ : $f(0) = f(1) = 2$, $f(7) = 11$.
+    - |
+      Plus loin, le théorème {{cal-arret|Arrêt}} donnera l'exemple d'un ensemble $K$ qui a une semi-caractéristique récursive, égale à $1$ sur $K$ et indéfinie ailleurs, sans être récursif : c'est la différence entre récursif et récursivement énumérable.

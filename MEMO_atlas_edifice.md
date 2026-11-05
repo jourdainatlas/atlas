@@ -2047,3 +2047,13 @@ Journal des lots.
   p-variables ; espace-fonctions-integrables et m-integrables (i) disent « espace vectoriel » sans algèbre linéaire en
   amont ; m-integrale affirme sans preuve l'intégrale pour la mesure de comptage. Proposés : ∫ g dδ_b = g(b) en point
   de m-integrale ; tribu dénombrable/co-dénombrable en remarque de m-tribus.
+- calc + anc : 66 termes, 180 exemples, 12 schémas (graphe d'un programme, facteurs d'un mot ; xⁿ, disque de
+  convergence, chemins, indices, images conformes, couronnes). Contraintes : cal-ackermann-lemme sans prédécesseur
+  dans cal-primitives, cal-syntaxe sans cal-recursives, cal-kleene sans cal-ensembles, cal-dg-second sans cal-dg-prov,
+  cx-liouville pas en amont des résidus ni de la représentation conforme. Relu : bloquants corrigés (somme des parties
+  principales affirmée en général ; exp(az) non bornée justifiée pour a = 1 seulement ; deux hypothèses annoncées
+  nécessaires, une montrée ; zéro d'ordre impair sans preuve ; hypothèses de Gödel-Rosser pour PA + ¬G). Signalés,
+  non faits : lexique, fonction-ackermann, ensemble-recursivement-enumerable, formule-sigma1, fonction-recursive,
+  holomorphe, serie-entiere, pole, propriete-racine-carree, logarithme-holomorphe citent l'aval ; cx-suites affirme
+  sans preuve la divergence de Σ 1/(n + 1). Arêtes proposées : cal-pr-definition → cal-ackermann-lemme,
+  cal-dg-prov → cal-dg-second.
