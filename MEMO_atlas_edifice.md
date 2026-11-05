@@ -1980,3 +1980,12 @@ Journal des lots.
   Signalés, non faits : f-exemples (ii) et la remarque de f-haar emploient « limite uniforme » avant fc-uniforme ;
   troisième remarque de f-autoadjoints cite le graphe fermé hors amont ; remarque de f-hilbert sur ℓ¹ et de
   f-compacts sur ℓ² hors amont ; lexique : espace-Lp « de Banach » avant la complétude, espace-L2 parle de probabilités.
+- galois : 48 termes, 144 exemples, 5 schémas (𝔽₉* et le Frobenius, racines neuvièmes de l'unité et 2cos(2π/9),
+  droite stable du plan x + y + z = 0, construction de √2, cycle x ↦ x² − 2 sur les racines de X³ − 3X + 1).
+  gs-artin n'a que extensions et degré en amont ; cyclotomie et Hilbert 90 sans gs-corps-finis (𝔽₉ en corps de
+  rupture) ; représentations sans cosinus ni orthogonalité. Pratique nouvelle, admise : un exemple peut renvoyer par
+  lien aux exemples d'un autre terme d'amont. Relu deux fois : rien de faux ; « la racine réelle » de X³ − 3X + 1
+  (il y en a trois) et racine rationnelle ±1 non justifiée corrigés ; vrai contre-exemple pour la norme, ℚ(∛2).
+  Signalés, non faits : remarque 2 de gc-irreductibilite cite gs-corps-finis hors amont (construire.py ne le voit
+  pas) ; remarques de gs-separabilite (X^p − T irréductible) et gs-decomposition (degré 3 de X³ − 3X + 1) sans
+  preuve ; lexique : dix définitions emploient des résultats d'aval (ex. polynome-cyclotomique irréductible sur ℚ).
