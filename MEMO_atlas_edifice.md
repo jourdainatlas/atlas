@@ -1927,3 +1927,11 @@ Journal des lots.
   vers ‖·‖∞ ; sphère dite jamais convexe, fausse dans {0} ; X ∈ 𝒯 non vérifié). Signalés, non faits : top emploie
   « fini » sans n-fini en amont (comme t-compact, t-produit : défaut du graphe) ; lexique : boule-fermee r ⩾ 0 contre
   r > 0 dans me-espace ; espaces-homeomorphes cite ]0, 1[ et ]0, 2[ avant ℝ.
+- z + q + r + c : 47 termes, 140 exemples, 5 schémas (archimédien, suite de Cauchy, partie entière, module,
+  triangle de Pascal modulo 2). Ajouts d'amont démontrés : q-ordre (ii) énoncé pour tout anneau intègre totalement
+  ordonné et son corps des fractions ; remarque de q-archimede, ℚ(X) ordonné par le signe du coefficient dominant,
+  non archimédien ; q-irrationnel, Γ n'est aucun q* ; rr-archimede y renvoie. Relu deux fois : bloquants corrigés
+  (ℚ(X) ordonné par calculs « recopiés » ; trois formules trop larges sur téléphone) ; Héron réécrit par
+  encadrement. Signalés, non faits : lexique, « suite de Cauchy » emploie d et « convergente » bien en aval du nœud
+  r ; « module » nomme l'inégalité triangulaire en aval de c-calcul. Proposé : compatibilité réduction modulo n /
+  évaluation en point d'énoncé de pol-evaluation.
