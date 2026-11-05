@@ -2009,3 +2009,10 @@ Journal des lots.
   equation-differentielle (« solution maximale »), courbure-courbe et repere-frenet (versions de l'espace),
   courbure-gauss (Theorema egregium), geodesique (« minimise localement ») citent l'aval ; remarque de ly-equilibres
   (coordonnées polaires hors amont) ; remarque d'ed-varietes (champ de S² dit lisse sans cartes).
+- topalg (topalg, van Kampen, revêtements) : 40 termes, 118 exemples, 21 schémas (lacets, homotopies, revêtements,
+  rétraction radiale, boucle d'oreille hawaïenne, région en U). ta-revetement sans prédécesseur (x ↦ x², B × F,
+  espaces finis ; ℝ → ℝ/ℤ en ouverture) ; ta-consequences pas en amont des chapitres (angle continu redémontré) ;
+  vk-spheres pas en amont de vk-van-kampen (exemple 1 : région en U, simplement connexe, non convexe). Relu deux fois :
+  rien de bloquant. Signalés, non faits : lexique, revetement (relèvement), tore (carré recollé, π₁ = ℤ²),
+  semi-localement-simplement-connexe (suffisance) citent l'aval ; seconde remarque de rv-critere cite
+  ta-consequences hors amont (arête proposée de ta-consequences vers les chapitres).
