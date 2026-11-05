@@ -2089,3 +2089,24 @@ fiches à cette occasion : a-anneau (v), a-groupe (iv), a-distingue (iv), a-corp
 généralisé, remarque de q-archimede (ℚ(X)), q-irrationnel, remarque de r-injections, nb-zeta (ii). Reste à faire, en
 un lot de corrections de fiches : les défauts « signalés, non faits » de chaque lot ci-dessus (lexique citant l'aval,
 remarques hors amont, arêtes proposées) — à trier avant tout travail.
+
+## 113. Lot de corrections des fiches et du lexique (5 novembre 2026)
+
+Correction des défauts « signalés, non faits » du §112 (et fins des §108, §109), en trois parties parallèles relues
+chacune par un agent indépendant (consigne hors dépôt : /home/claude/travail/corrections-fiches/CONSIGNE.md ; chaque
+défaut est d'abord vérifié, les faux signalements sont écartés avec leur raison). Remèdes, par ordre de préférence :
+reformuler avec l'amont (un fait d'aval devient une annonce « le nœud {{x}} montrera… »), démontrer sur place,
+ajouter une arête réelle.
+
+Décision d'Armand (5 nov.) : la topologie emploie « fini » sans n-fini en amont ; l'arête n → top, qui ferait remonter
+top et ses descendants (refus du 28 oct. pour ordin → top, §30), est écartée. On définira la finitude sans ℕ (à la
+Tarski) dans zf, employée en top, l'équivalence avec la définition par ℕ étant démontrée en n-fini (lot à venir).
+
+- Fondements et algèbre (15 défauts) : arêtes zf-ext → zf-paire, zf-reunion, zf-parties, zf-operations (graphe zf :
+  1 → 0 croisement) ; démontrés : End(G) anneau non commutatif (a-anneau), abélianisé abélien et propriété universelle
+  (a-quotient), n-fini (iv) réunion de deux finis, o-cardinal (iv) α cardinal ⇔ |α| = α, md-equivalence (vi) même rang
+  ⇔ équivalentes sur un corps, X^p − T irréductible (gs-separabilite), degrés 6 et 3 (gs-decomposition), X⁴ + 1
+  réductible modulo tout premier sans corps finis ; ⋆ et réciproque dans od-bon-ordre ; remarques reformulées
+  (a-module, r-familles, l-incompletude, l-quantificateurs ; « type fini » en remarque) ; gf-diedraux, gf-alterne-4,
+  gf-ordre-8 citent a-distingue (iv) ; GL_n harmonisé ; me-espace : boule fermée pour r ⩾ 0. Écartés : \lex de lie
+  (correct), remarques de Hilbert 90 (annonces permises).
