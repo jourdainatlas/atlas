@@ -2066,3 +2066,11 @@ Journal des lots.
   pour ℚ(√−5)), forme-volume, espace-tangent (sous-variété), fonction-plateau citent l'aval. Proposés : remarque
   démontrée sur le cercle et ses deux cartes stéréographiques dans gd-varietes ; non-exactitude de la forme angle
   dans gd-formes.
+- mart + fourier : 34 termes, 102 exemples, 23 schémas. Fil conducteur : une « chaîne d'échappement » sur ℕ, récurrente
+  nulle, récurrente positive ou transiente selon p_x (vérifié). Nœuds frères non en amont (mk-classes / mk-markov-forte ;
+  mk-invariante, mk-recurrence-positive sans Pólya ni ruine ; mu-ui sans mu-arret). Relu : bloquants corrigés (règle
+  générale fausse sur la transformée intégrable ; « propriété de Markov » avant son nœud). Signalés, non faits :
+  lexique, etat-recurrent et recurrent-positif citent Pólya, uniformement-integrable Vitali, transformee-fourier
+  l'inversion, convergence-loi une équivalence d'aval ; martingale-fermee (lexique « de la forme E[X | ℱ_n] ») diffère de
+  la fiche mu-fermees ; troisième remarque de mk-recurrence-positive renvoie à mk-polya hors amont. Proposés : « un
+  ensemble fini d'états a une classe fermée », « une chaîne finie a un état récurrent » en remarques démontrées.

@@ -16,4 +16,384 @@
 #
 # Les termes suivent l'ordre du lexique ; deux ou trois exemples par terme.
 
-exemples: {}
+exemples:
+  matrice-transition:
+    - |
+      Une matrice de transition se lit ligne par ligne, et ses colonnes n'ont aucune somme imposée. Sur $I = \{1, 2\}$, la matrice
+      $$Q = \begin{pmatrix} 0 & 1 \\[2pt] \frac12 & \frac12 \end{pmatrix}$$
+      a des lignes de somme $1$, mais des colonnes de somme $\frac12$ et $\frac32$. Son carré, qui est encore une matrice de transition ({{mk-transition|Matrices de transition}}, (i)), vaut
+      $$Q^2 = \begin{pmatrix} \frac12 & \frac12 \\[2pt] \frac14 & \frac34 \end{pmatrix}.$$
+      Partant de $1$, on va sûrement en $2$, d'où l'on revient en $1$ avec probabilité $\frac12$ : c'est la valeur $Q^2(1, 1) = \frac12$ que donne la formule des chemins (même nœud, (iii)).
+      ```schema lex-matrice-transition-1
+      Le graphe de transition de $Q$ : les nombres portés par les flèches qui sortent d'un même état ont pour somme $1$. Le seul chemin de longueur $2$ de $1$ à $1$, en rouge, passe par $2$ et donne $Q^2(1, 1) = 1 \cdot \frac12$.
+      ```
+    - |
+      La positivité des coefficients ne découle pas de la condition sur les lignes, et elle est indispensable. La matrice
+      $$R = \begin{pmatrix} \frac32 & -\frac12 \\[2pt] 0 & 1 \end{pmatrix}$$
+      a des lignes de somme $1$, et ses puissances aussi, puisque, par récurrence,
+      $$R^n = \begin{pmatrix} (\frac32)^n & 1 - (\frac32)^n \\[2pt] 0 & 1 \end{pmatrix}.$$
+      Ce n'est pas une matrice de transition, et aucune lecture probabiliste n'en est possible : le coefficient $R^n(1, 1) = (\frac32)^n$, qui serait la probabilité d'être en $1$ au bout de $n$ pas, dépasse $1$ dès $n = 1$ et tend vers $+\infty$.
+    - |
+      Sur un ensemble infini d'états, le produit $\lambda Q$ porte aussi sur des mesures de masse infinie. Sur $I = \lex{ensemble-entiers-naturels}{\mathbb N}$, la marche réfléchie en $0$ a pour matrice $Q(0, 1) = 1$ et $Q(x, x - 1) = Q(x, x + 1) = \frac12$ pour $x \geqslant 1$, les autres coefficients étant nuls. La formule des chemins ({{mk-transition|Matrices de transition}}, (iii)) donne $Q^2(0, 0) = Q^2(0, 2) = \frac12$ et $Q^2(1, 1) = \frac12 \cdot 1 + \frac12 \cdot \frac12 = \frac34$.
+
+      Pour la [[mesure-denombrable|mesure]] de comptage $c$, qui vaut $1$ en chaque état, on trouve $(cQ)(0) = \frac12$, $(cQ)(1) = 1 + \frac12 = \frac32$ et $(cQ)(y) = 1$ pour $y \geqslant 2$ : $cQ \neq c$. La mesure $\lambda$ qui vaut $\frac12$ en $0$ et $1$ ailleurs vérifie au contraire $\lambda Q = \lambda$, puisque $(\lambda Q)(0) = \frac12\lambda(1)$, $(\lambda Q)(1) = \lambda(0) + \frac12\lambda(2)$ et $(\lambda Q)(y) = \frac12\lambda(y - 1) + \frac12\lambda(y + 1)$ pour $y \geqslant 2$. Plus loin, une telle mesure sera dite invariante ({{mk-invariante|Mesures invariantes}}).
+      ```schema lex-matrice-transition-3
+      Les premiers états de la marche réfléchie en $0$ : depuis $0$, le pas suivant mène en $1$ avec probabilité $1$, et depuis $x \geqslant 1$ il mène en $x - 1$ ou en $x + 1$ avec probabilité $\frac12$.
+      ```
+
+  chaine-markov:
+    - |
+      Une suite de variables indépendantes et de même loi est une chaîne de Markov dont toutes les lignes de la matrice sont égales. Si les $X_n$ sont indépendantes, à valeurs dans $I$, de même loi $\mu$, l'indépendance donne $P(X_0 = x_0, \dots, X_n = x_n) = \mu(x_0)\mu(x_1)\cdots\mu(x_n)$ : c'est une [[chaine-markov|chaîne $(\mu, Q)$]] pour $Q(x, y) = \mu(y)$. Le pas suivant ne dépend pas plus du présent que du passé ; la forme conditionnelle de la définition ({{mk-chaines|Chaînes de Markov}}, (i)), qui autorise la dépendance envers le présent, est ici satisfaite de la façon la plus pauvre.
+    - |
+      Le maximum courant d'une marche n'est pas une chaîne de Markov : son présent ne résume pas son passé. Soient des signes [[independance|indépendants]] équiprobables $\varepsilon_k$, $S_n = \varepsilon_1 + \cdots + \varepsilon_n$ et $M_n = \max(S_0, \dots, S_n)$. Les deux passés $(M_0, \dots, M_3) = (0, 1, 1, 1)$ et $(0, 0, 0, 1)$ ont le même présent $M_3 = 1$, mais l'énumération des seize trajectoires donne
+      $$\begin{aligned} P(M_4 = 2 \mid M = (0, 1, 1, 1)) &= \tfrac14, \\ P(M_4 = 2 \mid M = (0, 0, 0, 1)) &= \tfrac12. \end{aligned}$$
+      Dans le second cas, $S_3 = 1$ est connu ; dans le premier, $S_3$ vaut $1$ ou $-1$. Par la forme conditionnelle ({{mk-chaines|Chaînes de Markov}}, (i)), ces deux nombres devraient valoir $Q(1, 2)$ pour une même matrice $Q$.
+    - |
+      La marche sur $\lex{ensemble-entiers-relatifs}{\mathbb Z}$ est une chaîne de Markov, et la loi de $X_n$ se lit sur $Q^n$. Si $X_0 = x$ et $X_n = x + \varepsilon_1 + \cdots + \varepsilon_n$, les signes indépendants valant $1$ avec probabilité $p$ et $-1$ avec probabilité $q = 1 - p$, l'indépendance donne la formule de définition, avec $Q(y, y + 1) = p$ et $Q(y, y - 1) = q$. La loi de $X_n$ est $\delta_xQ^n$ ({{mk-chaines|Chaînes de Markov}}, (ii)) : $X_n = x + 2k - n$ avec probabilité $\binom nk p^kq^{n-k}$, nombre de chemins à $k$ pas montants multiplié par leur poids commun. Plus loin, le théorème de Pólya montrera que, pour $p = \frac12$, la marche revient presque sûrement en $x$ ({{mk-polya|Théorème de Pólya}}).
+
+  chaine-irreductible:
+    - |
+      Une chaîne est irréductible dès que son graphe de transition permet d'aller de tout état à tout autre. Pour la chaîne à trois états du nœud {{mk-transition|Matrices de transition}}, les chemins $1 \to 2 \to 3$ et $3 \to 2 \to 1$ ont des probabilités $\frac18$ et $\frac1{12}$, non nulles ; avec $1 \to 2$, $2 \to 1$, $2 \to 3$ et $3 \to 2$, qui sont des transitions directes, tous les états communiquent : la matrice est [[chaine-irreductible|irréductible]].
+    - |
+      Rendre un seul état absorbant détruit l'irréductibilité. Modifions la troisième ligne de la même matrice en $Q'(3, 3) = 1$ : une chaîne issue de $3$ y reste, et $Q'^n(3, 1) = Q'^n(3, 2) = 0$ pour tout $n$. Les états $1$ et $2$ [[mene-a|mènent]] toujours à $3$, mais $3$ ne mène à aucun d'eux : il y a deux classes, $\{1, 2\}$ et $\{3\}$, et la seconde seule est fermée.
+    - |
+      Sans irréductibilité, l'équation $\pi Q = \pi$ peut avoir une infinité de solutions de masse $1$. Pour la matrice identité sur $\{1, 2\}$, réductible, chaque état forme sa propre classe, et toute probabilité $\pi$ vérifie $\pi Q = \pi$. Plus loin, on verra qu'une chaîne irréductible sur un ensemble fini a une probabilité invariante, et une seule ({{mk-recurrence-positive|Récurrence positive}}).
+
+  periode-etat:
+    - |
+      Pour un cycle déterministe, la période est la longueur du cycle. Sur $\{0, 1, 2, 3\}$, la matrice $Q(x, x + 1 \bmod 4) = 1$ fait tourner les états ; on a $Q^n(x, x) = 1$ si $4$ divise $n$, et $0$ sinon. Donc $R(x) = \{4, 8, 12, \dots\}$, et la [[periode-etat|période]] de chaque état vaut $4$, plus grand commun diviseur de ces entiers.
+    - |
+      La période est un plus grand commun diviseur, et non la plus petite longueur d'un retour. Sur neuf états, faisons partir de l'état $1$ deux circuits, $1 \to 2 \to 3 \to 4 \to 1$ et $1 \to 5 \to 6 \to 7 \to 8 \to 9 \to 1$, de longueurs $4$ et $6$, en posant $Q(1, 2) = Q(1, 5) = \frac12$, toutes les autres transitions du dessin ayant la probabilité $1$. Un retour en $1$ enchaîne des circuits, d'où $R(1) = \{4a + 6b\} \setminus \{0\} = \{4, 6, 8, 10, \dots\}$. La période vaut $2$, alors que $Q^2(1, 1) = 0$ : $2 \notin R(1)$.
+      ```schema lex-periode-etat-2
+      Les deux circuits issus de l'état $1$, de longueurs $4$, en rouge, et $6$, en bleu : tout retour en $1$ a une longueur paire, et la plus courte vaut $4$, bien que la période soit $2$.
+      ```
+    - |
+      Deux états qui ne communiquent pas peuvent avoir des périodes différentes. Sur $\{1, 2, 3\}$, soit $Q(1, 2) = 1$, $Q(2, 1) = Q(2, 3) = \frac12$ et $Q(3, 3) = 1$. Une chaîne issue de $1$ n'y revient que par des allers-retours $1 \to 2 \to 1$, d'où $Q^{2k}(1, 1) = 2^{-k}$ et $Q^{2k+1}(1, 1) = 0$ : la période de $1$, et de $2$ qui communique avec lui, vaut $2$. L'état $3$, qui a une boucle, est de période $1$ ; or $2 \to 3$ sans retour. Plus loin, on verra qu'une période égale à $2$ n'empêche pas les fréquences de visite de converger ({{mk-ergodique|Théorème ergodique}}, seconde remarque).
+
+  etat-recurrent:
+    - |
+      Pour la chaîne à deux états, le critère de la série s'applique à la main. Pour
+      $$Q = \begin{pmatrix} 1 - a & a \\ b & 1 - b \end{pmatrix}, \qquad a, b \in \,]0, 1],$$
+      la formule
+      $$Q^n(1, 1) = \frac{b}{a + b} + \frac{a}{a + b}(1 - a - b)^n$$
+      ({{mk-chaines|Chaînes de Markov}}, première remarque) montre que $Q^n(1, 1)$ tend vers $\frac{b}{a + b} > 0$ si $a + b < 2$, et vaut $1$ pour tout $n$ pair si $a = b = 1$. Dans les deux cas, la série $\sum_n Q^n(1, 1)$ diverge, et l'état $1$ est [[etat-recurrent|récurrent]] ({{mk-recurrence|Récurrence et transience}}, (ii)).
+    - |
+      Sur un ensemble infini, une chaîne irréductible peut être récurrente ou non, selon les valeurs de ses probabilités. Sur $\mathbb N$, la chaîne d'échappement monte de $x$ à $x + 1$ avec probabilité $p_x \in \,]0, 1[$ et retombe en $0$ sinon. Elle est [[chaine-irreductible|irréductible]], et $T_0 > n$ demande $n$ pas montants, d'où $P_0(T_0 > n) = p_0p_1\cdots p_{n-1}$, qui décroît vers $P_0(T_0 = +\infty)$.
+
+      Pour $p_x = \frac{x + 1}{x + 2}$, ce produit vaut $\frac1{n + 1}$ et tend vers $0$ : l'état $0$ est récurrent. Pour $p_x = 1 - \frac1{(x + 2)^2}$, il vaut, par télescopage de $1 - \frac1{k^2} = \frac{(k - 1)(k + 1)}{k^2}$, $\frac{n + 2}{2(n + 1)}$, qui tend vers $\frac12$ : l'état $0$ est transient, alors que le graphe est le même.
+      ```schema lex-etat-recurrent-2
+      La chaîne d'échappement : depuis chaque état, une flèche montante vers l'état suivant, de probabilité $p_x$, et une flèche de retour vers $0$, de probabilité $1 - p_x$. La récurrence dépend de la vitesse à laquelle les $p_x$ tendent vers $1$, et non de ce dessin.
+      ```
+    - |
+      La récurrence est une propriété de classe, et un état peut être récurrent sans que sa classe en contienne d'autre. Dans la ruine du joueur sur $\{0, 1, 2, 3\}$, où $Q(0, 0) = Q(3, 3) = 1$ et $Q(x, x \pm 1) = \frac12$ pour $x = 1, 2$, les états absorbants $0$ et $3$ sont récurrents, puisque $T_0 = 1$ sous $P_0$. Les états $1$ et $2$ sont transients : une chaîne issue de $1$ n'y revient que par $1 \to 2 \to 1$, avec probabilité $\frac14 < 1$. Plus loin, le théorème de Pólya dira que la marche simple est récurrente sur $\mathbb Z$ et sur $\mathbb Z^2$, et transiente sur $\mathbb Z^3$ ({{mk-polya|Théorème de Pólya}}).
+
+  etat-transient:
+    - |
+      Un état qui mène à un autre sans que celui-ci le ramène est transient. Pour la chaîne à deux états de matrice
+      $$Q = \begin{pmatrix} 1 - a & a \\ 0 & 1 \end{pmatrix}, \qquad 0 < a < 1,$$
+      l'état $2$ est absorbant et $1$ [[mene-a|mène à]] $2$ sans que $2$ mène à $1$ : par le point (iii) de {{mk-recurrence|Récurrence et transience}}, l'état $1$ n'est pas récurrent. Directement, une chaîne issue de $1$ n'y revient que si son premier pas reste en $1$, d'où $f_1 = 1 - a < 1$, et le nombre de visites en $1$ suit la loi géométrique $P_1(N_1 > k) = (1 - a)^k$. L'état est [[etat-transient|transient]].
+    - |
+      Une chaîne sur un ensemble fini a toujours un état récurrent, mais pas une chaîne sur un ensemble infini. Si tous les états d'un ensemble fini $I$ étaient transients, la propriété de Markov forte au temps $H_y$ donnerait $P_x(N_y = +\infty) = P_x(H_y < +\infty)\,P_y(N_y = +\infty) = 0$ pour tous $x, y$ ({{mk-markov-forte|Markov forte}}, (ii)), alors que $\sum_{y \in I}N_y = +\infty$ sous $P_x$, la chaîne étant à chaque instant quelque part : $I$ étant fini, l'un des $N_y$ est infini sur chaque trajectoire, d'où $1 \leqslant \sum_y P_x(N_y = +\infty) = 0$, ce qui est absurde. Pour la translation $Q(x, x + 1) = 1$ sur $\mathbb N$, au contraire, $T_x = +\infty$ sous $P_x$ : tous les états sont transients.
+    - |
+      Dans une chaîne irréductible, un état transient rend tous les états transients. Pour la chaîne d'échappement de l'exemple de [[etat-recurrent|état récurrent]] avec $p_x = 1 - \frac1{(x + 2)^2}$, on a $f_0 = P_0(T_0 < +\infty) = \frac12$, d'où $E_0[N_0] = \frac1{1 - f_0} = 2$, et tous les états sont transients, par le point (iii) de {{mk-recurrence|Récurrence et transience}} : la chaîne finit par monter sans jamais retomber. Plus loin, on verra que la fréquence des visites en chaque état tend alors vers $0$ ({{mk-ergodique|Théorème ergodique}}, (ii)).
+
+  mesure-invariante:
+    - |
+      Une chaîne récurrente peut avoir une mesure invariante de masse infinie. Pour la chaîne d'échappement sur $\mathbb N$ avec $p_x = \frac{x + 1}{x + 2}$, récurrente (exemple de [[etat-recurrent|état récurrent]]), la mesure $\lambda(y) = \frac1{y + 1}$ vérifie, pour $y \geqslant 1$, $(\lambda Q)(y) = \lambda(y - 1)p_{y-1} = \frac1y\cdot\frac{y}{y + 1} = \lambda(y)$, et, par télescopage,
+      $$\begin{aligned} (\lambda Q)(0) &= \sum_{y \geqslant 0}\frac1{(y + 1)(y + 2)} \\ &= 1 = \lambda(0). \end{aligned}$$
+      C'est une [[mesure-invariante|mesure invariante]], de masse $\sum_y \frac1{y + 1} = +\infty$. Par le point (ii) de {{mk-invariante|Mesures invariantes}}, toute mesure invariante non nulle à valeurs finies en est un multiple : cette chaîne n'a aucune [[probabilite-invariante|probabilité invariante]].
+    - |
+      Sans la récurrence, il peut n'exister aucune mesure invariante non nulle à valeurs finies. Pour la chaîne d'échappement avec $p_x = 1 - \frac1{(x + 2)^2}$, transiente, l'égalité $\lambda Q = \lambda$ en $y \geqslant 1$ impose $\lambda(y) = \lambda(0)\,p_0\cdots p_{y-1}$. En $0$, si $\lambda(0)$ est fini, elle donne par télescopage
+      $$\begin{aligned} \lambda(0) &= \lambda(0)\sum_{y \geqslant 0}\big(p_0\cdots p_{y-1} - p_0\cdots p_y\big) \\ &= \lambda(0)\big(1 - \tfrac12\big), \end{aligned}$$
+      d'où $\lambda(0) = 0$ et $\lambda = 0$. Les seules mesures invariantes sont la mesure nulle et la mesure identiquement égale à $+\infty$ : le point (i) du même nœud tombe.
+    - |
+      La mesure invariante d'une chaîne irréductible récurrente compte les visites pendant une excursion. Pour la chaîne à trois états du nœud {{mk-transition|Matrices de transition}}, irréductible sur un ensemble fini, donc récurrente ({{mk-recurrence|Récurrence et transience}}, (iv)), la seule mesure invariante qui vaut $1$ en $1$ est $\lambda = (1, 2, \frac32)$, ce que l'on vérifie sur $\lambda Q = \lambda$. Par le point (ii) de {{mk-invariante|Mesures invariantes}}, c'est $\gamma_1$ : entre deux passages en $1$, la chaîne passe en moyenne deux fois par $2$ et une fois et demie par $3$. Par le point (iii), $E_1[T_1] = 1 + 2 + \frac32 = \frac92$. Plus loin, cette relation deviendra $\pi(x) = 1/E_x[T_x]$ ({{mk-recurrence-positive|Récurrence positive}}).
+
+  recurrent-positif:
+    - |
+      Pour la chaîne à deux états, la récurrence positive se vérifie sur la loi du temps de retour. Pour
+      $$Q = \begin{pmatrix} 1 - a & a \\ b & 1 - b \end{pmatrix}, \qquad a, b \in \,]0, 1],$$
+      on a $E_1[T_1] = \frac{a + b}b$, calcul fait dans les exemples de [[temps-retour|temps de retour]] : l'état $1$ est [[recurrent-positif|récurrent positif]], et son inverse $\frac{b}{a + b}$ est bien la valeur en $1$ de la [[probabilite-invariante|probabilité invariante]] $\big(\frac b{a + b}, \frac a{a + b}\big)$, conformément au théorème de {{mk-recurrence-positive|Récurrence positive}}.
+    - |
+      Un état récurrent n'est pas toujours récurrent positif. Pour la chaîne d'échappement sur $\mathbb N$, qui monte de $x$ à $x + 1$ avec probabilité $p_x$ et retombe en $0$ sinon, $P_0(T_0 > n) = p_0\cdots p_{n-1}$. Avec $p_x = \frac{x + 1}{x + 2}$, ce produit vaut $\frac1{n + 1}$ : $0$ est récurrent, mais $E_0[T_0] = \sum_{n \geqslant 0}\frac1{n + 1} = +\infty$, et il n'y a pas de probabilité invariante.
+
+      Avec $p_x = \big(\frac{x + 1}{x + 2}\big)^2$, le produit vaut $\frac1{(n + 1)^2}$ et $E_0[T_0] = \sum_{k \geqslant 1}\frac1{k^2}$, fini puisque $\frac1{k^2} \leqslant \frac1{k - 1} - \frac1k$ pour $k \geqslant 2$ ; la même comparaison, et $\frac1{k^2} \geqslant \frac1k - \frac1{k + 1}$, encadrent la queue $\sum_{k > 10}\frac1{k^2}$ entre $\frac1{11}$ et $\frac1{10}$, et les dix premiers termes ont pour somme environ $1{,}5498$, d'où $1{,}64 < E_0[T_0] < 1{,}65$ : $0$ est récurrent positif, et $\pi(0) = 1/E_0[T_0] \approx 0{,}608$.
+    - |
+      Sur un ensemble fini, la formule $\pi(x) = 1/E_x[T_x]$ donne tous les temps moyens de retour d'un coup. Pour la chaîne à trois états du nœud {{mk-transition|Matrices de transition}}, de probabilité invariante $(\frac29, \frac49, \frac13)$, on trouve $E_1[T_1] = \frac92$, $E_2[T_2] = \frac94$ et $E_3[T_3] = 3$ : l'état central, le plus visité, est aussi celui où l'on revient le plus vite. Plus loin, le théorème ergodique dira que la chaîne passe asymptotiquement la fraction $\frac49$ du temps en $2$ ({{mk-ergodique|Théorème ergodique}}).
+
+  esperance-conditionnelle:
+    - |
+      Conditionner par une variable indépendante revient à la remplacer par sa moyenne. Soient $D_1$ et $D_2$ deux dés [[independance|indépendants]], uniformes sur $\{1, \dots, 6\}$, $X = D_1 + D_2$ et $\mathcal G = \sigma(D_1)$. La variable $D_1$, bornée et $\mathcal G$-mesurable, vérifie trivialement la propriété caractéristique, et $D_2$ est indépendante de $\mathcal G$ ; par linéarité et le point (iv) de {{mt-conditionnelle|Espérance conditionnelle}},
+      $$E[X \mid \mathcal G] = D_1 + E[D_2] = D_1 + \tfrac72.$$
+      Sur chaque atome $\{D_1 = d\}$, c'est la moyenne de $d + D_2$, comme le dit la première remarque du même nœud.
+    - |
+      Sans indépendance, l'[[esperance-conditionnelle|espérance conditionnelle]] n'est plus forcément l'espérance, même pour une variable qui a l'air de n'en rien savoir. Avec les mêmes dés et $S = D_1 + D_2$, les couples $(D_1, D_2)$ et $(D_2, D_1)$ ont même loi, donc $E[D_1\mathbf 1_{\{S \in B\}}] = E[D_2\mathbf 1_{\{S \in B\}}]$ pour tout $B$ : $E[D_1 \mid \sigma(S)] = E[D_2 \mid \sigma(S)]$. Leur somme valant $E[S \mid \sigma(S)] = S$, on obtient $E[D_1 \mid \sigma(S)] = \frac S2$, et non $\frac72$ : la somme renseigne sur chaque dé.
+      ```schema lex-esperance-conditionnelle-2
+      Les trente-six issues des deux dés : les atomes de $\sigma(S)$ sont les diagonales $D_1 + D_2 = s$, et sur chacune d'elles la moyenne de $D_1$, marquée en rouge, est le milieu $\frac s2$. Pour $s = 8$, en bleu, les cinq issues ont pour moyenne $D_1 = 4$.
+      ```
+    - |
+      Dans $L^2$, l'espérance conditionnelle est la meilleure prévision. Avec $X = D_1 + D_2$ et $\mathcal G = \sigma(D_1)$, l'erreur quadratique de la prévision $D_1 + \frac72$ vaut $E[(D_2 - \frac72)^2] = \frac{35}{12} \approx 2{,}92$, la variance d'un dé. Une autre prévision $\mathcal G$-mesurable, comme $D_1 + 3$, fait moins bien : son erreur est $\frac{35}{12} + \frac14 = \frac{19}6$, par le théorème de Pythagore, puisque $X - E[X \mid \mathcal G]$ est orthogonal à $L^2(\mathcal G)$ ({{mt-conditionnelle|Espérance conditionnelle}}, (i)). Plus loin, la suite des prévisions $E[X \mid \mathcal F_n]$ pour une information croissante sera une martingale ({{mt-martingales|Martingales}}, (i)).
+
+  martingale:
+    - |
+      Le carré d'une martingale n'en est pas une en général, mais on peut le corriger. Soient $(\varepsilon_k)_{k \geqslant 1}$ des signes [[independance|indépendants]], égaux à $1$ ou à $-1$ avec probabilité $\frac12$, $S_0 = 0$, $S_n = \varepsilon_1 + \cdots + \varepsilon_n$ et $\mathcal F_n = \sigma(\varepsilon_1, \dots, \varepsilon_n)$, $\mathcal F_0$ étant la tribu triviale : $(S_n)$ est une [[martingale]] ({{mt-martingales|Martingales}}, (i)).
+
+      Comme $S_{n+1}^2 = S_n^2 + 2S_n\varepsilon_{n+1} + 1$, que $S_n$ est bornée par $n$ et $\mathcal F_n$-mesurable, et que $\varepsilon_{n+1}$ est indépendante de $\mathcal F_n$ par regroupement ({{p-independance|Indépendance}}, (ii)), le point (iv) de {{mt-conditionnelle|Espérance conditionnelle}} donne
+      $$\begin{aligned} E[S_{n+1}^2 \mid \mathcal F_n] &= S_n^2 + 2S_nE[\varepsilon_{n+1}] + 1 \\ &= S_n^2 + 1. \end{aligned}$$
+      La suite $(S_n^2)$ n'est donc pas une martingale, mais $(S_n^2 - n)$ en est une, et le point (ii) de {{mt-martingales|Martingales}} donne $E[S_n^2] = n$.
+    - |
+      Retirer le centrage des pas fait tomber la propriété de martingale, et un terme de dérive la rétablit. Si les signes indépendants $\varepsilon_k$ valent $1$ avec probabilité $p \neq \frac12$ et $-1$ avec probabilité $q = 1 - p$, le calcul précédent donne $E[S_{n+1} \mid \mathcal F_n] = S_n + (p - q)$ : la marche $(S_n)$ n'est pas une martingale, mais $(S_n - n(p - q))$ en est une.
+
+      Pour $r = q/p$, la suite $(r^{S_n})$, bornée par $\max(r, 1/r)^n$ à l'instant $n$, en est une aussi, puisque $E[r^{S_{n+1}} \mid \mathcal F_n] = r^{S_n}E[r^{\varepsilon_{n+1}}]$ et que
+      $$E[r^{\varepsilon_{n+1}}] = p\cdot\frac qp + q\cdot\frac pq = 1.$$
+    - |
+      Toute variable intégrable engendre une martingale, celle de ses prévisions successives. Avec trois signes équiprobables et $X = \mathbf 1_{\{S_3 > 0\}}$, la suite $M_n = E[X \mid \mathcal F_n]$, $n \leqslant 3$, est une martingale ({{mt-martingales|Martingales}}, (i)). Sur chaque atome $\{\varepsilon_1 = a_1, \dots, \varepsilon_n = a_n\}$ de $\mathcal F_n$, elle vaut la proportion des prolongements de $(a_1, \dots, a_n)$ pour lesquels $S_3 > 0$ ({{mt-conditionnelle|Espérance conditionnelle}}, première remarque).
+
+      On trouve $M_0 = \frac12$, puis $M_1 = \frac34$ ou $\frac14$ selon le signe de $\varepsilon_1$, puis $M_2 = 1$, $\frac12$ ou $0$ selon que $S_2$ vaut $2$, $0$ ou $-2$, et enfin $M_3 = X$. Chaque valeur est la moyenne des deux valeurs qui la suivent : c'est la propriété de martingale, lue sur l'arbre des tirages. Plus loin, le théorème de Lévy montrera que, pour une suite infinie de signes et une variable $X$ déterminée par toute la suite, $E[X \mid \mathcal F_n]$ tend vers $X$ presque sûrement ({{mu-levy|Théorème de Lévy}}, (i)).
+      ```schema lex-martingale-3
+      L'arbre des trois tirages : chaque nœud porte la valeur de $M_n$ sur l'atome correspondant, et chaque valeur est la moyenne des deux valeurs portées par ses fils. Les feuilles valent $1$, en rouge, quand $S_3 > 0$, et $0$ sinon.
+      ```
+
+  temps-arret:
+    - |
+      Un premier instant d'atteinte est un temps d'arrêt, mais l'instant qui le précède n'en est pas un en général. Soient $(\varepsilon_k)_{k \geqslant 1}$ des signes [[independance|indépendants]], égaux à $1$ ou à $-1$ avec probabilité $\frac12$, $S_0 = 0$, $S_n = \varepsilon_1 + \cdots + \varepsilon_n$ et $\mathcal F_n = \sigma(\varepsilon_1, \dots, \varepsilon_n)$, $\mathcal F_0$ étant la tribu triviale.
+
+      Le premier instant $T$ où $S_n = 2$ est un [[temps-arret|temps d'arrêt]], puisque $\{T = n\} = \{S_1 \neq 2, \dots, S_{n-1} \neq 2, S_n = 2\}$ appartient à $\mathcal F_n$, et $T + 1$ en est un aussi, puisque $\{T + 1 = n\} = \{T = n - 1\}$ appartient à $\mathcal F_{n-1} \subset \mathcal F_n$. Comme $T \geqslant 2$, $T - 1$ est à valeurs dans $\mathbb N \cup \{+\infty\}$ ; mais $\{T - 1 = 1\} = \{\varepsilon_1 = \varepsilon_2 = 1\}$, de probabilité $\frac14$, n'est pas dans $\mathcal F_1 = \{\varnothing, \{\varepsilon_1 = 1\}, \{\varepsilon_1 = -1\}, \Omega\}$, dont les événements ont pour probabilités $0$, $\frac12$ et $1$.
+      ```schema lex-temps-arret-1
+      Une trajectoire de la marche : $T$ est le premier instant où elle atteint $2$, ici $T = 6$, et l'on sait à l'instant $6$ que $T$ est arrivé au seul vu de la trajectoire jusqu'à cet instant, en rouge. La suite de la trajectoire, en gris, n'intervient pas.
+      ```
+    - |
+      Le dernier instant de passage en un point n'est pas un temps d'arrêt en général, parce qu'il dépend de l'avenir. Avec quatre signes, soit $L$ le dernier instant $n \leqslant 4$ tel que $S_n = 0$. Comme $S_3$ est impair, $\{L = 2\} = \{S_2 = 0\} \cap \{\varepsilon_3 + \varepsilon_4 \neq 0\}$, de probabilité $\frac12 \cdot \frac12 = \frac14$.
+
+      Si cet événement appartenait à $\mathcal F_2$, il serait indépendant de $\sigma(\varepsilon_3, \varepsilon_4)$ par regroupement ({{p-independance|Indépendance}}, (ii)), et, comme il est contenu dans $\{\varepsilon_3 + \varepsilon_4 \neq 0\}$,
+      $$\begin{aligned} P(L = 2) &= P(L = 2)\,P(\varepsilon_3 + \varepsilon_4 \neq 0) \\ &= \tfrac12\,P(L = 2), \end{aligned}$$
+      d'où $P(L = 2) = 0$, ce qui est faux.
+      ```schema lex-temps-arret-2
+      Les quatre trajectoires qui commencent par $\varepsilon_1 = 1$ et $\varepsilon_2 = -1$ : elles ont le même passé jusqu'à l'instant $2$, mais $L = 4$ pour les deux qui reviennent en $0$, en bleu, et $L = 2$ pour les deux autres, en rouge. À l'instant $2$, on ne peut donc pas savoir si $L = 2$.
+      ```
+    - |
+      Un temps d'arrêt borné conserve l'espérance d'une martingale, ce que l'on vérifie sur une loi exacte. Soit $T$ le premier instant où $S_n = 1$. Le temps $T \wedge 4 = \min(T, 4)$ est un temps d'arrêt borné : $\{T \wedge 4 = n\}$ vaut $\{T = n\}$ pour $n < 4$, le complémentaire de $\{T \leqslant 3\}$ pour $n = 4$, et $\varnothing$ pour $n > 4$. L'arrêt borné ({{mt-martingales|Martingales}}, (iii)) donne donc $E[S_{T \wedge 4}] = 0$.
+
+      Or $T \leqslant 4$ avec probabilité $\frac12 + \frac18 = \frac58$, $T$ valant alors $1$ ou $3$, et $S_{T \wedge 4} = 1$ sur cet événement ; sur son complémentaire, $E[S_4\mathbf 1_{\{T > 4\}}] = -\frac58$ compense exactement. Plus loin, on verra que $T$ est fini presque sûrement et que pourtant $E[S_T] = 1$ : l'hypothèse de borne ne peut pas être levée ({{mu-arret-doob|Théorème d'arrêt}}, (iv)).
+
+  tribu-passe:
+    - |
+      Pour un temps constant, la tribu du passé est la tribu de l'instant. Si le [[temps-arret|temps d'arrêt]] $T$ est constant, égal à l'entier $m$, alors $A \cap \{T = n\}$ vaut $A$ pour $n = m$ et $\varnothing$ sinon : la condition se réduit à $A \in \mathcal F_m$, et $\mathcal F_T = \mathcal F_m$, puisque $\mathcal F_m \subset \mathcal F_\infty$. La [[tribu-passe|tribu du passé]] avant un temps d'arrêt généralise ainsi l'information disponible à un instant fixé.
+    - |
+      Ce qui suit l'instant $T$ n'appartient pas, en général, à la tribu du passé. Soient des signes [[independance|indépendants]] équiprobables $\varepsilon_k$, $S_n = \varepsilon_1 + \cdots + \varepsilon_n$, $\mathcal F_n = \sigma(\varepsilon_1, \dots, \varepsilon_n)$, et $T$ le premier instant où $S_n = 1$, [[temps-arret|temps d'arrêt]]. L'événement $A = \{T < +\infty,\ \varepsilon_{T+1} = 1\}$, « le pas qui suit l'arrêt monte », vérifie $A \cap \{T = 1\} = \{\varepsilon_1 = \varepsilon_2 = 1\}$, de probabilité $\frac14$ ; il n'est pas dans $\mathcal F_1 = \sigma(\varepsilon_1)$, dont les événements ont pour probabilités $0$, $\frac12$ ou $1$, et $A \notin \mathcal F_T$.
+    - |
+      Un événement de la tribu du passé peut porter sur toute l'histoire avant l'arrêt, et l'arrêt borné reste équitable sachant lui. Avec les mêmes notations, soit $T \wedge 4 = \min(T, 4)$ et $A = \{S_1 = -1\}$. Pour $n \geqslant 1$, $A \cap \{T \wedge 4 = n\}$ appartient à $\mathcal F_n$, puisque $A \in \mathcal F_1$, et $A \cap \{T \wedge 4 = 0\} = \varnothing$ : $A \in \mathcal F_{T \wedge 4}$. Le point (iii) de {{mu-arret|Martingale arrêtée}}, appliqué à $T \wedge 4 \leqslant 4$, donne $E[S_4\mathbf 1_A] = E[S_{T \wedge 4}\mathbf 1_A]$, et l'énumération des huit trajectoires concernées donne bien $-\frac12$ des deux côtés. Plus loin, pour une martingale fermée par $M_\infty$, on aura $M_T = E[M_\infty \mid \mathcal F_T]$ pour tout temps d'arrêt ({{mu-arret-doob|Théorème d'arrêt}}, (i)).
+
+  martingale-arretee:
+    - |
+      Arrêter une [[martingale]] à la sortie d'un intervalle borné donne une martingale bornée, d'où l'on tire une probabilité de sortie. Soient $(\varepsilon_k)_{k \geqslant 1}$ des signes [[independance|indépendants]], égaux à $\pm 1$ avec probabilité $\frac12$, $S_n = \varepsilon_1 + \cdots + \varepsilon_n$, et $T$ le premier instant où $S_n \in \{-2, 3\}$, [[temps-arret|temps d'arrêt]]. La [[martingale-arretee|martingale arrêtée]] $S_{T \wedge n}$ ({{mu-arret|Martingale arrêtée}}, (ii)) reste entre $-2$ et $3$ ; bornée dans $L^1$, elle converge presque sûrement ({{mt-doob-l1|Martingales bornées dans L¹}}).
+
+      Sur $\{T = +\infty\}$, ses accroissements valent $\pm 1$ et elle n'est pas de Cauchy : cet événement est négligeable, et $S_{T \wedge n} \to S_T$ presque sûrement. Par convergence dominée, $E[S_T] = \lim_n E[S_{T \wedge n}] = 0$, et, avec $h = P(S_T = 3)$, l'égalité $3h - 2(1 - h) = 0$ donne $h = \frac25$.
+    - |
+      Arrêter en un instant qui n'est pas un temps d'arrêt peut ne pas donner une suite adaptée. Avec deux signes, soit $L$ le dernier instant $n \leqslant 2$ tel que $S_n = 0$, qui vaut $0$ ou $2$. La suite $S_{L \wedge n}$ vaut $S_{L \wedge 1} = \varepsilon_1\mathbf 1_{\{\varepsilon_2 = -\varepsilon_1\}}$ à l'instant $1$ : sur $\{\varepsilon_1 = 1\}$, elle vaut $1$ ou $0$ selon le signe à venir $\varepsilon_2$. L'événement $\{S_{L \wedge 1} = 1\} = \{\varepsilon_1 = 1, \varepsilon_2 = -1\}$, de probabilité $\frac14$, n'appartient pas à $\mathcal F_1 = \sigma(\varepsilon_1)$, dont les événements ont pour probabilités $0$, $\frac12$ ou $1$ : la suite n'est pas une martingale, faute d'être adaptée.
+    - |
+      La martingale arrêtée au premier passage en $1$ garde une espérance nulle, alors qu'elle vaut le plus souvent $1$. Soit $T$ le premier instant où $S_n = 1$ ; la martingale arrêtée vérifie $E[S_{T \wedge n}] = 0$ pour tout $n$ ({{mt-martingales|Martingales}}, (ii)). Le calcul exact de sa loi donne, pour $n = 10$, $P(T \leqslant 10) = \frac{193}{256} \approx 0{,}754$, et une moyenne d'environ $-3{,}06$ sur l'événement complémentaire ; pour $n = 20$, ces nombres deviennent $0{,}824$ et $-4{,}68$. Une masse de plus en plus petite part vers des valeurs de plus en plus négatives. Plus loin, ce défaut sera identifié comme celui de l'uniforme intégrabilité ({{mu-arret-doob|Théorème d'arrêt}}, (iv)).
+      ```schema lex-martingale-arretee-3
+      La loi de $S_{T \wedge 10}$ : une masse $\frac{193}{256}$ en $1$, en rouge, et, en bleu, des masses en $0, -2, \dots, -10$, de moyenne environ $-3{,}06$, marquée en pointillé, sur l'événement $\{T > 10\}$. Les deux contributions à $E[S_{T \wedge 10}]$ se compensent exactement.
+      ```
+
+  uniformement-integrable:
+    - |
+      Une famille de variables intégrables n'est uniformément intégrable que si ses queues sont contrôlées d'un même coup. Soit $N$ de [[loi-normale|loi normale]] $\mathcal N(0, 1)$ et, pour $\sigma > 0$, $X_\sigma = \sigma N$, de loi $\mathcal N(0, \sigma^2)$ ({{p-normale|Loi normale}}, (ii)). Une primitive de $x\,e^{-x^2/(2\sigma^2)}$ étant $-\sigma^2e^{-x^2/(2\sigma^2)}$, la symétrie de la densité donne
+      $$\begin{aligned} &E\big[|X_\sigma|\mathbf 1_{\{|X_\sigma| > a\}}\big] \\ &= \frac{2}{\sigma\sqrt{2\pi}}\int_a^{+\infty} x\,e^{-\frac{x^2}{2\sigma^2}}\,dx \\ &= \sigma\sqrt{\tfrac2\pi}\;e^{-\frac{a^2}{2\sigma^2}}, \end{aligned}$$
+      fonction croissante de $\sigma$.
+
+      Pour $\sigma \leqslant 1$, le sup vaut $\sqrt{2/\pi}\,e^{-a^2/2}$, qui tend vers $0$ : la famille est [[uniformement-integrable|uniformément intégrable]], avec des queues bien plus petites que la borne $\frac1a$ du point (iv) de {{mu-ui|Uniforme intégrabilité}}, environ $0{,}0089$ contre $\frac13$ pour $a = 3$. Si $\sigma$ parcourt $]0, +\infty[$, le sup est au contraire infini pour tout $a$, alors que chaque $X_\sigma$ est intégrable : sans borne sur $\sigma$, la conclusion tombe.
+    - |
+      L'uniforme intégrabilité est strictement plus faible que la domination. Sur $[0, 1[$ muni de la [[mesure-lebesgue|mesure de Lebesgue]], soit, pour $n \geqslant 1$, $X_n = \frac{2^n}n\mathbf 1_{I_n}$, où $I_n = [2^{-n}, 2^{1-n}[$ est de longueur $2^{-n}$, si bien que $E[X_n] = \frac1n$. Les $I_n$ étant disjoints, une variable $Y$ telle que $Y \geqslant X_n$ pour tout $n$ majore $\sum_n X_n$, et $E[Y] \geqslant \sum_n \frac1n = +\infty$ : aucune variable intégrable ne domine la suite.
+
+      Pourtant, pour $a > 1$, l'espérance $E[X_n\mathbf 1_{\{X_n > a\}}]$ vaut $\frac1n$ si $\frac{2^n}n > a$ et $0$ sinon ; comme $\frac{2^n}n > a$ entraîne $2^n > a$, donc $n > \log_2 a$, le sup de ces espérances est au plus $\frac1{\log_2 a}$, qui tend vers $0$. La suite est uniformément intégrable, mais ses queues ne décroissent que comme l'inverse d'un logarithme.
+    - |
+      Une marche arrêtée à la sortie d'un intervalle borné forme une famille dominée. Avec des signes indépendants équiprobables $\varepsilon_k$ et $S_n = \varepsilon_1 + \cdots + \varepsilon_n$, soit $T$ le premier instant où $S_n \in \{-2, 3\}$. Les variables $S_{\min(T, n)}$, $n \in \mathbb N$, restent entre $-2$ et $3$, puisque la marche avance d'une unité à la fois et ne bouge plus après $T$ : elles forment une famille uniformément intégrable par domination ({{mu-ui|Uniforme intégrabilité}}, (iii)). Plus loin, l'arrêt au premier passage en $1$, sans barrière inférieure, donnera une famille $(S_{\min(T, n)})$ qui n'est pas uniformément intégrable ({{mu-arret-doob|Théorème d'arrêt}}, (iv)).
+
+  martingale-fermee:
+    - |
+      Les sommes partielles d'un développement binaire aléatoire forment une martingale fermée par sa limite. Soient des signes [[independance|indépendants]] équiprobables $\varepsilon_k$, $\mathcal F_n = \sigma(\varepsilon_1, \dots, \varepsilon_n)$, $X = \sum_{k \geqslant 1}\varepsilon_k2^{-k}$, à valeurs dans $[-1, 1]$, et $M_n = \sum_{k \leqslant n}\varepsilon_k2^{-k}$. Le reste $X - M_n$ est indépendant de $\mathcal F_n$, par regroupement, et centré ; $M_n$ est bornée et $\mathcal F_n$-mesurable : le point (iv) de {{mt-conditionnelle|Espérance conditionnelle}} donne $E[X \mid \mathcal F_n] = M_n$. La [[martingale]] $(M_n)$ est [[martingale-fermee|fermée]] par $X$, et $|X - M_n| \leqslant 2^{-n}$ : la convergence est même uniforme.
+    - |
+      Une martingale positive d'espérance $1$ peut tendre vers $0$, et n'est alors fermée par aucune variable. Avec les mêmes signes, $M_n = \prod_{k \leqslant n}(1 + \frac{\varepsilon_k}2)$ est une martingale, puisque $M_n$ est bornée par $(\frac32)^n$ et que $E[M_{n+1} \mid \mathcal F_n] = M_n\,E[1 + \frac{\varepsilon_{n+1}}2] = M_n$ ({{mt-conditionnelle|Espérance conditionnelle}}, (iv)) ; ainsi $E[M_n] = 1$. Or $\frac1n\ln M_n$ est la moyenne de variables indépendantes bornées, d'espérance $\frac12(\ln\frac32 + \ln\frac12) = \frac12\ln\frac34 < 0$ : par la loi forte ({{p-loi-forte|Loi forte}}), $\ln M_n \to -\infty$ et $M_n \to 0$ presque sûrement. Si elle était fermée, elle convergerait dans $L^1$ vers cette limite ({{mu-fermees|Martingales fermées}}), et $E[M_n] = 1$ tendrait vers $0$.
+      ```schema lex-martingale-fermee-2
+      Six trajectoires de $M_n$ sur $200$ pas, en échelle logarithmique : chacune finit par décroître vers $0$, comme le veut la pente moyenne $\frac12\ln\frac34$ de $\ln M_n$, en pointillé, bien que $E[M_n] = 1$ pour tout $n$.
+      ```
+    - |
+      La variable qui ferme une martingale n'est pas unique, et elle n'est pas forcément la limite. Avec les mêmes signes, soit $Y$ une variable intégrable centrée, indépendante de la suite $(\varepsilon_k)$, et $X = \varepsilon_1 + Y$. Pour $n \geqslant 1$, $E[X \mid \mathcal F_n] = \varepsilon_1 = E[\varepsilon_1 \mid \mathcal F_n]$ : la martingale, constante à partir du rang $1$, s'écrit à la fois $E[X \mid \mathcal F_n]$ et $E[\varepsilon_1 \mid \mathcal F_n]$. Au sens de {{mu-fermees|Martingales fermées}}, elle est fermée par sa limite $M_\infty = \varepsilon_1$, qui ignore $Y$, que la [[filtration]] ne voit pas. Plus loin, le théorème de Lévy identifiera cette limite à $E[X \mid \mathcal F_\infty]$ ({{mu-levy|Théorème de Lévy}}, (i)).
+
+  filtration:
+    - |
+      Sur un espace fini, une filtration se lit comme une suite de partitions de plus en plus fines. Sur $\Omega = \{-1, 1\}^3$ muni de la probabilité uniforme, soit $\varepsilon_k(\omega) = \omega_k$ et $\mathcal F_n = \sigma(\varepsilon_1, \dots, \varepsilon_n)$. Les réunions d'atomes $\{\varepsilon_1 = a_1, \dots, \varepsilon_n = a_n\}$ forment une tribu, qui contient les événements $\{\varepsilon_k = \pm 1\}$, $k \leqslant n$, et qui est contenue dans la [[tribu-engendree|tribu engendrée]] par ceux-ci : c'est $\mathcal F_n$.
+
+      Ses $2^n$ atomes donnent $2^{2^n}$ événements, soit $2$, $4$, $16$ et $256$ pour $n = 0, 1, 2, 3$ ; $\mathcal F_0$ est la tribu triviale, et $\mathcal F_3$ est formée de toutes les parties de $\Omega$. Chaque atome de $\mathcal F_n$ est la réunion de deux atomes de $\mathcal F_{n+1}$, d'où $\mathcal F_n \subset \mathcal F_{n+1}$ : la suite est une [[filtration]].
+      ```schema lex-filtration-1
+      Les huit éléments de $\Omega$, notés par leurs signes, et, de haut en bas, les atomes de $\mathcal F_0$, $\mathcal F_1$, $\mathcal F_2$ et $\mathcal F_3$ : chaque boîte se coupe en deux à la ligne suivante, ce qui traduit $\mathcal F_n \subset \mathcal F_{n+1}$.
+      ```
+    - |
+      Les tribus engendrées par les seules valeurs présentes $S_n$ ne forment pas une filtration : l'information du présent ne contient pas celle du passé. Avec deux signes et $S_n = \varepsilon_1 + \cdots + \varepsilon_n$, l'événement $\{S_1 = 1\}$ appartient à $\sigma(S_1)$. Un événement $\{S_2 \in B\}$ contient à la fois les deux suites $(1, -1)$ et $(-1, 1)$, qui donnent toutes deux $S_2 = 0$, ou bien aucune d'elles, alors que $\{S_1 = 1\}$ contient la première et non la seconde : $\sigma(S_1) \not\subset \sigma(S_2)$. La suite $\sigma(S_1, \dots, S_n) = \sigma(\varepsilon_1, \dots, \varepsilon_n)$ répare ce défaut, puisqu'elle accumule l'information.
+    - |
+      La filtration dyadique de $[0, 1[$ est celle de l'information obtenue en lisant un réel avec une précision croissante. Sur $[0, 1[$ muni de la [[tribu-borelienne|tribu borélienne]] et de la [[mesure-lebesgue|mesure de Lebesgue]], soit $\mathcal F_n$ la tribu engendrée par les $2^n$ intervalles $[k2^{-n}, (k + 1)2^{-n}[$. Chacun d'eux est la réunion de deux intervalles de rang $n + 1$, donc $\mathcal F_n \subset \mathcal F_{n+1}$.
+
+      Pour $f$ intégrable, $E[f \mid \mathcal F_n]$ vaut, sur chacun de ces intervalles, la moyenne de $f$ ({{mt-conditionnelle|Espérance conditionnelle}}, première remarque) ; pour $f(\omega) = \omega$, c'est le milieu de l'intervalle de rang $n$ qui contient $\omega$, à au plus $2^{-n-1}$ de $\omega$. Plus loin, le théorème de Lévy montrera que ces moyennes tendent vers $f(\omega)$ pour presque tout $\omega$, quelle que soit $f$ intégrable ({{mu-levy|Théorème de Lévy}}).
+
+  nombre-montees:
+    - |
+      Le nombre de montées ne compte que les traversées achevées de $a$ à $b$. Pour la suite $M = (0, 3, -1, 2, 1, -2, 4, -1, 1)$, d'indices $0$ à $8$, avec $a = 0$ et $b = 2$, on trouve $\sigma_1 = 0$, $\tau_1 = 1$, $\sigma_2 = 2$, $\tau_2 = 3$, $\sigma_3 = 5$, $\tau_3 = 6$ et $\sigma_4 = 7$, mais $M_8 = 1 < 2$ : le [[nombre-montees|nombre de montées]] est $U_8 = 3$, et la dernière position reste ouverte. La valeur $M_4 = 1$, entre $a$ et $b$, ne compte pas.
+
+      On a $H_k = 1$ pour $k = 1, 3, 6, 8$, d'où $\sum_k H_k(M_k - M_{k-1}) = 3 + 3 + 6 + 2 = 14$, qui majore bien $(b - a)U_8 - (M_8 - a)^- = 6$ ({{mt-montees|Montées}}, (ii)) : chaque montée rapporte au moins $b - a$.
+      ```schema lex-nombre-montees-1
+      La suite $M$, le niveau $b = 2$, en pointillé, et le niveau $a = 0$, qui est l'axe horizontal : les trois montées achevées, de $\sigma_j$ à $\tau_j$, sont ombrées en rouge, et la position ouverte en $\sigma_4 = 7$, non soldée à l'instant $8$, en bleu.
+      ```
+    - |
+      Un nombre fini de montées pour un seul couple de niveaux ne dit rien de la convergence. La suite $M_k = (-1)^k$ ne converge pas ; avec $a = -\frac12$ et $b = \frac12$, elle monte à chaque instant pair, et $U_n = \lfloor n/2 \rfloor$ tend vers $+\infty$. Avec $a = 2$ et $b = 3$, au contraire, elle ne passe jamais sous $a$, et $U_n = 0$ pour tout $n$.
+    - |
+      L'inégalité des montées se vérifie sur une loi exacte. Pour la marche $S_n$ somme de six signes [[independance|indépendants]] équiprobables, avec $a = -1$ et $b = 1$, l'énumération des $64$ trajectoires donne $E[U_6] = \frac7{32} \approx 0{,}219$, alors que la borne $E[(S_6 + 1)^-]/(b - a)$ du point (iii) de {{mt-montees|Montées}} vaut $\frac{19}{64} \approx 0{,}297$. Plus loin, cette inégalité, appliquée à une martingale bornée dans $L^1$, montrera que le nombre total de montées est presque sûrement fini, d'où la convergence presque sûre ({{mt-doob-l1|Martingales bornées dans L¹}}).
+
+  cylindre-trajectoires:
+    - |
+      Deux cylindres sont disjoints ou emboîtés, ce qui en fait, avec $\varnothing$ et $I^{\mathbb N}$, un [[pi-systeme|π-système]]. Sur $I = \{0, 1\}$, le cylindre $C(0, 1, 1)$ est contenu dans $C(0, 1)$, lui-même contenu dans $C(0)$, tandis que $C(0, 1)$ est disjoint de $C(1)$ et de $C(0, 0)$. En général, pour $n \leqslant m$, les cylindres $C(x_0, \dots, x_n)$ et $C(y_0, \dots, y_m)$ sont emboîtés si $x_k = y_k$ pour tout $k \leqslant n$, et disjoints sinon. Ici, $C(0)$ est la réunion disjointe de $C(0, 0)$ et de $C(0, 1)$, et le complémentaire de $C(0, 1)$ est $C(1) \cup C(0, 0)$.
+      ```schema lex-cylindre-trajectoires-1
+      L'arbre des débuts de suites sur $\{0, 1\}$ : chaque nœud représente le cylindre des suites qui commencent ainsi. Le cylindre $C(0, 1)$, en rouge, contient tous les cylindres de son sous-arbre ; il est contenu dans $C(0)$, et disjoint de tous les autres.
+      ```
+    - |
+      Les cylindres et leurs réunions finies ne forment pas une tribu : la tribu des trajectoires contient bien davantage. Sur $I = \{0, 1\}$, la partie $Z$ réduite à la suite nulle est l'intersection des cylindres $C(0, \dots, 0)$, de longueurs croissantes, donc appartient à la tribu des trajectoires. Ce n'est pas une réunion finie de cylindres : si $Z$ était la réunion de cylindres en nombre fini, de longueurs au plus $N + 1$, celui qui contient la suite nulle contiendrait aussi la suite qui vaut $1$ au seul rang $N + 1$, et qui n'est pas dans $Z$.
+    - |
+      La loi d'une chaîne sur les cylindres est donnée par la définition, et beaucoup d'événements naturels s'en déduisent. Pour la chaîne à trois états du nœud {{mk-transition|Matrices de transition}}, [[chaine-issue|issue de]] $1$, l'événement « visiter $3$ au plus tard à l'instant $2$ » ne diffère de $\{X \in C(1, 2, 3)\}$ que par l'événement $\{X_1 = 3\}$, de probabilité $Q(1, 3) = 0$ ; sa probabilité est donc $Q(1, 2)\,Q(2, 3) = \frac18$. L'événement « revenir en $x$ », formé des suites $w$ telles que $w_n = x$ pour un $n \geqslant 1$, est une réunion dénombrable de cylindres ; plus loin, c'est par sa probabilité que l'on distinguera les états récurrents ({{mk-recurrence|Récurrence et transience}}).
+
+  chaine-issue:
+    - |
+      Une chaîne déterministe est issue de son point de départ, sur n'importe quel espace probabilisé. Sur $I = \{1, 2, 3\}$, la [[matrice-transition|matrice de transition]] définie par $Q(1, 2) = Q(2, 3) = Q(3, 1) = 1$, ses autres coefficients étant nuls, fait tourner les états. Soit $(x_n)$ la suite $1, 2, 3, 1, 2, 3, \dots$ et $X_n$ la variable constante égale à $x_n$. Alors $P(X_0 = y_0, \dots, X_n = y_n)$ vaut $1$ si $y_k = x_k$ pour tout $k \leqslant n$, et $0$ sinon, ce qui est $\delta_1(y_0)Q(y_0, y_1)\cdots Q(y_{n-1}, y_n)$ : $(X_n)$ est une chaîne [[chaine-issue|issue de]] $1$, et $P_1(X_3 = 1) = 1$.
+    - |
+      Partir d'un état ne suffit pas : la même matrice doit régir chaque pas. Sur $\Omega = \{1, 2\}$ muni de la probabilité uniforme, soient $X_0 = 1$ et $X_n(\omega) = \omega$ pour $n \geqslant 1$. Si $(X_n)$ était une chaîne issue de $1$ et de matrice $Q$, la définition donnerait
+      $$\begin{aligned} Q(1, 1) &= P(X_0 = X_1 = 1) = \tfrac12, \\ Q(1, 1)^2 &= P(X_0 = X_1 = X_2 = 1) = \tfrac12, \end{aligned}$$
+      ce qui est impossible. Le premier pas tire au hasard et les suivants recopient : la loi du pas dépend de l'instant, et la suite n'est une [[chaine-markov|chaîne de Markov]] pour aucune matrice.
+    - |
+      Une chaîne de loi initiale quelconque fournit, sans aucun choix, une chaîne issue de chaque état qu'elle charge au départ. Si $(X_n)$ est une chaîne $(\mu, Q)$ et $\mu(x) > 0$, la [[probabilite|probabilité]] $P(\cdot \mid X_0 = x)$ ({{p-espace|Espace probabilisé}}, (i)) fait de $(X_n)$ une chaîne issue de $x$ : il suffit de diviser par $\mu(x)$ la formule de définition, dans laquelle $x_0 = x$. Pour la chaîne à trois états du nœud {{mk-transition|Matrices de transition}}, de loi initiale uniforme, on obtient ainsi des chaînes issues de $1$, de $2$ et de $3$. Plus loin, la propriété de Markov fera de même avec $X_n$ au lieu de $X_0$, pour tout état $x$ tel que $P(X_n = x) > 0$ ({{mk-markov|Propriété de Markov}}, (ii)).
+
+  chaine-jusqu-instant:
+    - |
+      Jusqu'à l'instant $1$, la condition est vide : toute paire de variables est une chaîne. Si $X_0$ et $X_1$ sont des [[variable-valeurs-denombrable|variables à valeurs dans]] $I$, soient $\mu$ la loi de $X_0$, $Q(x, y) = P(X_1 = y \mid X_0 = x)$ quand $\mu(x) > 0$, et $Q(x, \cdot) = \delta_x$ sinon. Chaque ligne est une probabilité, et $P(X_0 = x_0, X_1 = x_1) = \mu(x_0)Q(x_0, x_1)$, les deux membres étant nuls si $\mu(x_0) = 0$ : $(X_0, X_1)$ est une [[chaine-jusqu-instant|chaîne $(\mu, Q)$ jusqu'à l'instant $1$]]. La condition de définition ne devient une contrainte qu'à partir de trois instants.
+    - |
+      Une chaîne jusqu'à l'instant $1$ peut cesser d'en être une à l'instant $2$. Soient $X_0$ et $X_1$ indépendantes, uniformes sur $\{0, 1\}$, et $X_2 = X_0$. Jusqu'à l'instant $1$, c'est une chaîne de loi initiale uniforme, dont la matrice a nécessairement tous ses coefficients égaux à $\frac12$, puisque $P(X_1 = y \mid X_0 = x) = \frac12$. Jusqu'à l'instant $2$, il faudrait $P(X_0 = 0, X_1 = 1, X_2 = 1) = \frac18$, alors que cette probabilité est nulle : le troisième terme se souvient du premier, par-dessus le présent.
+    - |
+      Une chaîne jusqu'à l'instant $m$ est une probabilité sur l'ensemble des chemins de longueur $m$. Pour la chaîne à trois états du nœud {{mk-transition|Matrices de transition}}, issue de $1$, et $m = 2$, les chemins de poids non nul sont
+      $$\begin{aligned} &(1, 1, 1),\ (1, 1, 2),\ (1, 2, 2) : \ \tfrac14, \\ &(1, 2, 1),\ (1, 2, 3) : \ \tfrac18, \end{aligned}$$
+      de somme $1$, les quatre autres chemins issus de $1$ empruntant une transition de probabilité nulle. Plus loin, on verra que ces poids, sur l'ensemble fini ou dénombrable $I^{m+1}$, définissent toujours une telle chaîne, sans aucun choix ({{mk-existence|Existence}}, (ii)).
+      ```schema lex-chaine-jusqu-instant-3
+      L'arbre des chemins de longueur $2$ issus de $1$ : chaque arête porte la probabilité de la transition, et le poids d'un chemin, écrit à son extrémité, est le produit des nombres rencontrés. Les poids des cinq feuilles ont pour somme $1$.
+      ```
+
+  variable-valeurs-denombrable:
+    - |
+      Le rang du premier chiffre binaire égal à $1$ est une variable à valeurs dans $\mathbb N^*$, de loi géométrique. Sur $[0, 1[$ muni de la [[mesure-lebesgue|mesure de Lebesgue]], avec les chiffres $d_k$ du nœud {{p-normaux|Nombres normaux}}, soit $X(\omega)$ le plus petit $k \geqslant 1$ tel que $d_k(\omega) = 1$, et $X(0) = 1$. Par télescopage, $\sum_{j \leqslant n} 2^{n-j}d_j(\omega) = \lfloor 2^n\omega \rfloor$ ; donc $d_1 = \cdots = d_{k-1} = 0$ équivaut à $\omega < 2^{1-k}$, et alors $d_k = 1$ équivaut à $\omega \geqslant 2^{-k}$.
+
+      Ainsi $\{X = k\} = [2^{-k}, 2^{1-k}[$ pour $k \geqslant 2$, et $\{X = 1\} = [\frac12, 1[ \cup \{0\}$ : ce sont des boréliens, et $P(X = k) = 2^{-k}$.
+      ```schema lex-variable-valeurs-denombrable-1
+      L'intervalle $[0, 1[$ découpé selon la valeur de $X$ : $\{X = 1\}$ occupe la moitié droite, $\{X = 2\}$ le quart suivant, et ainsi de suite, chaque morceau ayant la moitié de la longueur du précédent.
+      ```
+    - |
+      La condition porte sur chaque valeur, et elle peut manquer. Sur $\Omega = \{a, b, c\}$ muni de la tribu $\{\varnothing, \{a\}, \{b, c\}, \Omega\}$, l'application $X$ qui vaut $1$ en $a$ et en $b$, et $2$ en $c$, n'est pas une variable à valeurs dans $\{1, 2\}$ : $\{X = 2\} = \{c\}$ n'est pas un événement. Quand la condition est remplie, en revanche, $\{X \in D\}$ est un événement pour toute partie $D$ de $I$, réunion au plus dénombrable des $\{X = x\}$, $x \in D$, et la loi de $X$ est une probabilité sur toutes les parties de $I$ par σ-additivité.
+    - |
+      La [[partie-entiere|partie entière]] d'une variable réelle est une variable à valeurs dans $\mathbb N$ dès que la variable est positive. Si $Y$ suit la loi exponentielle de paramètre $\lambda$ ({{p-poisson-exp|Lois de Poisson et loi exponentielle}}), $\{\lfloor Y \rfloor = k\} = \{k \leqslant Y < k + 1\}$ est un événement, et
+      $$P(\lfloor Y \rfloor = k) = e^{-\lambda k}(1 - e^{-\lambda}) :$$
+      $\lfloor Y \rfloor + 1$ suit la loi géométrique de paramètre $1 - e^{-\lambda}$, et la durée sans mémoire, comptée en unités entières, reste sans mémoire. Plus loin, les temps de retour d'une chaîne de Markov seront des variables de ce type, à valeurs dans $\mathbb N \cup \{+\infty\}$ ({{mk-markov-forte|Markov forte}}).
+
+  etat-aperiodique:
+    - |
+      Une boucle suffit à rendre un état apériodique. Pour la chaîne à deux états de matrice
+      $$Q = \begin{pmatrix} 1 - a & a \\ b & 1 - b \end{pmatrix}, \qquad a, b \in \,]0, 1[,$$
+      on a $Q(1, 1) = 1 - a > 0$, donc $1$ appartient à $R(1) = \{n \geqslant 1 : Q^n(1, 1) > 0\}$, et la [[periode-etat|période]] de $1$, qui divise $1$, vaut $1$ : l'état $1$ est [[etat-aperiodique|apériodique]], et l'état $2$ aussi, puisqu'il communique avec $1$ ({{mk-classes|Classes, période}}, (ii)).
+    - |
+      Un état peut être apériodique sans aucune boucle. Sur $\{1, 2, 3\}$, soit $Q(1, 2) = 1$, $Q(2, 1) = Q(2, 3) = \frac12$ et $Q(3, 1) = 1$. Les circuits $1 \to 2 \to 1$ et $1 \to 2 \to 3 \to 1$ donnent $2, 3 \in R(1)$, et $R(1)$ est stable par addition (preuve de {{mk-classes|Classes, période}}, (iii)), donc contient tout entier $n \geqslant 2$, somme de $2$ et de $3$. La période vaut $1$, alors que $Q(x, x) = 0$ pour tout $x$ et que $1 \notin R(1)$ : on peut prendre $N = 2$ dans le point (iii).
+      ```schema lex-etat-aperiodique-2
+      Le graphe de transition : après l'arête $1 \to 2$, commune aux deux circuits, le retour $2 \to 1$, en bleu, ferme un circuit de longueur $2$, et le trajet $2 \to 3 \to 1$, en rouge, un circuit de longueur $3$. Ces longueurs sont premières entre elles, ce qui rend l'état $1$ apériodique.
+      ```
+    - |
+      Sans l'apériodicité, la conclusion du point (iii) de {{mk-classes|Classes, période}} tombe. Pour la chaîne qui alterne entre deux états, $a = b = 1$, on a $Q^n(1, 1) = 1$ pour $n$ pair et $0$ pour $n$ impair : aucun rang $N$ ne rend tous les $Q^n(1, 1)$ positifs, et la période vaut $2$. Plus loin, on verra que l'apériodicité est ce qui fait converger la loi de $X_n$ vers l'équilibre ({{mk-couplage|Convergence vers l'équilibre}}) ; ici, partant de $1$, elle oscille sans fin.
+
+  classe-fermee:
+    - |
+      Dans la ruine du joueur, les deux issues forment chacune une classe fermée, et les fortunes intermédiaires une classe qui ne l'est pas. Sur $\{0, 1, 2, 3\}$, soit $Q(0, 0) = Q(3, 3) = 1$ et $Q(x, x - 1) = Q(x, x + 1) = \frac12$ pour $x = 1, 2$. Les états $1$ et $2$ communiquent, mais $1 \to 0$ sans que $0$ mène à $1$ : les classes sont $\{0\}$, $\{1, 2\}$ et $\{3\}$. Les classes $\{0\}$ et $\{3\}$ sont [[classe-fermee|fermées]], et $\{1, 2\}$ ne l'est pas.
+      ```schema lex-classe-fermee-1
+      Le graphe de transition de la ruine du joueur, ses classes entourées : les classes fermées $\{0\}$ et $\{3\}$, en rouge, n'ont aucune flèche sortante, alors que la classe $\{1, 2\}$, en bleu, en a deux.
+      ```
+    - |
+      Sur un ensemble fini et non vide d'états, il existe toujours une classe fermée, mais pas sur un ensemble infini. Sur l'ensemble fini des classes, la relation « un état de $C$ [[mene-a|mène à]] un état de $C'$ » ne dépend pas des états choisis, puisque deux états d'une même classe communiquent ; elle est donc transitive, et c'est un ordre, antisymétrique puisque deux classes qui se mènent l'une à l'autre communiquent. En partant d'une classe et en passant, tant que c'est possible, à une classe strictement plus grande, on ne repasse jamais par la même, donc on s'arrête, sur une classe maximale, qui est fermée. Pour la translation $Q(x, x + 1) = 1$ sur $\mathbb N$, en revanche, chaque classe est un singleton $\{x\}$, et $x \to x + 1$ : aucune n'est fermée.
+    - |
+      Une classe fermée peut être infinie, et c'est là que la finitude compte. Pour la marche sur $\lex{ensemble-entiers-relatifs}{\mathbb Z}$ qui fait un pas $+1$ avec probabilité $p \in \,]0, 1[$ et $-1$ sinon, tous les états communiquent : $\mathbb Z$ est une seule classe, fermée. Plus loin, on verra qu'une classe fermée finie est récurrente ({{mk-recurrence|Récurrence et transience}}, (iv)), alors que cette classe infinie est transiente dès que $p \neq \frac12$ (remarque du même nœud).
+
+  probabilite-invariante:
+    - |
+      Pour deux états, la probabilité invariante se calcule à la main, et elle est unique dès que la chaîne bouge. Pour
+      $$Q = \begin{pmatrix} 1 - a & a \\ b & 1 - b \end{pmatrix}, \qquad a, b \in [0, 1],$$
+      l'équation $\pi Q = \pi$ se réduit à $a\,\pi(1) = b\,\pi(2)$. Si $a + b > 0$, la seule [[probabilite-invariante|probabilité invariante]] est donc
+      $$\pi = \Big(\frac{b}{a + b},\ \frac{a}{a + b}\Big).$$
+      Dans le cas limite $a = b = 0$, $Q$ est la matrice identité, et toute probabilité sur $\{1, 2\}$ est invariante : la chaîne ne bouge pas.
+    - |
+      Une chaîne sur un ensemble infini peut n'avoir aucune probabilité invariante. Pour la marche sur $\lex{ensemble-entiers-relatifs}{\mathbb Z}$ définie par $Q(y, y - 1) = Q(y, y + 1) = \frac12$, une probabilité invariante $\pi$ vérifierait $\pi(y) = \frac12\pi(y - 1) + \frac12\pi(y + 1)$, c'est-à-dire $\pi(y + 1) - \pi(y) = \pi(y) - \pi(y - 1)$, pour tout $y$. La suite $\pi(y)$ serait donc de la forme $\pi(0) + cy$, positive sur tout $\mathbb Z$, ce qui impose $c = 0$ ; mais une constante a pour somme sur $\mathbb Z$ zéro ou $+\infty$, et non $1$. Cette marche n'a donc aucune loi d'équilibre.
+    - |
+      Quand les colonnes de $Q$ sont aussi de somme $1$, la loi uniforme $\pi$ sur un ensemble de $m$ états est invariante, puisque $(\pi Q)(y) = \frac1m\sum_x Q(x, y) = \frac1m$. C'est le cas de la marche sur le cycle $\{0, \dots, 5\}$, qui va de $x$ à $x \pm 1$ modulo $6$ avec probabilité $\frac12$ : si $X_0$ est uniforme, chaque $X_n$ l'est. Partant de $0$, en revanche, $P(X_n = 0) = 0$ pour tout $n$ impair, chaque pas changeant la parité : la loi de $X_n$ ne tend pas vers $\pi$. Plus loin, on verra que, pour une chaîne finie irréductible et apériodique, comme la marche sur le cycle à $5$ états, la loi de $X_n$ converge vers $\pi$ ({{mk-couplage|Convergence vers l'équilibre}}).
+
+  temps-retour:
+    - |
+      Le temps de retour diffère du temps d'atteinte par l'instant $0$ seulement. Pour la chaîne déterministe $1 \to 2 \to 3 \to 1$ issue de $1$, le [[temps-retour|temps de retour]] $T_1$ vaut $3$, alors que le [[temps-atteinte|temps d'atteinte]] $H_1$ vaut $0$, puisque $X_0 = 1$. Pour l'état $2$, que la chaîne ne visite pas à l'instant $0$, les deux coïncident : $T_2 = H_2 = 1$.
+    - |
+      Le temps de retour d'une chaîne issue d'un état n'est pas toujours fini. Pour la chaîne à deux états de matrice
+      $$Q = \begin{pmatrix} 1 - a & a \\ b & 1 - b \end{pmatrix}, \qquad 0 < a \leqslant 1,$$
+      issue de $1$, on a $T_1 = 1$ si le premier pas reste en $1$, et sinon la chaîne passe en $2$ et y reste jusqu'à son retour. La formule de définition des chaînes donne ainsi, pour $n \geqslant 2$,
+      $$P_1(T_1 = n) = a(1 - b)^{n-2}b,$$
+      et $P_1(T_1 = 1) = 1 - a$. Si $b > 0$, la somme de ces probabilités vaut $(1 - a) + a = 1$ : la chaîne revient presque sûrement. Si $b = 0$, elle vaut $1 - a$, et $P_1(T_1 = +\infty) = a$ : une fois en $2$, la chaîne n'en sort plus.
+    - |
+      L'espérance du temps de retour se lit sur cette loi, par une somme de probabilités de queue. Pour la même chaîne, avec $b > 0$, l'événement $\{T_1 > n\}$, pour $n \geqslant 1$, demande un premier pas vers $2$ puis $n - 1$ pas qui y restent, d'où $P_1(T_1 > n) = a(1 - b)^{n-1}$. La formule $E[T] = \sum_{n \geqslant 0}P(T > n)$ ({{p-esperance|Espérance, variance}}, seconde remarque) donne
+      $$\begin{aligned} E_1[T_1] &= 1 + a\sum_{n \geqslant 1}(1 - b)^{n-1} \\ &= 1 + \frac ab = \frac{a + b}b. \end{aligned}$$
+      Pour $a = 0{,}3$ et $b = 0{,}1$, la chaîne reste en $1$ avec probabilité $0{,}7$ au premier pas, mais une excursion en $2$ dure en moyenne $10$ pas, et $E_1[T_1] = 4$. Plus loin, on verra que $1/E_1[T_1] = \frac{b}{a + b}$ est la probabilité invariante de l'état $1$ ({{mk-recurrence-positive|Récurrence positive}}).
+      ```schema lex-temps-retour-3
+      La fonction $n \mapsto P_1(T_1 > n)$ pour $a = 0{,}3$ et $b = 0{,}1$, en escalier rouge : elle tombe de $1$ à $0{,}3$ après le premier pas, puis décroît géométriquement, de raison $0{,}9$. L'aire ombrée sous l'escalier est la somme des $P_1(T_1 > n)$, c'est-à-dire $E_1[T_1] = 4$.
+      ```
+
+  nombre-visites:
+    - |
+      Partant d'un [[etat-transient|état transient]], le nombre de visites suit une loi géométrique, que l'on lit sur la probabilité de retour. Dans la ruine du joueur sur $\{0, 1, 2, 3\}$, où $Q(0, 0) = Q(3, 3) = 1$ et $Q(x, x \pm 1) = \frac12$ pour $x = 1, 2$, une chaîne issue de $1$ n'y revient que par $1 \to 2 \to 1$, d'où $f_1 = P_1(T_1 < +\infty) = \frac14$.
+
+      Le point (i) de {{mk-recurrence|Récurrence et transience}} donne $P_1(N_1 > k) = 4^{-k}$ et $E_1[N_1] = \frac1{1 - 1/4} = \frac43$, ce que confirme la série des $Q^n(1, 1)$, égaux à $4^{-n/2}$ pour $n$ pair et à $0$ pour $n$ impair : $\sum_m 4^{-m} = \frac43$. Le [[nombre-visites|nombre de visites]] compte la visite de l'instant $0$.
+    - |
+      La dichotomie « presque sûrement fini ou presque sûrement infini » n'est garantie que pour une chaîne issue de l'état considéré. Dans la même chaîne, issue de $1$, le nombre de visites en $0$ vaut $+\infty$ si la chaîne est absorbée en $0$, et $0$ si elle l'est en $3$. Les trajectoires absorbées en $0$ font $k$ allers-retours $1 \to 2 \to 1$, puis le pas $1 \to 0$, d'où
+      $$P_1(N_0 = +\infty) = \sum_{k \geqslant 0} 4^{-k}\cdot\frac12 = \frac23,$$
+      probabilité strictement comprise entre $0$ et $1$. Sous $P_0$, en revanche, $N_0 = +\infty$ presque sûrement, conformément au point (ii) du même nœud.
+    - |
+      L'espérance du nombre de visites en un autre état se calcule de même, par la série des probabilités de passage. Dans la même chaîne, $E_1[N_2] = \sum_n P_1(X_n = 2) = \sum_n Q^n(1, 2)$, par convergence monotone ; les chemins de $1$ à $2$ ont une longueur impaire $2m + 1$ et un poids total $\frac12\cdot 4^{-m}$, d'où $E_1[N_2] = \frac12\cdot\frac43 = \frac23$. Partant de $1$, la chaîne passe donc en moyenne moins d'une fois par $2$ avant d'être absorbée. Plus loin, pour une chaîne irréductible récurrente, où tous les $N_y$ sont infinis, c'est la fréquence $\frac1n\sum_{k < n}\mathbf 1_{\{X_k = y\}}$ des visites qui aura une limite ({{mk-ergodique|Théorème ergodique}}).
+
+  mesure-denombrable:
+    - |
+      Sur un ensemble dénombrable, une probabilité se donne par ses valeurs aux points, et la probabilité d'une partie s'obtient en sommant. La [[loi-poisson|loi de Poisson]] de paramètre $\theta > 0$ est la [[mesure-denombrable|probabilité]] $\lambda(x) = e^{-\theta}\theta^x/x!$ sur $\mathbb N$ ({{p-poisson-exp|Lois de Poisson et loi exponentielle}}, (ii)). La partie des entiers pairs a pour mesure
+      $$\lambda(2\mathbb N) = e^{-\theta}\sum_{k \geqslant 0}\frac{\theta^{2k}}{(2k)!} = \frac{1 + e^{-2\theta}}2,$$
+      demi-somme des séries de $e^\theta$ et de $e^{-\theta}$, soit environ $0{,}568$ pour $\theta = 1$ : un peu plus d'une chance sur deux, l'écart $\frac12e^{-2\theta}$ s'effaçant quand $\theta$ grandit.
+    - |
+      Sur un ensemble dénombrable, aucune mesure ne peut imiter la longueur, puisque toute mesure y est portée par ses points. Sur $I = \lex{ensemble-rationnels}{\mathbb Q} \cap [0, 1]$, une mesure $\mu$ sur les parties de $I$ telle que $\mu(I \cap [a, b]) = b - a$ pour $0 \leqslant a < b \leqslant 1$ donnerait à chaque point $q$ une mesure au plus égale à celle de $I \cap [a, b]$, pour un segment $[a, b]$ de longueur au plus $\varepsilon$ qui contient $q$, donc nulle. Par σ-additivité, $\mu(I) = \sum_{q \in I}\mu(\{q\}) = 0$, alors qu'il faudrait $1$. Pour la même raison, il n'y a pas de probabilité uniforme sur $\mathbb N$ : une famille constante a pour somme $0$ ou $+\infty$.
+    - |
+      Une matrice de transition transforme une mesure sur $\mathbb N$ en une autre, et la loi de Poisson est stable par effacement aléatoire. Pour $p \in \,]0, 1[$ et $q = 1 - p$, soit $Q(x, y) = \binom xy p^yq^{x-y}$ pour $y \leqslant x$ : chacun des $x$ objets est gardé avec probabilité $p$. Pour la loi de Poisson $\lambda$ de paramètre $\theta$,
+      $$\begin{aligned} (\lambda Q)(y) &= \sum_{x \geqslant y}e^{-\theta}\frac{\theta^x}{x!}\binom xy p^yq^{x-y} \\ &= e^{-\theta}\frac{(\theta p)^y}{y!}\sum_{j \geqslant 0}\frac{(\theta q)^j}{j!} \\ &= e^{-\theta p}\frac{(\theta p)^y}{y!}, \end{aligned}$$
+      la loi de Poisson de paramètre $\theta p$. Plus loin, une mesure telle que $\lambda Q = \lambda$ sera dite invariante ({{mk-invariante|Mesures invariantes}}) : ce n'est pas le cas ici, puisque $\theta p \neq \theta$, mais c'est celui de la probabilité qui vaut $1$ en $0$, puisque $Q(0, 0) = 1$.
+
+  temps-atteinte:
+    - |
+      Pour une chaîne à deux états, le temps d'atteinte de l'autre état suit une loi géométrique. Pour la matrice
+      $$Q = \begin{pmatrix} 1 - a & a \\ b & 1 - b \end{pmatrix}, \qquad 0 < a \leqslant 1,$$
+      et une chaîne issue de $1$, l'événement $\{H_2 > n\}$ demande $n$ pas qui restent en $1$, d'où $P_1(H_2 > n) = (1 - a)^n$, et, par la formule $E[T] = \sum_n P(T > n)$ ({{p-esperance|Espérance, variance}}, seconde remarque), $E_1[H_2] = \sum_{n \geqslant 0}(1 - a)^n = \frac1a$. Le [[temps-atteinte|temps d'atteinte]] ne dépend pas de $b$ : seul compte ce qui se passe avant d'atteindre $2$.
+    - |
+      Qu'un chemin de probabilité non nulle aille de $x$ à $y$ n'entraîne pas que la chaîne issue de $x$ atteigne $y$ presque sûrement. Dans la ruine du joueur sur $\{0, 1, 2, 3\}$, où $Q(0, 0) = Q(3, 3) = 1$ et $Q(x, x \pm 1) = \frac12$ pour $x = 1, 2$, on a $Q^2(1, 3) = \frac14 > 0$. Une chaîne issue de $1$ atteint $3$ après $k$ allers-retours $1 \to 2 \to 1$ suivis de $1 \to 2 \to 3$, d'où
+      $$P_1(H_3 < +\infty) = \sum_{k \geqslant 0}4^{-k}\cdot\frac14 = \frac13,$$
+      et $P_1(H_3 = +\infty) = \frac23$ : la chaîne est d'abord absorbée en $0$, d'où elle ne sort plus.
+    - |
+      Le premier instant où la chaîne atteint l'une des deux issues a une espérance finie, que l'on calcule trajectoire par trajectoire. Dans la même chaîne issue de $1$, soit $H = \min(H_0, H_3)$, temps d'atteinte de $\{0, 3\}$. On a $H = 2k + 1$ sur les trajectoires $1 \to (2 \to 1)^k \to 0$, de probabilité $4^{-k}\cdot\frac12$, et $H = 2k + 2$ sur les trajectoires $1 \to (2 \to 1)^k \to 2 \to 3$, de probabilité $4^{-k}\cdot\frac14$ ; d'où
+      $$\begin{aligned} E_1[H] &= \sum_{k \geqslant 0}4^{-k}\Big(\frac{2k + 1}2 + \frac{2k + 2}4\Big) \\ &= 2. \end{aligned}$$
+      Plus loin, la ruine du joueur donnera $E[T] = x(N - x)$ pour une fortune initiale $x$ et un objectif $N$, soit ici $1 \cdot 2 = 2$ ({{mk-ruine|Ruine du joueur}}, (iii)).
+
+  mene-a:
+    - |
+      Un état peut mener à un autre sans transition directe. Pour la chaîne à trois états du nœud {{mk-transition|Matrices de transition}}, $Q(1, 3) = 0$, mais $Q^2(1, 3) = \frac18 > 0$, par le chemin $1 \to 2 \to 3$ : l'état $1$ [[mene-a|mène à]] $3$. Tout état mène à lui-même, puisque $Q^0(x, x) = 1$, même s'il n'a pas de boucle, comme chacun des états de la chaîne déterministe $1 \to 2 \to 3 \to 1$.
+    - |
+      La relation « mène à » n'est pas symétrique ; seule la communication l'est. Sur $\{1, 2\}$, pour $Q(1, 2) = Q(2, 2) = 1$, on a $1 \to 2$, mais $Q^n(2, 1) = 0$ pour tout $n$, puisque la chaîne issue de $2$ y reste : $2$ ne mène pas à $1$. La relation est réflexive et transitive ({{mk-classes|Classes, période}}, preuve de (i)), sans être une relation d'équivalence ; les deux états forment deux classes distinctes, $\{1\}$ et $\{2\}$.
+    - |
+      Sur un ensemble infini, « mène à » peut être un ordre total. Pour la translation $Q(x, x + 1) = 1$ sur $\mathbb N$, on a $Q^n(x, y) = 1$ si $y = x + n$ et $0$ sinon, donc $x \to y$ si et seulement si $x \leqslant y$ : la relation est l'ordre usuel de $\mathbb N$, et aucun couple d'états distincts ne communique. Plus loin, on verra qu'un état récurrent $x$ ne mène qu'à des états qui mènent à $x$ ({{mk-recurrence|Récurrence et transience}}, (iii)) ; ici, $x \to x + 1$ sans retour, et aucun état n'est récurrent.
