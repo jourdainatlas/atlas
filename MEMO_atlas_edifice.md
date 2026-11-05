@@ -1953,3 +1953,14 @@ Journal des lots.
   nombre-e 3. Signalés, non faits : lexique, nombre-e, exponentielle, fonction-periodique, cosinus-sinus, pi
   s'appuient sur des résultats d'aval (ex-serie, tg-cercle, tg-addition) ; c-uniforme (continuité en un point hors
   amont) ; tr-ultrafiltres (topologie de ℝ et Borel-Lebesgue hors amont).
+- ac : 53 termes, 158 exemples, 3 schémas (idéaux de ℤ contenant 12ℤ, dérivation nilpotente sur trois corps, base
+  adaptée d'un réseau de ℤ²). Ni ℚ, ni ℝ, ni ℂ en amont : matrices sur le corps des fractions de ℤ ; nœuds internes
+  qui ne se voient pas tous (ac-chinois sans ac-divisibilite, ac-modules sans Gauss ni Hilbert). Contre-exemple
+  récurrent : le sous-anneau intègre de ℤ[X] des polynômes à coefficients non constants pairs, non ajouté en amont.
+  Relu deux fois : bloquants corrigés (« seul le polynôme minimal » a pour racines les valeurs propres ; élément
+  associé de ℤ/6ℤ sans inversible distinct ; contenu sans vrai contre-exemple, pris dans K[X², X³] ; décompositions
+  supposées sans preuve dans le sous-anneau). Signalés, non faits : lexique, groupe-abelien-type-fini et
+  module-sans-torsion citent ℚ en aval ; pgcd-anneau utilise ℤ[√−5] dans ℂ ; endomorphisme-trigonalisable « toujours
+  sur ℂ » ; polynome-caracteristique cite Cayley-Hamilton en aval ; matrice-permutation plus large que md-equivalence ;
+  multiplicite-algebrique cite un fait de rd-stables, en aval. Proposé : (mℤ)(nℤ) = mnℤ et mℤ ∩ nℤ = ppcm(m, n)ℤ en
+  remarque d'ac-chinois.
