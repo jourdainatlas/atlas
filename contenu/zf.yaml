@@ -88,12 +88,12 @@ noeuds:
       Il existe un ensemble [[inductif-successeur|inductif]], c'est-à-dire un ensemble $I$ qui a un élément sans élément et qui, avec chacun de ses éléments $x$, contient l'ensemble dont les éléments sont ceux de $x$ et $x$ lui-même :
       $$\begin{aligned} \exists I\, \Big[&\exists e\, \big(e \in I \wedge \forall z\, z \notin e\big) \\ &\wedge \forall x\, \Big(x \in I \Rightarrow \exists y\, \big(y \in I \\ &\quad \wedge \forall z\, (z \in y \\ &\qquad \Leftrightarrow (z \in x \vee z = x))\big)\Big)\Big]. \end{aligned}$$
     texte: |
-      C'est le seul axiome qui affirme l'existence d'un ensemble infini ; sans lui, tous les ensembles construits seraient finis.
+      C'est le seul axiome qui affirme l'existence d'un ensemble infini ; sans lui, tous les ensembles construits seraient finis, au sens qui sera défini au nœud « Finitude sans les entiers » de ce graphe.
     remarques:
       - |
         L'axiome est écrit dans le langage pur, parce que l'ensemble vide, la paire et la réunion ne sont introduits qu'après lui. Avec les notations des nœuds {{zf-vide|Ensemble vide}} et {{zf-operations|Opérations booléennes}}, il se lit plus simplement : il existe un ensemble $I$ tel que $\varnothing \in I$ et $x \cup \{x\} \in I$ pour tout $x \in I$.
       - |
-        Il fonde la construction de {{n|$\mathbb N$}}, plus petit ensemble inductif.
+        Il fonde la construction de {{n|$\mathbb N$}}, plus petit ensemble inductif. Que cet ensemble soit infini au sens du nœud {{zf-fini|Ensembles finis, sans les entiers}}, le nœud {{n-fini|Ensembles finis et principe des tiroirs}} le montrera.
 
   - id: zf-fond
     etiquette: Fondation
@@ -149,6 +149,56 @@ noeuds:
       - |
         L'intersection d'une famille **vide** n'existe pas : elle devrait contenir tous les ensembles, ce que le paradoxe de Russell interdit.
 
+  - id: zf-fini
+    etiquette: Finitude sans les entiers
+    nature: proposition
+    titre: Ensembles finis, sans les entiers
+    texte: |
+      Un ensemble $A$ est [[ensemble-fini-tarski|fini]] si toute partie non vide $\mathcal F$ de $\lex{ensemble-parties}{\mathcal P}(A)$ ({{zf-parties|Axiome des parties}}) a un élément maximal pour l'inclusion, c'est-à-dire un élément $M$ tel que $M \subset F$ et $F \in \mathcal F$ entraînent $F = M$. Un ensemble qui n'est pas fini est dit infini.
+
+      Cette définition, d'un type introduit par Tarski, n'emploie que l'ensemble des parties et l'inclusion : ni les entiers, ni même les applications, qui ne viendront qu'avec les relations. Elle peut donc être posée dès les axiomes, et c'est elle qu'emploie la topologie générale, qui précède les entiers naturels dans l'édifice.
+    enonce: |
+      (i) L'ensemble vide et tout singleton sont finis. Toute partie d'un ensemble fini est finie. Si $A$ est fini, toute partie non vide de $\mathcal P(A)$ a aussi un élément minimal pour l'inclusion, c'est-à-dire un élément qui ne contient strictement aucun autre élément de cette partie.
+
+      (ii) *Récurrence sur les parties d'un ensemble fini.* Soit $\varphi(B)$ une [[formule]], qui peut avoir d'autres variables libres que $B$, et $A$ un ensemble fini. Si $\varphi(\varnothing)$ est vraie et si, pour toute partie $B$ de $A$ et tout $x \in A \setminus B$, $\varphi(B)$ entraîne $\varphi(B \cup \{x\})$, alors $\varphi(A)$ est vraie.
+
+      (iii) Si $A$ est fini, $A \cup \{x\}$ est fini pour tout $x$. Si $A$ et $B$ sont finis, $A \cup B$ est fini.
+
+      (iv) *Image.* Soient $A$ et $B$ des ensembles, et $\varphi(x, y)$ une formule telle que, pour tout $x \in A$, il existe un unique $y \in B$ vérifiant $\varphi(x, y)$. Si $A$ est fini, l'ensemble des $y \in B$ tels que $\varphi(x, y)$ pour un $x \in A$, formé par séparation, est fini.
+
+      (v) Si $\mathcal F$ est un ensemble fini dont tous les éléments sont finis, $\bigcup \mathcal F$ est fini.
+
+      (vi) *Collecte finie.* Soit $A$ un ensemble fini, $B$ un ensemble et $\psi(x, y)$ une formule telle que, pour tout $x \in A$, il existe $y \in B$ vérifiant $\psi(x, y)$. Il existe alors une partie finie $C$ de $B$ telle que, pour tout $x \in A$, il existe $y \in C$ vérifiant $\psi(x, y)$.
+
+      Les points (ii), (iv) et (vi) sont des schémas : un énoncé par formule.
+    preuve: |
+      (i) La seule partie de $\varnothing$ ({{zf-vide|Ensemble vide}}) est $\varnothing$ : une partie non vide de $\mathcal P(\varnothing)$ est $\{\varnothing\}$, dont $\varnothing$ est l'élément maximal. Les parties de $\{a\}$ sont $\varnothing$ et $\{a\}$ : dans une partie non vide $\mathcal F$ de $\mathcal P(\{a\})$, l'élément $\{a\}$ est maximal s'il appartient à $\mathcal F$, et sinon $\mathcal F = \{\varnothing\}$. Si $B \subset A$ et si $A$ est fini, une partie non vide de $\mathcal P(B)$ est aussi une partie non vide de $\mathcal P(A)$ ; elle a donc un élément maximal, et ce caractère ne dépend que de la famille, non de l'ensemble qui la contient.
+
+      Pour la dernière assertion, soit $\mathcal F$ une partie non vide de $\mathcal P(A)$, et $\mathcal F'$ l'ensemble des $C \in \mathcal P(A)$ tels que $A \setminus C \in \mathcal F$, formé par séparation ({{zf-operations|Opérations booléennes}}). Il n'est pas vide, puisque $A \setminus (A \setminus F) = F$ pour $F \in \mathcal F$ ; soit $M$ un élément maximal de $\mathcal F'$. Alors $A \setminus M \in \mathcal F$, et si $F \in \mathcal F$ vérifie $F \subset A \setminus M$, la partie $A \setminus F$ appartient à $\mathcal F'$ et contient $M$ : elle lui est égale, et $F = A \setminus M$. Ainsi $A \setminus M$ est minimal dans $\mathcal F$.
+
+      (ii) L'ensemble $\mathcal S = \{B \in \mathcal P(A) : \varphi(B)\}$ existe par séparation, et il contient $\varnothing$. Comme $A$ est fini, $\mathcal S$ a un élément maximal $M$. Si $M \neq A$, il existe $x \in A \setminus M$ ; alors $\varphi(M \cup \{x\})$ est vraie par hypothèse, et $M \cup \{x\}$ est un élément de $\mathcal S$ qui contient strictement $M$, puisqu'il contient $x$. C'est impossible : $M = A$, et $\varphi(A)$ est vraie.
+
+      (iii) Si $x \in A$, alors $A \cup \{x\} = A$. Supposons $x \notin A$, et soit $\mathcal F$ une partie non vide de $\mathcal P(A \cup \{x\})$. L'ensemble $\mathcal G$ des parties $G$ de $A$ telles que $G = F \setminus \{x\}$ pour un $F \in \mathcal F$ est non vide ; il a un élément maximal $M$. Un élément $F$ de $\mathcal F$ tel que $F \setminus \{x\} = M$ est égal à $M$ ou à $M \cup \{x\}$, et il en existe au moins un. Posons $H = M \cup \{x\}$ si $M \cup \{x\} \in \mathcal F$, et $H = M$ sinon ; dans les deux cas, $H \in \mathcal F$.
+
+      Soit $F \in \mathcal F$ tel que $H \subset F$. Alors $M \subset F \setminus \{x\}$, qui appartient à $\mathcal G$, d'où $F \setminus \{x\} = M$ par maximalité, et $F$ vaut $M$ ou $M \cup \{x\}$. Si $H = M \cup \{x\}$, l'inclusion $H \subset F$ impose $F = H$ ; si $H = M$, c'est que $M \cup \{x\} \notin \mathcal F$, et $F = M = H$. Ainsi $H$ est maximal dans $\mathcal F$, et $A \cup \{x\}$ est fini.
+
+      Si $A$ et $B$ sont finis, appliquons (ii) à l'ensemble fini $B$ et à la formule « $A \cup C$ est fini », de variable $C$. Elle est vraie pour $C = \varnothing$ ; si elle l'est pour $C$, elle l'est pour $C \cup \{x\}$, puisque $A \cup (C \cup \{x\}) = (A \cup C) \cup \{x\}$ est fini par ce qui précède. Elle est donc vraie pour $C = B$.
+
+      (iv) Pour $C \subset A$, notons $Y_C$ l'ensemble des $y \in B$ tels que $\varphi(x, y)$ pour un $x \in C$, formé par {{zf-sep|séparation}} ; l'ensemble de l'énoncé est $Y_A$. Appliquons (ii) à la formule « $Y_C$ est fini », de variable $C$. On a $Y_\varnothing = \varnothing$, fini par (i). Si $x \in A \setminus C$ et si $y$ est l'unique élément de $B$ tel que $\varphi(x, y)$, alors $Y_{C \cup \{x\}} = Y_C \cup \{y\}$, fini par (iii) dès que $Y_C$ l'est. Donc $Y_A$ est fini.
+
+      (v) Appliquons (ii) à $\mathcal F$ et à la formule « $\bigcup \mathcal B$ est fini », de variable $\mathcal B$. On a $\bigcup \varnothing = \varnothing$ ; et si $X \in \mathcal F$, alors $\bigcup (\mathcal B \cup \{X\}) = (\bigcup \mathcal B) \cup X$, réunion de deux ensembles finis dès que $\bigcup \mathcal B$ est fini, puisque $X$ l'est : elle est finie par (iii).
+
+      (vi) Appliquons (ii) à $A$ et à la formule « il existe une partie finie $C$ de $B$ telle que tout $x \in D$ ait un $y \in C$ vérifiant $\psi(x, y)$ », de variable $D$. Pour $D = \varnothing$, la partie $C = \varnothing$ convient. Si $C$ convient pour $D$ et si $x \in A \setminus D$, l'hypothèse fournit un $y \in B$ vérifiant $\psi(x, y)$, et la partie $C \cup \{y\}$, finie par (iii), convient pour $D \cup \{x\}$.
+    remarques:
+      - |
+        A. Tarski (« Sur les ensembles finis », *Fundamenta Mathematicae* 6, 1924, p. 45-95, notice EuDML 214289) a donné une définition de ce type, par l'existence d'un élément extrémal pour l'inclusion dans toute famille non vide de parties. Les formes minimale et maximale sont équivalentes, par le point (i), le passage au complémentaire renversant l'inclusion. La forme maximale est retenue ici parce qu'elle donne aussitôt la récurrence (ii) : parmi les parties qui vérifient la propriété, une partie maximale ne peut manquer aucun point. C. Kuratowski (« Sur la notion d'ensemble fini », *Fundamenta Mathematicae* 1, 1920, p. 129-131) appelait fini un ensemble dont les parties non vides forment la seule famille de parties non vides qui contienne les singletons et soit stable par réunion de deux de ses éléments. Cette définition équivaut à celle-ci : si $A$ est fini et si $\mathcal K$ est une telle famille, la récurrence (ii), appliquée à chaque partie de $A$, finie par (i), et à la formule « $B = \varnothing$ ou $B \in \mathcal K$ », montre que $\mathcal K$ contient toutes les parties non vides de $A$ ; inversement, les parties non vides de $A$ qui sont finies au sens de Tarski forment, par (i) et (iii), une telle famille, qui contient donc $A$ si $A$ n'est pas vide.
+      - |
+        Dans le point (iv), l'ensemble $B$ qui contient les valeurs sert seulement à les rassembler par séparation ; dans les emplois de l'édifice, il est toujours donné, comme $\mathcal P(X)$ ou l'ensemble d'arrivée d'une application. Le {{zf-rempl|schéma de remplacement}} permettrait de s'en passer, en fournissant un ensemble qui contient toutes les valeurs.
+      - |
+        Le point (vi) est le sens exact de la phrase « cela ne demande qu'un nombre fini de choix », que l'on rencontrera en topologie. La récurrence ne construit aucune fonction de choix : à chaque pas, elle n'emploie qu'une fois l'existence d'un témoin $y$, ce que la logique seule permet. Pour une infinité de points $x$, il faudrait en général l'[[axiome-choix]] ({{zf-choix|Axiome du choix}}).
+      - |
+        Le nœud {{n-fini|Ensembles finis et principe des tiroirs}} montrera, sans aucune forme de l'axiome du choix, qu'un ensemble est fini si et seulement s'il est équipotent à un entier naturel, ce qui justifie le nom. L'erreur la plus répandue est de prendre pour définition l'absence de bijection de l'ensemble sur une de ses parties strictes, due à Dedekind : un ensemble fini n'en a pas, mais la réciproque n'est pas démontrable dans $\mathsf{ZF}$.
+
   - id: zf-bienfonde
     etiquette: Pas de x ∈ x
     nature: proposition
@@ -194,5 +244,8 @@ aretes:
   - [zf-paire, zf-operations]
   - [zf-ext, zf-operations]
   - [zf-reunion, zf-operations]
+  - [zf-vide, zf-fini]
+  - [zf-parties, zf-fini]
+  - [zf-operations, zf-fini]
   - [zf-paire, zf-bienfonde]
   - [zf-fond, zf-bienfonde]

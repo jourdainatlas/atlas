@@ -2130,3 +2130,17 @@ Tarski) dans zf, employée en top, l'équivalence avec la définition par ℕ é
   cal-dg-godel → cal-dg-second (choisie au lieu de cal-dg-prov → cal-dg-second, qui imposait un croisement ;
   cal-dg-prov reste en amont par transitivité) ; arêtes devenues redondantes retirées ; croisements inchangés.
   Relu : bloquant corrigé (homologie des sphères dite nulle ou ℤ, faux pour H₀(S⁰)).
+- Finitude sans ℕ (décision d'Armand ci-dessus) : nouveau nœud zf-fini, « Finitude sans les entiers » (parents
+  zf-vide, zf-parties, zf-operations) : A est fini si toute partie non vide de 𝒫(A) a un élément maximal pour
+  l'inclusion ; démontrés dans ZF sans choix : (i) vide, singletons, parties, forme minimale équivalente, (ii)
+  récurrence sur les parties, (iii) réunion de deux finis, (iv) image (schéma sur une formule, valeurs prises dans un
+  ensemble donné, sans applications), (v) réunion d'un ensemble fini de finis, (vi) collecte finie (sens exact de « un
+  nombre fini de choix ») ; équivalence avec Kuratowski (Fund. Math. 1, 1920) en remarque ; Tarski (Fund. Math. 6,
+  1924, EuDML 214289) cité pour une définition « de ce type, par un élément extrémal », sans lui prêter la forme
+  exacte (article non consulté, sources secondaires discordantes). n-fini (v) : équivalence avec la définition par ℕ,
+  sans choix ; numérotation (i)-(iv) inchangée. top : intersections finies démontrées (t-espace), cylindres (indices
+  vides compris), compacité par les fermés, collecte finie dans t-compact-prop (ii)(iii), lemme du tube et produit
+  fini par récurrence (t-produit-fini) ; remarques de r-choix et o-ultrafiltre, zf-infini, un exemple d'ordin et de zf
+  ajustés. Lexique : entrée ensemble-fini-tarski (trois exemples) ; ensemble-fini renvoie à n-fini (v). Croisements :
+  zf 0 → 2 (minimum vérifié par recherche exhaustive), édifice 15 inchangé. Relu : rien de faux ; attribution à Tarski
+  neutralisée, une étape de l'équivalence de Kuratowski ajoutée, étiquette propre au nœud.
