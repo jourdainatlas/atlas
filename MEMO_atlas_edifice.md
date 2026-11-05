@@ -1998,3 +1998,14 @@ Journal des lots.
   vers Sᵐ, m ⩾ 1, mais cup-borsuk-ulam (i) parle de S¹ → S⁰ ; aucune fiche n'énonce « contractile ⇒ simplement
   connexe » ; lexique : morphisme-complexes, homotopie-complexes, morphisme-connexion (cochaînes), attachement-cellules
   (quotient), surface-genre, anneau-cohomologie (ℝPⁿ mod 2), application-impaire (Borsuk-Ulam) citent l'aval.
+- edo (edo, changement, Liapounov, courbes, surfaces) : 72 termes, 212 exemples, 42 schémas (portraits de phase,
+  solutions, courbes, surfaces en projection orthographique ; nouvel auxiliaire d'axes qui garde flèches et noms dans
+  le cadre). Sphère paramétrée par latitude et longitude : normale intérieure, W = id/R. Seul ⋆ : Vitali (§57 pour
+  Lebesgue). Relu deux fois : bloquants corrigés (image de (u, v², v³) : z² = y³ et non y² = z³ ; « trois quarts » de
+  grand cercle ; quatre faits géométriques affirmés sans preuve — cycloïde, cône, Scherk, faux aux coins, ombilics du
+  paraboloïde — démontrés ou retirés ; résultat de sf-exemples employé en amont ; « seules les orthogonales » ;
+  justification du méridien). Restent mineurs (figures) : étiquette traversée dans courbure-courbe-1, « x » sur le
+  point de départ dans fonction-liapounov-2, raccord des hélices dans torsion-courbe-2. Signalés, non faits : lexique,
+  equation-differentielle (« solution maximale »), courbure-courbe et repere-frenet (versions de l'espace),
+  courbure-gauss (Theorema egregium), geodesique (« minimise localement ») citent l'aval ; remarque de ly-equilibres
+  (coordonnées polaires hors amont) ; remarque d'ed-varietes (champ de S² dit lisse sans cartes).
