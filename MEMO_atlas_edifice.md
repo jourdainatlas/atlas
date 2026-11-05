@@ -1964,3 +1964,11 @@ Journal des lots.
   sur ℂ » ; polynome-caracteristique cite Cayley-Hamilton en aval ; matrice-permutation plus large que md-equivalence ;
   multiplicite-algebrique cite un fait de rd-stables, en aval. Proposé : (mℤ)(nℤ) = mnℤ et mℤ ∩ nℤ = ppcm(m, n)ℤ en
   remarque d'ac-chinois.
+- gf + cohgr : 45 termes, 135 exemples, 3 schémas (orbites de {id, τab} sur 𝒫({a, b, c}), suites de composition de
+  ℤ/30ℤ, partitions de 4 et groupes abéliens d'ordre 16). gf-actions n'a que Lagrange en amont (pas d'ordre d'un
+  élément) ; cohgr calcule H¹ à la main avant cg-h1. Ajout d'amont démontré : a-distingue (iv), si G/H a exactement
+  deux éléments, H est distingué (sans finitude ; cité par trois exemples). Relu deux fois : bloquants corrigés
+  (groupe-resoluble sans vrai contre-exemple alors que ⟨u, l⟩ ⊂ GL₂(ℤ/5ℤ), parfait d'ordre 120, en donne un ;
+  racine-primitive 3 faux pour n = q − 1 et terme d'aval ; annulation « deux à deux » d'un cocycle non démontrée).
+  Signalés, non faits : gf-diedraux, gf-alterne-4, gf-ordre-8 refont l'argument d'indice 2 (pourraient citer
+  a-distingue (iv)) ; lexique : groupe-simple, groupe-resoluble, suite-exacte-groupes citent des résultats d'aval.
