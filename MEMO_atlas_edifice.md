@@ -1943,3 +1943,13 @@ Journal des lots.
   amont ; ouverture de trois-cycle attribuant à la conjugaison la preuve de gs-sn, qui passe par un commutateur ;
   légende de lex-valeur-propre-2 contraire à la figure ; « triangulaire inférieure » non défini). Signalé, non fait :
   n-fini n'énonce pas qu'une réunion de deux ensembles finis est finie, ce que v-espace suppose (K^(I) sous-espace).
+- analyse-reelle : 45 termes, 135 exemples, 37 schémas (courbes, suites, intervalles, tangentes, sommes de Riemann).
+  Ordre serré : pas de règles de dérivation dans ar-deriv avant leur fiche ; π, périodes, Euler seulement en
+  ouverture. Relu deux fois : bloquants corrigés (bornes décimales arrondies dans le mauvais sens pour ln 3 et π,
+  puis, par un contrôle systématique du sens des arrondis ajouté à verif.py, pour ln 10 et e ; dérivées successives
+  de 1/(1 + x) attribuées à Taylor-Lagrange ; légende contraire à la figure) ; vrais contre-exemples ajoutés pour
+  exponentielle et cosinus-sinus ; pi 3 et nombre-e 3 démontrent un encadrement. Restent mineurs : répétition dans
+  cosinus-sinus 3, « imparité » superflue et ∫t² non justifiée dans pi 3, lien vers l'inégalité de la moyenne dans
+  nombre-e 3. Signalés, non faits : lexique, nombre-e, exponentielle, fonction-periodique, cosinus-sinus, pi
+  s'appuient sur des résultats d'aval (ex-serie, tg-cercle, tg-addition) ; c-uniforme (continuité en un point hors
+  amont) ; tr-ultrafiltres (topologie de ℝ et Borel-Lebesgue hors amont).
