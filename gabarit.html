@@ -172,6 +172,7 @@ section[id^="apropos-"] .corps-texte a:hover { text-decoration-color: var(--encr
   #impression { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   body.imprime > *:not(#impression) { display: none !important; }
   body.imprime #impression { display: block !important; }
+  .retour-edifice { display: none !important; }   /* impression native (Ctrl+P) : pas de bouton de retour sur la page */
 }
 #impression { --papier: #f4f5f7; --surface: #ffffff; --encre: #1b1e24; --encre-2: #4f5561; --encre-3: #858b96; --filet: #d8dbe1; --trame: #e3e6eb; --rouge: #b0001a; --rouge-fond: #fbeef0; --noeud: #ffffff; --arete: #a1a6af; --arete-vive: #1b1e24; --choix: #8a6400; --choix-fond: #fdf5dc; --corrige-fond: #eef6f1; --corrige-filet: #3f8f63; --c-fond: #666b74; --c-ord: #6a7d00; --c-alg: #d26d00; --c-top: #c0007a; --c-nb: #0070c0;      --c-ana: #00866b;     --c-geo: #8a45ab;     --c-mix: #2f343c;     --c-neutre: #2f343c;  --c-axiome: #c00000; color: var(--encre); background: #fff; font-family: var(--f-texte); font-size: 10.5pt; line-height: 1.5; }
 #impression a, #impression .lien-noeud, #impression .terme { color: inherit; text-decoration: none; border: 0; background: none; font: inherit; padding: 0; }
@@ -600,6 +601,35 @@ body.redim .vue { pointer-events: none; }
 }
 .onglets button[aria-selected="true"] { color: var(--encre); border-bottom-color: var(--rouge); font-weight: 500; }
 .onglet { padding: 20px 24px 40px; }
+/* Une cible atteinte par scrollIntoView ou par une ancre ne passe pas sous la barre collante (recherche et onglets),
+   dont la hauteur est mesurée (--haut-tete-panneau, posée par un ResizeObserver). */
+.onglet :is([id], h2, h3, details, .bouton, .remarque, .enonce) { scroll-margin-top: calc(var(--haut-tete-panneau, 52px) + 8px); }
+/* Passage d'un onglet à l'autre par un glissement du doigt : le contenu entre du côté d'où vient l'onglet. */
+@keyframes onglet-depuis-droite { from { transform: translateX(28px); opacity: .3; } to { transform: none; opacity: 1; } }
+@keyframes onglet-depuis-gauche { from { transform: translateX(-28px); opacity: .3; } to { transform: none; opacity: 1; } }
+.onglet.glisse-droite { animation: onglet-depuis-droite .2s ease-out; }
+.onglet.glisse-gauche { animation: onglet-depuis-gauche .2s ease-out; }
+@media (prefers-reduced-motion: reduce) { .onglet.glisse-droite, .onglet.glisse-gauche { animation: none; } }
+/* Retour à la page d'où l'on est venu (cours, annales, exercices…) : visible seulement après un lien vers l'édifice. */
+.retour-edifice {
+  position: fixed; z-index: 40; left: max(14px, env(safe-area-inset-left, 0px)); bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+  display: flex; align-items: stretch; max-width: min(440px, calc(100vw - 28px));
+  background: var(--surface); color: var(--encre); border: 1px solid var(--filet); border-radius: 999px; box-shadow: var(--ombre);
+  font-family: var(--f-ui); font-size: 13px; opacity: .97;
+}
+.retour-edifice[hidden] { display: none; }
+/* Sur téléphone, le bouton est posé sur le panneau : une marge sous le contenu pour qu'il n'en cache pas la fin.
+   Au bureau, il est posé sur le graphe. Bandeau d'installation (iOS, Android) présent : le bouton passe au-dessus. */
+@media (max-width: 860px) { body.avec-retour-edifice .onglet { padding-bottom: 88px; } }
+body.avec-appli-encart .retour-edifice { bottom: calc(var(--haut-appli-encart, 72px) + 22px + env(safe-area-inset-bottom, 0px)); }
+.retour-edifice button { border: 0; background: none; color: inherit; cursor: pointer; font: inherit; }
+.retour-edifice .re-aller { display: flex; align-items: center; gap: 7px; min-width: 0; padding: 7px 6px 7px 13px; border-radius: 999px 0 0 999px; }
+.retour-edifice .re-aller span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.retour-edifice .re-aller b { font-weight: 600; }
+.retour-edifice .re-aller svg { flex: none; width: 15px; height: 15px; }
+.retour-edifice .re-fermer { flex: none; width: 32px; padding: 0; color: var(--encre-3); font-size: 17px; line-height: 1; border-left: 1px solid var(--filet); border-radius: 0 999px 999px 0; }
+.retour-edifice button:hover { background: var(--trame); color: var(--encre); }
+.retour-edifice button:focus-visible { outline: 2px solid var(--rouge); outline-offset: -2px; }
 
 .fiche { font-family: var(--f-texte); font-size: 17px; line-height: 1.55; max-width: 46rem; }
 .fiche p { margin: 0 0 .7em; }
@@ -807,7 +837,7 @@ blockquote.redaction p { margin: 0; }
 
 /* bulle de définition au survol */
 .bulle {
-  position: fixed; z-index: 20; width: min(360px, calc(100vw - 24px)); box-sizing: border-box;
+  position: fixed; z-index: 45;   /* au-dessus du bouton de retour (40) */ width: min(360px, calc(100vw - 24px)); box-sizing: border-box;
   background: var(--surface); border: 1px solid var(--filet); border-radius: 8px; box-shadow: var(--ombre);
   padding: 12px 14px 10px; font-family: var(--f-texte); font-size: 15.5px; line-height: 1.5;
 }
@@ -858,6 +888,7 @@ blockquote.redaction p { margin: 0; }
 body.en-rubrique .legende { display: none; }
 .rubrique { min-height: 0; overflow: auto; background: var(--papier); }
 .rubrique[hidden] { display: none; }
+.rubrique:focus { outline: none; }   /* focus rendu à la rubrique au retour depuis l'édifice (tabindex -1) */
 .page { max-width: 1180px; margin: 0 auto; padding: 28px 24px 72px; }
 .page-tete { max-width: 52rem; margin-bottom: 22px; }
 .page-tete h2 { font-family: var(--f-titre); font-weight: 600; font-size: 32px; line-height: 1.15; margin: 0 0 10px; }
@@ -1308,7 +1339,11 @@ span.case:hover { border-style: dashed; color: inherit; }
   .corps { display: block; }
   .separateur { display: none; }
   .cadre { height: 64vh; border-right: 0; border-bottom: 1px solid var(--filet); }
-  .panneau { overflow: visible; }
+  .panneau { overflow: visible; overflow-x: clip; }   /* clip : l'animation du glissement ne crée pas de défilement horizontal, et la barre reste collante */
+  /* La barre (recherche et onglets) reste collée en haut de l'écran quand on descend dans la fiche ou le lexique ;
+     sous l'encoche, en mode application, elle s'arrête sous la bande de la zone sûre (body::before). */
+  .tete-panneau { top: env(safe-area-inset-top, 0px); }
+  .onglet :is([id], h2, h3, details, .bouton, .remarque, .enonce) { scroll-margin-top: calc(var(--haut-tete-panneau, 52px) + 8px + env(safe-area-inset-top, 0px)); }
   .onglet { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
   .cherche-edifice { padding-left: 16px; padding-right: 16px; }
   .cherche-edifice input { font-size: 16px; }
@@ -1325,6 +1360,10 @@ span.case:hover { border-style: dashed; color: inherit; }
   .chercher-tout { justify-self: end; margin-left: 10px !important; }
   .partager { margin-left: 8px; padding: 4px 11px; }
   .fil { grid-column: 1 / -1; grid-row: 2; }
+  /* Un titre de graphe long (« Suites de composition et théorème de Jordan-Hölder ») passe à la ligne au lieu de
+     faire défiler la page en largeur ; le titre reste entier, sans troncature. */
+  .fil li { white-space: normal; min-width: 0; align-items: baseline; }   /* « › » face à la première ligne */
+  .fil button { min-width: 0; text-align: left; overflow-wrap: anywhere; }
   .commandes button { min-width: 30px; padding: 0 6px; }
 }
 @media (max-width: 350px) { .marque { letter-spacing: .04em; gap: 6px; font-size: 16px; } .chercher-tout, .bouton-theme, .signaler { width: 32px; height: 32px; } .chercher-tout { margin-left: 4px !important; } .partager { margin-left: 4px; padding: 3px 7px; font-size: 12px; } }
@@ -1411,6 +1450,13 @@ span.case:hover { border-style: dashed; color: inherit; }
     </details>
   </header>
 
+  <!-- Retour à la page d'origine (cours, feuille, accueil…) : placé ici pour venir tôt dans l'ordre de tabulation ;
+       en position fixe, il ne prend aucune place dans la grille. -->
+  <nav class="retour-edifice" id="retour-edifice" aria-label="Retour à la page précédente" hidden>
+    <button type="button" class="re-aller" id="retour-edifice-aller"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Revenir à <b id="retour-edifice-titre"></b></span></button>
+    <button type="button" class="re-fermer" id="retour-edifice-fermer" aria-label="Masquer ce bouton de retour" title="Masquer">×</button>
+  </nav>
+
   <main class="corps">
     <section class="cadre" aria-label="Graphe de dépendances">
       <div class="vue" id="vue">
@@ -1453,6 +1499,7 @@ span.case:hover { border-style: dashed; color: inherit; }
 
   <main class="rubrique" id="rubrique" hidden></main>
 </div>
+
 
 <div class="bulle" id="bulle" role="tooltip" hidden></div>
 
@@ -1713,6 +1760,8 @@ function chargerBranche(gid) {
 
 /* ------------------------------------------------------------ navigation */
 function aller(gid, choisi = null, opts = {}) {
+  // position de l'onglet quitté (Fiche de la fiche courante, ou Lexique), rendue quand on y revient
+  if (!enRubrique()) memoriserOngletEdifice();
   quitterRubrique();
   // Pseudo-fiche « État de l'édifice » (#edifice/etat) : graphe principal, inventaire dans le panneau.
   etat.vue = opts.vue === 'etat' && gid === D.racine && !choisi ? 'etat' : null;
@@ -1748,11 +1797,18 @@ function aller(gid, choisi = null, opts = {}) {
   }
   fil();
   fiche();
+  defilsOngletEdifice.delete(cleOngletEdifice('fiche'));   // une fiche que l'on ouvre se lit depuis son début
   surlignerDependancesGraphe();
-  montrerOnglet('fiche');
+  montrerOnglet('fiche', { sansMemoire: true });
   if (typeof marquerMenu === 'function') marquerMenu('edifice');
   $('#remonter').hidden = !D.graphes[gid].parent;
-  try { history.replaceState(null, '', '#' + ancreEdifice); } catch (e) {}
+  // L'état de l'entrée d'historique (numéro, origine du bouton de retour) est conservé ; seul le lien avec les
+  // termes ouverts depuis une fiche (atlasTermes) tombe, puisque l'entrée désigne désormais une autre fiche.
+  const st = { ...etatHistoriqueEdifice() };
+  delete st.atlasTermes;
+  ecrireHistoriqueEdifice(st, '#' + ancreEdifice);
+  noterVueEdifice();
+  majRetourEdifice();
 }
 
 function chemin(gid) {
@@ -1796,6 +1852,9 @@ function remonter() {
 function ouvrirNoeud(id) {
   const n = D.noeuds[id];
   if (!n) return;
+  // Depuis un cours, une feuille, l'accueil… : une nouvelle entrée d'historique, pour que « Précédent » et le
+  // bouton de retour ramènent à la page quittée (aller() remplace l'entrée courante).
+  if (enRubrique()) entrerEdificeDepuisRubrique();
   // Rouvrir à sa place la fiche dont les fondements ou la portée sont surlignés (« Voir cette notion à sa
   // place ») garde le surlignage, comme le bouton « Revenir au graphe » ; toute autre fiche l'efface.
   aller(n.graphe, id, etat.dep && etat.dep.id === id ? { dep: etat.dep } : {});
@@ -2284,15 +2343,20 @@ function construireLexique() {
   filtrer();   // ce qui a pu être tapé dans le filtre pendant le chargement
 }
 // deplier : la pastille des exemples de l'entrée est ouverte (clic sur un terme, dont la bulle l'annonce).
-function ouvrirTerme(id, deplier = false) {
+// opts.historique (geste de l'utilisateur) : le terme reçoit sa propre entrée d'historique #lexique/<id>, si bien que
+// « Précédent » ramène à la fiche, à l'endroit quitté ; opts.defilement === false : pas de défilement jusqu'à
+// l'entrée (retour par l'historique, la position mémorisée est rendue à la place).
+function ouvrirTerme(id, deplier = false, opts = {}) {
   cacherBulle(true);
-  if (enRubrique()) aller(etat.graphe || D.racine, etat.choisi);   // le lexique est dans le panneau de l'édifice
+  if (opts.historique) pousserTermeLexique(id);
+  else if (enRubrique()) aller(etat.graphe || D.racine, etat.choisi);   // le lexique est dans le panneau de l'édifice
   $('#filtre').value = '';
   montrerOnglet('lexique');
   filtrer();
   remplirLexique().then(() => {
     const e = document.getElementById('lx-' + id);
     if (!e || $('#onglet-lexique').hidden) return;   // onglet quitté pendant le chargement
+    if (opts.defilement === false) return;
     // le titre de l'entrée ne doit pas passer sous la barre collante (recherche et onglets), dont la hauteur
     // varie avec la largeur : on la mesure
     const tp = document.querySelector('.tete-panneau');
@@ -2311,13 +2375,322 @@ function filtrer() {
     e.hidden = q !== '' && !t.includes(q);
   });
 }
-function montrerOnglet(nom) {
+// Chaque onglet garde sa position de défilement : celle de l'onglet quitté est mémorisée (Fiche : pour la fiche
+// affichée ; Lexique : une seule), celle de l'onglet montré est rendue ; sans mémoire, on part du haut de l'onglet
+// (sur téléphone, sans redescendre si l'on regardait le graphe). opts.sansMemoire : l'appelant a déjà mémorisé
+// (aller) ; opts.sansDefilement : l'appelant pose lui-même la position ; opts.glisse : 'gauche' ou 'droite'.
+function montrerOnglet(nom, opts = {}) {
+  const avant = ongletCourantEdifice(), y0 = defilEdifice();   // avant de masquer l'onglet : la page peut raccourcir
+  if (avant !== nom && !opts.sansMemoire) memoriserOngletEdifice(avant);
   for (const t of ['fiche', 'lexique']) {
     $('#tab-' + t).setAttribute('aria-selected', String(t === nom));
     $('#onglet-' + t).hidden = t !== nom;
   }
   if (nom === 'lexique') remplirLexique().catch(() => {});
+  if (avant !== nom && !opts.sansDefilement) rendreOngletEdifice(nom, y0);
+  const o = $('#onglet-' + nom);
+  o.classList.remove('glisse-gauche', 'glisse-droite');
+  if (opts.glisse) { void o.offsetWidth; o.classList.add('glisse-' + opts.glisse); }
 }
+
+/* ------------------------------------------------------------ positions de lecture, historique, retour, glissement */
+// Défilement du panneau : sur téléphone, c'est la page qui défile (graphe au-dessus, panneau en dessous) ; sur
+// ordinateur, le panneau seul (#panneau).
+const etroitEdifice = () => matchMedia('(max-width: 860px)').matches;
+const mouvementReduitEdifice = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+const defilsOngletEdifice = new Map();   // clé d'onglet → { y, etroit }
+function ongletCourantEdifice() { return $('#tab-lexique').getAttribute('aria-selected') === 'true' ? 'lexique' : 'fiche'; }
+function cleOngletEdifice(nom) { return nom === 'lexique' ? 'lexique' : 'fiche:' + ancreEdifice; }
+function defilEdifice() { return Math.round(etroitEdifice() ? scrollY : $('#panneau').scrollTop); }
+// Position où le haut de l'onglet touche le bas de l'en-tête collant : 0 sur ordinateur, le haut du panneau sur téléphone.
+function hautPanneauEdifice() {
+  if (!etroitEdifice()) return 0;
+  const zs = parseFloat(getComputedStyle(document.querySelector('.tete-panneau')).top) || 0;
+  return Math.max(0, Math.round($('#panneau').getBoundingClientRect().top + scrollY - zs));
+}
+function poserDefilEdifice(y, doux = false) {
+  const behavior = doux && !mouvementReduitEdifice() ? 'smooth' : 'auto';
+  if (etroitEdifice()) scrollTo({ top: y, behavior }); else $('#panneau').scrollTo({ top: y, behavior });
+}
+function memoriserOngletEdifice(nom = ongletCourantEdifice()) {
+  if (enRubrique() || !ancreEdifice || !$('#onglet-fiche').childElementCount) return;
+  defilsOngletEdifice.set(cleOngletEdifice(nom), { y: defilEdifice(), etroit: etroitEdifice() });
+}
+function rendreOngletEdifice(nom, y0 = defilEdifice()) {
+  const m = defilsOngletEdifice.get(cleOngletEdifice(nom));
+  const y = m && m.etroit === etroitEdifice() ? m.y : Math.min(y0, hautPanneauEdifice());
+  poserDefilEdifice(y);
+  // Lexique encore en chargement : la page est courte, la position est rognée ; on la repose à l'arrivée des entrées
+  // (ouvrirTerme, appelé après, défile ensuite jusqu'à son terme).
+  if (nom === 'lexique' && !document.querySelector('#lexique .entree-lex'))
+    remplirLexique().then(() => { if (ongletCourantEdifice() === 'lexique') poserDefilEdifice(y); }, () => {});
+}
+// Un clic sur l'onglet déjà actif remonte en haut de son contenu.
+function remonterOngletEdifice() {
+  const haut = hautPanneauEdifice();
+  if (defilEdifice() > haut) poserDefilEdifice(haut, true);
+}
+// Changement d'onglet demandé par l'utilisateur (clic, glissement). Revenir à la fiche depuis un terme ouvert par
+// un clic (#lexique/<id>, atlasTermes entrées après celle de la fiche) remonte l'historique d'autant : « Précédent »
+// et l'onglet mènent au même endroit, sans entrée en double.
+let ongletVouluEdifice = null;
+function choisirOngletEdifice(nom, glisse) {
+  if (nom === ongletCourantEdifice()) { if (!glisse) remonterOngletEdifice(); return; }
+  montrerOnglet(nom, { glisse });
+  if (nom === 'fiche' && /^#lexique(\/|$)/.test(location.hash)) {
+    const k = etatHistoriqueEdifice().atlasTermes;
+    if (k) { ongletVouluEdifice = 'fiche'; history.go(-k); }
+    else ecrireHistoriqueEdifice(etatHistoriqueEdifice(), '#' + ancreEdifice);
+  }
+}
+
+// Historique. Chaque entrée porte dans history.state un numéro (atlasN), posé à sa création ; une entrée sans numéro
+// est donc neuve (lien suivi), une entrée numérotée est retrouvée (Précédent, Suivant, bouton de retour). Champs :
+// atlasOrigine { id, n, hash, titre, profondeur } (id : propre à chaque passage, pour le bouton écarté ; page d'où l'on est entré dans l'édifice, profondeur entrées plus tôt),
+// atlasTermes (nombre d'entrées de termes depuis la fiche), atlasPos (position de lecture de l'entrée, mémorisée
+// au clic et à la fin de chaque défilement : r pour une rubrique, e pour l'édifice).
+let numeroEntreeEdifice = 0;
+try { numeroEntreeEdifice = +sessionStorage.getItem('atlas-entree') || 0; } catch (e) {}
+function nouveauNumeroEdifice() {
+  numeroEntreeEdifice++;
+  try { sessionStorage.setItem('atlas-entree', String(numeroEntreeEdifice)); } catch (e) {}
+  return numeroEntreeEdifice;
+}
+function etatHistoriqueEdifice() { const s = history.state; return s && typeof s === 'object' ? s : {}; }
+function ecrireHistoriqueEdifice(st, url, pousser = false) {
+  try { history[pousser ? 'pushState' : 'replaceState'](st, '', url ?? location.href); } catch (e) {}   // Safari limite le nombre d'appels
+  if (vueEdifice) { vueEdifice.etat = etatHistoriqueEdifice(); vueEdifice.hash = location.hash; }
+}
+// Vue courante, relevée après chaque navigation : au changement d'ancre suivant, c'est la vue quittée.
+let vueEdifice = null, traverseeEdifice = false;
+function libelleVueEdifice() {
+  const t = [...document.querySelectorAll('#fil button')].map(b => b.textContent.trim()).filter(Boolean);
+  return t.join(' › ') || 'la page précédente';
+}
+function noterVueEdifice() {
+  vueEdifice = { rubrique: enRubrique(), hash: location.hash, titre: libelleVueEdifice(), etat: etatHistoriqueEdifice() };
+}
+// Éléments focalisables d'une rubrique, dans l'ordre du document : l'élément d'où l'on part est retenu par son rang.
+const FOCUS_RUBRIQUE_EDIFICE = 'a[href], button, summary, input, select, textarea, [tabindex]:not([tabindex="-1"])';
+// Signature d'un élément (balise, nœud ou terme visé, début du texte) : la page recomposée peut avoir décalé les rangs.
+const signatureFocusEdifice = e => [e.tagName, e.dataset.n || e.dataset.g || e.getAttribute('href') || '', e.textContent.trim().slice(0, 40)].join('|');
+function retrouverFocusEdifice(z, f) {
+  if (!Array.isArray(f)) return null;
+  const tous = [...z.querySelectorAll(FOCUS_RUBRIQUE_EDIFICE)];
+  let mieux = null, ecart = Infinity;
+  tous.forEach((e, i) => { if (Math.abs(i - f[0]) < ecart && signatureFocusEdifice(e) === f[1]) { mieux = e; ecart = Math.abs(i - f[0]); } });
+  return mieux;
+}
+function memoriserVueEdifice(ev) {
+  const pos = { hash: location.hash };
+  if (enRubrique()) {
+    const z = $('#rubrique'), pa = z.querySelector('.pa-corps');
+    pos.r = [Math.round(scrollY), Math.round(z.scrollTop), pa ? Math.round(pa.scrollTop) : 0];
+    const cible = ev && ev.target && ev.target.closest && ev.target.closest(FOCUS_RUBRIQUE_EDIFICE);
+    const avant = etatHistoriqueEdifice().atlasPos;
+    if (cible && z.contains(cible)) pos.f = [[...z.querySelectorAll(FOCUS_RUBRIQUE_EDIFICE)].indexOf(cible), signatureFocusEdifice(cible)];
+    else if (avant && avant.hash === pos.hash && avant.f !== undefined) pos.f = avant.f;   // fin de défilement : on garde l'élément
+  } else if (ancreEdifice && $('#onglet-fiche').childElementCount) {
+    const o = ongletCourantEdifice();
+    pos.e = { onglet: o, cle: cleOngletEdifice(o), y: defilEdifice(), etroit: etroitEdifice() };
+  } else return;
+  // Une entrée sans numéro (même ancre suivie deux fois, sans hashchange) en reçoit un : on y est passé.
+  const st = etatHistoriqueEdifice();
+  ecrireHistoriqueEdifice({ ...st, atlasN: st.atlasN || nouveauNumeroEdifice(), atlasPos: pos });
+}
+// Entrée dans l'édifice par un bouton d'une rubrique (puce d'un nœud, terme) : nouvelle entrée, qui retient l'origine.
+function entrerEdificeDepuisRubrique() {
+  memoriserVueEdifice();
+  const st = etatHistoriqueEdifice();
+  ecrireHistoriqueEdifice({ atlasN: nouveauNumeroEdifice(), atlasOrigine: { id: nouveauNumeroEdifice(), n: st.atlasN, hash: location.hash, titre: libelleVueEdifice(), profondeur: 1 } }, location.href, true);
+}
+// Terme ouvert par un clic : entrée #lexique/<id>.
+function pousserTermeLexique(id) {
+  const url = '#lexique/' + id;
+  if (enRubrique()) {
+    entrerEdificeDepuisRubrique();
+    aller(etat.graphe || D.racine, etat.choisi);
+    ecrireHistoriqueEdifice(etatHistoriqueEdifice(), url);
+    noterVueEdifice();
+    return;
+  }
+  if (location.hash === url) return;
+  memoriserVueEdifice();
+  const st = etatHistoriqueEdifice(), surTerme = /^#lexique(\/|$)/.test(location.hash);
+  const neuf = { atlasN: nouveauNumeroEdifice() };
+  const k = surTerme ? (st.atlasTermes ? st.atlasTermes + 1 : 0) : 1;
+  if (k) neuf.atlasTermes = k;
+  if (st.atlasOrigine) neuf.atlasOrigine = { ...st.atlasOrigine, profondeur: st.atlasOrigine.profondeur + 1 };
+  ecrireHistoriqueEdifice(neuf, url, true);
+  noterVueEdifice();
+  majRetourEdifice();
+}
+// Changement d'ancre (lien suivi, Précédent, Suivant) : avant depuisAncre, on numérote une entrée neuve et, si elle
+// mène dans l'édifice, on y inscrit l'origine (la rubrique quittée, ou l'origine de l'entrée quittée).
+const estAncreEdificeHash = h => { const r = decodeURIComponent(h.slice(1)).split(/[/.]/)[0]; return !!h && h !== '#' && !(r in RUBRIQUES); };
+// Une entrée sans numéro n'est pas toujours neuve : une entrée d'avant cette version (état nul), un replaceState
+// refusé par Safari, une ancre tapée dans la barre d'adresse… Une origine n'est donc inscrite que si un geste de
+// l'utilisateur dans la page (clic, touche) précède le changement d'ancre de moins d'une seconde, et jamais quand
+// l'API Navigation dit qu'il s'agit d'un parcours de l'historique.
+let dernierGesteEdifice = -1e9;
+const marquerGesteEdifice = () => { dernierGesteEdifice = performance.now(); };
+document.addEventListener('click', marquerGesteEdifice, true);
+document.addEventListener('keydown', marquerGesteEdifice, true);
+function avantAncreEdifice() {
+  const st = etatHistoriqueEdifice();
+  traverseeEdifice = !!st.atlasN;
+  if (traverseeEdifice) return;
+  const neuf = { ...st, atlasN: nouveauNumeroEdifice() }, v = vueEdifice;
+  let parcours = false;
+  try { parcours = window.navigation && navigation.transition && navigation.transition.navigationType === 'traverse'; } catch (e) {}
+  const geste = performance.now() - dernierGesteEdifice < 1000 && !parcours;
+  if (v && geste && estAncreEdificeHash(location.hash)) {
+    if (v.rubrique) neuf.atlasOrigine = { id: nouveauNumeroEdifice(), n: v.etat.atlasN, hash: v.hash, titre: v.titre, profondeur: 1 };
+    else if (v.etat.atlasOrigine) neuf.atlasOrigine = { ...v.etat.atlasOrigine, profondeur: v.etat.atlasOrigine.profondeur + 1 };
+  }
+  ecrireHistoriqueEdifice(neuf);
+}
+// Après depuisAncre : une entrée retrouvée rend sa position (rubrique retrouvée depuis l'édifice ; onglet et
+// défilement de l'édifice), puis la vue est relevée et le bouton de retour mis à jour.
+function apresAncreEdifice() {
+  const v = vueEdifice, p = etatHistoriqueEdifice().atlasPos;
+  if (traverseeEdifice && p && p.hash === location.hash) {
+    if (enRubrique() && p.r && v && !v.rubrique) rendreRubriqueEdifice(p.r, p.f);
+    else if (!enRubrique() && p.e && !(ongletVouluEdifice && ongletVouluEdifice !== p.e.onglet)) rendrePositionEdifice(p.e);
+  }
+  ongletVouluEdifice = null;
+  traverseeEdifice = false;
+  noterVueEdifice();
+  majRetourEdifice();
+}
+function rendrePositionEdifice(e) {
+  if (e.etroit !== etroitEdifice()) return;
+  if (e.onglet !== ongletCourantEdifice()) montrerOnglet(e.onglet, { sansDefilement: true });
+  if (e.cle !== cleOngletEdifice(e.onglet)) return;
+  const poser = () => poserDefilEdifice(e.y);
+  if (e.onglet === 'lexique') remplirLexique().then(poser, () => {});
+  else { poser(); requestAnimationFrame(poser); }
+}
+// Rubrique retrouvée : la page est recomposée en haut ; on rend sa position, et on la repose pendant 1,5 s au plus
+// (images, PDF qui s'agrandissent), tant que l'utilisateur ne fait rien.
+// f : rang de l'élément d'où l'on était parti, qui reprend le focus (sinon la rubrique elle-même).
+function rendreRubriqueEdifice(r, f, avecFocus = true) {
+  const z = $('#rubrique');
+  const poser = () => { scrollTo(0, r[0]); z.scrollTop = r[1]; const pa = z.querySelector('.pa-corps'); if (pa) pa.scrollTop = r[2]; };
+  poser();
+  const el = retrouverFocusEdifice(z, f);
+  if (avecFocus) {
+    if (!z.hasAttribute('tabindex')) z.setAttribute('tabindex', '-1');
+    if (el) el.focus({ preventScroll: true });
+    if (!el || document.activeElement !== el) z.focus({ preventScroll: true });   // élément masqué ou disparu : la rubrique
+  }
+  let k = 0, minuteur = 0;
+  const gestes = ['wheel', 'touchstart', 'keydown', 'pointerdown'];
+  const fin = () => { clearInterval(minuteur); gestes.forEach(t => removeEventListener(t, fin, true)); };
+  gestes.forEach(t => addEventListener(t, fin, { capture: true, passive: true }));
+  minuteur = setInterval(() => { if (++k > 15 || !enRubrique()) fin(); else poser(); }, 100);
+}
+// Bouton de retour : présent dans l'édifice quand l'entrée courante a une origine que l'utilisateur n'a pas écartée.
+// Écarté par × : gardé pour la session de l'onglet (sessionStorage), sous try/catch.
+const originesFermeesEdifice = new Set();
+try { for (const i of JSON.parse(sessionStorage.getItem('atlas-retour-ferme') || '[]')) originesFermeesEdifice.add(i); } catch (e) {}
+// Origine cohérente : un numéro, une profondeur entière ≥ 1, une ancre de rubrique (jamais de l'édifice), et une
+// entrée courante numérotée.
+function origineSureEdifice(st) {
+  const o = st.atlasOrigine;
+  return !!(o && st.atlasN && Number.isInteger(o.id) && Number.isInteger(o.profondeur) && o.profondeur >= 1
+    && typeof o.hash === 'string' && !estAncreEdificeHash(o.hash) && typeof o.titre === 'string');
+}
+function majRetourEdifice() {
+  const b = $('#retour-edifice');
+  if (!b) return;
+  const st = etatHistoriqueEdifice(), o = st.atlasOrigine;
+  const voir = origineSureEdifice(st) && !enRubrique() && !originesFermeesEdifice.has(o.id);
+  b.hidden = !voir;
+  document.body.classList.toggle('avec-retour-edifice', voir);   // marge sous le contenu : le bouton ne cache pas la fin de la fiche
+  if (!voir) return;
+  $('#retour-edifice-titre').textContent = o.titre;
+  $('#retour-edifice-aller').setAttribute('aria-label', `Revenir à ${o.titre}, à l'endroit quitté`);
+  $('#retour-edifice-aller').title = `Revenir à ${o.titre}, à l'endroit quitté`;
+}
+$('#retour-edifice-aller').addEventListener('click', () => {
+  const o = etatHistoriqueEdifice().atlasOrigine;
+  if (o && o.profondeur > 0) history.go(-o.profondeur);
+});
+$('#retour-edifice-fermer').addEventListener('click', () => {
+  const o = etatHistoriqueEdifice().atlasOrigine;
+  if (o) {
+    originesFermeesEdifice.add(o.id);
+    try { sessionStorage.setItem('atlas-retour-ferme', JSON.stringify([...originesFermeesEdifice].slice(-50))); } catch (e) {}
+  }
+  majRetourEdifice();
+  $('#tab-' + ongletCourantEdifice()).focus({ preventScroll: true });
+});
+// Mémorisation de la position de lecture dans l'entrée courante : avant tout clic (lien, puce, bouton qui change
+// d'ancre), et à la fin de chaque défilement.
+document.addEventListener('click', ev => memoriserVueEdifice(ev), true);
+// Bandeau d'installation (appliEncart, fixe en bas) : sa hauteur, pour que le bouton de retour passe au-dessus.
+try {
+  const majAppliEncartEdifice = () => {
+    const e = document.getElementById('appli-encart');
+    document.body.classList.toggle('avec-appli-encart', !!e);
+    if (e) document.documentElement.style.setProperty('--haut-appli-encart', Math.ceil(e.getBoundingClientRect().height) + 'px');
+  };
+  new MutationObserver(majAppliEncartEdifice).observe(document.body, { childList: true });
+} catch (e) {}
+let minuteurVueEdifice = 0;
+document.addEventListener('scroll', () => {
+  clearTimeout(minuteurVueEdifice);
+  const h = location.hash;
+  minuteurVueEdifice = setTimeout(() => { if (location.hash === h && !traverseeEdifice) memoriserVueEdifice(); }, 400);
+}, { capture: true, passive: true });
+// Hauteur de la barre collante, pour les marges de défilement des cibles (--haut-tete-panneau).
+try {
+  new ResizeObserver(([e]) => document.documentElement.style.setProperty('--haut-tete-panneau', Math.ceil(e.target.getBoundingClientRect().height) + 'px'))
+    .observe(document.querySelector('.tete-panneau'));
+} catch (e) {}
+// Glissement latéral du doigt sur le panneau (écran tactile) : vers la gauche, Fiche → Lexique ; vers la droite,
+// Lexique → Fiche. Le geste doit être net : 64 px au moins, pente au plus 1/2 (27°), en moins de 0,7 s. Il est
+// ignoré s'il part du bord de l'écran (gestes du navigateur), d'un champ, d'un élément qui défile en largeur
+// (formule large, tableau, schéma), à plusieurs doigts, ou s'il sélectionne du texte. Écouteurs passifs : le
+// défilement vertical et la sélection restent ceux du navigateur. Le graphe (#vue) est hors du panneau.
+const GLISSE_EDIFICE = { distance: 64, pente: 0.5, duree: 700, bord: 24, vertical: 24 };
+let glisseEdifice = null;
+function defileEnLargeurEdifice(el) {
+  const p = $('#panneau');
+  for (; el && el !== p && el.nodeType === 1; el = el.parentElement) {
+    if (el.scrollWidth > el.clientWidth + 1 && /^(auto|scroll)$/.test(getComputedStyle(el).overflowX)) return true;
+  }
+  return false;
+}
+$('#panneau').addEventListener('touchstart', ev => {
+  glisseEdifice = null;
+  if (ev.touches.length !== 1) return;
+  if (window.visualViewport && visualViewport.scale > 1.01) return;   // page agrandie au pincement : le doigt la déplace
+  const t = ev.touches[0];
+  if (t.clientX < GLISSE_EDIFICE.bord || t.clientX > innerWidth - GLISSE_EDIFICE.bord) return;
+  if (ev.target.closest && ev.target.closest('input, textarea, select, .resultats-edifice')) return;
+  if (defileEnLargeurEdifice(ev.target)) return;
+  glisseEdifice = { x: t.clientX, y: t.clientY, t: performance.now() };
+}, { passive: true });
+$('#panneau').addEventListener('touchmove', ev => {
+  if (!glisseEdifice) return;
+  if (ev.touches.length !== 1) { glisseEdifice = null; return; }
+  const t = ev.touches[0], dx = t.clientX - glisseEdifice.x, dy = t.clientY - glisseEdifice.y;
+  if (Math.abs(dy) > GLISSE_EDIFICE.vertical && Math.abs(dy) > Math.abs(dx)) glisseEdifice = null;   // défilement vertical commencé
+}, { passive: true });
+$('#panneau').addEventListener('touchcancel', () => { glisseEdifice = null; }, { passive: true });
+$('#panneau').addEventListener('touchend', ev => {
+  const g = glisseEdifice; glisseEdifice = null;
+  if (!g || ev.touches.length || !ev.changedTouches.length) return;
+  const t = ev.changedTouches[0], dx = t.clientX - g.x, dy = t.clientY - g.y;
+  if (performance.now() - g.t > GLISSE_EDIFICE.duree || Math.abs(dx) < GLISSE_EDIFICE.distance || Math.abs(dy) > GLISSE_EDIFICE.pente * Math.abs(dx)) return;
+  if (String(getSelection && getSelection()).trim()) return;
+  if (enRubrique()) return;
+  const actuel = ongletCourantEdifice();
+  if (dx < 0 && actuel === 'fiche') choisirOngletEdifice('lexique', 'droite');
+  else if (dx > 0 && actuel === 'lexique') choisirOngletEdifice('fiche', 'gauche');
+}, { passive: true });
 
 /* ------------------------------------------------------------ recherche dans tout l'édifice */
 // Chaque nœud de tous les graphes (théories, sous-théories, chapitres) est cherché par son titre et son
@@ -2526,7 +2899,7 @@ document.querySelectorAll('.legende').forEach(d => d.addEventListener('toggle', 
 window.addEventListener('resize', () => document.querySelectorAll('.legende[open]').forEach(placerLegende));
 document.addEventListener('click', ev => {
   const t = ev.target.closest('.terme');
-  if (t && t.dataset.g) { ev.preventDefault(); ouvrirTerme(t.dataset.g, true); return; }
+  if (t && t.dataset.g) { ev.preventDefault(); ouvrirTerme(t.dataset.g, true, { historique: true }); return; }
   // Fondements, Portée (fiche) : un clic surligne, un second efface ; « Voir dans l'édifice » et son retour
   // changent de graphe en gardant le surlignage.
   const dp = ev.target.closest('#onglet-fiche [data-dep]');
@@ -2555,7 +2928,7 @@ document.addEventListener('click', ev => {
 });
 document.addEventListener('keydown', ev => {
   const t = ev.target.closest && ev.target.closest('.terme');
-  if (t && (ev.key === 'Enter' || ev.key === ' ')) { ev.preventDefault(); ouvrirTerme(t.dataset.g, true); }
+  if (t && (ev.key === 'Enter' || ev.key === ' ')) { ev.preventDefault(); ouvrirTerme(t.dataset.g, true, { historique: true }); }
   if (ev.key === 'Escape') cacherBulle(true);
   // Échap efface le surlignage des fondements ou de la portée (sauf dans un champ, le menu ou le signalement,
   // qui ont leur propre usage de la touche)
@@ -2580,8 +2953,9 @@ document.addEventListener('focusin', ev => { const t = ev.target.closest('.terme
 document.addEventListener('focusout', ev => { if (ev.target.closest('.terme')) cacherBulle(false); });
 document.addEventListener('scroll', () => cacherBulle(true), true);
 
-$('#tab-fiche').addEventListener('click', () => montrerOnglet('fiche'));
-$('#tab-lexique').addEventListener('click', () => montrerOnglet('lexique'));
+// Onglets : changement d'onglet, ou, sur l'onglet déjà actif, retour en haut de son contenu.
+$('#tab-fiche').addEventListener('click', () => choisirOngletEdifice('fiche'));
+$('#tab-lexique').addEventListener('click', () => choisirOngletEdifice('lexique'));
 // « Réessayer » après un échec du chargement du lexique (onglet Lexique ou bulle d'un terme)
 document.addEventListener('click', ev => {
   if (!ev.target.closest('[data-lexique-reessayer]')) return;
@@ -4166,16 +4540,24 @@ function depuisAncre() {
   if (h === 'edifice/etat') { aller(D.racine, null, { vue: 'etat' }); return; }
   // #lexique : l'onglet Lexique du panneau de l'édifice ; #lexique/<id> : ce terme, mis en évidence.
   if (r === 'lexique') {
-    const ancre = location.hash;
-    aller(etat.graphe || D.racine, etat.choisi);
-    if (reste[0] && D.lexique[reste[0]]) ouvrirTerme(reste[0]); else montrerOnglet('lexique');
-    // aller() a remis l'ancre du graphe : on garde #lexique/<id> dans la barre d'adresse (partage, Précédent)
-    try { history.replaceState(null, '', ancre); } catch (e) {}
+    const ancre = location.hash, st = etatHistoriqueEdifice();
+    // Déjà dans l'édifice : la fiche reste telle quelle (preuves dépliées, position) ; seul l'onglet change.
+    if (enRubrique() || !$('#onglet-fiche').childElementCount) aller(etat.graphe || D.racine, etat.choisi);
+    // Entrée retrouvée par l'historique, avec sa position : pas de défilement jusqu'au terme (apresAncreEdifice la rend).
+    const garder = traverseeEdifice && st.atlasPos && st.atlasPos.hash === ancre && st.atlasPos.e;
+    if (reste[0] && D.lexique[reste[0]]) ouvrirTerme(reste[0], false, { defilement: !garder }); else montrerOnglet('lexique');
+    // aller() a remis l'ancre du graphe : on garde #lexique/<id> dans la barre d'adresse (partage, Précédent), et l'état de l'entrée
+    ecrireHistoriqueEdifice(st, ancre);
     return;
   }
   const [g, n] = h.split('.');
   const valide = n && D.noeuds[n] && (D.noeuds[n].graphe === g || (D.graphes[g] && D.graphes[g].noeuds.some(p => p.id === n && p.entree)));
-  if (g && D.graphes[g]) aller(g, valide ? n : null);
+  if (g && D.graphes[g]) {
+    // Retour à la fiche affichée (Précédent après un terme ouvert, onglet Fiche) : elle n'est pas recomposée, ce
+    // qui garde ses preuves dépliées et sa position ; seul l'onglet Fiche revient.
+    if (!enRubrique() && h === ancreEdifice && etat.vue !== 'etat' && $('#onglet-fiche').childElementCount) { montrerOnglet('fiche'); return; }
+    aller(g, valide ? n : null);
+  }
   else aller(D.racine);
 }
 /* ---- Mode clair / sombre, mémorisé pour la session (cookie sans date d'expiration + sessionStorage) */
@@ -4452,6 +4834,14 @@ addEventListener('appinstalled', () => $('#appli-encart')?.remove());
 // iPhone et iPad : Safari ne propose pas l'installation de lui-même ; on explique le geste.
 if (appliIos && matchMedia('(max-width: 1100px)').matches) setTimeout(() => appliEncart(
   'Installez ATLAS sur votre écran d\'accueil : touchez <svg class="ae-partage" viewBox="0 0 24 24" aria-label="Partager"><path d="M12 3v12M7.5 7.5 12 3l4.5 4.5M6 11H5v10h14V11h-1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg> <b>Partager</b>, puis <b>Sur l\'écran d\'accueil</b>.'), 4000);
+// Numérotation des entrées et origine du bouton de retour (avantAncreEdifice), puis position rendue (apresAncreEdifice).
+addEventListener('hashchange', avantAncreEdifice);
 addEventListener('hashchange', depuisAncre);
+addEventListener('hashchange', apresAncreEdifice);
+if (!etatHistoriqueEdifice().atlasN) ecrireHistoriqueEdifice({ ...etatHistoriqueEdifice(), atlasN: nouveauNumeroEdifice() });
 depuisAncre();
+// Rechargement d'une rubrique dont la position avait été mémorisée : elle est rendue.
+{ const p = etatHistoriqueEdifice().atlasPos; if (enRubrique() && p && p.r && p.hash === location.hash) rendreRubriqueEdifice(p.r, undefined, false); }
+noterVueEdifice();
+majRetourEdifice();
 </script>

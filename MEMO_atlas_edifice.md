@@ -2167,3 +2167,21 @@ de-taylor. Croisements : 0 (analyse-reelle), 0 (chapitre), 15 (édifice). Nouvea
 lexique illustré… » (même jour, même rubrique). Relu : rien de faux ; corrigés : DL d'aval dans as-etude-locale,
 « séries = intégrales de la mesure de comptage » restreint aux termes positifs ou absolument convergentes, un arrondi,
 deux étiquettes coupées. Reste : la notation o(h² + k²) à deux variables d'edo-surfaces n'est définie nulle part.
+
+## 115. Navigation : glissement, positions, bouton de retour, fil d'Ariane (5 novembre 2026)
+
+Demandes d'Armand, gabarit.html seul. (1) Glissement latéral Fiche ⇄ Lexique sur écran tactile : au moins 64 px,
+pente ⩽ 1/2, en moins de 0,7 s ; ignoré depuis le bord (24 px), un champ, un élément qui défile en largeur, deux doigts,
+une sélection, une page zoomée ; écouteurs passifs ; fondu de 0,2 s, aucun sous prefers-reduced-motion. (2) Position de
+chaque onglet mémorisée (Fiche : par fiche ; Lexique : une) et restaurée ; la fiche n'est plus redessinée au retour.
+(3) Bouton « Revenir à … » (en bas à gauche, placé tôt dans l'ordre de tabulation, focus rendu à l'élément de départ) :
+seulement si l'origine est sûre (clic ou touche moins d'une seconde avant le changement d'ancre, état d'historique
+complet) ; jamais pour une ancre partagée ou tapée ; fermeture par × gardée pour la session ; masqué à l'impression.
+(4) Toucher l'onglet actif remonte en haut ; la barre recherche + onglets était déjà collée en haut sur téléphone
+(l'en-tête ne l'est pas : 226 px sur 844 à eux deux) ; scroll-margin-top calé sur la hauteur réelle de la barre.
+(5) Fil d'Ariane : passe à la ligne sur écran étroit (95 graphes testés à 390 et 320 px). Comportements nouveaux :
+un terme ouvert par un clic crée l'entrée d'historique #lexique/<id> (« Précédent » ramène à la fiche) ; les puces et
+termes des cours, feuilles et accueil ajoutent une étape au lieu de remplacer la page ; un clic sur une puce depuis un
+terme remplace l'entrée du terme ; un résultat de recherche qui vise la fiche affichée la réaffiche à sa position.
+Relu par un agent indépendant (parcours 100/100, gestes 69/69, aperçu à fichier unique sans sessionStorage) ; reste à
+confirmer sur un vrai iPhone le seuil de 64 px. Entrée de nouveautés (rubrique site).
