@@ -455,3 +455,25 @@ la phrase ou les phrases sur l'introduction ont été retirées, et les phrases 
 réécrites (`ma-04`, `ma-07`, `ma-09`, `ma-10`). **Règle pour tout chapitre futur** : ne jamais rédiger de phrase
 sur l'introduction historique dans le résumé, même si le .tex en a une. Le sommaire, lui, garde la section
 « Introduction historique » quand le PDF l'a, puisqu'il renvoie aux pages du PDF.
+
+### 33. Termes des cours dans la recherche globale (5 nov. 2026)
+
+Depuis le 5 novembre, `outils/cours_termes.py` (domaine apparence, §51 de `MEMO_atlas_apropos.md`), lancé par
+`construire.sh`, relève le texte en rouge des PDF de `documents/cours/`, page par page. Ces termes paraissent dans
+la recherche de l'en-tête, sous « Définis dans les cours », avec un lien vers la page de la définition. Le résultat
+est gardé dans `outils/cours-termes.json`, avec l'empreinte de chaque PDF : seuls les PDF nouveaux ou modifiés
+sont relus.
+
+**Au dépôt ou au remplacement d'un PDF de cours :**
+- lancer `sh construire.sh` avec `pdfplumber` installé (il est dans `requirements.txt`) ; la ligne
+  « cours_termes : … PDF relus » confirme la lecture ;
+- joindre `outils/cours-termes.json` au commit du PDF, sinon la publication relit ce PDF à chaque fois ;
+- vérifier que le champ `pdf` du chapitre dans `rubriques/cours.yaml` pointe vers le fichier, car c'est lui qui
+  relie les termes au chapitre.
+
+**Convention des sources.** Dans un cours, seul le terme défini s'écrit en rouge. Un mot mis en rouge pour
+insister devient un faux terme (cas observés : « coupent », « parmi »). Les formules en rouge sont ignorées.
+Si l'auteur signale un faux terme, on l'ajoute à `outils/cours-termes-exclus.txt`, une ligne par terme. Le mieux
+reste de corriger le rouge dans la source LaTeX, ce qui relève de l'auteur, puisque cette conversation ne corrige
+pas les cours. Le programme, le passage de `rendu.mjs` qui écrit `site/cours-termes.json` et le code de la
+recherche dans `gabarit.html` ne se modifient pas ici.
