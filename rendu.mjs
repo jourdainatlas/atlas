@@ -323,6 +323,23 @@ for (const gid of Object.keys(D.graphes)) {
   fs.writeFileSync('site/cherche.json', contenu);
   Dsite.chercheACharger = `cherche.json?v=${empreinte(contenu)}`;
 }
+// Termes définis dans les PDF de cours (outils/cours_termes.py, texte rouge des PDF) : site/cours-termes.json,
+// { chapitre: [[terme, page, dans un bloc Définition (1/0)], …] }, chargé par la recherche globale avec les extraits.
+// Exclusions à la main dans outils/cours-termes-exclus.txt. Seuls les chapitres déposés dont le PDF est connu comptent.
+{
+  const brut = fs.existsSync('outils/cours-termes.json') ? JSON.parse(fs.readFileSync('outils/cours-termes.json', 'utf8')) : {};
+  const exclus = new Set(fs.existsSync('outils/cours-termes-exclus.txt') ? fs.readFileSync('outils/cours-termes-exclus.txt', 'utf8').split('\n').map(l => l.trim().toLowerCase()).filter(l => l && !l.startsWith('#')) : []);
+  const parChapitre = {};
+  for (const c of Dsite.rubriques?.cours?.cours || []) {
+    const e = c.pdf && c.statut === 'depose' && brut[c.pdf];
+    if (e) parChapitre[c.id] = e.termes.filter(x => !exclus.has(x.t.toLowerCase())).map(x => [x.t, x.p, x.def ? 1 : 0]);
+  }
+  if (Object.keys(parChapitre).length) {
+    const contenu = JSON.stringify(parChapitre);
+    fs.writeFileSync('site/cours-termes.json', contenu);
+    Dsite.coursTermesACharger = `cours-termes.json?v=${empreinte(contenu)}`;
+  }
+}
 // Textes des exercices (énoncé, corrigé) : un fichier par feuille, chargé à l'ouverture des exercices.
 // Index du moteur des annales : fichier séparé, chargé à l'ouverture de la rubrique.
 const AIsite = Dsite.rubriques?.['annales-index'];

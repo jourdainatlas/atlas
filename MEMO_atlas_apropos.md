@@ -356,3 +356,18 @@ n'a que la ligne. **Partage des tâches (décision de l'auteur, 4 nov.)** : les 
 chapitre au moment de son dépôt et retouche un symbole à la demande de l'auteur (planche montrée avant
 publication) ; le reste du bloc (CSS, `bandeChapitre`, `symboleChapitre`) reste au domaine apparence. Planche de contrôle : script de la
 conversation du 4 nov. (toutes les cartes à 72 px, clair et sombre).
+
+## 51. Termes définis des PDF de cours dans la recherche globale (5 nov. 2026)
+
+Convention des cours : le terme défini est écrit en rouge dans le PDF. `outils/cours_termes.py` (lancé par
+`construire.sh`, dépendance `pdfplumber` dans `requirements.txt`) relève ce texte rouge hors formules, page par
+page, élimine le bruit (intitulés, consignes, ligatures mal codées des PDF de Maths Sup : `(cid:28)` = fi,
+`Ø` = é…), marque ce qui suit un intitulé « Définition », et écrit `outils/cours-termes.json` (versionné), rangé
+par PDF avec son SHA-256 : seuls les PDF nouveaux ou modifiés sont relus (≈ 1 min pour les 62, 0,3 s sinon) ;
+sans pdfplumber, le fichier en place sert. Exclusions : `outils/cours-termes-exclus.txt` (appliquées par
+`rendu.mjs`, le cache garde tout). `rendu.mjs` écrit `site/cours-termes.json?v=` (≈ 33 Ko, chapitres déposés
+seulement), chargé avec les extraits (`chargerTermesCours`, à l'inoccupation ou à l'ouverture de la
+recherche). Recherche globale : groupe « Définis dans les cours » (5 résultats, bonus aux termes d'un bloc
+Définition) ; le lien ouvre le chapitre et le lecteur PDF va à la page (`allerPage`, sans toucher au code
+des cours). Au 5 nov. : 1 395 termes, bruit estimé à moins d'un sur dix. Après le dépôt d'un PDF, committer
+`outils/cours-termes.json` (sinon la publication relit ce PDF à chaque fois).

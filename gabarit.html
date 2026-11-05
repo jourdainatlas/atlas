@@ -2340,7 +2340,16 @@ function chargerCherche() {
     .catch(() => { chargementCherche = null; });
   return chargementCherche;
 }
-quandInoccupe(() => setTimeout(chargerCherche, 1500));
+// Termes définis dans les PDF de cours (cours-termes.json, D.coursTermesACharger) : même moment que les extraits.
+let TERMES_COURS = {}, chargementTermesCours = null;
+function chargerTermesCours() {
+  if (!D.coursTermesACharger) return Promise.resolve();
+  if (!chargementTermesCours) chargementTermesCours = fetch(D.coursTermesACharger).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(x => { TERMES_COURS = x; delete D.coursTermesACharger; if (typeof RG !== 'undefined' && RG.ouvert) rgChercher(); })
+    .catch(() => { chargementTermesCours = null; });
+  return chargementTermesCours;
+}
+quandInoccupe(() => setTimeout(() => { chargerCherche(); chargerTermesCours(); }, 1500));
 function indexEdifice() {
   if (indexEdificeMemo) return indexEdificeMemo;
   const termes = {};
@@ -3765,7 +3774,7 @@ function rgElements() {
   return f;
 }
 function rgOuvrir() {
-  chargerCherche();
+  chargerCherche(); chargerTermesCours();
   const f = rgElements();
   f.hidden = false; RG.ouvert = true;
   $('#chercher-tout').setAttribute('aria-expanded', 'true');
@@ -3826,6 +3835,13 @@ function rgChercher() {
     const nv = niveauDe(f.niveau).titre || '';
     return { s: rgNote(f.titre, `${nv} exercices feuille ${(f.parties || []).map(rgTexte).join(' ')}`, mots, q), titre: rgTexte(f.titre), det: `${nv} · ${f.nombre} exercices corrigés`, href: `#exercices/feuille/${f.id}` };
   });
+  // Termes définis dans les PDF de cours : le lien ouvre le chapitre à la page de la définition.
+  const tc = [];
+  for (const c of (R.cours?.cours || [])) for (const [t, pg, def] of TERMES_COURS[c.id] || []) {
+    const sc = rgNote(t, '', mots, q); if (sc < 0) continue;
+    tc.push({ s: sc + (def ? 15 : 0), titre: t, det: `défini dans ${niveauDe(c.niveau).titre}${c.chapitre ? `, chapitre ${c.chapitre}` : ''} « ${rgTexte(c.titre)} », page ${pg}`, href: `#cours/${c.id}`, page: pg });
+  }
+  groupes.push(['cours', 'Définis dans les cours', garder(tc, 5)]);
   groupes.push(['exercices', 'Feuilles d\'exercices', garder(feuilles, 4)]);
   // Annales : seulement si la recherche nomme un concours, une filière ou une année, sinon « maths » prendrait tout.
   const A = R.annales || {}, titreConc = {};
@@ -3843,7 +3859,7 @@ function rgChercher() {
   for (const [sym, titre, l] of groupes) {
     if (!l.length) continue;
     h += `<div class="rg-groupe" aria-hidden="true">${symbole(sym)}${titre}</div>`;
-    for (const x of l) { RG.items.push({ href: x.href }); h += `<a class="rg-item" role="option" id="rg-${i}" href="${x.href}" data-rg-i="${i}" aria-selected="${i === 0}"><span class="rg-titre">${surligneEdifice(x.titre, mots)}</span><span class="rg-det">${esc(x.det)}</span></a>`; i++; }
+    for (const x of l) { RG.items.push({ href: x.href, page: x.page }); h += `<a class="rg-item" role="option" id="rg-${i}" href="${x.href}" data-rg-i="${i}" aria-selected="${i === 0}"><span class="rg-titre">${surligneEdifice(x.titre, mots)}</span><span class="rg-det">${esc(x.det)}</span></a>`; i++; }
   }
   if (!i) h += `<div class="rg-vide">Rien ne porte ce nom dans l'édifice, le lexique, les cours ou les sujets. La recherche peut encore se poursuivre dans le texte des exercices ou dans le contenu des sujets d'annales :</div>`;
   const enc = esc(brut.trim());
@@ -3868,7 +3884,9 @@ function rgAller(i) {
     if (location.hash === '#annales') suite(); else { addEventListener('hashchange', suite, { once: true }); location.hash = '#annales'; }
     return;
   }
-  if (location.hash === x.href) depuisAncre(); else location.hash = x.href;
+  // Terme d'un cours : une fois le chapitre affiché, le lecteur PDF va à la page (allerPage attend qu'elle soit dessinée).
+  if (x.page) addEventListener('hashchange', () => setTimeout(() => allerPage(x.page), 120), { once: true });
+  if (location.hash === x.href) { depuisAncre(); if (x.page) setTimeout(() => allerPage(x.page), 120); } else location.hash = x.href;
 }
 function rgClavier(ev) {
   const items = [...document.querySelectorAll('#rg-res .rg-item')];

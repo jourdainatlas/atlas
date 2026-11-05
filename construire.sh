@@ -3,5 +3,7 @@
 set -e
 cd "$(dirname "$0")"
 python3 construire.py
+# Termes définis dans les PDF de cours (recherche globale) : seuls les PDF nouveaux ou modifiés sont relus.
+python3 outils/cours_termes.py
 # Le rendu tient dans le tas par défaut de Node (≈ 2 Go) ; 4 Go laissent de la marge à la croissance.
 node --max-old-space-size=4096 rendu.mjs
