@@ -1972,3 +1972,11 @@ Journal des lots.
   racine-primitive 3 faux pour n = q − 1 et terme d'aval ; annulation « deux à deux » d'un cocycle non démontrée).
   Signalés, non faits : gf-diedraux, gf-alterne-4, gf-ordre-8 refont l'argument d'indice 2 (pourraient citer
   a-distingue (iv)) ; lexique : groupe-simple, groupe-resoluble, suite-exacte-groupes citent des résultats d'aval.
+- anf : 52 termes, 156 exemples, 18 schémas. Graphes intérieurs non linéaires (f-evn, f-operateurs, f-compacts sans
+  L¹, L², C(K) ; fc-bernstein sans fc-uniforme) ; ⋆ à chaque emploi d'un résultat qui use du choix, versions sans
+  choix ailleurs. Relu deux fois : bloquants corrigés (cas d'égalité de Minkowski faux pour p = ∞ ; Minkowski sans
+  vrai contre-exemple, p = ½ ajouté ; « n'a pas l'unicité » du point le plus proche, faux pour Lᵖ ; deux affirmations
+  non démontrées sur Bernstein ; Weierstrass hors amont ; convergence uniforme employée avant fc-uniforme).
+  Signalés, non faits : f-exemples (ii) et la remarque de f-haar emploient « limite uniforme » avant fc-uniforme ;
+  troisième remarque de f-autoadjoints cite le graphe fermé hors amont ; remarque de f-hilbert sur ℓ¹ et de
+  f-compacts sur ℓ² hors amont ; lexique : espace-Lp « de Banach » avant la complétude, espace-L2 parle de probabilités.
