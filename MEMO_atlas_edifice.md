@@ -1920,3 +1920,10 @@ Journal des lots.
   (1977), Gödel (1938), Cohen (1963-1964). Relu : bloquants corrigés (énoncé prêté à Herrlich-Strecker ; « six
   premiers » axiomes ambigu ; « valide » hors amont). Signalé, non fait : zf-parties, zf-paire et zf-reunion
   emploient l'extensionnalité sans arête depuis zf-ext (l'ajout redessine le graphe zf).
+- top + met : 37 termes, 106 exemples, 23 schémas (top : espaces finis, ouverts en contours, assert que chaque
+  contour entoure exactement ses points ; met : boules, normes, contractantes, ε-réseaux…) ; lex-topologie-1
+  régénéré, ∅ barré, génération déterministe. top ne dépend que de zf, rel, log : ni ℕ, ni ℝ, ni ordre, ni suite
+  (ℝ en trois ouvertures). Relu : bloquants corrigés (max |a_ij| dit non subordonnée alors qu'elle l'est de ‖·‖₁
+  vers ‖·‖∞ ; sphère dite jamais convexe, fausse dans {0} ; X ∈ 𝒯 non vérifié). Signalés, non faits : top emploie
+  « fini » sans n-fini en amont (comme t-compact, t-produit : défaut du graphe) ; lexique : boule-fermee r ⩾ 0 contre
+  r > 0 dans me-espace ; espaces-homeomorphes cite ]0, 1[ et ]0, 2[ avant ℝ.
