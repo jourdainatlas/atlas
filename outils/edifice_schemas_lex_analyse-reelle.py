@@ -958,3 +958,33 @@ def lex_fonction_periodique_3():
     S.poly(R(xs, np.sin(xs)), 'b', l=2)
     S.poly(R(xs, np.sin(xs) ** 2), 'r', l=2.2)
     return S
+
+
+# ---------------------------------------------------------------------------------------------- chapitre ar-asymptotique
+
+@schema('lex-au-voisinage-2')
+def lex_au_voisinage_2():
+    d = Fr(2, 5)
+    # dans R, ]-d, d[ contient -d/2 < 0 ; dans ]0, 1], D ∩ ]-d, d[ = ]0, d[ (d <= 1), sans point négatif
+    assert -d / 2 < 0 and -d < -d / 2 < d and d <= 1
+    S = Schema(W0, 200, 'Voisinages relatifs de 0 dans ℝ et dans ]0, 1]')
+    X = lambda v: 70 + (float(v) + 1.1) / 2.4 * (W0 - 110)
+    y1, y2 = 62, 150
+    _droite_reelle(S, X, y1, -1.1, 1.25, [-1, 0, 1], {-1: '−1', 0: '0', 1: '1'})
+    S.ligne((X(-d), y1), (X(d), y1), 'b', l=4)
+    S.point((X(-d), y1), 'b', r=4, creux=True)
+    S.point((X(d), y1), 'b', r=4, creux=True)
+    S.point((X(-d / 2), y1), 'b', r=4)
+    S.texte((X(-d / 2), y1 - 17), '−δ/2', 'b', taille=TL)
+    S.texte((X(-1.1) - 6, y1), 'ℝ', 'g', ancre='end', taille=TL)
+    _droite_reelle(S, X, y2, -1.1, 1.25, [-1, 0, 1], {-1: '−1', 0: '0', 1: '1'})
+    S.ligne((X(0), y2), (X(1), y2), 'v', l=2.6)
+    S.point((X(0), y2), 'v', r=4, creux=True)
+    S.point((X(1), y2), 'v', r=4)
+    S.ligne((X(0), y2 - 9), (X(d), y2 - 9), 'r', l=4)
+    S.point((X(0), y2 - 9), 'r', r=3.6, creux=True)
+    S.point((X(d), y2 - 9), 'r', r=3.6, creux=True)
+    S.texte((X(d), y2 - 26), 'δ', 'r', taille=TL)
+    S.texte((X(-1.1) - 6, y2), ']0, 1]', 'g', ancre='end', taille=15)
+    _dans_cadre(S, (X(-1.1) - 6, y2), ']0, 1]', taille=15, ancre='end')
+    return S

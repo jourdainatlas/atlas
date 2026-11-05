@@ -1,0 +1,464 @@
+# Niveau 2 : structure interne du chapitre « Comparaison asymptotique et développements limités ».
+# Relations o, O, ∼ pour les fonctions d'une variable réelle et pour les suites, dans un même cadre
+# (voisinages relatifs d'un réel adhérent, de ±∞, ou de +∞ pour les suites) ; développements limités à un
+# ordre quelconque ; intégration d'un développement par l'égalité des accroissements finis, d'où la formule
+# de Taylor-Young sous l'hypothèse minimale « f^(n-1) dérivable en a » ; opérations ; développements usuels
+# (exp, ln, puissances, cos, sin, arctan, tan) ; étude locale ; séries à termes positifs, séries de Riemann,
+# séries alternées et constante d'Euler. Les intégrales impropres, traitées en théorie analytique des
+# nombres, ne sont qu'annoncées. Aucune démonstration n'emploie l'axiome du choix.
+
+graphe: ar-asymptotique
+titre: Comparaisons et développements limités
+conteneur: ar-asymptotique
+
+entrees:
+  ar-deriv: [as-comparaison]
+  ar-exp: [as-regles]
+  ar-trigo: [as-usuels]
+
+noeuds:
+  - id: as-comparaison
+    etiquette: Relations de comparaison
+    nature: définition
+    titre: Relations de comparaison au voisinage d'un point
+    texte: |
+      Ce chapitre compare deux fonctions au voisinage d'un point, dans un cadre qui couvre à la fois les fonctions d'une variable réelle et les suites. On se donne une partie $D$ de $\lex{ensemble-reels}{\mathbb R}$ et un point $a$ dans l'un des trois cas suivants, chacun muni de ses *voisinages relatifs*.
+
+      (a) $a$ est un réel [[point-adherent-reel|adhérent]] à $D \setminus \{a\}$ ; les voisinages relatifs de $a$ sont les ensembles $D \cap \,]a - \delta, a + \delta[$, pour $\delta > 0$. Le point $a$ peut appartenir à $D$ ou non.
+
+      (b) $a = +\infty$, et $D$ contient une demi-droite $[A_0, +\infty[$ ; les voisinages relatifs sont les demi-droites $[B, +\infty[$, pour $B \geqslant A_0$. De même pour $a = -\infty$, avec $]{-\infty}, A_0] \subset D$ et les $]{-\infty}, B]$, pour $B \leqslant A_0$.
+
+      (c) $D = \{n \in \lex{ensemble-entiers-naturels}{\mathbb N} : n \geqslant N_0\}$ et $a = +\infty$ ; les voisinages relatifs sont les ensembles $\{n \in \mathbb N : n \geqslant N\}$, pour $N \geqslant N_0$. C'est le cas des [[suite|suites]] réelles, éventuellement définies à partir d'un rang $N_0$.
+
+      Une propriété $P(x)$ est [[au-voisinage|vraie au voisinage de $a$]] s'il existe un voisinage relatif $V$ de $a$ tel que $P(x)$ soit vraie pour tout $x \in V$. Dans le cas (c), cela revient à dire qu'elle est vraie [[a-partir-certain-rang|à partir d'un certain rang]].
+
+      Deux voisinages relatifs de $a$ en contiennent un troisième, celui qui correspond au plus petit des deux $\delta$ ou au plus grand des deux seuils : deux propriétés vraies au voisinage de $a$ le sont donc simultanément, et, par récurrence, un nombre fini d'entre elles aussi. De plus, un voisinage relatif $V$ de $a$ est lui-même une partie à laquelle le cadre s'applique, avec le même point $a$, et les voisinages relatifs de $a$ dans $V$ sont des voisinages relatifs de $a$ dans $D$ ; on peut donc toujours remplacer $D$ par un voisinage relatif de $a$ sans rien changer à ce qui est vrai au voisinage de $a$. Plus généralement, soit $D' \subset D$ telle que le même point $a$ relève du cadre pour $D'$ ; dans les cas (b) et (c), les voisinages relatifs de $a$ dans $D'$ sont des voisinages relatifs dans $D$, et dans le cas (a) ce sont les intersections avec $D'$ de ceux de $D$. Une propriété vraie au voisinage de $a$ dans $D$ l'est donc encore, pour la restriction à $D'$, au voisinage de $a$ dans $D'$ ; il en va de même des relations définies ci-dessous, qui passent aux restrictions.
+
+      Les limites des nœuds {{de-limite|Limite en un point}} et {{su-convergence|Suite convergente, limite}} s'écrivent dans ce langage. Une fonction $g : D \to \mathbb R$ tend vers le réel $\ell$ en $a$ si et seulement si, pour tout $\varepsilon > 0$, l'inégalité $|g(x) - \ell| < \varepsilon$ est vraie au voisinage de $a$ ; elle tend vers $+\infty$ si et seulement si, pour tout réel $A$, l'inégalité $g(x) > A$ l'est, et vers $-\infty$ si $g(x) < A$ l'est. Dans le cas (b), c'est la limite en $\pm\infty$ de la restriction de $g$ à la demi-droite ; dans le cas (c), celle de la suite $(g(n))_{n \geqslant N_0}$.
+    enonce: |
+      Soit $f, g : D \to \mathbb R$.
+
+      On dit que $f$ est [[fonction-dominee|dominée par $g$]] au voisinage de $a$, et l'on écrit $f = \lex{fonction-dominee}{O}(g)$, ou $f(x) = O(g(x))$ quand $x \to a$, s'il existe un réel $C \geqslant 0$ tel que l'inégalité $|f(x)| \leqslant C\,|g(x)|$ soit vraie au voisinage de $a$.
+
+      On dit que $f$ est [[fonction-negligeable|négligeable devant $g$]], et l'on écrit $f = \lex{fonction-negligeable}{o}(g)$, si, pour tout $\varepsilon > 0$, l'inégalité $|f(x)| \leqslant \varepsilon\,|g(x)|$ est vraie au voisinage de $a$.
+
+      On dit que $f$ est [[fonction-equivalente|équivalente à $g$]], et l'on écrit $f \mathrel{\lex{fonction-equivalente}{\sim}} g$, si $f - g = o(g)$.
+
+      Pour des suites, on écrit $u_n = O(v_n)$, $u_n = o(v_n)$ et $u_n \sim v_n$, toujours en $+\infty$. Enfin, $f = h + o(g)$ signifie $f - h = o(g)$, et de même avec $O$.
+
+      (i) Si $f = o(g)$, alors $f = O(g)$.
+
+      (ii) *Limites.* Soit $\ell$ un réel. La fonction $f$ tend vers $\ell$ en $a$ si et seulement si $f - \ell = o(1)$, où $1$ désigne la fonction constante ; $f = O(1)$ si et seulement si $f$ est bornée au voisinage de $a$. Si $\ell \neq 0$, $f$ tend vers $\ell$ si et seulement si $f \sim \ell$.
+
+      (iii) *Quotients.* Supposons qu'il existe un voisinage relatif $V$ de $a$ tel que $g$ ne s'annule en aucun point de $W = V \setminus \{a\}$. Alors :
+
+      - $f = o(g)$ si et seulement si $f(x)/g(x)$ tend vers $0$ quand $x$ tend vers $a$ dans $W$ et, lorsque $a \in D$, $f(a) = 0$ ;
+      - $f \sim g$ si et seulement si $f(x)/g(x)$ tend vers $1$ quand $x$ tend vers $a$ dans $W$ et, lorsque $a \in D$, $f(a) = g(a)$ ;
+      - $f = O(g)$ si et seulement si $f/g$ est bornée au voisinage de $a$ dans $W$ et, lorsque $a \in D$ et $g(a) = 0$, $f(a) = 0$.
+    preuve: |
+      Dans (iii), $W$ relève du cadre avec le même point $a$ : dans le cas (a), tout intervalle $]a - \eta, a + \eta[$ avec $\eta \leqslant \delta$ rencontre $D \setminus \{a\}$, donc $W$ ; dans les cas (b) et (c), $W = V$. Les voisinages relatifs de $a$ dans $W$ sont les intersections de $W$ avec ceux de $a$ dans $D$.
+
+      (i) On prend $\varepsilon = 1$ et $C = 1$.
+
+      (ii) Si $f \to \ell$ et $\varepsilon > 0$, l'inégalité $|f(x) - \ell| < \varepsilon$, donc $|f(x) - \ell| \leqslant \varepsilon \cdot 1$, est vraie au voisinage de $a$. Réciproquement, si $f - \ell = o(1)$, l'inégalité $|f(x) - \ell| \leqslant \varepsilon/2 < \varepsilon$ l'est pour tout $\varepsilon > 0$. La deuxième affirmation est la définition de $O$ avec $g = 1$. Pour la troisième, $f \sim \ell$ signifie que $|f(x) - \ell| \leqslant \varepsilon|\ell|$ est vraie au voisinage de $a$ pour tout $\varepsilon > 0$ ; comme $\ell \neq 0$, $\varepsilon|\ell|$ parcourt tous les réels strictement positifs quand $\varepsilon$ les parcourt, et c'est la condition $f - \ell = o(1)$.
+
+      (iii) *Le cas de $o$.* Supposons $f = o(g)$ et soit $\varepsilon > 0$. L'inégalité $|f(x)| \leqslant \frac\varepsilon2 |g(x)|$ est vraie sur un voisinage relatif $V_1$ de $a$ ; pour $x \in V_1 \cap W$, on peut diviser par $|g(x)| > 0$, et $|f(x)/g(x)| \leqslant \frac\varepsilon2 < \varepsilon$. Ainsi $f/g$ tend vers $0$ dans $W$. Si $a \in D$, le point $a$ est dans tout voisinage relatif, donc $|f(a)| \leqslant \varepsilon|g(a)|$ pour tout $\varepsilon > 0$, ce qui force $f(a) = 0$, que $g(a)$ soit nul ou non.
+
+      Réciproquement, soit $\varepsilon > 0$ et $V_2$ un voisinage relatif de $a$ tel que $|f(x)/g(x)| < \varepsilon$ pour $x \in V_2 \cap W$. Sur un voisinage relatif contenu dans $V \cap V_2$, tout point $x$ est soit dans $W$, et alors $|f(x)| \leqslant \varepsilon|g(x)|$, soit égal à $a$, et alors $|f(a)| = 0 \leqslant \varepsilon|g(a)|$.
+
+      *Le cas de $\sim$.* Il suffit d'appliquer le cas précédent à $f - g$, puisque $(f - g)/g = f/g - 1$.
+
+      *Le cas de $O$.* Si $|f| \leqslant C|g|$ au voisinage de $a$, alors $|f/g| \leqslant C$ au voisinage de $a$ dans $W$, et $|f(a)| \leqslant C \cdot 0$ si $a \in D$ et $g(a) = 0$. Réciproquement, si $|f/g| \leqslant C$ sur $V_3 \cap W$ pour un voisinage relatif $V_3$, alors $|f| \leqslant C|g|$ sur $V_3 \cap W$ ; si $a \in D$, on a $|f(a)| \leqslant C'|g(a)|$ avec $C' = C$ lorsque $g(a) = 0$, puisqu'alors $f(a) = 0$, et $C' = \max\big(C, |f(a)|/|g(a)|\big)$ sinon. L'inégalité $|f| \leqslant C'|g|$ est donc vraie sur un voisinage relatif contenu dans $V \cap V_3$.
+    remarques:
+      - |
+        Le signe « $=$ » de la notation trompe : $f = o(g)$ est une relation entre $f$ et $g$, non une égalité entre deux fonctions. En $0$, on a $x = o(1)$ et $x^2 = o(1)$, sans que $x$ et $x^2$ soient égaux. Il faut lire « $f$ appartient à l'ensemble des fonctions négligeables devant $g$ », et ne jamais simplifier deux $o$ de part et d'autre d'une égalité.
+      - |
+        Le point $a$ fait partie de la relation. Quand $x \to +\infty$, on a $x = o(x^2)$ et $x^2 + 3x \sim x^2$ ; quand $x \to 0$, au contraire, $x^2 = o(x)$ et $x^2 + 3x \sim 3x$. En $0$, l'inégalité $x^2 \leqslant \varepsilon |x|$ équivaut à $|x| \leqslant \varepsilon$ : elle est vraie sur l'intervalle $]{-\varepsilon}, \varepsilon[$, qui rétrécit avec $\varepsilon$, et c'est ce que demande la définition de $o$.
+
+        ```schema as-comparaison
+        Le graphe de $x \mapsto x^2$, en rouge, reste dans le secteur bleu $|y| \leqslant \frac12|x|$ exactement pour $|x| \leqslant \frac12$, et dans le secteur vert, plus étroit, $|y| \leqslant \frac14|x|$ exactement pour $|x| \leqslant \frac14$. Pour chaque $\varepsilon$, il y a un voisinage de $0$ où $x^2 \leqslant \varepsilon|x|$ : c'est la relation $x^2 = o(x)$ en $0$.
+        ```
+      - |
+        Deux fonctions peuvent se dominer l'une l'autre sans être équivalentes. Quand $x \to +\infty$, la fonction $f(x) = x(2 + \sin x)$ vérifie $|x| \leqslant |f(x)| \leqslant 3|x|$, donc $f = O(x)$ et $x = O(f)$. Pourtant le quotient $f(x)/x = 2 + \sin x$ vaut $2$ en chaque $2k\pi$ et $3$ en chaque $\frac\pi2 + 2k\pi$, par la périodicité du sinus ({{tg-addition|Formules d'addition}}, (iv) et (v)) : il n'a pas de limite, et $f$ n'est équivalente à aucun $cx$.
+      - |
+        La lettre $O$ apparaît chez Paul Bachmann, *Die analytische Zahlentheorie* (1894) ; Edmund Landau l'a reprise dans son *Handbuch der Lehre von der Verteilung der Primzahlen* (1909), où il définit aussi $o$ et $\sim$, et ces notations portent souvent son nom. L'équivalent le plus célèbre est celui du {{nb-tnp|théorème des nombres premiers}}, $\pi(x) \sim x/\ln x$.
+
+  - id: as-regles
+    etiquette: Règles de calcul
+    nature: proposition
+    titre: Règles de calcul sur les relations de comparaison
+    enonce: |
+      Les fonctions sont définies sur $D$, et les relations sont prises au voisinage de $a$, dans le cadre du nœud {{as-comparaison|Relations de comparaison}}.
+
+      (i) *Transitivité.* Si $f = \lex{fonction-dominee}{O}(g)$ et $g = O(h)$, alors $f = O(h)$. Si de plus l'une des deux relations est un $\lex{fonction-negligeable}{o}$, alors $f = o(h)$.
+
+      (ii) *Combinaisons linéaires.* Si $f_1 = o(h)$ et $f_2 = o(h)$, alors $\lambda f_1 + \mu f_2 = o(h)$ pour tous réels $\lambda$ et $\mu$ ; de même avec $O$.
+
+      (iii) *Produits.* Si $f_1 = O(g_1)$ et $f_2 = O(g_2)$, alors $f_1 f_2 = O(g_1 g_2)$, et si de plus $f_2 = o(g_2)$, alors $f_1 f_2 = o(g_1 g_2)$. En particulier, si $f = o(g)$, alors $kf = o(kg)$ pour toute fonction $k : D \to \mathbb R$.
+
+      (iv) *Équivalence.* La relation $\mathrel{\lex{fonction-equivalente}{\sim}}$ est une [[relation-equivalence|relation d'équivalence]] sur l'ensemble des fonctions de $D$ dans $\lex{ensemble-reels}{\mathbb R}$. Si $f \sim g$, alors $f = O(g)$, $g = O(f)$ et $f - g = o(f)$.
+
+      (v) *Signe et limite.* Si $f \sim g$, alors, au [[au-voisinage|voisinage de $a$]], $\frac12|g(x)| \leqslant |f(x)| \leqslant \frac32|g(x)|$, et $f(x)$ et $g(x)$ sont de même signe strict, ou nuls tous deux. Si $g$ tend vers une limite $\ell$, réelle, $+\infty$ ou $-\infty$, il en est de même de $f$.
+
+      (vi) *Produits, inverses, puissances.* Si $f_1 \sim g_1$ et $f_2 \sim g_2$, alors $f_1 f_2 \sim g_1 g_2$. Si $f_1$ et $g_1$ ne s'annulent pas sur $D$, alors $1/f_1 \sim 1/g_1$. Si $f_1$ et $g_1$ sont strictement positives sur $D$, alors $f_1^\alpha \sim g_1^\alpha$ pour tout réel $\alpha$.
+
+      (vii) *Substitution.* Soit $E$ une partie de $\mathbb R$ et $c$ un point dans le cadre du nœud {{as-comparaison|Relations de comparaison}} pour $E$, et $u : E \to D$ une fonction qui tend vers $a$ en $c$, au sens où, pour tout voisinage relatif $V$ de $a$ dans $D$, la propriété $u(y) \in V$ est vraie au voisinage de $c$. Si $f = o(g)$ au voisinage de $a$, alors $f \circ u = o(g \circ u)$ au voisinage de $c$ ; de même avec $O$ et avec $\sim$.
+
+      (viii) *Logarithme.* Si $f \sim g$, si $g$ est strictement positive sur $D$ et si $g$ tend vers $0$ ou vers $+\infty$ en $a$, alors $f$ est strictement positive au voisinage de $a$, et $\ln f \sim \ln g$ sur un voisinage relatif de $a$ où $f > 0$.
+    preuve: |
+      (i) Il existe des constantes $C, C' > 0$, quitte à les augmenter, telles que $|f| \leqslant C|g|$ et $|g| \leqslant C'|h|$ au voisinage de $a$ ; les deux inégalités sont vraies simultanément, et $|f| \leqslant CC'|h|$. Si $f = o(g)$, on prend, pour $\varepsilon > 0$, $|f| \leqslant (\varepsilon/C')|g|$, d'où $|f| \leqslant \varepsilon|h|$ ; si $g = o(h)$, on prend $|g| \leqslant (\varepsilon/C)|h|$.
+
+      (ii) Pour $\varepsilon > 0$, posons $\varepsilon' = \varepsilon/(|\lambda| + |\mu| + 1)$. Au voisinage de $a$, $|f_1| \leqslant \varepsilon'|h|$ et $|f_2| \leqslant \varepsilon'|h|$, donc $|\lambda f_1 + \mu f_2| \leqslant (|\lambda| + |\mu|)\varepsilon'|h| \leqslant \varepsilon|h|$. Le cas de $O$ est le même, avec des constantes.
+
+      (iii) Si $|f_1| \leqslant C_1|g_1|$ et $|f_2| \leqslant C_2|g_2|$, alors $|f_1f_2| \leqslant C_1C_2|g_1g_2|$. Si $f_2 = o(g_2)$, on prend $|f_2| \leqslant (\varepsilon/C_1)|g_2|$, avec $C_1 > 0$. Enfin $|f| \leqslant \varepsilon|g|$ entraîne $|kf| \leqslant \varepsilon|kg|$.
+
+      (iv) La réflexivité vient de $f - f = 0$, négligeable devant toute fonction. Si $f \sim g$, l'inégalité $|f - g| \leqslant \frac12|g|$ est vraie au voisinage de $a$ ; par l'[[inegalite-triangulaire|inégalité triangulaire]], elle donne $|f| \leqslant \frac32|g|$ et $|g| \leqslant |f| + \frac12|g|$, soit $|g| \leqslant 2|f|$. Ainsi $f = O(g)$ et $g = O(f)$ ; par (i), $f - g = o(g)$ et $g = O(f)$ donnent $f - g = o(f)$, c'est-à-dire $g \sim f$ : la relation est symétrique. Si $f \sim g$ et $g \sim h$, alors $f - g = o(g)$ et $g = O(h)$, donc $f - g = o(h)$ par (i), et $f - h = (f - g) + (g - h) = o(h)$ par (ii) : la relation est transitive.
+
+      (v) Les inégalités ont été obtenues en (iv). Si $g(x) > 0$, alors $f(x) \geqslant g(x) - |f(x) - g(x)| \geqslant \frac12 g(x) > 0$, et de même si $g(x) < 0$ ; si $g(x) = 0$, alors $|f(x)| \leqslant 0$. Si $g$ tend vers le réel $\ell$, elle est bornée au voisinage de $a$, car $|g(x)| \leqslant |\ell| + 1$ dès que $|g(x) - \ell| < 1$ ; donc $f - g = o(g) = o(1)$ par (i), et $f - \ell = (f - g) + (g - \ell) = o(1)$ par (ii), ce qui signifie $f \to \ell$ ({{as-comparaison|Relations de comparaison}}, (ii)). Si $g \to +\infty$ et $A$ est un réel, on a $g(x) > \max(0, 2A)$ au voisinage de $a$, d'où $f(x) \geqslant \frac12 g(x) > A$ ; le cas de $-\infty$ s'en déduit en changeant $f$ et $g$ en leurs opposées.
+
+      (vi) Par (iv), $f_2 = O(g_2)$. On écrit
+      $$\begin{aligned} f_1f_2 - g_1g_2 &= (f_1 - g_1)f_2 \\ &\quad + g_1(f_2 - g_2). \end{aligned}$$
+      Le premier terme est le produit de $o(g_1)$ par $O(g_2)$, le second celui de $g_1$ par $o(g_2)$ : tous deux sont $o(g_1g_2)$ par (iii), et leur somme aussi par (ii).
+
+      Pour les inverses, $\frac1{f_1} - \frac1{g_1} = (g_1 - f_1)\cdot\frac{1}{f_1}\cdot\frac{1}{g_1}$. Par (v), $|f_1| \geqslant \frac12|g_1|$ au voisinage de $a$, donc $\frac1{f_1} = O\big(\frac1{g_1}\big)$ ; comme $g_1 - f_1 = o(g_1)$, la règle (iii), appliquée deux fois, donne un $o\big(g_1 \cdot \frac1{g_1}\cdot\frac1{g_1}\big) = o\big(\frac1{g_1}\big)$.
+
+      Pour les puissances, posons $t = f_1/g_1$, définie et strictement positive sur $D$. La fonction $u \mapsto u^\alpha$ est dérivable sur $]0, +\infty[$ ({{ex-puissances|Puissances réelles}}, (iii)), donc continue en $1$ ({{de-dl1|Développement à l'ordre 1}}), où elle vaut $1$ : pour $\eta > 0$, il existe $\varepsilon > 0$ tel que $|u - 1| < \varepsilon$ entraîne $|u^\alpha - 1| < \eta$. Or $|f_1 - g_1| \leqslant \frac\varepsilon2 g_1$, c'est-à-dire $|t - 1| \leqslant \frac\varepsilon2$, est vraie au voisinage de $a$. Par les règles de calcul des puissances ({{ex-puissances|Puissances réelles}}, (i)), $f_1^\alpha - g_1^\alpha = g_1^\alpha\,(t^\alpha - 1)$, et donc $|f_1^\alpha - g_1^\alpha| \leqslant \eta\, g_1^\alpha$ au voisinage de $a$.
+
+      (vii) Soit $\varepsilon > 0$, et $V$ un voisinage relatif de $a$ sur lequel $|f| \leqslant \varepsilon|g|$. La propriété $u(y) \in V$ est vraie au voisinage de $c$, et pour un tel $y$, $|f(u(y))| \leqslant \varepsilon|g(u(y))|$. Le cas de $O$ est identique, et celui de $\sim$ s'en déduit, puisque $f \circ u - g \circ u = (f - g) \circ u$.
+
+      (viii) Par (v), $f > 0$ au voisinage de $a$ ; sur un voisinage relatif $V$ où c'est le cas, qui relève encore du cadre, posons $t = f/g > 0$. Par {{ex-logarithme|Logarithme}}, (ii), $\ln f = \ln t + \ln g$. Comme dans (vi), $|t - 1|$ est inférieur à tout $\varepsilon > 0$ au voisinage de $a$, et la continuité de $\ln$ en $1$, où il vaut $0$, donne $\ln t = o(1)$.
+
+      Si $g \to +\infty$, alors $\ln g \to +\infty$ : pour tout réel $A$, il existe $B$ tel que $\ln x > A$ pour $x \geqslant B$ ({{ex-logarithme|Logarithme}}, (iii)), et $g(x) \geqslant B$ au voisinage de $a$. De même, si $g \to 0$, alors $\ln g \to -\infty$. Dans les deux cas, $|\ln g(x)| \geqslant 1/\varepsilon$ au voisinage de $a$ pour tout $\varepsilon > 0$, c'est-à-dire $1 = o(\ln g)$. Par (i), $\ln f - \ln g = \ln t = o(1) = o(\ln g)$.
+    remarques:
+      - |
+        L'erreur la plus répandue est d'ajouter des équivalents. Quand $x \to +\infty$, on a $x + 1 \sim x$ et $-x \sim -x$, mais la somme des premiers membres vaut $1$ et celle des seconds $0$ ; or aucune fonction n'est équivalente à la fonction nulle, sauf celles qui sont nulles au voisinage de $a$, par (v). Ce qui s'ajoute, ce sont les $o$ et les $O$ devant une même fonction, par (ii) : on écrit $f_1 = g_1 + o(h)$ et $f_2 = g_2 + o(h)$ avec la même fonction $h$, et l'on garde l'information perdue par le passage à l'équivalent.
+      - |
+        La substitution (vii) compose à droite ; la composition à gauche par une fonction, en revanche, ne conserve pas les équivalents. Quand $x \to +\infty$, $x + 1 \sim x$, mais $\exp(x + 1)/\exp x = e$ ne tend pas vers $1$. L'hypothèse de (viii) sur la limite de $g$ ne peut pas non plus être omise : en $0$, $1 + x \sim 1 + 2x$, toutes deux tendant vers $1$, alors que $\ln(1 + x) \sim x$ et $\ln(1 + 2x) \sim 2x$ ; en effet $\ln(1 + h)/h$ est le [[taux-accroissement|taux d'accroissement]] de $\ln$ en $1$, qui tend vers $1$ ({{ex-logarithme|Logarithme}}, (i)), et la substitution $h = 2x$ donne le second. Le quotient des logarithmes tend donc vers $\frac12$.
+      - |
+        Les croissances comparées ({{ex-croissances|Croissances comparées}}, (iii)) s'écrivent, par le point (iii) du nœud {{as-comparaison|Relations de comparaison}} : quand $x \to +\infty$, $x^b = o(\exp x)$ pour tout réel $b$ et $\ln x = o(x^\varepsilon)$ pour tout $\varepsilon > 0$ ; quand $x \to 0$, $x > 0$, $\ln x = o(x^{-\varepsilon})$. La substitution (vii) en tire les comparaisons de suites. Pour $q > 1$, on a $q^n = \exp(n\ln q)$ ({{ex-puissances|Puissances réelles}}, (ii)), et $n \ln q \to +\infty$ ; ainsi
+        $$\frac{n^b}{q^n} = \frac{(n\ln q)^b\exp(-n\ln q)}{(\ln q)^b} \to 0,$$
+        c'est-à-dire $n^b = o(q^n)$ : une suite géométrique de raison $q > 1$ l'emporte sur toute puissance.
+
+  - id: as-dl
+    etiquette: Développement limité
+    nature: définition
+    titre: Développement limité à l'ordre n
+    texte: |
+      Dans ce nœud, $D$ est une partie de $\lex{ensemble-reels}{\mathbb R}$, $a$ un réel [[point-adherent-reel|adhérent]] à $D \setminus \{a\}$, comme dans le cas (a) du nœud {{as-comparaison|Relations de comparaison}}, et $n \in \lex{ensemble-entiers-naturels}{\mathbb N}$. Les relations de comparaison sont prises au voisinage de $a$.
+    enonce: |
+      Une fonction $f : D \to \mathbb R$ admet un [[developpement-limite|développement limité à l'ordre $n$]] en $a$ s'il existe des réels $c_0, \dots, c_n$ tels que
+      $$f(x) = \sum_{k=0}^n c_k (x - a)^k + \lex{fonction-negligeable}{o}\big((x - a)^n\big)$$
+      quand $x \to a$. La [[fonction-polynomiale|fonction polynomiale]] $x \mapsto \sum_{k \leqslant n} c_k (x - a)^k$ en est la *partie régulière*. On abrège souvent « développement limité » en DL.
+
+      (i) *Unicité.* Les coefficients $c_0, \dots, c_n$ d'un DL à l'ordre $n$ sont uniques.
+
+      (ii) *Troncature.* Pour des entiers $k > m$, on a $(x - a)^k = o\big((x - a)^m\big)$. Par suite, si $f$ admet un DL à l'ordre $n$ de coefficients $c_0, \dots, c_n$, elle admet, pour tout $m \leqslant n$, le DL à l'ordre $m$ de coefficients $c_0, \dots, c_m$.
+
+      (iii) *Ordres 0 et 1.* $f$ admet un DL à l'ordre $0$ en $a$ si et seulement si elle a une [[limite-fonction|limite]] réelle en $a$ ; $c_0$ est alors cette limite, égale à $f(a)$ si $a \in D$. Si $D = I$ est un [[intervalle]] contenant $a$, $f$ admet un DL à l'ordre $1$ en $a$ si et seulement si elle est [[derivable]] en $a$, et alors $c_0 = f(a)$ et $c_1 = f'(a)$.
+
+      (iv) *Parité.* Supposons que $D$ soit symétrique, c'est-à-dire que $-x \in D$ pour tout $x \in D$, et que $a = 0$. Si $f$ est paire, les coefficients d'indice impair de son DL sont nuls ; si $f$ est impaire, ce sont ceux d'indice pair.
+
+      (v) *Équivalent.* Si les $c_k$ ne sont pas tous nuls et si $p$ est le plus petit indice tel que $c_p \neq 0$, alors $f(x) \mathrel{\lex{fonction-equivalente}{\sim}} c_p(x - a)^p$.
+    preuve: |
+      (ii) Si $|x - a| \leqslant \min(1, \varepsilon)$, alors $|x - a|^k = |x - a|^{k-m}\,|x - a|^m \leqslant \varepsilon\,|x - a|^m$, puisque $k - m \geqslant 1$. De même, $|x - a|^n \leqslant |x - a|^m$ pour $|x - a| \leqslant 1$ et $n \geqslant m$, donc $(x - a)^n = \lex{fonction-dominee}{O}\big((x - a)^m\big)$, et un $o\big((x - a)^n\big)$ est un $o\big((x - a)^m\big)$ par transitivité ({{as-regles|Règles de calcul}}, (i)). Alors
+      $$\begin{aligned} &f(x) - \sum_{k=0}^m c_k(x - a)^k \\ &\quad = \sum_{k=m+1}^n c_k (x - a)^k + o\big((x - a)^n\big) \end{aligned}$$
+      est une somme finie de fonctions négligeables devant $(x - a)^m$, donc négligeable devant elle ({{as-regles|Règles de calcul}}, (ii)).
+
+      (i) Supposons que $f$ ait deux DL à l'ordre $n$, de coefficients $(c_k)$ et $(d_k)$, et posons $e_k = c_k - d_k$. Par différence, $\sum_k e_k (x - a)^k = o\big((x - a)^n\big)$. Si les $e_k$ n'étaient pas tous nuls, soit $p$ le plus petit indice tel que $e_p \neq 0$, et $\varepsilon > 0$. Au voisinage de $a$, et pour $|x - a| \leqslant 1$, on a $\big|\sum_{k \geqslant p} e_k (x - a)^k\big| \leqslant \varepsilon\,|x - a|^n \leqslant \varepsilon\,|x - a|^p$, d'où, pour $x \neq a$, en divisant par $|x - a|^p$,
+      $$\Big|e_p + \sum_{k > p} e_k (x - a)^{k - p}\Big| \leqslant \varepsilon.$$
+      Le premier membre est la valeur absolue d'une fonction polynomiale, continue, qui vaut $|e_p|$ en $a$ ; l'inégalité vaut sur un voisinage relatif de $a$ privé de $a$, auquel $a$ est adhérent, et le passage à la limite ({{de-limite|Limite en un point}}, (ii), (iii) et (vi)) donne $|e_p| \leqslant \varepsilon$. C'est vrai pour tout $\varepsilon > 0$, donc $e_p = 0$, ce qui contredit le choix de $p$.
+
+      (iii) Le cas de l'ordre $0$ est le point (ii) du nœud {{as-comparaison|Relations de comparaison}}, avec le point (ii) du nœud {{de-limite|Limite en un point}} quand $a \in D$. Si $D = I$ contient $a$ et si $f(x) = c_0 + c_1(x - a) + o(x - a)$, l'inégalité $|f(a) - c_0| \leqslant \varepsilon \cdot 0$ force $c_0 = f(a)$. La fonction $x \mapsto x - a$ ne s'annule pas sur $I \setminus \{a\}$, et la fonction $f(x) - f(a) - c_1(x - a)$ s'annule en $a$ ; par le point (iii) du nœud {{as-comparaison|Relations de comparaison}}, la relation équivaut à
+      $$\frac{f(x) - f(a)}{x - a} - c_1 \to 0$$
+      quand $x \to a$ dans $I \setminus \{a\}$, c'est-à-dire à la dérivabilité de $f$ en $a$ avec $f'(a) = c_1$ ({{de-derivee|Dérivabilité en un point}}).
+
+      (iv) La fonction $u(x) = -x$ envoie $D$ dans $D$ et tend vers $0$ en $0$. Par substitution ({{as-regles|Règles de calcul}}, (vii)) dans le DL de $f$, on obtient
+      $$f(-x) = \sum_{k=0}^n (-1)^k c_k x^k + o\big((-x)^n\big),$$
+      et un $o\big((-x)^n\big)$ est un $o(x^n)$, les deux fonctions ayant même valeur absolue. Si $f$ est paire, $f(-x) = f(x)$, et l'unicité (i) donne $(-1)^k c_k = c_k$, donc $c_k = 0$ pour $k$ impair ; si $f$ est impaire, $f(-x) = -f(x)$ donne $c_k = 0$ pour $k$ pair.
+
+      (v) On a $f(x) - c_p(x - a)^p = \sum_{k > p} c_k(x - a)^k + o\big((x - a)^n\big)$, qui est $o\big((x - a)^p\big)$ par (ii), puisque $n \geqslant p$. Comme $c_p \neq 0$, $(x - a)^p = O\big(c_p(x - a)^p\big)$, avec la constante $1/|c_p|$, et la transitivité donne $f(x) - c_p(x - a)^p = o\big(c_p(x - a)^p\big)$.
+    remarques:
+      - |
+        Le point (iii) est le nœud {{de-dl1|Développement à l'ordre 1}} récrit dans le langage des relations de comparaison : la fonction $\varepsilon$, continue et nulle en $0$, de la forme (ii) de ce nœud exprime exactement que le reste est un $o(x - a)$.
+      - |
+        L'existence d'un DL à l'ordre $2$ n'entraîne pas l'existence d'une dérivée seconde. Soit $f(x) = x^3 \sin(1/x)$ pour $x \neq 0$ et $f(0) = 0$. Comme $|f(x)| \leqslant |x|^3$, on a $f(x) = o(x^2)$ en $0$ : $f$ admet le DL nul à l'ordre $2$, donc, par (iii), elle est dérivable en $0$ avec $f'(0) = 0$. Pour $x \neq 0$, les règles de dérivation et le nœud {{tg-prolongement|Cosinus et sinus sur ℝ}}, (iii), donnent $f'(x) = 3x^2\sin(1/x) - x\cos(1/x)$.
+
+        Aux points $x_k = 1/(2k\pi)$, avec $k \geqslant 1$ entier, on a $\sin(1/x_k) = 0$ et $\cos(1/x_k) = 1$, donc $f'(x_k)/x_k = -1$ ; aux points $y_k = 1/((2k + 1)\pi)$, on a $\cos(1/y_k) = -1$, donc $f'(y_k)/y_k = 1$ ({{tg-cercle|Paramétrage du cercle}}, (i) et (ii), avec $\cos^2 + \sin^2 = 1$). Ces deux familles de points s'approchent de $0$ autant qu'on veut. Si le taux d'accroissement $f'(x)/x$ de $f'$ en $0$ avait une limite $\ell$, on aurait, pour $\varepsilon = 1$, à la fois $|\ell + 1| < 1$ et $|\ell - 1| < 1$, ce qui est impossible : $f'$ n'est pas dérivable en $0$.
+
+        ```schema as-dl
+        À gauche, $f(x) = x^3\sin(1/x)$ oscille entre les courbes bleues $\pm|x|^3$, qui l'écrasent contre l'axe : c'est le DL nul à l'ordre $2$. À droite, sa dérivée $f'$ oscille autour de $0$ et passe, aux points rouges $x_k$ et $y_k$, par les droites vertes $y = -x$ et $y = x$ : les pentes des cordes issues de l'origine y valent $-1$ et $1$, et $f'$ n'a pas de dérivée en $0$.
+        ```
+      - |
+        L'hypothèse que $a$ est adhérent à $D \setminus \{a\}$ est celle qui donne l'unicité. Si $a$ était un point isolé de $D$, par exemple $a = 0$ et $D = \{0\} \cup [1, 2]$, un voisinage relatif assez petit serait réduit à $\{0\}$, et la relation ne porterait que sur la valeur en $0$ : toute fonction polynomiale prenant la valeur $f(0)$ en $0$ conviendrait.
+
+  - id: as-primitive
+    etiquette: Intégrer un DL
+    nature: lemme
+    titre: Intégration d'un développement limité
+    enonce: |
+      Soit $I$ un [[intervalle]] de $\lex{ensemble-reels}{\mathbb R}$ non réduit à un point, $a \in I$ et $F : I \to \mathbb R$ continue sur $I$ et [[derivable]] en tout point de $I \setminus \{a\}$. Si, pour un entier $n \geqslant 0$ et des réels $c_0, \dots, c_n$,
+      $$F'(x) = \sum_{k=0}^n c_k (x - a)^k + \lex{fonction-negligeable}{o}\big((x - a)^n\big)$$
+      quand $x \to a$, $x \in I \setminus \{a\}$, alors $F$ admet le [[developpement-limite|DL]] à l'ordre $n + 1$
+      $$\begin{aligned} F(x) &= F(a) + \sum_{k=0}^n \frac{c_k}{k + 1}(x - a)^{k+1} \\ &\quad + o\big((x - a)^{n+1}\big). \end{aligned}$$
+    preuve: |
+      Posons, pour $x \in I$,
+      $$G(x) = F(x) - F(a) - \sum_{k=0}^n \frac{c_k}{k + 1}(x - a)^{k+1}.$$
+      La fonction $G$ est continue sur $I$, dérivable en tout point de $I \setminus \{a\}$, nulle en $a$, et sa dérivée y vaut $G'(x) = F'(x) - \sum_k c_k(x - a)^k$ ({{de-operations|Opérations}}, (i) et (iv)). Par hypothèse, $G'(x) = o\big((x - a)^n\big)$ quand $x \to a$ dans $I \setminus \{a\}$.
+
+      Soit $\varepsilon > 0$, et $\delta > 0$ tel que $|G'(t)| \leqslant \varepsilon\,|t - a|^n$ pour tout $t \in I$ vérifiant $0 < |t - a| < \delta$. Soit $x \in I$ tel que $0 < |x - a| < \delta$. Le segment d'extrémités $a$ et $x$ est contenu dans $I$ ; $G$ y est continue, et dérivable en tout point strictement compris entre $a$ et $x$, puisqu'un tel point diffère de $a$. L'égalité des accroissements finis ({{de-taf|Égalité des accroissements finis}}) fournit $c$ strictement compris entre $a$ et $x$ tel que $G(x) = G(x) - G(a) = G'(c)(x - a)$. Comme $0 < |c - a| < |x - a| < \delta$,
+      $$|G(x)| \leqslant \varepsilon\,|c - a|^n\,|x - a| \leqslant \varepsilon\,|x - a|^{n+1}.$$
+      L'inégalité vaut aussi en $x = a$, où $G(a) = 0$ : elle est vraie sur $I \cap \,]a - \delta, a + \delta[$, et $G(x) = o\big((x - a)^{n+1}\big)$, ce qui est l'énoncé.
+    remarques:
+      - |
+        On intègre un développement limité, on ne le dérive pas. La fonction $f(x) = x^3\sin(1/x)$, prolongée par $f(0) = 0$, est un $o(x^2)$ en $0$ ({{as-dl|Développement limité}}, deuxième remarque), mais sa dérivée n'est pas un $o(x)$ : $f'(x)/x$ prend les valeurs $-1$ et $1$ aussi près de $0$ qu'on veut. Le lemme va dans un seul sens, de la dérivée vers la fonction, parce que l'égalité des accroissements finis transforme une information sur $F'$ en une information sur $F$, comme au nœud {{de-iaf|Inégalité des accroissements finis}}.
+      - |
+        Aucune continuité de $F'$ n'est demandée, ni même son existence en $a$. Si $F'$ est continue, on peut aussi écrire $G(x) = \int_a^x G'$ par le {{ar-tfa|théorème fondamental de l'analyse}} et majorer l'intégrale ; l'égalité des accroissements finis évite cette hypothèse, et c'est elle qui permet la formule de Taylor-Young sous la plus faible des hypothèses usuelles, au nœud {{as-taylor-young|Taylor-Young}}.
+      - |
+        Appliqué à $F(x) = \ln(1 + x)$, dont la dérivée $1/(1 + x)$ a un développement donné par une identité algébrique, le lemme donne le DL du logarithme à tout ordre ; appliqué à l'{{tg-arctan|arc tangente}}, de dérivée $1/(1 + x^2)$, celui de $\arctan$. C'est ce que fait le nœud {{as-usuels|Développements usuels}}.
+
+  - id: as-taylor-young
+    etiquette: Taylor-Young
+    nature: théorème
+    titre: Formule de Taylor-Young à une variable
+    enonce: |
+      Soit $I$ un [[intervalle]] de $\lex{ensemble-reels}{\mathbb R}$ non réduit à un point, $a \in I$, $n \geqslant 1$ un entier, et $f : I \to \mathbb R$ une fonction $n - 1$ fois [[derivee-successive|dérivable]] sur $I$, dont la dérivée $(n - 1)$-ième $f^{(n-1)}$ est [[derivable]] en $a$ ; on note $f^{(n)}(a)$ son nombre dérivé en $a$. Alors
+      $$f(x) = \sum_{k=0}^n \frac{f^{(k)}(a)}{k!}(x - a)^k + \lex{fonction-negligeable}{o}\big((x - a)^n\big)$$
+      quand $x \to a$. C'est la [[formule-taylor-young-reelle|formule de Taylor-Young]] : $f$ admet un [[developpement-limite|DL]] à l'ordre $n$ en $a$, dont la partie régulière est son [[polynome-taylor|polynôme de Taylor]] à l'ordre $n$ en $a$. Elle s'applique en particulier si $f$ est $n$ fois dérivable sur $I$, ou de classe $C^n$ sur $I$.
+    preuve: |
+      Par récurrence sur $n$, l'énoncé étant démontré pour tous les intervalles, tous les points et toutes les fonctions à la fois. Pour $n = 1$, $f$ est dérivable en $a$, et c'est le point (iii) du nœud {{as-dl|Développement limité}}.
+
+      Supposons l'énoncé vrai au rang $n \geqslant 1$, et soit $f$ une fonction $n$ fois dérivable sur $I$ dont la dérivée $n$-ième est dérivable en $a$. Par une récurrence immédiate sur $k$, la dérivée $f'$ est $k$ fois dérivable sur $I$ pour $k \leqslant n - 1$, avec $(f')^{(k)} = f^{(k+1)}$ : c'est vrai pour $k = 0$, et si $(f')^{(k)} = f^{(k+1)}$ avec $k + 1 \leqslant n - 1$, la dérivée de cette fonction est $f^{(k+2)}$, par définition des [[derivee-successive|dérivées successives]]. Ainsi $f'$ est $n - 1$ fois dérivable sur $I$, et $(f')^{(n-1)} = f^{(n)}$ est dérivable en $a$, de nombre dérivé $f^{(n+1)}(a)$. L'hypothèse de récurrence, appliquée à $f'$, donne
+      $$f'(x) = \sum_{k=0}^n \frac{f^{(k+1)}(a)}{k!}(x - a)^k + o\big((x - a)^n\big).$$
+
+      La fonction $f$ est dérivable sur $I$, puisque $n \geqslant 1$, donc continue ({{de-dl1|Développement à l'ordre 1}}). Le lemme d'intégration ({{as-primitive|Intégrer un DL}}) donne alors, avec $k!\,(k + 1) = (k + 1)!$ et le changement d'indice $j = k + 1$,
+      $$\begin{aligned} f(x) &= f(a) + \sum_{j=1}^{n+1} \frac{f^{(j)}(a)}{j!}(x - a)^j \\ &\quad + o\big((x - a)^{n+1}\big), \end{aligned}$$
+      qui est l'énoncé au rang $n + 1$, puisque le terme $j = 0$ de la somme est $f(a)$.
+    remarques:
+      - |
+        La formule de Taylor-Lagrange ({{de-taylor|Taylor-Lagrange}}) et celle de Taylor-Young ne disent pas la même chose. La première demande $n + 1$ dérivées sur tout l'intervalle et donne, entre deux points quelconques, un reste explicite que l'on peut majorer ; la seconde ne demande que $n - 1$ dérivées sur l'intervalle et une de plus au seul point $a$, et ne dit rien d'autre que le comportement du reste quand $x$ tend vers $a$. Quand $f^{(n+1)}$ est bornée près de $a$, la première donne même un reste $\lex{fonction-dominee}{O}\big((x - a)^{n+1}\big)$, plus précis.
+
+        Ainsi, pour le cosinus en $0$ à l'ordre $2$, le reste $\cos x - (1 - x^2/2)$ vaut environ $4{,}165 \cdot 10^{-6}$ en $x = 0{,}1$, très près de $x^4/24 \approx 4{,}167 \cdot 10^{-6}$ : il est bien plus petit que $x^2$, ce que dit Taylor-Young, et la formule de Taylor-Lagrange à l'ordre $3$ le borne par $x^4/24$, puisque $|\cos| \leqslant 1$.
+      - |
+        La réciproque est fausse dès l'ordre $2$ : la fonction $x^3\sin(1/x)$, prolongée par $0$, a un DL à l'ordre $2$ en $0$ sans être deux fois dérivable en $0$ ({{as-dl|Développement limité}}, deuxième remarque). Et un DL ne détermine pas la fonction : la fonction $\theta$ du nœud {{ex-plateau|Fonction plate en 0}} a toutes ses dérivées nulles en $0$, donc, par Taylor-Young, le DL nul à tout ordre, comme la fonction nulle, alors que $\theta(x) > 0$ pour $x > 0$.
+      - |
+        Lue à l'envers, avec l'unicité du DL ({{as-dl|Développement limité}}, (i)), la formule calcule des dérivées : si $f$ vérifie les hypothèses du théorème et si l'on connaît, par un autre moyen, un DL à l'ordre $n$ de coefficients $c_k$, alors $f^{(k)}(a) = k!\,c_k$. Pour $f(x) = 1/(1 - x^2)$, l'identité $\frac1{1 - y} = 1 + y + y^2 + \frac{y^3}{1 - y}$, avec $y = x^2$, donne le DL $1 + x^2 + x^4 + o(x^5)$, d'où $f^{(4)}(0) = 4! = 24$ sans dériver quatre fois.
+      - |
+        Le nom vient de William Henry Young, qui l'a exposée en 1910 dans *The Fundamental Theorems of the Differential Calculus* (Cambridge Tracts in Mathematics and Mathematical Physics, n° 11). La version à plusieurs variables, à l'ordre $2$, est au nœud {{fq-taylor-young|Taylor-Young}} du calcul différentiel.
+
+  - id: as-operations
+    etiquette: Opérations sur les DL
+    nature: proposition
+    titre: Opérations sur les développements limités
+    texte: |
+      Le cadre est celui du nœud {{as-dl|Développement limité}} : $a$ est adhérent à $D \setminus \{a\}$, et $n \in \lex{ensemble-entiers-naturels}{\mathbb N}$. Pour une fonction polynomiale $R(h) = \sum_k r_k h^k$, on note $T_n(R)(h) = \sum_{k \leqslant n} r_k h^k$ sa *troncature* à l'ordre $n$. On écrit les DL sous la forme $f(x) = P(x - a) + \lex{fonction-negligeable}{o}\big((x - a)^n\big)$, où $P$ est une fonction polynomiale de degré au plus $n$.
+    enonce: |
+      Soit $f, g : D \to \lex{ensemble-reels}{\mathbb R}$ admettant des [[developpement-limite|DL]] à l'ordre $n$ en $a$, de parties régulières $P(x - a)$ et $Q(x - a)$.
+
+      (i) *Combinaisons linéaires.* Pour tous réels $\lambda$ et $\mu$, $\lambda f + \mu g$ admet le DL à l'ordre $n$ de partie régulière $\lambda P(x - a) + \mu Q(x - a)$.
+
+      (ii) *Produit.* $fg$ admet le DL à l'ordre $n$ de partie régulière $T_n(PQ)(x - a)$.
+
+      (iii) *Composition.* Supposons $n \geqslant 1$ et $P(0) = 0$. Soit $E$ une partie de $\mathbb R$ telle que $0$ soit adhérent à $E \setminus \{0\}$, avec $f(D) \subset E$, et $\varphi : E \to \mathbb R$ admettant en $0$ le DL $\varphi(y) = R(y) + o(y^n)$. Alors $\varphi \circ f$ admet en $a$ le DL à l'ordre $n$ de partie régulière $T_n(R \circ P)(x - a)$.
+
+      (iv) *Inverse et quotient.* Si $g$ ne s'annule pas sur $D$ et si $Q(0) \neq 0$, alors $1/g$ et $f/g$ admettent des DL à l'ordre $n$ en $a$, que l'on obtient par (ii) et (iii) en écrivant $g = Q(0)\,(1 - v)$, avec $v = 1 - g/Q(0)$, et
+      $$\frac{1}{1 - y} = \sum_{k=0}^n y^k + o(y^n)$$
+      quand $y \to 0$, $y \neq 1$.
+    preuve: |
+      (i) C'est le point (ii) du nœud {{as-regles|Règles de calcul}}.
+
+      (ii) On écrit $f = P(x - a) + r$ et $g = Q(x - a) + s$, avec $r, s = o\big((x - a)^n\big)$. Alors
+      $$\begin{aligned} fg &= P(x - a)Q(x - a) \\ &\quad + P(x - a)\,s + Q(x - a)\,r + rs. \end{aligned}$$
+      Les fonctions polynomiales sont continues, donc bornées au voisinage de $a$, et $r$, $s$ le sont aussi, étant des $o(1)$ par troncature ({{as-dl|Développement limité}}, (ii)). Les trois derniers termes sont donc des $o\big((x - a)^n\big)$ par le point (iii) du nœud {{as-regles|Règles de calcul}}, avec $O(1)$ comme second facteur. Enfin $PQ - T_n(PQ)$ est une somme de termes $r_k h^k$ avec $k > n$, chacun $o(h^n)$ en $h = x - a$ ({{as-dl|Développement limité}}, (ii)).
+
+      (iii) Écrivons $R(y) = \sum_{j \leqslant n} d_j y^j$. La troncature à l'ordre $0$ montre que $f$ tend vers $P(0) = 0$ en $a$ ({{as-dl|Développement limité}}, (ii) et (iii)) : pour tout voisinage relatif $E \cap \,]{-\eta}, \eta[$ de $0$, la propriété $f(x) \in E \cap \,]{-\eta}, \eta[$ est vraie au voisinage de $a$. Trois étapes.
+
+      *Le reste de $\varphi$.* Par substitution ({{as-regles|Règles de calcul}}, (vii)), $\varphi(f(x)) - R(f(x)) = o\big(f(x)^n\big)$. Comme $P(0) = 0$, on a $P(h) = h\,P_1(h)$ avec $P_1$ polynomiale, donc bornée près de $0$, et $P(x - a) = O(x - a)$ ; le reste de $f$, un $o\big((x - a)^n\big)$, est aussi un $O(x - a)$, puisque $n \geqslant 1$. Ainsi $f = O(x - a)$, $f^n = O\big((x - a)^n\big)$ par produits, et $\varphi(f) - R(f) = o\big((x - a)^n\big)$ par transitivité.
+
+      *Remplacer $f$ par $P$.* Pour $j \geqslant 1$, $f^j - P^j = (f - P)\sum_{i=0}^{j-1} f^i P^{j-1-i}$, où l'on écrit $P$ pour $P(x - a)$. Le premier facteur est un $o\big((x - a)^n\big)$, le second est borné au voisinage de $a$, puisque $f$ et $P(x - a)$ tendent vers $0$. Donc $R(f) - R(P(x - a)) = o\big((x - a)^n\big)$.
+
+      *Tronquer.* $R \circ P$ est une fonction polynomiale, et $R \circ P - T_n(R \circ P)$ est une somme de termes de degré $> n$, négligeables devant $h^n$. En ajoutant les trois relations ({{as-regles|Règles de calcul}}, (ii)), $\varphi(f(x)) = T_n(R \circ P)(x - a) + o\big((x - a)^n\big)$.
+
+      (iv) *Le développement de $1/(1 - y)$.* Pour $y \neq 1$, $(1 - y)\sum_{k=0}^n y^k = 1 - y^{n+1}$, d'où
+      $$\frac{1}{1 - y} = \sum_{k=0}^n y^k + \frac{y^{n+1}}{1 - y}.$$
+      Pour $|y| \leqslant \frac12$, on a $|1 - y| \geqslant \frac12$, donc $\big|\frac{y^{n+1}}{1 - y}\big| \leqslant 2|y|\,|y|^n$, qui est au plus $\varepsilon|y|^n$ dès que $|y| \leqslant \min(\frac12, \frac\varepsilon2)$ : le dernier terme est un $o(y^n)$ quand $y \to 0$ dans $E = \mathbb R \setminus \{1\}$, auquel $0$ est adhérent.
+
+      *L'inverse.* Posons $c = Q(0) \neq 0$ et $v = 1 - g/c$, qui ne prend jamais la valeur $1$ puisque $g$ ne s'annule pas. Par (i), $v$ admet le DL de partie régulière $1 - Q(x - a)/c$, de terme constant nul. Si $n \geqslant 1$, (iii), appliqué à $v$ et à $\varphi(y) = 1/(1 - y)$, donne un DL à l'ordre $n$ de $1/(1 - v) = c/g$, et $1/g$ s'en déduit par (i). Si $n = 0$, $g$ tend vers $c$, et $1/g$ vers $1/c$ ({{de-limite|Limite en un point}}, (iv)), ce qui est le DL à l'ordre $0$ ({{as-dl|Développement limité}}, (iii)). Enfin $f/g = f \cdot (1/g)$ relève de (ii).
+    remarques:
+      - |
+        Il faut tronquer au bon ordre, et c'est l'ordre du résultat qui décide. Pour calculer la limite en $0$ de $(\exp x - 1 - x)/x^2$, le DL $\exp x = 1 + x + o(x)$ ne donne qu'un $o(x)/x^2$, sur lequel on ne peut rien dire ; à l'ordre $2$, $\exp x = 1 + x + \frac{x^2}2 + o(x^2)$, que donne la majoration $|\exp x - S_2(x)| \leqslant \exp|x|\,|x|^3/6$ du nœud {{ex-serie|Série de l'exponentielle}}, (i), donne $\frac12 + o(1)$, et la limite vaut $\frac12$. Dans un quotient par $x^p$, il faut développer le numérateur à l'ordre $n + p$ pour obtenir un résultat à l'ordre $n$.
+      - |
+        La troncature du produit n'est pas une précaution de forme. De $f = 1 + x + o(x)$ et $g = 1 - x + o(x)$, on ne peut tirer que $fg = 1 + o(x)$. Les fonctions $f = 1 + x$ et $g = 1 - x$ vérifient ces deux développements, avec $fg = 1 - x^2$ ; les fonctions $f = \exp x$ et $g = \exp(-x)$ les vérifient aussi, avec $fg = 1$. Le terme en $x^2$ du produit dépend des restes, que les développements à l'ordre $1$ ne font pas connaître : le $-x^2$ du produit des parties régulières n'a aucun sens.
+      - |
+        Les compensations sont fréquentes, et seul le calcul les révèle. Avec $\sin x = x - \frac{x^3}6 + o(x^3)$, par la formule de Taylor-Lagrange ({{de-taylor|Taylor-Lagrange}}), le reste étant au plus $x^4/24$, et $\exp y = 1 + y + \frac{y^2}2 + \frac{y^3}6 + o(y^3)$, par le nœud {{ex-serie|Série de l'exponentielle}}, (i), la composition (iii) donne
+        $$\exp(\sin x) = 1 + x + \frac{x^2}2 + o(x^3) :$$
+        les deux contributions au terme en $x^3$, $-\frac16$ venant du terme $y$ et $\frac16$ venant du terme $\frac{y^3}6$, s'annulent. Les développements de $\sin$ et de $\exp$ à tout ordre sont établis au nœud {{as-usuels|Développements usuels}}.
+
+  - id: as-usuels
+    etiquette: Développements usuels
+    nature: proposition
+    titre: Développements limités usuels en 0
+    enonce: |
+      Pour tout entier $n \geqslant 0$, on a, quand $x \to 0$, les [[developpement-limite|DL]] suivants.
+
+      (i) Sur $\lex{ensemble-reels}{\mathbb R}$,
+      $$\lex{exponentielle}{\exp} x = \sum_{k=0}^n \frac{x^k}{k!} + \lex{fonction-negligeable}{o}(x^n).$$
+
+      (ii) Sur $\mathbb R \setminus \{1\}$ et sur $\mathbb R \setminus \{-1\}$ respectivement,
+      $$\begin{aligned} \frac1{1 - x} &= \sum_{k=0}^n x^k + o(x^n), \\ \frac1{1 + x} &= \sum_{k=0}^n (-1)^k x^k + o(x^n). \end{aligned}$$
+
+      (iii) Sur $]{-1}, +\infty[$,
+      $$\lex{logarithme}{\ln}(1 + x) = \sum_{k=1}^n \frac{(-1)^{k+1}}{k} x^k + o(x^n).$$
+
+      (iv) Pour tout réel $\alpha$, sur $]{-1}, +\infty[$,
+      $$(1 + x)^\alpha = \sum_{k=0}^n \binom{\alpha}{k} x^k + o(x^n),$$
+      où $\binom{\alpha}{0} = 1$ et, pour $k \geqslant 1$,
+      $$\binom{\alpha}{k} = \frac{\alpha(\alpha - 1)\cdots(\alpha - k + 1)}{k!}.$$
+
+      (v) Sur $\mathbb R$,
+      $$\begin{aligned} \cos x &= \sum_{k=0}^n \frac{(-1)^k x^{2k}}{(2k)!} + o(x^{2n+1}), \\ \sin x &= \sum_{k=0}^n \frac{(-1)^k x^{2k+1}}{(2k+1)!} + o(x^{2n+2}). \end{aligned}$$
+
+      (vi) Sur $\mathbb R$,
+      $$\lex{arc-tangente}{\arctan} x = \sum_{k=0}^n \frac{(-1)^k x^{2k+1}}{2k + 1} + o(x^{2n+2}).$$
+
+      (vii) Sur $]{-\frac\pi2}, \frac\pi2[$,
+      $$\tan x = x + \frac{x^3}3 + \frac{2x^5}{15} + o(x^6).$$
+    preuve: |
+      Dans (i), (iii) et (iv), pour $n = 0$, l'énoncé dit que la fonction tend vers sa valeur en $0$, ce qui vient de sa continuité, puisqu'elle est dérivable ; on y suppose désormais $n \geqslant 1$. Les démonstrations de (ii), (v) et (vi) valent pour tout $n \geqslant 0$, les ordres $2n + 1$ et $2n + 2$ étant au moins égaux à $1$. Les fonctions de (i), (iv), (v) sont indéfiniment dérivables, et l'on applique la formule de Taylor-Young ({{as-taylor-young|Taylor-Young}}) ; celles de (iii) et (vi) s'obtiennent par le lemme d'intégration ({{as-primitive|Intégrer un DL}}).
+
+      (i) Toutes les dérivées successives de $\exp$ sont égales à $\exp$ ({{ex-exponentielle|Exponentielle}}, (ii)), et $\exp 0 = 1$.
+
+      (ii) C'est l'identité démontrée au point (iv) du nœud {{as-operations|Opérations sur les DL}}. La substitution $y = -x$, qui tend vers $0$ ({{as-regles|Règles de calcul}}, (vii)), donne le second développement, $o\big((-x)^n\big)$ étant un $o(x^n)$.
+
+      (iii) La fonction $F(x) = \ln(1 + x)$ est dérivable sur $]{-1}, +\infty[$, de dérivée $1/(1 + x)$, par {{ex-logarithme|Logarithme}}, (i), et la dérivée d'une composée ({{de-composee|Dérivée d'une composée}}) ; elle est donc continue, et $F(0) = \ln 1 = 0$. Le développement (ii) à l'ordre $n - 1$ et le lemme d'intégration donnent
+      $$\ln(1 + x) = \sum_{k=0}^{n-1} \frac{(-1)^k}{k + 1}x^{k+1} + o(x^n),$$
+      qui est (iii) après le changement d'indice $k + 1 \to k$.
+
+      (iv) Par {{ex-puissances|Puissances réelles}}, (iii), et la dérivée d'une composée, la fonction $f(x) = (1 + x)^\alpha$ est dérivable sur $]{-1}, +\infty[$, de dérivée $\alpha(1 + x)^{\alpha - 1}$. Par récurrence sur $k$, elle est $k$ fois dérivable et $f^{(k)}(x) = \alpha(\alpha - 1)\cdots(\alpha - k + 1)(1 + x)^{\alpha - k}$ : on dérive encore, par la même règle avec l'exposant $\alpha - k$. En $0$, $(1 + 0)^{\alpha - k} = 1$, et $f^{(k)}(0)/k! = \binom\alpha k$.
+
+      (v) Par {{tg-prolongement|Cosinus et sinus sur ℝ}}, (iii), $\cos' = -\sin$ et $\sin' = \cos$ ; par récurrence sur $k$, $\cos^{(2k)} = (-1)^k\cos$, $\cos^{(2k+1)} = (-1)^{k+1}\sin$, $\sin^{(2k)} = (-1)^k\sin$ et $\sin^{(2k+1)} = (-1)^k \cos$. Comme $\cos 0 = 1$ et $\sin 0 = 0$ ({{tg-tangente|Tangente, cos et sin}}, (iii)), les coefficients de Taylor de $\cos$ en $0$ sont nuls aux ordres impairs et valent $(-1)^k/(2k)!$ à l'ordre $2k$ ; ceux de $\sin$ sont nuls aux ordres pairs et valent $(-1)^k/(2k + 1)!$ à l'ordre $2k + 1$. La formule de Taylor-Young à l'ordre $2n + 1$ pour $\cos$, $2n + 2$ pour $\sin$, donne (v).
+
+      (vi) La fonction $\arctan$ est dérivable sur $\mathbb R$, de dérivée $1/(1 + x^2)$, et $\arctan 0 = 0$ ({{tg-arctan|Arc tangente, π}}, (i)). L'identité de (ii), avec $y = -x^2$, donne
+      $$\frac1{1 + x^2} = \sum_{k=0}^n (-1)^k x^{2k} + \frac{(-1)^{n+1}x^{2n+2}}{1 + x^2},$$
+      et le dernier terme, de valeur absolue au plus $x^{2n+2}$, est un $o(x^{2n+1})$. Le lemme d'intégration, appliqué à l'ordre $2n + 1$, donne (vi).
+
+      (vii) Sur $I_0 = \,]{-\frac\pi2}, \frac\pi2[$, le cosinus et le sinus prolongent les fonctions $c$ et $s$ du nœud {{tg-tangente|Tangente, cos et sin}}, qui vérifient $c > 0$ et $s = \tan \cdot c$ : ainsi $\tan = \sin/\cos$ sur $I_0$, où $\cos$ ne s'annule pas. Par (v), $\sin x = x - \frac{x^3}6 + \frac{x^5}{120} + o(x^6)$ et $\cos x = 1 - v(x)$ avec
+      $$v(x) = \frac{x^2}2 - \frac{x^4}{24} + \frac{x^6}{720} + o(x^6).$$
+      Le point (iv) du nœud {{as-operations|Opérations sur les DL}}, avec $1/(1 - y) = \sum_{k \leqslant 6} y^k + o(y^6)$, dont seuls les termes $y$, $y^2$ et $y^3$ contribuent jusqu'à l'ordre $6$ puisque $v(x) = O(x^2)$, et avec $v^2 = \frac{x^4}4 - \frac{x^6}{24} + o(x^6)$ et $v^3 = \frac{x^6}8 + o(x^6)$, donne
+      $$\frac1{\cos x} = 1 + \frac{x^2}2 + \frac{5x^4}{24} + \frac{61x^6}{720} + o(x^6),$$
+      et le produit (ii) par le DL du sinus, tronqué à l'ordre $6$, donne $x + \big(\frac12 - \frac16\big)x^3 + \big(\frac5{24} - \frac1{12} + \frac1{120}\big)x^5 + o(x^6)$. Comme $\frac12 - \frac16 = \frac13$ et $\frac5{24} - \frac1{12} + \frac1{120} = \frac{2}{15}$, c'est (vii) ; il n'y a pas de terme en $x^6$, puisque la partie régulière du sinus n'a que des puissances impaires et celle de $1/\cos$ que des puissances paires.
+    remarques:
+      - |
+        Les coefficients ont un sens concret. En $x = 0{,}1$, le DL du sinus à l'ordre $4$ donne $0{,}1 - 0{,}001/6 \approx 0{,}0998333$, pour $\sin 0{,}1 \approx 0{,}0998334$ ; l'écart, environ $8{,}3 \cdot 10^{-8}$, est voisin du terme suivant, $x^5/120$. Le DL de $(1 + x)^{1/2}$ à l'ordre $2$, $1 + \frac x2 - \frac{x^2}8$, donne $\sqrt{1{,}02} \approx 1{,}00995$, la valeur exacte étant $1{,}0099504\ldots$
+      - |
+        Un DL est une information locale. Les polynômes $\sum_{k=1}^n (-1)^{k+1}x^k/k$ approchent $\ln(1 + x)$ près de $0$, mais en $x = 2$ leurs termes croissent sans limite, comme ceux de $\frac1{1 + x}$ au nœud {{de-taylor|Taylor-Lagrange}} ; la série de l'exponentielle converge au contraire en tout point ({{ex-serie|Série de l'exponentielle}}), ce que la formule de Taylor-Lagrange, et non celle de Taylor-Young, permet de démontrer.
+      - |
+        Un DL en un point $a \neq 0$ se ramène à un DL en $0$ par la substitution $x = a + h$ : ainsi $\ln x = \ln(1 + h)$ en $a = 1$, et $\exp(a + h) = \exp a \cdot \exp h$ ({{ex-exponentielle|Exponentielle}}, (iii)), d'où $\exp x = \exp a \sum_{k \leqslant n} (x - a)^k/k! + o\big((x - a)^n\big)$.
+
+  - id: as-etude-locale
+    etiquette: Étude locale
+    nature: proposition
+    titre: "Étude locale : position par rapport à la tangente, extremums"
+    enonce: |
+      Soit $I$ un [[intervalle]] de $\lex{ensemble-reels}{\mathbb R}$, $a$ un point de $I$ qui n'en est pas une extrémité, et $f : I \to \mathbb R$ admettant en $a$ un [[developpement-limite|DL]] de la forme
+      $$f(x) = c_0 + c_1(x - a) + c_p(x - a)^p + \lex{fonction-negligeable}{o}\big((x - a)^p\big),$$
+      avec un entier $p \geqslant 2$ et $c_p \neq 0$. Alors $f$ est [[derivable]] en $a$, $c_0 = f(a)$ et $c_1 = f'(a)$ ; on note $T(x) = f(a) + f'(a)(x - a)$.
+
+      (i) *Position par rapport à la tangente.* Il existe $r > 0$ tel que, pour tout $x \in I$ vérifiant $0 < |x - a| < r$, le réel $f(x) - T(x)$ soit non nul et du signe de $c_p(x - a)^p$. Si $p$ est pair, le graphe de $f$ est donc, près du point de contact et hors de lui, au-dessus de sa tangente si $c_p > 0$, au-dessous si $c_p < 0$ ; si $p$ est impair, il la traverse.
+
+      (ii) *Extremum.* Supposons $f'(a) = 0$. Si $p$ est pair, $f$ admet en $a$ un minimum local strict si $c_p > 0$, c'est-à-dire que $f(x) > f(a)$ pour $0 < |x - a| < r$, et un maximum local strict si $c_p < 0$. Si $p$ est impair, $f$ n'a pas d'[[extremum-local|extremum local]] en $a$.
+
+      (iii) *Critère de la dérivée seconde.* Si $f$ est dérivable sur $I$, si $f'$ est dérivable en $a$, si $f'(a) = 0$ et $f''(a) > 0$, alors $f$ admet un minimum local strict en $a$ ; si $f''(a) < 0$, un maximum local strict.
+    preuve: |
+      Par troncature à l'ordre $1$ et par le point (iii) du nœud {{as-dl|Développement limité}}, $f$ est dérivable en $a$, avec $c_0 = f(a)$ et $c_1 = f'(a)$.
+
+      (i) On a $f(x) - T(x) = c_p(x - a)^p + o\big((x - a)^p\big)$, donc $f(x) - T(x) \mathrel{\lex{fonction-equivalente}{\sim}} c_p(x - a)^p$ ({{as-dl|Développement limité}}, (v)). Par le point (v) du nœud {{as-regles|Règles de calcul}}, il existe $r > 0$ tel que, pour $x \in I$ et $|x - a| < r$, les deux membres soient de même signe strict ou nuls ensemble ; pour $x \neq a$, $c_p(x - a)^p$ n'est pas nul. Si $p$ est pair, $(x - a)^p > 0$ pour $x \neq a$ ; si $p$ est impair, $(x - a)^p$ a le signe de $x - a$, et, comme $a$ n'est pas une extrémité de $I$, il y a des points de $I$ de chaque côté de $a$ à moins de $r$.
+
+      (ii) Si $f'(a) = 0$, la tangente est la fonction constante $f(a)$, et (i) s'applique à $f(x) - f(a)$. Si $p$ est pair, $f(x) - f(a)$ a le signe de $c_p$ pour $0 < |x - a| < r$. Si $p$ est impair, tout intervalle $]a - r', a + r'[$, avec $0 < r' \leqslant r$, contient des points de $I$ où $f(x) > f(a)$ et d'autres où $f(x) < f(a)$ : il n'y a ni maximum ni minimum local en $a$.
+
+      (iii) La formule de Taylor-Young à l'ordre $2$ ({{as-taylor-young|Taylor-Young}}) s'écrit $f(x) = f(a) + \frac{f''(a)}2 (x - a)^2 + o\big((x - a)^2\big)$, et (ii) s'applique avec $p = 2$ et $c_2 = f''(a)/2$.
+    remarques:
+      - |
+        Comme $\cos' = -\sin$ et $\sin' = \cos$ ({{tg-prolongement|Cosinus et sinus sur ℝ}}, (iii)), avec $\cos 0 = 1$ et $\sin 0 = 0$, les dérivées successives de $\cos$ en $0$ valent $1$, $0$, $-1$, $0$, et celles de $\sin$ valent $0$, $1$, $0$, $-1$, $0$ ; la formule de Taylor-Young ({{as-taylor-young|Taylor-Young}}) donne $\cos x = 1 - \frac{x^2}2 + o(x^3)$ et $\sin x = x - \frac{x^3}6 + o(x^4)$. Le cosinus, avec $p = 2$ et $c_2 = -\frac12$, est au-dessous de sa tangente horizontale $y = 1$ et y atteint un maximum local strict ; le sinus, avec $p = 3$ et $c_3 = -\frac16$, traverse sa tangente $y = x$, au-dessous pour $x > 0$ et au-dessus pour $x < 0$.
+
+        ```schema as-etude-locale
+        À gauche, le cosinus, en rouge, reste sous sa tangente horizontale $y = 1$, en bleu, et la parabole $y = 1 - x^2/2$, en vert, en pointillé, l'épouse près de $0$. À droite, le sinus traverse sa tangente $y = x$ en $0$ : l'écart $\sin x - x$, voisin de $-x^3/6$, est négatif à droite et positif à gauche.
+        ```
+      - |
+        Quand $f''(a) = 0$, le critère (iii) ne conclut pas, et il faut aller plus loin dans le développement. En $0$, les fonctions $x^3$, $x^4$ et $-x^4$ ont toutes une dérivée et une dérivée seconde nulles ; la première n'a pas d'extremum ($p = 3$), la deuxième a un minimum strict et la troisième un maximum strict ($p = 4$). C'est la condition suffisante qui manquait au nœud {{de-extremum|Extremum local}}, où un zéro de la dérivée n'était qu'un candidat ; en plusieurs variables, la matrice hessienne joue le rôle de $f''(a)$ ({{fq-points-critiques|Points critiques}}).
+      - |
+        La même méthode étudie une fonction en $+\infty$ par un développement en puissances de $1/x$. Pour $x > 0$, $\sqrt{x^2 + x} = x\sqrt{1 + u}$ avec $u = 1/x \to 0$, et le DL $(1 + u)^{1/2} = 1 + \frac u2 - \frac{u^2}8 + o(u^2)$, que donne la formule de Taylor-Young puisque les dérivées de $(1 + u)^{1/2}$ valent $\frac12$ et $-\frac14$ en $0$ ({{ex-puissances|Puissances réelles}}, (iii)), par substitution ({{as-regles|Règles de calcul}}, (vii)) puis multiplication par $x$ (même nœud, (iii)), donne
+        $$\sqrt{x^2 + x} = x + \frac12 - \frac1{8x} + o\Big(\frac1x\Big).$$
+        La droite $y = x + \frac12$ est donc asymptote au graphe, et celui-ci est au-dessous d'elle pour $x$ assez grand, l'écart étant équivalent à $-\frac1{8x}$.
+
+  - id: as-series
+    etiquette: Séries et équivalents
+    nature: théorème
+    titre: Séries à termes positifs, équivalents et constante d'Euler
+    texte: |
+      Soit $(u_n)_{n \geqslant 0}$ une [[suite]] réelle. La [[serie-reelle|série]] de terme général $u_n$, notée $\sum u_n$, est la suite de ses *sommes partielles* $S_N = \sum_{n=0}^N u_n$. Elle converge si la suite $(S_N)$ [[limite-suite|converge]], et sa limite est alors la *somme* de la série, notée $\sum_{n=0}^{+\infty} u_n$ ; elle diverge sinon. Deux séries ont *même nature* si elles convergent toutes deux ou divergent toutes deux. Pour une suite définie à partir du rang $1$, les sommes partielles commencent à $n = 1$.
+
+      La série de [[serie-riemann|Riemann]] d'exposant $\alpha$ réel est $\sum_{n \geqslant 1} 1/n^\alpha$. Une [[serie-alternee|série alternée]] est une série $\sum (-1)^n a_n$, où $(a_n)$ est une suite de réels positifs.
+    enonce: |
+      (i) Si $\sum u_n$ converge, alors $u_n \to 0$. Pour tout entier $N_0$, les séries $\sum_n u_n$ et $\sum_n u_{N_0 + n}$ ont même nature : la nature d'une série ne dépend pas de ses premiers termes.
+
+      (ii) *Termes positifs.* Si $u_n \geqslant 0$ pour tout $n$, la série $\sum u_n$ converge si et seulement si la suite de ses sommes partielles est majorée ; sinon, $S_N \to +\infty$.
+
+      (iii) *Comparaison.* Soit $(u_n)$ et $(v_n)$ deux suites telles que $u_n \geqslant 0$ et $v_n \geqslant 0$ [[a-partir-certain-rang|à partir d'un certain rang]], et $u_n = \lex{fonction-dominee}{O}(v_n)$. Si $\sum v_n$ converge, alors $\sum u_n$ converge ; si $\sum u_n$ diverge, alors $\sum v_n$ diverge.
+
+      (iv) *Équivalents.* Si $u_n \mathrel{\lex{fonction-equivalente}{\sim}} v_n$ et si $v_n \geqslant 0$ à partir d'un certain rang, les séries $\sum u_n$ et $\sum v_n$ ont même nature.
+
+      (v) *Séries de Riemann.* Pour $\alpha$ réel, la série $\sum_{n \geqslant 1} 1/n^\alpha$ converge si et seulement si $\alpha > 1$. Pour $\alpha > 1$, sa somme est au plus $\alpha/(\alpha - 1)$ ; pour $\alpha = 1$, ses sommes partielles $H_N = \sum_{n=1}^N 1/n$ vérifient $H_N \geqslant \ln(N + 1)$.
+
+      (vi) *Séries alternées.* Si $(a_n)$ est [[suite-monotone|décroissante]] et tend vers $0$, la série $\sum (-1)^n a_n$ converge, et sa somme $S$ vérifie $|S - S_N| \leqslant a_{N+1}$ pour tout $N$.
+
+      (vii) *Constante d'Euler.* La suite $\big(H_n - \ln n\big)_{n \geqslant 1}$ converge. Sa limite, la [[constante-euler|constante d'Euler]] $\gamma$, vérifie $1 - \ln 2 < \gamma \leqslant 1$, et $H_n = \ln n + \gamma + \lex{fonction-negligeable}{o}(1)$ ; en particulier $H_n \sim \ln n$.
+    preuve: |
+      (i) Si $S_N \to S$, alors $u_N = S_N - S_{N-1} \to S - S = 0$ ({{su-operations|Opérations sur les limites}}). Les sommes partielles de $\sum_n u_{N_0 + n}$ sont les $S_{N_0 + N} - S_{N_0 - 1}$ (avec $S_{-1} = 0$) : elles convergent si et seulement si $(S_N)$ converge.
+
+      (ii) La suite $(S_N)$ est [[suite-monotone|croissante]], puisque $S_{N+1} - S_N = u_{N+1} \geqslant 0$ ; le théorème de la limite monotone ({{su-monotone|Limite monotone}}) conclut, une suite convergente étant bornée ({{su-bornee|Unicité, bornitude}}).
+
+      (iii) Il existe $C \geqslant 0$ et un rang $N_0$ tels que, pour $n \geqslant N_0$, $u_n \geqslant 0$, $v_n \geqslant 0$ et $u_n \leqslant C v_n$. Par (i), on peut supposer $N_0 = 0$. Si $\sum v_n$ converge, ses sommes partielles sont majorées par (ii), disons par $M$, et celles de $\sum u_n$ par $CM$ : $\sum u_n$ converge par (ii). La seconde affirmation est la contraposée de la première.
+
+      (iv) Par le point (v) du nœud {{as-regles|Règles de calcul}}, $\frac12 v_n \leqslant u_n \leqslant \frac32 v_n$ à partir d'un certain rang ; en particulier $u_n \geqslant 0$. Ainsi $u_n = O(v_n)$ et $v_n = O(u_n)$, et (iii), appliqué dans les deux sens, conclut.
+
+      (v) *Cas $\alpha \leqslant 0$.* Alors $1/n^\alpha = n^{-\alpha} \geqslant 1$ pour $n \geqslant 1$ ({{ex-puissances|Puissances réelles}}, (iv)), le terme général ne tend pas vers $0$, et la série diverge par (i).
+
+      *Cas $0 < \alpha \leqslant 1$.* Pour $n \geqslant 1$, $n^{\alpha - 1} \leqslant 1$, donc $1/n^\alpha \geqslant 1/n$. L'inégalité $\ln x \leqslant x - 1$ ({{ex-croissances|Croissances comparées}}, (i)), en $x = 1 + 1/n$, donne $\ln(n + 1) - \ln n \leqslant 1/n$ ; en sommant de $1$ à $N$, $H_N \geqslant \ln(N + 1)$. Comme $\ln$ tend vers $+\infty$ en $+\infty$ ({{ex-logarithme|Logarithme}}, (iii)), les sommes partielles $H_N$ ne sont pas majorées, $\sum 1/n$ diverge, et $\sum 1/n^\alpha$ aussi par (iii).
+
+      *Cas $\alpha > 1$.* La fonction $\phi(t) = t^{1-\alpha}$ est dérivable sur $]0, +\infty[$, de dérivée $(1 - \alpha)t^{-\alpha}$ ({{ex-puissances|Puissances réelles}}, (iii)). Pour $n \geqslant 2$, l'égalité des accroissements finis ({{de-taf|Égalité des accroissements finis}}) fournit $c \in \,]n - 1, n[$ tel que
+      $$\phi(n - 1) - \phi(n) = (\alpha - 1)\,c^{-\alpha} > (\alpha - 1)\,n^{-\alpha},$$
+      la fonction $t \mapsto t^{-\alpha}$ étant strictement décroissante. En sommant de $2$ à $N$, la somme télescopique donne
+      $$\sum_{n=2}^N \frac1{n^\alpha} < \frac{1 - N^{1-\alpha}}{\alpha - 1} < \frac1{\alpha - 1}.$$
+      Les sommes partielles sont majorées par $1 + \frac1{\alpha - 1} = \frac{\alpha}{\alpha - 1}$, et la série converge par (ii), de somme au plus $\frac\alpha{\alpha - 1}$ par passage à la limite ({{su-inegalites|Passage à la limite}}).
+
+      (vi) Posons $p_N = S_{2N}$ et $q_N = S_{2N+1}$. Alors $p_{N+1} - p_N = -a_{2N+1} + a_{2N+2} \leqslant 0$, $q_{N+1} - q_N = a_{2N+2} - a_{2N+3} \geqslant 0$, et $p_N - q_N = a_{2N+1} \to 0$ : les suites $(p_N)$ et $(q_N)$ sont [[suites-adjacentes|adjacentes]]. Elles convergent vers une même limite $S$, avec $q_N \leqslant S \leqslant p_N$ ({{su-adjacentes|Suites adjacentes}}), et $S_N \to S$ ({{su-extraites|Suites extraites}}, (ii)). Comme $(q_N)$ croît et $(p_N)$ décroît, $S$ est compris entre $S_{2N}$ et $S_{2N+1}$, et entre $S_{2N+1}$ et $S_{2N+2}$ : pour tout $N$, $S$ est entre $S_N$ et $S_{N+1}$, donc $|S - S_N| \leqslant |S_{N+1} - S_N| = a_{N+1}$.
+
+      (vii) Pour $n \geqslant 1$, posons $w_n = \frac1n - \ln\big(1 + \frac1n\big)$, positif par {{ex-croissances|Croissances comparées}}, (i). Par le DL $\ln(1 + x) = x - \frac{x^2}2 + o(x^2)$ ({{as-usuels|Développements usuels}}, (iii)), on a $x - \ln(1 + x) \sim \frac{x^2}2$ quand $x \to 0$ ({{as-dl|Développement limité}}, (v)), et la substitution $x = 1/n$ ({{as-regles|Règles de calcul}}, (vii)) donne $w_n \sim \frac1{2n^2}$. Par (iv) et (v), avec $\alpha = 2$, la série $\sum w_n$ converge. Or, par {{ex-logarithme|Logarithme}}, (ii),
+      $$\sum_{n=1}^N w_n = H_N - \sum_{n=1}^N \big(\ln(n + 1) - \ln n\big) = H_N - \ln(N + 1).$$
+      Donc $H_N - \ln(N + 1)$ converge vers $\gamma = \sum_{n \geqslant 1} w_n$, et $H_N - \ln N = \big(H_N - \ln(N + 1)\big) + \ln\big(1 + \frac1N\big)$ aussi, le dernier terme tendant vers $\ln 1 = 0$ par continuité de $\ln$. Comme les $w_n$ sont strictement positifs, par le cas d'égalité de {{ex-croissances|Croissances comparées}}, (i), on a $\gamma > w_1 = 1 - \ln 2$. D'autre part, $(H_n - \ln n)$ est décroissante : sa différence entre les rangs $n + 1$ et $n$ vaut $\frac1{n+1} + \ln\big(1 - \frac1{n+1}\big) \leqslant 0$, toujours par $\ln x \leqslant x - 1$ ; donc $\gamma \leqslant H_1 - \ln 1 = 1$. Enfin $H_n - \ln n = O(1)$, et $1 = o(\ln n)$ puisque $\ln n \to +\infty$ : $H_n - \ln n = o(\ln n)$, c'est-à-dire $H_n \sim \ln n$.
+    remarques:
+      - |
+        Le critère (iv) ne vaut que pour des termes de signe constant à partir d'un certain rang. Pour $n \geqslant 1$, posons $v_n = (-1)^n/\sqrt n$ et $u_n = v_n + 1/n$. Comme $\frac{1/n}{1/\sqrt n} = \frac1{\sqrt n} \to 0$, on a $1/n = o(v_n)$ et $u_n \sim v_n$. La série $\sum v_n$ converge par (vi), alors que $\sum u_n$ diverge : sinon $\sum 1/n = \sum (u_n - v_n)$ convergerait, comme différence de deux séries convergentes.
+      - |
+        Avec les développements usuels, le critère (iv) règle la plupart des séries à termes positifs. Comme $\sin y \sim y$ et $1 - \cos y \sim y^2/2$ quand $y \to 0$, la substitution $y = 1/n$ montre que $\sum \sin(1/n)$ diverge, comme $\sum 1/n$, et que $\sum \big(1 - \cos(1/n)\big)$ converge, comme $\sum 1/(2n^2)$. La réciproque de (i) est fausse : $\ln(1 + 1/n) \to 0$, mais les sommes partielles de $\sum_{n \geqslant 1} \ln(1 + 1/n)$ valent $\ln(N + 1)$, qui tend vers $+\infty$.
+      - |
+        La majoration (v) est grossière : pour $\alpha = 2$, elle borne $\sum 1/n^2$ par $2$, alors que $\sum_{n=1}^{10} 1/n^2 \approx 1{,}5498$ et que la somme vaut $\pi^2/6 \approx 1{,}6449$, ce que démontrera la théorie de Fourier ({{fo-parseval|Parseval}}). La série harmonique diverge, mais avec une lenteur extrême : par (vii), $H_N$ est voisin de $\ln N + 0{,}5772$, et il faut aller jusqu'à $N = 12\,367$ pour que $H_N$ dépasse $10$.
+      - |
+        Euler a introduit la constante $\gamma$ dans *De progressionibus harmonicis observationes* et en a calculé la valeur approchée $0{,}577218$ ; la lettre $\gamma$ n'apparaît qu'au XIXᵉ siècle (J. Lagarias, « Euler's constant: Euler's work and modern developments », *Bull. Amer. Math. Soc.* 50, 2013). Les valeurs $H_n - \ln n \approx 0{,}6264$, $0{,}5822$ et $0{,}5777$ pour $n = 10$, $100$ et $1000$ approchent $\gamma = 0{,}5772156649\ldots$ ; on ignore encore si $\gamma$ est rationnel.
+
+        ```schema as-series
+        Les points rouges sont les valeurs de $H_n - \ln n$, qui décroissent, et les points bleus celles de $H_n - \ln(n + 1)$, qui croissent, pour $1 \leqslant n \leqslant 16$. Leur écart, $\ln(1 + 1/n)$, tend vers $0$ : les deux suites encadrent la constante d'Euler $\gamma \approx 0{,}5772$, en pointillé.
+        ```
+      - |
+        Les séries à termes positifs, et les séries absolument convergentes, sont les intégrales de la mesure de comptage sur $\mathbb N$ ({{m-integrale|Intégrale}}) ; une série semi-convergente comme $\sum (-1)^n/(n + 1)$ n'en est pas une, et le critère (iii) a pour analogue la comparaison des intégrales impropres de fonctions positives. Plus loin, la théorie analytique des nombres définit ces intégrales et compare sommes et intégrales par la sommation d'Abel ({{nb-sommation|Sommation d'Abel}}) ; les séries de nombres complexes et la convergence absolue viennent avec l'analyse complexe ({{cx-suites|Suites et séries}}).
+
+aretes:
+  - [as-comparaison, as-regles]
+  - [as-regles, as-dl]
+  - [as-dl, as-primitive]
+  - [as-dl, as-operations]
+  - [as-primitive, as-taylor-young]
+  - [as-taylor-young, as-usuels]
+  - [as-operations, as-usuels]
+  - [as-usuels, as-series]
+  - [as-taylor-young, as-etude-locale]

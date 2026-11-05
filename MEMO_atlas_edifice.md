@@ -2144,3 +2144,26 @@ Tarski) dans zf, employée en top, l'équivalence avec la définition par ℕ é
   ajustés. Lexique : entrée ensemble-fini-tarski (trois exemples) ; ensemble-fini renvoie à n-fini (v). Croisements :
   zf 0 → 2 (minimum vérifié par recherche exhaustive), édifice 15 inchangé. Relu : rien de faux ; attribution à Tarski
   neutralisée, une étape de l'équivalence de Kuratowski ajoutée, étiquette propre au nœud.
+
+## 114. Comparaison asymptotique et développements limités (5 novembre 2026)
+
+Demande d'Armand : le site n'avait que le DL d'ordre 1 (de-dl1), Taylor-Lagrange (de-taylor) et Taylor-Young à
+plusieurs variables d'ordre 2 (fq-taylor-young) ; ni o, O, ∼, ni DL d'ordre quelconque, ni équivalents, alors qu'ils
+portent un contenu théorématique (unicité, Taylor-Young, même nature des séries équivalentes). Nouveau chapitre
+ar-asymptotique (graphe « Comparaisons et développements limités », titre court pour le fil d'Ariane), après ar-exp et
+ar-trigo : as-comparaison (o, O, ∼ dans un cadre commun : réel adhérent, ±∞, suites ; « vraie au voisinage de a » ;
+restriction à D′ ⊂ D), as-regles (opérations, interdits : somme d'équivalents, composition à gauche), as-dl (unicité,
+troncature, parité ; x³ sin(1/x) : DL d'ordre 2 sans dérivée seconde), as-primitive (intégration d'un DL par les
+accroissements finis), as-taylor-young (f n − 1 fois dérivable sur I, f^(n−1) dérivable en a : la plus faible des
+hypothèses usuelles), as-operations (somme, produit, composition, quotient), as-usuels (exp, 1/(1 ± x), ln(1 + x),
+(1 + x)^α, cos, sin, arctan, tan à l'ordre 6), as-etude-locale (tangente, extremums ; DL tirés de Taylor-Young sur place,
+as-usuels n'étant pas en amont), as-series (séries réelles, comparaison, équivalents ⇒ même nature, Riemann sans
+intégrale, séries alternées, constante d'Euler). Tout démontré, sans ⋆. Lexique : 10 entrées nouvelles (au-voisinage,
+fonction-dominee, fonction-negligeable, fonction-equivalente, developpement-limite, formule-taylor-young-reelle,
+serie-reelle, serie-riemann, serie-alternee, constante-euler), 29 exemples ; 5 schémas. Références vérifiées : Bachmann
+(1894), Landau (1909), Young (Cambridge Tracts in Mathematics and Mathematical Physics, n° 11, 1910), Lagarias (Bull.
+AMS 50, 2013). Renvois ajoutés : cx-suites (Σ 1/(n+1) par Riemann), nb-tnp, p-borel-cantelli, fq-taylor-young, de-dl1,
+de-taylor. Croisements : 0 (analyse-reelle), 0 (chapitre), 15 (édifice). Nouveautés : entrée fusionnée avec « Tout le
+lexique illustré… » (même jour, même rubrique). Relu : rien de faux ; corrigés : DL d'aval dans as-etude-locale,
+« séries = intégrales de la mesure de comptage » restreint aux termes positifs ou absolument convergentes, un arrondi,
+deux étiquettes coupées. Reste : la notation o(h² + k²) à deux variables d'edo-surfaces n'est définie nulle part.
