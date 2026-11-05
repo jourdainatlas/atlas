@@ -2030,3 +2030,10 @@ Journal des lots.
   comme général ; « orthogonaux ne sont pas perpendiculaires » ; « classes successives distinctes » non démontré).
   Signalé, non fait : el-niveau définit le vecteur tangent sous l'hypothèse d'une submersion, que sa remarque 2 et le
   lexique n'imposent pas.
+- derham (formes, de Rham, Poincaré, Stokes, variétés) : 33 termes, 99 exemples, 15 schémas. Nœuds presque sans
+  amont (dr-iterees, dr-cubes, dc-mayer-vietoris, pc-support, pc-limite) : faits démontrés dans l'exemple ou repris
+  par lien. Relu : bloquants corrigés (« quatre morceaux n'auraient pas suffi » démontré pour le seul découpage
+  régulier ; « une rotation se décompose » vrai pour le quart de tour seulement ; « le plus petit complexe double »
+  faux). Les captures « sombres » du rédacteur étaient en clair (le site lit 'light'/'dark') : consigne corrigée.
+  Signalés, non faits : lexique, cohomologie-support-compact, orientation-induite, formule-stokes citent l'aval ;
+  proposé : la propriété des trois cubes en remarque de dt-cech-de-rham.
