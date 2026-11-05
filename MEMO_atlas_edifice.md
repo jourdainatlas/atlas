@@ -2110,3 +2110,11 @@ Tarski) dans zf, employée en top, l'équivalence avec la définition par ℕ é
   (a-module, r-familles, l-incompletude, l-quantificateurs ; « type fini » en remarque) ; gf-diedraux, gf-alterne-4,
   gf-ordre-8 citent a-distingue (iv) ; GL_n harmonisé ; me-espace : boule fermée pour r ⩾ 0. Écartés : \lex de lie
   (correct), remarques de Hilbert 90 (annonces permises).
+- Lexique (92 définitions, d'après §112 et les « erreurs vues dans le lexique » des NOTES de chaque lot) : faits
+  d'aval changés en annonces liées ; démontrés sur place : cardinal, abelianise, période 2π (cosinus-sinus), inverse
+  de P_σ, semblables ⇒ équivalentes sans réciproque ; exemples d'aval remplacés (element-regulier, groupe-abelien-
+  type-fini, module-sans-torsion, espaces-homeomorphes) ; récrits : ordre-dense (sans « infinité »), suite-cauchy
+  (|u_p − u_q|), inductif-successeur, equation-differentielle (hypothèse de ed-cauchy-lipschitz (ii)) ; ⋆ ajoutés :
+  distribution, forme-volume, espace-Lp, espace-L2 ; boule-fermee r ⩾ 0 (me-espace aligné) ; pgcd-anneau sans ℂ ;
+  « Plus loin » réservé aux nœuds d'aval. Relu : rien de faux ; quatre annonces trop fortes corrigées (r.e. : parties
+  de ℕ ; suite exacte : G fini ; attachement : Y compact ; géodésiques de la sphère).
