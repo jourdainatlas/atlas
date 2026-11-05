@@ -2023,3 +2023,10 @@ Journal des lots.
   trois entrées de la première moitié dans leur état d'avant relecture ; vérifié (aucune ligne supprimée). Relu deux
   fois : rien de bloquant. Signalés, non faits : troisième remarque de ku-homologie cite H_*(ℝP²) (hom-cellulaire,
   hors amont) ; remarques de hom-cohomologie emploient « torsion » sans md-libres en amont.
+- cdiff (calcul différentiel, formes quadratiques, Lagrange) : 42 termes, 126 exemples, 18 schémas (lignes de
+  niveau, points critiques, coniques, espace tangent). Relu deux fois : bloquants corrigés (∇ avant el-lagrange ;
+  « extremum local » avant fq-points-critiques, que les outils ne voyaient pas, l'entrée s'intitulant « extremum
+  local (plusieurs variables) » ; « caractéristique 2 » hors amont, devenu « quand 1 + 1 = 0 » ; λ = M′(c) présenté
+  comme général ; « orthogonaux ne sont pas perpendiculaires » ; « classes successives distinctes » non démontré).
+  Signalé, non fait : el-niveau définit le vecteur tangent sous l'hypothèse d'une submersion, que sa remarque 2 et le
+  lexique n'imposent pas.
