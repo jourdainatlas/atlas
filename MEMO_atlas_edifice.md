@@ -1989,3 +1989,12 @@ Journal des lots.
   Signalés, non faits : remarque 2 de gc-irreductibilite cite gs-corps-finis hors amont (construire.py ne le voit
   pas) ; remarques de gs-separabilite (X^p − T irréductible) et gs-decomposition (degré 3 de X³ − 3X + 1) sans
   preuve ; lexique : dix définitions emploient des résultats d'aval (ex. polynome-cyclotomique irréductible sur ℚ).
+- hom (première moitié : hom, hom-cellulaire, hom-jordan, hom-cup, hom-hurewicz) : 54 termes, 158 exemples,
+  23 schémas. Groupes d'homologie par forme de Smith, morphismes de connexion depuis la définition ; nœuds frères
+  non en amont les uns des autres, contournés. Commutativité graduée admise en cup-anneau (ii) : les exemples qui
+  l'emploient le disent (conforme à « Admis ici »). Relu deux fois : bloquant corrigé (paire-bon-type 2 attribuait
+  l'échec à « A fermée » au lieu de la condition de voisinage) ; « torsion » (md-libres hors amont) remplacé ;
+  application-impaire 3 refait (m ⩾ 1). Signalés, non faits : cup-transfert (iii) définit les applications impaires
+  vers Sᵐ, m ⩾ 1, mais cup-borsuk-ulam (i) parle de S¹ → S⁰ ; aucune fiche n'énonce « contractile ⇒ simplement
+  connexe » ; lexique : morphisme-complexes, homotopie-complexes, morphisme-connexion (cochaînes), attachement-cellules
+  (quotient), surface-genre, anneau-cohomologie (ℝPⁿ mod 2), application-impaire (Borsuk-Ulam) citent l'aval.
