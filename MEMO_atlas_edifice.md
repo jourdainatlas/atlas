@@ -2074,3 +2074,18 @@ Journal des lots.
   l'inversion, convergence-loi une équivalence d'aval ; martingale-fermee (lexique « de la forme E[X | ℱ_n] ») diffère de
   la fiche mu-fermees ; troisième remarque de mk-recurrence-positive renvoie à mk-polya hors amont. Proposés : « un
   ensemble fini d'états a une classe fermée », « une chaîne finie a un état récurrent » en remarques démontrées.
+- edp + nban + lie + grtop : 34 termes, 102 exemples, 22 schémas. Ajout d'amont démontré : énoncé de nb-zeta (ii)
+  complété (φₙ, Z = 1 + (s − 1)Σφₙ, ζ = Z/(s − 1) pour Re s > 0, s ≠ 1). Relu : bloquants corrigés (légende « en gris »
+  d'un tracé à l'encre ; « rapports non monotones » contredit par les valeurs citées ; majoration π(100) ≤ 70,2
+  arrondie vers le bas). Signalés, non faits : ds-support (ii) et sa remarque emploient la dérivée d'une distribution
+  sans ds-derivation en amont (arête proposée) ; remarque de ds-distributions (« m au moins N ») non démontrée ;
+  remarque de ds-laplacien omet le lemme de Weyl ; lexique, distribution dit « de façon équivalente » sans le ⋆ de
+  ds-distributions (ii), et une douzaine d'autres définitions citent l'aval.
+
+Bilan (5 novembre 2026) : les 1 079 entrées du lexique ont des exemples, 3 130 en tout, et 335 schémas d'exemples
+(contenu/schemas/lex-*.svg) ; 24 lots (pilote compris), chacun relu par un agent indépendant, la plupart deux fois.
+Entrée de nouveautés « Tout le lexique illustré par des exemples et des schémas ». Énoncés démontrés ajoutés aux
+fiches à cette occasion : a-anneau (v), a-groupe (iv), a-distingue (iv), a-corps (seconde remarque), q-ordre (ii)
+généralisé, remarque de q-archimede (ℚ(X)), q-irrationnel, remarque de r-injections, nb-zeta (ii). Reste à faire, en
+un lot de corrections de fiches : les défauts « signalés, non faits » de chaque lot ci-dessus (lexique citant l'aval,
+remarques hors amont, arêtes proposées) — à trier avant tout travail.
