@@ -231,7 +231,7 @@ déclare des règles par motif, `R`, et des règles par partie de la feuille, `P
 numéros → mot-clé, nœuds, notions). Il déclare aussi `FOND` : les nœuds donnés aux exercices de synthèse
 qu'aucune règle n'atteint. `tex2exos.py` ôte désormais les séparateurs `@{…}` des préambules d'`array`,
 que KaTeX refuse. Les résumés
-ont été rédigés d'après les introductions, les énoncés numérotés et les bilans des .tex. Le sommaire
+ont été rédigés d'après les énoncés numérotés et les bilans des .tex. Le sommaire
 reprend les titres longs des `\section`, introduction historique et bilan compris. Nouveauté annoncée
 le 1er novembre.
 
@@ -445,3 +445,13 @@ Le 4 novembre au soir, à la demande de l'auteur, trois symboles ont été chang
 Les dessins `planComplexe` et `table` restent dans `SYM_DESSINS`, sans chapitre pour l'instant.
 Les scripts de planche sont à refaire dans chaque session : on injecte les dessins dans la page `#cours`
 servie localement, pour que les variables de couleur `--c-…` s'y résolvent.
+
+### 32. Résumés des cours : pas d'introduction historique (5 nov. 2026)
+
+À la demande de l'auteur, le résumé d'un chapitre (`resume` dans `rubriques/cours.yaml`) ne mentionne plus
+l'introduction historique, ni son contenu (personnages, dates, anecdotes, figure d'ouverture). Il décrit seulement
+ce que le chapitre définit, démontre et étudie. Les 48 résumés qui la mentionnaient ont été repris le 5 novembre :
+la phrase ou les phrases sur l'introduction ont été retirées, et les phrases suivantes qui en dépendaient ont été
+réécrites (`ma-04`, `ma-07`, `ma-09`, `ma-10`). **Règle pour tout chapitre futur** : ne jamais rédiger de phrase
+sur l'introduction historique dans le résumé, même si le .tex en a une. Le sommaire, lui, garde la section
+« Introduction historique » quand le PDF l'a, puisqu'il renvoie aux pages du PDF.
