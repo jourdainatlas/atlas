@@ -2016,3 +2016,10 @@ Journal des lots.
   rien de bloquant. Signalés, non faits : lexique, revetement (relèvement), tore (carré recollé, π₁ = ℤ²),
   semi-localement-simplement-connexe (suffisance) citent l'aval ; seconde remarque de rv-critere cite
   ta-consequences hors amont (arête proposée de ta-consequences vers les chapitres).
+- hom (seconde moitié : hom-cohomologie, hom-kunneth) : 40 termes, 110 exemples, 6 schémas (cobord sur le triangle
+  creux, pivots dans ℤ², base et famille libre, carré e⊗e, cône, Alexander-Whitney). cs-projectifs et cs-division
+  sans prédécesseur dans leur chapitre ; hom-cellulaire et hom-hurewicz pas en amont de hom-kunneth ; battage « Admis
+  ici » dit dans le seul exemple qui l'emploie. Incident corrigé avant relecture : un brouillon périmé avait remis
+  trois entrées de la première moitié dans leur état d'avant relecture ; vérifié (aucune ligne supprimée). Relu deux
+  fois : rien de bloquant. Signalés, non faits : troisième remarque de ku-homologie cite H_*(ℝP²) (hom-cellulaire,
+  hors amont) ; remarques de hom-cohomologie emploient « torsion » sans md-libres en amont.

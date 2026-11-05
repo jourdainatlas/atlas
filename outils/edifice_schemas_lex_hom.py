@@ -781,3 +781,225 @@ def lex_cone_lineaire_2():
     S.texte(b + [-14, -10], 'b', 'b', ancre='end')
     S.texte((w[0] + w[1]) / 2 + [0, 24], 'α', 'r')
     return S
+
+
+# ================================================================================================ lot 2
+# Sous-graphes hom-cohomologie et hom-kunneth (second lot de la théorie) : fonctions ajoutées à la suite.
+
+# ------------------------------------------------------------------------------------------------ paquet 1
+@schema('lex-cobord-complexe-1')
+def lex_cobord_complexe_1():
+    W, H = 420, 270
+    S = Schema(W, H, 'Le triangle creux : une fonction f sur les sommets et son cobord sur les arêtes')
+    cote = 220.0
+    u = np.array([100.0, 230.0]); v = u + [cote, 0]; w = u + [cote / 2, -cote * math.sqrt(3) / 2]
+    g = (u + v + w) / 3
+    f = {'u': 0, 'v': 2, 'w': 5}
+    aretes = [(u, v, 'u', 'v'), (v, w, 'v', 'w'), (w, u, 'w', 'u')]
+    df = [f[t] - f[o] for _, _, o, t in aretes]           # valeur à l'extrémité moins valeur à l'origine
+    assert df == [2, 3, -5] and sum(df) == 0
+    for (p, q, _, _), val in zip(aretes, df):
+        S.ligne(p, q, 't', l=2.2)
+        _fleche_milieu(S, p, q, 't')
+        _etiquette_arete(S, p, q, g, str(val).replace('-', '−'), 'r', dist=18)
+    lab = {'u': (u, [-14, 4], 'end'), 'v': (v, [14, 4], 'start'), 'w': (w, [0, -20], 'middle')}
+    for nom, (p, d, an) in lab.items():
+        S.point(p, 't', r=4)
+        S.texte(p + d, f'f({nom}) = {f[nom]}', 'b', ancre=an)
+    # les étiquettes des sommets tiennent dans le cadre
+    assert u[0] - 14 - largeur_texte('f(u) = 0') > 4 and v[0] + 14 + largeur_texte('f(v) = 2') < W - 4
+    assert w[1] - 20 - 10 > 0
+    return S
+
+
+# ------------------------------------------------------------------------------------------------ paquet 3
+def _clip(p, d, xmin, xmax, ymin, ymax):
+    """Segment de la droite p + t d contenu dans le rectangle [xmin, xmax] × [ymin, ymax] (coordonnées du
+    réseau), ou None."""
+    t0, t1 = -1e9, 1e9
+    for k, (lo, hi) in enumerate([(xmin, xmax), (ymin, ymax)]):
+        if abs(d[k]) < 1e-12:
+            if not lo - 1e-9 <= p[k] <= hi + 1e-9:
+                return None
+            continue
+        a, b = (lo - p[k]) / d[k], (hi - p[k]) / d[k]
+        t0, t1 = max(t0, min(a, b)), min(t1, max(a, b))
+    if t1 - t0 < 1e-9:
+        return None
+    return np.array(p) + t0 * np.array(d), np.array(p) + t1 * np.array(d)
+
+
+@schema('lex-pivot-sous-groupe-1')
+def lex_pivot_sous_groupe_1():
+    W, H = 420, 270
+    S = Schema(W, H, 'Le sous-groupe de ℤ² engendré par (1, 2) et (0, 4) : deux pivots, n₀ = n₁ = 2')
+    pas = 28.0
+    o = np.array([W / 2, H / 2])
+    X = lambda a, b: o + pas * np.array([a, -b])
+    xs, ys = range(-4, 5), range(-4, 5)
+    S.ligne(X(-4.5, 0), X(4.5, 0), 'r', l=2.2)
+    # H = {a(1, 2) + b(0, 4)} = {(x, y) : y ≡ 2x mod 4}, calculé par énumération des combinaisons
+    Hens = {(a, 2 * a + 4 * b) for a in range(-6, 7) for b in range(-6, 7)}
+    Hpts = [(a, b) for a in xs for b in ys if (a, b) in Hens]
+    assert all(((b - 2 * a) % 4 == 0) == ((a, b) in Hens) for a in xs for b in ys)
+    for a in xs:
+        for b in ys:
+            if (a, b) not in Hens:
+                S.point(X(a, b), 'g', r=2.4)
+    for a, b in Hpts:
+        S.point(X(a, b), 'b', r=4.4)
+    S.fleche(X(0, 0), X(1, 2), 'b', l=2.4, retrait=5)
+    S.fleche(X(0, 0), X(0, 4), 'b', l=2.4, retrait=5)
+    # ce que dit la légende : sur l'axe, H a les points d'abscisse paire ; secondes coordonnées paires ; (1, 2) ∈ H
+    assert sorted(a for a, b in Hpts if b == 0) == [-4, -2, 0, 2, 4]
+    assert all(b % 2 == 0 for _, b in Hpts) and (1, 2) in Hens
+    S.texte(X(1, 2) + [12, 14], '(1, 2)', 'b', ancre='start', taille=16)
+    S.texte(X(0, 4) + [12, 14], '(0, 4)', 'b', ancre='start', taille=16)
+    S.texte(X(4.5, 0) + [8, 0], 'ℤe_0', 'r', ancre='start')
+    assert X(4.5, 0)[0] + 8 + largeur_texte('ℤe0') < W - 4
+    S.texte(X(0, 0) + [-10, -14], '0', ancre='end')
+    return S
+
+
+@schema('lex-base-groupe-abelien-1')
+def lex_base_groupe_abelien_1():
+    W, H = 430, 200
+    S = Schema(W, H, 'Une base de ℤ², et deux éléments indépendants qui n engendrent pas ℤ²')
+    pas = 34.0
+    xmin, xmax, ymin, ymax = -1, 3, -1, 3
+    def panneau(ox):
+        o = np.array([ox, H - 30 - pas])
+        return lambda a, b: o + pas * np.array([a, -b])
+    G, D = panneau(62.0), panneau(282.0)
+    # gauche : droites a(2,1) + b(1,1), b fixé (direction (2,1)) et a fixé (direction (1,1))
+    u, v = np.array([2, 1]), np.array([1, 1])
+    for k in range(-6, 7):
+        for dirn, base in [(u, k * v), (v, k * u)]:
+            seg = _clip(base, dirn, xmin - 0.3, xmax + 0.3, ymin - 0.3, ymax + 0.3)
+            if seg is not None:
+                S.ligne(G(*seg[0]), G(*seg[1]), 'g', l=1.1)
+    M = np.array([u, v]).T
+    for a in range(xmin, xmax + 1):
+        for b in range(ymin, ymax + 1):
+            c = np.linalg.solve(M, [a, b])
+            assert np.allclose(c, np.round(c))          # tout point est combinaison entière de (2,1) et (1,1)
+            S.point(G(a, b), 'b', r=3.6)
+    S.fleche(G(0, 0), G(2, 1), 'b', l=2.6, retrait=5)
+    S.fleche(G(0, 0), G(1, 1), 'b', l=2.6, retrait=5)
+    S.texte(G(2, 1) + [8, 12], '(2, 1)', 'b', ancre='start', taille=16)
+    S.texte(G(1, 1) + [-8, -14], '(1, 1)', 'b', ancre='end', taille=16)
+    # droite : combinaisons de (2,0) et (0,1) = points de première coordonnée paire
+    for a in range(xmin, xmax + 1):
+        for b in range(ymin, ymax + 1):
+            if a % 2 == 0:
+                S.point(D(a, b), 'r', r=3.8)
+            else:
+                S.point(D(a, b), 'g', r=3.4, creux=True)
+    S.fleche(D(0, 0), D(2, 0), 'r', l=2.6, retrait=5)
+    S.fleche(D(0, 0), D(0, 1), 'r', l=2.6, retrait=5)
+    S.texte(D(2, 0) + [6, 16], '(2, 0)', 'r', ancre='start', taille=16)
+    S.texte(D(0, 1) + [-8, -12], '(0, 1)', 'r', ancre='end', taille=16)
+    S.texte(D(1, 0) + [0, 18], '(1, 0)', 'g', taille=16)
+    # les deux panneaux ne se chevauchent pas et tiennent dans le cadre
+    assert G(xmax, 0)[0] + 20 < D(xmin, 0)[0] - 10 and D(xmax, 0)[0] + 10 < W and G(0, ymax)[1] > 20
+    assert G(xmin - 0.3, 0)[0] > 2 and G(0, ymin - 0.3)[1] < H - 2
+    assert D(2, 0)[0] + 6 + largeur_texte('(2, 0)', 16) < W - 2
+    return S
+
+
+# ------------------------------------------------------------------------------------------------ paquet 4
+@schema('lex-regle-signes-1')
+def lex_regle_signes_1():
+    W, H = 420, 270
+    S = Schema(W, H, 'Le carré e ⊗ e et son bord, orienté par la règle des signes')
+    L = 150.0
+    x0, y0 = 135.0, 210.0
+    P = lambda i, j: np.array([x0 + L * i, y0 - L * j])
+    S.surface([P(0, 0), P(1, 0), P(1, 1), P(0, 1)], 'b')
+    # ∂(e⊗e) = e⊗v0 + v1⊗e − e⊗v1 − v0⊗e ; e⊗vj : de (0, j) à (1, j) ; vi⊗e : de (i, 0) à (i, 1)
+    termes = [(+1, 'e', 0), (+1, 'v', 1), (-1, 'e', 1), (-1, 'v', 0)]
+    tour = []
+    for sg, kind, k in termes:
+        a, b = ((P(0, k), P(1, k)) if kind == 'e' else (P(k, 0), P(k, 1)))
+        tour.append((a, b) if sg > 0 else (b, a))
+    # les quatre arêtes signées se suivent et tournent dans le sens direct à l'écran
+    assert all(np.allclose(tour[i][1], tour[(i + 1) % 4][0]) for i in range(4))
+    assert _aire([t[0] for t in tour]) > 0
+    noms = ['e ⊗ v_0', 'v_1 ⊗ e', '−e ⊗ v_1', '−v_0 ⊗ e']
+    centre = (P(0, 0) + P(1, 1)) / 2
+    for (a, b), nom in zip(tour, noms):
+        S.ligne(a, b, 'r', l=2.8)
+        _fleche_milieu(S, a, b, 'r')
+        _etiquette_arete(S, a, b, centre, nom, 'r', dist=20)
+    for i in (0, 1):
+        for j in (0, 1):
+            d = np.array([-10 if i == 0 else 10, 16 if j == 0 else -16])
+            S.point(P(i, j), 't', r=3.6)
+            S.texte(P(i, j) + d, f'v_{i} ⊗ v_{j}', ancre='end' if i == 0 else 'start', taille=16)
+    S.texte(centre, 'e ⊗ e', 'b')
+    # étiquettes dans le cadre
+    assert x0 - 20 - largeur_texte('−v0 ⊗ e') > 4 and x0 + L + 20 + largeur_texte('v1 ⊗ e') < W - 4
+    assert x0 - 10 - largeur_texte('v0 ⊗ v0', 16) > 4 and y0 - L - 16 - 10 > 0 and y0 + 22 + 10 < H
+    return S
+
+
+# ------------------------------------------------------------------------------------------------ paquet 5
+@schema('lex-cone-singulier-1')
+def lex_cone_singulier_1():
+    W, H = 420, 290
+    R, k = _repere_egal(-1.5, 1.5, -1.08, 1.14, W, H, 8)
+    S = Schema(W, H, 'Le cône d un demi-cercle de sommet b sort du cercle')
+    th = np.linspace(0, 2 * np.pi, 361)
+    S.poly(R(np.cos(th), np.sin(th)), 'g', l=1.6)
+    b = np.array([1.0, 0.0])
+    for a in np.linspace(np.pi / 9, np.pi, 9):
+        q = np.array([np.cos(a), np.sin(a)])
+        S.ligne(R(*b), R(*q), 'g', l=1.2)
+        # le milieu de chaque segment est strictement dans le disque : le cône sort du cercle
+        assert np.hypot(*((b + q) / 2)) < 1 - 1e-9
+    th2 = np.linspace(0, np.pi, 181)
+    S.poly(R(np.cos(th2), np.sin(th2)), 'r', l=3)
+    S.pointe(R(np.cos(1.62), np.sin(1.62)), R(np.cos(1.64), np.sin(1.64)) - R(np.cos(1.62), np.sin(1.62)), 'r', taille=11, largeur=5)
+    m = (b + np.array([-1.0, 0.0])) / 2
+    assert np.allclose(m, [0, 0])
+    S.point(R(*b), 't', r=4.2); S.point(R(-1, 0), 't', r=4.2); S.point(R(*m), 'b', r=4.6)
+    S.texte(R(*b) + [12, 4], 'b', ancre='start')
+    S.texte(R(-1, 0) + [-12, 4], '(−1, 0)', ancre='end')
+    S.texte(R(*m) + [0, 20], '(0, 0)', 'b')
+    S.texte(R(np.cos(1.1), np.sin(1.1)) + [12, -10], 'σ', 'r', ancre='start')
+    assert R(-1, 0)[0] - 12 - largeur_texte('(−1, 0)') > 2 and R(*m)[1] + 30 < H
+    return S
+
+
+@schema('lex-application-alexander-whitney-1')
+def lex_application_alexander_whitney_1():
+    W, H = 420, 270
+    S = Schema(W, H, 'Un chemin du produit et le chemin en équerre que lui associe l application d Alexander-Whitney')
+    # cadre X × Y : [0, 1]² ; γ(s) = (s + 0.12 sin(πs) ..) à composantes croissantes
+    X0, Y0, L = 110.0, 230.0, 190.0
+    P = lambda x, y: np.array([X0 + L * x, Y0 - L * y])
+    S.poly([P(0, 0), P(1, 0), P(1, 1), P(0, 1)], 'g', ferme=True, l=1.2)
+    xa, xb, ya, yb = 0.15, 0.85, 0.15, 0.85
+    s = np.linspace(0, 1, 201)
+    g1 = xa + (xb - xa) * s ** 0.6
+    g2 = ya + (yb - ya) * s ** 1.7
+    assert np.all(np.diff(g1) > 0) and np.all(np.diff(g2) > 0)          # composantes monotones
+    assert abs(g1[0] - xa) + abs(g1[-1] - xb) + abs(g2[0] - ya) + abs(g2[-1] - yb) < 1e-9
+    pts = np.array([P(a, c) for a, c in zip(g1, g2)])
+    S.poly(pts, 'r', l=3)
+    S.pointe(pts[100], pts[102] - pts[100], 'r', taille=11, largeur=5)
+    # équerre : (x0, y) pour y de y0 à y1, puis (x, y1) pour x de x0 à x1
+    S.ligne(P(xa, ya), P(xa, yb), 'b', l=3)
+    S.ligne(P(xa, yb), P(xb, yb), 'b', l=3)
+    _fleche_milieu(S, P(xa, ya), P(xa, yb), 'b')
+    _fleche_milieu(S, P(xa, yb), P(xb, yb), 'b')
+    for (x, y), lab, d, an in [((xa, ya), '(x_0, y_0)', [8, 18], 'start'), ((xb, yb), '(x_1, y_1)', [10, 14], 'start')]:
+        S.point(P(x, y), 't', r=4.2)
+        S.texte(P(x, y) + d, lab, ancre=an)
+    S.texte(P(1, 0) + [10, 0], 'X', 'g', ancre='start')
+    S.texte(P(0, 1) + [-10, 0], 'Y', 'g', ancre='end')
+    S.texte(P(0.66, 0.36), 'γ', 'r')
+    # l'équerre et γ ont les mêmes extrémités ; la courbe reste dans le cadre ; étiquettes dans le cadre
+    assert np.all((g1 >= 0) & (g1 <= 1) & (g2 >= 0) & (g2 <= 1))
+    assert P(xb, yb)[0] + 10 + largeur_texte('(x1, y1)') < W - 2
+    return S
