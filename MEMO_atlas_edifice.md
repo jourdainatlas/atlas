@@ -1935,3 +1935,11 @@ Journal des lots.
   encadrement. Signalés, non faits : lexique, « suite de Cauchy » emploie d et « convergente » bien en aval du nœud
   r ; « module » nomme l'inégalité triangulaire en aval de c-calcul. Proposé : compatibilité réduction modulo n /
   évaluation en point d'énoncé de pol-evaluation.
+- alglin : 49 termes nouveaux (55 avec le pilote), 158 exemples, 6 schémas (supplémentaire, valeur propre,
+  signature, matrice diagonale par blocs, composée de deux 3-cycles, puissances d'une nilpotente triangulaire).
+  Rédigé par deux agents (le premier interrompu par un redémarrage du conteneur, le second a tout revérifié). Pas
+  de ℝ en amont : pas de figure dans le plan réel. Ajout d'amont démontré : seconde remarque de a-corps, 𝒫({p}) corps
+  à deux éléments où 1 + 1 = 0 (cité par douze exemples). Relu deux fois : bloquants corrigés (« d'ordre 3 » hors
+  amont ; ouverture de trois-cycle attribuant à la conjugaison la preuve de gs-sn, qui passe par un commutateur ;
+  légende de lex-valeur-propre-2 contraire à la figure ; « triangulaire inférieure » non défini). Signalé, non fait :
+  n-fini n'énonce pas qu'une réunion de deux ensembles finis est finie, ce que v-espace suppose (K^(I) sous-espace).
