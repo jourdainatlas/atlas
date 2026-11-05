@@ -1119,7 +1119,7 @@ def ga_zeros():
     sol = sp.solve([X1 ** 2 + X2 ** 2 - 1, X2 - (X1 + 1) / 2], [X1, X2], dict=True)
     sol = sorted((s_[X1], s_[X2]) for s_ in sol)
     assert sol == [(-1, 0), (sp.Rational(3, 5), sp.Rational(4, 5))]
-    S = Schema(530, 260, 'Un cercle coupe une droite en deux points ; la sinusoïde coupe l’axe une infinité de fois')
+    S = Schema(530, 260, 'Un cercle coupe une droite en deux points ; une droite privée d’un point n’est pas algébrique')
     # à gauche : cercle et droite
     Rg = Repere(-1.6, 1.6, -1.45, 1.45, 15, 30, 200, 200 * 2.9 / 3.2)
     S.fleche(Rg(-1.55, 0), Rg(1.55, 0), 'g'); S.fleche(Rg(0, -1.12), Rg(0, 1.4), 'g')
@@ -1130,18 +1130,19 @@ def ga_zeros():
     for a, b in sol:
         S.point(Rg(float(a), float(b)), 't', r=4.4)
     S.texte(Rg(0, -1) + [0, 34], 'Z(X_1^2 + X_2^2 − 1)', 'r', taille=15)
-    # à droite : y = sin x et l'axe y = 0
-    Rd = Repere(-0.4, 10.2, -1.4, 1.4, 255, 30, 260, 200 * 2.8 / 2.9)
-    S.fleche(Rd(-0.4, 0), Rd(10.2, 0), 'g')
+    # à droite : D = {(x, 0) : x ≠ 0}, en rouge, et la droite L : X_2 = 0 qui la porte, en pointillé gris.
+    # Un polynôme nul sur D l'est, restreint à L, en une infinité de points : il est nul sur L, donc en (0, 0).
+    Rd = Repere(-4.4, 4.4, -1.4, 1.4, 255, 30, 260, 200 * 2.8 / 2.9)
+    D = lambda x, y: y == 0 and x != 0
+    assert not D(0, 0) and all(D(k, 0) for k in range(1, 50))
     S.fleche(Rd(0, -1.3), Rd(0, 1.35), 'g')
-    Rd.graphe(S, np.sin, -0.3, 10.0, 'r')
-    zs = [k * math.pi for k in range(4)]
-    assert all(abs(math.sin(z)) < 1e-12 for z in zs)
-    for z in zs:
-        S.point(Rd(z, 0), 't', r=4.4)
-    S.texte(Rd(10.2, 0) + [-4, 16], '…', ancre='end')
-    S.texte(Rd(1.6, 1) + [0, -14], 'y = `sin` x', 'r', taille=15)
-    S.texte(Rd(7.85, 0) + [0, 18], 'y = 0', 'g', taille=15)
+    S.ligne(Rd(-4.3, 0), Rd(4.3, 0), 'g', d=True)
+    S.ligne(Rd(-4.1, 0), Rd(-0.12, 0), 'r', l=3)
+    S.ligne(Rd(0.12, 0), Rd(4.1, 0), 'r', l=3)
+    S.point(Rd(0, 0), 'r', r=5, creux=True)                               # le point retiré
+    S.texte(Rd(2.6, 0) + [0, -18], 'D', 'r', taille=16)
+    S.texte(Rd(4.3, 0) + [-2, 18], 'L', 'g', ancre='end', taille=16)
+    S.texte(Rd(0, 0) + [10, 20], '(0, 0) `exclu`', 'g', ancre='start', taille=14)
     return S
 
 

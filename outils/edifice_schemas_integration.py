@@ -559,40 +559,37 @@ def m_riemann():
 
 @schema('m-convergence-dominee')
 def m_convergence_dominee():
-    # f_n = n 1_{]0, 1/n]} ; sup_n f_n(x) = ⌊1/x⌋ sur ]0, 1] ; ⌊t⌋ >= t/2 pour t >= 1.
-    ns = [1, 2, 3, 5]
-    xs = np.linspace(1e-4, 1, 20001)
-    sup = np.array([max(n for n in range(1, 10001) if n * x <= 1) for x in xs[::50]])
-    assert np.all(sup == np.floor(1 / xs[::50] + 1e-12))
-    assert np.all(np.floor(1 / xs + 1e-12) >= 1 / (2 * xs) - 1e-12)
-    ymax = 6.6
-    S = Schema(500, 380, 'Les fonctions f_n, leur enveloppe et la minorante 1/(2x)')
-    R = Repere(-0.08, 1.2, -0.45, ymax + 0.35, 40, 8, 430, 350)
+    # Mesure μ sur ℕ* de poids w_k = 1/(k(k+1)) ; le point k est figuré par le segment ]1/(k+1), 1/k],
+    # de longueur w_k. f_n = n(n+1) 1_{n} : colonne de hauteur n(n+1) sur le segment de n, d'aire 1.
+    # sup_n f_n vaut k(k+1) en k : l'aire des N premières colonnes vaut N, et tend vers +∞.
+    w = lambda k: Fr(1, k * (k + 1))
+    assert all(Fr(1, k) - Fr(1, k + 1) == w(k) for k in range(1, 50))          # longueur du segment de k
+    assert sum(w(k) for k in range(1, 100)) == 1 - Fr(1, 100)                    # masse totale 1 (télescopage)
+    assert all(n * (n + 1) * w(n) == 1 for n in range(1, 50))                    # ∫ f_n dμ = 1
+    assert all(sum(k * (k + 1) * w(k) for k in range(1, N + 1)) == N for N in range(1, 30))
+    ns = [1, 2, 3]
+    ymax = 13.6
+    S = Schema(500, 380, 'Les fonctions f_n, d’intégrale 1, et leur enveloppe, d’intégrale infinie')
+    R = Repere(-0.08, 1.2, -0.7, ymax + 0.4, 40, 8, 430, 350)
     R.axes(S, 'x', '')
-    # enveloppe ⌊1/x⌋ : palier k sur ]1/(k+1), 1/k], tronquée en haut
+    # enveloppe : palier k(k+1) sur ]1/(k+1), 1/k], tronquée en haut
     morceaux = []
-    for k in range(1, 7):
-        morceaux.append((1 / (k + 1), 1 / k, k))
+    for k in range(1, 9):
+        morceaux.append((1 / (k + 1), 1 / k, min(k * (k + 1), ymax)))
     morceaux = morceaux[::-1]
-    S.surface(np.vstack([R(1 / 7, 0)] + [p for a, b, k in morceaux for p in (R(a, k), R(b, k))] + [R(1, 0)]), 'r')
-    for n in ns:
-        S.poly(R(np.array([0, 0, 1 / n, 1 / n]), np.array([0, n, n, 0])), 'b', l=1.3)
+    S.surface(np.vstack([R(1 / 9, 0)] + [p for a, b, h in morceaux for p in (R(a, h), R(b, h))] + [R(1, 0)]), 'r')
     marche(S, R, morceaux, 'r')
-    S.ligne(R(1 / 7, 6), R(1 / 7, ymax), 'r', d=True)
-    S.pointe(R(1 / 7, ymax) + [0, -2], (0, -1), 'r')
+    S.pointe(R(0.18, ymax) + [0, -2], (0, -1), 'r')      # les colonnes k >= 4, tronquées, continuent
     for n in ns:
-        S.point(R(1 / n, n), 'b', r=3.4)
-    for n in ns:
-        S.texte(R(1 / n, n) + [8, -12], f'f_{n}', 'b', ancre='start', taille=15)
-    # 1/(2x)
-    xc = np.linspace(1 / (2 * ymax), 1.0, 400)
-    S.poly(R(xc, 1 / (2 * xc)), 'v', l=2)
-    S.texte(R(0.8, 0.625) + [0, 22], '1/(2x)', 'v', taille=15)
-    S.ligne(R(0.68, 2.2) + [0, 4], R(0.74, 1.0), 'g')
-    S.texte(R(0.68, 2.2) + [-4, -8], '`sup` f_n', 'r', ancre='start')
+        a, b, h = 1 / (n + 1), 1 / n, n * (n + 1)
+        S.poly(R(np.array([a, a, b, b]), np.array([0, h, h, 0])), 'b', ferme=True, l=1.6)
+        S.texte(R(b, h) + [8, -12], f'f_{n}', 'b', ancre='start', taille=15)
+        S.texte(R((a + b) / 2, h / 2), '1', 'b', taille=14 if n < 3 else 12)
+    S.ligne(R(0.62, 9.0) + [0, 4], R(0.44, 4.8), 'g')                 # vers l'intérieur de la surface rouge
+    S.texte(R(0.62, 9.0) + [-4, -8], '`sup` f_n', 'r', ancre='start')
     for xv, s in [(0, '0'), (1 / 3, '1/3'), (0.5, '1/2'), (1, '1')]:
         S.texte(R(xv, 0) + [0, 19], s, 'g', taille=14)
-    for yv in range(1, 7):
+    for yv in (2, 6, 12):
         S.ligne(R(0, yv) + [-3, 0], R(0, yv) + [3, 0], 'g')
         S.texte(R(0, yv) + [-8, 0], str(yv), 'g', ancre='end', taille=14)
     return S
@@ -777,43 +774,44 @@ def m_beppo_levi():
 
 @schema('m-fatou')
 def m_fatou():
-    # À gauche f_n = 1_{]n, n+1]} (la bosse glisse), à droite f_n = n 1_{]0, 1/n]} (elle s'écrase) :
-    # ∫ f_n = 1 pour tout n, limite simple nulle en tout point.
-    gl = lambda n, x: ((x > n) & (x <= n + 1)).astype(float)
-    ec = lambda n, x: n * ((x > 0) & (x <= 1 / n)).astype(float)
-    xs = np.linspace(-1, 6, 70001)
-    pas = xs[1] - xs[0]
-    for n in range(1, 6):
-        assert abs(gl(n, xs).sum() * pas - 1) < 2e-3 and abs(ec(n, xs).sum() * pas - 1) < 2e-3
-    for x in np.linspace(-1, 6, 701):
-        N = 2 + math.ceil(abs(x)) + (math.ceil(1 / x) if x > 0 else 0)
-        assert all(gl(n, np.array(x)) == 0 and ec(n, np.array(x)) == 0 for n in range(N, N + 30))
+    # À gauche, mesure de comptage sur ℕ, f_n = 1_{n} (la bosse glisse) ; à droite, mesure μ de poids
+    # w_k = 1/(k(k+1)) sur ℕ*, le point k figuré par le segment ]1/(k+1), 1/k] de longueur w_k, et
+    # f_n = n(n+1) 1_{n} (la bosse s'écrase contre 0) : ∫ f_n = 1 pour tout n, limite simple nulle.
+    w = lambda k: Fr(1, k * (k + 1))
+    assert all(Fr(1, k) - Fr(1, k + 1) == w(k) for k in range(1, 50))
+    assert sum(w(k) for k in range(1, 200)) == 1 - Fr(1, 200)               # μ est de masse 1
+    assert all(n * (n + 1) * w(n) == 1 for n in range(1, 50))               # ∫ f_n dμ = 1 à droite
+    f = lambda n, k: n * (n + 1) if n == k else 0                           # f_n à droite (à gauche : 1_{n})
+    for k in range(0, 40):                                                  # f_n(k) = 0 dès que n > k
+        assert all(f(n, k) == 0 and int(n == k) == 0 for n in range(k + 1, k + 30))
     S = Schema(520, 300, 'Deux suites d’intégrale 1 de limite nulle : la bosse glisse, la bosse s’écrase')
-    # panneau de gauche
-    R = Repere(-0.25, 4.6, -0.3, 1.45, 18, 30, 250, 230)
-    R.axes(S, 'x', '')
+    # panneau de gauche : barres de largeur 1 centrées en n, d'aire μ({n}) · 1 = 1
+    R = Repere(-0.75, 4.2, -0.3, 1.45, 18, 30, 250, 230)
+    R.axes(S, 'k', '', origine=(-0.75, 0))
     for n in range(4):                                     # f_0 plein, les suivantes en contour pointillé
-        cadre = R(np.array([n, n, n + 1, n + 1]), np.array([0, 1, 1, 0]))
+        cadre = R(np.array([n - 0.5, n - 0.5, n + 0.5, n + 0.5]), np.array([0, 1, 1, 0]))
         if n:                                              # retrait de 3 px : les bords voisins ne se confondent pas
             cadre = cadre + np.array([[3, 0], [3, 0], [-3, 0], [-3, 0]])
         S.poly(cadre, 'b', d=n > 0, ferme=True, rempli='b' if n == 0 else None)
-        S.texte(R(n + 0.5, 1) + [0, -14], f'f_{n}', 'b', taille=15)
-        S.texte(R(n + 0.5, 0.5), '1', 'b', taille=14)
-        S.texte(R(n, 0) + [-6 if n == 0 else 0, 16], str(n), 'g', ancre='end' if n == 0 else 'middle', taille=14)
-    S.texte(R(4, 0) + [0, 16], '4', 'g', taille=14)
-    S.fleche(R(0.5, 1.32), R(3.6, 1.32), 'g')
-    S.ligne(R(-0.25, 0), R(4.45, 0), 'r', l=3)
-    # panneau de droite
-    Q = Repere(-0.12, 1.25, -0.3, 4.7, 300, 30, 190, 230)
+        S.texte(R(n, 1) + [0, -14], f'f_{n}', 'b', taille=15)
+        S.texte(R(n, 0.5), '1', 'b', taille=14)
+        S.texte(R(n, 0) + [0, 16], str(n), 'g', taille=14)
+    S.fleche(R(0, 1.32), R(3.4, 1.32), 'g')
+    S.ligne(R(-0.75, 0), R(4.05, 0), 'r', l=3)
+    # panneau de droite : colonnes de hauteur n(n+1) sur les segments ]1/(n+1), 1/n]
+    Q = Repere(-0.1, 1.2, -0.8, 13.4, 300, 30, 190, 230)
     Q.axes(S, 'x', '')
-    for n in (4, 2, 1):
-        S.poly(Q(np.array([0, 0, 1 / n, 1 / n]), np.array([0, n, n, 0])), 'b', ferme=True, rempli='b')
-        S.texte(Q(1 / n, n) + [8, -10], f'f_{n}', 'b', ancre='start', taille=15)
-    for xv, sv in [(0.25, '1/4'), (0.5, '1/2'), (1, '1')]:
+    for n in (1, 2, 3):
+        a, b, h = 1 / (n + 1), 1 / n, n * (n + 1)
+        S.poly(Q(np.array([a, a, b, b]), np.array([0, h, h, 0])), 'b', ferme=True, rempli='b')
+        S.texte(Q(b, h) + [6, -8], f'f_{n}', 'b', ancre='start', taille=15)
+        if n < 3:                                          # la colonne de f_3, trop étroite, n'a pas d'étiquette
+            S.texte(Q((a + b) / 2, h / 2), '1', 'b', taille=14)
+    for xv, sv in [(0.5, '1/2'), (1, '1')]:
         S.texte(Q(xv, 0) + [0, 16], sv, 'g', taille=14)
-    S.ligne(Q(-0.12, 0), Q(1.12, 0), 'r', l=3)
-    S.texte((150, 286), 'f_n → 0, ∫ f_n = 1', 'r', taille=15)
-    S.texte((395, 286), 'f_n → 0, ∫ f_n = 1', 'r', taille=15)
+    S.ligne(Q(-0.1, 0), Q(1.1, 0), 'r', l=3)
+    S.texte((150, 286), 'f_n → 0, ∫ f_n dμ = 1', 'r', taille=15)
+    S.texte((395, 286), 'f_n → 0, ∫ f_n dμ = 1', 'r', taille=15)
     return S
 
 

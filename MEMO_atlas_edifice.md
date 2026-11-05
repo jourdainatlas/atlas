@@ -2118,3 +2118,15 @@ Tarski) dans zf, employée en top, l'équivalence avec la définition par ℕ é
   distribution, forme-volume, espace-Lp, espace-L2 ; boule-fermee r ⩾ 0 (me-espace aligné) ; pgcd-anneau sans ℂ ;
   « Plus loin » réservé aux nœuds d'aval. Relu : rien de faux ; quatre annonces trop fortes corrigées (r.e. : parties
   de ℕ ; suite exacte : G fini ; attachement : Y compact ; géodésiques de la sphère).
+- Analyse, topologie algébrique, géométrie (33 défauts corrigés, 6 écartés) : contre-exemples de m-beppo-levi,
+  m-fatou, m-convergence-dominee refaits avec des mesures discrètes (Lebesgue hors amont) ; tr-ultrafiltres sur ℕ
+  discret ; ga-zeros, ga-nullstellensatz sans ℝ, ℂ, sin ; « torsion » retiré (hom-cohomologie, ku-homologie) ;
+  démontrés : intégrale pour la mesure de comptage et ∫ g dδ_b = g(b) (m-integrale), Hellinger-Toeplitz par Baire
+  (f-autoadjoints), courbes intégrales explicites (ly-equilibres), champ de rotation lisse sur S² (ed-varietes),
+  divergence de Σ 1/(n+1) (cx-suites), « m au moins N » (ds-distributions), rôle du lemme de Weyl (ds-laplacien) ;
+  admis ici de statut `ailleurs` (§80 ; « 0 à faire » inchangé) : Pólya, homologie de ℝP², d'Alembert-Gauss,
+  théorème de projection (f-hahn-banach). Arêtes : c-point → c-uniforme, p-variables → p-zero-un,
+  cal-pr-definition → cal-ackermann-lemme (notation S, entrée fonction-ackermann), ds-derivation → ds-support,
+  cal-dg-godel → cal-dg-second (choisie au lieu de cal-dg-prov → cal-dg-second, qui imposait un croisement ;
+  cal-dg-prov reste en amont par transitivité) ; arêtes devenues redondantes retirées ; croisements inchangés.
+  Relu : bloquant corrigé (homologie des sphères dite nulle ou ℤ, faux pour H₀(S⁰)).
