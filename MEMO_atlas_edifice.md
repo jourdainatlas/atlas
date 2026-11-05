@@ -2057,3 +2057,12 @@ Journal des lots.
   holomorphe, serie-entiere, pole, propriete-racine-carree, logarithme-holomorphe citent l'aval ; cx-suites affirme
   sans preuve la divergence de Σ 1/(n + 1). Arêtes proposées : cal-pr-definition → cal-ackermann-lemme,
   cal-dg-prov → cal-dg-second.
+- geod + tan + geoalg : 51 termes, 148 exemples, 12 schémas. geoalg sans ℚ, ℝ, ℂ ni corps finis en amont (ℤ, ℤ/nℤ,
+  K[X], K(T) ; corps algébriquement clos sans exemple positif) ; variétés sans parent dans geod (cercle construit à la
+  main) ; gd-formes sans intégrales curvilignes (non-exactitude de la forme angle démontrée directement). ⋆ : Krull.
+  Relu : à corriger, fait (x² = y² ⇒ y = ±x dit faux hors intègre, alors que 𝔽₂ × 𝔽₂ le vérifie ; bijection dite
+  continue ; cas b = 0 ; deux étiquettes) ; vrai contre-exemple pour la partition de l'unité. Signalés, non faits :
+  remarques de ga-zeros et ga-nullstellensatz emploient ℝ, ℂ, sin hors amont ; lexique, groupe-classes (deux éléments
+  pour ℚ(√−5)), forme-volume, espace-tangent (sous-variété), fonction-plateau citent l'aval. Proposés : remarque
+  démontrée sur le cercle et ses deux cartes stéréographiques dans gd-varietes ; non-exactitude de la forme angle
+  dans gd-formes.
