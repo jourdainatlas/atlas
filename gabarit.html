@@ -173,6 +173,7 @@ section[id^="apropos-"] .corps-texte a:hover { text-decoration-color: var(--encr
   body.imprime > *:not(#impression) { display: none !important; }
   body.imprime #impression { display: block !important; }
   .retour-edifice { display: none !important; }   /* impression native (Ctrl+P) : pas de bouton de retour sur la page */
+  .retour-lex { display: none !important; }
 }
 #impression { --papier: #f4f5f7; --surface: #ffffff; --encre: #1b1e24; --encre-2: #4f5561; --encre-3: #858b96; --filet: #d8dbe1; --trame: #e3e6eb; --rouge: #b0001a; --rouge-fond: #fbeef0; --noeud: #ffffff; --arete: #a1a6af; --arete-vive: #1b1e24; --choix: #8a6400; --choix-fond: #fdf5dc; --corrige-fond: #eef6f1; --corrige-filet: #3f8f63; --c-fond: #666b74; --c-ord: #6a7d00; --c-alg: #d26d00; --c-top: #c0007a; --c-nb: #0070c0;      --c-ana: #00866b;     --c-geo: #8a45ab;     --c-mix: #2f343c;     --c-neutre: #2f343c;  --c-axiome: #c00000; color: var(--encre); background: #fff; font-family: var(--f-texte); font-size: 10.5pt; line-height: 1.5; }
 #impression a, #impression .lien-noeud, #impression .terme { color: inherit; text-decoration: none; border: 0; background: none; font: inherit; padding: 0; }
@@ -821,6 +822,18 @@ blockquote.redaction p { margin: 0; }
 .entree-lex p { margin: 0 0 .5em; }
 .entree-lex .emplois { font-family: var(--f-ui); font-size: 12.5px; color: var(--encre-3); display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 6px; }
 .entree-lex.eclair { background: var(--rouge-fond); }
+/* Titre d'une entrée qui porte le bouton « ← terme précédent » (chaîne de termes ouverts depuis le lexique) : le
+   bouton suit le titre sur sa ligne, passe dessous quand la place manque, et le nom n'est abrégé que s'il dépasse la ligne. */
+.tete-lex { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 10px; row-gap: 3px; margin: 0 0 4px; }
+.tete-lex > h3 { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.tete-lex > h3:focus { outline: none; }
+.tete-lex > h3:focus-visible { outline: 2px solid var(--rouge); outline-offset: 2px; border-radius: 2px; }
+.retour-lex { flex: 0 1 auto; min-width: 0; max-width: 100%; min-height: 24px; display: inline-flex; align-items: center; gap: 5px; padding: 2px 10px 2px 8px; font-family: var(--f-ui); font-size: 12.5px; line-height: 1.2; color: var(--encre-2); background: none; border: 1px solid var(--filet); border-radius: 999px; cursor: pointer; }
+.retour-lex[hidden] { display: none; }
+.retour-lex svg { flex: none; width: 12px; height: 12px; }
+.retour-lex .rl-nom { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.retour-lex:hover { color: var(--encre); border-color: var(--rouge); }
+.retour-lex:focus-visible { outline: 2px solid var(--rouge); outline-offset: 2px; color: var(--encre); }
 /* exemples du lexique : pastille repliable entre la définition et « Défini dans » */
 .intro-lex { font-family: var(--f-ui); font-size: 13px; line-height: 1.5; color: var(--encre-2); margin: -6px 0 10px; max-width: 46rem; }
 .exemples-lex { margin: 4px 0 2px; }
@@ -1805,7 +1818,7 @@ function aller(gid, choisi = null, opts = {}) {
   // L'état de l'entrée d'historique (numéro, origine du bouton de retour) est conservé ; seul le lien avec les
   // termes ouverts depuis une fiche (atlasTermes) tombe, puisque l'entrée désigne désormais une autre fiche.
   const st = { ...etatHistoriqueEdifice() };
-  delete st.atlasTermes;
+  delete st.atlasTermes; delete st.atlasLex;
   ecrireHistoriqueEdifice(st, '#' + ancreEdifice);
   noterVueEdifice();
   majRetourEdifice();
@@ -2341,14 +2354,18 @@ function construireLexique() {
     intro.hidden = false;
   }
   filtrer();   // ce qui a pu être tapé dans le filtre pendant le chargement
+  majChaineLexique();
 }
 // deplier : la pastille des exemples de l'entrée est ouverte (clic sur un terme, dont la bulle l'annonce).
 // opts.historique (geste de l'utilisateur) : le terme reçoit sa propre entrée d'historique #lexique/<id>, si bien que
 // « Précédent » ramène à la fiche, à l'endroit quitté ; opts.defilement === false : pas de défilement jusqu'à
 // l'entrée (retour par l'historique, la position mémorisée est rendue à la place).
+// opts.source : id de l'entrée du lexique dont on a suivi le lien (chaîne de termes, bouton « ← terme précédent ») ;
+// un lien vers un terme déjà dans la chaîne y remonte, comme le bouton, au lieu d'empiler un doublon.
 function ouvrirTerme(id, deplier = false, opts = {}) {
   cacherBulle(true);
-  if (opts.historique) pousserTermeLexique(id);
+  if (opts.historique && opts.source && remonterChaineLexique(id, opts.source)) return;
+  if (opts.historique) pousserTermeLexique(id, opts.source);
   else if (enRubrique()) aller(etat.graphe || D.racine, etat.choisi);   // le lexique est dans le panneau de l'édifice
   $('#filtre').value = '';
   montrerOnglet('lexique');
@@ -2363,9 +2380,12 @@ function ouvrirTerme(id, deplier = false, opts = {}) {
     if (tp) e.style.scrollMarginTop = Math.ceil(tp.getBoundingClientRect().height) + 8 + 'px';
     const px = deplier && e.querySelector('details.exemples-lex');
     if (px && !px.open) px.open = true;   // l'événement toggle remplit la pastille
+    majChaineLexique();   // le bouton « ← terme précédent » prend place sur la ligne du titre avant le défilement
     e.scrollIntoView({ block: 'start' });
     e.classList.add('eclair');
     setTimeout(() => e.classList.remove('eclair'), 1400);
+    // terme ouvert depuis une autre entrée : le focus suit, et le bouton de retour est à une tabulation
+    if (opts.source) focusEntreeLexique(e);
   }, () => {});
 }
 function filtrer() {
@@ -2481,7 +2501,7 @@ function retrouverFocusEdifice(z, f) {
   tous.forEach((e, i) => { if (Math.abs(i - f[0]) < ecart && signatureFocusEdifice(e) === f[1]) { mieux = e; ecart = Math.abs(i - f[0]); } });
   return mieux;
 }
-function memoriserVueEdifice(ev) {
+function memoriserVueEdifice(ev, ancreLex) {
   const pos = { hash: location.hash };
   if (enRubrique()) {
     const z = $('#rubrique'), pa = z.querySelector('.pa-corps');
@@ -2493,6 +2513,7 @@ function memoriserVueEdifice(ev) {
   } else if (ancreEdifice && $('#onglet-fiche').childElementCount) {
     const o = ongletCourantEdifice();
     pos.e = { onglet: o, cle: cleOngletEdifice(o), y: defilEdifice(), etroit: etroitEdifice() };
+    if (o === 'lexique') { const lx = ancreLexiqueEdifice(ev, ancreLex); if (lx) pos.e.lx = lx; }
   } else return;
   // Une entrée sans numéro (même ancre suivie deux fois, sans hashchange) en reçoit un : on y est passé.
   const st = etatHistoriqueEdifice();
@@ -2505,7 +2526,7 @@ function entrerEdificeDepuisRubrique() {
   ecrireHistoriqueEdifice({ atlasN: nouveauNumeroEdifice(), atlasOrigine: { id: nouveauNumeroEdifice(), n: st.atlasN, hash: location.hash, titre: libelleVueEdifice(), profondeur: 1 } }, location.href, true);
 }
 // Terme ouvert par un clic : entrée #lexique/<id>.
-function pousserTermeLexique(id) {
+function pousserTermeLexique(id, source) {
   const url = '#lexique/' + id;
   if (enRubrique()) {
     entrerEdificeDepuisRubrique();
@@ -2515,15 +2536,157 @@ function pousserTermeLexique(id) {
     return;
   }
   if (location.hash === url) return;
-  memoriserVueEdifice();
+  // Chaîne de termes : le lien suivi est dans l'entrée « source ». Si c'est l'entrée visée par l'ancre, la chaîne de
+  // l'entrée courante se prolonge ; sinon (entrée atteinte en défilant, par le filtre, par l'onglet) elle repart de la
+  // source, et l'entrée courante, quand c'est déjà une entrée du lexique, prend l'ancre de la source : « Précédent »
+  // et le bouton y ramènent alors, sous la même adresse.
+  let chaine = null;
+  if (source && source !== id && D.lexique[source]) {
+    const st0 = etatHistoriqueEdifice();
+    if (termeAncreLexique(location.hash) === source) chaine = [...(chaineLexique(st0) || []), source].slice(-100);
+    else {
+      chaine = [source];
+      if (/^#lexique(\/|$)/.test(location.hash)) { const s = { ...st0 }; delete s.atlasLex; ecrireHistoriqueEdifice(s, '#lexique/' + source); }
+    }
+  }
+  memoriserVueEdifice(null, source);
   const st = etatHistoriqueEdifice(), surTerme = /^#lexique(\/|$)/.test(location.hash);
   const neuf = { atlasN: nouveauNumeroEdifice() };
   const k = surTerme ? (st.atlasTermes ? st.atlasTermes + 1 : 0) : 1;
   if (k) neuf.atlasTermes = k;
   if (st.atlasOrigine) neuf.atlasOrigine = { ...st.atlasOrigine, profondeur: st.atlasOrigine.profondeur + 1 };
+  if (chaine) neuf.atlasLex = { cible: id, chaine };
   ecrireHistoriqueEdifice(neuf, url, true);
   noterVueEdifice();
   majRetourEdifice();
+}
+// Chaîne de termes du lexique. Choix : elle vit dans l'historique du navigateur, non dans une pile à part. Chaque terme
+// ouvert par un lien d'une autre entrée a déjà son entrée #lexique/<id> (pousserTermeLexique), poussée juste après
+// celle de l'entrée d'où l'on vient ; l'état de la nouvelle entrée retient la chaîne (atlasLex : { cible, chaine },
+// chaine = les termes précédents, le dernier étant celui que l'on vient de quitter). Le bouton « ← terme » fait donc
+// history.back() : il mène exactement où mène « Précédent », avec la position mémorisée de l'entrée quittée (§ 115),
+// sans doublon ; « Suivant » refait le chemin, et chaque entrée retrouvée rend sa propre chaîne. Une pile à part se
+// désaccorderait de l'historique dès le premier « Précédent ». La chaîne n'est montrée que sur l'entrée visée par
+// l'ancre, et seulement si l'état est cohérent ; toute autre façon d'ouvrir un terme (recherche, filtre, bulle d'une
+// fiche, ancre partagée ou tapée, onglet) crée ou remplace une entrée sans atlasLex : la chaîne repart de zéro.
+function termeAncreLexique(h) { const m = /^#lexique\/([^/?#]+)$/.exec(h || ''); return m ? decodeURIComponent(m[1]) : null; }
+function chaineLexique(st) {
+  const x = st && st.atlasLex;
+  if (!x || !st.atlasN || typeof x.cible !== 'string' || !Array.isArray(x.chaine) || !x.chaine.length) return null;
+  if (x.cible !== termeAncreLexique(location.hash) || !x.chaine.every(i => typeof i === 'string' && D.lexique[i])) return null;
+  return x.chaine;
+}
+// Terme visé par un retour dans la chaîne : reçoit le focus à l'arrivée (apresAncreEdifice).
+// suiteChaineLex { id, source } : terme à ouvrir depuis source une fois la remontée jusqu'à source arrivée.
+let retourLexVoulu = null, suiteChaineLex = null, minuteurRetourLex = 0;
+function revenirChaineLexique(pas, id) {
+  retourLexVoulu = id;
+  clearTimeout(minuteurRetourLex);
+  minuteurRetourLex = setTimeout(() => { retourLexVoulu = null; suiteChaineLex = null; }, 3000);
+  history.go(-pas);
+}
+// Lien vers un terme déjà dans la chaîne (« groupe » depuis « loi associative », ouverte depuis « groupe ») : on y
+// remonte, comme par le bouton, au lieu d'empiler un doublon. Lien suivi dans une entrée de la chaîne atteinte en
+// défilant (on remonte de « loi associative » jusqu'à « groupe » et l'on y suit « commutative ») : on remonte
+// l'historique jusqu'à cette entrée, puis on ouvre le terme depuis elle (finirRetourLexique) ; sans cela, l'entrée
+// courante prendrait l'ancre de la source et l'historique aurait deux entrées « groupe » de suite.
+function remonterChaineLexique(id, source) {
+  if (enRubrique()) return false;
+  const ch = chaineLexique(etatHistoriqueEdifice());
+  if (!ch) return false;
+  if (termeAncreLexique(location.hash) !== source) {
+    const j = ch.lastIndexOf(source);
+    if (j < 0) return false;
+    suiteChaineLex = { id, source };
+    revenirChaineLexique(ch.length - j, source);
+    return true;
+  }
+  const i = ch.lastIndexOf(id);
+  if (i < 0) return false;
+  revenirChaineLexique(ch.length - i, id);
+  return true;
+}
+// Le bouton : un seul élément, placé dans la ligne de titre de l'entrée visée (enveloppe .tete-lex créée au besoin).
+const boutonRetourLex = document.createElement('button');
+boutonRetourLex.type = 'button';
+boutonRetourLex.className = 'retour-lex';
+boutonRetourLex.hidden = true;
+boutonRetourLex.innerHTML = '<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M13 8H3.5M7.5 3.5 3 8l4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="rl-nom"></span>';
+boutonRetourLex.addEventListener('click', () => {
+  if (retourLexVoulu) return;   // retour déjà en cours (double clic) : un seul cran
+  const ch = chaineLexique(etatHistoriqueEdifice());
+  if (ch) revenirChaineLexique(1, ch[ch.length - 1]);
+  else majChaineLexique();
+});
+function majChaineLexique() {
+  const ch = !enRubrique() && chaineLexique(etatHistoriqueEdifice());
+  const e = ch && document.getElementById('lx-' + termeAncreLexique(location.hash));
+  const h = e && e.querySelector(':scope > h3, :scope > .tete-lex > h3');
+  if (!h) { boutonRetourLex.hidden = true; return; }
+  let t = h.parentElement;
+  if (!t.classList.contains('tete-lex')) {
+    t = document.createElement('div'); t.className = 'tete-lex';
+    h.before(t); t.append(h);
+  }
+  if (boutonRetourLex.parentElement !== t) t.append(boutonRetourLex);
+  const nom = D.lexique[ch[ch.length - 1]].terme, lib = `Revenir à la définition de ${nom}`;
+  boutonRetourLex.querySelector('.rl-nom').textContent = nom;
+  boutonRetourLex.setAttribute('aria-label', lib);
+  boutonRetourLex.title = lib;
+  boutonRetourLex.hidden = false;
+}
+function focusEntreeLexique(e) {
+  const h = e.querySelector(':scope > h3, :scope > .tete-lex > h3');
+  if (!h) return;
+  h.setAttribute('tabindex', '-1');
+  h.focus({ preventScroll: true });
+}
+// Arrivée d'un retour dans la chaîne : l'entrée visée reçoit le focus ; si la position n'a pas pu être rendue (largeur
+// changée entre-temps), on la fait venir à l'écran.
+// Après « Précédent » du navigateur (parcours), si le focus était resté dans le lexique, sur l'entrée quittée hors de
+// l'écran, il est ramené sur l'entrée affichée (celle de l'ancre, ou l'entrée d'ancrage de la position mémorisée).
+function finirRetourLexique(parcours) {
+  const id = retourLexVoulu;
+  if (!id) {
+    if (!parcours || ongletCourantEdifice() !== 'lexique' || !document.activeElement || !$('#lexique').contains(document.activeElement)) return;
+    const p = etatHistoriqueEdifice().atlasPos, lx = p && p.e && p.e.lx;
+    const cible = termeAncreLexique(location.hash) || (Array.isArray(lx) && lx[0]);
+    if (cible) remplirLexique().then(() => {
+      const e = document.getElementById('lx-' + cible);
+      if (e && !e.hidden && ongletCourantEdifice() === 'lexique') focusEntreeLexique(e);
+    }, () => {});
+    return;
+  }
+  retourLexVoulu = null;
+  const s = suiteChaineLex; suiteChaineLex = null;
+  if (s && termeAncreLexique(location.hash) === s.source) { ouvrirTerme(s.id, true, { historique: true, source: s.source }); return; }
+  remplirLexique().then(() => {
+    const e = document.getElementById('lx-' + id);
+    if (!e || e.hidden || ongletCourantEdifice() !== 'lexique') return;
+    const r = e.getBoundingClientRect(), haut = document.querySelector('.tete-panneau').getBoundingClientRect().bottom;
+    if (r.bottom < haut + 20 || r.top > innerHeight - 40) e.scrollIntoView({ block: 'start' });
+    focusEntreeLexique(e);
+  }, () => {});
+}
+// Ancre de position dans le lexique : une entrée et la distance de son haut au haut de la fenêtre. Au retour, on
+// recale sur elle, car des pastilles d'exemples dépliées plus haut entre-temps ont pu décaler la liste.
+function ancreLexiqueEdifice(ev, id) {
+  let e = id && document.getElementById('lx-' + id);
+  if (!e && ev && ev.target && ev.target.closest) e = ev.target.closest('#lexique .entree-lex');
+  if (!e) {
+    const tp = document.querySelector('.tete-panneau').getBoundingClientRect(), l = $('#lexique').getBoundingClientRect();
+    const x = Math.round(l.left + Math.min(40, l.width / 2)), y = Math.round(Math.max(tp.bottom, 0) + 6);
+    const p = y < innerHeight && document.elementFromPoint(x, y);
+    e = p && p.closest && p.closest('#lexique .entree-lex');
+  }
+  return e && !e.hidden ? [e.id.slice(3), Math.round(e.getBoundingClientRect().top)] : null;
+}
+function recalerLexiqueEdifice(lx) {
+  if (!Array.isArray(lx) || ongletCourantEdifice() !== 'lexique') return;
+  const e = document.getElementById('lx-' + lx[0]);
+  if (!e || e.hidden) return;
+  const d = Math.round(e.getBoundingClientRect().top) - lx[1];
+  if (Math.abs(d) > 1) poserDefilEdifice(defilEdifice() + d);
 }
 // Changement d'ancre (lien suivi, Précédent, Suivant) : avant depuisAncre, on numérote une entrée neuve et, si elle
 // mène dans l'édifice, on y inscrit l'origine (la rubrique quittée, ou l'origine de l'entrée quittée).
@@ -2553,7 +2716,7 @@ function avantAncreEdifice() {
 // Après depuisAncre : une entrée retrouvée rend sa position (rubrique retrouvée depuis l'édifice ; onglet et
 // défilement de l'édifice), puis la vue est relevée et le bouton de retour mis à jour.
 function apresAncreEdifice() {
-  const v = vueEdifice, p = etatHistoriqueEdifice().atlasPos;
+  const v = vueEdifice, p = etatHistoriqueEdifice().atlasPos, parcours = traverseeEdifice;
   if (traverseeEdifice && p && p.hash === location.hash) {
     if (enRubrique() && p.r && v && !v.rubrique) rendreRubriqueEdifice(p.r, p.f);
     else if (!enRubrique() && p.e && !(ongletVouluEdifice && ongletVouluEdifice !== p.e.onglet)) rendrePositionEdifice(p.e);
@@ -2562,13 +2725,14 @@ function apresAncreEdifice() {
   traverseeEdifice = false;
   noterVueEdifice();
   majRetourEdifice();
+  finirRetourLexique(parcours);
 }
 function rendrePositionEdifice(e) {
   if (e.etroit !== etroitEdifice()) return;
   if (e.onglet !== ongletCourantEdifice()) montrerOnglet(e.onglet, { sansDefilement: true });
   if (e.cle !== cleOngletEdifice(e.onglet)) return;
   const poser = () => poserDefilEdifice(e.y);
-  if (e.onglet === 'lexique') remplirLexique().then(poser, () => {});
+  if (e.onglet === 'lexique') remplirLexique().then(() => { poser(); recalerLexiqueEdifice(e.lx); }, () => {});
   else { poser(); requestAnimationFrame(poser); }
 }
 // Rubrique retrouvée : la page est recomposée en haut ; on rend sa position, et on la repose pendant 1,5 s au plus
@@ -2602,6 +2766,7 @@ function origineSureEdifice(st) {
     && typeof o.hash === 'string' && !estAncreEdificeHash(o.hash) && typeof o.titre === 'string');
 }
 function majRetourEdifice() {
+  majChaineLexique();
   const b = $('#retour-edifice');
   if (!b) return;
   const st = etatHistoriqueEdifice(), o = st.atlasOrigine;
@@ -2897,9 +3062,11 @@ function placerLegende(d) {
 }
 document.querySelectorAll('.legende').forEach(d => d.addEventListener('toggle', () => placerLegende(d)));
 window.addEventListener('resize', () => document.querySelectorAll('.legende[open]').forEach(placerLegende));
+// Entrée du lexique qui contient le lien suivi (définition, exemples, « Voir aussi ») : maillon de la chaîne de termes.
+const sourceLexique = t => { const a = t.closest('#lexique .entree-lex'); return a ? a.id.slice(3) : null; };
 document.addEventListener('click', ev => {
   const t = ev.target.closest('.terme');
-  if (t && t.dataset.g) { ev.preventDefault(); ouvrirTerme(t.dataset.g, true, { historique: true }); return; }
+  if (t && t.dataset.g) { ev.preventDefault(); ouvrirTerme(t.dataset.g, true, { historique: true, source: sourceLexique(t) }); return; }
   // Fondements, Portée (fiche) : un clic surligne, un second efface ; « Voir dans l'édifice » et son retour
   // changent de graphe en gardant le surlignage.
   const dp = ev.target.closest('#onglet-fiche [data-dep]');
@@ -2928,7 +3095,7 @@ document.addEventListener('click', ev => {
 });
 document.addEventListener('keydown', ev => {
   const t = ev.target.closest && ev.target.closest('.terme');
-  if (t && (ev.key === 'Enter' || ev.key === ' ')) { ev.preventDefault(); ouvrirTerme(t.dataset.g, true, { historique: true }); }
+  if (t && (ev.key === 'Enter' || ev.key === ' ')) { ev.preventDefault(); ouvrirTerme(t.dataset.g, true, { historique: true, source: sourceLexique(t) }); }
   if (ev.key === 'Escape') cacherBulle(true);
   // Échap efface le surlignage des fondements ou de la portée (sauf dans un champ, le menu ou le signalement,
   // qui ont leur propre usage de la touche)

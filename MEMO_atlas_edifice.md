@@ -2185,3 +2185,38 @@ termes des cours, feuilles et accueil ajoutent une étape au lieu de remplacer l
 terme remplace l'entrée du terme ; un résultat de recherche qui vise la fiche affichée la réaffiche à sa position.
 Relu par un agent indépendant (parcours 100/100, gestes 69/69, aperçu à fichier unique sans sessionStorage) ; reste à
 confirmer sur un vrai iPhone le seuil de 64 px. Entrée de nouveautés (rubrique site).
+
+## 116. Lexique : chaîne de termes et bouton « ← terme précédent » (8 novembre 2026)
+
+Demande d'Armand : gabarit.html, plus deux \allowbreak dans le contenu. Un terme ouvert par un lien d'une autre entrée
+du lexique (définition, exemple déplié, « Voir aussi ») porte, à droite de son titre et sur sa ligne, un petit bouton
+« ← terme précédent » (`.retour-lex`, `--encre-2`, 24 px de haut ; aria-label et infobulle « Revenir à la définition
+de … »). Il passe sous le titre quand la place manque, et le nom n'est abrégé que s'il dépasse la ligne. Des clics
+successifs remontent la chaîne jusqu'au premier terme ; chaque entrée est rendue à sa place à l'écran, avec le focus
+sur son titre. Un terme ouvert depuis le lexique reçoit lui aussi le focus, si bien que le bouton est à une tabulation.
+
+Conception : la chaîne est rangée dans l'état de l'entrée d'historique `#lexique/<id>` que § 115 crée déjà
+(`history.state.atlasLex = { cible, chaine }`), et le bouton fait `history.back()`. Il mène donc où mène
+« Précédent », sans doublon, et « Suivant » rend les chaînes ; il n'y a aucune pile à part, et rien n'est écrit dans
+sessionStorage.
+
+Règles. La source est l'entrée qui contient le lien. Si c'est l'entrée de l'ancre, la chaîne se prolonge ; sinon elle
+repart de la source, et l'entrée courante du lexique prend l'ancre de la source (l'adresse suit ce qu'on lit). Un lien
+vers un terme de la chaîne remonte l'historique jusqu'à lui ; un lien suivi dans une entrée de la chaîne atteinte en
+défilant remonte jusqu'à cette entrée, puis ouvre le terme depuis elle. Un double clic ne fait reculer que d'un cran.
+Le bouton n'est montré que si l'état est cohérent : numéro d'entrée, cible égale à l'ancre, termes connus. Toute autre
+façon d'ouvrir un terme (recherche, filtre, terme ou bulle d'une fiche, ancre partagée, onglet, glissement) fait
+repartir la chaîne de zéro, et `aller()` efface `atlasLex`.
+
+Au passage, la position du Lexique est recalée sur une entrée d'ancrage (`atlasPos.e.lx`) : des exemples dépliés plus
+haut décalaient « Précédent » de près de 1 000 px. Après « Précédent », un focus resté dans le lexique est ramené sur
+l'entrée affichée.
+
+Contenu : `\allowbreak` dans la définition de « différentielle (cohomologie des groupes) » et dans l'exemple 1 de
+« surface paramétrée ». Plus rien n'est rogné à 320 px ; le second exemple se coupe dans son triplet et perd une ligne au bureau (6 → 5), ce qui est meilleur.
+
+Tests : test_chaine.py 188/188 (390, 320 et 1400 px, clair et sombre), aperçu à fichier unique avec et sans
+sessionStorage, suites de § 115 relancées (test_navigation 132/132 une fois corrigé un artefact de son test [3]).
+Relu par un agent indépendant : aucun bloquant, et ses quatre souhaitables sont appliqués.
+
+Entrée de nouveautés (rubrique site).
