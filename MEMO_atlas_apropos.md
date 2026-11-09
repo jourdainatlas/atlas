@@ -498,3 +498,6 @@ Pourcentages avant les suites, Trigonométrie avant la géométrie complexe). 42
   `…/cours/<id>/?page=n` (le bouton dit « Lien de la page n copié ») ; l'aperçu des messageries reste celui du chapitre.
 - Page de lecture du cours (`lecture.mjs`, pages dont l'ancre commence par `cours/`) : un court script lit `?page=n`
   et change les boutons en « Ouvrir le cours à la page n → » (`/#cours/<id>/n`). Google ignore le paramètre.
+
+Idée écartée par l'auteur (9 nov. 2026) : « exercice au hasard » / « exercice du jour » (bouton M'entraîner,
+encadré d'accueil). Ne pas la reproposer.
