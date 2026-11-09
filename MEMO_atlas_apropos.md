@@ -371,3 +371,29 @@ recherche). Recherche globale : groupe « Définis dans les cours » (5 résulta
 Définition) ; le lien ouvre le chapitre et le lecteur PDF va à la page (`allerPage`, sans toucher au code
 des cours). Au 5 nov. : 1 395 termes, bruit estimé à moins d'un sur dix. Après le dépôt d'un PDF, committer
 `outils/cours-termes.json` (sinon la publication relit ce PDF à chaque fois).
+
+## 52. Allègement : formules composées dans le navigateur (9 nov. 2026)
+
+Le site passait de 632 à 704 Mo en deux jours (limite GitHub Pages : 1 Go). Le HTML composé par KaTeX pesait 20 à
+30 fois la source (fiche « Théorème central limite » : 276 Ko publiés pour 8 Ko de source). Désormais :
+- `rendu.mjs`, `formule()` : chaque formule est **vérifiée** par KaTeX à la construction (une erreur bloque toujours
+  la publication), mais **publiée comme un repère** `<span class="kx">source échappée</span>` (`kxd` : formule
+  centrée ; `\lex{id}` déjà converti en `\htmlData{g=id}`). La ponctuation collée (insécable) devient les attributs
+  `data-av` / `data-ap`. `texteBrut` convertit les repères en texte simple (`texteTex`).
+- `gabarit.html`, tout en tête du script : `composerFormule`, `composerDans(racine, tout)`, un MutationObserver
+  qui confie chaque repère inséré à un IntersectionObserver (marge 150 %) : seules les formules proches de l'écran
+  sont composées (onglet Lexique ≈ 7 000 formules, corrigés fermés, bas des listes : plus tard). `.kx` est invisible
+  jusqu'à sa composition (jamais de LaTeX brut) ; sans KaTeX, `html.sans-katex` les montre en clair.
+  `texteFormule` (ℕ ℤ ℚ ℝ ℂ…) sert aux textes simples (`rgTexte`). `katex.min.js?v=` est chargé par la page avant
+  le script (cache durable du service worker). **Règle pour tout code** : un contenu inséré puis lu ou mesuré
+  aussitôt (texte des formules, hauteur) doit d'abord appeler `composerDans(élément, true)` ; c'est fait pour
+  l'impression (`#impression`, cachée à l'écran).
+- `lecture.mjs`, `page()` : dans les pages de lecture (référencement), les repères deviennent du **MathML**
+  (`output: 'mathml'`), lisible sans script par les navigateurs et les moteurs ; les lettres stylées (`mathvariant`
+  double-struck, script, fraktur, bold, sans-serif, que Chrome n'applique pas) sont remplacées par leurs
+  caractères Unicode mathématiques.
+- Aperçu à fichier unique : KaTeX y est inséré en ligne.
+Mesures : site 704 → 308 Mo (branches 107 → 22, textes des exercices 137 → 8,5, pages de lecture des exercices
+158 → 67, de l'édifice 113 → 58, exemples 38 → 8). Composition : 500 formules en 133 ms (440 ms à CPU ÷ 4, ordre
+d'un téléphone moyen), d'où la composition paresseuse. Vérifié : fiche, démonstration, lexique, cours, exercice et
+corrigé, feuille, annales, recherche, projection, impression, pages de lecture.

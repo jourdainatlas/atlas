@@ -35,10 +35,14 @@ function formule(tex, affichee, ou) {
     if (!D.lexique[id]) erreurs.push(`${ou} : notation inconnue \\lex{${id}}`);
     return `\\htmlData{g=${id}}`;
   });
+  // Allègement (9 nov. 2026, MEMO_atlas_apropos.md §52) : la formule est vérifiée ici par KaTeX (une erreur bloque
+  // la publication), mais publiée comme un repère <span class="kx">source</span> (kxd : formule centrée) ; le
+  // navigateur la compose à l'affichage (gabarit : composerFormule), les pages de lecture en MathML (lecture.mjs).
+  // Le HTML composé pesait 20 à 30 fois la source.
   try {
-    return katex.renderToString(tex, { displayMode: affichee, throwOnError: true, strict: 'ignore', output: 'html',
-      trust: c => c.command === '\\htmlData' })
-      .replace(/<span class="enclosing" data-g="/g, '<span class="enclosing terme terme-math" tabindex="0" role="button" data-g="');
+    katex.renderToString(tex, { displayMode: affichee, throwOnError: true, strict: 'ignore', output: 'html',
+      trust: c => c.command === '\\htmlData' });
+    return `<span class="kx${affichee ? ' kxd' : ''}">${echappe(tex)}</span>`;
   } catch (e) {
     erreurs.push(`${ou} : ${e.message}`);
     return echappe(tex);
@@ -134,6 +138,8 @@ function rendre(texte, ou) {
       const f = maths[+k];
       if (f.affichee || (!ouvre && !ponct)) return m;
       let html = f.html, avant = '', apres = '';
+      // repère kx : la ponctuation est portée en attribut, et le navigateur la place dans le bloc de la formule
+      if (html.startsWith('<span class="kx')) return html.replace('>', `${ouvre ? ` data-av="${ouvre}"` : ''}${ponct ? ` data-ap="${ponct}"` : ''}>`);
       if (ouvre) { const i = html.indexOf(DEBUT); if (i >= 0) html = html.slice(0, i + DEBUT.length) + `<span class="ponct">${ouvre}</span>` + html.slice(i + DEBUT.length); else avant = ouvre; }
       if (ponct) { if (html.endsWith(FIN)) html = html.slice(0, -FIN.length) + `<span class="ponct">${ponct}</span>` + FIN; else apres = ponct; }
       return avant + html + apres;
@@ -250,7 +256,8 @@ if (/url\(fonts\//.test(css)) { console.error('ERREUR : une police KaTeX n\'a pa
 // Les grandes chaînes restent dans un bloc, libérées avant la suite.
 if (process.env.ATLAS_APERCU === '1') {
   const json = JSON.stringify(D).replace(/</g, '\\u003c');
-  const page = fs.readFileSync('gabarit.html', 'utf8').replace('/*KATEX*/', () => css).replace('"__DONNEES__"', () => json);
+  const page = fs.readFileSync('gabarit.html', 'utf8').replace('/*KATEX*/', () => css).replace('"__DONNEES__"', () => json)
+    .replace('</head>', () => `<script>${fs.readFileSync(path.join(dist, 'katex.min.js'), 'utf8')}</script>\n</head>`);
   fs.writeFileSync('construction/atlas.html', page);
   console.log(`Page écrite : construction/atlas.html (${(page.length / 1024).toFixed(0)} Ko)`);
 }
@@ -340,6 +347,11 @@ for (const gid of Object.keys(D.graphes)) {
     Dsite.coursTermesACharger = `cours-termes.json?v=${empreinte(contenu)}`;
   }
 }
+// KaTeX côté navigateur : compose toutes les formules du site (repères kx) ; fichier à empreinte, gardé par le
+// service worker (cache durable), chargé par la page avant son script.
+const KJS = fs.readFileSync(path.join(dist, 'katex.min.js'), 'utf8');
+fs.writeFileSync('site/katex.min.js', KJS);
+const KATEX_JS = `katex.min.js?v=${empreinte(KJS)}`;
 // Textes des exercices (énoncé, corrigé) : un fichier par feuille, chargé à l'ouverture des exercices.
 // Index du moteur des annales : fichier séparé, chargé à l'ouverture de la rubrique.
 const AIsite = Dsite.rubriques?.['annales-index'];
@@ -348,10 +360,8 @@ if (AIsite) {
   const contenu = JSON.stringify(AIsite.sujets || []);
   fs.writeFileSync('site/annales-index.json', contenu);
   AIsite.aCharger = `annales-index.json?v=${empreinte(contenu)}`;
-  // KaTeX côté navigateur, pour les formules de l'index (même version que la construction)
-  const kjs = fs.readFileSync(path.join(dist, 'katex.min.js'), 'utf8');
-  fs.writeFileSync('site/katex.min.js', kjs);
-  AIsite.katex = `katex.min.js?v=${empreinte(kjs)}`;
+  // KaTeX côté navigateur (même version que la construction) : déjà chargé par la page (KATEX_JS, plus bas)
+  AIsite.katex = KATEX_JS;
   AIsite.nombre = (AIsite.sujets || []).length;
   AIsite.sujets = [];
 }
@@ -427,6 +437,7 @@ const index = `<!doctype html>
 <meta name="twitter:card" content="summary_large_image">
 <style>body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
 <link rel="stylesheet" href="katex.css?v=${vCss}">
+<script src="${KATEX_JS}"></script>
 ${teteSite}</head>
 <body>
 ${corpsSite}
@@ -440,7 +451,8 @@ fs.writeFileSync('site/index.html', index);
 // voient donc la même page, et le même aperçu, pour toutes les ancres. Chaque cours, rubrique et nœud
 // reçoit une petite page à une vraie adresse (cours/t-01/, edifice/<nœud>/), avec son titre, sa
 // description et l'image d'aperçu, qui renvoie aussitôt vers l'ancre correspondante du site.
-const texteBrut = h => String(h || '').replace(/<figure class="schema"[\s\S]*?<\/figure>/g, '').replace(/<annotation[\s\S]*?<\/annotation>/g, '').replace(/<span class="katex-mathml">[\s\S]*?<\/span><\/span>/g, '')
+const deEchappe = t => t.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+const texteBrut = h => String(h || '').replace(/<figure class="schema"[\s\S]*?<\/figure>/g, '').replace(/<span class="kx[^"]*"[^>]*>([^<]*)<\/span>/g, (m, t) => ` ${texteTex(deEchappe(t).replace(/\\htmlData\{[^}]*\}/g, ''))} `).replace(/<annotation[\s\S]*?<\/annotation>/g, '').replace(/<span class="katex-mathml">[\s\S]*?<\/span><\/span>/g, '')
   .replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
 const coupe = (t, n = 200) => t.length > n ? t.slice(0, n - 1).replace(/\s+\S*$/, '') + '…' : t;
 const attr = t => String(t).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
@@ -484,7 +496,7 @@ function pagePartage(chemin, ancre, titre, description) {
 const Rb = D.rubriques || {};
 // Contexte des pages de lecture (lecture.mjs) : une rubrique peut écrire les siennes avec
 // outilsLecture(ctxLecture).page({...}) ; leurs adresses entrent d'elles-mêmes dans le plan du site.
-const ctxLecture = { fs, D, ADRESSE, attr, coupe, texteBrut, NOMS, empreinte, vCss, gabarit: fs.readFileSync('gabarit.html', 'utf8') };
+const ctxLecture = { fs, D, ADRESSE, attr, coupe, texteBrut, NOMS, empreinte, vCss, katex, gabarit: fs.readFileSync('gabarit.html', 'utf8') };
 const niveaux = Object.fromEntries((Rb.cours?.niveaux || []).map(n => [n.id, texteBrut(n.titre)]));
 pagePartage('accueil/', 'accueil', 'Accueil', 'Architecture logique des théories mathématiques ; cours, exercices corrigés, et annales de concours avec recherche par thème.');
 if (!D.noeuds.etat) pagePartage('edifice/etat/', 'edifice/etat', 'État de l\'édifice', 'Inventaire des résultats admis dans l\'édifice, rangés par statut, et des fiches où intervient l\'axiome du choix.');

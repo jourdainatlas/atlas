@@ -261,6 +261,8 @@ section[id^="apropos-"] .corps-texte a:hover { text-decoration-color: var(--encr
 svg.sc .f1 { fill: var(--c); } svg.sc .f2 { fill: var(--c); fill-opacity: .55; } svg.sc .f3 { fill: var(--c); fill-opacity: .2; }
 svg.sc .t { fill: none; stroke: var(--c); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; stroke-opacity: .8; }
 svg.sc .t3 { fill: none; stroke: var(--c); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.kx { visibility: hidden; font-family: var(--f-mono); font-size: .9em; }   /* en attente de composition */
+.kx-erreur, .sans-katex .kx { visibility: visible; font-family: var(--f-mono); font-size: .9em; }
 /* Recherche globale (domaine À propos – apparence) : loupe de l'en-tête, Ctrl K ou « / ». */
 .chercher-tout { flex: none; display: grid; place-items: center; width: 30px; height: 30px; padding: 0; margin-right: -16px; border: 0; border-radius: 8px; background: none; color: var(--encre-2); cursor: pointer; }
 body.en-rubrique .chercher-tout { margin-left: auto; }
@@ -1518,6 +1520,44 @@ span.case:hover { border-style: dashed; color: inherit; }
 
 <script>
 const D = "__DONNEES__";
+/* ---- Formules (domaine À propos – apparence, 9 nov. 2026, MEMO_atlas_apropos.md §52)
+   Les données publiées portent chaque formule comme un repère <span class="kx">source LaTeX</span> (kxd : centrée ;
+   data-av, data-ap : ponctuation collée avant ou après). Un observateur compose chaque repère inséré dans la page,
+   avant l'affichage (les rappels d'un MutationObserver passent avant le dessin) : on ne voit jamais le LaTeX brut.
+   Un repère dans un <details> fermé (corrigé, démonstration) attend son ouverture. katex.min.js est chargé par la
+   page avant ce script. composerDans(élément) compose tout de suite, pour le code qui lit le rendu aussitôt. */
+const KX_OPTS = { throwOnError: false, strict: 'ignore', output: 'html', trust: c => c.command === '\\htmlData' };
+function composerFormule(el) {
+  if (!window.katex || !el.isConnected) return;
+  let h;
+  try { h = katex.renderToString(el.textContent, { ...KX_OPTS, displayMode: el.classList.contains('kxd') }); }
+  catch (e) { el.classList.replace('kx', 'kx-erreur'); return; }
+  h = h.replace(/<span class="enclosing" data-g="/g, '<span class="enclosing terme terme-math" tabindex="0" role="button" data-g="');
+  const av = el.dataset.av, ap = el.dataset.ap;
+  if (av) { const D0 = '<span class="base">', i = h.indexOf(D0); h = i >= 0 ? h.slice(0, i + D0.length) + `<span class="ponct">${av}</span>` + h.slice(i + D0.length) : av + h; }
+  if (ap) { const F = '</span></span></span>'; h = h.endsWith(F) ? h.slice(0, -F.length) + `<span class="ponct">${ap}</span>` + F : h + ap; }
+  el.outerHTML = h;
+}
+// Composition paresseuse : seule une formule proche de l'écran est composée (IntersectionObserver, marge d'un
+// écran et demi). Les onglets cachés (lexique : environ 7 000 formules), les corrigés fermés et le bas des longues
+// listes attendent d'être montrés : tout composer d'un coup prendrait plusieurs secondes sur un téléphone. Tant
+// qu'elle n'est pas composée, une formule est invisible (.kx), pour ne jamais montrer le LaTeX brut.
+const kxVue = 'IntersectionObserver' in window ? new IntersectionObserver(es => {
+  for (const e of es) if (e.isIntersecting) { kxVue.unobserve(e.target); composerFormule(e.target); }
+}, { rootMargin: '150% 0px' }) : null;
+function composerDans(racine, tout = false) {
+  if (!window.katex) { document.documentElement.classList.add('sans-katex'); return; }   // KaTeX absent : le LaTeX reste lisible
+  if (!racine) return;
+  const l = racine.matches?.('span.kx') ? [racine] : racine.querySelectorAll ? racine.querySelectorAll('span.kx') : [];
+  for (const el of l) { if (tout || !kxVue) { kxVue?.unobserve(el); composerFormule(el); } else kxVue.observe(el); }
+}
+new MutationObserver(ms => { for (const m of ms) for (const n of m.addedNodes) if (n.nodeType === 1) composerDans(n); })
+  .observe(document.documentElement, { childList: true, subtree: true });
+// Texte simple d'une formule (titres d'onglet, recherche, impression des chemins) : ℕ ℤ ℚ ℝ ℂ, sans commandes.
+const TEX_BB = { N: 'ℕ', Z: 'ℤ', Q: 'ℚ', R: 'ℝ', C: 'ℂ', K: '𝕂', P: 'ℙ' };
+const texteFormule = t => t.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/\\htmlData\{[^}]*\}/g, '')
+  .replace(/\\mathbb\s*\{?\s*([A-Z])\s*\}?/g, (m, l) => TEX_BB[l] || l)
+  .replace(/\\(?:mathrm|operatorname|text|mathcal|mathbf|mathfrak)\{([^}]*)\}/g, '$1').replace(/\\([a-zA-Z]+)/g, '$1').replace(/[{}\\]/g, '').replace(/\s+/g, ' ').trim();
 const $ = s => document.querySelector(s);
 
 /* ------------------------------------------------------------ chargement du lexique */
@@ -2343,8 +2383,8 @@ function construireLexique() {
     </article>`).join('');
   // la recherche porte aussi sur la notation (« L2 », « Spec », « Z/nZ »…)
   document.querySelectorAll('.entree-lex').forEach(a => {
-    const n = a.querySelector('h3 .notation .katex-html');
-    if (n) a.dataset.t += ' ' + n.textContent.replace(/\s+/g, '').toLowerCase();
+    const n = a.querySelector('h3 .notation .kx') || a.querySelector('h3 .notation .katex-html');
+    if (n) a.dataset.t += ' ' + (n.classList.contains('kx') ? texteFormule(n.textContent) : n.textContent).replace(/\s+/g, '').toLowerCase();
   });
   // phrase d'introduction : nombres exacts, calculés sur le lexique chargé (rien d'écrit en dur)
   const avecEx = L.filter(e => nbExemples(e)), nEx = avecEx.reduce((t, e) => t + nbExemples(e), 0), intro = $('#intro-lex');
@@ -4176,6 +4216,7 @@ function impImprimer(quoi, preuves) {
     if (!z) { z = document.createElement('div'); z.id = 'impression'; document.body.appendChild(z); }
     z.className = tout ? '' : 'ip-seule';
     z.innerHTML = h;
+    composerDans(z, true);   // la feuille est cachée à l'écran : ses formules sont composées tout de suite
     let st = document.getElementById('imp-page');
     if (!st) { st = document.createElement('style'); st.id = 'imp-page'; document.head.appendChild(st); }
     const marge = c => `font: 8.5pt "IBM Plex Sans", sans-serif; color: #6b717c; content: ${c};`;
@@ -4326,7 +4367,7 @@ function rgFermer() {
   f.hidden = true; RG.ouvert = false;
   const b = $('#chercher-tout'); b.setAttribute('aria-expanded', 'false'); b.focus({ preventScroll: true });
 }
-const rgTexte = h => String(h || '').replace(/<[^>]+>/g, ' ').replace(/\$[^$]*\$/g, ' ').replace(/\s+/g, ' ').trim();
+const rgTexte = h => String(h || '').replace(/<span class="kx[^"]*"[^>]*>([^<]*)<\/span>/g, (m, t) => texteFormule(t)).replace(/<[^>]+>/g, ' ').replace(/\$[^$]*\$/g, ' ').replace(/\s+/g, ' ').trim();
 // Note d'une entrée : chaque mot doit figurer dans le titre (mieux en début de mot) ou dans le détail.
 function rgNote(titre, detail, mots, q) {
   const t = ' ' + normEdifice(titre), d = normEdifice(detail);

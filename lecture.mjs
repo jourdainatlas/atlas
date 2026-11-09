@@ -30,6 +30,7 @@ export function outilsLecture(ctx) {
   const cssLecture = `
 /* ---- pages de lecture */
 html, body.l-corps { height: auto; }
+.nobr { white-space: nowrap; } math[display="block"] { overflow-x: auto; overflow-y: hidden; padding: 2px 0; }
 body.l-corps { min-height: 100%; margin: 0; display: block; }
 .l-tete { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; gap: 12px; padding: 10px max(16px, env(safe-area-inset-left, 0px)); background: var(--surface); border-bottom: 1px solid var(--filet); }
 .l-marque { display: inline-flex; align-items: center; gap: 10px; color: var(--encre); text-decoration: none; font-family: var(--f-titre); font-size: 19px; letter-spacing: .14em; font-weight: 600; }
@@ -101,7 +102,29 @@ body.l-corps { min-height: 100%; margin: 0; display: block; }
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="${r[t] ? `ATLAS – ${r[t]}` : 'Logo ATLAS : un graphe orienté de l\'alpha à l\'oméga'}">`;
   }
+  // Formules : les données portent des repères <span class="kx">source</span> (rendu.mjs, §52 du mémo) ; ici, elles
+  // deviennent du MathML, que les navigateurs affichent seuls et que les moteurs lisent, bien plus léger que le
+  // HTML de KaTeX. La ponctuation collée (data-av, data-ap) est remise autour, dans un même bloc insécable.
+  const deEch = t => t.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+  // Chrome n'applique pas mathvariant (hors « normal ») : les lettres stylées sont remplacées par leurs caractères
+  // Unicode mathématiques (ℤ, 𝒜, 𝔤, 𝐯…), que toutes les polices mathématiques savent afficher.
+  const VAR = { 'double-struck': [0x1D538, { C: 'ℂ', H: 'ℍ', N: 'ℕ', P: 'ℙ', Q: 'ℚ', R: 'ℝ', Z: 'ℤ' }], script: [0x1D49C, { B: 'ℬ', E: 'ℰ', F: 'ℱ', H: 'ℋ', I: 'ℐ', L: 'ℒ', M: 'ℳ', R: 'ℛ', e: 'ℯ', g: 'ℊ', o: 'ℴ' }],
+    fraktur: [0x1D504, { C: 'ℭ', H: 'ℌ', I: 'ℑ', R: 'ℜ', Z: 'ℨ' }], bold: [0x1D400, {}], 'bold-italic': [0x1D468, {}], 'sans-serif': [0x1D5A0, {}] };
+  const lettre = (v, t) => [...t].map(c => {
+    const [base, exc] = VAR[v]; if (exc[c]) return exc[c];
+    const k = c >= 'A' && c <= 'Z' ? c.charCodeAt(0) - 65 : c >= 'a' && c <= 'z' ? 26 + c.charCodeAt(0) - 97 : -1;
+    return k < 0 ? c : String.fromCodePoint(base + k);
+  }).join('');
+  const styler = m => m.replace(/<(mi|mn|mtext) mathvariant="(double-struck|script|fraktur|bold|bold-italic|sans-serif)">([^<]*)<\/\1>/g,
+    (x, b, v, t) => `<${b}${b === 'mi' ? ' mathvariant="normal"' : ''}>${lettre(v, t)}</${b}>`);
+  const enMathML = h => !ctx.katex ? h : String(h || '').replace(/<span class="kx( kxd)?"(?: data-av="([^"]*)")?(?: data-ap="([^"]*)")?>([^<]*)<\/span>/g, (m, d, av, ap, t) => {
+    let f;
+    try { f = styler(ctx.katex.renderToString(deEch(t).replace(/\\htmlData\{[^}]*\}/g, ''), { displayMode: !!d, output: 'mathml', throwOnError: false, strict: 'ignore' })); }
+    catch (e) { return m; }
+    return av || ap ? `<span class="nobr">${av || ''}${f}${ap || ''}</span>` : f;
+  });
   function page({ chemin, titre, description, ancre, corps, fil = [], type = 'article', fichier, indexable = true }) {
+    corps = enMathML(corps);
     const url = ADRESSE + chemin, cible = '/#' + ancre;
     const d = coupe(description || '');
     const filLd = fil.length ? `<script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@type': 'BreadcrumbList',
