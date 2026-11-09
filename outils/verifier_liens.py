@@ -59,9 +59,20 @@ def main():
     A = adresses()
     with concurrent.futures.ThreadPoolExecutor(max_workers=8) as ex:
         res = list(ex.map(verifier, A))
-    casses = [(u, c, m) for u, c, m in res if m]
-    l = [f'Contrôle du {time.strftime("%d/%m/%Y")} : {len(A)} adresses des annales, {len(casses)} sans réponse correcte '
+    echecs = [(u, c, m) for u, c, m in res if m]
+    # Un site dont aucune adresse ne répond, sans même un code HTTP (connexion refusée, délai), refuse en général les
+    # serveurs de GitHub (cas de devenirenseignant.gouv.fr) : ses liens sont signalés à part, comme non vérifiés.
+    dom = lambda u: u.split('/')[2]
+    par_dom = {}
+    for u, c, m in res: par_dom.setdefault(dom(u), []).append((c, m))
+    injoignables = {d for d, l in par_dom.items() if all(m and not c for c, m in l)}
+    casses = [x for x in echecs if dom(x[0]) not in injoignables]
+    l = [f'Contrôle du {time.strftime("%d/%m/%Y")} : {len(A)} adresses des annales, {len(casses)} lien(s) cassé(s) '
          f'après deux essais.', '']
+    if injoignables:
+        n_inj = sum(len(par_dom[d]) for d in injoignables)
+        l += [f"Non vérifiés : {n_inj} lien(s) de {', '.join(sorted(injoignables))}, site qui refuse les connexions des "
+              "serveurs de GitHub (il faut les vérifier à la main, depuis un navigateur).", '']
     if casses:
         l += ['| Sujet | Lien | Erreur |', '|---|---|---|']
         for u, c, m in sorted(casses, key=lambda x: A[x[0]][0]):
