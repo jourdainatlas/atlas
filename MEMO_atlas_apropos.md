@@ -466,3 +466,13 @@ et Index, en clair et en sombre. Corrigé (domaine apparence) :
 - contour de focus visible au clavier pour tout lien, bouton et résumé (`:focus-visible`), et pour les bulles SVG.
 Reste, hors domaine : titres h4 orange des familles de concours dans les Annales (#d26d00 sur blanc, 3,5:1 ; à
 assombrir en #ad5900 par la conversation Annales).
+
+## 60. Retour après un renvoi vers un cours ; symbole de l'Index (9 nov. 2026)
+
+Demande de l'auteur : un lien `a[data-cours-page]` (lexique « Dans les cours », index) note la page de départ et sa
+position (`RETOUR`, conteneur qui défile : `#panneau` pour le lexique, `#rubrique` et la fenêtre sinon) ; sur le
+chapitre ouvert, un bouton flottant « ← Retour au lexique » ou « ← Retour à l'index » (`#retour-renvoi`, en bas au
+centre) revient par l'historique et remet la position (deux fois, 250 puis 700 ms, après la remise en haut de page de
+la rubrique) ; la fiche du lexique d'où l'on venait est brièvement soulignée. Il disparaît si l'on quitte le chapitre
+autrement. Symbole `sym-index` (répertoire gris à onglets sur la tranche, sans lettres), dans le menu, le fil d'Ariane
+et la carte de l'index ; gris neutre comme Nouveautés et À propos.
