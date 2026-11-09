@@ -339,7 +339,11 @@ for (const gid of Object.keys(D.graphes)) {
   const parChapitre = {};
   for (const c of Dsite.rubriques?.cours?.cours || []) {
     const e = c.pdf && c.statut === 'depose' && brut[c.pdf];
-    if (e) parChapitre[c.id] = e.termes.filter(x => !exclus.has(x.t.toLowerCase())).map(x => [x.t, x.p, x.def ? 1 : 0]);
+    // Fragments à écarter (9 nov.) : passage rouge coupé par une formule (« de classe », « pour tout », « d'éléments »),
+    // abréviations de figures (« def », « deg 180 ») et mots seuls de deux lettres.
+    const fragment = t => /^(de|du|des|d’|d'|dans|pour|par|sur|en|au|aux|la|le|les|un|une|à|et|ou|si|tel|telle|tels|soit|avec|sans|entre|vers)\b/i.test(t)
+      || /^(def|deg)\b/i.test(t) || t.length < 3;
+    if (e) parChapitre[c.id] = e.termes.filter(x => !exclus.has(x.t.toLowerCase()) && !fragment(x.t)).map(x => [x.t, x.p, x.def ? 1 : 0]);
   }
   if (Object.keys(parChapitre).length) {
     const contenu = JSON.stringify(parChapitre);

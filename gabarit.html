@@ -286,6 +286,22 @@ html.vp-ouverte, html.vp-ouverte body { overflow: hidden; }
 .puce-cours { display: inline-block; margin: 2px 4px 2px 0; font: 12.5px var(--f-ui); color: var(--encre); text-decoration: none; border: 1px solid var(--filet); border-left: 3px solid var(--r-cours, #00866b); border-radius: 0 6px 6px 0; padding: 2px 8px; }
 .puce-cours:hover { border-color: var(--encre-3); }
 .bulle-cours { font: 12.5px/1.45 var(--f-ui); color: var(--encre-2); margin: 6px 0 0; padding-top: 6px; border-top: 1px dashed var(--filet); }
+/* Index alphabétique (domaine À propos – apparence) */
+.ix-outils { position: sticky; top: 0; z-index: 3; background: var(--papier); padding: 10px 0 8px; display: flex; flex-direction: column; gap: 8px; border-bottom: 1px solid var(--filet); }
+.ix-outils input { font: 15px var(--f-ui); padding: 8px 12px; border: 1px solid var(--filet); border-radius: 8px; background: var(--surface); color: var(--encre); max-width: 420px; }
+.ix-lettres { display: flex; flex-wrap: wrap; gap: 2px; }
+.ix-lettres a { font: 600 13px var(--f-ui); color: var(--encre-2); text-decoration: none; padding: 3px 7px; border-radius: 5px; }
+.ix-lettres a:hover { background: var(--trame); color: var(--encre); }
+.ix-corps { columns: 2 380px; column-gap: 40px; margin-top: 12px; }
+.ix-lettre { break-inside: avoid-column; }
+.ix-lettre h3 { font-family: var(--f-titre); font-size: 26px; margin: 18px 0 6px; color: var(--encre); break-after: avoid; scroll-margin-top: 110px; }
+.ix-lettre ul { list-style: none; margin: 0; padding: 0; }
+.ix-lettre li { break-inside: avoid; padding: 3px 0; font-size: 15px; line-height: 1.5; }
+.ix-terme { font-family: var(--f-texte); color: var(--encre); margin-right: 4px; }
+.ix-lex, .ix-cours { font: 12px var(--f-ui); text-decoration: none; color: var(--encre-2); border: 1px solid var(--filet); border-radius: 5px; padding: 1px 6px; white-space: nowrap; display: inline-block; margin: 1px 0; }
+.ix-lex { border-left: 3px solid var(--r-edifice); } .ix-cours { border-left: 3px solid var(--r-cours); }
+.ix-lex:hover, .ix-cours:hover { color: var(--encre); border-color: var(--encre-3); }
+.ix-vide { color: var(--encre-2); }
 /* Recherche globale (domaine À propos – apparence) : loupe de l'en-tête, Ctrl K ou « / ». */
 .chercher-tout { flex: none; display: grid; place-items: center; width: 30px; height: 30px; padding: 0; margin-right: -16px; border: 0; border-radius: 8px; background: none; color: var(--encre-2); cursor: pointer; }
 body.en-rubrique .chercher-tout { margin-left: auto; }
@@ -336,7 +352,7 @@ body.en-rubrique .chercher-tout ~ .bouton-theme { margin-left: 0; }
 .menu-rubriques a[data-rubrique="cours"], .acc-rub[href="#cours"], .acc-etape[href^="#cours/"] { --r: var(--r-cours); }
 .menu-rubriques a[data-rubrique="exercices"], .acc-rub[href="#exercices"], .acc-etape[href^="#exercices"] { --r: var(--r-exercices); }
 .menu-rubriques a[data-rubrique="annales"], .acc-rub[href="#annales"] { --r: var(--r-annales); }
-.menu-rubriques a[data-rubrique="accueil"], .menu-rubriques a[data-rubrique="nouveautes"], .menu-rubriques a[data-rubrique="a-propos"] { --r: var(--r-neutre); }
+.menu-rubriques a[data-rubrique="accueil"], .menu-rubriques a[data-rubrique="nouveautes"], .menu-rubriques a[data-rubrique="index"], .menu-rubriques a[data-rubrique="a-propos"] { --r: var(--r-neutre); }
 .acc-fil .acc-etape:last-of-type { --r: var(--r-edifice); }
 /* Bande en haut de l'encadré : couleur de sa rubrique ; dégradé des rubriques vers lesquelles mène un profil. */
 .acc-rub, .acc-profil, .acc-nouv-carte, .acc-etape { position: relative; overflow: hidden; }
@@ -1441,6 +1457,7 @@ span.case:hover { border-style: dashed; color: inherit; }
         <a href="#annales" data-rubrique="annales"><span class="m-titre">Annales</span><span class="m-desc">Sujets des concours d'ingénieurs et de l'enseignement, et recherche par thème.</span></a>
         <hr>
         <a href="#nouveautes" data-rubrique="nouveautes"><span class="m-titre">Nouveautés</span><span class="m-badge m-neuf" id="menu-neuf" hidden>nouveau</span><span class="m-desc">Ce qui a été ajouté au site, semaine après semaine.</span></a>
+        <a href="#index" data-rubrique="index"><span class="m-titre">Index</span><span class="m-desc">Tous les termes définis, de A à Z, et où les trouver.</span></a>
         <a href="#a-propos" data-rubrique="a-propos"><span class="m-titre">À propos – Contact</span><span class="m-desc">L'auteur, le projet, et une adresse pour écrire ou signaler une erreur.</span></a>
       </nav>
     </div>
@@ -3317,6 +3334,7 @@ const RUBRIQUES = {
   annales: { titre: 'Annales', page: pageAnnales },
   nouveautes: { titre: 'Nouveautés', page: pageNouveautes },
   'a-propos': { titre: 'À propos', page: pageAPropos },
+  index: { titre: 'Index', page: pageIndex },
 };
 let ancreEdifice = '';
 // Titre de l'onglet : « ATLAS – <rubrique> » (même forme que les pages de partage de rendu.mjs).
@@ -4258,6 +4276,55 @@ function impImprimer(quoi, preuves) {
     (document.fonts?.ready || Promise.resolve()).then(() => setTimeout(() => window.print(), 50));
   }, () => { m.innerHTML = '<div class="imp-attente">Les textes n\'ont pas pu être chargés. Vérifiez la connexion, puis réessayez.</div>'; });
 }
+
+/* ---- Index alphabétique (domaine À propos – apparence, 9 nov. 2026, MEMO_atlas_apropos.md §56)
+   Page #index : tous les termes définis du site, de A à Z, comme l'index d'un livre. Un terme du lexique de l'édifice
+   et le même terme défini dans des cours (à la casse et au pluriel près, normTerme) forment une seule entrée, avec
+   ses renvois : la fiche du lexique, puis chaque chapitre de cours (le PDF s'ouvre à la page). Lettres en tête, champ
+   de filtre. Les termes des cours arrivent avec cours-termes.json : la page se complète alors d'elle-même. */
+const etatIndex = { q: '' };
+const lettreIndex = t => { const c = t.normalize('NFD').replace(/\p{Diacritic}/gu, '').charAt(0).toUpperCase(); return /[A-Z]/.test(c) ? c : '#'; };
+function entreesIndex() {
+  const m = new Map();
+  const ajoute = (terme, f) => { const k = normTerme(terme); if (!k) return; if (!m.has(k)) m.set(k, { terme, lex: null, cours: [] }); f(m.get(k)); };
+  for (const e of Object.values(D.lexique)) ajoute(e.terme, x => { x.lex = e; x.terme = e.terme; });
+  const ordre = (R.cours?.niveaux || []).map(n => n.id);
+  const chap = (R.cours?.cours || []).slice().sort((a, b) => ordre.indexOf(a.niveau) - ordre.indexOf(b.niveau) || (a.chapitre || 0) - (b.chapitre || 0));
+  for (const c of chap) for (const [t, p] of TERMES_COURS[c.id] || []) ajoute(t, x => { if (!x.cours.some(y => y.c === c)) x.cours.push({ c, p }); });
+  return [...m.values()].sort((a, b) => a.terme.localeCompare(b.terme, 'fr', { sensitivity: 'base' }));
+}
+function pageIndex() {
+  const pret = !D.coursTermesACharger;
+  if (!pret) chargerTermesCours().then(() => { const z = $('#rubrique'); if (z?.dataset.nom === 'index') z.querySelector('.page').innerHTML = pageIndex(); });
+  const E = entreesIndex(), lettres = [...new Set(E.map(x => lettreIndex(x.terme)))];
+  const nl = E.filter(x => x.lex).length, nc = E.filter(x => x.cours.length).length;
+  let h = tete('Index', 'Index des termes', `<p>Les ${E.length.toLocaleString('fr-FR')} termes définis sur le site, de A à Z : ${nl.toLocaleString('fr-FR')} au lexique de l'édifice, ${nc.toLocaleString('fr-FR')} dans les cours${pret ? '' : ' (en cours de chargement)'}. Chaque renvoi mène à la définition : la fiche du lexique, ou la page du chapitre de cours.</p>`);
+  h += `<div class="ix-outils"><input type="search" id="ix-q" placeholder="Filtrer : groupe, dérivée, matrice…" value="${esc(etatIndex.q)}" aria-label="Filtrer l'index"><nav class="ix-lettres" aria-label="Lettres">${lettres.map(l => `<a href="#ix-${l === '#' ? 'autres' : l}" data-ix-lettre>${l}</a>`).join('')}</nav></div>`;
+  h += '<div class="ix-corps" id="ix-corps">';
+  for (const l of lettres) {
+    h += `<section class="ix-lettre" id="ix-${l === '#' ? 'autres' : l}"><h3>${l}</h3><ul>`;
+    for (const x of E.filter(y => lettreIndex(y.terme) === l)) {
+      const r = [];
+      if (x.lex) r.push(`<a class="ix-lex" href="#lexique/${x.lex.id}" title="Lexique de l'édifice">lexique</a>`);
+      for (const { c, p } of x.cours) r.push(`<a class="ix-cours" href="#cours/${c.id}" data-cours-page="${p}" title="${esc(rgTexte(c.titre))}, page ${p}">${esc(lieuCoursCourt(c))} p. ${p}</a>`);
+      h += `<li data-t="${esc(normEdifice(x.terme))}"><span class="ix-terme">${esc(x.terme)}</span> ${r.join(' ')}</li>`;
+    }
+    h += '</ul></section>';
+  }
+  return h + '</div><p class="ix-vide" id="ix-vide" hidden>Aucun terme ne correspond.</p>';
+}
+function filtrerIndex() {
+  const q = normEdifice($('#ix-q')?.value || '').trim(); etatIndex.q = $('#ix-q')?.value || '';
+  let n = 0;
+  document.querySelectorAll('#ix-corps li').forEach(li => { const ok = !q || li.dataset.t.includes(q); li.hidden = !ok; n += ok; });
+  document.querySelectorAll('#ix-corps .ix-lettre').forEach(sec => { sec.hidden = !sec.querySelector('li:not([hidden])'); });
+  const v = $('#ix-vide'); if (v) v.hidden = n > 0;
+}
+document.addEventListener('input', ev => { if (ev.target.id === 'ix-q') filtrerIndex(); });
+document.addEventListener('click', ev => {
+  const a = ev.target.closest('a[data-ix-lettre]'); if (!a) return;
+  ev.preventDefault(); document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
 
 /* ---- Pont lexique ↔ cours (domaine À propos – apparence, 9 nov. 2026, MEMO_atlas_apropos.md §55)
    Un terme du lexique de l'édifice qui est aussi défini dans un cours (même terme, à la casse et au pluriel près) :

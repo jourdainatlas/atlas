@@ -423,3 +423,13 @@ Un terme du lexique de l'édifice aussi défini dans un cours (même terme à la
 qui ouvre le PDF à la page : `a[data-cours-page]`), et sa bulle une ligne « Aussi défini dans le cours … » (`bulleCours`).
 Au 9 nov. : 131 termes du lexique reliés. Les variantes de nom (« divisibilité des entiers » / « divisible ») ne sont
 pas rapprochées : seule l'égalité des termes compte.
+
+## 56. Index alphabétique (9 nov. 2026)
+
+Page `#index` (rubrique « Index » du menu, couleur neutre ; `RUBRIQUES.index`, `pageIndex` du gabarit) : tous les
+termes définis du site, de A à Z, en deux colonnes sur ordinateur. Un terme du lexique et le même terme défini dans
+des cours (`normTerme`) forment une entrée ; renvois « lexique » (bleu de l'édifice) et « Niveau, ch. n p. k » (vert
+des cours ; le PDF s'ouvre à la page). Barre collante : champ de filtre (sans accents) et lettres. Au 9 nov. : 1 934
+entrées (1 090 au lexique, ≈ 950 dans les cours). Pour l'index, `rendu.mjs` écarte aussi des termes des cours les
+fragments coupés par une formule (début en « de », « pour », « dans »…, « def », « deg ») : 1 395 → 1 345 termes,
+ce qui profite aussi à la recherche globale.
