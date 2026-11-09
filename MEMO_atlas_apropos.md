@@ -489,3 +489,12 @@ par plus du quart des chapitres ignorées, trois au plus ; refuse d'écraser le 
 retirés les liens faibles (« Notion de suite » proposée par les seules limites, « Espaces vectoriels » pour la logique,
 « Groupes » pour les polynômes…), ajoutés les évidents (Fonctions numériques avant la Dérivation et l'exponentielle,
 Pourcentages avant les suites, Trigonométrie avant la géométrie complexe). 42 chapitres, 74 renvois.
+
+## 62. Lien vers une page précise d'un cours (9 nov. 2026)
+
+- Ancre `#cours/<id>/<n>` : `depuisAncre` ouvre le chapitre puis le lecteur à la page n (`allerPage`), sans toucher à
+  `pageCours`.
+- « Partager » sur un chapitre : si le lecteur affiche une page au-delà de la première, l'adresse copiée est
+  `…/cours/<id>/?page=n` (le bouton dit « Lien de la page n copié ») ; l'aperçu des messageries reste celui du chapitre.
+- Page de lecture du cours (`lecture.mjs`, pages dont l'ancre commence par `cours/`) : un court script lit `?page=n`
+  et change les boutons en « Ouvrir le cours à la page n → » (`/#cours/<id>/n`). Google ignore le paramètre.

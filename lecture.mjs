@@ -168,6 +168,7 @@ ${fil.length ? `<nav class="l-fil" aria-label="Position">${fil.map(f => f.href ?
 ${corps}
 <a class="l-ouvrir l-ouvrir-bas" href="${attr(cible)}">Ouvrir dans l'atlas interactif →</a>
 </main>
+${String(ancre).startsWith('cours/') ? `<script>(function(){var m=location.search.match(/[?&]page=(\\d+)/);if(!m)return;document.querySelectorAll('a.l-ouvrir').forEach(function(a){a.href=a.getAttribute('href')+'/'+m[1];a.textContent='Ouvrir le cours à la page '+m[1]+' →'})})();</script>` : ''}
 <footer class="l-pied">ATLAS, architecture logique des théories mathématiques — Armand Jourdain, professeur agrégé de mathématiques. Contenu sous licence <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.fr">CC BY-NC-SA 4.0</a>. <a href="/#a-propos">À propos – Contact</a></footer>
 </body>
 </html>

@@ -4952,7 +4952,11 @@ const ADRESSE_SITE = 'https://www.atlasjourdain.fr/';
 function adressePartage() {
   if (enRubrique()) {
     const z = $('#rubrique'), nom = z.dataset.nom, ch = z.dataset.chemin;
-    if (nom === 'cours' && ch && (R.cours?.cours || []).some(c => c.id === ch)) return `${ADRESSE_SITE}cours/${ch}/`;
+    if (nom === 'cours' && ch && (R.cours?.cours || []).some(c => c.id === ch)) {
+      // la page affichée dans le lecteur (au-delà de la première) entre dans l'adresse : ?page=n, lu par la page de lecture
+      const n = +($('#rubrique .pdf-num')?.textContent || 1);
+      return `${ADRESSE_SITE}cours/${ch}/${n > 1 ? `?page=${n}` : ''}`;
+    }
     if (nom === 'exercices' && etatExo.ex) return `${ADRESSE_SITE}exercices/${etatExo.ex}/`;
     if (nom === 'exercices' && etatExo.feuille) return `${ADRESSE_SITE}exercices/feuille/${etatExo.feuille}/`;   // page de lecture (lecture-cours.mjs)
     if (nom === 'exercices' && etatExo.vue === 'niveau' && etatExo.niveauVu) return `${ADRESSE_SITE}#exercices/niveau/${etatExo.niveauVu}`;
@@ -4974,7 +4978,8 @@ $('#partager').addEventListener('click', async () => {
     try { ok = document.execCommand('copy'); } catch (e) {}
     champ.remove();
   }
-  b.textContent = ok ? 'Lien copié' : url; b.classList.toggle('copie', ok);
+  const pg = (url.match(/[?&]page=(\d+)/) || [])[1];
+  b.textContent = ok ? (pg ? `Lien de la page ${pg} copié` : 'Lien copié') : url; b.classList.toggle('copie', ok);
   setTimeout(() => { b.textContent = 'Partager'; b.classList.remove('copie'); }, ok ? 1800 : 6000);
 });
 
@@ -5004,6 +5009,10 @@ function depuisAncre() {
   if (r === 'annales' && enRubrique() && $('#rubrique').dataset.nom === 'annales' && $('#rubrique .page')) {
     const ch = reste.join('/');
     if (ch.startsWith('sujet/') || ($('#rubrique').dataset.chemin || '').startsWith('sujet/')) { majFicheAnnales(ch); return; }
+  }
+  // Cours à une page : #cours/<id>/<n> ouvre le chapitre, puis le lecteur à la page n (§62).
+  if (r === 'cours' && reste.length === 2 && /^\d+$/.test(reste[1]) && (R.cours?.cours || []).some(c => c.id === reste[0])) {
+    afficherRubrique('cours', reste[0]); setTimeout(() => allerPage(+reste[1]), 120); return;
   }
   if (RUBRIQUES[r]) { afficherRubrique(r, reste.join('/')); return; }
   if (h === 'edifice/etat') { aller(D.racine, null, { vue: 'etat' }); return; }
