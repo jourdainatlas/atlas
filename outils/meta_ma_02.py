@@ -28,5 +28,5 @@ R = [
     (r'croissante pour l\'inclusion|point fixe', 'point fixe', ['od-tarski'], []),
 ]
 FOND = ['r-injections']
-EXTRA = {43: (['applications multiplicatives', 'récurrence'], ['r-injections', 'n-recurrence'], ['application'])}
+EXTRA = {44: (['applications multiplicatives', 'récurrence'], ['r-injections', 'n-recurrence'], ['application'])}
 meta = fabriquer(R, PARTIES, FOND, EXTRA)

@@ -29,5 +29,5 @@ R = [
     (r'équation fonctionnelle|toutes les fonctions', 'équations fonctionnelles', [], []),
 ]
 FOND = ['de-operations']
-EXTRA = {}
+EXTRA = {42: (['équations hyperboliques'], ['de-derivee', 'de-operations'], []), 44: (['formule de Moivre hyperbolique'], ['de-derivee', 'de-operations'], [])}
 meta = fabriquer(R, PARTIES, FOND, EXTRA)

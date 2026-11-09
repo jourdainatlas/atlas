@@ -28,5 +28,5 @@ R = [
     (r'tiroir', 'principe des tiroirs', ['n-fini'], []),
 ]
 FOND = ['l-connecteurs', 'zf-operations']
-EXTRA = {}
+EXTRA = {47: (['écriture en base r', 'récurrence'], ['n-recurrence'], [])}
 meta = fabriquer(R, PARTIES, FOND, EXTRA)

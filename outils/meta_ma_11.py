@@ -30,5 +30,5 @@ R = [
     (r'binôme', 'formule du binôme', ['pol-binome'], []),
 ]
 FOND = ['a-groupe']
-EXTRA = {51: (['groupes finis', 'principe des tiroirs'], ['a-groupe'], ['groupe'])}
+EXTRA = {55: (['groupes finis', 'principe des tiroirs'], ['a-groupe'], ['groupe'])}
 meta = fabriquer(R, PARTIES, FOND, EXTRA)

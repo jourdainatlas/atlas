@@ -518,3 +518,21 @@ Faux termes du chapitre 15 dans la recherche : les formules en rouge de son cour
 (`base \iff libre \iff génératrice` au théorème 4, `injective \iff surjective \iff bijective` au théorème 10).
 `cours_termes.py` les relève comme termes. On ne peut pas les exclure par la liste, qui est globale : « base »,
 « libre » et « injective » sont de vrais termes dans d'autres chapitres. Le défaut est signalé à l'auteur.
+
+### 36. MPSI : feuilles 1 à 11 enrichies, cours 2 retouché, chapitre 16 déposé (9 nov. 2026)
+
+Les feuilles 1 à 11 ont reçu 38 exercices nouveaux, tous dans les exercices de synthèse : elles comptent maintenant
+49, 48, 49, 64, 59, 55, 54, 57, 55, 56 et 59 exercices. Les exercices d'après sont renumérotés, et les identifiants
+`ma-NN-KK` ont glissé d'autant. Méthode (script `maj.py` dans le scratchpad, à refaire au besoin) :
+1. Convertir les nouvelles sources à part.
+2. Apparier l'ancienne et la nouvelle conversion par texte d'énoncé (égalité, sinon ressemblance de plus de 0,8).
+3. Renuméroter les clés `EXTRA` des `meta_ma_NN.py` d'après cet appariement, **avant** d'y ajouter de nouvelles
+   clés : sinon la renumérotation les décale à leur tour, ce qui est arrivé pour `meta_ma_07`.
+4. Reconvertir.
+Pour les 565 exercices inchangés, l'étiquetage est resté le même, sauf `ma-05-42` et `ma-05-44`, qui avaient
+perdu leurs nœuds (`de-derivee`, `de-operations`), rendus par `EXTRA`. Le cours 2 a changé d'une phrase : le PDF
+est remplacé, et ses pages et son sommaire sont inchangés.
+
+Le chapitre 16, « Matrices », est déposé avec son cours de 19 pages et la feuille `f-ma-16` de 71 exercices
+(`meta_ma_16.py`). Ses termes rouges sont tous de vraies définitions. Son entrée « À revoir avant » est
+`[ap-09, me-03]`. Pour le symbole, on propose de reprendre `matrice` (`me-03`, `ap-09`), à faire valider.

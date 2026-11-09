@@ -1468,13 +1468,121 @@
   feuille: "f-ma-10"
   numero: 50
   partie: "Exercices de synthèse"
+  etoiles: 2
+  types: [Démonstration, Calcul]
+  mots_cles: [calcul de limites]
+  noeuds: [de-limite]
+  notions: [limite-fonction]
+  page_enonce: 10
+  page_corrige: 23
+  enonce: |
+    *Des moyennes vers la moyenne géométrique.* Soit $a$, $b$, $c$ trois réels strictement positifs, et $G = \sqrt[3]{abc}$ leur moyenne géométrique. Pour tout réel $t \neq 0$, on pose 
+    $$M(t) = \Big(\frac{a^{t} + b^{t} + c^{t}}{3}\Big)^{1/t},$$
+     de sorte que $M(1)$ est la moyenne arithmétique de $a$, $b$, $c$, et $M(-1)$ leur moyenne harmonique.
+
+    **1.** Montrer que $\lim\limits_{t \to 0} M(t) = G$. En déduire la limite de $\Big(\dfrac{a^{1/x} + b^{1/x} + c^{1/x}}{3}\Big)^{x}$ quand $x$ tend vers $+\infty$.
+
+    **2.** On prolonge $M$ en posant $M(0) = G$. Montrer que $M$ est dérivable en $0$, avec 
+    $$M'(0) = \frac{G}{6}\bigg(\Big(\ln\frac{a}{G}\Big)^{2} + \Big(\ln\frac{b}{G}\Big)^{2} + \Big(\ln\frac{c}{G}\Big)^{2}\bigg).$$
+     En déduire que, si $a$, $b$, $c$ ne sont pas tous égaux, on a $M(-t) < G < M(t)$ pour tout $t > 0$ assez petit.
+
+    **3.** Déterminer les limites de $M(t)$ quand $t$ tend vers $+\infty$ et quand $t$ tend vers $-\infty$.
+  corrige: |
+    On note $\alpha = \ln a$, $\beta = \ln b$, $\gamma = \ln c$ et $m = \frac{\alpha + \beta + \gamma}{3}$, de sorte que $m = \ln G$. Pour $t \neq 0$, on passe à l'exponentielle : 
+    $$M(t) = \exp\Big(\frac{1}{t}\ln S(t)\Big), \qquad\text{avec}\qquad S(t) = \frac{a^{t} + b^{t} + c^{t}}{3} = \frac{\mathrm{e}^{\alpha t} + \mathrm{e}^{\beta t} + \mathrm{e}^{\gamma t}}{3}.$$
+
+    **1.** Le développement de l'exponentielle (théorème 5), par substitution, donne $\mathrm{e}^{\alpha t} = 1 + \alpha t + o(t)$, et de même pour $\beta$ et $\gamma$. En faisant la moyenne, 
+    $$S(t) = 1 + mt + o(t).$$
+     On pose $v = S(t) - 1 = mt + o(t)$, qui est un $O(t)$ et tend vers $0$. Comme $\ln(1 + v) = v + o(v)$, on a $\ln S(t) = mt + o(t)$, donc $\frac{1}{t}\ln S(t) = m + o(1)$ tend vers $m$, et la continuité de l'exponentielle conclut : 
+    $$\boxed{\lim\limits_{t \to 0} M(t) = \mathrm{e}^{m} = G = \sqrt[3]{abc}}$$
+     L'expression proposée vaut $M\big(\frac{1}{x}\big)$, et $\frac{1}{x}$ tend vers $0$ quand $x$ tend vers $+\infty$ : par composition des limites, 
+    $$\boxed{\lim\limits_{x \to +\infty} \Big(\frac{a^{1/x} + b^{1/x} + c^{1/x}}{3}\Big)^{x} = \sqrt[3]{abc}}$$
+
+    *Piège.* L'erreur la plus répandue est de conclure que $M(t)$ tend vers $1$, puisque $S(t)$ tend vers $1$. C'est une forme indéterminée $1^{\infty}$ : l'exposant $\frac{1}{t}$ explose, et seul le développement de $\ln S(t)$ à l'ordre $1$ permet de conclure, comme pour $\big(1 + \frac{1}{n}\big)^{n}$ dans le cours.
+
+    **2.** Il faut un terme de plus. Avec $\mathrm{e}^{\alpha t} = 1 + \alpha t + \frac{\alpha^{2}t^{2}}{2} + o(t^{2})$, et en notant $q = \frac{\alpha^{2} + \beta^{2} + \gamma^{2}}{3}$, on obtient 
+    $$S(t) = 1 + mt + \frac{q}{2}t^{2} + o(t^{2}).$$
+     On compose avec $\ln(1 + v) = v - \frac{v^{2}}{2} + o(v^{2})$ (proposition 11), où $v = mt + \frac{q}{2}t^{2} + o(t^{2})$ vérifie $v^{2} = m^{2}t^{2} + o(t^{2})$ : 
+    $$\ln S(t) = mt + \frac{q - m^{2}}{2}\,t^{2} + o(t^{2}).$$
+     En développant les carrés, on vérifie que $q - m^{2} = \frac{1}{3}\big((\alpha - m)^{2} + (\beta - m)^{2} + (\gamma - m)^{2}\big) = \frac{D}{3}$, où l'on a posé 
+    $$D = \Big(\ln\frac{a}{G}\Big)^{2} + \Big(\ln\frac{b}{G}\Big)^{2} + \Big(\ln\frac{c}{G}\Big)^{2},$$
+     puisque $\alpha - m = \ln a - \ln G = \ln\frac{a}{G}$. Ainsi $\frac{1}{t}\ln S(t) = \ln G + \frac{D}{6}t + o(t)$, puis, avec $\mathrm{e}^{w} = 1 + w + o(w)$ pour $w = \frac{D}{6}t + o(t)$, 
+    $$M(t) = G\exp\Big(\frac{D}{6}t + o(t)\Big) = G + \frac{GD}{6}\,t + o(t).$$
+     Cette égalité, établie pour $t \neq 0$, reste vraie en $t = 0$ puisque $M(0) = G$ : la fonction $M$ admet un développement limité à l'ordre $1$ en $0$, donc elle y est dérivable (proposition 10), et 
+    $$\boxed{M'(0) = \frac{GD}{6} = \frac{G}{6}\bigg(\Big(\ln\frac{a}{G}\Big)^{2} + \Big(\ln\frac{b}{G}\Big)^{2} + \Big(\ln\frac{c}{G}\Big)^{2}\bigg)}$$
+     Si $a$, $b$, $c$ ne sont pas tous égaux, $\alpha$, $\beta$, $\gamma$ ne sont pas tous égaux à leur moyenne $m$, et $D > 0$. Alors $M(t) - G \sim \frac{GD}{6}t$ (proposition 13), qui a le signe de $t$ au voisinage de $0$ (proposition 5) : 
+    $$\boxed{M(-t) < G < M(t) \quad\text{pour tout } t > 0 \text{ assez petit}}$$
+     Par exemple, pour $a = 1$, $b = 2$ et $c = 4$, on trouve 
+    $$G = 2, \qquad M(1) = \frac{7}{3} \approx 2{,}333, \qquad M(-1) = \frac{12}{7} \approx 1{,}714, \qquad M'(0) = \frac{2}{3}(\ln 2)^{2} \approx 0{,}320 ;$$
+     numériquement, $M(0{,}1) \approx 2{,}032$ et $M(-0{,}1) \approx 1{,}968$, en accord avec la pente trouvée.
+
+    **3.** L'expression étant symétrique en $a$, $b$, $c$, on peut supposer que $\mu = a$ est le plus grand des trois. Pour $t > 0$, chacun des trois termes de $S(t)$ est compris entre $0$ et $\mu^{t}$, et l'un d'eux vaut $\mu^{t}$ ; ainsi $\frac{\mu^{t}}{3} \leqslant S(t) \leqslant \mu^{t}$. En élevant à la puissance $\frac{1}{t} > 0$, fonction croissante, on obtient 
+    $$\mu\,3^{-1/t} \leqslant M(t) \leqslant \mu,$$
+     et $3^{-1/t} = \mathrm{e}^{-(\ln 3)/t}$ tend vers $1$ quand $t$ tend vers $+\infty$. Par encadrement, $M(t)$ tend vers $\mu$. Pour $t = -s$ avec $s > 0$, on a 
+    $$M(-s) = \bigg(\Big(\frac{(1/a)^{s} + (1/b)^{s} + (1/c)^{s}}{3}\Big)^{1/s}\bigg)^{-1},$$
+     et ce qui précède, appliqué à $\frac{1}{a}$, $\frac{1}{b}$, $\frac{1}{c}$, montre que la quantité entre parenthèses tend, quand $s$ tend vers $+\infty$, vers 
+    $$\max\Big(\frac{1}{a}, \frac{1}{b}, \frac{1}{c}\Big) = \frac{1}{\min(a, b, c)}.$$
+
+    $$\boxed{\lim\limits_{t \to +\infty} M(t) = \max(a, b, c), \qquad \lim\limits_{t \to -\infty} M(t) = \min(a, b, c)}$$
+
+    *À retenir.* Une seule famille de fonctions relie le minimum, la moyenne harmonique, la moyenne géométrique, la moyenne arithmétique et le maximum. La moyenne géométrique n'est pas de la forme $M(t)$ : elle n'apparaît qu'à la limite, et c'est le développement limité qui la fait surgir. La question 2 est une version locale de l'inégalité arithmético-géométrique du chapitre 9 ; on peut d'ailleurs montrer, à l'aide de l'inégalité de Jensen du même chapitre, que $M$ est croissante sur $\mathbb{R}$.
+- id: "ma-10-51"
+  feuille: "f-ma-10"
+  numero: 51
+  partie: "Exercices de synthèse"
+  etoiles: 2
+  types: [Démonstration, Calcul]
+  mots_cles: [équivalents, négligeabilité, développements limités]
+  noeuds: [su-infinies, de-taylor]
+  notions: [negligeable, formule-taylor-young, cosinus-sinus]
+  page_enonce: 10
+  page_corrige: 24
+  enonce: |
+    *Une approximation rationnelle du sinus.* Pour tout couple $(a, b)$ de réels, on considère la fonction $f_{a,b}$, définie au voisinage de $0$ par 
+    $$f_{a,b}(x) = \sin x - \frac{x + ax^{3}}{1 + bx^{2}}.$$
+
+    **1.** Déterminer le développement limité de $f_{a,b}$ à l'ordre $6$ en $0$.
+
+    **2.** Montrer qu'il existe un unique couple $(a_{0}, b_{0})$ tel que $f_{a_{0},b_{0}}(x) = o(x^{6})$ au voisinage de $0$, et donner un équivalent de $f_{a_{0},b_{0}}$ en $0$.
+
+    **3.** Parmi les fonctions $f_{a,b}$, y en a-t-il une qui soit négligeable en $0$ devant toutes les autres ?
+
+    **4.** On pose $R(x) = \dfrac{x + a_{0}x^{3}}{1 + b_{0}x^{2}}$ et $T(x) = x - \dfrac{x^{3}}{6} + \dfrac{x^{5}}{120}$ : chacune de ces deux approximations du sinus dépend de trois coefficients. Montrer que $R(x) < \sin x < T(x)$ pour tout $x > 0$ assez petit, puis comparer $R$ et $T$ au voisinage de $+\infty$.
+  corrige: |
+    **1.** Comme $bx^{2}$ tend vers $0$, le développement $\frac{1}{1 + y} = 1 - y + y^{2} - y^{3} + o(y^{3})$, composé avec $y = bx^{2}$, donne $\frac{1}{1 + bx^{2}} = 1 - bx^{2} + b^{2}x^{4} + o(x^{5})$, le terme en $x^{6}$ étant absorbé par le reste. Ainsi 
+    $$\frac{x + ax^{3}}{1 + bx^{2}} = (x + ax^{3})\big(1 - bx^{2} + b^{2}x^{4} + o(x^{5})\big) = x + (a - b)x^{3} + (b^{2} - ab)x^{5} + o(x^{6}),$$
+     le terme $ab^{2}x^{7}$ étant absorbé par le reste. Avec $\sin x = x - \frac{x^{3}}{6} + \frac{x^{5}}{120} + o(x^{6})$ (théorème 5), 
+    $$\boxed{f_{a,b}(x) = \Big(b - a - \frac{1}{6}\Big)x^{3} + \Big(\frac{1}{120} + ab - b^{2}\Big)x^{5} + o(x^{6})}$$
+     L'absence de termes de degré pair était prévisible : $f_{a,b}$ est impaire (proposition 9).
+
+    **2.** Par unicité du développement limité (proposition 8), $f_{a,b}(x) = o(x^{6})$ si et seulement si les deux coefficients sont nuls, c'est-à-dire si $b - a = \frac{1}{6}$ et $b(b - a) = \frac{1}{120}$. La première égalité, reportée dans la seconde, donne $\frac{b}{6} = \frac{1}{120}$, d'où un unique couple : 
+    $$\boxed{a_{0} = -\frac{7}{60}, \qquad b_{0} = \frac{1}{20}}$$
+     Pour l'équivalent, on pousse le calcul d'un ordre. Le développement 
+    $$\frac{1}{1 + b_{0}x^{2}} = 1 - b_{0}x^{2} + b_{0}^{2}x^{4} - b_{0}^{3}x^{6} + o(x^{7})$$
+     ajoute au quotient le terme $(a_{0}b_{0}^{2} - b_{0}^{3})x^{7} = b_{0}^{2}(a_{0} - b_{0})x^{7} = -\frac{x^{7}}{2400}$, et le sinus contribue $-\frac{x^{7}}{5040}$. Comme $-\frac{1}{5040} + \frac{1}{2400} = \frac{-10 + 21}{50\,400}$, la proposition 13 donne 
+    $$\boxed{f_{a_{0},b_{0}}(x) \underset{x \to 0}{\sim} \frac{11}{50\,400}\,x^{7}}$$
+
+    **3.** Soit $(a, b) \neq (a_{0}, b_{0})$. Par la question 2, l'un des coefficients de $x^{3}$ ou de $x^{5}$ dans le développement de $f_{a,b}$ est non nul, et la proposition 13 donne $f_{a,b}(x) \sim c\,x^{p}$, avec $c \neq 0$ et $p \in \{3, 5\}$. Comme $x^{7} = o(x^{p})$, on obtient $f_{a_{0},b_{0}} = o(f_{a,b})$. Aucune autre fonction ne convient : si $f_{a,b}$, avec $(a, b) \neq (a_{0}, b_{0})$, était négligeable devant $f_{a_{0},b_{0}}$, elle serait négligeable devant elle-même par transitivité, donc nulle au voisinage de $0$, ce que contredit $f_{a,b}(x) \sim c\,x^{p}$. 
+    $$\boxed{\text{oui : } f_{a_{0},b_{0}} \text{ est la seule, avec } \frac{x + a_{0}x^{3}}{1 + b_{0}x^{2}} = \frac{x(60 - 7x^{2})}{3(20 + x^{2})}}$$
+
+    **4.** Le développement du sinus à l'ordre $8$ donne $\sin x - T(x) \sim -\frac{x^{7}}{5040}$, et la question 2 donne $\sin x - R(x) \sim \frac{11x^{7}}{50\,400}$. Par la proposition 13, ces deux différences ont respectivement le signe de $-x^{7}$ et de $x^{7}$ au voisinage de $0$ : 
+    $$\boxed{R(x) < \sin x < T(x) \quad\text{pour tout } x > 0 \text{ assez petit}}$$
+     Au voisinage de $+\infty$, une fonction rationnelle est équivalente au quotient de ses termes de plus haut degré : $R(x) \sim \frac{-7x^{3}/60}{x^{2}/20}$ et $T(x) \sim \frac{x^{5}}{120}$, soit 
+    $$\boxed{R(x) \underset{x \to +\infty}{\sim} -\frac{7x}{3}, \qquad T(x) \underset{x \to +\infty}{\sim} \frac{x^{5}}{120}}$$
+     Aucune des deux ne reste bornée comme le sinus, mais $R$ s'en écarte bien plus lentement. Numériquement, $R(1) = \frac{53}{63} \approx 0{,}841\,270$ et $T(1) = \frac{101}{120} \approx 0{,}841\,667$ encadrent $\sin 1 \approx 0{,}841\,471$ avec des écarts presque égaux, mais $R(\pi) \approx -0{,}319$ est plus proche de $\sin\pi = 0$ que $T(\pi) \approx 0{,}524$.
+
+    *Piège.* Être négligeable devant toutes les autres est une propriété *locale*, qui ne dit pas que $R$ est la meilleure approximation. Près de $0$, c'est même $T$ qui l'emporte de peu, puisque $\frac{1}{5040} \approx 1{,}98 \cdot 10^{-4}$ est inférieur à $\frac{11}{50\,400} \approx 2{,}18 \cdot 10^{-4}$ ; l'avantage de $R$ n'apparaît que loin de $0$. Ces fractions rationnelles, qui coïncident avec une fonction à un ordre aussi élevé que possible, ont été étudiées systématiquement par Henri Padé dans sa thèse de 1892, et portent son nom ; les approximations rationnelles de ce type servent au calcul numérique des fonctions usuelles.
+- id: "ma-10-52"
+  feuille: "f-ma-10"
+  numero: 52
+  partie: "Exercices de synthèse"
   etoiles: 3
   types: [Démonstration]
   mots_cles: [négligeabilité]
   noeuds: [su-infinies]
   notions: [negligeable]
-  page_enonce: 9
-  page_corrige: 23
+  page_enonce: 10
+  page_corrige: 26
   enonce: |
     Soit $f$ et $g$ deux fonctions impaires de classe $\mathcal{C}^{\infty}$ sur $\mathbb{R}$, telles que $f'(0) = g'(0) = 1$. Montrer que $f\big(g(x)\big) - g\big(f(x)\big) = o(x^{6})$ au voisinage de $0$. On écrira les développements limités de $f$ et de $g$ à l'ordre $6$, et l'on exploitera l'imparité de $f \circ g - g \circ f$. Le coefficient de $x^{7}$ est-il nul en général ?
   corrige: |
@@ -1485,9 +1593,9 @@
      En échangeant les rôles, $g\big(f(x)\big) = x + (a + p)x^{3} + (b + 3pa + q)x^{5} + o(x^{6})$. Les deux développements coïncident : 
     $$\boxed{f\big(g(x)\big) - g\big(f(x)\big) = o(x^{6})}$$
      Le coefficient de $x^{6}$ est d'ailleurs nul d'office, puisque $f \circ g - g \circ f$ est impaire. Celui de $x^{7}$ n'est pas nul en général : pour $f(x) = x + x^{3}$ et $g(x) = x + 2x^{3}$, on calcule $f(g(x)) - g(f(x)) = 6x^{7} + 6x^{9}$. Deux fonctions tangentes à l'identité commutent donc « presque » à l'ordre $6$, mais pas au-delà.
-- id: "ma-10-51"
+- id: "ma-10-53"
   feuille: "f-ma-10"
-  numero: 51
+  numero: 53
   partie: "Exercices de synthèse"
   etoiles: 3
   types: [Démonstration, Calcul]
@@ -1495,7 +1603,7 @@
   noeuds: [su-infinies, de-taylor, n-sommes, pol-binome]
   notions: [negligeable, formule-taylor-young, coefficient-binomial]
   page_enonce: 10
-  page_corrige: 23
+  page_corrige: 26
   enonce: |
     *Une somme alternée.* Soit $n \in \mathbb{N}^{*}$ et, pour $p \in \mathbb{N}$, $S_{p} = \displaystyle\sum_{k=0}^{n} (-1)^{n-k}\binom{n}{k}k^{p}$.
 
@@ -1513,17 +1621,17 @@
     **3.** Par unicité du développement limité à l'ordre $n$, les questions 1 et 2 donnent $\frac{S_{p}}{p!} = 0$ pour $p < n$ et $\frac{S_{n}}{n!} = 1$. 
     $$\boxed{S_{p} = 0 \text{ pour } 0 \leqslant p < n, \qquad S_{n} = n!}$$
      Pour $n = 2$ : $S_{0} = 1 - 2 + 1 = 0$, $S_{1} = 0 - 2 + 2 = 0$ et $S_{2} = 0 - 2 + 4 = 2 = 2!$. Le chapitre 21 montrera que $S_{p}$ compte les surjections d'un ensemble à $p$ éléments sur un ensemble à $n$ éléments : il n'y en a aucune si $p < n$, et ce sont les $n!$ bijections si $p = n$.
-- id: "ma-10-52"
+- id: "ma-10-54"
   feuille: "f-ma-10"
-  numero: 52
+  numero: 54
   partie: "Exercices de synthèse"
   etoiles: 3
   types: [Démonstration, Calcul]
   mots_cles: [équivalents, négligeabilité, suites implicites]
   noeuds: [su-infinies, c-tvi]
   notions: [negligeable]
-  page_enonce: 10
-  page_corrige: 23
+  page_enonce: 11
+  page_corrige: 26
   enonce: |
     Soit $f : x \mapsto x\operatorname{sh}\frac{1}{x}$ sur $]0\,,+\infty[$.
 
@@ -1545,17 +1653,78 @@
 
     **4.** Par la question 2, $\frac{1}{n} = f(u_{n}) - 1 \sim \frac{1}{6u_{n}^{2}}$, d'où $u_{n}^{2} \sim \frac{n}{6}$, puis 
     $$\boxed{u_{n} \sim \sqrt{\frac{n}{6}}}$$
-- id: "ma-10-53"
+- id: "ma-10-55"
   feuille: "f-ma-10"
-  numero: 53
+  numero: 55
+  partie: "Exercices de synthèse"
+  etoiles: 3
+  types: [Démonstration, Calcul]
+  mots_cles: [équivalents, négligeabilité, position par rapport à la tangente, "développement d'une réciproque"]
+  noeuds: [su-infinies, de-dl1, de-reciproque]
+  notions: [negligeable]
+  page_enonce: 11
+  page_corrige: 27
+  enonce: |
+    *Le point de rebroussement de la cycloïde.* Un cercle de rayon $1$ roule sans glisser sur l'axe des abscisses. Lorsqu'il a tourné d'un angle $t$, un point $M$ du cercle, situé à l'origine pour $t = 0$, a pour coordonnées 
+    $$x(t) = t - \sin t, \qquad y(t) = 1 - \cos t.$$
+
+    **1.** Déterminer les développements limités de $x$ et de $y$ à l'ordre $3$ en $0$, et calculer $x'(0)$ et $y'(0)$.
+
+    **2.** Montrer que $x$ réalise une bijection de $[0\,,2\pi]$ sur lui-même, dont la réciproque $\varphi$ est continue. On pose $Y = y \circ \varphi$ : la première arche de la courbe décrite par $M$ est la courbe représentative de $Y$ sur $[0\,,2\pi]$.
+
+    **3.** Montrer que $\varphi(u) \sim (6u)^{1/3}$ quand $u$ tend vers $0^{+}$, puis que $Y(u) \sim \frac{1}{2}(6u)^{2/3}$.
+
+    **4.** En déduire que $Y$ n'est pas dérivable à droite en $0$, et que la courbe de $Y$ admet en l'origine une tangente verticale, alors que $x$ et $y$ sont de classe $\mathcal{C}^{\infty}$. Interpréter ce résultat.
+
+    **5.** Montrer que $Y(u) = \frac{1}{2}(6u)^{2/3} - \frac{1}{40}(6u)^{4/3} + o\big(u^{4/3}\big)$ quand $u$ tend vers $0^{+}$.
+  corrige: |
+    Le centre du cercle, après une rotation d'angle $t$, est au point $(t, 1)$, puisque le cercle a roulé sans glisser d'une longueur d'arc $t$ ; le point $M$ s'en déduit en ajoutant le vecteur $(-\sin t, -\cos t)$, ce qui redonne les formules de l'énoncé.
+
+    **1.** Le théorème 5 donne $\sin t = t - \frac{t^{3}}{6} + o(t^{4})$ et $\cos t = 1 - \frac{t^{2}}{2} + o(t^{3})$, d'où 
+    $$\boxed{x(t) = \frac{t^{3}}{6} + o(t^{3}), \qquad y(t) = \frac{t^{2}}{2} + o(t^{3})}$$
+     Les coefficients de $t$ sont nuls : $\boxed{x'(0) = y'(0) = 0}$ (proposition 10), ce que l'on vérifie sur $x'(t) = 1 - \cos t$ et $y'(t) = \sin t$. Au moment où il touche le sol, le point $M$ est immobile.
+
+    **2.** La fonction $x$ est dérivable, de dérivée $x'(t) = 1 - \cos t \geqslant 0$, qui ne s'annule sur $[0\,,2\pi]$ qu'en $0$ et en $2\pi$ ; elle n'est donc identiquement nulle sur aucun intervalle non réduit à un point, et $x$ est strictement croissante sur $[0\,,2\pi]$ (chapitre 9, théorème 7). Comme $x$ est continue, avec $x(0) = 0$ et $x(2\pi) = 2\pi$, le théorème de la bijection continue (chapitre 8, théorème 11) conclut : 
+    $$\boxed{x \text{ est une bijection de } [0\,,2\pi] \text{ sur } [0\,,2\pi], \text{ de réciproque } \varphi \text{ continue et strictement croissante}}$$
+     Pour $t \in [0\,,2\pi]$, on pose $u = x(t)$ ; alors $t = \varphi(u)$, et le point $M$ a pour coordonnées 
+    $$\big(u, y(\varphi(u))\big) = \big(u, Y(u)\big) :$$
+     il décrit bien la courbe de $Y$.
+
+    **3.** La fonction $\varphi$ est continue en $0$, avec $\varphi(0) = 0$, et $\varphi(u) > 0$ pour $u > 0$ : $\varphi(u)$ tend vers $0$ par valeurs strictement positives quand $u$ tend vers $0^{+}$. La question 1 et la proposition 13 donnent $x(t) \sim \frac{t^{3}}{6}$ au voisinage de $0$, et la substitution $t = \varphi(u)$ (théorème 1) donne 
+    $$u = x\big(\varphi(u)\big) \underset{u \to 0^{+}}{\sim} \frac{\varphi(u)^{3}}{6}, \qquad\text{soit}\qquad \varphi(u)^{3} \sim 6u.$$
+     Les deux membres étant strictement positifs, on élève à la puissance fixe $\frac{1}{3}$ (théorème 1). De même, $y(t) \sim \frac{t^{2}}{2}$ donne $Y(u) = y\big(\varphi(u)\big) \sim \frac{\varphi(u)^{2}}{2}$, puis on élève au carré : 
+    $$\boxed{\varphi(u) \underset{u \to 0^{+}}{\sim} (6u)^{1/3}, \qquad Y(u) \underset{u \to 0^{+}}{\sim} \frac{1}{2}(6u)^{2/3}}$$
+
+    **4.** Comme $Y(0) = y(0) = 0$, le taux d'accroissement de $Y$ en $0$ vérifie, pour $u > 0$, 
+    $$\frac{Y(u) - Y(0)}{u} = \frac{Y(u)}{u} \underset{u \to 0^{+}}{\sim} \frac{(6u)^{2/3}}{2u} = \frac{6^{2/3}}{2u^{1/3}} \xrightarrow[u \to 0^{+}]{} +\infty.$$
+
+    $$\boxed{Y \text{ n'est pas dérivable à droite en } 0, \text{ et sa courbe admet en l'origine une tangente verticale}}$$
+     Le déplacement horizontal $x(t) \sim \frac{t^{3}}{6}$ est négligeable devant le déplacement vertical $y(t) \sim \frac{t^{2}}{2}$ : le point $M$, immobile à l'instant où il touche le sol, en repart verticalement. Pour $t \in [-2\pi\,,0]$, la fonction $x$ étant impaire et $y$ paire, on obtient l'arche précédente, symétrique de la première par rapport à l'axe des ordonnées : les deux arches arrivent en l'origine tangentes à cet axe, en formant une pointe. C'est ce que l'on appelle un *point de rebroussement*.
+
+    *Piège.* L'erreur la plus répandue est de conclure de $y'(0) = 0$ que la tangente est horizontale. La pente de la corde est le quotient $\frac{y(t)}{x(t)} \sim \frac{3}{t}$, qui tend vers $+\infty$ quand $t$ tend vers $0^{+}$ : c'est la comparaison des premiers termes non nuls de $x$ et de $y$, et non la valeur des dérivées, qui donne la tangente.
+
+    **5.** On reprend le calcul avec un terme de plus. Le théorème 5 donne $x(t) = \frac{t^{3}}{6} - \frac{t^{5}}{120} + o(t^{6})$, c'est-à-dire 
+    $$6x(t) = t^{3}\Big(1 - \frac{t^{2}}{20} + o(t^{2})\Big).$$
+     On substitue $t = \varphi(u)$, et l'on note $w = (6u)^{1/3}$, qui tend vers $0$. En élevant à la puissance $\frac{1}{3}$, avec $(1 + v)^{1/3} = 1 + \frac{v}{3} + o(v)$, 
+    $$w = \varphi(u)\Big(1 - \frac{\varphi(u)^{2}}{60} + o\big(\varphi(u)^{2}\big)\Big), \qquad\text{donc}\qquad \varphi(u) = w\Big(1 + \frac{\varphi(u)^{2}}{60} + o\big(\varphi(u)^{2}\big)\Big).$$
+     Par la question 3, $\varphi(u) \sim w$, donc $\varphi(u)^{2} = w^{2} + o(w^{2})$, et les $o\big(\varphi(u)^{2}\big)$ sont des $o(w^{2})$ : 
+    $$\boxed{\varphi(u) = w + \frac{w^{3}}{60} + o(w^{3})}$$
+     Enfin $Y(u) = 1 - \cos\varphi(u) = \frac{\varphi(u)^{2}}{2} - \frac{\varphi(u)^{4}}{24} + o(w^{4})$, avec $\varphi(u)^{2} = w^{2} + \frac{w^{4}}{30} + o(w^{4})$ et $\varphi(u)^{4} = w^{4} + o(w^{4})$. Comme $\frac{1}{60} - \frac{1}{24} = -\frac{1}{40}$ et $w^{4} = (6u)^{4/3}$, 
+    $$\boxed{Y(u) \underset{u \to 0^{+}}{=} \frac{1}{2}(6u)^{2/3} - \frac{1}{40}(6u)^{4/3} + o\big(u^{4/3}\big)}$$
+     Pour $t = 0{,}1$, on a $u \approx 1{,}666 \cdot 10^{-4}$ et $Y(u) = 1 - \cos 0{,}1 \approx 4{,}995\,835 \cdot 10^{-3}$ ; le premier terme seul donne $4{,}998\,33 \cdot 10^{-3}$, et les deux termes $4{,}995\,835 \cdot 10^{-3}$, à $10^{-9}$ près.
+
+    *À retenir.* Ce développement, en puissances fractionnaires de $u$, n'est pas un développement limité : c'est un développement asymptotique. Il vient de l'inversion de $x(t) \sim \frac{t^{3}}{6}$. À l'exercice 24, la fonction à inverser avait une dérivée non nulle en $0$, et sa réciproque admettait un développement limité ; ici $x'(0) = 0$, et l'on retrouve le phénomène de la racine cubique au chapitre 9 : une réciproque n'est pas dérivable là où la fonction a une dérivée nulle.
+- id: "ma-10-56"
+  feuille: "f-ma-10"
+  numero: 56
   partie: "Exercices de synthèse"
   etoiles: 4
   types: [Démonstration, Calcul]
   mots_cles: [équivalents, négligeabilité, développements limités, suites récurrentes]
   noeuds: [su-infinies, de-taylor, su-convergence, su-monotone]
   notions: [negligeable, formule-taylor-young, suite]
-  page_enonce: 10
-  page_corrige: 24
+  page_enonce: 11
+  page_corrige: 28
   enonce: |
     *Une suite récurrente lente.* Soit $u_{0} > 0$ et $u_{n+1} = \operatorname{th} u_{n}$.
 
@@ -1567,7 +1736,7 @@
 
     **4.** À l'aide de l'exercice 11, montrer que $\dfrac{1}{u_{n}^{2}} = \dfrac{2n}{3} + \dfrac{\ln n}{10} + o(\ln n)$, et en déduire un développement asymptotique de $u_{n}$ à deux termes.
   corrige: |
-    **1.** On a $0 < \operatorname{th} u < u$ pour $u > 0$ (exercice 52) : par récurrence, $(u_{n})$ est strictement positive et décroissante. Elle converge vers $\ell \geqslant 0$ tel que $\operatorname{th}\ell = \ell$, donc $\boxed{\ell = 0}$.
+    **1.** On a $0 < \operatorname{th} u < u$ pour $u > 0$ (exercice 54) : par récurrence, $(u_{n})$ est strictement positive et décroissante. Elle converge vers $\ell \geqslant 0$ tel que $\operatorname{th}\ell = \ell$, donc $\boxed{\ell = 0}$.
 
     **2.** Par quotient des développements de $\operatorname{sh}$ et de $\operatorname{ch}$ (proposition 12), 
     $$\operatorname{th} u = u - \frac{u^{3}}{3} + \frac{2u^{5}}{15} + o(u^{6}), \qquad \operatorname{th}^{2}u = u^{2}\Big(1 - \frac{2u^{2}}{3} + \frac{17u^{4}}{45} + o(u^{4})\Big),$$

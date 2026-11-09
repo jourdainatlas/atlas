@@ -31,5 +31,5 @@ R = [
     (r'\\sum|série', 'sommes', ['n-sommes'], []),
 ]
 FOND = ['ar-suites']
-EXTRA = {}
+EXTRA = {48: (['fractions égyptiennes', 'algorithme glouton'], ['q-construction', 'q-ordre'], [])}
 meta = fabriquer(R, PARTIES, FOND, EXTRA)

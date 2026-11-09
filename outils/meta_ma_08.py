@@ -27,5 +27,5 @@ R = [
     (r'polyn', 'polynômes', ['c-tvi'], []),
 ]
 FOND = ['continuite']
-EXTRA = {53: (['valeurs intermédiaires', 'surjectivité'], ['c-tvi', 'c-bornes'], ['continuite'])}
+EXTRA = {56: (['valeurs intermédiaires', 'surjectivité'], ['c-tvi', 'c-bornes'], ['continuite'])}
 meta = fabriquer(R, PARTIES, FOND, EXTRA)
