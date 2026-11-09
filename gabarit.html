@@ -302,6 +302,17 @@ html.vp-ouverte, html.vp-ouverte body { overflow: hidden; }
 .ix-lex { border-left: 3px solid var(--r-edifice); } .ix-cours { border-left: 3px solid var(--r-cours); }
 .ix-lex:hover, .ix-cours:hover { color: var(--encre); border-color: var(--encre-3); }
 .ix-vide { color: var(--encre-2); }
+/* « Reprendre où j'en étais » (domaine À propos – apparence) */
+.acc-reprise { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin: 18px 0 4px; }
+.ar-tete { font: 600 11.5px var(--f-ui); letter-spacing: .1em; text-transform: uppercase; color: var(--encre-3); margin-right: 2px; }
+.ar-lien { display: flex; align-items: center; gap: 8px; max-width: 100%; text-decoration: none; color: var(--encre); background: var(--surface); border: 1px solid var(--filet); border-radius: 10px; padding: 6px 12px 6px 8px; }
+.ar-lien:hover { border-color: var(--encre-3); }
+.ar-lien svg.sym { width: 22px; height: 22px; flex: none; }
+.ar-lien span { display: flex; flex-direction: column; min-width: 0; }
+.ar-lien b { font: 600 14px/1.3 var(--f-ui); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 300px; }
+.ar-lien small { font: 12px/1.3 var(--f-ui); color: var(--encre-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 300px; }
+.ar-effacer { border: 0; background: none; font: 12.5px var(--f-ui); color: var(--encre-3); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+@media (max-width: 560px) { .ar-lien { flex: 1 1 100%; } .ar-lien b, .ar-lien small { max-width: none; } }
 /* Recherche globale (domaine À propos – apparence) : loupe de l'en-tête, Ctrl K ou « / ». */
 .chercher-tout { flex: none; display: grid; place-items: center; width: 30px; height: 30px; padding: 0; margin-right: -16px; border: 0; border-radius: 8px; background: none; color: var(--encre-2); cursor: pointer; }
 body.en-rubrique .chercher-tout { margin-left: auto; }
@@ -3384,6 +3395,7 @@ function pageAccueil() {
   h += `<h2>L'architecture des mathématiques, <em>de l'axiome au théorème</em></h2>`;
   h += `<p class="chapeau">ATLAS présente les mathématiques comme un édifice : un graphe qui part des axiomes de la théorie des ensembles et dont chaque théorie s'ouvre sur ses définitions et ses théorèmes, démontrés dans l'ordre. Autour de lui, des cours, des exercices corrigés et des sujets de concours, rattachés aux théories qui les fondent.</p>`;
   h += `<div class="acc-actions"><a class="bouton plein" href="#${D.racine}">Entrer dans l'édifice</a><a class="bouton" href="#cours">Les cours</a><a class="bouton" href="#exercices">Les exercices</a><a class="bouton" href="#annales">Les annales</a></div>`;
+  h += repriseAccueil();   // « Reprendre où j'en étais » (§57)
   h += `</div><a class="acc-carte-edifice carte" href="#${D.racine}" aria-label="Ouvrir l'édifice">${miniEdifice()}`;
   h += `<div class="acc-legende"><span><b>${nbTheories}</b> théories</span><span><b>${nbEnonces}</b> définitions, axiomes et théorèmes</span><span><b>${nbTermes}</b> termes au lexique</span></div></a></section>`;
   h += aProposCommencer();   // domaine À propos : guide par profil de lecteur
@@ -4276,6 +4288,39 @@ function impImprimer(quoi, preuves) {
     (document.fonts?.ready || Promise.resolve()).then(() => setTimeout(() => window.print(), 50));
   }, () => { m.innerHTML = '<div class="imp-attente">Les textes n\'ont pas pu être chargés. Vérifiez la connexion, puis réessayez.</div>'; });
 }
+
+/* ---- « Reprendre où j'en étais » (domaine À propos – apparence, 9 nov. 2026, MEMO_atlas_apropos.md §57)
+   À chaque ouverture d'un chapitre de cours, d'une feuille ou d'un exercice, ou d'une fiche de l'édifice, l'adresse
+   et son libellé sont retenus dans le navigateur du visiteur (localStorage « atlas-reprise », jamais envoyé) ;
+   l'accueil propose d'y revenir. Le dernier de chaque sorte est gardé (cours, exercices, édifice), le plus récent
+   en tête ; « Effacer » vide la liste. */
+const REPRISE = 'atlas-reprise';
+function repriseLire() { try { return JSON.parse(localStorage.getItem(REPRISE) || '[]'); } catch (e) { return []; } }
+function repriseNoter(sorte, hash, libelle, detail) {
+  if (!libelle) return;
+  const l = repriseLire().filter(x => x.sorte !== sorte);
+  l.unshift({ sorte, hash, libelle: String(libelle).slice(0, 120), detail: String(detail || '').slice(0, 120), t: Date.now() });
+  try { localStorage.setItem(REPRISE, JSON.stringify(l.slice(0, 3))); } catch (e) {}
+}
+function repriseDepuisAncre() {
+  const h = decodeURIComponent(location.hash.slice(1)), [r, a, b] = h.split('/');
+  if (r === 'cours' && a) { const c = (R.cours?.cours || []).find(x => x.id === a); if (c) repriseNoter('cours', '#' + h, rgTexte(c.titre), `Cours · ${libelleChapitre(c)}`); }
+  else if (r === 'exercices' && a === 'feuille' && b) { const f = feuilleDe(b); if (f.id) repriseNoter('exercices', '#' + h, rgTexte(f.titre), `Feuille d'exercices · ${niveauDe(f.niveau).titre}${f.chapitre ? `, chapitre ${f.chapitre}` : ''}`); }
+  else if (r === 'exercices' && a === 'ex' && b) { const e = (R.exercices?.exercices || []).find(x => x.id === b), f = e ? feuilleDe(e.feuille) : null; if (!e) { const at = chargerExercices(); if (at && chargementIndexExos) chargementIndexExos.then(() => { if (location.hash.includes(b)) repriseDepuisAncre(); }, () => {}); return; } if (e) repriseNoter('exercices', '#' + h, `Exercice ${e.numero} · ${rgTexte(f.titre)}`, `Exercices · ${niveauDe(f.niveau).titre}${f.chapitre ? `, chapitre ${f.chapitre}` : ''}`); }
+  else if (!RUBRIQUES[r] && r !== 'lexique' && h.includes('.')) { const id = h.split('.').pop(), n = D.noeuds[id]; if (n) repriseNoter('edifice', '#' + h, rgTexte(n.titre), `L'édifice · ${rgTexte(D.graphes[n.graphe].titre)}`); }
+}
+addEventListener('hashchange', repriseDepuisAncre);
+addEventListener('load', repriseDepuisAncre);
+const REPRISE_SYM = { cours: 'cours', exercices: 'exercices', edifice: 'edifice' };
+function repriseAccueil() {
+  const l = repriseLire(); if (!l.length) return '';
+  return `<div class="acc-reprise" aria-label="Reprendre la lecture"><span class="ar-tete">Reprendre</span>${l.map(x => `<a class="ar-lien" href="${esc(x.hash)}">${symbole(REPRISE_SYM[x.sorte])}<span><b>${esc(x.libelle)}</b><small>${esc(x.detail)}</small></span></a>`).join('')}<button type="button" class="ar-effacer" data-reprise-effacer title="Effacer cette liste">Effacer</button></div>`;
+}
+document.addEventListener('click', ev => {
+  if (!ev.target.closest('[data-reprise-effacer]')) return;
+  try { localStorage.removeItem(REPRISE); } catch (e) {}
+  ev.target.closest('.acc-reprise')?.remove();
+});
 
 /* ---- Index alphabétique (domaine À propos – apparence, 9 nov. 2026, MEMO_atlas_apropos.md §56)
    Page #index : tous les termes définis du site, de A à Z, comme l'index d'un livre. Un terme du lexique de l'édifice

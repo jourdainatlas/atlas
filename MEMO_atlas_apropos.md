@@ -433,3 +433,11 @@ des cours ; le PDF s'ouvre à la page). Barre collante : champ de filtre (sans a
 entrées (1 090 au lexique, ≈ 950 dans les cours). Pour l'index, `rendu.mjs` écarte aussi des termes des cours les
 fragments coupés par une formule (début en « de », « pour », « dans »…, « def », « deg ») : 1 395 → 1 345 termes,
 ce qui profite aussi à la recherche globale.
+
+## 57. « Reprendre où j'en étais » (9 nov. 2026)
+
+`repriseDepuisAncre` (à chaque `hashchange` et au chargement) retient dans le navigateur (`localStorage`
+« atlas-reprise », jamais envoyé ; mentionné dans les mentions légales : « ne quittent pas le navigateur ») le dernier
+chapitre de cours, la dernière feuille ou le dernier exercice, et la dernière fiche de l'édifice ouverts (un par sorte,
+le plus récent en tête). L'accueil les propose sous les boutons du bandeau (« Reprendre », avec le symbole de la
+rubrique ; « Effacer »). Un exercice ouvert avant l'arrivée de l'index est noté à son arrivée.
