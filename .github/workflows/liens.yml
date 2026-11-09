@@ -1,0 +1,40 @@
+# Contrôle hebdomadaire des liens externes des annales (MEMO_atlas_apropos.md §58).
+# Chaque lundi à 6 h 17 (heure de Paris en hiver), ou à la main (onglet Actions) : outils/verifier_liens.py teste les
+# adresses des sujets et rapports ; s'il y a des liens cassés, un ticket « Liens cassés des annales » est ouvert ou mis
+# à jour (GitHub en prévient l'auteur par courriel) ; s'il n'y en a plus, le ticket ouvert est fermé.
+name: Liens des annales
+
+on:
+  schedule:
+    - cron: "17 5 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  verifier:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install PyYAML==6.0.2
+      - id: liens
+        run: python3 outils/verifier_liens.py rapport.md
+      - name: Ticket
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CASSES: ${{ steps.liens.outputs.casses }}
+        run: |
+          titre="Liens cassés des annales"
+          num=$(gh issue list --state open --search "in:title \"$titre\"" --json number -q '.[0].number')
+          if [ "${CASSES:-0}" -gt 0 ]; then
+            if [ -n "$num" ]; then gh issue edit "$num" --body-file rapport.md && gh issue comment "$num" --body "Nouveau contrôle : $CASSES lien(s) cassé(s), liste mise à jour."
+            else gh issue create --title "$titre" --body-file rapport.md; fi
+          elif [ -n "$num" ]; then
+            gh issue close "$num" --comment "Contrôle du $(date +%d/%m/%Y) : tous les liens répondent."
+          fi

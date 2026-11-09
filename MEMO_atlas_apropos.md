@@ -441,3 +441,12 @@ ce qui profite aussi à la recherche globale.
 chapitre de cours, la dernière feuille ou le dernier exercice, et la dernière fiche de l'édifice ouverts (un par sorte,
 le plus récent en tête). L'accueil les propose sous les boutons du bandeau (« Reprendre », avec le symbole de la
 rubrique ; « Effacer »). Un exercice ouvert avant l'arrivée de l'index est noté à son arrivée.
+
+## 58. Contrôle hebdomadaire des liens des annales (9 nov. 2026)
+
+`outils/verifier_liens.py` teste les ≈ 720 adresses externes de `rubriques/annales.yaml` (sujet, rapport, source ;
+HEAD puis GET partiel ; deux échecs espacés de 20 s avant de déclarer un lien cassé). `.github/workflows/liens.yml` le
+lance chaque lundi à 5 h 17 UTC (ou à la main, onglet Actions) et ouvre ou met à jour le ticket « Liens cassés des
+annales » du dépôt (GitHub prévient l'auteur par courriel), ou le ferme quand tout répond. Les corrections relèvent
+de la conversation Annales. Testé ici sur la lecture des adresses seulement (le réseau de cette session ne joint pas
+les sites des concours) : le premier vrai passage se fait sur GitHub.
