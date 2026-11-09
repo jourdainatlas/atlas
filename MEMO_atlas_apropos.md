@@ -408,3 +408,18 @@ si le PDF en est un), page courante / total, Partager (si `navigator.share`), T�
 PDF.js (`/pdfjs/`). `history.pushState` à l'ouverture : le geste ou le bouton retour du téléphone la ferme
 (`popstate`). `#page=n` ouvre à la page n. Les PDF des sites officiels (annales) gardent leur comportement (feuille
 Safari avec « OK »). Dans un navigateur ordinaire, rien ne change.
+
+## 54. Cours : « Ce que ce chapitre définit » (9 nov. 2026)
+
+Carte de la colonne d'un chapitre de cours, sous le Sommaire (`definitChapitre(c)`, appelée dans la page du chapitre
+du gabarit) : les termes définis relevés dans son PDF (`TERMES_COURS`, §51), dans l'ordre des pages ; un clic mène à
+la page (`data-pdf-page`, comme le sommaire). Douze montrés, le reste sous « Voir les n termes ». La carte se remplit
+à l'arrivée de `cours-termes.json` si besoin.
+
+## 55. Pont lexique ↔ cours (9 nov. 2026)
+
+Un terme du lexique de l'édifice aussi défini dans un cours (même terme à la casse et au s/x final près,
+`normTerme`) : sa fiche du lexique porte « Dans les cours » (`.dans-cours`, un lien par chapitre, du lycée au master,
+qui ouvre le PDF à la page : `a[data-cours-page]`), et sa bulle une ligne « Aussi défini dans le cours … » (`bulleCours`).
+Au 9 nov. : 131 termes du lexique reliés. Les variantes de nom (« divisibilité des entiers » / « divisible ») ne sont
+pas rapprochées : seule l'égalité des termes compte.

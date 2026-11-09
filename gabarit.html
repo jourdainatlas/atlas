@@ -276,6 +276,16 @@ html.vp-ouverte, html.vp-ouverte body { overflow: hidden; }
 .vp-pages canvas { max-width: 100%; height: auto; background: #fff; box-shadow: 0 1px 3px rgb(0 0 0 / .2); }
 .vp-attente { margin: 40px 16px; font: 15px var(--f-ui); color: var(--encre-2); text-align: center; }
 @media (max-width: 480px) { .vp-titre { display: none; } }
+/* Cours : « Ce que ce chapitre définit » (domaine À propos – apparence) */
+.defs-ch { display: flex; flex-wrap: wrap; gap: 6px; }
+.def-ch { font: 13.5px/1.3 var(--f-texte); color: var(--encre); background: var(--trame); border: 1px solid var(--filet); border-radius: 6px; padding: 4px 8px; cursor: pointer; text-align: left; }
+.def-ch span { font: 11px var(--f-ui); color: var(--encre-3); margin-left: 6px; }
+.def-ch:hover { border-color: var(--encre-3); }
+.def-ch:focus-visible { outline: 2px solid var(--encre-3); outline-offset: 1px; }
+.defs-plus { margin-top: 8px; } .defs-plus summary { cursor: pointer; font: 13px var(--f-ui); color: var(--encre-2); margin-bottom: 6px; }
+.puce-cours { display: inline-block; margin: 2px 4px 2px 0; font: 12.5px var(--f-ui); color: var(--encre); text-decoration: none; border: 1px solid var(--filet); border-left: 3px solid var(--r-cours, #00866b); border-radius: 0 6px 6px 0; padding: 2px 8px; }
+.puce-cours:hover { border-color: var(--encre-3); }
+.bulle-cours { font: 12.5px/1.45 var(--f-ui); color: var(--encre-2); margin: 6px 0 0; padding-top: 6px; border-top: 1px dashed var(--filet); }
 /* Recherche globale (domaine À propos – apparence) : loupe de l'en-tête, Ctrl K ou « / ». */
 .chercher-tout { flex: none; display: grid; place-items: center; width: 30px; height: 30px; padding: 0; margin-right: -16px; border: 0; border-radius: 8px; background: none; color: var(--encre-2); cursor: pointer; }
 body.en-rubrique .chercher-tout { margin-left: auto; }
@@ -2391,9 +2401,11 @@ function construireLexique() {
       <h3>${esc(e.terme)}${e.notation ? ` <span class="notation">${e.notation}</span>` : ''}</h3>${e.definition || ''}
       ${nbExemples(e) ? `<details class="exemples-lex" data-ex="${e.id}"><summary><span class="signe" aria-hidden="true"></span>${libelleExemples(nbExemples(e))}</summary><div class="exemples-corps"></div></details>` : ''}
       ${D.noeuds[e.defini] ? `<div class="emplois">Défini dans ${puce(e.defini)}</div>` : ''}
+      <div class="emplois dans-cours" data-dc="${e.id}" hidden></div>
       ${(e.emplois || []).some(i => D.noeuds[i]) ? `<div class="emplois">Employé dans ${e.emplois.filter(i => D.noeuds[i]).map(i => puce(i)).join('')}</div>` : ''}
       ${(e.voir || []).some(v => D.lexique[v]) ? `<div class="emplois">Voir aussi ${e.voir.filter(v => D.lexique[v]).map(v => `<span class="terme" data-g="${v}" tabindex="0" role="button">${esc(D.lexique[v].terme)}</span>`).join(', ')}</div>` : ''}
     </article>`).join('');
+  chargerTermesCours().then(remplirCoursLexique);   // « Dans les cours » (§55)
   // la recherche porte aussi sur la notation (« L2 », « Spec », « Z/nZ »…)
   document.querySelectorAll('.entree-lex').forEach(a => {
     const n = a.querySelector('h3 .notation .kx') || a.querySelector('h3 .notation .katex-html');
@@ -2936,7 +2948,7 @@ let TERMES_COURS = {}, chargementTermesCours = null;
 function chargerTermesCours() {
   if (!D.coursTermesACharger) return Promise.resolve();
   if (!chargementTermesCours) chargementTermesCours = fetch(D.coursTermesACharger).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
-    .then(x => { TERMES_COURS = x; delete D.coursTermesACharger; if (typeof RG !== 'undefined' && RG.ouvert) rgChercher(); })
+    .then(x => { TERMES_COURS = x; coursParTerme = null; delete D.coursTermesACharger; if (typeof RG !== 'undefined' && RG.ouvert) rgChercher(); })
     .catch(() => { chargementTermesCours = null; });
   return chargementTermesCours;
 }
@@ -3048,7 +3060,7 @@ function montrerBulle(el, explicite = false) {
     const corps = pret ? (e.definition ?? '') : '<p class="attente-lexique" role="status">Chargement de la définition…</p>';
     const nx = nbExemples(e);
     const pied = nx ? `${libelleExemples(nx)} dans le lexique&nbsp;: cliquer pour ${nx > 1 ? 'les' : 'le'} voir` : 'cliquer pour l\'ouvrir dans le lexique';
-    b.innerHTML = `<p class="bulle-terme">${esc(e.terme)}${e.notation ? ` <span class="notation">${e.notation}</span>` : ''}</p>${corps}<p class="bulle-pied">Défini au nœud «&nbsp;${esc(D.noeuds[e.defini].titre)}&nbsp;» · ${pied}</p>`;
+    b.innerHTML = `<p class="bulle-terme">${esc(e.terme)}${e.notation ? ` <span class="notation">${e.notation}</span>` : ''}</p>${corps}${bulleCours(e)}<p class="bulle-pied">Défini au nœud «&nbsp;${esc(D.noeuds[e.defini].titre)}&nbsp;» · ${pied}</p>`;
     termeActif = el;
     if (!pret) chargerLexique(explicite).then(() => {
       if (termeActif === el && !b.hidden) { termeActif = null; montrerBulle(el); }
@@ -3450,6 +3462,7 @@ function pageChapitre(c, tous) {
   if (c.pdf) h += `<div class="lecteur-raccourci"><button type="button" data-vers-cote aria-label="Aller au sommaire, aux liens et aux exercices du chapitre">Sommaire et liens ↓</button></div>`;
   h += `</div><aside class="cote"><button type="button" class="cote-retour" data-vers-lecteur>↑ Revenir au PDF</button>`;
   h += `<div class="carte"><h3 class="titre-bloc">Sommaire</h3>${c.sommaire ? `<ol class="sommaire">${c.sommaire.map((x, i) => `<li>${c.pdf && c.sommaire_pages ? `<button type="button" class="vers-page" data-pdf-page="${c.sommaire_pages[i]}" title="Aller à la page ${c.sommaire_pages[i]} du PDF">${x}<span class="num-page">p. ${c.sommaire_pages[i]}</span></button>` : x}</li>`).join('')}</ol>` : '<p class="vide-note">Tiré du PDF une fois déposé.</p>'}</div>`;
+  h += `<div class="carte carte-definit" data-definit="${c.id}">${definitChapitre(c)}</div>`;   // termes définis (domaine apparence, §54)
   h += `<div class="carte"><h3 class="titre-bloc">Dans l'atlas</h3><div class="puces">${(c.theories || []).map(t => puce(t)).join('')}</div>`;
   if ((c.notions || []).length) h += `<p style="margin:10px 0 0;font-size:13.5px">Notions&nbsp;: ${(c.notions).map(terme).join(', ')}</p>`;
   h += `</div>`;
@@ -4244,6 +4257,65 @@ function impImprimer(quoi, preuves) {
     addEventListener('afterprint', fin, { once: true });
     (document.fonts?.ready || Promise.resolve()).then(() => setTimeout(() => window.print(), 50));
   }, () => { m.innerHTML = '<div class="imp-attente">Les textes n\'ont pas pu être chargés. Vérifiez la connexion, puis réessayez.</div>'; });
+}
+
+/* ---- Pont lexique ↔ cours (domaine À propos – apparence, 9 nov. 2026, MEMO_atlas_apropos.md §55)
+   Un terme du lexique de l'édifice qui est aussi défini dans un cours (même terme, à la casse et au pluriel près) :
+   sa fiche du lexique porte « Dans les cours », un lien par chapitre qui ouvre le PDF à la page ; sa bulle le dit en
+   une ligne. La correspondance est faite dans le navigateur, à l'arrivée de cours-termes.json. */
+const normTerme = t => String(t).toLowerCase().normalize('NFC').replace(/[’']/g, "'").replace(/\s+/g, ' ').trim().replace(/(s|x)$/, '');
+let coursParTerme = null;
+function coursDuTerme(terme) {
+  if (!Object.keys(TERMES_COURS).length) return [];
+  if (!coursParTerme) {
+    coursParTerme = new Map();
+    const ordre = (R.cours?.niveaux || []).map(n => n.id);
+    const chap = (R.cours?.cours || []).slice().sort((a, b) => ordre.indexOf(a.niveau) - ordre.indexOf(b.niveau) || (a.chapitre || 0) - (b.chapitre || 0));
+    for (const c of chap) for (const [t, p] of TERMES_COURS[c.id] || []) {
+      const k = normTerme(t), l = coursParTerme.get(k) || [];
+      if (!l.some(x => x.c === c)) l.push({ c, p });
+      coursParTerme.set(k, l);
+    }
+  }
+  return coursParTerme.get(normTerme(terme)) || [];
+}
+const lieuCoursCourt = c => `${niveauDe(c.niveau).titre}${c.chapitre ? `, ch. ${c.chapitre}` : ''}`;
+function remplirCoursLexique() {
+  document.querySelectorAll('.dans-cours[data-dc]').forEach(z => {
+    const e = D.lexique[z.dataset.dc], l = e ? coursDuTerme(e.terme) : [];
+    if (!l.length) return;
+    z.innerHTML = `Dans les cours ${l.map(({ c, p }) => `<a class="puce-cours" href="#cours/${c.id}" data-cours-page="${p}" title="${esc(rgTexte(c.titre))}, page ${p}">${esc(lieuCoursCourt(c))} · p. ${p}</a>`).join('')}`;
+    z.hidden = false;
+  });
+}
+function bulleCours(e) {
+  const l = coursDuTerme(e.terme);
+  if (!l.length) return '';
+  const { c, p } = l[0];
+  return `<p class="bulle-cours">Aussi défini dans le cours ${esc(lieuCoursCourt(c))} «&nbsp;${esc(rgTexte(c.titre))}&nbsp;», p. ${p}${l.length > 1 ? `, et dans ${l.length - 1} autre${l.length > 2 ? 's' : ''} cours` : ''}.</p>`;
+}
+// Lien vers un cours à une page : le chapitre s'ouvre, puis le lecteur va à la page (comme la recherche globale).
+document.addEventListener('click', ev => {
+  const a = ev.target.closest('a[data-cours-page]'); if (!a) return;
+  const pg = +a.dataset.coursPage;
+  if (location.hash === a.getAttribute('href')) { ev.preventDefault(); allerPage(pg); return; }
+  addEventListener('hashchange', () => setTimeout(() => allerPage(pg), 120), { once: true });
+});
+
+/* ---- Cours : « Ce que ce chapitre définit » (domaine À propos – apparence, 9 nov. 2026, MEMO_atlas_apropos.md §54)
+   Carte de la colonne du chapitre : les termes définis relevés dans le PDF (texte rouge, cours-termes.json), dans
+   l'ordre des pages ; un clic mène à la page dans le lecteur (data-pdf-page, comme le sommaire). Les douze premiers
+   sont montrés, les autres sous « Voir les n termes ». Tant que la liste n'est pas chargée, la carte la demande. */
+function definitChapitre(c) {
+  if (!c.pdf) return '';
+  const l = TERMES_COURS[c.id];
+  if (!l) { chargerTermesCours().then(() => { const z = document.querySelector(`.carte-definit[data-definit="${c.id}"]`); if (z && TERMES_COURS[c.id]) z.innerHTML = definitChapitre(c); }); return '<h3 class="titre-bloc">Ce que ce chapitre définit</h3><p class="vide-note">Chargement…</p>'; }
+  if (!l.length) return '';
+  const tri = [...l].sort((a, b) => a[1] - b[1]);
+  const puce = ([t, p]) => `<button type="button" class="def-ch" data-pdf-page="${p}" title="Aller à la page ${p} du PDF">${esc(t)}<span>p. ${p}</span></button>`;
+  const tete = tri.slice(0, 12).map(puce).join(''), reste = tri.slice(12);
+  return `<h3 class="titre-bloc">Ce que ce chapitre définit</h3><div class="defs-ch">${tete}</div>`
+    + (reste.length ? `<details class="defs-plus"><summary>Voir les ${tri.length} termes</summary><div class="defs-ch">${reste.map(puce).join('')}</div></details>` : '');
 }
 
 /* ---- Cours : symbole et ligne de couleur de chaque chapitre (domaine À propos – apparence)
