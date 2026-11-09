@@ -263,6 +263,19 @@ svg.sc .t { fill: none; stroke: var(--c); stroke-width: 1.5; stroke-linecap: rou
 svg.sc .t3 { fill: none; stroke: var(--c); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
 .kx { visibility: hidden; font-family: var(--f-mono); font-size: .9em; }   /* en attente de composition */
 .kx-erreur, .sans-katex .kx { visibility: visible; font-family: var(--f-mono); font-size: .9em; }
+/* Visionneuse de PDF de l'application installée (domaine À propos – apparence) */
+.vp { position: fixed; inset: 0; z-index: 80; display: flex; flex-direction: column; background: var(--papier); }
+.vp[hidden] { display: none; }
+html.vp-ouverte, html.vp-ouverte body { overflow: hidden; }
+.vp-barre { display: flex; align-items: center; gap: 10px; padding: max(8px, env(safe-area-inset-top)) 12px 8px; background: var(--surface); border-bottom: 1px solid var(--filet); font: 14px var(--f-ui); color: var(--encre-2); }
+.vp-barre button, .vp-barre a { flex: none; font: inherit; color: var(--encre); background: none; border: 1px solid var(--filet); border-radius: 8px; padding: 7px 11px; text-decoration: none; cursor: pointer; }
+.vp-barre .vp-retour { font-weight: 600; border-color: var(--encre-3); }
+.vp-titre { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.vp-num { flex: none; font-variant-numeric: tabular-nums; } .vp-num b { font-weight: 600; color: var(--encre); } .vp-num i { font-style: normal; }
+.vp-pages { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 8px 8px max(16px, env(safe-area-inset-bottom)); display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.vp-pages canvas { max-width: 100%; height: auto; background: #fff; box-shadow: 0 1px 3px rgb(0 0 0 / .2); }
+.vp-attente { margin: 40px 16px; font: 15px var(--f-ui); color: var(--encre-2); text-align: center; }
+@media (max-width: 480px) { .vp-titre { display: none; } }
 /* Recherche globale (domaine À propos – apparence) : loupe de l'en-tête, Ctrl K ou « / ». */
 .chercher-tout { flex: none; display: grid; place-items: center; width: 30px; height: 30px; padding: 0; margin-right: -16px; border: 0; border-radius: 8px; background: none; color: var(--encre-2); cursor: pointer; }
 body.en-rubrique .chercher-tout { margin-left: auto; }
@@ -5015,6 +5028,72 @@ if (/(^|\.)atlasjourdain\.fr$/.test(location.hostname)) {
   document.head.append(sc);
   addEventListener('hashchange', audienceCompter);
 }
+
+/* ---- Visionneuse de PDF de l'application installée (domaine À propos – apparence, 9 nov. 2026)
+   Installé sur l'écran d'accueil (iPhone surtout), le site n'a plus de barre de navigateur : un PDF du site ouvert
+   dans un nouvel onglet s'affichait en plein écran sans aucun moyen de revenir. Dans l'application seulement, les
+   liens vers un PDF du site (cours, feuilles, corrigés, sujets hébergés) ouvrent donc une visionneuse par-dessus la
+   page (PDF.js, déjà servi par le site), avec « ← Retour », la page courante, Partager et Télécharger. Le geste ou
+   le bouton « retour » du téléphone la ferme aussi (une entrée d'historique est ajoutée à l'ouverture). Un lien
+   #page=n ouvre à la page n. Les PDF des sites officiels gardent leur comportement (feuille Safari avec « OK »). */
+const VP = { el: null, url: '', ouvert: false };
+function vpOuvrir(url, page) {
+  if (!VP.el) {
+    VP.el = document.createElement('div'); VP.el.className = 'vp'; VP.el.setAttribute('role', 'dialog'); VP.el.setAttribute('aria-modal', 'true');
+    document.body.appendChild(VP.el);
+    VP.el.addEventListener('click', ev => {
+      if (ev.target.closest('[data-vp-retour]')) history.state?.vp ? history.back() : vpFermer();
+      else if (ev.target.closest('[data-vp-partager]')) navigator.share?.({ url: new URL(VP.url, location.href).href }).catch(() => {});
+    });
+  }
+  VP.url = url; VP.ouvert = true;
+  const chemin = url.replace(/^\//, '').split('#')[0];
+  const c = (R.cours?.cours || []).find(x => x.pdf === chemin);
+  const nom = c ? rgTexte(c.titre) : decodeURIComponent(chemin.split('/').pop().replace(/\.pdf.*$/, '')).replace(/[_-]+/g, ' ');
+  VP.el.innerHTML = `<div class="vp-barre"><button type="button" class="vp-retour" data-vp-retour>← Retour</button><span class="vp-titre">${esc(nom)}</span>`
+    + `<span class="vp-num">page <b>1</b> / <i>…</i></span>${navigator.share ? '<button type="button" data-vp-partager>Partager</button>' : ''}<a href="${url}" download>Télécharger</a></div><div class="vp-pages"><p class="vp-attente">Chargement du PDF…</p></div>`;
+  VP.el.hidden = false; document.documentElement.classList.add('vp-ouverte');
+  history.pushState({ ...(history.state || {}), vp: 1 }, '');
+  vpMonter(url, page || 1);
+}
+function vpFermer() {
+  if (!VP.ouvert) return;
+  VP.ouvert = false; VP.el.hidden = true; VP.el.innerHTML = ''; document.documentElement.classList.remove('vp-ouverte');
+}
+addEventListener('popstate', () => { if (VP.ouvert) vpFermer(); });
+async function vpMonter(url, page) {
+  const zone = VP.el.querySelector('.vp-pages'), num = VP.el.querySelector('.vp-num');
+  try {
+    await chargerScript(PDFJS + 'pdf.min.js');
+    pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS + 'pdf.worker.min.js';
+    const doc = await pdfjsLib.getDocument(url).promise;
+    if (!VP.ouvert || VP.url !== url) return;
+    zone.innerHTML = ''; num.querySelector('i').textContent = doc.numPages;
+    const largeur = Math.min(900, zone.clientWidth - 16), dpr = Math.min(2, devicePixelRatio || 1);
+    const obs = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) num.querySelector('b').textContent = e.target.dataset.page; }), { root: zone, rootMargin: '-45% 0px -45% 0px' });
+    for (let i = 1; i <= doc.numPages; i++) {
+      const pg = await doc.getPage(i);
+      const v = pg.getViewport({ scale: largeur / pg.getViewport({ scale: 1 }).width });
+      const c = document.createElement('canvas');
+      c.width = Math.floor(v.width * dpr); c.height = Math.floor(v.height * dpr); c.style.width = v.width + 'px';
+      c.dataset.page = i; c.setAttribute('role', 'img'); c.setAttribute('aria-label', `Page ${i}`);
+      zone.append(c); obs.observe(c);
+      if (i === page) c.scrollIntoView({ block: 'start' });
+      await pg.render({ canvasContext: c.getContext('2d'), viewport: v, transform: dpr !== 1 ? [dpr, 0, 0, dpr, 0, 0] : null }).promise;
+      if (!VP.ouvert || VP.url !== url) return;
+    }
+  } catch (e) {
+    zone.innerHTML = `<p class="vp-attente">Le PDF ne peut pas être affiché ici. <a href="${url}" download>Le télécharger</a>.</p>`;
+  }
+}
+document.addEventListener('click', ev => {
+  if (ev.defaultPrevented || ev.button || ev.metaKey || ev.ctrlKey || !appliInstallee()) return;
+  const a = ev.target.closest('a[href]'); if (!a || a.closest('.vp')) return;
+  const u = new URL(a.getAttribute('href'), location.href);
+  if (u.origin !== location.origin || !/\.pdf$/i.test(u.pathname)) return;
+  ev.preventDefault();
+  vpOuvrir(u.pathname + u.search, +((u.hash.match(/page=(\d+)/) || [])[1] || 1));
+});
 
 /* ---- Application installable (service worker et invitation à installer ; fichiers dans identite/) */
 // Le service worker n'est enregistré que sur le site publié (ou en local), jamais dans l'aperçu Claude.

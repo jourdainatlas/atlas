@@ -397,3 +397,14 @@ Mesures : site 704 → 308 Mo (branches 107 → 22, textes des exercices 137 →
 158 → 67, de l'édifice 113 → 58, exemples 38 → 8). Composition : 500 formules en 133 ms (440 ms à CPU ÷ 4, ordre
 d'un téléphone moyen), d'où la composition paresseuse. Vérifié : fiche, démonstration, lexique, cours, exercice et
 corrigé, feuille, annales, recherche, projection, impression, pages de lecture.
+
+## 53. Visionneuse de PDF de l'application installée (9 nov. 2026)
+
+Signalé par l'auteur : dans l'application installée sur l'écran d'accueil de l'iPhone, un PDF du site ouvert
+(`target="_blank"`) s'affichait en plein écran sans aucun moyen de revenir. Bloc « Visionneuse de PDF » du gabarit :
+**seulement quand `appliInstallee()`**, un clic sur un lien vers un PDF du même site (cours, feuilles, corrigés,
+sujets hébergés ; `download` compris) ouvre `.vp` par-dessus la page : barre « ← Retour », titre (titre du cours
+si le PDF en est un), page courante / total, Partager (si `navigator.share`), Télécharger ; pages dessinées par
+PDF.js (`/pdfjs/`). `history.pushState` à l'ouverture : le geste ou le bouton retour du téléphone la ferme
+(`popstate`). `#page=n` ouvre à la page n. Les PDF des sites officiels (annales) gardent leur comportement (feuille
+Safari avec « OK »). Dans un navigateur ordinaire, rien ne change.
