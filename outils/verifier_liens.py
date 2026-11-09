@@ -73,13 +73,19 @@ def main():
     par_dom = {}
     for u, c, m in res: par_dom.setdefault(dom(u), []).append((c, m))
     injoignables = {d for d, l in par_dom.items() if all(m and not c for c, m in l)}
-    casses = [x for x in echecs if dom(x[0]) not in injoignables]
+    # Sans code HTTP (refus, délai) sur un site qui répond par ailleurs : limitation des requêtes, pas un lien cassé.
+    # Seuls les vrais codes d'erreur (404, 410, 500…) comptent ; les autres sont listés à part, à revoir s'ils durent.
+    casses = [x for x in echecs if dom(x[0]) not in injoignables and x[1]]
+    douteux = [x for x in echecs if dom(x[0]) not in injoignables and not x[1]]
     l = [f'Contrôle du {time.strftime("%d/%m/%Y")} : {len(A)} adresses des annales, {len(casses)} lien(s) cassé(s) '
          f'après deux essais.', '']
     if injoignables:
         n_inj = sum(len(par_dom[d]) for d in injoignables)
         l += [f"Non vérifiés : {n_inj} lien(s) de {', '.join(sorted(injoignables))}, site qui refuse les connexions des "
               "serveurs de GitHub (il faut les vérifier à la main, depuis un navigateur).", '']
+    if douteux:
+        l += [f"À revoir s'ils reviennent : {len(douteux)} lien(s) sans réponse (refus ou délai) sur des sites qui répondent "
+              f"par ailleurs, sans doute une limitation des requêtes : " + ', '.join(sorted({dom(u) for u, _, _ in douteux})) + '.', '']
     if casses:
         l += ['| Sujet | Lien | Erreur |', '|---|---|---|']
         for u, c, m in sorted(casses, key=lambda x: A[x[0]][0]):
