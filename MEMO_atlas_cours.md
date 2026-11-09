@@ -499,3 +499,22 @@ fichier, et `--forcer` recalcule tout : on écrit donc dans un fichier temporair
 nouveau chapitre. Quand l'auteur signale un défaut, on corrige directement la liste du chapitre.
 État au 9 novembre : 42 entrées. Les chapitres de Seconde n'en ont pas, et `p-06`, `me-01`, `me-04`, `me-07`
 et `ap-01` à `ap-05` n'en ont pas non plus.
+
+### 35. MPSI : feuilles 12 à 14 mises à jour, chapitre 15 déposé (9 nov. 2026)
+
+Les feuilles `f-ma-12`, `f-ma-13` et `f-ma-14` ont reçu de nouveaux exercices : elles en comptent maintenant 67,
+72 et 85. Les nouveaux s'insèrent parmi les exercices de synthèse, ce qui décale les numéros suivants, et donc les
+identifiants `ma-1N-NN` de ces exercices. Les `EXTRA` de `meta_ma_12.py` et `meta_ma_13.py` ont été renumérotés
+en conséquence. Pour retrouver ce qui a changé, on compare les énoncés de l'ancienne et de la nouvelle conversion :
+à texte d'énoncé égal, c'est le même exercice.
+
+Le chapitre 15, « Dimension finie et rang », est déposé avec son cours de 12 pages et la feuille `f-ma-15` de
+60 exercices (`meta_ma_15.py`). Son entrée « À revoir avant » est `[ap-08, ap-06]`, et une nouveauté l'annonce.
+
+`tex2exos.developper` ajoute désormais une espace après une macro à arguments dont le développement finit par une
+commande, quand une lettre suit : `\ent{\frac{x}{T}}T` donnait `\rfloorT`, une erreur KaTeX.
+
+Faux termes du chapitre 15 dans la recherche : les formules en rouge de son cours contiennent des `\text{…}`
+(`base \iff libre \iff génératrice` au théorème 4, `injective \iff surjective \iff bijective` au théorème 10).
+`cours_termes.py` les relève comme termes. On ne peut pas les exclure par la liste, qui est globale : « base »,
+« libre » et « injective » sont de vrais termes dans d'autres chapitres. Le défaut est signalé à l'auteur.

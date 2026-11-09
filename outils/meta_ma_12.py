@@ -26,5 +26,5 @@ R = [
     (r'\\sigma\(|\\tau\(|diviseurs positifs', 'fonctions arithmétiques', ['z-premiers'], []),
 ]
 FOND = ['z-division']
-EXTRA = {59: (['équations diophantiennes', 'décomposition en facteurs premiers'], ['z-premiers'], ['nombre-premier']), 60: (['puissances parfaites', 'entiers premiers entre eux'], ['z-bezout', 'z-premiers'], ['pgcd']), 63: (['suites d\'entiers', 'congruences'], ['z-zn'], ['congruence'])}
+EXTRA = {63: (['équations diophantiennes', 'décomposition en facteurs premiers'], ['z-premiers'], ['nombre-premier']), 64: (['puissances parfaites', 'entiers premiers entre eux'], ['z-bezout', 'z-premiers'], ['pgcd']), 67: (['suites d\'entiers', 'congruences'], ['z-zn'], ['congruence'])}
 meta = fabriquer(R, PARTIES, FOND, EXTRA)

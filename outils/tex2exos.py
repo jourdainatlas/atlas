@@ -71,7 +71,7 @@ def developper(t, M):
                 if not ok: out.append(m.group(0)); i = m.end(); continue
                 r = corps
                 for k, a in enumerate(args): r = r.replace('#%d' % (k + 1), a)
-                if n == 0 and j < len(t) and t[j].isalpha(): r = r + ' '
+                if j < len(t) and t[j].isalpha() and (n == 0 or re.search(r'\\[A-Za-z]+$', r)): r = r + ' '   # \ent{x}T : « \rfloor T »
                 if r[:1].isalpha() and re.search(r'\\[A-Za-z]+$', t[max(0, m.start() - 40):m.start()]): r = ' ' + r
                 out.append(r); i = j
             out.append(t[i:]); t = ''.join(out)

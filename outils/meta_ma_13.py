@@ -30,5 +30,5 @@ R = [
     (r'\\sum', 'sommes', ['n-sommes'], []),
 ]
 FOND = ['pol-anneau']
-EXTRA = {59: (['polynômes positifs', 'sommes de deux carrés'], ['pol-irreductibles', 'c-dalembert'], ['polynome-irreductible']), 62: (['polynômes scindés', 'théorème de Rolle'], ['pol-derivee', 'pol-racines'], ['derivee-formelle'])}
+EXTRA = {55: (['coefficients binomiaux', 'polynômes à coefficients entiers'], ['pol-binome', 'pol-anneau'], ['anneau-polynomes']), 56: (['racines de l\'unité', 'produits de distances'], ['pol-racines', 'cx-exponentielle'], []), 61: (['polynômes positifs', 'sommes de deux carrés'], ['pol-irreductibles', 'c-dalembert'], ['polynome-irreductible']), 66: (['polynômes scindés', 'théorème de Rolle'], ['pol-derivee', 'pol-racines'], ['derivee-formelle'])}
 meta = fabriquer(R, PARTIES, FOND, EXTRA)
