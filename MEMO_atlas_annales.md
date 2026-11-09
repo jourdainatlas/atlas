@@ -44,7 +44,10 @@ domaines : algèbre, algèbre linéaire, arithmétique, les quatre d'analyse, pr
 numérique et combinatoire. Titres de domaine colorés selon la famille de l'édifice (champ `famille:`
 des domaines dans `annales-themes.yaml`, variable `--c-<famille>`) : algèbre et algèbre linéaire en orange
 (`alg`), arithmétique et numérique en bleu (`nb`), les quatre d'analyse et les probabilités en vert d'eau
-(`ana`), géométrie en violet (`geo`) ; filet à gauche et soulignement de la même couleur.
+(`ana`), géométrie en violet (`geo`) ; filet à gauche et soulignement de la même couleur. Audit WCAG AA du 9 nov. 2026 :
+l'orange `--c-alg` en texte de 13 px donnait 3,5:1 en clair ; le texte des titres est désormais
+`color-mix(in srgb, var(--dc) 72%, var(--encre))` (filet et soulignement inchangés). Contrastes calculés
+sur `--surface` : clair 5,5 (algèbre), 7,3 (nombres), 6,6 (analyse), 8,2 (géométrie) ; sombre 8,5 à 9,7.
 
 **Rubrique achevée (27 oct. 2026).** À la demande de l'auteur, la mention « En construction » est retirée :
 plus de badge dans le menu du logo, et la note d'usage de la présentation (`annalesInfo`, classe `ann-info`)
