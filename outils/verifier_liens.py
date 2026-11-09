@@ -59,6 +59,13 @@ def main():
     A = adresses()
     with concurrent.futures.ThreadPoolExecutor(max_workers=8) as ex:
         res = list(ex.map(verifier, A))
+    # Connexion refusée sans code HTTP sur un site qui répond par ailleurs : limitation du nombre de requêtes (cas de
+    # devenirenseignant.gouv.fr). Ces liens sont réessayés un par un, à 8 s d'intervalle.
+    for i, (u, c, m) in enumerate(res):
+        if m and not c:
+            time.sleep(8)
+            c2, m2 = essai(u)
+            if c2 and c2 < 400: res[i] = (u, c2, '')
     echecs = [(u, c, m) for u, c, m in res if m]
     # Un site dont aucune adresse ne répond, sans même un code HTTP (connexion refusée, délai), refuse en général les
     # serveurs de GitHub (cas de devenirenseignant.gouv.fr) : ses liens sont signalés à part, comme non vérifiés.
