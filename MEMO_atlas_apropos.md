@@ -476,3 +476,16 @@ centre) revient par l'historique et remet la position (deux fois, 250 puis 700 m
 la rubrique) ; la fiche du lexique d'où l'on venait est brièvement soulignée. Il disparaît si l'on quitte le chapitre
 autrement. Symbole `sym-index` (répertoire gris à onglets sur la tranche, sans lettres), dans le menu, le fil d'Ariane
 et la carte de l'index ; gris neutre comme Nouveautés et À propos.
+
+## 61. Cours : « À revoir avant » (9 nov. 2026)
+
+Carte de la colonne d'un chapitre, avant « Chapitres liés » (qui ne répète plus ces chapitres). Liste dans
+`rubriques/cours-prerequis.yaml` (`a_revoir: {chapitre: [chapitres]}`), **domaine de la conversation Cours**, qui fait
+foi et se corrige à la main. Règle de l'auteur, vérifiée par `construire.py` (erreur bloquante) : seulement des
+chapitres du **niveau scolaire juste en dessous** (Seconde pour la Première ; Première pour la Terminale, les Maths
+expertes et approfondies ; ces trois-là pour la Maths Sup ; Maths Sup pour le Master ; rien pour la Seconde).
+Proposition initiale : `outils/cours_prerequis.py` (fiche intérieure commune ou ancêtre dans l'édifice, fiches citées
+par plus du quart des chapitres ignorées, trois au plus ; refuse d'écraser le fichier sans `--forcer`), puis relue :
+retirés les liens faibles (« Notion de suite » proposée par les seules limites, « Espaces vectoriels » pour la logique,
+« Groupes » pour les polynômes…), ajoutés les évidents (Fonctions numériques avant la Dérivation et l'exponentielle,
+Pourcentages avant les suites, Trigonométrie avant la géométrie complexe). 42 chapitres, 74 renvois.

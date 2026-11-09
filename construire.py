@@ -1202,6 +1202,17 @@ def verifie_rubrique(nom, objet, ou):
         for x in objet: verifie_rubrique(nom, x, ou)
     elif isinstance(objet, str):
         verifie_refs(objet, f"rubriques/{nom} {ou}")
+# « À revoir avant » (rubriques/cours-prerequis.yaml, MEMO_atlas_apropos.md §61) : chapitres existants, et du niveau
+# scolaire juste en dessous seulement (règle de l'auteur, 9 nov. 2026).
+PRECEDENT = {'premiere': ['seconde'], 'terminale': ['premiere'], 'expertes': ['premiere'], 'approfondies': ['premiere'],
+             'ma': ['terminale', 'expertes', 'approfondies'], 'master': ['ma']}
+if 'cours-prerequis' in rubriques:
+    _niv = {c['id']: c.get('niveau') for c in (rubriques.get('cours', {}).get('cours') or [])}
+    for _c, _l in (rubriques['cours-prerequis'].get('a_revoir') or {}).items():
+        if _c not in _niv: erreur(f"rubriques/cours-prerequis : chapitre inconnu {_c}"); continue
+        for _x in _l or []:
+            if _x not in _niv: erreur(f"rubriques/cours-prerequis {_c} : chapitre inconnu {_x}")
+            elif _niv[_x] not in PRECEDENT.get(_niv[_c], []): erreur(f"rubriques/cours-prerequis {_c} : {_x} n'est pas du niveau juste en dessous")
 # Les exercices d'une feuille peuvent être rangés dans rubriques/exercices/<feuille>.yaml (une liste).
 # L'index du moteur des annales est rangé par session dans rubriques/annales-index/AAAA.yaml.
 if 'annales-index' in rubriques:

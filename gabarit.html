@@ -321,6 +321,7 @@ svg a:focus-visible { outline: none; } svg a:focus-visible rect { stroke-width: 
 .retour-renvoi[hidden] { display: none; }
 .retour-renvoi:hover { background: var(--encre-2); }
 .retour-repere { outline: 2px solid var(--r-cours); outline-offset: 3px; border-radius: 6px; transition: outline-color .6s; }
+
 /* Recherche globale (domaine À propos – apparence) : loupe de l'en-tête, Ctrl K ou « / ». */
 .chercher-tout { flex: none; display: grid; place-items: center; width: 30px; height: 30px; padding: 0; margin-right: -16px; border: 0; border-radius: 8px; background: none; color: var(--encre-2); cursor: pointer; }
 body.en-rubrique .chercher-tout { margin-left: auto; }
@@ -3510,7 +3511,15 @@ function pageChapitre(c, tous) {
   h += `<div class="carte"><h3 class="titre-bloc">Dans l'atlas</h3><div class="puces">${(c.theories || []).map(t => puce(t)).join('')}</div>`;
   if ((c.notions || []).length) h += `<p style="margin:10px 0 0;font-size:13.5px">Notions&nbsp;: ${(c.notions).map(terme).join(', ')}</p>`;
   h += `</div>`;
-  const lies = coursLies(c, tous);
+  // « À revoir avant » (domaine apparence, §61) : chapitres du niveau juste en dessous, liste de rubriques/cours-prerequis.yaml.
+  const avant = ((R['cours-prerequis'] || {}).a_revoir || {})[c.id] || [];
+  const avantC = avant.map(id => tous.find(x => x.id === id)).filter(Boolean);
+  if (avantC.length) {
+    h += `<div class="carte carte-avant"><h3 class="titre-bloc">À revoir avant</h3><ul class="cours-lies">`;
+    for (const x of avantC) h += `<li><a class="cours-lie" href="#cours/${x.id}"><span class="cl-lieu">${esc(niveauDe(x.niveau).titre)}${x.chapitre ? `, ch. ${x.chapitre}` : ''}</span><span class="cl-titre">${x.titre}</span></a></li>`;
+    h += `</ul></div>`;
+  }
+  const lies = coursLies(c, tous).filter(x => !avant.includes(x.id));
   if (lies.length) {
     h += `<div class="carte"><h3 class="titre-bloc">Chapitres liés</h3><ul class="cours-lies">`;
     for (const x of lies) h += `<li><a class="cours-lie" href="#cours/${x.id}"><span class="cl-lieu">${esc(niveauDe(x.niveau).titre)}${x.chapitre ? `, ch. ${x.chapitre}` : ''}</span><span class="cl-titre">${x.titre}</span></a></li>`;
