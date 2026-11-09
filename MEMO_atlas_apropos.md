@@ -450,3 +450,19 @@ lance chaque lundi à 5 h 17 UTC (ou à la main, onglet Actions) et ouvre ou met
 annales » du dépôt (GitHub prévient l'auteur par courriel), ou le ferme quand tout répond. Les corrections relèvent
 de la conversation Annales. Testé ici sur la lecture des adresses seulement (le réseau de cette session ne joint pas
 les sites des concours) : le premier vrai passage se fait sur GitHub.
+
+## 59. Accessibilité (9 nov. 2026)
+
+Audit axe-core (WCAG 2 A et AA) sur l'accueil, une fiche, Cours, un chapitre, Exercices, Annales, Nouveautés, À propos
+et Index, en clair et en sombre. Corrigé (domaine apparence) :
+- contrastes : `--encre-3` #858b96 → **#686e79** en clair (4,7:1 sur le papier), #7c838e → **#90979f** en sombre ;
+  `--corrige-filet` #3f8f63 → **#2b7550** en clair (onglet « Corrigé ») ; comptes des pastilles sans opacité, et lisibles
+  sur une pastille active ; pastilles « Ce que ce chapitre définit » sur fond blanc (≈ 390 éléments en défaut → 0) ;
+- carte de l'édifice de l'accueil : n'est plus un lien contenant des liens (div, clic hors bulle → édifice) ; SVG
+  `role="group"` ;
+- termes du lexique dans les formules : `tabindex="-1"` (ils étaient focalisables dans la partie aria-hidden de KaTeX) ;
+- séparateur du panneau : `aria-valuenow` (part du panneau en %), barres de difficulté `role="img"`, liste « Notion de
+  l'atlas » nommée ;
+- contour de focus visible au clavier pour tout lien, bouton et résumé (`:focus-visible`), et pour les bulles SVG.
+Reste, hors domaine : titres h4 orange des familles de concours dans les Annales (#d26d00 sur blanc, 3,5:1 ; à
+assombrir en #ad5900 par la conversation Annales).
