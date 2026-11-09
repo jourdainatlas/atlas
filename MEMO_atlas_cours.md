@@ -477,3 +477,25 @@ Si l'auteur signale un faux terme, on l'ajoute à `outils/cours-termes-exclus.tx
 reste de corriger le rouge dans la source LaTeX, ce qui relève de l'auteur, puisque cette conversation ne corrige
 pas les cours. Le programme, le passage de `rendu.mjs` qui écrit `site/cours-termes.json` et le code de la
 recherche dans `gabarit.html` ne se modifient pas ici.
+
+### 34. « À revoir avant » : `rubriques/cours-prerequis.yaml` (9 nov. 2026)
+
+La carte « À revoir avant » de la page d'un chapitre (domaine apparence, §61 de `MEMO_atlas_apropos.md`) lit
+`rubriques/cours-prerequis.yaml`, dont la seule clé `a_revoir` associe à un id de chapitre une liste de trois ids
+au plus (`t-05: [p-08, p-04]`). Ce fichier est du domaine Cours, il fait foi et se corrige à la main.
+
+**Règle de l'auteur**, vérifiée par `construire.py` (un renvoi fautif bloque la publication) : on ne renvoie qu'au
+niveau scolaire juste en dessous. La Première renvoie à la Seconde. La Terminale, les Maths expertes et les Maths
+approfondies renvoient à la Première. La Maths Sup renvoie à la Terminale, aux expertes et aux approfondies. Le
+Master renvoie à la Maths Sup. On ne renvoie jamais au même niveau ni à un niveau supérieur, et la Seconde n'a
+pas de renvoi. Pour un niveau nouveau (Maths Spé, qui renverra à la Maths Sup), il faut ajouter sa ligne à la table
+`PRECEDENT` de `construire.py` et à celle de `outils/cours_prerequis.py`. Ces deux fichiers sont du domaine
+apparence : il faut le signaler à l'auteur.
+
+**Au dépôt d'un chapitre**, on ajoute son entrée dans le même travail. Le critère est pédagogique : ce que l'élève
+doit avoir en tête avant de commencer, et non tout ce dont le chapitre dépend dans l'édifice. Pour une proposition
+de départ, lancer `python3 outils/cours_prerequis.py` après `sh construire.sh`. Le programme refuse d'écraser le
+fichier, et `--forcer` recalcule tout : on écrit donc dans un fichier temporaire, ou on ne reprend que l'entrée du
+nouveau chapitre. Quand l'auteur signale un défaut, on corrige directement la liste du chapitre.
+État au 9 novembre : 42 entrées. Les chapitres de Seconde n'en ont pas, et `p-06`, `me-01`, `me-04`, `me-07`
+et `ap-01` à `ap-05` n'en ont pas non plus.
