@@ -515,7 +515,13 @@ projection et les pages de lecture ne changent pas.
 pastille à côté du titre (`.exo[data-suivi]`), jauge sur la carte de chaque feuille et dans le bandeau d'une
 feuille ouverte (`suiviJauge`, cachée tant qu'aucun exercice de la feuille n'est marqué). Stockage :
 localStorage « atlas-suivi », `{ id: [état, feuille] }`, propre au navigateur, jamais envoyé. Couleurs : vert du
-corrigé pour « fait », gris d'encre pour « à revoir » (le rouge reste réservé).
+corrigé pour « fait », ambre pour « à revoir » (jetons `--revoir` et `--revoir-fond`, clair et sombre ; le rouge
+reste réservé).
+
+**Filtre « Mon suivi »** (colonne de gauche, après « Type d'activité ») : puces « À faire » (exercice sans marque),
+« Fait », « À revoir », cumulables, avec leur compte (`etatExo.suivi`, critère `suivi` de `filtrerExercices`,
+effacé par la corbeille). Marquer un exercice met les comptes à jour sur place sans redessiner la liste, pour que
+le corrigé ouvert le reste ; la liste filtrée ne se recalcule qu'au clic suivant sur un filtre.
 
 **Écarté.** Le sommaire latéral des pages longues : les fiches de l'édifice n'ont pas d'intertitres (énoncé,
 démonstration, remarques) et s'affichent dans le panneau à côté du graphe ; l'À propos a déjà son sommaire.
