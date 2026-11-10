@@ -567,3 +567,9 @@ application/xml (sitemap), `nouveautes.xml` en application/rss+xml. Mentions lé
 **Reste à faire** dans quelques semaines : retirer `essai.atlasjourdain.fr` (Mes sites, certificat, zone DNS) pour
 éviter un double du site ; retirer les jobs GitHub Pages de publier.yml (le job `ovh` dépend alors directement de la
 construction, qui devra téléverser le site par actions/upload-artifact) et faire désactiver Pages par l'auteur.
+
+## 65. Accueil, encadré « En prépa » : « S'entraîner » filtré sur Maths Sup (10 nov. 2026)
+
+Le lien porte `data-niveau-exos` = premier niveau de prépa (`prepa[0]`, aujourd'hui `ma`, Maths Sup – MPSI) : le
+gestionnaire existant de #rubrique ouvre la banque d'exercices, vue « Par exercice », avec ce seul niveau coché
+(1 081 exercices sur 2 698). Quand Maths Spé aura des exercices, décider s'il faut cocher tous les niveaux de prépa.
