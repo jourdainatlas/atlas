@@ -557,3 +557,19 @@ d'exercices. Décision de l'auteur (10 nov.) : ce paragraphe ne va pas sur le si
 du cours, et le PDF de la feuille les rappelle. On le laisse donc de côté à la conversion, sans le signaler.
 Symboles validés le 10 novembre : `permutation` (`ma-17`, trois éléments envoyés par le cycle (1 2 3)) et
 `escalier` (`ma-18`, quatre marches sous un arc de parabole exact, chacune touchant la courbe à son extrémité gauche).
+
+### 38. Publication par OVHcloud (10 nov. 2026)
+
+Depuis le 10 novembre, www.atlasjourdain.fr est servi par l'hébergement OVHcloud, et non plus par GitHub Pages
+(§64 de `MEMO_atlas_apropos.md`, et `MEMO_atlas.md`). Le travail ne change pas : construire, valider, pousser.
+Le workflow « Publier ATLAS » a trois jobs :
+- `construire` ;
+- `publier`, la publication GitHub Pages gardée en secours ;
+- `ovh`, la mise en ligne réelle. **C'est ce job qui doit réussir.**
+
+Une publication n'annule plus la précédente : elle peut rester « queued » quelques minutes derrière celle d'une
+autre conversation, et c'est normal. Pour suivre une publication, on attend la fin du run, puis on vérifie la
+conclusion du job `ovh` avec `gh run view <id> --json jobs`, puis la page en ligne. La limite de 1 Go pour le site
+tient tant que GitHub Pages reste en secours (le site fait environ 160 Mo au 10 nov.). On ne modifie pas
+`outils/publier_ovh.py`, `identite/htaccess-ovh` ni le job `ovh` de `.github/workflows/publier.yml`, qui relèvent
+du domaine apparence.
