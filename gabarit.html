@@ -1251,6 +1251,8 @@ a.case.present:hover { background: color-mix(in srgb, var(--c-ana) 26%, var(--su
 .case.attente { border: 1px dashed var(--choix); color: var(--choix); background: var(--choix-fond); }
 span.case { cursor: default; display: inline-grid; place-items: center; }
 span.case:hover { border-style: dashed; color: inherit; }
+.legende-annales a { color: inherit; text-decoration: underline; text-decoration-color: var(--filet); text-underline-offset: 3px; }
+.legende-annales a:hover { text-decoration-color: currentColor; }
 .grille .rapports { margin-top: 6px; font-size: 12px; line-height: 1.5; }
 .grille .rapports a { color: var(--encre-2); text-decoration: underline; text-decoration-color: var(--filet); text-underline-offset: 3px; }
 .grille .hors { color: var(--encre-3, var(--encre-2)); opacity: .55; font-size: 13px; padding-left: 4px; }
@@ -3447,9 +3449,9 @@ function pageAccueil() {
   h += carte('#exercices', 'Exercices', nbExos, 'exercices corrigés', "Les feuilles d'exercices et leurs corrigés, exercice par exercice. On cherche par thème, par difficulté, par type d'activité ou par notion de l'atlas.", `${pl(feuilles.length, 'feuille', 'feuilles')} en ligne`);
   const ann = R.annales || {}, sujAnn = (ann.sujets || []).filter(x => x.sujet);
   const ansAnn = [...new Set(sujAnn.map(x => x.annee))].sort((a, b) => a - b);
-  const nbConc = (ann.familles || []).reduce((n, f) => n + (f.concours || []).length, 0);
+  const nbConc = (ann.familles || []).filter(f => !f.cases_sujets).reduce((n, f) => n + (f.concours || []).length, 0);   // les centres du bac ne sont pas des concours
   h += sujAnn.length
-    ? carte('#annales', 'Annales', sujAnn.length, 'sujets en ligne', "Les sujets d'écrit de mathématiques des concours d'écoles d'ingénieurs (X-ENS, Mines-Ponts, Centrale, CCINP, e3a) et de l'enseignement (CAPES, agrégations), avec les rapports du jury, et un moteur qui retrouve les parties de sujets traitant d'une notion.", `${nbConc} concours · sessions ${ansAnn[0]} à ${ansAnn[ansAnn.length - 1]}`)
+    ? carte('#annales', 'Annales', sujAnn.length, 'sujets en ligne', "Les sujets d'écrit de mathématiques des concours d'écoles d'ingénieurs (X-ENS, Mines-Ponts, Centrale, CCINP, e3a) et de l'enseignement (CAPES, agrégations), avec les rapports du jury, ceux du baccalauréat avec leurs corrigés, et un moteur qui retrouve les parties de sujets traitant d'une notion.", `${nbConc} concours et le bac · sessions ${ansAnn[0]} à ${ansAnn[ansAnn.length - 1]}`)
     : carte('#annales', 'Annales', '—', 'à venir', "Les sujets d'écrit des concours d'ingénieurs et de l'enseignement, rangés par concours, par année et par épreuve, avec leurs rapports de jury.", 'En préparation', true);
   h += `</div></section>`;
 
@@ -3794,35 +3796,42 @@ function pageAnnales(chemin) {
   h += `<div class="annales-barre"><div class="segments" role="group" aria-label="Famille de concours">${fams.map(f => `<button type="button" data-famille="${f.id}" aria-pressed="${f.id === fam.id}">${f.titre}</button>`).join('')}</div>`;
   if (fam.filieres) h += `<div class="puces-chips" role="group" aria-label="Filière">${fam.filieres.map(x => `<button type="button" class="chip" data-filiere="${x}" aria-pressed="${x === etatAnn.filiere}">${x}</button>`).join('')}</div>`;
   h += `<div class="segments vue-ann" role="group" aria-label="Affichage"><button type="button" data-vue-ann="grille" aria-pressed="${etatAnn.vue === 'grille'}"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h5v5H2zM9 2h5v5H9zM2 9h5v5H2zM9 9h5v5H9z"/></svg>Grille</button><button type="button" data-vue-ann="liste" aria-pressed="${etatAnn.vue === 'liste'}"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 3h2v2H2zM6 3h8v2H6zM2 7h2v2H2zM6 7h8v2H6zM2 11h2v2H2zM6 11h8v2H6z"/></svg>Liste</button></div>`;
-  const ans = fam.annees;
+  // années de la filière (l'épreuve anticipée de Première n'existe que depuis 2026)
+  const ans = (fam.annees_filiere || {})[fil] || fam.annees;
+  const srcFam = (fam.sources || {})[fil];
   if (etatAnn.vue === 'liste') {
     h += `</div>` + vueListeAnnales(fam, fil);
   } else {
   h += `<div class="defil-annees" role="group" aria-label="Faire défiler les années"><span class="bout">${ans[0]}</span><button type="button" data-defil="-1" aria-label="Années plus récentes">‹</button><input type="range" min="0" max="1000" step="1" value="${Math.round(etatAnn.defil * 1000)}" aria-label="Faire défiler les années de ${ans[0]} à ${ans[ans.length - 1]}"><button type="button" data-defil="1" aria-label="Années plus anciennes">›</button><span class="bout">${ans[ans.length - 1]}</span><span class="visible" aria-live="polite"></span></div>`;
-  h += `</div><div class="carte grille-wrap"><table class="grille"><thead><tr><th>Concours</th>${fam.annees.map(a => `<th data-an="${a}">${a}</th>`).join('')}</tr></thead><tbody>`;
+  h += `</div><div class="carte grille-wrap"><table class="grille"><thead><tr><th>${fam.cases_sujets ? 'Centre' : 'Concours'}</th>${ans.map(a => `<th data-an="${a}">${a}</th>`).join('')}</tr></thead><tbody>`;
   for (const c of fam.concours) {
     // une épreuve est un libellé, ou {nom, annees} pour une épreuve qui n'a existé que certaines années
     const epsTout = epreuvesDe(c).map(e => typeof e === 'string' ? { nom: e } : e);
     if (!epsTout.length) continue;
+    // familles où chaque case est un sujet publié (baccalauréat) : sigle déclaré par épreuve, ligne omise si vide
+    const courts = Object.fromEntries(epsTout.filter(e => e.court).map(e => [e.nom, String(e.court)]));
+    if (fam.cases_sujets && !ans.some(an => epsTout.some(e => trouver(c, an, e.nom)))) continue;
     const nomC = c.titre.replace(/<[^>]+>/g, '');
     const anPlage = l => l.length > 1 ? `${Math.min(...l)}–${Math.max(...l)}` : l[0];
-    h += `<tr><th scope="row">${c.titre}<small>${epsTout.map(e => esc(e.nom) + (e.annees ? ` (${anPlage(e.annees)})` : '')).join(' · ')}</small></th>`;
-    for (const an of fam.annees) {
-      const eps = epsTout.filter(e => !e.annees || e.annees.includes(an)).map(e => e.nom);
+    h += `<tr><th scope="row">${c.titre}${fam.cases_sujets ? '' : `<small>${epsTout.map(e => esc(e.nom) + (e.annees ? ` (${anPlage(e.annees)})` : '')).join(' · ')}</small>`}</th>`;
+    for (const an of ans) {
+      const eps = epsTout.filter(e => !e.annees || e.annees.includes(an)).map(e => e.nom).filter(ep => !fam.cases_sujets || trouver(c, an, ep));
       // épreuve inexistante cette année-là (filière ou concours créés plus tard)
       const debut = Math.max((fam.debut || {})[fil] || 0, c.debut || 0);
       if (an < debut) { h += `<td><span class="hors" title="${esc(fil && (fam.debut || {})[fil] > (c.debut || 0) ? `Filière ${fil} créée en ${debut}` : `Concours créé en ${debut}`)}">—</span></td>`; continue; }
-      const court = (ep, i) => eps.length === 1 ? 'M' : (ep.match(/\b([A-Z0-9])$/) || [, String(i + 1)])[1];
+      const court = (ep, i) => courts[ep] || (eps.length === 1 ? 'M' : (ep.match(/\b([A-Z0-9])$/) || [, String(i + 1)])[1]);
       const cases = eps.map((ep, i) => {
-        const x = trouver(c, an, ep), lib = `${nomC}${fil ? ' ' + fil : ''} ${an}, ${ep}`;
-        if (x && x.sujet) return `<a class="case present" href="${esc(x.sujet)}" target="_blank" rel="noopener" title="${esc(lib)} : ${x.source ? `sujet (PDF), source : ${esc(x.source.nom)}` : 'sujet officiel (PDF)'}">${court(ep, i)}</a>`;
+        const x = trouver(c, an, ep), lib = `${nomC}${fil ? ' ' + fil : ''} ${an}, ${ep}${x && x.date ? `, ${x.date}${x.lieu ? ' (' + x.lieu + ')' : ''}` : ''}`;
+        const srcX = x && (x.source || srcFam);
+        if (x && x.sujet) return `<a class="case present" href="${esc(x.sujet)}" target="_blank" rel="noopener" title="${esc(lib)} : ${srcX ? `sujet (PDF), source : ${esc(srcX.nom)}` : 'sujet officiel (PDF)'}">${court(ep, i)}</a>`;
         if (x && x.attente) { const cle = [fam.id, fil || '', c.id, an, ep].join('|'); return `<button type="button" class="case attente" data-cle="${esc(cle)}" aria-pressed="${etatAnn.cle === cle}" title="${esc(lib)} : ${esc(x.attente)}">${court(ep, i)}</button>`; }
         return `<span class="case" title="${esc(lib)} : pas encore référencé">${court(ep, i)}</span>`;
       }).join('');
-      // rapports du jury de la case (un seul lien s'il est commun aux épreuves)
-      const rap = eps.map((ep, i) => [court(ep, i), (trouver(c, an, ep) || {}).rapport]).filter(r => r[1]);
+      // rapports du jury de la case (un seul lien s'il est commun aux épreuves), ou corrigés (baccalauréat)
+      const rap = eps.map((ep, i) => { const x = trouver(c, an, ep) || {}; return [court(ep, i), x.rapport || x.corrige]; }).filter(r => r[1]);
       const uniques = [...new Set(rap.map(r => r[1]))];
-      const liens = uniques.length === 1 && rap.length === eps.length ? `<a href="${esc(uniques[0])}" target="_blank" rel="noopener">rapport du jury</a>`
+      const liens = uniques.length === 1 && rap.length === eps.length ? `<a href="${esc(uniques[0])}" target="_blank" rel="noopener">${fam.corriges ? 'corrigé' : 'rapport du jury'}</a>`
+        : fam.corriges ? 'corrigés ' + rap.map(([k, u]) => `<a href="${esc(u)}" target="_blank" rel="noopener" title="Corrigé ${esc(k)}">${k}</a>`).join(' · ')
         : rap.map(([k, u]) => `<a href="${esc(u)}" target="_blank" rel="noopener">rapport ${k}</a>`).join(' · ');
       // provenance des PDF qui ne viennent pas directement du site officiel
       const srcs = [...new Map(eps.map(ep => (trouver(c, an, ep) || {}).source).filter(Boolean).map(o => [o.url, o])).values()];
@@ -3835,7 +3844,10 @@ function pageAnnales(chemin) {
     h += `</tr>`;
   }
   h += `</tbody></table></div>`;
-  h += `<div class="legende-annales"><span><span class="case present" aria-hidden="true">1</span> sujet, ouvert dans un nouvel onglet (sa provenance est indiquée sous la case s'il ne vient pas du site officiel)</span><span><span class="case attente" aria-hidden="true">1</span> pas de PDF officiel individuel : cliquer pour le détail</span><span><span class="case" aria-hidden="true">1</span> pas encore référencé</span><span>— : épreuve inexistante cette année-là (filière ou concours créés plus tard).</span><span>Les lettres et chiffres désignent les épreuves de chaque concours.</span></div>`;
+  // sigles des épreuves d'une famille à cases-sujets, tirés des épreuves déclarées
+  const sigles = new Map(); if (fam.cases_sujets) for (const e of fam.concours.flatMap(c => epreuvesDe(c))) if (e.court) { const k = String(e.court); if (!sigles.has(k)) sigles.set(k, []); if (!sigles.get(k).includes(e.nom)) sigles.get(k).push(e.nom); }
+  if (fam.cases_sujets) h += `<div class="legende-annales"><span><span class="case present" aria-hidden="true">1</span> sujet, ouvert dans un nouvel onglet ; le jour et le centre exacts s'affichent au survol.</span><span>${[...sigles].map(([k, l]) => `<b>${esc(k)}</b>&nbsp;: ${esc(l.join(' ou ').toLowerCase())}`).join(' ; ')}.</span>${srcFam ? `<span>Sujets et corrigés&nbsp;: annales de l'<a href="${esc(srcFam.url)}" target="_blank" rel="noopener">${esc(srcFam.nom)}</a> (Association des professeurs de mathématiques de l'enseignement public).</span>` : ''}</div>`;
+  else h += `<div class="legende-annales"><span><span class="case present" aria-hidden="true">1</span> sujet, ouvert dans un nouvel onglet (sa provenance est indiquée sous la case s'il ne vient pas du site officiel)</span><span><span class="case attente" aria-hidden="true">1</span> pas de PDF officiel individuel : cliquer pour le détail</span><span><span class="case" aria-hidden="true">1</span> pas encore référencé</span><span>— : épreuve inexistante cette année-là (filière ou concours créés plus tard).</span><span>Les lettres et chiffres désignent les épreuves de chaque concours.</span></div>`;
   }
   if (etatAnn.cle) {
     const [fid, fl, cid, an, ep] = etatAnn.cle.split('|');
@@ -3853,20 +3865,25 @@ function pageAnnales(chemin) {
 }
 
 /* ---- Annales : vue Liste et fiches détaillées (description par thème d'un sujet) */
+// source commune à toute une famille (baccalauréat : APMEP), par filière
+function sourceFamAnnales(x) { const f = ((R.annales || {}).familles || []).find(f => (f.concours || []).some(c => c.id === x.concours)); return f && (f.sources || {})[x.filiere]; }
 const slugSujet = x => normRech([x.concours, x.filiere, x.annee, x.epreuve].filter(Boolean).join(' ')).replace(/ /g, '-');
 function entreeDeSlug(sl) { return ((R.annales || {}).sujets || []).find(x => slugSujet(x) === sl); }
 function ficheSujetHTML(x, complet) {
   const I = indexAnnales();
   const cf = I.famDe[x.concours] || {}, d = x.sujet && I.parUrl[x.sujet], sl = slugSujet(x);
-  const titreConc = `${esc(cf.titre || x.concours)}${x.filiere ? ` · ${x.filiere}` : ''} · ${x.annee} · ${esc(x.epreuve)}`;
+  const titreConc = `${esc(cf.titre || x.concours)}${x.filiere ? ` · ${x.filiere}` : ''} · ${x.annee} · ${esc(x.epreuve)}${x.date ? ` · ${esc(x.date)}${x.lieu ? ` (${esc(x.lieu)})` : ''}` : ''}`;
+  const srcF = sourceFamAnnales(x);
   let h = `<article class="fiche-ann carte${complet ? ' complete' : ''}" data-slug="${sl}">`;
   h += `<div class="fa-tete"><span class="res-conc">${titreConc}</span><span class="fa-liens">`;
   if (x.sujet) h += `<a class="bouton plein fa-pdf" href="${esc(x.sujet)}" target="_blank" rel="noopener">Sujet (PDF)</a>`;
   if (x.rapport) h += `<a class="bouton" href="${esc(x.rapport)}" target="_blank" rel="noopener">Rapport du jury</a>`;
+  if (x.corrige) h += `<a class="bouton" href="${esc(x.corrige)}" target="_blank" rel="noopener">Corrigé${srcF ? ' ' + esc(srcF.nom) : ''}</a>`;
   if (!complet && d) h += `<a class="bouton" href="#annales/sujet/${sl}" title="Contenu du sujet, partie par partie (adresse à partager)">Contenu</a>`;
   h += aProposSignalBouton(`Annales › ${titreConc}`, `${ADRESSE_SITE}annales/sujet/${sl}/`);
   h += `</span></div>`;
   if (x.source) h += `<p class="fa-source">PDF hébergé hors du site officiel — source&nbsp;: <a href="${esc(x.source.url)}" target="_blank" rel="noopener">${esc(x.source.nom)}</a></p>`;
+  else if (srcF) h += `<p class="fa-source">Sujet${x.corrige ? ' et corrigé' : ''} publiés par l'<a href="${esc(srcF.url)}" target="_blank" rel="noopener">${esc(srcF.nom)}</a>.</p>`;
   if (x.attente) h += `<p class="fa-source">${esc(x.attente)}</p>`;
   if (!d) { h += `<p class="fa-vide">Description par thème à venir : les sujets de cette session n'ont pas encore été étiquetés.</p></article>`; return h; }
   h += `<h4>${annalesF(esc(d.nom || ''), d)}</h4>`;
@@ -3890,7 +3907,7 @@ function vueListeAnnales(fam, fil) {
   const L = (A.sujets || []).filter(x => x.concours in ordre && (!fil || x.filiere === fil) && (x.sujet || x.attente));
   const ans = [...new Set(L.map(x => x.annee))].sort((a, b) => b - a);
   const nbDecrits = L.filter(x => x.sujet && indexAnnales().parUrl[x.sujet]).length;
-  let h = `<div class="liste-ann"><p class="la-bilan">${L.length} sujet${L.length > 1 ? 's' : ''}${fil ? ` en filière ${fil}` : ''}, dont ${nbDecrits} avec leur description par thème. Le bouton « Sujet (PDF) » ouvre le sujet en un clic ; le détail des parties se déplie. <a href="#" data-aller-rech>Chercher un thème ↓</a></p>`;
+  let h = `<div class="liste-ann"><p class="la-bilan">${L.length} sujet${L.length > 1 ? 's' : ''}${fil ? ` en ${fam.nom_filiere ? '' : 'filière '}${fil}` : ''}, dont ${nbDecrits} avec leur description par thème. Le bouton « Sujet (PDF) » ouvre le sujet en un clic ; le détail des parties se déplie. <a href="#" data-aller-rech>Chercher un thème ↓</a></p>`;
   const anDecrits = new Set(L.filter(x => x.sujet && indexAnnales().parUrl[x.sujet]).map(x => x.annee));
   h += `<nav class="la-annees" aria-label="Aller à une session">${ans.map(a => `<button type="button" class="chip${anDecrits.has(a) ? ' decrite' : ''}" data-aller-an="${a}" title="${anDecrits.has(a) ? 'Session décrite par thème' : 'Description par thème à venir'}">${a}</button>`).join('')}</nav>`;
   for (const an of ans) {
@@ -4127,12 +4144,12 @@ function blocRechercheAnnales() {
   if (famCh) {
     const avec = new Set(I.sujets.flatMap(x => x.cases.map(c => c.concours)));
     const cs = (famCh.concours || []).filter(c => avec.has(c.id));
-    const libre = famCh.filieres ? 'Toutes les écoles' : 'Tous les concours';
-    h += `<select id="ann-conc" aria-label="${famCh.filieres ? 'École' : 'Concours'}"><option value="">${libre}</option>${cs.map(c => `<option value="${c.id}"${etatRech.conc === c.id ? ' selected' : ''}>${esc(c.titre.replace(/<[^>]+>/g, ''))}</option>`).join('')}</select>`;
+    const libre = famCh.tous_concours || (famCh.filieres ? 'Toutes les écoles' : 'Tous les concours');
+    h += `<select id="ann-conc" aria-label="${famCh.nom_concours || (famCh.filieres ? 'École' : 'Concours')}"><option value="">${libre}</option>${cs.map(c => `<option value="${c.id}"${etatRech.conc === c.id ? ' selected' : ''}>${esc(c.titre.replace(/<[^>]+>/g, ''))}</option>`).join('')}</select>`;
   }
   // filières de la famille choisie (aucune pour les concours de l'enseignement : le menu disparaît)
   const filsAnn = [...new Set(fams.filter(f => !etatRech.fam || f.id === etatRech.fam).flatMap(f => f.filieres || []))];
-  if (filsAnn.length) h += `<select id="ann-fil" aria-label="Filière"><option value="">Toutes filières</option>${filsAnn.map(f => `<option${etatRech.fil === f ? ' selected' : ''}>${f}</option>`).join('')}</select>`;
+  if (filsAnn.length) h += `<select id="ann-fil" aria-label="Filière"><option value="">${famCh && famCh.nom_filiere ? 'Tous niveaux' : 'Toutes filières'}</option>${filsAnn.map(f => `<option${etatRech.fil === f ? ' selected' : ''}>${f}</option>`).join('')}</select>`;
   const opts = v => anTous.map(y => `<option${String(y) === v ? ' selected' : ''}>${y}</option>`).join('');
   h += `<span class="rech-periode">de <select id="ann-de" aria-label="Première session"><option value="">${anTous[0]}</option>${opts(etatRech.de)}</select> à <select id="ann-a" aria-label="Dernière session"><option value="">${anTous[anTous.length - 1]}</option>${opts(etatRech.a)}</select></span></div>`;
   h += `<div id="ann-res" aria-live="polite">${resultatsAnnales()}</div></section>`;
@@ -4790,7 +4807,7 @@ function rgChercher() {
   const ann = vise ? (A.sujets || []).filter(x => x.sujet).map(x => {
     const t = `${titreConc[x.concours] || x.concours}${x.filiere ? ' ' + x.filiere : ''} ${x.annee} · ${x.epreuve}`;
     const s = rgNote(t, `${x.concours} annales sujet concours`, mots, q);
-    return { s: s < 0 ? s : s + (+x.annee - 2000) / 10, titre: t, det: x.rapport ? 'sujet et rapport du jury' : 'sujet', href: `#annales/sujet/${slugSujet(x)}` };
+    return { s: s < 0 ? s : s + (+x.annee - 2000) / 10, titre: t, det: x.rapport ? 'sujet et rapport du jury' : x.corrige ? 'sujet et corrigé' : 'sujet', href: `#annales/sujet/${slugSujet(x)}` };
   }) : [];
   groupes.push(['annales', 'Annales', garder(ann, 5)]);
   let h = '', i = 0;

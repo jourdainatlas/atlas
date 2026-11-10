@@ -264,14 +264,17 @@ export function pagesLecture(ctx) {
   for (const x of liste) {
     const sl = slug(x); if (vus.has(sl)) continue; vus.add(sl);
     const c = concours[x.concours] || { titre: x.concours, famille: {} };
-    const titreC = `${texteBrut(c.titre)}${x.filiere ? ` ${x.filiere}` : ''} ${x.annee} — ${x.epreuve}`;
+    // familles à préfixe (baccalauréat : « Bac Métropole Terminale 2024 — Jour 1, 19 juin 2024 »)
+    const titreC = `${c.famille.prefixe ? c.famille.prefixe + ' ' : ''}${texteBrut(c.titre)}${x.filiere ? ` ${x.filiere}` : ''} ${x.annee} — ${x.epreuve}${x.date ? `, ${x.date}${x.lieu ? ` (${x.lieu})` : ''}` : ''}`;
+    const srcF = (c.famille.sources || {})[x.filiere];
     const d = x.sujet && parUrl[x.sujet];
     let h = `<article class="fiche l-ann"><p class="sur-titre"><span class="sorte">Annales</span><span>${esc(texteBrut(c.famille.titre || ''))}</span></p>`;
     h += `<h1>${esc(titreC)}</h1>`;
     if (d?.nom) h += `<p class="l-meta">${F(d.nom, d)}${d.pages ? ` · ${d.pages} pages` : ''}</p>`;
     const abs = u => /^https?:/.test(u) ? u : '/' + String(u).replace(/^\//, '');
-    h += `<div class="l-boutons">${x.sujet ? `<a class="plein" href="${attr(abs(x.sujet))}" rel="noopener">Sujet (PDF)</a>` : ''}${x.rapport ? `<a href="${attr(abs(x.rapport))}" rel="noopener">Rapport du jury</a>` : ''}</div>`;
+    h += `<div class="l-boutons">${x.sujet ? `<a class="plein" href="${attr(abs(x.sujet))}" rel="noopener">Sujet (PDF)</a>` : ''}${x.rapport ? `<a href="${attr(abs(x.rapport))}" rel="noopener">Rapport du jury</a>` : ''}${x.corrige ? `<a href="${attr(abs(x.corrige))}" rel="noopener">Corrigé${srcF ? ' ' + esc(srcF.nom) : ''}</a>` : ''}</div>`;
     if (x.source) h += `<p class="l-meta">PDF hébergé hors du site officiel — source : <a href="${attr(x.source.url)}" rel="noopener">${esc(x.source.nom)}</a></p>`;
+    else if (srcF) h += `<p class="l-meta">Sujet${x.corrige ? ' et corrigé' : ''} publiés par l'<a href="${attr(srcF.url)}" rel="noopener">${esc(srcF.nom)}</a>.</p>`;
     if (x.attente) h += `<p class="l-meta">${esc(x.attente)}</p>`;
     let noeudsVus = new Set();
     if (d) {
@@ -286,7 +289,7 @@ export function pagesLecture(ctx) {
       if (noeudsVus.size) h += `<div class="liens"><div><h3>Dans l'édifice</h3><div class="puces">${[...noeudsVus].slice(0, 30).map(puce).join('')}</div></div></div>`;
     } else h += `<p class="l-meta">La description par thème de ce sujet est à venir.</p>`;
     h += '</article>';
-    const desc = d ? `${titreC}. ${Ft(d.nom || '', d)}. ${Ft(d.apercu || '', d)}` : `${titreC} : sujet d'écrit de mathématiques${x.rapport ? ' et rapport du jury' : ''}.`;
+    const desc = d ? `${titreC}. ${Ft(d.nom || '', d)}. ${Ft(d.apercu || '', d)}` : `${titreC} : sujet d'écrit de mathématiques${x.rapport ? ' et rapport du jury' : x.corrige ? ' et corrigé' : ''}.`;
     page({ chemin: `annales/sujet/${sl}/`, titre: `ATLAS – Annales : ${titreC}`, description: desc, ancre: `annales/sujet/${sl}`,
       fil: [{ name: 'Annales', href: '/annales/' }, { name: titreC }], corps: h });
   }
