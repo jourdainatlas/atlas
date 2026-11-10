@@ -167,7 +167,10 @@ classer centre, jour, remplacement ou secours, vérifier la date sur l'en-tête 
 **Lignes repliables et champ `corrige_pdf` (10 nov. 2026, soir).** À la demande de l'auteur, chaque centre du
 bac est une ligne fermée par défaut (champ de famille `lignes_repliables: true`) : un bouton « + » dans la
 colonne des centres la déplie (« − » la replie), le « + » de l'en-tête déplie ou replie tout ; fermée, la ligne
-indique seulement le nombre de sujets de chaque année (état `etatAnn.lignes`). Le lien du corrigé s'appelait
+montre une pastille verte par sujet (miniature des cases ; référence du sujet au survol ; un clic sur les
+pastilles ouvre la ligne). Le bouton est à droite du nom du centre ; l'en-tête porte « tout ouvrir + » (le
+texte disparaît sous 640 px) ; une phrase au-dessus de la grille explique le « + » et les pastilles (état
+`etatAnn.lignes`). Le lien du corrigé s'appelait
 d'abord `corrige` : `rendu.mjs` met ce nom de champ en forme comme un texte riche (corrigés des exercices),
 l'adresse devenait `<p>https://…</p>` et le lien menait à la page 404 du site. Le champ s'appelle désormais
 `corrige_pdf`. Règle : un champ d'adresse ne prend jamais un nom de `RICHES` ou `COURTS` (`rendu.mjs`).

@@ -1251,9 +1251,18 @@ a.case.present:hover { background: color-mix(in srgb, var(--c-ana) 26%, var(--su
 .case.attente { border: 1px dashed var(--choix); color: var(--choix); background: var(--choix-fond); }
 span.case { cursor: default; display: inline-grid; place-items: center; }
 span.case:hover { border-style: dashed; color: inherit; }
-table.grille .pli-tete { display: flex; align-items: flex-start; gap: 8px; }
+table.grille .pli-tete { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+table.grille button.pli-tout { flex: none; display: inline-flex; align-items: center; gap: 6px; margin: -3px 0 -3px 0; padding: 2px 3px 2px 8px; border: 1px solid var(--encre-3); border-radius: 6px; background: var(--surface); color: var(--encre-2); font: 500 11.5px/1.2 var(--f-mono); letter-spacing: 0; text-transform: none; cursor: pointer; }
+table.grille button.pli-tout:hover { color: var(--encre); border-color: var(--encre); }
+.pli-signe { display: inline-grid; place-items: center; width: 16px; height: 16px; border-radius: 4px; background: color-mix(in srgb, var(--encre) 10%, transparent); color: var(--encre); font: 600 13px/1 var(--f-mono); }
+@media (max-width: 640px) { table.grille .pli-txt { display: none; } table.grille button.pli-tout { padding: 2px 3px; } }
+.aide-pli { margin: 14px 0 8px; font-size: 13px; color: var(--encre-2); }
+.aide-pli .pli-signe { width: 18px; height: 18px; border: 1px solid var(--encre-3); background: var(--surface); vertical-align: -3px; }
+.grille .pastilles { display: inline-flex; flex-wrap: wrap; gap: 3px; padding: 3px 0; cursor: pointer; }
+.grille .pastille { width: 13px; height: 10px; border-radius: 3px; border: 1px solid var(--c-ana); background: color-mix(in srgb, var(--c-ana) 30%, var(--surface)); }
+.grille .pastilles:hover .pastille { background: color-mix(in srgb, var(--c-ana) 55%, var(--surface)); }
 table.grille button.pli-ann { flex: none; display: inline-grid; place-items: center; width: 22px; height: 22px; margin: -2px 8px 0 0; padding: 0; vertical-align: middle; border: 1px solid var(--encre-3); border-radius: 6px; background: var(--surface); color: var(--encre); font: 600 15px/1 ui-monospace, monospace; cursor: pointer; }
-table.grille .pli-tete button.pli-ann { margin: -1px 0 0; }
+table.grille .pli-tete button.pli-ann { margin: -1px 0 0; order: 2; }
 table.grille button.pli-ann:hover { border-color: var(--encre); }
 .grille .pli-ann:focus-visible { outline: 2px solid var(--accent, currentColor); outline-offset: 2px; }
 .grille tr.replie th, .grille tr.replie td { padding-top: 8px; padding-bottom: 8px; }
@@ -3810,7 +3819,7 @@ function pageAnnales(chemin) {
     h += `</div>` + vueListeAnnales(fam, fil);
   } else {
   h += `<div class="defil-annees" role="group" aria-label="Faire défiler les années"><span class="bout">${ans[0]}</span><button type="button" data-defil="-1" aria-label="Années plus récentes">‹</button><input type="range" min="0" max="1000" step="1" value="${Math.round(etatAnn.defil * 1000)}" aria-label="Faire défiler les années de ${ans[0]} à ${ans[ans.length - 1]}"><button type="button" data-defil="1" aria-label="Années plus anciennes">›</button><span class="bout">${ans[ans.length - 1]}</span><span class="visible" aria-live="polite"></span></div>`;
-  h += `</div><div class="carte grille-wrap"><table class="grille"><thead><tr><th>${fam.lignes_repliables ? (() => { const tout = fam.concours.every(c => etatAnn.lignes.has(c.id)); return `<button type="button" class="pli-ann" data-pli="*" aria-expanded="${tout}" aria-label="${tout ? 'Replier' : 'Déplier'} toutes les lignes" title="${tout ? 'Tout replier' : 'Tout déplier'}">${tout ? '−' : '+'}</button>`; })() : ''}${fam.cases_sujets ? 'Centre' : 'Concours'}</th>${ans.map(a => `<th data-an="${a}">${a}</th>`).join('')}</tr></thead><tbody>`;
+  h += `</div>${fam.lignes_repliables ? `<p class="aide-pli">Chaque centre est replié : le bouton <span class="pli-signe" aria-hidden="true">+</span> au bout de sa ligne l'ouvre et montre ses sujets ; les pastilles signalent les sujets disponibles (le survol en donne la référence).</p>` : ''}<div class="carte grille-wrap"><table class="grille"><thead><tr><th>${fam.lignes_repliables ? (() => { const tout = fam.concours.every(c => etatAnn.lignes.has(c.id)); return `<span class="pli-tete"><span>${fam.cases_sujets ? 'Centre' : 'Concours'}</span><button type="button" class="pli-tout" data-pli="*" aria-expanded="${tout}" aria-label="${tout ? 'Tout fermer' : 'Tout ouvrir'}" title="${tout ? 'Fermer' : 'Ouvrir'} toutes les lignes"><span class="pli-txt">${tout ? 'tout fermer' : 'tout ouvrir'}</span><span class="pli-signe" aria-hidden="true">${tout ? '−' : '+'}</span></button></span>`; })() : (fam.cases_sujets ? 'Centre' : 'Concours')}</th>${ans.map(a => `<th data-an="${a}">${a}</th>`).join('')}</tr></thead><tbody>`;
   for (const c of fam.concours) {
     // une épreuve est un libellé, ou {nom, annees} pour une épreuve qui n'a existé que certaines années
     const epsTout = epreuvesDe(c).map(e => typeof e === 'string' ? { nom: e } : e);
@@ -3822,15 +3831,16 @@ function pageAnnales(chemin) {
     const anPlage = l => l.length > 1 ? `${Math.min(...l)}–${Math.max(...l)}` : l[0];
     // lignes repliables (baccalauréat) : fermées par défaut, ouvertes par le bouton « + » de la colonne des centres
     const ouverte = !fam.lignes_repliables || etatAnn.lignes.has(c.id);
-    const pli = fam.lignes_repliables ? `<button type="button" class="pli-ann" data-pli="${c.id}" aria-expanded="${ouverte}" aria-label="${ouverte ? 'Replier' : 'Déplier'} la ligne ${esc(nomC)}">${ouverte ? '−' : '+'}</button>` : '';
-    h += `<tr${ouverte ? '' : ' class="replie"'}><th scope="row">${pli ? `<span class="pli-tete">${pli}<span>${c.titre}</span></span>` : c.titre}${fam.cases_sujets ? '' : `<small>${epsTout.map(e => esc(e.nom) + (e.annees ? ` (${anPlage(e.annees)})` : '')).join(' · ')}</small>`}</th>`;
+    const pli = fam.lignes_repliables ? `<button type="button" class="pli-ann" data-pli="${c.id}" aria-expanded="${ouverte}" aria-label="${ouverte ? 'Replier' : 'Déplier'} la ligne ${esc(nomC)}" title="${ouverte ? 'Refermer' : 'Ouvrir'} : sujets de ${esc(nomC)}">${ouverte ? '−' : '+'}</button>` : '';
+    h += `<tr${ouverte ? '' : ' class="replie"'}><th scope="row">${pli ? `<span class="pli-tete"><span>${c.titre}</span>${pli}</span>` : c.titre}${fam.cases_sujets ? '' : `<small>${epsTout.map(e => esc(e.nom) + (e.annees ? ` (${anPlage(e.annees)})` : '')).join(' · ')}</small>`}</th>`;
     for (const an of ans) {
       const eps = epsTout.filter(e => !e.annees || e.annees.includes(an)).map(e => e.nom).filter(ep => !fam.cases_sujets || trouver(c, an, ep));
       // épreuve inexistante cette année-là (filière ou concours créés plus tard)
       const debut = Math.max((fam.debut || {})[fil] || 0, c.debut || 0);
       if (an < debut) { h += `<td><span class="hors" title="${esc(fil && (fam.debut || {})[fil] > (c.debut || 0) ? `Filière ${fil} créée en ${debut}` : `Concours créé en ${debut}`)}">—</span></td>`; continue; }
-      if (!ouverte) { const n = eps.length; h += `<td>${n ? `<span class="nb-replie">${n} sujet${n > 1 ? 's' : ''}</span>` : ''}</td>`; continue; }
       const court = (ep, i) => courts[ep] || (eps.length === 1 ? 'M' : (ep.match(/\b([A-Z0-9])$/) || [, String(i + 1)])[1]);
+      // ligne fermée : une pastille par sujet (miniature des cases), référence au survol ; un clic ouvre la ligne
+      if (!ouverte) { h += `<td>${eps.length ? `<span class="pastilles" data-pli="${c.id}">${eps.map((ep, i) => { const x = trouver(c, an, ep) || {}; return `<span class="pastille" title="${esc(`${court(ep, i)} — ${nomC}${fil ? ' ' + fil : ''} ${an}, ${ep}${x.date ? `, ${x.date}${x.lieu ? ' (' + x.lieu + ')' : ''}` : ''}`)}"></span>`; }).join('')}</span>` : ''}</td>`; continue; }
       const cases = eps.map((ep, i) => {
         const x = trouver(c, an, ep), lib = `${nomC}${fil ? ' ' + fil : ''} ${an}, ${ep}${x && x.date ? `, ${x.date}${x.lieu ? ' (' + x.lieu + ')' : ''}` : ''}`;
         const srcX = x && (x.source || srcFam);
