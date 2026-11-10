@@ -570,6 +570,6 @@ Le workflow « Publier ATLAS » a trois jobs :
 Une publication n'annule plus la précédente : elle peut rester « queued » quelques minutes derrière celle d'une
 autre conversation, et c'est normal. Pour suivre une publication, on attend la fin du run, puis on vérifie la
 conclusion du job `ovh` avec `gh run view <id> --json jobs`, puis la page en ligne. La limite de 1 Go pour le site
-tient tant que GitHub Pages reste en secours (le site fait environ 160 Mo au 10 nov.). On ne modifie pas
+tient tant que GitHub Pages reste en secours (le site construit fait environ 380 Mo au 10 nov.). On ne modifie pas
 `outils/publier_ovh.py`, `identite/htaccess-ovh` ni le job `ovh` de `.github/workflows/publier.yml`, qui relèvent
 du domaine apparence.
