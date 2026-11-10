@@ -501,3 +501,21 @@ Pourcentages avant les suites, Trigonométrie avant la géométrie complexe). 42
 
 Idée écartée par l'auteur (9 nov. 2026) : « exercice au hasard » / « exercice du jour » (bouton M'entraîner,
 encadré d'accueil). Ne pas la reproposer.
+
+## 63. Corrigé question par question ; suivi des exercices (10 nov. 2026)
+
+**Corrigé.** À l'ouverture d'un corrigé dans la banque d'exercices, seule la première question est montrée ;
+« Question suivante (k sur n) » dévoile la suivante, « Tout le corrigé » le reste. Le découpage est celui de la
+projection, mis en commun dans `etapesCorrige(C, parBloc)` : un bloc qui commence par « 2. », « (b) » ou « b) »
+ouvre une étape. Sans marque de question, le corrigé s'ouvre en entier (la projection, elle, garde une étape par
+bloc). Le découpage se fait dans le DOM au premier `toggle` (`corrEtapes`, `corrMaj`) : `e.corrige`, la
+projection et les pages de lecture ne changent pas.
+
+**Suivi.** Boutons « ✓ Fait » et « ↻ À revoir » au pied de chaque exercice (second clic : retire la marque),
+pastille à côté du titre (`.exo[data-suivi]`), jauge sur la carte de chaque feuille et dans le bandeau d'une
+feuille ouverte (`suiviJauge`, cachée tant qu'aucun exercice de la feuille n'est marqué). Stockage :
+localStorage « atlas-suivi », `{ id: [état, feuille] }`, propre au navigateur, jamais envoyé. Couleurs : vert du
+corrigé pour « fait », gris d'encre pour « à revoir » (le rouge reste réservé).
+
+**Écarté.** Le sommaire latéral des pages longues : les fiches de l'édifice n'ont pas d'intertitres (énoncé,
+démonstration, remarques) et s'affichent dans le panneau à côté du graphe ; l'À propos a déjà son sommaire.

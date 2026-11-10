@@ -1169,6 +1169,26 @@ button.lien-simple { border: 0; background: none; padding: 0; cursor: pointer; f
 .exo .corrige .contenu { font-family: var(--f-texte); font-size: 16px; line-height: 1.55; padding: 12px 16px 6px;
   background: var(--corrige-fond); border-left: 3px solid var(--corrige-filet); border-radius: 0 6px 6px 6px; }
 .exo .corrige .contenu p { margin: 0 0 .6em; }
+/* Corrigé question par question, suivi des exercices (domaine À propos – apparence, MEMO_atlas_apropos.md §63) */
+.corr-etape + .corr-etape { border-top: 1px dashed color-mix(in srgb, var(--corrige-filet) 35%, transparent); padding-top: .6em; }
+.corr-suite { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin: 4px 0 10px; font-family: var(--f-ui); font-size: 13.5px; }
+.corr-suite .bouton { font-size: 13.5px; padding: 5px 12px; color: var(--corrige-filet); border-color: color-mix(in srgb, var(--corrige-filet) 45%, transparent); background: var(--surface); }
+.corr-suite .bouton:hover { border-color: var(--corrige-filet); }
+.corr-suite .cs-n { color: var(--encre-3); font-weight: 400; margin-left: 4px; font-size: 12.5px; }
+.exo-suivi { display: flex; gap: 6px; }
+.exo-suivi button { font: inherit; font-size: 12.5px; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--filet); background: var(--surface); color: var(--encre-2); cursor: pointer; }
+.exo-suivi button:hover { border-color: var(--encre-3); color: var(--encre); }
+.exo-suivi [data-suivi="fait"][aria-pressed="true"] { background: var(--corrige-fond); border-color: var(--corrige-filet); color: var(--corrige-filet); font-weight: 600; }
+.exo-suivi [data-suivi="revoir"][aria-pressed="true"] { background: var(--trame); border-color: var(--encre-2); color: var(--encre); font-weight: 600; }
+.exo[data-suivi] .exo-tete h3::after { font-family: var(--f-ui); font-size: 12px; font-weight: 600; margin-left: 10px; padding: 2px 8px; border-radius: 999px; vertical-align: 2px; }
+.exo[data-suivi="fait"] .exo-tete h3::after { content: "✓ fait"; background: var(--corrige-fond); color: var(--corrige-filet); }
+.exo[data-suivi="revoir"] .exo-tete h3::after { content: "↻ à revoir"; background: var(--trame); color: var(--encre-2); }
+.suivi-jauge { display: flex; align-items: center; gap: 10px; font-family: var(--f-ui); font-size: 12.5px; color: var(--encre-2); }
+.suivi-jauge[hidden] { display: none; }
+.sj-barre { display: flex; flex: 1; min-width: 70px; max-width: 220px; height: 6px; border-radius: 3px; background: var(--trame); overflow: hidden; }
+.sj-f { background: var(--corrige-filet); }
+.sj-r { background: var(--encre-3); }
+.bandeau-filtre .suivi-jauge { flex: 1 1 160px; }
 .feuilles { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
 .niveau-exos + .niveau-exos { margin-top: 28px; }
 .niveaux-exos { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
@@ -3610,6 +3630,7 @@ function vueFeuilles(E, liste) {
       h += `<div><div class="repartition" title="Répartition par difficulté">${f.etoiles.map((k, i) => k ? `<span style="width:${100 * k / tot}%;background:${couleurs[i]}"></span>` : '').join('')}</div>`;
       h += `<div class="repartition-legende" style="margin-top:6px">${f.etoiles.map((k, i) => k ? `<span><i class="pastille-diff" style="background:${couleurs[i]}"></i>${difficulte(i + 1)} ${k}</span>` : '').join('')}<span>${f.nombre} exercices</span></div></div>`;
     } else h += `<p class="vide-note" style="margin:0">Feuille à venir.</p>`;
+    if (f.etoiles) h += suiviJauge(f);
     if (f.parties) h += `<ol class="parties">${f.parties.map(x => `<li>${x}</li>`).join('')}</ol>`;
     h += `<div class="actions">${statut(f.statut)}${f.pdf_enonce ? lienPdf(f.pdf_enonce, 0, 'Énoncés PDF') : '<a class="bouton" aria-disabled="true">Énoncés PDF</a>'}${f.pdf_corrige ? lienPdf(f.pdf_corrige, 0, 'Corrigés PDF') : '<a class="bouton" aria-disabled="true">Corrigés PDF</a>'}`;
     if (exosEnLigne(f)) h += `<a class="bouton plein" href="#exercices/feuille/${f.id}">Voir les exercices</a>`;
@@ -3718,7 +3739,7 @@ function vueExercices(E, enChargement) {
   h += '</aside><div class="resultats">';
   const actifs = etatExo.q || etatExo.themes.size || etatExo.diff.size || etatExo.types.size || etatExo.niveaux.size;
   if (etatExo.noeud) h += `<div class="bandeau-filtre">Exercices liés à ${puce(etatExo.noeud)}<a class="lien-simple" href="#exercices" data-effacer="1" style="margin-left:auto">Retirer ce filtre</a></div>`;
-  if (etatExo.feuille) h += `<div class="bandeau-filtre">Feuille : ${feuilleDe(etatExo.feuille).titre} (${esc(niveauDe(feuilleDe(etatExo.feuille).niveau).titre)})<a class="lien-simple" href="#exercices" data-effacer="1" style="margin-left:auto">Retirer ce filtre</a></div>`;
+  if (etatExo.feuille) h += `<div class="bandeau-filtre">Feuille : ${feuilleDe(etatExo.feuille).titre} (${esc(niveauDe(feuilleDe(etatExo.feuille).niveau).titre)})${suiviJauge(feuilleDe(etatExo.feuille))}<a class="lien-simple" href="#exercices" data-effacer="1" style="margin-left:auto">Retirer ce filtre</a></div>`;
   if (etatExo.ex) h += `<div class="bandeau-filtre">Un seul exercice affiché<a class="lien-simple" href="#exercices" data-effacer="1" style="margin-left:auto">Voir toute la banque</a></div>`;
   h += `<div class="resultats-tete"><span>${garde.length} ${garde.length > 1 ? 'exercices' : 'exercice'}${actifs ? ` sur ${contexte.length}` : ''}</span>${actifs ? '<button type="button" class="lien-simple" data-reinit="1">Effacer la recherche et les filtres</button>' : ''}</div>`;
   for (const e of garde.slice(0, etatExo.montres)) h += carteExercice(e, enChargement);
@@ -3730,12 +3751,12 @@ function vueExercices(E, enChargement) {
 }
 function carteExercice(e, enChargement) {
   const f = feuilleDe(e.feuille);
-  let h = `<article class="exo carte" id="ex-${e.id}"><div class="exo-tete"><h3><a class="lien-exo" href="#exercices/ex/${e.id}" title="Lien vers cet exercice">Exercice ${e.numero}</a>${e.titre ? ` <span class="exo-titre">${e.titre}</span>` : ''}</h3>${e.etoiles ? difficulte(e.etoiles) : ''}${(e.types || []).map(t => `<span class="etiquette-type">${esc(t)}</span>`).join('')}${aProposSignalBouton(`Exercice ${e.numero} (${e.id}) — ${niveauDe(f.niveau).titre}${f.chapitre ? `, chapitre ${f.chapitre}` : ''}, ${f.titre}`, `${ADRESSE_SITE}exercices/${e.id}/`)}${pjBouton(e)}</div>`;
+  let h = `<article class="exo carte" id="ex-${e.id}"${suiviDe(e.id) ? ` data-suivi="${suiviDe(e.id)}"` : ''}><div class="exo-tete"><h3><a class="lien-exo" href="#exercices/ex/${e.id}" title="Lien vers cet exercice">Exercice ${e.numero}</a>${e.titre ? ` <span class="exo-titre">${e.titre}</span>` : ''}</h3>${e.etoiles ? difficulte(e.etoiles) : ''}${(e.types || []).map(t => `<span class="etiquette-type">${esc(t)}</span>`).join('')}${aProposSignalBouton(`Exercice ${e.numero} (${e.id}) — ${niveauDe(f.niveau).titre}${f.chapitre ? `, chapitre ${f.chapitre}` : ''}, ${f.titre}`, `${ADRESSE_SITE}exercices/${e.id}/`)}${pjBouton(e)}</div>`;
   h += `<div class="exo-meta">${esc(niveauDe(f.niveau).titre)}${f.chapitre ? `, chapitre ${f.chapitre}` : ''} — ${f.titre}${e.partie ? ` · ${e.partie}` : ''}</div>`;
   h += e.enonce ? `<div class="exo-enonce">${e.enonce}</div>` : `<p class="vide-note">${enChargement ? 'Chargement de l\'énoncé…' : ''}</p>`;
   if (e.source) h += `<p class="source-exo">Source : ${esc(e.source)}</p>`;
   if (e.corrige) h += `<details class="corrige"><summary>Corrigé</summary><div class="contenu">${e.corrige}</div></details>`;
-  h += `<div class="exo-pied"><div class="notions">${(e.mots_cles || []).map(m => `<button type="button" class="mot-cle" data-filtre="theme" value="${esc(m)}" aria-pressed="${etatExo.themes.has(m)}">${esc(m)}</button>`).join('')}</div>`;
+  h += `<div class="exo-pied">${suiviBoutons(e)}<div class="notions">${(e.mots_cles || []).map(m => `<button type="button" class="mot-cle" data-filtre="theme" value="${esc(m)}" aria-pressed="${etatExo.themes.has(m)}">${esc(m)}</button>`).join('')}</div>`;
   h += `<div class="exo-liens">${lienPdf(f.pdf_enonce, e.page_enonce, `Énoncé PDF${e.page_enonce ? `, p. ${e.page_enonce}` : ''}`)}${lienPdf(f.pdf_corrige, e.page_corrige, `Corrigé PDF${e.page_corrige ? `, p. ${e.page_corrige}` : ''}`)}</div></div>`;
   if ((e.noeuds || []).length || (e.notions || []).length) h += `<div class="exo-atlas"><span>Dans l'atlas :</span>${(e.noeuds || []).map(n => puce(n)).join('')}${(e.notions || []).map(terme).join(' ')}</div>`;
   return h + '</article>';
@@ -4522,6 +4543,76 @@ function symboleChapitre(c) {
    visible en colonne. → / Espace / Page suivante : étape suivante ; ← / Page précédente : étape précédente ;
    C : tout le corrigé ; E : retour à l'énoncé ; T : clair ou sombre (au départ, le thème du site) ; Échap :
    quitter. Un exercice à la fois (choix de l'auteur). Rien n'est cliquable dans la projection. */
+// Étapes d'un corrigé, communes à la projection et au corrigé révélé question par question (§63) : un bloc qui
+// commence par « 2. », « (b) » ou « b) » ouvre une étape, les blocs suivants (calculs, formules, conclusion) s'y
+// rattachent. Sans marque de question : une étape par bloc si parBloc (projection), sinon une seule étape.
+function etapesCorrige(C, parBloc) {
+  let blocs = [...C.children];
+  if (blocs.length === 1 && blocs[0].children.length > 1 && !/katex|formule|kx/.test(blocs[0].className)) blocs = [...blocs[0].children];
+  const marque = b => /^\s*(\d+\s*\.|\(\s*[a-z]{1,4}\s*\)|[a-z]{1,3}\))/i.test(b.textContent);
+  let etapes = [];
+  for (const b of blocs) (marque(b) || !etapes.length ? etapes.push([b]) : etapes[etapes.length - 1].push(b));
+  if (etapes.length < 2) etapes = parBloc ? blocs.map(b => [b]) : [blocs];
+  return etapes;
+}
+
+/* ---- Corrigé question par question et suivi des exercices (domaine À propos – apparence, MEMO_atlas_apropos.md §63)
+   Corrigé : à l'ouverture, seule la première question est montrée ; « Question suivante » dévoile la suivante,
+   « Tout le corrigé » le reste. Un corrigé sans marque de question s'ouvre en entier. Les données ne changent pas
+   (la projection et la page de lecture lisent e.corrige tel quel).
+   Suivi : « ✓ Fait » ou « ↻ À revoir » sur chaque exercice, retenu dans le navigateur du visiteur (localStorage
+   « atlas-suivi » : { id: [état, feuille] }, jamais envoyé) ; jauge sur la carte de chaque feuille et dans le
+   bandeau d'une feuille ouverte, dès qu'un exercice de la feuille est marqué. Un second clic retire la marque. */
+function corrEtapes(d) {
+  if (d.dataset.etapes) return;
+  d.dataset.etapes = '1';
+  const C = d.querySelector('.contenu'), et = etapesCorrige(C, false);
+  if (et.length < 2) return;
+  et.forEach((g, i) => { const w = document.createElement('div'); w.className = 'corr-etape'; g[0].before(w); for (const b of g) w.appendChild(b); if (i) w.hidden = true; });
+  const s = document.createElement('div'); s.className = 'corr-suite'; C.appendChild(s);
+  corrMaj(d);
+}
+function corrMaj(d) {
+  const E = [...d.querySelectorAll('.corr-etape')], k = E.filter(x => !x.hidden).length, s = d.querySelector('.corr-suite');
+  s.hidden = k >= E.length;
+  s.innerHTML = k < E.length ? `<button type="button" class="bouton" data-corr="1">Question suivante <span class="cs-n">${k + 1}&nbsp;sur&nbsp;${E.length}</span></button><button type="button" class="lien-simple" data-corr="tout">Tout le corrigé</button>` : '';
+}
+document.addEventListener('toggle', ev => { const d = ev.target; if (d.open && d.matches?.('.exo details.corrige')) corrEtapes(d); }, true);
+document.addEventListener('click', ev => {
+  const b = ev.target.closest('[data-corr]'); if (!b) return;
+  const d = b.closest('details.corrige'), E = [...d.querySelectorAll('.corr-etape')];
+  if (b.dataset.corr === 'tout') E.forEach(x => { x.hidden = false; }); else { const x = E.find(y => y.hidden); if (x) x.hidden = false; }
+  if (typeof composerDans === 'function') composerDans(d, true);
+  corrMaj(d);
+  d.querySelector('[data-corr="1"]')?.focus({ preventScroll: true });
+});
+const SUIVI = 'atlas-suivi';
+let suiviCache = null;
+function suiviLire() {
+  if (!suiviCache) { try { suiviCache = JSON.parse(localStorage.getItem(SUIVI) || '{}') || {}; } catch { suiviCache = {}; } }
+  return suiviCache;
+}
+const suiviDe = id => (suiviLire()[id] || [])[0] || '';
+const suiviBoutons = e => { const s = suiviDe(e.id);
+  return `<div class="exo-suivi" role="group" aria-label="Où j'en suis sur cet exercice"><button type="button" data-suivi="fait" data-suivi-id="${e.id}" data-suivi-f="${e.feuille}" aria-pressed="${s === 'fait'}" title="Marquer comme fait (retenu dans ce navigateur)">✓ Fait</button><button type="button" data-suivi="revoir" data-suivi-id="${e.id}" data-suivi-f="${e.feuille}" aria-pressed="${s === 'revoir'}" title="Marquer à revoir (retenu dans ce navigateur)">↻ À revoir</button></div>`; };
+function suiviJauge(f) {
+  let a = 0, r = 0;
+  for (const [, v] of Object.entries(suiviLire())) if (v[1] === f.id) (v[0] === 'fait' ? a++ : r++);
+  const n = Math.max(f.nombre || 0, a + r), pc = x => n ? (100 * x / n).toFixed(1) : 0;
+  return `<div class="suivi-jauge" data-jauge-f="${f.id}"${a || r ? '' : ' hidden'} title="Votre progression sur cette feuille, retenue dans ce navigateur"><span class="sj-barre"><span class="sj-f" style="width:${pc(a)}%"></span><span class="sj-r" style="width:${pc(r)}%"></span></span><span class="sj-txt">${a}&nbsp;/&nbsp;${n} ${a > 1 ? 'faits' : 'fait'}${r ? ` · ${r}&nbsp;à revoir` : ''}</span></div>`;
+}
+document.addEventListener('click', ev => {
+  const b = ev.target.closest('[data-suivi]'); if (!b) return;
+  const S = suiviLire(), id = b.dataset.suiviId, f = b.dataset.suiviF, k = b.dataset.suivi;
+  if (suiviDe(id) === k) delete S[id]; else S[id] = [k, f];
+  try { localStorage.setItem(SUIVI, JSON.stringify(S)); } catch { /* navigation privée : la marque vaut pour la page */ }
+  const art = b.closest('.exo'), s = suiviDe(id);
+  if (s) art.dataset.suivi = s; else delete art.dataset.suivi;
+  art.querySelectorAll('[data-suivi]').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.suivi === s)));
+  const F = feuilleDe(f);
+  if (F) document.querySelectorAll(`[data-jauge-f="${f}"]`).forEach(j => { j.outerHTML = suiviJauge(F); });
+});
+
 const PJ_ICONE = '<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="12" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 16v3.5M8 20.5h8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
 const pjBouton = e => `<button type="button" class="pj-elt" data-pj="${e.id}" title="Projeter en classe (plein écran)" aria-label="Projeter l'exercice ${e.numero} en plein écran">${PJ_ICONE}</button>`;
 const PJ = { e: null, etape: 0, blocs: [], sombre: false, el: null };
@@ -4530,14 +4621,7 @@ function pjOuvrir(id) {
   if (!e) return;
   if (!e.enonce) { const a = chargerExercices(); if (a) a.then(() => pjOuvrir(id)); return; }
   const C = document.createElement('div'); C.innerHTML = e.corrige || '';
-  let blocs = [...C.children];
-  if (blocs.length === 1 && blocs[0].children.length > 1 && !/katex|formule/.test(blocs[0].className)) blocs = [...blocs[0].children];
-  // Une étape par question : un bloc qui commence par « 2. », « (b) » ou « b) » ouvre une étape, les blocs suivants
-  // (calculs, formules, conclusion) s'y rattachent. Sans aucune marque de question, une étape par bloc.
-  const marque = b => /^\s*(\d+\s*\.|\(\s*[a-z]{1,4}\s*\)|[a-z]{1,3}\))/i.test(b.textContent);
-  let etapes = [];
-  for (const b of blocs) (marque(b) || !etapes.length ? etapes.push([b]) : etapes[etapes.length - 1].push(b));
-  if (etapes.length < 2) etapes = blocs.map(b => [b]);
+  const etapes = etapesCorrige(C, true);
   Object.assign(PJ, { e, etape: 0, tout: false, blocs: etapes.map(g => g.map(b => b.outerHTML).join('')), sombre: document.documentElement.dataset.theme === 'dark' });
   if (!PJ.el) {
     PJ.el = document.createElement('div'); PJ.el.className = 'pj'; PJ.el.setAttribute('role', 'dialog'); PJ.el.setAttribute('aria-modal', 'true'); PJ.el.tabIndex = -1;
