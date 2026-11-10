@@ -24,6 +24,15 @@ annales (`pageAnnales` et ses auxiliaires, vérifications des annales dans `cons
 fichiers volumineux de la rubrique (PDF de `documents/annales/`) sont versés dans des commits séparés
 du code, pour qu'un éventuel retour en arrière n'emporte pas le travail de l'autre conversation.
 
+**Hébergement OVHcloud (10 nov. 2026, `MEMO_atlas_apropos.md` §64).** Le site est servi par OVHcloud ; le
+dépôt reste la source. Pour suivre une publication : c'est le job `ovh` de « Publier ATLAS » qui doit
+réussir (`publier` = GitHub Pages, gardé en secours) ; une publication n'annule plus la précédente et peut
+rester « queued » derrière celle d'une autre conversation. Ne jamais toucher `outils/publier_ovh.py`,
+`identite/htaccess-ovh` ni le job `ovh` (domaine À propos – apparence). La limite de 1 Go reste à respecter
+tant que Pages sert de secours (site construit : 320 Mo, dont 34 Mo de PDF Mines-Ponts). Vérifié sur le
+nouvel hébergement le 10 nov. : PDF (application/pdf), `annales-index.json`, `katex.min.js` et moteur
+(formules composées, aucune erreur).
+
 ### 27. Formules des fiches en LaTeX (27 oct. 2026)
 
 **Mécanisme.** Dans `rubriques/annales-index/AAAA.yaml`, une formule de l'aperçu (`apercu`), d'un nom de
