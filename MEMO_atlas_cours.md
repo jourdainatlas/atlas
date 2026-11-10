@@ -536,3 +536,22 @@ est remplacé, et ses pages et son sommaire sont inchangés.
 Le chapitre 16, « Matrices », est déposé avec son cours de 19 pages et la feuille `f-ma-16` de 71 exercices
 (`meta_ma_16.py`). Ses termes rouges sont tous de vraies définitions. Son entrée « À revoir avant » est
 `[ap-09, me-03]`. Pour le symbole, on propose de reprendre `matrice` (`me-03`, `ap-09`), à faire valider.
+
+### 37. MPSI : chapitres 17 et 18 déposés (10 nov. 2026)
+
+Le chapitre 17, « Groupe symétrique et déterminants » (16 pages), est déposé avec la feuille `f-ma-17`, qui compte
+65 exercices. Le chapitre 18, « Intégration » (21 pages), l'est avec `f-ma-18`, qui en compte 56. Les métadonnées
+sont dans `meta_ma_17.py` et `meta_ma_18.py`, et les entrées « À revoir avant » sont `[ap-09, ap-03]` et
+`[t-06, t-05]`.
+
+**Correction de `tex2exos.lire`.** Ces sources appellent par endroits `\par\needspace{…}\exoorig{N}{…}` ou
+`\partieorig{…}` directement, au lieu de `\exo` ou `\partie`, pour réduire la réserve de place avant un exercice
+court. Le convertisseur ne les voyait pas : la première conversion perdait l'énoncé 65 du chapitre 17, l'énoncé 37
+et le corrigé 53 du chapitre 18, ainsi que la partie « Exercices de synthèse » du chapitre 18. Désormais, dans le
+corps du document (après la ligne `\begin{document}`), ces appels sont ramenés à `\exo` et `\partie`. Les
+définitions du préambule ne sont pas touchées. Aucune source des chapitres 1 à 16 n'emploie ces appels dans son corps.
+
+**Paragraphe de notations perdu.** Depuis le chapitre 13, l'énoncé commence par un paragraphe « Dans toute la
+feuille, … » qui fixe les notations. Le site n'a pas de place pour lui : il n'est pas repris sur les pages
+d'exercices. C'est signalé à l'auteur. L'afficher demanderait un champ de feuille et son rendu, qui relèvent du
+domaine apparence.

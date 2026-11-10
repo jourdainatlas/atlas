@@ -9,7 +9,17 @@ Les métadonnées (mots-clés, nœuds…) sont proposées par outils/meta_<PREFI
 import re, sys, os, hashlib, subprocess, tempfile, json, importlib.util
 
 # ------------------------------------------------------------------ lecture et macros
-def lire(p): return open(p, encoding='utf-8').read()
+def lire(p):
+    s = open(p, encoding='utf-8').read()
+    # Variantes de mise en page : \par\needspace{…}\exoorig{…} et \partieorig{…} valent \exo et \partie
+    # (le corps du document ne garde que les appels ; la définition \let\exoorig\exo du préambule reste intacte).
+    m = re.search(r'^\\begin\{document\}', s, re.M)
+    if m:
+        i = m.start()
+        corps = re.sub(r'\\par\s*\\needspace\{[^{}]*\}\s*\\(exo|partie)orig\{', r'\\\1{', s[i:])
+        corps = re.sub(r'\\(exo|partie)orig\{', r'\\\1{', corps)
+        s = s[:i] + corps
+    return s
 
 def accolade(s, i):
     """s[i] == '{' : renvoie l'indice juste après l'accolade fermante correspondante."""
