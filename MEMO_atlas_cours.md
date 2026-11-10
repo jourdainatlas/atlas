@@ -555,3 +555,5 @@ définitions du préambule ne sont pas touchées. Aucune source des chapitres 1 
 feuille, … » qui fixe les notations. Le site n'a pas de place pour lui : il n'est pas repris sur les pages
 d'exercices. C'est signalé à l'auteur. L'afficher demanderait un champ de feuille et son rendu, qui relèvent du
 domaine apparence.
+Symboles validés le 10 novembre : `permutation` (`ma-17`, trois éléments envoyés par le cycle (1 2 3)) et
+`escalier` (`ma-18`, quatre marches sous un arc de parabole exact, chacune touchant la courbe à son extrémité gauche).
