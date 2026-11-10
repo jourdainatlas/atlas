@@ -130,7 +130,7 @@ pour les groupes à sujet propre, `bac-entrainement` pour les sujets zéro et in
 et `Première`. Champs de famille nouveaux, lus par `pageAnnales` (remplacements ciblés dans `gabarit.html`) :
 `annees_filiere` (Première : 2026 seul), `cases_sujets: true` (une case par sujet publié, pas par épreuve
 déclarée ; ligne vide masquée), `court` sur chaque épreuve (N, R, U, 1, 2, S1, S2, R1, R2, 0, M1, M2, Z1, Z2 ;
-légende générée sous la grille), `corriges: true` (liens « corrigés » ; champ `corrige` des sujets),
+légende générée sous la grille), `corriges: true` (liens « corrigés » ; champ `corrige_pdf` des sujets),
 `sources` par filière (APMEP, dit une fois sous la grille et dans chaque fiche au lieu de chaque case),
 `nom_filiere`, `nom_concours`, `tous_concours` (libellés du moteur : « Tous niveaux », « Tous les centres »),
 `prefixe: Bac` (titres des pages de lecture et des résultats : un centre seul serait ambigu). Sujets :
@@ -163,3 +163,11 @@ reprendre pour une session nouvelle.
 **Pour une session nouvelle.** Lire la page `Annee-AAAA` de l'APMEP (tableau : libellé, sujet PDF, corrigé PDF),
 classer centre, jour, remplacement ou secours, vérifier la date sur l'en-tête du PDF, ajouter les lignes de
 `sujets` (la grille suit sans autre changement), puis étiqueter selon la chaîne ci-dessus.
+
+**Lignes repliables et champ `corrige_pdf` (10 nov. 2026, soir).** À la demande de l'auteur, chaque centre du
+bac est une ligne fermée par défaut (champ de famille `lignes_repliables: true`) : un bouton « + » dans la
+colonne des centres la déplie (« − » la replie), le « + » de l'en-tête déplie ou replie tout ; fermée, la ligne
+indique seulement le nombre de sujets de chaque année (état `etatAnn.lignes`). Le lien du corrigé s'appelait
+d'abord `corrige` : `rendu.mjs` met ce nom de champ en forme comme un texte riche (corrigés des exercices),
+l'adresse devenait `<p>https://…</p>` et le lien menait à la page 404 du site. Le champ s'appelle désormais
+`corrige_pdf`. Règle : un champ d'adresse ne prend jamais un nom de `RICHES` ou `COURTS` (`rendu.mjs`).
