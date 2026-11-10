@@ -413,7 +413,7 @@ exercices/<id>/. Feuille en ligne : Terminale chapitre 1 (33 exercices).
 - racine/index.html : page de renvoi vers /atlas/ pour un dépôt jourdainatlas.github.io, à créer par l'auteur (Claude n'a pas accès à la création de dépôt).
 
 ### 16. Domaine (26 oct. 2026)
-- Le site est servi à https://www.atlasjourdain.fr/ (domaine OVHcloud, déclaré dans Settings → Pages du dépôt atlas ; DNS : CNAME www → jourdainatlas.github.io., A/AAAA de GitHub sur @, TXT de vérification GitHub).
+- Le site est servi à https://www.atlasjourdain.fr/ par l'hébergement web OVHcloud Perso (depuis le 10 nov. 2026, MEMO_atlas_apropos.md §64 : dossier `atlas`, envoi SFTP par le job `ovh` de publier.yml ; DNS : A/AAAA de @ vers 145.239.37.162 / 2001:41d0:301::30, CNAME www → atlasjourdain.fr., MX/SPF/TXT inchangés). GitHub Pages reste publié en secours quelques semaines (retour : rétablir A/AAAA de GitHub sur @ et CNAME www → jourdainatlas.github.io.).
 - ADRESSE (rendu.mjs) et ADRESSE_SITE (gabarit.html) valent https://www.atlasjourdain.fr/. GitHub redirige jourdainatlas.github.io/atlas/… vers le domaine ; la page du dépôt jourdainatlas.github.io renvoie aussi vers le domaine.
 - Thème : bouton soleil/lune (#theme) ; choix gardé par cookie de session atlas-theme (+ sessionStorage).
 - Mode clair par défaut (27 oct. 2026, demande de l'auteur) : sans choix enregistré, `data-theme="light"` est posé

@@ -526,7 +526,7 @@ le corrigé ouvert le reste ; la liste filtrée ne se recalcule qu'au clic suiva
 **Écarté.** Le sommaire latéral des pages longues : les fiches de l'édifice n'ont pas d'intertitres (énoncé,
 démonstration, remarques) et s'affichent dans le panneau à côté du graphe ; l'À propos a déjà son sommaire.
 
-## 64. Hébergement OVHcloud (en cours de mise en place, 10 nov. 2026)
+## 64. Hébergement OVHcloud (en service depuis le 10 nov. 2026)
 
 **Pourquoi.** Un ordinateur du lycée de l'auteur refuse le site (Firefox : SSL_ERROR_RX_RECORD_TOO_LONG), même
 après la mise en liste blanche du domaine : le filtre de l'établissement bloque le réseau Fastly, qui sert
@@ -553,3 +553,17 @@ modification automatique du DNS ; zone DNS : A/AAAA de @ vers l'hébergement, CN
 MX, SPF et TXT (Google, GitHub) inchangés. (3) GitHub Pages reste en secours quelques semaines (retour = anciennes
 lignes DNS), puis on retire son job et l'auteur désactive Pages. Mettre alors à jour MEMO_atlas.md (ligne
 « Le site est servi à… ») et la mention de l'hébergeur dans les mentions légales (rubriques/apropos.yaml).
+
+**Bascule faite le 10 nov. 2026.** Essai validé depuis le lycée sur `essai.atlasjourdain.fr`. Interface OVH (nouvelle) :
+onglet « Mes sites » (un dossier = un site : ajouter un domaine par le menu ⋮ du site, pas par « Ajouter un site »,
+qui répond « path atlas already used ») ; DNS en configuration **manuelle** ; certificats Let's Encrypt par l'onglet
+« Certificats SSL », un par adresse. Zone : un seul A et un seul AAAA sur @ (145.239.37.162, 2001:41d0:301::30),
+`www` CNAME `atlasjourdain.fr.`, lignes `essai` A/AAAA. Les certificats affichés « Actif » ont mis environ 30 min à
+être servis par tous les frontaux d'OVH (pendant ce temps, une partie des visites recevait le certificat générique
+`cluster130.hosting.ovh.net`, erreur SSL_ERROR_BAD_CERT_DOMAIN). Contrôle après coup : 404 servie par 404.html,
+http → https, atlasjourdain.fr → www, sw.js no-cache, liste d'empreintes interdite (403) ; `.xml` servi en
+application/xml (sitemap), `nouveautes.xml` en application/rss+xml. Mentions légales : hébergeur OVH SAS,
+2 rue Kellermann, 59100 Roubaix (d'après les mentions légales d'ovhcloud.com).
+**Reste à faire** dans quelques semaines : retirer `essai.atlasjourdain.fr` (Mes sites, certificat, zone DNS) pour
+éviter un double du site ; retirer les jobs GitHub Pages de publier.yml (le job `ovh` dépend alors directement de la
+construction, qui devra téléverser le site par actions/upload-artifact) et faire désactiver Pages par l'auteur.
