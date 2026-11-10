@@ -22,8 +22,14 @@ FILS = 6
 
 
 def connexion():
-    t = paramiko.Transport((os.environ['OVH_HOTE'], int(os.environ.get('OVH_PORT') or 22)))
-    t.connect(username=os.environ['OVH_UTILISATEUR'], password=os.environ['OVH_MOT_DE_PASSE'])
+    hote, util, mdp = (os.environ[k].strip() for k in ('OVH_HOTE', 'OVH_UTILISATEUR', 'OVH_MOT_DE_PASSE'))
+    t = paramiko.Transport((hote, int(os.environ.get('OVH_PORT') or 22)))
+    t.start_client(timeout=30)
+    try:
+        t.auth_password(util, mdp)
+    except paramiko.AuthenticationException:
+        # certains serveurs n'acceptent le mot de passe que par la méthode « keyboard-interactive »
+        t.auth_interactive(util, lambda titre, instr, invites: [mdp for _ in invites])
     return t, paramiko.SFTPClient.from_transport(t)
 
 
