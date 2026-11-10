@@ -1,4 +1,5 @@
-# Publication automatique de l'atlas sur GitHub Pages.
+# Publication automatique de l'atlas sur GitHub Pages et, si les secrets OVH_* sont enregistrés,
+# sur l'hébergement web OVHcloud (job « ovh », MEMO_atlas_apropos.md §64).
 #
 # À chaque modification enregistrée sur la branche main (par exemple un fichier
 # du dossier contenu/), GitHub exécute ce script : il vérifie le contenu,
@@ -65,3 +66,33 @@ jobs:
       - name: Mettre en ligne
         id: deploiement
         uses: actions/deploy-pages@v4
+
+  ovh:
+    # Envoi du même site sur l'hébergement OVHcloud, par SFTP (outils/publier_ovh.py). Sauté tant que le secret
+    # OVH_HOTE n'existe pas ; indépendant de la publication GitHub Pages (un échec de l'un n'arrête pas l'autre).
+    needs: construire
+    runs-on: ubuntu-latest
+    env:
+      OVH_HOTE: ${{ secrets.OVH_HOTE }}
+      OVH_UTILISATEUR: ${{ secrets.OVH_UTILISATEUR }}
+      OVH_MOT_DE_PASSE: ${{ secrets.OVH_MOT_DE_PASSE }}
+      OVH_PORT: "22"
+      OVH_DOSSIER: atlas
+    steps:
+      - name: Récupérer les fichiers
+        if: env.OVH_HOTE != ''
+        uses: actions/checkout@v4
+
+      - name: Récupérer le site construit
+        if: env.OVH_HOTE != ''
+        uses: actions/download-artifact@v4
+        with:
+          name: github-pages
+          path: archive
+
+      - name: Envoyer sur OVHcloud
+        if: env.OVH_HOTE != ''
+        run: |
+          mkdir site && tar -xf archive/artifact.tar -C site
+          pip install paramiko==5.1.0
+          python3 outils/publier_ovh.py site

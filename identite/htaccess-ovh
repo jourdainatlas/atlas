@@ -1,0 +1,37 @@
+# Réglages du serveur Apache de l'hébergement OVHcloud (MEMO_atlas_apropos.md §64).
+# Déposé sous le nom .htaccess à la racine du site par outils/publier_ovh.py ; sans effet sur GitHub Pages.
+
+Options -Indexes
+AddDefaultCharset utf-8
+DirectoryIndex index.html
+ErrorDocument 404 /404.html
+
+AddType text/javascript .js .mjs
+AddType application/manifest+json .webmanifest
+AddType application/json .json
+AddType application/rss+xml .xml
+AddType font/woff2 .woff2
+AddType image/svg+xml .svg
+
+RewriteEngine On
+# Liste des empreintes de la publication : interne, jamais servie.
+RewriteRule ^\.manifeste-atlas\.json - [F,L]
+# HTTPS partout (OVH termine le chiffrement en amont : le port dit si la requête est arrivée en clair).
+RewriteCond %{SERVER_PORT} ^80$
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+# atlasjourdain.fr → www.atlasjourdain.fr, comme sur GitHub Pages.
+RewriteCond %{HTTP_HOST} ^atlasjourdain\.fr$ [NC]
+RewriteRule ^ https://www.atlasjourdain.fr%{REQUEST_URI} [L,R=301]
+
+<IfModule mod_headers.c>
+  # Même durée que GitHub Pages (10 min) ; les fichiers ?v= sont de toute façon gardés par le service worker.
+  Header set Cache-Control "max-age=600"
+  <FilesMatch "^sw\.js$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+  Header set X-Content-Type-Options "nosniff"
+</IfModule>
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/javascript application/json application/manifest+json application/rss+xml image/svg+xml text/plain
+</IfModule>

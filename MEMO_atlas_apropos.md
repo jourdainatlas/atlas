@@ -525,3 +525,27 @@ le corrigé ouvert le reste ; la liste filtrée ne se recalcule qu'au clic suiva
 
 **Écarté.** Le sommaire latéral des pages longues : les fiches de l'édifice n'ont pas d'intertitres (énoncé,
 démonstration, remarques) et s'affichent dans le panneau à côté du graphe ; l'À propos a déjà son sommaire.
+
+## 64. Hébergement OVHcloud (en cours de mise en place, 10 nov. 2026)
+
+**Pourquoi.** Un ordinateur du lycée de l'auteur refuse le site (Firefox : SSL_ERROR_RX_RECORD_TOO_LONG), même
+après la mise en liste blanche du domaine : le filtre de l'établissement bloque le réseau Fastly, qui sert
+GitHub Pages (le site de Fastly est lui-même bloqué). L'auteur a choisi l'hébergement web OVHcloud **Perso**
+(100 Go ; domaine déjà chez OVH).
+
+**Publication.** Le workflow `publier.yml` garde la publication GitHub Pages et ajoute un job `ovh` : il
+récupère l'archive du site construit (artefact `github-pages`) et lance `outils/publier_ovh.py` (paramiko,
+SFTP port 22) vers le dossier `atlas` du compte FTP. Secrets du dépôt : `OVH_HOTE`, `OVH_UTILISATEUR`,
+`OVH_MOT_DE_PASSE` (enregistrés par l'auteur, jamais dans la conversation) ; sans eux, le job est sauté.
+Envoi différentiel par la liste d'empreintes `.manifeste-atlas.json` (réécrite en fin d'envoi, interdite au
+public par le .htaccess) ; ordre : .htaccess, ressources, pages, puis index.html et sw.js ; suppression des
+fichiers retirés du site. Essai local (sshd) : 5 635 fichiers en 42 s, puis 0 à renvoyer.
+Réglages Apache : `identite/htaccess-ovh` (déposé en `.htaccess`) : 404.html, HTTPS forcé (`SERVER_PORT` 80,
+méthode d'OVH), atlasjourdain.fr → www, Cache-Control 600 s (sw.js : no-cache), types MIME, compression.
+
+**Bascule, dans l'ordre.** (1) Multisite : `essai.atlasjourdain.fr` → dossier `atlas`, SSL ; test depuis le
+lycée. (2) Si le test passe : Multisite `atlasjourdain.fr` et `www.atlasjourdain.fr` → `atlas`, SSL, sans
+modification automatique du DNS ; zone DNS : A/AAAA de @ vers l'hébergement, CNAME `www` remplacé par A/AAAA ;
+MX, SPF et TXT (Google, GitHub) inchangés. (3) GitHub Pages reste en secours quelques semaines (retour = anciennes
+lignes DNS), puis on retire son job et l'auteur désactive Pages. Mettre alors à jour MEMO_atlas.md (ligne
+« Le site est servi à… ») et la mention de l'hébergeur dans les mentions légales (rubriques/apropos.yaml).
