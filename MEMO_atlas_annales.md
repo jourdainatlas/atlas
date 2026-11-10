@@ -169,7 +169,9 @@ bac est une ligne fermée par défaut (champ de famille `lignes_repliables: true
 colonne des centres la déplie (« − » la replie), le « + » de l'en-tête déplie ou replie tout ; fermée, la ligne
 montre une pastille verte par sujet (miniature des cases ; référence du sujet au survol ; un clic sur les
 pastilles ouvre la ligne). Le bouton est à droite du nom du centre ; l'en-tête porte « tout ouvrir + » (le
-texte disparaît sous 640 px) ; une phrase au-dessus de la grille explique le « + » et les pastilles (état
+texte disparaît sous 640 px) ; seule la pastille survolée s'éclaire ; colonnes étroites (96 px, 84 px sous
+640 px, classe `grille-pli`) tant qu'aucune ligne n'est ouverte, 150 px dès qu'une l'est (8 années visibles
+au lieu de 4 sur ordinateur) ; une phrase au-dessus de la grille explique le « + » et les pastilles (état
 `etatAnn.lignes`). Le lien du corrigé s'appelait
 d'abord `corrige` : `rendu.mjs` met ce nom de champ en forme comme un texte riche (corrigés des exercices),
 l'adresse devenait `<p>https://…</p>` et le lien menait à la page 404 du site. Le champ s'appelle désormais
