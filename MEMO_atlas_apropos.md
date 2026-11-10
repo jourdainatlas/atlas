@@ -539,7 +539,11 @@ SFTP port 22) vers le dossier `atlas` du compte FTP. Secrets du dépôt : `OVH_H
 `OVH_MOT_DE_PASSE` (enregistrés par l'auteur, jamais dans la conversation) ; sans eux, le job est sauté.
 Envoi différentiel par la liste d'empreintes `.manifeste-atlas.json` (réécrite en fin d'envoi, interdite au
 public par le .htaccess) ; ordre : .htaccess, ressources, pages, puis index.html et sw.js ; suppression des
-fichiers retirés du site. Essai local (sshd) : 5 635 fichiers en 42 s, puis 0 à renvoyer.
+fichiers retirés du site ; la liste est réécrite tous les 400 fichiers, si bien qu'un envoi interrompu reprend
+où il s'était arrêté (vérifié : coupé au bout de 7 s, l'envoi suivant n'avait plus que 4 481 fichiers sur 5 635).
+Essai local (sshd) : 5 635 fichiers en 40 s, puis 0 à renvoyer. Le premier envoi réel a été annulé au bout de
+10 min par une publication suivante : `concurrency` de publier.yml est passé à `cancel-in-progress: false` (une
+publication attend la fin de la précédente ; seule la plus récente attend), job `ovh` limité à 90 min.
 Réglages Apache : `identite/htaccess-ovh` (déposé en `.htaccess`) : 404.html, HTTPS forcé (`SERVER_PORT` 80,
 méthode d'OVH), atlasjourdain.fr → www, Cache-Control 600 s (sw.js : no-cache), types MIME, compression.
 

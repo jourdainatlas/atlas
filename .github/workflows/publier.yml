@@ -19,9 +19,11 @@ permissions:
   pages: write
   id-token: write
 
+# Une publication en cours n'est pas annulée par la suivante, qui attend son tour (la plus récente seulement) :
+# l'envoi vers OVH, long la première fois, doit pouvoir aller au bout.
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   construire:
@@ -72,6 +74,7 @@ jobs:
     # OVH_HOTE n'existe pas ; indépendant de la publication GitHub Pages (un échec de l'un n'arrête pas l'autre).
     needs: construire
     runs-on: ubuntu-latest
+    timeout-minutes: 90
     env:
       OVH_HOTE: ${{ secrets.OVH_HOTE }}
       OVH_UTILISATEUR: ${{ secrets.OVH_UTILISATEUR }}
@@ -95,4 +98,4 @@ jobs:
         run: |
           mkdir site && tar -xf archive/artifact.tar -C site
           pip install paramiko==5.1.0
-          python3 outils/publier_ovh.py site
+          python3 -u outils/publier_ovh.py site

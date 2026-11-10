@@ -18,7 +18,7 @@ import paramiko
 
 RACINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MANIFESTE = '.manifeste-atlas.json'
-FILS = 6
+FILS = 8
 
 
 def connexion():
@@ -117,31 +117,40 @@ def main():
                 time.sleep(5)
                 local_fil.__dict__.pop('s', None)
 
+    # La liste du serveur est réécrite tous les 400 fichiers : un envoi interrompu (publication annulée, coupure)
+    # reprend au suivant là où il s'était arrêté.
+    publie = dict(ancien)
+
+    def ecrire_liste():
+        with sftp.open(posixpath.join(base, MANIFESTE + '.tmp'), 'w') as m:
+            m.write(json.dumps(publie, sort_keys=True).encode('utf-8'))
+        sftp.posix_rename(posixpath.join(base, MANIFESTE + '.tmp'), posixpath.join(base, MANIFESTE))
+
     fait = 0
     with concurrent.futures.ThreadPoolExecutor(max_workers=FILS) as ex:
         for r in range(4):
             lot = [c for c in a_envoyer if rang(c) == r]
-            for _ in ex.map(envoie, lot):
-                fait += 1
-                if fait % 500 == 0: print(f'  {fait} / {len(a_envoyer)}')
+            for i in range(0, len(lot), 400):
+                morceau = lot[i:i + 400]
+                list(ex.map(envoie, morceau))
+                for c in morceau: publie[c] = E[c]
+                fait += len(morceau)
+                ecrire_liste()
+                print(f'  {fait} / {len(a_envoyer)} ({time.time() - t0:.0f} s)', flush=True)
     for c in a_suppr:
         try:
             sftp.remove(posixpath.join(base, c))
         except FileNotFoundError:
             pass
+        publie.pop(c, None)
     # dossiers devenus vides
     for d in sorted({posixpath.dirname(c) for c in a_suppr if '/' in c}, key=lambda d: -d.count('/')):
         try:
             if not sftp.listdir(posixpath.join(base, d)): sftp.rmdir(posixpath.join(base, d))
         except (FileNotFoundError, IOError):
             pass
-    with sftp.open(posixpath.join(base, MANIFESTE + '.tmp'), 'w') as m:
-        m.write(json.dumps(E, sort_keys=True).encode('utf-8'))
-    try:
-        sftp.remove(posixpath.join(base, MANIFESTE))
-    except FileNotFoundError:
-        pass
-    sftp.rename(posixpath.join(base, MANIFESTE + '.tmp'), posixpath.join(base, MANIFESTE))
+    publie = dict(E)
+    ecrire_liste()
     for x in clients: x.close()
     t.close()
     print(f'Publication OVH terminée en {time.time() - t0:.0f} s')
