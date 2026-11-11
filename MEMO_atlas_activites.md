@@ -562,3 +562,26 @@ courbes) : un trait pointillé horizontal relie M au point de la sinusoïde. Le 
 ligne) sont sous l'ensemble ; la figure fait moins de 500 px de haut sur ordinateur. Sur téléphone, cercle puis
 courbes sont empilés dans le même cadre, sans le trait de report. RÈGLE retenue : deux vues d'un même réglage
 doivent tenir ensemble à l'écran, dans un seul cadre.
+
+### 133. Solitaire et anagrammes (11 nov. 2026, soir)
+
+**`solitaire`** (casse-tête). Plateau anglais (33 trous) ou français (37), trou de départ au choix. Pion à un
+seul saut possible : il saute au clic ; sinon on choisit l'arrivée. Coloriage en trois couleurs selon
+(ligne + colonne) mod 3, compteurs par couleur ; arrivées permises du dernier pion calculées avec les deux
+coloriages diagonaux. Contrôlé (Node) : anglais, centre vide → 5 arrivées (centre et milieux des bords) ;
+français, centre vide → aucune (12, 12, 12) ; français, trou voisin du centre → 4. « Un coup » : recherche en
+profondeur avec mémoire des positions sans issue, bornée à 400 000 positions, trois réponses distinctes (coup
+trouvé, aucune suite, recherche non aboutie) ; si l'invariant interdit déjà la victoire, elle n'est pas lancée.
+Depuis le départ anglais : solution en 31 coups après environ 1 000 positions (une trentaine de millisecondes).
+L'atteinte des cinq arrivées est justifiée dans la page (dernier saut fait dans l'autre sens) ; l'existence
+d'une solution centrale est constatée par la recherche.
+
+**`anagrammes`** (Terminale, Maths Sup ; dénombrement). Mot saisi (12 lettres au plus, accents retirés),
+décompte des lettres, n!/(m₁!…m_k!) en entiers, liste sans doublon (complète jusqu'à 360 mots, sinon les 120
+premiers). Seconde figure : pour un mot de 3 ou 4 lettres, les n! rangements numérotés rangés par mot obtenu
+(principe des bergers). Contrôlé : MATHS 120 ; ANANAS 60 ; ELEVE 20 ; BANANE 180 ; AABBB 10 ; MISSISSIPPI
+34 650 ; OTTO : 6 cases de 4.
+
+Explorations : vingt-six. Casse-têtes : sept. Reste de la liste : droites et plans de l'espace. La liste
+d'origine est donc épuisée à une idée près ; idées en réserve : polynômes de Bernstein, phénomène de Gibbs,
+argument diagonal, marche aléatoire, théorème de Thalès et homothéties, lieux géométriques (pour l'atelier).
