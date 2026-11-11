@@ -608,7 +608,8 @@ Les formulaires d'une page (PDF) sont rangés dans `documents/formulaires/<nivea
 où `cours_termes.py` chercherait des termes définis dans leur rouge, qui marque ici les formules à connaître. Ils
 sont déclarés sous la clé `formulaires` de `rubriques/cours.yaml` (`id`, `titre`, `niveau`, `pdf`, `chapitres`).
 Chaque chapitre de la liste `chapitres` les montre :
-- dans la colonne de droite de sa page, avec une carte « Formulaires » placée entre « Exercices » et « Fichiers »
+- dans la colonne de droite de sa page, avec une carte « Formulaires » placée sous le sommaire, au-dessus de la carte
+  « Exercices », elle-même remontée avant « Ce que ce chapitre définit » à la demande de l'auteur
   (`gabarit.html`) ;
 - sur sa page de lecture, avec un bouton « Formulaire : … (PDF) » (`lecture-cours.mjs`).
 

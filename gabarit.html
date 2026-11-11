@@ -3680,6 +3680,18 @@ function pageChapitre(c, tous) {
   if (c.pdf) h += `<div class="lecteur-raccourci"><button type="button" data-vers-cote aria-label="Aller au sommaire, aux liens et aux exercices du chapitre">Sommaire et liens ↓</button></div>`;
   h += `</div><aside class="cote"><button type="button" class="cote-retour" data-vers-lecteur>↑ Revenir au PDF</button>`;
   h += `<div class="carte"><h3 class="titre-bloc">Sommaire</h3>${c.sommaire ? `<ol class="sommaire">${c.sommaire.map((x, i) => `<li>${c.pdf && c.sommaire_pages ? `<button type="button" class="vers-page" data-pdf-page="${c.sommaire_pages[i]}" title="Aller à la page ${c.sommaire_pages[i]} du PDF">${x}<span class="num-page">p. ${c.sommaire_pages[i]}</span></button>` : x}</li>`).join('')}</ol>` : '<p class="vide-note">Tiré du PDF une fois déposé.</p>'}</div>`;
+  // Formulaires d'une page rattachés au chapitre (rubriques/cours.yaml, clé formulaires)
+  const formulaires = (R.cours?.formulaires || []).filter(x => x.pdf && (x.chapitres || []).includes(c.id));
+  if (formulaires.length) h += `<div class="carte"><h3 class="titre-bloc">Formulaires</h3><div style="display:flex;gap:6px;flex-wrap:wrap">${formulaires.map(x => lienPdf(x.pdf, 0, `Formulaire : ${x.titre}`)).join('')}</div></div>`;
+  if (feuille && (feuille.pdf_enonce || feuille.nombre)) {
+    h += `<div class="carte"><h3 class="titre-bloc">Exercices</h3><div style="display:grid;gap:8px">`;
+    if (exosEnLigne(feuille)) h += `<a class="bouton plein" href="#exercices/feuille/${feuille.id}" style="justify-content:center">Les ${feuille.nombre} exercices en ligne →</a>`;
+    h += `<div style="display:flex;gap:6px;flex-wrap:wrap">${lienPdf(feuille.pdf_enonce, 0, 'Feuille PDF')}${lienPdf(feuille.pdf_corrige, 0, 'Corrigé PDF')}</div>`;
+    // Feuilles complémentaires rattachées au chapitre (champ cours), sans numéro de chapitre.
+    for (const f of (R.exercices?.feuilles || []).filter(f => f.cours === c.id && f.id !== feuille.id && f.statut === 'depose'))
+      h += `<a class="bouton" href="#exercices/feuille/${f.id}" style="justify-content:center">${esc(f.titre)}${f.nombre ? ` · ${f.nombre} exercices` : ''} →</a>`;
+    h += `</div></div>`;
+  } else h += `<div class="carte"><h3 class="titre-bloc">Exercices</h3><p class="vide-note">Feuille d'exercices à venir.</p></div>`;
   h += `<div class="carte carte-definit" data-definit="${c.id}">${definitChapitre(c)}</div>`;   // termes définis (domaine apparence, §54)
   h += `<div class="carte"><h3 class="titre-bloc">Dans l'atlas</h3><div class="puces">${(c.theories || []).map(t => puce(t)).join('')}</div>`;
   if ((c.notions || []).length) h += `<p style="margin:10px 0 0;font-size:13.5px">Notions&nbsp;: ${(c.notions).map(terme).join(', ')}</p>`;
@@ -3698,18 +3710,6 @@ function pageChapitre(c, tous) {
     for (const x of lies) h += `<li><a class="cours-lie" href="#cours/${x.id}"><span class="cl-lieu">${esc(niveauDe(x.niveau).titre)}${x.chapitre ? `, ch. ${x.chapitre}` : ''}</span><span class="cl-titre">${x.titre}</span></a></li>`;
     h += `</ul></div>`;
   }
-  if (feuille && (feuille.pdf_enonce || feuille.nombre)) {
-    h += `<div class="carte"><h3 class="titre-bloc">Exercices</h3><div style="display:grid;gap:8px">`;
-    if (exosEnLigne(feuille)) h += `<a class="bouton plein" href="#exercices/feuille/${feuille.id}" style="justify-content:center">Les ${feuille.nombre} exercices en ligne →</a>`;
-    h += `<div style="display:flex;gap:6px;flex-wrap:wrap">${lienPdf(feuille.pdf_enonce, 0, 'Feuille PDF')}${lienPdf(feuille.pdf_corrige, 0, 'Corrigé PDF')}</div>`;
-    // Feuilles complémentaires rattachées au chapitre (champ cours), sans numéro de chapitre.
-    for (const f of (R.exercices?.feuilles || []).filter(f => f.cours === c.id && f.id !== feuille.id && f.statut === 'depose'))
-      h += `<a class="bouton" href="#exercices/feuille/${f.id}" style="justify-content:center">${esc(f.titre)}${f.nombre ? ` · ${f.nombre} exercices` : ''} →</a>`;
-    h += `</div></div>`;
-  } else h += `<div class="carte"><h3 class="titre-bloc">Exercices</h3><p class="vide-note">Feuille d'exercices à venir.</p></div>`;
-  // Formulaires d'une page rattachés au chapitre (rubriques/cours.yaml, clé formulaires)
-  const formulaires = (R.cours?.formulaires || []).filter(x => x.pdf && (x.chapitres || []).includes(c.id));
-  if (formulaires.length) h += `<div class="carte"><h3 class="titre-bloc">Formulaires</h3><div style="display:flex;gap:6px;flex-wrap:wrap">${formulaires.map(x => lienPdf(x.pdf, 0, `Formulaire : ${x.titre}`)).join('')}</div></div>`;
   h += `<div class="carte"><h3 class="titre-bloc">Fichiers</h3><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">${statut(c.statut)}${c.pdf ? `<a class="lien-simple" href="${c.pdf}" download style="font-size:13.5px">PDF${c.pages ? `, ${c.pages} pages` : ''}</a>` : '<span style="font-size:13px;color:var(--encre-2)">PDF</span>'}</div></div>`;
   h += `</aside></div>`;
   h += `<nav class="voisins">${prec ? `<a href="#cours/${prec.id}">← ${prec.titre}</a>` : '<span></span>'}<a href="#cours">Tous les cours</a>${suiv ? `<a href="#cours/${suiv.id}">${suiv.titre} →</a>` : '<span></span>'}</nav>`;
