@@ -415,3 +415,26 @@ Ajout dans l'interface, hors du moteur. La barre d'outils a été resserrée pou
 `atelier.js` est désormais modifié directement : `/tmp/gen/gen.py` n'est plus la source.
 
 Explorations : quatorze. Casse-têtes : quatre.
+
+### 127. Suites, nombre e, intégrale par les rectangles (11 nov. 2026, soir)
+
+**`suites`** (Première, Terminale ; analyse). u₀ et r (pas de 0,05), v₀, q (pas de 0,01), rang de 2 à 40. Termes
+et somme de la suite arithmétique en entiers (centièmes) ; sommes calculées par la formule et recoupées par
+addition (un « ? » s'afficherait en cas de désaccord). Rang à partir duquel la géométrique dépasse l'autre pour
+toujours : premier rang où vₙ > uₙ et vₙ(q − 1) ≥ r (l'écart ne fait ensuite que croître). Contrôlé : 5 + 3n
+contre 0,5 × 1,2ⁿ → rang 29 ; v₂₀ ≈ 19,17 ; v₄₀ ≈ 734,9.
+
+**`nombre-e`** (Première, Terminale ; analyse). Base a de 1,2 à 4,5 (pas de 0,001), tangente en 0 de pente ln a,
+droite repère y = x + 1. Puis (1 + 1/n)ⁿ pour n = 10⁰ à 10⁶ et la somme des 1/k! jusqu'à m = 17. Limites
+choisies pour que les flottants ne faussent rien : à n = 10⁸, l'arrondi de 1 + 1/n donne un écart de 3,0 × 10⁻⁸
+au lieu de 1,36 × 10⁻⁸ ; on s'arrête donc à 10⁶. Contrôlé : 2,5937 ; 2,7048 ; 2,7169 ; m = 9 → 2,7182815.
+
+**`rectangles`** (Terminale, Maths Sup ; analyse). x² sur [0 ; 1], 1/x sur [1 ; 2], sin sur [0 ; π], √x sur
+[0 ; 1] ; rectangles à gauche, à droite, au milieu, trapèzes ; n de 1 à 200 ; tableau des erreurs pour n = 10 à
+160 et rapports. Contrôlé : x², n = 10 → 0,285 ; 0,385 ; 0,3325 ; 0,335 ; rapports 2 (gauche) et 4 (milieu,
+trapèzes) ; √x au milieu → 2,73 à 2,80 ; sin : sommes à gauche et à droite égales.
+
+Explorations : dix-sept. Casse-têtes : quatre. Restent de la liste des vingt : accroissements finis,
+développements limités, convexité, droites et plans de l'espace, racines et coefficients d'un polynôme, loi des
+grands nombres ; puis anagrammes, anniversaires, tiroirs, dérangements, Catalan ; casse-têtes : solitaire,
+grenouilles, dominos sur l'échiquier écorné.
