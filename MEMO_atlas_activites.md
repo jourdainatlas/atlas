@@ -791,3 +791,45 @@ avec la préférence p de l'animateur par vingtièmes et l'observation choisie ;
 d'annulées ; dix portes au hasard : 0,1 ; 0,1 ; 0,8. Sources vérifiées : Selvin 1975, vos Savant 1990.
 
 Explorations : vingt-huit. Casse-têtes : quinze.
+
+### 140. Le jeu de go (11 novembre 2026, nuit)
+
+Demande de l'auteur : un go en 9 × 9, selon la proposition faite (plateaux de 5, 7 et 9 lignes, la page ou un
+ami pour adversaire, problèmes de vie et de mort). Module `activites/go.js`, en trois parties.
+
+**Moteur (`plateau(n)`).** Voisins et diagonales précalculés ; `respire` (une chaîne a-t-elle une liberté,
+parcours à pile), `chaine` (pierres et libertés), `poser` (prises, refus du suicide, point de ko simple),
+`oeil`, `aire` (décompte par aire). Règle de répétition de la partie : aucune disposition du plateau ne revient
+(ensemble `vus` des dispositions). Fin par deux passes ; la page propose les pierres mortes d'après le
+propriétaire moyen de chaque case sur 400 parties finies au hasard (chaîne morte si la moyenne dépasse 0,4 en
+faveur de l'adversaire), les joueurs corrigent en cliquant, « Reprendre la partie » ou « Valider le décompte ».
+Komi au choix (0 ; 5,5 ; 6,5 ; 7,5). Libertés et chaînes à une liberté affichables. Clavier : flèches, Entrée,
+P (écoute sur la fenêtre). Plateau en teintes fixes (bois, noir, blanc), identiques en clair et en sombre.
+
+**Adversaire (`monteCarlo`).** Recherche arborescente de Monte-Carlo avec statistiques « tous les coups comme
+premiers » (RAVE) ; parties au hasard qui ne remplissent pas leurs propres yeux ; calcul par tranches de 35 ms
+pour ne pas figer la page ; trois durées (0,4 s ; 1,2 s ; 3 s). Après une passe adverse, la page passe si le
+décompte du plateau tel quel lui donne la victoire. Mesuré (Node) : environ 11 000 parties par seconde sur
+9 × 9 ; 20 victoires sur 20 contre un joueur au hasard avec 400 parties par coup ; 16 sur 16 pour 1 500 parties
+contre 150 sur 7 × 7 ; sur 5 × 5 sans komi, Noir gagne d'environ 22 points contre lui-même (valeur théorique
+25). Niveau réel face à un humain : non mesuré ; la page se présente comme un adversaire de débutant.
+« Un conseil » : même recherche pendant 0,7 s, annoncée comme une suggestion.
+
+**Vie et mort (`vieEtMort`, `probleme`).** Dix espaces intérieurs (trois en ligne, trois en coude, quatre en
+ligne, en coude, en T, en carré, cinq en croix, en massue, six en fleur, en rectangle) sur un plateau de 9 :
+l'espace est entouré de Blanc (voisinage à huit cases), lui-même entouré de Noir. Recherche exhaustive sans
+table : seuls les points de l'espace se jouent, Blanc et Noir peuvent passer, deux passes = le groupe vit,
+aucune disposition ne se répète le long d'une variante. Au plus 17 000 nœuds, 30 ms. L'utilisateur joue Noir, la
+page défend parfaitement ; option « Blanc joue d'abord » ; « Un indice », « Où en est-on ? », « Renoncer : Blanc
+vit ». Résultats (tableau calculé par la page à l'ouverture), conformes aux résultats classiques : trois en
+ligne, trois en coude, quatre en T, cinq en croix, cinq en massue, six en fleur : le trait décide ; quatre en
+ligne, quatre en coude, six en rectangle : vivants ; quatre en carré : mort même si Blanc commence. Contrôlé :
+Blanc est une seule chaîne sans liberté extérieure dans les dix problèmes.
+
+**Mathématiques de la page.** Démontré : une partie compte au plus 2 × 3^(n²) coups ; une chaîne à deux yeux
+ne peut être prise. Calculé (Node, énumération) : 57, 12 675 et 24 318 165 dispositions légales pour n = 2, 3,
+4. Admis ou cité : nombre de dispositions légales sur 19 × 19 (Tromp, 2016, environ 2,08 × 10^170, 1,2 % du
+total, vérifié par recherche web) ; 5 × 5 résolu, Noir gagne tout le plateau (van der Werf, van den Herik,
+Uiterwijk, 2003, vérifié). Le titre « Solving Go on Small Boards », ICGA Journal, est cité de mémoire.
+
+Explorations : vingt-huit. Jeux et casse-têtes : seize.
