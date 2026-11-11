@@ -379,7 +379,7 @@ le relier », point accroché à une ligne, point d'intersection). Ajouts dans l
 explorations. Menu : « Explorations interactives, casse-têtes à résoudre et atelier de géométrie. » Carte de
 l'accueil et introduction de la page (titre « Explorer, jouer, construire ») : les trois familles sont nommées.
 
-## 126. Dichotomie, matrice, Euclide ; retouches des casse-têtes
+### 126. Dichotomie, matrice, Euclide ; retouches des casse-têtes (11 nov. 2026)
 
 **`dichotomie`** (Terminale, Maths Sup ; analyse). Quatre équations : x³ − 2x − 5 = 0 sur [2 ; 3], cos x = x sur
 [0 ; 1], x² = 2 sur [1 ; 2], et le piège 1/(x − 1,3) sur [1 ; 2], qui change de signe sans s'annuler. Jusqu'à
