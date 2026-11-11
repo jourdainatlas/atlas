@@ -26,6 +26,9 @@ d'intercalaires de classeur tournés vers le haut, dans l'ordre du catalogue : �
 par *groupe* d'activités (aujourd'hui « Explorations », qui réunit les deux explorables de visualisation ; le
 nombre d'activités est affiché) et un intercalaire par activité *sans groupe* (« Atelier de construction »),
 qui s'ouvre directement. Les activités d'un groupe ne sont pas des onglets.
+Sur téléphone (≤ 640 px), les intercalaires passent à la ligne et se partagent la largeur, pour être tous visibles
+d'emblée : le défilement latéral, que rien ne signalait, cachait des groupes (demande de l'auteur, 12 nov., faite
+depuis le domaine À propos – apparence).
 La page du groupe (`#activites/explorations`) les présente en cartes, avec deux filtres à puces, par niveau et
 par domaine, dans l'esprit de la banque d'exercices (demande de l'auteur, les explorations devant devenir
 nombreuses) : état dans `pageActivites.filtre`, clic géré par un écouteur délégué qui appelle

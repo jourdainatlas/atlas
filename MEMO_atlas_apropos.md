@@ -695,3 +695,10 @@ balance) ; loupe (balayage, les trois points s'allument) ; arbre (tronc, branche
 livre (page tournée, lignes réécrites) ; feuille et crayon (le crayon retrace le paraphe) ; copies (celle du dessus
 part, la suivante arrive) ; puzzle (le curseur balaie, le point suit la courbe : images clés calculées sur la
 cloche de §67). Pour modifier un symbole, garder ses classes `p-…` ou adapter les règles `sa-…`.
+
+## 71. Intercalaires des Activités sur téléphone (12 nov. 2026)
+
+Demande de l'auteur : sur téléphone, les intercalaires de la rubrique Activités défilaient latéralement sans que rien
+ne l'indique, et des groupes restaient cachés. Sous 640 px, `.activites-onglets` passe en `flex-wrap: wrap` et chaque
+intercalaire s'étire (`flex: 1 1 auto`) : tous sont visibles, sur deux ou trois rangs. Noté aussi dans
+`MEMO_atlas_activites.md` (navigation).
