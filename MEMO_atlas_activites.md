@@ -711,3 +711,38 @@ a été redessinée (les formes n'étaient pas alignées sur un quadrillage comm
 activités (voir §42 de `MEMO_atlas_cours.md`) ; elle n'a rien changé d'autre dans `rubriques/activites.yaml`. Elle
 vérifiera ce champ à chaque nouveau chapitre. Les pages de chapitre montrent maintenant, dans une carte
 « Activités », les activités qui les citent.
+
+### 138. Nim, ponts de Königsberg, promenade du cavalier (11 nov. 2026, soir)
+
+**Décision de l'auteur : jeux à deux.** Un jeu à deux doit pouvoir se jouer avec un ami assis à côté, sur le
+même écran. RÈGLE pour les prochains jeux à deux : un réglage « Adversaire » offre toujours « la page » et « un
+ami, sur le même écran » ; dans le second cas la page arbitre (à qui le trait, coup permis, gagnant), nomme les
+joueurs A et B avec deux couleurs, et propose « Rejouer la même » en plus de « Nouvelle partie ».
+
+**`nim`** (premier jeu à deux). 2 à 6 tas, taille maximale 3 à 12, positions classiques ; cliquer un objet le
+retire avec ceux qui le suivent. Contre la page : elle joue parfaitement (rend la somme de Nim nulle, sinon
+retire un objet du plus grand tas) ou se trompe une fois sur deux ; on choisit qui commence. La page répond dans
+le même geste que le coup du joueur (pas d'animation) et laisse en pointillés les objets qu'elle a pris.
+Écriture en base 2 et somme de Nim sur demande ; « Un coup ». Théorème de Bouton démontré en entier (trois
+faits et une récurrence). Contrôlé (Node) : le théorème, par recherche exhaustive, sur 3 072 positions de
+quatre tas ; 3 ⊕ 4 ⊕ 5 = 2 ; 1 ⊕ 3 ⊕ 5 ⊕ 7 = 0. Source vérifiée : C. L. Bouton, Annals of Mathematics, 2ᵉ
+série, vol. 3 (1901-1902), p. 35-39.
+
+**`ponts`** (tracés d'un seul trait). Figures : Königsberg (multigraphe, arêtes multiples dessinées en arcs),
+enveloppe ouverte, pentagone étoilé, deux carrés emboîtés, quatre points tous reliés, figure au hasard (4 à 8
+sommets, connexe), figure vide. « Modifier la figure » : deux sommets cliqués créent un trait, un trait cliqué
+s'efface. Degrés affichables. « Est-ce possible ? » : connexité puis décompte des sommets impairs. « Un trait » :
+règle de Fleury, mise en œuvre par le test « ce qui reste est-il encore traçable depuis le sommet d'arrivée ».
+Les deux sens du théorème d'Euler et le lemme des poignées de main sont démontrés dans la page. Contrôlé dans
+le navigateur : les trois figures traçables le sont entièrement en suivant les conseils. Source vérifiée :
+mémoire présenté le 26 août 1735, paru dans les Commentarii, tome 8 (daté de 1736, publié en 1741) ; réciproque
+démontrée par Hierholzer.
+
+**`cavalier`**. Échiquiers de 3 à 8 lignes et colonnes ; numérotation des passages, nombre de sorties sur
+demande (règle de Warnsdorff, présentée comme une heuristique) ; « Un saut » et « Est-ce possible ? » par
+retour arrière ordonné par nombre de sorties, borné, à trois réponses. L'argument des couleurs est démontré ; le
+théorème de Schwenk (1991) est « admis ici ». Contrôlé (Node) contre une recherche exhaustive pour les plateaux
+de 20 cases au plus : aucun parcours pour 3 × 3, 3 × 5, 3 × 6, 4 × 4 ; un parcours pour toutes les autres
+tailles proposées, trouvé en moins de 30 ms. Cases en deux gris fixes, comme pour les dominos.
+
+Explorations : vingt-sept. Casse-têtes : douze.
