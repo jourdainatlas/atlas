@@ -1005,6 +1005,14 @@ body.en-rubrique .legende { display: none; }
 .acc-section { margin: 26px 0 0; }
 .acc-section > h3 { font-family: var(--f-ui); font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--encre-2); margin: 0 0 12px; }
 .acc-rubriques { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; }
+/* Cinq rubriques sur une seule ligne dès que la page est assez large (11 nov. 2026, demande de l'auteur) : cartes resserrées. */
+@media (min-width: 1040px) {
+  .acc-rubriques { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+  .acc-rubriques .acc-rub { padding: 16px 14px 14px; }
+  .acc-rubriques .acc-rub h4 { font-size: 19px; gap: 8px; } .acc-rubriques .acc-rub h4 svg.sym { width: 24px; height: 24px; }
+  .acc-rubriques .acc-rub .r-chiffre { font-size: 21px; } .acc-rubriques .acc-rub p { font-size: 14.5px; }
+  .acc-rubriques .acc-rub .r-pied { font-size: 12.5px; }
+}
 .acc-rub { display: flex; flex-direction: column; gap: 8px; padding: 18px 18px 16px; text-decoration: none; color: inherit; transition: border-color .15s, box-shadow .15s, transform .15s; }
 .acc-rub:hover, .acc-rub:focus-visible { border-color: var(--encre-3); box-shadow: var(--ombre); transform: translateY(-1px); outline: none; }
 .acc-rub .r-tete { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
@@ -1507,14 +1515,10 @@ table.grille button.pli-ann:hover { border-color: var(--encre); }
 .activites-onglets { display: flex; align-items: flex-end; gap: 4px; margin: 0 0 -1px; padding: 6px 2px 0; overflow-x: auto; scrollbar-width: thin; position: relative; z-index: 1; }
 .activites-onglet { --o: var(--encre-3); flex: 0 0 auto; display: inline-flex; align-items: center; gap: 8px; max-width: 16rem; padding: 7px 16px 8px; font: 500 14px/1.25 var(--f-ui); color: var(--encre-2); text-decoration: none; white-space: nowrap;
   background: var(--trame); border: 1px solid var(--filet); border-top: 4px solid var(--o); border-radius: 10px 10px 0 0; }
-.activites-onglet[data-domaine="analyse"] { --o: var(--c-ana); } .activites-onglet[data-domaine="geometrie"] { --o: var(--c-geo); }
-.activites-onglet[data-domaine="algebre"] { --o: var(--c-alg); } .activites-onglet[data-domaine="nombres"], .activites-onglet[data-domaine="probabilites"] { --o: var(--c-nb); }
 .activites-onglet:hover { color: var(--encre); background: var(--surface); }
 .activites-onglet[aria-current="page"] { color: var(--encre); background: var(--papier); border-bottom-color: var(--papier); padding-top: 11px; font-weight: 600; }
 .activites-onglet .niv { font: 11px var(--f-mono); color: var(--encre-3); background: var(--surface); border: 1px solid var(--filet); border-radius: 999px; padding: 0 6px; }
 .activites-feuille { border-top: 1px solid var(--filet); padding-top: 26px; }
-.activites-feuille[data-domaine="analyse"] { --o: var(--c-ana); } .activites-feuille[data-domaine="geometrie"] { --o: var(--c-geo); }
-.activites-feuille[data-domaine="algebre"] { --o: var(--c-alg); } .activites-feuille[data-domaine="nombres"], .activites-feuille[data-domaine="probabilites"] { --o: var(--c-nb); }
 .activites-sous { display: flex; flex-wrap: wrap; gap: 8px; margin: -8px 0 26px; padding-bottom: 14px; border-bottom: 1px solid var(--filet); }
 .activites-sous a { display: inline-flex; align-items: baseline; gap: 8px; padding: 6px 13px; font: 500 14px/1.25 var(--f-ui); color: var(--encre-2); text-decoration: none; background: var(--surface); border: 1px solid var(--filet); border-left: 3px solid var(--o, var(--encre-3)); border-radius: 6px; }
 .activites-sous a:hover { color: var(--encre); border-color: var(--encre-3); border-left-color: var(--o, var(--encre-3)); }
@@ -1522,7 +1526,6 @@ table.grille button.pli-ann:hover { border-color: var(--encre); }
 .activites-sous .niv { font: 11px var(--f-mono); opacity: .75; }
 .activites-cartes { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
 .activites-carte { display: flex; flex-direction: column; gap: 6px; padding: 16px 18px; text-decoration: none; color: var(--encre); border-top: 3px solid var(--o, var(--encre-3)); }
-.activites-carte[data-domaine="analyse"] { --o: var(--c-ana); } .activites-carte[data-domaine="geometrie"] { --o: var(--c-geo); }
 .activites-carte:hover { border-color: var(--encre-3); border-top-color: var(--o, var(--encre-3)); }
 .activites-carte .niv { font: 12px var(--f-ui); letter-spacing: .06em; text-transform: uppercase; color: var(--encre-3); }
 .activites-carte h3 { margin: 0; font: 600 21px/1.2 var(--f-titre); }
@@ -3451,19 +3454,28 @@ const RUBRIQUES = {
 /* ---- Rubrique Activités (MEMO_atlas_activites.md) : #activites (toutes) et #activites/<id> (un onglet par activité).
    Le code d'une activité n'est pas dans cette page : c'est un module du dossier activites/, importé quand on ouvre son onglet. */
 function pageActivites(chemin) {
-  const A = R.activites || {}, acts = A.activites || [], doms = (A.domaines || []).filter(d => acts.some(a => a.domaine === d.id));
-  const act = acts.find(a => a.id === chemin), dom = doms.find(d => d.id === (act ? act.domaine : chemin));
-  const onglet = (href, titre, d, n, courant) => `<a class="activites-onglet" href="${href}"${d ? ` data-domaine="${d}"` : ''}${courant ? ' aria-current="page"' : ''}>${esc(titre)}${n ? `<span class="niv">${n}</span>` : ''}</a>`;
-  const cartes = liste => `<div class="activites-cartes">${liste.map(a => `<a class="carte activites-carte" href="#activites/${a.id}" data-domaine="${a.domaine || ''}"><span class="niv">${esc(a.niveau || '')}</span><h3>${a.titre}</h3><p>${a.resume || ''}</p><span class="fleche" aria-hidden="true">→</span></a>`).join('')}</div>`;
+  const A = R.activites || {}, acts = A.activites || [], groupes = A.groupes || [];
+  const act = acts.find(a => a.id === chemin), groupeDe = a => groupes.find(x => x.id === a.groupe);
+  const grp = act ? groupeDe(act) : groupes.find(x => x.id === chemin), membres = x => acts.filter(a => a.groupe === x.id);
+  const teinte = x => /^(ana|geo|alg|nb|ord|top)$/.test(x?.couleur || '') ? ` style="--o: var(--c-${x.couleur})"` : '';
+  const onglet = (href, titre, x, n, courant) => `<a class="activites-onglet" href="${href}"${teinte(x)}${courant ? ' aria-current="page"' : ''}>${titre}${n ? `<span class="niv">${n}</span>` : ''}</a>`;
+  const cartes = liste => `<div class="activites-cartes">${liste.map(a => `<a class="carte activites-carte" href="#activites/${a.id}"${teinte(groupeDe(a) || a)}><span class="niv">${esc(a.niveau || '')}</span><h3>${a.titre}</h3><p>${a.resume || ''}</p><span class="fleche" aria-hidden="true">→</span></a>`).join('')}</div>`;
   // Le titre d'une activité est dans son propre texte : la tête de page n'est affichée que sur les listes.
-  let h = act ? '' : tete('Activités', dom ? esc(dom.titre) : 'Manipuler, conjecturer, démontrer', dom ? (dom.intro || '') : (A.intro || ''));
-  // Intercalaires : « Toutes », puis un par domaine ; les activités d'un domaine sont dans le sous-menu de son intercalaire.
-  h += `<nav class="activites-onglets" aria-label="Domaines des activités">${onglet('#activites', 'Toutes', '', '', !dom)}${doms.map(d => onglet('#activites/' + d.id, d.titre, d.id, acts.filter(a => a.domaine === d.id).length, d === dom)).join('')}</nav>`;
-  h += `<div class="activites-feuille"${dom ? ` data-domaine="${dom.id}"` : ''}>`;
-  if (dom) h += `<nav class="activites-sous" aria-label="Activités : ${esc(dom.titre)}">${acts.filter(a => a.domaine === dom.id).map(a => `<a href="#activites/${a.id}"${a === act ? ' aria-current="page"' : ''}>${a.onglet || a.titre}<span class="niv">${esc(a.niveau || '')}</span></a>`).join('')}</nav>`;
+  let h = act ? '' : tete('Activités', grp ? esc(grp.titre) : 'Manipuler, conjecturer, démontrer', grp ? (grp.intro || '') : (A.intro || ''));
+  // Intercalaires, dans l'ordre du catalogue : « Toutes », puis un par groupe (ses activités sont dans le sous-menu)
+  // et un par activité sans groupe (elle s'ouvre directement, sans sous-menu).
+  const vus = new Set();
+  h += `<nav class="activites-onglets" aria-label="Activités">${onglet('#activites', 'Toutes', null, '', !act && !grp)}${acts.map(a => {
+    const x = groupeDe(a);
+    if (!x) return onglet('#activites/' + a.id, a.onglet || a.titre, a, '', a === act);
+    if (vus.has(x.id)) return ''; vus.add(x.id);
+    return onglet('#activites/' + x.id, esc(x.titre), x, membres(x).length, x === grp);
+  }).join('')}</nav>`;
+  h += `<div class="activites-feuille"${teinte(grp)}>`;
+  if (grp) h += `<nav class="activites-sous" aria-label="${esc(grp.titre)}">${membres(grp).map(a => `<a href="#activites/${a.id}"${a === act ? ' aria-current="page"' : ''}>${a.onglet || a.titre}<span class="niv">${esc(a.niveau || '')}</span></a>`).join('')}</nav>`;
   if (!act) {
-    if (chemin && !dom) h += `<p class="vide-note">Cette activité n'existe pas (ou plus).</p>`;
-    return h + cartes(dom ? acts.filter(a => a.domaine === dom.id) : acts) + `</div>`;
+    if (chemin && !grp) h += `<p class="vide-note">Cette activité n'existe pas (ou plus).</p>`;
+    return h + cartes(grp ? membres(grp) : acts) + `</div>`;
   }
   return h + `<div class="activites-act" data-act="${esc(act.id)}"><p class="vide-note">Chargement de l'activité…</p></div><div class="activites-pied">${aProposSignalBouton('Activité : ' + act.titre, ADRESSE_SITE + 'activites/' + act.id + '/')}</div></div>`;
 }
@@ -3548,10 +3560,10 @@ function pageAccueil() {
   const ansAnn = [...new Set(sujAnn.map(x => x.annee))].sort((a, b) => a - b);
   const nbConc = (ann.familles || []).filter(f => !f.cases_sujets).reduce((n, f) => n + (f.concours || []).length, 0);   // les centres du bac ne sont pas des concours
   h += sujAnn.length
-    ? carte('#annales', 'Annales', sujAnn.length, 'sujets en ligne', "Les sujets d'écrit de mathématiques des concours d'écoles d'ingénieurs (X-ENS, Mines-Ponts, Centrale, CCINP, e3a) et de l'enseignement (CAPES, agrégations), avec les rapports du jury, ceux du baccalauréat avec leurs corrigés, et un moteur qui retrouve les parties de sujets traitant d'une notion.", `${nbConc} concours et le bac · sessions ${ansAnn[0]} à ${ansAnn[ansAnn.length - 1]}`)
+    ? carte('#annales', 'Annales', sujAnn.length, 'sujets en ligne', "Les sujets d'écrit des concours d'ingénieurs et de l'enseignement avec leurs rapports de jury, ceux du baccalauréat avec leurs corrigés, et un moteur qui retrouve les parties de sujets traitant d'une notion.", `${nbConc} concours et le bac · sessions ${ansAnn[0]} à ${ansAnn[ansAnn.length - 1]}`)
     : carte('#annales', 'Annales', '—', 'à venir', "Les sujets d'écrit des concours d'ingénieurs et de l'enseignement, rangés par concours, par année et par épreuve, avec leurs rapports de jury.", 'En préparation', true);
   { const actsAcc = R.activites?.activites || [];   // rubrique Activités : cinquième carte
-    if (actsAcc.length) h += carte('#activites', 'Activités', actsAcc.length, actsAcc.length > 1 ? 'activités interactives' : 'activité interactive', "Des pages où l'on manipule avant de lire : déplacer un point, faire varier un nombre, proposer une réponse, puis retrouver la définition ou le théorème dans le cours et dans l'édifice.", (R.activites.domaines || []).filter(d => actsAcc.some(x => x.domaine === d.id)).map(d => esc(d.titre)).join(' · ')); }
+    if (actsAcc.length) h += carte('#activites', 'Activités', actsAcc.length, actsAcc.length > 1 ? 'activités interactives' : 'activité interactive', "Des pages où l'on manipule avant de lire : déplacer un point, faire varier un nombre, puis retrouver la définition ou le théorème dans le cours et dans l'édifice.", [...new Set(actsAcc.map(x => (R.activites.groupes || []).find(q => q.id === x.groupe)?.titre || x.onglet || x.titre))].map(esc).join(' · ')); }
   h += `</div></section>`;
 
   // Un exemple réel du lien entre les rubriques : le chapitre « PGCD » de Mathématiques expertes, dont le théorème de

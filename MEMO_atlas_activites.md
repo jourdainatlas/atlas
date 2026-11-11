@@ -12,34 +12,41 @@ ce mémo, tout outil `outils/activites_*` ; dans `gabarit.html`, `pageActivites`
 l'entrée du menu et la carte de l'accueil. Dans `rendu.mjs` (commun), trois ajouts locaux : la copie de
 `activites/` vers `site/activites/` avec l'empreinte `Dsite.vActivites`, l'appel de `pagesActivites`, et
 l'entrée `activites` de `RUBRIQUES_PARTAGE`. Dans `construire.py` (commun), une branche de la vérification des
-liens des Nouveautés reconnaît les ancres `activites`, `activites/<domaine>` et `activites/<id>`.
+liens des Nouveautés reconnaît les ancres `activites`, `activites/<groupe>` et `activites/<id>`.
 
 **Nom.** « Activités », identifiant `activites`. L'auteur avait demandé d'autres idées (proposées :
 Explorations, Planches, Expériences) et n'a pas tranché ; la rubrique a été publiée sous « Activités », qu'il
 disait bien aimer. Un changement de nom toucherait l'identifiant, donc les adresses, le dossier et les préfixes.
 
-**Adresses.** `#activites` (toutes les activités), `#activites/<domaine>` (les activités d'un domaine),
-`#activites/<id>` (une activité). Un identifiant de domaine ne doit pas être celui d'une activité.
+**Adresses.** `#activites` (toutes les activités), `#activites/<groupe>` (les activités d'un groupe),
+`#activites/<id>` (une activité). Un identifiant de groupe ne doit pas être celui d'une activité.
 
-**Navigation (demande de l'auteur).** En haut de page, des onglets en forme d'intercalaires de classeur tournés
-vers le haut : « Toutes », puis un intercalaire par domaine qui a au moins une activité (Analyse en vert
-`--c-ana`, Géométrie en violet `--c-geo` ; couleurs prévues pour `algebre`, `nombres`, `probabilites`), avec le
-nombre d'activités. Les activités d'un domaine ne sont pas des onglets : une fois dans l'intercalaire, un
-sous-menu (`.activites-sous`) les propose, l'activité ouverte étant marquée `aria-current`. Première version,
-écartée par l'auteur : un intercalaire par activité. Sur téléphone, la rangée d'intercalaires défile
-horizontalement dans son cadre ; la page ne déborde pas.
+**Navigation (demandes successives de l'auteur, 11 nov.).** En haut de page, des onglets en forme
+d'intercalaires de classeur tournés vers le haut, dans l'ordre du catalogue : « Toutes », puis un intercalaire
+par *groupe* d'activités (aujourd'hui « Explorations », vert `--c-ana`, qui réunit les deux explorables de
+visualisation ; le nombre d'activités est affiché) et un intercalaire par activité *sans groupe* (« Atelier de
+construction », violet `--c-geo`), qui s'ouvre directement. Les activités d'un groupe ne sont pas des onglets :
+une fois dans l'intercalaire, un sous-menu (`.activites-sous`) les propose, l'activité ouverte étant marquée
+`aria-current` ; une activité sans groupe n'a pas de sous-menu. Versions écartées par l'auteur : un intercalaire
+par activité, puis un découpage par domaine mathématique (« Analyse », « Géométrie »), qui créait un sous-menu à
+une seule entrée pour l'atelier. La couleur vient du champ `couleur` du catalogue (posée en ligne, `--o`). Sur
+téléphone, la rangée d'intercalaires défile horizontalement dans son cadre ; la page ne déborde pas.
 
 **Repères.** Couleur de la rubrique : `--c-ord` (olive), la seule couleur de thème qu'aucune rubrique
 n'employait. Symbole : une courbe dans un cadre, un point que l'on déplace, un curseur (trois nuances obtenues
 par opacité, classes `.activites-sy1` à `3`). Menu : après Annales. Accueil : cinquième carte de « Les
-rubriques », à la demande de l'auteur. L'encadré « Par curiosité » de « Par où commencer ? » (domaine À propos)
+rubriques ». D'abord seule sur une deuxième ligne, ce que l'auteur a refusé : à partir de 1040 px de large, les
+cinq cartes tiennent sur une ligne (`repeat(5, 1fr)`, cartes resserrées : titre 19 px, nombre 21 px, texte
+14,5 px), et le texte de la carte Annales a été raccourci à sa demande (plus de liste des banques de concours).
+En dessous de 1040 px, la grille d'origine s'applique (3 + 2 sur tablette, une colonne sur téléphone). L'encadré « Par curiosité » de « Par où commencer ? » (domaine À propos)
 n'a pas été modifié : la proposition d'y mettre un lien vers les activités attend la réponse de l'auteur. La
 barre de rubriques des pages de lecture (`lecture.mjs`, domaine À propos) ne cite pas encore « Activités ».
 
-**Catalogue : `rubriques/activites.yaml`.** `intro` ; `domaines` (`id`, `titre`, `intro`) ; `activites` (`id`,
-`titre`, `onglet`, `niveau`, `domaine`, `resume`, `texte`, `cours`, `noeuds`). `construire.py` vérifie les
-`noeuds` comme pour toute rubrique ; `rendu.mjs` compose `intro`, `resume` et `texte`. Les identifiants de
-`cours` ne sont vérifiés par personne : les relire à la main.
+**Catalogue : `rubriques/activites.yaml`.** `intro` ; `groupes` (`id`, `titre`, `intro`, `couleur`) ;
+`activites` (`id`, `titre`, `onglet`, `niveau`, `resume`, `texte`, `cours`, `noeuds`, et soit `groupe`, soit
+rien, avec alors une `couleur` propre). `couleur` vaut `ana`, `geo`, `alg`, `nb`, `ord` ou `top`.
+`construire.py` vérifie les `noeuds` comme pour toute rubrique ; `rendu.mjs` compose `intro`, `resume` et
+`texte`. Les identifiants de `cours` et de `groupe` ne sont vérifiés par personne : les relire à la main.
 
 **Une activité = un module.** `activites/<id>.js` exporte `css` (styles, précédés des styles communs), `html`
 (texte et cadres des figures) et `monter()`, qui lance les figures et rend la fonction qui les arrête. Rien de
@@ -118,8 +125,8 @@ activité, plus aucun style ni abonnement ne reste.
   démonstration » (chapitre de cours, fiches de l'édifice), « Ce que la page calcule ».
 
 **Ajouter une activité.** Écrire `activites/<id>.js` sur le modèle des trois autres (importer `bac` et `css`
-de `commun.js`) ; ajouter l'entrée dans `rubriques/activites.yaml` (et le domaine s'il est nouveau, avec sa
-couleur dans les sélecteurs `[data-domaine=…]` du bloc de styles de la rubrique) ; construire ; regarder ;
+de `commun.js`) ; ajouter l'entrée dans `rubriques/activites.yaml` (avec `groupe: explorations` pour une
+exploration, ou sans groupe pour un intercalaire à elle) ; construire ; regarder ;
 entrée dans `rubriques/nouveautes.yaml`. Une première liste de dix idées (toile d'araignée des suites
 récurrentes, sommes de Riemann, accroissements finis, polynômes de Taylor, méthode d'Euler, de Moivre-Laplace,
 racines n-ièmes, argument diagonal, polynômes de Bernstein, phénomène de Gibbs) a été proposée à l'auteur, qui
@@ -128,7 +135,7 @@ décidera plus tard.
 ### 119. Pages de lecture et partage (11 nov. 2026)
 
 `lecture-activites.mjs` (`pagesActivites(ctxLecture)`, appelé par `rendu.mjs` après les cours) écrit
-`/activites/` (les activités par domaine) et `/activites/<id>/` : niveau, résumé, « Ce que l'on y fait » (champ
+`/activites/` (les activités par groupe, puis les autres) et `/activites/<id>/` : niveau, résumé, « Ce que l'on y fait » (champ
 `texte` du catalogue : ce qu'on manipule, ce que cela signifie, le piège, avec des valeurs vérifiées), liens
 vers `/cours/<id>/` et `/edifice/<nœud>/`, bouton « Ouvrir dans l'atlas ». Ces adresses entrent d'elles-mêmes
 dans le plan du site (4 adresses). Le bouton « Partager » donne `/activites/<id>/` pour une activité et

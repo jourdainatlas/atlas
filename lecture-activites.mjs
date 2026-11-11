@@ -1,6 +1,6 @@
 // Pages de lecture indexables de la rubrique Activités (MEMO_atlas_activites.md, §119), sur le modèle de
 // lecture-cours.mjs : à une vraie adresse, une page légère, sans script, avec un bouton « Ouvrir dans l'atlas ».
-//   /activites/          les activités, domaine par domaine
+//   /activites/          les activités, groupe par groupe, puis celles qui n'ont pas de groupe
 //   /activites/<id>/     une activité : ce qu'on y fait, ce que cela signifie, le piège, cours et fiches de l'édifice
 // Une activité ne se lit pas : la page décrit en phrases ce qu'on y manipule (champ texte de rubriques/activites.yaml)
 // et renvoie à l'atlas pour manipuler. L'enveloppe vient de outilsLecture(ctx).
@@ -10,11 +10,11 @@ export function pagesActivites(ctx) {
   const { D, texteBrut } = ctx;
   const { page, esc } = outilsLecture(ctx);
   const A = (D.rubriques || {}).activites || {}, acts = A.activites || [];
-  const doms = (A.domaines || []).filter(d => acts.some(a => a.domaine === d.id));
+  const doms = (A.groupes || []).filter(d => acts.some(a => a.groupe === d.id)), seules = acts.filter(a => !doms.some(d => d.id === a.groupe));
   const cours = Object.fromEntries(((D.rubriques.cours || {}).cours || []).map(c => [c.id, c]));
   const fil0 = { name: 'Activités', href: '/activites/' };
   for (const a of acts) {
-    const dom = doms.find(d => d.id === a.domaine);
+    const dom = doms.find(d => d.id === a.groupe);
     const liens = [
       ...(a.cours || []).filter(id => cours[id]).map(id => `<li><span class="l-sorte">Cours</span><a href="/cours/${id}/">${cours[id].titre}</a></li>`),
       ...(a.noeuds || []).filter(id => D.noeuds[id]).map(id => `<li><span class="l-sorte">Édifice</span><a href="/edifice/${id}/">${D.noeuds[id].titre}</a></li>`),
@@ -28,6 +28,7 @@ ${liens ? `<h2 class="l-sec">Où lire l'énoncé et la démonstration</h2><ul cl
   }
   page({ chemin: 'activites/', ancre: 'activites', titre: 'ATLAS – Activités', description: texteBrut(A.intro), fil: [fil0],
     corps: `<article class="fiche"><h1>Activités</h1><div class="texte">${A.intro || ''}</div>
-${doms.map(d => `<h2 class="l-sec">${esc(d.titre)}</h2><div class="texte">${d.intro || ''}</div><ul class="l-liste">${acts.filter(a => a.domaine === d.id).map(a => `<li><span class="l-sorte">${esc(a.niveau || '')}</span><a href="/activites/${a.id}/">${a.titre}</a></li>`).join('')}</ul>`).join('')}</article>` });
+${doms.map(d => `<h2 class="l-sec">${esc(d.titre)}</h2><div class="texte">${d.intro || ''}</div><ul class="l-liste">${acts.filter(a => a.groupe === d.id).map(a => `<li><span class="l-sorte">${esc(a.niveau || '')}</span><a href="/activites/${a.id}/">${a.titre}</a></li>`).join('')}</ul>`).join('')}
+${seules.map(a => `<h2 class="l-sec"><a href="/activites/${a.id}/">${a.titre}</a></h2><div class="texte">${a.resume || ''}</div>`).join('')}</article>` });
   return acts.length + 1;
 }
