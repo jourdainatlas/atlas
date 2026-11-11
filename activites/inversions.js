@@ -35,7 +35,7 @@ export const html = `
 <section>
   <div class="col">
     <h4><span class="n">1</span>Jouer</h4>
-    <p>« Revenir au départ » rétablit la position telle qu'elle était avant votre premier appui et remet le compteur à zéro, pour réessayer autant de fois que vous le souhaitez. « Mélanger » part du plateau éteint et appuie au hasard : la position obtenue a donc une solution. « Tout allumer » est le défi classique. « Lampes au hasard » allume chaque lampe à pile ou face, sans rien garantir : sur certains plateaux, la plupart de ces positions sont impossibles. Cochez « montrer où appuyer » si vous séchez : les cases marquées d'un point sont celles d'une solution qui demande le moins d'appuis possible.</p>
+    <p>« Revenir au départ » rétablit la position telle qu'elle était avant votre premier appui et remet le compteur à zéro, pour réessayer autant de fois que vous le souhaitez. Une fois tout éteint, la page rappelle le plus petit nombre d'appuis qui suffisait depuis cette position, pour comparer avec le vôtre. « Mélanger » part du plateau éteint et appuie au hasard : la position obtenue a donc une solution. « Tout allumer » est le défi classique. « Lampes au hasard » allume chaque lampe à pile ou face, sans rien garantir : sur certains plateaux, la plupart de ces positions sont impossibles. Cochez « montrer où appuyer » si vous séchez : les cases marquées d'un point sont celles d'une solution qui demande le moins d'appuis possible.</p>
   </div>
 </section>
 
@@ -63,7 +63,7 @@ export const html = `
 
 export function monter(racine) {
   const q = s => racine.querySelector(s);
-  let L = 5, K = 5, N = 25, b = [], b0 = [], coups = 0, S = null, vivant = true;
+  let L = 5, K = 5, N = 25, b = [], b0 = [], min0 = null, coups = 0, S = null, vivant = true;
   const voisines = i => { const y = Math.floor(i / K), x = i % K, o = [i]; if (x > 0) o.push(i - 1); if (x < K - 1) o.push(i + 1); if (y > 0) o.push(i - K); if (y < L - 1) o.push(i + K); return o; };
   // Pivot de Gauss sur F2 de la matrice augmentée [A | I] : donne les opérations à appliquer à tout second membre.
   function preparer() {
@@ -98,14 +98,14 @@ export function monter(racine) {
       bt.setAttribute('aria-label', `Ligne ${Math.floor(i / K) + 1}, colonne ${i % K + 1} : lampe ${b[i] ? 'allumée' : 'éteinte'}${montre && sol && sol[i] ? ', à appuyer' : ''}`); bt.setAttribute('aria-pressed', String(!!b[i])); });
     ecrire(q('#lo-coups'), entier(coups)); q('#lo-debut').disabled = coups === 0;
     const min = sol ? sol.reduce((a, v) => a + v, 0) : null;
-    ecrire(q('#lo-min'), eteint ? '' : sol ? `Au mieux, il reste ${entier(min)} appui${min > 1 ? 's' : ''}.` : 'Aucun choix d\'appuis n\'éteint cette position.');
+    ecrire(q('#lo-min'), eteint ? (min0 ? `Minimum depuis le départ : ${entier(min0)}.` : '') : sol ? `Au mieux, il reste ${entier(min)} appui${min > 1 ? 's' : ''}` + (min0 !== null && coups ? ` (minimum depuis le départ : ${entier(min0)}).` : '.') : 'Aucun choix d\'appuis n\'éteint cette position.');
     ecrire(q('#lo-noyau'), `Noyau de dimension ${k}`);
     const m = q('#lo-message'); m.className = 'jeu-message' + (eteint ? ' gagne' : sol ? '' : ' bloque');
-    ecrire(m, eteint ? (coups ? `Tout est éteint, en ${entier(coups)} appui${coups > 1 ? 's' : ''}.` : 'Tout est éteint. Mélangez, ou allumez tout.')
+    ecrire(m, eteint ? (coups ? `Tout est éteint, en ${entier(coups)} appui${coups > 1 ? 's' : ''}. ` + (min0 === null || !min0 ? '' : coups === min0 ? `C'est le minimum possible depuis la position de départ.` : `Le minimum possible depuis la position de départ était de ${entier(min0)} appui${min0 > 1 ? 's' : ''} : « Revenir au départ » permet de réessayer.`) : 'Tout est éteint. Mélangez, ou allumez tout.')
       : sol ? 'Cette position a une solution. Appuyez sur une case pour inverser sa lampe et ses voisines.' : 'Le système Ax = b n\'a pas de solution : cette position ne peut pas être éteinte.');
     ecrire(q('#lo-rang'), `Pour le plateau de ${L} sur ${K}, N = ${N}, le rang de A est ${S.rg} et son noyau est de dimension ${k} : ` + (k === 0 ? 'toute position est soluble, d\'une seule façon.' : `une position sur ${entier(Math.pow(2, k))} est soluble, et chacune de celles-là a ${entier(Math.pow(2, k))} solutions.`));
   }
-  const nouveau = f => { b = new Array(N).fill(0); f(); b0 = b.slice(); coups = 0; rendre(); };
+  const nouveau = f => { b = new Array(N).fill(0); f(); b0 = b.slice(); const s0 = resoudre(); min0 = s0 ? s0.reduce((a, v) => a + v, 0) : null; coups = 0; rendre(); };
   const melanger = () => nouveau(() => { do { for (let i = 0; i < N; i++) if (Math.random() < 0.5) appuyer(i); } while (b.every(v => !v)); });
   function taille() { L = +q('#lo-l').value; K = +q('#lo-c').value; N = L * K; preparer(); melanger(); }
   q('#lo-l').addEventListener('change', taille); q('#lo-c').addEventListener('change', taille);

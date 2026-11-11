@@ -402,7 +402,8 @@ l'impasse que lorsque toutes les cases sont occupées ou menacées. Le bouton «
 est sollicité sans issue.
 
 **Tout éteindre (demande de l'auteur).** Bouton « Revenir au départ » : rétablit la position d'avant le premier
-appui et remet le compteur à zéro. Règle à suivre pour les prochains casse-têtes : toujours offrir de reprendre
+appui et remet le compteur à zéro. Le minimum d'appuis depuis la position de départ est calculé à sa création et
+rappelé en fin de partie (« en 34 appuis ; le minimum était de 5 »), pour que le joueur compare. Règle à suivre pour les prochains casse-têtes : toujours offrir de reprendre
 la même position, en plus d'en tirer une nouvelle.
 
 Explorations : quatorze. Casse-têtes : quatre.
