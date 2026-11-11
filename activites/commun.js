@@ -94,6 +94,12 @@ export const css = `
 .activites-act .feedback strong { color: var(--tan); } .activites-act .feedback strong.c-sec { color: var(--sec); }
 .activites-act .def { font-size: 19px; line-height: 1.5; padding: 14px 18px; background: var(--surface); border: 1px solid var(--filet); border-left: 4px solid var(--rouge); border-radius: 0 8px 8px 0; }
 .activites-act .def span, .activites-act .col p > span[class^="c-"] { font-weight: 600; }
+/* Formules composées par le site (span.kx, span.kx.kxd) dans un encadré : graisse normale, défilement si trop larges. */
+.activites-act .def .katex, .activites-act .def .katex span, .activites-act .def .katex-display, .activites-act .def span.kx { font-weight: 400; }
+.activites-act div.def { overflow-x: auto; overflow-y: hidden; }
+.activites-act div.def > p { margin: 0; }
+.activites-act .def .katex-display { margin: .45em 0 .2em; overflow-x: auto; overflow-y: hidden; padding: 2px 0; }
+@media (max-width: 560px) { .activites-act .def .katex-display { font-size: .7em; } }
 .activites-act sub { font-size: .7em; }
 .activites-act .suite { margin-top: 48px; padding-top: 18px; border-top: 1px solid var(--filet); font-size: 16px; color: var(--encre-2); }
 .activites-act .suite h4 { font-size: 17px; color: var(--encre); margin-bottom: 6px; }

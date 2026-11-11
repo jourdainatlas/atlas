@@ -37,7 +37,7 @@ export const html = `
   <div class="col">
     <h4><span class="n">2</span>La précision se compte</h4>
     <p>À chaque étape, la longueur de l'intervalle est divisée par 2. Après <i>n</i> étapes, la solution est enfermée dans un intervalle de longueur (<i>b</i> − <i>a</i>)/2<sup><i>n</i></sup> : dix étapes divisent l'incertitude par 1 024, vingt étapes par plus d'un million. C'est lent comparé à d'autres méthodes, mais c'est sûr, et l'on sait d'avance combien d'étapes il faudra.</p>
-    <p class="def">Théorème des valeurs intermédiaires. Si <i>f</i> est continue sur [<i>a</i> ; <i>b</i>] et si <i>f</i>(<i>a</i>) et <i>f</i>(<i>b</i>) sont de signes contraires, alors il existe au moins un réel <i>c</i> de ]<i>a</i> ; <i>b</i>[ tel que <i>f</i>(<i>c</i>) = 0.</p>
+    <div class="def"><p>Théorème des valeurs intermédiaires. Si <span class="kx">f</span> est continue sur <span class="kx">[a\\,;b]</span> et si <span class="kx">f(a)</span> et <span class="kx">f(b)</span> sont de signes contraires, alors il existe au moins un réel <span class="kx">c</span> de <span class="kx">]a\\,;b[</span> tel que <span class="kx">f(c) = 0</span>.</p></div>
     <p>La dichotomie en est même une démonstration : les bornes de gauche forment une suite croissante, celles de droite une suite décroissante, leur écart tend vers 0, elles ont donc une limite commune <i>c</i>, et la continuité de <i>f</i> force <i>f</i>(<i>c</i>) à être à la fois négatif ou nul et positif ou nul.</p>
   </div>
 </section>

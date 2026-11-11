@@ -50,7 +50,7 @@ export const html = `
   </div>
   <div class="col">
     <p>Avec <i>n</i> = 1 000 000, la première suite n'a encore que cinq décimales exactes : son écart avec e est voisin de e/(2<i>n</i>). La seconde atteint la même précision dès <i>m</i> = 9, et quinze décimales pour <i>m</i> = 17, parce que les factorielles croissent plus vite que toute suite géométrique.</p>
-    <p class="def">e = lim (1 + 1/<i>n</i>)<sup><i>n</i></sup> = lim (1 + 1/1! + 1/2! + … + 1/<i>m</i>!) ≈ 2,718 281 828 459. La fonction exponentielle <i>x</i> ↦ e<sup><i>x</i></sup> est l'unique fonction dérivable sur ℝ, égale à sa dérivée et valant 1 en 0.</p>
+    <div class="def"><span class="kx kxd">\\begin{aligned} \\mathrm e &= \\lim_{n \\to +\\infty} \\left(1 + \\frac1n\\right)^{n} \\\\[2pt] &= \\lim_{m \\to +\\infty} \\left(1 + \\frac1{1!} + \\frac1{2!} + \\dots + \\frac1{m!}\\right) \\\\[2pt] &\\approx 2{,}718\\,281\\,828\\,459. \\end{aligned}</span><p>La fonction exponentielle <span class="kx">x \\mapsto \\mathrm e^{x}</span> est l'unique fonction dérivable sur ℝ, égale à sa dérivée et valant 1 en 0.</p></div>
   </div>
 </section>
 ` + suite(

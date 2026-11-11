@@ -37,7 +37,7 @@ export const html = `
   <div class="col">
     <h4><span class="n">2</span>Pourquoi le dernier carré donne le PGCD</h4>
     <p>Écrivons la division euclidienne <i>a</i> = <i>bq</i> + <i>r</i>. Un entier qui divise <i>a</i> et <i>b</i> divise aussi <i>r</i> = <i>a</i> − <i>bq</i> ; un entier qui divise <i>b</i> et <i>r</i> divise aussi <i>a</i> = <i>bq</i> + <i>r</i>. Les couples (<i>a</i> ; <i>b</i>) et (<i>b</i> ; <i>r</i>) ont donc exactement les mêmes diviseurs communs, et en particulier le même plus grand.</p>
-    <p class="def">Si <i>a</i> = <i>bq</i> + <i>r</i>, alors PGCD(<i>a</i> ; <i>b</i>) = PGCD(<i>b</i> ; <i>r</i>). Les restes successifs sont des entiers positifs strictement décroissants : l'un d'eux est nul, et le PGCD est le dernier reste non nul.</p>
+    <div class="def"><p>Si <span class="kx">a = bq + r</span>, alors <span class="kx">\\mathrm{PGCD}(a\\,;b) = \\mathrm{PGCD}(b\\,;r)</span>. Les restes successifs sont des entiers positifs strictement décroissants : l'un d'eux est nul, et le PGCD est le dernier reste non nul.</p></div>
     <p>Sur la figure, cela se voit : un carré qui pave le rectangle de départ pave chacun des carrés découpés, donc le rectangle restant, et ainsi de suite jusqu'au dernier carré. Celui-ci pave tout : c'est le plus grand carré qui pave le rectangle.</p>
   </div>
 </section>

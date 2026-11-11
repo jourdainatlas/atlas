@@ -44,7 +44,7 @@ export const html = `
   <div class="col">
     <h4><span class="n">2</span>Le déterminant, une aire avec un signe</h4>
     <p>Le nombre <i>ad</i> − <i>bc</i> est le <b>déterminant</b> de <i>M</i>. Sa valeur absolue est l'aire du parallélogramme image du carré unité, et plus généralement le facteur par lequel <i>M</i> multiplie toutes les aires. Son signe dit si la figure est retournée : quand il est négatif, le F apparaît comme dans un miroir.</p>
-    <p class="def">La matrice <i>M</i> est inversible si, et seulement si, son déterminant n'est pas nul. Quand il est nul, les deux colonnes sont colinéaires et tout le plan est écrasé sur une droite, ou sur un point.</p>
+    <div class="def"><p>La matrice <span class="kx">M = \\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix}</span> est inversible si, et seulement si, son déterminant <span class="kx">\\det M = ad - bc</span> n'est pas nul. Quand il est nul, les deux colonnes sont colinéaires et tout le plan est écrasé sur une droite, ou sur un point.</p></div>
     <p>Faites tourner la seconde colonne jusqu'à l'aligner avec la première : l'aire fond, le déterminant passe par 0, puis change de signe, et le F se retourne.</p>
   </div>
 </section>

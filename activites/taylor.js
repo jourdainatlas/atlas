@@ -41,7 +41,7 @@ export const html = `
 <section>
   <div class="col">
     <h4><span class="n">2</span>Ce que dit le théorème, et ce qu'il ne dit pas</h4>
-    <p class="def">Formule de Taylor-Young. Si <i>f</i> est <i>n</i> fois dérivable en 0, alors <i>f</i>(<i>x</i>) = <i>f</i>(0) + <i>f</i>′(0)<i>x</i> + <i>f</i>″(0)<i>x</i>²/2! + … + <i>f</i><sup>(<i>n</i>)</sup>(0)<i>x<sup>n</sup></i>/<i>n</i>! + <i>o</i>(<i>x<sup>n</sup></i>) quand <i>x</i> tend vers 0.</p>
+    <div class="def"><p>Formule de Taylor-Young. Si <span class="kx">f</span> est <span class="kx">n</span> fois dérivable en 0, alors, quand <span class="kx">x</span> tend vers 0 :</p><span class="kx kxd">\\begin{aligned} f(x) = {} & f(0) + f'(0)\\,x + \\frac{f''(0)}{2!}\\,x^2 + \\cdots \\\\[2pt] & {} + \\frac{f^{(n)}(0)}{n!}\\,x^n + o(x^n). \\end{aligned}</span></div>
     <p>L'énoncé est <b>local</b> : il compare l'écart à <i>x<sup>n</sup></i> quand <i>x</i> tend vers 0, à <i>n</i> fixé. Il ne dit rien de ce qui se passe en un point <i>x</i> donné quand <i>n</i> grandit. Pour le sinus, le cosinus et l'exponentielle, tout se passe bien : en tout point, l'écart tend vers 0. Pour ln(1 + <i>x</i>) et 1/(1 − <i>x</i>), il ne tend vers 0 que si <i>x</i> reste dans un intervalle autour de 0 : placez <i>x</i> en 1,5 pour le logarithme et montez en degré, les polynômes s'écartent de plus en plus violemment.</p>
   </div>
 </section>

@@ -123,9 +123,10 @@ export const cssFigures = `
 .activites-act .reglages label { color: var(--encre-2); white-space: nowrap; }
 .activites-act .reglages input[type=range] { width: 100%; min-width: 0; }
 .activites-act .reglages output { font-family: var(--f-mono); font-size: 13.5px; min-width: 5.5ch; text-align: right; font-variant-numeric: tabular-nums; }
-.activites-act .lectures { margin: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 5px 10px; font: 14px/1.4 var(--f-ui); }
-.activites-act .lectures dt { color: var(--encre-2); white-space: nowrap; }
-.activites-act .lectures dd { margin: 0; font-family: var(--f-mono); font-size: 13.5px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.activites-act .lectures { margin: 0; display: grid; grid-template-columns: auto minmax(min-content, 1fr); gap: 5px 10px; font: 14px/1.4 var(--f-ui); }
+.activites-act .lectures dt { color: var(--encre-2); }
+.activites-act .lectures dd { margin: 0; font-family: var(--f-mono); font-size: 13.5px; font-variant-numeric: tabular-nums; overflow-wrap: break-word; }
+
 .activites-act .formes { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; font: 14px/1.4 var(--f-ui); }
 .activites-act .formes b { display: block; font-weight: 500; font-size: 12px; letter-spacing: .05em; text-transform: uppercase; color: var(--encre-3); }
 .activites-act .formes span { font-family: var(--f-mono); font-size: 13.5px; }

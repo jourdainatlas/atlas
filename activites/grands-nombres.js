@@ -42,7 +42,7 @@ export const html = `
   <div class="col">
     <h4><span class="n">2</span>L'énoncé, et la raison de l'entonnoir</h4>
     <p>Le nombre de succès <i>S<sub>n</sub></i> suit la loi binomiale de paramètres <i>n</i> et <i>p</i> : son espérance est <i>np</i>, sa variance <i>np</i>(1 − <i>p</i>). La fréquence <i>S<sub>n</sub></i>/<i>n</i> a donc pour espérance <i>p</i> et pour écart-type σ/√<i>n</i>, qui tend vers 0 : il faut multiplier <i>n</i> par 100 pour diviser cet écart-type par 10.</p>
-    <p class="def">Inégalité de Bienaymé-Tchebychev appliquée à la fréquence : pour tout δ &gt; 0, P(|<i>S<sub>n</sub></i>/<i>n</i> − <i>p</i>| ≥ δ) ≤ <i>p</i>(1 − <i>p</i>)/(<i>n</i>δ²). Cette probabilité tend donc vers 0 quand <i>n</i> tend vers l'infini : c'est la loi faible des grands nombres.</p>
+    <div class="def"><p>Inégalité de Bienaymé-Tchebychev appliquée à la fréquence : pour tout <span class="kx">\\delta > 0</span>,</p><span class="kx kxd">P\\left(\\left|\\frac{S_n}{n} - p\\right| \\geqslant \\delta\\right) \\leqslant \\frac{p(1-p)}{n\\,\\delta^2}.</span><p>Cette probabilité tend donc vers 0 quand <span class="kx">n</span> tend vers l'infini : c'est la loi faible des grands nombres.</p></div>
     <p id="gn-tch" aria-live="polite"></p>
   </div>
 </section>

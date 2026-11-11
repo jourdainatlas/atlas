@@ -462,3 +462,39 @@ P(57) = 0,9901 ; 1 − (364/365)²³ = 0,0612 ; seuil de l'autre question : 253 
 Explorations : vingt. Casse-têtes : quatre. Restent de la liste des vingt : accroissements finis, convexité,
 droites et plans de l'espace, racines et coefficients d'un polynôme ; dénombrement : anagrammes, dérangements,
 Catalan ; casse-têtes : solitaire, grenouilles, dominos sur l'échiquier écorné.
+
+### 129. Formules en LaTeX ; accroissements finis, convexité, grenouilles (11 nov. 2026, soir)
+
+**Formules composées par KaTeX (demande de l'auteur, qui trouvait la formule de P(n) peu lisible).** Le site
+compose de lui-même tout `<span class="kx">…</span>` (en ligne) ou `<span class="kx kxd">…</span>` (hors texte)
+inséré dans la page (`composerFormule`, observateur du gabarit) : il suffit donc d'écrire le LaTeX dans le HTML
+du module, sans rien ajouter au gabarit. Attention : le HTML est une chaîne JavaScript, chaque barre oblique
+inverse doit y être doublée (`\\frac`). RÈGLE désormais : les énoncés encadrés (`.def`) et toute formule à
+fraction, somme ou produit sont en LaTeX ; les lettres isolées mêlées aux nombres réglables restent en HTML.
+L'encadré est alors un `<div class="def">` (paragraphes et formules hors texte) ; `commun.js` y rétablit la
+graisse normale, réduit les formules hors texte sur téléphone (0,7 em) et les laisse défiler si elles débordent.
+Les formules longues sont coupées en deux lignes (`aligned`). Converti : anniversaires, suites, Taylor, grands
+nombres, rectangles, nombre e, accroissements, convexité, dichotomie, Euclide, matrice. Restent en HTML simple :
+les explorations antérieures (§120 à §125) et les prototypes ; à convertir au fil des retouches.
+Les lectures (`.lectures`) ne coupent plus un nombre en deux lignes : c'est le libellé qui passe à la ligne.
+
+**`accroissements`** (Maths Sup ; analyse). x³ − 3x, x², sin x, |x| ; A et B déplaçables (pas de 0,05, aimant aux
+demi-entiers) ; tous les c de ]a ; b[ tels que f′(c) égale la pente de la corde (changements de signe sur 2 000
+points, puis dichotomie). Contrôlé : x³ − 3x sur [−2 ; 2] → pente 1, c = ±1,155 ; x² → milieu ; |x| sur
+[−1 ; 2] → aucun.
+
+**`convexite`** (Terminale, Maths Sup ; analyse). exp, x², ln, x³ − 3x, x⁴, sin ; corde [AB] et tangente en T.
+Position par rapport à la corde décidée par le signe de f″ (points de changement connus exactement) ; position
+par rapport à la tangente contrôlée sur 600 points. Erreur trouvée en vérifiant : le signe initial de f″ pour le
+sinus était inversé (la page annonçait « convexe » sur [0,5 ; 2,5]) ; corrigé avant publication.
+
+**`grenouilles`** (casse-tête ; 1 à 6 par couleur). Parcours exhaustif des positions accessibles : impasses,
+nombre de solutions, coup conseillé. Démonstration par double comptage : toute solution a nm sauts et n + m pas.
+Contrôlé (Node) : 72 positions et 13 impasses pour 3 et 3 ; 476 positions pour 5 et 5, 1 089 pour 6 et 6 ;
+exactement deux solutions dès que n ≥ 2 et m ≥ 2 (une par couleur du premier coup) ; avec une seule grenouille
+d'un côté, il y en a davantage (3, 5, 8, 13, 21 pour 2 à 6 en face). Comme pour les dames, la page n'annonce
+l'impasse que lorsque plus rien ne bouge ; « Annuler un coup » et « Recommencer » sont offerts.
+
+Explorations : vingt-deux. Casse-têtes : cinq. Restent de la liste des vingt : droites et plans de l'espace,
+racines et coefficients d'un polynôme ; dénombrement : anagrammes, dérangements, Catalan ; casse-têtes :
+solitaire, dominos sur l'échiquier écorné.

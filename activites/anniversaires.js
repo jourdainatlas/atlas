@@ -19,7 +19,7 @@ export const html = `
   <div class="col">
     <h4><span class="n">1</span>Compter les groupes sans coïncidence</h4>
     <p>On suppose les <i>d</i> jours équiprobables et les naissances indépendantes. Un groupe de <i>n</i> personnes correspond à une liste de <i>n</i> jours : il y en a <i>d<sup>n</sup></i>. Les listes sans répétition sont au nombre de <i>d</i>(<i>d</i> − 1)…(<i>d</i> − <i>n</i> + 1). La probabilité d'au moins une coïncidence est donc</p>
-    <p class="def">P(<i>n</i>) = 1 − <i>d</i>(<i>d</i> − 1)…(<i>d</i> − <i>n</i> + 1)/<i>d<sup>n</sup></i> = 1 − (1 − 1/<i>d</i>)(1 − 2/<i>d</i>)…(1 − (<i>n</i> − 1)/<i>d</i>).</p>
+    <div class="def"><span class="kx kxd">\\begin{aligned} P(n) &= 1 - \\frac{d\\,(d-1)\\cdots(d-n+1)}{d^{\\,n}} \\\\[4pt] &= 1 - \\prod_{k=1}^{n-1}\\left(1 - \\frac kd\\right). \\end{aligned}</span></div></div>
     <p>La <b class="c-sec">courbe orange</b> donne cette probabilité en fonction de <i>n</i>. La <b class="c-mark">courbe bleue</b> répond à une autre question, que l'on confond souvent avec la première : la probabilité qu'une personne au moins du groupe ait le même anniversaire que <em>vous</em>. Choisissez le calendrier : <span class="chips" id="an-d"></span></p>
   </div>
   <div class="fig">
@@ -48,7 +48,7 @@ export const html = `
   <div class="col">
     <h4><span class="n">2</span>Pourquoi 23 suffisent</h4>
     <p>L'intuition compare 23 à 365 et conclut que c'est peu. Mais une coïncidence peut se produire dans n'importe quelle <b>paire</b> de personnes, et un groupe de 23 contient 23 × 22/2 = 253 paires. Chacune a une chance sur 365 de coïncider : 253 occasions à 1/365, cela fait beaucoup, même si ces occasions ne sont pas indépendantes.</p>
-    <p>La seconde question, elle, ne met en jeu que <i>n</i> paires : celles qui vous contiennent. Sa probabilité est 1 − (1 − 1/<i>d</i>)<sup><i>n</i></sup>, et il faut cette fois 253 personnes, et non 23, pour dépasser une chance sur deux avec 365 jours.</p>
+    <p>La seconde question, elle, ne met en jeu que <i>n</i> paires : celles qui vous contiennent. Sa probabilité est <span class="kx">1 - \\left(1 - \\dfrac1d\\right)^{n}</span>, et il faut cette fois 253 personnes, et non 23, pour dépasser une chance sur deux avec 365 jours.</p>
   </div>
 </section>
 

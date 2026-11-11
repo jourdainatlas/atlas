@@ -44,7 +44,7 @@ export const html = `
 <section>
   <div class="col">
     <h4><span class="n">2</span>Le terme général et la somme</h4>
-    <p class="def">Suite arithmétique de raison <i>r</i> : <i>u<sub>n</sub></i> = <i>u</i><sub>0</sub> + <i>nr</i>, et <i>u</i><sub>0</sub> + <i>u</i><sub>1</sub> + … + <i>u<sub>n</sub></i> = (<i>n</i> + 1)(<i>u</i><sub>0</sub> + <i>u<sub>n</sub></i>)/2. Suite géométrique de raison <i>q</i> ≠ 1 : <i>v<sub>n</sub></i> = <i>v</i><sub>0</sub><i>q<sup>n</sup></i>, et <i>v</i><sub>0</sub> + <i>v</i><sub>1</sub> + … + <i>v<sub>n</sub></i> = <i>v</i><sub>0</sub>(1 − <i>q</i><sup><i>n</i>+1</sup>)/(1 − <i>q</i>).</p>
+    <div class="def"><p>Suite arithmétique de raison <span class="kx">r</span> :</p><span class="kx kxd">\\begin{aligned} u_n &= u_0 + nr, \\\\[2pt] u_0 + u_1 + \\dots + u_n &= \\frac{(n+1)(u_0 + u_n)}{2}. \\end{aligned}</span><p>Suite géométrique de raison <span class="kx">q \\neq 1</span> :</p><span class="kx kxd">\\begin{aligned} v_n &= v_0\\,q^n, \\\\[2pt] v_0 + v_1 + \\dots + v_n &= v_0\\,\\frac{1 - q^{\\,n+1}}{1 - q}. \\end{aligned}</span></div>
     <p>La première somme s'obtient en écrivant la somme deux fois, à l'endroit et à l'envers : chaque colonne vaut <i>u</i><sub>0</sub> + <i>u<sub>n</sub></i>, et il y a <i>n</i> + 1 colonnes. La seconde, en multipliant la somme <i>S</i> par <i>q</i> : dans <i>S</i> − <i>qS</i>, tous les termes se simplifient sauf le premier et le dernier, et il reste <i>v</i><sub>0</sub> − <i>v</i><sub>0</sub><i>q</i><sup><i>n</i>+1</sup>. La page calcule chaque somme deux fois, par la formule et en additionnant les termes un à un, et vérifie que les deux résultats coïncident.</p>
   </div>
 </section>

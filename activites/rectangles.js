@@ -40,7 +40,7 @@ export const html = `
   <div class="col">
     <h4><span class="n">2</span>Encadrer, puis passer à la limite</h4>
     <p>Quand la fonction est croissante, les rectangles « à gauche » restent sous la courbe et les rectangles « à droite » passent au-dessus : l'intégrale est encadrée par les deux sommes. Leur différence se calcule sans rien savoir de l'intégrale : c'est (<i>b</i> − <i>a</i>)(<i>f</i>(<i>b</i>) − <i>f</i>(<i>a</i>))/<i>n</i>, qui tend vers 0. Les deux sommes ont donc la même limite.</p>
-    <p class="def">Si <i>f</i> est continue sur [<i>a</i> ; <i>b</i>], les sommes ((<i>b</i> − <i>a</i>)/<i>n</i>) × (<i>f</i>(<i>x</i><sub>0</sub>) + … + <i>f</i>(<i>x</i><sub><i>n</i>−1</sub>)), où <i>x<sub>k</sub></i> = <i>a</i> + <i>k</i>(<i>b</i> − <i>a</i>)/<i>n</i>, tendent vers l'intégrale de <i>f</i> entre <i>a</i> et <i>b</i> quand <i>n</i> tend vers l'infini.</p>
+    <div class="def"><p>Si <span class="kx">f</span> est continue sur <span class="kx">[a\\,;b]</span> et si <span class="kx">x_k = a + k\\,\\dfrac{b-a}{n}</span>, alors</p><span class="kx kxd">\\frac{b-a}{n}\\,\\sum_{k=0}^{n-1} f(x_k) \\;\\xrightarrow[n \\to +\\infty]{}\\; \\int_a^b f(x)\\,\\mathrm dx.</span></div>
   </div>
 </section>
 
