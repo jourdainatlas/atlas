@@ -29,8 +29,10 @@ qui s'ouvre directement. Les activités d'un groupe ne sont pas des onglets :
 une fois dans l'intercalaire, un sous-menu (`.activites-sous`) les propose, l'activité ouverte étant marquée
 `aria-current` ; une activité sans groupe n'a pas de sous-menu. Versions écartées par l'auteur : un intercalaire
 par activité, puis un découpage par domaine mathématique (« Analyse », « Géométrie »), qui créait un sous-menu à
-une seule entrée pour l'atelier. Tous les intercalaires, les cartes et le sous-menu sont en olive, couleur de la rubrique : le code de couleurs
-par domaine (vert, violet) n'avait plus de sens une fois les domaines abandonnés, et l'auteur l'a fait retirer. Sur
+une seule entrée pour l'atelier. Les intercalaires sont en olive, couleur de la rubrique, sauf « Toutes », en gris. Le domaine mathématique ne
+colore plus les intercalaires mais, à la demande de l'auteur, les entrées du sous-menu et les cartes des
+explorations (champ `domaine` : analyse en vert, géométrie en violet, algèbre en orange, nombres et probabilités
+en bleu, comme les familles de l'édifice) ; une activité sans domaine reste en olive. Sur
 téléphone, la rangée d'intercalaires défile horizontalement dans son cadre ; la page ne déborde pas.
 
 **Repères.** Couleur de la rubrique : `--c-ord` (olive), la seule couleur de thème qu'aucune rubrique
@@ -44,7 +46,7 @@ n'a pas été modifié : la proposition d'y mettre un lien vers les activités a
 barre de rubriques des pages de lecture (`lecture.mjs`, domaine À propos) ne cite pas encore « Activités ».
 
 **Catalogue : `rubriques/activites.yaml`.** `intro` ; `groupes` (`id`, `titre`, `intro`) ; `activites` (`id`,
-`titre`, `onglet`, `niveau`, `resume`, `texte`, `cours`, `noeuds`, et `groupe` ou rien).
+`titre`, `onglet`, `niveau`, `resume`, `texte`, `cours`, `noeuds`, `groupe` ou rien, `domaine` facultatif).
 `construire.py` vérifie les `noeuds` comme pour toute rubrique ; `rendu.mjs` compose `intro`, `resume` et
 `texte`. Les identifiants de `cours` et de `groupe` ne sont vérifiés par personne : les relire à la main.
 
