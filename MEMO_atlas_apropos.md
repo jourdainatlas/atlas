@@ -656,6 +656,11 @@ Pièges rencontrés : la classe `.fil` est celle du fil d'Ariane (masquée par `
 la page d'accueil est dessinée deux fois au démarrage, d'où `accueilFil.debut` (le montage reprend où il en était)
 et `enCours` vrai jusqu'à la fin du montage (sinon l'observateur lance un tracé pendant le montage).
 
+Correctif du 11 nov. (téléphone) : la légende tient sur une ligne (`nowrap`) ; avec la colonne `1fr` du téléphone, un
+titre de théorème long élargissait la carte, donc la page entière (390 → 459 px), et le navigateur dézoomait :
+l'en-tête paraissait coupé. Colonne passée à `minmax(0, 1fr)`, `min-width: 0` sur la carte, et sur téléphone le
+titre du théorème passe à la ligne (hauteur réservée 86 px).
+
 **Roue des rubriques** (`accueilRoue()`, bloc `.acc-roue` de `pageAccueil`) : elle remplace les quatre boutons
 (`.acc-actions`), que la barre de navigation (§66) doublait. Cadran `.ro-cadran` : les symboles des rubriques
 (`.ro-sym`, celles dont le compte est nul sont omises) sur un cercle qui tourne d'un cran (`--a`) et amène le
