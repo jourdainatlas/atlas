@@ -14,7 +14,7 @@ export const html = `
 <section>
   <div class="col">
     <h4><span class="n">1</span>Trois calculs, un seul nombre</h4>
-    <p>Déplacez les extrémités A et B des vecteurs <b class="c-mark"><i>u</i></b> = OA et <b class="c-sec"><i>v</i></b> = OB, ou réglez leurs coordonnées. Le point H est le projeté orthogonal de B sur la droite (OA). Le tableau calcule le produit scalaire <i>u</i> · <i>v</i> des trois façons.</p>
+    <p>Déplacez les extrémités A et B des vecteurs <b class="c-mark"><span class=kx>u</span></b> = OA et <b class="c-sec"><span class=kx>v</span></b> = OB, ou réglez leurs coordonnées. Le point H est le projeté orthogonal de B sur la droite (OA). Le tableau calcule le produit scalaire <span class=kx>u \\cdot v</span> des trois façons.</p>
   </div>
   <div class="fig">
     <div class="split">
@@ -41,22 +41,22 @@ export const html = `
 <section>
   <div class="col">
     <h4><span class="n">2</span>Ce que dit le signe</h4>
-    <p>Comme <i>u</i> · <i>v</i> = ‖<i>u</i>‖ × ‖<i>v</i>‖ × cos θ et que les longueurs sont positives, le produit scalaire de deux vecteurs non nuls a le signe de cos θ : positif si l'angle est aigu, négatif s'il est obtus. Faites tourner B autour de O et regardez H passer de l'autre côté de O au moment où l'angle devient obtus.</p>
+    <p>Comme <span class=kx>u \\cdot v</span> = ‖<span class=kx>u</span>‖ × ‖<span class=kx>v</span>‖ × cos θ et que les longueurs sont positives, le produit scalaire de deux vecteurs non nuls a le signe de cos θ : positif si l'angle est aigu, négatif s'il est obtus. Faites tourner B autour de O et regardez H passer de l'autre côté de O au moment où l'angle devient obtus.</p>
     <p class="def">Deux vecteurs sont orthogonaux si, et seulement si, leur produit scalaire est nul.</p>
-    <p>Dans un repère orthonormé, cela donne un test sans aucune mesure d'angle : <i>u</i>(<i>x</i> ; <i>y</i>) et <i>v</i>(<i>x</i>′ ; <i>y</i>′) sont orthogonaux exactement quand <i>xx</i>′ + <i>yy</i>′ = 0. Cherchez plusieurs vecteurs <i>v</i> orthogonaux à <i>u</i>(3 ; 2) : ils sont tous alignés.</p>
+    <p>Dans un repère orthonormé, cela donne un test sans aucune mesure d'angle : <span class=kx>u(x \\,; y)</span> et <span class=kx>v(x' \\,; y')</span> sont orthogonaux exactement quand <span class=kx>xx' + yy' = 0</span>. Cherchez plusieurs vecteurs <span class=kx>v</span> orthogonaux à <span class=kx>u(3 \\,; 2)</span> : ils sont tous alignés.</p>
   </div>
 </section>
 
 <section>
   <div class="col">
     <h4><span class="n">3</span>Le projeté</h4>
-    <p>La troisième expression n'emploie que des points de la droite (OA) : <i>u</i> · <i>v</i> est le produit de OA par OH, compté positivement si H est du même côté de O que A, négativement sinon. Déplacer B perpendiculairement à (OA) ne change donc pas le produit scalaire, puisque H ne bouge pas. Essayez : avec <i>u</i>(4 ; 0), faites varier seulement l'ordonnée de <i>v</i>.</p>
+    <p>La troisième expression n'emploie que des points de la droite (OA) : <span class=kx>u \\cdot v</span> est le produit de OA par OH, compté positivement si H est du même côté de O que A, négativement sinon. Déplacer B perpendiculairement à (OA) ne change donc pas le produit scalaire, puisque H ne bouge pas. Essayez : avec <span class=kx>u(4 \\,; 0)</span>, faites varier seulement l'ordonnée de <span class=kx>v</span>.</p>
   </div>
 </section>
 ` + suite(
-  "Oublier que le produit scalaire est un nombre, et non un vecteur, et lui prêter les règles du produit des nombres. En particulier, <i>u</i> · <i>v</i> = 0 n'entraîne pas que l'un des deux vecteurs soit nul : (3 ; 2) · (−2 ; 3) = −6 + 6 = 0, et aucun des deux n'est nul. On ne peut donc pas « simplifier par <i>u</i> » dans une égalité <i>u</i> · <i>v</i> = <i>u</i> · <i>w</i>.",
-  "Le chapitre de Première <a href=\"#cours/p-07\">Produit scalaire</a> établit l'égalité des trois expressions. Dans l'édifice, la fiche <a href=\"#met.me-produit-scalaire\">Produit scalaire et inégalité de Cauchy-Schwarz</a> part de la définition générale ; l'inégalité |<i>u</i> · <i>v</i>| ≤ ‖<i>u</i>‖ × ‖<i>v</i>‖ est ce qui permet de définir l'angle par son cosinus.",
-  "Le produit scalaire est calculé avec les coordonnées, qui avancent par pas de 0,05 et sont traitées comme des entiers (en vingtièmes) : il est exact. Quand on déplace un point à la souris ou au doigt, il s'accroche légèrement aux nœuds du quadrillage. L'angle θ, donné au dixième de degré, vient de cos θ = <i>u</i> · <i>v</i> / (‖<i>u</i>‖ × ‖<i>v</i>‖) ; le projeté H est OA multiplié par <i>u</i> · <i>v</i> / ‖<i>u</i>‖². Les longueurs sont arrondies à 10⁻³. Rien n'est enregistré ni envoyé.");
+  "Oublier que le produit scalaire est un nombre, et non un vecteur, et lui prêter les règles du produit des nombres. En particulier, <span class=kx>u \\cdot v = 0</span> n'entraîne pas que l'un des deux vecteurs soit nul : (3 ; 2) · (−2 ; 3) = −6 + 6 = 0, et aucun des deux n'est nul. On ne peut donc pas « simplifier par <span class=kx>u</span> » dans une égalité <span class=kx>u \\cdot v = u \\cdot w</span>.",
+  "Le chapitre de Première <a href=\"#cours/p-07\">Produit scalaire</a> établit l'égalité des trois expressions. Dans l'édifice, la fiche <a href=\"#met.me-produit-scalaire\">Produit scalaire et inégalité de Cauchy-Schwarz</a> part de la définition générale ; l'inégalité <span class=kx>|u \\cdot v| \\leqslant</span> ‖<span class=kx>u</span>‖ × ‖<span class=kx>v</span>‖ est ce qui permet de définir l'angle par son cosinus.",
+  "Le produit scalaire est calculé avec les coordonnées, qui avancent par pas de 0,05 et sont traitées comme des entiers (en vingtièmes) : il est exact. Quand on déplace un point à la souris ou au doigt, il s'accroche légèrement aux nœuds du quadrillage. L'angle θ, donné au dixième de degré, vient de cos θ <span class=kx>= u \\cdot v</span> / (‖<span class=kx>u</span>‖ × ‖<span class=kx>v</span>‖) ; le projeté H est OA multiplié par <span class=kx>u \\cdot v</span> / ‖<span class=kx>u</span>‖². Les longueurs sont arrondies à 10⁻³. Rien n'est enregistré ni envoyé.");
 
 export function monter(racine) {
   const q = s => racine.querySelector(s);

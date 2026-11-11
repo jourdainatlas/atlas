@@ -44,9 +44,9 @@ export const html = `
   <div class="col">
     <h4><span class="n">2</span>La position impossible</h4>
     <p>Remettez le jeu en ordre, puis appuyez sur « Échanger les pièces 1 et 2 », comme si l'on avait démonté le jeu pour le remonter de travers. Vous pouvez essayer aussi longtemps que vous voudrez : cette position n'a pas de solution. C'est le défi qui fit la célébrité du jeu vers 1880, avec les pièces 14 et 15 échangées.</p>
-    <p>Pour le démontrer, on cherche une quantité que <em>aucun coup ne change</em>. Regardons la position comme une permutation des cases, la case vide comptant pour une pièce. Un coup échange la case vide et une pièce : c'est une transposition, qui change la <b>signature</b> de la permutation en son opposée. Le même coup déplace la case vide d'un pas : la distance <i>d</i> qui la sépare du coin en bas à droite, comptée en pas horizontaux et verticaux, change de parité. Le produit</p>
+    <p>Pour le démontrer, on cherche une quantité que <em>aucun coup ne change</em>. Regardons la position comme une permutation des cases, la case vide comptant pour une pièce. Un coup échange la case vide et une pièce : c'est une transposition, qui change la <b>signature</b> de la permutation en son opposée. Le même coup déplace la case vide d'un pas : la distance <span class=kx>d</span> qui la sépare du coin en bas à droite, comptée en pas horizontaux et verticaux, change de parité. Le produit</p>
     <div class="def"><span class="kx kxd">\\text{signature de la permutation} \\times (-1)^{d}</span></div>
-    <p>ne change donc jamais. Il vaut +1 dans la position rangée, donc +1 dans toute position que l'on peut ranger. Or échanger deux pièces sans toucher à la case vide change la signature sans changer <i>d</i> : le produit passe à −1, et la position est hors d'atteinte. La page affiche ce produit sous le plateau.</p>
+    <p>ne change donc jamais. Il vaut +1 dans la position rangée, donc +1 dans toute position que l'on peut ranger. Or échanger deux pièces sans toucher à la case vide change la signature sans changer <span class=kx>d</span> : le produit passe à −1, et la position est hors d'atteinte. La page affiche ce produit sous le plateau.</p>
   </div>
 </section>
 

@@ -41,7 +41,7 @@ export const html = `
 <section>
   <div class="col">
     <h4><span class="n">2</span>Un chemin est un mot</h4>
-    <p>Tout chemin fait exactement <i>n</i> pas vers la droite et <i>p</i> pas vers le haut : son mot a <i>n</i> + <i>p</i> lettres, dont <i>n</i> lettres « → ». Réciproquement, tout mot de ce type décrit un chemin, et un seul. Compter les chemins revient donc à choisir, parmi les <i>n</i> + <i>p</i> positions du mot, les <i>n</i> positions des lettres « → ».</p>
+    <p>Tout chemin fait exactement <span class=kx>n</span> pas vers la droite et <span class=kx>p</span> pas vers le haut : son mot a <span class=kx>n + p</span> lettres, dont <span class=kx>n</span> lettres « → ». Réciproquement, tout mot de ce type décrit un chemin, et un seul. Compter les chemins revient donc à choisir, parmi les <span class=kx>n + p</span> positions du mot, les <span class=kx>n</span> positions des lettres « → ».</p>
     <div class="def"><p>Le nombre de chemins est le nombre de parties à <span class="kx">n</span> éléments d'un ensemble à <span class="kx">n + p</span> éléments, le coefficient binomial</p><span class="kx kxd">\\binom{n+p}{n} = \\frac{(n+p)!}{n!\\,p!}.</span></div>
     <p id="cg-total" aria-live="polite"></p>
   </div>
@@ -51,13 +51,13 @@ export const html = `
   <div class="col">
     <h4><span class="n">3</span>La relation de Pascal</h4>
     <p>Choisissez un nœud, sur la figure ou avec les deux curseurs. Pour y arriver, le dernier pas vient soit de la gauche, soit du dessous : les chemins qui y mènent se partagent en deux familles, sans chemin commun. Le nombre inscrit en un nœud est donc la <b>somme</b> des nombres de ses deux voisins, à gauche et au-dessous.</p>
-    <p>C'est la relation de Pascal : « <i>i</i> parmi <i>i</i> + <i>j</i> » est la somme de « <i>i</i> − 1 parmi <i>i</i> + <i>j</i> − 1 » et de « <i>i</i> parmi <i>i</i> + <i>j</i> − 1 ». Penchez la tête d'un huitième de tour : les nombres de la grille, lus diagonale par diagonale, sont les lignes du triangle de Pascal.</p>
+    <p>C'est la relation de Pascal : « <span class=kx>i</span> parmi <span class=kx>i + j</span> » est la somme de « <span class=kx>i - 1</span> parmi <span class=kx>i + j - 1</span> » et de « <span class=kx>i</span> parmi <span class=kx>i + j - 1</span> ». Penchez la tête d'un huitième de tour : les nombres de la grille, lus diagonale par diagonale, sont les lignes du triangle de Pascal.</p>
   </div>
 </section>
 ` + suite(
   "Multiplier au lieu d'additionner, ou compter les nœuds au lieu des pas. Sur une grille de 4 pas vers la droite et 3 pas vers le haut, il n'y a ni 4 × 3 = 12 chemins, ni 5 × 4 = 20, mais « 4 parmi 7 », c'est-à-dire 35. On additionne les nombres des deux voisins parce que les deux familles de chemins sont disjointes ; on multiplierait si l'on enchaînait deux choix indépendants.",
-  "Le chapitre de Terminale <a href=\"#cours/t-07\">Dénombrement</a> définit les combinaisons et démontre la relation de Pascal. Dans l'édifice, voir la fiche <a href=\"#z-polynomes.pol-binome\">Binôme de Newton et coefficients binomiaux</a> : développer (<i>a</i> + <i>b</i>)<sup><i>n</i> + <i>p</i></sup>, c'est précisément compter les mots formés de <i>n</i> lettres <i>a</i> et de <i>p</i> lettres <i>b</i>.",
-  "Les nombres de la grille sont calculés par additions successives à partir des bords, où ils valent 1 ; ce sont des entiers exacts (au plus 12 870, pour <i>n</i> = <i>p</i> = 8). Rien n'est enregistré ni envoyé.");
+  "Le chapitre de Terminale <a href=\"#cours/t-07\">Dénombrement</a> définit les combinaisons et démontre la relation de Pascal. Dans l'édifice, voir la fiche <a href=\"#z-polynomes.pol-binome\">Binôme de Newton et coefficients binomiaux</a> : développer <span class=kx>(a + b)^{n + p}</span>, c'est précisément compter les mots formés de <span class=kx>n</span> lettres <span class=kx>a</span> et de <span class=kx>p</span> lettres <span class=kx>b</span>.",
+  "Les nombres de la grille sont calculés par additions successives à partir des bords, où ils valent 1 ; ce sont des entiers exacts (au plus 12 870, pour <span class=kx>n = p = 8</span>). Rien n'est enregistré ni envoyé.");
 
 export function monter(racine) {
   const q = s => racine.querySelector(s);

@@ -43,7 +43,7 @@ export const html = `
   <div class="col">
     <h4><span class="n">2</span>Deux remarques qui changent tout</h4>
     <p><b>L'ordre des appuis ne compte pas.</b> L'état final d'une lampe ne dépend que du nombre de fois où elle a été inversée, pas de l'ordre. <b>Appuyer deux fois sur la même case ne fait rien.</b> Une stratégie se réduit donc à un choix : pour chaque case, appuyer ou ne pas appuyer.</p>
-    <p>Codons « allumé » par 1 et « éteint » par 0, et calculons modulo 2, où 1 + 1 = 0 : inverser une lampe, c'est lui ajouter 1. Les nombres 0 et 1, avec cette addition et la multiplication ordinaire, forment un corps, noté 𝔽₂. Une position est un vecteur <i>b</i> de 𝔽₂<sup><i>N</i></sup>, où <i>N</i> est le nombre de cases ; un choix d'appuis est un autre vecteur <i>x</i>.</p>
+    <p>Codons « allumé » par 1 et « éteint » par 0, et calculons modulo 2, où 1 + 1 = 0 : inverser une lampe, c'est lui ajouter 1. Les nombres 0 et 1, avec cette addition et la multiplication ordinaire, forment un corps, noté 𝔽₂. Une position est un vecteur <span class=kx>b</span> de 𝔽₂<sup><i>N</i></sup>, où <span class=kx>N</span> est le nombre de cases ; un choix d'appuis est un autre vecteur <span class=kx>x</span>.</p>
     <div class="def"><p>Éteindre la position <span class="kx">b</span>, c'est résoudre le système linéaire <span class="kx">Ax = b</span> sur <span class="kx">\\mathbb F_2</span>, où la matrice <span class="kx">A</span>, carrée de taille <span class="kx">N</span>, a un 1 à la ligne <span class="kx">i</span> et à la colonne <span class="kx">j</span> quand un appui sur la case <span class="kx">j</span> inverse la lampe <span class="kx">i</span>.</p></div>
   </div>
 </section>
@@ -51,7 +51,7 @@ export const html = `
 <section>
   <div class="col">
     <h4><span class="n">3</span>Ce que dit le rang</h4>
-    <p>La page résout ce système par la méthode du pivot de Gauss. Tout dépend du noyau de <i>A</i>, c'est-à-dire des choix d'appuis qui ne changent rien. Si sa dimension est <i>k</i>, le théorème du rang dit que les positions solubles forment un sous-espace de dimension <i>N</i> − <i>k</i> : elles sont 2<sup><i>N</i> − <i>k</i></sup> parmi 2<sup><i>N</i></sup>, soit une proportion de 1/2<sup><i>k</i></sup>, et chacune a exactement 2<sup><i>k</i></sup> solutions.</p>
+    <p>La page résout ce système par la méthode du pivot de Gauss. Tout dépend du noyau de <span class=kx>A</span>, c'est-à-dire des choix d'appuis qui ne changent rien. Si sa dimension est <span class=kx>k</span>, le théorème du rang dit que les positions solubles forment un sous-espace de dimension <span class=kx>N - k</span> : elles sont <span class=kx>2^{N - k}</span> parmi <span class=kx>2^{N}</span>, soit une proportion de <span class=kx>1/2^{k}</span>, et chacune a exactement <span class=kx>2^{k}</span> solutions.</p>
     <p id="lo-rang" aria-live="polite"></p>
     <p>Changez la taille : le plateau de 3 sur 3 a un noyau réduit à zéro, toute position y est soluble, d'une seule façon ; celui de 5 sur 5 a un noyau de dimension 2, celui de 4 sur 4 un noyau de dimension 4. Pour toutes les tailles proposées ici, la position « tout allumé » est soluble : la page le vérifie par le calcul.</p>
   </div>
@@ -59,7 +59,7 @@ export const html = `
 ` + suite(
   "Chercher une stratégie « dans l'ordre », en croyant que le premier appui doit préparer le suivant. L'ordre n'a aucune importance, et réappuyer sur une case annule l'appui : toute solution est un ensemble de cases, que l'on peut jouer dans n'importe quel ordre. L'autre erreur est de croire toute position soluble : sur le plateau de 5 sur 5, trois positions sur quatre ne le sont pas.",
   "Le pivot de Gauss, le rang d'une matrice et le théorème du rang sont établis dans les chapitres de Maths Sup <a href=\"#cours/ma-15\">Dimension finie et rang</a> et <a href=\"#cours/ma-16\">Matrices</a>, sur un corps quelconque, donc aussi sur 𝔽₂. Dans l'édifice : <a href=\"#alglin.v-rang\">Théorème du rang</a>, et <a href=\"#galois.gs-corps-finis\">Corps finis</a> pour 𝔽₂.",
-  "La matrice <i>A</i> est construite pour la taille choisie, puis réduite par le pivot de Gauss sur 𝔽₂ ; on en tire la dimension du noyau, une solution particulière quand il y en a une, et une base du noyau. La solution affichée est la plus courte des 2<sup><i>k</i></sup> solutions, toutes passées en revue (au plus 16 ici). Rien n'est enregistré ni envoyé.");
+  "La matrice <span class=kx>A</span> est construite pour la taille choisie, puis réduite par le pivot de Gauss sur 𝔽₂ ; on en tire la dimension du noyau, une solution particulière quand il y en a une, et une base du noyau. La solution affichée est la plus courte des <span class=kx>2^{k}</span> solutions, toutes passées en revue (au plus 16 ici). Rien n'est enregistré ni envoyé.");
 
 export function monter(racine) {
   const q = s => racine.querySelector(s);

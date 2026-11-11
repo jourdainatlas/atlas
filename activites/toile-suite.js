@@ -8,14 +8,14 @@ export const html = `
 <header class="col">
   <p class="eyebrow">Terminale, Maths Sup · Suites définies par récurrence</p>
   <h3>Suites récurrentes : la toile d'araignée</h3>
-  <p class="lede">Une suite définie par <i>u</i><sub><i>n</i>+1</sub> = <i>f</i>(<i>u<sub>n</sub></i>) se construit sans aucun calcul, avec deux courbes : celle de <i>f</i> et la droite d'équation <i>y</i> = <i>x</i>. Le dessin obtenu, escalier ou spirale, dit si la suite converge, et vers quoi.</p>
+  <p class="lede">Une suite définie par <span class=kx>u_{n+1} = f(u_{n})</span> se construit sans aucun calcul, avec deux courbes : celle de <span class=kx>f</span> et la droite d'équation <span class=kx>y = x</span>. Le dessin obtenu, escalier ou spirale, dit si la suite converge, et vers quoi.</p>
 </header>
 
 <section>
   <div class="col">
     <h4><span class="n">1</span>Construire les termes</h4>
     <p>Choisissez une fonction : <span class="chips" id="ts-fn"></span></p>
-    <p>On part de <i>u</i><sub>0</sub> sur l'axe des abscisses. On monte jusqu'à la courbe de <i>f</i> : on est à la hauteur <i>f</i>(<i>u</i><sub>0</sub>) = <i>u</i><sub>1</sub>. On rejoint horizontalement la droite <i>y</i> = <i>x</i>, ce qui reporte <i>u</i><sub>1</sub> en abscisse. Et l'on recommence. Déplacez <i>u</i><sub>0</sub> sur la figure et augmentez le nombre d'étapes.</p>
+    <p>On part de <span class=kx>u_{0}</span> sur l'axe des abscisses. On monte jusqu'à la courbe de <span class=kx>f</span> : on est à la hauteur <span class=kx>f(u_{0}) = u_{1}</span>. On rejoint horizontalement la droite <span class=kx>y = x</span>, ce qui reporte <span class=kx>u_{1}</span> en abscisse. Et l'on recommence. Déplacez <span class=kx>u_{0}</span> sur la figure et augmentez le nombre d'étapes.</p>
   </div>
   <div class="fig">
     <div class="split">
@@ -38,7 +38,7 @@ export const html = `
 <section>
   <div class="col">
     <h4><span class="n">2</span>Où la suite peut-elle aller ?</h4>
-    <p>Si la suite converge vers un réel ℓ et si <i>f</i> est continue en ℓ, alors en passant à la limite dans <i>u</i><sub><i>n</i>+1</sub> = <i>f</i>(<i>u<sub>n</sub></i>) on obtient ℓ = <i>f</i>(ℓ). Les seules limites possibles sont donc les <b>points fixes</b> de <i>f</i> : les abscisses où sa courbe coupe la droite <i>y</i> = <i>x</i>.</p>
+    <p>Si la suite converge vers un réel ℓ et si <span class=kx>f</span> est continue en ℓ, alors en passant à la limite dans <span class=kx>u_{n+1} = f(u_{n})</span> on obtient <span class=kx>\\ell = f(\\ell )</span>. Les seules limites possibles sont donc les <b>points fixes</b> de <span class=kx>f</span> : les abscisses où sa courbe coupe la droite <span class=kx>y = x</span>.</p>
     <p id="ts-verdict" aria-live="polite"></p>
   </div>
 </section>
@@ -46,15 +46,15 @@ export const html = `
 <section>
   <div class="col">
     <h4><span class="n">3</span>Escalier ou spirale</h4>
-    <p>Près d'un point fixe ℓ, la courbe de <i>f</i> ressemble à sa tangente, de pente <i>f</i> ′(ℓ). Tout se joue sur ce nombre. Si <i>f</i> ′(ℓ) est positif, la suite avance en <b>escalier</b>, d'un seul côté de ℓ ; s'il est négatif, elle tourne en <b>spirale</b> et ses termes encadrent ℓ alternativement.</p>
+    <p>Près d'un point fixe ℓ, la courbe de <span class=kx>f</span> ressemble à sa tangente, de pente <span class=kx>f '(\\ell )</span>. Tout se joue sur ce nombre. Si <span class=kx>f '(\\ell )</span> est positif, la suite avance en <b>escalier</b>, d'un seul côté de ℓ ; s'il est négatif, elle tourne en <b>spirale</b> et ses termes encadrent ℓ alternativement.</p>
     <div class="def"><p>Si <span class="kx">f</span> est dérivable en un point fixe <span class="kx">\\ell</span> et si <span class="kx">|f'(\\ell)| < 1</span>, alors la suite converge vers <span class="kx">\\ell</span> dès que <span class="kx">u_0</span> est assez proche de <span class="kx">\\ell</span>. Si <span class="kx">|f'(\\ell)| > 1</span>, elle ne converge vers <span class="kx">\\ell</span> que si l'un de ses termes est exactement égal à <span class="kx">\\ell</span>.</p></div>
-    <p>Avec la fonction affine, réglez la pente <i>a</i> : pour <i>a</i> = 0,5 un escalier qui converge, pour <i>a</i> = −0,5 une spirale qui converge, pour <i>a</i> = −1,2 une spirale qui s'éloigne. Avec <i>rx</i>(1 − <i>x</i>), montez <i>r</i> au-delà de 3 : le point fixe est toujours là, mais la suite n'y va plus.</p>
+    <p>Avec la fonction affine, réglez la pente <span class=kx>a</span> : pour <span class=kx>a = 0{,}5</span> un escalier qui converge, pour <span class=kx>a = -0{,}5</span> une spirale qui converge, pour <span class=kx>a = -1{,}2</span> une spirale qui s'éloigne. Avec <span class=kx>rx(1 - x)</span>, montez <span class=kx>r</span> au-delà de 3 : le point fixe est toujours là, mais la suite n'y va plus.</p>
   </div>
 </section>
 ` + suite(
-  "Croire que l'existence d'un point fixe suffit. L'équation ℓ = <i>f</i>(ℓ) donne les limites <em>possibles</em> ; elle ne dit pas que la suite converge. Pour <i>f</i>(<i>x</i>) = −1,2(<i>x</i> − 0,5) + 0,5, le point fixe est ℓ = 0,5, et pourtant la suite s'en éloigne dès que <i>u</i><sub>0</sub> ≠ 0,5, puisque <i>u<sub>n</sub></i> − 0,5 = (−1,2)<sup><i>n</i></sup>(<i>u</i><sub>0</sub> − 0,5).",
+  "Croire que l'existence d'un point fixe suffit. L'équation <span class=kx>\\ell = f(\\ell )</span> donne les limites <em>possibles</em> ; elle ne dit pas que la suite converge. Pour <span class=kx>f(x) = -1{,}2(x - 0{,}5) + 0{,}5</span>, le point fixe est ℓ = 0,5, et pourtant la suite s'en éloigne dès que <span class=kx>u_{0} \\neq 0{,}5</span>, puisque <span class=kx>u_{n} - 0{,}5 = (-1{,}2)^{n}(u_{0} - 0{,}5)</span>.",
   "Le chapitre de Terminale <a href=\"#cours/t-01\">Suites numériques</a> et celui de Maths Sup <a href=\"#cours/ma-07\">Nombres réels et suites numériques</a> étudient ces suites. Le résultat général derrière l'énoncé encadré est, dans l'édifice, le <a href=\"#met.gd-point-fixe\">Théorème du point fixe de Banach</a> : une application contractante d'un espace complet dans lui-même a un unique point fixe, vers lequel convergent toutes les suites récurrentes.",
-  "Les termes sont calculés en appliquant <i>f</i>, sans approximation autre que l'arrondi d'affichage à 10⁻⁴. Les points fixes sont donnés par leur formule : 0,5 pour la fonction affine <i>a</i>(<i>x</i> − 0,5) + 0,5, 0 et 1 − 1/<i>r</i> pour <i>rx</i>(1 − <i>x</i>) ; celui du cosinus, 0,7391 à 10⁻⁴ près, est obtenu par dichotomie. Rien n'est enregistré ni envoyé.");
+  "Les termes sont calculés en appliquant <span class=kx>f</span>, sans approximation autre que l'arrondi d'affichage à 10⁻⁴. Les points fixes sont donnés par leur formule : 0,5 pour la fonction affine <span class=kx>a(x - 0{,}5) + 0{,}5</span>, 0 et <span class=kx>1 - 1/r</span> pour <span class=kx>rx(1 - x)</span> ; celui du cosinus, 0,7391 à 10⁻⁴ près, est obtenu par dichotomie. Rien n'est enregistré ni envoyé.");
 
 // Point fixe du cosinus par dichotomie sur [0 ; 1] (cos x − x y change de signe, et y est strictement décroissante).
 let PC = (() => { let a = 0, b = 1; for (let i = 0; i < 60; i++) { const m = (a + b) / 2; if (Math.cos(m) - m > 0) a = m; else b = m; } return (a + b) / 2; })();

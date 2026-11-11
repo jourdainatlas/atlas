@@ -8,14 +8,14 @@ export const html = `
 <header class="col">
   <p class="eyebrow">Première · Polynôme du second degré</p>
   <h3>Le trinôme du second degré</h3>
-  <p class="lede">Trois coefficients <i>a</i>, <i>b</i>, <i>c</i>, et une seule courbe : la parabole d'équation <i>y</i> = <i>ax</i>² + <i>bx</i> + <i>c</i>. Réglez-les un par un et regardez ce que chacun commande : le sommet, les racines, le signe.</p>
+  <p class="lede">Trois coefficients <span class=kx>a</span>, <span class=kx>b</span>, <span class=kx>c</span>, et une seule courbe : la parabole d'équation <span class=kx>y = ax^{2} + bx + c</span>. Réglez-les un par un et regardez ce que chacun commande : le sommet, les racines, le signe.</p>
 </header>
 
 <section>
   <div class="col">
     <h4><span class="n">1</span>Ce que commande chaque coefficient</h4>
-    <p>Commencez par <i>c</i> : la parabole monte ou descend d'un bloc, car <i>c</i> = <i>f</i>(0) est l'ordonnée du point où elle coupe l'axe vertical. Passez à <i>a</i> : son signe décide si la parabole est tournée vers le haut ou vers le bas, et sa valeur absolue de son ouverture.</p>
-    <p>Le rôle de <i>b</i> est le moins évident. Cochez « lieu du sommet », puis faites varier <i>b</i> seul : le sommet glisse le long d'une autre parabole, d'équation <i>y</i> = −<i>ax</i>² + <i>c</i>.</p>
+    <p>Commencez par <span class=kx>c</span> : la parabole monte ou descend d'un bloc, car <span class=kx>c = f(0)</span> est l'ordonnée du point où elle coupe l'axe vertical. Passez à <span class=kx>a</span> : son signe décide si la parabole est tournée vers le haut ou vers le bas, et sa valeur absolue de son ouverture.</p>
+    <p>Le rôle de <span class=kx>b</span> est le moins évident. Cochez « lieu du sommet », puis faites varier <span class=kx>b</span> seul : le sommet glisse le long d'une autre parabole, d'équation <span class=kx>y = -ax^{2} + c</span>.</p>
   </div>
   <div class="fig">
     <div class="split">
@@ -52,22 +52,22 @@ export const html = `
 <section>
   <div class="col">
     <h4><span class="n">2</span>Le sommet et la forme canonique</h4>
-    <p>La parabole a un axe de symétrie vertical, d'équation <i>x</i> = α avec α = −<i>b</i>/(2<i>a</i>). Son sommet est le point S(α ; β), où β = <i>f</i>(α). Tout le trinôme se réécrit alors autour de ce point : <i>f</i>(<i>x</i>) = <i>a</i>(<i>x</i> − α)² + β. C'est la <b>forme canonique</b>, affichée à côté de la figure.</p>
-    <p>Elle se lit d'un coup d'œil : le carré (<i>x</i> − α)² est positif ou nul et ne s'annule qu'en α, donc β est le minimum de <i>f</i> si <i>a</i> &gt; 0, son maximum si <i>a</i> &lt; 0.</p>
+    <p>La parabole a un axe de symétrie vertical, d'équation <span class=kx>x = \\alpha</span> avec <span class=kx>\\alpha = -b/(2a)</span>. Son sommet est le point S(α ; β), où <span class=kx>\\beta = f(\\alpha )</span>. Tout le trinôme se réécrit alors autour de ce point : <span class=kx>f(x) = a(x - \\alpha )^{2} + \\beta</span>. C'est la <b>forme canonique</b>, affichée à côté de la figure.</p>
+    <p>Elle se lit d'un coup d'œil : le carré <span class=kx>(x - \\alpha )^{2}</span> est positif ou nul et ne s'annule qu'en α, donc β est le minimum de <span class=kx>f</span> si <span class=kx>a > 0</span>, son maximum si <span class=kx>a < 0</span>.</p>
   </div>
 </section>
 
 <section>
   <div class="col">
     <h4><span class="n">3</span>Le discriminant décide</h4>
-    <p>Le calcul donne β = −Δ/(4<i>a</i>), où Δ = <i>b</i>² − 4<i>ac</i> est le <b>discriminant</b>. Le signe de Δ dit donc de quel côté de l'axe horizontal se trouve le sommet, comparé au sens d'ouverture de la parabole, c'est-à-dire si la courbe coupe l'axe.</p>
+    <p>Le calcul donne <span class=kx>\\beta = -\\Delta /(4a)</span>, où <span class=kx>\\Delta = b^{2} - 4ac</span> est le <b>discriminant</b>. Le signe de Δ dit donc de quel côté de l'axe horizontal se trouve le sommet, comparé au sens d'ouverture de la parabole, c'est-à-dire si la courbe coupe l'axe.</p>
     <p id="sd-verdict" aria-live="polite"></p>
     <div class="def"><p>Si <span class="kx">\\Delta > 0</span>, le trinôme a deux racines réelles :</p><span class="kx kxd">x_1 = \\frac{-b - \\sqrt{\\Delta}}{2a}, \\qquad x_2 = \\frac{-b + \\sqrt{\\Delta}}{2a}.</span><p>Si <span class="kx">\\Delta = 0</span>, il a une seule racine, <span class="kx">-\\dfrac{b}{2a}</span>, dite double. Si <span class="kx">\\Delta < 0</span>, il n'a aucune racine réelle.</p></div>
-    <p>Essayez les trois exemples proposés sous la figure, puis fabriquez les vôtres : en partant de deux racines, augmentez <i>c</i> (si <i>a</i> &gt; 0) jusqu'à ce que les deux racines se rejoignent, puis disparaissent.</p>
+    <p>Essayez les trois exemples proposés sous la figure, puis fabriquez les vôtres : en partant de deux racines, augmentez <span class=kx>c</span> (si <span class=kx>a > 0</span>) jusqu'à ce que les deux racines se rejoignent, puis disparaissent.</p>
   </div>
 </section>
 ` + suite(
-  "Deux erreurs reviennent sans cesse. La première est d'oublier le signe dans α = −<i>b</i>/(2<i>a</i>) : pour <i>f</i>(<i>x</i>) = <i>x</i>² − 2<i>x</i> − 3, l'axe est <i>x</i> = 1, et non <i>x</i> = −1. La seconde est de lire Δ &lt; 0 comme « le trinôme est négatif » : Δ &lt; 0 signifie seulement qu'il ne s'annule pas, et il garde alors partout le signe de <i>a</i>.",
+  "Deux erreurs reviennent sans cesse. La première est d'oublier le signe dans <span class=kx>\\alpha = -b/(2a)</span> : pour <span class=kx>f(x) = x^{2} - 2x - 3</span>, l'axe est <span class=kx>x = 1</span>, et non <span class=kx>x = -1</span>. La seconde est de lire Δ &lt; 0 comme « le trinôme est négatif » : Δ &lt; 0 signifie seulement qu'il ne s'annule pas, et il garde alors partout le signe de <span class=kx>a</span>.",
   "Le chapitre de Première <a href=\"#cours/p-01\">Polynôme du second degré</a> établit la forme canonique, les formules des racines et le tableau de signes. Quand Δ &lt; 0, les racines existent encore, mais dans ℂ : l'édifice traite ce cas dans la fiche <a href=\"#c.c-racines-carrees\">Racines carrées et équations du second degré</a>.",
   "Les coefficients avancent par pas de 0,05 ; Δ, α et β sont calculés en nombres entiers (en vingtièmes), donc sans erreur d'arrondi. Ils sont écrits en fractions quand le dénominateur ne dépasse pas 20, et sinon en valeurs approchées à 10⁻³, précédées du signe ≈ ; les racines sont exactes dès que Δ est le carré d'un rationnel. Rien n'est enregistré ni envoyé.");
 

@@ -12,9 +12,14 @@ export const css = cssCommun + cssFigures + cssJeux + `
 .activites-act .so button.cible { border-color: var(--tan); border-style: dashed; box-shadow: 0 0 0 3px color-mix(in srgb, var(--tan) 30%, transparent); }
 .activites-act .so button.arrivee::before { content: ""; position: absolute; inset: -6px; border-radius: 50%; border: 2px dotted var(--tan); }
 .activites-act .so button.conseil { box-shadow: 0 0 0 4px color-mix(in srgb, var(--tan) 60%, transparent); }
-.activites-act .so.teintes button.t0 { background: color-mix(in srgb, var(--mark) 30%, var(--papier)); }
-.activites-act .so.teintes button.t1 { background: color-mix(in srgb, var(--sec) 30%, var(--papier)); }
-.activites-act .so.teintes button.t2 { background: color-mix(in srgb, var(--semi) 30%, var(--papier)); }
+/* Coloriage affiché : le pion lui-même prend la couleur de son trou (bleu, orange, vert), le trou vide en garde le contour. */
+.activites-act .so.teintes button.t0 { border-color: var(--mark); background: color-mix(in srgb, var(--mark) 16%, var(--papier)); }
+.activites-act .so.teintes button.t1 { border-color: var(--sec); background: color-mix(in srgb, var(--sec) 16%, var(--papier)); }
+.activites-act .so.teintes button.t2 { border-color: var(--tan); background: color-mix(in srgb, var(--tan) 16%, var(--papier)); }
+.activites-act .so.teintes button.t0.pion::after { background: var(--mark); }
+.activites-act .so.teintes button.t1.pion::after { background: var(--sec); }
+.activites-act .so.teintes button.t2.pion::after { background: var(--tan); }
+.activites-act .so-puce { display: inline-block; width: .8em; height: .8em; border-radius: 50%; margin: 0 .25em 0 .7em; vertical-align: -.05em; }
 `;
 const K = t => '<span class="kx">' + t + '</span>';
 
@@ -50,7 +55,7 @@ export const html = `
 <section>
   <div class="col">
     <h4><span class="n">2</span>Trois couleurs et une parité</h4>
-    <p>Cochez « montrer les trois couleurs ». Les trous sont coloriés en diagonale, de sorte que trois trous alignés et consécutifs portent toujours les trois couleurs. Un saut met en jeu trois trous consécutifs : il retire un pion de deux couleurs et en ajoute un sur la troisième. Les nombres de pions sur chaque couleur, affichés sous le plateau, changent donc tous les trois d'une unité à chaque coup.</p>
+    <p>Cochez « montrer les trois couleurs ». Les trous sont coloriés en diagonale, en bleu, en orange et en vert, et chaque pion prend la couleur du trou qu'il occupe, de sorte que trois trous alignés et consécutifs portent toujours les trois couleurs. Un saut met en jeu trois trous consécutifs : il retire un pion de deux couleurs et en ajoute un sur la troisième. Les nombres de pions sur chaque couleur, affichés sous le plateau, changent donc tous les trois d'une unité à chaque coup.</p>
     <div class="def"><p>À chaque coup, les trois nombres de pions par couleur changent tous de parité. Deux d'entre eux qui avaient la même parité la gardent donc pour toujours ; deux qui avaient des parités différentes aussi.</p></div>
     <p>S'il ne reste qu'un pion, les trois nombres sont 1, 0 et 0 : un impair et deux pairs. Il faut donc qu'au départ, la couleur du dernier pion soit la seule de sa parité. Cela désigne une couleur, donc une diagonale sur trois. En recommençant avec le coloriage selon l'autre diagonale, on obtient une seconde condition : le dernier pion ne peut finir qu'aux croisements des deux familles de diagonales permises.</p>
     <p id="so-bilan" aria-live="polite"></p>
@@ -101,7 +106,7 @@ export function monter(racine) {
       b.setAttribute('aria-label', `Ligne ${H[k][0] + 1}, colonne ${H[k][1] + 1} : ${pions.has(k) ? 'pion' : 'trou libre'}${cibles.includes(k) ? ', arrivée possible du saut' : ''}${arr.includes(k) ? ', arrivée permise pour le dernier pion' : ''}`); });
     const n = comptes(c1), peutJouer = M.some(([a, b, c]) => pions.has(a) && pions.has(b) && !pions.has(c)), gagne = pions.size === 1;
     ecrire(q('#so-nb'), entier(pions.size)); ecrire(q('#so-coups'), entier(hist.length));
-    ecrire(q('#so-coul'), `Pions par couleur : ${n[0]}, ${n[1]}, ${n[2]}`);
+    ecrire(q('#so-coul'), `Pions par couleur :<span class="so-puce" style="background:var(--mark)"></span>bleu <b>${n[0]}</b><span class="so-puce" style="background:var(--sec)"></span>orange <b>${n[1]}</b><span class="so-puce" style="background:var(--tan)"></span>vert <b>${n[2]}</b>`, true);
     q('#so-annuler').disabled = !hist.length; q('#so-conseil').disabled = gagne || choixVide; q('#so-vide').disabled = hist.length > 0;
     const m = q('#so-message'); m.className = 'jeu-message' + (gagne ? ' gagne' : !peutJouer ? ' bloque' : '');
     ecrire(m, choixVide ? 'Cliquez sur le trou qui sera vide au départ.' : gagne ? `Réussi : il ne reste qu'un pion, en ${hist.length} coups.` : !peutJouer ? `Plus aucun saut n'est possible : il reste ${pions.size} pions. Annulez des coups, ou recommencez.` : msg || (pris >= 0 ? 'Cliquez sur l\'un des trous entourés de tirets verts.' : hist.length ? 'Continuez.' : 'Cliquez sur un pion qui peut sauter.'));

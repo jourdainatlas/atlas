@@ -19,7 +19,7 @@ export const html = `
 <section>
   <div class="col">
     <h4><span class="n">1</span>Des termes qui se tassent</h4>
-    <p>Voici les <span class="scrub" data-var="n1" tabindex="0" role="slider" aria-label="nombre de termes affichés"></span> premiers termes de la suite <i>u<sub>n</sub></i> = <span class="chips" data-chips></span>. Chaque point est un terme : son rang <i>n</i> se lit en bas, sa valeur à gauche.</p>
+    <p>Voici les <span class="scrub" data-var="n1" tabindex="0" role="slider" aria-label="nombre de termes affichés"></span> premiers termes de la suite <span class=kx>u_{n}</span> = <span class="chips" data-chips></span>. Chaque point est un terme : son rang <span class=kx>n</span> se lit en bas, sa valeur à gauche.</p>
     <p>Affichez de plus en plus de termes. Vers quel nombre semblent-ils aller ? S'en approchent-ils tous de la même façon ?</p>
   </div>
   <div class="fig">
@@ -31,7 +31,7 @@ export const html = `
 <section>
   <div class="col">
     <h4><span class="n">2</span>Une bande pour trancher</h4>
-    <p>Proposez une limite <i>ℓ</i> = <span class="scrub" data-var="l" tabindex="0" role="slider" aria-label="limite proposée"></span> et une tolérance <i>ε</i> = <span class="scrub" data-var="e" tabindex="0" role="slider" aria-label="tolérance epsilon"></span>. Elles dessinent une <b class="c-tan">bande</b> entre <i>ℓ</i> − <i>ε</i> et <i>ℓ</i> + <i>ε</i>. Les termes dans la bande sont en vert, les autres en <b class="c-sec">orange</b>.</p>
+    <p>Proposez une limite <span class=kx>\\ell</span> = <span class="scrub" data-var="l" tabindex="0" role="slider" aria-label="limite proposée"></span> et une tolérance <span class=kx>\\varepsilon</span> = <span class="scrub" data-var="e" tabindex="0" role="slider" aria-label="tolérance epsilon"></span>. Elles dessinent une <b class="c-tan">bande</b> entre <span class=kx>\\ell - \\varepsilon</span> et <span class=kx>\\ell + \\varepsilon</span>. Les termes dans la bande sont en vert, les autres en <b class="c-sec">orange</b>.</p>
     <p><span id="bandtext"></span></p>
   </div>
   <div class="fig">
@@ -56,8 +56,8 @@ export const html = `
     </div>
   </div>
   <div class="col">
-    <p>Sur la figure, faites glisser la ligne centrale pour changer <i>ℓ</i> et un bord de la bande pour changer <i>ε</i>. Essayez une mauvaise limite, par exemple 2,3 : la bande large fait illusion, la bande fine ne pardonne pas.</p>
-    <p>Le tableau montre aussi que le rang <i>N</i> <b>dépend de <i>ε</i></b>. Quand la tolérance est divisée par 10, de combien le rang grandit-il ? Comparez les suites entre elles : c'est leur vitesse de convergence.</p>
+    <p>Sur la figure, faites glisser la ligne centrale pour changer <span class=kx>\\ell</span> et un bord de la bande pour changer <span class=kx>\\varepsilon</span>. Essayez une mauvaise limite, par exemple 2,3 : la bande large fait illusion, la bande fine ne pardonne pas.</p>
+    <p>Le tableau montre aussi que le rang <span class=kx>N</span> <b>dépend de <span class=kx>\\varepsilon</span></b>. Quand la tolérance est divisée par 10, de combien le rang grandit-il ? Comparez les suites entre elles : c'est leur vitesse de convergence.</p>
   </div>
 </section>
 
@@ -87,19 +87,19 @@ export const html = `
   <div class="col">
     <h4><span class="n">4</span>La définition, mot pour mot</h4>
     <p>Gagner une manche ne suffit pas. Converger, c'est pouvoir gagner <em>toutes</em> les manches, quelle que soit la tolérance choisie par l'adversaire.</p>
-    <p class="def">La suite (<i>u<sub>n</sub></i>) converge vers <i>ℓ</i> si, <span class="c-mark">pour tout <i>ε</i> &gt; 0</span>, <span class="c-sec">il existe un rang <i>N</i></span> tel que <span class="c-tan">pour tout <i>n</i> ≥ <i>N</i>, |<i>u<sub>n</sub></i> − <i>ℓ</i>| &lt; <i>ε</i></span>.</p>
+    <p class="def">La suite <span class=kx>(u_{n})</span> converge vers <span class=kx>\\ell</span> si, <span class="c-mark">pour tout <span class=kx>\\varepsilon > 0</span></span>, <span class="c-sec">il existe un rang <span class=kx>N</span></span> tel que <span class="c-tan">pour tout <span class=kx>n \\geqslant N</span>, <span class=kx>|u_{n} - \\ell | < \\varepsilon</span></span>.</p>
     <p><span class="c-mark"><b>Pour tout ε</b></span> : l'adversaire choisit la bande, aussi fine qu'il veut. <span class="c-sec"><b>Il existe N</b></span> : vous répondez par un rang, qui peut dépendre de ε. <span class="c-tan"><b>Pour tout n ≥ N</b></span> : à partir de ce rang, aucun terme ne ressort.</p>
-    <p>Et pour montrer qu'une suite ne converge pas vers <i>ℓ</i> ? Il suffit d'une seule bande pour laquelle aucun rang ne convient. Rejouez avec la dernière suite de la liste.</p>
+    <p>Et pour montrer qu'une suite ne converge pas vers <span class=kx>\\ell</span> ? Il suffit d'une seule bande pour laquelle aucun rang ne convient. Rejouez avec la dernière suite de la liste.</p>
   </div>
 </section>
 
 <div class="suite col">
   <h4>Le piège le plus courant</h4>
-  <p>L'ordre des mots compte : le rang <i>N</i> est choisi <em>après</em> ε et dépend de lui. Trois bandes gagnées ne prouvent rien, car la définition exige une réponse pour toutes les tolérances ; à l'inverse, une seule bande sans rang possible suffit à réfuter la convergence vers <i>ℓ</i>.</p>
+  <p>L'ordre des mots compte : le rang <span class=kx>N</span> est choisi <em>après</em> ε et dépend de lui. Trois bandes gagnées ne prouvent rien, car la définition exige une réponse pour toutes les tolérances ; à l'inverse, une seule bande sans rang possible suffit à réfuter la convergence vers <span class=kx>\\ell</span>.</p>
   <h4>Où lire la démonstration</h4>
   <p>Le chapitre de Terminale <a href="#cours/t-01">Suites numériques</a> énonce cette définition et ses conséquences. Dans l'édifice, la fiche <a href="#ar-suites.su-convergence">Suite convergente, limite</a> la reprend, et la fiche <a href="#ar-suites.su-bornee">Unicité de la limite</a> démontre qu'une suite ne peut pas avoir deux limites, ce que la bande fine fait voir quand on propose 2,3.</p>
   <h4>Ce que la page calcule</h4>
-  <p>Les rangs affichés sont les plus petits possibles. Une majoration connue de |<i>u<sub>n</sub></i> − <i>ℓ</i>| donne un rang qui convient, puis la page redescend terme à terme ; pour savoir si un terme est dans la bande, elle compare des nombres entiers (en millièmes), ce qui évite les erreurs d'arrondi quand un terme tombe exactement sur le bord. Seule la suite en sin(<i>n</i>) est comparée en valeurs approchées. Rien n'est enregistré ni envoyé.</p>
+  <p>Les rangs affichés sont les plus petits possibles. Une majoration connue de <span class=kx>|u_{n} - \\ell |</span> donne un rang qui convient, puis la page redescend terme à terme ; pour savoir si un terme est dans la bande, elle compare des nombres entiers (en millièmes), ce qui évite les erreurs d'arrondi quand un terme tombe exactement sur le bord. Seule la suite en <span class=kx>\\sin (n)</span> est comparée en valeurs approchées. Rien n'est enregistré ni envoyé.</p>
 </div>`;
 
 export function monter() {

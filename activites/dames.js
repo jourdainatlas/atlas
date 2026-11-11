@@ -42,8 +42,8 @@ export const html = `
 <section>
   <div class="col">
     <h4><span class="n">2</span>Un problème de permutations</h4>
-    <p>Deux dames ne peuvent pas partager une ligne : avec <i>n</i> dames sur <i>n</i> lignes, il y en a exactement une par ligne. De même, une par colonne. Une solution est donc une <b>permutation</b> : à chaque ligne <i>i</i>, elle associe la colonne σ(<i>i</i>) de sa dame. Il y a <i>n</i>! permutations, 40 320 pour <i>n</i> = 8.</p>
-    <p>Restent les diagonales. Deux cases sont sur une même diagonale montante quand elles ont la même différence <i>i</i> − σ(<i>i</i>), sur une même diagonale descendante quand elles ont la même somme <i>i</i> + σ(<i>i</i>).</p>
+    <p>Deux dames ne peuvent pas partager une ligne : avec <span class=kx>n</span> dames sur <span class=kx>n</span> lignes, il y en a exactement une par ligne. De même, une par colonne. Une solution est donc une <b>permutation</b> : à chaque ligne <span class=kx>i</span>, elle associe la colonne <span class=kx>\\sigma (i)</span> de sa dame. Il y a <span class=kx>n!</span> permutations, 40 320 pour <span class=kx>n = 8</span>.</p>
+    <p>Restent les diagonales. Deux cases sont sur une même diagonale montante quand elles ont la même différence <span class=kx>i - \\sigma (i)</span>, sur une même diagonale descendante quand elles ont la même somme <span class=kx>i + \\sigma (i)</span>.</p>
     <div class="def"><p>Les solutions sont les permutations <span class="kx">\\sigma</span> de <span class="kx">\\{1, \\dots, n\\}</span> pour lesquelles les <span class="kx">n</span> nombres <span class="kx">i - \\sigma(i)</span> sont deux à deux distincts, ainsi que les <span class="kx">n</span> nombres <span class="kx">i + \\sigma(i)</span>.</p></div>
   </div>
 </section>
@@ -52,8 +52,8 @@ export const html = `
   <div class="col">
     <h4><span class="n">3</span>Combien de solutions ?</h4>
     <p id="dm-compte" aria-live="polite"></p>
-    <p>On ne connaît aucune formule qui donne ce nombre en fonction de <i>n</i>. La page le calcule comme on le ferait à la main, mais sans se lasser : elle pose une dame sur la première ligne, puis une sur la deuxième dans une case non menacée, et ainsi de suite, en revenant en arrière dès qu'une ligne n'offre plus aucune case libre. C'est la recherche par <b>retour arrière</b>. Les nombres obtenus pour <i>n</i> de 4 à 10 sont 2, 10, 4, 40, 92, 352 et 724.</p>
-    <p>Retourner ou faire tourner l'échiquier transforme une solution en solution : les huit symétries du carré regroupent les solutions en familles. Pour <i>n</i> = 8, les 92 solutions forment 12 familles.</p>
+    <p>On ne connaît aucune formule qui donne ce nombre en fonction de <span class=kx>n</span>. La page le calcule comme on le ferait à la main, mais sans se lasser : elle pose une dame sur la première ligne, puis une sur la deuxième dans une case non menacée, et ainsi de suite, en revenant en arrière dès qu'une ligne n'offre plus aucune case libre. C'est la recherche par <b>retour arrière</b>. Les nombres obtenus pour <span class=kx>n</span> de 4 à 10 sont 2, 10, 4, 40, 92, 352 et 724.</p>
+    <p>Retourner ou faire tourner l'échiquier transforme une solution en solution : les huit symétries du carré regroupent les solutions en familles. Pour <span class=kx>n = 8</span>, les 92 solutions forment 12 familles.</p>
   </div>
 </section>
 ` + suite(

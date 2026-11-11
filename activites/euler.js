@@ -15,7 +15,7 @@ export const html = `
 <section>
   <div class="col">
     <h4><span class="n">1</span>Avancer par petits pas</h4>
-    <p>On cherche la fonction <i>y</i> telle que <i>y</i> ′ = <i>ky</i> et <i>y</i>(0) = 1, sur l'intervalle [0 ; 2]. On découpe cet intervalle en <i>N</i> pas de longueur <i>h</i> = 2/<i>N</i>. Partant du point (0 ; 1), on suit la tangente, dont la pente est <i>k</i> fois l'ordonnée où l'on se trouve, pendant un pas : l'ordonnée est multipliée par 1 + <i>kh</i>. Et l'on recommence. Augmentez <i>N</i>.</p>
+    <p>On cherche la fonction <span class=kx>y</span> telle que <span class=kx>y ' = ky</span> et <span class=kx>y(0) = 1</span>, sur l'intervalle [0 ; 2]. On découpe cet intervalle en <span class=kx>N</span> pas de longueur <span class=kx>h = 2/N</span>. Partant du point (0 ; 1), on suit la tangente, dont la pente est <span class=kx>k</span> fois l'ordonnée où l'on se trouve, pendant un pas : l'ordonnée est multipliée par <span class=kx>1 + kh</span>. Et l'on recommence. Augmentez <span class=kx>N</span>.</p>
   </div>
   <div class="fig">
     <div class="split">
@@ -42,7 +42,7 @@ export const html = `
 <section>
   <div class="col">
     <h4><span class="n">2</span>Ce que l'on retrouve à la limite</h4>
-    <p>Après <i>N</i> pas, la méthode donne en <i>x</i> = 2 la valeur (1 + 2<i>k</i>/<i>N</i>)<sup><i>N</i></sup>, alors que la solution exacte est <i>x</i> ↦ e<sup><i>kx</i></sup>, qui vaut e<sup>2<i>k</i></sup> en 2. Dire que la méthode converge, c'est dire que (1 + 2<i>k</i>/<i>N</i>)<sup><i>N</i></sup> tend vers e<sup>2<i>k</i></sup> quand <i>N</i> tend vers l'infini : c'est l'une des définitions classiques de l'exponentielle.</p>
+    <p>Après <span class=kx>N</span> pas, la méthode donne en <span class=kx>x = 2</span> la valeur <span class=kx>(1 + 2k/N)^{N}</span>, alors que la solution exacte est <span class=kx>x \\mapsto \\mathrm e^{kx}</span>, qui vaut <span class=kx>\\mathrm e^{2k}</span> en 2. Dire que la méthode converge, c'est dire que <span class=kx>(1 + 2k/N)^{N}</span> tend vers <span class=kx>\\mathrm e^{2k}</span> quand <span class=kx>N</span> tend vers l'infini : c'est l'une des définitions classiques de l'exponentielle.</p>
     <p>Le tableau montre à quelle vitesse : chaque fois que le pas est divisé par 2, l'écart est à peu près divisé par 2. On dit que la méthode est d'ordre 1 : l'erreur est proportionnelle au pas.</p>
   </div>
 </section>
@@ -50,15 +50,15 @@ export const html = `
 <section>
   <div class="col">
     <h4><span class="n">3</span>Quand le pas est trop grand</h4>
-    <p>Prenez <i>k</i> = −3. La vraie solution, e<sup>−3<i>x</i></sup>, décroît vers 0 en restant positive. Réglez maintenant <i>N</i> sur 2, puis 3, puis 5.</p>
+    <p>Prenez <span class=kx>k = -3</span>. La vraie solution, <span class=kx>\\mathrm e^{-3x}</span>, décroît vers 0 en restant positive. Réglez maintenant <span class=kx>N</span> sur 2, puis 3, puis 5.</p>
     <p id="eu-verdict" aria-live="polite"></p>
-    <p>Tout se lit sur le facteur 1 + <i>kh</i> par lequel chaque pas multiplie l'ordonnée. S'il est entre 0 et 1, la ligne brisée décroît sagement. S'il est négatif, elle change de signe à chaque pas, ce que la vraie solution ne fait jamais. S'il est inférieur à −1, c'est-à-dire si <i>h</i> &gt; 2/|<i>k</i>|, elle s'amplifie au lieu de s'éteindre.</p>
+    <p>Tout se lit sur le facteur <span class=kx>1 + kh</span> par lequel chaque pas multiplie l'ordonnée. S'il est entre 0 et 1, la ligne brisée décroît sagement. S'il est négatif, elle change de signe à chaque pas, ce que la vraie solution ne fait jamais. S'il est inférieur à −1, c'est-à-dire si <span class=kx>h > 2/|k|</span>, elle s'amplifie au lieu de s'éteindre.</p>
   </div>
 </section>
 ` + suite(
-  "Croire qu'un calcul numérique donne « à peu près » la solution quel que soit le pas. Pour <i>y</i> ′ = −3<i>y</i> avec un pas <i>h</i> = 1, la méthode d'Euler fournit 1, −2, 4 : des valeurs qui oscillent et grandissent, alors que la solution exacte vaut e<sup>−6</sup> ≈ 0,0025 en 2. Un résultat numérique ne vaut que si le pas est assez petit pour l'équation traitée.",
-  "Le chapitre de Terminale <a href=\"#cours/t-08\">Équations différentielles</a> résout <i>y</i> ′ = <i>ky</i>, et celui de Maths Sup <a href=\"#cours/ma-06\">Primitives et équations différentielles linéaires</a> le cas général. L'existence et l'unicité de la solution, que la méthode d'Euler suppose acquises, sont dans l'édifice le <a href=\"#edo.ed-cauchy-lipschitz\">Théorème de Cauchy-Lipschitz local</a>.",
-  "Les valeurs de la méthode sont (1 + <i>kh</i>)<sup><i>n</i></sup>, calculées telles quelles, et la solution exacte est e<sup><i>kx</i></sup> : aucune des deux n'est approchée autrement que par l'arrondi d'affichage à 10⁻⁴. Rien n'est enregistré ni envoyé.");
+  "Croire qu'un calcul numérique donne « à peu près » la solution quel que soit le pas. Pour <span class=kx>y ' = -3y</span> avec un pas <span class=kx>h = 1</span>, la méthode d'Euler fournit 1, −2, 4 : des valeurs qui oscillent et grandissent, alors que la solution exacte vaut <span class=kx>\\mathrm e^{-6} \\approx 0{,}0025</span> en 2. Un résultat numérique ne vaut que si le pas est assez petit pour l'équation traitée.",
+  "Le chapitre de Terminale <a href=\"#cours/t-08\">Équations différentielles</a> résout <span class=kx>y ' = ky</span>, et celui de Maths Sup <a href=\"#cours/ma-06\">Primitives et équations différentielles linéaires</a> le cas général. L'existence et l'unicité de la solution, que la méthode d'Euler suppose acquises, sont dans l'édifice le <a href=\"#edo.ed-cauchy-lipschitz\">Théorème de Cauchy-Lipschitz local</a>.",
+  "Les valeurs de la méthode sont <span class=kx>(1 + kh)^{n}</span>, calculées telles quelles, et la solution exacte est <span class=kx>\\mathrm e^{kx}</span> : aucune des deux n'est approchée autrement que par l'arrondi d'affichage à 10⁻⁴. Rien n'est enregistré ni envoyé.");
 
 export function monter(racine) {
   const q = s => racine.querySelector(s);

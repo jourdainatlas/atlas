@@ -8,13 +8,13 @@ export const html = `
 <header class="col">
   <p class="eyebrow">Terminale, Maths Sup · Loi binomiale</p>
   <h3>De la loi binomiale à la courbe en cloche</h3>
-  <p class="lede">On répète <i>n</i> fois, de façon indépendante, une épreuve qui réussit avec la probabilité <i>p</i>, et l'on compte les succès. Quand <i>n</i> grandit, le diagramme de cette loi prend toujours la même forme. Cette page la fait apparaître, sans simulation : toutes les probabilités affichées sont exactes.</p>
+  <p class="lede">On répète <span class=kx>n</span> fois, de façon indépendante, une épreuve qui réussit avec la probabilité <span class=kx>p</span>, et l'on compte les succès. Quand <span class=kx>n</span> grandit, le diagramme de cette loi prend toujours la même forme. Cette page la fait apparaître, sans simulation : toutes les probabilités affichées sont exactes.</p>
 </header>
 
 <section>
   <div class="col">
     <h4><span class="n">1</span>Le diagramme de la loi</h4>
-    <p>La variable <i>X</i> suit la loi binomiale de paramètres <i>n</i> et <i>p</i>. Chaque barre a pour hauteur la probabilité P(<i>X</i> = <i>k</i>). Faites varier <i>n</i> et <i>p</i> : le diagramme se déplace, car son centre est l'espérance <i>np</i>, et il s'étale, car sa largeur se mesure par l'écart-type σ = √(<i>np</i>(1 − <i>p</i>)).</p>
+    <p>La variable <span class=kx>X</span> suit la loi binomiale de paramètres <span class=kx>n</span> et <span class=kx>p</span>. Chaque barre a pour hauteur la probabilité P<span class=kx>(X = k)</span>. Faites varier <span class=kx>n</span> et <span class=kx>p</span> : le diagramme se déplace, car son centre est l'espérance <span class=kx>np</span>, et il s'étale, car sa largeur se mesure par l'écart-type <span class=kx>\\sigma = \\sqrt{np(1 - p)}</span>.</p>
   </div>
   <div class="fig">
     <div class="split">
@@ -41,8 +41,8 @@ export const html = `
 <section>
   <div class="col">
     <h4><span class="n">2</span>Centrer et réduire</h4>
-    <p>Pour comparer des diagrammes qui n'ont ni le même centre ni la même largeur, on remplace <i>X</i> par <i>Z</i> = (<i>X</i> − <i>np</i>)/σ, d'espérance 0 et d'écart-type 1. Cochez « centrer et réduire » : chaque barre est alors placée en (<i>k</i> − <i>np</i>)/σ, avec la largeur 1/σ et la hauteur σ × P(<i>X</i> = <i>k</i>), de sorte que son <em>aire</em> reste égale à P(<i>X</i> = <i>k</i>).</p>
-    <p>Faites maintenant grandir <i>n</i>. Le diagramme ne bouge presque plus : il se cale sur une courbe fixe, que vous pouvez afficher. C'est la courbe de la fonction φ(<i>x</i>) = e<sup>−<i>x</i>²/2</sup>/√(2π), densité de la <b>loi normale centrée réduite</b>.</p>
+    <p>Pour comparer des diagrammes qui n'ont ni le même centre ni la même largeur, on remplace <span class=kx>X</span> par <span class=kx>Z = (X - np)/\\sigma</span>, d'espérance 0 et d'écart-type 1. Cochez « centrer et réduire » : chaque barre est alors placée en <span class=kx>(k - np)/\\sigma</span>, avec la largeur 1/σ et la hauteur σ × P<span class=kx>(X = k)</span>, de sorte que son <em>aire</em> reste égale à P<span class=kx>(X = k)</span>.</p>
+    <p>Faites maintenant grandir <span class=kx>n</span>. Le diagramme ne bouge presque plus : il se cale sur une courbe fixe, que vous pouvez afficher. C'est la courbe de la fonction <span class=kx>\\varphi (x) = \\mathrm e^{-x^{2}/2}/\\sqrt{2\\pi }</span>, densité de la <b>loi normale centrée réduite</b>.</p>
   </div>
 </section>
 
@@ -50,14 +50,14 @@ export const html = `
   <div class="col">
     <h4><span class="n">3</span>Le théorème de De Moivre-Laplace</h4>
     <div class="def"><p>Soit <span class="kx">p</span> un réel de <span class="kx">]0\\,;1[</span> et, pour tout <span class="kx">n</span>, une variable <span class="kx">X_n</span> de loi binomiale de paramètres <span class="kx">n</span> et <span class="kx">p</span>. Alors, pour tous réels <span class="kx">a \\leqslant b</span>,</p><span class="kx kxd">\\begin{aligned} & P\\left(a \\leqslant \\frac{X_n - np}{\\sqrt{np(1-p)}} \\leqslant b\\right) \\\\[2pt] & \\qquad \\xrightarrow[n \\to +\\infty]{}\\; \\int_a^b \\varphi(t)\\,\\mathrm dt, \\end{aligned}</span><p>l'aire sous la courbe de <span class="kx">\\varphi</span> entre <span class="kx">a</span> et <span class="kx">b</span>.</p></div>
-    <p>Le tableau compare, pour les valeurs choisies, la probabilité exacte que <i>X</i> soit à moins de un, deux ou trois écarts-types de son espérance, et les limites 0,6827, 0,9545 et 0,9973 données par la loi normale. C'est la raison d'être des intervalles de fluctuation « à deux écarts-types ».</p>
-    <p>Prenez enfin <i>p</i> = 0,05 et <i>n</i> = 30 : le diagramme est dissymétrique et la cloche ne lui va pas. Le théorème parle d'une limite à <i>p</i> fixé ; quand <i>np</i> est petit, on est encore loin de cette limite.</p>
+    <p>Le tableau compare, pour les valeurs choisies, la probabilité exacte que <span class=kx>X</span> soit à moins de un, deux ou trois écarts-types de son espérance, et les limites 0,6827, 0,9545 et 0,9973 données par la loi normale. C'est la raison d'être des intervalles de fluctuation « à deux écarts-types ».</p>
+    <p>Prenez enfin <span class=kx>p = 0{,}05</span> et <span class=kx>n = 30</span> : le diagramme est dissymétrique et la cloche ne lui va pas. Le théorème parle d'une limite à <span class=kx>p</span> fixé ; quand <span class=kx>np</span> est petit, on est encore loin de cette limite.</p>
   </div>
 </section>
 ` + suite(
-  "Appliquer la loi normale sans regarder si <i>n</i> est assez grand, ni ce que l'on fait des bornes. Pour <i>n</i> = 100 et <i>p</i> = 0,5, on a σ = 5 et P(45 ≤ <i>X</i> ≤ 55) = 0,7287 à 10⁻⁴ près, alors que la loi normale annonce 0,6827 : les deux valeurs extrêmes 45 et 55, comptées en entier, pèsent lourd. Une loi qui ne prend que des valeurs entières ne se compare à une aire qu'en élargissant l'intervalle d'une demi-unité de chaque côté.",
-  "Le chapitre de Terminale <a href=\"#cours/t-10\">Loi des grands nombres</a> étudie la concentration de <i>X</i>/<i>n</i> autour de <i>p</i>, dont ce théorème précise la forme. Dans l'édifice, il est un cas particulier du <a href=\"#proba.p-tcl\">Théorème central limite</a>, démontré par la méthode de Lindeberg.",
-  "Chaque probabilité P(<i>X</i> = <i>k</i>) est calculée par son logarithme, ln C(<i>n</i>, <i>k</i>) + <i>k</i> ln <i>p</i> + (<i>n</i> − <i>k</i>) ln(1 − <i>p</i>), pour éviter les dépassements de capacité quand <i>n</i> est grand ; les probabilités du tableau sont des sommes de ces valeurs, arrondies à 10⁻⁴. Les trois valeurs de référence de la loi normale sont des constantes connues. Rien n'est enregistré ni envoyé.");
+  "Appliquer la loi normale sans regarder si <span class=kx>n</span> est assez grand, ni ce que l'on fait des bornes. Pour <span class=kx>n = 100</span> et <span class=kx>p = 0{,}5</span>, on a σ = 5 et P<span class=kx>(45 \\leqslant X \\leqslant 55) = 0{,}7287</span> à 10⁻⁴ près, alors que la loi normale annonce 0,6827 : les deux valeurs extrêmes 45 et 55, comptées en entier, pèsent lourd. Une loi qui ne prend que des valeurs entières ne se compare à une aire qu'en élargissant l'intervalle d'une demi-unité de chaque côté.",
+  "Le chapitre de Terminale <a href=\"#cours/t-10\">Loi des grands nombres</a> étudie la concentration de <span class=kx>X/n</span> autour de <span class=kx>p</span>, dont ce théorème précise la forme. Dans l'édifice, il est un cas particulier du <a href=\"#proba.p-tcl\">Théorème central limite</a>, démontré par la méthode de Lindeberg.",
+  "Chaque probabilité P<span class=kx>(X = k)</span> est calculée par son logarithme, ln C(<span class=kx>n</span>, <i>k</i>) + <i>k</i> ln <i>p</i> + (<i>n</i> − <i>k</i>) ln(1 − <i>p</i>), pour éviter les dépassements de capacité quand <span class=kx>n</span> est grand ; les probabilités du tableau sont des sommes de ces valeurs, arrondies à 10⁻⁴. Les trois valeurs de référence de la loi normale sont des constantes connues. Rien n'est enregistré ni envoyé.");
 
 const REF = [0.6827, 0.9545, 0.9973];
 export function monter(racine) {

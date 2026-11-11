@@ -14,7 +14,7 @@ export const html = `
 <section>
   <div class="col">
     <h4><span class="n">1</span>Tourner et agrandir</h4>
-    <p>Déplacez les points d'affixes <b class="c-mark"><i>z</i></b> et <b class="c-sec"><i>w</i></b>, ou réglez leur module et leur argument. Le point d'affixe <b class="c-tan"><i>zw</i></b> suit. Les deux triangles colorés, de sommets 0, 1, <i>z</i> et 0, <i>w</i>, <i>zw</i>, ont toujours la même forme : multiplier par <i>w</i>, c'est appliquer à tout le plan la rotation d'angle arg <i>w</i> suivie de l'agrandissement de rapport |<i>w</i>|, et cette transformation envoie 1 sur <i>w</i> et <i>z</i> sur <i>zw</i>.</p>
+    <p>Déplacez les points d'affixes <b class="c-mark"><span class=kx>z</span></b> et <b class="c-sec"><span class=kx>w</span></b>, ou réglez leur module et leur argument. Le point d'affixe <b class="c-tan"><span class=kx>zw</span></b> suit. Les deux triangles colorés, de sommets 0, 1, <span class=kx>z</span> et 0, <span class=kx>w</span>, <span class=kx>zw</span>, ont toujours la même forme : multiplier par <span class=kx>w</span>, c'est appliquer à tout le plan la rotation d'angle <span class=kx>\\arg w</span> suivie de l'agrandissement de rapport <span class=kx>|w|</span>, et cette transformation envoie 1 sur <span class=kx>w</span> et <span class=kx>z</span> sur <span class=kx>zw</span>.</p>
   </div>
   <div class="fig">
     <div class="split">
@@ -39,21 +39,21 @@ export const html = `
   <div class="col">
     <h4><span class="n">2</span>La règle</h4>
     <div class="def"><p>Pour tous nombres complexes non nuls <span class="kx">z</span> et <span class="kx">w</span> :</p><span class="kx kxd">\\begin{aligned} |zw| &= |z| \\times |w|, \\\\[2pt] \\arg(zw) &= \\arg z + \\arg w \\pmod{2\\pi}. \\end{aligned}</span></div>
-    <p>C'est une conséquence des formules d'addition du cosinus et du sinus : en écrivant <i>z</i> = <i>r</i>(cos α + i sin α) et <i>w</i> = <i>s</i>(cos β + i sin β), le produit se développe en <i>rs</i>(cos(α + β) + i sin(α + β)). Le tableau le vérifie sur vos valeurs.</p>
+    <p>C'est une conséquence des formules d'addition du cosinus et du sinus : en écrivant <span class=kx>z = r(\\cos \\alpha + \\mathrm i \\sin \\alpha )</span> et <span class=kx>w = s(\\cos \\beta + \\mathrm i \\sin \\beta )</span>, le produit se développe en <span class=kx>rs(\\cos (\\alpha + \\beta ) + \\mathrm i \\sin (\\alpha + \\beta ))</span>. Le tableau le vérifie sur vos valeurs.</p>
   </div>
 </section>
 
 <section>
   <div class="col">
     <h4><span class="n">3</span>Puissances et racines de l'unité</h4>
-    <p>Cochez « montrer les puissances de <i>z</i> ». Multiplier encore et encore par <i>z</i>, c'est tourner chaque fois du même angle en multipliant la distance à l'origine par |<i>z</i>| : les points <i>z</i>, <i>z</i>², <i>z</i>³… dessinent une spirale, qui s'éloigne si |<i>z</i>| &gt; 1 et s'enroule vers 0 si |<i>z</i>| &lt; 1.</p>
-    <p>Sur le cercle de rayon 1, la spirale devient un cercle. Si de plus l'argument de <i>z</i> est un <i>n</i>-ième de tour, on revient à 1 au bout de <i>n</i> pas : les puissances de <i>z</i> sont les <i>n</i> sommets d'un polygone régulier. Ce sont les <i>n</i> solutions de l'équation <i>z</i><sup><i>n</i></sup> = 1, les <b>racines <i>n</i>-ièmes de l'unité</b>. Les boutons placent <i>z</i> sur la première d'entre elles, affichent ses puissances et masquent <i>w</i>, qui ne sert pas ici ; la case « afficher <i>w</i> et le produit <i>zw</i> » le fait revenir.</p>
+    <p>Cochez « montrer les puissances de <span class=kx>z</span> ». Multiplier encore et encore par <span class=kx>z</span>, c'est tourner chaque fois du même angle en multipliant la distance à l'origine par <span class=kx>|z|</span> : les points <span class=kx>z</span>, <span class=kx>z^{2}</span>, <span class=kx>z^{3}</span>… dessinent une spirale, qui s'éloigne si <span class=kx>|z| > 1</span> et s'enroule vers 0 si <span class=kx>|z| < 1</span>.</p>
+    <p>Sur le cercle de rayon 1, la spirale devient un cercle. Si de plus l'argument de <span class=kx>z</span> est un <span class=kx>n</span>-ième de tour, on revient à 1 au bout de <span class=kx>n</span> pas : les puissances de <span class=kx>z</span> sont les <span class=kx>n</span> sommets d'un polygone régulier. Ce sont les <span class=kx>n</span> solutions de l'équation <span class=kx>z^{n} = 1</span>, les <b>racines <span class=kx>n</span>-ièmes de l'unité</b>. Les boutons placent <span class=kx>z</span> sur la première d'entre elles, affichent ses puissances et masquent <span class=kx>w</span>, qui ne sert pas ici ; la case « afficher <span class=kx>w</span> et le produit <span class=kx>zw</span> » le fait revenir.</p>
   </div>
 </section>
 ` + suite(
-  "Intervertir les deux règles, en ajoutant les modules ou en multipliant les arguments. Pour <i>z</i> = <i>w</i> = i, de module 1 et d'argument 90°, le produit est i² = −1 : son module est 1 × 1 = 1, et non 2, et son argument est 90° + 90° = 180°. L'autre oubli fréquent est que l'équation <i>z</i><sup><i>n</i></sup> = 1 a <i>n</i> solutions dans ℂ, et non la seule solution 1.",
+  "Intervertir les deux règles, en ajoutant les modules ou en multipliant les arguments. Pour <span class=kx>z = w = \\mathrm i</span>, de module 1 et d'argument 90°, le produit est i² = −1 : son module est 1 × 1 = 1, et non 2, et son argument est 90° + 90° = 180°. L'autre oubli fréquent est que l'équation <span class=kx>z^{n} = 1</span> a <span class=kx>n</span> solutions dans ℂ, et non la seule solution 1.",
   "Les chapitres de Maths expertes <a href=\"#cours/me-02\">Nombres complexes</a> et <a href=\"#cours/me-05\">Géométrie complexe</a>, puis celui de Maths Sup <a href=\"#cours/ma-04\">Nombres complexes et trigonométrie</a>, établissent la forme trigonométrique et ses règles. Dans l'édifice, les racines de l'unité sont étudiées à la fiche <a href=\"#galois-cyclotomie.gc-cyclotomiques\">Racines de l'unité et polynômes cyclotomiques</a>.",
-  "Les affixes sont calculées à partir du module et de l'argument réglés ; le produit est calculé par la formule (<i>a</i> + i<i>b</i>)(<i>c</i> + i<i>d</i>) = (<i>ac</i> − <i>bd</i>) + i(<i>ad</i> + <i>bc</i>), puis son module et son argument sont lus sur le résultat, ce qui permet de constater la règle au lieu de la supposer. Les affichages sont arrondis à 10⁻³ et au dixième de degré. Rien n'est enregistré ni envoyé.");
+  "Les affixes sont calculées à partir du module et de l'argument réglés ; le produit est calculé par la formule <span class=kx>(a + \\mathrm ib)(c + \\mathrm id) = (ac - bd) + \\mathrm i(ad + bc)</span>, puis son module et son argument sont lus sur le résultat, ce qui permet de constater la règle au lieu de la supposer. Les affichages sont arrondis à 10⁻³ et au dixième de degré. Rien n'est enregistré ni envoyé.");
 
 export function monter(racine) {
   const q = s => racine.querySelector(s);

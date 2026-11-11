@@ -49,12 +49,12 @@ export const html = `
 
 <section>
   <div class="col">
-    <h4><span class="n">2</span>Trois tours : 2<sup><i>n</i></sup> − 1 coups</h4>
-    <p>Notons <i>T</i>(<i>n</i>) le nombre minimal de coups pour déplacer <i>n</i> disques avec trois tours. Pour <i>n</i> = 1, 2, 3, 4, le jeu donne 1, 3, 7, 15.</p>
-    <p><b>On peut le faire en 2<i>T</i>(<i>n</i> − 1) + 1 coups.</b> On transporte les <i>n</i> − 1 petits disques sur la tour du milieu, on porte le grand disque sur la dernière tour, puis on ramène les <i>n</i> − 1 petits disques par-dessus.</p>
-    <p><b>On ne peut pas faire mieux.</b> Le grand disque doit bouger. Au moment de son premier déplacement, rien ne le recouvre et la tour où il va est vide : les <i>n</i> − 1 autres disques sont donc tous empilés sur la troisième tour, ce qui a demandé au moins <i>T</i>(<i>n</i> − 1) coups. Après son dernier déplacement, il est sur la tour d'arrivée et les <i>n</i> − 1 autres, de nouveau empilés ailleurs, doivent encore y être amenés : au moins <i>T</i>(<i>n</i> − 1) coups de plus.</p>
+    <h4><span class="n">2</span>Trois tours : <span class=kx>2^{n} - 1</span> coups</h4>
+    <p>Notons <span class=kx>T(n)</span> le nombre minimal de coups pour déplacer <span class=kx>n</span> disques avec trois tours. Pour <span class=kx>n = 1</span>, 2, 3, 4, le jeu donne 1, 3, 7, 15.</p>
+    <p><b>On peut le faire en <span class=kx>2T(n - 1) + 1</span> coups.</b> On transporte les <span class=kx>n - 1</span> petits disques sur la tour du milieu, on porte le grand disque sur la dernière tour, puis on ramène les <span class=kx>n - 1</span> petits disques par-dessus.</p>
+    <p><b>On ne peut pas faire mieux.</b> Le grand disque doit bouger. Au moment de son premier déplacement, rien ne le recouvre et la tour où il va est vide : les <span class=kx>n - 1</span> autres disques sont donc tous empilés sur la troisième tour, ce qui a demandé au moins <span class=kx>T(n - 1)</span> coups. Après son dernier déplacement, il est sur la tour d'arrivée et les <span class=kx>n - 1</span> autres, de nouveau empilés ailleurs, doivent encore y être amenés : au moins <span class=kx>T(n - 1)</span> coups de plus.</p>
     <div class="def"><p><span class="kx">T(n) = 2\\,T(n-1) + 1</span> et <span class="kx">T(1) = 1</span>, donc, par récurrence,</p><span class="kx kxd">T(n) = 2^n - 1.</span></div>
-    <p>En effet, si <i>T</i>(<i>n</i> − 1) = 2<sup><i>n</i> − 1</sup> − 1, alors <i>T</i>(<i>n</i>) = 2(2<sup><i>n</i> − 1</sup> − 1) + 1 = 2<sup><i>n</i></sup> − 1. Avec huit disques, il faut déjà 255 coups.</p>
+    <p>En effet, si <span class=kx>T(n - 1) = 2^{n - 1} - 1</span>, alors <span class=kx>T(n) = 2(2^{n - 1} - 1) + 1 = 2^{n} - 1</span>. Avec huit disques, il faut déjà 255 coups.</p>
   </div>
 </section>
 
@@ -62,13 +62,13 @@ export const html = `
   <div class="col">
     <h4><span class="n">3</span>Une tour de plus change tout</h4>
     <p>Passez à quatre tours. Les minimums tombent à 1, 3, 5, 9, 13, 17, 25, 33 pour un à huit disques : la tour supplémentaire sert de garage. Mais le raisonnement précédent ne tient plus, car les petits disques peuvent se répartir sur deux tours, et l'on ne connaît plus de formule aussi simple.</p>
-    <p>Une stratégie naturelle, proposée en 1941 par J. S. Frame et B. M. Stewart, consiste à garer d'abord les <i>k</i> plus petits disques sur une tour, à transporter les autres avec les tours qui restent, puis à ramener les <i>k</i> petits, en choisissant le meilleur <i>k</i>. Qu'elle soit la meilleure possible avec quatre tours n'a été démontré qu'en 2014, par Thierry Bousch ; avec cinq tours ou plus, la question est toujours ouverte. Les nombres affichés ici ne dépendent pas de cette conjecture : pour huit disques au plus, la page parcourt toutes les positions.</p>
+    <p>Une stratégie naturelle, proposée en 1941 par J. S. Frame et B. M. Stewart, consiste à garer d'abord les <span class=kx>k</span> plus petits disques sur une tour, à transporter les autres avec les tours qui restent, puis à ramener les <span class=kx>k</span> petits, en choisissant le meilleur <span class=kx>k</span>. Qu'elle soit la meilleure possible avec quatre tours n'a été démontré qu'en 2014, par Thierry Bousch ; avec cinq tours ou plus, la question est toujours ouverte. Les nombres affichés ici ne dépendent pas de cette conjecture : pour huit disques au plus, la page parcourt toutes les positions.</p>
   </div>
 </section>
 ` + suite(
-  "Confondre « j'ai trouvé une solution en 2<sup><i>n</i></sup> − 1 coups » et « 2<sup><i>n</i></sup> − 1 est le minimum ». Exhiber une stratégie ne donne qu'une majoration ; il faut un second raisonnement, celui du grand disque, pour montrer qu'aucune autre ne fait mieux. C'est exactement ce second raisonnement qui manque dès qu'il y a plus de quatre tours.",
+  "Confondre « j'ai trouvé une solution en <span class=kx>2^{n} - 1</span> coups » et « <span class=kx>2^{n} - 1</span> est le minimum ». Exhiber une stratégie ne donne qu'une majoration ; il faut un second raisonnement, celui du grand disque, pour montrer qu'aucune autre ne fait mieux. C'est exactement ce second raisonnement qui manque dès qu'il y a plus de quatre tours.",
   "Le raisonnement par récurrence est introduit en Terminale, dans le chapitre <a href=\"#cours/t-01\">Suites numériques</a> ; l'édifice l'établit à la fiche <a href=\"#n.n-recurrence\">Principe de récurrence</a>. Le jeu a été inventé par Édouard Lucas en 1883. Pour quatre tours : Thierry Bousch, « La quatrième tour de Hanoï », <i>Bulletin of the Belgian Mathematical Society – Simon Stevin</i>, vol. 21, n° 5 (2014), p. 895-912.",
-  "Une position est la donnée de la tour de chaque disque : il y en a <i>p</i><sup><i>n</i></sup> pour <i>p</i> tours et <i>n</i> disques, au plus 390 625 ici. La page les parcourt toutes en largeur à partir de la position finale, ce qui donne le nombre minimal exact de coups depuis chacune. Rien n'est enregistré ni envoyé.");
+  "Une position est la donnée de la tour de chaque disque : il y en a <span class=kx>p^{n}</span> pour <span class=kx>p</span> tours et <span class=kx>n</span> disques, au plus 390 625 ici. La page les parcourt toutes en largeur à partir de la position finale, ce qui donne le nombre minimal exact de coups depuis chacune. Rien n'est enregistré ni envoyé.");
 
 export function monter(racine) {
   const q = s => racine.querySelector(s);

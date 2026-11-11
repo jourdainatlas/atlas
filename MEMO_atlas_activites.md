@@ -585,3 +585,32 @@ premiers). Seconde figure : pour un mot de 3 ou 4 lettres, les n! rangements num
 Explorations : vingt-six. Casse-têtes : sept. Reste de la liste : droites et plans de l'espace. La liste
 d'origine est donc épuisée à une idée près ; idées en réserve : polynômes de Bernstein, phénomène de Gibbs,
 argument diagonal, marche aléatoire, théorème de Thalès et homothéties, lieux géométriques (pour l'atelier).
+
+### 134. Espace ; texte courant en LaTeX ; couleurs du solitaire (11 nov. 2026, soir)
+
+**`espace`**, « Droites et plans de l'espace » (Terminale ; géométrie). Plan ax + by + cz + d = 0 et droite
+(A, u) ; coefficients par pas de 0,05, traités en vingtièmes entiers (n·u et n·A + d exacts, donc « parallèle »
+et « contenue » sans arrondi) ; trois points A au choix, quatre exemples. Vue en projection orthogonale, que
+l'on tourne en faisant glisser la figure ou par deux curseurs (azimut, hauteur) ; carré du plan centré sur le
+projeté de l'origine ; partie de la droite située de l'autre côté du plan en pointillés ; vecteur normal posé
+dans un coin du carré ; point I, projeté H, distance. Contrôlé : plan x + y + 2z − 4 = 0, A(1 ; 2 ; 3),
+u(0 ; −0,5 ; −1) → n·u = −2,5, I(1 ; 1 ; 1), distance 5/√6 ≈ 2,041. La liste des vingt idées est épuisée.
+
+**Texte courant en LaTeX (demande de l'auteur).** Outil `/tmp/conv/conv.py` (non versionné : un script de
+passage unique) : dans le HTML statique d'un module, il repère les suites de lettres en italique, d'indices,
+d'exposants, de nombres et de signes, les traduit en LaTeX et les enveloppe dans `<span class=kx>`. Il ne touche
+ni aux libellés des curseurs, ni aux lectures, ni aux titres de tableaux, ni au code. Chaque traduction a été
+relue dans son journal (environ 370 formules). Appliqué à : dérivée, limite d'une suite (prototypes), cercle
+trigonométrique, second degré, aire, toile d'araignée, binomiale, produit scalaire, chemins sur une grille,
+Euler, complexes, taquin, Hanoï, Tout éteindre, dames. Laissés tels quels : les titres de revues en italique,
+deux fragments à parenthèses non fermées, les libellés des réglages, les textes écrits par le code (verdicts,
+tableaux) et l'atelier, qui ne contient pas de formules. Contrôle : aucune formule en erreur ni en attente sur
+les quinze pages, à 1280 et à 360 px.
+
+**Solitaire : couleurs lisibles (demande de l'auteur).** Les trois teintes pâles derrière des pions tous bleu
+pétrole ne se distinguaient pas. Quand le coloriage est affiché, chaque pion prend maintenant la couleur de son
+trou (bleu, orange, vert, pleines), le trou vide en garde le contour, et la ligne des compteurs porte une
+pastille et le nom de chaque couleur.
+
+Explorations : vingt-sept. Casse-têtes : sept. Idées en réserve : polynômes de Bernstein, phénomène de Gibbs,
+argument diagonal, marche aléatoire, Thalès et homothéties. L'auteur a annoncé deux idées à décrire en détail.

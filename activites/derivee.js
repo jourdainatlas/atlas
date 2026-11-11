@@ -21,7 +21,7 @@ export const html = `
 <section>
   <div class="col">
     <h4><span class="n">1</span>Deux points, une sécante</h4>
-    <p>Prenez la courbe de <i>f</i>(<i>x</i>) = <span class="chips" data-chips></span>. Placez A à l'abscisse <i>a</i> = <span class="scrub" data-var="a" tabindex="0" role="slider" aria-label="abscisse de A"></span> et écartez B de <i>h</i> = <span class="scrub" data-var="h" tabindex="0" role="slider" aria-label="écart h"></span>.</p>
+    <p>Prenez la courbe de <span class=kx>f(x)</span> = <span class="chips" data-chips></span>. Placez A à l'abscisse <span class=kx>a</span> = <span class="scrub" data-var="a" tabindex="0" role="slider" aria-label="abscisse de A"></span> et écartez B de <span class=kx>h</span> = <span class="scrub" data-var="h" tabindex="0" role="slider" aria-label="écart h"></span>.</p>
     <p>La droite (AB) est une <b class="c-sec">sécante</b>. Entre A et B la courbe varie de <span class="live c-mark" data-live="dy"></span> pendant qu'on avance de <span class="live c-mark" data-live="h"></span>. La pente de la sécante vaut donc <span class="live c-sec" data-live="slope"></span>.</p>
   </div>
   <div class="fig">
@@ -54,15 +54,15 @@ export const html = `
     </div>
   </div>
   <div class="col">
-    <p>Ce quotient s'appelle le <b>taux d'accroissement</b> de <i>f</i> entre <i>a</i> et <i>a</i> + <i>h</i>. Il mesure une pente moyenne, sur tout l'intervalle.</p>
+    <p>Ce quotient s'appelle le <b>taux d'accroissement</b> de <span class=kx>f</span> entre <span class=kx>a</span> et <span class=kx>a + h</span>. Il mesure une pente moyenne, sur tout l'intervalle.</p>
   </div>
 </section>
 
 <section>
   <div class="col">
     <h4><span class="n">2</span>Rapprocher B de A</h4>
-    <p>Remontez à la figure et appuyez sur « Faire tendre h vers 0 ». La sécante pivote autour de A puis se stabilise. Le tableau fait la même expérience avec des nombres : il calcule le quotient pour des <i>h</i> de plus en plus petits, à droite de A et à gauche.</p>
-    <p>Exactement en <i>h</i> = 0, le calcul n'a plus de sens : on divise 0 par 0. Faites glisser B sur A pour le voir. La pente en A n'est donc pas une valeur du quotient. C'est sa <b>limite</b>, le nombre dont il s'approche.</p>
+    <p>Remontez à la figure et appuyez sur « Faire tendre h vers 0 ». La sécante pivote autour de A puis se stabilise. Le tableau fait la même expérience avec des nombres : il calcule le quotient pour des <span class=kx>h</span> de plus en plus petits, à droite de A et à gauche.</p>
+    <p>Exactement en <span class=kx>h = 0</span>, le calcul n'a plus de sens : on divise 0 par 0. Faites glisser B sur A pour le voir. La pente en A n'est donc pas une valeur du quotient. C'est sa <b>limite</b>, le nombre dont il s'approche.</p>
     <p>Cette limite n'existe pas toujours. Changez de fonction : <span class="chips" data-chips></span>. Avec |x|, placez A en 0 et comparez les deux colonnes du tableau.</p>
   </div>
 </section>
@@ -81,14 +81,14 @@ export const html = `
   </div>
   <div class="col">
     <p>La fenêtre mesure <span class="live" data-live="zw"></span> de large. <span id="zoomtext"></span></p>
-    <p>Une fonction <b>dérivable</b> en <i>a</i> est une fonction dont la courbe, vue d'assez près, ressemble à une droite. Cette droite est la <b class="c-tan">tangente</b> et sa pente est le <b>nombre dérivé</b> <i>f</i> ′(<i>a</i>).</p>
+    <p>Une fonction <b>dérivable</b> en <span class=kx>a</span> est une fonction dont la courbe, vue d'assez près, ressemble à une droite. Cette droite est la <b class="c-tan">tangente</b> et sa pente est le <b>nombre dérivé</b> <span class=kx>f '(a)</span>.</p>
   </div>
 </section>
 
 <section>
   <div class="col">
     <h4><span class="n">4</span>Une pente par point</h4>
-    <p>Chaque abscisse a maintenant son nombre dérivé. Faites glisser A le long de la courbe. Le cadre du bas reporte, au-dessus de la même abscisse, la pente de la tangente. Point par point, une nouvelle courbe se dessine : celle de la <b>fonction dérivée</b> <i>f</i> ′.</p>
+    <p>Chaque abscisse a maintenant son nombre dérivé. Faites glisser A le long de la courbe. Le cadre du bas reporte, au-dessus de la même abscisse, la pente de la tangente. Point par point, une nouvelle courbe se dessine : celle de la <b>fonction dérivée</b> <span class=kx>f '</span>.</p>
     <p>Avant de balayer toute la largeur, essayez de prévoir : où la trace coupera-t-elle l'axe ? Où sera-t-elle la plus haute ?</p>
   </div>
   <div class="fig">
@@ -125,9 +125,9 @@ export const html = `
 
 <div class="suite col">
   <h4>Le piège le plus courant</h4>
-  <p>Le nombre dérivé n'est pas la valeur du taux d'accroissement « en <i>h</i> = 0 » : cette valeur n'existe pas. C'est une limite, et elle peut ne pas exister, comme pour |<i>x</i>| en 0, où les taux à droite valent tous 1 et les taux à gauche tous −1.</p>
+  <p>Le nombre dérivé n'est pas la valeur du taux d'accroissement « en <span class=kx>h = 0</span> » : cette valeur n'existe pas. C'est une limite, et elle peut ne pas exister, comme pour <span class=kx>|x|</span> en 0, où les taux à droite valent tous 1 et les taux à gauche tous −1.</p>
   <h4>Où lire la démonstration</h4>
-  <p>Le chapitre de Première <a href="#cours/p-04">Dérivation</a> pose la définition et les règles de calcul. Dans l'édifice, la fiche <a href="#ar-deriv.de-derivee">Dérivabilité en un point</a> donne la définition par la limite du taux d'accroissement, et la fiche <a href="#ar-deriv.de-monotonie">Signe de la dérivée et monotonie</a> démontre le lien entre le signe de <i>f</i> ′ et le sens de variation, que le dernier défi fait pressentir.</p>
+  <p>Le chapitre de Première <a href="#cours/p-04">Dérivation</a> pose la définition et les règles de calcul. Dans l'édifice, la fiche <a href="#ar-deriv.de-derivee">Dérivabilité en un point</a> donne la définition par la limite du taux d'accroissement, et la fiche <a href="#ar-deriv.de-monotonie">Signe de la dérivée et monotonie</a> démontre le lien entre le signe de <span class=kx>f '</span> et le sens de variation, que le dernier défi fait pressentir.</p>
   <h4>Ce que la page calcule</h4>
   <p>Les pentes affichées sont calculées avec la formule exacte de la dérivée de chacune des quatre fonctions ; le tableau, lui, montre de vrais taux d'accroissement. Rien n'est enregistré ni envoyé.</p>
 </div>`;

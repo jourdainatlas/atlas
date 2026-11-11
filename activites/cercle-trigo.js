@@ -24,8 +24,8 @@ export const html = `
 <section>
   <div class="col">
     <h4><span class="n">1</span>Un point, deux coordonnées, deux courbes</h4>
-    <p>On enroule la droite des réels autour du cercle de centre O et de rayon 1, à partir du point I(1 ; 0), dans le sens direct. Le réel <i>t</i> arrive sur un point M. Par définition, <b class="c-mark">cos <i>t</i></b> est l'abscisse de M et <b class="c-sec">sin <i>t</i></b> son ordonnée.</p>
-    <p>À droite du cercle, on a reporté <i>t</i> sur un axe horizontal et, au-dessus, les deux coordonnées de M : ce sont les courbes des fonctions <b class="c-mark">cosinus</b> et <b class="c-sec">sinus</b>, tracées à la même échelle que le cercle. Déplacez M sur le cercle, faites glisser le repère vertical sur les courbes, ou réglez <i>t</i> avec le curseur, degré par degré : le trait pointillé horizontal montre que la hauteur de M est exactement celle du point de la sinusoïde.</p>
+    <p>On enroule la droite des réels autour du cercle de centre O et de rayon 1, à partir du point I(1 ; 0), dans le sens direct. Le réel <span class=kx>t</span> arrive sur un point M. Par définition, <b class="c-mark"><span class=kx>\\cos t</span></b> est l'abscisse de M et <b class="c-sec"><span class=kx>\\sin t</span></b> son ordonnée.</p>
+    <p>À droite du cercle, on a reporté <span class=kx>t</span> sur un axe horizontal et, au-dessus, les deux coordonnées de M : ce sont les courbes des fonctions <b class="c-mark">cosinus</b> et <b class="c-sec">sinus</b>, tracées à la même échelle que le cercle. Déplacez M sur le cercle, faites glisser le repère vertical sur les courbes, ou réglez <span class=kx>t</span> avec le curseur, degré par degré : le trait pointillé horizontal montre que la hauteur de M est exactement celle du point de la sinusoïde.</p>
   </div>
   <div class="fig">
     <div class="ct-duo">
@@ -47,29 +47,29 @@ export const html = `
     </div>
   </div>
   <div class="col">
-    <p>Comme OM = 1, le théorème de Pythagore donne cos² <i>t</i> + sin² <i>t</i> = 1 pour tout réel <i>t</i>. Et comme un tour complet mesure 2π, les réels <i>t</i> et <i>t</i> + 2π arrivent au même point : cosinus et sinus sont périodiques de période 2π, et leurs courbes se répètent.</p>
+    <p>Comme OM = 1, le théorème de Pythagore donne <span class=kx>\\cos ^{2} t + \\sin ^{2} t = 1</span> pour tout réel <span class=kx>t</span>. Et comme un tour complet mesure 2π, les réels <span class=kx>t</span> et <span class=kx>t + 2\\pi</span> arrivent au même point : cosinus et sinus sont périodiques de période 2π, et leurs courbes se répètent.</p>
   </div>
 </section>
 
 <section>
   <div class="col">
     <h4><span class="n">2</span>Dérouler le cercle</h4>
-    <p>Faites faire à M un tour complet, lentement. Son ordonnée monte de 0 à 1 pendant le premier quart de tour, redescend à 0, plonge à −1, puis revient : la sinusoïde n'est rien d'autre que ce va-et-vient vertical, étalé le long de l'axe des <i>t</i>. Le cosinus fait le même mouvement, mais c'est une abscisse : il part de 1 au lieu de 0, avec un quart de tour d'avance.</p>
-    <p>Les deux courbes ont donc la même forme : celle du sinus est celle du cosinus décalée de π/2 vers la droite, ce que dit la formule sin <i>t</i> = cos(<i>t</i> − π/2).</p>
+    <p>Faites faire à M un tour complet, lentement. Son ordonnée monte de 0 à 1 pendant le premier quart de tour, redescend à 0, plonge à −1, puis revient : la sinusoïde n'est rien d'autre que ce va-et-vient vertical, étalé le long de l'axe des <span class=kx>t</span>. Le cosinus fait le même mouvement, mais c'est une abscisse : il part de 1 au lieu de 0, avec un quart de tour d'avance.</p>
+    <p>Les deux courbes ont donc la même forme : celle du sinus est celle du cosinus décalée de π/2 vers la droite, ce que dit la formule <span class=kx>\\sin t = \\cos (t - \\pi /2)</span>.</p>
   </div>
 </section>
 
 <section>
   <div class="col">
     <h4><span class="n">3</span>Les angles associés</h4>
-    <p>Choisissez un second réel, lié à <i>t</i> : <span class="chips" id="ct-assoc"></span></p>
+    <p>Choisissez un second réel, lié à <span class=kx>t</span> : <span class="chips" id="ct-assoc"></span></p>
     <p>Le point <b class="c-tan">M′</b> qui lui correspond apparaît sur le cercle de la figure. <span id="ct-sym"></span></p>
     <p class="def" id="ct-formule" aria-live="polite"></p>
     <p>Ces formules ne s'apprennent pas par cœur : elles se relisent sur le cercle, en comparant les coordonnées de M et de M′.</p>
   </div>
 </section>
 ` + suite(
-  "Les erreurs de signe : cos(π − <i>t</i>) vaut −cos <i>t</i>, mais sin(π − <i>t</i>) vaut sin <i>t</i>, et l'on confond facilement les deux. L'autre piège est l'unité : sur le cercle, <i>t</i> est une longueur d'arc, donc un nombre de radians ; une calculatrice réglée en degrés donne cos 3 ≈ 0,9986 au lieu de cos 3 ≈ −0,9900.",
+  "Les erreurs de signe : <span class=kx>\\cos (\\pi - t)</span> vaut <span class=kx>-\\cos t</span>, mais <span class=kx>\\sin (\\pi - t)</span> vaut <span class=kx>\\sin t</span>, et l'on confond facilement les deux. L'autre piège est l'unité : sur le cercle, <span class=kx>t</span> est une longueur d'arc, donc un nombre de radians ; une calculatrice réglée en degrés donne cos 3 ≈ 0,9986 au lieu de cos 3 ≈ −0,9900.",
   "Le chapitre de Première <a href=\"#cours/p-06\">Trigonométrie</a> définit l'enroulement de la droite sur le cercle et établit les formules des angles associés. L'édifice construit le cosinus et le sinus sans figure, à partir de l'exponentielle : voir la fiche <a href=\"#ar-trigo.tg-prolongement\">Prolongement du cosinus et du sinus à ℝ</a> et, pour le nombre π et le parcours du cercle, la fiche <a href=\"#ar-trigo.tg-cercle\">Zéros, périodes et paramétrage du cercle</a>.",
   "Pour les multiples de π/6 et de π/4, les valeurs exactes affichées (1/2, √2/2, √3/2…) viennent d'une table, et non d'un arrondi ; les valeurs décimales sont arrondies à 10⁻⁴. L'angle avance par degrés entiers et s'accroche, quand on relâche le point, au multiple de π/12 le plus proche s'il est à moins de deux degrés. Rien n'est enregistré ni envoyé.");
 

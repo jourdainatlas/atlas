@@ -8,20 +8,20 @@ export const html = `
 <header class="col">
   <p class="eyebrow">Terminale · Calcul intégral</p>
   <h3>L'aire sous la courbe</h3>
-  <p class="lede">Fixez une borne <i>a</i>, laissez l'autre libre : l'aire comprise entre la courbe et l'axe devient une fonction de <i>x</i>. Cette page fait voir pourquoi la dérivée de cette fonction est la fonction de départ.</p>
+  <p class="lede">Fixez une borne <span class=kx>a</span>, laissez l'autre libre : l'aire comprise entre la courbe et l'axe devient une fonction de <span class=kx>x</span>. Cette page fait voir pourquoi la dérivée de cette fonction est la fonction de départ.</p>
 </header>
 
 <section>
   <div class="col">
     <h4><span class="n">1</span>Une aire qui dépend de sa borne</h4>
-    <p>Choisissez une fonction <i>f</i> : <span class="chips" id="ap-fn"></span></p>
-    <p>La figure du haut colore le domaine compris entre la courbe de <i>f</i>, l'axe des abscisses et les droites verticales d'abscisses <i>a</i> et <i>x</i>. Déplacez <i>x</i>. L'intégrale de <i>a</i> à <i>x</i> compte <b class="c-tan">positivement</b> ce qui est au-dessus de l'axe et <b class="c-sec">négativement</b> ce qui est au-dessous, quand <i>x</i> est à droite de <i>a</i> ; les signes s'inversent quand <i>x</i> passe à gauche de <i>a</i>.</p>
-    <p>La figure du bas reporte cette valeur au-dessus de <i>x</i> : c'est la courbe de la fonction <i>F</i>, définie par <i>F</i>(<i>x</i>) = ∫<sub><i>a</i></sub><sup><i>x</i></sup> <i>f</i>(<i>t</i>) d<i>t</i>.</p>
+    <p>Choisissez une fonction <span class=kx>f</span> : <span class="chips" id="ap-fn"></span></p>
+    <p>La figure du haut colore le domaine compris entre la courbe de <span class=kx>f</span>, l'axe des abscisses et les droites verticales d'abscisses <span class=kx>a</span> et <span class=kx>x</span>. Déplacez <span class=kx>x</span>. L'intégrale de <span class=kx>a</span> à <span class=kx>x</span> compte <b class="c-tan">positivement</b> ce qui est au-dessus de l'axe et <b class="c-sec">négativement</b> ce qui est au-dessous, quand <span class=kx>x</span> est à droite de <span class=kx>a</span> ; les signes s'inversent quand <span class=kx>x</span> passe à gauche de <span class=kx>a</span>.</p>
+    <p>La figure du bas reporte cette valeur au-dessus de <span class=kx>x</span> : c'est la courbe de la fonction <span class=kx>F</span>, définie par <span class=kx>F(x) = \\int _{a}^{x} f(t) \\mathrm dt</span>.</p>
   </div>
   <div class="fig">
-    <div class="cap"><span>courbe de <i>f</i> et aire algébrique de <i>a</i> à <i>x</i></span><span id="ap-l1"></span></div>
+    <div class="cap"><span>courbe de <span class=kx>f</span> et aire algébrique de <span class=kx>a</span> à <span class=kx>x</span></span><span id="ap-l1"></span></div>
     <canvas id="ap-haut" class="large fixe paire" aria-label="Courbe de f ; domaine coloré entre a et x ; rectangle de même aire entre x et x + h"></canvas>
-    <div class="cap"><span>courbe de <i>F</i> : l'aire, reportée au-dessus de <i>x</i></span><span id="ap-l2"></span></div>
+    <div class="cap"><span>courbe de <span class=kx>F</span> : l'aire, reportée au-dessus de <span class=kx>x</span></span><span id="ap-l2"></span></div>
     <canvas id="ap-bas" class="large fixe paire" style="border-top:1px dashed var(--filet)" aria-label="Courbe de la fonction F, sa sécante entre x et x + h et sa tangente en x"></canvas>
     <div class="reglages">
       <label for="ap-x"><i>x</i></label><input type="range" id="ap-x" min="-4" max="4" step="0.05" value="2"><output id="ap-xv"></output>
@@ -34,14 +34,14 @@ export const html = `
 <section>
   <div class="col">
     <h4><span class="n">2</span>La pente de la courbe des aires</h4>
-    <p>Avancez de <i>x</i> à <i>x</i> + <i>h</i>. L'aire gagne une tranche, <i>F</i>(<i>x</i> + <i>h</i>) − <i>F</i>(<i>x</i>). Le <b class="c-mark">rectangle bleu</b> de la figure du haut a la même base <i>h</i> et la même aire que cette tranche : sa hauteur est donc le taux d'accroissement de <i>F</i>, qui est aussi la valeur moyenne de <i>f</i> entre <i>x</i> et <i>x</i> + <i>h</i>.</p>
+    <p>Avancez de <span class=kx>x</span> à <span class=kx>x + h</span>. L'aire gagne une tranche, <span class=kx>F(x + h) - F(x)</span>. Le <b class="c-mark">rectangle bleu</b> de la figure du haut a la même base <span class=kx>h</span> et la même aire que cette tranche : sa hauteur est donc le taux d'accroissement de <span class=kx>F</span>, qui est aussi la valeur moyenne de <span class=kx>f</span> entre <span class=kx>x</span> et <span class=kx>x + h</span>.</p>
     <dl class="lectures" aria-live="polite" style="margin:0 0 14px">
       <dt><i>F</i>(<i>x</i>)</dt><dd id="ap-F"></dd>
       <dt><i>f</i>(<i>x</i>)</dt><dd id="ap-f"></dd>
       <dt>taux à droite</dt><dd id="ap-td"></dd>
       <dt>taux à gauche</dt><dd id="ap-tg"></dd>
     </dl>
-    <p>Réduisez <i>h</i> : la tranche devient si fine que <i>f</i> n'a plus le temps de varier, et la hauteur du rectangle se rapproche de <i>f</i>(<i>x</i>). <span id="ap-verdict" aria-live="polite"></span></p>
+    <p>Réduisez <span class=kx>h</span> : la tranche devient si fine que <span class=kx>f</span> n'a plus le temps de varier, et la hauteur du rectangle se rapproche de <span class=kx>f(x)</span>. <span id="ap-verdict" aria-live="polite"></span></p>
   </div>
 </section>
 
@@ -49,14 +49,14 @@ export const html = `
   <div class="col">
     <h4><span class="n">3</span>Le théorème, et son hypothèse</h4>
     <div class="def"><p>Si <span class="kx">f</span> est continue sur un intervalle <span class="kx">I</span> et si <span class="kx">a</span> est un point de <span class="kx">I</span>, alors la fonction</p><span class="kx kxd">F : x \\longmapsto \\int_a^x f(t)\\,\\mathrm dt</span><p>est dérivable sur <span class="kx">I</span> et <span class="kx">F' = f</span>. C'est la primitive de <span class="kx">f</span> qui s'annule en <span class="kx">a</span>.</p></div>
-    <p>Changer <i>a</i> ne change pas la forme de la courbe du bas : elle monte ou descend d'un bloc, parce que deux primitives d'une même fonction sur un intervalle diffèrent d'une constante. Vérifiez-le avec le curseur <i>a</i>.</p>
-    <p>L'hypothèse de continuité n'est pas décorative. Choisissez la fonction « en escalier », qui saute de 1 à 2,5 en <i>x</i> = 1, et placez <i>x</i> en 1 : l'aire reste une fonction continue, mais sa courbe fait un angle, et les taux à droite et à gauche ne s'accordent pas.</p>
+    <p>Changer <span class=kx>a</span> ne change pas la forme de la courbe du bas : elle monte ou descend d'un bloc, parce que deux primitives d'une même fonction sur un intervalle diffèrent d'une constante. Vérifiez-le avec le curseur <span class=kx>a</span>.</p>
+    <p>L'hypothèse de continuité n'est pas décorative. Choisissez la fonction « en escalier », qui saute de 1 à 2,5 en <span class=kx>x = 1</span>, et placez <span class=kx>x</span> en 1 : l'aire reste une fonction continue, mais sa courbe fait un angle, et les taux à droite et à gauche ne s'accordent pas.</p>
   </div>
 </section>
 ` + suite(
-  "Croire qu'une intégrale est une aire au sens ordinaire. C'est une aire algébrique : pour <i>f</i>(<i>x</i>) = <i>x</i>²/4 − 1, négative entre −2 et 2, l'intégrale de −2 à 2 vaut −8/3, alors que l'aire du domaine vaut 8/3. Et l'intégrale change de signe quand on échange ses bornes.",
+  "Croire qu'une intégrale est une aire au sens ordinaire. C'est une aire algébrique : pour <span class=kx>f(x) = x^{2}/4 - 1</span>, négative entre −2 et 2, l'intégrale de −2 à 2 vaut −8/3, alors que l'aire du domaine vaut 8/3. Et l'intégrale change de signe quand on échange ses bornes.",
   "Le chapitre de Terminale <a href=\"#cours/t-06\">Calcul intégral</a> démontre ce résultat pour une fonction continue, positive et croissante, par un encadrement de la tranche entre deux rectangles. La démonstration générale est dans l'édifice, à la fiche <a href=\"#analyse-reelle.ar-tfa\">Théorème fondamental de l'analyse</a>.",
-  "Les valeurs de <i>F</i> ne viennent pas d'une somme approchée : chaque fonction proposée a une primitive connue (<i>x</i>²/4 + <i>x</i>, sin <i>x</i>, <i>x</i>³/12 − <i>x</i>, et une fonction affine par morceaux pour l'escalier), et la page calcule <i>F</i>(<i>x</i>) = <i>G</i>(<i>x</i>) − <i>G</i>(<i>a</i>). Les affichages sont arrondis à 10⁻⁴. Rien n'est enregistré ni envoyé.");
+  "Les valeurs de <span class=kx>F</span> ne viennent pas d'une somme approchée : chaque fonction proposée a une primitive connue (<span class=kx>x^{2}/4 + x</span>, <span class=kx>\\sin x</span>, <span class=kx>x^{3}/12 - x</span>, et une fonction affine par morceaux pour l'escalier), et la page calcule <span class=kx>F(x) = G(x) - G(a)</span>. Les affichages sont arrondis à 10⁻⁴. Rien n'est enregistré ni envoyé.");
 
 // Chaque fonction avec une primitive G exacte ; saut : abscisse d'une discontinuité de f.
 const FN = [
