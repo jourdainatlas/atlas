@@ -364,3 +364,8 @@ menacent pas et n'appartiennent ensemble à aucune solution.
 
 Explorations : onze. Casse-têtes : quatre.
 
+**Clavier (règle).** Quand un texte annonce des touches fléchées, elles doivent agir sans clic préalable : on les
+écoute sur la fenêtre par la doublure de `bac()` (retirée en quittant l'activité), seulement quand la figure est
+à l'écran et hors des champs, listes et curseurs. Fait pour le taquin et, à la demande de l'auteur qui s'y
+attendait, pour les chemins sur une grille (→, ↑, et ← pour retirer un pas).
+
