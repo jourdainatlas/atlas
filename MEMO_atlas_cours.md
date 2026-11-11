@@ -619,3 +619,28 @@ On rattache un formulaire aux chapitres qui établissent ou emploient ses formul
 
 Les liens des Nouveautés ne prennent que des ancres internes (`ancre`) : l'annonce renvoie donc aux chapitres, et
 non aux PDF.
+
+### 41. MPSI : chapitres 19, 20 et 21 déposés (11 nov. 2026, soir)
+
+Trois chapitres sont déposés, avec leurs feuilles et leurs métadonnées :
+- chapitre 19, « Espaces préhilbertiens réels » : cours de 19 pages, `f-ma-19` (57 exercices), `meta_ma_19.py` ;
+- chapitre 20, « Séries et familles sommables » : cours de 23 pages, `f-ma-20` (64 exercices), `meta_ma_20.py` ;
+- chapitre 21, « Dénombrement et probabilités » : cours de 29 pages, `f-ma-21` (110 exercices), `meta_ma_21.py`.
+
+Les entrées « À revoir avant » sont `[t-04, ap-08]`, `[t-01, t-06]` et `[t-07, t-02, t-10]`. Les feuilles comptent
+39 figures TikZ, toutes vérifiées sur une planche de contrôle.
+
+**Pièges.**
+- Un titre de sommaire qui contient « : » doit être mis entre guillemets dans `cours.yaml` : sinon YAML en fait
+  un dictionnaire et `pages_sommaire.py` échoue. Les numéros de page de `ma-20` et `ma-21` ont été relevés à la main.
+- Dans une règle `R` d'un `meta_ma_NN.py`, une alternative vide (`\\|` en fin de motif) correspond à tout.
+- `c-continuite` n'existe pas : on écrit `c-sequentielle` ou `c-point`.
+
+**Faux termes repérés par `cours_termes.py`** (rouge d'insistance dans des théorèmes ; signalés à l'auteur, non
+exclus) :
+- chapitre 19 : « sous-espace vectoriel », « non nuls », « simples », « unique » ;
+- chapitre 20 : « majorée », « de même nature », « décroissante », « positive » ;
+- chapitre 21 : « éléments », « sachant ».
+
+Certains termes sortent abîmés par l'extraction du PDF (`mŒme`, `cid:224`), un défaut qui relève du programme du
+domaine apparence.
