@@ -1,5 +1,5 @@
 // Casse-tête « Le taquin » (rubrique Activités, MEMO_atlas_activites.md §121).
-import { css as cssCommun } from './commun.js';
+import { css as cssCommun, bac } from './commun.js';
 import { cssFigures, suite } from './figures.js';
 import { cssJeux, ecrire, entier } from './jeux.js';
 
@@ -35,7 +35,7 @@ export const html = `
 <section>
   <div class="col">
     <h4><span class="n">1</span>Jouer</h4>
-    <p>Cliquez sur une pièce de la même ligne ou de la même colonne que la case vide : elle glisse, avec celles qui la séparent du vide. Au clavier, les flèches poussent une pièce vers la case vide. Le but est la position rangée, case vide en bas à droite. Le bouton « Mélanger » ne joue que des coups permis : la position obtenue a donc toujours une solution.</p>
+    <p>Cliquez sur une pièce de la même ligne ou de la même colonne que la case vide : elle glisse, avec celles qui la séparent du vide. Au clavier, les flèches poussent une pièce vers la case vide, dès que le plateau est à l'écran : la flèche vers le haut fait monter la pièce située sous la case vide. Le but est la position rangée, case vide en bas à droite. Le bouton « Mélanger » ne joue que des coups permis : la position obtenue a donc toujours une solution.</p>
     <p>Jusqu'à neuf cases, la page connaît toutes les positions : elle indique le nombre minimal de coups qui restent, et « Un coup » joue l'un des meilleurs. Au-delà, elle donne seulement un nombre de coups au-dessous duquel on ne peut pas descendre.</p>
   </div>
 </section>
@@ -105,7 +105,7 @@ export function monter(racine) {
     const P = q('#tq-plateau'); P.style.setProperty('--col', K);
     if (P.children.length !== N) { P.innerHTML = ''; for (let i = 0; i < N; i++) { const b = document.createElement('button'); b.type = 'button'; b.dataset.i = i; P.append(b); } }
     [...P.children].forEach((b, i) => { const x = t[i]; b.textContent = x || ''; b.className = (x ? '' : 'vide') + (x && x === i + 1 ? ' place' : '') + (i === conseil ? ' conseil' : '');
-      b.disabled = !x; b.setAttribute('aria-label', x ? `Pièce ${x}, ligne ${Math.floor(i / K) + 1}, colonne ${i % K + 1}` : 'Case vide'); });
+      b.disabled = false; b.setAttribute('aria-disabled', String(!x)); b.tabIndex = x ? 0 : -1; b.setAttribute('aria-label', x ? `Pièce ${x}, ligne ${Math.floor(i / K) + 1}, colonne ${i % K + 1}` : 'Case vide'); });
     const I = invariant(), petit = N <= 9, D = petit ? table() : null, reste = petit ? D.get(code(t)) : undefined, gagne = fini();
     ecrire(q('#tq-coups'), entier(coups));
     ecrire(q('#tq-min'), gagne ? '' : petit ? (reste === undefined ? 'Aucune suite de coups ne range cette position.' : `Au mieux, il reste ${entier(reste)} coup${reste > 1 ? 's' : ''}.`) : `Il reste au moins ${entier(manhattan())} coups.`);
@@ -126,13 +126,21 @@ export function monter(racine) {
     for (const w of voisins(v)) { const b = t.slice(); b[v] = b[w]; b[w] = 0; if (D.get(code(b)) === d - 1) { jouer(w); conseil = v; break; } }
     rendre();
   });
-  q('#tq-plateau').addEventListener('click', e => { const b = e.target.closest('button[data-i]'); if (b && jouer(+b.dataset.i)) { rendre(); const c = q('#tq-plateau').children[vide(t)]; } });
-  q('#tq-plateau').addEventListener('keydown', e => {
+  q('#tq-plateau').addEventListener('click', e => { const b = e.target.closest('button[data-i]'); if (b && jouer(+b.dataset.i)) rendre(); });
+  // Flèches du clavier : elles poussent vers la case vide la pièce qui se trouve du côté opposé. Elles sont écoutées sur
+  // toute la fenêtre (et non sur le seul plateau, où il fallait d'abord avoir cliqué sur une pièce), mais seulement quand
+  // le plateau est à l'écran et que l'on n'est pas dans un champ, une liste ou un curseur, pour ne pas gêner le reste.
+  const { window: fenetre, demonter } = bac();
+  fenetre.addEventListener('keydown', e => {
+    if (!/^Arrow(Up|Down|Left|Right)$/.test(e.key) || e.altKey || e.ctrlKey || e.metaKey) return;
+    const cible = e.target, P = q('#tq-plateau'), r0 = P.getBoundingClientRect();
+    if (cible && cible.closest && cible.closest('input, select, textarea, [contenteditable], [role="slider"]')) return;
+    if (r0.bottom < 60 || r0.top > innerHeight - 40 || !P.isConnected) return;
     const v = vide(t), r = Math.floor(v / K), c = v % K;
     const i = e.key === 'ArrowUp' && r < L - 1 ? v + K : e.key === 'ArrowDown' && r > 0 ? v - K : e.key === 'ArrowLeft' && c < K - 1 ? v + 1 : e.key === 'ArrowRight' && c > 0 ? v - 1 : -1;
-    if (!/^Arrow/.test(e.key)) return; e.preventDefault();
-    if (i >= 0 && jouer(i)) { rendre(); q('#tq-plateau').children[v].focus(); }
+    e.preventDefault();
+    if (i >= 0 && jouer(i)) rendre();
   });
   melanger(); rendre();
-  return () => { vivant = false; };
+  return () => { vivant = false; demonter(); };
 }

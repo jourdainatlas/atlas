@@ -287,4 +287,11 @@ Restent quinze idées de la liste des vingt, les visualisations de dénombrement
   (`height: 0; min-height: 100%` dans une grille étirée) : la liste des défis prend toute la place restante,
   ses lignes sont resserrées et la planche monte jusqu'à 76 % de la hauteur de la fenêtre (820 px au plus). Sur
   un écran de 1080 px, presque toute la liste est visible sans défiler. Sur téléphone, rien ne change.
+- *Taquin au clavier.* Les flèches n'agissaient que si une pièce avait le focus, et le perdaient dès qu'une pièce
+  devenait la case vide (bouton désactivé) : l'auteur a constaté qu'elles ne poussaient rien. Elles sont
+  maintenant écoutées sur la fenêtre (doublure de `bac()`, donc retirées en quittant l'activité), seulement quand
+  le plateau est à l'écran et hors des champs, listes et curseurs ; la case vide n'est plus un bouton désactivé.
+- *Vignettes.* Chaque carte d'activité porte un petit dessin au trait (champ `vignette` du catalogue : intérieur
+  d'un SVG de 120 × 72, classes `a` trait coloré, `f` aplat, `p` point, `t` tirets, `e` trait fort), à la couleur
+  de la carte. Toute nouvelle activité doit avoir la sienne.
 
