@@ -3707,6 +3707,9 @@ function pageChapitre(c, tous) {
       h += `<a class="bouton" href="#exercices/feuille/${f.id}" style="justify-content:center">${esc(f.titre)}${f.nombre ? ` · ${f.nombre} exercices` : ''} →</a>`;
     h += `</div></div>`;
   } else h += `<div class="carte"><h3 class="titre-bloc">Exercices</h3><p class="vide-note">Feuille d'exercices à venir.</p></div>`;
+  // Formulaires d'une page rattachés au chapitre (rubriques/cours.yaml, clé formulaires)
+  const formulaires = (R.cours?.formulaires || []).filter(x => x.pdf && (x.chapitres || []).includes(c.id));
+  if (formulaires.length) h += `<div class="carte"><h3 class="titre-bloc">Formulaires</h3><div style="display:flex;gap:6px;flex-wrap:wrap">${formulaires.map(x => lienPdf(x.pdf, 0, `Formulaire : ${x.titre}`)).join('')}</div></div>`;
   h += `<div class="carte"><h3 class="titre-bloc">Fichiers</h3><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">${statut(c.statut)}${c.pdf ? `<a class="lien-simple" href="${c.pdf}" download style="font-size:13.5px">PDF${c.pages ? `, ${c.pages} pages` : ''}</a>` : '<span style="font-size:13px;color:var(--encre-2)">PDF</span>'}</div></div>`;
   h += `</aside></div>`;
   h += `<nav class="voisins">${prec ? `<a href="#cours/${prec.id}">← ${prec.titre}</a>` : '<span></span>'}<a href="#cours">Tous les cours</a>${suiv ? `<a href="#cours/${suiv.id}">${suiv.titre} →</a>` : '<span></span>'}</nav>`;

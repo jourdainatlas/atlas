@@ -84,7 +84,8 @@ export function pagesCoursExercices(ctx) {
     h += `<h1>${c.titre}</h1>`;
     h += boutons([bouton(pdf(c.pdf), `Cours (PDF${c.pages ? `, ${c.pages} pages` : ''})`, true),
       f && bouton(`/exercices/feuille/${f.id}/`, `Les ${f.nombre || exosDe(f.id).length} exercices corrigés`),
-      f && bouton(pdf(f.pdf_enonce), 'Feuille (PDF)'), f && bouton(pdf(f.pdf_corrige), 'Corrigé (PDF)')]);
+      f && bouton(pdf(f.pdf_enonce), 'Feuille (PDF)'), f && bouton(pdf(f.pdf_corrige), 'Corrigé (PDF)'),
+      ...(R.cours?.formulaires || []).filter(x => x.pdf && (x.chapitres || []).includes(c.id)).map(x => bouton(pdf(x.pdf), `Formulaire : ${x.titre} (PDF)`))]);
     if (c.resume) h += relier(c.resume);
     if ((c.sommaire || []).length) {
       h += `<h2 class="l-sec">Sommaire</h2><ol class="l-sommaire">${c.sommaire.map((s, i) => { const p = (c.sommaire_pages || [])[i];

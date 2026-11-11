@@ -601,3 +601,20 @@ constante `ALLER`), un script renvoie aussitôt le visiteur vers la page interac
 l'adresse porte `page=` ou `ouvrir`. Sans paramètre (adresse canonique, plan du site, moteurs), la page de lecture
 s'affiche comme avant. Les aperçus des messageries, qui n'exécutent pas de script, restent ceux de la page de
 lecture. Les pages de lecture de l'édifice et des annales (`lecture.mjs`, domaine apparence) ne sont pas concernées.
+
+### 40. Formulaires (11 nov. 2026)
+
+Les formulaires d'une page (PDF) sont rangés dans `documents/formulaires/<niveau>/` et non dans `documents/cours/`,
+où `cours_termes.py` chercherait des termes définis dans leur rouge, qui marque ici les formules à connaître. Ils
+sont déclarés sous la clé `formulaires` de `rubriques/cours.yaml` (`id`, `titre`, `niveau`, `pdf`, `chapitres`).
+Chaque chapitre de la liste `chapitres` les montre :
+- dans la colonne de droite de sa page, avec une carte « Formulaires » placée entre « Exercices » et « Fichiers »
+  (`gabarit.html`) ;
+- sur sa page de lecture, avec un bouton « Formulaire : … (PDF) » (`lecture-cours.mjs`).
+
+On rattache un formulaire aux chapitres qui établissent ou emploient ses formules. Au 11 novembre :
+- trigonométrie : `ma-04`, `ma-05`, `ma-06`, `ma-10` ;
+- fonctions hyperboliques : `ma-05`, `ma-06`, `ma-10`.
+
+Les liens des Nouveautés ne prennent que des ancres internes (`ancre`) : l'annonce renvoie donc aux chapitres, et
+non aux PDF.
