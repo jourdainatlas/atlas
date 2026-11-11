@@ -39,9 +39,9 @@ export const css = cssCommun + `
 .activites-act .verdict.ok b { color: var(--ok); }
 .activites-act .verdict.ko b { color: var(--free); }
 .activites-act .stage { display: flex; flex-direction: column; overflow: hidden; }
-.activites-act .tools { display: flex; flex-wrap: wrap; gap: 2px; padding: 8px 6px; border-bottom: 1px solid var(--filet); }
+.activites-act .tools { display: flex; flex-wrap: wrap; gap: 1px; padding: 8px 6px; border-bottom: 1px solid var(--filet); }
 .activites-act .tools .sep { flex: 1 1 12px; }
-.activites-act .tool { display: flex; flex-direction: column; align-items: center; gap: 1px; min-width: 44px; font: 500 11px var(--f-ui); color: var(--encre); background: transparent; border: 1px solid transparent; border-radius: 6px; padding: 5px 4px 4px; cursor: pointer; }
+.activites-act .tool { display: flex; flex-direction: column; align-items: center; gap: 1px; min-width: 40px; font: 500 10.5px var(--f-ui); letter-spacing: -.01em; color: var(--encre); background: transparent; border: 1px solid transparent; border-radius: 6px; padding: 5px 2px 4px; cursor: pointer; }
 .activites-act .tool svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 .activites-act .tool svg .f { fill: currentColor; stroke: none; }
 .activites-act .tool:hover { background: var(--trame); }
@@ -414,6 +414,7 @@ const TOOLS=[
  ['mid','Milieu','<path d="M4 18L20 6"/><circle cx="4" cy="18" r="2"/><circle cx="20" cy="6" r="2"/><circle class="f" cx="12" cy="12" r="2.6"/>'],
  ['perp','Perpendiculaire','<path d="M3 19h18M12 19V3M12 15h4v4"/>'],
  ['par','Parallèle','<path d="M3 17L15 5M9 20L21 8"/>'],
+ ['dim','Estomper','<path d="M3 20L10.5 12.5"/><path opacity=".3" d="M10.5 12.5L21 2"/><circle opacity=".3" cx="15" cy="15" r="6"/>'],
  ['trace','Trace','<circle class="f" cx="4" cy="18" r="1.4"/><circle class="f" cx="8" cy="12.5" r="1.4"/><circle class="f" cx="13" cy="9" r="1.4"/><circle class="f" cx="19" cy="7" r="2.6"/>'],
  ['del','Effacer','<path d="M6 6l12 12M18 6L6 18"/>']
 ];
@@ -427,6 +428,7 @@ const HINTS={
  mid:['Milieu : cliquez sur un premier point.','Milieu : cliquez sur le second point.'],
  perp:['Perpendiculaire : cliquez sur un point et sur une droite ou un segment, dans l\'ordre que vous voulez.','Perpendiculaire : il manque encore un point ou une ligne.'],
  par:['Parallèle : cliquez sur un point et sur une droite ou un segment, dans l\'ordre que vous voulez.','Parallèle : il manque encore un point ou une ligne.'],
+ dim:['Estomper : cliquez sur un trait de construction (droite, segment ou cercle) pour l\'atténuer sans le supprimer. Recliquez dessus pour lui rendre son épaisseur.'],
  trace:['Trace : cliquez sur un point pour qu\'il laisse une trace quand la figure bouge. Recliquez pour l\'arrêter.'],
  del:['Effacer : cliquez sur un objet. Tout ce qui en dépend disparaît aussi.']
 };
@@ -519,6 +521,7 @@ function click(w){
     inter(G.get(pend.ln),G.get(hc.id)).forEach((p,k)=>{if(p)addInter(pend.ln,hc.id,k,p);});
     resetPend();return;
   }
+  if(tool==='dim'){const h=(nearCurves(w,10)[0]||{}).o;if(h)h.dim=!h.dim;return;}
   if(tool==='trace'){const h=hitPoint(w);if(h){h.trace=!h.trace;if(!h.trace)traces.delete(h.id);}return;}
   if(tool==='del'){const h=hitPoint(w)||(nearCurves(w,10)[0]||{}).o;if(h&&!h.given){removeWithDeps(h.id);st.flash=null;}return;}
   if(tool==='seg'||tool==='line'||tool==='circle'||tool==='mid'){
@@ -564,8 +567,10 @@ function draw(){
   for(const o of st.objs){if(o.t==='pt')continue;const g=G.get(o.id);if(!g||!g.ok)continue;
     const sel=pend.ln===o.id,hov=(hover&&hover.id===o.id)||(snap&&(snap.o1===o.id||snap.o2===o.id));
     if(sel||hov){ctx.strokeStyle=C.hl;ctx.lineWidth=8;strokeGeom(g);}
-    if((sel||hov)&&tool!=='move'&&tool!=='trace'&&tool!=='del'){ctx.globalAlpha=.5;ctx.strokeStyle=C.ok;ctx.lineWidth=5;strokeGeom(g);ctx.globalAlpha=1;}
-    ctx.strokeStyle=o.given?C.soft:C.ink;ctx.lineWidth=o.given?2.6:(o.k==='seg'?2.2:1.5);strokeGeom(g);
+    if((sel||hov)&&tool!=='move'&&tool!=='trace'&&tool!=='del'&&tool!=='dim'){ctx.globalAlpha=.5;ctx.strokeStyle=C.ok;ctx.lineWidth=5;strokeGeom(g);ctx.globalAlpha=1;}
+    /* trait estompé (outil « Estomper ») : il reste là, utilisable, mais presque effacé */
+    if(o.dim)ctx.globalAlpha=sel||hov?.55:.16;
+    ctx.strokeStyle=o.given?C.soft:C.ink;ctx.lineWidth=o.given?2.6:(o.k==='seg'?2.2:1.5);strokeGeom(g);ctx.globalAlpha=1;
     if(o.label){ctx.font='italic 700 16px '+C.fd;ctx.fillStyle=C.soft;ctx.textAlign='left';ctx.textBaseline='bottom';ctx.fillText(o.label,sx(g.x+0.3*g.dx),sy(g.y+0.3*g.dy)-6);}}
   // aperçu
   if(cursor&&pend.pts.length===1&&(tool==='seg'||tool==='line'||tool==='circle'||tool==='mid')){const a=G.get(pend.pts[0]);
@@ -580,7 +585,7 @@ function draw(){
     const sel=pend.pts.includes(o.id),hov=hover&&hover.id===o.id;
     if(sel||hov){ctx.fillStyle=C.hl;ctx.beginPath();ctx.arc(X,Y,14,0,7);ctx.fill();}
     // point qui va être relié à l'objet en cours de tracé (ou premier point déjà choisi) : anneau vert bien visible
-    if((sel||hov)&&tool!=='move'&&tool!=='trace'&&tool!=='del'){ctx.strokeStyle=C.ok;ctx.lineWidth=3;ctx.beginPath();ctx.arc(X,Y,12.5,0,7);ctx.stroke();}
+    if((sel||hov)&&tool!=='move'&&tool!=='trace'&&tool!=='del'&&tool!=='dim'){ctx.strokeStyle=C.ok;ctx.lineWidth=3;ctx.beginPath();ctx.arc(X,Y,12.5,0,7);ctx.stroke();}
     if(o.lock){ctx.strokeStyle=C.soft;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(X-4,Y-4);ctx.lineTo(X+4,Y+4);ctx.moveTo(X-4,Y+4);ctx.lineTo(X+4,Y-4);ctx.stroke();}
     else if(o.k==='free'){ctx.fillStyle=C.free;ctx.beginPath();ctx.arc(X,Y,7,0,7);ctx.fill();}
     else if(o.k==='on'){ctx.fillStyle=C.semi;ctx.beginPath();ctx.arc(X,Y,6.5,0,7);ctx.fill();}
@@ -601,7 +606,7 @@ function updateUI(){
   const hs=HINTS[tool],step=(tool==='perp'||tool==='par'||tool==='inter')?((pend.pts.length||pend.ln)?1:0):Math.min(pend.pts.length,hs.length-1);
   $('hint').textContent=hs[Math.min(step,hs.length-1)];
   // annonce de la liaison qui va se faire : avec un point existant, avec une ligne, ou avec un croisement
-  if(tool!=='move'&&tool!=='trace'&&tool!=='del'){
+  if(tool!=='move'&&tool!=='trace'&&tool!=='del'&&tool!=='dim'){
     if(snap)$('hint').textContent='Le point sera placé à l\'intersection des deux lignes surlignées.';
     else if(hover&&hover.t==='pt')$('hint').textContent=(tool==='circle'&&pend.pts.length===1?'Le cercle passera par le point ':tool==='circle'?'Le cercle aura pour centre le point ':(tool==='seg'||tool==='line')?'La ligne passera par le point ':'Le point utilisé sera ')+(hover.name||'survolé')+' : cliquez pour le relier.';
     else if(hover&&tool==='point')$('hint').textContent='Le point sera accroché à la ligne surlignée et ne pourra glisser que sur elle.';
@@ -677,7 +682,7 @@ cv.addEventListener('pointermove',e=>{
     if(o.k==='free'){o.x=w.x+dragging.ox;o.y=w.y+dragging.oy;}
     else{const g=G.get(o.o);if(g&&g.ok)o.u=paramOn(g,w);}
     refresh();return;}
-  const hp=hitPoint(w);
+  const hp=tool==='dim'?null:hitPoint(w);
   hover=hp||(tool==='move'||tool==='trace'?null:((nearCurves(w,10)[0]||{}).o||null));
   snap=hp?null:tool==='point'?snapInter(w,10,16):tool==='inter'&&!pend.ln?snapInter(w,12,18):null;
   draw();updateUI();

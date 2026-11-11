@@ -406,4 +406,12 @@ appui et remet le compteur à zéro. Le minimum d'appuis depuis la position de d
 rappelé en fin de partie (« en 34 appuis ; le minimum était de 5 »), pour que le joueur compare. Règle à suivre pour les prochains casse-têtes : toujours offrir de reprendre
 la même position, en plus d'en tirer une nouvelle.
 
+**Atelier : outil « Estomper » (demande de l'auteur).** Quand les traits de construction s'accumulent (cercle
+circonscrit : six cercles et trois droites), la figure devient illisible. L'outil, placé avant « Trace », atténue
+le trait cliqué (droite, segment ou cercle, donné ou construit) à 16 % d'opacité, et le rétablit au second clic.
+Le trait reste un objet à part entière : il retrouve de la présence au survol, on peut y accrocher un point ou
+en prendre l'intersection, et la vérification l'ignore (champ `dim` de l'objet, lu seulement par le dessin).
+Ajout dans l'interface, hors du moteur. La barre d'outils a été resserrée pour tenir sur une ligne à 1280 px.
+`atelier.js` est désormais modifié directement : `/tmp/gen/gen.py` n'est plus la source.
+
 Explorations : quatorze. Casse-têtes : quatre.
