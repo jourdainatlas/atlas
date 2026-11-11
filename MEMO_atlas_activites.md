@@ -332,3 +332,35 @@ nombre e, intégrale par rectangles, dichotomie, méthode d'Euler, accroissement
 convexité, multiplication complexe, droites et plans de l'espace, matrice 2×2, racines et coefficients, Euclide
 en rectangles, loi des grands nombres ; puis anagrammes, anniversaires, tiroirs, dérangements, Catalan.
 
+### 125. Règle des curseurs fluides ; Euler, nombres complexes, problème des dames (11 nov. 2026)
+
+**RÈGLE DE L'AUTEUR POUR TOUTE VISUALISATION, PRÉSENTE OU FUTURE.** Un curseur ou un point déplaçable ne doit pas
+avancer par sauts visibles : le pas est petit (0,05 ou 0,01 pour une grandeur réelle, un degré pour un angle),
+de sorte que la figure bouge de façon continue. Pour retrouver facilement les valeurs rondes, un point que l'on
+déplace sur la figure s'aimante légèrement sur les nœuds du quadrillage (ou sur les valeurs remarquables), sans
+que le curseur lui-même soit grossier. Seules les grandeurs entières par nature (nombre de pas, n d'une loi
+binomiale, taille d'un plateau) avancent par unités. L'exactitude reste due : on stocke les valeurs en entiers
+(vingtièmes, centièmes, degrés) et l'on calcule sur ces entiers. Appliqué le 11 nov. au second degré (0,05), au
+cercle trigonométrique (degré), au produit scalaire (0,05, aimant à 0,13 des entiers, produit calculé en
+vingtièmes), à la borne a de l'aire (0,05), à p de la binomiale (0,01), à k d'Euler (0,05).
+
+**Figures basses.** Les figures superposées, limitées en hauteur au §124, étaient étirées sur toute la largeur
+de la page, donc aplaties : l'auteur ne lisait plus les variations. Leur cadre est maintenant rétréci à 2,1
+fois la hauteur d'une figure et centré (`.fig:has(canvas.paire, #cv3t, #cv4t)`).
+
+**`euler`** (Terminale, Maths Sup ; analyse). y′ = ky, y(0) = 1 sur [0 ; 2], N pas : valeurs (1 + kh)^n et
+solution e^{kx}, toutes deux en forme close. Tableau des écarts pour N = 10 à 160 et leurs rapports (1,81 ;
+1,90 ; 1,94 ; 1,97 pour k = 1). Verdict selon le facteur 1 + kh (instabilité si h > 2/|k|). Contrôlé : k = 1 →
+6,1917 ; 6,7275 ; 7,0400 pour N = 10, 20, 40 ; e² ≈ 7,3891.
+
+**`complexes`** (Maths expertes, Maths Sup ; géométrie). z et w par module (pas de 0,05) et argument (degré) ;
+zw calculé par la formule algébrique, puis module et argument lus sur le résultat, pour constater la règle.
+Triangles semblables (0, 1, z) et (0, w, zw) ; puissances de z ; boutons des racines n-ièmes de l'unité.
+
+**`dames`** (casse-tête ; n de 4 à 10). Toutes les solutions par retour arrière, familles sous les huit
+symétries du carré. Contrôlé (Node) contre les valeurs connues : 2, 10, 4, 40, 92, 352, 724 solutions et
+1, 2, 1, 6, 12, 46, 92 familles. Le piège cité est vérifié : sur 8 × 8, les dames en (1, 1) et (2, 3) ne se
+menacent pas et n'appartiennent ensemble à aucune solution.
+
+Explorations : onze. Casse-têtes : quatre.
+

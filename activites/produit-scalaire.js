@@ -30,10 +30,10 @@ export const html = `
       </div>
     </div>
     <div class="reglages">
-      <label for="ps-ux"><i>u</i> : abscisse</label><input type="range" id="ps-ux" min="-5" max="5" step="0.5"><output id="ps-uxv"></output>
-      <label for="ps-uy"><i>u</i> : ordonnée</label><input type="range" id="ps-uy" min="-4" max="4" step="0.5"><output id="ps-uyv"></output>
-      <label for="ps-vx"><i>v</i> : abscisse</label><input type="range" id="ps-vx" min="-5" max="5" step="0.5"><output id="ps-vxv"></output>
-      <label for="ps-vy"><i>v</i> : ordonnée</label><input type="range" id="ps-vy" min="-4" max="4" step="0.5"><output id="ps-vyv"></output>
+      <label for="ps-ux"><i>u</i> : abscisse</label><input type="range" id="ps-ux" min="-5" max="5" step="0.05"><output id="ps-uxv"></output>
+      <label for="ps-uy"><i>u</i> : ordonnée</label><input type="range" id="ps-uy" min="-4" max="4" step="0.05"><output id="ps-uyv"></output>
+      <label for="ps-vx"><i>v</i> : abscisse</label><input type="range" id="ps-vx" min="-5" max="5" step="0.05"><output id="ps-vxv"></output>
+      <label for="ps-vy"><i>v</i> : ordonnée</label><input type="range" id="ps-vy" min="-4" max="4" step="0.05"><output id="ps-vyv"></output>
     </div>
   </div>
 </section>
@@ -56,17 +56,18 @@ export const html = `
 ` + suite(
   "Oublier que le produit scalaire est un nombre, et non un vecteur, et lui prêter les règles du produit des nombres. En particulier, <i>u</i> · <i>v</i> = 0 n'entraîne pas que l'un des deux vecteurs soit nul : (3 ; 2) · (−2 ; 3) = −6 + 6 = 0, et aucun des deux n'est nul. On ne peut donc pas « simplifier par <i>u</i> » dans une égalité <i>u</i> · <i>v</i> = <i>u</i> · <i>w</i>.",
   "Le chapitre de Première <a href=\"#cours/p-07\">Produit scalaire</a> établit l'égalité des trois expressions. Dans l'édifice, la fiche <a href=\"#met.me-produit-scalaire\">Produit scalaire et inégalité de Cauchy-Schwarz</a> part de la définition générale ; l'inégalité |<i>u</i> · <i>v</i>| ≤ ‖<i>u</i>‖ × ‖<i>v</i>‖ est ce qui permet de définir l'angle par son cosinus.",
-  "Le produit scalaire est calculé avec les coordonnées, qui avancent par demi-unités : il est exact. L'angle θ, donné au dixième de degré, vient de cos θ = <i>u</i> · <i>v</i> / (‖<i>u</i>‖ × ‖<i>v</i>‖) ; le projeté H est OA multiplié par <i>u</i> · <i>v</i> / ‖<i>u</i>‖². Les longueurs sont arrondies à 10⁻³. Rien n'est enregistré ni envoyé.");
+  "Le produit scalaire est calculé avec les coordonnées, qui avancent par pas de 0,05 et sont traitées comme des entiers (en vingtièmes) : il est exact. Quand on déplace un point à la souris ou au doigt, il s'accroche légèrement aux nœuds du quadrillage. L'angle θ, donné au dixième de degré, vient de cos θ = <i>u</i> · <i>v</i> / (‖<i>u</i>‖ × ‖<i>v</i>‖) ; le projeté H est OA multiplié par <i>u</i> · <i>v</i> / ‖<i>u</i>‖². Les longueurs sont arrondies à 10⁻³. Rien n'est enregistré ni envoyé.");
 
 export function monter(racine) {
   const q = s => racine.querySelector(s);
   const E = { ux: 4, uy: 1, vx: 1.5, vy: 3 };
   let V = null, pris = null;
-  for (const k of ['ux', 'uy', 'vx', 'vy']) q('#ps-' + k).addEventListener('input', e => { E[k] = +e.target.value; S.planifier(); });
+  for (const k of ['ux', 'uy', 'vx', 'vy']) q('#ps-' + k).addEventListener('input', e => { E[k] = Math.round(+e.target.value * 20) / 20; S.planifier(); });
   const fleche = (ctx, x0, y0, x1, y1, couleur) => { ctx.strokeStyle = couleur; ctx.fillStyle = couleur; ctx.lineWidth = 3; trait(ctx, x0, y0, x1, y1);
     const a = Math.atan2(y1 - y0, x1 - x0); if (Math.hypot(x1 - x0, y1 - y0) < 6) return; ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x1 - 12 * Math.cos(a - .4), y1 - 12 * Math.sin(a - .4)); ctx.lineTo(x1 - 12 * Math.cos(a + .4), y1 - 12 * Math.sin(a + .4)); ctx.closePath(); ctx.fill(); };
   function rendre(C) {
-    const { ux, uy, vx, vy } = E, ps = ux * vx + uy * vy, nu = Math.hypot(ux, uy), nv = Math.hypot(vx, vy), nuls = nu === 0 || nv === 0;
+    const { ux, uy, vx, vy } = E, ent = t => Math.round(t * 20), ps = (ent(ux) * ent(vx) + ent(uy) * ent(vy)) / 400,   // coordonnées en vingtièmes : produit exact
+       nu = Math.hypot(ux, uy), nv = Math.hypot(vx, vy), nuls = nu === 0 || nv === 0;
     const cos = nuls ? NaN : borne(ps / (nu * nv), -1, 1), th = Math.acos(cos), k = nu ? ps / (nu * nu) : 0, hx = k * ux, hy = k * uy;
     const { ctx, w, h } = toile(q('#ps-fig')), v = vueEgale(w, h, 0, 0, Math.max(5.8, 4.8 * w / h)); V = v;
     grille(ctx, v, C, true);
@@ -80,9 +81,9 @@ export function monter(racine) {
     if (nu) { pastille(ctx, v.X(hx), v.Y(hy), C.vert, 5); etiquette(ctx, C, 'H', v.X(hx) + 4, v.Y(hy) + 16, C.vert, 'center', 13); }
     poignee(ctx, C, v.X(ux), v.Y(uy), C.bleu, 'A', uy < 0); poignee(ctx, C, v.X(vx), v.Y(vy), C.orange, 'B', vy < 0);
     etiquette(ctx, C, 'O', O[0] - 11, O[1] + 13, C.doux, 'center', 12);
-    for (const k2 of ['ux', 'uy', 'vx', 'vy']) { const r = q('#ps-' + k2); if (+r.value !== E[k2]) r.value = E[k2]; ecrire(q('#ps-' + k2 + 'v'), frc(E[k2])); }
+    for (const k2 of ['ux', 'uy', 'vx', 'vy']) { const r = q('#ps-' + k2); if (+r.value !== E[k2]) r.value = E[k2]; ecrire(q('#ps-' + k2 + 'v'), fr(E[k2], 2)); }
     const par = x => x < 0 ? '(' + frc(x) + ')' : frc(x);
-    ecrire(q('#ps-c'), `${par(ux)} × ${par(vx)} + ${par(uy)} × ${par(vy)} = ${frc(ps)}`);
+    ecrire(q('#ps-c'), `${par(ux)} × ${par(vx)} + ${par(uy)} × ${par(vy)} = ${frc(ps, 4)}`);
     ecrire(q('#ps-a'), nuls ? 'pas d\'angle : un vecteur est nul' : `${fr(nu, 3)} × ${fr(nv, 3)} × cos ${fr(th * 180 / Math.PI, 1)}° ≈ ${fr(nu * nv * Math.cos(th), 3)}`);
     ecrire(q('#ps-p'), nu ? `OA × OH = ${fr(nu, 3)} × ${k < 0 ? '(−' + fr(Math.abs(k) * nu, 3) + ')' : fr(k * nu, 3)} ≈ ${fr(nu * k * nu, 3)}` : 'pas de droite (OA) : u est nul');
     ecrire(q('#ps-verdict'), nuls ? "L'un des vecteurs est nul : le produit scalaire vaut 0 et l'angle n'est pas défini."
@@ -93,7 +94,9 @@ export function monter(racine) {
   glisser(q('#ps-fig'), (p, phase) => {
     if (!V) return;
     if (phase === 'debut') pris = Math.hypot(p.x - V.X(E.ux), p.y - V.Y(E.uy)) <= Math.hypot(p.x - V.X(E.vx), p.y - V.Y(E.vy)) ? 'u' : 'v';
-    const x = borne(Math.round(V.ix(p.x) * 2) / 2, -5, 5), y = borne(Math.round(V.iy(p.y) * 2) / 2, -4, 4);
+    // pas de 0,05, avec une légère aimantation sur les nœuds du quadrillage (coordonnées entières)
+    const aimant = t => { const r = Math.round(t * 20) / 20, e = Math.round(t); return Math.abs(t - e) < 0.13 ? e : r; };
+    const x = borne(aimant(V.ix(p.x)), -5, 5), y = borne(aimant(V.iy(p.y)), -4, 4);
     E[pris + 'x'] = x; E[pris + 'y'] = y; S.planifier();
   });
   return S.arreter;

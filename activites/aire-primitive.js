@@ -25,7 +25,7 @@ export const html = `
     <canvas id="ap-bas" class="large fixe paire" style="border-top:1px dashed var(--filet)" aria-label="Courbe de la fonction F, sa sécante entre x et x + h et sa tangente en x"></canvas>
     <div class="reglages">
       <label for="ap-x"><i>x</i></label><input type="range" id="ap-x" min="-4" max="4" step="0.05" value="2"><output id="ap-xv"></output>
-      <label for="ap-a"><i>a</i></label><input type="range" id="ap-a" min="-3" max="3" step="0.5" value="0"><output id="ap-av"></output>
+      <label for="ap-a"><i>a</i></label><input type="range" id="ap-a" min="-3" max="3" step="0.05" value="0"><output id="ap-av"></output>
       <label for="ap-h"><i>h</i></label><input type="range" id="ap-h" min="0.02" max="1.5" step="0.02" value="1"><output id="ap-hv"></output>
     </div>
   </div>
@@ -112,7 +112,7 @@ export function monter(racine) {
       poignee(ctx, C, v.X(x), v.Y(Fx), C.encre, '', false);
     }
     racine.querySelectorAll('#ap-fn .chip').forEach((b, i) => b.setAttribute('aria-pressed', String(i === E.fn)));
-    for (const [id, val, d] of [['#ap-x', x, 2], ['#ap-a', a, 1], ['#ap-h', h, 2]]) { if (Math.abs(+q(id).value - val) > 1e-9) q(id).value = val; ecrire(q(id + 'v'), fr(val, d)); }
+    for (const [id, val, d] of [['#ap-x', x, 2], ['#ap-a', a, 2], ['#ap-h', h, 2]]) { if (Math.abs(+q(id).value - val) > 1e-9) q(id).value = val; ecrire(q(id + 'v'), fr(val, d)); }
     ecrire(q('#ap-l1'), 'f(x) = ' + fr(f(x), 4)); ecrire(q('#ap-l2'), 'F(x) = ' + fr(Fx, 4));
     ecrire(q('#ap-F'), fr(Fx, 4)); ecrire(q('#ap-f'), fr(f(x), 4) + (auSaut ? ' (saut : 1 à gauche, 2,5 à droite)' : ''));
     ecrire(q('#ap-td'), '(F(x + h) − F(x))/h = ' + fr(td, 4)); ecrire(q('#ap-tg'), '(F(x − h) − F(x))/(−h) = ' + fr(tg, 4));

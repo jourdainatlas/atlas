@@ -53,6 +53,9 @@ export const css = `
    Le dessin s'adapte de lui-même : chaque figure lit la taille réelle de sa toile. */
 .activites-act .fig canvas { max-height: 70vh; }
 .activites-act .fig canvas.paire, .activites-act #cv3t, .activites-act #cv3b, .activites-act #cv4t, .activites-act #cv4b { aspect-ratio: auto !important; height: clamp(150px, 31vh, 330px); }
+/* … et le cadre qui les contient est rétréci et centré, pour que ces figures basses ne soient pas étirées en largeur
+   (courbes aplaties, variations illisibles) : largeur = 2,1 fois la hauteur d'une figure. */
+.activites-act .fig:has(canvas.paire, #cv3t, #cv4t) { max-width: calc(clamp(150px, 31vh, 330px) * 2.1); margin-left: auto; margin-right: auto; }
 .activites-act .split { display: grid; grid-template-columns: minmax(0, 1fr) 270px; }
 .activites-act .split .side { border-left: 1px solid var(--filet); padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
 @media (max-width: 820px) { .activites-act .split { grid-template-columns: 1fr; } .activites-act .split .side { border-left: 0; border-top: 1px solid var(--filet); } }

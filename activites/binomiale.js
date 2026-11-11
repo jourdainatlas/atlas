@@ -32,7 +32,7 @@ export const html = `
     </div>
     <div class="reglages">
       <label for="bn-n"><i>n</i></label><input type="range" id="bn-n" min="1" max="200" step="1" value="20"><output id="bn-nv"></output>
-      <label for="bn-p"><i>p</i></label><input type="range" id="bn-p" min="0.05" max="0.95" step="0.05" value="0.3"><output id="bn-pv"></output>
+      <label for="bn-p"><i>p</i></label><input type="range" id="bn-p" min="0.02" max="0.98" step="0.01" value="0.3"><output id="bn-pv"></output>
     </div>
     <div class="bar"><label><input type="checkbox" id="bn-red"> centrer et réduire</label><label><input type="checkbox" id="bn-norm"> montrer la courbe en cloche</label></div>
   </div>
@@ -64,7 +64,7 @@ export function monter(racine) {
   const q = s => racine.querySelector(s);
   const E = { n: 20, p: 0.3, red: false, norm: false };
   q('#bn-n').addEventListener('input', e => { E.n = +e.target.value; S.planifier(); });
-  q('#bn-p').addEventListener('input', e => { E.p = Math.round(+e.target.value * 20) / 20; S.planifier(); });
+  q('#bn-p').addEventListener('input', e => { E.p = Math.round(+e.target.value * 100) / 100; S.planifier(); });
   q('#bn-red').addEventListener('change', e => { E.red = e.target.checked; S.planifier(); });
   q('#bn-norm').addEventListener('change', e => { E.norm = e.target.checked; S.planifier(); });
   function loi(n, p) {   // P(X = k), k = 0..n, par les logarithmes

@@ -1,5 +1,5 @@
 // Exploration « Chemins sur une grille » (rubrique Activités, MEMO_atlas_activites.md §124).
-import { css as cssCommun } from './commun.js';
+import { css as cssCommun, bac } from './commun.js';
 import { cssFigures, suite, scene, toile, trait, etiquette, pastille, glisser, ecrire, borne } from './figures.js';
 
 export const css = cssCommun + cssFigures;
@@ -15,7 +15,7 @@ export const html = `
 <section>
   <div class="col">
     <h4><span class="n">1</span>Tracer un chemin</h4>
-    <p>Réglez la taille de la grille, puis tracez un chemin avec les boutons « → » et « ↑ ». Chaque chemin s'écrit comme un mot : la suite de ses pas. Essayez-en plusieurs, et comparez leurs mots.</p>
+    <p>Réglez la taille de la grille, puis tracez un chemin avec les boutons « → » et « ↑ », ou avec les flèches du clavier (la flèche vers la gauche retire le dernier pas). Chaque chemin s'écrit comme un mot : la suite de ses pas. Essayez-en plusieurs, et comparez leurs mots.</p>
   </div>
   <div class="fig">
     <div class="split">
@@ -110,5 +110,15 @@ export function monter(racine) {
   }
   const S = scene(racine, rendre);
   glisser(q('#cg-fig'), pt => { if (!G) return; E.i = borne(Math.round((pt.x - G.m) / G.pasx), 0, E.n); E.j = borne(Math.round((G.h - G.m - pt.y) / G.pasy), 0, E.p); S.planifier(); });
-  return S.arreter;
+  // Flèches du clavier : → et ↑ ajoutent un pas, ← (ou la touche d'effacement) retire le dernier. Écoutées sur la fenêtre
+  // quand la figure est à l'écran, sauf dans un champ ou un curseur, où les flèches gardent leur rôle habituel.
+  const { window: fenetre, demonter } = bac();
+  fenetre.addEventListener('keydown', e => {
+    if (e.altKey || e.ctrlKey || e.metaKey || !/^(ArrowRight|ArrowUp|ArrowLeft|Backspace)$/.test(e.key)) return;
+    if (e.target && e.target.closest && e.target.closest('input, select, textarea, [contenteditable], [role="slider"]')) return;
+    const r = q('#cg-fig').getBoundingClientRect(); if (r.bottom < 60 || r.top > innerHeight - 40) return;
+    e.preventDefault();
+    q(e.key === 'ArrowRight' ? '#cg-d' : e.key === 'ArrowUp' ? '#cg-h' : '#cg-r').click();
+  });
+  return () => { demonter(); S.arreter(); };
 }
