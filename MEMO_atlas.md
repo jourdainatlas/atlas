@@ -32,6 +32,10 @@ a poussé entre-temps, un fichier commun réécrit à partir d'une copie périm�
      (noms en `aPropos…`, `APropos…` ou `Contact…`) avec leurs styles (`.apropos*`, `.profil`,
      `.texte-auteur`). Les retouches d'apparence globale (variables de couleur, typographie, en-tête,
      menu) restent communes : remplacements locaux, commits « Apparence : … ».
+   - *Activités* (11 nov. 2026) : `rubriques/activites.yaml`, tout le dossier `activites/` (un module JavaScript par
+     activité, chargé à la demande), tout outil nommé `outils/activites_*`, `lecture-activites.mjs`,
+     `MEMO_atlas_activites.md`, et dans `gabarit.html` les fonctions `pageActivites`, `activites…` avec leurs styles
+     (`.activites-…`), le symbole `sym-activites` et la carte « Activités » de l'accueil.
    - *Communs* (toute conversation peut y toucher, avec les précautions du point 2) : `construire.py`,
      `rendu.mjs`, `gabarit.html`, `MEMO_atlas.md`, `LICENCE.md`, `.github/`, `package*.json`, `requirements.txt`.
 2. **Fichiers communs : modifications ciblées, jamais de réécriture complète.** On les modifie par
@@ -59,12 +63,14 @@ a poussé entre-temps, un fichier commun réécrit à partir d'une copie périm�
    On suit la dernière exécution avec `gh run list -R jourdainatlas/atlas` jusqu'au succès. Si elle échoue à
    cause des fichiers de l'autre rubrique, on ne les corrige pas soi-même : on signale l'erreur à l'auteur.
 7. **Mémos du projet Claude :** chaque conversation n'écrit dans le projet que son propre mémo
-   (`MEMO_atlas_annales.md`, `MEMO_atlas_cours.md`, `MEMO_atlas_edifice.md`, `MEMO_atlas_apropos.md`). `MEMO_atlas.md` est commun : on le modifie dans le
+   (`MEMO_atlas_annales.md`, `MEMO_atlas_cours.md`, `MEMO_atlas_edifice.md`, `MEMO_atlas_apropos.md`, `MEMO_atlas_activites.md`). `MEMO_atlas.md` est commun : on le modifie dans le
    dépôt (point 2), et la copie du projet ne fait que refléter la version du dépôt ; avant de l'écrire
    dans le projet, on relit la copie du projet et on vérifie qu'elle ne contient rien que le dépôt
    n'ait pas. Une nouvelle section commune prend le numéro suivant le plus grand déjà employé, tous
    mémos confondus (sections 17-18 et 27 dans `MEMO_atlas_annales.md`, 19-22 dans `MEMO_atlas_cours.md`,
-   23-26 et 29-33 dans `MEMO_atlas_edifice.md`, 28, 34 à 43 dans `MEMO_atlas_apropos.md` ; prochain numéro libre : 44).
+   23-26 et 29-116 dans `MEMO_atlas_edifice.md`, 28 et 34 à 65 dans `MEMO_atlas_apropos.md`, 117 à 119 dans
+   `MEMO_atlas_activites.md` ; plusieurs numéros entre 34 et 65 servent dans deux mémos, on ne les renumérote pas ;
+   prochain numéro libre au 11 nov. 2026 : 120).
 8. **Nouveautés (31 oct. 2026, règle de l'auteur) :** toute conversation qui publie un **ajout complet**
    (nouveau chapitre ou niveau de cours, nouvelle feuille, nouvelle théorie ou nouveau chapitre de
    l'édifice, nouvelle session d'annales, nouvelle fonction du site) ajoute, **dans le même commit**, une
@@ -355,7 +361,7 @@ Publication de l'artifact (25 octobre 2026) : le fichier unique `construction/at
 
 ## 13. Rubriques (25 octobre 2026)
 
-Le logo ouvre un menu : L'édifice, Cours, Exercices, Annales, À propos. Les rubriques vivent sous les
+Le logo ouvre un menu : L'édifice, Cours, Exercices, Annales, Activités (depuis le 11 nov. 2026, `MEMO_atlas_activites.md`), À propos. Les rubriques vivent sous les
 ancres `#cours`, `#cours/<id>`, `#exercices`, `#exercices/feuille/<id>`, `#exercices/notion/<nœud>`,
 `#annales`, `#a-propos`. Leurs données sont dans `rubriques/*.yaml` (dossier distinct de `contenu/`) :
 `construire.py` vérifie les renvois (`theories`, `noeuds` → nœuds de l'atlas ; `notions` → lexique ;

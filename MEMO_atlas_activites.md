@@ -1,0 +1,136 @@
+# Mémo ATLAS — complément : rubrique Activités
+
+> Complément de `MEMO_atlas.md` (à lire d'abord, section 0). Ce mémo décrit la rubrique des activités
+> interactives : pages où l'on manipule une figure ou un paramètre avant de lire l'énoncé et la démonstration.
+> Sections numérotées à partir de 117 (numérotation commune à tous les mémos).
+
+### 117. La rubrique (11 nov. 2026)
+
+**Domaine de la conversation.** `rubriques/activites.yaml`, le dossier `activites/`, `lecture-activites.mjs`,
+ce mémo, tout outil `outils/activites_*` ; dans `gabarit.html`, `pageActivites`, `activitesMonter`,
+`activitesEnCours`, les styles `.activites-…`, le symbole `sym-activites`, la ligne `activites` de `RUBRIQUES`,
+l'entrée du menu et la carte de l'accueil. Dans `rendu.mjs` (commun), trois ajouts locaux : la copie de
+`activites/` vers `site/activites/` avec l'empreinte `Dsite.vActivites`, l'appel de `pagesActivites`, et
+l'entrée `activites` de `RUBRIQUES_PARTAGE`. Dans `construire.py` (commun), une branche de la vérification des
+liens des Nouveautés reconnaît les ancres `activites`, `activites/<domaine>` et `activites/<id>`.
+
+**Nom.** « Activités », identifiant `activites`. L'auteur avait demandé d'autres idées (proposées :
+Explorations, Planches, Expériences) et n'a pas tranché ; la rubrique a été publiée sous « Activités », qu'il
+disait bien aimer. Un changement de nom toucherait l'identifiant, donc les adresses, le dossier et les préfixes.
+
+**Adresses.** `#activites` (toutes les activités), `#activites/<domaine>` (les activités d'un domaine),
+`#activites/<id>` (une activité). Un identifiant de domaine ne doit pas être celui d'une activité.
+
+**Navigation (demande de l'auteur).** En haut de page, des onglets en forme d'intercalaires de classeur tournés
+vers le haut : « Toutes », puis un intercalaire par domaine qui a au moins une activité (Analyse en vert
+`--c-ana`, Géométrie en violet `--c-geo` ; couleurs prévues pour `algebre`, `nombres`, `probabilites`), avec le
+nombre d'activités. Les activités d'un domaine ne sont pas des onglets : une fois dans l'intercalaire, un
+sous-menu (`.activites-sous`) les propose, l'activité ouverte étant marquée `aria-current`. Première version,
+écartée par l'auteur : un intercalaire par activité. Sur téléphone, la rangée d'intercalaires défile
+horizontalement dans son cadre ; la page ne déborde pas.
+
+**Repères.** Couleur de la rubrique : `--c-ord` (olive), la seule couleur de thème qu'aucune rubrique
+n'employait. Symbole : une courbe dans un cadre, un point que l'on déplace, un curseur (trois nuances obtenues
+par opacité, classes `.activites-sy1` à `3`). Menu : après Annales. Accueil : cinquième carte de « Les
+rubriques », à la demande de l'auteur. L'encadré « Par curiosité » de « Par où commencer ? » (domaine À propos)
+n'a pas été modifié : la proposition d'y mettre un lien vers les activités attend la réponse de l'auteur. La
+barre de rubriques des pages de lecture (`lecture.mjs`, domaine À propos) ne cite pas encore « Activités ».
+
+**Catalogue : `rubriques/activites.yaml`.** `intro` ; `domaines` (`id`, `titre`, `intro`) ; `activites` (`id`,
+`titre`, `onglet`, `niveau`, `domaine`, `resume`, `texte`, `cours`, `noeuds`). `construire.py` vérifie les
+`noeuds` comme pour toute rubrique ; `rendu.mjs` compose `intro`, `resume` et `texte`. Les identifiants de
+`cours` ne sont vérifiés par personne : les relire à la main.
+
+**Une activité = un module.** `activites/<id>.js` exporte `css` (styles, précédés des styles communs), `html`
+(texte et cadres des figures) et `monter()`, qui lance les figures et rend la fonction qui les arrête. Rien de
+cela n'est dans `gabarit.html` : `activitesMonter` importe le module (`import('./activites/<id>.js?v=…')`)
+quand un cadre `.activites-act[data-act]` apparaît dans `#rubrique` (un MutationObserver propre à la rubrique
+le surveille, pour ne pas toucher `afficherRubrique`, qui est commun), pose une balise `<style>`, insère le
+HTML, appelle `monter()`. Quand le cadre disparaît (autre activité, autre rubrique, retour à l'édifice), les
+styles sont retirés et les figures arrêtées. La page d'accueil ne s'alourdit donc que du code de la rubrique
+(environ 10 Ko) ; les trois modules pèsent 26 à 43 Ko.
+
+**`activites/commun.js`.** Les styles communs (`css`), tous préfixés par `.activites-act`, et `bac()`. Les
+figures lisent leurs couleurs dans des variables de `:root` (`--sheet`, `--ink`, `--sec`, `--tan`, `--mark`,
+`--free`, `--semi`, `--ok`, `--hl`…) : elles sont branchées là sur celles du site, si bien que le clair et le
+sombre suivent le bouton du site. Code couleur : orange = ce qui varie ou échoue (sécante, terme hors de la
+bande, point libre ; #ad5900 en clair pour le contraste, `--c-alg` en sombre) ; vert `--c-ana` = ce qui est
+acquis (tangente, bande, propriété vérifiée) ; bleu `--c-nb` = les mesures ; violet `--c-geo` = point lié à une
+ligne. Le rouge reste réservé : le seul rouge est le filet de l'encadré de la définition de la limite.
+`bac()` rend des doublures de `window`, `MutationObserver` et `ResizeObserver` qui retiennent chaque
+abonnement, et `demonter()` qui les annule tous. Raison : les prototypes s'abonnent à la fenêtre sans jamais se
+désabonner, ce qui est sans conséquence dans une page autonome mais pas dans un site à une seule page
+(l'atelier interceptait Ctrl+Z partout après sa première ouverture). Le module déclare ces trois noms en tête
+de `monter()` ; le code des figures les emploie sans le savoir.
+
+**Collisions de noms.** Les prototypes emploient des classes courtes (`.chip`, `.fig`, `.enonce`, `.verdict`,
+`.tool`…) dont certaines existent dans le site : tout style d'activité est préfixé par `.activites-act`, et
+`.activites-act .enonce` annule le style d'énoncé du site. Les identifiants (`#tab`, `#verdict`, `#b-next`…)
+sont communs à plusieurs activités : une seule activité est montée à la fois.
+
+### 118. Les trois premières activités, venues de prototypes de l'auteur (11 nov. 2026)
+
+L'auteur a fourni trois pages autonomes : deux « explorables » (la dérivée en Première, la limite d'une suite
+en Terminale) et un atelier de géométrie dynamique à dix défis. Consigne : reprendre la charte, la navigation
+et la structure du site, garder tel quel le code JavaScript des figures et, pour l'atelier, le moteur de
+vérification entre `//<engine>` et `//</engine>`.
+
+**Ce qui a été gardé.** Le code de chaque prototype est recopié dans `monter()` entre deux repères (« début du
+code du prototype », « fin »), sans réécriture ni remise en forme. Le HTML est repris section par section, avec
+les mêmes identifiants. Ont disparu : les polices Google, la marge rouge de cahier, le grand titre, les notes
+« prototype » et « site de recherche ».
+
+**Ce qui a changé dans le code, avec l'accord de l'auteur.**
+1. *Vouvoiement.* Le site vouvoie ; les prototypes tutoyaient, y compris dans des messages écrits dans le code
+   (consignes et indices des défis de l'atelier, à l'intérieur du moteur ; verdicts ; aides des outils). Ces
+   chaînes ont été passées au « vous », sans toucher à la logique.
+2. *Limite d'une suite : comparaisons exactes.* Deux erreurs de même nature, trouvées en vérifiant.
+   (a) Quand la limite proposée est fausse et que ε = |ℓ − L|, `rankFor` répondait « aucun rang » sans
+   regarder : or pour (3n − 2)/(n + 1), ℓ = 2,5 et ε = 0,5 (valeur par défaut), tous les termes sont dans
+   ]2 ; 3[ dès n = 5 ; le verdict « dès que ε ≤ 0,50… » était faux lui aussi (désormais « ε < »).
+   (b) Le test « u_n dans la bande » calculait `Math.abs(u(n) - l) < e` en flottants : pour 2 + (−1)ⁿ/n, ℓ = 2,
+   ε = 0,01, la machine trouve 2 + 1/100 − 2 < 0,01 et la page affichait N = 100 au lieu de 101 (de même 20 au
+   lieu de 21 pour ε = 0,05, dans le tableau affiché à l'ouverture). Correction : ℓ et ε étant des décimaux à
+   trois chiffres au plus, chaque suite porte une fonction `ins(n, l, e)` qui compare en millièmes entiers
+   (exact pour les trois suites rationnelles ou géométrique et pour 2 + (−1)ⁿ ; la suite en sin n, dont aucun
+   terme ne peut tomber sur un bord puisque sin n est transcendant, reste comparée en flottants), et un champ
+   `side` (signe constant de u_n − L) qui tranche le cas ε = |ℓ − L|. `inBand` sert au calcul du rang, à la
+   couleur des points et au jeu. Contrôle : 4 392 triplets (suite, ℓ, ε) comparés à l'arithmétique exacte de
+   Python (`fractions`), zéro écart.
+
+**Vérifications faites.** Construction sans erreur ; Playwright en clair et en sombre, à 1280 et à 360 px :
+aucun débordement horizontal, aucune erreur de script (la seule erreur de console est la requête vers Google
+Fonts, sans réseau dans l'environnement de travail). Atelier : un triangle équilatéral construit par deux
+cercles est reconnu, le même placé à vue est refusé et le contre-exemple est rejoué. Après avoir quitté une
+activité, plus aucun style ni abonnement ne reste.
+
+**Points à connaître, non traités.**
+- Les formules des activités sont en HTML simple (italiques, indices), pas en KaTeX : elles sont mêlées aux
+  nombres que l'on fait glisser. Les textes des pages de lecture, eux, sont en LaTeX.
+- « Vérifier » de l'atelier est un test sur quarante déplacements aléatoires, pas une démonstration ; le texte
+  ajouté sous l'atelier le dit.
+- Dérivée : le verdict « dérivable ou non » compare deux taux d'accroissement pour h = ±10⁻⁶ ; c'est exact pour
+  les quatre fonctions proposées, ce ne serait pas une méthode générale.
+- Les nombres surlignés se règlent au clavier (flèches) ; les points des figures (canvas) et la planche de
+  l'atelier ne se manipulent qu'à la souris ou au doigt.
+- L'atelier garde la liste des défis réussis dans `localStorage` (`atelier-construction-done`).
+- Sous chaque activité, trois blocs rédigés ont été ajoutés : « Le piège le plus courant », « Où lire la
+  démonstration » (chapitre de cours, fiches de l'édifice), « Ce que la page calcule ».
+
+**Ajouter une activité.** Écrire `activites/<id>.js` sur le modèle des trois autres (importer `bac` et `css`
+de `commun.js`) ; ajouter l'entrée dans `rubriques/activites.yaml` (et le domaine s'il est nouveau, avec sa
+couleur dans les sélecteurs `[data-domaine=…]` du bloc de styles de la rubrique) ; construire ; regarder ;
+entrée dans `rubriques/nouveautes.yaml`. Une première liste de dix idées (toile d'araignée des suites
+récurrentes, sommes de Riemann, accroissements finis, polynômes de Taylor, méthode d'Euler, de Moivre-Laplace,
+racines n-ièmes, argument diagonal, polynômes de Bernstein, phénomène de Gibbs) a été proposée à l'auteur, qui
+décidera plus tard.
+
+### 119. Pages de lecture et partage (11 nov. 2026)
+
+`lecture-activites.mjs` (`pagesActivites(ctxLecture)`, appelé par `rendu.mjs` après les cours) écrit
+`/activites/` (les activités par domaine) et `/activites/<id>/` : niveau, résumé, « Ce que l'on y fait » (champ
+`texte` du catalogue : ce qu'on manipule, ce que cela signifie, le piège, avec des valeurs vérifiées), liens
+vers `/cours/<id>/` et `/edifice/<nœud>/`, bouton « Ouvrir dans l'atlas ». Ces adresses entrent d'elles-mêmes
+dans le plan du site (4 adresses). Le bouton « Partager » donne `/activites/<id>/` pour une activité et
+`/activites/` sinon (ligne `activites` de `adressePartage`). « Signaler une erreur » : `aProposSignalBouton`
+au pied de chaque activité.

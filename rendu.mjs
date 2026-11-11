@@ -13,6 +13,7 @@
 //   **gras**  *italique*   ; une ligne vide sépare deux paragraphes
 import { pagesLecture, outilsLecture } from './lecture.mjs';
 import { pagesCoursExercices } from './lecture-cours.mjs';
+import { pagesActivites } from './lecture-activites.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
@@ -404,6 +405,12 @@ cssSite = `/*! KaTeX ${require('katex/package.json').version} (feuille de style 
 fs.writeFileSync('site/katex.css', cssSite);
 // Documents déposés (PDF des cours…) : copiés tels quels dans le site.
 if (fs.existsSync('documents')) fs.cpSync('documents', 'site/documents', { recursive: true });
+// Activités interactives (rubrique Activités) : modules copiés tels quels, importés à la demande par la page ;
+// leur empreinte commune sert de version (?v=) aux imports.
+if (fs.existsSync('activites')) {
+  fs.cpSync('activites', 'site/activites', { recursive: true });
+  Dsite.vActivites = empreinte(fs.readdirSync('activites').sort().map(f => fs.readFileSync(path.join('activites', f), 'utf8')).join('\n'));
+}
 const vCss = empreinte(cssSite);
 const jsonSite = JSON.stringify(Dsite).replace(/</g, '\\u003c');
 const pageSite = fs.readFileSync('gabarit.html', 'utf8').replace('/*KATEX*/', '').replace('"__DONNEES__"', () => jsonSite);
@@ -462,7 +469,7 @@ const coupe = (t, n = 200) => t.length > n ? t.slice(0, n - 1).replace(/\s+\S*$/
 const attr = t => String(t).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
 let nbPartage = 0;
 const APERCUS = new Set(['edifice', 'cours', 'exercices', 'annales', 'nouveautes', 'a-propos']);   // identite/apercu-<rubrique>.png
-const RUBRIQUES_PARTAGE = { accueil: 'Accueil', edifice: 'L\'édifice', cours: 'Cours', exercices: 'Exercices', annales: 'Annales', nouveautes: 'Nouveautés', 'a-propos': 'À propos' };
+const RUBRIQUES_PARTAGE = { accueil: 'Accueil', edifice: 'L\'édifice', cours: 'Cours', exercices: 'Exercices', annales: 'Annales', activites: 'Activités', nouveautes: 'Nouveautés', 'a-propos': 'À propos' };
 function pagePartage(chemin, ancre, titre, description) {
   const url = ADRESSE + chemin, cible = ADRESSE + '#' + ancre;
   // Titre : « ATLAS – <rubrique> » pour une rubrique, « ATLAS – <rubrique> : <titre> » plus profond.
@@ -507,6 +514,8 @@ if (!D.noeuds.etat) pagePartage('edifice/etat/', 'edifice/etat', 'État de l\'é
 // Cours et exercices : pages de lecture complètes et indexables (lecture-cours.mjs, MEMO_atlas_cours.md §29),
 // aux adresses de partage cours/, cours/<id>/, exercices/, exercices/feuille/<id>/ et exercices/<id>/.
 console.log(`Pages de lecture des cours et exercices : ${pagesCoursExercices(ctxLecture)}`);
+// Activités : une page de lecture par activité et la page d'entrée (lecture-activites.mjs, MEMO_atlas_activites.md §119).
+if (Rb.activites) console.log(`Pages de lecture des activités : ${pagesActivites(ctxLecture)}`);
 pagePartage('nouveautes/', 'nouveautes', 'Nouveautés', texteBrut(Rb.nouveautes?.intro));
 pagePartage('a-propos/', 'a-propos', 'À propos', 'L\'auteur d\'ATLAS, professeur agrégé de mathématiques, le projet et ses principes de rédaction ; une adresse pour écrire ou signaler une erreur.');
 // Édifice et annales : pages de lecture complètes et indexables (lecture.mjs), aux adresses de partage.

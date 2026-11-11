@@ -1311,6 +1311,10 @@ if 'nouveautes' in rubriques:
                 if m[2] not in feuil_ids: erreur(f"{ou} : feuille inconnue {m[2]}")
                 couverts.add(m[2])
             elif m[0] in ('exercices', 'annales'): pass
+            elif m[0] == 'activites':   # rubrique Activités : #activites, #activites/<domaine>, #activites/<id>
+                _act = rubriques.get('activites') or {}
+                if len(m) > 2 or (len(m) == 2 and m[1] not in {x.get('id') for x in (_act.get('activites') or []) + (_act.get('domaines') or [])}):
+                    erreur(f"{ou} : activité inconnue {a}")
             elif m[0] == 'lexique' and (len(m) == 1 or (len(m) == 2 and m[1] in lex)): pass   # #lexique, #lexique/<id>
             elif a.split('.')[0] in G or a in noeuds:
                 couverts.add(a.split('.')[-1])
