@@ -498,3 +498,31 @@ l'impasse que lorsque plus rien ne bouge ; « Annuler un coup » et « Recommenc
 Explorations : vingt-deux. Casse-têtes : cinq. Restent de la liste des vingt : droites et plans de l'espace,
 racines et coefficients d'un polynôme ; dénombrement : anagrammes, dérangements, Catalan ; casse-têtes :
 solitaire, dominos sur l'échiquier écorné.
+
+### 130. Dominos, chapeaux mélangés, racines et coefficients (11 nov. 2026, soir)
+
+**`dominos`** (casse-tête ; 2 à 8 lignes et colonnes). Plateau entier, privé de deux coins opposés (de même
+couleur ; si les dimensions leur donnent des couleurs différentes, on retire un coin voisin), ou de deux cases
+tirées au hasard, de couleurs différentes ou non. Pose par deux clics, retrait par un clic. Compteurs des cases
+libres claires et foncées (l'invariant). « Est-ce possible ? » : décompte des couleurs, puis couplage parfait
+par chemins augmentants ; « Un domino » : une paire du couplage. Nombre de pavages du plateau entier par profils
+(contrôlé : 2×3 → 3 ; 3×4 → 11 ; 4×4 → 36 ; 2×8 → 34 ; 6×6 → 6 728 ; 8×8 → 12 988 816 = 3 604²). Théorème de
+Gomory « admis ici », avec l'idée du circuit. Sources vérifiées (recherche web) : Kasteleyn, et Temperley et
+Fisher, 1961 ; problème attribué à Max Black (1946), popularisé par Martin Gardner. Les deux gris des cases sont
+fixes (non pris au thème) pour que « claire » et « foncée » gardent leur sens en mode sombre.
+
+**`derangements`**, titre « Les chapeaux mélangés » (Terminale, Maths Sup ; dénombrement). n de 2 à 12 ; cartes
+à échanger, points fixes en orange ; 10 000 mélanges (Fisher-Yates) ; tableau n!, Dₙ, Dₙ/n!. La récurrence
+Dₙ = (n − 1)(Dₙ₋₁ + Dₙ₋₂) est démontrée dans la page ; la formule close est annoncée comme s'en déduisant, calcul
+non détaillé (dit dans la page). Contrôlé : récurrence et formule close coïncident pour n ≤ 12 ; D₆/6! = 0,3681.
+
+**`racines`** (Première, Maths Sup ; algèbre). Polynôme unitaire de degré 2 ou 3 à racines réelles déplaçables
+(vingtièmes entiers, coefficients exacts) ; seconde figure : deux nombres de somme S et de produit P.
+Contrôlé : racines −2, 1, 3 → x³ − 2x² − 5x + 6 ; S = 5, P = 6 → 2 et 3 ; S = 2, P = 2 → aucun.
+
+**Écriture des formules dans un module écrit à la main.** Fonctions locales `K(t)` et `KD(t)` qui rendent
+`<span class="kx">` et `<span class="kx kxd">` ; dans `${K('…')}`, une commande LaTeX s'écrit avec DEUX barres
+obliques inverses (chaîne JavaScript ordinaire), et non quatre.
+
+Explorations : vingt-quatre. Casse-têtes : six. Restent : droites et plans de l'espace ; anagrammes, nombres de
+Catalan ; solitaire.
