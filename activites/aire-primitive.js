@@ -48,7 +48,7 @@ export const html = `
 <section>
   <div class="col">
     <h4><span class="n">3</span>Le théorème, et son hypothèse</h4>
-    <p class="def">Si <i>f</i> est continue sur un intervalle I et si <i>a</i> est un point de I, alors la fonction <i>F</i> : <i>x</i> ↦ ∫<sub><i>a</i></sub><sup><i>x</i></sup> <i>f</i>(<i>t</i>) d<i>t</i> est dérivable sur I et <i>F</i> ′ = <i>f</i>. C'est la primitive de <i>f</i> qui s'annule en <i>a</i>.</p>
+    <div class="def"><p>Si <span class="kx">f</span> est continue sur un intervalle <span class="kx">I</span> et si <span class="kx">a</span> est un point de <span class="kx">I</span>, alors la fonction</p><span class="kx kxd">F : x \\longmapsto \\int_a^x f(t)\\,\\mathrm dt</span><p>est dérivable sur <span class="kx">I</span> et <span class="kx">F' = f</span>. C'est la primitive de <span class="kx">f</span> qui s'annule en <span class="kx">a</span>.</p></div>
     <p>Changer <i>a</i> ne change pas la forme de la courbe du bas : elle monte ou descend d'un bloc, parce que deux primitives d'une même fonction sur un intervalle diffèrent d'une constante. Vérifiez-le avec le curseur <i>a</i>.</p>
     <p>L'hypothèse de continuité n'est pas décorative. Choisissez la fonction « en escalier », qui saute de 1 à 2,5 en <i>x</i> = 1, et placez <i>x</i> en 1 : l'aire reste une fonction continue, mais sa courbe fait un angle, et les taux à droite et à gauche ne s'accordent pas.</p>
   </div>

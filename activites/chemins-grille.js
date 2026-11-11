@@ -42,7 +42,7 @@ export const html = `
   <div class="col">
     <h4><span class="n">2</span>Un chemin est un mot</h4>
     <p>Tout chemin fait exactement <i>n</i> pas vers la droite et <i>p</i> pas vers le haut : son mot a <i>n</i> + <i>p</i> lettres, dont <i>n</i> lettres « → ». Réciproquement, tout mot de ce type décrit un chemin, et un seul. Compter les chemins revient donc à choisir, parmi les <i>n</i> + <i>p</i> positions du mot, les <i>n</i> positions des lettres « → ».</p>
-    <p class="def">Le nombre de chemins est le nombre de parties à <i>n</i> éléments d'un ensemble à <i>n</i> + <i>p</i> éléments : le coefficient binomial « <i>n</i> parmi <i>n</i> + <i>p</i> », égal à (<i>n</i> + <i>p</i>)! / (<i>n</i>! <i>p</i>!).</p>
+    <div class="def"><p>Le nombre de chemins est le nombre de parties à <span class="kx">n</span> éléments d'un ensemble à <span class="kx">n + p</span> éléments, le coefficient binomial</p><span class="kx kxd">\\binom{n+p}{n} = \\frac{(n+p)!}{n!\\,p!}.</span></div>
     <p id="cg-total" aria-live="polite"></p>
   </div>
 </section>

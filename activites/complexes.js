@@ -38,7 +38,7 @@ export const html = `
 <section>
   <div class="col">
     <h4><span class="n">2</span>La règle</h4>
-    <p class="def">Pour tous nombres complexes non nuls <i>z</i> et <i>w</i> : |<i>zw</i>| = |<i>z</i>| × |<i>w</i>| et arg(<i>zw</i>) = arg <i>z</i> + arg <i>w</i>, à un multiple de 2π près.</p>
+    <div class="def"><p>Pour tous nombres complexes non nuls <span class="kx">z</span> et <span class="kx">w</span> :</p><span class="kx kxd">\\begin{aligned} |zw| &= |z| \\times |w|, \\\\[2pt] \\arg(zw) &= \\arg z + \\arg w \\pmod{2\\pi}. \\end{aligned}</span></div>
     <p>C'est une conséquence des formules d'addition du cosinus et du sinus : en écrivant <i>z</i> = <i>r</i>(cos α + i sin α) et <i>w</i> = <i>s</i>(cos β + i sin β), le produit se développe en <i>rs</i>(cos(α + β) + i sin(α + β)). Le tableau le vérifie sur vos valeurs.</p>
   </div>
 </section>

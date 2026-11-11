@@ -47,7 +47,7 @@ export const html = `
     <p>Notons <i>n</i> le nombre de bleues et <i>m</i> le nombre d'orange. On peut compter les coups d'une solution sans la connaître, en comptant deux fois la même chose.</p>
     <p><b>Les sauts.</b> À la fin, chaque bleue est passée de la gauche à la droite de chaque orange. Deux grenouilles de couleurs différentes ne peuvent se croiser que par un saut de l'une par-dessus l'autre, et elles ne se croisent qu'une fois puisque personne ne recule. Il y a donc exactement <i>nm</i> sauts.</p>
     <p><b>Les distances.</b> Chaque bleue avance de <i>m</i> + 1 nénuphars et chaque orange de <i>n</i> + 1 : la distance totale parcourue est <i>n</i>(<i>m</i> + 1) + <i>m</i>(<i>n</i> + 1) = 2<i>nm</i> + <i>n</i> + <i>m</i>. Les <i>nm</i> sauts, de longueur 2, en couvrent 2<i>nm</i>. Il reste <i>n</i> + <i>m</i>, parcourus par des pas de longueur 1.</p>
-    <p class="def">Toute solution compte exactement <i>nm</i> sauts et <i>n</i> + <i>m</i> pas, soit <i>nm</i> + <i>n</i> + <i>m</i> coups : ni plus, ni moins. Pour trois grenouilles de chaque couleur, 15 coups.</p>
+    <div class="def"><p>Toute solution compte exactement <span class="kx">nm</span> sauts et <span class="kx">n + m</span> pas, soit <span class="kx">nm + n + m</span> coups : ni plus, ni moins. Pour trois grenouilles de chaque couleur, 15 coups.</p></div>
   </div>
 </section>
 

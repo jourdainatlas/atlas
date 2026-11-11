@@ -526,3 +526,20 @@ obliques inverses (chaîne JavaScript ordinaire), et non quatre.
 
 Explorations : vingt-quatre. Casse-têtes : six. Restent : droites et plans de l'espace ; anagrammes, nombres de
 Catalan ; solitaire.
+
+### 131. Nombres de Catalan ; encadrés des activités antérieures en LaTeX (11 nov. 2026, soir)
+
+**`catalan`** (Terminale, Maths Sup ; dénombrement). n de 1 à 8 ; chemin tracé par boutons ou par les flèches
+↑ ↓ ← (écoutées sur la fenêtre, règle du §125) ; mot de parenthèses ; galerie de tous les chemins de Dyck
+jusqu'à n = 4 ; option « autoriser à passer sous 0 », qui dessine le symétrique par rapport au niveau −1 à
+partir du premier contact (principe de réflexion, démontré dans la page) ; récurrence par le premier retour.
+Tirage uniforme pas à pas, par le nombre de fins possibles C(r, u) − C(r, u − 1) (contrôlé contre l'énumération
+pour r ≤ 12). Contrôlé : 1, 2, 5, 14, 42, 132, 429, 1 430 par la récurrence et par les deux formules.
+
+**Encadrés en LaTeX.** Les énoncés encadrés du second degré, de l'aire sous la courbe, de la toile d'araignée,
+de la binomiale, des chemins sur une grille, des complexes, du taquin, de Hanoï, de « Tout éteindre », des dames
+et des grenouilles sont maintenant composés par KaTeX (règle du §129) ; formules coupées en deux lignes quand
+elles débordaient à 360 px. Restent en HTML simple : le texte courant de ces activités et les trois prototypes
+(dérivée, limite d'une suite, atelier).
+
+Explorations : vingt-cinq. Casse-têtes : six. Restent : droites et plans de l'espace ; anagrammes ; solitaire.

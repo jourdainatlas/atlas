@@ -44,7 +44,7 @@ export const html = `
     <h4><span class="n">2</span>Deux remarques qui changent tout</h4>
     <p><b>L'ordre des appuis ne compte pas.</b> L'état final d'une lampe ne dépend que du nombre de fois où elle a été inversée, pas de l'ordre. <b>Appuyer deux fois sur la même case ne fait rien.</b> Une stratégie se réduit donc à un choix : pour chaque case, appuyer ou ne pas appuyer.</p>
     <p>Codons « allumé » par 1 et « éteint » par 0, et calculons modulo 2, où 1 + 1 = 0 : inverser une lampe, c'est lui ajouter 1. Les nombres 0 et 1, avec cette addition et la multiplication ordinaire, forment un corps, noté 𝔽₂. Une position est un vecteur <i>b</i> de 𝔽₂<sup><i>N</i></sup>, où <i>N</i> est le nombre de cases ; un choix d'appuis est un autre vecteur <i>x</i>.</p>
-    <p class="def">Éteindre la position <i>b</i>, c'est résoudre le système linéaire <i>Ax</i> = <i>b</i> sur 𝔽₂, où la matrice <i>A</i>, carrée de taille <i>N</i>, a un 1 à la ligne <i>i</i> et à la colonne <i>j</i> quand un appui sur la case <i>j</i> inverse la lampe <i>i</i>.</p>
+    <div class="def"><p>Éteindre la position <span class="kx">b</span>, c'est résoudre le système linéaire <span class="kx">Ax = b</span> sur <span class="kx">\\mathbb F_2</span>, où la matrice <span class="kx">A</span>, carrée de taille <span class="kx">N</span>, a un 1 à la ligne <span class="kx">i</span> et à la colonne <span class="kx">j</span> quand un appui sur la case <span class="kx">j</span> inverse la lampe <span class="kx">i</span>.</p></div>
   </div>
 </section>
 

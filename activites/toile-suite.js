@@ -47,7 +47,7 @@ export const html = `
   <div class="col">
     <h4><span class="n">3</span>Escalier ou spirale</h4>
     <p>Près d'un point fixe ℓ, la courbe de <i>f</i> ressemble à sa tangente, de pente <i>f</i> ′(ℓ). Tout se joue sur ce nombre. Si <i>f</i> ′(ℓ) est positif, la suite avance en <b>escalier</b>, d'un seul côté de ℓ ; s'il est négatif, elle tourne en <b>spirale</b> et ses termes encadrent ℓ alternativement.</p>
-    <p class="def">Si <i>f</i> est dérivable en un point fixe ℓ et si |<i>f</i> ′(ℓ)| &lt; 1, alors la suite converge vers ℓ dès que <i>u</i><sub>0</sub> est assez proche de ℓ. Si |<i>f</i> ′(ℓ)| &gt; 1, elle ne converge vers ℓ que si l'un de ses termes est exactement égal à ℓ.</p>
+    <div class="def"><p>Si <span class="kx">f</span> est dérivable en un point fixe <span class="kx">\\ell</span> et si <span class="kx">|f'(\\ell)| < 1</span>, alors la suite converge vers <span class="kx">\\ell</span> dès que <span class="kx">u_0</span> est assez proche de <span class="kx">\\ell</span>. Si <span class="kx">|f'(\\ell)| > 1</span>, elle ne converge vers <span class="kx">\\ell</span> que si l'un de ses termes est exactement égal à <span class="kx">\\ell</span>.</p></div>
     <p>Avec la fonction affine, réglez la pente <i>a</i> : pour <i>a</i> = 0,5 un escalier qui converge, pour <i>a</i> = −0,5 une spirale qui converge, pour <i>a</i> = −1,2 une spirale qui s'éloigne. Avec <i>rx</i>(1 − <i>x</i>), montez <i>r</i> au-delà de 3 : le point fixe est toujours là, mais la suite n'y va plus.</p>
   </div>
 </section>

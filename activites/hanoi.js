@@ -53,7 +53,7 @@ export const html = `
     <p>Notons <i>T</i>(<i>n</i>) le nombre minimal de coups pour déplacer <i>n</i> disques avec trois tours. Pour <i>n</i> = 1, 2, 3, 4, le jeu donne 1, 3, 7, 15.</p>
     <p><b>On peut le faire en 2<i>T</i>(<i>n</i> − 1) + 1 coups.</b> On transporte les <i>n</i> − 1 petits disques sur la tour du milieu, on porte le grand disque sur la dernière tour, puis on ramène les <i>n</i> − 1 petits disques par-dessus.</p>
     <p><b>On ne peut pas faire mieux.</b> Le grand disque doit bouger. Au moment de son premier déplacement, rien ne le recouvre et la tour où il va est vide : les <i>n</i> − 1 autres disques sont donc tous empilés sur la troisième tour, ce qui a demandé au moins <i>T</i>(<i>n</i> − 1) coups. Après son dernier déplacement, il est sur la tour d'arrivée et les <i>n</i> − 1 autres, de nouveau empilés ailleurs, doivent encore y être amenés : au moins <i>T</i>(<i>n</i> − 1) coups de plus.</p>
-    <p class="def"><i>T</i>(<i>n</i>) = 2<i>T</i>(<i>n</i> − 1) + 1 et <i>T</i>(1) = 1, donc, par récurrence, <i>T</i>(<i>n</i>) = 2<sup><i>n</i></sup> − 1.</p>
+    <div class="def"><p><span class="kx">T(n) = 2\\,T(n-1) + 1</span> et <span class="kx">T(1) = 1</span>, donc, par récurrence,</p><span class="kx kxd">T(n) = 2^n - 1.</span></div>
     <p>En effet, si <i>T</i>(<i>n</i> − 1) = 2<sup><i>n</i> − 1</sup> − 1, alors <i>T</i>(<i>n</i>) = 2(2<sup><i>n</i> − 1</sup> − 1) + 1 = 2<sup><i>n</i></sup> − 1. Avec huit disques, il faut déjà 255 coups.</p>
   </div>
 </section>

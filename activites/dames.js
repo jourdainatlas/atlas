@@ -44,7 +44,7 @@ export const html = `
     <h4><span class="n">2</span>Un problème de permutations</h4>
     <p>Deux dames ne peuvent pas partager une ligne : avec <i>n</i> dames sur <i>n</i> lignes, il y en a exactement une par ligne. De même, une par colonne. Une solution est donc une <b>permutation</b> : à chaque ligne <i>i</i>, elle associe la colonne σ(<i>i</i>) de sa dame. Il y a <i>n</i>! permutations, 40 320 pour <i>n</i> = 8.</p>
     <p>Restent les diagonales. Deux cases sont sur une même diagonale montante quand elles ont la même différence <i>i</i> − σ(<i>i</i>), sur une même diagonale descendante quand elles ont la même somme <i>i</i> + σ(<i>i</i>).</p>
-    <p class="def">Les solutions sont les permutations σ de {1, …, <i>n</i>} pour lesquelles les <i>n</i> nombres <i>i</i> − σ(<i>i</i>) sont deux à deux distincts, ainsi que les <i>n</i> nombres <i>i</i> + σ(<i>i</i>).</p>
+    <div class="def"><p>Les solutions sont les permutations <span class="kx">\\sigma</span> de <span class="kx">\\{1, \\dots, n\\}</span> pour lesquelles les <span class="kx">n</span> nombres <span class="kx">i - \\sigma(i)</span> sont deux à deux distincts, ainsi que les <span class="kx">n</span> nombres <span class="kx">i + \\sigma(i)</span>.</p></div>
   </div>
 </section>
 

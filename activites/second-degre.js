@@ -62,7 +62,7 @@ export const html = `
     <h4><span class="n">3</span>Le discriminant décide</h4>
     <p>Le calcul donne β = −Δ/(4<i>a</i>), où Δ = <i>b</i>² − 4<i>ac</i> est le <b>discriminant</b>. Le signe de Δ dit donc de quel côté de l'axe horizontal se trouve le sommet, comparé au sens d'ouverture de la parabole, c'est-à-dire si la courbe coupe l'axe.</p>
     <p id="sd-verdict" aria-live="polite"></p>
-    <p class="def">Si Δ &gt; 0, le trinôme a deux racines réelles, (−<i>b</i> − √Δ)/(2<i>a</i>) et (−<i>b</i> + √Δ)/(2<i>a</i>). Si Δ = 0, il a une seule racine, −<i>b</i>/(2<i>a</i>), dite double. Si Δ &lt; 0, il n'a aucune racine réelle.</p>
+    <div class="def"><p>Si <span class="kx">\\Delta > 0</span>, le trinôme a deux racines réelles :</p><span class="kx kxd">x_1 = \\frac{-b - \\sqrt{\\Delta}}{2a}, \\qquad x_2 = \\frac{-b + \\sqrt{\\Delta}}{2a}.</span><p>Si <span class="kx">\\Delta = 0</span>, il a une seule racine, <span class="kx">-\\dfrac{b}{2a}</span>, dite double. Si <span class="kx">\\Delta < 0</span>, il n'a aucune racine réelle.</p></div>
     <p>Essayez les trois exemples proposés sous la figure, puis fabriquez les vôtres : en partant de deux racines, augmentez <i>c</i> (si <i>a</i> &gt; 0) jusqu'à ce que les deux racines se rejoignent, puis disparaissent.</p>
   </div>
 </section>
