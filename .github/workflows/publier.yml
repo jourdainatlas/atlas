@@ -13,6 +13,11 @@ on:
   push:
     branches: [main]
   workflow_dispatch:        # permet aussi de lancer la publication à la main
+    inputs:
+      indexnow_tout:
+        description: "Signaler à IndexNow toutes les adresses du plan du site (et non les seules modifiées)"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -102,4 +107,4 @@ jobs:
 
       - name: Signaler les pages modifiées (IndexNow)
         if: env.OVH_HOTE != ''
-        run: python3 outils/indexnow.py site/indexnow-a-signaler.json
+        run: python3 outils/indexnow.py site/indexnow-a-signaler.json ${{ inputs.indexnow_tout && '--tout' || '' }}

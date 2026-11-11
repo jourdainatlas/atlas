@@ -633,7 +633,7 @@ Aucun changement visible à l'écran ; tout est dans l'en-tête des pages de lec
 5. **IndexNow** : clé publique `identite/indexnow-cle.txt`, publiée en `/<clé>.txt` ; `rendu.mjs` écrit
    `site/indexnow-a-signaler.json` (adresses nouvelles ou modifiées), que `publier_ovh.py` ne publie pas et que
    l'étape « Signaler les pages modifiées » du job `ovh` envoie à api.indexnow.org (`outils/indexnow.py`) après la
-   mise en ligne. Première publication : toutes les adresses (≈ 4 950), une fois.
+   mise en ligne. Le premier envoi (toutes les adresses) a reçu 403, la clé venant d’être publiée dans la même minute ; les suivants passent (200). Envoi complet à la main : lancer « Publier ATLAS » dans l’onglet Actions en cochant indexnow_tout (fait le 11 nov. 2026).
 6. **llms.txt** (`site/llms.txt`, tiré des données) : présentation, auteur, licence, rubriques, chapitres de cours
    et activités avec leurs adresses. Effet incertain (aucun grand moteur ne s'engage à le lire), coût nul.
 À faire par l'auteur : inscription à Bing Webmaster Tools (import depuis la Search Console) et envoi du sitemap.
