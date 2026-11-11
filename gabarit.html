@@ -217,6 +217,13 @@ section[id^="apropos-"] .corps-texte a:hover { text-decoration-color: var(--encr
 .pj-elt { display: inline-grid; place-items: center; width: 26px; height: 26px; padding: 0; margin-left: -8px; vertical-align: middle; border: 0; border-radius: 6px; background: none; color: var(--encre-3); cursor: pointer; opacity: .55; transition: opacity .15s; }
 .pj-elt:hover, .pj-elt:focus-visible { opacity: 1; color: var(--encre); background: var(--trame); }
 .pj-elt:focus-visible { outline: 2px solid var(--encre-3); outline-offset: 1px; }
+/* Partager un exercice : lien vers sa feuille, ouverte sur lui (#exercices/feuille/<feuille>/<exercice>) */
+.partage-exo { display: inline-flex; align-items: center; gap: 4px; height: 26px; padding: 0 5px; margin-left: -6px; vertical-align: middle; border: 0; border-radius: 6px; background: none; color: var(--encre-3); font: inherit; font-size: 12px; cursor: pointer; opacity: .55; transition: opacity .15s; }
+.partage-exo svg { width: 16px; height: 16px; flex: none; }
+.partage-exo:hover, .partage-exo:focus-visible, .partage-exo.copie { opacity: 1; color: var(--encre); background: var(--trame); }
+.partage-exo.copie { color: var(--c-ana); }
+.partage-exo:focus-visible { outline: 2px solid var(--encre-3); outline-offset: 1px; }
+.exo.exo-vise { box-shadow: 0 0 0 2px var(--c-ana); transition: box-shadow .6s; }
 @media (max-width: 760px) { .pj-elt { display: none; } }
 .pj { --papier: #f4f5f7; --surface: #fff; --encre: #1b1e24; --encre-2: #4f5561; --encre-3: #686e79; --filet: #d8dbe1; --trame: #e3e6eb; --corrige-fond: #eef6f1; --corrige-filet: #2b7550;
   --sy-vd: #5b2a78; --sy-vm: #8a45ab; --sy-vl: #dcc6ea; --pj-v: #8a45ab; --pj-passe: .38; --pj-ombre: 0 1px 2px rgba(27,30,36,.06), 0 6px 20px rgba(27,30,36,.06);
@@ -3659,7 +3666,7 @@ function pageChapitre(c, tous) {
 }
 
 /* ---- Exercices */
-const etatExo = { vue: 'exercice', niveauVu: '', niveaux: new Set(), diff: new Set(), types: new Set(), themes: new Set(), suivi: new Set(), q: '', noeud: '', feuille: '', ex: '', montres: 15 };
+const etatExo = { vue: 'exercice', niveauVu: '', niveaux: new Set(), diff: new Set(), types: new Set(), themes: new Set(), suivi: new Set(), q: '', noeud: '', feuille: '', ex: '', cible: '', montres: 15 };
 const sansAccents = t => String(t).normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
 // Nombre d'exercices d'un nœud : compté sur l'index s'il est chargé, sinon lu dans le compte gardé dans la page.
 function nombreExosNoeud(id) {
@@ -3691,11 +3698,11 @@ function chargerExercices() {
 
 function pageExercices(chemin, premiere) {
   const E = R.exercices || {};
-  const [mode, arg] = (chemin || '').split('/');
+  const [mode, arg, cible] = (chemin || '').split('/');
   if (premiere) {
-    etatExo.noeud = ''; etatExo.feuille = ''; etatExo.ex = ''; etatExo.montres = 15;
+    etatExo.noeud = ''; etatExo.feuille = ''; etatExo.ex = ''; etatExo.montres = 15; etatExo.cible = '';
     if (mode === 'notion') { etatExo.vue = 'exercice'; etatExo.noeud = arg || ''; }
-    else if (mode === 'feuille') { etatExo.vue = 'exercice'; etatExo.feuille = arg || ''; }
+    else if (mode === 'feuille') { etatExo.vue = 'exercice'; etatExo.feuille = arg || ''; if (cible) { etatExo.cible = cible; viserExercice(cible); } }
     else if (mode === 'ex') { etatExo.vue = 'exercice'; etatExo.ex = arg || ''; }
     else if (mode === 'niveau') { etatExo.vue = 'niveau'; etatExo.niveauVu = arg || ''; }
   }
@@ -3843,6 +3850,7 @@ function vueExercices(E, enChargement) {
   if (etatExo.feuille) h += `<div class="bandeau-filtre">Feuille : ${feuilleDe(etatExo.feuille).titre} (${esc(niveauDe(feuilleDe(etatExo.feuille).niveau).titre)})${suiviJauge(feuilleDe(etatExo.feuille))}<a class="lien-simple" href="#exercices" data-effacer="1" style="margin-left:auto">Retirer ce filtre</a></div>`;
   if (etatExo.ex) h += `<div class="bandeau-filtre">Un seul exercice affiché<a class="lien-simple" href="#exercices" data-effacer="1" style="margin-left:auto">Voir toute la banque</a></div>`;
   h += `<div class="resultats-tete"><span>${garde.length} ${garde.length > 1 ? 'exercices' : 'exercice'}${actifs ? ` sur ${contexte.length}` : ''}</span>${actifs ? '<button type="button" class="lien-simple" data-reinit="1">Effacer la recherche et les filtres</button>' : ''}</div>`;
+  if (etatExo.cible) { const k = garde.findIndex(e => e.id === etatExo.cible); if (k >= etatExo.montres) etatExo.montres = Math.ceil((k + 1) / 15) * 15; }
   for (const e of garde.slice(0, etatExo.montres)) h += carteExercice(e, enChargement);
   if (garde.length > etatExo.montres) h += `<p style="text-align:center"><button type="button" class="bouton" data-plus-exos="1">Afficher ${Math.min(15, garde.length - etatExo.montres)} exercices de plus</button></p>`;
   if (!garde.length) h += '<p class="vide-note">Aucun exercice ne correspond à cette recherche.</p>';
@@ -3852,7 +3860,7 @@ function vueExercices(E, enChargement) {
 }
 function carteExercice(e, enChargement) {
   const f = feuilleDe(e.feuille);
-  let h = `<article class="exo carte" id="ex-${e.id}"${suiviDe(e.id) ? ` data-suivi="${suiviDe(e.id)}"` : ''}><div class="exo-tete"><h3><a class="lien-exo" href="#exercices/ex/${e.id}" title="Lien vers cet exercice">Exercice ${e.numero}</a>${e.titre ? ` <span class="exo-titre">${e.titre}</span>` : ''}</h3>${e.etoiles ? difficulte(e.etoiles) : ''}${(e.types || []).map(t => `<span class="etiquette-type">${esc(t)}</span>`).join('')}${aProposSignalBouton(`Exercice ${e.numero} (${e.id}) — ${niveauDe(f.niveau).titre}${f.chapitre ? `, chapitre ${f.chapitre}` : ''}, ${f.titre}`, `${ADRESSE_SITE}exercices/${e.id}/`)}${pjBouton(e)}</div>`;
+  let h = `<article class="exo carte" id="ex-${e.id}"${suiviDe(e.id) ? ` data-suivi="${suiviDe(e.id)}"` : ''}><div class="exo-tete"><h3><a class="lien-exo" href="#exercices/ex/${e.id}" title="Lien vers cet exercice">Exercice ${e.numero}</a>${e.titre ? ` <span class="exo-titre">${e.titre}</span>` : ''}</h3>${e.etoiles ? difficulte(e.etoiles) : ''}${(e.types || []).map(t => `<span class="etiquette-type">${esc(t)}</span>`).join('')}${aProposSignalBouton(`Exercice ${e.numero} (${e.id}) — ${niveauDe(f.niveau).titre}${f.chapitre ? `, chapitre ${f.chapitre}` : ''}, ${f.titre}`, `${ADRESSE_SITE}exercices/${e.id}/`)}${pjBouton(e)}${partageExoBouton(e)}</div>`;
   h += `<div class="exo-meta">${esc(niveauDe(f.niveau).titre)}${f.chapitre ? `, chapitre ${f.chapitre}` : ''} — ${f.titre}${e.partie ? ` · ${e.partie}` : ''}</div>`;
   h += e.enonce ? `<div class="exo-enonce">${e.enonce}</div>` : `<p class="vide-note">${enChargement ? 'Chargement de l\'énoncé…' : ''}</p>`;
   if (e.source) h += `<p class="source-exo">Source : ${esc(e.source)}</p>`;
@@ -4695,17 +4703,27 @@ function corrEtapes(d) {
 }
 function corrMaj(d) {
   const E = [...d.querySelectorAll('.corr-etape')], k = E.filter(x => !x.hidden).length, s = d.querySelector('.corr-suite');
-  s.hidden = k >= E.length;
-  s.innerHTML = k < E.length ? `<button type="button" class="bouton" data-corr="1">Question suivante <span class="cs-n">${k + 1}&nbsp;sur&nbsp;${E.length}</span></button><button type="button" class="lien-simple" data-corr="tout">Tout le corrigé</button>` : '';
+  // avancer (question suivante, tout le corrigé) et revenir (masquer la dernière réponse, revenir à la première)
+  s.innerHTML = (k < E.length ? `<button type="button" class="bouton" data-corr="1">Question suivante <span class="cs-n">${k + 1}&nbsp;sur&nbsp;${E.length}</span></button><button type="button" class="lien-simple" data-corr="tout">Tout le corrigé</button>` : '')
+    + (k > 1 ? `<button type="button" class="lien-simple" data-corr="moins" title="Cacher la réponse à la question ${k}">Masquer la dernière réponse</button>` : '')
+    + (k > 2 ? `<button type="button" class="lien-simple" data-corr="debut">Revenir à la première</button>` : '');
+  s.hidden = !s.innerHTML;
 }
 document.addEventListener('toggle', ev => { const d = ev.target; if (d.open && d.matches?.('.exo details.corrige')) corrEtapes(d); }, true);
 document.addEventListener('click', ev => {
   const b = ev.target.closest('[data-corr]'); if (!b) return;
   const d = b.closest('details.corrige'), E = [...d.querySelectorAll('.corr-etape')];
-  if (b.dataset.corr === 'tout') E.forEach(x => { x.hidden = false; }); else { const x = E.find(y => y.hidden); if (x) x.hidden = false; }
+  const vus = E.filter(x => !x.hidden);
+  if (b.dataset.corr === 'tout') E.forEach(x => { x.hidden = false; });
+  else if (b.dataset.corr === 'moins') { if (vus.length > 1) vus[vus.length - 1].hidden = true; }
+  else if (b.dataset.corr === 'debut') E.forEach((x, i) => { x.hidden = i > 0; });
+  else { const x = E.find(y => y.hidden); if (x) x.hidden = false; }
   if (typeof composerDans === 'function') composerDans(d, true);
   corrMaj(d);
-  d.querySelector('[data-corr="1"]')?.focus({ preventScroll: true });
+  // le focus reste sur le bouton de même rôle s'il existe encore, sinon sur « Question suivante »
+  (d.querySelector(`[data-corr="${b.dataset.corr}"]`) || d.querySelector('[data-corr="1"]') || d.querySelector('[data-corr="moins"]'))?.focus({ preventScroll: true });
+  // en revenant en arrière, la barre peut sortir de l'écran : on la ramène en vue
+  if (b.dataset.corr === 'moins' || b.dataset.corr === 'debut') { const s = d.querySelector('.corr-suite'), r = s.getBoundingClientRect(); if (r.top < 60 || r.bottom > innerHeight) s.scrollIntoView({ block: 'center' }); }
 });
 const SUIVI = 'atlas-suivi';
 let suiviCache = null;
@@ -4739,6 +4757,39 @@ document.addEventListener('click', ev => {
 });
 
 const PJ_ICONE = '<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="12" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 16v3.5M8 20.5h8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+// Partager un exercice : l'adresse ouvre la page Exercices filtrée sur sa feuille et descend jusqu'à lui.
+const adresseExoFeuille = e => `${ADRESSE_SITE}#exercices/feuille/${e.feuille}/${e.id}`;
+const PARTAGE_ICONE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7.5 7.5 12 3l4.5 4.5M6 11H5v10h14V11h-1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const partageExoBouton = e => `<button type="button" class="partage-exo" data-partage-exo="${e.id}" data-url="${adresseExoFeuille(e)}" title="Partager : copier le lien de l'exercice ${e.numero}, qui ouvre sa feuille à cet exercice" aria-label="Partager l'exercice ${e.numero}">${PARTAGE_ICONE}<span>Partager</span></button>`;
+document.addEventListener('click', async ev => {
+  const b = ev.target.closest('[data-partage-exo]');
+  if (!b) return;
+  const url = b.dataset.url, lib = b.querySelector('span');
+  // téléphone : feuille de partage du système ; ailleurs : copie dans le presse-papiers
+  if (navigator.share && matchMedia('(pointer: coarse)').matches) { try { await navigator.share({ url }); return; } catch (e) { if (e.name === 'AbortError') return; } }
+  let ok = false;
+  try { await navigator.clipboard.writeText(url); ok = true; } catch (e) {}
+  if (!ok) { const c = document.createElement('input'); c.value = url; c.style.cssText = 'position:fixed;top:-100px'; document.body.append(c); c.select(); try { ok = document.execCommand('copy'); } catch (e) {} c.remove(); }
+  lib.textContent = ok ? 'Lien copié' : 'Copie impossible'; b.classList.toggle('copie', ok);
+  if (!ok) prompt('Lien de l\'exercice :', url);
+  setTimeout(() => { lib.textContent = 'Partager'; b.classList.remove('copie'); }, 1800);
+});
+// Arrivée par une adresse partagée : on attend que la carte et son énoncé soient affichés, puis on y descend.
+function viserExercice(id) {
+  const debut = Date.now();
+  const essai = () => {
+    const c = document.getElementById('ex-' + id);
+    if (c && c.querySelector('.exo-enonce')) {
+      const aller = () => { const el = document.getElementById('ex-' + id); if (el) el.scrollIntoView({ block: 'start' }); };
+      aller(); setTimeout(aller, 500);   // second passage : KaTeX et figures ont pu allonger ce qui précède
+      c.classList.add('exo-vise'); setTimeout(() => { const el = document.getElementById('ex-' + id); if (el) el.classList.remove('exo-vise'); }, 2500);
+      etatExo.cible = '';
+      return;
+    }
+    if (Date.now() - debut < 15000) setTimeout(essai, 150);
+  };
+  setTimeout(essai, 0);
+}
 const pjBouton = e => `<button type="button" class="pj-elt" data-pj="${e.id}" title="Projeter en classe (plein écran)" aria-label="Projeter l'exercice ${e.numero} en plein écran">${PJ_ICONE}</button>`;
 const PJ = { e: null, etape: 0, blocs: [], sombre: false, el: null };
 function pjOuvrir(id) {

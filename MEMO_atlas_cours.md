@@ -573,3 +573,18 @@ conclusion du job `ovh` avec `gh run view <id> --json jobs`, puis la page en lig
 tient tant que GitHub Pages reste en secours (le site construit fait environ 380 Mo au 10 nov.). On ne modifie pas
 `outils/publier_ovh.py`, `identite/htaccess-ovh` ni le job `ovh` de `.github/workflows/publier.yml`, qui relèvent
 du domaine apparence.
+
+### 39. Partager un exercice ; revenir en arrière dans un corrigé (11 nov. 2026)
+
+**Partager.** Chaque carte d'exercice a un bouton « Partager » (`partageExoBouton`, classe `.partage-exo`), placé
+après le bouton de projection. Il copie l'adresse `https://www.atlasjourdain.fr/#exercices/feuille/<feuille>/<exercice>`,
+ou ouvre la feuille de partage du système sur téléphone (`navigator.share` avec un pointeur tactile). Cette adresse
+ouvre la page Exercices filtrée sur la feuille. `pageExercices` lit le troisième segment du chemin dans
+`etatExo.cible` ; `vueExercices` montre assez de cartes pour inclure l'exercice ; `viserExercice` attend que la
+carte et son énoncé soient affichés, descend jusqu'à elle, recommence 500 ms plus tard (KaTeX et figures), et
+l'entoure 2,5 s (`.exo-vise`). Le lien « Exercice N » du titre garde son ancienne cible, `#exercices/ex/<id>`,
+qui montre l'exercice seul.
+
+**Corrigé question par question** (`corrMaj`, §63 de `MEMO_atlas_apropos.md`). La barre propose aussi
+« Masquer la dernière réponse » dès que deux réponses sont visibles, et « Revenir à la première » dès qu'il y en
+a trois. Elle reste affichée quand tout le corrigé est déroulé.
