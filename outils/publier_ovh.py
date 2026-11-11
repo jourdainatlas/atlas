@@ -48,7 +48,7 @@ def local(dossier):
             p = os.path.join(d, n)
             fichiers[os.path.relpath(p, dossier).replace(os.sep, '/')] = p
     fichiers['.htaccess'] = os.path.join(RACINE, 'identite', 'htaccess-ovh')
-    for nom in ('CNAME', '.nojekyll'):      # propres à GitHub Pages
+    for nom in ('CNAME', '.nojekyll', 'indexnow-a-signaler.json'):      # propres à GitHub Pages ; liste pour IndexNow
         fichiers.pop(nom, None)
     return fichiers
 

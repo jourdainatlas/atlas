@@ -608,3 +608,33 @@ courbe en cloche dont le sommet est marqué, et sous elle un curseur dont le bou
 normale (demi-épaisseur 1, repère de la pièce), avec deux disques en bout ; pièce et courbe réduites à 0,88 et
 remontées (`translate(1.18 -3.17)`), curseur de 4 à 20 en y = 19,3. Les variantes non retenues (pièce pleine,
 point qui suit le curseur, aire teintée, pièce au trait) ne sont pas à reproposer sans demande.
+
+## 68. Référencement : descriptions, titres, données structurées, dates, IndexNow, llms.txt (11 nov. 2026)
+
+Aucun changement visible à l'écran ; tout est dans l'en-tête des pages de lecture ou dans des fichiers à part.
+1. **Formules en texte** (`rendu.mjs`, `texteTexLisible`, appelé par `texteBrut`) : symboles Unicode (∣ ≤ ∈ ℤ ℝ
+   α…), fractions simples a/b, √, exposants et indices en caractères supérieurs et inférieurs (sinon `^(…)`,
+   `_(…)`), `\binom{n}{k}` → « (k parmi n) ». Et la ponctuation collée aux formules (`data-av`, `data-ap` des
+   marqueurs kx : « », virgule, point) n'était pas reprise par `texteBrut` depuis §52 : elle l'est. Effet sur les
+   descriptions, le fil RSS et l'index de recherche. Avant : « La divisibilité a mid b a divise b , … mathbb Z » ;
+   après : « La divisibilité a ∣ b, « a divise b », … c ∈ ℤ ».
+2. **Titres** : `page()` de `lecture.mjs` retourne « ATLAS – sujet » en « sujet – ATLAS » pour toutes les rubriques
+   (les appelants n'ont pas changé) ; fiches de l'édifice : « Titre (nature) – ATLAS ».
+3. **Données structurées** : en plus du BreadcrumbList, une `LearningResource` schema.org par page de lecture,
+   déduite de l'adresse (`sorteRessource`) : type de ressource (définition, théorème et démonstration, exercice
+   corrigé, feuille, cours en PDF, activité interactive, sujet de concours), auteur (Person, professeur agrégé,
+   lien vers l'À propos), licence CC BY-NC-SA 4.0, langue, gratuité, site parent. Paramètre facultatif
+   `ressource` de `page()` pour qu'une rubrique la complète (niveau, notions…). 600 blocs vérifiés au hasard : JSON
+   valide.
+4. **lastmod** : empreinte de contenu par adresse (pages : titre + description + corps ; PDF : le fichier) ;
+   `site/sitemap-dates.json` publié ({ adresse: [empreinte, date] }) et relu à la publication suivante depuis le
+   site en ligne : empreinte inchangée → date gardée, sinon date du jour (Europe/Paris). Site injoignable → dates
+   du jour, rien de signalé. Construction déterministe vérifiée (deux constructions : 0 empreinte différente).
+5. **IndexNow** : clé publique `identite/indexnow-cle.txt`, publiée en `/<clé>.txt` ; `rendu.mjs` écrit
+   `site/indexnow-a-signaler.json` (adresses nouvelles ou modifiées), que `publier_ovh.py` ne publie pas et que
+   l'étape « Signaler les pages modifiées » du job `ovh` envoie à api.indexnow.org (`outils/indexnow.py`) après la
+   mise en ligne. Première publication : toutes les adresses (≈ 4 950), une fois.
+6. **llms.txt** (`site/llms.txt`, tiré des données) : présentation, auteur, licence, rubriques, chapitres de cours
+   et activités avec leurs adresses. Effet incertain (aucun grand moteur ne s'engage à le lire), coût nul.
+À faire par l'auteur : inscription à Bing Webmaster Tools (import depuis la Search Console) et envoi du sitemap.
+Remarque laissée en suspens : l'en-tête des pages de lecture (`.l-rubriques`) ne mène pas encore à Activités.

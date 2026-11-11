@@ -463,8 +463,39 @@ fs.writeFileSync('site/index.html', index);
 // reçoit une petite page à une vraie adresse (cours/t-01/, edifice/<nœud>/), avec son titre, sa
 // description et l'image d'aperçu, qui renvoie aussitôt vers l'ancre correspondante du site.
 const deEchappe = t => t.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
-const texteBrut = h => String(h || '').replace(/<figure class="schema"[\s\S]*?<\/figure>/g, '').replace(/<span class="kx[^"]*"[^>]*>([^<]*)<\/span>/g, (m, t) => ` ${texteTex(deEchappe(t).replace(/\\htmlData\{[^}]*\}/g, ''))} `).replace(/<annotation[\s\S]*?<\/annotation>/g, '').replace(/<span class="katex-mathml">[\s\S]*?<\/span><\/span>/g, '')
-  .replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+// Formule en texte lisible (descriptions des pages, fil RSS, recherche ; MEMO_atlas_apropos.md §68) : symboles
+// Unicode à la place des commandes (\\mid → ∣, \\leq → ≤, lettres grecques, ℝ…), fractions simples a/b, exposants
+// et indices numériques en caractères supérieurs et inférieurs ; le reste comme texteTex.
+const TEX_SYM = { colon: ':', mid: '∣', le: '≤', leq: '≤', leqslant: '≤', ge: '≥', geq: '≥', geqslant: '≥', neq: '≠', ne: '≠', in: '∈', notin: '∉',
+  subset: '⊂', subseteq: '⊆', supset: '⊃', cup: '∪', cap: '∩', bigcup: '⋃', bigcap: '⋂', times: '×', cdot: '·', cdots: '⋯', ldots: '…',
+  dots: '…', to: '→', rightarrow: '→', longrightarrow: '⟶', mapsto: '↦', longmapsto: '⟼', Rightarrow: '⇒', implies: '⇒', Leftarrow: '⇐',
+  iff: '⇔', Leftrightarrow: '⇔', Longleftrightarrow: '⟺', forall: '∀', exists: '∃', neg: '¬', lnot: '¬', land: '∧', wedge: '∧', lor: '∨',
+  vee: '∨', infty: '∞', sum: '∑', prod: '∏', int: '∫', partial: '∂', nabla: '∇', approx: '≈', equiv: '≡', sim: '∼', simeq: '≃', cong: '≅',
+  pm: '±', mp: '∓', circ: '∘', emptyset: '∅', varnothing: '∅', setminus: '∖', langle: '⟨', rangle: '⟩', lvert: '|', rvert: '|', vert: '|',
+  lVert: '‖', rVert: '‖', Vert: '‖', mathcal: '', ell: 'ℓ', prime: '′', perp: '⊥', parallel: '∥', oplus: '⊕', otimes: '⊗', star: '⋆',
+  alpha: 'α', beta: 'β', gamma: 'γ', delta: 'δ', epsilon: 'ε', varepsilon: 'ε', zeta: 'ζ', eta: 'η', theta: 'θ', vartheta: 'ϑ', iota: 'ι',
+  kappa: 'κ', lambda: 'λ', mu: 'μ', nu: 'ν', xi: 'ξ', pi: 'π', rho: 'ρ', sigma: 'σ', tau: 'τ', upsilon: 'υ', phi: 'φ', varphi: 'φ',
+  chi: 'χ', psi: 'ψ', omega: 'ω', Gamma: 'Γ', Delta: 'Δ', Theta: 'Θ', Lambda: 'Λ', Xi: 'Ξ', Pi: 'Π', Sigma: 'Σ', Phi: 'Φ', Psi: 'Ψ', Omega: 'Ω' };
+const TEX_BB = { N: 'ℕ', Z: 'ℤ', Q: 'ℚ', R: 'ℝ', C: 'ℂ', K: '𝕂', P: 'ℙ' };
+const SUP = { 0: '⁰', 1: '¹', 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷', 8: '⁸', 9: '⁹', '+': '⁺', '-': '⁻', n: 'ⁿ', i: 'ⁱ' };
+const SUB = { 0: '₀', 1: '₁', 2: '₂', 3: '₃', 4: '₄', 5: '₅', 6: '₆', 7: '₇', 8: '₈', 9: '₉', n: 'ₙ', k: 'ₖ', i: 'ᵢ', j: 'ⱼ', p: 'ₚ' };
+const texteTexLisible = tex => {
+  let t = tex.replace(/\\(?:left|right|big|Big|bigg|Bigg)(?![a-zA-Z])/g, '').replace(/\\(?:,|;|:|!|quad|qquad)/g, ' ').replace(/~/g, ' ')
+    .replace(/\\mathbb\s*\{?([A-Z])\}?/g, (m, l) => TEX_BB[l] || l)
+    .replace(/\\[dt]?frac\{([^{}]*)\}\{([^{}]*)\}/g, (m, a, b) => `${/^\w$/.test(a) ? a : '(' + a + ')'}/${/^\w$/.test(b) ? b : '(' + b + ')'}`)
+    .replace(/\\sqrt\{([^{}]*)\}/g, (m, a) => '√' + (/^\w$/.test(a) ? a : '(' + a + ')'))
+    .replace(/\\binom\{([^{}]*)\}\{([^{}]*)\}/g, '($2 parmi $1)')
+    .replace(/([\^_])(?:\{([^{}]*)\}|([A-Za-z0-9]))/g, (m, op, e1, e2) => { const e = e1 ?? e2, T = op === '^' ? SUP : SUB;
+      return [...e].every(c => T[c]) ? [...e].map(c => T[c]).join('') : `${op === '^' ? '\uE003' : '\uE004'}${e.length > 1 ? '(' + e + ')' : e}`; })
+    .replace(/\\([a-zA-Z]+)/g, (m, c) => c in TEX_SYM ? ` ${TEX_SYM[c]} ` : m)
+    .replace(/\\\{/g, '\uE001').replace(/\\\}/g, '\uE002');
+  return texteTex(t).replace(/\uE001/g, '{').replace(/\uE002/g, '}').replace(/\uE003/g, '^').replace(/\uE004/g, '_').replace(/ ([,.;)]|[⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻ⁿⁱ₀₁₂₃₄₅₆₇₈₉ₙₖᵢⱼₚ′])/g, '$1').replace(/\( /g, '(');
+};
+const texteBrut = h => String(h || '').replace(/<figure class="schema"[\s\S]*?<\/figure>/g, '').replace(/<span class="kx[^"]*"([^>]*)>([^<]*)<\/span>/g, (m, at, t) => {
+    // ponctuation collée à la formule (data-av avant, data-ap après : « », virgule, point…), rendue au texte
+    const av = deEchappe((at.match(/data-av="([^"]*)"/) || [])[1] || ''), ap = deEchappe((at.match(/data-ap="([^"]*)"/) || [])[1] || '');
+    return ` ${av}${texteTexLisible(deEchappe(t).replace(/\\htmlData\{[^}]*\}/g, ''))}${ap} `; }).replace(/<annotation[\s\S]*?<\/annotation>/g, '').replace(/<span class="katex-mathml">[\s\S]*?<\/span><\/span>/g, '')
+  .replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').replace(/ ([,.])(?=\s|$)/g, '$1').trim();
 const coupe = (t, n = 200) => t.length > n ? t.slice(0, n - 1).replace(/\s+\S*$/, '') + '…' : t;
 const attr = t => String(t).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
 let nbPartage = 0;
@@ -534,8 +565,53 @@ for (const f of ['favicon.svg', 'favicon-32.png', 'apple-touch-icon.png', 'icone
   for (const c of Rb.cours?.cours || []) if (c.pdf && c.statut === 'depose') urls.push(ADRESSE + encodeURI(c.pdf));
   for (const f of Rb.exercices?.feuilles || []) if (f.statut === 'depose') for (const k of ['pdf_enonce', 'pdf_corrige']) if (f[k]) urls.push(ADRESSE + encodeURI(f[k]));
   const xml = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
-  fs.writeFileSync('site/sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${[...new Set(urls)].map(u => `  <url><loc>${xml(u)}</loc></url>`).join('\n')}\n</urlset>\n`);
+  // Date de mise à jour (lastmod) et IndexNow (MEMO_atlas_apropos.md §68). Chaque adresse a une empreinte de son
+  // contenu (pages de lecture : titre, description, corps ; PDF : le fichier). La publication précédente a laissé
+  // site/sitemap-dates.json ({ adresse: [empreinte, date] }) : une empreinte inchangée garde sa date, une nouvelle
+  // prend celle du jour. Sans accès au site (construction locale, réseau coupé), toutes les dates sont celles du
+  // jour et rien n'est signalé. Les adresses nouvelles ou modifiées vont dans site/indexnow-a-signaler.json, que le
+  // job ovh de publier.yml transmet à IndexNow (outils/indexnow.py) une fois le site en ligne, puis ne publie pas.
+  const E = outilsLecture(ctxLecture).empreintesPages;
+  const empr = u => E[u] || (u.startsWith(ADRESSE + 'documents/') && fs.existsSync('site/' + decodeURI(u.slice(ADRESSE.length)))
+    ? crypto.createHash('sha256').update(fs.readFileSync('site/' + decodeURI(u.slice(ADRESSE.length)))).digest('hex').slice(0, 10) : empreinte(u));
+  const auj = new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Paris' });
+  let prec = null, premier = false;
+  try {
+    const r = await fetch(ADRESSE + 'sitemap-dates.json', { signal: AbortSignal.timeout(15000) });
+    if (r.ok) prec = await r.json(); else if (r.status === 404) { prec = {}; premier = true; }
+  } catch { /* hors ligne : dates du jour, rien à signaler */ }
+  const dates = {}, aSignaler = [];
+  for (const u of new Set(urls)) {
+    const h = empr(u), p = prec?.[u];
+    dates[u] = p && p[0] === h ? p : [h, auj];
+    if (prec && !(p && p[0] === h)) aSignaler.push(u);
+  }
+  fs.writeFileSync('site/sitemap-dates.json', JSON.stringify(dates));
+  if (aSignaler.length) fs.writeFileSync('site/indexnow-a-signaler.json', JSON.stringify(aSignaler));
+  console.log(`Dates du plan du site : ${prec ? (premier ? 'première publication' : `${aSignaler.length} adresse(s) nouvelle(s) ou modifiée(s)`) : 'site injoignable, dates du jour'}`);
+  fs.writeFileSync(`site/${fs.readFileSync('identite/indexnow-cle.txt', 'utf8').trim()}.txt`, fs.readFileSync('identite/indexnow-cle.txt', 'utf8').trim());
+  fs.writeFileSync('site/sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${[...new Set(urls)].map(u => `  <url><loc>${xml(u)}</loc><lastmod>${dates[u][1]}</lastmod></url>`).join('\n')}\n</urlset>\n`);
   fs.writeFileSync('site/robots.txt', `User-agent: *\nAllow: /\n\nSitemap: ${ADRESSE}sitemap.xml\n`);
+  // llms.txt (proposition de format pour les assistants IA, llmstxt.org ; MEMO_atlas_apropos.md §68) : ce qu'est le
+  // site, ses rubriques et ses pages d'entrée, les chapitres de cours. Tiré des données, rien à tenir à la main.
+  {
+    const ok = new Set(urls), L = [];
+    const lien = (t, chemin, d) => ok.has(ADRESSE + chemin) ? `- [${t}](${ADRESSE}${chemin})${d ? ' : ' + d : ''}` : null;
+    L.push('# ATLAS', '', "> Architecture logique des théories mathématiques : un graphe qui part des axiomes de la logique du premier ordre et de la théorie des ensembles (ZFC), où chaque définition et chaque théorème est démontré dans l'ordre ; autour de lui, des cours du lycée au master, des exercices corrigés, des sujets de concours rattachés aux théories qui les fondent, et des activités interactives.", '',
+      "Site rédigé en français par Armand Jourdain, professeur agrégé de mathématiques. Contenu sous licence CC BY-NC-SA 4.0 (reprise avec citation, sans usage commercial). Chaque page de lecture donne l'énoncé, la démonstration ou le corrigé en texte et en MathML ; les théorèmes admis sont signalés « Admis ici », et l'usage de l'axiome du choix par ⋆.", '',
+      '## Rubriques', '', ...[
+        lien("L'édifice", 'edifice/', 'les théories, leurs définitions, axiomes et théorèmes démontrés, dans l\'ordre logique'),
+        lien('Cours', 'cours/', 'cours du lycée (Seconde à Terminale, options) et de classe préparatoire (Maths Sup – MPSI), chapitre par chapitre, en PDF'),
+        lien('Exercices', 'exercices/', 'feuilles d\'exercices corrigés, par niveau et par chapitre'),
+        lien('Annales', 'annales/', 'sujets de concours d\'ingénieurs et de l\'enseignement, décrits partie par partie et rattachés aux théories'),
+        lien('Activités', 'activites/', 'activités interactives : manipuler, conjecturer, puis lire l\'énoncé et la démonstration'),
+      ].filter(Boolean), '', `- [À propos – Contact](${ADRESSE}#a-propos) : l'auteur, le projet, les principes de rédaction`, `- [Plan du site](${ADRESSE}sitemap.xml)`);
+    const C = (Rb.cours?.cours || []).map(c => lien(texteBrut(c.titre), `cours/${c.id}/`, niveaux[c.niveau] ? `${niveaux[c.niveau]}${c.chapitre ? ', chapitre ' + c.chapitre : ''}` : '')).filter(Boolean);
+    if (C.length) L.push('', '## Chapitres de cours', '', ...C);
+    const A = (Rb.activites?.activites || []).map(a => lien(texteBrut(a.titre), `activites/${a.id}/`, texteBrut(a.niveau || ''))).filter(Boolean);
+    if (A.length) L.push('', '## Activités', '', ...A);
+    fs.writeFileSync('site/llms.txt', L.join('\n') + '\n');
+  }
   console.log(`Plan du site : ${new Set(urls).size} adresses`);
 }
 // Fil RSS des nouveautés (domaine À propos) : site/nouveautes.xml, une entrée par nouveauté. Le lien de

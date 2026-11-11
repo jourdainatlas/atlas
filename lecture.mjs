@@ -123,10 +123,38 @@ body.l-corps { min-height: 100%; margin: 0; display: block; }
     catch (e) { return m; }
     return av || ap ? `<span class="nobr">${av || ''}${f}${ap || ''}</span>` : f;
   });
-  function page({ chemin, titre, description, ancre, corps, fil = [], type = 'article', fichier, indexable = true }) {
+  // Référencement (MEMO_atlas_apropos.md §68) :
+  // - titre : le sujet d'abord, le nom du site à la fin (« Cours – ATLAS ») ; les appelants écrivent encore
+  //   « ATLAS – sujet », retourné ici ;
+  // - données structurées : en plus du fil (BreadcrumbList), une LearningResource (schema.org) déduite de l'adresse,
+  //   avec type de ressource, auteur, licence, langue ; un appelant peut la compléter par `ressource` ({ ... }) ;
+  // - empreinte du contenu, pour la date de mise à jour du plan du site (empreintesPages, lue par rendu.mjs).
+  const AUTEUR = { '@type': 'Person', name: 'Armand Jourdain', jobTitle: 'Professeur agrégé de mathématiques', url: ADRESSE + 'a-propos/' };
+  const LICENCE = 'https://creativecommons.org/licenses/by-nc-sa/4.0/';
+  const sorteRessource = chemin => {
+    let m;
+    if ((m = chemin.match(/^edifice\/([^/]+)\/$/)) && D.noeuds[m[1]]) {
+      const n = D.noeuds[m[1]];
+      return { learningResourceType: ({ 'définition': 'Définition', 'axiome': 'Axiome', 'théorème': 'Théorème et démonstration', 'proposition': 'Proposition et démonstration', 'lemme': 'Lemme et démonstration', 'corollaire': 'Corollaire et démonstration' }[n.nature]) || 'Fiche de cours', educationalLevel: 'Enseignement supérieur' };
+    }
+    if (/^exercices\/feuille\/[^/]+\/$/.test(chemin)) return { learningResourceType: "Feuille d'exercices corrigés" };
+    if (/^exercices\/[^/]+\/$/.test(chemin)) return { learningResourceType: 'Exercice corrigé' };
+    if (/^cours\/[^/]+\/$/.test(chemin)) return { learningResourceType: 'Cours', encoding: { '@type': 'MediaObject', encodingFormat: 'application/pdf' } };
+    if (/^activites\/[^/]+\/$/.test(chemin)) return { learningResourceType: 'Activité interactive', interactivityType: 'active' };
+    if (/^annales\/sujet\/[^/]+\/$/.test(chemin)) return { learningResourceType: 'Sujet de concours' };
+    return null;
+  };
+  const empreintesPages = {};
+  function page({ chemin, titre, description, ancre, corps, fil = [], type = 'article', fichier, indexable = true, ressource }) {
+    titre = String(titre).replace(/^ATLAS – (.+)$/, '$1 – ATLAS');
     corps = enMathML(corps);
     const url = ADRESSE + chemin, cible = '/#' + ancre;
     const d = coupe(description || '');
+    const sorte = sorteRessource(chemin);
+    const ressLd = indexable && (sorte || ressource) ? `<script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@type': 'LearningResource',
+      name: titre.replace(/ – ATLAS$/, ''), description: d, url, inLanguage: 'fr', isAccessibleForFree: true, license: LICENCE, author: AUTEUR,
+      isPartOf: { '@type': 'WebSite', name: 'ATLAS', url: ADRESSE }, ...(sorte || {}), ...(ressource || {}) }).replace(/</g, '\\u003c')}</script>` : '';
+    if (indexable && !fichier) empreintesPages[url] = empreinte(titre + '\n' + d + '\n' + corps);
     const filLd = fil.length ? `<script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@type': 'BreadcrumbList',
       itemListElement: [{ name: 'ATLAS', href: '' }, ...fil].map((f, i) => ({ '@type': 'ListItem', position: i + 1, name: f.name, item: ADRESSE + (f.href || '').replace(/^\//, '') })) }).replace(/</g, '\\u003c')}</script>` : '';
     const sortie = fichier ? `site/${fichier}` : `site/${chemin}index.html`;
@@ -157,7 +185,7 @@ ${THEME}
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
 <link rel="stylesheet" href="/katex.css?v=${vCss}">
 <link rel="stylesheet" href="/lecture.css?v=${vLecture}">
-${filLd}
+${filLd}${ressLd}
 </head>
 <body class="l-corps">
 <header class="l-tete"><a class="l-marque" href="/"><img src="/icone-192.png" alt="" width="28" height="28">ATLAS</a>
@@ -196,7 +224,7 @@ ${String(ancre).startsWith('cours/') ? `<script>(function(){var m=location.searc
       return `<a class="terme" href="${lien(def)}" title="${attr(`${L[id].terme} : ${infobulle(id)}`)}">${txt}</a>`;
     })
     .replace(/(href|src)="documents\//g, '$1="/documents/');
-  return (outilsCache = { page, puce, relier, couleur, lien, esc, urls });
+  return (outilsCache = { page, puce, relier, couleur, lien, esc, urls, empreintesPages });
 }
 
 export function pagesLecture(ctx) {
@@ -235,7 +263,7 @@ export function pagesLecture(ctx) {
       if (ids.length) h += `<h2 class="l-sec">Contenu : ${esc(G[n.sous].titre)}</h2><ul class="l-liste">${ids.map(id => `<li><span class="l-sorte">${esc(N[id].sorte || '')}</span><a href="${lien(id)}">${esc(N[id].titre)}</a></li>`).join('')}</ul>`;
     }
     const contexte = n.graphe === racine ? 'Théorie de l\'édifice' : `${NOMS[n.nature] || ''} · ${texteBrut(G[n.graphe].titre)}`;
-    page({ chemin: `edifice/${n.id}/`, titre: `ATLAS – L'édifice : ${texteBrut(n.titre)}`, description: `${contexte}. ${texteBrut(n.texte || n.enonce)}`,
+    page({ chemin: `edifice/${n.id}/`, titre: `ATLAS – ${texteBrut(n.titre)}${n.nature ? ` (${n.nature})` : ''}`, description: `${contexte}. ${texteBrut(n.texte || n.enonce)}`,
       ancre, fil: [...fil, { name: texteBrut(n.titre) }], corps: h });
   }
   // Page d'entrée de l'édifice : les théories, du socle aux grandes théories.
