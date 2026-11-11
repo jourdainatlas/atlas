@@ -419,6 +419,80 @@ svg.sym { width: 20px; height: 20px; flex: none; display: inline-block; vertical
 /* symbole, titre et nombre sur une même ligne médiane (le titre seul s'alignait sur la ligne de base du nombre) */
 .acc-rubriques .acc-rub .r-tete { align-items: center; min-height: 32px; }
 .fil li.fil-icone { margin-right: 2px; }
+/* Onglets des rubriques dans l'en-tête, sur grand écran (domaine À propos – apparence, MEMO_atlas_apropos.md §66) :
+   la rubrique courante est entourée d'une pastille à sa couleur, qui s'agrandit pour contenir la suite du fil
+   d'Ariane (« Cours › chapitre ») ; le fil lui-même est alors masqué. Quand un fil est à lire, les autres
+   rubriques se replient en pastilles sans couleur réduites à leur symbole. Sous 1100 px (téléphone, tablette) :
+   une seconde ligne sous la barre, où les rubriques autres que la courante sont toujours repliées. */
+@media (max-width: 1099px) {
+  .nav-rub { order: 20; flex: 0 0 auto; display: flex; align-items: center; gap: 4px; min-width: 0; margin: 0; padding: 0; border: 0; background: none; }
+  body.a-onglet .nav-rub { flex: 1 1 100%; }
+  .nav-rub { grid-column: 1 / -1; grid-row: 3; }   /* téléphone : l'en-tête est une grille (voir plus bas) */
+  body.a-onglet .nav-rub { grid-row: 2; }
+  /* L'édifice : le bouton Légende partage la seconde ligne avec les rubriques (colonnes du drapeau et de Partager). */
+  body:not(.en-rubrique) .nav-rub { grid-column: 1 / 5; }
+  body:not(.en-rubrique) .legende { grid-row: 2; grid-column: 5 / -1; justify-self: end; }
+  body:not(.en-rubrique) .nav-rub-cur { padding-right: 10px; }
+
+  .fil { order: 21; }
+  body.a-onglet .fil { display: none; }
+  .nav-rub a { flex: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none; color: var(--encre-2); font-family: var(--f-ui); font-size: 14px; }
+  .nav-rub > a { width: 30px; height: 30px; border: 1px solid var(--filet); border-radius: 999px; background: var(--surface); }
+  .nav-rub > a .nav-rub-nom, .nav-rub-cur:has(.nav-rub-suite) > a .nav-rub-nom { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .nav-rub a svg.sym { width: 16px; height: 16px; }
+  .nav-rub-cur { flex: 0 1 auto; min-width: 0; display: inline-flex; align-items: center; gap: 2px; padding: 3px 11px 3px 9px; min-height: 30px; box-sizing: border-box; border: 1px solid color-mix(in srgb, var(--r) 65%, transparent); background: color-mix(in srgb, var(--r) 13%, transparent); border-radius: 17px; }
+  .nav-rub-cur > a { color: var(--encre); font-weight: 600; }
+  .nav-rub-suite { display: inline-flex; align-items: center; flex-wrap: wrap; min-width: 0; font-family: var(--f-ui); font-size: 13px; line-height: 1.25; }
+  .nav-rub-suite button { all: unset; cursor: pointer; color: var(--encre-2); min-width: 0; }
+  .nav-rub-suite button + button::before { content: "›"; margin: 0 5px; color: var(--encre-3); }
+  .nav-rub-suite button:last-child { color: var(--encre); font-weight: 600; cursor: default; }
+  .nav-rub-suite button span { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .nav-rub-suite button { display: inline-flex; }
+  .nav-rub-cur > a + .nav-rub-suite { margin-left: 4px; }
+}
+@media (max-width: 420px) {
+  /* Très petit écran, édifice : la pastille colorée se réduit aussi à son symbole, pour laisser la place à Légende. */
+  body:not(.en-rubrique) .nav-rub-cur { width: 30px; height: 30px; min-height: 0; padding: 0; justify-content: center; }
+  body:not(.en-rubrique) .nav-rub-cur > a .nav-rub-nom { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .nav-rub { gap: 3px; }
+  .nav-rub > a { width: 28px; height: 28px; }
+  .nav-rub-cur:has(.nav-rub-suite) > a { display: none; }   /* la couleur de la pastille dit déjà la rubrique */
+  .nav-rub-cur:has(.nav-rub-suite) { padding-left: 11px; }
+  .nav-rub-suite button span { -webkit-line-clamp: 3; }
+}
+.nav-rub [data-onglet="edifice"] { --r: var(--r-edifice); }
+.nav-rub [data-onglet="cours"] { --r: var(--r-cours); }
+.nav-rub [data-onglet="exercices"] { --r: var(--r-exercices); }
+.nav-rub [data-onglet="annales"] { --r: var(--r-annales); }
+.nav-rub [data-onglet="activites"] { --r: var(--c-ord); }
+.nav-rub [data-onglet="accueil"] { --r: var(--r-neutre); }
+@media (min-width: 1100px) {
+  .entete:has(.nav-rub) { flex-wrap: nowrap; min-width: 0; }
+  .nav-rub { display: flex; align-items: center; gap: 2px; flex: 0 1 auto; min-width: 0; }
+  .nav-rub a { flex: none; display: inline-flex; align-items: center; gap: 6px; font-family: var(--f-ui); font-size: 13.5px; font-weight: 500; color: var(--encre-2); text-decoration: none; white-space: nowrap; padding: 5px 11px; border: 1px solid transparent; border-radius: 999px; }
+  .nav-rub a svg.sym { width: 15px; height: 15px; }
+  .nav-rub a:hover { background: var(--trame); color: var(--encre); }
+  .nav-rub a[aria-current="page"] { color: var(--encre); font-weight: 600; border-color: color-mix(in srgb, var(--r) 65%, transparent); background: color-mix(in srgb, var(--r) 13%, transparent); }
+  .nav-rub a:focus-visible { outline: 2px solid var(--r); outline-offset: 1px; }
+  body.a-onglet .fil { display: none; }
+  .nav-rub.replie { gap: 6px; }
+  .nav-rub.replie > a { width: 32px; height: 32px; padding: 0; justify-content: center; border-color: var(--filet); background: var(--surface); }
+  .nav-rub.replie > a:hover { background: var(--trame); }
+  .nav-rub.replie > a .nav-rub-nom { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .nav-rub.replie > a svg.sym { width: 16px; height: 16px; }
+  .nav-rub-cur { flex: 0 1 auto; display: inline-flex; align-items: center; min-width: 0; border: 1px solid color-mix(in srgb, var(--r) 65%, transparent); background: color-mix(in srgb, var(--r) 13%, transparent); border-radius: 999px; }
+  .nav-rub-cur > a[aria-current="page"] { border-color: transparent; background: none; }
+  .nav-rub-suite { display: inline-flex; align-items: center; min-width: 0; overflow: hidden; padding-right: 13px; font-family: var(--f-ui); font-size: 13.5px; }
+  .nav-rub-suite button { all: unset; flex: 0 1 auto; min-width: 0; display: inline-flex; align-items: center; cursor: pointer; color: var(--encre-2); white-space: nowrap; }
+  .nav-rub-suite button span { display: block; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  .nav-rub-suite button::before { content: "›"; margin: 0 7px 0 0; color: var(--encre-3); flex: none; }
+  .nav-rub-suite button:hover span { color: var(--encre); text-decoration: underline; text-underline-offset: 3px; }
+  .nav-rub-suite button:last-child { color: var(--encre); font-weight: 600; cursor: default; flex-shrink: 1; }
+  .nav-rub-suite button:last-child:hover span { text-decoration: none; }
+  .nav-rub-suite button + button { margin-left: 7px; }
+  .nav-rub-suite button:focus-visible { outline: 2px solid var(--r); outline-offset: 2px; border-radius: 3px; }
+  .fil { overflow: hidden; }
+}
 .fil li.fil-icone + li::before { content: none; }
 .nouv-rub svg.sym, .acc-nouv-carte svg.sym { width: 16px; height: 16px; vertical-align: -3px; }
 .nouv-filtres .chip svg.sym { width: 15px; height: 15px; }
@@ -1594,6 +1668,9 @@ table.grille button.pli-ann:hover { border-color: var(--encre); }
         <a href="#a-propos" data-rubrique="a-propos"><span class="m-titre">À propos – Contact</span><span class="m-desc">L'auteur, le projet, et une adresse pour écrire ou signaler une erreur.</span></a>
       </nav>
     </div>
+    <nav class="nav-rub" id="nav-rub" aria-label="Rubriques principales">
+      <a href="#accueil" data-onglet="accueil">Accueil</a><a href="#edifice" data-onglet="edifice">L'édifice</a><a href="#cours" data-onglet="cours">Cours</a><a href="#exercices" data-onglet="exercices">Exercices</a><a href="#annales" data-onglet="annales">Annales</a><a href="#activites" data-onglet="activites">Activités</a>
+    </nav>
     <ol class="fil" id="fil" aria-label="Position dans l'atlas"></ol>
     <button type="button" class="chercher-tout" id="chercher-tout" aria-haspopup="dialog" aria-expanded="false" title="Rechercher dans tout le site (Ctrl K)" aria-label="Rechercher dans tout le site"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><circle cx="10.5" cy="10.5" r="6.2" fill="none" stroke="currentColor" stroke-width="1.9"/><path d="M15.2 15.2 20 20" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"/></svg></button>
     <button type="button" class="bouton-theme" id="theme" aria-pressed="false" title="Passer en mode clair" aria-label="Passer en mode clair"><svg class="icone-soleil" viewBox="0 0 200 200" width="26" height="26" aria-hidden="true" focusable="false"><rect x="4" y="4" width="192" height="192" rx="42" fill="#1d2027" stroke="#3a3f4a" stroke-width="8"/><g stroke="#e7e9ed" stroke-width="13" stroke-linecap="round"><line x1="100" y1="40" x2="100" y2="58" transform="rotate(0 100 100)"/><line x1="100" y1="40" x2="100" y2="58" transform="rotate(45 100 100)"/><line x1="100" y1="40" x2="100" y2="58" transform="rotate(90 100 100)"/><line x1="100" y1="40" x2="100" y2="58" transform="rotate(135 100 100)"/><line x1="100" y1="40" x2="100" y2="58" transform="rotate(180 100 100)"/><line x1="100" y1="40" x2="100" y2="58" transform="rotate(225 100 100)"/><line x1="100" y1="40" x2="100" y2="58" transform="rotate(270 100 100)"/><line x1="100" y1="40" x2="100" y2="58" transform="rotate(315 100 100)"/></g><circle cx="100" cy="100" r="28" fill="#ff6d7d"/></svg><svg class="icone-lune" viewBox="0 0 200 200" width="26" height="26" aria-hidden="true" focusable="false"><rect x="4" y="4" width="192" height="192" rx="42" fill="#1d2027" stroke="#3a3f4a" stroke-width="8"/><path d="M118 48a56 56 0 1 0 38 92A46 46 0 0 1 118 48z" fill="#e7e9ed"/><circle cx="140" cy="62" r="9" fill="#ff6d7d"/></svg></button>
@@ -5431,6 +5508,37 @@ const SYMBOLES = new Set(['edifice', 'cours', 'exercices', 'annales', 'activites
 function symbole(nom) { return SYMBOLES.has(nom) ? `<svg class="sym" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#sym-${nom}"/></svg>` : ''; }
 // Menu du logo : le symbole devant le nom de chaque rubrique.
 document.querySelectorAll('#menu-rubriques a[data-rubrique] .m-titre').forEach(t => t.insertAdjacentHTML('afterbegin', symbole(t.parentElement.dataset.rubrique)));
+// En-tête, grand écran : onglets des rubriques, la rubrique courante marquée (§66). Les pages hors onglets
+// (Nouveautés, Index, À propos) n'en marquent aucun et gardent leur fil complet.
+document.querySelectorAll('#nav-rub a[data-onglet]').forEach(a => { const t = a.textContent; a.title = t; a.innerHTML = `${symbole(a.dataset.onglet)}<span class="nav-rub-nom">${t}</span>`; });
+// La pastille courante s'agrandit pour contenir la suite du fil d'Ariane (après le nom de la rubrique) : chaque
+// étape reprend le texte de l'élément du fil et, au clic, déclenche son bouton (le fil garde toute la logique).
+function majOnglets() {
+  const nav = $('#nav-rub'); if (!nav) return;
+  const nom = document.body.classList.contains('en-rubrique') ? ($('#rubrique')?.dataset.nom || '') : 'edifice';
+  const ancien = nav.querySelector('.nav-rub-cur');
+  if (ancien) { ancien.replaceWith(ancien.querySelector('a')); }
+  let cur = null;
+  nav.querySelectorAll('a[data-onglet]').forEach(a => { const c = a.dataset.onglet === nom; if (c) { cur = a; a.setAttribute('aria-current', 'page'); } else a.removeAttribute('aria-current'); });
+  document.body.classList.toggle('a-onglet', !!cur);
+  nav.classList.remove('replie');
+  if (!cur) return;
+  const etapes = [...$('#fil').children].filter(li => !li.classList.contains('fil-icone')).slice(1);
+  const w = document.createElement('span'); w.className = 'nav-rub-cur'; w.dataset.onglet = nom;
+  cur.replaceWith(w); w.appendChild(cur);
+  if (!etapes.length) return;
+  // Un fil à lire : les autres rubriques se replient en pastilles sans couleur, réduites à leur symbole.
+  nav.classList.add('replie');
+  const suite = document.createElement('span'); suite.className = 'nav-rub-suite';
+  etapes.forEach((li, i) => {
+    const b = document.createElement('button'); b.type = 'button';
+    const t = li.textContent.trim(); b.innerHTML = `<span>${esc(t)}</span>`; b.title = t;
+    if (i === etapes.length - 1) b.setAttribute('aria-current', 'location');
+    b.addEventListener('click', () => li.querySelector('button, a')?.click());
+    suite.appendChild(b);
+  });
+  w.appendChild(suite);
+}
 // En-tête : le symbole de la rubrique courante en tête du fil d'Ariane, quel que soit le code qui reconstruit le fil.
 (() => {
   const fil = $('#fil'); if (!fil) return;
@@ -5441,6 +5549,9 @@ document.querySelectorAll('#menu-rubriques a[data-rubrique] .m-titre').forEach(t
     if (!fil.children.length || !SYMBOLES.has(nom)) return;
     fil.insertAdjacentHTML('afterbegin', `<li class="fil-icone" data-nom="${nom}" aria-hidden="true">${symbole(nom)}</li>`);
   };
+  new MutationObserver(() => majOnglets()).observe(fil, { childList: true, subtree: true, characterData: true });
+  addEventListener('hashchange', () => setTimeout(majOnglets, 0));
+  majOnglets();
   new MutationObserver(poser).observe(fil, { childList: true });
   addEventListener('hashchange', () => setTimeout(poser, 0));
   poser();

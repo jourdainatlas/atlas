@@ -573,3 +573,28 @@ construction, qui devra téléverser le site par actions/upload-artifact) et fai
 Le lien porte `data-niveau-exos` = premier niveau de prépa (`prepa[0]`, aujourd'hui `ma`, Maths Sup – MPSI) : le
 gestionnaire existant de #rubrique ouvre la banque d'exercices, vue « Par exercice », avec ce seul niveau coché
 (1 081 exercices sur 2 698). Quand Maths Spé aura des exercices, décider s'il faut cocher tous les niveaux de prépa.
+
+## 66. Rubriques en pastilles dans l'en-tête (11 nov. 2026)
+
+Demande de l'auteur : naviguer d'une rubrique à l'autre sans passer par le menu du logo. `<nav class="nav-rub"
+id="nav-rub">` après `.marque-menu` : Accueil, L'édifice, Cours, Exercices, Annales, Activités (symbole + nom,
+`span.nav-rub-nom`). Le menu du logo reste inchangé (il garde Nouveautés, Index, À propos). Nom de classe : le
+premier essai `.onglets` entrait en collision avec les onglets du panneau des fiches (même nom) ; ne pas réutiliser.
+
+`majOnglets()` (après `SYMBOLES`) : rubrique courante = `#rubrique.dataset.nom` en rubrique, sinon `edifice` ;
+son lien est enveloppé dans `span.nav-rub-cur` (pastille à la couleur `--r` de la rubrique) suivi de
+`span.nav-rub-suite`, qui reprend les éléments du fil `#fil` après le nom de la rubrique (chaque bouton déclenche
+le bouton correspondant du fil, qui garde toute la logique). Relancée par un MutationObserver sur `#fil` et au
+`hashchange`. Classe `body.a-onglet` quand une rubrique est marquée : le fil est alors masqué (sauf ≥ pages hors
+onglets : Nouveautés, Index, À propos gardent leur fil et aucune pastille n'est marquée).
+
+Grand écran (≥ 1100 px) : onglets complets ; dès qu'un fil est à lire (`nav.replie`), les autres rubriques se
+replient en pastilles rondes sans couleur (fond de la barre, filet), symbole seul, nom gardé pour les lecteurs
+d'écran et en infobulle. `.entete` passe en `nowrap` avec `min-width: 0` (sans quoi la grille `.app` s'élargit au
+contenu) ; le titre trop long se raccourcit par points de suspension.
+Téléphone et tablette (< 1100 px) : seconde ligne sous la barre ; toutes les rubriques sauf la courante sont
+toujours repliées (30 px, 28 px sous 420 px) ; la pastille courante contient le fil sur deux lignes (trois sous
+420 px), sans le nom de la rubrique (la couleur suffit ; sous 420 px le symbole aussi disparaît). En grille
+(≤ 860 px) : `.nav-rub` en ligne 2 (ligne 3 hors onglets, sous le fil), et dans l'édifice le bouton Légende
+partage la ligne 2 (colonnes 5 et suivantes) ; sous 420 px la pastille de l'édifice se réduit à son symbole.
+Vérifié de 360 à 1 440 px, clair et sombre, sans débordement horizontal ni erreur de console.
