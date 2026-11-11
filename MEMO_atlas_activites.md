@@ -438,3 +438,27 @@ Explorations : dix-sept. Casse-têtes : quatre. Restent de la liste des vingt : 
 développements limités, convexité, droites et plans de l'espace, racines et coefficients d'un polynôme, loi des
 grands nombres ; puis anagrammes, anniversaires, tiroirs, dérangements, Catalan ; casse-têtes : solitaire,
 grenouilles, dominos sur l'échiquier écorné.
+
+### 128. Polynômes de Taylor, loi des grands nombres, anniversaires (11 nov. 2026, soir)
+
+**`taylor`** (Maths Sup ; analyse). Sept fonctions (sin, cos, exp, ln(1 + x), 1/(1 − x), √(1 + x), et
+exp(−1/x²) prolongée par 0), ordre 0 à 15, point x déplaçable. Coefficients en forme close, évaluation par
+Horner ; le polynôme est écrit avec des coefficients rationnels retrouvés par fractions continues (5x⁴/128,
+x⁷/5040). Bande verte ]−1 ; 1[ pour les trois fonctions de rayon 1. Les verdicts sur la convergence en un point
+fixé énoncent des faits connus (rayon de convergence, cas du bord) : ils ne sont pas démontrés dans la page.
+Contrôlé : ln(1 + x) en 1,5 → ordre 2 : 0,375 ; ordre 10 : −2,4031 ; exact 0,9163.
+
+**`grands-nombres`** (Terminale, Maths Sup ; probabilités). Épreuves de Bernoulli ajoutées par paquets (aucune
+animation), jusqu'à 100 000 ; fréquence sur échelle logarithmique, zone p ± 2σ/√n, six séries précédentes en
+gris. Les séries sont des simulations (dit dans la page) ; la zone et les bornes de Bienaymé-Tchebychev sont
+calculées. Contrôlé : p = 0,5 → n ≥ 2 000 (δ = 0,05) et n ≥ 50 000 (δ = 0,01) pour 95 %.
+
+**`anniversaires`** (Terminale, Maths Sup ; dénombrement). d = 365, 12 ou 7 ; probabilité exacte par le produit
+des 1 − k/d, comparée à 1 − (1 − 1/d)ⁿ (« le même jour que moi ») ; tirage d'un groupe (dates affichées,
+coïncidences en orange) ou de 1 000 groupes. Contrôlé : P(22) = 0,4757 ; P(23) = 0,5073 ; P(50) = 0,9704 ;
+P(57) = 0,9901 ; 1 − (364/365)²³ = 0,0612 ; seuil de l'autre question : 253 personnes (0,5005 contre 0,4991 pour
+252) ; 12 mois → 5 personnes ; 7 jours → 4.
+
+Explorations : vingt. Casse-têtes : quatre. Restent de la liste des vingt : accroissements finis, convexité,
+droites et plans de l'espace, racines et coefficients d'un polynôme ; dénombrement : anagrammes, dérangements,
+Catalan ; casse-têtes : solitaire, grenouilles, dominos sur l'échiquier écorné.
