@@ -9,7 +9,7 @@ export const css = cssCommun + `
 @media (max-width: 900px) { .activites-act .bench { grid-template-columns: 1fr; } }
 .activites-act .sheet { background: var(--surface); border: 1px solid var(--filet); border-radius: 8px; margin-top: 0; }
 .activites-act aside.sheet { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 14px; font-size: 16px; line-height: 1.5; }
-.activites-act .defis { display: flex; flex-direction: column; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.activites-act .defis { display: flex; flex-direction: column; gap: 4px; margin: 0; padding: 0 4px 0 0; list-style: none; max-height: 268px; overflow-y: auto; }
 .activites-act .defis button { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 8px; text-align: left; font: 500 14.5px var(--f-ui); color: var(--encre); background: transparent; border: 1px solid transparent; border-radius: 6px; padding: 4px 9px; cursor: pointer; }
 .activites-act .defis button:hover { background: var(--trame); }
 .activites-act .defis button[aria-current="true"] { border-color: var(--encre-3); background: var(--papier); }
@@ -20,6 +20,11 @@ export const css = cssCommun + `
 .activites-act .enonce { border: 0; padding: 0; margin: 0; background: none; border-radius: 0; }
 .activites-act .enonce h4 { font-size: 20px; margin: 0 0 6px; }
 .activites-act .enonce p { margin: 0 0 8px; }
+.activites-act .modele { margin: 4px 0 10px; padding: 6px; background: var(--papier); border: 1px solid var(--filet); border-radius: 6px; }
+.activites-act .modele svg { display: block; width: 100%; max-height: 230px; fill: none; stroke: var(--encre); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.activites-act .modele svg .cod { stroke: var(--free); stroke-width: 2; }
+.activites-act .modele svg circle { fill: var(--encre); stroke: none; }
+.activites-act .modele svg text { fill: var(--encre); stroke: none; font: 600 14px var(--f-ui); }
 .activites-act details { font-size: 15px; color: var(--encre-2); }
 .activites-act summary { cursor: pointer; font: 13.5px var(--f-ui); color: var(--encre); }
 .activites-act .actions { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -52,7 +57,7 @@ export const html = `
 <header class="col">
   <p class="eyebrow">Collège, lycée · Géométrie plane</p>
   <h3>Atelier de construction</h3>
-  <p class="lede">Un <b>dessin</b> a l'air juste. Une <b>figure</b> reste juste quand on déplace ses points. Ici, seules les figures comptent.</p>
+  <p class="lede">Un <b>dessin</b> a l'air juste. Une <b>figure</b> reste juste quand on déplace ses points. Ici, seules les figures comptent : dix-neuf défis, des constructions de base aux figures codées à reproduire.</p>
 </header>
 
 <div class="bench">
@@ -61,6 +66,7 @@ export const html = `
     <div class="enonce">
       <h4 id="ch-title"></h4>
       <p id="ch-text"></p>
+      <div id="ch-model" class="modele" hidden></div>
       <details id="ch-hintbox"><summary>Un indice</summary><p id="ch-hint" style="margin:6px 0 0"></p></details>
     </div>
     <div class="actions">
@@ -272,9 +278,86 @@ CH.splice(CH.length-1,0,
   hint:'Dans un cercle de centre O, tracez deux diamètres perpendiculaires [AA′] et [BB′]. Soit I le milieu de [OB′]. Le cercle de centre I passant par A recoupe [OB] en P. La longueur AP est le côté du pentagone inscrit dans le cercle.',
   init:()=>[],cands:regCands(5),strict:ps=>isRegular(ps,STRICT)}
 );
-const ORDER=['equi','carre','para','hexa','circ','tang','inscrit','penta','parab','ellipse','libre'];
+/* ---- Défis ajoutés le 11 nov. 2026 (accord de l'auteur) : constructions classiques plus difficiles, et « figures codées ».
+   Une figure codée est un modèle montré avec ses codages (segments égaux, angles droits, milieux) ; ctr liste les contraintes
+   entre les rôles 0, 1, 2… du modèle : ['eq',i,j,k,l] PiPj = PkPl ; ['perp',i,j,k,l] (PiPj) ⊥ (PkPl) ; ['par',i,j,k,l] ;
+   ['mid',m,i,j] Pm milieu de [PiPj]. Chaque tolérance est relative aux longueurs de la contrainte elle-même. */
+function ctrOne(ps,c,tol){
+  const P=i=>ps[c[i]],vx=(i,j)=>P(j).x-P(i).x,vy=(i,j)=>P(j).y-P(i).y;
+  if(c[0]==='eq'){const a=dist(P(1),P(2)),b=dist(P(3),P(4));return Math.abs(a-b)<tol*Math.max(a,b);}
+  if(c[0]==='mid'){const a=P(2),b=P(3);return dist(P(1),{x:(a.x+b.x)/2,y:(a.y+b.y)/2})<tol*dist(a,b);}
+  const ux=vx(1,2),uy=vy(1,2),wx=vx(3,4),wy=vy(3,4),n=Math.hypot(ux,uy)*Math.hypot(wx,wy);
+  if(c[0]==='perp')return Math.abs(ux*wx+uy*wy)<tol*n;
+  if(c[0]==='par')return Math.abs(ux*wy-uy*wx)<tol*n;
+  return false;
+}
+function modCands(k,ctr){const need=ctr.map(c=>Math.max.apply(null,c.slice(1)));
+  return (ids,G)=>{const out=[],pick=[],P=ids.map(i=>G.get(i));
+    (function rec(){if(out.length>=24)return;const r=pick.length;
+      if(r===k){out.push(pick.map(j=>ids[j]));return;}
+      for(let j=0;j<ids.length&&out.length<24;j++){if(pick.includes(j))continue;pick.push(j);
+        const ps=pick.map(t=>P[t]);let ok=true;
+        for(let q=0;q<r&&ok;q++)if(dist(ps[q],ps[r])<8)ok=false;
+        for(let c=0;c<ctr.length&&ok;c++)if(need[c]===r&&!ctrOne(ps,ctr[c],LOOSE))ok=false;
+        if(ok)rec();pick.pop();}})();
+    return out;};}
+function modStrict(ctr){return ps=>{for(let i=0;i<ps.length;i++)for(let j=i+1;j<ps.length;j++)if(dist(ps[i],ps[j])<2)return false;return ctr.every(c=>ctrOne(ps,c,STRICT));};}
+function modele(id,title,text,hint,model,ctr){return {id,title,text,hint,model,shape:'la figure du modèle',init:()=>[],cands:modCands(model.pts.length,ctr),strict:modStrict(ctr)};}
+const TRI=()=>[
+   {id:1,t:'pt',k:'free',x:-200,y:130,name:'A',given:true},{id:2,t:'pt',k:'free',x:210,y:140,name:'B',given:true},{id:3,t:'pt',k:'free',x:40,y:-170,name:'C',given:true},
+   {id:4,t:'ln',k:'seg',a:1,b:2,given:true},{id:5,t:'ln',k:'seg',a:2,b:3,given:true},{id:6,t:'ln',k:'seg',a:3,b:1,given:true}];
+function triS(G){return (dist(G.get(1),G.get(2))+dist(G.get(2),G.get(3))+dist(G.get(3),G.get(1)))/3;}
+function orthoOk(H,G,tol){const A=G.get(1),B=G.get(2),C=G.get(3),s=triS(G);
+  return Math.abs((H.x-A.x)*(C.x-B.x)+(H.y-A.y)*(C.y-B.y))<tol*s*s&&Math.abs((H.x-B.x)*(C.x-A.x)+(H.y-B.y)*(C.y-A.y))<tol*s*s;}
+function gravOk(p,G,tol){const A=G.get(1),B=G.get(2),C=G.get(3);return dist(p,{x:(A.x+B.x+C.x)/3,y:(A.y+B.y+C.y)/3})<tol*triS(G);}
+function symOk(p,G,tol,marge){const l=G.get(3),P=G.get(4);if(!l.ok)return false;const n2=l.dx*l.dx+l.dy*l.dy,u=((P.x-l.x)*l.dx+(P.y-l.y)*l.dy)/n2;
+  const hx=l.x+u*l.dx,hy=l.y+u*l.dy,d=Math.hypot(P.x-hx,P.y-hy);return d>3&&dist(p,{x:2*hx-P.x,y:2*hy-P.y})<tol*d+marge;}
+function orOk(p,G,tol){const A=G.get(1),B=G.get(2),L=dist(A,B),f=(Math.sqrt(5)-1)/2;if(!(L>5))return false;
+  return dist(p,{x:A.x+f*(B.x-A.x),y:A.y+f*(B.y-A.y)})<tol*L||dist(p,{x:B.x+f*(A.x-B.x),y:B.y+f*(A.y-B.y)})<tol*L;}
+CH.splice(CH.length-1,0,
+ {id:'ortho',title:'Orthocentre',shape:'le point de concours des hauteurs',
+  text:'Le triangle ABC est donné. Construisez son orthocentre : le point où se coupent ses trois hauteurs. Déformez ensuite le triangle jusqu\'à rendre un angle obtus, et regardez où part ce point.',
+  hint:'La hauteur issue de A est la perpendiculaire à (BC) passant par A. Deux hauteurs suffisent ; si le triangle a un angle obtus, tracez les droites qui portent les côtés.',
+  init:TRI,cands:(ids,G)=>ids.filter(i=>i>6&&orthoOk(G.get(i),G,LOOSE)).map(i=>[i]),strict:(ps,G)=>orthoOk(ps[0],G,STRICT)},
+ {id:'gravite',title:'Centre de gravité',shape:'le point de concours des médianes',
+  text:'Le triangle ABC est donné. Construisez son centre de gravité : le point où se coupent ses trois médianes.',
+  hint:'La médiane issue de A joint A au milieu de [BC]. Deux médianes suffisent.',
+  init:TRI,cands:(ids,G)=>ids.filter(i=>i>6&&gravOk(G.get(i),G,LOOSE)).map(i=>[i]),strict:(ps,G)=>gravOk(ps[0],G,STRICT)},
+ {id:'sym',title:'Symétrique par rapport à une droite',shape:'le symétrique de P par rapport à d',
+  text:'La droite d et le point P sont donnés. Il n\'y a pas d\'outil symétrie : construisez le symétrique de P par rapport à d.',
+  hint:'La droite d doit être la médiatrice du segment qui joint P à son symétrique : menez par P la perpendiculaire à d, puis reportez la distance avec un cercle centré sur d.',
+  init:()=>[{id:1,t:'pt',k:'free',x:-320,y:140,name:'',lock:true,given:true},{id:2,t:'pt',k:'free',x:320,y:20,name:'',lock:true,given:true},
+   {id:3,t:'ln',k:'line',a:1,b:2,given:true,label:'d'},{id:4,t:'pt',k:'free',x:40,y:-120,name:'P',given:true}],
+  cands:(ids,G)=>ids.filter(i=>i>4&&symOk(G.get(i),G,LOOSE,2)).map(i=>[i]),strict:(ps,G)=>symOk(ps[0],G,STRICT,1e-6)},
+ {id:'or',title:'Partage d\'or',shape:'un point qui partage [AB] selon le nombre d\'or',
+  text:'Le segment [AB] est donné. Construisez un point M de ce segment tel que AB/AM = AM/MB : le grand morceau est au petit ce que le tout est au grand. Ce rapport est le nombre d\'or, (1 + √5)/2.',
+  hint:'Élevez en B une perpendiculaire à (AB) et placez-y C tel que BC = AB/2. Le cercle de centre C passant par B coupe [AC] en D ; le cercle de centre A passant par D coupe [AB] au point cherché.',
+  init:()=>[{id:1,t:'pt',k:'free',x:-190,y:70,name:'A',given:true},{id:2,t:'pt',k:'free',x:190,y:70,name:'B',given:true},{id:3,t:'ln',k:'seg',a:1,b:2,given:true}],
+  cands:(ids,G)=>ids.filter(i=>i>3&&orOk(G.get(i),G,LOOSE/2)).map(i=>[i]),strict:(ps,G)=>orOk(ps[0],G,STRICT)},
+ modele('m-losange','Deux triangles équilatéraux','Reproduisez la figure : quatre points A, B, C, D, et cinq segments tous de même longueur.',
+  'Deux cercles de même rayon, centrés en A et en C et passant chacun par le centre de l\'autre, se coupent en B et en D.',
+  {pts:[[0,0],[0.5,-0.866],[1,0],[0.5,0.866]],names:'ABCD',segs:[[0,1],[1,2],[2,3],[3,0],[0,2]],ticks:[[0,1,1],[1,2,1],[2,3,1],[3,0,1],[0,2,1]],droits:[]},
+  [['eq',0,1,1,2],['eq',1,2,2,3],['eq',2,3,3,0],['eq',0,2,0,1]]),
+ modele('m-rect','Rectangle deux fois plus long que large','Reproduisez la figure : un rectangle ABCD et le milieu M de [AB], avec AM = AD.',
+  'Partez de [AM] : un cercle de centre M passant par A redonne la longueur AM de l\'autre côté, et une perpendiculaire en A porte le côté [AD].',
+  {pts:[[0,0],[2,0],[2,1],[0,1],[1,0]],names:'ABCDM',segs:[[0,1],[1,2],[2,3],[3,0]],ticks:[[0,4,1],[4,1,1],[0,3,1]],droits:[[1,0,2],[2,1,3],[3,2,0]]},
+  [['mid',4,0,1],['perp',0,1,1,2],['perp',1,2,2,3],['perp',2,3,3,0],['eq',0,4,0,3]]),
+ modele('m-mediane','Médiane prolongée','Reproduisez la figure : un triangle ABC, le milieu I de [BC], et le point D tel que I soit aussi le milieu de [AD]. Quelle est la nature du quadrilatère ABDC ?',
+  'Le point D est sur la droite (AI), à la même distance de I que A : un cercle de centre I passant par A le donne.',
+  {pts:[[0,0],[2.2,0.3],[0.8,1.5],[1.5,0.9],[3,1.8]],names:'ABCID',segs:[[0,1],[0,2],[1,2],[0,4]],tirets:[[1,4],[2,4]],ticks:[[1,3,1],[3,2,1],[0,3,2],[3,4,2]],droits:[]},
+  [['mid',3,1,2],['mid',3,0,4]]),
+ modele('m-droit','Triangle rectangle et sa médiane','Reproduisez la figure : un triangle ABC rectangle en A et le milieu M de son hypoténuse [BC]. Tracez ensuite le cercle de centre M passant par A : que remarquez-vous ?',
+  'Une perpendiculaire en A à (AB) porte le côté [AC]. Le cercle de centre M passant par A passe aussi par B et C : dans un triangle rectangle, la médiane issue de l\'angle droit vaut la moitié de l\'hypoténuse.',
+  {pts:[[0,0],[2,0],[0,1.4],[1,0.7]],names:'ABCM',segs:[[0,1],[0,2],[1,2],[0,3]],ticks:[[1,3,1],[3,2,1]],droits:[[0,1,2]]},
+  [['perp',0,1,0,2],['mid',3,1,2]]),
+ modele('m-maison','Carré et triangle équilatéral','Reproduisez la figure : un carré ABCD surmonté d\'un triangle équilatéral DCE. C\'est la figure la plus longue de la série.',
+  'Construisez d\'abord le carré (perpendiculaires et cercles pour reporter le côté), puis le sommet E à l\'intersection de deux cercles centrés en D et en C.',
+  {pts:[[0,0],[1,0],[1,1],[0,1],[0.5,1.866]],names:'ABCDE',segs:[[0,1],[1,2],[2,3],[3,0],[3,4],[2,4]],ticks:[[0,1,1],[1,2,1],[2,3,1],[3,0,1],[3,4,1],[2,4,1]],droits:[[0,1,3],[1,0,2],[2,1,3]]},
+  [['perp',0,1,1,2],['perp',1,2,2,3],['perp',2,3,3,0],['eq',0,1,1,2],['eq',3,4,2,3],['eq',2,4,2,3]])
+);
+const ORDER=['equi','carre','para','hexa','circ','tang','gravite','sym','inscrit','ortho','or','penta','parab','ellipse','m-losange','m-droit','m-mediane','m-rect','m-maison','libre'];
 CH.sort((a,b)=>ORDER.indexOf(a.id)-ORDER.indexOf(b.id));
-const LVL={equi:'Pour démarrer',hexa:'Constructions classiques',inscrit:'Plus difficile',parab:'Lieux de points',libre:'Sans consigne'};
+const LVL={equi:'Pour démarrer',hexa:'Constructions classiques',inscrit:'Plus difficile',parab:'Lieux de points','m-losange':'Figures codées à reproduire',libre:'Sans consigne'};
 function runCheck(ch,base,seed){
   const G0=evalAll(base),ids=base.filter(o=>o.t==='pt'&&G0.get(o.id).ok&&!(o.lock)).map(o=>o.id).slice(0,40);
   const cands=ch.cands(ids,G0);
@@ -350,6 +433,21 @@ function add(o){o.id=st.nid++;if(o.t==='pt')o.name=nextName();st.objs.push(o);st
 function removeWithDeps(id){const gone=new Set([id]);let ch=true;
   while(ch){ch=false;for(const o of st.objs){if(gone.has(o.id))continue;if(REFS.some(k=>gone.has(o[k]))){gone.add(o.id);ch=true;}}}
   st.objs=st.objs.filter(o=>!gone.has(o.id));gone.forEach(i=>traces.delete(i));}
+/* Modèle d'une figure codée : dessin fixe (SVG) avec les codages usuels : traits d'égalité, angles droits, pointillés. */
+function modelSvg(m){
+  const xs=m.pts.map(p=>p[0]),ys=m.pts.map(p=>p[1]),x0=Math.min.apply(null,xs),x1=Math.max.apply(null,xs),y0=Math.min.apply(null,ys),y1=Math.max.apply(null,ys);
+  const k=200/Math.max(x1-x0,y1-y0,1e-9),W=(x1-x0)*k+56,H=(y1-y0)*k+56,X=p=>28+(p[0]-x0)*k,Y=p=>H-28-(p[1]-y0)*k;
+  const cx=xs.reduce((a,b)=>a+b,0)/xs.length,cy=ys.reduce((a,b)=>a+b,0)/ys.length;let s='';
+  const ln=(a,b,dash)=>'<line x1="'+X(m.pts[a]).toFixed(1)+'" y1="'+Y(m.pts[a]).toFixed(1)+'" x2="'+X(m.pts[b]).toFixed(1)+'" y2="'+Y(m.pts[b]).toFixed(1)+'"'+(dash?' stroke-dasharray="5 5"':'')+'/>';
+  (m.segs||[]).forEach(e=>{s+=ln(e[0],e[1]);});(m.tirets||[]).forEach(e=>{s+=ln(e[0],e[1],true);});
+  (m.ticks||[]).forEach(e=>{const a=m.pts[e[0]],b=m.pts[e[1]],ax=X(a),ay=Y(a),bx=X(b),by=Y(b),L=Math.hypot(bx-ax,by-ay),ux=(bx-ax)/L,uy=(by-ay)/L;
+    for(let i=0;i<e[2];i++){const t=(i-(e[2]-1)/2)*5,mx=(ax+bx)/2+ux*t,my=(ay+by)/2+uy*t;s+='<line class="cod" x1="'+(mx-uy*6-ux*2).toFixed(1)+'" y1="'+(my+ux*6-uy*2).toFixed(1)+'" x2="'+(mx+uy*6+ux*2).toFixed(1)+'" y2="'+(my-ux*6+uy*2).toFixed(1)+'"/>';}});
+  (m.droits||[]).forEach(e=>{const v=m.pts[e[0]],dir=j=>{const q=m.pts[j],dx=X(q)-X(v),dy=Y(q)-Y(v),n=Math.hypot(dx,dy);return [dx/n*11,dy/n*11];},a=dir(e[1]),b=dir(e[2]),vx=X(v),vy=Y(v);
+    s+='<path class="cod" d="M'+(vx+a[0]).toFixed(1)+' '+(vy+a[1]).toFixed(1)+'L'+(vx+a[0]+b[0]).toFixed(1)+' '+(vy+a[1]+b[1]).toFixed(1)+'L'+(vx+b[0]).toFixed(1)+' '+(vy+b[1]).toFixed(1)+'"/>';});
+  m.pts.forEach((p,i)=>{let dx=p[0]-cx,dy=p[1]-cy;const n=Math.hypot(dx,dy)||1;dx/=n;dy/=n;
+    s+='<circle cx="'+X(p).toFixed(1)+'" cy="'+Y(p).toFixed(1)+'" r="3.2"/><text x="'+(X(p)+dx*15).toFixed(1)+'" y="'+(Y(p)-dy*15+5).toFixed(1)+'" text-anchor="middle">'+m.names[i]+'</text>';});
+  return '<svg viewBox="0 0 '+W.toFixed(0)+' '+H.toFixed(0)+'" role="img" aria-label="Figure modèle à reproduire">'+s+'</svg>';
+}
 function loadChallenge(i,fresh){
   if(booted) st.saved[CH[st.cur].id]={objs:st.objs,nid:st.nid};
   booted=true;
@@ -358,7 +456,7 @@ function loadChallenge(i,fresh){
   else{st.objs=ch.init();const k=Math.min(1,W/760);st.objs.forEach(o=>{if(o.t==='pt'){o.x*=k;o.y*=k;}});st.nid=st.objs.reduce((m,o)=>Math.max(m,o.id),0)+1;}
   st.undo=[];st.flash=null;traces.clear();resetPend();
   $('ch-title').textContent=ch.title;$('ch-text').textContent=ch.text;$('ch-hint').textContent=ch.hint;
-  $('ch-hintbox').hidden=!ch.hint;$('ch-hintbox').open=false;$('b-check').hidden=!!ch.free;
+  $('ch-model').hidden=!ch.model;$('ch-model').innerHTML=ch.model?modelSvg(ch.model):'';$('ch-hintbox').hidden=!ch.hint;$('ch-hintbox').open=false;$('b-check').hidden=!!ch.free;
   setVerdict('',ch.free?'Rien à vérifier ici. Le bouton « Secouer » déplace tous les points libres.':'Quand votre construction est prête, vérifiez-la. Vous pouvez aussi la secouer pour la tester vous-même.');
   renderList();refresh();
 }

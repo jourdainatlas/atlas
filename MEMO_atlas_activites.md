@@ -227,3 +227,28 @@ ce que le texte dit, les nombres affichés venant du parcours exhaustif et non d
 éléments, taille réglable), solitaire à pions (invariant de coloriage), grenouilles sauteuses, problème des
 huit dames (taille réglable), pavage par dominos de l'échiquier écorné.
 
+### 122. Atelier de construction : neuf défis de plus, dont cinq figures codées (11 nov. 2026)
+
+Demande de l'auteur, avec son accord pour étendre le moteur (entre `//<engine>` et `//</engine>`) : des défis
+plus difficiles, et des figures montrées avec leurs codages, à reproduire. Les ajouts sont insérés par
+`CH.splice` juste avant la liste d'ordre, sans modifier le code existant du moteur ; l'atelier compte
+dix-neuf défis et l'atelier libre.
+
+**Constructions classiques** (même forme que les défis d'origine : `cands` tolérant, `strict` à 10⁻⁶) : centre
+de gravité, symétrique d'un point par rapport à une droite (il n'y a pas d'outil symétrie), orthocentre, partage
+d'or d'un segment (les deux points de partage sont acceptés ; l'indice donne la construction par le triangle
+rectangle de côtés AB et AB/2, pour laquelle AD = AC − CB = (√5 − 1)/2 · AB).
+
+**Figures codées** (`modele(id, titre, texte, indice, modèle, contraintes)`). Le modèle (points, segments,
+pointillés, traits d'égalité, angles droits) est dessiné en SVG dans la fiche du défi par `modelSvg`, côté
+interface. Les contraintes portent sur les rôles 0, 1, 2… du modèle : `eq` (longueurs égales), `perp`, `par`,
+`mid` (milieu), chacune avec une tolérance relative à ses propres longueurs (`ctrOne`). `modCands` cherche par
+retour arrière les points de l'élève qui peuvent tenir les rôles (contrainte testée dès que ses rôles sont tous
+attribués ; au plus 24 candidats), `modStrict` exige toutes les contraintes à 10⁻⁶ et des points distincts.
+Cinq figures : deux triangles équilatéraux accolés, triangle rectangle et milieu de l'hypoténuse, médiane
+prolongée (parallélogramme), rectangle deux fois plus long que large, carré surmonté d'un triangle équilatéral.
+
+**Contrôle** (`node`, moteur extrait du module) : pour chacun des neuf défis, une construction correcte est
+reconnue (« ok ») et la même figure posée à vue, tous points libres, est refusée (« fragile »). Vérifié aussi
+dans le navigateur sur une figure codée.
+
