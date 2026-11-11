@@ -543,3 +543,22 @@ elles débordaient à 360 px. Restent en HTML simple : le texte courant de ces a
 (dérivée, limite d'une suite, atelier).
 
 Explorations : vingt-cinq. Casse-têtes : six. Restent : droites et plans de l'espace ; anagrammes ; solitaire.
+
+### 132. Retouches demandées : complexes et cercle trigonométrique (11 nov. 2026, soir)
+
+**Complexes.** (1) Case « afficher w et le produit zw » : décochée, w, zw, leur triangle, leurs curseurs et
+leurs lignes du tableau disparaissent, et la fenêtre se resserre (±2,5 au lieu de ±4,2). Les boutons des racines
+de l'unité la décochent. (2) Erreur signalée par l'auteur : pour n = 3, on lisait z⁴ et z⁵ sur le triangle. La
+page traçait toujours 24 puissances et les étiquetait de z² à z⁶ ; sur un cycle de longueur 3, z⁴ et z⁵
+recouvraient z et z². Désormais, si |z| = 1 et si l'argument est un nombre entier de degrés, la période
+360/pgcd(360, |arg|) est calculée et le tracé s'arrête au retour en 1, étiqueté « zⁿ = 1 » ; tous les sommets
+portent leur nom, placé vers l'extérieur du cercle. Les puissances sont calculées directement
+(|z|^k, k·arg réduit modulo 360 en entiers), sans produit itéré.
+
+**Cercle trigonométrique.** L'auteur ne voyait pas la sinusoïde bouger avec le point : les courbes étaient dans
+une seconde figure, plus bas, séparée par un paragraphe. Le cercle et les courbes sont maintenant dans la même
+figure, côte à côte, à la même échelle verticale (pixels par unité calculés sur le cercle et repris par les
+courbes) : un trait pointillé horizontal relie M au point de la sinusoïde. Le curseur et les lectures (en
+ligne) sont sous l'ensemble ; la figure fait moins de 500 px de haut sur ordinateur. Sur téléphone, cercle puis
+courbes sont empilés dans le même cadre, sans le trait de report. RÈGLE retenue : deux vues d'un même réglage
+doivent tenir ensemble à l'écran, dans un seul cadre.

@@ -2,7 +2,17 @@
 import { css as cssCommun } from './commun.js';
 import { cssFigures, suite, scene, toile, vue, vueEgale, trait, courbe, etiquette, poignee, pastille, glisser, ecrire, fr, borne, pgcd } from './figures.js';
 
-export const css = cssCommun + cssFigures;
+export const css = cssCommun + cssFigures + `
+/* Cercle et courbes côte à côte, à la même échelle verticale : l'ordonnée de M se reporte à l'horizontale sur la sinusoïde. */
+.activites-act .ct-duo { display: grid; grid-template-columns: minmax(230px, 30%) minmax(0, 1fr); }
+.activites-act .ct-duo canvas { display: block; width: 100%; height: clamp(250px, 44vh, 380px); max-height: none; touch-action: none; }
+.activites-act .ct-duo canvas + canvas { border-left: 1px solid var(--filet); }
+.activites-act .ct-lect { display: flex; flex-wrap: wrap; gap: 4px 26px; padding: 10px 16px; border-top: 1px solid var(--filet); }
+.activites-act .ct-lect .lectures { display: flex; flex-wrap: wrap; gap: 4px 22px; }
+.activites-act .ct-lect .lectures > div { display: flex; gap: 8px; align-items: baseline; }
+.activites-act .ct-lect .verdict { margin: 0; flex-basis: 100%; }
+@media (max-width: 760px) { .activites-act .ct-duo { grid-template-columns: 1fr; } .activites-act .ct-duo canvas { height: clamp(210px, 32vh, 280px); } .activites-act .ct-duo canvas + canvas { border-left: 0; border-top: 1px solid var(--filet); } }
+`;
 
 export const html = `
 <header class="col">
@@ -13,44 +23,39 @@ export const html = `
 
 <section>
   <div class="col">
-    <h4><span class="n">1</span>Un point, deux coordonnées</h4>
+    <h4><span class="n">1</span>Un point, deux coordonnées, deux courbes</h4>
     <p>On enroule la droite des réels autour du cercle de centre O et de rayon 1, à partir du point I(1 ; 0), dans le sens direct. Le réel <i>t</i> arrive sur un point M. Par définition, <b class="c-mark">cos <i>t</i></b> est l'abscisse de M et <b class="c-sec">sin <i>t</i></b> son ordonnée.</p>
-    <p>Déplacez M sur le cercle, ou réglez <i>t</i> avec le curseur, qui avance par cent-quatre-vingtièmes de π, c'est-à-dire degré par degré.</p>
+    <p>À droite du cercle, on a reporté <i>t</i> sur un axe horizontal et, au-dessus, les deux coordonnées de M : ce sont les courbes des fonctions <b class="c-mark">cosinus</b> et <b class="c-sec">sinus</b>, tracées à la même échelle que le cercle. Déplacez M sur le cercle, faites glisser le repère vertical sur les courbes, ou réglez <i>t</i> avec le curseur, degré par degré : le trait pointillé horizontal montre que la hauteur de M est exactement celle du point de la sinusoïde.</p>
   </div>
   <div class="fig">
-    <div class="split">
-      <canvas id="ct-cercle" class="carre fixe" aria-label="Cercle trigonométrique : le point M, son abscisse cos t et son ordonnée sin t"></canvas>
-      <div class="side">
-        <h5>Lecture</h5>
-        <dl class="lectures" aria-live="polite">
-          <dt><i>t</i></dt><dd id="ct-t"></dd>
-          <dt>en degrés</dt><dd id="ct-deg"></dd>
-          <dt class="c-mark">cos <i>t</i></dt><dd id="ct-cos"></dd>
-          <dt class="c-sec">sin <i>t</i></dt><dd id="ct-sin"></dd>
-          <dt>cos² <i>t</i> + sin² <i>t</i></dt><dd id="ct-pyth"></dd>
-        </dl>
-        <p class="verdict" id="ct-note"></p>
-      </div>
+    <div class="ct-duo">
+      <canvas id="ct-cercle" aria-label="Cercle trigonométrique : le point M, son abscisse cos t et son ordonnée sin t"></canvas>
+      <canvas id="ct-courbes" aria-label="Courbes des fonctions cosinus et sinus entre −2π et 2π, avec la valeur de t choisie"></canvas>
     </div>
     <div class="reglages">
       <label for="ct-k"><i>t</i></label><input type="range" id="ct-k" min="-360" max="360" step="1" value="30"><output id="ct-kv"></output>
     </div>
+    <div class="ct-lect">
+      <dl class="lectures" aria-live="polite">
+        <div><dt><i>t</i></dt><dd id="ct-t"></dd></div>
+        <div><dt>en degrés</dt><dd id="ct-deg"></dd></div>
+        <div><dt class="c-mark">cos <i>t</i></dt><dd id="ct-cos"></dd></div>
+        <div><dt class="c-sec">sin <i>t</i></dt><dd id="ct-sin"></dd></div>
+        <div><dt>cos² <i>t</i> + sin² <i>t</i></dt><dd id="ct-pyth"></dd></div>
+      </dl>
+      <p class="verdict" id="ct-note"></p>
+    </div>
   </div>
   <div class="col">
-    <p>Comme OM = 1, le théorème de Pythagore donne cos² <i>t</i> + sin² <i>t</i> = 1 pour tout réel <i>t</i>. Et comme un tour complet mesure 2π, les réels <i>t</i> et <i>t</i> + 2π arrivent au même point : cosinus et sinus sont périodiques de période 2π.</p>
+    <p>Comme OM = 1, le théorème de Pythagore donne cos² <i>t</i> + sin² <i>t</i> = 1 pour tout réel <i>t</i>. Et comme un tour complet mesure 2π, les réels <i>t</i> et <i>t</i> + 2π arrivent au même point : cosinus et sinus sont périodiques de période 2π, et leurs courbes se répètent.</p>
   </div>
 </section>
 
 <section>
   <div class="col">
     <h4><span class="n">2</span>Dérouler le cercle</h4>
-    <p>Reportons maintenant <i>t</i> sur un axe horizontal et, au-dessus, l'abscisse et l'ordonnée de M. On obtient les courbes des fonctions <b class="c-mark">cosinus</b> et <b class="c-sec">sinus</b>. Faites glisser le repère vertical : c'est le même <i>t</i> que sur le cercle.</p>
-  </div>
-  <div class="fig">
-    <canvas id="ct-courbes" class="large fixe" aria-label="Courbes des fonctions cosinus et sinus entre −2π et 2π, avec la valeur de t choisie"></canvas>
-  </div>
-  <div class="col">
-    <p>Les deux courbes ont la même forme : celle du sinus est celle du cosinus décalée de π/2 vers la droite, ce que dit la formule sin <i>t</i> = cos(<i>t</i> − π/2).</p>
+    <p>Faites faire à M un tour complet, lentement. Son ordonnée monte de 0 à 1 pendant le premier quart de tour, redescend à 0, plonge à −1, puis revient : la sinusoïde n'est rien d'autre que ce va-et-vient vertical, étalé le long de l'axe des <i>t</i>. Le cosinus fait le même mouvement, mais c'est une abscisse : il part de 1 au lieu de 0, avec un quart de tour d'avance.</p>
+    <p>Les deux courbes ont donc la même forme : celle du sinus est celle du cosinus décalée de π/2 vers la droite, ce que dit la formule sin <i>t</i> = cos(<i>t</i> − π/2).</p>
   </div>
 </section>
 
@@ -58,7 +63,7 @@ export const html = `
   <div class="col">
     <h4><span class="n">3</span>Les angles associés</h4>
     <p>Choisissez un second réel, lié à <i>t</i> : <span class="chips" id="ct-assoc"></span></p>
-    <p>Le point <b class="c-tan">M′</b> qui lui correspond apparaît sur le cercle de la première figure. <span id="ct-sym"></span></p>
+    <p>Le point <b class="c-tan">M′</b> qui lui correspond apparaît sur le cercle de la figure. <span id="ct-sym"></span></p>
     <p class="def" id="ct-formule" aria-live="polite"></p>
     <p>Ces formules ne s'apprennent pas par cœur : elles se relisent sur le cercle, en comparant les coordonnées de M et de M′.</p>
   </div>
@@ -104,9 +109,11 @@ export function monter(racine) {
   q('#ct-k').addEventListener('input', e => poser(+e.target.value * Math.PI / 180, false));
 
   function rendre(C) {
-    const t = E.t, c = Math.cos(t), s = Math.sin(t), A = ASSOC.find(a => a.id === E.assoc), t2 = A.f ? A.f(t) : null;
+    const t = E.t, c = Math.cos(t), s = Math.sin(t), A = ASSOC.find(a => a.id === E.assoc), t2 = A.f ? A.f(t) : null; let ppu = 100;
+    const cote = Math.abs(q('#ct-cercle').getBoundingClientRect().top - q('#ct-courbes').getBoundingClientRect().top) < 4;   // côte à côte ?
     { // le cercle
-      const { ctx, w, h } = toile(q('#ct-cercle')), v = vueEgale(w, h, 0, 0, 1.42 * Math.max(1, w / h)); V1 = v;
+      const { ctx, w, h } = toile(q('#ct-cercle')); ppu = Math.min(h / 2.9, w / 2.5);   // pixels par unité, repris par les courbes
+      const v = vueEgale(w, h, 0, 0, w / (2 * ppu)); V1 = v;
       ctx.strokeStyle = C.filetFort; ctx.lineWidth = 1;
       for (const g of [-1, -0.5, 0.5, 1]) { trait(ctx, v.X(g), 0, v.X(g), h); trait(ctx, 0, v.Y(g), w, v.Y(g)); }
       ctx.strokeStyle = C.doux; ctx.lineWidth = 1.5; trait(ctx, 0, v.Y(0), w, v.Y(0)); trait(ctx, v.X(0), 0, v.X(0), h);
@@ -126,19 +133,21 @@ export function monter(racine) {
         ctx.strokeStyle = C.vert; ctx.lineWidth = 1.2; ctx.setLineDash([4, 4]); trait(ctx, X2, Y2, X2, Y0); trait(ctx, X2, Y2, X0, Y2); ctx.setLineDash([]);
         ctx.lineWidth = 1.6; trait(ctx, X0, Y0, X2, Y2); pastille(ctx, X2, Y2, C.vert, 6);
         etiquette(ctx, C, 'M′', X2 + (Math.cos(t2) >= 0 ? 16 : -16), Y2 + (Math.sin(t2) >= 0 ? -12 : 12), C.vert, 'center', 14); }
+      if (cote) { ctx.strokeStyle = C.orange; ctx.lineWidth = 1.4; ctx.setLineDash([5, 4]); trait(ctx, X, Y, w, Y); ctx.setLineDash([]); }
       poignee(ctx, C, X, Y, C.encre, '', false);
       etiquette(ctx, C, 'M', X + (c >= 0 ? 16 : -16), Y + (s >= 0 ? -14 : 14), C.encre, 'center', 15);
     }
     { // les courbes
-      const { ctx, w, h } = toile(q('#ct-courbes')), v = vue(w, h, -2 * Math.PI - 0.25, 2 * Math.PI + 0.25, -1.45, 1.45); V2 = v;
+      const { ctx, w, h } = toile(q('#ct-courbes')), dy = cote ? h / (2 * ppu) : 1.45, v = vue(w, h, -2 * Math.PI - 0.25, 2 * Math.PI + 0.25, -dy, dy); V2 = v;
       ctx.lineWidth = 1; ctx.strokeStyle = C.filetFort; trait(ctx, 0, v.Y(1), w, v.Y(1)); trait(ctx, 0, v.Y(-1), w, v.Y(-1));
       ctx.fillStyle = C.doux; ctx.font = '500 11px ' + C.police; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
       for (let j = -4; j <= 4; j++) { const X = Math.round(v.X(j * Math.PI / 2)) + .5; trait(ctx, X, 0, X, h); if (j && (w > 520 || j % 2 === 0)) ctx.fillText(enPi(j * 6), X + (j === 4 ? -12 : j === -4 ? 14 : 0), h - 6); }
       ctx.textAlign = 'right'; ctx.fillText('1', v.X(0) - 5, v.Y(1) + 4); ctx.fillText('−1', v.X(0) - 5, v.Y(-1) + 4);
       ctx.strokeStyle = C.doux; ctx.lineWidth = 1.5; trait(ctx, 0, v.Y(0), w, v.Y(0)); trait(ctx, v.X(0), 0, v.X(0), h);
       courbe(ctx, v, Math.cos, C.bleu, 2.6); courbe(ctx, v, Math.sin, C.orange, 2.6);
-      etiquette(ctx, C, 'cos', v.X(-2 * Math.PI) + 22, v.Y(1) - 11, C.bleu, 'center', 12); etiquette(ctx, C, 'sin', v.X(-1.5 * Math.PI), v.Y(1) - 11, C.orange, 'center', 12);
+      etiquette(ctx, C, 'cos', v.X(-2 * Math.PI) + 22, v.Y(1) - 11, C.bleu, 'center', 12); etiquette(ctx, C, 'sin', v.X(w > 520 ? -1.5 * Math.PI : 0.5 * Math.PI), v.Y(1) - 11, C.orange, 'center', 12);
       ctx.strokeStyle = C.encre; ctx.lineWidth = 1.6; ctx.setLineDash([5, 4]); trait(ctx, v.X(t), 0, v.X(t), h); ctx.setLineDash([]);
+      if (cote) { ctx.strokeStyle = C.orange; ctx.lineWidth = 1.4; ctx.setLineDash([5, 4]); trait(ctx, 0, v.Y(s), v.X(t), v.Y(s)); ctx.setLineDash([]); }
       pastille(ctx, v.X(t), v.Y(c), C.bleu, 6); pastille(ctx, v.X(t), v.Y(s), C.orange, 6);
       etiquette(ctx, C, 't', v.X(t), 11, C.encre, 'center', 13);
     }
