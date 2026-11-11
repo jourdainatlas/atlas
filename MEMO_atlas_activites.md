@@ -704,3 +704,10 @@ Compléments du même soir, à la demande de l'auteur : le but (« le moins de p
 chapeau, en tête de la partie « Jouer », dans le bandeau et dans le résumé de la carte ; la vignette de la carte
 a été redessinée (les formes n'étaient pas alignées sur un quadrillage commun) : c'est maintenant un carré de
 4 sur 4 pavé par un T, un L, un tromino droit et trois dominos, tous sur la même grille de 16 px.
+
+### Note de la conversation Cours (11 nov. 2026) : champ `cours` complété
+
+À la demande de l'auteur, la conversation Cours a ajouté les chapitres de MPSI concernés au champ `cours` de 14
+activités (voir §42 de `MEMO_atlas_cours.md`) ; elle n'a rien changé d'autre dans `rubriques/activites.yaml`. Elle
+vérifiera ce champ à chaque nouveau chapitre. Les pages de chapitre montrent maintenant, dans une carte
+« Activités », les activités qui les citent.

@@ -91,6 +91,8 @@ export function pagesCoursExercices(ctx) {
       h += `<h2 class="l-sec">Sommaire</h2><ol class="l-sommaire">${c.sommaire.map((s, i) => { const p = (c.sommaire_pages || [])[i];
         return `<li>${p && c.pdf ? `<a href="${attr(pdf(c.pdf, p))}">${s}</a> <span class="l-sorte">p. ${p}</span>` : s}</li>`; }).join('')}</ol>`;
     }
+    const acts = (R.activites?.activites || []).filter(x => (x.cours || []).includes(c.id));
+    if (acts.length) h += `<h2 class="l-sec">Activités</h2><ul class="l-liste">${acts.map(x => `<li><a href="/activites/${x.id}/">${texteBrut(x.titre)}</a>${x.niveau ? ` <span class="l-sorte">${esc(x.niveau)}</span>` : ''}</li>`).join('')}</ul>`;
     const liens = [...new Set([...(c.liens || []), ...coursTous.filter(x => (x.liens || []).includes(c.id)).map(x => x.id)])].map(coursDe).filter(Boolean)
       .sort((a, b) => ordreNiv(a.niveau) - ordreNiv(b.niveau) || (a.chapitre || 0) - (b.chapitre || 0));
     h += `<div class="liens">`;

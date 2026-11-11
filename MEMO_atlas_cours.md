@@ -644,3 +644,25 @@ exclus) :
 
 Certains termes sortent abîmés par l'extraction du PDF (`mŒme`, `cid:224`), un défaut qui relève du programme du
 domaine apparence.
+Symboles validés le 11 novembre : `projection` (`ma-19`, repris de `p-07`), `serie` (`ma-20`, dessin nouveau : un
+carré coupé en moitiés successives, 1/2 + 1/4 + … = 1) et `binomiale` (`ma-21`, repris de `t-02`). Ajoutés à
+`outils/cours-termes-exclus.txt`, parce qu'ils n'apparaissent comme termes nulle part ailleurs : « non nuls »,
+« simples », « de mŒme nature ». Les autres faux termes servent aussi de vrais termes dans d'autres cours ; ils
+restent signalés à l'auteur.
+
+### 42. Activités reliées aux chapitres (11 nov. 2026)
+
+À la demande de l'auteur, la conversation Cours vérifie à chaque dépôt de chapitre quelles activités
+(`rubriques/activites.yaml`, domaine Activités) s'y rattachent, et ajoute l'id du chapitre au champ `cours` de
+l'activité. On ne touche à rien d'autre dans ce fichier. Le 11 novembre, rétrospectivement :
+- `ma-21` : binomiale, chemins-grille, grands-nombres, anniversaires, derangements, catalan, anagrammes ;
+- `ma-20` : nombre-e, derangements ;
+- `ma-19` : espace, produit-scalaire ;
+- `ma-05` et `ma-09` : derivee ;
+- `ma-07` : limite-suite ;
+- `ma-04` : cercle-trigo ;
+- `ma-18` : aire-primitive.
+
+En sens inverse, la page d'un chapitre a une carte « Activités », placée sous « Exercices » (`gabarit.html`).
+Elle liste les activités dont le champ `cours` cite le chapitre. Sa page de lecture a une section « Activités »
+(`lecture-cours.mjs`).
