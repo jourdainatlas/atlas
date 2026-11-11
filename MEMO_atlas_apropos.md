@@ -671,3 +671,22 @@ rien ne tourne seul.
 
 Vérification des rendus : le navigateur de test ne charge pas Google Fonts ; pour des captures fidèles, les polices
 Spectral et IBM Plex sont installées localement (paquets npm `@fontsource/*`, convertis en TTF dans `~/.fonts`).
+
+## 70. Symboles animés des encadrés de l'accueil et de la roue (11 nov. 2026)
+
+Demande de l'auteur : une petite animation par symbole des neuf encadrés de l'accueil (quatre profils, cinq
+rubriques), au survol ; et la même, dans la roue (§69), quand le symbole arrive en face du texte.
+
+Mécanisme (`gabarit.html`). Les pièces à animer sont nommées dans les `<symbol>` par des classes `p-…` (groupes
+`<g>` ajoutés, chemins scindés ; le dessin ne change pas, sauf `p-tourne`, page du livre invisible au repos).
+`symbole(nom, true)` recopie le dessin en ligne (`svg.sym.sym-anime.sa-<nom>`) au lieu de l'appeler par `<use>`,
+car les pièces d'un `<use>` ne sont pas atteignables par les sélecteurs de survol. Les règles ont pour déclencheur
+`:is(.acc-rub:hover, .acc-rub:focus-visible, .acc-profil:hover, .acc-profil:focus-within, .ro-sym.actif)` ; chaque
+animation joue une fois (0,7 à 1,3 s) ; dans la roue, `--d0` la retarde de 0,45 s. `prefers-reduced-motion` : rien.
+Partout ailleurs (barre du haut, menu, pages), les symboles restent des `<use>` immobiles.
+
+Animations : cartable (saut, fermoir relevé) ; pile de livres (chute et empilement) ; toque (lancer, pompon qui se
+balance) ; loupe (balayage, les trois points s'allument) ; arbre (tronc, branche, sept feuilles de bas en haut) ;
+livre (page tournée, lignes réécrites) ; feuille et crayon (le crayon retrace le paraphe) ; copies (celle du dessus
+part, la suivante arrive) ; puzzle (le curseur balaie, le point suit la courbe : images clés calculées sur la
+cloche de §67). Pour modifier un symbole, garder ses classes `p-…` ou adapter les règles `sa-…`.
