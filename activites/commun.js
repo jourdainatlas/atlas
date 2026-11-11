@@ -48,6 +48,11 @@ export const css = `
 .activites-act .fig { margin: 20px 0 24px; background: var(--surface); border: 1px solid var(--filet); border-radius: 8px; overflow: hidden; }
 .activites-act .fig canvas { display: block; width: 100%; touch-action: pan-y; cursor: grab; }
 .activites-act .fig canvas.draw { touch-action: none; cursor: crosshair; }
+/* Aucune figure ne dépasse la hauteur de l'écran (11 nov. 2026) : une figure seule est limitée à 70 % de la fenêtre,
+   et deux figures superposées qui se lisent ensemble (classe paire, ou repères ci-dessous) tiennent à deux dans la fenêtre.
+   Le dessin s'adapte de lui-même : chaque figure lit la taille réelle de sa toile. */
+.activites-act .fig canvas { max-height: 70vh; }
+.activites-act .fig canvas.paire, .activites-act #cv3t, .activites-act #cv3b, .activites-act #cv4t, .activites-act #cv4b { aspect-ratio: auto !important; height: clamp(150px, 31vh, 330px); }
 .activites-act .split { display: grid; grid-template-columns: minmax(0, 1fr) 270px; }
 .activites-act .split .side { border-left: 1px solid var(--filet); padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
 @media (max-width: 820px) { .activites-act .split { grid-template-columns: 1fr; } .activites-act .split .side { border-left: 0; border-top: 1px solid var(--filet); } }

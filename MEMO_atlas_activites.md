@@ -297,3 +297,38 @@ Restent quinze idées de la liste des vingt, les visualisations de dénombrement
 - *Atelier, titres des groupes de défis.* En violet (`--c-geo`), gras, soulignés d'un filet, à la demande de
   l'auteur, pour se repérer dans la liste.
 
+### 124. Produit scalaire, chemins sur une grille, « Tout éteindre » ; hauteur des figures (11 nov. 2026)
+
+**Décisions de l'auteur.** L'intercalaire de l'atelier reste violet (confirmé). Les activités continuent dans
+l'ordre proposé. L'entrée des Nouveautés porte désormais la rubrique `activites`, acceptée par `construire.py`
+depuis un commit de la conversation À propos ; les ajouts du jour sont dans une seconde entrée.
+
+**Hauteur des figures.** L'auteur a signalé que, dans « La pente en un point », les figures superposées
+(courbe et trace de la dérivée, courbe mystère et zone de dessin) dépassaient la hauteur de l'écran. Règle
+désormais commune (`commun.js`) : une figure seule est limitée à 70 % de la hauteur de la fenêtre, et deux
+figures qui se lisent ensemble (classe `paire`, ou les toiles `cv3t`, `cv3b`, `cv4t`, `cv4b` du prototype) ont
+chacune 31 % de cette hauteur (entre 150 et 330 px), si bien que la paire tient dans la fenêtre. Aucun code de
+figure n'a changé : chaque figure lit la taille réelle de sa toile.
+
+**`produit-scalaire`** (Première, géométrie). Deux vecteurs d'origine O, extrémités déplaçables ou réglées par
+quatre curseurs (demi-unités), projeté H de B sur (OA). Trois calculs affichés : coordonnées (exact),
+longueurs et angle, OA × OH signé. Contrôlé : (4 ; 1)·(1,5 ; 3) = 9 ; (3 ; 2)·(−2 ; 3) = 0 ; (4 ; 0)·(−2,5 ; 2)
+= −10.
+
+**`chemins-grille`** (Terminale, Maths Sup ; nouveau domaine « Dénombrement », en bleu). Grille de n sur p pas
+(1 à 8), chemin tracé par boutons, mot du chemin, nombre de chemins en chaque nœud par additions (entiers
+exacts, au plus 12 870), relation de Pascal lue sur le nœud choisi. « Au hasard » tire un chemin uniformément.
+
+**`inversions`**, titre « Tout éteindre » (casse-tête ; Maths Sup). Plateau de 2 à 7 lignes et colonnes. La
+matrice A (N × N sur F2) est réduite une fois par taille par le pivot de Gauss appliqué à [A | I] ; on en tire
+le rang, une base du noyau, puis pour chaque position une solution particulière et la plus courte des 2^k
+solutions (k ≤ 4 ici). Contrôles (Node) : dimensions du noyau pour toutes les tailles (3×3 : 0 ; 4×4 : 4 ;
+5×5 : 2, rang 23 ; 7×7 : 0…), « tout allumé » soluble pour toutes ; sur 1 440 positions aléatoires, la solution
+rendue éteint toujours la position et, pour les plateaux de 12 cases au plus, sa longueur est le minimum trouvé
+par recherche exhaustive ; 5×5 tout allumé : 15 appuis.
+
+Explorations : neuf. Casse-têtes : trois. Restent de la liste des vingt : suites arithmétiques et géométriques,
+nombre e, intégrale par rectangles, dichotomie, méthode d'Euler, accroissements finis, développements limités,
+convexité, multiplication complexe, droites et plans de l'espace, matrice 2×2, racines et coefficients, Euclide
+en rectangles, loi des grands nombres ; puis anagrammes, anniversaires, tiroirs, dérangements, Catalan.
+

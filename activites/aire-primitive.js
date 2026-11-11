@@ -20,9 +20,9 @@ export const html = `
   </div>
   <div class="fig">
     <div class="cap"><span>courbe de <i>f</i> et aire algébrique de <i>a</i> à <i>x</i></span><span id="ap-l1"></span></div>
-    <canvas id="ap-haut" class="large fixe" aria-label="Courbe de f ; domaine coloré entre a et x ; rectangle de même aire entre x et x + h"></canvas>
+    <canvas id="ap-haut" class="large fixe paire" aria-label="Courbe de f ; domaine coloré entre a et x ; rectangle de même aire entre x et x + h"></canvas>
     <div class="cap"><span>courbe de <i>F</i> : l'aire, reportée au-dessus de <i>x</i></span><span id="ap-l2"></span></div>
-    <canvas id="ap-bas" class="large fixe" style="border-top:1px dashed var(--filet)" aria-label="Courbe de la fonction F, sa sécante entre x et x + h et sa tangente en x"></canvas>
+    <canvas id="ap-bas" class="large fixe paire" style="border-top:1px dashed var(--filet)" aria-label="Courbe de la fonction F, sa sécante entre x et x + h et sa tangente en x"></canvas>
     <div class="reglages">
       <label for="ap-x"><i>x</i></label><input type="range" id="ap-x" min="-4" max="4" step="0.05" value="2"><output id="ap-xv"></output>
       <label for="ap-a"><i>a</i></label><input type="range" id="ap-a" min="-3" max="3" step="0.5" value="0"><output id="ap-av"></output>
