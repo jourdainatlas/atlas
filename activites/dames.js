@@ -7,7 +7,7 @@ export const css = cssCommun + cssFigures + cssJeux + `
 .activites-act .dm { display: grid; grid-template-columns: repeat(var(--col), 1fr); width: min(100%, calc(var(--col) * 58px)); border: 2px solid var(--encre-3); border-radius: 6px; overflow: hidden; }
 .activites-act .dm button { aspect-ratio: 1 / 1; padding: 0; border: 0; border-radius: 0; background: var(--surface); font-size: clamp(16px, 5.5vw, 30px); line-height: 1; color: var(--activites-jeu); }
 .activites-act .dm button.sombre { background: var(--trame); }
-.activites-act .dm button.menace { box-shadow: inset 0 0 0 100px color-mix(in srgb, var(--sec) 13%, transparent); }
+.activites-act .dm button.menace { box-shadow: inset 0 0 0 100px color-mix(in srgb, var(--activites-jeu) 22%, transparent); }
 .activites-act .dm button.conflit { color: var(--sec); box-shadow: inset 0 0 0 3px var(--sec); }
 .activites-act .dm button.conseil { box-shadow: inset 0 0 0 3px var(--tan); color: var(--tan); }
 .activites-act .dm button:hover { filter: brightness(.96); background: var(--surface); } .activites-act .dm button.sombre:hover { background: var(--trame); }
@@ -35,7 +35,7 @@ export const html = `
 <section>
   <div class="col">
     <h4><span class="n">1</span>Jouer</h4>
-    <p>Cliquez sur une case pour y poser une dame, et de nouveau pour la retirer. Deux dames qui se menacent sont encadrées. Il faut poser autant de dames que l'échiquier a de lignes. Tant qu'aucune dame n'en menace une autre, la page vous dit si la position peut encore être complétée ; « Une dame de plus » en ajoute une qui ne ferme pas la porte.</p>
+    <p>Cliquez sur une case pour y poser une dame, et de nouveau pour la retirer. Deux dames qui se menacent sont encadrées. Il faut poser autant de dames que l'échiquier a de lignes. Les cases menacées sont teintées en bleu : la page ne dit rien tant qu'il reste une case libre, et vous laisse découvrir seul qu'une position bien partie peut finir en impasse. Si vous séchez, « Une dame de plus » en ajoute une qui ne ferme pas la porte.</p>
   </div>
 </section>
 
@@ -57,13 +57,13 @@ export const html = `
   </div>
 </section>
 ` + suite(
-  "Poser les dames « au mieux » l'une après l'autre, en croyant qu'une position sans menace mène toujours à une solution. C'est faux : sur l'échiquier de 8 sur 8, une dame dans le coin (ligne 1, colonne 1) et une autre en ligne 2, colonne 3 ne se menacent pas, et pourtant aucune des 92 solutions ne les contient toutes les deux. Il faut alors revenir en arrière. La page le signale dès que la position ne peut plus être complétée.",
+  "Poser les dames « au mieux » l'une après l'autre, en croyant qu'une position sans menace mène toujours à une solution. C'est faux : sur l'échiquier de 8 sur 8, une dame dans le coin (ligne 1, colonne 1) et une autre en ligne 2, colonne 3 ne se menacent pas, et pourtant aucune des 92 solutions ne les contient toutes les deux. Il faut alors revenir en arrière ; la page ne le dit que lorsqu'il ne reste plus aucune case libre.",
   "Les permutations et leur dénombrement sont traités en Terminale dans le chapitre <a href=\"#cours/t-07\">Dénombrement</a> et en Maths Sup dans <a href=\"#cours/ma-17\">Groupe symétrique et déterminants</a> ; dans l'édifice, à la fiche <a href=\"#v-det.v-permutations\">Groupe symétrique et signature</a>.",
-  "Toutes les solutions sont énumérées par retour arrière pour la taille choisie (724 au plus), puis regroupées en familles en appliquant à chacune les huit symétries du carré. « Peut être complétée » signifie qu'au moins une de ces solutions contient toutes les dames posées. Rien n'est enregistré ni envoyé.");
+  "Toutes les solutions sont énumérées par retour arrière pour la taille choisie (724 au plus), puis regroupées en familles en appliquant à chacune les huit symétries du carré. « Une dame de plus » choisit une dame dans l'une des solutions qui contiennent toutes les dames déjà posées. Rien n'est enregistré ni envoyé.");
 
 export function monter(racine) {
   const q = s => racine.querySelector(s);
-  let n = 8, D = new Set(), conseil = -1, vivant = true;
+  let n = 8, D = new Set(), conseil = -1, aide = '', vivant = true;
   const tables = new Map();
   // Toutes les solutions (tableau col[ligne]) par retour arrière, et le nombre de familles sous les 8 symétries du carré.
   function table() {
@@ -87,22 +87,28 @@ export function monter(racine) {
       b.className = ((i + c) % 2 ? 'sombre' : '') + (teinte && men ? ' menace' : '') + (enConflit.has(k) ? ' conflit' : '') + (k === conseil ? ' conseil' : '');
       b.textContent = dame ? '♛' : ''; b.setAttribute('aria-pressed', String(dame));
       b.setAttribute('aria-label', `Ligne ${i + 1}, colonne ${c + 1} : ${dame ? 'dame' + (enConflit.has(k) ? ' menacée' : '') : men ? 'case menacée' : 'case libre'}`); });
-    const T = table(), ok = enConflit.size === 0, comp = ok ? compatibles() : [], gagne = ok && D.size === n;
+    const T = table(), ok = enConflit.size === 0, gagne = ok && D.size === n;
     ecrire(q('#dm-nb'), `${D.size} sur ${n}`);
     ecrire(q('#dm-sol'), `Solutions pour cette taille : ${entier(T.sols.length)}`);
-    const m = q('#dm-message'); m.className = 'jeu-message' + (gagne ? ' gagne' : !ok || !comp.length ? ' bloque' : '');
+    const m = q('#dm-message');
+    // La page ne dit pas qu'une position est condamnée tant qu'il reste une case libre (demande de l'auteur) :
+    // le message d'impasse n'arrive que lorsque toutes les cases sont occupées ou menacées.
+    let libres = 0; for (let k = 0; k < n * n; k++) if (!D.has(k) && !L.some(a => menace(a, k))) libres++;
+    m.className = 'jeu-message' + (gagne ? ' gagne' : !ok || (!libres && D.size) ? ' bloque' : '');
     ecrire(m, gagne ? `Réussi : ${n} dames, aucune menace.` : !ok ? 'Deux dames se menacent : retirez-en une.'
-      : !comp.length ? 'Aucune dame ne se menace, mais cette position ne peut plus être complétée : il faut revenir en arrière.'
-      : D.size === 0 ? 'Posez une première dame.' : `Cette position peut encore être complétée, de ${entier(comp.length)} façon${comp.length > 1 ? 's' : ''}.`);
-    q('#dm-conseil').disabled = gagne || !ok || !comp.length;
+      : D.size === 0 ? 'Posez une première dame.'
+      : !libres ? `Impasse : toutes les cases sont occupées ou menacées, avec seulement ${D.size} dame${D.size > 1 ? 's' : ''} sur ${n}. Retirez-en une ou plusieurs et essayez autrement.`
+      : aide || `${D.size} dame${D.size > 1 ? 's' : ''} posée${D.size > 1 ? 's' : ''}, aucune menace. Il reste ${libres} case${libres > 1 ? 's' : ''} libre${libres > 1 ? 's' : ''}.`);
+    q('#dm-conseil').disabled = gagne || !ok;
     ecrire(q('#dm-compte'), `Pour l'échiquier de ${n} sur ${n}, il y a ${entier(T.sols.length)} solutions parmi les ${entier([...Array(n)].reduce((f, _, i) => f * (i + 1), 1))} permutations, qui forment ${entier(T.familles)} famille${T.familles > 1 ? 's' : ''} quand on identifie les solutions qui se déduisent l'une de l'autre par une symétrie du carré.`);
   }
   q('#dm-n').addEventListener('change', e => { n = +e.target.value; D = new Set(); conseil = -1; rendre(); });
-  q('#dm-vider').addEventListener('click', () => { D = new Set(); conseil = -1; rendre(); });
+  q('#dm-vider').addEventListener('click', () => { D = new Set(); conseil = -1; aide = ''; rendre(); });
   q('#dm-menaces').addEventListener('change', rendre);
-  q('#dm-conseil').addEventListener('click', () => { const comp = compatibles(); if (!comp.length) return; const s = comp[Math.floor(Math.random() * comp.length)];
+  q('#dm-conseil').addEventListener('click', () => { const comp = compatibles(); aide = '';
+    if (!comp.length) { aide = 'Vous avez demandé de l\'aide : aucune dame ne peut plus mener à une solution depuis cette position. Il faut en retirer au moins une.'; rendre(); return; } const s = comp[Math.floor(Math.random() * comp.length)];
     for (let i = 0; i < n; i++) if (!D.has(i * n + s[i])) { D.add(i * n + s[i]); conseil = i * n + s[i]; break; } rendre(); });
-  q('#dm-plateau').addEventListener('click', e => { const b = e.target.closest('button[data-k]'); if (!b) return; const k = +b.dataset.k; if (D.has(k)) D.delete(k); else D.add(k); conseil = -1; rendre(); });
+  q('#dm-plateau').addEventListener('click', e => { const b = e.target.closest('button[data-k]'); if (!b) return; const k = +b.dataset.k; if (D.has(k)) D.delete(k); else D.add(k); conseil = -1; aide = ''; rendre(); });
   rendre();
   return () => { vivant = false; };
 }

@@ -379,3 +379,30 @@ le relier », point accroché à une ligne, point d'intersection). Ajouts dans l
 explorations. Menu : « Explorations interactives, casse-têtes à résoudre et atelier de géométrie. » Carte de
 l'accueil et introduction de la page (titre « Explorer, jouer, construire ») : les trois familles sont nommées.
 
+## 126. Dichotomie, matrice, Euclide ; retouches des casse-têtes
+
+**`dichotomie`** (Terminale, Maths Sup ; analyse). Quatre équations : x³ − 2x − 5 = 0 sur [2 ; 3], cos x = x sur
+[0 ; 1], x² = 2 sur [1 ; 2], et le piège 1/(x − 1,3) sur [1 ; 2], qui change de signe sans s'annuler. Jusqu'à
+trente étapes ; les bornes sont des dyadiques exacts en machine. Option « cadrer sur l'intervalle courant ».
+Contrôlé : 2,0945515 ; 0,7390851 ; 1,4142136.
+
+**`matrice`** (Maths expertes, Maths Sup ; algèbre). Coefficients de −2,5 à 2,5 par pas de 0,05, traités en
+vingtièmes entiers : déterminant et discriminant (a − d)² + 4bc exacts, d'où les cas « déterminant nul » et
+« valeur propre double » sans arrondi. Extrémités des colonnes déplaçables, aimantées aux demi-entiers. Carré
+unité et lettre F (pour voir le retournement), directions propres sur demande. Contrôlé : (1,5 ; 0,5 ; 0,5 ; 1)
+→ dét 1,25, valeurs propres 0,691 et 1,809.
+
+**`euclide`** (Maths expertes, Maths Sup ; algèbre). a, b entiers de 1 à 120 ; carrés d'une couleur par étape,
+divisions successives, PGCD, nombre de carrés, fraction continue. Contrôlé : 45 et 12 → quotients 3, 1, 3,
+PGCD 3 ; 89 et 55 → neuf divisions (huit quotients 1 puis 2) ; 120 et 7 → 17, 7.
+
+**Dames (demande de l'auteur).** Les cases menacées sont teintées en bleu (couleur du jeu) et non plus en orange.
+La page ne dit plus qu'une position sans menace ne peut plus être complétée : elle laisse chercher, et n'annonce
+l'impasse que lorsque toutes les cases sont occupées ou menacées. Le bouton « Une dame de plus » le dit s'il
+est sollicité sans issue.
+
+**Tout éteindre (demande de l'auteur).** Bouton « Revenir au départ » : rétablit la position d'avant le premier
+appui et remet le compteur à zéro. Règle à suivre pour les prochains casse-têtes : toujours offrir de reprendre
+la même position, en plus d'en tirer une nouvelle.
+
+Explorations : quatorze. Casse-têtes : quatre.
