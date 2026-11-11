@@ -1530,6 +1530,13 @@ table.grille button.pli-ann:hover { border-color: var(--encre); }
 .activites-sous a:hover { color: var(--encre); border-color: var(--encre-3); border-left-color: var(--o); }
 .activites-sous a[aria-current="page"] { color: var(--surface); background: var(--encre); border-color: var(--encre); border-left-color: var(--o); font-weight: 600; }
 .activites-sous .niv { font: 11px var(--f-mono); opacity: .75; }
+.activites-sous a.activites-retour { --o: var(--c-ord); }
+.activites-filtres { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 26px; margin: -6px 0 22px; padding-bottom: 16px; border-bottom: 1px solid var(--filet); }
+.activites-filtre { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.activites-filtre > span { font: 500 12px var(--f-ui); letter-spacing: .06em; text-transform: uppercase; color: var(--encre-3); }
+.activites-filtre .puces-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.activites-filtre .chip[data-domaine] { border-left: 3px solid var(--o); }
+.activites-compte { margin: 0 0 0 auto; font: 13px var(--f-mono); color: var(--encre-3); }
 .activites-cartes { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
 .activites-carte { display: flex; flex-direction: column; gap: 6px; padding: 16px 18px; text-decoration: none; color: var(--encre); border-top: 3px solid var(--o); }
 .activites-carte:hover { border-color: var(--encre-3); border-top-color: var(--o); }
@@ -3477,13 +3484,33 @@ function pageActivites(chemin) {
     return onglet('#activites/' + x.id, esc(x.titre), membres(x).length, x === grp);
   }).join('')}</nav>`;
   h += `<div class="activites-feuille">`;
-  if (grp) h += `<nav class="activites-sous" aria-label="${esc(grp.titre)}">${membres(grp).map(a => `<a href="#activites/${a.id}"${a.domaine ? ` data-domaine="${esc(a.domaine)}"` : ''}${a === act ? ' aria-current="page"' : ''}>${a.onglet || a.titre}<span class="niv">${esc(a.niveau || '')}</span></a>`).join('')}</nav>`;
+  const dom = a => a.domaine ? ` data-domaine="${esc(a.domaine)}"` : '';
+  if (grp && act) {
+    // Dans un groupe, une activité ouverte : retour à la liste, activité précédente, activité suivante.
+    const M = membres(grp), k = M.indexOf(act), lien = (a, avant) => a ? `<a href="#activites/${a.id}"${dom(a)}>${avant ? '← ' : ''}${a.onglet || a.titre}${avant ? '' : ' →'}</a>` : '';
+    h += `<nav class="activites-sous" aria-label="${esc(grp.titre)}"><a class="activites-retour" href="#activites/${grp.id}">${esc(grp.titre)} : toute la liste</a>${lien(M[k - 1], true)}${lien(M[k + 1], false)}</nav>`;
+  }
   if (!act) {
     if (chemin && !grp) h += `<p class="vide-note">Cette activité n'existe pas (ou plus).</p>`;
-    return h + cartes(grp ? membres(grp) : acts) + `</div>`;
+    if (!grp) return h + cartes(acts) + `</div>`;
+    // Liste d'un groupe : filtres par niveau et par domaine (seules les valeurs présentes sont proposées).
+    const M = membres(grp), F = pageActivites.filtre;
+    const puces = (cle, titre, liste) => { const L = liste.filter(x => M.some(a => cle === 'niv' ? (a.niveaux || []).includes(x.id) : a.domaine === x.id));
+      if (!L.some(x => x.id === F[cle])) F[cle] = '';
+      return L.length < 2 ? '' : `<div class="activites-filtre"><span id="activites-f-${cle}">${titre}</span><div class="puces-chips" role="group" aria-labelledby="activites-f-${cle}">${[{ id: '', titre: cle === 'niv' ? 'Tous' : 'Tous' }, ...L].map(x => `<button type="button" class="chip" data-activites-filtre="${cle}" data-val="${x.id}"${cle === 'dom' && x.id ? ` data-domaine="${x.id}"` : ''} aria-pressed="${F[cle] === x.id}">${esc(x.titre)}</button>`).join('')}</div></div>`; };
+    const filtres = puces('niv', 'Niveau', A.niveaux || []) + puces('dom', 'Domaine', A.domaines || []);
+    const vus2 = M.filter(a => (!F.niv || (a.niveaux || []).includes(F.niv)) && (!F.dom || a.domaine === F.dom));
+    return h + (filtres ? `<div class="activites-filtres">${filtres}<p class="activites-compte" aria-live="polite">${vus2.length} sur ${M.length}</p></div>` : '')
+      + (vus2.length ? cartes(vus2) : `<p class="vide-note">Aucune activité ne correspond à ces deux filtres à la fois.</p>`) + `</div>`;
   }
   return h + `<div class="activites-act" data-act="${esc(act.id)}"><p class="vide-note">Chargement de l'activité…</p></div><div class="activites-pied">${aProposSignalBouton('Activité : ' + act.titre, ADRESSE_SITE + 'activites/' + act.id + '/')}</div></div>`;
 }
+pageActivites.filtre = { niv: '', dom: '' };
+document.addEventListener('click', e => {
+  const b = e.target.closest?.('[data-activites-filtre]'); if (!b) return;
+  pageActivites.filtre[b.dataset.activitesFiltre] = b.dataset.val; rafraichirRubrique();
+  document.querySelector(`[data-activites-filtre="${b.dataset.activitesFiltre}"][data-val="${b.dataset.val}"]`)?.focus();
+});
 // Montage : dès qu'un cadre .activites-act apparaît dans la page, son module est importé, ses styles posés et ses
 // figures lancées ; quand le cadre disparaît (autre onglet, autre rubrique, retour à l'édifice), tout est défait.
 let activitesEnCours = null;

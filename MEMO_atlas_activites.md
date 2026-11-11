@@ -25,9 +25,13 @@ disait bien aimer. Un changement de nom toucherait l'identifiant, donc les adres
 d'intercalaires de classeur tournés vers le haut, dans l'ordre du catalogue : « Toutes », puis un intercalaire
 par *groupe* d'activités (aujourd'hui « Explorations », qui réunit les deux explorables de visualisation ; le
 nombre d'activités est affiché) et un intercalaire par activité *sans groupe* (« Atelier de construction »),
-qui s'ouvre directement. Les activités d'un groupe ne sont pas des onglets :
-une fois dans l'intercalaire, un sous-menu (`.activites-sous`) les propose, l'activité ouverte étant marquée
-`aria-current` ; une activité sans groupe n'a pas de sous-menu. Versions écartées par l'auteur : un intercalaire
+qui s'ouvre directement. Les activités d'un groupe ne sont pas des onglets.
+La page du groupe (`#activites/explorations`) les présente en cartes, avec deux filtres à puces, par niveau et
+par domaine, dans l'esprit de la banque d'exercices (demande de l'auteur, les explorations devant devenir
+nombreuses) : état dans `pageActivites.filtre`, clic géré par un écouteur délégué qui appelle
+`rafraichirRubrique`, seules les valeurs présentes sont proposées. Une activité ouverte dans un groupe porte une
+barre `.activites-sous` : retour à la liste, activité précédente, activité suivante (le sous-menu qui citait
+toutes les activités ne tenait plus au-delà de quelques-unes). Une activité sans groupe n'a rien de cela. Versions écartées par l'auteur : un intercalaire
 par activité, puis un découpage par domaine mathématique (« Analyse », « Géométrie »), qui créait un sous-menu à
 une seule entrée pour l'atelier. Les intercalaires sont en olive, couleur de la rubrique, sauf « Toutes », en gris. Le domaine mathématique ne
 colore plus les intercalaires mais, à la demande de l'auteur, les entrées du sous-menu et les cartes des
@@ -46,7 +50,8 @@ n'a pas été modifié : la proposition d'y mettre un lien vers les activités a
 barre de rubriques des pages de lecture (`lecture.mjs`, domaine À propos) ne cite pas encore « Activités ».
 
 **Catalogue : `rubriques/activites.yaml`.** `intro` ; `groupes` (`id`, `titre`, `intro`) ; `activites` (`id`,
-`titre`, `onglet`, `niveau`, `resume`, `texte`, `cours`, `noeuds`, `groupe` ou rien, `domaine` facultatif).
+`titre`, `onglet`, `niveau` (texte affiché), `niveaux` (identifiants, pour le filtre), `resume`, `texte`,
+`cours`, `noeuds`, `groupe` ou rien, `domaine`) ; `niveaux` et `domaines` (`id`, `titre`) : listes des filtres.
 `construire.py` vérifie les `noeuds` comme pour toute rubrique ; `rendu.mjs` compose `intro`, `resume` et
 `texte`. Les identifiants de `cours` et de `groupe` ne sont vérifiés par personne : les relire à la main.
 
@@ -154,3 +159,34 @@ vers `/cours/<id>/` et `/edifice/<nœud>/`, bouton « Ouvrir dans l'atlas ». Ce
 dans le plan du site (4 adresses). Le bouton « Partager » donne `/activites/<id>/` pour une activité et
 `/activites/` sinon (ligne `activites` de `adressePartage`). « Signaler une erreur » : `aProposSignalBouton`
 au pied de chaque activité.
+
+### 120. Explorations écrites pour le site ; liste d'attente (11 nov. 2026)
+
+**`activites/figures.js`.** Outils communs aux explorations qui ne viennent pas d'un prototype : `scene(racine,
+rendre)` (couleurs du thème, rendu différé, suivi du thème et de la taille, `arreter()`), `toile`, `vue`,
+`vueEgale`, `grille`, `courbe` (avec coupures aux discontinuités), `droite`, `etiquette`, `poignee`, `pastille`,
+`glisser` (souris et doigt), nombres à la française (`fr`, `frc`), `fraction` exacte, styles `cssFigures`
+(réglages par curseurs étiquetés, lectures) et `suite()` (piège, démonstration, ce que la page calcule). Les
+fonctions de tracé reprennent celles des prototypes de l'auteur, pour un aspect identique. Règle suivie : tout
+paramètre se règle par un curseur natif (donc au clavier), le glissement sur la figure venant en plus.
+
+**Trois explorations publiées le 11 nov.**, une par couleur.
+- `cercle-trigo` (Première, géométrie) : point sur le cercle, cos et sin lus comme coordonnées, courbes
+  déroulées, angles associés avec la symétrie correspondante. Angle en douzièmes de π ; valeurs exactes tirées
+  d'une table pour les multiples de π/6 et π/4, décimales à 10⁻⁴ sinon.
+- `second-degre` (Première, algèbre) : coefficients par demi-unités, stockés en entiers doublés (A, B, K) ;
+  Δ = (B² − 4AK)/4, α = −B/(2A), β = −(B² − 4AK)/(8A) calculés en entiers et écrits en fractions ; racines
+  exactes si B² − 4AK est un carré parfait. Le curseur de *a* saute par-dessus 0. Lieu du sommet quand *b*
+  varie : y = −ax² + c. Contrôles faits à la main sur quatre trinômes, dont −1,5x² + 2,5x + 2 (Δ = 18,25,
+  S(5/6 ; 73/24)).
+- `aire-primitive` (Terminale, analyse) : F(x) = G(x) − G(a) avec une primitive G exacte par fonction (dérivée
+  de G comparée à f numériquement, écart < 10⁻⁹) ; rectangle de même aire que la tranche [x ; x + h] ; fonction
+  en escalier pour montrer la nécessité de la continuité (taux 2,5 à droite, 1 à gauche en x = 1).
+
+**Liste validée par l'auteur (« les vingt idées »), restant à écrire**, dans l'ordre proposé : toile d'araignée
+des suites récurrentes ; suites arithmétiques et géométriques ; le nombre e ; l'intégrale par rectangles ;
+valeurs intermédiaires et dichotomie ; méthode d'Euler ; accroissements finis ; développements limités ;
+convexité ; produit scalaire ; multiplication complexe et racines n-ièmes ; droites et plans de l'espace ;
+matrice 2×2 et déterminant ; racines et coefficients d'un polynôme ; algorithme d'Euclide en rectangles ;
+binomiale et courbe en cloche ; loi des grands nombres. Demandes en attente du même message : des défis plus
+difficiles dans l'atelier (figure codée à reproduire), des explorations de dénombrement et des casse-têtes.

@@ -308,7 +308,7 @@ const traces=new Map();
 const TOOLS=[
  ['move','Déplacer','<path class="f" d="M6 3l12 8-5.2 1.1L15.5 18l-2.3 1-2.6-5.8L6 17z"/>'],
  ['point','Point','<circle class="f" cx="12" cy="12" r="3.5"/>'],
- ['inter','Intersection','<circle cx="9" cy="14" r="7"/><path d="M6 3l14 16"/><circle class="f" cx="16" cy="14.4" r="2.6"/>'],
+ ['inter','Intersection','<path d="M3 18L21 8M6 4l10 17"/><circle class="f" cx="11.5" cy="13.3" r="2.9"/>'],
  ['seg','Segment','<path d="M5 19L19 5"/><circle class="f" cx="5" cy="19" r="2.3"/><circle class="f" cx="19" cy="5" r="2.3"/>'],
  ['line','Droite','<path d="M2 22L22 2"/><circle class="f" cx="8" cy="16" r="2.1"/><circle class="f" cx="16" cy="8" r="2.1"/>'],
  ['circle','Cercle','<circle cx="12" cy="12" r="8.5"/><circle class="f" cx="12" cy="12" r="1.8"/>'],
