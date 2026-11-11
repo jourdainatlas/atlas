@@ -20,6 +20,7 @@ export const css = cssCommun + cssFigures + cssJeux + `
 .activites-act .go-plateau .atari { fill: none; stroke: #d9480f; stroke-width: 3; stroke-dasharray: 5 4; }
 .activites-act .go-plateau .conseil { fill: none; stroke: #0b7a3b; stroke-width: 3.5; }
 .activites-act .go-plateau .curseur { fill: none; stroke: #1b1d21; stroke-width: 2; stroke-dasharray: 3 3; }
+.activites-act .go-plateau .terr.flou { opacity: .5; }
 .activites-act .go-plateau .terr.n { fill: #1b1d21; } .activites-act .go-plateau .terr.b { fill: #f6f5f0; stroke: #55514a; stroke-width: .8; }
 .activites-act .go-plateau text { font: 700 15px var(--f-ui); text-anchor: middle; dominant-baseline: central; pointer-events: none; }
 .activites-act .go-plateau text.n { fill: #f6f5f0; } .activites-act .go-plateau text.b { fill: #1b1d21; } .activites-act .go-plateau text.rep { font-weight: 500; font-size: 11px; fill: #4a3a1c; }
@@ -47,7 +48,7 @@ export const html = `
     <button type="button" class="primary" id="go-neuf">Nouvelle partie</button>
   </div>
   <p class="go-but">But : à la fin, avoir <b>plus de points que l'adversaire</b>. Un point par pierre posée et vivante, un point par intersection vide entourée par vos seules pierres. Blanc reçoit le komi en compensation du premier coup de Noir.</p>
-  <div class="bar"><button type="button" id="go-passer">Passer</button><button type="button" id="go-annuler">Annuler</button><button type="button" id="go-conseil">Un conseil</button><button type="button" id="go-reprendre" hidden>Reprendre la partie</button><button type="button" class="primary" id="go-valider" hidden>Valider le décompte</button>
+  <div class="bar"><button type="button" id="go-passer">Passer</button><button type="button" id="go-annuler">Annuler</button><button type="button" id="go-conseil">Un conseil</button><button type="button" id="go-arreter">Arrêter et estimer</button><button type="button" id="go-reprendre" hidden>Reprendre la partie</button><button type="button" class="primary" id="go-valider" hidden>Valider le décompte</button>
     <label><input type="checkbox" id="go-libs"> afficher les libertés</label><label><input type="checkbox" id="go-atari"> signaler les chaînes à une liberté</label></div>
   <p class="go-tour" id="go-tour" aria-live="polite"></p>
   <div class="jeu-plateau"><div class="go-plateau" id="go-plateau"></div></div>
@@ -63,6 +64,7 @@ export const html = `
     <p><b>3.</b> Une chaîne dont l'adversaire occupe la dernière liberté est <b>prise</b> : ses pierres sont retirées du plateau.</p>
     <p><b>4.</b> Il est interdit de poser une pierre qui laisserait sa propre chaîne sans liberté, sauf si ce coup prend des pierres adverses. Il est interdit de reproduire une disposition du plateau déjà apparue dans la partie : c'est la règle du <b>ko</b>.</p>
     <p><b>5.</b> Quand les deux joueurs passent l'un après l'autre, la partie s'arrête. On retire les pierres <b>mortes</b>, celles qui seraient prises à coup sûr si l'on continuait, puis chacun compte ses pierres et les intersections vides que ses pierres sont seules à border.</p>
+    <p>La partie peut aussi s'arrêter plus tôt. « Arrêter et estimer » l'interrompt à tout moment : la page termine alors plusieurs centaines de parties au hasard depuis la position, et marque d'un carré estompé le joueur à qui chaque intersection encore ouverte revient le plus souvent. La page fait d'elle-même cette estimation avant chaque coup : si plus aucune intersection ne paraît disputée, elle arrête la partie et propose le décompte ; contre vous, elle abandonne quand elle ne gagne plus qu'une de ces parties sur cent, ou moins. Dans tous les cas, « Reprendre la partie » ou « Annuler » vous laissent continuer si vous n'êtes pas d'accord.</p>
     <p>Pour jouer, cliquez sur une intersection. Au clavier, les flèches déplacent un repère, la touche Entrée pose la pierre et la touche P passe. Quand les deux joueurs ont passé, la page propose les pierres mortes, en grisé : cliquez sur une chaîne pour changer son statut, puis validez. À deux, mettez-vous d'accord ; en cas de désaccord, « Reprendre la partie » permet de trancher en jouant.</p>
   </div>
 </section>
@@ -125,13 +127,13 @@ export const html = `
     <h4><span class="n">6</span>Ce que l'on sait, et comment joue la page</h4>
     <p>Le plateau de 5 lignes est résolu : Erik van der Werf, Jaap van den Herik et Jos Uiterwijk ont établi par ordinateur, en 2003, que Noir gagne la totalité du plateau en jouant au mieux (<i>admis ici</i> : le résultat repose sur une recherche exhaustive hors de portée de cette page). Pour 9 lignes, et à plus forte raison pour 19, on ne connaît pas l'issue du jeu parfait.</p>
     <p>La page ne joue donc pas parfaitement. Pour choisir un coup, elle termine des milliers de parties en jouant au hasard à partir de la position, et retient le coup après lequel son camp gagne le plus souvent, en explorant davantage les coups prometteurs. Cette méthode, la <b>recherche arborescente de Monte-Carlo</b>, repose sur la loi des grands nombres : la fréquence des victoires estime la valeur d'un coup. Le bouton « Un conseil » emploie la même méthode : c'est une suggestion, pas une certitude.</p>
-    <p>Les quatre niveaux ne diffèrent que par le nombre de parties examinées avant chaque coup. Au niveau 1, <b>débutant</b>, la page n'en examine que 15, et joue de plus un coup tiré au hasard trois fois sur dix : elle laisse prendre ses pierres et convient pour une toute première partie. Au niveau 2, <b>facile</b>, elle en examine 120 ; au niveau 3, <b>moyen</b>, 1 200 ; au niveau 4, <b>fort</b>, 10 000, ce qui demande une seconde ou davantage par coup, selon l'appareil. L'échelle est nette : dans les essais faits en écrivant cette page, chaque niveau a gagné toutes ses parties contre le niveau inférieur, sur 8 à 20 parties selon les niveaux. Aucun de ces niveaux n'a été mesuré contre des joueurs classés.</p>
+    <p>Les quatre niveaux ne diffèrent que par le nombre de parties examinées avant chaque coup. Au niveau 1, <b>débutant</b>, la page n'en examine que 15, et joue de plus un coup tiré au hasard trois fois sur dix : elle laisse prendre ses pierres et convient pour une toute première partie. Au niveau 2, <b>facile</b>, elle en examine 250 ; au niveau 3, <b>moyen</b>, 3 000 ; au niveau 4, <b>fort</b>, 10 000, ce qui demande une seconde ou davantage par coup, selon l'appareil. Dans les essais faits en écrivant cette page, le niveau 2 a gagné 20 parties sur 20 contre le niveau 1, le niveau 3 en a gagné 16 sur 16 contre le niveau 2, et le niveau 4 en a gagné 11 sur 16 contre le niveau 3. Aucun de ces niveaux n'a été mesuré contre des joueurs classés.</p>
   </div>
 </section>
 ` + suite(
   "Croire qu'un groupe vit parce qu'il entoure beaucoup d'intersections. Quatre cases en carré ne donnent jamais deux yeux, alors que quatre cases en ligne en donnent toujours : c'est la forme de l'espace intérieur qui décide, et la page le démontre par l'examen de toutes les suites. L'autre erreur des débuts est de compter les diagonales : deux pierres qui se touchent par un coin ne forment pas une chaîne, et l'adversaire peut les séparer.",
   "Le chapitre de Maths expertes <a href=\"#cours/me-06\">Applications des matrices</a> introduit les graphes ; celui de Terminale <a href=\"#cours/t-10\">sur la loi des grands nombres</a> fonde la méthode de Monte-Carlo, que l'exploration <a href=\"#activites/grands-nombres\">La loi des grands nombres</a> fait voir. Dans l'édifice : <a href=\"#n.n-fini\">Ensembles finis et principe des tiroirs</a>, pour la finitude de la partie. Sources : J. Tromp, « The Number of Legal Go Positions » (2016) ; E. van der Werf, J. van den Herik et J. Uiterwijk, « Solving Go on Small Boards », <i>ICGA Journal</i> (2003).",
-  "Les règles (prises, suicide, répétition) sont appliquées exactement. Le décompte se fait par aire, avec le komi choisi ; les pierres mortes proposées viennent de quelques centaines de parties terminées au hasard, et c'est à vous de les corriger. L'adversaire et le conseil relèvent de la recherche de Monte-Carlo : le niveau fixe le nombre de parties examinées par coup, si bien que la force de la page ne dépend pas de la vitesse de votre appareil, mais ses coups n'ont rien de certain. Les problèmes de vie et de mort, eux, sont résolus par une recherche exhaustive où seules les intersections de l'espace intérieur se jouent, où Blanc peut passer, et où aucune disposition ne se répète : leurs verdicts sont exacts pour ces règles. Rien n'est enregistré ni envoyé.");
+  "Les règles (prises, suicide, répétition) sont appliquées exactement. Le décompte se fait par aire, avec le komi choisi ; les pierres mortes proposées, l'estimation d'une partie arrêtée, l'arrêt automatique et l'abandon de la page viennent de quelques centaines de parties terminées au hasard : ce sont des jugements statistiques et non des certitudes, et c'est à vous de les corriger. Une intersection est tenue pour disputée tant qu'elle ne revient pas au même joueur dans neuf de ces parties sur dix. L'adversaire et le conseil relèvent de la recherche de Monte-Carlo : le niveau fixe le nombre de parties examinées par coup, si bien que la force de la page ne dépend pas de la vitesse de votre appareil, mais ses coups n'ont rien de certain. Les problèmes de vie et de mort, eux, sont résolus par une recherche exhaustive où seules les intersections de l'espace intérieur se jouent, où Blanc peut passer, et où aucune disposition ne se répète : leurs verdicts sont exacts pour ces règles. Rien n'est enregistré ni envoyé.");
 
 // ---------- Moteur : plateau, chaînes, libertés, prises ----------
 export function plateau(n) {
@@ -175,7 +177,7 @@ export function plateau(n) {
 // ---------- Adversaire : recherche arborescente de Monte-Carlo (UCT avec statistiques « tous les coups comme premiers ») ----------
 export function monteCarlo(P, komi) {
   const { N, vois, poser, oeil, E } = P, tmp = new Int8Array(N), vides = new Int32Array(N), premier = [null, new Int32Array(N), new Int32Array(N)];
-  let dernierProp = null;
+  let dernierProp = null, victoiresNoires = 0;
   // Partie au hasard depuis col (modifié), trait c, ko simple. Rend la marge noire (aire noire − aire blanche).
   function hasard(col, c, ko, rang) { let passes = 0, coups = 0;
     while (passes < 2 && coups < 3 * N) { let nv = 0; for (let p = 0; p < N; p++) if (col[p] === 0) vides[nv++] = p;
@@ -210,7 +212,7 @@ export function monteCarlo(P, komi) {
       meilleur() { let b = null; for (const f of racine.fils) if (!b || f.n > b.n) b = f; return b ? { coup: b.coup, taux: b.n ? b.g / b.n : 0.5, n: b.n } : { coup: -1, taux: 0.5, n: 0 }; } }; }
   // Pierres mortes probables : propriétaire moyen de chaque case sur k parties au hasard.
   function proprietaires(col0, c0, k) { dernierProp = new Float64Array(N); const col = new Int8Array(N); premier[1].fill(1); premier[2].fill(1);
-    for (let t = 0; t < k; t++) { col.set(col0); hasard(col, t % 2 ? c0 : 3 - c0, -1, 0); } const r = Array.from(dernierProp, x => x / k); dernierProp = null; return r; }
+    victoiresNoires = 0; for (let t = 0; t < k; t++) { col.set(col0); if (hasard(col, c0, -1, 0) - komi > 0) victoiresNoires++; } const r = Array.from(dernierProp, x => x / k); dernierProp = null; r.noir = victoiresNoires / k; return r; }
   return { chercheur, proprietaires };
 }
 
@@ -268,7 +270,7 @@ function dessin(P, col, o = {}) {
       if (o.atari && info.get(p) === 1 && !morte) s += `<circle class="atari" cx="${x}" cy="${y}" r="${u / 2 - 5}"/>`;
       if (o.libs && !o.prop) s += `<text class="${c === 1 ? 'n' : 'b'}" x="${x}" y="${y}">${info.get(p)}</text>`;
       else if (o.dernier === p) s += `<circle class="dern ${c === 1 ? 'n' : 'b'}" cx="${x}" cy="${y}" r="7"/>`; }
-    if (o.prop && o.prop[p] && (!c || (o.mortes && o.mortes.has(p)))) s += `<rect class="terr ${o.prop[p] === 1 ? 'n' : 'b'}" x="${x - 6}" y="${y - 6}" width="12" height="12"/>`;
+    if (o.prop && o.prop[p] && (!c || (o.mortes && o.mortes.has(p)))) s += `<rect class="terr ${o.prop[p] === 1 ? 'n' : 'b'}${o.flou && o.flou.has(p) ? ' flou' : ''}" x="${x - 6}" y="${y - 6}" width="12" height="12"/>`;
     if (o.conseil === p) s += `<circle class="conseil" cx="${x}" cy="${y}" r="${u / 2 - 6}"/>`;
     if (o.curseur === p) s += `<rect class="curseur" x="${x - u / 2 + 3}" y="${y - u / 2 + 3}" width="${u - 6}" height="${u - 6}" rx="4"/>`; }
   for (let k = 0; k < n; k++) s += `<text class="rep" x="${m + k * u}" y="10">${'ABCDEFGHJ'[k]}</text><text class="rep" x="9" y="${m + k * u}">${n - k}</text>`;
@@ -276,7 +278,7 @@ function dessin(P, col, o = {}) {
   return `<svg viewBox="0 0 ${T} ${T}" role="img" aria-label="Plateau de go de ${n} lignes">${s}</svg>`;
 }
 // Niveaux de la page : [parties au hasard examinées par coup, probabilité de jouer un coup tiré au hasard].
-const NIVEAUX = [[15, 0.3], [120, 0], [1200, 0], [10000, 0]];
+const NIVEAUX = [[15, 0.3], [250, 0], [3000, 0], [10000, 0]];
 const nomPoint = (P, p) => 'ABCDEFGHJ'[p % P.n] + (P.n - Math.floor(p / P.n));
 
 export function monter(racine) {
@@ -289,7 +291,7 @@ export function monter(racine) {
   const mode = () => q('#go-mode').value, humain = () => +q('#go-coul').value, komi = () => +q('#go-komi').value;
   const aLaPage = () => mode() === 'page' && G.phase === 'jeu' && G.trait !== humain();
   function nouvelle() { jeton++; P = plateau(+q('#go-n').value); M = monteCarlo(P, komi());
-    G = { col: new Int8Array(P.N), trait: 1, passes: 0, pris: [0, 0, 0], dernier: -1, hist: [], vus: new Set(), phase: 'jeu', mortes: new Set(), curseur: (P.N - 1) / 2, clavier: false, conseil: -1, msg: '', pense: false, nb: 0 };
+    G = { col: new Int8Array(P.N), trait: 1, passes: 0, pris: [0, 0, 0], dernier: -1, hist: [], vus: new Set(), phase: 'jeu', mortes: new Set(), curseur: (P.N - 1) / 2, clavier: false, conseil: -1, msg: '', pense: false, nb: 0, estime: null, raison: '', abandon: 0 };
     G.vus.add(cle(G.col)); rendre(); if (aLaPage()) penser(); }
   // Coups qui reproduiraient une disposition déjà vue.
   function repetitions(c) { const r = new Set(); for (let p = 0; p < P.N; p++) { if (G.col[p]) continue; const s = G.col.slice(); if (P.poser(s, p, c) >= 0 && G.vus.has(cle(s))) r.add(p); } return r; }
@@ -302,38 +304,49 @@ export function monter(racine) {
     G.col = s; G.pris[c] += Math.max(0, pris); G.dernier = p; G.passes = p < 0 ? G.passes + 1 : 0; if (p >= 0) G.vus.add(cle(s)); G.trait = 3 - c; G.nb++; G.conseil = -1;
     G.msg = p < 0 ? `${NOM[c]} passe.` : `${NOM[c]} joue en ${nomPoint(P, p)}${pris > 0 ? ` et prend ${pris} pierre${pris > 1 ? 's' : ''}` : ''}.`;
     if (G.passes >= 2) decompter(); return true; }
-  function decompter() { G.phase = 'decompte'; G.mortes = new Set(); const pr = M.proprietaires(G.col, G.trait, 400), fait = new Set();
+  // Estimation : propriétaire moyen de chaque intersection sur k parties finies au hasard ; .noir = part des victoires noires.
+  const estimer = k => M.proprietaires(G.col, G.trait, k);
+  const dispute = pr => { let k = 0; for (const x of pr) if (Math.abs(x) < 0.8) k++; return k; };
+  // Avant chaque coup : la page abandonne-t-elle ? la partie est-elle jouée ? Rend true si la partie s'arrête.
+  function arretAuto() { if (G.phase !== 'jeu' || G.nb < 2 * P.n || G.sansArret) return false; const pr = estimer(300), page = mode() === 'page' ? 3 - humain() : 0;
+    if (page && G.trait === page && (page === 1 ? pr.noir : 1 - pr.noir) <= 0.01) { decompter(pr, ''); G.phase = 'fini'; G.abandon = page; return true; }
+    if (!dispute(pr)) { decompter(pr, 'Plus aucune intersection ne paraît disputée : la page arrête la partie et propose le décompte.'); return true; }
+    return false; }
+  function decompter(estime, raison) { G.phase = 'decompte'; G.mortes = new Set(); G.estime = estime || null; G.raison = raison || ''; const pr = estime || estimer(400), fait = new Set();
     for (let p = 0; p < P.N; p++) if (G.col[p] && !fait.has(p)) { const ch = P.chaine(G.col, p); let s = 0; for (const x of ch.pierres) { fait.add(x); s += pr[x]; } s /= ch.pierres.length;
       if ((G.col[p] === 1 && s < -0.4) || (G.col[p] === 2 && s > 0.4)) for (const x of ch.pierres) G.mortes.add(x); }
     G.msg = ''; }
-  function score() { const s = G.col.slice(); for (const p of G.mortes) s[p] = 0; const [a, b, prop] = P.aire(s); return { a, b, prop }; }
-  function penser() { const moi = ++jeton, c = G.trait; G.pense = true; rendre();
+  function score() { const s = G.col.slice(); for (const p of G.mortes) s[p] = 0; let [a, b, prop] = P.aire(s); const flou = new Set();
+    if (G.estime) for (let p = 0; p < P.N; p++) if (!prop[p] && Math.abs(G.estime[p]) >= 0.3) { prop[p] = G.estime[p] > 0 ? 1 : 2; flou.add(p); if (prop[p] === 1) a++; else b++; }
+    return { a, b, prop, flou }; }
+  function penser() { const moi = ++jeton, c = G.trait; if (arretAuto()) { rendre(); return; } G.pense = true; rendre();
     // Après une passe adverse, la page passe aussi si le décompte du plateau tel quel lui donne déjà la victoire.
     if (G.passes === 1) { const [a, b] = P.aire(G.col), marge = a - b - komi(); if ((c === 1) === (marge > 0)) { setTimeout(() => { if (moi !== jeton || !vivant) return; G.pense = false; jouer(-1); rendre(); }, 30); return; } }
     const [cible, etourderie] = NIVEAUX[+q('#go-force').value], S = M.chercheur(G.col, c, -1, repetitions(c)), fin = performance.now() + 8000;
     if (Math.random() < etourderie) { const f = S.racine.fils, p = f[Math.floor(Math.random() * f.length)].coup; setTimeout(() => { if (moi !== jeton || !vivant) return; G.pense = false; if (!jouer(p)) jouer(-1); rendre(); }, 30); return; }
     const tranche = () => { if (moi !== jeton || !vivant) return; const t = performance.now() + 35; while (performance.now() < t && S.total < cible) S.tour();
       if (S.total < cible && performance.now() < fin) { setTimeout(tranche, 0); return; }
-      G.pense = false; const b = S.meilleur(); if (!jouer(b.coup)) jouer(-1); rendre(); };
+      G.pense = false; const b = S.meilleur(); if (!jouer(b.coup)) jouer(-1); arretAuto(); rendre(); };
     setTimeout(tranche, 20); }
   function clic(p) { if (G.pense) return;
     if (G.phase === 'decompte') { if (!G.col[p]) return; const ch = P.chaine(G.col, p).pierres, morte = G.mortes.has(p); for (const x of ch) morte ? G.mortes.delete(x) : G.mortes.add(x); rendre(); return; }
-    if (G.phase !== 'jeu' || aLaPage()) return; const ok = jouer(p); rendre(); if (ok && aLaPage()) penser(); }
+    if (G.phase !== 'jeu' || aLaPage()) return; const ok = jouer(p); if (ok && !aLaPage()) arretAuto(); rendre(); if (ok && aLaPage()) penser(); }
   function rendre() {
     if (!vivant) return; const deux = mode() === 'deux', dec = G.phase !== 'jeu';
     q('#go-coul-l').hidden = deux; q('#go-force-l').hidden = deux;
     const o = { dernier: G.dernier, libs: q('#go-libs').checked, atari: q('#go-atari').checked, conseil: G.conseil, curseur: G.clavier && !dec ? G.curseur : -1 };
-    let sc = null; if (dec) { sc = score(); o.mortes = G.mortes; o.prop = sc.prop; }
+    let sc = null; if (dec) { sc = score(); o.mortes = G.mortes; o.prop = sc.prop; o.flou = sc.flou; }
     const pl = q('#go-plateau'); pl.classList.toggle('fige', G.pense || G.phase === 'fini' || aLaPage()); ecrire(pl, dessin(P, G.col, o), true);
     ecrire(q('#go-pn'), String(G.pris[1])); ecrire(q('#go-pb'), String(G.pris[2])); ecrire(q('#go-nb'), String(G.nb));
-    q('#go-passer').disabled = dec || G.pense || aLaPage(); q('#go-conseil').disabled = dec || G.pense || aLaPage(); q('#go-annuler').disabled = !G.hist.length || G.pense;
+    q('#go-passer').disabled = dec || G.pense || aLaPage(); q('#go-conseil').disabled = dec || G.pense || aLaPage(); q('#go-arreter').disabled = dec || G.pense || !G.nb; q('#go-annuler').disabled = !G.hist.length || G.pense;
     q('#go-reprendre').hidden = G.phase !== 'decompte'; q('#go-valider').hidden = G.phase !== 'decompte';
     const pastille = c => `<i class="p ${c === 1 ? 'n' : 'b'}"></i>`, qui = c => deux ? NOM[c] : (c === humain() ? 'vous (' + NOM[c] + ')' : 'la page (' + NOM[c] + ')');
     let tour, msg = G.msg, cl = '';
     if (!dec) tour = G.pense ? `<span>${pastille(G.trait)}La page réfléchit…</span>` : `<span>${pastille(G.trait)}Au trait : ${qui(G.trait)}.</span>`;
     else { const k = komi(), tb = sc.b + k, fr1 = x => String(x).replace('.', ','), ecart = sc.a - tb, g = ecart > 0 ? 1 : 2;
-      tour = `<span>${pastille(1)}Noir : ${sc.a}</span><span>${pastille(2)}Blanc : ${sc.b}${k ? ' + ' + fr1(k) + ' = ' + fr1(tb) : ''}</span><span>${ecart === 0 ? 'Égalité.' : `${NOM[g]} gagne de ${fr1(Math.abs(ecart))} point${Math.abs(ecart) > 1 ? 's' : ''}.`}</span>`;
-      if (G.phase === 'decompte') msg = 'Les deux joueurs ont passé. Les pierres grisées sont proposées comme mortes, et les petits carrés indiquent à qui revient chaque intersection. Cliquez sur une chaîne pour changer son statut, puis validez le décompte.';
+      tour = (G.estime ? '<span>Estimation</span>' : '') + `<span>${pastille(1)}Noir : ${sc.a}</span><span>${pastille(2)}Blanc : ${sc.b}${k ? ' + ' + fr1(k) + ' = ' + fr1(tb) : ''}</span><span>${ecart === 0 ? 'Égalité.' : `${NOM[g]} gagne de ${fr1(Math.abs(ecart))} point${Math.abs(ecart) > 1 ? 's' : ''}.`}</span>`;
+      if (G.abandon) { tour = `<span>${pastille(G.abandon)}La page abandonne.</span>` + tour; msg = 'La page abandonne : sur 300 parties terminées au hasard depuis cette position, elle n\'en gagne presque aucune. Vous gagnez la partie. Les carrés indiquent à qui reviendrait probablement chaque intersection.'; cl = ' gagne'; }
+      else if (G.phase === 'decompte') msg = (G.estime ? (G.raison || 'Partie arrêtée.') + ' Les carrés estompés sont une estimation, tirée de parties terminées au hasard : ils disent à qui reviendrait probablement chaque intersection encore ouverte. ' : 'Les deux joueurs ont passé. ') + 'Les pierres grisées sont proposées comme mortes, et les carrés indiquent à qui revient chaque intersection. Cliquez sur une chaîne pour changer son statut, puis validez le décompte ou reprenez la partie.';
       else { msg = ecart === 0 ? 'Partie nulle.' : deux ? `${NOM[g]} gagne la partie.` : g === humain() ? 'Vous gagnez la partie.' : 'La page gagne la partie.'; cl = ecart === 0 ? '' : deux || g === humain() ? ' gagne' : ' bloque'; } }
     ecrire(q('#go-tour'), tour, true); const m = q('#go-message'); m.className = 'jeu-message' + cl;
     ecrire(m, msg || (G.nb ? '' : 'Noir commence. Cliquez sur une intersection pour y poser une pierre.'));
@@ -342,10 +355,11 @@ export function monter(racine) {
   q('#go-passer').addEventListener('click', () => { if (G.pense || aLaPage()) return; jouer(-1); rendre(); if (aLaPage()) penser(); });
   q('#go-annuler').addEventListener('click', () => { if (G.pense || !G.hist.length) return; jeton++;
     do { const h = G.hist.pop(); if (h.cle) G.vus.delete(h.cle); G.col = h.col; G.trait = h.trait; G.passes = h.passes; G.pris = h.pris; G.dernier = h.dernier; G.nb = h.nb; } while (mode() === 'page' && G.hist.length && G.trait !== humain());
-    G.phase = 'jeu'; G.mortes = new Set(); G.conseil = -1; G.msg = ''; rendre(); if (aLaPage()) penser(); });
+    G.phase = 'jeu'; G.mortes = new Set(); G.estime = null; G.abandon = 0; G.conseil = -1; G.msg = ''; G.sansArret = true; rendre(); if (aLaPage()) penser(); });
   q('#go-conseil').addEventListener('click', () => { if (G.pense || G.phase !== 'jeu') return; const S = M.chercheur(G.col, G.trait, -1, repetitions(G.trait)), fin = performance.now() + 700; while (performance.now() < fin) S.tour(); const b = S.meilleur();
     G.conseil = b.coup; G.msg = b.coup < 0 ? 'Vous avez demandé un conseil : la page ne voit plus de coup utile et passerait.' : `Vous avez demandé un conseil : la page jouerait en ${nomPoint(P, b.coup)} (cerclé de vert). C'est une suggestion tirée de ${S.total.toLocaleString('fr-FR')} parties terminées au hasard, pas une certitude.`; rendre(); });
-  q('#go-reprendre').addEventListener('click', () => { G.phase = 'jeu'; G.passes = 0; G.mortes = new Set(); G.msg = 'La partie reprend.'; rendre(); if (aLaPage()) penser(); });
+  q('#go-reprendre').addEventListener('click', () => { G.phase = 'jeu'; G.passes = 0; G.mortes = new Set(); G.estime = null; G.sansArret = true; G.msg = 'La partie reprend. Elle ne s\'arrêtera plus d\'elle-même : passez tous les deux, ou cliquez sur « Arrêter et estimer ».'; rendre(); if (aLaPage()) penser(); });
+  q('#go-arreter').addEventListener('click', () => { if (G.pense || G.phase !== 'jeu' || !G.nb) return; jeton++; decompter(estimer(600), 'Vous avez arrêté la partie.'); rendre(); });
   q('#go-valider').addEventListener('click', () => { G.phase = 'fini'; rendre(); });
   q('#go-neuf').addEventListener('click', nouvelle); for (const id of ['#go-n', '#go-mode', '#go-coul', '#go-komi']) q(id).addEventListener('change', nouvelle);
   for (const id of ['#go-libs', '#go-atari']) q(id).addEventListener('change', rendre);

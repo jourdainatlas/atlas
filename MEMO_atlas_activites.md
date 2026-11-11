@@ -842,4 +842,23 @@ débutant (15 parties par coup, et un coup au hasard trois fois sur dix), 2 · f
 ne dépend plus de l'appareil. Mesuré (Node, 9 × 9, komi 7,5) : débutant contre hasard 19 sur 20 ; facile contre
 débutant 20 sur 20 ; moyen contre facile 16 sur 16 ; fort contre moyen 8 sur 8.
 
+**Retouches du 12 novembre (demandes de l'auteur, qui a joué sur téléphone).**
+- *Niveaux 2 et 3 relevés* : 250 et 3 000 parties par coup (au lieu de 120 et 1 200) ; 1 et 4 inchangés.
+  Mesuré : facile contre débutant 20 sur 20 ; moyen contre facile 16 sur 16 ; fort contre moyen 11 sur 16.
+- *« Arrêter et estimer »* : à tout moment, 600 parties finies au hasard donnent le propriétaire moyen de chaque
+  intersection ; les intersections encore ouvertes reçoivent un carré estompé si la moyenne dépasse 0,3 en valeur
+  absolue, et sont comptées dans un score annoncé comme « Estimation ». Pierres mortes proposées comme avant.
+- *Arrêt automatique* (`arretAuto`, avant chaque coup, à partir de 2n coups joués, 300 parties) : si aucune
+  intersection n'est « disputée » (moyenne inférieure à 0,8 en valeur absolue, soit moins de neuf parties sur
+  dix pour le même joueur), la page ouvre le décompte estimé. L'auteur demandait un arrêt « quand plus rien n'est
+  mathématiquement disputable » : le critère retenu est statistique et la page le dit ; un critère exact
+  (algorithme de Benson) ne se déclencherait presque jamais dans une partie réelle.
+- *Abandon de la page* : au trait, si elle gagne au plus 1 % de ces 300 parties, elle abandonne (partie finie,
+  estimation affichée). « Annuler » et « Reprendre la partie » permettent de continuer ; l'arrêt automatique est
+  alors suspendu jusqu'à la partie suivante (`G.sansArret`).
+
+**Taquin (même demande).** Bouton « Revenir au départ » (position d'après le dernier mélange ou le dernier
+échange, compteur remis à zéro). Une fois le taquin rangé, le message rappelle le minimum depuis la position de
+départ (exact jusqu'à neuf cases ; minorant de Manhattan au-delà, annoncé comme tel).
+
 Explorations : vingt-huit. Jeux et casse-têtes : seize.

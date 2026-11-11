@@ -22,7 +22,7 @@ export const html = `
   <div class="bar top">
     <label>Lignes <select id="tq-l"><option>2</option><option>3</option><option selected>4</option><option>5</option></select></label>
     <label>Colonnes <select id="tq-c"><option>2</option><option>3</option><option selected>4</option><option>5</option></select></label>
-    <button type="button" class="primary" id="tq-melanger">Mélanger</button>
+    <button type="button" class="primary" id="tq-melanger">Mélanger</button><button type="button" id="tq-depart">Revenir au départ</button>
     <button type="button" id="tq-ordre">Remettre en ordre</button>
     <button type="button" id="tq-echange">Échanger les pièces 1 et 2</button>
     <button type="button" id="tq-conseil">Un coup</button>
@@ -35,7 +35,7 @@ export const html = `
 <section>
   <div class="col">
     <h4><span class="n">1</span>Jouer</h4>
-    <p>Cliquez sur une pièce de la même ligne ou de la même colonne que la case vide : elle glisse, avec celles qui la séparent du vide. Au clavier, les flèches poussent une pièce vers la case vide, dès que le plateau est à l'écran : la flèche vers le haut fait monter la pièce située sous la case vide. Le but est la position rangée, case vide en bas à droite. Le bouton « Mélanger » ne joue que des coups permis : la position obtenue a donc toujours une solution.</p>
+    <p>Cliquez sur une pièce de la même ligne ou de la même colonne que la case vide : elle glisse, avec celles qui la séparent du vide. Au clavier, les flèches poussent une pièce vers la case vide, dès que le plateau est à l'écran : la flèche vers le haut fait monter la pièce située sous la case vide. Le but est la position rangée, case vide en bas à droite. Le bouton « Mélanger » ne joue que des coups permis : la position obtenue a donc toujours une solution. « Revenir au départ » replace les pièces comme elles étaient après le dernier mélange, pour réessayer ; une fois le taquin rangé, la page rappelle le plus petit nombre de coups qui suffisait depuis cette position.</p>
     <p>Jusqu'à neuf cases, la page connaît toutes les positions : elle indique le nombre minimal de coups qui restent, et « Un coup » joue l'un des meilleurs. Au-delà, elle donne seulement un nombre de coups au-dessous duquel on ne peut pas descendre.</p>
   </div>
 </section>
@@ -63,7 +63,7 @@ export const html = `
 
 export function monter(racine) {
   const q = s => racine.querySelector(s);
-  let L = 4, K = 4, N = 16, t = [], coups = 0, conseil = -1, vivant = true;
+  let L = 4, K = 4, N = 16, t = [], coups = 0, conseil = -1, vivant = true, depart = [], minDepart = null;   // minDepart : minimum depuis la position de départ (exact si N ≤ 9, sinon minorant)
   const tables = new Map();   // « L×K » → Map(code → distance à la position rangée), pour N ≤ 9
   const range = () => Array.from({ length: N }, (_, i) => (i + 1) % N);
   const vide = a => a.indexOf(0);
@@ -98,8 +98,10 @@ export function monter(racine) {
   function melanger() {
     t = range(); let v = N - 1, avant = -1;
     for (let k = 0; k < 60 * N || fini(); k++) { const o = voisins(v).filter(w => w !== avant), w = o[Math.floor(Math.random() * o.length)]; t[v] = t[w]; t[w] = 0; avant = v; v = w; }
-    coups = 0; conseil = -1;
+    coups = 0; conseil = -1; noter();
   }
+  // Retient la position de départ, pour y revenir et pour rappeler le minimum une fois le taquin rangé.
+  function noter() { depart = t.slice(); const I = invariant(); minDepart = I.produit < 0 ? null : N <= 9 ? { n: table().get(code(t)), exact: true } : { n: manhattan(), exact: false }; }
   function rendre() {
     if (!vivant) return;
     const P = q('#tq-plateau'); P.style.setProperty('--col', K);
@@ -111,16 +113,17 @@ export function monter(racine) {
     ecrire(q('#tq-min'), gagne ? '' : petit ? (reste === undefined ? 'Aucune suite de coups ne range cette position.' : `Au mieux, il reste ${entier(reste)} coup${reste > 1 ? 's' : ''}.`) : `Il reste au moins ${entier(manhattan())} coups.`);
     ecrire(q('#tq-inv'), `Signature ${I.s > 0 ? '+1' : '−1'}, d = ${I.d}, produit ${I.produit > 0 ? '+1' : '−1'}`);
     const m = q('#tq-message'); m.className = 'jeu-message' + (gagne ? ' gagne' : I.produit < 0 ? ' bloque' : '');
-    ecrire(m, gagne ? (coups ? `Rangé en ${entier(coups)} coup${coups > 1 ? 's' : ''}.` : 'Position rangée. Mélangez, ou échangez deux pièces pour voir la position impossible.')
+    ecrire(m, gagne ? (coups ? `Rangé en ${entier(coups)} coup${coups > 1 ? 's' : ''}.` + (minDepart && minDepart.n ? (minDepart.exact ? (coups <= minDepart.n ? ' C\'est le minimum : on ne peut pas faire plus court depuis cette position de départ.' : ` Le minimum depuis cette position de départ était de ${entier(minDepart.n)} coup${minDepart.n > 1 ? 's' : ''} : « Revenir au départ » vous laisse réessayer.`) : ` Depuis cette position de départ, il en fallait au moins ${entier(minDepart.n)} ; le minimum exact n'est calculé que pour les plateaux de neuf cases au plus.`) : '') : 'Position rangée. Mélangez, ou échangez deux pièces pour voir la position impossible.')
       : I.produit < 0 ? "Le produit vaut −1 : cette position ne peut pas être rangée, quels que soient les coups joués." : "Le produit vaut +1 : cette position a une solution.");
-    q('#tq-conseil').disabled = !petit || gagne || reste === undefined;
+    q('#tq-conseil').disabled = !petit || gagne || reste === undefined; q('#tq-depart').disabled = !coups;
     q('#tq-conseil').title = petit ? '' : 'Disponible pour les plateaux de neuf cases au plus';
   }
   function taille() { L = +q('#tq-l').value; K = +q('#tq-c').value; N = L * K; melanger(); rendre(); }
   q('#tq-l').addEventListener('change', taille); q('#tq-c').addEventListener('change', taille);
   q('#tq-melanger').addEventListener('click', () => { melanger(); rendre(); });
-  q('#tq-ordre').addEventListener('click', () => { t = range(); coups = 0; conseil = -1; rendre(); });
-  q('#tq-echange').addEventListener('click', () => { const a = t.indexOf(1), b = t.indexOf(2); t[a] = 2; t[b] = 1; coups = 0; conseil = -1; rendre(); });
+  q('#tq-ordre').addEventListener('click', () => { t = range(); coups = 0; conseil = -1; noter(); rendre(); });
+  q('#tq-depart').addEventListener('click', () => { t = depart.slice(); coups = 0; conseil = -1; rendre(); });
+  q('#tq-echange').addEventListener('click', () => { const a = t.indexOf(1), b = t.indexOf(2); t[a] = 2; t[b] = 1; coups = 0; conseil = -1; noter(); rendre(); });
   q('#tq-conseil').addEventListener('click', () => {
     const D = table(), d = D.get(code(t)), v = vide(t); if (!d) return;
     for (const w of voisins(v)) { const b = t.slice(); b[v] = b[w]; b[w] = 0; if (D.get(code(b)) === d - 1) { jouer(w); conseil = v; break; } }
