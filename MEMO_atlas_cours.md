@@ -588,3 +588,8 @@ qui montre l'exercice seul.
 **Corrigé question par question** (`corrMaj`, §63 de `MEMO_atlas_apropos.md`). La barre propose aussi
 « Masquer la dernière réponse » dès que deux réponses sont visibles, et « Revenir à la première » dès qu'il y en
 a trois. Elle reste affichée quand tout le corrigé est déroulé.
+
+**Symboles sur les cartes de feuilles (11 nov. 2026).** Dans la rubrique Exercices, vues « Par niveau » et
+« Par feuille », le titre de chaque carte de feuille (`vueFeuilles`) est précédé du symbole de son chapitre, à
+32 px. On appelle `symboleChapitre(c)` du domaine apparence, sans le modifier, avec le cours `f.cours`. Une
+feuille sans cours, ou dont le chapitre n'a pas de symbole, garde son titre seul.
