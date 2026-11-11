@@ -1517,6 +1517,9 @@ table.grille button.pli-ann:hover { border-color: var(--encre); }
 .activites-onglet { --o: var(--c-ord); flex: 0 0 auto; display: inline-flex; align-items: center; gap: 8px; max-width: 16rem; padding: 7px 16px 8px; font: 500 14px/1.25 var(--f-ui); color: var(--encre-2); text-decoration: none; white-space: nowrap;
   background: var(--trame); border: 1px solid var(--filet); border-top: 4px solid var(--o); border-radius: 10px 10px 0 0; }
 .activites-onglet-toutes { --o: var(--encre-3); }
+/* Casse-têtes : teinte propre au groupe (bleu pétrole, entre le bleu de l'édifice et le vert de l'analyse). */
+:root { --activites-jeu: #0e7490; } :root[data-theme="dark"] { --activites-jeu: #5cc8dc; }
+[data-teinte="jeu"] { --o: var(--activites-jeu) !important; }
 /* Explorations : le sous-menu et les cartes prennent la couleur du domaine mathématique (celles des familles de l'édifice). */
 .activites-sous a, .activites-carte { --o: var(--c-ord); }
 [data-domaine="analyse"] { --o: var(--c-ana) !important; } [data-domaine="geometrie"] { --o: var(--c-geo) !important; }
@@ -3470,8 +3473,9 @@ function pageActivites(chemin) {
   const A = R.activites || {}, acts = A.activites || [], groupes = A.groupes || [];
   const act = acts.find(a => a.id === chemin), groupeDe = a => groupes.find(x => x.id === a.groupe);
   const grp = act ? groupeDe(act) : groupes.find(x => x.id === chemin), membres = x => acts.filter(a => a.groupe === x.id);
-  const onglet = (href, titre, n, courant) => `<a class="activites-onglet${href === '#activites' ? ' activites-onglet-toutes' : ''}" href="${href}"${courant ? ' aria-current="page"' : ''}>${titre}${n ? `<span class="niv">${n}</span>` : ''}</a>`;
-  const cartes = liste => `<div class="activites-cartes">${liste.map(a => `<a class="carte activites-carte" href="#activites/${a.id}"${a.domaine ? ` data-domaine="${esc(a.domaine)}"` : ''}><span class="niv">${esc(a.niveau || '')}</span><h3>${a.titre}</h3><p>${a.resume || ''}</p><span class="fleche" aria-hidden="true">→</span></a>`).join('')}</div>`;
+  const teinte = x => x?.couleur ? ` data-teinte="${esc(x.couleur)}"` : '';
+  const onglet = (href, titre, n, courant, x) => `<a class="activites-onglet${href === '#activites' ? ' activites-onglet-toutes' : ''}" href="${href}"${teinte(x)}${courant ? ' aria-current="page"' : ''}>${titre}${n ? `<span class="niv">${n}</span>` : ''}</a>`;
+  const cartes = liste => `<div class="activites-cartes">${liste.map(a => `<a class="carte activites-carte" href="#activites/${a.id}"${a.domaine ? ` data-domaine="${esc(a.domaine)}"` : teinte(groupeDe(a))}><span class="niv">${esc(a.niveau || '')}</span><h3>${a.titre}</h3><p>${a.resume || ''}</p><span class="fleche" aria-hidden="true">→</span></a>`).join('')}</div>`;
   // Le titre d'une activité est dans son propre texte : la tête de page n'est affichée que sur les listes.
   let h = act ? '' : tete('Activités', grp ? esc(grp.titre) : 'Manipuler, conjecturer, démontrer', grp ? (grp.intro || '') : (A.intro || ''));
   // Intercalaires, dans l'ordre du catalogue : « Toutes », puis un par groupe (ses activités sont dans le sous-menu)
@@ -3481,14 +3485,14 @@ function pageActivites(chemin) {
     const x = groupeDe(a);
     if (!x) return onglet('#activites/' + a.id, a.onglet || a.titre, '', a === act);
     if (vus.has(x.id)) return ''; vus.add(x.id);
-    return onglet('#activites/' + x.id, esc(x.titre), membres(x).length, x === grp);
+    return onglet('#activites/' + x.id, esc(x.titre), membres(x).length, x === grp, x);
   }).join('')}</nav>`;
   h += `<div class="activites-feuille">`;
-  const dom = a => a.domaine ? ` data-domaine="${esc(a.domaine)}"` : '';
+  const dom = a => a.domaine ? ` data-domaine="${esc(a.domaine)}"` : teinte(groupeDe(a));
   if (grp && act) {
     // Dans un groupe, une activité ouverte : retour à la liste, activité précédente, activité suivante.
     const M = membres(grp), k = M.indexOf(act), lien = (a, avant) => a ? `<a href="#activites/${a.id}"${dom(a)}>${avant ? '← ' : ''}${a.onglet || a.titre}${avant ? '' : ' →'}</a>` : '';
-    h += `<nav class="activites-sous" aria-label="${esc(grp.titre)}"><a class="activites-retour" href="#activites/${grp.id}">${esc(grp.titre)} : toute la liste</a>${lien(M[k - 1], true)}${lien(M[k + 1], false)}</nav>`;
+    h += `<nav class="activites-sous" aria-label="${esc(grp.titre)}"><a class="activites-retour" href="#activites/${grp.id}"${teinte(grp)}>${esc(grp.titre)} : toute la liste</a>${lien(M[k - 1], true)}${lien(M[k + 1], false)}</nav>`;
   }
   if (!act) {
     if (chemin && !grp) h += `<p class="vide-note">Cette activité n'existe pas (ou plus).</p>`;

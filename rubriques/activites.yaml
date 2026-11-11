@@ -1,6 +1,7 @@
 # Rubrique « Activités » (MEMO_atlas_activites.md) : catalogue des activités interactives.
 # Une activité = un module activites/<id>.js, chargé seulement quand on l'ouvre.
-#   groupes: [{id, titre, intro}]  un intercalaire par groupe ; ses activités sont dans un sous-menu.
+#   groupes: [{id, titre, intro, couleur}]  (couleur: jeu, facultatif : teinte propre au groupe, sinon olive)
+#   groupes, suite :  un intercalaire par groupe ; ses activités sont dans un sous-menu.
 #             L'identifiant d'un groupe ne doit pas être celui d'une activité.
 #   activites: id (module et adresse #activites/<id>), titre, onglet (titre court), niveau, resume (une ou deux
 #             phrases, cartes et descriptions), texte (page de lecture : ce qu'on observe, ce que cela signifie, le
@@ -30,6 +31,11 @@ groupes:
     titre: "Explorations"
     intro: |
       Chaque exploration part d'une phrase vague (« la pente en un point », « les termes se rapprochent de 2 ») et la remplace, figure après figure, par la définition exacte : on fait varier un nombre, on regarde ce qui se stabilise, puis on lit l'énoncé.
+  - id: casse-tetes
+    titre: "Casse-têtes"
+    couleur: jeu
+    intro: |
+      Ici, on joue d'abord. Chaque casse-tête se règle (taille du plateau, nombre de pièces) et se résout sur la page ; la page connaît le jeu assez bien pour dire combien de coups il reste, ou qu'il n'y a pas de solution. Les mathématiques viennent après la partie : un invariant, une récurrence, un dénombrement.
 
 activites:
   - id: derivee
@@ -117,6 +123,38 @@ activites:
       Le piège le plus courant est de prendre l'intégrale pour une aire ordinaire. C'est une aire algébrique : pour $f(x) = \dfrac{x^2}{4} - 1$, négative sur $]-2\,;2[$, on a $\displaystyle\int_{-2}^{2} f(t)\,\mathrm dt = -\dfrac83$, alors que l'aire du domaine vaut $\dfrac83$.
     cours: [t-06]
     noeuds: [ar-tfa]
+  - id: taquin
+    titre: "Le taquin"
+    onglet: "Le taquin"
+    niveau: "Jeu · Maths Sup"
+    niveaux: [sup]
+    groupe: casse-tetes
+    resume: |
+      Des pièces numérotées à remettre en ordre en les faisant glisser, sur un plateau de 2 à 5 lignes et colonnes. Une position sur deux est sans solution : la signature d'une permutation l'explique.
+    texte: |
+      Le plateau a de $2$ à $5$ lignes et de $2$ à $5$ colonnes. On fait glisser vers la case vide une pièce voisine, à la souris, au doigt ou avec les flèches du clavier, pour retrouver la position rangée, case vide en bas à droite. Un bouton mélange par des coups permis, un autre échange les pièces $1$ et $2$. Jusqu'à neuf cases, la page indique le nombre minimal de coups restants et peut en jouer un.
+
+      Ce que cela signifie : une position est une permutation des cases, la case vide comptant pour une pièce. Un coup est une transposition, qui change la signature en son opposée, et il change de $1$ la distance $d$ de la case vide au coin en bas à droite. Le produit de la signature par $(-1)^d$ est donc invariant ; il vaut $+1$ dans la position rangée. Échanger deux pièces le fait passer à $-1$ : la position obtenue ne peut pas être rangée. Réciproquement, dès qu'il y a au moins deux lignes et deux colonnes, toute position de produit $+1$ peut l'être : exactement la moitié des positions sont solubles, soit $181\,440$ sur $362\,880$ pour le jeu de $3$ sur $3$, ce que la page vérifie par un parcours complet ; le cas général est admis.
+
+      Le piège le plus courant est de juger une position à l'œil : celle qui ne diffère de la position rangée que par deux pièces échangées paraît presque résolue, et elle n'a aucune solution.
+    cours: [ma-17]
+    noeuds: [v-permutations]
+  - id: hanoi
+    titre: "Les tours de Hanoï"
+    onglet: "Les tours de Hanoï"
+    niveau: "Jeu · Terminale, Maths Sup"
+    niveaux: [terminale, sup]
+    groupe: casse-tetes
+    resume: |
+      De 1 à 8 disques à transporter d'une tour à une autre, avec 3, 4 ou 5 tours. Avec trois tours, le minimum est $2^n - 1$ coups ; une tour de plus, et la question devient un problème de recherche.
+    texte: |
+      On transporte une pile de $n$ disques, de $1$ à $8$, de la première tour à la dernière, un disque à la fois et sans jamais poser un disque sur un plus petit ; le jeu se joue avec $3$, $4$ ou $5$ tours. La page compte les coups, indique le minimum depuis le départ et depuis la position courante, et peut jouer un coup ou montrer une solution.
+
+      Ce que cela signifie : avec trois tours, le nombre minimal $T(n)$ de coups vérifie $T(n) = 2T(n-1) + 1$ et $T(1) = 1$, donc $T(n) = 2^n - 1$, soit $255$ coups pour huit disques. La majoration vient d'une stratégie (déplacer $n-1$ disques, puis le grand, puis les $n-1$ disques) ; la minoration vient de ce que, au premier et au dernier déplacement du grand disque, les $n-1$ autres sont empilés sur une seule tour. Avec quatre tours, les minimums sont $1, 3, 5, 9, 13, 17, 25, 33$ pour un à huit disques ; l'optimalité de la stratégie de Frame et Stewart n'a été démontrée qu'en 2014 par Thierry Bousch, et la question reste ouverte pour cinq tours et plus. Les nombres affichés viennent d'un parcours de toutes les positions, au plus $5^8 = 390\,625$.
+
+      Le piège le plus courant est de confondre « j'ai une solution en $2^n - 1$ coups » avec « $2^n - 1$ est le minimum » : une stratégie ne donne qu'une majoration, et il faut un second raisonnement pour la minoration.
+    cours: [t-01]
+    noeuds: [n-recurrence]
   - id: atelier
     titre: "Atelier de construction"
     onglet: "Atelier de construction"

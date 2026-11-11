@@ -190,3 +190,40 @@ convexité ; produit scalaire ; multiplication complexe et racines n-ièmes ; dr
 matrice 2×2 et déterminant ; racines et coefficients d'un polynôme ; algorithme d'Euclide en rectangles ;
 binomiale et courbe en cloche ; loi des grands nombres. Demandes en attente du même message : des défis plus
 difficiles dans l'atelier (figure codée à reproduire), des explorations de dénombrement et des casse-têtes.
+
+### 121. Groupe « Casse-têtes » : taquin et tours de Hanoï (11 nov. 2026)
+
+**Demande de l'auteur.** Une troisième sous-rubrique, à côté d'Explorations et de l'Atelier, pour les vrais
+casse-têtes : on y joue d'abord, sur la page, avec des dimensions réglables dans la limite du jouable. N'y
+entrent que des jeux ; les visualisations de dénombrement (chemins sur une grille, anniversaires, tiroirs…)
+vont dans Explorations. Teinte propre au groupe : bleu pétrole `--activites-jeu` (#0e7490 en clair, #5cc8dc en
+sombre), posée par `couleur: jeu` sur le groupe (attribut `data-teinte`), distincte du bleu de l'édifice et du
+vert de l'analyse ; contraste 5,4:1 sur blanc.
+
+**`activites/jeux.js`.** Styles communs (`.jeu`, plateau, ligne d'état, message). Les jeux sont faits de
+boutons de la page et non de dessins : toute pièce se joue à la souris, au doigt et au clavier, et porte un
+libellé pour les lecteurs d'écran.
+
+**`taquin`.** Plateau de 2 à 5 lignes et colonnes. Mélange par une marche aléatoire de coups permis (donc
+toujours soluble) ; bouton d'échange des pièces 1 et 2 pour produire une position insoluble. Invariant affiché :
+signature de la permutation des cases (vide compris, par les cycles) × (−1)^d, d distance du vide au coin.
+Jusqu'à 9 cases, parcours en largeur depuis la position rangée (Map code → distance), d'où le minimum restant
+et le bouton « Un coup » ; au-delà, minorant par la somme des distances de Manhattan. Contrôle (Node) : pour
+2×2, 2×3, 3×2, 2×4, 4×2 et 3×3, le nombre de positions accessibles vaut N!/2 (12, 360, 360, 20 160, 20 160,
+181 440), toutes d'invariant +1, et le diamètre du 3×3 est 31, valeur connue. La réciproque générale (toute
+position d'invariant +1 est soluble dès 2 lignes et 2 colonnes) est marquée « admis ici ». Source vérifiée :
+W. W. Johnson et W. E. Story, « Notes on the “15” Puzzle », American Journal of Mathematics 2 (1879), 397-404.
+
+**`hanoi`.** 3, 4 ou 5 tours, 1 à 8 disques. Parcours en largeur des p^n positions depuis la position finale
+(au plus 390 625, environ un quart de seconde pour tous les réglages réunis) : minimum exact depuis le départ et
+depuis la position courante, « Un coup », « Montrer une solution » (animation lancée par l'utilisateur,
+arrêtable). Contrôle (Node) : 3 tours 1, 3, 7, …, 255 ; 4 tours 1, 3, 5, 9, 13, 17, 25, 33 ; 5 tours 1, 3, 5,
+7, 11, 15, 19, 23. Le texte démontre T(n) = 2T(n−1) + 1 (stratégie, puis premier et dernier déplacement du
+grand disque). Sources vérifiées : jeu d'Édouard Lucas (1883) ; Thierry Bousch, « La quatrième tour de
+Hanoï », Bull. Belg. Math. Soc. Simon Stevin 21(5) (2014), 895-912 ; cinq tours et plus : question ouverte,
+ce que le texte dit, les nombres affichés venant du parcours exhaustif et non de la conjecture.
+
+**Casse-têtes envisagés ensuite** : jeu des inversions (« Lights Out », système linéaire sur le corps à deux
+éléments, taille réglable), solitaire à pions (invariant de coloriage), grenouilles sauteuses, problème des
+huit dames (taille réglable), pavage par dominos de l'échiquier écorné.
+
