@@ -1514,20 +1514,20 @@ table.grille button.pli-ann:hover { border-color: var(--encre); }
    Les styles propres à chaque activité sont dans son module (activites/), chargé à la demande. */
 .activites-sy1 { fill: var(--c-ord); } .activites-sy2 { fill: var(--c-ord); opacity: .55; } .activites-sy3 { fill: var(--c-ord); opacity: .25; }
 .activites-onglets { display: flex; align-items: flex-end; gap: 4px; margin: 0 0 -1px; padding: 6px 2px 0; overflow-x: auto; scrollbar-width: thin; position: relative; z-index: 1; }
-.activites-onglet { --o: var(--encre-3); flex: 0 0 auto; display: inline-flex; align-items: center; gap: 8px; max-width: 16rem; padding: 7px 16px 8px; font: 500 14px/1.25 var(--f-ui); color: var(--encre-2); text-decoration: none; white-space: nowrap;
+.activites-onglet { --o: var(--c-ord); flex: 0 0 auto; display: inline-flex; align-items: center; gap: 8px; max-width: 16rem; padding: 7px 16px 8px; font: 500 14px/1.25 var(--f-ui); color: var(--encre-2); text-decoration: none; white-space: nowrap;
   background: var(--trame); border: 1px solid var(--filet); border-top: 4px solid var(--o); border-radius: 10px 10px 0 0; }
 .activites-onglet:hover { color: var(--encre); background: var(--surface); }
 .activites-onglet[aria-current="page"] { color: var(--encre); background: var(--papier); border-bottom-color: var(--papier); padding-top: 11px; font-weight: 600; }
 .activites-onglet .niv { font: 11px var(--f-mono); color: var(--encre-3); background: var(--surface); border: 1px solid var(--filet); border-radius: 999px; padding: 0 6px; }
 .activites-feuille { border-top: 1px solid var(--filet); padding-top: 26px; }
 .activites-sous { display: flex; flex-wrap: wrap; gap: 8px; margin: -8px 0 26px; padding-bottom: 14px; border-bottom: 1px solid var(--filet); }
-.activites-sous a { display: inline-flex; align-items: baseline; gap: 8px; padding: 6px 13px; font: 500 14px/1.25 var(--f-ui); color: var(--encre-2); text-decoration: none; background: var(--surface); border: 1px solid var(--filet); border-left: 3px solid var(--o, var(--encre-3)); border-radius: 6px; }
-.activites-sous a:hover { color: var(--encre); border-color: var(--encre-3); border-left-color: var(--o, var(--encre-3)); }
-.activites-sous a[aria-current="page"] { color: var(--surface); background: var(--encre); border-color: var(--encre); border-left-color: var(--o, var(--encre)); font-weight: 600; }
+.activites-sous a { display: inline-flex; align-items: baseline; gap: 8px; padding: 6px 13px; font: 500 14px/1.25 var(--f-ui); color: var(--encre-2); text-decoration: none; background: var(--surface); border: 1px solid var(--filet); border-left: 3px solid var(--c-ord); border-radius: 6px; }
+.activites-sous a:hover { color: var(--encre); border-color: var(--encre-3); border-left-color: var(--c-ord); }
+.activites-sous a[aria-current="page"] { color: var(--surface); background: var(--encre); border-color: var(--encre); border-left-color: var(--c-ord); font-weight: 600; }
 .activites-sous .niv { font: 11px var(--f-mono); opacity: .75; }
 .activites-cartes { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
-.activites-carte { display: flex; flex-direction: column; gap: 6px; padding: 16px 18px; text-decoration: none; color: var(--encre); border-top: 3px solid var(--o, var(--encre-3)); }
-.activites-carte:hover { border-color: var(--encre-3); border-top-color: var(--o, var(--encre-3)); }
+.activites-carte { display: flex; flex-direction: column; gap: 6px; padding: 16px 18px; text-decoration: none; color: var(--encre); border-top: 3px solid var(--c-ord); }
+.activites-carte:hover { border-color: var(--encre-3); border-top-color: var(--c-ord); }
 .activites-carte .niv { font: 12px var(--f-ui); letter-spacing: .06em; text-transform: uppercase; color: var(--encre-3); }
 .activites-carte h3 { margin: 0; font: 600 21px/1.2 var(--f-titre); }
 .activites-carte p { margin: 0; font: 15.5px/1.5 var(--f-texte); color: var(--encre-2); }
@@ -3458,21 +3458,20 @@ function pageActivites(chemin) {
   const A = R.activites || {}, acts = A.activites || [], groupes = A.groupes || [];
   const act = acts.find(a => a.id === chemin), groupeDe = a => groupes.find(x => x.id === a.groupe);
   const grp = act ? groupeDe(act) : groupes.find(x => x.id === chemin), membres = x => acts.filter(a => a.groupe === x.id);
-  const teinte = x => /^(ana|geo|alg|nb|ord|top)$/.test(x?.couleur || '') ? ` style="--o: var(--c-${x.couleur})"` : '';
-  const onglet = (href, titre, x, n, courant) => `<a class="activites-onglet" href="${href}"${teinte(x)}${courant ? ' aria-current="page"' : ''}>${titre}${n ? `<span class="niv">${n}</span>` : ''}</a>`;
-  const cartes = liste => `<div class="activites-cartes">${liste.map(a => `<a class="carte activites-carte" href="#activites/${a.id}"${teinte(groupeDe(a) || a)}><span class="niv">${esc(a.niveau || '')}</span><h3>${a.titre}</h3><p>${a.resume || ''}</p><span class="fleche" aria-hidden="true">→</span></a>`).join('')}</div>`;
+  const onglet = (href, titre, n, courant) => `<a class="activites-onglet" href="${href}"${courant ? ' aria-current="page"' : ''}>${titre}${n ? `<span class="niv">${n}</span>` : ''}</a>`;
+  const cartes = liste => `<div class="activites-cartes">${liste.map(a => `<a class="carte activites-carte" href="#activites/${a.id}"><span class="niv">${esc(a.niveau || '')}</span><h3>${a.titre}</h3><p>${a.resume || ''}</p><span class="fleche" aria-hidden="true">→</span></a>`).join('')}</div>`;
   // Le titre d'une activité est dans son propre texte : la tête de page n'est affichée que sur les listes.
   let h = act ? '' : tete('Activités', grp ? esc(grp.titre) : 'Manipuler, conjecturer, démontrer', grp ? (grp.intro || '') : (A.intro || ''));
   // Intercalaires, dans l'ordre du catalogue : « Toutes », puis un par groupe (ses activités sont dans le sous-menu)
   // et un par activité sans groupe (elle s'ouvre directement, sans sous-menu).
   const vus = new Set();
-  h += `<nav class="activites-onglets" aria-label="Activités">${onglet('#activites', 'Toutes', null, '', !act && !grp)}${acts.map(a => {
+  h += `<nav class="activites-onglets" aria-label="Activités">${onglet('#activites', 'Toutes', '', !act && !grp)}${acts.map(a => {
     const x = groupeDe(a);
-    if (!x) return onglet('#activites/' + a.id, a.onglet || a.titre, a, '', a === act);
+    if (!x) return onglet('#activites/' + a.id, a.onglet || a.titre, '', a === act);
     if (vus.has(x.id)) return ''; vus.add(x.id);
-    return onglet('#activites/' + x.id, esc(x.titre), x, membres(x).length, x === grp);
+    return onglet('#activites/' + x.id, esc(x.titre), membres(x).length, x === grp);
   }).join('')}</nav>`;
-  h += `<div class="activites-feuille"${teinte(grp)}>`;
+  h += `<div class="activites-feuille">`;
   if (grp) h += `<nav class="activites-sous" aria-label="${esc(grp.titre)}">${membres(grp).map(a => `<a href="#activites/${a.id}"${a === act ? ' aria-current="page"' : ''}>${a.onglet || a.titre}<span class="niv">${esc(a.niveau || '')}</span></a>`).join('')}</nav>`;
   if (!act) {
     if (chemin && !grp) h += `<p class="vide-note">Cette activité n'existe pas (ou plus).</p>`;

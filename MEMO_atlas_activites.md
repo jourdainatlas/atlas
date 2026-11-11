@@ -23,13 +23,14 @@ disait bien aimer. Un changement de nom toucherait l'identifiant, donc les adres
 
 **Navigation (demandes successives de l'auteur, 11 nov.).** En haut de page, des onglets en forme
 d'intercalaires de classeur tournés vers le haut, dans l'ordre du catalogue : « Toutes », puis un intercalaire
-par *groupe* d'activités (aujourd'hui « Explorations », vert `--c-ana`, qui réunit les deux explorables de
-visualisation ; le nombre d'activités est affiché) et un intercalaire par activité *sans groupe* (« Atelier de
-construction », violet `--c-geo`), qui s'ouvre directement. Les activités d'un groupe ne sont pas des onglets :
+par *groupe* d'activités (aujourd'hui « Explorations », qui réunit les deux explorables de visualisation ; le
+nombre d'activités est affiché) et un intercalaire par activité *sans groupe* (« Atelier de construction »),
+qui s'ouvre directement. Les activités d'un groupe ne sont pas des onglets :
 une fois dans l'intercalaire, un sous-menu (`.activites-sous`) les propose, l'activité ouverte étant marquée
 `aria-current` ; une activité sans groupe n'a pas de sous-menu. Versions écartées par l'auteur : un intercalaire
 par activité, puis un découpage par domaine mathématique (« Analyse », « Géométrie »), qui créait un sous-menu à
-une seule entrée pour l'atelier. La couleur vient du champ `couleur` du catalogue (posée en ligne, `--o`). Sur
+une seule entrée pour l'atelier. Tous les intercalaires, les cartes et le sous-menu sont en olive, couleur de la rubrique : le code de couleurs
+par domaine (vert, violet) n'avait plus de sens une fois les domaines abandonnés, et l'auteur l'a fait retirer. Sur
 téléphone, la rangée d'intercalaires défile horizontalement dans son cadre ; la page ne déborde pas.
 
 **Repères.** Couleur de la rubrique : `--c-ord` (olive), la seule couleur de thème qu'aucune rubrique
@@ -42,9 +43,8 @@ En dessous de 1040 px, la grille d'origine s'applique (3 + 2 sur tablette, une c
 n'a pas été modifié : la proposition d'y mettre un lien vers les activités attend la réponse de l'auteur. La
 barre de rubriques des pages de lecture (`lecture.mjs`, domaine À propos) ne cite pas encore « Activités ».
 
-**Catalogue : `rubriques/activites.yaml`.** `intro` ; `groupes` (`id`, `titre`, `intro`, `couleur`) ;
-`activites` (`id`, `titre`, `onglet`, `niveau`, `resume`, `texte`, `cours`, `noeuds`, et soit `groupe`, soit
-rien, avec alors une `couleur` propre). `couleur` vaut `ana`, `geo`, `alg`, `nb`, `ord` ou `top`.
+**Catalogue : `rubriques/activites.yaml`.** `intro` ; `groupes` (`id`, `titre`, `intro`) ; `activites` (`id`,
+`titre`, `onglet`, `niveau`, `resume`, `texte`, `cours`, `noeuds`, et `groupe` ou rien).
 `construire.py` vérifie les `noeuds` comme pour toute rubrique ; `rendu.mjs` compose `intro`, `resume` et
 `texte`. Les identifiants de `cours` et de `groupe` ne sont vérifiés par personne : les relire à la main.
 
@@ -104,6 +104,17 @@ les mêmes identifiants. Ont disparu : les polices Google, la marge rouge de cah
    `side` (signe constant de u_n − L) qui tranche le cas ε = |ℓ − L|. `inBand` sert au calcul du rang, à la
    couleur des points et au jeu. Contrôle : 4 392 triplets (suite, ℓ, ε) comparés à l'arithmétique exacte de
    Python (`fractions`), zéro écart.
+
+3. *Atelier : outil « Intersection »* (demande de l'auteur : avec l'outil Point, un seul des deux objets
+   survolés était surligné, et l'on ne savait pas si le point serait bien l'intersection). Ajouts dans
+   l'interface seulement, le moteur entre `//<engine>` et `//</engine>` restant identique au prototype hors
+   chaînes de texte (contrôlé par comparaison) : `snapInter` (croisement à portée du pointeur), `addInter`,
+   une branche de `click`, l'état `snap`. L'outil s'emploie de deux façons : cliquer sur un croisement crée ce
+   point ; cliquer sur une ligne puis sur une autre crée tous leurs points communs (les deux pour deux cercles),
+   ce qui convient au doigt, où il n'y a pas de survol. Avec les outils Point et Intersection, le survol d'un
+   croisement surligne désormais les deux lignes et entoure en vert le point qui sera créé ; pour Point,
+   l'aperçu emploie les mêmes seuils que `makePoint`, donc il montre exactement ce que le clic fera. Vérifié :
+   triangle équilatéral construit avec l'outil et reconnu, à la souris (1280 px) et sur 360 px.
 
 **Vérifications faites.** Construction sans erreur ; Playwright en clair et en sombre, à 1280 et à 360 px :
 aucun débordement horizontal, aucune erreur de script (la seule erreur de console est la requête vers Google

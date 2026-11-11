@@ -1,7 +1,7 @@
 // Activité « La limite d'une suite » (rubrique Activités, MEMO_atlas_activites.md).
 // Le texte (html) est mis à la charte du site. Le code des figures, entre les deux repères ci-dessous, est
-// celui du prototype de l'auteur ; seuls y ont changé les messages (vouvoiement) et, pour la limite d'une
-// suite, le cas ε = |ℓ − L| (MEMO_atlas_activites.md, §118).
+// celui du prototype de l'auteur ; y ont changé les messages (vouvoiement), les comparaisons de la limite d'une
+// suite et, dans l'atelier, l'outil Intersection ajouté à l'interface (MEMO_atlas_activites.md, §118).
 import { bac, css as cssCommun } from './commun.js';
 
 export const css = cssCommun + `

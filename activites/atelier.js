@@ -1,7 +1,7 @@
 // Activité « Atelier de construction » (rubrique Activités, MEMO_atlas_activites.md).
 // Le texte (html) est mis à la charte du site. Le code des figures, entre les deux repères ci-dessous, est
-// celui du prototype de l'auteur ; seuls y ont changé les messages (vouvoiement) et, pour la limite d'une
-// suite, le cas ε = |ℓ − L| (MEMO_atlas_activites.md, §118).
+// celui du prototype de l'auteur ; y ont changé les messages (vouvoiement), les comparaisons de la limite d'une
+// suite et, dans l'atelier, l'outil Intersection ajouté à l'interface (MEMO_atlas_activites.md, §118).
 import { bac, css as cssCommun } from './commun.js';
 
 export const css = cssCommun + `
@@ -31,9 +31,9 @@ export const css = cssCommun + `
 .activites-act .verdict.ok b { color: var(--ok); }
 .activites-act .verdict.ko b { color: var(--free); }
 .activites-act .stage { display: flex; flex-direction: column; overflow: hidden; }
-.activites-act .tools { display: flex; flex-wrap: wrap; gap: 4px; padding: 8px; border-bottom: 1px solid var(--filet); }
+.activites-act .tools { display: flex; flex-wrap: wrap; gap: 2px; padding: 8px 6px; border-bottom: 1px solid var(--filet); }
 .activites-act .tools .sep { flex: 1 1 12px; }
-.activites-act .tool { display: flex; flex-direction: column; align-items: center; gap: 1px; min-width: 52px; font: 500 11px var(--f-ui); color: var(--encre); background: transparent; border: 1px solid transparent; border-radius: 6px; padding: 5px 6px 4px; cursor: pointer; }
+.activites-act .tool { display: flex; flex-direction: column; align-items: center; gap: 1px; min-width: 44px; font: 500 11px var(--f-ui); color: var(--encre); background: transparent; border: 1px solid transparent; border-radius: 6px; padding: 5px 4px 4px; cursor: pointer; }
 .activites-act .tool svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 .activites-act .tool svg .f { fill: currentColor; stroke: none; }
 .activites-act .tool:hover { background: var(--trame); }
@@ -303,11 +303,12 @@ if(typeof module!=='undefined'&&typeof document==='undefined'){module.exports={e
 const $=id=>document.getElementById(id);
 const cv=$('board'),ctx=cv.getContext('2d');
 const st={cur:0,objs:[],nid:1,undo:[],saved:{},done:{},flash:null};
-let booted=false,G=new Map(),tool='move',pend={pts:[],ln:null},cursor=null,hover=null,dragging=null,anim=false,W=600,H=400,C={};
+let booted=false,G=new Map(),tool='move',pend={pts:[],ln:null},cursor=null,hover=null,snap=null,dragging=null,anim=false,W=600,H=400,C={};
 const traces=new Map();
 const TOOLS=[
  ['move','Déplacer','<path class="f" d="M6 3l12 8-5.2 1.1L15.5 18l-2.3 1-2.6-5.8L6 17z"/>'],
  ['point','Point','<circle class="f" cx="12" cy="12" r="3.5"/>'],
+ ['inter','Intersection','<circle cx="9" cy="14" r="7"/><path d="M6 3l14 16"/><circle class="f" cx="16" cy="14.4" r="2.6"/>'],
  ['seg','Segment','<path d="M5 19L19 5"/><circle class="f" cx="5" cy="19" r="2.3"/><circle class="f" cx="19" cy="5" r="2.3"/>'],
  ['line','Droite','<path d="M2 22L22 2"/><circle class="f" cx="8" cy="16" r="2.1"/><circle class="f" cx="16" cy="8" r="2.1"/>'],
  ['circle','Cercle','<circle cx="12" cy="12" r="8.5"/><circle class="f" cx="12" cy="12" r="1.8"/>'],
@@ -320,6 +321,7 @@ const TOOLS=[
 const HINTS={
  move:['Attrapez un point plein et déplacez-le. Les points creux suivent la construction.'],
  point:['Cliquez pour poser un point. Sur une ligne il y reste accroché, à un croisement il devient l\'intersection.'],
+ inter:['Intersection : cliquez sur un croisement, ou sur une première ligne (droite, segment ou cercle).','Intersection : cliquez sur la seconde ligne. Tous leurs points communs sont créés.'],
  seg:['Segment : cliquez sur la première extrémité.','Segment : cliquez sur la seconde extrémité.'],
  line:['Droite : cliquez sur un premier point.','Droite : cliquez sur un second point.'],
  circle:['Cercle : cliquez sur le centre.','Cercle : cliquez sur un point par lequel il passe.'],
@@ -383,10 +385,26 @@ function makePoint(w){
   if(near.length>=1)return add({t:'pt',k:'on',o:near[0].o.id,u:paramOn(near[0].g,w)});
   return add({t:'pt',k:'free',x:w.x,y:w.y});
 }
+/* Outil Intersection (ajout du 11 nov. 2026) : croisement de deux lignes le plus proche du pointeur, s'il y en a un à portée.
+   Avec (10,16), c'est exactement le choix de makePoint : l'aperçu de l'outil Point montre donc ce que le clic créera. */
+function snapInter(w,r,lim){const near=nearCurves(w,r);let best=null,bd=lim;
+  for(let i=0;i<near.length;i++)for(let j=i+1;j<near.length;j++){const A=near[i],B=near[j],P=inter(A.g,B.g);
+    P.forEach((p,k)=>{if(!p)return;const d=dist(p,w);if(d<bd){bd=d;best={o1:A.o.id,o2:B.o.id,i:k,p};}});}
+  return best;}
+function addInter(o1,o2,i,p){const ex=hitPoint(p,3);if(ex)return ex.id;return add({t:'pt',k:'int',o1,o2,i});}
 function pointAt(w){const h=hitPoint(w);return h?h.id:makePoint(w);}
 function exists(pred){return st.objs.some(pred);}
 function click(w){
   if(tool==='point'){const h=hitPoint(w);if(!h)makePoint(w);return;}
+  if(tool==='inter'){
+    const s=snapInter(w,12,18);
+    if(s&&!pend.ln){addInter(s.o1,s.o2,s.i,s.p);return;}
+    const hc=(nearCurves(w,12)[0]||{}).o;if(!hc)return;
+    if(!pend.ln){pend.ln=hc.id;return;}
+    if(hc.id===pend.ln){resetPend();return;}
+    inter(G.get(pend.ln),G.get(hc.id)).forEach((p,k)=>{if(p)addInter(pend.ln,hc.id,k,p);});
+    resetPend();return;
+  }
   if(tool==='trace'){const h=hitPoint(w);if(h){h.trace=!h.trace;if(!h.trace)traces.delete(h.id);}return;}
   if(tool==='del'){const h=hitPoint(w)||(nearCurves(w,10)[0]||{}).o;if(h&&!h.given){removeWithDeps(h.id);st.flash=null;}return;}
   if(tool==='seg'||tool==='line'||tool==='circle'||tool==='mid'){
@@ -430,7 +448,7 @@ function draw(){
     else ps.forEach(p=>{ctx.strokeStyle=col;ctx.lineWidth=4;ctx.beginPath();ctx.arc(sx(p.x),sy(p.y),15,0,7);ctx.stroke();});}
   // lignes et cercles
   for(const o of st.objs){if(o.t==='pt')continue;const g=G.get(o.id);if(!g||!g.ok)continue;
-    const sel=pend.ln===o.id,hov=hover&&hover.id===o.id;
+    const sel=pend.ln===o.id,hov=(hover&&hover.id===o.id)||(snap&&(snap.o1===o.id||snap.o2===o.id));
     if(sel||hov){ctx.strokeStyle=C.hl;ctx.lineWidth=8;strokeGeom(g);}
     ctx.strokeStyle=o.given?C.soft:C.ink;ctx.lineWidth=o.given?2.6:(o.k==='seg'?2.2:1.5);strokeGeom(g);
     if(o.label){ctx.font='italic 700 16px '+C.fd;ctx.fillStyle=C.soft;ctx.textAlign='left';ctx.textBaseline='bottom';ctx.fillText(o.label,sx(g.x+0.3*g.dx),sy(g.y+0.3*g.dy)-6);}}
@@ -451,6 +469,8 @@ function draw(){
     else{ctx.fillStyle=C.sheet;ctx.strokeStyle=C.ink;ctx.lineWidth=2;ctx.beginPath();ctx.arc(X,Y,5,0,7);ctx.fill();ctx.stroke();}
     if(o.trace){ctx.strokeStyle=C.ok;ctx.lineWidth=2;ctx.beginPath();ctx.arc(X,Y,10.5,0,7);ctx.stroke();}
     if(o.name){ctx.font='700 15px '+C.fd;ctx.textAlign='left';ctx.textBaseline='alphabetic';ctx.lineWidth=4;ctx.strokeStyle=C.sheet;ctx.strokeText(o.name,X+10,Y-9);ctx.fillStyle=C.ink;ctx.fillText(o.name,X+10,Y-9);}}
+  // aperçu du point d'intersection qui serait créé
+  if(snap){const X=sx(snap.p.x),Y=sy(snap.p.y);ctx.strokeStyle=C.ok;ctx.lineWidth=2.5;ctx.beginPath();ctx.arc(X,Y,10,0,7);ctx.stroke();ctx.fillStyle=C.ok;ctx.beginPath();ctx.arc(X,Y,3.5,0,7);ctx.fill();}
 }
 function refresh(){
   G=evalAll(st.objs);
@@ -460,12 +480,12 @@ function refresh(){
 }
 function updateUI(){
   document.querySelectorAll('.tool[data-tool]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.tool===tool)));
-  const hs=HINTS[tool],step=(tool==='perp'||tool==='par')?((pend.pts.length||pend.ln)?1:0):Math.min(pend.pts.length,hs.length-1);
+  const hs=HINTS[tool],step=(tool==='perp'||tool==='par'||tool==='inter')?((pend.pts.length||pend.ln)?1:0):Math.min(pend.pts.length,hs.length-1);
   $('hint').textContent=hs[Math.min(step,hs.length-1)];
   $('t-undo').disabled=!st.undo.length;
   cv.style.cursor=tool==='move'?(dragging?'grabbing':(hover&&hover.t==='pt'?'grab':'default')):'crosshair';
 }
-function setTool(t){if(anim)return;tool=t;resetPend();hover=null;refresh();}
+function setTool(t){if(anim)return;tool=t;resetPend();hover=null;snap=null;refresh();}
 
 /* ----- animations : secouer, contre-exemple ----- */
 function getParams(objs,userOnly){return objs.filter(o=>isParam(o,userOnly)).map(o=>({id:o.id,x:o.x,y:o.y,u:o.u,k:o.k,hk:o.k==='on'?hostKind(o,objs):null,
@@ -523,7 +543,7 @@ cv.addEventListener('pointerdown',e=>{
     if(h&&!h.lock&&(h.k==='free'||h.k==='on')){pushUndo();const g=G.get(h.id);dragging={id:h.id,ox:g.x-w.x,oy:g.y-w.y};try{cv.setPointerCapture(e.pointerId);}catch(_){}
       if(st.flash&&!st.flash.ok)st.flash=null;}
     refresh();return;}
-  const before=JSON.stringify({objs:st.objs,nid:st.nid});click(w);
+  const before=JSON.stringify({objs:st.objs,nid:st.nid});snap=null;click(w);
   if(JSON.stringify({objs:st.objs,nid:st.nid})!==before){st.undo.push(before);if(st.undo.length>120)st.undo.shift();}
   refresh();
 });
@@ -535,11 +555,12 @@ cv.addEventListener('pointermove',e=>{
     refresh();return;}
   const hp=hitPoint(w);
   hover=hp||(tool==='move'||tool==='trace'?null:((nearCurves(w,10)[0]||{}).o||null));
+  snap=hp?null:tool==='point'?snapInter(w,10,16):tool==='inter'&&!pend.ln?snapInter(w,12,18):null;
   draw();updateUI();
 });
 const endDrag=()=>{if(dragging){dragging=null;refresh();}};
 cv.addEventListener('pointerup',endDrag);cv.addEventListener('pointercancel',endDrag);
-cv.addEventListener('pointerleave',()=>{if(!dragging){cursor=null;hover=null;draw();}});
+cv.addEventListener('pointerleave',()=>{if(!dragging){cursor=null;hover=null;snap=null;draw();}});
 
 const tb=$('tools');
 TOOLS.forEach(([id,label,svg])=>{const b=document.createElement('button');b.type='button';b.className='tool';b.dataset.tool=id;
