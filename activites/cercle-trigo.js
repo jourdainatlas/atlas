@@ -15,7 +15,7 @@ export const html = `
   <div class="col">
     <h4><span class="n">1</span>Un point, deux coordonnées</h4>
     <p>On enroule la droite des réels autour du cercle de centre O et de rayon 1, à partir du point I(1 ; 0), dans le sens direct. Le réel <i>t</i> arrive sur un point M. Par définition, <b class="c-mark">cos <i>t</i></b> est l'abscisse de M et <b class="c-sec">sin <i>t</i></b> son ordonnée.</p>
-    <p>Déplacez M sur le cercle, ou réglez <i>t</i> avec le curseur, qui avance par douzièmes de π.</p>
+    <p>Déplacez M sur le cercle, ou réglez <i>t</i> avec le curseur, qui avance par cent-quatre-vingtièmes de π, c'est-à-dire degré par degré.</p>
   </div>
   <div class="fig">
     <div class="split">
@@ -33,7 +33,7 @@ export const html = `
       </div>
     </div>
     <div class="reglages">
-      <label for="ct-k"><i>t</i>, en douzièmes de π</label><input type="range" id="ct-k" min="-24" max="24" step="1" value="2"><output id="ct-kv"></output>
+      <label for="ct-k"><i>t</i></label><input type="range" id="ct-k" min="-360" max="360" step="1" value="30"><output id="ct-kv"></output>
     </div>
   </div>
   <div class="col">
@@ -66,15 +66,15 @@ export const html = `
 ` + suite(
   "Les erreurs de signe : cos(π − <i>t</i>) vaut −cos <i>t</i>, mais sin(π − <i>t</i>) vaut sin <i>t</i>, et l'on confond facilement les deux. L'autre piège est l'unité : sur le cercle, <i>t</i> est une longueur d'arc, donc un nombre de radians ; une calculatrice réglée en degrés donne cos 3 ≈ 0,9986 au lieu de cos 3 ≈ −0,9900.",
   "Le chapitre de Première <a href=\"#cours/p-06\">Trigonométrie</a> définit l'enroulement de la droite sur le cercle et établit les formules des angles associés. L'édifice construit le cosinus et le sinus sans figure, à partir de l'exponentielle : voir la fiche <a href=\"#ar-trigo.tg-prolongement\">Prolongement du cosinus et du sinus à ℝ</a> et, pour le nombre π et le parcours du cercle, la fiche <a href=\"#ar-trigo.tg-cercle\">Zéros, périodes et paramétrage du cercle</a>.",
-  "Pour les multiples de π/6 et de π/4, les valeurs exactes affichées (1/2, √2/2, √3/2…) viennent d'une table, et non d'un arrondi ; les valeurs décimales sont arrondies à 10⁻⁴. Rien n'est enregistré ni envoyé.");
+  "Pour les multiples de π/6 et de π/4, les valeurs exactes affichées (1/2, √2/2, √3/2…) viennent d'une table, et non d'un arrondi ; les valeurs décimales sont arrondies à 10⁻⁴. L'angle avance par degrés entiers et s'accroche, quand on relâche le point, au multiple de π/12 le plus proche s'il est à moins de deux degrés. Rien n'est enregistré ni envoyé.");
 
 // t = kπ/12 : écriture en fraction de π, et valeurs exactes pour les multiples de π/6 et de π/4.
 const EXACT = { 0: '1', 2: '√3/2', 3: '√2/2', 4: '1/2', 6: '0', 8: '−1/2', 9: '−√2/2', 10: '−√3/2', 12: '−1' };
 function cosExact(k) { k = ((k % 24) + 24) % 24; if (k > 12) k = 24 - k; return EXACT[k] ?? null; }
 const sinExact = k => cosExact(k - 6);
-function enPi(k) {
+function enPi(k, d0 = 12) {   // k·π/d0 en fraction irréductible de π
   if (k === 0) return '0';
-  const g = pgcd(k, 12), n = k / g, d = 12 / g;
+  const g = pgcd(k, d0), n = k / g, d = d0 / g;
   return (n < 0 ? '−' : '') + (Math.abs(n) === 1 ? '' : Math.abs(n)) + 'π' + (d === 1 ? '' : '/' + d);
 }
 // Angles associés : image t′ de t, formules, symétrie qui envoie M sur M′.
@@ -89,18 +89,19 @@ const ASSOC = [
 
 export function monter(racine) {
   const q = s => racine.querySelector(s);
-  const E = { k: 2, t: Math.PI / 6, assoc: 'aucun' };   // k : entier si t = kπ/12, sinon null
+  // t = deg·π/180, deg entier entre −360 et 360 ; k = deg/15 quand t est un multiple de π/12 (valeurs exactes), sinon null.
+  const E = { deg: 30, k: 2, t: Math.PI / 6, assoc: 'aucun' };
   let V1 = null, V2 = null;
   const poser = (t, accroche) => {
-    t = borne(t, -2 * Math.PI, 2 * Math.PI);
-    const k = Math.round(t * 12 / Math.PI);
-    if (accroche && Math.abs(t - k * Math.PI / 12) < 0.035) { E.k = k; E.t = k * Math.PI / 12; } else { E.k = null; E.t = t; }
+    let deg = borne(Math.round(t * 180 / Math.PI), -360, 360);
+    if (accroche) { const m = Math.round(deg / 15) * 15; if (Math.abs(deg - m) <= 2) deg = m; }
+    E.deg = deg; E.t = deg * Math.PI / 180; E.k = deg % 15 === 0 ? deg / 15 : null;
     S.planifier();
   };
   const boite = q('#ct-assoc');
   ASSOC.forEach(a => { const b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = a.nom; b.dataset.a = a.id;
     b.addEventListener('click', () => { E.assoc = a.id; S.planifier(); }); boite.append(b); });
-  q('#ct-k').addEventListener('input', e => { E.k = +e.target.value; E.t = E.k * Math.PI / 12; S.planifier(); });
+  q('#ct-k').addEventListener('input', e => poser(+e.target.value * Math.PI / 180, false));
 
   function rendre(C) {
     const t = E.t, c = Math.cos(t), s = Math.sin(t), A = ASSOC.find(a => a.id === E.assoc), t2 = A.f ? A.f(t) : null;
@@ -143,14 +144,14 @@ export function monter(racine) {
     }
     // lectures
     const k = E.k, ce = k !== null ? cosExact(k) : null, se = k !== null ? sinExact(k) : null;
-    ecrire(q('#ct-t'), k !== null ? enPi(k) + (k ? ' ≈ ' + fr(t, 4) : '') : fr(t, 4));
-    ecrire(q('#ct-deg'), fr(t * 180 / Math.PI, k !== null ? 0 : 1) + '°');
+    ecrire(q('#ct-t'), enPi(E.deg, 180) + (E.deg ? ' ≈ ' + fr(t, 4) : ''));
+    ecrire(q('#ct-deg'), fr(E.deg, 0) + '°');
     ecrire(q('#ct-cos'), (ce !== null && !/^(0|1|−1|1\/2|−1\/2)$/.test(ce) ? ce + ' ≈ ' : ce !== null ? ce : '') + (ce !== null && /^(0|1|−1|1\/2|−1\/2)$/.test(ce) ? '' : fr(c, 4)));
     ecrire(q('#ct-sin'), (se !== null && !/^(0|1|−1|1\/2|−1\/2)$/.test(se) ? se + ' ≈ ' : se !== null ? se : '') + (se !== null && /^(0|1|−1|1\/2|−1\/2)$/.test(se) ? '' : fr(s, 4)));
     ecrire(q('#ct-pyth'), '1');
-    ecrire(q('#ct-note'), k === null ? "Entre deux graduations, les valeurs sont données arrondies à 10⁻⁴." : ce === null ? "Pour cet angle, cosinus et sinus n'ont pas d'écriture aussi simple qu'aux multiples de π/6 et de π/4 : la page donne leurs valeurs arrondies." : "Valeurs exactes : cet angle est un multiple de π/6 ou de π/4.");
-    const kr = q('#ct-k'), kv = Math.round(t * 12 / Math.PI); if (+kr.value !== kv) kr.value = kv;
-    ecrire(q('#ct-kv'), k !== null ? enPi(k) : '≈ ' + fr(t / Math.PI, 2) + ' π');
+    ecrire(q('#ct-note'), ce === null ? "Pour cet angle, cosinus et sinus n'ont pas d'écriture aussi simple qu'aux multiples de π/6 et de π/4 : la page donne leurs valeurs arrondies." : "Valeurs exactes : cet angle est un multiple de π/6 ou de π/4.");
+    const kr = q('#ct-k'); if (+kr.value !== E.deg) kr.value = E.deg;
+    ecrire(q('#ct-kv'), enPi(E.deg, 180));
     racine.querySelectorAll('#ct-assoc .chip').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.a === E.assoc)));
     if (!A.f) { ecrire(q('#ct-sym'), ''); ecrire(q('#ct-formule'), "Choisissez un angle associé pour lire les deux formules qui lui correspondent."); }
     else {
@@ -161,14 +162,14 @@ export function monter(racine) {
   }
   const S = scene(racine, rendre);
   // Déplacer M : l'angle suit le pointeur tour après tour (on ajoute la variation d'angle, sans saut de 2π).
-  let dernier = 0;
+  let dernier = 0, cumul = 0;
   glisser(q('#ct-cercle'), (p, phase) => {
     if (!V1) return;
     const a = Math.atan2(V1.iy(p.y), V1.ix(p.x));
-    if (phase === 'debut') { let d = a - E.t; d -= 2 * Math.PI * Math.round(d / (2 * Math.PI)); dernier = a; poser(E.t + d, true); return; }
-    let d = a - dernier; d -= 2 * Math.PI * Math.round(d / (2 * Math.PI)); dernier = a;
-    if (phase === 'suite') poser((E.k !== null ? E.k * Math.PI / 12 : E.t) + d, false); else poser(E.t, true);
+    if (phase === 'debut') { let d = a - E.t; d -= 2 * Math.PI * Math.round(d / (2 * Math.PI)); cumul = borne(E.t + d, -2 * Math.PI, 2 * Math.PI); dernier = a; poser(cumul, false); return; }
+    let d = a - dernier; d -= 2 * Math.PI * Math.round(d / (2 * Math.PI)); dernier = a; cumul = borne(cumul + d, -2 * Math.PI, 2 * Math.PI);
+    poser(cumul, phase === 'fin');
   });
-  glisser(q('#ct-courbes'), (p, phase) => { if (V2) poser(V2.ix(p.x), phase === 'fin' || phase === 'debut'); });
+  glisser(q('#ct-courbes'), (p, phase) => { if (V2) poser(V2.ix(p.x), phase === 'fin'); });
   return S.arreter;
 }

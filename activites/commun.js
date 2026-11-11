@@ -35,7 +35,8 @@ export const css = `
 :root[data-theme="dark"] { --sec: var(--c-alg); --free: var(--c-alg); --hl: #1e3550; --hl-ink: #cfe4fb; }
 .activites-act { font-family: var(--f-texte); font-size: 17.5px; line-height: 1.6; color: var(--encre); }
 .activites-act *, .activites-act *::before { box-sizing: border-box; }
-.activites-act .col { max-width: 46rem; }
+/* Le texte occupe toute la largeur de la page, comme les figures (demande de l'auteur, 11 nov. 2026 ; il était limité à 46rem). */
+.activites-act .col { max-width: none; }
 .activites-act .eyebrow { font-family: var(--f-ui); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--encre-3); margin: 0 0 6px; }
 .activites-act h3 { font-family: var(--f-titre); font-weight: 600; font-size: clamp(26px, 4.4vw, 34px); line-height: 1.12; margin: 0 0 12px; text-wrap: balance; }
 .activites-act .lede { font-size: 19px; line-height: 1.5; margin: 0; }

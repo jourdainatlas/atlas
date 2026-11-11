@@ -7,7 +7,7 @@ export const css = cssCommun + cssFigures + cssJeux + `
 .activites-act .tq { display: grid; grid-template-columns: repeat(var(--col), 1fr); gap: 6px; width: min(100%, calc(var(--col) * 84px)); }
 .activites-act .tq button { aspect-ratio: 1 / 1; padding: 0; border-radius: 8px; border: 1px solid var(--encre-3); background: var(--surface); font: 600 clamp(15px, 5vw, 26px) var(--f-mono); color: var(--encre); }
 .activites-act .tq button.place { border-color: var(--activites-jeu); box-shadow: inset 0 -3px 0 var(--activites-jeu); }
-.activites-act .tq button.vide { visibility: hidden; }
+.activites-act .tq button.vide { border: 1px dashed var(--encre-3); opacity: 1; cursor: default; background: repeating-linear-gradient(45deg, transparent 0 7px, var(--filet) 7px 8.5px), var(--papier); }
 .activites-act .tq button.conseil { background: var(--hl); color: var(--hl-ink); }
 `;
 

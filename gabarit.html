@@ -1519,7 +1519,7 @@ table.grille button.pli-ann:hover { border-color: var(--encre); }
 .activites-onglet-toutes { --o: var(--encre-3); }
 /* Casse-têtes : teinte propre au groupe (bleu pétrole, entre le bleu de l'édifice et le vert de l'analyse). */
 :root { --activites-jeu: #0e7490; } :root[data-theme="dark"] { --activites-jeu: #5cc8dc; }
-[data-teinte="jeu"] { --o: var(--activites-jeu) !important; }
+[data-teinte="jeu"] { --o: var(--activites-jeu) !important; } [data-teinte="geo"] { --o: var(--c-geo) !important; }
 /* Explorations : le sous-menu et les cartes prennent la couleur du domaine mathématique (celles des familles de l'édifice). */
 .activites-sous a, .activites-carte { --o: var(--c-ord); }
 [data-domaine="analyse"] { --o: var(--c-ana) !important; } [data-domaine="geometrie"] { --o: var(--c-geo) !important; }
@@ -3475,7 +3475,7 @@ function pageActivites(chemin) {
   const grp = act ? groupeDe(act) : groupes.find(x => x.id === chemin), membres = x => acts.filter(a => a.groupe === x.id);
   const teinte = x => x?.couleur ? ` data-teinte="${esc(x.couleur)}"` : '';
   const onglet = (href, titre, n, courant, x) => `<a class="activites-onglet${href === '#activites' ? ' activites-onglet-toutes' : ''}" href="${href}"${teinte(x)}${courant ? ' aria-current="page"' : ''}>${titre}${n ? `<span class="niv">${n}</span>` : ''}</a>`;
-  const cartes = liste => `<div class="activites-cartes">${liste.map(a => `<a class="carte activites-carte" href="#activites/${a.id}"${a.domaine ? ` data-domaine="${esc(a.domaine)}"` : teinte(groupeDe(a))}><span class="niv">${esc(a.niveau || '')}</span><h3>${a.titre}</h3><p>${a.resume || ''}</p><span class="fleche" aria-hidden="true">→</span></a>`).join('')}</div>`;
+  const cartes = liste => `<div class="activites-cartes">${liste.map(a => `<a class="carte activites-carte" href="#activites/${a.id}"${a.domaine ? ` data-domaine="${esc(a.domaine)}"` : teinte(groupeDe(a) || a)}><span class="niv">${esc(a.niveau || '')}</span><h3>${a.titre}</h3><p>${a.resume || ''}</p><span class="fleche" aria-hidden="true">→</span></a>`).join('')}</div>`;
   // Le titre d'une activité est dans son propre texte : la tête de page n'est affichée que sur les listes.
   let h = act ? '' : tete('Activités', grp ? esc(grp.titre) : 'Manipuler, conjecturer, démontrer', grp ? (grp.intro || '') : (A.intro || ''));
   // Intercalaires, dans l'ordre du catalogue : « Toutes », puis un par groupe (ses activités sont dans le sous-menu)
@@ -3483,7 +3483,7 @@ function pageActivites(chemin) {
   const vus = new Set();
   h += `<nav class="activites-onglets" aria-label="Activités">${onglet('#activites', 'Toutes', '', !act && !grp)}${acts.map(a => {
     const x = groupeDe(a);
-    if (!x) return onglet('#activites/' + a.id, a.onglet || a.titre, '', a === act);
+    if (!x) return onglet('#activites/' + a.id, a.onglet || a.titre, '', a === act, a);
     if (vus.has(x.id)) return ''; vus.add(x.id);
     return onglet('#activites/' + x.id, esc(x.titre), membres(x).length, x === grp, x);
   }).join('')}</nav>`;

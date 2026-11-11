@@ -7,6 +7,11 @@ export const css = cssCommun + cssFigures + cssJeux + `
 .activites-act .hn { display: grid; grid-template-columns: repeat(var(--tours), minmax(0, 1fr)); gap: 8px; width: min(100%, calc(var(--tours) * 190px)); }
 .activites-act .hn button.tour { position: relative; display: flex; flex-direction: column-reverse; align-items: center; gap: 3px; height: calc(var(--disques) * 21px + 46px); padding: 0 2px 6px; border-radius: 8px; border: 1px solid transparent; border-bottom: 4px solid var(--encre-3); background: transparent; }
 .activites-act .hn button.tour::before { content: ""; position: absolute; left: calc(50% - 3px); bottom: 0; top: 16px; width: 6px; border-radius: 3px 3px 0 0; background: var(--filet); }
+.activites-act .hn button.tour { margin-bottom: 20px; }
+.activites-act .hn button.tour::after { content: attr(data-role); position: absolute; left: 0; right: 0; bottom: -24px; font: 600 11px var(--f-ui); letter-spacing: .06em; text-transform: uppercase; }
+.activites-act .hn button.tour.depart { border-bottom-color: var(--sec); } .activites-act .hn button.tour.depart::after { color: var(--sec); }
+.activites-act .hn button.tour.arrivee { border-bottom-color: var(--tan); background: color-mix(in srgb, var(--tan) 12%, transparent); } .activites-act .hn button.tour.arrivee::after { color: var(--tan); }
+.activites-act .hn button.tour.arrivee::before { background: color-mix(in srgb, var(--tan) 45%, var(--filet)); }
 .activites-act .hn button.tour:hover { background: var(--trame); }
 .activites-act .hn button.tour.prise { border-color: var(--activites-jeu); background: var(--surface); }
 .activites-act .hn button.tour.conseil { background: var(--hl); }
@@ -37,7 +42,7 @@ export const html = `
 <section>
   <div class="col">
     <h4><span class="n">1</span>Jouer</h4>
-    <p>Cliquez sur une tour pour saisir le disque du dessus, puis sur la tour où le poser. Il s'agit d'amener toute la pile de la première tour sur la dernière. Commencez avec trois tours et trois ou quatre disques, comptez vos coups, puis recommencez en cherchant à en jouer moins.</p>
+    <p>Cliquez sur une tour pour saisir le disque du dessus, puis sur la tour où le poser. Il s'agit d'amener toute la pile de la tour de départ, dont le socle est orange, sur la tour d'arrivée, en vert. Commencez avec trois tours et trois ou quatre disques, comptez vos coups, puis recommencez en cherchant à en jouer moins.</p>
     <p>La page connaît toutes les positions du jeu : elle indique le nombre minimal de coups depuis le départ et depuis la position où vous êtes, et « Un coup » joue l'un des meilleurs.</p>
   </div>
 </section>
@@ -99,9 +104,10 @@ export function monter(racine) {
     if (P.children.length !== p) { P.innerHTML = ''; for (let i = 0; i < p; i++) { const b = document.createElement('button'); b.type = 'button'; b.className = 'tour'; b.dataset.i = i; P.append(b); } }
     [...P.children].forEach((b, i) => {
       const ds = []; for (let k = n - 1; k >= 0; k--) if (pos[k] === i) ds.push(k);   // du bas vers le haut
-      b.className = 'tour' + (i === prise ? ' prise' : '') + (conseil.includes(i) ? ' conseil' : '');
+      b.className = 'tour' + (i === 0 ? ' depart' : i === p - 1 ? ' arrivee' : '') + (i === prise ? ' prise' : '') + (conseil.includes(i) ? ' conseil' : '');
+      b.dataset.role = i === 0 ? 'départ' : i === p - 1 ? 'arrivée' : '';
       b.innerHTML = ds.map(k => `<span class="disque" style="--t:${n > 1 ? k / (n - 1) : 1}">${k + 1}</span>`).join('');
-      b.setAttribute('aria-label', `Tour ${i + 1} : ${ds.length ? 'disques ' + ds.map(k => k + 1).join(', ') + ' (du bas vers le haut)' : 'vide'}`);
+      b.setAttribute('aria-label', `Tour ${i + 1}${i === 0 ? ' (départ)' : i === p - 1 ? ' (arrivée)' : ''} : ${ds.length ? 'disques ' + ds.map(k => k + 1).join(', ') + ' (du bas vers le haut)' : 'vide'}`);
     });
     const D = table(), dep = D[code(new Array(n).fill(0))], reste = D[code(pos)], gagne = fini();
     ecrire(q('#hn-coups'), entier(coups));
@@ -109,7 +115,7 @@ export function monter(racine) {
     ecrire(q('#hn-reste'), gagne ? '' : `Au mieux, il reste ${entier(reste)} coup${reste > 1 ? 's' : ''}.`);
     const m = q('#hn-message'); m.className = 'jeu-message' + (gagne ? ' gagne' : msg ? ' bloque' : '');
     ecrire(m, gagne ? (coups === dep ? `Réussi en ${entier(coups)} coups : c'est le minimum.` : `Réussi en ${entier(coups)} coups ; le minimum est ${entier(dep)}.`)
-      : msg || (prise >= 0 ? `Disque ${sommets(pos)[prise] + 1} saisi : choisissez la tour où le poser.` : 'Choisissez la tour dont vous voulez déplacer le disque du dessus.'));
+      : msg || (prise >= 0 ? `Disque ${sommets(pos)[prise] + 1} saisi : choisissez la tour où le poser.` : `But : amener tous les disques sur la tour d'arrivée, la tour ${p}, en vert. Choisissez la tour dont vous voulez déplacer le disque du dessus.`));
     q('#hn-conseil').disabled = gagne; q('#hn-auto').disabled = gagne && !minuterie;
     ecrire(q('#hn-auto'), minuterie ? 'Arrêter' : 'Montrer une solution');
   }

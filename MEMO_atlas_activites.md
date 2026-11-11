@@ -252,3 +252,35 @@ prolongée (parallélogramme), rectangle deux fois plus long que large, carré s
 reconnue (« ok ») et la même figure posée à vue, tous points libres, est refusée (« fragile »). Vérifié aussi
 dans le navigateur sur une figure codée.
 
+### 123. Retouches demandées et deux explorations de plus (11 nov. 2026, après-midi)
+
+**Retouches demandées par l'auteur.**
+- *Largeur du texte.* Le texte des activités était limité à 46rem (longueur de ligne de lecture) alors que les
+  figures occupaient toute la page : l'auteur y a vu un défaut. `.activites-act .col` n'a plus de largeur
+  maximale ; le texte remplit la page (1180 px au plus).
+- *Curseurs plus fins.* Second degré : pas de 0,05 au lieu de 0,5 ; les coefficients sont stockés en vingtièmes
+  entiers (A, B, K), Δ = (B² − 4AK)/400, α = −B/(2A), β = −(B² − 4AK)/(80A), toujours calculés en entiers.
+  Affichage : fraction si le dénominateur réduit ne dépasse pas 20, sinon valeur approchée à 10⁻³ précédée de
+  « ≈ » (fonction `rat`). Cercle trigonométrique : l'angle avance par degrés entiers (π/180) au lieu de π/12,
+  et s'accroche au multiple de π/12 le plus proche, à deux degrés près, quand on relâche le point ; les valeurs
+  exactes restent celles des multiples de π/6 et π/4.
+- *Taquin.* La case vide est hachurée, bordée de tirets.
+- *Hanoï.* Le socle de la tour de départ est orange avec la mention « départ » ; la tour d'arrivée est teintée
+  en vert avec la mention « arrivée », et le message rappelle le but.
+- *Atelier.* Son intercalaire prend la couleur de la géométrie (`couleur: geo`, violet `--c-geo`). L'auteur a
+  écrit « l'orange de la géométrie » : dans le site, la géométrie est violette et l'orange est l'algèbre ; le
+  violet a été retenu pour le sens, à confirmer.
+
+**Deux explorations.**
+- `toile-suite` (Terminale, Maths Sup ; analyse) : construction en toile d'araignée de u(n+1) = f(u(n)) pour
+  a(x − 0,5) + 0,5, cos x et rx(1 − x). Points fixes par formule (0,5 ; 0 et 1 − 1/r) ou, pour le cosinus, par
+  dichotomie (0,7391). Les verdicts n'affirment que ce qui est démontré : formule explicite pour l'affine,
+  convergence globale pour le cosinus, critère local |f′(ℓ)| < 1 pour le reste.
+- `binomiale` (Terminale, Maths Sup ; probabilités, première activité en bleu) : loi exacte calculée par les
+  logarithmes, diagramme centré réduit (aires conservées), densité normale, tableau des probabilités à 1, 2, 3
+  écarts-types. Valeurs contrôlées avec Python : n = 100, p = 0,5 → 0,7287 ; 0,9648 ; 0,9982 ; n = 30,
+  p = 0,05 → 0,5975 ; 0,9392 ; 0,9967 ; n = 50, p = 0,3 → 0,7204 ; 0,9567 ; 0,9969. Le piège retenu est la
+  correction de continuité (0,7287 contre 0,6827).
+
+Restent quinze idées de la liste des vingt, les visualisations de dénombrement et d'autres casse-têtes.
+
