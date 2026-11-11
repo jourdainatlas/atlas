@@ -3,12 +3,12 @@ from meta_ma_commun import fabriquer
 
 PARTIES = [
     (1, 9, 'généralités sur les fonctions', ['de-monotonie'], []),
-    (10, 20, 'dérivation', ['de-operations'], ['derivable']),
-    (21, 28, 'exponentielle et logarithme', ['cx-exponentielle', 'nb-logarithme'], ['exponentielle', 'logarithme']),
-    (29, 33, 'puissances et croissances comparées', ['nb-logarithme'], ['puissance-reelle']),
-    (34, 41, 'fonctions circulaires réciproques', ['de-reciproque', 'c-bijection'], []),
-    (42, 47, 'fonctions hyperboliques', ['cx-exponentielle'], ['exponentielle']),
-    (48, 49, 'fonctions à valeurs complexes', ['de-operations', 'cx-exponentielle'], ['derivable']),
+    (10, 25, 'dérivation', ['de-operations'], ['derivable']),
+    (26, 33, 'exponentielle et logarithme', ['cx-exponentielle', 'nb-logarithme'], ['exponentielle', 'logarithme']),
+    (34, 38, 'puissances et croissances comparées', ['nb-logarithme'], ['puissance-reelle']),
+    (39, 46, 'fonctions circulaires réciproques', ['de-reciproque', 'c-bijection'], []),
+    (47, 52, 'fonctions hyperboliques', ['cx-exponentielle'], ['exponentielle']),
+    (53, 54, 'fonctions à valeurs complexes', ['de-operations', 'cx-exponentielle'], ['derivable']),
 ]
 R = [
     (r'pair|impair|périodi', 'parité et périodicité', [], []),
@@ -29,5 +29,5 @@ R = [
     (r'équation fonctionnelle|toutes les fonctions', 'équations fonctionnelles', [], []),
 ]
 FOND = ['de-operations']
-EXTRA = {42: (['équations hyperboliques'], ['de-derivee', 'de-operations'], []), 44: (['formule de Moivre hyperbolique'], ['de-derivee', 'de-operations'], [])}
+EXTRA = {47: (['équations hyperboliques'], ['de-derivee', 'de-operations'], []), 49: (['formule de Moivre hyperbolique'], ['de-derivee', 'de-operations'], [])}
 meta = fabriquer(R, PARTIES, FOND, EXTRA)

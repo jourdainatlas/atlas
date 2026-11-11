@@ -681,3 +681,14 @@ navigation, puis le gestionnaire existant `data-vers-moteur` fait défiler jusqu
 **À chaque dépôt de chapitre**, on choisit de 1 à 11 thèmes qui recouvrent son programme, en préférant les thèmes
 fins (`parent:`), et on vérifie leurs ids. On ne relie pas encore les niveaux du lycée : les sujets du baccalauréat
 ne sont pas indexés par thème.
+
+### 44. MPSI ch. 5 mis à jour (11 nov. 2026, soir)
+
+Le cours passe à 19 pages. Il ajoute les symétries par rapport à une droite `x = a` et à un point, ainsi qu'un
+exemple complet d'étude de la fonction périodique `x ↦ sin x cos² x`. Le résumé et le sommaire (pages) sont repris.
+
+La feuille passe de 59 à 64 exercices. Les 5 nouveaux (11, 15, 16, 17 et 19) s'insèrent dans la partie
+« Dérivation », et non dans les exercices de synthèse : il a donc fallu décaler à la main les intervalles
+`PARTIES` de `meta_ma_05.py`, en plus de la renumérotation automatique des `EXTRA` par `maj.py`. **Quand une
+partie autre que la synthèse grandit**, on compare les intervalles des parties de l'ancienne et de la nouvelle
+conversion avant de reconvertir.
