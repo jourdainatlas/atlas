@@ -15,6 +15,9 @@ export const css = cssCommun + `
 .activites-act .defis button[aria-current="true"] { border-color: var(--encre-3); background: var(--papier); }
 .activites-act .defis .grp { font: 500 11.5px var(--f-ui); letter-spacing: .07em; text-transform: uppercase; color: var(--encre-3); padding: 8px 9px 2px; }
 .activites-act .defis .grp:first-child { padding-top: 0; }
+/* Titres des groupes de défis : à la couleur de l'atelier (géométrie), avec un filet, pour se repérer dans la liste. */
+.activites-act .defis .grp { color: var(--c-geo); font-weight: 600; border-bottom: 1px solid color-mix(in srgb, var(--c-geo) 35%, transparent); margin: 6px 0 2px; }
+.activites-act .defis .grp:first-child { margin-top: 0; }
 .activites-act .pill { font-size: 11px; font-weight: 600; letter-spacing: .04em; padding: 1px 8px; border-radius: 999px; border: 1px solid var(--filet); color: var(--encre-3); white-space: nowrap; }
 .activites-act .pill.done { border-color: var(--ok); color: var(--ok); }
 .activites-act .enonce { border: 0; padding: 0; margin: 0; background: none; border-radius: 0; }

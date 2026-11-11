@@ -294,4 +294,6 @@ Restent quinze idées de la liste des vingt, les visualisations de dénombrement
 - *Vignettes.* Chaque carte d'activité porte un petit dessin au trait (champ `vignette` du catalogue : intérieur
   d'un SVG de 120 × 72, classes `a` trait coloré, `f` aplat, `p` point, `t` tirets, `e` trait fort), à la couleur
   de la carte. Toute nouvelle activité doit avoir la sienne.
+- *Atelier, titres des groupes de défis.* En violet (`--c-geo`), gras, soulignés d'un filet, à la demande de
+  l'auteur, pour se repérer dans la liste.
 
