@@ -49,6 +49,11 @@ export function pagesCoursExercices(ctx) {
   const srcExo = Object.fromEntries((brut.exercices?.exercices || []).map(e => [e.id, e]));
   const srcCours = Object.fromEntries((brut.cours?.cours || []).map(c => [c.id, c]));
   const { page, puce, relier, esc } = outilsLecture(ctx);
+  // Lien partagé depuis le site (bouton Partager de l'en-tête : ?page=n pour un cours, ?ouvrir pour un exercice ou
+  // une feuille) : le visiteur va droit à la page interactive. Les aperçus des messageries et les moteurs, qui
+  // lisent l'adresse sans paramètre (canonical) ou n'exécutent pas le script, gardent la page de lecture.
+  // DOMContentLoaded : après le script de lecture.mjs qui ajoute la page au lien « Ouvrir ».
+  const ALLER = `<script>if(/[?&](page=\\d+|ouvrir)(&|$)/.test(location.search))document.addEventListener('DOMContentLoaded',function(){var a=document.querySelector('a.l-ouvrir');if(a)location.replace(a.href)});</script>`;
   const R = D.rubriques || {};
   const niveaux = R.cours?.niveaux || [];
   const niveau = id => niveaux.find(n => n.id === id) || { id, titre: id };
@@ -96,7 +101,7 @@ export function pagesCoursExercices(ctx) {
     h += navigation(meme[k - 1] && { href: `/cours/${meme[k - 1].id}/`, texte: meme[k - 1].titre }, meme[k + 1] && { href: `/cours/${meme[k + 1].id}/`, texte: meme[k + 1].titre });
     h += `</article>`;
     page({ chemin: `cours/${c.id}/`, titre: `ATLAS – Cours : ${texteBrut(c.titre)} (${lieuCours(c)})`, description: `Cours de ${lieuCours(c)}. ${texteSource(srcCours[c.id]?.resume)}`,
-      ancre: `cours/${c.id}`, fil: [FIL_C, { name: texteBrut(nv.titre), href: `/cours/#${nv.id}` }, { name: texteBrut(c.titre) }], corps: h });
+      ancre: `cours/${c.id}`, fil: [FIL_C, { name: texteBrut(nv.titre), href: `/cours/#${nv.id}` }, { name: texteBrut(c.titre) }], corps: h + ALLER });
     n++;
   }
   {
@@ -139,7 +144,7 @@ export function pagesCoursExercices(ctx) {
       h += `</article>`;
       page({ chemin: `exercices/${e.id}/`, titre: `ATLAS – Exercice ${e.numero}${e.titre ? ` (${texteBrut(e.titre)})` : ''} : ${texteBrut(f.titre)}, ${lieuFeuille(f)}`,
         description: `Exercice corrigé, ${texteBrut(f.titre)} (${lieuFeuille(f)}). ${texteSource(srcExo[e.id]?.enonce)}`, ancre: `exercices/ex/${e.id}`,
-        fil: [...filF, { name: texteBrut(f.titre), href: `/exercices/feuille/${f.id}/` }, { name: `Exercice ${e.numero}` }], corps: h });
+        fil: [...filF, { name: texteBrut(f.titre), href: `/exercices/feuille/${f.id}/` }, { name: `Exercice ${e.numero}` }], corps: h + ALLER });
       n++;
     });
     // la page de la feuille
@@ -154,7 +159,7 @@ export function pagesCoursExercices(ctx) {
     h += '</ul></article>';
     page({ chemin: `exercices/feuille/${f.id}/`, titre: `ATLAS – Exercices : ${texteBrut(f.titre)} (${lieuFeuille(f)})`,
       description: `${liste.length} exercices corrigés, ${texteBrut(f.titre)} (${lieuFeuille(f)}).${c ? ` ${texteSource(srcCours[c.id]?.resume)}` : ''}`, ancre: `exercices/feuille/${f.id}`,
-      fil: [...filF, { name: texteBrut(f.titre) }], corps: h });
+      fil: [...filF, { name: texteBrut(f.titre) }], corps: h + ALLER });
     n++;
   }
   {

@@ -593,3 +593,11 @@ a trois. Elle reste affichée quand tout le corrigé est déroulé.
 « Par feuille », le titre de chaque carte de feuille (`vueFeuilles`) est précédé du symbole de son chapitre, à
 32 px. On appelle `symboleChapitre(c)` du domaine apparence, sans le modifier, avec le cours `f.cours`. Une
 feuille sans cours, ou dont le chapitre n'a pas de symbole, garde son titre seul.
+
+**Liens partagés : redirection directe (11 nov. 2026).** Le bouton Partager de l'en-tête donne, pour un cours,
+`/cours/<id>/?page=n`, avec toujours le paramètre, même pour la page 1. Pour un exercice ou une feuille, il donne
+`/exercices/<id>/?ouvrir` ou `/exercices/feuille/<id>/?ouvrir`. Sur ces pages de lecture (`lecture-cours.mjs`,
+constante `ALLER`), un script renvoie aussitôt le visiteur vers la page interactive, à la bonne page du PDF, quand
+l'adresse porte `page=` ou `ouvrir`. Sans paramètre (adresse canonique, plan du site, moteurs), la page de lecture
+s'affiche comme avant. Les aperçus des messageries, qui n'exécutent pas de script, restent ceux de la page de
+lecture. Les pages de lecture de l'édifice et des annales (`lecture.mjs`, domaine apparence) ne sont pas concernées.

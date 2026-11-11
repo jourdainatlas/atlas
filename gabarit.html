@@ -5236,10 +5236,10 @@ function adressePartage() {
     if (nom === 'cours' && ch && (R.cours?.cours || []).some(c => c.id === ch)) {
       // la page affichée dans le lecteur (au-delà de la première) entre dans l'adresse : ?page=n, lu par la page de lecture
       const n = +($('#rubrique .pdf-num')?.textContent || 1);
-      return `${ADRESSE_SITE}cours/${ch}/${n > 1 ? `?page=${n}` : ''}`;
+      return `${ADRESSE_SITE}cours/${ch}/?page=${n}`;   // le paramètre fait aussi aller le destinataire droit au cours (lecture-cours.mjs)
     }
-    if (nom === 'exercices' && etatExo.ex) return `${ADRESSE_SITE}exercices/${etatExo.ex}/`;
-    if (nom === 'exercices' && etatExo.feuille) return `${ADRESSE_SITE}exercices/feuille/${etatExo.feuille}/`;   // page de lecture (lecture-cours.mjs)
+    if (nom === 'exercices' && etatExo.ex) return `${ADRESSE_SITE}exercices/${etatExo.ex}/?ouvrir`;   // ?ouvrir : redirection vers la page interactive
+    if (nom === 'exercices' && etatExo.feuille) return `${ADRESSE_SITE}exercices/feuille/${etatExo.feuille}/?ouvrir`;   // page de lecture (lecture-cours.mjs)
     if (nom === 'exercices' && etatExo.vue === 'niveau' && etatExo.niveauVu) return `${ADRESSE_SITE}#exercices/niveau/${etatExo.niveauVu}`;
     if (nom === 'accueil') return ADRESSE_SITE;
     if (nom === 'activites') return `${ADRESSE_SITE}activites/${(R.activites?.activites || []).some(a => a.id === ch) ? ch + '/' : ''}`;   // pages de lecture (lecture-activites.mjs)
@@ -5261,7 +5261,7 @@ $('#partager').addEventListener('click', async () => {
     champ.remove();
   }
   const pg = (url.match(/[?&]page=(\d+)/) || [])[1];
-  b.textContent = ok ? (pg ? `Lien de la page ${pg} copié` : 'Lien copié') : url; b.classList.toggle('copie', ok);
+  b.textContent = ok ? (pg && pg !== '1' ? `Lien de la page ${pg} copié` : 'Lien copié') : url; b.classList.toggle('copie', ok);
   setTimeout(() => { b.textContent = 'Partager'; b.classList.remove('copie'); }, ok ? 1800 : 6000);
 });
 
