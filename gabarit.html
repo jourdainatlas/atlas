@@ -1066,6 +1066,52 @@ body.en-rubrique .legende { display: none; }
 .acc-hero .chapeau { font-family: var(--f-texte); font-size: 18.5px; line-height: 1.6; max-width: 34rem; margin: 0 0 22px; }
 .acc-actions { display: flex; flex-wrap: wrap; gap: 10px; }
 .acc-actions .bouton { font-size: 14.5px; padding: 9px 16px; text-decoration: none; }
+/* Roue des rubriques de l'accueil (§69) : le cadran tourne d'un cran, le volet de droite change en fondu. */
+.acc-roue, .acc-roue [data-r] { --r: var(--r-neutre); }
+.acc-roue[data-r="edifice"], .acc-roue [data-r="edifice"] { --r: var(--r-edifice); }
+.acc-roue[data-r="cours"], .acc-roue [data-r="cours"] { --r: var(--r-cours); }
+.acc-roue[data-r="exercices"], .acc-roue [data-r="exercices"] { --r: var(--r-exercices); }
+.acc-roue[data-r="annales"], .acc-roue [data-r="annales"] { --r: var(--r-annales); }
+.acc-roue[data-r="activites"], .acc-roue [data-r="activites"] { --r: var(--c-ord); }
+.acc-roue { --a: 0deg; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 6px 22px; max-width: 34rem; padding: 2px 0; }
+.ro-cadran { position: relative; width: 132px; height: 132px; flex: none; }
+.ro-tour { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); fill: none; }
+.ro-piste { stroke: color-mix(in srgb, var(--r) 22%, var(--filet)); stroke-width: 1.5; transition: stroke .7s ease; }
+.ro-avance { stroke: var(--r); stroke-width: 2.5; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke .7s ease; }
+.ro-anneau { position: absolute; inset: 0; transform: rotate(var(--a)); transition: transform .9s cubic-bezier(.5, 0, .2, 1); }
+.ro-sym { --t: calc(360deg / var(--n) * var(--k)); position: absolute; left: 50%; top: 50%; width: 30px; height: 30px; margin: -15px; padding: 0; display: grid; place-items: center;
+  border-radius: 50%; border: 1px solid transparent; background: none; cursor: pointer; opacity: .5;
+  transform: rotate(var(--t)) translateX(47px) rotate(calc(0deg - var(--t) - var(--a))) scale(1);
+  transition: transform .9s cubic-bezier(.5, 0, .2, 1), opacity .5s ease, background-color .5s ease, border-color .5s ease, box-shadow .5s ease; }
+.ro-sym .sym { width: 18px; height: 18px; margin: 0; }
+.ro-sym:focus-visible { opacity: 1; border-color: color-mix(in srgb, var(--r) 55%, transparent); }
+@media (hover: hover) { .ro-sym:hover { opacity: 1; border-color: color-mix(in srgb, var(--r) 55%, transparent); } }
+.ro-sym.actif { opacity: 1; background: var(--surface); border-color: var(--r); box-shadow: 0 0 0 4px color-mix(in srgb, var(--r) 18%, transparent);
+  transform: rotate(var(--t)) translateX(47px) rotate(calc(0deg - var(--t) - var(--a))) scale(1.24); }
+.ro-centre { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; padding-right: 12px; }   /* décalé : le symbole actif est à droite */
+.ro-nb { grid-area: 1 / 1; display: flex; flex-direction: column; align-items: center; font: 500 9.5px/1.2 var(--f-mono); letter-spacing: 0; color: var(--encre-2); opacity: 0; transform: scale(.82); transition: opacity .5s ease, transform .6s ease; }
+.ro-nb b { font: 600 22px/1 var(--f-titre); letter-spacing: 0; color: var(--encre); margin-bottom: 3px; font-variant-numeric: lining-nums; }
+.ro-nb.actif { opacity: 1; transform: none; transition-delay: .25s; }
+.ro-volets { display: grid; min-width: 0; }
+.ro-volet { grid-area: 1 / 1; display: flex; flex-direction: column; justify-content: center; gap: 4px; min-width: 0; text-decoration: none; color: inherit;
+  opacity: 0; visibility: hidden; transform: translateY(8px); transition: opacity .5s ease, transform .6s ease, visibility 0s .6s; }
+.ro-volet.actif { opacity: 1; visibility: visible; transform: none; transition: opacity .6s ease .3s, transform .7s ease .3s, visibility 0s; }
+.ro-nom { font: 600 23px/1.15 var(--f-titre); color: var(--r); }
+.ro-desc { font: 400 14px/1.45 var(--f-ui); color: var(--encre-2); }
+.ro-aller { margin-top: 3px; font: 600 13.5px/1.3 var(--f-ui); color: var(--encre); }
+.ro-aller > span { display: inline-block; transition: transform .2s ease; }
+.ro-volet:hover .ro-aller > span { transform: translateX(4px); }
+.ro-volet:hover .ro-aller, .ro-volet:focus-visible .ro-aller { text-decoration: underline; text-underline-offset: 3px; }
+@media (max-width: 480px) {
+  .acc-roue { gap: 6px 14px; }
+  .ro-cadran { width: 108px; height: 108px; }
+  .ro-sym { width: 24px; height: 24px; margin: -12px; transform: rotate(var(--t)) translateX(38px) rotate(calc(0deg - var(--t) - var(--a))) scale(1); }
+  .ro-sym.actif { transform: rotate(var(--t)) translateX(38px) rotate(calc(0deg - var(--t) - var(--a))) scale(1.2); }
+  .ro-sym .sym { width: 15px; height: 15px; }
+  .ro-nb b { font-size: 18px; } .ro-nb { font-size: 8.5px; } .ro-centre { padding-right: 16px; }
+  .ro-nom { font-size: 20px; } .ro-desc { font-size: 13px; }
+}
+@media (prefers-reduced-motion: reduce) { .acc-roue, .acc-roue * { transition: none !important; } }
 .acc-carte-edifice { cursor: pointer; position: relative; display: block; padding: 14px 14px 10px; text-decoration: none; color: inherit; transition: border-color .15s, box-shadow .15s; }
 .acc-carte-edifice:hover { border-color: var(--encre-3); box-shadow: var(--ombre); }
 .acc-mini { display: block; width: 100%; height: auto; max-height: 440px; }
@@ -1074,6 +1120,36 @@ body.en-rubrique .legende { display: none; }
 .acc-mini .nd .pastille { fill: var(--c); stroke: none; }
 .acc-mini a:hover rect, .acc-mini a:focus-visible rect { fill: color-mix(in srgb, var(--c) 55%, var(--surface)); }
 .acc-mini a:focus-visible { outline: none; }
+/* Accueil : « de l'axiome au théorème », un chemin tracé dans la miniature (domaine À propos – apparence,
+   MEMO_atlas_apropos.md §69). Les bulles hors du chemin s'estompent ; un trait lumineux monte d'arête en arête, à la
+   couleur de la théorie atteinte ; la légende nomme la théorie traversée, puis le théorème d'arrivée. */
+.acc-mini .ar, .acc-mini .nd { transition: opacity .5s; }
+.acc-mini .nd { transform-box: fill-box; transform-origin: center; }
+.acc-mini.trace .ar { opacity: .22; }
+.acc-mini.trace .nd:not(.sur-fil) { opacity: .34; }
+.acc-mini .acc-trait { fill: none; stroke: var(--c); stroke-width: 9; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; filter: drop-shadow(0 0 9px var(--c)); transition: opacity .5s; }
+.acc-mini .acc-trait.fixe { stroke-dashoffset: 0; }
+.acc-mini .acc-traits.s-efface .acc-trait, .acc-mini .acc-traits.s-efface .halo { opacity: 0; }
+.acc-mini .nd.sur-fil rect { fill: color-mix(in srgb, var(--c) 50%, var(--surface)); }
+.acc-mini .nd.sur-fil.arrivee rect { fill: color-mix(in srgb, var(--c) 78%, var(--surface)); filter: drop-shadow(0 0 16px var(--c)); }
+.acc-mini .halo { fill: none; stroke: var(--c); stroke-width: 6; transform-box: fill-box; transform-origin: center; transition: opacity .5s; }
+.acc-chemin { padding: 8px 4px 2px; min-height: 58px; font-family: var(--f-ui); }
+.acc-chemin p { margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: opacity .35s; }
+.acc-chemin .ch-etape { font-size: 12.5px; color: var(--encre-2); display: flex; gap: 8px; align-items: baseline; }
+.acc-chemin .ch-n { font-family: var(--f-mono); font-size: 11.5px; color: var(--encre-3); }
+.acc-chemin .ch-n:empty { display: none; }
+.acc-chemin .ch-nom { overflow: hidden; text-overflow: ellipsis; }
+.acc-chemin .ch-but { font-family: var(--f-titre); font-size: 19px; font-weight: 600; line-height: 1.45; color: var(--encre); }
+.acc-chemin .ch-but a { color: inherit; text-decoration: none; border-bottom: 1px solid var(--filet); }
+.acc-chemin .ch-but a:hover { border-bottom-color: var(--encre-2); }
+.acc-chemin .ch-but .ch-fleche { font-family: var(--f-ui); font-weight: 400; color: var(--encre-3); margin-left: 6px; }
+.acc-chemin .ch-but .ch-choix { color: var(--choix); margin-left: 4px; }
+.acc-chemin .ch-but small { font-family: var(--f-ui); font-size: 12.5px; font-weight: 400; color: var(--encre-2); }
+.acc-chemin .voile { opacity: 0; }
+.acc-fil-bouton { position: absolute; top: 10px; right: 10px; z-index: 1; width: 30px; height: 30px; display: grid; place-items: center; border: 1px solid var(--filet); border-radius: 50%; background: var(--surface); color: var(--encre-2); cursor: pointer; padding: 0; }
+.acc-fil-bouton[hidden] { display: none; }
+.acc-fil-bouton:hover { color: var(--encre); border-color: var(--encre-3); }
+.acc-fil-bouton svg { width: 12px; height: 12px; fill: currentColor; }
 .acc-legende { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; font-size: 12.5px; color: var(--encre-2); padding: 8px 4px 0; border-top: 1px solid var(--filet); margin-top: 6px; }
 .acc-legende b { font-family: var(--f-mono); font-weight: 600; color: var(--encre); }
 .acc-section { margin: 26px 0 0; }
@@ -3643,11 +3719,12 @@ const libelleChapitre = c => niveauDe(c.niveau).titre + (c.chapitre ? ` · chapi
 function miniEdifice() {
   const g = D.graphes[D.racine];
   let h = `<svg class="acc-mini" viewBox="-20 -20 ${g.largeur + 40} ${g.hauteur + 40}" role="group" aria-label="Miniature de l'édifice : ${g.noeuds.length} théories reliées de la logique aux grandes théories">`;
-  for (const a of g.aretes) h += `<path class="ar" d="${a.d}"/>`;
+  for (const a of g.aretes) h += `<path class="ar" pathLength="1" data-de="${a.de}" data-vers="${a.vers}" d="${a.d}"/>`;
+  h += `<g class="acc-traits"></g>`;   // chemins lumineux de accueilFil() (§69), entre les arêtes et les bulles
   for (const p of g.noeuds) {
     const n = D.noeuds[p.id]; if (!n) continue;
     const x = p.x - p.w / 2, y = p.y - p.h / 2;
-    h += `<a href="#${D.racine}.${p.id}" class="nd" style="--c: ${couleurNoeud(n)}"><title>${esc(n.titre)}</title><rect x="${x}" y="${y}" width="${p.w}" height="${p.h}" rx="16"/><circle class="pastille" cx="${x + 26}" cy="${p.y}" r="11"/></a>`;
+    h += `<a href="#${D.racine}.${p.id}" class="nd" data-t="${p.id}" style="--c: ${couleurNoeud(n)}"><title>${esc(n.titre)}</title><rect x="${x}" y="${y}" width="${p.w}" height="${p.h}" rx="16"/><circle class="pastille" cx="${x + 26}" cy="${p.y}" r="11"/></a>`;
   }
   return h + '</svg>';
 }
@@ -3663,10 +3740,25 @@ function pageAccueil() {
   let h = `<section class="acc-hero"><div>`;
   h += `<p class="sur-titre">Mathématiques · de la logique aux grandes théories</p>`;
   h += `<h2>L'architecture des mathématiques, <em>de l'axiome au théorème</em></h2>`;
-  h += `<p class="chapeau">ATLAS présente les mathématiques comme un édifice : un graphe qui part des axiomes de la théorie des ensembles et dont chaque théorie s'ouvre sur ses définitions et ses théorèmes, démontrés dans l'ordre. Autour de lui, des cours, des exercices corrigés et des sujets de concours, rattachés aux théories qui les fondent.</p>`;
-  h += `<div class="acc-actions"><a class="bouton plein" href="#${D.racine}">Entrer dans l'édifice</a><a class="bouton" href="#cours">Les cours</a><a class="bouton" href="#exercices">Les exercices</a><a class="bouton" href="#annales">Les annales</a></div>`;
+  h += `<p class="chapeau">ATLAS présente les mathématiques comme un édifice : un graphe qui part des axiomes de la théorie des ensembles et dont chaque théorie s'ouvre sur ses définitions et ses théorèmes, démontrés dans l'ordre. Autour de lui, des cours, des exercices corrigés, des sujets de concours et des activités interactives, rattachés aux théories qui les fondent.</p>`;
+  // Roue des rubriques (accueilRoue, §69) : elle remplace les quatre boutons, que la barre de navigation double.
+  { const nbSuj = (R.annales?.sujets || []).filter(x => x.sujet).length, nbAct = (R.activites?.activites || []).length;
+    const rub = [
+      ['edifice', `#${D.racine}`, "L'édifice", nbTheories, 'théories', "Le graphe des théories, de la logique du premier ordre aux grandes théories : chaque nœud s'ouvre sur ses définitions et ses théorèmes, démontrés dans l'ordre.", "Entrer dans l'édifice"],
+      ['cours', '#cours', 'Cours', cours.length, cours.length > 1 ? 'chapitres' : 'chapitre', "Les cours scolaires, chapitre par chapitre, à lire en ligne ou à télécharger, chacun relié aux théories sur lesquelles il repose.", 'Ouvrir les cours'],
+      ['exercices', '#exercices', 'Exercices', nbExos, 'exercices', "Des feuilles d'exercices corrigés question par question, à filtrer par thème, par difficulté ou par notion de l'atlas.", "S'entraîner"],
+      ['annales', '#annales', 'Annales', nbSuj, 'sujets', "Les sujets des concours et du baccalauréat, avec leurs rapports de jury et leurs corrigés, et un moteur pour retrouver une notion.", 'Parcourir les annales'],
+      ['activites', '#activites', 'Activités', nbAct, nbAct > 1 ? 'activités' : 'activité', "Des figures à faire varier pour voir un théorème à l'œuvre, des casse-têtes à résoudre sur la page et un atelier à la règle et au compas.", 'Explorer les activités'],
+    ].filter(x => x[3] > 0);
+    h += `<div class="acc-roue" data-r="${rub[0][0]}"><div class="ro-cadran"><svg class="ro-tour" viewBox="0 0 132 132" aria-hidden="true"><circle class="ro-piste" cx="66" cy="66" r="63"/><circle class="ro-avance" cx="66" cy="66" r="63" pathLength="1"/></svg>`;
+    h += `<div class="ro-anneau" role="tablist" aria-label="Rubriques">${rub.map((x, k) => `<button type="button" class="ro-sym${k ? '' : ' actif'}" role="tab" aria-selected="${!k}" data-k="${k}" data-r="${x[0]}" style="--k:${k};--n:${rub.length}" title="${esc(x[2])}" aria-label="${esc(x[2])}">${symbole(x[0])}</button>`).join('')}</div>`;
+    h += `<div class="ro-centre" aria-hidden="true">${rub.map((x, k) => `<span class="ro-nb${k ? '' : ' actif'}"><b>${x[3]}</b>${x[4]}</span>`).join('')}</div></div>`;
+    h += `<div class="ro-volets">${rub.map((x, k) => `<a class="ro-volet${k ? '' : ' actif'}" data-r="${x[0]}" href="${x[1]}"${k ? ' tabindex="-1" aria-hidden="true"' : ''}><span class="ro-nom">${esc(x[2])}</span><span class="ro-desc">${x[5]}</span><span class="ro-aller">${x[6]} <span aria-hidden="true">→</span></span></a>`).join('')}</div></div>`; }
   h += repriseAccueil();   // « Reprendre où j'en étais » (§57)
   h += `</div><div class="acc-carte-edifice carte" data-vers="#${D.racine}">${miniEdifice()}`;
+  // Chemin tracé dans la miniature (accueilFil, §69) : bouton de pause et légende du chemin en cours.
+  h += `<button type="button" class="acc-fil-bouton" hidden></button>`;
+  h += `<div class="acc-chemin"><p class="ch-etape"><span class="ch-n"></span><span class="ch-nom">De l'axiome au théorème</span></p><p class="ch-but">&nbsp;</p></div>`;
   h += `<div class="acc-legende"><span><b>${nbTheories}</b> théories</span><span><b>${nbEnonces}</b> définitions, axiomes et théorèmes</span><span><b>${nbTermes}</b> termes au lexique</span></div></div></section>`;
   h += aProposCommencer();   // domaine À propos : guide par profil de lecteur
 
@@ -4597,9 +4689,179 @@ function impImprimer(quoi, preuves) {
   }, () => { m.innerHTML = '<div class="imp-attente">Les textes n\'ont pas pu être chargés. Vérifiez la connexion, puis réessayez.</div>'; });
 }
 
+/* ---- Accueil : « de l'axiome au théorème » (domaine À propos – apparence, MEMO_atlas_apropos.md §69)
+   Dans la miniature de l'édifice, un chemin se trace de la logique jusqu'à une théorie, arête par arête, puis la
+   légende nomme un théorème de cette théorie, avec un lien vers sa fiche ; et l'on recommence avec un autre.
+   Rien n'est inventé : le chemin suit les arêtes du graphe racine (dépendances entre théories, tirées au hasard en
+   redescendant de la théorie vers la logique), et le théorème est une fiche de nature « théorème » dont le titre
+   commence par « Théorème », démontrée dans l'édifice (les énoncés « Admis ici » sont écartés) ; s'il utilise
+   l'axiome du choix, l'étoile ⋆ le signale comme partout ailleurs.
+   À la première ouverture, l'édifice se monte d'abord rang par rang, de bas en haut. Le survol d'une bulle suspend le
+   tracé et montre tout ce sur quoi repose la théorie. Bouton de pause en haut à droite de la carte ; le tracé
+   s'arrête aussi quand la carte sort de l'écran ou que l'onglet est caché. Avec « réduire les animations », rien ne
+   bouge : un chemin est montré d'un coup, et le bouton en propose un autre. */
+// Roue des rubriques de l'accueil (§69). Le tour extérieur se remplit pendant la tenue d'une rubrique ; à la fin, le
+// cadran tourne d'un cran (toujours dans le même sens) et amène le symbole suivant face au texte. Le survol et le
+// focus suspendent le tour ; un clic sur un symbole choisit la rubrique. Avec « réduire les animations », rien ne
+// tourne seul. La page d'accueil étant redessinée quand des données arrivent, le cran courant est gardé.
+let accRoue = null;
+function accueilRoue() {
+  if (accRoue) accRoue.arreter();
+  const roue = document.querySelector('.acc-roue'); if (!roue) { accRoue = null; return; }
+  const syms = [...roue.querySelectorAll('.ro-sym')], nbs = [...roue.querySelectorAll('.ro-nb')], volets = [...roue.querySelectorAll('.ro-volet')], n = syms.length;
+  const avance = roue.querySelector('.ro-avance'), calme = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let cran = accueilRoue.cran || 0, tour = null, retenu = false;
+  const poser = () => {
+    const i = ((cran % n) + n) % n;
+    roue.dataset.r = syms[i].dataset.r; roue.style.setProperty('--a', `${-cran * 360 / n}deg`);
+    syms.forEach((b, k) => { b.classList.toggle('actif', k === i); b.setAttribute('aria-selected', k === i); });
+    nbs.forEach((b, k) => b.classList.toggle('actif', k === i));
+    volets.forEach((v, k) => { v.classList.toggle('actif', k === i); if (k === i) { v.removeAttribute('tabindex'); v.removeAttribute('aria-hidden'); } else { v.tabIndex = -1; v.setAttribute('aria-hidden', 'true'); } });
+    accueilRoue.cran = cran;
+  };
+  const lancer = () => {
+    tour?.cancel(); tour = null; if (calme || n < 2) return;
+    tour = avance.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: 5200, easing: 'linear', fill: 'forwards' });
+    tour.onfinish = () => { cran++; poser(); lancer(); };
+    if (retenu || document.hidden) tour.pause();
+  };
+  const retenir = v => { retenu = v; if (!tour) return; if (v) tour.pause(); else if (!document.hidden) tour.play(); };
+  roue.addEventListener('mouseenter', () => retenir(true)); roue.addEventListener('mouseleave', () => retenir(false));
+  roue.addEventListener('focusin', () => retenir(!!roue.querySelector(':focus-visible')));   // le focus au clavier, pas le toucher roue.addEventListener('focusout', () => retenir(roue.matches(':hover')));
+  roue.addEventListener('click', ev => {
+    const b = ev.target.closest('.ro-sym'); if (!b) return;
+    const i = ((cran % n) + n) % n; let d = (+b.dataset.k - i + n) % n; if (d > n / 2) d -= n;   // par le plus court chemin
+    cran += d; poser(); lancer();
+  });
+  const surVisibilite = () => { if (tour && !retenu) document.hidden ? tour.pause() : tour.play(); };
+  document.addEventListener('visibilitychange', surVisibilite);
+  poser(); lancer();
+  accRoue = { arreter() { tour?.cancel(); document.removeEventListener('visibilitychange', surVisibilite); } };
+}
+
+let accFil = null;
+function accueilFil(premiereFois) {
+  if (accFil) { accFil.arreter(); accFil = null; }
+  const carte = document.querySelector('.acc-carte-edifice'), svg = carte?.querySelector('.acc-mini');
+  if (!svg) return;
+  const g = D.graphes[D.racine], N = D.noeuds, G = D.graphes;
+  const fils = svg.querySelector('.acc-traits'), bouton = carte.querySelector('.acc-fil-bouton'), leg = carte.querySelector('.acc-chemin');
+  const elN = leg.querySelector('.ch-n'), elNom = leg.querySelector('.ch-nom'), elBut = leg.querySelector('.ch-but');
+  const calme = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const amont = {}, bulle = {}, pos = {};
+  for (const a of g.aretes) (amont[a.vers] ||= []).push(a);
+  for (const p of g.noeuds) pos[p.id] = p;
+  svg.querySelectorAll('.nd[data-t]').forEach(b => { bulle[b.dataset.t] = b; });
+  const theorieDe = n => { let gr = n.graphe; while (G[gr] && G[gr].parent !== D.racine) gr = G[gr].parent; return G[gr] && bulle[G[gr].conteneur] ? G[gr].conteneur : null; };
+  // Théorèmes candidats, rangés par théorie puis tirés à tour de rôle pour varier les destinations.
+  const parTheorie = {};
+  for (const n of Object.values(N)) {
+    if (n.nature !== 'théorème' || n.admis || n.graphe === D.racine || !/^Théorème /.test(n.titre) || n.titre.length > 60) continue;
+    const t = theorieDe(n); if (t && amont[t]) (parTheorie[t] ||= []).push(n);
+  }
+  const melange = l => { for (let i = l.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [l[i], l[j]] = [l[j], l[i]]; } return l; };
+  let file = [];
+  const prochain = () => {
+    if (!file.length) {
+      const piles = melange(Object.values(parTheorie).map(l => melange([...l])));
+      for (let k = 0; piles.some(l => l[k]); k++) for (const l of piles) if (l[k]) file.push(l[k]);
+    }
+    return file.shift();
+  };
+  if (!Object.keys(parTheorie).length) return;
+  const cheminVers = t => { const ar = []; let c = t; while (amont[c]) { const a = amont[c][Math.floor(Math.random() * amont[c].length)]; ar.unshift(a); c = a.de; } return ar; };
+  const svgEl = (nom, attrs) => { const e = document.createElementNS('http://www.w3.org/2000/svg', nom); for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v); return e; };
+
+  let jeton = 0, minuteries = [], pause = false, survol = false, visible = true, enCours = true;   // enCours reste vrai jusqu'à la fin du montage
+  const apres = (ms, f) => { const j = jeton; minuteries.push(setTimeout(() => { if (j === jeton && svg.isConnected) f(); }, ms)); };
+  const annuler = () => { jeton++; minuteries.forEach(clearTimeout); minuteries = []; };
+  const effacer = () => {
+    fils.replaceChildren(); fils.classList.remove('s-efface'); svg.classList.remove('trace');
+    svg.querySelectorAll('.nd.sur-fil').forEach(b => b.classList.remove('sur-fil', 'arrivee'));
+  };
+  const legende = (n, nom, but) => { elN.textContent = n; elNom.textContent = nom; if (but != null) elBut.innerHTML = but; };
+  const allumer = (id, arrivee) => { const b = bulle[id]; if (!b) return; b.classList.add('sur-fil'); if (arrivee) b.classList.add('arrivee');
+    if (!calme) b.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.16)' }, { transform: 'scale(1)' }], { duration: 420, easing: 'ease-out' }); };
+  const trait = (a, duree) => { const f = svgEl('path', { class: 'acc-trait' + (duree ? '' : ' fixe'), pathLength: 1, d: a.d }); f.style.setProperty('--c', bulle[a.vers]?.style.getPropertyValue('--c') || 'var(--encre)'); fils.appendChild(f);
+    if (duree) f.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: duree, easing: 'linear', fill: 'forwards' }); };
+  const butDe = n => `<a href="#${n.id}">${esc(n.titre)}</a>${n.choix ? '<span class="ch-choix" title="Ce théorème utilise une forme de l\'axiome du choix">⋆</span>' : ''}<span class="ch-fleche" aria-hidden="true">→</span>`;
+
+  // Un chemin complet : estompe, montée, arrivée, tenue, effacement, puis le suivant.
+  function tracer() {
+    const th = prochain(), t = theorieDe(th), ar = cheminVers(t), total = ar.length + 1;
+    enCours = true; effacer(); svg.classList.add('trace');
+    elBut.classList.add('voile');
+    if (calme) {   // rien ne bouge : le chemin entier, d'un coup
+      allumer(ar[0].de); ar.forEach(a => { trait(a, 0); allumer(a.vers, a.vers === t); });
+      legende(`${total} théories`, N[t].titre, butDe(th)); elBut.classList.remove('voile'); enCours = false; return;
+    }
+    const pas = Math.max(170, Math.min(400, 2600 / ar.length));
+    allumer(ar[0].de); legende(`1 / ${total}`, N[ar[0].de].titre);
+    ar.forEach((a, i) => {
+      apres(260 + i * pas, () => trait(a, pas));
+      apres(260 + (i + 1) * pas, () => { allumer(a.vers, a.vers === t); legende(`${i + 2} / ${total}`, N[a.vers].titre); });
+    });
+    const fin = 260 + ar.length * pas;
+    apres(fin + 60, () => {
+      const p = pos[t], h = svgEl('circle', { class: 'halo', cx: p.x, cy: p.y, r: 30 }); h.style.setProperty('--c', bulle[t].style.getPropertyValue('--c')); fils.appendChild(h);
+      h.animate([{ transform: 'scale(1)', opacity: .9 }, { transform: 'scale(3.4)', opacity: 0 }], { duration: 900, easing: 'ease-out', fill: 'forwards' });
+      legende(`${total} théories`, N[t].titre, butDe(th)); elBut.classList.remove('voile');
+    });
+    apres(fin + 4200, () => { fils.classList.add('s-efface'); svg.classList.remove('trace'); svg.querySelectorAll('.nd.sur-fil').forEach(b => b.classList.remove('sur-fil', 'arrivee')); });
+    apres(fin + 4900, () => { enCours = false; suite(); });
+  }
+  const suite = () => { if (!pause && !survol && visible && !document.hidden && !calme) tracer(); };
+
+  // Survol d'une bulle : tout ce sur quoi repose la théorie.
+  const montrerAscendance = id => {
+    annuler(); effacer(); enCours = false; svg.classList.add('trace');
+    const vus = new Set([id]), pile = [id]; let nb = 0;
+    while (pile.length) for (const a of amont[pile.pop()] || []) { trait(a, 0); if (!vus.has(a.de)) { vus.add(a.de); pile.push(a.de); nb++; } }
+    vus.forEach(x => bulle[x]?.classList.add('sur-fil')); bulle[id].classList.add('arrivee');
+    elBut.classList.remove('voile');
+    legende('', nb ? `repose sur ${nb} théorie${nb > 1 ? 's' : ''} de l'édifice` : "le socle de tout l'édifice", `${esc(N[id].titre)}`);
+  };
+  const entrer = ev => { const b = ev.target.closest('.nd[data-t]'); if (!b) return; survol = true; montrerAscendance(b.dataset.t); };
+  const sortir = ev => { if (!ev.target.closest('.nd[data-t]')) return; survol = false; annuler(); apres(700, () => { effacer(); legende('', "De l'axiome au théorème", '&nbsp;'); if (calme) tracer(); else suite(); }); };
+  if (matchMedia('(hover: hover)').matches) { svg.addEventListener('mouseover', entrer); svg.addEventListener('mouseout', sortir); }
+  svg.addEventListener('focusin', entrer); svg.addEventListener('focusout', sortir);
+
+  // Bouton : pause et reprise ; avec « réduire les animations », un autre chemin.
+  const ICONES = { pause: '<svg viewBox="0 0 12 12" aria-hidden="true"><rect x="2" y="1.5" width="3" height="9" rx=".8"/><rect x="7" y="1.5" width="3" height="9" rx=".8"/></svg>',
+    lecture: '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 1.4v9.2a.5.5 0 0 0 .77.42l7-4.6a.5.5 0 0 0 0-.84l-7-4.6A.5.5 0 0 0 3 1.4Z"/></svg>',
+    autre: '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 1.2a4.8 4.8 0 1 0 4.6 6.2.6.6 0 1 0-1.15-.34A3.6 3.6 0 1 1 6 2.4c.9 0 1.72.33 2.36.88L7.3 4.3a.4.4 0 0 0 .28.7H10.6a.4.4 0 0 0 .4-.4V1.58a.4.4 0 0 0-.68-.28l-1.1 1.1A4.78 4.78 0 0 0 6 1.2Z"/></svg>' };
+  const majBouton = () => { const k = calme ? 'autre' : pause ? 'lecture' : 'pause';
+    bouton.innerHTML = ICONES[k]; bouton.title = { autre: 'Tracer un autre chemin', lecture: 'Reprendre le tracé des chemins', pause: 'Mettre le tracé en pause' }[k]; bouton.setAttribute('aria-label', bouton.title); };
+  bouton.hidden = false; majBouton();
+  bouton.onclick = () => { if (calme) { annuler(); tracer(); return; } pause = !pause; majBouton(); if (!pause && !enCours) suite(); };
+
+  const io = new IntersectionObserver(es => { visible = es[es.length - 1].intersectionRatio > .3; if (visible && !enCours) suite(); }, { threshold: [0, .3, .6] });
+  io.observe(carte);
+  const surVisibilite = () => { if (!document.hidden && !enCours) suite(); };
+  document.addEventListener('visibilitychange', surVisibilite);
+
+  // Montage de l'édifice à la première ouverture : les bulles se posent rang par rang, de bas en haut, et chaque
+  // arête se tire depuis la théorie dont elle part.
+  // (La page d'accueil est redessinée quand des données arrivent : le montage reprend alors où il en était.)
+  let delai = 500;
+  if (!calme) {
+    const ys = [...new Set(g.noeuds.map(p => p.y))].sort((a, b) => b - a), rang = id => ys.indexOf(pos[id].y), dt = 75, duree = ys.length * dt + 600;
+    if (premiereFois && accueilFil.debut == null) accueilFil.debut = performance.now();
+    const ecoule = accueilFil.debut == null ? Infinity : performance.now() - accueilFil.debut;
+    if (ecoule < duree) {
+      for (const p of g.noeuds) bulle[p.id]?.animate([{ opacity: 0, transform: 'translateY(26px) scale(.7)' }, { opacity: 1, transform: 'none' }], { duration: 460, delay: rang(p.id) * dt - ecoule, easing: 'cubic-bezier(.2,.9,.3,1.25)', fill: 'backwards' });
+      svg.querySelectorAll('.ar').forEach(e => e.animate([{ strokeDasharray: '0 1', opacity: 0 }, { strokeDasharray: '1 0', opacity: .8 }], { duration: 520, delay: rang(e.dataset.de) * dt + 120 - ecoule, easing: 'ease-out', fill: 'backwards' }));
+      delai = duree + 500 - ecoule;
+    }
+  }
+  if (calme) tracer(); else apres(delai, () => { enCours = false; suite(); });
+
+  accFil = { arreter() { annuler(); io.disconnect(); document.removeEventListener('visibilitychange', surVisibilite); } };
+}
+
 // Carte de l'édifice de l'accueil : un clic hors d'une bulle ouvre l'édifice (les bulles sont des liens à part).
 document.addEventListener('click', ev => {
-  const c = ev.target.closest('.acc-carte-edifice[data-vers]'); if (!c || ev.target.closest('a')) return;
+  const c = ev.target.closest('.acc-carte-edifice[data-vers]'); if (!c || ev.target.closest('a, button')) return;
   location.hash = c.dataset.vers;
 });
 /* ---- « Reprendre où j'en étais » (domaine À propos – apparence, 9 nov. 2026, MEMO_atlas_apropos.md §57)
@@ -5211,6 +5473,7 @@ function afficherRubrique(nom, chemin) {
   z.dataset.nom = nom; z.dataset.chemin = chemin || '';
   document.title = titreOnglet(RUBRIQUES[nom].titre);
   z.classList.toggle('accueil', nom === 'accueil');
+  if (nom === 'accueil') { accueilFil(true); accueilRoue(); }
   z.scrollTop = 0; scrollTo(0, 0);
   monterPdf(z);
   brancherDefilAnnales(z);
@@ -5259,6 +5522,7 @@ function brancherDefilAnnales(z) {
 function rafraichirRubrique() {
   const z = $('#rubrique'), y = z.scrollTop, yw = scrollY;
   z.querySelector('.page').innerHTML = RUBRIQUES[z.dataset.nom].page(z.dataset.chemin, false);
+  if (z.dataset.nom === 'accueil') { accueilFil(false); accueilRoue(); }
   brancherDefilAnnales(z);
   z.scrollTop = y; scrollTo(0, yw);
 }

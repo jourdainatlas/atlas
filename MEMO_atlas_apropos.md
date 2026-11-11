@@ -638,3 +638,36 @@ Aucun changement visible à l'écran ; tout est dans l'en-tête des pages de lec
    et activités avec leurs adresses. Effet incertain (aucun grand moteur ne s'engage à le lire), coût nul.
 Bing Webmaster Tools : site inscrit par l'auteur le 11 nov. 2026 (rapport IndexNow et indexation à y suivre).
 Ajout du 11 nov. 2026 : lien « Activités » dans l'en-tête des pages de lecture (`.l-rubriques`, masqué sur téléphone comme les autres) et dans la liste de la page 404.
+
+## 69. Haut de l'accueil : fil de l'axiome au théorème, roue des rubriques (11 nov. 2026)
+
+Demande de l'auteur : rendre dynamique le haut de l'accueil, inchangé depuis l'origine. Tout est dans `gabarit.html`.
+
+**Fil de l'édifice** (`accueilFil(premiereFois)`, appelé par `afficherRubrique` et `rafraichirRubrique`). Dans la
+miniature (`miniEdifice()` : arêtes `path.ar[data-de][data-vers]`, bulles `a.nd[data-t]`, groupe `g.acc-traits`) :
+à la première ouverture l'édifice se monte rang par rang de bas en haut ; ensuite un trait lumineux part de la
+logique et grimpe arête par arête (chemin tiré au hasard en redescendant les arêtes) jusqu'à une théorie ; la
+légende `.acc-chemin` nomme chaque théorie traversée puis affiche un théorème de la théorie atteinte, lien vers sa
+fiche, avec ⋆ s'il a `choix`. Théorèmes tirés : nature théorème, non admis, titre commençant par « Théorème », au
+plus 60 caractères ; théories servies à tour de rôle. Survol ou focus d'une bulle : toute l'ascendance de la
+théorie (« repose sur N théories de l'édifice »). Bouton `.acc-fil-bouton` (pause/reprise). Arrêt hors écran
+(IntersectionObserver) et onglet masqué. `prefers-reduced-motion` : un chemin fixe, le bouton en trace un autre.
+Pièges rencontrés : la classe `.fil` est celle du fil d'Ariane (masquée par `body.a-onglet`), d'où `.acc-trait` ;
+la page d'accueil est dessinée deux fois au démarrage, d'où `accueilFil.debut` (le montage reprend où il en était)
+et `enCours` vrai jusqu'à la fin du montage (sinon l'observateur lance un tracé pendant le montage).
+
+**Roue des rubriques** (`accueilRoue()`, bloc `.acc-roue` de `pageAccueil`) : elle remplace les quatre boutons
+(`.acc-actions`), que la barre de navigation (§66) doublait. Cadran `.ro-cadran` : les symboles des rubriques
+(`.ro-sym`, celles dont le compte est nul sont omises) sur un cercle qui tourne d'un cran (`--a`) et amène le
+symbole courant à droite, face au texte ; au centre le chiffre de la rubrique (`.ro-nb`) ; à droite les volets
+`.ro-volet` (nom, phrase, lien) superposés dans une même case de grille et échangés en fondu, ce qui fixe la
+hauteur. Le tour `.ro-avance` (animation WAAPI de 5,2 s) sert de minuterie : sa fin fait avancer la roue, sa mise
+en pause (survol, focus clavier, onglet masqué) la suspend. Clic sur un symbole : rubrique choisie par le plus
+court chemin. Le cran courant est gardé dans `accueilRoue.cran` (page redessinée). Pas de cadre ni de fond coloré
+(choix de l'auteur) : la couleur ne porte que sur le tour, le symbole actif et le nom. `prefers-reduced-motion` :
+rien ne tourne seul.
+
+**Texte de présentation** : la dernière phrase cite désormais les activités interactives.
+
+Vérification des rendus : le navigateur de test ne charge pas Google Fonts ; pour des captures fidèles, les polices
+Spectral et IBM Plex sont installées localement (paquets npm `@fontsource/*`, convertis en TTF dans `~/.fonts`).
