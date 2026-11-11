@@ -677,3 +677,30 @@ un déplacement (l'élément saisi doit rester en place, pour le toucher). Véri
 
 Explorations : vingt-sept. Casse-têtes : neuf. Les documents `claude/prototype-*.js` du projet sont périmés :
 la source est dans `activites/`.
+
+### 137. Polyominos : défi « type TFJM² de Marie » et but du jeu affiché (11 nov. 2026, soir)
+
+Demande de l'auteur. Une catégorie mise en avant (groupe « À la une » de la liste, précédée d'une étoile) et
+proposée par défaut à l'ouverture : « type TFJM² de Marie », avec six pièces à volonté, le monomino, le domino,
+le tromino droit, le tromino en L, le tétromino en T et le pentomino en X. But : recouvrir la forme avec le
+moins de pièces possible. Un bandeau « But du jeu » est affiché en permanence sous les réglages, et son texte
+dépend du défi (moins de pièces possible ; chaque pièce une fois ; pièces à volonté). Les boutons d'orientation
+portent le nom de leur touche (R, F), rappelé aussi dans le message d'accueil.
+
+Pour les autres défis, le nombre de pièces est imposé par l'aire (pièces de même taille) : le but reste de
+réussir le pavage, ce que la page dit. Si l'auteur veut d'autres jeux de pièces de tailles mêlées, il suffit
+d'ajouter une entrée `moins: true` à `MODES`.
+
+**Minimum.** `minimum()` : recherche en profondeur sur la première case libre, pièces essayées de la plus grande
+à la plus petite, élagage par (pièces posées) + ⌈cases restantes / 5⌉ ≥ meilleur connu, bornée à 400 000
+nœuds. Rend le minimum et dit s'il est prouvé (recherche allée au bout). Contrôlé (Node), rectangles : 3 × 3 →
+3 ; 4 × 4 → 4 ; 4 × 5 → 6 ; 5 × 5 → 7 ; 5 × 6 → 8 ; 6 × 6 → 10 ; 6 × 8 → 12 ; 8 × 8 → 16, tous prouvés (1 ms
+à 1,2 s) ; 10 × 10 → 26 et 12 × 12 → 37, non prouvés (la page le dit). Le minimum n'est annoncé qu'une fois la
+forme recouverte, pour comparer, comme dans « Tout éteindre ».
+
+La liste des défis est groupée (`optgroup`) : À la une ; un seul type de pièce ; toutes les pièces d'une
+taille ; une liste, chaque pièce une fois.
+Compléments du même soir, à la demande de l'auteur : le but (« le moins de pièces possible ») est écrit dans le
+chapeau, en tête de la partie « Jouer », dans le bandeau et dans le résumé de la carte ; la vignette de la carte
+a été redessinée (les formes n'étaient pas alignées sur un quadrillage commun) : c'est maintenant un carré de
+4 sur 4 pavé par un T, un L, un tromino droit et trois dominos, tous sur la même grille de 16 px.

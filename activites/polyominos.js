@@ -15,6 +15,8 @@ export const css = cssCommun + cssFigures + cssJeux + `
 .activites-act .po button.conseil::after { content: ""; position: absolute; inset: 32%; border-radius: 50%; background: var(--tan); }
 .activites-act .po-pieces { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; padding: 12px 16px; border-top: 1px solid var(--filet); background: var(--papier); }
 .activites-act .po-pieces button, .activites-act .po button.pleine { touch-action: none; }
+.activites-act .po-but { margin: 0; padding: 10px 16px; border-top: 1px solid var(--filet); font: 600 15px/1.45 var(--f-ui); color: var(--encre); background: color-mix(in srgb, var(--activites-jeu) 10%, var(--surface)); }
+.activites-act .po-but b { color: var(--activites-jeu); }
 .activites-act .po-fantome { position: fixed; z-index: 50; pointer-events: none; opacity: .8; }
 .activites-act .po-fantome i { position: absolute; border-radius: 3px; box-shadow: inset 0 0 0 1px var(--papier); }
 .activites-act .po-pieces button { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 8px; min-width: 54px; border-radius: 8px; border: 1px solid var(--filet); background: var(--surface); color: var(--encre-2); font: 12px var(--f-ui); cursor: pointer; }
@@ -28,7 +30,7 @@ export const html = `
 <header class="col">
   <p class="eyebrow">Casse-tête · accessible à tous, la théorie va jusqu'en Maths Sup</p>
   <h3>Polyominos</h3>
-  <p class="lede">Un polyomino est une pièce faite de carrés collés par leurs côtés : le domino en a deux, les pièces de Tetris quatre. Il faut recouvrir exactement une forme donnée, sans trou ni chevauchement. La page fabrique les formes et les jeux de pièces ; les mathématiques disent quand c'est impossible, et pourquoi.</p>
+  <p class="lede">Un polyomino est une pièce faite de carrés collés par leurs côtés : le domino en a deux, les pièces de Tetris quatre. Il faut recouvrir exactement une forme donnée, sans trou ni chevauchement, et le faire <b>avec le moins de pièces possible</b> parmi celles qui sont proposées. La page fabrique les formes et les jeux de pièces ; les mathématiques disent quand un pavage est impossible, et pourquoi.</p>
 </header>
 
 <div class="jeu">
@@ -39,7 +41,8 @@ export const html = `
     <label>Colonnes <select id="po-c"></select></label>
     <button type="button" class="primary" id="po-neuf">Nouveau casse-tête</button>
   </div>
-  <div class="bar"><button type="button" id="po-tourner">Tourner la pièce</button><button type="button" id="po-retourner">La retourner</button><button type="button" id="po-annuler">Annuler</button><button type="button" id="po-vider">Tout retirer</button><button type="button" id="po-conseil">Une pièce</button></div>
+  <p class="po-but" id="po-but" aria-live="polite"></p>
+  <div class="bar"><button type="button" id="po-tourner">Tourner la pièce (touche R)</button><button type="button" id="po-retourner">La retourner (touche F)</button><button type="button" id="po-annuler">Annuler</button><button type="button" id="po-vider">Tout retirer</button><button type="button" id="po-conseil">Une pièce</button></div>
   <div class="jeu-plateau"><div class="po" id="po-plateau" role="group" aria-label="Forme à paver"></div></div>
   <div class="po-pieces" id="po-pieces" role="group" aria-label="Pièces disponibles"></div>
   <div class="jeu-etat"><span>Cases à couvrir : <b id="po-reste">0</b></span><span>Pièces posées : <b id="po-nb">0</b></span><span id="po-info"></span></div>
@@ -49,9 +52,11 @@ export const html = `
 <section>
   <div class="col">
     <h4><span class="n">1</span>Jouer</h4>
+    <p><b>Le but du jeu</b> est de recouvrir toute la forme en utilisant le moins de pièces possible. Les grandes pièces couvrent plus de cases, mais elles se casent mal : tout l'art est de les placer sans laisser de recoins qu'il faudrait boucher une case à la fois. Quand la forme est recouverte, la page annonce votre nombre de pièces et le compare au minimum.</p>
     <p>Faites glisser une pièce de la réserve jusqu'à la forme : l'emplacement s'affiche en vert s'il convient, en orange sinon, et la pièce se pose quand vous la lâchez. Une pièce déjà posée se déplace de la même façon, et retourne à la réserve si vous la lâchez hors de la forme. Pour l'orienter, utilisez « Tourner » et « La retourner », ou les touches R et F, y compris pendant le déplacement.</p>
     <p>On peut aussi jouer sans glisser, à la souris, au doigt ou au clavier : choisissez une pièce dans la réserve, puis cliquez sur une case libre, et la pièce s'y pose de façon à couvrir cette case si c'est possible ; cliquez sur une pièce posée pour la reprendre.</p>
-    <p>Trois sortes de défis : paver avec <b>un seul type</b> de pièce, répété autant qu'il faut ; avec <b>toutes les pièces d'une taille donnée</b>, à volonté ; ou avec <b>une liste</b> de pièces, chacune utilisée une fois. Chaque forme proposée a été pavée par la page avant de vous être soumise : une solution existe toujours.</p>
+    <p>Le défi proposé à l'ouverture, « type TFJM² de Marie », met à votre disposition six pièces, à volonté : le monomino, le domino, le tromino droit, le tromino en L, le tétromino en T et le pentomino en X. Avec le monomino, n'importe quelle forme se recouvre ; tout l'intérêt est donc d'y parvenir avec <b>le moins de pièces possible</b>. Une fois la forme recouverte, la page compare votre nombre de pièces au minimum.</p>
+    <p>Trois autres sortes de défis : paver avec <b>un seul type</b> de pièce, répété autant qu'il faut ; avec <b>toutes les pièces d'une taille donnée</b>, à volonté ; ou avec <b>une liste</b> de pièces, chacune utilisée une fois. Dans ces trois cas, le nombre de pièces est imposé par l'aire de la forme, et le but est seulement de réussir le pavage. Chaque forme proposée a été pavée par la page avant de vous être soumise : une solution existe toujours.</p>
   </div>
 </section>
 
@@ -86,7 +91,7 @@ export const html = `
 ` + suite(
   "Croire qu'une forme est pavable dès que son aire est un multiple de la taille des pièces. Le rectangle de 4 sur 5 a 20 cases, les cinq tétrominos aussi, et le pavage est impossible. Un carré de 6 sur 6 a 36 cases, multiple de 4, et ne peut pas être pavé par des tétrominos en T : chaque T couvre un nombre impair de cases claires, il en faudrait neuf, et neuf nombres impairs ne peuvent pas avoir pour somme 18.",
   "Les arguments de coloriage sont ceux des <a href=\"#activites/dominos\">dominos sur l'échiquier</a> et du <a href=\"#activites/solitaire\">solitaire</a>. Dans l'édifice : <a href=\"#n.n-recurrence\">Principe de récurrence</a>, pour le pavage par trominos, et <a href=\"#rel.r-injections\">Injections, surjections, bijections</a>. Le chapitre de Terminale <a href=\"#cours/t-07\">Dénombrement</a> fournit les décomptes.",
-  "Les polyominos sont énumérés par croissance, avec une forme normale sous les huit symétries du carré. Chaque casse-tête proposé a été résolu par la page avant d'être affiché ; si la forme demandée n'est pas pavable avec les pièces choisies, la page le dit et construit à la place une forme de même aire par assemblage de pièces. La recherche d'un pavage est limitée à 600 000 placements examinés et distingue trois réponses : pavage trouvé, aucun pavage, recherche non aboutie. Rien n'est enregistré ni envoyé.");
+  "Les polyominos sont énumérés par croissance, avec une forme normale sous les huit symétries du carré. Chaque casse-tête proposé a été résolu par la page avant d'être affiché ; si la forme demandée n'est pas pavable avec les pièces choisies, la page le dit et construit à la place une forme de même aire par assemblage de pièces. Pour le défi « le moins de pièces possible », le minimum est obtenu par une recherche qui abandonne une piste dès qu'elle ne peut plus battre le meilleur pavage connu ; quand elle va au bout, le minimum est démontré, sinon la page dit qu'elle n'a pas pu conclure. La recherche d'un pavage est limitée à 600 000 placements examinés et distingue trois réponses : pavage trouvé, aucun pavage, recherche non aboutie. Rien n'est enregistré ni envoyé.");
 
 // ------------------------------------------------------------------ pièces
 const norm = c => { const r0 = Math.min(...c.map(x => x[0])), c0 = Math.min(...c.map(x => x[1])); return c.map(([r, k]) => [r - r0, k - c0]).sort((a, b) => a[0] - b[0] || a[1] - b[1]); };
@@ -98,12 +103,13 @@ const LIBRES = [null]; (() => { let cur = new Map([[canon([[0, 0]]), norm([[0, 0
 const P = t => norm(t.trim().split('/').flatMap((l, r) => [...l].map((ch, c) => ch === '#' ? [r, c] : null).filter(Boolean)));
 const TYPES = [['domino', '##'], ['tromino droit', '###'], ['tromino en L', '#./##'], ['tétromino droit', '####'], ['tétromino carré', '##/##'], ['tétromino en T', '###/.#.'], ['tétromino en L', '#./#./##'], ['tétromino en S', '.##/##.'], ['pentomino en L', '#./#./#./##'], ['pentomino en P', '##/##/#.'], ['pentomino en U', '#.#/###']];
 const MODES = [
-  ...TYPES.map(([nom, t]) => ({ id: 'type:' + nom, nom: 'un seul type : ' + nom, pieces: [P(t)], illimite: true })),
-  { id: 'taille:3', nom: 'tous les trominos, à volonté', pieces: LIBRES[3], illimite: true }, { id: 'taille:4', nom: 'tous les tétrominos, à volonté', pieces: LIBRES[4], illimite: true }, { id: 'taille:5', nom: 'tous les pentominos, à volonté', pieces: LIBRES[5], illimite: true },
-  { id: 'liste:t4', nom: 'liste : les cinq tétrominos, une fois chacun', pieces: LIBRES[4], illimite: false, aire: 20, dims: [4, 5] },
-  { id: 'liste:t4x2', nom: 'liste : deux jeux de tétrominos', pieces: LIBRES[4].concat(LIBRES[4]), illimite: false, aire: 40, dims: [5, 8] },
-  { id: 'liste:p5', nom: 'liste : les douze pentominos, une fois chacun', pieces: LIBRES[5], illimite: false, aire: 60, dims: [6, 10] },
-  { id: 'liste:p5m', nom: 'liste : six pentominos au hasard', pieces: null, illimite: false, aire: 30, dims: [5, 6] },
+  { id: 'tfjm', nom: '★ type TFJM² de Marie', groupe: 'À la une', pieces: ['#', '##', '###', '#./##', '###/.#.', '.#./###/.#.'].map(P), illimite: true, moins: true },
+  ...TYPES.map(([nom, t]) => ({ id: 'type:' + nom, nom: nom, groupe: 'Un seul type de pièce', pieces: [P(t)], illimite: true })),
+  { id: 'taille:3', nom: 'tous les trominos', groupe: 'Toutes les pièces d\'une taille, à volonté', pieces: LIBRES[3], illimite: true }, { id: 'taille:4', nom: 'tous les tétrominos', groupe: 'Toutes les pièces d\'une taille, à volonté', pieces: LIBRES[4], illimite: true }, { id: 'taille:5', nom: 'tous les pentominos', groupe: 'Toutes les pièces d\'une taille, à volonté', pieces: LIBRES[5], illimite: true },
+  { id: 'liste:t4', nom: 'les cinq tétrominos', groupe: 'Une liste, chaque pièce une fois', pieces: LIBRES[4], illimite: false, aire: 20, dims: [4, 5] },
+  { id: 'liste:t4x2', nom: 'deux jeux de tétrominos', groupe: 'Une liste, chaque pièce une fois', pieces: LIBRES[4].concat(LIBRES[4]), illimite: false, aire: 40, dims: [5, 8] },
+  { id: 'liste:p5', nom: 'les douze pentominos', groupe: 'Une liste, chaque pièce une fois', pieces: LIBRES[5], illimite: false, aire: 60, dims: [6, 10] },
+  { id: 'liste:p5m', nom: 'six pentominos au hasard', groupe: 'Une liste, chaque pièce une fois', pieces: null, illimite: false, aire: 30, dims: [5, 6] },
 ];
 const COUL = ['var(--mark)', 'var(--sec)', 'var(--tan)', 'var(--semi)', 'var(--activites-jeu)', '#b58900', '#d33682', '#6c71c4', '#859900', '#cb4b16', '#2aa198', '#93a1a1'];
 
@@ -117,11 +123,20 @@ function paver(cases, C, types, budget = 600000, hasard = false) { const libre =
     return false; };
   const ok = f(); return ok ? sol : depasse ? undefined : null; }
 
+// Plus petit nombre de pièces d'un pavage : recherche en profondeur, élaguée dès que (pièces posées) + ⌈cases restantes / plus grande taille⌉
+// atteint le meilleur connu. Rend { m, prouve } : prouve est faux si la limite de recherche a été atteinte.
+function minimum(cases, C, types, budget = 400000) { const libre = new Set(cases), ordre = [...cases].sort((a, b) => a - b), T = types.slice().sort((a, b) => b.o[0].length - a.o[0].length), gmax = T[0].o[0].length; let meilleur = Infinity, n = 0, depasse = false;
+  const f = (posees, reste) => { if (reste === 0) { if (posees < meilleur) meilleur = posees; return; } if (posees + Math.ceil(reste / gmax) >= meilleur) return; if (++n > budget) { depasse = true; return; }
+    let premier = -1; for (const i of ordre) if (libre.has(i)) { premier = i; break; } const r0 = Math.floor(premier / C), c0 = premier % C;
+    for (const t of T) for (const o of t.o) { const a = o[0], pl = []; let ok = true; for (const [r, c] of o) { const rr = r0 + r - a[0], cc = c0 + c - a[1]; if (cc < 0 || cc >= C || !libre.has(rr * C + cc)) { ok = false; break; } pl.push(rr * C + cc); } if (!ok) continue;
+      pl.forEach(i => libre.delete(i)); f(posees + 1, reste - pl.length); pl.forEach(i => libre.add(i)); if (depasse) return; } };
+  f(0, libre.size); return { m: meilleur, prouve: !depasse }; }
+
 export function monter(racine) {
   const q = s => racine.querySelector(s);
-  let L = 6, C = 6, cases = new Set(), types = [], poses = [], hist = [], sel = 0, ori = 0, survol = -1, conseil = [], conseilPose = null, glisse = null, msg = '', info = '', vivant = true;
-  MODES.forEach(m => { const o = document.createElement('option'); o.value = m.id; o.textContent = m.nom; q('#po-mode').append(o); }); q('#po-mode').value = 'type:tromino en L';
-  for (const id of ['#po-l', '#po-c']) for (let k = 2; k <= 12; k++) { const o = document.createElement('option'); o.textContent = k; q(id).append(o); } q('#po-l').value = 6; q('#po-c').value = 6;
+  let L = 6, C = 6, cases = new Set(), types = [], poses = [], hist = [], sel = 0, ori = 0, survol = -1, conseil = [], conseilPose = null, glisse = null, mini = null, modeCourant = null, msg = '', info = '', vivant = true;
+  { const G = new Map(); MODES.forEach(m => { if (!G.has(m.groupe)) { const og = document.createElement('optgroup'); og.label = m.groupe; G.set(m.groupe, og); q('#po-mode').append(og); } const o = document.createElement('option'); o.value = m.id; o.textContent = m.nom; G.get(m.groupe).append(o); }); } q('#po-mode').value = 'tfjm';
+  for (const id of ['#po-l', '#po-c']) for (let k = 2; k <= 12; k++) { const o = document.createElement('option'); o.textContent = k; q(id).append(o); } q('#po-l').value = 5; q('#po-c').value = 6;
   const occupe = () => { const m = new Map(); poses.forEach((p, k) => p.cases.forEach(i => m.set(i, k))); return m; };
   const restes = () => types.map((t, k) => t.illimite ? Infinity : t.nb - poses.filter(p => p.k === k).length);
   // emplacement de la pièce choisie couvrant la case i : premier placement légal parmi les ancrages possibles
@@ -159,7 +174,7 @@ export function monter(racine) {
       if (!g) { g = gabarit('rect'); info = (raison ? raison + ' ' : '') + 'Le cadre est trop petit pour y assembler ces pièces : agrandissez-le. La forme affichée n\'est pas garantie.'; }
       else info = (raison ? raison + ' La page a donc construit une autre forme, par assemblage des pièces.' : 'Forme construite par assemblage des pièces : elle est pavable par construction.'); }
     else info = sur ? 'La page a trouvé un pavage de cette forme avant de vous la proposer.' : (raison || 'Rien ne garantit que cette forme soit pavable.');
-    cases = g; rendre(); }
+    cases = g; modeCourant = m; mini = m.moins ? minimum(cases, C, types.map(t => ({ o: t.o }))) : null; rendre(); }
   const svg = (o, coul) => { const h = Math.max(...o.map(x => x[0])) + 1, w = Math.max(...o.map(x => x[1])) + 1, u = 46 / Math.max(h, w, 3); return `<svg viewBox="0 0 46 46" aria-hidden="true">${o.map(([r, c]) => `<rect x="${((46 - w * u) / 2 + c * u + .6).toFixed(1)}" y="${((46 - h * u) / 2 + r * u + .6).toFixed(1)}" width="${(u - 1.2).toFixed(1)}" height="${(u - 1.2).toFixed(1)}" rx="1.5" fill="${coul}"/>`).join('')}</svg>`; };
   function rendre() {
     if (!vivant) return;
@@ -173,9 +188,10 @@ export function monter(racine) {
     const reste = cases.size - occ.size, gagne = reste === 0; let jouable = false;
     if (!gagne) { const sv = sel, so = ori; outer: for (let k = 0; k < types.length; k++) { if (R[k] <= 0) continue; sel = k; for (let o = 0; o < types[k].o.length; o++) { ori = o; for (const i of cases) if (!occ.has(i) && emplacement(i, occ)) { jouable = true; break outer; } } } sel = sv; ori = so; }
     ecrire(q('#po-reste'), entier(reste)); ecrire(q('#po-nb'), entier(poses.length)); ecrire(q('#po-info'), info);
+    ecrire(q('#po-but'), modeCourant && modeCourant.moins ? '<b>But du jeu :</b> recouvrir toute la forme, sans trou ni chevauchement, en utilisant <b>le moins de pièces possible</b>. Les six pièces sont disponibles à volonté.' : modeCourant && !modeCourant.illimite ? '<b>But du jeu :</b> recouvrir toute la forme, sans trou ni chevauchement, en utilisant chaque pièce de la réserve une fois.' : '<b>But du jeu :</b> recouvrir toute la forme, sans trou ni chevauchement, avec les pièces de la réserve, disponibles à volonté.', true);
     q('#po-annuler').disabled = !hist.length; q('#po-vider').disabled = !poses.length; q('#po-conseil').disabled = gagne;
     const m = q('#po-message'); m.className = 'jeu-message' + (gagne ? ' gagne' : !jouable ? ' bloque' : '');
-    ecrire(m, gagne ? `Réussi : la forme est pavée par ${poses.length} pièces.` : !jouable ? `Plus aucune pièce ne peut être posée, et il reste ${reste} case${reste > 1 ? 's' : ''} à couvrir. Reprenez des pièces.` : msg || (poses.length ? 'Continuez.' : 'Faites glisser une pièce sur la forme, ou choisissez-la puis cliquez sur une case.'));
+    ecrire(m, gagne ? (mini ? (poses.length <= mini.m ? `Réussi, avec ${poses.length} pièces : ${mini.prouve ? 'c\'est le minimum possible, la page l\'a vérifié en examinant tous les pavages' : 'la page n\'a pas trouvé mieux, sans avoir pu examiner tous les pavages'}.` : `La forme est recouverte, avec ${poses.length} pièces. ${mini.prouve ? `Le minimum possible est de ${mini.m} pièces` : `La page a trouvé un pavage en ${mini.m} pièces, sans avoir pu vérifier que c'est le minimum`} : reprenez des pièces et essayez d'en utiliser moins.`) : `Réussi : la forme est pavée par ${poses.length} pièces.`) : !jouable ? `Plus aucune pièce ne peut être posée, et il reste ${reste} case${reste > 1 ? 's' : ''} à couvrir. Reprenez des pièces.` : msg || (poses.length ? 'Continuez.' : 'Faites glisser une pièce sur la forme, ou choisissez-la puis cliquez sur une case. Les touches R et F la tournent et la retournent.'));
     let t = ''; for (let k = 1; k <= 7; k++) t += `${k === 1 ? '' : k === 7 ? ' et ' : ', '}${LIBRES[k].length} de ${k} case${k > 1 ? 's' : ''}`;
     ecrire(q('#po-compte'), `Résultat de l'énumération faite par la page : ${t}. Les cinq pièces de 4 cases sont les tétrominos, les douze de 5 cases les pentominos.`);
   }
