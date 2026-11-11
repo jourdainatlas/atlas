@@ -637,4 +637,4 @@ Aucun changement visible à l'écran ; tout est dans l'en-tête des pages de lec
 6. **llms.txt** (`site/llms.txt`, tiré des données) : présentation, auteur, licence, rubriques, chapitres de cours
    et activités avec leurs adresses. Effet incertain (aucun grand moteur ne s'engage à le lire), coût nul.
 À faire par l'auteur : inscription à Bing Webmaster Tools (import depuis la Search Console) et envoi du sitemap.
-Remarque laissée en suspens : l'en-tête des pages de lecture (`.l-rubriques`) ne mène pas encore à Activités.
+Ajout du 11 nov. 2026 : lien « Activités » dans l'en-tête des pages de lecture (`.l-rubriques`, masqué sur téléphone comme les autres) et dans la liste de la page 404.

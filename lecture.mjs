@@ -189,7 +189,7 @@ ${filLd}${ressLd}
 </head>
 <body class="l-corps">
 <header class="l-tete"><a class="l-marque" href="/"><img src="/icone-192.png" alt="" width="28" height="28">ATLAS</a>
-<nav class="l-rubriques" aria-label="Rubriques"><a href="/edifice/">L'édifice</a><a href="/cours/">Cours</a><a href="/exercices/">Exercices</a><a href="/annales/">Annales</a></nav>
+<nav class="l-rubriques" aria-label="Rubriques"><a href="/edifice/">L'édifice</a><a href="/cours/">Cours</a><a href="/exercices/">Exercices</a><a href="/annales/">Annales</a><a href="/activites/">Activités</a></nav>
 <a class="l-ouvrir" href="${attr(cible)}">Ouvrir dans l'atlas →</a></header>
 <main class="l-page">
 ${fil.length ? `<nav class="l-fil" aria-label="Position">${fil.map(f => f.href ? `<a href="${attr(f.href)}">${esc(f.name)}</a>` : `<span>${esc(f.name)}</span>`).join('<span aria-hidden="true">›</span>')}</nav>` : ''}
@@ -343,6 +343,6 @@ export function pagesLecture(ctx) {
     description: 'Cette adresse ne correspond à aucune page d\'ATLAS.', fil: [],
     corps: `<article class="fiche l-404"><p class="sur-titre"><span class="sorte">Erreur 404</span></p><h1>Cette page n'existe pas</h1>
 <p>L'adresse demandée ne correspond à aucune page d'ATLAS : elle est peut-être mal recopiée, ou la page a changé de place. Le plus simple est de repartir d'une rubrique ; dans l'atlas interactif, la barre de recherche de l'édifice retrouve une notion par son nom.</p>
-<ul class="l-liste"><li><a href="/">Accueil</a></li><li><a href="/edifice/">L'édifice : les théories et leurs fiches</a></li><li><a href="/#edifice">Chercher une notion dans l'atlas interactif</a></li><li><a href="/cours/">Cours</a></li><li><a href="/exercices/">Exercices</a></li><li><a href="/annales/">Annales</a></li><li><a href="/#nouveautes">Nouveautés</a></li><li><a href="/#a-propos">À propos – Contact</a></li></ul></article>` });
+<ul class="l-liste"><li><a href="/">Accueil</a></li><li><a href="/edifice/">L'édifice : les théories et leurs fiches</a></li><li><a href="/#edifice">Chercher une notion dans l'atlas interactif</a></li><li><a href="/cours/">Cours</a></li><li><a href="/exercices/">Exercices</a></li><li><a href="/annales/">Annales</a></li><li><a href="/activites/">Activités</a></li><li><a href="/#nouveautes">Nouveautés</a></li><li><a href="/#a-propos">À propos – Contact</a></li></ul></article>` });
   return urls;
 }
