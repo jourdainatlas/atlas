@@ -52,10 +52,12 @@ a poussé entre-temps, un fichier commun réécrit à partir d'une copie périm�
 5. **Commits petits et fréquents**, un par lot cohérent, avec un message qui commence par la rubrique
    (« Annales : … », « Cours : … »). Une conversation ne laisse jamais de travail non poussé qui
    touche un fichier commun.
-6. **Publication :** le flux `publier.yml` annule une publication en cours quand une autre poussée
-   arrive (`cancel-in-progress`) ; c'est normal. Seule compte la dernière exécution : on la suit avec
-   `gh run list -R jourdainatlas/atlas` jusqu'au succès. Si elle échoue à cause des fichiers de l'autre
-   rubrique, on ne les corrige pas soi-même : on signale l'erreur à l'auteur.
+6. **Publication :** depuis le 10 nov. 2026, `publier.yml` n'annule plus une publication en cours
+   (`cancel-in-progress: false`) : une nouvelle poussée attend la fin de la précédente (« queued »), ce qui est
+   normal. Le flux a trois jobs : `construire`, `publier` (GitHub Pages, gardé en secours) et `ovh` (mise en
+   ligne réelle sur l'hébergement OVHcloud, MEMO_atlas_apropos.md §64) ; c'est le job `ovh` qui doit réussir.
+   On suit la dernière exécution avec `gh run list -R jourdainatlas/atlas` jusqu'au succès. Si elle échoue à
+   cause des fichiers de l'autre rubrique, on ne les corrige pas soi-même : on signale l'erreur à l'auteur.
 7. **Mémos du projet Claude :** chaque conversation n'écrit dans le projet que son propre mémo
    (`MEMO_atlas_annales.md`, `MEMO_atlas_cours.md`, `MEMO_atlas_edifice.md`, `MEMO_atlas_apropos.md`). `MEMO_atlas.md` est commun : on le modifie dans le
    dépôt (point 2), et la copie du projet ne fait que refléter la version du dépôt ; avant de l'écrire
