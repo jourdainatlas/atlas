@@ -666,3 +666,18 @@ l'activité. On ne touche à rien d'autre dans ce fichier. Le 11 novembre, rétr
 En sens inverse, la page d'un chapitre a une carte « Activités », placée sous « Exercices » (`gabarit.html`).
 Elle liste les activités dont le champ `cours` cite le chapitre. Sa page de lecture a une section « Activités »
 (`lecture-cours.mjs`).
+
+### 43. « Dans les annales » sur les pages de chapitre (11 nov. 2026)
+
+Chaque chapitre de MPSI porte dans `rubriques/cours.yaml` un champ `annales_themes`. C'est une liste choisie à la
+main de thèmes du moteur des annales (ids de `rubriques/annales-themes.yaml`, domaine Annales, lu sans être
+modifié). Une correspondance automatique par les nœuds de l'édifice donnait trop de bruit : « Enseignement et
+didactique » pour le chapitre 1, rien sur les séries pour le chapitre 20.
+
+La page du chapitre affiche ces thèmes dans une carte « Dans les annales », placée sous « Activités ». Un clic ouvre
+la rubrique Annales avec le moteur prérempli : un gestionnaire `a[data-rech-q]` écrit `etatRech.q` avant la
+navigation, puis le gestionnaire existant `data-vers-moteur` fait défiler jusqu'au moteur.
+
+**À chaque dépôt de chapitre**, on choisit de 1 à 11 thèmes qui recouvrent son programme, en préférant les thèmes
+fins (`parent:`), et on vérifie leurs ids. On ne relie pas encore les niveaux du lycée : les sujets du baccalauréat
+ne sont pas indexés par thème.

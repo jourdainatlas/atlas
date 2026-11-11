@@ -3915,6 +3915,10 @@ function pageChapitre(c, tous) {
   // Activités qui se rattachent au chapitre (champ cours de rubriques/activites.yaml)
   const activitesCh = (R.activites?.activites || []).filter(x => (x.cours || []).includes(c.id));
   if (activitesCh.length) h += `<div class="carte"><h3 class="titre-bloc">Activités</h3><ul class="cours-lies">${activitesCh.map(x => `<li><a class="cours-lie" href="#activites/${x.id}"><span class="cl-lieu">${esc(x.niveau || 'Activité')}</span><span class="cl-titre">${x.titre}</span></a></li>`).join('')}</ul></div>`;
+  // Annales : thèmes du moteur (rubriques/annales-themes.yaml) choisis pour le chapitre (champ annales_themes) ;
+  // un clic ouvre la rubrique Annales, moteur prérempli avec le thème (etatRech.q, gestionnaire data-rech-q).
+  const themesAnn = (c.annales_themes || []).map(id => ((R['annales-themes'] || {}).themes || []).find(t => t.id === id)).filter(Boolean);
+  if (themesAnn.length) h += `<div class="carte"><h3 class="titre-bloc">Dans les annales</h3><div class="puces">${themesAnn.map(t => `<a class="puce" style="text-decoration:none" href="#annales" data-vers-moteur data-rech-q="${esc(t.titre)}" title="Chercher « ${esc(t.titre)} » dans les sujets de concours">${esc(t.titre)}</a>`).join('')}</div></div>`;
   h += `<div class="carte carte-definit" data-definit="${c.id}">${definitChapitre(c)}</div>`;   // termes définis (domaine apparence, §54)
   h += `<div class="carte"><h3 class="titre-bloc">Dans l'atlas</h3><div class="puces">${(c.theories || []).map(t => puce(t)).join('')}</div>`;
   if ((c.notions || []).length) h += `<p style="margin:10px 0 0;font-size:13.5px">Notions&nbsp;: ${(c.notions).map(terme).join(', ')}</p>`;
@@ -5205,6 +5209,8 @@ const PJ_ICONE = '<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="t
 const adresseExoFeuille = e => `${ADRESSE_SITE}#exercices/feuille/${e.feuille}/${e.id}`;
 const PARTAGE_ICONE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7.5 7.5 12 3l4.5 4.5M6 11H5v10h14V11h-1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const partageExoBouton = e => `<button type="button" class="partage-exo" data-partage-exo="${e.id}" data-url="${adresseExoFeuille(e)}" title="Partager : copier le lien de l'exercice ${e.numero}, qui ouvre sa feuille à cet exercice" aria-label="Partager l'exercice ${e.numero}">${PARTAGE_ICONE}<span>Partager</span></button>`;
+// Lien « Dans les annales » d'une page de chapitre : le moteur des annales s'ouvre sur ce thème.
+document.addEventListener('click', ev => { const a = ev.target.closest?.('a[data-rech-q]'); if (a && typeof etatRech === 'object') { etatRech.q = a.dataset.rechQ; etatRech.montres = 12; } }, true);
 document.addEventListener('click', async ev => {
   const b = ev.target.closest('[data-partage-exo]');
   if (!b) return;
