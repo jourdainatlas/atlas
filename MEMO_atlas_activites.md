@@ -832,4 +832,11 @@ ne peut être prise. Calculé (Node, énumération) : 57, 12 675 et 24 318 165 d
 total, vérifié par recherche web) ; 5 × 5 résolu, Noir gagne tout le plateau (van der Werf, van den Herik,
 Uiterwijk, 2003, vérifié). Le titre « Solving Go on Small Boards », ICGA Journal, est cité de mémoire.
 
+**Niveaux de la page (demande de l'auteur, même nuit).** L'auteur trouvait la page forte et les libellés
+« réfléchit peu, un peu plus, longtemps » peu parlants. Le réglage est désormais « Niveau de la page » : 1 ·
+débutant (15 parties par coup, et un coup au hasard trois fois sur dix), 2 · facile (120, par défaut), 3 · moyen
+(1 200), 4 · fort (10 000, plafonné à 8 s). Le niveau fixe un nombre de parties et non plus une durée : la force
+ne dépend plus de l'appareil. Mesuré (Node, 9 × 9, komi 7,5) : débutant contre hasard 19 sur 20 ; facile contre
+débutant 20 sur 20 ; moyen contre facile 16 sur 16 ; fort contre moyen 8 sur 8.
+
 Explorations : vingt-huit. Jeux et casse-têtes : seize.

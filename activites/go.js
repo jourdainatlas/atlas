@@ -41,7 +41,7 @@ export const html = `
   <div class="bar top">
     <label>Adversaire <select id="go-mode"><option value="page" selected>la page</option><option value="deux">un ami, sur le même écran</option></select></label>
     <label id="go-coul-l">Vous jouez <select id="go-coul"><option value="1" selected>Noir (qui commence)</option><option value="2">Blanc</option></select></label>
-    <label id="go-force-l">La page réfléchit <select id="go-force"><option value="400">peu</option><option value="1200" selected>un peu plus</option><option value="3000">longtemps</option></select></label>
+    <label id="go-force-l">Niveau de la page <select id="go-force"><option value="0">1 · débutant</option><option value="1" selected>2 · facile</option><option value="2">3 · moyen</option><option value="3">4 · fort</option></select></label>
     <label>Plateau <select id="go-n"><option value="5">5 × 5</option><option value="7">7 × 7</option><option value="9" selected>9 × 9</option></select></label>
     <label>Komi <select id="go-komi"><option value="0">0</option><option value="5.5">5,5</option><option value="6.5">6,5</option><option value="7.5" selected>7,5</option></select></label>
     <button type="button" class="primary" id="go-neuf">Nouvelle partie</button>
@@ -124,13 +124,14 @@ export const html = `
   <div class="col">
     <h4><span class="n">6</span>Ce que l'on sait, et comment joue la page</h4>
     <p>Le plateau de 5 lignes est résolu : Erik van der Werf, Jaap van den Herik et Jos Uiterwijk ont établi par ordinateur, en 2003, que Noir gagne la totalité du plateau en jouant au mieux (<i>admis ici</i> : le résultat repose sur une recherche exhaustive hors de portée de cette page). Pour 9 lignes, et à plus forte raison pour 19, on ne connaît pas l'issue du jeu parfait.</p>
-    <p>La page ne joue donc pas parfaitement. Pour choisir un coup, elle termine des milliers de parties en jouant au hasard à partir de la position, et retient le coup après lequel son camp gagne le plus souvent, en explorant davantage les coups prometteurs. Cette méthode, la <b>recherche arborescente de Monte-Carlo</b>, repose sur la loi des grands nombres : la fréquence des victoires estime la valeur d'un coup. Elle donne un adversaire convenable pour débuter, qui commet des erreurs qu'un joueur exercé saura punir. Le bouton « Un conseil » emploie la même méthode : c'est une suggestion, pas une certitude.</p>
+    <p>La page ne joue donc pas parfaitement. Pour choisir un coup, elle termine des milliers de parties en jouant au hasard à partir de la position, et retient le coup après lequel son camp gagne le plus souvent, en explorant davantage les coups prometteurs. Cette méthode, la <b>recherche arborescente de Monte-Carlo</b>, repose sur la loi des grands nombres : la fréquence des victoires estime la valeur d'un coup. Le bouton « Un conseil » emploie la même méthode : c'est une suggestion, pas une certitude.</p>
+    <p>Les quatre niveaux ne diffèrent que par le nombre de parties examinées avant chaque coup. Au niveau 1, <b>débutant</b>, la page n'en examine que 15, et joue de plus un coup tiré au hasard trois fois sur dix : elle laisse prendre ses pierres et convient pour une toute première partie. Au niveau 2, <b>facile</b>, elle en examine 120 ; au niveau 3, <b>moyen</b>, 1 200 ; au niveau 4, <b>fort</b>, 10 000, ce qui demande une seconde ou davantage par coup, selon l'appareil. L'échelle est nette : dans les essais faits en écrivant cette page, chaque niveau a gagné toutes ses parties contre le niveau inférieur, sur 8 à 20 parties selon les niveaux. Aucun de ces niveaux n'a été mesuré contre des joueurs classés.</p>
   </div>
 </section>
 ` + suite(
   "Croire qu'un groupe vit parce qu'il entoure beaucoup d'intersections. Quatre cases en carré ne donnent jamais deux yeux, alors que quatre cases en ligne en donnent toujours : c'est la forme de l'espace intérieur qui décide, et la page le démontre par l'examen de toutes les suites. L'autre erreur des débuts est de compter les diagonales : deux pierres qui se touchent par un coin ne forment pas une chaîne, et l'adversaire peut les séparer.",
   "Le chapitre de Maths expertes <a href=\"#cours/me-06\">Applications des matrices</a> introduit les graphes ; celui de Terminale <a href=\"#cours/t-10\">sur la loi des grands nombres</a> fonde la méthode de Monte-Carlo, que l'exploration <a href=\"#activites/grands-nombres\">La loi des grands nombres</a> fait voir. Dans l'édifice : <a href=\"#n.n-fini\">Ensembles finis et principe des tiroirs</a>, pour la finitude de la partie. Sources : J. Tromp, « The Number of Legal Go Positions » (2016) ; E. van der Werf, J. van den Herik et J. Uiterwijk, « Solving Go on Small Boards », <i>ICGA Journal</i> (2003).",
-  "Les règles (prises, suicide, répétition) sont appliquées exactement. Le décompte se fait par aire, avec le komi choisi ; les pierres mortes proposées viennent de quelques centaines de parties terminées au hasard, et c'est à vous de les corriger. L'adversaire et le conseil relèvent de la recherche de Monte-Carlo : leur force dépend du temps de réflexion choisi et de la vitesse de votre appareil, et ils n'ont rien de certain. Les problèmes de vie et de mort, eux, sont résolus par une recherche exhaustive où seules les intersections de l'espace intérieur se jouent, où Blanc peut passer, et où aucune disposition ne se répète : leurs verdicts sont exacts pour ces règles. Rien n'est enregistré ni envoyé.");
+  "Les règles (prises, suicide, répétition) sont appliquées exactement. Le décompte se fait par aire, avec le komi choisi ; les pierres mortes proposées viennent de quelques centaines de parties terminées au hasard, et c'est à vous de les corriger. L'adversaire et le conseil relèvent de la recherche de Monte-Carlo : le niveau fixe le nombre de parties examinées par coup, si bien que la force de la page ne dépend pas de la vitesse de votre appareil, mais ses coups n'ont rien de certain. Les problèmes de vie et de mort, eux, sont résolus par une recherche exhaustive où seules les intersections de l'espace intérieur se jouent, où Blanc peut passer, et où aucune disposition ne se répète : leurs verdicts sont exacts pour ces règles. Rien n'est enregistré ni envoyé.");
 
 // ---------- Moteur : plateau, chaînes, libertés, prises ----------
 export function plateau(n) {
@@ -274,6 +275,8 @@ function dessin(P, col, o = {}) {
   for (let p = 0; p < N; p++) s += `<circle class="pt" data-p="${p}" cx="${X(p)}" cy="${Y(p)}" r="${u / 2 - 1}"/>`;
   return `<svg viewBox="0 0 ${T} ${T}" role="img" aria-label="Plateau de go de ${n} lignes">${s}</svg>`;
 }
+// Niveaux de la page : [parties au hasard examinées par coup, probabilité de jouer un coup tiré au hasard].
+const NIVEAUX = [[15, 0.3], [120, 0], [1200, 0], [10000, 0]];
 const nomPoint = (P, p) => 'ABCDEFGHJ'[p % P.n] + (P.n - Math.floor(p / P.n));
 
 export function monter(racine) {
@@ -307,9 +310,10 @@ export function monter(racine) {
   function penser() { const moi = ++jeton, c = G.trait; G.pense = true; rendre();
     // Après une passe adverse, la page passe aussi si le décompte du plateau tel quel lui donne déjà la victoire.
     if (G.passes === 1) { const [a, b] = P.aire(G.col), marge = a - b - komi(); if ((c === 1) === (marge > 0)) { setTimeout(() => { if (moi !== jeton || !vivant) return; G.pense = false; jouer(-1); rendre(); }, 30); return; } }
-    const S = M.chercheur(G.col, c, -1, repetitions(c)), fin = performance.now() + +q('#go-force').value;
-    const tranche = () => { if (moi !== jeton || !vivant) return; const t = performance.now() + 35; while (performance.now() < t) S.tour();
-      if (performance.now() < fin) { setTimeout(tranche, 0); return; }
+    const [cible, etourderie] = NIVEAUX[+q('#go-force').value], S = M.chercheur(G.col, c, -1, repetitions(c)), fin = performance.now() + 8000;
+    if (Math.random() < etourderie) { const f = S.racine.fils, p = f[Math.floor(Math.random() * f.length)].coup; setTimeout(() => { if (moi !== jeton || !vivant) return; G.pense = false; if (!jouer(p)) jouer(-1); rendre(); }, 30); return; }
+    const tranche = () => { if (moi !== jeton || !vivant) return; const t = performance.now() + 35; while (performance.now() < t && S.total < cible) S.tour();
+      if (S.total < cible && performance.now() < fin) { setTimeout(tranche, 0); return; }
       G.pense = false; const b = S.meilleur(); if (!jouer(b.coup)) jouer(-1); rendre(); };
     setTimeout(tranche, 20); }
   function clic(p) { if (G.pense) return;
