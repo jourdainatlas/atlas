@@ -598,3 +598,13 @@ toujours repliées (30 px, 28 px sous 420 px) ; la pastille courante contient le
 (≤ 860 px) : `.nav-rub` en ligne 2 (ligne 3 hors onglets, sous le fil), et dans l'édifice le bouton Légende
 partage la ligne 2 (colonnes 5 et suivantes) ; sous 420 px la pastille de l'édifice se réduit à son symbole.
 Vérifié de 360 à 1 440 px, clair et sombre, sans débordement horizontal ni erreur de console.
+
+## 67. Symbole de la rubrique Activités (11 nov. 2026)
+
+Choix de l'auteur, parmi six propositions puis cinq variantes : **E1**, une pièce de puzzle claire portant une
+courbe en cloche dont le sommet est marqué, et sous elle un curseur dont le bouton est à l'aplomb du sommet
+(visualisation et casse-têtes). Il remplace dans `#sym-activites` l'ancien « courbe et curseur ». Tout en aplats
+(classes `activites-sy1/2/3`, couleur `--c-ord`) : la courbe est une bande calculée par décalage le long de la
+normale (demi-épaisseur 1, repère de la pièce), avec deux disques en bout ; pièce et courbe réduites à 0,88 et
+remontées (`translate(1.18 -3.17)`), curseur de 4 à 20 en y = 19,3. Les variantes non retenues (pièce pleine,
+point qui suit le curseur, aire teintée, pièce au trait) ne sont pas à reproposer sans demande.
