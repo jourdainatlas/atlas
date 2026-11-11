@@ -10,5 +10,10 @@ export const cssJeux = `
 .activites-act .jeu-message { padding: 10px 16px; border-top: 1px solid var(--filet); font: 15px/1.45 var(--f-ui); min-height: 44px; }
 .activites-act .jeu-message.gagne { color: var(--tan); font-weight: 600; }
 .activites-act .jeu-message.bloque { color: var(--sec); }
+/* But atteint, mais pas au mieux (plus de pièces, de coups ou de couleurs que le minimum) : en rouge, à la demande de l'auteur (11 nov. 2026). */
+.activites-act .jeu-message.mieux { color: var(--rouge); font-weight: 600; }
 .activites-act .bar select { font: 14px var(--f-ui); color: var(--encre); background: var(--surface); border: 1px solid var(--encre-3); border-radius: 6px; padding: 4px 6px; }
 `;
+// Sept teintes fixes, lisibles sur fond clair comme sur fond sombre, pour les jeux qui colorient (cartes, carrés latins). Le rouge reste réservé.
+export const TEINTES = ['#3d7fc4', '#e08a2e', '#3f9b62', '#8b62c9', '#22a3a8', '#cf5c9c', '#a58a2c'];
+export const NOMS_TEINTES = ['bleu', 'orange', 'vert', 'violet', 'turquoise', 'rose', 'ocre'];

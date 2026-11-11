@@ -746,3 +746,48 @@ de 20 cases au plus : aucun parcours pour 3 × 3, 3 × 5, 3 × 6, 4 × 4 ; un pa
 tailles proposées, trouvé en moins de 30 ms. Cases en deux gris fixes, comme pour les dominos.
 
 Explorations : vingt-sept. Casse-têtes : douze.
+
+### 139. Coloriage de cartes, transvasements, carrés latins, Monty Hall ; message rouge quand le minimum n'est pas atteint (11 novembre 2026)
+
+**Règle nouvelle (demande de l'auteur).** Quand le but d'un jeu est un minimum et que le joueur termine sans
+l'atteindre, le message final n'est pas vert mais rouge : classe `.jeu-message.mieux` de `jeux.js` (couleur
+`--rouge`). Appliquée à `polyominos`, `coloriage`, `transvasements`. Le vert (`.gagne`) reste pour la réussite
+au minimum. `jeux.js` exporte aussi `TEINTES` et `NOMS_TEINTES` : sept teintes fixes (sans rouge) pour les jeux
+qui colorient ; chaque couleur est doublée d'un numéro ou d'une lettre.
+
+**`coloriage`** (casse-tête). Cartes sur quadrillage : au hasard (croissance de germes, 8 à 26 régions, 10 × 14),
+rectangles superposés (côtés d'abscisses et d'ordonnées toutes distinctes, 12 × 16), roue à cinq quartiers.
+Voisinage = côté commun de deux cases. Palette de six couleurs (touches 1 à 6), fautes directes seulement
+(frontière épaisse rayée), minimum annoncé à la fin, indice par recherche d'un coloriage minimal prolongeant les
+choix. Nombre chromatique exact par retour arrière. Démontré dans la page : deux couleurs pour les rectangles
+superposés (parité) ; la roue exige quatre couleurs ; six couleurs suffisent, en admettant qu'une région a au
+plus cinq voisines. Admis : théorème des quatre couleurs. Contrôlé (Node) : 1 600 cartes de rectangles, toutes
+de nombre chromatique 2 et coloriées par la parité ; roue : 4, sans quatre régions mutuellement voisines ;
+cartes au hasard : 3 ou 4. Sources vérifiées : conjecture de 1852, Kempe 1879, Heawood 1890, Appel et Haken 1976.
+
+**`transvasements`** (casse-tête). Capacités 2 à 12, but réglable, six opérations (les opérations sans effet
+sont grisées), quadrillage des états avec le parcours, minimum par parcours en largeur, « Un coup », « Est-ce
+possible ? ». « Nouveau défi » ne tire que des défis réalisables d'au moins quatre opérations. Théorème démontré
+en entier (invariant ; cycle « remplir A, verser dans B » et Bézout). Contrôlé (Node) : le théorème sur toutes
+les capacités de 2 à 12 ; 3 et 5 → 4 : minimum 6, 8 par le cycle partant de A ; 3 et 5 → 1 : 4 opérations.
+
+**`carres-latins`** (casse-tête). Jeu gréco-latin (officiers lettre latine + lettre grecque, réserve d'un
+officier de chaque sorte) et jeu latin simple ; ordres 3 à 7 ; départ : grille vide, première ligne, un tiers,
+la moitié. Solutions : i + j et 2i + j modulo n pour n impair, corps à quatre éléments pour n = 4, brouillées
+par permutations. L'ordre 6 gréco-latin est proposé vide, annoncé sans solution dans le bandeau du but (choix
+assumé : c'est le problème historique). Indice : la solution d'origine si la position la respecte, sinon retour
+arrière plafonné à 40 000 essais, à trois réponses. Démontré : existence des carrés latins, construction pour n
+impair, impossibilité à l'ordre 2, au plus n − 1 carrés orthogonaux, absence de carré orthogonal à la table de
+ℤ/nℤ pour n pair. Admis : Tarry (1900-1901), Bose-Shrikhande-Parker (1960). Contrôlé (Node) : 200 solutions par
+ordre, toutes valides ; aucune transversale dans ℤ/4ℤ ni ℤ/6ℤ. Source vérifiée : Euler, « Recherches sur une
+nouvelle espèce de quarrés magiques », 1782.
+
+**`monty-hall`** (exploration, probabilités). Trois vues : le jeu (3 à 10 portes, l'animateur ouvre n − 2
+portes ; animateur qui sait, ou qui ouvre au hasard, la partie étant alors annulée s'il montre la voiture) ; un
+mur de 300 parties coloriées selon la stratégie gagnante, que l'on peut ranger par couleur ; le carré des
+probabilités (trois portes, porte 1 choisie, colonnes = place de la voiture, découpées selon la porte ouverte),
+avec la préférence p de l'animateur par vingtièmes et l'observation choisie ; fractions exactes. Démontré :
+1/n et (n − 1)/n ; Bayes : p/(1 + p). Contrôlé (Node, 400 000 parties) : 1/3, 2/3 ; au hasard 1/3, 1/3, 1/3
+d'annulées ; dix portes au hasard : 0,1 ; 0,1 ; 0,8. Sources vérifiées : Selvin 1975, vos Savant 1990.
+
+Explorations : vingt-huit. Casse-têtes : quinze.
