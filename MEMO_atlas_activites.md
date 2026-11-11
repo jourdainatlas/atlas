@@ -369,3 +369,9 @@ Explorations : onze. Casse-têtes : quatre.
 à l'écran et hors des champs, listes et curseurs. Fait pour le taquin et, à la demande de l'auteur qui s'y
 attendait, pour les chemins sur une grille (→, ↑, et ← pour retirer un pas).
 
+**Atelier : liaisons visibles (demande de l'auteur).** Avec un outil de tracé, le point survolé (celui par
+lequel le cercle ou la ligne va passer) et le premier point déjà choisi portent un anneau vert ; l'aperçu en
+pointillés s'accroche à ce point et passe au vert ; une ligne survolée, à laquelle un point va s'attacher, est
+doublée d'un trait vert. La ligne d'aide annonce la liaison (« Le cercle passera par le point B : cliquez pour
+le relier », point accroché à une ligne, point d'intersection). Ajouts dans l'interface seulement.
+

@@ -564,12 +564,14 @@ function draw(){
   for(const o of st.objs){if(o.t==='pt')continue;const g=G.get(o.id);if(!g||!g.ok)continue;
     const sel=pend.ln===o.id,hov=(hover&&hover.id===o.id)||(snap&&(snap.o1===o.id||snap.o2===o.id));
     if(sel||hov){ctx.strokeStyle=C.hl;ctx.lineWidth=8;strokeGeom(g);}
+    if((sel||hov)&&tool!=='move'&&tool!=='trace'&&tool!=='del'){ctx.globalAlpha=.5;ctx.strokeStyle=C.ok;ctx.lineWidth=5;strokeGeom(g);ctx.globalAlpha=1;}
     ctx.strokeStyle=o.given?C.soft:C.ink;ctx.lineWidth=o.given?2.6:(o.k==='seg'?2.2:1.5);strokeGeom(g);
     if(o.label){ctx.font='italic 700 16px '+C.fd;ctx.fillStyle=C.soft;ctx.textAlign='left';ctx.textBaseline='bottom';ctx.fillText(o.label,sx(g.x+0.3*g.dx),sy(g.y+0.3*g.dy)-6);}}
   // aperçu
   if(cursor&&pend.pts.length===1&&(tool==='seg'||tool==='line'||tool==='circle'||tool==='mid')){const a=G.get(pend.pts[0]);
-    if(a&&a.ok){ctx.strokeStyle=C.soft;ctx.lineWidth=1.5;ctx.setLineDash([5,5]);ctx.beginPath();
-      if(tool==='circle')ctx.arc(sx(a.x),sy(a.y),dist(a,cursor),0,7);else{ctx.moveTo(sx(a.x),sy(a.y));ctx.lineTo(sx(cursor.x),sy(cursor.y));}
+    if(a&&a.ok){const hg=hover&&hover.t==='pt'?G.get(hover.id):null,tip=hg&&hg.ok?hg:cursor;   /* l'aperçu s'accroche au point survolé */
+      ctx.strokeStyle=hg&&hg.ok?C.ok:C.soft;ctx.lineWidth=hg&&hg.ok?2:1.5;ctx.setLineDash([5,5]);ctx.beginPath();
+      if(tool==='circle')ctx.arc(sx(a.x),sy(a.y),dist(a,tip),0,7);else{ctx.moveTo(sx(a.x),sy(a.y));ctx.lineTo(sx(tip.x),sy(tip.y));}
       ctx.stroke();ctx.setLineDash([]);}}
   // traces
   traces.forEach(arr=>{ctx.fillStyle=C.ok;for(const p of arr){ctx.beginPath();ctx.arc(sx(p.x),sy(p.y),2,0,7);ctx.fill();}});
@@ -577,6 +579,8 @@ function draw(){
   for(const o of st.objs){if(o.t!=='pt')continue;const g=G.get(o.id);if(!g||!g.ok)continue;const X=sx(g.x),Y=sy(g.y);
     const sel=pend.pts.includes(o.id),hov=hover&&hover.id===o.id;
     if(sel||hov){ctx.fillStyle=C.hl;ctx.beginPath();ctx.arc(X,Y,14,0,7);ctx.fill();}
+    // point qui va être relié à l'objet en cours de tracé (ou premier point déjà choisi) : anneau vert bien visible
+    if((sel||hov)&&tool!=='move'&&tool!=='trace'&&tool!=='del'){ctx.strokeStyle=C.ok;ctx.lineWidth=3;ctx.beginPath();ctx.arc(X,Y,12.5,0,7);ctx.stroke();}
     if(o.lock){ctx.strokeStyle=C.soft;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(X-4,Y-4);ctx.lineTo(X+4,Y+4);ctx.moveTo(X-4,Y+4);ctx.lineTo(X+4,Y-4);ctx.stroke();}
     else if(o.k==='free'){ctx.fillStyle=C.free;ctx.beginPath();ctx.arc(X,Y,7,0,7);ctx.fill();}
     else if(o.k==='on'){ctx.fillStyle=C.semi;ctx.beginPath();ctx.arc(X,Y,6.5,0,7);ctx.fill();}
@@ -596,6 +600,12 @@ function updateUI(){
   document.querySelectorAll('.tool[data-tool]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.tool===tool)));
   const hs=HINTS[tool],step=(tool==='perp'||tool==='par'||tool==='inter')?((pend.pts.length||pend.ln)?1:0):Math.min(pend.pts.length,hs.length-1);
   $('hint').textContent=hs[Math.min(step,hs.length-1)];
+  // annonce de la liaison qui va se faire : avec un point existant, avec une ligne, ou avec un croisement
+  if(tool!=='move'&&tool!=='trace'&&tool!=='del'){
+    if(snap)$('hint').textContent='Le point sera placé à l\'intersection des deux lignes surlignées.';
+    else if(hover&&hover.t==='pt')$('hint').textContent=(tool==='circle'&&pend.pts.length===1?'Le cercle passera par le point ':tool==='circle'?'Le cercle aura pour centre le point ':(tool==='seg'||tool==='line')?'La ligne passera par le point ':'Le point utilisé sera ')+(hover.name||'survolé')+' : cliquez pour le relier.';
+    else if(hover&&tool==='point')$('hint').textContent='Le point sera accroché à la ligne surlignée et ne pourra glisser que sur elle.';
+  }
   $('t-undo').disabled=!st.undo.length;
   cv.style.cursor=tool==='move'?(dragging?'grabbing':(hover&&hover.t==='pt'?'grab':'default')):'crosshair';
 }
