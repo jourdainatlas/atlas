@@ -283,4 +283,8 @@ dans le navigateur sur une figure codée.
   correction de continuité (0,7287 contre 0,6827).
 
 Restent quinze idées de la liste des vingt, les visualisations de dénombrement et d'autres casse-têtes.
+- *Atelier, fiche de gauche.* Sur ordinateur (au-delà de 900 px), la fiche a exactement la hauteur de la planche
+  (`height: 0; min-height: 100%` dans une grille étirée) : la liste des défis prend toute la place restante,
+  ses lignes sont resserrées et la planche monte jusqu'à 76 % de la hauteur de la fenêtre (820 px au plus). Sur
+  un écran de 1080 px, presque toute la liste est visible sans défiler. Sur téléphone, rien ne change.
 

@@ -51,6 +51,19 @@ export const css = cssCommun + `
 .activites-act .legend i.l1 { background: var(--free); border-color: var(--free); }
 .activites-act .legend i.l2 { background: var(--semi); border-color: var(--semi); }
 .activites-act .legend i.l3 { background: var(--surface); }
+/* Sur ordinateur, la fiche de gauche a exactement la hauteur de la planche : la liste des défis occupe la place
+   restante et défile seule ; si l'énoncé, le modèle et le verdict débordent, c'est la fiche entière qui défile. */
+@media (min-width: 901px) {
+  .activites-act .bench { align-items: stretch; }
+  .activites-act aside.sheet { height: 0; min-height: 100%; overflow-y: auto; }
+  .activites-act aside.sheet .defis { flex: 1 1 0; min-height: 132px; max-height: none; }
+  .activites-act aside.sheet > :not(.defis) { flex: none; }
+  .activites-act aside.sheet { gap: 10px; padding-top: 12px; }
+  .activites-act #board { height: clamp(440px, 76vh, 820px); }
+  .activites-act .defis { gap: 1px; } .activites-act .defis button { padding: 2px 9px; font-size: 14px; }
+  .activites-act .defis .grp { padding: 6px 9px 1px; }
+  .activites-act aside.sheet .verdict { min-height: 0; }
+}
 `;
 
 export const html = `
