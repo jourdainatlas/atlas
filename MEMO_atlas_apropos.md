@@ -101,7 +101,7 @@ défilement et se ferme s'il sort de l'écran.
 
 Rubrique `#nouveautes` (menu du logo, entre Annales et À propos ; page de partage `/nouveautes/`).
 Données : `rubriques/nouveautes.yaml` (`intro`, `entrees` : date entre guillemets, sinon PyYAML en fait une
-date que le JSON refuse ; `rubrique` edifice | cours | exercices | annales | site ; `titre` ; `texte` ;
+date que le JSON refuse ; `rubrique` edifice | cours | exercices | annales | activites | site (activites ajouté le 11 nov. 2026, couleur `--c-ord`) ; `titre` ; `texte` ;
 `liens: [{nom, ancre}]`, champ nommé `nom` et non `texte`, que `rendu.mjs` composerait en paragraphe ;
 `couvre`). Espaces insécables avant ; : ! ? » et après « dans les textes.
 Code : `pageNouveautes` et auxiliaires `nouv…` dans `gabarit.html`, styles `.nouv*` ; chronologie par

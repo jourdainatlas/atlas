@@ -1286,7 +1286,7 @@ if 'cours' in rubriques:
 # Un oubli n'est qu'un avertissement ; une correction ne crée aucun identifiant, donc ne déclenche rien.
 if 'nouveautes' in rubriques:
     NV = rubriques['nouveautes']; NV.setdefault('entrees', [])
-    RUBS = {'edifice', 'cours', 'exercices', 'annales', 'site'}
+    RUBS = {'edifice', 'cours', 'exercices', 'annales', 'activites', 'site'}
     cours_ids = {c['id'] for c in rubriques.get('cours', {}).get('cours', [])}
     feuil_ids = {f['id'] for f in rubriques.get('exercices', {}).get('feuilles', [])}
     racine_ids = {n['id'] for n in yaml.safe_load(open('contenu/edifice.yaml', encoding='utf-8'))['noeuds']}
