@@ -652,3 +652,28 @@ le carré troué (Dana Scott, 1958) ; 6 × 10 résolu en 1960 par C. B. et J. Ha
 
 Points soumis à l'auteur : voir la réponse de la conversation (niveaux du sudoku, saisie tactile des
 polyominos, formes impossibles proposées comme défis, limites de calcul).
+
+### 136. Sudoku et polyominos publiés, après discussion avec l'auteur (11 nov. 2026, soir)
+
+**Décisions de l'auteur.** Les cinq niveaux du sudoku par techniques sont validés. Un indice discret doit
+précéder le coup joué ; le bouton qui joue le coup s'appelle « Remplir une case » (et non « Un pas »). Les
+polyominos se manipulent par glisser-déposer. Pas de formes impossibles pour le moment (à revoir plus tard) :
+la case « garantir une solution » et le bouton « Est-ce possible ? » ont été retirés, toute forme proposée a été
+pavée par la page. Tailles gardées : cadre de 12 sur 12 au plus, pièces de 5 cases au plus.
+
+**Sudoku.** Trois aides : « Un indice » (teinte en vert la zone où une déduction est possible et en dit la
+nature, sans case ni chiffre) ; « Remplir une case » (enchaîne les éliminations nécessaires, barrées dans les
+cases, jusqu'à poser un chiffre, et explique) ; « Résoudre jusqu'au bout ». Chaque déduction du moteur porte
+désormais `zone` et `discret`. Saisie : cliquer une case puis taper le chiffre au clavier (écoute sur la
+fenêtre, règle du §125), ou touches sous la grille ; flèches, effacement, N pour les notes.
+
+**Polyominos.** Glisser-déposer par événements de pointeur, depuis la réserve ou depuis le plateau : la pièce
+suit le pointeur (calque `po-fantome`), l'emplacement visé est teinté en vert ou en orange, la pièce se pose au
+lâcher ; lâchée hors de la forme, une pièce du plateau retourne à la réserve ; R et F tournent et retournent
+pendant le déplacement, la case saisie restant sous le pointeur. Un déplacement de moins de 7 px reste un clic :
+choisir une pièce, la poser sur une case, reprendre une pièce posée. La réserve n'est pas reconstruite pendant
+un déplacement (l'élément saisi doit rester en place, pour le toucher). Vérifié à la souris ; le toucher n'a pu
+être essayé que par émulation de la largeur, pas avec un vrai doigt.
+
+Explorations : vingt-sept. Casse-têtes : neuf. Les documents `claude/prototype-*.js` du projet sont périmés :
+la source est dans `activites/`.
