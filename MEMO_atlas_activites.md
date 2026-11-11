@@ -375,3 +375,7 @@ pointillés s'accroche à ce point et passe au vert ; une ligne survolée, à la
 doublée d'un trait vert. La ligne d'aide annonce la liaison (« Le cercle passera par le point B : cliquez pour
 le relier », point accroché à une ligne, point d'intersection). Ajouts dans l'interface seulement.
 
+**Descriptions de la rubrique (demande de l'auteur).** Elles dataient de l'ouverture, quand il n'y avait que des
+explorations. Menu : « Explorations interactives, casse-têtes à résoudre et atelier de géométrie. » Carte de
+l'accueil et introduction de la page (titre « Explorer, jouer, construire ») : les trois familles sont nommées.
+
