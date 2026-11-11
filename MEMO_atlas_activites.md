@@ -614,3 +614,41 @@ pastille et le nom de chaque couleur.
 
 Explorations : vingt-sept. Casse-têtes : sept. Idées en réserve : polynômes de Bernstein, phénomène de Gibbs,
 argument diagonal, marche aléatoire, Thalès et homothéties. L'auteur a annoncé deux idées à décrire en détail.
+
+### 135. Deux prototypes de casse-têtes, NON PUBLIÉS : sudoku et polyominos (11 nov. 2026, soir)
+
+L'auteur a demandé deux prototypes à discuter avant toute publication. Ils ne sont ni dans `activites/` ni dans
+le catalogue. Leurs sources sont dans le projet (documents `claude/prototype-sudoku.js` et
+`claude/prototype-polyominos.js`) ; pour les essayer, les copier dans `activites/` sous les noms `sudoku.js` et
+`polyominos.js`, ajouter deux entrées au catalogue (groupe `casse-tetes`), construire. Une page autonome de
+chacun a été remise à l'auteur (page du site où le module est inséré en ligne au lieu d'être importé).
+
+**Sudoku.** Demande : générateur, difficulté réglable, résolution possible jusqu'au bout ; n'afficher une erreur
+que si deux chiffres se gênent directement, jamais si la grille est devenue impossible ; variante où l'on pose
+ses propres chiffres et où la grille est engendrée autour d'eux ; exposé mathématique. Prototype : tailles 4 × 4,
+6 × 6, 9 × 9 ; moteur générique (blocs br × bc) ; solution tirée par retour arrière, indices retirés tant que la
+solution reste unique et que le résolveur par déductions reste dans le niveau visé ; cinq niveaux définis par la
+déduction la plus fine nécessaire (1 : place unique dans une zone ; 2 : chiffre unique dans une case ; 3 :
+candidats confinés, paires ; 4 : triplets, X-wing ; 5 : au-delà) ; « Un pas » expliqué, « Résoudre jusqu'au
+bout » ; notes ; clavier. Contrôlé (Node) : 288 grilles de 4 × 4 ; pour 9 × 9, les cinq niveaux sont atteints
+exactement, grilles à solution unique, 10 à 600 ms par grille ; les petites tailles ne dépassent guère le
+niveau 1 à 3. Sources vérifiées (recherche web) : 6 670 903 752 021 072 936 960 grilles (Felgenhauer et Jarvis,
+2005), 5 472 730 538 essentiellement différentes (Russell et Jarvis, 2006), minimum de 17 indices (McGuire,
+Tugemann, Civario, 2012). Proposition démontrée dans la page : unicité ⇒ au moins n − 1 chiffres distincts
+parmi les indices.
+
+**Polyominos.** Demande : générateur de formes quadrillées, du rectangle aux formes non simplement connexes, à
+paver avec un type de pièce, toutes les pièces d'une taille, ou une liste établie ; exposé mathématique.
+Prototype : pièces libres énumérées par croissance (1, 1, 2, 5, 12, 35, 108, contrôlé) ; trois familles de
+défis (onze types seuls ; trominos, tétrominos, pentominos à volonté ; listes : cinq tétrominos, deux jeux,
+douze pentominos, six pentominos au hasard) ; formes : rectangle, rectangle troué, escalier, croix, forme au
+hasard par assemblage ; case « garantir une solution » (la page pave avant de proposer, sinon construit une
+forme par assemblage et dit pourquoi) ; pose par clic avec aperçu au survol, rotation et retournement (R, F) ;
+« Une pièce », « Est-ce possible ? » par recherche de couverture exacte bornée. Contrôlé (Node) : cinq
+tétrominos sur 4 × 5 : aucun pavage ; T sur 6 × 6 : aucun ; L sur 8 × 8 privé d'une case : 21 pièces ;
+pentominos sur 6 × 10 et sur 8 × 8 troué : pavage trouvé (1,7 s et 0,15 s) ; 3 × 20 : hors de la limite de
+recherche. Sources vérifiées : 2 339, 1 010, 368 et 2 pavages des rectangles par les douze pentominos, 65 pour
+le carré troué (Dana Scott, 1958) ; 6 × 10 résolu en 1960 par C. B. et J. Haselgrove ; Golomb, à partir de 1953.
+
+Points soumis à l'auteur : voir la réponse de la conversation (niveaux du sudoku, saisie tactile des
+polyominos, formes impossibles proposées comme défis, limites de calcul).
