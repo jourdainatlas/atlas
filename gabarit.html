@@ -4188,6 +4188,8 @@ function pageAnnales(chemin) {
   const fam = fams.find(f => f.id === etatAnn.famille) || fams[0];
   if (!fam) return '';
   etatAnn.famille = fam.id;
+  // le moteur de recherche suit la catégorie de la grille : réglé sur elle à l'ouverture, et à chaque changement
+  if (!etatRech.famInit) { etatRech.famInit = true; etatRech.fam = fam.id; }
   if (fam.filieres && !fam.filieres.includes(etatAnn.filiere)) etatAnn.filiere = fam.filieres[0];
   const fil = fam.filieres ? etatAnn.filiere : null;
   const epreuvesDe = c => Array.isArray(c.epreuves) ? c.epreuves : ((c.epreuves || {})[fil] || []);
@@ -4382,7 +4384,7 @@ function dateSujetAnn(s) {
   // la date réelle peut tomber l'année civile précédente (Nouvelle-Calédonie, novembre) : on garde l'ordre des sessions
   return an * 10000 + (+m[3] - an + 1) * 1300 + (MOIS_ANN.indexOf(m[2]) + 1) * 40 + (+m[1] || 0);
 }
-const rechVide = () => !etatRech.q.trim() && !etatRech.fam && !etatRech.conc && !etatRech.fil && !etatRech.de && !etatRech.a;
+const rechVide = () => !etatRech.q.trim() && etatRech.fam === (etatAnn.famille || '') && !etatRech.conc && !etatRech.fil && !etatRech.de && !etatRech.a;
 let indexAnn = null, chargementIndexAnn = null;
 // Sur le site publié, l'index est dans un fichier séparé (annales-index.json), chargé à la première visite.
 function chargerIndexAnnales() {
@@ -4627,7 +4629,7 @@ $('#rubrique').addEventListener('click', ev => {
   if (ev.target.closest('[data-rplus]')) { etatRech.montres += 12; majRechercheAnnales(); }
   const tr = ev.target.closest('[data-rtri]'); if (tr) { etatRech.tri = tr.dataset.rtri; etatRech.montres = 12; majRechercheAnnales(); return; }
   if (ev.target.closest('[data-reffacer]')) {
-    Object.assign(etatRech, { q: '', fam: '', conc: '', fil: '', de: '', a: '', tri: '', montres: 12 });
+    Object.assign(etatRech, { q: '', fam: etatAnn.famille || '', conc: '', fil: '', de: '', a: '', tri: '', montres: 12 });   // la catégorie revient à celle de la grille
     const z = $('#rech-ann'); if (z) { z.outerHTML = blocRechercheAnnales(); const i = $('#ann-q'); if (i) i.focus(); }
   }
 });
@@ -5654,7 +5656,10 @@ $('#rubrique').addEventListener('click', ev => {
   if (t.closest('[data-plus-exos]')) { etatExo.montres += 15; rafraichirRubrique(); return; }
   if (t.closest('[data-plus-themes]')) { etatExo.tousThemes = !etatExo.tousThemes; rafraichirRubrique(); return; }
   const ef = t.closest('[data-effacer]'); if (ef) { etatExo.noeud = ''; etatExo.feuille = ''; etatExo.ex = ''; if (location.hash === '#exercices') { ev.preventDefault(); rafraichirRubrique(); } return; }
-  const fa = t.closest('[data-famille]'); if (fa) { etatAnn.famille = fa.dataset.famille; etatAnn.cle = ''; rafraichirRubrique(); return; }
+  const fa = t.closest('[data-famille]'); if (fa) { etatAnn.famille = fa.dataset.famille; etatAnn.cle = '';
+    if (etatRech.fam !== etatAnn.famille) { const f = ((R.annales || {}).familles || []).find(x => x.id === etatAnn.famille) || {};
+      Object.assign(etatRech, { fam: etatAnn.famille, conc: '', montres: 12 }); if (!(f.filieres || []).includes(etatRech.fil)) etatRech.fil = ''; }
+    rafraichirRubrique(); return; }
   const va = t.closest('[data-vue-ann]'); if (va) { etatAnn.vue = va.dataset.vueAnn; rafraichirRubrique(); return; }
   if (t.closest('[data-aller-rech]')) { ev.preventDefault(); const z = $('#rech-ann'); if (z) z.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
   const aa = t.closest('[data-aller-an]'); if (aa) { const s2 = $('#la-' + aa.dataset.allerAn); if (s2) s2.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }

@@ -202,3 +202,11 @@ de l'algorithmique ; « Exponentielle et logarithme » principal quand exp ou ln
 secondaire comme outil ; dans les automatismes de Première, un thème passe en secondaire s'il porte au moins
 deux questions. Consignes et scripts (`CONSIGNE_lycee.md`, `valider_ly.py`, `fusion_ly.py`) : bloc-notes de
 la conversation ; une session nouvelle s'étiquette directement dans le vocabulaire du lycée.
+
+**Moteur réglé sur la catégorie de la grille (12 nov. 2026, demande de l'auteur).** À l'ouverture, le menu de
+catégorie du moteur est réglé sur celle de la grille (Écoles d'ingénieurs par défaut, `etatRech.famInit`) ;
+choisir une catégorie en haut de la grille y règle aussi le moteur (centre ou école remis à « tous »,
+filière gardée si elle existe dans la catégorie). Le menu du moteur reste libre ensuite ; « Effacer la
+recherche » le ramène à la catégorie de la grille, et ce réglage par défaut n'est pas compté comme un filtre
+pour l'affichage du bouton (`rechVide`). Il compte en revanche pour l'ordre des résultats : avec une
+catégorie choisie, ils vont du plus récent au plus ancien.
