@@ -1,4 +1,4 @@
-// Trouver l'erreur : Terminale, quinze raisonnements (MEMO_atlas_activites.md §145).
+// Trouver l'erreur : Terminale, vingt-quatre raisonnements (MEMO_atlas_activites.md §145 et §147).
 import { T, faux } from './raisonner-outils.js';
 const H = ` Si la ligne est fausse, c'est qu'une erreur a été commise plus haut.`;
 export default [
@@ -7,7 +7,7 @@ faux('infini-moins-infini', 'terminale', '', 't-01', 'Une limite nulle', T`« D�
   [T`De même, $n$ tend vers $+\infty$.`, T`C'est une limite de référence.`],
   [T`Par différence de limites, $n^2 - n$ tend vers $(+\infty) - (+\infty) = 0$.`] ],
   T`« $\infty - \infty$ » est une forme indéterminée : aucune règle ne donne la limite d'une différence de deux suites qui tendent vers $+\infty$, et $+\infty$ n'est pas un nombre que l'on retranche à lui-même. Il faut transformer l'expression : $n^2 - n = n(n - 1)$, produit de deux suites qui tendent vers $+\infty$, tend vers $+\infty$.`,
-  T`Les quatre formes indéterminées sont « $\infty - \infty$ », « $0 \times \infty$ », « $\dfrac{\infty}{\infty}$ » et « $\dfrac00$ ». Devant l'une d'elles, on factorise le terme dominant.`, T`Calculez $n^2 - n$ pour $n = 10$, puis pour $n = 100$.`),
+  T`Les quatre formes indéterminées des opérations usuelles sont « $\infty - \infty$ », « $0 \times \infty$ », « $\dfrac{\infty}{\infty}$ » et « $\dfrac00$ ». Devant l'une d'elles, on factorise le terme dominant.`, T`Calculez $n^2 - n$ pour $n = 10$, puis pour $n = 100$.`),
 faux('sans-initialisation', 'terminale', '', 't-01', 'Une récurrence sans départ', T`« Démontrons » par récurrence que, pour tout entier naturel $n$, le nombre $10^n + 1$ est divisible par 9.`, [
   [T`Notons $P(n)$ la propriété « $10^n + 1$ est divisible par 9 ». Soit $n$ un entier naturel tel que $P(n)$ soit vraie : $10^n + 1 = 9k$, avec $k$ entier.`, T`C'est l'hypothèse de récurrence, correctement posée : on suppose la propriété vraie à un rang $n$.`],
   [T`Alors $10^{n+1} + 1 = 10 \times (10^n + 1) - 9$.`, T`Le calcul est exact : $10 \times 10^n + 10 - 9 = 10^{n+1} + 1$.`],
@@ -68,8 +68,8 @@ faux('inflexion', 'terminale', '', 't-03', 'Un point d\'inflexion imaginaire', T
   [T`La fonction $f$ est deux fois dérivable sur $\mathbb{R}$ : $f'(x) = 4x^3$ et $f''(x) = 12x^2$.`, T`Les deux dérivées sont exactes.`],
   [T`En particulier, $f''(0) = 0$.`, T`C'est exact : $12 \times 0^2 = 0$.`],
   [T`La dérivée seconde s'annule en 0 : la courbe admet donc un point d'inflexion en 0.`] ],
-  T`Un point d'inflexion est un point où la courbe traverse sa tangente, c'est-à-dire où la convexité change : il faut que $f''$ s'annule <em>en changeant de signe</em>. Ici $f''(x) = 12x^2$ est positive des deux côtés de 0 : la fonction est convexe sur $\mathbb{R}$, et sa courbe reste au-dessus de sa tangente en 0, l'axe des abscisses.`,
-  T`$f''(a) = 0$ est nécessaire pour un point d'inflexion, mais ne suffit pas. On étudie le signe de $f''$ de part et d'autre de $a$.`, T`Quel est le signe de $f''(x)$ à gauche et à droite de 0 ?`),
+  T`Un point d'inflexion est un point où la courbe traverse sa tangente, c'est-à-dire où la convexité change : on s'assure que $f''$ s'annule <em>en changeant de signe</em>. Ici $f''(x) = 12x^2$ est positive des deux côtés de 0 : la fonction est convexe sur $\mathbb{R}$, et sa courbe reste au-dessus de sa tangente en 0, l'axe des abscisses.`,
+  T`Pour une fonction deux fois dérivable, $f''(a) = 0$ est nécessaire pour un point d'inflexion, mais ne suffit pas. On étudie le signe de $f''$ de part et d'autre de $a$.`, T`Quel est le signe de $f''(x)$ à gauche et à droite de 0 ?`),
 faux('double-compte', 'terminale', '', 't-07', 'Des mains comptées deux fois', T`On tire deux cartes ensemble dans un jeu de 32 cartes, qui contient 4 as. « Démontrons » qu'il y a 124 mains contenant au moins un as.`, [
   [T`Pour former une main contenant au moins un as, on choisit d'abord un as : il y a 4 choix.`, T`Il y a bien 4 façons de choisir un as. La phrase décrit un procédé de construction, qui n'est pas faux en lui-même.`],
   [T`On choisit ensuite la seconde carte parmi les 31 cartes restantes : il y a 31 choix.`, T`Il reste bien 31 cartes, et la seconde carte peut être n'importe laquelle d'entre elles.`],
@@ -93,7 +93,7 @@ faux('constante-ajoutee', 'terminale', '', 't-08', 'Une constante ajoutée trop 
   [T`La fonction $x \mapsto e^{2x}$ est solution de $y' = 2y$.`, T`C'est exact : sa dérivée est $x \mapsto 2e^{2x}$.`],
   [T`Elle vaut 1 en 0 ; pour obtenir la valeur 3, on lui ajoute la constante 2, ce qui donne encore une solution : $f(x) = e^{2x} + 2$.`],
   [T`On a bien $f(0) = 1 + 2 = 3$.`, T`Le calcul de $f(0)$ est exact.`],
-  [T`La solution cherchée est donc $f : x \mapsto e^{2x} + 2$.`, T`La fonction prend la bonne valeur en 0, et la ligne 2 affirme qu'elle est solution : le passage est correct.` + H] ],
+  [T`La solution cherchée est donc $f : x \mapsto e^{2x} + 2$.`, T`La fonction prend la bonne valeur en 0, et il a été affirmé plus haut qu'elle est solution : le passage est correct.` + H] ],
   T`Ajouter une constante conserve les <em>primitives</em>, pas les solutions de $y' = 2y$. Pour $f(x) = e^{2x} + 2$, on a $f'(x) = 2e^{2x}$, alors que $2f(x) = 2e^{2x} + 4$. Les solutions sont les fonctions $x \mapsto Ce^{2x}$ : la constante <em>multiplie</em>. La condition $f(0) = 3$ donne $C = 3$, d'où $f(x) = 3e^{2x}$.`,
   T`Les solutions de $y' = ay$ sont les $x \mapsto Ce^{ax}$. Une fois la fonction trouvée, on vérifie l'équation en dérivant, et pas seulement la condition initiale.`, T`Calculez $f'(x)$ et $2f(x)$ pour la fonction proposée.`),
 faux('compensation', 'terminale', '', 't-10', 'La pièce qui se rattrape', T`On lance une pièce équilibrée. Les cinq premiers lancers ont donné pile. « Démontrons » que face est plus probable que pile au sixième lancer.`, [
@@ -104,11 +104,11 @@ faux('compensation', 'terminale', '', 't-10', 'La pièce qui se rattrape', T`On 
   T`La loi des grands nombres porte sur les fréquences, pas sur les effectifs, et ne contredit jamais l'indépendance. Croire à la compensation, c'est « l'erreur du joueur ».`, T`Les lancers sont-ils indépendants ?`),
 // ---------- Ajouts du 12 nov. (audit des chapitres, §147) ----------
 faux('limite-supposee', 'terminale', '', 't-01', 'Une suite positive de limite négative', T`Soit $(u_n)$ la suite définie par $u_0 = 0$ et $u_{n+1} = 2u_n + 1$. « Démontrons » qu'elle converge vers $-1$.`, [
-  [T`Notons $\ell$ la limite de la suite $(u_n)$.`],
+  [T`La suite $(u_n)$ converge : notons $\ell$ sa limite, qui est un nombre réel.`],
   [T`La suite $(u_{n+1})$ a la même limite $\ell$ ; et, par opérations sur les limites, $2u_n + 1$ tend vers $2\ell + 1$.`, T`Si $(u_n)$ a pour limite le réel $\ell$, ces deux affirmations sont exactes : le passage est correct.` + H],
   [T`En passant à la limite dans $u_{n+1} = 2u_n + 1$ : $\ell = 2\ell + 1$, d'où $\ell = -1$.`, T`L'unicité de la limite donne bien $\ell = 2\ell + 1$, et la résolution est exacte : le passage est correct.` + H],
   [T`La suite $(u_n)$ converge donc vers $-1$.`, T`C'est la valeur obtenue pour $\ell$ : le passage est correct.` + H] ],
-  T`On a nommé la limite avant de savoir qu'elle existe. Ici la suite ne converge pas : ses termes sont $0, 1, 3, 7, 15, \dots$, c'est-à-dire $u_n = 2^n - 1$, qui tend vers $+\infty$. Le calcul montre seulement que <em>si</em> la suite convergeait, ce serait vers $-1$ ; comme tous ses termes sont positifs, c'est une preuve qu'elle ne converge pas.`,
+  T`On a affirmé que la suite converge, et nommé sa limite, sans rien démontrer. Or elle ne converge pas : ses termes sont $0, 1, 3, 7, 15, \dots$, c'est-à-dire $u_n = 2^n - 1$, qui tend vers $+\infty$. Le calcul montre seulement que <em>si</em> la suite convergeait, ce serait vers $-1$ ; comme tous ses termes sont positifs, c'est une preuve qu'elle ne converge pas.`,
   T`Avant de passer à la limite dans une relation de récurrence, on démontre que la suite converge, par exemple parce qu'elle est monotone et bornée.`, T`Calculez les cinq premiers termes de la suite.`),
 faux('composee-oubliee', 'terminale', '', 't-03', '2 = 1 avec une fonction composée', T`Soit $g(x) = e^{2x}$. « Démontrons » que $2 = 1$.`, [
   [T`On a $g(x) = e^x \times e^x$ : par la dérivée d'un produit, $g'(x) = e^x e^x + e^x e^x = 2e^{2x}$.`, T`La formule du produit est bien appliquée, et $e^x e^x = e^{2x}$.`],
@@ -127,7 +127,7 @@ faux('ln-quotient', 'terminale', '', 't-05', '0 = 1 avec un logarithme', T`« D�
 faux('aire-nulle', 'terminale', '', 't-06', 'Une aire nulle', T`« Démontrons » que l'aire du domaine compris entre la droite d'équation $y = x$, l'axe des abscisses et les droites d'équations $x = -1$ et $x = 1$ est nulle.`, [
   [T`Une primitive de $x \mapsto x$ est $x \mapsto \dfrac{x^2}{2}$ : donc $\displaystyle\int_{-1}^{1} x\,dx = \dfrac12 - \dfrac12 = 0$.`, T`Le calcul de l'intégrale est exact.`],
   [T`L'aire du domaine est égale à cette intégrale.`],
-  [T`L'aire du domaine est donc nulle.`, T`C'est la valeur calculée à la ligne 1, reportée d'après la ligne 2 : le passage est correct.` + H] ],
+  [T`L'aire du domaine est donc nulle.`, T`C'est la valeur calculée plus haut, interprétée comme il vient d'être dit : le passage est correct.` + H] ],
   T`L'intégrale n'est égale à l'aire que pour une fonction <em>positive</em>. Là où la fonction est négative, l'intégrale compte l'aire négativement : ici les deux triangles, d'aire $\dfrac12$ chacun, se compensent. L'aire du domaine est $\displaystyle\int_{-1}^{1} |x|\,dx = 1$.`,
   T`L'aire entre une courbe et l'axe des abscisses est l'intégrale de $|f|$. On découpe l'intervalle selon le signe de $f$.`, T`Dessinez le domaine : de quoi est-il formé ?`),
 faux('delegues', 'terminale', '', 't-07', 'Douze paires de délégués', T`« Démontrons » qu'il y a 12 façons de choisir deux délégués parmi quatre élèves.`, [
@@ -153,7 +153,7 @@ faux('normal-un-seul', 'terminale', '', 't-04', 'Un vecteur normal un peu vite',
 faux('derivee-cosinus', 'terminale', '', 't-09', 'Une constante dont la dérivée n\'est pas nulle', T`Soit $f(x) = \cos^2 x + \sin^2 x$. « Démontrons » que $2 = 0$.`, [
   [T`Pour tout réel $x$, $f(x) = 1$ : la fonction $f$ est constante, donc $f'(x) = 0$.`, T`C'est la relation fondamentale de la trigonométrie, et la dérivée d'une constante est nulle.`],
   [T`D'autre part, la dérivée de $\sin$ est $\cos$, et celle de $\cos$ est $\sin$.`],
-  [T`Donc $f'(x) = 2\cos x \sin x + 2\sin x \cos x = 4\sin x\cos x$.`, T`La dérivée de $u^2$ est $2u'u$ : avec les dérivées de la ligne 2, le calcul est bien mené. Le passage est correct.` + H],
+  [T`Donc $f'(x) = 2\cos x \sin x + 2\sin x \cos x = 4\sin x\cos x$.`, T`La dérivée de $u^2$ est $2u'u$ : avec les dérivées écrites plus haut, le calcul est bien mené. Le passage est correct.` + H],
   [T`Pour $x = \dfrac{\pi}{4}$ : $4 \times \dfrac{\sqrt2}{2} \times \dfrac{\sqrt2}{2} = 2$. Donc $2 = 0$.`, T`Les valeurs remarquables et le produit sont exacts : le passage est correct.` + H] ],
   T`La dérivée de $\cos$ est $-\sin$ : il y a un signe moins. Avec lui, $f'(x) = -2\cos x\sin x + 2\sin x\cos x = 0$, comme il se doit. Le signe se retrouve sur la courbe : juste après 0, le cosinus décroît, alors que le sinus y est positif.`,
   T`$\sin' = \cos$ et $\cos' = -\sin$. Dériver $\cos^2 + \sin^2$ est un bon moyen de contrôler les signes.`, T`Sur $[0, \pi]$, la fonction cosinus est-elle croissante ou décroissante ?`),

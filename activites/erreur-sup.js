@@ -1,4 +1,4 @@
-// Trouver l'erreur : Maths Sup, trente raisonnements classés par thème (MEMO_atlas_activites.md §145).
+// Trouver l'erreur : Maths Sup, cinquante raisonnements classés par thème (MEMO_atlas_activites.md §145 et §147).
 import { T, faux } from './raisonner-outils.js';
 const H = ` Si la ligne est fausse, c'est qu'une erreur a été commise plus haut.`;
 const F = 'fondements', A = 'algebre', L = 'lineaire', N = 'analyse', Pr = 'probabilites';
@@ -21,7 +21,7 @@ faux('image-intersection', 'sup', F, 'ma-02', 'L\'image d\'une intersection', T`
   [T`On a $f(A) = [0, 1]$ et $f(B) = [0, 1]$.`, T`C'est exact : le carré d'un réel de $[-1, 0]$ ou de $[0, 1]$ décrit $[0, 1]$.`],
   [T`On a $A \cap B = \{0\}$, donc $f(A \cap B) = \{0\}$.`, T`C'est exact : 0 est le seul réel commun aux deux segments, et $f(0) = 0$.`],
   [T`L'image d'une intersection est l'intersection des images : $f(A \cap B) = f(A) \cap f(B)$.`],
-  [T`Donc $\{0\} = [0, 1]$. En particulier, 1 appartient à $\{0\}$ : $1 = 0$.`, T`On a remplacé chaque membre par sa valeur, calculée aux lignes 1 et 2 : le passage est correct.` + H] ],
+  [T`Donc $\{0\} = [0, 1]$. En particulier, 1 appartient à $\{0\}$ : $1 = 0$.`, T`On a remplacé chaque membre par sa valeur, calculée plus haut : le passage est correct.` + H] ],
   T`Seule l'inclusion $f(A \cap B) \subset f(A) \cap f(B)$ est vraie en général. L'autre demande que $f$ soit injective : un élément de $f(A) \cap f(B)$ s'écrit $f(a) = f(b)$ avec $a \in A$ et $b \in B$, et rien ne dit que $a = b$. Ici $1 = f(-1) = f(1)$, avec $-1 \in A$ et $1 \in B$. Pour la réunion, en revanche, l'égalité $f(A \cup B) = f(A) \cup f(B)$ est toujours vraie.`,
   T`L'image directe se comporte bien avec la réunion, mal avec l'intersection. L'image <em>réciproque</em>, elle, respecte toutes les opérations ensemblistes.`, T`La fonction $f$ est-elle injective ?`),
 faux('reflexive', 'sup', F, 'ma-02', 'Symétrique et transitive, donc réflexive ?', T`« Démontrons » que toute relation $\sim$ symétrique et transitive sur un ensemble $E$ est réflexive.`, [
@@ -36,7 +36,7 @@ faux('pgcd-ppcm-trois', 'sup', A, 'ma-12', '4 = 8', T`« Démontrons » que $4 =
   [T`Pour deux entiers strictement positifs $a$ et $b$, on a $\operatorname{pgcd}(a, b) \times \operatorname{ppcm}(a, b) = ab$.`, T`C'est un résultat du cours, valable pour deux entiers.`],
   [T`Cette formule s'étend à trois entiers : $\operatorname{pgcd}(a, b, c) \times \operatorname{ppcm}(a, b, c) = abc$.`],
   [T`Pour $a = b = c = 2$, le PGCD vaut 2 et le PPCM vaut 2.`, T`C'est exact : 2 est à la fois le plus grand diviseur commun et le plus petit multiple commun.`],
-  [T`Donc $2 \times 2 = 2 \times 2 \times 2$, c'est-à-dire $4 = 8$.`, T`On a reporté ces valeurs dans la formule de la ligne 2 : le passage est correct.` + H] ],
+  [T`Donc $2 \times 2 = 2 \times 2 \times 2$, c'est-à-dire $4 = 8$.`, T`On a reporté ces valeurs dans la formule écrite plus haut : le passage est correct.` + H] ],
   T`La formule ne s'étend pas à trois entiers. Pour chaque nombre premier $p$, elle exprime que le plus petit et le plus grand de deux exposants ont pour somme la somme des deux exposants ; avec trois exposants, le minimum et le maximum laissent de côté celui du milieu.`,
   T`$\operatorname{pgcd}(a, b) \times \operatorname{ppcm}(a, b) = ab$ est propre à deux entiers. Avant de généraliser une formule, on la teste sur le cas le plus simple.`, T`D'où vient la formule pour deux entiers, en termes de décomposition en facteurs premiers ?`),
 faux('degre-somme', 'sup', A, 'ma-13', '0 = 1 avec des degrés', T`Soit $P = X + 1$ et $Q = -X$. « Démontrons » que $0 = 1$.`, [
@@ -69,7 +69,7 @@ faux('exp-complexe', 'sup', A, 'ma-04', '2π = 0', T`« Démontrons » que $2\pi
 faux('somme-triangulaire', 'sup', A, 'ma-03', '5 = 4 avec une somme double', T`On pose $S = \displaystyle\sum_{i=1}^{2}\,\sum_{j=1}^{i} i$. « Démontrons » que $5 = 4$.`, [
   [T`Calcul direct : pour $i = 1$, la somme intérieure a un terme, égal à 1 ; pour $i = 2$, elle a deux termes, égaux à 2. Donc $S = 1 + 2 + 2 = 5$.`, T`Le calcul est exact : l'indice $j$ ne sert qu'à compter les termes.`],
   [T`Les sommes étant finies, on peut les intervertir : $S = \displaystyle\sum_{j=1}^{2}\,\sum_{i=1}^{j} i$.`],
-  [T`Pour $j = 1$, la somme intérieure vaut 1 ; pour $j = 2$, elle vaut $1 + 2 = 3$. Donc $S = 4$.`, T`La somme écrite à la ligne 2 est bien calculée : le passage est correct.` + H],
+  [T`Pour $j = 1$, la somme intérieure vaut 1 ; pour $j = 2$, elle vaut $1 + 2 = 3$. Donc $S = 4$.`, T`La somme écrite plus haut est bien calculée : le passage est correct.` + H],
   [T`Donc $5 = 4$.`, T`Deux valeurs d'un même nombre sont égales : le passage est correct.` + H] ],
   T`On n'intervertit pas les symboles en gardant chacun ses bornes quand les bornes de l'un dépendent de l'indice de l'autre. Le domaine de sommation est le triangle $1 \leqslant j \leqslant i \leqslant 2$ : à $j$ fixé, c'est $i$ qui varie de $j$ à 2. La bonne interversion est $S = \displaystyle\sum_{j=1}^{2}\,\sum_{i=j}^{2} i = (1 + 2) + 2 = 5$.`,
   T`$\displaystyle\sum_{i=1}^{n}\sum_{j=1}^{i} a_{ij} = \sum_{j=1}^{n}\sum_{i=j}^{n} a_{ij}$. Pour une somme triangulaire, on écrit d'abord le domaine sous la forme $1 \leqslant j \leqslant i \leqslant n$.`, T`Quels sont les couples $(i, j)$ sur lesquels on somme ?`),
@@ -202,7 +202,7 @@ faux('esperance-produit', 'sup', Pr, 'ma-21', '1 = 0 avec une espérance', T`Soi
   [T`On a $E(X) = 1 \times \dfrac12 + (-1) \times \dfrac12 = 0$.`, T`Le calcul est exact.`],
   [T`La variable $X^2$ est constante égale à 1 : donc $E(X^2) = 1$.`, T`C'est exact : $1^2 = (-1)^2 = 1$.`],
   [T`L'espérance d'un produit est le produit des espérances : $E(X \times X) = E(X) \times E(X)$.`],
-  [T`Donc $1 = 0 \times 0 = 0$.`, T`On a remplacé chaque espérance par sa valeur, calculée aux lignes 1 et 2 : le passage est correct.` + H] ],
+  [T`Donc $1 = 0 \times 0 = 0$.`, T`On a remplacé chaque espérance par sa valeur, calculée plus haut : le passage est correct.` + H] ],
   T`La formule $E(XY) = E(X)\,E(Y)$ suppose $X$ et $Y$ <em>indépendantes</em>, et une variable non constante n'est jamais indépendante d'elle-même. L'écart $E(X^2) - E(X)^2$ est précisément la variance de $X$, qui vaut ici 1.`,
   T`L'espérance est toujours linéaire, $E(X + Y) = E(X) + E(Y)$ ; elle n'est multiplicative que pour des variables indépendantes.`, T`Les deux facteurs du produit sont-ils indépendants ?`),
 faux('variance-difference', 'sup', Pr, 'ma-21', 'Deux dés toujours égaux', T`On lance deux dés équilibrés indépendants, et l'on note $X$ et $Y$ leurs résultats. « Démontrons » que les deux dés donnent presque sûrement le même résultat.`, [
@@ -223,7 +223,7 @@ faux('image-reciproque', 'sup', F, 'ma-02', 'Image réciproque de l\'image', T`S
   [T`On a $f(A) = [0, 1]$.`, T`C'est exact : le carré d'un réel de $[0, 1]$ décrit $[0, 1]$.`],
   [T`On a $f^{-1}\bigl([0, 1]\bigr) = [-1, 1]$.`, T`C'est exact : $x^2 \in [0, 1]$ équivaut à $-1 \leqslant x \leqslant 1$.`],
   [T`Pour toute partie $A$ de l'ensemble de départ, $f^{-1}\bigl(f(A)\bigr) = A$.`],
-  [T`Donc $[-1, 1] = [0, 1]$ : en particulier $-1 \in [0, 1]$, et $-1 \geqslant 0$.`, T`On a remplacé chaque membre par sa valeur, calculée aux lignes 1 et 2 : le passage est correct.` + H] ],
+  [T`Donc $[-1, 1] = [0, 1]$ : en particulier $-1 \in [0, 1]$, et $-1 \geqslant 0$.`, T`On a remplacé chaque membre par sa valeur, calculée plus haut : le passage est correct.` + H] ],
   T`On a seulement l'inclusion $A \subset f^{-1}\bigl(f(A)\bigr)$ : l'image réciproque de $f(A)$ contient tous les éléments qui ont la même image qu'un élément de $A$. L'égalité a lieu pour toute partie $A$ si et seulement si $f$ est injective. De même, $f\bigl(f^{-1}(B)\bigr) \subset B$, avec égalité pour toute partie $B$ si et seulement si $f$ est surjective.`,
   T`$A \subset f^{-1}(f(A))$ et $f(f^{-1}(B)) \subset B$. La notation $f^{-1}(B)$ désigne une image réciproque, qui existe même quand $f$ n'est pas bijective.`, T`Quels sont tous les réels dont le carré est dans $[0, 1]$ ?`),
 faux('somme-produit', 'sup', F, 'ma-03', '5 = 9 avec des sommes', T`« Démontrons » que $5 = 9$.`, [
@@ -264,7 +264,7 @@ faux('supplementaire-unique', 'sup', L, 'ma-14', 'Le supplémentaire', T`Dans $\
   [T`Un sous-espace a un seul supplémentaire : donc $G_1 = G_2$.`],
   [T`Le vecteur $(0, 1)$ de $G_1$ appartient donc à $G_2$ : il existe $\lambda$ tel que $(0, 1) = (\lambda, \lambda)$, d'où $\lambda = 0$ et $\lambda = 1$, soit $0 = 1$.`, T`Les vecteurs de $G_2$ sont les $(\lambda, \lambda)$, et l'on identifie les coordonnées : le passage est correct.` + H] ],
   T`Un sous-espace a en général une infinité de supplémentaires : toute droite du plan autre que $F$ est un supplémentaire de $F$. C'est pourquoi l'on dit « un » supplémentaire et non « le » supplémentaire. Ce qui est unique, une fois le supplémentaire choisi, c'est la décomposition de chaque vecteur.`,
-  T`Le supplémentaire n'est pas le complémentaire, et il n'est pas unique. Dans un espace préhilbertien, un seul est privilégié : le supplémentaire orthogonal.`, T`Combien de droites du plan sont en somme directe avec $F$ ?`),
+  T`Le supplémentaire n'est pas le complémentaire, et il n'est pas unique. Dans un espace préhilbertien, un sous-espace de dimension finie en possède un qui est privilégié : son supplémentaire orthogonal.`, T`Combien de droites du plan sont en somme directe avec $F$ ?`),
 faux('non-nulle-inversible', 'sup', L, 'ma-16', 'Non nulle, donc inversible ?', T`Soit $A = \begin{pmatrix} 1 & 1 \\ 1 & 1 \end{pmatrix}$ et $X = \begin{pmatrix} 1 \\ -1 \end{pmatrix}$. « Démontrons » que $1 = 0$.`, [
   [T`On a $AX = \begin{pmatrix} 1 - 1 \\ 1 - 1 \end{pmatrix} = \begin{pmatrix} 0 \\ 0 \end{pmatrix}$.`, T`Le produit est bien calculé.`],
   [T`La matrice $A$ n'est pas nulle : elle est donc inversible.`],
@@ -276,14 +276,14 @@ faux('echange-lignes', 'sup', L, 'ma-17', '1 = −1 avec un déterminant', T`« 
   [T`On a $\det\begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix} = 1$.`, T`C'est exact : $1 \times 1 - 0 \times 0 = 1$.`],
   [T`En échangeant les deux lignes de cette matrice, on obtient $\begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}$, de déterminant $0 \times 0 - 1 \times 1 = -1$.`, T`L'échange et le calcul sont exacts.`],
   [T`Les opérations élémentaires sur les lignes ne changent pas le déterminant : les deux matrices ont le même déterminant.`],
-  [T`Donc $1 = -1$.`, T`On a comparé les deux déterminants calculés aux lignes 1 et 2 : le passage est correct.` + H] ],
+  [T`Donc $1 = -1$.`, T`On a comparé les deux déterminants calculés plus haut : le passage est correct.` + H] ],
   T`Seule l'une des trois opérations élémentaires conserve le déterminant : ajouter à une ligne un multiple d'une autre. Échanger deux lignes le multiplie par $-1$, et multiplier une ligne par $\lambda$ le multiplie par $\lambda$. Ce que toutes conservent, c'est le <em>rang</em>, et donc le caractère inversible.`,
   T`$L_i \leftarrow L_i + \lambda L_j$ : déterminant inchangé. $L_i \leftrightarrow L_j$ : déterminant changé de signe. $L_i \leftarrow \lambda L_i$ : déterminant multiplié par $\lambda$.`, T`Quelles opérations élémentaires laissent le déterminant inchangé ?`),
 faux('orthogonal-intersection', 'sup', L, 'ma-19', 'L\'orthogonal d\'une intersection', T`Dans $\mathbb{R}^2$ muni du produit scalaire usuel, soit $F$ la droite engendrée par $(1, 0)$ et $G$ la droite engendrée par $(0, 1)$. « Démontrons » que $\mathbb{R}^2 = \{0\}$.`, [
   [T`On a $F \cap G = \{0\}$, donc $(F \cap G)^\perp = \mathbb{R}^2$.`, T`C'est exact : tout vecteur est orthogonal au vecteur nul.`],
   [T`On a $F^\perp = G$ et $G^\perp = F$, donc $F^\perp \cap G^\perp = G \cap F = \{0\}$.`, T`C'est exact : les deux axes sont orthogonaux l'un à l'autre.`],
   [T`L'orthogonal d'une intersection est l'intersection des orthogonaux : $(F \cap G)^\perp = F^\perp \cap G^\perp$.`],
-  [T`Donc $\mathbb{R}^2 = \{0\}$.`, T`On a remplacé chaque membre par sa valeur, calculée aux lignes 1 et 2 : le passage est correct.` + H] ],
+  [T`Donc $\mathbb{R}^2 = \{0\}$.`, T`On a remplacé chaque membre par sa valeur, calculée plus haut : le passage est correct.` + H] ],
   T`Passer à l'orthogonal renverse les inclusions, et échange donc somme et intersection : $(F + G)^\perp = F^\perp \cap G^\perp$, et, en dimension finie, $(F \cap G)^\perp = F^\perp + G^\perp$. Ici $F^\perp + G^\perp = G + F = \mathbb{R}^2$, comme attendu.`,
   T`$(F + G)^\perp = F^\perp \cap G^\perp$ : être orthogonal à $F + G$, c'est être orthogonal à $F$ et à $G$. Plus un sous-espace est petit, plus son orthogonal est grand.`, T`Si $F$ rétrécit, que devient son orthogonal ?`),
 faux('superposition', 'sup', N, 'ma-06', 'Superposer avec un second membre', T`On considère l'équation différentielle $(E) : y' + y = 1$. « Démontrons » que $2 = 1$.`, [
@@ -296,7 +296,7 @@ faux('interversion-limites', 'sup', N, 'ma-08', 'Intervertir deux limites', T`«
   [T`Pour $n$ fixé, $x^n$ tend vers 1 quand $x$ tend vers 1 : donc $\displaystyle\lim_{n \to +\infty}\ \lim_{x \to 1^-} x^n = 1$.`, T`C'est exact : pour chaque $n$, la limite intérieure vaut 1, et la suite constante égale à 1 tend vers 1.`],
   [T`Pour $x$ fixé dans $[0, 1[$, $x^n$ tend vers 0 quand $n$ tend vers $+\infty$ : donc $\displaystyle\lim_{x \to 1^-}\ \lim_{n \to +\infty} x^n = 0$.`, T`C'est exact : pour chaque $x$ de $[0, 1[$, la limite intérieure vaut 0, et la fonction nulle tend vers 0.`],
   [T`On peut échanger l'ordre de deux passages à la limite : les deux nombres précédents sont égaux.`],
-  [T`Donc $1 = 0$.`, T`On a comparé les deux limites calculées aux lignes 1 et 2 : le passage est correct.` + H] ],
+  [T`Donc $1 = 0$.`, T`On a comparé les deux limites calculées plus haut : le passage est correct.` + H] ],
   T`Deux passages à la limite ne commutent pas en général : le résultat dépend de l'ordre. Ici, pour $n$ grand et $x$ proche de 1, $x^n$ peut être proche de n'importe quelle valeur entre 0 et 1, selon la vitesse à laquelle chacun des deux s'approche de sa limite. L'interversion demande des hypothèses supplémentaires, étudiées en deuxième année.`,
   T`$\displaystyle\lim_n \lim_x$ et $\displaystyle\lim_x \lim_n$ sont deux nombres différents a priori. Il en va de même pour une limite et une intégrale, ou une limite et une dérivée.`, T`Que vaut $x^n$ pour $x = 1 - \dfrac1n$ et $n$ grand ?`),
 faux('strictement-croissante', 'sup', N, 'ma-09', '0 > 0 avec une dérivée', T`Soit $f : x \mapsto x^3$. « Démontrons » que $0 > 0$.`, [
@@ -304,7 +304,7 @@ faux('strictement-croissante', 'sup', N, 'ma-09', '0 > 0 avec une dérivée', T`
   [T`Une fonction dérivable et strictement croissante sur un intervalle a une dérivée strictement positive en tout point : en particulier $f'(0) > 0$.`],
   [T`Or $f'(x) = 3x^2$, donc $f'(0) = 0$ : ainsi $0 > 0$.`, T`La dérivée est exacte : le passage est correct.` + H] ],
   T`L'implication vraie est la réciproque : si $f' > 0$ sur un intervalle, alors $f$ est strictement croissante. Une fonction strictement croissante peut avoir une dérivée nulle en certains points ; on sait seulement que $f' \geqslant 0$. Plus précisément, $f$ est strictement croissante si et seulement si $f' \geqslant 0$ et $f'$ ne s'annule sur aucun intervalle non réduit à un point.`,
-  T`$f' > 0 \Rightarrow f$ strictement croissante ; $f$ croissante $\iff f' \geqslant 0$. La stricte croissance n'interdit pas les tangentes horizontales isolées.`, T`Quelle est la tangente à la courbe de $f$ en 0 ?`),
+  T`Pour $f$ dérivable sur un intervalle : $f' > 0 \Rightarrow f$ strictement croissante ; $f$ croissante $\iff f' \geqslant 0$. La stricte croissance n'interdit pas les tangentes horizontales isolées.`, T`Quelle est la tangente à la courbe de $f$ en 0 ?`),
 faux('dl-produit', 'sup', N, 'ma-10', 'Un ordre de trop', T`« Démontrons » que $1 = 2$, par le développement limité de $e^{2x}$ en 0.`, [
   [T`Au voisinage de 0, $e^x = 1 + x + o(x)$.`, T`C'est le développement limité de l'exponentielle à l'ordre 1.`],
   [T`En élevant au carré : $e^{2x} = (1 + x)^2 + o(x^2) = 1 + 2x + x^2 + o(x^2)$.`],
@@ -316,7 +316,7 @@ faux('valeur-absolue-integrale', 'sup', N, 'ma-18', '1 = 0 avec une intégrale',
   [T`On a $\displaystyle\int_{-1}^{1} x\,dx = 0$.`, T`C'est exact : une primitive est $\dfrac{x^2}{2}$, qui prend la même valeur en $-1$ et en 1.`],
   [T`On a $\displaystyle\int_{-1}^{1} |x|\,dx = 1$.`, T`C'est exact : c'est l'aire de deux triangles d'aire $\dfrac12$.`],
   [T`L'intégrale de la valeur absolue est la valeur absolue de l'intégrale : $\displaystyle\int_{-1}^{1} |x|\,dx = \left|\int_{-1}^{1} x\,dx\right|$.`],
-  [T`Donc $1 = |0| = 0$.`, T`On a remplacé chaque intégrale par sa valeur, calculée aux lignes 1 et 2 : le passage est correct.` + H] ],
+  [T`Donc $1 = |0| = 0$.`, T`On a remplacé chaque intégrale par sa valeur, calculée plus haut : le passage est correct.` + H] ],
   T`On dispose seulement de l'inégalité $\left|\displaystyle\int_a^b f\right| \leqslant \displaystyle\int_a^b |f|$, pour $a \leqslant b$ : c'est l'inégalité triangulaire, étendue des sommes aux intégrales. Il y a égalité quand $f$ garde un signe constant ; sinon, les parties positive et négative se compensent dans le membre de gauche, pas dans celui de droite.`,
   T`$\left|\displaystyle\int_a^b f\right| \leqslant \displaystyle\int_a^b |f|$ pour $a \leqslant b$. La valeur absolue ne « traverse » ni les sommes ni les intégrales.`, T`Quel est le signe de $x$ sur $[-1, 0]$ et sur $[0, 1]$ ?`),
 faux('produit-series', 'sup', N, 'ma-20', '3 = 1 avec des séries', T`« Démontrons » que $3 = 1$.`, [
@@ -337,7 +337,7 @@ faux('conditionnelles-somme', 'sup', Pr, 'ma-21', 'Deux conditionnelles de somme
   [T`On a $P_B(A) = \dfrac13$ : parmi les trois résultats pairs, un seul est 6.`, T`C'est exact.`],
   [T`On a $P_{\overline B}(A) = 0$ : aucun résultat impair n'est 6.`, T`C'est exact.`],
   [T`Les événements $B$ et $\overline B$ sont contraires : donc $P_B(A) + P_{\overline B}(A) = 1$.`],
-  [T`Ainsi $\dfrac13 + 0 = 1$, c'est-à-dire $\dfrac13 = 1$.`, T`On a remplacé chaque probabilité par sa valeur, calculée aux lignes 1 et 2 : le passage est correct.` + H] ],
+  [T`Ainsi $\dfrac13 + 0 = 1$, c'est-à-dire $\dfrac13 = 1$.`, T`On a remplacé chaque probabilité par sa valeur, calculée plus haut : le passage est correct.` + H] ],
   T`La formule vraie porte sur l'événement dont on calcule la probabilité, pas sur celui qui conditionne : $P_B(A) + P_B(\overline A) = 1$, parce que $P_B$ est une probabilité. Les nombres $P_B(A)$ et $P_{\overline B}(A)$ sont calculés avec deux probabilités différentes, et leur somme n'a pas de signification ; ce qui les relie, c'est la formule des probabilités totales, où chacun est pondéré.`,
   T`À $B$ fixé, $A \mapsto P_B(A)$ est une probabilité. À $A$ fixé, $B \mapsto P_B(A)$ n'en est pas une.`, T`Sur un arbre pondéré, quelles branches ont des probabilités de somme 1 ?`),
 faux('anagrammes-repetees', 'sup', Pr, 'ma-21', 'Six anagrammes pour trois lettres', T`« Démontrons » que le mot ANA possède 6 anagrammes, alors qu'on n'en trouve que 3 : ANA, AAN et NAA.`, [

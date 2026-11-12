@@ -1289,5 +1289,49 @@ inférieure est négative, carrés repérables au chiffre des unités.
 1280 px : 107 implications, 81 contre-exemples, séries de toutes les familles des quatre classes, parcours
 de la classe expertes suivi étape par étape, aucune erreur de page, aucun débordement.
 
+### 153. « Remettre en ordre » et « Trouver l'erreur » relus par deux agents indépendants (12 nov. 2026)
+
+Demande de l'auteur. Deux agents, en lecture seule, un par activité ; les quatre activités de « Raisonner » et
+« Dix calculs » ont donc toutes reçu une relecture indépendante (§152 pour les trois autres).
+
+**Remettre en ordre (153 pièces relues).** Aucune démonstration fausse dans l'ordre écrit. Corrigé :
+- `premiers` (pièce d'origine) : l'intrus « donc N est premier » était une déduction valide sous l'hypothèse
+  absurde ; remplacé par « le produit de nombres premiers augmenté de 1 est toujours premier », réfuté par
+  30 031 = 59 × 509 ;
+- trois réfutations inexactes : `tangente` (p = f(a) aussi quand f′(a) = 0), `bayes` (égalité aussi quand
+  P(A ∩ B) = 0), `poignees` ;
+- `inverse-unique` : intrus dont l'égalité écrite était vraie, remplacé par la simplification par une matrice
+  non nulle ;
+- dépendances ajoutées pour interdire des ordres mal lisibles : `comparaison-series`, `bijective-reciproque`,
+  `racine-facteur`, `lagrange`, `projecteur` (le format compact n'a pas de `blocs` : on y supplée par une
+  dépendance entre les deux parties) ;
+- `decomposition-unicite` (s ≥ 2), `dl-unicite` (cas p = 0), `projete-proche` (M dans le plan),
+  `integrale-primitive` (énoncé restreint à f continue positive, théorème de l'aire cité), `loi-faible` (suite
+  de variables), `aire-primitive` (extrémités), `bornes-atteintes` (⋆ : choix dénombrable signalé).
+Laissé en l'état : intrus vrais dans un cas dégénéré non signalé (`k-succes` et `binome-denombrement` pour
+k ≤ 1, `binome-recurrence` pour n = 0, `fermat` pour p = 2, `concentration` et `loi-faible-sup` pour n = 1,
+`somme-entiers` pour n = 2) ; lettre P à double emploi dans `markov-transition` ; continuité d'une fonction
+dérivable admise sans le dire dans `derivee-produit`.
+
+**Trouver l'erreur (122 pièces relues).** Aucune ligne fautive mal placée. Corrigé :
+- `extremum-cube` : la ligne 4 contenait une seconde faute indépendante (« croissante, donc minimum ») ;
+  réécrite avec x³ > 0 pour x > 0 ;
+- `ordre-complexes` : « ordre <em>total</em> » compatible (un ordre partiel compatible existe) ;
+- `limite-supposee` : la ligne fautive affirme maintenant la convergence (la suite a bien une limite, +∞) ;
+- `suite-fonction` : inégalités larges, la stricte n'étant pas justifiée ; `derivee` : justification de la
+  ligne 4 ;
+- une vingtaine de justifications de lignes postérieures à la faute citaient le numéro de la ligne fautive ou
+  « les lignes 1 et 2 » : remplacées par « plus haut » ;
+- phrases « à retenir » précisées : `inflexion`, `test-medical`, `racine-carree`, `infini-moins-infini`,
+  `supplementaire-unique`, `strictement-croissante`.
+Laissé en l'état : les renvois à « la ligne précédente » quand celle-ci est la fautive ; la parenthèse de
+`rearrangement` sur le programme (à vérifier sur le texte officiel).
+
+**Leçon de méthode.** Ne jamais écrire `open(f, 'w').write(patch(f))` : le fichier est vidé avant d'être lu
+(arrivé une fois, réparé par `git checkout`). Calculer d'abord, écrire ensuite.
+
+**Contrôles.** `outils/activites_raisonner.mjs` : « Aucun problème », ordres multiples relus. Navigateur : 153
+démonstrations (sombre 375 px, clair 1280 px) et 122 erreurs affichées, aucune formule en erreur.
+
 Explorations : vingt-huit. Jeux et casse-têtes : seize. Calcul mental : deux activités. Raisonner : quatre.
 Parcours du jour : une.

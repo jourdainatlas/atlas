@@ -95,7 +95,7 @@ demo('inverse-unique', 'expertes', '', 'me-03', 'Unicité de l\'inverse d\'une m
   [T`Comme $I$ est neutre pour le produit, $B = BI = B(AC)$.`, 'a', T`l'écriture $B = B(AC)$`],
   [T`Le produit matriciel étant associatif, $B(AC) = (BA)C = IC = C$.`, 'b', T`le calcul $B(AC) = C$`],
   [T`Donc $B = C$ : l'inverse, quand elle existe, est unique.`, 'c'] ], [
-  [T`Le produit matriciel étant commutatif, $B(AC) = (AC)B = B$.`, T`Le produit de deux matrices n'est pas commutatif en général. La propriété utilisée ici est l'associativité, qui permet de déplacer les parenthèses sans changer l'ordre des facteurs.`],
+  [T`Comme $AB = AC$ et que $A$ n'est pas la matrice nulle, on peut simplifier par $A$ : $B = C$.`, T`On ne simplifie pas par une matrice non nulle quelconque : avec $A = \begin{pmatrix} 1 & 0 \\ 0 & 0 \end{pmatrix}$ et $B = \begin{pmatrix} 0 & 0 \\ 0 & 1 \end{pmatrix}$, on a $AB = A \times 0$ sans que $B$ soit nulle. Ce qui permet de simplifier, c'est de multiplier à gauche par une inverse de $A$, et c'est exactement ce que fait la démonstration.`],
   [T`Comme $I$ est neutre pour le produit, $B = BI = BA$.`, T`On a $BA = I$, et non $BA = B$. Pour faire apparaître $C$, on remplace $I$ par $AC$.`] ]),
 demo('inverse-2x2', 'expertes', '', 'me-03', 'Inverse d\'une matrice d\'ordre 2', T`Soit $A = \begin{pmatrix} a & b \\ c & d \end{pmatrix}$. Si $ad - bc \neq 0$, alors $A$ est inversible, et $A^{-1} = \dfrac{1}{ad - bc}\begin{pmatrix} d & -b \\ -c & a \end{pmatrix}$.`, [
   [T`Posons $B = \begin{pmatrix} d & -b \\ -c & a \end{pmatrix}$ et $\delta = ad - bc$.`, '', T`la matrice $B$ et le réel $\delta$`],
@@ -111,7 +111,7 @@ demo('poignees', 'expertes', '', 'me-06', 'Somme des degrés d\'un graphe', T`Da
   [T`En regroupant par arête : chaque arête a exactement deux extrémités, donc figure dans deux couples. S'il y a $m$ arêtes, le nombre de couples est $2m$.`, 'a', T`le décompte par arête`],
   [T`Les deux décomptes portent sur le même ensemble : la somme des degrés vaut $2m$.`, 'bc'] ], [
   [T`En regroupant par arête : chaque arête figure dans un seul couple. S'il y a $m$ arêtes, le nombre de couples est $m$.`, T`Une arête relie deux sommets : elle figure dans un couple avec chacune de ses deux extrémités. C'est ce facteur 2 qui fait que la somme des degrés est toujours paire.`],
-  [T`Chaque sommet est relié à tous les autres : si le graphe a $n$ sommets, la somme des degrés vaut $n(n - 1)$.`, T`Ce n'est vrai que pour un graphe complet. Dans un graphe quelconque, les degrés sont différents d'un sommet à l'autre, et l'on ne peut que les additionner.`] ]),
+  [T`Chaque sommet est relié à tous les autres : si le graphe a $n$ sommets, la somme des degrés vaut $n(n - 1)$.`, T`Ce n'est vrai que pour un graphe complet. Dans un graphe quelconque, les degrés varient en général d'un sommet à l'autre et ne valent pas tous $n - 1$ : on ne peut que les additionner.`] ]),
 // ---------- Ajouts du 12 nov. (audit des programmes, §146) ----------
 demo('zn-an', 'expertes', '', 'me-02', 'Factorisation de zⁿ − aⁿ', T`Pour tous nombres complexes $z$ et $a$ et tout entier $n \geqslant 1$ : $z^n - a^n = (z - a)\bigl(z^{n-1} + a z^{n-2} + \dots + a^{n-2} z + a^{n-1}\bigr)$.`, [
   [T`Notons $S = z^{n-1} + a z^{n-2} + \dots + a^{n-2} z + a^{n-1}$.`, '', T`la somme $S$`],
@@ -192,7 +192,7 @@ demo('division-existence', 'expertes', '', 'me-01', 'Existence de la division eu
   [T`Par définition de $q$ : $bq \leqslant a$, et $b(q + 1) > a$.`, 'a', T`l'encadrement $bq \leqslant a < b(q + 1)$`],
   [T`Posons $r = a - bq$. En retranchant $bq$ dans l'encadrement précédent : $0 \leqslant r < b$.`, 'b', T`l'entier $r$ et son encadrement`],
   [T`On a donc $a = bq + r$, avec $0 \leqslant r < b$.`, 'c'] ], [
-  [T`Cet ensemble a un plus petit élément $q$, et l'on pose $r = a - bq$.`, T`Le plus petit élément de cet ensemble est 0 : on obtiendrait $q = 0$ et $r = a$, qui peut dépasser $b$. C'est le plus <em>grand</em> multiple de $b$ inférieur à $a$ qu'il faut retrancher.`],
+  [T`Cet ensemble a un plus petit élément $q$, et l'on pose $r = a - bq$.`, T`Le plus petit élément de cet ensemble est 0 : on obtiendrait $q = 0$ et $r = a$, qui peut dépasser $b$. C'est le plus <em>grand</em> multiple de $b$ inférieur ou égal à $a$ qu'il faut retrancher.`],
   [T`Comme $bq \leqslant a$, l'entier $r = a - bq$ vérifie $r < b$.`, T`L'inégalité $bq \leqslant a$ donne seulement $r \geqslant 0$. La majoration $r < b$ vient de l'autre inégalité, $a < b(q + 1)$, c'est-à-dire du fait que $q$ est le plus grand possible.`] ]),
 demo('decomposition-existence', 'expertes', '', 'me-01', 'Existence de la décomposition en facteurs premiers', T`Tout entier $n \geqslant 2$ est un produit de nombres premiers (éventuellement réduit à un seul facteur).`, [
   [T`Raisonnons par l'absurde : supposons qu'il existe des entiers supérieurs ou égaux à 2 qui ne sont pas des produits de nombres premiers, et soit $n$ le plus petit d'entre eux.`, '', T`l'entier $n$, plus petit contre-exemple`],

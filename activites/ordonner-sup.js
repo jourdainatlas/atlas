@@ -1,4 +1,4 @@
-// Démonstrations à remettre en ordre : Maths Sup, trente pièces classées par thème (MEMO_atlas_activites.md §145).
+// Démonstrations à remettre en ordre : Maths Sup, soixante-huit pièces classées par thème (MEMO_atlas_activites.md §145 et §146).
 import { T, demo } from './raisonner-outils.js';
 const F = 'fondements', A = 'algebre', L = 'lineaire', N = 'analyse', Pr = 'probabilites';
 export default [
@@ -59,7 +59,7 @@ demo('racine-facteur', 'sup', A, 'ma-13', 'Racine et factorisation', T`Soit $P \
   [T`Effectuons la division euclidienne de $P$ par $X - a$ : $P = (X - a)Q + R$, avec $\deg R < 1$. Le reste $R$ est donc un polynôme constant, égal à un scalaire $c$.`, '', T`la division euclidienne $P = (X - a)Q + c$`],
   [T`En évaluant en $a$ : $P(a) = (a - a)Q(a) + c = c$.`, 'a', T`l'égalité $P(a) = c$`],
   [T`Sens direct : si $a$ est racine de $P$, alors $c = P(a) = 0$, donc $P = (X - a)Q$ : le polynôme $X - a$ divise $P$.`, 'b', T`le sens direct`],
-  [T`Sens réciproque : si $X - a$ divise $P$, alors $P = (X - a)S$ pour un polynôme $S$, et $P(a) = 0 \times S(a) = 0$.`, ''] ], [
+  [T`Sens réciproque : si $X - a$ divise $P$, alors $P = (X - a)S$ pour un polynôme $S$, et $P(a) = 0 \times S(a) = 0$.`, 'c'] ], [
   [T`Comme $\deg R < 1$, le reste $R$ est le polynôme nul.`, T`Un polynôme de degré strictement inférieur à 1 est un polynôme <em>constant</em>, éventuellement non nul : la constante 3 est de degré 0. C'est la valeur $P(a)$ qui décide si cette constante est nulle.`],
   [T`En évaluant en $a$ : $P(a) = Q(a)$.`, T`Le facteur $(X - a)$ s'annule en $a$ : le terme $(X - a)Q$ disparaît tout entier, et il reste la constante $c$.`] ]),
 demo('nombre-racines', 'sup', A, 'ma-13', 'Nombre de racines d\'un polynôme', T`Un polynôme non nul de degré $n$, à coefficients dans un corps $\mathbb{K}$, possède au plus $n$ racines distinctes dans $\mathbb{K}$.`, [
@@ -91,7 +91,7 @@ demo('image-libre', 'sup', L, 'ma-14', 'Image d\'une famille libre par une injec
   [T`Par linéarité, cette égalité s'écrit $u(\lambda_1 e_1 + \dots + \lambda_n e_n) = 0_F$.`, 'a', T`l'égalité $u(\lambda_1 e_1 + \dots + \lambda_n e_n) = 0_F$`],
   [T`Comme $u$ est injective, son noyau est réduit à $0_E$ : donc $\lambda_1 e_1 + \dots + \lambda_n e_n = 0_E$.`, 'b', T`l'égalité $\lambda_1 e_1 + \dots + \lambda_n e_n = 0_E$`],
   [T`La famille $(e_1, \dots, e_n)$ étant libre, tous les $\lambda_i$ sont nuls : la famille des images est libre.`, 'c'] ], [
-  [T`De $\lambda_1 u(e_1) + \dots + \lambda_n u(e_n) = 0_F$, on déduit que $u(e_i) = 0_F$ pour tout $i$.`, T`Une somme nulle n'a pas tous ses termes nuls, et un terme $\lambda_i u(e_i)$ nul ne donnerait pas $u(e_i) = 0_F$. Ce sont les coefficients $\lambda_i$ dont on veut montrer la nullité.`],
+  [T`De $\lambda_1 u(e_1) + \dots + \lambda_n u(e_n) = 0_F$, on déduit que $u(e_i) = 0_F$ pour tout $i$.`, T`Une somme nulle n'a pas nécessairement tous ses termes nuls, et un terme $\lambda_i u(e_i)$ nul ne donnerait pas $u(e_i) = 0_F$. Ce sont les coefficients $\lambda_i$ dont on veut montrer la nullité.`],
   [T`Ce résultat vaut pour toute application linéaire, injective ou non.`, T`C'est faux : l'application nulle envoie toute famille libre sur une famille de vecteurs nuls, qui est liée. L'injectivité est utilisée pour passer de $u(v) = 0_F$ à $v = 0_E$.`] ]),
 demo('rang', 'sup', L, 'ma-15', 'Théorème du rang', T`Soit $E$ un espace vectoriel de dimension finie $n$ et $u : E \to F$ une application linéaire. Alors $\dim \operatorname{Ker} u + \operatorname{rg} u = n$.`, [
   [T`Soit $(e_1, \dots, e_p)$ une base de $\operatorname{Ker} u$. D'après le théorème de la base incomplète, on la complète en une base $(e_1, \dots, e_n)$ de $E$.`, '', T`une base de $E$ dont les $p$ premiers vecteurs forment une base du noyau`],
@@ -183,7 +183,7 @@ demo('serie-geometrique', 'sup', N, 'ma-20', 'Somme d\'une série géométrique'
   [T`La formule $\dfrac{1}{1 - q}$ donne donc la somme de la série pour tout $q \neq 1$ : par exemple $1 + 2 + 4 + 8 + \dots = -1$.`, T`Pour $|q| \geqslant 1$, le terme général ne tend pas vers 0 et la série diverge : elle n'a pas de somme. La formule n'a de sens que là où la série converge.`] ]),
 demo('comparaison-series', 'sup', N, 'ma-20', 'Comparaison de séries à termes positifs', T`Soit $(u_n)$ et $(v_n)$ deux suites telles que $0 \leqslant u_n \leqslant v_n$ pour tout $n$. Si la série $\sum v_n$ converge, alors la série $\sum u_n$ converge.`, [
   [T`Notons $U_n$ et $V_n$ les sommes partielles des deux séries. En additionnant les inégalités, $U_n \leqslant V_n$ pour tout $n$.`, '', T`l'inégalité $U_n \leqslant V_n$ entre les sommes partielles`],
-  [T`La suite $(V_n)$ est croissante, car $v_n \geqslant 0$, et elle converge vers la somme $V$ de la série : donc $V_n \leqslant V$ pour tout $n$.`, '', T`la majoration $V_n \leqslant V$`],
+  [T`La suite $(V_n)$ est croissante, car $v_n \geqslant 0$, et elle converge vers la somme $V$ de la série : donc $V_n \leqslant V$ pour tout $n$.`, 'a', T`la majoration $V_n \leqslant V$`],
   [T`La suite $(U_n)$ est croissante, car $u_n \geqslant 0$, et majorée par $V$ d'après ce qui précède.`, 'ab', T`le fait que $(U_n)$ est croissante et majorée`],
   [T`D'après le théorème de la limite monotone, la suite $(U_n)$ converge : la série $\sum u_n$ converge.`, 'c'] ], [
   [T`La suite $(U_n)$ est majorée par $V$. Or toute suite majorée converge : la série $\sum u_n$ converge.`, T`Une suite majorée ne converge pas forcément : $(-1)^n$ est majorée et diverge. C'est la croissance de $(U_n)$, due à la positivité des $u_n$, qui permet d'invoquer la limite monotone.`],
@@ -251,7 +251,7 @@ demo('egalite-triangulaire', 'sup', F, 'ma-04', 'Cas d\'égalité de l\'inégali
   [T`L'égalité $|z + z'| = |z| + |z'|$ n'a lieu que si $z = z'$.`, T`Elle a lieu dès que les points images sont sur une même demi-droite issue de l'origine : $|1 + 2| = |1| + |2|$.`] ]),
 demo('bijective-reciproque', 'sup', F, 'ma-02', 'Une application qui a une réciproque est bijective', T`Soit $f : E \to F$ une application. S'il existe $g : F \to E$ telle que $g \circ f = \mathrm{id}_E$ et $f \circ g = \mathrm{id}_F$, alors $f$ est bijective.`, [
   [T`Injectivité : soit $x$ et $x'$ dans $E$ tels que $f(x) = f(x')$. En appliquant $g$ : $g\bigl(f(x)\bigr) = g\bigl(f(x')\bigr)$, c'est-à-dire $x = x'$, puisque $g \circ f = \mathrm{id}_E$.`, '', T`l'injectivité de $f$`],
-  [T`Surjectivité : soit $y$ un élément de $F$, et posons $x = g(y)$, qui est un élément de $E$.`, '', T`l'élément $x = g(y)$`],
+  [T`Surjectivité : soit $y$ un élément de $F$, et posons $x = g(y)$, qui est un élément de $E$.`, 'a', T`l'élément $x = g(y)$`],
   [T`Alors $f(x) = f\bigl(g(y)\bigr) = y$, puisque $f \circ g = \mathrm{id}_F$ : tout élément de $F$ a un antécédent par $f$.`, 'b', T`la surjectivité de $f$`],
   [T`L'application $f$ est injective et surjective : elle est bijective.`, 'ac'] ], [
   [T`Comme $g \circ f = \mathrm{id}_E$, l'application $f$ est surjective.`, T`L'égalité $g \circ f = \mathrm{id}_E$ donne l'injectivité de $f$, pas sa surjectivité : avec $f : \{0\} \to \{0, 1\}$, $f(0) = 0$, et $g$ constante égale à 0, on a $g \circ f = \mathrm{id}$ et $f$ n'est pas surjective. C'est $f \circ g = \mathrm{id}_F$ qui fournit les antécédents.`],
@@ -299,7 +299,7 @@ demo('decomposition-unicite', 'sup', A, 'ma-12', 'Unicité de la décomposition 
   [T`Initialisation : si $p_1 = q_1 \cdots q_s$, alors $q_1$ divise le nombre premier $p_1$, donc $q_1 = p_1$ ; en simplifiant, le produit des autres $q_j$ vaut 1, ce qui impose $s = 1$. Donc $H(1)$ est vraie.`, 'a', T`l'initialisation`],
   [T`Hérédité : soit $r \geqslant 1$ tel que $H(r)$ soit vraie, et supposons $p_1 \cdots p_{r+1} = q_1 \cdots q_s$. Le nombre premier $p_{r+1}$ divise le produit $q_1 \cdots q_s$ : d'après le lemme d'Euclide, il divise l'un des $q_j$, que l'on peut supposer être $q_s$ en changeant l'ordre.`, 'a', T`le fait que $p_{r+1}$ divise $q_s$`],
   [T`Comme $q_s$ est premier et que $p_{r+1} \geqslant 2$ le divise, $p_{r+1} = q_s$.`, 'c', T`l'égalité $p_{r+1} = q_s$`],
-  [T`En simplifiant par ce facteur : $p_1 \cdots p_r = q_1 \cdots q_{s-1}$. D'après $H(r)$, $s - 1 = r$ et les facteurs sont les mêmes à l'ordre près : $H(r+1)$ est vraie.`, 'd', T`l'hérédité`],
+  [T`En simplifiant par ce facteur : $p_1 \cdots p_r = q_1 \cdots q_{s-1}$ ; le membre de gauche étant au moins égal à 2, on a $s \geqslant 2$. D'après $H(r)$, $s - 1 = r$ et les facteurs sont les mêmes à l'ordre près : $H(r+1)$ est vraie.`, 'd', T`l'hérédité`],
   [T`Par le principe de récurrence, $H(r)$ est vraie pour tout entier $r \geqslant 1$.`, 'be'] ], [
   [T`Le nombre premier $p_{r+1}$ divise le produit $q_1 \cdots q_s$ : il divise donc chacun des $q_j$.`, T`Le lemme d'Euclide dit qu'un nombre premier qui divise un produit divise <em>l'un</em> des facteurs, pas tous : 3 divise $2 \times 3$ sans diviser 2.`],
   [T`Comme $p_{r+1}$ divise $q_s$, le nombre $q_s$ n'est pas premier : contradiction.`, T`Un nombre premier est divisible par 1 et par lui-même. Qu'un nombre premier $p_{r+1}$ divise $q_s$ n'a rien de contradictoire : cela impose seulement $p_{r+1} = q_s$.`] ]),
@@ -321,7 +321,7 @@ demo('racine-multiple', 'sup', A, 'ma-13', 'Racine multiple et dérivée', T`Soi
 demo('lagrange', 'sup', A, 'ma-13', 'Polynôme d\'interpolation de Lagrange', T`Soit $x_0, \dots, x_n$ des scalaires deux à deux distincts et $y_0, \dots, y_n$ des scalaires quelconques. Il existe un unique polynôme $P$ de degré au plus $n$ tel que $P(x_i) = y_i$ pour tout $i$.`, [
   [T`Unicité : si $P$ et $Q$ conviennent, le polynôme $P - Q$ est de degré au plus $n$ et s'annule aux $n + 1$ points distincts $x_0, \dots, x_n$.`, '', T`le polynôme $P - Q$, qui a $n + 1$ racines`],
   [T`Un polynôme non nul de degré au plus $n$ a au plus $n$ racines : le polynôme $P - Q$, qui en a $n + 1$, est donc nul, et $P = Q$.`, 'a', T`l'unicité`],
-  [T`Existence : pour chaque $i$, posons $L_i = \displaystyle\prod_{j \neq i} \frac{X - x_j}{x_i - x_j}$. C'est un polynôme de degré $n$, qui vaut 1 en $x_i$ et 0 en $x_j$ pour $j \neq i$.`, '', T`les polynômes $L_i$`],
+  [T`Existence : pour chaque $i$, posons $L_i = \displaystyle\prod_{j \neq i} \frac{X - x_j}{x_i - x_j}$. C'est un polynôme de degré $n$, qui vaut 1 en $x_i$ et 0 en $x_j$ pour $j \neq i$.`, 'b', T`les polynômes $L_i$`],
   [T`Le polynôme $P = \displaystyle\sum_{i=0}^{n} y_i L_i$ est de degré au plus $n$, et $P(x_j) = y_j$ pour tout $j$ : il convient.`, 'c'] ], [
   [T`Le polynôme $P - Q$ s'annule en $n + 1$ points : il est donc de degré $n + 1$.`, T`Différence de deux polynômes de degré au plus $n$, il est de degré au plus $n$. Avoir plus de racines que son degré ne le permet l'oblige à être le polynôme nul.`],
   [T`Pour chaque $i$, posons $L_i = \displaystyle\prod_{j \neq i} (X - x_j)$ : ce polynôme vaut 1 en $x_i$.`, T`Ce produit s'annule bien aux $x_j$ pour $j \neq i$, mais en $x_i$ il vaut $\displaystyle\prod_{j \neq i}(x_i - x_j)$, qui n'est pas 1 en général. Il faut diviser par ce nombre, non nul parce que les $x_j$ sont distincts.`] ]),
@@ -343,7 +343,7 @@ demo('injectif-surjectif', 'sup', L, 'ma-15', 'Injectif, surjectif, bijectif en 
 demo('projecteur', 'sup', L, 'ma-14', 'Noyau et image d\'un projecteur', T`Soit $p$ un endomorphisme d'un espace vectoriel $E$ tel que $p \circ p = p$. Alors $E = \operatorname{Ker} p \oplus \operatorname{Im} p$.`, [
   [T`Soit $x \in E$. Écrivons $x = \bigl(x - p(x)\bigr) + p(x)$.`, '', T`la décomposition $x = (x - p(x)) + p(x)$`],
   [T`On a $p\bigl(x - p(x)\bigr) = p(x) - p\bigl(p(x)\bigr) = 0_E$ : le vecteur $x - p(x)$ est dans $\operatorname{Ker} p$, et $p(x)$ est dans $\operatorname{Im} p$. Donc $E = \operatorname{Ker} p + \operatorname{Im} p$.`, 'a', T`l'égalité $E = \operatorname{Ker} p + \operatorname{Im} p$`],
-  [T`Soit $y \in \operatorname{Ker} p \cap \operatorname{Im} p$ : il existe $z \in E$ tel que $y = p(z)$, et $p(y) = 0_E$.`, '', T`un vecteur $y$ de l'intersection`],
+  [T`Soit $y \in \operatorname{Ker} p \cap \operatorname{Im} p$ : il existe $z \in E$ tel que $y = p(z)$, et $p(y) = 0_E$.`, 'b', T`un vecteur $y$ de l'intersection`],
   [T`Alors $p(y) = p\bigl(p(z)\bigr) = p(z) = y$, donc $y = 0_E$ : l'intersection est réduite au vecteur nul.`, 'c', T`le fait que l'intersection est nulle`],
   [T`La somme est donc directe : $E = \operatorname{Ker} p \oplus \operatorname{Im} p$.`, 'bd'] ], [
   [T`D'après le théorème du rang, $\dim \operatorname{Ker} p + \dim \operatorname{Im} p = \dim E$ : le noyau et l'image sont donc supplémentaires.`, T`L'égalité des dimensions ne suffit pas à rendre deux sous-espaces supplémentaires : pour $u(x, y) = (y, 0)$, le noyau et l'image sont égaux. De plus, rien ne dit ici que $E$ est de dimension finie.`],
@@ -408,7 +408,7 @@ demo('bolzano-weierstrass', 'sup', N, 'ma-07', 'Théorème de Bolzano-Weierstras
   [T`On garde une moitié qui contient au moins un terme de la suite.`, T`Un seul terme ne suffit pas : pour extraire une suite, il faut pouvoir choisir des indices de plus en plus grands, donc disposer d'une infinité d'indices dans chaque segment.`],
   [T`La suite $(u_n)$ est bornée : elle converge donc vers $\ell$.`, T`Une suite bornée peut diverger : $(-1)^n$ est bornée et n'a pas de limite. Le théorème n'affirme la convergence que d'une suite <em>extraite</em>.`] ]),
 demo('bornes-atteintes', 'sup', N, 'ma-08', 'Théorème des bornes atteintes', T`Soit $f$ une fonction continue sur un segment $[a, b]$. Alors $f$ est majorée et atteint sa borne supérieure.`, [
-  [T`Notons $M$ la borne supérieure de $f$ sur $[a, b]$, avec $M = +\infty$ si $f$ n'est pas majorée. Il existe une suite $(x_n)$ de points de $[a, b]$ telle que $f(x_n)$ tend vers $M$.`, '', T`la suite $(x_n)$ telle que $f(x_n) \to M$`],
+  [T`Notons $M$ la borne supérieure de $f$ sur $[a, b]$, avec $M = +\infty$ si $f$ n'est pas majorée. Il existe une suite $(x_n)$ de points de $[a, b]$ telle que $f(x_n)$ tend vers $M$ (⋆ : on choisit un point $x_n$ pour chaque $n$, ce qui emploie l'axiome du choix dénombrable).`, '', T`la suite $(x_n)$ telle que $f(x_n) \to M$`],
   [T`La suite $(x_n)$ est bornée : d'après le théorème de Bolzano-Weierstrass, elle admet une suite extraite $\bigl(x_{\varphi(n)}\bigr)$ qui converge vers un réel $c$ ; et $a \leqslant x_{\varphi(n)} \leqslant b$ donne, à la limite, $c \in [a, b]$.`, 'a', T`la suite extraite convergeant vers $c \in [a, b]$`],
   [T`Comme $f$ est continue en $c$, la suite $\bigl(f(x_{\varphi(n)})\bigr)$ converge vers $f(c)$.`, 'b', T`la convergence de $f(x_{\varphi(n)})$ vers $f(c)$`],
   [T`Or cette suite, extraite de $\bigl(f(x_n)\bigr)$, tend aussi vers $M$ : par unicité de la limite, $M = f(c)$.`, 'c', T`l'égalité $M = f(c)$`],
@@ -444,7 +444,7 @@ demo('dl-unicite', 'sup', N, 'ma-10', 'Unicité du développement limité', T`Si
   [T`En divisant par $x^p$, pour $x \neq 0$ : $0 = (a_p - b_p) + (a_{p+1} - b_{p+1})x + \dots + (a_n - b_n)x^{n-p} + o(x^{n-p})$.`, 'b', T`l'égalité obtenue après division par $x^p$`],
   [T`Quand $x$ tend vers 0, tous les termes du second membre tendent vers 0, sauf le premier : donc $a_p - b_p = 0$, ce qui contredit le choix de $p$.`, 'c'] ], [
   [T`En retranchant, les deux restes s'éliminent, puisque $o(x^n) - o(x^n) = 0$ : les deux polynômes sont égaux pour tout $x$.`, T`La notation $o(x^n)$ ne désigne pas une fonction précise : les deux restes sont deux fonctions différentes, négligeables devant $x^n$. Leur différence est encore un $o(x^n)$, pas zéro.`],
-  [T`En divisant par $x^p$, le reste $o(x^n)$ reste un $o(x^n)$.`, T`Diviser par $x^p$ une fonction négligeable devant $x^n$ donne une fonction négligeable devant $x^{n-p}$, ce qui est moins précis. Pour $p = n$, il ne reste qu'un $o(1)$, c'est-à-dire une fonction qui tend vers 0.`] ]),
+  [T`En divisant par $x^p$, le reste $o(x^n)$ reste un $o(x^n)$.`, T`Dès que $p \geqslant 1$ (pour $p = 0$, la division ne change rien), diviser par $x^p$ une fonction négligeable devant $x^n$ donne une fonction négligeable devant $x^{n-p}$, ce qui est moins précis. Pour $p = n$, il ne reste qu'un $o(1)$, c'est-à-dire une fonction qui tend vers 0.`] ]),
 demo('edl-ordre-1', 'sup', N, 'ma-06', 'Équation différentielle linéaire homogène d\'ordre 1', T`Soit $a$ une fonction continue sur un intervalle $I$ et $A$ une primitive de $a$. Les solutions sur $I$ de $y' + a(x)\,y = 0$ sont les fonctions $x \mapsto Ce^{-A(x)}$, où $C$ est une constante.`, [
   [T`Pour toute constante $C$, la fonction $x \mapsto Ce^{-A(x)}$ est solution : sa dérivée est $x \mapsto -a(x)\,Ce^{-A(x)}$.`, '', T`le fait que les fonctions $Ce^{-A}$ sont solutions`],
   [T`Réciproquement, soit $f$ une solution, et posons $g = f e^{A}$.`, 'a', T`la fonction $g = f e^{A}$`],
@@ -491,7 +491,7 @@ demo('bayes', 'sup', Pr, 'ma-21', 'Formule de Bayes', T`Soit $A$ et $B$ deux év
   [T`Donc $P_B(A) = \dfrac{P(A)\,P_A(B)}{P(B)}$.`, 'ab', T`la formule $P_B(A) = \dfrac{P(A)\,P_A(B)}{P(B)}$`],
   [T`D'après la formule des probabilités totales, appliquée au système complet $(A, \overline A)$ : $P(B) = P(A)\,P_A(B) + P(\overline A)\,P_{\overline A}(B)$.`, '', T`l'expression de $P(B)$ par les probabilités totales`],
   [T`En remplaçant $P(B)$ par cette expression, on obtient la formule annoncée.`, 'cd'] ], [
-  [T`Les probabilités conditionnelles se renversent : $P_B(A) = P_A(B)$.`, T`C'est la confusion la plus répandue du chapitre. Les deux nombres sont reliés par $P_B(A) = \dfrac{P(A)\,P_A(B)}{P(B)}$, et ne sont égaux que si $P(A) = P(B)$.`],
+  [T`Les probabilités conditionnelles se renversent : $P_B(A) = P_A(B)$.`, T`C'est la confusion la plus répandue du chapitre. Les deux nombres sont reliés par $P_B(A) = \dfrac{P(A)\,P_A(B)}{P(B)}$, et ne sont égaux que si $P(A) = P(B)$ ou si $P(A \cap B) = 0$.`],
   [T`D'après la formule des probabilités totales, $P(B) = P_A(B) + P_{\overline A}(B)$.`, T`Chaque probabilité conditionnelle doit être pondérée par la probabilité de l'événement qui conditionne. Si $B$ est l'événement certain, la formule écrite donnerait $1 = 2$.`] ]),
 demo('variance-somme', 'sup', Pr, 'ma-21', 'Variance d\'une somme de variables indépendantes', T`Soit $X$ et $Y$ deux variables aléatoires réelles indépendantes sur un univers fini. Alors $V(X + Y) = V(X) + V(Y)$.`, [
   [T`Posons $X' = X - E(X)$ et $Y' = Y - E(Y)$ : ce sont des variables d'espérance nulle, et $V(X + Y) = E\bigl((X' + Y')^2\bigr)$.`, '', T`les variables centrées $X'$ et $Y'$`],

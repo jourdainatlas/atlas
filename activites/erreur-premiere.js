@@ -1,4 +1,4 @@
-// Trouver l'erreur : Première, dix raisonnements (MEMO_atlas_activites.md §145).
+// Trouver l'erreur : Première, dix-huit raisonnements (MEMO_atlas_activites.md §145 et §147).
 import { T, faux } from './raisonner-outils.js';
 const H = ` Si la ligne est fausse, c'est qu'une erreur a été commise plus haut.`;
 export default [
@@ -8,7 +8,7 @@ faux('racine-carree', 'premiere', '', 'p-01', '−3 = 3', T`« Démontrons » qu
   [T`Donc $(-3)^2 = 3^2$.`, T`Deux nombres égaux à 9 sont égaux entre eux.`],
   [T`En prenant la racine carrée des deux membres : $-3 = 3$.`] ],
   T`La racine carrée de $x^2$ n'est pas $x$, mais $|x|$ : $\sqrt{(-3)^2} = \sqrt9 = 3$. En prenant la racine des deux membres, on obtient donc $3 = 3$, ce qui est vrai et n'apprend rien. De l'égalité de deux carrés, on déduit seulement que les nombres sont égaux ou opposés.`,
-  T`Pour tout réel $x$, $\sqrt{x^2} = |x|$. L'équation $x^2 = a^2$ a deux solutions, $a$ et $-a$ : la fonction carré n'est pas injective sur $\mathbb{R}$.`, T`Que vaut exactement $\sqrt{(-3)^2}$ ?`),
+  T`Pour tout réel $x$, $\sqrt{x^2} = |x|$. L'équation $x^2 = a^2$ a pour solutions $a$ et $-a$ (confondues si $a = 0$) : la fonction carré prend deux fois chaque valeur strictement positive.`, T`Que vaut exactement $\sqrt{(-3)^2}$ ?`),
 faux('solution-perdue', 'premiere', '', 'p-01', 'Une solution perdue', T`« Démontrons » que l'équation $x^2 = 5x$ a pour seule solution le nombre 5.`, [
   [T`Soit $x$ une solution : $x^2 = 5x$, c'est-à-dire $x \times x = 5 \times x$.`, T`C'est l'équation, où l'on a écrit $x^2 = x \times x$.`],
   [T`En divisant les deux membres par $x$ : $x = 5$.`],
@@ -41,8 +41,8 @@ faux('extremum-cube', 'premiere', '', 'p-04', 'Un minimum qui n\'existe pas', T`
   [T`La fonction $f$ est dérivable sur $\mathbb{R}$, et $f'(x) = 3x^2$.`, T`C'est la dérivée d'une fonction puissance.`],
   [T`En particulier, $f'(0) = 0$.`, T`C'est exact : $3 \times 0^2 = 0$.`],
   [T`La dérivée s'annule en 0 : la fonction $f$ admet donc un extremum en 0.`],
-  [T`Comme $f'(x) \geqslant 0$ pour tout $x$, la fonction ne décroît jamais : cet extremum ne peut être qu'un minimum.`, T`Il est vrai que $3x^2 \geqslant 0$ pour tout réel $x$, et la déduction s'appuie sur la ligne précédente : le passage est correct.` + H] ],
-  T`Une dérivée qui s'annule ne suffit pas : il faut qu'elle s'annule <em>en changeant de signe</em>. Ici $f'(x) = 3x^2$ est positive de part et d'autre de 0 : la fonction est strictement croissante sur $\mathbb{R}$, et $f(-1) = -1 < f(0) = 0$. Il n'y a ni minimum ni maximum en 0, seulement une tangente horizontale.`,
+  [T`Comme $f(x) = x^3 > 0 = f(0)$ pour tout $x > 0$, cet extremum ne peut pas être un maximum : c'est donc un minimum.`, T`Il est exact que $x^3 > 0$ pour tout $x > 0$ : aussi près de 0 que l'on veut, $f$ prend des valeurs strictement supérieures à $f(0)$, ce qui exclut un maximum. Un extremum qui n'est pas un maximum est un minimum : le passage est correct.` + H] ],
+  T`Une dérivée qui s'annule ne suffit pas : on s'assure qu'elle s'annule <em>en changeant de signe</em>. Ici $f'(x) = 3x^2$ est positive de part et d'autre de 0 : la fonction est strictement croissante sur $\mathbb{R}$, et $f(-1) = -1 < f(0) = 0$. Il n'y a ni minimum ni maximum en 0, seulement une tangente horizontale.`,
   T`Si $f$ a un extremum local en un point intérieur, alors $f'$ s'y annule ; la réciproque est fausse. On conclut toujours par le tableau de variations.`, T`Comparez $f(0)$ et $f(-1)$.`),
 faux('test-medical', 'premiere', '', 'p-05', 'Le test positif', T`Une maladie touche 1 % de la population. Un test est positif chez 99 % des malades et négatif chez 99 % des personnes saines. « Démontrons » qu'une personne dont le test est positif est malade avec une probabilité de 0,99.`, [
   [T`Notons $M$ l'événement « la personne est malade » et $T$ l'événement « le test est positif ». L'énoncé donne $P(M) = 0{,}01$ et $P_M(T) = 0{,}99$.`, T`C'est la traduction exacte de l'énoncé : 99 % des malades ont un test positif.`],
@@ -50,7 +50,7 @@ faux('test-medical', 'premiere', '', 'p-05', 'Le test positif', T`Une maladie to
   [T`Or $P_T(M) = P_M(T)$.`],
   [T`Donc la probabilité cherchée vaut 0,99.`, T`C'est la valeur de $P_M(T)$ donnée par l'énoncé, reportée d'après la ligne précédente : le passage est correct.` + H] ],
   T`Les probabilités $P_T(M)$ et $P_M(T)$ ne sont pas égales en général : on ne conditionne pas par le même événement. Par la formule des probabilités totales, $P(T) = 0{,}01 \times 0{,}99 + 0{,}99 \times 0{,}01 = 0{,}0198$, d'où $P_T(M) = \dfrac{0{,}0099}{0{,}0198} = 0{,}5$. Une personne positive n'a qu'une chance sur deux d'être malade : les personnes saines sont si nombreuses que leurs 1 % de faux positifs pèsent autant que les vrais.`,
-  T`$P_A(B)$ et $P_B(A)$ sont deux nombres différents, reliés par $P_B(A) = \dfrac{P(A)\,P_A(B)}{P(B)}$. Un arbre pondéré évite la confusion.`, T`Sur 10 000 personnes, combien sont malades et positives ? Combien sont saines et positives ?`),
+  T`$P_A(B)$ et $P_B(A)$ sont en général deux nombres différents, reliés par $P_B(A) = \dfrac{P(A)\,P_A(B)}{P(B)}$. Un arbre pondéré évite la confusion.`, T`Sur 10 000 personnes, combien sont malades et positives ? Combien sont saines et positives ?`),
 faux('incompatibles-independants', 'premiere', '', 'p-05', 'Incompatibles, donc indépendants ?', T`On lance un dé équilibré. On note $A$ l'événement « le résultat est pair » et $B$ l'événement « le résultat est impair ». « Démontrons » que $0 = \dfrac14$.`, [
   [T`On a $P(A) = \dfrac12$ et $P(B) = \dfrac12$.`, T`C'est exact : trois faces sur six sont paires, trois sont impaires.`],
   [T`Les événements $A$ et $B$ ne peuvent pas se produire ensemble : $P(A \cap B) = 0$.`, T`C'est exact : aucun résultat n'est à la fois pair et impair.`],
@@ -78,7 +78,7 @@ faux('sinus-racine', 'premiere', '', 'p-06', 'Un sinus qui change de signe', T`�
   [T`Pour tout réel $x$, $\cos^2 x + \sin^2 x = 1$, donc $\sin^2 x = 1 - \cos^2 x$.`, T`C'est la relation fondamentale de la trigonométrie.`],
   [T`En prenant la racine carrée : $\sin x = \sqrt{1 - \cos^2 x}$ pour tout réel $x$.`],
   [T`Pour $x = -\dfrac{\pi}{6}$ : $\cos x = \dfrac{\sqrt3}{2}$, donc $\sqrt{1 - \cos^2 x} = \sqrt{1 - \dfrac34} = \dfrac12$.`, T`La valeur du cosinus et le calcul de la racine sont exacts.`],
-  [T`Or $\sin\left(-\dfrac{\pi}{6}\right) = -\dfrac12$ : donc $-\dfrac12 = \dfrac12$.`, T`La valeur du sinus est exacte, et l'on applique la formule de la ligne 2 : le passage est correct.` + H] ],
+  [T`Or $\sin\left(-\dfrac{\pi}{6}\right) = -\dfrac12$ : donc $-\dfrac12 = \dfrac12$.`, T`La valeur du sinus est exacte, et l'on applique la formule écrite plus haut : le passage est correct.` + H] ],
   T`De $\sin^2 x = 1 - \cos^2 x$, on tire seulement $|\sin x| = \sqrt{1 - \cos^2 x}$ : le sinus vaut cette racine ou son opposé, selon son signe. Sur le cercle trigonométrique, les points d'abscisse $\dfrac{\sqrt3}{2}$ sont deux, l'un au-dessus de l'axe, l'autre en dessous.`,
   T`$\sqrt{a^2} = |a|$. Pour passer de $\cos x$ à $\sin x$, il faut connaître le signe du sinus, c'est-à-dire le quadrant où se trouve le point.`, T`Quel est le signe du sinus de $-\dfrac{\pi}{6}$ ?`),
 faux('directeur-normal', 'premiere', '', 'p-03', 'Un point qui devrait être sur la droite', T`Soit $d$ la droite d'équation $2x + 3y - 6 = 0$. « Démontrons » que $13 = 0$.`, [
@@ -88,11 +88,11 @@ faux('directeur-normal', 'premiere', '', 'p-03', 'Un point qui devrait être sur
   [T`Ses coordonnées vérifient donc l'équation : $2 \times 5 + 3 \times 3 - 6 = 0$, c'est-à-dire $13 = 0$.`, T`Le calcul $10 + 9 - 6 = 13$ est exact : le passage est correct.` + H] ],
   T`Le vecteur $(a ; b)$ est un vecteur <em>normal</em> à la droite d'équation $ax + by + c = 0$, pas un vecteur directeur. Un vecteur directeur est $(-b ; a)$, ici $(-3 ; 2)$ : le point $(3 - 3 ; 0 + 2) = (0 ; 2)$ est bien sur $d$.`,
   T`Pour la droite $ax + by + c = 0$ : vecteur normal $(a ; b)$, vecteur directeur $(-b ; a)$. Leur produit scalaire, $-ab + ba$, est nul.`, T`Le point $B$ vérifie-t-il l'équation de la droite ?`),
-faux('suite-fonction', 'premiere', '', 'p-02', 'Une suite prétendue croissante', T`Soit $(u_n)$ la suite définie par $u_0 = 4$ et $u_{n+1} = f(u_n)$, où $f(x) = \dfrac x2$. « Démontrons » que $2 > 4$.`, [
+faux('suite-fonction', 'premiere', '', 'p-02', 'Une suite prétendue croissante', T`Soit $(u_n)$ la suite définie par $u_0 = 4$ et $u_{n+1} = f(u_n)$, où $f(x) = \dfrac x2$. « Démontrons » que $2 \geqslant 4$.`, [
   [T`La fonction $f : x \mapsto \dfrac x2$ est croissante sur $\mathbb{R}$.`, T`C'est exact : c'est une fonction linéaire de coefficient positif.`],
   [T`Une suite définie par $u_{n+1} = f(u_n)$, où $f$ est croissante, est croissante.`],
-  [T`En particulier $u_1 > u_0$, la suite n'étant pas constante.`, T`C'est ce que donne la ligne précédente, les deux premiers termes étant différents : le passage est correct.` + H],
-  [T`Or $u_1 = \dfrac42 = 2$ et $u_0 = 4$ : donc $2 > 4$.`, T`Le calcul de $u_1$ est exact : le passage est correct.` + H] ],
+  [T`En particulier, $u_1 \geqslant u_0$.`, T`C'est la définition d'une suite croissante, appliquée aux deux premiers termes : le passage est correct.` + H],
+  [T`Or $u_1 = \dfrac42 = 2$ et $u_0 = 4$ : donc $2 \geqslant 4$.`, T`Le calcul de $u_1$ est exact : le passage est correct.` + H] ],
   T`On confond deux situations. Si $u_n = f(n)$ et si $f$ est croissante, alors la suite est croissante. Mais si $u_{n+1} = f(u_n)$, la croissance de $f$ dit seulement que la suite est <em>monotone</em> : son sens dépend de la comparaison de $u_0$ et $u_1$. Ici $u_1 < u_0$, et la suite $4, 2, 1, \dfrac12, \dots$ est décroissante.`,
   T`Pour une suite $u_{n+1} = f(u_n)$, on étudie le signe de $u_{n+1} - u_n$, ou l'on compare $u_1$ à $u_0$ avant d'utiliser la croissance de $f$.`, T`Calculez les trois premiers termes.`),
 faux('derivee-quotient', 'premiere', '', 'p-04', 'La dérivée d\'un quotient', T`« Démontrons » que $1 = 2$.`, [

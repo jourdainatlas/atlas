@@ -1,4 +1,4 @@
-// Trouver l'erreur : Maths expertes, quinze raisonnements (MEMO_atlas_activites.md §145).
+// Trouver l'erreur : Maths expertes, vingt-deux raisonnements (MEMO_atlas_activites.md §145 et §147).
 import { T, faux } from './raisonner-outils.js';
 const H = ` Si la ligne est fausse, c'est qu'une erreur a été commise plus haut.`;
 export default [
@@ -49,7 +49,7 @@ faux('racine-moins-un', 'expertes', '', 'me-02', '−1 = 1', T`« Démontrons »
   [T`Par définition de $i$, on a $\sqrt{-1} \times \sqrt{-1} = i^2 = -1$.`, T`Avec la notation convenue, c'est l'égalité $i^2 = -1$.`],
   [T`La racine d'un produit est le produit des racines : $\sqrt{-1} \times \sqrt{-1} = \sqrt{(-1) \times (-1)}$.`],
   [T`Or $(-1) \times (-1) = 1$, et $\sqrt1 = 1$.`, T`Les deux calculs sont exacts.`],
-  [T`Donc $-1 = 1$.`, T`Les lignes 1 à 3 donnent deux valeurs de la même expression : la déduction est correcte.` + H] ],
+  [T`Donc $-1 = 1$.`, T`Les lignes précédentes donnent deux valeurs de la même expression : la déduction est correcte.` + H] ],
   T`La règle $\sqrt a \times \sqrt b = \sqrt{ab}$ n'est valable que pour des réels $a$ et $b$ positifs. C'est précisément pour éviter ce piège que l'on n'écrit pas $\sqrt{-1}$ : le symbole $\sqrt{\phantom{x}}$ est réservé aux réels positifs, et un nombre complexe non nul a deux racines carrées opposées, sans qu'aucune ne s'impose.`,
   T`$\sqrt a\,\sqrt b = \sqrt{ab}$ pour $a \geqslant 0$ et $b \geqslant 0$ seulement. Dans $\mathbb{C}$, on écrit $i^2 = -1$, jamais $i = \sqrt{-1}$.`, T`Pour quels nombres la règle sur la racine d'un produit a-t-elle été démontrée ?`),
 faux('ordre-complexes', 'expertes', '', 'me-02', '−1 > 0', T`« Démontrons » que $-1 > 0$.`, [
@@ -57,13 +57,13 @@ faux('ordre-complexes', 'expertes', '', 'me-02', '−1 > 0', T`« Démontrons »
   [T`Si $i > 0$ : en multipliant les deux membres par $i$, qui est positif, on conserve le sens, et $i \times i > 0$, soit $-1 > 0$.`, T`Multiplier une inégalité par un nombre strictement positif en conserve le sens, et $i^2 = -1$ : dans le cas envisagé, le passage est correct.` + H],
   [T`Si $i < 0$ : en multipliant les deux membres par $i$, qui est négatif, on renverse le sens, et $i \times i > 0$, soit $-1 > 0$.`, T`Multiplier une inégalité par un nombre strictement négatif en renverse le sens : dans le cas envisagé, le passage est correct.` + H],
   [T`Dans les deux cas, $-1 > 0$.`, T`Si les deux cas envisagés sont les seuls, la conclusion vaut dans tous les cas : le passage est correct.` + H] ],
-  T`Il n'existe pas de relation d'ordre sur $\mathbb{C}$ compatible avec l'addition et la multiplication : écrire $i > 0$ ou $i < 0$ n'a pas de sens. Le raisonnement en est d'ailleurs la preuve : si un tel ordre existait, on aurait $-1 > 0$, donc $0 > 1$ en ajoutant 1, alors que $1 = 1^2$ devrait être positif.`,
+  T`Il n'existe pas de relation d'ordre <em>total</em> sur $\mathbb{C}$ qui soit compatible avec l'addition et avec la multiplication par les éléments positifs : écrire $i > 0$ ou $i < 0$ n'a pas de sens. Le raisonnement en est d'ailleurs la preuve : si un tel ordre existait, on aurait $-1 > 0$, donc $0 > 1$ en ajoutant 1, alors que $1 = 1^2$, carré d'un élément non nul, devrait être strictement positif.`,
   T`On ne compare pas deux nombres complexes. Seuls leurs modules, leurs parties réelles ou leurs parties imaginaires, qui sont des réels, peuvent figurer dans une inégalité.`, T`Quel sens donnez-vous à une inégalité entre nombres complexes ?`),
 faux('module-somme', 'expertes', '', 'me-02', '0 = 2 avec des modules', T`« Démontrons » que $0 = 2$.`, [
   [T`On a $|1| = 1$ et $|-1| = 1$.`, T`C'est exact : deux nombres opposés ont le même module.`],
   [T`Le module d'une somme est la somme des modules : $|1 + (-1)| = |1| + |-1|$.`],
   [T`Or $1 + (-1) = 0$, et $|0| = 0$.`, T`Les deux calculs sont exacts.`],
-  [T`Donc $0 = 1 + 1 = 2$.`, T`On a remplacé chaque membre de l'égalité de la ligne 2 par sa valeur : le passage est correct.` + H] ],
+  [T`Donc $0 = 1 + 1 = 2$.`, T`On a remplacé chaque membre de l'égalité écrite plus haut par sa valeur : le passage est correct.` + H] ],
   T`Le module est compatible avec le produit, $|zz'| = |z|\,|z'|$, mais pas avec la somme. Pour la somme, on ne dispose que de l'inégalité triangulaire, $|z + z'| \leqslant |z| + |z'|$, avec égalité seulement quand les points images sont sur une même demi-droite issue de l'origine. Ici, 1 et $-1$ sont dans des directions opposées.`,
   T`$|z + z'| \leqslant |z| + |z'|$ : c'est une inégalité, pas une égalité. Géométriquement, un côté d'un triangle est plus court que la somme des deux autres.`, T`Placez les points d'affixes 1 et $-1$, et leur somme.`),
 faux('argument-arctan', 'expertes', '', 'me-05', 'Un argument dans le mauvais quadrant', T`« Démontrons » que $-1 - i = 1 + i$.`, [
@@ -91,7 +91,7 @@ faux('identite-remarquable-matrices', 'expertes', '', 'me-03', 'Une identité re
   [T`On a $A + B = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}$, et $(A + B)^2 = \begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix}$.`, T`La somme et le carré sont bien calculés.`],
   [T`On a $A^2 = \begin{pmatrix} 0 & 0 \\ 0 & 0 \end{pmatrix}$, $B^2 = \begin{pmatrix} 0 & 0 \\ 0 & 0 \end{pmatrix}$ et $AB = \begin{pmatrix} 1 & 0 \\ 0 & 0 \end{pmatrix}$.`, T`Les trois produits sont bien calculés.`],
   [T`D'après l'identité remarquable, $(A + B)^2 = A^2 + 2AB + B^2$.`],
-  [T`Donc $\begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix} = 2\begin{pmatrix} 1 & 0 \\ 0 & 0 \end{pmatrix} = \begin{pmatrix} 2 & 0 \\ 0 & 0 \end{pmatrix}$.`, T`On a remplacé chaque terme par la valeur calculée aux lignes 1 et 2 : le passage est correct.` + H] ],
+  [T`Donc $\begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix} = 2\begin{pmatrix} 1 & 0 \\ 0 & 0 \end{pmatrix} = \begin{pmatrix} 2 & 0 \\ 0 & 0 \end{pmatrix}$.`, T`On a remplacé chaque terme par la valeur calculée plus haut : le passage est correct.` + H] ],
   T`En développant sans rien supposer, $(A + B)^2 = A^2 + AB + BA + B^2$. On ne peut regrouper $AB + BA$ en $2AB$ que si $A$ et $B$ commutent, ce qui n'est pas le cas ici : $BA = \begin{pmatrix} 0 & 0 \\ 0 & 1 \end{pmatrix}$. Avec la bonne formule, on retrouve bien $AB + BA = \begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix}$.`,
   T`Les identités remarquables et la formule du binôme ne valent, pour des matrices, que si elles commutent : $AB = BA$.`, T`Calculez le produit $BA$.`),
 faux('simplifier-matrice', 'expertes', '', 'me-03', '1 = 2 avec des matrices', T`Soit $A = \begin{pmatrix} 1 & 0 \\ 0 & 0 \end{pmatrix}$, $B = \begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix}$ et $C = \begin{pmatrix} 1 & 0 \\ 0 & 2 \end{pmatrix}$. « Démontrons » que $1 = 2$.`, [
@@ -133,14 +133,14 @@ faux('rectangle-isocele', 'expertes', '', 'me-08', 'Un triangle rectangle préte
 faux('partie-imaginaire', 'expertes', '', 'me-02', '1 = −1 avec un module', T`« Démontrons » que $1 = -1$.`, [
   [T`Le nombre $i$ s'écrit $0 + i \times 1$ : sa partie réelle est 0.`, T`C'est exact.`],
   [T`Sa partie imaginaire est $i$.`],
-  [T`Le carré du module est la somme des carrés de la partie réelle et de la partie imaginaire : $|i|^2 = 0^2 + i^2 = -1$.`, T`C'est la formule $|z|^2 = \mathrm{Re}(z)^2 + \mathrm{Im}(z)^2$, et $i^2 = -1$ : avec les valeurs des lignes 1 et 2, le passage est correct.` + H],
+  [T`Le carré du module est la somme des carrés de la partie réelle et de la partie imaginaire : $|i|^2 = 0^2 + i^2 = -1$.`, T`C'est la formule $|z|^2 = \mathrm{Re}(z)^2 + \mathrm{Im}(z)^2$, et $i^2 = -1$ : avec les valeurs obtenues plus haut, le passage est correct.` + H],
   [T`Or $|i| = 1$, donc $|i|^2 = 1$ : ainsi $1 = -1$.`, T`Le point d'affixe $i$ est à la distance 1 de l'origine : le passage est correct.` + H] ],
   T`La partie imaginaire de $a + ib$ est le <em>réel</em> $b$, et non $ib$. Celle de $i$ est donc 1, et l'on retrouve $|i|^2 = 0^2 + 1^2 = 1$. C'est parce que les parties réelle et imaginaire sont des réels que le module est un réel positif.`,
   T`Si $z = a + ib$ avec $a$ et $b$ réels, alors $\mathrm{Re}(z) = a$ et $\mathrm{Im}(z) = b$ : deux nombres réels.`, T`La partie imaginaire d'un nombre complexe est-elle un nombre réel ?`),
 faux('un-premier', 'expertes', '', 'me-01', 'Deux décompositions de 6', T`« Démontrons » que la décomposition d'un entier en produit de nombres premiers n'est pas unique.`, [
   [T`Le nombre 1 n'a pas d'autre diviseur positif que 1 et lui-même : c'est un nombre premier.`],
   [T`On a $6 = 2 \times 3$, produit de nombres premiers.`, T`C'est exact : 2 et 3 sont premiers.`],
-  [T`On a aussi $6 = 1 \times 2 \times 3$, autre produit de nombres premiers, qui comporte trois facteurs au lieu de deux.`, T`Le produit vaut bien 6, et la ligne 1 range 1 parmi les nombres premiers : le passage est correct.` + H],
+  [T`On a aussi $6 = 1 \times 2 \times 3$, autre produit de nombres premiers, qui comporte trois facteurs au lieu de deux.`, T`Le produit vaut bien 6, et ses facteurs ont tous été déclarés premiers plus haut : le passage est correct.` + H],
   [T`L'entier 6 a donc deux décompositions différentes : la décomposition n'est pas unique.`, T`Deux produits qui n'ont pas le même nombre de facteurs sont différents, même à l'ordre près : le passage est correct.` + H] ],
   T`Le nombre 1 n'est pas premier : un nombre premier est un entier qui possède <em>exactement deux</em> diviseurs positifs distincts, 1 et lui-même, et 1 n'en a qu'un. Cette convention n'est pas un caprice : c'est précisément elle qui rend la décomposition unique.`,
   T`Un nombre premier est un entier supérieur ou égal à 2 dont les seuls diviseurs positifs sont 1 et lui-même. Ni 0 ni 1 ne sont premiers.`, T`Combien 1 a-t-il de diviseurs positifs ?`),
