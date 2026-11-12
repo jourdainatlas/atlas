@@ -867,3 +867,29 @@ Ordre de la liste des défis, à sa demande : À la une ; une liste, chaque piè
 pièce ; toutes les pièces d'une taille.
 
 Explorations : vingt-huit. Jeux et casse-têtes : seize.
+
+### 141. Prototype NON PUBLIÉ : « Le compte est bon », pour une sous-rubrique de calcul mental (12 nov. 2026)
+
+Demande de l'auteur : une sous-rubrique de calcul mental, avec un nombre du jour à atteindre à partir de six
+nombres et des quatre opérations (interface donnée par une capture : cinq lignes « a op b = résultat », touches
+C, +, −, ×, ÷, annuler, six plaques), en trois niveaux : 1, trois ou quatre étapes ; 2, cinq étapes et plusieurs
+chemins ; 3, une seule solution. Prototype remis à l'auteur (page autonome) ; il n'est ni dans `activites/` ni
+dans le catalogue. Source : document `claude/prototype-compte-est-bon.js` du projet.
+
+**Choix faits, à discuter.**
+- *Nombre du jour sans serveur* : une banque de tirages classés est embarquée dans le module ; l'indice du jour
+  est le nombre de jours écoulés depuis le 1er janvier 2026 à Paris, modulo la taille de la banque. Tous les
+  visiteurs ont donc le même tirage. « Un autre tirage » en prend un au hasard dans la banque.
+- *Banque* (prototype : 150, 150 et 142 tirages ; à porter à 400 environ avant publication, une seconde de
+  calcul par tirage) : plaques tirées parmi 1 à 10 en double, 25, 50, 75, 100 ; pour chaque tirage, toutes les
+  suites d'opérations sont énumérées (résultats entiers strictement positifs ; sont écartées les opérations
+  inutiles : fois 1, divisé par 1, a − b = b, a ÷ b = b). Chaque calcul est ramené à une forme normale (sommes
+  et produits aplatis, opérandes triés) : deux solutions sont identiques si elles ont la même forme normale.
+  Niveau 1 : minimum de 3 ou 4 opérations et au moins trois formes ; niveau 2 : minimum 5 et au moins trois
+  formes ; niveau 3 : une seule forme. Outils : `gen.mjs`, `banque.mjs` (gardés dans /home/claude/proto, à
+  verser dans `outils/activites_compte.mjs` à la publication).
+- *Dans la page* : recherche du plus court calcul par approfondissement itératif (48 ms au plus), pour
+  « Un indice » (deux temps : nature de la première opération, puis l'opération) et « Voir une solution ».
+  Contrôlé : sur les 442 tirages, cette recherche retrouve le minimum inscrit dans la banque.
+- Un clic sur un nombre remplit la prochaine case vide ; un clic sur un nombre de la ligne en cours le retire.
+- Groupe du catalogue à créer (`calcul`), nom et couleur à décider avec l'auteur.
