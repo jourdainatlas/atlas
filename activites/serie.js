@@ -24,6 +24,8 @@ export const css = cssCommun + cssFigures + cssJeux + `
 .activites-act .sr-bilan li b { font: 700 12.5px var(--f-mono); color: var(--encre-3); }
 .activites-act .sr-bilan .rep { display: block; font: 14.5px/1.6 var(--f-ui); color: var(--encre-2); }
 .activites-act .sr-bilan .rep .faux { color: var(--rouge); } .activites-act .sr-bilan .rep .vrai { color: var(--tan); font-weight: 600; }
+.activites-act .sr-choix.longues button span { white-space: nowrap; }
+@media (max-width: 640px) { .activites-act .sr-choix.longues { grid-template-columns: 1fr; } .activites-act .sr-choix.longues button { min-height: 52px; } }
 @media (max-width: 420px) { .activites-act .sr-choix button kbd { display: none; } .activites-act .sr-question { font-size: 17.5px; } }
 `;
 
@@ -31,7 +33,7 @@ export const html = `
 <header class="col">
   <p class="eyebrow">Calcul mental · Première, Terminale, Maths expertes, Maths Sup</p>
   <h3>Dix calculs</h3>
-  <p class="lede">Dix calculs à faire de tête, contre la montre, sur un thème de votre classe : carrés et pourcentages en Première, logarithmes et intégrales en Terminale, à quoi s'ajoutent PGCD, congruences et nombres complexes avec l'option Maths expertes, puis déterminants et limites usuelles en Maths Sup. Quatre réponses sont proposées ; une seule est exacte, les autres sont les erreurs que l'on commet le plus souvent.</p>
+  <p class="lede">Dix calculs à faire de tête, contre la montre, sur un thème de votre classe : carrés, pourcentages, développements et factorisations en Première, dérivées, primitives et intégrales en Terminale, à quoi s'ajoutent PGCD, congruences et nombres complexes avec l'option Maths expertes, puis développements limités, équivalents et déterminants en Maths Sup. Quatre réponses sont proposées ; une seule est exacte, les autres sont les erreurs que l'on commet le plus souvent.</p>
 </header>
 
 <div class="jeu">
@@ -89,7 +91,7 @@ export function monter(racine) {
     q('#sr-rang').textContent = rang < 0 ? '' : fini ? 'Série terminée' : `Calcul ${rang + 1} sur ${S.length}`; q('#sr-temps').textContent = rang < 0 ? '' : duree(secondes);
     ecrire(q('#sr-avance'), rang < 0 ? '' : S.map((x, k) => `<i class="${k < reponses.length ? (reponses[k] === x.bon ? 'ok' : 'ko') : k === rang ? 'ici' : ''}"></i>`).join(''), true);
     if (rang < 0) { ecrire(q('#sr-question'), 'Dix calculs vous attendent. Le chronomètre part quand vous cliquez sur « Commencer ».', true); ecrire(q('#sr-choix'), '', true); m.className = 'jeu-message'; ecrire(m, record(), true); B.hidden = true; return; }
-    if (!fini) { const x = S[rang]; ecrire(q('#sr-question'), x.q, true); ecrire(q('#sr-choix'), x.choix.map((c, i) => `<button type="button" data-i="${i}"><kbd>${i + 1}</kbd><span>${c}</span></button>`).join(''), true); m.className = 'jeu-message'; ecrire(m, 'Cliquez sur la réponse, ou tapez son numéro.', true); B.hidden = true; return; }
+    if (!fini) { const x = S[rang]; ecrire(q('#sr-question'), x.q, true); q('#sr-choix').classList.toggle('longues', x.choix.some(c => c.replace(/<[^>]+>|\\[a-z]+|[{}^_]/g, '').length > 11)); ecrire(q('#sr-choix'), x.choix.map((c, i) => `<button type="button" data-i="${i}"><kbd>${i + 1}</kbd><span>${c}</span></button>`).join(''), true); m.className = 'jeu-message'; ecrire(m, 'Cliquez sur la réponse, ou tapez son numéro.', true); B.hidden = true; return; }
     const bons = S.filter((x, k) => reponses[k] === x.bon).length; ecrire(q('#sr-question'), `<b>${bons} sur ${S.length}</b>, en ${duree(secondes)}.`, true); ecrire(q('#sr-choix'), '', true);
     m.className = 'jeu-message ' + (bons === S.length ? 'gagne' : bons >= 7 ? '' : 'mieux'); ecrire(m, (bons === S.length ? 'Sans faute. ' : bons >= 7 ? 'Presque : les calculs manqués sont repris ci-dessous. ' : 'Les calculs manqués sont repris ci-dessous, avec la bonne réponse : ce sont les règles à revoir. ') + record() + (duParcours ? lienParcours : ''), true);
     B.hidden = false; ecrire(B, S.map((x, k) => { const ok = reponses[k] === x.bon; return `<li class="${ok ? '' : 'ko'}"><b>${k + 1}</b><span>${x.q}<span class="rep">${ok ? `<span class="vrai">Juste :</span> ${x.choix[x.bon]}` : `<span class="faux">Votre réponse :</span> ${x.choix[reponses[k]]} · <span class="vrai">Réponse exacte :</span> ${x.choix[x.bon]}`}</span></span></li>`; }).join(''), true); }

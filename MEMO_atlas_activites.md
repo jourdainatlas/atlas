@@ -1340,5 +1340,32 @@ parcours, « Le compte est bon » est donc au niveau 1 en Première et au niveau
 (`NIV_COMPTE` de `parcours.js` et la table de `compte-est-bon.js` : `sup: 1`). Le niveau 3 reste proposé dans
 l'activité. Terminale et Maths Sup ont ainsi le même nombre du jour.
 
+### 155. Dix calculs : neuf thèmes de calcul littéral (12 nov. 2026)
+
+Demande de l'auteur (idée « calcul littéral chronométré »). Pas de nouvelle activité : neuf fabriques de plus
+dans `serie-calculs.js`, soit 43 familles (Première 11, Terminale 9, Terminale + Maths expertes 14, Maths
+Sup 9). Première : `developper` (produit de deux facteurs, carré, produit conjugué), `factoriser` (différence
+de carrés, carré parfait, trinôme à racines entières, facteur commun), `simplifier` (quotient et carré de
+monômes, quotient par x − b ou par un entier). Terminale : `deriver` (« Fonctions dérivées » : dix formes,
+on choisit l'expression de f′ ; le thème existant est renommé « Dérivées en un point ») et `primitives` (neuf
+formes, « sur ]0, +∞[ » quand il le faut). Maths Sup : `dl` (douze fonctions, ordre 2, 3 ou 4) et
+`equivalents` (dix en 0, huit suites en +∞). Le parcours du jour les reçoit par le mélange de la classe.
+
+**Écriture unique.** `poly(c)` écrit un polynôme à coefficients entiers d'une seule façon, `terme` et `dlS`
+un monôme à coefficient rationnel réduit et un développement limité : deux réponses de même valeur ont donc la
+même chaîne, et `question()` les confond. Les réponses fausses sont des erreurs nommables (double produit
+oublié, signe, dérivée de la fonction intérieure oubliée, constante 1/a inversée, coefficient a au lieu de a²).
+
+**Réponses longues.** Quand une réponse dépasse une dizaine de signes, la grille des réponses reçoit la classe
+`longues` : une colonne sur téléphone, sans coupure de ligne dans la formule (les développements limités se
+coupaient en trois lignes à 375 px).
+
+**Contrôle.** Évaluateur numérique d'un sous-ensemble de LaTeX (script de passage, non versionné) : 27 408
+questions tirées ; la bonne réponse est vérifiée par égalité numérique (développer, factoriser, simplifier),
+par dérivation numérique (dériver, primitives), par (f − P)/xⁿ → 0 (développements limités) et par le rapport
+→ 1 (équivalents), et aucune réponse fausse ne passe le même test. Zéro écart. `outils/activites_raisonner.mjs` :
+« Aucun problème ». Navigateur : 47 séries (43 familles et 4 mélanges), sombre 375 px et clair 1280 px, aucune
+formule en erreur, aucun débordement. Pas de relecture par un agent pour ce lot.
+
 Explorations : vingt-huit. Jeux et casse-têtes : seize. Calcul mental : deux activités. Raisonner : quatre.
 Parcours du jour : une.
