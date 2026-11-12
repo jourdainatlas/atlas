@@ -176,3 +176,29 @@ au lieu de 4 sur ordinateur) ; une phrase au-dessus de la grille explique le « 
 d'abord `corrige` : `rendu.mjs` met ce nom de champ en forme comme un texte riche (corrigés des exercices),
 l'adresse devenait `<p>https://…</p>` et le lien menait à la page 404 du site. Le champ s'appelle désormais
 `corrige_pdf`. Règle : un champ d'adresse ne prend jamais un nom de `RICHES` ou `COURTS` (`rendu.mjs`).
+
+**Moteur : ordre des résultats et vocabulaire du lycée (12 nov. 2026, demande de l'auteur).**
+*Ordre.* Dès qu'un filtre est posé (famille, centre ou école, filière ou niveau, période), les sujets
+trouvés sont classés du plus récent au plus ancien (`dateSujetAnn` : l'année, précisée par le jour de
+l'épreuve quand le champ `date` le donne ; à date égale, la pertinence) ; sans filtre, par pertinence. Un
+lien sous le décompte bascule entre les deux (`etatRech.tri` : '', 'date', 'pertinence').
+*Vocabulaire.* Audit : les 1 101 exercices du bac portaient 70 thèmes du vocabulaire prépa (« Dérivabilité »,
+« Loi normale et vecteurs gaussiens », « Séries numériques », « Polynômes d'endomorphismes »…), dont une
+quarantaine sur cinq exercices ou moins. Les thèmes ont maintenant un **vocabulaire** : domaines marqués
+`vocabulaire: lycee` dans `annales-themes.yaml` (5 domaines, 19 thèmes larges et 32 thèmes fins, identifiants
+`ly-…`, validés par l'auteur), famille `bac` marquée `vocabulaire: lycee` dans `annales.yaml`. Les blocs du bac
+sont étiquetés **uniquement** dans ce vocabulaire. Chaque thème du lycée porte `proches` (thèmes généraux
+correspondants) : sans filtre de famille, ou avec une autre famille, le moteur compte et cherche les
+exercices du bac par ces correspondances (`thG`, `secG` calculés dans `indexAnnales`) ; avec « Baccalauréat »,
+il n'affiche et ne reconnaît que les thèmes du lycée (`vocabAnn`, `themesPartie`). Un thème d'une fiche de bac,
+cliqué, relance la recherche dans la famille du bac. L'aide du moteur donne alors des exemples de lycée.
+Ré-étiquetage : brouillon automatique (correspondance des anciens thèmes), puis 10 lots de 24 sujets
+ré-étiquetés d'après la fiche et le texte des exercices, chacun relu par un second agent (5 à 18 blocs
+corrigés par lot) ; règles fixées en cours de route : géométrie plane → « Géométrie plane » seul (les thèmes
+fins de l'espace ne s'y emploient pas) ; « Matrices de transition » seulement avec une matrice ou un graphe
+probabiliste (un arbre à deux états répété relève des probabilités conditionnelles et des suites) ; un
+algorithme qui occupe une partie entière de l'exercice peut être principal, une formule de tableur n'est pas
+de l'algorithmique ; « Exponentielle et logarithme » principal quand exp ou ln est au cœur de l'étude,
+secondaire comme outil ; dans les automatismes de Première, un thème passe en secondaire s'il porte au moins
+deux questions. Consignes et scripts (`CONSIGNE_lycee.md`, `valider_ly.py`, `fusion_ly.py`) : bloc-notes de
+la conversation ; une session nouvelle s'étiquette directement dans le vocabulaire du lycée.

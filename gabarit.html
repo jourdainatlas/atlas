@@ -4301,7 +4301,7 @@ function ficheSujetHTML(x, complet) {
   h += `<h4>${annalesF(esc(d.nom || ''), d)}</h4>`;
   if (d.apercu) h += `<p class="res-resume">${annalesF(esc(d.apercu), d)}</p>`;
   const tous = [...new Set(d.parties.flatMap(p => p.themes || []))];
-  h += `<p class="fa-themes">${tous.map(t => `<button type="button" class="chip" data-rq-ext="${esc((I.themes[t] || {}).titre || t)}" title="Chercher ce thème dans les autres sujets">${esc((I.themes[t] || {}).titre || t)}</button>`).join('')}</p>`;
+  h += `<p class="fa-themes">${tous.map(t => `<button type="button" class="chip" data-rq-ext="${esc((I.themes[t] || {}).titre || t)}"${d.vocab !== 'general' ? ` data-rq-fam="${d.fam}"` : ''} title="Chercher ce thème dans les autres sujets">${esc((I.themes[t] || {}).titre || t)}</button>`).join('')}</p>`;
   const ouvert = complet || etatAnn.ouverts.has(sl);
   const telecharge = /devenirenseignant\.gouv\.fr\/media\//.test(x.sujet);
   h += `<details class="fa-parties" data-slug="${sl}"${ouvert ? ' open' : ''}><summary>${d.parties.length} partie${d.parties.length > 1 ? 's' : ''}, détail par thème</summary><ul class="res-parties">`;
@@ -4359,14 +4359,18 @@ function compteAnnales() {
   if (cle === '||||') return I.compte;
   if (compteAnnCache.cle === cle && compteAnnCache.I === I) return compteAnnCache.compte;
   const compte = {};
+  const v = vocabAnn();
   for (const s of I.sujets) if (passeFiltresAnn(s)) for (const p of s.parties) {
     const vus = new Set();
-    for (const t of p.themes || []) { vus.add(t); if (I.themes[t] && I.themes[t].parent) vus.add(I.themes[t].parent); }
+    for (const t of themesPartie(s, p, v)[0]) { vus.add(t); if (I.themes[t] && I.themes[t].parent) vus.add(I.themes[t].parent); }
     for (const t of vus) compte[t] = (compte[t] || 0) + 1;
   }
   compteAnnCache = { cle, I, compte };
   return compte;
 }
+// vocabulaire des thèmes : celui de la famille choisie (lycée pour le baccalauréat), sinon le vocabulaire général
+const vocabAnn = () => ((((R.annales || {}).familles || []).find(f => f.id === etatRech.fam)) || {}).vocabulaire || 'general';
+const themesPartie = (s, p, v) => s.vocab === v || !p.thG ? [p.themes || [], p.secondaires || []] : [p.thG, p.secG];
 const filtreAnnActif = () => !!(etatRech.fam || etatRech.conc || etatRech.fil || etatRech.de || etatRech.a);
 const triAnnDate = () => etatRech.tri ? etatRech.tri === 'date' : filtreAnnActif();
 // clé de date d'un sujet : l'année, précisée par le jour de l'épreuve quand il est connu (baccalauréat)
@@ -4397,14 +4401,19 @@ function indexAnnales() {
   if (indexAnn) return indexAnn;
   const T = R['annales-themes'] || {}, I = (R['annales-index'] || {}).sujets || [], A = R.annales || {};
   const themes = {};
-  for (const t of T.themes || []) themes[t.id] = { ...t, cles: [t.titre, ...(t.synonymes || [])].map(normRech) };
+  const vocDom = Object.fromEntries((T.domaines || []).map(d => [d.id, d.vocabulaire || 'general']));
+  for (const t of T.themes || []) themes[t.id] = { ...t, vocab: vocDom[t.domaine] || 'general', cles: [t.titre, ...(t.synonymes || [])].map(normRech) };
+  const vocFam = Object.fromEntries((A.familles || []).map(f => [f.id, f.vocabulaire || 'general']));
+  // une partie étiquetée dans un vocabulaire propre (lycée) porte aussi ses thèmes généraux (« proches »)
+  const versG = l => [...new Set((l || []).flatMap(t => themes[t] && themes[t].vocab !== 'general' ? themes[t].proches || [] : [t]))];
   const famDe = {}; for (const f of A.familles || []) for (const c of f.concours || []) famDe[c.id] = { fam: f.id, titre: (f.prefixe ? f.prefixe + ' ' : '') + c.titre.replace(/<[^>]+>/g, '') };   // « Bac Asie » : le centre seul serait ambigu
   const sujets = I.map(x => {
     const cases = (A.sujets || []).filter(c => c.sujet === x.sujet);
     const c0 = cases[0] || {};
-    return { ...x, cases, annee: c0.annee, concours: c0.concours, fam: (famDe[c0.concours] || {}).fam,
+    const fam = (famDe[c0.concours] || {}).fam, vocab = vocFam[fam] || 'general';
+    return { ...x, cases, annee: c0.annee, concours: c0.concours, fam, vocab,
       filieres: [...new Set(cases.map(c => c.filiere).filter(Boolean))],
-      parties: (x.blocs || []).map(p => ({ ...p, motsN: (p.mots || []).map(m => normRech(annalesFt(m, x))), titreN: normRech(annalesFt(p.nom || '', x)) })),
+      parties: (x.blocs || []).map(p => ({ ...p, ...(vocab !== 'general' ? (() => { const thG = versG(p.themes); return { thG, secG: versG(p.secondaires).filter(t => !thG.includes(t)) }; })() : {}), motsN: (p.mots || []).map(m => normRech(annalesFt(m, x))), titreN: normRech(annalesFt(p.nom || '', x)) })),
       texteN: normRech(`${annalesFt(x.nom || '', x)} ${annalesFt(x.apercu || '', x)}`) };
   });
   const enfants = {};
@@ -4413,7 +4422,7 @@ function indexAnnales() {
   const compte = {};
   for (const s of sujets) for (const p of s.parties) {
     const vus = new Set();
-    for (const t of p.themes || []) { vus.add(t); if (themes[t] && themes[t].parent) vus.add(themes[t].parent); }
+    for (const t of p.thG || p.themes || []) { vus.add(t); if (themes[t] && themes[t].parent) vus.add(themes[t].parent); }
     for (const t of vus) compte[t] = (compte[t] || 0) + 1;
   }
   const parUrl = Object.fromEntries(sujets.map(s => [s.sujet, s]));
@@ -4443,7 +4452,8 @@ function rechercherAnnales(q) {
   if (!n) return { themes: [], res: [] };
   // le titre du thème compte plein ; un synonyme (souvent plus étroit que le thème) compte moitié
   // tolérance aux fautes seulement si rien ne correspond exactement
-  const essai = flou => Object.values(I.themes).map(t => { const sc = t.cles.map((k, i) => scoreCle(n, k, flou) * (i ? .55 : 1)); return { t, s: Math.max(...sc), brut: Math.max(...t.cles.map(k => scoreCle(n, k, flou))) }; }).filter(x => x.brut >= 4).sort((a, b) => b.s - a.s);
+  const v = vocabAnn();
+  const essai = flou => Object.values(I.themes).filter(t => t.vocab === v).map(t => { const sc = t.cles.map((k, i) => scoreCle(n, k, flou) * (i ? .55 : 1)); return { t, s: Math.max(...sc), brut: Math.max(...t.cles.map(k => scoreCle(n, k, flou))) }; }).filter(x => x.brut >= 4).sort((a, b) => b.s - a.s);
   let th = essai(false); if (!th.length) th = essai(true);
   const best = th.length ? th[0].s : 0;
   const thRet = th.filter(x => x.s === best || x.s >= Math.max(3.3, .7 * best));
@@ -4454,8 +4464,9 @@ function rechercherAnnales(q) {
     if (!passeFiltresAnn(s)) continue;
     const parts = s.parties.map((p, i) => {
       let sc = 0, prin = false;
-      for (const t of p.themes || []) if (poids[t]) { sc += 3 * poids[t]; prin = true; }
-      for (const t of p.secondaires || []) if (poids[t]) sc += 1 * poids[t];
+      const [thP, thS] = themesPartie(s, p, v);
+      for (const t of thP) if (poids[t]) { sc += 3 * poids[t]; prin = true; }
+      for (const t of thS) if (poids[t]) sc += 1 * poids[t];
       const sm = Math.max(0, ...p.motsN.map(k => scoreCle(n, k)));
       if (sm >= 4) { sc += 3.5 * sm / 10; prin = prin || sm >= 6; }
       if (scoreCle(n, p.titreN) >= 4) sc += 1;
@@ -4507,7 +4518,7 @@ function resultatsAnnales() {
   if (!q) {
     // parcours : les thèmes présents, par domaine, avec le nombre de parties concernées
     let h = '<div class="rech-domaines">';
-    for (const d of I.domaines) {
+    for (const d of I.domaines.filter(d => (d.vocabulaire || 'general') === vocabAnn())) {
       const ts = Object.values(I.themes).filter(t => t.domaine === d.id && !t.parent && C[t.id]).sort((a, b) => C[b.id] - C[a.id]);
       if (!ts.length) continue;
       // couleur du domaine : celle de sa famille dans l'édifice (algèbre orange, nombres bleu, analyse vert d'eau, géométrie violet)
@@ -4561,9 +4572,10 @@ function blocRechercheAnnales() {
   const fams = (R.annales || {}).familles || [];
   const anTous = [...new Set(((R.annales || {}).familles || []).flatMap(f => f.annees || []))].sort((a, b) => a - b);
   let h = `<section class="rech-ann carte" id="rech-ann"><div class="rech-tete"><h3>Chercher un thème dans les sujets</h3><button type="button" class="bouton rech-effacer" data-reffacer${rechVide() ? ' hidden' : ''}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>Effacer la recherche</button></div>`;
-  h += `<p class="rech-aide">Tapez une notion (« séries entières », « Perron-Frobenius », « loi de Poisson »…) : le moteur renvoie les parties de sujets qui la travaillent, avec un lien qui ouvre le PDF à la bonne page. Un thème large (« Variables aléatoires ») regroupe des thèmes fins (« Loi de Poisson ») qu'on peut choisir ensuite pour préciser. Sujets étiquetés : session${ans.length > 1 ? 's' : ''} ${ans.length > 3 ? `${ans[0]} à ${ans[ans.length - 1]}` : ans.join(', ')} (${I.sujets.length} sujets)${ans.length < 16 ? ', les autres années suivront' : ''}.</p>`;
+  const lyc = vocabAnn() === 'lycee';
+  h += `<p class="rech-aide">Tapez une notion (${lyc ? '« loi binomiale », « intégration par parties », « représentation paramétrique »' : '« séries entières », « Perron-Frobenius », « loi de Poisson »'}…) : le moteur renvoie les ${lyc ? 'exercices' : 'parties de sujets'} qui la travaillent, avec un lien qui ouvre le PDF à la bonne page. Un thème large (${lyc ? '« Géométrie dans l\'espace »' : '« Variables aléatoires »'}) regroupe des thèmes fins (${lyc ? '« Droites et plans »' : '« Loi de Poisson »'}) qu'on peut choisir ensuite pour préciser.${lyc ? ' Les thèmes proposés sont ceux du programme du lycée.' : ''} Sujets étiquetés : session${ans.length > 1 ? 's' : ''} ${ans.length > 3 ? `${ans[0]} à ${ans[ans.length - 1]}` : ans.join(', ')} (${I.sujets.length} sujets)${ans.length < 16 ? ', les autres années suivront' : ''}.</p>`;
   h += `<div class="rech-ligne"><input type="search" id="ann-q" value="${esc(etatRech.q)}" placeholder="Un thème, un théorème, un objet…" aria-label="Rechercher un thème dans les sujets" autocomplete="off" list="ann-themes">`;
-  h += `<datalist id="ann-themes">${Object.values(I.themes).filter(t => I.compte[t.id]).map(t => `<option value="${esc(t.titre)}">`).join('')}</datalist>`;
+  h += `<datalist id="ann-themes">${(() => { const C = compteAnnales(); return Object.values(I.themes).filter(t => C[t.id]); })().map(t => `<option value="${esc(t.titre)}">`).join('')}</datalist>`;
   h += `<select id="ann-fam" aria-label="Famille de concours"><option value="">Tous les concours</option>${fams.map(f => `<option value="${f.id}"${etatRech.fam === f.id ? ' selected' : ''}>${esc(f.titre)}</option>`).join('')}</select>`;
   // écoles (ingénieurs) ou concours (enseignement) de la famille choisie, ceux qui ont des sujets étiquetés
   const famCh = fams.find(f => f.id === etatRech.fam);
@@ -5650,8 +5662,11 @@ $('#rubrique').addEventListener('click', ev => {
   const rx = t.closest('[data-rq-ext]');
   if (rx) {
     etatRech.q = rx.dataset.rqExt; etatRech.montres = 12;
+    // thème d'un vocabulaire propre (lycée) : on se place dans sa famille, où ce vocabulaire a cours
+    const famR = rx.dataset.rqFam || '', changeFam = famR !== etatRech.fam && (famR || vocabAnn() !== 'general');
+    if (changeFam) Object.assign(etatRech, { fam: famR, conc: '', fil: '' });
     if (location.hash.startsWith('#annales/sujet/')) location.hash = '#annales';
-    setTimeout(() => { const i = $('#ann-q'); if (i) i.value = etatRech.q; majRechercheAnnales(); const z = $('#rech-ann'); if (z) z.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 30);
+    setTimeout(() => { if (changeFam) { const z = $('#rech-ann'); if (z) z.outerHTML = blocRechercheAnnales(); } const i = $('#ann-q'); if (i) i.value = etatRech.q; majRechercheAnnales(); const z = $('#rech-ann'); if (z) z.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 30);
     return;
   }
   const pl = t.closest('[data-pli]'); if (pl) { const f = ((R.annales || {}).familles || []).find(x => x.id === etatAnn.famille) || {}; const k = pl.dataset.pli;
