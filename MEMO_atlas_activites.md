@@ -3,6 +3,13 @@
 > Complément de `MEMO_atlas.md` (à lire d'abord, section 0). Ce mémo décrit la rubrique des activités
 > interactives : pages où l'on manipule une figure ou un paramètre avant de lire l'énoncé et la démonstration.
 > Sections numérotées à partir de 117 (numérotation commune à tous les mémos).
+>
+> **RÈGLE PERMANENTE (auteur, 12 nov. 2026) : relecture indépendante automatique.** Toute pièce ou fabrique
+> nouvelle ou modifiée de « Raisonner » et de « Dix calculs » est relue par un agent indépendant (lecture
+> seule) AVANT publication, sans attendre que l'auteur le demande. `node outils/activites_raisonner.mjs`
+> l'impose : il liste ce qui reste à relire et échoue tant que le registre n'est pas à jour (§156). Même règle,
+> sans registre, pour tout autre contenu mathématique nouveau de la rubrique (texte d'une exploration,
+> démonstration d'un casse-tête).
 
 ### 117. La rubrique (11 nov. 2026)
 
@@ -1377,6 +1384,37 @@ fonctions circulaires réciproques et hyperboliques : 35 407 questions, zéro é
 Seuil de la classe `longues` abaissé : (signes hors commandes) + 2 × (nombre de commandes LaTeX) > 7, après
 contrôle au navigateur que plus aucune réponse ne se coupe sur deux lignes à 375 px (1 470 questions de toutes
 les familles ; le test compte les rectangles de `.katex-html`).
+
+### 156. Relecture indépendante rendue automatique ; relecture du calcul littéral (12 nov. 2026)
+
+**Demande de l'auteur** : faire relire le calcul littéral par un agent indépendant, et que cette relecture soit
+désormais automatique.
+
+**Mécanisme.** `outils/activites_relectures.json` est le registre des relectures : pour chaque démonstration,
+erreur, implication, contre-exemple (par identifiant) et chaque fabrique de « Dix calculs » (par
+`classe/thème`), l'empreinte de son contenu au moment où un agent indépendant l'a relue.
+`node outils/activites_raisonner.mjs` recalcule les empreintes et, pour toute pièce absente du registre
+(« nouvelle ») ou dont l'empreinte a changé (« modifiée »), affiche « À FAIRE RELIRE PAR UN AGENT
+INDÉPENDANT » et sort en erreur. Marche à suivre à chaque ajout ou retouche : (1) lancer l'outil, qui donne la
+liste ; (2) lancer un agent en lecture seule sur ces pièces seulement, avec les consignes des relectures des
+§152, §153 et de celle-ci (exactitude, unicité de la bonne réponse, domaines, niveau, écriture, test numérique
+indépendant pour les calculs) ; (3) corriger ; (4) `node outils/activites_raisonner.mjs --relu`, qui inscrit
+l'état corrigé ; (5) publier, en disant à l'auteur ce que le relecteur a trouvé. Limites : l'empreinte d'une
+fabrique est celle de son code, pas des fonctions d'écriture qu'elle appelle (`question`, `poly`…) : les faire
+relire quand on les touche. Une simple correction de coquille redemande une relecture ; c'est voulu. Le
+registre initial (12 nov.) enregistre l'état publié après les relectures des §152, §153 et de ce paragraphe ;
+les corrections qui ont suivi chaque rapport ont été faites par la conversation, sans second passage.
+L'outil n'est pas appelé par `construire.sh` (fichier commun) : c'est à la conversation de le lancer.
+
+**Relecture du calcul littéral** (neuf fabriques du §155 et de son complément ; 53 067 questions testées par
+le relecteur avec mpmath, 86 lignes de table relues). Aucune bonne réponse fausse, aucune réponse fausse
+juste. Corrigé : dérivée de √(ax + b) écrite avec une fraction non réduite quand a est pair (2/(2√u)) ;
+« 1n » dans un énoncé d'équivalent ; réponses fausses éliminables par le seul domaine (arcsin sur ℝ) ou
+toujours identiques (e^(1/n) − 1) ; « là où f est dérivable » ajouté aux énoncés de dérivées ; intervalle
+inutile retiré pour 2x/(x² + b) ; les réponses fausses de réserve sont maintenant tirées au hasard
+(`melanger(faux)`), toutes étant fausses (revérifié : 35 000 questions, trois passes, zéro écart). Laissé :
+« 0 » proposé comme équivalent dans trois suites (confusion classique, voulue) ; notations `\dfrac{1}{2}x^2`
+et `\dfrac{n^2}{2}` mêlées ; séries un peu répétitives dans les trois thèmes les plus courts (22 à 29 énoncés).
 
 Explorations : vingt-huit. Jeux et casse-têtes : seize. Calcul mental : deux activités. Raisonner : quatre.
 Parcours du jour : une.

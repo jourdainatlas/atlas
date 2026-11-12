@@ -149,29 +149,29 @@ const simplifier = () => { const t = R(0, 3);
     return question(`Simplifiez ${K('\\dfrac{' + poly([-b * b, 0, 1]) + '}{' + lin(1, -b) + '}')}, pour ${K('x \\neq ' + b)}.`, lin(1, b), [lin(1, -b), lin(1, b * b), poly([b, 0, 1]), 'x', lin(1, -b * b)]); }
   const a = R(2, 6), b = pick(NZ); return question(`Simplifiez ${K('\\dfrac{' + lin(a, a * b) + '}{' + a + '}')}.`, lin(1, b), [lin(1, a * b), lin(a, b), lin(1, a + b), 'x', lin(a, a * b)]); };
 
-const deriver = () => { const a = R(2, 5), b = R(1, 6), n = R(3, 5), E = 'e^{' + a + 'x}', u = lin(a, b), [f, bon, faux] = pick([
+const deriver = () => { const a = R(2, 5), b = R(1, 6), n = R(3, 5), E = 'e^{' + a + 'x}', u = lin(a, b), g = a % 2 ? 1 : 2, rac = '\\sqrt{' + u + '}', [f, bon, faux] = pick([
     ['x\\,' + E, '(1+' + a + 'x)' + E, [a + E, a + 'x\\,' + E, '(1+x)' + E, E]],
     ['\\ln(x^2+' + b + ')', '\\dfrac{2x}{x^2+' + b + '}', ['\\dfrac{1}{x^2+' + b + '}', '\\dfrac{1}{2x}', '2x\\ln(x^2+' + b + ')', '\\dfrac{x^2}{x^2+' + b + '}']],
     ['e^{' + a + 'x^2}', 2 * a + 'x\\,e^{' + a + 'x^2}', ['e^{' + a + 'x^2}', a + 'x\\,e^{' + a + 'x^2}', 2 * a + 'x\\,e^{' + 2 * a + 'x}', a + 'x^2e^{' + a + 'x^2}']],
     ['(' + u + ')^{' + n + '}', n * a + '(' + u + ')^{' + (n - 1) + '}', [n + '(' + u + ')^{' + (n - 1) + '}', a + '(' + u + ')^{' + (n - 1) + '}', n * a + '(' + u + ')^{' + n + '}', n * a + 'x^{' + (n - 1) + '}']],
     ['\\dfrac{1}{' + u + '}', '-\\dfrac{' + a + '}{(' + u + ')^2}', ['\\dfrac{' + a + '}{(' + u + ')^2}', '-\\dfrac{1}{(' + u + ')^2}', '-\\dfrac{' + a + '}{' + u + '}', '\\ln(' + u + ')']],
     ['x\\ln x', '\\ln x+1', ['\\dfrac{1}{x}', '\\ln x', '1', '\\dfrac{\\ln x}{x}']],
-    ['\\sqrt{' + u + '}', '\\dfrac{' + a + '}{2\\sqrt{' + u + '}}', ['\\dfrac{1}{2\\sqrt{' + u + '}}', '\\dfrac{' + a + '}{\\sqrt{' + u + '}}', '\\dfrac{' + a + '}{2}\\sqrt{' + u + '}', '\\dfrac{1}{\\sqrt{' + u + '}}']],
+    [rac, '\\dfrac{' + a / g + '}{' + (g === 1 ? '2' : '') + rac + '}', ['\\dfrac{1}{2' + rac + '}', '\\dfrac{' + a + '}{' + rac + '}', (g === 1 ? '\\dfrac{' + a + '}{2}' : a === 2 ? '' : a / 2) + rac, '\\dfrac{1}{' + rac + '}']],
     ['\\cos(' + a + 'x)', '-' + a + '\\sin(' + a + 'x)', [a + '\\sin(' + a + 'x)', '-\\sin(' + a + 'x)', '-' + a + '\\cos(' + a + 'x)', a + '\\cos(' + a + 'x)']],
     ['\\sin(' + a + 'x)', a + '\\cos(' + a + 'x)', ['-' + a + '\\cos(' + a + 'x)', '\\cos(' + a + 'x)', a + '\\sin(' + a + 'x)', '-' + a + '\\sin(' + a + 'x)']],
     ['\\dfrac{\\ln x}{x}', '\\dfrac{1-\\ln x}{x^2}', ['\\dfrac{1}{x^2}', '\\dfrac{\\ln x-1}{x^2}', '\\dfrac{1}{x}', '\\dfrac{1+\\ln x}{x^2}']]]);
-  return question(`Soit ${K('f(x) = ' + f)}. Quelle est l'expression de ${K("f'(x)")} ?`, bon, faux); };
+  return question(`Soit ${K('f(x) = ' + f)}. Quelle est l'expression de ${K("f'(x)")}, là où ${K('f')} est dérivable ?`, bon, melanger(faux)); };
 const primitives = () => { const a = R(2, 5), b = R(1, 6), n = R(2, 5), k = R(2, 4), E = 'e^{' + a + 'x}', inv = '\\dfrac{1}{' + a + '}', u = lin(a, b), [f, bon, faux, pos] = pick([
     [E, inv + E, [a + E, E, 'x\\,' + E, '\\dfrac{e^{' + a + 'x+1}}{' + a + 'x+1}']],
     ['x^{' + n + '}', '\\dfrac{x^{' + (n + 1) + '}}{' + (n + 1) + '}', [n + 'x' + (n > 2 ? '^{' + (n - 1) + '}' : ''), 'x^{' + (n + 1) + '}', '\\dfrac{x^{' + (n + 1) + '}}{' + n + '}', (n + 1) + 'x^{' + (n + 1) + '}']],
-    ['\\dfrac{2x}{x^2+' + b + '}', '\\ln(x^2+' + b + ')', ['\\dfrac{1}{x^2+' + b + '}', '2\\ln(x^2+' + b + ')', '\\ln(2x)', '\\dfrac{x^2}{x^2+' + b + '}'], 1],
+    ['\\dfrac{2x}{x^2+' + b + '}', '\\ln(x^2+' + b + ')', ['\\dfrac{1}{x^2+' + b + '}', '2\\ln(x^2+' + b + ')', '\\dfrac{2}{x^2+' + b + '}', '\\dfrac{x^2}{x^2+' + b + '}']],
     [2 * k + 'x\\,e^{x^2}', k + 'e^{x^2}', [2 * k + 'e^{x^2}', k + 'x^2e^{x^2}', 'e^{x^2}', 4 * k + 'x^2e^{x^2}']],
     ['\\cos(' + a + 'x)', inv + '\\sin(' + a + 'x)', [a + '\\sin(' + a + 'x)', '-' + inv + '\\sin(' + a + 'x)', '-' + a + '\\sin(' + a + 'x)', '\\sin(' + a + 'x)']],
     ['\\sin(' + a + 'x)', '-' + inv + '\\cos(' + a + 'x)', [inv + '\\cos(' + a + 'x)', a + '\\cos(' + a + 'x)', '-' + a + '\\cos(' + a + 'x)', '-\\cos(' + a + 'x)']],
     ['\\dfrac{1}{x^2}', '-\\dfrac{1}{x}', ['\\dfrac{1}{x}', '-\\dfrac{2}{x^3}', '\\ln(x^2)', '\\dfrac{1}{x^3}'], 1],
     ['\\dfrac{1}{\\sqrt{x}}', '2\\sqrt{x}', ['\\sqrt{x}', '\\dfrac{1}{2\\sqrt{x}}', '-\\dfrac{1}{2x\\sqrt{x}}', '\\ln(\\sqrt{x})'], 1],
     ['\\dfrac{1}{' + u + '}', inv + '\\ln(' + u + ')', ['\\ln(' + u + ')', a + '\\ln(' + u + ')', '-\\dfrac{' + a + '}{(' + u + ')^2}', '-\\dfrac{1}{(' + u + ')^2}'], 1]]);
-  return question(`Laquelle de ces fonctions est une primitive de ${K('x \\mapsto ' + f)}` + (pos ? ` sur ${K(']0, +\\infty[')}` : '') + ' ?', bon, faux); };
+  return question(`Laquelle de ces fonctions est une primitive de ${K('x \\mapsto ' + f)}` + (pos ? ` sur ${K(']0, +\\infty[')}` : '') + ' ?', bon, melanger(faux)); };
 
 // Terme (n/d)·v^p sans son signe, puis somme de termes [n, d, p] et reste o(x^ordre).
 const terme = (n, d, p, v = 'x') => { const g = pgcd(n, d), a = Math.abs(n) / g, e = d / g, x = p === 0 ? '' : v + (p > 1 ? '^{' + p + '}' : '');
@@ -191,11 +191,11 @@ const dl = () => { const a = R(2, 4), c = R(3, 6), U = [1, 1, 0], [f, o, bon, fa
     ['\\arctan x', 3, [[1, 1, 1], [-1, 3, 3]], [[[1, 1, 1], [1, 3, 3]], [[1, 1, 1], [-1, 6, 3]], [[1, 1, 1], [-1, 2, 3]], [[1, 1, 1], [1, 6, 3]]]],
     ['\\dfrac{1}{1+x^2}', 4, [U, [-1, 1, 2], [1, 1, 4]], [[U, [1, 1, 2], [1, 1, 4]], [U, [-1, 1, 2], [1, 2, 4]], [U, [-1, 1, 2], [-1, 1, 4]], [U, [-2, 1, 2], [1, 1, 4]]]],
     ['\\ln(1+x)', 3, [[1, 1, 1], [-1, 2, 2], [1, 3, 3]], [[[1, 1, 1], [-1, 2, 2], [1, 6, 3]], [[1, 1, 1], [1, 2, 2], [1, 3, 3]], [[1, 1, 1], [-1, 1, 2], [1, 1, 3]], [[1, 1, 1], [-1, 2, 2], [-1, 3, 3]]]]]);
-  return question(`Quel est le développement limité à l'ordre ${K(o)} en 0 de ${K(f)} ?`, dlS(bon, o), faux.map(t => dlS(t, o))); };
+  return question(`Quel est le développement limité à l'ordre ${K(o)} en 0 de ${K(f)} ?`, dlS(bon, o), melanger(faux.map(t => dlS(t, o)))); };
 const equivalents = () => { const a = R(2, 5), c = R(1, 4), s = (n, d, p, v) => signe(n, d, p, v);
   if (R(0, 2)) { const [f, bon, faux] = pick([
       ['\\sin(' + a + 'x)', s(a, 1, 1), [s(1, 1, 1), s(a, 1, 0), s(a, 1, 2), s(a, 2, 1)]],
-      ['1-\\cos(' + (c === 1 ? '' : c) + 'x)', s(c * c, 2, 2), [s(c, 2, 2), s(c * c, 1, 2), s(c * c, 2, 1), s(-c * c, 2, 2), s(c, 1, 1)]],
+      ['1-\\cos' + (c === 1 ? ' x' : '(' + c + 'x)'), s(c * c, 2, 2), [s(c, 2, 2), s(c * c, 1, 2), s(c * c, 2, 1), s(-c * c, 2, 2), s(c, 1, 1)]],
       ['\\ln(1+' + a + 'x)', s(a, 1, 1), [s(1, 1, 1), s(a, 1, 2), s(-a * a, 2, 2), s(a, 1, 0)]],
       ['e^{' + a + 'x}-1', s(a, 1, 1), [s(1, 1, 1), s(a, 1, 2), s(a * a, 2, 2), s(1, 1, 0)]],
       ['\\sqrt{1+' + a + 'x}-1', s(a, 2, 1), [s(a, 1, 1), s(1, 2, 1), s(a, 2, 2), s(-a * a, 8, 2)]],
@@ -204,17 +204,17 @@ const equivalents = () => { const a = R(2, 5), c = R(1, 4), s = (n, d, p, v) => 
       ['\\ln(\\cos x)', s(-1, 2, 2), [s(1, 2, 2), s(-1, 1, 2), s(-1, 1, 1), s(-1, 2, 1)]],
       ['\\tan x-x', s(1, 3, 3), [s(-1, 3, 3), s(1, 6, 3), s(1, 1, 2), s(1, 2, 3)]],
       ['\\sqrt{1+x}-\\sqrt{1-x}', s(1, 1, 1), [s(1, 2, 1), s(2, 1, 1), s(1, 1, 2), s(-1, 4, 2)]]]);
-    return question(`Quel est un équivalent de ${K(f)} quand ${K('x')} tend vers 0 ?`, bon, faux); }
+    return question(`Quel est un équivalent de ${K(f)} quand ${K('x')} tend vers 0 ?`, bon, melanger(faux)); }
   const b = R(1, 9), d = R(1, 9), p = R(2, 5), q = R(2, 5), [f, bon, faux] = pick([
-    ['\\dfrac{' + p + 'n^2+' + b + 'n}{' + q + 'n+' + d + '}', p === q ? 'n' : s(p, q, 1, 'n'), [s(p, q, 2, 'n'), fr(p, q), s(b, d, 1, 'n'), s(p, 1, 1, 'n'), s(p, q * q, 1, 'n')]],
+    ['\\dfrac{' + p + 'n^2+' + (b === 1 ? '' : b) + 'n}{' + q + 'n+' + d + '}', p === q ? 'n' : s(p, q, 1, 'n'), [s(p, q, 2, 'n'), fr(p, q), s(b, d, 1, 'n'), s(p, 1, 1, 'n'), s(p, q * q, 1, 'n')]],
     ['\\ln(n^2+1)', '2\\ln n', ['\\ln n', 'n^2', '2n']],
     ['\\sqrt{n^2+n}-n', '\\dfrac{1}{2}', ['0', '\\dfrac{n}{2}', '1', '\\sqrt{n}']],
     ['\\ln\\left(1+\\dfrac{' + a + '}{n}\\right)', '\\dfrac{' + a + '}{n}', ['\\dfrac{1}{n}', String(a), '\\dfrac{' + a + '}{n^2}', '\\ln ' + a]],
     ['n\\sin\\left(\\dfrac{1}{n}\\right)', '1', ['n', '\\dfrac{1}{n}', '0', '\\sin 1']],
     ['\\displaystyle\\binom{n}{2}', '\\dfrac{n^2}{2}', ['n^2', '\\dfrac{n}{2}', '2n', 'n']],
-    ['e^{1/n}-1', '\\dfrac{1}{n}', ['1', '0', 'e', '\\dfrac{1}{n^2}']],
+    ['e^{1/n}-1', '\\dfrac{1}{n}', ['\\dfrac{1}{n^2}', '1', '\\dfrac{e}{n}', '0']],
     ['\\sqrt{n+1}-\\sqrt{n}', '\\dfrac{1}{2\\sqrt{n}}', ['0', '\\dfrac{1}{\\sqrt{n}}', '\\dfrac{1}{2}', '\\dfrac{1}{2n}']]]);
-  return question(`Quel est un équivalent de ${K('u_n = ' + f)} quand ${K('n')} tend vers ${K('+\\infty')} ?`, bon, faux); };
+  return question(`Quel est un équivalent de ${K('u_n = ' + f)} quand ${K('n')} tend vers ${K('+\\infty')} ?`, bon, melanger(faux)); };
 
 // Maths Sup : dérivées et primitives à reconnaître (fonctions circulaires réciproques, hyperboliques, puissances, parties).
 const R1 = '\\sqrt{1-x^2}', R2 = '\\sqrt{1+x^2}', CH = '\\operatorname{ch}', SH = '\\operatorname{sh}';
@@ -232,9 +232,9 @@ const deriver3 = () => { const a = R(2, 5), q = a * a, [f, bon, faux] = pick([
     ['\\ln\\left(x+' + R2 + '\\right)', '\\dfrac{1}{' + R2 + '}', ['\\dfrac{1}{x+' + R2 + '}', '\\dfrac{x}{' + R2 + '}', '\\dfrac{1}{1+x^2}', '\\dfrac{1}{' + R1 + '}']],
     ['x^2e^{-x}', '(2x-x^2)e^{-x}', ['2x\\,e^{-x}', '-2x\\,e^{-x}', '(2x+x^2)e^{-x}', '-x^2e^{-x}']],
     ['\\arctan\\left(\\dfrac{1}{x}\\right)', '-\\dfrac{1}{1+x^2}', ['\\dfrac{1}{1+x^2}', '\\dfrac{x^2}{1+x^2}', '-\\dfrac{1}{x^2}', '-\\dfrac{1}{x^2(1+x^2)}']]]);
-  return question(`Soit ${K('f(x) = ' + f)}. Quelle est l'expression de ${K("f'(x)")} ?`, bon, faux); };
+  return question(`Soit ${K('f(x) = ' + f)}. Quelle est l'expression de ${K("f'(x)")}, là où ${K('f')} est dérivable ?`, bon, melanger(faux)); };
 const primitives3 = () => { const a = R(2, 5), q = a * a, inv = '\\dfrac{1}{' + a + '}', AT = '\\arctan\\left(\\dfrac{x}{' + a + '}\\right)', PI = '\\left]-\\dfrac{\\pi}{2}, \\dfrac{\\pi}{2}\\right[', [f, bon, faux, I] = pick([
-    ['\\dfrac{1}{1+x^2}', '\\arctan x', ['\\ln(1+x^2)', '\\arcsin x', '\\dfrac{1}{2x}\\ln(1+x^2)', '-\\dfrac{2x}{(1+x^2)^2}'], '\\mathbb{R}'],
+    ['\\dfrac{1}{1+x^2}', '\\arctan x', ['\\ln(1+x^2)', '\\dfrac{1}{2}\\ln(1+x^2)', '-\\dfrac{2x}{(1+x^2)^2}', '\\dfrac{x}{1+x^2}'], '\\mathbb{R}'],
     ['\\dfrac{1}{x^2+' + q + '}', inv + AT, [AT, a + AT, '\\dfrac{1}{' + q + '}' + AT, inv + '\\arctan(' + a + 'x)'], '\\mathbb{R}'],
     ['\\dfrac{1}{' + R1 + '}', '\\arcsin x', ['\\arccos x', '\\arctan x', R1, '-' + R1], ']-1, 1['],
     ['\\tan x', '-\\ln(\\cos x)', ['\\ln(\\cos x)', '\\dfrac{1}{\\cos^2 x}', '\\ln(\\sin x)', '-\\ln(\\sin x)'], '\\left]0, \\dfrac{\\pi}{2}\\right['],
@@ -247,7 +247,7 @@ const primitives3 = () => { const a = R(2, 5), q = a * a, inv = '\\dfrac{1}{' + 
     [SH + '(' + a + 'x)', inv + CH + '(' + a + 'x)', ['-' + inv + CH + '(' + a + 'x)', a + CH + '(' + a + 'x)', inv + SH + '(' + a + 'x)', CH + '(' + a + 'x)'], '\\mathbb{R}'],
     ['\\dfrac{1}{\\cos^2 x}', '\\tan x', ['-\\tan x', '\\dfrac{2\\sin x}{\\cos^3 x}', '\\ln(\\cos^2 x)', '-\\dfrac{1}{\\cos x}'], PI],
     ['\\dfrac{x}{' + R2 + '}', R2, ['\\dfrac{1}{2}' + R2, '2' + R2, '\\ln\\left(x+' + R2 + '\\right)', '\\dfrac{x^2}{2' + R2 + '}'], '\\mathbb{R}']]);
-  return question(`Laquelle de ces fonctions est une primitive de ${K('x \\mapsto ' + f)} sur ${K(I)} ?`, bon, faux); };
+  return question(`Laquelle de ces fonctions est une primitive de ${K('x \\mapsto ' + f)} sur ${K(I)} ?`, bon, melanger(faux)); };
 
 export const FAMILLES = {
   premiere: [['carres', 'Carrés de 11 à 25', carres], ['pourcentages', 'Pourcentages', pourcentages], ['fractions', 'Sommes de fractions', fractions], ['puissances', 'Puissances', puissances], ['discriminant', 'Discriminants', discriminant], ['derive', 'Nombres dérivés', nombreDerive], ['suites', 'Suites arithmétiques et géométriques', suites1], ['trigo', 'Valeurs de cosinus et de sinus', trigo], ['developper', 'Développer', developper], ['factoriser', 'Factoriser', factoriser], ['simplifier', 'Simplifier', simplifier]],
