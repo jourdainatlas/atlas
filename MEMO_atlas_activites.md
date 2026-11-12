@@ -861,4 +861,7 @@ débutant 20 sur 20 ; moyen contre facile 16 sur 16 ; fort contre moyen 8 sur 8.
 échange, compteur remis à zéro). Une fois le taquin rangé, le message rappelle le minimum depuis la position de
 départ (exact jusqu'à neuf cases ; minorant de Manhattan au-delà, annoncé comme tel).
 
+**Polyominos (12 nov., demande de l'auteur, sur téléphone).** Un nouveau clic sur la pièce déjà choisie dans la
+réserve la tourne d'un quart de tour, comme la touche R (utile au doigt, où il n'y a pas de clavier).
+
 Explorations : vingt-huit. Jeux et casse-têtes : seize.
