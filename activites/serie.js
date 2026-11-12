@@ -29,9 +29,9 @@ export const css = cssCommun + cssFigures + cssJeux + `
 
 export const html = `
 <header class="col">
-  <p class="eyebrow">Calcul mental · Première, Terminale, Maths Sup</p>
+  <p class="eyebrow">Calcul mental · Première, Terminale, Maths expertes, Maths Sup</p>
   <h3>Dix calculs</h3>
-  <p class="lede">Dix calculs à faire de tête, contre la montre, sur un thème de votre classe : carrés et pourcentages en Première, logarithmes et intégrales en Terminale, complexes et limites usuelles en Maths Sup. Quatre réponses sont proposées ; une seule est exacte, les autres sont les erreurs que l'on commet le plus souvent.</p>
+  <p class="lede">Dix calculs à faire de tête, contre la montre, sur un thème de votre classe : carrés et pourcentages en Première, logarithmes et intégrales en Terminale, à quoi s'ajoutent PGCD, congruences et nombres complexes avec l'option Maths expertes, puis déterminants et limites usuelles en Maths Sup. Quatre réponses sont proposées ; une seule est exacte, les autres sont les erreurs que l'on commet le plus souvent.</p>
 </header>
 
 <div class="jeu">

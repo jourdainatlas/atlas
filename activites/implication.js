@@ -78,7 +78,7 @@ export const html = `
 const TEXTE = { d: 'A ⇒ B seulement', g: 'B ⇒ A seulement', e: 'A ⇔ B', n: 'aucune des deux implications' };
 export function monter(racine) {
   const q = s => racine.querySelector(s); let P = PIECES[0], choisi = '', niveau = 'tous', theme = 'tous', vivant = true, duParcours = false;
-  const D = demande('implication'); if (D) { niveau = D.niveau; P = pieceDuJour(PIECES, niveau, 'implication') || P; duParcours = true; }
+  const D = demande('implication'); if (D) { P = pieceDuJour(PIECES, D.niveau, 'implication') || P; niveau = P.niveau; duParcours = true; }
   const visibles = () => filtrer(PIECES, niveau, theme);
   function listes() { const M = lireMemoire('implication'), V = visibles();
     ecrire(q('#im-niveaux'), pucesNiveaux(PIECES, niveau), true); const th = q('#im-themes'); th.hidden = niveau !== 'sup'; if (niveau === 'sup') ecrire(th, pucesThemes(PIECES, theme), true);

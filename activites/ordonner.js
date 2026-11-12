@@ -225,7 +225,7 @@ export { PIECES };
 
 export function monter(racine) {
   const q = s => racine.querySelector(s); let P = PIECES[0], L = [], ordre = [], msg = '', cl = '', marque = -1, conseil = '', niveau = 'tous', theme = 'tous', nbIntrus = 1, vivant = true, duParcours = false;
-  const D = demande('ordonner'); if (D) { niveau = D.niveau; P = pieceDuJour(PIECES, niveau, 'ordonner') || P; duParcours = true; }
+  const D = demande('ordonner'); if (D) { P = pieceDuJour(PIECES, D.niveau, 'ordonner') || P; niveau = P.niveau; duParcours = true; }
   const texte = id => (P.etapes.find(e => e.id === id) || P.intrus.find(e => e.id === id)).t, visibles = () => filtrer(PIECES, niveau, theme);
   function listes() { const M = lireMemoire('ordonner'), V = visibles();
     ecrire(q('#od-niveaux'), pucesNiveaux(PIECES, niveau), true); const th = q('#od-themes'); th.hidden = niveau !== 'sup'; if (niveau === 'sup') ecrire(th, pucesThemes(PIECES, theme), true);

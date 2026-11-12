@@ -143,7 +143,7 @@ export { PIECES };
 
 export function monter(racine) {
   const q = s => racine.querySelector(s); let P = PIECES[0], vus = new Set(), trouve = false, essais = 0, msg = '', niveau = 'tous', theme = 'tous', vivant = true, duParcours = false;
-  const D = demande('erreur'); if (D) { niveau = D.niveau; P = pieceDuJour(PIECES, niveau, 'erreur') || P; duParcours = true; }
+  const D = demande('erreur'); if (D) { P = pieceDuJour(PIECES, D.niveau, 'erreur') || P; niveau = P.niveau; duParcours = true; }
   const visibles = () => filtrer(PIECES, niveau, theme);
   function listes() { const M = lireMemoire('erreur'), V = visibles();
     ecrire(q('#er-niveaux'), pucesNiveaux(PIECES, niveau), true); const th = q('#er-themes'); th.hidden = niveau !== 'sup'; if (niveau === 'sup') ecrire(th, pucesThemes(PIECES, theme), true);

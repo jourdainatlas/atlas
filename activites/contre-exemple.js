@@ -67,7 +67,7 @@ export const html = `
 
 export function monter(racine) {
   const q = s => racine.querySelector(s); let P = PIECES[0], ordre = [], vus = new Set(), trouve = false, essais = 0, msg = '', niveau = 'tous', theme = 'tous', vivant = true, duParcours = false;
-  const D = demande('contre-exemple'); if (D) { niveau = D.niveau; P = pieceDuJour(PIECES, niveau, 'contre-exemple') || P; duParcours = true; }
+  const D = demande('contre-exemple'); if (D) { P = pieceDuJour(PIECES, D.niveau, 'contre-exemple') || P; niveau = P.niveau; duParcours = true; }
   const visibles = () => filtrer(PIECES, niveau, theme);
   function listes() { const M = lireMemoire('contre'), V = visibles();
     ecrire(q('#cx-niveaux'), pucesNiveaux(PIECES, niveau), true); const th = q('#cx-themes'); th.hidden = niveau !== 'sup'; if (niveau === 'sup') ecrire(th, pucesThemes(PIECES, theme), true);

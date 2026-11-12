@@ -1251,3 +1251,41 @@ jour ouverte, étape marquée au retour). Rédaction et relecture par la même c
 
 Explorations : vingt-huit. Jeux et casse-têtes : seize. Calcul mental : deux activités. Raisonner : quatre.
 Parcours du jour : une.
+
+### 152. Contre-exemples et implications étoffés, classe « Terminale + Maths expertes », parcours orange, relecture par deux agents (12 nov. 2026)
+
+**Inventaire.** Les 49 chapitres du cours (p-01 à p-08, t-01 à t-10, me-01 à me-09, ma-01 à ma-22) ont été
+passés en revue : chacun a désormais au moins une pièce dans « Le contre-exemple » et dans « Nécessaire ou
+suffisant ? ». Le contre-exemple passe de 46 à **81** énoncés (16, 16, 14, 35) ; les implications de 67 à
+**107** couples (20, 24, 19, 44). Les listes `cours:` des deux entrées du catalogue citent les 49 chapitres.
+
+**Classe « Terminale + Maths expertes ».** `jour.js` : `NIVEAUX_PARCOURS` a quatre classes, et `NIVEAUX_DE`
+dit dans quels niveaux de pièces puise chaque classe (`expertes` → `terminale` et `expertes`). Les quatre
+modules de pièces ouvrent la pièce du jour avec **son propre** niveau (`niveau = P.niveau`). Le compte est bon
+y est au niveau 2. « Dix calculs » : `FAMILLES.expertes` = les sept thèmes de Terminale et cinq thèmes de
+l'option (nombres complexes, PGCD, divisions euclidiennes, congruences, déterminants d'ordre 2 écrits « le
+déterminant de la matrice », sans barres) ; 34 familles au total.
+
+**Couleur.** Le parcours prend l'orange des Annales : `couleur: annales` au catalogue, règle
+`[data-teinte="annales"] { --o: var(--r-annales) }` dans le gabarit (onglet, carte, vignette), et
+`--activites-jeu: var(--r-annales)` dans `parcours.js` (cadre).
+
+**Relecture indépendante (deux agents, lecture seule).** Implications : 107 relues, aucune valeur de vérité
+fausse ; corrigé d'après le rapport : justifications de non-indépendance (`variance-somme`,
+`esperance-produit`), ensemble d'arrivée (`composee-surjective`), polynôme non nul (`racine-multiple`),
+cadre de `dl-derivable` et de `droites-paralleles`, argument de `inflexion` et de `derivee-extremum`,
+preuve élémentaire de `divisible-six`, suites définies dès le rang 0, théorème d'Euler marqué « admise ici »
+(le chapitre me-06 ne le traite pas). Contre-exemples : 81 relus, un seul objet réfutant à chaque fois ;
+corrigé : « à retenir » de `sans-racine`, `anneau-integre`, `derivee-nulle`, `sinus-somme`, distracteur non
+trivial dans `primitive-carre`, Euler « admis ici ». Calculs : 74 324 questions tirées, 71 581 réponses
+recalculées sans écart ; corrigé : « 1n » dans `limites2`, distracteurs du PGCD (désormais des diviseurs de
+l'un des deux nombres), fractions de l'énoncé irréductibles, plus de « g^{1} » dans `puissances`, distracteur
+nul des pourcentages. Laissé en l'état : distracteurs de `integrales2` éliminables au signe quand la borne
+inférieure est négative, carrés repérables au chiffre des unités.
+
+**Contrôles.** `outils/activites_raisonner.mjs` : « Aucun problème. » Navigateur, sombre 375 px et clair
+1280 px : 107 implications, 81 contre-exemples, séries de toutes les familles des quatre classes, parcours
+de la classe expertes suivi étape par étape, aucune erreur de page, aucun débordement.
+
+Explorations : vingt-huit. Jeux et casse-têtes : seize. Calcul mental : deux activités. Raisonner : quatre.
+Parcours du jour : une.

@@ -5,6 +5,7 @@ import { cssJeux, ecrire } from './jeux.js';
 import { NIVEAUX_PARCOURS, aujourdhui, lireParcours, ecrireParcours, demander } from './jour.js';
 
 export const css = cssCommun + cssFigures + cssJeux + `
+.activites-act .jeu { --activites-jeu: var(--r-annales); }
 .activites-act .pc-niveaux { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .activites-act .pc-niveaux .nom { font: 600 13px var(--f-ui); letter-spacing: .04em; text-transform: uppercase; color: var(--encre-3); margin-right: 4px; }
 .activites-act .pc-date { padding: 12px 16px 0; margin: 0; font: 600 15px var(--f-ui); color: var(--encre-2); }
@@ -24,7 +25,7 @@ export const css = cssCommun + cssFigures + cssJeux + `
 
 export const html = `
 <header class="col">
-  <p class="eyebrow">Chaque jour · Première, Terminale, Maths Sup</p>
+  <p class="eyebrow">Chaque jour · Première, Terminale, Maths expertes, Maths Sup</p>
   <h3>Parcours du jour</h3>
   <p class="lede">Six étapes par jour, les mêmes pour tous les visiteurs d'une même classe : un nombre à atteindre, dix calculs, une démonstration à remettre en ordre, une erreur à trouver, un contre-exemple, une question de logique. Un quart d'heure environ, pour entretenir à la fois le calcul et le raisonnement.</p>
 </header>
@@ -40,7 +41,7 @@ export const html = `
   <div class="col">
     <h4><span class="n">1</span>Comment cela marche</h4>
     <p>Choisissez votre classe une fois : votre navigateur s'en souvient. Chaque étape ouvre l'activité correspondante, déjà réglée sur votre classe et sur la pièce du jour ; quand l'étape est réussie, un lien ramène ici, et l'étape est marquée « fait ». À minuit, heure de Paris, le parcours change et les marques repartent de zéro.</p>
-    <p>Les étapes sont indépendantes : on peut les faire dans l'ordre que l'on veut, et s'arrêter en route. La difficulté suit la classe choisie. « Le compte est bon » passe du niveau 1 en Première au niveau 3 en Maths Sup ; les dix calculs portent sur le programme de la classe ; les quatre pièces de raisonnement sont tirées parmi celles de la classe. En Terminale, le parcours ne puise pas dans les pièces de Maths expertes, que tous les élèves ne suivent pas : elles restent accessibles dans chaque activité.</p>
+    <p>Les étapes sont indépendantes : on peut les faire dans l'ordre que l'on veut, et s'arrêter en route. La difficulté suit la classe choisie. « Le compte est bon » passe du niveau 1 en Première au niveau 2 en Terminale et au niveau 3 en Maths Sup ; les dix calculs portent sur le programme de la classe ; les quatre pièces de raisonnement sont tirées parmi celles de la classe. Deux classes sont proposées en Terminale : « Terminale », qui s'en tient à l'enseignement de spécialité, et « Terminale + Maths expertes », qui y ajoute l'arithmétique, les nombres complexes, les matrices et les graphes de l'option.</p>
   </div>
 </section>
 
@@ -56,7 +57,7 @@ export const html = `
   "Chaque étape renvoie, dans l'activité qu'elle ouvre, au chapitre du cours concerné. Pour le raisonnement lui-même, voir le chapitre <a href=\"#cours/ma-01\">Logique et ensembles</a> et la fiche <a href=\"#n.n-recurrence\">Principe de récurrence</a> de l'édifice.",
   "Le parcours ne calcule rien lui-même : il choisit, d'après la date à Paris et la classe, le rang de la pièce du jour dans chaque activité, et lit dans votre navigateur ce que vous avez déjà fait aujourd'hui. Rien n'est envoyé : la classe choisie et les étapes faites restent sur votre appareil.");
 
-const NIV_COMPTE = { premiere: 0, terminale: 1, sup: 2 };
+const NIV_COMPTE = { premiere: 0, terminale: 1, expertes: 1, sup: 2 };
 const ETAPES = [
   ['compte-est-bon', 'calcul', 'Le compte est bon', n => `Le nombre du jour, niveau ${NIV_COMPTE[n] + 1} : six nombres, quatre opérations, une cible.`],
   ['serie', 'calcul', 'Dix calculs', () => 'Dix calculs de tête sur le programme de votre classe, contre la montre.'],

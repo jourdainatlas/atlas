@@ -1,5 +1,7 @@
 // Parcours du jour (MEMO_atlas_activites.md §151) : date à Paris, niveau choisi, étapes faites, et passage d'une étape du parcours à l'activité.
-export const NIVEAUX_PARCOURS = [['premiere', 'Première'], ['terminale', 'Terminale'], ['sup', 'Maths Sup']];
+export const NIVEAUX_PARCOURS = [['premiere', 'Première'], ['terminale', 'Terminale'], ['expertes', 'Terminale + Maths expertes'], ['sup', 'Maths Sup']];
+// La classe « Terminale + Maths expertes » puise dans les pièces des deux niveaux.
+const NIVEAUX_DE = { premiere: ['premiere'], terminale: ['terminale'], expertes: ['terminale', 'expertes'], sup: ['sup'] };
 // Numéro du jour à Paris, compté depuis le 1er janvier 2026 (même convention que « Le compte est bon »).
 export function aujourdhui() { const s = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date()), [y, m, d] = s.split('-').map(Number);
   return { n: Math.round((Date.UTC(y, m - 1, d) - Date.UTC(2026, 0, 1)) / 864e5), texte: new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Paris', weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date()) }; }
@@ -10,7 +12,7 @@ export function lireParcours() { let m = null; try { m = JSON.parse(localStorage
 export function ecrireParcours(m) { try { localStorage.setItem(CLE, JSON.stringify(m)); } catch (_) {} }
 // Pièce du jour d'une banque, pour un niveau : la même pour tous les visiteurs. Le décalage évite que toutes les activités avancent du même pas.
 const DECALAGE = { ordonner: 0, erreur: 7, 'contre-exemple': 13, implication: 19 };
-export function pieceDuJour(PIECES, niveau, activite) { const L = PIECES.filter(p => p.niveau === niveau); if (!L.length) return null; const k = aujourdhui().n + (DECALAGE[activite] || 0); return L[((k % L.length) + L.length) % L.length]; }
+export function pieceDuJour(PIECES, niveau, activite) { const N = NIVEAUX_DE[niveau] || [niveau], L = PIECES.filter(p => N.includes(p.niveau)); if (!L.length) return null; const k = aujourdhui().n + (DECALAGE[activite] || 0); return L[((k % L.length) + L.length) % L.length]; }
 // Le parcours dépose une demande avant d'ouvrir une activité ; l'activité la lit une fois en se montant.
 export function demander(activite, niveau) { try { sessionStorage.setItem(PASSAGE, JSON.stringify({ activite, niveau, jour: aujourdhui().n })); } catch (_) {} }
 export function demande(activite) { try { const d = JSON.parse(sessionStorage.getItem(PASSAGE) || 'null'); if (d && d.activite === activite && d.jour === aujourdhui().n) { sessionStorage.removeItem(PASSAGE); return d; } } catch (_) {} return null; }

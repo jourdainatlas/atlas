@@ -1,4 +1,4 @@
-// « Le contre-exemple » : quarante-six énoncés faux et, pour chacun, quatre objets dont un seul le réfute (MEMO_atlas_activites.md §151).
+// « Le contre-exemple » : quatre-vingt-un énoncés faux et, pour chacun, quatre objets dont un seul le réfute (MEMO_atlas_activites.md §151 et §152).
 import { T, contre } from './raisonner-outils.js';
 const F = 'fondements', A = 'algebre', L = 'lineaire', N = 'analyse', Pr = 'probabilites', B = true;
 const HF = ` L'hypothèse n'étant pas vérifiée, cet objet ne dit rien de l'énoncé.`, CV = ` Cet objet vérifie l'hypothèse et la conclusion : il illustre l'énoncé, il ne le réfute pas.`;
@@ -21,7 +21,7 @@ contre('derivee-nulle', 'premiere', '', 'p-04', 'Dérivée nulle donc extremum',
   [T`$f(x) = x^3$ et $a = 0$`, T`$f'(0) = 0$, mais $f$ est strictement croissante : $f(x) < 0$ avant 0 et $f(x) > 0$ après, il n'y a pas d'extremum.`, B],
   [T`$f(x) = x$ et $a = 0$`, T`$f'(0) = 1$ n'est pas nul.` + HF],
   [T`$f(x) = x^2 - 2x$ et $a = 1$`, T`$f'(1) = 0$ et $f$ a un minimum en 1.` + CV] ],
-  T`La dérivée doit s'annuler en changeant de signe. En 0, la dérivée $3x^2$ de $x^3$ s'annule sans changer de signe.`),
+  T`C'est le changement de signe de la dérivée qui garantit un extremum : il suffit que $f'$ s'annule en $a$ en changeant de signe. En 0, la dérivée $3x^2$ de $x^3$ s'annule sans changer de signe.`),
 contre('carre-plus-grand', 'premiere', '', 'p-01', 'Un carré plus grand que le nombre', T`« Le carré d'un réel positif est toujours supérieur ou égal à ce réel. »`, [
   [T`$x = 2$`, T`$2^2 = 4 \geqslant 2$ : l'énoncé est vérifié pour ce nombre.`],
   [T`$x = 1$`, T`$1^2 = 1 \geqslant 1$ : l'énoncé est vérifié pour ce nombre.`],
@@ -149,7 +149,7 @@ contre('chaine-eulerienne', 'expertes', '', 'me-06', 'Connexe donc eulérien', T
   [T`Une chaîne de trois sommets $A$ — $B$ — $C$`, T`La chaîne $A$, $B$, $C$ emprunte chaque arête une fois.` + CV],
   [T`Le graphe complet à quatre sommets, où chaque sommet est relié aux trois autres`, T`Il est connexe, mais ses quatre sommets sont de degré 3 : il y a plus de deux sommets de degré impair, donc pas de chaîne eulérienne.`, B],
   [T`Un carré $ABCD$ avec sa diagonale $[AC]$`, T`Deux sommets seulement, $A$ et $C$, sont de degré impair : il existe une chaîne eulérienne de $A$ à $C$.` + CV] ],
-  T`Théorème d'Euler : un graphe connexe admet une chaîne eulérienne si et seulement s'il a zéro ou deux sommets de degré impair.`),
+  T`Théorème d'Euler, admis ici (il complète le chapitre sur les graphes) : un graphe connexe admet une chaîne eulérienne si et seulement s'il a zéro ou deux sommets de degré impair.`),
 contre('carre-reel', 'expertes', '', 'me-02', 'Carré réel donc nombre réel', T`« Si le carré d'un nombre complexe $z$ est réel, alors $z$ est réel. »`, [
   [T`$z = 2$`, T`$z^2 = 4$ est réel et $z$ aussi.` + CV],
   [T`$z = i$`, T`$z^2 = -1$ est réel, alors que $i$ ne l'est pas.`, B],
@@ -193,7 +193,7 @@ contre('sans-racine', 'sup', A, 'ma-13', 'Sans racine donc irréductible', T`« 
   [T`$X^4 + 1$`, T`Il n'a pas de racine réelle, mais $X^4 + 1 = (X^2 + \sqrt2\,X + 1)(X^2 - \sqrt2\,X + 1)$.`, B],
   [T`$X^2 - 1$`, T`Ce polynôme a deux racines réelles, 1 et $-1$.` + HF],
   [T`$X^2 + X + 1$`, T`Son discriminant est $-3$ : il n'a pas de racine réelle et il est irréductible.` + CV] ],
-  T`« Sans racine » équivaut à « irréductible » seulement en degrés 2 et 3. Dans $\mathbb{R}[X]$, aucun polynôme de degré supérieur ou égal à 3 n'est irréductible.`),
+  T`Sur un corps quelconque, « sans racine » équivaut à « irréductible » en degrés 2 et 3 seulement. Dans $\mathbb{R}[X]$, les polynômes irréductibles sont ceux de degré 1 et ceux de degré 2 à discriminant strictement négatif.`),
 contre('degre-somme', 'sup', A, 'ma-13', 'Degré d\'une somme', T`« Pour tous polynômes non nuls $P$ et $Q$, $\deg(P + Q) = \max(\deg P, \deg Q)$. »`, [
   [T`$P = X^2$ et $Q = X$`, T`$P + Q = X^2 + X$ est de degré 2 : l'égalité est vraie ici.`],
   [T`$P = X + 1$ et $Q = -X$`, T`$P + Q = 1$ est de degré 0, alors que les deux polynômes sont de degré 1.`, B],
@@ -205,7 +205,7 @@ contre('anneau-integre', 'sup', A, 'ma-11', 'Produit nul dans un anneau', T`« D
   [T`Dans $\mathbb{Z}/5\mathbb{Z}$ : $a = \overline2$ et $b = \overline3$`, T`$\overline2 \times \overline3 = \overline6 = \overline1$ : le produit n'est pas nul.` + HF],
   [T`Dans $\mathbb{Z}$ : $a = 0$ et $b = 7$`, T`Le produit est nul et $a = 0$.` + CV],
   [T`Dans $\mathbb{Z}/6\mathbb{Z}$ : $a = \overline5$ et $b = \overline5$`, T`$\overline5 \times \overline5 = \overline{25} = \overline1$ : le produit n'est pas nul.` + HF] ],
-  T`Un anneau où la règle du produit nul est vraie est dit intègre. $\mathbb{Z}/n\mathbb{Z}$ est intègre si et seulement si $n$ est premier.`),
+  T`Un anneau où la règle du produit nul est vraie est dit intègre. Pour $n \geqslant 2$, $\mathbb{Z}/n\mathbb{Z}$ est intègre si et seulement si $n$ est premier.`),
 // ---------- Maths Sup : algèbre linéaire ----------
 contre('deux-a-deux', 'sup', L, 'ma-14', 'Deux à deux non colinéaires donc libre', T`« Une famille de vecteurs deux à deux non colinéaires est libre. »`, [
   [T`$\bigl((1, 0), (0, 1), (1, 1)\bigr)$ dans $\mathbb{R}^2$`, T`Aucun de ces vecteurs n'est multiple d'un autre, mais le troisième est la somme des deux premiers : la famille est liée.`, B],
@@ -287,4 +287,215 @@ contre('non-correlees', 'sup', Pr, 'ma-21', 'E(XY) = E(X)E(Y) donc indépendante
   [T`$X$ le résultat d'un dé et $Y = X$`, T`$E(X^2) = \dfrac{91}{6}$, alors que $E(X)^2 = \dfrac{49}{4}$ : l'égalité est fausse.` + HF],
   [T`$X$ constante égale à 2 et $Y$ le résultat d'un dé`, T`L'égalité est vraie, et une variable constante est indépendante de toute autre.` + CV] ],
   T`L'indépendance entraîne $E(XY) = E(X)\,E(Y)$ ; la réciproque est fausse. Des variables qui vérifient cette égalité sont dites non corrélées.`),
+// ---------- Ajouts du 12 nov. au soir (inventaire des chapitres du cours, §152) ----------
+contre('meme-pente', 'premiere', '', 'p-03', 'Même coefficient directeur', T`« Deux droites qui ont le même coefficient directeur sont confondues. »`, [
+  [T`$y = 2x + 1$ et $y = 2x - 3$`, T`Ces droites ont le même coefficient directeur, 2, mais des ordonnées à l'origine différentes : elles sont strictement parallèles.`, B],
+  [T`$y = 2x + 1$ et $y = 2x + 1$`, T`Ces deux équations décrivent la même droite.` + CV],
+  [T`$y = 2x + 1$ et $y = 3x + 1$`, T`Les coefficients directeurs, 2 et 3, sont différents.` + HF],
+  [T`$y = x$ et $y = -x$`, T`Les coefficients directeurs, 1 et $-1$, sont différents.` + HF] ],
+  T`Même coefficient directeur signifie parallèles. Pour être confondues, deux droites doivent avoir de plus un point commun.`),
+contre('exp-somme', 'premiere', '', 'p-08', 'L\'exponentielle d\'une somme', T`« Pour tous réels $a$ et $b$, $e^{a+b} = e^a + e^b$. »`, [
+  [T`$a = 0$ et $b = 0$`, T`$e^{0} = 1$, alors que $e^0 + e^0 = 2$.`, B],
+  [T`$a = \ln 2$ et $b = \ln 2$`, T`$e^{a+b} = 2 \times 2 = 4$ et $e^a + e^b = 2 + 2 = 4$ : l'égalité est vraie pour ces nombres.`],
+  [T`$a = \ln 3$ et $b = \ln 1{,}5$`, T`$e^{a+b} = 3 \times 1{,}5 = 4{,}5$ et $e^a + e^b = 3 + 1{,}5 = 4{,}5$ : l'égalité est vraie pour ces nombres.`],
+  [T`$a = \ln 4$ et $b = \ln\dfrac43$`, T`$e^{a+b} = 4 \times \dfrac43 = \dfrac{16}{3}$ et $e^a + e^b = 4 + \dfrac43 = \dfrac{16}{3}$ : l'égalité est vraie pour ces nombres.`] ],
+  T`$e^{a+b} = e^a \times e^b$. L'égalité proposée n'a lieu que si les deux nombres $e^a$ et $e^b$ ont même somme et même produit.`),
+contre('geometrique-croissante', 'premiere', '', 'p-02', 'Raison positive donc croissante', T`« Une suite géométrique de premier terme positif et de raison positive est croissante. »`, [
+  [T`$u_0 = 1$ et $q = 2$`, T`La suite $1, 2, 4, 8, \dots$ est croissante.` + CV],
+  [T`$u_0 = 1$ et $q = \dfrac12$`, T`La suite $1, \dfrac12, \dfrac14, \dots$ a un premier terme et une raison positifs, et elle est décroissante.`, B],
+  [T`$u_0 = 1$ et $q = -2$`, T`La raison est négative.` + HF],
+  [T`$u_0 = 3$ et $q = 1$`, T`La suite est constante, donc croissante au sens large.` + CV] ],
+  T`Pour $u_0 > 0$, la suite géométrique est croissante si $q \geqslant 1$ et décroissante si $0 < q \leqslant 1$ : c'est la position de $q$ par rapport à 1 qui compte, pas son signe.`),
+contre('derivee-produit', 'premiere', '', 'p-04', 'La dérivée d\'un produit', T`« Pour toutes fonctions dérivables $u$ et $v$, $(uv)' = u' \times v'$. »`, [
+  [T`$u(x) = x$ et $v(x) = x$`, T`$(uv)'(x) = 2x$, alors que $u'(x)\,v'(x) = 1$.`, B],
+  [T`$u(x) = 0$ et $v(x) = x^2$`, T`Les deux membres sont nuls : l'égalité est vraie pour ces fonctions.`],
+  [T`$u(x) = 2$ et $v(x) = 3$`, T`Le produit est constant et les deux dérivées sont nulles : l'égalité est vraie pour ces fonctions.`],
+  [T`$u(x) = e^{2x}$ et $v(x) = e^{2x}$`, T`$(uv)'(x) = 4e^{4x}$ et $u'(x)\,v'(x) = 2e^{2x} \times 2e^{2x} = 4e^{4x}$ : l'égalité est vraie pour ces fonctions.`] ],
+  T`$(uv)' = u'v + uv'$. Qu'une formule fausse donne le bon résultat sur quelques exemples ne la rend pas vraie.`),
+contre('conditionnelles', 'premiere', '', 'p-05', 'Inverser une probabilité conditionnelle', T`On lance un dé équilibré. « Pour tous événements $A$ et $B$ de probabilités non nulles, $P_A(B) = P_B(A)$. »`, [
+  [T`$A$ : « obtenir 6 » ; $B$ : « obtenir un nombre pair »`, T`$P_A(B) = 1$, puisque 6 est pair, alors que $P_B(A) = \dfrac13$.`, B],
+  [T`$A$ : « obtenir un nombre pair » ; $B$ : « obtenir un nombre impair »`, T`Les deux probabilités conditionnelles sont nulles : l'égalité est vraie ici.`],
+  [T`$A$ : « obtenir 1 ou 2 » ; $B$ : « obtenir 2 ou 3 »`, T`$P_A(B) = \dfrac12$ et $P_B(A) = \dfrac12$ : l'égalité est vraie ici.`],
+  [T`$A$ et $B$ : « obtenir un nombre pair »`, T`Les deux probabilités conditionnelles valent 1 : l'égalité est vraie ici.`] ],
+  T`$P_A(B) = \dfrac{P(A \cap B)}{P(A)}$ et $P_B(A) = \dfrac{P(A \cap B)}{P(B)}$ : elles ne sont égales que si $P(A) = P(B)$ ou si $P(A \cap B) = 0$.`),
+contre('sinus-somme', 'premiere', '', 'p-06', 'Le sinus d\'une somme', T`« Pour tous réels $a$ et $b$, $\sin(a + b) = \sin a + \sin b$. »`, [
+  [T`$a = 0$ et $b = \dfrac{\pi}{2}$`, T`$\sin\dfrac{\pi}{2} = 1 = 0 + 1$ : l'égalité est vraie pour ces nombres.`],
+  [T`$a = \pi$ et $b = \pi$`, T`$\sin(2\pi) = 0 = 0 + 0$ : l'égalité est vraie pour ces nombres.`],
+  [T`$a = \dfrac{\pi}{2}$ et $b = \dfrac{\pi}{2}$`, T`$\sin\pi = 0$, alors que $\sin\dfrac{\pi}{2} + \sin\dfrac{\pi}{2} = 2$.`, B],
+  [T`$a = 0$ et $b = 0$`, T`Les deux membres sont nuls : l'égalité est vraie pour ces nombres.`] ],
+  T`Le sinus n'est pas linéaire. La formule exacte, $\sin(a + b) = \sin a\cos b + \cos a\sin b$, est établie plus tard, en Maths expertes.`),
+contre('norme-somme', 'premiere', '', 'p-07', 'La norme d\'une somme', T`« Pour tous vecteurs $\vec u$ et $\vec v$, $\|\vec u + \vec v\| = \|\vec u\| + \|\vec v\|$. »`, [
+  [T`$\vec u(3 ; 0)$ et $\vec v(0 ; 4)$`, T`$\|\vec u + \vec v\| = 5$, alors que $\|\vec u\| + \|\vec v\| = 7$.`, B],
+  [T`$\vec u(1 ; 0)$ et $\vec v(2 ; 0)$`, T`$\|\vec u + \vec v\| = 3 = 1 + 2$ : l'égalité est vraie pour ces vecteurs, colinéaires et de même sens.`],
+  [T`$\vec u(0 ; 0)$ et $\vec v(1 ; 1)$`, T`Les deux membres valent $\sqrt2$ : l'égalité est vraie pour ces vecteurs.`],
+  [T`$\vec u(1 ; 1)$ et $\vec v(2 ; 2)$`, T`Les deux membres valent $3\sqrt2$ : l'égalité est vraie pour ces vecteurs, colinéaires et de même sens.`] ],
+  T`$\|\vec u + \vec v\| \leqslant \|\vec u\| + \|\vec v\|$, avec égalité pour des vecteurs colinéaires et de même sens.`),
+contre('factorielle-puissance', 'terminale', '', 't-07', 'Factorielle et puissance de 2', T`« Pour tout entier $n \geqslant 1$, $n! > 2^n$. »`, [
+  [T`$n = 4$`, T`$4! = 24 > 16 = 2^4$ : l'énoncé est vérifié pour cet entier.`],
+  [T`$n = 5$`, T`$5! = 120 > 32 = 2^5$ : l'énoncé est vérifié pour cet entier.`],
+  [T`$n = 3$`, T`$3! = 6$, alors que $2^3 = 8$.`, B],
+  [T`$n = 10$`, T`$10! = 3\,628\,800 > 1024 = 2^{10}$ : l'énoncé est vérifié pour cet entier.`] ],
+  T`L'inégalité $n! > 2^n$ est vraie à partir de $n = 4$, et se démontre alors par récurrence. Une propriété vraie pour tous les grands entiers peut être fausse pour les premiers.`),
+contre('solution-positive', 'terminale', '', 't-08', 'Solutions de y′ = y', T`« Toute solution sur $\mathbb{R}$ de l'équation $y' = y$ est strictement positive. »`, [
+  [T`$y(x) = e^x$`, T`Cette fonction est solution et strictement positive.` + CV],
+  [T`$y(x) = 2e^x$`, T`Cette fonction est solution et strictement positive.` + CV],
+  [T`$y(x) = -e^x$`, T`Cette fonction est solution, puisque sa dérivée est $-e^x$, et elle est strictement négative.`, B],
+  [T`$y(x) = e^{2x}$`, T`Sa dérivée est $2e^{2x}$ : cette fonction n'est pas solution de $y' = y$.` + HF] ],
+  T`Les solutions de $y' = y$ sont les fonctions $x \mapsto Ce^x$, où $C$ est un réel quelconque, éventuellement négatif ou nul.`),
+contre('cosinus-egaux', 'terminale', '', 't-09', 'Même cosinus', T`« Si $\cos x = \cos y$, alors $x = y$. »`, [
+  [T`$x = 0$ et $y = 0$`, T`Les cosinus sont égaux et les nombres aussi.` + CV],
+  [T`$x = \dfrac{\pi}{3}$ et $y = -\dfrac{\pi}{3}$`, T`Les deux cosinus valent $\dfrac12$, la fonction cosinus étant paire, alors que $x \neq y$.`, B],
+  [T`$x = 0$ et $y = \dfrac{\pi}{2}$`, T`$\cos 0 = 1$ et $\cos\dfrac{\pi}{2} = 0$ : les cosinus sont différents.` + HF],
+  [T`$x = \pi$ et $y = \pi$`, T`Les cosinus sont égaux et les nombres aussi.` + CV] ],
+  T`$\cos x = \cos y$ équivaut à $x = y + 2k\pi$ ou $x = -y + 2k\pi$, avec $k$ entier.`),
+contre('meme-esperance', 'terminale', '', 't-10', 'Même espérance donc même variance', T`« Deux variables aléatoires de même espérance ont la même variance. »`, [
+  [T`$X$ constante égale à 0 ; $Y$ valant $-1$ ou 1 avec la probabilité $\dfrac12$`, T`Les deux espérances sont nulles, mais $V(X) = 0$ et $V(Y) = 1$.`, B],
+  [T`$X$ le résultat d'un dé, et $Y = X$`, T`Même espérance et même variance.` + CV],
+  [T`$X$ le résultat d'un dé, et $Y = 7 - X$`, T`$Y$ prend les mêmes valeurs que $X$ avec les mêmes probabilités : même espérance, $3{,}5$, et même variance.` + CV],
+  [T`$X$ valant 0 ou 1 selon une pièce équilibrée ; $Y$ le résultat d'un dé`, T`Les espérances, $0{,}5$ et $3{,}5$, sont différentes.` + HF] ],
+  T`L'espérance indique où la variable se situe en moyenne ; la variance mesure sa dispersion autour de cette moyenne. Ce sont deux informations indépendantes.`),
+contre('ln-carre', 'terminale', '', 't-05', 'ln(x²) = 2 ln x', T`« Pour tout réel $x$ non nul, $\ln(x^2) = 2\ln x$. »`, [
+  [T`$x = 2$`, T`$\ln 4 = 2\ln 2$ : l'égalité est vraie pour ce nombre.`],
+  [T`$x = e$`, T`$\ln(e^2) = 2 = 2\ln e$ : l'égalité est vraie pour ce nombre.`],
+  [T`$x = -1$`, T`$\ln\bigl((-1)^2\bigr) = \ln 1 = 0$, alors que $\ln(-1)$ n'existe pas.`, B],
+  [T`$x = 1$`, T`Les deux membres sont nuls : l'égalité est vraie pour ce nombre.`] ],
+  T`La formule vaut pour $x > 0$. Pour tout réel non nul, c'est $\ln(x^2) = 2\ln|x|$.`),
+contre('integrale-produit', 'terminale', '', 't-06', 'L\'intégrale d\'un produit', T`Sur $[0, 1]$ : « L'intégrale d'un produit est le produit des intégrales. »`, [
+  [T`$f(x) = 1$ et $g(x) = 1$`, T`Les deux membres valent 1 : l'égalité est vraie pour ces fonctions.`],
+  [T`$f(x) = x$ et $g(x) = x$`, T`$\displaystyle\int_0^1 x^2\,dx = \dfrac13$, alors que $\dfrac12 \times \dfrac12 = \dfrac14$.`, B],
+  [T`$f(x) = 0$ et $g(x) = x^2$`, T`Les deux membres sont nuls : l'égalité est vraie pour ces fonctions.`],
+  [T`$f(x) = 1$ et $g(x) = x$`, T`Les deux membres valent $\dfrac12$ : l'égalité est vraie pour ces fonctions.`] ],
+  T`L'intégrale est linéaire, pas multiplicative. Pour un produit, on pense à l'intégration par parties.`),
+contre('changement-signe', 'terminale', '', 't-03', 'Changer de signe sans s\'annuler', T`« Si $f(a) \times f(b) < 0$, alors $f$ s'annule entre $a$ et $b$. »`, [
+  [T`$f(x) = \dfrac1x$, $a = -1$ et $b = 1$`, T`$f(-1) \times f(1) = -1 < 0$, mais $\dfrac1x$ ne s'annule jamais : la fonction n'est pas définie en 0.`, B],
+  [T`$f(x) = x$, $a = -1$ et $b = 1$`, T`Le produit est négatif et $f$ s'annule en 0.` + CV],
+  [T`$f(x) = x^2$, $a = -1$ et $b = 1$`, T`$f(-1) \times f(1) = 1$ n'est pas négatif.` + HF],
+  [T`$f(x) = x^3 - 1$, $a = 0$ et $b = 2$`, T`$f(0) \times f(2) = -7 < 0$ et $f$ s'annule en 1.` + CV] ],
+  T`Le théorème des valeurs intermédiaires demande une fonction continue sur tout l'intervalle $[a, b]$.`),
+contre('module-difference', 'expertes', '', 'me-05', 'Distance et modules', T`« Pour tous nombres complexes $z$ et $z'$, $|z - z'| = |z| - |z'|$. »`, [
+  [T`$z = 3$ et $z' = 1$`, T`$|3 - 1| = 2 = 3 - 1$ : l'égalité est vraie pour ces nombres.`],
+  [T`$z = 2i$ et $z' = i$`, T`$|i| = 1 = 2 - 1$ : l'égalité est vraie pour ces nombres.`],
+  [T`$z = 1$ et $z' = i$`, T`$|1 - i| = \sqrt2$, alors que $|1| - |i| = 0$.`, B],
+  [T`$z = 5$ et $z' = 5$`, T`Les deux membres sont nuls : l'égalité est vraie pour ces nombres.`] ],
+  T`$|z - z'|$ est la distance entre les points images. On a seulement $|z - z'| \geqslant \bigl||z| - |z'|\bigr|$, avec égalité quand les points sont sur une même demi-droite issue de l'origine.`),
+contre('rectangle-isocele', 'expertes', '', 'me-08', 'Imaginaire pur donc rectangle isocèle', T`Les points $A$, $B$, $C$ ont pour affixes $a$, $b$, $c$. « Si $\dfrac{c - a}{b - a}$ est imaginaire pur, alors $ABC$ est rectangle et isocèle en $A$. »`, [
+  [T`$a = 0$, $b = 1$, $c = i$`, T`Le quotient vaut $i$ : le triangle est rectangle et isocèle en $A$.` + CV],
+  [T`$a = 0$, $b = 1$, $c = 2i$`, T`Le quotient vaut $2i$, imaginaire pur : le triangle est rectangle en $A$, mais $AB = 1$ et $AC = 2$.`, B],
+  [T`$a = 0$, $b = 1$, $c = 1 + i$`, T`Le quotient vaut $1 + i$, qui n'est pas imaginaire pur.` + HF],
+  [T`$a = 0$, $b = 2$, $c = -2i$`, T`Le quotient vaut $-i$ : le triangle est rectangle et isocèle en $A$.` + CV] ],
+  T`L'argument du quotient donne l'angle en $A$, son module donne le rapport $\dfrac{AC}{AB}$. Rectangle isocèle : quotient égal à $i$ ou à $-i$.`),
+contre('markov-converge', 'expertes', '', 'me-09', 'Une chaîne de Markov converge toujours', T`Une chaîne de Markov à deux états part de la distribution $\begin{pmatrix} 1 & 0 \end{pmatrix}$. « La suite des distributions converge, quelle que soit la matrice de transition $P$. »`, [
+  [T`$P = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}$`, T`Le système change d'état à chaque étape : les distributions valent alternativement $\begin{pmatrix} 1 & 0 \end{pmatrix}$ et $\begin{pmatrix} 0 & 1 \end{pmatrix}$, sans limite.`, B],
+  [T`$P = \begin{pmatrix} 0{,}5 & 0{,}5 \\ 0{,}5 & 0{,}5 \end{pmatrix}$`, T`Dès la première étape, la distribution vaut $\begin{pmatrix} 0{,}5 & 0{,}5 \end{pmatrix}$ et n'en bouge plus : la suite converge.`],
+  [T`$P = \begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix}$`, T`Le système ne change jamais d'état : la suite des distributions est constante, donc convergente.`],
+  [T`$P = \begin{pmatrix} 1 & 0 \\ 0{,}5 & 0{,}5 \end{pmatrix}$`, T`Partant du premier état, le système y reste : la suite des distributions est constante, donc convergente.`] ],
+  T`La convergence demande une hypothèse sur $P$, par exemple qu'une de ses puissances n'ait aucun coefficient nul.`),
+contre('non-nulle-inversible', 'expertes', '', 'me-03', 'Non nulle donc inversible', T`« Toute matrice carrée non nulle est inversible. »`, [
+  [T`$\begin{pmatrix} 1 & 1 \\ 1 & 1 \end{pmatrix}$`, T`Cette matrice n'est pas nulle, mais son déterminant $1 \times 1 - 1 \times 1$ est nul : elle n'est pas inversible.`, B],
+  [T`$\begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix}$`, T`Cette matrice est non nulle et inversible : elle est son propre inverse.` + CV],
+  [T`$\begin{pmatrix} 1 & 2 \\ 3 & 4 \end{pmatrix}$`, T`Son déterminant vaut $-2$ : elle est non nulle et inversible.` + CV],
+  [T`$\begin{pmatrix} 0 & 0 \\ 0 & 0 \end{pmatrix}$`, T`Cette matrice est nulle.` + HF] ],
+  T`Une matrice carrée d'ordre 2 est inversible si et seulement si son déterminant $ad - bc$ n'est pas nul.`),
+contre('produit-diviseurs', 'expertes', '', 'me-07', 'Le produit de deux diviseurs', T`« Si $a$ et $b$ divisent $n$, alors $ab$ divise $n$. »`, [
+  [T`$a = 4$, $b = 6$, $n = 12$`, T`4 et 6 divisent 12, mais leur produit 24 ne le divise pas.`, B],
+  [T`$a = 2$, $b = 3$, $n = 12$`, T`2 et 3 divisent 12, et 6 aussi.` + CV],
+  [T`$a = 3$, $b = 4$, $n = 12$`, T`3 et 4 divisent 12, et leur produit 12 aussi.` + CV],
+  [T`$a = 5$, $b = 2$, $n = 12$`, T`5 ne divise pas 12.` + HF] ],
+  T`L'énoncé est vrai quand $a$ et $b$ sont premiers entre eux. En général, c'est leur PPCM qui divise $n$.`),
+contre('impair-premier', 'expertes', '', 'me-01', 'Impair donc premier', T`« Tout entier impair supérieur ou égal à 3 est premier. »`, [
+  [T`$3$`, T`3 est impair et premier : l'énoncé est vérifié pour cet entier.`],
+  [T`$7$`, T`7 est impair et premier : l'énoncé est vérifié pour cet entier.`],
+  [T`$9$`, T`9 est impair, et $9 = 3 \times 3$ n'est pas premier.`, B],
+  [T`$13$`, T`13 est impair et premier : l'énoncé est vérifié pour cet entier.`] ],
+  T`Tout nombre premier autre que 2 est impair ; la réciproque est fausse.`),
+contre('quantificateurs', 'sup', F, 'ma-01', 'Échanger deux quantificateurs', T`Sur $\mathbb{N}$ : « Si $\forall x,\ \exists y,\ R(x, y)$, alors $\exists y,\ \forall x,\ R(x, y)$. »`, [
+  [T`$R(x, y)$ : « $y > x$ »`, T`Tout entier a un entier plus grand, mais aucun entier n'est plus grand que tous les autres.`, B],
+  [T`$R(x, y)$ : « $y \leqslant x$ »`, T`Les deux assertions sont vraies : $y = 0$ convient à tous les $x$.` + CV],
+  [T`$R(x, y)$ : « $y < x$ »`, T`Pour $x = 0$, aucun entier naturel $y$ ne convient : la première assertion est fausse.` + HF],
+  [T`$R(x, y)$ : « $xy = 0$ »`, T`Les deux assertions sont vraies : $y = 0$ convient à tous les $x$.` + CV] ],
+  T`Dans $\forall x\,\exists y$, le $y$ dépend de $x$. Dans $\exists y\,\forall x$, un même $y$ convient à tous.`),
+contre('somme-produits', 'sup', F, 'ma-03', 'Somme de produits', T`Pour des réels $a_1, a_2, b_1, b_2$ : « $a_1 b_1 + a_2 b_2 = (a_1 + a_2)(b_1 + b_2)$. »`, [
+  [T`$(a_1, a_2) = (1, 1)$ et $(b_1, b_2) = (1, 1)$`, T`Le premier membre vaut 2, le second 4.`, B],
+  [T`$(a_1, a_2) = (1, 0)$ et $(b_1, b_2) = (1, 0)$`, T`Les deux membres valent 1 : l'égalité est vraie ici.`],
+  [T`$(a_1, a_2) = (0, 0)$ et $(b_1, b_2) = (3, 5)$`, T`Les deux membres sont nuls : l'égalité est vraie ici.`],
+  [T`$(a_1, a_2) = (2, 0)$ et $(b_1, b_2) = (3, 0)$`, T`Les deux membres valent 6 : l'égalité est vraie ici.`] ],
+  T`Le produit de deux sommes contient les termes croisés $a_1 b_2$ et $a_2 b_1$ : $\displaystyle\sum a_k b_k \neq \left(\sum a_k\right)\left(\sum b_k\right)$ en général.`),
+contre('pythagore-complexe', 'sup', A, 'ma-04', 'Module d\'une somme, au carré', T`« Pour tous nombres complexes $z$ et $z'$, $|z + z'|^2 = |z|^2 + |z'|^2$. »`, [
+  [T`$z = 1$ et $z' = i$`, T`$|1 + i|^2 = 2 = 1 + 1$ : l'égalité est vraie pour ces nombres.`],
+  [T`$z = 1$ et $z' = 1$`, T`$|2|^2 = 4$, alors que $1 + 1 = 2$.`, B],
+  [T`$z = 2$ et $z' = 3i$`, T`$|2 + 3i|^2 = 13 = 4 + 9$ : l'égalité est vraie pour ces nombres.`],
+  [T`$z = 0$ et $z' = 5$`, T`Les deux membres valent 25 : l'égalité est vraie pour ces nombres.`] ],
+  T`$|z + z'|^2 = |z|^2 + 2\,\mathrm{Re}(z\overline{z'}) + |z'|^2$ : l'égalité proposée est le théorème de Pythagore, vrai quand les vecteurs images sont orthogonaux.`),
+contre('arctan-tan', 'sup', N, 'ma-05', 'arctan(tan x) = x', T`« Pour tout réel $x$ où la tangente est définie, $\arctan(\tan x) = x$. »`, [
+  [T`$x = 0$`, T`$\arctan(\tan 0) = \arctan 0 = 0$ : l'égalité est vraie pour ce nombre.`],
+  [T`$x = \dfrac{\pi}{4}$`, T`$\arctan 1 = \dfrac{\pi}{4}$ : l'égalité est vraie pour ce nombre.`],
+  [T`$x = \pi$`, T`$\tan\pi = 0$, donc $\arctan(\tan\pi) = 0$, et non $\pi$.`, B],
+  [T`$x = -\dfrac{\pi}{3}$`, T`$\arctan\bigl(-\sqrt3\bigr) = -\dfrac{\pi}{3}$ : l'égalité est vraie pour ce nombre.`] ],
+  T`L'arctangente prend ses valeurs dans $\left]-\dfrac{\pi}{2}, \dfrac{\pi}{2}\right[$ : l'égalité $\arctan(\tan x) = x$ n'a lieu que sur cet intervalle. En revanche $\tan(\arctan y) = y$ pour tout réel $y$.`),
+contre('primitive-carre', 'sup', N, 'ma-06', 'Primitive d\'un carré', T`« Si $F$ est une primitive de $f$ sur $\mathbb{R}$, alors $F^2$ est une primitive de $f^2$. »`, [
+  [T`$f(x) = 1$ et $F(x) = x$`, T`$F^2(x) = x^2$ a pour dérivée $2x$, alors que $f^2(x) = 1$.`, B],
+  [T`$f(x) = 0$ et $F(x) = 0$`, T`$F^2$ et $f^2$ sont nulles : l'énoncé est vérifié ici.`],
+  [T`$f(x) = 2e^{2x}$ et $F(x) = e^{2x}$`, T`$F^2(x) = e^{4x}$ a pour dérivée $4e^{4x}$, qui est bien $f^2(x)$ : l'énoncé est vérifié ici.`],
+  [T`$f(x) = 0$ et $F(x) = -2$`, T`$F^2$ est constante, de dérivée nulle, et $f^2$ est nulle : l'énoncé est vérifié ici.`] ],
+  T`$(F^2)' = 2FF' = 2Ff$, qui n'est pas $f^2$. La primitivation est linéaire ; elle ne respecte ni les produits ni les carrés.`),
+contre('gauss-sans-hypothese', 'sup', A, 'ma-12', 'Gauss sans « premiers entre eux »', T`« Si $a$ divise $bc$ et ne divise pas $b$, alors $a$ divise $c$. »`, [
+  [T`$a = 6$, $b = 4$, $c = 9$`, T`6 divise 36 et ne divise pas 4 ; pourtant il ne divise pas 9.`, B],
+  [T`$a = 3$, $b = 4$, $c = 9$`, T`3 divise 36, ne divise pas 4, et divise 9.` + CV],
+  [T`$a = 5$, $b = 2$, $c = 10$`, T`5 divise 20, ne divise pas 2, et divise 10.` + CV],
+  [T`$a = 4$, $b = 4$, $c = 3$`, T`4 divise $b = 4$.` + HF] ],
+  T`Le théorème de Gauss demande que $a$ soit premier avec $b$, ce qui est plus fort que « $a$ ne divise pas $b$ ».`),
+contre('identite-remarquable', 'sup', L, 'ma-16', 'Identité remarquable pour des matrices', T`« Pour toutes matrices $A$ et $B$ de $\mathcal{M}_2(\mathbb{R})$, $(A + B)^2 = A^2 + 2AB + B^2$. »`, [
+  [T`$A = \begin{pmatrix} 0 & 1 \\ 0 & 0 \end{pmatrix}$ et $B = \begin{pmatrix} 0 & 0 \\ 1 & 0 \end{pmatrix}$`, T`$(A + B)^2 = I_2$, alors que $A^2 + 2AB + B^2 = \begin{pmatrix} 2 & 0 \\ 0 & 0 \end{pmatrix}$.`, B],
+  [T`$A = I_2$ et $B = \begin{pmatrix} 1 & 2 \\ 3 & 4 \end{pmatrix}$`, T`$I_2$ commute avec toute matrice : l'égalité est vraie ici.`],
+  [T`$A = B = \begin{pmatrix} 1 & 2 \\ 3 & 4 \end{pmatrix}$`, T`Les deux membres valent $4A^2$ : l'égalité est vraie ici.`],
+  [T`$A = 2I_2$ et $B = \begin{pmatrix} 1 & 2 \\ 3 & 4 \end{pmatrix}$`, T`$2I_2$ commute avec toute matrice : l'égalité est vraie ici.`] ],
+  T`$(A + B)^2 = A^2 + AB + BA + B^2$ : l'identité remarquable vaut si et seulement si $AB = BA$.`),
+contre('valeur-absolue-integrale', 'sup', N, 'ma-18', 'Valeur absolue et intégrale', T`« Pour toute fonction $f$ continue sur $[a, b]$, $\left|\displaystyle\int_a^b f\right| = \displaystyle\int_a^b |f|$. »`, [
+  [T`$f(x) = x$ sur $[-1, 1]$`, T`L'intégrale de $f$ est nulle, alors que celle de $|f|$ vaut 1.`, B],
+  [T`$f(x) = x$ sur $[0, 1]$`, T`Les deux membres valent $\dfrac12$ : l'égalité est vraie ici.`],
+  [T`$f(x) = -1$ sur $[0, 1]$`, T`Les deux membres valent 1 : l'égalité est vraie ici.`],
+  [T`$f(x) = x^2$ sur $[-1, 1]$`, T`Les deux membres valent $\dfrac23$ : l'égalité est vraie ici.`] ],
+  T`$\left|\displaystyle\int_a^b f\right| \leqslant \displaystyle\int_a^b |f|$, avec égalité quand $f$ garde un signe constant.`),
+contre('pythagore-toujours', 'sup', L, 'ma-19', 'Pythagore sans orthogonalité', T`Dans $\mathbb{R}^2$ muni du produit scalaire usuel : « Pour tous vecteurs $x$ et $y$, $\|x + y\|^2 = \|x\|^2 + \|y\|^2$. »`, [
+  [T`$x = (1, 0)$ et $y = (0, 1)$`, T`Les deux membres valent 2 : l'égalité est vraie pour ces vecteurs, qui sont orthogonaux.`],
+  [T`$x = (1, 0)$ et $y = (1, 0)$`, T`$\|x + y\|^2 = 4$, alors que $\|x\|^2 + \|y\|^2 = 2$.`, B],
+  [T`$x = (0, 0)$ et $y = (2, 3)$`, T`Les deux membres valent 13 : l'égalité est vraie pour ces vecteurs.`],
+  [T`$x = (1, 1)$ et $y = (1, -1)$`, T`Les deux membres valent 4 : l'égalité est vraie pour ces vecteurs, qui sont orthogonaux.`] ],
+  T`$\|x + y\|^2 = \|x\|^2 + 2\langle x, y \rangle + \|y\|^2$ : l'égalité de Pythagore équivaut à l'orthogonalité.`),
+contre('partielles-continue', 'sup', N, 'ma-22', 'Dérivées partielles donc continue', T`« Une fonction de $\mathbb{R}^2$ dans $\mathbb{R}$ qui admet des dérivées partielles en $(0, 0)$ est continue en $(0, 0)$. »`, [
+  [T`$f(x, y) = \dfrac{xy}{x^2 + y^2}$ si $(x, y) \neq (0, 0)$, et $f(0, 0) = 0$`, T`$f$ est nulle sur les deux axes, donc ses dérivées partielles en $(0, 0)$ existent ; mais $f(t, t) = \dfrac12$ ne tend pas vers 0.`, B],
+  [T`$f(x, y) = x + y$`, T`Cette fonction a des dérivées partielles et elle est continue.` + CV],
+  [T`$f(x, y) = |x| + |y|$`, T`$x \mapsto |x|$ n'est pas dérivable en 0 : les dérivées partielles en $(0, 0)$ n'existent pas.` + HF],
+  [T`$f(x, y) = x^2 + y^2$`, T`Cette fonction a des dérivées partielles et elle est continue.` + CV] ],
+  T`Les dérivées partielles ne renseignent que sur les deux axes. C'est la classe $\mathcal{C}^1$ qui entraîne la continuité.`),
+contre('reunion-sous-espaces', 'sup', L, 'ma-14', 'Réunion de sous-espaces', T`Dans $\mathbb{R}^2$ : « La réunion de deux sous-espaces vectoriels est un sous-espace vectoriel. »`, [
+  [T`L'axe des abscisses et l'axe des ordonnées`, T`La réunion contient $(1, 0)$ et $(0, 1)$, mais pas leur somme $(1, 1)$.`, B],
+  [T`L'axe des abscisses et $\{(0, 0)\}$`, T`La réunion est l'axe des abscisses : c'est un sous-espace.`],
+  [T`L'axe des abscisses et $\mathbb{R}^2$`, T`La réunion est $\mathbb{R}^2$ : c'est un sous-espace.`],
+  [T`L'axe des abscisses et lui-même`, T`La réunion est l'axe des abscisses : c'est un sous-espace.`] ],
+  T`La réunion de deux sous-espaces est un sous-espace si et seulement si l'un contient l'autre. Le plus petit sous-espace qui les contient tous deux est leur somme.`),
+contre('det-homogene', 'sup', L, 'ma-17', 'Déterminant d\'un multiple', T`« Pour tout réel $\lambda$ et toute matrice $A$ de $\mathcal{M}_2(\mathbb{R})$, $\det(\lambda A) = \lambda \det A$. »`, [
+  [T`$\lambda = 2$ et $A = I_2$`, T`$\det(2I_2) = 4$, alors que $2\det I_2 = 2$.`, B],
+  [T`$\lambda = 1$ et $A = \begin{pmatrix} 1 & 2 \\ 3 & 4 \end{pmatrix}$`, T`Les deux membres valent $\det A$ : l'égalité est vraie ici.`],
+  [T`$\lambda = 3$ et $A = \begin{pmatrix} 1 & 1 \\ 1 & 1 \end{pmatrix}$`, T`Les deux déterminants sont nuls : l'égalité est vraie ici.`],
+  [T`$\lambda = 0$ et $A = I_2$`, T`Les deux membres sont nuls : l'égalité est vraie ici.`] ],
+  T`$\det(\lambda A) = \lambda^n \det A$ pour une matrice de taille $n$ : chaque colonne est multipliée par $\lambda$.`),
+contre('union-additive', 'sup', Pr, 'ma-21', 'Probabilité d\'une réunion', T`On lance un dé équilibré. « Pour tous événements $A$ et $B$, $P(A \cup B) = P(A) + P(B)$. »`, [
+  [T`$A$ : « obtenir un nombre pair » ; $B$ : « obtenir 6 »`, T`$A \cup B = A$, de probabilité $\dfrac12$, alors que $P(A) + P(B) = \dfrac12 + \dfrac16$.`, B],
+  [T`$A$ : « obtenir un nombre pair » ; $B$ : « obtenir un nombre impair »`, T`Les événements sont incompatibles : les deux membres valent 1.`],
+  [T`$A$ : « obtenir 1 » ; $B$ : « obtenir 2 »`, T`Les événements sont incompatibles : les deux membres valent $\dfrac13$.`],
+  [T`$A$ : l'événement impossible ; $B$ : « obtenir un nombre pair »`, T`Les deux membres valent $\dfrac12$ : l'égalité est vraie ici.`] ],
+  T`$P(A \cup B) = P(A) + P(B) - P(A \cap B)$ : l'additivité simple vaut pour des événements incompatibles.`),
+contre('somme-divergentes', 'sup', N, 'ma-07', 'Somme de deux suites divergentes', T`« La somme de deux suites divergentes est divergente. »`, [
+  [T`$u_n = n$ et $v_n = -n$`, T`Les deux suites divergent, et leur somme est la suite nulle, qui converge.`, B],
+  [T`$u_n = n$ et $v_n = n$`, T`Les deux suites divergent, et leur somme $2n$ aussi.` + CV],
+  [T`$u_n = (-1)^n$ et $v_n = \dfrac1n$`, T`La suite $(v_n)$ converge vers 0.` + HF],
+  [T`$u_n = n$ et $v_n = (-1)^n$`, T`Les deux suites divergent, et leur somme tend vers $+\infty$, donc diverge.` + CV] ],
+  T`Ce qui est vrai : la somme d'une suite convergente et d'une suite divergente est divergente.`),
+contre('equivalent-difference', 'sup', N, 'ma-10', 'Équivalentes donc de différence nulle', T`« Si $u_n \sim v_n$, alors $u_n - v_n$ tend vers 0. »`, [
+  [T`$u_n = n + 1$ et $v_n = n$`, T`Le quotient tend vers 1, donc les suites sont équivalentes ; mais leur différence vaut 1.`, B],
+  [T`$u_n = \dfrac1n + \dfrac{1}{n^2}$ et $v_n = \dfrac1n$`, T`Les suites sont équivalentes et leur différence $\dfrac{1}{n^2}$ tend vers 0.` + CV],
+  [T`$u_n = n^2$ et $v_n = n$`, T`Le quotient tend vers $+\infty$ : les suites ne sont pas équivalentes.` + HF],
+  [T`$u_n = 1 + \dfrac1n$ et $v_n = 1$`, T`Les suites sont équivalentes et leur différence $\dfrac1n$ tend vers 0.` + CV] ],
+  T`$u_n \sim v_n$ signifie $u_n - v_n = o(v_n)$ : la différence est négligeable devant $v_n$, pas devant 1.`),
 ];
