@@ -100,7 +100,7 @@ faux('simplifier-matrice', 'expertes', '', 'me-03', '1 = 2 avec des matrices', T
   [T`Donc $AB = AC$. La matrice $A$ n'étant pas nulle, on simplifie : $B = C$.`],
   [T`En comparant les coefficients en bas à droite : $1 = 2$.`, T`Deux matrices égales ont les mêmes coefficients : le passage est correct.` + H] ],
   T`On ne simplifie pas par une matrice au seul motif qu'elle n'est pas nulle : il faut qu'elle soit <em>inversible</em>, et l'on multiplie alors à gauche par son inverse. Ici $A$ n'est pas inversible, son déterminant étant nul ; l'égalité $AB = AC$ s'écrit $A(B - C) = 0$, produit nul de deux matrices non nulles.`,
-  T`$AB = AC$ entraîne $B = C$ lorsque $A$ est inversible, et seulement dans ce cas en général. « Non nulle » ne suffit pas.`, T`La matrice $A$ est-elle inversible ?`),
+  T`On ne passe de $AB = AC$ à $B = C$ que si $A$ est inversible. « Non nulle » ne suffit pas.`, T`La matrice $A$ est-elle inversible ?`),
 faux('poignees-impossibles', 'expertes', '', 'me-06', '15 est pair', T`« Démontrons » que 15 est un nombre pair.`, [
   [T`Considérons une réunion de cinq personnes où chacune serre la main d'exactement trois autres, et le graphe dont les sommets sont les personnes et les arêtes les poignées de main.`],
   [T`Chacun des cinq sommets est de degré 3 : la somme des degrés est $5 \times 3 = 15$.`, T`Le degré d'un sommet est le nombre d'arêtes qui en partent, et le produit est exact : le passage est correct.` + H],

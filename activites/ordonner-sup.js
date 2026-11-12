@@ -40,7 +40,7 @@ demo('morphisme', 'sup', A, 'ma-11', 'Image du neutre et de l\'inverse par un mo
   [T`De $f(e) = f(e)\,f(e)$, on déduit $f(e) = 0$.`, T`Dans un groupe, il n'y a pas de « zéro » absorbant : tout élément est inversible, et l'on simplifie par $f(e)$. On obtient l'élément neutre $e'$.`],
   [T`Comme $f$ est un morphisme, $f(x^{-1}) = f(x)$ pour tout $x$.`, T`Un morphisme transforme le produit en produit, donc l'inverse en inverse : $f(x^{-1}) = f(x)^{-1}$, qui n'est égal à $f(x)$ que si $f(x)$ est son propre inverse.`] ]),
 demo('bezout', 'sup', A, 'ma-12', 'Théorème de Bézout : existence', T`Soit $a$ et $b$ deux entiers non tous deux nuls. Il existe deux entiers $u$ et $v$ tels que $au + bv$ soit le PGCD de $a$ et $b$.`, [
-  [T`L'ensemble $E$ des entiers strictement positifs de la forme $au + bv$, avec $u, v \in \mathbb{Z}$, n'est pas vide : il a un plus petit élément $d = au_0 + bv_0$.`, '', T`le plus petit élément $d = au_0 + bv_0$ de $E$`],
+  [T`L'ensemble $E$ des entiers strictement positifs de la forme $au + bv$, avec $u, v \in \mathbb{Z}$, n'est pas vide, puisqu'il contient $|a|$ ou $|b|$ : il a un plus petit élément $d = au_0 + bv_0$.`, '', T`le plus petit élément $d = au_0 + bv_0$ de $E$`],
   [T`Effectuons la division euclidienne de $a$ par $d$ : $a = dq + r$, avec $0 \leqslant r < d$.`, 'a', T`la division euclidienne $a = dq + r$`],
   [T`Alors $r = a - dq = a(1 - u_0 q) + b(-v_0 q)$ : le reste $r$ est lui aussi de la forme $au + bv$.`, 'b', T`l'écriture de $r$ sous la forme $au + bv$`],
   [T`Si $r$ était strictement positif, il appartiendrait à $E$ tout en étant strictement inférieur à $d$ : c'est impossible. Donc $r = 0$, et $d$ divise $a$.`, 'c', T`le fait que $d$ divise $a$`],
@@ -84,7 +84,7 @@ demo('somme-directe', 'sup', L, 'ma-14', 'Somme directe et unicité de la décom
   [T`En regroupant : $f - f' = g' - g$.`, 'a', T`l'égalité $f - f' = g' - g$`],
   [T`Le vecteur $f - f'$ appartient à $F$, et $g' - g$ appartient à $G$ : leur valeur commune appartient à $F \cap G$.`, 'b', T`l'appartenance de $f - f'$ à $F \cap G$`],
   [T`Comme $F \cap G = \{0_E\}$, on a $f - f' = 0_E$ et $g' - g = 0_E$ : $f = f'$ et $g = g'$.`, 'c'] ], [
-  [T`En regroupant : $f - f' = g - g'$.`, T`De $f + g = f' + g'$ on tire $f - f' = g' - g$ : le signe est inversé. L'erreur est sans conséquence sur la conclusion, mais l'égalité écrite est fausse.`],
+  [T`Comme $x$ appartient à $F + G$, il appartient à $F$ ou à $G$ : sa décomposition est $x + 0_E$ ou $0_E + x$.`, T`La somme $F + G$ n'est pas la réunion $F \cup G$ : un vecteur de $F + G$ est la somme d'un vecteur de $F$ et d'un vecteur de $G$, et n'est en général dans aucun des deux. Dans $\mathbb{R}^2$, le vecteur $(1, 1)$ est somme de $(1, 0)$ et de $(0, 1)$ sans être sur aucun des deux axes.`],
   [T`Le vecteur $f - f'$ appartient à $F$ et à $G$ : donc $f = g$.`, T`On obtient que $f - f'$ est nul, donc que $f = f'$ : ce sont les deux composantes dans $F$ qui sont égales. Rien ne relie $f$, vecteur de $F$, à $g$, vecteur de $G$.`] ]),
 demo('image-libre', 'sup', L, 'ma-14', 'Image d\'une famille libre par une injection', T`Soit $u : E \to F$ une application linéaire injective et $(e_1, \dots, e_n)$ une famille libre de $E$. Alors $\bigl(u(e_1), \dots, u(e_n)\bigr)$ est une famille libre de $F$.`, [
   [T`Soit $\lambda_1, \dots, \lambda_n$ des scalaires tels que $\lambda_1 u(e_1) + \dots + \lambda_n u(e_n) = 0_F$.`, '', T`une combinaison linéaire nulle des $u(e_i)$`],
@@ -123,7 +123,7 @@ demo('gendarmes', 'sup', N, 'ma-07', 'Théorème d\'encadrement', T`Soit $(u_n)$
   [T`Donc $|v_n - \ell| \leqslant \varepsilon$ pour tout $n \geqslant \max(N_1, N_2)$.`, 'c', T`la majoration de $|v_n - \ell|$`],
   [T`Ceci vaut pour tout $\varepsilon > 0$ : la suite $(v_n)$ converge vers $\ell$.`, 'd'] ], [
   [T`À partir d'un certain rang, $u_n = w_n = \ell$, donc $v_n = \ell$.`, T`Converger vers $\ell$ n'est pas valoir $\ell$ à partir d'un rang : les suites $-\frac1n$ et $\frac1n$ convergent vers 0 sans jamais s'annuler.`],
-  [T`Comme $u_n \leqslant v_n \leqslant w_n$ et que $(u_n)$ et $(w_n)$ convergent, la suite $(v_n)$ converge.`, T`Sans l'égalité des deux limites, c'est faux : $-1 \leqslant (-1)^n \leqslant 1$, les suites constantes $-1$ et $1$ convergent, et $(-1)^n$ diverge. Il faut la même limite $\ell$, et c'est $\varepsilon$ qui la fait intervenir.`] ]),
+  [T`Comme $u_n \leqslant v_n \leqslant w_n$ et que $(u_n)$ et $(w_n)$ convergent, la suite $(v_n)$ converge.`, T`Sans l'égalité des deux limites, c'est faux : $-1 \leqslant (-1)^n \leqslant 1$, les suites constantes $-1$ et $1$ convergent, et $(-1)^n$ diverge. Il faut que les deux suites qui encadrent aient la même limite $\ell$.`] ]),
 demo('adjacentes', 'sup', N, 'ma-07', 'Suites adjacentes', T`Soit $(u_n)$ une suite croissante et $(v_n)$ une suite décroissante telles que $v_n - u_n$ tend vers 0. Alors $(u_n)$ et $(v_n)$ convergent vers la même limite.`, [
   [T`La suite $(v_n - u_n)$ est décroissante, comme différence d'une suite décroissante et d'une suite croissante, et elle tend vers 0 : tous ses termes sont donc positifs, c'est-à-dire $u_n \leqslant v_n$ pour tout $n$.`, '', T`l'inégalité $u_n \leqslant v_n$`],
   [T`Par conséquent $u_n \leqslant v_n \leqslant v_0$ : la suite $(u_n)$ est croissante et majorée par $v_0$, donc elle converge vers un réel $\ell$.`, 'a', T`la convergence de $(u_n)$`],
@@ -215,13 +215,13 @@ demo('tchebychev', 'sup', Pr, 'ma-21', 'Inégalité de Bienaymé-Tchebychev', T`
   [T`Comme $\delta > 0$, les événements $\bigl(|X - E(X)| \geqslant \delta\bigr)$ et $(Y \geqslant \delta^2)$ sont égaux.`, 'a', T`l'égalité des deux événements`],
   [T`L'inégalité de Markov, appliquée à $Y$ et au réel $\delta^2 > 0$, donne $P(Y \geqslant \delta^2) \leqslant \dfrac{E(Y)}{\delta^2}$.`, 'a', T`l'inégalité de Markov appliquée à $Y$`],
   [T`Or $E(Y) = V(X)$, par définition de la variance : on obtient l'inégalité annoncée.`, 'bc'] ], [
-  [T`L'inégalité de Markov, appliquée à $X - E(X)$ et au réel $\delta$, donne $P\bigl(X - E(X) \geqslant \delta\bigr) \leqslant 0$.`, T`L'inégalité de Markov ne s'applique qu'aux variables positives, et $X - E(X)$ prend des valeurs des deux signes puisque son espérance est nulle. C'est pour cela que l'on passe au carré.`],
+  [T`L'inégalité de Markov, appliquée à $X - E(X)$ et au réel $\delta$, donne $P\bigl(X - E(X) \geqslant \delta\bigr) \leqslant 0$.`, T`L'inégalité de Markov ne s'applique qu'aux variables positives, et $X - E(X)$, dont l'espérance est nulle, prend des valeurs des deux signes dès que $X$ n'est pas constante. C'est pour cela que l'on passe au carré.`],
   [T`Or $E(Y) = \sigma(X)$, l'écart-type de $X$.`, T`L'espérance du carré de l'écart à la moyenne est la variance ; l'écart-type en est la racine carrée.`] ]),
 demo('koenig', 'sup', Pr, 'ma-21', 'Formule de König-Huygens', T`Pour toute variable aléatoire réelle $X$ sur un univers fini : $V(X) = E(X^2) - E(X)^2$.`, [
   [T`Notons $m = E(X)$. Par définition, $V(X) = E\bigl((X - m)^2\bigr)$, et $(X - m)^2 = X^2 - 2mX + m^2$.`, '', T`le développement de $(X - m)^2$`],
   [T`Par linéarité de l'espérance, $m$ étant une constante : $V(X) = E(X^2) - 2m\,E(X) + m^2$.`, 'a', T`l'expression de $V(X)$ obtenue par linéarité`],
   [T`Comme $E(X) = m$, cela s'écrit $V(X) = E(X^2) - 2m^2 + m^2$.`, 'b', T`le remplacement de $E(X)$ par $m$`],
   [T`Donc $V(X) = E(X^2) - m^2 = E(X^2) - E(X)^2$.`, 'c'] ], [
-  [T`Par définition, $V(X) = E\bigl((X - m)^2\bigr)$, et $(X - m)^2 = X^2 - m^2$.`, T`Le carré d'une différence comporte un double produit : $(X - m)^2 = X^2 - 2mX + m^2$. Sans lui, le signe de $m^2$ serait faux lui aussi.`],
+  [T`Par définition, $V(X) = E\bigl((X - m)^2\bigr)$, et $(X - m)^2 = X^2 - m^2$.`, T`Le carré d'une différence comporte un double produit : $(X - m)^2 = X^2 - 2mX + m^2$. L'égalité écrite est donc fausse, même si elle conduirait par hasard à la bonne formule : l'oubli du double produit et l'erreur de signe sur $m^2$ s'y compensent.`],
   [T`Par linéarité, $E(X^2) = E(X)^2$, donc $V(X) = 0$.`, T`L'espérance est linéaire, elle ne commute pas avec le carré. L'écart entre $E(X^2)$ et $E(X)^2$ est précisément la variance, qui n'est nulle que pour une variable presque sûrement constante.`] ]),
 ];

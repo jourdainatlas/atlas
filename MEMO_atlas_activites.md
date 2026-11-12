@@ -1063,4 +1063,13 @@ ligne à ligne aux PDF du cours comme l'avaient été les dix premières. Résul
 dans les explications : irréductibles de $\mathbb{R}[X]$, convergence et somme de la série harmonique alternée,
 réordonnement des séries absolument convergentes (signalé « admis ici », hors programme de première année).
 
+**Relecture du 12 nov. (demande de l'auteur), par la même conversation.** Les 70 démonstrations nouvelles ont
+été relues une à une sur leur texte affiché (énoncé, étapes, dépendances, intrus et réfutations) ; les 70
+erreurs sur leur source. Six retouches, aucune faute mathématique dans une étape ou une ligne : Bézout (pourquoi
+l'ensemble n'est pas vide) ; somme directe (un intrus faible, « f − f′ = g − g′ », remplacé par la confusion
+entre somme et réunion) ; Bienaymé-Tchebychev (réfutation exacte seulement si X n'est pas constante) ;
+König-Huygens (l'intrus mène par hasard à la bonne formule, ce que la réfutation dit maintenant) ; encadrement
+(fin de réfutation obscure) ; « 1 = 2 avec des matrices » (phrase « à retenir » maladroite). Les 22 pièces
+d'origine (§144) n'ont pas été relues à cette occasion. Ce n'est toujours pas une relecture indépendante.
+
 Explorations : vingt-huit. Jeux et casse-têtes : seize. Calcul mental : une activité. Raisonner : deux.
