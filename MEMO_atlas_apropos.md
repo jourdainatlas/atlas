@@ -712,3 +712,36 @@ pastilles. Sous 860 px, `.nav-rub` passe en `flex-wrap: wrap` ; quand un fil exi
 pour laisser la place à Légende) et `.nav-rub-suite` occupe toute la ligne suivante (`order: 99; flex: 1 1 100%`).
 Dans l'édifice, la navigation s'étend alors sur toute la largeur de la grille et le bouton Légende reste en haut à
 droite (`align-self: start`). Au-dessus de 860 px, rien ne change (§66).
+
+## 73. Le jardin de l'accueil (12 nov. 2026)
+
+Idée de l'auteur, mise au point en plusieurs propositions : une bande animée entre le haut de l'accueil et « Par où
+commencer ? ». Tout est dans `gabarit.html` : bloc `.acc-jardin` (un `<canvas>` décoratif, `aria-hidden`, et un
+bouton de pause) inséré par `pageAccueil`, fonction `accueilJardin()` appelée avec `accueilFil` et `accueilRoue`.
+
+**Scène.** Un jardinier mathématicien (π à la craie sur la blouse, chapeau en courbe en cloche, arrosoir qui verse
+des symboles + × π = ∑) entre à gauche et s'arrête à intervalles réguliers pour arroser. À chaque arrêt pousse un
+arbre : celui du symbole de l'édifice (mêmes tracés), aux feuilles des couleurs des rubriques (une dominante par
+arbre), agitées par des rafales. L'arbre vit environ un tour : ses feuilles tombent une à une à partir de 40 % du
+tour, puis le tronc s'efface (84 à 97 %), juste avant que le jardinier ne repasse et replante. Le sol se couvre
+d'herbe sur son passage (touffes en éventail, brins isolés, petites plantes parfois fleuries, plages nues), qui fane
+de même avant son retour. Le rouge n'est pas employé (réservé aux définitions, aux axiomes et au logo).
+
+**Le labrador chocolat** suit son maître : trot, galop pour le rattraper, assis quand il arrose. Au hasard, il joue
+dans l'herbe (salut de jeu, bonds), poursuit un symbole papillon (π ∑ ∞ √ ∫) en sautant, tourne après sa queue,
+se frotte le dos contre un arbre, renifle un tronc, dépasse son maître et l'attend assis, ou s'assoit et regarde
+ailleurs. Postures lissées, queue en trois tronçons qui ondulent, sauts en trois temps (élan, vol, réception), pas
+réglé sur le chemin parcouru. La poursuite de la queue quitte un instant le profil (`dessinerRonde`) : le chien
+s'enroule sur un cercle vu presque de profil (ellipse de rapport 0,22, demandé par l'auteur pour rester cohérent
+avec la scène), avec un enroulement progressif (`rk`) à l'entrée et à la sortie ; étourdi, trois petits Σ tournent
+au-dessus de sa tête.
+
+**Mécanique.** Une seule horloge `tau` (état gardé dans `accueilJardin.etat`, la page étant redessinée), qui ne
+tourne que si la bande est à l'écran (IntersectionObserver), l'onglet visible et la pause levée. Le jardinier, les
+arbres et l'herbe sont des fonctions de `tau` (tirages reproductibles par tour) ; seul le chien a un état propre
+(`E.chien`, abscisse cumulée `U`). Un tour dure environ 43 s sur ordinateur (un arbre tous les 130 px), une vingtaine
+de secondes sur téléphone. Couleurs lues dans les variables CSS et relues au changement de thème ; le brun du chien
+est fixé dans le code (clair et sombre). Si la largeur change, le jardin repart de zéro. `prefers-reduced-motion` :
+une image fixe (jardin à tous les âges, jardinier et chien immobiles), pas de bouton.
+`accueilJardin.variante = 'a'` redonne la première esquisse (jardinier simple, sans herbe ni chien), gardée dans le
+code. `accJardin.ou()` et `accJardin.chien()` servent aux essais (forcer un état du chien, par exemple).

@@ -1216,6 +1216,12 @@ svg.sym-anime { overflow: visible; }
 .acc-legende { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; font-size: 12.5px; color: var(--encre-2); padding: 8px 4px 0; border-top: 1px solid var(--filet); margin-top: 6px; }
 .acc-legende b { font-family: var(--f-mono); font-weight: 600; color: var(--encre); }
 .acc-section { margin: 26px 0 0; }
+/* Le jardin de l'accueil (§73) : bande dessinée sur un canevas par accueilJardin(). */
+.acc-jardin { position: relative; height: 108px; margin: -16px 0 -8px; }
+.acc-jardin canvas { display: block; width: 100%; height: 100%; }
+.acc-jardin-bouton { position: absolute; right: 0; top: 4px; width: 26px; height: 26px; padding: 0; display: grid; place-items: center; border-radius: 50%; border: 1px solid var(--filet); background: var(--surface); color: var(--encre-2); cursor: pointer; opacity: .55; transition: opacity .2s; }
+.acc-jardin-bouton:hover, .acc-jardin-bouton:focus-visible { opacity: 1; color: var(--encre); }
+.acc-jardin-bouton svg { width: 11px; height: 11px; fill: currentColor; }
 .acc-section > h3 { font-family: var(--f-ui); font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--encre-2); margin: 0 0 12px; }
 .acc-rubriques { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; }
 /* Cinq rubriques sur une seule ligne dès que la page est assez large (11 nov. 2026, demande de l'auteur) : cartes resserrées. */
@@ -3833,6 +3839,8 @@ function pageAccueil() {
   h += `<button type="button" class="acc-fil-bouton" hidden></button>`;
   h += `<div class="acc-chemin"><p class="ch-etape"><span class="ch-n"></span><span class="ch-nom">De l'axiome au théorème</span></p><p class="ch-but">&nbsp;</p></div>`;
   h += `<div class="acc-legende"><span><b>${nbTheories}</b> théories</span><span><b>${nbEnonces}</b> définitions, axiomes et théorèmes</span><span><b>${nbTermes}</b> termes au lexique</span></div></div></section>`;
+  // Le jardin (accueilJardin, §73) : bande décorative, un jardinier arrose et fait pousser des arbres de l'édifice.
+  h += `<div class="acc-jardin"><canvas aria-hidden="true"></canvas><button type="button" class="acc-jardin-bouton" hidden></button></div>`;
   h += aProposCommencer();   // domaine À propos : guide par profil de lecteur
 
   const carte = (href, titre, chiffre, unite, texte, pied, aVenir) =>
@@ -4848,6 +4856,319 @@ function accueilRoue() {
   accRoue = { arreter() { tour?.cancel(); document.removeEventListener('visibilitychange', surVisibilite); } };
 }
 
+// Le jardin de l'accueil (§73, idée de l'auteur). Un jardinier entre à gauche, s'arrête à intervalles réguliers pour
+// arroser ; à chaque arrêt pousse un arbre, celui du symbole de l'édifice, aux feuilles des couleurs des rubriques,
+// agitées par le vent. L'arbre vit à peu près un tour : ses feuilles tombent une à une, puis le tronc s'efface, juste
+// avant que le jardinier, ressorti à droite et rentré à gauche, ne repasse et replante. Tout est fonction d'une seule
+// horloge (tau), qui ne tourne que si la bande est à l'écran, l'onglet visible et la pause levée.
+let accJardin = null;
+function accueilJardin() {
+  if (accJardin) accJardin.arreter();
+  const boite = document.querySelector('.acc-jardin'); if (!boite) { accJardin = null; return; }
+  const cv = boite.querySelector('canvas'), ctx = cv.getContext('2d'), bouton = boite.querySelector('button');
+  const calme = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const E = accueilJardin.etat || (accueilJardin.etat = { tau: 0, arbres: [], faits: new Set(), pause: false, W: 0 });
+  const FE = new Path2D('M-1 0 C-0.55 -0.66 0.5 -0.62 1 0 C0.52 0.44 -0.5 0.52 -1 0 Z');
+  const TRONC = new Path2D('M8.7 21.8 C8.6 16.4 10.9 12 16.6 8.2 C12.9 12.3 11.9 16.6 12.7 21.8 Z');
+  const BRANCHE = new Path2D('M9.9 14.6 C9.3 12.1 8 10.1 6.4 8.3 C8.6 9.2 10.4 10.9 11.4 13.1 Z');
+  // feuilles du symbole : x, y, rotation (degrés), échelle ; dans l'ordre d'éclosion, de bas en haut
+  const FEUILLES = [[17, 12.9, 12, 2.55], [5.9, 10.8, -14, 1.85], [16.4, 8.6, -36, 3.25], [6.3, 7.9, 28, 2.25], [11.7, 7.8, 67, 3], [8.7, 6.5, 66, 1.85], [14.4, 5.1, -74, 2.55]];
+  const H = 108, SOL = H - 13, BEC = 19, ARRET = 1.6, B = (accueilJardin.variante || 'b') === 'b';   // variante b (publiée) : mathématicien, sol végétalisé, labrador ; 'a' : première esquisse, gardée
+  let W = 0, n = 0, v = 40, T = 60, coul = {}, raf = 0, dernier = 0, visible = false;
+  const alea = g => () => { g |= 0; g = g + 0x6D2B79F5 | 0; let t = Math.imul(g ^ g >>> 15, 1 | g); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+  const borne = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x)), doux = x => x * x * (3 - 2 * x), ressort = x => { const c = 1.9; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+  const couleurs = () => { const st = getComputedStyle(boite), c = k => st.getPropertyValue(k).trim();
+    coul = { feuilles: ['--r-edifice', '--r-cours', '--r-exercices', '--r-annales', '--c-ord'].map(c), tronc: c('--sy-gd'), branche: c('--sy-gm'), sol: c('--filet'), corps: c('--sy-gd'), tete: c('--sy-gm'), chapeau: c('--r-annales'), arrosoir: c('--r-edifice'), eau: c('--r-edifice'), herbe: [c('--r-cours'), c('--c-ord')], craie: c('--papier') }; };
+  const mesurer = () => {
+    const w = boite.clientWidth; if (!w) return false;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2); cv.width = Math.round(w * dpr); cv.height = Math.round(H * dpr); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    if (Math.abs(w - E.W) > 2) { E.W = w; E.tau = 0; E.arbres = []; E.faits = new Set(); }   // largeur changée : le jardin repart de zéro
+    W = w; n = Math.max(2, Math.round(W / 132)); v = borne(W / 28, 26, 58); T = (W + 80) / v + n * ARRET; return true;
+  };
+  const place = (tour, k) => (k + .5) * W / n + (alea(tour * 97 + k * 13 + 5)() - .5) * W / n * .28;
+  const heureArret = (tour, k) => (place(tour, k) - BEC + 40) / v + k * ARRET;      // dans le tour
+  // Variante b. Instant du tour où le bec de l'arrosoir passe au-dessus de l'abscisse x : c'est là que l'herbe lève.
+  const passage = (tour, x) => { let k = 0; while (k < n && place(tour, k) < x) k++; return (x - BEC + 40) / v + k * ARRET; };
+  let pre = null;
+  const prairie = () => {            // brins d'herbe et petites plantes, fixes d'un tour à l'autre
+    if (pre && pre.W === W) return pre.l; const r = alea(4242), l = [];
+    // Irrégulière : des touffes serrées (brins en éventail, plus hauts au centre), des brins isolés, des plages nues.
+    const brin = (x, h, pen, ep) => l.push({ x, h, pen, ep, c: r() < .62 ? 0 : 1, ph: r() * 6.28, plante: 0 });
+    for (let x = 4 + r() * 10; x < W - 4;) {
+      const tirage = r();
+      if (tirage < .34) { const nb = 4 + Math.floor(r() * 7), larg = 3 + r() * 7, haut = 6 + r() * 8; for (let i = 0; i < nb; i++) { const u = nb > 1 ? i / (nb - 1) * 2 - 1 : 0; brin(x + u * larg + (r() - .5) * 1.5, haut * (1 - .55 * u * u) * (.7 + r() * .5), u * (3 + r() * 4), 1.1 + r() * .6); } x += larg + 5 + r() * 16; }
+      else if (tirage < .48) { l.push({ x, plante: 1 + Math.floor(r() * 2), fleur: Math.floor(r() * 5), ht: 8 + r() * 8, c: r() < .5 ? 0 : 1, ph: r() * 6.28 }); x += 7 + r() * 14; }
+      else if (tirage < .80) { const nb = 1 + Math.floor(r() * 3); for (let i = 0; i < nb; i++) brin(x + i * (1.5 + r() * 2.5), 2.5 + r() * 4.5, (r() - .5) * 4, .9 + r() * .4); x += 6 + r() * 12; }
+      else x += 14 + r() * 34;      // plage nue
+    }
+    pre = { W, l }; return l;
+  };
+  const dessinerPrairie = () => {
+    const tour = Math.floor(E.tau / T), tl = E.tau % T, t = E.tau;
+    ctx.save(); ctx.lineCap = 'round';
+    for (const b of prairie()) {
+      const tp = passage(tour, b.x) + (b.ph - 3) * .12, age = tl >= tp ? tl - tp : tour > 0 ? tl + T - passage(tour - 1, b.x) - (b.ph - 3) * .12 : -1; if (age < 0) continue;
+      const pousse = doux(borne(age / (b.plante ? 2.2 : 1.2))), fane = borne((age - .78 * T) / (.2 * T)), vie = pousse * (1 - fane); if (vie <= 0) continue;
+      const vent = (.5 + .5 * Math.sin(.5 * t - b.x * .006)) * Math.sin(2.3 * t + b.ph + b.x * .02);
+      ctx.globalAlpha = .85 * (1 - fane * .6);
+      if (!b.plante) { ctx.strokeStyle = coul.herbe[b.c]; ctx.lineWidth = b.ep; ctx.beginPath(); ctx.moveTo(b.x, SOL); ctx.quadraticCurveTo(b.x + b.pen * .3, SOL - b.h * vie * .6, b.x + b.pen + vent * 1.8, SOL - b.h * vie); ctx.stroke(); continue; }
+      const hx = b.x + vent * 1.5, hy = SOL - b.ht * vie;                                   // petite plante : tige, deux feuilles, parfois une fleur
+      ctx.strokeStyle = coul.herbe[0]; ctx.lineWidth = 1.3; ctx.beginPath(); ctx.moveTo(b.x, SOL); ctx.quadraticCurveTo(b.x, SOL - b.ht * vie * .5, hx, hy); ctx.stroke();
+      feuille(b.x - 2.6 + vent * .6, SOL - b.ht * vie * .45, -.5 + vent * .2, 2.7 * vie, coul.herbe[b.c], ctx.globalAlpha); feuille(b.x + 2.6 + vent * .9, SOL - b.ht * vie * .68, -2.6 + vent * .2, 2.4 * vie, coul.herbe[1 - b.c], ctx.globalAlpha);
+      if (b.plante === 2 && age > 2.4) { const e = ressort(borne((age - 2.4) / .5)) * (1 - fane); ctx.fillStyle = coul.feuilles[b.fleur]; ctx.beginPath(); ctx.arc(hx, hy - 1, 2.1 * e, 0, 6.3); ctx.fill(); ctx.fillStyle = coul.craie; ctx.beginPath(); ctx.arc(hx, hy - 1, .8 * e, 0, 6.3); ctx.fill(); }
+    }
+    ctx.restore();
+  };
+  const jardinier = tl => {            // position et geste à l'instant tl du tour
+    const tour = Math.floor(E.tau / T);
+    for (let k = 0; k < n; k++) { const t = heureArret(tour, k); if (tl < t) return { x: -40 + (tl - k * ARRET) * v, marche: true }; if (tl < t + ARRET) return { x: place(tour, k) - BEC, geste: (tl - t) / ARRET, k }; }
+    return { x: -40 + (tl - n * ARRET) * v, marche: true };
+  };
+  const planter = () => {
+    const tour = Math.floor(E.tau / T);
+    for (const L of [tour - 1, tour]) { if (L < 0) continue;
+      for (let k = 0; k < n; k++) { const ne = L * T + heureArret(L, k) + ARRET * .5, cle = L + ':' + k;
+        if (ne > E.tau || E.tau - ne > T * 1.02 || E.faits.has(cle)) continue; E.faits.add(cle);
+        const r = alea(L * 1009 + k * 31 + 7), dom = Math.floor(r() * 5), ordre = FEUILLES.map((_, i) => [r(), i]).sort((a, b) => a[0] - b[0]).map(x => x[1]);
+        E.arbres.push({ x: place(L, k), ne, ech: 2.5 + r() * 1.0, miroir: r() < .5 ? -1 : 1,
+          feuilles: FEUILLES.map((f, i) => ({ c: r() < .5 ? dom : Math.floor(r() * 5), chute: .40 + .40 * (ordre.indexOf(i) + r() * .8) / FEUILLES.length, duree: 2.2 + r() * 1.4, derive: 10 + r() * 26, phase: r() * 6.28, sens: r() < .5 ? -1 : 1 })) }); } }
+    E.arbres = E.arbres.filter(a => E.tau - a.ne <= T * 1.02);
+    if (E.faits.size > 4 * n) E.faits = new Set([...E.faits].filter(c => +c.split(':')[0] >= tour - 1));
+  };
+  const feuille = (x, y, rot, ech, c, alpha) => { ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(ech, ech); ctx.globalAlpha = alpha; ctx.fillStyle = c; ctx.fill(FE); ctx.restore(); };
+  const dessinerArbre = a => {
+    const age = E.tau - a.ne, t = E.tau, s = a.ech, fane = borne((age - .84 * T) / (.13 * T)), opa = 1 - fane;
+    const tronc = doux(borne(age / 1.5)), branche = doux(borne((age - .9) / .9)), rafale = .5 + .5 * Math.sin(.5 * t - a.x * .006);
+    const X = (ux, uy) => [a.x + (ux - 10.7) * s * a.miroir, SOL + (uy - 21.8) * s];   // unités du symbole → écran
+    ctx.save(); ctx.globalAlpha = .9 * opa; ctx.fillStyle = coul.sol; ctx.beginPath(); ctx.ellipse(a.x, SOL + .5, 3.2 * s * borne(age / .8), 1.6, 0, 0, 6.3); ctx.fill(); ctx.restore();
+    ctx.save(); ctx.translate(a.x, SOL); ctx.rotate(.018 * Math.sin(.9 * t + a.x * .01) * (1 - fane)); ctx.scale(s * a.miroir, s * tronc * (1 - .3 * fane)); ctx.translate(-10.7, -21.8); ctx.globalAlpha = opa;
+    ctx.fillStyle = coul.tronc; ctx.fill(TRONC);
+    if (branche > 0) { ctx.translate(11.4, 13.1); ctx.scale(branche, branche); ctx.translate(-11.4, -13.1); ctx.fillStyle = coul.branche; ctx.fill(BRANCHE); }
+    ctx.restore();
+    a.feuilles.forEach((f, i) => {
+      const [ux, uy, deg, e] = FEUILLES[i], rot0 = deg * Math.PI / 180 * a.miroir, [x0, y0] = X(ux, uy), tc = f.chute * T, c = coul.feuilles[f.c];
+      if (age < tc) {            // sur l'arbre : elle éclot, puis s'agite au vent
+        const eclos = borne((age - 1.4 - i * .26) / .6); if (eclos <= 0) return;
+        const vent = (.09 + .13 * rafale) * Math.sin(2.3 * t + f.phase + a.x * .02) + (a.secoue && t - a.secoue < .25 ? .22 * Math.sin(t * 15 + f.phase) : 0), presque = borne((age - tc + 3) / 3);   // elle tremble davantage avant de se détacher
+        feuille(x0 + vent * 3, y0, rot0 + vent * (1 + presque), e * s * ressort(eclos), c, 1);
+      } else {                   // détachée : elle descend en se balançant, se pose, puis s'efface
+        const dt = age - tc, p = borne(dt / f.duree), ySol = SOL - 1.2, pose = dt - f.duree;
+        const x = x0 + f.derive * p + Math.sin(dt * 4.2 + f.phase) * 6 * (1 - p), y = y0 + (ySol - y0) * Math.pow(p, 1.5);
+        const rot = p < 1 ? rot0 + f.sens * (dt * 2.6 + Math.sin(dt * 4.2 + f.phase)) : 0;
+        feuille(x, y, rot, e * s, c, pose < 3 ? 1 : 1 - borne((pose - 3) / 2.5));
+      }
+    });
+  };
+  const dessinerJardinier = () => {
+    const tl = E.tau % T, j = jardinier(tl), t = E.tau, pas = j.marche ? t * 7.5 : 0, saut = j.marche ? Math.abs(Math.sin(pas)) * 1.3 : 0;
+    const g = j.geste ?? -1, incl = g < 0 ? 0 : g < .18 ? doux(g / .18) : g > .82 ? doux((1 - g) / .18) : 1, verse = g > .16 && g < .84;
+    const x = j.x, y = SOL - saut; if (x < -30 || x > W + 30) return;
+    ctx.save(); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    // jambes
+    ctx.strokeStyle = coul.corps; ctx.lineWidth = 2.6;
+    for (const d of [-1, 1]) { const o = j.marche ? Math.sin(pas + (d > 0 ? 0 : Math.PI)) * 4.2 : d * 2.2; ctx.beginPath(); ctx.moveTo(x + d * 1.6, y - 11); ctx.lineTo(x + d * 1.6 + o, SOL - 1 - (j.marche ? Math.max(0, Math.cos(pas + (d > 0 ? 0 : Math.PI))) * 2 : 0)); ctx.stroke(); }
+    // tablier / corps
+    ctx.fillStyle = coul.corps; ctx.beginPath(); ctx.moveTo(x - 4.2, y - 25); ctx.quadraticCurveTo(x, y - 27.5, x + 4.2, y - 25); ctx.lineTo(x + 6, y - 10.5); ctx.quadraticCurveTo(x, y - 8.5, x - 6, y - 10.5); ctx.closePath(); ctx.fill();
+    if (B) {   // π tracé à la craie sur la blouse
+      ctx.strokeStyle = coul.craie; ctx.lineWidth = 1.25; ctx.beginPath(); ctx.moveTo(x - 3.2, y - 21.2); ctx.lineTo(x + 3.4, y - 21.2); ctx.moveTo(x - 1.4, y - 21.2); ctx.lineTo(x - 1.9, y - 14.6); ctx.moveTo(x + 1.5, y - 21.2); ctx.quadraticCurveTo(x + 1.3, y - 15.2, x + 2.8, y - 14.8); ctx.stroke(); }
+    // tête et chapeau de paille
+    ctx.fillStyle = coul.tete; ctx.beginPath(); ctx.arc(x + .8, y - 30.5, 4.6, 0, 6.3); ctx.fill();
+    if (B) {   // le chapeau est une courbe en cloche posée sur son axe
+      const cx = x + .8, by = y - 33.4, g = u => Math.exp(-u * u / 18) * 8.2; ctx.fillStyle = coul.chapeau; ctx.beginPath(); ctx.moveTo(cx - 10.5, by);
+      for (let u = -10.5; u <= 10.5; u += .75) ctx.lineTo(cx + u, by - g(u)); ctx.lineTo(cx + 10.5, by); ctx.closePath(); ctx.fill();
+      ctx.strokeStyle = coul.chapeau; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(cx - 11.5, by); ctx.lineTo(cx + 11.5, by); ctx.stroke();
+    } else {
+    ctx.fillStyle = coul.chapeau; ctx.beginPath(); ctx.ellipse(x + .8, y - 33.6, 9.2, 2.1, -.06, 0, 6.3); ctx.fill(); ctx.beginPath(); ctx.arc(x + .8, y - 34.2, 4.9, Math.PI, 0); ctx.fill(); }
+    // arrosoir, tenu devant ; il s'incline pour verser
+    const ax = x + 12.5, ay = y - 18 + incl * 1.5;
+    ctx.strokeStyle = coul.corps; ctx.lineWidth = 2.4; ctx.beginPath(); ctx.moveTo(x + 2.5, y - 22.5); ctx.quadraticCurveTo(x + 6, y - 17, ax - 3.5, ay - 4.5); ctx.stroke();   // bras
+    ctx.save(); ctx.translate(ax, ay); ctx.rotate(incl * .62);
+    ctx.strokeStyle = coul.arrosoir; ctx.fillStyle = coul.arrosoir; ctx.lineWidth = 1.7;
+    ctx.beginPath(); ctx.arc(-1.2, -4.2, 4.2, Math.PI * 1.05, Math.PI * 1.95); ctx.stroke();                  // anse
+    ctx.beginPath(); ctx.roundRect(-5, -4, 9.5, 8.5, 1.6); ctx.fill();                                          // réservoir
+    ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(3.5, 2.5); ctx.lineTo(10.5, -3.2); ctx.stroke();             // bec
+    ctx.lineWidth = 2.6; ctx.beginPath(); ctx.moveTo(9.4, -5); ctx.lineTo(11.8, -1.6); ctx.stroke();            // pomme
+    const m = ctx.getTransform().transformPoint(new DOMPoint(11.2, -3)); ctx.restore();
+    if (verse) {                                                                                                // gouttes
+      const dpr = cv.width / W, bx = m.x / dpr, by = m.y / dpr; ctx.fillStyle = coul.eau;
+      if (B) { ctx.font = '700 8.5px ' + (getComputedStyle(boite).getPropertyValue('--f-mono') || 'monospace'); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        for (let i = 0; i < 5; i++) { const ph = (t * 1.15 + i / 5) % 1, ec = (i % 3 - 1) * 3.2; ctx.globalAlpha = .95 - ph * .4; ctx.fillText('+×π=∑'[(i + Math.floor(t * 1.15 + i / 5)) % 5], bx + 1.5 + ec + ph * (1.5 + ec * .4), by + 2 + ph * ph * (SOL - by - 5)); } }
+      else for (let i = 0; i < 7; i++) { const ph = (t * 1.9 + i / 7) % 1, ec = (i % 3 - 1) * 2.4; ctx.globalAlpha = .85 - ph * .35; ctx.beginPath(); ctx.ellipse(bx + 1 + ec + ph * (1.5 + ec * .4), by + ph * ph * (SOL - by - 1), .95, 1.5, 0, 0, 6.3); ctx.fill(); }
+      ctx.globalAlpha = .28 * borne((g - .2) / .3); ctx.beginPath(); ctx.ellipse(x + BEC, SOL + .5, 9, 1.8, 0, 0, 6.3); ctx.fill();   // terre mouillée
+    }
+    ctx.restore();
+  };
+  // Variante b : un labrador chocolat suit le jardinier. Il trotte derrière lui, s'assoit quand il arrose et, de temps
+  // en temps, joue dans l'herbe, poursuit un symbole qui volette comme un papillon, tourne après sa queue ou se frotte
+  // le dos contre un arbre ; puis il galope pour rattraper son maître. Sa position est comptée en abscisse cumulée
+  // (U croît de W + 80 à chaque tour) : il peut ainsi finir un jeu pendant que le jardinier est déjà rentré à gauche.
+  const LG = () => W + 80, ecran = U => ((U % LG()) + LG()) % LG() - 40;
+  const majChien = (dt, j) => {
+    const c = E.chien || (E.chien = { U: null, dir: 1, face: 1, etat: 'suit', t: 0, repos: 3, bouge: false, galop: false, phase: 0, qph: 0, lag: 0, sautPrec: 0, pose: { tang: 0, tete: 0, bas: 0, qb: .6, qa: .3 } });
+    const UG = Math.floor(E.tau / T) * LG() + j.x + 40, cible = UG - 32; if (c.U === null) c.U = cible; const U0 = c.U; c.t += dt;
+    if (Math.abs(cible - c.U) > LG() * 1.5) { c.U = cible; c.etat = 'suit'; }
+    const x = ecran(c.U), suivre = 1 - Math.exp(-dt * 15);
+    const vers = (U, vit) => { const d = U - c.U; if (Math.abs(d) < 1.5) { c.bouge = false; return true; } c.dir = Math.sign(d); c.U += Math.sign(d) * Math.min(Math.abs(d), vit * dt); c.bouge = true; return false; };
+    const fin = () => { c.etat = 'suit'; c.t = 0; c.repos = 2 + Math.random() * 3.5; c.cible = null; c.galop = false; };
+    const P = { tang: 0, tete: 0, bas: 0, qb: .7, qa: .28, qf: 5, saut: 0, pattes: 'pose', vol: 0 };
+    // Un saut complet : il se ramasse, s'élance (le corps bascule de la montée à la descente), se reçoit en fléchissant.
+    const sauter = (k, haut) => { if (k <= 0 || k >= 1) return false;
+      if (k < .2) { const u = doux(k / .2); P.bas = 2.4 * u; P.tang = .14 * u; P.qb = .35; }
+      else if (k < .86) { const u = (k - .2) / .66; P.saut = haut * 4 * u * (1 - u); P.tang = -.5 + .85 * doux(u); P.pattes = 'vol'; P.vol = u; P.tete = -.25 + .35 * u; P.qb = .9 - .5 * u; P.qa = .1; }
+      else { const u = (k - .86) / .14; P.bas = 2.6 * (1 - u); P.tang = .22 * (1 - u); P.qb = 1.1; }
+      return true; };
+    const assis = (qa = .4, qf = 7) => { P.tang = -.5; P.pattes = 'assis'; P.qb = .12; P.qa = qa; P.qf = qf; };
+    if (c.etat === 'suit') {
+      const d = cible - c.U; c.galop = d > 110 || (c.galop && d > 30);
+      if (vers(cible, c.galop ? 2.7 * v : d > 26 ? 1.5 * v : 1.02 * v)) { c.dir = 1; assis(); }
+      c.repos -= dt;
+      if (c.repos <= 0 && Math.abs(d) < 70 && x > 24 && x < W - 90) {
+        const ages = a => E.tau - a.ne;
+        const frotter = E.arbres.filter(a => { const dx = x - a.x; return ages(a) > 4 && ages(a) < .7 * T && dx > 14 && dx < 300; }).sort((a, b) => b.x - a.x)[0];
+        const flairer = E.arbres.filter(a => { const dx = x - a.x; return ages(a) > 2.5 && ages(a) < .88 * T && dx > -90 && dx < 300 && Math.abs(dx) > 12; }).sort((a, b) => Math.abs(x - a.x) - Math.abs(x - b.x))[0];
+        const choix = ['herbe', 'herbe', 'papillon', 'papillon', 'papillon', 'queue', 'queue', 'ailleurs', 'ailleurs', 'ailleurs'].concat(frotter ? ['arbre', 'arbre'] : [], flairer ? ['flaire', 'flaire', 'flaire'] : [], x < W - 260 ? ['depasse', 'depasse', 'depasse'] : []);
+        const e = choix[Math.floor(Math.random() * choix.length)]; c.etat = e; c.t = 0; c.U0 = c.U;
+        if (e === 'arbre') { c.cible = frotter; c.cote = -frotter.miroir; }
+        if (e === 'flaire') { c.cible = flairer; c.cote = Math.sign(x - flairer.x) || 1; }
+        if (e === 'papillon') c.sym = { car: 'π∑∞√∫'[Math.floor(Math.random() * 5)], coul: Math.floor(Math.random() * 5) };
+        if (e === 'depasse') c.but = UG + 80 + Math.random() * 50 + (j.marche ? v * 1.3 : 0);
+        if (e === 'ailleurs') { c.mode = Math.random() < .6 ? 'derriere' : 'haut'; c.duree = 2.8 + Math.random() * 1.4; }
+      }
+    } else if (c.etat === 'herbe') {            // salut de jeu, puis deux bonds dans l'herbe
+      c.bouge = false; c.dir = 1;
+      if (c.t < 1.1) { P.tang = .36; P.tete = -.3; P.qb = 1.2; P.qa = .6; P.qf = 13; P.pattes = 'salut'; }
+      else if (c.t < 2.7) { const k = (c.t - 1.1) % .8 / .8; sauter(k, 7.5); if (k > .2 && k < .86) c.U += 26 * dt; }
+      else assis(.6, 12);
+      if (c.t > 3.3) fin();
+    } else if (c.etat === 'papillon') {         // il suit le symbole, le nez en l'air, et saute trois fois
+      const sU = c.U0 + 20 + 20 * Math.sin(1.1 * c.t) + 16 * c.t; c.symU = sU; const arrive = vers(sU - 9, 1.5 * v);
+      P.tete = -.42; P.qb = 1.05; P.qa = .5; P.qf = 10; P.pattes = arrive ? 'pose' : 'trot';
+      for (const d of [1.0, 2.1, 3.15]) sauter((c.t - d) / .78, 12.5);
+      if (c.t > 4.8) fin();
+    } else if (c.etat === 'queue') {            // il tourne après sa queue : la scène quitte un instant la vue de profil (voir dessinerRonde)
+      c.bouge = false; c.dir = 1; const w = c.t - 2.5;
+      if (c.t < .28) { P.bas = 2.2; P.tang = .1; P.tete = .55; P.qb = 1.1; P.qa = .5; P.qf = 12; c.ronde = null; }                   // il se ramasse, l'œil sur sa queue
+      else if (w < 0) {            // la ronde : il s'enroule (rk de 0,2 à 1), fait trois tours qui s'emballent puis ralentissent, se déroule
+        const e = c.t - .28; c.rk = e < .2 ? .2 + .8 * doux(e / .2) : e > 2.0 ? .2 + .8 * doux((2.22 - e) / .22) : 1;
+        c.ronde = 1.5708 + 2.4 * c.rk + 6.283 * 3 * doux(borne((e - .12) / 1.96)); }
+      else { c.ronde = null; P.tang = .13 * Math.sin(w * 15) * Math.max(0, 1 - w / .9); P.tete = .22 * Math.sin(w * 9) * Math.max(0, 1 - w / .9); P.qa = .15; }   // étourdi, il vacille
+      if (c.t > 3.5) fin();
+    } else if (c.etat === 'arbre' || c.etat === 'flaire') {      // il rejoint l'arbre choisi
+      const a = c.cible, fl = c.etat === 'flaire'; if (E.tau - a.ne > (fl ? .9 : .78) * T || c.t > 9) fin();
+      else if (vers(c.U - (x - (a.x + c.cote * (2.1 * a.ech + (fl ? 16 : 6.5)))), 1.7 * v)) { c.etat = fl ? 'renifle' : 'gratte'; c.t = 0; c.dir = fl ? -c.cote : c.cote; }
+      else P.pattes = 'trot';
+    } else if (c.etat === 'gratte') {           // dressé, le dos contre le tronc
+      c.bouge = false; c.cible.secoue = E.tau; P.tang = -1.02; P.saut = 2 + 2 * Math.sin(c.t * 15); P.pattes = 'debout'; P.qb = .1; P.qa = .1; P.tete = .22 * Math.sin(c.t * 7);
+      if (c.t > 3.2) fin();
+    } else if (c.etat === 'renifle') {          // le nez au pied du tronc, à petits coups
+      c.bouge = false; P.tang = .15; P.tete = .8 + .07 * Math.sin(c.t * 23); P.bas = .8; P.qb = .55; P.qa = .2; P.qf = 3.5; P.pattes = 'salut';
+      if (c.t > 2.9) { const a = c.cible, age = E.tau - a.ne; if (Math.random() < .3 && age > 4 && age < .7 * T) { c.etat = 'arbre'; c.t = 0; c.cote = -a.miroir; } else fin(); }
+    } else if (c.etat === 'depasse') {          // il file devant son maître…
+      c.galop = true; if (vers(c.but, 3.1 * v)) { c.etat = 'attend'; c.t = 0; c.dir = -1; } if (c.t > 6) fin();
+    } else if (c.etat === 'attend') {           // … se retourne, s'assoit et l'attend
+      c.bouge = false; c.galop = false; c.dir = -1; assis(.65, 12); if (UG >= c.U - 16 || c.t > 9) { c.dir = 1; fin(); }
+    } else if (c.etat === 'ailleurs') {         // assis, il regarde derrière lui, ou en l'air
+      c.bouge = false; assis(.2, 3); const dedans = c.t > .5 && c.t < c.duree - .4;
+      if (c.mode === 'derriere') c.dir = dedans ? -1 : 1; else { c.dir = 1; P.tete = dedans ? -.6 + .06 * Math.sin(c.t * 2.2) : 0; }
+      if (c.t > c.duree) { c.dir = 1; fin(); }
+    }
+    if (c.bouge && P.pattes === 'pose') P.pattes = c.galop ? 'galop' : 'trot';
+    const dU = Math.abs(c.U - U0); c.phase += dU * (c.galop ? .21 : .4);          // le pas avance avec le chemin parcouru : les pieds ne glissent pas
+    if (P.pattes === 'trot') { P.saut += .7 * Math.abs(Math.sin(c.phase)); P.tete += .05 * Math.sin(c.phase * 2); P.qb = .8; P.qa = .25; P.qf = 6; }
+    if (P.pattes === 'galop') { P.tang = .17 * Math.sin(c.phase); P.saut = 1.6 + 1.6 * Math.sin(c.phase - 1.2); P.qb = .3; P.qa = .1; P.tete = -.1; }
+    c.face += (c.dir - c.face) * (1 - Math.exp(-dt * 12));                                  // demi-tour progressif
+    for (const k of ['tang', 'tete', 'bas', 'qb', 'qa']) c.pose[k] += (P[k] - c.pose[k]) * (dt > 0 ? suivre : 1);      // les postures s'enchaînent sans à-coup
+    const vy = dt > 0 ? (P.saut - c.sautPrec) / dt : 0; c.sautPrec = P.saut; c.lag += (borne(-vy * .014, -.7, .7) - c.lag) * (1 - Math.exp(-dt * 9));   // la queue traîne dans les sauts
+    c.qph += dt * P.qf * 1.6; c.pose.saut = P.saut; c.pose.pattes = P.pattes; c.pose.vol = P.vol;
+  };
+  // La ronde : le chien, enroulé sur lui-même, court après sa queue sur un cercle vu en perspective (une ellipse
+  // aplatie). Le corps est une suite de disques le long de l'arc, tracés du fond vers l'avant ; la tête mène, le bout
+  // de la queue file juste devant la truffe. Seul moment où la scène n'est pas de profil.
+  const dessinerRonde = (c, x, brun, fonce, noir) => {
+    // rk : enroulement. À 1 le corps fait presque le tour du cercle ; près de 0 le cercle est immense et le corps,
+    // presque droit, se confond avec le chien de profil : c'est l'image de transition à l'entrée et à la sortie.
+    // L'ellipse est très aplatie (rapport 0,22) : le cercle est vu presque de profil, comme le reste de la scène.
+    const k = c.rk, ka = k * (.4 + .6 * k), th = c.ronde - 2.4 * (k - ka),   // ka : angle par unité de corps (le corps garde sa longueur quand le cercle grandit)
+       rx = 8.6 / k, ry = rx * .22, cy = SOL - 8.2 - ry * (1 - k), vit = k < 1 ? 0 : borne(Math.sin(borne((c.t - .4) / 1.96) * Math.PI) * 1.4);
+    const pt = a => [x - rx * Math.cos(a), cy + ry * Math.sin(a) - .8 * k * Math.abs(Math.sin(a * 2 + th))], fond = a => borne(.5 - .5 * Math.sin(a)) * k;   // fond : 1 à l'arrière du cercle
+    const teinte = a => fond(a) > .5 ? fonce : brun;
+    ctx.save(); ctx.lineCap = 'round';
+    ctx.strokeStyle = coul.branche; ctx.lineWidth = 1;                                                           // traits de vitesse, au sol
+    for (const [r, d] of [[1.5, 2.4], [1.8, 4.3]]) { ctx.globalAlpha = .4 * vit; ctx.beginPath(); ctx.ellipse(x, SOL - 1.2, 8.6 * r, 8.6 * r * .13, 0, -(th - d), -(th - d - 1.1 * vit)); ctx.stroke(); }
+    ctx.globalAlpha = 1;
+    const pieces = [];
+    for (let i = 0; i <= 15; i++) { const a = th - (.55 + i * .25) * ka, gros = (4.1 - .6 * Math.abs(i - 6) / 6) * (1 - .14 * fond(a)); pieces.push({ p: Math.sin(a), f: () => { const [X, Y] = pt(a); ctx.fillStyle = teinte(a); ctx.beginPath(); ctx.arc(X, Y, gros, 0, 6.3); ctx.fill(); } }); }
+    for (const [da, dec] of [[-.9, 0], [-1.5, 3.1], [-3.5, 1.6], [-4.1, 4.7]]) { const a = th + da * ka; pieces.push({ p: Math.sin(a) - .05, f: () => { const [X, Y] = pt(a), lev = Math.max(0, Math.sin(c.t * 22 + dec)) * 2.2 * k; ctx.strokeStyle = fonce; ctx.lineWidth = 2.3; ctx.beginPath(); ctx.moveTo(X, Y + 1); ctx.lineTo(X, SOL - lev - 1.2 * fond(a)); ctx.stroke(); } }); }
+    pieces.push({ p: Math.sin(th - 4.9 * ka) - .02, f: () => { ctx.strokeStyle = teinte(th - 4.9 * ka); let [X, Y] = pt(th - 4.35 * ka);                 // queue, effilée et relevée
+      [[4.8, 2.8], [5.25, 2.3], [5.7, 1.7]].forEach(([d, ep], i) => { const [nx, ny] = pt(th - d * ka); ctx.lineWidth = ep; ctx.beginPath(); ctx.moveTo(X, Y); ctx.lineTo(nx, ny - (i + 1) * 1.5); ctx.stroke(); X = nx; Y = ny - (i + 1) * 1.5; }); } });
+    pieces.push({ p: Math.sin(th) + .15, f: () => { const [X, Y] = pt(th), tx = rx * Math.sin(th), ty = ry * Math.cos(th), n = Math.hypot(tx, ty) || 1, ux = tx / n, uy = ty / n, ech = 1 - .12 * fond(th);   // tête, museau dans le sens de la course
+      ctx.fillStyle = teinte(th); ctx.beginPath(); ctx.arc(X, Y - 3, 4 * ech, 0, 6.3); ctx.fill(); ctx.strokeStyle = teinte(th); ctx.lineWidth = 3.7 * ech; ctx.beginPath(); ctx.moveTo(X + ux * 2, Y - 2.6 + uy * 2); ctx.lineTo(X + ux * 6.6, Y - 2.3 + uy * 4); ctx.stroke();
+      ctx.fillStyle = fond(th) > .5 ? brun : fonce; ctx.beginPath(); ctx.ellipse(X - ux * 2.2, Y - 2, 2, 3.6, -ux * .45, 0, 6.3); ctx.fill();
+      ctx.fillStyle = noir; ctx.beginPath(); ctx.arc(X + ux * 7.3, Y - 2.4 + uy * 4.4, 1.1, 0, 6.3); ctx.fill(); ctx.beginPath(); ctx.arc(X + ux * 2.4, Y - 4.3 + uy * 1.2, .75, 0, 6.3); ctx.fill(); } });
+    pieces.sort((u, w) => u.p - w.p).forEach(q => q.f());
+    ctx.restore();
+  };
+  const dessinerChien = () => {
+    const c = E.chien; if (!c) return; const x = ecran(c.U), t = E.tau, q = c.pose, sombre = document.documentElement.dataset.theme === 'dark';
+    const brun = sombre ? '#b47c50' : '#7a4a2b', fonce = sombre ? '#8b5a37' : '#57331d', noir = '#1b1e24';
+    if (c.etat === 'queue' && c.ronde != null) return dessinerRonde(c, x, brun, fonce, noir);
+    if (c.etat === 'queue' && c.t > 2.5 && c.t < 3.5) {      // étourdi : trois petits Σ tournent au-dessus de sa tête
+      const w = c.t - 2.5; ctx.save(); ctx.fillStyle = coul.branche; ctx.font = '700 8.5px ' + (getComputedStyle(boite).getPropertyValue('--f-titre') || 'serif'); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      for (let i = 0; i < 3; i++) { const a = w * 8 + i * 2.09, prof = Math.sin(a); ctx.globalAlpha = (1 - borne((w - .6) / .4)) * (.6 + .4 * (prof > 0 ? 1 : .35)); ctx.save(); ctx.translate(x + c.dir * 9 + 7.5 * Math.cos(a), SOL - 24 + 2.2 * prof); ctx.rotate(.3 * Math.sin(a * 2)); ctx.scale(.85 + .15 * prof, .85 + .15 * prof); ctx.fillText('Σ', 0, 0); ctx.restore(); } ctx.restore(); }
+    const tang = q.tang, pattes = q.pattes, dir = Math.abs(c.face) < .2 ? .2 * (c.face < 0 ? -1 : 1) : c.face, base = SOL - q.saut + q.bas, pv = [-6, -3], co = Math.cos(tang), si = Math.sin(tang);
+    const monde = (lx, ly) => { const dx = lx - pv[0], dy = ly - pv[1]; return [x + dir * (pv[0] + dx * co - dy * si), base + pv[1] + dx * si + dy * co]; };
+    ctx.save(); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    // pattes : la hanche tient au corps, le pied est posé ou replié ; un léger genou les arrondit
+    [[-6, 0, fonce], [5.2, Math.PI, fonce], [-4.2, Math.PI, brun], [7, 0, brun]].forEach(([hx, dec, coulP], i) => {
+      const [X, Y] = monde(hx, -6), avant = hx > 0; let px = X, py = SOL, ph = c.phase + dec;
+      if (pattes === 'trot') { px = X + dir * Math.sin(ph) * 4.2; py = SOL - Math.max(0, Math.cos(ph)) * 2.4; }
+      else if (pattes === 'galop') { ph = c.phase + (avant ? 0 : 2.5) + (i < 2 ? .35 : 0); px = X + dir * Math.sin(ph) * 6.5; py = SOL - Math.max(0, Math.cos(ph)) * 4; }
+      else if (pattes === 'vol') { const u = q.vol, e = doux(avant ? borne((u - .45) / .4) : borne(u / .45)); px = X + dir * (avant ? 2.5 + 3.5 * e : -6 + 5 * e); py = Math.min(SOL, Y + (avant ? 3.6 + 2.6 * e : 4.4 + 1.4 * e)); }
+      else if (pattes === 'debout') { px = X + dir * (avant ? 3.2 : 2.5); py = avant ? Y + 4.5 + Math.sin(c.t * 15 + i) * .8 : SOL; }
+      else if (pattes === 'salut' && avant) px = X + dir * 5.5;
+      else if (pattes === 'assis' && !avant) px = X + dir * 3.5;
+      const mx = (X + px) / 2 + dir * (avant ? -1.1 : 1.3), my = (Y + py) / 2;
+      ctx.strokeStyle = coulP; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(X, Y); ctx.quadraticCurveTo(mx, my, px, py); ctx.stroke();
+    });
+    ctx.translate(x, base); ctx.scale(dir, 1); ctx.translate(pv[0], pv[1]); ctx.rotate(tang); ctx.translate(-pv[0], -pv[1]);
+    // queue : trois tronçons de plus en plus fins, chacun en retard sur le précédent (elle ondule au lieu de pivoter)
+    let qx = -8.4, qy = -10.4; const a0 = q.qb + c.lag;
+    [[3.3, 3], [3, 2.4], [2.7, 1.8]].forEach(([lg, ep], i) => { const a = a0 + q.qa * Math.sin(c.qph - i * .75) * (.6 + .4 * i) - i * .12, nx = qx - lg * Math.cos(a), ny = qy - lg * Math.sin(a);
+      ctx.strokeStyle = brun; ctx.lineWidth = ep; ctx.beginPath(); ctx.moveTo(qx, qy); ctx.lineTo(nx, ny); ctx.stroke(); qx = nx; qy = ny; });
+    ctx.fillStyle = brun; ctx.beginPath(); ctx.ellipse(-.5, -8.8, 8.8, 4.5, -.05, 0, 6.3); ctx.fill(); ctx.beginPath(); ctx.ellipse(5, -9.6, 4.6, 4.9, 0, 0, 6.3); ctx.fill();   // corps, poitrail
+    ctx.translate(8.6, -12.6); ctx.rotate(q.tete - tang * .55);                                                  // tête : elle reste à peu près horizontale
+    ctx.fillStyle = brun; ctx.beginPath(); ctx.arc(1.2, -1.4, 4.1, 0, 6.3); ctx.fill(); ctx.beginPath(); ctx.roundRect(2.6, -2.2, 6.4, 3.9, 1.9); ctx.fill();
+    ctx.fillStyle = fonce; ctx.beginPath(); ctx.ellipse(-.9, .2, 2.1, 3.9, .28 + .5 * c.lag + (pattes === 'trot' || pattes === 'galop' ? .2 * Math.sin(c.phase * 2) : 0), 0, 6.3); ctx.fill();   // oreille tombante
+    ctx.fillStyle = noir; ctx.beginPath(); ctx.arc(8.7, -1.3, 1.15, 0, 6.3); ctx.fill(); ctx.beginPath(); ctx.arc(2.9, -2.5, .75, 0, 6.3); ctx.fill();      // truffe, œil
+    ctx.restore();
+    if (c.etat === 'papillon' && c.sym) {      // le symbole papillon : il volette, bat des ailes, puis s'envole
+      const u = c.t, sxp = ecran(c.symU), part = borne((u - 4) / .8), sy = SOL - 27 - 5 * Math.sin(u * 3.3) - 3 * Math.sin(u * 7.1) - part * 46;
+      ctx.save(); ctx.globalAlpha = borne(u / .4) * (1 - part); ctx.translate(sxp + part * 22, sy); ctx.rotate(.25 * Math.sin(u * 5)); ctx.scale(.45 + .55 * Math.abs(Math.cos(u * 13)), 1);
+      ctx.fillStyle = coul.feuilles[c.sym.coul]; ctx.font = '700 15px ' + (getComputedStyle(boite).getPropertyValue('--f-titre') || 'serif'); ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(c.sym.car, 0, 0); ctx.restore();
+    }
+  };
+  const dessiner = () => {
+    ctx.clearRect(0, 0, W, H); planter();
+    ctx.save(); ctx.strokeStyle = coul.sol; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(0, SOL + .5); ctx.lineTo(W, SOL + .5); ctx.stroke(); ctx.restore();
+    if (B) dessinerPrairie();
+    for (const a of E.arbres) dessinerArbre(a);
+    if (B) dessinerChien();
+    dessinerJardinier();
+  };
+  const image = h => { raf = 0; const dt = Math.min(.05, (h - dernier) / 1000 || 0); dernier = h; E.tau += dt; if (B) majChien(dt, jardinier(E.tau % T)); dessiner(); boucle(); };
+  const boucle = () => { if (!raf && visible && !E.pause && !calme && !document.hidden) { dernier = performance.now(); raf = requestAnimationFrame(image); } };
+  const majBouton = () => { if (calme) return; bouton.hidden = false; bouton.innerHTML = E.pause ? '<svg viewBox="0 0 12 12"><path d="M3 1.5v9l7.5-4.5Z"/></svg>' : '<svg viewBox="0 0 12 12"><path d="M2.5 1.5h2.6v9H2.5zM6.9 1.5h2.6v9H6.9z"/></svg>'; bouton.title = E.pause ? 'Relancer le jardin' : 'Mettre le jardin en pause'; bouton.setAttribute('aria-label', bouton.title); };
+  bouton.addEventListener('click', () => { E.pause = !E.pause; majBouton(); boucle(); });
+  const io = new IntersectionObserver(l => { visible = l[0].isIntersecting; boucle(); }); io.observe(boite);
+  const ro = new ResizeObserver(() => { if (mesurer()) dessiner(); }); ro.observe(boite);
+  const mo = new MutationObserver(() => { couleurs(); dessiner(); }); mo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  const surVisibilite = () => boucle(); document.addEventListener('visibilitychange', surVisibilite);
+  couleurs();
+  if (mesurer()) { if (calme && E.tau === 0) E.tau = T * 1.42; if (calme && B) majChien(0, jardinier(E.tau % T)); dessiner(); }   // sans animation : un jardin figé, à tous les âges
+  majBouton();
+  accJardin = { ou: () => jardinier(E.tau % T), chien: () => E.chien, arreter() { cancelAnimationFrame(raf); raf = 0; io.disconnect(); ro.disconnect(); mo.disconnect(); document.removeEventListener('visibilitychange', surVisibilite); } };
+}
+
 let accFil = null;
 function accueilFil(premiereFois) {
   if (accFil) { accFil.arreter(); accFil = null; }
@@ -5584,7 +5905,7 @@ function afficherRubrique(nom, chemin) {
   z.dataset.nom = nom; z.dataset.chemin = chemin || '';
   document.title = titreOnglet(RUBRIQUES[nom].titre);
   z.classList.toggle('accueil', nom === 'accueil');
-  if (nom === 'accueil') { accueilFil(true); accueilRoue(); }
+  if (nom === 'accueil') { accueilFil(true); accueilRoue(); accueilJardin(); }
   z.scrollTop = 0; scrollTo(0, 0);
   monterPdf(z);
   brancherDefilAnnales(z);
@@ -5633,7 +5954,7 @@ function brancherDefilAnnales(z) {
 function rafraichirRubrique() {
   const z = $('#rubrique'), y = z.scrollTop, yw = scrollY;
   z.querySelector('.page').innerHTML = RUBRIQUES[z.dataset.nom].page(z.dataset.chemin, false);
-  if (z.dataset.nom === 'accueil') { accueilFil(false); accueilRoue(); }
+  if (z.dataset.nom === 'accueil') { accueilFil(false); accueilRoue(); accueilJardin(); }
   brancherDefilAnnales(z);
   z.scrollTop = y; scrollTo(0, yw);
 }
