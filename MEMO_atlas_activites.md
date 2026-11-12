@@ -1115,4 +1115,37 @@ deux intrus, clair 1280 px et sombre 375 px : aucune formule en erreur, aucun d�
 relecture par la même conversation, sans relecture indépendante ; les 69 pièces n'ont pas été confrontées aux
 PDF du cours.
 
+### 147. « Trouver l'erreur » : audit et quarante-quatre pièces de plus ; retouche du « Compte est bon » (12 nov. 2026)
+
+**Demande de l'auteur.** Le même travail que pour les démonstrations (§146), pour « Trouver l'erreur ». Et, dans
+« Le compte est bon », qu'un clic sur la dernière case remplie la vide.
+
+**Le compte est bon.** Dans la dernière ligne calculée, tant que la ligne suivante n'est pas commencée, le second
+nombre est un bouton (`data-defaire`) qui appelle `annuler()` : la plaque redevient disponible, le résultat
+disparaît, la ligne redevient incomplète. C'est le même effet que la flèche. Texte « Comment jouer » complété.
+
+**Méthode de l'audit.** Il n'existe pas de liste officielle d'erreurs : choix parmi les fautes réellement
+commises (règle appliquée hors de son domaine, réciproque prise pour l'énoncé, hypothèse oubliée, objet supposé
+exister), en visant d'abord les chapitres sans pièce : p-03, p-06, me-08, me-09, ma-06, ma-11, ma-19, ma-22.
+
+**Ajouts (`erreur` : 122 pièces).** Première 20 (+8) : sinus et racine carrée, vecteur directeur ou normal,
+suite u(n+1) = f(u(n)) avec f croissante, dérivée d'un quotient, P(A ∪ B), signe d'un produit, e^x × e^x,
+norme d'une somme. Terminale 28 (+9) : limite nommée avant d'exister, composée oubliée, logarithme d'un
+quotient, intégrale et aire, couples et paires, P(A ∩ B) sans indépendance, vecteur normal par un seul
+vecteur, dérivée du cosinus, continue donc dérivable. Maths expertes 23 (+7) : chaîne de Markov qui alterne,
+connexe donc eulérien, rectangle donc isocèle, partie imaginaire, 1 premier, carrés congrus, matrice
+nilpotente. Maths Sup 51 (+20) : fondements 7, algèbre 10, algèbre linéaire 11, analyse 18, probabilités 5.
+Tous les chapitres du lycée et de Maths Sup ont désormais au moins une pièce dans l'une des deux activités.
+
+**Erreur de mise en page trouvée et corrigée.** Les boîtes internes de KaTeX (accents comme les flèches de
+vecteurs, fractions) débordent de trois cadratins au-dessus de leur ligne ; dans « Trouver l'erreur », celles de
+la ligne 2 de « 5 = 7 avec des normes » recouvraient le centre de la ligne 1, si bien qu'un clic sur la ligne 1
+pouvait désigner la ligne 2. Règle ajoutée à `cssRaison` : `.activites-act .jeu .katex { pointer-events: none }`,
+valable pour les deux activités (le glissement d'une étape saisie par une formule fonctionne toujours, vérifié).
+Le contrôle par navigateur teste maintenant, pour chaque ligne, que son centre n'est pas recouvert.
+
+**Contrôles.** `node outils/activites_raisonner.mjs` : une seule ligne fautive par pièce, aucun champ vide. Les
+122 pièces ouvertes une à une et toutes leurs lignes cliquées, sombre 375 px et clair 1280 px : aucune formule
+en erreur, aucun débordement, aucune ligne recouverte. Rédaction et relecture par la même conversation.
+
 Explorations : vingt-huit. Jeux et casse-têtes : seize. Calcul mental : une activité. Raisonner : deux.

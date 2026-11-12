@@ -108,4 +108,53 @@ faux('poignees-impossibles', 'expertes', '', 'me-06', '15 est pair', T`« Démon
   [T`Donc 15 est le double d'un entier : c'est un nombre pair.`, T`Le nombre d'arêtes est un entier, et la déduction suit des deux lignes précédentes : le passage est correct.` + H] ],
   T`La réunion décrite n'existe pas, et la suite du raisonnement en est justement la preuve : dans tout graphe, la somme des degrés est paire, donc le nombre de sommets de degré impair est pair. Cinq sommets de degré 3, c'est impossible. On a raisonné sur un objet sans s'assurer de son existence, et obtenu une absurdité : lu comme un raisonnement par l'absurde, le texte est une démonstration correcte de cette impossibilité.`,
   T`« Considérons un objet tel que… » est une affirmation d'existence. Si elle est fausse, tout ce que l'on en déduit correctement peut être absurde.`, T`Essayez de dessiner la situation.`),
+// ---------- Ajouts du 12 nov. (audit des chapitres, §147) ----------
+faux('markov-alternance', 'expertes', '', 'me-09', 'Une chaîne qui devrait se stabiliser', T`Une chaîne de Markov à deux états a pour matrice de transition $P = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}$ et pour distribution initiale $\pi_0 = \begin{pmatrix} 1 & 0 \end{pmatrix}$. « Démontrons » que $1 = \dfrac12$.`, [
+  [T`La distribution $\pi = \begin{pmatrix} \frac12 & \frac12 \end{pmatrix}$ est invariante : $\pi P = \pi$.`, T`Le produit est bien calculé : $\begin{pmatrix} \frac12 & \frac12 \end{pmatrix} P = \begin{pmatrix} \frac12 & \frac12 \end{pmatrix}$.`],
+  [T`La suite des distributions $(\pi_n)$ d'une chaîne de Markov converge vers la distribution invariante : $\pi_n$ tend vers $\pi$.`],
+  [T`Or $P^2 = I_2$, donc $\pi_{2n} = \pi_0 P^{2n} = \pi_0 = \begin{pmatrix} 1 & 0 \end{pmatrix}$ pour tout $n$.`, T`Le carré de $P$ est bien la matrice identité, et $\pi_n = \pi_0 P^n$.`],
+  [T`La suite $(\pi_{2n})$, extraite de $(\pi_n)$, est constante et tend vers $\pi$ : donc $\begin{pmatrix} 1 & 0 \end{pmatrix} = \begin{pmatrix} \frac12 & \frac12 \end{pmatrix}$, et $1 = \dfrac12$.`, T`Une suite extraite d'une suite convergente a la même limite, et une suite constante a pour limite sa valeur : le passage est correct.` + H] ],
+  T`Une chaîne de Markov ne converge pas toujours vers sa distribution invariante. Ici le système change d'état à chaque transition : $\pi_n$ vaut alternativement $\begin{pmatrix} 1 & 0 \end{pmatrix}$ et $\begin{pmatrix} 0 & 1 \end{pmatrix}$, et n'a pas de limite. La distribution invariante est celle qui ne bouge pas si l'on en part, ce qui est une autre question.`,
+  T`« Invariante » ne veut pas dire « limite ». La convergence demande des hypothèses sur la matrice de transition, par exemple qu'une de ses puissances n'ait aucun coefficient nul.`, T`Calculez $\pi_1$, $\pi_2$ et $\pi_3$.`),
+faux('connexe-eulerien', 'expertes', '', 'me-06', '3 est pair', T`On considère le graphe complet à quatre sommets : chaque sommet est relié aux trois autres. « Démontrons » que 3 est un nombre pair.`, [
+  [T`Ce graphe est connexe : deux sommets quelconques sont reliés par une arête.`, T`C'est exact, et même plus qu'il n'en faut pour la connexité.`],
+  [T`Un graphe connexe admet un cycle eulérien, c'est-à-dire un parcours fermé qui emprunte chaque arête une fois et une seule.`],
+  [T`Le long d'un tel cycle, chaque passage par un sommet utilise une arête pour y entrer et une autre pour en sortir : le degré de chaque sommet est donc pair.`, T`C'est l'argument classique : dans un graphe qui admet un cycle eulérien, tous les degrés sont pairs. Le passage est correct.` + H],
+  [T`Or chaque sommet est de degré 3 : donc 3 est pair.`, T`Chaque sommet est bien relié aux trois autres : le passage est correct.` + H] ],
+  T`La connexité est nécessaire, pas suffisante. Le théorème d'Euler dit qu'un graphe connexe admet un cycle eulérien si et seulement si <em>tous ses sommets sont de degré pair</em>. Ici les quatre sommets sont de degré impair : il n'y a ni cycle ni même chaîne eulérienne.`,
+  T`Cycle eulérien : graphe connexe et tous les degrés pairs. Chaîne eulérienne : graphe connexe et zéro ou deux sommets de degré impair.`, T`Essayez de tracer la figure sans lever le crayon.`),
+faux('rectangle-isocele', 'expertes', '', 'me-08', 'Un triangle rectangle prétendu isocèle', T`Soit $A$, $B$, $C$ les points d'affixes $a = 0$, $b = 1$ et $c = 2i$. « Démontrons » que $1 = 2$.`, [
+  [T`On a $\dfrac{c - a}{b - a} = 2i$, qui est un imaginaire pur.`, T`Le calcul est exact.`],
+  [T`Lorsque $\dfrac{c - a}{b - a}$ est imaginaire pur, le triangle $ABC$ est rectangle et isocèle en $A$.`],
+  [T`En particulier $AB = AC$.`, T`C'est la définition d'un triangle isocèle en $A$ : le passage est correct.` + H],
+  [T`Or $AB = |b - a| = 1$ et $AC = |c - a| = 2$ : donc $1 = 2$.`, T`Les deux modules sont bien calculés : le passage est correct.` + H] ],
+  T`Un quotient imaginaire pur renseigne sur l'<em>argument</em> : l'angle en $A$ est droit. Pour que le triangle soit de plus isocèle, il faut une condition sur le <em>module</em> : $\left|\dfrac{c - a}{b - a}\right| = 1$, c'est-à-dire un quotient égal à $i$ ou à $-i$. Ici le module vaut 2 : le triangle est rectangle en $A$, avec $AC = 2AB$.`,
+  T`$\arg\dfrac{c - a}{b - a}$ donne l'angle $(\overrightarrow{AB}, \overrightarrow{AC})$ ; $\left|\dfrac{c - a}{b - a}\right|$ donne le rapport $\dfrac{AC}{AB}$. Ce sont deux informations indépendantes.`, T`Que vaut le module du quotient ?`),
+faux('partie-imaginaire', 'expertes', '', 'me-02', '1 = −1 avec un module', T`« Démontrons » que $1 = -1$.`, [
+  [T`Le nombre $i$ s'écrit $0 + i \times 1$ : sa partie réelle est 0.`, T`C'est exact.`],
+  [T`Sa partie imaginaire est $i$.`],
+  [T`Le carré du module est la somme des carrés de la partie réelle et de la partie imaginaire : $|i|^2 = 0^2 + i^2 = -1$.`, T`C'est la formule $|z|^2 = \mathrm{Re}(z)^2 + \mathrm{Im}(z)^2$, et $i^2 = -1$ : avec les valeurs des lignes 1 et 2, le passage est correct.` + H],
+  [T`Or $|i| = 1$, donc $|i|^2 = 1$ : ainsi $1 = -1$.`, T`Le point d'affixe $i$ est à la distance 1 de l'origine : le passage est correct.` + H] ],
+  T`La partie imaginaire de $a + ib$ est le <em>réel</em> $b$, et non $ib$. Celle de $i$ est donc 1, et l'on retrouve $|i|^2 = 0^2 + 1^2 = 1$. C'est parce que les parties réelle et imaginaire sont des réels que le module est un réel positif.`,
+  T`Si $z = a + ib$ avec $a$ et $b$ réels, alors $\mathrm{Re}(z) = a$ et $\mathrm{Im}(z) = b$ : deux nombres réels.`, T`La partie imaginaire d'un nombre complexe est-elle un nombre réel ?`),
+faux('un-premier', 'expertes', '', 'me-01', 'Deux décompositions de 6', T`« Démontrons » que la décomposition d'un entier en produit de nombres premiers n'est pas unique.`, [
+  [T`Le nombre 1 n'a pas d'autre diviseur positif que 1 et lui-même : c'est un nombre premier.`],
+  [T`On a $6 = 2 \times 3$, produit de nombres premiers.`, T`C'est exact : 2 et 3 sont premiers.`],
+  [T`On a aussi $6 = 1 \times 2 \times 3$, autre produit de nombres premiers, qui comporte trois facteurs au lieu de deux.`, T`Le produit vaut bien 6, et la ligne 1 range 1 parmi les nombres premiers : le passage est correct.` + H],
+  [T`L'entier 6 a donc deux décompositions différentes : la décomposition n'est pas unique.`, T`Deux produits qui n'ont pas le même nombre de facteurs sont différents, même à l'ordre près : le passage est correct.` + H] ],
+  T`Le nombre 1 n'est pas premier : un nombre premier est un entier qui possède <em>exactement deux</em> diviseurs positifs distincts, 1 et lui-même, et 1 n'en a qu'un. Cette convention n'est pas un caprice : c'est précisément elle qui rend la décomposition unique.`,
+  T`Un nombre premier est un entier supérieur ou égal à 2 dont les seuls diviseurs positifs sont 1 et lui-même. Ni 0 ni 1 ne sont premiers.`, T`Combien 1 a-t-il de diviseurs positifs ?`),
+faux('carres-congrus', 'expertes', '', 'me-04', '8 divise 2', T`« Démontrons » que 8 divise 2.`, [
+  [T`On a $3^2 = 9 = 8 + 1$, donc $3^2 \equiv 1 \pmod 8$.`, T`Le calcul est exact.`],
+  [T`Comme $1 = 1^2$, cela s'écrit $3^2 \equiv 1^2 \pmod 8$.`, T`C'est exact : on a seulement écrit 1 autrement.`],
+  [T`Deux entiers dont les carrés sont congrus sont congrus : $3 \equiv 1 \pmod 8$.`],
+  [T`Donc 8 divise $3 - 1 = 2$.`, T`C'est la définition de la congruence : le passage est correct.` + H] ],
+  T`On peut élever une congruence au carré, mais on ne peut pas en « prendre la racine ». Modulo 8, les entiers 1, 3, 5 et 7 ont tous pour carré 1. Même modulo un nombre premier $p$, l'égalité $a^2 \equiv b^2$ donne seulement $a \equiv b$ ou $a \equiv -b$, parce que $p$ divise $(a - b)(a + b)$.`,
+  T`De $a \equiv b$ on déduit $a^2 \equiv b^2$ ; la réciproque est fausse. Les opérations permises sur les congruences sont l'addition, la multiplication et les puissances, pas leurs réciproques.`, T`Calculez les carrés de 1, 3, 5 et 7 modulo 8.`),
+faux('nilpotente', 'expertes', '', 'me-03', 'Une matrice de carré nul', T`Soit $A = \begin{pmatrix} 0 & 1 \\ 0 & 0 \end{pmatrix}$. « Démontrons » que $1 = 0$.`, [
+  [T`Le calcul donne $A^2 = \begin{pmatrix} 0 & 0 \\ 0 & 0 \end{pmatrix}$.`, T`Le produit est bien calculé : chacun des quatre coefficients est nul.`],
+  [T`Un nombre dont le carré est nul est nul ; il en va de même pour une matrice : $A$ est la matrice nulle.`],
+  [T`En comparant les coefficients en haut à droite : $1 = 0$.`, T`Deux matrices égales ont les mêmes coefficients : le passage est correct.` + H] ],
+  T`La règle « $x^2 = 0$ entraîne $x = 0$ » repose sur la règle du produit nul, qui est fausse pour les matrices. Une matrice non nulle dont une puissance est nulle est dite nilpotente ; celle-ci en est l'exemple le plus simple.`,
+  T`Pour des matrices, $AB = 0$ n'entraîne pas $A = 0$ ou $B = 0$, et $A^2 = 0$ n'entraîne pas $A = 0$.`, T`Quelle règle sur les nombres permet de passer de $x^2 = 0$ à $x = 0$ ?`),
 ];

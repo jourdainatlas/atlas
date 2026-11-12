@@ -6,6 +6,8 @@ export const cssRaison = `
 .activites-act .rz-niveaux { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .activites-act .bar.top { flex-direction: column; align-items: flex-start; gap: 8px; }
 .activites-act .rz-niveaux[hidden] { display: none; }
+/* Les boîtes internes de KaTeX (accents, fractions) débordent au-dessus de leur ligne et captaient les clics destinés à la ligne voisine. */
+.activites-act .jeu .katex { pointer-events: none; }
 .activites-act .rz-niveaux .rz-nom { font: 600 12.5px var(--f-ui); letter-spacing: .04em; text-transform: uppercase; color: var(--encre-3); margin-right: 2px; }
 .activites-act label.rz-choix { display: flex; align-items: center; gap: 8px; flex: 1 1 320px; min-width: 0; max-width: 100%; }
 .activites-act label.rz-choix select { flex: 1 1 auto; min-width: 0; width: 100%; max-width: 100%; text-overflow: ellipsis; }
