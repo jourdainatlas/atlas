@@ -863,7 +863,7 @@ départ (exact jusqu'à neuf cases ; minorant de Manhattan au-delà, annoncé co
 
 **Polyominos (12 nov., demande de l'auteur, sur téléphone).** Un nouveau clic sur la pièce déjà choisie dans la
 réserve la tourne d'un quart de tour, comme la touche R (utile au doigt, où il n'y a pas de clavier).
-Ordre de la liste des défis, à sa demande : À la une ; une liste, chaque pièce une fois ; toutes les pièces
-d'une taille ; un seul type de pièce.
+Ordre de la liste des défis, à sa demande : À la une ; une liste, chaque pièce une fois ; un seul type de
+pièce ; toutes les pièces d'une taille.
 
 Explorations : vingt-huit. Jeux et casse-têtes : seize.
