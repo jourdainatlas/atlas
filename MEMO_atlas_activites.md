@@ -967,3 +967,46 @@ ln(1/2) < 0), les chevaux de même couleur (hérédité fausse pour n = 1).
 **Questions posées à l'auteur** : une activité par genre avec une liste de pièces (choix du prototype), ou une
 carte par pièce ; glisser-déposer ; nombre et choix des pièces ; plusieurs intrus par pièce ; mémoire des pièces
 réussies.
+
+### 144. Sous-rubrique « Raisonner » publiée (12 nov. 2026)
+
+**Décisions de l'auteur.** Une liste de pièces par activité, avec un filtre par niveau en plus de la liste
+déroulante (il prévoit beaucoup de démonstrations, surtout en Maths Sup et en Maths expertes). Glisser-déposer.
+Deux intrus possibles, comme réglage de difficulté. Une dizaine de démonstrations de Maths Sup, prises dans le
+cours du site. Mémoire des pièces réussies, sans empêcher de les refaire. Sur téléphone, la mention de l'état
+d'une ligne passe sous la ligne. Couleur : `--rouge`, par `couleur: raison` et la règle `[data-teinte="raison"]`
+du gabarit. Onglet placé entre « Calcul mental » et l'atelier. Descriptions de la rubrique complétées (« Cinq
+façons… », « Explorer, jouer, calculer, raisonner, construire »).
+
+**`activites/raisonner.js`** (module d'appui, pas une activité) : liste `NIVEAUX`, styles communs `cssRaison`
+(teinte, puces de niveau, mention « Fait », lien vers le cours), mémoire `localStorage` sous la clé
+`atlas-raisonner` : `{ ordonner: { id: 1 + nombre d'intrus }, erreur: { id: essais } }`, meilleure valeur gardée.
+
+**`ordonner`** : quatorze pièces. Première : irrationalité de √2. Terminale : somme des premiers impairs, suite
+croissante non majorée. Maths expertes : infinité des nombres premiers. Maths Sup (dix, rédigées d'après les
+chapitres du cours, relus dans les PDF) : unicité de la limite, suite convergente bornée, limite monotone
+(ma-07) ; lemme de Gauss (ma-12) ; Rolle, accroissements finis (ma-09) ; injectivité et noyau (ma-14) ; Cantor
+(ma-02) ; Cauchy-Schwarz (ma-19) ; divergence de la série harmonique (ma-20). Chaque pièce : `id`, `niveau`,
+`cours` (lien « Lire la démonstration dans le cours »), étapes avec dépendances et phrases d'explication, deux
+intrus avec leur réfutation ; le réglage « Intrus » en retient zéro, un (défaut) ou deux. Champ facultatif
+`blocs` (texte) avec `bloc` par étape : les étapes d'un même bloc doivent rester contiguës (les deux sens de
+l'équivalence, pour « injectivité et noyau »). Contrôlé (Node) sur toutes les permutations de chaque pièce :
+ordres acceptés 1, 4, 1, 1, 1, 2, 1, 2, 1, 2, 2, 2, 2, 6 ; tout intrus est refusé ; toute dépendance renvoie à
+une étape existante. Glisser-déposer par événements de pointeur : à la souris, la phrase se saisit n'importe où ;
+au doigt, seulement par sa poignée (⋮⋮), pour que la page défile encore ; trait d'insertion rouge ; une phrase
+lâchée sur la réserve y retourne. Vérifié à la souris dans le navigateur, et au doigt par événements simulés
+(pas avec un vrai doigt).
+
+**`erreur`** : huit pièces. Première : 1 = 2 (division par zéro), 2 = 1 par dérivation (nombre de termes
+variable). Terminale : 2 > 3 (signe de ln ½), chevaux de même couleur, (1 + 1/n)ⁿ → 1 (forme indéterminée),
+0 = 1 par parties (primitives à constante près). Maths expertes : 12 divise 6 (simplification d'une
+congruence). Maths Sup : 0 = 1 par la série 1 − 1 + 1 − … (somme inexistante). Les explications des lignes
+justes ne désignent jamais la ligne fautive : elles disent seulement que l'erreur est plus haut.
+
+**Pour ajouter une pièce** : un objet de plus dans `PIECES` du module ; relancer le contrôle des permutations
+(le script est décrit ci-dessus : toutes les permutations des étapes passées à `verifier`) et regarder le rendu
+des formules. Idées en attente : valeurs intermédiaires par dichotomie, Bézout, division euclidienne, formule
+du binôme, théorème du rang, Lagrange ; erreurs : triangles tous isocèles (demande une figure), 0,999… < 1,
+interversion de limites.
+
+Explorations : vingt-huit. Jeux et casse-têtes : seize. Calcul mental : une activité. Raisonner : deux.
