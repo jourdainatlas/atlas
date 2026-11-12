@@ -1621,6 +1621,11 @@ table.grille button.pli-ann:hover { border-color: var(--encre); }
 }
 .appli-encart img { border-radius: 9px; flex: none; }
 .appli-encart p { margin: 0; flex: 1; }
+.appli-encart p > .ae-titre, .appli-encart p > span { display: block; }
+.appli-encart p > .ae-titre { font-size: 1.04em; margin-bottom: 2px; }
+.appli-encart p > span { color: var(--encre-2); }
+.appli-encart p > .ae-geste { margin-top: 6px; color: var(--encre); }
+.appli-encart:has(.ae-titre) { align-items: flex-start; }
 .appli-encart .ae-partage { width: 17px; height: 17px; vertical-align: -3px; color: #0a84ff; }
 .appli-encart .ae-installer { flex: none; font: inherit; font-weight: 600; padding: 7px 14px; border-radius: 8px; border: 0; background: var(--encre); color: var(--papier); cursor: pointer; }
 .appli-encart .ae-fermer { flex: none; width: 30px; height: 30px; border-radius: 8px; border: 0; background: transparent; color: var(--encre-2); font-size: 22px; line-height: 1; cursor: pointer; }
@@ -6522,12 +6527,12 @@ function appliEncart(texte, bouton, action) {
 let appliInvite = null;
 addEventListener('beforeinstallprompt', ev => {
   ev.preventDefault(); appliInvite = ev;
-  setTimeout(() => appliEncart('Installez ATLAS sur votre téléphone : il s\'ouvrira comme une application, en plein écran.', 'Installer', () => appliInvite.prompt()), 4000);
+  setTimeout(() => appliEncart('<b class="ae-titre">ATLAS existe aussi en application</b><span>Gratuite, sans magasin d\'applications : ATLAS prend place sur votre écran d\'accueil et s\'ouvre en plein écran.</span>', 'Installer', () => appliInvite.prompt()), 4000);
 });
 addEventListener('appinstalled', () => $('#appli-encart')?.remove());
 // iPhone et iPad : Safari ne propose pas l'installation de lui-même ; on explique le geste.
 if (appliIos && matchMedia('(max-width: 1100px)').matches) setTimeout(() => appliEncart(
-  'Installez ATLAS sur votre écran d\'accueil : touchez <svg class="ae-partage" viewBox="0 0 24 24" aria-label="Partager"><path d="M12 3v12M7.5 7.5 12 3l4.5 4.5M6 11H5v10h14V11h-1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg> <b>Partager</b>, puis <b>Sur l\'écran d\'accueil</b>.'), 4000);
+  '<b class="ae-titre">ATLAS existe aussi en application</b><span>Gratuite, sans App Store : ATLAS prend place sur votre écran d\'accueil et s\'ouvre en plein écran.</span><span class="ae-geste">Pour l\'installer, touchez <svg class="ae-partage" viewBox="0 0 24 24" aria-label="Partager"><path d="M12 3v12M7.5 7.5 12 3l4.5 4.5M6 11H5v10h14V11h-1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg> <b>Partager</b>, puis <b>Sur l\'écran d\'accueil</b>.</span>'), 4000);
 // Numérotation des entrées et origine du bouton de retour (avantAncreEdifice), puis position rendue (apresAncreEdifice).
 addEventListener('hashchange', avantAncreEdifice);
 addEventListener('hashchange', depuisAncre);

@@ -776,3 +776,11 @@ l'adresse que donne « Partager » pour chaque sorte de vue de l'application.
   de l'accueil (groupes d'activités, exercices par niveau ou par notion, cours par niveau, lexique, Index, sections
   d'À propos) ; (b) les filtres et recherches (banque d'exercices, moteur des annales) ne sont pas dans l'adresse :
   on partage la rubrique, pas la sélection.
+
+## 76. Encart d'installation sur téléphone (12 nov. 2026)
+
+Remarque de l'auteur : l'encart (« Installez ATLAS sur votre écran d'accueil… ») ne disait pas assez que le site
+fonctionne alors comme une application. `appliEncart` reçoit maintenant un titre (`b.ae-titre`, « ATLAS existe aussi
+en application »), une phrase de bénéfice (gratuite, sans App Store ou magasin d'applications, écran d'accueil,
+plein écran) et, sur iPhone, le geste sur une ligne à part (`span.ae-geste`). Sur Android, le bouton « Installer »
+est inchangé.
