@@ -1,6 +1,6 @@
 // Raisonner « Démonstrations à remettre en ordre », rubrique Activités, MEMO_atlas_activites.md §143 et §144.
 import { css as cssCommun } from './commun.js';
-import { cssRaison, lireMemoire, noterMemoire, filtrer, pucesNiveaux, pucesThemes, options } from './raisonner.js';
+import { cssRaison, lireMemoire, noterMemoire, filtrer, pucesNiveaux, pucesThemes, options, auHasard } from './raisonner.js';
 import { cssFigures, suite } from './figures.js';
 import { cssJeux, ecrire } from './jeux.js';
 import premiere from './ordonner-premiere.js';
@@ -47,6 +47,7 @@ export const html = `
   </div>
   <div class="bar">
     <label class="rz-choix">Démonstration <select id="od-piece"></select></label>
+    <button type="button" class="rz-hasard" id="od-hasard" title="Tirer une pièce au hasard parmi celles du niveau et du thème choisis">Au hasard</button>
     <label>Intrus <select id="od-intrus"><option value="0">aucun</option><option value="1" selected>un</option><option value="2">deux</option></select></label>
     <button type="button" class="primary" id="od-verifier">Vérifier</button>
     <button type="button" id="od-indice">Un indice</button>
@@ -63,7 +64,7 @@ export const html = `
 <section>
   <div class="col">
     <h4><span class="n">1</span>Comment jouer</h4>
-    <p>Choisissez un niveau et, pour Maths Sup, un thème (fondements, algèbre, algèbre linéaire, analyse, probabilités), puis une démonstration. Faites glisser les phrases de la réserve vers votre démonstration, à la place voulue ; vous pouvez aussi les déplacer entre elles, ou les ramener dans la réserve. Sur un écran tactile, saisissez une phrase par sa poignée, à gauche. Sans glisser, un clic sur une phrase de la réserve l'ajoute à la fin, les flèches la montent ou la descendent, et la croix la renvoie en réserve. Quand le raisonnement vous paraît complet, cliquez sur « Vérifier ». La page ne juge rien avant : elle vous laisse chercher.</p>
+    <p>Choisissez un niveau et, pour Maths Sup, un thème (fondements, algèbre, algèbre linéaire, analyse, probabilités), puis une démonstration, ou laissez la page en tirer une avec « Au hasard » : elle la prend dans le niveau et le thème choisis, de préférence parmi celles que vous n'avez pas encore faites. Faites glisser les phrases de la réserve vers votre démonstration, à la place voulue ; vous pouvez aussi les déplacer entre elles, ou les ramener dans la réserve. Sur un écran tactile, saisissez une phrase par sa poignée, à gauche. Sans glisser, un clic sur une phrase de la réserve l'ajoute à la fin, les flèches la montent ou la descendent, et la croix la renvoie en réserve. Quand le raisonnement vous paraît complet, cliquez sur « Vérifier ». La page ne juge rien avant : elle vous laisse chercher.</p>
     <p>Le réglage « Intrus » fixe la difficulté : aucune phrase fausse, une seule, ou deux. Une démonstration réussie est marquée d'une coche dans la liste, et votre navigateur s'en souvient ; vous pouvez la refaire autant de fois que vous voulez.</p>
     <p>La vérification ne compare pas votre texte à un modèle. Pour chaque étape, la page connaît les étapes dont elle a besoin : elle contrôle que celles-ci figurent plus haut. Plusieurs ordres peuvent donc être justes. Dans une récurrence, par exemple, rien n'oblige à écrire l'initialisation avant l'hérédité ; il faut seulement que les deux précèdent la conclusion.</p>
     <p>Si quelque chose ne va pas, la page désigne la première étape en défaut et dit ce qui lui manque : « cette étape emploie un nombre qui n'a pas encore été introduit ». Si vous avez retenu un intrus, elle explique pourquoi la phrase est fausse, ou pourquoi elle ne démontre pas ce qu'elle prétend. Chaque démonstration renvoie au chapitre du cours où le résultat est établi ; la rédaction du cours peut suivre un autre chemin, et la comparaison des deux fait partie de l'exercice.</p>
@@ -250,7 +251,8 @@ export function monter(racine) {
     if (r.pos >= 0) { marque = r.pos; msg = `Vous avez demandé un indice : commencez par revoir l'étape ${r.pos + 1}, marquée d'un filet rouge.`; }
     else { const s = P.etapes.find(e => !L.includes(e.id) && Object.keys(e.dep).every(d => L.includes(d)) && !verifier(P, L.concat([e.id])).texte?.startsWith?.('Vous mêlez')); conseil = s ? s.id : ''; msg = s ? 'Vous avez demandé un indice : la phrase entourée de vert, dans la réserve, peut être écrite maintenant.' : 'Vous avez demandé un indice : la démonstration est complète.'; } rendre(); });
   q('#od-depart').addEventListener('click', () => { L = []; raz(); });
-  q('#od-piece').addEventListener('change', e => { P = PIECES.find(p => p.id === e.target.value); charger(); }); q('#od-intrus').addEventListener('change', charger);
+  q('#od-piece').addEventListener('change', e => { P = PIECES.find(p => p.id === e.target.value); charger(); });
+  q('#od-hasard').addEventListener('click', () => { P = auHasard(visibles(), P, lireMemoire('ordonner')); listes(); charger(); }); q('#od-intrus').addEventListener('change', charger);
   q('#od-niveaux').addEventListener('click', e => { const b = e.target.closest('button[data-n]'); if (!b) return; niveau = b.dataset.n; theme = 'tous'; listes(); charger(); });
   q('#od-themes').addEventListener('click', e => { const b = e.target.closest('button[data-t]'); if (!b) return; theme = b.dataset.t; listes(); charger(); });
 

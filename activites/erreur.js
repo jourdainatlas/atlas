@@ -1,6 +1,6 @@
 // Raisonner « Trouver l'erreur », rubrique Activités, MEMO_atlas_activites.md §143 et §144.
 import { css as cssCommun } from './commun.js';
-import { cssRaison, lireMemoire, noterMemoire, filtrer, pucesNiveaux, pucesThemes, options } from './raisonner.js';
+import { cssRaison, lireMemoire, noterMemoire, filtrer, pucesNiveaux, pucesThemes, options, auHasard } from './raisonner.js';
 import { cssFigures, suite } from './figures.js';
 import { cssJeux, ecrire } from './jeux.js';
 import premiere from './erreur-premiere.js';
@@ -38,6 +38,7 @@ export const html = `
   </div>
   <div class="bar">
     <label class="rz-choix">Raisonnement <select id="er-piece"></select></label>
+    <button type="button" class="rz-hasard" id="er-hasard" title="Tirer une pièce au hasard parmi celles du niveau et du thème choisis">Au hasard</button>
     <button type="button" class="primary" id="er-depart">Recommencer</button>
     <button type="button" id="er-indice">Un indice</button>
   </div>
@@ -50,7 +51,7 @@ export const html = `
 <section>
   <div class="col">
     <h4><span class="n">1</span>Comment jouer</h4>
-    <p>Choisissez un niveau et, pour Maths Sup, un thème (fondements, algèbre, algèbre linéaire, analyse, probabilités), puis un raisonnement. Lisez-le, puis cliquez sur la ligne que vous croyez fautive. Si vous vous trompez, la page dit pourquoi cette ligne-là est correcte, et vous laisse chercher encore. Quand vous trouvez, elle explique l'erreur et ce qu'il faut en retenir. Le nombre d'essais est compté : un raisonnement lu avec soin se résout au premier. Un raisonnement résolu est marqué d'une coche dans la liste, et votre navigateur s'en souvient ; « Recommencer » permet de le refaire.</p>
+    <p>Choisissez un niveau et, pour Maths Sup, un thème (fondements, algèbre, algèbre linéaire, analyse, probabilités), puis un raisonnement, ou laissez la page en tirer un avec « Au hasard » : elle le prend dans le niveau et le thème choisis, de préférence parmi ceux que vous n'avez pas encore faits. Lisez-le, puis cliquez sur la ligne que vous croyez fautive. Si vous vous trompez, la page dit pourquoi cette ligne-là est correcte, et vous laisse chercher encore. Quand vous trouvez, elle explique l'erreur et ce qu'il faut en retenir. Le nombre d'essais est compté : un raisonnement lu avec soin se résout au premier. Un raisonnement résolu est marqué d'une coche dans la liste, et votre navigateur s'en souvient ; « Recommencer » permet de le refaire.</p>
     <p>Une ligne est fautive quand le passage de la ligne précédente à celle-ci n'est pas justifié. Les lignes qui suivent l'erreur sont souvent fausses elles aussi, mais elles se déduisent correctement de la ligne fautive : ce n'est pas elles qu'il faut désigner. La faute peut aussi se trouver dès la première ligne, quand elle introduit un objet qui n'existe pas, et quelques raisonnements aboutissent à un résultat faux sans être absurde : c'est alors la règle invoquée qu'il faut contrôler.</p>
   </div>
 </section>
@@ -156,6 +157,7 @@ export function monter(racine) {
     else msg = `<b>Ligne ${i + 1} : ce n'est pas l'erreur.</b> ` + P.lignes[i].ok; rendre(); });
   q('#er-indice').addEventListener('click', () => { if (trouve) return; msg = 'Vous avez demandé un indice : ' + P.indice; rendre(); });
   q('#er-depart').addEventListener('click', charger); q('#er-piece').addEventListener('change', e => { P = PIECES.find(p => p.id === e.target.value); charger(); });
+  q('#er-hasard').addEventListener('click', () => { P = auHasard(visibles(), P, lireMemoire('erreur')); listes(); charger(); });
   q('#er-niveaux').addEventListener('click', e => { const b = e.target.closest('button[data-n]'); if (!b) return; niveau = b.dataset.n; theme = 'tous'; listes(); charger(); });
   q('#er-themes').addEventListener('click', e => { const b = e.target.closest('button[data-t]'); if (!b) return; theme = b.dataset.t; listes(); charger(); });
   listes(); charger(); return () => { vivant = false; };

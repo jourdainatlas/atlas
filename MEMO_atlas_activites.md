@@ -1148,4 +1148,14 @@ Le contrôle par navigateur teste maintenant, pour chaque ligne, que son centre 
 122 pièces ouvertes une à une et toutes leurs lignes cliquées, sombre 375 px et clair 1280 px : aucune formule
 en erreur, aucun débordement, aucune ligne recouverte. Rédaction et relecture par la même conversation.
 
+### 148. « Raisonner » : bouton « Au hasard » (12 nov. 2026)
+
+Demande de l'auteur : tirer une démonstration ou un raisonnement au hasard, en respectant les filtres, pour
+qu'un élève s'entraîne sans avoir à choisir. Bouton `#od-hasard` / `#er-hasard` (classe `rz-hasard`), à côté de
+la liste ; sur téléphone, sur toute la largeur, sous la liste. `auHasard(V, P, M)` de `raisonner.js` : tirage
+uniforme parmi les pièces visibles (niveau, et thème en Maths Sup), de préférence parmi celles qui ne sont pas
+marquées « faites » dans la mémoire du navigateur, et jamais la pièce affichée s'il y en a d'autres ; quand
+tout est fait, le tirage porte sur toutes les autres. Vérifié : 40 tirages sous « Maths Sup, Probabilités »
+dans chaque activité, toutes les pièces du filtre sorties, aucune hors filtre, aucune répétition immédiate.
+
 Explorations : vingt-huit. Jeux et casse-têtes : seize. Calcul mental : une activité. Raisonner : deux.
