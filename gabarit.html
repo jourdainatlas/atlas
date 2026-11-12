@@ -1538,6 +1538,9 @@ table.grille button.pli-ann:hover { border-color: var(--encre); }
 .rech-domaines .chip { text-align: left; }
 .rech-domaines .chip small { color: var(--encre-3); margin-left: 4px; }
 .rech-bilan { margin: 16px 0 8px; font-size: 13.5px; color: var(--encre-2); }
+.rech-tri { margin-left: 6px; }
+.rech-tri .lien-bouton { padding: 0; border: 0; background: none; color: inherit; font: inherit; text-decoration: underline; text-decoration-color: var(--ligne); text-underline-offset: 3px; cursor: pointer; }
+.rech-tri .lien-bouton:hover { color: var(--encre); text-decoration-color: currentColor; }
 .res-ann { padding: 14px 16px; margin-top: 10px; }
 .res-ann .res-tete { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: baseline; justify-content: space-between; }
 .res-ann .res-conc { font-family: var(--f-mono); font-size: 12px; color: var(--encre-2); letter-spacing: .02em; }
@@ -4343,7 +4346,7 @@ function fermerFicheAnnales() { location.hash = '#annales'; }
 /* ---- Annales : moteur de recherche par thème.
    Chaque sujet étiqueté (rubriques/annales-index.yaml) est découpé en parties ; chaque partie porte
    des thèmes du vocabulaire (rubriques/annales-themes.yaml), principaux ou secondaires, et des mots-clés. */
-const etatRech = { q: '', fam: '', conc: '', fil: '', de: '', a: '', montres: 12 };
+const etatRech = { q: '', fam: '', conc: '', fil: '', de: '', a: '', tri: '', montres: 12 };   // tri : '' (date si un filtre est posé, sinon pertinence), 'date', 'pertinence'
 // filtres du moteur (famille, école ou concours, filière, période) appliqués à un sujet
 const passeFiltresAnn = s => !(etatRech.fam && s.fam !== etatRech.fam)
   && !(etatRech.conc && !s.cases.some(c => c.concours === etatRech.conc))
@@ -4363,6 +4366,17 @@ function compteAnnales() {
   }
   compteAnnCache = { cle, I, compte };
   return compte;
+}
+const filtreAnnActif = () => !!(etatRech.fam || etatRech.conc || etatRech.fil || etatRech.de || etatRech.a);
+const triAnnDate = () => etatRech.tri ? etatRech.tri === 'date' : filtreAnnActif();
+// clé de date d'un sujet : l'année, précisée par le jour de l'épreuve quand il est connu (baccalauréat)
+const MOIS_ANN = ['janvier', 'fevrier', 'mars', 'avril', 'mai', 'juin', 'juillet', 'aout', 'septembre', 'octobre', 'novembre', 'decembre'];
+function dateSujetAnn(s) {
+  const d = normRech((s.cases[0] || {}).date || ''), m = d.match(/(?:(\d+)(?:er)? )?([a-z]+) (\d{4})/);
+  const an = s.annee || 0;
+  if (!m || MOIS_ANN.indexOf(m[2]) < 0) return an * 10000;
+  // la date réelle peut tomber l'année civile précédente (Nouvelle-Calédonie, novembre) : on garde l'ordre des sessions
+  return an * 10000 + (+m[3] - an + 1) * 1300 + (MOIS_ANN.indexOf(m[2]) + 1) * 40 + (+m[1] || 0);
 }
 const rechVide = () => !etatRech.q.trim() && !etatRech.fam && !etatRech.conc && !etatRech.fil && !etatRech.de && !etatRech.a;
 let indexAnn = null, chargementIndexAnn = null;
@@ -4455,6 +4469,8 @@ function rechercherAnnales(q) {
   res.sort((a, b) => b.sc - a.sc || (b.s.annee || 0) - (a.s.annee || 0));
   // on écarte les correspondances très faibles devant les meilleures
   if (res.length) { const m = res[0].sc; while (res.length && res[res.length - 1].sc < .2 * m) res.pop(); }
+  // dès qu'un filtre est posé (ou sur demande), du plus récent au plus ancien ; à date égale, par pertinence
+  if (triAnnDate()) res.sort((a, b) => dateSujetAnn(b.s) - dateSujetAnn(a.s) || b.sc - a.sc);
   return { themes: thRet.map(x => x.t), res };
 }
 function lienEdifice(id) { const nd = D.noeuds[id]; return nd ? `#${nd.graphe || D.racine}.${id}` : ''; }
@@ -4513,7 +4529,8 @@ function resultatsAnnales() {
     h += `</div>`;
   }
   const nbP = res.reduce((u, r) => u + r.parts.length, 0);
-  h += `<p class="rech-bilan">${res.length ? `${res.length} sujet${res.length > 1 ? 's' : ''}, ${nbP} partie${nbP > 1 ? 's' : ''} concernée${nbP > 1 ? 's' : ''}.` : (etatRech.fam || etatRech.conc || etatRech.fil || etatRech.de || etatRech.a ? 'Aucun sujet étiqueté ne correspond avec ces filtres (concours, école, filière ou période). Élargissez-les, ou choisissez un thème ci-dessous.' : 'Aucun sujet étiqueté ne correspond. Essayez un thème plus général, ou choisissez-en un ci-dessous.')}</p>`;
+  const tri = res.length > 1 ? ` <span class="rech-tri">${triAnnDate() ? 'Du plus récent au plus ancien' : 'Par pertinence'} · <button type="button" class="lien-bouton" data-rtri="${triAnnDate() ? 'pertinence' : 'date'}">classer ${triAnnDate() ? 'par pertinence' : 'du plus récent au plus ancien'}</button></span>` : '';
+  h += `<p class="rech-bilan">${res.length ? `${res.length} sujet${res.length > 1 ? 's' : ''}, ${nbP} partie${nbP > 1 ? 's' : ''} concernée${nbP > 1 ? 's' : ''}.${tri}` : (etatRech.fam || etatRech.conc || etatRech.fil || etatRech.de || etatRech.a ? 'Aucun sujet étiqueté ne correspond avec ces filtres (concours, école, filière ou période). Élargissez-les, ou choisissez un thème ci-dessous.' : 'Aucun sujet étiqueté ne correspond. Essayez un thème plus général, ou choisissez-en un ci-dessous.')}</p>`;
   if (!res.length) { const sv = etatRech.q; etatRech.q = ''; h += resultatsAnnales(); etatRech.q = sv; return h; }
   for (const r of res.slice(0, etatRech.montres)) {
     const s = r.s, cf = I.famDe[s.concours] || {};
@@ -4596,8 +4613,9 @@ $('#rubrique').addEventListener('click', ev => {
   const b = ev.target.closest('[data-rq]');
   if (b) { etatRech.q = b.dataset.rq; etatRech.montres = 12; const i = $('#ann-q'); if (i) i.value = etatRech.q; majRechercheAnnales(); return; }
   if (ev.target.closest('[data-rplus]')) { etatRech.montres += 12; majRechercheAnnales(); }
+  const tr = ev.target.closest('[data-rtri]'); if (tr) { etatRech.tri = tr.dataset.rtri; etatRech.montres = 12; majRechercheAnnales(); return; }
   if (ev.target.closest('[data-reffacer]')) {
-    Object.assign(etatRech, { q: '', fam: '', conc: '', fil: '', de: '', a: '', montres: 12 });
+    Object.assign(etatRech, { q: '', fam: '', conc: '', fil: '', de: '', a: '', tri: '', montres: 12 });
     const z = $('#rech-ann'); if (z) { z.outerHTML = blocRechercheAnnales(); const i = $('#ann-q'); if (i) i.focus(); }
   }
 });
