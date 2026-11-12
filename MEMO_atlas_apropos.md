@@ -745,3 +745,12 @@ est fixé dans le code (clair et sombre). Si la largeur change, le jardin repart
 une image fixe (jardin à tous les âges, jardinier et chien immobiles), pas de bouton.
 `accueilJardin.variante = 'a'` redonne la première esquisse (jardinier simple, sans herbe ni chien), gardée dans le
 code. `accJardin.ou()` et `accJardin.chien()` servent aux essais (forcer un état du chien, par exemple).
+
+## 74. Partager depuis un groupe d'activités (12 nov. 2026)
+
+Défaut signalé par l'auteur : depuis un groupe d'activités (Raisonner, Casse-têtes…), « Partager » donnait
+l'adresse de toute la rubrique. `adressePartage()` ne connaissait que les activités, qui ont une page de lecture
+(`/activites/<id>/`). Un groupe n'en a pas : l'adresse partagée est désormais celle de la page affichée,
+`https://www.atlasjourdain.fr/#activites/<groupe>` (comme pour les exercices par niveau). L'aperçu dans une
+messagerie est alors celui de l'accueil ; un aperçu propre au groupe demanderait une page de lecture par groupe
+(`lecture-activites.mjs`, domaine Activités).

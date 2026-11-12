@@ -6062,7 +6062,10 @@ function adressePartage() {
     if (nom === 'exercices' && etatExo.feuille) return `${ADRESSE_SITE}exercices/feuille/${etatExo.feuille}/?ouvrir`;   // page de lecture (lecture-cours.mjs)
     if (nom === 'exercices' && etatExo.vue === 'niveau' && etatExo.niveauVu) return `${ADRESSE_SITE}#exercices/niveau/${etatExo.niveauVu}`;
     if (nom === 'accueil') return ADRESSE_SITE;
-    if (nom === 'activites') return `${ADRESSE_SITE}activites/${(R.activites?.activites || []).some(a => a.id === ch) ? ch + '/' : ''}`;   // pages de lecture (lecture-activites.mjs)
+    if (nom === 'activites') {   // une activité a sa page de lecture (lecture-activites.mjs) ; un groupe (Raisonner, Casse-têtes…) ou toute autre vue n'en a pas : adresse « # » de la page affichée
+      if ((R.activites?.activites || []).some(a => a.id === ch)) return `${ADRESSE_SITE}activites/${ch}/`;
+      return ch ? `${ADRESSE_SITE}#activites/${ch}` : `${ADRESSE_SITE}activites/`;
+    }
     if (nom === 'annales' && (ch || '').startsWith('sujet/')) return `${ADRESSE_SITE}annales/${ch}/`;   // page de lecture (lecture.mjs)
     return `${ADRESSE_SITE}${nom}/`;
   }
