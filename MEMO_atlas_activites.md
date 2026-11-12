@@ -934,3 +934,36 @@ calculée, elle retire seulement le second nombre, la ligne redevenant incomplè
 premier nombre.
 
 Explorations : vingt-huit. Jeux et casse-têtes : seize. Calcul mental : une activité.
+
+### 143. Prototypes NON PUBLIÉS : sous-rubrique « Raisonner » (12 nov. 2026)
+
+Demande de l'auteur : un prototype de la sous-rubrique « Raisonner » proposée (démonstrations à remettre en
+ordre, erreurs à trouver), en rouge, celui du logo et du titre de l'accueil (`--rouge`). Page autonome remise à
+l'auteur. Rien n'est dans `activites/` ni dans le catalogue. Sources dans le dépôt, hors du site :
+`outils/activites_prototypes/ordonner.js` et `erreur.js` ; `page_autonome.py` (dans le même dossier) fabrique
+une page autonome à partir d'un module installé provisoirement dans `activites/` (les chemins y sont ceux de la
+session de travail ; les fichiers de KaTeX sont pris sur le site en ligne, sans quoi les formules restent en
+LaTeX brut quand la page est ouverte hors du site).
+
+**Pour publier** : déplacer les deux modules dans `activites/` ; ajouter au catalogue le groupe `raisonner`
+(`couleur: raison`) et les deux activités ; dans `gabarit.html`, la règle
+`[data-teinte="raison"] { --o: var(--rouge) !important; }` ; compléter les descriptions de la rubrique.
+
+**`ordonner`.** Une pièce = un énoncé, des étapes, un intrus. Chaque étape porte ses dépendances, chacune avec
+la phrase dite quand elle manque (« cette étape emploie l'entier k, qui n'a pas encore été introduit »).
+« Vérifier » (sur demande seulement) parcourt la démonstration : intrus (avec l'explication de sa faute),
+première dépendance manquante, ou étapes manquantes. Tout ordre compatible avec les dépendances est accepté.
+Pose par clic, flèches pour monter et descendre, croix pour renvoyer en réserve ; pas encore de glisser-déposer.
+Trois pièces : irrationalité de √2 (intrus : réciproque prise pour l'énoncé direct), infinité des nombres
+premiers (intrus : « donc N est premier » ; 30 031 = 59 × 509, vérifié), somme des n premiers impairs par
+récurrence (intrus : hypothèse « pour tout n »). Contrôlé (Node) sur les 720 ordres de chaque pièce : un seul
+ordre accepté pour les deux premières, quatre pour la récurrence (l'initialisation peut venir après l'hérédité).
+
+**`erreur`.** Une pièce = un raisonnement en lignes numérotées, dont une fautive. Clic sur une ligne : si elle
+est juste, la page dit pourquoi et la marque ; si c'est la faute, elle l'explique et donne « À retenir ».
+Nombre d'essais compté. Trois pièces : 1 = 2 (division par a − b = 0), 2 > 3 (division d'une inégalité par
+ln(1/2) < 0), les chevaux de même couleur (hérédité fausse pour n = 1).
+
+**Questions posées à l'auteur** : une activité par genre avec une liste de pièces (choix du prototype), ou une
+carte par pièce ; glisser-déposer ; nombre et choix des pièces ; plusieurs intrus par pièce ; mémoire des pièces
+réussies.
