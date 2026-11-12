@@ -1185,4 +1185,61 @@ nombres du jour des niveaux 1 et 2 ont donc changé le 12 novembre en fin d'apr�
 déjà acquise ce jour-là reste affichée. Libellés du réglage, chapeau, « Comment jouer », catalogue et
 Nouveautés mis à jour.
 
-Explorations : vingt-huit. Jeux et casse-têtes : seize. Calcul mental : une activité. Raisonner : deux.
+### 151. Quatre activités : contre-exemple, nécessaire ou suffisant, dix calculs, parcours du jour (12 nov. 2026)
+
+**Demande de l'auteur.** Mettre en place quatre des idées proposées : le contre-exemple et « nécessaire ou
+suffisant », avec les mêmes filtres que les deux activités de « Raisonner » ; des séries de calcul chronométrées
+et un parcours du jour, dont la difficulté suit la classe (Première, Terminale, Maths Sup).
+
+**`contre-exemple`** (groupe `raisonner`). Un énoncé faux, quatre objets présentés dans un ordre tiré au hasard,
+un seul contre-exemple ; un mauvais choix est expliqué (hypothèse non vérifiée, ou conclusion vérifiée aussi) et
+l'on cherche encore ; essais comptés. 46 pièces dans `contre-exemple-pieces.js` (Première 9, Terminale 9, Maths
+expertes 8, Maths Sup 20 : fondements 3, algèbre 4, algèbre linéaire 4, analyse 7, probabilités 2), écrites
+avec `contre(id, niveau, theme, cours, nom, enonce, [[objet, pourquoi, bon?] × 4], retenir)`. Mémoire sous
+`contre` dans `atlas-raisonner`. Les objets ont été choisis pour qu'un seul réfute l'énoncé (vérifié à la
+rédaction : par exemple, pour det(A + B), trois des quatre couples de matrices vérifient l'égalité).
+
+**`implication`**, titre « Nécessaire ou suffisant ? » (groupe `raisonner`). Un cadre, deux propriétés A et B,
+quatre réponses (A ⇒ B seulement, B ⇒ A seulement, A ⇔ B, aucune), un seul essai, puis la raison ou le
+contre-exemple de chaque sens. 67 pièces dans `implication-pieces.js` (13, 15, 12, 27 : fondements 5, algèbre
+5, algèbre linéaire 6, analyse 8, probabilités 3), écrites avec `imp(id, niveau, theme, cours, nom, cadre, A,
+B, [vrai?, texte], [vrai?, texte])`. Répartition des réponses : 24, 17, 23, 3. Mémoire sous `implication`.
+
+Les deux activités reprennent filtres, liste groupée, « Au hasard » et mémoire de `raisonner.js`.
+
+**`serie`**, titre « Dix calculs » (groupe `calcul`). Classe, thème ou mélange, dix questions à quatre réponses,
+chronomètre lancé par « Commencer », touches 1 à 4, bilan question par question, meilleur résultat par thème
+(`atlas-serie` : `{ "classe/thème": [justes, secondes] }`, d'abord le nombre de réponses justes, puis le
+temps). Les questions sont fabriquées par `serie-calculs.js` : 22 familles (Première 8 : carrés, pourcentages,
+fractions, puissances, discriminants, nombres dérivés, suites, cosinus et sinus ; Terminale 7 : logarithmes et
+exponentielles, dérivées, intégrales, limites, coefficients binomiaux, sommes, loi binomiale ; Maths Sup 7 :
+complexes, déterminants, congruences, sommes, limites usuelles, dérivées en 0, intégrales usuelles). Chaque
+fabrique rend l'énoncé, la réponse exacte (entiers, fractions réduites) et des réponses fausses obtenues par une
+règle erronée précise ; `question()` en garde trois distinctes. Les limites et intégrales usuelles viennent de
+tables. Pas d'animation : seul le chronomètre avance, après action de l'utilisateur.
+
+**`parcours`**, « Parcours du jour » (sans groupe : son propre intercalaire, placé en tête). Classe choisie une
+fois (`atlas-parcours` : `{ niveau, jour, faits }`, les étapes faites étant oubliées le lendemain ou si l'on
+change de classe). Six étapes : compte est bon (niveau 1, 2 ou 3 selon la classe), dix calculs (mélange de la
+classe), démonstration, erreur, contre-exemple, implication du jour. `jour.js` porte la date à Paris, la
+mémoire, `pieceDuJour(PIECES, niveau, activité)` (rang = numéro du jour + décalage propre à l'activité, modulo
+le nombre de pièces du niveau ; la pièce est donc la même pour tous), et le passage d'une étape à l'activité :
+le parcours dépose une demande dans `sessionStorage` (`atlas-parcours-ouvrir`), l'activité la lit en se
+montant, se règle sur la classe et la pièce du jour, puis, une fois l'étape réussie, la marque (`validerPiece`,
+`valider`) et affiche « Revenir au parcours du jour ». Le compte est bon garde sa propre mémoire, que le
+parcours lit. En Terminale, le parcours ne puise pas dans les pièces de Maths expertes (dit dans la page).
+Une étape réussie sans passer par le parcours est comptée aussi, si une classe a été choisie.
+
+**Catalogue.** Quatre entrées ; introduction de la rubrique et des groupes `calcul` et `raisonner` complétées ;
+entrée des Nouveautés du 12 novembre complétée. Fiche de l'édifice citée pour la logique :
+`log.l-connecteurs`.
+
+**Contrôles.** `node outils/activites_raisonner.mjs` vérifie désormais aussi les implications, les
+contre-exemples (une seule bonne réponse sur quatre) et les fabriques de calculs (quatre réponses distinctes,
+séries de dix). Réponses des 22 familles relues sur échantillon. Navigateur, sombre 375 px et clair 1280 px :
+les 67 implications et les 46 contre-exemples affichés et joués, 75 séries complètes couvrant toutes les
+familles, aucune formule en erreur, aucun débordement ; parcours de Terminale suivi étape par étape (pièce du
+jour ouverte, étape marquée au retour). Rédaction et relecture par la même conversation.
+
+Explorations : vingt-huit. Jeux et casse-têtes : seize. Calcul mental : deux activités. Raisonner : quatre.
+Parcours du jour : une.

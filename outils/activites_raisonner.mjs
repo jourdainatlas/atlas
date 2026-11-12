@@ -25,4 +25,15 @@ const R = await charge('erreur'); vus.clear();
 for (const P of R.PIECES) { if (vus.has(P.id)) dit('doublon', P.id); vus.add(P.id); if (P.niveau === 'sup' && !P.theme) dit('thème manquant', P.id);
   if (P.lignes.filter(l => !l.ok).length !== 1 || P.lignes[P.faute].ok) dit('une seule ligne fautive attendue', P.id);
   for (const k of ['nom', 'annonce', 'pourquoi', 'retenir', 'indice']) if (!P[k]) dit('champ vide', P.id, k); }
-console.log('Erreurs :', R.PIECES.length, compte(R.PIECES)); console.log(pb ? pb + ' problème(s)' : 'Aucun problème.'); process.exit(pb ? 1 : 0);
+console.log('Erreurs :', R.PIECES.length, compte(R.PIECES));
+// Implications et contre-exemples (§151) : identifiants uniques, thème en Maths Sup, une seule bonne réponse parmi quatre, justifications présentes.
+const I = await charge('implication'); vus.clear();
+for (const P of I.PIECES) { if (vus.has(P.id)) dit('doublon', P.id); vus.add(P.id); if (P.niveau === 'sup' && !P.theme) dit('thème manquant', P.id); if (!P.nom || !P.cadre || !P.A || !P.B || !P.d.t || !P.r.t || !'dgen'.includes(P.rep)) dit('implication incomplète', P.id); }
+console.log('Implications :', I.PIECES.length, compte(I.PIECES));
+const C = await charge('contre-exemple'); vus.clear();
+for (const P of C.PIECES) { if (vus.has(P.id)) dit('doublon', P.id); vus.add(P.id); if (P.niveau === 'sup' && !P.theme) dit('thème manquant', P.id); if (P.choix.length !== 4 || P.choix.filter(c => c.bon).length !== 1 || P.choix.some(c => !c.t || !c.pourquoi) || !P.retenir) dit('contre-exemple mal formé', P.id); }
+console.log('Contre-exemples :', C.PIECES.length, compte(C.PIECES));
+// Dix calculs : chaque fabrique donne quatre réponses distinctes, sans valeur indéfinie, et de quoi faire une série de dix.
+const S = await charge('serie-calculs'); let nq = 0;
+for (const niv in S.FAMILLES) { for (const [id, , g] of S.FAMILLES[niv]) { for (let i = 0; i < 500; i++) { const x = g(); if (!x) continue; nq++; if (x.choix.length !== 4 || new Set(x.choix).size !== 4 || x.bon < 0 || x.bon > 3 || /NaN|undefined|Infinity|null/.test(x.q + x.choix.join(''))) dit('calcul mal formé', niv, id, x.q); } if (S.serie(niv, id).length !== 10) dit('série incomplète', niv, id); } if (S.serie(niv, 'melange').length !== 10) dit('mélange incomplet', niv); }
+console.log('Dix calculs :', Object.values(S.FAMILLES).reduce((a, f) => a + f.length, 0), 'familles,', nq, 'calculs essayés'); console.log(pb ? pb + ' problème(s)' : 'Aucun problème.'); process.exit(pb ? 1 : 0);

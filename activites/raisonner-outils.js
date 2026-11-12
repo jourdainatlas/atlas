@@ -12,3 +12,8 @@ export function demo(id, niveau, theme, cours, nom, enonce, etapes, intrus) {
 export function faux(id, niveau, theme, cours, nom, annonce, lignes, pourquoi, retenir, indice) {
   return { id, niveau, theme, cours, nom, annonce, faute: lignes.findIndex(l => !l[1]), lignes: lignes.map(([t, ok]) => ok ? { t, ok } : { t }), pourquoi, retenir, indice };
 }
+
+// Implications (§151) : nom court (liste déroulante), cadre, propriétés A et B, puis [vrai ou faux, justification] pour « A ⇒ B » et pour « B ⇒ A ».
+export function imp(id, niveau, theme, cours, nom, cadre, A, B, d, r) { return { id, niveau, theme, cours, nom, cadre, A, B, d: { vrai: d[0], t: d[1] }, r: { vrai: r[0], t: r[1] }, rep: d[0] ? (r[0] ? 'e' : 'd') : (r[0] ? 'g' : 'n') }; }
+// Contre-exemples (§151) : un énoncé faux, des objets [texte, justification, vrai si c'est le contre-exemple], un seul bon.
+export function contre(id, niveau, theme, cours, nom, enonce, choix, retenir) { const C = choix.map((c, i) => ({ t: c[0], pourquoi: c[1], bon: !!c[2] })); return { id, niveau, theme, cours, nom, enonce, choix: C, retenir }; }

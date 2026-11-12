@@ -2,6 +2,7 @@
 // La banque de tirages (BANQUE) est fabriquée par outils/activites_compte.mjs.
 import { css as cssCommun, bac } from './commun.js';
 import { cssFigures, suite } from './figures.js';
+import { demande } from './jour.js';
 import { cssJeux, ecrire } from './jeux.js';
 
 export const css = cssCommun + cssFigures + cssJeux + `
@@ -162,7 +163,7 @@ export function monter(racine) {
     q('#cb-annuler').disabled = !lignes.length && cur.a < 0 && !cur.op; q('#cb-raz').disabled = q('#cb-annuler').disabled; q('#cb-indice').disabled = gagne; q('#cb-solution').disabled = false;
     const m = q('#cb-message'), n = lignes.length, bloque = !gagne && libres().length < 2 && cur.a < 0;
     m.className = 'jeu-message' + (gagne ? ' gagne' : bloque ? ' bloque' : cl);
-    ecrire(m, gagne ? `Le compte est bon, en ${n} opération${n > 1 ? 's' : ''}. ${vu ? '' : n <= pb.min ? 'On ne peut pas faire plus court.' : `Le plus court calcul n'en demande que ${pb.min} : la touche C vous laisse recommencer.`}` : msg || (bloque ? 'Il ne reste plus de quoi calculer. Annulez une étape, ou effacez tout.' : (duJour && F && !n && cur.a < 0 ? 'Le nombre du jour a déjà été trouvé sur ce navigateur. Vous pouvez le refaire : choisissez un nombre, une opération, puis un second nombre.' : 'Choisissez un nombre, une opération, puis un second nombre.')));
+    ecrire(m, gagne ? `Le compte est bon, en ${n} opération${n > 1 ? 's' : ''}. ${vu ? '' : n <= pb.min ? 'On ne peut pas faire plus court.' : `Le plus court calcul n'en demande que ${pb.min} : la touche C vous laisse recommencer.`}${duParcours && duJour ? ' <a href="#activites/parcours">Revenir au parcours du jour</a>' : ''}` : msg || (bloque ? 'Il ne reste plus de quoi calculer. Annulez une étape, ou effacez tout.' : (duJour && F && !n && cur.a < 0 ? 'Le nombre du jour a déjà été trouvé sur ce navigateur. Vous pouvez le refaire : choisissez un nombre, une opération, puis un second nombre.' : 'Choisissez un nombre, une opération, puis un second nombre.')));
   }
   q('#cb-plaques').addEventListener('click', e => { const b = e.target.closest('button[data-i]'); if (b) nombre(+b.dataset.i); });
   q('#cb-lignes').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; if (b.dataset.defaire === 'op') oterOperation(); else if (b.dataset.defaire) annuler(); else if (b.dataset.oter) oter(b.dataset.oter); else if (b.dataset.i) nombre(+b.dataset.i); });
@@ -176,6 +177,7 @@ export function monter(racine) {
   q('#cb-solution').addEventListener('click', () => { const r = chercher(pb.plaques, pb.cible), S = q('#cb-sol'); vu = true; S.hidden = false; S.textContent = 'Une solution parmi les plus courtes :\n' + r.map(([a, op, b, c]) => `${a} ${op} ${b} = ${c}`).join('\n') + (niv === 2 ? '\nÀ l\'ordre des calculs près, c\'est la seule.' : ''); });
   fenetre.addEventListener('keydown', e => { if (e.altKey || e.ctrlKey || e.metaKey || (e.target && e.target.closest && e.target.closest('input, select, textarea'))) return; const r = q('#cb-lignes').getBoundingClientRect(); if (r.bottom < 0 || r.top > innerHeight) return;
     const op = { '+': '+', '-': '−', '*': '×', 'x': '×', '/': '÷', ':': '÷' }[e.key]; if (op) { e.preventDefault(); operation(op); } else if (e.key === 'Backspace') { e.preventDefault(); annuler(); } });
+  const D = demande('compte-est-bon'), duParcours = !!D; if (D) q('#cb-niv').value = String({ premiere: 0, terminale: 1, sup: 2 }[D.niveau] || 0);
   charger(true);
   return () => { vivant = false; demonter(); };
 }

@@ -3,6 +3,7 @@ import { css as cssCommun } from './commun.js';
 import { cssRaison, lireMemoire, noterMemoire, filtrer, pucesNiveaux, pucesThemes, options, auHasard } from './raisonner.js';
 import { cssFigures, suite } from './figures.js';
 import { cssJeux, ecrire } from './jeux.js';
+import { demande, pieceDuJour, validerPiece, lienParcours } from './jour.js';
 import premiere from './ordonner-premiere.js';
 import terminale from './ordonner-terminale.js';
 import expertes from './ordonner-expertes.js';
@@ -223,7 +224,8 @@ for (const p of PIECES) if (p.id === 'bezout' || p.id === 'gauss') p.aussi = ['e
 export { PIECES };
 
 export function monter(racine) {
-  const q = s => racine.querySelector(s); let P = PIECES[0], L = [], ordre = [], msg = '', cl = '', marque = -1, conseil = '', niveau = 'tous', theme = 'tous', nbIntrus = 1, vivant = true;
+  const q = s => racine.querySelector(s); let P = PIECES[0], L = [], ordre = [], msg = '', cl = '', marque = -1, conseil = '', niveau = 'tous', theme = 'tous', nbIntrus = 1, vivant = true, duParcours = false;
+  const D = demande('ordonner'); if (D) { niveau = D.niveau; P = pieceDuJour(PIECES, niveau, 'ordonner') || P; duParcours = true; }
   const texte = id => (P.etapes.find(e => e.id === id) || P.intrus.find(e => e.id === id)).t, visibles = () => filtrer(PIECES, niveau, theme);
   function listes() { const M = lireMemoire('ordonner'), V = visibles();
     ecrire(q('#od-niveaux'), pucesNiveaux(PIECES, niveau), true); const th = q('#od-themes'); th.hidden = niveau !== 'sup'; if (niveau === 'sup') ecrire(th, pucesThemes(PIECES, theme), true);
@@ -245,7 +247,7 @@ export function monter(racine) {
   q('#od-preuve').addEventListener('click', e => { if (clicAnnule) return; const b = e.target.closest('button[data-a]'); if (!b) return; const i = +b.dataset.i, a = b.dataset.a;
     if (a === 'x') L.splice(i, 1); else { const j = a === 'h' ? i - 1 : i + 1; [L[i], L[j]] = [L[j], L[i]]; } raz(); });
   q('#od-verifier').addEventListener('click', () => { conseil = ''; if (!L.length) { msg = 'Votre démonstration est vide.'; cl = ''; rendre(); return; } const r = verifier(P, L);
-    if (r.ok) { msg = 'La démonstration est complète, et chaque étape s\'appuie sur ce qui la précède.' + (P.cours ? ' Le cours établit ce résultat, avec ses remarques.' : ''); cl = ' gagne'; marque = -1; noterMemoire('ordonner', P.id, nbIntrus + 1); listes(); }
+    if (r.ok) { msg = 'La démonstration est complète, et chaque étape s\'appuie sur ce qui la précède.' + (P.cours ? ' Le cours établit ce résultat, avec ses remarques.' : ''); cl = ' gagne'; marque = -1; noterMemoire('ordonner', P.id, nbIntrus + 1); if (validerPiece('ordonner', PIECES, P) && duParcours) msg += lienParcours; listes(); }
     else { marque = r.pos; cl = r.pos < 0 ? '' : ' bloque'; msg = (r.pos >= 0 ? `<b>Étape ${r.pos + 1}${r.intrus ? ' : c\'est un intrus' : ''}.</b> ` : '') + r.texte; } rendre(); });
   q('#od-indice').addEventListener('click', () => { marque = -1; cl = ''; const r = verifier(P, L);
     if (r.pos >= 0) { marque = r.pos; msg = `Vous avez demandé un indice : commencez par revoir l'étape ${r.pos + 1}, marquée d'un filet rouge.`; }
