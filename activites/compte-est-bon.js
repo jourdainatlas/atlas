@@ -177,7 +177,7 @@ export function monter(racine) {
   q('#cb-solution').addEventListener('click', () => { const r = chercher(pb.plaques, pb.cible), S = q('#cb-sol'); vu = true; S.hidden = false; S.textContent = 'Une solution parmi les plus courtes :\n' + r.map(([a, op, b, c]) => `${a} ${op} ${b} = ${c}`).join('\n') + (niv === 2 ? '\nÀ l\'ordre des calculs près, c\'est la seule.' : ''); });
   fenetre.addEventListener('keydown', e => { if (e.altKey || e.ctrlKey || e.metaKey || (e.target && e.target.closest && e.target.closest('input, select, textarea'))) return; const r = q('#cb-lignes').getBoundingClientRect(); if (r.bottom < 0 || r.top > innerHeight) return;
     const op = { '+': '+', '-': '−', '*': '×', 'x': '×', '/': '÷', ':': '÷' }[e.key]; if (op) { e.preventDefault(); operation(op); } else if (e.key === 'Backspace') { e.preventDefault(); annuler(); } });
-  const D = demande('compte-est-bon'), duParcours = !!D; if (D) q('#cb-niv').value = String({ premiere: 0, terminale: 1, expertes: 1, sup: 2 }[D.niveau] || 0);
+  const D = demande('compte-est-bon'), duParcours = !!D; if (D) q('#cb-niv').value = String({ premiere: 0, terminale: 1, expertes: 1, sup: 1 }[D.niveau] || 0);
   charger(true);
   return () => { vivant = false; demonter(); };
 }

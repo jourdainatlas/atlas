@@ -1333,5 +1333,12 @@ Laissé en l'état : les renvois à « la ligne précédente » quand celle-ci e
 **Contrôles.** `outils/activites_raisonner.mjs` : « Aucun problème », ordres multiples relus. Navigateur : 153
 démonstrations (sombre 375 px, clair 1280 px) et 122 erreurs affichées, aucune formule en erreur.
 
+### 154. Parcours du jour : le compte est bon au niveau 2 en Maths Sup (12 nov. 2026)
+
+Demande de l'auteur : le niveau 3, trop long pour un parcours quotidien, est laissé aux volontaires. Dans le
+parcours, « Le compte est bon » est donc au niveau 1 en Première et au niveau 2 dans les trois autres classes
+(`NIV_COMPTE` de `parcours.js` et la table de `compte-est-bon.js` : `sup: 1`). Le niveau 3 reste proposé dans
+l'activité. Terminale et Maths Sup ont ainsi le même nombre du jour.
+
 Explorations : vingt-huit. Jeux et casse-têtes : seize. Calcul mental : deux activités. Raisonner : quatre.
 Parcours du jour : une.
