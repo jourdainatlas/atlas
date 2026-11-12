@@ -710,3 +710,12 @@ préambule (`\mathbb{R}`). Le développement des macros changeait la variable de
 sont maintenant renommées en `\fv<nom>`. Les figures qui ont une boucle changent donc d'empreinte à la prochaine
 conversion : on supprime les SVG orphelins non suivis par git, ceux qu'aucun fichier de `rubriques/` ne cite.
 Contrôle utile : aucun SVG de `documents/figures` ne doit contenir `<pageSet>` ni `height="0"`.
+
+### 46. Symbole du ch. 22 : « surface » (12 nov. 2026)
+
+Le dessin `surface` (validé par l'auteur, troisième proposition) représente le graphe de z = 1 − (x² + y²)/2 sur
+[−1, 1]², projeté par P(x, y) = (12 + 5,3√2·(x cos45° − y sin45°), 14,3 + 4,3√2·(x sin45° + y cos45°) − 4·f).
+Le jacobien de la projection reste strictement positif, la surface ne se replie donc pas : une seule teinte `f3`
+remplit le bord, sans élimination des parties cachées. Quadrillage `t` de deux lignes par sens, bord `t3`.
+Abandonnés : la colline en cloche (lue comme une tente) et la selle (illisible à 40 px). Générateur :
+`scratchpad/sym/surf_inj.py` (21 points par arête, coordonnées arrondies au dixième).
