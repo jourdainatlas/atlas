@@ -217,6 +217,8 @@ export function verifier(piece, L) {
 const TH = { unicite: 'analyse', bornee: 'analyse', monotone: 'analyse', rolle: 'analyse', taf: 'analyse', harmonique: 'analyse', gauss: 'algebre', noyau: 'lineaire', cs: 'lineaire', cantor: 'fondements' };
 for (const p of ANCIENNES) p.theme = TH[p.id] || '';
 const PIECES = ANCIENNES.concat(premiere, terminale, expertes, sup);
+// Pièces montrées aussi sous un second niveau : Bézout et Gauss figurent au programme de Maths expertes (§146).
+for (const p of PIECES) if (p.id === 'bezout' || p.id === 'gauss') p.aussi = ['expertes'];
 export { PIECES };
 
 export function monter(racine) {

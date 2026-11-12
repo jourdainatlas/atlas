@@ -79,4 +79,64 @@ demo('independance-contraire', 'premiere', '', 'p-05', 'Indépendance et événe
   [T`Or $1 - P(B) = P(\overline{B})$ : ainsi $P(A \cap \overline{B}) = P(A)\,P(\overline{B})$, et $A$ et $\overline{B}$ sont indépendants.`, 'c'] ], [
   [T`Comme $A$ et $B$ sont indépendants, ils ne peuvent pas se produire en même temps : $P(A \cap B) = 0$.`, T`C'est la confusion entre « indépendants » et « incompatibles ». Deux événements indépendants de probabilités non nulles se produisent ensemble avec la probabilité $P(A)P(B)$, qui n'est pas nulle.`],
   [T`Donc $P(A \cap \overline{B}) = P(A) - P(B)$.`, T`On retranche à $P(A)$ la probabilité de $A \cap B$, et non celle de $B$ tout entier : une partie de $B$ peut se trouver hors de $A$.`] ]),
+// ---------- Ajouts du 12 nov. (audit des programmes, §146) ----------
+demo('racine-non-derivable', 'premiere', '', 'p-04', 'La racine carrée n\'est pas dérivable en 0', T`La fonction $f : x \mapsto \sqrt x$ n'est pas dérivable en 0.`, [
+  [T`Pour $h > 0$, le taux de variation de $f$ entre 0 et $h$ est $\dfrac{\sqrt h - \sqrt 0}{h} = \dfrac{\sqrt h}{h}$.`, '', T`le taux de variation $\dfrac{\sqrt h}{h}$`],
+  [T`Comme $h = \sqrt h \times \sqrt h$, ce taux vaut $\dfrac{1}{\sqrt h}$.`, 'a', T`l'écriture du taux sous la forme $\dfrac{1}{\sqrt h}$`],
+  [T`Soit $A > 0$ un réel quelconque. Dès que $0 < h < \dfrac{1}{A^2}$, on a $\sqrt h < \dfrac1A$, donc $\dfrac{1}{\sqrt h} > A$.`, 'b', T`le fait que le taux dépasse tout réel $A$ donné`],
+  [T`Le taux de variation dépasse donc n'importe quel réel pourvu que $h$ soit assez petit : il tend vers $+\infty$ quand $h$ tend vers 0, et n'a pas de limite finie.`, 'c', T`l'absence de limite finie du taux`],
+  [T`La fonction racine carrée n'est donc pas dérivable en 0.`, 'd'] ], [
+  [T`Ce taux vaut $\dfrac{\sqrt h}{h} = \sqrt h$, qui tend vers 0 : la fonction est dérivable en 0, de nombre dérivé 0.`, T`On a $\dfrac{\sqrt h}{h} = \dfrac{1}{\sqrt h}$, et non $\sqrt h$ : pour $h = 0{,}01$, le taux vaut 10. La courbe a d'ailleurs en 0 une tangente verticale, pas horizontale.`],
+  [T`La formule $f'(x) = \dfrac{1}{2\sqrt x}$ n'a pas de sens pour $x = 0$ : cela suffit à prouver que $f$ n'est pas dérivable en 0.`, T`Cette formule n'a été établie que pour $x > 0$. Qu'une formule cesse d'avoir un sens ne dit rien de la fonction : il faut revenir à la définition, c'est-à-dire au taux de variation.`] ]),
+demo('tangente', 'premiere', '', 'p-04', 'Équation de la tangente', T`Soit $f$ une fonction dérivable en $a$. La tangente à sa courbe au point d'abscisse $a$ a pour équation $y = f'(a)(x - a) + f(a)$.`, [
+  [T`Par définition, la tangente est la droite qui passe par le point $A\bigl(a ; f(a)\bigr)$ et dont le coefficient directeur est $f'(a)$.`, '', T`la définition de la tangente`],
+  [T`Son équation réduite est donc de la forme $y = f'(a)\,x + p$, où $p$ est un réel à déterminer.`, 'a', T`la forme $y = f'(a)x + p$ de l'équation`],
+  [T`Le point $A$ appartient à la droite : $f(a) = f'(a) \times a + p$, d'où $p = f(a) - a f'(a)$.`, 'b', T`la valeur de $p$`],
+  [T`L'équation s'écrit donc $y = f'(a)\,x + f(a) - a f'(a)$, c'est-à-dire $y = f'(a)(x - a) + f(a)$.`, 'c'] ], [
+  [T`Le point $A$ appartient à la droite : donc $p = f(a)$.`, T`Le nombre $p$ est l'ordonnée à l'origine, c'est-à-dire l'ordonnée du point de la droite d'abscisse 0, et non celle du point $A$. Les deux ne coïncident que si $a = 0$.`],
+  [T`Par définition, la tangente est la droite qui passe par $A$ et dont le coefficient directeur est $f(a)$.`, T`Le coefficient directeur de la tangente est le nombre dérivé $f'(a)$, limite des pentes des sécantes. Le nombre $f(a)$ est l'ordonnée du point de contact.`] ]),
+demo('cercle-diametre', 'premiere', '', 'p-07', 'Cercle de diamètre [AB]', T`Soit $A$ et $B$ deux points distincts et $I$ le milieu de $[AB]$. L'ensemble des points $M$ tels que $\overrightarrow{MA} \cdot \overrightarrow{MB} = 0$ est le cercle de diamètre $[AB]$.`, [
+  [T`Pour tout point $M$, la relation de Chasles donne $\overrightarrow{MA} = \overrightarrow{MI} + \overrightarrow{IA}$ et $\overrightarrow{MB} = \overrightarrow{MI} + \overrightarrow{IB}$.`, '', T`la décomposition de $\overrightarrow{MA}$ et $\overrightarrow{MB}$ par le point $I$`],
+  [T`Comme $I$ est le milieu de $[AB]$, $\overrightarrow{IB} = -\overrightarrow{IA}$. Donc $\overrightarrow{MA} \cdot \overrightarrow{MB} = \bigl(\overrightarrow{MI} + \overrightarrow{IA}\bigr) \cdot \bigl(\overrightarrow{MI} - \overrightarrow{IA}\bigr)$.`, 'a', T`l'écriture du produit scalaire avec $\overrightarrow{MI}$ et $\overrightarrow{IA}$`],
+  [T`En développant : $\overrightarrow{MA} \cdot \overrightarrow{MB} = MI^2 - IA^2$.`, 'b', T`l'égalité $\overrightarrow{MA} \cdot \overrightarrow{MB} = MI^2 - IA^2$`],
+  [T`Ainsi $\overrightarrow{MA} \cdot \overrightarrow{MB} = 0$ équivaut à $MI^2 = IA^2$, c'est-à-dire à $MI = IA$, puisque ce sont des longueurs.`, 'c', T`l'équivalence avec $MI = IA$`],
+  [T`L'ensemble cherché est donc le cercle de centre $I$ et de rayon $IA = \dfrac{AB}{2}$ : c'est le cercle de diamètre $[AB]$.`, 'd'] ], [
+  [T`En développant : $\overrightarrow{MA} \cdot \overrightarrow{MB} = MI^2 + IA^2$.`, T`Le produit $(\vec u + \vec v) \cdot (\vec u - \vec v)$ vaut $\vec u^{\,2} - \vec v^{\,2}$ : les doubles produits s'éliminent et le second carré est précédé d'un signe moins. Avec un signe plus, le produit scalaire ne s'annulerait jamais.`],
+  [T`Un produit scalaire est nul si et seulement si l'un des vecteurs est nul : $M = A$ ou $M = B$.`, T`Un produit scalaire est nul quand les vecteurs sont <em>orthogonaux</em>, ce qui ne demande pas que l'un d'eux soit nul. Les points $A$ et $B$ conviennent, mais ils sont loin d'être les seuls.`] ]),
+demo('somme-produit-racines', 'premiere', '', 'p-01', 'Somme et produit des racines', T`Soit $a \neq 0$. Si le trinôme $ax^2 + bx + c$ a deux racines $x_1$ et $x_2$, éventuellement égales, alors $x_1 + x_2 = -\dfrac ba$ et $x_1 x_2 = \dfrac ca$.`, [
+  [T`Le trinôme s'écrit sous forme factorisée : pour tout réel $x$, $ax^2 + bx + c = a(x - x_1)(x - x_2)$.`, '', T`la forme factorisée du trinôme`],
+  [T`En développant : $a(x - x_1)(x - x_2) = ax^2 - a(x_1 + x_2)\,x + a\,x_1 x_2$.`, 'a', T`le développement de la forme factorisée`],
+  [T`Deux polynômes égaux pour tout réel $x$ ont les mêmes coefficients : $b = -a(x_1 + x_2)$ et $c = a\,x_1 x_2$.`, 'b', T`les égalités $b = -a(x_1 + x_2)$ et $c = a\,x_1 x_2$`],
+  [T`Comme $a \neq 0$, on divise par $a$ : $x_1 + x_2 = -\dfrac ba$ et $x_1 x_2 = \dfrac ca$.`, 'c'] ], [
+  [T`Le trinôme s'écrit sous forme factorisée : $ax^2 + bx + c = (x - x_1)(x - x_2)$.`, T`Le coefficient $a$ a été oublié : le membre de droite a pour terme de plus haut degré $x^2$, et non $ax^2$. L'égalité n'est vraie que si $a = 1$.`],
+  [T`Par identification, $b = a(x_1 + x_2)$, d'où $x_1 + x_2 = \dfrac ba$.`, T`Le coefficient de $x$ dans le développement est $-a(x_1 + x_2)$ : le signe moins vient des deux facteurs $(x - x_1)$ et $(x - x_2)$. Pour $x^2 - 3x + 2$, de racines 1 et 2, la somme est bien $3 = -\frac ba$.`] ]),
+demo('exp-unicite', 'premiere', '', 'p-08', 'Unicité de la fonction exponentielle', T`Il existe au plus une fonction $f$ dérivable sur $\mathbb{R}$ telle que $f' = f$ et $f(0) = 1$. On utilise qu'une telle fonction ne s'annule pas.`, [
+  [T`Soit $f$ et $g$ deux fonctions vérifiant ces conditions. Comme $g$ ne s'annule pas, on peut poser $h = \dfrac fg$.`, '', T`la fonction $h = \dfrac fg$`],
+  [T`La fonction $h$ est dérivable sur $\mathbb{R}$, et $h' = \dfrac{f'g - fg'}{g^2} = \dfrac{fg - fg}{g^2} = 0$.`, 'a', T`le fait que $h'$ est nulle`],
+  [T`La fonction $h$ est donc constante sur $\mathbb{R}$ : pour tout $x$, $h(x) = h(0) = \dfrac{f(0)}{g(0)} = 1$.`, 'b', T`le fait que $h$ est constante égale à 1`],
+  [T`Ainsi $f(x) = g(x)$ pour tout réel $x$ : les deux fonctions sont égales.`, 'c'] ], [
+  [T`La fonction $h$ est dérivable, et $h' = \dfrac{f'}{g'} = \dfrac fg = h$.`, T`La dérivée d'un quotient n'est pas le quotient des dérivées : $\left(\dfrac fg\right)' = \dfrac{f'g - fg'}{g^2}$.`],
+  [T`Comme $f(0) = g(0)$, les fonctions $f$ et $g$ sont égales.`, T`Deux fonctions qui prennent la même valeur en un point peuvent différer partout ailleurs. C'est la condition $f' = f$, traduite par $h' = 0$, qui propage l'égalité à tout réel.`] ]),
+demo('exp-somme', 'premiere', '', 'p-08', 'Exponentielle d\'une somme', T`Pour tous réels $a$ et $b$ : $\exp(a + b) = \exp(a) \times \exp(b)$. On utilise que $\exp(x) \times \exp(-x) = 1$ pour tout réel $x$.`, [
+  [T`Soit $a$ un réel fixé. Considérons la fonction $\varphi$ définie sur $\mathbb{R}$ par $\varphi(x) = \exp(a + x) \times \exp(-x)$.`, '', T`la fonction $\varphi$`],
+  [T`Elle est dérivable, et $\varphi'(x) = \exp(a + x)\exp(-x) - \exp(a + x)\exp(-x) = 0$.`, 'a', T`le fait que $\varphi'$ est nulle`],
+  [T`La fonction $\varphi$ est donc constante : $\varphi(x) = \varphi(0) = \exp(a) \times \exp(0) = \exp(a)$ pour tout $x$.`, 'b', T`l'égalité $\exp(a + x)\exp(-x) = \exp(a)$`],
+  [T`En multipliant les deux membres par $\exp(x)$, et comme $\exp(-x)\exp(x) = 1$ : $\exp(a + x) = \exp(a) \times \exp(x)$ pour tout réel $x$.`, 'c', T`l'égalité $\exp(a + x) = \exp(a)\exp(x)$`],
+  [T`En particulier, pour $x = b$ : $\exp(a + b) = \exp(a) \times \exp(b)$.`, 'd'] ], [
+  [T`La fonction $\varphi$ est donc constante : $\varphi(x) = \varphi(0) = \exp(0) = 1$ pour tout $x$.`, T`On a $\varphi(0) = \exp(a + 0) \times \exp(0) = \exp(a)$, et non 1 : le réel $a$ est toujours là. C'est lui qui fournit le facteur $\exp(a)$ du résultat.`],
+  [T`L'exponentielle d'une somme est la somme des exponentielles : $\exp(a + x) = \exp(a) + \exp(x)$.`, T`Pour $a = x = 0$, on obtiendrait $1 = 2$. L'exponentielle transforme les sommes en produits.`] ]),
+demo('totales-deux', 'premiere', '', 'p-05', 'Probabilités totales', T`Soit $A$ un événement tel que $0 < P(A) < 1$. Pour tout événement $B$ : $P(B) = P(A)\,P_A(B) + P(\overline A)\,P_{\overline A}(B)$.`, [
+  [T`Les événements $B \cap A$ et $B \cap \overline A$ sont incompatibles, et leur réunion est $B$.`, '', T`le partage de $B$ en $B \cap A$ et $B \cap \overline A$`],
+  [T`Donc $P(B) = P(B \cap A) + P(B \cap \overline A)$.`, 'a', T`l'égalité $P(B) = P(B \cap A) + P(B \cap \overline A)$`],
+  [T`Par définition des probabilités conditionnelles, $P(B \cap A) = P(A)\,P_A(B)$ et $P(B \cap \overline A) = P(\overline A)\,P_{\overline A}(B)$.`, '', T`l'expression de $P(B \cap A)$ et de $P(B \cap \overline A)$`],
+  [T`En reportant : $P(B) = P(A)\,P_A(B) + P(\overline A)\,P_{\overline A}(B)$.`, 'bc'] ], [
+  [T`Donc $P(B) = P_A(B) + P_{\overline A}(B)$.`, T`Les probabilités conditionnelles doivent être pondérées par $P(A)$ et $P(\overline A)$ : sur un arbre, on multiplie le long des branches avant d'additionner. Si $B$ est l'événement certain, la formule écrite donnerait $1 = 2$.`],
+  [T`Par définition des probabilités conditionnelles, $P(B \cap A) = P(A)\,P(B)$.`, T`Cette égalité caractérise l'indépendance de $A$ et $B$, qui n'est pas supposée. En général, c'est $P_A(B)$ qui intervient.`] ]),
+demo('vecteur-normal', 'premiere', '', 'p-03', 'Vecteur normal à une droite', T`Soit $a$, $b$, $c$ trois réels, $a$ et $b$ n'étant pas tous deux nuls. Le vecteur $\vec n(a ; b)$ est normal à la droite $d$ d'équation $ax + by + c = 0$.`, [
+  [T`Soit $A(x_A ; y_A)$ et $B(x_B ; y_B)$ deux points distincts de $d$ : $ax_A + by_A + c = 0$ et $ax_B + by_B + c = 0$.`, '', T`deux points $A$ et $B$ de la droite`],
+  [T`En retranchant ces deux égalités : $a(x_B - x_A) + b(y_B - y_A) = 0$.`, 'a', T`l'égalité $a(x_B - x_A) + b(y_B - y_A) = 0$`],
+  [T`Or le vecteur $\overrightarrow{AB}$ a pour coordonnées $(x_B - x_A ; y_B - y_A)$ : le membre de gauche est le produit scalaire $\vec n \cdot \overrightarrow{AB}$.`, 'b', T`l'égalité $\vec n \cdot \overrightarrow{AB} = 0$`],
+  [T`Le vecteur $\vec n$ est donc orthogonal à $\overrightarrow{AB}$, qui dirige $d$ : il est normal à la droite $d$.`, 'c'] ], [
+  [T`Le vecteur $\vec n(a ; b)$ est un vecteur directeur de $d$.`, T`Un vecteur directeur de la droite d'équation $ax + by + c = 0$ est $(-b ; a)$. Le vecteur $(a ; b)$ lui est orthogonal : $a \times (-b) + b \times a = 0$.`],
+  [T`En retranchant ces deux égalités : $a(x_B - x_A) + b(y_B - y_A) + 2c = 0$.`, T`Le terme $c$ figure dans les deux égalités avec le même signe : il s'élimine dans la différence. C'est pourquoi la direction de la droite ne dépend pas de $c$.`] ]),
 ];

@@ -1072,4 +1072,47 @@ König-Huygens (l'intrus mène par hasard à la bonne formule, ce que la réfuta
 (fin de réfutation obscure) ; « 1 = 2 avec des matrices » (phrase « à retenir » maladroite). Les 22 pièces
 d'origine (§144) n'ont pas été relues à cette occasion. Ce n'est toujours pas une relecture indépendante.
 
+### 146. Audit des démonstrations et soixante-neuf pièces de plus (12 nov. 2026)
+
+**Demande de l'auteur.** Un audit de ce qui manque en Première, Terminale (spécialité), Maths expertes et Maths
+Sup ; puis, toutes les propositions retenues, sauf les démonstrations trop courtes, trop longues ou reposant
+sur une figure.
+
+**Méthode de l'audit.** Lycée : comparaison des pièces en ligne avec les rubriques « Démonstrations » des
+programmes officiels (Terminale : annexe du programme de spécialité, Éduscol ; Maths expertes : programme de
+juin 2019, education.gouv.fr ; Première : copie du programme hébergée par l'académie de Bordeaux, dont la date
+n'a pas pu être établie). Maths Sup : le programme de MPSI ne fixe pas de liste ; choix guidé par les chapitres
+du cours sans pièce et par les théorèmes structurants absents.
+
+**Ajouts (`ordonner` : 153 pièces).** Première 19 (+8) : racine carrée non dérivable en 0, tangente, cercle de
+diamètre [AB], somme et produit des racines, unicité et propriété fondamentale de l'exponentielle, probabilités
+totales, vecteur normal. Terminale 29 (+12) : limites de l'exponentielle, x ln x, convexité et tangentes,
+projeté orthogonal, équation d'un plan, aire et primitive, intégrale et primitive, k succès, variance
+binomiale, Pascal par le calcul, y′ = ay + b, loi faible. Maths expertes 27 (+11) : zⁿ − aⁿ, factorisation par
+z − a, au plus n solutions, binôme par récurrence, addition du cosinus, conjugué d'un produit, chemins et
+matrice d'adjacence, chaîne de Markov, inégalité triangulaire, existence de la division euclidienne et de la
+décomposition en facteurs premiers. Maths Sup 78 (+38) : fondements 9, algèbre 15, algèbre linéaire 17,
+analyse 28, probabilités 9.
+
+**Écartées, comme convenu.** Trop courtes : |z|² = z z̄, module d'une puissance, termes généraux des suites
+arithmétiques et géométriques. Reposant sur une figure : cos et sin de π/4 et π/3. Trop longues : déterminant
+d'un produit, Heine, lemme d'échange. La croissance comparée de xⁿ et de l'exponentielle n'a pas été ajoutée
+(variante de la pièce existante).
+
+**Pièce montrée sous deux niveaux.** Champ facultatif `aussi` (liste de niveaux) : `bezout` et `gauss`, rangées
+en Maths Sup, apparaissent aussi sous « Maths expertes », où le programme les demande ; `filtrer` et
+`pucesNiveaux` en tiennent compte (la puce « Maths expertes » affiche donc 29). Sous « Tous », une pièce n'est
+listée qu'une fois, à son niveau principal.
+
+**Doublons assumés entre niveaux**, avec des démonstrations différentes : binôme (récurrence en Maths expertes,
+dénombrement en Maths Sup), factorisation par z − a (par zᵏ − aᵏ en Maths expertes, division euclidienne en
+Maths Sup), loi faible des grands nombres, convexité et tangentes (signe de f″ en Terminale, accroissements
+finis en Maths Sup).
+
+**Contrôles.** `node outils/activites_raisonner.mjs` : aucun problème ; ordres multiples relus (deux étapes
+reformulées pour se lire dans tout ordre accepté : Lagrange, Riemann). Les 153 pièces affichées une à une avec
+deux intrus, clair 1280 px et sombre 375 px : aucune formule en erreur, aucun débordement. Rédaction et
+relecture par la même conversation, sans relecture indépendante ; les 69 pièces n'ont pas été confrontées aux
+PDF du cours.
+
 Explorations : vingt-huit. Jeux et casse-têtes : seize. Calcul mental : une activité. Raisonner : deux.
