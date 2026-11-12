@@ -4,8 +4,10 @@
 // Pour chaque tirage, toutes les suites d'opérations sont énumérées (résultats entiers strictement positifs ; opérations inutiles
 // écartées : fois 1, divisé par 1, a − b = b, a ÷ b = b). Chaque calcul est ramené à une forme normale : sommes et produits aplatis,
 // opérandes triés. Deux solutions sont identiques quand elles ont la même forme normale.
-// Niveaux : 1 = minimum de 3 ou 4 opérations, au moins trois formes ; 2 = minimum 5, au moins trois formes ; 3 = minimum 5, une seule forme.
-let graine = 2026111201; const rnd = () => (graine = (graine * 1103515245 + 12345) % 2147483648) / 2147483648;
+// Niveaux (abaissés le 12 nov. 2026, §150) : 1 = minimum de 2 ou 3 opérations, au moins quatre formes ; 2 = minimum 4, au moins trois formes ;
+// 3 = minimum 5, une seule forme (inchangé). Avant : 1 = minimum 3 ou 4 et trois formes ; 2 = minimum 5 et trois formes.
+// Second argument facultatif : la graine (pour lancer plusieurs fabrications en parallèle).
+let graine = +process.argv[3] || 2026111201; const rnd = () => (graine = (graine * 1103515245 + 12345) % 2147483648) / 2147483648;
 const GRANDS = [25, 50, 75, 100], PETITS = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 14, 15, 16, 17, 18, 19, 20];
 export function tirage() { const u = rnd(), k = u < 0.55 ? 1 : u < 0.92 ? 2 : 3, g = GRANDS.slice(), p = PETITS.slice(), r = [];
   for (let i = 0; i < k; i++) r.push(g.splice(Math.floor(rnd() * g.length), 1)[0]); while (r.length < 6) r.push(p.splice(Math.floor(rnd() * p.length), 1)[0]);
@@ -28,7 +30,7 @@ export function analyser(plaques, plafond = 4) { const R = new Map();
   rec(plaques.map(feuille)); return R; }
 if (process.argv[1] && process.argv[1].endsWith('activites_compte.mjs')) { const N = +process.argv[2] || 10, B = [[], [], []], choix = a => a[Math.floor(rnd() * a.length)], vus = new Set();
   for (let k = 0; k < N; k++) { const p = tirage(); if (vus.has(p.join('.'))) continue; vus.add(p.join('.')); const R = analyser(p), c = [[], [], []];
-    for (const [v, e] of R) { if (e.min === 5 && e.formes.size === 1) c[2].push(v); else if ((e.min === 3 || e.min === 4) && e.formes.size >= 3) c[0].push(v); else if (e.min === 5 && e.formes.size >= 3) c[1].push(v); }
+    for (const [v, e] of R) { if (e.min === 5 && e.formes.size === 1) c[2].push(v); else if ((e.min === 2 || e.min === 3) && e.formes.size >= 4) c[0].push(v); else if (e.min === 4 && e.formes.size >= 3) c[1].push(v); }
     for (let n = 0; n < 3; n++) if (c[n].length) { const v = choix(c[n]); B[n].push(p.join('.') + ':' + v + ':' + R.get(v).min); }
     if (k % 40 === 0) process.stderr.write(k + ' ' + B.map(b => b.length).join(',') + '\n'); }
   console.log(JSON.stringify(B)); }

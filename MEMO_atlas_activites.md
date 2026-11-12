@@ -1167,4 +1167,22 @@ restent en place, et choisir une autre opération recalcule aussitôt la ligne. 
 case à la fois. Vérifié à 375 px : retrait en cours de ligne, retrait après calcul, nouvelle opération, puis
 deux annulations.
 
+### 150. Le compte est bon : niveaux 1 et 2 abaissés (12 nov. 2026)
+
+Demande de l'auteur, qui trouvait les calculs trop difficiles : baisser légèrement la difficulté. Niveau 1 :
+minimum de 2 ou 3 opérations (au lieu de 3 ou 4) et au moins quatre formes normales (au lieu de trois) ; dans
+la banque, 89 tirages en 2 opérations et 311 en 3. Niveau 2 : minimum de 4 opérations (au lieu de 5), au moins
+trois formes ; cinq des six nombres suffisent. Niveau 3 inchangé (5 opérations, une seule forme), puisque
+c'est la définition donnée par l'auteur au départ ; ses 396 tirages sont ceux du §142. Le tirage des plaques
+est inchangé (petits nombres de 1 à 20, un à trois grands).
+
+`outils/activites_compte.mjs` porte les nouveaux critères et accepte une graine en second argument. Les deux
+listes viennent de deux fabrications menées en parallèle (`node outils/activites_compte.mjs 230 2026111202` et
+`… 230 2026111203`, quatre minutes chacune), entrelacées, dédoublonnées et coupées à 400 ; la liste du niveau 2
+est décalée de 137 rangs pour que les niveaux 1 et 2 n'aient jamais les mêmes six nombres le même jour.
+Contrôle : la recherche de la page retrouve le minimum inscrit pour les 1 196 tirages (60 ms au plus). Les
+nombres du jour des niveaux 1 et 2 ont donc changé le 12 novembre en fin d'après-midi ; la mention « Fait »
+déjà acquise ce jour-là reste affichée. Libellés du réglage, chapeau, « Comment jouer », catalogue et
+Nouveautés mis à jour.
+
 Explorations : vingt-huit. Jeux et casse-têtes : seize. Calcul mental : une activité. Raisonner : deux.
