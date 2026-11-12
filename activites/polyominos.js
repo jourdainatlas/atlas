@@ -104,12 +104,12 @@ const P = t => norm(t.trim().split('/').flatMap((l, r) => [...l].map((ch, c) => 
 const TYPES = [['domino', '##'], ['tromino droit', '###'], ['tromino en L', '#./##'], ['tétromino droit', '####'], ['tétromino carré', '##/##'], ['tétromino en T', '###/.#.'], ['tétromino en L', '#./#./##'], ['tétromino en S', '.##/##.'], ['pentomino en L', '#./#./#./##'], ['pentomino en P', '##/##/#.'], ['pentomino en U', '#.#/###']];
 const MODES = [
   { id: 'tfjm', nom: '★ type TFJM² de Marie', groupe: 'À la une', pieces: ['#', '##', '###', '#./##', '###/.#.', '.#./###/.#.'].map(P), illimite: true, moins: true },
-  ...TYPES.map(([nom, t]) => ({ id: 'type:' + nom, nom: nom, groupe: 'Un seul type de pièce', pieces: [P(t)], illimite: true })),
-  { id: 'taille:3', nom: 'tous les trominos', groupe: 'Toutes les pièces d\'une taille, à volonté', pieces: LIBRES[3], illimite: true }, { id: 'taille:4', nom: 'tous les tétrominos', groupe: 'Toutes les pièces d\'une taille, à volonté', pieces: LIBRES[4], illimite: true }, { id: 'taille:5', nom: 'tous les pentominos', groupe: 'Toutes les pièces d\'une taille, à volonté', pieces: LIBRES[5], illimite: true },
   { id: 'liste:t4', nom: 'les cinq tétrominos', groupe: 'Une liste, chaque pièce une fois', pieces: LIBRES[4], illimite: false, aire: 20, dims: [4, 5] },
   { id: 'liste:t4x2', nom: 'deux jeux de tétrominos', groupe: 'Une liste, chaque pièce une fois', pieces: LIBRES[4].concat(LIBRES[4]), illimite: false, aire: 40, dims: [5, 8] },
   { id: 'liste:p5', nom: 'les douze pentominos', groupe: 'Une liste, chaque pièce une fois', pieces: LIBRES[5], illimite: false, aire: 60, dims: [6, 10] },
   { id: 'liste:p5m', nom: 'six pentominos au hasard', groupe: 'Une liste, chaque pièce une fois', pieces: null, illimite: false, aire: 30, dims: [5, 6] },
+  ...TYPES.map(([nom, t]) => ({ id: 'type:' + nom, nom: nom, groupe: 'Un seul type de pièce', pieces: [P(t)], illimite: true })),
+  { id: 'taille:3', nom: 'tous les trominos', groupe: 'Toutes les pièces d\'une taille, à volonté', pieces: LIBRES[3], illimite: true }, { id: 'taille:4', nom: 'tous les tétrominos', groupe: 'Toutes les pièces d\'une taille, à volonté', pieces: LIBRES[4], illimite: true }, { id: 'taille:5', nom: 'tous les pentominos', groupe: 'Toutes les pièces d\'une taille, à volonté', pieces: LIBRES[5], illimite: true },
 ];
 const COUL = ['var(--mark)', 'var(--sec)', 'var(--tan)', 'var(--semi)', 'var(--activites-jeu)', '#b58900', '#d33682', '#6c71c4', '#859900', '#cb4b16', '#2aa198', '#93a1a1'];
 
