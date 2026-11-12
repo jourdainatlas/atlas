@@ -925,4 +925,12 @@ ignorée dès que le jour change ; le meilleur nombre d'opérations est gardé ;
 
 Le document `claude/prototype-compte-est-bon.js` du projet est périmé : la source est dans `activites/`.
 
+**Retouches du même jour (demandes de l'auteur).** (1) Tirage élargi : les petits nombres vont de 1 à 20 (1 à
+12 en deux exemplaires, 13 à 20 en un seul), et non plus 1 à 12, 15 et 20 ; banque régénérée (graine
+2026111201) : 400, 400 et 396 tirages (le niveau 3, plus rare, n'en a fourni que 396 sur 520 tirages essayés ;
+chaque niveau tourne sur sa propre longueur). Les nombres du jour ont donc changé le 12 novembre en cours de
+journée. Contrôle refait sur les 1 196 tirages. (2) La flèche n'efface plus une ligne entière : après une ligne
+calculée, elle retire seulement le second nombre, la ligne redevenant incomplète ; puis l'opération, puis le
+premier nombre.
+
 Explorations : vingt-huit. Jeux et casse-têtes : seize. Calcul mental : une activité.

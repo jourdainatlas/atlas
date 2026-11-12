@@ -1,12 +1,12 @@
 // Rubrique Activités (MEMO_atlas_activites.md §141) : fabrique la banque de tirages du « Compte est bon ».
 // Usage : node outils/activites_compte.mjs 480 > banque.json   (une seconde par tirage environ ; graine fixe, résultat reproductible)
-// Tirage : six nombres, dont un ou deux (rarement trois) parmi 25, 50, 75, 100, les autres parmi 1 à 12 (chacun deux fois au plus), 15 et 20.
+// Tirage : six nombres, dont un ou deux (rarement trois) parmi 25, 50, 75, 100, les autres parmi 1 à 12 (chacun deux fois au plus) et 13 à 20 (une fois).
 // Pour chaque tirage, toutes les suites d'opérations sont énumérées (résultats entiers strictement positifs ; opérations inutiles
 // écartées : fois 1, divisé par 1, a − b = b, a ÷ b = b). Chaque calcul est ramené à une forme normale : sommes et produits aplatis,
 // opérandes triés. Deux solutions sont identiques quand elles ont la même forme normale.
 // Niveaux : 1 = minimum de 3 ou 4 opérations, au moins trois formes ; 2 = minimum 5, au moins trois formes ; 3 = minimum 5, une seule forme.
-let graine = 20261112; const rnd = () => (graine = (graine * 1103515245 + 12345) % 2147483648) / 2147483648;
-const GRANDS = [25, 50, 75, 100], PETITS = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 15, 20];
+let graine = 2026111201; const rnd = () => (graine = (graine * 1103515245 + 12345) % 2147483648) / 2147483648;
+const GRANDS = [25, 50, 75, 100], PETITS = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 14, 15, 16, 17, 18, 19, 20];
 export function tirage() { const u = rnd(), k = u < 0.55 ? 1 : u < 0.92 ? 2 : 3, g = GRANDS.slice(), p = PETITS.slice(), r = [];
   for (let i = 0; i < k; i++) r.push(g.splice(Math.floor(rnd() * g.length), 1)[0]); while (r.length < 6) r.push(p.splice(Math.floor(rnd() * p.length), 1)[0]);
   return r.sort((a, b) => a - b); }
