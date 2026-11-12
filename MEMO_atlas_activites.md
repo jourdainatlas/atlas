@@ -893,3 +893,36 @@ dans le catalogue. Source : document `claude/prototype-compte-est-bon.js` du pro
   Contrôlé : sur les 442 tirages, cette recherche retrouve le minimum inscrit dans la banque.
 - Un clic sur un nombre remplit la prochaine case vide ; un clic sur un nombre de la ligne en cours le retire.
 - Groupe du catalogue à créer (`calcul`), nom et couleur à décider avec l'auteur.
+
+### 142. Sous-rubrique « Calcul mental » : « Le compte est bon » publié (12 nov. 2026)
+
+**Décisions de l'auteur.** Nom de l'onglet : « Calcul mental » ; titre de l'activité : « Le compte est bon ».
+Deux solutions qui ne diffèrent que par l'ordre des calculs sont identiques (définition du §141, acceptée).
+Le niveau 3 impose cinq opérations. Tirage plus varié que celui du jeu télévisé. Banque de 400 tirages par
+niveau. Le navigateur retient que le nombre du jour a été trouvé (mention « Fait »), sans empêcher de
+recommencer. Couleur propre au groupe, distincte du bleu pétrole. La case du résultat est en surbrillance bleue.
+D'autres activités de calcul mental viendront plus tard (idées : jeu du 24, ordres de grandeur, critères de
+divisibilité, carrés et produits remarquables, fractions à comparer).
+
+**Groupe `calcul`** du catalogue (`couleur: calcul`) : teinte `--activites-calcul` (indigo, #4051c4 en clair,
+#9aa8ff en sombre), déclarée dans `gabarit.html` à côté de `--activites-jeu`, avec la règle
+`[data-teinte="calcul"]`. Le module remplace `--activites-jeu` par cette teinte à l'intérieur de son cadre
+`.jeu`. L'onglet est placé avant l'atelier. Les descriptions de la rubrique (menu, cartes de l'accueil, titre
+« Explorer, jouer, calculer, construire », introduction « Quatre façons… ») citent le calcul mental.
+
+**Tirage** (`outils/activites_compte.mjs`, graine fixe, `node outils/activites_compte.mjs 500`, une vingtaine
+de minutes) : six nombres dont un, deux ou trois (55 %, 37 %, 8 %) parmi 25, 50, 75, 100 ; les autres parmi 1 à
+12 (deux exemplaires chacun), 15 et 20. But de 101 à 999. Niveau 1 : minimum 3 ou 4 opérations, au moins trois
+formes normales ; niveau 2 : minimum 5, au moins trois formes ; niveau 3 : minimum 5, une seule forme. La banque
+(1 200 chaînes « plaques:but:minimum », 48 Ko) est inscrite dans `activites/compte-est-bon.js` (constante
+`BANQUE`). Contrôlé : la recherche de la page retrouve le minimum inscrit pour les 1 200 tirages (68 ms au
+plus). Le nombre du jour est le tirage d'indice (jours depuis le 1er janvier 2026 à Paris) modulo 400 : la
+liste revient au bout de 400 jours ; pour la renouveler, changer la graine et régénérer.
+
+**Mémoire** : `localStorage`, clé `atlas-compte-est-bon`, valeur `{ jour, faits: { niveau: opérations } }`,
+ignorée dès que le jour change ; le meilleur nombre d'opérations est gardé ; rien n'est noté si la solution a
+été affichée avant la réussite, ni pour un tirage libre. La page le dit (« rien n'est envoyé »).
+
+Le document `claude/prototype-compte-est-bon.js` du projet est périmé : la source est dans `activites/`.
+
+Explorations : vingt-huit. Jeux et casse-têtes : seize. Calcul mental : une activité.
