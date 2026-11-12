@@ -754,3 +754,25 @@ l'adresse de toute la rubrique. `adressePartage()` ne connaissait que les activi
 `https://www.atlasjourdain.fr/#activites/<groupe>` (comme pour les exercices par niveau). L'aperçu dans une
 messagerie est alors celui de l'accueil ; un aperçu propre au groupe demanderait une page de lecture par groupe
 (`lecture-activites.mjs`, domaine Activités).
+
+## 75. Mode sombre par défaut ; audit des adresses partagées et des aperçus (12 nov. 2026)
+
+**Mode sombre par défaut** (demande de l'auteur) : voir MEMO_atlas.md §0 (ligne « Thème »). Modifiés : le script de
+tête de `gabarit.html`, `themeEffectif()`, les libellés du bouton (« Passer en mode clair » / « Revenir au mode
+sombre »), `THEME` et `theme-color` de `lecture.mjs`, `theme-color` de `rendu.mjs`, `identite/site.webmanifest`.
+
+**Audit (demande de l'auteur).** Deux contrôles : les 5 057 pages de `site/` (titre, description, image d'aperçu) et
+l'adresse que donne « Partager » pour chaque sorte de vue de l'application.
+- Textes d'aperçu : chaque page de lecture a un titre et une description propres (un seul doublon de description,
+  deux exercices de Seconde au même début d'énoncé). Rien de générique.
+- Images d'aperçu : une par rubrique (`apercu-edifice`, `-cours`, `-exercices`, `-annales`, `-nouveautes`,
+  `-a-propos`), aucune par page. **Les 53 pages d'Activités emploient l'image générale `apercu.png`** : il manque
+  un `apercu-activites.png`.
+- Adresses corrigées ce jour dans `adressePartage()` : la rubrique Index donnait `/index/`, page inexistante
+  (erreur 404) → `#index` ; un terme du lexique donnait `/edifice/` → `#lexique/<terme>` ; les cours d'un niveau,
+  les exercices d'une notion, une section d'À propos donnaient la rubrique entière → adresse « # » de la vue
+  (règle générale : toute vue de rubrique sans page de lecture partage son adresse « # »).
+- Restent non personnalisés : (a) toute adresse « # » ouvre la bonne page mais son aperçu en messagerie est celui
+  de l'accueil (groupes d'activités, exercices par niveau ou par notion, cours par niveau, lexique, Index, sections
+  d'À propos) ; (b) les filtres et recherches (banque d'exercices, moteur des annales) ne sont pas dans l'adresse :
+  on partage la rubrique, pas la sélection.

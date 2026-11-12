@@ -424,6 +424,9 @@ exercices/<id>/. Feuille en ligne : Terminale chapitre 1 (33 exercices).
 - Le site est servi à https://www.atlasjourdain.fr/ par l'hébergement web OVHcloud Perso (depuis le 10 nov. 2026, MEMO_atlas_apropos.md §64 : dossier `atlas`, envoi SFTP par le job `ovh` de publier.yml ; DNS : A/AAAA de @ vers 145.239.37.162 / 2001:41d0:301::30, CNAME www → atlasjourdain.fr., MX/SPF/TXT inchangés). GitHub Pages reste publié en secours quelques semaines (retour : rétablir A/AAAA de GitHub sur @ et CNAME www → jourdainatlas.github.io.).
 - ADRESSE (rendu.mjs) et ADRESSE_SITE (gabarit.html) valent https://www.atlasjourdain.fr/. GitHub redirige jourdainatlas.github.io/atlas/… vers le domaine ; la page du dépôt jourdainatlas.github.io renvoie aussi vers le domaine.
 - Thème : bouton soleil/lune (#theme) ; choix gardé par cookie de session atlas-theme (+ sessionStorage).
-- Mode clair par défaut (27 oct. 2026, demande de l'auteur) : sans choix enregistré, `data-theme="light"` est posé
-  au chargement, quel que soit le réglage du système ; le sombre ne s'applique que s'il a été choisi au bouton.
-  `meta theme-color` suit le thème (#f4f5f7 / #121418). Le bloc CSS `prefers-color-scheme` est conservé mais inactif.
+- Mode sombre par défaut (12 nov. 2026, demande de l'auteur ; c'était le clair depuis le 27 oct.) : sans choix
+  enregistré, `data-theme="dark"` est posé au chargement, quel que soit le réglage du système ; le clair ne s'applique
+  que s'il a été choisi au bouton. Même règle sur les pages de lecture (`THEME` de lecture.mjs). `meta theme-color`
+  suit le thème (#121418 / #f4f5f7) ; le manifeste de l'application installée est sombre lui aussi. Le bloc CSS
+  `prefers-color-scheme` est conservé mais inactif. Pour vérifier un rendu clair, cliquer le bouton (ou poser le
+  cookie `atlas-theme=light`).

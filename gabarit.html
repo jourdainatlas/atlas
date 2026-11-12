@@ -4,8 +4,8 @@
 (function () { let t = null;
   try { t = (document.cookie.match(/(?:^|; )atlas-theme=(light|dark)/) || [])[1] || null; } catch (e) {}
   if (!t) try { t = sessionStorage.getItem('atlas-theme'); } catch (e) {}
-  // Mode clair par défaut (27 oct. 2026) : le mode sombre ne s'applique que s'il a été choisi.
-  document.documentElement.dataset.theme = t === 'dark' ? 'dark' : 'light'; })();</script>
+  // Mode sombre par défaut (12 nov. 2026, demande de l'auteur) : le mode clair ne s'applique que s'il a été choisi.
+  document.documentElement.dataset.theme = t === 'light' ? 'light' : 'dark'; })();</script>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="author" content="Armand Jourdain">
 <link rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
@@ -6067,8 +6067,12 @@ function adressePartage() {
       return ch ? `${ADRESSE_SITE}#activites/${ch}` : `${ADRESSE_SITE}activites/`;
     }
     if (nom === 'annales' && (ch || '').startsWith('sujet/')) return `${ADRESSE_SITE}annales/${ch}/`;   // page de lecture (lecture.mjs)
-    return `${ADRESSE_SITE}${nom}/`;
+    // Vue sans page de lecture propre (cours d'un niveau, exercices d'une notion, section d'À propos…) : l'adresse
+    // « # » de la page affichée, plutôt que la rubrique entière ; la rubrique Index n'a pas de page du tout (§75).
+    if (ch) return `${ADRESSE_SITE}#${nom}/${ch}`;
+    return nom === 'index' ? `${ADRESSE_SITE}#index` : `${ADRESSE_SITE}${nom}/`;
   }
+  if (/^#lexique(\/|$)/.test(location.hash)) return ADRESSE_SITE + location.hash;   // le lexique, ou l'un de ses termes
   const id = etat.choisi || (etat.graphe !== D.racine ? D.graphes[etat.graphe].conteneur : null);
   if (!id && etat.vue === 'etat') return `${ADRESSE_SITE}edifice/etat/`;
   return id ? `${ADRESSE_SITE}edifice/${id}/` : `${ADRESSE_SITE}edifice/`;
@@ -6145,9 +6149,9 @@ function depuisAncre() {
 }
 /* ---- Mode clair / sombre, mémorisé pour la session (cookie sans date d'expiration + sessionStorage) */
 const boutonTheme = $('#theme'), sombreSysteme = matchMedia('(prefers-color-scheme: dark)');
-const themeEffectif = () => document.documentElement.dataset.theme || 'light';
+const themeEffectif = () => document.documentElement.dataset.theme || 'dark';
 function majBoutonTheme() {
-  const clair = themeEffectif() === 'light', texte = clair ? 'Passer en mode sombre' : 'Revenir au mode clair';
+  const clair = themeEffectif() === 'light', texte = clair ? 'Revenir au mode sombre' : 'Passer en mode clair';
   document.querySelector('meta[name="theme-color"]')?.setAttribute('content', clair ? '#f4f5f7' : '#121418');
   boutonTheme.classList.toggle('clair', clair);
   boutonTheme.setAttribute('aria-pressed', String(clair));

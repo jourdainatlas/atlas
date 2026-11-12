@@ -29,6 +29,14 @@ qui s'ouvre directement. Les activités d'un groupe ne sont pas des onglets.
 Sur téléphone (≤ 640 px), les intercalaires passent à la ligne et se partagent la largeur, pour être tous visibles
 d'emblée : le défilement latéral, que rien ne signalait, cachait des groupes (demande de l'auteur, 12 nov., faite
 depuis le domaine À propos – apparence).
+
+**À faire, signalé par le domaine À propos – apparence (12 nov., demande de l'auteur).** (1) Un groupe d'activités
+(Explorations, Casse-têtes, Calcul mental, Raisonner…) n'a pas de page de lecture : « Partager » donne donc
+`#activites/<groupe>`, qui ouvre la bonne page mais dont l'aperçu en messagerie est celui de l'accueil. Créer dans
+`lecture-activites.mjs` une page `/activites/<groupe>/` par groupe (titre, introduction du groupe, liste de ses
+activités), puis faire renvoyer `adressePartage()` (gabarit.html) vers elle, comme pour une activité. (2) Les pages
+de lecture des activités emploient l'image d'aperçu générale `apercu.png` ; les autres rubriques ont la leur
+(`apercu-cours.png`, etc.) : prévoir un `apercu-activites.png` (1200 × 630) et le passer à `page()`.
 La page du groupe (`#activites/explorations`) les présente en cartes, avec deux filtres à puces, par niveau et
 par domaine, dans l'esprit de la banque d'exercices (demande de l'auteur, les explorations devant devenir
 nombreuses) : état dans `pageActivites.filtre`, clic géré par un écouteur délégué qui appelle

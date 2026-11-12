@@ -91,7 +91,7 @@ body.l-corps { min-height: 100%; margin: 0; display: block; }
   const vLecture = empreinte(css);
 
   // Gabarit commun d'une page de lecture.
-  const THEME = `<script>(function(){var t=null;try{t=(document.cookie.match(/(?:^|; )atlas-theme=(light|dark)/)||[])[1]||null}catch(e){}if(!t)try{t=sessionStorage.getItem('atlas-theme')}catch(e){}document.documentElement.dataset.theme=t==='dark'?'dark':'light'})();</script>`;
+  const THEME = `<script>(function(){var t=null;try{t=(document.cookie.match(/(?:^|; )atlas-theme=(light|dark)/)||[])[1]||null}catch(e){}if(!t)try{t=sessionStorage.getItem('atlas-theme')}catch(e){}document.documentElement.dataset.theme=t==='light'?'light':'dark';if(t==='light')document.addEventListener('DOMContentLoaded',function(){var m=document.querySelector('meta[name="theme-color"]');if(m)m.content='#f4f5f7'})})();</script>`;
   // fichier : chemin imposé (404.html) ; indexable: false → noindex, ni adresse canonique ni plan du site.
   // Image d'aperçu de la rubrique (identite/apercu-<rubrique>.png, fabriquer-apercus.mjs), sinon celle du site.
   function imageApercu(chemin) {
@@ -175,7 +175,7 @@ ${indexable ? `<link rel="canonical" href="${url}">` : '<meta name="robots" cont
 ${imageApercu(chemin)}
 <meta property="og:locale" content="fr_FR">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#f4f5f7">
+<meta name="theme-color" content="#121418">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
