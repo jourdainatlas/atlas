@@ -1367,5 +1367,16 @@ par dérivation numérique (dériver, primitives), par (f − P)/xⁿ → 0 (dé
 « Aucun problème ». Navigateur : 47 séries (43 familles et 4 mélanges), sombre 375 px et clair 1280 px, aucune
 formule en erreur, aucun débordement. Pas de relecture par un agent pour ce lot.
 
+**Complément du même soir (demande de l'auteur) : dérivées et primitives en Maths Sup.** La classe n'avait que
+« Dérivées en 0 » et « Intégrales usuelles », où l'on calcule un nombre. Deux thèmes de plus, `deriver3`
+(« Fonctions dérivées », treize formes : arctan(ax), arcsin, arccos, x^x, a^x, tan, ch et sh, ln(cos x),
+√(1 + x²), ln(x + √(1 + x²)), x²e^(−x), arctan(1/x)) et `primitives3` (« Primitives », treize formes, chacune
+avec son intervalle : 1/(1 + x²), 1/(x² + a²), 1/√(1 − x²), tan, ln, x e^x, x cos x, ln x / x, 1/(x ln x), a^x,
+sh(ax), 1/cos², x/√(1 + x²)). 45 familles en tout (Maths Sup : 11). Même contrôle numérique, étendu aux
+fonctions circulaires réciproques et hyperboliques : 35 407 questions, zéro écart.
+Seuil de la classe `longues` abaissé : (signes hors commandes) + 2 × (nombre de commandes LaTeX) > 7, après
+contrôle au navigateur que plus aucune réponse ne se coupe sur deux lignes à 375 px (1 470 questions de toutes
+les familles ; le test compte les rectangles de `.katex-html`).
+
 Explorations : vingt-huit. Jeux et casse-têtes : seize. Calcul mental : deux activités. Raisonner : quatre.
 Parcours du jour : une.

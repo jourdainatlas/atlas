@@ -216,11 +216,44 @@ const equivalents = () => { const a = R(2, 5), c = R(1, 4), s = (n, d, p, v) => 
     ['\\sqrt{n+1}-\\sqrt{n}', '\\dfrac{1}{2\\sqrt{n}}', ['0', '\\dfrac{1}{\\sqrt{n}}', '\\dfrac{1}{2}', '\\dfrac{1}{2n}']]]);
   return question(`Quel est un équivalent de ${K('u_n = ' + f)} quand ${K('n')} tend vers ${K('+\\infty')} ?`, bon, faux); };
 
+// Maths Sup : dérivées et primitives à reconnaître (fonctions circulaires réciproques, hyperboliques, puissances, parties).
+const R1 = '\\sqrt{1-x^2}', R2 = '\\sqrt{1+x^2}', CH = '\\operatorname{ch}', SH = '\\operatorname{sh}';
+const deriver3 = () => { const a = R(2, 5), q = a * a, [f, bon, faux] = pick([
+    ['\\arctan(' + a + 'x)', '\\dfrac{' + a + '}{1+' + q + 'x^2}', ['\\dfrac{1}{1+' + q + 'x^2}', '\\dfrac{' + a + '}{1+x^2}', '\\dfrac{' + a + '}{1+' + a + 'x^2}', '\\dfrac{1}{1+x^2}']],
+    ['\\arcsin x', '\\dfrac{1}{' + R1 + '}', ['-\\dfrac{1}{' + R1 + '}', '\\dfrac{1}{1+x^2}', '\\dfrac{1}{' + R2 + '}', '\\dfrac{1}{\\cos x}']],
+    ['\\arccos x', '-\\dfrac{1}{' + R1 + '}', ['\\dfrac{1}{' + R1 + '}', '-\\dfrac{1}{1+x^2}', '-\\dfrac{1}{' + R2 + '}', '-\\dfrac{1}{\\sin x}']],
+    ['x^{x}', '(1+\\ln x)x^{x}', ['x^{x}', 'x^{x}\\ln x', 'x^{x-1}', '(1+x)x^{x}']],
+    [a + '^{x}', a + '^{x}\\ln ' + a, ['x\\,' + a + '^{x-1}', a + '^{x}', '\\dfrac{' + a + '^{x}}{\\ln ' + a + '}', a + '^{x}\\ln x']],
+    ['\\tan x', '\\dfrac{1}{\\cos^2 x}', ['-\\dfrac{1}{\\cos^2 x}', '\\dfrac{1}{\\sin^2 x}', '\\dfrac{1}{1+x^2}', '1-\\tan^2 x']],
+    [CH + '(' + a + 'x)', a + SH + '(' + a + 'x)', ['-' + a + SH + '(' + a + 'x)', SH + '(' + a + 'x)', a + CH + '(' + a + 'x)', '-' + SH + '(' + a + 'x)']],
+    [SH + '(' + a + 'x)', a + CH + '(' + a + 'x)', ['-' + a + CH + '(' + a + 'x)', CH + '(' + a + 'x)', a + SH + '(' + a + 'x)', '-' + CH + '(' + a + 'x)']],
+    ['\\ln(\\cos x)', '-\\tan x', ['\\tan x', '\\dfrac{1}{\\cos x}', '-\\dfrac{1}{\\cos x}', '-\\sin x']],
+    [R2, '\\dfrac{x}{' + R2 + '}', ['\\dfrac{1}{2' + R2 + '}', '\\dfrac{2x}{' + R2 + '}', '\\dfrac{1}{' + R2 + '}', '\\dfrac{x}{2' + R2 + '}']],
+    ['\\ln\\left(x+' + R2 + '\\right)', '\\dfrac{1}{' + R2 + '}', ['\\dfrac{1}{x+' + R2 + '}', '\\dfrac{x}{' + R2 + '}', '\\dfrac{1}{1+x^2}', '\\dfrac{1}{' + R1 + '}']],
+    ['x^2e^{-x}', '(2x-x^2)e^{-x}', ['2x\\,e^{-x}', '-2x\\,e^{-x}', '(2x+x^2)e^{-x}', '-x^2e^{-x}']],
+    ['\\arctan\\left(\\dfrac{1}{x}\\right)', '-\\dfrac{1}{1+x^2}', ['\\dfrac{1}{1+x^2}', '\\dfrac{x^2}{1+x^2}', '-\\dfrac{1}{x^2}', '-\\dfrac{1}{x^2(1+x^2)}']]]);
+  return question(`Soit ${K('f(x) = ' + f)}. Quelle est l'expression de ${K("f'(x)")} ?`, bon, faux); };
+const primitives3 = () => { const a = R(2, 5), q = a * a, inv = '\\dfrac{1}{' + a + '}', AT = '\\arctan\\left(\\dfrac{x}{' + a + '}\\right)', PI = '\\left]-\\dfrac{\\pi}{2}, \\dfrac{\\pi}{2}\\right[', [f, bon, faux, I] = pick([
+    ['\\dfrac{1}{1+x^2}', '\\arctan x', ['\\ln(1+x^2)', '\\arcsin x', '\\dfrac{1}{2x}\\ln(1+x^2)', '-\\dfrac{2x}{(1+x^2)^2}'], '\\mathbb{R}'],
+    ['\\dfrac{1}{x^2+' + q + '}', inv + AT, [AT, a + AT, '\\dfrac{1}{' + q + '}' + AT, inv + '\\arctan(' + a + 'x)'], '\\mathbb{R}'],
+    ['\\dfrac{1}{' + R1 + '}', '\\arcsin x', ['\\arccos x', '\\arctan x', R1, '-' + R1], ']-1, 1['],
+    ['\\tan x', '-\\ln(\\cos x)', ['\\ln(\\cos x)', '\\dfrac{1}{\\cos^2 x}', '\\ln(\\sin x)', '-\\ln(\\sin x)'], '\\left]0, \\dfrac{\\pi}{2}\\right['],
+    ['\\ln x', 'x\\ln x-x', ['\\dfrac{1}{x}', 'x\\ln x', 'x\\ln x+x', '\\dfrac{(\\ln x)^2}{2}'], ']0, +\\infty['],
+    ['x\\,e^{x}', '(x-1)e^{x}', ['(x+1)e^{x}', '\\dfrac{x^2}{2}e^{x}', 'x\\,e^{x}', 'x^2e^{x}'], '\\mathbb{R}'],
+    ['x\\cos x', 'x\\sin x+\\cos x', ['x\\sin x-\\cos x', '\\dfrac{x^2}{2}\\sin x', 'x\\sin x', '-x\\sin x+\\cos x'], '\\mathbb{R}'],
+    ['\\dfrac{\\ln x}{x}', '\\dfrac{(\\ln x)^2}{2}', ['(\\ln x)^2', '\\ln(\\ln x)', '\\dfrac{1-\\ln x}{x^2}', '\\dfrac{\\ln x}{2}'], ']1, +\\infty['],
+    ['\\dfrac{1}{x\\ln x}', '\\ln(\\ln x)', ['\\dfrac{(\\ln x)^2}{2}', '\\ln(x\\ln x)', '\\dfrac{1}{\\ln x}', '-\\dfrac{1}{\\ln x}'], ']1, +\\infty['],
+    [a + '^{x}', '\\dfrac{' + a + '^{x}}{\\ln ' + a + '}', [a + '^{x}\\ln ' + a, '\\dfrac{' + a + '^{x+1}}{x+1}', a + '^{x}', 'x\\,' + a + '^{x-1}'], '\\mathbb{R}'],
+    [SH + '(' + a + 'x)', inv + CH + '(' + a + 'x)', ['-' + inv + CH + '(' + a + 'x)', a + CH + '(' + a + 'x)', inv + SH + '(' + a + 'x)', CH + '(' + a + 'x)'], '\\mathbb{R}'],
+    ['\\dfrac{1}{\\cos^2 x}', '\\tan x', ['-\\tan x', '\\dfrac{2\\sin x}{\\cos^3 x}', '\\ln(\\cos^2 x)', '-\\dfrac{1}{\\cos x}'], PI],
+    ['\\dfrac{x}{' + R2 + '}', R2, ['\\dfrac{1}{2}' + R2, '2' + R2, '\\ln\\left(x+' + R2 + '\\right)', '\\dfrac{x^2}{2' + R2 + '}'], '\\mathbb{R}']]);
+  return question(`Laquelle de ces fonctions est une primitive de ${K('x \\mapsto ' + f)} sur ${K(I)} ?`, bon, faux); };
+
 export const FAMILLES = {
   premiere: [['carres', 'Carrés de 11 à 25', carres], ['pourcentages', 'Pourcentages', pourcentages], ['fractions', 'Sommes de fractions', fractions], ['puissances', 'Puissances', puissances], ['discriminant', 'Discriminants', discriminant], ['derive', 'Nombres dérivés', nombreDerive], ['suites', 'Suites arithmétiques et géométriques', suites1], ['trigo', 'Valeurs de cosinus et de sinus', trigo], ['developper', 'Développer', developper], ['factoriser', 'Factoriser', factoriser], ['simplifier', 'Simplifier', simplifier]],
   terminale: [['logexp', 'Logarithmes et exponentielles', logexp], ['derivees', 'Dérivées en un point', derivees2], ['deriver', 'Fonctions dérivées', deriver], ['integrales', 'Intégrales', integrales2], ['primitives', 'Primitives', primitives], ['limites', 'Limites', limites2], ['binomiaux', 'Coefficients binomiaux', binomiaux], ['sommes', 'Sommes', sommes2], ['binomiale', 'Loi binomiale', binomiale]],
   expertes: [],
-  sup: [['complexes', 'Nombres complexes', complexes], ['determinants', 'Déterminants d\'ordre 2', determinantDe(true)], ['congruences', 'Congruences', congruences], ['sommes', 'Sommes', sommes3], ['limites', 'Limites usuelles', limites3], ['derivees', 'Dérivées en 0', derivees3], ['integrales', 'Intégrales usuelles', integrales3], ['dl', 'Développements limités', dl], ['equivalents', 'Équivalents', equivalents]],
+  sup: [['complexes', 'Nombres complexes', complexes], ['determinants', 'Déterminants d\'ordre 2', determinantDe(true)], ['congruences', 'Congruences', congruences], ['sommes', 'Sommes', sommes3], ['limites', 'Limites usuelles', limites3], ['derivees', 'Dérivées en 0', derivees3], ['integrales', 'Intégrales usuelles', integrales3], ['deriver', 'Fonctions dérivées', deriver3], ['primitives', 'Primitives', primitives3], ['dl', 'Développements limités', dl], ['equivalents', 'Équivalents', equivalents]],
 };
 // Une série de n questions toutes différentes, dans une famille ou en mélange.
 export function serie(niveau, famille, n = 10) { const F = FAMILLES[niveau], G = famille === 'melange' ? F : F.filter(f => f[0] === famille), S = [], vus = new Set(); let garde = 0;
