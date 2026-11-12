@@ -87,6 +87,16 @@ a poussé entre-temps, un fichier commun réécrit à partir d'une copie périm�
    (ses liens, ou son champ `couvre`). On ne complète jamais le socle pour faire taire l'avertissement.
    Ce fichier est le seul du domaine À propos où les autres conversations écrivent, et seulement en tête.
 
+9. **Images d'aperçu par page (12 nov. 2026, MEMO_atlas_apropos.md §77) :** chaque cours, fiche de l'édifice,
+   feuille d'exercices, sujet d'annales et activité a sa propre image d'aperçu (celle qu'affichent les messageries
+   quand on partage son adresse), rangée dans `identite/apercus/`. La construction se termine par une ligne
+   « Images d'aperçu par page : N sur M » ; **si elle ajoute « … à fabriquer »** (page nouvelle, ou titre modifié),
+   la conversation qui a créé ou renommé ces pages lance, avant de valider :
+   `node identite/fabriquer-apercus-pages.mjs <dossier où npm a installé @fontsource/spectral et @fontsource/ibm-plex-sans>`,
+   puis `sh construire.sh` de nouveau, et joint `identite/apercus/` à son commit. C'est rapide (les images déjà
+   faites ne sont pas refaites). Rien n'est cassé si on l'oublie : la page affiche en attendant l'image de sa
+   rubrique. Une page de lecture d'une nouvelle sorte reçoit son image en passant un champ `apercu` à `page()`.
+
 ## 1. Ce qu'est l'atlas
 
 Un site web statique, d'un seul fichier HTML, qui représente les mathématiques comme un graphe

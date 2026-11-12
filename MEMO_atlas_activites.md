@@ -34,9 +34,11 @@ depuis le domaine À propos – apparence).
 (Explorations, Casse-têtes, Calcul mental, Raisonner…) n'a pas de page de lecture : « Partager » donne donc
 `#activites/<groupe>`, qui ouvre la bonne page mais dont l'aperçu en messagerie est celui de l'accueil. Créer dans
 `lecture-activites.mjs` une page `/activites/<groupe>/` par groupe (titre, introduction du groupe, liste de ses
-activités), puis faire renvoyer `adressePartage()` (gabarit.html) vers elle, comme pour une activité. (2) Les pages
-de lecture des activités emploient l'image d'aperçu générale `apercu.png` ; les autres rubriques ont la leur
-(`apercu-cours.png`, etc.) : prévoir un `apercu-activites.png` (1200 × 630) et le passer à `page()`.
+activités), puis faire renvoyer `adressePartage()` (gabarit.html) vers elle, comme pour une activité. (2) Fait le 12 nov.
+par le domaine À propos : la rubrique a son image d'aperçu (`apercu-activites.png`) et chaque activité la sienne,
+bâtie sur sa vignette (`apercu` passé à `page()` dans lecture-activites.mjs ; MEMO_atlas_apropos.md §77). Une page
+de groupe, quand elle existera, recevra la sienne de la même façon. **Après l'ajout d'une activité, ou un changement
+de titre, de niveau ou de vignette : suivre MEMO_atlas.md §0, point 9** (la construction le rappelle).
 La page du groupe (`#activites/explorations`) les présente en cartes, avec deux filtres à puces, par niveau et
 par domaine, dans l'esprit de la banque d'exercices (demande de l'auteur, les explorations devant devenir
 nombreuses) : état dans `pageActivites.filtre`, clic géré par un écouteur délégué qui appelle

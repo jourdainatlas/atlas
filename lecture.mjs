@@ -17,6 +17,9 @@
 //   L.puce(idNoeud) → lien vers la page de lecture d'une fiche de l'édifice ; L.relier(html) réécrit les liens
 //   {{nœud}} d'un texte composé ; L.urls : adresses écrites, à ajouter au plan du site.
 // ctx = { fs, D, ADRESSE, attr, coupe, texteBrut, NOMS, empreinte, vCss, gabarit } (fourni par rendu.mjs).
+import { empreinteApercu, DOSSIER_APERCUS } from './identite/apercus-commun.mjs';
+// Aperçus par page (§77 du mémo À propos) : fiches demandées par les pages, et images déjà fabriquées.
+export const apercusPages = new Map();
 let outilsCache = null;
 export function outilsLecture(ctx) {
   if (outilsCache) return outilsCache;
@@ -93,14 +96,22 @@ body.l-corps { min-height: 100%; margin: 0; display: block; }
   // Gabarit commun d'une page de lecture.
   const THEME = `<script>(function(){var t=null;try{t=(document.cookie.match(/(?:^|; )atlas-theme=(light|dark)/)||[])[1]||null}catch(e){}if(!t)try{t=sessionStorage.getItem('atlas-theme')}catch(e){}document.documentElement.dataset.theme=t==='light'?'light':'dark';if(t==='light')document.addEventListener('DOMContentLoaded',function(){var m=document.querySelector('meta[name="theme-color"]');if(m)m.content='#f4f5f7'})})();</script>`;
   // fichier : chemin imposé (404.html) ; indexable: false → noindex, ni adresse canonique ni plan du site.
-  // Image d'aperçu de la rubrique (identite/apercu-<rubrique>.png, fabriquer-apercus.mjs), sinon celle du site.
-  function imageApercu(chemin) {
-    const r = { edifice: 'L’édifice', cours: 'Cours', exercices: 'Exercices', annales: 'Annales', nouveautes: 'Nouveautés', 'a-propos': 'À propos' };
+  // Image d'aperçu : celle de la page si elle a été fabriquée et correspond encore à sa fiche
+  // (identite/apercus/<cle>.png, fabriquer-apercus-pages.mjs), sinon celle de la rubrique
+  // (identite/apercu-<rubrique>.png, fabriquer-apercus.mjs), sinon celle du site.
+  let faites = {}; try { faites = JSON.parse(fs.readFileSync(`${DOSSIER_APERCUS}/empreintes.json`, 'utf8')); } catch (e) {}
+  function imageApercu(chemin, apercu) {
+    const r = { edifice: 'L’édifice', cours: 'Cours', exercices: 'Exercices', annales: 'Annales', activites: 'Activités', nouveautes: 'Nouveautés', 'a-propos': 'À propos' };
     const t = String(chemin || '').split('/')[0];
-    return `<meta property="og:image" content="${ADRESSE}${r[t] ? `apercu-${t}.png` : 'apercu.png'}">
+    let image = r[t] ? `apercu-${t}.png` : 'apercu.png', alt = r[t] ? `ATLAS – ${r[t]}` : 'Logo ATLAS : un graphe orienté de l\'alpha à l\'oméga';
+    if (apercu) {
+      const e = empreinteApercu(apercu); apercusPages.set(apercu.cle, { ...apercu, empreinte: e });
+      if (faites[apercu.cle] === e) { image = `apercus/${apercu.cle}.png?v=${e}`; alt = `ATLAS – ${apercu.sur} : ${apercu.titre}`; }
+    }
+    return `<meta property="og:image" content="${ADRESSE}${image}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="${r[t] ? `ATLAS – ${r[t]}` : 'Logo ATLAS : un graphe orienté de l\'alpha à l\'oméga'}">`;
+<meta property="og:image:alt" content="${attr(alt)}">`;
   }
   // Formules : les données portent des repères <span class="kx">source</span> (rendu.mjs, §52 du mémo) ; ici, elles
   // deviennent du MathML, que les navigateurs affichent seuls et que les moteurs lisent, bien plus léger que le
@@ -145,7 +156,7 @@ body.l-corps { min-height: 100%; margin: 0; display: block; }
     return null;
   };
   const empreintesPages = {};
-  function page({ chemin, titre, description, ancre, corps, fil = [], type = 'article', fichier, indexable = true, ressource }) {
+  function page({ chemin, titre, description, ancre, corps, fil = [], type = 'article', fichier, indexable = true, ressource, apercu }) {
     titre = String(titre).replace(/^ATLAS – (.+)$/, '$1 – ATLAS');
     corps = enMathML(corps);
     const url = ADRESSE + chemin, cible = '/#' + ancre;
@@ -172,7 +183,7 @@ ${indexable ? `<link rel="canonical" href="${url}">` : '<meta name="robots" cont
 <meta property="og:title" content="${attr(titre)}">
 <meta property="og:description" content="${attr(d)}">
 <meta property="og:url" content="${url}">
-${imageApercu(chemin)}
+${imageApercu(chemin, apercu)}
 <meta property="og:locale" content="fr_FR">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#121418">
@@ -264,7 +275,8 @@ export function pagesLecture(ctx) {
     }
     const contexte = n.graphe === racine ? 'Théorie de l\'édifice' : `${NOMS[n.nature] || ''} · ${texteBrut(G[n.graphe].titre)}`;
     page({ chemin: `edifice/${n.id}/`, titre: `ATLAS – ${texteBrut(n.titre)}${n.nature ? ` (${n.nature})` : ''}`, description: `${contexte}. ${texteBrut(n.texte || n.enonce)}`,
-      ancre, fil: [...fil, { name: texteBrut(n.titre) }], corps: h });
+      ancre, fil: [...fil, { name: texteBrut(n.titre) }], corps: h,
+      apercu: { cle: `edifice/${n.id}`, rub: 'edifice', sur: n.graphe === racine ? 'L’édifice · théorie' : contexte, titre: texteBrut(n.titre) } });
   }
   // Page d'entrée de l'édifice : les théories, du socle aux grandes théories.
   {
@@ -319,7 +331,8 @@ export function pagesLecture(ctx) {
     h += '</article>';
     const desc = d ? `${titreC}. ${Ft(d.nom || '', d)}. ${Ft(d.apercu || '', d)}` : `${titreC} : sujet d'écrit de mathématiques${x.rapport ? ' et rapport du jury' : x.corrige_pdf ? ' et corrigé' : ''}.`;
     page({ chemin: `annales/sujet/${sl}/`, titre: `ATLAS – Annales : ${titreC}`, description: desc, ancre: `annales/sujet/${sl}`,
-      fil: [{ name: 'Annales', href: '/annales/' }, { name: titreC }], corps: h });
+      fil: [{ name: 'Annales', href: '/annales/' }, { name: titreC }], corps: h,
+      apercu: { cle: `annales/${sl}`, rub: 'annales', sur: `Annales · ${titreC.split(', ')[0].replace(' — ', ' · ')}`, titre: (d?.nom && Ft(d.nom, d)) || 'Sujet d’écrit de mathématiques' } });
   }
   // Page d'entrée des annales : tous les sujets, par famille, concours et session.
   {

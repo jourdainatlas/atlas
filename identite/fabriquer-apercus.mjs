@@ -18,7 +18,8 @@ const polices = `@font-face{font-family:Spectral;font-weight:600;src:url(${f('sp
 const G = fs.readFileSync('gabarit.html', 'utf8');
 const planche = G.match(/<svg class="sym-sprite"[\s\S]*?<\/defs><\/svg>/)[0];
 const sombre = G.match(/:root\[data-theme="dark"\] \{\s*(--sy-bd[\s\S]*?)\}/)[1];
-const classes = [...G.matchAll(/\.(sy-[a-z0-9]+) \{ fill: var\(--\1\); \}/g)].map(m => m[0]).join(' ');
+const classes = [...G.matchAll(/\.(sy-[a-z0-9]+) \{ fill: var\(--\1\); \}/g)].map(m => m[0]).join(' ')
+  + ' .activites-sy1{fill:#b6ca4c}.activites-sy2{fill:#b6ca4c;opacity:.55}.activites-sy3{fill:#b6ca4c;opacity:.25}';   // symbole des Activités (olive du thème sombre)
 
 // Couleur de bande (thème sombre) et sous-titre de chaque rubrique.
 const RUB = {
@@ -26,6 +27,7 @@ const RUB = {
   cours: ['Cours', '#35caa4', 'Cours de mathématiques, de la Seconde au Master, chapitre par chapitre'],
   exercices: ['Exercices', '#c793e6', 'Feuilles d’exercices corrigés, à chercher par thème, par difficulté ou par notion'],
   annales: ['Annales', '#ffa24a', 'Sujets d’écrit des concours d’ingénieurs et de l’enseignement, avec un moteur par thème'],
+  activites: ['Activités', '#b6ca4c', 'Explorer, jouer, raisonner, construire : des mathématiques à manipuler'],
   nouveautes: ['Nouveautés', '#a3a8b1', 'Ce qui a été ajouté au site, semaine après semaine'],
   'a-propos': ['À propos', '#a3a8b1', 'L’auteur, le projet, et une adresse pour écrire ou signaler une erreur'],
 };
@@ -46,7 +48,8 @@ p{margin:0;font-family:Spectral;font-size:31px;line-height:1.35;color:#aeb4be;ma
 
 const nav = await chromium.launch();
 const p = await nav.newPage({ viewport: { width: 1200, height: 630 } });
-for (const [id, v] of Object.entries(RUB)) {
+const seules = process.argv.slice(3);   // facultatif : ne refaire que ces rubriques
+for (const [id, v] of Object.entries(RUB).filter(([id]) => !seules.length || seules.includes(id))) {
   await p.setContent(carte(id, v));
   await p.evaluate(() => document.fonts.ready);
   await p.waitForTimeout(150);

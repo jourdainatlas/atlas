@@ -11,7 +11,8 @@
 //   \lex{id}{...}         dans une formule : notation du lexique (ensembles usuels)
 //   {{id|texte}}           lien vers un nœud de l'atlas
 //   **gras**  *italique*   ; une ligne vide sépare deux paragraphes
-import { pagesLecture, outilsLecture } from './lecture.mjs';
+import { pagesLecture, outilsLecture, apercusPages } from './lecture.mjs';
+import { DOSSIER_APERCUS, LISTE_APERCUS } from './identite/apercus-commun.mjs';
 import { pagesCoursExercices } from './lecture-cours.mjs';
 import { pagesActivites } from './lecture-activites.mjs';
 import fs from 'node:fs';
@@ -499,7 +500,7 @@ const texteBrut = h => String(h || '').replace(/<figure class="schema"[\s\S]*?<\
 const coupe = (t, n = 200) => t.length > n ? t.slice(0, n - 1).replace(/\s+\S*$/, '') + '…' : t;
 const attr = t => String(t).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
 let nbPartage = 0;
-const APERCUS = new Set(['edifice', 'cours', 'exercices', 'annales', 'nouveautes', 'a-propos']);   // identite/apercu-<rubrique>.png
+const APERCUS = new Set(['edifice', 'cours', 'exercices', 'annales', 'activites', 'nouveautes', 'a-propos']);   // identite/apercu-<rubrique>.png
 const RUBRIQUES_PARTAGE = { accueil: 'Accueil', edifice: 'L\'édifice', cours: 'Cours', exercices: 'Exercices', annales: 'Annales', activites: 'Activités', nouveautes: 'Nouveautés', 'a-propos': 'À propos' };
 function pagePartage(chemin, ancre, titre, description) {
   const url = ADRESSE + chemin, cible = ADRESSE + '#' + ancre;
@@ -556,6 +557,17 @@ console.log(`Pages de partage : ${nbPartage}`);
 // Icônes et image d'aperçu (fabriquées par identite/fabriquer-icones.mjs).
 for (const f of ['favicon.svg', 'favicon-32.png', 'apple-touch-icon.png', 'icone-192.png', 'icone-512.png', 'icone-masquable-512.png', 'apercu.png', ...[...APERCUS].map(r => `apercu-${r}.png`), 'portrait.jpg', 'site.webmanifest'])
   fs.copyFileSync(`identite/${f}`, `site/${f}`);
+// Images d'aperçu par page (domaine À propos, §77) : la liste des fiches demandées est écrite pour la fabrique
+// (identite/fabriquer-apercus-pages.mjs), les images déjà fabriquées sont copiées, et la construction dit combien
+// de pages attendent la leur (elles affichent en attendant l'image de leur rubrique).
+{
+  const fiches = [...apercusPages.values()];
+  fs.writeFileSync(LISTE_APERCUS, JSON.stringify(fiches));
+  let faites = {}; try { faites = JSON.parse(fs.readFileSync(`${DOSSIER_APERCUS}/empreintes.json`, 'utf8')); } catch (e) {}
+  if (fs.existsSync(DOSSIER_APERCUS)) fs.cpSync(DOSSIER_APERCUS, 'site/apercus', { recursive: true, filter: f => !f.endsWith('.json') });
+  const manque = fiches.filter(f => faites[f.cle] !== f.empreinte).length;
+  console.log(`Images d'aperçu par page : ${fiches.length - manque} sur ${fiches.length}` + (manque ? ` — ${manque} à fabriquer : node identite/fabriquer-apercus-pages.mjs <dossier des polices> (MEMO_atlas_apropos.md §77)` : ''));
+}
 // Référencement (domaine À propos) : robots.txt et plan du site. Le plan ne liste que de vraies pages :
 // l'accueil, les pages de lecture de l'édifice et des annales, et les PDF des cours et des feuilles. Les pages de partage
 // (/cours/t-01/…) redirigent vers une ancre : les lister vaudrait des « pages avec redirection » dans la

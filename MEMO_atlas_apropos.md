@@ -784,3 +784,35 @@ fonctionne alors comme une application. `appliEncart` reçoit maintenant un titr
 en application »), une phrase de bénéfice (gratuite, sans App Store ou magasin d'applications, écran d'accueil,
 plein écran) et, sur iPhone, le geste sur une ligne à part (`span.ae-geste`). Sur Android, le bouton « Installer »
 est inchangé.
+
+## 77. Images d'aperçu par page (12 nov. 2026)
+
+Demande de l'auteur, après l'audit de §75 : une image d'aperçu propre à chaque lien. L'accueil, À propos, Nouveautés
+et les pages mineures gardent leur image ; les Activités ont désormais leur image de rubrique
+(`identite/apercu-activites.png`, ajoutée à `fabriquer-apercus.mjs`, qui accepte en 3e argument les rubriques à
+refaire). Ont une image par page : les 70 cours, les 1 076 fiches de l'édifice, les 803 sujets d'annales, les
+52 activités, et les 72 feuilles d'exercices (une image par feuille, partagée par la page de la feuille et par
+celles de ses exercices : choix de l'auteur). Soit 2 073 images, 32 Mo.
+
+**Dessin.** Celui des images de rubrique : bande de couleur, tuile au symbole de la rubrique, marque ATLAS, adresse.
+S'y ajoutent une ligne de contexte en capitales (« Cours · Seconde · chapitre 1 », « Théorème · Espaces métriques
+et normés », « Annales · X-ENS MP 2025 · Maths A », « Feuille d'exercices corrigés · Seconde », « Activité ·
+Casse-têtes ») et le titre de la page, dont la taille suit la longueur (3 lignes, 4 pour les très longs intitulés
+de bac). Pour une activité, la tuile porte sa vignette (celle du catalogue) et la bande prend la couleur de son
+domaine ou de son groupe. Les capitales ne s'appliquent qu'aux lettres latines (β ne devient pas Β).
+
+**Mécanique.**
+- `page()` (lecture.mjs) reçoit un champ `apercu` : `{ cle, rub, sur, titre, sous?, couleur?, vignette? }` (format
+  décrit dans `identite/apercus-commun.mjs`, qui calcule aussi l'empreinte d'une fiche). Fiches posées dans
+  lecture.mjs (édifice, annales), lecture-cours.mjs (cours, feuilles) et lecture-activites.mjs (activités).
+- La construction écrit la liste des fiches dans `construction/apercus.json`, copie `identite/apercus/` dans
+  `site/apercus/`, et annonce « Images d'aperçu par page : N sur M » (plus « … à fabriquer » s'il en manque).
+- Une page ne désigne son image que si `identite/apercus/empreintes.json` porte l'empreinte de sa fiche actuelle ;
+  sinon elle garde l'image de sa rubrique. L'adresse de l'image porte `?v=<empreinte>` : une image refaite n'est
+  pas confondue avec l'ancienne par les messageries.
+- `identite/fabriquer-apercus-pages.mjs <polices> [--tout]` fabrique les images manquantes ou périmées (Playwright,
+  une seule page réutilisée : 2 073 images en deux minutes), supprime celles qui n'ont plus de page, et réduit
+  chaque image à 128 couleurs avec Pillow (≈ 15 Ko). Si le dessin change, incrémenter `VERSION_APERCU`.
+- Règle pour toutes les conversations : MEMO_atlas.md §0, point 9.
+
+Restent sur l'image de l'accueil : les adresses « # » (groupes d'activités, vues par niveau, lexique…), voir §75.

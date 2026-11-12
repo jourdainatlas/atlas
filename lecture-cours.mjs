@@ -104,7 +104,8 @@ export function pagesCoursExercices(ctx) {
     h += navigation(meme[k - 1] && { href: `/cours/${meme[k - 1].id}/`, texte: meme[k - 1].titre }, meme[k + 1] && { href: `/cours/${meme[k + 1].id}/`, texte: meme[k + 1].titre });
     h += `</article>`;
     page({ chemin: `cours/${c.id}/`, titre: `ATLAS – Cours : ${texteBrut(c.titre)} (${lieuCours(c)})`, description: `Cours de ${lieuCours(c)}. ${texteSource(srcCours[c.id]?.resume)}`,
-      ancre: `cours/${c.id}`, fil: [FIL_C, { name: texteBrut(nv.titre), href: `/cours/#${nv.id}` }, { name: texteBrut(c.titre) }], corps: h + ALLER });
+      ancre: `cours/${c.id}`, fil: [FIL_C, { name: texteBrut(nv.titre), href: `/cours/#${nv.id}` }, { name: texteBrut(c.titre) }], corps: h + ALLER,
+      apercu: { cle: `cours/${c.id}`, rub: 'cours', sur: `Cours · ${lieuCours(c).replace(', ', ' · ')}`, titre: texteBrut(c.titre) } });
     n++;
   }
   {
@@ -125,6 +126,8 @@ export function pagesCoursExercices(ctx) {
     const nv = niveau(f.niveau), c = coursDe(f.cours), liste = exosDe(f.id);
     if (!liste.length) continue;
     const filF = [FIL_E, { name: texteBrut(nv.titre), href: `/exercices/#${nv.id}` }];
+    // image d'aperçu : une par feuille, que partagent la page de la feuille et celles de ses exercices
+    const apercuF = { cle: `exercices/${f.id}`, rub: 'exercices', sur: `Feuille d’exercices corrigés · ${texteBrut(nv.titre)}`, titre: texteBrut(f.titre), sous: `${liste.length} exercices${f.chapitre ? `, chapitre ${f.chapitre}` : ''}` };
     // une page par exercice
     liste.forEach((e, k) => {
       let h = `<article class="fiche l-ann l-exo"><p class="sur-titre"><span class="sorte">Exercice</span><span>${esc(lieuFeuille(f))} — ${f.titre}${e.partie ? ` · ${e.partie}` : ''}</span></p>`;
@@ -147,7 +150,7 @@ export function pagesCoursExercices(ctx) {
       h += `</article>`;
       page({ chemin: `exercices/${e.id}/`, titre: `ATLAS – Exercice ${e.numero}${e.titre ? ` (${texteBrut(e.titre)})` : ''} : ${texteBrut(f.titre)}, ${lieuFeuille(f)}`,
         description: `Exercice corrigé, ${texteBrut(f.titre)} (${lieuFeuille(f)}). ${texteSource(srcExo[e.id]?.enonce)}`, ancre: `exercices/ex/${e.id}`,
-        fil: [...filF, { name: texteBrut(f.titre), href: `/exercices/feuille/${f.id}/` }, { name: `Exercice ${e.numero}` }], corps: h + ALLER });
+        fil: [...filF, { name: texteBrut(f.titre), href: `/exercices/feuille/${f.id}/` }, { name: `Exercice ${e.numero}` }], corps: h + ALLER, apercu: apercuF });
       n++;
     });
     // la page de la feuille
@@ -162,7 +165,7 @@ export function pagesCoursExercices(ctx) {
     h += '</ul></article>';
     page({ chemin: `exercices/feuille/${f.id}/`, titre: `ATLAS – Exercices : ${texteBrut(f.titre)} (${lieuFeuille(f)})`,
       description: `${liste.length} exercices corrigés, ${texteBrut(f.titre)} (${lieuFeuille(f)}).${c ? ` ${texteSource(srcCours[c.id]?.resume)}` : ''}`, ancre: `exercices/feuille/${f.id}`,
-      fil: [...filF, { name: texteBrut(f.titre) }], corps: h + ALLER });
+      fil: [...filF, { name: texteBrut(f.titre) }], corps: h + ALLER, apercu: apercuF });
     n++;
   }
   {
