@@ -702,3 +702,13 @@ Demande de l'auteur : sur téléphone, les intercalaires de la rubrique Activit�
 ne l'indique, et des groupes restaient cachés. Sous 640 px, `.activites-onglets` passe en `flex-wrap: wrap` et chaque
 intercalaire s'étire (`flex: 1 1 auto`) : tous sont visibles, sur deux ou trois rangs. Noté aussi dans
 `MEMO_atlas_activites.md` (navigation).
+
+## 72. Téléphone : le fil de position sous les pastilles (12 nov. 2026)
+
+Défaut signalé par l'auteur : sur téléphone, dans une théorie de l'édifice, le fil débordait de la pastille courante
+(réduite à 30 px sous 420 px par une règle de §66 qui ne prévoyait pas de fil). Demande : afficher le fil sous les
+pastilles. Sous 860 px, `.nav-rub` passe en `flex-wrap: wrap` ; quand un fil existe, `.nav-rub-cur` devient
+`display: contents`, son lien porte la pastille colorée (symbole et nom ; symbole seul dans l'édifice sous 420 px,
+pour laisser la place à Légende) et `.nav-rub-suite` occupe toute la ligne suivante (`order: 99; flex: 1 1 100%`).
+Dans l'édifice, la navigation s'étend alors sur toute la largeur de la grille et le bouton Légende reste en haut à
+droite (`align-self: start`). Au-dessus de 860 px, rien ne change (§66).

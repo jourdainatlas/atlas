@@ -460,6 +460,25 @@ svg.sym { width: 20px; height: 20px; flex: none; display: inline-block; vertical
   .nav-rub-cur:has(.nav-rub-suite) { padding-left: 11px; }
   .nav-rub-suite button span { -webkit-line-clamp: 3; }
 }
+/* Téléphone (≤ 860 px) : le fil de position passe sur sa propre ligne, sous les pastilles (demande de l'auteur, §72) ;
+   la pastille courante garde son symbole et son nom. .nav-rub-cur devient transparent à la mise en page
+   (display: contents) : son lien porte alors la pastille colorée, et le fil est un élément de la ligne suivante. */
+@media (max-width: 860px) {
+  .nav-rub { flex-wrap: wrap; row-gap: 6px; }
+  .nav-rub-cur:has(.nav-rub-suite) { display: contents; }
+  .nav-rub-cur:has(.nav-rub-suite) > a { display: inline-flex; box-sizing: border-box; height: 30px; padding: 3px 11px 3px 9px; color: var(--encre); font-weight: 600;
+    border: 1px solid color-mix(in srgb, var(--r) 65%, transparent); background: color-mix(in srgb, var(--r) 13%, transparent); border-radius: 17px; }
+  .nav-rub-cur:has(.nav-rub-suite) > a .nav-rub-nom { position: static; width: auto; height: auto; overflow: visible; clip-path: none; }
+  .nav-rub-cur > a + .nav-rub-suite { order: 99; flex: 1 1 100%; margin: 0; padding: 0 3px 1px; }
+  .nav-rub-suite button span { -webkit-line-clamp: 2; }
+  /* L'édifice : la ligne des pastilles s'étend sous le bouton Légende, qui reste en haut à droite de cette ligne. */
+  body:not(.en-rubrique) .nav-rub:has(.nav-rub-suite) { grid-column: 1 / -1; padding-right: 0; }
+  body:not(.en-rubrique) .legende { align-self: start; position: relative; z-index: 1; }
+}
+@media (max-width: 420px) {
+  body:not(.en-rubrique) .nav-rub-cur:has(.nav-rub-suite) > a { width: 30px; padding: 0; }
+  body:not(.en-rubrique) .nav-rub-cur:has(.nav-rub-suite) > a .nav-rub-nom { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+}
 .nav-rub [data-onglet="edifice"] { --r: var(--r-edifice); }
 .nav-rub [data-onglet="cours"] { --r: var(--r-cours); }
 .nav-rub [data-onglet="exercices"] { --r: var(--r-exercices); }
