@@ -1009,4 +1009,58 @@ des formules. Idées en attente : valeurs intermédiaires par dichotomie, Bézou
 du binôme, théorème du rang, Lagrange ; erreurs : triangles tous isocèles (demande une figure), 0,999… < 1,
 interversion de limites.
 
+### 145. « Raisonner » : soixante-dix démonstrations et soixante-dix erreurs de plus, thèmes de Maths Sup (12 nov. 2026)
+
+**Demande de l'auteur.** Liste déroulante coupée sur téléphone ; dix démonstrations de Première, quinze de
+Terminale, quinze de Maths expertes, trente de Maths Sup avec un classement par thème ; autant pour
+« Trouver l'erreur ».
+
+**Totaux.** `ordonner` : 84 pièces (Première 11, Terminale 17, Maths expertes 16, Maths Sup 40 : fondements 4,
+algèbre 7, algèbre linéaire 8, analyse 16, probabilités 5). `erreur` : 78 pièces (12, 19, 16, 31 : fondements 4,
+algèbre 6, algèbre linéaire 7, analyse 11, probabilités 3).
+
+**Fichiers.** Les pièces d'origine restent dans `ordonner.js` et `erreur.js` (tableau `ANCIENNES`, écriture
+longue avec `K(...)`). Les nouvelles sont dans huit modules d'appui, un par activité et par niveau :
+`ordonner-premiere.js`, `ordonner-terminale.js`, `ordonner-expertes.js`, `ordonner-sup.js`, et de même
+`erreur-*.js` ; chacun exporte par défaut un tableau, et `PIECES = ANCIENNES.concat(premiere, terminale,
+expertes, sup)`. Écriture compacte, dans `raisonner-outils.js` :
+- ``T`texte avec $formule$` `` : gabarit étiqueté, barres obliques inverses écrites une seule fois, formules
+  entre dollars changées en `<span class="kx">` (les `<` et `&` des formules sont échappés). Ne jamais y écrire
+  `${`.
+- `demo(id, niveau, theme, cours, nom, enonce, etapes, intrus)` : étapes `[texte, dépendances, apport]`, où les
+  dépendances sont les lettres des étapes requises (`'ab'`) et l'apport un groupe nominal qui sert à fabriquer
+  le message « Cette étape s'appuie sur …, qui ne figure pas encore plus haut. » ; intrus `[texte, pourquoi]`,
+  toujours deux.
+- `faux(id, niveau, theme, cours, nom, annonce, lignes, pourquoi, retenir, indice)` : lignes `[texte,
+  justification]` ; la ligne fautive est celle qui n'a pas de justification (une seule). Les justifications des
+  lignes placées après la faute se terminent par la constante `H` (« Si la ligne est fausse, c'est qu'une erreur
+  a été commise plus haut. »).
+
+**Thèmes.** Champ `theme` des pièces de Maths Sup : `fondements`, `algebre`, `lineaire`, `analyse`,
+`probabilites` (liste `THEMES` de `raisonner.js`). `raisonner.js` porte maintenant les filtres communs aux deux
+activités : `filtrer`, `pucesNiveaux`, `pucesThemes`, `options`. La rangée de thèmes (`#od-themes`,
+`#er-themes`) n'apparaît que lorsque le niveau « Maths Sup » est choisi ; changer de niveau remet le thème sur
+« Tout ». La liste déroulante est groupée (`optgroup`) par niveau sous « Tous », par thème sous « Maths Sup ».
+
+**Liste coupée sur téléphone.** L'étiquette de la liste est `label.rz-choix` : boîte flexible, la liste occupe
+toute la largeur disponible et ne dépasse plus du cadre (`min-width: 0`, `max-width: 100 %`) ; à 640 px et
+moins, l'étiquette passe au-dessus de la liste. La barre du haut (`.bar.top`) empile niveaux et thèmes.
+
+**Contrôles.** `node outils/activites_raisonner.mjs` : toutes les permutations des étapes de chaque
+démonstration passées à `verifier` (ordre écrit accepté, intrus refusés, dépendances existantes, thème présent
+en Maths Sup), et, pour les erreurs, une seule ligne fautive et aucun champ vide. Il affiche les pièces qui
+admettent plusieurs ordres : à relire à chaque ajout, pour qu'aucun ordre accepté ne se lise mal (une étape
+qui emploie une notation doit dépendre de celle qui l'introduit ; éviter « par ailleurs », « réciproquement »
+dans une étape sans dépendance). Nombres vérifiés en Python : produits de matrices, $2^{340} \equiv 1
+\pmod{341}$ et $341 = 11 \times 31$, $n^2 + n + 41$ premier de 0 à 39, 118 mains avec au moins un as,
+$V = 35/12$ pour un dé, somme de la série réordonnée ($\frac12 \ln 2$). Navigateur : les 84 et 78 pièces
+affichées une à une (avec deux intrus ; chaque ligne cliquée pour les erreurs), clair à 1280 px et sombre à
+375 px, aucune formule en erreur, aucun débordement.
+
+**Limites.** Les 140 pièces ont été rédigées et relues par leur seul auteur, sans relecture indépendante. Les
+démonstrations de Maths Sup suivent les énoncés classiques du programme ; elles n'ont pas été confrontées
+ligne à ligne aux PDF du cours comme l'avaient été les dix premières. Résultats cités sans démonstration
+dans les explications : irréductibles de $\mathbb{R}[X]$, convergence et somme de la série harmonique alternée,
+réordonnement des séries absolument convergentes (signalé « admis ici », hors programme de première année).
+
 Explorations : vingt-huit. Jeux et casse-têtes : seize. Calcul mental : une activité. Raisonner : deux.

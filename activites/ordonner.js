@@ -1,8 +1,12 @@
 // Raisonner « Démonstrations à remettre en ordre », rubrique Activités, MEMO_atlas_activites.md §143 et §144.
 import { css as cssCommun } from './commun.js';
-import { NIVEAUX, cssRaison, lireMemoire, noterMemoire } from './raisonner.js';
+import { cssRaison, lireMemoire, noterMemoire, filtrer, pucesNiveaux, pucesThemes, options } from './raisonner.js';
 import { cssFigures, suite } from './figures.js';
 import { cssJeux, ecrire } from './jeux.js';
+import premiere from './ordonner-premiere.js';
+import terminale from './ordonner-terminale.js';
+import expertes from './ordonner-expertes.js';
+import sup from './ordonner-sup.js';
 
 export const css = cssCommun + cssFigures + cssJeux + cssRaison + `
 .activites-act .od-enonce { padding: 12px 16px; border-bottom: 1px solid var(--filet); font: 17px/1.5 var(--f-texte, Georgia, serif); color: var(--encre); }
@@ -39,9 +43,10 @@ export const html = `
 <div class="jeu">
   <div class="bar top">
     <span class="rz-niveaux" id="od-niveaux" role="group" aria-label="Niveau"></span>
+    <span class="rz-niveaux" id="od-themes" role="group" aria-label="Thème de Maths Sup" hidden></span>
   </div>
   <div class="bar">
-    <label>Démonstration <select id="od-piece"></select></label>
+    <label class="rz-choix">Démonstration <select id="od-piece"></select></label>
     <label>Intrus <select id="od-intrus"><option value="0">aucun</option><option value="1" selected>un</option><option value="2">deux</option></select></label>
     <button type="button" class="primary" id="od-verifier">Vérifier</button>
     <button type="button" id="od-indice">Un indice</button>
@@ -58,10 +63,10 @@ export const html = `
 <section>
   <div class="col">
     <h4><span class="n">1</span>Comment jouer</h4>
-    <p>Choisissez un niveau, puis une démonstration. Faites glisser les phrases de la réserve vers votre démonstration, à la place voulue ; vous pouvez aussi les déplacer entre elles, ou les ramener dans la réserve. Sur un écran tactile, saisissez une phrase par sa poignée, à gauche. Sans glisser, un clic sur une phrase de la réserve l'ajoute à la fin, les flèches la montent ou la descendent, et la croix la renvoie en réserve. Quand le raisonnement vous paraît complet, cliquez sur « Vérifier ». La page ne juge rien avant : elle vous laisse chercher.</p>
+    <p>Choisissez un niveau et, pour Maths Sup, un thème (fondements, algèbre, algèbre linéaire, analyse, probabilités), puis une démonstration. Faites glisser les phrases de la réserve vers votre démonstration, à la place voulue ; vous pouvez aussi les déplacer entre elles, ou les ramener dans la réserve. Sur un écran tactile, saisissez une phrase par sa poignée, à gauche. Sans glisser, un clic sur une phrase de la réserve l'ajoute à la fin, les flèches la montent ou la descendent, et la croix la renvoie en réserve. Quand le raisonnement vous paraît complet, cliquez sur « Vérifier ». La page ne juge rien avant : elle vous laisse chercher.</p>
     <p>Le réglage « Intrus » fixe la difficulté : aucune phrase fausse, une seule, ou deux. Une démonstration réussie est marquée d'une coche dans la liste, et votre navigateur s'en souvient ; vous pouvez la refaire autant de fois que vous voulez.</p>
     <p>La vérification ne compare pas votre texte à un modèle. Pour chaque étape, la page connaît les étapes dont elle a besoin : elle contrôle que celles-ci figurent plus haut. Plusieurs ordres peuvent donc être justes. Dans une récurrence, par exemple, rien n'oblige à écrire l'initialisation avant l'hérédité ; il faut seulement que les deux précèdent la conclusion.</p>
-    <p>Si quelque chose ne va pas, la page désigne la première étape en défaut et dit ce qui lui manque : « cette étape emploie un nombre qui n'a pas encore été introduit ». Si vous avez retenu un intrus, elle explique pourquoi la phrase est fausse, ou pourquoi elle ne démontre pas ce qu'elle prétend. Les démonstrations de Maths Sup sont celles des chapitres du cours, vers lesquels la page renvoie.</p>
+    <p>Si quelque chose ne va pas, la page désigne la première étape en défaut et dit ce qui lui manque : « cette étape emploie un nombre qui n'a pas encore été introduit ». Si vous avez retenu un intrus, elle explique pourquoi la phrase est fausse, ou pourquoi elle ne démontre pas ce qu'elle prétend. Chaque démonstration renvoie au chapitre du cours où le résultat est établi ; la rédaction du cours peut suivre un autre chemin, et la comparaison des deux fait partie de l'exercice.</p>
   </div>
 </section>
 
@@ -74,13 +79,13 @@ export const html = `
 </section>
 ` + suite(
   "Juger une étape sur sa seule vérité. Une phrase vraie peut être mal placée, parce qu'elle emploie un objet qui n'existe pas encore, ou mal justifiée, parce que l'argument invoqué ne la démontre pas. « Le carré d'un nombre pair est pair, donc <i>p</i> est pair » part d'un fait exact et arrive à une conclusion exacte, mais le « donc » est faux : c'est la réciproque qu'il fallait.",
-  "Sous chaque énoncé, un lien mène au chapitre du cours où la démonstration est rédigée en entier, avec ses remarques : par exemple <a href=\"#cours/ma-07\">Nombres réels et suites numériques</a> pour l'unicité de la limite et le théorème de la limite monotone, ou <a href=\"#cours/ma-09\">Dérivabilité et convexité</a> pour le théorème de Rolle. Les récurrences reposent sur la fiche <a href=\"#n.n-recurrence\">Principe de récurrence</a> de l'édifice.",
+  "Sous chaque énoncé, un lien mène au chapitre du cours où le résultat est établi, avec ses remarques : par exemple <a href=\"#cours/ma-07\">Nombres réels et suites numériques</a> pour l'unicité de la limite et le théorème de la limite monotone, ou <a href=\"#cours/ma-09\">Dérivabilité et convexité</a> pour le théorème de Rolle. Les récurrences reposent sur la fiche <a href=\"#n.n-recurrence\">Principe de récurrence</a> de l'édifice.",
   "Chaque étape porte la liste des étapes dont elle dépend. « Vérifier » parcourt votre démonstration de haut en bas et s'arrête à la première étape dont une dépendance manque plus haut, à l'intrus s'il est présent, ou constate qu'il manque des étapes. Quand une démonstration a deux parties indépendantes, comme les deux sens d'une équivalence, la page demande aussi qu'elles ne soient pas entremêlées. L'indice désigne une étape de la réserve qui peut être écrite dès maintenant. Votre navigateur retient seulement quelles démonstrations ont été réussies ; rien n'est envoyé.");
 
 // Une pièce : id, nom, niveau, cours (chapitre où lire la démonstration), énoncé, étapes { id, t (texte), dep: { id: phrase dite quand
 // cette dépendance manque }, bloc (facultatif) }, intrus [{ id, t, pourquoi }] (deux par pièce ; le réglage en retient zéro, un ou deux).
 // Les démonstrations de Maths Sup suivent celles des chapitres du cours du site.
-const PIECES = [
+const ANCIENNES = [
   { id: 'racine2', nom: 'Irrationalité de √2', niveau: 'premiere', cours: '', enonce: `Le nombre ${K('\\sqrt2')} est irrationnel.`, etapes: [
     { id: 'a', t: `Raisonnons par l'absurde : supposons qu'il existe deux entiers ${K('p > 0')} et ${K('q > 0')}, sans diviseur commun autre que 1, tels que ${K('\\sqrt2 = \\dfrac pq')}.`, dep: {} },
     { id: 'b', t: `En élevant au carré, on obtient ${K('p^2 = 2q^2')}.`, dep: { a: `Cette étape parle de ${K('p')} et de ${K('q')}, qui n'ont pas encore été introduits.` } },
@@ -208,21 +213,25 @@ export function verifier(piece, L) {
   const manque = piece.etapes.length - L.length; if (manque > 0) return { pos: -1, texte: `Tout ce qui est écrit s'enchaîne correctement, mais la démonstration n'est pas terminée : il manque ${manque} étape${manque > 1 ? 's' : ''}.` };
   return { ok: true };
 }
+// Thèmes des dix premières pièces de Maths Sup, puis réunion de toutes les pièces, rangées par niveau et, en Maths Sup, par thème (§145).
+const TH = { unicite: 'analyse', bornee: 'analyse', monotone: 'analyse', rolle: 'analyse', taf: 'analyse', harmonique: 'analyse', gauss: 'algebre', noyau: 'lineaire', cs: 'lineaire', cantor: 'fondements' };
+for (const p of ANCIENNES) p.theme = TH[p.id] || '';
+const PIECES = ANCIENNES.concat(premiere, terminale, expertes, sup);
 export { PIECES };
 
 export function monter(racine) {
-  const q = s => racine.querySelector(s); let P = PIECES[0], L = [], ordre = [], msg = '', cl = '', marque = -1, conseil = '', niveau = 'tous', nbIntrus = 1, vivant = true;
-  const texte = id => (P.etapes.find(e => e.id === id) || P.intrus.find(e => e.id === id)).t, visibles = () => PIECES.filter(p => niveau === 'tous' || p.niveau === niveau);
+  const q = s => racine.querySelector(s); let P = PIECES[0], L = [], ordre = [], msg = '', cl = '', marque = -1, conseil = '', niveau = 'tous', theme = 'tous', nbIntrus = 1, vivant = true;
+  const texte = id => (P.etapes.find(e => e.id === id) || P.intrus.find(e => e.id === id)).t, visibles = () => filtrer(PIECES, niveau, theme);
   function listes() { const M = lireMemoire('ordonner'), V = visibles();
-    ecrire(q('#od-niveaux'), [['tous', 'Tous']].concat(NIVEAUX).filter(([id]) => id === 'tous' || PIECES.some(p => p.niveau === id)).map(([id, nom]) => `<button type="button" class="chip" data-n="${id}" aria-pressed="${id === niveau}">${nom} <small>${id === 'tous' ? PIECES.length : PIECES.filter(p => p.niveau === id).length}</small></button>`).join(''), true);
-    if (!V.includes(P)) P = V[0]; const sel = q('#od-piece'); sel.innerHTML = V.map(p => `<option value="${p.id}">${M[p.id] ? '✓ ' : ''}${p.nom}${niveau === 'tous' ? ' · ' + NIVEAUX.find(n => n[0] === p.niveau)[1] : ''}</option>`).join(''); sel.value = P.id; }
+    ecrire(q('#od-niveaux'), pucesNiveaux(PIECES, niveau), true); const th = q('#od-themes'); th.hidden = niveau !== 'sup'; if (niveau === 'sup') ecrire(th, pucesThemes(PIECES, theme), true);
+    if (!V.includes(P)) P = V[0]; const sel = q('#od-piece'); sel.innerHTML = options(V, niveau, theme, M); sel.value = P.id; }
   function charger() { nbIntrus = +q('#od-intrus').value; L = []; ordre = P.etapes.concat(P.intrus.slice(0, nbIntrus)).map(e => e.id); for (let i = ordre.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [ordre[i], ordre[j]] = [ordre[j], ordre[i]]; } raz(); }
   const raz = () => { msg = ''; cl = ''; marque = -1; conseil = ''; rendre(); };
   const pas = (id, i) => i >= 0
     ? `<li class="od-pas${marque === i ? ' faute' : ''}${cl === ' gagne' ? ' juste' : ''}" data-id="${id}" data-i="${i}"><span class="poignee" aria-hidden="true">⋮⋮</span><span>${texte(id)}</span><span class="cmd"><button type="button" data-a="h" data-i="${i}" ${i ? '' : 'disabled'} aria-label="Monter l'étape ${i + 1}">↑</button><button type="button" data-a="b" data-i="${i}" ${i < L.length - 1 ? '' : 'disabled'} aria-label="Descendre l'étape ${i + 1}">↓</button><button type="button" data-a="x" data-i="${i}" aria-label="Renvoyer l'étape ${i + 1} en réserve">✕</button></span></li>`
     : `<li class="od-pas${conseil === id ? ' conseil' : ''}" data-id="${id}" tabindex="0" role="button"><span class="poignee" aria-hidden="true">⋮⋮</span><span>${texte(id)}</span><button type="button" tabindex="-1" aria-hidden="true">+</button></li>`;
   function rendre() { if (!vivant) return; const fait = lireMemoire('ordonner')[P.id];
-    ecrire(q('#od-enonce'), '<b>À démontrer</b>' + P.enonce + (fait ? ` <span class="rz-fait">Fait${fait > 1 ? `, avec ${fait === 2 ? 'un intrus' : 'deux intrus'}` : ''}</span>` : '') + (P.cours ? ` <a class="rz-cours" href="#cours/${P.cours}">Lire la démonstration dans le cours</a>` : ''), true);
+    ecrire(q('#od-enonce'), '<b>À démontrer</b>' + P.enonce + (fait ? ` <span class="rz-fait">Fait${fait > 1 ? `, avec ${fait === 2 ? 'un intrus' : 'deux intrus'}` : ''}</span>` : '') + (P.cours ? ` <a class="rz-cours" href="#cours/${P.cours}">Le résultat dans le cours</a>` : ''), true);
     ecrire(q('#od-preuve'), L.length ? L.map((id, i) => pas(id, i)).join('') : '<li class="od-vide">Faites glisser ici les phrases de la réserve, ou cliquez sur elles.</li>', true);
     const R = ordre.filter(id => !L.includes(id));
     ecrire(q('#od-reserve'), R.length ? R.map(id => pas(id, -1)).join('') : '<li class="od-vide">La réserve est vide.</li>', true);
@@ -233,14 +242,15 @@ export function monter(racine) {
   q('#od-preuve').addEventListener('click', e => { if (clicAnnule) return; const b = e.target.closest('button[data-a]'); if (!b) return; const i = +b.dataset.i, a = b.dataset.a;
     if (a === 'x') L.splice(i, 1); else { const j = a === 'h' ? i - 1 : i + 1; [L[i], L[j]] = [L[j], L[i]]; } raz(); });
   q('#od-verifier').addEventListener('click', () => { conseil = ''; if (!L.length) { msg = 'Votre démonstration est vide.'; cl = ''; rendre(); return; } const r = verifier(P, L);
-    if (r.ok) { msg = 'La démonstration est complète, et chaque étape s\'appuie sur ce qui la précède.' + (P.cours ? ' Le cours la rédige en entier, avec ses remarques.' : ''); cl = ' gagne'; marque = -1; noterMemoire('ordonner', P.id, nbIntrus + 1); listes(); }
+    if (r.ok) { msg = 'La démonstration est complète, et chaque étape s\'appuie sur ce qui la précède.' + (P.cours ? ' Le cours établit ce résultat, avec ses remarques.' : ''); cl = ' gagne'; marque = -1; noterMemoire('ordonner', P.id, nbIntrus + 1); listes(); }
     else { marque = r.pos; cl = r.pos < 0 ? '' : ' bloque'; msg = (r.pos >= 0 ? `<b>Étape ${r.pos + 1}${r.intrus ? ' : c\'est un intrus' : ''}.</b> ` : '') + r.texte; } rendre(); });
   q('#od-indice').addEventListener('click', () => { marque = -1; cl = ''; const r = verifier(P, L);
     if (r.pos >= 0) { marque = r.pos; msg = `Vous avez demandé un indice : commencez par revoir l'étape ${r.pos + 1}, marquée d'un filet rouge.`; }
     else { const s = P.etapes.find(e => !L.includes(e.id) && Object.keys(e.dep).every(d => L.includes(d)) && !verifier(P, L.concat([e.id])).texte?.startsWith?.('Vous mêlez')); conseil = s ? s.id : ''; msg = s ? 'Vous avez demandé un indice : la phrase entourée de vert, dans la réserve, peut être écrite maintenant.' : 'Vous avez demandé un indice : la démonstration est complète.'; } rendre(); });
   q('#od-depart').addEventListener('click', () => { L = []; raz(); });
   q('#od-piece').addEventListener('change', e => { P = PIECES.find(p => p.id === e.target.value); charger(); }); q('#od-intrus').addEventListener('change', charger);
-  q('#od-niveaux').addEventListener('click', e => { const b = e.target.closest('button[data-n]'); if (!b) return; niveau = b.dataset.n; listes(); charger(); });
+  q('#od-niveaux').addEventListener('click', e => { const b = e.target.closest('button[data-n]'); if (!b) return; niveau = b.dataset.n; theme = 'tous'; listes(); charger(); });
+  q('#od-themes').addEventListener('click', e => { const b = e.target.closest('button[data-t]'); if (!b) return; theme = b.dataset.t; listes(); charger(); });
 
   // Glisser-déposer : à la souris, on saisit une phrase n'importe où ; au doigt, par sa poignée (pour que la page puisse encore défiler).
   let glisse = null, clicAnnule = false; const fantome = document.createElement('p'); fantome.className = 'od-fantome'; fantome.hidden = true; document.body.append(fantome);

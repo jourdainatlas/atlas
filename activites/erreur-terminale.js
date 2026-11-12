@@ -1,0 +1,105 @@
+// Trouver l'erreur : Terminale, quinze raisonnements (MEMO_atlas_activites.md §145).
+import { T, faux } from './raisonner-outils.js';
+const H = ` Si la ligne est fausse, c'est qu'une erreur a été commise plus haut.`;
+export default [
+faux('infini-moins-infini', 'terminale', '', 't-01', 'Une limite nulle', T`« Démontrons » que la suite de terme général $n^2 - n$ tend vers 0.`, [
+  [T`Quand $n$ tend vers $+\infty$, $n^2$ tend vers $+\infty$.`, T`C'est une limite de référence.`],
+  [T`De même, $n$ tend vers $+\infty$.`, T`C'est une limite de référence.`],
+  [T`Par différence de limites, $n^2 - n$ tend vers $(+\infty) - (+\infty) = 0$.`] ],
+  T`« $\infty - \infty$ » est une forme indéterminée : aucune règle ne donne la limite d'une différence de deux suites qui tendent vers $+\infty$, et $+\infty$ n'est pas un nombre que l'on retranche à lui-même. Il faut transformer l'expression : $n^2 - n = n(n - 1)$, produit de deux suites qui tendent vers $+\infty$, tend vers $+\infty$.`,
+  T`Les quatre formes indéterminées sont « $\infty - \infty$ », « $0 \times \infty$ », « $\dfrac{\infty}{\infty}$ » et « $\dfrac00$ ». Devant l'une d'elles, on factorise le terme dominant.`, T`Calculez $n^2 - n$ pour $n = 10$, puis pour $n = 100$.`),
+faux('sans-initialisation', 'terminale', '', 't-01', 'Une récurrence sans départ', T`« Démontrons » par récurrence que, pour tout entier naturel $n$, le nombre $10^n + 1$ est divisible par 9.`, [
+  [T`Notons $P(n)$ la propriété « $10^n + 1$ est divisible par 9 ». Soit $n$ un entier naturel tel que $P(n)$ soit vraie : $10^n + 1 = 9k$, avec $k$ entier.`, T`C'est l'hypothèse de récurrence, correctement posée : on suppose la propriété vraie à un rang $n$.`],
+  [T`Alors $10^{n+1} + 1 = 10 \times (10^n + 1) - 9$.`, T`Le calcul est exact : $10 \times 10^n + 10 - 9 = 10^{n+1} + 1$.`],
+  [T`Donc $10^{n+1} + 1 = 10 \times 9k - 9 = 9(10k - 1)$ : la propriété $P(n+1)$ est vraie.`, T`Sous l'hypothèse $P(n)$, le calcul est exact et $10k - 1$ est bien un entier : l'hérédité est correctement démontrée.`],
+  [T`La propriété est héréditaire : par le principe de récurrence, elle est vraie pour tout entier naturel $n$.`] ],
+  T`Le principe de récurrence demande deux choses : l'hérédité et l'<em>initialisation</em>. Or $P(0)$ est fausse : $10^0 + 1 = 2$ n'est pas divisible par 9. En réalité, la propriété n'est vraie pour aucun entier : $10^n + 1$ a pour reste 2 dans la division par 9, puisque $10^n - 1 = 99\dots9$ est divisible par 9. L'hérédité, elle, est irréprochable : elle dit seulement que si la propriété était vraie à un rang, elle le serait au suivant.`,
+  T`Une propriété héréditaire peut être fausse à tous les rangs. Sans initialisation, une récurrence ne démontre rien.`, T`La propriété est-elle vraie pour $n = 0$ ? Pour $n = 1$ ?`),
+faux('limite-stricte', 'terminale', '', 't-01', '0 > 0', T`« Démontrons » que $0 > 0$.`, [
+  [T`Pour tout entier $n \geqslant 1$, on a $\dfrac1n > 0$.`, T`C'est exact : l'inverse d'un nombre strictement positif est strictement positif.`],
+  [T`La suite de terme général $\dfrac1n$ converge vers 0.`, T`C'est une limite de référence.`],
+  [T`Une suite dont tous les termes sont strictement positifs a une limite strictement positive.`],
+  [T`Donc $0 > 0$.`, T`C'est l'application de la ligne précédente à la suite $\left(\dfrac1n\right)$ : le passage est correct.` + H] ],
+  T`Le passage à la limite conserve les inégalités larges, pas les inégalités strictes : de $u_n > 0$ pour tout $n$, on déduit seulement $\lim u_n \geqslant 0$. La suite $\left(\dfrac1n\right)$ en est l'exemple type : tous ses termes sont strictement positifs, et sa limite est nulle.`,
+  T`À la limite, « $<$ » devient « $\leqslant$ ». C'est une source d'erreur constante dans les majorations.`, T`Connaissez-vous une suite strictement positive qui tend vers 0 ?`),
+faux('ln-somme', 'terminale', '', 't-05', '2 = 1 avec un logarithme', T`« Démontrons » que $2 = 1$.`, [
+  [T`On a $\ln 2 = \ln(1 + 1)$.`, T`C'est exact : $2 = 1 + 1$.`],
+  [T`Le logarithme d'une somme est la somme des logarithmes : $\ln(1 + 1) = \ln 1 + \ln 1$.`],
+  [T`Or $\ln 1 = 0$ : donc $\ln 2 = 0$.`, T`Il est exact que $\ln 1 = 0$, et $0 + 0 = 0$ : le passage est correct.` + H],
+  [T`Ainsi $\ln 2 = \ln 1$. La fonction $\ln$ étant strictement croissante, deux nombres de même logarithme sont égaux : $2 = 1$.`, T`Une fonction strictement croissante ne prend jamais deux fois la même valeur : la déduction est correcte.` + H] ],
+  T`Le logarithme transforme les <em>produits</em> en sommes : $\ln(ab) = \ln a + \ln b$. Il n'existe aucune formule pour $\ln(a + b)$. Ici $\ln 1 + \ln 1 = \ln(1 \times 1) = \ln 1 = 0$, alors que $\ln 2 \approx 0{,}693$.`,
+  T`$\ln(ab) = \ln a + \ln b$ pour $a > 0$ et $b > 0$. Le logarithme d'une somme ne se simplifie pas.`, T`Quelle est la valeur approchée de $\ln 2$ ?`),
+faux('ln-carre', 'terminale', '', 't-05', 'Encore une solution perdue', T`« Démontrons » que l'équation $\ln(x^2) = 0$ a pour seule solution le nombre 1.`, [
+  [T`L'équation a un sens pour tout réel $x$ non nul, puisqu'alors $x^2 > 0$.`, T`C'est exact : le logarithme est défini pour les réels strictement positifs, et $x^2 > 0$ dès que $x \neq 0$.`],
+  [T`Pour tout réel $x$ non nul, $\ln(x^2) = 2\ln x$.`],
+  [T`L'équation s'écrit donc $2\ln x = 0$, c'est-à-dire $\ln x = 0$.`, T`La division par 2 est permise : le passage est correct.` + H],
+  [T`Donc $x = 1$ : c'est la seule solution.`, T`Il est exact que $\ln x = 0$ équivaut à $x = 1$ : le passage est correct.` + H] ],
+  T`La formule $\ln(x^2) = 2\ln x$ n'a de sens que pour $x > 0$ : pour $x < 0$, le nombre $\ln x$ n'existe pas. La formule valable pour tout $x$ non nul est $\ln(x^2) = 2\ln|x|$. L'équation devient $\ln|x| = 0$, soit $|x| = 1$ : il y a deux solutions, 1 et $-1$, et l'on vérifie que $\ln\bigl((-1)^2\bigr) = \ln 1 = 0$.`,
+  T`Les formules du logarithme supposent que chaque logarithme écrit existe. Transformer une expression peut réduire son domaine de définition, et faire perdre des solutions.`, T`Le nombre $-1$ est-il solution de l'équation ?`),
+faux('cosinus-egaux', 'terminale', '', 't-09', '1 = −1 avec un cosinus', T`« Démontrons » que $1 = -1$.`, [
+  [T`On a $\cos\left(\dfrac{\pi}{3}\right) = \dfrac12$.`, T`C'est une valeur remarquable.`],
+  [T`On a aussi $\cos\left(-\dfrac{\pi}{3}\right) = \dfrac12$.`, T`C'est exact : la fonction cosinus est paire.`],
+  [T`Deux nombres qui ont le même cosinus sont égaux : $\dfrac{\pi}{3} = -\dfrac{\pi}{3}$.`],
+  [T`En multipliant par $\dfrac{3}{\pi}$ : $1 = -1$.`, T`Multiplier les deux membres d'une égalité par un même nombre est permis : le passage est correct.` + H] ],
+  T`La fonction cosinus prend une infinité de fois chaque valeur de $[-1, 1]$ : elle est paire et périodique. L'égalité $\cos a = \cos b$ signifie que $a = b + 2k\pi$ ou $a = -b + 2k\pi$, avec $k$ entier ; ici, c'est le second cas, avec $k = 0$.`,
+  T`$\cos a = \cos b$ si et seulement si $a = b + 2k\pi$ ou $a = -b + 2k\pi$, avec $k \in \mathbb{Z}$. On ne « simplifie » par une fonction que si elle ne prend jamais deux fois la même valeur.`, T`Regardez le cercle trigonométrique : combien de points ont pour abscisse $\dfrac12$ ?`),
+faux('integrale-negative', 'terminale', '', 't-06', 'Une aire négative', T`« Démontrons » que l'intégrale de la fonction positive $x \mapsto \dfrac{1}{x^2}$ entre $-1$ et 1 vaut $-2$.`, [
+  [T`Une primitive de $x \mapsto \dfrac{1}{x^2}$ est $F : x \mapsto -\dfrac1x$.`, T`C'est exact sur chacun des intervalles $]-\infty, 0[$ et $]0, +\infty[$ : la dérivée de $-\dfrac1x$ est $\dfrac{1}{x^2}$.`],
+  [T`Donc $\displaystyle\int_{-1}^{1} \frac{1}{x^2}\,dx = F(1) - F(-1)$.`],
+  [T`Or $F(1) = -1$ et $F(-1) = 1$.`, T`Les deux valeurs sont exactes.`],
+  [T`L'intégrale vaut donc $-1 - 1 = -2$.`, T`La soustraction est exacte : le passage est correct.` + H] ],
+  T`La formule $\displaystyle\int_a^b f = F(b) - F(a)$ suppose $f$ continue sur tout l'intervalle $[a, b]$. Or $x \mapsto \dfrac{1}{x^2}$ n'est pas définie en 0, qui est entre $-1$ et 1 : l'intégrale écrite n'a pas de sens en Terminale, et $F$ n'est pas une primitive sur $[-1, 1]$. L'aire sous la courbe au voisinage de 0 est d'ailleurs infinie.`,
+  T`Avant d'intégrer, on vérifie que la fonction est continue sur tout l'intervalle d'intégration, bornes comprises. Une intégrale négative pour une fonction positive, avec des bornes dans le bon ordre, signale toujours une erreur.`, T`La fonction est-elle définie partout entre $-1$ et 1 ?`),
+faux('primitive-produit', 'terminale', '', 't-06', 'La primitive d\'un produit', T`« Démontrons » que $\displaystyle\int_0^1 x\,e^x\,dx = \dfrac e2$.`, [
+  [T`Une primitive de $x \mapsto x$ est $x \mapsto \dfrac{x^2}{2}$, et une primitive de $x \mapsto e^x$ est $x \mapsto e^x$.`, T`Les deux primitives sont exactes.`],
+  [T`Une primitive d'un produit est le produit des primitives : $F(x) = \dfrac{x^2}{2}\,e^x$ est une primitive de $x \mapsto x\,e^x$.`],
+  [T`Donc $\displaystyle\int_0^1 x\,e^x\,dx = F(1) - F(0)$.`, T`C'est la définition de l'intégrale à l'aide d'une primitive, la fonction étant continue sur $[0, 1]$ : le passage est correct.` + H],
+  [T`Or $F(1) = \dfrac e2$ et $F(0) = 0$ : l'intégrale vaut $\dfrac e2$.`, T`Les deux valeurs de $F$ sont bien calculées : le passage est correct.` + H] ],
+  T`Il n'y a pas de formule pour la primitive d'un produit, pas plus que la dérivée d'un produit n'est le produit des dérivées. En dérivant $F$, on trouve $x\,e^x + \dfrac{x^2}{2}e^x$, et non $x\,e^x$. L'outil adapté est l'intégration par parties, qui donne la primitive $(x - 1)e^x$ : l'intégrale vaut $0 - (-1) = 1$.`,
+  T`Pour contrôler une primitive, on la dérive. Pour un produit, on pense à l'intégration par parties : $\displaystyle\int_a^b u v' = \bigl[uv\bigr]_a^b - \int_a^b u' v$.`, T`Dérivez la fonction $F$ proposée.`),
+faux('tvi-sans-continuite', 'terminale', '', 't-03', 'Une fonction qui devrait s\'annuler', T`Soit $f$ la fonction inverse, $f(x) = \dfrac1x$. « Démontrons » qu'il existe un réel $c$ tel que $\dfrac1c = 0$.`, [
+  [T`On a $f(-1) = -1$ et $f(1) = 1$.`, T`Les deux valeurs sont exactes.`],
+  [T`Le nombre 0 est compris entre $f(-1)$ et $f(1)$.`, T`C'est exact : $-1 < 0 < 1$.`],
+  [T`D'après le théorème des valeurs intermédiaires, il existe $c$ entre $-1$ et 1 tel que $f(c) = 0$.`],
+  [T`Ce réel vérifie donc $\dfrac1c = 0$.`, T`C'est la définition de $f$, reportée dans la ligne précédente : le passage est correct.` + H] ],
+  T`Le théorème des valeurs intermédiaires exige une fonction <em>continue sur l'intervalle</em> $[-1, 1]$ tout entier. La fonction inverse n'est pas définie en 0 : elle est continue sur $[-1, 0[$ et sur $]0, 1]$, pas sur $[-1, 1]$. Sa courbe passe des valeurs négatives aux valeurs positives en « sautant » par-dessus l'axe.`,
+  T`Un changement de signe ne prouve l'existence d'une solution que pour une fonction continue sur un intervalle. On vérifie toujours les hypothèses avant de citer un théorème.`, T`Quel est l'ensemble de définition de la fonction ?`),
+faux('inflexion', 'terminale', '', 't-03', 'Un point d\'inflexion imaginaire', T`« Démontrons » que la courbe de la fonction $f : x \mapsto x^4$ admet un point d'inflexion en 0.`, [
+  [T`La fonction $f$ est deux fois dérivable sur $\mathbb{R}$ : $f'(x) = 4x^3$ et $f''(x) = 12x^2$.`, T`Les deux dérivées sont exactes.`],
+  [T`En particulier, $f''(0) = 0$.`, T`C'est exact : $12 \times 0^2 = 0$.`],
+  [T`La dérivée seconde s'annule en 0 : la courbe admet donc un point d'inflexion en 0.`] ],
+  T`Un point d'inflexion est un point où la courbe traverse sa tangente, c'est-à-dire où la convexité change : il faut que $f''$ s'annule <em>en changeant de signe</em>. Ici $f''(x) = 12x^2$ est positive des deux côtés de 0 : la fonction est convexe sur $\mathbb{R}$, et sa courbe reste au-dessus de sa tangente en 0, l'axe des abscisses.`,
+  T`$f''(a) = 0$ est nécessaire pour un point d'inflexion, mais ne suffit pas. On étudie le signe de $f''$ de part et d'autre de $a$.`, T`Quel est le signe de $f''(x)$ à gauche et à droite de 0 ?`),
+faux('double-compte', 'terminale', '', 't-07', 'Des mains comptées deux fois', T`On tire deux cartes ensemble dans un jeu de 32 cartes, qui contient 4 as. « Démontrons » qu'il y a 124 mains contenant au moins un as.`, [
+  [T`Pour former une main contenant au moins un as, on choisit d'abord un as : il y a 4 choix.`, T`Il y a bien 4 façons de choisir un as. La phrase décrit un procédé de construction, qui n'est pas faux en lui-même.`],
+  [T`On choisit ensuite la seconde carte parmi les 31 cartes restantes : il y a 31 choix.`, T`Il reste bien 31 cartes, et la seconde carte peut être n'importe laquelle d'entre elles.`],
+  [T`Toute main contenant au moins un as s'obtient ainsi.`, T`C'est exact : une telle main contient un as, que l'on peut choisir en premier, l'autre carte étant choisie ensuite.`],
+  [T`Par le principe multiplicatif, le nombre de ces mains est $4 \times 31 = 124$.`] ],
+  T`Le principe multiplicatif compte les <em>façons de construire</em>, et il ne donne le nombre de mains que si chaque main est obtenue une seule fois. Or une main de deux as est obtenue deux fois : as de cœur puis as de pique, ou as de pique puis as de cœur. Il y a $\dbinom42 = 6$ mains de deux as, comptées en double : le bon total est $124 - 6 = 118$. On le retrouve par le complémentaire : $\dbinom{32}{2} - \dbinom{28}{2} = 496 - 378 = 118$.`,
+  T`Pour dénombrer, il faut que chaque objet soit construit une fois et une seule. Pour « au moins un », le plus sûr est de passer par le complémentaire, « aucun ».`, T`De combien de façons votre procédé construit-il la main formée de l'as de cœur et de l'as de pique ?`),
+faux('sans-remise', 'terminale', '', 't-02', 'Une loi binomiale abusive', T`Une urne contient 3 boules rouges et 2 boules bleues. On tire deux boules l'une après l'autre, sans remettre la première. « Démontrons » que la probabilité d'obtenir deux boules rouges est $\dfrac{9}{25}$.`, [
+  [T`Au premier tirage, la probabilité d'obtenir une boule rouge est $\dfrac35$.`, T`C'est exact : 3 boules sur 5 sont rouges.`],
+  [T`Notons $X$ le nombre de boules rouges obtenues. On répète deux fois la même épreuve de Bernoulli : $X$ suit la loi binomiale de paramètres 2 et $\dfrac35$.`],
+  [T`Donc $P(X = 2) = \left(\dfrac35\right)^2 = \dfrac{9}{25}$.`, T`C'est la formule de la loi binomiale pour deux succès en deux épreuves, et le calcul est exact : le passage est correct.` + H] ],
+  T`La loi binomiale exige des épreuves identiques et <em>indépendantes</em>. Sans remise, la composition de l'urne change : si la première boule est rouge, il reste 2 rouges sur 4, et la probabilité d'une seconde rouge est $\dfrac24$. La bonne réponse est $\dfrac35 \times \dfrac24 = \dfrac{3}{10}$, et non $\dfrac{9}{25}$.`,
+  T`Loi binomiale : répétition d'épreuves de Bernoulli identiques et indépendantes. Un tirage sans remise n'est pas de ce type ; un arbre pondéré donne la réponse.`, T`Si la première boule tirée est rouge, que contient l'urne au second tirage ?`),
+faux('non-paralleles', 'terminale', '', 't-04', 'Deux droites qui devraient se couper', T`Dans un repère de l'espace, la droite $d$ passe par $O(0 ; 0 ; 0)$ et a pour vecteur directeur $\vec u(1 ; 0 ; 0)$ ; la droite $d'$ passe par $A(0 ; 0 ; 1)$ et a pour vecteur directeur $\vec v(0 ; 1 ; 0)$. « Démontrons » que $d$ et $d'$ ont un point commun.`, [
+  [T`Les vecteurs $\vec u$ et $\vec v$ ne sont pas colinéaires.`, T`C'est exact : leurs coordonnées ne sont pas proportionnelles.`],
+  [T`Les droites $d$ et $d'$ ne sont donc pas parallèles.`, T`C'est exact : deux droites sont parallèles si et seulement si leurs vecteurs directeurs sont colinéaires.`],
+  [T`Deux droites qui ne sont pas parallèles sont sécantes : $d$ et $d'$ ont un point commun.`] ],
+  T`C'est vrai dans le plan, pas dans l'espace : deux droites de l'espace peuvent n'être ni parallèles ni sécantes, on les dit alors <em>non coplanaires</em>. Ici, tout point de $d$ a pour cote 0 et tout point de $d'$ a pour cote 1 : elles n'ont aucun point commun.`,
+  T`Dans l'espace, deux droites sont soit coplanaires (parallèles ou sécantes), soit non coplanaires. Pour savoir si elles se coupent, on résout le système formé par leurs représentations paramétriques.`, T`Quelle est la cote d'un point de $d$ ? D'un point de $d'$ ?`),
+faux('constante-ajoutee', 'terminale', '', 't-08', 'Une constante ajoutée trop vite', T`« Trouvons » la solution de l'équation différentielle $y' = 2y$ qui vaut 3 en 0.`, [
+  [T`La fonction $x \mapsto e^{2x}$ est solution de $y' = 2y$.`, T`C'est exact : sa dérivée est $x \mapsto 2e^{2x}$.`],
+  [T`Elle vaut 1 en 0 ; pour obtenir la valeur 3, on lui ajoute la constante 2, ce qui donne encore une solution : $f(x) = e^{2x} + 2$.`],
+  [T`On a bien $f(0) = 1 + 2 = 3$.`, T`Le calcul de $f(0)$ est exact.`],
+  [T`La solution cherchée est donc $f : x \mapsto e^{2x} + 2$.`, T`La fonction prend la bonne valeur en 0, et la ligne 2 affirme qu'elle est solution : le passage est correct.` + H] ],
+  T`Ajouter une constante conserve les <em>primitives</em>, pas les solutions de $y' = 2y$. Pour $f(x) = e^{2x} + 2$, on a $f'(x) = 2e^{2x}$, alors que $2f(x) = 2e^{2x} + 4$. Les solutions sont les fonctions $x \mapsto Ce^{2x}$ : la constante <em>multiplie</em>. La condition $f(0) = 3$ donne $C = 3$, d'où $f(x) = 3e^{2x}$.`,
+  T`Les solutions de $y' = ay$ sont les $x \mapsto Ce^{ax}$. Une fois la fonction trouvée, on vérifie l'équation en dérivant, et pas seulement la condition initiale.`, T`Calculez $f'(x)$ et $2f(x)$ pour la fonction proposée.`),
+faux('compensation', 'terminale', '', 't-10', 'La pièce qui se rattrape', T`On lance une pièce équilibrée. Les cinq premiers lancers ont donné pile. « Démontrons » que face est plus probable que pile au sixième lancer.`, [
+  [T`D'après la loi des grands nombres, la fréquence de pile se rapproche de $\dfrac12$ quand le nombre de lancers devient grand.`, T`C'est le contenu de la loi des grands nombres, pour des lancers indépendants d'une pièce équilibrée.`],
+  [T`Après cinq lancers, la fréquence de pile vaut 1 : elle est très au-dessus de $\dfrac12$.`, T`C'est exact : cinq piles sur cinq lancers.`],
+  [T`Pour que la fréquence revienne vers $\dfrac12$, les lancers suivants doivent compenser : face est donc plus probable que pile au sixième lancer.`] ],
+  T`La pièce n'a pas de mémoire : les lancers sont indépendants, et la probabilité de face au sixième lancer est exactement $\dfrac12$. La fréquence revient vers $\dfrac12$ sans aucune compensation, par <em>dilution</em> : si les 995 lancers suivants donnent autant de piles que de faces à une unité près, la fréquence de pile après 1000 lancers est voisine de $\dfrac{502}{1000}$. L'avance de 5 piles subsiste, mais elle ne pèse plus rien.`,
+  T`La loi des grands nombres porte sur les fréquences, pas sur les effectifs, et ne contredit jamais l'indépendance. Croire à la compensation, c'est « l'erreur du joueur ».`, T`Les lancers sont-ils indépendants ?`),
+];

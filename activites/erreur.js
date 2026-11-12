@@ -1,8 +1,12 @@
 // Raisonner « Trouver l'erreur », rubrique Activités, MEMO_atlas_activites.md §143 et §144.
 import { css as cssCommun } from './commun.js';
-import { NIVEAUX, cssRaison, lireMemoire, noterMemoire } from './raisonner.js';
+import { cssRaison, lireMemoire, noterMemoire, filtrer, pucesNiveaux, pucesThemes, options } from './raisonner.js';
 import { cssFigures, suite } from './figures.js';
 import { cssJeux, ecrire } from './jeux.js';
+import premiere from './erreur-premiere.js';
+import terminale from './erreur-terminale.js';
+import expertes from './erreur-expertes.js';
+import sup from './erreur-sup.js';
 
 export const css = cssCommun + cssFigures + cssJeux + cssRaison + `
 .activites-act .er-enonce { padding: 12px 16px; border-bottom: 1px solid var(--filet); font: 17px/1.5 var(--f-texte, Georgia, serif); color: var(--encre); }
@@ -24,15 +28,16 @@ export const html = `
 <header class="col">
   <p class="eyebrow">Raisonner · de la Première à Maths Sup</p>
   <h3>Trouver l'erreur</h3>
-  <p class="lede">Chacun de ces raisonnements aboutit à une absurdité : 1 = 2, 2 &gt; 3, 0 = 1, tous les chevaux ont la même couleur. Toutes les lignes ont l'air justes, et toutes le sont, sauf une. Laquelle ?</p>
+  <p class="lede">Chacun de ces raisonnements aboutit à une absurdité ou à un résultat faux : 1 = 2, 2 &gt; 3, 0 = 1, tous les chevaux ont la même couleur. Toutes les lignes ont l'air justes, et toutes le sont, sauf une. Laquelle ?</p>
 </header>
 
 <div class="jeu">
   <div class="bar top">
     <span class="rz-niveaux" id="er-niveaux" role="group" aria-label="Niveau"></span>
+    <span class="rz-niveaux" id="er-themes" role="group" aria-label="Thème de Maths Sup" hidden></span>
   </div>
   <div class="bar">
-    <label>Raisonnement <select id="er-piece"></select></label>
+    <label class="rz-choix">Raisonnement <select id="er-piece"></select></label>
     <button type="button" class="primary" id="er-depart">Recommencer</button>
     <button type="button" id="er-indice">Un indice</button>
   </div>
@@ -45,8 +50,8 @@ export const html = `
 <section>
   <div class="col">
     <h4><span class="n">1</span>Comment jouer</h4>
-    <p>Choisissez un niveau, puis un raisonnement. Lisez-le, puis cliquez sur la ligne que vous croyez fautive. Si vous vous trompez, la page dit pourquoi cette ligne-là est correcte, et vous laisse chercher encore. Quand vous trouvez, elle explique l'erreur et ce qu'il faut en retenir. Le nombre d'essais est compté : un raisonnement lu avec soin se résout au premier. Un raisonnement résolu est marqué d'une coche dans la liste, et votre navigateur s'en souvient ; « Recommencer » permet de le refaire.</p>
-    <p>Une ligne est fautive quand le passage de la ligne précédente à celle-ci n'est pas justifié. Les lignes qui suivent l'erreur sont souvent fausses elles aussi, mais elles se déduisent correctement de la ligne fautive : ce n'est pas elles qu'il faut désigner.</p>
+    <p>Choisissez un niveau et, pour Maths Sup, un thème (fondements, algèbre, algèbre linéaire, analyse, probabilités), puis un raisonnement. Lisez-le, puis cliquez sur la ligne que vous croyez fautive. Si vous vous trompez, la page dit pourquoi cette ligne-là est correcte, et vous laisse chercher encore. Quand vous trouvez, elle explique l'erreur et ce qu'il faut en retenir. Le nombre d'essais est compté : un raisonnement lu avec soin se résout au premier. Un raisonnement résolu est marqué d'une coche dans la liste, et votre navigateur s'en souvient ; « Recommencer » permet de le refaire.</p>
+    <p>Une ligne est fautive quand le passage de la ligne précédente à celle-ci n'est pas justifié. Les lignes qui suivent l'erreur sont souvent fausses elles aussi, mais elles se déduisent correctement de la ligne fautive : ce n'est pas elles qu'il faut désigner. La faute peut aussi se trouver dès la première ligne, quand elle introduit un objet qui n'existe pas, et quelques raisonnements aboutissent à un résultat faux sans être absurde : c'est alors la règle invoquée qu'il faut contrôler.</p>
   </div>
 </section>
 
@@ -63,7 +68,7 @@ export const html = `
   "Rien n'est calculé : chaque ligne porte l'explication de sa justesse, ou de sa faute, rédigée à l'avance. Votre navigateur retient seulement quels raisonnements ont été résolus, et en combien d'essais ; rien n'est envoyé.");
 
 // Une pièce : annonce, lignes { t, ok (pourquoi la ligne est juste) } ; faute : rang de la ligne fautive ; pourquoi, retenir, indice.
-const PIECES = [
+const ANCIENNES = [
   { id: 'un-deux', niveau: 'premiere', cours: '', nom: '1 = 2', annonce: `Soit ${K('a')} et ${K('b')} deux nombres réels égaux et non nuls. « Démontrons » que ${K('2 = 1')}.`, faute: 4, lignes: [
     { t: `On a ${K('a = b')}.`, ok: `C'est l'hypothèse.` },
     { t: `En multipliant les deux membres par ${K('a')} : ${K('a^2 = ab')}.`, ok: `Multiplier les deux membres d'une égalité par un même nombre donne une égalité.` },
@@ -129,14 +134,17 @@ const PIECES = [
     pourquoi: `La série diverge : ses sommes partielles valent alternativement 1 et 0, et son terme général ne tend pas vers 0. Le nombre ${K('S')} n'existe donc pas, et tout ce que l'on en déduit est sans valeur. Les lignes suivantes le confirment à leur manière : c'est un raisonnement par l'absurde qui prouve que la série n'a pas de somme.`,
     retenir: `Avant de nommer la somme d'une série ou la limite d'une suite, on s'assure qu'elle existe. Écrire « notons ${K('S')} la somme » est déjà une affirmation, et c'est souvent la seule qui soit fausse.`, indice: `Calculez les premières sommes partielles de la série.` },
 ];
+// Réunion de toutes les pièces, rangées par niveau et, en Maths Sup, par thème (§145).
+for (const p of ANCIENNES) p.theme = p.id === 'serie' ? 'analyse' : '';
+const PIECES = ANCIENNES.concat(premiere, terminale, expertes, sup);
 export { PIECES };
 
 export function monter(racine) {
-  const q = s => racine.querySelector(s); let P = PIECES[0], vus = new Set(), trouve = false, essais = 0, msg = '', niveau = 'tous', vivant = true;
-  const visibles = () => PIECES.filter(p => niveau === 'tous' || p.niveau === niveau);
+  const q = s => racine.querySelector(s); let P = PIECES[0], vus = new Set(), trouve = false, essais = 0, msg = '', niveau = 'tous', theme = 'tous', vivant = true;
+  const visibles = () => filtrer(PIECES, niveau, theme);
   function listes() { const M = lireMemoire('erreur'), V = visibles();
-    ecrire(q('#er-niveaux'), [['tous', 'Tous']].concat(NIVEAUX).filter(([id]) => id === 'tous' || PIECES.some(p => p.niveau === id)).map(([id, nom]) => `<button type="button" class="chip" data-n="${id}" aria-pressed="${id === niveau}">${nom} <small>${id === 'tous' ? PIECES.length : PIECES.filter(p => p.niveau === id).length}</small></button>`).join(''), true);
-    if (!V.includes(P)) P = V[0]; const sel = q('#er-piece'); sel.innerHTML = V.map(p => `<option value="${p.id}">${M[p.id] ? '✓ ' : ''}${p.nom}${niveau === 'tous' ? ' · ' + NIVEAUX.find(n => n[0] === p.niveau)[1] : ''}</option>`).join(''); sel.value = P.id; }
+    ecrire(q('#er-niveaux'), pucesNiveaux(PIECES, niveau), true); const th = q('#er-themes'); th.hidden = niveau !== 'sup'; if (niveau === 'sup') ecrire(th, pucesThemes(PIECES, theme), true);
+    if (!V.includes(P)) P = V[0]; const sel = q('#er-piece'); sel.innerHTML = options(V, niveau, theme, M); sel.value = P.id; }
   function charger() { vus = new Set(); trouve = false; essais = 0; msg = ''; rendre(); }
   function rendre() { if (!vivant) return; const fait = lireMemoire('erreur')[P.id];
     ecrire(q('#er-enonce'), '<b>Le raisonnement</b>' + P.annonce + (fait ? ` <span class="rz-fait">Fait, en ${fait} essai${fait > 1 ? 's' : ''}</span>` : '') + (P.cours ? ` <a class="rz-cours" href="#cours/${P.cours}">La règle dans le cours</a>` : ''), true);
@@ -148,6 +156,7 @@ export function monter(racine) {
     else msg = `<b>Ligne ${i + 1} : ce n'est pas l'erreur.</b> ` + P.lignes[i].ok; rendre(); });
   q('#er-indice').addEventListener('click', () => { if (trouve) return; msg = 'Vous avez demandé un indice : ' + P.indice; rendre(); });
   q('#er-depart').addEventListener('click', charger); q('#er-piece').addEventListener('change', e => { P = PIECES.find(p => p.id === e.target.value); charger(); });
-  q('#er-niveaux').addEventListener('click', e => { const b = e.target.closest('button[data-n]'); if (!b) return; niveau = b.dataset.n; listes(); charger(); });
+  q('#er-niveaux').addEventListener('click', e => { const b = e.target.closest('button[data-n]'); if (!b) return; niveau = b.dataset.n; theme = 'tous'; listes(); charger(); });
+  q('#er-themes').addEventListener('click', e => { const b = e.target.closest('button[data-t]'); if (!b) return; theme = b.dataset.t; listes(); charger(); });
   listes(); charger(); return () => { vivant = false; };
 }
