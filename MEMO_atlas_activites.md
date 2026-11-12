@@ -1158,4 +1158,13 @@ marquées « faites » dans la mémoire du navigateur, et jamais la pièce affic
 tout est fait, le tirage porte sur toutes les autres. Vérifié : 40 tirages sous « Maths Sup, Probabilités »
 dans chaque activité, toutes les pièces du filtre sorties, aucune hors filtre, aucune répétition immédiate.
 
+### 149. Le compte est bon : retirer une opération d'un clic (12 nov. 2026)
+
+Demande de l'auteur. L'opération placée est maintenant un bouton. Dans la ligne en cours (`data-oter="op"`),
+le clic vide la case de l'opération. Dans la dernière ligne calculée, tant que la suivante n'est pas commencée
+(`data-defaire="op"`, fonction `oterOperation`), le clic retire l'opération et le résultat : les deux nombres
+restent en place, et choisir une autre opération recalcule aussitôt la ligne. La flèche continue d'effacer une
+case à la fois. Vérifié à 375 px : retrait en cours de ligne, retrait après calcul, nouvelle opération, puis
+deux annulations.
+
 Explorations : vingt-huit. Jeux et casse-têtes : seize. Calcul mental : une activité. Raisonner : deux.
