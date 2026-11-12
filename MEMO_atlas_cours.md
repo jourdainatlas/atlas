@@ -692,3 +692,21 @@ La feuille passe de 59 à 64 exercices. Les 5 nouveaux (11, 15, 16, 17 et 19) s'
 `PARTIES` de `meta_ma_05.py`, en plus de la renumérotation automatique des `EXTRA` par `maj.py`. **Quand une
 partie autre que la synthèse grandit**, on compare les intervalles des parties de l'ancienne et de la nouvelle
 conversion avant de reconvertir.
+
+### 45. MPSI ch. 22 déposé ; correction de `tex2exos` sur les boucles `\foreach` (12 nov. 2026)
+
+Le chapitre 22, « Fonctions de deux variables », est déposé : cours de 18 pages et feuille `f-ma-22` de
+39 exercices (`meta_ma_22.py`). Ses autres réglages :
+- `annales_themes` : calcul-differentiel, optimisation, points-critiques, edp ;
+- « À revoir avant » : `[t-03, t-06]` ;
+- activités : aucune ne s'y rattache.
+
+« min max » et « flèches », étiquettes rouges d'une figure du bilan, sont exclus de la recherche. « sommet »
+(introduction), « col », « strict » et « classe » restent signalés à l'auteur.
+
+**Correction de `tex2exos.lire`.** La figure du corrigé 18 contient `\foreach \R in {…}`, et `\R` est une macro du
+préambule (`\mathbb{R}`). Le développement des macros changeait la variable de boucle en `\mathbb{R}`, et
+`pdftocairo` produisait un SVG vide (hauteur 0). Dans chaque `tikzpicture` du corps, les variables de `\foreach`
+sont maintenant renommées en `\fv<nom>`. Les figures qui ont une boucle changent donc d'empreinte à la prochaine
+conversion : on supprime les SVG orphelins non suivis par git, ceux qu'aucun fichier de `rubriques/` ne cite.
+Contrôle utile : aucun SVG de `documents/figures` ne doit contenir `<pageSet>` ni `height="0"`.

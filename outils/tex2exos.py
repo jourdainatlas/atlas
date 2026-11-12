@@ -19,6 +19,14 @@ def lire(p):
         corps = re.sub(r'\\par\s*\\needspace\{[^{}]*\}\s*\\(exo|partie)orig\{', r'\\\1{', s[i:])
         corps = re.sub(r'\\(exo|partie)orig\{', r'\\\1{', corps)
         s = s[:i] + corps
+        # Variables de boucle \foreach d'une figure qui portent le nom d'une macro du préambule (\foreach \R in …,
+        # alors que \R vaut \mathbb{R}) : le développement des macros les détruirait. On les renomme dans la figure.
+        def renommer(m):
+            fig = m.group(0)
+            for v in set(re.findall(r'\\foreach\s*\\([A-Za-z]+)', fig)):
+                fig = re.sub(r'\\' + v + r'(?![A-Za-z])', lambda _: '\\fv' + v, fig)
+            return fig
+        s = s[:i] + re.sub(r'\\begin\{tikzpicture\}.*?\\end\{tikzpicture\}', renommer, s[i:], flags=re.S)
     return s
 
 def accolade(s, i):
