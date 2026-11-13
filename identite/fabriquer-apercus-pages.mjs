@@ -13,7 +13,7 @@ import fs from 'fs';
 import path from 'path';
 import { execFileSync } from 'child_process';
 import { createRequire } from 'module';
-import { DOSSIER_APERCUS, LISTE_APERCUS } from './apercus-commun.mjs';
+import { DOSSIER_APERCUS, LISTE_APERCUS, couleurSombre } from './apercus-commun.mjs';
 const { chromium } = createRequire('/')('playwright');
 const args = process.argv.slice(2), tout = args.includes('--tout'), NM = path.join(args.find(a => !a.startsWith('--')) || '.', 'node_modules/@fontsource');
 const f = p => 'data:font/woff2;base64,' + fs.readFileSync(path.join(NM, p)).toString('base64');
@@ -25,11 +25,9 @@ const polices = `@font-face{font-family:Spectral;font-weight:600;src:url(${f('sp
 // Symboles et couleurs : repris du gabarit (planche de symboles, palette du thème sombre).
 const G = fs.readFileSync('gabarit.html', 'utf8');
 const planche = G.match(/<svg class="sym-sprite"[\s\S]*?<\/defs><\/svg>/)[0];
-const blocSombre = [...G.matchAll(/:root\[data-theme="dark"\] \{([^}]*)\}/g)].map(m => m[1]).join(';');   // toutes les déclarations du thème sombre
 const sy = G.match(/:root\[data-theme="dark"\] \{\s*(--sy-bd[\s\S]*?)\}/)[1];
 const classes = [...G.matchAll(/\.(sy-[a-z0-9]+) \{ fill: var\(--\1\); \}/g)].map(m => m[0]).join(' ')
   + ' .activites-sy1{fill:#b6ca4c}.activites-sy2{fill:#b6ca4c;opacity:.55}.activites-sy3{fill:#b6ca4c;opacity:.25}';
-const varSombre = n => (blocSombre.match(new RegExp(`--${n}:\\s*(#[0-9a-fA-F]{3,8})`)) || [])[1];
 const COUL = { edifice: '#55aaff', cours: '#35caa4', exercices: '#c793e6', annales: '#ffa24a', activites: '#b6ca4c' };
 const logo = `<svg viewBox="0 0 200 200" width="44" height="44"><rect x="4" y="4" width="192" height="192" rx="42" fill="#1d2027" stroke="#3a3f4a" stroke-width="8"/><g transform="translate(20 20) scale(0.8)"><path d="M150 150 L50 150 L100 50" fill="none" stroke="#a1a6af" stroke-width="13" stroke-linejoin="round"/><path d="M150 150 L100 50" fill="none" stroke="#e7e9ed" stroke-width="13" stroke-linecap="round"/><circle cx="50" cy="150" r="22" fill="#e7e9ed"/><circle cx="150" cy="150" r="16" fill="#e7e9ed"/><circle cx="100" cy="50" r="30" fill="#ff6d7d"/></g></svg>`;
 const cadre = `<!doctype html><meta charset="utf-8"><style>${polices}
@@ -76,7 +74,7 @@ if (aFaire.length) {
       const h = q('h1'); h.textContent = x.titre;                       // la taille du titre suit sa longueur
       h.style.fontSize = (nb < 16 ? 92 : nb < 28 ? 76 : nb < 44 ? 62 : nb < 70 ? 52 : nb < 110 ? 44 : 37) + 'px';
       h.style.webkitLineClamp = nb < 110 ? 3 : 4;
-    }, { x, c: (x.couleur && varSombre(x.couleur)) || COUL[x.rub] || '#a3a8b1' });
+    }, { x, c: (x.couleur && couleurSombre(x.couleur)) || COUL[x.rub] || '#a3a8b1' });
     fs.mkdirSync(path.dirname(fichier(x.cle)), { recursive: true });
     await p.screenshot({ path: fichier(x.cle) });
     faites[x.cle] = x.empreinte; nouvelles.push(fichier(x.cle));

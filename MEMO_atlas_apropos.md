@@ -841,6 +841,16 @@ Modifiés hors de mon domaine, à la demande de l'auteur : `rubriques/activites.
 et `activites/parcours.js` (cadres et liserés). Les signalements d'erreur des jeux restent rouges. Images d'aperçu
 des cinq activités refaites.
 
+Suites du 13 nov. (messages du domaine Activités). (a) Le parcours a une classe « Seconde » : le domaine Activités a
+ajouté `seconde: 0` à la table `NIV_COMPTE` de `majParcours` (la même que dans `activites/parcours.js`) ; vérifié,
+rien d'autre à changer, la pastille ne dépend ni des autres niveaux ni du dessin de la vignette du parcours.
+(b) L'empreinte d'une image d'aperçu (§77) ne contenait que le nom de la variable de couleur : un changement de
+valeur dans le gabarit (l'or de Raisonner) ne faisait pas signaler les images. `empreinteApercu` y ajoute désormais
+la valeur lue dans le thème sombre du gabarit (`couleurSombre`, dans `identite/apercus-commun.mjs`, que la fabrique
+emploie aussi). Seules les fiches qui portent une couleur sont concernées, c'est-à-dire les activités : leurs 54
+images ont été refaites (3 seulement ont changé d'un octet) ; hors Activités, aucune image ne dépend d'une variable
+(couleur fixe de la rubrique, écrite dans la fabrique : la changer demande d'incrémenter `VERSION_APERCU`).
+
 ## 79. Serveur OVH : type et compression des fichiers WebAssembly (13 nov. 2026)
 
 Demande du domaine Cours (atelier Python, Pyodide servi depuis `/python/pyodide/`). `pyodide.asm.wasm` était servi
