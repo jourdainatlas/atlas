@@ -1427,5 +1427,37 @@ qui suivait le parcours sans aller jusqu'à la réussite du compte : le test ré
 contrôle le retour au parcours (375 px sombre, 1280 px clair). RÈGLE : tout message qui contient un lien se
 vérifie affiché, dans le navigateur, jusqu'à l'état où le lien apparaît.
 
+### 158. Dix calculs : un corrigé pour chaque calcul manqué (13 nov. 2026)
+
+Demande de l'auteur (capture du bilan) : en cas d'erreur, donner le corrigé du calcul en plus de la bonne
+réponse, pour que l'élève comprenne son erreur.
+
+**Données.** Chaque question porte un champ `c`, le corrigé (HTML, formules en `<span class="kx">`). Dans
+`serie-calculs.js`, la fabrique le dépose par `cor(texte)` juste avant `question(...)`, qui le joint à la
+question et l'efface (`cor(...) && question(...)`) ; dans une table, c'est le dernier élément de la ligne.
+Toute nouvelle fabrique doit faire de même : le contrôle du §151 ne vérifie pas encore la présence de `c`,
+mais le test de passage le fait (0 question sans corrigé sur 35 000). Environ 200 gabarits de corrigé pour les
+45 thèmes : règle citée, puis calcul avec les nombres de la question (« Δ = b² − 4ac = (−2)² − 4 × (−1) ×
+(−1) = 4 − 4 = 0 »), ou formule de dérivation avec u et u′, ou développement usuel et substitution. Aides
+d'écriture : `pl` (signe explicite), `prod`, `carreDe`, `corI` (puissances de i), `puissancesMod`
+(congruences : théorème de Fermat si k = m − 1, sinon puissances successives arrêtées dès que l'une vaut 1 ou
+−1 ; huit congruences au plus).
+
+**Affichage.** `serie.js`, bilan : sous « Votre réponse · Réponse exacte », un bloc `.cor` « Corrigé. … »,
+seulement pour les calculs manqués. Texte « Comment jouer » et catalogue complétés.
+
+**Relecture indépendante (règle du §156).** Un agent a relu les corrigés des 45 thèmes (585 formes après
+regroupement, 222 000 questions tirées, 19 517 égalités et 1 684 congruences recalculées, formules compilées
+par KaTeX en mode strict) : aucune erreur mathématique. Corrigé d'après son rapport : « (1+x)^{1} » ; corrigé
+tautologique de i² et i³ ; « (x)² » ; corrigés du carré et du produit conjugué qui ne menaient pas au résultat ;
+produit de complexes sans les produits partiels ; dérivées de produits arrêtées avant la forme de la réponse ;
+(1 + a/n)ⁿ ; coefficients binomiaux ; chaînes de congruences trop longues (jusqu'à onze) ; « 1 × » inutile.
+Laissé : dénominateur commun b × d et non le plus petit (changerait aussi les réponses fausses) ; angles hors
+du premier quadrant sans mention de la symétrie ; « ]0, +∞[ » avec une virgule en Terminale ; termes nuls
+affichés (« 0² − … ») ; corrigés réduits à une formule. Les corrections faites après le rapport n'ont pas été
+relues une seconde fois ; elles ont repassé les contrôles numériques (35 000 réponses, 34 000 égalités de
+corrigés, toutes les congruences écrites) et le navigateur (147 séries jouées en se trompant, 1 096 corrigés
+affichés, sombre 375 px et clair 1280 px, aucune formule en erreur, aucun débordement).
+
 Explorations : vingt-huit. Jeux et casse-têtes : seize. Calcul mental : deux activités. Raisonner : quatre.
 Parcours du jour : une.
