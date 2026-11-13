@@ -212,6 +212,16 @@ def console(wid, src, reponses, saut):
     return json.dumps(res)
 `;
 
+// Le serveur peut servir pyodide.asm.wasm sous un autre type que application/wasm (Apache d'OVH lit « .asm » :
+// text/x-asm) ; WebAssembly le refuse alors. On rétablit le type de la réponse, sans toucher au contenu.
+const fetchOrigine = self.fetch.bind(self);
+self.fetch = async (...a) => {
+  const r = await fetchOrigine(...a);
+  const u = String(a[0]?.url ?? a[0]);
+  if (!/\.wasm(\?|$)/.test(u) || (r.headers.get('content-type') || '').startsWith('application/wasm')) return r;
+  return new Response(r.body, { status: r.status, statusText: r.statusText, headers: { 'Content-Type': 'application/wasm' } });
+};
+
 async function demarrer() {
   py = await loadPyodide({ indexURL: new URL('./pyodide/', import.meta.url).href });
   py.runPython(AMORCE);
