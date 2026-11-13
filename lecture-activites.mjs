@@ -22,7 +22,7 @@ export function pagesActivites(ctx) {
     page({ chemin: `activites/${a.id}/`, ancre: `activites/${a.id}`, titre: `ATLAS – Activité : ${texteBrut(a.titre)} (${a.niveau})`,
       // image d'aperçu de l'activité (§77 du mémo À propos) : sa vignette, dans la couleur de son domaine ou de son groupe
       apercu: { cle: `activites/${a.id}`, rub: 'activites', sur: `Activité${dom ? ' · ' + texteBrut(dom.titre) : ''}`, titre: texteBrut(a.titre), sous: a.niveau || '', vignette: a.vignette || '',
-        couleur: { analyse: 'c-ana', geometrie: 'c-geo', algebre: 'c-alg', nombres: 'c-nb', probabilites: 'c-nb', denombrement: 'c-nb' }[a.domaine] || { jeu: 'activites-jeu', calcul: 'activites-calcul', raison: 'activites-raison', geo: 'c-geo', annales: 'c-alg', marque: 'rouge' }[(dom || a).couleur] || 'c-ord' },
+        couleur: { analyse: 'c-ana', geometrie: 'c-geo', algebre: 'c-alg', nombres: 'c-nb', probabilites: 'c-nb', denombrement: 'c-nb' }[a.domaine] || { jeu: 'activites-jeu', calcul: 'activites-calcul', raison: 'activites-raison', geo: 'c-geo', annales: 'c-alg', marque: 'rouge', python: 'c-nb' }[(dom || a).couleur] || 'c-ord' },
       description: texteBrut(a.resume), fil: [fil0, { name: texteBrut(a.titre), href: `/activites/${a.id}/` }],
       corps: `<article class="fiche"><p class="sur-titre">Activité interactive · ${esc(a.niveau || '')}${dom ? ' · ' + esc(dom.titre) : ''}</p><h1>${a.titre}</h1>
 <div class="texte">${a.resume || ''}</div>
