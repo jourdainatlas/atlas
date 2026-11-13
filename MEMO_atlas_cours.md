@@ -719,3 +719,45 @@ Le jacobien de la projection reste strictement positif, la surface ne se replie 
 remplit le bord, sans élimination des parties cachées. Quadrillage `t` de deux lignes par sens, bord `t3`.
 Abandonnés : la colline en cloche (lue comme une tente) et la selle (illisible à 40 px). Générateur :
 `scratchpad/sym/surf_inj.py` (21 points par arête, coordonnées arrondies au dixième).
+
+### 47. Niveau Python – Lycée et atelier Python (13 nov. 2026)
+
+**Niveau.** `python`, intitulé « Python – Lycée », déclaré en dernier dans `rubriques/cours.yaml` (après Master) :
+placé après les Maths approfondies, il serait compté parmi les niveaux de prépa de la carte « Par où commencer ? »
+de l'accueil (domaine À propos, tranche `approfondies` → `master`). Aucun niveau ne le précède (choix de l'auteur) :
+pas d'entrée dans `cours-prerequis.yaml` ni dans les tables `PRECEDENT`. Cours `py-01` (« Initiation à Python »,
+41 pages, huit chapitres et deux annexes dans un seul PDF, `documents/cours/python/chap01_initiation_python.pdf`),
+feuille `f-py-01` (43 exercices en sept parties), métadonnées `outils/meta_py_01.py` (nœuds : les objets
+mathématiques manipulés, division euclidienne, connecteurs, définition par récurrence…, et une table `RETIRER` pour
+les correspondances fortuites). Symbole `console` (fenêtre de terminal, dessin générique : pas de logo).
+
+**Convertisseur.** `tex2exos.py` met à l'abri les environnements `lstlisting`, `python` et `sortie` avant le retrait
+des commentaires (« % » est l'opérateur modulo) et le développement des macros ; `python` donne un bloc
+```` ```python ````, `sortie` un bloc ```` ```sortie ```` (affichage, fond bleuté). `\code{…}` devient du code en ligne,
+y compris dans les cellules (un tableau qui contient du code est rendu en HTML). Correction générale de la
+typographie : les clôtures d'un bloc ```` ```tableau ```` étaient prises pour du code en ligne et décalaient la
+protection des blocs suivants (espace insécable posée dans un `print("… : ")`). Contrôle : les 28 blocs de l'énoncé
+et les 111 du corrigé sont identiques au .tex.
+
+**Atelier** (`python/atelier.js`, `python/atelier-worker.mjs`). Python 3.14 (Pyodide 314.0.6, `vendor/pyodide-314.0.6/`,
+13 Mo, licence MPL-2.0) est servi par le site (`site/python/pyodide/`, copié par `rendu.mjs`) et ne se télécharge
+qu'au premier « Exécuter ». Le code tourne dans un worker, dans le navigateur du visiteur : rien n'est exécuté sur
+le serveur. Éditeur (coloration, numéros, indentation automatique), Exécuter (F5 ou Ctrl+Entrée), Déboguer
+(toutes les étapes enregistrées, au plus 1 000, puis parcourues dans les deux sens, variables globales et locales,
+celles qui changent en orange), Arrêter (le worker est relancé), variables, console interactive qui partage les
+variables du programme, messages d'erreur avec une phrase d'aide en français. `input()` : la réponse se tape dans
+la console ; le programme est relancé depuis le début avec les réponses déjà données (même graine du hasard),
+l'affichage déjà produit n'étant pas répété, ce qui évite les en-têtes d'isolation (`htaccess-ovh`). Code de
+l'élève gardé dans son navigateur (`atlas-python:<id>`).
+- **Feuille** : sous l'énoncé de chaque exercice de niveau `python`, « S'entraîner en Python » ; l'éditeur reçoit
+  les programmes de l'énoncé, à la suite. Les blocs de code des feuilles sont colorés (observateur sur `#rubrique`).
+- **Cours** : `outils/cours_code.py` repère dans le PDF les fonds gris des blocs de code (`fondcode`) et les rattache
+  aux environnements `python` du .tex, rangé hors du site dans `outils/sources-cours/` (table `SOURCES`) ; résultat
+  versionné `outils/cours-code.json` (empreinte : recalculé seulement si le PDF ou le .tex change ; la page de titre
+  n'a pas de bouton). La visionneuse pose un bouton « ▶ Essayer » sur chaque bloc (52) ; l'atelier unique de la page
+  s'ouvre sous la page de l'exemple. Carte « Atelier Python » (atelier vide) entre Formulaires et Exercices.
+- **Pages de lecture** : une phrase renvoie à la page interactive (cours et exercices).
+- **Mise à jour du cours** : remplacer le PDF et le .tex, puis `python3 outils/cours_code.py py-01`.
+
+Signalé à l'auteur : « corps » (corps d'une boucle) est relevé en rouge comme terme défini, alors qu'il en est un
+autre en algèbre ; laissé tel quel. Termes écartés : texte, la borne, vaut, Arrêter, et deux fragments.

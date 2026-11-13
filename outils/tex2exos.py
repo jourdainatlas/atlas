@@ -252,6 +252,7 @@ class Conv:
         """Tableau à rendre en HTML (le texte doit pouvoir passer à la ligne) : colonne p{…}
         ou cellule de texte longue. Les tableaux numériques restent des array KaTeX."""
         if re.search(r'[pmb]\{', spec): return True
+        if '\\texttt{' in corps: return True          # code dans les cellules (feuilles Python) : tableau HTML
         # Depuis le design v5 des feuilles, les fonds d'en-tête s'appellent « cfond » au lieu de
         # « orange!50 », « corange!45 »… : on mesure les cellules avec l'ancien nom, pour que le choix
         # entre tableau HTML et array KaTeX ne dépende pas du renommage.
@@ -273,6 +274,7 @@ class Conv:
             cells = []
             for c in s.couper_cellules(li):
                 c = re.sub(r'\\phantom\{(?:[^{}]|\{[^{}]*\})*\}', '', c).strip()
+                c = re.sub(r'\\texttt\{((?:[^{}]|\\[{}])*)\}', lambda m: '`' + re.sub(r'\\([_%#&{}$])', r'\1', m.group(1)) + '`', c)
                 # \textbf{… $x$ …} et \emph{…} : convertis avant le découpage aux $ (accolades appariées)
                 for cmd, marque in (('textbf', '**'), ('emph', '*'), ('textit', '*')):
                     while True:
@@ -362,7 +364,7 @@ class Conv:
                 if not m: return t
                 fin = t.index('\\end{%s}' % nom, m.end())
                 t = t[:m.start()] + f(t[m.end():fin], t[m.start():fin + len('\\end{%s}' % nom)]) + t[fin + len('\\end{%s}' % nom):]
-        t = rempl_env(t, 'lstlisting', lambda c, tout: s.jeton('CODE', re.sub(r'^\[[^]]*\]', '', c).strip('\n')))
+        t = rempl_env(t, 'lstlisting', lambda c, tout: s.jeton('SORT' if c.startswith('[sortie]') else 'CODE', re.sub(r'^\[[^]]*\]', '', c).strip('\n')))
         t = rempl_env(t, 'tikzpicture', lambda c, tout: s.jeton('FIG', tout))
         t = re.sub(r'\\includegraphics(\[[^\]]*\])?\{([^}]*)\}', lambda m: s.jeton('IMG', (m.group(2).strip(), m.group(1) or '')), t)
         def tab(c, tout):
@@ -504,6 +506,7 @@ class Conv:
             p = re.sub(r'@@TABH\d+@@', lambda x: '\n\n```tableau\n' + s.ph[x.group(0)][1] + '\n```\n\n', p)
             def code(x): return '\n\n```python\n' + s.ph[x.group(0)][1] + '\n```\n\n'
             p = re.sub(r'@@CODE\d+@@', code, p)
+            p = re.sub(r'@@SORT\d+@@', lambda x: '\n\n```sortie\n' + s.ph[x.group(0)][1] + '\n```\n\n', p)
             def fig(x):
                 f = compiler_figure(s.ph[x.group(0)][1], s.pre)
                 return f'\n\n![Figure]({f})\n\n' if f else '\n\n*La figure est dans le PDF de la feuille.*\n\n'
@@ -538,8 +541,12 @@ def typographie(t):
     # suivie de « : » compte comme un mot, et les jetons gardent les sauts de ligne de ce qu'ils cachent
     gardes = []
     def jeton(m): gardes.append(m.group(0)); return '\ue000%d' % (len(gardes) - 1) + '\n' * m.group(0).count('\n') + '\ue001'
+    # Les clôtures d'un bloc ```tableau (dont le contenu est retouché) sont d'abord remplacées par des
+    # marques : sinon la clôture serait prise pour du code en ligne et décalerait la protection des blocs suivants.
+    t = re.sub(r'```tableau\n([\s\S]*?)\n```', lambda m: '\ue002' + m.group(1) + '\ue003', t)
     x = texte(PROTEGE.sub(jeton, t))
-    return re.sub(r'\ue000(\d+)\n*\ue001', lambda m: gardes[int(m.group(1))], x)
+    x = re.sub(r'\ue000(\d+)\n*\ue001', lambda m: gardes[int(m.group(1))], x)
+    return x.replace('\ue002', '```tableau\n').replace('\ue003', '\n```')
 
 def sans_arobase(t):
     """KaTeX refuse les séparateurs @{…} d'un préambule d'array : on les ôte (« l@{\\qquad}l » devient
@@ -635,6 +642,12 @@ def feuille(tex):
     # Le vrai \begin{document}, en début de ligne : le préambule v5 le cite dans un commentaire.
     m = re.search(r'(?m)^[ \t]*\\begin\{document\}', brut)
     pre, corps = brut[:m.start()], brut[m.end():]
+    # Blocs de code (lstlisting, et les environnements python et sortie des feuilles Python) : mis à l'abri
+    # avant le retrait des commentaires (« % » est l'opérateur modulo) et le développement des macros.
+    blocs = []
+    def abri(m):
+        blocs.append((m.group(1), m.group(2))); return '@@BLOCCODE%d@@' % (len(blocs) - 1)
+    corps = re.sub(r'\\begin\{(lstlisting|python|sortie)\}(.*?)\\end\{\1\}', abri, corps, flags=re.S)
     corps_sc = sans_commentaires(corps)
     # Macros définies après \begin{document} (ex. \graduations) : déplacées dans le préambule,
     # pour être développées dans le texte et connues à la compilation des figures.
@@ -648,6 +661,7 @@ def feuille(tex):
     M = lire_macros(sans_commentaires(pre))
     corps_sc = re.sub(r'\\(?:euro|texteuro)(?:\{\})?', '€', corps_sc)
     M.pop('textcircledd', None)                    # dessin TikZ d'un cercle : traité par cercles()
+    if 'code' in M: M['code'] = (1, r'\texttt{#1}')   # code en ligne des feuilles Python (sans couleur)
     corps = developper(corps_sc, M)
     # Étiquette cerclée dessinée en ligne : \tikz[baseline=(n.base)]{\node[circle,…] (n) {$e_{1}$};}
     corps = re.sub(r'\\tikz\s*\[baseline=\(\w+\.base\)\]\s*\{%?\s*\\node\[circle[^\]]*\]\s*\(\w+\)\s*\{\s*\$?((?:[^{}$]|\{[^{}]*\})*)\$?\s*\}\s*;?\s*\}',
@@ -657,6 +671,13 @@ def feuille(tex):
     # Chiffre coloré dans une cellule ou dans le texte : \textcolor{#…}{$2$} devient $\textcolor{#…}{2}$.
     corps = re.sub(r'\\textcolor\{(#[0-9a-fA-F]{6})\}\{\$([^$]*)\$\}', r'$\\textcolor{\1}{\2}$', corps)
     corps = re.sub(r'\\texttt\{((?:[^{}]|\\[{}])*)\}', lambda m: '\\texttt{%s}' % CODE_MATH.sub(lambda x: CODE_SYMB[x.group(1)], m.group(1)), corps)
+    def remettre(m):
+        env, c = blocs[int(m.group(1))]
+        opt = '[sortie]' if env == 'sortie' else ''
+        if env == 'lstlisting': c = re.sub(r'^\[[^]]*\]', '', c)
+        elif c.startswith('['): c = re.sub(r'^\[[^]]*\]', '', c)
+        return '\\begin{lstlisting}' + opt + c + '\\end{lstlisting}'
+    corps = re.sub(r'@@BLOCCODE(\d+)@@', remettre, corps)
     return pre, corps, sources(brut)
 
 def main():

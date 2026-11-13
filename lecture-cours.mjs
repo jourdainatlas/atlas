@@ -87,6 +87,7 @@ export function pagesCoursExercices(ctx) {
       f && bouton(pdf(f.pdf_enonce), 'Feuille (PDF)'), f && bouton(pdf(f.pdf_corrige), 'Corrigé (PDF)'),
       ...(R.cours?.formulaires || []).filter(x => x.pdf && (x.chapitres || []).includes(c.id)).map(x => bouton(pdf(x.pdf), `Formulaire : ${x.titre} (PDF)`))]);
     if (c.resume) h += relier(c.resume);
+    if (c.niveau === 'python') h += `<p class="l-meta">Sur la <a href="/#cours/${attr(c.id)}">page interactive du cours</a>, chaque exemple de code porte un bouton « Essayer » qui l'ouvre dans l'atelier Python : on l'exécute, on le suit pas à pas et on le modifie dans le navigateur, sans rien installer.</p>`;
     if ((c.sommaire || []).length) {
       h += `<h2 class="l-sec">Sommaire</h2><ol class="l-sommaire">${c.sommaire.map((s, i) => { const p = (c.sommaire_pages || [])[i];
         return `<li>${p && c.pdf ? `<a href="${attr(pdf(c.pdf, p))}">${s}</a> <span class="l-sorte">p. ${p}</span>` : s}</li>`; }).join('')}</ol>`;
@@ -135,6 +136,7 @@ export function pagesCoursExercices(ctx) {
       h += `<p class="l-meta l-etiquettes">${difficulte(e.etoiles)}${(e.types || []).map(t => `<span class="etiquette-type">${esc(t)}</span>`).join('')}</p>`;
       h += `<div class="exo"><div class="exo-enonce">${relier(e.enonce || '')}</div>`;   // classe exo : style du site pour l'énoncé et le corrigé
       if (e.source) h += `<p class="source-exo">Source : ${esc(e.source)}</p>`;
+      if (f.niveau === 'python') h += `<p class="l-meta">Cet exercice se travaille dans l'atelier Python de la <a href="/#exercices/ex/${attr(e.id)}">page interactive</a> : éditeur, exécution pas à pas, variables et console, dans le navigateur.</p>`;
       if (e.corrige) h += `<details class="corrige"><summary>Corrigé</summary><div class="contenu">${relier(e.corrige)}</div></details>`;
       h += `</div>`;
       h += boutons([bouton(pdf(f.pdf_enonce, e.page_enonce), `Énoncé PDF${e.page_enonce ? `, p. ${e.page_enonce}` : ''}`),

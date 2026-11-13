@@ -665,6 +665,18 @@ ${E[0] ? `  <lastBuildDate>${date(E[0].date)}</lastBuildDate>\n` : ''}${items}
 // npm, licence Apache 2.0), et non plus depuis un CDN tiers : rien d'extérieur ne s'exécute dans la page.
 fs.mkdirSync('site/pdfjs', { recursive: true });
 for (const f of ['pdf.min.js', 'pdf.worker.min.js']) fs.copyFileSync(`vendor/pdfjs-3.11.174/${f}`, `site/pdfjs/${f}`);
+// Atelier Python (niveau Python – Lycée) : l'atelier (python/), Pyodide 314.0.6 servi par le site (vendor/, copie
+// exacte du paquet npm, licence MPL-2.0) et les blocs de code des cours, placés sur les pages du PDF
+// (outils/cours-code.json, produit par outils/cours_code.py). Rien n'est chargé tant qu'on n'ouvre pas l'atelier.
+fs.mkdirSync('site/python/pyodide', { recursive: true });
+for (const f of ['atelier.js', 'atelier-worker.mjs']) fs.copyFileSync(`python/${f}`, `site/python/${f}`);
+for (const f of ['pyodide.mjs', 'pyodide.asm.mjs', 'pyodide.asm.wasm', 'python_stdlib.zip', 'pyodide-lock.json', 'LICENSE'])
+  fs.copyFileSync(`vendor/pyodide-314.0.6/${f}`, `site/python/pyodide/${f}`);
+{
+  const cc = JSON.parse(fs.readFileSync('outils/cours-code.json', 'utf8'));
+  for (const k of Object.keys(cc)) delete cc[k].sha;
+  fs.writeFileSync('site/cours-code.json', JSON.stringify(cc));
+}
 // Application installable : service worker, dont la version change à chaque publication (voir identite/sw.js).
 fs.writeFileSync('site/sw.js', fs.readFileSync('identite/sw.js', 'utf8').replace("'atlas-__VERSION__'", `'atlas-${empreinte(index)}'`));
 console.log(`Site écrit : site/index.html (${(index.length / 1024).toFixed(0)} Ko)`);

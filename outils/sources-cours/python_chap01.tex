@@ -1,0 +1,2310 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  COURS D'INITIATION A PYTHON - M. JOURDAIN
+%
+%  Document unique, decoupe en 8 chapitres + une annexe :
+%     1. Decouvrir Python
+%     2. Variables, types et calculs
+%     3. Tests et conditions
+%     4. Boucles bornees : l'instruction for
+%     5. Boucles non bornees : l'instruction while
+%     6. Les fonctions
+%     7. Les listes
+%     8. Quelques algorithmes classiques
+%     A. Annexe : messages d'erreur et memento
+%
+%  Preambule type habituel, augmente des paquets necessaires au code.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[a4paper,11pt,openany]{book}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage[table]{xcolor}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{tikz}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{tabularx}
+
+% ---- paquets ajoutes pour ce cours ----
+\usepackage{listings}                            % affichage du code Python
+\usepackage{pgfplots} \pgfplotsset{compat=1.18}  % courbes : rectangles, frequences
+\usetikzlibrary{arrows.meta,decorations.pathreplacing,patterns,positioning,fit,shapes.geometric,calc}
+
+\geometry{hmargin=2.5cm,vmargin=1.5cm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CODE COULEUR %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\definecolor{rougecours}{RGB}{192,0,0}
+
+% Palette du cours : une notion = une couleur, constante d'un bout a l'autre
+\definecolor{codebleu}{RGB}{0,90,160}       % mots-cles, code en ligne
+\definecolor{codevert}{RGB}{0,130,90}       % chaines de caracteres, valeurs
+\definecolor{codegris}{RGB}{120,120,120}    % commentaires
+\definecolor{fondcode}{RGB}{245,245,245}    % fond des blocs de code
+\definecolor{fondsortie}{RGB}{237,242,247}  % fond des affichages
+\definecolor{couleurvar}{RGB}{0,112,192}    % variables dans les schemas
+\definecolor{couleurval}{RGB}{224,150,0}    % valeurs dans les schemas
+\definecolor{couleurvrai}{RGB}{0,150,120}   % branche vraie
+\definecolor{couleurfaux}{RGB}{192,0,0}     % branche fausse
+
+% Terme du vocabulaire en cours de definition
+\newcommand{\mot}[1]{\textcolor{rougecours}{\textbf{#1}}}
+% Notation ou formule mise en avant en rouge
+\newcommand{\rmath}[1]{\textcolor{rougecours}{#1}}
+% Code cite dans une phrase
+\newcommand{\code}[1]{\texttt{\textcolor{codebleu}{#1}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% STYLE DU CODE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Attention : un bloc lstlisting passe dans l'environnement cadre (tabular),
+% mais PAS dans un tabularx, qui lit son contenu plusieurs fois.
+
+\lstdefinestyle{codepy}{%
+  language=Python,
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{fondcode},
+  keywordstyle=\color{codebleu}\bfseries,
+  commentstyle=\color{codegris}\itshape,
+  stringstyle=\color{codevert},
+  emph={True,False,None},emphstyle=\color{codevert}\bfseries,
+  showstringspaces=false,
+  frame=leftline,framerule=1.2pt,rulecolor=\color{codebleu},
+  xleftmargin=6mm,framexleftmargin=6mm,framexrightmargin=3mm,framextopmargin=2pt,
+  framexbottommargin=2pt,
+  columns=fullflexible,keepspaces=true,
+  extendedchars=true,inputencoding=utf8,
+  literate={é}{{\'e}}1 {è}{{\`e}}1 {ê}{{\^e}}1 {ë}{{\"e}}1 {à}{{\`a}}1 {â}{{\^a}}1
+           {ù}{{\`u}}1 {û}{{\^u}}1 {ô}{{\^o}}1 {î}{{\^i}}1 {ï}{{\"i}}1 {ç}{{\c c}}1
+           {É}{{\'E}}1 {È}{{\`E}}1 {À}{{\`A}}1 {œ}{{\oe}}1 {°}{{\textdegree}}1
+}
+
+\lstdefinestyle{sortie}{%
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{fondsortie},
+  frame=leftline,framerule=1.2pt,rulecolor=\color{codegris},
+  xleftmargin=6mm,framexleftmargin=6mm,framexrightmargin=3mm,framextopmargin=2pt,
+  framexbottommargin=2pt,
+  columns=fullflexible,keepspaces=true,
+  extendedchars=true,inputencoding=utf8,
+  literate={é}{{\'e}}1 {è}{{\`e}}1 {ê}{{\^e}}1 {à}{{\`a}}1 {â}{{\^a}}1
+           {ù}{{\`u}}1 {û}{{\^u}}1 {ô}{{\^o}}1 {î}{{\^i}}1 {ç}{{\c c}}1 {°}{{\textdegree}}1 {^}{{\raisebox{-0.55ex}{\textasciicircum}}}1
+}
+
+\lstnewenvironment{python}[1][]{\lstset{style=codepy,#1}}{}
+\lstnewenvironment{sortie}[1][]{\lstset{style=sortie,#1}}{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% EN-TETES ET PIEDS DE PAGE %%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\lauteur}{Initiation à Python - M. JOURDAIN}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE]{\footnotesize\rightmark}
+\fancyhead[RE]{\footnotesize\leftmark}
+\fancyhead[LO]{\footnotesize\leftmark}
+\fancyhead[RO]{\footnotesize\rightmark}
+\fancyfoot[LE,LO]{\thepage}
+\fancyfoot[RE,RO]{\footnotesize\lauteur}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\fancypagestyle{plain}{%
+  \fancyhf{}%
+  \fancyfoot[C]{\thepage}%
+  \renewcommand{\headrulewidth}{0pt}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ENVIRONNEMENTS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Cadre pour les definitions, proprietes et theoremes
+\newenvironment{cadre}%
+ {\par\vspace{2mm}\noindent\begin{tabular}{|@{\hspace{4mm}}p{0.93\textwidth}@{\hspace{4mm}}|}
+  \hline \\[-2mm]}%
+ {\\[2mm] \hline \end{tabular}\par\vspace{3mm}}
+
+\newcommand{\definition}{\textbf{Définition :}~}
+\newcommand{\propo}[1]{\textbf{Propriété #1 :}~}
+\newcommand{\theoreme}[1]{\textbf{Théorème #1 :}~}
+\newcommand{\methode}{\textbf{\underline{$\heartsuit$ Méthode :}}~}
+\newcommand{\syntaxe}{\textbf{\underline{Syntaxe :}}~}
+
+% Demonstration
+\newenvironment{demo}%
+ {\par\vspace{1mm}\noindent$\circ$ \textit{Démonstration :}~}%
+ {\hfill$\square$\par\vspace{2mm}}
+
+% Exemples et remarques : blocs indentes
+\newenvironment{exemple}%
+ {\par\vspace{1mm}\begin{list}{}{\leftmargin=1cm \rightmargin=0.5cm}\item[]%
+  \textit{Exemple :}~}%
+ {\end{list}\vspace{1mm}}
+
+\newenvironment{remarque}%
+ {\par\vspace{1mm}\begin{list}{}{\leftmargin=1cm \rightmargin=0.5cm}\item[]%
+  \textit{\underline{Remarque :}}~}%
+ {\end{list}\vspace{1mm}}
+
+% Rediger un raisonnement type, encadre a gauche
+\newenvironment{redaction}%
+ {\par\vspace{2mm}\begin{center}\begin{tabular}{|@{\hspace{3mm}}l@{\hspace{3mm}}}}%
+ {\end{tabular}\end{center}\vspace{2mm}}
+
+% Citation d'ouverture de chapitre
+\newcommand{\epigraphe}[2]{%
+  \begin{list}{}{\leftmargin=1cm \rightmargin=1cm}\item[]
+  \small\textit{#1}
+  \end{list}
+  \nopagebreak
+  \hfill\small #2 \par\vspace{4mm}}
+
+% Ensembles de nombres
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+
+\setlength{\parindent}{1cm}
+\renewcommand{\arraystretch}{1.4}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\begin{titlepage}
+\begin{center}
+\vspace*{3cm}
+{\Huge \textbf{Initiation à la programmation}}\\[6mm]
+{\Huge \textbf{en \textcolor{rougecours}{Python}}}\\[1.5cm]
+{\Large Des premières instructions aux listes}\\[2.5cm]
+
+\begin{minipage}{10.5cm}
+\begin{python}
+def bonjour(nom):
+    return "Bonjour " + nom + " !"
+
+for eleve in classe:
+    print(bonjour(eleve))
+\end{python}
+\end{minipage}
+
+\vfill
+{\large \lauteur}\\[3mm]
+\end{center}
+\end{titlepage}
+
+\tableofcontents
+\thispagestyle{empty}
+%===============================================================================
+\chapter{Découvrir Python}
+%===============================================================================
+
+\section{Introduction historique}
+
+\epigraphe{La machine analytique n'a aucune prétention à créer quoi que ce soit. Elle peut faire tout ce que nous savons lui ordonner d'accomplir.}{Ada Lovelace - \emph{Note G} des \emph{Sketch of the Analytical Engine}, Scientific Memoirs, 1843}
+
+Un ordinateur ne comprend rien. Il exécute, à une vitesse prodigieuse, une suite d'ordres élémentaires que quelqu'un a dû écrire avant lui, dans les moindres détails, sans laisser place au sous-entendu. Programmer, c'est précisément apprendre à écrire ces ordres : c'est un exercice de rigueur qui ressemble beaucoup à la rédaction d'une démonstration, et qui a sur elle un avantage rare, celui de pouvoir être vérifié immédiatement.
+
+\subsection{De la machine qui calcule à la machine qu'on programme}
+
+Les machines à calculer sont anciennes : la \emph{Pascaline} de \textbf{Blaise Pascal}, en 1642, additionne et soustrait au moyen d'engrenages. Mais elle ne fait que cela, et elle le fait toujours de la même façon. L'idée décisive vient de \textbf{Charles Babbage}, qui conçoit vers 1834 une \emph{machine analytique} capable d'enchaîner des opérations selon un plan fourni de l'extérieur, sur des cartes perforées. La machine ne sera jamais construite, mais \textbf{Ada Lovelace}, qui traduit en 1843 un mémoire de l'ingénieur italien Menabrea, y ajoute des notes trois fois plus longues que le texte original. Dans la dernière, la fameuse \emph{Note G}, elle décrit pas à pas la suite d'opérations qui calculerait les nombres de Bernoulli : c'est ce qu'on considère aujourd'hui comme le premier programme de l'histoire, écrit un siècle avant que n'existe une machine capable de l'exécuter.
+
+Il faut attendre les années 1940 et les travaux d'\textbf{Alan Turing} et de \textbf{John von Neumann} pour que la machine programmable devienne réalité. Les premiers ordinateurs se programment alors dans leur propre langue, une suite de nombres appelée \emph{langage machine}, illisible pour un humain. La naissance des \mot{langages de programmation} — le Fortran en 1957, le C en 1972 — répond à un besoin simple : écrire des instructions que l'on puisse relire, corriger et transmettre.
+
+\subsection{Python, de 1991 à nos jours}
+
+Pendant les vacances de Noël 1989, le Néerlandais \textbf{Guido van Rossum}, chercheur au \emph{Centrum Wiskunde \& Informatica} d'Amsterdam, entreprend d'écrire un langage de programmation pour occuper ses journées de congé. Il le veut lisible, concis, et facile à apprendre. La première version publique paraît en 1991. Quant au nom, il ne doit rien au serpent : van Rossum était un lecteur assidu des scripts des \emph{Monty Python}, la troupe comique britannique, et cherchait un nom court et un peu irrévérencieux.
+
+Python est aujourd'hui l'un des langages les plus employés au monde, de l'analyse de données à l'intelligence artificielle. C'est aussi, depuis 2009 en France, le langage retenu pour l'enseignement de l'algorithmique au lycée, et c'est à ce titre qu'il nous intéresse : il va nous permettre de faire effectuer à la machine les calculs répétitifs que nous ne pourrions pas mener à la main, et de tester nos conjectures avant de les démontrer.
+
+%===============================================================================
+\section{Qu'est-ce qu'un programme ?}
+%===============================================================================
+
+\subsection{Instructions et interpréteur}
+
+\begin{center}
+\begin{tabularx}{15cm}{||X}
+\noindent \textbf{\underline{Définition :}} Une \mot{instruction} est un ordre élémentaire que la machine sait exécuter. Un \mot{programme} est une suite finie d'instructions, écrites dans un ordre précis. Le \mot{langage} est la grammaire à laquelle ces instructions doivent obéir.
+\end{tabularx}
+\end{center}
+
+\begin{center}
+\begin{tabularx}{15cm}{||X}
+\noindent \textbf{\underline{Définition :}} L'\mot{interpréteur} Python est le programme qui lit votre texte, le traduit en langage machine et l'exécute, \emph{une instruction après l'autre, de haut en bas}.
+\end{tabularx}
+\end{center}
+
+\begin{center}
+\begin{tikzpicture}[font=\small,
+   boite/.style={draw,rounded corners=2pt,minimum height=1.1cm,align=center,inner sep=4pt}]
+  \node[boite,fill=fondcode,draw=codebleu,text width=3.2cm] (edit) at (0,0)
+       {\textbf{Vous}\\ écrivez le programme};
+  \node[boite,fill=white,draw=rougecours,text width=3.4cm] (interp) at (5.2,0)
+       {\textbf{L'interpréteur}\\ lit, traduit, exécute};
+  \node[boite,fill=fondsortie,draw=codegris,text width=3.2cm] (res) at (10.4,0)
+       {\textbf{La machine}\\ affiche le résultat};
+  \draw[-{Latex[length=2.5mm]},thick] (edit) -- (interp);
+  \draw[-{Latex[length=2.5mm]},thick] (interp) -- (res);
+  \node[below=1mm of interp,text width=4cm,align=center,font=\footnotesize\itshape]
+       {c'est lui qui signale\\ les erreurs};
+\end{tikzpicture}
+\end{center}
+
+La figure ci-dessus se lit de gauche à droite : rien ne se passe tant que l'interpréteur n'a pas été lancé, et tout ce que vous verrez à l'écran est ce que le programme aura explicitement demandé d'afficher.
+
+\begin{remarque}
+L'interpréteur ne devine jamais votre intention. S'il rencontre un ordre qu'il ne comprend pas, il s'arrête et affiche un message ; s'il comprend un ordre différent de celui que vous aviez en tête, il l'exécute sans broncher. Les deux situations sont fréquentes, et la seconde est de loin la plus redoutable.
+\end{remarque}
+
+\subsection{Deux façons de travailler}
+
+On peut s'adresser à Python de deux manières. En \mot{mode interactif}, on tape une instruction dans une console, on appuie sur la touche Entrée, et la réponse apparaît immédiatement. L'invite de commande est traditionnellement notée \code{>{}>{}>}. Ce mode est idéal pour essayer quelque chose ou vérifier une valeur.
+
+\begin{sortie}
+>>> 3 + 5
+8
+>>> 2 ** 10
+1024
+\end{sortie}
+
+En \mot{mode script}, on écrit l'ensemble du programme dans un fichier d'extension \code{.py}, puis on l'exécute d'un seul bloc. C'est le mode que nous emploierons dès qu'un programme dépassera deux lignes, car il permet de corriger et de relancer sans tout retaper.
+
+\begin{remarque}
+En mode interactif, Python affiche spontanément la valeur de ce que vous tapez. En mode script, il n'affiche \emph{rien} de lui-même : il faut le lui demander avec l'instruction \code{print}, que nous découvrons maintenant. Un programme qui « ne fait rien » a très souvent simplement oublié d'afficher son résultat.
+\end{remarque}
+
+%===============================================================================
+\section[Afficher avec print]{Afficher : l'instruction \texttt{print}}
+%===============================================================================
+
+\begin{cadre}
+\syntaxe L'instruction \code{print} affiche à l'écran ce qu'on lui donne entre parenthèses.
+\begin{python}
+print("Bonjour tout le monde")
+print(3 + 5)
+\end{python}
+\end{cadre}
+
+Les guillemets sont essentiels : ils délimitent un \mot{texte}, que Python recopie tel quel sans chercher à le comprendre. Sans guillemets, Python interprète ce qu'il lit comme un calcul et affiche le résultat. La différence saute aux yeux sur cet exemple.
+
+\begin{python}
+print("3 + 5")
+print(3 + 5)
+\end{python}
+
+Affichage obtenu :
+
+\begin{sortie}
+3 + 5
+8
+\end{sortie}
+
+\begin{exemple}
+On peut donner à \code{print} plusieurs éléments séparés par des virgules : ils sont affichés à la suite, séparés par une espace. Le programme
+\begin{python}
+print("Le double de", 7, "vaut", 2 * 7)
+\end{python}
+produit l'affichage \code{Le double de 7 vaut 14}. Remarquez que le texte est recopié, tandis que le calcul \code{2 * 7} est effectué avant l'affichage : Python évalue toujours ce qu'il peut évaluer avant d'afficher quoi que ce soit.
+\end{exemple}
+
+\begin{remarque}
+Chaque \code{print} termine par un passage à la ligne : deux instructions \code{print} successives donnent deux lignes d'affichage. Un \code{print()} vide, sans rien entre les parenthèses, produit une ligne blanche, ce qui est commode pour aérer un affichage un peu long.
+\end{remarque}
+
+\begin{remarque}
+L'erreur la plus répandue chez les débutants consiste à oublier une parenthèse ou un guillemet fermants. Prenez tout de suite l'habitude de les écrire par paire : tapez \code{print()} puis revenez placer le contenu à l'intérieur, plutôt que d'écrire de gauche à droite en espérant ne rien oublier.
+\end{remarque}
+
+%===============================================================================
+\section{Commentaires et lisibilité}
+%===============================================================================
+
+\begin{center}
+\begin{tabularx}{15cm}{||X}
+\noindent \textbf{\underline{Définition :}} Un \mot{commentaire} est un texte destiné au lecteur humain et ignoré par l'interpréteur. En Python, tout ce qui suit le caractère \code{\#} sur une ligne est un commentaire.
+\end{tabularx}
+\end{center}
+
+\begin{python}
+# Programme d'accueil - version du 3 septembre
+print("Bonjour")      # on salue l'utilisateur
+\end{python}
+
+Un commentaire utile ne répète pas le code : il explique \emph{pourquoi} on fait quelque chose, ou rappelle la formule mathématique dont une ligne est la traduction. Écrire \code{\# on ajoute 1 à n} au-dessus de la ligne \code{n = n + 1} n'apporte rien ; écrire \code{\# n compte le nombre d'essais déjà effectués} éclaire tout le programme.
+
+\begin{remarque}
+Le commentaire sert aussi à neutraliser provisoirement une ligne que l'on soupçonne fautive, sans l'effacer. C'est une technique de recherche d'erreur que nous emploierons au chapitre 8.
+\end{remarque}
+
+%===============================================================================
+\section{Lire un message d'erreur}
+%===============================================================================
+
+Se tromper en programmant n'est pas un accident, c'est l'état normal du travail. Ce qui distingue un programmeur expérimenté d'un débutant n'est pas l'absence d'erreurs, mais la vitesse à laquelle il les identifie. Or Python fournit pour cela un message précieux, que la plupart des élèves commencent par ne pas lire.
+
+Supposons que le fichier \code{essai.py} contienne les deux lignes suivantes, la seconde faisant appel à une variable \code{prix} qui n'a jamais été définie.
+
+\begin{python}
+print("bonjour")
+print(prix)
+\end{python}
+
+L'exécution affiche d'abord \code{bonjour}, puis s'interrompt sur ce message :
+
+\begin{sortie}
+Traceback (most recent call last):
+  File "essai.py", line 2, in <module>
+    print(prix)
+          ^^^^
+NameError: name 'prix' is not defined
+\end{sortie}
+
+\begin{cadre}
+\methode Un message d'erreur se lit \textbf{de bas en haut}, et il comporte trois informations.
+\begin{itemize}[leftmargin=6mm,itemsep=1mm,topsep=1mm]
+\item La \textbf{dernière ligne} donne le type de l'erreur et sa cause : ici, le nom \code{prix} n'est pas défini.
+\item La \textbf{ligne indiquée} précise où Python a buté : ligne 2 du fichier \code{essai.py}. L'erreur peut avoir été commise plus haut, mais c'est là qu'elle se manifeste.
+\item Les \textbf{accents circonflexes} soulignent l'élément précis qui pose problème.
+\end{itemize}
+\end{cadre}
+
+\begin{exemple}
+Voici les trois erreurs que l'on rencontre le plus tôt. Une \code{SyntaxError} signale une phrase mal formée, par exemple un deux-points oublié après un test : Python affiche alors \code{SyntaxError: expected ':'}. Une \code{NameError} signale un nom inconnu, le plus souvent une faute de frappe sur le nom d'une variable. Une \code{TypeError} signale une opération impossible entre deux natures d'objets : l'instruction \code{print("2" + 3)} déclenche le message \code{TypeError: can only concatenate str (not "int") to str}, autrement dit « on ne peut ajouter du texte qu'à du texte ». Nous comprendrons précisément pourquoi au chapitre suivant.
+\end{exemple}
+
+\begin{remarque}
+Une erreur de syntaxe est détectée \emph{avant} toute exécution : si votre programme contient une telle faute à la ligne 40, rien du tout ne s'exécutera, pas même la ligne 1. Une \code{NameError}, au contraire, survient pendant l'exécution : les lignes précédentes ont bien été exécutées, comme le montre le \code{bonjour} affiché ci-dessus.
+\end{remarque}
+
+\begin{remarque}
+Le pire des messages est celui qui n'apparaît pas. Un programme qui s'exécute sans erreur n'est pas pour autant un programme juste : il fait ce que vous avez écrit, non ce que vous vouliez. C'est pourquoi chaque programme de ce cours sera accompagné d'un résultat attendu, calculé à la main ou connu par ailleurs, auquel comparer l'affichage obtenu.
+\end{remarque}
+
+\bigskip
+
+\begin{center}
+\begin{tabular}{|>{\columncolor{orange!50}}l|l|}
+\hline
+\rowcolor{orange!50} \textbf{Ce que j'ai écrit} & \textbf{Ce que Python comprend} \\
+\hline
+\code{print("Bonjour")} & affiche le texte \code{Bonjour} \\
+\hline
+\code{print(2 + 3)} & calcule, puis affiche \code{5} \\
+\hline
+\code{print("2 + 3")} & affiche le texte \code{2 + 3} \\
+\hline
+\code{\# Bonjour} & n'affiche rien, ligne ignorée \\
+\hline
+\code{print(Bonjour)} & cherche une variable nommée \code{Bonjour}, et échoue \\
+\hline
+\end{tabular}
+\end{center}
+
+Ce tableau résume à lui seul le chapitre : tout l'art consiste à distinguer ce qui est du texte de ce qui est un calcul, et c'est l'objet du chapitre suivant, consacré aux variables et aux types.
+%===============================================================================
+\chapter{Variables, types et calculs}
+%===============================================================================
+
+\epigraphe{Explicite vaut mieux qu'implicite.}{Tim Peters - \emph{The Zen of Python}, PEP 20, 2004}
+
+Un programme qui se contente d'afficher un texte fixe n'a guère d'intérêt : on l'aurait écrit plus vite à la main. Tout change dès que le programme manipule des valeurs qu'il ne connaît pas à l'avance, qu'il les range quelque part, les modifie, les combine. Ce chapitre installe les deux notions sur lesquelles reposera tout le reste du cours : la \emph{variable}, qui retient une valeur, et le \emph{type}, qui dit ce que l'on a le droit de faire avec.
+
+%===============================================================================
+\section{Variables et affectation}
+%===============================================================================
+
+\subsection{Ranger une valeur}
+
+\begin{center}
+\begin{tabularx}{15cm}{||X}
+\noindent \textbf{\underline{Définition :}} Une \mot{variable} est un nom associé à un emplacement de la mémoire, dans lequel est rangée une valeur. L'instruction \code{nom = valeur} s'appelle une \mot{affectation} : elle range la valeur de droite dans la variable de gauche.
+\end{tabularx}
+\end{center}
+
+\begin{python}
+prix = 12.5
+quantite = 4
+total = prix * quantite
+print(total)
+\end{python}
+
+Ce programme affiche \code{50.0}. L'interpréteur a procédé en quatre temps, dans l'ordre des lignes : il a rangé \code{12.5} sous le nom \code{prix}, puis \code{4} sous le nom \code{quantite}, puis il a calculé le produit \code{12.5 * 4} et rangé le résultat sous le nom \code{total}, et enfin il a affiché ce dernier.
+
+\begin{cadre}
+\propo{} L'exécution d'une affectation \code{nom = expression} se fait toujours en deux étapes, \textbf{dans cet ordre} :
+\begin{enumerate}[leftmargin=8mm,itemsep=0.5mm,topsep=1mm]
+\item l'expression de droite est entièrement évaluée, c'est-à-dire calculée ;
+\item la valeur obtenue est rangée dans la variable de gauche, dont l'ancien contenu est perdu.
+\end{enumerate}
+\end{cadre}
+
+\begin{center}
+\begin{tikzpicture}[font=\small]
+  % avant
+  \node[font=\bfseries] at (2,2.4) {Avant \texttt{x = x + 1}};
+  \draw[thick,couleurvar,fill=fondcode] (1.2,1.2) rectangle (2.8,1.9);
+  \node[couleurval] at (2,1.55) {\texttt{5}};
+  \node[couleurvar,left=1mm] at (1.2,1.55) {\texttt{x}};
+  \draw[-{Latex[length=2mm]},couleurvar] (0.75,1.55) -- (1.15,1.55);
+  \node[align=center,font=\footnotesize\itshape] at (2,0.6) {on calcule d'abord\\ $5+1$, ce qui donne $6$};
+  % fleche
+  \draw[-{Latex[length=3mm]},very thick,rougecours] (4,1.55) -- (6,1.55);
+  % apres
+  \node[font=\bfseries] at (8,2.4) {Après \texttt{x = x + 1}};
+  \draw[thick,couleurvar,fill=fondcode] (7.2,1.2) rectangle (8.8,1.9);
+  \node[couleurval] at (8,1.55) {\texttt{6}};
+  \node[couleurvar,left=1mm] at (7.2,1.55) {\texttt{x}};
+  \draw[-{Latex[length=2mm]},couleurvar] (6.75,1.55) -- (7.15,1.55);
+  \node[align=center,font=\footnotesize\itshape] at (8,0.6) {puis on range $6$ dans \texttt{x} :\\ l'ancien $5$ est effacé};
+\end{tikzpicture}
+\end{center}
+
+Cette figure montre ce qui se passe dans la mémoire lors de l'instruction \code{x = x + 1} : l'étiquette \code{x} désigne toujours la même case, mais son contenu a changé.
+
+\begin{remarque}
+L'erreur la plus répandue est de lire \code{x = x + 1} comme une équation. Ce serait une équation sans solution, et pourtant l'instruction fonctionne parfaitement. Le signe \code{=} n'est pas ici le symbole d'une égalité, mais l'ordre « range à gauche ce que tu viens de calculer à droite ». Nous verrons au chapitre 3 que l'égalité mathématique, elle, se note \code{==}.
+\end{remarque}
+
+\begin{remarque}
+Une affectation ne crée aucun lien durable entre les variables. Si l'on écrit \code{a = 3} puis \code{b = a} puis \code{a = 10}, la variable \code{b} vaut toujours $3$ : elle a reçu une copie de la valeur au moment du passage de la ligne, et non une promesse de suivre \code{a}. Nous nuancerons ce point au chapitre 7, où les listes se comporteront différemment.
+\end{remarque}
+
+\subsection{Nommer ses variables}
+
+Un nom de variable commence par une lettre ou le caractère \code{\_}, ne contient ni espace ni accent ni signe de ponctuation, et ne doit pas être un mot réservé du langage comme \code{if}, \code{for}, \code{while} ou \code{print}. Python distingue les majuscules des minuscules : \code{Total} et \code{total} désignent deux variables différentes, ce qui est une source d'erreurs inépuisable.
+
+\begin{cadre}
+\methode Choisissez des noms qui disent ce que la variable contient. Le programme
+\begin{python}
+n = 4
+p = 12.5
+t = n * p
+\end{python}
+et le programme
+\begin{python}
+quantite = 4
+prix_unitaire = 12.5
+total = quantite * prix_unitaire
+\end{python}
+font exactement la même chose, mais seul le second se relit six mois plus tard. Réservez les noms d'une lettre aux objets mathématiques dont c'est l'usage : un indice \code{i}, un entier \code{n}, une abscisse \code{x}.
+\end{cadre}
+
+\begin{exemple}
+Pour échanger le contenu de deux variables, Python offre une écriture particulièrement commode : l'instruction \code{a, b = b, a} évalue d'abord le couple de droite, puis affecte simultanément. Ainsi, après
+\begin{python}
+a = 3
+b = 7
+a, b = b, a
+\end{python}
+la variable \code{a} vaut $7$ et \code{b} vaut $3$. Dans la plupart des autres langages, cet échange exige une variable auxiliaire ; nous nous en servirons au chapitre 8 pour écrire un algorithme de tri.
+\end{exemple}
+
+%===============================================================================
+\section{Les types de données}
+%===============================================================================
+
+\begin{center}
+\begin{tabularx}{15cm}{||X}
+\noindent \textbf{\underline{Définition :}} Le \mot{type} d'une valeur est la nature de cette valeur. Les quatre types fondamentaux sont l'entier (\code{int}), le nombre à virgule flottante (\code{float}), la chaîne de caractères (\code{str}) et le booléen (\code{bool}). L'instruction \code{type(v)} renvoie le type de la valeur \code{v}.
+\end{tabularx}
+\end{center}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|l|l|l|l|}
+\hline
+\rowcolor{orange!50} \textbf{Type} & \textbf{Nature} & \textbf{Exemples} & \textbf{Ensemble associé} \\
+\hline
+\code{int} & entier relatif & \code{7}, \code{0}, \code{-15} & $\Z$ \\
+\hline
+\code{float} & nombre décimal approché & \code{2.5}, \code{-0.75}, \code{3.0} & une partie de $\D$ \\
+\hline
+\code{str} & texte & \code{"bonjour"}, \code{"12"} & --- \\
+\hline
+\code{bool} & valeur de vérité & \code{True}, \code{False} & $\{\text{vrai},\text{faux}\}$ \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{remarque}
+La virgule décimale s'écrit avec un \emph{point} : $2{,}5$ se code \code{2.5}. La virgule, en Python, sert exclusivement à séparer des éléments dans une liste ou des arguments dans des parenthèses. Écrire \code{x = 2,5} ne produit pas d'erreur, mais range dans \code{x} le couple $(2\,;5)$, ce qui fausse silencieusement tous les calculs suivants : c'est exactement le type d'erreur que Python ne signale pas.
+\end{remarque}
+
+\subsection{Passer d'un type à l'autre}
+
+\begin{center}
+\begin{tikzpicture}[font=\small,
+  pat/.style={draw,thick,ellipse,minimum width=2.9cm,minimum height=1.2cm},
+  fl/.style={-{Latex[length=2mm]},thick},
+  et/.style={font=\footnotesize,fill=white,inner sep=1.5pt}]
+  \node[pat,draw=codevert,fill=codevert!8] (str) at (0,0) {\code{str} : \texttt{"7"}};
+  \node[pat,draw=couleurvar,fill=couleurvar!8] (int) at (5.4,0) {\code{int} : \texttt{7}};
+  \node[pat,draw=couleurval,fill=couleurval!8] (flo) at (10.8,0) {\code{float} : \texttt{7.0}};
+  \draw[fl,couleurvar] (str) to[bend left=32] node[et,above,text=couleurvar] {\code{int()}} (int);
+  \draw[fl,codevert]   (int) to[bend left=32] node[et,below,text=codevert] {\code{str()}} (str);
+  \draw[fl,couleurval] (int) to[bend left=32] node[et,above,text=couleurval] {\code{float()}} (flo);
+  \draw[fl,couleurvar] (flo) to[bend left=32] node[et,below,text=couleurvar] {\code{int()} : on \emph{tronque}} (int);
+\end{tikzpicture}
+\end{center}
+
+Chaque flèche de ce schéma correspond à une instruction de conversion ; on y lit en particulier que le passage de \code{float} à \code{int} n'est pas un arrondi, mais une troncature vers zéro. Les mêmes noms assurent le passage direct entre \code{str} et \code{float}.
+
+\begin{exemple}
+Les conversions les plus fréquentes donnent :
+\begin{python}
+print(int(3.9))     # 3   : la partie décimale est supprimée
+print(int(-3.9))    # -3  : on tronque vers 0, on n'arrondit pas
+print(float(7))     # 7.0
+print(str(7) + "1") # 71  : concaténation de deux textes
+print(int("12") + 1)  # 13 : le texte "12" devient le nombre 12
+\end{python}
+La troisième ligne mérite attention : \code{str(7) + "1"} ne vaut pas $8$ mais le texte \code{"71"}, car l'opérateur \code{+} appliqué à deux chaînes les met bout à bout. C'est ce qu'on appelle la \mot{concaténation}.
+\end{exemple}
+
+\begin{remarque}
+Pour obtenir un véritable arrondi, on dispose de \code{round}. Attention : \code{round(3.14159, 2)} donne \code{3.14}, mais \code{round(2.5)} donne \code{2} et non \code{3}. Python applique en effet l'arrondi \emph{au pair le plus proche} en cas d'égalité parfaite, convention adoptée pour éviter un biais systématique lorsqu'on somme un grand nombre d'arrondis. La convention scolaire française, elle, arrondirait à $3$.
+\end{remarque}
+
+\begin{remarque}
+Un \code{float} n'est presque jamais la valeur exacte du nombre qu'il représente : c'est une approximation binaire. L'instruction \code{print(0.1 + 0.2)} affiche \code{0.30000000000000004}. Il n'y a là aucun bug : $0{,}1$ n'a pas d'écriture binaire finie, de même que $\tfrac{1}{3}$ n'a pas d'écriture décimale finie. Nous en tirerons au chapitre 3 une conséquence pratique très importante sur la façon de comparer deux nombres.
+\end{remarque}
+
+%===============================================================================
+\section{Les opérations}
+%===============================================================================
+
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|c|l|l|l|}
+\hline
+\rowcolor{orange!50} \textbf{Opérateur} & \textbf{Signification} & \textbf{Exemple} & \textbf{Résultat} \\
+\hline
+\code{+} \quad \code{-} \quad \code{*} & somme, différence, produit & \code{3 * 4} & \code{12} \\
+\hline
+\code{/} & quotient décimal & \code{7 / 2} & \code{3.5} \\
+\hline
+\code{**} & puissance & \code{2 ** 10} & \code{1024} \\
+\hline
+\code{//} & quotient entier & \code{7 // 2} & \code{3} \\
+\hline
+\code{\%} & reste de la division & \code{7 \% 2} & \code{1} \\
+\hline
+\end{tabular}
+\end{center}
+
+Les règles de priorité sont celles des mathématiques : la puissance d'abord, puis les produits et quotients, puis les sommes et différences, les parenthèses l'emportant sur tout. Ainsi \code{2 + 3 * 4} vaut $14$, et il faut écrire \code{(2 + 3) * 4} pour obtenir $20$.
+
+\begin{remarque}
+L'opérateur \code{/} renvoie \emph{toujours} un \code{float}, même lorsque la division tombe juste : \code{10 / 2} vaut \code{5.0} et non \code{5}. Cela n'a aucune importance dans un calcul, mais en a une lorsqu'on affiche un résultat ou qu'on s'en sert comme indice au chapitre 7.
+\end{remarque}
+
+\begin{cadre}
+\propo{} Pour deux entiers $a$ et $b$ avec $b > 0$, les instructions \code{a // b} et \code{a \% b} donnent respectivement le quotient $q$ et le reste $r$ de la \textbf{division euclidienne} de $a$ par $b$, c'est-à-dire l'unique couple d'entiers tel que
+\[ a = b \times q + r \qquad \text{avec} \qquad 0 \leqslant r < b .\]
+\end{cadre}
+
+\begin{exemple}
+On a \code{17 // 5} qui vaut $3$ et \code{17 \% 5} qui vaut $2$, et l'on vérifie que $17 = 5 \times 3 + 2$ avec $0 \leqslant 2 < 5$. Le reste sert constamment : un nombre $n$ est pair si et seulement si \code{n \% 2} vaut $0$, et divisible par $7$ si et seulement si \code{n \% 7} vaut $0$. Nous nous en servirons dès le chapitre 3.
+\end{exemple}
+
+\begin{remarque}
+Sur les entiers négatifs, Python reste fidèle à la définition mathématique ci-dessus, ce qui surprend : \code{-7 // 2} vaut $-4$, et non $-3$, car $-7 = 2 \times (-4) + 1$ avec un reste $1$ bien compris entre $0$ et $2$. De même \code{-7 \% 2} vaut $1$. Beaucoup de calculatrices, elles, tronquent vers zéro et annoncent $-3$ : ce n'est pas la même convention, et c'est Python qui a raison du point de vue de l'arithmétique.
+\end{remarque}
+
+\subsection{Le module \texttt{math}}
+
+Les fonctions mathématiques usuelles ne sont pas disponibles immédiatement : il faut charger le \mot{module} qui les contient, au moyen d'une instruction \code{import} placée en tête du programme.
+
+\begin{python}
+import math
+
+print(math.sqrt(2))     # 1.4142135623730951
+print(math.pi)          # 3.141592653589793
+print(math.floor(3.7))  # 3, la partie entière
+\end{python}
+
+\begin{remarque}
+La racine carrée obtenue est une valeur approchée à une quinzaine de décimales, jamais le nombre $\sqrt{2}$ lui-même, qui est irrationnel. Python calcule vite, mais il calcule de façon approchée dès qu'il quitte les entiers : il ne remplacera donc jamais une démonstration.
+\end{remarque}
+
+%===============================================================================
+\section{Dialoguer avec l'utilisateur}
+%===============================================================================
+
+\begin{center}
+\begin{tabularx}{15cm}{||X}
+\noindent \textbf{\underline{Définition :}} L'instruction \code{input("message")} affiche le message, attend que l'utilisateur tape quelque chose puis valide, et renvoie ce qui a été tapé \mot{sous forme de chaîne de caractères}.
+\end{tabularx}
+\end{center}
+
+\begin{python}
+prenom = input("Quel est ton prénom ? ")
+print("Bonjour", prenom)
+\end{python}
+
+\begin{cadre}
+\methode Pour récupérer un \emph{nombre}, il faut convertir explicitement ce que renvoie \code{input}, car c'est toujours du texte.
+\begin{python}
+age = int(input("Quel est ton âge ? "))
+print("L'an prochain tu auras", age + 1, "ans")
+\end{python}
+Sans le \code{int(...)}, l'instruction \code{age + 1} provoquerait l'erreur \code{TypeError} rencontrée au chapitre 1, puisqu'on ne peut pas ajouter $1$ à un texte.
+\end{cadre}
+
+\begin{remarque}
+Cette conversion est aussi un piège : si l'utilisateur tape \code{douze} au lieu de \code{12}, l'instruction \code{int(...)} échoue avec une \code{ValueError}. Un programme robuste devrait prévoir ce cas ; nous en aurons les moyens au chapitre suivant, avec les tests.
+\end{remarque}
+
+\begin{remarque}
+Dans les exercices de mathématiques, on préfère souvent se passer de \code{input} et fixer les valeurs en tête de programme, ou mieux, les passer en paramètres d'une fonction, comme nous le ferons au chapitre 6. Un programme sans \code{input} a l'immense avantage de se relancer à l'identique, ce qui permet de comparer deux exécutions.
+\end{remarque}
+%===============================================================================
+\chapter{Tests et conditions}
+%===============================================================================
+
+\epigraphe{Les tests révèlent la présence de bugs, non leur absence.}{Edsger W. Dijkstra - \emph{Software Engineering Techniques}, conférence de l'OTAN, Rome, 1969, p. 16}
+
+Jusqu'ici, nos programmes s'exécutaient ligne après ligne, toujours de la même façon. Ils ne savaient pas \emph{choisir}. Or la plupart des raisonnements mathématiques procèdent par disjonction de cas : si le discriminant est négatif alors il n'y a pas de solution réelle, sinon il y en a. Ce chapitre donne à nos programmes ce pouvoir de bifurquer, et il commence par l'objet qui le rend possible : le booléen.
+
+%===============================================================================
+\section{Booléens et comparaisons}
+%===============================================================================
+
+\begin{center}
+\begin{tabularx}{15cm}{||X}
+\noindent \textbf{\underline{Définition :}} Un \mot{booléen} est une valeur de vérité. Il n'en existe que deux, notées \code{True} et \code{False}, avec une majuscule. Le type correspondant est \code{bool}.
+\end{tabularx}
+\end{center}
+
+Les booléens ne se tapent presque jamais directement : ils apparaissent comme \emph{résultat} d'une comparaison. L'instruction \code{print(3 < 5)} affiche \code{True}, car l'affirmation « $3$ est strictement inférieur à $5$ » est vraie.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|c|l|c|l|}
+\hline
+\rowcolor{orange!50} \textbf{En Python} & \textbf{Signification} & \textbf{En Python} & \textbf{Signification} \\
+\hline
+\code{a == b} & $a$ est égal à $b$ & \code{a != b} & $a$ est différent de $b$ \\
+\hline
+\code{a < b} & $a < b$ & \code{a <= b} & $a \leqslant b$ \\
+\hline
+\code{a > b} & $a > b$ & \code{a >= b} & $a \geqslant b$ \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{remarque}
+Le double signe \code{==} n'est pas une coquetterie. Le simple \code{=} est déjà pris : il sert à affecter, comme nous l'avons vu au chapitre 2. Confondre les deux est l'erreur la plus répandue du débutant, et Python la signale par une \code{SyntaxError} : écrire \code{if x = 3} n'a aucun sens, puisqu'on ne peut pas « ranger dans un test ». Retenez la formule : un seul signe pour \emph{ranger}, deux signes pour \emph{demander}.
+\end{remarque}
+
+\begin{remarque}
+On peut comparer autre chose que des nombres. Les chaînes se comparent dans l'ordre du dictionnaire, si bien que \code{"abricot" < "banane"} vaut \code{True}. Attention toutefois : les majuscules passent avant toutes les minuscules, donc \code{"Zoé" < "abricot"} vaut également \code{True}.
+\end{remarque}
+
+\begin{cadre}
+\methode Ne testez jamais l'égalité de deux nombres à virgule par \code{==}. Nous avons vu au chapitre 2 que \code{0.1 + 0.2} vaut \code{0.30000000000000004} : l'instruction \code{0.1 + 0.2 == 0.3} renvoie donc \code{False}. On teste à la place que l'écart est négligeable :
+\begin{python}
+if abs(x - y) < 1e-9:
+    print("x et y sont égaux, aux erreurs d'arrondi près")
+\end{python}
+La notation \code{1e-9} désigne $10^{-9}$. Cette précaution ne concerne que les \code{float} : sur des entiers, \code{==} est parfaitement fiable.
+\end{cadre}
+
+%===============================================================================
+\section{Combiner des conditions}
+%===============================================================================
+
+\begin{center}
+\begin{tabularx}{15cm}{||X}
+\noindent \textbf{\underline{Définition :}} Étant donné deux booléens $A$ et $B$, l'expression \code{A and B} est vraie lorsque les deux le sont, l'expression \code{A or B} est vraie lorsque l'un au moins l'est, et \code{not A} est vraie exactement quand $A$ est fausse.
+\end{tabularx}
+\end{center}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\rowcolor{orange!50} $A$ & $B$ & \code{A and B} & \code{A or B} & \code{not A} \\
+\hline
+\code{True} & \code{True} & \code{True} & \code{True} & \code{False} \\
+\hline
+\code{True} & \code{False} & \code{False} & \code{True} & \code{False} \\
+\hline
+\code{False} & \code{True} & \code{False} & \code{True} & \code{True} \\
+\hline
+\code{False} & \code{False} & \code{False} & \code{False} & \code{True} \\
+\hline
+\end{tabular}
+\end{center}
+
+Cette table de vérité est celle de la logique enseignée en mathématiques : le \code{and} est la conjonction « et », le \code{or} la disjonction « ou », toujours inclusive.
+
+\begin{exemple}
+Pour exprimer que $x$ appartient à l'intervalle $[2\,;5]$, on écrit \code{x >= 2 and x <= 5}. Python autorise d'ailleurs l'écriture mathématique condensée \code{2 <= x <= 5}, qui donne le même résultat et se lit mieux. En revanche, pour exprimer que $x$ est en dehors de cet intervalle, il faut un \code{or} : \code{x < 2 or x > 5}.
+\end{exemple}
+
+\begin{remarque}
+Le passage d'une condition à sa contraire échange systématiquement \code{and} et \code{or} : la négation de « $x \geqslant 2$ \emph{et} $x \leqslant 5$ » est « $x < 2$ \emph{ou} $x > 5$ ». Ce sont les lois de De Morgan, et l'oubli de cet échange est une cause classique de programmes qui semblent corrects et ne le sont pas.
+\end{remarque}
+
+%===============================================================================
+\section{L'instruction conditionnelle}
+%===============================================================================
+
+\subsection{La forme simple}
+
+\begin{cadre}
+\syntaxe L'instruction \code{if} exécute un bloc d'instructions si et seulement si la condition est vraie.
+\begin{python}
+if temperature > 30:
+    print("Il fait chaud")
+    print("Pensez à boire")
+print("Fin du programme")
+\end{python}
+Deux éléments sont obligatoires : le \textbf{deux-points} à la fin de la ligne \code{if}, et l'\textbf{indentation} des lignes du bloc, c'est-à-dire leur décalage vers la droite de quatre espaces.
+\end{cadre}
+
+Dans l'exemple ci-dessus, les deux premiers \code{print} sont décalés : ils forment le bloc soumis à la condition. Le troisième ne l'est pas : il s'exécute dans tous les cas. L'indentation n'est donc pas une question de présentation, c'est elle qui \emph{définit} l'étendue du bloc. Python est l'un des rares langages où la mise en page a valeur d'instruction.
+
+\begin{center}
+\begin{tikzpicture}[font=\small,
+  bloc/.style={draw,rounded corners=2pt,fill=fondcode,minimum height=0.8cm,inner sep=4pt},
+  test/.style={draw,diamond,aspect=3.2,fill=white,draw=rougecours,thick,inner sep=1pt}]
+  \node[bloc] (a) at (0,3.4) {\texttt{temperature = 34}};
+  \node[test] (t) at (0,2) {\texttt{temperature > 30} ?};
+  \node[bloc,draw=couleurvrai] (b) at (-2.6,0.5) {\texttt{print("Il fait chaud")}};
+  \node[bloc] (c) at (0,-1) {\texttt{print("Fin du programme")}};
+  \draw[-{Latex[length=2mm]}] (a) -- (t);
+  \draw[-{Latex[length=2mm]},couleurvrai,thick] (t) -| node[above left=-1mm,font=\footnotesize,couleurvrai] {vrai} (b);
+  \draw[couleurvrai,thick] (b) |- (0,-0.35);
+  \draw[couleurfaux,thick] (t) -- node[right,font=\footnotesize,couleurfaux] {faux} (0,-0.35);
+  \draw[-{Latex[length=2mm]},thick] (0,-0.35) -- (c);
+\end{tikzpicture}
+\end{center}
+
+On lit sur cet organigramme que les deux chemins se rejoignent : quelle que soit la température, la dernière instruction est exécutée.
+
+\subsection{Les formes \texttt{else} et \texttt{elif}}
+
+\begin{cadre}
+\syntaxe Le mot \code{else} introduit le bloc exécuté lorsque la condition est fausse ; le mot \code{elif}, contraction de \emph{else if}, introduit une condition supplémentaire examinée seulement si les précédentes ont échoué.
+\begin{python}
+if note >= 10:
+    print("Admis")
+elif note >= 8:
+    print("Oral de rattrapage")
+else:
+    print("Ajourné")
+\end{python}
+\end{cadre}
+
+\begin{center}
+\begin{tikzpicture}[font=\small,
+  bloc/.style={draw,rounded corners=2pt,fill=fondcode,minimum height=0.75cm,inner sep=4pt},
+  test/.style={draw,diamond,aspect=3.2,fill=white,draw=rougecours,thick,inner sep=1pt}]
+  \node[test] (t1) at (0,0) {\texttt{note >= 10} ?};
+  \node[bloc,draw=couleurvrai] (a1) at (5.6,0) {\texttt{print("Admis")}};
+  \node[test] (t2) at (0,-2) {\texttt{note >= 8} ?};
+  \node[bloc,draw=couleurvrai] (a2) at (5.6,-2) {\texttt{print("Oral de rattrapage")}};
+  \node[bloc,draw=couleurfaux] (a3) at (5.6,-3.8) {\texttt{print("Ajourné")}};
+  \draw[-{Latex[length=2mm]},couleurvrai,thick] (t1) -- node[above,font=\footnotesize,couleurvrai] {vrai} (a1);
+  \draw[-{Latex[length=2mm]},couleurfaux,thick] (t1) -- node[left,font=\footnotesize,couleurfaux] {faux} (t2);
+  \draw[-{Latex[length=2mm]},couleurvrai,thick] (t2) -- node[above,font=\footnotesize,couleurvrai] {vrai} (a2);
+  \draw[-{Latex[length=2mm]},couleurfaux,thick] (t2) |- node[below left=-1mm,font=\footnotesize,couleurfaux] {faux} (a3);
+\end{tikzpicture}
+\end{center}
+
+L'essentiel est dans la descente verticale : on ne passe au test suivant que si le précédent a échoué, et une seule des trois branches est exécutée.
+
+\begin{remarque}
+L'ordre des tests est donc capital. Si l'on inverse les deux premières conditions et qu'on écrit \code{if note >= 8} en premier, un élève ayant $15$ obtient « Oral de rattrapage » : sa note vérifie bien la première condition rencontrée, et Python s'arrête là. L'erreur la plus répandue dans les cascades de \code{elif} consiste à placer la condition la plus large avant la plus restrictive.
+\end{remarque}
+
+\begin{remarque}
+Une suite de \code{if} indépendants n'est pas équivalente à une cascade de \code{elif} : avec quatre \code{if} successifs, les quatre conditions sont examinées et plusieurs blocs peuvent s'exécuter. Utilisez \code{elif} exactement quand les cas s'excluent mutuellement, ce qui est le cas de la plupart des disjonctions de cas mathématiques.
+\end{remarque}
+
+%===============================================================================
+\section{Exemples rédigés}
+%===============================================================================
+
+\begin{exemple}
+\textbf{Signe d'un nombre.} La disjonction de cas comporte trois branches exclusives, ce qui appelle un \code{elif} :
+\begin{python}
+x = -4
+if x > 0:
+    print("positif")
+elif x < 0:
+    print("négatif")
+else:
+    print("nul")
+\end{python}
+Avec $x = -4$, la première condition est fausse, la seconde vraie : le programme affiche \code{négatif}. Remarquez que le dernier cas ne demande aucun test, puisqu'il ne reste que la possibilité $x = 0$.
+\end{exemple}
+
+\begin{exemple}
+\textbf{Résolution d'une équation du second degré.} Le programme suivant traduit exactement le théorème du cours de première.
+\begin{python}
+import math
+
+a, b, c = 1, -5, 6
+delta = b**2 - 4*a*c
+
+if delta < 0:
+    print("Aucune solution réelle")
+elif delta == 0:
+    print("Une solution double :", -b / (2*a))
+else:
+    x1 = (-b - math.sqrt(delta)) / (2*a)
+    x2 = (-b + math.sqrt(delta)) / (2*a)
+    print("Deux solutions :", x1, "et", x2)
+\end{python}
+Ici $\Delta = 25 - 24 = 1$, et le programme affiche \code{Deux solutions : 2.0 et 3.0}. On retrouve bien les racines de $x^2-5x+6=(x-2)(x-3)$. Notez que le test \code{delta == 0} est ici légitime, car $a$, $b$ et $c$ sont des entiers : $\Delta$ est donc calculé exactement. Si les coefficients étaient des \code{float}, il faudrait écrire \code{abs(delta) < 1e-9}.
+\end{exemple}
+
+\begin{exemple}
+\textbf{Année bissextile.} Une année est bissextile si elle est divisible par $4$, sauf si elle est divisible par $100$ sans l'être par $400$. Cette règle se traduit avec le reste \code{\%} du chapitre 2 :
+\begin{python}
+annee = 2024
+if annee % 400 == 0:
+    bissextile = True
+elif annee % 100 == 0:
+    bissextile = False
+elif annee % 4 == 0:
+    bissextile = True
+else:
+    bissextile = False
+print(annee, "est bissextile :", bissextile)
+\end{python}
+Le programme affiche \code{2024 est bissextile : True}. On vérifie qu'il répond \code{False} pour $1900$, divisible par $100$ mais pas par $400$, et \code{True} pour $2000$. L'ordre des trois tests est ici l'exacte transcription de la hiérarchie des exceptions : c'est un cas où permuter deux lignes donnerait un programme faux sans provoquer la moindre erreur.
+\end{exemple}
+
+\begin{remarque}
+Le programme précédent peut s'écrire en une ligne, en affectant directement le résultat de l'expression booléenne :
+\begin{python}
+bissextile = (annee % 4 == 0 and annee % 100 != 0) or annee % 400 == 0
+\end{python}
+C'est plus court, mais plus difficile à relire et à corriger. Tant que vous débutez, préférez la version en cascade : un programme juste et long vaut mieux qu'un programme court et douteux.
+\end{remarque}
+%===============================================================================
+\chapter[Boucles bornées : \texttt{for}]{Boucles bornées : l'instruction \texttt{for}}
+%===============================================================================
+
+\epigraphe{Un algorithme doit être vu pour être cru, et la meilleure façon d'apprendre ce qu'il fait est de l'essayer.}{Donald E. Knuth - \emph{The Art of Computer Programming}, volume 1, section 1.1, 1968}
+
+Un ordinateur n'est pas plus intelligent qu'un élève de sixième, mais il ne se lasse jamais. C'est cette endurance que nous allons exploiter : répéter une opération mille fois lui coûte le même effort que la répéter une fois. Ce chapitre traite du cas où l'on sait \emph{à l'avance} combien de répétitions sont nécessaires ; le chapitre suivant traitera du cas contraire.
+
+%===============================================================================
+\section{Parcourir une plage d'entiers}
+%===============================================================================
+
+\begin{center}
+\begin{tabularx}{15cm}{||X}
+\noindent \textbf{\underline{Définition :}} L'instruction \code{range(n)} désigne la suite des entiers $0, 1, 2, \dots, n-1$. Plus généralement, \code{range(a, b)} désigne les entiers de $a$ à $b-1$, et \code{range(a, b, p)} ceux que l'on obtient en partant de $a$ et en avançant de $p$ en $p$, sans jamais atteindre $b$.
+\end{tabularx}
+\end{center}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|l|l|l|}
+\hline
+\rowcolor{orange!50} \textbf{Instruction} & \textbf{Entiers parcourus} & \textbf{Nombre de valeurs} \\
+\hline
+\code{range(5)} & $0,\ 1,\ 2,\ 3,\ 4$ & $5$ \\
+\hline
+\code{range(2, 7)} & $2,\ 3,\ 4,\ 5,\ 6$ & $5$ \\
+\hline
+\code{range(0, 10, 3)} & $0,\ 3,\ 6,\ 9$ & $4$ \\
+\hline
+\code{range(10, 0, -2)} & $10,\ 8,\ 6,\ 4,\ 2$ & $5$ \\
+\hline
+\code{range(1, n+1)} & $1,\ 2,\ \dots,\ n$ & $n$ \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tikzpicture}[font=\small]
+  \draw[-{Latex[length=2mm]}] (-0.6,0) -- (8.2,0);
+  \foreach \x in {0,...,7}{\draw (\x,0.1) -- (\x,-0.1); \node[below=1mm] at (\x,-0.1) {\footnotesize $\x$};}
+  \foreach \x in {2,3,4,5,6}{\fill[couleurvar] (\x,0) circle (3pt);}
+  \draw[couleurvar,thick,decorate,decoration={brace,amplitude=4pt,raise=6pt}] (2,0) -- (6,0);
+  \node[couleurvar,above=10pt] at (4,0) {\code{range(2, 7)}};
+  \node[rougecours,font=\footnotesize,anchor=north east] at (7.6,-1.0) {la borne $7$ est exclue};
+  \draw[rougecours,-{Latex[length=1.5mm]}] (7,-0.98) -- (7,-0.52);
+\end{tikzpicture}
+\end{center}
+
+La figure rappelle la convention essentielle : la première borne est atteinte, la seconde ne l'est jamais. On retrouve la logique des intervalles semi-ouverts $[a\,;b[$ du cours de mathématiques, et le nombre d'entiers parcourus vaut exactement $b - a$.
+
+\begin{remarque}
+L'erreur la plus répandue est d'oublier cette exclusion. Pour parcourir les entiers de $1$ à $n$ \emph{inclus}, il faut écrire \code{range(1, n+1)} et non \code{range(1, n)}. Un programme qui donne un résultat presque juste, à un terme près, souffre presque toujours de ce défaut-là.
+\end{remarque}
+
+%===============================================================================
+\section{La boucle \texttt{for}}
+%===============================================================================
+
+\begin{cadre}
+\syntaxe La boucle \code{for} exécute un bloc d'instructions une fois pour chaque valeur parcourue.
+\begin{python}
+for i in range(4):
+    print("tour numéro", i)
+print("terminé")
+\end{python}
+Comme pour le \code{if} du chapitre 3, le deux-points et l'indentation délimitent le bloc répété, appelé le \mot{corps} de la boucle.
+\end{cadre}
+
+Affichage obtenu :
+
+\begin{sortie}
+tour numéro 0
+tour numéro 1
+tour numéro 2
+tour numéro 3
+terminé
+\end{sortie}
+
+\begin{center}
+\begin{tikzpicture}[font=\small,
+  bloc/.style={draw,rounded corners=2pt,fill=fondcode,minimum height=0.8cm,inner sep=4pt,align=center},
+  test/.style={draw,diamond,aspect=2.2,fill=white,draw=rougecours,thick,inner sep=0pt,align=center}]
+  \node[bloc] (init) at (0,2.6) {\texttt{i} prend la première valeur};
+  \node[test] (t) at (0,1) {reste-t-il\\ une valeur ?};
+  \node[bloc,draw=couleurvrai] (corps) at (0,-0.9) {corps de la boucle\\ \texttt{print("tour numéro", i)}};
+  \node[bloc] (fin) at (0,-2.6) {\texttt{print("terminé")}};
+  \draw[-{Latex[length=2mm]}] (init) -- (t);
+  \draw[-{Latex[length=2mm]},couleurvrai,thick] (t) -- node[right,font=\footnotesize,couleurvrai] {oui} (corps);
+  \draw[-{Latex[length=2mm]},couleurfaux,thick] (t) -| node[above right=-1mm,font=\footnotesize,couleurfaux] {non} (4.2,1) -- (4.2,-2.6) -- (fin);
+  \draw[-{Latex[length=2mm]},couleurvrai,thick] (corps) -| (-4.2,-0.9) -- (-4.2,1) --
+        node[above,font=\footnotesize,couleurvrai,pos=0.45,fill=white,inner sep=1.5pt] {valeur suivante} (t);
+\end{tikzpicture}
+\end{center}
+
+Cet organigramme montre le mécanisme complet : la variable de boucle prend successivement chacune des valeurs, le corps est exécuté une fois par valeur, et l'on ne sort que lorsque la plage est épuisée.
+
+\begin{remarque}
+La variable de boucle est mise à jour automatiquement à chaque tour. La modifier à l'intérieur du corps ne sert donc à rien : écrire \code{i = i + 10} dans le corps ne fait pas sauter d'étapes, car la valeur est écrasée au tour suivant. C'est une différence importante avec la boucle \code{while} du chapitre 5, où c'est au programmeur de gérer l'avancement.
+\end{remarque}
+
+\begin{remarque}
+Si la variable de boucle ne sert pas dans le corps — par exemple pour répéter dix fois le même affichage — l'usage est de la nommer \code{\_}, ce qui signale au lecteur qu'elle est délibérément ignorée.
+\end{remarque}
+
+%===============================================================================
+\section{Accumuler un résultat}
+%===============================================================================
+
+C'est l'usage le plus fréquent de la boucle : faire grossir progressivement une variable qui contiendra, à la sortie, le résultat cherché.
+
+\begin{cadre}
+\methode Pour calculer une somme, un produit ou un compte, on procède en trois temps.
+\begin{enumerate}[leftmargin=8mm,itemsep=0.5mm,topsep=1mm]
+\item \textbf{Initialiser} l'accumulateur \emph{avant} la boucle : à $0$ pour une somme, à $1$ pour un produit.
+\item \textbf{Mettre à jour} l'accumulateur dans le corps de la boucle.
+\item \textbf{Exploiter} l'accumulateur \emph{après} la boucle, une fois celle-ci terminée.
+\end{enumerate}
+\end{cadre}
+
+\begin{python}
+S = 0
+for i in range(1, 101):
+    S = S + i
+print("La somme des entiers de 1 à 100 vaut", S)
+\end{python}
+
+Le programme affiche \code{5050}, ce que confirme la formule $\frac{n(n+1)}{2} = \frac{100 \times 101}{2} = 5050$ établie en classe de première. Le tableau ci-dessous, appelé \mot{tableau de trace}, suit l'état des variables aux premiers tours ; c'est l'outil à réflexe quand un programme ne donne pas ce qu'on attend.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|c|c|c|c|c|c|c|}
+\hline
+\rowcolor{orange!50} \textbf{Tour} & avant & 1\up{er} & 2\up{e} & 3\up{e} & 4\up{e} & $\dots$ & 100\up{e} \\
+\hline
+\code{i} & --- & $1$ & $2$ & $3$ & $4$ & $\dots$ & $100$ \\
+\hline
+\code{S} & $0$ & $1$ & $3$ & $6$ & $10$ & $\dots$ & $5050$ \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{remarque}
+L'initialisation doit impérativement précéder la boucle. Si l'on écrit \code{S = 0} \emph{dans} le corps, l'accumulateur est remis à zéro à chaque tour et le programme affiche $100$, la valeur du dernier terme. Si on l'oublie tout à fait, Python signale une \code{NameError} au premier passage.
+\end{remarque}
+
+\begin{exemple}
+Le même schéma, avec un produit, calcule une factorielle. On initialise cette fois à $1$, élément neutre de la multiplication :
+\begin{python}
+P = 1
+for k in range(1, 6):
+    P = P * k
+print("5! =", P)
+\end{python}
+Le programme affiche \code{5! = 120}, et l'on vérifie à la main que $1\times2\times3\times4\times5 = 120$. Initialiser $P$ à $0$ donnerait $0$ : dans une accumulation, la valeur de départ doit être l'élément neutre de l'opération employée.
+\end{exemple}
+
+\begin{exemple}
+Pour compter les multiples de $7$ inférieurs à $100$, on combine la boucle du présent chapitre et le test du chapitre 3 :
+\begin{python}
+compteur = 0
+for n in range(1, 100):
+    if n % 7 == 0:
+        compteur = compteur + 1
+print(compteur)
+\end{python}
+Le programme affiche $14$, ce qui se contrôle sans machine : les multiples de $7$ strictement compris entre $0$ et $100$ vont de $7\times1$ à $7\times14 = 98$. Notez la double indentation : le \code{if} est dans la boucle, et l'incrémentation est dans le \code{if}.
+\end{exemple}
+
+%===============================================================================
+\section{Calculer les termes d'une suite}
+%===============================================================================
+
+Une suite définie par récurrence se prête admirablement à la boucle \code{for} : la relation $u_{n+1} = f(u_n)$ \emph{est} l'instruction de mise à jour.
+
+\begin{exemple}
+Soit la suite définie par $u_0 = 2$ et $u_{n+1} = 0{,}8\,u_n + 3$. Le programme suivant affiche les six premiers termes.
+\begin{python}
+u = 2
+print("u0 =", u)
+for n in range(1, 6):
+    u = 0.8 * u + 3
+    print("u" + str(n), "=", round(u, 4))
+\end{python}
+\end{exemple}
+
+Affichage obtenu :
+
+\begin{sortie}
+u0 = 2
+u1 = 4.6
+u2 = 6.68
+u3 = 8.344
+u4 = 9.6752
+u5 = 10.7402
+\end{sortie}
+
+Les termes croissent en se rapprochant de $15$, qui est la solution de l'équation $\ell = 0{,}8\,\ell + 3$ : le programme suggère la limite, il ne la démontre pas. C'est là tout l'intérêt et toute la limite de la machine, et nous y reviendrons au chapitre 5 en cherchant à partir de quel rang la suite dépasse un seuil donné.
+
+\begin{remarque}
+Une seule variable \code{u} suffit : chaque tour écrase l'ancien terme par le nouveau. Si l'on souhaite conserver \emph{tous} les termes pour les tracer ou les réutiliser, il faudra la structure de données du chapitre 7, la liste.
+\end{remarque}
+
+%===============================================================================
+\section{Boucles imbriquées}
+%===============================================================================
+
+Le corps d'une boucle peut contenir une autre boucle. La boucle intérieure effectue alors un tour complet pour chaque valeur de la boucle extérieure.
+
+\begin{python}
+for i in range(1, 4):
+    for j in range(1, 4):
+        print(i, "x", j, "=", i * j)
+    print()
+\end{python}
+
+Ce programme affiche les neuf produits de la table, groupés en trois blocs séparés par une ligne vide, car l'instruction \code{print()} est indentée au niveau de la boucle extérieure seulement. Au total, le corps intérieur est exécuté $3 \times 3 = 9$ fois.
+
+\begin{remarque}
+Le nombre de répétitions se multiplie : deux boucles imbriquées parcourant chacune $1000$ valeurs exécutent un million de tours. C'est encore instantané, mais trois boucles de $1000$ feraient un milliard de tours et plusieurs minutes d'attente. Garder en tête ce décompte est le début de ce qu'on appelle l'étude de la complexité d'un algorithme.
+\end{remarque}
+
+\begin{remarque}
+Les deux boucles doivent utiliser des variables différentes. Réutiliser \code{i} à l'intérieur écraserait le compteur extérieur et produirait un comportement inattendu : Python, fidèle à lui-même, ne protesterait pas.
+\end{remarque}
+%===============================================================================
+\chapter[Boucles non bornées : \texttt{while}]{Boucles non bornées : l'instruction \texttt{while}}
+%===============================================================================
+
+\epigraphe{Face à l'ambiguïté, résistez à la tentation de deviner.}{Tim Peters - \emph{The Zen of Python}, PEP 20, 2004}
+
+Au chapitre précédent, le nombre de tours était connu dès l'écriture du programme. Mais que faire pour répondre à la question « à partir de quel rang la suite dépasse-t-elle $1000$ ? » Personne ne connaît la réponse avant d'avoir calculé, et c'est précisément la réponse qu'on cherche. Il faut donc une boucle qui s'arrête non pas après un nombre fixé de tours, mais dès qu'une condition cesse d'être vraie.
+
+%===============================================================================
+\section{Répéter tant qu'une condition est vraie}
+%===============================================================================
+
+\begin{cadre}
+\syntaxe La boucle \code{while} répète son corps aussi longtemps que la condition reste vraie.
+\begin{python}
+n = 1
+while n < 100:
+    n = 2 * n
+print(n)
+\end{python}
+La condition est testée \textbf{avant} chaque tour, y compris le premier : si elle est fausse d'emblée, le corps n'est jamais exécuté.
+\end{cadre}
+
+Ce programme affiche $128$. En effet \code{n} prend successivement les valeurs $1, 2, 4, 8, 16, 32, 64$, puis $128$ ; à ce moment la condition \code{n < 100} devient fausse et la boucle s'arrête. Notez que la valeur finale dépasse $100$ : la boucle ne s'interrompt pas au milieu d'un tour, elle termine toujours le corps commencé.
+
+\begin{center}
+\begin{tikzpicture}[font=\small,
+  bloc/.style={draw,rounded corners=2pt,fill=fondcode,minimum height=0.8cm,inner sep=4pt,align=center},
+  test/.style={draw,diamond,aspect=3.2,fill=white,draw=rougecours,thick,inner sep=1pt,align=center}]
+  \node[bloc] (init) at (0,2.5) {\texttt{n = 1} \quad (initialisation)};
+  \node[test] (t) at (0,1) {\texttt{n < 100} ?};
+  \node[bloc,draw=couleurvrai] (corps) at (0,-0.9) {\texttt{n = 2 * n}\\ (la condition doit progresser)};
+  \node[bloc] (fin) at (0,-2.6) {\texttt{print(n)}};
+  \draw[-{Latex[length=2mm]}] (init) -- (t);
+  \draw[-{Latex[length=2mm]},couleurvrai,thick] (t) -- node[right,font=\footnotesize,couleurvrai] {vrai} (corps);
+  \draw[-{Latex[length=2mm]},couleurfaux,thick] (t) -| node[above right=-1mm,font=\footnotesize,couleurfaux] {faux} (4.6,1) -- (4.6,-2.6) -- (fin);
+  \draw[-{Latex[length=2mm]},couleurvrai,thick] (corps) -| (-4.6,-0.9) -- (-4.6,1) --
+        node[above,font=\footnotesize,couleurvrai,pos=0.5,fill=white,inner sep=1.5pt] {retour au test} (t);
+\end{tikzpicture}
+\end{center}
+
+La comparaison avec l'organigramme du chapitre 4 est instructive : la forme est la même, mais l'avancement n'est plus automatique. C'est le corps de la boucle qui doit, lui-même, rapprocher la condition de sa fausseté.
+
+\begin{cadre}
+\propo{} Une boucle \code{while} s'arrête si, et seulement si, la condition finit par devenir fausse. Pour s'en assurer, on vérifie trois points :
+\begin{enumerate}[leftmargin=8mm,itemsep=0.5mm,topsep=1mm]
+\item une variable de la condition est \textbf{initialisée avant} la boucle ;
+\item cette variable est \textbf{modifiée dans} le corps ;
+\item cette modification fait \textbf{progresser} la condition vers la fausseté.
+\end{enumerate}
+\end{cadre}
+
+\begin{remarque}
+Si l'un des trois points manque, on obtient une \mot{boucle infinie} : le programme tourne indéfiniment, sans message d'erreur, et il faut l'interrompre par la combinaison de touches \code{Ctrl + C}. L'oubli le plus fréquent est celui de la ligne d'avancement dans le corps : la condition, alors, reste éternellement vraie. Ce n'est pas une catastrophe, c'est le rite d'initiation de tout programmeur.
+\end{remarque}
+
+\begin{remarque}
+La boucle infinie n'est pas toujours une étourderie. Avec une suite définie par $u_{n+1} = \tfrac{u_n}{2}$ et la condition \code{u > 0}, la boucle ne s'arrête jamais en mathématiques, mais elle s'arrête en Python : les \code{float} finissent par atteindre exactement $0$ par manque de précision. Un programme peut donc terminer alors que l'algorithme correspondant ne termine pas, et c'est une raison de plus de ne jamais confondre les deux.
+\end{remarque}
+
+%===============================================================================
+\section{Rechercher un seuil}
+%===============================================================================
+
+C'est l'application reine de la boucle \code{while} et un classique du baccalauréat : déterminer le premier rang à partir duquel une suite franchit une valeur donnée.
+
+\begin{exemple}
+\textbf{Suite géométrique décroissante.} Cherchons le plus petit entier $n$ tel que $0{,}9^{\,n} < 0{,}01$.
+\begin{python}
+n = 0
+v = 1.0          # v contient 0.9 puissance n
+while v >= 0.01:
+    v = v * 0.9
+    n = n + 1
+print("n =", n, "et 0.9^n =", v)
+\end{python}
+Le programme affiche \code{n = 44 et 0.9\textasciicircum{}n = 0.009697737297875247}. Le résultat s'interprète ainsi : $0{,}9^{43} \approx 0{,}0108$ est encore supérieur au seuil, tandis que $0{,}9^{44} \approx 0{,}0097$ lui est inférieur. On peut le confirmer par le calcul, puisque l'inégalité $0{,}9^{\,n} < 0{,}01$ équivaut à $n > \frac{\ln(0{,}01)}{\ln(0{,}9)} \approx 43{,}7$.
+\end{exemple}
+
+\begin{remarque}
+L'ordre des deux lignes du corps n'a aucune importance ici, mais leur présence conjointe est essentielle : \code{v} fait avancer la condition, \code{n} compte les tours. Une erreur classique consiste à incrémenter \code{n} avant la boucle ou après le \code{print}, ce qui décale le résultat d'une unité. Le tableau de trace du chapitre 4 reste le meilleur remède.
+\end{remarque}
+
+\begin{exemple}
+\textbf{Placement à intérêts composés.} Un capital de $1200$ euros augmente de $3\,\%$ par an. Au bout de combien d'années dépasse-t-il $1500$ euros ?
+\begin{python}
+capital = 1200
+annees = 0
+while capital < 1500:
+    capital = capital * 1.03
+    annees = annees + 1
+print(annees, "années, capital =", round(capital, 2))
+\end{python}
+L'affichage est \code{8 années, capital = 1520.12}. Au bout de sept ans le capital n'atteignait que $1475{,}85$ euros : il faut donc bien attendre la huitième année. On notera que la condition porte sur le capital, mais que la réponse attendue est le compteur : c'est presque toujours le cas dans ce type d'exercice.
+\end{exemple}
+
+%===============================================================================
+\section{\texttt{for} ou \texttt{while} ?}
+%===============================================================================
+
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|p{6.6cm}|p{6.6cm}|}
+\hline
+\rowcolor{orange!50} \textbf{Boucle \code{for}} & \textbf{Boucle \code{while}} \\
+\hline
+Le nombre de tours est connu avant l'exécution. & Le nombre de tours est inconnu, il dépend des calculs. \\
+\hline
+L'avancement est automatique. & L'avancement est à la charge du programmeur. \\
+\hline
+Elle se termine toujours. & Elle peut ne jamais se terminer. \\
+\hline
+Typique : calculer $u_{10}$, sommer $n$ termes. & Typique : chercher un seuil, un pgcd, une racine. \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{remarque}
+Toute boucle \code{for} peut se réécrire avec un \code{while}, mais l'inverse est faux, et de toute façon inutile : quand le nombre de tours est connu, le \code{for} dit mieux ce qu'il fait et supprime tout risque de boucle infinie. Choisissez la boucle qui exprime votre intention, pas celle que vous maîtrisez le mieux.
+\end{remarque}
+
+%===============================================================================
+\section{Deux algorithmes d'arithmétique}
+%===============================================================================
+
+\begin{exemple}
+\textbf{Division euclidienne par soustractions successives.} Avant de disposer des opérateurs \code{//} et \code{\%} du chapitre 2, on peut retrouver quotient et reste en soustrayant $b$ autant de fois que possible.
+\begin{python}
+a, b = 47, 6
+q = 0
+r = a
+while r >= b:
+    r = r - b
+    q = q + 1
+print(a, "=", b, "x", q, "+", r)
+\end{python}
+Le programme affiche \code{47 = 6 x 7 + 5}. La condition d'arrêt \code{r >= b} est exactement la condition $0 \leqslant r < b$ de la définition mathématique : la boucle s'arrête au moment précis où le reste devient légitime. À chaque tour, la quantité $r$ diminue strictement de $b$, ce qui garantit la terminaison.
+\end{exemple}
+
+\begin{exemple}
+\textbf{Algorithme d'Euclide.} Le plus grand diviseur commun de deux entiers s'obtient en remplaçant répétitivement le couple $(a\,;b)$ par $(b\,;r)$, où $r$ est le reste de $a$ par $b$, jusqu'à obtenir un reste nul.
+\begin{python}
+a, b = 1071, 462
+while b != 0:
+    a, b = b, a % b
+print("pgcd =", a)
+\end{python}
+\end{exemple}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\rowcolor{orange!50} \textbf{Tour} & 1\up{er} & 2\up{e} & 3\up{e} & sortie \\
+\hline
+\code{a} & $1071$ & $462$ & $147$ & $\mathbf{21}$ \\
+\hline
+\code{b} & $462$ & $147$ & $21$ & $0$ \\
+\hline
+\code{a \% b} & $147$ & $21$ & $0$ & --- \\
+\hline
+\end{tabular}
+\end{center}
+
+Le tableau de trace se lit colonne par colonne : chaque nouveau couple est formé de l'ancien \code{b} et de l'ancien reste. La boucle s'arrête lorsque \code{b} vaut $0$, et c'est alors \code{a} qui contient le pgcd, ici $21$. On vérifie que $1071 = 3^2 \times 7 \times 17$ et $462 = 2 \times 3 \times 7 \times 11$, dont le pgcd est bien $3 \times 7 = 21$.
+
+\begin{remarque}
+L'affectation simultanée \code{a, b = b, a \% b} est indispensable. En deux instructions séparées, \code{a = b} puis \code{b = a \% b}, la seconde ligne utiliserait le \emph{nouveau} \code{a}, et calculerait \code{b \% b}, c'est-à-dire $0$ : la boucle s'arrêterait dès le premier tour en annonçant un pgcd faux. Le mécanisme d'échange vu au chapitre 2 prend ici tout son sens.
+\end{remarque}
+
+\begin{remarque}
+Cet algorithme figure déjà, sous forme géométrique, dans les \emph{Éléments} d'Euclide, au III\up{e} siècle avant notre ère. Il est d'une efficacité remarquable : quelques dizaines de tours suffisent pour des nombres de vingt chiffres, là où la recherche systématique des diviseurs serait hors de portée de toute machine. Nous retrouverons cette idée de réduction rapide au chapitre 8 avec la dichotomie.
+\end{remarque}
+%===============================================================================
+\chapter{Les fonctions}
+%===============================================================================
+
+\epigraphe{N'importe quel imbécile peut écrire du code qu'un ordinateur comprend. Les bons programmeurs écrivent du code que les humains comprennent.}{Martin Fowler - \emph{Refactoring: Improving the Design of Existing Code}, 1999, p. 15}
+
+Nos programmes commencent à se répéter. Le calcul du discriminant du chapitre 3, la recherche de seuil du chapitre 5 : chaque fois qu'on veut les refaire avec d'autres nombres, il faut recopier les lignes et modifier les valeurs à la main. La fonction résout ce problème, et elle en résout un second, plus profond : elle permet de donner un \emph{nom} à une idée, et donc de raisonner avec des briques plutôt qu'avec des lignes.
+
+%===============================================================================
+\section{Définir et appeler une fonction}
+%===============================================================================
+
+\begin{center}
+\begin{tabularx}{15cm}{||X}
+\noindent \textbf{\underline{Définition :}} Une \mot{fonction} est un bloc d'instructions auquel on a donné un nom, et qui peut recevoir des \mot{paramètres} et renvoyer un résultat. On la définit par le mot-clé \code{def}, et on l'exécute en l'\mot{appelant} par son nom suivi de parenthèses.
+\end{tabularx}
+\end{center}
+
+\begin{cadre}
+\syntaxe La définition annonce le nom et les paramètres ; l'instruction \code{return} fixe le résultat renvoyé.
+\begin{python}
+def aire_disque(r):
+    return 3.14159 * r**2
+
+print(aire_disque(3))
+print(aire_disque(10))
+\end{python}
+\end{cadre}
+
+Ce programme affiche \code{28.27431} puis \code{314.159}. La définition, à elle seule, ne calcule rien : elle se contente d'enregistrer la recette. C'est l'appel \code{aire\_disque(3)} qui déclenche le calcul, en donnant temporairement au paramètre \code{r} la valeur $3$.
+
+\begin{center}
+\begin{tikzpicture}[font=\small]
+  \draw[thick,draw=rougecours,fill=fondcode,rounded corners=3pt] (0,0) rectangle (5,1.8);
+  \node[align=center] at (2.5,0.9) {\texttt{def aire\_disque(r):}\\[1mm] \texttt{return 3.14159 * r**2}};
+  \node[couleurvar,anchor=east] at (-2.3,1.2) {\textbf{entrée}};
+  \draw[-{Latex[length=2.5mm]},thick,couleurvar] (-2.3,0.7) -- node[below,font=\footnotesize] {\texttt{r = 3}} (-0.05,0.7);
+  \node[couleurval,anchor=west] at (7.3,1.2) {\textbf{sortie}};
+  \draw[-{Latex[length=2.5mm]},thick,couleurval] (5.05,0.7) -- node[below,font=\footnotesize] {\texttt{28.27431}} (7.3,0.7);
+\end{tikzpicture}
+\end{center}
+
+La fonction se comporte exactement comme une fonction mathématique : à une entrée elle associe une sortie, et l'on peut s'en servir sans savoir ce qu'il y a dans la boîte. C'est d'ailleurs ce que nous faisons depuis le chapitre 2 avec \code{math.sqrt}, dont nous ignorons tout du contenu.
+
+\begin{remarque}
+Les parenthèses sont obligatoires à l'appel, même sans paramètre. Écrire le nom seul ne provoque pas d'erreur : Python affiche alors la fonction elle-même, sous une forme énigmatique commençant par \code{<function}, et non son résultat. C'est déroutant la première fois, mais parfaitement logique.
+\end{remarque}
+
+%===============================================================================
+\section{\texttt{return} n'est pas \texttt{print}}
+%===============================================================================
+
+C'est la difficulté majeure du chapitre, et elle vaut la peine qu'on s'y arrête. Comparons deux fonctions apparemment jumelles.
+
+\begin{python}
+def double_affiche(x):
+    print(2 * x)
+
+def double_renvoie(x):
+    return 2 * x
+
+a = double_affiche(5)     # affiche 10, puis a vaut None
+b = double_renvoie(5)     # n'affiche rien, mais b vaut 10
+print(a)
+print(b)
+\end{python}
+
+Affichage obtenu :
+
+\begin{sortie}
+10
+None
+10
+\end{sortie}
+
+\begin{cadre}
+\propo{} L'instruction \code{print} s'adresse à l'\textbf{utilisateur} : elle dépose un texte à l'écran et rien de plus. L'instruction \code{return} s'adresse au \textbf{programme} : elle fournit une valeur réutilisable dans un calcul. Une fonction sans \code{return} renvoie automatiquement la valeur spéciale \code{None}, qui signifie « rien ».
+\end{cadre}
+
+\begin{remarque}
+L'erreur la plus répandue consiste à écrire \code{print} au lieu de \code{return}, puis à s'étonner que \code{2 * double\_affiche(5)} déclenche une \code{TypeError}. On ne peut effectivement pas multiplier « rien » par $2$. Retenez la règle : une fonction qui \emph{calcule} doit renvoyer ; c'est le programme principal qui affiche.
+\end{remarque}
+
+\begin{remarque}
+L'exécution de \code{return} met fin immédiatement à la fonction : les instructions qui suivent dans le bloc ne sont jamais exécutées. C'est commode pour traiter un cas particulier au début d'une fonction et sortir aussitôt, comme dans l'exemple des solutions ci-dessous.
+\end{remarque}
+
+%===============================================================================
+\section{Plusieurs paramètres, plusieurs résultats}
+%===============================================================================
+
+Une fonction peut recevoir autant de paramètres qu'on le souhaite, séparés par des virgules, et renvoyer plusieurs valeurs à la fois.
+
+\begin{exemple}
+Reprenons l'équation du second degré du chapitre 3, cette fois sous forme de fonction. Elle renvoie soit \code{None}, soit un nombre, soit un couple de nombres.
+\begin{python}
+import math
+
+def solutions(a, b, c):
+    """Renvoie les solutions réelles de a*x**2 + b*x + c = 0."""
+    delta = b**2 - 4*a*c
+    if delta < 0:
+        return None
+    if delta == 0:
+        return -b / (2*a)
+    x1 = (-b - math.sqrt(delta)) / (2*a)
+    x2 = (-b + math.sqrt(delta)) / (2*a)
+    return x1, x2
+
+print(solutions(1, -5, 6))    # (2.0, 3.0)
+print(solutions(1, 2, 1))     # -1.0
+print(solutions(2, 3, 5))     # None
+\end{python}
+Les trois appels correspondent aux trois cas du théorème : $\Delta = 1 > 0$, puis $\Delta = 0$, puis $\Delta = -31 < 0$. Le programme principal tient désormais en trois lignes, et le raisonnement mathématique est isolé dans la fonction, où on peut le relire et le corriger une bonne fois pour toutes.
+\end{exemple}
+
+\begin{remarque}
+Le texte placé entre triples guillemets juste après la ligne \code{def} s'appelle une \mot{docstring}. Il n'est pas exécuté, mais il constitue la documentation de la fonction : l'instruction \code{help(solutions)} l'affiche. Prenez l'habitude d'y écrire ce que la fonction reçoit et ce qu'elle renvoie, en une phrase.
+\end{remarque}
+
+\begin{remarque}
+On peut donner à un paramètre une valeur par défaut, utilisée lorsque l'appel ne la précise pas. Avec \code{def arrondi(x, n=2)}, l'appel \code{arrondi(3.14159)} utilise $n = 2$ tandis que \code{arrondi(3.14159, 4)} impose $n = 4$. Les paramètres munis d'une valeur par défaut doivent figurer en dernier dans la liste.
+\end{remarque}
+
+%===============================================================================
+\section{La portée des variables}
+%===============================================================================
+
+\begin{center}
+\begin{tabularx}{15cm}{||X}
+\noindent \textbf{\underline{Définition :}} Une variable créée à l'intérieur d'une fonction est dite \mot{locale} : elle n'existe que pendant l'exécution de cette fonction et disparaît ensuite. Une variable créée dans le programme principal est dite \mot{globale}.
+\end{tabularx}
+\end{center}
+
+\begin{center}
+\begin{tikzpicture}[font=\small]
+  % cadre exterieur : le programme principal
+  \draw[thick,draw=couleurvar,fill=couleurvar!5,rounded corners=3pt] (0,0) rectangle (11.6,4.3);
+  \node[couleurvar,anchor=north west,font=\bfseries] at (0.25,4.2) {Programme principal (variables globales)};
+  \node[anchor=west] at (0.5,3.45) {\texttt{rayon = 3} \qquad \texttt{surface = aire\_disque(rayon)}};
+  % bande libre pour les deux fleches
+  \draw[-{Latex[length=2mm]},thick,couleurval] (3.6,3.05) -- (3.6,2.55);
+  \node[couleurval,font=\footnotesize,anchor=east] at (3.45,2.8) {la valeur entre};
+  \draw[-{Latex[length=2mm]},thick,couleurval] (8.2,2.55) -- (8.2,3.05);
+  \node[couleurval,font=\footnotesize,anchor=west] at (8.35,2.8) {le résultat sort};
+  % cadre interieur : la fonction
+  \draw[thick,draw=rougecours,fill=white,rounded corners=3pt] (0.6,0.35) rectangle (11,2.5);
+  \node[rougecours,anchor=north west,font=\bfseries] at (0.85,2.3) {Fonction \texttt{aire\_disque} (variables locales)};
+  \node[anchor=north west,text width=9.6cm] at (0.85,1.5)
+       {\texttt{r}, et toute variable créée dans le corps, n'existent que le temps de l'appel : elles sont \emph{invisibles depuis l'extérieur}.};
+\end{tikzpicture}
+\end{center}
+
+Le schéma se lit ainsi : la fonction est une pièce fermée ; seules les valeurs des paramètres y entrent, seul le \code{return} en sort. Ce cloisonnement est une protection, non une contrainte : il garantit qu'une fonction écrite aujourd'hui ne viendra pas perturber un programme écrit demain.
+
+\begin{exemple}
+Le programme suivant illustre la disparition des variables locales.
+\begin{python}
+def calcul(n):
+    resultat = n * n
+    return resultat
+
+print(calcul(4))      # affiche 16
+print(resultat)       # NameError : 'resultat' is not defined
+\end{python}
+La dernière ligne échoue, bien que la variable ait manifestement existé : elle a été détruite à la sortie de la fonction. Pour conserver le résultat, il faut le recueillir dans une variable du programme principal, par exemple \code{valeur = calcul(4)}.
+\end{exemple}
+
+\begin{remarque}
+À l'inverse, une fonction peut \emph{lire} une variable globale. C'est possible, mais fortement déconseillé : la fonction devient dépendante du contexte, et donne des résultats différents selon l'endroit d'où on l'appelle. Une bonne fonction reçoit tout ce dont elle a besoin par ses paramètres.
+\end{remarque}
+
+%===============================================================================
+\section{Réutiliser des fonctions existantes}
+%===============================================================================
+
+Les fonctions les plus utiles sont souvent déjà écrites. Certaines sont disponibles d'emblée, comme \code{print}, \code{len}, \code{abs}, \code{round}, \code{min} et \code{max}. D'autres résident dans des modules qu'il faut importer, comme \code{math} rencontré au chapitre 2.
+
+\begin{python}
+import random
+
+de = random.randint(1, 6)       # un entier au hasard entre 1 et 6 inclus
+piece = random.random()         # un décimal au hasard dans [0 ; 1[
+\end{python}
+
+\begin{remarque}
+La fonction \code{random.randint(a, b)} est l'une des rares de Python dont \emph{les deux bornes sont incluses}, contrairement à \code{range} du chapitre 4. Confondre les deux conventions fausse toutes les simulations : un dé simulé par \code{random.randint(1, 6)} est équilibré, un dé simulé par \code{random.randint(0, 6)} a sept faces.
+\end{remarque}
+
+\begin{exemple}
+Combiner une fonction et une boucle donne des programmes très courts. Voici le calcul de la moyenne de vingt lancers d'un dé :
+\begin{python}
+import random
+
+def lancer_de():
+    return random.randint(1, 6)
+
+total = 0
+for i in range(20):
+    total = total + lancer_de()
+print("moyenne obtenue :", total / 20)
+\end{python}
+La moyenne affichée change à chaque exécution, mais elle se rapproche de $3{,}5$ lorsqu'on augmente le nombre de lancers. Nous verrons au chapitre 8 comment cette observation illustre la loi des grands nombres.
+\end{exemple}
+%===============================================================================
+\chapter{Les listes}
+%===============================================================================
+
+\epigraphe{Montrez-moi vos organigrammes en me cachant vos tables, je resterai perplexe. Montrez-moi vos tables, je n'aurai en général pas besoin de vos organigrammes.}{Frederick P. Brooks - \emph{The Mythical Man-Month}, 1975, chapitre 9, p. 102}
+
+Une variable ne retient qu'une valeur à la fois. Au chapitre 4, le calcul des termes d'une suite écrasait chaque terme par le suivant : à la fin, tout avait disparu sauf le dernier. Or nous avons souvent besoin de conserver l'ensemble des valeurs, pour les comparer, les trier ou les représenter graphiquement. C'est le rôle de la liste, première \emph{structure de données} de ce cours.
+
+%===============================================================================
+\section{Créer et lire une liste}
+%===============================================================================
+
+\begin{center}
+\begin{tabularx}{15cm}{||X}
+\noindent \textbf{\underline{Définition :}} Une \mot{liste} est une suite ordonnée de valeurs, écrite entre crochets et séparée par des virgules. Chaque valeur occupe une position repérée par un \mot{indice}, et l'on accède à la valeur d'indice $i$ de la liste \code{L} par l'écriture \code{L[i]}.
+\end{tabularx}
+\end{center}
+
+\begin{python}
+notes = [12, 8, 15, 19, 7]
+print(notes[0])     # 12, le premier élément
+print(notes[4])     # 7, le dernier
+print(len(notes))   # 5, le nombre d'éléments
+\end{python}
+
+\begin{center}
+\begin{tikzpicture}[font=\small,x=2.2cm]
+  \foreach \i/\v in {0/12,1/8,2/15,3/19,4/7}{
+    \draw[thick,draw=couleurvar,fill=fondcode] (\i,0) rectangle (\i+0.9,0.9);
+    \node[couleurval] at (\i+0.45,0.45) {\texttt{\v}};
+    \node[couleurvar,below=1mm] at (\i+0.45,0) {\footnotesize indice $\i$};
+  }
+  \foreach \i/\n in {0/-5,1/-4,2/-3,3/-2,4/-1}{
+    \node[rougecours,above=1mm] at (\i+0.45,0.9) {\footnotesize $\n$};
+  }
+  \node[rougecours,anchor=west,font=\footnotesize] at (5.05,1.25) {indices négatifs};
+  \node[couleurvar,anchor=west,font=\footnotesize] at (5.05,-0.3) {indices positifs};
+\end{tikzpicture}
+\end{center}
+
+La figure met en évidence le point qui déroute le plus : la numérotation commence à \textbf{zéro}. Une liste de $n$ éléments a donc pour indices $0, 1, \dots, n-1$, exactement les entiers de \code{range(n)} du chapitre 4, ce qui n'est pas une coïncidence. Les indices négatifs, eux, comptent depuis la fin : \code{L[-1]} désigne toujours le dernier élément, quelle que soit la longueur de la liste.
+
+\begin{remarque}
+L'erreur la plus répandue est l'\code{IndexError: list index out of range}, obtenue en demandant \code{notes[5]} sur une liste de cinq éléments. Le dernier indice valide est $4$. Le réflexe à acquérir est d'écrire \code{L[len(L)-1]}, ou plus simplement \code{L[-1]}, pour atteindre le dernier terme.
+\end{remarque}
+
+\begin{remarque}
+Ce décalage entre l'indice informatique et le rang mathématique demande de la vigilance. Si l'on range les termes $u_0, u_1, \dots$ d'une suite dans une liste, tout va bien : \code{U[n]} contient $u_n$. Mais si l'on range les termes $v_1, v_2, \dots$ d'une suite commençant au rang $1$, alors \code{V[0]} contient $v_1$, et tous les indices sont décalés d'une unité. Décidez de la convention avant d'écrire le programme, et notez-la en commentaire.
+\end{remarque}
+
+%===============================================================================
+\section{Modifier une liste}
+%===============================================================================
+
+\begin{cadre}
+\propo{} Contrairement à un nombre ou à une chaîne, une liste est \mot{modifiable} : on peut changer la valeur d'une case sans reconstruire la liste entière.
+\begin{python}
+notes = [12, 8, 15, 19, 7]
+notes[1] = 11          # la deuxième note est corrigée
+notes.append(16)       # une sixième note est ajoutée à la fin
+print(notes)           # [12, 11, 15, 19, 7, 16]
+\end{python}
+\end{cadre}
+
+L'instruction \code{append} est la plus utile de toutes : elle allonge la liste d'un élément. Elle s'écrit \emph{après} le nom de la liste, séparée par un point, car c'est une \mot{méthode}, c'est-à-dire une fonction attachée à l'objet sur lequel elle agit.
+
+\begin{remarque}
+Une méthode comme \code{append} modifie la liste sur place et ne renvoie rien. Écrire \code{notes = notes.append(16)} est donc une faute classique : la variable \code{notes} reçoit \code{None} et la liste est perdue. On écrit simplement \code{notes.append(16)}, sans affectation.
+\end{remarque}
+
+%===============================================================================
+\section{Extraire une tranche}
+%===============================================================================
+
+\begin{center}
+\begin{tabularx}{15cm}{||X}
+\noindent \textbf{\underline{Définition :}} L'écriture \code{L[a:b]} désigne la \mot{tranche} formée des éléments d'indices $a$ à $b-1$. Elle constitue une \emph{nouvelle} liste ; l'originale n'est pas modifiée.
+\end{tabularx}
+\end{center}
+
+\begin{center}
+\begin{tikzpicture}[font=\small,x=1.9cm]
+  \foreach \i/\v in {0/3,1/7,2/2,3/9,4/4}{
+    \draw[thick,draw=codegris,fill=fondcode] (\i,0) rectangle (\i+0.85,0.85);
+    \node at (\i+0.425,0.425) {\texttt{\v}};
+    \node[codegris,below=1mm] at (\i+0.425,0) {\footnotesize $\i$};
+  }
+  \draw[very thick,rougecours] (1,-0.05) rectangle (3.85,0.9);
+  \node[rougecours] at (2.42,1.55) {\code{L[1:4]} vaut \code{[7, 2, 9]}};
+  \draw[rougecours,-{Latex[length=2mm]}] (2.42,1.35) -- (2.42,0.98);
+\end{tikzpicture}
+\end{center}
+
+La borne de gauche est incluse, celle de droite exclue : c'est la convention déjà rencontrée avec \code{range}, et la tranche compte donc $b - a$ éléments. On peut omettre une borne : \code{L[:3]} part du début et vaut \code{[3, 7, 2]}, tandis que \code{L[2:]} va jusqu'à la fin et vaut \code{[2, 9, 4]}.
+
+\begin{remarque}
+L'écriture \code{L[:]} désigne la liste entière, et sert à en fabriquer une copie indépendante. Nous verrons à la fin du chapitre pourquoi cette précaution est parfois vitale.
+\end{remarque}
+
+%===============================================================================
+\section{Construire une liste avec une boucle}
+%===============================================================================
+
+\begin{cadre}
+\methode Pour construire une liste, on part de la liste vide et on ajoute les éléments un à un : c'est le schéma d'accumulation du chapitre 4, appliqué à une liste.
+\begin{python}
+carres = []
+for k in range(1, 8):
+    carres.append(k * k)
+print(carres)          # [1, 4, 9, 16, 25, 36, 49]
+\end{python}
+\end{cadre}
+
+\begin{exemple}
+Reprenons la suite du chapitre 4, définie par $u_0 = 2$ et $u_{n+1} = 0{,}8\,u_n + 3$, mais en conservant cette fois tous les termes.
+\begin{python}
+U = [2]
+for n in range(5):
+    U.append(0.8 * U[n] + 3)
+print(U)
+\end{python}
+La liste obtenue est \code{[2, 4.6, 6.68, 8.344000000000001, 9.6752, 10.74016]}. L'écriture \code{U[n]} donne directement le terme $u_n$ : la traduction de la relation de récurrence est immédiate, et l'on dispose à la fin de tous les termes, par exemple pour les représenter graphiquement.
+\end{exemple}
+
+\begin{remarque}
+Le troisième terme s'affiche \code{8.344000000000001} et non \code{8.344} : c'est l'approximation binaire des \code{float} signalée au chapitre 2 qui refait surface, l'affichage d'une liste ne procédant à aucun arrondi de confort. Pour une présentation lisible, on construit une liste arrondie avec \code{[round(u, 3) for u in U]}, mais on conserve la liste exacte pour les calculs : arrondir en cours de route dégraderait tous les termes suivants.
+\end{remarque}
+
+\begin{remarque}
+Python offre une écriture condensée, appelée \mot{liste en compréhension}, qui rappelle la notation $\{k^2 \mid 1 \leqslant k \leqslant 7\}$ des mathématiques :
+\begin{python}
+carres = [k * k for k in range(1, 8)]
+\end{python}
+Elle est élégante et fréquente, mais réservez-la aux cas simples : dès qu'un test ou deux instructions interviennent, la boucle explicite reste plus lisible.
+\end{remarque}
+
+%===============================================================================
+\section{Parcourir une liste}
+%===============================================================================
+
+Il y a deux manières de parcourir une liste, et le choix entre les deux n'est pas une affaire de goût.
+
+\begin{python}
+temperatures = [12, 15, 9, 21, 18]
+
+for t in temperatures:        # parcours par élément
+    print(t)
+
+for i in range(len(temperatures)):   # parcours par indice
+    print("jour", i + 1, ":", temperatures[i])
+\end{python}
+
+\begin{cadre}
+\methode Parcourez \textbf{par élément} lorsque seules les valeurs comptent : c'est plus court et plus sûr. Parcourez \textbf{par indice} lorsque vous avez besoin de la position, pour l'afficher, pour modifier la liste, ou pour comparer un élément à son voisin.
+\end{cadre}
+
+\begin{remarque}
+Dans le parcours par élément, la variable \code{t} est une copie de la valeur : lui affecter \code{t = 0} ne change rien à la liste. Pour modifier réellement le contenu, il faut passer par l'indice et écrire \code{temperatures[i] = 0}.
+\end{remarque}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|l|l|l|}
+\hline
+\rowcolor{orange!50} \textbf{Instruction} & \textbf{Effet} & \textbf{Exemple sur \code{[3, 7, 2, 9, 4]}} \\
+\hline
+\code{len(L)} & nombre d'éléments & $5$ \\
+\hline
+\code{sum(L)} & somme des éléments & $25$ \\
+\hline
+\code{min(L)}, \code{max(L)} & plus petit, plus grand & $2$ et $9$ \\
+\hline
+\code{sorted(L)} & nouvelle liste triée & \code{[2, 3, 4, 7, 9]} \\
+\hline
+\code{9 in L} & appartenance (booléen) & \code{True} \\
+\hline
+\code{L + M} & concaténation & met les deux listes bout à bout \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{remarque}
+Ces fonctions dispensent d'écrire des boucles, mais ne dispensent pas de savoir les écrire : au chapitre 8, nous programmerons nous-mêmes la recherche du maximum, car c'est l'algorithme, et non l'instruction, qui fait l'objet du programme de mathématiques.
+\end{remarque}
+
+%===============================================================================
+\section{Un piège : deux noms pour une même liste}
+%===============================================================================
+
+\begin{python}
+A = [1, 2, 3]
+B = A
+B.append(4)
+print(A)      # [1, 2, 3, 4] et non [1, 2, 3] !
+\end{python}
+
+\begin{center}
+\begin{tikzpicture}[font=\small]
+  \draw[thick,draw=couleurvar,fill=fondcode,rounded corners=2pt] (3,0) rectangle (6.4,0.9);
+  \node[couleurval] at (4.7,0.45) {\texttt{[1, 2, 3, 4]}};
+  \node[couleurvar] at (0.6,0.9) {\texttt{A}};
+  \node[couleurvar] at (0.6,0) {\texttt{B}};
+  \draw[-{Latex[length=2mm]},thick,couleurvar] (0.9,0.85) -- (2.95,0.6);
+  \draw[-{Latex[length=2mm]},thick,couleurvar] (0.9,0.05) -- (2.95,0.3);
+  \node[rougecours,anchor=west,font=\footnotesize,align=left] at (7,0.45)
+       {une seule liste en mémoire,\\ deux étiquettes pour la désigner};
+\end{tikzpicture}
+\end{center}
+
+L'affectation \code{B = A} ne recopie pas la liste : elle donne un second nom à la même zone de mémoire, si bien que toute modification faite par l'un est visible par l'autre. C'est la nuance annoncée au chapitre 2 : pour les nombres, l'affectation copie la valeur ; pour les listes, elle copie seulement l'adresse.
+
+\begin{cadre}
+\methode Pour obtenir une copie véritablement indépendante, utilisez la tranche complète ou la fonction \code{list} :
+\begin{python}
+B = A[:]          # ou bien : B = list(A)
+B.append(4)
+print(A)          # [1, 2, 3] : A est intacte
+\end{python}
+\end{cadre}
+
+\begin{remarque}
+Ce piège explique une classe entière de bugs difficiles à trouver : une fonction reçoit une liste en paramètre, la modifie, et le programme principal se retrouve avec des données altérées sans qu'aucune affectation n'apparaisse. Si une fonction doit transformer une liste, faites-lui-en prendre une copie au début, ou renvoyez une nouvelle liste plutôt que de modifier l'ancienne.
+\end{remarque}
+%===============================================================================
+\chapter{Quelques algorithmes classiques}
+%===============================================================================
+
+Le mot \emph{algorithme} vient du nom du savant persan \textbf{Muhammad ibn Mūsā al-Khwārizmī}, actif à Bagdad vers 820, dont les traités d'arithmétique et d'algèbre — c'est à lui que l'on doit également le mot \emph{algèbre} — exposaient des procédés de calcul systématiques. Un algorithme est en effet une méthode : une suite finie d'opérations non ambiguës conduisant au résultat en un nombre fini d'étapes. Ce dernier chapitre rassemble six algorithmes classiques qui mobilisent tout ce qui précède, et dont plusieurs figurent explicitement au programme du lycée.
+
+%===============================================================================
+\section{Le maximum d'une liste}
+%===============================================================================
+
+\begin{cadre}
+\methode On parcourt la liste en conservant dans une variable le plus grand élément rencontré jusque-là. Cette variable est initialisée avec le premier élément, jamais avec zéro.
+\begin{python}
+def maximum(L):
+    """Renvoie le plus grand élément de la liste non vide L."""
+    m = L[0]
+    for x in L:
+        if x > m:
+            m = x
+    return m
+
+print(maximum([3, 7, 2, 9, 4]))     # 9
+\end{python}
+\end{cadre}
+
+\begin{remarque}
+Initialiser \code{m} à $0$ serait une faute : sur la liste \code{[-5, -3, -8]}, l'algorithme renverrait $0$, qui n'est même pas un élément de la liste. C'est l'exemple type de l'erreur qui ne se voit pas tant qu'on ne teste qu'avec des nombres positifs.
+\end{remarque}
+
+\begin{remarque}
+Pour obtenir non pas le maximum mais sa \emph{position}, on mémorise l'indice plutôt que la valeur, ce qui impose le parcours par indice du chapitre 7 : on remplace la boucle par \code{for i in range(len(L))} et le test par \code{if L[i] > L[imax]}.
+\end{remarque}
+
+%===============================================================================
+\section{Balayage : encadrer une solution}
+%===============================================================================
+
+Soit $f$ la fonction définie sur $[0\,;1]$ par $f(x) = x^3 + x - 1$. Elle est continue et strictement croissante, avec $f(0) = -1 < 0$ et $f(1) = 1 > 0$ : d'après le théorème des valeurs intermédiaires, l'équation $f(x) = 0$ admet une unique solution $\alpha$ dans $[0\,;1]$. Aucune formule simple ne la donne ; nous allons l'approcher.
+
+\begin{python}
+def f(x):
+    return x**3 + x - 1
+
+pas = 0.01
+k = 0
+while f(k * pas) <= 0:
+    k = k + 1
+print("alpha est compris entre", (k-1) * pas, "et", k * pas)
+\end{python}
+
+Le programme affiche que $\alpha$ est compris entre $0{,}68$ et $0{,}69$. Le principe est celui du balayage : on avance pas à pas jusqu'à ce que le signe change, et l'encadrement obtenu a pour amplitude le pas choisi.
+
+\begin{remarque}
+On remarquera que le compteur \code{k} est un entier et que l'abscisse est reconstruite par \code{k * pas}. Écrire \code{x = x + 0.01} à la place cumulerait les erreurs d'arrondi signalées au chapitre 2, au point qu'après cent additions la variable ne vaudrait pas exactement $1$. Compter en entiers et convertir au dernier moment est une règle générale de prudence.
+\end{remarque}
+
+\begin{remarque}
+Pour un encadrement d'amplitude $10^{-6}$, le balayage demanderait environ un million de tours. C'est encore faisable, mais l'algorithme suivant obtient le même résultat en vingt étapes.
+\end{remarque}
+
+%===============================================================================
+\section{La dichotomie}
+%===============================================================================
+
+\begin{cadre}
+\methode On part d'un intervalle $[a\,;b]$ contenant la solution, on calcule son milieu $m$, et l'on conserve celle des deux moitiés qui contient encore la solution, repérée par le changement de signe. La longueur de l'intervalle est divisée par deux à chaque étape.
+\begin{python}
+a, b = 0, 1
+while b - a > 0.001:
+    m = (a + b) / 2
+    if f(m) <= 0:
+        a = m
+    else:
+        b = m
+print(a, b)
+\end{python}
+\end{cadre}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\rowcolor{orange!50} \textbf{Étape} & $a$ & $b$ & $m$ & $f(m)$ & \textbf{On garde} \\
+\hline
+1 & $0$ & $1$ & $0{,}5$ & $-0{,}375$ & la moitié droite \\
+\hline
+2 & $0{,}5$ & $1$ & $0{,}75$ & $0{,}1719$ & la moitié gauche \\
+\hline
+3 & $0{,}5$ & $0{,}75$ & $0{,}625$ & $-0{,}1309$ & la moitié droite \\
+\hline
+4 & $0{,}625$ & $0{,}75$ & $0{,}6875$ & $0{,}0125$ & la moitié gauche \\
+\hline
+5 & $0{,}625$ & $0{,}6875$ & $0{,}65625$ & $-0{,}0611$ & la moitié droite \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tikzpicture}[font=\footnotesize,x=12cm,y=1cm]
+  \foreach \k/\a/\b/\y in {1/0/1/0, 2/0.5/1/-0.75, 3/0.5/0.75/-1.5, 4/0.625/0.75/-2.25, 5/0.625/0.6875/-3}{
+    \draw[codegris] (0,\y) -- (1,\y);
+    \draw[very thick,couleurvar] (\a,\y) -- (\b,\y);
+    \draw[couleurvar] (\a,\y+0.12) -- (\a,\y-0.12);
+    \draw[couleurvar] (\b,\y+0.12) -- (\b,\y-0.12);
+    \node[left,codegris] at (-0.02,\y) {étape \k};
+  }
+  \draw[dashed,rougecours,thick] (0.6823,0.35) -- (0.6823,-3.35);
+  \node[rougecours,above] at (0.6823,0.35) {$\alpha \approx 0{,}682$};
+  \node[below,codegris] at (0,-3.2) {$0$};
+  \node[below,codegris] at (1,-3.2) {$1$};
+\end{tikzpicture}
+\end{center}
+
+La figure montre les intervalles successifs, tous emboîtés et tous contenant la droite verticale d'abscisse $\alpha$ : c'est la garantie de la méthode. Après $n$ étapes, l'amplitude vaut $\frac{1}{2^n}$, si bien que dix étapes donnent déjà trois décimales exactes et vingt étapes environ six.
+
+\begin{remarque}
+La condition d'arrêt porte sur l'amplitude \code{b - a}, et non sur la valeur de \code{f(m)}. Tester \code{f(m) == 0} serait vain : la solution est irrationnelle, et aucun \code{float} ne l'atteindra jamais exactement. C'est une application directe de la mise en garde du chapitre 3 sur la comparaison des nombres à virgule.
+\end{remarque}
+
+%===============================================================================
+\section{Le tri par sélection}
+%===============================================================================
+
+Trier une liste, c'est en réorganiser les éléments dans l'ordre croissant. La méthode la plus naturelle consiste à chercher le plus petit élément et à le mettre en première position, puis à recommencer sur ce qui reste.
+
+\begin{python}
+def tri_selection(L):
+    for i in range(len(L)):
+        j_min = i
+        for j in range(i + 1, len(L)):
+            if L[j] < L[j_min]:
+                j_min = j
+        L[i], L[j_min] = L[j_min], L[i]
+    return L
+
+print(tri_selection([5, 3, 8, 1, 9, 2]))
+\end{python}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|c|c|c|}
+\hline
+\rowcolor{orange!50} \textbf{Étape} & \textbf{Liste après échange} & \textbf{Commentaire} \\
+\hline
+départ & \code{[5, 3, 8, 1, 9, 2]} & --- \\
+\hline
+$i = 0$ & \code{[1, 3, 8, 5, 9, 2]} & le minimum $1$ prend la place de $5$ \\
+\hline
+$i = 1$ & \code{[1, 2, 8, 5, 9, 3]} & le minimum du reste est $2$ \\
+\hline
+$i = 2$ & \code{[1, 2, 3, 5, 9, 8]} & puis $3$ \\
+\hline
+$i = 3$ & \code{[1, 2, 3, 5, 9, 8]} & $5$ est déjà bien placé \\
+\hline
+$i = 4$ & \code{[1, 2, 3, 5, 8, 9]} & dernier échange \\
+\hline
+\end{tabular}
+\end{center}
+
+On lit dans ce tableau l'invariant de l'algorithme : après l'étape $i$, les $i+1$ premières cases contiennent, dans l'ordre, les $i+1$ plus petits éléments. C'est cette propriété, vraie à chaque tour, qui démontre que l'algorithme trie effectivement la liste.
+
+\begin{remarque}
+Les deux boucles imbriquées font que le nombre de comparaisons est de l'ordre de $\frac{n^2}{2}$ pour une liste de $n$ éléments : trier mille valeurs demande un demi-million de comparaisons. Les tris employés en pratique, comme celui de la fonction \code{sorted} du chapitre 7, sont bien plus rapides, mais leur principe dépasse le cadre de ce cours.
+\end{remarque}
+
+\begin{remarque}
+Cette fonction modifie la liste reçue en paramètre, conformément au piège signalé au chapitre 7 : après l'appel, la liste d'origine est triée elle aussi. Pour préserver l'original, commencez la fonction par \code{L = L[:]}.
+\end{remarque}
+
+%===============================================================================
+\section{Simulation et loi des grands nombres}
+%===============================================================================
+
+\begin{python}
+import random
+
+def frequence_de_six(n):
+    """Fréquence d'apparition du 6 sur n lancers d'un dé équilibré."""
+    compteur = 0
+    for i in range(n):
+        if random.randint(1, 6) == 6:
+            compteur = compteur + 1
+    return compteur / n
+\end{python}
+
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[width=14cm,height=6.2cm,
+   xlabel={nombre $n$ de lancers}, ylabel={fréquence du $6$},
+   xmin=0,xmax=2000,ymin=0,ymax=0.30,
+   grid=major,grid style={codegris!25},
+   tick label style={font=\footnotesize},label style={font=\footnotesize},
+   legend style={font=\footnotesize,at={(0.98,0.97)},anchor=north east}]
+\addplot[couleurvar,thick,mark=none] coordinates {
+(25,0.04) (50,0.08) (75,0.1067) (100,0.1) (125,0.144) (150,0.1333) (175,0.1314)
+(200,0.145) (225,0.1333) (250,0.132) (275,0.1345) (300,0.1367) (325,0.1415)
+(350,0.1457) (375,0.1467) (400,0.1425) (425,0.1365) (450,0.1356) (475,0.1432)
+(500,0.14) (525,0.139) (550,0.1364) (575,0.1357) (600,0.1417) (625,0.144)
+(650,0.14) (675,0.1393) (700,0.1486) (725,0.1517) (750,0.1573) (775,0.16)
+(800,0.1588) (825,0.1576) (850,0.1576) (875,0.1554) (900,0.1556) (925,0.1578)
+(950,0.1558) (975,0.1549) (1000,0.156) (1025,0.1571) (1050,0.1562) (1075,0.1591)
+(1100,0.1564) (1125,0.1573) (1150,0.1565) (1175,0.1566) (1200,0.1583)
+(1225,0.1567) (1250,0.1552) (1275,0.1553) (1300,0.1538) (1325,0.1532)
+(1350,0.1526) (1375,0.1542) (1400,0.1536) (1425,0.1516) (1450,0.1517)
+(1475,0.1532) (1500,0.1507) (1525,0.1528) (1550,0.1516) (1575,0.1517)
+(1600,0.1512) (1625,0.1526) (1650,0.1509) (1675,0.1516) (1700,0.1518)
+(1725,0.153) (1750,0.1554) (1775,0.1572) (1800,0.1561) (1825,0.1578)
+(1850,0.1578) (1875,0.1573) (1900,0.1568) (1925,0.1574) (1950,0.1579)
+(1975,0.1585) (2000,0.1585)};
+\addlegendentry{fréquence observée}
+\addplot[rougecours,thick,dashed,domain=0:2000,samples=2] {0.166667};
+\addlegendentry{$p = 1/6 \approx 0{,}167$}
+\end{axis}
+\end{tikzpicture}
+\end{center}
+
+Cette courbe est le résultat d'une simulation réelle de $2000$ lancers. Elle illustre la loi des grands nombres : la fréquence observée est très instable au début — après $25$ lancers elle vaut $0{,}04$ — puis se stabilise autour de la probabilité théorique $\frac{1}{6}$. Elle ne l'atteint pas exactement et ne s'y « colle » jamais définitivement : la loi affirme seulement que l'écart devient improbable, non qu'il devient nul.
+
+\begin{remarque}
+Deux exécutions successives donnent deux courbes différentes, puisque les tirages sont aléatoires. C'est une propriété du programme, non un défaut. Pour retrouver exactement la même suite de tirages, par exemple afin de comparer deux versions d'un algorithme, on fixe la graine du générateur par \code{random.seed(7)} au début du programme.
+\end{remarque}
+
+%===============================================================================
+\section{L'aire sous une courbe}
+%===============================================================================
+
+Terminons par un algorithme qui relie la programmation au calcul intégral : l'approximation de $\displaystyle\int_0^1 x^2\,\mathrm{d}x$ par la méthode des rectangles.
+
+\begin{python}
+def rectangles(n):
+    """Somme des aires des n rectangles à gauche sur [0 ; 1]."""
+    aire = 0
+    for k in range(n):
+        aire = aire + (k / n)**2 * (1 / n)
+    return aire
+
+for n in [4, 10, 100, 1000]:
+    print(n, rectangles(n))
+\end{python}
+
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[width=8.5cm,height=6cm,
+   xmin=-0.05,xmax=1.1,ymin=-0.05,ymax=1.1,axis lines=middle,
+   xlabel={$x$},ylabel={$y$},
+   tick label style={font=\footnotesize},label style={font=\footnotesize},
+   xtick={0,0.25,0.5,0.75,1},ytick={0,0.5,1}]
+% rectangles a gauche, traces explicitement (foreach+edef bugue dans axis)
+\addplot[fill=couleurvar!25,draw=couleurvar] coordinates
+   {(0.25,0) (0.5,0) (0.5,0.0625) (0.25,0.0625)} --cycle;
+\addplot[fill=couleurvar!25,draw=couleurvar] coordinates
+   {(0.5,0) (0.75,0) (0.75,0.25) (0.5,0.25)} --cycle;
+\addplot[fill=couleurvar!25,draw=couleurvar] coordinates
+   {(0.75,0) (1,0) (1,0.5625) (0.75,0.5625)} --cycle;
+\addplot[rougecours,very thick,domain=0:1,samples=60] {x^2};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\rowcolor{orange!50} $n$ & $4$ & $10$ & $100$ & $1000$ \\
+\hline
+valeur approchée & $0{,}21875$ & $0{,}285$ & $0{,}32835$ & $0{,}3328335$ \\
+\hline
+\end{tabular}
+\end{center}
+
+Les valeurs se rapprochent de $\frac{1}{3} \approx 0{,}3333$, qui est la valeur exacte de l'intégrale. Elles restent toutes inférieures à cette limite, ce qui n'a rien d'accidentel : la fonction carré étant croissante, chaque rectangle appuyé sur la borne de gauche passe sous la courbe, comme le montre la figure. C'est exactement la construction qui sert à \emph{définir} l'intégrale.
+
+\begin{remarque}
+L'erreur commise est de l'ordre de $\frac{1}{n}$ : il faut multiplier le nombre de rectangles par dix pour gagner une décimale. Ce n'est pas très efficace, et il existe de meilleures méthodes, mais c'est la plus simple à programmer et la seule qui traduise littéralement la définition.
+\end{remarque}
+\appendix
+%===============================================================================
+\chapter{Erreurs fréquentes et mémento}
+%===============================================================================
+
+%===============================================================================
+\section{Les messages d'erreur les plus courants}
+%===============================================================================
+
+Le tableau suivant rassemble les erreurs rencontrées tout au long du cours. La colonne de droite indique le premier réflexe à avoir, avant toute autre investigation.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|l|p{5.2cm}|p{5.6cm}|}
+\hline
+\rowcolor{orange!50} \textbf{Message} & \textbf{Cause habituelle} & \textbf{Que faire} \\
+\hline
+\code{SyntaxError} & phrase mal formée : deux-points ou parenthèse oubliés & relire la ligne indiquée \emph{et celle qui la précède} \\
+\hline
+\code{IndentationError} & décalage incohérent des lignes d'un bloc & aligner exactement le bloc, sans mélanger espaces et tabulations \\
+\hline
+\code{NameError} & nom inconnu : faute de frappe, ou variable employée avant d'être définie & vérifier l'orthographe et l'ordre des lignes \\
+\hline
+\code{TypeError} & opération entre types incompatibles, comme \code{"2" + 3} & convertir avec \code{int}, \code{float} ou \code{str} \\
+\hline
+\code{ValueError} & conversion impossible, comme \code{int("douze")} & contrôler ce que l'utilisateur a saisi \\
+\hline
+\code{IndexError} & indice hors de la liste & se souvenir que le dernier indice est \code{len(L)-1} \\
+\hline
+\code{ZeroDivisionError} & division par zéro & tester le dénominateur avant de diviser \\
+\hline
+\code{AttributeError} & méthode inexistante pour ce type, comme \code{append} sur un nombre & vérifier le type de l'objet avec \code{type()} \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{remarque}
+Aucun de ces messages n'apparaît lorsque le programme est simplement \emph{faux}. Un résultat absurde, une boucle qui tourne indéfiniment, une valeur décalée d'une unité : ce sont les erreurs les plus coûteuses, et le seul remède est le tableau de trace du chapitre 4, complété par des \code{print} temporaires placés à l'intérieur des boucles.
+\end{remarque}
+
+%===============================================================================
+\section{Mémento}
+%===============================================================================
+
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|l|l|}
+\hline
+\rowcolor{orange!50} \multicolumn{2}{|l|}{\textbf{Bases} (chapitres 1 et 2)} \\
+\hline
+\code{print(a, b)} & affiche les valeurs séparées par une espace \\
+\hline
+\code{x = 5} & range $5$ dans la variable \code{x} \\
+\hline
+\code{a, b = b, a} & échange les contenus de \code{a} et \code{b} \\
+\hline
+\code{int(v)}, \code{float(v)}, \code{str(v)} & conversions de type \\
+\hline
+\code{7 // 2}, \code{7 \% 2} & quotient et reste de la division euclidienne \\
+\hline
+\code{import math} & donne accès à \code{math.sqrt}, \code{math.pi}, \code{math.floor} \\
+\hline
+\rowcolor{orange!50} \multicolumn{2}{|l|}{\textbf{Tests} (chapitre 3)} \\
+\hline
+\code{==}, \code{!=}, \code{<=}, \code{>=} & comparaisons \\
+\hline
+\code{and}, \code{or}, \code{not} & connecteurs logiques \\
+\hline
+\code{if ... : / elif ... : / else :} & disjonction de cas \\
+\hline
+\rowcolor{orange!50} \multicolumn{2}{|l|}{\textbf{Boucles} (chapitres 4 et 5)} \\
+\hline
+\code{for i in range(a, b):} & répète pour $i = a$ jusqu'à $b-1$ \\
+\hline
+\code{while condition :} & répète tant que la condition est vraie \\
+\hline
+\rowcolor{orange!50} \multicolumn{2}{|l|}{\textbf{Fonctions} (chapitre 6)} \\
+\hline
+\code{def nom(p1, p2):} & définit une fonction et ses paramètres \\
+\hline
+\code{return v} & renvoie la valeur \code{v} et termine la fonction \\
+\hline
+\code{random.randint(1, 6)} & entier au hasard, \textbf{les deux bornes incluses} \\
+\hline
+\rowcolor{orange!50} \multicolumn{2}{|l|}{\textbf{Listes} (chapitre 7)} \\
+\hline
+\code{L = [3, 7, 2]} & crée une liste ; premier indice $0$ \\
+\hline
+\code{L[i]}, \code{L[-1]}, \code{L[a:b]} & élément, dernier élément, tranche \\
+\hline
+\code{L.append(v)} & ajoute \code{v} à la fin \\
+\hline
+\code{len(L)}, \code{sum(L)}, \code{sorted(L)} & longueur, somme, copie triée \\
+\hline
+\code{M = L[:]} & copie indépendante de \code{L} \\
+\hline
+\end{tabular}
+\end{center}
+
+%===============================================================================
+\section{Six règles pour programmer sans souffrir}
+%===============================================================================
+
+\begin{enumerate}[leftmargin=8mm,itemsep=1.5mm]
+\item \textbf{Écrire l'algorithme en français avant de le taper.} Trois phrases suffisent le plus souvent, et elles évitent d'écrire vingt lignes dans la mauvaise direction.
+\item \textbf{Tester sur un cas dont on connaît la réponse.} Un programme qui calcule une somme doit d'abord être essayé sur la somme des dix premiers entiers, dont on sait qu'elle vaut $55$.
+\item \textbf{Avancer par petits morceaux.} Écrire cinq lignes, les exécuter, puis continuer : une erreur dans cinq lignes se trouve en une minute, la même erreur dans cinquante lignes en une heure.
+\item \textbf{Lire le message d'erreur en entier}, en commençant par la dernière ligne, comme au chapitre 1.
+\item \textbf{Faire un tableau de trace} dès que le résultat est inattendu, plutôt que de modifier le programme au hasard en espérant que cela passe.
+\item \textbf{Nommer les variables pour un lecteur humain}, ainsi que le recommandait Martin Fowler en tête du chapitre 6 : le premier lecteur de votre programme, ce sera vous, dans deux mois.
+\end{enumerate}
+%===============================================================================
+\chapter[Deux environnements]{Deux environnements pour programmer}
+%===============================================================================
+
+Écrire un programme suppose un endroit où l'écrire et un interpréteur pour l'exécuter. Deux solutions s'offrent à vous, et elles ne s'excluent pas : un éditeur en ligne, immédiatement disponible dans un navigateur, et un logiciel installé sur votre machine. La première ne demande aucune installation mais ne conserve rien ; la seconde demande cinq minutes de mise en place mais devient votre outil de travail pour l'année. Cette annexe décrit l'une puis l'autre.
+
+%===============================================================================
+\section{Programiz, dans le navigateur}
+%===============================================================================
+
+\subsection{Ouvrir l'éditeur}
+
+Il n'y a rien à installer ni de compte à créer : il suffit d'ouvrir l'adresse
+
+\begin{center}
+\code{https://www.programiz.com/python-programming/online-compiler/}
+\end{center}
+
+\noindent dans n'importe quel navigateur. La page se présente en deux volets, et c'est toute sa force : à gauche l'éditeur, où l'on écrit le programme, à droite la zone d'affichage, où apparaît ce que le programme produit.
+
+\begin{center}
+\begin{tikzpicture}[font=\small]
+  % fenetre du navigateur
+  \draw[thick,draw=codegris,fill=white,rounded corners=3pt] (0,0) rectangle (14,6.4);
+  \draw[fill=fondcode,draw=codegris,rounded corners=3pt] (0,5.6) rectangle (14,6.4);
+  \node[anchor=west,font=\footnotesize] at (0.3,6) {\texttt{www.programiz.com/python-programming/online-compiler/}};
+  % volet editeur
+  \draw[thick,draw=codebleu,fill=fondcode] (0.3,0.3) rectangle (7,5.2);
+  \node[anchor=north west,font=\footnotesize\bfseries,codebleu] at (0.45,5.1) {\texttt{main.py}};
+  \node[anchor=north west,font=\ttfamily\footnotesize,align=left] at (0.55,4.5)
+       {1\ \ prix = 12.5\\ 2\ \ quantite = 4\\ 3\ \ print(prix * quantite)};
+  \node[codebleu,font=\footnotesize] at (3.6,0.65) {l'éditeur : on écrit ici};
+  % volet sortie
+  \draw[thick,draw=codegris,fill=fondsortie] (7.3,0.3) rectangle (13.7,5.2);
+  \node[anchor=north west,font=\footnotesize\bfseries] at (7.45,5.1) {Output};
+  \node[anchor=north west,font=\ttfamily\footnotesize] at (7.55,4.5) {50.0};
+  \node[codegris,font=\footnotesize] at (10.5,0.65) {l'affichage : on lit ici};
+  % boutons
+  \draw[fill=couleurvrai,draw=couleurvrai,rounded corners=2pt] (5.5,5.3) rectangle (7,5.55);
+  \node[white,font=\footnotesize\bfseries] at (6.25,5.42) {Run};
+  \draw[fill=white,draw=couleurval,rounded corners=2pt] (3.7,5.3) rectangle (5.3,5.55);
+  \node[couleurval,font=\footnotesize] at (4.5,5.42) {Visualize};
+  \draw[fill=white,draw=codegris,rounded corners=2pt] (12.5,5.3) rectangle (13.7,5.55);
+  \node[font=\footnotesize] at (13.1,5.42) {Share};
+\end{tikzpicture}
+\end{center}
+
+Cette figure schématise ce que vous verrez : le nom de fichier \code{main.py} en haut du volet gauche, le bouton \code{Run} qui lance l'exécution, et le mot \code{Output} en tête du volet droit. Le programme donné en exemple est celui du chapitre 2 ; il affiche \code{50.0}.
+
+\begin{cadre}
+\methode Pour exécuter un premier programme : effacez le code d'exemple présent à l'ouverture, tapez le vôtre dans le volet de gauche, cliquez sur \code{Run}, et lisez le résultat dans le volet de droite. Si le programme contient une erreur, c'est également dans ce volet que s'affiche le message étudié au chapitre 1 et répertorié à l'annexe A.
+\end{cadre}
+
+\begin{remarque}
+Les programmes qui font appel à \code{input}, vus au chapitre 2, fonctionnent parfaitement : la question s'affiche dans le volet de droite, et c'est là que vous tapez la réponse avant de valider par Entrée.
+\end{remarque}
+
+\subsection{Suivre l'exécution pas à pas}
+
+Le bouton \code{Visualize} ouvre un mode particulièrement utile en début d'apprentissage : le programme n'est plus exécuté d'un coup, mais ligne par ligne, avec l'affichage de la valeur de chaque variable à chaque étape. C'est, sous forme animée, exactement le tableau de trace du chapitre 4.
+
+\begin{remarque}
+Prenez l'habitude d'y recourir devant un résultat inattendu, plutôt que de modifier le programme au hasard. Voir de ses yeux l'accumulateur repartir de zéro à chaque tour vaut toutes les explications sur l'initialisation.
+\end{remarque}
+
+\subsection{Les limites à connaître}
+
+\begin{remarque}
+\textbf{Rien n'est conservé.} L'outil n'enregistre pas votre travail : fermer l'onglet, ou parfois simplement recharger la page, efface tout. Avant de quitter, sélectionnez votre code, copiez-le et collez-le dans un fichier texte, ou utilisez le bouton \code{Share}, qui fabrique un lien vers votre programme. C'est la raison pour laquelle cet outil convient à un essai de dix minutes, non à un devoir que l'on reprend le lendemain.
+\end{remarque}
+
+\begin{remarque}
+\textbf{Un seul fichier, et pas d'accès au disque.} Tout tient dans \code{main.py} : on ne peut pas répartir un projet en plusieurs fichiers, ni lire un fichier de données situé sur votre ordinateur. Pour tout ce que nous faisons dans ce cours, c'est sans conséquence.
+\end{remarque}
+
+\begin{remarque}
+\textbf{Le code est exécuté sur un serveur distant.} Une connexion est donc nécessaire, et un programme trop long finit par être interrompu. Une boucle infinie, au sens du chapitre 5, s'y arrête d'elle-même au bout de quelques secondes — ce qui, soit dit en passant, est une façon confortable de découvrir l'erreur sans figer sa machine.
+\end{remarque}
+
+%===============================================================================
+\section{Thonny, sur son ordinateur}
+%===============================================================================
+
+Thonny est un environnement de développement conçu pour l'enseignement, gratuit et libre, écrit à l'université de Tartu par l'Estonien Aivar Annamaa et diffusé depuis 2014. Il présente pour un débutant un avantage décisif sur ses concurrents : il est livré avec Python, si bien qu'une seule installation suffit, et son interface ne montre que l'essentiel.
+
+\subsection{Installer le logiciel}
+
+\begin{cadre}
+\methode L'installation se fait en trois temps, identiques sur les trois systèmes.
+\begin{enumerate}[leftmargin=8mm,itemsep=0.5mm,topsep=1mm]
+\item Ouvrir l'adresse \code{https://thonny.org} et cliquer sur le lien correspondant à votre système, en haut à droite de la page.
+\item Lancer le fichier téléchargé : un \code{.exe} sous Windows, un \code{.pkg} sous macOS. Sous Linux, une seule ligne suffit dans un terminal : \code{sudo apt install thonny}.
+\item Accepter les étapes proposées sans rien modifier, puis ouvrir Thonny depuis le menu Démarrer, le dossier Applications ou le terminal.
+\end{enumerate}
+\end{cadre}
+
+Au premier démarrage, Thonny demande la langue de l'interface : le français est disponible. Il propose également un mode d'installation « pour tous les utilisateurs » ou « pour moi seulement » ; sur un ordinateur personnel, le second évite d'avoir à saisir un mot de passe d'administrateur.
+
+\begin{remarque}
+Au moment où ces lignes sont écrites, la version diffusée est la 5.0.0, publiée en avril 2026, qui embarque Python 3.14 et demande Windows 10 ou 11. Sur une machine plus ancienne, la version 4 reste téléchargeable depuis la même page et convient parfaitement à tout ce qui figure dans ce cours. Vérifiez le numéro dans le menu \emph{Aide} puis \emph{À propos}.
+\end{remarque}
+
+\begin{remarque}
+Aucune installation séparée de Python n'est nécessaire, et il est même déconseillé d'en ajouter une : deux Python sur la même machine sont la première cause de « mais ça marchait hier » chez les débutants.
+\end{remarque}
+
+\subsection{L'interface}
+
+\begin{center}
+\begin{tikzpicture}[font=\small]
+  \draw[thick,draw=codegris,fill=white,rounded corners=3pt] (0,0) rectangle (14,7.2);
+  % barre de titre
+  \draw[fill=fondcode,draw=codegris,rounded corners=3pt] (0,6.4) rectangle (14,7.2);
+  \node[anchor=west,font=\footnotesize] at (0.3,6.8)
+       {Fichier \quad Édition \quad Affichage \quad Exécuter \quad Outils \quad Aide};
+  % barre d'outils
+  \draw[fill=couleurvrai,draw=couleurvrai,rounded corners=2pt] (0.3,5.7) rectangle (2.95,6.15);
+  \node[white,font=\footnotesize\bfseries] at (1.625,5.92) {Exécuter (F5)};
+  \draw[fill=white,draw=couleurval,rounded corners=2pt] (3.15,5.7) rectangle (5,6.15);
+  \node[couleurval,font=\footnotesize] at (4.075,5.92) {Déboguer};
+  \draw[fill=white,draw=rougecours,rounded corners=2pt] (5.2,5.7) rectangle (6.7,6.15);
+  \node[rougecours,font=\footnotesize] at (5.95,5.92) {Arrêter};
+  % editeur
+  \draw[thick,draw=codebleu,fill=fondcode] (0.3,2.6) rectangle (9.8,5.4);
+  \node[anchor=north west,font=\footnotesize\bfseries,codebleu] at (0.45,5.3) {\texttt{seuil.py} \quad --- \quad l'éditeur};
+  \node[anchor=north west,font=\ttfamily\footnotesize,align=left] at (0.55,4.75)
+       {1\ \ n = 0\\ 2\ \ v = 1.0\\ 3\ \ while v >= 0.01:\\ 4\ \ \ \ \ \ v = v * 0.9\\ 5\ \ \ \ \ \ n = n + 1};
+  % console
+  \draw[thick,draw=codegris,fill=fondsortie] (0.3,0.3) rectangle (9.8,2.3);
+  \node[anchor=north west,font=\footnotesize\bfseries] at (0.45,2.2) {Console (\emph{Shell})};
+  \node[anchor=north west,font=\ttfamily\footnotesize,align=left] at (0.55,1.7)
+       {>{}>{}> n\\ 44};
+  % variables
+  \draw[thick,draw=couleurval,fill=white] (10.1,2.6) rectangle (13.7,5.4);
+  \node[anchor=north west,font=\footnotesize\bfseries,couleurval] at (10.25,5.3) {Variables};
+  \node[anchor=north west,font=\ttfamily\footnotesize,align=left] at (10.35,4.75)
+       {n\ \ \ \ 44\\ v\ \ \ \ 0.0097};
+  \node[anchor=north west,font=\footnotesize,align=left,text width=3.3cm,codegris] at (10.25,1.9)
+       {À activer par le menu \emph{Affichage}.};
+\end{tikzpicture}
+\end{center}
+
+La fenêtre se lit en trois zones : l'éditeur en haut, où l'on écrit et enregistre le programme ; la console en bas, qui joue le rôle du mode interactif décrit au chapitre 1 et affiche les résultats et les messages d'erreur ; et, si on l'active, le panneau des variables sur la droite.
+
+\subsection{Écrire et exécuter un premier programme}
+
+\begin{cadre}
+\methode Tapez votre programme dans l'éditeur, puis enregistrez-le par \code{Ctrl + S} en lui donnant un nom suivi de l'extension \code{.py}. Appuyez enfin sur la touche \code{F5}, ou cliquez sur le bouton d'exécution : le programme s'exécute, et tout ce qu'il affiche apparaît dans la console.
+\end{cadre}
+
+\begin{remarque}
+Thonny refuse d'exécuter un programme non enregistré et propose de le faire pour vous. Ce n'est pas une brimade : l'exécution porte sur le fichier, et non sur ce qui est visible à l'écran. Un programme modifié mais non enregistré produirait l'ancien résultat, ce qui est la plus déroutante des situations.
+\end{remarque}
+
+\begin{remarque}
+L'erreur la plus répandue est de baptiser son fichier du nom d'un module. Un fichier nommé \code{math.py} ou \code{random.py} sera chargé à la place du véritable module lors de l'instruction \code{import}, et le programme échouera sur un message incompréhensible du genre « le module n'a pas d'attribut \code{sqrt} ». Nommez vos fichiers d'après ce qu'ils font : \code{suite\_seuil.py}, \code{tri.py}.
+\end{remarque}
+
+\begin{remarque}
+Si vous avez écrit une boucle infinie, au sens du chapitre 5, la console reste bloquée. Le bouton rouge d'arrêt de la barre d'outils, ou la combinaison \code{Ctrl + C} dans la console, interrompt le programme et vous rend la main.
+\end{remarque}
+
+\subsection{Le débogueur, ou le tableau de trace automatique}
+
+C'est la fonction qui justifie à elle seule le choix de Thonny pour un cours de mathématiques. Le bouton \emph{Déboguer}, puis les touches de progression pas à pas, exécutent le programme \emph{une ligne à la fois} : la ligne sur le point d'être exécutée est surlignée, et le panneau des variables montre leur contenu se modifier.
+
+\begin{cadre}
+\methode Devant un programme qui ne donne pas le résultat attendu :
+\begin{enumerate}[leftmargin=8mm,itemsep=0.5mm,topsep=1mm]
+\item ouvrir le panneau \emph{Variables} par le menu \emph{Affichage} ;
+\item lancer l'exécution en mode \emph{Déboguer} au lieu du mode normal ;
+\item avancer pas à pas et comparer, à chaque tour de boucle, les valeurs affichées avec celles du tableau de trace que vous avez établi à la main.
+\end{enumerate}
+La première ligne où les deux divergent est la ligne fautive.
+\end{cadre}
+
+\begin{remarque}
+Thonny comporte aussi un \emph{Assistant}, panneau qui commente les messages d'erreur en langue courante et suggère des causes probables. C'est une aide précieuse, à condition de lire d'abord le message lui-même : l'annexe A vous rendra plus autonome que n'importe quel assistant.
+\end{remarque}
+
+%===============================================================================
+\section{Lequel choisir ?}
+%===============================================================================
+
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|p{3.1cm}|p{5.3cm}|p{5.3cm}|}
+\hline
+\rowcolor{orange!50} & \textbf{Programiz, en ligne} & \textbf{Thonny, en local} \\
+\hline
+Installation & aucune & quelques minutes, une seule fois \\
+\hline
+Enregistrement & aucun : à recopier soi-même & fichiers \code{.py} sur votre disque \\
+\hline
+Connexion & indispensable & inutile \\
+\hline
+Exécution pas à pas & oui, bouton \code{Visualize} & oui, avec le panneau des variables \\
+\hline
+Bon pour & un essai rapide, une machine qui n'est pas la vôtre & le travail de l'année, les devoirs \\
+\hline
+\end{tabular}
+\end{center}
+
+La réponse raisonnable est donc : les deux. Installez Thonny chez vous et travaillez-y ; gardez Programiz pour vérifier une idée en trois lignes depuis n'importe quel poste. Dans les deux cas, le Python est le même, et tous les programmes de ce cours s'y exécutent à l'identique.
+
+\end{document}
