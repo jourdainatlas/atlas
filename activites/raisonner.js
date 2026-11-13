@@ -2,7 +2,7 @@
 export const NIVEAUX = [['premiere', 'Première'], ['terminale', 'Terminale'], ['expertes', 'Maths expertes'], ['sup', 'Maths Sup']];
 export const THEMES = [['fondements', 'Fondements'], ['algebre', 'Algèbre'], ['lineaire', 'Algèbre linéaire'], ['analyse', 'Analyse'], ['probabilites', 'Probabilités']];
 export const cssRaison = `
-.activites-act .jeu { --activites-jeu: var(--rouge); }
+.activites-act .jeu { --activites-jeu: var(--activites-raison); }
 .activites-act .rz-niveaux { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .activites-act .bar.top { flex-direction: column; align-items: flex-start; gap: 8px; }
 .activites-act .rz-niveaux[hidden] { display: none; }

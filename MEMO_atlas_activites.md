@@ -37,6 +37,12 @@ Sur téléphone (≤ 640 px), les intercalaires passent à la ligne et se partag
 d'emblée : le défilement latéral, que rien ne signalait, cachait des groupes (demande de l'auteur, 12 nov., faite
 depuis le domaine À propos – apparence).
 
+**Couleurs changées le 13 nov. par le domaine À propos, sur décision de l'auteur** (MEMO_atlas_apropos.md §78) : le
+parcours du jour est en rouge, celui du logo (`couleur: marque`), et il a une pastille d'accès dans la barre du haut,
+qui relit `atlas-parcours` et `atlas-compte-est-bon` (prévenir ce domaine si le format de ces mémoires ou la liste
+des six étapes change). Le groupe Raisonner passe du rouge à l'or (`--activites-raison` ; teinte `raison`), dans
+`raisonner.js` et dans les liserés de `parcours.js`. Le rouge reste la couleur des fautes dans les jeux.
+
 **À faire, signalé par le domaine À propos – apparence (12 nov., demande de l'auteur).** (1) Un groupe d'activités
 (Explorations, Casse-têtes, Calcul mental, Raisonner…) n'a pas de page de lecture : « Partager » donne donc
 `#activites/<groupe>`, qui ouvre la bonne page mais dont l'aperçu en messagerie est celui de l'accueil. Créer dans

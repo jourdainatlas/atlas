@@ -816,3 +816,27 @@ domaine ou de son groupe. Les capitales ne s'appliquent qu'aux lettres latines (
 - Règle pour toutes les conversations : MEMO_atlas.md §0, point 9.
 
 Restent sur l'image de l'accueil : les adresses « # » (groupes d'activités, vues par niveau, lexique…), voir §75.
+
+## 78. Pastille « Parcours du jour » dans la barre du haut ; marque alignée ; couleurs permutées (13 nov. 2026)
+
+**Pastille** (demande de l'auteur : un accès rapide pour qui fait le parcours chaque jour). `a#tete-parcours.tete-parcours`
+dans l'en-tête, juste avant la loupe, remplie par `majParcours()` : un anneau à six segments (un par étape, colorié
+si l'étape est faite aujourd'hui), le jour du mois au centre (une coche quand tout est fait), puis « Parcours du
+jour » et l'avancement (« 3 sur 6 », « terminé »). Sous 1 280 px et sur téléphone : l'anneau seul (la grille de
+l'en-tête du téléphone a une colonne de plus ; boutons resserrés sous 380 px ; masquée sous 350 px). Elle relit les
+mémoires du parcours (`atlas-parcours`, `atlas-compte-est-bon` : mêmes règles que `activites/jour.js` et
+`parcours.js`, à tenir d'accord si elles changent) à chaque changement de page (`majOnglets`) et toutes les trois
+secondes, une étape se validant sans changer de page. Affichée pour tous (invitation pour qui n'a pas commencé).
+D'abord essayée en haut de l'accueil, puis déplacée dans la barre à la demande de l'auteur.
+
+**Marque alignée.** Le logo, « ATLAS » et le chevron étaient 3 à 4 px plus haut que les autres boutons de la barre :
+`.marque-menu` est désormais `display: flex; align-items: center` (le titre, en ligne, réservait la place des
+jambages).
+
+**Couleurs (décision de l'auteur).** Le parcours du jour prend le rouge du logo et du titre : exception voulue à la
+règle « rouge réservé aux définitions, aux axiomes et au logo ». Pour le libérer, Raisonner passe du rouge à l'or
+(`--activites-raison` : #8f6b00 en clair, #f0c84b en sombre). Teintes : `raison` → or, nouvelle teinte `marque` →
+rouge (parcours du jour, `couleur: marque` dans activites.yaml), `annales` → orange (inchangée, plus employée).
+Modifiés hors de mon domaine, à la demande de l'auteur : `rubriques/activites.yaml` (parcours), `activites/raisonner.js`
+et `activites/parcours.js` (cadres et liserés). Les signalements d'erreur des jeux restent rouges. Images d'aperçu
+des cinq activités refaites.

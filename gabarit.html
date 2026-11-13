@@ -1026,7 +1026,7 @@ blockquote.redaction p { margin: 0; }
 .reessayer-lexique { font: inherit; color: var(--rouge); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
 
 /* ================================================================ menu des rubriques */
-.marque-menu { position: relative; }
+.marque-menu { position: relative; display: flex; align-items: center; }   /* flex : sans cela le titre, élément en ligne, laisse sous lui la place des jambages et la marque remonte de 3 px par rapport aux autres boutons de la barre */
 .marque-bouton {
   display: inline-flex; align-items: center; gap: 10px; border: 0; background: none; padding: 4px 8px 4px 4px;
   margin: -4px 0 -4px -4px; border-radius: 8px; cursor: pointer; font: inherit; letter-spacing: inherit; color: var(--encre);
@@ -1216,6 +1216,24 @@ svg.sym-anime { overflow: visible; }
 .acc-legende { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; font-size: 12.5px; color: var(--encre-2); padding: 8px 4px 0; border-top: 1px solid var(--filet); margin-top: 6px; }
 .acc-legende b { font-family: var(--f-mono); font-weight: 600; color: var(--encre); }
 .acc-section { margin: 26px 0 0; }
+/* Pastille « Parcours du jour » (§78), dans la barre du haut, avant la loupe. Sous 1280 px : l'anneau seul. */
+.tete-parcours { --o: var(--rouge); flex: none; display: inline-flex; align-items: center; gap: 7px; height: 32px; padding: 0 12px 0 4px; border-radius: 16px; text-decoration: none; white-space: nowrap;
+  font: 600 13px/1 var(--f-ui); color: var(--encre); border: 1px solid color-mix(in srgb, var(--o) 50%, transparent); background: color-mix(in srgb, var(--o) 11%, transparent); transition: background-color .2s, border-color .2s; }
+.tete-parcours[hidden] { display: none; }
+@media (min-width: 861px) { body.en-rubrique .tete-parcours:not([hidden]) { margin-left: auto; } body.en-rubrique .tete-parcours:not([hidden]) + .chercher-tout { margin-left: -8px; } }   /* collée à la loupe, à droite */
+@media (max-width: 349px) { .tete-parcours { display: none; } }   /* très petit écran : la barre n'a plus la place */
+.tete-parcours:hover, .tete-parcours:focus-visible { background: color-mix(in srgb, var(--o) 20%, transparent); border-color: var(--o); }
+.tete-parcours svg { width: 24px; height: 24px; flex: none; fill: none; stroke-linecap: round; }
+.tete-parcours svg path { stroke: color-mix(in srgb, var(--o) 30%, transparent); stroke-width: 2.4; }
+.tete-parcours svg path.fait { stroke: var(--o); }
+.tete-parcours svg path.coche { stroke: var(--o); stroke-width: 2.2; stroke-linejoin: round; }
+.tete-parcours svg text { fill: var(--encre); stroke: none; font: 600 9.5px var(--f-mono); text-anchor: middle; dominant-baseline: central; }
+.tete-parcours .tp-etat { font: 500 11.5px/1 var(--f-mono); color: var(--encre-2); padding-left: 7px; border-left: 1px solid color-mix(in srgb, var(--o) 40%, transparent); }
+@media (max-width: 1279px) {
+  .tete-parcours { width: 32px; padding: 0; justify-content: center; border-color: transparent; background: none; }
+  .tete-parcours svg { width: 28px; height: 28px; }
+  .tete-parcours .tp-nom, .tete-parcours .tp-etat { display: none; }
+}
 /* Le jardin de l'accueil (§73) : bande dessinée sur un canevas par accueilJardin(). */
 .acc-jardin { position: relative; height: 108px; margin: -16px 0 -8px; }
 .acc-jardin canvas { display: block; width: 100%; height: 100%; }
@@ -1717,7 +1735,11 @@ table.grille button.pli-ann:hover { border-color: var(--encre); }
   .effacer-edifice span { display: none; }   /* 16 px : pas de zoom automatique sur iOS */
   .resultats-edifice { left: 16px; right: 16px; max-height: 55vh; }
   .marque { font-size: 17px; white-space: normal; }
-  .entete { display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto auto; align-items: center; }   /* marque, loupe, thème, drapeau, Partager */
+  .entete { display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto auto auto; align-items: center; }   /* marque, parcours du jour, loupe, thème, drapeau, Partager */
+  .tete-parcours { width: 34px; height: 36px; justify-self: end; margin-left: 6px; }
+  .entete:has(.tete-parcours:not([hidden])) .chercher-tout { margin-left: 2px !important; }
+  .entete:has(.tete-parcours:not([hidden])) .partager { margin-left: 4px; padding: 4px 9px; }
+  @media (max-width: 380px) { .entete:has(.tete-parcours:not([hidden])) :is(.chercher-tout, .bouton-theme, .signaler) { width: 31px; } .tete-parcours { width: 30px; margin-left: 4px; } .entete:has(.tete-parcours:not([hidden])) .partager { padding: 4px 7px; } }
   /* Trois boutons à symbole de même taille (36 px, cible tactile), également espacés et centrés sur une même ligne ;
      un écart plus large les sépare de la marque (le chevron du menu) et du bouton Partager. */
   .entete { column-gap: 2px; }
@@ -1746,8 +1768,8 @@ table.grille button.pli-ann:hover { border-color: var(--encre); }
   background: var(--trame); border: 1px solid var(--filet); border-top: 4px solid var(--o); border-radius: 10px 10px 0 0; }
 .activites-onglet-toutes { --o: var(--encre-3); }
 /* Casse-têtes : teinte propre au groupe (bleu pétrole, entre le bleu de l'édifice et le vert de l'analyse). */
-:root { --activites-jeu: #0e7490; --activites-calcul: #4051c4; } :root[data-theme="dark"] { --activites-jeu: #5cc8dc; --activites-calcul: #9aa8ff; }
-[data-teinte="jeu"] { --o: var(--activites-jeu) !important; } [data-teinte="calcul"] { --o: var(--activites-calcul) !important; } [data-teinte="raison"] { --o: var(--rouge) !important; } [data-teinte="annales"] { --o: var(--r-annales) !important; } [data-teinte="geo"] { --o: var(--c-geo) !important; }
+:root { --activites-jeu: #0e7490; --activites-calcul: #4051c4; --activites-raison: #8f6b00; } :root[data-theme="dark"] { --activites-jeu: #5cc8dc; --activites-calcul: #9aa8ff; --activites-raison: #f0c84b; }   /* or de Raisonner (13 nov., choix de l'auteur) */
+[data-teinte="jeu"] { --o: var(--activites-jeu) !important; } [data-teinte="calcul"] { --o: var(--activites-calcul) !important; } [data-teinte="raison"] { --o: var(--activites-raison) !important; } [data-teinte="annales"] { --o: var(--r-annales) !important; } [data-teinte="marque"] { --o: var(--rouge) !important; } [data-teinte="geo"] { --o: var(--c-geo) !important; }
 /* Explorations : le sous-menu et les cartes prennent la couleur du domaine mathématique (celles des familles de l'édifice). */
 .activites-sous a, .activites-carte { --o: var(--c-ord); }
 [data-domaine="analyse"] { --o: var(--c-ana) !important; } [data-domaine="geometrie"] { --o: var(--c-geo) !important; }
@@ -1832,6 +1854,7 @@ table.grille button.pli-ann:hover { border-color: var(--encre); }
       <a href="#accueil" data-onglet="accueil">Accueil</a><a href="#edifice" data-onglet="edifice">L'édifice</a><a href="#cours" data-onglet="cours">Cours</a><a href="#exercices" data-onglet="exercices">Exercices</a><a href="#annales" data-onglet="annales">Annales</a><a href="#activites" data-onglet="activites">Activités</a>
     </nav>
     <ol class="fil" id="fil" aria-label="Position dans l'atlas"></ol>
+    <a class="tete-parcours" id="tete-parcours" href="#activites/parcours" hidden></a>
     <button type="button" class="chercher-tout" id="chercher-tout" aria-haspopup="dialog" aria-expanded="false" title="Rechercher dans tout le site (Ctrl K)" aria-label="Rechercher dans tout le site"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><circle cx="10.5" cy="10.5" r="6.2" fill="none" stroke="currentColor" stroke-width="1.9"/><path d="M15.2 15.2 20 20" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"/></svg></button>
     <button type="button" class="bouton-theme" id="theme" aria-pressed="false" title="Passer en mode clair" aria-label="Passer en mode clair"><svg class="icone-soleil" viewBox="0 0 200 200" width="26" height="26" aria-hidden="true" focusable="false"><rect x="4" y="4" width="192" height="192" rx="42" fill="#1d2027" stroke="#3a3f4a" stroke-width="8"/><g stroke="#e7e9ed" stroke-width="13" stroke-linecap="round"><line x1="100" y1="40" x2="100" y2="58" transform="rotate(0 100 100)"/><line x1="100" y1="40" x2="100" y2="58" transform="rotate(45 100 100)"/><line x1="100" y1="40" x2="100" y2="58" transform="rotate(90 100 100)"/><line x1="100" y1="40" x2="100" y2="58" transform="rotate(135 100 100)"/><line x1="100" y1="40" x2="100" y2="58" transform="rotate(180 100 100)"/><line x1="100" y1="40" x2="100" y2="58" transform="rotate(225 100 100)"/><line x1="100" y1="40" x2="100" y2="58" transform="rotate(270 100 100)"/><line x1="100" y1="40" x2="100" y2="58" transform="rotate(315 100 100)"/></g><circle cx="100" cy="100" r="28" fill="#ff6d7d"/></svg><svg class="icone-lune" viewBox="0 0 200 200" width="26" height="26" aria-hidden="true" focusable="false"><rect x="4" y="4" width="192" height="192" rx="42" fill="#1d2027" stroke="#3a3f4a" stroke-width="8"/><path d="M118 48a56 56 0 1 0 38 92A46 46 0 0 1 118 48z" fill="#e7e9ed"/><circle cx="140" cy="62" r="9" fill="#ff6d7d"/></svg></button>
     <button type="button" class="signaler" id="signaler" aria-haspopup="dialog" aria-expanded="false" title="Signaler une erreur sur cette page" aria-label="Signaler une erreur sur cette page"><svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" focusable="false"><path d="M5 21V4M5 4.5c2.2-1.3 4.4-1.3 6.6 0s4.4 1.3 6.6 0v8.4c-2.2 1.3-4.4 1.3-6.6 0s-4.4-1.3-6.6 0" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -3812,6 +3835,28 @@ function miniEdifice() {
   }
   return h + '</svg>';
 }
+// Pastille « Parcours du jour » de la barre du haut (§78) : un accès direct, depuis toute page, pour qui le fait
+// chaque jour. L'anneau a un segment par étape, colorié si l'étape est faite aujourd'hui ; au centre, le jour du
+// mois, ou une coche quand tout est fait. Sur écran étroit, l'anneau seul. Mêmes mémoires que activites/jour.js et
+// parcours.js (atlas-parcours, atlas-compte-est-bon), relues ici ; majParcours() est appelée à chaque changement de
+// page et toutes les trois secondes (une étape se valide dans l'activité, sans changer de page).
+function majParcours() {
+  const a = $('#tete-parcours'); if (!a) return;
+  if (!D.vActivites) { a.hidden = true; return; }
+  const ETAPES = ['compte-est-bon', 'serie', 'ordonner', 'erreur', 'contre-exemple', 'implication'], NIV_COMPTE = { premiere: 0, terminale: 1, expertes: 1, sup: 1 };
+  const [y, mo, d] = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date()).split('-').map(Number), jour = Math.round((Date.UTC(y, mo - 1, d) - Date.UTC(2026, 0, 1)) / 864e5);
+  const lire = c => { try { return JSON.parse(localStorage.getItem(c) || 'null') || {}; } catch (e) { return {}; } };
+  const m = lire('atlas-parcours'), cb = lire('atlas-compte-est-bon'), niveau = m.niveau in NIV_COMPTE ? m.niveau : '';
+  const faits = ETAPES.map(id => !!niveau && (id === 'compte-est-bon' ? cb.jour === jour && !!cb.faits && (NIV_COMPTE[niveau] in cb.faits) : m.jour === jour && !!(m.faits || {})[id]));
+  const signe = d + ':' + faits.map(Number).join(''); if (a.dataset.signe === signe) return; a.dataset.signe = signe;
+  const nb = faits.filter(Boolean).length, fini = nb === ETAPES.length;
+  const arc = k => { const t0 = (-90 + k * 60 + 8) * Math.PI / 180, t1 = (-90 + (k + 1) * 60 - 8) * Math.PI / 180, P = t => `${(12 + 10 * Math.cos(t)).toFixed(2)} ${(12 + 10 * Math.sin(t)).toFixed(2)}`; return `<path class="${faits[k] ? 'fait' : ''}" d="M${P(t0)}A10 10 0 0 1 ${P(t1)}"/>`; };
+  const etat = fini ? 'terminé' : nb ? `${nb} sur ${ETAPES.length}` : '', dit = fini ? 'Parcours du jour terminé' : nb ? `Parcours du jour : ${nb} étapes faites sur ${ETAPES.length}` : 'Parcours du jour : six étapes, un quart d\'heure';
+  a.hidden = false; a.classList.toggle('fini', fini); a.title = dit; a.setAttribute('aria-label', dit);
+  a.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true">${ETAPES.map((_, k) => arc(k)).join('')}${fini ? '<path class="coche" d="M7.6 12.4l3 3 5.8-6.4"/>' : `<text x="12" y="12.2">${d}</text>`}</svg>`
+    + `<span class="tp-nom">Parcours du jour</span>${etat ? `<span class="tp-etat">${etat}</span>` : ''}`;
+}
+setInterval(() => { if (!document.hidden) majParcours(); }, 3000);
 function pageAccueil() {
   const g = D.graphes[D.racine];
   const nbTheories = g.noeuds.length, nbNoeuds = Object.keys(D.noeuds).length, nbTermes = Object.keys(D.lexique).length;
@@ -6235,6 +6280,7 @@ document.querySelectorAll('#nav-rub a[data-onglet]').forEach(a => { const t = a.
 // La pastille courante s'agrandit pour contenir la suite du fil d'Ariane (après le nom de la rubrique) : chaque
 // étape reprend le texte de l'élément du fil et, au clic, déclenche son bouton (le fil garde toute la logique).
 function majOnglets() {
+  majParcours();
   const nav = $('#nav-rub'); if (!nav) return;
   const nom = document.body.classList.contains('en-rubrique') ? ($('#rubrique')?.dataset.nom || '') : 'edifice';
   const ancien = nav.querySelector('.nav-rub-cur');

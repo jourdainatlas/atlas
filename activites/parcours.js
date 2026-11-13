@@ -5,7 +5,7 @@ import { cssJeux, ecrire } from './jeux.js';
 import { NIVEAUX_PARCOURS, aujourdhui, lireParcours, ecrireParcours, demander } from './jour.js';
 
 export const css = cssCommun + cssFigures + cssJeux + `
-.activites-act .jeu { --activites-jeu: var(--r-annales); }
+.activites-act .jeu { --activites-jeu: var(--rouge); }
 .activites-act .pc-niveaux { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .activites-act .pc-niveaux .nom { font: 600 13px var(--f-ui); letter-spacing: .04em; text-transform: uppercase; color: var(--encre-3); margin-right: 4px; }
 .activites-act .pc-date { padding: 12px 16px 0; margin: 0; font: 600 15px var(--f-ui); color: var(--encre-2); }
@@ -19,7 +19,7 @@ export const css = cssCommun + cssFigures + cssJeux + `
 .activites-act .pc-etapes .quoi { font: 14.5px/1.45 var(--f-ui); color: var(--encre-2); display: block; }
 .activites-act .pc-etapes .etat { font: 600 13px var(--f-ui); color: var(--encre-3); white-space: nowrap; }
 .activites-act .pc-etapes li.fait a { border-color: var(--tan); border-left-color: var(--tan); } .activites-act .pc-etapes li.fait .etat { color: var(--tan); }
-.activites-act .pc-etapes .calcul { --t: var(--activites-calcul); } .activites-act .pc-etapes .raison { --t: var(--rouge); }
+.activites-act .pc-etapes .calcul { --t: var(--activites-calcul); } .activites-act .pc-etapes .raison { --t: var(--activites-raison); }
 @media (max-width: 520px) { .activites-act .pc-etapes a { grid-template-columns: auto minmax(0, 1fr); } .activites-act .pc-etapes .etat { grid-column: 2; } }
 `;
 
