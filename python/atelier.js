@@ -4,7 +4,10 @@
 const CSS = `
 .atelier { --at-vert: var(--corrige-filet); --at-orange: var(--revoir); --at-rouge: var(--rouge); --at-bleu: var(--c-nb);
   border: 1px solid var(--filet); border-radius: 10px; background: var(--surface); padding: 12px; margin-top: 12px;
-  font-family: var(--f-ui); font-size: 14px; color: var(--encre); }
+  font-family: var(--f-ui); font-size: 14px; color: var(--encre);
+  /* Safari sur iPhone grossit le texte des blocs larges (« text autosizing ») : le code et ses numéros de ligne,
+     agrandis différemment, se décalaient. On garde les tailles déclarées. */
+  -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 .at-barre { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 10px; }
 .at-barre button { font: 600 13.5px var(--f-ui); padding: 5px 12px; border-radius: 6px; cursor: pointer; background: var(--surface); }
 .at-barre button:disabled { opacity: .4; cursor: default; }
@@ -77,6 +80,9 @@ const CSS = `
 .at-ligne input { flex: 1; min-width: 0; border: 0; background: transparent; color: var(--encre); font: inherit; outline: none; padding: 2px 0; }
 @media (max-width: 720px) {
   .at-grille { grid-template-columns: minmax(0, 1fr); }
+  /* 16 px : en dessous, Safari zoome la page quand on touche le champ ; l'éditeur et sa coloration restent alignés */
+  .at-zone, .at-ligne { font-size: 16px; }
+  .at-ligne input { font-size: 16px; }
   .at-variables { grid-row: auto; order: 3; }
   .at-droite { margin-left: 0; width: 100%; }
 }

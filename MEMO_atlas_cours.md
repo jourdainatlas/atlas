@@ -766,3 +766,8 @@ Le 13 nov., après publication : OVH sert `pyodide.asm.wasm` en `text/x-asm` (Ap
 WebAssembly refuse. Le worker rétablit le type `application/wasm` des réponses `.wasm` (enveloppe de `fetch`), sans
 toucher à `htaccess-ovh`. Vérifié en ligne : l'exercice 2 s'exécute. Un `AddType application/wasm .wasm` (avec
 compression) dans `htaccess-ovh` rendrait le chargement plus léger : à proposer au domaine de la publication.
+
+Le 13 nov. (après-midi) : sur iPhone, Safari agrandissait le texte du code (« text autosizing » des blocs larges)
+sans agrandir les numéros de ligne, qui ne tombaient plus en face des lignes. `.atelier` fixe
+`text-size-adjust: 100%` ; sous 720 px, l'éditeur et la ligne de la console passent à 16 px, taille en dessous de
+laquelle Safari zoome la page quand on touche le champ.
