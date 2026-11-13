@@ -1549,3 +1549,16 @@ sans rien toucher), passé sur les 28 activités à figures à 1 600 et 390 px, 
 
 Explorations : vingt-neuf. Jeux et casse-têtes : seize. Calcul mental : deux activités. Raisonner : quatre.
 Parcours du jour : une.
+
+## 161. Bac à sable Python (13 novembre 2026)
+
+À la demande de l'auteur, relayée par la conversation Cours, la rubrique reçoit l'activité `bac-a-sable` : l'atelier Python du site, seul et sans exercice, suivi d'une présentation de Python et de son histoire. Elle n'a pas de groupe et forme donc son propre intercalaire, « Python », à la teinte nouvelle `python` (`[data-teinte="python"]`, bleu `--c-nb`, celui de l'éditeur de l'atelier). Le catalogue porte `cours: [py-01]` (autorisé par la conversation Cours) et aucun nœud de l'édifice, faute de nœud qui s'y rapporte.
+
+Le module `activites/bac-a-sable.js` n'importe `/python/atelier.js` que dans `monter` ; il appelle `monterAtelier(hote, { wid: 'activites/bac-a-sable', nom: 'essai.py', code, retour: "Revenir à l'exemple", disposition: 'cote' })` et, en quittant l'activité, arrête un programme encore en cours. L'option `disposition: 'cote'` a été ajoutée à `python/atelier.js` (domaine Cours, avec son accord, noté dans `MEMO_atlas_cours.md` §47) : une classe `cote` sur `.atelier` et un bloc `@media (min-width: 721px)` ; rien d'autre n'est touché, et la disposition par défaut est identique (géométrie relevée sur `#exercices/feuille/f-py-01`, ordinateur et téléphone).
+
+Le texte de présentation est vérifié sur des sources premières, citées en fin de page : FAQ générale et « History and License » de la documentation de Python (vacances de Noël 1989, CWI, ABC, Amoeba, publication de février 1991, version 0.9.0, CNRI en 1995, Python 2.0 en 2000, PSF en 2001, origine du nom), page de Python 3.0 (3 décembre 2008), « Sunsetting Python 2 » (1er janvier 2020), PEP 13 (retrait de juillet 2018, conseil de cinq membres), PEP 20 (Tim Peters, 2004), circulaire n° 2017-082 et BO spécial n° 1 du 22 janvier 2019. Deux citations seulement, courtes et sourcées : « short, unique, and slightly mysterious » (FAQ) et « Readability counts » (PEP 20).
+
+Point signalé à l'auteur pour la conversation Cours : le cours py-01 (section 1.1.2) écrit que Python est « depuis 2009 » le langage du lycée ; 2009 est l'année d'entrée de l'algorithmique en Seconde, sans langage imposé, et Python n'est désigné qu'à partir de 2017 (document d'accompagnement) puis 2019 (programmes). L'activité donne la chronologie exacte ; le cours n'a pas été modifié.
+
+Essai réel (Playwright, 1280 et 1600 px, 390 et 375 px, clair et sombre) : exécution de l'exemple, programme à deux `input()`, débogage pas à pas, boucle infinie arrêtée, `import this`, instruction dans la console, sortie longue qui défile ; aucun débordement horizontal, police de 16 px sur téléphone. Le texte n'étant pas un contenu mathématique, il n'a pas été soumis à l'agent relecteur.
+

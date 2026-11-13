@@ -86,6 +86,17 @@ const CSS = `
   .at-variables { grid-row: auto; order: 3; }
   .at-droite { margin-left: 0; width: 100%; }
 }
+/* Disposition « cote » (option de monterAtelier, bac à sable des Activités) : au-dessus de 720 px, l'éditeur occupe
+   toute la hauteur à gauche ; à droite, la console puis les variables. L'éditeur grandit avec le code, la console
+   défile. En dessous de 720 px, rien ne change : les règles ci-dessus empilent les trois cadres. */
+@media (min-width: 721px) {
+  .atelier.cote .at-grille { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; min-height: 480px; }
+  .atelier.cote .at-editeur { grid-column: 1; grid-row: 1 / span 2; }
+  .atelier.cote .at-console { grid-column: 2; grid-row: 1; }
+  .atelier.cote .at-variables { grid-column: 2; grid-row: 2; }
+  .atelier.cote .at-sortie { flex: 1 1 0; height: 0; min-height: 240px; max-height: none; }
+  .atelier.cote .at-vars { max-height: 220px; overflow-y: auto; }
+}
 `;
 
 const MOTS = new Set('False None True and as assert async await break class continue def del elif else except finally for from global if import in is lambda nonlocal not or pass raise return try while with yield'.split(' '));
@@ -146,14 +157,14 @@ function lire(cle) { try { return localStorage.getItem(cle); } catch { return nu
 function ecrire(cle, v) { try { v == null ? localStorage.removeItem(cle) : localStorage.setItem(cle, v); } catch {} }
 
 class Atelier {
-  constructor(hote, { wid, nom, code, retour = "Revenir au code de l'énoncé" }) {
+  constructor(hote, { wid, nom, code, retour = "Revenir au code de l'énoncé", disposition }) {
     if (!document.getElementById('atelier-css')) {
       const st = document.createElement('style'); st.id = 'atelier-css'; st.textContent = CSS; document.head.append(st);
     }
     this.wid = wid; this.nom = nom; this.initial = code; this.cle = 'atlas-python:' + wid;
     this.histo = []; this.hPos = 0; this.enCours = false; this.suiteConsole = '';
     const el = this.el = document.createElement('div');
-    el.className = 'atelier';
+    el.className = 'atelier' + (disposition === 'cote' ? ' cote' : '');
     el.innerHTML = `
       <div class="at-barre">
         <button class="at-executer" type="button" title="Exécuter le programme (F5 ou Ctrl+Entrée)">Exécuter <kbd>F5</kbd></button>

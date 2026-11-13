@@ -720,7 +720,7 @@ remplit le bord, sans élimination des parties cachées. Quadrillage `t` de deux
 Abandonnés : la colline en cloche (lue comme une tente) et la selle (illisible à 40 px). Générateur :
 `scratchpad/sym/surf_inj.py` (21 points par arête, coordonnées arrondies au dixième).
 
-### 47. Niveau Python – Lycée et atelier Python (13 nov. 2026)
+### 47. Niveau Python – Lycée et atelier Python (13 nov. 2026) Depuis le 13 novembre 2026, `monterAtelier` accepte l'option `disposition: 'cote'`, ajoutée par la conversation Activités pour son bac à sable (`activites/bac-a-sable.js`) : au-dessus de 720 px, l'éditeur occupe toute la hauteur à gauche, la console puis les variables sont à droite, et la console défile ; sans l'option, et toujours en dessous de 720 px, la disposition est inchangée (vérifié sur `#exercices/feuille/f-py-01`).
 
 **Niveau.** `python`, intitulé « Python – Lycée », déclaré en dernier dans `rubriques/cours.yaml` (après Master) :
 placé après les Maths approfondies, il serait compté parmi les niveaux de prépa de la carte « Par où commencer ? »
