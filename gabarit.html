@@ -1763,6 +1763,13 @@ table.grille button.pli-ann:hover { border-color: var(--encre); }
 /* ---- Rubrique Activités (MEMO_atlas_activites.md) : onglets en intercalaires de classeur, cartes, symbole.
    Les styles propres à chaque activité sont dans son module (activites/), chargé à la demande. */
 .activites-sy1 { fill: var(--c-ord); } .activites-sy2 { fill: var(--c-ord); opacity: .55; } .activites-sy3 { fill: var(--c-ord); opacity: .25; }
+.activites-haut { position: fixed; right: 14px; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); z-index: 40; display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 15px; border-radius: 999px; border: 1px solid var(--encre-3); background: var(--surface); color: var(--encre);
+  font: 600 14px var(--f-ui); box-shadow: 0 4px 14px rgba(0, 0, 0, .18); cursor: pointer; }
+.activites-haut[hidden] { display: none; }
+.activites-haut:hover { background: var(--trame); }
+.activites-haut:focus-visible { outline: 2px solid var(--c-ord); outline-offset: 2px; }
+@media print { .activites-haut { display: none; } }
 .activites-onglets { display: flex; align-items: flex-end; gap: 4px; margin: 0 0 -1px; padding: 6px 2px 0; overflow-x: auto; scrollbar-width: thin; position: relative; z-index: 1; }
 .activites-onglet { --o: var(--c-ord); flex: 0 0 auto; display: inline-flex; align-items: center; gap: 8px; max-width: 16rem; padding: 7px 16px 8px; font: 500 14px/1.25 var(--f-ui); color: var(--encre-2); text-decoration: none; white-space: nowrap;
   background: var(--trame); border: 1px solid var(--filet); border-top: 4px solid var(--o); border-radius: 10px 10px 0 0; }
@@ -3785,6 +3792,21 @@ document.addEventListener('click', e => {
 // Montage : dès qu'un cadre .activites-act apparaît dans la page, son module est importé, ses styles posés et ses
 // figures lancées ; quand le cadre disparaît (autre onglet, autre rubrique, retour à l'édifice), tout est défait.
 let activitesEnCours = null;
+// Activités : bouton « Haut », fixé en bas à droite dès que l'on a fait défiler une activité ou une liste (demande de
+// l'auteur : sur téléphone, il fallait tout remonter pour changer d'activité). Un seul bouton, créé à la demande.
+function activitesHaut() {
+  let b = document.getElementById('activites-haut');
+  // Selon la largeur, c'est la fenêtre (téléphone) ou le cadre #rubrique (ordinateur) qui défile.
+  const cadre = document.getElementById('rubrique'), voulu = location.hash.startsWith('#activites') && Math.max(scrollY, cadre ? cadre.scrollTop : 0) > 500;
+  if (!b) { if (!voulu) return; b = document.createElement('button'); b.type = 'button'; b.id = 'activites-haut'; b.className = 'activites-haut';
+    b.setAttribute('aria-label', 'Revenir en haut de la page, aux onglets des activités'); b.innerHTML = '<span aria-hidden="true">↑</span> Haut';
+    b.addEventListener('click', () => { const doux = { top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' };
+      scrollTo(doux); const c = document.getElementById('rubrique'); if (c) c.scrollTo(doux);
+      const o = document.querySelector('.activites-onglets a[aria-current]') || document.querySelector('.activites-onglets a'); if (o) o.focus({ preventScroll: true }); });
+    document.body.append(b); }
+  b.hidden = !voulu;
+}
+document.addEventListener('scroll', activitesHaut, { passive: true, capture: true }); addEventListener('hashchange', activitesHaut);
 function activitesMonter() {
   const el = document.querySelector('#rubrique .activites-act[data-act]');
   if (activitesEnCours && activitesEnCours.el !== el) { activitesEnCours.defaire(); activitesEnCours = null; }

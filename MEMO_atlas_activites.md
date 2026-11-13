@@ -1497,5 +1497,44 @@ ou six coups joués selon la position, page immobile, toucher simple toujours ac
 environ 140 px sur le texte et sur la figure non manipulable. Trente activités passées en revue pour l'état
 `touch-action` de leurs zones. Pas d'essai avec un vrai doigt.
 
-Explorations : vingt-huit. Jeux et casse-têtes : seize. Calcul mental : deux activités. Raisonner : quatre.
+### 160. Bouton « Haut » ; exploration « Asymptotes » (13 nov. 2026)
+
+**Bouton « Haut » (demande de l'auteur : sur téléphone, il fallait tout remonter pour changer d'activité).**
+`activitesHaut()` dans `gabarit.html`, avant `activitesMonter` : un bouton fixe en bas à droite
+(`#activites-haut`, style `.activites-haut`), créé à la demande, visible dans toute la rubrique dès que l'on a
+défilé de plus de 500 px. Attention : selon la largeur, c'est la fenêtre (téléphone) ou le cadre `#rubrique`
+(ordinateur) qui défile ; le bouton lit les deux positions, écoute `scroll` en capture sur le document, et
+remonte les deux. Après le clic, le focus va à l'onglet courant. Défilement doux, sauf si l'utilisateur a
+demandé moins de mouvement. Vérifié sur téléphone simulé et à 1280 px ; absent des autres rubriques.
+
+**`asymptotes`** (Terminale, Maths Sup ; analyse ; demande de l'auteur). Choix de la classe en tête (par défaut
+celle du parcours du jour) : en Terminale, seule la première figure est affichée ; en Maths Sup, la seconde
+aussi, avec la proposition et sa démonstration. Chaque figure : quatre familles, coefficients par pas de 0,05
+gardés en vingtièmes entiers, point M déplaçable, fenêtre ± 6, 12, 30 ou 100, lectures des limites, phrase de
+verdict, tableau de valeurs (±10, ±100, ±1 000, et près de l'asymptote verticale).
+- Horizontales et verticales : (ax + b)/(x − c) (cas ac + b = 0 : droite privée d'un point) ; a + b e⁻ˣ (un seul
+  côté) ; a + b ln(x − c) (verticale seule) ; a + b sin x / x (courbe qui coupe son asymptote ; pas de verticale
+  en 0).
+- Obliques : (ax² + bx + c)/(x − d) (division, reste r = ad² + bd + c ; a = 0 : horizontale ; r = 0 : droite) ;
+  √(x² + bx + c) (deux asymptotes y = ±(x + b/2), q = c − b²/4) ; ax + b ln x (branche parabolique, pas
+  d'asymptote) ; ax + b + c e⁻ˣ (asymptote en +∞ seulement).
+Tests de nature sur les entiers : Kn = AC + 20B = 400(ac + b) ; Rn = AD² + 20BD + 400C = 8 000 r ;
+Dn = 80C − B² = 400(4c − b²), donc q = Dn/1 600. L'écart à l'asymptote vient de sa formule (k/(x − c),
+b e⁻ˣ, r/(x − d), q/(f + |x + b/2|)…), pas d'une soustraction en machine, qui s'annulait à tort. Tracé :
+`courbe()` s'arrête un pas avant une asymptote verticale ou une extrémité du domaine ; des « raccords »
+(pas divisé par deux, quarante fois) prolongent la courbe jusqu'au bord. Image d'aperçu fabriquée
+(MEMO_atlas.md §0, point 9 ; les polices s'installent par `npm install @fontsource/spectral
+@fontsource/ibm-plex-sans` dans un dossier, que l'on passe à l'outil, sans `node_modules` au bout).
+
+**Erreur trouvée à l'œil avant relecture** : q affiché quatre fois trop grand (division par 400 au lieu de
+1 600). **Relecture indépendante (règle permanente)** : 450 496 jeux de coefficients confrontés numériquement,
+asymptotes, limites, signes et tests entiers exacts. Corrigé d'après le rapport : q arrondi mais présenté comme
+une égalité ; « |x + 0| » ; « au-dessous de ses deux asymptotes » faux quand q < 0 (chaque branche est sous la
+sienne) ; « pas d'asymptote » pour « pas d'asymptote verticale » dans le deuxième piège ; renvoi au chapitre
+ma-08, qui ne traite pas les branches infinies (c'est ma-05) ; hypothèses de domaine dans les définitions ;
+vocabulaire du cours (branche parabolique) ; fonctions constantes ou affines (leur propre asymptote) ;
+raccords du tracé ; libellés de tableau en double ; écriture des très grands et très petits nombres. Les
+corrections n'ont pas été relues une seconde fois. Non vérifié : la formulation du programme officiel de MPSI.
+
+Explorations : vingt-neuf. Jeux et casse-têtes : seize. Calcul mental : deux activités. Raisonner : quatre.
 Parcours du jour : une.
