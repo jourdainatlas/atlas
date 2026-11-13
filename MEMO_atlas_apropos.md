@@ -859,3 +859,10 @@ en `text/x-asm` (Apache lit l'extension « .asm » au milieu du nom) et sans com
 l'emporte sur le type déduit de « .asm » ; `application/wasm` ajouté à la liste DEFLATE (et `application/xml`, pour
 le plan du site). Le contournement posé par le domaine Cours dans `python/atelier-worker.mjs` reste en place : il
 ne fait rien quand le type est correct.
+
+## 80. Retour au mode clair par défaut (13 nov. 2026)
+
+Demande de l'auteur, le lendemain du passage au sombre (§75) : le clair redevient le mode par défaut. Mêmes endroits
+qu'en §75, inversés (script de tête et `themeEffectif()` de `gabarit.html`, libellés du bouton, `THEME` et
+`theme-color` de `lecture.mjs`, `theme-color` de `rendu.mjs`, `identite/site.webmanifest`). Le choix fait au bouton
+reste mémorisé pour la session. Les images d'aperçu restent sombres (elles ne dépendent pas du thème du site).
