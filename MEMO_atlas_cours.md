@@ -761,3 +761,8 @@ l'élève gardé dans son navigateur (`atlas-python:<id>`).
 
 Signalé à l'auteur : « corps » (corps d'une boucle) est relevé en rouge comme terme défini, alors qu'il en est un
 autre en algèbre ; laissé tel quel. Termes écartés : texte, la borne, vaut, Arrêter, et deux fragments.
+
+Le 13 nov., après publication : OVH sert `pyodide.asm.wasm` en `text/x-asm` (Apache lit l'extension « .asm »), que
+WebAssembly refuse. Le worker rétablit le type `application/wasm` des réponses `.wasm` (enveloppe de `fetch`), sans
+toucher à `htaccess-ovh`. Vérifié en ligne : l'exercice 2 s'exécute. Un `AddType application/wasm .wasm` (avec
+compression) dans `htaccess-ovh` rendrait le chargement plus léger : à proposer au domaine de la publication.
