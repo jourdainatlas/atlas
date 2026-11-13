@@ -1536,5 +1536,16 @@ vocabulaire du cours (branche parabolique) ; fonctions constantes ou affines (le
 raccords du tracé ; libellés de tableau en double ; écriture des très grands et très petits nombres. Les
 corrections n'ont pas été relues une seconde fois. Non vérifié : la formulation du programme officiel de MPSI.
 
+**Asymptotes : figure qui sautait de quelques pixels en boucle (signalé par l'auteur, corrigé le 13 nov.).**
+Cause : à chaque rendu, `ecrire(el, K(formule), true)` réécrivait la ligne de formule au-dessus de la figure.
+Le site compose ensuite cette formule (KaTeX), ce qui change son HTML (donc `ecrire` la croit différente au
+rendu suivant) et sa hauteur ; or la scène suit la taille de l'activité (`ResizeObserver`) et relance un rendu :
+boucle sans fin, 158 réécritures en deux secondes, figure alternant entre deux positions distantes de 16 px.
+Correction : la formule n'est réécrite que si son LaTeX a changé (mémorisé dans `data-tex`), et sa ligne a une
+hauteur réservée. **RÈGLE : dans une fonction de rendu d'une scène, ne jamais passer une formule `kx` à
+`ecrire()`** ; comparer le LaTeX source. Le défaut avait échappé aux contrôles, qui ne regardaient pas la page
+au repos : nouveau test de stabilité (position des toiles relevée sur 90 images, modifications du DOM comptées,
+sans rien toucher), passé sur les 28 activités à figures à 1 600 et 390 px, toutes stables.
+
 Explorations : vingt-neuf. Jeux et casse-têtes : seize. Calcul mental : deux activités. Raisonner : quatre.
 Parcours du jour : une.

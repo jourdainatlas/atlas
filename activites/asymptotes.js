@@ -11,7 +11,7 @@ export const css = cssCommun + cssFigures + `
 .activites-act .as-tab th:first-child, .activites-act .as-tab td:first-child { text-align: left; color: var(--encre-2); }
 .activites-act .as-tab caption { caption-side: top; text-align: left; padding: 8px 10px 4px; font: 500 12px var(--f-ui); letter-spacing: .05em; text-transform: uppercase; color: var(--encre-3); }
 .activites-act .as-choix { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; padding: 10px 16px; border-top: 1px solid var(--filet); font: 14px var(--f-ui); color: var(--encre-2); }
-.activites-act .as-formule { margin: 0; padding: 10px 16px 0; font: 15px/1.5 var(--f-texte, Georgia, serif); }
+.activites-act .as-formule { margin: 0; padding: 10px 16px 0; font: 15px/1.5 var(--f-texte, Georgia, serif); min-height: 62px; display: flex; align-items: center; }   /* hauteur réservée : la figure ne bouge pas quand la formule change */
 .activites-act .reglages .inutile { display: none; }
 `;
 
@@ -221,7 +221,10 @@ export function monter(racine) {
       if (Math.abs(+sl.value - P[l]) > 1e-9) sl.value = P[l]; ecrire(q(id + l + 'v'), fr(P[l], 2)); }
     const sx = q(id + 'x'); sx.min = -Z; sx.max = Z; if (Math.abs(+sx.value - x) > 1e-9) sx.value = x; ecrire(q(id + 'xv'), fr(x, 2));
     G.bF.forEach((bt, i) => bt.setAttribute('aria-pressed', String(i === E.fn))); G.bZ.forEach((bt, i) => bt.setAttribute('aria-pressed', String(i === E.z)));
-    ecrire(q('#as-e' + n), K(F.tex(P)), true);
+    // La formule n'est réécrite que si elle a changé : le site la compose ensuite (KaTeX), ce qui modifie son HTML et sa
+    // hauteur ; la réécrire à chaque rendu relançait la composition, donc un changement de hauteur, donc un nouveau rendu
+    // (la scène suit la taille de l'activité), sans fin : la figure sautait de quelques pixels en permanence.
+    { const el = q('#as-e' + n), t = F.tex(P); if (el.dataset.tex !== t) { el.dataset.tex = t; el.innerHTML = K(t); } }
     // figure
     const { ctx, w, h } = toile(q('#as-fig' + n)), v = vueEgale(w, h, 0, 0, Z); G.vue(v);
     grille(ctx, v, C, true);
