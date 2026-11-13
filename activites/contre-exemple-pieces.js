@@ -10,7 +10,7 @@ contre('sec-carre-plus-grand', 'seconde', '', 's-07', 'x² ≥ x', T`« Pour tou
   [T`$x = \dfrac12$`, T`$\left(\dfrac12\right)^2 = \dfrac14$, qui est strictement inférieur à $\dfrac12$ : l'inégalité est fausse pour ce nombre.`, B],
   [T`$x = 1$`, T`$1^2 = 1 \geqslant 1$ : l'inégalité, qui est large, est vraie pour ce nombre.`] ],
   T`Entre 0 et 1, élever au carré diminue : $x^2 - x = x(x - 1)$ est strictement négatif exactement quand $0 < x < 1$. Pour réfuter un énoncé « pour tout », un seul nombre suffit, mais il faut le chercher là où l'intuition, formée sur les entiers, ne va pas.`),
-contre('sec-racine-carre', 'seconde', '', 's-01', '√(x²) = x', T`« Pour tout réel $x$, on a $\sqrt{x^2} = x$. »`, [
+contre('sec-racine-carre', 'seconde', '', 's-01', 'Racine carrée de x² égale à x', T`« Pour tout réel $x$, on a $\sqrt{x^2} = x$. »`, [
   [T`$x = 3$`, T`$\sqrt{3^2} = \sqrt9 = 3$ : l'égalité est vraie pour ce nombre.`],
   [T`$x = 0$`, T`$\sqrt{0^2} = 0$ : l'égalité est vraie pour ce nombre.`],
   [T`$x = -4$`, T`$\sqrt{(-4)^2} = \sqrt{16} = 4$, qui n'est pas égal à $-4$ : l'égalité est fausse pour ce nombre.`, B],

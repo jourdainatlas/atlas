@@ -89,7 +89,7 @@ export const html = `
 // cette dépendance manque }, bloc (facultatif) }, intrus [{ id, t, pourquoi }] (deux par pièce ; le réglage en retient zéro, un ou deux).
 // Les démonstrations de Maths Sup suivent celles des chapitres du cours du site.
 const ANCIENNES = [
-  { id: 'racine2', nom: 'Irrationalité de √2', niveau: 'premiere', aussi: ['seconde'], cours: '', enonce: `Le nombre ${K('\\sqrt2')} est irrationnel.`, etapes: [
+  { id: 'racine2', nom: 'Irrationalité de la racine carrée de 2', niveau: 'premiere', aussi: ['seconde'], cours: '', enonce: `Le nombre ${K('\\sqrt2')} est irrationnel.`, etapes: [
     { id: 'a', t: `Raisonnons par l'absurde : supposons qu'il existe deux entiers ${K('p > 0')} et ${K('q > 0')}, sans diviseur commun autre que 1, tels que ${K('\\sqrt2 = \\dfrac pq')}.`, dep: {} },
     { id: 'b', t: `En élevant au carré, on obtient ${K('p^2 = 2q^2')}.`, dep: { a: `Cette étape parle de ${K('p')} et de ${K('q')}, qui n'ont pas encore été introduits.` } },
     { id: 'c', t: `Donc ${K('p^2')} est pair. Or le carré d'un nombre impair est impair : ${K('p')} est donc pair, et il existe un entier ${K('k')} tel que ${K('p = 2k')}.`, dep: { b: `Pour dire que ${K('p^2')} est pair, il faut avoir établi ${K('p^2 = 2q^2')}.` } },
