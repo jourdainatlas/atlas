@@ -1416,5 +1416,16 @@ inutile retiré pour 2x/(x² + b) ; les réponses fausses de réserve sont maint
 « 0 » proposé comme équivalent dans trois suites (confusion classique, voulue) ; notations `\dfrac{1}{2}x^2`
 et `\dfrac{n^2}{2}` mêlées ; séries un peu répétitives dans les trois thèmes les plus courts (22 à 29 énoncés).
 
+### 157. Le compte est bon : lien de retour au parcours affiché en clair (13 nov. 2026)
+
+Signalé par l'auteur (capture sur téléphone) : après un compte réussi ouvert depuis le parcours, le message
+montrait le code `<a href="#activites/parcours">…</a>` au lieu du lien. Cause : dans ce module, `ecrire(m, …)`
+est appelé sans son troisième argument et pose du texte, alors que les autres activités passent `true`. Le
+lien est maintenant un élément créé à part et ajouté au message. Le défaut avait échappé au contrôle du §151,
+qui suivait le parcours sans aller jusqu'à la réussite du compte : le test résout désormais le tirage du jour
+(recherche exhaustive dans le script), vérifie que le message ne contient ni `<a` ni `&lt;`, clique le lien et
+contrôle le retour au parcours (375 px sombre, 1280 px clair). RÈGLE : tout message qui contient un lien se
+vérifie affiché, dans le navigateur, jusqu'à l'état où le lien apparaît.
+
 Explorations : vingt-huit. Jeux et casse-têtes : seize. Calcul mental : deux activités. Raisonner : quatre.
 Parcours du jour : une.
