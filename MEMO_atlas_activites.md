@@ -1465,5 +1465,37 @@ relues une seconde fois ; elles ont repassé les contrôles numériques (35 000 
 corrigés, toutes les congruences écrites) et le navigateur (147 séries jouées en se trompant, 1 096 corrigés
 affichés, sombre 375 px et clair 1280 px, aucune formule en erreur, aucun débordement).
 
+### 159. Au doigt : les zones manipulées ne font plus défiler la page ; taquin par glissement (13 nov. 2026)
+
+**Demande de l'auteur (téléphone).** Déplacer un point ou un curseur faisait aussi défiler la page ; il demande
+que le toucher dans les zones manipulées (graphes, curseurs, casse-têtes) ne déplace plus la page, et que le
+taquin se joue par glissement.
+
+**RÈGLE.** Toute zone que l'on manipule au doigt porte `touch-action: none` ; ce qui ne se manipule pas garde le
+défilement. Mise en œuvre :
+- figures : `glisser()` de `figures.js` pose `touch-action: none` sur la toile qu'elle rend déplaçable (une
+  figure sans glissement, comme celle de la binomiale, garde `pan-y` et laisse défiler) ; prototypes : règles
+  propres dans `derivee.js` (cv1, cv3t, cv3b, cv4t, cv4b) et `limite-suite.js` (cv1, cv2) ;
+- curseurs et nombres à faire glisser : `commun.js`, `input[type="range"]` et `.scrub` ; `.scrub` devient
+  `inline-block`, car `touch-action` ne s'applique pas à un élément en ligne (constaté au test) ;
+- casse-têtes : `jeux.js`, `.jeu-plateau > * { touch-action: none !important }` (le plateau, pas la bande qui
+  l'entoure : les marges défilent toujours ; `!important` parce que ponts et polyominos posaient `manipulation`).
+Conséquence assumée : sur un petit écran, on fait défiler la page par le texte ou les marges, pas par la figure.
+
+**Taquin.** Un glissement d'au moins 22 px sur le plateau (doigt, stylet ou souris), dans sa direction
+dominante, pousse dans ce sens la pièce voisine de la case vide : même effet que la flèche du clavier
+(`versLe(sens)`, commun aux deux). Le clic que le geste produirait est ignoré (drapeau remis à zéro au toucher
+suivant ou après 350 ms). Texte « Comment jouer » complété.
+
+**Erreur commise et corrigée avant publication.** Une variable `depart` déclarée deux fois empêchait le module
+de se charger : la construction ne vérifie pas la syntaxe des modules. À faire après toute retouche d'un
+module : `for f in activites/*.js; do cp $f /tmp/x.mjs; node --check /tmp/x.mjs; done`, puis ouvrir l'activité.
+
+**Contrôles** (téléphone simulé, toucher réel par le protocole du navigateur) : taquin, six glissements, cinq
+ou six coups joués selon la position, page immobile, toucher simple toujours actif ; glissement vertical de
+120 px : 0 px de défilement sur figure déplaçable, curseur, nombre surligné, plateaux (Hanoï, polyominos, go),
+environ 140 px sur le texte et sur la figure non manipulable. Trente activités passées en revue pour l'état
+`touch-action` de leurs zones. Pas d'essai avec un vrai doigt.
+
 Explorations : vingt-huit. Jeux et casse-têtes : seize. Calcul mental : deux activités. Raisonner : quatre.
 Parcours du jour : une.

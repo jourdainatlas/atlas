@@ -48,6 +48,10 @@ export const css = `
 .activites-act .fig { margin: 20px 0 24px; background: var(--surface); border: 1px solid var(--filet); border-radius: 8px; overflow: hidden; }
 .activites-act .fig canvas { display: block; width: 100%; touch-action: pan-y; cursor: grab; }
 .activites-act .fig canvas.draw { touch-action: none; cursor: crosshair; }
+/* Au doigt (§159) : une zone que l'on manipule ne fait pas défiler la page. Les figures que l'on fait glisser reçoivent
+   touch-action: none de glisser() (figures.js) ; ici, les curseurs et les nombres à faire glisser. */
+.activites-act input[type="range"], .activites-act .scrub { touch-action: none; }
+.activites-act .scrub { display: inline-block; line-height: 1.25; }   /* touch-action ne s'applique pas à un élément en ligne */
 /* Aucune figure ne dépasse la hauteur de l'écran (11 nov. 2026) : une figure seule est limitée à 70 % de la fenêtre,
    et deux figures superposées qui se lisent ensemble (classe paire, ou repères ci-dessous) tiennent à deux dans la fenêtre.
    Le dessin s'adapte de lui-même : chaque figure lit la taille réelle de sa toile. */

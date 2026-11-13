@@ -107,7 +107,7 @@ export function poignee(ctx, C, X, Y, couleur, nom, dessous) {
 export function pastille(ctx, X, Y, couleur, r) { ctx.fillStyle = couleur; ctx.beginPath(); ctx.arc(X, Y, r || 4, 0, 7); ctx.fill(); }
 // Glisser sur une toile, à la souris ou au doigt : fn({x, y}, phase), phase = 'debut' | 'suite' | 'fin'.
 export function glisser(cv, fn) {
-  let actif = false;
+  let actif = false; cv.style.touchAction = 'none';   // le doigt déplace le point, pas la page
   const pos = e => { const r = cv.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
   cv.addEventListener('pointerdown', e => { actif = true; try { cv.setPointerCapture(e.pointerId); } catch (_) {} e.preventDefault(); fn(pos(e), 'debut'); });
   cv.addEventListener('pointermove', e => { if (actif) fn(pos(e), 'suite'); });

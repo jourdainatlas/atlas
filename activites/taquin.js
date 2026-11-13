@@ -35,7 +35,7 @@ export const html = `
 <section>
   <div class="col">
     <h4><span class="n">1</span>Jouer</h4>
-    <p>Cliquez sur une pièce de la même ligne ou de la même colonne que la case vide : elle glisse, avec celles qui la séparent du vide. Au clavier, les flèches poussent une pièce vers la case vide, dès que le plateau est à l'écran : la flèche vers le haut fait monter la pièce située sous la case vide. Le but est la position rangée, case vide en bas à droite. Le bouton « Mélanger » ne joue que des coups permis : la position obtenue a donc toujours une solution. « Revenir au départ » replace les pièces comme elles étaient après le dernier mélange, pour réessayer ; une fois le taquin rangé, la page rappelle le plus petit nombre de coups qui suffisait depuis cette position.</p>
+    <p>Cliquez sur une pièce de la même ligne ou de la même colonne que la case vide : elle glisse, avec celles qui la séparent du vide. Au doigt, un glissement sur le plateau, vers la gauche, la droite, le haut ou le bas, pousse dans ce sens la pièce voisine de la case vide. Au clavier, les flèches poussent une pièce vers la case vide, dès que le plateau est à l'écran : la flèche vers le haut fait monter la pièce située sous la case vide. Le but est la position rangée, case vide en bas à droite. Le bouton « Mélanger » ne joue que des coups permis : la position obtenue a donc toujours une solution. « Revenir au départ » replace les pièces comme elles étaient après le dernier mélange, pour réessayer ; une fois le taquin rangé, la page rappelle le plus petit nombre de coups qui suffisait depuis cette position.</p>
     <p>Jusqu'à neuf cases, la page connaît toutes les positions : elle indique le nombre minimal de coups qui restent, et « Un coup » joue l'un des meilleurs. Au-delà, elle donne seulement un nombre de coups au-dessous duquel on ne peut pas descendre.</p>
   </div>
 </section>
@@ -129,7 +129,19 @@ export function monter(racine) {
     for (const w of voisins(v)) { const b = t.slice(); b[v] = b[w]; b[w] = 0; if (D.get(code(b)) === d - 1) { jouer(w); conseil = v; break; } }
     rendre();
   });
-  q('#tq-plateau').addEventListener('click', e => { const b = e.target.closest('button[data-i]'); if (b && jouer(+b.dataset.i)) rendre(); });
+  // Coup dans une direction : la pièce voisine du vide glisse dans ce sens (flèches du clavier et glissement du doigt).
+  const versLe = sens => { const v = vide(t), r = Math.floor(v / K), c = v % K;
+    const i = sens === 'haut' && r < L - 1 ? v + K : sens === 'bas' && r > 0 ? v - K : sens === 'gauche' && c < K - 1 ? v + 1 : sens === 'droite' && c > 0 ? v - 1 : -1;
+    return i >= 0 && jouer(i); };
+  // Glissement (doigt, stylet ou souris) : au moins 22 px, direction dominante ; le clic que ce geste produirait est ignoré.
+  let appui = null, glisse = 0;
+  const P0 = q('#tq-plateau');
+  P0.addEventListener('pointerdown', e => { glisse = 0; appui = { x: e.clientX, y: e.clientY, id: e.pointerId }; });
+  P0.addEventListener('pointerup', e => { if (!appui || appui.id !== e.pointerId) return; const dx = e.clientX - appui.x, dy = e.clientY - appui.y; appui = null;
+    if (Math.max(Math.abs(dx), Math.abs(dy)) < 22) return; glisse = 1; setTimeout(() => { glisse = 0; }, 350);
+    if (versLe(Math.abs(dx) > Math.abs(dy) ? (dx < 0 ? 'gauche' : 'droite') : (dy < 0 ? 'haut' : 'bas'))) rendre(); });
+  P0.addEventListener('pointercancel', () => { appui = null; });
+  P0.addEventListener('click', e => { if (glisse) { glisse = 0; return; } const b = e.target.closest('button[data-i]'); if (b && jouer(+b.dataset.i)) rendre(); });
   // Flèches du clavier : elles poussent vers la case vide la pièce qui se trouve du côté opposé. Elles sont écoutées sur
   // toute la fenêtre (et non sur le seul plateau, où il fallait d'abord avoir cliqué sur une pièce), mais seulement quand
   // le plateau est à l'écran et que l'on n'est pas dans un champ, une liste ou un curseur, pour ne pas gêner le reste.
@@ -139,10 +151,8 @@ export function monter(racine) {
     const cible = e.target, P = q('#tq-plateau'), r0 = P.getBoundingClientRect();
     if (cible && cible.closest && cible.closest('input, select, textarea, [contenteditable], [role="slider"]')) return;
     if (r0.bottom < 60 || r0.top > innerHeight - 40 || !P.isConnected) return;
-    const v = vide(t), r = Math.floor(v / K), c = v % K;
-    const i = e.key === 'ArrowUp' && r < L - 1 ? v + K : e.key === 'ArrowDown' && r > 0 ? v - K : e.key === 'ArrowLeft' && c < K - 1 ? v + 1 : e.key === 'ArrowRight' && c > 0 ? v - 1 : -1;
     e.preventDefault();
-    if (i >= 0 && jouer(i)) rendre();
+    if (versLe({ ArrowUp: 'haut', ArrowDown: 'bas', ArrowLeft: 'gauche', ArrowRight: 'droite' }[e.key])) rendre();
   });
   melanger(); rendre();
   return () => { vivant = false; demonter(); };

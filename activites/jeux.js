@@ -5,6 +5,8 @@ export const entier = n => isFinite(n) ? Math.round(n).toLocaleString('fr-FR') :
 export const cssJeux = `
 .activites-act .jeu { margin: 22px 0 26px; background: var(--surface); border: 1px solid var(--filet); border-top: 3px solid var(--activites-jeu); border-radius: 8px; overflow: hidden; }
 .activites-act .jeu-plateau { padding: 22px 16px; display: flex; justify-content: center; background: var(--papier); }
+/* Au doigt (§159) : toucher le plateau ne fait pas défiler la page ; les marges autour, elles, défilent. */
+.activites-act .jeu-plateau > * { touch-action: none !important; }
 .activites-act .jeu-etat { display: flex; flex-wrap: wrap; gap: 6px 22px; padding: 10px 16px; border-top: 1px solid var(--filet); font: 14px/1.4 var(--f-ui); color: var(--encre-2); }
 .activites-act .jeu-etat b { font-family: var(--f-mono); font-weight: 600; color: var(--encre); }
 .activites-act .jeu-message { padding: 10px 16px; border-top: 1px solid var(--filet); font: 15px/1.45 var(--f-ui); min-height: 44px; }

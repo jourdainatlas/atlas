@@ -5,7 +5,7 @@
 import { bac, css as cssCommun } from './commun.js';
 
 export const css = cssCommun + `
-.activites-act #cv1 { aspect-ratio: 16/7; touch-action: pan-y; } .activites-act #cv2 { aspect-ratio: 16/10; } .activites-act #cv3 { aspect-ratio: 16/7; cursor: default; }
+.activites-act #cv1 { aspect-ratio: 16/7; touch-action: none; } .activites-act #cv2 { touch-action: none; } .activites-act #cv2 { aspect-ratio: 16/10; } .activites-act #cv3 { aspect-ratio: 16/7; cursor: default; }
 @media (max-width: 560px) { .activites-act #cv1, .activites-act #cv3 { aspect-ratio: 4/3; } .activites-act #cv2 { aspect-ratio: 1/1; } }
 `;
 
