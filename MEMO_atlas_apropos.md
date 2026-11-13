@@ -840,3 +840,12 @@ rouge (parcours du jour, `couleur: marque` dans activites.yaml), `annales` → o
 Modifiés hors de mon domaine, à la demande de l'auteur : `rubriques/activites.yaml` (parcours), `activites/raisonner.js`
 et `activites/parcours.js` (cadres et liserés). Les signalements d'erreur des jeux restent rouges. Images d'aperçu
 des cinq activités refaites.
+
+## 79. Serveur OVH : type et compression des fichiers WebAssembly (13 nov. 2026)
+
+Demande du domaine Cours (atelier Python, Pyodide servi depuis `/python/pyodide/`). `pyodide.asm.wasm` était servi
+en `text/x-asm` (Apache lit l'extension « .asm » au milieu du nom) et sans compression (9,6 Mo). Dans
+`identite/htaccess-ovh` : `AddType application/wasm .wasm`, plus un `<FilesMatch "\.wasm$">` avec `ForceType`, qui
+l'emporte sur le type déduit de « .asm » ; `application/wasm` ajouté à la liste DEFLATE (et `application/xml`, pour
+le plan du site). Le contournement posé par le domaine Cours dans `python/atelier-worker.mjs` reste en place : il
+ne fait rien quand le type est correct.

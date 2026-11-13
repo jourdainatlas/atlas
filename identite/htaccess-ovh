@@ -14,6 +14,13 @@ AddType application/xml .xml
   ForceType application/rss+xml
 </Files>
 AddType font/woff2 .woff2
+# WebAssembly (Pyodide de l'atelier Python, demande du domaine Cours, 13 nov. 2026). Le fichier s'appelle
+# pyodide.asm.wasm : Apache lit aussi l'extension « .asm » et servait text/x-asm, que le navigateur refuse (nosniff).
+# ForceType l'emporte sur tout type déduit des extensions.
+AddType application/wasm .wasm
+<FilesMatch "\.wasm$">
+  ForceType application/wasm
+</FilesMatch>
 AddType image/svg+xml .svg
 
 RewriteEngine On
@@ -36,5 +43,5 @@ RewriteRule ^ https://www.atlasjourdain.fr%{REQUEST_URI} [L,R=301]
 </IfModule>
 
 <IfModule mod_deflate.c>
-  AddOutputFilterByType DEFLATE text/html text/css text/javascript application/json application/manifest+json application/rss+xml image/svg+xml text/plain
+  AddOutputFilterByType DEFLATE text/html text/css text/javascript application/json application/manifest+json application/rss+xml image/svg+xml text/plain application/wasm application/xml
 </IfModule>
