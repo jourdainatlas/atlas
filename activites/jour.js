@@ -1,7 +1,7 @@
 // Parcours du jour (MEMO_atlas_activites.md §151) : date à Paris, niveau choisi, étapes faites, et passage d'une étape du parcours à l'activité.
-export const NIVEAUX_PARCOURS = [['premiere', 'Première'], ['terminale', 'Terminale'], ['expertes', 'Terminale + Maths expertes'], ['sup', 'Maths Sup']];
+export const NIVEAUX_PARCOURS = [['seconde', 'Seconde'], ['premiere', 'Première'], ['terminale', 'Terminale'], ['expertes', 'Terminale + Maths expertes'], ['sup', 'Maths Sup']];
 // La classe « Terminale + Maths expertes » puise dans les pièces des deux niveaux.
-const NIVEAUX_DE = { premiere: ['premiere'], terminale: ['terminale'], expertes: ['terminale', 'expertes'], sup: ['sup'] };
+const NIVEAUX_DE = { seconde: ['seconde'], premiere: ['premiere'], terminale: ['terminale'], expertes: ['terminale', 'expertes'], sup: ['sup'] };
 // Numéro du jour à Paris, compté depuis le 1er janvier 2026 (même convention que « Le compte est bon »).
 export function aujourdhui() { const s = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date()), [y, m, d] = s.split('-').map(Number);
   return { n: Math.round((Date.UTC(y, m - 1, d) - Date.UTC(2026, 0, 1)) / 864e5), texte: new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Paris', weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date()) }; }

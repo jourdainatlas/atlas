@@ -1,5 +1,5 @@
 // Commun aux deux activités de la sous-rubrique « Raisonner » (MEMO_atlas_activites.md §144) : niveaux, styles, mémoire du navigateur.
-export const NIVEAUX = [['premiere', 'Première'], ['terminale', 'Terminale'], ['expertes', 'Maths expertes'], ['sup', 'Maths Sup']];
+export const NIVEAUX = [['seconde', 'Seconde'], ['premiere', 'Première'], ['terminale', 'Terminale'], ['expertes', 'Maths expertes'], ['sup', 'Maths Sup']];
 export const THEMES = [['fondements', 'Fondements'], ['algebre', 'Algèbre'], ['lineaire', 'Algèbre linéaire'], ['analyse', 'Analyse'], ['probabilites', 'Probabilités']];
 export const cssRaison = `
 .activites-act .jeu { --activites-jeu: var(--activites-raison); }

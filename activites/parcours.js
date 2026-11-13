@@ -25,7 +25,7 @@ export const css = cssCommun + cssFigures + cssJeux + `
 
 export const html = `
 <header class="col">
-  <p class="eyebrow">Chaque jour · Première, Terminale, Maths expertes, Maths Sup</p>
+  <p class="eyebrow">Chaque jour · Seconde, Première, Terminale, Maths expertes, Maths Sup</p>
   <h3>Parcours du jour</h3>
   <p class="lede">Six étapes par jour, les mêmes pour tous les visiteurs d'une même classe : un nombre à atteindre, dix calculs, une démonstration à remettre en ordre, une erreur à trouver, un contre-exemple, une question de logique. Un quart d'heure environ, pour entretenir à la fois le calcul et le raisonnement.</p>
 </header>
@@ -41,7 +41,7 @@ export const html = `
   <div class="col">
     <h4><span class="n">1</span>Comment cela marche</h4>
     <p>Choisissez votre classe une fois : votre navigateur s'en souvient. Chaque étape ouvre l'activité correspondante, déjà réglée sur votre classe et sur la pièce du jour ; quand l'étape est réussie, un lien ramène ici, et l'étape est marquée « fait ». À minuit, heure de Paris, le parcours change et les marques repartent de zéro.</p>
-    <p>Les étapes sont indépendantes : on peut les faire dans l'ordre que l'on veut, et s'arrêter en route. La difficulté suit la classe choisie. « Le compte est bon » est au niveau 1 en Première et au niveau 2 à partir de la Terminale, Maths Sup comprise (le niveau 3, plus long, reste offert aux volontaires dans l'activité elle-même) ; les dix calculs portent sur le programme de la classe ; les quatre pièces de raisonnement sont tirées parmi celles de la classe. Deux classes sont proposées en Terminale : « Terminale », qui s'en tient à l'enseignement de spécialité, et « Terminale + Maths expertes », qui y ajoute l'arithmétique, les nombres complexes, les matrices et les graphes de l'option.</p>
+    <p>Les étapes sont indépendantes : on peut les faire dans l'ordre que l'on veut, et s'arrêter en route. La difficulté suit la classe choisie. « Le compte est bon » est au niveau 1 en Seconde et en Première, et au niveau 2 à partir de la Terminale, Maths Sup comprise (le niveau 3, plus long, reste offert aux volontaires dans l'activité elle-même) ; les dix calculs portent sur le programme de la classe ; les quatre pièces de raisonnement sont tirées parmi celles de la classe. Deux classes sont proposées en Terminale : « Terminale », qui s'en tient à l'enseignement de spécialité, et « Terminale + Maths expertes », qui y ajoute l'arithmétique, les nombres complexes, les matrices et les graphes de l'option.</p>
   </div>
 </section>
 
@@ -57,7 +57,7 @@ export const html = `
   "Chaque étape renvoie, dans l'activité qu'elle ouvre, au chapitre du cours concerné. Pour le raisonnement lui-même, voir le chapitre <a href=\"#cours/ma-01\">Logique et ensembles</a> et la fiche <a href=\"#n.n-recurrence\">Principe de récurrence</a> de l'édifice.",
   "Le parcours ne calcule rien lui-même : il choisit, d'après la date à Paris et la classe, le rang de la pièce du jour dans chaque activité, et lit dans votre navigateur ce que vous avez déjà fait aujourd'hui. Rien n'est envoyé : la classe choisie et les étapes faites restent sur votre appareil.");
 
-const NIV_COMPTE = { premiere: 0, terminale: 1, expertes: 1, sup: 1 };
+const NIV_COMPTE = { seconde: 0, premiere: 0, terminale: 1, expertes: 1, sup: 1 };
 const ETAPES = [
   ['compte-est-bon', 'calcul', 'Le compte est bon', n => `Le nombre du jour, niveau ${NIV_COMPTE[n] + 1} : six nombres, quatre opérations, une cible.`],
   ['serie', 'calcul', 'Dix calculs', () => 'Dix calculs de tête sur le programme de votre classe, contre la montre.'],

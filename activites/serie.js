@@ -33,9 +33,9 @@ export const css = cssCommun + cssFigures + cssJeux + `
 
 export const html = `
 <header class="col">
-  <p class="eyebrow">Calcul mental · Première, Terminale, Maths expertes, Maths Sup</p>
+  <p class="eyebrow">Calcul mental · Seconde, Première, Terminale, Maths expertes, Maths Sup</p>
   <h3>Dix calculs</h3>
-  <p class="lede">Dix calculs à faire de tête, contre la montre, sur un thème de votre classe : carrés, pourcentages, développements et factorisations en Première, dérivées, primitives et intégrales en Terminale, à quoi s'ajoutent PGCD, congruences et nombres complexes avec l'option Maths expertes, puis développements limités, équivalents et déterminants en Maths Sup. Quatre réponses sont proposées ; une seule est exacte, les autres sont les erreurs que l'on commet le plus souvent.</p>
+  <p class="lede">Dix calculs à faire de tête, contre la montre, sur un thème de votre classe : fractions, racines carrées, équations et inéquations en Seconde, carrés, pourcentages, développements et factorisations en Première, dérivées, primitives et intégrales en Terminale, à quoi s'ajoutent PGCD, congruences et nombres complexes avec l'option Maths expertes, puis développements limités, équivalents et déterminants en Maths Sup. Quatre réponses sont proposées ; une seule est exacte, les autres sont les erreurs que l'on commet le plus souvent.</p>
 </header>
 
 <div class="jeu">
@@ -69,7 +69,7 @@ export const html = `
 </section>
 ` + suite(
   "Aller vite avant d'aller juste. Une réponse fausse donnée en deux secondes ne vaut rien : la page classe d'abord par le nombre de réponses justes, et seulement ensuite par le temps. L'autre piège est de reconnaître une réponse « qui ressemble » : les réponses fausses sont précisément celles qui ressemblent.",
-  "Les règles employées sont celles des chapitres du cours : <a href=\"#cours/p-04\">Dérivation</a> et <a href=\"#cours/p-01\">Polynôme du second degré</a> en Première, <a href=\"#cours/t-05\">Fonctions exponentielle et logarithme</a> et <a href=\"#cours/t-06\">Calcul intégral</a> en Terminale, <a href=\"#cours/ma-04\">Nombres complexes et trigonométrie</a> et <a href=\"#cours/ma-10\">Analyse asymptotique et développements limités</a> en Maths Sup.",
+  "Les règles employées sont celles des chapitres du cours : <a href=\"#cours/s-01\">Nombres et calculs</a>, <a href=\"#cours/s-04\">Équations</a> et <a href=\"#cours/s-09\">Inéquations</a> en Seconde, <a href=\"#cours/p-04\">Dérivation</a> et <a href=\"#cours/p-01\">Polynôme du second degré</a> en Première, <a href=\"#cours/t-05\">Fonctions exponentielle et logarithme</a> et <a href=\"#cours/t-06\">Calcul intégral</a> en Terminale, <a href=\"#cours/ma-04\">Nombres complexes et trigonométrie</a> et <a href=\"#cours/ma-10\">Analyse asymptotique et développements limités</a> en Maths Sup.",
   "Chaque calcul est fabriqué par la page : les nombres sont tirés au hasard dans des plages choisies pour rester faisables de tête, la bonne réponse est calculée exactement (entiers et fractions réduites), et les réponses fausses sont obtenues en appliquant une règle erronée précise. Les limites et intégrales usuelles viennent d'une liste de résultats classiques. Votre navigateur retient seulement vos meilleurs résultats ; rien n'est envoyé.");
 
 const CLE = 'atlas-serie';

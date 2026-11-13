@@ -22,10 +22,9 @@ print("Par la formule n(n+1)(2n+1)/6 :", n * (n + 1) * (2 * n + 1) // 6)
 export const css = cssCommun + `
 .activites-act .bs-hote { margin-top: 22px; min-height: 120px; }
 .activites-act .bs-hote .vide-note { font: 15px var(--f-ui); color: var(--encre-3); }
-.activites-act .bs-mode { margin-top: 14px; font-size: 16px; color: var(--encre-2); max-width: 78ch; }
+.activites-act .bs-mode { margin-top: 18px; font-size: 16px; color: var(--encre-2); }
 .activites-act .bs-mode kbd, .activites-act .bs-texte code { font: 500 .88em var(--f-mono); }
 .activites-act .bs-mode kbd { border: 1px solid var(--filet); border-radius: 4px; padding: 0 5px; }
-.activites-act .bs-texte { max-width: 78ch; }
 .activites-act .bs-texte p { margin: 0 0 12px; line-height: 1.6; }
 .activites-act .bs-texte q { font-style: italic; quotes: "« " " »"; }
 .activites-act .bs-sources { font-size: 14.5px; line-height: 1.55; padding-left: 20px; margin: 6px 0 0; }

@@ -24,7 +24,7 @@ export const css = cssCommun + cssFigures + cssJeux + cssRaison + `
 
 export const html = `
 <header class="col">
-  <p class="eyebrow">Raisonner · de la Première à Maths Sup</p>
+  <p class="eyebrow">Raisonner · de la Seconde à Maths Sup</p>
   <h3>Le contre-exemple</h3>
   <p class="lede">L'énoncé affiché est faux. Parmi les quatre objets proposés, un seul le prouve : lequel ? Les trois autres ne réfutent rien, soit parce qu'ils ne vérifient pas l'hypothèse, soit parce qu'ils vérifient aussi la conclusion.</p>
 </header>

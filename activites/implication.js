@@ -28,7 +28,7 @@ export const css = cssCommun + cssFigures + cssJeux + cssRaison + `
 
 export const html = `
 <header class="col">
-  <p class="eyebrow">Raisonner · de la Première à Maths Sup</p>
+  <p class="eyebrow">Raisonner · de la Seconde à Maths Sup</p>
   <h3>Nécessaire ou suffisant ?</h3>
   <p class="lede">Deux propriétés, A et B. L'une entraîne-t-elle l'autre ? Dans un seul sens, dans les deux, dans aucun ? Répondre, c'est savoir ce qu'un théorème affirme, et ce que sa réciproque n'affirme pas.</p>
 </header>

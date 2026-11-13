@@ -1,8 +1,93 @@
-// « Le contre-exemple » : quatre-vingt-un énoncés faux et, pour chacun, quatre objets dont un seul le réfute (MEMO_atlas_activites.md §151 et §152).
+// « Le contre-exemple » : quatre-vingt-quinze énoncés faux et, pour chacun, quatre objets dont un seul le réfute (MEMO_atlas_activites.md §151 et §152).
 import { T, contre } from './raisonner-outils.js';
 const F = 'fondements', A = 'algebre', L = 'lineaire', N = 'analyse', Pr = 'probabilites', B = true;
 const HF = ` L'hypothèse n'étant pas vérifiée, cet objet ne dit rien de l'énoncé.`, CV = ` Cet objet vérifie l'hypothèse et la conclusion : il illustre l'énoncé, il ne le réfute pas.`;
 export default [
+// ---------- Seconde ----------
+contre('sec-carre-plus-grand', 'seconde', '', 's-07', 'x² ≥ x', T`« Pour tout réel $x$, on a $x^2 \geqslant x$. »`, [
+  [T`$x = 2$`, T`$2^2 = 4 \geqslant 2$ : l'inégalité est vraie pour ce nombre, qui ne réfute donc rien.`],
+  [T`$x = -1$`, T`$(-1)^2 = 1 \geqslant -1$ : l'inégalité est vraie pour ce nombre, qui ne réfute donc rien.`],
+  [T`$x = \dfrac12$`, T`$\left(\dfrac12\right)^2 = \dfrac14$, qui est strictement inférieur à $\dfrac12$ : l'inégalité est fausse pour ce nombre.`, B],
+  [T`$x = 1$`, T`$1^2 = 1 \geqslant 1$ : l'inégalité, qui est large, est vraie pour ce nombre.`] ],
+  T`Entre 0 et 1, élever au carré diminue : $x^2 - x = x(x - 1)$ est strictement négatif exactement quand $0 < x < 1$. Pour réfuter un énoncé « pour tout », un seul nombre suffit, mais il faut le chercher là où l'intuition, formée sur les entiers, ne va pas.`),
+contre('sec-racine-carre', 'seconde', '', 's-01', '√(x²) = x', T`« Pour tout réel $x$, on a $\sqrt{x^2} = x$. »`, [
+  [T`$x = 3$`, T`$\sqrt{3^2} = \sqrt9 = 3$ : l'égalité est vraie pour ce nombre.`],
+  [T`$x = 0$`, T`$\sqrt{0^2} = 0$ : l'égalité est vraie pour ce nombre.`],
+  [T`$x = -4$`, T`$\sqrt{(-4)^2} = \sqrt{16} = 4$, qui n'est pas égal à $-4$ : l'égalité est fausse pour ce nombre.`, B],
+  [T`$x = \dfrac12$`, T`$\sqrt{\dfrac14} = \dfrac12$ : l'égalité est vraie pour ce nombre.`] ],
+  T`Une racine carrée est toujours positive : $\sqrt{x^2}$ vaut $x$ si $x$ est positif et $-x$ si $x$ est négatif. L'égalité n'est donc en défaut que pour les nombres strictement négatifs.`),
+contre('sec-produit-inegalite', 'seconde', '', 's-09', 'Multiplier une inégalité', T`« Soit $a$, $b$ et $c$ trois réels. Si $a < b$, alors $ac < bc$. »`, [
+  [T`$a = 1$, $b = 2$, $c = 3$`, T`$1 < 2$ et $3 < 6$.` + CV],
+  [T`$a = -2$, $b = 5$, $c = 1$`, T`$-2 < 5$ et $-2 < 5$ encore après multiplication par 1.` + CV],
+  [T`$a = 1$, $b = 2$, $c = -1$`, T`$1 < 2$, mais $ac = -1$ et $bc = -2$ : on a $-1 > -2$. L'hypothèse est vraie, la conclusion fausse.`, B],
+  [T`$a = 2$, $b = 1$, $c = -1$`, T`$2 < 1$ est faux.` + HF] ],
+  T`Multiplier les deux membres d'une inégalité par un nombre strictement négatif en change le sens ; par zéro, on obtient une égalité. Le sens n'est conservé que pour un multiplicateur strictement positif.`),
+contre('sec-inverse-ordre', 'seconde', '', 's-07', 'L\'inverse renverse l\'ordre', T`« Soit $a$ et $b$ deux réels non nuls. Si $a < b$, alors $\dfrac1a > \dfrac1b$. »`, [
+  [T`$a = 2$, $b = 4$`, T`$2 < 4$ et $\dfrac12 > \dfrac14$.` + CV],
+  [T`$a = -4$, $b = -2$`, T`$-4 < -2$ et $-\dfrac14 > -\dfrac12$.` + CV],
+  [T`$a = -2$, $b = 3$`, T`$-2 < 3$, mais $-\dfrac12 < \dfrac13$ : l'hypothèse est vraie, la conclusion fausse.`, B],
+  [T`$a = 5$, $b = 1$`, T`$5 < 1$ est faux.` + HF] ],
+  T`La fonction inverse est décroissante sur $]-\infty\,;\,0[$ et sur $]0\,;\,+\infty[$ : elle renverse l'ordre de deux nombres de même signe. Pour deux nombres de signes contraires, chaque inverse garde son signe et l'ordre est conservé.`),
+contre('sec-divisible', 'seconde', '', '', 'Divisible par 2 et par 6', T`« Si un entier est divisible par 2 et par 6, alors il est divisible par 12. »`, [
+  [T`L'entier 12`, T`12 est divisible par 2, par 6 et par 12.` + CV],
+  [T`L'entier 24`, T`24 est divisible par 2, par 6 et par 12.` + CV],
+  [T`L'entier 6`, T`6 est divisible par 2 et par 6, mais pas par 12 : l'hypothèse est vraie, la conclusion fausse.`, B],
+  [T`L'entier 4`, T`4 n'est pas divisible par 6.` + HF] ],
+  T`Être divisible par 2 et par 6 n'apprend rien de plus qu'être divisible par 6, puisque tout multiple de 6 est déjà pair. On ne peut multiplier les deux diviseurs que s'ils n'ont aucun diviseur commun autre que 1 : un entier divisible par 3 et par 4 est divisible par 12.`),
+contre('sec-premier-impair', 'seconde', '', '', 'Premier donc impair', T`« Tout nombre premier est impair. »`, [
+  [T`Le nombre 3`, T`3 est premier et impair.` + CV],
+  [T`Le nombre 7`, T`7 est premier et impair.` + CV],
+  [T`Le nombre 2`, T`2 est premier, car ses seuls diviseurs positifs sont 1 et 2, et il est pair : l'hypothèse est vraie, la conclusion fausse.`, B],
+  [T`Le nombre 9`, T`$9 = 3 \times 3$ n'est pas premier.` + HF] ],
+  T`2 est le seul nombre premier pair : tout autre nombre pair strictement positif est divisible par 2 sans être égal à 2, donc n'est pas premier. L'énoncé devient vrai si l'on écrit « tout nombre premier différent de 2 ».`),
+contre('sec-taux-opposes', 'seconde', '', 's-06', 'Retour au prix de départ', T`« Si un prix retrouve sa valeur de départ après deux évolutions successives, alors les taux de ces deux évolutions sont opposés. »`, [
+  [T`Une hausse de $25\,\%$, puis une baisse de $20\,\%$`, T`$1{,}25 \times 0{,}8 = 1$ : le prix retrouve sa valeur, et pourtant les taux $+25\,\%$ et $-20\,\%$ ne sont pas opposés. L'hypothèse est vraie, la conclusion fausse.`, B],
+  [T`Une hausse de $10\,\%$, puis une baisse de $10\,\%$`, T`$1{,}1 \times 0{,}9 = 0{,}99$ : le prix ne retrouve pas sa valeur.` + HF],
+  [T`Deux évolutions de taux $0\,\%$`, T`Le prix ne change pas, et les deux taux, nuls, sont opposés.` + CV],
+  [T`Une hausse de $50\,\%$, puis une baisse de $50\,\%$`, T`$1{,}5 \times 0{,}5 = 0{,}75$ : le prix ne retrouve pas sa valeur.` + HF] ],
+  T`Deux évolutions se compensent quand le produit de leurs coefficients multiplicateurs vaut 1, et non quand la somme de leurs taux est nulle. Hormis le cas où rien ne change, les taux de deux évolutions réciproques ne sont jamais opposés.`),
+contre('sec-moyenne-valeur', 'seconde', '', 's-11', 'La moyenne est une valeur de la série', T`« La moyenne d'une série de nombres est toujours l'une des valeurs de la série. »`, [
+  [T`La série 2 ; 4 ; 6`, T`Sa moyenne est 4, qui est une valeur de la série : cette série vérifie l'énoncé.`],
+  [T`La série 5 ; 5 ; 5`, T`Sa moyenne est 5, qui est une valeur de la série : cette série vérifie l'énoncé.`],
+  [T`La série 1 ; 2 ; 6`, T`Sa moyenne est $\dfrac{1 + 2 + 6}{3} = 3$, qui n'est aucune des trois valeurs : l'énoncé est faux pour cette série.`, B],
+  [T`La série 0 ; 5 ; 10`, T`Sa moyenne est 5, qui est une valeur de la série : cette série vérifie l'énoncé.`] ],
+  T`La moyenne est un point d'équilibre, pas une valeur observée : une famille peut avoir « en moyenne » 1,8 enfant. Elle est seulement comprise entre la plus petite et la plus grande valeur.`),
+contre('sec-proba-somme', 'seconde', '', 's-03', 'P(A ∪ B) = P(A) + P(B)', T`On lance un dé équilibré à six faces. « Pour tous événements $A$ et $B$, on a $P(A \cup B) = P(A) + P(B)$. »`, [
+  [T`$A$ : « obtenir 1 ou 2 » ; $B$ : « obtenir 5 ou 6 »`, T`$P(A \cup B) = \dfrac46$ et $P(A) + P(B) = \dfrac26 + \dfrac26$ : l'égalité est vraie pour ces deux événements, qui sont incompatibles.`],
+  [T`$A$ : « obtenir un nombre pair » ; $B$ : « obtenir 1 »`, T`$P(A \cup B) = \dfrac46$ et $P(A) + P(B) = \dfrac36 + \dfrac16$ : l'égalité est vraie pour ces deux événements, qui sont incompatibles.`],
+  [T`$A$ : « obtenir un nombre pair » ; $B$ : « obtenir un multiple de 3 »`, T`$A \cup B$ contient 2, 3, 4 et 6 : $P(A \cup B) = \dfrac46$, alors que $P(A) + P(B) = \dfrac36 + \dfrac26 = \dfrac56$. L'égalité est fausse : l'issue 6, commune à $A$ et à $B$, est comptée deux fois.`, B],
+  [T`$A$ : « obtenir 1 » ; $B$ : « obtenir 7 »`, T`$B$ est impossible : $P(A \cup B) = \dfrac16 = \dfrac16 + 0$. L'égalité est vraie pour ces deux événements.`] ],
+  T`$P(A \cup B) = P(A) + P(B) - P(A \cap B)$. On ne peut ajouter les probabilités que lorsque $A$ et $B$ sont incompatibles.`),
+contre('sec-meme-norme', 'seconde', '', 's-10', 'Même norme donc égaux', T`Dans un repère orthonormé : « Deux vecteurs de même norme sont égaux. »`, [
+  [T`$\vec u(3\,;\,4)$ et $\vec v(3\,;\,4)$`, T`Les deux vecteurs ont la même norme, 5, et sont égaux.` + CV],
+  [T`$\vec u(3\,;\,4)$ et $\vec v(4\,;\,3)$`, T`Les deux normes valent $\sqrt{9 + 16} = 5$, mais les coordonnées diffèrent : les vecteurs ne sont pas égaux. L'hypothèse est vraie, la conclusion fausse.`, B],
+  [T`$\vec u(1\,;\,0)$ et $\vec v(2\,;\,0)$`, T`Les normes valent 1 et 2 : elles sont différentes.` + HF],
+  [T`$\vec u(0\,;\,0)$ et $\vec v(0\,;\,0)$`, T`Les deux vecteurs sont nuls : même norme, et ils sont égaux.` + CV] ],
+  T`Deux vecteurs sont égaux quand ils ont la même direction, le même sens <em>et</em> la même norme. La norme seule ne retient que la longueur : les représentants d'origine $O$ de tous les vecteurs de norme 5 ont leur extrémité sur un même cercle.`),
+contre('sec-affine-double', 'seconde', '', 's-09', 'f(2x) = 2f(x)', T`« Pour toute fonction affine $f$ et tout réel $x$, on a $f(2x) = 2f(x)$. »`, [
+  [T`$f : x \mapsto 3x$`, T`$f(2x) = 6x = 2 \times 3x$ : l'égalité est vraie pour cette fonction, qui est linéaire.`],
+  [T`$f : x \mapsto -x$`, T`$f(2x) = -2x = 2 \times (-x)$ : l'égalité est vraie pour cette fonction, qui est linéaire.`],
+  [T`$f : x \mapsto 2x + 1$`, T`$f(2x) = 4x + 1$, alors que $2f(x) = 4x + 2$ : ces deux nombres diffèrent pour tout $x$. L'égalité est fausse pour cette fonction.`, B],
+  [T`$f : x \mapsto 0$`, T`$f(2x) = 0 = 2 \times 0$ : l'égalité est vraie pour la fonction nulle, qui est linéaire.`] ],
+  T`Doubler la variable double l'image pour les fonctions linéaires, $x \mapsto mx$ : c'est la proportionnalité. Dès que l'ordonnée à l'origine $p$ n'est pas nulle, $f(2x) = 2mx + p$ et $2f(x) = 2mx + 2p$ diffèrent.`),
+contre('sec-produit-nul', 'seconde', '', 's-04', 'Produit nul, facteurs nuls', T`« Soit $a$ et $b$ deux réels. Si $ab = 0$, alors $a = 0$ et $b = 0$. »`, [
+  [T`$a = 0$, $b = 0$`, T`$ab = 0$, et les deux nombres sont nuls.` + CV],
+  [T`$a = 0$, $b = 5$`, T`$ab = 0$, et pourtant $b$ n'est pas nul : l'hypothèse est vraie, la conclusion fausse.`, B],
+  [T`$a = 2$, $b = 3$`, T`$ab = 6$ n'est pas nul.` + HF],
+  [T`$a = 1$, $b = -1$`, T`$ab = -1$ n'est pas nul.` + HF] ],
+  T`Un produit est nul si et seulement si l'<em>un au moins</em> de ses facteurs est nul : « $a = 0$ ou $b = 0$ », et non « $a = 0$ et $b = 0$ ». En mathématiques, le « ou » n'exclut pas que les deux soient vrais.`),
+contre('sec-equidistant', 'seconde', '', 's-05', 'À égale distance donc milieu', T`Dans un repère orthonormé, soit $A(0\,;\,0)$ et $B(4\,;\,0)$. « Si un point $I$ vérifie $IA = IB$, alors $I$ est le milieu de $[AB]$. »`, [
+  [T`$I(2\,;\,0)$`, T`$IA = IB = 2$, et $I$ est bien le milieu de $[AB]$.` + CV],
+  [T`$I(2\,;\,3)$`, T`$IA = IB = \sqrt{13}$, et pourtant $I$ n'est pas le milieu de $[AB]$, qui est le point $(2\,;\,0)$ : l'hypothèse est vraie, la conclusion fausse.`, B],
+  [T`$I(1\,;\,0)$`, T`$IA = 1$ et $IB = 3$ : les distances sont différentes.` + HF],
+  [T`$I(4\,;\,4)$`, T`$IA = \sqrt{32}$ et $IB = 4$ : les distances sont différentes.` + HF] ],
+  T`Les points à égale distance de $A$ et de $B$ forment la médiatrice de $[AB]$, ici la droite d'équation $x = 2$. Le milieu est le seul de ces points qui soit aligné avec $A$ et $B$.`),
+contre('sec-rationnel-decimal', 'seconde', '', 's-01', 'Rationnel donc décimal', T`« Tout nombre rationnel est un nombre décimal. »`, [
+  [T`Le nombre $\dfrac14$`, T`$\dfrac14 = 0{,}25$ est rationnel et décimal.` + CV],
+  [T`Le nombre $\dfrac7{20}$`, T`$\dfrac7{20} = 0{,}35$ est rationnel et décimal.` + CV],
+  [T`Le nombre $\dfrac13$`, T`$\dfrac13$ est rationnel, comme quotient de deux entiers, mais il n'est pas décimal : son écriture décimale $0{,}333\ldots$ ne s'arrête pas. L'hypothèse est vraie, la conclusion fausse.`, B],
+  [T`Le nombre $\sqrt2$`, T`$\sqrt2$ n'est pas rationnel.` + HF] ],
+  T`Les ensembles de nombres sont emboîtés dans un seul sens : tout décimal est rationnel, mais un rationnel n'est décimal que si sa fraction irréductible a un dénominateur dont les seuls facteurs premiers sont 2 et 5.`),
 // ---------- Première ----------
 contre('carre-grand', 'premiere', '', 'p-01', 'x² > 4 donc x > 2', T`« Si un réel $x$ vérifie $x^2 > 4$, alors $x > 2$. »`, [
   [T`$x = 3$`, T`$3^2 = 9 > 4$ et $3 > 2$.` + CV],

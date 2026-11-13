@@ -4,6 +4,7 @@ import { cssRaison, lireMemoire, noterMemoire, filtrer, pucesNiveaux, pucesTheme
 import { cssFigures, suite } from './figures.js';
 import { cssJeux, ecrire } from './jeux.js';
 import { demande, pieceDuJour, validerPiece, lienParcours } from './jour.js';
+import seconde from './erreur-seconde.js';
 import premiere from './erreur-premiere.js';
 import terminale from './erreur-terminale.js';
 import expertes from './erreur-expertes.js';
@@ -27,7 +28,7 @@ const K = t => '<span class="kx">' + t + '</span>';
 
 export const html = `
 <header class="col">
-  <p class="eyebrow">Raisonner · de la Première à Maths Sup</p>
+  <p class="eyebrow">Raisonner · de la Seconde à Maths Sup</p>
   <h3>Trouver l'erreur</h3>
   <p class="lede">Chacun de ces raisonnements aboutit à une absurdité ou à un résultat faux : 1 = 2, 2 &gt; 3, 0 = 1, tous les chevaux ont la même couleur. Toutes les lignes ont l'air justes, et toutes le sont, sauf une. Laquelle ?</p>
 </header>
@@ -138,7 +139,7 @@ const ANCIENNES = [
 ];
 // Réunion de toutes les pièces, rangées par niveau et, en Maths Sup, par thème (§145).
 for (const p of ANCIENNES) p.theme = p.id === 'serie' ? 'analyse' : '';
-const PIECES = ANCIENNES.concat(premiere, terminale, expertes, sup);
+const PIECES = seconde.concat(ANCIENNES, premiere, terminale, expertes, sup);
 export { PIECES };
 
 export function monter(racine) {
