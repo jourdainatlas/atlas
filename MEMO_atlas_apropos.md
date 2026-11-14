@@ -942,3 +942,15 @@ ce flou à la carte graphique : le défaut n'y paraît pas, et les mesures faite
 - **Règle à retenir.** Pas de filtre CSS (`drop-shadow`, `blur`) sur un élément SVG animé ou voisin d'une animation :
   simuler la lueur par des formes translucides. Vérification faite dans Chrome seulement (aspect conservé, en clair et
   en sombre) ; Firefox n'a pas pu être installé dans l'environnement de travail, l'auteur contrôle chez lui.
+- **Saccades du jardin : l'horloge (14 nov. 2026, soir).** Après la lueur sans filtre du § 82, le jardin saccadait
+  toujours sous Firefox, fil en pause compris. Cause : `boucle()` reprenait `dernier = performance.now()` à la fin de
+  **chaque** image, si bien que le pas de temps valait « heure de l'image suivante − fin de l'image précédente »,
+  c'est-à-dire l'intervalle réel **moins** le retard et la durée de l'image précédente. Le pas variait donc d'une image
+  à l'autre dès que la page était occupée, et le mouvement avec lui. Mesuré dans Chrome en glissant devant le jardin
+  un travail de 0 à 9 ms par image : rapport pas / intervalle réel de 0,66 en moyenne, entre 0,00 et 0,95 ; sans
+  charge, 0,93. Correction : `image` ne compare plus que deux heures données par `requestAnimationFrame`
+  (`dernier = h`), et `boucle(suite)` ne remet `dernier` à `null` qu'au redémarrage après une pause (la première image
+  n'avance alors pas le temps). Rapport mesuré après correction : 1,000 dans les deux cas. C'était aussi la cause du pas
+  négatif du défaut précédent. Les polices du canevas sont lues une fois dans `couleurs()` (`coul.mono`, `coul.titre`),
+  et non plus par `getComputedStyle` à chaque image. **Règle : dans une boucle d'animation, ne jamais mêler
+  `performance.now()` et l'heure reçue par la fonction de rappel.**

@@ -5133,11 +5133,11 @@ function accueilJardin() {
   const FEUILLES = [[17, 12.9, 12, 2.55], [5.9, 10.8, -14, 1.85], [16.4, 8.6, -36, 3.25], [6.3, 7.9, 28, 2.25], [11.7, 7.8, 67, 3], [8.7, 6.5, 66, 1.85], [14.4, 5.1, -74, 2.55]];
   const H = 100, ZOOM = 1.6, SOL = H - 13, BEC = 18, ARRET = 1.6,      // le jardin est dessiné en unités, agrandies 1,6 fois à l'écran (14 nov. 2026 : lunettes et π lisibles)
         B = (accueilJardin.variante || 'b') === 'b';   // variante b (publiée) : mathématicien, sol végétalisé, labrador ; 'a' : première esquisse, gardée
-  let W = 0, n = 0, v = 40, T = 60, coul = {}, raf = 0, dernier = 0, visible = false;
+  let W = 0, n = 0, v = 40, T = 60, coul = {}, raf = 0, dernier = null, visible = false;
   const alea = g => () => { g |= 0; g = g + 0x6D2B79F5 | 0; let t = Math.imul(g ^ g >>> 15, 1 | g); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
   const borne = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x)), doux = x => x * x * (3 - 2 * x), ressort = x => { const c = 1.9; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
   const couleurs = () => { const st = getComputedStyle(boite), c = k => st.getPropertyValue(k).trim();
-    coul = { feuilles: ['--r-edifice', '--r-cours', '--r-exercices', '--r-annales', '--c-ord'].map(c), tronc: c('--sy-gd'), branche: c('--sy-gm'), sol: c('--filet'), corps: c('--sy-gd'), tete: c('--sy-gm'), chapeau: c('--r-annales'), arrosoir: c('--r-edifice'), eau: c('--r-edifice'), herbe: [c('--r-cours'), c('--c-ord')], craie: c('--papier') };
+    coul = { feuilles: ['--r-edifice', '--r-cours', '--r-exercices', '--r-annales', '--c-ord'].map(c), tronc: c('--sy-gd'), branche: c('--sy-gm'), sol: c('--filet'), corps: c('--sy-gd'), tete: c('--sy-gm'), chapeau: c('--r-annales'), arrosoir: c('--r-edifice'), eau: c('--r-edifice'), herbe: [c('--r-cours'), c('--c-ord')], craie: c('--papier'), mono: c('--f-mono') || 'monospace', titre: c('--f-titre') || 'serif' };
     // Personnages et herbe repris de la vidéo de présentation : une palette par thème (le fond clair demande des tons plus soutenus).
     const sombre = document.documentElement.dataset.theme === 'dark';
     coul.chien = sombre ? { robe: '#7d5140', cuisse: '#6f4636', ombre: '#553529', clair: '#93634e', oreille: '#5e3b2d', truffe: '#8d6557', oeil: '#c8893c', noir: '#1b1e24', collier: coul.chapeau }
@@ -5269,7 +5269,7 @@ function accueilJardin() {
     const { bec } = accueilJardinDessins.homme(ctx, { x, t, marche: h.m, phase: (x + 40) * accueilJardinDessins.PAS, elan: 0, arrose: h.ar, tete: .1 * h.ar + (a && a.nom === 'front' ? .08 * env : 0),
       geste: a && a.nom !== 'chapeau' ? { nom: a.nom, k: env } : null, chapeau: a && a.nom === 'chapeau' ? Math.sin(Math.PI * a.t / a.duree) : 0 }, coul.homme);
     if (h.verse) {            // l'arrosoir verse des symboles
-      ctx.fillStyle = coul.eau; ctx.font = '700 8.5px ' + (getComputedStyle(boite).getPropertyValue('--f-mono') || 'monospace'); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillStyle = coul.eau; ctx.font = '700 8.5px ' + coul.mono; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       for (let i = 0; i < 5; i++) { const ph = (t * 1.15 + i / 5) % 1, ec = (i % 3 - 1) * 3.2; ctx.globalAlpha = .95 - ph * .4; ctx.fillText('+×π=∑'[(i + Math.floor(t * 1.15 + i / 5)) % 5], bec[0] + 1.5 + ec + ph * (1.5 + ec * .4), bec[1] + 2 + ph * ph * (-bec[1] - 5)); }
       ctx.globalAlpha = .28 * borne((h.g - .2) / .3); ctx.beginPath(); ctx.ellipse(x + BEC, .5, 9, 1.8, 0, 0, 6.3); ctx.fill();   // terre mouillée
     }
@@ -5395,7 +5395,7 @@ function accueilJardin() {
     const c = E.chien; if (!c) return; const x = ecran(c.U), t = E.tau, q = c.pose, K = coul.chien, brun = K.robe, fonce = K.ombre, noir = K.noir;
     if (c.etat === 'queue' && c.ronde != null) return dessinerRonde(c, x, brun, fonce, noir);
     if (c.etat === 'queue' && c.t > 2.5 && c.t < 3.5) {      // étourdi : trois petits Σ tournent au-dessus de sa tête
-      const w = c.t - 2.5; ctx.save(); ctx.fillStyle = coul.branche; ctx.font = '700 8.5px ' + (getComputedStyle(boite).getPropertyValue('--f-titre') || 'serif'); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      const w = c.t - 2.5; ctx.save(); ctx.fillStyle = coul.branche; ctx.font = '700 8.5px ' + coul.titre; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       for (let i = 0; i < 3; i++) { const a = w * 8 + i * 2.09, prof = Math.sin(a); ctx.globalAlpha = (1 - borne((w - .6) / .4)) * (.6 + .4 * (prof > 0 ? 1 : .35)); ctx.save(); ctx.translate(x + c.dir * 13 + 7.5 * Math.cos(a), SOL - 29 + 2.2 * prof); ctx.rotate(.3 * Math.sin(a * 2)); ctx.scale(.85 + .15 * prof, .85 + .15 * prof); ctx.fillText('Σ', 0, 0); ctx.restore(); } ctx.restore(); }
     // dessin repris de la vidéo de présentation (accueilJardinDessins.chien) ; l'ancienne inclinaison comptait vers le bas
     const pt = q.pattes, allure = pt === 'trot' || pt === 'galop' || pt === 'vol' ? pt : 'pose';
@@ -5406,7 +5406,7 @@ function accueilJardin() {
     if (c.etat === 'papillon' && c.sym) {      // le symbole papillon : il volette, bat des ailes, puis s'envole
       const u = c.t, sxp = ecran(c.symU), part = borne((u - 4) / .8), sy = SOL - 31 - 5 * Math.sin(u * 3.3) - 3 * Math.sin(u * 7.1) - part * 46;
       ctx.save(); ctx.globalAlpha = borne(u / .4) * (1 - part); ctx.translate(sxp + part * 22, sy); ctx.rotate(.25 * Math.sin(u * 5)); ctx.scale(.45 + .55 * Math.abs(Math.cos(u * 13)), 1);
-      ctx.fillStyle = coul.feuilles[c.sym.coul]; ctx.font = '700 15px ' + (getComputedStyle(boite).getPropertyValue('--f-titre') || 'serif'); ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(c.sym.car, 0, 0); ctx.restore();
+      ctx.fillStyle = coul.feuilles[c.sym.coul]; ctx.font = '700 15px ' + coul.titre; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(c.sym.car, 0, 0); ctx.restore();
     }
   };
   const dessiner = () => {
@@ -5419,9 +5419,13 @@ function accueilJardin() {
     dessinerJardinier();
     if (B) dessinerPrairie([2]);            // le premier plan passe devant les pieds
   };
-  const image = h => { raf = 0; const dt = borne((h - dernier) / 1000 || 0, 0, .05);      // jamais négatif : l'heure de l'image peut précéder celle du départ (voir majChien)
-     dernier = h; E.tau += dt; majHomme(dt, jardinier(E.tau % T)); if (B) majChien(dt, jardinier(E.tau % T)); dessiner(); boucle(); };
-  const boucle = () => { if (!raf && visible && !E.pause && !calme && !document.hidden) { dernier = performance.now(); raf = requestAnimationFrame(image); } };
+  // Le temps du jardin avance de l'écart entre deux heures d'image (celles que donne requestAnimationFrame), et de rien
+  // d'autre. Jusqu'au 14 nov. 2026, « dernier » était repris de performance.now() à la fin de chaque image : le pas valait
+  // alors l'intervalle moins le retard et la durée de l'image précédente, donc variait d'une image à l'autre dès que la
+  // page était occupée (saccades, surtout sous Firefox), et pouvait être négatif (chien créé un tour en arrière, § 81).
+  const image = h => { raf = 0; const dt = dernier === null ? 0 : borne((h - dernier) / 1000, 0, .05); dernier = h;
+    E.tau += dt; majHomme(dt, jardinier(E.tau % T)); if (B) majChien(dt, jardinier(E.tau % T)); dessiner(); boucle(true); };
+  const boucle = suite => { if (!raf && visible && !E.pause && !calme && !document.hidden) { if (!suite) dernier = null; raf = requestAnimationFrame(image); } };      // après une pause, la première image n'avance pas le temps
   const majBouton = () => { if (calme) return; bouton.hidden = false; bouton.innerHTML = E.pause ? '<svg viewBox="0 0 12 12"><path d="M3 1.5v9l7.5-4.5Z"/></svg>' : '<svg viewBox="0 0 12 12"><path d="M2.5 1.5h2.6v9H2.5zM6.9 1.5h2.6v9H6.9z"/></svg>'; bouton.title = E.pause ? 'Relancer le jardin' : 'Mettre le jardin en pause'; bouton.setAttribute('aria-label', bouton.title); };
   bouton.addEventListener('click', () => { E.pause = !E.pause; majBouton(); boucle(); });
   const io = new IntersectionObserver(l => { visible = l[0].isIntersecting; boucle(); }); io.observe(boite);
