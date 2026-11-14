@@ -121,8 +121,14 @@ Une vidéo : la **présentation d'ATLAS**, dans `videos/presentation/`.
 
 ## 7. Suites possibles
 
-- Reporter le chien, le jardinier et l'herbe dans le jardin de l'accueil (`accueilJardin`, domaine « À propos »,
-  son mémo § 73) : prototype demandé par l'auteur le 14 novembre, à lui montrer avant toute publication.
 - Autres idées proposées au départ : générique de six secondes, épisode du jardinier, démonstration en une minute.
 - Si la vidéo va sur le site : image d'attente, pas de lecture automatique avec son, respect de « réduire les
   animations », et accord préalable sur l'endroit où vit le fichier et sur son poids.
+
+## 8. Jardin de l'accueil (14 novembre 2026)
+
+À la demande de l'auteur, le chien, le jardinier et l'herbe de la vidéo ont été reportés dans le jardin de la page
+d'accueil (`accueilJardin` dans `gabarit.html`, domaine « À propos »). Le détail est dans `MEMO_atlas_apropos.md`,
+§ 81. À retenir pour ce domaine : les deux dessins existent désormais **en deux exemplaires** (`videos/presentation/`
+et `accueilJardinDessins` dans `gabarit.html`) ; une retouche d'un personnage se fait des deux côtés. L'accueil a en
+plus un thème clair, des attitudes aléatoires du jardinier et le chien dressé contre un tronc, que la vidéo n'a pas.

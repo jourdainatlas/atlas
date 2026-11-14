@@ -872,3 +872,30 @@ Demande de l'auteur, le lendemain du passage au sombre (§75) : le clair redevie
 qu'en §75, inversés (script de tête et `themeEffectif()` de `gabarit.html`, libellés du bouton, `THEME` et
 `theme-color` de `lecture.mjs`, `theme-color` de `rendu.mjs`, `identite/site.webmanifest`). Le choix fait au bouton
 reste mémorisé pour la session. Les images d'aperçu restent sombres (elles ne dépendent pas du thème du site).
+
+## 81. Jardin de l'accueil : personnages et herbe redessinés (14 nov. 2026)
+
+Modification faite par la conversation « Vidéos » à la demande de l'auteur (`MEMO_atlas_videos.md`, § 8) : le
+labrador, le jardinier et l'herbe de la vidéo de présentation remplacent ceux du § 73. Rien ne change au
+fonctionnement du jardin (tours, arbres, chute des feuilles, pause, « réduire les animations », taille de la bande).
+
+- **Dessins.** `accueilJardinDessins` (dans `gabarit.html`, juste avant `accueilJardin`) contient `chien(ctx, p, C)` et
+  `homme(ctx, p, T)`, repris de `videos/presentation/chien.js` et `jardinier.js` : squelettes posés par cinématique
+  inverse (`plier`), aplats par-dessus, sol en y = 0. Les couleurs viennent de `coul.chien` et `coul.homme`, une palette
+  par thème (définies dans `couleurs()` ; le fond clair demande des tons plus soutenus).
+- **Jardinier.** Costume trois pièces bleu, cheveux châtains, petites lunettes rondes, chapeau en courbe en cloche,
+  arrosoir en zinc marqué d'un π (le π n'est plus sur la blouse). `majHomme` lisse le passage de la marche à
+  l'arrosage et tient ses attitudes (`E.homme.att`) : il s'essuie le front en repartant d'un arrosage (une fois sur
+  trois), lève parfois son chapeau en chemin, salue son chien quand celui-ci l'attend devant lui. Le pas suit le
+  chemin parcouru (`phase = (x + 40) × PAS`). `BEC` passe de 19 à 18 (la pomme du nouvel arrosoir).
+- **Chien.** `majChien` garde sa machine à états ; il calcule en plus `assis` (0 à 1) et `q0` (port de la queue : elle
+  retombe quand il est debout et immobile, se relève quand il bouge ou joue, balaie le sol quand il est assis).
+  `dessinerChien` traduit l'ancienne pose pour le nouveau dessin (l'ancienne inclinaison comptait vers le bas : `tang`
+  change de signe). L'état `gratte` ne frotte plus le dos contre le tronc : le chien **se dresse sur ses pattes arrière,
+  les pattes avant posées sur le tronc, et flaire les feuilles** (demande de l'auteur) ; il s'approche donc face au
+  tronc. La ronde (`dessinerRonde`) garde son dessin en disques, recoloré.
+- **Herbe.** `prairie` engendre des brins pleins sur trois plans (0 : fond continu, 1 : touffes, 2 : premier plan,
+  dessiné après les personnages), des épis, des trèfles et des fleurs ; `dessinerPrairie(plans)` ; les brins s'écartent
+  autour des abscisses de `pieds`. Environ deux fois plus de formes qu'avant : à surveiller sur un téléphone lent.
+- **Pour vérifier un état rare**, on le force depuis la console : `accueilJardin.etat.chien.etat = 'queue'` (avec
+  `t = 0`), ou `etat = 'arbre'` avec `cible` (un arbre de `accueilJardin.etat.arbres`) et `cote = -cible.miroir`.
