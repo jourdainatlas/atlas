@@ -783,8 +783,8 @@ Pages du sommaire relevées sur les titres de section (taille de police > 13 pt)
 pour la section 5 de mp-02 (page 7 au lieu de 10). Recherche : alias `mp` et `spe`. Activités reliées :
 `matrice` → mp-02, `euclide` → mp-01. Termes écartés : « -algèbre » et « projecteur sur » (fragments).
 
-En attente : la ligne `'mp': ['ma']` des tables `PRECEDENT` de `construire.py` et `outils/cours_prerequis.py`
-(domaine apparence ; `'master'` devrait sans doute passer à `['ma', 'mp']`), sans laquelle `cours-prerequis.yaml`
-refuse les prérequis MPSI des chapitres MP ; prévus : mp-01 [ma-11, ma-12, ma-13], mp-02 [ma-15, ma-16, ma-17],
-mp-03 [ma-13, ma-15, ma-16]. Symboles retenus : mp-01 `cyclique` (dessin partagé avec ap-03, dont la flèche a été refaite le 14 nov. : arc plein
+Prérequis (après l'ajout de `'mp': ['ma']` aux tables `PRECEDENT` par le domaine apparence, §81 de son mémo) :
+mp-01 [ma-11, ma-12, ma-13], mp-02 [ma-15, ma-16, ma-17], mp-03 [ma-13, ma-15, ma-16]. Exclusions par chapitre :
+`mp-03 : pour tout` (texte d'une formule en rouge), et `+ ap-01 : pour tout`, vrai terme défini du chapitre de logique
+que la règle des fragments écartait. Symboles retenus : mp-01 `cyclique` (dessin partagé avec ap-03, dont la flèche a été refaite le 14 nov. : arc plein
 de l'élément mis en avant vers le suivant, pointe tangente au cercle, calculée), mp-02 `diagonale`, mp-03 `blocsdiag`.
