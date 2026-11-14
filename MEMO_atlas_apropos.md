@@ -851,6 +851,12 @@ emploie aussi). Seules les fiches qui portent une couleur sont concernées, c'es
 images ont été refaites (3 seulement ont changé d'un octet) ; hors Activités, aucune image ne dépend d'une variable
 (couleur fixe de la rubrique, écrite dans la fabrique : la changer demande d'incrémenter `VERSION_APERCU`).
 
+Correctif du 14 nov. (signalé par l'auteur, téléphone) : après un appui, la pastille réduite à l'anneau gardait le
+fond et le contour de l'état « survolé » (collé au toucher), dans une boîte de 34 × 36 px aux coins de 16 px : une
+tache ni ronde ni ovale. Le survol ne s'applique plus qu'aux appareils qui survolent (`@media (hover: hover)`) ; la
+pastille réduite est un vrai rond (côtés égaux, `border-radius: 50%`), sans fond ; sur la page du parcours, elle
+porte la classe `ici` (posée par `majParcours`) : halo rond discret sur téléphone, pastille appuyée sur ordinateur.
+
 ## 79. Serveur OVH : type et compression des fichiers WebAssembly (13 nov. 2026)
 
 Demande du domaine Cours (atelier Python, Pyodide servi depuis `/python/pyodide/`). `pyodide.asm.wasm` était servi

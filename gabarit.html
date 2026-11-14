@@ -1238,7 +1238,8 @@ svg.sym-anime { overflow: visible; }
 .tete-parcours[hidden] { display: none; }
 @media (min-width: 861px) { body.en-rubrique .tete-parcours:not([hidden]) { margin-left: auto; } body.en-rubrique .tete-parcours:not([hidden]) + .chercher-tout { margin-left: -8px; } }   /* collée à la loupe, à droite */
 @media (max-width: 349px) { .tete-parcours { display: none; } }   /* très petit écran : la barre n'a plus la place */
-.tete-parcours:hover, .tete-parcours:focus-visible { background: color-mix(in srgb, var(--o) 20%, transparent); border-color: var(--o); }
+.tete-parcours:focus-visible, .tete-parcours.ici { background: color-mix(in srgb, var(--o) 20%, transparent); border-color: var(--o); }
+@media (hover: hover) { .tete-parcours:hover { background: color-mix(in srgb, var(--o) 20%, transparent); border-color: var(--o); } }   /* pas au toucher : l'état « survolé » y reste collé après l'appui */
 .tete-parcours svg { width: 24px; height: 24px; flex: none; fill: none; stroke-linecap: round; }
 .tete-parcours svg path { stroke: color-mix(in srgb, var(--o) 30%, transparent); stroke-width: 2.4; }
 .tete-parcours svg path.fait { stroke: var(--o); }
@@ -1246,7 +1247,9 @@ svg.sym-anime { overflow: visible; }
 .tete-parcours svg text { fill: var(--encre); stroke: none; font: 600 9.5px var(--f-mono); text-anchor: middle; dominant-baseline: central; }
 .tete-parcours .tp-etat { font: 500 11.5px/1 var(--f-mono); color: var(--encre-2); padding-left: 7px; border-left: 1px solid color-mix(in srgb, var(--o) 40%, transparent); }
 @media (max-width: 1279px) {
-  .tete-parcours { width: 32px; padding: 0; justify-content: center; border-color: transparent; background: none; }
+  .tete-parcours, .tete-parcours:hover, .tete-parcours:focus-visible { width: 32px; height: 32px; padding: 0; justify-content: center; border-radius: 50%; border-color: transparent; background: none; }   /* l'anneau seul : un rond, sans fond */
+  .tete-parcours.ici { background: color-mix(in srgb, var(--o) 13%, transparent); }   /* on est sur le parcours : halo rond, discret */
+  .tete-parcours:focus-visible { outline: 2px solid var(--o); outline-offset: 1px; }
   .tete-parcours svg { width: 28px; height: 28px; }
   .tete-parcours .tp-nom, .tete-parcours .tp-etat { display: none; }
 }
@@ -1752,10 +1755,10 @@ table.grille button.pli-ann:hover { border-color: var(--encre); }
   .resultats-edifice { left: 16px; right: 16px; max-height: 55vh; }
   .marque { font-size: 17px; white-space: normal; }
   .entete { display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto auto auto; align-items: center; }   /* marque, parcours du jour, loupe, thème, drapeau, Partager */
-  .tete-parcours { width: 34px; height: 36px; justify-self: end; margin-left: 6px; }
+  .tete-parcours, .tete-parcours:hover, .tete-parcours:focus-visible { width: 34px; height: 34px; justify-self: end; margin-left: 6px; }
   .entete:has(.tete-parcours:not([hidden])) .chercher-tout { margin-left: 2px !important; }
   .entete:has(.tete-parcours:not([hidden])) .partager { margin-left: 4px; padding: 4px 9px; }
-  @media (max-width: 380px) { .entete:has(.tete-parcours:not([hidden])) :is(.chercher-tout, .bouton-theme, .signaler) { width: 31px; } .tete-parcours { width: 30px; margin-left: 4px; } .entete:has(.tete-parcours:not([hidden])) .partager { padding: 4px 7px; } }
+  @media (max-width: 380px) { .entete:has(.tete-parcours:not([hidden])) :is(.chercher-tout, .bouton-theme, .signaler) { width: 31px; } .tete-parcours, .tete-parcours:hover, .tete-parcours:focus-visible { width: 30px; height: 30px; margin-left: 4px; } .entete:has(.tete-parcours:not([hidden])) .partager { padding: 4px 7px; } }
   /* Trois boutons à symbole de même taille (36 px, cible tactile), également espacés et centrés sur une même ligne ;
      un écart plus large les sépare de la marque (le chevron du menu) et du bouton Partager. */
   .entete { column-gap: 2px; }
@@ -3886,6 +3889,7 @@ function majParcours() {
   const lire = c => { try { return JSON.parse(localStorage.getItem(c) || 'null') || {}; } catch (e) { return {}; } };
   const m = lire('atlas-parcours'), cb = lire('atlas-compte-est-bon'), niveau = m.niveau in NIV_COMPTE ? m.niveau : '';
   const faits = ETAPES.map(id => !!niveau && (id === 'compte-est-bon' ? cb.jour === jour && !!cb.faits && (NIV_COMPTE[niveau] in cb.faits) : m.jour === jour && !!(m.faits || {})[id]));
+  a.classList.toggle('ici', /^#activites\/parcours\b/.test(location.hash));
   const signe = d + ':' + faits.map(Number).join(''); if (a.dataset.signe === signe) return; a.dataset.signe = signe;
   const nb = faits.filter(Boolean).length, fini = nb === ETAPES.length;
   const arc = k => { const t0 = (-90 + k * 60 + 8) * Math.PI / 180, t1 = (-90 + (k + 1) * 60 - 8) * Math.PI / 180, P = t => `${(12 + 10 * Math.cos(t)).toFixed(2)} ${(12 + 10 * Math.sin(t)).toFixed(2)}`; return `<path class="${faits[k] ? 'fait' : ''}" d="M${P(t0)}A10 10 0 0 1 ${P(t1)}"/>`; };
