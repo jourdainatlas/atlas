@@ -786,5 +786,5 @@ pour la section 5 de mp-02 (page 7 au lieu de 10). Recherche : alias `mp` et `sp
 En attente : la ligne `'mp': ['ma']` des tables `PRECEDENT` de `construire.py` et `outils/cours_prerequis.py`
 (domaine apparence ; `'master'` devrait sans doute passer à `['ma', 'mp']`), sans laquelle `cours-prerequis.yaml`
 refuse les prérequis MPSI des chapitres MP ; prévus : mp-01 [ma-11, ma-12, ma-13], mp-02 [ma-15, ma-16, ma-17],
-mp-03 [ma-13, ma-15, ma-16]. Symboles : planche envoyée (A : cyclique, propre, blocsdiag ;
-B : horloge, diagonale, noyaux), en attente du choix de l'auteur.
+mp-03 [ma-13, ma-15, ma-16]. Symboles retenus : mp-01 `cyclique` (dessin partagé avec ap-03, dont la flèche a été refaite le 14 nov. : arc plein
+de l'élément mis en avant vers le suivant, pointe tangente au cercle, calculée), mp-02 `diagonale`, mp-03 `blocsdiag`.
