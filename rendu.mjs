@@ -335,9 +335,19 @@ for (const gid of Object.keys(D.graphes)) {
 // Termes définis dans les PDF de cours (outils/cours_termes.py, texte rouge des PDF) : site/cours-termes.json,
 // { chapitre: [[terme, page, dans un bloc Définition (1/0)], …] }, chargé par la recherche globale avec les extraits.
 // Exclusions à la main dans outils/cours-termes-exclus.txt. Seuls les chapitres déposés dont le PDF est connu comptent.
+// Trois formes de ligne dans ce fichier (14 nov. 2026, demande du domaine Cours) :
+//   terme              exclu de tous les chapitres ;
+//   mp-03 : terme      exclu du seul chapitre mp-03 ;
+//   + ap-01 : terme    gardé dans le chapitre ap-01, même si une exclusion générale ou la règle des fragments
+//                      ci-dessous l'écarte (« pour tout » est un vrai terme du chapitre de logique).
 {
   const brut = fs.existsSync('outils/cours-termes.json') ? JSON.parse(fs.readFileSync('outils/cours-termes.json', 'utf8')) : {};
-  const exclus = new Set(fs.existsSync('outils/cours-termes-exclus.txt') ? fs.readFileSync('outils/cours-termes-exclus.txt', 'utf8').split('\n').map(l => l.trim().toLowerCase()).filter(l => l && !l.startsWith('#')) : []);
+  const exclus = new Set(), exclusDe = {}, gardesDe = {}, idsCours = new Set((Dsite.rubriques?.cours?.cours || []).map(c => c.id));
+  for (const l of (fs.existsSync('outils/cours-termes-exclus.txt') ? fs.readFileSync('outils/cours-termes-exclus.txt', 'utf8').split('\n') : []).map(l => l.trim().toLowerCase()).filter(l => l && !l.startsWith('#'))) {
+    const m = l.match(/^(\+\s*)?([a-z0-9]+(?:-[a-z0-9]+)+)\s+:\s+(.+)$/);       // « identifiant : terme », avec « + » devant pour garder
+    if (m && idsCours.has(m[2])) ((m[1] ? gardesDe : exclusDe)[m[2]] ||= new Set()).add(m[3]);
+    else { if (m || l.startsWith('+')) console.log(`outils/cours-termes-exclus.txt : chapitre inconnu dans « ${l} » (ligne lue comme un terme)`); exclus.add(l); }
+  }
   const parChapitre = {};
   for (const c of Dsite.rubriques?.cours?.cours || []) {
     const e = c.pdf && c.statut === 'depose' && brut[c.pdf];
@@ -345,7 +355,7 @@ for (const gid of Object.keys(D.graphes)) {
     // abréviations de figures (« def », « deg 180 ») et mots seuls de deux lettres.
     const fragment = t => /^(de|du|des|d’|d'|dans|pour|par|sur|en|au|aux|la|le|les|un|une|à|et|ou|si|tel|telle|tels|soit|avec|sans|entre|vers)\b/i.test(t)
       || /^(def|deg)\b/i.test(t) || t.length < 3;
-    if (e) parChapitre[c.id] = e.termes.filter(x => !exclus.has(x.t.toLowerCase()) && !fragment(x.t)).map(x => [x.t, x.p, x.def ? 1 : 0]);
+    if (e) parChapitre[c.id] = e.termes.filter(x => { const t = x.t.toLowerCase(); return gardesDe[c.id]?.has(t) || (!exclus.has(t) && !exclusDe[c.id]?.has(t) && !fragment(x.t)); }).map(x => [x.t, x.p, x.def ? 1 : 0]);
   }
   if (Object.keys(parChapitre).length) {
     const contenu = JSON.stringify(parChapitre);

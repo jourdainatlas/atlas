@@ -910,3 +910,17 @@ fonctionnement du jardin (tours, arbres, chute des feuilles, pause, « réduire 
   navigateur. Corrections : `dt` borné à [0 ; 0,05] ; `ecran(U)` place hors champ à gauche un chien d'abscisse
   négative (il ne paraît plus au bord droit pendant la première seconde) ; `majChien` ramène d'un tour un chien qui
   aurait plus de 0,9 tour de retard ; un changement de largeur remet aussi à zéro `E.chien` et `E.homme`.
+
+## 81. Niveau MP dans les prérequis ; exclusions de termes par chapitre (14 nov. 2026)
+
+Deux demandes du domaine Cours.
+- Tables `PRECEDENT` de `construire.py` et de `outils/cours_prerequis.py` : `'mp': ['ma']`, et `'master': ['ma', 'mp']`
+  (la carte « À revoir avant » d'un chapitre de MP peut désigner des chapitres de MPSI ; un cours de Master, des
+  chapitres de MPSI ou de MP).
+- `outils/cours-termes-exclus.txt` (lu par `rendu.mjs`) accepte trois formes de ligne : `terme` (exclu partout),
+  `mp-03 : terme` (exclu de ce seul chapitre), `+ ap-01 : terme` (gardé dans ce chapitre malgré une exclusion
+  générale ou la règle des fragments). Espaces autour des deux-points ; un identifiant inconnu est signalé à la
+  construction et la ligne est lue comme un terme. Le contenu du fichier reste du domaine Cours.
+  Constat fait à cette occasion : « pour tout » était déjà écarté de tous les chapitres par la règle des fragments
+  (termes commençant par « pour », « de », « dans »…), y compris du chapitre de logique ap-01 où c'est un vrai
+  terme défini ; d'où la forme « + ».

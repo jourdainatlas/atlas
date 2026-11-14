@@ -1205,7 +1205,7 @@ def verifie_rubrique(nom, objet, ou):
 # « À revoir avant » (rubriques/cours-prerequis.yaml, MEMO_atlas_apropos.md §61) : chapitres existants, et du niveau
 # scolaire juste en dessous seulement (règle de l'auteur, 9 nov. 2026).
 PRECEDENT = {'premiere': ['seconde'], 'terminale': ['premiere'], 'expertes': ['premiere'], 'approfondies': ['premiere'],
-             'ma': ['terminale', 'expertes', 'approfondies'], 'master': ['ma']}
+             'ma': ['terminale', 'expertes', 'approfondies'], 'mp': ['ma'], 'master': ['ma', 'mp']}
 if 'cours-prerequis' in rubriques:
     _niv = {c['id']: c.get('niveau') for c in (rubriques.get('cours', {}).get('cours') or [])}
     for _c, _l in (rubriques['cours-prerequis'].get('a_revoir') or {}).items():

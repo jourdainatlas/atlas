@@ -15,7 +15,7 @@ import json, math, os, sys, yaml
 RACINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SORTIE = os.path.join(RACINE, 'rubriques', 'cours-prerequis.yaml')
 PRECEDENT = {'premiere': ['seconde'], 'terminale': ['premiere'], 'expertes': ['premiere'], 'approfondies': ['premiere'],
-             'ma': ['terminale', 'expertes', 'approfondies'], 'master': ['ma']}
+             'ma': ['terminale', 'expertes', 'approfondies'], 'mp': ['ma'], 'master': ['ma', 'mp']}
 if os.path.exists(SORTIE) and '--forcer' not in sys.argv:
     sys.exit('rubriques/cours-prerequis.yaml existe déjà (corrigé à la main) : relancer avec --forcer pour l\'écraser')
 d = json.load(open(os.path.join(RACINE, 'construction', 'donnees.json'), encoding='utf-8'))
