@@ -924,3 +924,21 @@ Deux demandes du domaine Cours.
   Constat fait à cette occasion : « pour tout » était déjà écarté de tous les chapitres par la règle des fragments
   (termes commençant par « pour », « de », « dans »…), y compris du chapitre de logique ap-01 où c'est un vrai
   terme défini ; d'où la forme « + ».
+
+## 82. Fil lumineux de l'édifice : lueur sans filtre (14 nov. 2026)
+
+Modification faite par la conversation « Vidéos » à la demande de l'auteur. Sous Firefox (Linux, écran à haute
+densité), tout l'accueil saccadait au rythme du fil lumineux (§ 69) : chaque tronçon portait un
+`filter: drop-shadow(…)`, que Firefox recalcule sur le processeur à chaque image de l'animation du tracé, en
+redessinant une large zone de la miniature ; le jardin, sur le même fil d'exécution, saccadait avec lui. Chrome confie
+ce flou à la carte graphique : le défaut n'y paraît pas, et les mesures faites dans Chrome ne le montraient pas.
+
+- **Fil.** `trait()` (dans `accueilFil`) crée dans `.acc-traits` quatre groupes, une fois par chemin : `.acc-lueur`,
+  `.acc-lueur.l2`, `.acc-lueur.l3` (traits de 30, 21 et 14 unités, opacités 0,10, 0,16 et 0,26) et `.acc-coeur` (le
+  trait de 9). Chaque tronçon est ajouté aux quatre, avec la même animation du tracé. L'opacité est portée par le
+  **groupe** : les tronçons ne s'additionnent pas à leurs jointures.
+- **Bulle d'arrivée.** `allumer(id, true)` ajoute deux rectangles arrondis translucides (`.lueur-nd`) derrière la
+  bulle ; le `drop-shadow` de `.nd.sur-fil.arrivee rect` est supprimé.
+- **Règle à retenir.** Pas de filtre CSS (`drop-shadow`, `blur`) sur un élément SVG animé ou voisin d'une animation :
+  simuler la lueur par des formes translucides. Vérification faite dans Chrome seulement (aspect conservé, en clair et
+  en sombre) ; Firefox n'a pas pu être installé dans l'environnement de travail, l'auteur contrôle chez lui.

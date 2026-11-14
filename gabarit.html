@@ -1206,11 +1206,20 @@ svg.sym-anime { overflow: visible; }
 .acc-mini .nd { transform-box: fill-box; transform-origin: center; }
 .acc-mini.trace .ar { opacity: .22; }
 .acc-mini.trace .nd:not(.sur-fil) { opacity: .34; }
-.acc-mini .acc-trait { fill: none; stroke: var(--c); stroke-width: 9; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; filter: drop-shadow(0 0 9px var(--c)); transition: opacity .5s; }
+.acc-mini .acc-trait { fill: none; stroke: var(--c); stroke-width: 9; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; transition: opacity .5s; }
+/* Lueur du fil sans filtre (14 nov. 2026) : des traits plus larges et translucides sous le trait, au lieu d'un flou
+   « drop-shadow » que Firefox recalculait sur le processeur à chaque image (saccades de tout l'accueil). */
+.acc-mini .acc-lueur { opacity: .1; }            /* l'opacité porte sur le groupe : les tronçons ne s'additionnent pas à leurs jointures */
+.acc-mini .acc-lueur .acc-trait { stroke-width: 30; }
+.acc-mini .acc-lueur.l2 { opacity: .16; } .acc-mini .acc-lueur.l2 .acc-trait { stroke-width: 21; }
+.acc-mini .acc-lueur.l3 { opacity: .26; } .acc-mini .acc-lueur.l3 .acc-trait { stroke-width: 14; }
+.acc-mini .lueur-nd { fill: var(--c); opacity: .13; transition: opacity .5s; }
+.acc-mini .lueur-nd.l2 { opacity: .2; }
+.acc-mini .acc-traits.s-efface .lueur-nd { opacity: 0; }
 .acc-mini .acc-trait.fixe { stroke-dashoffset: 0; }
 .acc-mini .acc-traits.s-efface .acc-trait, .acc-mini .acc-traits.s-efface .halo { opacity: 0; }
 .acc-mini .nd.sur-fil rect { fill: color-mix(in srgb, var(--c) 50%, var(--surface)); }
-.acc-mini .nd.sur-fil.arrivee rect { fill: color-mix(in srgb, var(--c) 78%, var(--surface)); filter: drop-shadow(0 0 16px var(--c)); }
+.acc-mini .nd.sur-fil.arrivee rect { fill: color-mix(in srgb, var(--c) 78%, var(--surface)); }
 .acc-mini .halo { fill: none; stroke: var(--c); stroke-width: 6; transform-box: fill-box; transform-origin: center; transition: opacity .5s; }
 .acc-chemin { padding: 8px 4px 2px; min-height: 58px; font-family: var(--f-ui); }
 .acc-chemin p { margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: opacity .35s; }
@@ -5466,10 +5475,15 @@ function accueilFil(premiereFois) {
     svg.querySelectorAll('.nd.sur-fil').forEach(b => b.classList.remove('sur-fil', 'arrivee'));
   };
   const legende = (n, nom, but) => { elN.textContent = n; elNom.textContent = nom; if (but != null) elBut.innerHTML = but; };
-  const allumer = (id, arrivee) => { const b = bulle[id]; if (!b) return; b.classList.add('sur-fil'); if (arrivee) b.classList.add('arrivee');
+  const allumer = (id, arrivee) => { const b = bulle[id]; if (!b) return; b.classList.add('sur-fil'); if (arrivee) { b.classList.add('arrivee');
+      const p = pos[id], c = b.style.getPropertyValue('--c');      // lueur de la bulle d'arrivée : deux rectangles arrondis translucides, sans filtre
+      for (const [m, cl] of [[17, ''], [9, ' l2']]) { const r = svgEl('rect', { class: 'lueur-nd' + cl, x: p.x - p.w / 2 - m, y: p.y - p.h / 2 - m, width: p.w + 2 * m, height: p.h + 2 * m, rx: 16 + m }); r.style.setProperty('--c', c); fils.appendChild(r); } }
     if (!calme) b.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.16)' }, { transform: 'scale(1)' }], { duration: 420, easing: 'ease-out' }); };
-  const trait = (a, duree) => { const f = svgEl('path', { class: 'acc-trait' + (duree ? '' : ' fixe'), pathLength: 1, d: a.d }); f.style.setProperty('--c', bulle[a.vers]?.style.getPropertyValue('--c') || 'var(--encre)'); fils.appendChild(f);
-    if (duree) f.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: duree, easing: 'linear', fill: 'forwards' }); };
+  const trait = (a, duree) => { const c = bulle[a.vers]?.style.getPropertyValue('--c') || 'var(--encre)';
+    if (!fils.querySelector('.acc-coeur')) for (const cl of ['acc-lueur', 'acc-lueur l2', 'acc-lueur l3', 'acc-coeur']) fils.appendChild(svgEl('g', { class: cl }));
+    for (const gr of fils.querySelectorAll('.acc-lueur, .acc-coeur')) {      // trois lueurs de plus en plus étroites, puis le trait : toutes s'allongent ensemble
+      const f = svgEl('path', { class: 'acc-trait' + (duree ? '' : ' fixe'), pathLength: 1, d: a.d }); f.style.setProperty('--c', c); gr.appendChild(f);
+      if (duree) f.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: duree, easing: 'linear', fill: 'forwards' }); } };
   const butDe = n => `<a href="#${n.id}">${esc(n.titre)}</a>${n.choix ? '<span class="ch-choix" title="Ce théorème utilise une forme de l\'axiome du choix">⋆</span>' : ''}<span class="ch-fleche" aria-hidden="true">→</span>`;
 
   // Un chemin complet : estompe, montée, arrivée, tenue, effacement, puis le suivant.
