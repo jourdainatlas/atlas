@@ -771,3 +771,20 @@ Le 13 nov. (après-midi) : sur iPhone, Safari agrandissait le texte du code (« 
 sans agrandir les numéros de ligne, qui ne tombaient plus en face des lignes. `.atelier` fixe
 `text-size-adjust: 100%` ; sous 720 px, l'éditeur et la ligne de la console passent à 16 px, taille en dessous de
 laquelle Safari zoome la page quand on touche le champ.
+
+### 48. Niveau Maths Spé – MP (14 nov. 2026)
+
+Niveau `mp` (« Maths Spé – MP »), déclaré juste après `ma` : il tombe ainsi dans la tranche « prépa » de l'accueil.
+Cours `mp-01` (Structures algébriques usuelles, 16 p.), `mp-02` (Éléments propres et diagonalisation, 18 p.),
+`mp-03` (Polynômes d'endomorphismes et réduction, 12 p.), dans `documents/cours/mp/` ; feuilles `f-mp-01` (79
+exercices), `f-mp-02` (55), `f-mp-03` (50), métadonnées `outils/meta_mp_01.py` à `meta_mp_03.py`. Les PDF reçus
+s'appelaient `…_apercu.pdf` : ce sont les PDF compilés, renommés selon la convention `chapNN_sujet[_enonce|_corrige].pdf`.
+Pages du sommaire relevées sur les titres de section (taille de police > 13 pt) : `pages_sommaire.py` s'était trompé
+pour la section 5 de mp-02 (page 7 au lieu de 10). Recherche : alias `mp` et `spe`. Activités reliées :
+`matrice` → mp-02, `euclide` → mp-01. Termes écartés : « -algèbre » et « projecteur sur » (fragments).
+
+En attente : la ligne `'mp': ['ma']` des tables `PRECEDENT` de `construire.py` et `outils/cours_prerequis.py`
+(domaine apparence ; `'master'` devrait sans doute passer à `['ma', 'mp']`), sans laquelle `cours-prerequis.yaml`
+refuse les prérequis MPSI des chapitres MP ; prévus : mp-01 [ma-11, ma-12, ma-13], mp-02 [ma-15, ma-16, ma-17],
+mp-03 [ma-13, ma-16, mp…] → [ma-13, ma-15, ma-16]. Symboles : planche envoyée (A : cyclique, propre, blocsdiag ;
+B : horloge, diagonale, noyaux), en attente du choix de l'auteur.
