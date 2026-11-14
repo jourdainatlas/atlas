@@ -1,0 +1,12 @@
+<!doctype html><meta charset="utf-8"><body style="margin:0;background:#121418"><canvas id="c" width="2000" height="1280"></canvas><script src="jardinier.js"></script><script src="chien.js"></script><script>
+const ctx = document.getElementById('c').getContext('2d'), K = 8.2;
+const poses = [
+ { n: 'immobile', p: {} }, { n: 'marche 0', p: { marche: 1, phase: 0.3 } }, { n: 'marche 1', p: { marche: 1, phase: 1.3 } }, { n: 'marche 2', p: { marche: 1, phase: 2.3 } }, { n: 'marche 3', p: { marche: 1, phase: 4.2 } },
+ { n: 'course 0', p: { marche: 1, elan: 1, phase: 0.8 } }, { n: 'course 1', p: { marche: 1, elan: 1, phase: 2.4 } }, { n: 'arrose', p: { arrose: 1 } }, { n: 'arrose à demi', p: { arrose: 0.5 } },
+ { n: 'regarde en haut', p: { geste: { nom: 'regard', k: 1 }, tete: -0.3 } }, { n: 's essuie le front', p: { geste: { nom: 'front', k: 1 }, tete: 0.1 } }, { n: 'salue', p: { geste: { nom: 'salut', k: 1 } } }, { n: 'lève son chapeau', p: { chapeau: 1 } },
+];
+poses.forEach((q, i) => { const cx = 200 + (i % 5) * 400, cy = 400 + Math.floor(i / 5) * 420;
+  ctx.strokeStyle = '#2b2f37'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(cx - 180, cy); ctx.lineTo(cx + 180, cy); ctx.stroke();
+  ctx.save(); ctx.translate(cx - (q.chien ? 30 : 0), cy); ctx.scale(K, K); if (q.chien) CHIEN.dessiner(ctx, { x: 30, face: -1, t: 1, assis: 1, queue: { a: -0.35, amp: 0.4, courbe: -0.12 } }); JARDINIER.dessiner(ctx, { x: 0, t: 0.3 + i, ...q.p }); ctx.restore();
+  ctx.fillStyle = '#90979f'; ctx.font = '22px sans-serif'; ctx.fillText(q.n, cx - 180, cy + 34); });
+</script>

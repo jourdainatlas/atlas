@@ -36,6 +36,8 @@ a poussé entre-temps, un fichier commun réécrit à partir d'une copie périm�
      activité, chargé à la demande), tout outil nommé `outils/activites_*`, `lecture-activites.mjs`,
      `MEMO_atlas_activites.md`, et dans `gabarit.html` les fonctions `pageActivites`, `activites…` avec leurs styles
      (`.activites-…`), le symbole `sym-activites` et la carte « Activités » de l'accueil.
+   - *Vidéos* (14 nov. 2026) : tout le dossier `videos/` (une vidéo par sous-dossier, refaite par son `fabriquer.sh` ;
+     les rendus ne sont pas versionnés) et `MEMO_atlas_videos.md`. Ce domaine ne modifie le site que sur demande de l'auteur.
    - *Communs* (toute conversation peut y toucher, avec les précautions du point 2) : `construire.py`,
      `rendu.mjs`, `gabarit.html`, `MEMO_atlas.md`, `LICENCE.md`, `.github/`, `package*.json`, `requirements.txt`.
 2. **Fichiers communs : modifications ciblées, jamais de réécriture complète.** On les modifie par
@@ -63,7 +65,7 @@ a poussé entre-temps, un fichier commun réécrit à partir d'une copie périm�
    On suit la dernière exécution avec `gh run list -R jourdainatlas/atlas` jusqu'au succès. Si elle échoue à
    cause des fichiers de l'autre rubrique, on ne les corrige pas soi-même : on signale l'erreur à l'auteur.
 7. **Mémos du projet Claude :** chaque conversation n'écrit dans le projet que son propre mémo
-   (`MEMO_atlas_annales.md`, `MEMO_atlas_cours.md`, `MEMO_atlas_edifice.md`, `MEMO_atlas_apropos.md`, `MEMO_atlas_activites.md`). `MEMO_atlas.md` est commun : on le modifie dans le
+   (`MEMO_atlas_annales.md`, `MEMO_atlas_cours.md`, `MEMO_atlas_edifice.md`, `MEMO_atlas_apropos.md`, `MEMO_atlas_activites.md`, `MEMO_atlas_videos.md`). `MEMO_atlas.md` est commun : on le modifie dans le
    dépôt (point 2), et la copie du projet ne fait que refléter la version du dépôt ; avant de l'écrire
    dans le projet, on relit la copie du projet et on vérifie qu'elle ne contient rien que le dépôt
    n'ait pas. Une nouvelle section commune prend le numéro suivant le plus grand déjà employé, tous
