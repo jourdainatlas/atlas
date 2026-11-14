@@ -899,3 +899,14 @@ fonctionnement du jardin (tours, arbres, chute des feuilles, pause, « réduire 
   autour des abscisses de `pieds`. Environ deux fois plus de formes qu'avant : à surveiller sur un téléphone lent.
 - **Pour vérifier un état rare**, on le force depuis la console : `accueilJardin.etat.chien.etat = 'queue'` (avec
   `t = 0`), ou `etat = 'arbre'` avec `cible` (un arbre de `accueilJardin.etat.arbres`) et `cote = -cible.miroir`.
+- **Agrandissement (même jour, demande de l'auteur : lunettes et π illisibles).** Le jardin est dessiné en unités
+  (`H = 100`) et agrandi par `ZOOM = 1.6` : la bande mesure 160 px (`.acc-jardin`, marge haute −28 px pour prendre sur
+  le vide au-dessus), `W` est la largeur **en unités** (`clientWidth / ZOOM`) et `E.W` reste en pixels. Les
+  personnages mesurent ainsi environ 70 px. Pour changer la taille : `ZOOM` et la hauteur CSS, ensemble.
+- **Défaut corrigé : le chien traversait tout l'écran au galop au démarrage** (signalé par l'auteur). L'heure passée à
+  la première image par `requestAnimationFrame` peut précéder le `performance.now()` pris au départ : `dt` devenait
+  négatif, `E.tau` aussi, `Math.floor(E.tau / T)` valait −1 et le chien était créé un tour entier derrière son maître.
+  Il galopait alors jusqu'au bord droit avant de reparaître à gauche. Le défaut datait du § 73 et dépendait du
+  navigateur. Corrections : `dt` borné à [0 ; 0,05] ; `ecran(U)` place hors champ à gauche un chien d'abscisse
+  négative (il ne paraît plus au bord droit pendant la première seconde) ; `majChien` ramène d'un tour un chien qui
+  aurait plus de 0,9 tour de retard ; un changement de largeur remet aussi à zéro `E.chien` et `E.homme`.
