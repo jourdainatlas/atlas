@@ -102,6 +102,13 @@ jobs:
         if: env.OVH_HOTE != ''
         run: |
           mkdir site && tar -xf archive/artifact.tar -C site
+          # Vidéos de cours (MEMO_atlas_videos.md §10) : trop lourdes pour la branche main, elles vivent dans la
+          # branche « videos-fichiers » ; on les place dans site/videos/ pour qu'elles partent avec le reste (l'envoi
+          # est différentiel : une vidéo déjà en ligne n'est pas renvoyée). Chaque fichier d'une vidéo marquée
+          # « en_ligne » dans le catalogue doit être là, sinon rien n'est envoyé.
+          git fetch --quiet --depth 1 origin videos-fichiers
+          mkdir -p site/videos && git archive FETCH_HEAD $(git ls-tree --name-only FETCH_HEAD | grep -E '\.(mp4|jpg)$') | tar -x -C site/videos
+          python3 -c "import json,os,sys; m=[v['fichier']+e for v in json.load(open('videos/catalogue.json',encoding='utf-8'))['videos'] if v.get('en_ligne') for e in ('.mp4','.jpg') if not os.path.exists('site/videos/'+v['fichier']+e)]; sys.exit('Fichiers absents de la branche videos-fichiers : '+', '.join(m)) if m else None"
           pip install paramiko==5.1.0
           python3 -u outils/publier_ovh.py site
 

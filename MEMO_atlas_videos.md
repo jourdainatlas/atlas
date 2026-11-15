@@ -336,7 +336,7 @@ Les trois premières vidéos (dérivation, équations, nombres réels et suites)
    `"en_ligne": true`, qui fait paraître le bouton « Vidéo » et le lecteur ; construction, contrôle du rendu (clair,
    sombre, ordinateur, téléphone), poussée.
 
-**Fait le 15 novembre (poussé, sans effet visible tant que `en_ligne` est faux)** : adresses YouTube des trois vidéos
+**Fait le 15 novembre** : adresses YouTube des trois vidéos
 au catalogue (seconde `Ll1S6FZrqK4`, première `kbkuh8Pka5k`, MPSI `VYHA0HfCdbs`) ; lecture du catalogue par
 `construire.py` ; bouton et lecteur dans `gabarit.html` (détail dans `MEMO_atlas_cours.md` §51) ; `/videos/` exclu du
 service worker (`MEMO_atlas_apropos.md` §83). Vérifié sur le site construit servi localement, la vidéo de MPSI placée
@@ -344,13 +344,18 @@ service worker (`MEMO_atlas_apropos.md` §83). Vérifié sur le site construit s
 Piège : le site a déjà des classes `.lecteur`, `.vue`, `.lecture`, `.bulle` ; celles du lecteur vidéo sont préfixées
 (`vl-`, `vx-`), faute de quoi la bulle de la piste et l'icône de lecture étaient déformées.
 
-**Reste à faire : amener les fichiers sur l'hébergement.** La session ne peut pas créer de publication GitHub
-(« releases » interdites à ce type de session, erreur 403), et n'a pas les accès OVH. Voies possibles, choix de
-l'auteur attendu : une branche à part du dépôt (`videos-fichiers`) que le job `ovh` copierait dans `site/videos/` ;
-ou une publication GitHub « videos » que l'auteur crée et alimente lui-même ; ou un dépôt direct par l'auteur dans
-`/videos/` (l'outil d'envoi ne supprime que ce que cite son manifeste). Les versions allégées sont prêtes
-(19,7, 21,1 et 18,4 Mo).
+**Dépôt des fichiers : la branche `videos-fichiers` (choix de l'auteur, 15 novembre).** La session ne peut pas créer
+de publication GitHub (« releases » interdites à ce type de session, erreur 403) et n'a pas les accès OVH. Les
+versions allégées et les vignettes vivent donc dans une branche orpheline du dépôt, `videos-fichiers`, séparée de
+`main` pour que le dépôt de travail reste léger. Le job `ovh` de `publier.yml` la récupère, copie ses `.mp4` et `.jpg`
+dans `site/videos/` et s'arrête si un fichier d'une vidéo `en_ligne` manque ; l'envoi étant différentiel, une vidéo
+déjà en ligne ne repart pas. GitHub Pages ne reçoit pas les vidéos : le lecteur les demande toujours à
+`https://www.atlasjourdain.fr/videos/`.
+Pour ajouter une vidéo : `git worktree add /tmp/wt videos-fichiers`, y copier les deux fichiers, valider, pousser
+(jamais `--force`) ; **puis seulement** passer `en_ligne` à vrai dans le catalogue et pousser `main`, ce qui lance la
+publication. Limite à surveiller : environ 20 Mo par vidéo dans le dépôt (GitHub conseille de rester sous quelques
+gigaoctets) ; au-delà d'une cinquantaine de vidéos, revoir le dépôt des fichiers.
 
 Repères de temps : YouTube n'active les chapitres que si le premier est à 0:00 et si chacun dure au moins dix secondes ;
 l'ouverture (huit secondes) est donc rattachée à la première partie, et `fiche.py` refuse un chapitre trop court.
-État au 15 novembre : étapes 2 et 3 faites pour les trois vidéos ; étape 4 codée, en attente du dépôt des fichiers.
+État au 15 novembre : les quatre étapes sont faites pour les trois vidéos (`en_ligne` vrai).
