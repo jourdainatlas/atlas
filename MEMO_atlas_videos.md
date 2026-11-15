@@ -211,19 +211,26 @@ Elles valent pour les trois vidéos existantes et pour toutes les suivantes.
 3. **Toute légende nomme ce dont elle parle** : pas de « ces nombres » sans que les nombres soient cités ou montrés
    avant (remarque de l'auteur sur la suite 1 ; 1,4 ; 1,41 ; 1,414).
 4. Pas de signature sur l'écran de fin ; pas de filet de couleur sous l'en-tête (idée écartée).
+5. **Mettre en scène les deux personnages dans les animations, autant que possible.** L'auteur aime beaucoup le chien
+   de la vidéo de dérivation, qui parcourt la colline avec la tangente sous ses pattes puis s'assoit au sommet de la
+   courbe : le chien et le jardinier ne doivent pas rester cantonnés au jardin du bas, mais porter l'idée mathématique
+   quand elle s'y prête (un personnage sur une courbe, sur une droite graduée, sur un plateau de balance…), sans
+   jamais fausser la figure.
 
 `song.js` est désormais le même fichier dans les trois dossiers (il lit `score.FIN`, `score.CH` et les événements).
 `commun.js` (dans `videos/derivation/`, copié ailleurs par `fabriquer.sh`) sait écrire dans les légendes les indices
 (`$u_n$`), les exposants (`$x^2$`), le prime et les lettres ℝ, ℚ, ℕ, ℤ ; un seul caractère après `_` ou `^`.
 
-État au 15 novembre 2026, en attente de validation par l'auteur : les deux vidéos de lycée dans leur contenu validé
-le matin, **avec les seuls intertitres en plus** : « La dérivation » 4 min 23 s (parties aux mesures 2, 6, 10, 18, 22,
-34, 38 ; bilan 50 ; fin 54), « Les équations » 4 min 03 s (2, 6, 14, 22, 26, 38 ; bilan 46 ; fin 50). Les versions
-rallongées, écartées, restent dans l'historique (validation « intertitres, rythme de lecture » du 15 novembre).
+**Validées en l'état par l'auteur le 15 novembre 2026**, contenu du matin avec les seuls intertitres en plus :
+« La dérivation » 4 min 23 s (parties aux mesures 2, 6, 10, 18, 22, 34, 38 ; bilan 50 ; fin 54, fichier livré
+`derivation-premiere-prototype-5-intertitres.mp4`), « Les équations » 4 min 03 s (2, 6, 14, 22, 26, 38 ; bilan 46 ;
+fin 50, `equations-seconde-prototype-4-intertitres.mp4`). Les versions rallongées, écartées, restent dans l'historique
+(validation « intertitres, rythme de lecture » du 15 novembre).
 
-### « Nombres réels et suites numériques », MPSI, chapitre 7 — prototype, non encore validé
+### « Nombres réels et suites numériques », MPSI, chapitre 7 — validée par l'auteur le 15 novembre 2026
 
-`videos/reels-suites/`, 4 min 07 s (rythme d'origine, intertitres compris). Fil du cours `ma-07` : Dedekind bute en 1858 sur « une suite croissante et majorée
+`videos/reels-suites/`, 4 min 07 s (rythme d'origine, intertitres compris ; fichier livré
+`reels-suites-mpsi-prototype-6.mp4`). Fil du cours `ma-07` : Dedekind bute en 1858 sur « une suite croissante et majorée
 a une limite » ; tout découle de l'axiome de la borne supérieure. Parties (mesures 2, 6, 14, 18, 26, 34, 38 ; bilan
 46 ; fin 50) : un théorème sans démonstration (les valeurs décimales approchées par défaut de √2), la borne supérieure
 (A = [0 ; 1[, caractérisation, axiome), premières conséquences (Archimède avec sa preuve, densité des décimaux),
