@@ -802,3 +802,13 @@ les premières propositions (chemin, compact, serievect, tangente) ont été ref
 autour d'un point du graphe, δ égal à 80 % du plus grand δ possible, calculé). mp-06 `sigma` (le signe Σ, autorisé
 comme signe propre au sujet ; les dessins de suites de vecteurs, de sommes partielles et de série-intégrale ont été
 écartés).
+
+### 50. MP, chapitres 7 à 9 (15 nov. 2026)
+
+`mp-07` (Endomorphismes des espaces euclidiens, 12 p.), `mp-08` (Suites et séries de fonctions, 13 p.), `mp-09`
+(Séries entières, 11 p.) ; feuilles `f-mp-07` (67 exercices), `f-mp-08` (58), `f-mp-09` (51), sans figure ;
+`outils/meta_mp_07.py` à `meta_mp_09.py`. Prérequis : mp-07 [ma-15, ma-16, ma-17] (le MPSI publié n'a pas encore de
+chapitre sur les espaces préhilbertiens), mp-08 [ma-08, ma-18, ma-20], mp-09 [ma-20, ma-10, ma-05]. Activités
+reliées : `matrice` → mp-07, `nombre-e`, `derangements`, `taylor` → mp-09. Termes écartés : les fragments de phrases
+mis en rouge dans mp-08 et mp-09, `cid:74` et `cid:75` (glyphes non décodés), « mŒme … » (ligature mal décodée) ;
+par chapitre : `mp-08 : limite`, `mp-09 : pour tout`, `mp-09 : de classe`. Symboles : planche envoyée.
