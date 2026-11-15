@@ -374,26 +374,30 @@
   const FINP = S.CH.map((c) => c.t1);                    // fins de partie
   // Le chien est l'acteur des scènes, et chacun de ses déplacements a une raison que l'on voit. Sur la colline du
   // début, il traverse l'écran de gauche à droite, puis rentre au jardin par la droite. Pour les variations, il saute
-  // sous l'écran, retombe du haut sur la courbe, la parcourt, s'assoit au sommet, et saute enfin rejoindre le jardinier.
-  const ACT = (() => { const d0 = S.variations.chien[0]; return { tJ: L(38) + 0.05, tA: d0 - 1.05, tL: d0 - 0.25, tX: FINP[6] - 0.7 }; })();
-  const EN_SCENE = [[ACT.tJ + 0.2, ACT.tX + 1.5]];
-  const TRAJETS = [[FINP[0] + 0.4, FINP[0] + 2.6, DEHORS, DS[1]], ...[1, 2, 3, 4, 5].map((k) => [J.marche[k][0] + 0.15, J.marche[k][1] + 0.15, DS[k], DS[k + 1]])];
+  // sous l'écran, retombe du haut sur la courbe, la parcourt, s'assoit au sommet ; il en saute alors presque à la
+  // verticale, se reçoit dans l'herbe au pied de la figure, et regagne sa place au galop, derrière le jardinier.
+  const ACT = (() => { const d0 = S.variations.chien[0], tX = FINP[6] - 0.7; return { tJ: L(38) + 0.05, tA: d0 - 1.05, tL: d0 - 0.25, tX, tS: tX + 1.2, tR: tX + 1.55, tF: tX + 3.5, xS: RV.X(2) + 64 }; })();
+  const EN_SCENE = [[ACT.tJ + 0.2, ACT.tR]];
+  const TRAJETS = [[FINP[0] + 0.4, FINP[0] + 2.6, DEHORS, DS[1]], ...[1, 2, 3, 4, 5].map((k) => [J.marche[k][0] + 0.15, J.marche[k][1] + 0.15, DS[k], DS[k + 1]]), [ACT.tR, ACT.tF, ACT.xS / SC, DS[6], 'galop']];
   function acteur(ctx, t) {
-    const { tJ, tA, tL, tX } = ACT, d0 = S.variations.chien[0], ECH = 2.6, x5 = DS[5] * SC, x6 = DS[6] * SC;
+    const { tJ, tA, tL, tX, tS, tR, xS } = ACT, d0 = S.variations.chien[0], ECH = 2.6, x6 = DS[6] * SC;
     const pente = (x) => Math.atan(-cubP(x) * RV.ky / RV.kx);
     if (t >= tJ + 0.2 && t < tA) { const u = t - tJ - 0.2, y = SOLPX - 430 * u + 1250 * u * u;                       // petit bond, puis il tombe sous l'écran
       if (y < H + 130) K.chienSur(ctx, x6, y, 0, SC, u < 0.17 ? { t, face: -1, allure: 'vol', vol: u / 0.17, tang: 0.3 } : { ...K.poseChute(t), face: -1 }); }
     else if (t >= tA && t < tL) { const u = (t - tA) / (tL - tA), yb = RV.Y(cub(-1)) - 2; K.chienSur(ctx, RV.X(-1), -60 + (yb + 60) * Math.pow(u, 1.6), pente(-1) * u * u, ECH, K.poseChute(t)); }   // il retombe du haut, sur la courbe
     else if (t >= tL && t < d0) K.chienSur(ctx, RV.X(-1), RV.Y(cub(-1)) - 2, pente(-1), ECH, K.poseChoc(t, t - tL));
-    else if (t >= tX && t < tX + 1.5) { const u = pr(t, tX + 0.2, 0.8), x = lerp(RV.X(2), x6, u), y = lerp(RV.Y(6) - 2, SOLPX, u * u) - 170 * Math.sin(Math.PI * u) * (1 - u), ech = lerp(ECH, SC, u), fin = t - (tX + 1.0);
-      K.chienSur(ctx, x, y, 0, ech, u <= 0 ? { t, assis: 1 - pr(t, tX, 0.2), bas: 2 * pr(t, tX, 0.2) } : u < 0.3 ? { t, allure: 'vol', vol: u / 0.3, tang: 0.35 } : u < 1 ? K.poseChute(t) : { ...K.poseChoc(t, fin), face: lerp(1, -1, doux(pr(fin, 0.1, 0.3))), assis: doux(pr(fin, 0.15, 0.35)) }); }
+    else if (t >= tX && t < tR) {                                                                                     // il saute du sommet : un bond court, puis la chute, presque verticale
+      const D = tS - tX - 0.2, u = pr(t, tX + 0.2, D), y0 = RV.Y(6) - 2, v0 = -450, g = 2 * (SOLPX - y0 - v0 * D) / (D * D), tv = u * D;
+      const x = lerp(RV.X(2), xS, u), y = Math.min(SOLPX, y0 + v0 * tv + g * tv * tv / 2), ech = lerp(ECH, SC, u), fin = t - tS;
+      K.chienSur(ctx, x, y, 0, ech, u <= 0 ? { t, assis: 1 - pr(t, tX, 0.2), bas: 2 * pr(t, tX, 0.2) } : u < 0.22 ? { t, allure: 'vol', vol: u / 0.22, tang: 0.35 } : u < 1 ? K.poseChute(t) : K.poseChoc(t, fin)); }
   }
   function chienA(t) {
     let x = DEHORS, bouge = 0, face = -1;
     for (const [a, b, xa, xb] of TRAJETS) { if (t >= a) x = lerp(xa, xb, doux(pr(t, a, b - a))); bouge = Math.max(bouge, Math.min(pr(t, a - 0.35, 0.3), 1 - pr(t, b, 0.3))); if (xb > xa) face += 2 * (doux(pr(t, a - 0.3, 0.3)) - doux(pr(t, b, 0.3))); }
-    const assis = 1 - doux(bouge), trotte = TRAJETS.some(([a, b]) => t > a && t < b);
+    const assis = 1 - doux(bouge), trotte = TRAJETS.some(([a, b]) => t > a && t < b), galope = TRAJETS.some(([a, b, , , al]) => al && t >= a && t < b);
     const P = { x, face, t, assis, tang: 0, tete: 0, cou: 0, bas: 0, saut: 0, vol: 0, phase: 0, allure: 'pose', queue: { a: lerp(-1.15, -0.35, assis), amp: lerp(0.06, 0.4, assis), f: 8, courbe: lerp(0.1, -0.12, assis) } };
     if (trotte) { P.allure = 'trot'; P.phase = x * 0.33; P.queue = { a: -0.35, amp: 0.25, f: 8, courbe: 0.06 }; }
+    if (galope) { P.allure = 'galop'; P.phase = x * 0.21; }
     if (t > S.fin.t0) P.queue.amp = 0.7;
     return P;
   }
