@@ -293,6 +293,9 @@ intertitre est une pastille qui donne son titre au survol et y saute au clic.
   rail (le pseudo-élément n'héritait pas de `box-sizing`), plein écran (un `<dialog>` ne peut pas passer en plein
   écran : on y met un cadre intérieur `.l-cadre`, avec repli « toute la fenêtre » si le navigateur refuse ; touche F,
   double clic), bouton de **vitesse** ×0,5, ×1, ×1,5, ×2 (menu).
+- Puis, à sa demande : le gros bouton de la vignette est **en haut à droite**, à la hauteur de la ligne « MPSI ·
+  chapitre 7 » ; le minuteur est dans une **pastille** (fond `--trame`, filet), et le titre de la partie en cours, qu'il
+  apprécie à cet endroit, est à côté, centré sur elle, en encre pleine.
 - **Le bouton rouge de la page Cours ne le convainc pas** (ne pas le reproposer tel quel). Quatre pistes à comparer
   dans le prototype (sélecteur en haut de page) : A, pastille pleine « ▶ Vidéo » jumelle de « En ligne » ; B,
   mini-vignette de la vidéo avec sa durée ; C, rond au trait turquoise, plein au survol ; D, phrase « Le chapitre en
