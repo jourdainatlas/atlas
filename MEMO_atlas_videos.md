@@ -170,3 +170,22 @@ Rendu : environ 4 min 30 pour 6 930 images ; le son n'est que mesuré (−14 LUF
 **Idée écartée par l'auteur (15 novembre 2026), à ne pas reproposer** : un filet de la couleur du domaine mathématique du
 chapitre (`--c-alg`, `--c-ana`…) tiré sous l'en-tête pour le séparer de la scène. Essayé sur les deux vidéos, non retenu :
 l'en-tête reste sans filet.
+
+### « Les équations », Seconde, chapitre 4 — validée par l'auteur le 15 novembre 2026
+
+`videos/equations/`, 3 min 35 s, 30 Mo, non versionnée, ni sur le site. Elle suit le cours `s-04`, avec la balance pour
+fil conducteur. Déroulé : ouverture (0–2), vocabulaire sur 5x − 3 = 2x + 9 (2–6), principe de la balance (6–14, une
+vraie balance : 3 sacs de graines et 2 poids contre 1 sac et 10 poids, soit 3x + 2 = x + 10, équation absente du cours
+mais de même solution 4 ; un sac retiré d'un seul côté la fait pencher), méthode (14–22, 5x − 3 = 2x + 9 ligne à
+ligne), deux cas particuliers (22–26), équations produit (26–38), équations quotient (38–46), bilan (46–50), fin
+(50–54). Six arbres. Non repris, faute de place : l'introduction historique, 4(x − 2) = 7x + 1, l'équation à
+fractions, 5x² + 3x = 0 et le premier exemple de quotient.
+
+Fichiers propres : `score.js`, `film.js` (dont `balanceD`, `objet`, `eq`, `marque`, `carte`, `branches`), `song.js`
+(celui de la dérivation, réglé par `score.FIN`), `formules-src.mjs` et `formules.js`. `commun.js` et
+`gen-formules.mjs` sont ceux de `videos/derivation/` (le premier est copié par `fabriquer.sh`). Couleurs : l'opération
+faite aux deux membres et les solutions en turquoise, le faux et l'interdit en orange, le vrai en vert, l'inconnue des
+sacs en violet ; cartes « Définition » à filet rouge, « Propriété » à filet turquoise.
+
+Pour une nouvelle vidéo de cours : copier `videos/equations/` (structure la plus générale : `TITRE`, `NIVEAU`,
+`NB_EXERCICES` en tête de `film.js`, parties dans `CH` de `score.js`), réécrire les scènes et les formules.
