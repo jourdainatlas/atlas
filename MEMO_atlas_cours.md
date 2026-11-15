@@ -798,5 +798,5 @@ d'Euler) ; `outils/meta_mp_04.py` à `meta_mp_06.py`. Pages du sommaire relevée
 Prérequis : mp-04 [ma-08, ma-14, ma-19], mp-05 [ma-08, ma-14], mp-06 [ma-20, ma-18, ma-10]. Activités reliées :
 `dichotomie` → mp-05, `taylor`, `accroissements`, `rectangles` → mp-06. Termes écartés : « admet », « 1918 F. Riesz :
 dimension finie » (frise historique). Symboles : mp-04 `ouvert` (boule ouverte contenant une petite boule autour d'un de ses points). Pour mp-05 et mp-06,
-les premières propositions (chemin, compact, serievect, tangente) ont été refusées ; nouvelle planche : `bornes`
-ou `emboites`, `vitesse` ou `serieint`.
+les premières propositions (chemin, compact, serievect, tangente) ont été refusées ; mp-05 `epsdelta` (bandes ε et δ
+autour d'un point du graphe, δ égal à 80 % du plus grand δ possible, calculé). mp-06 : en attente.
