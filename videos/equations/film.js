@@ -109,19 +109,29 @@
   }
 
   // ---------- 2. le principe de la balance ----------
+  const voleur = { depart: null };                        // position du sac que le chien emporte, relevée sur le plateau
   function balance(ctx, t) {
     const B = S.balance, a = fen(t, L(6) + 0.1, L(14), 0.4); if (a <= 0) return;
     const osc = (t0) => { const u = t - t0; return u > 0 ? 0.035 * Math.exp(-2.6 * u) * Math.sin(9 * u) : 0; };
     const th = 0.12 * (doux(pr(t, B.faute + 0.15, 0.7)) - doux(pr(t, B.sac + 0.15, 0.7))) + osc(B.faute + 0.5) - osc(B.sac + 0.5) + osc(B.poids + 0.3) * 0.4 + osc(B.moitie + 0.3) * 0.4;
     ctx.save(); ctx.globalAlpha = a;
     const o = B.objets;
-    balanceD(ctx, 495, 310, 1.1, th,
-      (X, Y) => { objet(ctx, t, 'sac', X - 110, Y, o); objet(ctx, t, 'sac', X - 40, Y, o + 0.1, B.moitie); objet(ctx, t, 'sac', X + 30, Y, o + 0.2, B.faute);
+    balanceD(ctx, 590, 315, 1, th,
+      (X, Y) => { if (t < B.faute) objet(ctx, t, 'sac', X - 110, Y, o); else voleur.depart = [X - 110, Y, X - 178]; objet(ctx, t, 'sac', X - 40, Y, o + 0.1, B.moitie); objet(ctx, t, 'sac', X + 30, Y, o + 0.2);
         objet(ctx, t, 'poids', X + 100, Y, o + 0.3, B.poids); objet(ctx, t, 'poids', X + 100, Y - 32, o + 0.4, B.poids); },
       (X, Y) => { objet(ctx, t, 'sac', X - 112, Y, o + 0.2, B.sac);
         for (let i = 0; i < 10; i++) objet(ctx, t, 'poids', X - 40 + (i % 5) * 34, Y - Math.floor(i / 5) * 32, o + 0.3 + i * 0.04, i >= 8 ? B.poids : i >= 4 ? B.moitie : 0); },
       doux(pr(t, B.trace[0], B.trace[1] - B.trace[0])));
-    ligne(ctx, 'D’un seul côté : l’équilibre est rompu.', 495, 720, { size: 32, w: 500, c: FAUX, a: fen(t, B.faute + 0.4, B.sac + 0.2, 0.3) });
+    // le chien emporte le sac retiré du plateau de gauche : le sac glisse au bord du plateau, tombe au sol, et le
+    // chien, arrivé par la gauche, le saisit et repart avec
+    { const SOL = 588, tf = B.faute, vu = fen(t, tf - 1.0, tf + 2.6, 0.2);
+      if (vu > 0 && voleur.depart) { const [x0, y0, bord] = voleur.depart, xs = bord - 38, ug = doux(pr(t, tf, 0.45)), uc = pr(t, tf + 0.45, 0.4), pris = t >= tf + 1.0;
+        const xc = t < tf + 1.0 ? lerp(-120, xs - 44, doux(pr(t, tf - 0.7, 1.6))) : lerp(xs - 44, -160, doux(pr(t, tf + 1.3, 1.2)));
+        const face = 1 - 2 * doux(pr(t, tf + 1.0, 0.3)), court = (t > tf - 0.7 && t < tf + 0.85) || t > tf + 1.3;
+        const sx = pris ? xc + face * 44 : lerp(lerp(x0, bord - 30, ug), xs, uc), sy = pris ? SOL - 12 : lerp(y0, SOL, uc * uc);
+        ctx.save(); ctx.globalAlpha *= vu; K.chienSur(ctx, xc, SOL, 0, 3.4, court ? { t, face, allure: 'trot', phase: xc / 3.4 * 0.33 } : { t, face, tete: 0.3 });
+        ctx.translate(sx, sy); ctx.scale(pris ? 0.8 : 1, pris ? 0.8 : 1); objet(ctx, t, 'sac', 0, 0, 0); ctx.restore(); } }
+    ligne(ctx, 'D’un seul côté : l’équilibre est rompu.', 590, 720, { size: 32, w: 500, c: FAUX, a: fen(t, B.faute + 0.4, B.sac + 0.2, 0.3) });
     // le calcul, ligne à ligne
     const LG = [['b0l', 'b0r', B.ligne0, ''], ['b1l', 'b1r', B.ligne1, 'un sac de moins de chaque côté'], ['b2l', 'b2r', B.ligne2, 'deux poids de moins de chaque côté'], ['b3l', 'b3r', B.ligne3, 'la moitié de chaque plateau']];
     LG.forEach(([l, r, tl, note], i) => { const k = ap(t, tl); if (k <= 0) return; const y = 205 + i * 78;
@@ -281,6 +291,9 @@
     ligne(ctx, `Le cours complet et ${NB_EXERCICES} exercices corrigés : {atlasjourdain.fr}`, CX, 650 + (1 - k2) * 16, { size: 42, w: 600, a: k2 });
   }
 
+  // fenêtre où le chien quitte le jardin pour jouer dans la scène
+  const EN_SCENE = [[S.balance.faute - 1.3, S.balance.faute + 2.6]];
+
   // ---------- le jardin du bas ----------
   const NP = S.CH.length, XS = S.CH.map((c, k) => (300 + 250 * k) / SC), STAND = [...XS.map((x) => x - BEC), XS[NP - 1] + 36], DS = [...XS.map((x) => x + 30), XS[NP - 1] + 76], J = S.jardin;
   const melange = (dom, g) => { const r = alea(g); return K.FEUILLES.map(() => (r() < 0.6 ? dom : RUBC[Math.floor(r() * 5)])); };
@@ -311,7 +324,7 @@
     const pieds = [j.x - 1.5, j.x + 2, ch.x - 7, ch.x + 7];
     K.dessinerPrairie(ctx, t, 0, [0, 1], pieds);
     for (const a of ARBRES) K.dessinerArbre(ctx, t, a);
-    if (ch.x < LU + 28) globalThis.CHIEN.dessiner(ctx, ch);
+    { const v = 1 - K.chienAbsent(t, EN_SCENE); if (ch.x < LU + 28 && v > 0) { ctx.save(); ctx.globalAlpha = v; globalThis.CHIEN.dessiner(ctx, ch); ctx.restore(); } }
     const { bec } = globalThis.JARDINIER.dessiner(ctx, j);
     if (j.verse) { ctx.save(); ctx.fillStyle = C.edifice;                                       // l'arrosoir verse des symboles
       G.decor(() => { ctx.font = `700 8.5px ${F.mono}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';

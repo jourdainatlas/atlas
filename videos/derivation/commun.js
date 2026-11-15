@@ -224,6 +224,16 @@
     for (const f of a.extra || []) { const q = pr(t, f.t, 0.4); if (q <= 0) continue; const [x0, y0] = X(f.u, f.v), vent = (0.09 + 0.13 * rafale) * Math.sin(2.3 * t + f.u * 3 + f.v); feuille(ctx, x0 + vent * 3, y0, f.rot + vent, f.e * s * ressort(q), f.c); }
   }
 
+  // le chien posé dans une figure : (px, py) son point d'appui en pixels, an son inclinaison, ech l'échelle ;
+  // p complète la pose (allure, phase, assis, face…). Son abscisse est exactement px : la figure reste juste.
+  function chienSur(ctx, px, py, an, ech, p) {
+    ctx.save(); ctx.translate(px, py); ctx.rotate(an); ctx.scale(ech, ech);
+    globalThis.CHIEN.dessiner(ctx, { x: 0, face: 1, t: p.t, assis: 0, tang: 0, tete: 0, cou: 0, bas: 0, saut: 0, vol: 0, phase: 0, allure: 'pose', queue: { a: -0.35, amp: 0.25, f: 8, courbe: 0.06 }, ...p });
+    ctx.restore();
+  }
+  // le chien du jardin s'efface pendant les fenêtres [a, b] où il joue dans la scène
+  const chienAbsent = (t, fenetres) => Math.max(0, ...fenetres.map(([a, b]) => fen(t, a, b, 0.3)));
+
   globalThis.K = { W, H, CX, borne, doux, ressort, pr, sortie, lerp, ap, fen, alea, fr, C, RUBC, F, txt, ligne, legende, chargerFormules, formule, largeur, cadre,
-    repere, dans, axes, courbe, droite, trait, point, fleche, logo, feuille, FEUILLES, dessinerPrairie, dessinerArbre, SC, SOLPX, LU, BEC };
+    repere, dans, axes, courbe, droite, trait, point, fleche, chienSur, chienAbsent, logo, feuille, FEUILLES, dessinerPrairie, dessinerArbre, SC, SOLPX, LU, BEC };
 })();

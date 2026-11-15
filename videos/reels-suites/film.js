@@ -103,18 +103,21 @@
     for (const v of [0, 1, 2]) grad(ctx, X(v), y, `$${v}$`, { a: ap(t, Su.droite[1]) });
     // la partie A = [0 ; 1[, en vert ; les majorants, en orange
     let k = ap(t, Su.A); ctx.save(); ctx.globalAlpha *= Math.min(1, k * 2); ctx.strokeStyle = VERT; ctx.lineWidth = 9; ctx.lineCap = 'butt'; ctx.beginPath(); ctx.moveTo(X(0), y); ctx.lineTo(lerp(X(0), X(1), k), y); ctx.stroke(); ctx.restore();
-    formule(ctx, 'A01', X(0.5), y - 44, { fs: 34, mil: 1, a: k });
+    formule(ctx, 'A01', X(0.22), y - 44, { fs: 34, mil: 1, a: k });
     const km = ap(t, Su.majorants); ctx.save(); ctx.globalAlpha *= Math.min(1, km * 2); ctx.strokeStyle = C.orange; ctx.lineWidth = 9; ctx.beginPath(); ctx.moveTo(X(1), y); ctx.lineTo(lerp(X(1), 1700, km), y); ctx.stroke(); ctx.restore();
     ligne(ctx, 'les majorants de $A$', X(2.15), y - 34, { size: 30, w: 500, c: C.orange, a: km });
     pastille(ctx, X(0), y, VERT, k, { r: 10 });
     k = ap(t, Su.M) * (1 - 0.6 * ap(t, Su.sup)); pastille(ctx, X(1.8), y, C.orange, k, { r: 10 }); formule(ctx, 'M', X(1.8), y - 78, { fs: 34, mil: 1, a: k }); ligne(ctx, 'un majorant', X(1.8), y + 86, { size: 26, w: 500, c: C.orange, a: k * (1 - km) });
     const ks = ap(t, Su.sup); pastille(ctx, X(1), y, C.rouge, Math.max(ks, ap(t, Su.A)), { creux: 1, r: 11 });
-    formule(ctx, 'supA', X(1), y - 88, { fs: 38, mil: 1, a: ks }); ligne(ctx, '$1$ n’appartient pas à $A$', X(1), y - 138, { size: 26, w: 500, c: C.encre2, a: ap(t, Su.piege) });
+    formule(ctx, 'supA', X(1) + 30, y - 106, { fs: 38, mil: 1, a: ks }); ligne(ctx, '$1$ n’appartient pas à $A$', X(1) + 30, y - 152, { size: 26, w: 500, c: C.encre2, a: ap(t, Su.piege) });
     // la caractérisation : tout intervalle ]sup A − ε ; sup A] contient un élément de A
     const ke = fen(t, Su.eps[0], L(12) - 0.2, 0.4), e = lerp(0.6, 0.12, doux(pr(t, Su.eps[0] + 0.8, Su.eps[1] - Su.eps[0] - 0.8)));
     if (ke > 0) { ctx.save(); ctx.globalAlpha *= ke; ctx.strokeStyle = C.violet; ctx.lineWidth = 3.5; ctx.lineCap = 'round'; const xa = X(1 - e), xb = X(1), yb = y + 96;
       ctx.beginPath(); ctx.moveTo(xa, yb - 12); ctx.lineTo(xa, yb); ctx.lineTo(xb, yb); ctx.lineTo(xb, yb - 12); ctx.stroke(); formule(ctx, 'eps', (xa + xb) / 2, yb + 30, { fs: 32, mil: 1 });
-      pastille(ctx, X(1 - e / 2), y, VERT, 1, { r: 9 }); formule(ctx, 'a', X(1 - e / 2), y + 60, { fs: 30, mil: 1 }); ctx.restore(); }
+      // l'élément a de A, c'est le chien : il s'approche de la borne supérieure sans jamais l'atteindre
+      const xa2 = X(1 - e / 2), marche = t > Su.eps[0] + 0.8 && t < Su.eps[1];
+      K.chienSur(ctx, xa2, y - 3, 0, 2.6, marche ? { t, allure: 'trot', phase: xa2 / 2.6 * 0.33 } : { t, tete: 0.25, queue: { a: -0.35, amp: 0.45, f: 8, courbe: 0.06 } });
+      pastille(ctx, xa2, y, VERT, 1, { r: 7 }); formule(ctx, 'a', xa2, y + 60, { fs: 30, mil: 1 }); ctx.restore(); }
     // la définition, la caractérisation, l'axiome
     k = ap(t, Su.def); carte(ctx, 110, 450, 800, 150, 'DÉFINITION', k);
     ligne(ctx, 'La [borne supérieure] de $A$, notée sup $A$, est le plus petit', 142, 532, { size: 28, w: 500, align: 'left', a: k }); ligne(ctx, 'des majorants de $A$, s’il existe.', 142, 570, { size: 28, w: 500, align: 'left', a: k });
@@ -139,8 +142,14 @@
       droiteR(ctx, 240, 1640, y, doux(pr(t, Co.arch, 0.8))); grad(ctx, X(0), y, '$0$', { a: k }); grad(ctx, X(xv), y, '', { c: C.orange, a: k, h: 16, lw: 4 }); formule(ctx, 'x', X(xv), y + 50, { fs: 34, mil: 1, a: k });
       Co.sauts.forEach((ts, i) => { const q = doux(pr(t, ts, 0.3)); if (q <= 0) return; const xa = X(i), xb = X(i + 1), der = i === 6;
         ctx.save(); ctx.strokeStyle = der ? C.cours : C.bleu; ctx.lineWidth = 3.5; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(xa, y - 6);
-        for (let s = 0; s <= q + 1e-9; s += 0.05) ctx.lineTo(lerp(xa, xb, s), y - 6 - Math.sin(Math.PI * s) * 70); ctx.stroke(); ctx.restore();
+        for (let s = 0; s <= Math.min(1, (t - ts) / 0.25) + 1e-9; s += 0.05) ctx.lineTo(lerp(xa, xb, s), y - 6 - Math.sin(Math.PI * s) * 70); ctx.stroke(); ctx.restore();
         if (q >= 1) { pastille(ctx, xb, y, der ? C.cours : C.bleu, ap(t, ts + 0.3, 0.25), { r: 7 }); if (i < 2) ligne(ctx, i ? '$2a$' : '$a$', xb, y + 44, { size: 28, c: C.bleu, a: ap(t, ts + 0.3) }); if (der) formule(ctx, 'na', xb, y + 50, { fs: 34, mil: 1, a: ap(t, ts + 0.3) }); } });
+      { // le chien franchit lui-même les sept sauts de longueur a
+        const DS = 0.25, i = Co.sauts.findIndex((ts) => t >= ts && t < ts + DS), fait = Co.sauts.filter((ts) => t >= ts + DS).length, kc = ap(t, Co.arch + 0.3);
+        if (kc > 0) { ctx.save(); ctx.globalAlpha *= kc;
+          if (i >= 0) { const s = (t - Co.sauts[i]) / DS; K.chienSur(ctx, lerp(X(i), X(i + 1), s), y - 6 - Math.sin(Math.PI * s) * 70, -Math.cos(Math.PI * s) * 0.45, 3, { t, allure: 'galop', phase: s * Math.PI }); }
+          else K.chienSur(ctx, X(fait), y - 4, 0, 3, { t, queue: { a: -0.35, amp: fait === 7 ? 0.6 : 0.3, f: 8, courbe: 0.06 } });
+          ctx.restore(); } }
       ['Sinon, la partie des $na$ serait majorée par $x$ : l’axiome lui donnerait une borne supérieure $M$.', 'Or $M − a$ n’est pas un majorant : un certain $na$ le dépasse, donc $(n + 1)a > M$.', 'C’est absurde, puisque $(n + 1)a$ appartient à la partie que $M$ majore.']
         .forEach((s, i) => ligne(ctx, s, CX, 570 + i * 54, { size: 31, w: 500, c: i === 2 ? C.encre : C.encre2, a: ap(t, Co.preuve[i]) }));
       ctx.restore(); }
@@ -288,6 +297,9 @@
     ligne(ctx, `Le cours complet et ${NB_EXERCICES} exercices corrigés : {atlasjourdain.fr}`, CX, 650 + (1 - k2) * 16, { size: 42, w: 600, a: k2 });
   }
 
+  // fenêtres où le chien quitte le jardin pour jouer dans la scène
+  const EN_SCENE = [[S.sup.eps[0] - 0.3, L(12) + 0.1], [S.conseq.arch - 0.2, L(16) + 0.1]];
+
   // ---------- le jardin du bas ----------
   const NP = S.CH.length, XS = S.CH.map((c, k) => (280 + 210 * k) / SC), STAND = [...XS.map((x) => x - BEC), XS[NP - 1] + 36], DS = [...XS.map((x) => x + 30), XS[NP - 1] + 76], J = S.jardin;
   const melange = (dom, g) => { const r = alea(g); return K.FEUILLES.map(() => (r() < 0.6 ? dom : RUBC[Math.floor(r() * 5)])); };
@@ -318,7 +330,7 @@
     const pieds = [j.x - 1.5, j.x + 2, ch.x - 7, ch.x + 7];
     K.dessinerPrairie(ctx, t, 0, [0, 1], pieds);
     for (const a of ARBRES) K.dessinerArbre(ctx, t, a);
-    if (ch.x < LU + 28) globalThis.CHIEN.dessiner(ctx, ch);
+    { const v = 1 - K.chienAbsent(t, EN_SCENE); if (ch.x < LU + 28 && v > 0) { ctx.save(); ctx.globalAlpha = v; globalThis.CHIEN.dessiner(ctx, ch); ctx.restore(); } }
     const { bec } = globalThis.JARDINIER.dessiner(ctx, j);
     if (j.verse) { ctx.save(); ctx.fillStyle = C.edifice;                                       // l'arrosoir verse des symboles
       G.decor(() => { ctx.font = `700 8.5px ${F.mono}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';

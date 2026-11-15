@@ -216,6 +216,13 @@ Elles valent pour les trois vidéos existantes et pour toutes les suivantes.
    courbe : le chien et le jardinier ne doivent pas rester cantonnés au jardin du bas, mais porter l'idée mathématique
    quand elle s'y prête (un personnage sur une courbe, sur une droite graduée, sur un plateau de balance…), sans
    jamais fausser la figure.
+   Mises en scène en place (prototypes du 15 novembre, en attente de validation) : dans la dérivation, le chien sur
+   la colline puis assis au sommet de la courbe (validé) ; dans les équations, il emporte le sac retiré d'un seul
+   côté de la balance (le sac glisse au bord du plateau, tombe, le chien le saisit et repart : la balance penche) ;
+   en MPSI, il est l'élément a qui s'approche de sup A sans l'atteindre, et il franchit lui-même les sept sauts de
+   longueur a de la propriété d'Archimède. Outils : `K.chienSur(ctx, px, py, an, ech, pose)` pose le chien en un
+   point exact de la figure ; `EN_SCENE` (dans `film.js`) liste les fenêtres où le chien du jardin s'efface pour ne
+   pas être à deux endroits. Le jardinier n'est pas encore mis en scène : son dessin ne se retourne pas.
 
 `song.js` est désormais le même fichier dans les trois dossiers (il lit `score.FIN`, `score.CH` et les événements).
 `commun.js` (dans `videos/derivation/`, copié ailleurs par `fabriquer.sh`) sait écrire dans les légendes les indices
