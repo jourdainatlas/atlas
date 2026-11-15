@@ -206,10 +206,8 @@ Elles valent pour les trois vidéos existantes et pour toutes les suivantes.
    congrue à 2 modulo 4, et leur longueur est un multiple de quatre mesures.
 2. **Le rythme de lecture.** Décision de l'auteur après essai : **au lycée, on ne ralentit pas** ; les versions
    rallongées de la dérivation (5 min 59 s) et des équations (6 min 27 s) ont été jugées beaucoup trop longues, et
-   l'on compte sur la pause pour lire. Ne pas reproposer de rallonger une vidéo de lycée. Le rythme ralenti (un texte
-   au moins trois secondes et demie à l'écran, une légende de deux lignes près de huit, jamais deux textes longs dans
-   la même mesure, une ligne de démonstration par mesure) n'a été appliqué qu'à la vidéo de MPSI, où l'auteur l'a
-   apprécié.
+   l'on compte sur la pause pour lire. La même règle vaut pour la vidéo de MPSI, ramenée de 5 min 11 s à 4 min 07 s à
+   sa demande. Ne pas reproposer de rallonger une vidéo pour laisser le temps de lire.
 3. **Toute légende nomme ce dont elle parle** : pas de « ces nombres » sans que les nombres soient cités ou montrés
    avant (remarque de l'auteur sur la suite 1 ; 1,4 ; 1,41 ; 1,414).
 4. Pas de signature sur l'écran de fin ; pas de filet de couleur sous l'en-tête (idée écartée).
@@ -225,9 +223,9 @@ rallongées, écartées, restent dans l'historique (validation « intertitres, r
 
 ### « Nombres réels et suites numériques », MPSI, chapitre 7 — prototype, non encore validé
 
-`videos/reels-suites/`, 5 min 11 s. Fil du cours `ma-07` : Dedekind bute en 1858 sur « une suite croissante et majorée
-a une limite » ; tout découle de l'axiome de la borne supérieure. Parties (mesures 2, 10, 18, 26, 34, 46, 54 ; bilan
-62 ; fin 66) : un théorème sans démonstration (les valeurs décimales approchées par défaut de √2), la borne supérieure
+`videos/reels-suites/`, 4 min 07 s (rythme d'origine, intertitres compris). Fil du cours `ma-07` : Dedekind bute en 1858 sur « une suite croissante et majorée
+a une limite » ; tout découle de l'axiome de la borne supérieure. Parties (mesures 2, 6, 14, 18, 26, 34, 38 ; bilan
+46 ; fin 50) : un théorème sans démonstration (les valeurs décimales approchées par défaut de √2), la borne supérieure
 (A = [0 ; 1[, caractérisation, axiome), premières conséquences (Archimède avec sa preuve, densité des décimaux),
 limite d'une suite (u_n = 2 + (−1)ⁿ·3/(n + 2) ; ε = 0,4, 0,2, 0,1 donnent N = 6, 13, 28), limite monotone (sommes des
 1/k², démonstration animée, ε = 0,12 et N = 8), suites adjacentes (sommes des 1/k! et v_n = u_n + 1/(n·n!)),

@@ -52,7 +52,7 @@
     ctx.save(); ctx.globalAlpha = a;
     K.logo(ctx, 78, 74, 60);
     txt(ctx, `${COURT} · ${NIVEAU}`, 126, 62, { fam: F.mono, w: 500, size: 20, ls: 3, c: C.encre3, align: 'left' });
-    for (const [nom, t0, t1] of [...S.CH.map((c) => [c.nom, c.t0, c.t1]), ['En résumé', L(62), L(S.FIN)]]) { const k = fen(t, t0 + 0.1, t1, 0.35); if (k > 0) txt(ctx, nom, 126, 104, { size: 36, w: 600, align: 'left', a: k }); }
+    for (const [nom, t0, t1] of [...S.CH.map((c) => [c.nom, c.t0, c.t1]), ['En résumé', L(46), L(S.FIN)]]) { const k = fen(t, t0 + 0.1, t1, 0.35); if (k > 0) txt(ctx, nom, 126, 104, { size: 36, w: 600, align: 'left', a: k }); }
     ctx.restore();
   }
 
@@ -71,16 +71,16 @@
 
   // ---------- 1. un théorème sans démonstration ----------
   function trou(ctx, t) {
-    const Tr = S.trou; let a = fen(t, L(2) + 0.1, L(6) - 0.1, 0.4);
+    const Tr = S.trou; let a = fen(t, L(2) + 0.1, L(4) - 0.1, 0.4);
     if (a > 0) { ctx.save(); ctx.globalAlpha = a;
       let k = ap(t, L(2) + 0.4); txt(ctx, 'ZURICH, AUTOMNE 1858', CX, 250, { fam: F.mono, w: 500, size: 26, ls: 5, c: C.encre3, a: k });
       k = ap(t, Tr.enonce); txt(ctx, 'L’énoncé que tout le monde admet :', CX, 340, { size: 34, w: 500, c: C.encre2, a: k });
       txt(ctx, 'une suite croissante et majorée a une limite.', CX, 430 + (1 - k) * 18, { size: 60, w: 700, a: k });
       k = ap(t, Tr.question); txt(ctx, 'Sa démonstration :', CX - 40, 560, { size: 40, w: 500, c: C.encre2, a: k }); txt(ctx, '?', CX + 190, 572 , { size: 96, w: 800, c: C.orange, a: k });
       ctx.restore(); }
-    a = fen(t, L(6) + 0.1, L(10), 0.4);
+    a = fen(t, L(4) + 0.1, L(6), 0.4);
     if (a > 0) { ctx.save(); ctx.globalAlpha = a; const X = echelle(240, 1680, 0.95, 1.55), y = 470, V = [1, 1.4, 1.41, 1.414], NOM = ['1', '1,4', '1,41', '1,414'];
-      { const k = ap(t, L(6) + 0.2), titre = 'Les valeurs décimales approchées par défaut de'; ctx.save(); ctx.font = `700 40px ${F.titre}`; const wt = ctx.measureText(titre).width; ctx.restore();
+      { const k = ap(t, L(4) + 0.2), titre = 'Les valeurs décimales approchées par défaut de'; ctx.save(); ctx.font = `700 40px ${F.titre}`; const wt = ctx.measureText(titre).width; ctx.restore();
         txt(ctx, titre, 240, 215, { size: 40, w: 700, align: 'left', a: k }); formule(ctx, 'racine', 240 + wt + 16, 215, { fs: 40, align: 'left', a: k }); }
       droiteR(ctx, 180, 1720, y, doux(pr(t, Tr.droite[0], Tr.droite[1] - Tr.droite[0])));
       for (const v of [1, 1.1, 1.2, 1.3, 1.4, 1.5]) grad(ctx, X(v), y, v === 1 || v === 1.5 ? '' : `$${fr(v, 1)}$`, { a: ap(t, Tr.droite[1]) * (v === 1.4 ? 0 : 1) });
@@ -91,15 +91,13 @@
       k = ap(t, Tr.racine); pastille(ctx, X(Math.SQRT2), y, C.encre, k, { creux: 1, r: 11 }); formule(ctx, 'racine_q', X(Math.SQRT2), y + 86, { fs: 40, mil: 1, a: k });
       ligne(ctx, 'la limite attendue manque', X(Math.SQRT2), y + 150, { size: 28, w: 500, c: C.encre2, a: k });
       ctx.restore(); }
-    legende(ctx, t, Tr.leg[0], ['Richard Dedekind doit enseigner ce théorème à ses élèves.']);
-    legende(ctx, t, Tr.leg[1], ['Il constate qu’il ne peut que l’admettre :', 'rien, dans les rationnels, ne permet de le démontrer.']);
-    legende(ctx, t, Tr.leg[2], ['Les nombres $1$ ; $1,4$ ; $1,41$ ; $1,414$… forment une suite croissante', 'de rationnels, majorée par $1,5$.']);
-    legende(ctx, t, Tr.leg[3], ['Elle n’a pourtant aucune limite rationnelle :', 'chez les rationnels, l’énoncé est faux.']);
+    legende(ctx, t, Tr.leg[0], ['Dedekind doit l’enseigner à ses élèves… et constate qu’il ne peut que', 'l’admettre : rien, dans les rationnels, ne permet de le démontrer.'], { size: 40 });
+    legende(ctx, t, Tr.leg[1], ['Les nombres $1$ ; $1,4$ ; $1,41$ ; $1,414$… forment une suite croissante de rationnels, majorée par $1,5$.', 'Elle n’a pourtant aucune limite rationnelle : chez les rationnels, l’énoncé est faux.'], { size: 38 });
   }
 
   // ---------- 2. la borne supérieure ----------
   function sup(ctx, t) {
-    const Su = S.sup, a = fen(t, L(10) + 0.1, L(18), 0.4); if (a <= 0) return;
+    const Su = S.sup, a = fen(t, L(6) + 0.1, L(14), 0.4); if (a <= 0) return;
     ctx.save(); ctx.globalAlpha = a; const X = echelle(260, 1660, -0.3, 2.7), y = 290;
     droiteR(ctx, 200, 1720, y, doux(pr(t, Su.droite[0], Su.droite[1] - Su.droite[0])));
     for (const v of [0, 1, 2]) grad(ctx, X(v), y, `$${v}$`, { a: ap(t, Su.droite[1]) });
@@ -113,7 +111,7 @@
     const ks = ap(t, Su.sup); pastille(ctx, X(1), y, C.rouge, Math.max(ks, ap(t, Su.A)), { creux: 1, r: 11 });
     formule(ctx, 'supA', X(1), y - 88, { fs: 38, mil: 1, a: ks }); ligne(ctx, '$1$ n’appartient pas à $A$', X(1), y - 138, { size: 26, w: 500, c: C.encre2, a: ap(t, Su.piege) });
     // la caractérisation : tout intervalle ]sup A − ε ; sup A] contient un élément de A
-    const ke = fen(t, Su.eps[0], L(16) - 0.2, 0.4), e = lerp(0.6, 0.12, doux(pr(t, Su.eps[0] + 0.8, Su.eps[1] - Su.eps[0] - 0.8)));
+    const ke = fen(t, Su.eps[0], L(12) - 0.2, 0.4), e = lerp(0.6, 0.12, doux(pr(t, Su.eps[0] + 0.8, Su.eps[1] - Su.eps[0] - 0.8)));
     if (ke > 0) { ctx.save(); ctx.globalAlpha *= ke; ctx.strokeStyle = C.violet; ctx.lineWidth = 3.5; ctx.lineCap = 'round'; const xa = X(1 - e), xb = X(1), yb = y + 96;
       ctx.beginPath(); ctx.moveTo(xa, yb - 12); ctx.lineTo(xa, yb); ctx.lineTo(xb, yb); ctx.lineTo(xb, yb - 12); ctx.stroke(); formule(ctx, 'eps', (xa + xb) / 2, yb + 30, { fs: 32, mil: 1 });
       pastille(ctx, X(1 - e / 2), y, VERT, 1, { r: 9 }); formule(ctx, 'a', X(1 - e / 2), y + 60, { fs: 30, mil: 1 }); ctx.restore(); }
@@ -135,7 +133,7 @@
 
   // ---------- 3. premières conséquences ----------
   function conseq(ctx, t) {
-    const Co = S.conseq; let a = fen(t, L(18) + 0.1, L(22) - 0.1, 0.4);
+    const Co = S.conseq; let a = fen(t, L(14) + 0.1, L(16) - 0.1, 0.4);
     if (a > 0) { ctx.save(); ctx.globalAlpha = a; const X = echelle(300, 1560, 0, 8), y = 400, xv = 6.4;
       let k = ap(t, Co.arch); txt(ctx, 'Propriété d’Archimède', 240, 215, { size: 40, w: 700, align: 'left', a: k }); formule(ctx, 'arch', 1290, 205, { fs: 34, mil: 1, a: k });
       droiteR(ctx, 240, 1640, y, doux(pr(t, Co.arch, 0.8))); grad(ctx, X(0), y, '$0$', { a: k }); grad(ctx, X(xv), y, '', { c: C.orange, a: k, h: 16, lw: 4 }); formule(ctx, 'x', X(xv), y + 50, { fs: 34, mil: 1, a: k });
@@ -146,7 +144,7 @@
       ['Sinon, la partie des $na$ serait majorée par $x$ : l’axiome lui donnerait une borne supérieure $M$.', 'Or $M − a$ n’est pas un majorant : un certain $na$ le dépasse, donc $(n + 1)a > M$.', 'C’est absurde, puisque $(n + 1)a$ appartient à la partie que $M$ majore.']
         .forEach((s, i) => ligne(ctx, s, CX, 570 + i * 54, { size: 31, w: 500, c: i === 2 ? C.encre : C.encre2, a: ap(t, Co.preuve[i]) }));
       ctx.restore(); }
-    a = fen(t, L(22) + 0.1, L(26), 0.4);
+    a = fen(t, L(16) + 0.1, L(18), 0.4);
     if (a > 0) { ctx.save(); ctx.globalAlpha = a; const X = echelle(300, 1620, 0.285, 0.405), y = 420, va = 0.313, vb = 0.347;
       let k = ap(t, Co.dens); txt(ctx, 'Densité des décimaux', 240, 215, { size: 40, w: 700, align: 'left', a: k });
       droiteR(ctx, 240, 1680, y, doux(pr(t, Co.dens, 0.8))); grad(ctx, X(0.3), y, '$0,3$', { a: k, h: 14 }); grad(ctx, X(0.4), y, '$0,4$', { a: k, h: 14 });
@@ -158,19 +156,18 @@
       ligne(ctx, 'Tout intervalle ouvert non vide contient un décimal, donc un rationnel ; il contient aussi un irrationnel.', CX, 690, { size: 30, w: 500, c: C.encre2, a: ap(t, Co.suite) });
       ctx.restore(); }
     legende(ctx, t, Co.leg[0], ['Première conséquence : à force d’ajouter $a$, on finit par dépasser tout réel $x$.']);
-    legende(ctx, t, Co.leg[1], ['La démonstration, par l’absurde, s’appuie directement sur l’axiome.']);
-    legende(ctx, t, Co.leg[2], ['On en tire la densité : dès que $10^{-n}$ est plus petit que $b − a$,'.replace('$10^{-n}$', 'le pas des graduations'), 'l’une d’elles tombe entre $a$ et $b$.']);
+    legende(ctx, t, Co.leg[1], ['On en tire la densité : dès que $10^{-n}$ est plus petit que $b − a$,'.replace('$10^{-n}$', 'le pas des graduations'), 'l’une d’elles tombe entre $a$ et $b$.']);
   }
 
   // ---------- 4. la limite d'une suite ----------
   const RL = repere({ x: 110, y: 160, w: 1000, h: 590 }, { x0: -1, x1: 31, y0: 0.6, y1: 3.7 });
   const uL = (n) => 2 + (n % 2 ? -1 : 1) * 3 / (n + 2);
   function limite(ctx, t) {
-    const Li = S.limite, a = fen(t, L(26) + 0.1, L(34), 0.4); if (a <= 0) return;
+    const Li = S.limite, a = fen(t, L(18) + 0.1, L(26), 0.4); if (a <= 0) return;
     let e = 0.4; for (const [t0, t1, ea, eb] of Li.serre) { const k = doux(pr(t, t0, t1 - t0)); if (k > 0) e = lerp(ea, eb, k); }
     const N = Math.max(0, Math.ceil(3 / e - 2 - 1e-9)), kb = ap(t, Li.bande), kN = ap(t, Li.N), R = RL;
     ctx.save(); ctx.globalAlpha = a;
-    axes(ctx, R, pr(t, L(26) + 0.1, 0.8), { gx: [5, 10, 15, 20, 25, 30], gy: [1, 2, 3] }); formule(ctx, 'n', R.b.x + R.b.w + 4, R.Y(0.6) - 26, { fs: 26, a: ap(t, L(26) + 0.8) });
+    axes(ctx, R, pr(t, L(18) + 0.1, 0.8), { gx: [5, 10, 15, 20, 25, 30], gy: [1, 2, 3] }); formule(ctx, 'n', R.b.x + R.b.w + 4, R.Y(0.6) - 26, { fs: 26, a: ap(t, L(18) + 0.8) });
     if (kb > 0) dans(ctx, R, () => { ctx.globalAlpha *= kb; ctx.fillStyle = 'rgba(255,162,74,0.16)'; ctx.fillRect(R.X(-1), R.Y(2 + e), R.b.w, R.Y(2 - e) - R.Y(2 + e));
       ctx.strokeStyle = C.orange; ctx.lineWidth = 2.5; ctx.setLineDash([10, 8]); for (const v of [2 + e, 2 - e]) { ctx.beginPath(); ctx.moveTo(R.b.x, R.Y(v)); ctx.lineTo(R.b.x + R.b.w, R.Y(v)); ctx.stroke(); } });
     const kl = ap(t, Li.ell); trait(ctx, R, -1, 2, lerp(-1, 31, kl), 2, { c: C.encre2, dash: [3, 7], a: kl });
@@ -179,7 +176,7 @@
     const [p0, p1] = Li.points;
     for (let n = 0; n <= 30; n++) { const k = ap(t, p0 + n / 30 * (p1 - p0), 0.3); point(ctx, R, n, uL(n), { c: C.bleu, k, r: 7, a: kN > 0 && n < N ? lerp(1, 0.35, kN) : 1 }); }
     // à droite : la suite, la définition, les valeurs de ε et de N
-    const xp = 1515; formule(ctx, 'suite_u', xp, 215, { fs: 32, mil: 1, a: ap(t, L(26) + 0.4), monte: 1 });
+    const xp = 1515; formule(ctx, 'suite_u', xp, 215, { fs: 32, mil: 1, a: ap(t, L(18) + 0.4), monte: 1 });
     let k = ap(t, Li.def); carte(ctx, 1195, 290, 650, 200, 'DÉFINITION', k); ligne(ctx, 'La suite [converge] vers le réel $ℓ$ si :', 1227, 372, { size: 28, w: 500, align: 'left', a: k }); formule(ctx, 'lim_def', xp, 435, { fs: 25, mil: 1, a: k });
     ligne(ctx, `$ε = ${fr(e, 2)}$`, 1370, 580, { size: 46, c: C.orange, a: kb }); ligne(ctx, `$N = ${N}$`, 1680, 580, { size: 46, c: C.cours, a: kN });
     ligne(ctx, 'Théorème : une suite a au plus une limite.', xp, 690, { size: 29, w: 500, c: C.encre2, a: ap(t, Li.unicite) });
@@ -194,11 +191,11 @@
   const RM = repere({ x: 110, y: 160, w: 900, h: 590 }, { x0: 0, x1: 12.9, y0: 0.86, y1: 2.14 });
   const SOM = [0]; for (let n = 1; n <= 12; n++) SOM.push(SOM[n - 1] + 1 / (n * n));
   function monotone(ctx, t) {
-    const Mo = S.monotone, a = fen(t, L(34) + 0.1, L(46), 0.4); if (a <= 0) return;
+    const Mo = S.monotone, a = fen(t, L(26) + 0.1, L(34), 0.4); if (a <= 0) return;
     const R = RM, ell = Math.PI * Math.PI / 6, e = 0.12, Nn = 8;
     ctx.save(); ctx.globalAlpha = a;
-    axes(ctx, R, pr(t, L(34) + 0.1, 0.8), { gx: [2, 4, 6, 8, 10, 12], gy: [1, 1.5, 2], sansO: 1, muetY: 1 });
-    for (const v of [1, 1.5, 2]) ligne(ctx, `$${fr(v, v === 1.5 ? 1 : 0)}$`, R.b.x - 30, R.Y(v) + 9, { size: 26, c: C.encre3, a: ap(t, L(34) + 0.6) });
+    axes(ctx, R, pr(t, L(26) + 0.1, 0.8), { gx: [2, 4, 6, 8, 10, 12], gy: [1, 1.5, 2], sansO: 1, muetY: 1 });
+    for (const v of [1, 1.5, 2]) ligne(ctx, `$${fr(v, v === 1.5 ? 1 : 0)}$`, R.b.x - 30, R.Y(v) + 9, { size: 26, c: C.encre3, a: ap(t, L(26) + 0.6) });
     let k = ap(t, Mo.majorant); trait(ctx, R, 0, 2, lerp(0, 12.9, k), 2, { c: C.orange, dash: [10, 8], a: k, lw: 3 }); ligne(ctx, 'majorant $2$', R.X(10.6), R.Y(2) - 16, { size: 28, w: 500, c: C.orange, a: k });
     const kb = ap(t, Mo.bande); if (kb > 0) dans(ctx, R, () => { ctx.globalAlpha *= kb; ctx.fillStyle = 'rgba(199,147,230,0.16)'; ctx.fillRect(R.b.x, R.Y(ell), R.b.w, R.Y(ell - e) - R.Y(ell)); ctx.strokeStyle = C.violet; ctx.lineWidth = 2.5; ctx.setLineDash([10, 8]); ctx.beginPath(); ctx.moveTo(R.b.x, R.Y(ell - e)); ctx.lineTo(R.b.x + R.b.w, R.Y(ell - e)); ctx.stroke(); });
     formule(ctx, 'mono_ellm', R.X(1.3), R.Y(ell - e) + 34, { fs: 26, a: kb });
@@ -208,7 +205,7 @@
     for (let n = 1; n <= 12; n++) { const q = ap(t, p0 + (n - 1) / 11 * (p1 - p0), 0.3); point(ctx, R, n, SOM[n], { c: n === Nn && ku > 0 ? C.cours : n > Nn && ks > 0 ? C.cours : C.bleu, k: q, r: n === Nn && ku > 0 ? 11 : 8 }); }
     formule(ctx, 'mono_uN', R.X(Nn), R.Y(SOM[Nn]) + 52, { fs: 30, a: ku });
     // à droite : la suite, le théorème, la démonstration
-    const x0 = 1085, xp = 1465; formule(ctx, 'mono_u', xp, 205, { fs: 28, mil: 1, a: ap(t, L(34) + 0.4), monte: 1 });
+    const x0 = 1085, xp = 1465; formule(ctx, 'mono_u', xp, 205, { fs: 28, mil: 1, a: ap(t, L(26) + 0.4), monte: 1 });
     k = ap(t, Mo.th); carte(ctx, x0, 262, 760, 200, 'THÉORÈME', k); ligne(ctx, 'Toute suite réelle croissante et majorée converge,', x0 + 32, 340, { size: 28, w: 500, align: 'left', a: k }); ligne(ctx, 'et sa limite est sa borne supérieure :', x0 + 32, 378, { size: 28, w: 500, align: 'left', a: k }); formule(ctx, 'mono_th', xp, 428, { fs: 24, mil: 1, a: k });
     const pl = (s, y, tk, c) => ligne(ctx, s, x0 + 10, y, { size: 27, w: 500, align: 'left', a: ap(t, tk), c });
     pl('La partie des $u_n$ est non vide et majorée :', 520, Mo.p1); pl('par l’[axiome], elle a une borne supérieure $ℓ$.', 556, Mo.p1);
@@ -216,17 +213,15 @@
     pl('La suite est croissante, donc pour tout $n ⩾ N$ :', 704, Mo.p3); k = ap(t, Mo.formule); cadre(ctx, xp, 750, largeur('mono_pr', 30) + 60, 58, { stroke: C.cours, fill: 'rgba(53,202,164,0.10)', a: k }); formule(ctx, 'mono_pr', xp, 750, { fs: 30, mil: 1, a: k });
     ctx.restore();
     legende(ctx, t, Mo.leg[0], ['Revenons au théorème de Dedekind. Ces sommes croissent et restent sous $2$.']);
-    legende(ctx, t, Mo.leg[1], ['Voici le théorème, et cette fois sa démonstration.']);
-    legende(ctx, t, Mo.leg[2], ['L’axiome donne à ces termes une borne supérieure $ℓ$ : c’est elle, la limite.']);
-    legende(ctx, t, Mo.leg[3], ['Comme $ℓ − ε$ n’est pas un majorant, un terme $u_N$ le dépasse.']);
-    legende(ctx, t, Mo.leg[4], ['Les suivants, plus grands encore, restent sous $ℓ$ :', 'ils sont tous à moins de $ε$ de $ℓ$.']);
-    legende(ctx, t, Mo.leg[5], ['Trois lignes de démonstration, mais tout repose sur la borne supérieure.']);
+    legende(ctx, t, Mo.leg[1], ['L’axiome leur donne une borne supérieure $ℓ$ : c’est elle, la limite.']);
+    legende(ctx, t, Mo.leg[2], ['Un terme dépasse $ℓ − ε$ ; les suivants, plus grands encore, restent sous $ℓ$.']);
+    legende(ctx, t, Mo.leg[3], ['Trois lignes de démonstration, mais tout repose sur la borne supérieure.']);
   }
 
   // ---------- 6. suites adjacentes ----------
   const ADJ = (() => { const r = []; let f = 1, u = 1; for (let n = 1; n <= 5; n++) { f *= n; u += 1 / f; r.push([u, u + 1 / (n * f)]); } return r; })();
   function adjacentes(ctx, t) {
-    const Ad = S.adjacentes, a = fen(t, L(46) + 0.1, L(54), 0.4); if (a <= 0) return;
+    const Ad = S.adjacentes, a = fen(t, L(34) + 0.1, L(38), 0.4); if (a <= 0) return;
     ctx.save(); ctx.globalAlpha = a; const X = echelle(250, 990, 1.9, 3.1), yl = (n) => 232 + (n - 1) * 86;
     const kl = ap(t, Ad.ell); ctx.save(); ctx.globalAlpha *= kl; ctx.strokeStyle = C.cours; ctx.lineWidth = 3; ctx.setLineDash([8, 8]); ctx.beginPath(); ctx.moveTo(X(Math.E), 190); ctx.lineTo(X(Math.E), 660); ctx.stroke(); ctx.restore(); formule(ctx, 'ell', X(Math.E), 172, { fs: 30, a: kl });
     Ad.rangs.forEach((tr, i) => { const k = ap(t, tr, 0.35); if (k <= 0) return; const [u, v] = ADJ[i], y = yl(i + 1);
@@ -242,15 +237,13 @@
     k = ap(t, Ad.th); carte(ctx, x0, 452, 760, 200, 'THÉORÈME', k); ligne(ctx, 'Deux suites adjacentes convergent vers une même', x0 + 32, 530, { size: 28, w: 500, align: 'left', a: k }); ligne(ctx, 'limite $ℓ$, qui les sépare :', x0 + 32, 568, { size: 28, w: 500, align: 'left', a: k }); formule(ctx, 'adj_th', xp, 618, { fs: 28, mil: 1, a: k });
     k = ap(t, Ad.note); ligne(ctx, 'Ici $ℓ = e$ (chapitre 18) ; dès $n = 5$ : $2,7166 ⩽ e ⩽ 2,7184$.', xp, 722, { size: 27, w: 500, c: C.encre2, a: k });
     ctx.restore();
-    legende(ctx, t, Ad.leg[0], ['Deux suites : l’une monte, l’autre descend, et l’écart entre elles tend vers $0$.']);
-    legende(ctx, t, Ad.leg[1], ['De telles suites sont dites adjacentes.']);
-    legende(ctx, t, Ad.leg[2], ['Elles convergent vers une même limite, qu’elles encadrent à chaque rang.']);
-    legende(ctx, t, Ad.leg[3], ['La preuve : la suite croissante est majorée par $v_0$.', 'C’est le théorème de la limite monotone.']);
+    legende(ctx, t, Ad.leg[0], ['L’une monte, l’autre descend, et l’écart entre elles tend vers $0$.']);
+    legende(ctx, t, Ad.leg[1], ['La preuve : la suite croissante est majorée par $v_0$.', 'C’est le théorème de la limite monotone.']);
   }
 
   // ---------- 7. Bolzano-Weierstrass ----------
   function bw(ctx, t) {
-    const Bw = S.bw, a = fen(t, L(54) + 0.1, L(62), 0.4); if (a <= 0) return;
+    const Bw = S.bw, a = fen(t, L(38) + 0.1, L(46), 0.4); if (a <= 0) return;
     ctx.save(); ctx.globalAlpha = a;
     // les termes de la suite, dont on garde certains sans changer leur ordre
     for (let i = 0; i < 18; i++) { const k = ap(t, Bw.jetons + i * 0.05, 0.3), j = Bw.PHI.indexOf(i), q = j >= 0 ? ap(t, Bw.choisis[j], 0.3) : 0, x = 150 + i * 95, y = 205;
@@ -274,7 +267,7 @@
 
   // ---------- bilan : l'arbre des résultats, qui pousse depuis l'axiome ----------
   function bilan(ctx, t) {
-    const Bi = S.bilan, a = fen(t, L(62) + 0.2, L(S.FIN), 0.4); if (a <= 0) return;
+    const Bi = S.bilan, a = fen(t, L(46) + 0.2, L(S.FIN), 0.4); if (a <= 0) return;
     ctx.save(); ctx.globalAlpha = a;
     const ND = [[960, 705, 'Axiome de la borne supérieure', -1, C.rouge], [520, 580, 'Propriété d’Archimède', 0], [520, 455, 'Densité des rationnels', 1], [1400, 580, 'Limite monotone', 0], [1400, 455, 'Suites adjacentes', 3], [1400, 330, 'Bolzano-Weierstrass', 4], [1400, 205, 'Chapitre 8 : bornes atteintes', 5, C.encre3]];
     ND.forEach(([x, y, , p], i) => { if (p < 0) return; const k = doux(pr(t, Bi.noeuds[i] - 0.5, 0.6)); if (k <= 0) return; const [xp, yp] = ND[p];

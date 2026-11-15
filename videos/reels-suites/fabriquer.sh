@@ -1,5 +1,5 @@
 #!/bin/sh
-# Refait la vidéo « Nombres réels et suites numériques » (MPSI) : out/reels-suites.mp4, 1920 × 1080, 30 images/s, 5 min 11 s.
+# Refait la vidéo « Nombres réels et suites numériques » (MPSI) : out/reels-suites.mp4, 1920 × 1080, 30 images/s, 4 min 07 s.
 # Il faut Node 22+, ffmpeg et Google Chrome ou Chromium. Compter une vingtaine de minutes.
 #   sh videos/reels-suites/fabriquer.sh
 set -e
