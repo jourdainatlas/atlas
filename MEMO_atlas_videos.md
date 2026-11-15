@@ -166,3 +166,7 @@ Décisions de l'auteur : **aucune signature** « Armand Jourdain, professeur agr
 fin, pour cette vidéo comme pour les suivantes ; l'écran de fin porte le logo, le titre et le renvoi vers le cours.
 
 Rendu : environ 4 min 30 pour 6 930 images ; le son n'est que mesuré (−14 LUFS), jamais écouté.
+
+**Idée écartée par l'auteur (15 novembre 2026), à ne pas reproposer** : un filet de la couleur du domaine mathématique du
+chapitre (`--c-alg`, `--c-ana`…) tiré sous l'en-tête pour le séparer de la scène. Essayé sur les deux vidéos, non retenu :
+l'en-tête reste sans filet.
