@@ -2,7 +2,7 @@
 // La banque de tirages (BANQUE) est fabriquée par outils/activites_compte.mjs.
 import { css as cssCommun, bac } from './commun.js';
 import { cssFigures, suite } from './figures.js';
-import { demande } from './jour.js';
+import { demande, suiteParcours } from './jour.js';
 import { cssJeux, ecrire } from './jeux.js';
 
 export const css = cssCommun + cssFigures + cssJeux + `
@@ -165,7 +165,7 @@ export function monter(racine) {
     m.className = 'jeu-message' + (gagne ? ' gagne' : bloque ? ' bloque' : cl);
     ecrire(m, gagne ? `Le compte est bon, en ${n} opération${n > 1 ? 's' : ''}. ${vu ? '' : n <= pb.min ? 'On ne peut pas faire plus court.' : `Le plus court calcul n'en demande que ${pb.min} : la touche C vous laisse recommencer.`}` : msg || (bloque ? 'Il ne reste plus de quoi calculer. Annulez une étape, ou effacez tout.' : (duJour && F && !n && cur.a < 0 ? 'Le nombre du jour a déjà été trouvé sur ce navigateur. Vous pouvez le refaire : choisissez un nombre, une opération, puis un second nombre.' : 'Choisissez un nombre, une opération, puis un second nombre.')));
     // Le lien de retour est un vrai élément : ecrire() pose ici du texte, pas du HTML.
-    if (gagne && duParcours && duJour) { const a = document.createElement('a'); a.className = 'rz-cours'; a.href = '#activites/parcours'; a.textContent = 'Revenir au parcours du jour'; m.append(' ', a); }
+    if (gagne && duParcours && duJour) { const a = document.createElement('span'); a.innerHTML = suiteParcours('compte-est-bon'); m.append(' ', a); }
   }
   q('#cb-plaques').addEventListener('click', e => { const b = e.target.closest('button[data-i]'); if (b) nombre(+b.dataset.i); });
   q('#cb-lignes').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; if (b.dataset.defaire === 'op') oterOperation(); else if (b.dataset.defaire) annuler(); else if (b.dataset.oter) oter(b.dataset.oter); else if (b.dataset.i) nombre(+b.dataset.i); });

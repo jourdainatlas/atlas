@@ -3,7 +3,7 @@ import { css as cssCommun, bac } from './commun.js';
 import { cssFigures, suite } from './figures.js';
 import { cssJeux, ecrire } from './jeux.js';
 import { FAMILLES, serie } from './serie-calculs.js';
-import { NIVEAUX_PARCOURS, demande, valider, lireParcours, lienParcours } from './jour.js';
+import { NIVEAUX_PARCOURS, demande, valider, lireParcours, suiteParcours } from './jour.js';
 
 export const css = cssCommun + cssFigures + cssJeux + `
 .activites-act .jeu { --activites-jeu: var(--activites-calcul); }
@@ -95,7 +95,7 @@ export function monter(racine) {
     if (rang < 0) { ecrire(q('#sr-question'), 'Dix calculs vous attendent. Le chronomètre part quand vous cliquez sur « Commencer ».', true); ecrire(q('#sr-choix'), '', true); m.className = 'jeu-message'; ecrire(m, record(), true); B.hidden = true; return; }
     if (!fini) { const x = S[rang]; ecrire(q('#sr-question'), x.q, true); q('#sr-choix').classList.toggle('longues', x.choix.some(c => c.replace(/<[^>]+>|\\[a-z]+|[{}^_ ]/g, '').length + 2 * (c.match(/\\[a-z]+/g) || []).length > 7)); ecrire(q('#sr-choix'), x.choix.map((c, i) => `<button type="button" data-i="${i}"><kbd>${i + 1}</kbd><span>${c}</span></button>`).join(''), true); m.className = 'jeu-message'; ecrire(m, 'Cliquez sur la réponse, ou tapez son numéro.', true); B.hidden = true; return; }
     const bons = S.filter((x, k) => reponses[k] === x.bon).length; ecrire(q('#sr-question'), `<b>${bons} sur ${S.length}</b>, en ${duree(secondes)}.`, true); ecrire(q('#sr-choix'), '', true);
-    m.className = 'jeu-message ' + (bons === S.length ? 'gagne' : bons >= 7 ? '' : 'mieux'); ecrire(m, (bons === S.length ? 'Sans faute. ' : bons >= 7 ? 'Presque : les calculs manqués sont repris ci-dessous, avec leur corrigé. ' : 'Les calculs manqués sont repris ci-dessous, avec la bonne réponse : ce sont les règles à revoir. ') + record() + (duParcours ? lienParcours : ''), true);
+    m.className = 'jeu-message ' + (bons === S.length ? 'gagne' : bons >= 7 ? '' : 'mieux'); ecrire(m, (bons === S.length ? 'Sans faute. ' : bons >= 7 ? 'Presque : les calculs manqués sont repris ci-dessous, avec leur corrigé. ' : 'Les calculs manqués sont repris ci-dessous, avec la bonne réponse : ce sont les règles à revoir. ') + record() + (duParcours ? suiteParcours('serie') : ''), true);
     B.hidden = false; ecrire(B, S.map((x, k) => { const ok = reponses[k] === x.bon; return `<li class="${ok ? '' : 'ko'}"><b>${k + 1}</b><span>${x.q}<span class="rep">${ok ? `<span class="vrai">Juste :</span> ${x.choix[x.bon]}` : `<span class="faux">Votre réponse :</span> ${x.choix[reponses[k]]} · <span class="vrai">Réponse exacte :</span> ${x.choix[x.bon]}`}</span>${!ok && x.c ? `<span class="cor"><span class="t">Corrigé.</span> ${x.c}</span>` : ''}</span></li>`; }).join(''), true); }
   q('#sr-niveau').addEventListener('change', () => { familles(); attente(); }); q('#sr-famille').addEventListener('change', attente); q('#sr-depart').addEventListener('click', demarrer);
   q('#sr-choix').addEventListener('click', e => { const b = e.target.closest('button[data-i]'); if (b) repondre(+b.dataset.i); });

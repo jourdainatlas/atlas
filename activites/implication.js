@@ -3,7 +3,7 @@ import { css as cssCommun } from './commun.js';
 import { cssRaison, lireMemoire, noterMemoire, filtrer, pucesNiveaux, pucesThemes, options, auHasard } from './raisonner.js';
 import { cssFigures, suite } from './figures.js';
 import { cssJeux, ecrire } from './jeux.js';
-import { demande, pieceDuJour, validerPiece, lienParcours } from './jour.js';
+import { demande, pieceDuJour, validerPiece, suiteParcours } from './jour.js';
 import PIECES from './implication-pieces.js';
 export { PIECES };
 
@@ -89,7 +89,7 @@ export function monter(racine) {
     ecrire(q('#im-props'), `<div><b>A</b>${P.A}</div><div><b>B</b>${P.B}</div>`, true);
     racine.querySelectorAll('#im-reponses button').forEach(b => { const r = b.dataset.r; b.disabled = !!choisi; b.className = choisi && r === P.rep ? 'bon' : choisi && r === choisi ? 'mauvais' : ''; });
     const m = q('#im-message'), juste = choisi === P.rep; m.className = 'jeu-message' + (choisi ? (juste ? ' gagne' : ' mieux') : '');
-    ecrire(m, !choisi ? 'A entraîne-t-elle B ? B entraîne-t-elle A ? Choisissez l\'une des quatre réponses.' : (juste ? `<b>C'est exact : ${TEXTE[P.rep]}.</b>` : `<b>Ce n'est pas cela : la bonne réponse est « ${TEXTE[P.rep]} ».</b>`) + (duParcours && juste ? lienParcours : ''), true);
+    ecrire(m, !choisi ? 'A entraîne-t-elle B ? B entraîne-t-elle A ? Choisissez l\'une des quatre réponses.' : (juste ? `<b>C'est exact : ${TEXTE[P.rep]}.</b>` : `<b>Ce n'est pas cela : la bonne réponse est « ${TEXTE[P.rep]} ».</b>`) + (duParcours && juste ? suiteParcours('implication') : ''), true);
     const d = q('#im-detail'); d.hidden = !choisi; if (choisi) ecrire(d, `<p><b>A ⇒ B :</b> <span class="${P.d.vrai ? 'vrai' : 'faux'}">${P.d.vrai ? 'vrai' : 'faux'}</span>. ${P.d.t}</p><p><b>B ⇒ A :</b> <span class="${P.r.vrai ? 'vrai' : 'faux'}">${P.r.vrai ? 'vrai' : 'faux'}</span>. ${P.r.t}</p>`, true); }
   q('#im-reponses').addEventListener('click', e => { const b = e.target.closest('button[data-r]'); if (!b || choisi) return; choisi = b.dataset.r;
     if (choisi === P.rep) { noterMemoire('implication', P.id, 1, false); validerPiece('implication', PIECES, P); listes(); } rendre(); });

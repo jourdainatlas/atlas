@@ -21,3 +21,15 @@ export function valider(activite, niveau) { const m = lireParcours(); if (!m.niv
 // Pour les quatre activités à pièces : la pièce réussie est-elle celle du jour, au niveau du parcours ?
 export function validerPiece(activite, PIECES, P) { const m = lireParcours(); if (!m.niveau || pieceDuJour(PIECES, m.niveau, activite) !== P) return false; return valider(activite); }
 export const lienParcours = ' <a class="rz-cours" href="#activites/parcours">Revenir au parcours du jour</a>';
+// Étape suivante du parcours (§164) : après une étape réussie, l'activité propose d'ouvrir directement la prochaine étape
+// qui reste à faire, dans l'ordre du parcours (en repartant du début après la dernière), sans repasser par sa page.
+const SUITE = [['compte-est-bon', 'Le compte est bon'], ['serie', 'Dix calculs'], ['ordonner', 'La démonstration du jour'], ['erreur', 'L\'erreur du jour'], ['contre-exemple', 'Le contre-exemple du jour'], ['implication', 'Nécessaire ou suffisant ?']];
+const NIV_COMPTE = { seconde: 0, premiere: 0, terminale: 1, expertes: 1, sup: 1 };
+// « Le compte est bon » tient sa propre mémoire du jour : { jour, faits: { niveau: opérations } }.
+export function compteFait(n) { try { const m = JSON.parse(localStorage.getItem('atlas-compte-est-bon') || 'null'); return !!(m && m.jour === aujourdhui().n && m.faits && (NIV_COMPTE[n] in m.faits)); } catch (_) { return false; } }
+export function etapeSuivante(courante) { const M = lireParcours(); if (!M.niveau) return null; const fait = id => id === courante || (id === 'compte-est-bon' ? compteFait(M.niveau) : !!M.faits[id]), k = SUITE.findIndex(e => e[0] === courante);
+  for (let i = 1; i < SUITE.length; i++) { const e = SUITE[(k + i) % SUITE.length]; if (!fait(e[0])) return e; } return null; }
+export function suiteParcours(courante) { const e = etapeSuivante(courante); return (e ? ` <a class="pc-suite" href="#activites/${e[0]}" data-suite="${e[0]}">Étape suivante : ${e[1]} <span aria-hidden="true">→</span></a>` : ' <b class="pc-fini">Parcours du jour terminé.</b>') + lienParcours; }
+// Le lien « Étape suivante » dépose la demande (classe et pièce du jour) avant que l'activité suivante ne se monte.
+if (typeof document !== 'undefined' && !document.documentElement.dataset.atlasSuite) { document.documentElement.dataset.atlasSuite = '1';
+  document.addEventListener('click', e => { const a = e.target.closest && e.target.closest('a[data-suite]'); if (a) demander(a.dataset.suite, lireParcours().niveau); }, true); }

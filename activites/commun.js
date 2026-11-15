@@ -29,6 +29,11 @@ export function bac() {
 // Orange = ce qui varie (sécante, terme hors de la bande, point libre) ; vert = ce qui est acquis
 // (tangente, bande, propriété vérifiée) ; bleu = les mesures. Le rouge du site reste réservé.
 export const css = `
+.activites-act a.pc-suite { display: inline-block; margin: 6px 4px 2px 10px; padding: 6px 15px; border-radius: 999px; background: var(--encre); color: var(--surface); font: 600 14.5px/1.3 var(--f-ui); text-decoration: none; white-space: nowrap; }
+.activites-act a.pc-suite:hover, .activites-act a.pc-suite:focus-visible { opacity: .86; }
+.activites-act .pc-fini { margin-left: 8px; }
+.activites-act a.rz-cours { font: 500 13.5px var(--f-ui); margin-left: 10px; white-space: nowrap; }
+@media (max-width: 520px) { .activites-act a.pc-suite { display: block; margin: 10px 0 4px; text-align: center; white-space: normal; } }
 :root { --sheet: var(--surface); --ink: var(--encre); --ink-soft: var(--encre-3); --rule: var(--trame); --rule-strong: var(--filet);
   --sec: #ad5900; --tan: var(--c-ana); --mark: var(--c-nb); --free: #ad5900; --semi: var(--c-geo); --ok: var(--c-ana);
   --hl: #dbe9f8; --hl-ink: #0b3a63; --font-display: var(--f-ui); }

@@ -3,7 +3,7 @@ import { css as cssCommun } from './commun.js';
 import { cssRaison, lireMemoire, noterMemoire, filtrer, pucesNiveaux, pucesThemes, options, auHasard } from './raisonner.js';
 import { cssFigures, suite } from './figures.js';
 import { cssJeux, ecrire } from './jeux.js';
-import { demande, pieceDuJour, validerPiece, lienParcours } from './jour.js';
+import { demande, pieceDuJour, validerPiece, suiteParcours } from './jour.js';
 import seconde from './erreur-seconde.js';
 import premiere from './erreur-premiere.js';
 import terminale from './erreur-terminale.js';
@@ -156,7 +156,7 @@ export function monter(racine) {
     const m = q('#er-message'); m.className = 'jeu-message' + (trouve ? ' gagne' : ''); ecrire(m, msg || 'Cliquez sur la ligne où le raisonnement cesse d\'être correct.', true);
     const r = q('#er-retenir'); r.hidden = !trouve; if (trouve) ecrire(r, '<b>À retenir.</b> ' + P.retenir, true); q('#er-indice').disabled = trouve; }
   q('#er-lignes').addEventListener('click', e => { const b = e.target.closest('button[data-i]'); if (!b || trouve) return; const i = +b.dataset.i; essais++; vus.add(i);
-    if (i === P.faute) { trouve = true; noterMemoire('erreur', P.id, essais, false); listes(); msg = `<b>Ligne ${i + 1} : c'est bien l'erreur${essais === 1 ? ', trouvée du premier coup' : `, trouvée en ${essais} essais`}.</b> ` + P.pourquoi + (validerPiece('erreur', PIECES, P) && duParcours ? lienParcours : ''); }
+    if (i === P.faute) { trouve = true; noterMemoire('erreur', P.id, essais, false); listes(); msg = `<b>Ligne ${i + 1} : c'est bien l'erreur${essais === 1 ? ', trouvée du premier coup' : `, trouvée en ${essais} essais`}.</b> ` + P.pourquoi + (validerPiece('erreur', PIECES, P) && duParcours ? suiteParcours('erreur') : ''); }
     else msg = `<b>Ligne ${i + 1} : ce n'est pas l'erreur.</b> ` + P.lignes[i].ok; rendre(); });
   q('#er-indice').addEventListener('click', () => { if (trouve) return; msg = 'Vous avez demandé un indice : ' + P.indice; rendre(); });
   q('#er-depart').addEventListener('click', charger); q('#er-piece').addEventListener('change', e => { P = PIECES.find(p => p.id === e.target.value); charger(); });

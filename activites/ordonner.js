@@ -3,7 +3,7 @@ import { css as cssCommun } from './commun.js';
 import { cssRaison, lireMemoire, noterMemoire, filtrer, pucesNiveaux, pucesThemes, options, auHasard } from './raisonner.js';
 import { cssFigures, suite } from './figures.js';
 import { cssJeux, ecrire } from './jeux.js';
-import { demande, pieceDuJour, validerPiece, lienParcours } from './jour.js';
+import { demande, pieceDuJour, validerPiece, suiteParcours } from './jour.js';
 import seconde from './ordonner-seconde.js';
 import premiere from './ordonner-premiere.js';
 import terminale from './ordonner-terminale.js';
@@ -248,7 +248,7 @@ export function monter(racine) {
   q('#od-preuve').addEventListener('click', e => { if (clicAnnule) return; const b = e.target.closest('button[data-a]'); if (!b) return; const i = +b.dataset.i, a = b.dataset.a;
     if (a === 'x') L.splice(i, 1); else { const j = a === 'h' ? i - 1 : i + 1; [L[i], L[j]] = [L[j], L[i]]; } raz(); });
   q('#od-verifier').addEventListener('click', () => { conseil = ''; if (!L.length) { msg = 'Votre démonstration est vide.'; cl = ''; rendre(); return; } const r = verifier(P, L);
-    if (r.ok) { msg = 'La démonstration est complète, et chaque étape s\'appuie sur ce qui la précède.' + (P.cours ? ' Le cours établit ce résultat, avec ses remarques.' : ''); cl = ' gagne'; marque = -1; noterMemoire('ordonner', P.id, nbIntrus + 1); if (validerPiece('ordonner', PIECES, P) && duParcours) msg += lienParcours; listes(); }
+    if (r.ok) { msg = 'La démonstration est complète, et chaque étape s\'appuie sur ce qui la précède.' + (P.cours ? ' Le cours établit ce résultat, avec ses remarques.' : ''); cl = ' gagne'; marque = -1; noterMemoire('ordonner', P.id, nbIntrus + 1); if (validerPiece('ordonner', PIECES, P) && duParcours) msg += suiteParcours('ordonner'); listes(); }
     else { marque = r.pos; cl = r.pos < 0 ? '' : ' bloque'; msg = (r.pos >= 0 ? `<b>Étape ${r.pos + 1}${r.intrus ? ' : c\'est un intrus' : ''}.</b> ` : '') + r.texte; } rendre(); });
   q('#od-indice').addEventListener('click', () => { marque = -1; cl = ''; const r = verifier(P, L);
     if (r.pos >= 0) { marque = r.pos; msg = `Vous avez demandé un indice : commencez par revoir l'étape ${r.pos + 1}, marquée d'un filet rouge.`; }

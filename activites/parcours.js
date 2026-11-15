@@ -40,7 +40,7 @@ export const html = `
 <section>
   <div class="col">
     <h4><span class="n">1</span>Comment cela marche</h4>
-    <p>Choisissez votre classe une fois : votre navigateur s'en souvient. Chaque étape ouvre l'activité correspondante, déjà réglée sur votre classe et sur la pièce du jour ; quand l'étape est réussie, un lien ramène ici, et l'étape est marquée « fait ». À minuit, heure de Paris, le parcours change et les marques repartent de zéro.</p>
+    <p>Choisissez votre classe une fois : votre navigateur s'en souvient. Chaque étape ouvre l'activité correspondante, déjà réglée sur votre classe et sur la pièce du jour ; quand l'étape est réussie, elle est marquée « fait », et un bouton « Étape suivante » ouvre directement la prochaine étape qui reste à faire ; un lien permet aussi de revenir ici. À minuit, heure de Paris, le parcours change et les marques repartent de zéro.</p>
     <p>Les étapes sont indépendantes : on peut les faire dans l'ordre que l'on veut, et s'arrêter en route. La difficulté suit la classe choisie. « Le compte est bon » est au niveau 1 en Seconde et en Première, et au niveau 2 à partir de la Terminale, Maths Sup comprise (le niveau 3, plus long, reste offert aux volontaires dans l'activité elle-même) ; les dix calculs portent sur le programme de la classe ; les quatre pièces de raisonnement sont tirées parmi celles de la classe. Deux classes sont proposées en Terminale : « Terminale », qui s'en tient à l'enseignement de spécialité, et « Terminale + Maths expertes », qui y ajoute l'arithmétique, les nombres complexes, les matrices et les graphes de l'option.</p>
   </div>
 </section>

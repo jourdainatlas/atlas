@@ -3,7 +3,7 @@ import { css as cssCommun } from './commun.js';
 import { cssRaison, lireMemoire, noterMemoire, filtrer, pucesNiveaux, pucesThemes, options, auHasard } from './raisonner.js';
 import { cssFigures, suite } from './figures.js';
 import { cssJeux, ecrire } from './jeux.js';
-import { demande, pieceDuJour, validerPiece, lienParcours } from './jour.js';
+import { demande, pieceDuJour, validerPiece, suiteParcours } from './jour.js';
 import PIECES from './contre-exemple-pieces.js';
 export { PIECES };
 
@@ -79,7 +79,7 @@ export function monter(racine) {
     const m = q('#cx-message'); m.className = 'jeu-message' + (trouve ? ' gagne' : ''); ecrire(m, msg || 'Cliquez sur l\'objet qui prouve que l\'énoncé est faux.', true);
     const r = q('#cx-retenir'); r.hidden = !trouve; if (trouve) ecrire(r, '<b>À retenir.</b> ' + P.retenir, true); }
   q('#cx-choix').addEventListener('click', e => { const b = e.target.closest('button[data-i]'); if (!b || trouve) return; const i = +b.dataset.i, c = P.choix[i]; essais++; vus.add(i);
-    if (c.bon) { trouve = true; noterMemoire('contre', P.id, essais, false); const p = validerPiece('contre-exemple', PIECES, P); listes(); msg = `<b>C'est le contre-exemple${essais === 1 ? ', trouvé du premier coup' : `, trouvé en ${essais} essais`}.</b> ` + c.pourquoi + (duParcours && p ? lienParcours : ''); }
+    if (c.bon) { trouve = true; noterMemoire('contre', P.id, essais, false); const p = validerPiece('contre-exemple', PIECES, P); listes(); msg = `<b>C'est le contre-exemple${essais === 1 ? ', trouvé du premier coup' : `, trouvé en ${essais} essais`}.</b> ` + c.pourquoi + (duParcours && p ? suiteParcours('contre-exemple') : ''); }
     else msg = `<b>Cet objet ne réfute pas l'énoncé.</b> ` + c.pourquoi; rendre(); });
   q('#cx-depart').addEventListener('click', charger); q('#cx-piece').addEventListener('change', e => { P = PIECES.find(p => p.id === e.target.value); charger(); });
   q('#cx-hasard').addEventListener('click', () => { P = auHasard(visibles(), P, lireMemoire('contre')); listes(); charger(); });
