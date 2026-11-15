@@ -797,5 +797,6 @@ corrigé, vérifiées), `f-mp-05` (62), `f-mp-06` (58, un programme Python dans 
 d'Euler) ; `outils/meta_mp_04.py` à `meta_mp_06.py`. Pages du sommaire relevées sur les titres de section du PDF.
 Prérequis : mp-04 [ma-08, ma-14, ma-19], mp-05 [ma-08, ma-14], mp-06 [ma-20, ma-18, ma-10]. Activités reliées :
 `dichotomie` → mp-05, `taylor`, `accroissements`, `rectangles` → mp-06. Termes écartés : « admet », « 1918 F. Riesz :
-dimension finie » (frise historique). Symboles : planche envoyée (A : boules, chemin, serievect ; B : ouvert,
-compact, tangente), en attente du choix de l'auteur.
+dimension finie » (frise historique). Symboles : mp-04 `ouvert` (boule ouverte contenant une petite boule autour d'un de ses points). Pour mp-05 et mp-06,
+les premières propositions (chemin, compact, serievect, tangente) ont été refusées ; nouvelle planche : `bornes`
+ou `emboites`, `vitesse` ou `serieint`.
