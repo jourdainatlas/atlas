@@ -788,3 +788,14 @@ mp-01 [ma-11, ma-12, ma-13], mp-02 [ma-15, ma-16, ma-17], mp-03 [ma-13, ma-15, m
 `mp-03 : pour tout` (texte d'une formule en rouge), et `+ ap-01 : pour tout`, vrai terme défini du chapitre de logique
 que la règle des fragments écartait. Symboles retenus : mp-01 `cyclique` (dessin partagé avec ap-03, dont la flèche a été refaite le 14 nov. : arc plein
 de l'élément mis en avant vers le suivant, pointe tangente au cercle, calculée), mp-02 `diagonale`, mp-03 `blocsdiag`.
+
+### 49. MP, chapitres 4 à 6 (15 nov. 2026)
+
+`mp-04` (Espaces vectoriels normés, 12 p.), `mp-05` (Continuité, compacité, connexité par arcs, 15 p.), `mp-06`
+(Séries et fonctions à valeurs vectorielles, 11 p.) ; feuilles `f-mp-04` (62 exercices, deux figures TikZ dans le
+corrigé, vérifiées), `f-mp-05` (62), `f-mp-06` (58, un programme Python dans l'énoncé de l'exercice sur la constante
+d'Euler) ; `outils/meta_mp_04.py` à `meta_mp_06.py`. Pages du sommaire relevées sur les titres de section du PDF.
+Prérequis : mp-04 [ma-08, ma-14, ma-19], mp-05 [ma-08, ma-14], mp-06 [ma-20, ma-18, ma-10]. Activités reliées :
+`dichotomie` → mp-05, `taylor`, `accroissements`, `rectangles` → mp-06. Termes écartés : « admet », « 1918 F. Riesz :
+dimension finie » (frise historique). Symboles : planche envoyée (A : boules, chemin, serievect ; B : ouvert,
+compact, tangente), en attente du choix de l'auteur.
