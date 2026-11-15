@@ -204,9 +204,12 @@ Elles valent pour les trois vidéos existantes et pour toutes les suivantes.
    fantôme à la réouverture. La musique lit la même horloge : pendant cette mesure, `song.js` (événement `titre`) tient
    l'accord de dominante qui termine la phrase précédente. Les parties commencent donc toutes sur une mesure
    congrue à 2 modulo 4, et leur longueur est un multiple de quatre mesures.
-2. **Le rythme de lecture.** Un texte reste à l'écran au moins trois secondes et demie, une légende de deux lignes
-   près de huit ; deux textes longs (carte, ligne de démonstration, légende de deux lignes) n'apparaissent jamais dans
-   la même mesure ; une ligne de calcul ou de démonstration par mesure. On rallonge la vidéo plutôt que de serrer.
+2. **Le rythme de lecture.** Décision de l'auteur après essai : **au lycée, on ne ralentit pas** ; les versions
+   rallongées de la dérivation (5 min 59 s) et des équations (6 min 27 s) ont été jugées beaucoup trop longues, et
+   l'on compte sur la pause pour lire. Ne pas reproposer de rallonger une vidéo de lycée. Le rythme ralenti (un texte
+   au moins trois secondes et demie à l'écran, une légende de deux lignes près de huit, jamais deux textes longs dans
+   la même mesure, une ligne de démonstration par mesure) n'a été appliqué qu'à la vidéo de MPSI, où l'auteur l'a
+   apprécié.
 3. **Toute légende nomme ce dont elle parle** : pas de « ces nombres » sans que les nombres soient cités ou montrés
    avant (remarque de l'auteur sur la suite 1 ; 1,4 ; 1,41 ; 1,414).
 4. Pas de signature sur l'écran de fin ; pas de filet de couleur sous l'en-tête (idée écartée).
@@ -215,10 +218,10 @@ Elles valent pour les trois vidéos existantes et pour toutes les suivantes.
 `commun.js` (dans `videos/derivation/`, copié ailleurs par `fabriquer.sh`) sait écrire dans les légendes les indices
 (`$u_n$`), les exposants (`$x^2$`), le prime et les lettres ℝ, ℚ, ℕ, ℤ ; un seul caractère après `_` ou `^`.
 
-État au 15 novembre 2026, versions à intertitres et au rythme ralenti, **en attente de validation par l'auteur** :
-« La dérivation » 5 min 59 s (parties aux mesures 2, 6, 14, 26, 34, 50, 58 ; bilan 74 ; fin 78) ; « Les équations »
-6 min 27 s (2, 10, 22, 34, 42, 66 ; bilan 82 ; fin 86). Les versions validées le matin (3 min 51 s et 3 min 35 s, sans
-intertitres) sont dans l'historique du dépôt (validations « sources et mémo » du 15 novembre).
+État au 15 novembre 2026, en attente de validation par l'auteur : les deux vidéos de lycée dans leur contenu validé
+le matin, **avec les seuls intertitres en plus** : « La dérivation » 4 min 23 s (parties aux mesures 2, 6, 10, 18, 22,
+34, 38 ; bilan 50 ; fin 54), « Les équations » 4 min 03 s (2, 6, 14, 22, 26, 38 ; bilan 46 ; fin 50). Les versions
+rallongées, écartées, restent dans l'historique (validation « intertitres, rythme de lecture » du 15 novembre).
 
 ### « Nombres réels et suites numériques », MPSI, chapitre 7 — prototype, non encore validé
 
