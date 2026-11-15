@@ -359,3 +359,30 @@ gigaoctets) ; au-delà d'une cinquantaine de vidéos, revoir le dépôt des fich
 Repères de temps : YouTube n'active les chapitres que si le premier est à 0:00 et si chacun dure au moins dix secondes ;
 l'ouverture (huit secondes) est donc rattachée à la première partie, et `fiche.py` refuse un chapitre trop court.
 État au 15 novembre : les quatre étapes sont faites pour les trois vidéos (`en_ligne` vrai).
+
+## 11. Deux nouveaux prototypes (16 novembre 2026), en attente du retour de l'auteur
+
+Demandés par l'auteur, montrés en prototype, **ni validés ni inscrits au catalogue** (donc ni YouTube ni site).
+
+- **« Les matrices », Terminale Maths expertes, chapitre 3** — `videos/matrices/`, 3 min 47 s
+  (`matrices-expertes-prototype-1.mp4`). Parties (mesures 2, 6, 10, 22, 26, 30 ; bilan 42 ; fin 46) : un tableau de
+  nombres, somme et produit par un réel, le produit de deux matrices, un produit où l'ordre compte, les puissances,
+  l'inverse d'une matrice. Tous les exemples sont ceux du cours `me-03`, sauf D = diag(2, 3) pour les puissances et
+  la matrice sans inverse (2 4 ; 1 2). Mise en scène : pendant le produit, disposé « au brouillon » comme dans le
+  cours, le chien quitte le jardin par la droite, entre par la droite sur une tablette, reçoit chaque coefficient
+  calculé sur une étiquette, la porte sous sa case et l'y dépose d'un petit bond ; il repart par la droite.
+- **« La géométrie dans l'espace », Terminale spécialité, chapitre 4** — `videos/espace/`, 4 min 03 s
+  (`espace-terminale-prototype-1.mp4`). Parties (2, 6, 14, 22, 26, 34 ; bilan 46 ; fin 50) : un repère de l'espace, le
+  produit scalaire, le plan et son vecteur normal, la droite et son paramètre, positions relatives, le projeté
+  orthogonal. Exemples du cours `t-04` ; le point M(2 ; 3 ; 2) du repère est propre à la vidéo. Le chien joue quatre
+  fois : il marche les coordonnées de M dans le repère ; il est le point M qui se promène sur le plan ; il est le
+  point de paramètre t sur la droite (valeur affichée en direct) ; perché en M, il saute à la verticale sur son
+  projeté H. `film.js` y a des outils de figure en perspective cavalière (`vue`, `seg`, `poly`, `angleDroit`) et les
+  trois mouvements motivés du chien en fonctions (`bond`, `chute`, `sautJardin`), à reprendre dans les films suivants.
+
+Les deux films sont bâtis sur celui des équations (boîte à outils, intertitres, jardin, fin, vignette). `BILAN` est
+désormais dans la partition (les films plus anciens écrivent la mesure du bilan en dur).
+Piège rencontré : dans `chienA`, deux trajets vers la droite qui se suivent additionnaient leurs « face » et étiraient
+le chien ; `face` est maintenant borné à [−1 ; 1] dans `videos/espace/film.js` (à reporter si le cas se présente
+ailleurs). MathJax espace mal un mot accentué dans `\text{…}` (« parallè le ») : écrire ce texte avec `txt`.
+
