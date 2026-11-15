@@ -304,25 +304,27 @@
   // le chien : il arrive par la droite pendant l'ouverture, puis suit le jardinier d'arbre en arbre
   const DEHORS = LU + 34;
   // Le chien est l'acteur des scènes (voir acteur) : chacun de ses déplacements a une raison que l'on voit.
-  //  · borne supérieure : il saute sous l'écran, retombe du haut sur l'intervalle A, y marche, puis saute rejoindre
-  //    le jardinier ; · Archimède : il sort par la gauche pendant l'intertitre, entre par la gauche de l'axe, fait
+  //  · borne supérieure : il saute sous l'écran, retombe du haut sur l'intervalle A, y marche, en saute presque à la
+  //    verticale et revient au trot près du jardinier ; · Archimède : il sort par la gauche pendant l'intertitre, entre par la gauche de l'axe, fait
   //    les sept sauts, repart par la droite et revient au jardin par la droite.
   const AC = (() => { const Su = S.sup, Co = S.conseq, e0 = Su.eps[0];
-    return { tJ: e0 - 1.9, tA: e0 - 0.75, tL: e0 + 0.55, tX: L(12) - 0.8, tIn: Co.arch + 0.1, tE: L(16) - 1.35 }; })();
-  const EN_SCENE = [[AC.tJ + 0.2, AC.tX + 1.5]];
+    const tX = L(12) - 0.8; return { tJ: e0 - 1.9, tA: e0 - 0.75, tL: e0 + 0.55, tX, tS: tX + 1.2, tR: tX + 1.55, xS: 260 + 1400 * 1.24 / 3 - 56, tIn: Co.arch + 0.1, tE: L(16) - 1.35 }; })();
+  const EN_SCENE = [[AC.tJ + 0.2, AC.tR]];
   const TRAJETS = [[L(1, 1), L(1, 3.2), DEHORS, DS[0]], ...J.marche.map(([a, b], k) => k === 1 ? [a + 0.15, b + 0.35, DS[1], -45] : [a + 0.15, b + 0.15, DS[k], DS[k + 1]]),
-    [L(16) + 0.2, L(16) + 2.3, DEHORS, DS[2]]].sort((u, v) => u[0] - v[0]);
+    [L(16) + 0.2, L(16) + 2.3, DEHORS, DS[2]], [AC.tR, AC.tR + 1.0, AC.xS / SC, DS[1]]].sort((u, v) => u[0] - v[0]);
   function acteur(ctx, t) {
     const Su = S.sup, Co = S.conseq, e0 = Su.eps[0], e1 = Su.eps[1], Xs = echelle(260, 1660, -0.3, 2.7), ys = 287, ECH = 3, dsx = DS[1] * SC;
-    const { tJ, tA, tL, tX, tIn, tE } = AC;
+    const { tJ, tA, tL, tX, tS, tR, xS, tIn, tE } = AC;
     // --- la borne supérieure ---
     if (t >= tJ + 0.2 && t < tA) { const u = t - tJ - 0.2, y = SOLPX - 430 * u + 1250 * u * u;                       // petit bond, puis il tombe sous l'écran
       if (y < H + 130) K.chienSur(ctx, dsx, y, 0, SC, u < 0.17 ? { t, face: -1, allure: 'vol', vol: u / 0.17, tang: 0.3 } : { ...K.poseChute(t), face: -1 }); }
     else if (t >= tA && t < tL) { const u = (t - tA) / (tL - tA); K.chienSur(ctx, Xs(0.7), -60 + (ys + 60) * Math.pow(u, 1.6), 0, ECH, K.poseChute(t)); }      // il retombe du haut de l'écran
     else if (t >= tL && t < tX) { const e = lerp(0.6, 0.12, doux(pr(t, e0 + 0.8, e1 - e0 - 0.8))), x = Xs(1 - e / 2), marche = t > e0 + 0.8 && t < e1;
       K.chienSur(ctx, x, ys, 0, ECH, marche ? { t, allure: 'trot', phase: x / ECH * 0.33 } : t < e0 + 0.8 ? K.poseChoc(t, t - tL) : { t, tete: 0.25, queue: { a: -0.35, amp: 0.45, f: 8, courbe: 0.06 } }); }
-    else if (t >= tX && t < tX + 1.5) { const u = pr(t, tX + 0.2, 0.8), x = lerp(Xs(0.94), dsx, u), y = lerp(ys, SOLPX, u * u) - 170 * Math.sin(Math.PI * u) * (1 - u), ech = lerp(ECH, SC, u), fin = t - (tX + 1.0);
-      K.chienSur(ctx, x, y, 0, ech, u <= 0 ? { t, face: -1, bas: 2.2 * pr(t, tX, 0.2) } : u < 0.3 ? { t, face: -1, allure: 'vol', vol: u / 0.3, tang: 0.35 } : u < 1 ? { ...K.poseChute(t), face: -1 } : { ...K.poseChoc(t, fin), face: -1, assis: doux(pr(fin, 0.15, 0.35)) }); }
+    else if (t >= tX && t < tR) {                                                                                     // il saute de A : un bond court, puis la chute, presque verticale
+      const D = tS - tX - 0.2, u = pr(t, tX + 0.2, D), v0 = -450, g = 2 * (SOLPX - ys - v0 * D) / (D * D), tv = u * D;
+      const x = lerp(Xs(0.94), xS, u), y = Math.min(SOLPX, ys + v0 * tv + g * tv * tv / 2), ech = lerp(ECH, SC, u);
+      K.chienSur(ctx, x, y, 0, ech, u <= 0 ? { t, face: -1, bas: 2.2 * pr(t, tX, 0.2) } : u < 0.22 ? { t, face: -1, allure: 'vol', vol: u / 0.22, tang: 0.35 } : u < 1 ? { ...K.poseChute(t), face: -1 } : { ...K.poseChoc(t, t - tS), face: -1 }); }
     // --- Archimède ---
     const ya = 396, Xa = echelle(300, 1560, 0, 8), DH = 0.25;
     if (t >= tIn && t < tE + 1.15) {
@@ -348,7 +350,7 @@
     const pieds = [j.x - 1.5, j.x + 2, ch.x - 7, ch.x + 7];
     K.dessinerPrairie(ctx, t, 0, [0, 1], pieds);
     for (const a of ARBRES) K.dessinerArbre(ctx, t, a);
-    if (ch.x < LU + 28 && ch.x > -32 && !EN_SCENE.some(([a, b]) => t >= a && t < b)) globalThis.CHIEN.dessiner(ctx, ch);
+    if (!VIGNETTE && ch.x < LU + 28 && ch.x > -32 && !EN_SCENE.some(([a, b]) => t >= a && t < b)) globalThis.CHIEN.dessiner(ctx, ch);
     const { bec } = globalThis.JARDINIER.dessiner(ctx, j);
     if (j.verse) { ctx.save(); ctx.fillStyle = C.edifice;                                       // l'arrosoir verse des symboles
       G.decor(() => { ctx.font = `700 8.5px ${F.mono}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
@@ -358,8 +360,30 @@
     ctx.restore();
   }
 
+  // ---------- la vignette (image d'attente du lecteur, miniature YouTube) ----------
+  // Elle n'appartient pas au film : `node engine/render.js stills 1000` la dessine (tout instant au-delà de la durée
+  // plus 100 s). Le titre, la figure de la borne supérieure avec le chien sur A, et le jardin entièrement planté.
+  let VIGNETTE = false;
+  function vignette(ctx) {
+    const tv = S.fin.t0 - 0.3, X = echelle(330, 1590, -0.3, 2.3), y = 745;
+    K.logo(ctx, 128, 126, 104);
+    txt(ctx, `${NIVEAU} · CHAPITRE ${CHAPITRE}`, 212, 140, { fam: F.mono, w: 500, size: 38, ls: 7, c: C.encre2, align: 'left' });
+    txt(ctx, 'Nombres réels', 76, 352, { size: 150, w: 800, align: 'left' });
+    txt(ctx, 'et suites numériques', 76, 506, { size: 150, w: 800, align: 'left' });
+    droiteR(ctx, 250, 1680, y);
+    for (const v of [0, 1, 2]) grad(ctx, X(v), y, `$${v}$`, { size: 36, dy: 56 });
+    ctx.save(); ctx.lineWidth = 12; ctx.lineCap = 'butt';
+    ctx.strokeStyle = VERT; ctx.beginPath(); ctx.moveTo(X(0), y); ctx.lineTo(X(1), y); ctx.stroke();
+    ctx.strokeStyle = C.orange; ctx.beginPath(); ctx.moveTo(X(1), y); ctx.lineTo(1660, y); ctx.stroke(); ctx.restore();
+    pastille(ctx, X(0), y, VERT, 1, { r: 13 }); pastille(ctx, X(1), y, C.rouge, 1, { creux: 1, r: 14 });
+    formule(ctx, 'A01', X(0.2), y - 54, { fs: 46, mil: 1 }); formule(ctx, 'supA', X(1) + 150, y - 60, { fs: 52, mil: 1 });
+    K.chienSur(ctx, X(0.72), y - 3, 0, 4.2, { t: 0.4, tete: 0.2, queue: { a: -0.35, amp: 0.45, f: 8, courbe: 0.06 } });
+    VIGNETTE = true; jardin(ctx, tv); VIGNETTE = false;
+  }
+
   function draw(ctx, t) {
     ctx.fillStyle = C.papier; ctx.fillRect(0, 0, W, H);
+    if (t > S.DURATION + 100) return vignette(ctx);
     // Pendant un intertitre, une fois le voile fermé, les scènes sont dessinées à l'instant où la partie suivante
     // commence : la précédente a alors tout à fait disparu et ne peut pas reparaître quand le voile se rouvre.
     let ts = t; for (const it of S.intertitres) { const u = t - it.t; if (u > 1 && u < S.INTER) ts = it.t + S.INTER; }

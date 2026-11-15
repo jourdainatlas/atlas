@@ -222,7 +222,9 @@ Elles valent pour les trois vidéos existantes et pour toutes les suivantes.
    et retombe du haut ; il revient au jardin en sautant devant le jardinier ou en y rentrant par un bord.
    **Un saut reste court et proche de la verticale** : une longue distance se parcourt au sol, en courant, jamais
    par un grand saut oblique (remarque de l'auteur : « on dirait qu'il vole »).
-   Mises en scène en place (15 novembre ; celles des équations et de la MPSI validées par l'auteur, « c'est parfait ») :
+   Mises en scène en place (15 novembre), **validées par l'auteur pour les trois vidéos** une fois les sauts de sortie
+   de la dérivation et de la MPSI rendus verticaux (fichiers livrés `derivation-premiere-prototype-7-chien.mp4`,
+   `equations-seconde-prototype-6-chien.mp4`, `reels-suites-mpsi-prototype-9-chien.mp4`) :
    - dérivation : sur la colline du début, il traverse l'écran de gauche à droite et rentre au jardin par la droite ;
      pour les variations, il saute sous l'écran, retombe du haut sur la courbe, la parcourt, s'assoit au sommet, puis
      en saute presque à la verticale, se reçoit dans l'herbe au pied de la figure et regagne sa place au galop,
@@ -230,7 +232,8 @@ Elles valent pour les trois vidéos existantes et pour toutes les suivantes.
    - équations : il sort à gauche pendant l'intertitre, entre près de la balance, s'assoit, bondit et vole un sac sur
      le plateau de gauche (l'équilibre est rompu), repart à gauche et rapporte le sac au jardin, devant le jardinier ;
    - MPSI, borne supérieure : il saute sous l'écran, retombe du haut sur l'intervalle A, y marche vers sup A sans
-     l'atteindre (il est l'élément a ; le point vert reste sous ses pattes), puis saute rejoindre le jardinier ;
+     l'atteindre (il est l'élément a ; le point vert reste sous ses pattes), puis en saute presque à la verticale et
+     revient au trot s'asseoir près du jardinier ;
    - MPSI, Archimède : il sort à gauche pendant l'intertitre, entre par la gauche de l'axe, fait les sept sauts de
      longueur a, repart par la droite et revient au jardin par la droite.
    Outils : `acteur(ctx, t)` dans `film.js` (dessiné par-dessus tout) ; `K.chienSur(ctx, px, py, an, ech, pose)` pose
@@ -267,3 +270,23 @@ de 1858 est une paraphrase de l'introduction du cours, sans guillemets.
 YouTube peut afficher des publicités sur toute vidéo, même d'une chaîne non monétisée. Héberger les fichiers est
 possible : réencodées (libx264, crf 27), les vidéos pèsent environ 3 Mo par minute. Elles ne doivent pas entrer dans le
 dépôt ; il faudrait les déposer à part sur l'hébergement. L'intégration aux pages de cours relève du domaine Cours.
+
+### Lecteur vidéo du site : prototype (15 novembre 2026, en discussion, rien sur le site)
+
+Idée de l'auteur : dans la rubrique Cours, sous la pastille « En ligne » d'un chapitre, un bouton de lecture (rectangle
+arrondi au rouge du site, triangle clair) ouvre la vidéo dans un lecteur presque plein écran. Le lecteur montre
+d'abord une vignette, puis la vidéo ; sa barre porte au centre lecture/pause (touche Espace) entouré de deux boutons
+« 5 secondes » (flèches du clavier), à droite un lien vers YouTube et le plein écran, et au-dessus une piste où chaque
+intertitre est une pastille qui donne son titre au survol et y saute au clic.
+
+- Sources du prototype : `videos/lecteur/gabarit-proto.html` (page, styles, script) et `gen.py`, qui y verse les lignes
+  des chapitres 7 et 8 de MPSI (lues dans `construction/donnees.json`) et les intertitres (lus dans
+  `videos/reels-suites/score.js`). La page fabriquée, la vidéo allégée (crf 27, 19,7 Mo pour 4 min 07 s : l'herbe se
+  compresse mal, soit près de 5 Mo par minute et non 3) et la vignette ne sont pas dans le dépôt.
+- **Vignette** : `film.js` de `reels-suites` la dessine pour tout instant au-delà de la durée plus 100 s
+  (`node engine/render.js stills 1000`) : titre, figure de la borne supérieure avec le chien sur A, jardin planté.
+  Elle sert d'image d'attente au lecteur et servira de miniature YouTube. À reporter dans les deux autres films.
+- Choix faits dans le prototype, à confirmer : lecteur toujours en thème sombre ; partie lue en turquoise (couleur de
+  la rubrique Cours), le rouge restant au seul bouton de lecture ; le bouton vit hors du lien de la ligne (un bouton
+  dans un lien est interdit en HTML), ce qui demandera de retoucher la ligne `.chapitre` de `gabarit.html`.
+- L'intégration au site relève du domaine Cours : ne rien y toucher sans demande de l'auteur.

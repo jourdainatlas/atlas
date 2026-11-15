@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>ATLAS — prototype du lecteur vidéo</title>
+<style>
+@font-face { font-family: "Spectral"; font-weight: 400; src: url(fonts/spectral-latin-400-normal.woff2) format("woff2"); font-display: swap; }
+@font-face { font-family: "Spectral"; font-weight: 600; src: url(fonts/spectral-latin-600-normal.woff2) format("woff2"); font-display: swap; }
+@font-face { font-family: "IBM Plex Sans"; font-weight: 400; src: url(fonts/ibm-plex-sans-latin-400-normal.woff2) format("woff2"); font-display: swap; }
+@font-face { font-family: "IBM Plex Sans"; font-weight: 500; src: url(fonts/ibm-plex-sans-latin-500-normal.woff2) format("woff2"); font-display: swap; }
+@font-face { font-family: "IBM Plex Sans"; font-weight: 600; src: url(fonts/ibm-plex-sans-latin-600-normal.woff2) format("woff2"); font-display: swap; }
+@font-face { font-family: "IBM Plex Mono"; font-weight: 500; src: url(fonts/ibm-plex-mono-latin-500-normal.woff2) format("woff2"); font-display: swap; }
+
+/* Variables reprises telles quelles de gabarit.html (thèmes clair et sombre du site). */
+:root {
+  --papier: #f4f5f7; --surface: #ffffff; --encre: #1b1e24; --encre-2: #4f5561; --encre-3: #686e79;
+  --filet: #d8dbe1; --trame: #e3e6eb; --rouge: #b0001a; --rouge-fond: #fbeef0;
+  --c-ord: #6a7d00; --c-nb: #0070c0; --c-ana: #00866b;
+  --ombre: 0 1px 2px rgba(27, 30, 36, .08), 0 4px 14px rgba(27, 30, 36, .08);
+  --f-titre: "Spectral", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --f-ui: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  color-scheme: light;
+}
+:root[data-theme="dark"], .lecteur {
+  --papier: #121418; --surface: #191c22; --encre: #e7e9ed; --encre-2: #aeb4be; --encre-3: #90979f;
+  --filet: #2b2f37; --trame: #1f2329; --rouge: #ff6d7d; --rouge-fond: #351a1f;
+  --c-ord: #b6ca4c; --c-nb: #55aaff; --c-ana: #35caa4;
+  --ombre: 0 1px 2px rgba(0, 0, 0, .4), 0 6px 18px rgba(0, 0, 0, .35);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--papier); color: var(--encre); font-family: var(--f-ui); font-size: 15px; line-height: 1.5; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--rouge); outline-offset: 2px; }
+
+/* ---- décor : en-tête et page simplifiés ---- */
+.entete { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; padding: 10px 16px; background: var(--surface); border-bottom: 1px solid var(--filet); }
+.entete .marque { font-family: var(--f-titre); font-size: 20px; letter-spacing: .28em; font-weight: 600; }
+.entete nav { display: flex; flex-wrap: wrap; gap: 4px; }
+.entete nav span { padding: 5px 12px; border-radius: 16px; font-size: 14px; font-weight: 500; color: var(--encre-2); }
+.entete nav span.ici { color: var(--encre); font-weight: 600; background: color-mix(in srgb, var(--c-ana) 18%, transparent); box-shadow: inset 0 0 0 1px var(--c-ana); }
+.entete .theme { margin-left: auto; border: 1px solid var(--filet); background: var(--surface); border-radius: 6px; padding: 5px 12px; font-size: 13.5px; cursor: pointer; }
+.entete .theme:hover { border-color: var(--encre-3); }
+.page { max-width: 1320px; margin: 0 auto; padding: 28px 24px 72px; }
+.note { border: 1px dashed var(--encre-3); border-radius: 8px; padding: 10px 14px; font-size: 13.5px; color: var(--encre-2); margin: 0 0 26px; }
+.niveau-tete { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin: 0 0 10px; }
+.niveau-tete h3 { font-family: var(--f-titre); font-size: 22px; font-weight: 600; margin: 0; }
+.niveau-tete span { font-size: 13.5px; color: var(--encre-2); }
+.carte { background: var(--surface); border: 1px solid var(--filet); border-radius: 10px; box-shadow: var(--ombre); }
+
+/* ---- la ligne de chapitre : celle du site, avec une quatrième colonne « état » hors du lien ---- */
+.chapitres { list-style: none; margin: 0; padding: 0; overflow: hidden; border-radius: 10px; }
+.chapitres li { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
+.chapitres li::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--c-ana); pointer-events: none; }
+.chapitres li:first-child::before { background: linear-gradient(var(--c-ord), var(--c-ana) 30%); }
+.chapitres li + li { border-top: 1px solid var(--filet); }
+.chapitres li:hover { background: var(--papier); }
+.chapitre { display: grid; grid-template-columns: 48px minmax(0, 1fr) minmax(0, 220px); gap: 6px 16px; align-items: center; padding: 12px 16px; color: inherit; text-decoration: none; }
+.chapitre .num { font-family: var(--f-titre); font-size: 24px; color: var(--encre-2); text-align: center; }
+.chapitre .ch-titre { font-family: var(--f-titre); font-size: 18px; font-weight: 600; display: block; }
+.chapitre .ch-resume { font-size: 13.5px; color: var(--encre-2); display: block; margin-top: 2px; }
+.chapitre .ch-theories { display: flex; flex-wrap: wrap; gap: 4px 12px; }
+.mini-theorie { display: inline-flex; align-items: center; gap: 5px; font-size: 12.5px; color: var(--encre-2); }
+.mini-theorie::before { content: ""; width: 8px; height: 8px; border-radius: 2px; background: var(--c-ana); flex: none; }
+.statut { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .05em; text-transform: uppercase; white-space: nowrap; border: 1px dashed var(--encre-3); color: var(--encre-3); border-radius: 999px; padding: 1px 8px; }
+.statut.depose { border-style: solid; border-color: var(--c-ana); color: var(--c-ana); }
+.ch-etat { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 12px 16px 12px 0; }
+
+/* ---- le bouton « vidéo » : un rectangle arrondi rouge, triangle clair ---- */
+.voir-video { border: 0; background: none; padding: 7px; margin: -7px; cursor: pointer; border-radius: 14px; line-height: 0; }
+.voir-video svg { width: 44px; height: 30px; display: block; transition: transform .15s; }
+.voir-video rect { fill: var(--rouge); }
+.voir-video path { fill: var(--surface); }
+@media (hover: hover) { .voir-video:hover svg { transform: scale(1.1); } }
+
+@media (max-width: 860px) {
+  .page { padding: 20px 16px 56px; }
+  .chapitres li { grid-template-columns: minmax(0, 1fr); }
+  .chapitre { grid-template-columns: 36px minmax(0, 1fr); padding-bottom: 6px; }
+  .chapitre .ch-theories { grid-column: 2; }
+  .ch-etat { flex-direction: row; justify-content: flex-start; padding: 0 16px 14px 68px; }
+}
+
+/* ================================================================= le lecteur */
+.lecteur { --barre: 96px; --tete: 46px;
+  width: min(96vw, calc((100dvh - var(--barre) - var(--tete) - 28px) * 16 / 9)); max-width: none; max-height: none;
+  padding: 0; border: 1px solid var(--filet); border-radius: 12px; background: var(--surface); color: var(--encre); overflow: hidden;
+  box-shadow: 0 20px 70px rgba(0, 0, 0, .55); font-family: var(--f-ui); }
+.lecteur::backdrop { background: rgba(8, 9, 12, .78); }
+.lecteur[open] { display: flex; flex-direction: column; animation: l-ouvre .18s ease-out; }
+@keyframes l-ouvre { from { opacity: 0; transform: scale(.975); } }
+.l-tete { height: var(--tete); flex: none; display: flex; align-items: center; gap: 12px; padding: 0 6px 0 16px; border-bottom: 1px solid var(--filet); }
+.l-sur { font-family: var(--f-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--encre-3); white-space: nowrap; }
+.l-tete h2 { font-family: var(--f-titre); font-size: 17px; font-weight: 600; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; flex: 1; }
+.l-bouton { border: 0; background: none; cursor: pointer; border-radius: 8px; width: 40px; height: 40px; display: inline-grid; place-items: center; color: var(--encre-2); flex: none; text-decoration: none; }
+.l-bouton svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+@media (hover: hover) { .l-bouton:hover { background: var(--trame); color: var(--encre); } }
+
+.l-scene { position: relative; aspect-ratio: 16 / 9; background: #121418; flex: none; }
+.l-scene video, .l-affiche img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; object-fit: contain; }
+.l-affiche { position: absolute; inset: 0; border: 0; padding: 0; background: #121418; cursor: pointer; }
+.l-affiche:focus-visible { outline-offset: -4px; }
+.l-affiche .gros { position: absolute; left: 80%; top: 27%; width: 13%; min-width: 64px; transform: translate(-50%, -50%); filter: drop-shadow(0 6px 22px rgba(0, 0, 0, .6)); transition: transform .15s; }
+.l-affiche .gros rect { fill: var(--rouge); } .l-affiche .gros path { fill: #121418; }
+@media (hover: hover) { .l-affiche:hover .gros { transform: translate(-50%, -50%) scale(1.08); } }
+.l-affiche[hidden] { display: none; }
+
+.l-barre { flex: none; height: var(--barre); padding: 0 14px; border-top: 1px solid var(--filet); display: flex; flex-direction: column; }
+/* la piste : un rail, la partie lue, et une pastille par intertitre */
+.l-piste { position: relative; height: 34px; cursor: pointer; touch-action: none; border-radius: 6px; }
+.l-rail { position: absolute; left: 0; right: 0; top: 50%; height: 5px; margin-top: -2.5px; border-radius: 3px; background: var(--filet); overflow: hidden; }
+.l-lu { height: 100%; width: 0; background: var(--c-ana); }
+.l-tete-lecture { position: absolute; top: 50%; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: var(--encre); left: 0; pointer-events: none; }
+.l-pastille { position: absolute; top: 0; height: 100%; width: 26px; margin-left: -13px; }
+.l-pastille::after { content: ""; position: absolute; left: 50%; top: 50%; width: 11px; height: 11px; margin: -5.5px; border-radius: 50%; background: var(--surface); border: 2px solid var(--encre-3); transition: transform .12s; }
+.l-pastille.passee::after { border-color: var(--c-ana); background: var(--c-ana); }
+.l-pastille.vise::after { transform: scale(1.45); border-color: var(--encre); }
+.l-bulle { position: absolute; bottom: 30px; transform: translateX(-50%); white-space: nowrap; pointer-events: none; background: var(--encre); color: var(--surface); border-radius: 6px; padding: 4px 9px; font-size: 13px; font-weight: 500; opacity: 0; transition: opacity .1s; z-index: 2; }
+.l-bulle.vue { opacity: 1; }
+.l-bulle small { font-family: var(--f-mono); font-size: 11.5px; opacity: .75; margin-left: 8px; }
+
+.l-commandes { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 10px; padding-bottom: 8px; }
+.l-gauche { display: flex; align-items: baseline; gap: 12px; min-width: 0; }
+.l-temps { font-family: var(--f-mono); font-size: 13px; color: var(--encre-2); white-space: nowrap; }
+.l-partie { font-size: 13.5px; color: var(--encre-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.l-centre { display: flex; align-items: center; gap: 6px; }
+.l-saut { width: 44px; height: 44px; position: relative; }
+.l-saut svg { width: 30px; height: 30px; }
+.l-saut span { position: absolute; left: 0; right: 0; top: 50%; margin-top: -6px; text-align: center; font-family: var(--f-mono); font-size: 10.5px; line-height: 14px; font-weight: 500; }
+.l-jouer { width: 52px; height: 52px; border-radius: 50%; background: var(--encre); color: var(--surface); }
+.l-jouer svg { width: 24px; height: 24px; fill: currentColor; stroke: none; }
+@media (hover: hover) { .l-jouer:hover { background: var(--encre); color: var(--surface); transform: scale(1.06); } }
+.l-jouer .pause, .l-jouer.joue .lecture { display: none; } .l-jouer.joue .pause { display: block; }
+.l-droite { display: flex; align-items: center; justify-content: flex-end; gap: 4px; }
+.l-youtube { display: inline-flex; align-items: center; gap: 7px; height: 36px; padding: 0 12px; border: 1px solid var(--filet); border-radius: 8px; color: var(--encre); text-decoration: none; font-size: 13.5px; font-weight: 500; white-space: nowrap; }
+.l-youtube svg { width: 22px; height: 16px; flex: none; } .l-youtube rect { fill: var(--encre-2); } .l-youtube path { fill: var(--surface); }
+.l-youtube[aria-disabled="true"] { border-style: dashed; color: var(--encre-3); cursor: not-allowed; }
+@media (hover: hover) { .l-youtube:not([aria-disabled="true"]):hover { border-color: var(--encre-3); } }
+
+.lecteur:fullscreen { width: 100vw; height: 100vh; border: 0; border-radius: 0; }
+.lecteur:fullscreen .l-scene { flex: 1; aspect-ratio: auto; min-height: 0; }
+
+@media (max-width: 640px) {
+  .lecteur { --barre: 112px; width: 100vw; border-radius: 0; border-left: 0; border-right: 0; }
+  .l-sur, .l-partie, .l-youtube span { display: none; }
+  .l-youtube { padding: 0 9px; }
+  .l-commandes { gap: 4px; }
+}
+@media (prefers-reduced-motion: reduce) { .lecteur[open] { animation: none; } .voir-video svg, .l-affiche .gros, .l-pastille::after { transition: none; } }
+</style>
+</head>
+<body>
+<header class="entete">
+  <span class="marque">ATLAS</span>
+  <nav aria-label="Rubriques (décor)"><span>Accueil</span><span>L’édifice</span><span class="ici">Cours</span><span>Exercices</span><span>Annales</span><span>Activités</span></nav>
+  <button class="theme" type="button" id="theme">Thème clair</button>
+</header>
+<main class="page">
+  <p class="note">Prototype du lecteur vidéo, hors du site. L’en-tête et la liste sont un décor simplifié de la rubrique Cours ; seuls le bouton rouge du chapitre 7 et le lecteur qu’il ouvre sont à juger. Le chapitre 8 montre une ligne sans vidéo.</p>
+  <section class="niveau">
+    <div class="niveau-tete"><h3>MPSI</h3><span>extrait : chapitres 7 et 8</span></div>
+    <ul class="chapitres carte">/*LIGNES*/</ul>
+  </section>
+</main>
+
+<dialog class="lecteur" id="lecteur" aria-labelledby="l-titre">
+  <header class="l-tete">
+    <span class="l-sur">MPSI · chapitre 7</span>
+    <h2 id="l-titre">Nombres réels et suites numériques</h2>
+    <button class="l-bouton" type="button" id="l-fermer" aria-label="Fermer le lecteur" title="Fermer (Échap)"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </header>
+  <div class="l-scene">
+    <video id="l-video" src="video.mp4" preload="metadata" playsinline></video>
+    <button class="l-affiche" type="button" id="l-affiche" aria-label="Lancer la vidéo">
+      <img src="vignette.jpg" alt="">
+      <svg class="gros" viewBox="0 0 44 30" aria-hidden="true"><rect width="44" height="30" rx="8.5"/><path d="M17.5 8.6v12.8L29 15z"/></svg>
+    </button>
+  </div>
+  <div class="l-barre">
+    <div class="l-piste" id="l-piste" role="slider" tabindex="0" aria-label="Position dans la vidéo" aria-valuemin="0" aria-valuemax="247" aria-valuenow="0" aria-valuetext="0:00">
+      <div class="l-rail"><div class="l-lu" id="l-lu"></div></div>
+      <div class="l-tete-lecture" id="l-curseur"></div>
+      <div class="l-bulle" id="l-bulle"></div>
+    </div>
+    <div class="l-commandes">
+      <div class="l-gauche"><span class="l-temps" id="l-temps">0:00 / 4:07</span><span class="l-partie" id="l-partie"></span></div>
+      <div class="l-centre">
+        <button class="l-bouton l-saut" type="button" id="l-recule" aria-label="Reculer de 5 secondes" title="Reculer de 5 s (←)"><svg viewBox="0 0 30 30"><path d="M8.2 8.4A9.6 9.6 0 1 1 5.4 15"/><path d="M8.6 3.4v5.2h5.2"/></svg><span>5</span></button>
+        <button class="l-bouton l-jouer" type="button" id="l-jouer" aria-label="Lecture" title="Lecture ou pause (Espace)"><svg class="lecture" viewBox="0 0 24 24"><path d="M8 5.2v13.6L19.5 12z"/></svg><svg class="pause" viewBox="0 0 24 24"><path d="M7 5h3.6v14H7zM13.4 5H17v14h-3.6z"/></svg></button>
+        <button class="l-bouton l-saut" type="button" id="l-avance" aria-label="Avancer de 5 secondes" title="Avancer de 5 s (→)"><svg viewBox="0 0 30 30"><path d="M21.8 8.4A9.6 9.6 0 1 0 24.6 15"/><path d="M21.4 3.4v5.2h-5.2"/></svg><span>5</span></button>
+      </div>
+      <div class="l-droite">
+        <a class="l-youtube" id="l-youtube" aria-disabled="true" title="Lien à venir : la vidéo n’est pas encore sur YouTube"><svg viewBox="0 0 44 30" aria-hidden="true"><rect width="44" height="30" rx="8.5"/><path d="M17.5 8.6v12.8L29 15z"/></svg><span>Voir sur YouTube</span></a>
+        <button class="l-bouton" type="button" id="l-plein" aria-label="Plein écran" title="Plein écran"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script>
+(() => {
+  'use strict';
+  // Durée et intertitres : lus dans videos/reels-suites/score.js au moment de fabriquer cette page.
+  const SCORE = /*SCORE*/;
+  const DUREE = SCORE.d, CHAP = SCORE.c, NB = CHAP.length - 1;           // le dernier intertitre est le bilan
+  const YOUTUBE = '';                                                     // adresse de la vidéo sur YouTube, quand elle existera
+  const $ = (id) => document.getElementById(id);
+  const dlg = $('lecteur'), video = $('l-video'), affiche = $('l-affiche'), piste = $('l-piste'), bulle = $('l-bulle');
+  const mmss = (s) => { s = Math.max(0, Math.round(s)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
+  const nomChap = (i) => i < 0 ? 'Ouverture' : (i < NB ? (i + 1) + ' / ' + NB + ' · ' : '') + CHAP[i].nom;
+  const chapA = (t) => { let i = -1; CHAP.forEach((c, k) => { if (t >= c.t - 0.05) i = k; }); return i; };
+
+  // --- thème du décor ---
+  const racine = document.documentElement, bTheme = $('theme');
+  const poser = (sombre) => { racine.dataset.theme = sombre ? 'dark' : 'light'; bTheme.textContent = sombre ? 'Thème clair' : 'Thème sombre'; };
+  poser(!matchMedia('(prefers-color-scheme: light)').matches);
+  bTheme.addEventListener('click', () => poser(racine.dataset.theme !== 'dark'));
+
+  // --- pastilles des intertitres ---
+  const pastilles = CHAP.map((c, k) => { const p = document.createElement('span'); p.className = 'l-pastille'; p.style.left = (c.t / DUREE * 100) + '%'; p.dataset.k = k; piste.insertBefore(p, bulle); return p; });
+  if (YOUTUBE) { const y = $('l-youtube'); y.href = YOUTUBE; y.target = '_blank'; y.rel = 'noopener'; y.removeAttribute('aria-disabled'); y.title = 'Ouvrir la vidéo sur YouTube'; }
+
+  // --- état ---
+  let commence = false, declencheur = null, cible = null;      // cible : instant demandé tant que le saut n'est pas fait
+  const demarrer = () => { if (!commence) { commence = true; const f = document.activeElement === affiche; affiche.hidden = true; if (f) $('l-jouer').focus(); } };
+  const jouer = () => { demarrer(); const p = video.play(); if (p && p.catch) p.catch(() => {}); };
+  const bascule = () => { if (video.paused || video.ended) jouer(); else video.pause(); };
+  const ici = () => cible ?? (video.currentTime || 0);
+  const aller = (t) => { demarrer(); cible = Math.min(DUREE - 0.05, Math.max(0, t)); video.currentTime = cible; peindre(); };
+  video.addEventListener('seeked', () => { cible = null; });
+  function peindre() {
+    const t = ici(), f = Math.min(1, t / DUREE) * 100, i = chapA(t);
+    $('l-lu').style.width = f + '%'; $('l-curseur').style.left = f + '%';
+    $('l-temps').textContent = mmss(t) + ' / ' + mmss(DUREE); $('l-partie').textContent = nomChap(i);
+    pastilles.forEach((p, k) => p.classList.toggle('passee', k <= i));
+    piste.setAttribute('aria-valuenow', Math.round(t)); piste.setAttribute('aria-valuetext', mmss(t) + ', ' + nomChap(i));
+  }
+  const etat = () => { const joue = !video.paused && !video.ended; $('l-jouer').classList.toggle('joue', joue); $('l-jouer').setAttribute('aria-label', joue ? 'Pause' : 'Lecture'); };
+  ['timeupdate', 'seeked', 'loadedmetadata'].forEach((e) => video.addEventListener(e, peindre));
+  ['play', 'pause', 'ended'].forEach((e) => video.addEventListener(e, etat));
+
+  // Propre au prototype : certains hébergements de démonstration ne servent pas les « requêtes partielles » dont le
+  // navigateur a besoin pour sauter dans une vidéo. On charge donc le fichier entier en mémoire dès l'arrivée sur la
+  // page. Sur le site, le serveur les accepte : ce bloc disparaîtra et la vidéo ne se chargera qu'à la demande.
+  if (location.protocol !== 'file:') fetch(video.getAttribute('src')).then((r) => r.ok ? r.blob() : null).then((b) => { if (b && !commence) video.src = URL.createObjectURL(b); }).catch(() => {});
+
+  // --- ouverture et fermeture ---
+  document.querySelectorAll('[data-video]').forEach((b) => b.addEventListener('click', () => { declencheur = b; dlg.showModal(); affiche.hidden ? $('l-jouer').focus() : affiche.focus(); peindre(); }));
+  $('l-fermer').addEventListener('click', () => dlg.close());
+  dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });                     // clic sur le fond
+  dlg.addEventListener('close', () => { video.pause(); if (document.fullscreenElement) document.exitFullscreen().catch(() => {}); if (declencheur) declencheur.focus(); });
+
+  // --- commandes ---
+  affiche.addEventListener('click', () => { jouer(); $('l-jouer').focus(); });
+  video.addEventListener('click', bascule);
+  $('l-jouer').addEventListener('click', bascule);
+  $('l-recule').addEventListener('click', () => aller(ici() - 5));
+  $('l-avance').addEventListener('click', () => aller(ici() + 5));
+  $('l-plein').addEventListener('click', () => { const p = document.fullscreenElement ? document.exitFullscreen() : (dlg.requestFullscreen ? dlg.requestFullscreen() : null); if (p && p.catch) p.catch(() => {}); });
+  document.addEventListener('keydown', (e) => {
+    if (!dlg.open || e.altKey || e.ctrlKey || e.metaKey) return;
+    if (e.key === ' ' || e.key === 'Spacebar') {
+      const c = e.target.closest('button, a'); if (c && c !== $('l-jouer') && c !== affiche) return;     // Espace garde son rôle sur les autres boutons
+      e.preventDefault(); bascule();
+    } else if (e.key === 'ArrowLeft') { e.preventDefault(); aller(ici() - 5); }
+    else if (e.key === 'ArrowRight') { e.preventDefault(); aller(ici() + 5); }
+  });
+
+  // --- la piste : survol, clic, glissement ---
+  const fraction = (e) => { const r = piste.getBoundingClientRect(); return Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)); };
+  const viser = (e) => { const p = e.target.closest ? e.target.closest('.l-pastille') : null; return p ? +p.dataset.k : -1; };
+  let glisse = false;
+  function montrer(e) {
+    const k = glisse ? -1 : viser(e), t = k >= 0 ? CHAP[k].t : fraction(e) * DUREE, r = piste.getBoundingClientRect();
+    pastilles.forEach((p, j) => p.classList.toggle('vise', j === k));
+    bulle.textContent = ''; bulle.append(k >= 0 ? nomChap(k) : nomChap(chapA(t))); const s = document.createElement('small'); s.textContent = mmss(t); bulle.append(s);
+    bulle.classList.add('vue');
+    const demi = bulle.offsetWidth / 2, x = t / DUREE * r.width; bulle.style.left = Math.min(r.width - demi, Math.max(demi, x)) + 'px';
+  }
+  const cacher = () => { bulle.classList.remove('vue'); pastilles.forEach((p) => p.classList.remove('vise')); };
+  piste.addEventListener('pointermove', (e) => { if (glisse) aller(fraction(e) * DUREE); montrer(e); });
+  piste.addEventListener('pointerleave', () => { if (!glisse) cacher(); });
+  piste.addEventListener('pointerdown', (e) => { const k = viser(e); if (k >= 0) { aller(CHAP[k].t); montrer(e); return; } glisse = true; piste.setPointerCapture(e.pointerId); aller(fraction(e) * DUREE); montrer(e); });
+  const lacher = (e) => { if (!glisse) return; glisse = false; if (e.pointerType !== 'mouse') cacher(); };
+  piste.addEventListener('pointerup', lacher); piste.addEventListener('pointercancel', lacher);
+  peindre();
+})();
+</script>
+</body>
+</html>
