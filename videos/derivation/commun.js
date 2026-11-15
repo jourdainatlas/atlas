@@ -34,7 +34,10 @@
   function segments(s) {
     const segs = []; let mode = '', buf = '';
     const vide = () => { if (!buf) return;
-      if (mode === '$') { for (const m of buf.matchAll(/[A-Za-z]+|′|[^A-Za-z′]+/g)) segs.push(/[A-Za-z]/.test(m[0]) ? { s: m[0], math: 1 } : m[0] === '′' ? { s: '′', prime: 1 } : { s: m[0], main: 1 }); }
+      if (mode === '$') { for (const m of buf.matchAll(/_.|\^.|[A-Za-z]+|′|[ℝℚℕℤ]|[^A-Za-z′_^ℝℚℕℤ]+/g)) { const u = m[0];      // _n : indice, ^2 : exposant (un seul caractère), ℝ ℚ ℕ ℤ : lettres ajourées
+          if (u[0] === '_' || u[0] === '^') segs.push({ s: u[1], math: /[A-Za-z]/.test(u[1]), main: !/[A-Za-z]/.test(u[1]), petit: u[0] === '_' ? 0.22 : -0.38 });
+          else if ('ℝℚℕℤ'.includes(u)) segs.push({ s: 'RQNZ'['ℝℚℕℤ'.indexOf(u)], bb: 1 });
+          else segs.push(/[A-Za-z]/.test(u) ? { s: u, math: 1 } : u === '′' ? { s: '′', prime: 1 } : { s: u, main: 1 }); } }
       else segs.push({ s: buf, c: mode === '[' ? C.rouge : mode === '{' ? C.cours : null });
       buf = ''; };
     for (const ch of s) {
@@ -49,10 +52,10 @@
   function ligne(ctx, s, x, y, o = {}) {
     const segs = segments(s), size = o.size || 44;
     ctx.save();
-    const f = (g) => g.prime ? `400 ${size * 0.76}px ${F.main}` : g.math ? `italic 400 ${size * 1.04}px ${F.math}` : g.main ? `400 ${size * 1.04}px ${F.main}` : `${o.it ? 'italic ' : ''}${o.w || 600} ${size}px ${o.fam || F.titre}`;
+    const f = (g) => { const k = g.petit !== undefined ? 0.7 : 1; return g.prime ? `400 ${size * 0.76}px ${F.main}` : g.bb ? `400 ${size * 1.04}px KaTeX_AMS` : g.math ? `italic 400 ${size * 1.04 * k}px ${F.math}` : g.main ? `400 ${size * 1.04 * k}px ${F.main}, KaTeX_AMS` : `${o.it ? 'italic ' : ''}${o.w || 600} ${size}px ${o.fam || F.titre}`; };
     let total = 0; for (const g of segs) { ctx.font = f(g); total += ctx.measureText(g.s).width; }
     let cx = o.align === 'left' ? x : x - total / 2; ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic'; ctx.globalAlpha *= o.a ?? 1;
-    for (const g of segs) { ctx.font = f(g); ctx.fillStyle = g.c || o.c || C.encre; ctx.fillText(g.s, cx, g.prime ? y - size * 0.34 : y); cx += ctx.measureText(g.s).width; }
+    for (const g of segs) { ctx.font = f(g); ctx.fillStyle = g.c || o.c || C.encre; ctx.fillText(g.s, cx, g.prime ? y - size * 0.34 : g.petit !== undefined ? y + size * g.petit : y); cx += ctx.measureText(g.s).width; }
     ctx.restore(); return total;
   }
   // légende du bas : une ou deux lignes, présentes entre t0 et t1

@@ -1,5 +1,5 @@
 #!/bin/sh
-# Refait la vidéo « La dérivation » (Première spécialité) : out/derivation.mp4, 1920 × 1080, 30 images/s, 3 min 51 s.
+# Refait la vidéo « La dérivation » (Première spécialité) : out/derivation.mp4, 1920 × 1080, 30 images/s, 5 min 59 s.
 # Il faut Node 22+, ffmpeg et Google Chrome ou Chromium. Compter une vingtaine de minutes.
 #   sh videos/derivation/fabriquer.sh
 set -e

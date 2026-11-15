@@ -1,5 +1,5 @@
 #!/bin/sh
-# Refait la vidéo « Les équations » (Seconde) : out/equations.mp4, 1920 × 1080, 30 images/s, 3 min 35 s.
+# Refait la vidéo « Les équations » (Seconde) : out/equations.mp4, 1920 × 1080, 30 images/s, 6 min 27 s.
 # Il faut Node 22+, ffmpeg et Google Chrome ou Chromium. Compter une vingtaine de minutes.
 #   sh videos/equations/fabriquer.sh
 set -e

@@ -26,13 +26,27 @@
     txt(ctx, genre, x + 32, y + 42, { fam: F.mono, w: 700, size: 20, ls: 3, c, align: 'left' }); ctx.restore();
   }
 
+  // ---------- intertitre : avant chaque partie, une mesure (quatre secondes) où son titre occupe seul l'écran. ----------
+  // Trois temps qui ne se recouvrent pas : la scène précédente s'efface (0 à 0,5 s), le titre paraît, tient, puis
+  // s'efface (0,6 à 3,5 s), et la scène suivante se découvre (3,6 à 4 s). Le jardin reste visible tout du long.
+  function intertitre(ctx, t) {
+    for (const it of S.intertitres) { const u = t - it.t; if (u <= 0 || u >= S.INTER) continue;
+      const voile = Math.min(doux(pr(u, 0, 0.5)), 1 - doux(pr(u, S.INTER - 0.4, 0.4))), k = Math.min(sortie(pr(u, 0.6, 0.5)), 1 - doux(pr(u, S.INTER - 0.9, 0.4)));
+      ctx.save(); ctx.globalAlpha = voile; ctx.fillStyle = C.papier; ctx.fillRect(0, 0, W, 884); ctx.restore();
+      if (k <= 0) continue;
+      ctx.save(); ctx.globalAlpha = k;
+      if (it.rang) txt(ctx, it.rang, CX, 372, { fam: F.mono, w: 500, size: 28, ls: 6, c: C.encre3 });
+      txt(ctx, it.nom, CX, 478 + (1 - sortie(pr(u, 0.6, 0.6))) * 22, { size: 84, w: 800 });
+      ctx.restore(); }
+  }
+
   // ---------- en-tête ----------
   function entete(ctx, t) {
     const a = fen(t, L(2) + 0.2, L(S.FIN) - 0.1, 0.5); if (a <= 0) return;
     ctx.save(); ctx.globalAlpha = a;
     K.logo(ctx, 78, 74, 60);
     txt(ctx, `${TITRE.toUpperCase()} · ${NIVEAU}`, 126, 62, { fam: F.mono, w: 500, size: 20, ls: 3, c: C.encre3, align: 'left' });
-    for (const [nom, t0, t1] of [...S.CH.map((c) => [c.nom, c.t0, c.t1]), ['En résumé', L(46), L(S.FIN)]]) { const k = fen(t, t0 + 0.1, t1, 0.35); if (k > 0) txt(ctx, nom, 126, 104, { size: 36, w: 600, align: 'left', a: k }); }
+    for (const [nom, t0, t1] of [...S.CH.map((c) => [c.nom, c.t0, c.t1]), ['En résumé', L(82), L(S.FIN)]]) { const k = fen(t, t0 + 0.1, t1, 0.35); if (k > 0) txt(ctx, nom, 126, 104, { size: 36, w: 600, align: 'left', a: k }); }
     ctx.restore();
   }
 
@@ -51,7 +65,7 @@
 
   // ---------- 1. le vocabulaire ----------
   function vocab(ctx, t) {
-    const V = S.vocab, a = fen(t, L(2) + 0.1, L(6), 0.4); if (a <= 0) return;
+    const V = S.vocab, a = fen(t, L(2) + 0.1, L(10), 0.4); if (a <= 0) return;
     ctx.save(); ctx.globalAlpha = a;
     const fs = 88, xe = CX, y = 290, k = ap(t, V.eq); eq(ctx, 'v_l', 'v_r', xe, y, { fs, a: k, monte: 1 });
     const d = 0.72 * fs, wl = largeur('v_l', fs), wr = largeur('v_r', fs);
@@ -65,7 +79,9 @@
       const q = ap(t, T.v); marque(ctx, 1500, yy, 20, !!i, q); txt(ctx, i ? '4 est une solution' : '1 n’est pas solution', 1540, yy + 11, { fam: F.ui, w: 500, size: 28, c: i ? VRAI : FAUX, align: 'left', a: q }); });
     ctx.restore();
     legende(ctx, t, V.leg[0], ['Une [équation] est une égalité qui contient un nombre inconnu : l’[inconnue].']);
-    legende(ctx, t, V.leg[1], ['Une [solution] est une valeur de l’inconnue qui rend l’égalité vraie.', 'Résoudre l’équation, c’est trouver toutes ses solutions.']);
+    legende(ctx, t, V.leg[1], ['Une [solution] est une valeur de l’inconnue qui rend l’égalité vraie.']);
+    legende(ctx, t, V.leg[2], ['Pour $x = 4$, les deux membres valent $17$ : $4$ est une solution.']);
+    legende(ctx, t, V.leg[3], ['Résoudre l’équation, c’est trouver toutes ses solutions.', 'Essayer des nombres un par un ne suffit pas : il faut une méthode.']);
   }
 
   // ---------- la balance : pivot (cx, cy), échelle s, inclinaison th (positive : le plateau droit descend) ----------
@@ -96,7 +112,7 @@
 
   // ---------- 2. le principe de la balance ----------
   function balance(ctx, t) {
-    const B = S.balance, a = fen(t, L(6) + 0.1, L(14), 0.4); if (a <= 0) return;
+    const B = S.balance, a = fen(t, L(10) + 0.1, L(22), 0.4); if (a <= 0) return;
     const osc = (t0) => { const u = t - t0; return u > 0 ? 0.035 * Math.exp(-2.6 * u) * Math.sin(9 * u) : 0; };
     const th = 0.12 * (doux(pr(t, B.faute + 0.15, 0.7)) - doux(pr(t, B.sac + 0.15, 0.7))) + osc(B.faute + 0.5) - osc(B.sac + 0.5) + osc(B.poids + 0.3) * 0.4 + osc(B.moitie + 0.3) * 0.4;
     ctx.save(); ctx.globalAlpha = a;
@@ -127,7 +143,7 @@
 
   // ---------- 3. la méthode ----------
   function methode(ctx, t) {
-    const M = S.methode, a = fen(t, L(14) + 0.1, L(22), 0.4); if (a <= 0) return;
+    const M = S.methode, a = fen(t, L(22) + 0.1, L(34), 0.4); if (a <= 0) return;
     ctx.save(); ctx.globalAlpha = a;
     const LG = [['v_l', 'v_r', ''], ['m1l', 'm1r', 'on retranche $2x$ aux deux membres'], ['m2l', 'm2r', 'on réduit chaque membre'], ['m3l', 'm3r', 'on ajoute $3$ aux deux membres'], ['m4l', 'm4r', 'on réduit'], ['m5l', 'm5r', 'on divise les deux membres par $3$'], ['m6l', 'm6r', 'l’inconnue est isolée']];
     LG.forEach(([l, r, note], i) => { const k = ap(t, M.lignes[i]); if (k <= 0) return; const y = 178 + i * 82 + (i === 6 ? 6 : 0);
@@ -136,7 +152,7 @@
     // la balance, à droite : elle reste à l'horizontale, ses plateaux portent les deux membres
     const ET = [['v_l', 'v_r', M.lignes[0]], ['m2l', 'm2r', M.lignes[2]], ['m4l', 'm4r', M.lignes[4]], ['m6l', 'm6r', M.lignes[6]]];
     const plateau = (j) => (X, Y) => ET.forEach((e, i) => { const k = ap(t, e[2]) * (i < 3 ? 1 - ap(t, ET[i + 1][2], 0.3) : 1); formule(ctx, e[j], X, Y - 34, { fs: 34, mil: 1, a: k }); });
-    balanceD(ctx, 1600, 250, 0.62, 0.02 * Math.sin(t * 1.3), plateau(0), plateau(1), ap(t, L(14) + 0.3));
+    balanceD(ctx, 1600, 250, 0.62, 0.02 * Math.sin(t * 1.3), plateau(0), plateau(1), ap(t, L(22) + 0.3));
     ligne(ctx, 'Vérification, pour $x = 4$ :', 150, 748, { size: 30, w: 500, align: 'left', c: C.encre2, a: ap(t, M.verif[0] - 0.3) });
     formule(ctx, 't4l', 760, 738, { fs: 36, mil: 1, a: ap(t, M.verif[0]), monte: 1 }); txt(ctx, 'et', 955, 748, { size: 30, w: 500, c: C.encre2, a: ap(t, M.verif[1]) }); formule(ctx, 't4r', 1150, 738, { fs: 36, mil: 1, a: ap(t, M.verif[1]), monte: 1 });
     marque(ctx, 1350, 738, 18, true, ap(t, M.verif[2]));
@@ -149,7 +165,7 @@
 
   // ---------- 4. deux cas particuliers ----------
   function cas(ctx, t) {
-    const Ca = S.cas, a = fen(t, L(22) + 0.1, L(26), 0.4); if (a <= 0) return;
+    const Ca = S.cas, a = fen(t, L(34) + 0.1, L(42), 0.4); if (a <= 0) return;
     ctx.save(); ctx.globalAlpha = a;
     const xg = 500, xd = 1420, fs = 50, note = (s, x, y, k) => ligne(ctx, s, x, y, { size: 26, w: 500, c: C.cours, a: k });
     eq(ctx, 'c1l', 'c1r', xg, 250, { fs, a: ap(t, Ca.g[0]), monte: 1 }); note('on retranche $2x$ aux deux membres', xg, 338, ap(t, Ca.g[1])); eq(ctx, 'c5', 'c1', xg, 410, { fs, a: ap(t, Ca.g[1]), monte: 1 });
@@ -160,7 +176,9 @@
     k = ap(t, Ca.d[3]); marque(ctx, xd - 375, 690, 20, true, k); txt(ctx, 'Égalité toujours vraie : tous les réels sont solutions.', xd - 335, 701, { fam: F.ui, w: 500, size: 30, c: VRAI, align: 'left', a: k });
     ctx.restore();
     legende(ctx, t, Ca.leg[0], ['Il arrive que l’inconnue disparaisse en cours de route.']);
-    legende(ctx, t, Ca.leg[1], ['Ce n’est pas le signe d’une erreur : c’est l’égalité restante qu’il faut regarder.']);
+    legende(ctx, t, Ca.leg[1], ['Ici, il reste une égalité fausse : aucun nombre ne convient.']);
+    legende(ctx, t, Ca.leg[2], ['Ce n’est pas le signe d’une erreur : c’est l’égalité restante qu’il faut regarder.']);
+    legende(ctx, t, Ca.leg[3], ['Là, elle est toujours vraie : tous les nombres réels conviennent.']);
   }
 
   // deux branches qui partent de (x, y) vers (xa, yb) et (xb, yb)
@@ -171,7 +189,7 @@
 
   // ---------- 5. les équations produit ----------
   function produit(ctx, t) {
-    const P = S.produit; let a = fen(t, L(26) + 0.1, L(30) - 0.1, 0.4);
+    const P = S.produit; let a = fen(t, L(42) + 0.1, L(50) - 0.1, 0.4);
     if (a > 0) { ctx.save(); ctx.globalAlpha = a;
       let k = ap(t, P.prop); carte(ctx, 110, 180, 800, 290, 'PROPRIÉTÉ', k);
       ligne(ctx, 'Un produit de facteurs est nul si et seulement si', 142, 270, { size: 30, w: 500, align: 'left', a: k }); ligne(ctx, 'l’un au moins de ses facteurs est nul.', 142, 312, { size: 30, w: 500, align: 'left', a: k });
@@ -181,7 +199,7 @@
       let x = 1040; ['p_12a', 'p_12b', 'p_12c', 'p_12d'].forEach((id, i) => { formule(ctx, id, x, 540, { fs: 40, mil: 1, align: 'left', a: ap(t, P.douze[i]), monte: 1 }); x += largeur(id, 40) + 14; });
       ligne(ctx, 'Un produit égal à $12$ ne dit rien de ses facteurs.', PX, 650, { size: 30, w: 500, c: C.encre2, a: ap(t, P.douze[3] + 0.3) });
       ctx.restore(); }
-    a = fen(t, L(30) + 0.1, L(34) - 0.1, 0.4);
+    a = fen(t, L(50) + 0.1, L(58) - 0.1, 0.4);
     if (a > 0) { ctx.save(); ctx.globalAlpha = a; const xa = 560, xb = 1360;
       formule(ctx, 'p_e', CX, 215, { fs: 62, mil: 1, a: ap(t, P.ex), monte: 1 });
       branches(ctx, CX, 268, xa, xb, 350, doux(pr(t, P.branches, 0.8))); txt(ctx, 'ou', CX, 412, { size: 46, w: 700, it: true, c: C.cours, a: ap(t, P.branches + 0.5) });
@@ -191,7 +209,7 @@
       k = ap(t, P.dr[1]); cadre(ctx, xb, 590, 250, 72, { stroke: C.cours, fill: 'rgba(53,202,164,0.10)', a: k }); formule(ctx, 'p_b3', xb, 590, { fs: 48, mil: 1, a: k });
       const kp = fen(t, P.piege[0], P.piege[1], 0.3); ligne(ctx, 'Développer mènerait à une équation que l’on ne sait pas résoudre en Seconde :', CX, 694, { size: 28, w: 500, c: FAUX, a: kp }); formule(ctx, 'p_dev', CX, 742, { fs: 34, mil: 1, a: kp * ap(t, P.dev) });
       ctx.restore(); }
-    a = fen(t, L(34) + 0.1, L(38), 0.4);
+    a = fen(t, L(58) + 0.1, L(66), 0.4);
     if (a > 0) { ctx.save(); ctx.globalAlpha = a; const xa = 700, xb = 1220;
       formule(ctx, 'q0', CX, 200, { fs: 60, mil: 1, a: ap(t, P.carre[0]), monte: 1 });
       let k = ap(t, P.carre[1]); formule(ctx, 'q1', CX, 300, { fs: 50, mil: 1, a: k, monte: 1 }); ligne(ctx, 'on retranche $9$ aux deux membres', 1180, 310, { size: 27, w: 500, c: C.cours, align: 'left', a: k });
@@ -202,14 +220,15 @@
     legende(ctx, t, P.leg[0], ['Une [équation produit] est un produit de facteurs égal à zéro.']);
     legende(ctx, t, P.leg[1], ['Il faut donc toujours se ramener à la forme « $… = 0$ » avant de conclure.']);
     legende(ctx, t, P.leg[2], ['Chaque facteur donne une équation du premier degré ;', 'on les relie par le mot « ou ».']);
-    legende(ctx, t, P.leg[3], ['L’erreur à éviter : développer. La forme factorisée est la forme utile.']);
-    legende(ctx, t, P.leg[4], ['Pour $x^2 = 9$ : on ramène tout dans un membre, puis on factorise.'].map((s) => s.replace('x^2', 'x²')));
-    legende(ctx, t, P.leg[5], ['L’oubli le plus courant : cette équation a deux solutions, $−3$ et $3$.']);
+    legende(ctx, t, P.leg[3], ['L’équation a donc deux solutions : $3$ et $−5$.']);
+    legende(ctx, t, P.leg[4], ['L’erreur à éviter : développer. La forme factorisée est la forme utile.']);
+    legende(ctx, t, P.leg[5], ['Pour $x^2 = 9$ : on ramène tout dans un membre, puis on factorise.']);
+    legende(ctx, t, P.leg[6], ['L’oubli le plus courant : cette équation a deux solutions, $−3$ et $3$.']);
   }
 
   // ---------- 6. les équations quotient ----------
   function quotient(ctx, t) {
-    const Q = S.quotient; let a = fen(t, L(38) + 0.1, L(42) - 0.1, 0.4);
+    const Q = S.quotient; let a = fen(t, L(66) + 0.1, L(74) - 0.1, 0.4);
     if (a > 0) { ctx.save(); ctx.globalAlpha = a;
       let k = ap(t, Q.def); carte(ctx, 110, 180, 800, 400, 'DÉFINITION', k);
       ligne(ctx, 'Une [équation quotient] est une équation de la forme', 142, 270, { size: 30, w: 500, align: 'left', a: k }); formule(ctx, 'r_def', 510, 350, { fs: 42, mil: 1, a: k });
@@ -219,7 +238,7 @@
       formule(ctx, 'r_prop', 1405, 395, { fs: 36, mil: 1, a: ap(t, Q.prop + 0.6), monte: 1 });
       ligne(ctx, 'Produit nul : $A = 0$ {ou} $B = 0$.', 1012, 560, { size: 36, w: 600, align: 'left', a: ap(t, Q.contraste[0]) }); ligne(ctx, 'Quotient nul : $A = 0$ {et} $B ≠ 0$.', 1012, 630, { size: 36, w: 600, align: 'left', a: ap(t, Q.contraste[1]) });
       ctx.restore(); }
-    a = fen(t, L(42) + 0.1, L(46), 0.4);
+    a = fen(t, L(74) + 0.1, L(82), 0.4);
     if (a > 0) { ctx.save(); ctx.globalAlpha = a; const xt = 720, x1 = 1210, x2 = 1560, fs = 42, etape = (s, y, k) => txt(ctx, s, xt, y + 11, { size: 32, w: 600, align: 'left', a: k });
       formule(ctx, 'r_e', 370, 400, { fs: 68, mil: 1, a: ap(t, Q.ex), monte: 1 });
       ctx.strokeStyle = C.filet; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(660, 180); ctx.lineTo(660, 750); ctx.stroke();
@@ -241,7 +260,7 @@
 
   // ---------- bilan ----------
   function bilan(ctx, t) {
-    const B = S.bilan, a = fen(t, L(46) + 0.2, L(S.FIN), 0.4); if (a <= 0) return;
+    const B = S.bilan, a = fen(t, L(82) + 0.2, L(S.FIN), 0.4); if (a <= 0) return;
     ctx.save(); ctx.globalAlpha = a;
     const k0 = ap(t, B.titre); txt(ctx, 'Trois réflexes pour résoudre', CX, 222 + (1 - k0) * 20, { size: 62, w: 700, a: k0 });
     const XC = [400, 960, 1520], TX = [['Premier degré : la même opération', 'sur les deux membres.'], ['Produit nul : un facteur est nul,', 'ou bien l’autre.'], ['Quotient nul : le numérateur est nul', 'et le dénominateur ne l’est pas.']];
@@ -309,8 +328,12 @@
 
   function draw(ctx, t) {
     ctx.fillStyle = C.papier; ctx.fillRect(0, 0, W, H);
-    ouverture(ctx, t); entete(ctx, t);
-    vocab(ctx, t); balance(ctx, t); methode(ctx, t); cas(ctx, t); produit(ctx, t); quotient(ctx, t); bilan(ctx, t); fin(ctx, t);
+    // Pendant un intertitre, une fois le voile fermé, les scènes sont dessinées à l'instant où la partie suivante
+    // commence : la précédente a alors tout à fait disparu et ne peut pas reparaître quand le voile se rouvre.
+    let ts = t; for (const it of S.intertitres) { const u = t - it.t; if (u > 1 && u < S.INTER) ts = it.t + S.INTER; }
+    ouverture(ctx, ts); entete(ctx, ts);
+    vocab(ctx, ts); balance(ctx, ts); methode(ctx, ts); cas(ctx, ts); produit(ctx, ts); quotient(ctx, ts); bilan(ctx, ts); fin(ctx, t);
+    intertitre(ctx, t);
     jardin(ctx, t);
     // éclair bref sur les deux temps forts (l'oméga du logo, la fin) : l'image frappe à l'instant où le son frappe
     for (const [te, c, f] of [[S.ouverture.logo[2], '255,109,125', 0.13], [S.fin.t0, '231,233,237', 0.14]]) { const u = t - te; if (u >= 0 && u < 0.3) { ctx.fillStyle = `rgba(${c},${f * (1 - u / 0.3)})`; ctx.fillRect(0, 0, W, H); } }

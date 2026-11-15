@@ -67,6 +67,12 @@ for (const e of sc.EV) {
   if (e.g === 'note') { const x = ep(tons[rang % tons.length] + (rang % 8 > 3 ? 12 : 0), 0.9, 0.9); lead.addMono(x, e.t, 0.2, pan); verb.addMono(x, e.t, 0.1); rang++; }
   else if (e.g === 'pas') fx.addMono(I.woodTick(1.3 + (rang % 3) * 0.1), e.t, 0.12, pan);
   else if (e.g === 'cloche') { const b = I.bell(hz(tons[tons.length - 1] + 12), 1.4, 2); fx.addMono(b, e.t, 0.1); verb.addMono(b, e.t, 0.14); const x = ep(tons[0] + 12, 1.2, 0.9); lead.addMono(x, e.t, 0.2); verb.addMono(x, e.t, 0.1); }
+  else if (e.g === 'titre') {                                 // la mesure de l'intertitre : l'accord de dominante tenu, égrené sur les quatre temps
+    fx.addMono(I.paperFwip(0.8, 3), e.t, 0.1); bass.addMono(I.bass(m(DEF.C.bass) + 12, 3.4, { bright: 0.2, sub: 1 }), e.t, 0.42);
+    drums.addMono(I.kick({ tail: 0.3, punch: 0.5 }), e.t, 0.5);
+    tons.forEach((n, j) => { const x = ep(n, 1.6, 0.8); lead.addMono(x, e.t + j, 0.17, (j % 3 - 1) * 0.25); verb.addMono(x, e.t + j, 0.11); });
+    { const Hh = I.hat(false, 23); for (let s8 = 0; s8 < 8; s8++) drums.addMono(Hh, e.t + s8 * 0.5 + (s8 % 2 ? 0.04 : 0), s8 % 2 ? 0.025 : 0.04, 0.3); }
+    fx.addMono(I.woodTick(1.2), e.t + 3, 0.09); fx.addMono(I.woodTick(1.35), e.t + 3.5, 0.11); }
   else if (e.g === 'arbre') { fx.addMono(I.thud(100, 0.06), e.t, 0.24); for (const n of c.notes) { const g = I.guitar(n + 12, 1.1, { bright: 0.4 }); keys.addMono(g, e.t, 0.36); verb.addMono(g, e.t, 0.14); } }
 }
 // ouverture : un froissement à l'apparition du titre ; fin : la batterie s'arrête sur le temps fort, un accord tenu

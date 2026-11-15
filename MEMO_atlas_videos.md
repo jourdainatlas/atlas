@@ -189,3 +189,51 @@ sacs en violet ; cartes « Définition » à filet rouge, « Propriété » à f
 
 Pour une nouvelle vidéo de cours : copier `videos/equations/` (structure la plus générale : `TITRE`, `NIVEAU`,
 `NB_EXERCICES` en tête de `film.js`, parties dans `CH` de `score.js`), réécrire les scènes et les formules.
+
+### Règles des vidéos de cours, fixées par l'auteur le 15 novembre 2026
+
+Elles valent pour les trois vidéos existantes et pour toutes les suivantes.
+
+1. **Un intertitre avant chaque partie et avant le bilan.** Il dure une mesure entière (quatre secondes) et se déroule
+   en trois temps qui ne se recouvrent pas : la scène précédente s'efface, le titre de la partie paraît seul avec son
+   rang (« 6 / 7 »), puis la scène suivante se découvre. Le jardin reste visible. Dans `score.js`, `INTER = 4` et
+   `BORNES` (les mesures où commencent les parties et le bilan) décalent toute l'horloge : `L(b0)` est l'instant où le
+   contenu d'une partie démarre, l'intertitre occupe `[L(b0) − INTER, L(b0)]`, et `CH[k].t1 = L(b1) − INTER` est la fin
+   réelle de la partie (l'arbre y est planté). Dans `film.js`, `intertitre()` pose un voile ; tant qu'il est fermé, les
+   scènes sont dessinées à l'instant `L(b0)` (variable `ts` de `draw`), sans quoi la scène précédente reparaît en
+   fantôme à la réouverture. La musique lit la même horloge : pendant cette mesure, `song.js` (événement `titre`) tient
+   l'accord de dominante qui termine la phrase précédente. Les parties commencent donc toutes sur une mesure
+   congrue à 2 modulo 4, et leur longueur est un multiple de quatre mesures.
+2. **Le rythme de lecture.** Un texte reste à l'écran au moins trois secondes et demie, une légende de deux lignes
+   près de huit ; deux textes longs (carte, ligne de démonstration, légende de deux lignes) n'apparaissent jamais dans
+   la même mesure ; une ligne de calcul ou de démonstration par mesure. On rallonge la vidéo plutôt que de serrer.
+3. **Toute légende nomme ce dont elle parle** : pas de « ces nombres » sans que les nombres soient cités ou montrés
+   avant (remarque de l'auteur sur la suite 1 ; 1,4 ; 1,41 ; 1,414).
+4. Pas de signature sur l'écran de fin ; pas de filet de couleur sous l'en-tête (idée écartée).
+
+`song.js` est désormais le même fichier dans les trois dossiers (il lit `score.FIN`, `score.CH` et les événements).
+`commun.js` (dans `videos/derivation/`, copié ailleurs par `fabriquer.sh`) sait écrire dans les légendes les indices
+(`$u_n$`), les exposants (`$x^2$`), le prime et les lettres ℝ, ℚ, ℕ, ℤ ; un seul caractère après `_` ou `^`.
+
+État au 15 novembre 2026, versions à intertitres et au rythme ralenti, **en attente de validation par l'auteur** :
+« La dérivation » 5 min 59 s (parties aux mesures 2, 6, 14, 26, 34, 50, 58 ; bilan 74 ; fin 78) ; « Les équations »
+6 min 27 s (2, 10, 22, 34, 42, 66 ; bilan 82 ; fin 86). Les versions validées le matin (3 min 51 s et 3 min 35 s, sans
+intertitres) sont dans l'historique du dépôt (validations « sources et mémo » du 15 novembre).
+
+### « Nombres réels et suites numériques », MPSI, chapitre 7 — prototype, non encore validé
+
+`videos/reels-suites/`, 5 min 11 s. Fil du cours `ma-07` : Dedekind bute en 1858 sur « une suite croissante et majorée
+a une limite » ; tout découle de l'axiome de la borne supérieure. Parties (mesures 2, 10, 18, 26, 34, 46, 54 ; bilan
+62 ; fin 66) : un théorème sans démonstration (les valeurs décimales approchées par défaut de √2), la borne supérieure
+(A = [0 ; 1[, caractérisation, axiome), premières conséquences (Archimède avec sa preuve, densité des décimaux),
+limite d'une suite (u_n = 2 + (−1)ⁿ·3/(n + 2) ; ε = 0,4, 0,2, 0,1 donnent N = 6, 13, 28), limite monotone (sommes des
+1/k², démonstration animée, ε = 0,12 et N = 8), suites adjacentes (sommes des 1/k! et v_n = u_n + 1/(n·n!)),
+Bolzano-Weierstrass (dichotomie du cours sur sin n : u₀, u₄, u₅, u₁₁, u₁₇), bilan en arbre. Le rouge y sert aussi au
+point sup A et à la droite ℓ = sup{u_n}, comme sur les figures du cours. Aucun usage de l'axiome du choix. La phrase
+de 1858 est une paraphrase de l'introduction du cours, sans guillemets.
+
+### Diffusion (question de l'auteur, non tranchée)
+
+YouTube peut afficher des publicités sur toute vidéo, même d'une chaîne non monétisée. Héberger les fichiers est
+possible : réencodées (libx264, crf 27), les vidéos pèsent environ 3 Mo par minute. Elles ne doivent pas entrer dans le
+dépôt ; il faudrait les déposer à part sur l'hébergement. L'intégration aux pages de cours relève du domaine Cours.

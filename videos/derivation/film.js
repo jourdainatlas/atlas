@@ -10,13 +10,27 @@
   const carre = (x) => x * x, cub = (x) => -x * x * x + 3 * x * x + 2, cubP = (x) => -3 * x * x + 6 * x;
   const POS = C.activites, NEG = C.orange;                 // signe de f′ : positif en vert, négatif en orange
 
+  // ---------- intertitre : avant chaque partie, une mesure (quatre secondes) où son titre occupe seul l'écran. ----------
+  // Trois temps qui ne se recouvrent pas : la scène précédente s'efface (0 à 0,5 s), le titre paraît, tient, puis
+  // s'efface (0,6 à 3,5 s), et la scène suivante se découvre (3,6 à 4 s). Le jardin reste visible tout du long.
+  function intertitre(ctx, t) {
+    for (const it of S.intertitres) { const u = t - it.t; if (u <= 0 || u >= S.INTER) continue;
+      const voile = Math.min(doux(pr(u, 0, 0.5)), 1 - doux(pr(u, S.INTER - 0.4, 0.4))), k = Math.min(sortie(pr(u, 0.6, 0.5)), 1 - doux(pr(u, S.INTER - 0.9, 0.4)));
+      ctx.save(); ctx.globalAlpha = voile; ctx.fillStyle = C.papier; ctx.fillRect(0, 0, W, 884); ctx.restore();
+      if (k <= 0) continue;
+      ctx.save(); ctx.globalAlpha = k;
+      if (it.rang) txt(ctx, it.rang, CX, 372, { fam: F.mono, w: 500, size: 28, ls: 6, c: C.encre3 });
+      txt(ctx, it.nom, CX, 478 + (1 - sortie(pr(u, 0.6, 0.6))) * 22, { size: 84, w: 800 });
+      ctx.restore(); }
+  }
+
   // ---------- en-tête : le logo, le titre du cours, la partie en cours ----------
   function entete(ctx, t) {
-    const a = fen(t, L(2) + 0.2, L(54) - 0.1, 0.5); if (a <= 0) return;
+    const a = fen(t, L(2) + 0.2, L(S.FIN) - 0.1, 0.5); if (a <= 0) return;
     ctx.save(); ctx.globalAlpha = a;
     K.logo(ctx, 78, 74, 60);
     txt(ctx, 'LA DÉRIVATION · PREMIÈRE SPÉCIALITÉ', 126, 62, { fam: F.mono, w: 500, size: 20, ls: 3, c: C.encre3, align: 'left' });
-    const parties = [...S.CH.map((c) => [c.nom, c.t0, c.t1]), ['En résumé', L(50), L(54)]];
+    const parties = [...S.CH.map((c) => [c.nom, c.t0, c.t1]), ['En résumé', L(74), L(S.FIN)]];
     for (const [nom, t0, t1] of parties) { const k = fen(t, t0 + 0.1, t1, 0.35); if (k > 0) txt(ctx, nom, 126, 104, { size: 36, w: 600, align: 'left', a: k }); }
     ctx.restore();
   }
@@ -44,7 +58,7 @@
   // ---------- 1. la colline ----------
   const XH = (x) => (x + 0.75) / 3.9 * W, YH = (y) => 770 - (y - 0.5) / 6 * 520, KXH = W / 3.9, KYH = 520 / 6;
   function colline(ctx, t) {
-    const P = S.pente, [c0, c1] = S.ouverture.colline, a = 1 - pr(t, L(6) - 0.5, 0.5); if (t < c0 || a <= 0) return;
+    const P = S.pente, [c0, c1] = S.ouverture.colline, a = 1 - pr(t, L(6) - 0.1, 0.1); if (t < c0 || a <= 0) return;
     const k = doux(pr(t, c0, c1 - c0)), xf = lerp(-0.8, 3.2, k);
     ctx.save(); ctx.globalAlpha = a;
     const g = ctx.createLinearGradient(0, 290, 0, 790); g.addColorStop(0, 'rgba(53,202,164,0.20)'); g.addColorStop(1, 'rgba(53,202,164,0)');
@@ -74,7 +88,7 @@
     return h;
   }
   function parabole(ctx, t) {
-    const Tx = S.taux, N = S.nombre, a = fen(t, L(6) + 0.1, L(18), 0.4); if (a <= 0) return;
+    const Tx = S.taux, N = S.nombre, a = fen(t, L(6) + 0.1, L(26), 0.4); if (a <= 0) return;
     const R = RP, h = hDe(t), kt = doux(pr(t, N.tangente, 0.8)), gros = borne((h - 0.25) / 0.2);
     ctx.save(); ctx.globalAlpha = a;
     axes(ctx, R, pr(t, L(6) + 0.1, 0.9), { gx: [1, 2], gy: [1, 2, 3, 4, 5] });
@@ -103,14 +117,14 @@
     ctx.restore();
 
     // --- panneau de droite, temps 1 : la formule du taux de variation ---
-    let p = a * (1 - pr(t, L(10) - 0.4, 0.4));
+    let p = a * (1 - pr(t, L(14) - 0.4, 0.4));
     if (p > 0) { ctx.save(); ctx.globalAlpha = p;
       formule(ctx, 'fx2', PX, 215, { fs: 54, a: ap(t, Tx.courbe[0]), monte: 1 });
       let k = ap(t, Tx.formule); ligne(ctx, '[Taux de variation] de $f$ entre $a$ et $a + h$ :', PX, 350, { size: 34, w: 500, a: k }); formule(ctx, 'taux_gen', PX, 450, { fs: 56, mil: 1, a: k, monte: 1 });
       k = ap(t, Tx.valeur); ligne(ctx, 'Ici, avec $a = 1$ et $h = 1$ :', PX, 585, { size: 34, w: 500, a: k }); formule(ctx, 'taux_num', PX, 675, { fs: 46, mil: 1, a: k, monte: 1 });
       ctx.restore(); }
     // --- temps 2 : h rétrécit, le taux s'approche de 2 ---
-    p = fen(t, L(10), L(14) - 0.1, 0.4);
+    p = fen(t, L(14), L(18) - 0.1, 0.4);
     if (p > 0) { ctx.save(); ctx.globalAlpha = p;
       const n = h < 0.1 - 1e-9 ? 3 : 2, x1 = 1230, x2 = 1580;
       ctx.save(); ctx.globalAlpha *= 1 - kt; ligne(ctx, `$h = ${fr(h, n)}$`, x1, 222, { size: 52, c: C.violet }); ligne(ctx, `taux : $${fr(2 + h, n)}$`, x2, 222, { size: 52, c: C.orange }); ctx.restore();
@@ -124,7 +138,7 @@
       ligne(ctx, '$0$', x1, 716, { size: 50, c: C.violet, a: kl }); ligne(ctx, '$2$', x2, 716, { size: 50, c: C.cours, a: kl });
       ctx.restore(); }
     // --- temps 3 : la définition, puis le calcul ---
-    p = fen(t, L(14), L(18), 0.4);
+    p = fen(t, L(18), L(26), 0.4);
     if (p > 0) { ctx.save(); ctx.globalAlpha = p;
       let k = ap(t, N.def);
       ctx.save(); ctx.globalAlpha *= k; ctx.beginPath(); ctx.roundRect(980, 150, 850, 276, 10); ctx.fillStyle = C.surface; ctx.fill(); ctx.fillStyle = C.rouge; ctx.fillRect(980, 150, 5, 276);
@@ -141,23 +155,26 @@
       k = ap(t, N.resultat); cadre(ctx, PX, 730, 250, 70, { stroke: C.cours, fill: 'rgba(53,202,164,0.10)', a: k }); formule(ctx, 'res1', PX, 730, { fs: 44, mil: 1, a: k });
       ctx.restore(); }
     legende(ctx, t, Tx.leg[0], ['Par deux points $A$ et $B$ de la courbe passe une droite : la sécante.']);
-    legende(ctx, t, Tx.leg[1], ['Sa pente est le [taux de variation] de $f$ entre $a$ et $a + h$.']);
+    legende(ctx, t, Tx.leg[1], ['Quand on avance de $h$, la sécante monte de $f(a + h) − f(a)$.']);
+    legende(ctx, t, Tx.leg[2], ['Sa pente est le [taux de variation] de $f$ entre $a$ et $a + h$.']);
+    legende(ctx, t, Tx.leg[3], ['Ici, entre $1$ et $2$, la sécante a pour pente $3$.']);
     legende(ctx, t, N.leg[0], ['Rapprochons $B$ de $A$ : l’écart $h$ devient de plus en plus petit.']);
     legende(ctx, t, N.leg[1], ['Le taux de variation se rapproche de $2$,', 'et la sécante devient la {tangente} à la courbe en $A$.']);
     legende(ctx, t, N.leg[2], ['Le nombre dérivé $f′(a)$ est la pente de la tangente', 'à la courbe au point d’abscisse $a$.']);
+    legende(ctx, t, N.leg[3], ['Calculons-le pour $f(x) = x^2$ au point d’abscisse $1$.']);
   }
 
   // ---------- 4. la fonction dérivée ----------
   const RF = repere({ x: 110, y: 150, w: 700, h: 610 }, { x0: -2.3, x1: 2.3, y0: -0.8, y1: 4.8 });
   const RD = repere({ x: 1010, y: 150, w: 760, h: 390 }, { x0: -2.3, x1: 2.3, y0: -4.6, y1: 4.6 });
   function fonction(ctx, t) {
-    const Fo = S.fonction, a = fen(t, L(18) + 0.1, L(22), 0.4); if (a <= 0) return;
+    const Fo = S.fonction, a = fen(t, L(26) + 0.1, L(34), 0.4); if (a <= 0) return;
     const [b0, b1] = Fo.balaie, u = pr(t, b0, b1 - b0), x = lerp(-1.5, 1.5, u), kp = ap(t, b0 - 0.5);
     ctx.save(); ctx.globalAlpha = a;
-    axes(ctx, RF, pr(t, L(18) + 0.1, 0.7), { gx: [-2, -1, 1, 2], gy: [1, 2, 3, 4] });
-    axes(ctx, RD, pr(t, L(18) + 0.3, 0.7), { gx: [-2, -1, 1, 2], gy: [-4, -2, 2, 4] });
-    courbe(ctx, RF, carre, -2.3, lerp(-2.3, 2.3, doux(pr(t, L(18) + 0.1, 0.8))));
-    formule(ctx, 'cf2', RF.X(1.45), RF.Y(4.2), { fs: 32, a: ap(t, L(18) + 0.8) });
+    axes(ctx, RF, pr(t, L(26) + 0.1, 0.7), { gx: [-2, -1, 1, 2], gy: [1, 2, 3, 4] });
+    axes(ctx, RD, pr(t, L(26) + 0.3, 0.7), { gx: [-2, -1, 1, 2], gy: [-4, -2, 2, 4] });
+    courbe(ctx, RF, carre, -2.3, lerp(-2.3, 2.3, doux(pr(t, L(26) + 0.1, 0.8))));
+    formule(ctx, 'cf2', RF.X(1.45), RF.Y(4.2), { fs: 32, a: ap(t, L(26) + 0.8) });
     formule(ctx, 'tf', RF.X(0) + 50, 176, { fs: 26, a: kp }); formule(ctx, 'tfp', RD.X(0) + 54, 176, { fs: 26, a: kp });
     // à gauche : le point et sa tangente (un segment de longueur constante à l'écran)
     const p = 2 * x, dx = 150 / Math.hypot(RF.kx, p * RF.ky);
@@ -165,7 +182,7 @@
     point(ctx, RF, x, x * x, { k: kp });
     ligne(ctx, `$x = ${fr(x, 1)}$`, RF.X(0) - 118, 300, { size: 34, a: kp, c: C.encre2 }); ligne(ctx, `pente : $${fr(p, 1)}$`, RF.X(0) + 128, 300, { size: 34, a: kp, c: C.cours });
     // à droite : on reporte la pente au-dessus de x ; les points s'alignent sur la droite y = 2x
-    const kf = doux(pr(t, Fo.formule - 0.2, 0.7)), xa = lerp(-1.5, -2.3, kf), xb = lerp(x, 2.3, kf);
+    const kf = doux(pr(t, Fo.aligne, 0.7)), xa = lerp(-1.5, -2.3, kf), xb = lerp(x, 2.3, kf);
     if (u > 0) { courbe(ctx, RD, (v) => 2 * v, xa, xb, { c: C.cours });
       trait(ctx, RD, x, 0, x, p, { dash: [7, 9], c: C.gl, a: 1 - kf }); }
     for (const r of Fo.reperes) { const k = ap(t, r.t, 0.3); if (k <= 0) continue; point(ctx, RD, r.x, 2 * r.x, { c: C.cours, k, r: 8 });
@@ -177,30 +194,32 @@
     const k = ap(t, Fo.resultat); cadre(ctx, 1390, 734, 560, 62, { stroke: C.cours, fill: 'rgba(53,202,164,0.10)', a: k }); formule(ctx, 'fd_res', 1390, 734, { fs: 36, mil: 1, a: k });
     ctx.restore();
     legende(ctx, t, Fo.leg[0], ['En chaque point, la courbe a sa pente.', 'Reportons-la à droite, au-dessus de l’abscisse $x$.']);
-    legende(ctx, t, Fo.leg[1], ['La fonction qui, à chaque $x$, associe le nombre dérivé $f′(x)$', 'est la [fonction dérivée] de $f$ : on la note $f′$.']);
+    legende(ctx, t, Fo.leg[1], ['Les points s’alignent : au point d’abscisse $x$, la pente vaut $2x$.']);
+    legende(ctx, t, Fo.leg[2], ['Le calcul le confirme, quel que soit $x$.']);
+    legende(ctx, t, Fo.leg[3], ['La fonction qui, à chaque $x$, associe le nombre dérivé $f′(x)$', 'est la [fonction dérivée] de $f$ : on la note $f′$.']);
   }
 
   // ---------- 5. les formules ----------
   function formules(ctx, t) {
-    const Fm = S.formules; let a = fen(t, L(22) + 0.1, L(30) - 0.1, 0.4);
+    const Fm = S.formules; let a = fen(t, L(34) + 0.1, L(44) - 0.1, 0.4);
     const yl = (i) => 306 + i * 82, fu = 28;
     if (a > 0) { ctx.save(); ctx.globalAlpha = a;
       // dérivées usuelles
-      let k = ap(t, L(22) + 0.2); txt(ctx, 'Dérivées usuelles', 130, 190, { size: 40, w: 700, align: 'left', a: k });
+      let k = ap(t, L(34) + 0.2); txt(ctx, 'Dérivées usuelles', 130, 190, { size: 40, w: 700, align: 'left', a: k });
       formule(ctx, 'tf', 290, 248, { fs: 28, a: k }); formule(ctx, 'tfp', 560, 248, { fs: 28, a: k }); txt(ctx, 'pour', 790, 246, { fam: F.ui, w: 500, size: 22, c: C.encre3, a: k });
       ctx.save(); ctx.globalAlpha *= k; ctx.strokeStyle = C.filet; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(130, 268); ctx.lineTo(900, 268); ctx.stroke(); ctx.restore();
       Fm.usuelles.forEach((tu, i) => { const q = ap(t, tu); if (q <= 0) return; const y = yl(i);
         formule(ctx, `u${i}l`, 290, y, { fs: fu, mil: 1, a: q }); fleche(ctx, 400, y, 450, y, { c: C.gl, lw: 3, tp: 10, a: q, k: q }); formule(ctx, `u${i}r`, 560, y, { fs: fu, mil: 1, a: q, monte: 1 });
         if (globalThis.FORMULES[`u${i}c`]) formule(ctx, `u${i}c`, 790, y, { fs: 26, mil: 1, a: q }); else ligne(ctx, 'tout réel $x$', 790, y + 9, { size: 24, w: 500, c: C.encre3, a: q }); });
       // opérations
-      k = ap(t, L(26) - 0.3); txt(ctx, 'Opérations', 1010, 190, { size: 40, w: 700, align: 'left', a: k });
+      k = ap(t, L(38) - 0.3); txt(ctx, 'Opérations', 1010, 190, { size: 40, w: 700, align: 'left', a: k });
       ligne(ctx, '$u$, $v$ et $g$ dérivables, $k$, $a$ et $b$ réels ;', 1010, 232, { size: 23, w: 500, c: C.encre3, a: k, align: 'left' }); ligne(ctx, 'au dénominateur, $v$ ne s’annule pas.', 1010, 260, { size: 23, w: 500, c: C.encre3, a: k, align: 'left' });
       Fm.operations.forEach((to, i) => formule(ctx, `o${i}`, 1030, yl(i), { fs: fu, mil: 1, align: 'left', a: ap(t, to), monte: 1 }));
       const kp = fen(t, Fm.piege[0], Fm.piege[1], 0.3);
       if (kp > 0) { cadre(ctx, 1030 + largeur('o2', fu) / 2, yl(2), largeur('o2', fu) + 36, 62, { stroke: C.orange, a: kp }); txt(ctx, 'et non', 1500, yl(2) + 9, { fam: F.ui, w: 500, size: 24, c: C.orange, a: kp }); formule(ctx, 'piege', 1660, yl(2), { fs: fu, mil: 1, a: kp }); }
       ctx.restore(); }
     // l'exemple : terme à terme
-    a = fen(t, L(30) + 0.1, L(34), 0.4);
+    a = fen(t, L(44) + 0.1, L(50), 0.4);
     if (a > 0) { const E = Fm.exemple, XT = [800, 1060, 1300], fs = 62; ctx.save(); ctx.globalAlpha = a;
       let k = ap(t, E.f); formule(ctx, 'e_f', 660, 330, { fs, align: 'right', a: k }); ['e_1', 'e_2', 'e_3'].forEach((id, i) => formule(ctx, id, XT[i], 330, { fs, a: k }));
       formule(ctx, 'e_fp', 660, 560, { fs, align: 'right', a: ap(t, E.termes[0] - 0.4) });
@@ -218,7 +237,7 @@
 
   // ---------- 6. la tangente ----------
   function tangente(ctx, t) {
-    const Tg = S.tangente, a = fen(t, L(34) + 0.1, L(38), 0.4); if (a <= 0) return;
+    const Tg = S.tangente, a = fen(t, L(50) + 0.1, L(58), 0.4); if (a <= 0) return;
     const z = doux(pr(t, Tg.zoom[0], Tg.zoom[1] - Tg.zoom[0])), s = Math.exp(-z * Math.log(8));       // agrandissement de centre A, jusqu'à 8
     const R = repere(BP, { x0: 1 + (FP.x0 - 1) * s, x1: 1 + (FP.x1 - 1) * s, y0: 1 + (FP.y0 - 1) * s, y1: 1 + (FP.y1 - 1) * s });
     ctx.save(); ctx.globalAlpha = a;
@@ -229,24 +248,25 @@
     formule(ctx, 'cf2', 610, 192, { fs: 34, a: 1 - z }); formule(ctx, 'tan_T', R.X(1.9) + 34, R.Y(2.8) + 30, { fs: 36, a: ap(t, Tg.trace[1]) * (1 - z) });
     const kr = ap(t, Tg.resultat) * (1 - z); point(ctx, R, 0, -1, { c: C.cours, k: kr, a: 1 - z, r: 8 }); ligne(ctx, '$−1$', R.X(0) + 18, R.Y(-1) + 10, { size: 28, c: C.cours, a: kr, align: 'left' });
     ligne(ctx, 'La figure est agrandie 8 fois autour de $A$.', BP.x + 20, BP.y + 44, { size: 28, w: 500, c: C.encre2, a: ap(t, Tg.zoom[1] - 0.4), align: 'left' });
-    let k = ap(t, L(34) + 0.3);
+    let k = ap(t, L(50) + 0.3);
     ligne(ctx, 'La tangente à la courbe en $A$ est la droite qui passe', 1000, 215, { size: 32, w: 500, align: 'left', a: k }); ligne(ctx, 'par $A$ et dont la pente est le nombre dérivé $f′(a)$.', 1000, 260, { size: 32, w: 500, align: 'left', a: k });
     k = ap(t, Tg.formule); cadre(ctx, PX, 365, largeur('tan_gen', 48) + 70, 90, { fill: C.surface, a: k }); formule(ctx, 'tan_gen', PX, 365, { fs: 48, mil: 1, a: k });
     k = ap(t, Tg.remplace); ligne(ctx, 'Ici $a = 1$, $f(1) = 1$ et $f′(1) = 2$ :', 1000, 482, { size: 32, w: 500, align: 'left', a: k }); formule(ctx, 'tan_a', PX, 560, { fs: 46, mil: 1, a: ap(t, Tg.remplace + 0.5), monte: 1 });
     k = ap(t, Tg.resultat); cadre(ctx, PX, 680, 330, 84, { stroke: C.cours, fill: 'rgba(53,202,164,0.10)', a: k }); formule(ctx, 'tan_res', PX, 680, { fs: 52, mil: 1, a: k });
     ctx.restore();
     legende(ctx, t, Tg.leg[0], ['Connaître $f′(a)$, c’est connaître la tangente : on écrit son équation.']);
-    legende(ctx, t, Tg.leg[1], ['Vues de près, la courbe et sa tangente se confondent presque.']);
+    legende(ctx, t, Tg.leg[1], ['Avec $a = 1$, la tangente en $A$ a pour équation $y = 2x − 1$.']);
+    legende(ctx, t, Tg.leg[2], ['Vues de près, la courbe et sa tangente se confondent presque.']);
   }
 
   // ---------- 7. les variations ----------
   const RV = repere({ x: 110, y: 150, w: 760, h: 350 }, { x0: -1.1, x1: 3.2, y0: -0.6, y1: 7.2 });
   const RW = repere({ x: 110, y: 540, w: 760, h: 225 }, { x0: -1.1, x1: 3.2, y0: -4.5, y1: 4 });
   function variations(ctx, t) {
-    const V = S.variations, a = fen(t, L(38) + 0.1, L(50) + 0.2, 0.4); if (a <= 0) return;
+    const V = S.variations, a = fen(t, L(58) + 0.1, L(74), 0.4); if (a <= 0) return;
     const [d0, d1] = V.chien, u = pr(t, d0, d1 - d0), xd = lerp(-1, 2, u), xp = t < d1 ? xd : lerp(2, 3.2, doux(pr(t, d1, 1.5)));
     ctx.save(); ctx.globalAlpha = a;
-    axes(ctx, RV, pr(t, L(38) + 0.1, 0.8), { gx: [-1, 1, 2, 3], gy: [2, 4, 6] });
+    axes(ctx, RV, pr(t, L(58) + 0.1, 0.8), { gx: [-1, 1, 2, 3], gy: [2, 4, 6] });
     courbe(ctx, RV, cub, -1.1, lerp(-1.1, 3.2, doux(pr(t, V.courbe[0], V.courbe[1] - V.courbe[0]))));
     formule(ctx, 'cf', RV.X(2.85), RV.Y(5.3), { fs: 34, a: ap(t, V.courbe[1]) });
     // le signe de f′ colore la courbe au passage du chien
@@ -278,7 +298,7 @@
 
     // --- panneau de droite ---
     formule(ctx, 'var_f', PX, 212, { fs: 42, mil: 1, a: ap(t, V.courbe[0]), monte: 1 });
-    const regles = fen(t, d0, L(42) - 0.3, 0.4), t0c = d0 + (d1 - d0) / 3;
+    const regles = fen(t, d0, L(62) - 0.3, 0.4), t0c = d0 + (d1 - d0) / 3;
     if (regles > 0) { ctx.save(); ctx.globalAlpha *= regles;
       [[d0, NEG, 'Tant que $f′$ est négative, la courbe descend.'], [t0c, POS, 'Dès que $f′$ est positive, elle monte.'], [d1, C.encre, 'Au sommet, la tangente est horizontale : $f′(2) = 0$.']].forEach(([tr, c, s], i) => { const q = ap(t, tr); if (q <= 0) return;
         ctx.save(); ctx.globalAlpha *= q; ctx.fillStyle = c; ctx.beginPath(); ctx.arc(1012, 330 + i * 76, 9, 0, 6.3); ctx.fill(); ctx.restore(); ligne(ctx, s, 1040, 341 + i * 76, { size: 32, w: 500, align: 'left', a: q }); });
@@ -313,7 +333,7 @@
 
   // ---------- bilan ----------
   function bilan(ctx, t) {
-    const B = S.bilan, a = fen(t, L(50) + 0.2, L(54), 0.4); if (a <= 0) return;
+    const B = S.bilan, a = fen(t, L(74) + 0.2, L(S.FIN), 0.4); if (a <= 0) return;
     ctx.save(); ctx.globalAlpha = a;
     const k0 = ap(t, B.titre); txt(ctx, 'À quoi sert la dérivée ?', CX, 222 + (1 - k0) * 20, { size: 62, w: 700, a: k0 });
     const XC = [400, 960, 1520], TX = [['Écrire l’équation d’une tangente,', 'approcher une courbe par une droite.'], ['Étudier les variations,', 'trouver un maximum ou un minimum.'], ['Décrire un mouvement : la vitesse', 'est la dérivée de la position.']];
@@ -357,8 +377,9 @@
   }
   // le chien du bas : il arrive après la colline, suit le jardinier, repart sur la colline des variations, puis revient
   const DEHORS = LU + 34;
-  const TRAJETS = [[L(6) + 0.4, L(6) + 2.6, DEHORS, DS[1]], ...[1, 2, 3, 4].map((k) => [J.marche[k][0] + 0.15, J.marche[k][1] + 0.15, DS[k], DS[k + 1]]),
-    [L(38) + 0.9, L(38) + 2.4, DS[5], DEHORS], [L(50) + 0.5, L(50) + 2.2, DEHORS, DS[6]]];
+  const FINP = S.CH.map((c) => c.t1);                    // fins de partie
+  const TRAJETS = [[FINP[0] + 0.4, FINP[0] + 2.6, DEHORS, DS[1]], ...[1, 2, 3, 4].map((k) => [J.marche[k][0] + 0.15, J.marche[k][1] + 0.15, DS[k], DS[k + 1]]),
+    [FINP[5] + 0.9, FINP[5] + 2.4, DS[5], DEHORS], [FINP[6] + 0.5, FINP[6] + 2.2, DEHORS, DS[6]]];
   function chienA(t) {
     let x = DEHORS, bouge = 0, face = -1;
     for (const [a, b, xa, xb] of TRAJETS) { if (t >= a) x = lerp(xa, xb, doux(pr(t, a, b - a))); bouge = Math.max(bouge, Math.min(pr(t, a - 0.35, 0.3), 1 - pr(t, b, 0.3))); if (xb > xa) face += 2 * (doux(pr(t, a - 0.3, 0.3)) - doux(pr(t, b, 0.3))); }
@@ -386,8 +407,12 @@
 
   function draw(ctx, t) {
     ctx.fillStyle = C.papier; ctx.fillRect(0, 0, W, H);
-    ouverture(ctx, t); entete(ctx, t);
-    colline(ctx, t); parabole(ctx, t); fonction(ctx, t); formules(ctx, t); tangente(ctx, t); variations(ctx, t); bilan(ctx, t); fin(ctx, t);
+    // Pendant un intertitre, une fois le voile fermé, les scènes sont dessinées à l'instant où la partie suivante
+    // commence : la précédente a alors tout à fait disparu et ne peut pas reparaître quand le voile se rouvre.
+    let ts = t; for (const it of S.intertitres) { const u = t - it.t; if (u > 1 && u < S.INTER) ts = it.t + S.INTER; }
+    ouverture(ctx, ts); entete(ctx, ts);
+    colline(ctx, ts); parabole(ctx, ts); fonction(ctx, ts); formules(ctx, ts); tangente(ctx, ts); variations(ctx, ts); bilan(ctx, ts); fin(ctx, t);
+    intertitre(ctx, t);
     jardin(ctx, t);
     // éclair bref sur les deux temps forts (l'oméga du logo, la fin) : l'image frappe à l'instant où le son frappe
     for (const [te, c, f] of [[S.ouverture.logo[2], '255,109,125', 0.13], [S.fin.t0, '231,233,237', 0.14]]) { const u = t - te; if (u >= 0 && u < 0.3) { ctx.fillStyle = `rgba(${c},${f * (1 - u / 0.3)})`; ctx.fillRect(0, 0, W, H); } }
