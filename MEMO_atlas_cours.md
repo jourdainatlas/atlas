@@ -812,4 +812,6 @@ chapitre sur les espaces préhilbertiens), mp-08 [ma-08, ma-18, ma-20], mp-09 [m
 reliées : `matrice` → mp-07, `nombre-e`, `derangements`, `taylor` → mp-09. Termes écartés : les fragments de phrases
 mis en rouge dans mp-08 et mp-09, `cid:74` et `cid:75` (glyphes non décodés), « mŒme … » (ligature mal décodée) ;
 par chapitre : `mp-08 : limite`, `mp-09 : pour tout`, `mp-09 : de classe`. Symboles : mp-07 `ellipse` (conique
-$\langle Ax, x\rangle = 1$ et ses axes propres orthogonaux, image du théorème spectral) ; mp-08 et mp-09 en attente.
+$\langle Ax, x\rangle = 1$ et ses axes propres orthogonaux, image du théorème spectral) ; mp-08 `xn` (courbes de $x^n$
+pour n = 1, 3, 8, 25 et leur limite simple discontinue) ; mp-09 `disque` (disque ouvert teinté, sans bord tracé, un point
+plein dedans, un point vide dehors).
