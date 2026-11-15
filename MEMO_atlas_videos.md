@@ -289,4 +289,12 @@ intertitre est une pastille qui donne son titre au survol et y saute au clic.
 - Choix faits dans le prototype, à confirmer : lecteur toujours en thème sombre ; partie lue en turquoise (couleur de
   la rubrique Cours), le rouge restant au seul bouton de lecture ; le bouton vit hors du lien de la ligne (un bouton
   dans un lien est interdit en HTML), ce qui demandera de retoucher la ligne `.chapitre` de `gabarit.html`.
+- Retour de l'auteur (15 novembre, soir) : **le lecteur lui plaît**. Corrigé à sa demande : pastilles centrées sur le
+  rail (le pseudo-élément n'héritait pas de `box-sizing`), plein écran (un `<dialog>` ne peut pas passer en plein
+  écran : on y met un cadre intérieur `.l-cadre`, avec repli « toute la fenêtre » si le navigateur refuse ; touche F,
+  double clic), bouton de **vitesse** ×0,5, ×1, ×1,5, ×2 (menu).
+- **Le bouton rouge de la page Cours ne le convainc pas** (ne pas le reproposer tel quel). Quatre pistes à comparer
+  dans le prototype (sélecteur en haut de page) : A, pastille pleine « ▶ Vidéo » jumelle de « En ligne » ; B,
+  mini-vignette de la vidéo avec sa durée ; C, rond au trait turquoise, plein au survol ; D, phrase « Le chapitre en
+  vidéo · 4 min 07 » sous le résumé. Choix en attente.
 - L'intégration au site relève du domaine Cours : ne rien y toucher sans demande de l'auteur.

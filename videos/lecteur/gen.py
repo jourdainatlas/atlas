@@ -13,8 +13,13 @@ def ligne(cid, video):
     c = cours[cid]
     th = ''.join(f'<span class="mini-theorie">{html.escape(N[i]["titre"]).replace("$\\\\mathbb{R}$","ℝ").replace("$\\\\mathbb{Q}$","ℚ")}</span>' for i in c['theories'] if i in N)
     th = th.replace(r'$\mathbb{R}$','ℝ').replace(r'$\mathbb{Q}$','ℚ')
-    bouton = f'<button class="voir-video" type="button" data-video aria-haspopup="dialog" aria-label="Regarder la vidéo du chapitre {c["chapitre"]}, {html.escape(c["titre"])}" title="Regarder la vidéo du chapitre"><svg viewBox="0 0 44 30" aria-hidden="true"><rect width="44" height="30" rx="8.5"/><path d="M17.5 8.6v12.8L29 15z"/></svg></button>' if video else ''
-    return f'''<li><a class="chapitre" href="#"><span class="num"><span>{c["chapitre"]}</span></span><span><span class="ch-titre">{html.escape(c["titre"])}</span><span class="ch-resume">{tex(c["resume"])}</span></span><span class="ch-theories">{th}</span></a><span class="ch-etat"><span class="statut depose">En ligne</span>{bouton}</span></li>'''
+    lab = f'aria-haspopup="dialog" aria-label="Regarder la vidéo du chapitre {c["chapitre"]}, {html.escape(c["titre"])} (4 min 07)" title="Regarder la vidéo du chapitre"'
+    tri = '<svg viewBox="0 0 10 12" aria-hidden="true"><path d="M0 0v12l10-6z"/></svg>'
+    bouton = (f'<button class="voir-video v-a" type="button" data-video {lab}>{tri}Vidéo</button>'
+              f'<button class="voir-video v-b" type="button" data-video {lab}><img src="vignette.jpg" alt=""><span class="rond">{tri}</span><span class="duree">4:07</span></button>'
+              f'<button class="voir-video v-c" type="button" data-video {lab}>{tri}</button>') if video else ''
+    sous = f'<span class="ch-sous"><button class="voir-video v-d" type="button" data-video {lab}>{tri}<span>Le chapitre en vidéo</span><small>4 min 07</small></button></span>' if video else ''
+    return f'''<li><a class="chapitre" href="#"><span class="num"><span>{c["chapitre"]}</span></span><span><span class="ch-titre">{html.escape(c["titre"])}</span><span class="ch-resume">{tex(c["resume"])}</span></span><span class="ch-theories">{th}</span></a><span class="ch-etat"><span class="statut depose">En ligne</span>{bouton}</span>{sous}</li>'''
 t = open('gabarit-proto.html', encoding='utf-8').read()
 t = t.replace('/*LIGNES*/', ligne('ma-07', True) + ligne('ma-08', False)).replace('/*SCORE*/', sc.strip())
 open('index.html', 'w', encoding='utf-8').write(t)

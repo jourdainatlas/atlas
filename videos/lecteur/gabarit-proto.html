@@ -70,12 +70,35 @@ button { font: inherit; color: inherit; }
 .statut.depose { border-style: solid; border-color: var(--c-ana); color: var(--c-ana); }
 .ch-etat { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 12px 16px 12px 0; }
 
-/* ---- le bouton « vidéo » : un rectangle arrondi rouge, triangle clair ---- */
-.voir-video { border: 0; background: none; padding: 7px; margin: -7px; cursor: pointer; border-radius: 14px; line-height: 0; }
-.voir-video svg { width: 44px; height: 30px; display: block; transition: transform .15s; }
-.voir-video rect { fill: var(--rouge); }
-.voir-video path { fill: var(--surface); }
-@media (hover: hover) { .voir-video:hover svg { transform: scale(1.1); } }
+/* ---- le bouton « vidéo » : quatre pistes, choisies par l'attribut data-piste de <body> ---- */
+.voir-video { display: none; border: 0; background: none; cursor: pointer; font: inherit; color: inherit; }
+.ch-sous { display: none; grid-column: 1 / -1; padding: 0 16px 14px 80px; margin-top: -4px; }
+body[data-piste="a"] .v-a, body[data-piste="b"] .v-b, body[data-piste="c"] .v-c { display: inline-flex; }
+body[data-piste="d"] .ch-sous { display: block; } body[data-piste="d"] .v-d { display: inline-flex; }
+/* A. La pastille jumelle : même forme que « En ligne », pleine. */
+.v-a { align-items: center; gap: 6px; font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .05em; text-transform: uppercase; white-space: nowrap; border-radius: 999px; padding: 3px 10px 3px 8px; background: var(--c-ana); color: var(--surface); font-weight: 500; }
+.v-a svg { width: 8px; height: 9px; fill: currentColor; }
+@media (hover: hover) { .v-a:hover { background: var(--encre); } }
+/* B. La mini-vignette : l'image de la vidéo, sa durée, un triangle. */
+.v-b { position: relative; width: 112px; aspect-ratio: 16 / 9; padding: 0; border-radius: 7px; overflow: hidden; border: 1px solid var(--filet); background: #121418; transition: border-color .15s, transform .15s; }
+.v-b img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.v-b .rond { position: absolute; left: 5px; bottom: 5px; width: 22px; height: 22px; border-radius: 50%; background: rgba(18, 20, 24, .78); display: grid; place-items: center; box-shadow: 0 0 0 1.5px rgba(231, 233, 237, .85); }
+.v-b .rond svg { width: 8px; height: 9px; fill: #e7e9ed; margin-left: 1.5px; }
+.v-b .duree { position: absolute; right: 4px; bottom: 4px; font-family: var(--f-mono); font-size: 10px; line-height: 1; padding: 2px 4px; border-radius: 3px; background: rgba(18, 20, 24, .82); color: #e7e9ed; }
+@media (hover: hover) { .v-b:hover { border-color: var(--c-ana); transform: scale(1.04); } }
+/* C. Le rond au trait : discret, de la couleur de la rubrique, plein au survol. */
+.v-c { width: 38px; height: 38px; border-radius: 50%; border: 1.5px solid var(--c-ana); color: var(--c-ana); align-items: center; justify-content: center; transition: background .15s, color .15s; }
+.v-c svg { width: 12px; height: 14px; fill: currentColor; margin-left: 2px; }
+@media (hover: hover) { .v-c:hover { background: var(--c-ana); color: var(--surface); } }
+/* D. La ligne d'encre : une phrase sous le résumé, comme un renvoi du texte. */
+.v-d { align-items: center; gap: 8px; padding: 2px 0; font-size: 13.5px; color: var(--c-ana); font-weight: 500; }
+.v-d svg { width: 9px; height: 11px; fill: currentColor; }
+.v-d small { font-family: var(--f-mono); font-size: 11.5px; color: var(--encre-3); font-weight: 400; }
+@media (hover: hover) { .v-d:hover span { text-decoration: underline; text-underline-offset: 3px; } }
+.pistes { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin: 0 0 22px; }
+.pistes > span { font-size: 13.5px; color: var(--encre-2); margin-right: 4px; }
+.pistes button { border: 1px solid var(--filet); background: var(--surface); border-radius: 999px; padding: 5px 14px; font-size: 13.5px; cursor: pointer; }
+.pistes button[aria-pressed="true"] { border-color: var(--c-ana); box-shadow: inset 0 0 0 1px var(--c-ana); font-weight: 600; }
 
 @media (max-width: 860px) {
   .page { padding: 20px 16px 56px; }
@@ -83,6 +106,7 @@ button { font: inherit; color: inherit; }
   .chapitre { grid-template-columns: 36px minmax(0, 1fr); padding-bottom: 6px; }
   .chapitre .ch-theories { grid-column: 2; }
   .ch-etat { flex-direction: row; justify-content: flex-start; padding: 0 16px 14px 68px; }
+  .ch-sous { padding-left: 68px; }
 }
 
 /* ================================================================= le lecteur */
@@ -91,7 +115,8 @@ button { font: inherit; color: inherit; }
   padding: 0; border: 1px solid var(--filet); border-radius: 12px; background: var(--surface); color: var(--encre); overflow: hidden;
   box-shadow: 0 20px 70px rgba(0, 0, 0, .55); font-family: var(--f-ui); }
 .lecteur::backdrop { background: rgba(8, 9, 12, .78); }
-.lecteur[open] { display: flex; flex-direction: column; animation: l-ouvre .18s ease-out; }
+.lecteur[open] { display: block; animation: l-ouvre .18s ease-out; }
+.l-cadre { display: flex; flex-direction: column; background: var(--surface); color: var(--encre); }
 @keyframes l-ouvre { from { opacity: 0; transform: scale(.975); } }
 .l-tete { height: var(--tete); flex: none; display: flex; align-items: center; gap: 12px; padding: 0 6px 0 16px; border-bottom: 1px solid var(--filet); }
 .l-sur { font-family: var(--f-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--encre-3); white-space: nowrap; }
@@ -114,9 +139,9 @@ button { font: inherit; color: inherit; }
 .l-piste { position: relative; height: 34px; cursor: pointer; touch-action: none; border-radius: 6px; }
 .l-rail { position: absolute; left: 0; right: 0; top: 50%; height: 5px; margin-top: -2.5px; border-radius: 3px; background: var(--filet); overflow: hidden; }
 .l-lu { height: 100%; width: 0; background: var(--c-ana); }
-.l-tete-lecture { position: absolute; top: 50%; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: var(--encre); left: 0; pointer-events: none; }
+.l-tete-lecture { position: absolute; z-index: 1; top: 50%; width: 16px; height: 16px; margin: -8px 0 0 -8px; box-shadow: 0 0 0 2px var(--surface); border-radius: 50%; background: var(--encre); left: 0; pointer-events: none; }
 .l-pastille { position: absolute; top: 0; height: 100%; width: 26px; margin-left: -13px; }
-.l-pastille::after { content: ""; position: absolute; left: 50%; top: 50%; width: 11px; height: 11px; margin: -5.5px; border-radius: 50%; background: var(--surface); border: 2px solid var(--encre-3); transition: transform .12s; }
+.l-pastille::after { content: ""; box-sizing: border-box; position: absolute; left: 50%; top: 50%; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: var(--surface); border: 2px solid var(--encre-3); transition: transform .12s; }
 .l-pastille.passee::after { border-color: var(--c-ana); background: var(--c-ana); }
 .l-pastille.vise::after { transform: scale(1.45); border-color: var(--encre); }
 .l-bulle { position: absolute; bottom: 30px; transform: translateX(-50%); white-space: nowrap; pointer-events: none; background: var(--encre); color: var(--surface); border-radius: 6px; padding: 4px 9px; font-size: 13px; font-weight: 500; opacity: 0; transition: opacity .1s; z-index: 2; }
@@ -138,19 +163,33 @@ button { font: inherit; color: inherit; }
 .l-droite { display: flex; align-items: center; justify-content: flex-end; gap: 4px; }
 .l-youtube { display: inline-flex; align-items: center; gap: 7px; height: 36px; padding: 0 12px; border: 1px solid var(--filet); border-radius: 8px; color: var(--encre); text-decoration: none; font-size: 13.5px; font-weight: 500; white-space: nowrap; }
 .l-youtube svg { width: 22px; height: 16px; flex: none; } .l-youtube rect { fill: var(--encre-2); } .l-youtube path { fill: var(--surface); }
+.l-vitesse { position: relative; }
+.l-vit { width: auto; min-width: 48px; padding: 0 8px; font-family: var(--f-mono); font-size: 13.5px; font-weight: 500; }
+.l-vit.autre { color: var(--c-ana); }
+.l-menu { position: absolute; bottom: 46px; right: 0; z-index: 3; display: flex; flex-direction: column; gap: 2px; padding: 5px; background: var(--surface); border: 1px solid var(--filet); border-radius: 10px; box-shadow: var(--ombre); }
+.l-menu[hidden] { display: none; }
+.l-menu button { border: 0; background: none; cursor: pointer; border-radius: 6px; padding: 7px 14px 7px 30px; text-align: left; font-family: var(--f-mono); font-size: 13.5px; color: var(--encre-2); white-space: nowrap; position: relative; }
+.l-menu button[aria-pressed="true"] { color: var(--encre); }
+.l-menu button[aria-pressed="true"]::before { content: ""; position: absolute; left: 12px; top: 50%; width: 8px; height: 8px; margin-top: -4px; border-radius: 50%; background: var(--c-ana); }
+@media (hover: hover) { .l-menu button:hover { background: var(--trame); color: var(--encre); } }
 .l-youtube[aria-disabled="true"] { border-style: dashed; color: var(--encre-3); cursor: not-allowed; }
 @media (hover: hover) { .l-youtube:not([aria-disabled="true"]):hover { border-color: var(--encre-3); } }
 
-.lecteur:fullscreen { width: 100vw; height: 100vh; border: 0; border-radius: 0; }
-.lecteur:fullscreen .l-scene { flex: 1; aspect-ratio: auto; min-height: 0; }
+.l-cadre:fullscreen { width: 100vw; height: 100vh; }
+.l-cadre:fullscreen .l-scene, .lecteur.plein .l-scene { flex: 1; aspect-ratio: auto; min-height: 0; }
+/* repli quand le navigateur refuse le vrai plein écran : le lecteur occupe toute la fenêtre */
+.lecteur.plein { width: 100vw; height: 100dvh; border: 0; border-radius: 0; margin: 0; }
+.lecteur.plein .l-cadre { height: 100%; }
+.l-plein .sortir, .l-plein.actif .entrer { display: none; } .l-plein.actif .sortir { display: block; }
 
 @media (max-width: 640px) {
   .lecteur { --barre: 112px; width: 100vw; border-radius: 0; border-left: 0; border-right: 0; }
   .l-sur, .l-partie, .l-youtube span { display: none; }
+  .l-vit { min-width: 40px; padding: 0 4px; } .l-saut { width: 40px; }
   .l-youtube { padding: 0 9px; }
   .l-commandes { gap: 4px; }
 }
-@media (prefers-reduced-motion: reduce) { .lecteur[open] { animation: none; } .voir-video svg, .l-affiche .gros, .l-pastille::after { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .lecteur[open] { animation: none; } .v-b, .v-c, .l-affiche .gros, .l-pastille::after { transition: none; } }
 </style>
 </head>
 <body>
@@ -160,7 +199,8 @@ button { font: inherit; color: inherit; }
   <button class="theme" type="button" id="theme">Thème clair</button>
 </header>
 <main class="page">
-  <p class="note">Prototype du lecteur vidéo, hors du site. L’en-tête et la liste sont un décor simplifié de la rubrique Cours ; seuls le bouton rouge du chapitre 7 et le lecteur qu’il ouvre sont à juger. Le chapitre 8 montre une ligne sans vidéo.</p>
+  <p class="note">Prototype du lecteur vidéo, hors du site. L’en-tête et la liste sont un décor simplifié de la rubrique Cours ; seuls le bouton vidéo du chapitre 7 et le lecteur qu’il ouvre sont à juger. Le chapitre 8 montre une ligne sans vidéo.</p>
+  <div class="pistes" role="group" aria-label="Piste de bouton"><span>Bouton du chapitre 7 :</span><button type="button" data-piste="a">A · pastille jumelle</button><button type="button" data-piste="b">B · mini-vignette</button><button type="button" data-piste="c">C · rond au trait</button><button type="button" data-piste="d">D · ligne d’encre</button></div>
   <section class="niveau">
     <div class="niveau-tete"><h3>MPSI</h3><span>extrait : chapitres 7 et 8</span></div>
     <ul class="chapitres carte">/*LIGNES*/</ul>
@@ -168,6 +208,7 @@ button { font: inherit; color: inherit; }
 </main>
 
 <dialog class="lecteur" id="lecteur" aria-labelledby="l-titre">
+<div class="l-cadre" id="l-cadre">
   <header class="l-tete">
     <span class="l-sur">MPSI · chapitre 7</span>
     <h2 id="l-titre">Nombres réels et suites numériques</h2>
@@ -195,10 +236,15 @@ button { font: inherit; color: inherit; }
       </div>
       <div class="l-droite">
         <a class="l-youtube" id="l-youtube" aria-disabled="true" title="Lien à venir : la vidéo n’est pas encore sur YouTube"><svg viewBox="0 0 44 30" aria-hidden="true"><rect width="44" height="30" rx="8.5"/><path d="M17.5 8.6v12.8L29 15z"/></svg><span>Voir sur YouTube</span></a>
-        <button class="l-bouton" type="button" id="l-plein" aria-label="Plein écran" title="Plein écran"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+        <div class="l-vitesse">
+          <button class="l-bouton l-vit" type="button" id="l-vit" aria-haspopup="true" aria-expanded="false" aria-label="Vitesse de lecture : ×1" title="Vitesse de lecture">×1</button>
+          <div class="l-menu" id="l-menu" role="group" aria-label="Vitesse de lecture" hidden></div>
+        </div>
+        <button class="l-bouton l-plein" type="button" id="l-plein" aria-label="Plein écran" title="Plein écran (F)"><svg class="entrer" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><svg class="sortir" viewBox="0 0 24 24"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg></button>
       </div>
     </div>
   </div>
+</div>
 </dialog>
 
 <script>
@@ -219,6 +265,12 @@ button { font: inherit; color: inherit; }
   const poser = (sombre) => { racine.dataset.theme = sombre ? 'dark' : 'light'; bTheme.textContent = sombre ? 'Thème clair' : 'Thème sombre'; };
   poser(!matchMedia('(prefers-color-scheme: light)').matches);
   bTheme.addEventListener('click', () => poser(racine.dataset.theme !== 'dark'));
+
+  // --- pistes de bouton (prototype) ---
+  const bPistes = [...document.querySelectorAll('.pistes button')];
+  const piste_ = (k) => { document.body.dataset.piste = k; bPistes.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.piste === k))); };
+  bPistes.forEach((b) => b.addEventListener('click', () => piste_(b.dataset.piste)));
+  piste_((location.hash.match(/^#piste-([a-d])$/) || [])[1] || 'b');
 
   // --- pastilles des intertitres ---
   const pastilles = CHAP.map((c, k) => { const p = document.createElement('span'); p.className = 'l-pastille'; p.style.left = (c.t / DUREE * 100) + '%'; p.dataset.k = k; piste.insertBefore(p, bulle); return p; });
@@ -246,13 +298,13 @@ button { font: inherit; color: inherit; }
   // Propre au prototype : certains hébergements de démonstration ne servent pas les « requêtes partielles » dont le
   // navigateur a besoin pour sauter dans une vidéo. On charge donc le fichier entier en mémoire dès l'arrivée sur la
   // page. Sur le site, le serveur les accepte : ce bloc disparaîtra et la vidéo ne se chargera qu'à la demande.
-  if (location.protocol !== 'file:') fetch(video.getAttribute('src')).then((r) => r.ok ? r.blob() : null).then((b) => { if (b && !commence) video.src = URL.createObjectURL(b); }).catch(() => {});
+  if (location.protocol !== 'file:') fetch(video.getAttribute('src')).then((r) => r.ok ? r.blob() : null).then((b) => { if (b && !commence) { const v = video.playbackRate; video.src = URL.createObjectURL(b); video.playbackRate = v; } }).catch(() => {});
 
   // --- ouverture et fermeture ---
   document.querySelectorAll('[data-video]').forEach((b) => b.addEventListener('click', () => { declencheur = b; dlg.showModal(); affiche.hidden ? $('l-jouer').focus() : affiche.focus(); peindre(); }));
   $('l-fermer').addEventListener('click', () => dlg.close());
   dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });                     // clic sur le fond
-  dlg.addEventListener('close', () => { video.pause(); if (document.fullscreenElement) document.exitFullscreen().catch(() => {}); if (declencheur) declencheur.focus(); });
+  dlg.addEventListener('close', () => { video.pause(); fermerMenu(); dlg.classList.remove('plein'); majPlein(); if (document.fullscreenElement) document.exitFullscreen().catch(() => {}); if (declencheur) declencheur.focus(); });
 
   // --- commandes ---
   affiche.addEventListener('click', () => { jouer(); $('l-jouer').focus(); });
@@ -260,7 +312,35 @@ button { font: inherit; color: inherit; }
   $('l-jouer').addEventListener('click', bascule);
   $('l-recule').addEventListener('click', () => aller(ici() - 5));
   $('l-avance').addEventListener('click', () => aller(ici() + 5));
-  $('l-plein').addEventListener('click', () => { const p = document.fullscreenElement ? document.exitFullscreen() : (dlg.requestFullscreen ? dlg.requestFullscreen() : null); if (p && p.catch) p.catch(() => {}); });
+  // Plein écran : le vrai quand le navigateur l'accorde, sinon le lecteur occupe toute la fenêtre.
+  const cadre = $('l-cadre'), bPlein = $('l-plein');
+  const enPlein = () => !!document.fullscreenElement || dlg.classList.contains('plein');
+  const majPlein = () => { const a = enPlein(); bPlein.classList.toggle('actif', a); bPlein.setAttribute('aria-label', a ? 'Quitter le plein écran' : 'Plein écran'); };
+  function plein() {
+    if (document.fullscreenElement) { document.exitFullscreen().catch(() => {}); return; }
+    if (dlg.classList.contains('plein')) { dlg.classList.remove('plein'); majPlein(); return; }
+    const repli = () => { dlg.classList.add('plein'); majPlein(); };
+    const demande = cadre.requestFullscreen || cadre.webkitRequestFullscreen;
+    if (!demande) return repli();
+    try { const p = demande.call(cadre); if (p && p.catch) p.catch(repli); } catch (e) { repli(); }
+  }
+  bPlein.addEventListener('click', plein);
+  document.addEventListener('fullscreenchange', majPlein);
+  video.addEventListener('dblclick', plein);
+
+  // Vitesse de lecture.
+  const VITESSES = [0.5, 1, 1.5, 2], bVit = $('l-vit'), menu = $('l-menu');
+  const nomVit = (v) => '×' + String(v).replace('.', ',');
+  const fermerMenu = () => { menu.hidden = true; bVit.setAttribute('aria-expanded', 'false'); };
+  function vitesse(v) {
+    video.playbackRate = v; video.defaultPlaybackRate = v; bVit.textContent = nomVit(v); bVit.classList.toggle('autre', v !== 1); bVit.setAttribute('aria-label', 'Vitesse de lecture : ' + nomVit(v));
+    menu.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(+b.dataset.v === v)));
+  }
+  VITESSES.forEach((v) => { const b = document.createElement('button'); b.type = 'button'; b.dataset.v = v; b.textContent = nomVit(v); b.addEventListener('click', () => { vitesse(v); fermerMenu(); bVit.focus(); }); menu.append(b); });
+  vitesse(1);
+  bVit.addEventListener('click', () => { const o = menu.hidden; menu.hidden = !o; bVit.setAttribute('aria-expanded', String(o)); if (o) (menu.querySelector('[aria-pressed="true"]') || menu.firstChild).focus(); });
+  dlg.addEventListener('pointerdown', (e) => { if (!menu.hidden && !e.target.closest('.l-vitesse')) fermerMenu(); });
+  dlg.addEventListener('cancel', (e) => { if (!menu.hidden) { e.preventDefault(); fermerMenu(); bVit.focus(); } else if (dlg.classList.contains('plein')) { e.preventDefault(); dlg.classList.remove('plein'); majPlein(); } });
   document.addEventListener('keydown', (e) => {
     if (!dlg.open || e.altKey || e.ctrlKey || e.metaKey) return;
     if (e.key === ' ' || e.key === 'Spacebar') {
@@ -268,6 +348,7 @@ button { font: inherit; color: inherit; }
       e.preventDefault(); bascule();
     } else if (e.key === 'ArrowLeft') { e.preventDefault(); aller(ici() - 5); }
     else if (e.key === 'ArrowRight') { e.preventDefault(); aller(ici() + 5); }
+    else if (e.key === 'f' || e.key === 'F') { e.preventDefault(); plein(); }
   });
 
   // --- la piste : survol, clic, glissement ---
