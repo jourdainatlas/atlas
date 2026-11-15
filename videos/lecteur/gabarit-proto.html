@@ -164,16 +164,21 @@ button { font: inherit; color: inherit; }
 .l-cadre.immersif:not(.montre) .l-tete, .l-cadre.immersif:not(.montre) .l-barre { opacity: 0; pointer-events: none; }
 .l-plein .sortir, .l-plein.actif .entrer { display: none; } .l-plein.actif .sortir { display: block; }
 
-@media (max-width: 640px) {
-  .lecteur { width: 100vw; border-radius: 0; border-left: 0; border-right: 0; }
-  .lecteur { --barre: 150px; }
-  .l-sur, .l-youtube span { display: none; }
-  .l-youtube { padding: 0 9px; }
-  /* deux rangs : le minuteur, la partie en cours et les réglages ; puis les trois boutons de lecture, seuls */
-  .l-commandes { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "gauche droite" "centre centre"; gap: 4px 10px; padding-bottom: 6px; }
-  .l-gauche { grid-area: gauche; gap: 10px; } .l-droite { grid-area: droite; } .l-centre { grid-area: centre; justify-content: center; gap: 18px; }
-  .l-partie { font-size: 13px; }
-}
+@media (max-width: 640px) { .lecteur { width: 100vw; border-radius: 0; border-left: 0; border-right: 0; } }
+/* Lecteur étroit (classe posée par le script d'après la largeur réelle du lecteur, et non celle de l'écran : un
+   téléphone couché a un écran large mais un lecteur étroit). La barre passe sur deux rangs : le minuteur, la partie
+   en cours et les réglages ; puis les trois boutons de lecture, seuls. */
+.lecteur.etroit { --barre: 150px; }
+/* Lecteur moyen : sur un rang, mais le lien YouTube se réduit à son symbole. */
+.lecteur.compact .l-sur, .lecteur.compact .l-youtube span { display: none; }
+.lecteur.compact .l-youtube { padding: 0 9px; }
+.lecteur.etroit .l-commandes { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "gauche droite" "centre centre"; gap: 4px 10px; padding-bottom: 6px; }
+.lecteur.etroit .l-gauche { grid-area: gauche; gap: 10px; } .lecteur.etroit .l-droite { grid-area: droite; } .lecteur.etroit .l-centre { grid-area: centre; justify-content: center; gap: 18px; }
+.lecteur.etroit .l-partie { font-size: 13px; }
+/* Téléphone couché : le lecteur prend toute la fenêtre, comme en plein écran. */
+.lecteur.couche { width: 100vw; height: 100dvh; border: 0; border-radius: 0; margin: 0; }
+.lecteur.couche .l-cadre { height: 100%; }
+.lecteur.couche .l-scene { flex: 1; aspect-ratio: auto; min-height: 0; }
 @media (prefers-reduced-motion: reduce) { .lecteur[open] { animation: none; } .l-cadre.immersif .l-tete, .l-cadre.immersif .l-barre { transition: none; }  .l-affiche .gros, .l-pastille::after { transition: none; } }
 </style>
 </head>
@@ -256,7 +261,7 @@ button { font: inherit; color: inherit; }
 
   // --- état ---
   let commence = false, declencheur = null, cible = null;      // cible : instant demandé tant que le saut n'est pas fait
-  const demarrer = () => { if (!commence) { commence = true; const f = document.activeElement === affiche; affiche.hidden = true; if (f) $('l-jouer').focus(); } };
+  const demarrer = () => { if (!commence) { commence = true; const f = document.activeElement === affiche; affiche.hidden = true; if (f) $('l-jouer').focus(); majPlein(); } };
   const jouer = () => { demarrer(); const p = video.play(); if (p && p.catch) p.catch(() => {}); };
   const bascule = () => { if (video.paused || video.ended) jouer(); else video.pause(); };
   const ici = () => cible ?? (video.currentTime || 0);
@@ -295,7 +300,14 @@ button { font: inherit; color: inherit; }
   // Plein écran : le vrai quand le navigateur l'accorde, sinon le lecteur occupe toute la fenêtre.
   const cadre = $('l-cadre'), bPlein = $('l-plein');
   const enPlein = () => !!document.fullscreenElement || dlg.classList.contains('plein');
-  const tactile = matchMedia('(pointer: coarse)');
+  const tactile = matchMedia('(pointer: coarse)'), couche = matchMedia('(pointer: coarse) and (orientation: landscape) and (max-height: 520px)');
+  // Largeur qu'aura le lecteur, calculée d'après la fenêtre (et non mesurée : sa hauteur de barre en dépend).
+  function majEtroit() {
+    const vw = innerWidth, vh = innerHeight, toute = document.fullscreenElement || dlg.classList.contains('plein') || dlg.classList.contains('couche');
+    const l = toute || vw <= 640 ? vw : Math.min(0.96 * vw, (vh - 96 - 46 - 28) * 16 / 9);
+    dlg.classList.toggle('compact', l < 720); dlg.classList.toggle('etroit', l < 500);
+  }
+  const majCouche = () => { dlg.classList.toggle('couche', couche.matches); majPlein(); };
   let minuterie = 0;
   const immersif = () => cadre.classList.contains('immersif');
   function rappeler() {                                                    // montre l'en-tête et la barre, puis les efface après trois secondes de lecture
@@ -304,7 +316,8 @@ button { font: inherit; color: inherit; }
   }
   const majPlein = () => {
     const a = enPlein(); bPlein.classList.toggle('actif', a); bPlein.setAttribute('aria-label', a ? 'Quitter le plein écran' : 'Plein écran');
-    cadre.classList.toggle('immersif', a && tactile.matches); rappeler();
+    // immersif seulement après le lancement : avant, la vignette reste entière
+    cadre.classList.toggle('immersif', commence && ((a && tactile.matches) || dlg.classList.contains('couche'))); majEtroit(); rappeler();
     if (a && tactile.matches && screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(() => {});
   };
   function plein() {
@@ -322,6 +335,7 @@ button { font: inherit; color: inherit; }
     try { const p = demande.call(cadre); if (p && p.catch) p.catch(repli); } catch (e) { repli(); }
   }
   bPlein.addEventListener('click', plein);
+  addEventListener('resize', majEtroit); (couche.addEventListener ? couche.addEventListener('change', majCouche) : couche.addListener(majCouche));
   document.addEventListener('fullscreenchange', majPlein);
   video.addEventListener('dblclick', plein);
 
@@ -365,7 +379,7 @@ button { font: inherit; color: inherit; }
   piste.addEventListener('pointerdown', (e) => { const k = viser(e); if (k >= 0) { aller(CHAP[k].t); montrer(e); return; } glisse = true; piste.setPointerCapture(e.pointerId); aller(fraction(e) * DUREE); montrer(e); });
   const lacher = (e) => { if (!glisse) return; glisse = false; if (e.pointerType !== 'mouse') cacher(); };
   piste.addEventListener('pointerup', lacher); piste.addEventListener('pointercancel', lacher);
-  peindre();
+  peindre(); majCouche();
 })();
 </script>
 </body>

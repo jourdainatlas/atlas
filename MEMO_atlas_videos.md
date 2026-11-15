@@ -308,4 +308,11 @@ intertitre est une pastille qui donne son titre au survol et y saute au clic.
   système (`video.webkitEnterFullscreen`), seul vrai plein écran, avec les commandes d'Apple et sans les pastilles ;
   si le système refuse, on retombe sur le mode « toute la fenêtre », immersif. Rien de tout cela n'a été essayé sur
   un vrai téléphone (émulation tactile de Chrome et simulation du cas iPhone seulement).
+- **Téléphone couché** (collision signalée par l'auteur) : la disposition de la barre dépend désormais de la largeur du
+  lecteur, calculée par `majEtroit()`, et non de celle de l'écran (un téléphone couché a un écran large mais un
+  lecteur étroit). Trois états : normal (720 px et plus), `compact` (YouTube réduit à son symbole), `etroit` (moins de
+  500 px, deux rangs). Sur écran tactile en paysage de moins de 520 px de haut (classe `couche`), le lecteur prend
+  toute la fenêtre ; une fois la vidéo lancée il devient immersif, avant cela la vignette reste entière.
+  Piège rencontré : un commentaire `//` ajouté en fin de ligne a avalé deux appels écrits sur la même ligne.
+- Validé par l'auteur sur son iPhone : plein écran du système, et lecteur téléphone droit sans plein écran.
 - L'intégration au site relève du domaine Cours : ne rien y toucher sans demande de l'auteur.
