@@ -220,8 +220,10 @@ Elles valent pour les trois vidéos existantes et pour toutes les suivantes.
    déplacement du chien a une raison que l'on voit** : il ne disparaît ni n'apparaît jamais d'un coup. Il sort du
    jardin par un bord pendant un intertitre et entre dans la scène par le même bord, ou bien il saute sous l'écran
    et retombe du haut ; il revient au jardin en sautant devant le jardinier ou en y rentrant par un bord.
-   Mises en scène en place (15 novembre, en attente de validation sauf la première) :
-   - dérivation : le chien sur la colline, puis assis au sommet de la courbe (validée) ;
+   Mises en scène en place (15 novembre ; celles des équations et de la MPSI validées par l'auteur, « c'est parfait ») :
+   - dérivation : sur la colline du début, il traverse l'écran de gauche à droite et rentre au jardin par la droite ;
+     pour les variations, il saute sous l'écran, retombe du haut sur la courbe, la parcourt, s'assoit au sommet, puis
+     saute rejoindre le jardinier quand la partie s'achève ;
    - équations : il sort à gauche pendant l'intertitre, entre près de la balance, s'assoit, bondit et vole un sac sur
      le plateau de gauche (l'équilibre est rompu), repart à gauche et rapporte le sac au jardin, devant le jardinier ;
    - MPSI, borne supérieure : il saute sous l'écran, retombe du haut sur l'intervalle A, y marche vers sup A sans

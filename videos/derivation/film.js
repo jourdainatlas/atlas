@@ -280,7 +280,7 @@
       formule(ctx, 'moins', RW.X(-0.55), RW.Y(-1.5), { fs: 46, mil: 1, a: ks[0] }); formule(ctx, 'plus', RW.X(1), RW.Y(1.3), { fs: 46, mil: 1, a: ks[1] }); formule(ctx, 'moins', RW.X(2.62), RW.Y(-1.5), { fs: 46, mil: 1, a: ks[2] });
     }
     // le chien : il descend, remonte, et s'assoit au sommet
-    const kc = ap(t, d0 - 0.3);
+    const kc = t >= d0 && t < ACT.tX ? 1 : 0;                 // avant et après, c'est acteur() qui le dessine
     if (kc > 0) { const p = cubP(xd), an = Math.atan(-p * RV.ky / RV.kx), px = RV.X(xd), py = RV.Y(cub(xd)), assis = doux(pr(t, d1, 0.5));
       ctx.save(); ctx.globalAlpha *= kc;
       if (u < 1) { const c = Math.abs(p) < 0.35 ? C.encre : p > 0 ? POS : NEG; ctx.strokeStyle = c; ctx.lineWidth = 4; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(px - 80 * Math.cos(an), py - 80 * Math.sin(an)); ctx.lineTo(px + 80 * Math.cos(an), py + 80 * Math.sin(an)); ctx.stroke(); }
@@ -372,8 +372,22 @@
   // le chien du bas : il arrive après la colline, suit le jardinier, repart sur la colline des variations, puis revient
   const DEHORS = LU + 34;
   const FINP = S.CH.map((c) => c.t1);                    // fins de partie
-  const TRAJETS = [[FINP[0] + 0.4, FINP[0] + 2.6, DEHORS, DS[1]], ...[1, 2, 3, 4].map((k) => [J.marche[k][0] + 0.15, J.marche[k][1] + 0.15, DS[k], DS[k + 1]]),
-    [FINP[5] + 0.9, FINP[5] + 2.4, DS[5], DEHORS], [FINP[6] + 0.5, FINP[6] + 2.2, DEHORS, DS[6]]];
+  // Le chien est l'acteur des scènes, et chacun de ses déplacements a une raison que l'on voit. Sur la colline du
+  // début, il traverse l'écran de gauche à droite, puis rentre au jardin par la droite. Pour les variations, il saute
+  // sous l'écran, retombe du haut sur la courbe, la parcourt, s'assoit au sommet, et saute enfin rejoindre le jardinier.
+  const ACT = (() => { const d0 = S.variations.chien[0]; return { tJ: L(38) + 0.05, tA: d0 - 1.05, tL: d0 - 0.25, tX: FINP[6] - 0.7 }; })();
+  const EN_SCENE = [[ACT.tJ + 0.2, ACT.tX + 1.5]];
+  const TRAJETS = [[FINP[0] + 0.4, FINP[0] + 2.6, DEHORS, DS[1]], ...[1, 2, 3, 4, 5].map((k) => [J.marche[k][0] + 0.15, J.marche[k][1] + 0.15, DS[k], DS[k + 1]])];
+  function acteur(ctx, t) {
+    const { tJ, tA, tL, tX } = ACT, d0 = S.variations.chien[0], ECH = 2.6, x5 = DS[5] * SC, x6 = DS[6] * SC;
+    const pente = (x) => Math.atan(-cubP(x) * RV.ky / RV.kx);
+    if (t >= tJ + 0.2 && t < tA) { const u = t - tJ - 0.2, y = SOLPX - 430 * u + 1250 * u * u;                       // petit bond, puis il tombe sous l'écran
+      if (y < H + 130) K.chienSur(ctx, x6, y, 0, SC, u < 0.17 ? { t, face: -1, allure: 'vol', vol: u / 0.17, tang: 0.3 } : { ...K.poseChute(t), face: -1 }); }
+    else if (t >= tA && t < tL) { const u = (t - tA) / (tL - tA), yb = RV.Y(cub(-1)) - 2; K.chienSur(ctx, RV.X(-1), -60 + (yb + 60) * Math.pow(u, 1.6), pente(-1) * u * u, ECH, K.poseChute(t)); }   // il retombe du haut, sur la courbe
+    else if (t >= tL && t < d0) K.chienSur(ctx, RV.X(-1), RV.Y(cub(-1)) - 2, pente(-1), ECH, K.poseChoc(t, t - tL));
+    else if (t >= tX && t < tX + 1.5) { const u = pr(t, tX + 0.2, 0.8), x = lerp(RV.X(2), x6, u), y = lerp(RV.Y(6) - 2, SOLPX, u * u) - 170 * Math.sin(Math.PI * u) * (1 - u), ech = lerp(ECH, SC, u), fin = t - (tX + 1.0);
+      K.chienSur(ctx, x, y, 0, ech, u <= 0 ? { t, assis: 1 - pr(t, tX, 0.2), bas: 2 * pr(t, tX, 0.2) } : u < 0.3 ? { t, allure: 'vol', vol: u / 0.3, tang: 0.35 } : u < 1 ? K.poseChute(t) : { ...K.poseChoc(t, fin), face: lerp(1, -1, doux(pr(fin, 0.1, 0.3))), assis: doux(pr(fin, 0.15, 0.35)) }); }
+  }
   function chienA(t) {
     let x = DEHORS, bouge = 0, face = -1;
     for (const [a, b, xa, xb] of TRAJETS) { if (t >= a) x = lerp(xa, xb, doux(pr(t, a, b - a))); bouge = Math.max(bouge, Math.min(pr(t, a - 0.35, 0.3), 1 - pr(t, b, 0.3))); if (xb > xa) face += 2 * (doux(pr(t, a - 0.3, 0.3)) - doux(pr(t, b, 0.3))); }
@@ -389,7 +403,7 @@
     const pieds = [j.x - 1.5, j.x + 2, ch.x - 7, ch.x + 7];
     K.dessinerPrairie(ctx, t, 0, [0, 1], pieds);
     for (const a of ARBRES) K.dessinerArbre(ctx, t, a);
-    if (ch.x < LU + 28) globalThis.CHIEN.dessiner(ctx, ch);
+    if (ch.x < LU + 28 && ch.x > -32 && !EN_SCENE.some(([a, b]) => t >= a && t < b)) globalThis.CHIEN.dessiner(ctx, ch);
     const { bec } = globalThis.JARDINIER.dessiner(ctx, j);
     if (j.verse) { ctx.save(); ctx.fillStyle = C.edifice;                                       // l'arrosoir verse des symboles
       G.decor(() => { ctx.font = `700 8.5px ${F.mono}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
@@ -408,6 +422,7 @@
     colline(ctx, ts); parabole(ctx, ts); fonction(ctx, ts); formules(ctx, ts); tangente(ctx, ts); variations(ctx, ts); bilan(ctx, ts); fin(ctx, t);
     intertitre(ctx, t);
     jardin(ctx, t);
+    acteur(ctx, t);
     // éclair bref sur les deux temps forts (l'oméga du logo, la fin) : l'image frappe à l'instant où le son frappe
     for (const [te, c, f] of [[S.ouverture.logo[2], '255,109,125', 0.13], [S.fin.t0, '231,233,237', 0.14]]) { const u = t - te; if (u >= 0 && u < 0.3) { ctx.fillStyle = `rgba(${c},${f * (1 - u / 0.3)})`; ctx.fillRect(0, 0, W, H); } }
     const f = pr(t, S.DURATION - 0.9, 0.8); if (f > 0) { ctx.fillStyle = `rgba(18,20,24,${f})`; ctx.fillRect(0, 0, W, H); }
