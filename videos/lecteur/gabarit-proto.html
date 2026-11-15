@@ -70,35 +70,11 @@ button { font: inherit; color: inherit; }
 .statut.depose { border-style: solid; border-color: var(--c-ana); color: var(--c-ana); }
 .ch-etat { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 12px 16px 12px 0; }
 
-/* ---- le bouton « vidéo » : quatre pistes, choisies par l'attribut data-piste de <body> ---- */
-.voir-video { display: none; border: 0; background: none; cursor: pointer; font: inherit; color: inherit; }
-.ch-sous { display: none; grid-column: 1 / -1; padding: 0 16px 14px 80px; margin-top: -4px; }
-body[data-piste="a"] .v-a, body[data-piste="b"] .v-b, body[data-piste="c"] .v-c { display: inline-flex; }
-body[data-piste="d"] .ch-sous { display: block; } body[data-piste="d"] .v-d { display: inline-flex; }
-/* A. La pastille jumelle : même forme que « En ligne », pleine. */
-.v-a { align-items: center; gap: 6px; font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .05em; text-transform: uppercase; white-space: nowrap; border-radius: 999px; padding: 3px 10px 3px 8px; background: var(--c-ana); color: var(--surface); font-weight: 500; }
-.v-a svg { width: 8px; height: 9px; fill: currentColor; }
-@media (hover: hover) { .v-a:hover { background: var(--encre); } }
-/* B. La mini-vignette : l'image de la vidéo, sa durée, un triangle. */
-.v-b { position: relative; width: 112px; aspect-ratio: 16 / 9; padding: 0; border-radius: 7px; overflow: hidden; border: 1px solid var(--filet); background: #121418; transition: border-color .15s, transform .15s; }
-.v-b img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.v-b .rond { position: absolute; left: 5px; bottom: 5px; width: 22px; height: 22px; border-radius: 50%; background: rgba(18, 20, 24, .78); display: grid; place-items: center; box-shadow: 0 0 0 1.5px rgba(231, 233, 237, .85); }
-.v-b .rond svg { width: 8px; height: 9px; fill: #e7e9ed; margin-left: 1.5px; }
-.v-b .duree { position: absolute; right: 4px; bottom: 4px; font-family: var(--f-mono); font-size: 10px; line-height: 1; padding: 2px 4px; border-radius: 3px; background: rgba(18, 20, 24, .82); color: #e7e9ed; }
-@media (hover: hover) { .v-b:hover { border-color: var(--c-ana); transform: scale(1.04); } }
-/* C. Le rond au trait : discret, de la couleur de la rubrique, plein au survol. */
-.v-c { width: 38px; height: 38px; border-radius: 50%; border: 1.5px solid var(--c-ana); color: var(--c-ana); align-items: center; justify-content: center; transition: background .15s, color .15s; }
-.v-c svg { width: 12px; height: 14px; fill: currentColor; margin-left: 2px; }
-@media (hover: hover) { .v-c:hover { background: var(--c-ana); color: var(--surface); } }
-/* D. La ligne d'encre : une phrase sous le résumé, comme un renvoi du texte. */
-.v-d { align-items: center; gap: 8px; padding: 2px 0; font-size: 13.5px; color: var(--c-ana); font-weight: 500; }
-.v-d svg { width: 9px; height: 11px; fill: currentColor; }
-.v-d small { font-family: var(--f-mono); font-size: 11.5px; color: var(--encre-3); font-weight: 400; }
-@media (hover: hover) { .v-d:hover span { text-decoration: underline; text-underline-offset: 3px; } }
-.pistes { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin: 0 0 22px; }
-.pistes > span { font-size: 13.5px; color: var(--encre-2); margin-right: 4px; }
-.pistes button { border: 1px solid var(--filet); background: var(--surface); border-radius: 999px; padding: 5px 14px; font-size: 13.5px; cursor: pointer; }
-.pistes button[aria-pressed="true"] { border-color: var(--c-ana); box-shadow: inset 0 0 0 1px var(--c-ana); font-weight: 600; }
+/* ---- le bouton « vidéo » : une pastille pleine, jumelle de « En ligne » (piste A, retenue par l'auteur) ---- */
+.voir-video { display: inline-flex; align-items: center; gap: 6px; border: 0; cursor: pointer; font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .05em; text-transform: uppercase; white-space: nowrap; border-radius: 999px; padding: 3px 10px 3px 8px; background: var(--c-ana); color: var(--surface); font-weight: 500; position: relative; }
+.voir-video::after { content: ""; position: absolute; inset: -11px -6px; }                 /* zone tactile élargie */
+.voir-video svg { width: 8px; height: 9px; fill: currentColor; }
+@media (hover: hover) { .voir-video:hover { background: var(--encre); } }
 
 @media (max-width: 860px) {
   .page { padding: 20px 16px 56px; }
@@ -106,7 +82,6 @@ body[data-piste="d"] .ch-sous { display: block; } body[data-piste="d"] .v-d { di
   .chapitre { grid-template-columns: 36px minmax(0, 1fr); padding-bottom: 6px; }
   .chapitre .ch-theories { grid-column: 2; }
   .ch-etat { flex-direction: row; justify-content: flex-start; padding: 0 16px 14px 68px; }
-  .ch-sous { padding-left: 68px; }
 }
 
 /* ================================================================= le lecteur */
@@ -180,16 +155,26 @@ body[data-piste="d"] .ch-sous { display: block; } body[data-piste="d"] .v-d { di
 /* repli quand le navigateur refuse le vrai plein écran : le lecteur occupe toute la fenêtre */
 .lecteur.plein { width: 100vw; height: 100dvh; border: 0; border-radius: 0; margin: 0; }
 .lecteur.plein .l-cadre { height: 100%; }
+/* Sur un écran tactile, le plein écran est « immersif » : la vidéo occupe tout, l'en-tête et la barre se posent
+   par-dessus et s'effacent ; un appui sur la vidéo les rappelle. */
+.l-cadre.immersif { position: relative; background: #121418; }
+.l-cadre.immersif .l-scene { flex: 1; aspect-ratio: auto; min-height: 0; }
+.l-cadre.immersif .l-tete, .l-cadre.immersif .l-barre { position: absolute; left: 0; right: 0; z-index: 4; background: rgba(25, 28, 34, .93); transition: opacity .2s; }
+.l-cadre.immersif .l-tete { top: 0; } .l-cadre.immersif .l-barre { bottom: 0; }
+.l-cadre.immersif:not(.montre) .l-tete, .l-cadre.immersif:not(.montre) .l-barre { opacity: 0; pointer-events: none; }
 .l-plein .sortir, .l-plein.actif .entrer { display: none; } .l-plein.actif .sortir { display: block; }
 
 @media (max-width: 640px) {
-  .lecteur { --barre: 112px; width: 100vw; border-radius: 0; border-left: 0; border-right: 0; }
-  .l-sur, .l-partie, .l-youtube span { display: none; }
-  .l-vit { min-width: 40px; padding: 0 4px; } .l-saut { width: 40px; }
+  .lecteur { width: 100vw; border-radius: 0; border-left: 0; border-right: 0; }
+  .lecteur { --barre: 150px; }
+  .l-sur, .l-youtube span { display: none; }
   .l-youtube { padding: 0 9px; }
-  .l-commandes { gap: 4px; }
+  /* deux rangs : le minuteur, la partie en cours et les réglages ; puis les trois boutons de lecture, seuls */
+  .l-commandes { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "gauche droite" "centre centre"; gap: 4px 10px; padding-bottom: 6px; }
+  .l-gauche { grid-area: gauche; gap: 10px; } .l-droite { grid-area: droite; } .l-centre { grid-area: centre; justify-content: center; gap: 18px; }
+  .l-partie { font-size: 13px; }
 }
-@media (prefers-reduced-motion: reduce) { .lecteur[open] { animation: none; } .v-b, .v-c, .l-affiche .gros, .l-pastille::after { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .lecteur[open] { animation: none; } .l-cadre.immersif .l-tete, .l-cadre.immersif .l-barre { transition: none; }  .l-affiche .gros, .l-pastille::after { transition: none; } }
 </style>
 </head>
 <body>
@@ -200,7 +185,6 @@ body[data-piste="d"] .ch-sous { display: block; } body[data-piste="d"] .v-d { di
 </header>
 <main class="page">
   <p class="note">Prototype du lecteur vidéo, hors du site. L’en-tête et la liste sont un décor simplifié de la rubrique Cours ; seuls le bouton vidéo du chapitre 7 et le lecteur qu’il ouvre sont à juger. Le chapitre 8 montre une ligne sans vidéo.</p>
-  <div class="pistes" role="group" aria-label="Piste de bouton"><span>Bouton du chapitre 7 :</span><button type="button" data-piste="a">A · pastille jumelle</button><button type="button" data-piste="b">B · mini-vignette</button><button type="button" data-piste="c">C · rond au trait</button><button type="button" data-piste="d">D · ligne d’encre</button></div>
   <section class="niveau">
     <div class="niveau-tete"><h3>MPSI</h3><span>extrait : chapitres 7 et 8</span></div>
     <ul class="chapitres carte">/*LIGNES*/</ul>
@@ -266,12 +250,6 @@ body[data-piste="d"] .ch-sous { display: block; } body[data-piste="d"] .v-d { di
   poser(!matchMedia('(prefers-color-scheme: light)').matches);
   bTheme.addEventListener('click', () => poser(racine.dataset.theme !== 'dark'));
 
-  // --- pistes de bouton (prototype) ---
-  const bPistes = [...document.querySelectorAll('.pistes button')];
-  const piste_ = (k) => { document.body.dataset.piste = k; bPistes.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.piste === k))); };
-  bPistes.forEach((b) => b.addEventListener('click', () => piste_(b.dataset.piste)));
-  piste_((location.hash.match(/^#piste-([a-d])$/) || [])[1] || 'b');
-
   // --- pastilles des intertitres ---
   const pastilles = CHAP.map((c, k) => { const p = document.createElement('span'); p.className = 'l-pastille'; p.style.left = (c.t / DUREE * 100) + '%'; p.dataset.k = k; piste.insertBefore(p, bulle); return p; });
   if (YOUTUBE) { const y = $('l-youtube'); y.href = YOUTUBE; y.target = '_blank'; y.rel = 'noopener'; y.removeAttribute('aria-disabled'); y.title = 'Ouvrir la vidéo sur YouTube'; }
@@ -308,14 +286,27 @@ body[data-piste="d"] .ch-sous { display: block; } body[data-piste="d"] .v-d { di
 
   // --- commandes ---
   affiche.addEventListener('click', () => { jouer(); $('l-jouer').focus(); });
-  video.addEventListener('click', bascule);
+  video.addEventListener('click', () => { if (!immersif()) return bascule(); if (cadre.classList.contains('montre') && !video.paused) { clearTimeout(minuterie); cadre.classList.remove('montre'); } else rappeler(); });
+  ['play', 'pause', 'ended'].forEach((e) => video.addEventListener(e, () => rappeler()));
+  ['pointerdown', 'keydown', 'focusin'].forEach((e) => $('l-cadre').addEventListener(e, (ev) => { if (ev.target !== video) rappeler(); }));
   $('l-jouer').addEventListener('click', bascule);
   $('l-recule').addEventListener('click', () => aller(ici() - 5));
   $('l-avance').addEventListener('click', () => aller(ici() + 5));
   // Plein écran : le vrai quand le navigateur l'accorde, sinon le lecteur occupe toute la fenêtre.
   const cadre = $('l-cadre'), bPlein = $('l-plein');
   const enPlein = () => !!document.fullscreenElement || dlg.classList.contains('plein');
-  const majPlein = () => { const a = enPlein(); bPlein.classList.toggle('actif', a); bPlein.setAttribute('aria-label', a ? 'Quitter le plein écran' : 'Plein écran'); };
+  const tactile = matchMedia('(pointer: coarse)');
+  let minuterie = 0;
+  const immersif = () => cadre.classList.contains('immersif');
+  function rappeler() {                                                    // montre l'en-tête et la barre, puis les efface après trois secondes de lecture
+    clearTimeout(minuterie); cadre.classList.add('montre');
+    if (immersif() && !video.paused && !video.ended) minuterie = setTimeout(() => { if (menu.hidden && !glisse) cadre.classList.remove('montre'); else rappeler(); }, 3000);
+  }
+  const majPlein = () => {
+    const a = enPlein(); bPlein.classList.toggle('actif', a); bPlein.setAttribute('aria-label', a ? 'Quitter le plein écran' : 'Plein écran');
+    cadre.classList.toggle('immersif', a && tactile.matches); rappeler();
+    if (a && tactile.matches && screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(() => {});
+  };
   function plein() {
     if (document.fullscreenElement) { document.exitFullscreen().catch(() => {}); return; }
     if (dlg.classList.contains('plein')) { dlg.classList.remove('plein'); majPlein(); return; }

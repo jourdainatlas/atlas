@@ -296,8 +296,14 @@ intertitre est une pastille qui donne son titre au survol et y saute au clic.
 - Puis, à sa demande : le gros bouton de la vignette est **en haut à droite**, à la hauteur de la ligne « MPSI ·
   chapitre 7 » ; le minuteur est dans une **pastille** (fond `--trame`, filet), et le titre de la partie en cours, qu'il
   apprécie à cet endroit, est à côté, centré sur elle, en encre pleine.
-- **Le bouton rouge de la page Cours ne le convainc pas** (ne pas le reproposer tel quel). Quatre pistes à comparer
-  dans le prototype (sélecteur en haut de page) : A, pastille pleine « ▶ Vidéo » jumelle de « En ligne » ; B,
-  mini-vignette de la vidéo avec sa durée ; C, rond au trait turquoise, plein au survol ; D, phrase « Le chapitre en
-  vidéo · 4 min 07 » sous le résumé. Choix en attente.
+- **Bouton de la page Cours : piste A retenue par l'auteur**, une pastille pleine turquoise « ▶ Vidéo », jumelle de
+  « En ligne » et placée dessous. Écartés, à ne pas reproposer : le rectangle rouge façon YouTube, la mini-vignette,
+  le rond au trait, la phrase sous le résumé.
+- **Téléphone** (demandes de l'auteur) : sous 640 px la barre passe sur deux rangs (minuteur, partie en cours, YouTube,
+  vitesse, plein écran ; puis les trois boutons de lecture seuls), ce qui supprime la collision entre « +5 s » et
+  YouTube. Sur écran tactile (`pointer: coarse`), le plein écran est **immersif** : la vidéo occupe tout, l'en-tête et
+  la barre se posent par-dessus et s'effacent après trois secondes de lecture ; un appui sur la vidéo les rappelle,
+  ils restent visibles en pause. Sur ordinateur, la barre reste toujours visible (souhait de l'auteur). L'iPhone
+  n'accorde pas le plein écran à un élément de page : on y retombe sur le mode « toute la fenêtre », immersif lui
+  aussi ; le seul vrai plein écran y serait celui du lecteur du système (`webkitEnterFullscreen`), sans les pastilles.
 - L'intégration au site relève du domaine Cours : ne rien y toucher sans demande de l'auteur.
