@@ -343,8 +343,24 @@
     ctx.restore();
   }
 
+  // ---------- la vignette (image d'attente du lecteur, miniature YouTube) ----------
+  // Elle n'appartient pas au film : `node engine/render.js stills 1000` la dessine (tout instant au-delà de la durée
+  // plus 100 s). Le titre, l'équation 3x + 2 = x + 10 et sa balance en équilibre, le jardin planté avec le chien.
+  function vignette(ctx) {
+    const T = 1e6;
+    K.logo(ctx, 128, 126, 104);
+    txt(ctx, `${NIVEAU} · CHAPITRE 4`, 212, 140, { fam: F.mono, w: 500, size: 38, ls: 7, c: C.encre2, align: 'left' });
+    txt(ctx, 'Les équations', 76, 400, { size: 180, w: 800, align: 'left' });
+    eq(ctx, 'b0l', 'b0r', 560, 600, { fs: 92 });
+    balanceD(ctx, 1440, 470, 0.95, 0,
+      (X, Y) => { for (const dx of [-132, -62, 8]) objet(ctx, T, 'sac', X + dx, Y, 0); objet(ctx, T, 'poids', X + 104, Y, 0); objet(ctx, T, 'poids', X + 104, Y - 32, 0); },
+      (X, Y) => { objet(ctx, T, 'sac', X - 110, Y, 0); for (let i = 0; i < 10; i++) objet(ctx, T, 'poids', X - 40 + (i % 5) * 34, Y - Math.floor(i / 5) * 32, 0); });
+    jardin(ctx, S.fin.t0 - 0.3);
+  }
+
   function draw(ctx, t) {
     ctx.fillStyle = C.papier; ctx.fillRect(0, 0, W, H);
+    if (t > S.DURATION + 100) return vignette(ctx);
     // Pendant un intertitre, une fois le voile fermé, les scènes sont dessinées à l'instant où la partie suivante
     // commence : la précédente a alors tout à fait disparu et ne peut pas reparaître quand le voile se rouvre.
     let ts = t; for (const it of S.intertitres) { const u = t - it.t; if (u > 1 && u < S.INTER) ts = it.t + S.INTER; }

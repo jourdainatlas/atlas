@@ -407,7 +407,7 @@
     const pieds = [j.x - 1.5, j.x + 2, ch.x - 7, ch.x + 7];
     K.dessinerPrairie(ctx, t, 0, [0, 1], pieds);
     for (const a of ARBRES) K.dessinerArbre(ctx, t, a);
-    if (ch.x < LU + 28 && ch.x > -32 && !EN_SCENE.some(([a, b]) => t >= a && t < b)) globalThis.CHIEN.dessiner(ctx, ch);
+    if (!VIGNETTE && ch.x < LU + 28 && ch.x > -32 && !EN_SCENE.some(([a, b]) => t >= a && t < b)) globalThis.CHIEN.dessiner(ctx, ch);
     const { bec } = globalThis.JARDINIER.dessiner(ctx, j);
     if (j.verse) { ctx.save(); ctx.fillStyle = C.edifice;                                       // l'arrosoir verse des symboles
       G.decor(() => { ctx.font = `700 8.5px ${F.mono}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
@@ -417,8 +417,29 @@
     ctx.restore();
   }
 
+  // ---------- la vignette (image d'attente du lecteur, miniature YouTube) ----------
+  // Elle n'appartient pas au film : `node engine/render.js stills 1000` la dessine (tout instant au-delà de la durée
+  // plus 100 s). Le titre, la colline de −x³ + 3x² + 2 avec le chien et la tangente sous ses pattes, le jardin planté.
+  let VIGNETTE = false;
+  function vignette(ctx) {
+    const X = (x) => 250 + (x + 0.6) / 3.7 * 1450, Y = (v) => 850 - (v - 1) * 54, kx = 1450 / 3.7, ky = 54;
+    K.logo(ctx, 128, 126, 104);
+    txt(ctx, 'PREMIÈRE SPÉCIALITÉ · CHAPITRE 4', 212, 140, { fam: F.mono, w: 500, size: 38, ls: 7, c: C.encre2, align: 'left' });
+    txt(ctx, 'La dérivation', 76, 400, { size: 190, w: 800, align: 'left' });
+    const g = ctx.createLinearGradient(0, 560, 0, 880); g.addColorStop(0, 'rgba(53,202,164,0.22)'); g.addColorStop(1, 'rgba(53,202,164,0)');
+    ctx.beginPath(); ctx.moveTo(X(-0.6), 880); for (let x = -0.6; x <= 3.1 + 1e-9; x += 0.02) ctx.lineTo(X(x), Y(cub(x))); ctx.lineTo(X(3.1), 880); ctx.closePath(); ctx.fillStyle = g; ctx.fill();
+    ctx.beginPath(); for (let x = -0.6; x <= 3.1 + 1e-9; x += 0.02) ctx.lineTo(X(x), Y(cub(x))); ctx.strokeStyle = C.bleu; ctx.lineWidth = 8; ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.stroke();
+    const a = 1.05, px = X(a), py = Y(cub(a)), an = Math.atan(-cubP(a) * ky / kx);
+    ctx.strokeStyle = POS; ctx.lineWidth = 8; ctx.beginPath(); ctx.moveTo(px - 230 * Math.cos(an), py - 230 * Math.sin(an)); ctx.lineTo(px + 230 * Math.cos(an), py + 230 * Math.sin(an)); ctx.stroke();
+    chienSur(ctx, px, py - 3, an, 4.6, { t: 0.4, allure: 'trot', phase: 1.1 });
+    txt(ctx, 'la pente', px - 300, py - 96, { fam: F.mono, w: 500, size: 30, ls: 3, c: C.encre2 });
+    txt(ctx, 'elle monte', px - 300, py - 50, { fam: F.ui, w: 600, size: 42, c: POS });
+    VIGNETTE = true; jardin(ctx, S.fin.t0 - 0.3); VIGNETTE = false;
+  }
+
   function draw(ctx, t) {
     ctx.fillStyle = C.papier; ctx.fillRect(0, 0, W, H);
+    if (t > S.DURATION + 100) return vignette(ctx);
     // Pendant un intertitre, une fois le voile fermé, les scènes sont dessinées à l'instant où la partie suivante
     // commence : la précédente a alors tout à fait disparu et ne peut pas reparaître quand le voile se rouvre.
     let ts = t; for (const it of S.intertitres) { const u = t - it.t; if (u > 1 && u < S.INTER) ts = it.t + S.INTER; }

@@ -285,7 +285,8 @@ intertitre est une pastille qui donne son titre au survol et y saute au clic.
   compresse mal, soit près de 5 Mo par minute et non 3) et la vignette ne sont pas dans le dépôt.
 - **Vignette** : `film.js` de `reels-suites` la dessine pour tout instant au-delà de la durée plus 100 s
   (`node engine/render.js stills 1000`) : titre, figure de la borne supérieure avec le chien sur A, jardin planté.
-  Elle sert d'image d'attente au lecteur et servira de miniature YouTube. À reporter dans les deux autres films.
+  Elle sert d'image d'attente au lecteur et de miniature YouTube. Les trois films en ont une (dérivation : la colline,
+  le chien et la tangente ; équations : 3x + 2 = x + 10 et sa balance en équilibre).
 - Choix faits dans le prototype, à confirmer : lecteur toujours en thème sombre ; partie lue en turquoise (couleur de
   la rubrique Cours), le rouge restant au seul bouton de lecture ; le bouton vit hors du lien de la ligne (un bouton
   dans un lien est interdit en HTML), ce qui demandera de retoucher la ligne `.chapitre` de `gabarit.html`.
@@ -316,3 +317,28 @@ intertitre est une pastille qui donne son titre au survol et y saute au clic.
   Piège rencontré : un commentaire `//` ajouté en fin de ligne a avalé deux appels écrits sur la même ligne.
 - Validé par l'auteur sur son iPhone : plein écran du système, et lecteur téléphone droit sans plein écran.
 - L'intégration au site relève du domaine Cours : ne rien y toucher sans demande de l'auteur.
+
+## 10. Protocole de publication d'une vidéo de cours (fixé avec l'auteur le 15 novembre 2026)
+
+Les trois premières vidéos (dérivation, équations, nombres réels et suites) sont **validées** et le protocole est lancé.
+
+1. **L'auteur valide la vidéo.**
+2. **La session prépare le dépôt YouTube** : le fichier final, la miniature (1280 × 720, tirée de la vignette du film)
+   et la fiche (`python3 videos/fiche.py <cours> <dossier>` : titre, description, repères de temps, mots-clés,
+   réglages conseillés). L'entrée de la vidéo est créée dans `videos/catalogue.json` (cours, dossier, nom de fichier,
+   titre YouTube, présentation, mots-clés, `youtube` vide). Noms des fichiers : `atlas-<niveau>-<chapitre>-<sujet>`.
+3. **L'auteur dépose lui-même la vidéo sur YouTube** (chaîne créée le 15 novembre) et donne l'adresse. C'est la seule
+   étape manuelle, par choix : l'envoi automatique par l'interface de programmation de YouTube laisse les vidéos
+   bloquées en privé tant que le projet Google n'a pas passé un audit (ne pas reproposer cette voie sans fait nouveau) ;
+   piloter son navigateur reste possible, mais n'a pas été retenu.
+4. **La session met la vidéo sur le site** : dépôt du fichier allégé et de la vignette sur l'hébergement OVH, hors du
+   dépôt Git ; adresse YouTube inscrite au catalogue ; bouton « Vidéo » et lecteur sur la ligne du chapitre ;
+   construction, contrôle du rendu (clair, sombre, ordinateur, téléphone), poussée. **Reste à construire** : la
+   lecture du catalogue par `construire.py`, le bouton et le lecteur dans `gabarit.html` (domaine Cours), et le dépôt
+   des vidéos sur OVH (`outils/publier_ovh.py` supprime aujourd'hui ce qui n'est pas dans le site construit : il doit
+   épargner le dossier des vidéos). L'auteur a donné son accord de principe en lançant le protocole ; noter ces
+   changements dans `MEMO_atlas_cours.md` et `MEMO_atlas_apropos.md` au moment de les faire.
+
+Repères de temps : YouTube n'active les chapitres que si le premier est à 0:00 et si chacun dure au moins dix secondes ;
+l'ouverture (huit secondes) est donc rattachée à la première partie, et `fiche.py` refuse un chapitre trop court.
+État au 15 novembre : étape 2 faite pour les trois vidéos (fichiers livrés dans la conversation), étape 3 en attente.
