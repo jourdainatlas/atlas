@@ -231,9 +231,11 @@
     globalThis.CHIEN.dessiner(ctx, { x: 0, face: 1, t: p.t, assis: 0, tang: 0, tete: 0, cou: 0, bas: 0, saut: 0, vol: 0, phase: 0, allure: 'pose', queue: { a: -0.35, amp: 0.25, f: 8, courbe: 0.06 }, ...p });
     ctx.restore();
   }
-  // le chien du jardin s'efface pendant les fenêtres [a, b] où il joue dans la scène
-  const chienAbsent = (t, fenetres) => Math.max(0, ...fenetres.map(([a, b]) => fen(t, a, b, 0.3)));
+  // pose de chute : pattes écartées qui battent, corps qui tangue, oreilles et queue rabattues vers le haut par l'air
+  const poseChute = (t) => ({ t, allure: 'vol', vol: 0.55 + 0.3 * Math.sin(t * 10), tang: 0.12 * Math.sin(t * 7), tete: -0.12, oreille: -2.45 + 0.32 * Math.sin(t * 34), queue: { a: 1.35, amp: 0.55, f: 24, courbe: -0.05 } });
+  // pose de réception : le corps s'écrase puis se redresse ; u : temps écoulé depuis le contact
+  const poseChoc = (t, u) => ({ t, bas: 2.6 * Math.exp(-u * 8) * Math.cos(u * 9), oreille: -0.9 * Math.exp(-u * 6), queue: { a: -0.35, amp: 0.4, f: 8, courbe: 0.06 } });
 
   globalThis.K = { W, H, CX, borne, doux, ressort, pr, sortie, lerp, ap, fen, alea, fr, C, RUBC, F, txt, ligne, legende, chargerFormules, formule, largeur, cadre,
-    repere, dans, axes, courbe, droite, trait, point, fleche, chienSur, chienAbsent, logo, feuille, FEUILLES, dessinerPrairie, dessinerArbre, SC, SOLPX, LU, BEC };
+    repere, dans, axes, courbe, droite, trait, point, fleche, chienSur, poseChute, poseChoc, logo, feuille, FEUILLES, dessinerPrairie, dessinerArbre, SC, SOLPX, LU, BEC };
 })();

@@ -1,6 +1,7 @@
 // LE LABRADOR — redessiné pour la vidéo : un squelette (hanche, épaule, genou, jarret, coude) posé par cinématique
 // inverse, et des aplats par-dessus. Unités du jardin : le sol est en y = 0, le chien regarde vers la droite.
-//   CHIEN.dessiner(ctx, { x, face, t, assis, tang, saut, bas, tete, queue: { a, amp, f }, allure, phase, vol })
+//   CHIEN.dessiner(ctx, { x, face, t, assis, tang, saut, bas, tete, queue: { a, amp, f }, allure, phase, vol, oreille })
+//   oreille : rotation ajoutée à l'oreille autour de son attache (négative : elle remonte, comme dans une chute)
 (function () {
   const borne = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x)), lerp = (a, b, k) => a + (b - a) * k;
   // labrador chocolat : la robe est éclaircie par rapport à la photo de référence, pour rester lisible sur le fond sombre
@@ -72,7 +73,7 @@
     ctx.fillStyle = C.oeil; ctx.beginPath(); ctx.arc(2.9, -1.7, 0.74, 0, 6.3); ctx.fill(); ctx.fillStyle = C.noir; ctx.beginPath(); ctx.arc(3.0, -1.7, 0.5, 0, 6.3); ctx.fill();
     ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(3.18, -1.92, 0.17, 0, 6.3); ctx.fill();
     ctx.fillStyle = C.clair; ctx.beginPath(); ctx.ellipse(2.7, -3.05, 0.95, 0.42, -0.5, 0, 6.3); ctx.fill();                          // le sourcil : une touche claire, relevée vers l'arrière
-    ctx.save(); ctx.translate(-1, -3); ctx.rotate((allure === 'trot' || allure === 'galop' ? 0.2 * Math.sin(ph * 2) : 0) + (allure === 'vol' ? -0.45 : 0) + 0.25 * (p.tete || 0)); ctx.scale(0.84, 0.86); ctx.translate(1.3, 3.2); ctx.fillStyle = C.oreille; ctx.fill(OREILLE); ctx.restore();
+    ctx.save(); ctx.translate(-1, -3); ctx.rotate((allure === 'trot' || allure === 'galop' ? 0.2 * Math.sin(ph * 2) : 0) + (allure === 'vol' ? -0.45 : 0) + 0.25 * (p.tete || 0) + (p.oreille || 0)); ctx.scale(0.84, 0.86); ctx.translate(1.3, 3.2); ctx.fillStyle = C.oreille; ctx.fill(OREILLE); ctx.restore();
     ctx.restore();
   }
   globalThis.CHIEN = { dessiner, TEINTES };

@@ -114,9 +114,7 @@
     const ke = fen(t, Su.eps[0], L(12) - 0.2, 0.4), e = lerp(0.6, 0.12, doux(pr(t, Su.eps[0] + 0.8, Su.eps[1] - Su.eps[0] - 0.8)));
     if (ke > 0) { ctx.save(); ctx.globalAlpha *= ke; ctx.strokeStyle = C.violet; ctx.lineWidth = 3.5; ctx.lineCap = 'round'; const xa = X(1 - e), xb = X(1), yb = y + 96;
       ctx.beginPath(); ctx.moveTo(xa, yb - 12); ctx.lineTo(xa, yb); ctx.lineTo(xb, yb); ctx.lineTo(xb, yb - 12); ctx.stroke(); formule(ctx, 'eps', (xa + xb) / 2, yb + 30, { fs: 32, mil: 1 });
-      // l'élément a de A, c'est le chien : il s'approche de la borne supérieure sans jamais l'atteindre
-      const xa2 = X(1 - e / 2), marche = t > Su.eps[0] + 0.8 && t < Su.eps[1];
-      K.chienSur(ctx, xa2, y - 3, 0, 2.6, marche ? { t, allure: 'trot', phase: xa2 / 2.6 * 0.33 } : { t, tete: 0.25, queue: { a: -0.35, amp: 0.45, f: 8, courbe: 0.06 } });
+      const xa2 = X(1 - e / 2);                              // l'élément a de A : le chien vient s'y poser (voir acteur)
       pastille(ctx, xa2, y, VERT, 1, { r: 7 }); formule(ctx, 'a', xa2, y + 60, { fs: 30, mil: 1 }); ctx.restore(); }
     // la définition, la caractérisation, l'axiome
     k = ap(t, Su.def); carte(ctx, 110, 450, 800, 150, 'DÉFINITION', k);
@@ -144,12 +142,6 @@
         ctx.save(); ctx.strokeStyle = der ? C.cours : C.bleu; ctx.lineWidth = 3.5; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(xa, y - 6);
         for (let s = 0; s <= Math.min(1, (t - ts) / 0.25) + 1e-9; s += 0.05) ctx.lineTo(lerp(xa, xb, s), y - 6 - Math.sin(Math.PI * s) * 70); ctx.stroke(); ctx.restore();
         if (q >= 1) { pastille(ctx, xb, y, der ? C.cours : C.bleu, ap(t, ts + 0.3, 0.25), { r: 7 }); if (i < 2) ligne(ctx, i ? '$2a$' : '$a$', xb, y + 44, { size: 28, c: C.bleu, a: ap(t, ts + 0.3) }); if (der) formule(ctx, 'na', xb, y + 50, { fs: 34, mil: 1, a: ap(t, ts + 0.3) }); } });
-      { // le chien franchit lui-même les sept sauts de longueur a
-        const DS = 0.25, i = Co.sauts.findIndex((ts) => t >= ts && t < ts + DS), fait = Co.sauts.filter((ts) => t >= ts + DS).length, kc = ap(t, Co.arch + 0.3);
-        if (kc > 0) { ctx.save(); ctx.globalAlpha *= kc;
-          if (i >= 0) { const s = (t - Co.sauts[i]) / DS; K.chienSur(ctx, lerp(X(i), X(i + 1), s), y - 6 - Math.sin(Math.PI * s) * 70, -Math.cos(Math.PI * s) * 0.45, 3, { t, allure: 'galop', phase: s * Math.PI }); }
-          else K.chienSur(ctx, X(fait), y - 4, 0, 3, { t, queue: { a: -0.35, amp: fait === 7 ? 0.6 : 0.3, f: 8, courbe: 0.06 } });
-          ctx.restore(); } }
       ['Sinon, la partie des $na$ serait majorée par $x$ : l’axiome lui donnerait une borne supérieure $M$.', 'Or $M − a$ n’est pas un majorant : un certain $na$ le dépasse, donc $(n + 1)a > M$.', 'C’est absurde, puisque $(n + 1)a$ appartient à la partie que $M$ majore.']
         .forEach((s, i) => ligne(ctx, s, CX, 570 + i * 54, { size: 31, w: 500, c: i === 2 ? C.encre : C.encre2, a: ap(t, Co.preuve[i]) }));
       ctx.restore(); }
@@ -297,9 +289,6 @@
     ligne(ctx, `Le cours complet et ${NB_EXERCICES} exercices corrigés : {atlasjourdain.fr}`, CX, 650 + (1 - k2) * 16, { size: 42, w: 600, a: k2 });
   }
 
-  // fenêtres où le chien quitte le jardin pour jouer dans la scène
-  const EN_SCENE = [[S.sup.eps[0] - 0.3, L(12) + 0.1], [S.conseq.arch - 0.2, L(16) + 0.1]];
-
   // ---------- le jardin du bas ----------
   const NP = S.CH.length, XS = S.CH.map((c, k) => (280 + 210 * k) / SC), STAND = [...XS.map((x) => x - BEC), XS[NP - 1] + 36], DS = [...XS.map((x) => x + 30), XS[NP - 1] + 76], J = S.jardin;
   const melange = (dom, g) => { const r = alea(g); return K.FEUILLES.map(() => (r() < 0.6 ? dom : RUBC[Math.floor(r() * 5)])); };
@@ -314,7 +303,36 @@
   }
   // le chien : il arrive par la droite pendant l'ouverture, puis suit le jardinier d'arbre en arbre
   const DEHORS = LU + 34;
-  const TRAJETS = [[L(1, 1), L(1, 3.2), DEHORS, DS[0]], ...J.marche.map(([a, b], k) => [a + 0.15, b + 0.15, DS[k], DS[k + 1]])];
+  // Le chien est l'acteur des scènes (voir acteur) : chacun de ses déplacements a une raison que l'on voit.
+  //  · borne supérieure : il saute sous l'écran, retombe du haut sur l'intervalle A, y marche, puis saute rejoindre
+  //    le jardinier ; · Archimède : il sort par la gauche pendant l'intertitre, entre par la gauche de l'axe, fait
+  //    les sept sauts, repart par la droite et revient au jardin par la droite.
+  const AC = (() => { const Su = S.sup, Co = S.conseq, e0 = Su.eps[0];
+    return { tJ: e0 - 1.9, tA: e0 - 0.75, tL: e0 + 0.55, tX: L(12) - 0.8, tIn: Co.arch + 0.1, tE: L(16) - 1.35 }; })();
+  const EN_SCENE = [[AC.tJ + 0.2, AC.tX + 1.5]];
+  const TRAJETS = [[L(1, 1), L(1, 3.2), DEHORS, DS[0]], ...J.marche.map(([a, b], k) => k === 1 ? [a + 0.15, b + 0.35, DS[1], -45] : [a + 0.15, b + 0.15, DS[k], DS[k + 1]]),
+    [L(16) + 0.2, L(16) + 2.3, DEHORS, DS[2]]].sort((u, v) => u[0] - v[0]);
+  function acteur(ctx, t) {
+    const Su = S.sup, Co = S.conseq, e0 = Su.eps[0], e1 = Su.eps[1], Xs = echelle(260, 1660, -0.3, 2.7), ys = 287, ECH = 3, dsx = DS[1] * SC;
+    const { tJ, tA, tL, tX, tIn, tE } = AC;
+    // --- la borne supérieure ---
+    if (t >= tJ + 0.2 && t < tA) { const u = t - tJ - 0.2, y = SOLPX - 430 * u + 1250 * u * u;                       // petit bond, puis il tombe sous l'écran
+      if (y < H + 130) K.chienSur(ctx, dsx, y, 0, SC, u < 0.17 ? { t, face: -1, allure: 'vol', vol: u / 0.17, tang: 0.3 } : { ...K.poseChute(t), face: -1 }); }
+    else if (t >= tA && t < tL) { const u = (t - tA) / (tL - tA); K.chienSur(ctx, Xs(0.7), -60 + (ys + 60) * Math.pow(u, 1.6), 0, ECH, K.poseChute(t)); }      // il retombe du haut de l'écran
+    else if (t >= tL && t < tX) { const e = lerp(0.6, 0.12, doux(pr(t, e0 + 0.8, e1 - e0 - 0.8))), x = Xs(1 - e / 2), marche = t > e0 + 0.8 && t < e1;
+      K.chienSur(ctx, x, ys, 0, ECH, marche ? { t, allure: 'trot', phase: x / ECH * 0.33 } : t < e0 + 0.8 ? K.poseChoc(t, t - tL) : { t, tete: 0.25, queue: { a: -0.35, amp: 0.45, f: 8, courbe: 0.06 } }); }
+    else if (t >= tX && t < tX + 1.5) { const u = pr(t, tX + 0.2, 0.8), x = lerp(Xs(0.94), dsx, u), y = lerp(ys, SOLPX, u * u) - 170 * Math.sin(Math.PI * u) * (1 - u), ech = lerp(ECH, SC, u), fin = t - (tX + 1.0);
+      K.chienSur(ctx, x, y, 0, ech, u <= 0 ? { t, face: -1, bas: 2.2 * pr(t, tX, 0.2) } : u < 0.3 ? { t, face: -1, allure: 'vol', vol: u / 0.3, tang: 0.35 } : u < 1 ? { ...K.poseChute(t), face: -1 } : { ...K.poseChoc(t, fin), face: -1, assis: doux(pr(fin, 0.15, 0.35)) }); }
+    // --- Archimède ---
+    const ya = 396, Xa = echelle(300, 1560, 0, 8), DH = 0.25;
+    if (t >= tIn && t < tE + 1.15) {
+      if (t < Co.sauts[0]) { const k = doux(pr(t, tIn, 0.85)), x = lerp(-90, Xa(0), k); K.chienSur(ctx, x, ya, 0, ECH, k < 1 ? { t, allure: 'trot', phase: x / ECH * 0.33 } : { t, bas: 1.2 }); }
+      else if (t < tE) { const i = Co.sauts.findIndex((ts) => t >= ts && t < ts + DH), fait = Co.sauts.filter((ts) => t >= ts + DH).length;
+        if (i >= 0) { const u = (t - Co.sauts[i]) / DH; K.chienSur(ctx, lerp(Xa(i), Xa(i + 1), u), ya - 2 - Math.sin(Math.PI * u) * 70, -Math.cos(Math.PI * u) * 0.45, ECH, { t, allure: 'galop', phase: u * Math.PI, oreille: -0.8 * Math.sin(Math.PI * u) }); }
+        else K.chienSur(ctx, Xa(fait), ya, 0, ECH, { t, queue: { a: -0.35, amp: fait === 7 ? 0.6 : 0.3, f: 8, courbe: 0.06 } }); }
+      else { const u = pr(t, tE, 1.15), x = lerp(Xa(7), W + 150, u * u); K.chienSur(ctx, x, ya, 0, ECH, { t, allure: 'galop', phase: x / ECH * 0.21 }); }
+    }
+  }
   function chienA(t) {
     let x = DEHORS, bouge = 0, face = -1;
     for (const [a, b, xa, xb] of TRAJETS) { if (t >= a) x = lerp(xa, xb, doux(pr(t, a, b - a))); bouge = Math.max(bouge, Math.min(pr(t, a - 0.35, 0.3), 1 - pr(t, b, 0.3))); if (xb > xa) face += 2 * (doux(pr(t, a - 0.3, 0.3)) - doux(pr(t, b, 0.3))); }
@@ -330,7 +348,7 @@
     const pieds = [j.x - 1.5, j.x + 2, ch.x - 7, ch.x + 7];
     K.dessinerPrairie(ctx, t, 0, [0, 1], pieds);
     for (const a of ARBRES) K.dessinerArbre(ctx, t, a);
-    { const v = 1 - K.chienAbsent(t, EN_SCENE); if (ch.x < LU + 28 && v > 0) { ctx.save(); ctx.globalAlpha = v; globalThis.CHIEN.dessiner(ctx, ch); ctx.restore(); } }
+    if (ch.x < LU + 28 && ch.x > -32 && !EN_SCENE.some(([a, b]) => t >= a && t < b)) globalThis.CHIEN.dessiner(ctx, ch);
     const { bec } = globalThis.JARDINIER.dessiner(ctx, j);
     if (j.verse) { ctx.save(); ctx.fillStyle = C.edifice;                                       // l'arrosoir verse des symboles
       G.decor(() => { ctx.font = `700 8.5px ${F.mono}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
@@ -349,6 +367,7 @@
     trou(ctx, ts); sup(ctx, ts); conseq(ctx, ts); limite(ctx, ts); monotone(ctx, ts); adjacentes(ctx, ts); bw(ctx, ts); bilan(ctx, ts); fin(ctx, t);
     intertitre(ctx, t);
     jardin(ctx, t);
+    acteur(ctx, t);
     // éclair bref sur les deux temps forts (l'oméga du logo, la fin) : l'image frappe à l'instant où le son frappe
     for (const [te, c, f] of [[S.ouverture.logo[2], '255,109,125', 0.13], [S.fin.t0, '231,233,237', 0.14]]) { const u = t - te; if (u >= 0 && u < 0.3) { ctx.fillStyle = `rgba(${c},${f * (1 - u / 0.3)})`; ctx.fillRect(0, 0, W, H); } }
     const f = pr(t, S.DURATION - 0.9, 0.8); if (f > 0) { ctx.fillStyle = `rgba(18,20,24,${f})`; ctx.fillRect(0, 0, W, H); }

@@ -109,7 +109,7 @@
   }
 
   // ---------- 2. le principe de la balance ----------
-  const voleur = { depart: null };                        // position du sac que le chien emporte, relevée sur le plateau
+  const voleur = { sac: null };                           // position, sur le plateau, du sac que le chien va voler
   function balance(ctx, t) {
     const B = S.balance, a = fen(t, L(6) + 0.1, L(14), 0.4); if (a <= 0) return;
     const osc = (t0) => { const u = t - t0; return u > 0 ? 0.035 * Math.exp(-2.6 * u) * Math.sin(9 * u) : 0; };
@@ -117,20 +117,11 @@
     ctx.save(); ctx.globalAlpha = a;
     const o = B.objets;
     balanceD(ctx, 590, 315, 1, th,
-      (X, Y) => { if (t < B.faute) objet(ctx, t, 'sac', X - 110, Y, o); else voleur.depart = [X - 110, Y, X - 178]; objet(ctx, t, 'sac', X - 40, Y, o + 0.1, B.moitie); objet(ctx, t, 'sac', X + 30, Y, o + 0.2);
+      (X, Y) => { voleur.sac = [X - 138, Y]; if (t < B.faute) objet(ctx, t, 'sac', X - 138, Y, o); objet(ctx, t, 'sac', X - 68, Y, o + 0.1, B.moitie); objet(ctx, t, 'sac', X + 2, Y, o + 0.2);
         objet(ctx, t, 'poids', X + 100, Y, o + 0.3, B.poids); objet(ctx, t, 'poids', X + 100, Y - 32, o + 0.4, B.poids); },
       (X, Y) => { objet(ctx, t, 'sac', X - 112, Y, o + 0.2, B.sac);
         for (let i = 0; i < 10; i++) objet(ctx, t, 'poids', X - 40 + (i % 5) * 34, Y - Math.floor(i / 5) * 32, o + 0.3 + i * 0.04, i >= 8 ? B.poids : i >= 4 ? B.moitie : 0); },
       doux(pr(t, B.trace[0], B.trace[1] - B.trace[0])));
-    // le chien emporte le sac retiré du plateau de gauche : le sac glisse au bord du plateau, tombe au sol, et le
-    // chien, arrivé par la gauche, le saisit et repart avec
-    { const SOL = 588, tf = B.faute, vu = fen(t, tf - 1.0, tf + 2.6, 0.2);
-      if (vu > 0 && voleur.depart) { const [x0, y0, bord] = voleur.depart, xs = bord - 38, ug = doux(pr(t, tf, 0.45)), uc = pr(t, tf + 0.45, 0.4), pris = t >= tf + 1.0;
-        const xc = t < tf + 1.0 ? lerp(-120, xs - 44, doux(pr(t, tf - 0.7, 1.6))) : lerp(xs - 44, -160, doux(pr(t, tf + 1.3, 1.2)));
-        const face = 1 - 2 * doux(pr(t, tf + 1.0, 0.3)), court = (t > tf - 0.7 && t < tf + 0.85) || t > tf + 1.3;
-        const sx = pris ? xc + face * 44 : lerp(lerp(x0, bord - 30, ug), xs, uc), sy = pris ? SOL - 12 : lerp(y0, SOL, uc * uc);
-        ctx.save(); ctx.globalAlpha *= vu; K.chienSur(ctx, xc, SOL, 0, 3.4, court ? { t, face, allure: 'trot', phase: xc / 3.4 * 0.33 } : { t, face, tete: 0.3 });
-        ctx.translate(sx, sy); ctx.scale(pris ? 0.8 : 1, pris ? 0.8 : 1); objet(ctx, t, 'sac', 0, 0, 0); ctx.restore(); } }
     ligne(ctx, 'D’un seul côté : l’équilibre est rompu.', 590, 720, { size: 32, w: 500, c: FAUX, a: fen(t, B.faute + 0.4, B.sac + 0.2, 0.3) });
     // le calcul, ligne à ligne
     const LG = [['b0l', 'b0r', B.ligne0, ''], ['b1l', 'b1r', B.ligne1, 'un sac de moins de chaque côté'], ['b2l', 'b2r', B.ligne2, 'deux poids de moins de chaque côté'], ['b3l', 'b3r', B.ligne3, 'la moitié de chaque plateau']];
@@ -291,9 +282,6 @@
     ligne(ctx, `Le cours complet et ${NB_EXERCICES} exercices corrigés : {atlasjourdain.fr}`, CX, 650 + (1 - k2) * 16, { size: 42, w: 600, a: k2 });
   }
 
-  // fenêtre où le chien quitte le jardin pour jouer dans la scène
-  const EN_SCENE = [[S.balance.faute - 1.3, S.balance.faute + 2.6]];
-
   // ---------- le jardin du bas ----------
   const NP = S.CH.length, XS = S.CH.map((c, k) => (300 + 250 * k) / SC), STAND = [...XS.map((x) => x - BEC), XS[NP - 1] + 36], DS = [...XS.map((x) => x + 30), XS[NP - 1] + 76], J = S.jardin;
   const melange = (dom, g) => { const r = alea(g); return K.FEUILLES.map(() => (r() < 0.6 ? dom : RUBC[Math.floor(r() * 5)])); };
@@ -308,7 +296,25 @@
   }
   // le chien : il arrive par la droite pendant l'ouverture, puis suit le jardinier d'arbre en arbre
   const DEHORS = LU + 34;
-  const TRAJETS = [[L(1, 1), L(1, 3.2), DEHORS, DS[0]], ...J.marche.map(([a, b], k) => [a + 0.15, b + 0.15, DS[k], DS[k + 1]])];
+  // Le chien est l'acteur de la scène de la balance (voir acteur) : il sort par la gauche pendant l'intertitre, entre
+  // près de la balance, s'assoit, bondit pour voler un sac sur le plateau de gauche (l'équilibre est rompu), repart
+  // par la gauche avec le sac et le rapporte au jardin, devant le jardinier.
+  const VOL = (() => { const tf = S.balance.faute; return { tf, tR: tf + 2.1 }; })();
+  const EN_SCENE = [];
+  const TRAJETS = [[L(1, 1), L(1, 3.2), DEHORS, DS[0]], ...J.marche.map(([a, b], k) => k === 0 ? [a + 0.15, b + 0.35, DS[0], -45] : [a + 0.15, b + 0.15, DS[k], DS[k + 1]]),
+    [VOL.tR, VOL.tR + 1.9, -45, DS[1]]].sort((u, v) => u[0] - v[0]);
+  function acteur(ctx, t) {
+    const SOL = 588, ECH = 3.4, tf = VOL.tf, x0 = 78, tIn = L(6) + 0.2; if (t < tIn || t > tf + 2.0) return;
+    const saut = pr(t, tf - 0.32, 0.72), xs = x0 + 52 * Math.sin(Math.PI * saut), ysol = SOL - 70 * Math.sin(Math.PI * saut);
+    let x = xs, y = ysol, face = 1, pose;
+    if (t < tf - 0.55) { const k = doux(pr(t, tIn, 1.2)); x = lerp(-100, x0, k); pose = k < 1 ? { t, allure: 'trot', phase: x / ECH * 0.33 } : { t, assis: doux(pr(t, tIn + 1.2, 0.4)), tete: -0.25, queue: { a: -0.35, amp: 0.4, f: 8, courbe: -0.12 } }; }
+    else if (saut <= 0) pose = { t, bas: 2.4 * pr(t, tf - 0.55, 0.2), tete: -0.3 };                                              // il se ramasse
+    else if (saut < 1) pose = { t, allure: 'vol', vol: Math.sin(Math.PI * saut), tang: 0.55 * Math.cos(Math.PI * saut), oreille: saut > 0.5 ? -1.6 * (saut - 0.5) * 2 : 0, tete: -0.2 };   // le bond
+    else { const u = t - (tf + 0.4); face = 1 - 2 * doux(pr(u, 0.1, 0.25)); x = lerp(x0, -170, doux(pr(u, 0.35, 1.2))); y = SOL; pose = u < 0.35 ? K.poseChoc(t, u) : { t, allure: 'trot', phase: x / ECH * 0.33 }; }
+    K.chienSur(ctx, x, y, 0, ECH, { ...pose, face });
+    // le sac : saisi au sommet du bond, puis emporté dans la gueule
+    if (t >= tf) { ctx.save(); ctx.translate(x + face * 43, y - 6); ctx.scale(0.8, 0.8); objet(ctx, t, 'sac', 0, 0, 0); ctx.restore(); }
+  }
   function chienA(t) {
     let x = DEHORS, bouge = 0, face = -1;
     for (const [a, b, xa, xb] of TRAJETS) { if (t >= a) x = lerp(xa, xb, doux(pr(t, a, b - a))); bouge = Math.max(bouge, Math.min(pr(t, a - 0.35, 0.3), 1 - pr(t, b, 0.3))); if (xb > xa) face += 2 * (doux(pr(t, a - 0.3, 0.3)) - doux(pr(t, b, 0.3))); }
@@ -324,7 +330,10 @@
     const pieds = [j.x - 1.5, j.x + 2, ch.x - 7, ch.x + 7];
     K.dessinerPrairie(ctx, t, 0, [0, 1], pieds);
     for (const a of ARBRES) K.dessinerArbre(ctx, t, a);
-    { const v = 1 - K.chienAbsent(t, EN_SCENE); if (ch.x < LU + 28 && v > 0) { ctx.save(); ctx.globalAlpha = v; globalThis.CHIEN.dessiner(ctx, ch); ctx.restore(); } }
+    if (ch.x < LU + 28 && ch.x > -32 && !EN_SCENE.some(([a, b]) => t >= a && t < b)) globalThis.CHIEN.dessiner(ctx, ch);
+    // le sac volé : le chien le rapporte au jardin et le pose devant le jardinier
+    { const k = fen(t, VOL.tR, S.CH[1].t1 + 0.3, 0.3); if (k > 0) { const pose = t >= VOL.tR + 1.9, sx = pose ? DS[1] - 13 : ch.x + ch.face * 12.5, sy = pose ? 0 : -9;
+        ctx.save(); ctx.globalAlpha = k; ctx.translate(sx, sy); ctx.scale(0.8 / SC, 0.8 / SC); objet(ctx, t, 'sac', 0, 0, 0); ctx.restore(); } }
     const { bec } = globalThis.JARDINIER.dessiner(ctx, j);
     if (j.verse) { ctx.save(); ctx.fillStyle = C.edifice;                                       // l'arrosoir verse des symboles
       G.decor(() => { ctx.font = `700 8.5px ${F.mono}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
@@ -343,6 +352,7 @@
     vocab(ctx, ts); balance(ctx, ts); methode(ctx, ts); cas(ctx, ts); produit(ctx, ts); quotient(ctx, ts); bilan(ctx, ts); fin(ctx, t);
     intertitre(ctx, t);
     jardin(ctx, t);
+    acteur(ctx, t);
     // éclair bref sur les deux temps forts (l'oméga du logo, la fin) : l'image frappe à l'instant où le son frappe
     for (const [te, c, f] of [[S.ouverture.logo[2], '255,109,125', 0.13], [S.fin.t0, '231,233,237', 0.14]]) { const u = t - te; if (u >= 0 && u < 0.3) { ctx.fillStyle = `rgba(${c},${f * (1 - u / 0.3)})`; ctx.fillRect(0, 0, W, H); } }
     const f = pr(t, S.DURATION - 0.9, 0.8); if (f > 0) { ctx.fillStyle = `rgba(18,20,24,${f})`; ctx.fillRect(0, 0, W, H); }

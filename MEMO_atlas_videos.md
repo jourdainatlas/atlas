@@ -216,13 +216,23 @@ Elles valent pour les trois vidéos existantes et pour toutes les suivantes.
    courbe : le chien et le jardinier ne doivent pas rester cantonnés au jardin du bas, mais porter l'idée mathématique
    quand elle s'y prête (un personnage sur une courbe, sur une droite graduée, sur un plateau de balance…), sans
    jamais fausser la figure.
-   Mises en scène en place (prototypes du 15 novembre, en attente de validation) : dans la dérivation, le chien sur
-   la colline puis assis au sommet de la courbe (validé) ; dans les équations, il emporte le sac retiré d'un seul
-   côté de la balance (le sac glisse au bord du plateau, tombe, le chien le saisit et repart : la balance penche) ;
-   en MPSI, il est l'élément a qui s'approche de sup A sans l'atteindre, et il franchit lui-même les sept sauts de
-   longueur a de la propriété d'Archimède. Outils : `K.chienSur(ctx, px, py, an, ech, pose)` pose le chien en un
-   point exact de la figure ; `EN_SCENE` (dans `film.js`) liste les fenêtres où le chien du jardin s'efface pour ne
-   pas être à deux endroits. Le jardinier n'est pas encore mis en scène : son dessin ne se retourne pas.
+   **Le chien est l'acteur principal ; le jardinier reste stoïque au jardin** (décision de l'auteur). **Chaque
+   déplacement du chien a une raison que l'on voit** : il ne disparaît ni n'apparaît jamais d'un coup. Il sort du
+   jardin par un bord pendant un intertitre et entre dans la scène par le même bord, ou bien il saute sous l'écran
+   et retombe du haut ; il revient au jardin en sautant devant le jardinier ou en y rentrant par un bord.
+   Mises en scène en place (15 novembre, en attente de validation sauf la première) :
+   - dérivation : le chien sur la colline, puis assis au sommet de la courbe (validée) ;
+   - équations : il sort à gauche pendant l'intertitre, entre près de la balance, s'assoit, bondit et vole un sac sur
+     le plateau de gauche (l'équilibre est rompu), repart à gauche et rapporte le sac au jardin, devant le jardinier ;
+   - MPSI, borne supérieure : il saute sous l'écran, retombe du haut sur l'intervalle A, y marche vers sup A sans
+     l'atteindre (il est l'élément a ; le point vert reste sous ses pattes), puis saute rejoindre le jardinier ;
+   - MPSI, Archimède : il sort à gauche pendant l'intertitre, entre par la gauche de l'axe, fait les sept sauts de
+     longueur a, repart par la droite et revient au jardin par la droite.
+   Outils : `acteur(ctx, t)` dans `film.js` (dessiné par-dessus tout) ; `K.chienSur(ctx, px, py, an, ech, pose)` pose
+   le chien en un point exact ; `K.poseChute(t)` (pattes qui battent, corps qui tangue, oreilles et queue rabattues
+   vers le haut par l'air) et `K.poseChoc(t, u)` (réception) ; `chien.js` accepte `oreille` (rotation de l'oreille ;
+   la copie de l'accueil, dans `gabarit.html`, ne l'a pas) ; `EN_SCENE` liste les fenêtres où le chien du jardin
+   n'est pas dessiné, et ses `TRAJETS` portent les sorties et les retours.
 
 `song.js` est désormais le même fichier dans les trois dossiers (il lit `score.FIN`, `score.CH` et les événements).
 `commun.js` (dans `videos/derivation/`, copié ailleurs par `fabriquer.sh`) sait écrire dans les légendes les indices
