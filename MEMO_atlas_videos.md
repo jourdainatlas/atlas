@@ -132,3 +132,37 @@ d'accueil (`accueilJardin` dans `gabarit.html`, domaine « À propos »). Le dé
 § 81. À retenir pour ce domaine : les deux dessins existent désormais **en deux exemplaires** (`videos/presentation/`
 et `accueilJardinDessins` dans `gabarit.html`) ; une retouche d'un personnage se fait des deux côtés. L'accueil a en
 plus un thème clair, des attitudes aléatoires du jardinier et le chien dressé contre un tronc, que la vidéo n'a pas.
+
+## 9. Vidéos de cours pour YouTube (15 novembre 2026)
+
+Une vidéo par chapitre de cours, en paysage 16:9 (1920 × 1080, 30 images/s), même direction artistique que la vidéo
+de présentation : thème sombre, habillage lo-fi à 60 à la noire, jardin en bas de l'écran. Pas de voix : les
+explications passent par des légendes en phrases complètes (une voix pourrait se poser dessus plus tard).
+
+### « La dérivation », Première spécialité, chapitre 4 — validée par l'auteur le 15 novembre 2026
+
+`videos/derivation/`, 3 min 51 s, 33 Mo, non versionnée (`out/`), ni sur le site. Elle suit le cours `p-04` avec deux
+fonctions seulement : x² (taux de variation, nombre dérivé, fonction dérivée, tangente) et −x³ + 3x² + 2 (la colline du
+début, l'exemple de dérivation, les variations). Déroulé (mesures de 4 s, `L(mesure, temps)`) : ouverture (0–2), une
+pente en chaque point (2–6, le chien parcourt la colline, la tangente sous ses pattes), taux de variation (6–10),
+nombre dérivé (10–18), fonction dérivée (18–22), formules (22–34), tangente (34–38), variations (38–50), bilan (50–54),
+fin (54–58). Un arbre est planté à la fin de chacune des sept parties : le jardin sert de barre de progression.
+
+Fichiers : `score.js` (instants et événements sonores `EV`), `commun.js` (couleurs, texte balisé, formules, repères et
+courbes, jardin : la boîte à outils des vidéos de cours), `film.js` (les scènes), `song.js`, `formules-src.mjs` →
+`gen-formules.mjs` → `formules.js` (formules composées par MathJax en tracés SVG, une image par formule ; MathJax
+s'installe hors dépôt), `index.html`, `fabriquer.sh`. Le moteur, les polices, `chien.js` et `jardinier.js` sont copiés
+depuis `videos/presentation/` par `fabriquer.sh` et ignorés par git : le serveur du moteur ne suit pas les liens
+symboliques.
+
+Conventions retenues : la courbe de f en bleu, ce qui touche à la dérivée (tangente, f′) en turquoise, sécante et taux
+de variation en orange, h en violet, signe de f′ en vert (positif) et orange (négatif). Le rouge reste réservé au logo,
+au mot « Définition » et aux termes que l'on définit (balise `[ … ]` des légendes). Balisage des phrases : `$…$` pour
+les mathématiques, `{ … }` pour une mise en valeur turquoise ; le prime « ′ » est dessiné en exposant (le glyphe de
+KaTeX_Main est prévu pour cela). Tous les calculs montrés sont vérifiés avec sympy. Pas de limites en ±∞ dans le
+tableau de variations (hors programme de Première).
+
+Décisions de l'auteur : **aucune signature** « Armand Jourdain, professeur agrégé de mathématiques » sur l'écran de
+fin, pour cette vidéo comme pour les suivantes ; l'écran de fin porte le logo, le titre et le renvoi vers le cours.
+
+Rendu : environ 4 min 30 pour 6 930 images ; le son n'est que mesuré (−14 LUFS), jamais écouté.
