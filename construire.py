@@ -1239,6 +1239,17 @@ if 'exercices' in rubriques:
     for e in E['exercices']:
         e['mots_cles'] = [m.strip().lower() if m.strip() != 'Python' else m for m in e.get('mots_cles', [])]
 for nom, r in rubriques.items(): verifie_rubrique(nom, r, '')
+# Vidéos de cours (videos/catalogue.json, MEMO_atlas_videos.md §10) : chaque vidéo du catalogue est rattachée à son
+# chapitre, qui reçoit alors le bouton « Vidéo » et le lecteur de la rubrique Cours. `en_ligne` n'est mis à vrai
+# qu'une fois <fichier>.mp4 et <fichier>.jpg réellement servis dans /videos/ par l'hébergement.
+if os.path.exists('videos/catalogue.json'):
+    _cours = {c['id']: c for c in (rubriques.get('cours', {}).get('cours') or [])}
+    for _v in json.load(open('videos/catalogue.json', encoding='utf-8')).get('videos') or []:
+        if _v.get('cours') not in _cours: erreur(f"videos/catalogue.json : chapitre inconnu {_v.get('cours')}"); continue
+        if not _v.get('en_ligne'): continue          # fichiers pas encore sur l'hébergement : ni bouton ni lecteur
+        if not (_v.get('fichier') and _v.get('duree') and _v.get('reperes')): erreur(f"videos/catalogue.json {_v['cours']} : fichier, duree ou reperes manquant"); continue
+        if any(not (0 <= t < _v['duree']) for t, _ in _v['reperes']): erreur(f"videos/catalogue.json {_v['cours']} : repère hors de la durée")
+        _cours[_v['cours']]['video'] = {k: _v[k] for k in ('fichier', 'duree', 'reperes', 'youtube') if _v.get(k)}
 if 'exercices' in rubriques and 'cours' in rubriques:
     ids_cours = {c['id'] for c in rubriques['cours'].get('cours', [])}
     ids_feuilles = {f['id'] for f in rubriques['exercices'].get('feuilles', [])}

@@ -954,3 +954,12 @@ ce flou à la carte graphique : le défaut n'y paraît pas, et les mesures faite
   négatif du défaut précédent. Les polices du canevas sont lues une fois dans `couleurs()` (`coul.mono`, `coul.titre`),
   et non plus par `getComputedStyle` à chaque image. **Règle : dans une boucle d'animation, ne jamais mêler
   `performance.now()` et l'heure reçue par la fonction de rappel.**
+
+## 83. Vidéos de cours : service worker (15 nov. 2026, par la conversation « Vidéos ATLAS »)
+
+À la demande de l'auteur, la conversation « Vidéos ATLAS » a ajouté une ligne à `identite/sw.js` : les requêtes vers
+`/videos/` vont au réseau seul, comme les PDF. Sans elle, le service worker tentait de mettre en cache chaque morceau
+de vidéo (réponses partielles, refusées par le cache) ou la vidéo entière (une vingtaine de mégaoctets). Les fichiers
+des vidéos ne sont pas dans le dépôt ; `outils/publier_ovh.py` n'a pas été modifié : il ne supprime que ce que cite
+son manifeste, donc pas un fichier déposé à part dans `/videos/`. Voir `MEMO_atlas_videos.md`, §10.
+

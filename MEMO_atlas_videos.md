@@ -331,14 +331,26 @@ Les trois premières vidéos (dérivation, équations, nombres réels et suites)
    étape manuelle, par choix : l'envoi automatique par l'interface de programmation de YouTube laisse les vidéos
    bloquées en privé tant que le projet Google n'a pas passé un audit (ne pas reproposer cette voie sans fait nouveau) ;
    piloter son navigateur reste possible, mais n'a pas été retenu.
-4. **La session met la vidéo sur le site** : dépôt du fichier allégé et de la vignette sur l'hébergement OVH, hors du
-   dépôt Git ; adresse YouTube inscrite au catalogue ; bouton « Vidéo » et lecteur sur la ligne du chapitre ;
-   construction, contrôle du rendu (clair, sombre, ordinateur, téléphone), poussée. **Reste à construire** : la
-   lecture du catalogue par `construire.py`, le bouton et le lecteur dans `gabarit.html` (domaine Cours), et le dépôt
-   des vidéos sur OVH (`outils/publier_ovh.py` supprime aujourd'hui ce qui n'est pas dans le site construit : il doit
-   épargner le dossier des vidéos). L'auteur a donné son accord de principe en lançant le protocole ; noter ces
-   changements dans `MEMO_atlas_cours.md` et `MEMO_atlas_apropos.md` au moment de les faire.
+4. **La session met la vidéo sur le site** : version allégée (libx264, crf 27, `-g 60`, `+faststart`) et vignette
+   servies par l'hébergement dans `/videos/`, hors de la branche `main` ; adresse YouTube inscrite au catalogue ; puis
+   `"en_ligne": true`, qui fait paraître le bouton « Vidéo » et le lecteur ; construction, contrôle du rendu (clair,
+   sombre, ordinateur, téléphone), poussée.
+
+**Fait le 15 novembre (poussé, sans effet visible tant que `en_ligne` est faux)** : adresses YouTube des trois vidéos
+au catalogue (seconde `Ll1S6FZrqK4`, première `kbkuh8Pka5k`, MPSI `VYHA0HfCdbs`) ; lecture du catalogue par
+`construire.py` ; bouton et lecteur dans `gabarit.html` (détail dans `MEMO_atlas_cours.md` §51) ; `/videos/` exclu du
+service worker (`MEMO_atlas_apropos.md` §83). Vérifié sur le site construit servi localement, la vidéo de MPSI placée
+à la main dans `site/videos/` : liste et page de chapitre, clair et sombre, ordinateur, téléphone droit et couché.
+Piège : le site a déjà des classes `.lecteur`, `.vue`, `.lecture`, `.bulle` ; celles du lecteur vidéo sont préfixées
+(`vl-`, `vx-`), faute de quoi la bulle de la piste et l'icône de lecture étaient déformées.
+
+**Reste à faire : amener les fichiers sur l'hébergement.** La session ne peut pas créer de publication GitHub
+(« releases » interdites à ce type de session, erreur 403), et n'a pas les accès OVH. Voies possibles, choix de
+l'auteur attendu : une branche à part du dépôt (`videos-fichiers`) que le job `ovh` copierait dans `site/videos/` ;
+ou une publication GitHub « videos » que l'auteur crée et alimente lui-même ; ou un dépôt direct par l'auteur dans
+`/videos/` (l'outil d'envoi ne supprime que ce que cite son manifeste). Les versions allégées sont prêtes
+(19,7, 21,1 et 18,4 Mo).
 
 Repères de temps : YouTube n'active les chapitres que si le premier est à 0:00 et si chacun dure au moins dix secondes ;
 l'ouverture (huit secondes) est donc rattachée à la première partie, et `fiche.py` refuse un chapitre trop court.
-État au 15 novembre : étape 2 faite pour les trois vidéos (fichiers livrés dans la conversation), étape 3 en attente.
+État au 15 novembre : étapes 2 et 3 faites pour les trois vidéos ; étape 4 codée, en attente du dépôt des fichiers.

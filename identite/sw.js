@@ -66,6 +66,7 @@ self.addEventListener('fetch', ev => {
   const url = new URL(req.url);
   if (url.origin === self.location.origin) {
     if (url.pathname.startsWith('/documents/') || url.pathname.endsWith('.pdf')) return;   // PDF : réseau seul
+    if (url.pathname.startsWith('/videos/')) return;   // vidéos de cours : réseau seul (lecture par morceaux, jamais en cache)
     // Navigation vers la racine : une seule entrée de cache, quelle que soit la requête (?source=…).
     if (req.mode === 'navigate' && url.pathname === '/') return ev.respondWith(reseauDabord(req, './'));
     // Autre page (pages de partage /annales/, /cours/t-01/…) : hors ligne et jamais visitée, on renvoie à

@@ -815,3 +815,21 @@ par chapitre : `mp-08 : limite`, `mp-09 : pour tout`, `mp-09 : de classe`. Symbo
 $\langle Ax, x\rangle = 1$ et ses axes propres orthogonaux, image du théorème spectral) ; mp-08 `xn` (courbes de $x^n$
 pour n = 1, 3, 8, 25 et leur limite simple discontinue) ; mp-09 `disque` (disque ouvert teinté, sans bord tracé, un point
 plein dedans, un point vide dehors).
+
+### 51. Vidéo du chapitre : bouton et lecteur (15 nov. 2026, par la conversation « Vidéos ATLAS », à la demande de l'auteur)
+
+La conversation « Vidéos ATLAS » a ajouté à la rubrique, avec l'accord de l'auteur, de quoi regarder la vidéo d'un
+chapitre. Le détail (mise au point du lecteur, décisions, protocole de publication) est dans `MEMO_atlas_videos.md`,
+§9 et §10. Ce qui touche ce domaine :
+
+- `construire.py`, à la fin du bloc des rubriques : lecture de `videos/catalogue.json` ; une vidéo marquée
+  `en_ligne` donne à son chapitre un champ `video` (`fichier`, `duree`, `reperes`, `youtube`).
+- `gabarit.html`, `pageCours` : la pastille d'état est sortie du lien de la ligne, dans `<span class="ch-etat">`, où
+  la rejoint le bouton « ▶ Vidéo » (`coursVideoBouton`) : un bouton ne peut pas vivre dans un lien. La ligne `<li>`
+  est devenue une grille (lien, état) ; `.chapitre` n'a plus que trois colonnes ; le survol colore le `<li>`.
+  Conséquence : un clic sur la pastille « En ligne » n'ouvre plus le chapitre.
+- `gabarit.html`, `pageChapitre` : un bouton « Vidéo » dans la barre du lecteur de PDF, quand le chapitre en a une.
+- `gabarit.html` : `coursVideoDuree`, `coursVideoBouton`, `ouvrirCoursVideo` et l'écouteur de clic `[data-cours-video]`,
+  placés avant `pageCours` ; styles entre les repères « Cours : vidéo du chapitre » et « fin de la vidéo du chapitre ».
+  Classes préfixées `vl-` (éléments) et `vx-` (états) : `.lecteur`, `.vue`, `.lecture`, `.bulle` existent déjà sur le site.
+
