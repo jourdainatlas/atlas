@@ -312,7 +312,13 @@ button { font: inherit; color: inherit; }
     if (dlg.classList.contains('plein')) { dlg.classList.remove('plein'); majPlein(); return; }
     const repli = () => { dlg.classList.add('plein'); majPlein(); };
     const demande = cadre.requestFullscreen || cadre.webkitRequestFullscreen;
-    if (!demande) return repli();
+    if (!demande) {                                                       // iPhone : pas de plein écran pour un élément de page
+      if (!video.webkitEnterFullscreen) return repli();
+      demarrer();                                                         // on passe par le lecteur du système, seul vrai plein écran
+      const entrer = () => { try { video.webkitEnterFullscreen(); } catch (e) { repli(); } };
+      if (video.readyState >= 1) entrer(); else { video.addEventListener('loadedmetadata', entrer, { once: true }); video.load(); }
+      return;
+    }
     try { const p = demande.call(cadre); if (p && p.catch) p.catch(repli); } catch (e) { repli(); }
   }
   bPlein.addEventListener('click', plein);

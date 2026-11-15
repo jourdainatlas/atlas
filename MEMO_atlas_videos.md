@@ -304,6 +304,8 @@ intertitre est une pastille qui donne son titre au survol et y saute au clic.
   YouTube. Sur écran tactile (`pointer: coarse`), le plein écran est **immersif** : la vidéo occupe tout, l'en-tête et
   la barre se posent par-dessus et s'effacent après trois secondes de lecture ; un appui sur la vidéo les rappelle,
   ils restent visibles en pause. Sur ordinateur, la barre reste toujours visible (souhait de l'auteur). L'iPhone
-  n'accorde pas le plein écran à un élément de page : on y retombe sur le mode « toute la fenêtre », immersif lui
-  aussi ; le seul vrai plein écran y serait celui du lecteur du système (`webkitEnterFullscreen`), sans les pastilles.
+  n'accorde pas le plein écran à un élément de page : **à la demande de l'auteur**, le bouton y ouvre le lecteur du
+  système (`video.webkitEnterFullscreen`), seul vrai plein écran, avec les commandes d'Apple et sans les pastilles ;
+  si le système refuse, on retombe sur le mode « toute la fenêtre », immersif. Rien de tout cela n'a été essayé sur
+  un vrai téléphone (émulation tactile de Chrome et simulation du cas iPhone seulement).
 - L'intégration au site relève du domaine Cours : ne rien y toucher sans demande de l'auteur.
