@@ -842,4 +842,4 @@ chapitre. Le détail (mise au point du lecteur, décisions, protocole de publica
 `ar-asymptotique`. Prérequis : mp-10 [ma-14, ma-15, ma-18], mp-11 [ma-18, ma-20, ma-05], mp-12 [ma-18, ma-20, ma-10].
 Activité reliée : `produit-scalaire` → mp-10. Termes écartés : deux dates de frise et deux fragments (globaux), et
 par chapitre des adjectifs ou fragments mis en rouge (mp-10 : fermé, dimension finie, réelles ; mp-12 : aire,
-majorée, continue, positive, limites finies, égales, décroissante, intégrable en). Symboles : planche envoyée.
+majorée, continue, positive, limites finies, égales, décroissante, intégrable en). Symboles validés le 16 nov. : mp-10 `plan` (vecteur projeté sur un plan), mp-11 `creneau` (créneau en aplat et somme partielle S₃), mp-12 `singularite` (aire sous 1/√x le long de l'asymptote x = 0).
