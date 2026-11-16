@@ -380,6 +380,13 @@ Demandés par l'auteur, montrés en prototype, **ni validés ni inscrits au cata
   projeté H. `film.js` y a des outils de figure en perspective cavalière (`vue`, `seg`, `poly`, `angleDroit`) et les
   trois mouvements motivés du chien en fonctions (`bond`, `chute`, `sautJardin`), à reprendre dans les films suivants.
 
+Retours de l'auteur sur la géométrie (16 novembre), corrigés dans `espace-terminale-prototype-2.mp4` : la droite
+sécante du croquis doit rester alignée de part et d'autre du plan (partie cachée en pointillé, puis visible au-delà
+du bord) ; sur le cube, (CG), à l'arrière, s'interrompt là où elle croise en apparence (AB) ; la carte de l'équation
+cartésienne rappelle M(x ; y ; z) et les coordonnées de AM, écrites en bleu comme le vecteur AM. **À retenir pour
+toute figure de l'espace : respecter la profondeur (ce qui est derrière s'interrompt ou passe en pointillé) et
+faire suivre le code couleur des figures jusque dans les calculs.**
+
 Les deux films sont bâtis sur celui des équations (boîte à outils, intertitres, jardin, fin, vignette). `BILAN` est
 désormais dans la partition (les films plus anciens écrivent la mesure du bilan en dur).
 Piège rencontré : dans `chienA`, deux trajets vers la droite qui se suivent additionnaient leurs « face » et étiraient

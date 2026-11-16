@@ -140,9 +140,9 @@
       fl(ctx, P3.A, p, { c: C.bleu, lw: 5, a: km }); angleDroit(ctx, P3.A, u, [0, -1], 22, { a: km }); lettre(ctx, 'M', p, 0, 34, km, 34); }
     let k = fen(t, V.eq - 0.1, L(20), 0.4);
     if (k > 0) { ctx.save(); ctx.globalAlpha *= k;
-      formule(ctx, 'p_eq', 1340, 235, { fs: 50, mil: 1, a: ap(t, V.eq), monte: 1 });
-      const kd = ap(t, V.dev); carte(ctx, 900, 350, 880, 330, 'PROPRIÉTÉ', kd); formule(ctx, 'p_dev', 1340, 465, { fs: 38, mil: 1, a: kd });
-      const kc = ap(t, V.car); formule(ctx, 'p_car', 1230, 590, { fs: 52, mil: 1, a: kc, monte: 1 }); formule(ctx, 'p_n', 1650, 580, { fs: 40, mil: 1, a: kc }); ctx.restore(); }
+      formule(ctx, 'p_eq', 1340, 225, { fs: 50, mil: 1, a: ap(t, V.eq), monte: 1 });
+      const kd = ap(t, V.dev); carte(ctx, 900, 312, 880, 432, 'PROPRIÉTÉ', kd); formule(ctx, 'p_M', 1340, 418, { fs: 34, mil: 1, a: kd }); formule(ctx, 'p_dev', 1340, 548, { fs: 38, mil: 1, a: kd });
+      const kc = ap(t, V.car); formule(ctx, 'p_car', 1230, 658, { fs: 50, mil: 1, a: kc, monte: 1 }); formule(ctx, 'p_n', 1650, 652, { fs: 36, mil: 1, a: kc }); ctx.restore(); }
     k = fen(t, L(20) + 0.1, L(22), 0.4);
     if (k > 0) { ctx.save(); ctx.globalAlpha *= k;
       formule(ctx, 'p_ex', 1340, 230, { fs: 44, mil: 1, a: ap(t, V.ex), monte: 1 });
@@ -151,7 +151,7 @@
     ctx.restore();
     legende(ctx, t, V.leg[0], ['Un vecteur [normal] à un plan est orthogonal à tous les vecteurs de ce plan.']);
     legende(ctx, t, V.leg[1], ['Où que soit $M$ dans le plan, le vecteur $AM$ reste orthogonal au vecteur normal.']);
-    legende(ctx, t, V.leg[2], ['En coordonnées, on obtient une [équation cartésienne] du plan.']);
+    legende(ctx, t, V.leg[2], ['Avec les coordonnées $(x ; y ; z)$ de $M$, on obtient une [équation cartésienne] du plan.']);
     legende(ctx, t, V.leg[3], ['Les coefficients de $x$, $y$ et $z$ sont les coordonnées du vecteur normal.']);
   }
 
@@ -183,7 +183,11 @@
     ctx.save(); ctx.globalAlpha *= a; poly(ctx, Q);
     if (genre === 0) seg(ctx, v(0.3, -1.25), v(-0.3, 1.25), { c: C.bleu, lw: 5 });
     if (genre === 1) seg(ctx, v(0.3, -1.6, 1.1), v(-0.3, 1.6, 1.1), { c: C.bleu, lw: 5 });
-    if (genre === 2) { const I = v(0, 0), h = v(-0.2, 0.5, 1.5), b = v(0.13, -0.33, -1); seg(ctx, [I[0], I[1] + 36], b, { c: C.bleu, lw: 5, a: 0.35 }); seg(ctx, h, I, { c: C.bleu, lw: 5 }); pt(ctx, I, { c: C.cours, r: 8 }); }
+    if (genre === 2) {                                                                    // la droite perce le plan en I : même direction de part et d'autre
+      const I = v(0, 0), h = v(-0.2, 0.5, 1.5), b = v(0.2 * 0.8, -0.5 * 0.8, -1.5 * 0.8), P = (k) => [lerp(I[0], b[0], k), lerp(I[1], b[1], k)];
+      const dedans = (p) => Q.every((q, i) => { const r = Q[(i + 1) % 4]; return (r[0] - q[0]) * (p[1] - q[1]) - (r[1] - q[1]) * (p[0] - q[0]) >= 0; });
+      let ks = 0; while (ks < 1 && dedans(P(ks + 0.01))) ks += 0.01;                      // sortie de sous le plan
+      seg(ctx, I, P(ks), { c: C.bleu, lw: 4, dash: [5, 7], a: 0.55 }); seg(ctx, P(ks), b, { c: C.bleu, lw: 5 }); seg(ctx, h, I, { c: C.bleu, lw: 5 }); pt(ctx, I, { c: C.cours, r: 8 }); }
     ctx.restore();
   }
   const V5 = vue(560, 600, 220, -0.45, 0.4), CU = Object.fromEntries(Object.entries({ A: [1, 0, 0], B: [1, 1, 0], C: [0, 1, 0], D: [0, 0, 0], E: [1, 0, 1], F: [1, 1, 1], G: [0, 1, 1], H: [0, 0, 1] }).map(([l, p]) => [l, V5(...p)]));
@@ -202,7 +206,10 @@
       const kc = ap(t, V.cube, 0.7), kab = ap(t, V.ab, 0.6), kcg = ap(t, V.cg, 0.6), kn = ap(t, V.non);
       for (const [p, q, cache] of [['A', 'B'], ['B', 'C'], ['A', 'E'], ['B', 'F'], ['C', 'G'], ['E', 'F'], ['F', 'G'], ['G', 'H'], ['H', 'E'], ['D', 'A', 1], ['D', 'C', 1], ['D', 'H', 1]]) seg(ctx, CU[p], CU[q], { c: cache ? C.gl : C.gm, lw: 3, dash: cache ? [7, 8] : null, a: kc });
       const dAB = unit(CU.A, CU.B), ext = (p, d, s) => [p[0] + d[0] * s, p[1] + d[1] * s];
-      seg(ctx, ext(CU.A, dAB, -150), ext(CU.B, dAB, 190), { c: C.bleu, lw: 6, k: kab }); seg(ctx, ext(CU.G, [0, -1], 90), ext(CU.C, [0, 1], 130), { c: C.orange, lw: 6, k: kcg });
+      const yX = CU.A[1], gH = ext(CU.G, [0, -1], 90), gB = ext(CU.C, [0, 1], 150), lg = gB[1] - gH[1], k1 = Math.min(1, kcg * lg / (yX - 16 - gH[1]));
+      seg(ctx, gH, [gH[0], yX - 16], { c: C.orange, lw: 6, k: k1 });                       // (CG), à l'arrière : elle passe derrière (AB)
+      if (kcg * lg > yX + 16 - gH[1]) seg(ctx, [gH[0], yX + 16], [gH[0], gH[1] + kcg * lg], { c: C.orange, lw: 6 });
+      seg(ctx, ext(CU.A, dAB, -150), ext(CU.B, dAB, 190), { c: C.bleu, lw: 6, k: kab });
       for (const [l, dx, dy] of [['A', -22, 30], ['B', -8, 34], ['C', 30, 6], ['D', -26, -10], ['E', -28, -8], ['F', 26, 22], ['G', 30, -8], ['H', -26, -12]]) lettre(ctx, l, CU[l], dx, dy, kc, 32);
       formule(ctx, 'q_AB', CU.A[0] - 200, CU.A[1] - 4, { fs: 36, mil: 1, a: kab }); formule(ctx, 'q_CG', CU.G[0] + 62, CU.G[1] - 86, { fs: 36, mil: 1, a: kcg });
       txt(ctx, 'Elles ne sont pas parallèles.', 1340, 300, { fam: F.ui, w: 500, size: 36, a: ap(t, V.cg + 1) });

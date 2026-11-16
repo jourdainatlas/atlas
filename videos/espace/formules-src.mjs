@@ -20,7 +20,7 @@ export default [
   ['s_cos', `\\cos\\widehat{BAC}=\\dfrac{3}{\\sqrt{14}\\times\\sqrt{18}}\\approx 0{,}189`], ['s_ang', '\\widehat{BAC}\\approx 79^\\circ', 'cours'],
   // 3. plan
   ['p_eq', `M\\in\\mathcal{P}\\quad\\Longleftrightarrow\\quad${b(vec('AM'))}\\cdot${n}=0`],
-  ['p_dev', `${o('a')}(x-x_A)+${o('b')}(y-y_A)+${o('c')}(z-z_A)=0`], ['p_car', `${o('a')}x+${o('b')}y+${o('c')}z+d=0`], ['p_n', `${n}${col('a', 'b', 'c')}`],
+  ['p_M', `M(x\\,;y\\,;z)\\qquad${b(vec('AM'))}${b(col('x-x_A', 'y-y_A', 'z-z_A'))}`], ['p_dev', `${o('a')}${b('(x-x_A)')}+${o('b')}${b('(y-y_A)')}+${o('c')}${b('(z-z_A)')}=0`], ['p_car', `${o('a')}x+${o('b')}y+${o('c')}z+d=0`], ['p_n', `${n}${col('a', 'b', 'c')}`],
   ['p_ex', `A(2\\,;-1\\,;3)\\qquad${n}${col(1, 4, -2)}`], ['p_e1', `x+${o('4')}y-${o('2')}z+d=0`], ['p_e2', '2+4\\times(-1)-2\\times 3+d=0'], ['p_e3', 'd=8'], ['p_e4', 'x+4y-2z+8=0', 'cours'],
   // 4. droite
   ['d_eq', `${vec('AM')}=t\\,${u}`], ['d_sys', sys(`x=x_A+${b('\\alpha')}\\,t`, `y=y_A+${b('\\beta')}\\,t`, `z=z_A+${b('\\gamma')}\\,t`)], ['d_u', `${u}${col('\\alpha', '\\beta', '\\gamma')}`],
