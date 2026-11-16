@@ -360,7 +360,7 @@ Repères de temps : YouTube n'active les chapitres que si le premier est à 0:00
 l'ouverture (huit secondes) est donc rattachée à la première partie, et `fiche.py` refuse un chapitre trop court.
 État au 15 novembre : les quatre étapes sont faites pour les trois vidéos (`en_ligne` vrai).
 
-## 11. Deux nouveaux prototypes (16 novembre 2026), en attente du retour de l'auteur
+## 11. Trois nouveaux prototypes (16 novembre 2026), en attente du retour de l'auteur
 
 Demandés par l'auteur, montrés en prototype, **ni validés ni inscrits au catalogue** (donc ni YouTube ni site).
 
@@ -393,3 +393,19 @@ Piège rencontré : dans `chienA`, deux trajets vers la droite qui se suivent ad
 le chien ; `face` est maintenant borné à [−1 ; 1] dans `videos/espace/film.js` (à reporter si le cas se présente
 ailleurs). MathJax espace mal un mot accentué dans `\text{…}` (« parallè le ») : écrire ce texte avec `txt`.
 
+Troisième prototype, demandé par l'auteur « avant de valider » :
+
+- **« Les probabilités », Seconde, chapitre 3** — `videos/probabilites/`, 4 min 03 s
+  (`probabilites-seconde-prototype-1.mp4`). Mêmes bornes que la géométrie (2, 6, 14, 22, 26, 34 ; bilan 46 ; fin 50).
+  Parties : une expérience aléatoire (dé, Ω, A = {2 ; 4 ; 6}, B = {5 ; 6}) ; contraire, intersection, réunion
+  (diagramme, événements incompatibles) ; la loi de probabilité (dé truqué en barres, P(A) = 0,6 ; jeu de 32 cartes,
+  8/32 et 4/32) ; deux formules (P(Ā) = 3/4, P(A ∪ B) = 11/32) ; les arbres pondérés (urne de 3 rouges et 2 vertes,
+  tirage avec remise, 12/25 = 0,48) ; les probabilités conditionnelles (tableau du lycée de 500 élèves,
+  P_S(M) = 0,3, définition, produit, indépendance). Tous les exemples sont ceux du cours `s-03` ; les calculs ont été
+  refaits en fractions exactes avec Python. Bilan : « Trois formules ».
+  Le chien joue deux fois : il entre par la gauche et pousse le dé, qui roule et s'arrête sur 4 ; il sort du jardin
+  par la gauche, entre par la gauche à la racine de l'arbre, suit le chemin (R ; V), descend d'un saut vertical sur la
+  branche de (V ; R) et revient à la racine par l'autre chemin. Il s'arrête aux trois quarts de la dernière branche
+  (`KS` dans `cheminChien`) pour ne pas masquer l'étiquette de l'issue.
+  **Couleurs :** les boules et les branches de l'urne sont en rouge brique `#e2553b` et en vert `#7fc65a`, teintes
+  propres à ce film ; le rouge du site reste réservé aux définitions. À confirmer par l'auteur.
