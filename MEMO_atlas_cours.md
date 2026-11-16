@@ -854,3 +854,8 @@ fournis, le site garderait sinon un texte différent du PDF. Pas de reconversion
 directement dans `f-ma-NN.yaml` (avant `page_enonce`), toutes autres métadonnées intactes ; sources EXO et
 CORRIGE identiques partout. `tex2exos.sources` reconnaît désormais aussi `\par\needspace{…}\exoorig{N}` (ex. 65
 du ch. 17, 37 et 53 du ch. 18 étaient manqués). 185 exercices sur 1 356 restent sans source (aucun commentaire).
+
+**Sources internes masquées (16 nov.).** À la demande de l'auteur, une source qui ne renvoie à aucun document
+extérieur (« exercice composé pour la feuille… », « promesse de la feuille… », seules ou entre elles) n'est pas
+affichée : `tex2exos.source_interne` l'écarte à la conversion, et les 88 champs existants (MPSI et MP) ont été
+retirés. Les sources mixtes (« BibM@th, … ; exercice composé pour la feuille ») sont gardées telles quelles (18).

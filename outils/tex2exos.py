@@ -626,8 +626,20 @@ def sources(t_brut):
         texte = m.group(2).strip()
         # Les commentaires LaTeX sont souvent écrits sans accents : titre du polycopié rétabli.
         texte = texte.replace('Mathematiques : du lycee aux CPGE', 'Mathématiques : du lycée aux CPGE')
+        if source_interne(texte): continue   # exercice composé pour la feuille : rien n'est affiché
         r[int(m.group(3))] = texte if m.group(1).startswith('Source') else 'inspiré de ' + texte   # affiché « Source : inspiré de … »
     return r
+
+def source_interne(texte):
+    """Vrai si la source ne renvoie à aucun document extérieur : chaque partie (séparée par « ; » hors
+    parenthèses) est « exercice composé pour la feuille… » ou « promesse de la feuille… »."""
+    parts, prof, cour = [], 0, ''
+    for ch in texte:
+        prof += (ch == '(') - (ch == ')')
+        if ch == ';' and prof == 0: parts.append(cour); cour = ''
+        else: cour += ch
+    parts.append(cour)
+    return all(re.match(r'\s*(exercice composé pour la feuille|promesse de la feuille)', x) for x in parts)
 
 def pages(pdf):
     n = int(re.search(r'Pages:\s+(\d+)', subprocess.run(['pdfinfo', pdf], capture_output=True, text=True, errors='replace').stdout).group(1))
