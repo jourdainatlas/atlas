@@ -843,3 +843,14 @@ chapitre. Le détail (mise au point du lecteur, décisions, protocole de publica
 Activité reliée : `produit-scalaire` → mp-10. Termes écartés : deux dates de frise et deux fragments (globaux), et
 par chapitre des adjectifs ou fragments mis en rouge (mp-10 : fermé, dimension finie, réelles ; mp-12 : aire,
 majorée, continue, positive, limites finies, égales, décroissante, intégrable en). Symboles validés le 16 nov. : mp-10 `plan` (vecteur projeté sur un plan), mp-11 `creneau` (créneau en aplat et somme partielle S₃), mp-12 `singularite` (aire sous 1/√x le long de l'asymptote x = 0).
+
+### 52. Sources des feuilles MPSI (16 nov. 2026)
+
+L'auteur a renvoyé les 44 .tex MPSI (EXO et CORRIGE, chap. 1 à 22) avec des commentaires `% Source :` avant les
+exercices. Hors commentaires, les énoncés sont identiques à ceux en ligne ; deux phrases de corrigé diffèrent
+(ch. 16, « Piège » : « sur $\C$, on remplace » au lieu de « le chapitre 19 remplacera » ; ch. 17, ex. 65 ou voisin,
+« la seconde année appellera » au lieu de « le chapitre 19 appellera »), **non reportées** : les PDF n'ont pas été
+fournis, le site garderait sinon un texte différent du PDF. Pas de reconversion : 1 171 champs `source` insérés
+directement dans `f-ma-NN.yaml` (avant `page_enonce`), toutes autres métadonnées intactes ; sources EXO et
+CORRIGE identiques partout. `tex2exos.sources` reconnaît désormais aussi `\par\needspace{…}\exoorig{N}` (ex. 65
+du ch. 17, 37 et 53 du ch. 18 étaient manqués). 230 exercices restent sans source (aucun commentaire).

@@ -621,7 +621,7 @@ def sources(t_brut):
     """Sources indiquées en commentaire juste avant un exercice : « % Source : … » → {numéro: texte} ;
     « % Inspiré de : … » donne « inspiré de … »."""
     r = {}
-    tete = r'(?:\\exo\{|\\noindent\s*\\textbf\{\s*\\underline\{\s*Exercice\s+)(\d+)'
+    tete = r'(?:\\par\s*\\needspace\{[^}]*\}\s*)?(?:\\exo(?:orig)?\{|\\noindent\s*\\textbf\{\s*\\underline\{\s*Exercice\s+)(\d+)'
     for m in re.finditer(r'%\s*(Sources?|Inspiré de)\s*:\s*(.*)\n(?:%[^\n]*\n|\s*\n|\\newpage\s*\n)*' + tete, t_brut):
         texte = m.group(2).strip()
         # Les commentaires LaTeX sont souvent écrits sans accents : titre du polycopié rétabli.
