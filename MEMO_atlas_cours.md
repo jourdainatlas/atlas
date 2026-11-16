@@ -833,3 +833,13 @@ chapitre. Le détail (mise au point du lecteur, décisions, protocole de publica
   placés avant `pageCours` ; styles entre les repères « Cours : vidéo du chapitre » et « fin de la vidéo du chapitre ».
   Classes préfixées `vl-` (éléments) et `vx-` (états) : `.lecteur`, `.vue`, `.lecture`, `.bulle` existent déjà sur le site.
 
+
+### 51. MP, chapitres 10 à 12 (16 nov. 2026)
+
+`mp-10` (Espaces préhilbertiens, 16 p.), `mp-11` (Séries de Fourier, 12 p.), `mp-12` (Intégrales généralisées,
+16 p.) ; feuilles `f-mp-10` (52 exercices), `f-mp-11` (34), `f-mp-12` (43), sans figure ; `outils/meta_mp_10.py` à
+`meta_mp_12.py`. L'édifice n'a pas de nœud propre aux intégrales généralisées : `ri-integrable`, `ri-proprietes`,
+`ar-asymptotique`. Prérequis : mp-10 [ma-14, ma-15, ma-18], mp-11 [ma-18, ma-20, ma-05], mp-12 [ma-18, ma-20, ma-10].
+Activité reliée : `produit-scalaire` → mp-10. Termes écartés : deux dates de frise et deux fragments (globaux), et
+par chapitre des adjectifs ou fragments mis en rouge (mp-10 : fermé, dimension finie, réelles ; mp-12 : aire,
+majorée, continue, positive, limites finies, égales, décroissante, intégrable en). Symboles : planche envoyée.
