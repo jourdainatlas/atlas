@@ -879,4 +879,4 @@ réception, `meta_mp_14.py` (parties : 1–3, 4–9, 10–21, 22–24, 25–30, 
 `exercices: f-mp-14` et entrée dans `exercices.yaml`, sans nouvelle entrée de nouveautés (compléter celle du 17 nov.).
 Prérequis : mp-13 [ma-18, ma-20, ma-08], mp-14 [ma-21, ma-20, ma-03], mp-15 [ma-21, ma-20, ma-10]. Activités :
 `grands-nombres` → mp-15, `anniversaires` → mp-14. Termes écartés par chapitre (fragments, renvois « théorème N »,
-et « presque sßr(ement) », où le PDF code « û » comme « ß »). Symboles : planche envoyée.
+et « presque sßr(ement) », où le PDF code « û » comme « ß »). Symboles validés le 17 nov. : mp-13 `domine` (oscillation φ(t) cos(2,4 t) dans l'enveloppe ±φ, φ(t) = e^{−t/2}), mp-14 `partition` (univers en trois parts et un événement), mp-15 `esperance` (loi de Poisson(1,6) tronquée à 0–5 sur un pivot placé à son espérance, 1,572, calculée).
