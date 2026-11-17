@@ -992,6 +992,7 @@ réduites à `contents: read`. Le site construit passe d'un job à l'autre par u
 `configure-pages` échoue quand Pages est désactivé, ce qui aurait arrêté aussi l'envoi vers OVH.
 Garde-fou ajouté dans `outils/publier_ovh.py` : refus d'envoyer un site sans index.html, sans 404.html ou de moins
 de 3 000 fichiers (l'envoi supprimant du serveur ce qui a disparu du site construit).
-Restent à la main de l'auteur (hors de portée de cette session) : désactiver Pages dans les réglages du dépôt ;
-retirer `essai.atlasjourdain.fr` du Multisite OVH et les lignes `essai` de la zone DNS. Les enregistrements `@` et
-`www`, les MX, SPF et TXT ne changent pas.
+Faits par l'auteur le même jour : Pages désactivé dans les réglages du dépôt (jourdainatlas.github.io/atlas répond
+404), `essai.atlasjourdain.fr` retiré du Multisite OVH et de la zone DNS. Les enregistrements `@` et `www`, les MX,
+SPF et TXT n'ont pas changé. Contrôlé ensuite : site servi par OVH, redirections intactes, publication réussie sans
+Pages. Le retrait de l'adresse d'essai n'a pas pu être vérifié d'ici (le bac à sable ne joint pas ce sous-domaine).

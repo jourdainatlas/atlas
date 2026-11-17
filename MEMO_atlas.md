@@ -60,8 +60,9 @@ a poussé entre-temps, un fichier commun réécrit à partir d'une copie périm�
    touche un fichier commun.
 6. **Publication :** depuis le 10 nov. 2026, `publier.yml` n'annule plus une publication en cours
    (`cancel-in-progress: false`) : une nouvelle poussée attend la fin de la précédente (« queued »), ce qui est
-   normal. Le flux a trois jobs : `construire`, `publier` (GitHub Pages, gardé en secours) et `ovh` (mise en
-   ligne réelle sur l'hébergement OVHcloud, MEMO_atlas_apropos.md §64) ; c'est le job `ovh` qui doit réussir.
+   normal. Le flux a deux jobs : `construire` et `ovh` (mise en ligne sur l'hébergement OVHcloud,
+   MEMO_atlas_apropos.md §64) ; c'est le job `ovh` qui doit réussir. GitHub Pages, gardé en secours jusqu'au
+   17 nov. 2026, est retiré (§83 du même mémo).
    On suit la dernière exécution avec `gh run list -R jourdainatlas/atlas` jusqu'au succès. Si elle échoue à
    cause des fichiers de l'autre rubrique, on ne les corrige pas soi-même : on signale l'erreur à l'auteur.
 7. **Mémos du projet Claude :** chaque conversation n'écrit dans le projet que son propre mémo
@@ -438,7 +439,7 @@ exercices/<id>/. Feuille en ligne : Terminale chapitre 1 (33 exercices).
 - racine/index.html : page de renvoi vers /atlas/ pour un dépôt jourdainatlas.github.io, à créer par l'auteur (Claude n'a pas accès à la création de dépôt).
 
 ### 16. Domaine (26 oct. 2026)
-- Le site est servi à https://www.atlasjourdain.fr/ par l'hébergement web OVHcloud Perso (depuis le 10 nov. 2026, MEMO_atlas_apropos.md §64 : dossier `atlas`, envoi SFTP par le job `ovh` de publier.yml ; DNS : A/AAAA de @ vers 145.239.37.162 / 2001:41d0:301::30, CNAME www → atlasjourdain.fr., MX/SPF/TXT inchangés). GitHub Pages reste publié en secours quelques semaines (retour : rétablir A/AAAA de GitHub sur @ et CNAME www → jourdainatlas.github.io.).
+- Le site est servi à https://www.atlasjourdain.fr/ par l'hébergement web OVHcloud Perso (depuis le 10 nov. 2026, MEMO_atlas_apropos.md §64 : dossier `atlas`, envoi SFTP par le job `ovh` de publier.yml ; DNS : A/AAAA de @ vers 145.239.37.162 / 2001:41d0:301::30, CNAME www → atlasjourdain.fr., MX/SPF/TXT inchangés). GitHub Pages, gardé en secours une semaine, a été retiré le 17 nov. 2026 (MEMO_atlas_apropos.md §83) : OVH est le seul hébergement.
 - ADRESSE (rendu.mjs) et ADRESSE_SITE (gabarit.html) valent https://www.atlasjourdain.fr/. GitHub redirige jourdainatlas.github.io/atlas/… vers le domaine ; la page du dépôt jourdainatlas.github.io renvoie aussi vers le domaine.
 - Thème : bouton soleil/lune (#theme) ; choix gardé par cookie de session atlas-theme (+ sessionStorage).
 - Mode clair par défaut (13 nov. 2026, demande de l'auteur ; déjà le cas du 27 oct. au 12 nov., sombre entre le 12
