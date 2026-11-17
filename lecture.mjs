@@ -156,6 +156,7 @@ body.l-corps { min-height: 100%; margin: 0; display: block; }
     return null;
   };
   const empreintesPages = {};
+  const RUBRIQUES_APPLI = new Set(['edifice', 'cours', 'exercices', 'annales', 'activites', 'nouveautes', 'a-propos', 'index']);   // têtes d'ancre de l'application (RUBRIQUES du gabarit, plus edifice)
   function page({ chemin, titre, description, ancre, corps, fil = [], type = 'article', fichier, indexable = true, ressource, apercu }) {
     titre = String(titre).replace(/^ATLAS – (.+)$/, '$1 – ATLAS');
     corps = enMathML(corps);
@@ -168,6 +169,12 @@ body.l-corps { min-height: 100%; margin: 0; display: block; }
     if (indexable && !fichier) empreintesPages[url] = empreinte(titre + '\n' + d + '\n' + corps);
     const filLd = fil.length ? `<script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@type': 'BreadcrumbList',
       itemListElement: [{ name: 'ATLAS', href: '' }, ...fil].map((f, i) => ({ '@type': 'ListItem', position: i + 1, name: f.name, item: ADRESSE + (f.href || '').replace(/^\//, '') })) }).replace(/</g, '\\u003c')}</script>` : '';
+    // Mesure d'audience (GoatCounter, MEMO_atlas_apropos.md §37 et §82) : la page de lecture est comptée sous le même
+    // chemin que la vue correspondante de l'application (audienceChemin de gabarit.html), pour qu'une fiche lue des
+    // deux façons tombe sur la même ligne du tableau de bord. Seulement sur le site publié ; pas la page 404.
+    const tA = String(ancre || '').split('/')[0];
+    const cheminAudience = !ancre || ancre === 'accueil' ? '/' : RUBRIQUES_APPLI.has(tA) ? '/' + ancre : '/edifice/' + String(ancre).replace('.', '/');
+    const audience = indexable ? `<script>if(/(^|\\.)atlasjourdain\\.fr$/.test(location.hostname)){window.goatcounter={path:${JSON.stringify(cheminAudience).replace(/</g, '\\u003c')}};var s=document.createElement('script');s.async=true;s.src='https://gc.zgo.at/count.js';s.dataset.goatcounter='https://atlasjourdain.goatcounter.com/count';document.head.appendChild(s)}</script>\n` : '';
     const sortie = fichier ? `site/${fichier}` : `site/${chemin}index.html`;
     if (!fichier) fs.mkdirSync('site/' + chemin, { recursive: true });
     fs.writeFileSync(sortie, `<!doctype html>
@@ -197,7 +204,7 @@ ${THEME}
 <link rel="stylesheet" href="/katex.css?v=${vCss}">
 <link rel="stylesheet" href="/lecture.css?v=${vLecture}">
 ${filLd}${ressLd}
-</head>
+${audience}</head>
 <body class="l-corps">
 <header class="l-tete"><a class="l-marque" href="/"><img src="/icone-192.png" alt="" width="28" height="28">ATLAS</a>
 <nav class="l-rubriques" aria-label="Rubriques"><a href="/edifice/">L'édifice</a><a href="/cours/">Cours</a><a href="/exercices/">Exercices</a><a href="/annales/">Annales</a><a href="/activites/">Activités</a></nav>

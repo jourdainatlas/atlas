@@ -963,3 +963,16 @@ de vidéo (réponses partielles, refusées par le cache) ou la vidéo entière (
 des vidéos ne sont pas dans le dépôt ; `outils/publier_ovh.py` n'a pas été modifié : il ne supprime que ce que cite
 son manifeste, donc pas un fichier déposé à part dans `/videos/`. Voir `MEMO_atlas_videos.md`, §10.
 
+
+## 82. Mesure d'audience sur les pages de lecture (17 nov. 2026)
+
+Angle mort constaté : GoatCounter (§37) ne comptait que l'application ; les pages de lecture, celles qu'indexent les
+moteurs, n'avaient pas le compteur, si bien qu'un visiteur venu d'une recherche et reparti sans ouvrir l'atlas
+n'apparaissait nulle part. `page()` (lecture.mjs) pose désormais dans l'en-tête un court script : sur
+atlasjourdain.fr seulement, il fixe `window.goatcounter.path` puis charge `gc.zgo.at/count.js`. Le chemin est
+calculé à la construction à partir de l'ancre de la page, par la même règle que `audienceChemin` du gabarit
+(`RUBRIQUES_APPLI` dans lecture.mjs, à tenir d'accord avec `RUBRIQUES`) : une fiche lue en page de lecture ou dans
+l'application tombe sur la même ligne (`/cours/s-01`, `/exercices/ex/s-01-01`, `/edifice/galois`,
+`/edifice/<graphe>/<fiche>`…). La provenance est transmise par le script lui-même. Non comptées : la page 404, et
+les quatre pages d'aperçu qui renvoient aussitôt à l'application (accueil, à propos, nouveautés, état de l'édifice),
+que l'application compte. La mention de l'À propos (§37) couvre cet usage.
