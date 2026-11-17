@@ -868,3 +868,15 @@ des chapitres) et `/exercices/niveau/<id>/` (liste des feuilles), avec leur imag
 que partage le bouton Partager pour une rubrique filtrée sur un niveau. Elles se mettent à jour d'elles-mêmes quand
 un chapitre, une feuille ou un niveau est ajouté ; la construction demandera seulement de refabriquer leur image
 (MEMO_atlas.md §0, point 9). Détail : MEMO_atlas_apropos.md §84.
+
+### 53. MP, chapitres 13 à 15 (17 nov. 2026)
+
+`mp-13` (Convergence dominée et intégrales à paramètre, 15 p.), `mp-14` (Espaces probabilisés et variables
+aléatoires discrètes, 15 p.), `mp-15` (Espérance, variance et fonctions génératrices, 14 p.) ; feuilles `f-mp-13`
+(43 exercices) et `f-mp-15` (46), sans figure ; `outils/meta_mp_13.py`, `meta_mp_15.py`. **La feuille 14 attend
+son corrigé** (ni .tex ni PDF reçus) : `mp-14` n'a pas de champ `exercices`, et l'énoncé n'est pas déposé ; à
+réception, `meta_mp_14.py` (parties : 1–3, 4–9, 10–21, 22–24, 25–30, 31–33, 34–41, synthèse 42–46), conversion, champ
+`exercices: f-mp-14` et entrée dans `exercices.yaml`, sans nouvelle entrée de nouveautés (compléter celle du 17 nov.).
+Prérequis : mp-13 [ma-18, ma-20, ma-08], mp-14 [ma-21, ma-20, ma-03], mp-15 [ma-21, ma-20, ma-10]. Activités :
+`grands-nombres` → mp-15, `anniversaires` → mp-14. Termes écartés par chapitre (fragments, renvois « théorème N »,
+et « presque sßr(ement) », où le PDF code « û » comme « ß »). Symboles : planche envoyée.
