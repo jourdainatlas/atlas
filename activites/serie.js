@@ -35,7 +35,7 @@ export const html = `
 <header class="col">
   <p class="eyebrow">Calcul mental · Seconde, Première, Terminale, Maths expertes, Maths Sup</p>
   <h3>Dix calculs</h3>
-  <p class="lede">Dix calculs à faire de tête, contre la montre, sur un thème de votre classe : fractions, racines carrées, équations et inéquations en Seconde, carrés, pourcentages, développements et factorisations en Première, dérivées, primitives et intégrales en Terminale, à quoi s'ajoutent PGCD, congruences et nombres complexes avec l'option Maths expertes, puis développements limités, équivalents et déterminants en Maths Sup. Quatre réponses sont proposées ; une seule est exacte, les autres sont les erreurs que l'on commet le plus souvent.</p>
+  <p class="lede">Dix calculs à faire de tête, contre la montre, sur un thème de votre classe : fractions, racines carrées, équations, probabilités et évolutions en Seconde, trinômes, dérivées, produit scalaire et probabilités conditionnelles en Première, logarithmes, limites, dénombrement et équations différentielles en Terminale, à quoi s'ajoutent nombres complexes, matrices et arithmétique avec l'option Maths expertes, puis développements limités, séries, polynômes et algèbre linéaire en Maths Sup. Quatre réponses sont proposées ; une seule est exacte, les autres sont les erreurs que l'on commet le plus souvent.</p>
 </header>
 
 <div class="jeu">
