@@ -65,6 +65,10 @@ def main():
     base = os.environ.get('OVH_DOSSIER') or 'atlas'
     t0 = time.time()
     F = local(site)
+    # Garde-fou (17 nov. 2026) : l'envoi supprime du serveur ce qui n'est plus dans le site construit. Un site vide
+    # ou tronqué (archive mal transmise) effacerait donc le site en ligne : on refuse d'envoyer dans ce cas.
+    if 'index.html' not in F or '404.html' not in F or len(F) < 3000:
+        sys.exit(f'Site construit incomplet ({len(F)} fichiers, index.html {"présent" if "index.html" in F else "absent"}) : rien n\'est envoyé.')
     E = {c: empreinte(p) for c, p in F.items()}
     t, sftp = connexion()
     print(f'Connecté à {os.environ["OVH_HOTE"]} (clé du serveur : {t.get_remote_server_key().get_name()} '

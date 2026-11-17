@@ -1,5 +1,5 @@
-# Publication automatique de l'atlas sur GitHub Pages et, si les secrets OVH_* sont enregistrés,
-# sur l'hébergement web OVHcloud (job « ovh », MEMO_atlas_apropos.md §64).
+# Publication automatique de l'atlas sur l'hébergement web OVHcloud (job « ovh », MEMO_atlas_apropos.md §64).
+# L'hébergement de secours GitHub Pages a été retiré le 17 nov. 2026 (§83) : ce script n'en dépend plus.
 #
 # À chaque modification enregistrée sur la branche main (par exemple un fichier
 # du dossier contenu/), GitHub exécute ce script : il vérifie le contenu,
@@ -21,8 +21,6 @@ on:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 # Une publication en cours n'est pas annulée par la suivante, qui attend son tour (la plus récente seulement) :
 # l'envoi vers OVH, long la première fois, doit pouvoir aller au bout.
@@ -55,28 +53,21 @@ jobs:
       - name: Vérifier le contenu et construire la page
         run: sh construire.sh
 
-      - name: Préparer la publication
-        uses: actions/configure-pages@v5
+      # Le site construit passe au job « ovh » sous la forme d'une archive (artifact.tar), gardée un jour.
+      - name: Archiver le site construit
+        run: tar --dereference --hard-dereference -cf "$RUNNER_TEMP/artifact.tar" -C site .
 
-      - name: Envoyer la page construite
-        uses: actions/upload-pages-artifact@v3
+      - name: Transmettre le site construit
+        uses: actions/upload-artifact@v4
         with:
-          path: site
-
-  publier:
-    needs: construire
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deploiement.outputs.page_url }}
-    steps:
-      - name: Mettre en ligne
-        id: deploiement
-        uses: actions/deploy-pages@v4
+          name: site-construit
+          path: ${{ runner.temp }}/artifact.tar
+          retention-days: 1
+          if-no-files-found: error
 
   ovh:
-    # Envoi du même site sur l'hébergement OVHcloud, par SFTP (outils/publier_ovh.py). Sauté tant que le secret
-    # OVH_HOTE n'existe pas ; indépendant de la publication GitHub Pages (un échec de l'un n'arrête pas l'autre).
+    # Envoi du site sur l'hébergement OVHcloud, par SFTP (outils/publier_ovh.py). Sauté si le secret OVH_HOTE
+    # n'existe pas.
     needs: construire
     runs-on: ubuntu-latest
     timeout-minutes: 90
@@ -95,7 +86,7 @@ jobs:
         if: env.OVH_HOTE != ''
         uses: actions/download-artifact@v4
         with:
-          name: github-pages
+          name: site-construit
           path: archive
 
       - name: Envoyer sur OVHcloud

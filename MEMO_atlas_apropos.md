@@ -982,3 +982,16 @@ reçoit le compteur d'office, quelle que soit la conversation qui l'ajoute. `ren
 que chaque page HTML du site est comptée (compteur, ou renvoi immédiat vers l'application) et que les rubriques du
 gabarit figurent dans `RUBRIQUES_APPLI` ; sinon la construction s'arrête sur une ERREUR qui dit quoi faire. Exclus :
 404, et les dossiers de bibliothèques ou de documents (pdfjs, python, documents, fonts, apercus).
+
+## 83. Retrait de l'hébergement de secours GitHub Pages et de l'adresse d'essai (17 nov. 2026)
+
+À la demande de l'auteur, une semaine après le passage chez OVH (§64). `publier.yml` n'a plus que deux jobs,
+`construire` et `ovh` : plus de `configure-pages`, d'`upload-pages-artifact` ni de job `publier` ; permissions
+réduites à `contents: read`. Le site construit passe d'un job à l'autre par une archive `artifact.tar` (artefact
+`site-construit`, gardé un jour), extraite comme avant. Ce changement devait précéder la désactivation de Pages :
+`configure-pages` échoue quand Pages est désactivé, ce qui aurait arrêté aussi l'envoi vers OVH.
+Garde-fou ajouté dans `outils/publier_ovh.py` : refus d'envoyer un site sans index.html, sans 404.html ou de moins
+de 3 000 fichiers (l'envoi supprimant du serveur ce qui a disparu du site construit).
+Restent à la main de l'auteur (hors de portée de cette session) : désactiver Pages dans les réglages du dépôt ;
+retirer `essai.atlasjourdain.fr` du Multisite OVH et les lignes `essai` de la zone DNS. Les enregistrements `@` et
+`www`, les MX, SPF et TXT ne changent pas.
