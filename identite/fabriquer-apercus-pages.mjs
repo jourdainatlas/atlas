@@ -27,7 +27,7 @@ const G = fs.readFileSync('gabarit.html', 'utf8');
 const planche = G.match(/<svg class="sym-sprite"[\s\S]*?<\/defs><\/svg>/)[0];
 const sy = G.match(/:root\[data-theme="dark"\] \{\s*(--sy-bd[\s\S]*?)\}/)[1];
 const classes = [...G.matchAll(/\.(sy-[a-z0-9]+) \{ fill: var\(--\1\); \}/g)].map(m => m[0]).join(' ')
-  + ' .activites-sy1{fill:#b6ca4c}.activites-sy2{fill:#b6ca4c;opacity:.55}.activites-sy3{fill:#b6ca4c;opacity:.25}';
+  + ' .activites-sy1{fill:var(--sa,#b6ca4c)}.activites-sy2{fill:var(--sa,#b6ca4c);opacity:.55}.activites-sy3{fill:var(--sa,#b6ca4c);opacity:.25}';   // --sa : teinte du groupe d'activités, sinon l'olive de la rubrique
 const COUL = { edifice: '#55aaff', cours: '#35caa4', exercices: '#c793e6', annales: '#ffa24a', activites: '#b6ca4c' };
 const logo = `<svg viewBox="0 0 200 200" width="44" height="44"><rect x="4" y="4" width="192" height="192" rx="42" fill="#1d2027" stroke="#3a3f4a" stroke-width="8"/><g transform="translate(20 20) scale(0.8)"><path d="M150 150 L50 150 L100 50" fill="none" stroke="#a1a6af" stroke-width="13" stroke-linejoin="round"/><path d="M150 150 L100 50" fill="none" stroke="#e7e9ed" stroke-width="13" stroke-linecap="round"/><circle cx="50" cy="150" r="22" fill="#e7e9ed"/><circle cx="150" cy="150" r="16" fill="#e7e9ed"/><circle cx="100" cy="50" r="30" fill="#ff6d7d"/></g></svg>`;
 const cadre = `<!doctype html><meta charset="utf-8"><style>${polices}
@@ -68,6 +68,7 @@ if (aFaire.length) {
       const q = s => document.querySelector(s), nb = x.titre.length;
       document.body.style.setProperty('--c', c);
       const t = q('.tuile'); t.classList.toggle('vig', !!x.vignette);
+      if (x.rub === 'activites' && x.couleur && !x.vignette) t.style.setProperty('--sa', c); else t.style.removeProperty('--sa');   // page d'un groupe : le symbole prend sa teinte
       t.innerHTML = x.vignette ? `<svg class="vg" viewBox="0 0 120 72">${x.vignette}</svg>` : `<svg class="sym" viewBox="0 0 24 24"><use href="#sym-${x.rub}"/></svg>`;
       q('.sur').textContent = x.sur.replace(/[a-zà-öø-ÿœ]+/g, m => m.toUpperCase());   // capitales pour les lettres latines seulement : β ne doit pas devenir Β
        q('p').textContent = x.sous || ''; q('p').style.display = x.sous ? '' : 'none';

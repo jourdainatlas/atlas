@@ -1010,7 +1010,9 @@ transmis au serveur ; la messagerie reçoit l'accueil). Ces vues ont désormais 
   `/index/`, `/lexique/` ; titre et description propres, image de la rubrique ou image générale.
 - `adressePartage()` donne ces adresses (`?ouvrir` pour les niveaux : le destinataire va droit dans l'atlas).
 - Ligne d'auteur sous le titre des pages de lecture : écartée par l'auteur (il ne veut pas son nom partout).
-Restent sur l'aperçu de l'accueil : les groupes d'activités (à faire par le domaine Activités, voir son mémo), un
-terme du lexique, les exercices d'une notion, les filtres et recherches (écartés pour l'instant).
+Restent sur l'aperçu de l'accueil : un terme du lexique, les exercices d'une notion, les filtres et recherches (écartés pour l'instant).
 
 **Ajout de la conversation Activités (17 nov. 2026).** Les groupes d'activités ont leur page `/activites/<groupe>/` et leur aperçu `activites/groupe-<groupe>` (MEMO_atlas_activites.md §165). Dans `adressePartage()`, le bloc `activites` rend désormais `activites/<ch>/` quand `ch` est une activité ou le groupe d'au moins une activité (`a.id === ch || a.groupe === ch`) ; aucun identifiant de groupe n'est celui d'une activité, et la construction le vérifie.
+
+Sur l'image d'un groupe, le symbole des Activités prend la teinte du groupe (`--sa` dans la fabrique), comme le filet
+et le sur-titre ; fait sans changer `VERSION_APERCU` : seules les quatre images de groupe ont été refaites.
