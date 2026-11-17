@@ -880,3 +880,12 @@ réception, `meta_mp_14.py` (parties : 1–3, 4–9, 10–21, 22–24, 25–30, 
 Prérequis : mp-13 [ma-18, ma-20, ma-08], mp-14 [ma-21, ma-20, ma-03], mp-15 [ma-21, ma-20, ma-10]. Activités :
 `grands-nombres` → mp-15, `anniversaires` → mp-14. Termes écartés par chapitre (fragments, renvois « théorème N »,
 et « presque sßr(ement) », où le PDF code « û » comme « ß »). Symboles validés le 17 nov. : mp-13 `domine` (oscillation φ(t) cos(2,4 t) dans l'enveloppe ±φ, φ(t) = e^{−t/2}), mp-14 `partition` (univers en trois parts et un événement), mp-15 `esperance` (loi de Poisson(1,6) tronquée à 0–5 sur un pivot placé à son espérance, 1,572, calculée).
+
+### 54. MP, chapitres 16 et 17 (17 nov. 2026)
+
+`mp-16` (Équations différentielles linéaires, 11 p.) et `mp-17` (Calcul différentiel et optimisation, 18 p.), derniers
+chapitres de MP ; feuilles `f-mp-16` (47 exercices) et `f-mp-17` (51), sans figure ; `outils/meta_mp_16.py`,
+`meta_mp_17.py` (la diagonalisation se dit `rd-diagonalisable`). Prérequis : mp-16 [ma-06, ma-16, ma-17], mp-17
+[ma-22, ma-14, ma-09]. Activité : `euler` → mp-16. Termes écartés (mp-17) : dérivable en, différentiable en, selon le
+vecteur, de classe, global, col (doublon de « point col »), réciproque fausse. Symboles : planche envoyée. Reste dû :
+la feuille `f-mp-14` (corrigé non reçu, §53).
