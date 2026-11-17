@@ -887,5 +887,5 @@ et « presque sßr(ement) », où le PDF code « û » comme « ß »). Symboles
 chapitres de MP ; feuilles `f-mp-16` (47 exercices) et `f-mp-17` (51), sans figure ; `outils/meta_mp_16.py`,
 `meta_mp_17.py` (la diagonalisation se dit `rd-diagonalisable`). Prérequis : mp-16 [ma-06, ma-16, ma-17], mp-17
 [ma-22, ma-14, ma-09]. Activité : `euler` → mp-16. Termes écartés (mp-17) : dérivable en, différentiable en, selon le
-vecteur, de classe, global, col (doublon de « point col »), réciproque fausse. Symboles : planche envoyée. Reste dû :
+vecteur, de classe, global, col (doublon de « point col »), réciproque fausse. Symboles validés le 17 nov., après deux planches refusées (spirale, nœud, gradient sur ellipses, Lagrange sur cercles ; col, famille, jacobienne, relief) : mp-16 `champdir` (champ de directions ; le nom `champ` était déjà pris de y′ = 1 − y et la solution y = 1 + 2,3 e^{−t}), mp-17 `tangence` (disque de contrainte, ligne de niveau de f = x + y tangente au point du maximum, une ligne plus basse en pointillés). Reste dû :
 la feuille `f-mp-14` (corrigé non reçu, §53).
