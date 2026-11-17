@@ -1,6 +1,7 @@
 // Pages de lecture indexables de la rubrique Activités (MEMO_atlas_activites.md, §119), sur le modèle de
 // lecture-cours.mjs : à une vraie adresse, une page légère, sans script, avec un bouton « Ouvrir dans l'atlas ».
 //   /activites/          les activités, groupe par groupe, puis celles qui n'ont pas de groupe
+//   /activites/<groupe>/ un groupe (Explorations, Casse-têtes, Calcul mental, Raisonner) : son introduction et ses activités (§165)
 //   /activites/<id>/     une activité : ce qu'on y fait, ce que cela signifie, le piège, cours et fiches de l'édifice
 // Une activité ne se lit pas : la page décrit en phrases ce qu'on y manipule (champ texte de rubriques/activites.yaml)
 // et renvoie à l'atlas pour manipuler. L'enveloppe vient de outilsLecture(ctx).
@@ -31,7 +32,20 @@ ${liens ? `<h2 class="l-sec">Où lire l'énoncé et la démonstration</h2><ul cl
   }
   page({ chemin: 'activites/', ancre: 'activites', titre: 'ATLAS – Activités', description: texteBrut(A.intro), fil: [fil0],
     corps: `<article class="fiche"><h1>Activités</h1><div class="texte">${A.intro || ''}</div>
-${doms.map(d => `<h2 class="l-sec">${esc(d.titre)}</h2><div class="texte">${d.intro || ''}</div><ul class="l-liste">${acts.filter(a => a.groupe === d.id).map(a => `<li><span class="l-sorte">${esc(a.niveau || '')}</span><a href="/activites/${a.id}/">${a.titre}</a></li>`).join('')}</ul>`).join('')}
+${doms.map(d => `<h2 class="l-sec"><a href="/activites/${d.id}/">${esc(d.titre)}</a></h2><div class="texte">${d.intro || ''}</div><ul class="l-liste">${acts.filter(a => a.groupe === d.id).map(a => `<li><span class="l-sorte">${esc(a.niveau || '')}</span><a href="/activites/${a.id}/">${a.titre}</a></li>`).join('')}</ul>`).join('')}
 ${seules.map(a => `<h2 class="l-sec"><a href="/activites/${a.id}/">${a.titre}</a></h2><div class="texte">${a.resume || ''}</div>`).join('')}</article>` });
-  return acts.length + 1;
+  // Une page par groupe (§165, demande du domaine À propos, MEMO_atlas_apropos.md §84) : l'adresse que donne « Partager »
+  // depuis la vue #activites/<groupe>, avec son propre aperçu. Un groupe et une activité ne peuvent pas porter le même
+  // identifiant : ils auraient la même adresse.
+  const COUL = { jeu: 'activites-jeu', calcul: 'activites-calcul', raison: 'activites-raison', geo: 'c-geo', annales: 'c-alg', marque: 'rouge', python: 'c-nb' };
+  for (const d of doms) {
+    if (acts.some(a => a.id === d.id)) throw new Error(`Activités : « ${d.id} » est à la fois un groupe et une activité (même adresse /activites/${d.id}/).`);
+    const la = acts.filter(a => a.groupe === d.id), T = texteBrut(d.titre), nb = `${la.length} activité${la.length > 1 ? 's' : ''}`;
+    page({ chemin: `activites/${d.id}/`, ancre: `activites/${d.id}`, titre: `ATLAS – Activités : ${T}`, description: texteBrut(d.intro) || `${T} : ${nb}.`,
+      fil: [fil0, { name: T, href: `/activites/${d.id}/` }],
+      apercu: { cle: `activites/groupe-${d.id}`, rub: 'activites', sur: 'Activités', titre: T, sous: nb, couleur: COUL[d.couleur] || 'c-ord' },
+      corps: `<article class="fiche"><p class="sur-titre">Activités interactives · ${esc(nb)}</p><h1>${esc(d.titre)}</h1><div class="texte">${d.intro || ''}</div>
+<ul class="l-liste">${la.map(a => `<li><span class="l-sorte">${esc(a.niveau || '')}</span><a href="/activites/${a.id}/">${a.titre}</a></li>`).join('')}</ul></article>` });
+  }
+  return acts.length + 1 + doms.length;
 }
