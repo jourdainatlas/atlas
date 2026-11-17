@@ -4285,6 +4285,9 @@ function pageCours(chemin) {
     const c = tous.find(x => x.id === chemin);
     if (c) return pageChapitre(c, tous);
   }
+  // #cours/niveau/<id> : la rubrique filtrée sur un niveau (adresse des pages /cours/niveau/<id>/, §84 du mémo À propos)
+  const mNiv = /^niveau\/(.+)$/.exec(chemin || '');
+  if (mNiv && (C.niveaux || []).some(n => n.id === mNiv[1]) && pageCours.vuNiv !== chemin) { pageCours.filtre = mNiv[1]; pageCours.vuNiv = chemin; }
   const niv = (pageCours.filtre ||= 'tous');
   let h = tete('Rubrique', 'Cours', C.intro);
   const presents = (C.niveaux || []).filter(n => tous.some(c => c.niveau === n.id));
@@ -6680,7 +6683,9 @@ function adressePartage() {
     }
     if (nom === 'exercices' && etatExo.ex) return `${ADRESSE_SITE}exercices/${etatExo.ex}/?ouvrir`;   // ?ouvrir : redirection vers la page interactive
     if (nom === 'exercices' && etatExo.feuille) return `${ADRESSE_SITE}exercices/feuille/${etatExo.feuille}/?ouvrir`;   // page de lecture (lecture-cours.mjs)
-    if (nom === 'exercices' && etatExo.vue === 'niveau' && etatExo.niveauVu) return `${ADRESSE_SITE}#exercices/niveau/${etatExo.niveauVu}`;
+    if (nom === 'exercices' && etatExo.vue === 'niveau' && etatExo.niveauVu) return `${ADRESSE_SITE}exercices/niveau/${etatExo.niveauVu}/?ouvrir`;   // pages par niveau (lecture-cours.mjs, §84)
+    if (nom === 'cours' && pageCours.filtre && pageCours.filtre !== 'tous' && (R.cours?.cours || []).some(c => c.niveau === pageCours.filtre)) return `${ADRESSE_SITE}cours/niveau/${pageCours.filtre}/?ouvrir`;
+    if (nom === 'a-propos' && ch) return `${ADRESSE_SITE}a-propos/${ch}/`;   // pages de renvoi (rendu.mjs, §84)
     if (nom === 'accueil') return ADRESSE_SITE;
     if (nom === 'activites') {   // une activité a sa page de lecture (lecture-activites.mjs) ; un groupe (Raisonner, Casse-têtes…) ou toute autre vue n'en a pas : adresse « # » de la page affichée
       if ((R.activites?.activites || []).some(a => a.id === ch)) return `${ADRESSE_SITE}activites/${ch}/`;
@@ -6690,9 +6695,10 @@ function adressePartage() {
     // Vue sans page de lecture propre (cours d'un niveau, exercices d'une notion, section d'À propos…) : l'adresse
     // « # » de la page affichée, plutôt que la rubrique entière ; la rubrique Index n'a pas de page du tout (§75).
     if (ch) return `${ADRESSE_SITE}#${nom}/${ch}`;
-    return nom === 'index' ? `${ADRESSE_SITE}#index` : `${ADRESSE_SITE}${nom}/`;
+    return `${ADRESSE_SITE}${nom}/`;   // l'Index a sa page de renvoi (/index/, §84)
   }
-  if (/^#lexique(\/|$)/.test(location.hash)) return ADRESSE_SITE + location.hash;   // le lexique, ou l'un de ses termes
+  if (location.hash === '#lexique') return ADRESSE_SITE + 'lexique/';
+  if (/^#lexique\//.test(location.hash)) return ADRESSE_SITE + location.hash;   // le lexique, ou l'un de ses termes
   const id = etat.choisi || (etat.graphe !== D.racine ? D.graphes[etat.graphe].conteneur : null);
   if (!id && etat.vue === 'etat') return `${ADRESSE_SITE}edifice/etat/`;
   return id ? `${ADRESSE_SITE}edifice/${id}/` : `${ADRESSE_SITE}edifice/`;

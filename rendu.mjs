@@ -559,6 +559,10 @@ console.log(`Pages de lecture des cours et exercices : ${pagesCoursExercices(ctx
 // Activités : une page de lecture par activité et la page d'entrée (lecture-activites.mjs, MEMO_atlas_activites.md §119).
 if (Rb.activites) console.log(`Pages de lecture des activités : ${pagesActivites(ctxLecture)}`);
 pagePartage('nouveautes/', 'nouveautes', 'Nouveautés', texteBrut(Rb.nouveautes?.intro));
+// Pages de renvoi des vues qui n'avaient pas d'adresse propre (§84 du mémo À propos) : sections d'À propos, Index, lexique.
+for (const s of Rb.apropos?.sections || []) if (s.id && !s.a_rediger) pagePartage(`a-propos/${s.id}/`, `a-propos/${s.id}`, texteBrut(s.titre), `${texteBrut(s.titre)} — rubrique À propos d'ATLAS, architecture logique des théories mathématiques.`);
+pagePartage('index/', 'index', 'Index', 'Index alphabétique d\'ATLAS : les termes du lexique et les termes définis dans les cours, avec un renvoi vers chaque définition.');
+pagePartage('lexique/', 'lexique', 'Lexique', `Lexique d'ATLAS : ${Object.keys(D.lexique || {}).length} termes et notations mathématiques, chacun défini et relié aux théories de l'édifice.`);
 pagePartage('a-propos/', 'a-propos', 'À propos', 'L\'auteur d\'ATLAS, professeur agrégé de mathématiques, le projet et ses principes de rédaction ; une adresse pour écrire ou signaler une erreur.');
 // Édifice et annales : pages de lecture complètes et indexables (lecture.mjs), aux adresses de partage.
 const urlsLecture = pagesLecture(ctxLecture);   // même tableau que outilsLecture(ctxLecture).urls

@@ -996,3 +996,19 @@ Faits par l'auteur le même jour : Pages désactivé dans les réglages du dép�
 404), `essai.atlasjourdain.fr` retiré du Multisite OVH et de la zone DNS. Les enregistrements `@` et `www`, les MX,
 SPF et TXT n'ont pas changé. Contrôlé ensuite : site servi par OVH, redirections intactes, publication réussie sans
 Pages. Le retrait de l'adresse d'essai n'a pas pu être vérifié d'ici (le bac à sable ne joint pas ce sous-domaine).
+
+## 84. Adresses et aperçus des vues qui n'en avaient pas (17 nov. 2026)
+
+Suite de l'audit de §75 : une adresse « # » ne peut pas avoir d'aperçu propre (ce qui suit le « # » n'est pas
+transmis au serveur ; la messagerie reçoit l'accueil). Ces vues ont désormais une vraie adresse :
+- **Cours et exercices d'un niveau** : `/cours/niveau/<id>/` et `/exercices/niveau/<id>/` (9 + 9 pages), vraies
+  pages de lecture écrites par `page()` dans `lecture-cours.mjs` (fichier du domaine Cours, modifié avec l'accord de
+  l'auteur) : liste des chapitres ou des feuilles, lien croisé cours ↔ exercices, image d'aperçu propre
+  (`cours/niveau-<id>`, `exercices/niveau-<id>`), indexables. Dans l'application, `#cours/niveau/<id>` applique le
+  filtre du niveau (`pageCours`, une fois par arrivée) ; `#exercices/niveau/<id>` existait.
+- **Sections d'À propos, Index, lexique** : pages de renvoi `pagePartage` (rendu.mjs) : `/a-propos/<section>/`,
+  `/index/`, `/lexique/` ; titre et description propres, image de la rubrique ou image générale.
+- `adressePartage()` donne ces adresses (`?ouvrir` pour les niveaux : le destinataire va droit dans l'atlas).
+- Ligne d'auteur sous le titre des pages de lecture : écartée par l'auteur (il ne veut pas son nom partout).
+Restent sur l'aperçu de l'accueil : les groupes d'activités (à faire par le domaine Activités, voir son mémo), un
+terme du lexique, les exercices d'une notion, les filtres et recherches (écartés pour l'instant).

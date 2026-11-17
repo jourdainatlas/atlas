@@ -120,6 +120,19 @@ export function pagesCoursExercices(ctx) {
     page({ chemin: 'cours/', titre: 'ATLAS – Cours', description: texteBrut(R.cours?.intro) || 'Cours de mathématiques, du lycée au master, chapitre par chapitre.',
       ancre: 'cours', fil: [{ name: 'Cours' }], corps: h });
     n++;
+    // Une page par niveau (domaine À propos, MEMO_atlas_apropos.md §84) : l'adresse que partage le bouton Partager
+    // quand la rubrique est filtrée sur un niveau, avec son propre aperçu ; indexée (« cours de mathématiques de Seconde »).
+    for (const nv of niveaux) {
+      const cs = coursTous.filter(c => c.niveau === nv.id).sort((a, b) => (a.chapitre || 0) - (b.chapitre || 0));
+      if (!cs.length) continue;
+      const T = texteBrut(nv.titre), nb = `${cs.length} chapitre${cs.length > 1 ? 's' : ''}`;
+      let g = `<article class="fiche"><p class="sur-titre"><span class="sorte">Cours</span></p><h1>${nv.titre}</h1>${nv.description ? `<p>${esc(texteBrut(nv.description))}</p>` : ''}<p class="l-meta">${nb}.${feuilles.some(f => f.niveau === nv.id && exosDe(f.id).length) ? ` Les exercices corrigés du même niveau sont <a href="/exercices/niveau/${nv.id}/">rangés par feuille</a>.` : ''}</p></article>`;
+      g += `<ul class="l-liste">${cs.map(c => `<li>${c.chapitre ? `<span class="l-sorte">Chapitre ${c.chapitre}</span>` : ''}<a href="/cours/${c.id}/">${c.titre}</a></li>`).join('')}</ul>`;
+      page({ chemin: `cours/niveau/${nv.id}/`, titre: `ATLAS – Cours de mathématiques : ${T}`, description: `Cours de mathématiques de ${T} : ${nb}. ${cs.slice(0, 6).map(c => texteBrut(c.titre)).join(', ')}${cs.length > 6 ? '…' : '.'}`,
+        ancre: `cours/niveau/${nv.id}`, fil: [FIL_C, { name: T }], corps: g + ALLER,
+        apercu: { cle: `cours/niveau-${nv.id}`, rub: 'cours', sur: 'Cours de mathématiques', titre: T, sous: nb } });
+      n++;
+    }
   }
 
   // ---------------------------------------------------------------- exercices
@@ -181,6 +194,18 @@ export function pagesCoursExercices(ctx) {
     page({ chemin: 'exercices/', titre: 'ATLAS – Exercices', description: texteBrut(E.intro) || 'Exercices corrigés de mathématiques, du lycée au master.',
       ancre: 'exercices', fil: [{ name: 'Exercices' }], corps: h });
     n++;
+    // Une page par niveau (domaine À propos, §84), comme pour les cours : c'est la vue #exercices/niveau/<id>.
+    for (const nv of niveaux) {
+      const fs = feuilles.filter(f => f.niveau === nv.id && exosDe(f.id).length).sort((a, b) => (a.chapitre || 0) - (b.chapitre || 0));
+      if (!fs.length) continue;
+      const T = texteBrut(nv.titre), tot = fs.reduce((s, f) => s + exosDe(f.id).length, 0), nb = `${tot} exercices corrigés, ${fs.length} feuille${fs.length > 1 ? 's' : ''}`;
+      let g = `<article class="fiche"><p class="sur-titre"><span class="sorte">Exercices</span></p><h1>${nv.titre}</h1><p class="l-meta">${nb}.${coursTous.some(c => c.niveau === nv.id) ? ` Les cours du même niveau sont <a href="/cours/niveau/${nv.id}/">rangés par chapitre</a>.` : ''}</p></article>`;
+      g += `<ul class="l-liste">${fs.map(f => `<li>${f.chapitre ? `<span class="l-sorte">Chapitre ${f.chapitre}</span>` : ''}<a href="/exercices/feuille/${f.id}/">${f.titre}</a> <span class="l-sorte">— ${exosDe(f.id).length} exercices</span></li>`).join('')}</ul>`;
+      page({ chemin: `exercices/niveau/${nv.id}/`, titre: `ATLAS – Exercices corrigés de mathématiques : ${T}`, description: `Exercices corrigés de mathématiques de ${T} : ${nb}. ${fs.slice(0, 6).map(f => texteBrut(f.titre)).join(', ')}${fs.length > 6 ? '…' : '.'}`,
+        ancre: `exercices/niveau/${nv.id}`, fil: [FIL_E, { name: T }], corps: g + ALLER,
+        apercu: { cle: `exercices/niveau-${nv.id}`, rub: 'exercices', sur: 'Exercices corrigés', titre: T, sous: nb } });
+      n++;
+    }
   }
   return n;
 

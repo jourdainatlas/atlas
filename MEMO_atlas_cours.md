@@ -859,3 +859,12 @@ du ch. 17, 37 et 53 du ch. 18 étaient manqués). 185 exercices sur 1 356 resten
 extérieur (« exercice composé pour la feuille… », « promesse de la feuille… », seules ou entre elles) n'est pas
 affichée : `tex2exos.source_interne` l'écarte à la conversion, et les 88 champs existants (MPSI et MP) ont été
 retirés. Les sources mixtes (« BibM@th, … ; exercice composé pour la feuille ») sont gardées telles quelles (18).
+
+
+## Note du domaine À propos – apparence (17 nov. 2026) : pages par niveau
+
+Avec l'accord de l'auteur, `lecture-cours.mjs` écrit maintenant une page par niveau : `/cours/niveau/<id>/` (liste
+des chapitres) et `/exercices/niveau/<id>/` (liste des feuilles), avec leur image d'aperçu ; ce sont les adresses
+que partage le bouton Partager pour une rubrique filtrée sur un niveau. Elles se mettent à jour d'elles-mêmes quand
+un chapitre, une feuille ou un niveau est ajouté ; la construction demandera seulement de refabriquer leur image
+(MEMO_atlas.md §0, point 9). Détail : MEMO_atlas_apropos.md §84.
