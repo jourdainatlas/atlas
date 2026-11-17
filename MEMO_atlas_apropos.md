@@ -976,3 +976,9 @@ l'application tombe sur la même ligne (`/cours/s-01`, `/exercices/ex/s-01-01`, 
 `/edifice/<graphe>/<fiche>`…). La provenance est transmise par le script lui-même. Non comptées : la page 404, et
 les quatre pages d'aperçu qui renvoient aussitôt à l'application (accueil, à propos, nouveautés, état de l'édifice),
 que l'application compte. La mention de l'À propos (§37) couvre cet usage.
+
+Filet de sécurité (même jour, demande de l'auteur : que toute page future soit comptée). Une page écrite par `page()`
+reçoit le compteur d'office, quelle que soit la conversation qui l'ajoute. `rendu.mjs` vérifie en fin de construction
+que chaque page HTML du site est comptée (compteur, ou renvoi immédiat vers l'application) et que les rubriques du
+gabarit figurent dans `RUBRIQUES_APPLI` ; sinon la construction s'arrête sur une ERREUR qui dit quoi faire. Exclus :
+404, et les dossiers de bibliothèques ou de documents (pdfjs, python, documents, fonts, apercus).

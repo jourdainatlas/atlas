@@ -99,6 +99,11 @@ a poussé entre-temps, un fichier commun réécrit à partir d'une copie périm�
    faites ne sont pas refaites). Rien n'est cassé si on l'oublie : la page affiche en attendant l'image de sa
    rubrique. Une page de lecture d'une nouvelle sorte reçoit son image en passant un champ `apercu` à `page()`.
 
+10. **Mesure d'audience (17 nov. 2026, MEMO_atlas_apropos.md §82) :** toute page HTML publiée est comptée. Une page
+   de lecture écrite avec `page()` (lecture.mjs) l'est d'office : ne pas écrire de page HTML autrement. La
+   construction s'arrête sur une ERREUR si une page n'est pas comptée, ou si une rubrique ajoutée à `RUBRIQUES`
+   (gabarit) manque dans `RUBRIQUES_APPLI` (lecture.mjs) : l'y ajouter suffit.
+
 ## 1. Ce qu'est l'atlas
 
 Un site web statique, d'un seul fichier HTML, qui représente les mathématiques comme un graphe

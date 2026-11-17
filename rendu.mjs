@@ -687,6 +687,25 @@ for (const f of ['pyodide.mjs', 'pyodide.asm.mjs', 'pyodide.asm.wasm', 'python_s
   for (const k of Object.keys(cc)) delete cc[k].sha;
   fs.writeFileSync('site/cours-code.json', JSON.stringify(cc));
 }
+// Mesure d'audience (domaine À propos, §82) : filet de sécurité. Toute page HTML du site doit être comptée : par le
+// compteur que pose page() de lecture.mjs, par le gabarit (index.html), ou parce qu'elle renvoie aussitôt à
+// l'application, qui compte. Une page écrite autrement que par page() et sans compteur arrête la construction.
+// Les têtes d'ancre connues de lecture.mjs doivent aussi rester celles des rubriques du gabarit.
+{
+  const sans = [], voir = d => { for (const e of fs.readdirSync(d, { withFileTypes: true })) { const f = `${d}/${e.name}`;
+    if (e.isDirectory()) { if (!/^site\/(pdfjs|python|documents|fonts|apercus)$/.test(f)) voir(f); }
+    else if (e.name.endsWith('.html') && f !== 'site/404.html' && f !== 'site/index.html') { const t = fs.readFileSync(f, 'utf8'); if (!t.includes('goatcounter') && !/<script>location\.replace\(/.test(t)) sans.push(f); } } };
+  voir('site');
+  const rubGabarit = [...(ctxLecture.gabarit.match(/\nconst RUBRIQUES = \{([\s\S]*?)\n\};/)?.[1] || '').matchAll(/^\s*'?([a-z-]+)'?: \{ titre:/gm)].map(m => m[1]).filter(r => r !== 'accueil');
+  const rubLecture = (fs.readFileSync('lecture.mjs', 'utf8').match(/const RUBRIQUES_APPLI = new Set\(\[([^\]]*)\]/)?.[1] || '').replace(/'/g, '').split(/,\s*/);
+  const ecart = rubGabarit.filter(r => !rubLecture.includes(r));
+  if (!index.includes('goatcounter')) sans.push('site/index.html');
+  if (sans.length || ecart.length || !rubGabarit.length) {
+    if (sans.length) console.error(`ERREUR : ${sans.length} page(s) sans mesure d'audience (${sans.slice(0, 5).join(', ')}${sans.length > 5 ? '…' : ''}). Les écrire avec page() de lecture.mjs, qui pose le compteur (MEMO_atlas_apropos.md §82).`);
+    if (ecart.length || !rubGabarit.length) console.error(`ERREUR : rubrique(s) du gabarit absente(s) de RUBRIQUES_APPLI (lecture.mjs) : ${ecart.join(', ') || 'liste du gabarit illisible'} (MEMO_atlas_apropos.md §82).`);
+    process.exit(1);
+  }
+}
 // Application installable : service worker, dont la version change à chaque publication (voir identite/sw.js).
 fs.writeFileSync('site/sw.js', fs.readFileSync('identite/sw.js', 'utf8').replace("'atlas-__VERSION__'", `'atlas-${empreinte(index)}'`));
 console.log(`Site écrit : site/index.html (${(index.length / 1024).toFixed(0)} Ko)`);
