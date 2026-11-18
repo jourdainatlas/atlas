@@ -218,7 +218,7 @@
     const kf = ap(t, V.sol); cadre(ctx, CX, 742, 330, 84, { stroke: C.cours, fill: 'rgba(53,202,164,0.12)', a: kf }); formule(ctx, 'sol', CX, 742, { fs: 50, mil: 1, a: kf });
     ctx.restore();
     legende(ctx, t, V.leg[0], ['Par [substitution] : on isole une inconnue dans l’une des équations…']);
-    legende(ctx, t, V.leg[1], ['… et on la remplace dans l’autre : il ne reste qu’une inconnue.']);
+    legende(ctx, t, V.leg[1], ['… et l’on remplace cette inconnue par son expression, en violet, dans l’autre.']);
     legende(ctx, t, V.leg[2], ['On reprend l’expression isolée pour obtenir la seconde inconnue.']);
     legende(ctx, t, V.leg[3], ['Par [combinaison linéaire] : on ajoute les équations', 'de façon à éliminer une inconnue.'], { size: 40 });
     legende(ctx, t, V.leg[4], ['Les deux méthodes conduisent au même couple.']);

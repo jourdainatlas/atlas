@@ -429,6 +429,10 @@ Demandés par l'auteur, montrés en prototype, **ni validés ni inscrits au cata
   solution (1 ; 3) par les deux méthodes) ; propres à la vidéo : A(1 ; 1) et B(4 ; 3) pour le vecteur, w(2 ; 1) comme
   vecteur non colinéaire. Le chien parcourt le vecteur de A à B (la flèche se trace sous ses pattes), puis il est le
   point M de la droite d, dont les coordonnées s'affichent en direct.
+  Retour de l'auteur (18 novembre), fait dans `geometrie-cartesienne-premiere-prototype-2.mp4` : **davantage de
+  couleurs dans les méthodes**. (E₁) est en bleu et (E₂) en orange partout, comme les droites d₁ et d₂ ; l'expression
+  substituée 2y − 5 est en violet ; les résultats restent en turquoise. À retenir pour les calculs en plusieurs
+  lignes : une couleur par objet que l'on suit d'une ligne à l'autre.
   Relevé dans le PDF du cours, non corrigé (domaine Cours) : proposition 1, point 5, la somme de deux vecteurs est
   écrite (x + y ; x′ + y′) au lieu de (x + x′ ; y + y′).
 - **« Fonctions numériques », Terminale spécialité, chapitre 3** — `videos/fonctions/`, 4 min 03 s
