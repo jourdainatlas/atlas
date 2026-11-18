@@ -418,9 +418,13 @@ Troisième prototype, demandé par l'auteur « avant de valider » :
   **Couleurs :** les boules et les branches de l'urne sont en rouge brique `#e2553b` et en vert `#7fc65a`, teintes
   propres à ce film ; le rouge du site reste réservé aux définitions. Accepté avec la validation du 18 novembre.
 
-## 12. Trois nouveaux prototypes (18 novembre 2026), en attente du retour de l'auteur
+## 12. Trois nouvelles vidéos (18 novembre 2026), validées par l'auteur le jour même
 
-Demandés par l'auteur, montrés en prototype, **ni validés ni inscrits au catalogue**.
+**Validées toutes les trois le 18 novembre** (géométrie cartésienne : prototype 2 ; fonctions et limites :
+prototype 1, étoile ⋆ de la caractérisation séquentielle et courbes bleues comprises). Étapes 1 et 2 du protocole
+faites : entrées au catalogue (`p-03`, `t-03`, `ma-08`, `youtube` vide, `en_ligne` faux), fichiers, miniatures et
+fiches remis à l'auteur (`atlas-premiere-03-geometrie-cartesienne`, `atlas-terminale-03-fonctions-numeriques`,
+`atlas-mpsi-08-limites-continuite`). **Reste l'étape 4 dès que l'auteur donne les trois adresses YouTube.**
 
 - **« Géométrie cartésienne », Première spécialité, chapitre 3** — `videos/cartesienne/`, 4 min 03 s
   (`geometrie-cartesienne-premiere-prototype-1.mp4`). Parties (2, 6, 14, 22, 26, 34 ; bilan 46) : les vecteurs,
