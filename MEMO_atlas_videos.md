@@ -417,3 +417,42 @@ Troisième prototype, demandé par l'auteur « avant de valider » :
   (`KS` dans `cheminChien`) pour ne pas masquer l'étiquette de l'issue.
   **Couleurs :** les boules et les branches de l'urne sont en rouge brique `#e2553b` et en vert `#7fc65a`, teintes
   propres à ce film ; le rouge du site reste réservé aux définitions. Accepté avec la validation du 18 novembre.
+
+## 12. Trois nouveaux prototypes (18 novembre 2026), en attente du retour de l'auteur
+
+Demandés par l'auteur, montrés en prototype, **ni validés ni inscrits au catalogue**.
+
+- **« Géométrie cartésienne », Première spécialité, chapitre 3** — `videos/cartesienne/`, 4 min 03 s
+  (`geometrie-cartesienne-premiere-prototype-1.mp4`). Parties (2, 6, 14, 22, 26, 34 ; bilan 46) : les vecteurs,
+  colinéarité et déterminant, l'équation cartésienne, l'équation réduite, deux droites sécantes, résoudre le système.
+  Exemples du cours `p-03` (u(1 ; −3) et v(3 ; −9), d : 2x + 3y − 8 = 0 avec A(1 ; 2) et B(2 ; 1), système de
+  solution (1 ; 3) par les deux méthodes) ; propres à la vidéo : A(1 ; 1) et B(4 ; 3) pour le vecteur, w(2 ; 1) comme
+  vecteur non colinéaire. Le chien parcourt le vecteur de A à B (la flèche se trace sous ses pattes), puis il est le
+  point M de la droite d, dont les coordonnées s'affichent en direct.
+  Relevé dans le PDF du cours, non corrigé (domaine Cours) : proposition 1, point 5, la somme de deux vecteurs est
+  écrite (x + y ; x′ + y′) au lieu de (x + x′ ; y + y′).
+- **« Fonctions numériques », Terminale spécialité, chapitre 3** — `videos/fonctions/`, 4 min 03 s
+  (`fonctions-terminale-prototype-1.mp4`). Parties : une limite en l'infini, limites infinies et asymptotes, lever
+  une indétermination (dont les gendarmes), dériver une composée, la convexité, continuité et valeurs intermédiaires.
+  Exemples du cours `t-03` ; propre à la vidéo : la bande ]1,5 ; 2,5[ (atteinte pour x > 7) et la cubique à trois
+  solutions de l'illustration du théorème. Le chien court sur la courbe de 2 + 3/(x − 1) et sort par la droite ; il
+  parcourt x³ − 3x² + 2 avec la tangente sous ses pattes, que l'on voit changer de côté au point d'inflexion.
+  Son inclinaison est bornée à 49° (`incl`) : sur une pente raide, il semblait grimper à la verticale.
+- **« Limites et continuité », MPSI, chapitre 8** — `videos/limites-continuite/`, 4 min 07 s
+  (`limites-continuite-mpsi-prototype-1.mp4`). Sept parties (2, 6, 14, 18, 26, 34, 38 ; bilan 46) : l'histoire
+  (dates de l'introduction du cours, sans citation), la limite en un point (1/x en 2, δ = min(1, 2ε)), le pont avec
+  les suites (sin(1/x)), la continuité en un point (partie entière, prolongement de x sin(1/x)), valeurs
+  intermédiaires (dichotomie sur x² − 2), bornes atteintes, continuité uniforme et Heine ; bilan en arbre.
+  Le chien est le milieu du segment dans la dichotomie, puis il va s'asseoir au point où le maximum est atteint.
+  **Étoile ⋆** : la caractérisation séquentielle de la limite porte une ⋆ et la mention « la réciproque utilise
+  l'axiome du choix dénombrable ». Le PDF du cours ne le signale pas : à confirmer par l'auteur.
+  Rouge : seulement les termes définis et le nœud « axiome » du bilan (la courbe du cours, rouge, est ici en bleu).
+
+**Assembleur** : `videos/outils/asm.py <nom>` fabrique `score.js` et `film.js` d'un film à partir de `videos/espace/`
+(en-tête, intertitres, jardin, fin) et de cinq morceaux rangés dans `videos/outils/<nom>/` (`conf.json`,
+`score-corps.js`, `scenes.js`, `acteur.js`, `vignette.js`, plus `formules-src.mjs`) ; `outils.js` porte les outils
+communs (`seg`, `pt`, `bond`, `chute`, `sautJardin`, `bilanCartes`). **Retoucher les morceaux, puis réassembler** :
+une retouche faite dans `film.js` serait perdue. `conf.json` accepte `bornes` et `pas_jardin` pour un film à sept
+parties. Pièges : dans une légende, `[…]` est la balise rouge (ne pas y écrire un intervalle) ; lancer deux rendus à
+la fois double leur durée ; l'assemblage son-image prend alors plusieurs minutes (attendre la ligne « wrote »).
+
