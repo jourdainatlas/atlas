@@ -889,3 +889,7 @@ chapitres de MP ; feuilles `f-mp-16` (47 exercices) et `f-mp-17` (51), sans figu
 [ma-22, ma-14, ma-09]. Activité : `euler` → mp-16. Termes écartés (mp-17) : dérivable en, différentiable en, selon le
 vecteur, de classe, global, col (doublon de « point col »), réciproque fausse. Symboles validés le 17 nov., après deux planches refusées (spirale, nœud, gradient sur ellipses, Lagrange sur cercles ; col, famille, jacobienne, relief) : mp-16 `champdir` (champ de directions ; le nom `champ` était déjà pris de y′ = 1 − y et la solution y = 1 + 2,3 e^{−t}), mp-17 `tangence` (disque de contrainte, ligne de niveau de f = x + y tangente au point du maximum, une ligne plus basse en pointillés). Reste dû :
 la feuille `f-mp-14` (corrigé non reçu, §53).
+
+**18 nov. : MP 15 à 17 révisés.** Les théorèmes passent de l'environnement `cadre` à un tableau encadré à titre
+rouge souligné (« Théorème 1 : Formule de transfert : ») ; aucun nouveau terme relevé par `cours_termes.py`. Seul
+changement de pagination : mp-16, section 7 en page 10 (au lieu de 9).
