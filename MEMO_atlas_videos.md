@@ -366,10 +366,11 @@ l'ouverture (huit secondes) est donc rattachée à la première partie, et `fich
 prototype 1, teintes des boules comprises). Étapes 1 et 2 du protocole (§ 10) faites : entrées au catalogue
 (`me-03`, `t-04`, `s-03`, `youtube` vide, `en_ligne` faux), fichiers, miniatures et fiches remis à l'auteur
 (`atlas-expertes-03-matrices`, `atlas-terminale-04-geometrie-espace`, `atlas-seconde-03-probabilites`).
-**Reste à faire dès que l'auteur donne les trois adresses YouTube : étape 4** (versions allégées et vignettes dans
-`videos-fichiers`, adresses au catalogue, `en_ligne` à vrai, contrôle du rendu). Listes de lecture inscrites :
-« Seconde », « Terminale spécialité », « Terminale Maths expertes » (les deux dernières à aligner sur les noms que
-l'auteur aura donnés à ses playlists).
+**Étape 4 faite le 18 novembre** : adresses YouTube au catalogue (seconde `ctVEQI9F4z4`, terminale `MOjC5I8yaew`,
+Maths expertes `mnR8HGAnZLU`), versions allégées (16,7 à 18,7 Mo) et vignettes dans `videos-fichiers`, `en_ligne`
+vrai ; lecteur ouvert et lu pour les trois sur le site construit (clair, sombre, ordinateur, téléphone). Les pages
+YouTube n'ont pas pu être relues depuis la session (accès refusé) : les adresses sont inscrites telles que données
+par l'auteur. Six vidéos sont en ligne.
 
 - **« Les matrices », Terminale Maths expertes, chapitre 3** — `videos/matrices/`, 3 min 47 s
   (`matrices-expertes-prototype-1.mp4`). Parties (mesures 2, 6, 10, 22, 26, 30 ; bilan 42 ; fin 46) : un tableau de
