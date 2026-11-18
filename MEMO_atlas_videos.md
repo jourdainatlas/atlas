@@ -424,7 +424,10 @@ Troisième prototype, demandé par l'auteur « avant de valider » :
 prototype 1, étoile ⋆ de la caractérisation séquentielle et courbes bleues comprises). Étapes 1 et 2 du protocole
 faites : entrées au catalogue (`p-03`, `t-03`, `ma-08`, `youtube` vide, `en_ligne` faux), fichiers, miniatures et
 fiches remis à l'auteur (`atlas-premiere-03-geometrie-cartesienne`, `atlas-terminale-03-fonctions-numeriques`,
-`atlas-mpsi-08-limites-continuite`). **Reste l'étape 4 dès que l'auteur donne les trois adresses YouTube.**
+`atlas-mpsi-08-limites-continuite`). **Étape 4 faite le 18 novembre** : adresses YouTube au catalogue (première `wp3gFFiFubI`, terminale
+`yYJ6w-K-Tyw`, MPSI `pk2gm2xENy0`), versions allégées (18,6 à 19,4 Mo) et vignettes dans `videos-fichiers`,
+`en_ligne` vrai ; lecteur ouvert et lu pour les trois sur le site construit (clair, sombre, ordinateur, téléphone).
+La vignette de la géométrie cartésienne servie par le site est celle au vecteur. Neuf vidéos sont en ligne.
 
 - **« Géométrie cartésienne », Première spécialité, chapitre 3** — `videos/cartesienne/`, 4 min 03 s
   (`geometrie-cartesienne-premiere-prototype-1.mp4`). Parties (2, 6, 14, 22, 26, 34 ; bilan 46) : les vecteurs,
@@ -439,7 +442,7 @@ fiches remis à l'auteur (`atlas-premiere-03-geometrie-cartesienne`, `atlas-term
   lignes : une couleur par objet que l'on suit d'une ligne à l'autre.
   Vignette : à la demande de l'auteur, proposée avec un vecteur (flèche de A à B sur un quadrillage, chien dessus,
   coordonnées de AB) à la place de la droite et de son équation ; c'est celle que dessine désormais `film.js`
-  (`atlas-premiere-03-geometrie-cartesienne-vecteurs.jpg`, en attente de son accord).
+  (l'auteur a donné l'adresse YouTube aussitôt après, sans objection : c'est la vignette du site).
   Relevé dans le PDF du cours, non corrigé (domaine Cours) : proposition 1, point 5, la somme de deux vecteurs est
   écrite (x + y ; x′ + y′) au lieu de (x + x′ ; y + y′).
 - **« Fonctions numériques », Terminale spécialité, chapitre 3** — `videos/fonctions/`, 4 min 03 s
