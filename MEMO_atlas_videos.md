@@ -360,9 +360,16 @@ Repères de temps : YouTube n'active les chapitres que si le premier est à 0:00
 l'ouverture (huit secondes) est donc rattachée à la première partie, et `fiche.py` refuse un chapitre trop court.
 État au 15 novembre : les quatre étapes sont faites pour les trois vidéos (`en_ligne` vrai).
 
-## 11. Trois nouveaux prototypes (16 novembre 2026), en attente du retour de l'auteur
+## 11. Trois nouvelles vidéos (16 novembre 2026), validées par l'auteur le 18 novembre 2026
 
-Demandés par l'auteur, montrés en prototype, **ni validés ni inscrits au catalogue** (donc ni YouTube ni site).
+**Validées toutes les trois le 18 novembre** (matrices : prototype 1 ; géométrie : prototype 2 ; probabilités :
+prototype 1, teintes des boules comprises). Étapes 1 et 2 du protocole (§ 10) faites : entrées au catalogue
+(`me-03`, `t-04`, `s-03`, `youtube` vide, `en_ligne` faux), fichiers, miniatures et fiches remis à l'auteur
+(`atlas-expertes-03-matrices`, `atlas-terminale-04-geometrie-espace`, `atlas-seconde-03-probabilites`).
+**Reste à faire dès que l'auteur donne les trois adresses YouTube : étape 4** (versions allégées et vignettes dans
+`videos-fichiers`, adresses au catalogue, `en_ligne` à vrai, contrôle du rendu). Listes de lecture inscrites :
+« Seconde », « Terminale spécialité », « Terminale Maths expertes » (les deux dernières à aligner sur les noms que
+l'auteur aura donnés à ses playlists).
 
 - **« Les matrices », Terminale Maths expertes, chapitre 3** — `videos/matrices/`, 3 min 47 s
   (`matrices-expertes-prototype-1.mp4`). Parties (mesures 2, 6, 10, 22, 26, 30 ; bilan 42 ; fin 46) : un tableau de
@@ -408,4 +415,4 @@ Troisième prototype, demandé par l'auteur « avant de valider » :
   branche de (V ; R) et revient à la racine par l'autre chemin. Il s'arrête aux trois quarts de la dernière branche
   (`KS` dans `cheminChien`) pour ne pas masquer l'étiquette de l'issue.
   **Couleurs :** les boules et les branches de l'urne sont en rouge brique `#e2553b` et en vert `#7fc65a`, teintes
-  propres à ce film ; le rouge du site reste réservé aux définitions. À confirmer par l'auteur.
+  propres à ce film ; le rouge du site reste réservé aux définitions. Accepté avec la validation du 18 novembre.
