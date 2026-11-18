@@ -11,6 +11,7 @@ export default [
   ['l_u', v('u'), 'bleu'], ['l_v', v('v'), 'cours'], ['l_w', v('w'), 'orange'], ['l_ud', v('u'), 'cours'], ['n2', '2', 'orange'], ['n3', '3', 'orange'],
   // 1. vecteurs
   ['v_nom', b(vec('AB'))], ['v_AB', `${b(vec('AB'))}${col('x_B-x_A', 'y_B-y_A')}`], ['v_num', `${b(vec('AB'))}${col('4-1', '3-1')}=${t(col(3, 2))}`],
+  ['v_vig', `${b(vec('AB'))}\\,${o(col('x_B-x_A', 'y_B-y_A'))}`],
   ['v_ng', `\\|${v('u')}\\|=\\sqrt{x^2+y^2}`], ['v_norme', `\\|${b(vec('AB'))}\\|=\\sqrt{3^2+2^2}=${t('\\sqrt{13}')}`],
   // 2. colinéarité
   ['c_def', `${v('u')}=\\lambda\\,${v('v')}`], ['c_u', `${b(v('u') + col(1, -3))}`], ['c_v', `${t(v('v') + col(3, -9))}`], ['c_ex', `${t(v('v'))}=${col(3, -9)}=3${col(1, -3)}=3\\,${b(v('u'))}`],

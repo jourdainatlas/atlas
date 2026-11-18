@@ -437,6 +437,9 @@ fiches remis à l'auteur (`atlas-premiere-03-geometrie-cartesienne`, `atlas-term
   couleurs dans les méthodes**. (E₁) est en bleu et (E₂) en orange partout, comme les droites d₁ et d₂ ; l'expression
   substituée 2y − 5 est en violet ; les résultats restent en turquoise. À retenir pour les calculs en plusieurs
   lignes : une couleur par objet que l'on suit d'une ligne à l'autre.
+  Vignette : à la demande de l'auteur, proposée avec un vecteur (flèche de A à B sur un quadrillage, chien dessus,
+  coordonnées de AB) à la place de la droite et de son équation ; c'est celle que dessine désormais `film.js`
+  (`atlas-premiere-03-geometrie-cartesienne-vecteurs.jpg`, en attente de son accord).
   Relevé dans le PDF du cours, non corrigé (domaine Cours) : proposition 1, point 5, la somme de deux vecteurs est
   écrite (x + y ; x′ + y′) au lieu de (x + x′ ; y + y′).
 - **« Fonctions numériques », Terminale spécialité, chapitre 3** — `videos/fonctions/`, 4 min 03 s
