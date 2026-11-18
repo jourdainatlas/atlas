@@ -470,3 +470,30 @@ une retouche faite dans `film.js` serait perdue. `conf.json` accepte `bornes` et
 parties. Pièges : dans une légende, `[…]` est la balise rouge (ne pas y écrire un intervalle) ; lancer deux rendus à
 la fois double leur durée ; l'assemblage son-image prend alors plusieurs minutes (attendre la ligne « wrote »).
 
+## 13. Sept prototypes des chapitres 1 (18 novembre 2026), en attente du retour de l'auteur
+
+Demandés par l'auteur en un seul lot, montrés en prototype, **ni validés ni inscrits au catalogue**. Tous durent
+4 min 03 s (six parties aux mesures 2, 6, 14, 22, 26, 34 ; bilan 46) et sont assemblés par `videos/outils/asm.py`.
+
+| Dossier | Chapitre | Fichier livré | Rôle du chien |
+|---|---|---|---|
+| `nombres` | Seconde 1, Nombres et calculs (`s-01`) | `nombres-calculs-seconde-prototype-1.mp4` | il parcourt la diagonale du carré de côté 1 ; il est un réel x dans [1 ; 4] |
+| `second-degre` | Première 1, Second degré (`p-01`) | `second-degre-premiere-prototype-1.mp4` | il descend la parabole jusqu'au sommet ; il lit le signe du trinôme le long de l'axe |
+| `suites` | Terminale 1, Suites numériques (`t-01`) | `suites-terminale-prototype-1.mp4` | il pousse le premier domino ; il gravit les premiers termes de la suite |
+| `divisibilite` | Maths expertes 1 (`me-01`) | `divisibilite-expertes-prototype-1.mp4` | neuf bonds de 5 puis deux pas : 47 = 5 × 9 + 2 |
+| `logique-approfondies` | Maths approfondies 1 (`ap-01`) | `ensembles-logique-approfondies-prototype-1.mp4` | il est l'élément x (A inclus dans B ; puis E, E ∩ F, F) |
+| `logique-mpsi` | MPSI 1, Logique et ensembles (`ma-01`) | `logique-ensembles-mpsi-prototype-1.mp4` | il est le y qui répond à chaque x, puis se fait dépasser |
+| `structures` | MP 1, Structures algébriques (`mp-01`) | `structures-algebriques-mp-prototype-1.mp4` | il avance de 18, recule de 12 : 12ℤ + 18ℤ = 6ℤ |
+
+Exemples propres aux vidéos (tout le reste vient des cours) : Maths expertes, 47 et −47 divisés par 5, 211 et
+30 031 = 59 × 509 pour l'argument d'Euclide, 84/126 = 2/3 ; MPSI, l'exponentielle pour illustrer les parties paire et
+impaire (sans nommer ch et sh, définis plus tard). Tous les calculs sont vérifiés avec Python.
+
+**Assembleur, depuis ce lot** : un film se réduit à `conf.json` (titres, noms des parties, vignette, bilan en trois
+cartes), `score-parties.js` (un objet d'instants par partie, avec les raccourcis `N`, `P`, `Cl` pour une note, un
+« pas », une cloche, et `G` pour les fenêtres des légendes), `formules-src.mjs` et `scenes.js`. Ce dernier se termine
+par `ACTES_DEF` (les actes du chien, décrits par `acte(partie, instants, échelle, position(t), [sortie])` : bond sous
+l'écran, chute sur la figure, jeu, saut vertical vers le jardin) et par `vignetteFig`. Outils ajoutés dans
+`outils.js` : `phase`, `legs`, `fo`, `tx`, `acte`, `axeGradue`. Compter, par film, une heure de travail dont dix
+minutes de rendu ; ne lancer qu'un rendu à la fois quand c'est possible.
+
