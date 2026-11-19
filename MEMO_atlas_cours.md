@@ -925,4 +925,4 @@ Exercices à venir. « À revoir avant » n'est pas posé par chapitre (la table
 `l3`) : prérequis au niveau de l'UE (mp-04, mp-05, mp-17). Termes écartés : fragments et formes tronquées
 (« -difféomorphisme », « -ième dérivée partielle »…), par chapitre. Le chapitre 7 contient du Python (`lstlisting`) :
 les boutons « Essayer » de `cours_code.py` ne sont pas posés (sources non rangées dans `outils/sources-cours/`).
-Symboles : planche à faire valider.
+Symboles validés le 19 nov. : repris `ouvert` (ch. 1, comme mp-04), `tangente` (ch. 2), `dl` (ch. 4), `tangence` (ch. 5, comme mp-17), `champdir` (ch. 6, comme mp-16) ; nouveaux `hyperplan` (ch. 3 : disque {g ≤ 0}, droite tangente et gradient normal au point, calculés) et `euler` (ch. 7 : y = e^t sur [0, 2] et polygone d'Euler de pas 0,5, de 1 à 1,5⁴ ≈ 5,06).
