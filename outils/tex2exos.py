@@ -404,7 +404,11 @@ class Conv:
                 m = re.search(r'\\boxed\s*\{', x)
                 if not m: return x
                 f = accolade(x, m.end() - 1)
-                x = x[:m.start()] + s.jeton('MI', x[m.start():f]) + x[f:]
+                # une formule encadrée en ligne ne se coupe pas : longue, elle passe en formule centrée (téléphone)
+                if f - m.end() > 30:   # la ponctuation qui suit entre dans la formule centrée, comme pour \\[ … \\].
+                    pm = re.match(r'\s*([.,;:])', x[f:]); g = f + pm.end() if pm else f
+                    x = x[:m.start()] + s.jeton('MD', x[m.start():f] + (pm.group(1) if pm else '')) + x[g:]
+                else: x = x[:m.start()] + s.jeton('MI', x[m.start():f]) + x[f:]
         return ''.join(x if re.fullmatch(r'@@MI\d+@@', x) else encadres(x) for x in out)
 
     def tex_math(s, m):
