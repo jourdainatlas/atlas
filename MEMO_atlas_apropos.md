@@ -1049,3 +1049,9 @@ n'est pas documenté, et ces services gardent leurs icônes en mémoire plusieur
 
 **Modifié dans le domaine Cours, à la demande de l'auteur.** `rubriques/cours.yaml` : `l3` placé avant `master` (ordre des onglets : … Maths Spé, Licence 3, Master, Python). Tables `PRECEDENT` (`construire.py`, `outils/cours_prerequis.py`) : `'l3': ['ma', 'mp']`, `'master': ['ma', 'mp', 'l3']`.
 
+## 88. Page Cours : pastilles de niveau par cycle, avec monogramme (19 nov. 2026)
+
+Demande de l'auteur : les pastilles de niveau, devenues nombreuses (dix), gagnent un symbole et de la couleur. Dans `pageCours` (fonction du domaine Cours, bloc modifié avec l'accord de l'auteur) : les niveaux sont rangés par cycle (`cycleDe` : lycée, prépa, université, Python ; même règle d'identifiants qu'au §87), chaque cycle dans un `span.niv-cycle[data-cycle]` qui fixe sa couleur `--cy` (vert `--sy-tm`, violet `--sy-vm`, bleu `--sy-b1`, gris `--sy-gm`). Chaque pastille commence par le monogramme du niveau sur un disque plein (`span.niv-mono`, table `MONO` : 2de, 1re, Tle, *i* pour Maths expertes, ∀ pour Maths approfondies, Sup, Spé, M, >_ pour Python ; un niveau `l1`, `m2`… prend son identifiant en capitales, tout autre niveau les trois premières lettres de son titre, à compléter alors dans `MONO`). Contour et compteur à la couleur du cycle ; pastille choisie remplie, monogramme inversé. « Tous » reste neutre. Sous 640 px, chaque cycle commence une ligne.
+
+Choix de l'auteur parmi trois pistes : monogrammes en cartouche teinté, **monogrammes en pastille pleine** (retenue), pictogrammes d'objets mathématiques (écartés : peu lisibles à cette taille). Les symboles de cycle placés devant chaque groupe dans le premier prototype (cartable, livres, fronton, console) ont été retirés, redondants avec les monogrammes. La vue par niveau de la rubrique Exercices n'est pas concernée.
+
