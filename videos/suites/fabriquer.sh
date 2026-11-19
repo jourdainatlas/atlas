@@ -1,5 +1,5 @@
 #!/bin/sh
-# Refait la vidéo « Les suites numériques » (Terminale spécialité) : out/suites.mp4, 1920 × 1080, 30 images/s, 4 min 03 s.
+# Refait la vidéo « Les suites numériques » (Terminale spécialité) : out/suites.mp4, 1920 × 1080, 30 images/s, 4 min 35 s.
 # Il faut Node 22+, ffmpeg et Google Chrome ou Chromium. Compter une vingtaine de minutes.
 #   sh videos/equations/fabriquer.sh
 set -e

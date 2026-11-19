@@ -10,7 +10,9 @@
         ctx.save(); ctx.globalAlpha *= k; ctx.translate(x + DO.w / 2, DO.sol); ctx.rotate(i === DO.n - 1 ? an * 1.39 : an); ctx.fillStyle = i ? C.encre : C.cours; ctx.beginPath(); ctx.roundRect(-DO.w, -DO.h, DO.w, DO.h, 5); ctx.fill(); ctx.restore(); }
       tx(ctx, t, 'Initialisation : le premier domino tombe.', CX, 270, V.init, { size: 40, c: C.cours }); tx(ctx, t, 'Hérédité : chaque domino fait tomber le suivant.', CX, 350, V.hered, { size: 40 }); });
     legs(ctx, t, V, [['Démontrer une propriété pour tous les entiers, c’est faire tomber une file infinie de dominos.'], ['Deux étapes suffisent : c’est le [principe de récurrence].']]); }
-  const posDomino = (t) => { const V = S.recurrence, k = Math.sin(Math.PI * pr(t, V.pousse - 0.35, 0.8)); return { p: [DO.x0 - 128 + 30 * k, DO.sol], pose: t > V.pousse - 0.35 && t < V.pousse + 0.45 ? { t, tete: 0.1 + 0.5 * k, bas: 0.8 * k } : undefined, assis: t > V.pousse + 0.45 ? doux(pr(t, V.pousse + 0.45, 0.4)) : undefined, tete: 0.1 }; };
+  // il s'approche, se dresse sur ses pattes arrière, pose les pattes avant sur le domino et pousse ; puis il retombe et s'assoit
+  const posDomino = (t) => { const V = S.recurrence, tp = V.pousse, leve = doux(pr(t, tp - 1.0, 0.6)) * (1 - doux(pr(t, tp + 0.7, 0.5))), pous = doux(pr(t, tp - 0.25, 0.3)) * (1 - doux(pr(t, tp + 0.7, 0.5)));
+    return { p: [DO.x0 - 150 + 62 * doux(pr(t, tp - 1.6, 0.6)) + 40 * pous, DO.sol], pose: t > tp - 1.6 && t < tp + 1.2 ? (leve > 0.02 ? { t, allure: 'vol', vol: 0.2 + 0.8 * pous, tang: 1.2 * leve - 0.14 * pous, tete: 0.4 * leve } : trot(t, t * 300, DO.ech)) : undefined, assis: t >= tp + 1.2 ? doux(pr(t, tp + 1.2, 0.4)) : undefined, tete: 0.1 }; };
 
   // ---------- 2. rédiger une récurrence ----------
   function rediger(ctx, t) { const V = S.rediger;
@@ -40,25 +42,31 @@
 
   // ---------- 4. lever une indétermination ----------
   function operations(ctx, t) { const V = S.operations;
-    phase(ctx, t, 22, 26, () => { fo(ctx, t, 'o_e', 760, 260, 54, V.ex); const kf = ap(t, V.fi); cadre(ctx, 1280, 260, 250, 150, { stroke: C.orange, fill: 'rgba(255,162,74,0.10)', a: kf }); formule(ctx, 'o_fi', 1280, 260, { fs: 50, mil: 1, a: kf });
+    phase(ctx, t, 22, 26, () => { [['u_n', 'u_n2', 'u_rn'], ['u_in', 'u_in2', 'u_irn']].forEach((l, j) => l.forEach((id, i) => { const k = ap(t, V.ref[j] + i * 0.35), x = 440 + i * 520, y = 240 + j * 150; cadre(ctx, x, y, 470, 120, { fill: C.surface, stroke: C.filet, lw: 2, a: k }); formule(ctx, id, x, y, { fs: 40, mil: 1, a: k }); }));
+      fo(ctx, t, 'u_g', CX, 540, 40, V.gen); fo(ctx, t, 'u_o1', 620, 690, 40, V.ops); fo(ctx, t, 'u_o2', 1320, 690, 40, V.ops + 0.5); });
+    phase(ctx, t, 26, 30, () => { fo(ctx, t, 'o_e', 760, 260, 54, V.ex); const kf = ap(t, V.fi); cadre(ctx, 1280, 260, 250, 150, { stroke: C.orange, fill: 'rgba(255,162,74,0.10)', a: kf }); formule(ctx, 'o_fi', 1280, 260, { fs: 50, mil: 1, a: kf });
       tx(ctx, t, 'forme indéterminée', 1280, 372, V.fi, { c: C.orange, size: 26 }); fo(ctx, t, 'o_f', CX, 510, 44, V.fact); fo(ctx, t, 'o_r', CX, 700, 54, V.res); });
-    legs(ctx, t, V, [['Numérateur et dénominateur tendent vers l’infini : les règles de calcul ne concluent pas.'], ['On factorise par le terme dominant : il ne reste que des limites connues.']]); }
+    legs(ctx, t, V, [['Les [limites usuelles] : les puissances de $n$ tendent vers plus l’infini…'], ['… et leurs inverses tendent vers 0.'], ['Elles se combinent par somme, produit et quotient, tant que le résultat a un sens.'], ['Ici, numérateur et dénominateur tendent vers l’infini : les règles ne concluent pas.'], ['On factorise par le terme dominant : il ne reste que des limites usuelles.']]); }
 
-  // ---------- 5. deux théorèmes de convergence ----------
+  // ---------- 5. comparer, encadrer, majorer ----------
+  const R5c = K.repere({ x: 110, y: 420, w: 800, h: 330 }, { x0: -0.6, x1: 12.6, y0: -1.5, y1: 13.5 });
   const R5 = K.repere({ x: 110, y: 330, w: 890, h: 400 }, { x0: 0, x1: 41, y0: -1.1, y1: 1.1 }), vn = (n) => Math.sin(n) / n;
   function theoremes(ctx, t) { const V = S.theoremes;
-    phase(ctx, t, 26, 30, () => { const kg = ap(t, V.gend); carte(ctx, 210, 165, 1500, 130, 'THÉORÈME DES GENDARMES', kg); formule(ctx, 'g_th', 840, 240, { fs: 36, mil: 1, a: kg }); tx(ctx, t, '⟹', 1340, 252, V.gend, { size: 36 }); formule(ctx, 'g_c', 1520, 240, { fs: 40, mil: 1, a: kg });
+    phase(ctx, t, 30, 34, () => { [['k_1', 'MINORATION', 520], ['k_2', 'MAJORATION', 1400]].forEach(([id, nom, x], i) => { const k = ap(t, V.comp[i]); carte(ctx, x - 415, 165, 830, 170, 'THÉORÈME DE COMPARAISON · ' + nom, k); formule(ctx, id, x, 266, { fs: 29, mil: 1, a: k }); });
+      const kf = ap(t, V.cfig, 0.9); K.axes(ctx, R5c, kf, { gx: [2, 4, 6, 8, 10, 12], gy: [4, 8, 12] }); K.droite(ctx, R5c, 0, -1, 1, { c: VIOLET, lw: 3.5, k: kf }); nuage(ctx, R5c, (n) => n + Math.sin(n), 0, 12, kf, { r: 7 }); formule(ctx, 'k_l', R5c.X(10.6), R5c.Y(7.4), { fs: 30, mil: 1, a: kf });
+      fo(ctx, t, 'k_ex', 1400, 480, 50, V.cfig); fo(ctx, t, 'k_res', 1400, 650, 50, V.cres); });
+    phase(ctx, t, 34, 38, () => { const kg = ap(t, V.gend); carte(ctx, 210, 165, 1500, 130, 'THÉORÈME DES GENDARMES', kg); formule(ctx, 'g_th', 840, 240, { fs: 36, mil: 1, a: kg }); tx(ctx, t, '⟹', 1340, 252, V.gend, { size: 36 }); formule(ctx, 'g_c', 1520, 240, { fs: 40, mil: 1, a: kg });
       const kf = ap(t, V.fig, 0.9); K.axes(ctx, R5, kf, { gx: [10, 20, 30, 40], gy: [-1, 1] }); K.courbe(ctx, R5, (x) => 1 / x, 0.92, lerp(0.92, 41, kf), { c: VIOLET, lw: 3.5 }); K.courbe(ctx, R5, (x) => -1 / x, 0.92, lerp(0.92, 41, kf), { c: VIOLET, lw: 3.5 }); nuage(ctx, R5, vn, 1, 40, kf, { r: 6 });
       fo(ctx, t, 'g_enc', 1450, 440, 48, V.enc); fo(ctx, t, 'g_lim', 1450, 630, 52, V.lim); });
-    phase(ctx, t, 30, 34, () => { const km = ap(t, V.mono); carte(ctx, 1040, 170, 830, 190, 'THÉORÈME', km); txt(ctx, 'Une suite croissante et majorée', 1455, 250, { fam: F.ui, w: 600, size: 32, a: km }); txt(ctx, 'converge.', 1455, 302, { fam: F.ui, w: 600, size: 36, c: C.cours, a: km });
-      figU(ctx, t, ap(t, V.fig2, 0.9), 0, 0, 0); tx(ctx, t, 'Il affirme que la limite existe, sans la donner.', 1455, 440, V.fig2, { size: 28, c: C.encre2 }); fo(ctx, t, 'm_ell', 1455, 560, 40, V.ell); fo(ctx, t, 'l_lim', 1455, 690, 50, V.six); });
-    legs(ctx, t, V, [['Une suite prise entre deux suites de même limite a cette limite.'], ['Le sinus reste entre −1 et 1 : les deux gendarmes tendent vers 0.'], ['La suite de tout à l’heure est croissante et majorée par 6 : elle converge.'], ['Pour trouver sa limite, on passe à la limite dans la relation de récurrence.']]); }
+    phase(ctx, t, 38, 42, () => { const km = ap(t, V.mono); carte(ctx, 1040, 170, 830, 200, 'THÉORÈME DE CONVERGENCE MONOTONE', km); txt(ctx, 'Toute suite croissante et majorée converge.', 1455, 262, { fam: F.ui, w: 600, size: 30, a: km }); txt(ctx, 'Toute suite décroissante et minorée converge.', 1455, 312, { fam: F.ui, w: 600, size: 30, a: km });
+      figU(ctx, t, ap(t, V.fig2, 0.9), 0, 0, 0); tx(ctx, t, 'Il affirme que la limite existe, sans la donner.', 1455, 450, V.fig2, { size: 28, c: C.encre2 }); fo(ctx, t, 'm_ell', 1455, 560, 40, V.ell); fo(ctx, t, 'l_lim', 1455, 690, 50, V.six); });
+    legs(ctx, t, V, [['Une suite plus grande qu’une suite qui tend vers plus l’infini y tend aussi ;', 'et de même vers moins l’infini pour une suite plus petite.'], ['Le sinus est au moins égal à −1 : cette minoration suffit.'], ['Une suite prise entre deux suites de même limite a cette limite.'], ['Le sinus reste entre −1 et 1 : les deux gendarmes tendent vers 0.'], ['Le [théorème de convergence monotone] : croissante et majorée par 6, la suite converge.'], ['Pour trouver sa limite, on passe à la limite dans la relation de récurrence.']]); }
 
   // ---------- 6. les suites géométriques ----------
   function geometriques(ctx, t) { const V = S.geometriques, CAS = [[1.3, 'q_1', 'vers plus l’infini', C.orange], [0.8, 'q_2', 'vers 0', C.cours], [-0.8, 'q_3', 'vers 0, en alternant', C.cours], [-1.2, 'q_4', 'pas de limite', C.orange]];
-    phase(ctx, t, 34, 40, () => { CAS.forEach(([q, id, s, c], i) => { const k = ap(t, V.cas[i], 0.8), x = 130 + i * 440, neg = q < 0, R = K.repere({ x, y: 250, w: 380, h: 340 }, { x0: -0.5, x1: 10.5, y0: q < -1 ? -6.5 : neg ? -1.1 : 0, y1: q < -1 ? 6.5 : q > 1 ? 14 : 1.1 }); if (k <= 0) return;
+    phase(ctx, t, 42, 48, () => { CAS.forEach(([q, id, s, c], i) => { const k = ap(t, V.cas[i], 0.8), x = 130 + i * 440, neg = q < 0, R = K.repere({ x, y: 250, w: 380, h: 340 }, { x0: -0.5, x1: 10.5, y0: q < -1 ? -6.5 : neg ? -1.1 : 0, y1: q < -1 ? 6.5 : q > 1 ? 14 : 1.1 }); if (k <= 0) return;
         formule(ctx, id, x + 190, 205, { fs: 40, mil: 1, a: k }); seg(ctx, XY(R, -0.5, 0), XY(R, 10.5, 0), { c: C.gm, lw: 2.5, k }); K.dans(ctx, R, () => nuage(ctx, R, (n) => Math.pow(q, n), 0, 10, k, { r: 7 })); txt(ctx, s, x + 190, 650, { fam: F.ui, w: 600, size: 28, c, a: k }); }); });
-    phase(ctx, t, 40, 46, () => { const kp = ap(t, V.prop); carte(ctx, 260, 165, 1400, 210, 'PROPRIÉTÉ', kp);
+    phase(ctx, t, 48, 54, () => { const kp = ap(t, V.prop); carte(ctx, 260, 165, 1400, 210, 'PROPRIÉTÉ', kp);
       [['q_4', 520], ['q_m', 960], ['q_1', 1400]].forEach(([id, x]) => formule(ctx, id, x, 250, { fs: 38, mil: 1, a: kp })); txt(ctx, 'pas de limite', 520, 322, { fam: F.ui, w: 600, size: 30, c: C.orange, a: kp }); formule(ctx, 'q_r2', 960, 318, { fs: 34, mil: 1, a: kp }); formule(ctx, 'q_r1', 1400, 318, { fs: 34, mil: 1, a: kp });
       fo(ctx, t, 'q_b', CX, 470, 42, V.bern); tx(ctx, t, 'l’inégalité de Bernoulli, démontrée par récurrence, donne le cas q > 1', CX, 540, V.bern, { size: 26, c: C.encre2, w: 500 }); fo(ctx, t, 'q_e', 620, 680, 48, V.ex); fo(ctx, t, 'q_er', 1300, 680, 40, V.res); });
     legs(ctx, t, V, [['Une suite géométrique de raison plus grande que 1 dépasse tout nombre.'], ['Si la raison est entre 0 et 1, les termes s’écrasent sur 0.'], ['Entre −1 et 0, ils changent de signe à chaque rang, mais tendent encore vers 0.'], ['Au-delà de −1, ils s’écartent en alternant : la suite n’a pas de limite.'], ['Tout dépend de la raison $q$.'], ['Le premier cas repose sur une inégalité que l’on démontre par récurrence.'], ['Ici la raison vaut 0,8 : la suite tend vers 0.']]); }
