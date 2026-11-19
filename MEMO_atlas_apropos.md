@@ -1037,3 +1037,15 @@ n'est pas documenté, et ces services gardent leurs icônes en mémoire plusieur
 
 **Nom du site.** Le panneau de ChatGPT est sa propre recherche sur le mot « ATLAS », nom très partagé : rien dans le site ne le commande. Les données structurées de l'accueil donnent désormais trois autres noms (`alternateName` : « ATLAS – Architecture des mathématiques », « ATLAS Jourdain », « atlasjourdain.fr »), ce qui aide les moteurs à distinguer le site, sans garantie d'effet.
 
+## 87. Accueil : encadré « À l'université », cinq profils ; couleur des UE (19 nov. 2026)
+
+**Demande.** Le niveau Licence 3 (domaine Cours) doit précéder le Master, sans tomber dans l'encadré « En prépa » de l'accueil, qui prenait tous les niveaux rangés entre les Maths approfondies et le Master.
+
+**Accueil (`aProposCommencer`).** Cinq profils : Au lycée, En prépa, **À l'université**, **Concours et examens** (ancien « CAPES, agrégation, Master »), Par curiosité. Les niveaux d'université sont reconnus par leur identifiant (`l1`, `l2`, `l3`…, `m1`, `m2`, `master`) : la prépa va des Maths approfondies au premier d'entre eux, l'université du premier au dernier. Un niveau ajouté dans `cours.yaml` entre ces bornes paraît seul dans le bon encadré. Textes validés par l'auteur. Liens : édifice et index pour l'université ; annales par session et moteur (`#annales/recherche`, §86) pour les concours. « Commencer par la logique » devient « Partir de la logique » (une ligne). Grille : cinq colonnes au-dessus de 1 320 px (titre 16,5 px sur une ligne, symbole 22 px), trois colonnes, deux sous 1 100 px, une sous 560 px.
+
+**Symbole** `sym-p-universite` (choix de l'auteur parmi trois : fronton à colonnes, amphithéâtre, diplôme ; les deux derniers ne sont pas à reproposer) : fronton bleu, quatre colonnes vertes `p-col`, deux marches. Animation `sa-p-universite` : les colonnes se dressent une à une (`sa-dresse`), puis le fronton se pose (`sa-pose`). Bandes : université du vert des cours au bleu de l'édifice ; concours de l'orange des annales au bleu.
+
+**Couleur d'une UE** (`couleurUE`, page Cours) : la famille de l'édifice la plus représentée parmi les théories de ses chapitres, comme le symbole d'un chapitre ; elle teinte le filet de gauche et le lien de présentation (`--accent`, jusque-là non défini : filet blanc). Le calcul différentiel sort en vert (analyse) ; une UE d'algèbre, de géométrie ou de théorie des nombres prendra la couleur de sa famille sans réglage. Champ facultatif `couleur` d'une UE dans `cours.yaml` (nom de famille : `ana`, `alg`, `geo`…) pour forcer.
+
+**Modifié dans le domaine Cours, à la demande de l'auteur.** `rubriques/cours.yaml` : `l3` placé avant `master` (ordre des onglets : … Maths Spé, Licence 3, Master, Python). Tables `PRECEDENT` (`construire.py`, `outils/cours_prerequis.py`) : `'l3': ['ma', 'mp']`, `'master': ['ma', 'mp', 'l3']`.
+

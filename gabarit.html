@@ -358,7 +358,9 @@ body.en-rubrique .chercher-tout ~ .bouton-theme { margin-left: 0; }
 .rg-vide button { border: 0; background: none; padding: 0; font: inherit; color: var(--encre); text-decoration: underline; text-decoration-color: var(--filet); text-underline-offset: 3px; cursor: pointer; }
 .rg-pied { display: flex; gap: 14px; flex-wrap: wrap; padding: 8px 16px; border-top: 1px solid var(--filet); font-size: 12px; color: var(--encre-3); }
 @media (max-width: 560px) { .rg-fond { padding: 0; } .rg-boite { width: 100%; max-height: none; height: 100%; border-radius: 0; border: 0; } .rg-champ input { font-size: 16px; } .rg-pied { display: none; } }
-.acc-profils { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.acc-profils { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+/* Cinq profils (19 nov. 2026) : une ligne sur grand écran, trois colonnes puis deux, puis une. */
+@media (max-width: 1320px) { .acc-profils { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; } }
 .acc-profil { padding: 16px 18px; display: flex; flex-direction: column; gap: 8px; }
 .acc-profil h4 { margin: 0; font-family: var(--f-titre); font-size: 19px; }
 .acc-profil p { margin: 0; font-size: 14px; line-height: 1.5; color: var(--encre-2); }
@@ -391,7 +393,8 @@ body.en-rubrique .chercher-tout ~ .bouton-theme { margin-left: 0; }
 .acc-nouv-carte { border-left-width: 1px; border-left-color: var(--filet); --r: var(--c); }
 .acc-profil.p-lycee { --r-bande: linear-gradient(90deg, var(--r-cours), var(--r-exercices)); }
 .acc-profil.p-prepa { --r-bande: linear-gradient(90deg, var(--r-cours), var(--r-exercices), var(--r-annales)); }
-.acc-profil.p-concours { --r-bande: linear-gradient(90deg, var(--r-edifice), var(--r-annales), var(--r-cours)); }
+.acc-profil.p-universite { --r-bande: linear-gradient(90deg, var(--r-cours), var(--r-edifice)); }
+.acc-profil.p-concours { --r-bande: linear-gradient(90deg, var(--r-annales), var(--r-edifice)); }
 .acc-profil.p-curiosite { --r-bande: linear-gradient(90deg, var(--r-edifice), var(--r-neutre)); }
 
 /* ---- symboles des rubriques : aplats de trois nuances de la couleur de chaque rubrique (inversées en sombre) */
@@ -416,6 +419,7 @@ svg.sym { width: 20px; height: 20px; flex: none; display: inline-block; vertical
 /* encadrés « Par où commencer ? » : symbole calé sur la première ligne du titre, qui peut passer sur deux lignes */
 .acc-profil h4 { display: flex; align-items: flex-start; gap: 10px; }
 .acc-profil h4 svg.sym { width: 26px; height: 26px; margin-top: 1px; }
+@media (min-width: 1321px) { .acc-profil { padding: 16px 14px; } .acc-profil h4 { font-size: 16.5px; gap: 8px; white-space: nowrap; } .acc-profil h4 svg.sym { width: 22px; height: 22px; } }
 /* symbole, titre et nombre sur une même ligne médiane (le titre seul s'alignait sur la ligne de base du nombre) */
 .acc-rubriques .acc-rub .r-tete { align-items: center; min-height: 32px; }
 .fil li.fil-icone { margin-right: 2px; }
@@ -1178,6 +1182,10 @@ svg.sym-anime { overflow: visible; }
 :is(.acc-rub:hover, .acc-rub:focus-visible, .acc-profil:hover, .acc-profil:focus-within, .ro-sym.actif) .p-fermoir { transform-origin: 50% 0%; animation: sa-fermoir .8s ease-in-out both; }
 @keyframes sa-saut { 0% { transform: none; } 16% { transform: scale(1.14,.82); } 42% { transform: translateY(-10px) rotate(-7deg) scale(.94,1.08); } 66% { transform: scale(1.12,.86); } 82% { transform: translateY(-3px) rotate(2deg); } 100% { transform: none; } }
 @keyframes sa-fermoir { 0%, 30% { transform: none; } 55% { transform: scaleY(-.75); } 80% { transform: scaleY(-.75); } 100% { transform: none; } }
+:is(.acc-rub:hover, .acc-rub:focus-visible, .acc-profil:hover, .acc-profil:focus-within, .ro-sym.actif) .sa-p-universite .p-col { transform-box: fill-box; transform-origin: 50% 100%; animation: sa-dresse .4s cubic-bezier(.3,0,.3,1) calc(var(--i) * .11s) both; }
+:is(.acc-rub:hover, .acc-rub:focus-visible, .acc-profil:hover, .acc-profil:focus-within, .ro-sym.actif) .sa-p-universite .p-fronton { animation: sa-pose .45s cubic-bezier(.3,0,.4,1.3) .6s both; }
+@keyframes sa-dresse { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+@keyframes sa-pose { from { transform: translateY(-5px); opacity: 0; } to { transform: none; opacity: 1; } }
 :is(.acc-rub:hover, .acc-rub:focus-visible, .acc-profil:hover, .acc-profil:focus-within, .ro-sym.actif) .p-b { animation: sa-tombe .45s cubic-bezier(.4,0,.6,1) calc(var(--i) * .16s) both; }
 :is(.acc-rub:hover, .acc-rub:focus-visible, .acc-profil:hover, .acc-profil:focus-within, .ro-sym.actif) .p-b2 { animation-name: sa-tombe2; }
 @keyframes sa-tombe { 0% { transform: translateY(-16px); opacity: 0; } 25% { opacity: 1; } 62% { transform: none; } 80% { transform: translateY(-1.4px); } 100% { transform: none; } }
@@ -2010,6 +2018,7 @@ table.grille button.pli-ann:hover { border-color: var(--encre); }
 <symbol id="sym-accueil" viewBox="0 0 24 24"><path class="sy-gl" d="M5.4 10.6 H18.6 V20.5 H5.4 Z"/><path class="sy-gd" d="M3 11.6 L12 3.8 L21 11.6 L19.8 12.9 L12 6.2 L4.2 12.9 Z"/><path class="sy-gm" d="M10 14 H14 V20.5 H10 Z"/></symbol>
 <symbol id="sym-p-lycee" viewBox="0 0 24 24"><path class="sy-tm" d="M3.5 8.5H20.5V20.5H3.5Z"/><path class="sy-td" d="M9 8.5V5.3H15V8.5H13.5V6.8H10.5V8.5Z M3.5 8.5H20.5V13C16 14.6 8 14.6 3.5 13Z"/><g class="p-fermoir"><path class="sy-vm" d="M10.7 12.3H13.3V16.4H10.7Z"/><path class="sy-vl" d="M11.4 13.4H12.6V15.3H11.4Z"/></g></symbol>
 <symbol id="sym-p-prepa" viewBox="0 0 24 24"><g class="p-b" style="--i:0"><path class="sy-om" d="M3 16.8H21V21H3Z"/><path class="sy-ol" d="M18.6 17.8H21V20H18.6Z"/></g><g class="p-b" style="--i:1"><path class="sy-vm" d="M4.8 12.6H19.6V16.8H4.8Z"/><path class="sy-vl" d="M4.8 13.6H7.2V15.8H4.8Z"/></g><g class="p-b p-b2" style="--i:2"><path class="sy-tm" d="M3.6 8.4H18.4V12.6H3.6Z"/><path class="sy-tl" d="M16 9.4H18.4V11.6H16Z"/><path class="sy-td" d="M6 8.4H7V12.6H6Z"/></g></symbol>
+<symbol id="sym-p-universite" viewBox="0 0 24 24"><path class="sy-tm" d="M2 19.8H22V21.4H2Z"/><path class="sy-td" d="M3 18.2H21V19.8H3Z"/><path class="sy-tm p-col" style="--i:0" d="M4.50 9.8H6.70V18.2H4.50Z"/><path class="sy-tm p-col" style="--i:1" d="M8.77 9.8H10.97V18.2H8.77Z"/><path class="sy-tm p-col" style="--i:2" d="M13.03 9.8H15.23V18.2H13.03Z"/><path class="sy-tm p-col" style="--i:3" d="M17.30 9.8H19.50V18.2H17.30Z"/><g class="p-fronton"><path class="sy-bd" d="M3.5 8H20.5V9.8H3.5Z"/><path class="sy-b1" d="M12 2.6L21.6 8H2.4Z"/><circle class="sy-b3" cx="12" cy="6" r="1.1"/></g></symbol>
 <symbol id="sym-p-concours" viewBox="0 0 24 24"><path class="sy-tm" d="M4 19H20V21.6H4Z"/><path class="sy-tl" d="M17.5 19.6H20V21H17.5Z"/><g class="p-toque"><path class="sy-bd" d="M6.5 10.8V15.2C6.5 17.4 17.5 17.4 17.5 15.2V10.8L12 13.3Z"/><path class="sy-b1" d="M12 3.8L22 8.4L12 13L2 8.4Z"/><g class="p-pompon"><path class="sy-od" d="M19.5 9.4H20.4V15.3H19.5Z"/><path class="sy-om" d="M18.9 15.1H21L21.6 18.3H18.3Z"/></g></g></symbol>
 <symbol id="sym-p-curiosite" viewBox="0 0 24 24"><g class="p-loupe"><path class="sy-gm" d="M14.3 15.7L15.7 14.3L21.3 19.9C21.7 20.3 21.7 20.9 21.3 21.3C20.9 21.7 20.3 21.7 19.9 21.3Z"/><circle class="sy-b3" cx="10" cy="10" r="5.6"/><circle cx="10" cy="10" r="6.3" fill="none" style="stroke: var(--sy-gd)" stroke-width="1.6"/></g><path fill="none" style="stroke: var(--sy-b1)" stroke-width="1" d="M8 12.4L10 7.8L12.2 12.4Z"/><circle class="sy-b1 p-pt" style="--i:2" cx="10" cy="7.8" r="1.4"/><circle class="sy-bd p-pt" style="--i:0" cx="8" cy="12.4" r="1"/><circle class="sy-bd p-pt" style="--i:1" cx="12.2" cy="12.4" r="1"/></symbol>
 </defs></svg>
@@ -4352,7 +4361,7 @@ function coursNiveauParUE(n, liste, uesN) {
     for (const u of uesN.filter(u => u.semestre === s)) {
       const lu = liste.filter(c => c.ue === u.id);
       if (!lu.length) { h += `<div class="ue"><div class="ue-vide carte"><span class="ue-code">${esc(u.code || '')}</span><span class="ue-titre">${u.titre}</span><span class="statut">À venir</span></div></div>`; continue; }
-      h += `<details class="ue" data-ue="${u.id}"${coursUEOuvertes.has(u.id) ? ' open' : ''}><summary class="ue-tete"><span class="ue-code">${esc(u.code || '')}</span><span class="ue-titre">${u.titre}</span><span class="ue-info">${lu.length} chapitres${u.pages ? ` · ${u.pages} pages` : ''}</span><span class="ue-chevron" aria-hidden="true"></span></summary><div class="ue-corps"><a class="ue-lien" href="#cours/ue/${u.id}">Présentation de l'UE et cours complet (PDF) →</a><ol class="chapitres carte">${lu.map(ligneChapitre).join('')}</ol></div></details>`;
+      h += `<details class="ue" data-ue="${u.id}" style="--accent: ${couleurUE(u, lu)}"${coursUEOuvertes.has(u.id) ? ' open' : ''}><summary class="ue-tete"><span class="ue-code">${esc(u.code || '')}</span><span class="ue-titre">${u.titre}</span><span class="ue-info">${lu.length} chapitres${u.pages ? ` · ${u.pages} pages` : ''}</span><span class="ue-chevron" aria-hidden="true"></span></summary><div class="ue-corps"><a class="ue-lien" href="#cours/ue/${u.id}">Présentation de l'UE et cours complet (PDF) →</a><ol class="chapitres carte">${lu.map(ligneChapitre).join('')}</ol></div></details>`;
     }
     h += `</div>`;
   }
@@ -6125,6 +6134,13 @@ function bandeChapitre(c) {
   const d = [...new Set(couleursChapitre(c))];
   return !d.length ? 'transparent' : d.length === 1 ? d[0] : `linear-gradient(to bottom, ${d.join(', ')})`;
 }
+// Couleur d'une UE : la famille de l'édifice la plus représentée parmi les théories de ses chapitres (comme le
+// symbole d'un chapitre) ; un champ couleur de l'UE, dans cours.yaml, l'emporte (nom de famille : ana, alg, geo…).
+function couleurUE(u, lu) {
+  if (u.couleur) return `var(--c-${u.couleur})`;
+  const n = {}; for (const c of lu) for (const x of couleursChapitre(c)) n[x] = (n[x] || 0) + 1;
+  return Object.entries(n).sort((a, b) => b[1] - a[1])[0]?.[0] || 'var(--encre-2)';
+}
 function symboleChapitre(c) {
   const dessin = SYM_DESSINS[SYM_CHAPITRES[c.id]];
   if (!dessin) return '';
@@ -6915,7 +6931,7 @@ document.addEventListener('click', ev => {
 (() => { const d = (R.nouveautes?.entrees || [])[0]?.date, vu = nouvVu(), b = $('#menu-neuf'); if (b) b.hidden = !(d && vu && d > vu); })();
 
 /* ---- Symboles des rubriques (sprite #sym-… au début de .app) */
-const SYMBOLES = new Set(['edifice', 'cours', 'exercices', 'annales', 'activites', 'nouveautes', 'a-propos', 'index', 'accueil', 'p-lycee', 'p-prepa', 'p-concours', 'p-curiosite']);
+const SYMBOLES = new Set(['edifice', 'cours', 'exercices', 'annales', 'activites', 'nouveautes', 'a-propos', 'index', 'accueil', 'p-lycee', 'p-prepa', 'p-universite', 'p-concours', 'p-curiosite']);
 // anime (§70) : le dessin est recopié en ligne (et non appelé par <use>) pour que ses pièces p-… puissent être animées
 // par les règles .sa-… quand l'encadré est survolé ou que le symbole arrive en face du texte dans la roue de l'accueil.
 function symbole(nom, anime) {
@@ -6990,18 +7006,24 @@ function aProposCommencer() {
   };
   const profil = (cl, titre, texte, puces, liens) => `<div class="carte acc-profil ${cl}"><h4>${symbole(cl, true)}<span>${titre}</span></h4><p>${texte}</p>${puces ? `<div class="acc-puces">${puces}</div>` : ''}<p class="acc-profil-liens">${liens}</p></div>`;
   const lycee = ['seconde', 'premiere', 'terminale', 'expertes', 'approfondies'];
-  // Prépa : les niveaux rangés entre les Maths approfondies et le Master (Maths Sup, puis Maths Spé et ECG quand ils auront des chapitres).
-  const ordreNiv = (C.niveaux || []).map(n => n.id);
-  const prepa = ordreNiv.slice(ordreNiv.indexOf('approfondies') + 1, ordreNiv.includes('master') ? ordreNiv.indexOf('master') : undefined);
+  // Prépa : les niveaux rangés entre les Maths approfondies et le premier niveau d'université (Maths Sup, Maths Spé,
+  // ECG quand il aura des chapitres). Université : de la première année de licence (identifiant l1, l2, l3…) au
+  // dernier niveau de master (master, m1, m2) ; un niveau ajouté dans cours.yaml entre ces bornes y paraît seul.
+  const ordreNiv = (C.niveaux || []).map(n => n.id), estUniv = id => /^(l\d|m\d|master)$/.test(id);
+  const iU = ordreNiv.findIndex(estUniv), jU = ordreNiv.length - [...ordreNiv].reverse().findIndex(estUniv);
+  const prepa = ordreNiv.slice(ordreNiv.indexOf('approfondies') + 1, iU < 0 ? undefined : iU);
+  const univ = iU < 0 ? [] : ordreNiv.slice(iU, jU);
   let h = `<section class="acc-section"><h3>Par où commencer ?</h3><div class="acc-profils">`;
   h += profil('p-lycee', 'Au lycée', 'Choisissez votre classe ou votre option : chaque chapitre se lit en ligne ou se télécharge, et sa feuille d\'exercices corrigés permet de s\'entraîner aussitôt.',
     lycee.map(id => puceNiveau(id)).join(''), `<a href="#cours" data-cours-niveau="tous">Tous les cours&nbsp;→</a><a href="#exercices">Les exercices par niveau&nbsp;→</a>`);
   h += profil('p-prepa', 'En prépa', 'Les cours suivent les programmes des classes préparatoires, chapitre par chapitre. Le moteur des annales retrouve, par thème, les parties de sujets de concours d\'ingénieurs qui portent sur le chapitre que l\'on vient d\'étudier.',
     prepa.map(id => puceNiveau(id)).join(''), `<a href="#exercices"${prepa[0] ? ` data-niveau-exos="${prepa[0]}"` : ''}>S'entraîner&nbsp;→</a><a href="#annales" data-vers-moteur>Les annales par thème&nbsp;→</a>`);
-  h += profil('p-concours', 'CAPES, agrégation, Master', 'L\'édifice reprend chaque théorie dans l\'ordre logique, avec des démonstrations complètes ; les annales de l\'enseignement se cherchent par thème, partie par partie.',
-    '', `<a href="#${D.racine}">Entrer dans l'édifice →</a><a href="#annales">Les annales et leur moteur →</a>`);
+  h += profil('p-universite', 'À l\'université', 'Les cours de licence et de master se lisent chapitre par chapitre. Chacun indique les théories de l\'édifice sur lesquelles il repose, reprises dans l\'ordre logique avec leurs démonstrations.',
+    univ.map(id => puceNiveau(id)).join(''), `<a href="#${D.racine}">Entrer dans l'édifice&nbsp;→</a><a href="#index">L'index des notions&nbsp;→</a>`);
+  h += profil('p-concours', 'Concours et examens', 'Baccalauréat, concours d\'ingénieurs, CAPES et agrégation : les sujets sont rangés par session, et un moteur retrouve, par thème, les parties qui portent sur une notion.',
+    '', `<a href="#annales">Les annales par session&nbsp;→</a><a href="#annales/recherche">Chercher un thème&nbsp;→</a>`);
   h += profil('p-curiosite', 'Par curiosité', 'Partez des fondations : la logique du premier ordre et les axiomes de la théorie des ensembles, puis suivez les flèches de l\'édifice jusqu\'aux grandes théories.',
-    '', `<a href="#${D.noeuds.log?.sous || D.racine}">Commencer par la logique →</a><a href="#nouveautes">Ce qui vient de paraître →</a>`);
+    '', `<a href="#${D.noeuds.log?.sous || D.racine}">Partir de la logique&nbsp;→</a><a href="#nouveautes">Ce qui vient de paraître&nbsp;→</a>`);
   return h + '</div></section>';
 }
 // Accueil : une puce de niveau ouvre la page Cours filtrée sur ce niveau (le filtre est posé avant la navigation).
