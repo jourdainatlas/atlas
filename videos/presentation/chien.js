@@ -1,6 +1,8 @@
 // LE LABRADOR — redessiné pour la vidéo : un squelette (hanche, épaule, genou, jarret, coude) posé par cinématique
 // inverse, et des aplats par-dessus. Unités du jardin : le sol est en y = 0, le chien regarde vers la droite.
-//   CHIEN.dessiner(ctx, { x, face, t, assis, tang, saut, bas, tete, queue: { a, amp, f }, allure, phase, vol, oreille })
+//   CHIEN.dessiner(ctx, { x, face, t, assis, tang, saut, bas, tete, queue: { a, amp, f }, allure, phase, vol, oreille, pattes })
+//   allure 'dresse' : dressé sur ses pattes arrière (tang), pattes avant en pattes = [dx, dy] depuis l'épaule ;
+//   avance : le corps se porte vers l'avant sans que les pattes arrière quittent leur place
 //   oreille : rotation ajoutée à l'oreille autour de son attache (négative : elle remonte, comme dans une chute)
 (function () {
   const borne = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x)), lerp = (a, b, k) => a + (b - a) * k;
@@ -26,7 +28,7 @@
     if (allure === 'galop') { tang += 0.13 * Math.sin(ph + 0.4); saut += 0.9 + 0.9 * Math.sin(ph - 1.3); }
     const dir = Math.abs(p.face) < 0.18 ? 0.18 * (p.face < 0 ? -1 : 1) : p.face;
     // la hanche descend quand il s'assoit ; le tronc pivote autour d'elle
-    const H = [lerp(HANCHE[0], -5.4, s), lerp(HANCHE[1], -3.7, s) - saut + bas * (1 - s)], co = Math.cos(tang), si = Math.sin(tang);
+    const H = [lerp(HANCHE[0], -5.4, s) + (p.avance || 0), lerp(HANCHE[1], -3.7, s) - saut + bas * (1 - s)], co = Math.cos(tang), si = Math.sin(tang);
     const corps = (lx, ly) => [H[0] + lx * co + ly * si, H[1] - lx * si + ly * co];            // repère du tronc → monde
     const E = corps(EPAULE[0] - HANCHE[0], EPAULE[1] - HANCHE[1] + bas * 0.5 * (1 - s));
     // ----- pieds -----
@@ -35,6 +37,8 @@
       if (allure === 'trot') { const f = ph + ((avant ? 0 : Math.PI) + (loin ? Math.PI : 0)); return [x0 + d + 3.3 * Math.sin(f), -Math.max(0, Math.cos(f)) * 2]; }
       if (allure === 'galop') { const f = ph + (avant ? 0 : 2.5) + (loin ? 0.45 : 0); return [x0 + d + (avant ? 1 : -0.5) + 5.4 * Math.sin(f), -saut * 0.55 - Math.max(0, Math.cos(f)) * 3.4]; }
       if (allure === 'vol') { const u = p.vol || 0; return avant ? [E[0] + lerp(3.4, 5.6, u), Math.min(0, E[1] + lerp(7.5, 9.6, u))] : [H[0] - lerp(6.5, 2.4, u) + d * 0.5, Math.min(0, H[1] + lerp(8.6, 9.8, u))]; }
+      // 'dresse' : les pattes arrière restent plantées ; les pattes avant visent p.pattes = [dx, dy] depuis l'épaule (jamais sous le sol)
+      if (allure === 'dresse') return avant ? [E[0] + (p.pattes ? p.pattes[0] : 0.3) + d * 0.6, Math.min(0, E[1] + (p.pattes ? p.pattes[1] : 13))] : [x0 + d, 0];
       if (avant) return [lerp(x0, E[0] + 0.3, s) + d * (1 - s), 0];
       return [lerp(x0, H[0] + 5.3, s) + d, 0];
     };

@@ -112,20 +112,20 @@
   function nuage(ctx, R, u, n0, n1, k, o = {}) { for (let n = n0; n <= n1; n++) K.point(ctx, R, n, u(n), { k: borne(k * (n1 - n0 + 3) - (n - n0)), r: o.r || 8, c: o.c || C.bleu }); }
 
   // ---------- 1. le principe de récurrence ----------
-  const DO = { x0: 420, pas: 108, sol: 640, h: 170, w: 28, n: 13, ech: 3.7 };
+  const DO = { x0: 420, pas: 108, sol: 640, h: 170, w: 28, n: 13, ech: 3.2 };
   function recurrence(ctx, t) { const V = S.recurrence;
     phase(ctx, t, 2, 6, () => { const kd = ap(t, V.dominos, 0.8); seg(ctx, [120, DO.sol], [1800, DO.sol], { c: C.gl, lw: 3, k: kd });
-      for (let i = 0; i < DO.n; i++) { const k = borne(kd * 3 - i * 0.12), an = 1.13 * (i ? doux(pr(t, V.pousse + 0.02 + i * 0.2, 0.42)) : appui(t)), x = DO.x0 + i * DO.pas; if (k <= 0) continue;
+      for (let i = 0; i < DO.n; i++) { const k = borne(kd * 3 - i * 0.12), an = 1.13 * (i ? doux(pr(t, V.pousse + 0.06 + i * 0.2, 0.42)) : Math.pow(pr(t, V.pousse, 0.48), 1.8)), x = DO.x0 + i * DO.pas; if (k <= 0) continue;
         ctx.save(); ctx.globalAlpha *= k; ctx.translate(x + DO.w / 2, DO.sol); ctx.rotate(i === DO.n - 1 ? an * 1.39 : an); ctx.fillStyle = i ? C.encre : C.cours; ctx.beginPath(); ctx.roundRect(-DO.w, -DO.h, DO.w, DO.h, 5); ctx.fill(); ctx.restore(); }
       tx(ctx, t, 'Initialisation : le premier domino tombe.', CX, 270, V.init, { size: 40, c: C.cours }); tx(ctx, t, 'Hérédité : chaque domino fait tomber le suivant.', CX, 350, V.hered, { size: 40 }); });
     legs(ctx, t, V, [['Démontrer une propriété pour tous les entiers, c’est faire tomber une file infinie de dominos.'], ['Deux étapes suffisent : c’est le [principe de récurrence].']]); }
-  // Il trotte jusqu'au domino, se dresse, et se laisse aussitôt tomber dessus de tout son poids : le domino bascule sous
-  // ses pattes avant. `appui` (de 0 à 1) est la chute du chien ; le premier domino tourne avec elle (recurrence, plus haut).
-  const appui = (t) => { const k = pr(t, S.recurrence.pousse - 0.12, 0.5); return k * k * (3 - 2 * k) * (0.35 + 0.65 * k); };
-  const posDomino = (t) => { const V = S.recurrence, tp = V.pousse, app = doux(pr(t, tp - 1.9, 0.9)), leve = doux(pr(t, tp - 0.62, 0.5)), ch = appui(t), ret = doux(pr(t, tp + 1.25, 0.55));
-    const tang = (1.12 * leve - 0.80 * ch) * (1 - ret), x = DO.x0 - 205 + 76 * app + 42 * leve + 58 * ch - 22 * ret;
-    return { p: [x, DO.sol], pose: t < tp - 1.9 ? undefined : app < 1 ? trot(t, x * 1.3, DO.ech) : ret >= 1 ? undefined : { t, allure: 'vol', vol: 0.15 + 0.85 * ch, tang, tete: 0.1 + 0.25 * ch },
-      assis: t >= tp + 1.8 ? doux(pr(t, tp + 1.8, 0.45)) : undefined, tete: 0.1 }; };
+  // Il trotte jusqu'au domino et s'arrête le nez dessus ; puis, sans que ses pattes arrière bougent, il fléchit, se dresse
+  // un peu et laisse retomber ses pattes avant : elles touchent le domino à l'instant `pousse`, assez bas, et finissent au sol.
+  const sm = (t, a, d) => doux(pr(t, a, d));
+  const posDomino = (t) => { const V = S.recurrence, tp = V.pousse, app = sm(t, tp - 2.0, 0.9), flex = sm(t, tp - 1.0, 0.3) * (1 - sm(t, tp - 0.72, 0.3)), leve = sm(t, tp - 0.78, 0.5), d = sm(t, tp - 0.3, 0.6), repos = sm(t, tp + 0.3, 0.5);
+    const cible = d < 0.5 ? [lerp(6.5, 8.5, d * 2), lerp(5.5, 3.9, d * 2)] : [lerp(8.5, lerp(3.0, 0.3, repos), d * 2 - 1), lerp(3.9, 13, d * 2 - 1)], x = DO.x0 - 84 - 100 * (1 - app), av = 7 * sm(t, tp - 0.3, 0.3) * (1 - 0.85 * repos);
+    return { p: [x, DO.sol], pose: t < tp - 2.0 ? undefined : app < 1 ? trot(t, x * 1.3, DO.ech) : t < tp + 1.0 ? { t, allure: 'dresse', avance: av, tang: 0.62 * leve * (1 - d), pattes: [lerp(0.3, cible[0], leve), lerp(13, cible[1], leve)], bas: 1.3 * flex + 0.8 * sm(t, tp + 0.22, 0.14) * (1 - sm(t, tp + 0.36, 0.3)), tete: 0.28 * (1 - leve) + 0.12 } : undefined,
+      assis: t >= tp + 1.0 ? sm(t, tp + 1.0, 0.45) : undefined, tete: 0.1 }; };
 
   // ---------- 2. rédiger une récurrence ----------
   function rediger(ctx, t) { const V = S.rediger;
