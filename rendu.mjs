@@ -456,7 +456,7 @@ const index = `<!doctype html>
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Logo ATLAS : un graphe orienté de l'alpha à l'oméga">
 <meta property="og:locale" content="fr_FR">
-<script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@type': 'WebSite', name: 'ATLAS', alternateName: 'ATLAS – Architecture des mathématiques', url: ADRESSE, inLanguage: 'fr', description: 'Architecture logique des théories mathématiques ; cours, exercices corrigés, et annales de concours avec recherche par thème.', author: { '@type': 'Person', name: 'Armand Jourdain', jobTitle: 'Professeur agrégé de mathématiques' }, license: 'https://creativecommons.org/licenses/by-nc-sa/4.0/' }).replace(/</g, '\\u003c')}</script>
+<script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@type': 'WebSite', name: 'ATLAS', alternateName: ['ATLAS – Architecture des mathématiques', 'ATLAS Jourdain', 'atlasjourdain.fr'], url: ADRESSE, inLanguage: 'fr', description: 'Architecture logique des théories mathématiques ; cours, exercices corrigés, et annales de concours avec recherche par thème.', author: { '@type': 'Person', name: 'Armand Jourdain', jobTitle: 'Professeur agrégé de mathématiques' }, license: 'https://creativecommons.org/licenses/by-nc-sa/4.0/' }).replace(/</g, '\\u003c')}</script>
 <meta name="twitter:card" content="summary_large_image">
 <style>body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
 <link rel="stylesheet" href="katex.css?v=${vCss}">

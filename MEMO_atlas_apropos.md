@@ -1026,3 +1026,14 @@ pas le SVG. Ajoutés : `identite/favicon.ico` (16, 32, 48 et 64 px, tiré de `ic
 change), copié à la racine par `rendu.mjs` ; liens `rel="icon"` PNG (32 et 192 px) sur l'application et sur les
 pages de lecture ; type `image/x-icon` dans `htaccess-ovh`. Cause supposée, non prouvée : le mécanisme de ChatGPT
 n'est pas documenté, et ces services gardent leurs icônes en mémoire plusieurs jours.
+
+## 86. Arrivée directe sur le moteur des annales, et nom du site (19 novembre 2026)
+
+**Demande.** Un lien vers `/annales/` donné par ChatGPT ouvrait la page de lecture (liste des sujets) ; l'auteur voulait arriver directement sur le moteur par thème, dans l'atlas. Par ailleurs, le mot « ATLAS » d'une réponse de ChatGPT ouvrait un panneau décrivant un logiciel d'entreprise homonyme.
+
+**Arrivée sur le moteur.** La page de lecture `/annales/` porte un court script (`VERS_MOTEUR`, dans `lecture.mjs`) : si le visiteur vient d'un autre site (`document.referrer` d'un autre hôte) ou si l'adresse porte `utm_source` (ChatGPT l'ajoute), il est conduit par `location.replace` à `/#annales/recherche`. Les robots d'indexation, qui lisent la page sans site d'origine ni paramètre, gardent la page de lecture : l'adresse reste indexée, et un visiteur interne (menu des pages de lecture) la voit toujours. La nouvelle ancre `#annales/recherche` (`depuisAncre`, `allerRechercheAnnales` dans le gabarit) ouvre la rubrique et se place sur `#rech-ann` ; comme l'index des sujets peut arriver après l'affichage et changer les hauteurs, le drapeau `etatAnn.versRech` fait replacer la vue une fois l'index chargé. Elle peut servir de lien direct vers le moteur partout ailleurs.
+
+**Mesure d'audience.** La redirection ferait perdre le site d'origine (l'application ne verrait que `/annales/`). Le script le dépose dans `sessionStorage` (`atlas-venu-de`), et le premier comptage de l'application le reprend (`venuDe()`), puis l'efface.
+
+**Nom du site.** Le panneau de ChatGPT est sa propre recherche sur le mot « ATLAS », nom très partagé : rien dans le site ne le commande. Les données structurées de l'accueil donnent désormais trois autres noms (`alternateName` : « ATLAS – Architecture des mathématiques », « ATLAS Jourdain », « atlasjourdain.fr »), ce qui aide les moteurs à distinguer le site, sans garantie d'effet.
+

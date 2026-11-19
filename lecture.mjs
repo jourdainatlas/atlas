@@ -356,8 +356,12 @@ export function pagesLecture(ctx) {
           .map(x => `<li><a href="/annales/sujet/${slug(x)}/">${x.annee}${x.filiere ? ` · ${esc(x.filiere)}` : ''} · ${esc(x.epreuve)}</a>${parUrl[x.sujet]?.nom ? ` <span class="l-sorte">— ${esc(Ft(parUrl[x.sujet].nom, parUrl[x.sujet]))}</span>` : ''}</li>`).join('')}</ul>`;
       }
     }
+    // Visiteur venu d'un autre site (moteur de recherche, assistant, lien partagé) : il arrive droit sur le moteur
+    // par thème de l'atlas interactif. Les robots d'indexation, qui lisent la page sans site d'origine ni
+    // paramètre, gardent cette page de lecture ; le site d'origine est transmis à la mesure d'audience.
+    const VERS_MOTEUR = `<script>(function(){try{var r=document.referrer,h=r?new URL(r).hostname:'',u=(location.search.match(/[?&]utm_source=([^&]+)/)||[])[1];if((h&&h!==location.hostname)||u){try{sessionStorage.setItem('atlas-venu-de',h&&h!==location.hostname?r:'https://'+decodeURIComponent(u)+'/')}catch(e){}location.replace('/#annales/recherche')}}catch(e){}})();</script>`;
     page({ chemin: 'annales/', titre: 'ATLAS – Annales', description: texteBrut(R.annales?.intro) || 'Sujets d\'écrit de mathématiques des concours d\'ingénieurs et de l\'enseignement, avec leur description par thème.',
-      ancre: 'annales', fil: [{ name: 'Annales' }], corps: h });
+      ancre: 'annales', fil: [{ name: 'Annales' }], corps: VERS_MOTEUR + h });
   }
   // ---------------------------------------------------------------- page introuvable
   // GitHub Pages sert site/404.html pour toute adresse inconnue (avec le code 404). Chemins absolus partout.

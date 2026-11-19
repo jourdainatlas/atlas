@@ -1680,7 +1680,7 @@ table.grille button.pli-ann:hover { border-color: var(--encre); }
 .grille .source-ann { margin-top: 2px; color: var(--encre-2); }
 .grille .rapports a:hover { color: var(--encre); text-decoration-color: currentColor; }
 .case[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--rouge); }
-.rech-ann { padding: 18px 20px; margin: 26px 0 8px; }
+.rech-ann { padding: 18px 20px; margin: 26px 0 8px; scroll-margin-top: 14px; }
 .rech-ann .rech-tete { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
 .rech-ann .rech-effacer { font-size: 13.5px; font-weight: 600; background: var(--encre); border-color: var(--encre); color: var(--surface); padding: 7px 14px; box-shadow: 0 1px 0 rgba(0,0,0,.25); }
 .rech-ann .rech-effacer:hover { background: var(--encre-2); border-color: var(--encre-2); }
@@ -4586,7 +4586,7 @@ function carteExercice(e, enChargement) {
 const etatAnn = { famille: '', filiere: '', cle: '', defil: 0, vue: 'grille', ouverts: new Set(), lignes: new Set() };   // lignes : centres dépliés (familles à lignes repliables)
 function pageAnnales(chemin) {
   const attente = chargerIndexAnnales();
-  if (attente) attente.then(() => { const z = $('#rubrique'); if (enRubrique() && z.dataset.nom === 'annales' && !R['annales-index'].aCharger) rafraichirRubrique(); });
+  if (attente) attente.then(() => { const z = $('#rubrique'); if (enRubrique() && z.dataset.nom === 'annales' && !R['annales-index'].aCharger) { rafraichirRubrique(); if (etatAnn.versRech) allerRechercheAnnales(); } });
   const A = R.annales || {};
   const fams = A.familles || [];
   const fam = fams.find(f => f.id === etatAnn.famille) || fams[0];
@@ -4748,6 +4748,12 @@ function majFicheAnnales(chemin) {
   if (p) { z.insertAdjacentHTML('beforeend', p); const b = z.querySelector('.pa-fermer'); if (b) b.focus({ preventScroll: true }); }
 }
 function fermerFicheAnnales() { location.hash = '#annales'; }
+// #annales/recherche : la rubrique s'ouvre sur le moteur par thème (arrivée depuis un autre site, voir lecture.mjs).
+// L'index des sujets peut arriver après l'affichage et changer les hauteurs : on se replace alors une fois.
+function allerRechercheAnnales() {
+  etatAnn.versRech = !!(R['annales-index'] || {}).aCharger;
+  const z = $('#rech-ann'); if (z) z.scrollIntoView({ block: 'start' });
+}
 
 /* ---- Annales : moteur de recherche par thème.
    Chaque sujet étiqueté (rubriques/annales-index.yaml) est découpé en parties ; chaque partie porte
@@ -6745,6 +6751,7 @@ function depuisAncre() {
     const ch = reste.join('/');
     if (ch.startsWith('sujet/') || ($('#rubrique').dataset.chemin || '').startsWith('sujet/')) { majFicheAnnales(ch); return; }
   }
+  if (r === 'annales' && reste.join('/') === 'recherche') { afficherRubrique('annales', ''); allerRechercheAnnales(); return; }
   // Cours à une page : #cours/<id>/<n> ouvre le chapitre, puis le lecteur à la page n (§62).
   if (r === 'cours' && reste.length === 2 && /^\d+$/.test(reste[1]) && (R.cours?.cours || []).some(c => c.id === reste[0])) {
     afficherRubrique('cours', reste[0]); setTimeout(() => allerPage(+reste[1]), 120); return;
@@ -7036,6 +7043,9 @@ addEventListener('resize', aProposPlacerSignal);
 // arrivée sur le site, puis chaque changement d'ancre (rubrique, chapitre, fiche), sous la forme d'un
 // chemin lisible (#annales/sujet/x → /annales/sujet/x, #continuite.c-tvi → /edifice/continuite/c-tvi).
 const AUDIENCE = 'https://atlasjourdain.goatcounter.com/count';
+// Site d'origine d'un visiteur passé par une page de lecture qui l'a amené ici (lecture.mjs) : sans cela, la
+// mesure d'audience ne verrait que l'adresse interne de cette page.
+const venuDe = () => { try { const v = sessionStorage.getItem('atlas-venu-de'); sessionStorage.removeItem('atlas-venu-de'); return v || ''; } catch (e) { return ''; } };
 if (/(^|\.)atlasjourdain\.fr$/.test(location.hostname)) {
   window.goatcounter = { no_onload: true };
   let audienceDernier = '', audienceMinuteur = 0, audiencePremier = true;
@@ -7052,7 +7062,7 @@ if (/(^|\.)atlasjourdain\.fr$/.test(location.hostname)) {
       if (chemin === audienceDernier || !window.goatcounter?.count) return;
       audienceDernier = chemin;
       // La provenance (Google, Telegram…) n'a de sens que pour l'arrivée sur le site.
-      window.goatcounter.count({ path: chemin, title: document.title, referrer: audiencePremier ? document.referrer : '' });
+      window.goatcounter.count({ path: chemin, title: document.title, referrer: audiencePremier ? (venuDe() || document.referrer) : '' });
       audiencePremier = false;
     }, 1000);
   };
