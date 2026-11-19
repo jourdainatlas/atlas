@@ -437,6 +437,7 @@ const index = `<!doctype html>
 <meta name="description" content="Architecture logique des théories mathématiques ; cours, exercices corrigés, et annales de concours avec recherche par thème.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="icone-192.png" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
 <link rel="alternate" type="application/rss+xml" title="ATLAS – Nouveautés" href="nouveautes.xml">
@@ -569,7 +570,7 @@ const urlsLecture = pagesLecture(ctxLecture);   // même tableau que outilsLectu
 console.log(`Pages de lecture : ${urlsLecture.length}`);
 console.log(`Pages de partage : ${nbPartage}`);
 // Icônes et image d'aperçu (fabriquées par identite/fabriquer-icones.mjs).
-for (const f of ['favicon.svg', 'favicon-32.png', 'apple-touch-icon.png', 'icone-192.png', 'icone-512.png', 'icone-masquable-512.png', 'apercu.png', ...[...APERCUS].map(r => `apercu-${r}.png`), 'portrait.jpg', 'site.webmanifest'])
+for (const f of ['favicon.ico', 'favicon.svg', 'favicon-32.png', 'apple-touch-icon.png', 'icone-192.png', 'icone-512.png', 'icone-masquable-512.png', 'apercu.png', ...[...APERCUS].map(r => `apercu-${r}.png`), 'portrait.jpg', 'site.webmanifest'])
   fs.copyFileSync(`identite/${f}`, `site/${f}`);
 // Images d'aperçu par page (domaine À propos, §77) : la liste des fiches demandées est écrite pour la fabrique
 // (identite/fabriquer-apercus-pages.mjs), les images déjà fabriquées sont copiées, et la construction dit combien

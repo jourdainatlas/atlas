@@ -1016,3 +1016,13 @@ Restent sur l'aperçu de l'accueil : un terme du lexique, les exercices d'une no
 
 Sur l'image d'un groupe, le symbole des Activités prend la teinte du groupe (`--sa` dans la fabrique), comme le filet
 et le sur-titre ; fait sans changer `VERSION_APERCU` : seules les quatre images de groupe ont été refaites.
+
+## 85. Icône du site pour les services tiers (19 nov. 2026)
+
+Constat de l'auteur : dans une réponse de ChatGPT citant ATLAS, la vignette du site est vide. Le site n'avait pas de
+`/favicon.ico` (404) et ses pages de lecture ne déclaraient que l'icône SVG : beaucoup de services qui affichent
+l'icône d'un site (assistants, agrégateurs, certains moteurs) demandent `/favicon.ico` ou une icône PNG et ne lisent
+pas le SVG. Ajoutés : `identite/favicon.ico` (16, 32, 48 et 64 px, tiré de `icone-192.png` ; à refaire si le logo
+change), copié à la racine par `rendu.mjs` ; liens `rel="icon"` PNG (32 et 192 px) sur l'application et sur les
+pages de lecture ; type `image/x-icon` dans `htaccess-ovh`. Cause supposée, non prouvée : le mécanisme de ChatGPT
+n'est pas documenté, et ces services gardent leurs icônes en mémoire plusieurs jours.

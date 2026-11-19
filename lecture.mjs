@@ -195,6 +195,8 @@ ${imageApercu(chemin, apercu)}
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#f4f5f7">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/icone-192.png" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
 ${THEME}
