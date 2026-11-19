@@ -479,7 +479,7 @@ Demandés par l'auteur en un seul lot, montrés en prototype, **ni validés ni i
 |---|---|---|---|
 | `nombres` | Seconde 1, Nombres et calculs (`s-01`) | `nombres-calculs-seconde-prototype-1.mp4` | il parcourt la diagonale du carré de côté 1 ; il est un réel x dans [1 ; 4] |
 | `second-degre` | Première 1, Second degré (`p-01`) | `second-degre-premiere-prototype-2.mp4` | il descend la parabole jusqu'au sommet ; il lit le signe du trinôme le long de l'axe |
-| `suites` | Terminale 1, Suites numériques (`t-01`) | `suites-terminale-prototype-2.mp4` | il pousse le premier domino ; il gravit les premiers termes de la suite |
+| `suites` | Terminale 1, Suites numériques (`t-01`) | `suites-terminale-prototype-3.mp4` | il pousse le premier domino ; il gravit les premiers termes de la suite |
 | `divisibilite` | Maths expertes 1 (`me-01`) | `divisibilite-expertes-prototype-1.mp4` | neuf bonds de 5 puis deux pas : 47 = 5 × 9 + 2 |
 | `logique-approfondies` | Maths approfondies 1 (`ap-01`) | `ensembles-logique-approfondies-prototype-1.mp4` | il est l'élément x (A inclus dans B ; puis E, E ∩ F, F) |
 | `logique-mpsi` | MPSI 1, Logique et ensembles (`ma-01`) | `logique-ensembles-mpsi-prototype-1.mp4` | il est le y qui répond à chaque x, puis se fait dépasser |
@@ -491,8 +491,10 @@ paraboles (a > 0, a < 0) ont leurs axes sur une même horizontale, au centre de 
 zéro posé dessus, pour séparer les cases « + » des cases « − » (règle à suivre dans tous les films).
 
 Retours de l'auteur sur les suites (19 novembre), faits dans `suites-terminale-prototype-2.mp4` (4 min 35 s, bornes
-2, 6, 14, 22, 30, 42 ; bilan 54) : le chien **se dresse sur ses pattes arrière** et pousse le domino des pattes avant
-(pose `allure: 'vol'` avec un tangage de 1,2 : à reprendre quand il doit pousser ou s'appuyer) ; la partie 4 commence
+2, 6, 14, 22, 30, 42 ; bilan 54) : le chien se dresse sur ses pattes arrière ; la première version (dressé, puis poussée horizontale)
+a été jugée « pas du tout naturelle » : dans le prototype 3, il trotte jusqu'au domino, se dresse et **se laisse aussitôt
+tomber dessus**, le domino basculant sous ses pattes avant (`appui(t)` pilote à la fois le tangage du chien et l'angle
+du premier domino ; pose `allure: 'vol'`). À retenir : un geste du chien doit être porté par son poids, d'un seul élan ; la partie 4 commence
 par les **limites usuelles** (proposition 2 du cours) avant les formes indéterminées ; la partie 5 énonce les deux
 **théorèmes de comparaison** (minoration, majoration ; exemple n + sin n, propre à la vidéo), puis les gendarmes, puis
 le **théorème de convergence monotone, nommé**. Leçon : dans une vidéo de cours, ne sauter aucun théorème du
