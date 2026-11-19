@@ -1,0 +1,994 @@
+- id: "l3-cd-03-01"
+  feuille: "f-l3-cd-03"
+  numero: 1
+  partie: "Méthode de Newton"
+  etoiles: 1
+  types: [Démonstration]
+  mots_cles: [méthode de Newton]
+  noeuds: [gd-inversion-locale]
+  notions: []
+  page_enonce: 1
+  page_corrige: 1
+  enonce: |
+    On cherche les zéros de $f : \mathbb{R} \to \mathbb{R}$, $x \mapsto x^{2} - 2$.
+
+    **1.** Montrer que chacun des zéros de $f$ peut être approché par la méthode de Newton.
+
+    **2.** Écrire explicitement la relation de récurrence vérifiée par la suite des itérés.
+
+    **3.** L'algorithme est-il défini pour toute valeur initiale ?
+  corrige: |
+    On applique la méthode des tangentes à $f(x) = x^{2} - 2$, dont les zéros sont $\pm\sqrt{2}$.
+
+    **1.** Les zéros $\pm\sqrt{2}$ sont simples : $f'(\pm\sqrt{2}) = \pm 2\sqrt{2} \neq 0$, et $f'$ est lipschitzienne. Par la convergence quadratique de la méthode de Newton (cours, prop. 3), 
+    $$\boxed{\text{chaque zéro est limite des itérés pour } x_{0} \text{ assez proche}}\text{.}$$
+
+    **2.** $x_{n + 1} = x_{n} - \dfrac{f(x_{n})}{f'(x_{n})} = x_{n} - \dfrac{x_{n}^{2} - 2}{2x_{n}}$, soit 
+    $$\boxed{x_{n + 1} = \frac{1}{2}\Big(x_{n} + \frac{2}{x_{n}}\Big)}.$$
+     C'est la méthode de Héron (cours, prop. 1) pour $a = 2$.
+
+    **3.** L'algorithme n'est pas défini pour $x_{0} = 0$, où la tangente est horizontale. Si $x_{0} > 0$, tous les $x_{n}$ sont strictement positifs, et la suite converge vers $\sqrt{2}$ par la proposition 1 du cours ; si $x_{0} < 0$, la suite est l'opposée de celle issue de $-x_{0}$ et converge vers $-\sqrt{2}$. 
+    $$\boxed{\text{L'algorithme est défini pour tout } x_{0} \neq 0}\text{,}$$
+     et la valeur initiale choisit le zéro : celui qui a son signe.
+
+    ![Figure](documents/figures/ef387d25d2122166.svg)
+
+    Chaque itéré est l'abscisse où la tangente au point précédent coupe l'axe : $x_{1} = \frac{11}{6} \approx 1{,}833$, $x_{2} = \frac{193}{132} \approx 1{,}4621$, puis $x_{3} \approx 1{,}414216$, déjà exact à $2 \cdot 10^{-6}$ près. Le nombre de décimales exactes double environ à chaque pas.
+- id: "l3-cd-03-02"
+  feuille: "f-l3-cd-03"
+  numero: 2
+  partie: "Difféomorphismes et inversion locale"
+  etoiles: 2
+  types: [Démonstration]
+  mots_cles: [inversion locale]
+  noeuds: [gd-inversion-locale]
+  notions: [diffeomorphisme]
+  page_enonce: 1
+  page_corrige: 2
+  enonce: |
+    **1.** Soit $f : \mathbb{R} \to \mathbb{R}$ dérivable, telle que $f'(x) \neq 0$ pour tout $x$. Montrer que $f$ est un homéomorphisme de $\mathbb{R}$ sur $f(\mathbb{R})$ et que $f^{-1}$ est dérivable en tout point de $f(\mathbb{R})$.
+
+    **2.** Soit $f : \mathbb{R} \to \mathbb{R}$ définie par $f(x) = x + x^{2}\sin\dfrac{\pi}{x}$ si $x \neq 0$ et $f(0) = 0$. Montrer que $f$ est dérivable sur $\mathbb{R}$ et que $f'(0) \neq 0$, mais que $f$ n'est injective sur aucun voisinage de $0$. Est-ce contradictoire avec le théorème d'inversion locale ?
+  corrige: |
+    Le théorème d'inversion locale demande une application de classe $\mathcal{C}^{1}$ ; une simple dérivabilité ne suffit pas, comme le montre la question 2.
+
+    **1.** Une dérivée vérifie la propriété des valeurs intermédiaires (théorème de Darboux, *Rappel.*) : $f'$ ne s'annulant pas, elle garde un signe constant, et $f$ est strictement monotone. C'est donc une bijection continue de $\mathbb{R}$ sur l'intervalle $f(\mathbb{R})$, dont la réciproque est continue et strictement monotone : 
+    $$\boxed{f \text{ est un homéomorphisme de } \mathbb{R} \text{ sur } f(\mathbb{R})}\text{.}$$
+     Pour $y = f(x)$ et $y + k = f(x + h)$, on a $h \to 0$ quand $k \to 0$, et $\dfrac{f^{-1}(y + k) - f^{-1}(y)}{k} = \dfrac{h}{f(x + h) - f(x)} \to \dfrac{1}{f'(x)}$ : (f^-1)'(y) = 1f'(f^-1(y)).
+
+    **2.** Pour $x \neq 0$, $f'(x) = 1 + 2x\sin\dfrac{\pi}{x} - \pi\cos\dfrac{\pi}{x}$ ; en $0$, $\Big|\dfrac{f(x)}{x} - 1\Big| \leqslant |x|$, donc f'(0) = 1 0. Mais, pour $k \geqslant 1$, 
+    $$f'\Big(\frac{1}{2k}\Big) = 1 - \pi < 0, \qquad f'\Big(\frac{1}{2k + 1}\Big) = 1 + \pi > 0 :$$
+     $f'$ change de signe dans tout voisinage de $0$, donc $f$ n'y est pas monotone. Une fonction continue injective sur un intervalle étant monotone, 
+    $$\boxed{f \text{ n'est injective sur aucun voisinage de } 0}\text{.}$$
+     Ce n'est pas contradictoire avec le théorème d'inversion locale : $f'$ n'a pas de limite en $0$, donc $f$ n'est pas de classe $\mathcal{C}^{1}$.
+
+    ![Figure](documents/figures/38ba6ee3089d6bcd.svg)
+
+    Le graphe de $f$ oscille entre les paraboles $y = x \pm x^{2}$, tangentes à la diagonale en $0$. Près de $x = \frac{1}{2}$ (point carmin), $f$ décroît : $f(0{,}45) \approx 0{,}580$ et $f(0{,}55) \approx 0{,}386$. De tels intervalles de décroissance, de plus en plus courts, existent près de chaque $\frac{1}{2k}$.
+- id: "l3-cd-03-03"
+  feuille: "f-l3-cd-03"
+  numero: 3
+  partie: "Difféomorphismes et inversion locale"
+  etoiles: 1
+  types: [Démonstration]
+  mots_cles: [inversion locale, difféomorphismes]
+  noeuds: [gd-inversion-locale]
+  notions: [diffeomorphisme]
+  page_enonce: 1
+  page_corrige: 3
+  enonce: |
+    **1.** Montrer que $\varphi : (r, \theta) \mapsto (r\cos\theta, r\sin\theta)$ est un $\mathcal{C}^{1}$-difféomorphisme de l'ouvert $]0, +\infty[ \times ]-\pi, \pi[$ sur le plan privé de la demi-droite $\mathbb{R}_{-} \times \{0\}$. Si $f(x, y) = g(r, \theta)$, donner les formules de passage entre les dérivées partielles de $f$ et celles de $g$.
+
+    **2.** Soit $U = \mathbb{R}^{2} \setminus \{(0, 0)\}$ et $f(x, y) = (x^{2} - y^{2}, 2xy)$. Montrer que $f$ est un difféomorphisme local au voisinage de tout point de $U$, mais n'est pas un difféomorphisme de $U$ sur son image.
+
+    **3.** Soit $g : \mathbb{R}^{2} \to \mathbb{R}^{2}$, $g(x, y) = (x + y, xy)$. Trouver un ouvert connexe maximal $U \subset \mathbb{R}^{2}$ tel que $g$ soit un difféomorphisme de $U$ sur $g(U)$.
+
+    **4.** Soit $h : \mathbb{R}^{2} \to \mathbb{R}^{2}$, $h(x, y) = (e^{x}\cos y, e^{x}\sin y)$. Montrer que $h$ est de classe $\mathcal{C}^{1}$, que $\mathrm{d} h(x, y) \in \mathrm{Isom}(\mathbb{R}^{2}, \mathbb{R}^{2})$ en tout point, mais que $h$ n'est ni injective, ni surjective, et n'est pas un homéomorphisme de $\mathbb{R}^{2}$ sur $h(\mathbb{R}^{2})$.
+  corrige: |
+    Dans chaque cas, on calcule le jacobien ; là où il ne s'annule pas, l'application est un difféomorphisme local (cours, th. 1), et la question globale est une question d'injectivité (cours, prop. 7).
+
+    **1.** $\varphi$ est de classe $\mathcal{C}^{\infty}$, de jacobien $r > 0$. Elle est bijective de $]0, +\infty[ \times ]-\pi, \pi[$ sur le plan fendu : tout point non situé sur la demi-droite fermée $\mathbb{R}_{-} \times \{0\}$ s'écrit de manière unique $(r\cos\theta, r\sin\theta)$ avec $r > 0$ et $\theta \in \,]-\pi, \pi[$. Par la proposition 7 du cours, 
+    $$\boxed{\varphi \text{ est un } \mathcal{C}^{1}\text{-difféomorphisme}}\text{.}$$
+     Les formules de passage sont $\dfrac{\partial g}{\partial r} = \cos\theta\dfrac{\partial f}{\partial x} + \sin\theta\dfrac{\partial f}{\partial y}$ et $\dfrac{\partial g}{\partial \theta} = -r\sin\theta\dfrac{\partial f}{\partial x} + r\cos\theta\dfrac{\partial f}{\partial y}$ (chapitre 2, exercice 36) ; en inversant la jacobienne, 
+    $$\boxed{\dfrac{\partial f}{\partial x} = \cos\theta\dfrac{\partial g}{\partial r} - \frac{\sin\theta}{r}\dfrac{\partial g}{\partial \theta}, \qquad \dfrac{\partial f}{\partial y} = \sin\theta\dfrac{\partial g}{\partial r} + \frac{\cos\theta}{r}\dfrac{\partial g}{\partial \theta}}.$$
+
+    **2.** $\det J_{f}(x, y) = \det\begin{pmatrix} 2x & -2y \\ 2y & 2x \end{pmatrix} = 4(x^{2} + y^{2}) > 0$ sur $U$ : 
+    $$\boxed{f \text{ est un difféomorphisme local en tout point de } U}\text{.}$$
+     Mais $f(-x, -y) = f(x, y)$ : $f$ n'est pas injective, donc pas un difféomorphisme sur son image. En complexe, $f(z) = z^{2}$.
+
+    **3.** $\det J_{g}(x, y) = \det\begin{pmatrix} 1 & 1 \\ y & x \end{pmatrix} = x - y$. Sur un ouvert où $g$ est un difféomorphisme, ce jacobien ne s'annule pas (cours, prop. 6), donc un tel ouvert connexe est contenu dans $\{x > y\}$ ou dans $\{x < y\}$. Sur $U = \{x > y\}$, $g$ est injective : $(x + y, xy) = (s, p)$ fait de $x$ et $y$ les deux racines de $T^{2} - sT + p$, et $x > y$ les distingue. Par la proposition 7, U = \{(x, y) ; x > y\} convient, et il est maximal. Son image est $\{(s, p) \,;\, s^{2} > 4p\}$, et la réciproque s'écrit explicitement $(s, p) \mapsto \Big(\frac{s + \sqrt{s^{2} - 4p}}{2}, \frac{s - \sqrt{s^{2} - 4p}}{2}\Big)$.
+
+    **4.** $h$ est de classe $\mathcal{C}^{\infty}$ et $\det J_{h}(x, y) = e^{2x} > 0$ : d h(x, y) Isom(R^2, R^2), en tout point de $\mathbb{R}^{2}$, origine comprise. Mais $h(x, y + 2\pi) = h(x, y)$, donc $h$ n'est pas injective, et $\lVert h(x, y) \rVert = e^{x} > 0$, donc $(0, 0)$ n'est pas atteint. N'étant pas injective, 
+    $$\boxed{h \text{ n'est pas un homéomorphisme sur son image}}\text{.}$$
+     En complexe, $h(z) = e^{z}$ : l'exponentielle complexe est le prototype du difféomorphisme local qui n'est pas global.
+- id: "l3-cd-03-04"
+  feuille: "f-l3-cd-03"
+  numero: 4
+  partie: "Difféomorphismes et inversion locale"
+  etoiles: 1
+  types: [Démonstration]
+  mots_cles: [inversion locale, difféomorphismes]
+  noeuds: [gd-inversion-locale]
+  notions: [diffeomorphisme]
+  page_enonce: 2
+  page_corrige: 3
+  enonce: |
+    On considère $f : \mathbb{R}^{2} \to \mathbb{R}^{2}$, $f(x, y) = \big(2x - y + x^{2}y - 2y^{5},\ x + 3y - 4x^{2}y^{2}\big)$. Montrer qu'il existe des voisinages ouverts $U$ et $V$ de $(0, 0)$ tels que $f$ induise un $\mathcal{C}^{1}$-difféomorphisme de $U$ sur $V$. L'application $f$ est-elle un difféomorphisme de $\mathbb{R}^{2}$ sur son image ?
+  corrige: |
+    On applique le théorème d'inversion locale en $0$, puis on cherche un point où la différentielle n'est pas inversible.
+
+    $f$ est polynomiale, donc de classe $\mathcal{C}^{1}$, et 
+    $$J_{f}(0, 0) = \begin{pmatrix} 2 & -1 \\ 1 & 3 \end{pmatrix}, \qquad \det J_{f}(0, 0) = 7 \neq 0.$$
+     Par le théorème d'inversion locale (cours, th. 1), 
+    $$\boxed{f \text{ induit un } \mathcal{C}^{1}\text{-difféomorphisme d'un voisinage } U \text{ de } 0 \text{ sur un voisinage } V \text{ de } 0}\text{.}$$
+     En revanche, le calcul (vérifié avec sympy) donne $\det J_{f}(0, 1) = 17$ et $\det J_{f}(1, 1) = -90$ ; par le théorème des valeurs intermédiaires sur le segment qui joint ces points, le jacobien s'annule quelque part. En ce point, $\mathrm{d} f$ n'est pas inversible, ce qui est impossible pour un difféomorphisme (cours, prop. 6) : 
+    $$\boxed{f \text{ n'est pas un difféomorphisme de } \mathbb{R}^{2} \text{ sur son image}}\text{.}$$
+- id: "l3-cd-03-05"
+  feuille: "f-l3-cd-03"
+  numero: 5
+  partie: "Difféomorphismes et inversion locale"
+  etoiles: 2
+  types: [Calcul]
+  mots_cles: [inversion locale]
+  noeuds: [gd-inversion-locale]
+  notions: [diffeomorphisme]
+  page_enonce: 2
+  page_corrige: 4
+  enonce: |
+    Soit $U = \mathbb{R}^{3} \setminus \{0\}$ et $f : U \to \mathbb{R}^{3}$ l'inversion de pôle $0$ et de puissance $1$ : 
+    $$f(x, y, z) = (X, Y, Z) = \Big(\dfrac{x}{\rho^{2}}, \dfrac{y}{\rho^{2}}, \dfrac{z}{\rho^{2}}\Big), \qquad \rho = \sqrt{x^{2} + y^{2} + z^{2}}.$$
+     Calculer la matrice jacobienne de $f$. Vérifier que $f \circ f = \mathrm{Id}$ et que la matrice jacobienne de $f$ au point $f(x, y, z)$ est l'inverse de sa matrice jacobienne au point $(x, y, z)$.
+  corrige: |
+    On écrit $f(v) = \dfrac{v}{\rho^{2}}$ avec $v = (x, y, z)$ et $\rho = \lVert v \rVert$. Comme au chapitre 2 (exercice 39, en dimension $2$), la jacobienne est un multiple d'une symétrie orthogonale.
+
+    $\triangleright$ *Jacobienne.* $\dfrac{\partial }{\partial x_{j}}\Big(\frac{x_{i}}{\rho^{2}}\Big) = \frac{\delta_{ij}}{\rho^{2}} - \frac{2x_{i}x_{j}}{\rho^{4}}$, d'où 
+    $$\boxed{J_{f}(v) = \frac{1}{\rho^{2}}\Big(I_{3} - \frac{2\,v\,{}^{t}v}{\rho^{2}}\Big)}.$$
+     La matrice $S = I_{3} - 2u\,{}^{t}u$, avec $u = \frac{v}{\rho}$ unitaire, est la symétrie orthogonale par rapport au plan $u^{\perp}$ : $S^{2} = I_{3}$.
+
+    $\triangleright$ *Involution.* $\lVert f(v) \rVert = \frac{1}{\rho}$, donc $f(f(v)) = \dfrac{v/\rho^{2}}{1/\rho^{2}} = v$ : f f = Id.
+
+    $\triangleright$ *Jacobienne au point image.* Le point $w = f(v)$ a pour norme $\frac{1}{\rho}$ et la même direction $u$, donc $J_{f}(w) = \rho^{2}S$, et 
+    $$J_{f}(w)\,J_{f}(v) = \rho^{2}S\cdot\frac{1}{\rho^{2}}S = S^{2} = I_{3}.$$
+     J_f(f(v)) = J_f(v)^-1, ce qu'on retrouve en dérivant $f \circ f = \mathrm{Id}$ par la règle de la chaîne.
+
+    *Piège.* L'énoncé d'origine affirmait que la jacobienne en $v$ est égale à son inverse ; c'est faux dès que $\rho \neq 1$, puisque $J_{f}(v)^{-1} = \rho^{2}S \neq \frac{1}{\rho^{2}}S$.
+- id: "l3-cd-03-06"
+  feuille: "f-l3-cd-03"
+  numero: 6
+  partie: "Difféomorphismes et inversion locale"
+  etoiles: 2
+  types: [Démonstration, Calcul]
+  mots_cles: [inversion locale]
+  noeuds: [gd-inversion-locale]
+  notions: [diffeomorphisme]
+  page_enonce: 2
+  page_corrige: 4
+  enonce: |
+    *(Racine carrée d'une matrice.)* On munit $\mathcal{M}_{n}(\mathbb{R})$ d'une norme.
+
+    **1.** En considérant $\varphi : \mathcal{M}_{n}(\mathbb{R}) \to \mathcal{M}_{n}(\mathbb{R})$, $\varphi(A) = A^{2}$, montrer qu'il existe $\alpha > 0$ tel que toute matrice $A$ vérifiant $\lVert A - I_{n} \rVert < \alpha$ admette une racine carrée.
+
+    **2.** On considère $f : \mathcal{M}_{n}(\mathbb{R}) \times \mathcal{M}_{n}(\mathbb{R}) \to \mathcal{M}_{n}(\mathbb{R})$, $f(X, Y) = -I_{n} - X + Y^{2}$. Calculer la différentielle partielle $\mathrm{d}_{2}f(X, Y)$ de $f$ par rapport à $Y$. Montrer qu'il existe une fonction $\varphi$ de classe $\mathcal{C}^{1}$, définie au voisinage de $I_{n}$, telle que $\varphi(X)^{2} = X$.
+
+    **3.** La fonction $\varphi$ est-elle unique ?
+  corrige: |
+    Les deux méthodes, inversion locale et fonctions implicites, donnent le même résultat ; la seconde est la première écrite autrement.
+
+    **1.** $\varphi$ est de classe $\mathcal{C}^{1}$ (polynomiale en les coefficients), et $\mathrm{d}\varphi(A)\cdot H = AH + HA$ (chapitre 2, exercice 3), donc $\mathrm{d}\varphi(I_{n})\cdot H = 2H$ : $\mathrm{d}\varphi(I_{n}) = 2\,\mathrm{Id}$ est inversible. Par le théorème d'inversion locale, $\varphi$ induit un difféomorphisme d'un voisinage de $I_{n}$ sur un voisinage $W$ de $\varphi(I_{n}) = I_{n}$, qui contient une boule $B(I_{n}, \alpha)$. 
+    $$\boxed{\text{Toute } A \text{ telle que } \lVert A - I_{n} \rVert < \alpha \text{ a une racine carrée}}\text{,}$$
+     proche de $I_{n}$.
+
+    **2.** d_2f(X, Y) K = YK + KY. Au point $(0, I_{n})$, où $f(0, I_{n}) = 0$, $\mathrm{d}_{2}f(0, I_{n}) = 2\,\mathrm{Id}$ est inversible. Le théorème des fonctions implicites (cours, th. 2) donne $\psi$ de classe $\mathcal{C}^{1}$, définie au voisinage de $0$, avec $\psi(0) = I_{n}$ et $\psi(X)^{2} = I_{n} + X$. Alors (X) = (X - I_n) vérifie $\varphi(X)^{2} = X$ au voisinage de $I_{n}$.
+
+    **3.** Non : $-\varphi$ convient aussi, ainsi que, pour $n \geqslant 2$, d'autres choix (pour $X = I_{n}$, toute symétrie est une racine carrée). En revanche, le théorème des fonctions implicites donne l'unicité de $\varphi$ *parmi les fonctions à valeurs dans un voisinage de* $I_{n}$ : 
+    $$\boxed{\varphi \text{ est unique avec } \varphi(I_{n}) = I_{n} \text{ et des valeurs proches de } I_{n}}\text{.}$$
+- id: "l3-cd-03-07"
+  feuille: "f-l3-cd-03"
+  numero: 7
+  partie: "Difféomorphismes et inversion locale"
+  etoiles: 2
+  types: [Démonstration]
+  mots_cles: [inversion locale]
+  noeuds: [gd-inversion-locale]
+  notions: [diffeomorphisme]
+  page_enonce: 2
+  page_corrige: 5
+  enonce: |
+    **1.** Montrer que, si $a$ et $b$ sont voisins de $1$, on peut trouver $x$, $y \in \mathbb{R}$ tels que $y + e^{xy} = a$ et $x + e^{-xy} = b$.
+
+    **2.** Soit $f : \mathbb{R}^{2} \to \mathbb{R}^{2}$, $f(x, y) = \big(x\sin(xy) + y,\ y\cos(xy) + x\big)$, et $(a_{n}, b_{n})$ une suite tendant vers $(0, 0)$. Montrer que, si $f(a_{n}, b_{n}) = 0$ pour tout $n$, la suite $(a_{n}, b_{n})$ est stationnaire.
+  corrige: |
+    Les deux questions reposent sur l'inversion locale en $(0, 0)$ : l'existence de solutions pour la première, l'injectivité locale pour la seconde.
+
+    **1.** Soit $F(x, y) = (y + e^{xy}, x + e^{-xy})$, de classe $\mathcal{C}^{1}$, avec $F(0, 0) = (1, 1)$ et 
+    $$J_{F}(0, 0) = \begin{pmatrix} ye^{xy} & 1 + xe^{xy} \\ 1 - ye^{-xy} & -xe^{-xy} \end{pmatrix}_{(0, 0)} = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix},$$
+     inversible. Par le théorème d'inversion locale, $F$ envoie un voisinage de $(0, 0)$ sur un voisinage de $(1, 1)$ : 
+    $$\boxed{\text{pour } (a, b) \text{ voisin de } (1, 1), \text{ il existe } (x, y) \text{ solution}}\text{,}$$
+     proche de $(0, 0)$.
+
+    **2.** $f(0, 0) = (0, 0)$ et $J_{f}(0, 0) = \begin{pmatrix} 0 & 1 \\ 1 & 1 \end{pmatrix}$, de déterminant $-1$. Par le théorème d'inversion locale, $f$ est injective sur un voisinage $V$ de $0$. Pour $n \geqslant N$, $(a_{n}, b_{n}) \in V$ et $f(a_{n}, b_{n}) = 0 = f(0, 0)$, donc $(a_{n}, b_{n}) = (0, 0)$ : la suite est stationnaire. Les zéros de $f$ sont isolés en $0$.
+- id: "l3-cd-03-08"
+  feuille: "f-l3-cd-03"
+  numero: 8
+  partie: "Difféomorphismes et inversion locale"
+  etoiles: 2
+  types: [Démonstration]
+  mots_cles: [inversion locale]
+  noeuds: [gd-inversion-locale]
+  notions: [diffeomorphisme, valeur-propre]
+  page_enonce: 2
+  page_corrige: 5
+  enonce: |
+    Soit $f : \mathbb{R}^{n} \to \mathbb{R}^{n}$ de classe $\mathcal{C}^{1}$. On suppose que $0$ est un point fixe de $f$ et que $1$ n'est pas valeur propre de $\mathrm{d} f(0)$.
+
+    **1.** Montrer que $0$ est un point fixe isolé de $f$. On pourra considérer l'application $x \mapsto f(x) - x$.
+
+    **2.** Soit $g : \mathbb{R}^{n} \to \mathbb{R}^{n}$ de classe $\mathcal{C}^{1}$ et, pour $\lambda \in \mathbb{R}$, $f_{\lambda} = f + \lambda g$. Montrer qu'il existe un réel $\varepsilon > 0$, un voisinage $V$ de $0$ et une application $\varpi : \,]-\varepsilon, \varepsilon[ \to V$ de classe $\mathcal{C}^{1}$ tels que, pour tout $\lambda \in \,]-\varepsilon, \varepsilon[$, $\varpi(\lambda)$ soit l'unique point fixe de $f_{\lambda}$ dans $V$.
+  corrige: |
+    On transforme « point fixe » en « zéro », et l'hypothèse sur la valeur propre $1$ en inversibilité d'une différentielle.
+
+    **1.** Soit $G(x) = f(x) - x$. Alors $\mathrm{d} G(0) = \mathrm{d} f(0) - \mathrm{Id}$, inversible puisque $1$ n'est pas valeur propre de $\mathrm{d} f(0)$. Par le théorème d'inversion locale, $G$ est injective sur un voisinage $V$ de $0$ ; comme $G(0) = 0$, $0$ est le seul zéro de $G$ dans $V$ : 0 est un point fixe isolé de f.
+
+    **2.** Soit $H(\lambda, x) = f(x) + \lambda g(x) - x$, de classe $\mathcal{C}^{1}$ sur $\mathbb{R} \times \mathbb{R}^{n}$, avec $H(0, 0) = 0$ et $\mathrm{d}_{2}H(0, 0) = \mathrm{d} f(0) - \mathrm{Id}$ inversible. Par le théorème des fonctions implicites (cours, th. 2), il existe $\varepsilon > 0$, un voisinage $V$ de $0$ et $\varpi : \,]-\varepsilon, \varepsilon[ \to V$ de classe $\mathcal{C}^{1}$ tels que, pour $|\lambda| < \varepsilon$ et $x \in V$, $H(\lambda, x) = 0 \iff x = \varpi(\lambda)$. 
+    $$\boxed{\varpi(\lambda) \text{ est l'unique point fixe de } f_{\lambda} \text{ dans } V}\text{.}$$
+     En dérivant $H(\lambda, \varpi(\lambda)) = 0$ en $0$, on obtient même $\varpi'(0) = -\big(\mathrm{d} f(0) - \mathrm{Id}\big)^{-1}g(0)$.
+
+    *Remarque.* Si $1$ est valeur propre, le point fixe peut se dédoubler ou disparaître quand $\lambda$ varie : c'est le point de départ de la théorie des bifurcations.
+- id: "l3-cd-03-09"
+  feuille: "f-l3-cd-03"
+  numero: 9
+  partie: "Difféomorphismes et inversion locale"
+  etoiles: 2
+  types: [Démonstration]
+  mots_cles: [inversion locale, difféomorphismes]
+  noeuds: [gd-inversion-locale]
+  notions: [diffeomorphisme]
+  page_enonce: 2
+  page_corrige: 5
+  enonce: |
+    Soit $U$ un ouvert de $\mathbb{R}^{2}$ et $\varphi = (f, g) : U \to \mathbb{R}^{2}$ de classe $\mathcal{C}^{1}$. Pour $u$, $v$ réels, on cherche $(x, y)$ tels que 
+    $$(\ast) \qquad f(x, y) = u, \qquad g(x, y) = v.$$
+
+    **1.** On suppose que $\mathrm{d}\varphi$ est de rang $2$ en tout point de $U$. Montrer que, pour tout $(x_{0}, y_{0}) \in U$ et tout $(u, v)$ voisin de $\varphi(x_{0}, y_{0})$, le système $(\ast)$ admet une solution voisine de $(x_{0}, y_{0})$, unique dans un voisinage de ce point. Que peut-on dire si $\mathrm{d}\varphi$ est de rang $2$ en un point de $U$ seulement ?
+
+    **2.** A-t-on des solutions si $\mathrm{d}\varphi$ est de rang $0$ en tout point de $U$ connexe ?
+
+    **3.** On suppose que $\mathrm{d}\varphi$ est de rang $1$ en tout point de $U$ et que $\dfrac{\partial f}{\partial x}$ ne s'annule pas sur $U$. Montrer que $\psi : (x, y) \mapsto \big(f(x, y), y\big)$ est un difféomorphisme local en tout point de $U$. En déduire, sur un ouvert $V \subset U$ assez petit, une fonction $G$ telle que $g(x, y) = G\big(f(x, y)\big)$ sur $V$. Que peut-on dire des solutions du système $(\ast)$ ?
+  corrige: |
+    Le rang de la différentielle décide de la nature des solutions de $(\ast)$ : de rang $2$, elles sont isolées ; de rang $1$, elles forment des courbes, et le second membre doit vérifier une relation.
+
+    **1.** En chaque point $(x_{0}, y_{0})$, $\mathrm{d}\varphi(x_{0}, y_{0})$ est inversible. Le théorème d'inversion locale donne des voisinages $V$ de $(x_{0}, y_{0})$ et $W$ de $\varphi(x_{0}, y_{0})$ tels que $\varphi : V \to W$ soit bijective : 
+    $$\boxed{\text{pour } (u, v) \in W, (\ast) \text{ a une unique solution dans } V}\text{.}$$
+     Si $\mathrm{d}\varphi$ est de rang $2$ en un seul point $p$, elle l'est encore au voisinage de $p$ (le déterminant jacobien est continu et non nul en $p$), et la conclusion vaut au voisinage de $p$.
+
+    **2.** Si $\mathrm{d}\varphi = 0$ sur $U$ connexe, $\varphi$ est constante, égale à $c$ (chapitre 2, prop. 14). 
+    $$\boxed{(\ast) \text{ n'a de solution que si } (u, v) = c}\text{,}$$
+     et alors tout point de $U$ est solution.
+
+    **3.** $J_{\psi} = \begin{pmatrix} \partial_{x}f & \partial_{y}f \\ 0 & 1 \end{pmatrix}$ a pour déterminant $\partial_{x}f \neq 0$ : 
+    $$\boxed{\psi \text{ est un difféomorphisme local en tout point}}\text{.}$$
+     Prenons $V$ assez petit pour que $\psi$ soit un difféomorphisme de $V$ sur $\psi(V)$, et que $\psi(V)$ soit un rectangle $I \times J$. Écrivons $\psi^{-1}(s, y) = \big(X(s, y), y\big)$, de sorte que $f\big(X(s, y), y\big) = s$, d'où $\partial_{x}f\,\dfrac{\partial X}{\partial y} + \partial_{y}f = 0$. Alors 
+    $$\dfrac{\partial }{\partial y}\Big[g\big(X(s, y), y\big)\Big] = \partial_{x}g\,\dfrac{\partial X}{\partial y} + \partial_{y}g = \frac{\partial_{x}f\,\partial_{y}g - \partial_{x}g\,\partial_{y}f}{\partial_{x}f} = \frac{\det J_{\varphi}}{\partial_{x}f} = 0,$$
+     puisque le rang est $1$. Sur le rectangle, $g \circ \psi^{-1}$ ne dépend que de $s$ : il existe $G$ de classe $\mathcal{C}^{1}$ telle que g = G f sur V. Les solutions de $(\ast)$ dans $V$ n'existent que si v = G(u), et forment alors la courbe de niveau $\{f = u\}$, qui n'est pas réduite à un point.
+- id: "l3-cd-03-10"
+  feuille: "f-l3-cd-03"
+  numero: 10
+  partie: "Difféomorphismes et inversion locale"
+  etoiles: 3
+  types: [Démonstration]
+  mots_cles: [inversion locale, difféomorphismes]
+  noeuds: [gd-inversion-locale]
+  notions: [diffeomorphisme]
+  page_enonce: 3
+  page_corrige: 6
+  enonce: |
+    Soit $E = \mathbb{R}^{n}$ muni d'une norme quelconque et $B_{r}$ la boule fermée de centre $0$ et de rayon $r$. Soit $f$ un $\mathcal{C}^{1}$-difféomorphisme entre deux ouverts $U$ et $V$ de $E$ contenant $0$, tel que $f(0) = 0$. On pose $A = \mathrm{d} f(0)$ et on fixe $\varepsilon \in \,]0, 1[$.
+
+    **1.** Montrer qu'il existe $R > 0$ tel que $\lVert A^{-1}f(x) - x \rVert \leqslant \varepsilon\lVert x \rVert$ pour tout $x \in B_{R}$.
+
+    **2.** Montrer qu'il existe $R' > 0$ tel que, pour $0 < r \leqslant R'$, $(1 - \varepsilon)A(B_{r}) \subset f(B_{r}) \subset (1 + \varepsilon)A(B_{r})$.
+
+    **3.** En déduire que $\displaystyle\lim_{r \to 0}\frac{\mathrm{vol}\,f(B_{r})}{\mathrm{vol}\,B_{r}} = |\det A|$.
+  corrige: |
+    On compare $f(B_{r})$ à l'image de $B_{r}$ par l'application linéaire tangente $A$, en se ramenant par $A^{-1}$ à une perturbation de l'identité.
+
+    **1.** $g = A^{-1} \circ f$ est de classe $\mathcal{C}^{1}$, avec $g(0) = 0$ et $\mathrm{d} g(0) = \mathrm{Id}$. Par définition de la différentielle, $\lVert g(x) - x \rVert = o(\lVert x \rVert)$ : il existe $R > 0$ tel que 
+    $$\boxed{\lVert A^{-1}f(x) - x \rVert \leqslant \varepsilon\lVert x \rVert \text{ sur } B_{R}}\text{.}$$
+
+    **2.** Écrivons $g = \mathrm{Id} + \phi$. Comme $\mathrm{d}\phi(0) = 0$ et $\mathrm{d}\phi$ est continue, quitte à diminuer $R$ (avec $B_{R} \subset U$), $|\mkern-1.5mu|\mkern-1.5mu|\mathrm{d}\phi|\mkern-1.5mu|\mkern-1.5mu| \leqslant \varepsilon$ sur $B_{R}$, donc $\phi$ est $\varepsilon$-lipschitzienne sur ce convexe, et $\lVert \phi(x) \rVert \leqslant \varepsilon\lVert x \rVert$. Soit $r \leqslant R' = R$.
+
+    • Pour $x \in B_{r}$, $\lVert g(x) \rVert \leqslant (1 + \varepsilon)r$, donc $f(x) = A g(x) \in (1 + \varepsilon)A(B_{r})$.
+
+    • Soit $y$ tel que $\lVert y \rVert \leqslant (1 - \varepsilon)r$. L'application $T(x) = y - \phi(x)$ envoie $B_{r}$ dans lui-même ($\lVert T(x) \rVert \leqslant (1 - \varepsilon)r + \varepsilon r = r$) et est $\varepsilon$-contractante ; par le point fixe de Banach (chapitre 1, th. 13), elle a un point fixe $x \in B_{r}$, et $g(x) = y$. C'est la proposition 4 du cours. Donc $(1 - \varepsilon)B_{r} \subset g(B_{r})$, et, en appliquant $A$, $(1 - \varepsilon)A(B_{r}) \subset f(B_{r})$.
+
+    $$\boxed{(1 - \varepsilon)A(B_{r}) \subset f(B_{r}) \subset (1 + \varepsilon)A(B_{r})}.$$
+
+    **3.** Le volume de l'image d'une partie par l'application linéaire $\lambda A$ est multiplié par $|\det(\lambda A)| = \lambda^{n}|\det A|$. D'où, pour $r \leqslant R'$, 
+    $$(1 - \varepsilon)^{n}|\det A| \leqslant \frac{\mathrm{vol}\,f(B_{r})}{\mathrm{vol}\,B_{r}} \leqslant (1 + \varepsilon)^{n}|\det A|,$$
+     et, $\varepsilon$ étant arbitraire, 
+    $$\boxed{\lim_{r \to 0}\frac{\mathrm{vol}\,f(B_{r})}{\mathrm{vol}\,B_{r}} = |\det A|}\text{.}$$
+     C'est l'interprétation du jacobien comme coefficient de dilatation des volumes, qui fonde la formule de changement de variables dans les intégrales multiples.
+
+    ![Figure](documents/figures/951794d22a111398.svg)
+
+    Pour $f(x, y) = (2x + 0{,}6y^{2}, x + y + 0{,}6x^{2})$, de différentielle $A = \begin{pmatrix} 2 & 0 \\ 1 & 1 \end{pmatrix}$ en $0$, le disque euclidien $B_{r}$ de rayon $r = 0{,}5$ a pour image une région coincée entre les deux ellipses $(1 \pm \varepsilon)A(B_{r})$ avec $\varepsilon = 0{,}2$ ; le calcul donne $0{,}85\,r \leqslant \lVert A^{-1}f(x) \rVert \leqslant 1{,}17\,r$ sur le cercle. Quand $r \to 0$, on peut prendre $\varepsilon$ de plus en plus petit.
+- id: "l3-cd-03-11"
+  feuille: "f-l3-cd-03"
+  numero: 11
+  partie: "Inversion globale"
+  etoiles: 2
+  types: [Démonstration, Calcul]
+  mots_cles: [inversion globale, difféomorphismes]
+  noeuds: [gd-inversion-locale]
+  notions: [diffeomorphisme]
+  page_enonce: 3
+  page_corrige: 7
+  enonce: |
+    On considère $\varphi : \mathbb{R}^{2} \to \mathbb{R}^{2}$, $\varphi(x, y) = \Big(\sin\dfrac{y}{2} - x,\ \sin\dfrac{x}{2} - y\Big)$.
+
+    **1.** Montrer que $\varphi$ est de classe $\mathcal{C}^{\infty}$. Calculer sa jacobienne et montrer que $\mathrm{d}\varphi(x, y)$ est inversible pour tout $(x, y)$.
+
+    **2.** En déduire que $\varphi$ est un difféomorphisme local en tout point et que $\varphi(\mathbb{R}^{2})$ est ouvert.
+
+    **3.** Montrer que, pour tous $u_{1} < u_{2}$, il existe $u \in \,]u_{1}, u_{2}[$ tel que $\sin\dfrac{u_{2}}{2} - \sin\dfrac{u_{1}}{2} = \dfrac{1}{2}(u_{2} - u_{1})\cos\dfrac{u}{2}$. En déduire que $\varphi$ est injective.
+
+    **4.** On munit $\mathbb{R}^{2}$ de la norme $\lVert (x, y) \rVert = |x| + |y|$. Montrer que $\varphi^{-1}$ est lipschitzienne sur $\varphi(\mathbb{R}^{2})$.
+
+    **5.** Soit $(x_{n}, y_{n})$ une suite telle que $\varphi(x_{n}, y_{n})$ converge. Montrer que $(x_{n}, y_{n})$ est bornée. En déduire que $\varphi(\mathbb{R}^{2})$ est fermé, puis que $\varphi$ est un $\mathcal{C}^{1}$-difféomorphisme de $\mathbb{R}^{2}$ sur $\mathbb{R}^{2}$.
+
+    **6.** Soit $(u, v) = \varphi(x, y)$. Exprimer $\mathrm{d}(\varphi^{-1})(u, v)$ à l'aide de $\mathrm{d}\varphi(x, y)$, et calculer $\mathrm{d}(\varphi^{-1})(p)$ pour $p = \Big(1 - \dfrac{\pi}{2}, \dfrac{\sqrt{2}}{2} - \pi\Big)$.
+  corrige: |
+    Le schéma est celui de la proposition 7 du cours (injectivité et différentielle inversible), complété par un argument « ouvert et fermé » pour la surjectivité.
+
+    **1.** Les coordonnées sont $\mathcal{C}^{\infty}$, et 
+    $$J_{\varphi}(x, y) = \begin{pmatrix} -1 & \frac{1}{2}\cos\frac{y}{2} \\ \frac{1}{2}\cos\frac{x}{2} & -1 \end{pmatrix}, \qquad \det J_{\varphi}(x, y) = 1 - \frac{1}{4}\cos\frac{x}{2}\cos\frac{y}{2} \geqslant \frac{3}{4}.$$
+
+    $$\boxed{\mathrm{d}\varphi(x, y) \text{ est inversible en tout point}}\text{.}$$
+
+    **2.** Par le théorème d'inversion locale, $\varphi$ est un difféomorphisme local en tout point ; en particulier, l'image de tout ouvert est ouverte, et (R^2) est ouvert.
+
+    **3.** C'est l'égalité des accroissements finis pour $\sin\frac{u}{2}$, de dérivée $\frac{1}{2}\cos\frac{u}{2}$. Elle donne $\big|\sin\frac{u_{2}}{2} - \sin\frac{u_{1}}{2}\big| \leqslant \frac{1}{2}|u_{2} - u_{1}|$. Si $\varphi(x, y) = \varphi(x', y')$, alors $x' - x = \sin\frac{y'}{2} - \sin\frac{y}{2}$ et $y' - y = \sin\frac{x'}{2} - \sin\frac{x}{2}$, d'où $|x' - x| \leqslant \frac{1}{2}|y' - y| \leqslant \frac{1}{4}|x' - x|$, donc $x = x'$, puis $y = y'$. est injective.
+
+    **4.** Avec les mêmes notations, pour $p = (x, y)$, $q = (x', y')$, 
+    $$\lVert \varphi(p) - \varphi(q) \rVert \geqslant \Big(|x - x'| - \frac{1}{2}|y - y'|\Big) + \Big(|y - y'| - \frac{1}{2}|x - x'|\Big) = \frac{1}{2}\lVert p - q \rVert,$$
+     donc 
+    $$\boxed{\varphi^{-1} \text{ est } 2\text{-lipschitzienne}}$$
+     sur $\varphi(\mathbb{R}^{2})$.
+
+    **5.** Par la question 4, $\lVert (x_{n}, y_{n}) \rVert \leqslant 2\lVert \varphi(x_{n}, y_{n}) - \varphi(0, 0) \rVert$ est borné. Si $\varphi(p_{n}) \to w$, une sous-suite de $(p_{n})$ converge vers un $p$ (Bolzano-Weierstrass, chapitre 1, th. 1), et $\varphi(p) = w$ par continuité : (R^2) est fermé. Ouvert, fermé et non vide dans le connexe $\mathbb{R}^{2}$, il vaut $\mathbb{R}^{2}$. Comme $\varphi$ est injective, à différentielle partout inversible, la proposition 7 du cours donne 
+    $$\boxed{\varphi \text{ est un } \mathcal{C}^{1}\text{-difféomorphisme de } \mathbb{R}^{2} \text{ sur } \mathbb{R}^{2}}\text{.}$$
+
+    **6.** En dérivant $\varphi^{-1} \circ \varphi = \mathrm{Id}$, 
+    $$\boxed{\mathrm{d}(\varphi^{-1})(u, v) = \big(\mathrm{d}\varphi(x, y)\big)^{-1}}\text{.}$$
+     Le point $p$ est l'image de $\big(\frac{\pi}{2}, \pi\big)$ : $\sin\frac{\pi}{2} - \frac{\pi}{2} = 1 - \frac{\pi}{2}$ et $\sin\frac{\pi}{4} - \pi = \frac{\sqrt{2}}{2} - \pi$. Alors 
+    $$J_{\varphi}\Big(\frac{\pi}{2}, \pi\Big) = \begin{pmatrix} -1 & 0 \\ \frac{\sqrt{2}}{4} & -1 \end{pmatrix}, \qquad \boxed{J_{\varphi^{-1}}(p) = \begin{pmatrix} -1 & 0 \\ -\frac{\sqrt{2}}{4} & -1 \end{pmatrix}}.$$
+- id: "l3-cd-03-12"
+  feuille: "f-l3-cd-03"
+  numero: 12
+  partie: "Inversion globale"
+  etoiles: 2
+  types: [Démonstration]
+  mots_cles: [inversion globale, difféomorphismes]
+  noeuds: [gd-inversion-locale]
+  notions: [diffeomorphisme]
+  page_enonce: 3
+  page_corrige: 8
+  enonce: |
+    Soit $f : \mathbb{R}^{n} \to \mathbb{R}^{n}$ de classe $\mathcal{C}^{1}$. On suppose qu'il existe $\alpha > 0$ tel que $\langle \mathrm{d} f(x)\cdot h, h \rangle \geqslant \alpha\langle h, h \rangle$ pour tous $x$, $h \in \mathbb{R}^{n}$.
+
+    **1.** En considérant $\varphi(t) = \langle f\big(a + t(b - a)\big), b - a \rangle$, montrer que $\langle f(b) - f(a), b - a \rangle \geqslant \alpha\langle b - a, b - a \rangle$ pour tous $a$, $b \in \mathbb{R}^{n}$. En déduire que $f$ est injective et que l'image par $f$ de tout fermé est fermée.
+
+    **2.** Montrer que, pour tout $x$, $\mathrm{d} f(x)$ est un isomorphisme de $\mathbb{R}^{n}$. En déduire que l'image par $f$ de tout ouvert est ouverte.
+
+    **3.** Conclure que $f$ est un $\mathcal{C}^{1}$-difféomorphisme de $\mathbb{R}^{n}$ sur lui-même.
+
+    **4.** Reprendre l'exercice dans l'esprit suivant : « si $f$ est un difféomorphisme, la matrice inverse de la matrice jacobienne de $f$ est la matrice jacobienne de $f^{-1}$ ».
+  corrige: |
+    L'hypothèse dit que $f$ est « fortement monotone » : elle éloigne les points au moins comme $\alpha$ fois l'identité.
+
+    **1.** $\varphi'(t) = \langle \mathrm{d} f\big(a + t(b - a)\big)\cdot(b - a), b - a \rangle \geqslant \alpha\lVert b - a \rVert^{2}$, et en intégrant sur $[0, 1]$, 
+    $$\boxed{\langle f(b) - f(a), b - a \rangle \geqslant \alpha\lVert b - a \rVert^{2}}\text{.}$$
+     Par Cauchy-Schwarz, $\lVert f(b) - f(a) \rVert \geqslant \alpha\lVert b - a \rVert$ : $f$ est injective. Si $F$ est fermé et $f(x_{n}) \to y$ avec $x_{n} \in F$, alors $\lVert x_{n} - x_{m} \rVert \leqslant \frac{1}{\alpha}\lVert f(x_{n}) - f(x_{m}) \rVert$ : la suite $(x_{n})$ est de Cauchy, converge vers $x \in F$, et $f(x) = y$. f(F) est fermé.
+
+    **2.** Si $\mathrm{d} f(x)\cdot h = 0$, alors $0 = \langle \mathrm{d} f(x)\cdot h, h \rangle \geqslant \alpha\lVert h \rVert^{2}$, donc $h = 0$ : l'endomorphisme $\mathrm{d} f(x)$ est injectif, donc d f(x) est un isomorphisme. Par le théorème d'inversion locale, f est ouverte.
+
+    **3.** $f(\mathbb{R}^{n})$ est ouvert, fermé et non vide, donc égal à $\mathbb{R}^{n}$ ; $f$ est bijective, et la proposition 7 du cours donne 
+    $$\boxed{f \text{ est un } \mathcal{C}^{1}\text{-difféomorphisme de } \mathbb{R}^{n} \text{ sur } \mathbb{R}^{n}}\text{.}$$
+
+    **4.** De $\langle \mathrm{d} f(x)\cdot h, h \rangle \geqslant \alpha\lVert h \rVert^{2}$ et Cauchy-Schwarz, $\lVert \mathrm{d} f(x)\cdot h \rVert \geqslant \alpha\lVert h \rVert$, donc $|\mkern-1.5mu|\mkern-1.5mu|\mathrm{d} f(x)^{-1}|\mkern-1.5mu|\mkern-1.5mu| \leqslant \frac{1}{\alpha}$. Une fois $f$ connu comme difféomorphisme, $\mathrm{d}(f^{-1})(y) = \mathrm{d} f\big(f^{-1}(y)\big)^{-1}$ est de norme au plus $\frac{1}{\alpha}$, et l'inégalité des accroissements finis sur le convexe $\mathbb{R}^{n}$ montre que 
+    $$\boxed{f^{-1} \text{ est } \frac{1}{\alpha}\text{-lipschitzienne}}\text{,}$$
+     ce qui redonne l'inégalité de la question 1.
+- id: "l3-cd-03-13"
+  feuille: "f-l3-cd-03"
+  numero: 13
+  partie: "Inversion globale"
+  etoiles: 3
+  types: [Démonstration]
+  mots_cles: [inversion globale, difféomorphismes]
+  noeuds: [gd-inversion-locale]
+  notions: [diffeomorphisme]
+  page_enonce: 3
+  page_corrige: 8
+  enonce: |
+    Soit $a$, $b \in \mathbb{R}$ et $f : \mathbb{R}^{2} \to \mathbb{R}^{2}$, $f(x, y) = (x + a\sin y,\ y + b\sin x)$.
+
+    **1.** Montrer que, si $|ab| < 1$, $f$ est un $\mathcal{C}^{1}$-difféomorphisme de $\mathbb{R}^{2}$ sur lui-même.
+
+    **2.** Montrer que, si $|ab| = 1$, $f$ n'est plus un difféomorphisme, mais reste un homéomorphisme de $\mathbb{R}^{2}$ sur lui-même.
+  corrige: |
+    On ramène l'équation $f(x, y) = (u, v)$ à une équation d'une seule variable, à laquelle on applique le point fixe ou la monotonie.
+
+    **1.** $\det J_{f}(x, y) = \det\begin{pmatrix} 1 & a\cos y \\ b\cos x & 1 \end{pmatrix} = 1 - ab\cos x\cos y \geqslant 1 - |ab| > 0$. Résolvons $f(x, y) = (u, v)$ : $x = u - a\sin y$, et $y$ doit être un point fixe de $T(y) = v - b\sin(u - a\sin y)$. Comme $|T'(y)| = |ab\cos(u - a\sin y)\cos y| \leqslant |ab| < 1$, $T$ est contractante sur $\mathbb{R}$ complet et a un unique point fixe (chapitre 1, th. 13) : $f$ est bijective. Par la proposition 7 du cours, 
+    $$\boxed{f \text{ est un } \mathcal{C}^{1}\text{-difféomorphisme de } \mathbb{R}^{2}}\text{.}$$
+
+    **2.** Si $|ab| = 1$, $\det J_{f}$ s'annule là où $ab\cos x\cos y = 1$, par exemple en $(0, 0)$ si $ab = 1$, en $(0, \pi)$ si $ab = -1$ : f n'est pas un difféomorphisme (cours, prop. 6).
+
+    $\triangleright$ *Bijectivité.* La fonction $D(y) = T(y) - y$ a pour dérivée $ab\cos(u - a\sin y)\cos y - 1 \leqslant 0$, qui ne s'annule qu'en des points isolés ; $D$ est donc strictement décroissante, et tend vers $\mp\infty$ en $\pm\infty$ puisque $T$ est bornée. Elle s'annule une seule fois : $f$ est bijective.
+
+    $\triangleright$ *Continuité de la réciproque.* $\lVert f(p) - p \rVert \leqslant |a| + |b|$, donc l'image réciproque d'une partie bornée est bornée. Si $F$ est fermé et $f(p_{n}) \to w$ avec $p_{n} \in F$, la suite $(p_{n})$ est bornée, une sous-suite converge vers $p \in F$, et $f(p) = w$ : $f$ est fermée, donc $f^{-1}$ est continue. f est un homéomorphisme de R^2.
+- id: "l3-cd-03-14"
+  feuille: "f-l3-cd-03"
+  numero: 14
+  partie: "Inversion globale"
+  etoiles: 2
+  types: [Démonstration]
+  mots_cles: [inversion globale, difféomorphismes]
+  noeuds: [gd-inversion-locale]
+  notions: [diffeomorphisme]
+  page_enonce: 4
+  page_corrige: 9
+  enonce: |
+    Soit $f : \mathbb{R}^{n} \to \mathbb{R}^{n}$ de classe $\mathcal{C}^{1}$ telle que, pour une constante $k > 0$, 
+    $$\lVert f(x) - f(y) \rVert \geqslant k\lVert x - y \rVert \qquad \text{pour tous } x, y \in \mathbb{R}^{n}.$$
+     On va montrer que $f$ est un $\mathcal{C}^{1}$-difféomorphisme de $\mathbb{R}^{n}$ sur lui-même.
+
+    **1.** Montrer que $f$ est injective et que $f(\mathbb{R}^{n})$ est fermé dans $\mathbb{R}^{n}$.
+
+    **2.** Montrer que $\mathrm{d} f(x)$ est inversible pour tout $x \in \mathbb{R}^{n}$.
+
+    **3.** En déduire que $f(\mathbb{R}^{n})$ est ouvert et fermé dans $\mathbb{R}^{n}$, et conclure.
+  corrige: |
+    C'est le même schéma qu'aux exercices 11 et 12, sous une hypothèse plus faible : $f$ éloigne les points, sans condition sur la direction.
+
+    **1.** $f(x) = f(y)$ entraîne $k\lVert x - y \rVert \leqslant 0$ : $f$ est injective. Si $f(x_{n}) \to w$, l'inégalité montre que $(x_{n})$ est de Cauchy, donc converge vers $x$, et $f(x) = w$ : f(R^n) est fermé.
+
+    **2.** Pour $h \in \mathbb{R}^{n}$ et $t \neq 0$, $\lVert f(x + th) - f(x) \rVert \geqslant k|t|\,\lVert h \rVert$ ; en divisant par $|t|$ et en faisant $t \to 0$, $\lVert \mathrm{d} f(x)\cdot h \rVert \geqslant k\lVert h \rVert$. Donc $\mathrm{d} f(x)$ est injective, inversible.
+
+    **3.** Par le théorème d'inversion locale, $f(\mathbb{R}^{n})$ est ouvert ; il est fermé et non vide, donc égal à $\mathbb{R}^{n}$ connexe. $f$ est bijective, à différentielle partout inversible : par la proposition 7 du cours, 
+    $$\boxed{f \text{ est un } \mathcal{C}^{1}\text{-difféomorphisme de } \mathbb{R}^{n} \text{ sur lui-même}}\text{.}$$
+- id: "l3-cd-03-15"
+  feuille: "f-l3-cd-03"
+  numero: 15
+  partie: "Inversion globale"
+  etoiles: 2
+  types: [Démonstration]
+  mots_cles: [inversion globale]
+  noeuds: [gd-inversion-locale]
+  notions: [diffeomorphisme]
+  page_enonce: 4
+  page_corrige: 9
+  enonce: |
+    Soit $G$ un ouvert borné de $\mathbb{R}^{n}$ et $f : \overline{G} \to \mathbb{R}^{n}$ une application continue sur $\overline{G}$, de classe $\mathcal{C}^{1}$ sur $G$, telle que $\mathrm{d} f(x)$ soit inversible pour tout $x \in G$. Montrer que $x \mapsto \lVert f(x) \rVert$ atteint son maximum sur $\overline{G}$ en un point du bord $\partial G = \overline{G} \setminus G$.
+  corrige: |
+    C'est un « principe du maximum » : une application ouverte ne peut pas atteindre un maximum de norme à l'intérieur.
+
+    $\overline{G}$ est fermé et borné, donc compact, et $x \mapsto \lVert f(x) \rVert$, continue, y atteint son maximum $M$ en un point $x_{0}$ (chapitre 1, th. 3). Supposons $x_{0} \in G$. Par le théorème d'inversion locale, $f(G)$ contient une boule $B\big(f(x_{0}), \delta\big)$. Si $f(x_{0}) \neq 0$, le point $\big(1 + \frac{\delta}{2M}\big)f(x_{0})$ est dans cette boule et de norme $M + \frac{\delta}{2} > M$ ; si $f(x_{0}) = 0$, alors $M = 0$, et la boule $B(0, \delta) \subset f(G)$ contient des points de norme $\frac{\delta}{2} > M$. Dans les deux cas, c'est une contradiction. Le maximum est atteint sur G, qui est non vide puisque $G$ est un ouvert borné non vide de $\mathbb{R}^{n}$.
+- id: "l3-cd-03-16"
+  feuille: "f-l3-cd-03"
+  numero: 16
+  partie: "Inversion globale"
+  etoiles: 2
+  types: [Démonstration]
+  mots_cles: [inversion globale, difféomorphismes]
+  noeuds: [gd-inversion-locale]
+  notions: [diffeomorphisme, fonction-convexe]
+  page_enonce: 4
+  page_corrige: 9
+  enonce: |
+    Soit $E$ un espace vectoriel normé de dimension finie, $\Omega$ un ouvert convexe de $E$ et $f : \Omega \to E$ de classe $\mathcal{C}^{1}$ telle que $|\mkern-1.5mu|\mkern-1.5mu|\mathrm{d} f(x)|\mkern-1.5mu|\mkern-1.5mu| \leqslant c$ pour tout $x \in \Omega$, où $0 \leqslant c < 1$. Montrer que $\mathrm{Id} - f$ est un $\mathcal{C}^{1}$-difféomorphisme de $\Omega$ sur son image.
+  corrige: |
+    On reconnaît une perturbation de l'identité (cours, prop. 4), qu'on traite par la proposition 7.
+
+    $\triangleright$ *Différentielle inversible.* $\mathrm{d}(\mathrm{Id} - f)(x) = \mathrm{Id} - \mathrm{d} f(x)$ avec $|\mkern-1.5mu|\mkern-1.5mu|\mathrm{d} f(x)|\mkern-1.5mu|\mkern-1.5mu| \leqslant c < 1$ : c'est un isomorphisme (série de Neumann, chapitre 1, th. 12).
+
+    $\triangleright$ *Injectivité.* Sur le convexe $\Omega$, $f$ est $c$-lipschitzienne (chapitre 2, prop. 14), donc 
+    $$\lVert (x - f(x)) - (y - f(y)) \rVert \geqslant \lVert x - y \rVert - c\lVert x - y \rVert = (1 - c)\lVert x - y \rVert.$$
+     Par la proposition 7 du cours, 
+    $$\boxed{\mathrm{Id} - f \text{ est un } \mathcal{C}^{1}\text{-difféomorphisme de } \Omega \text{ sur son image}}\text{,}$$
+     qui est ouverte, et sa réciproque est $\frac{1}{1 - c}$-lipschitzienne.
+
+    *Piège.* L'énoncé d'origine ne supposait $\Omega$ que connexe ; l'injectivité peut alors tomber en défaut. Sur l'anneau fendu $\Omega = \{re^{\mathrm{i}\theta} \,;\, 1 < r < 2,\ -\pi < \theta < \pi\}$, l'application $g(re^{\mathrm{i}\theta}) = re^{1{,}2\,\mathrm{i}\theta}$ s'écrit $\mathrm{Id} - f$ avec $|\mkern-1.5mu|\mkern-1.5mu|\mathrm{d} f|\mkern-1.5mu|\mkern-1.5mu| \leqslant 0{,}76$ (calcul numérique), et elle n'est pas injective, puisque l'angle $1{,}2\,\theta$ parcourt un intervalle de longueur $2{,}4\pi > 2\pi$.
+- id: "l3-cd-03-17"
+  feuille: "f-l3-cd-03"
+  numero: 17
+  partie: "Fonctions implicites"
+  etoiles: 1
+  types: [Démonstration]
+  mots_cles: [fonctions implicites, espace tangent]
+  noeuds: [gd-submersions, gd-tangent-sm]
+  notions: [espace-tangent]
+  page_enonce: 4
+  page_corrige: 10
+  enonce: |
+    **1.** Montrer que la relation 
+    $$(\ast) \qquad x^{3} + y^{3} - 2xy = 0$$
+     définit implicitement, au voisinage de $1$, une unique fonction $\varphi$ telle que $\varphi(1) = 1$ et $x^{3} + \varphi(x)^{3} - 2x\varphi(x) = 0$.
+
+    **2.** Calculer $\varphi'(1)$.
+
+    **3.** Montrer que, si $P \neq (0, 0)$ est un point de la courbe $C$ d'équation $(\ast)$, alors, au voisinage de $P$, l'équation $(\ast)$ se résout en $x$ ou en $y$.
+
+    **4.** Montrer que $C$ a une tangente en tout point $P \neq (0, 0)$.
+  corrige: |
+    On pose $F(x, y) = x^{3} + y^{3} - 2xy$, de gradient $\nabla F = (3x^{2} - 2y,\ 3y^{2} - 2x)$. La courbe $C$ est un folium de Descartes.
+
+    **1.** $F(1, 1) = 0$ et $\dfrac{\partial F}{\partial y}(1, 1) = 1 \neq 0$. Par le théorème des fonctions implicites (cours, th. 2), il existe des intervalles ouverts $I \ni 1$, $J \ni 1$ et une unique $\varphi : I \to J$, de classe $\mathcal{C}^{1}$, telle que, pour $(x, y) \in I \times J$, F(x, y) = 0 y = (x).
+
+    **2.** En dérivant $F\big(x, \varphi(x)\big) = 0$ : $\varphi'(1) = -\dfrac{\partial_{x}F(1, 1)}{\partial_{y}F(1, 1)} = -\dfrac{1}{1}$, soit '(1) = -1. La tangente en $(1, 1)$ est la droite $x + y = 2$.
+
+    **3.** Le gradient s'annule si $3x^{2} = 2y$ et $3y^{2} = 2x$. Alors $x$, $y \geqslant 0$ et $9x^{4} = 4y^{2} = \frac{8x}{3}$, donc $x = 0$ ou $x = \frac{2}{3}$ ; le point $\big(\frac{2}{3}, \frac{2}{3}\big)$ n'est pas sur $C$ ($F = \frac{16}{27} - \frac{8}{9} \neq 0$). Le seul point de $C$ où le gradient s'annule est $(0, 0)$. En $P \neq (0, 0)$ sur $C$, l'une des dérivées partielles est non nulle : si $\partial_{y}F(P) \neq 0$, () se résout en y, sinon $\partial_{x}F(P) \neq 0$ et elle se résout en $x$.
+
+    **4.** En $P \neq (0, 0)$, $P$ est un point régulier, et le théorème de l'hyperplan tangent (cours, th. 3) donne une tangente orthogonale à F(P). Les tangentes sont verticales là où $\partial_{y}F = 0$, en $\big(\frac{2}{3}2^{2/3}, \frac{2}{3}2^{1/3}\big) \approx (1{,}058 \,;\, 0{,}840)$, et horizontales au point symétrique.
+
+    ![Figure](documents/figures/d7c12a994a2e0b34.svg)
+
+    Le folium a une boucle dans le premier quadrant et deux branches infinies. À l'origine, deux branches se croisent : aucune description comme graphe n'est possible, ce qui explique l'exclusion du point $(0, 0)$. Au point où la tangente est verticale, la courbe n'est pas un graphe $y = \varphi(x)$, mais elle est un graphe $x = \psi(y)$.
+- id: "l3-cd-03-18"
+  feuille: "f-l3-cd-03"
+  numero: 18
+  partie: "Fonctions implicites"
+  etoiles: 1
+  types: [Démonstration, Calcul]
+  mots_cles: [fonctions implicites]
+  noeuds: [gd-submersions]
+  notions: []
+  page_enonce: 4
+  page_corrige: 10
+  enonce: |
+    **1.** Montrer que la relation $e^{x - y} = 1 + x + y$ définit implicitement, au voisinage de $0$, une fonction $\varphi$ de classe $\mathcal{C}^{\infty}$ telle que $\varphi(0) = 0$ et $e^{x - \varphi(x)} = 1 + x + \varphi(x)$.
+
+    **2.** Calculer $\varphi'(x)$ puis $\varphi''(x)$.
+
+    **3.** En déduire que $\displaystyle\lim_{x \to 0}\frac{\varphi(x)}{x^{2}} = \frac{1}{4}$.
+  corrige: |
+    On pose $F(x, y) = e^{x - y} - 1 - x - y$, de classe $\mathcal{C}^{\infty}$.
+
+    **1.** $F(0, 0) = 0$ et $\dfrac{\partial F}{\partial y} = -e^{x - y} - 1 < 0$ partout. Le théorème des fonctions implicites donne $\varphi$ de classe $\mathcal{C}^{1}$ au voisinage de $0$, avec $\varphi(0) = 0$. La formule $\varphi' = -\dfrac{\partial_{x}F}{\partial_{y}F}\big(x, \varphi(x)\big)$ exprime $\varphi'$ comme fonction $\mathcal{C}^{\infty}$ de $x$ et $\varphi(x)$ : si $\varphi$ est de classe $\mathcal{C}^{k}$, $\varphi'$ l'est aussi, donc $\varphi$ est de classe $\mathcal{C}^{k + 1}$, et par récurrence est de classe C^.
+
+    **2.** Avec $u = x - \varphi(x)$, 
+    $$\varphi'(x) = \frac{e^{u} - 1}{e^{u} + 1} = \boxed{\operatorname{th}\frac{x - \varphi(x)}{2}}, \qquad \boxed{\varphi''(x) = \frac{1}{2}\big(1 - \varphi'(x)^{2}\big)\big(1 - \varphi'(x)\big)},$$
+     la seconde formule venant de $\operatorname{th}' = 1 - \operatorname{th}^{2}$ et de $u' = 1 - \varphi'$.
+
+    **3.** $\varphi(0) = 0$, $\varphi'(0) = \operatorname{th} 0 = 0$ et $\varphi''(0) = \frac{1}{2}$. Par la formule de Taylor-Young à l'ordre $2$ (*Rappel.* ; chapitre 4, prop. 4), $\varphi(x) = \frac{1}{4}x^{2} + o(x^{2})$, d'où 
+    $$\boxed{\lim_{x \to 0}\frac{\varphi(x)}{x^{2}} = \frac{1}{4}}\text{.}$$
+
+    ![Figure](documents/figures/1f6dcf0ad3349902.svg)
+
+    Dans les coordonnées $u = x - y$, $s = x + y$, la courbe est le graphe $s = e^{u} - 1$, tourné de $45^{\circ}$ : c'est ainsi qu'on l'a tracée. Près de l'origine, elle est tangente à l'axe des abscisses et suit la parabole $y = \frac{x^{2}}{4}$, dont elle s'écarte au troisième ordre ($\varphi = \frac{x^{2}}{4} - \frac{x^{3}}{24} + \cdots$, calcul sympy).
+- id: "l3-cd-03-19"
+  feuille: "f-l3-cd-03"
+  numero: 19
+  partie: "Fonctions implicites"
+  etoiles: 1
+  types: [Démonstration, Calcul]
+  mots_cles: [fonctions implicites]
+  noeuds: [gd-submersions]
+  notions: []
+  page_enonce: 4
+  page_corrige: 11
+  enonce: |
+    Montrer que l'équation $\cos(x + y) = 1 + x + 2y$ définit implicitement, au voisinage de $(0, 0)$, une fonction $\varphi$ de classe $\mathcal{C}^{1}$ telle que $\varphi(0) = 0$ et $\cos\big(x + \varphi(x)\big) = 1 + x + 2\varphi(x)$. Calculer $\varphi'(0)$.
+  corrige: |
+    Avec $F(x, y) = \cos(x + y) - 1 - x - 2y$ : $F(0, 0) = 0$ et $\dfrac{\partial F}{\partial y} = -\sin(x + y) - 2$ vaut $-2 \neq 0$ en $(0, 0)$. Le théorème des fonctions implicites donne $\varphi$, et 
+    $$\varphi'(0) = -\frac{\partial_{x}F(0, 0)}{\partial_{y}F(0, 0)} = -\frac{-\sin 0 - 1}{-2}, \qquad \boxed{\varphi'(0) = -\frac{1}{2}}.$$
+     *Remarque.* $\partial_{y}F \leqslant -1$ partout : le théorème s'applique en tout point de la courbe, qui est donc globalement le graphe d'une fonction de $x$.
+- id: "l3-cd-03-20"
+  feuille: "f-l3-cd-03"
+  numero: 20
+  partie: "Fonctions implicites"
+  etoiles: 1
+  types: [Démonstration, Calcul]
+  mots_cles: [fonctions implicites]
+  noeuds: [gd-submersions]
+  notions: []
+  page_enonce: 5
+  page_corrige: 11
+  enonce: |
+    **1.** Soit $F(x, y) = x^{2} + y^{2} - 1$. Démontrer que, pour $x$ suffisamment proche de $0$, il existe un unique $y = y(x) > 0$ tel que $F(x, y) = 0$. Vérifier, sans résolution explicite, que $y'(x) = -\dfrac{x}{y}$.
+
+    **2.** Montrer que l'équation $e^{x} + e^{y} + x + y - 2 = 0$ définit, au voisinage de l'origine, une fonction implicite $\varphi$ de $x$, dont on calculera le développement limité à l'ordre $3$ en $0$.
+  corrige: |
+    **1.** $F(0, 1) = 0$ et $\dfrac{\partial F}{\partial y}(0, 1) = 2 \neq 0$ : il existe une unique fonction $y$ de classe $\mathcal{C}^{1}$, à valeurs près de $1$, donc positives, telle que $F(x, y(x)) = 0$. En dérivant $x^{2} + y(x)^{2} = 1$ : $2x + 2yy' = 0$, d'où y'(x) = -xy. On reconnaît $y = \sqrt{1 - x^{2}}$, mais le calcul n'en a pas besoin.
+
+    **2.** $F(x, y) = e^{x} + e^{y} + x + y - 2$ vérifie $F(0, 0) = 0$ et $\dfrac{\partial F}{\partial y} = e^{y} + 1 > 0$ : $\varphi$ existe, de classe $\mathcal{C}^{\infty}$ (même argument qu'à l'exercice 18). Posons $\varphi(x) = a_{1}x + a_{2}x^{2} + a_{3}x^{3} + o(x^{3})$. Le développement 
+    $$e^{x} + e^{\varphi} + x + \varphi - 2 = (2 + 2a_{1})x + \Big(\frac{1}{2} + \frac{a_{1}^{2}}{2} + 2a_{2}\Big)x^{2} + \Big(\frac{1}{6} + a_{1}a_{2} + \frac{a_{1}^{3}}{6} + 2a_{3}\Big)x^{3} + o(x^{3})$$
+     doit être nul, d'où $a_{1} = -1$, $a_{2} = -\frac{1}{2}$, $a_{3} = -\frac{1}{4}$ (vérifié avec sympy) : 
+    $$\boxed{\varphi(x) = -x - \frac{x^{2}}{2} - \frac{x^{3}}{4} + o(x^{3})}.$$
+     *Vérification.* L'équation est symétrique en $x$ et $y$, donc $\varphi \circ \varphi = \mathrm{Id}$ ; le développement le confirme jusqu'à l'ordre $3$.
+
+    ![Figure](documents/figures/300128c5db994b36.svg)
+
+    La courbe est symétrique par rapport à la première bissectrice et décroissante : c'est le graphe d'une involution. Le développement limité d'ordre $3$ la suit de près autour de l'origine, alors que la tangente $y = -x$ s'en écarte dès qu'on s'éloigne de $0$.
+- id: "l3-cd-03-21"
+  feuille: "f-l3-cd-03"
+  numero: 21
+  partie: "Fonctions implicites"
+  etoiles: 1
+  types: [Calcul]
+  mots_cles: [fonctions implicites]
+  noeuds: [gd-submersions]
+  notions: []
+  page_enonce: 5
+  page_corrige: 12
+  enonce: |
+    Donner l'allure de $C = \{(x, y) \in \mathbb{R}^{2} \,;\, x^{4} + y^{3} - y^{2} + x - y = 0\}$ au voisinage des points $(0, 0)$ et $(-1, 0)$.
+  corrige: |
+    On calcule en chaque point le gradient de $F(x, y) = x^{4} + y^{3} - y^{2} + x - y$, puis la dérivée seconde de la fonction implicite pour connaître la position de la courbe par rapport à sa tangente.
+
+    $\triangleright$ *En $(0, 0)$.* $\nabla F = (4x^{3} + 1, 3y^{2} - 2y - 1) = (1, -1)$ : la courbe est, au voisinage, le graphe d'une fonction $y = \varphi(x)$ avec $\varphi'(0) = 1$. En dérivant deux fois $F(x, \varphi(x)) = 0$, on obtient $\varphi''(0) = -2$ (sympy). 
+    $$\boxed{\text{Tangente } y = x, \text{ courbe en dessous}}\text{.}$$
+
+    $\triangleright$ *En $(-1, 0)$.* Ce point est sur $C$ ($1 + 0 - 0 - 1 - 0 = 0$), et $\nabla F(-1, 0) = (-3, -1)$ : $y = \psi(x)$ avec $\psi'(-1) = -3$ et $\psi''(-1) = -6$. 
+    $$\boxed{\text{Tangente } y = -3(x + 1), \text{ courbe en dessous}}\text{.}$$
+
+    ![Figure](documents/figures/ca0735b49a7dac85.svg)
+
+    Aux deux points, le gradient a ses deux coordonnées non nulles : la courbe est localement un graphe aussi bien en $x$ qu'en $y$. Le tracé, obtenu numériquement, confirme les tangentes de pentes $1$ et $-3$, et la concavité des deux arcs.
+- id: "l3-cd-03-22"
+  feuille: "f-l3-cd-03"
+  numero: 22
+  partie: "Fonctions implicites"
+  etoiles: 2
+  types: [Démonstration, Calcul]
+  mots_cles: [fonctions implicites]
+  noeuds: [gd-submersions]
+  notions: []
+  page_enonce: 5
+  page_corrige: 13
+  enonce: |
+    On considère le système de deux équations à trois inconnues 
+    $$\left\{ \begin{array}{l} x^{2} + y^{2} - z^{2} = 1 \\ x^{3} - y^{3} + z^{3} = 1. \end{array} \right.$$
+
+    **1.** Vérifier que $(2, -1, -2)$ est solution.
+
+    **2.** Montrer qu'il existe deux fonctions $\varphi$ et $\psi$ de classe $\mathcal{C}^{1}$, définies au voisinage de $-2$, telles que, pour tout $z$ dans ce voisinage, $\big(\varphi(z), \psi(z), z\big)$ soit solution du système, avec $\varphi(-2) = 2$ et $\psi(-2) = -1$.
+
+    **3.** Calculer $\varphi'(z)$ et $\psi'(z)$ en fonction de $\varphi(z)$, $\psi(z)$ et $z$, puis $\varphi'(-2)$ et $\psi'(-2)$.
+  corrige: |
+    On applique le théorème des fonctions implicites (cours, prop. 8) aux inconnues $(x, y)$, la variable $z$ jouant le rôle de paramètre.
+
+    **1.** $4 + 1 - 4 = 1$ et $8 + 1 - 8 = 1$ : (2, -1, -2) est solution.
+
+    **2.** Avec $f(x, y, z) = (x^{2} + y^{2} - z^{2} - 1, x^{3} - y^{3} + z^{3} - 1)$, le bloc jacobien en $(x, y)$ est 
+    $$J_{(x, y)}f = \begin{pmatrix} 2x & 2y \\ 3x^{2} & -3y^{2} \end{pmatrix}, \qquad \det = -6xy(x + y),$$
+     qui vaut $12 \neq 0$ en $(2, -1, -2)$. Le théorème donne 
+    $$\boxed{\varphi, \psi \text{ de classe } \mathcal{C}^{1} \text{ au voisinage de } -2}\text{.}$$
+
+    **3.** En dérivant le système : $2\varphi\varphi' + 2\psi\psi' = 2z$ et $3\varphi^{2}\varphi' - 3\psi^{2}\psi' = -3z^{2}$. En résolvant ce système linéaire, 
+    $$\boxed{\varphi'(z) = \frac{z(\psi - z)}{\varphi(\varphi + \psi)}, \qquad \psi'(z) = \frac{z(\varphi + z)}{\psi(\varphi + \psi)}},$$
+     d'où, en $z = -2$, '(-2) = -1, '(-2) = 0.
+- id: "l3-cd-03-23"
+  feuille: "f-l3-cd-03"
+  numero: 23
+  partie: "Fonctions implicites"
+  etoiles: 2
+  types: [Calcul]
+  mots_cles: [fonctions implicites]
+  noeuds: [gd-submersions]
+  notions: []
+  page_enonce: 5
+  page_corrige: 13
+  enonce: |
+    On considère le système de trois équations à quatre inconnues 
+    $$\left\{ \begin{array}{l} x + y + z + t = 0 \\ x^{2} + y^{2} + z^{2} + t^{2} = 2 \\ x^{3} + y^{3} + z^{3} + t^{3} = 0. \end{array} \right.$$
+
+    **1.** Vérifier que $(0, -1, 1, 0)$ est solution.
+
+    **2.** Donner un énoncé précis du fait que, au voisinage de ce point, les solutions sont de la forme $\big(x(t), y(t), z(t), t\big)$, avec $x$, $y$, $z$ de classe $\mathcal{C}^{1}$.
+
+    **3.** Calculer $x'(t)$, $y'(t)$, $z'(t)$ en fonction de $x(t)$, $y(t)$, $z(t)$ et $t$, puis la dérivée en $0$ de $t \mapsto \big(x(t), y(t), z(t)\big)$.
+  corrige: |
+    Même méthode, avec trois inconnues $(x, y, z)$ et le paramètre $t$.
+
+    **1.** $0 - 1 + 1 + 0 = 0$, $0 + 1 + 1 + 0 = 2$, $0 - 1 + 1 + 0 = 0$ : (0, -1, 1, 0) est solution.
+
+    **2.** Le bloc jacobien en $(x, y, z)$ est une matrice de Vandermonde : 
+    $$\begin{pmatrix} 1 & 1 & 1 \\ 2x & 2y & 2z \\ 3x^{2} & 3y^{2} & 3z^{2} \end{pmatrix}, \qquad \det = 6(y - x)(z - x)(z - y),$$
+     qui vaut $6 \cdot (-1) \cdot 1 \cdot 2 = -12 \neq 0$ au point considéré. *Énoncé précis* : il existe un intervalle ouvert $I \ni 0$, un voisinage ouvert $W$ de $(0, -1, 1)$ et une application $t \mapsto \big(x(t), y(t), z(t)\big)$ de classe $\mathcal{C}^{1}$ de $I$ dans $W$ telle que, pour $(t, (x, y, z)) \in I \times W$, $(x, y, z, t)$ est solution si et seulement si $(x, y, z) = \big(x(t), y(t), z(t)\big)$.
+
+    **3.** En dérivant, $x' + y' + z' = -1$, $xx' + yy' + zz' = -t$, $x^{2}x' + y^{2}y' + z^{2}z' = -t^{2}$. Ce système de Vandermonde se résout par les formules de Lagrange : 
+    $$\boxed{x' = -\frac{(t - y)(t - z)}{(x - y)(x - z)}, \quad y' = -\frac{(t - x)(t - z)}{(y - x)(y - z)}, \quad z' = -\frac{(t - x)(t - y)}{(z - x)(z - y)}}.$$
+     En $t = 0$, $(x, y, z) = (0, -1, 1)$ : (x'(0), y'(0), z'(0)) = (-1, 0, 0) (vérifié avec sympy).
+- id: "l3-cd-03-24"
+  feuille: "f-l3-cd-03"
+  numero: 24
+  partie: "Fonctions implicites"
+  etoiles: 1
+  types: [Démonstration]
+  mots_cles: [fonctions implicites]
+  noeuds: [gd-submersions]
+  notions: []
+  page_enonce: 5
+  page_corrige: 13
+  enonce: |
+    Soit $f : \mathbb{R}^{3} \to \mathbb{R}^{2}$, $f(x, y, z) = (x^{2} - y^{2} + z^{2} - 1,\ xyz - 1)$, et $(x_{0}, y_{0}, z_{0}) \in \mathbb{R}^{3}$ tel que $f(x_{0}, y_{0}, z_{0}) = (0, 0)$. Montrer qu'il existe un intervalle ouvert $I$ contenant $x_{0}$ et une application $\varphi : I \to \mathbb{R}^{2}$ de classe $\mathcal{C}^{1}$ tels que $\varphi(x_{0}) = (y_{0}, z_{0})$ et $f\big(x, \varphi(x)\big) = (0, 0)$ pour tout $x \in I$.
+  corrige: |
+    Le bloc jacobien de $f$ en $(y, z)$ est 
+    $$\begin{pmatrix} -2y & 2z \\ xz & xy \end{pmatrix}, \qquad \det = -2x(y^{2} + z^{2}).$$
+     En un point solution, $x_{0}y_{0}z_{0} = 1$, donc $x_{0} \neq 0$ et $y_{0}^{2} + z_{0}^{2} > 0$ : le déterminant est non nul. Le théorème des fonctions implicites (cours, prop. 8) donne 
+    $$\boxed{I \text{ et } \varphi \text{ de classe } \mathcal{C}^{1}}\text{,}$$
+     et même l'unicité de $\varphi(x)$ au voisinage de $(y_{0}, z_{0})$.
+- id: "l3-cd-03-25"
+  feuille: "f-l3-cd-03"
+  numero: 25
+  partie: "Fonctions implicites"
+  etoiles: 1
+  types: [Démonstration, Calcul]
+  mots_cles: [fonctions implicites]
+  noeuds: [gd-submersions]
+  notions: []
+  page_enonce: 5
+  page_corrige: 14
+  enonce: |
+    On considère le système 
+    $$\left\{ \begin{array}{l} x^{2} + y^{2} - 2z^{2} = 0 \\ x^{2} + 2y^{2} + z^{2} = 4. \end{array} \right.$$
+     Montrer que, pour $x$ proche de $0$, il existe des fonctions positives $y(x)$ et $z(x)$ de classe $\mathcal{C}^{1}$ telles que $\big(x, y(x), z(x)\big)$ soit solution du système. Déterminer $y'$ en fonction de $x$ et $y$, et $z'$ en fonction de $x$ et $z$.
+  corrige: |
+    En $x = 0$, le système donne $y^{2} = 2z^{2}$ et $2y^{2} + z^{2} = 4$, d'où $z^{2} = \frac{4}{5}$, $y^{2} = \frac{8}{5}$ ; on part de $(y_{0}, z_{0}) = \big(\frac{2\sqrt{2}}{\sqrt{5}}, \frac{2}{\sqrt{5}}\big)$. Le bloc jacobien en $(y, z)$ est $\begin{pmatrix} 2y & -4z \\ 4y & 2z \end{pmatrix}$, de déterminant $20yz > 0$ : le théorème des fonctions implicites donne $y(x)$, $z(x)$ de classe $\mathcal{C}^{1}$, à valeurs proches de $y_{0}$ et $z_{0}$, donc positives. En dérivant, $x + yy' - 2zz' = 0$ et $x + 2yy' + zz' = 0$, d'où 
+    $$\boxed{y' = -\frac{3x}{5y}, \qquad z' = \frac{x}{5z}}.$$
+     En intégrant, $5y^{2} + 3x^{2}$ et $5z^{2} - x^{2}$ sont constants, ce que l'on retrouve directement en combinant les deux équations.
+- id: "l3-cd-03-26"
+  feuille: "f-l3-cd-03"
+  numero: 26
+  partie: "Fonctions implicites"
+  etoiles: 2
+  types: [Démonstration]
+  mots_cles: [fonctions implicites]
+  noeuds: [gd-submersions]
+  notions: []
+  page_enonce: 6
+  page_corrige: 14
+  enonce: |
+    *(Racines simples d'un polynôme.)*
+
+    **1.** Pour $a = (a_{0}, \dots, a_{n}) \in \mathbb{R}^{n + 1}$, on pose $P_{a}(X) = a_{0} + a_{1}X + \cdots + a_{n}X^{n}$. Soit $b \in \mathbb{R}^{n + 1}$ et $x_{b}$ une racine simple de $P_{b}$. Montrer qu'il existe un voisinage ouvert $U$ de $b$ dans $\mathbb{R}^{n + 1}$ et un voisinage ouvert $V$ de $x_{b}$ dans $\mathbb{R}$ tels que, pour tout $a \in U$, $P_{a}$ ait une unique racine dans $V$.
+
+    **2.** Soit $F(x, y) = y^{n} + a_{n - 1}(x)y^{n - 1} + \cdots + a_{1}(x)y + a_{0}(x)$, où les fonctions $a_{j}$ sont de classe $\mathcal{C}^{1}$ sur $\mathbb{R}$. On suppose que, pour un $x_{0} \in \mathbb{R}$, le polynôme $y \mapsto F(x_{0}, y)$ a une racine simple $y_{0}$. Démontrer que, pour $x$ voisin de $x_{0}$, $F(x, \cdot)$ possède une racine $y(x)$ proche de $y_{0}$, et que $x \mapsto y(x)$ est de classe $\mathcal{C}^{1}$.
+  corrige: |
+    Une racine simple est une racine où la dérivée par rapport à l'inconnue ne s'annule pas : c'est exactement l'hypothèse du théorème des fonctions implicites.
+
+    **1.** $\Phi(a, x) = P_{a}(x)$ est polynomiale en $(a, x) \in \mathbb{R}^{n + 1} \times \mathbb{R}$, $\Phi(b, x_{b}) = 0$ et $\dfrac{\partial \Phi}{\partial x}(b, x_{b}) = P_{b}'(x_{b}) \neq 0$. Le théorème des fonctions implicites donne des ouverts $U \ni b$, $V \ni x_{b}$ et $\xi : U \to V$ de classe $\mathcal{C}^{1}$ tels que, pour $(a, x) \in U \times V$, $P_{a}(x) = 0 \iff x = \xi(a)$ : 
+    $$\boxed{P_{a} \text{ a une unique racine } \xi(a) \text{ dans } V}\text{.}$$
+
+    **2.** Même raisonnement avec $F$, de classe $\mathcal{C}^{1}$ en $(x, y)$, et $\dfrac{\partial F}{\partial y}(x_{0}, y_{0}) \neq 0$ (racine simple) : 
+    $$\boxed{x \mapsto y(x) \text{ existe et est de classe } \mathcal{C}^{1}}\text{.}$$
+
+    *Piège.* Une racine double peut disparaître par perturbation : $X^{2} + \varepsilon$ n'a pas de racine réelle pour $\varepsilon > 0$. L'hypothèse de simplicité est indispensable.
+- id: "l3-cd-03-27"
+  feuille: "f-l3-cd-03"
+  numero: 27
+  partie: "Hyperplan tangent, sous-variétés"
+  etoiles: 1
+  types: [Calcul]
+  mots_cles: [sous-variétés et hyperplan tangent, sous-variétés]
+  noeuds: [gd-sous-varietes, gd-tangent-sm]
+  notions: [espace-tangent-sv]
+  page_enonce: 6
+  page_corrige: 14
+  enonce: |
+    Pour $\lambda \in \mathbb{R}$, soit $S_{\lambda} = \{(x_{1}, x_{2}, x_{3}) \in \mathbb{R}^{3} \,;\, x_{1}^{2} + x_{2}^{2} - x_{3}^{2} = \lambda\}$.
+
+    **1.** Déterminer les $\lambda$ pour lesquels $S_{\lambda}$ est une sous-variété de $\mathbb{R}^{3}$. Dessiner $S_{\lambda}$ selon les valeurs de $\lambda$.
+
+    **2.** Pour $x$, $y \in \mathbb{R}^{3}$, on pose $B(x, y) = x_{1}y_{1} + x_{2}y_{2} - x_{3}y_{3}$. Pour $x \in S_{\lambda}$, exprimer $T_{x}S_{\lambda}$ à l'aide de $B$.
+  corrige: |
+    On applique le critère rappelé en tête de partie à $g(x) = x_{1}^{2} + x_{2}^{2} - x_{3}^{2} - \lambda$, de gradient $2(x_{1}, x_{2}, -x_{3})$, qui ne s'annule qu'en $0$.
+
+    **1.** Si $\lambda \neq 0$, $0 \notin S_{\lambda}$ : le gradient ne s'annule pas sur $S_{\lambda}$, et 
+    $$\boxed{S_{\lambda} \text{ est une sous-variété de dimension } 2}\text{.}$$
+     Pour $\lambda > 0$, c'est un hyperboloïde à une nappe ; pour $\lambda < 0$, un hyperboloïde à deux nappes. Pour $\lambda = 0$, $S_{0}$ est un cône de sommet $0$, et S_0 n'est pas une sous-variété : si elle l'était au voisinage de $0$, l'ensemble $S_{0} \cap V$ privé de $0$ serait l'image par un homéomorphisme d'un disque privé de son centre, donc connexe ; or il a deux composantes, $x_{3} > 0$ et $x_{3} < 0$.
+
+    **2.** $\mathrm{d} g(x)\cdot h = 2(x_{1}h_{1} + x_{2}h_{2} - x_{3}h_{3}) = 2B(x, h)$, donc 
+    $$\boxed{T_{x}S_{\lambda} = \{h \in \mathbb{R}^{3} \,;\, B(x, h) = 0\}}\text{ :}$$
+     c'est l'orthogonal de $x$ pour la forme $B$.
+
+    ![Figure](documents/figures/61a909c4d8f672bb.svg)
+
+    Ce sont les sections par le plan $x_{2} = 0$ ; les surfaces s'obtiennent en faisant tourner ces courbes autour de l'axe $x_{3}$. Pour $\lambda = 1$, une hyperbole qui engendre l'hyperboloïde à une nappe ; pour $\lambda = 0$, deux droites qui engendrent le cône, singulier en son sommet (carmin) ; pour $\lambda = -1$, une hyperbole qui engendre l'hyperboloïde à deux nappes.
+- id: "l3-cd-03-28"
+  feuille: "f-l3-cd-03"
+  numero: 28
+  partie: "Hyperplan tangent, sous-variétés"
+  etoiles: 1
+  types: [Démonstration, Calcul]
+  mots_cles: [sous-variétés et hyperplan tangent, espace tangent, sous-variétés]
+  noeuds: [gd-sous-varietes, gd-tangent-sm]
+  notions: [espace-tangent-sv, espace-tangent, produit-scalaire]
+  page_enonce: 6
+  page_corrige: 15
+  enonce: |
+    On munit $\mathbb{R}^{n}$ du produit scalaire usuel $\langle \cdot, \cdot \rangle$. Soit $u : \mathbb{R}^{n} \to \mathbb{R}^{n}$ linéaire, symétrique ($\langle u(x), y \rangle = \langle x, u(y) \rangle$ pour tous $x$, $y$), et $Q = \{x \in \mathbb{R}^{n} \,;\, \langle u(x), x \rangle = 1\}$. Montrer que $Q$ est une sous-variété et déterminer son hyperplan tangent en chacun de ses points.
+  corrige: |
+    On pose $g(x) = \langle u(x), x \rangle - 1$. Par la symétrie de $u$ (chapitre 2, exercice 41), d g(x) h = 2 u(x), h . Si $x \in Q$, alors $\langle u(x), x \rangle = 1$, donc $u(x) \neq 0$ : $\mathrm{d} g(x)$ est une forme linéaire non nulle, donc surjective. 
+    $$\boxed{Q \text{ est une sous-variété de dimension } n - 1}\text{,}$$
+     et 
+    $$\boxed{T_{x}Q = \{h \in \mathbb{R}^{n} \,;\, \langle u(x), h \rangle = 0\} = u(x)^{\perp}}.$$
+     *Remarque.* Si $u$ est définie positive, $Q$ est un ellipsoïde ; si $u$ est négative, $Q$ est vide, et l'énoncé est vrai mais sans objet.
+- id: "l3-cd-03-29"
+  feuille: "f-l3-cd-03"
+  numero: 29
+  partie: "Hyperplan tangent, sous-variétés"
+  etoiles: 2
+  types: [Démonstration]
+  mots_cles: [sous-variétés et hyperplan tangent, sous-variétés]
+  noeuds: [gd-sous-varietes, gd-tangent-sm]
+  notions: [espace-tangent-sv]
+  page_enonce: 6
+  page_corrige: 15
+  enonce: |
+    *(Le tore.)* Soit $f : \mathbb{R}^{2} \to \mathbb{R}^{3}$, $f(\theta, \varphi) = \Big(\cos\theta\big(1 + \tfrac{1}{2}\cos\varphi\big),\ \sin\theta\big(1 + \tfrac{1}{2}\cos\varphi\big),\ \tfrac{1}{2}\sin\varphi\Big)$, et $T = f(\mathbb{R}^{2})$.
+
+    **1.** Soit $R_{\theta}$ la rotation d'angle $\theta$ autour de l'axe $(Oz)$ et $C = \big\{\big(1 + \tfrac{1}{2}\cos\varphi, 0, \tfrac{1}{2}\sin\varphi\big) \,;\, \varphi \in \mathbb{R}\big\}$. Montrer que $T = \bigcup_{\theta \in \mathbb{R}}R_{\theta}(C)$. Dessiner $T$.
+
+    **2.** Montrer que $f(\theta, \varphi) = f(\theta', \varphi')$ si et seulement s'il existe $(k, l) \in \mathbb{Z}^{2}$ tel que $\theta = \theta' + 2k\pi$ et $\varphi = \varphi' + 2l\pi$.
+
+    **3.** Montrer que, pour tout ouvert $U \subset \mathbb{R}^{2}$, $f(U)$ est un ouvert de $T$.
+
+    **4.** Montrer que $T$ est une sous-variété de $\mathbb{R}^{3}$.
+  corrige: |
+    On décrit le tore comme surface de révolution, puis par une équation, ce qui permet d'appliquer le critère de la partie.
+
+    **1.** $f(\theta, \varphi) = R_{\theta}\big(f(0, \varphi)\big)$ et $f(0, \varphi) \in C$ : T = __(C). Le cercle $C$, de centre $(1, 0, 0)$ et de rayon $\frac{1}{2}$ dans le plan $y = 0$, tourne autour de l'axe $(Oz)$, qu'il ne rencontre pas.
+
+    **2.** La distance à l'axe de $f(\theta, \varphi)$ est $r = 1 + \frac{1}{2}\cos\varphi \geqslant \frac{1}{2} > 0$, et sa cote est $\frac{1}{2}\sin\varphi$. Si $f(\theta, \varphi) = f(\theta', \varphi')$, les deux points ont même $r$ et même projection sur le plan $(xOy)$, donc $(\cos\theta, \sin\theta) = (\cos\theta', \sin\theta')$ et $\theta \equiv \theta' \pmod{2\pi}$ ; puis $\cos\varphi = \cos\varphi'$ et $\sin\varphi = \sin\varphi'$, donc $\varphi \equiv \varphi' \pmod{2\pi}$. La réciproque est claire. 
+    $$\boxed{f(\theta, \varphi) = f(\theta', \varphi') \iff (\theta, \varphi) \equiv (\theta', \varphi') \pmod{2\pi\mathbb{Z}^{2}}}\text{.}$$
+
+    **3.** Soit $U$ ouvert et $\tilde{U} = U + 2\pi\mathbb{Z}^{2}$, ouvert, avec $f(\tilde{U}) = f(U)$. L'ensemble $K = [0, 2\pi]^{2} \setminus \tilde{U}$ est compact et $f(K) = T \setminus f(U)$ par la question 2. Comme $f(K)$ est compact, donc fermé, 
+    $$\boxed{f(U) = T \setminus f(K) \text{ est un ouvert de } T}\text{.}$$
+
+    **4.** $T$ est l'ensemble des points vérifiant $\big(\sqrt{x^{2} + y^{2}} - 1\big)^{2} + z^{2} = \frac{1}{4}$ : un tel point s'écrit $\sqrt{x^{2} + y^{2}} - 1 = \frac{1}{2}\cos\varphi$, $z = \frac{1}{2}\sin\varphi$, et l'on retrouve $f(\theta, \varphi)$. La fonction $g(x, y, z) = (r - 1)^{2} + z^{2} - \frac{1}{4}$, avec $r = \sqrt{x^{2} + y^{2}}$, est de classe $\mathcal{C}^{1}$ hors de l'axe $(Oz)$, qui ne rencontre pas $T$, et 
+    $$\nabla g = \Big(\frac{2(r - 1)x}{r}, \frac{2(r - 1)y}{r}, 2z\Big),$$
+     qui ne s'annule que si $z = 0$ et $r = 1$, où $g = -\frac{1}{4} \neq 0$. 
+    $$\boxed{T \text{ est une sous-variété de dimension } 2 \text{ de } \mathbb{R}^{3}}\text{.}$$
+
+    ![Figure](documents/figures/d15b3c08074a1925.svg)
+
+    La section du tore par le plan $y = 0$ est formée de deux cercles de rayon $\frac{1}{2}$ centrés en $(\pm 1, 0, 0)$ ; l'angle $\varphi$ repère le point sur le cercle $C$, l'angle $\theta$ la rotation autour de l'axe $(Oz)$. Les points où le gradient de $g$ s'annulerait sont sur le cercle des centres, qui n'est pas sur le tore.
+- id: "l3-cd-03-30"
+  feuille: "f-l3-cd-03"
+  numero: 30
+  partie: "Hyperplan tangent, sous-variétés"
+  etoiles: 2
+  types: [Démonstration, Calcul]
+  mots_cles: [sous-variétés et hyperplan tangent, espace tangent, sous-variétés]
+  noeuds: [gd-sous-varietes, gd-tangent-sm]
+  notions: [espace-tangent-sv, espace-tangent, polynome-caracteristique]
+  page_enonce: 7
+  page_corrige: 16
+  enonce: |
+    Soit $f : \mathcal{M}_{n}(\mathbb{R}) \to \mathbb{R}$, $f(A) = \det A$.
+
+    **1.** Montrer que $\displaystyle\lim_{\lambda \to 0}\frac{\det(I_{n} + \lambda X) - 1}{\lambda} = \operatorname{Tr} X$ (penser au polynôme caractéristique). En déduire $\mathrm{d} f(I_{n})\cdot X$.
+
+    **2.** En remarquant que $\dfrac{\det(A + \lambda X) - \det A}{\lambda} = \det A\,\dfrac{\det(I_{n} + \lambda A^{-1}X) - 1}{\lambda}$ pour $A$ inversible, calculer $\mathrm{d} f(A)\cdot X$ lorsque $A$ est inversible.
+
+    **3.** Montrer que $\mathrm{SL}_{n}(\mathbb{R}) = \{A \,;\, \det A = 1\}$ est une sous-variété de $\mathcal{M}_{n}(\mathbb{R})$ de dimension $n^{2} - 1$, dont l'espace tangent en $I_{n}$ est $\{X \in \mathcal{M}_{n}(\mathbb{R}) \,;\, \operatorname{Tr} X = 0\}$.
+  corrige: |
+    On retrouve la différentielle du déterminant du chapitre 2 (exercice 4), puis on applique le critère de la partie à $g = \det - 1$.
+
+    **1.** $\det(I_{n} + \lambda X)$ est un polynôme en $\lambda$ ; en développant, le coefficient de $\lambda$ est la somme des éléments diagonaux de $X$ (c'est, au signe près, le coefficient sous-dominant du polynôme caractéristique). Donc $\det(I_{n} + \lambda X) = 1 + \lambda\operatorname{Tr} X + O(\lambda^{2})$, et d f(I_n) X = Tr X, la dérivée selon $X$ étant la différentielle appliquée à $X$, $f$ étant de classe $\mathcal{C}^{\infty}$.
+
+    **2.** Par l'identité proposée et la question 1, d f(A) X = A Tr(A^-1X) pour $A$ inversible.
+
+    **3.** Sur $\mathrm{SL}_{n}(\mathbb{R})$, $\mathrm{d} f(A)\cdot A = \det A\,\operatorname{Tr}(I_{n}) = n \neq 0$ : la forme linéaire $\mathrm{d} f(A)$ est non nulle, donc surjective. Par le critère de la partie, appliqué à $g = f - 1$, 
+    $$\boxed{\mathrm{SL}_{n}(\mathbb{R}) \text{ est une sous-variété de dimension } n^{2} - 1}\text{,}$$
+     et 
+    $$\boxed{T_{I_{n}}\mathrm{SL}_{n}(\mathbb{R}) = \mathrm{Ker}\,\mathrm{d} f(I_{n}) = \{X \,;\, \operatorname{Tr} X = 0\}}.$$
+     *Remarque.* Le chapitre 6 du cours en donne l'interprétation : $\det e^{tX} = e^{t\operatorname{Tr} X}$, donc $e^{tX} \in \mathrm{SL}_{n}(\mathbb{R})$ pour tout $t$ si et seulement si $\operatorname{Tr} X = 0$.
+- id: "l3-cd-03-31"
+  feuille: "f-l3-cd-03"
+  numero: 31
+  partie: "Hyperplan tangent, sous-variétés"
+  etoiles: 2
+  types: [Démonstration]
+  mots_cles: [sous-variétés et hyperplan tangent, espace tangent, sous-variétés]
+  noeuds: [gd-sous-varietes, gd-tangent-sm]
+  notions: [espace-tangent-sv, espace-tangent]
+  page_enonce: 7
+  page_corrige: 16
+  enonce: |
+    Soit $E$ l'espace vectoriel des matrices symétriques réelles d'ordre $n$ et $f : \mathcal{M}_{n}(\mathbb{R}) \to E$, $f(A) = {}^{t}AA$.
+
+    **1.** Montrer que $\mathrm{d} f(A)\cdot X = {}^{t}AX + {}^{t}XA$.
+
+    **2.** Soit $A \in \mathrm{O}_{n}(\mathbb{R})$, $S \in E$ et $X = \frac{1}{2}AS$. Montrer que $\mathrm{d} f(A)\cdot X = S$. En déduire que $\mathrm{O}_{n}(\mathbb{R})$ est une sous-variété de $\mathcal{M}_{n}(\mathbb{R})$ de dimension $\dfrac{n(n - 1)}{2}$, dont l'espace tangent en $I_{n}$ est $\{X \in \mathcal{M}_{n}(\mathbb{R}) \,;\, {}^{t}X = -X\}$.
+  corrige: |
+    $\mathrm{O}_{n}(\mathbb{R}) = f^{-1}(I_{n})$, et on montre que la différentielle de $f$, vue comme application à valeurs dans $E$, est surjective.
+
+    **1.** ${}^{t}(A + X)(A + X) - {}^{t}AA = {}^{t}AX + {}^{t}XA + {}^{t}XX$, et $\lVert {}^{t}XX \rVert = O(\lVert X \rVert^{2})$ : d f(A) X = ^tAX + ^tXA, qui est bien symétrique.
+
+    **2.** Pour $A \in \mathrm{O}_{n}(\mathbb{R})$ et $S \in E$, ${}^{t}A\big(\frac{1}{2}AS\big) + {}^{t}\big(\frac{1}{2}AS\big)A = \frac{1}{2}S + \frac{1}{2}{}^{t}S{}^{t}AA = \frac{1}{2}S + \frac{1}{2}S$, donc d f(A) X = S. Ainsi $\mathrm{d} f(A) : \mathcal{M}_{n}(\mathbb{R}) \to E$ est surjective en tout point de $\mathrm{O}_{n}(\mathbb{R}) = \{A \,;\, f(A) - I_{n} = 0\}$, et, $E$ étant de dimension $\frac{n(n + 1)}{2}$, 
+    $$\boxed{\mathrm{O}_{n}(\mathbb{R}) \text{ est une sous-variété de dimension } n^{2} - \frac{n(n + 1)}{2} = \frac{n(n - 1)}{2}}\text{.}$$
+     Son espace tangent en $I_{n}$ est 
+    $$\boxed{\mathrm{Ker}\,\mathrm{d} f(I_{n}) = \{X \,;\, X + {}^{t}X = 0\}},$$
+     l'espace des matrices antisymétriques, de dimension $\frac{n(n - 1)}{2}$ comme il se doit.
+
+    *Remarque.* Le chapitre 2 (exercice 16) a montré que $e^{tX}$ est orthogonale lorsque $X$ est antisymétrique : les matrices antisymétriques sont les vitesses des courbes tracées sur $\mathrm{O}_{n}(\mathbb{R})$ et passant par $I_{n}$.
+- id: "l3-cd-03-32"
+  feuille: "f-l3-cd-03"
+  numero: 32
+  partie: "Hyperplan tangent, sous-variétés"
+  etoiles: 3
+  types: [Démonstration]
+  mots_cles: [sous-variétés et hyperplan tangent, sous-variétés, difféomorphismes]
+  noeuds: [gd-sous-varietes, gd-tangent-sm, gd-inversion-locale]
+  notions: [espace-tangent-sv, diffeomorphisme]
+  page_enonce: 7
+  page_corrige: 17
+  enonce: |
+    Soit $E$ un espace vectoriel de dimension finie, $a \in E$ et $f : E \to E$ un $\mathcal{C}^{1}$-difféomorphisme. On suppose que $f^{n} = \mathrm{Id}$ pour un entier $n \geqslant 1$ et que $f(a) = a$. On pose $A = \mathrm{d} f(a)$ et, pour $x \in E$, 
+    $$u(x) = \sum_{p = 1}^{n}A^{-p}f^{p}(x).$$
+
+    **1.** Montrer que $u$ est un difféomorphisme local en $a$ et que $u \circ f = A \circ u$.
+
+    **2.** Soit $F$ l'ensemble des points fixes de $f$. Montrer que $F$ est une sous-variété de $E$ au voisinage de $a$.
+
+    **3.** Soit $g : \mathbb{R}^{2} \to \mathbb{R}^{2}$, $g(x, y) = (x, y + y^{3} - x^{2})$. Montrer que $g$ est un $\mathcal{C}^{1}$-difféomorphisme de $\mathbb{R}^{2}$. En déduire que la conclusion de la question 2 peut être fausse si l'on supprime l'hypothèse $f^{n} = \mathrm{Id}$.
+  corrige: |
+    L'application $u$ « linéarise » $f$ au voisinage de $a$ : dans la carte $u$, $f$ devient l'application linéaire $A$, dont les points fixes forment un sous-espace.
+
+    **1.** Par la règle de la chaîne et $f(a) = a$, $\mathrm{d}(f^{p})(a) = A^{p}$ ; en particulier $A^{n} = \mathrm{d}(f^{n})(a) = \mathrm{Id}$, et $A$ est inversible. Alors $\mathrm{d} u(a) = \sum_{p = 1}^{n}A^{-p}A^{p} = n\,\mathrm{Id}$ est inversible, et u est un difféomorphisme local en a. Ensuite, 
+    $$u \circ f = \sum_{p = 1}^{n}A^{-p}f^{p + 1} = A\sum_{q = 2}^{n + 1}A^{-q}f^{q} = A\,u,$$
+     car le terme $q = n + 1$, égal à $A^{-n - 1}f^{n + 1} = A^{-1}f$, est le terme $q = 1$ manquant. u f = A u.
+
+    **2.** Soit $V$ un voisinage ouvert de $a$ sur lequel $u$ est un difféomorphisme, et $V' = V \cap f^{-1}(V)$, voisinage ouvert de $a$. Pour $x \in V'$ : si $f(x) = x$, alors $Au(x) = u(f(x)) = u(x)$ ; réciproquement, si $Au(x) = u(x)$, alors $u(f(x)) = u(x)$ avec $x$, $f(x) \in V$, donc $f(x) = x$. Ainsi $u(F \cap V') = u(V') \cap \mathrm{Ker}\,(A - \mathrm{Id})$, et, après un changement de base linéaire envoyant $\mathrm{Ker}\,(A - \mathrm{Id})$ sur $\mathbb{R}^{d} \times \{0\}$, 
+    $$\boxed{F \text{ est une sous-variété au voisinage de } a}\text{,}$$
+     de dimension $d = \dim\mathrm{Ker}\,(A - \mathrm{Id})$.
+
+    **3.** $g$ est bijective : $y \mapsto y + y^{3}$ est une bijection strictement croissante de $\mathbb{R}$, donc $g(x, y) = (u, v)$ équivaut à $x = u$ et $y + y^{3} = v + u^{2}$. Son jacobien $1 + 3y^{2}$ ne s'annule pas : par la proposition 7 du cours, 
+    $$\boxed{g \text{ est un } \mathcal{C}^{1}\text{-difféomorphisme}}\text{.}$$
+     Ses points fixes forment la courbe $\{y^{3} = x^{2}\}$, qui a un point de rebroussement en $0$. Ce n'est pas une sous-variété au voisinage de $0$ : sinon, il existerait une courbe $\gamma = (\gamma_{1}, \gamma_{2})$ de classe $\mathcal{C}^{1}$, avec $\gamma(0) = 0$ et $\gamma'(0) \neq 0$, paramétrant $F$ près de $0$. Comme $\gamma_{2} = \gamma_{1}^{2/3} \geqslant 0$ a un minimum en $0$, $\gamma_{2}'(0) = 0$, donc $\gamma_{1}'(0) \neq 0$ ; mais alors $\gamma_{1}(t)^{2} \sim \gamma_{1}'(0)^{2}t^{2}$, tandis que $\gamma_{2}(t)^{3} = o(t^{3})$, ce qui contredit $\gamma_{1}^{2} = \gamma_{2}^{3}$. 
+    $$\boxed{\text{La conclusion de la question 2 tombe en défaut sans l'hypothèse } f^{n} = \mathrm{Id}}\text{.}$$
+
+    ![Figure](documents/figures/c82bf1eb198cc490.svg)
+
+    Les deux arcs $y = |x|^{2/3}$ arrivent en $0$ tangents à l'axe des ordonnées, de part et d'autre : la courbe n'a pas de demi-tangentes opposées, et aucune paramétrisation régulière ne la décrit en $0$.
+- id: "l3-cd-03-33"
+  feuille: "f-l3-cd-03"
+  numero: 33
+  partie: "Exercice de synthèse"
+  etoiles: 3
+  types: [Démonstration]
+  mots_cles: [synthèse]
+  noeuds: [gd-inversion-locale]
+  notions: []
+  page_enonce: 7
+  page_corrige: 18
+  enonce: |
+    On considère l'équation différentielle 
+    $$(\ast) \qquad x''(t) - x(t)^{3} = g(t), \qquad x(0) = x(1) = 0,$$
+     où $g : [0, 1] \to \mathbb{R}$ est continue. Soit $F = \mathcal{C}([0, 1], \mathbb{R})$ muni de $\lVert \cdot \rVert_{\infty}$ et $E = \{\varphi \in \mathcal{C}^{2}([0, 1], \mathbb{R}) \,;\, \varphi(0) = \varphi(1) = 0\}$ muni de $\lVert \varphi \rVert_{E} = |\varphi'(0)| + \lVert \varphi'' \rVert_{\infty}$. On admet que $E$ est un espace de Banach.
+
+    **1.** Montrer que $\lVert \varphi \rVert_{\infty} \leqslant \lVert \varphi \rVert_{E}$ pour tout $\varphi \in E$.
+
+    **2.** Soit $\Phi : E \to F$ définie par $\Phi(\varphi) = \varphi'' - \varphi^{3}$. Montrer que $\Phi$ est de classe $\mathcal{C}^{1}$ sur $E$ et calculer $\mathrm{d}\Phi(\varphi)\cdot h$ pour $\varphi$, $h \in E$.
+
+    **3.** Montrer qu'il existe $\varepsilon > 0$ tel que, pour toute fonction $g$ vérifiant $\lVert g \rVert_{\infty} < \varepsilon$, l'équation $(\ast)$ admette une solution.
+  corrige: |
+    On résout l'équation non linéaire comme une petite perturbation de l'équation linéaire $x'' = g$, par le théorème d'inversion locale dans l'espace de Banach $E$ (cours, th. 1).
+
+    **1.** Comme $\varphi(0) = 0$, $\varphi(t) = \int_{0}^{t}\varphi'(s)\,\mathrm{d} s$ et $\varphi'(s) = \varphi'(0) + \int_{0}^{s}\varphi''$, donc $|\varphi'(s)| \leqslant |\varphi'(0)| + \lVert \varphi'' \rVert_{\infty} = \lVert \varphi \rVert_{E}$ et 
+    $$\boxed{\lVert \varphi \rVert_{\infty} \leqslant \lVert \varphi \rVert_{E}}\text{.}$$
+
+    **2.** $\Phi = L - N$, avec $L(\varphi) = \varphi''$, linéaire et continue ($\lVert \varphi'' \rVert_{\infty} \leqslant \lVert \varphi \rVert_{E}$), et $N(\varphi) = \varphi^{3}$. On a 
+    $$N(\varphi + h) - N(\varphi) - 3\varphi^{2}h = 3\varphi h^{2} + h^{3}, \qquad \lVert 3\varphi h^{2} + h^{3} \rVert_{\infty} \leqslant \big(3\lVert \varphi \rVert_{E} + \lVert h \rVert_{E}\big)\lVert h \rVert_{E}^{2},$$
+     par la question 1. Donc $N$ est différentiable, $\mathrm{d} N(\varphi)\cdot h = 3\varphi^{2}h$, et 
+    $$\boxed{\mathrm{d}\Phi(\varphi)\cdot h = h'' - 3\varphi^{2}h}.$$
+     De plus $|\mkern-1.5mu|\mkern-1.5mu|\mathrm{d} N(\varphi) - \mathrm{d} N(\psi)|\mkern-1.5mu|\mkern-1.5mu| \leqslant 3\lVert \varphi^{2} - \psi^{2} \rVert_{\infty} \leqslant 3\lVert \varphi - \psi \rVert_{E}\big(\lVert \varphi \rVert_{E} + \lVert \psi \rVert_{E}\big)$ : est de classe C^1.
+
+    **3.** En $\varphi = 0$, $\mathrm{d}\Phi(0) = L : h \mapsto h''$. C'est un isomorphisme de $E$ sur $F$ : pour $k \in F$, l'unique $h \in E$ tel que $h'' = k$ est 
+    $$h(t) = \int_{0}^{t}(t - s)k(s)\,\mathrm{d} s - t\int_{0}^{1}(1 - s)k(s)\,\mathrm{d} s,$$
+     et $\lVert h \rVert_{E} = |h'(0)| + \lVert k \rVert_{\infty} \leqslant 2\lVert k \rVert_{\infty}$, de sorte que $L^{-1}$ est continue. Par le théorème d'inversion locale, $\Phi$ envoie un voisinage de $0$ dans $E$ sur un voisinage de $\Phi(0) = 0$ dans $F$, qui contient une boule $B(0, \varepsilon)$. Pour $\lVert g \rVert_{\infty} < \varepsilon$, il existe $\varphi \in E$ tel que $\Phi(\varphi) = g$ : est solution de (), et c'est l'unique solution proche de $0$.
+
+    *Remarque.* Le choix de la norme $\lVert \cdot \rVert_{E}$ est essentiel : avec $\lVert \cdot \rVert_{\infty}$ sur $E$, l'application $h \mapsto h''$ ne serait pas continue (chapitre 2, exercice 8). Les chapitres 6 et 7 du cours traitent les problèmes de Cauchy, où les conditions portent sur un seul instant ; ce problème aux limites, où elles portent sur les deux extrémités, échappe à leurs méthodes, et c'est l'inversion locale qui le résout.
+

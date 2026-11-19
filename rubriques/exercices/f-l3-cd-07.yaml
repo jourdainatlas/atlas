@@ -1,0 +1,679 @@
+- id: "l3-cd-07-01"
+  feuille: "f-l3-cd-07"
+  numero: 1
+  partie: "Méthode d'Euler"
+  etoiles: 1
+  types: [Calcul]
+  mots_cles: ["méthode d'Euler"]
+  noeuds: [ed-cauchy-lipschitz, ed-gronwall]
+  notions: [schema-recurrence]
+  page_enonce: 1
+  page_corrige: 1
+  enonce: |
+    *(Schéma d'Euler explicite.)* Soit $t_{0}$, $x_{0} \in \mathbb{R}$, $T > 0$ et $f : [t_{0}, t_{0} + T] \times \mathbb{R} \to \mathbb{R}$ continue, $L$-lipschitzienne par rapport à sa seconde variable. On considère le problème $x' = f(t, x)$ sur $[t_{0}, t_{0} + T]$, $x(t_{0}) = x_{0}$.
+
+    **1.** Écrire le schéma d'Euler explicite à pas constant pour ce problème. Quel est son ordre ?
+
+    **2.** *Applications.* On considère les problèmes 
+    $$\text{(A)} \quad x' = t\sin x \text{ sur } [0, T], \ x(0) = \frac{\pi}{2} ; \qquad \text{(B)} \quad x' = t^{2} + x + 1 \text{ sur } [1, T], \ x(1) = 1.$$
+
+    **(a)** Écrire le schéma d'Euler explicite à pas constant, puis calculer les deux premières itérations pour $h = 0{,}1$.
+
+    **(b)** Le schéma converge-t-il vers la solution de chacun de ces problèmes ?
+  corrige: |
+    $\triangleright$ *1.* Avec $h = \dfrac{T}{N}$ et $t_{n} = t_{0} + nh$, le schéma est x_n + 1 = x_n + h f(t_n, x_n), $x_{0}$ donné. Si $f$ est de plus de classe $\mathcal{C}^{1}$, il est d'ordre 1 : l'erreur est majorée par $\dfrac{M_{2}h}{2L}\big(e^{LT} - 1\big)$ (cours, th. 1).
+
+    $\triangleright$ *2 (a).* Pour (A), $x_{n + 1} = x_{n} + h\,t_{n}\sin x_{n}$ avec $t_{n} = nh$ : comme $t_{0} = 0$, le premier pas ne bouge pas, 
+    $$x_{1} = \frac{\pi}{2} \approx 1{,}5708, \qquad x_{2} = \frac{\pi}{2} + 0{,}1 \times 0{,}1 \times \sin\frac{\pi}{2} = \boxed{\frac{\pi}{2} + 0{,}01 \approx 1{,}5808.}$$
+     Pour (B), $x_{n + 1} = x_{n} + h\big(t_{n}^{2} + x_{n} + 1\big)$ avec $t_{n} = 1 + nh$ : $x_{1} = 1 + 0{,}1 \times 3 = 1{,}3$ et $x_{2} = 1{,}3 + 0{,}1 \times (1{,}21 + 1{,}3 + 1) = \boxed{1{,}651}$.
+
+    $\triangleright$ *2 (b).* Pour (A), $f(t, x) = t\sin x$ est de classe $\mathcal{C}^{1}$ et $|f(t, x) - f(t, y)| \leqslant T|x - y|$ sur $[0, T] \times \mathbb{R}$ ; pour (B), $f$ est $1$-lipschitzienne en $x$. Dans les deux cas, la solution existe sur tout l'intervalle (chapitre 6, prop. 12), et le théorème 1 du cours s'applique : le schéma converge, à l'ordre 1. La constante $e^{LT}$ de la majoration est cependant énorme pour (A) quand $T$ est grand ($L = T$, d'où $e^{T^{2}}$) : la majoration garantit la convergence, pas une bonne précision.
+- id: "l3-cd-07-02"
+  feuille: "f-l3-cd-07"
+  numero: 2
+  partie: "Méthode d'Euler"
+  etoiles: 1
+  types: [Démonstration, Calcul]
+  mots_cles: ["méthode d'Euler"]
+  noeuds: [ed-cauchy-lipschitz, ed-gronwall]
+  notions: [schema-recurrence]
+  page_enonce: 1
+  page_corrige: 1
+  enonce: |
+    *(Erreur relative.)* On considère le problème $y'(t) = 3e^{0{,}5t} - 0{,}2\,y(t)$, $y(0) = 1$, sur $[0, 4]$.
+
+    **1.** Justifier l'existence et l'unicité de la solution, et la calculer.
+
+    **2.** Que dire de la convergence et de l'ordre de la méthode d'Euler explicite pour ce problème ?
+
+    **3.** Avec un pas $h = 1$, dresser un tableau des valeurs exactes $y(t_{i})$, des valeurs approchées $y_{i}$ ($0 \leqslant i \leqslant 4$) et de l'erreur relative en pourcentage $\varepsilon_{i} = \left|\dfrac{y(t_{i}) - y_{i}}{y(t_{i})}\right| \times 100$. Représenter sur un même graphique la solution exacte et les valeurs approchées.
+  corrige: |
+    $\triangleright$ *1.* Le second membre est affine en $y$, à coefficients continus : par le chapitre 6 (prop. 12), il existe une unique solution, définie sur $\mathbb{R}$. Une solution particulière $Ae^{0{,}5t}$ vérifie $0{,}5A = 3 - 0{,}2A$, soit $A = \dfrac{30}{7}$, et 
+    $$\boxed{y(t) = \frac{30}{7}e^{0{,}5t} - \frac{23}{7}e^{-0{,}2t}.}$$
+
+    $\triangleright$ *2.* Le second membre $F(t, y) = 3e^{0{,}5t} - 0{,}2y$ est de classe $\mathcal{C}^{1}$ et $0{,}2$-lipschitzienne en $y$ ; par le théorème 1 du cours, la méthode d'Euler converge, à l'ordre 1.
+
+    $\triangleright$ *3.* Avec $h = 1$, $y_{i + 1} = 0{,}8\,y_{i} + 3e^{0{,}5\,i}$. Valeurs calculées en Python :
+
+    $$\begin{array}{|c|c|c|c|c|c|} \hline t_{i} & 0 & 1 & 2 & 3 & 4 \\ \hline y(t_{i}) & 1 & 4{,}3758 & 9{,}4473 & 17{,}4040 & 30{,}1910 \\  y_{i} & 1 & 3{,}8000 & 7{,}9862 & 14{,}5438 & 25{,}0801 \\  \varepsilon_{i}\text{ (\%)} & 0 & 13{,}2 & 15{,}5 & 16{,}4 & 16{,}9 \\ \hline \end{array}$$
+
+    L'erreur relative croît lentement : avec un pas aussi grand, chaque pas sous-estime la croissance de la solution convexe, et l'erreur se propage.
+
+    ![Figure](documents/figures/d832addaab45acdc.svg)
+
+    Les valeurs d'Euler (en orange) restent sous la courbe exacte : la solution étant convexe, la tangente utilisée à chaque pas passe en dessous.
+- id: "l3-cd-07-03"
+  feuille: "f-l3-cd-07"
+  numero: 3
+  partie: "Méthode d'Euler"
+  etoiles: 1
+  types: [Algorithmique, Démonstration, Calcul]
+  mots_cles: ["méthode d'Euler"]
+  noeuds: [ed-cauchy-lipschitz, ed-gronwall]
+  notions: [schema-recurrence]
+  page_enonce: 1
+  page_corrige: 2
+  enonce: |
+    *(La méthode d'Euler ne voit pas l'explosion.)* On considère $y' = y^{2}$, $y(0) = 1$.
+
+    **1.** Donner la solution exacte et son intervalle maximal de définition.
+
+    **2.** Pour un pas $h > 0$, écrire le schéma d'Euler explicite. Montrer que la suite $(y_{n})$ est définie pour tout $n$, croissante, et tend vers $+\infty$. Pourquoi le théorème de convergence du cours ne s'applique-t-il pas sur $[0, 2]$ ?
+
+    **3.** Montrer que $\dfrac{1}{y_{n + 1}} \geqslant \dfrac{1}{y_{n}} - h$, et en déduire que $y_{n} \leqslant \dfrac{1}{1 - nh} = y(t_{n})$ tant que $nh < 1$ : le schéma sous-estime la solution.
+
+    **4.** *Python.* Pour $h = 10^{-2}$ et $h = 10^{-3}$, déterminer le premier indice $n$ tel que $y_{n} > 10^{6}$, et comparer $t_{n}$ à l'instant d'explosion. Qu'en conclure ?
+  corrige: |
+    $\triangleright$ *1.* $\Big(-\dfrac{1}{y}\Big)' = 1$ donne 
+    $$\boxed{y(t) = \frac{1}{1 - t} \text{ sur } ]-\infty, 1[}\text{ :}$$
+     la solution explose en $t = 1$.
+
+    $\triangleright$ *2.* $y_{n + 1} = y_{n} + hy_{n}^{2}$. Par récurrence, $y_{n} \geqslant 1$ est défini et $y_{n + 1} - y_{n} = hy_{n}^{2} > 0$ : la suite est croissante. Si elle convergeait vers $\ell \geqslant 1$, on aurait $\ell = \ell + h\ell^{2}$, donc $\ell = 0$ : c'est absurde, et y_n +, mais seulement quand $n \to +\infty$ : à chaque instant $t_{n}$, la valeur est finie. Le théorème 1 du cours suppose la solution définie sur tout l'intervalle de calcul, et $F(t, y) = y^{2}$ globalement lipschitzienne ; ici, la solution n'existe pas sur $[0, 2]$, et le schéma calcule des valeurs qui n'approchent rien après $t = 1$.
+
+    $\triangleright$ *3.* On a 
+    $$\frac{1}{y_{n + 1}} = \frac{1}{y_{n}(1 + hy_{n})} = \frac{1}{y_{n}} - \frac{h}{1 + hy_{n}} \geqslant \frac{1}{y_{n}} - h.$$
+     Par récurrence, $\dfrac{1}{y_{n}} \geqslant 1 - nh$, d'où y_n 11 - nh = y(t_n) tant que $nh < 1$ : comme à l'exercice 2, la solution est convexe et le schéma la sous-estime.
+
+    $\triangleright$ *4.* Le programme suivant donne $n = 108$, soit $t_{n} = 1{,}08$, pour $h = 10^{-2}$, et $n = 1010$, soit $t_{n} = 1{,}010$, pour $h = 10^{-3}$. 
+
+    ```python
+    for h in [1e-2, 1e-3]:
+        y, n = 1.0, 0
+        while y <= 1e6:
+            y, n = y + h*y*y, n + 1
+        print(h, n, n*h)
+    ```
+
+     L'instant où le schéma « explose » tend vers l'instant d'explosion $1$ quand $h \to 0$, mais le schéma, laissé à lui-même, continue au-delà : 
+    $$\boxed{\text{c'est à l'utilisateur de détecter l'explosion}}\text{,}$$
+     en surveillant la taille des $y_{n}$ ou en adaptant le pas, comme les solveurs de `scipy` (cours, section 7.8).
+
+    ![Figure](documents/figures/da211587ec3fd0b9.svg)
+
+    Avec $h = 0{,}1$, les points d'Euler restent sous la solution exacte jusqu'à $t = 1$ (tirets rouges), où celle-ci explose ; le schéma donne encore $y_{10} \approx 6{,}1$ en $t = 1$, puis franchit l'asymptote sans difficulté ($y_{12} \approx 19{,}7$).
+- id: "l3-cd-07-04"
+  feuille: "f-l3-cd-07"
+  numero: 4
+  partie: "Stabilité, schémas implicites, équations raides"
+  etoiles: 1
+  types: [Démonstration]
+  mots_cles: ["stabilité, schémas implicites, équations raides"]
+  noeuds: [ed-lineaires]
+  notions: [schema-recurrence]
+  page_enonce: 2
+  page_corrige: 3
+  enonce: |
+    *(Schéma d'Euler implicite.)* On reprend le problème de l'exercice 1. On dit qu'un schéma est *A-stable* si, appliqué à l'équation $x' = \lambda x$ avec $\lambda \in \mathbb{C}$, $\operatorname{Re}\lambda < 0$, il fournit pour tout pas $h > 0$ une suite qui tend vers $0$.
+
+    **1.** Le schéma d'Euler explicite à pas constant est-il A-stable ?
+
+    **2.** Écrire le schéma d'Euler implicite à pas constant. Justifier que, pour $hL < 1$, chaque itération est bien définie.
+
+    **3.** Le schéma d'Euler implicite est-il A-stable ?
+  corrige: |
+    $\triangleright$ *1.* Sur $x' = \lambda x$, le schéma explicite donne $x_{n} = (1 + h\lambda)^{n}x_{0}$, qui tend vers $0$ si et seulement si $|1 + h\lambda| < 1$, c'est-à-dire si $h\lambda$ est dans le disque ouvert de centre $-1$ et de rayon $1$. Pour $\lambda = -1$ et $h = 3$, $|1 + h\lambda| = 2$ : le schéma n'est pas A-stable.
+
+    $\triangleright$ *2.* Le schéma implicite est x_n + 1 = x_n + h f(t_n + 1, x_n + 1). Connaissant $x_{n}$, $x_{n + 1}$ est un point fixe de $g(z) = x_{n} + h f(t_{n + 1}, z)$, qui est $hL$-lipschitzienne : si $hL < 1$, $g$ est contractante sur $\mathbb{R}$ complet, et le théorème du point fixe (chapitre 1, th. 13) donne un unique $x_{n + 1}$, que l'on calcule par les itérations $z_{k + 1} = g(z_{k})$ ou par la méthode de Newton.
+
+    $\triangleright$ *3.* Sur $x' = \lambda x$, $x_{n + 1}(1 - h\lambda) = x_{n}$, donc $x_{n} = \dfrac{x_{0}}{(1 - h\lambda)^{n}}$ ; or $|1 - h\lambda| \geqslant 1 - h\operatorname{Re}\lambda > 1$ : $x_{n} \to 0$ pour tout $h > 0$. Le schéma implicite est A-stable (cours, prop. 2, pour $\lambda$ réel).
+
+    ![Figure](documents/figures/481ca4b810b4adf6.svg)
+
+    Les régions colorées sont les valeurs de $z = h\lambda$ pour lesquelles la suite tend vers $0$. Celle d'Euler implicite contient tout le demi-plan $\operatorname{Re}z < 0$ : c'est la A-stabilité. Celle d'Euler explicite n'en contient qu'un petit disque, et impose $h < \dfrac{2}{|\lambda|}$ pour $\lambda < 0$.
+- id: "l3-cd-07-05"
+  feuille: "f-l3-cd-07"
+  numero: 5
+  partie: "Stabilité, schémas implicites, équations raides"
+  etoiles: 2
+  types: [Calcul]
+  mots_cles: ["stabilité, schémas implicites, équations raides"]
+  noeuds: [ed-lineaires]
+  notions: [schema-recurrence]
+  page_enonce: 2
+  page_corrige: 4
+  enonce: |
+    *(Raideur et schéma implicite.)* Soit $a > 0$, $b \in \mathbb{R}$ et $x_{0} \in \mathbb{R}$. On considère le problème 
+    $$(1) \qquad x'(t) = -ax(t) + b \quad (t \geqslant 0), \qquad x(0) = x_{0}.$$
+
+    **1.** Donner l'ordre de l'équation et dire si elle est linéaire, autonome. Justifier l'existence d'une unique solution globale, la calculer et donner sa limite en $+\infty$.
+
+    **2.** Soit $h > 0$ et $t_{n} = nh$.
+
+    **(a)** Écrire le schéma d'Euler explicite pour (1), trouver la relation de récurrence entre $x_{n + 1}$ et $x_{n}$, et exprimer $x_{n}$ en fonction de $n$ et $h$.
+
+    **(b)** Quelle condition doit vérifier $h$ pour que, quel que soit $x_{0}$, $x_{n}$ tende vers $\lim_{t \to +\infty}x(t)$ ? Sous cette condition, combien d'instants de calcul faut-il au minimum pour approcher $x$ sur $[0, 10]$ ? Que vaut ce nombre pour $a = 100$ ?
+
+    **(c)** On prend $a = 100$, $b = 25$, $x_{0} = 1$ et $h = \dfrac{1}{25}$. Calculer $x_{n}$ et $\lim|x_{n}|$. Que conclure sur la A-stabilité du schéma ? Quelle est la plus grande valeur de $h$ pour laquelle $(|x_{n}|)$ reste bornée ?
+
+    **3.** Reprendre les questions 2 (a), (b) et (c) avec le schéma d'Euler implicite. La recherche d'un pas maximal a-t-elle encore un sens ?
+  corrige: |
+    $\triangleright$ *1.* Équation 
+    $$\boxed{\text{d'ordre } 1, \text{ linéaire (affine), autonome}}\text{.}$$
+     Le second membre est affine en $x$ : il existe une unique solution globale (chapitre 6, prop. 12), 
+    $$\boxed{x(t) = \frac{b}{a} + \Big(x_{0} - \frac{b}{a}\Big)e^{-at}}\text{,}$$
+     qui tend vers $\dfrac{b}{a}$ en $+\infty$. Pour $a = 100$, $b = 25$, $x_{0} = 1$ : $x(t) = \dfrac{1}{4} + \dfrac{3}{4}e^{-100t}$.
+
+    $\triangleright$ *2 (a).* $x_{n + 1} = x_{n} + h(-ax_{n} + b) = (1 - ah)x_{n} + hb$. Le point fixe de cette récurrence affine est $\dfrac{b}{a}$, d'où 
+    $$\boxed{x_{n} = \frac{b}{a} + (1 - ah)^{n}\Big(x_{0} - \frac{b}{a}\Big).}$$
+
+    $\triangleright$ *2 (b).* $x_{n} \to \dfrac{b}{a}$ pour tout $x_{0}$ si et seulement si $|1 - ah| < 1$, soit 0 < h < 2a (cours, prop. 2). Pour couvrir $[0, 10]$, il faut alors $N = \dfrac{10}{h} > 5a$ pas : plus de 500 pas pour a = 100, alors que la solution est pratiquement constante dès $t = 0{,}05$. C'est le phénomène de *raideur* : la contrainte de stabilité, et non la précision, impose le pas.
+
+    $\triangleright$ *2 (c).* $1 - 100h = -3$, donc x_n = 14 + 34(-3)^n et $|x_{n}| \to +\infty$ : le schéma n'est pas A-stable (exercice 4). La suite reste bornée si et seulement si $|1 - 100h| \leqslant 1$ : le pas maximal est h = 150, pour lequel $x_{n} = \dfrac{1}{4} + \dfrac{3}{4}(-1)^{n}$ oscille sans converger ; la convergence demande $h < \dfrac{1}{50}$.
+
+    $\triangleright$ *3.* Le schéma implicite donne $x_{n + 1} = x_{n} + h(-ax_{n + 1} + b)$, soit $x_{n + 1} = \dfrac{x_{n} + hb}{1 + ah}$ et 
+    $$\boxed{x_{n} = \frac{b}{a} + \frac{1}{(1 + ah)^{n}}\Big(x_{0} - \frac{b}{a}\Big) \xrightarrow[n \to +\infty]{} \frac{b}{a}} \quad \text{pour tout } h > 0.$$
+     Pour $h = \dfrac{1}{25}$, $x_{n} = \dfrac{1}{4} + \dfrac{3}{4}\cdot 5^{-n} \to \dfrac{1}{4}$ : le schéma est A-stable, et la recherche d'un pas maximal n'a plus de sens pour la stabilité. Seule la précision dans la phase transitoire, de durée $\dfrac{1}{a}$, guide alors le choix du pas.
+
+    ![Figure](documents/figures/4f494ff2487a926b.svg)
+
+    Avec $h = \dfrac{1}{25}$, le schéma explicite (orange) sort du cadre dès le deuxième point ($x_{1} = -2$) ; avec $h = 0{,}019$, juste sous $\dfrac{1}{50}$, il converge en oscillant lentement (vert) ; le schéma implicite (violet), avec le grand pas, rejoint aussitôt la valeur limite $\dfrac{1}{4}$.
+- id: "l3-cd-07-06"
+  feuille: "f-l3-cd-07"
+  numero: 6
+  partie: "Schémas d'ordre supérieur, méthodes de Runge-Kutta"
+  etoiles: 1
+  types: [Démonstration]
+  mots_cles: ["schémas d'ordre supérieur, méthodes de Runge-Kutta"]
+  noeuds: [de-taylor]
+  notions: [schema-recurrence]
+  page_enonce: 2
+  page_corrige: 5
+  enonce: |
+    *(Point milieu et trapèzes.)* On reprend le problème de l'exercice 1.
+
+    **1.** Construire le schéma explicite du point milieu à pas constant, en remplaçant la pente $f(t_{n}, x_{n})$ du schéma d'Euler par une estimation de la pente au milieu du pas.
+
+    **2.** Construire le schéma explicite des trapèzes (schéma de Heun) à pas constant, en remplaçant l'intégrale $\displaystyle\int_{t_{n}}^{t_{n + 1}}f(s, x(s))\,\mathrm{d} s$ par la méthode des trapèzes, la valeur inconnue en $t_{n + 1}$ étant prédite par un pas d'Euler.
+
+    **3.** Montrer que ces deux schémas sont d'ordre au moins $2$.
+  corrige: |
+    $\triangleright$ *1.* On estime la valeur au milieu du pas par un demi-pas d'Euler, et l'on avance avec la pente en ce point : 
+    $$\boxed{x_{n + 1} = x_{n} + h\,f\Big(t_{n} + \frac{h}{2},\ x_{n} + \frac{h}{2}f(t_{n}, x_{n})\Big).}$$
+
+    $\triangleright$ *2.* $x(t_{n + 1}) - x(t_{n}) = \int_{t_{n}}^{t_{n + 1}}f(s, x(s))\,\mathrm{d} s \approx \dfrac{h}{2}\big(f(t_{n}, x(t_{n})) + f(t_{n + 1}, x(t_{n + 1}))\big)$, et l'on prédit $x(t_{n + 1})$ par Euler : 
+    $$\boxed{x_{n + 1} = x_{n} + \frac{h}{2}\Big(f(t_{n}, x_{n}) + f\big(t_{n + 1},\ x_{n} + hf(t_{n}, x_{n})\big)\Big).}$$
+
+    $\triangleright$ *3.* On applique la prop. 6 du cours, avec $f$ de classe $\mathcal{C}^{2}$. Pour le point milieu, $\Phi(t, x, h) = f\Big(t + \dfrac{h}{2}, x + \dfrac{h}{2}f(t, x)\Big)$ : $\Phi(t, x, 0) = f(t, x)$ et, par la règle de la chaîne, $\frac{\partial \Phi}{\partial h}(t, x, 0) = \dfrac{1}{2}\frac{\partial f}{\partial t} + \dfrac{1}{2}\frac{\partial f}{\partial x}f = \dfrac{1}{2}f^{[1]}$. Pour Heun, $\Phi(t, x, h) = \dfrac{1}{2}\big(f(t, x) + f(t + h, x + hf(t, x))\big)$ : $\Phi(t, x, 0) = f$ et $\frac{\partial \Phi}{\partial h}(t, x, 0) = \dfrac{1}{2}\Big(\frac{\partial f}{\partial t} + \frac{\partial f}{\partial x}f\Big) = \dfrac{1}{2}f^{[1]}$. Les deux schémas sont d'ordre au moins 2 (c'est la prop. 7 du cours), et ils sont stables : l'erreur globale est un $O(h^{2})$ par le théorème 2.
+- id: "l3-cd-07-07"
+  feuille: "f-l3-cd-07"
+  numero: 7
+  partie: "Schémas d'ordre supérieur, méthodes de Runge-Kutta"
+  etoiles: 2
+  types: [Démonstration]
+  mots_cles: ["schémas d'ordre supérieur, méthodes de Runge-Kutta"]
+  noeuds: [de-taylor]
+  notions: [schema-recurrence]
+  page_enonce: 3
+  page_corrige: 5
+  enonce: |
+    *(Ordre des méthodes de Runge-Kutta.)* On considère une méthode de Runge-Kutta explicite à $s$ étages, de coefficients $(a_{ij})_{j < i}$, $(b_{i})$, $(c_{i})$, appliquée à $x' = f(t, x)$ avec $f$ régulière et globalement lipschitzienne par rapport à $x$. Montrer, en détaillant les calculs :
+
+    **1.** que la méthode est consistante d'ordre au moins $1$ si et seulement si $\displaystyle\sum_{i = 1}^{s}b_{i} = 1$ ;
+
+    **2.** qu'elle est d'ordre au moins $2$ si et seulement si, de plus, $\displaystyle\sum_{i = 1}^{s}b_{i}c_{i} = \frac{1}{2}$ et $\displaystyle\sum_{i = 1}^{s}b_{i}\sum_{j = 1}^{i - 1}a_{ij} = \frac{1}{2}$ ;
+
+    **3.** quelles conditions doivent vérifier les coefficients pour que la méthode soit d'ordre au moins $3$.
+  corrige: |
+    On écrit $x_{n + 1} = x_{n} + h\Phi(t_{n}, x_{n}, h)$ avec $\Phi = \sum_{i}b_{i}k_{i}$, $k_{i} = f\Big(t + c_{i}h, x + h\sum_{j < i}a_{ij}k_{j}\Big)$, et l'on compare au développement de la solution exacte : 
+    $$x(t + h) - x(t) = hf + \frac{h^{2}}{2}f^{[1]} + \frac{h^{3}}{6}f^{[2]} + O(h^{4}), \quad f^{[1]} = f_{t} + f_{x}f, \quad f^{[2]} = (f^{[1]})_{t} + (f^{[1]})_{x}f,$$
+     où $f_{t}$, $f_{x}$ désignent les dérivées partielles, toutes évaluées en $(t, x)$. On note $\sigma_{i} = \sum_{j < i}a_{ij}$.
+
+    $\triangleright$ *1.* $k_{i} = f + O(h)$, donc $\Phi(t, x, h) = \Big(\sum_{i}b_{i}\Big)f + O(h)$ et l'erreur de consistance vaut $h\Big(1 - \sum b_{i}\Big)f + O(h^{2})$. Si $\sum b_{i} = 1$, elle est en $O(h^{2})$ : ordre au moins $1$. Réciproquement, pour $f = 1$ (équation $x' = 1$), elle vaut $h\Big(1 - \sum b_{i}\Big)$ : l'ordre $1$ exige _ib_i = 1.
+
+    $\triangleright$ *2.* Au premier ordre, $k_{i} = f + h\big(c_{i}f_{t} + \sigma_{i}f_{x}f\big) + O(h^{2})$, donc 
+    $$\Phi = f + h\Big(\sum_{i}b_{i}c_{i}\Big)f_{t} + h\Big(\sum_{i}b_{i}\sigma_{i}\Big)f_{x}f + O(h^{2}),$$
+     à comparer avec $f + \dfrac{h}{2}(f_{t} + f_{x}f)$. Les deux conditions $\sum b_{i}c_{i} = \dfrac{1}{2}$ et $\sum b_{i}\sigma_{i} = \dfrac{1}{2}$ suffisent donc. Elles sont nécessaires : pour $f(t, x) = t$, seul le terme $f_{t} = 1$ intervient, et pour $f(t, x) = x$, seul le terme $f_{x}f = x$. Ainsi 
+    $$\boxed{\text{ordre} \geqslant 2 \iff \sum b_{i} = 1, \quad \sum_{i}b_{i}c_{i} = \frac{1}{2}, \quad \sum_{i}b_{i}\sum_{j < i}a_{ij} = \frac{1}{2}.}$$
+     En pratique on impose $c_{i} = \sigma_{i}$, de sorte que l'étage $i$ évalue $f$ « au bon instant » ; les deux dernières conditions coïncident alors, comme dans la prop. 8 du cours.
+
+    $\triangleright$ *3.* On suppose $c_{i} = \sigma_{i}$ pour alléger. Alors $h\sum_{j}a_{ij}k_{j} = hc_{i}f + h^{2}\Big(\sum_{j}a_{ij}c_{j}\Big)f^{[1]} + O(h^{3})$, et la formule de Taylor à l'ordre $2$ (chapitre 4) donne 
+    $$k_{i} = f + hc_{i}f^{[1]} + h^{2}\Big(\frac{c_{i}^{2}}{2}G + \Big(\sum_{j}a_{ij}c_{j}\Big)f_{x}f^{[1]}\Big) + O(h^{3}), \qquad G = f_{tt} + 2f_{tx}f + f_{xx}f^{2}.$$
+     Comme $f^{[2]} = G + f_{x}f^{[1]}$, la comparaison des termes en $h^{2}$ de $\Phi$ et de $\dfrac{1}{h}\big(x(t + h) - x(t)\big)$ donne les deux conditions supplémentaires 
+    $$\boxed{\sum_{i}b_{i}c_{i}^{2} = \frac{1}{3}, \qquad \sum_{i, j}b_{i}a_{ij}c_{j} = \frac{1}{6},}$$
+     nécessaires car $G$ et $f_{x}f^{[1]}$ sont indépendants ($f = t^{2}$ donne $G = 2$ et $f_{x}f^{[1]} = 0$ ; $f = x$ donne $G = 0$ et $f_{x}f^{[1]} = x$). On vérifie que RK4 les satisfait : $\dfrac{1}{3}\cdot\dfrac{1}{4} + \dfrac{1}{3}\cdot\dfrac{1}{4} + \dfrac{1}{6} = \dfrac{1}{3}$ et $\dfrac{1}{3}\cdot\dfrac{1}{4} + \dfrac{1}{6}\cdot\dfrac{1}{2} = \dfrac{1}{6}$. Le développement en $h^{3}$, qui donne les quatre conditions de plus de l'ordre $4$, suit le même principe (cours, th. 3, admis).
+- id: "l3-cd-07-08"
+  feuille: "f-l3-cd-07"
+  numero: 8
+  partie: "Schémas d'ordre supérieur, méthodes de Runge-Kutta"
+  etoiles: 1
+  types: [Calcul]
+  mots_cles: ["schémas d'ordre supérieur, méthodes de Runge-Kutta"]
+  noeuds: [de-taylor]
+  notions: [schema-recurrence]
+  page_enonce: 3
+  page_corrige: 6
+  enonce: |
+    *(Tableaux de Butcher.)*
+
+    **1.** Reconnaître les schémas représentés par les tableaux 
+    $$\text{(a)} \ \begin{array}{c|c} 0 & 0 \\ \hline & 1 \end{array} \qquad \text{(b)} \ \begin{array}{c|cc} 0 & 0 & 0 \\ 1/2 & 1/2 & 0 \\ \hline & 0 & 1 \end{array} \qquad \text{(c)} \ \begin{array}{c|cc} 0 & 0 & 0 \\ 1 & 1 & 0 \\ \hline & 1/2 & 1/2 \end{array}$$
+
+    **2.** Écrire sous forme explicite le schéma représenté par 
+    $$\text{(d)} \ \begin{array}{c|cccc} 0 & 0 & 0 & 0 & 0 \\ 1/2 & 1/2 & 0 & 0 & 0 \\ 1/2 & 0 & 1/2 & 0 & 0 \\ 1 & 0 & 0 & 1 & 0 \\ \hline & 1/6 & 1/3 & 1/3 & 1/6 \end{array} \qquad \text{puis par} \qquad \text{(e)} \ \begin{array}{c|cc} 0 & 0 & 0 \\ 2/3 & 2/3 & 0 \\ \hline & 1/4 & 1/4 \end{array}$$
+     et dire si le schéma (e) est consistant, d'ordre au moins $2$. Comment modifier sa dernière ligne pour qu'il soit d'ordre $2$ ?
+  corrige: |
+    $\triangleright$ *1.* (a) est la méthode d'Euler, $x_{n + 1} = x_{n} + hf(t_{n}, x_{n})$ ; (b) est Euler modifiée (point milieu) ; (c) est la méthode de Heun (trapèzes) : ce sont les schémas de l'exercice 6.
+
+    $\triangleright$ *2.* Le tableau (d) est celui de RK4 : 
+    $$k_{1} = f(t_{n}, x_{n}), \quad k_{2} = f\Big(t_{n} + \frac{h}{2}, x_{n} + \frac{h}{2}k_{1}\Big), \quad k_{3} = f\Big(t_{n} + \frac{h}{2}, x_{n} + \frac{h}{2}k_{2}\Big), \quad k_{4} = f(t_{n} + h, x_{n} + hk_{3}),$$
+
+    $$x_{n + 1} = x_{n} + \frac{h}{6}\big(k_{1} + 2k_{2} + 2k_{3} + k_{4}\big).$$
+     Le tableau (e) donne $k_{1} = f(t_{n}, x_{n})$, $k_{2} = f\Big(t_{n} + \dfrac{2h}{3}, x_{n} + \dfrac{2h}{3}k_{1}\Big)$ et $x_{n + 1} = x_{n} + \dfrac{h}{4}(k_{1} + k_{2})$. Comme $b_{1} + b_{2} = \dfrac{1}{2} \neq 1$, il n'est pas consistant (exercice 7) : sur $x' = 1$, il donne $x_{n} = x_{0} + \dfrac{nh}{2}$, la moitié de la bonne valeur. Avec la ligne $\Big(\dfrac{1}{4}, \dfrac{3}{4}\Big)$, on a $\sum b_{i} = 1$ et $\sum b_{i}c_{i} = \dfrac{3}{4}\cdot\dfrac{2}{3} = \dfrac{1}{2}$ : le schéma devient d'ordre 2 (méthode de Ralston). Il n'est pas d'ordre $3$, puisque $\sum b_{i}a_{ij}c_{j} = 0 \neq \dfrac{1}{6}$. La ligne $\Big(\dfrac{1}{4}, \dfrac{1}{4}\Big)$ de l'énoncé source est probablement une coquille.
+- id: "l3-cd-07-09"
+  feuille: "f-l3-cd-07"
+  numero: 9
+  partie: "Schémas d'ordre supérieur, méthodes de Runge-Kutta"
+  etoiles: 2
+  types: [Algorithmique, Calcul]
+  mots_cles: ["schémas d'ordre supérieur, méthodes de Runge-Kutta"]
+  noeuds: [de-taylor]
+  notions: [schema-recurrence]
+  page_enonce: 3
+  page_corrige: 6
+  enonce: |
+    *(Python : mesurer l'ordre.)* On considère $y' = y\cos t$, $y(0) = 1$, sur $[0, 2]$.
+
+    **1.** Calculer la solution exacte.
+
+    **2.** Programmer les méthodes d'Euler, de Heun et RK4 (tableau (d) de l'exercice 8), et calculer l'erreur $e(h) = |y_{N} - y(2)|$ pour $N = 10, 20, 40, \dots, 5120$ pas.
+
+    **3.** Représenter $e(h)$ en fonction de $h$ en échelle logarithmique, et estimer l'ordre de chaque méthode par la pente. Pourquoi l'erreur de RK4 cesse-t-elle de décroître pour les plus petits pas ?
+  corrige: |
+    $\triangleright$ *1.* $\big(\ln y\big)' = \cos t$ donne y(t) = e^ t, et $y(2) = e^{\sin 2} \approx 2{,}4826$.
+
+    $\triangleright$ *2.* Un programme possible : 
+
+    ```python
+    import numpy as np
+    F = lambda t, y: y*np.cos(t)
+    def pas(m, t, y, h):
+        if m == 'Euler': return y + h*F(t, y)
+        if m == 'Heun':
+            p = y + h*F(t, y); return y + h/2*(F(t, y) + F(t + h, p))
+        k1 = F(t, y); k2 = F(t + h/2, y + h/2*k1)
+        k3 = F(t + h/2, y + h/2*k2); k4 = F(t + h, y + h*k3)
+        return y + h/6*(k1 + 2*k2 + 2*k3 + k4)
+    for m in ['Euler', 'Heun', 'RK4']:
+        for N in [10*2**k for k in range(10)]:
+            h, t, y = 2/N, 0.0, 1.0
+            for n in range(N): y, t = pas(m, t, y, h), t + h
+            print(m, N, abs(y - np.exp(np.sin(2))))
+    ```
+
+     Il donne, pour $N = 10$, $80$, $640$, $5120$ :
+
+    $$\begin{array}{|c|c|c|c|c|} \hline N & 10 & 80 & 640 & 5120 \\ \hline \text{Euler} & 1{,}5 \cdot 10^{-1} & 1{,}9 \cdot 10^{-2} & 2{,}3 \cdot 10^{-3} & 2{,}9 \cdot 10^{-4} \\  \text{Heun} & 2{,}0 \cdot 10^{-2} & 2{,}9 \cdot 10^{-4} & 4{,}5 \cdot 10^{-6} & 7{,}0 \cdot 10^{-8} \\  \text{RK4} & 1{,}7 \cdot 10^{-5} & 4{,}0 \cdot 10^{-9} & 1{,}0 \cdot 10^{-12} & 1{,}6 \cdot 10^{-13} \\ \hline \end{array}$$
+
+    $\triangleright$ *3.* Quand $h$ est divisé par $2$, l'erreur est divisée par $2$, $4$ et $16$ : les pentes en échelle logarithmique valent 1, 2 et 4, conformément aux théorèmes 1 et 2 du cours. Pour RK4, l'erreur cesse de décroître vers $10^{-13}$ : ce sont les erreurs d'arrondi, qui s'accumulent sur un nombre croissant de pas (cours, remarque après la prop. 6). Un piège : sur $[0, 2\pi]$, les erreurs d'une période se compensent en partie, et l'on mesurerait des pentes $1$, $3$ et $5$, trompeuses ; c'est pourquoi l'énoncé fixe l'intervalle $[0, 2]$.
+
+    ![Figure](documents/figures/36b1c160e33f4c7f.svg)
+
+    En échelle logarithmique, les erreurs s'alignent sur des droites de pentes $1$, $2$ et $4$ ; la courbe violette remonte à gauche de son minimum, pour les plus petits pas, quand l'arrondi l'emporte sur l'erreur de méthode.
+- id: "l3-cd-07-10"
+  feuille: "f-l3-cd-07"
+  numero: 10
+  partie: "Méthodes itératives"
+  etoiles: 1
+  types: [Calcul]
+  mots_cles: [méthodes itératives]
+  noeuds: [gd-point-fixe]
+  notions: [contractante]
+  page_enonce: 4
+  page_corrige: 7
+  enonce: |
+    *(Vitesses de convergence.)* Soit $(e_{k})_{k \in \mathbb{N}}$ une suite de réels positifs, normes des erreurs d'une méthode itérative.
+
+    **1.** On suppose $e_{k} \leqslant C(C')^{k}$ pour tout $k$, avec $C = C' = \dfrac{1}{2}$. Combien d'itérations $k_{0}$ faut-il pour que cette estimation garantisse $e_{k_{0}} \leqslant 10^{-8}$ ? On donne $\dfrac{8\ln 10}{\ln 2} \in [26, 27[$.
+
+    **2.** On suppose $e_{k} \leqslant C(C')^{2^{k}}$ pour tout $k$, avec $C = 1$ et $C' = \dfrac{1}{2}$. Même question ; on donne $\dfrac{1}{\ln 2}\ln\Big(\dfrac{8\ln 10}{\ln 2}\Big) \in [4, 5[$.
+
+    **3.** Laquelle de ces deux estimations décrit les itérés de Picard d'une équation lipschitzienne (cours, chapitre 6) ? et la méthode de Newton (chapitre 3) ?
+  corrige: |
+    $\triangleright$ *1.* $e_{k} \leqslant 2^{-(k + 1)} \leqslant 10^{-8}$ dès que $k + 1 \geqslant \dfrac{8\ln 10}{\ln 2} \approx 26{,}6$ : il faut k_0 = 26 itérations. Chaque itération ne gagne qu'un facteur $2$, soit environ $0{,}3$ chiffre décimal.
+
+    $\triangleright$ *2.* $e_{k} \leqslant 2^{-2^{k}} \leqslant 10^{-8}$ dès que $2^{k} \geqslant \dfrac{8\ln 10}{\ln 2}$, soit $k \geqslant \dfrac{1}{\ln 2}\ln\Big(\dfrac{8\ln 10}{\ln 2}\Big) \approx 4{,}7$ : k_0 = 5 itérations suffisent. Le nombre de chiffres exacts double à chaque pas : c'est la convergence *quadratique*.
+
+    $\triangleright$ *3.* Les itérés de Picard d'une équation $L$-lipschitzienne vérifient $\lVert y_{n} - y \rVert \leqslant \dfrac{ML^{n}|t - t_{0}|^{n + 1}}{(n + 1)!}$ (chapitre 6, th. 4) : majoration du premier type au moins (une itérée de l'opérateur de Picard est contractante), et même meilleure grâce à la factorielle. La méthode de Newton (chapitre 3, prop. 3) converge de façon quadratique, comme dans la question 2, à condition de partir assez près de la racine.
+- id: "l3-cd-07-11"
+  feuille: "f-l3-cd-07"
+  numero: 11
+  partie: "Étude qualitative, portraits de phase"
+  etoiles: 3
+  types: [Problème, Démonstration]
+  mots_cles: ["étude qualitative, portraits de phase", système linéarisé]
+  noeuds: [edo-liapounov]
+  notions: [equilibre, equilibre-stable, systeme-linearise, produit-scalaire, valeur-propre]
+  page_enonce: 4
+  page_corrige: 8
+  enonce: |
+    *(Stabilité par linéarisation.)* Soit $\Omega$ un ouvert de $\mathbb{R}^{n}$, $f : \Omega \to \mathbb{R}^{n}$ de classe $\mathcal{C}^{1}$, et $0 \in \Omega$ un équilibre de $(1)$ : $x' = f(x)$. Soit $A$ la matrice jacobienne de $f$ en $0$. On veut montrer : *si toutes les valeurs propres de $A$ sont de partie réelle strictement négative, l'équilibre $0$ est asymptotiquement stable.* On fait cette hypothèse.
+
+    **1.** On admet qu'il existe un produit scalaire $\langle \cdot, \cdot \rangle_{A}$ sur $\mathbb{R}^{n}$ et $\alpha > 0$ tels que $\langle Ax, x \rangle_{A} \leqslant -\alpha\lVert x \rVert_{A}^{2}$ pour tout $x$, où $\lVert \cdot \rVert_{A}$ est la norme associée. Démontrer ce résultat lorsque $A$ est diagonalisable sur $\mathbb{C}$.
+
+    **2.** Montrer qu'il existe $\delta > 0$ tel que $\lVert x \rVert_{A} < \delta$ entraîne $\langle f(x), x \rangle_{A} \leqslant -\dfrac{\alpha}{2}\lVert x \rVert_{A}^{2}$.
+
+    **3.** Soit $v$ tel que $\lVert v \rVert_{A} < \delta$. Montrer que $(1)$ admet une unique solution maximale $x$ telle que $x(0) = v$, définie sur un intervalle ouvert $I \ni 0$, et qu'il existe $T > 0$ tel que $\lVert x(t) \rVert_{A} < \delta$ pour $t \in [0, T]$.
+
+    **4.** Montrer que $\lVert x(t) \rVert_{A}^{2} \leqslant e^{-\alpha t}\lVert v \rVert_{A}^{2}$ pour tout $t \in [0, T]$.
+
+    **5.** En déduire que $I$ contient $[0, +\infty[$, que $x(t) \to 0$ quand $t \to +\infty$, et conclure.
+  corrige: |
+    $\triangleright$ *1.* Soit $(e_{1}, \dots, e_{n})$ une base de $\mathbb{C}^{n}$ formée de vecteurs propres de $A$, $Ae_{j} = \lambda_{j}e_{j}$, et $\langle\cdot, \cdot\rangle$ le produit scalaire hermitien de $\mathbb{C}^{n}$ pour lequel cette base est orthonormée : $\Big\langle\sum x_{j}e_{j}, \sum y_{j}e_{j}\Big\rangle = \sum x_{j}\overline{y_{j}}$. Alors 
+    $$\operatorname{Re}\langle Ax, x\rangle = \sum_{j}\operatorname{Re}(\lambda_{j})|x_{j}|^{2} \leqslant -\alpha\lVert x \rVert^{2}, \qquad \alpha = \min_{j}\big(-\operatorname{Re}\lambda_{j}\big) > 0.$$
+     Sur $\mathbb{R}^{n} \subset \mathbb{C}^{n}$, $\langle x, y \rangle_{A} = \operatorname{Re}\langle x, y\rangle$ est un produit scalaire réel, de norme associée $\lVert \cdot \rVert$, et 
+    $$\boxed{\langle Ax, x \rangle_{A} \leqslant -\alpha\lVert x \rVert_{A}^{2}}\text{.}$$
+
+    $\triangleright$ *2.* $f$ est différentiable en $0$ avec $f(0) = 0$ : $f(x) = Ax + \lVert x \rVert_{A}\,\varepsilon(x)$ avec $\varepsilon(x) \to 0$. Par Cauchy-Schwarz, $\langle f(x), x \rangle_{A} \leqslant -\alpha\lVert x \rVert_{A}^{2} + \lVert \varepsilon(x) \rVert_{A}\lVert x \rVert_{A}^{2}$. Il suffit de choisir $\delta > 0$ tel que $\lVert \varepsilon(x) \rVert_{A} \leqslant \dfrac{\alpha}{2}$ pour $\lVert x \rVert_{A} < \delta$, et, quitte à le diminuer, tel que la boule fermée $\overline{B}_{A}(0, \delta)$ soit incluse dans $\Omega$.
+
+    $\triangleright$ *3.* $f$ est de classe $\mathcal{C}^{1}$ : le théorème de Cauchy-Lipschitz (chapitre 6, th. 5) donne une unique solution maximale, sur un intervalle ouvert $I \ni 0$. Comme $x$ est continue et $\lVert x(0) \rVert_{A} < \delta$, il existe $T > 0$ tel que $\lVert x(t) \rVert_{A} < \delta$ sur $[0, T]$.
+
+    $\triangleright$ *4.* Sur $[0, T]$, $\dfrac{\mathrm{d}}{\mathrm{d} t}\lVert x \rVert_{A}^{2} = 2\langle f(x), x \rangle_{A} \leqslant -\alpha\lVert x \rVert_{A}^{2}$, donc $\big(e^{\alpha t}\lVert x(t) \rVert_{A}^{2}\big)' \leqslant 0$ et 
+    $$\boxed{\lVert x(t) \rVert_{A}^{2} \leqslant e^{-\alpha t}\lVert v \rVert_{A}^{2}}\text{.}$$
+
+    $\triangleright$ *5.* Soit $T^{*}$ la borne supérieure des $T \in I$ tels que $\lVert x \rVert_{A} < \delta$ sur $[0, T]$. Sur $[0, T^{*}[$, l'inégalité de 4 donne $\lVert x(t) \rVert_{A} \leqslant \lVert v \rVert_{A}$. Si $T^{*} < \sup I$, alors $\lVert x(T^{*}) \rVert_{A} \leqslant \lVert v \rVert_{A} < \delta$, et par continuité $\lVert x \rVert_{A} < \delta$ un peu au-delà de $T^{*}$ : contradiction. Donc $T^{*} = \sup I$ et la courbe intégrale reste, sur $[0, \sup I[$, dans $\mathbb{R} \times \overline{B}_{A}(0, \lVert v \rVert_{A})$, où $\overline{B}_{A}(0, \lVert v \rVert_{A}) \subset \Omega$ est compact ; par le théorème des bouts (chapitre 6, th. 3), I = +, et $\lVert x(t) \rVert_{A} \leqslant e^{-\alpha t/2}\lVert v \rVert_{A} \to 0$.
+
+    $\triangleright$ *Conclusion.* Avec $V_{0} = V_{1} = B_{A}(0, \delta)$, les conditions (i) et (iii) sont établies. Pour (ii), si $W$ contient $B_{A}(0, \varepsilon)$, le voisinage $V = B_{A}(0, \min(\varepsilon, \delta))$ convient, puisque $\lVert \varphi_{t}(w) \rVert_{A} \leqslant \lVert w \rVert_{A}$ pour $t \geqslant 0$. L'équilibre $0$ est asymptotiquement stable, et la convergence est même exponentielle. Le résultat réciproque (une valeur propre de partie réelle strictement positive rend l'équilibre instable) est vrai aussi ; on l'admettra dans les exercices suivants.
+- id: "l3-cd-07-12"
+  feuille: "f-l3-cd-07"
+  numero: 12
+  partie: "Étude qualitative, portraits de phase"
+  etoiles: 2
+  types: [Calcul, Modélisation]
+  mots_cles: ["étude qualitative, portraits de phase"]
+  noeuds: [edo-liapounov]
+  notions: [equilibre, equilibre-stable]
+  page_enonce: 5
+  page_corrige: 8
+  enonce: |
+    *(Dynamique des populations.)*
+
+    **1.** *Une population en milieu limité.* La population $N(t)$ d'une espèce suit l'équation logistique $N' = rN\Big(1 - \dfrac{N}{k}\Big)$, où $r > 0$ est le taux de croissance et $k > 0$ la capacité du milieu. Faire une étude qualitative (équilibres, monotonie, limites, allure des solutions) et interpréter.
+
+    **2.** *Deux populations en compétition pour une même ressource.* On modélise leurs effectifs $x(t)$ et $y(t)$ par 
+    $$x' = x(1 - x - ay), \qquad y' = ry(1 - bx - y),$$
+     avec $a$, $b$, $r > 0$ et $ab \neq 1$.
+
+    **(a)** Déterminer, en fonction de $a$ et $b$, les équilibres « biologiquement réalistes » (à coordonnées positives) et leur stabilité.
+
+    **(b)** Esquisser un portrait de phase dans les différents cas, et interpréter.
+  corrige: |
+    $\triangleright$ *1. Équation logistique.* $g(N) = rN\Big(1 - \dfrac{N}{k}\Big)$ s'annule en $0$ et $k$ : ce sont les équilibres. Comme $g'(0) = r > 0$ et $g'(k) = -r < 0$, $0$ est instable et $k$ asymptotiquement stable (exercice 11, en dimension $1$). Par unicité, une solution ne traverse pas les équilibres : si $0 < N_{0} < k$, $N$ croît vers $k$ ; si $N_{0} > k$, elle décroît vers $k$. On le voit sur la formule explicite, obtenue par $\Big(\dfrac{1}{N}\Big)' = -\dfrac{r}{N} + \dfrac{r}{k}$ : 
+    $$\boxed{N(t) = \frac{k}{1 + \Big(\dfrac{k}{N_{0}} - 1\Big)e^{-rt}}.}$$
+     Pour $0 < N_{0} < \dfrac{k}{2}$, la courbe a un point d'inflexion là où $N = \dfrac{k}{2}$, puisque $N'' = g'(N)N'$ change de signe : croissance d'abord presque exponentielle, puis freinée par la ressource. Toute population positive se stabilise à la capacité $k$ du milieu, quel que soit son effectif initial. Les solutions négatives, sans sens biologique, explosent vers $-\infty$ en temps fini.
+
+    ![Figure](documents/figures/eb8c6ab9556c7354.svg)
+
+    Pour $r = k = 1$, toutes les solutions positives tendent vers l'équilibre $k$ (en rouge) ; celles qui partent sous $\dfrac{k}{2}$ ont l'allure en S caractéristique. La solution en tirets, de valeur initiale négative, explose.
+
+    $\triangleright$ *2 (a). Équilibres.* $x' = 0$ si $x = 0$ ou $x + ay = 1$ ; $y' = 0$ si $y = 0$ ou $bx + y = 1$. On obtient $(0, 0)$, $(1, 0)$, $(0, 1)$, et le point de coexistence 
+    $$(x^{*}, y^{*}) = \Big(\frac{1 - a}{1 - ab}, \frac{1 - b}{1 - ab}\Big),$$
+     à coordonnées positives si et seulement si $a$, $b < 1$ ou $a$, $b > 1$. La jacobienne est 
+    $$J = \begin{pmatrix} 1 - 2x - ay & -ax \\ -rby & r(1 - bx - 2y) \end{pmatrix}.$$
+
+    • $J(0, 0) = \operatorname{diag}(1, r)$ : nœud instable.
+
+    • $J(1, 0) = \begin{pmatrix} -1 & -a \\ 0 & r(1 - b) \end{pmatrix}$, de valeurs propres $-1$ et $r(1 - b)$ : asymptotiquement stable si $b > 1$, col (instable) si $b < 1$.
+
+    • $J(0, 1) = \begin{pmatrix} 1 - a & 0 \\ -rb & -r \end{pmatrix}$, de valeurs propres $1 - a$ et $-r$ : asymptotiquement stable si $a > 1$, col si $a < 1$.
+
+    • En $(x^{*}, y^{*})$, comme $1 - x^{*} - ay^{*} = 0 = 1 - bx^{*} - y^{*}$, $J = \begin{pmatrix} -x^{*} & -ax^{*} \\ -rby^{*} & -ry^{*} \end{pmatrix}$, de trace $-(x^{*} + ry^{*}) < 0$ et de déterminant $rx^{*}y^{*}(1 - ab)$. Si $a$, $b < 1$, le déterminant est positif et les deux valeurs propres sont de partie réelle négative : coexistence asymptotiquement stable. Si $a$, $b > 1$, il est négatif : c'est un col.
+
+    $\triangleright$ *2 (b). Quatre cas.* Le coefficient $a$ mesure la gêne que l'espèce $2$ cause à l'espèce $1$, et $b$ l'inverse.
+
+    • $a < 1$ et $b < 1$ : la compétition est faible ; toutes les trajectoires issues de $Q$ tendent vers le point de coexistence.
+
+    • $a > 1$ et $b > 1$ : la compétition est forte ; $(1, 0)$ et $(0, 1)$ sont stables, et la séparatrice du col $(x^{*}, y^{*})$ partage le quart de plan : l'espèce qui l'emporte dépend des effectifs initiaux (*bistabilité*).
+
+    • $a < 1 < b$ : l'espèce $1$ élimine l'espèce $2$, toutes les trajectoires de $Q$ tendant vers $(1, 0)$ ; symétriquement si $b < 1 < a$. C'est le *principe d'exclusion compétitive*.
+
+    ![Figure](documents/figures/cb606b80284a983f.svg)
+
+    À gauche, toutes les trajectoires convergent vers le point de coexistence $\Big(\dfrac{2}{3}, \dfrac{2}{3}\Big)$. À droite, le col $\Big(\dfrac{1}{3}, \dfrac{1}{3}\Big)$ sépare les trajectoires qui aboutissent à $(1, 0)$ de celles qui aboutissent à $(0, 1)$ ; la diagonale $y = x$, invariante par symétrie quand $r = 1$, est la séparatrice.
+- id: "l3-cd-07-13"
+  feuille: "f-l3-cd-07"
+  numero: 13
+  partie: "Étude qualitative, portraits de phase"
+  etoiles: 2
+  types: [Démonstration]
+  mots_cles: ["étude qualitative, portraits de phase"]
+  noeuds: [edo-liapounov]
+  notions: [equilibre, equilibre-stable]
+  page_enonce: 5
+  page_corrige: 10
+  enonce: |
+    *(Pendule simple et pendule amorti.)* On considère le pendule simple $x'' + \sin x = 0$ et le pendule amorti $x'' + kx' + \sin x = 0$, $k > 0$, écrits sous forme de systèmes 
+    $$(4) \quad x' = v, \ v' = -\sin x ; \qquad (5) \quad x' = v, \ v' = -kv - \sin x,$$
+     avec $x(0) = x_{0}$, $v(0) = v_{0}$.
+
+    **1.** Justifier l'existence et l'unicité d'une solution globale de (4) et de (5) pour toute donnée initiale, et déterminer les équilibres.
+
+    **2.** Soit $H(x, v) = \dfrac{1}{2}v^{2} - \cos x$. Montrer que $H$ est constante le long des solutions de (4) (c'est une *intégrale première*), et décroissante le long de celles de (5).
+
+    **3.** Tracer le portrait de phase du pendule simple à l'aide des lignes de niveau de $H$, et décrire le comportement des solutions de (4) selon la valeur de $H(x_{0}, v_{0})$.
+
+    **4.** Montrer que (5) n'a pas de solution périodique non constante, et que l'équilibre $(0, 0)$ est asymptotiquement stable pour (5).
+  corrige: |
+    $\triangleright$ *1.* Les seconds membres sont de classe $\mathcal{C}^{1}$ et vérifient $\lVert F(x, v) \rVert \leqslant (1 + k)\lVert (x, v) \rVert + 1$ : les solutions maximales sont uniques et globales (chapitre 6, th. 5 et prop. 12). Les équilibres annulent $v$ et $\sin x$ : ce sont les points (k, 0), k Z, pour les deux systèmes.
+
+    $\triangleright$ *2.* Le long d'une solution, $\dfrac{\mathrm{d}}{\mathrm{d} t}H(x, v) = vv' + x'\sin x = v(v' + \sin x)$, qui vaut 0 pour (4) et -kv^2 0 pour (5).
+
+    $\triangleright$ *3.* Les ensembles de niveau $E_{c} = \{H = c\}$ sont vides si $c < -1$, réduits aux points $(2k\pi, 0)$ si $c = -1$. Pour $-1 < c < 1$, $E_{c}$ est formé de courbes fermées autour des $(2k\pi, 0)$ : le pendule oscille, et la solution est périodique, car elle parcourt une courbe fermée sans équilibre avec une vitesse minorée. Pour $c = 1$, $E_{1}$ est formé des *séparatrices* $v = \pm 2\cos\dfrac{x}{2}$, qui joignent les équilibres instables $\big((2k + 1)\pi, 0\big)$ : le pendule tend vers la position verticale haute sans l'atteindre (cours, prop. 3). Pour $c > 1$, $v = \pm\sqrt{2(c + \cos x)}$ ne s'annule jamais : le pendule tourne indéfiniment, $x \to \pm\infty$.
+
+    $\triangleright$ *4.* Si $(x, v)$ était une solution périodique non constante de (5), $t \mapsto H(x(t), v(t))$ serait décroissante et périodique, donc constante ; alors $kv^{2} = 0$, $v = 0$, $x$ constante et $\sin x = -v' - kv = 0$ : la solution serait un équilibre. Il 
+    $$\boxed{\text{n'y a pas de solution périodique non constante}}\text{.}$$
+     En $(0, 0)$, la jacobienne de (5) est $\begin{pmatrix} 0 & 1 \\ -1 & -k \end{pmatrix}$, de trace $-k < 0$ et de déterminant $1 > 0$ : ses valeurs propres sont de partie réelle strictement négative, et l'équilibre est asymptotiquement stable (exercice 11).
+
+    ![Figure](documents/figures/786b0f3e6b438937.svg)
+
+    À gauche, les lignes de niveau de $H$ : oscillations (courbes fermées), séparatrices (en rouge, niveau $1$) et rotations (courbes ondulées au-dessus et en dessous). À droite, trois trajectoires du pendule amorti : l'énergie diminue, et chacune finit par s'enrouler en spirale autour d'un équilibre bas $(2k\pi, 0)$, après un ou deux tours complets pour celles qui partent avec beaucoup d'énergie.
+- id: "l3-cd-07-14"
+  feuille: "f-l3-cd-07"
+  numero: 14
+  partie: "Étude qualitative, portraits de phase"
+  etoiles: 2
+  types: [Démonstration, Calcul]
+  mots_cles: ["étude qualitative, portraits de phase"]
+  noeuds: [edo-liapounov]
+  notions: [equilibre, equilibre-stable]
+  page_enonce: 5
+  page_corrige: 11
+  enonce: |
+    *(Équations de Lotka-Volterra.)* On note $x(t)$ le nombre de proies et $y(t)$ celui des prédateurs, et l'on considère 
+    $$(6) \qquad x' = (a - by)x, \qquad y' = (cx - d)y,$$
+     où $a$, $b$, $c$, $d > 0$. Le taux de croissance $\dfrac{x'}{x}$ des proies est proportionnel à $\dfrac{a}{b} - y$, celui des prédateurs à $x - \dfrac{d}{c}$.
+
+    **1.** Déterminer les équilibres de (6) et, si possible, leur stabilité.
+
+    **2.** Montrer que les axes sont invariants : si $x(0) = 0$ (resp. $y(0) = 0$), alors $x(t) = 0$ (resp. $y(t) = 0$) pour tout $t$. En déduire que le quart de plan $Q = \left]0, +\infty\right[^{2}$ est invariant.
+
+    **3.** Représenter l'orientation du champ de vecteurs dans quatre zones de $Q$, et montrer que chaque courbe intégrale les rencontre successivement.
+
+    **4.** Trouver $L : Q \to \mathbb{R}$ de la forme $L(x, y) = F(x) + G(y)$, constante le long des solutions. En déduire que toutes les solutions issues de $Q$ sont périodiques, et esquisser le portrait de phase.
+  corrige: |
+    $\triangleright$ *1.* Les équilibres sont 
+    $$\boxed{(0, 0) \text{ et } \Big(\frac{d}{c}, \frac{a}{b}\Big)}\text{.}$$
+     La jacobienne $\begin{pmatrix} a - by & -bx \\ cy & cx - d \end{pmatrix}$ vaut $\operatorname{diag}(a, -d)$ en $(0, 0)$ : c'est un col, instable. En $\Big(\dfrac{d}{c}, \dfrac{a}{b}\Big)$, elle vaut $\begin{pmatrix} 0 & -bd/c \\ ac/b & 0 \end{pmatrix}$, de valeurs propres $\pm\mathrm{i}\sqrt{ad}$ : la linéarisation ne permet pas de conclure (l'exercice 11 ne s'applique pas). La question 4 montrera que l'équilibre est stable, non asymptotiquement stable.
+
+    $\triangleright$ *2.* Si $x(0) = 0$, la fonction $\big(0, y(0)e^{-dt}\big)$ est solution, donc c'est la solution par unicité ; de même $\big(x(0)e^{at}, 0\big)$ si $y(0) = 0$. Les axes sont donc réunions d'orbites. Comme deux orbites sont égales ou disjointes (cours, prop. 3), une solution issue de $Q$ ne rencontre jamais les axes, et, par continuité, elle reste dans Q.
+
+    $\triangleright$ *3.* Dans $Q$, $x' > 0$ si et seulement si $y < \dfrac{a}{b}$, et $y' > 0$ si et seulement si $x > \dfrac{d}{c}$. Les droites $x = \dfrac{d}{c}$ et $y = \dfrac{a}{b}$ découpent $Q$ en quatre zones, parcourues dans le sens direct : en bas à droite, $x$ et $y$ croissent ; en haut à droite, $x$ décroît et $y$ croît ; en haut à gauche, les deux décroissent ; en bas à gauche, $x$ croît et $y$ décroît. Dans chaque zone, la vitesse dans la direction de sortie est minorée tant que la courbe reste loin de l'équilibre, ce que garantit la conservation de $L$ ci-dessous : la courbe quitte la zone en temps fini, pour entrer dans la suivante.
+
+    $\triangleright$ *4.* On cherche $L = F(x) + G(y)$ avec $F'(x)x' + G'(y)y' = 0$, soit $F'(x)(a - by)x + G'(y)(cx - d)y = 0$. En séparant les variables, $F'(x) = c - \dfrac{d}{x}$ et $G'(y) = b - \dfrac{a}{y}$ conviennent : 
+    $$\boxed{L(x, y) = cx - d\ln x + by - a\ln y.}$$
+     $L$ est strictement convexe sur $Q$, tend vers $+\infty$ au bord de $Q$ et à l'infini, et atteint son minimum en $\Big(\dfrac{d}{c}, \dfrac{a}{b}\Big)$ : ses lignes de niveau sont des courbes fermées autour de cet équilibre, ce qui donne sa stabilité. Une solution issue de $Q$ reste sur l'une d'elles, en fait le tour en traversant les quatre zones, et repasse par son point de départ en un temps $T$ ; par unicité, elle est alors T-périodique. C'est la prop. 5 du cours, où $a = b = c = d = 1$.
+
+    ![Figure](documents/figures/c51eab72a03cb0e9.svg)
+
+    Les orbites sont des courbes fermées autour de l'équilibre $(1, 1)$, parcourues dans le sens direct ; les petites flèches noires indiquent l'orientation du champ dans les quatre zones. Les grandes orbites passent très près des axes : les populations y deviennent très faibles avant de repartir.
+- id: "l3-cd-07-15"
+  feuille: "f-l3-cd-07"
+  numero: 15
+  partie: "Étude qualitative, portraits de phase"
+  etoiles: 2
+  types: [Démonstration]
+  mots_cles: ["étude qualitative, portraits de phase"]
+  noeuds: [edo-liapounov]
+  notions: [equilibre, equilibre-stable]
+  page_enonce: 6
+  page_corrige: 12
+  enonce: |
+    *(Un cycle limite.)* On considère le système 
+    $$(S) \qquad x' = x\big(1 - (x^{2} + y^{2})\big) + y, \qquad y' = -x + y\big(1 - (x^{2} + y^{2})\big).$$
+
+    **1.** Montrer que $(0, 0)$ est l'unique équilibre de $(S)$, et étudier sa stabilité et son type.
+
+    **2.** Pour $(x_{0}, y_{0}) \in \mathbb{R}^{2}$, justifier l'existence d'une unique solution maximale de $(S)$ de donnée initiale $(x_{0}, y_{0})$ en $t = 0$, définie sur un intervalle ouvert $J$. Montrer que, si $(x_{0}, y_{0}) \neq (0, 0)$, elle ne passe jamais par $(0, 0)$.
+
+    **3.** On suppose $(x_{0}, y_{0}) \neq (0, 0)$ et l'on pose $r = \sqrt{x^{2} + y^{2}}$. Montrer que $r' = r(1 - r^{2})$, $r(0) = r_{0} = \sqrt{x_{0}^{2} + y_{0}^{2}}$.
+
+    **4.** En distinguant $r_{0} = 1$, $r_{0} \in \left]0, 1\right[$ et $r_{0} > 1$, montrer que $r$ est définie jusqu'en $+\infty$, étudier sa monotonie et sa limite. En déduire que $J \supset [0, +\infty[$ et que $x(t)^{2} + y(t)^{2} \to 1$.
+
+    **5.** On écrit $x = r\cos\theta$, $y = r\sin\theta$, avec $\theta$ dérivable sur $J$. Montrer que $\theta' = -1$. Décrire le comportement des solutions quand $t \to +\infty$ et dessiner quelques orbites.
+
+    **6.** *(Bonus.)* Même question pour le système qui s'écrit en polaires $r' = r(1 - r)(r - 2)$, $\theta' = 1$, en distinguant $r_{0} \in \{0, 1, 2\}$, $\left]0, 1\right[$, $\left]1, 2\right[$ et $\left]2, +\infty\right[$.
+  corrige: |
+    $\triangleright$ *1.* Si $x' = y' = 0$, alors 
+    $$xx' + yy' = r^{2}(1 - r^{2}) = 0 \quad \text{et} \quad yx' - xy' = x^{2} + y^{2} = 0,$$
+     donc (0, 0) est l'unique équilibre. La jacobienne en $(0, 0)$ est $\begin{pmatrix} 1 & 1 \\ -1 & 1 \end{pmatrix}$, de valeurs propres $1 \pm \mathrm{i}$ : c'est un foyer instable (cours, prop. 4) ; l'instabilité se lit aussi sur la question 3, puisque $r' > 0$ pour $0 < r < 1$.
+
+    $\triangleright$ *2.* Le second membre est polynomial : unique solution maximale, sur un intervalle ouvert $J$ (chapitre 6, th. 5). Si elle passait par $(0, 0)$, elle serait constante (cours, prop. 3) et $(x_{0}, y_{0}) = (0, 0)$.
+
+    $\triangleright$ *3.* $r > 0$ est dérivable, et $(r^{2})' = 2(xx' + yy') = 2r^{2}(1 - r^{2})$, d'où r' = r(1 - r^2).
+
+    $\triangleright$ *4.* Si $r_{0} = 1$, $r = 1$. Si $0 < r_{0} < 1$, par unicité $r$ ne peut atteindre ni $0$ ni $1$, et $r' > 0$ : $r$ croît, reste dans $]r_{0}, 1[$, et, monotone bornée, a une limite $\ell$ ; comme à l'exercice 27 de la feuille 6, $r'$ tend vers $\ell(1 - \ell^{2})$, nécessairement nul, et r 1. Si $r_{0} > 1$, $r$ décroît dans $]1, r_{0}[$ et tend vers $1$. Explicitement, $r(t)^{2} = \dfrac{1}{1 + (r_{0}^{-2} - 1)e^{-2t}}$. Dans tous les cas, $(x, y)$ reste bornée pour $t \geqslant 0$, donc J [0, +[ (feuille 6, exercice 22), et $x^{2} + y^{2} \to 1$. Vers le passé, les solutions extérieures explosent en $t = \dfrac{1}{2}\ln(1 - r_{0}^{-2})$, et les intérieures tendent vers $(0, 0)$.
+
+    $\triangleright$ *5.* $r^{2}\theta' = xy' - yx' = -x^{2} - y^{2}$, d'où ' = -1. Les solutions issues de $(x_{0}, y_{0}) \neq (0, 0)$ tournent dans le sens indirect à vitesse angulaire $1$ et s'enroulent en spirale, de l'intérieur ou de l'extérieur, sur le cercle unité, qui est lui-même une orbite périodique de période $2\pi$ : c'est un cycle limite attractif.
+
+    $\triangleright$ *6.* Le signe de $r(1 - r)(r - 2)$ est négatif sur $]0, 1[$ et sur $]2, +\infty[$, positif sur $]1, 2[$. Ainsi $(0, 0)$ est un équilibre attractif ; si $r_{0} \in \left]0, 1\right[$, $r \to 0$ ; les cercles $r = 1$ et $r = 2$ sont des orbites périodiques, la première répulsive, la seconde attractive ; si $r_{0} \in \left]1, 2\right[$ ou $r_{0} > 2$, $r \to 2$. Toutes les solutions tournent dans le sens direct.
+
+    ![Figure](documents/figures/6cc397e91661b1ea.svg)
+
+    À gauche, les orbites intérieures et extérieures s'enroulent, dans le sens indirect, sur le cercle unité (en rouge), cycle limite attractif. À droite, le cercle de rayon $1$ (tirets) repousse les orbites : celles de l'intérieur tombent vers l'origine, celles de l'extérieur rejoignent le cycle attractif de rayon $2$.
+- id: "l3-cd-07-16"
+  feuille: "f-l3-cd-07"
+  numero: 16
+  partie: "Retour sur l'équation $y' = t + y^{2}$"
+  etoiles: 3
+  types: [Algorithmique, Démonstration, Calcul]
+  mots_cles: ["retour sur l'équation y' = t + y²"]
+  noeuds: [ed-maximales]
+  notions: [solution-maximale]
+  page_enonce: 6
+  page_corrige: 13
+  enonce: |
+    *(Instant d'explosion et équation d'Airy.)*
+
+    **1.** Soit $u$ la solution sur $\mathbb{R}$ de $u'' + tu = 0$, $u(0) = 1$, $u'(0) = -y_{0}$. Montrer que, sur tout intervalle contenant $0$ où $u$ ne s'annule pas, $y = -\dfrac{u'}{u}$ est solution de $y' = t + y^{2}$, $y(0) = y_{0}$. En déduire que $\beta(y_{0})$ est le premier zéro strictement positif de $u$.
+
+    **2.** *Python.* En appliquant RK4 au système d'ordre 1 équivalent à $u'' + tu = 0$, et en repérant le premier changement de signe de $u$ (que l'on affinera par dichotomie ou interpolation), calculer $\beta(0)$ à $10^{-5}$ près. Pourquoi est-il préférable de calculer $u$ plutôt que $y$ ?
+
+    **3.** Montrer, à l'aide du lemme de comparaison (feuille 6, exercice 21), que $\beta$ est décroissante.
+
+    **4.** Soit $u_{1}$ et $u_{2}$ les solutions de $u'' + tu = 0$ telles que $(u_{1}, u_{1}')(0) = (1, 0)$ et $(u_{2}, u_{2}')(0) = (0, 1)$, et $\tau$ le premier zéro strictement positif de $u_{2}$. Montrer que $\beta(y_{0})$ est le premier zéro positif de $u_{2} + \dfrac{u_{1}}{|y_{0}|}$ pour $y_{0} < 0$, puis que $\beta(y_{0}) \to \tau$ quand $y_{0} \to -\infty$. Calculer $\tau$ numériquement.
+  corrige: |
+    $\triangleright$ *1.* $u$ est définie sur $\mathbb{R}$ (équation linéaire, chapitre 6, prop. 12). Là où $u \neq 0$, $y = -\dfrac{u'}{u}$ vérifie 
+    $$y' = -\frac{u''}{u} + \frac{u'^{2}}{u^{2}} = t + y^{2}, \qquad y(0) = -\frac{u'(0)}{u(0)} = y_{0}.$$
+     Si $u$ ne s'annulait pas sur $\mathbb{R}_{+}$, $y$ serait une solution définie sur $[0, +\infty[$, ce qui contredit $\beta(y_{0}) < +\infty$. Soit donc $z_{+}$ le premier zéro strictement positif de $u$. En $z_{+}$, $u'(z_{+}) \neq 0$ (sinon $u = 0$ par unicité), et $|y(t)| \to +\infty$ quand $t \to z_{+}$ : la solution ne se prolonge pas au-delà. Par unicité (chapitre 6, th. 5), (y_0) = z_+ ; de même, $\alpha(y_{0})$ est le plus grand zéro négatif de $u$, ou $-\infty$ s'il n'y en a pas. C'est le changement d'inconnue des équations de Riccati (feuille 6, exercice 6), lu à l'envers.
+
+    $\triangleright$ *2.* Avec $U = (u, u')$, $U' = (u', -tu)$, système linéaire sans singularité : 
+
+    ```python
+    import numpy as np
+    def beta(y0, h=1e-3):
+        G = lambda t, U: np.array([U[1], -t*U[0]])
+        t, U = 0.0, np.array([1.0, -y0])
+        while True:
+            k1 = G(t, U); k2 = G(t + h/2, U + h/2*k1)
+            k3 = G(t + h/2, U + h/2*k2); k4 = G(t + h, U + h*k3)
+            V = U + h/6*(k1 + 2*k2 + 2*k3 + k4)
+            if V[0] <= 0:                          # changement de signe
+                return t + h*U[0]/(U[0] - V[0])    # interpolation lineaire
+            t, U = t + h, V
+    print(beta(0.0))
+    ```
+
+     On obtient (0) 1,98635, valeur stable jusqu'au huitième chiffre quand on passe de $h = 10^{-2}$ à $h = 10^{-3}$, et qui coïncide avec celle du cours. Calculer $y$ directement obligerait à suivre une fonction qui tend vers l'infini : les erreurs relatives deviennent incontrôlables près de $\beta$, et le schéma ne « voit » pas l'explosion (exercice 3). La fonction $u$, elle, est régulière, et $\beta$ en est un zéro simple.
+
+    $\triangleright$ *3.* Si $y_{0} < y_{1}$, les solutions correspondantes ne se croisent pas (chapitre 6, th. 5 : deux courbes intégrales distinctes sont disjointes), donc $y_{y_{0}} < y_{y_{1}}$ sur l'intervalle commun $[0, \min(\beta(y_{0}), \beta(y_{1}))[$. Si l'on avait $\beta(y_{1}) > \beta(y_{0})$, $y_{y_{1}}$ serait bornée sur $[0, \beta(y_{0})]$ alors que $y_{y_{0}} \to +\infty$ en $\beta(y_{0})$, ce qui contredit $y_{y_{0}} < y_{y_{1}}$. Donc est décroissante.
+
+    $\triangleright$ *4.* Par linéarité, $u = u_{1} - y_{0}u_{2} = |y_{0}|\Big(u_{2} + \dfrac{u_{1}}{|y_{0}|}\Big)$ pour $y_{0} < 0$ : $u$ et $v = u_{2} + \dfrac{u_{1}}{|y_{0}|}$ ont les mêmes zéros, et $\beta(y_{0})$ est le premier zéro positif de $v$. Numériquement, $\tau \approx 2{,}66635$ et $u_{2}'(\tau) \neq 0$. Soit $\varepsilon \in \left]0, \tau\right[$ petit.
+
+    • Sur $[0, \varepsilon]$, $u_{1} > 0$ (car $u_{1}(0) = 1$, pour $\varepsilon$ petit) et $u_{2} \geqslant 0$, donc $v > 0$.
+
+    • Sur $[\varepsilon, \tau - \varepsilon]$, $u_{2} \geqslant m > 0$ et $|u_{1}| \leqslant M$ : $v > 0$ dès que $|y_{0}| > \dfrac{M}{m}$.
+
+    • Comme $u_{2}$ change de signe en $\tau$, $u_{2}(\tau + \varepsilon) < 0$, et $v(\tau + \varepsilon) < 0$ pour $|y_{0}|$ grand.
+
+    Ainsi $\beta(y_{0}) \in \left]\tau - \varepsilon, \tau + \varepsilon\right[$ pour $y_{0}$ assez négatif : (y_0) 2,66635. La fonction `beta` ci-dessus, avec la donnée $(0, 1)$, donne $\tau$ ; elle donne aussi $\beta(-1) \approx 2{,}3962$, $\beta(-10) \approx 2{,}6292$ et $\beta(-100) \approx 2{,}6625$.
+
+    ![Figure](documents/figures/9683d0aa022fa1d5.svg)
+
+    L'instant d'explosion décroît avec la valeur initiale, tend vers $0$ quand $y_{0} \to +\infty$ (comme $\dfrac{1}{y_{0}}$, ainsi que pour $y' = y^{2}$), et vers $\tau$ quand $y_{0} \to -\infty$ : même partie de très bas, la solution explose avant $t = 2{,}67$.
+- id: "l3-cd-07-17"
+  feuille: "f-l3-cd-07"
+  numero: 17
+  partie: "Retour sur l'équation $y' = t + y^{2}$"
+  etoiles: 3
+  types: [Algorithmique, Problème, Démonstration]
+  mots_cles: ["retour sur l'équation y' = t + y²"]
+  noeuds: [ed-maximales]
+  notions: [solution-maximale]
+  page_enonce: 6
+  page_corrige: 14
+  enonce: |
+    *(Comportement à gauche.)* Soit $y$ une solution maximale de $y' = t + y^{2}$, d'intervalle $\left]\alpha, \beta\right[$.
+
+    **1.** Montrer que $z(s) = -y(-s)$ est solution de $z' = z^{2} - s$, équation étudiée à la feuille 6, exercice 3.
+
+    **2.** *(Un entonnoir.)* Pour $s \geqslant 2$, on pose $\gamma(s) = -\sqrt{s}$ et $\delta(s) = -\sqrt{s} + \dfrac{1}{\sqrt{s}}$. Montrer que $\gamma(s)^{2} - s > \gamma'(s)$ et $\delta(s)^{2} - s < \delta'(s)$. En déduire que, si $\gamma(s_{1}) \leqslant z(s_{1}) \leqslant \delta(s_{1})$ pour un $s_{1} \geqslant 2$, alors $z$ est définie sur $[s_{1}, +\infty[$ et $z(s) + \sqrt{s} \to 0$ quand $s \to +\infty$. Traduire ce résultat pour $y$.
+
+    **3.** Montrer qu'une solution telle que $z(s_{1}) > \sqrt{2s_{1}}$ pour un $s_{1} \geqslant 1$ vérifie $z(s) > \sqrt{2s}$ pour $s \geqslant s_{1}$, puis qu'elle explose en temps fini. Traduire ce résultat pour $y$.
+
+    **4.** *Python.* À l'aide de RK4 avec un pas négatif, tracer sur $[-8, 0]$ les solutions de $y' = t + y^{2}$ telles que $y(0) = -0{,}6$, $-0{,}7$, $-0{,}75$ et $-0{,}8$. Observer qu'un seuil $y^{*} \approx -0{,}73$ sépare les deux comportements, et le comparer à $\dfrac{\operatorname{Ai}'(0)}{\operatorname{Ai}(0)}$, où $\operatorname{Ai}$ est la fonction d'Airy (`scipy.special.airy`), solution de $w'' = xw$ qui tend vers $0$ en $+\infty$. Expliquer ce lien à l'aide de l'exercice 16.
+  corrige: |
+    $\triangleright$ *1.* $z'(s) = y'(-s) = -s + y(-s)^{2} = \boxed{z(s)^{2} - s}$. Le comportement de $y$ en $\alpha$ est celui de $z$ en $-\alpha$ : c'est la partie droite du portrait des isoclines de la feuille 6, exercice 3.
+
+    $\triangleright$ *2.* Pour $s \geqslant 2$ : $\gamma(s)^{2} - s = 0 > -\dfrac{1}{2\sqrt{s}} = \gamma'(s)$ ; et $\delta(s)^{2} - s = -2 + \dfrac{1}{s} \leqslant -\dfrac{3}{2}$, alors que $\delta'(s) = -\dfrac{1}{2}\big(s^{-1/2} + s^{-3/2}\big) \geqslant -\dfrac{1}{2}\Big(\dfrac{1}{\sqrt{2}} + \dfrac{1}{2\sqrt{2}}\Big) > -\dfrac{3}{2}$. Les courbes intégrales traversent donc $\gamma$ vers le haut et $\delta$ vers le bas.
+
+    Supposons $\gamma(s_{1}) \leqslant z(s_{1}) \leqslant \delta(s_{1})$ et soit $s_{2}$ la borne supérieure des $s \geqslant s_{1}$ tels que $\gamma \leqslant z \leqslant \delta$ sur $[s_{1}, s]$. Si $s_{2}$ était strictement inférieur à la borne droite $\beta_{z}$ de l'intervalle de $z$, on aurait $z(s_{2}) = \gamma(s_{2})$ ou $z(s_{2}) = \delta(s_{2})$. Dans le premier cas, $(z - \gamma)'(s_{2}) = \gamma(s_{2})^{2} - s_{2} - \gamma'(s_{2}) > 0$, donc $z > \gamma$ juste après $s_{2}$, et aussi $z < \delta$ par continuité puisque $\gamma(s_{2}) < \delta(s_{2})$ ; de même dans le second cas : $z$ resterait dans l'entonnoir un peu au-delà de $s_{2}$, ce qui est absurde. Donc $z$ reste dans l'entonnoir, est bornée sur tout intervalle borné, et _z = + (feuille 6, exercice 22). Enfin $|z(s) + \sqrt{s}| \leqslant \dfrac{1}{\sqrt{s}} \to 0$.
+
+    Pour $y$ : si $\sqrt{-t_{1}} - \dfrac{1}{\sqrt{-t_{1}}} \leqslant y(t_{1}) \leqslant \sqrt{-t_{1}}$ pour un $t_{1} \leqslant -2$, alors 
+    $$\boxed{\alpha = -\infty \text{ et } y(t) - \sqrt{-t} \to 0 \text{ quand } t \to -\infty}\text{ :}$$
+     la solution longe la branche supérieure de la parabole $y^{2} = -t$.
+
+    $\triangleright$ *3.* Sur la courbe $w(s) = \sqrt{2s}$, $w^{2} - s = s > \dfrac{1}{\sqrt{2s}} = w'(s)$ pour $s \geqslant 1$ : les courbes intégrales la traversent vers le haut, et le raisonnement de 2 montre que 
+    $$\boxed{z(s) > \sqrt{2s} \text{ pour } s \geqslant s_{1}}\text{.}$$
+     Alors $z^{2} - s > \dfrac{z^{2}}{2}$, donc $\Big(-\dfrac{1}{z}\Big)' > \dfrac{1}{2}$ et $\dfrac{1}{z(s)} < \dfrac{1}{z(s_{1})} - \dfrac{s - s_{1}}{2}$ : le membre de droite s'annule en $s_{1} + \dfrac{2}{z(s_{1})}$, et $z$ explose avant cet instant. Pour $y$ : si $y(t_{1}) < -\sqrt{-2t_{1}}$ pour un $t_{1} \leqslant -1$, alors 
+    $$\boxed{y \to -\infty \text{ en } \alpha > t_{1} - \frac{2}{|y(t_{1})|}}\text{.}$$
+
+    $\triangleright$ *4.* On reprend la fonction `pas` de l'exercice 9 avec $F(t, y) = t + y^{2}$ et $h = -10^{-3}$, en arrêtant le calcul quand $|y| > 10^{3}$. Les solutions issues de $-0{,}6$ et $-0{,}7$ rejoignent la branche $\sqrt{-t}$ ; celles issues de $-0{,}75$ et $-0{,}8$ partent vers $-\infty$, en $t \approx -2{,}09$ et $t \approx -1{,}65$ ; en $t = -8$, les premières valent $2{,}796$, proche de $\sqrt{8} \approx 2{,}828$. Le seuil vaut 
+    $$\boxed{y^{*} = \frac{\operatorname{Ai}'(0)}{\operatorname{Ai}(0)} \approx -0{,}72901}\text{.}$$
+
+    $\triangleright$ *Le lien avec l'exercice 16.* On admet les propriétés suivantes des fonctions d'Airy $\operatorname{Ai}$ et $\operatorname{Bi}$, solutions de $w'' = xw$ : elles sont strictement positives sur $\mathbb{R}_{+}$, $\operatorname{Ai} \to 0$ et $\operatorname{Bi} \to +\infty$ en $+\infty$, et $\operatorname{Ai}\operatorname{Bi}' - \operatorname{Ai}'\operatorname{Bi} = \dfrac{1}{\pi}$. La fonction $u$ de l'exercice 16 s'écrit $u(t) = \lambda\operatorname{Ai}(-t) + \mu\operatorname{Bi}(-t)$, et les conditions initiales donnent $\mu = \pi\operatorname{Ai}(0)(y_{0} - y^{*})$. Si $y_{0} < y^{*}$, $\mu < 0$ et $u(t) \sim \mu\operatorname{Bi}(-t) \to -\infty$ en $-\infty$ : $u$ a un zéro négatif, et $y$ explose à gauche. Si $y_{0} \geqslant y^{*}$, $\mu \geqslant 0$ et 
+    $$u(t) = \mu\,\operatorname{Ai}(x)\Big(\frac{\operatorname{Bi}}{\operatorname{Ai}}(x) - \frac{\operatorname{Bi}}{\operatorname{Ai}}(0)\Big) + \frac{\operatorname{Ai}(x)}{\operatorname{Ai}(0)}, \qquad x = -t \geqslant 0,$$
+     où $\dfrac{\operatorname{Bi}}{\operatorname{Ai}}$ est croissante (sa dérivée vaut $\dfrac{1}{\pi\operatorname{Ai}^{2}}$) : $u > 0$ sur $\mathbb{R}_{-}$, et (y_0) = -. La *séparatrice* $y^{*}$ correspond à $\mu = 0$ : $y = \dfrac{\operatorname{Ai}'(-t)}{\operatorname{Ai}(-t)} \sim -\sqrt{-t}$, solution qui suit la branche inférieure de la parabole, instable vers le passé.
+
+    ![Figure](documents/figures/063d13bf1e03b54c.svg)
+
+    Vers le passé, les solutions issues de $0{,}5$, $-0{,}6$ et $-0{,}7$ rejoignent la branche $\sqrt{-t}$ (tirets violets), tandis que celles issues de $-0{,}75$, $-0{,}8$ et $-1{,}2$ plongent vers $-\infty$. La séparatrice (en rouge), issue de $y^{*} \approx -0{,}729$, longe la branche $-\sqrt{-t}$ jusqu'au bout.
+

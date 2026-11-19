@@ -921,7 +921,7 @@ Le prototype du 18 nov. (worktree du scratchpad) a servi de maquette.
 **Première UE** : `l3-s5-cd`, « Calcul différentiel et équations différentielles » (semestre 5, 108 pages), chapitres
 `l3-cd-01` à `l3-cd-07` (espaces normés ; applications différentiables ; inversion locale et fonctions implicites ;
 ordre supérieur et Taylor ; extrema libres et liés ; équations différentielles : existence ; approximation numérique).
-Exercices à venir. « À revoir avant » : posé par chapitre le 19 nov. au soir, une fois `l3` ajouté aux tables `PRECEDENT` (vers ma et mp), en plus des prérequis
+Exercices : voir §56. « À revoir avant » : posé par chapitre le 19 nov. au soir, une fois `l3` ajouté aux tables `PRECEDENT` (vers ma et mp), en plus des prérequis
 de l'UE (mp-04, mp-05, mp-17) ; liste dans `cours-prerequis.yaml`. Termes écartés : fragments et formes tronquées
 (« -difféomorphisme », « -ième dérivée partielle »…), par chapitre. Le chapitre 7 contient du Python (`lstlisting`) :
 boutons « Essayer » posés le 19 nov. (voir « Atelier dans la Licence » plus bas).
@@ -942,3 +942,21 @@ worker (`bibliotheques`) les charge à la demande par `loadPackagesFromImports`,
 ou « [Téléchargement impossible…] » sans réseau. Matplotlib passe en Agg, `plt.show` ne fait rien, et les figures
 ouvertes après l'exécution sont envoyées en PNG (message `image`, `Atelier.image`, classe `.at-figure`). Le CDN n'est
 pas joignable depuis l'environnement de travail : le chargement réel n'a pu être vérifié qu'en ligne.
+
+### 56. Feuilles d'exercices de la Licence 3 (19 nov. 2026)
+
+Sept feuilles `f-l3-cd-01` à `f-l3-cd-07` (35, 58, 33, 19, 17, 33 et 17 exercices : 212), converties par
+`tex2exos.py` avec `outils/meta_l3_cd_0N.py` ; PDF dans `documents/exercices/l3/`
+(`calcul_differentiel_chap0N_<slug>_{enonce,corrige}.pdf`, slug du chapitre 1 raccourci en `espaces_normes`) ;
+entrées dans `exercices.yaml` (avant `f-py-01`) et champ `exercices:` des chapitres `l3-cd-0N`. Nouveauté : l'entrée
+« Nouveau niveau : Licence 3 » du jour est complétée (lien `exercices/niveau/l3`, `couvre`). Le Python du corrigé 7
+(`lstlisting`) passe en blocs de code.
+
+Trois retouches de `tex2exos.py`. (1) Les feuilles v5 placent `\needspace{…}` seul entre le commentaire de source et
+`\exo{N}` : la tête accepte désormais `\needspace` avec ou sans `\par`. (2) Le renommage des variables de `\foreach`
+ne touche plus que les variables qui sont aussi des macros du préambule (`\R`…) : il renommait `\x` dans toute la
+figure, y compris le `plot (\x, …)` voisin (figure du corrigé 3 cassée). (3) `source_interne` : insensible à la casse,
+« cette feuille » accepté, et une source qui ne nomme qu'un fichier de travail (`f3.pdf`, `fic00047.pdf`, `Maudin.pdf`,
+« feuille 2 photographiée ») est tenue pour interne. Conséquence : aucune source n'est affichée pour la Licence ; si
+l'auteur donne les références réelles de ces fichiers, les remplacer dans les `.tex` et reconvertir.
+

@@ -24,6 +24,8 @@ def lire(p):
         def renommer(m):
             fig = m.group(0)
             for v in set(re.findall(r'\\foreach\s*\\([A-Za-z]+)', fig)):
+                # seules les variables qui sont aussi des macros du préambule ; \x reste \x (variable de plot)
+                if not re.search(r'\\(?:(?:re)?newcommand\*?\s*\{?|def|DeclareMathOperator\*?\s*\{?)\\' + v + r'(?![A-Za-z])', s[:i]): continue
                 fig = re.sub(r'\\' + v + r'(?![A-Za-z])', lambda _: '\\fv' + v, fig)
             return fig
         s = s[:i] + re.sub(r'\\begin\{tikzpicture\}.*?\\end\{tikzpicture\}', renommer, s[i:], flags=re.S)
@@ -621,7 +623,7 @@ def sources(t_brut):
     """Sources indiquées en commentaire juste avant un exercice : « % Source : … » → {numéro: texte} ;
     « % Inspiré de : … » donne « inspiré de … »."""
     r = {}
-    tete = r'(?:\\par\s*\\needspace\{[^}]*\}\s*)?(?:\\exo(?:orig)?\{|\\noindent\s*\\textbf\{\s*\\underline\{\s*Exercice\s+)(\d+)'
+    tete = r'(?:(?:\\par\s*)?\\needspace\{[^}]*\}\s*)?(?:\\exo(?:orig)?\{|\\noindent\s*\\textbf\{\s*\\underline\{\s*Exercice\s+)(\d+)'
     for m in re.finditer(r'%\s*(Sources?|Inspiré de)\s*:\s*(.*)\n(?:%[^\n]*\n|\s*\n|\\newpage\s*\n)*' + tete, t_brut):
         texte = m.group(2).strip()
         # Les commentaires LaTeX sont souvent écrits sans accents : titre du polycopié rétabli.
@@ -639,7 +641,10 @@ def source_interne(texte):
         if ch == ';' and prof == 0: parts.append(cour); cour = ''
         else: cour += ch
     parts.append(cour)
-    return all(re.match(r'\s*(exercice composé pour la feuille|promesse de la feuille)', x) for x in parts)
+    # Une source qui ne nomme qu'un fichier de travail (« f3.pdf, exercice 2 », « feuille 2 photographiée ») ne
+    # renvoie le lecteur à rien qu'il puisse consulter : elle est traitée comme interne.
+    return all(re.match(r'\s*(exercice composé pour (la|cette) feuille|promesse de (la|cette) feuille'
+                        r'|[\w.-]+\.pdf\b|feuille [^,;]*photographiée)', x, re.I) for x in parts)
 
 def pages(pdf):
     n = int(re.search(r'Pages:\s+(\d+)', subprocess.run(['pdfinfo', pdf], capture_output=True, text=True, errors='replace').stdout).group(1))
