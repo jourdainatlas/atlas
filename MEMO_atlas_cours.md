@@ -952,11 +952,15 @@ entrées dans `exercices.yaml` (avant `f-py-01`) et champ `exercices:` des chapi
 « Nouveau niveau : Licence 3 » du jour est complétée (lien `exercices/niveau/l3`, `couvre`). Le Python du corrigé 7
 (`lstlisting`) passe en blocs de code.
 
-Trois retouches de `tex2exos.py`. (1) Les feuilles v5 placent `\needspace{…}` seul entre le commentaire de source et
+Quatre retouches de `tex2exos.py`. (1) Les feuilles v5 placent `\needspace{…}` seul entre le commentaire de source et
 `\exo{N}` : la tête accepte désormais `\needspace` avec ou sans `\par`. (2) Le renommage des variables de `\foreach`
 ne touche plus que les variables qui sont aussi des macros du préambule (`\R`…) : il renommait `\x` dans toute la
 figure, y compris le `plot (\x, …)` voisin (figure du corrigé 3 cassée). (3) `source_interne` : insensible à la casse,
 « cette feuille » accepté, et une source qui ne nomme qu'un fichier de travail (`f3.pdf`, `fic00047.pdf`, `Maudin.pdf`,
 « feuille 2 photographiée ») est tenue pour interne. Conséquence : aucune source n'est affichée pour la Licence ; si
 l'auteur donne les références réelles de ces fichiers, les remplacer dans les `.tex` et reconvertir.
+(4) Les corrigés de Licence écrivent `\boxed{…}` hors de toute formule (amsmath le compose alors en formule
+encadrée) : la première conversion en faisait du texte mutilé (« y = (x + C) sur ]-C, +[ »). `maths()` le change
+maintenant en formule en ligne ; 142 exercices corrigés avant publication. Les feuilles déjà en ligne n'emploient
+`\boxed` qu'en formule.
 

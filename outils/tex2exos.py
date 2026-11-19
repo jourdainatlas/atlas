@@ -398,7 +398,14 @@ class Conv:
                 elif c == '$' and d == 0: break
                 k += 1
             out.append(t[i:j]); out.append(s.jeton('MI', t[j+1:k])); i = k + 1
-        return ''.join(out)
+        # \boxed{…} écrit hors de toute formule (amsmath le compose alors comme une formule encadrée) : formule en ligne
+        def encadres(x):
+            while True:
+                m = re.search(r'\\boxed\s*\{', x)
+                if not m: return x
+                f = accolade(x, m.end() - 1)
+                x = x[:m.start()] + s.jeton('MI', x[m.start():f]) + x[f:]
+        return ''.join(x if re.fullmatch(r'@@MI\d+@@', x) else encadres(x) for x in out)
 
     def tex_math(s, m):
         m = re.sub(r'@@TAB\d+@@', lambda x: s.ph[x.group(0)][1], m)
