@@ -1238,6 +1238,17 @@ if 'exercices' in rubriques:
                 erreur(f"rubriques/exercices {fe['id']} : fichier introuvable {fe[champ]}")
     for e in E['exercices']:
         e['mots_cles'] = [m.strip().lower() if m.strip() != 'Python' else m for m in e.get('mots_cles', [])]
+    # « Dans le cours » des cartes d'exercice : parties du cours concernées (indices du sommaire), calculées par
+    # outils/exercices_cours.py et rangées dans outils/exercices-cours.json.
+    if os.path.isfile('outils/exercices-cours.json'):
+        EC = json.load(open('outils/exercices-cours.json', encoding='utf-8'))
+        cours_ids = {c['id']: c for c in (rubriques.get('cours') or {}).get('cours', [])}
+        cours_f = {fe['id']: fe.get('cours') for fe in E.get('feuilles', [])}
+        for e in E['exercices']:
+            c = cours_ids.get(cours_f.get(e['feuille']))
+            l = [i for i in EC.get(e['id'], []) if c and isinstance(i, int) and 0 <= i < len(c.get('sommaire') or [])]
+            if len(l) != len(EC.get(e['id'], [])): avertissements.append(f"outils/exercices-cours.json : {e['id']} renvoie hors du sommaire de son cours")
+            if l: e['cours_parties'] = l
 for nom, r in rubriques.items(): verifie_rubrique(nom, r, '')
 # Vidéos de cours (videos/catalogue.json, MEMO_atlas_videos.md §10) : chaque vidéo du catalogue est rattachée à son
 # chapitre, qui reçoit alors le bouton « Vidéo » et le lecteur de la rubrique Cours. `en_ligne` n'est mis à vrai

@@ -188,6 +188,7 @@ exercices », c'est-à-dire la vue « Par exercice » filtrée sur ce niveau. Le
    reconnaissent pas (numéro → mots-clés, nœuds, notions) : aucun exercice ne reste sans nœud.
 3. Déclarer la feuille dans `rubriques/exercices.yaml` (`pdf_enonce`, `pdf_corrige`, `cours`,
    `statut: depose`) et relier le cours par son champ `exercices`.
+   Puis `python3 outils/exercices_cours.py <feuille>` (« Dans le cours » des cartes, §57).
 4. Contrôle de la conversion (et non du contenu, qui n'est pas relu ici, voir section 19) : aucun
    avertissement de l'outil (corrigé manquant, étoiles différentes, image introuvable), numéros
    consécutifs, pages trouvées, aucune commande LaTeX ni aucun jeton `@@…@@` hors des formules ou dans
@@ -873,8 +874,8 @@ un chapitre, une feuille ou un niveau est ajouté ; la construction demandera se
 
 `mp-13` (Convergence dominée et intégrales à paramètre, 15 p.), `mp-14` (Espaces probabilisés et variables
 aléatoires discrètes, 15 p.), `mp-15` (Espérance, variance et fonctions génératrices, 14 p.) ; feuilles `f-mp-13`
-(43 exercices) et `f-mp-15` (46), sans figure ; `outils/meta_mp_13.py`, `meta_mp_15.py`. **La feuille 14 attend
-son corrigé** (ni .tex ni PDF reçus) : `mp-14` n'a pas de champ `exercices`, et l'énoncé n'est pas déposé ; à
+(43 exercices) et `f-mp-15` (46), sans figure ; `outils/meta_mp_13.py`, `meta_mp_15.py`. **La feuille 14 attendait
+son corrigé** (reçu et versé le 19 nov., §57) (ni .tex ni PDF reçus) : `mp-14` n'a pas de champ `exercices`, et l'énoncé n'est pas déposé ; à
 réception, `meta_mp_14.py` (parties : 1–3, 4–9, 10–21, 22–24, 25–30, 31–33, 34–41, synthèse 42–46), conversion, champ
 `exercices: f-mp-14` et entrée dans `exercices.yaml`, sans nouvelle entrée de nouveautés (compléter celle du 17 nov.).
 Prérequis : mp-13 [ma-18, ma-20, ma-08], mp-14 [ma-21, ma-20, ma-03], mp-15 [ma-21, ma-20, ma-10]. Activités :
@@ -887,8 +888,7 @@ et « presque sßr(ement) », où le PDF code « û » comme « ß »). Symboles
 chapitres de MP ; feuilles `f-mp-16` (47 exercices) et `f-mp-17` (51), sans figure ; `outils/meta_mp_16.py`,
 `meta_mp_17.py` (la diagonalisation se dit `rd-diagonalisable`). Prérequis : mp-16 [ma-06, ma-16, ma-17], mp-17
 [ma-22, ma-14, ma-09]. Activité : `euler` → mp-16. Termes écartés (mp-17) : dérivable en, différentiable en, selon le
-vecteur, de classe, global, col (doublon de « point col »), réciproque fausse. Symboles validés le 17 nov., après deux planches refusées (spirale, nœud, gradient sur ellipses, Lagrange sur cercles ; col, famille, jacobienne, relief) : mp-16 `champdir` (champ de directions ; le nom `champ` était déjà pris de y′ = 1 − y et la solution y = 1 + 2,3 e^{−t}), mp-17 `tangence` (disque de contrainte, ligne de niveau de f = x + y tangente au point du maximum, une ligne plus basse en pointillés). Reste dû :
-la feuille `f-mp-14` (corrigé non reçu, §53).
+vecteur, de classe, global, col (doublon de « point col »), réciproque fausse. Symboles validés le 17 nov., après deux planches refusées (spirale, nœud, gradient sur ellipses, Lagrange sur cercles ; col, famille, jacobienne, relief) : mp-16 `champdir` (champ de directions ; le nom `champ` était déjà pris de y′ = 1 − y et la solution y = 1 + 2,3 e^{−t}), mp-17 `tangence` (disque de contrainte, ligne de niveau de f = x + y tangente au point du maximum, une ligne plus basse en pointillés). La feuille `f-mp-14`, d'abord en attente de son corrigé, est versée le 19 nov. (§57).
 
 **18 nov. : MP 15 à 17 révisés.** Les théorèmes passent de l'environnement `cadre` à un tableau encadré à titre
 rouge souligné (« Théorème 1 : Formule de transfert : ») ; aucun nouveau terme relevé par `cours_termes.py`. Seul
@@ -967,4 +967,24 @@ l'auteur donne les références réelles de ces fichiers, les remplacer dans les
 encadrée) : la première conversion en faisait du texte mutilé (« y = (x + C) sur ]-C, +[ »). `maths()` le change
 maintenant en formule en ligne ; 142 exercices corrigés avant publication. Les feuilles déjà en ligne n'emploient
 `\boxed` qu'en formule.
+
+### 57. « Dans le cours » sur les cartes d'exercice ; feuille MP 14 (19 nov. 2026)
+
+**Feuille `f-mp-14`** (46 exercices, 41 sources affichées), `outils/meta_mp_14.py` ; champ `exercices` de mp-14 ;
+nouveauté du 17 nov. complétée (135 exercices, lien vers la feuille). La MP est complète.
+
+**« Dans le cours »** (demande de l'auteur). Sous le pied de chaque carte d'exercice, avant « Dans l'atlas », une ligne
+« Dans le cours : » donne une ou deux parties du chapitre (titre du sommaire · p. N). Le lien (`a.puce-cours` avec
+`data-cours-page`) ouvre le chapitre à la page de la partie, par le mécanisme existant du domaine apparence (§60 de son
+mémo : `retourNoter`, `retourMontrer`, `retourFaire`) ; un écouteur du domaine Cours (`data-retour-exo`) change seulement
+le libellé du bouton flottant en « ← Retour à l'exercice N », qui ramène à la carte, à la même position.
+Données : `outils/exercices_cours.py` compare, par TF-IDF (mots réduits à six lettres, sans accents ni formules), le texte
+de chaque exercice (énoncé, corrigé, titre de partie et mots-clés comptés triple) au texte de chaque partie du PDF du
+cours (pdftotext, de la page de début à la suivante) ; « Introduction historique » et « Bilan » sont exclues. Une partie
+de feuille dont le titre reprend celui d'une partie du cours (deux tiers de ses mots) y renvoie d'abord ; une seconde
+partie est gardée si son score atteint 85 % du premier. Résultat versionné `outils/exercices-cours.json`
+({id: [indices du sommaire]}), lu par `construire.py` (champ `cours_parties` de l'index, avertissement si un indice sort
+du sommaire). Corrections manuelles éventuelles : `outils/exercices-cours-corrections.yaml` ({id: [indices]}), prioritaire.
+4 129 exercices sur 4 132 reliés (3 sans mot commun). **À relancer** après tout dépôt ou remplacement de feuille ou de
+cours (`python3 outils/exercices_cours.py [f-…]`), sinon les nouveaux exercices n'ont pas la ligne.
 

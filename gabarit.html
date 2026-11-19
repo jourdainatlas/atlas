@@ -1601,6 +1601,7 @@ button.lien-simple { border: 0; background: none; padding: 0; cursor: pointer; f
 .exo-liens { display: flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
 .exo-liens .bouton { font-size: 12.5px; padding: 4px 10px; }
 .exo-atlas { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; margin-top: 10px; font-size: 13px; color: var(--encre-3); }
+.exo-cours .puce-cours { margin: 0; font-size: 13px; }
 .exo-tete { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; margin-bottom: 4px; }
 .exo-tete h3 { font-family: var(--f-titre); font-size: 19px; margin: 0; }
 .exo-meta { font-size: 13px; color: var(--encre-2); margin-bottom: 10px; }
@@ -4681,6 +4682,11 @@ function carteExercice(e, enChargement) {
   if (e.corrige) h += `<details class="corrige"><summary>Corrigé</summary><div class="contenu">${e.corrige}</div></details>`;
   h += `<div class="exo-pied">${suiviBoutons(e)}<div class="notions">${(e.mots_cles || []).map(m => `<button type="button" class="mot-cle" data-filtre="theme" value="${esc(m)}" aria-pressed="${etatExo.themes.has(m)}">${esc(m)}</button>`).join('')}</div>`;
   h += `<div class="exo-liens">${lienPdf(f.pdf_enonce, e.page_enonce, `Énoncé PDF${e.page_enonce ? `, p. ${e.page_enonce}` : ''}`)}${lienPdf(f.pdf_corrige, e.page_corrige, `Corrigé PDF${e.page_corrige ? `, p. ${e.page_corrige}` : ''}`)}</div></div>`;
+  // « Dans le cours » : les parties du chapitre que l'exercice met en jeu (outils/exercices_cours.py) ; un lien ouvre le
+  // cours à la page de la partie, et le bouton « ← Retour à l'exercice » (RETOUR, plus bas) y ramène.
+  const cc = f.cours && (R.cours?.cours || []).find(x => x.id === f.cours);
+  const cp = cc && cc.pdf && cc.sommaire_pages ? (e.cours_parties || []).filter(i => cc.sommaire[i] && cc.sommaire_pages[i]) : [];
+  if (cp.length) h += `<div class="exo-atlas exo-cours"><span>Dans le cours :</span>${cp.map(i => `<a class="puce-cours" href="#cours/${cc.id}" data-cours-page="${cc.sommaire_pages[i]}" data-retour-exo="${e.numero}" title="Ouvrir le cours à la page ${cc.sommaire_pages[i]}">${cc.sommaire[i]} · p. ${cc.sommaire_pages[i]}</a>`).join('')}</div>`;
   if ((e.noeuds || []).length || (e.notions || []).length) h += `<div class="exo-atlas"><span>Dans l'atlas :</span>${(e.noeuds || []).map(n => puce(n)).join('')}${(e.notions || []).map(terme).join(' ')}</div>`;
   return h + '</article>';
 }
@@ -6065,6 +6071,8 @@ function retourNoter(lien) {
   Object.assign(RETOUR, { depuis: h, vers: lien.getAttribute('href'), y: zone ? zone.scrollTop : 0, yf: scrollY, zone, libelle, id: id && !id.startsWith('ix-') ? id : null });
 }
 document.addEventListener('click', ev => { const a = ev.target.closest('a[data-cours-page]'); if (a) retourNoter(a); }, true);
+// Depuis une carte d'exercice (« Dans le cours », domaine Cours) : le bouton dit « Retour à l'exercice N ».
+document.addEventListener('click', ev => { const a = ev.target.closest('a[data-retour-exo]'); if (a && RETOUR.vers === a.getAttribute('href')) RETOUR.libelle = `à l'exercice ${a.dataset.retourExo}`; });
 function retourMontrer() {
   let b = document.getElementById('retour-renvoi');
   const ici = location.hash;
