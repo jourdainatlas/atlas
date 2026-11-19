@@ -57,6 +57,23 @@ def _input(invite=''):
     raise BesoinSaisie(invite)
 builtins.input = _input
 
+def _figures():
+    # Figures matplotlib ouvertes après l'exécution : renvoyées en PNG (base64), puis fermées.
+    if 'matplotlib.pyplot' not in sys.modules: return json.dumps([])
+    import io, base64
+    plt = sys.modules['matplotlib.pyplot']; out = []
+    for n in plt.get_fignums():
+        b = io.BytesIO(); plt.figure(n).savefig(b, format='png', dpi=110, bbox_inches='tight')
+        out.append(base64.b64encode(b.getvalue()).decode())
+    plt.close('all')
+    return json.dumps(out)
+
+def _preparer_matplotlib():
+    import matplotlib
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+    plt.show = lambda *a, **k: None   # les figures s'affichent sous la console, après l'exécution
+
 _espaces = {}
 def _neuf():
     return {'__name__': '__main__', '__builtins__': builtins}
@@ -222,17 +239,37 @@ self.fetch = async (...a) => {
   return new Response(r.body, { status: r.status, statusText: r.statusText, headers: { 'Content-Type': 'application/wasm' } });
 };
 
+// Bibliothèques scientifiques (numpy, scipy, matplotlib, sympy…) : non hébergées avec le site (plusieurs dizaines
+// de Mo), elles sont téléchargées depuis le CDN de Pyodide, de la même version, la première fois qu'un programme
+// les importe ; le navigateur les garde ensuite en cache.
+const CDN = 'https://cdn.jsdelivr.net/pyodide/v314.0.6/full/';
+const NOMS = { numpy: 'NumPy', scipy: 'SciPy', matplotlib: 'Matplotlib', sympy: 'SymPy', pandas: 'pandas', networkx: 'NetworkX' };
+async function bibliotheques(code, wid) {
+  if (!/\bimport\b/.test(code)) return;
+  let noms = [];
+  try { noms = py.pyodide_py.code.find_imports(code).toJs(); } catch (e) { return; }
+  const manquants = noms.filter(n => NOMS[n] && !py.loadedPackages[n]);
+  if (!manquants.length) return;
+  postMessage({ type: 'sortie', wid, texte: `[Chargement de ${manquants.map(n => NOMS[n] || n).join(', ')} : la première fois, quelques secondes]\n` });
+  await py.loadPackagesFromImports(code, { messageCallback: () => {}, errorCallback: () => {} });
+  const rates = manquants.filter(n => !py.loadedPackages[n]);
+  if (rates.length) postMessage({ type: 'sortie', wid, texte: `[Téléchargement impossible (${rates.map(n => NOMS[n] || n).join(', ')}) : connexion au réseau nécessaire la première fois]\n` });
+  if (manquants.includes('matplotlib') || noms.includes('matplotlib')) py.runPython('_preparer_matplotlib()');
+}
+
 async function demarrer() {
-  py = await loadPyodide({ indexURL: new URL('./pyodide/', import.meta.url).href });
+  py = await loadPyodide({ indexURL: new URL('./pyodide/', import.meta.url).href, packageBaseUrl: CDN });
   py.runPython(AMORCE);
   const v = py.runPython('import sys; sys.version.split()[0]');
   postMessage({ type: 'pret', version: v });
 }
 
-onmessage = (ev) => {
+onmessage = async (ev) => {
   const m = ev.data;
   widCourant = m.wid; tampon = ''; dernier = Date.now();
   let r;
+  try { await bibliotheques(m.code || '', m.wid); }
+  catch (e) { postMessage({ type: 'sortie', wid: m.wid, texte: `[Bibliothèque introuvable ou réseau indisponible : ${String(e).split('\n')[0]}]\n` }); }
   try {
     const f = py.globals.get(m.action);
     if (m.action === 'executer') r = f(m.wid, m.code, m.nom, JSON.stringify(m.reponses), m.graine, m.saut);
@@ -244,6 +281,7 @@ onmessage = (ev) => {
     r = { etat: 'erreur', trace: String(e), aide: "Erreur interne de l'atelier." };
   }
   vider();
+  try { for (const png of JSON.parse(py.runPython('_figures()'))) postMessage({ type: 'image', wid: m.wid, png }); } catch (e) { /* pas de figure */ }
   postMessage({ type: 'fin', wid: m.wid, id: m.id, resultat: r });
 };
 

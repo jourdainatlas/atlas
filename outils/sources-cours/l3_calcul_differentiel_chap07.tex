@@ -1,0 +1,1005 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Cours de L3 - Calcul differentiel - M. JOURDAIN
+%
+%  PREAMBULE COMMUN DE L'UE (identique dans les sept chapitres et dans le
+%  volume complet L3_S5_COURS_calcul_differentiel.tex, qui inclut chaque
+%  chapitre tel quel grace au paquet docmute).
+%  Tire du preambule des cours de MP ; ajouts : hyperref (liens invisibles),
+%  listings (code Python des chapitres 6 et 7), macros de l'UE.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[a4paper,twoside]{report}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage[table]{xcolor}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{tikz}
+\usepackage{array}
+\usepackage{multirow}                            % cellules fusionnees des tableaux bilans
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{tabularx}
+
+% ---- paquets optionnels utilises dans l'UE ----
+\usepackage{stmaryrd}                            % crochets doubles des intervalles d'entiers
+\usepackage{needspace}                           % pas de titre «~Exemples :~» isole en bas de page
+\usepackage{tikz-cd}                             % diagrammes commutatifs (chapitres 2 et 3)
+\usepackage{pgfplots}                            % courbes et surfaces
+\pgfplotsset{compat=1.18}
+\usepackage{listings}                            % code Python (chapitres 6 et 7)
+\graphicspath{{/home/armandj/Documents/A Documents/image/}}  % chemin des images (fixe)
+
+\usetikzlibrary{arrows.meta,decorations.pathreplacing,patterns,calc}
+
+\geometry{hmargin=2.5cm,vmargin=1.5cm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% COULEURS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Le code couleur propre a chaque chapitre est decrit dans l'en-tete du
+%  chapitre (bloc «~CODE COULEUR~»). Couleurs disponibles :
+\definecolor{rougecours}{RGB}{192,0,0}
+\definecolor{couleurN}{RGB}{0,112,192}
+\definecolor{couleurZ}{RGB}{0,150,120}
+\definecolor{couleurD}{RGB}{224,150,0}
+\definecolor{couleurQ}{RGB}{150,80,180}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.98,0.98,0.98}
+% Mot defini, en gras rouge
+\newcommand{\mot}[1]{\textcolor{rougecours}{\textbf{#1}}}
+% Notation ou formule mise en avant en rouge
+\newcommand{\rmath}[1]{\textcolor{rougecours}{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% EN-TETES ET PIEDS DE PAGE %%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\lauteur}{Cours de L3 - Calcul différentiel - M. JOURDAIN}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE]{\footnotesize\rightmark}
+\fancyhead[RE]{\footnotesize\leftmark}
+\fancyhead[LO]{\footnotesize\leftmark}
+\fancyhead[RO]{\footnotesize\rightmark}
+\fancyfoot[LE,LO]{\thepage}
+\fancyfoot[RE,RO]{\footnotesize\lauteur}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\fancypagestyle{plain}{%
+  \fancyhf{}%
+  \fancyfoot[C]{\thepage}%
+  \renewcommand{\headrulewidth}{0pt}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ENVIRONNEMENTS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Cadre pour les propositions
+\newenvironment{cadre}%
+ {\par\vspace{2mm}\noindent\begin{tabular}{|@{\hspace{4mm}}p{0.93\textwidth}@{\hspace{4mm}}|}
+  \hline \\[-2mm]}%
+ {\\[2mm] \hline \end{tabular}\par\vspace{3mm}}
+
+\newcommand{\definition}{\textbf{Définition :}~}
+\newcommand{\propo}[1]{\textbf{\underline{Proposition #1 :}}~}
+\newcommand{\theoreme}[1]{\textbf{Théorème #1 :}~}
+\newcommand{\methode}{\textbf{\underline{$\heartsuit$ Méthode :}}~}
+% Enonce de niveau prerequis, donne sans demonstration ou avec une preuve courte
+\newcommand{\rappel}{\textit{(Rappel.)}~}
+
+% Demonstration
+\newenvironment{demo}%
+ {\par\needspace{4\baselineskip}\vspace{1mm}\noindent$\circ$ \underline{Démonstration :}~\setlength{\parskip}{3pt plus 1pt}}%
+ {\hfill$\square$\par\vspace{2mm}}
+
+% Etape d'une demonstration longue : nouvel alinea, intitule en italique
+\newcommand{\etape}[1]{\par\smallskip\noindent$\triangleright$~\textit{#1}~}
+
+% Exemples et remarques : blocs indentes
+\newenvironment{exemple}%
+ {\par\needspace{6\baselineskip}\vspace{1mm}\begin{list}{}{\leftmargin=1cm \rightmargin=0.5cm}\item[]%
+  \textit{Exemple :}~}%
+ {\end{list}\vspace{1mm}}
+
+\newenvironment{remarque}%
+ {\par\needspace{6\baselineskip}\vspace{1mm}\begin{list}{}{\leftmargin=1cm \rightmargin=0.5cm}\item[]%
+  \textit{\underline{Remarque :}}~}%
+ {\end{list}\vspace{1mm}}
+
+\newenvironment{remarques}%
+ {\par\needspace{6\baselineskip}\vspace{1mm}\begin{list}{}{\leftmargin=1cm \rightmargin=0.5cm}\item[]%
+  \textit{\underline{Remarques :}}%
+  \begin{itemize}[label=$\bullet$,leftmargin=0.45cm,topsep=3pt,itemsep=4pt]}%
+ {\end{itemize}\end{list}\vspace{1mm}}
+
+\newenvironment{exemples}%
+ {\par\needspace{6\baselineskip}\vspace{1mm}\begin{list}{}{\leftmargin=1cm \rightmargin=0.5cm}\item[]%
+  \textit{Exemples :}%
+  \begin{itemize}[label=$\bullet$,leftmargin=0.45cm,topsep=3pt,itemsep=4pt]}%
+ {\end{itemize}\end{list}\vspace{1mm}}
+
+% Rediger un raisonnement type, encadre a gauche
+\newenvironment{redaction}%
+ {\par\vspace{2mm}\begin{center}\begin{tabular}{|@{\hspace{3mm}}p{0.85\textwidth}@{\hspace{3mm}}}}%
+ {\end{tabular}\end{center}\vspace{2mm}}
+
+%--- Style du code Python (lstlisting) -----------------------------------------
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour}, commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta}, numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple}, basicstyle=\ttfamily\small,
+    breakatwhitespace=false, breaklines=true, captionpos=b, keepspaces=true,
+    numbers=left, numbersep=5pt, showspaces=false, showstringspaces=false,
+    showtabs=false, tabsize=4, language=Python}
+\lstset{style=mystyle}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% MACROS DE L'UE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Ensembles de nombres
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\K}{\mathbb{K}}                       % corps de base : R ou C
+\newcommand{\intn}[2]{\llbracket #1\,,#2 \rrbracket}   % intervalle d'entiers (stmaryrd)
+
+% Applications
+\newcommand{\appli}[5]{\begin{array}{r|ccl}                % application sur deux lignes
+  #1 : & #2 & \longrightarrow & #3 \\ & #4 & \longmapsto & #5 \end{array}}
+\newcommand{\id}{\mathrm{id}}                     % identite
+\newcommand{\ee}{\mathrm{e}}                      % exponentielle
+\newcommand{\ii}{\mathrm{i}}                      % unite imaginaire
+\newcommand{\dd}{\mathrm{d}}                      % differentielle, element d'integration
+\newcommand{\limn}{\lim\limits_{n \to +\infty}}
+\newcommand{\cvu}{\xrightarrow[]{\ \mathrm{CU}\ }}           % convergence uniforme
+
+% Algebre lineaire
+\newcommand{\Ker}{\operatorname{Ker}}
+\newcommand{\Imf}{\operatorname{Im}}              % image (\Im est la partie imaginaire)
+\newcommand{\rg}{\operatorname{rg}}
+\newcommand{\Vect}{\operatorname{Vect}}
+\newcommand{\tr}{\operatorname{tr}}               % trace
+\newcommand{\tra}[1]{{#1}^{T}}                    % transposee
+\newcommand{\Mnp}[2]{\mathcal{M}_{#1,#2}(\K)}      % matrices a #1 lignes et #2 colonnes
+\newcommand{\Mn}[1]{\mathcal{M}_{#1}(\K)}          % matrices carrees
+\newcommand{\GL}{\mathrm{GL}}                     % groupe lineaire
+\newcommand{\Sp}{\operatorname{Sp}}               % spectre
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\Bc}{\mathcal{B}}                     % bases
+
+% Espaces normes (chapitre 1)
+\newcommand{\norme}[1]{\lVert #1 \rVert}         % norme
+\newcommand{\nop}[1]{|\mkern-1.5mu|\mkern-1.5mu|#1|\mkern-1.5mu|\mkern-1.5mu|}   % norme subordonnee (triple barre)
+\newcommand{\ps}[2]{\langle #1, #2 \rangle}       % produit scalaire
+\newcommand{\Bo}{B}                               % boule ouverte B(a, r)
+\newcommand{\Bf}{B_{f}}                           % boule fermee B_f(a, r)
+\newcommand{\Sph}{S}                              % sphere S(a, r)
+\newcommand{\adh}[1]{\overline{#1}}               % adherence
+\newcommand{\inte}[1]{\mathring{#1}}              % interieur
+\newcommand{\Fr}{\operatorname{Fr}}               % frontiere
+\newcommand{\Bor}{\mathcal{B}}                    % fonctions bornees B(X, F)
+\newcommand{\Cc}{\mathcal{C}}                     % fonctions continues, de classe C^k
+\newcommand{\Lc}{\mathcal{L}}                     % applications lineaires continues L(E, F)
+\newcommand{\dist}{d}                             % distance a une partie
+\newcommand{\diam}{\operatorname{diam}}           % diametre
+
+% Calcul differentiel (chapitres 2 a 5)
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}   % derivee partielle
+\newcommand{\dpd}[2]{\dfrac{\partial #1}{\partial #2}}  % derivee partielle, en ligne en style display
+\newcommand{\Isom}{\mathrm{Isom}}                 % isomorphismes continus d inverse continu
+\newcommand{\grad}{\nabla}                        % gradient
+\newcommand{\Du}[1]{D_{#1}}                       % derivee selon un vecteur
+\newcommand{\Hs}{H}                               % matrice hessienne
+\newcommand{\Jac}{J}                              % matrice jacobienne
+\newcommand{\Ou}{\Omega}                          % ouvert de definition
+
+% Une formule en ligne n'est jamais coupee par un retour a la ligne
+\relpenalty=10000
+\binoppenalty=10000
+
+\setlength{\parindent}{1cm}
+
+% Liens du sommaire, des signets et des renvois : invisibles (charge en dernier)
+\usepackage[hidelinks,bookmarksnumbered,pdfauthor={M. JOURDAIN},pdftitle={Cours de L3 - Calcul differentiel}]{hyperref}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CODE COULEUR %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Code couleur du chapitre 7 (constant d'une figure a l'autre) :
+%     couleurN (bleu)   : les solutions exactes (courbes integrales, trajectoires)
+%     couleurD (orange) : la methode d'Euler
+%     couleurZ (vert)   : les schemas d'ordre 2 (Heun, Euler modifiee)
+%     couleurQ (violet) : la methode de Runge-Kutta d'ordre 4 et les solveurs de scipy
+%     rougecours        : les erreurs, les points d'equilibre et les points remarquables
+%     gris              : champs de directions, reperes
+%  Source : sommaire seul (sections 6.8, 6.9, 6.11 a 6.15 du sommaire).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+% Ce fichier constitue le chapitre 7
+\setcounter{chapter}{6}
+
+%===============================================================================
+\chapter[Équations différentielles : numérique]{Équations différentielles : approximation numérique}
+%===============================================================================
+
+\section{Introduction historique}
+
+\begin{quote}
+\emph{Les équations différentielles qui se présentent en Mécanique ou en Physique ne sont pas, en général, exactement intégrables ; on doit donc, le plus souvent, substituer aux solutions exactes, des solutions approchées.}
+\begin{flushright}Émile Cotton - \emph{Sur l'intégration approchée des équations différentielles}, Bull. SMF, t.~36, 1908\end{flushright}
+\end{quote}
+
+\subsection{Des lignes brisées pour calculer}
+
+\noindent Le chapitre 6 a démontré que les solutions existent, sans les calculer. Il reste à les approcher. L'idée la plus simple remonte à \textbf{Euler}, qui l'expose en 1768 dans ses \emph{Institutiones calculi integralis} : sur un petit intervalle de temps, on remplace la courbe cherchée par sa tangente, et l'on recommence à partir du point obtenu. Dans ses leçons des années 1820, \textbf{Cauchy} transforme ce procédé de calcul en démonstration d'existence, en faisant tendre le pas vers $0$ : ce sont les polygones d'Euler du théorème de Peano.
+
+\subsection{Gagner des ordres : Runge, Heun, Kutta}
+
+\noindent Le défaut de la méthode d'Euler est sa lenteur : diviser le pas par $10$ ne divise l'erreur que par $10$. En 1895, \textbf{Carl Runge} montre qu'en évaluant la pente en plusieurs points bien choisis de chaque pas, on obtient une précision bien meilleure : une erreur en $h^{2}$, dans le langage de la section 7.4 ; \textbf{Karl Heun} en 1900, puis \textbf{Wilhelm Kutta} en 1901, systématisent ces formules, et la méthode «~de Runge-Kutta~» d'ordre $4$ est encore la plus employée. Les solveurs actuels, comme celui de Dormand et Prince (1980) qu'utilise \texttt{scipy}, ajoutent un contrôle automatique du pas. Ce chapitre étudie la méthode d'Euler (section 7.2), les portraits de phase (section 7.3), l'erreur des schémas à un pas (section 7.4), les schémas d'ordre $2$ et $4$ (sections 7.5 et 7.6), puis la mise en œuvre en Python (sections 7.7 et 7.8).
+
+\vfill
+% ---- y' = y, y(0) = 1, sur [0, 2] avec h = 0,5 : Euler y_n = 1,5^n (1 ; 1,5 ; 2,25 ; 3,375 ; 5,0625),
+% ---- Heun y_n = 1,625^n (1 ; 1,625 ; 2,6406 ; 4,2910 ; 6,9729), exacte e^2 = 7,389 (calcules)
+\noindent\begin{minipage}[c]{8.1cm}
+\begin{tikzpicture}[x=3.1cm,y=0.62cm]
+  \draw[gray,->] (-0.05,0) -- (2.2,0) node[below,font=\small] {$t$};
+  \draw[gray,->] (0,-0.2) -- (0,8.1) node[left,font=\small] {$y$};
+  \foreach \k/\l in {0.5/0{,}5,1/1,1.5/1{,}5,2/2} \draw[gray] (\k,0.1) -- (\k,-0.1) node[below,font=\scriptsize] {$\l$};
+  \foreach \v in {2,4,6} \draw[gray] (0.02,\v) -- (-0.02,\v) node[left,font=\scriptsize] {$\v$};
+  \draw[couleurN,very thick,domain=0:2.05,samples=60] plot (\x,{exp(\x)});
+  \draw[couleurD,thick] (0,1) -- (0.5,1.5) -- (1,2.25) -- (1.5,3.375) -- (2,5.0625);
+  \foreach \p in {(0,1),(0.5,1.5),(1,2.25),(1.5,3.375),(2,5.0625)} \fill[couleurD] \p circle (1.4pt);
+  \draw[couleurZ,thick] (0,1) -- (0.5,1.625) -- (1,2.640625) -- (1.5,4.291016) -- (2,6.972900);
+  \foreach \p in {(0.5,1.625),(1,2.640625),(1.5,4.291016),(2,6.972900)} \fill[couleurZ] \p circle (1.4pt);
+  \node[couleurN,font=\small,anchor=east] at (1.97,7.6) {$\ee^{t}$};
+  \node[couleurZ,font=\small,anchor=west] at (2.04,6.97) {Heun};
+  \node[couleurD,font=\small,anchor=west] at (2.04,5.06) {Euler};
+\end{tikzpicture}
+\end{minipage}\hfill
+\begin{minipage}[c]{7.6cm}
+Pour $y' = y$, $y(0) = 1$, avec un pas $h = 0{,}5$ : le polygone d'Euler, en orange, suit la tangente sur chaque pas et prend du retard, puisque la courbe exacte, en bleu, est convexe ; il atteint $5{,}06$ en $t = 2$ au lieu de $\ee^{2} \approx 7{,}39$. Le schéma de Heun, en vert, moyenne deux pentes par pas et atteint $6{,}97$ : pour le même pas, l'erreur est divisée par plus de cinq.
+\end{minipage}
+\vfill
+\newpage
+%===============================================================================
+\section{La méthode d'Euler}
+%===============================================================================
+
+\noindent Dans tout le chapitre, on considère le problème de Cauchy
+\[ y' = F(t, y), \qquad y(t_{0}) = y_{0}, \]
+sur un intervalle $[t_{0}, T]$, avec $F : [t_{0}, T] \times \R^{p} \to \R^{p}$ continue et \emph{$L$-lipschitzienne par rapport à $y$ sur tout} $[t_{0}, T] \times \R^{p}$. Par la proposition 12 du chapitre 6, puisque $\norme{F(t, y)} \leqslant L\norme{y} + \norme{F(t, 0)}$, la solution maximale est définie sur $[t_{0}, T]$ tout entier : on note $y$ cette solution exacte. Cette hypothèse globale simplifie les énoncés ; le cas local se traite en restreignant $F$ à un voisinage compact de la courbe intégrale.
+
+\begin{center}
+\begin{tabularx}{15cm}{||X}
+\noindent \textbf{\underline{Définition :}} Soit $N \geqslant 1$, $h = \dfrac{T - t_{0}}{N}$ le \mot{pas} et $t_{n} = t_{0} + nh$. La \mot{méthode d'Euler} définit les valeurs approchées $y_{n}$ de $y(t_{n})$ par
+\[ \rmath{y_{n + 1} = y_{n} + h\,F(t_{n}, y_{n})}, \qquad 0 \leqslant n \leqslant N - 1, \]
+à partir de $y_{0}$. L'\mot{erreur} au rang $n$ est $e_{n} = \norme{y(t_{n}) - y_{n}}$.
+\end{tabularx}
+\end{center}
+
+\noindent Le point $(t_{n + 1}, y_{n + 1})$ s'obtient en suivant, pendant un temps $h$, la tangente en $(t_{n}, y_{n})$ à la courbe intégrale qui passe par ce point. Les $y_{n}$ sont les valeurs aux nœuds des polygones d'Euler du chapitre 6, section 6.5.
+
+\begin{exemple}
+Pour $y' = y$, $y(0) = 1$ sur $[0, 1]$, on obtient $y_{n + 1} = (1 + h)y_{n}$, donc $y_{N} = \left(1 + \dfrac{1}{N}\right)^{N}$, qui tend vers $\ee = y(1)$. Le développement
+\[ N\ln\left(1 + \frac{1}{N}\right) = 1 - \frac{1}{2N} + O\left(\frac{1}{N^{2}}\right) \]
+donne $\ee - y_{N} \sim \dfrac{\ee}{2N}$ : l'erreur est proportionnelle au pas. Il faut mille pas pour obtenir trois décimales exactes.
+\end{exemple}
+
+\begin{cadre}
+\propo{1} \emph{(Lemme de Gronwall discret.)} Soit $(e_{n})$ une suite de réels positifs, $h > 0$, $\Lambda > 0$ et $\varepsilon \geqslant 0$ tels que $e_{n + 1} \leqslant (1 + h\Lambda)e_{n} + \varepsilon$ pour tout $n$. Alors, pour tout $n$,
+\[ \rmath{e_{n} \leqslant \ee^{n h \Lambda}e_{0} + \frac{\ee^{n h \Lambda} - 1}{h\Lambda}\,\varepsilon}. \]
+\end{cadre}
+
+\begin{demo}
+Par récurrence, $e_{n} \leqslant (1 + h\Lambda)^{n}e_{0} + \varepsilon\displaystyle\sum_{k = 0}^{n - 1}(1 + h\Lambda)^{k} = (1 + h\Lambda)^{n}e_{0} + \varepsilon\,\dfrac{(1 + h\Lambda)^{n} - 1}{h\Lambda}$, et l'on conclut par $1 + h\Lambda \leqslant \ee^{h\Lambda}$, conséquence de la convexité de l'exponentielle.
+\end{demo}
+
+\noindent C'est l'analogue, pour les suites, du lemme de Gronwall du chapitre 6 (proposition 2) : l'erreur commise à chaque pas, $\varepsilon$, est amplifiée au plus exponentiellement.
+
+\begin{center}
+\begin{tabularx}{15cm}{||X||}
+\hline \\
+\textbf{\underline{\textcolor{rougecours}{Théorème 1 : Convergence de la méthode d'Euler :}}} \\
+On suppose de plus $F$ de classe $\Cc^{1}$. La solution exacte $y$ est alors de classe $\Cc^{2}$ ; on note $M_{2} = \max_{[t_{0}, T]}\norme{y''}$. Si $y_{0} = y(t_{0})$, pour tout $n \in \intn{0}{N}$,
+\[ \rmath{\norme{y(t_{n}) - y_{n}} \leqslant \frac{M_{2}\,h}{2L}\left(\ee^{L(t_{n} - t_{0})} - 1\right)}. \]
+La méthode d'Euler converge, et l'erreur est un $O(h)$ uniformément sur $[t_{0}, T]$ : la méthode est \emph{d'ordre} $1$.
+\medbreak
+\\ \hline
+\end{tabularx}
+\end{center}
+
+\begin{demo}
+\etape{Régularité.} Comme $y' = F(t, y)$ avec $F$ et $y$ de classe $\Cc^{1}$, $y'$ est de classe $\Cc^{1}$ par la règle de la chaîne (chapitre 2, théorème 3).
+
+\etape{Erreur locale.} L'inégalité de Taylor-Lagrange à l'ordre $2$ (chapitre 4, proposition 2) donne, pour tout $n$,
+\[ \tau_{n} = \norme{y(t_{n + 1}) - y(t_{n}) - h\,y'(t_{n})} \leqslant \frac{M_{2}h^{2}}{2}, \qquad \text{avec } y'(t_{n}) = F(t_{n}, y(t_{n})). \]
+
+\etape{Propagation.} En retranchant $y_{n + 1} = y_{n} + hF(t_{n}, y_{n})$, il vient
+\[ e_{n + 1} \leqslant e_{n} + h\norme{F(t_{n}, y(t_{n})) - F(t_{n}, y_{n})} + \tau_{n} \leqslant (1 + hL)e_{n} + \frac{M_{2}h^{2}}{2}. \]
+La proposition 1, avec $e_{0} = 0$, $\Lambda = L$ et $nh = t_{n} - t_{0}$, donne l'inégalité annoncée.
+\end{demo}
+
+% ---- y' = y, h = 0,5 : points d'Euler 1,5^n ; solutions exactes issues de chaque point : 1,5^n e^(t - t_n)
+% ---- valeurs en t = 2 : 7,389 ; 6,723 ; 6,116 ; 5,564 ; 5,0625 ; erreurs locales 0,149 ; 0,223 ; 0,335 ; 0,502 (calculees)
+\begin{center}
+\begin{tikzpicture}[x=4.2cm,y=0.85cm]
+  \draw[gray,->] (-0.05,0.6) -- (2.45,0.6) node[below,font=\small] {$t$};
+  \draw[gray,->] (0,0.5) -- (0,7.9) node[left,font=\small] {$y$};
+  \foreach \k/\l in {0/t_{0},0.5/t_{1},1/t_{2},1.5/t_{3},2/t_{4}} \draw[gray] (\k,0.68) -- (\k,0.52) node[below,font=\scriptsize] {$\l$};
+  \draw[couleurN,very thick,domain=0:2,samples=60] plot (\x,{exp(\x)});
+  \foreach \n/\v in {1/1.5,2/2.25,3/3.375} \draw[couleurN!60,thick,densely dashed,domain=\n*0.5:2,samples=40] plot (\x,{\v*exp(\x-\n*0.5)});
+  \draw[couleurD,thick] (0,1) -- (0.5,1.5) -- (1,2.25) -- (1.5,3.375) -- (2,5.0625);
+  \foreach \p in {(0,1),(0.5,1.5),(1,2.25),(1.5,3.375),(2,5.0625)} \fill[couleurD] \p circle (1.4pt);
+  \foreach \t/\a/\b in {0.5/1.5/1.6487,1/2.25/2.4731,1.5/3.375/3.7096,2/5.0625/5.5644} \draw[rougecours,very thick] (\t,\a) -- (\t,\b);
+  \draw[rougecours,decorate,decoration={brace,amplitude=4pt}] (2.06,7.389) -- (2.06,5.0625) node[midway,right=5pt,font=\small,align=left] {erreur\\ globale $e_{4}$};
+  \node[couleurN,font=\small,anchor=east] at (1.97,7.55) {$y$};
+  \node[rougecours,font=\small,anchor=north west] at (0.52,1.5) {$\tau_{0}$};
+  \node[couleurD,font=\small,anchor=north west] at (1.02,2.2) {$y_{2}$};
+\end{tikzpicture}
+\end{center}
+
+\noindent La démonstration en image, pour $y' = y$ et $h = 0{,}5$. À chaque pas, le polygone d'Euler, en orange, s'écarte de la solution exacte qui passe par son point de départ : c'est l'erreur locale $\tau_{n}$, en rouge. Les solutions issues des points successifs, en tirets, transportent ces erreurs jusqu'en $t_{4}$ en les amplifiant d'au plus $\ee^{L(t_{4} - t_{n})}$, et l'erreur globale est la somme de ces erreurs transportées. C'est exactement le calcul de la proposition 1.
+
+\begin{exemple}
+Pour $y' = y$ sur $[0, 1]$, on a $L = 1$ et $M_{2} = \ee$ ; la borne du théorème vaut $\dfrac{\ee(\ee - 1)}{2}h \approx 2{,}34\,h$, et l'erreur effective $\dfrac{\ee}{2}h \approx 1{,}36\,h$. La borne est du bon ordre de grandeur ; elle devient en revanche très pessimiste quand $L(T - t_{0})$ est grand, à cause du facteur exponentiel.
+\end{exemple}
+
+\needspace{12\baselineskip}
+\begin{lstlisting}
+import numpy as np
+
+def euler(F, t0, y0, T, N):
+    """Methode d'Euler : N pas de longueur h = (T - t0)/N."""
+    h = (T - t0) / N
+    t, y = t0, np.array(y0, dtype=float)
+    for n in range(N):
+        y = y + h * F(t, y)
+        t = t + h
+    return y
+
+F = lambda t, y: y                       # y' = y, y(0) = 1
+for N in [10, 100, 1000]:
+    yN = euler(F, 0, [1.0], 1, N)[0]
+    print(N, yN, np.e - yN)
+\end{lstlisting}
+
+\noindent Le programme affiche
+\begin{verbatim}
+10 2.5937424601 0.124539368359045
+100 2.704813829421526 0.013467999037519274
+1000 2.716923932235896 0.0013578962231490799
+\end{verbatim}
+\noindent L'erreur est bien divisée par $10$ quand le pas l'est, et elle vaut à peu près $\dfrac{\ee}{2N}$.
+
+\subsection{Stabilité : la méthode d'Euler implicite}
+
+\noindent La méthode d'Euler \emph{implicite} prend la pente au point d'arrivée :
+\[ y_{n + 1} = y_{n} + h\,F(t_{n + 1}, y_{n + 1}). \]
+Le nouveau point est solution d'une équation, résolue par le théorème du point fixe (chapitre 1, théorème 13) dès que $hL < 1$. Le théorème 1 s'adapte à cette méthode, également d'ordre $1$. Son intérêt est ailleurs, comme le montre l'équation la plus simple.
+
+\begin{cadre}
+\propo{2} Soit $\lambda > 0$ et l'équation $y' = -\lambda y$, dont toutes les solutions tendent vers $0$ en $+\infty$. La méthode d'Euler explicite donne $y_{n} = (1 - h\lambda)^{n}y_{0}$, qui tend vers $0$ si et seulement si $h < \dfrac{2}{\lambda}$ ; la méthode implicite donne $y_{n} = \dfrac{y_{0}}{(1 + h\lambda)^{n}}$, qui tend vers $0$ pour tout pas $h > 0$.
+\end{cadre}
+
+\begin{demo}
+Les deux récurrences s'écrivent $y_{n + 1} = (1 - h\lambda)y_{n}$ et $(1 + h\lambda)y_{n + 1} = y_{n}$. Une suite géométrique de raison $q$ tend vers $0$ si et seulement si $|q| < 1$, et $|1 - h\lambda| < 1$ équivaut à $0 < h\lambda < 2$.
+\end{demo}
+
+% ---- y' = -10 y, y(0) = 1 : explicite h = 0,15 (raison -0,5), explicite h = 0,22 (raison -1,2), implicite h = 0,22 (raison 1/3,2 = 0,3125)
+\begin{center}
+\begin{tikzpicture}[x=6.4cm,y=0.6cm]
+  \draw[gray,->] (-0.03,0) -- (1.75,0) node[below,font=\small] {$t$};
+  \draw[gray,->] (0,-3.9) -- (0,3.5) node[left,font=\small] {$y$};
+  \draw[gray] (0,-3.9) -- (1.7,-3.9);
+  \foreach \v in {-3,-2,-1,1,2} \draw[gray] (0.006,\v) -- (-0.006,\v) node[left,font=\scriptsize] {$\v$};
+  \foreach \k/\l in {0.5/0{,}5,1/1,1.5/1{,}5} {\draw[gray] (\k,0.08) -- (\k,-0.08); \draw[gray] (\k,-3.9) -- (\k,-3.98) node[below,font=\scriptsize] {$\l$};}
+  \draw[couleurN,very thick,domain=0:1.65,samples=80] plot (\x,{exp(-10*\x)});
+  \draw[couleurD!50,thick] (0,1) -- (0.15,-0.5) -- (0.30,0.25) -- (0.45,-0.125) -- (0.60,0.0625) -- (0.75,-0.0312) -- (0.90,0.0156) -- (1.05,-0.0078) -- (1.20,0.0039) -- (1.35,-0.0020) -- (1.50,0.0010) -- (1.65,-0.0005);
+  \draw[couleurD,thick] (0,1) -- (0.22,-1.2) -- (0.44,1.44) -- (0.66,-1.728) -- (0.88,2.0736) -- (1.10,-2.4883) -- (1.32,2.9860) -- (1.54,-3.5832);
+  \foreach \p in {(0,1),(0.22,-1.2),(0.44,1.44),(0.66,-1.728),(0.88,2.0736),(1.10,-2.4883),(1.32,2.9860),(1.54,-3.5832)} \fill[couleurD] \p circle (1.3pt);
+  \draw[couleurZ,thick] (0,1) -- (0.22,0.3125) -- (0.44,0.0977) -- (0.66,0.0305) -- (0.88,0.0095) -- (1.10,0.0030) -- (1.32,0.0009) -- (1.54,0.0003);
+  \foreach \p in {(0.22,0.3125),(0.44,0.0977),(0.66,0.0305)} \fill[couleurZ] \p circle (1.3pt);
+  \draw[couleurD,thick] (0.05,3.0) -- (0.12,3.0) node[right,font=\small,text=couleurD] {explicite, $h = 0{,}22$};
+  \draw[couleurD!50,thick] (0.05,2.45) -- (0.12,2.45) node[right,font=\small,text=couleurD!80] {explicite, $h = 0{,}15$};
+  \draw[couleurZ,thick] (0.05,1.9) -- (0.12,1.9) node[right,font=\small,text=couleurZ] {implicite, $h = 0{,}22$};
+\end{tikzpicture}
+\end{center}
+
+\noindent Pour $y' = -10y$, la solution exacte, en bleu, tend très vite vers $0$. Avec $h = 0{,}15 < 0{,}2$, la méthode explicite oscille mais s'amortit, en orange clair ; avec $h = 0{,}22 > 0{,}2$, elle oscille avec une amplitude multipliée par $1{,}2$ à chaque pas et diverge, en orange. La méthode implicite, en vert, décroît pour tout pas. L'erreur la plus répandue est de croire qu'un schéma convergent donne un résultat raisonnable pour tout pas : le théorème 1 ne dit rien tant que $h$ n'est pas petit devant $\dfrac{1}{L}$.
+%===============================================================================
+\section{Portraits de phase}
+%===============================================================================
+
+\noindent Avant de calculer, il faut savoir quoi regarder. Pour un système autonome du plan, le dessin de toutes les trajectoires, appelé portrait de phase, résume le comportement qualitatif des solutions, comme le plan de phase du pendule au chapitre 6.
+
+\begin{center}
+\begin{tabularx}{15cm}{||X}
+\noindent \textbf{\underline{Définition :}} Soit $\Omega$ un ouvert de $\R^{p}$ et $f : \Omega \to \R^{p}$ de classe $\Cc^{1}$. Le système $X' = f(X)$ est dit \mot{autonome}, car $f$ ne dépend pas du temps. L'\mot{orbite} (ou \mot{trajectoire}) d'une solution maximale $X$ est l'ensemble $\{X(t)\}$ de ses valeurs ; le \mot{portrait de phase} est l'ensemble des orbites. Un point $a \in \Omega$ tel que $f(a) = 0$ est un \mot{point d'équilibre} : la fonction constante égale à $a$ est solution.
+\end{tabularx}
+\end{center}
+
+\begin{cadre}
+\propo{3} Soit $X' = f(X)$ un système autonome, avec $f$ de classe $\Cc^{1}$.
+\begin{enumerate}[label=(\roman*),topsep=3pt,itemsep=3pt]
+  \item Si $X$ est solution sur $J$, alors $t \mapsto X(t + c)$ est solution sur $J - c$, pour tout réel $c$.
+  \item Deux orbites sont égales ou disjointes.
+  \item Une solution qui passe par un point d'équilibre est constante.
+\end{enumerate}
+\end{cadre}
+
+\begin{demo}
+\etape{(i)} La dérivée de $t \mapsto X(t + c)$ est $X'(t + c) = f(X(t + c))$ : c'est ici que sert l'autonomie.
+
+\etape{(ii)} Si $X(t_{1}) = Z(t_{2})$, la fonction $t \mapsto Z(t + t_{2} - t_{1})$ est, par (i), une solution qui prend la valeur $X(t_{1})$ en $t_{1}$. Par le théorème de Cauchy-Lipschitz (chapitre 6, théorème 5), les solutions maximales correspondantes coïncident, et les deux orbites sont égales.
+
+\etape{(iii)} Si $X(t_{1}) = a$ avec $f(a) = 0$, la solution constante égale à $a$ et $X$ coïncident en $t_{1}$, donc partout.
+\end{demo}
+
+\noindent Le point (iii) a une conséquence souvent mal comprise : une solution non constante n'atteint jamais un équilibre, elle peut seulement s'en approcher quand $t \to \pm\infty$, comme le pendule lâché sur la séparatrice au chapitre 6.
+
+\subsection{Systèmes linéaires du plan}
+
+\begin{cadre}
+\propo{4} Soit $A \in \mathcal{M}_{2}(\R)$, inversible, et le système $X' = AX$, dont $0$ est l'unique point d'équilibre.
+\begin{enumerate}[label=(\roman*),topsep=3pt,itemsep=3pt]
+  \item Si $A$ a deux valeurs propres réelles $\lambda_{1}$, $\lambda_{2}$ de même signe, de vecteurs propres $v_{1}$, $v_{2}$, les solutions $c_{1}\ee^{\lambda_{1}t}v_{1} + c_{2}\ee^{\lambda_{2}t}v_{2}$ tendent toutes vers $0$ si $\lambda_{1}, \lambda_{2} < 0$ (\mot{nœud stable}), ou toutes vers l'infini si $\lambda_{1}, \lambda_{2} > 0$.
+  \item Si $\lambda_{1} < 0 < \lambda_{2}$, seules les solutions portées par la droite $\R v_{1}$ tendent vers $0$ (\mot{col}).
+  \item Si $A$ a deux valeurs propres complexes conjuguées $\alpha \pm \ii\beta$, $\beta \neq 0$, il existe $P \in \GL_{2}(\R)$ telle que $P^{-1}X(t) = \ee^{\alpha t}R_{\beta t}\,P^{-1}X(0)$, où $R_{\theta}$ est la rotation d'angle $\theta$ : les orbites sont des spirales (\mot{foyer}) si $\alpha \neq 0$, des ellipses (\mot{centre}) si $\alpha = 0$.
+\end{enumerate}
+\end{cadre}
+
+\begin{demo}
+Les solutions sont les $X(t) = \exp(tA)X(0)$ (chapitre 6, proposition 6). Dans les cas (i) et (ii), $A$ est diagonalisable (\emph{Rappel.}) et $\exp(tA)v_{i} = \ee^{\lambda_{i}t}v_{i}$, d'où l'expression des solutions ; dans le cas (ii), $c_{2}\ee^{\lambda_{2}t}v_{2}$ tend vers l'infini dès que $c_{2} \neq 0$. Dans le cas (iii), si $v = u + \ii w$ est un vecteur propre pour $\alpha + \ii\beta$, la matrice de $A$ dans la base $(u, -w)$ est $B = \begin{pmatrix} \alpha & -\beta \\ \beta & \alpha \end{pmatrix} = \alpha I_{2} + \beta J$, avec $J = R_{\pi/2}$, et $\exp(tB) = \ee^{\alpha t}\exp(t\beta J) = \ee^{\alpha t}R_{\beta t}$ puisque $\alpha I_{2}$ et $J$ commutent et que $J^{2} = -I_{2}$.
+\end{demo}
+
+% ---- trajectoires exp(tA) X0 (scipy.linalg.expm) : noeud A = diag(-1,-3) ; col A = diag(1,-1) (axes en rouge : droites propres) ;
+% ---- foyer A = [[-0.3,-1],[1,-0.3]] ; centre A = [[0,-1],[1,0]] ; fenetre [-1,75 ; 1,75]^2 (calculees)
+\begin{center}
+\begin{tikzpicture}[scale=0.95]
+  \foreach \k/\nom/\titre in {0/noeud/{nœud stable},1/col/{col},2/foyer/{foyer stable},3/centre/{centre}} {
+    \begin{scope}[shift={(\k*3.9,0)}]
+      \draw[gray!60] (-1.75,0) -- (1.75,0) (0,-1.75) -- (0,1.75);
+      \draw[gray] (-1.75,-1.75) rectangle (1.75,1.75);
+      \node[font=\small,anchor=north] at (0,-1.8) {\titre};
+    \end{scope}
+  }
+  \begin{scope}[shift={(0,0)}]
+    \clip (-1.75,-1.75) rectangle (1.75,1.75);
+\draw[couleurN,thick] plot[smooth] coordinates {(1.600,0.000) (1.537,0.000) (1.476,0.000) (1.418,0.000) (1.362,0.000) (1.309,0.000) (1.257,0.000) (1.208,0.000) (1.160,0.000) (1.114,0.000) (1.070,0.000) (1.028,0.000) (0.988,0.000) (0.949,0.000) (0.911,0.000) (0.875,0.000) (0.841,0.000) (0.808,0.000) (0.776,0.000) (0.745,0.000) (0.716,0.000) (0.688,0.000) (0.661,0.000) (0.635,0.000) (0.610,0.000) (0.586,0.000) (0.563,0.000) (0.540,0.000) (0.519,0.000) (0.499,0.000) (0.479,0.000) (0.460,0.000) (0.442,0.000) (0.425,0.000) (0.408,0.000) (0.392,0.000) (0.376,0.000) (0.362,0.000) (0.347,0.000) (0.334,0.000) (0.320,0.000) (0.308,0.000) (0.296,0.000) (0.284,0.000) (0.273,0.000) (0.262,0.000) (0.252,0.000) (0.242,0.000) (0.232,0.000) (0.223,0.000) (0.214,0.000) (0.206,0.000) (0.198,0.000) (0.190,0.000) (0.183,0.000) (0.175,0.000) (0.168,0.000) (0.162,0.000) (0.155,0.000) (0.149,0.000) (0.143,0.000) (0.138,0.000) (0.132,0.000) (0.127,0.000) (0.122,0.000) (0.117,0.000) (0.113,0.000) (0.108,0.000) (0.104,0.000) (0.100,0.000) (0.096,0.000) (0.092,0.000) (0.089,0.000) (0.085,0.000) (0.082,0.000) (0.078,0.000) (0.075,0.000) (0.072,0.000) (0.070,0.000) (0.067,0.000) (0.064,0.000) (0.062,0.000) (0.059,0.000) (0.057,0.000) (0.055,0.000) (0.052,0.000) (0.050,0.000) (0.048,0.000) (0.047,0.000) (0.045,0.000) (0.043,0.000) (0.041,0.000) (0.040,0.000) (0.038,0.000) (0.037,0.000) (0.035,0.000) (0.034,0.000) (0.032,0.000) (0.031,0.000) (0.030,0.000)};
+\draw[couleurN,-{Stealth[length=4pt]}] (0.988,0.000) -- (0.968,0.000);
+\draw[couleurN,thick] plot[smooth] coordinates {(1.386,0.800) (1.331,0.709) (1.279,0.629) (1.228,0.557) (1.180,0.494) (1.133,0.438) (1.089,0.388) (1.046,0.344) (1.005,0.305) (0.965,0.270) (0.927,0.240) (0.890,0.212) (0.855,0.188) (0.822,0.167) (0.789,0.148) (0.758,0.131) (0.728,0.116) (0.700,0.103) (0.672,0.091) (0.646,0.081) (0.620,0.072) (0.596,0.064) (0.572,0.056) (0.550,0.050) (0.528,0.044) (0.507,0.039) (0.487,0.035) (0.468,0.031) (0.450,0.027) (0.432,0.024) (0.415,0.021) (0.398,0.019) (0.383,0.017) (0.368,0.015) (0.353,0.013) (0.339,0.012) (0.326,0.010) (0.313,0.009) (0.301,0.008) (0.289,0.007) (0.278,0.006) (0.267,0.006) (0.256,0.005) (0.246,0.004) (0.236,0.004) (0.227,0.004) (0.218,0.003) (0.209,0.003) (0.201,0.002) (0.193,0.002) (0.186,0.002) (0.178,0.002) (0.171,0.002) (0.165,0.001) (0.158,0.001) (0.152,0.001) (0.146,0.001) (0.140,0.001) (0.135,0.001) (0.129,0.001) (0.124,0.001) (0.119,0.001) (0.115,0.000) (0.110,0.000) (0.106,0.000) (0.102,0.000) (0.098,0.000) (0.094,0.000) (0.090,0.000) (0.086,0.000) (0.083,0.000) (0.080,0.000) (0.077,0.000) (0.074,0.000) (0.071,0.000) (0.068,0.000) (0.065,0.000) (0.063,0.000) (0.060,0.000) (0.058,0.000) (0.056,0.000) (0.053,0.000) (0.051,0.000) (0.049,0.000) (0.047,0.000) (0.045,0.000) (0.044,0.000) (0.042,0.000) (0.040,0.000) (0.039,0.000) (0.037,0.000) (0.036,0.000) (0.034,0.000) (0.033,0.000) (0.032,0.000) (0.030,0.000) (0.029,0.000) (0.028,0.000) (0.027,0.000) (0.026,0.000)};
+\draw[couleurN,-{Stealth[length=4pt]}] (0.946,0.254) -- (0.927,0.240);
+\draw[couleurN,thick] plot[smooth] coordinates {(0.800,1.386) (0.768,1.228) (0.738,1.089) (0.709,0.965) (0.681,0.855) (0.654,0.758) (0.629,0.672) (0.604,0.596) (0.580,0.528) (0.557,0.468) (0.535,0.415) (0.514,0.368) (0.494,0.326) (0.474,0.289) (0.456,0.256) (0.438,0.227) (0.420,0.201) (0.404,0.178) (0.388,0.158) (0.373,0.140) (0.358,0.124) (0.344,0.110) (0.330,0.098) (0.317,0.086) (0.305,0.077) (0.293,0.068) (0.281,0.060) (0.270,0.053) (0.260,0.047) (0.249,0.042) (0.240,0.037) (0.230,0.033) (0.221,0.029) (0.212,0.026) (0.204,0.023) (0.196,0.020) (0.188,0.018) (0.181,0.016) (0.174,0.014) (0.167,0.013) (0.160,0.011) (0.154,0.010) (0.148,0.009) (0.142,0.008) (0.136,0.007) (0.131,0.006) (0.126,0.005) (0.121,0.005) (0.116,0.004) (0.112,0.004) (0.107,0.003) (0.103,0.003) (0.099,0.003) (0.095,0.002) (0.091,0.002) (0.088,0.002) (0.084,0.002) (0.081,0.001) (0.078,0.001) (0.075,0.001) (0.072,0.001) (0.069,0.001) (0.066,0.001) (0.064,0.001) (0.061,0.001) (0.059,0.001) (0.056,0.000) (0.054,0.000) (0.052,0.000) (0.050,0.000) (0.048,0.000) (0.046,0.000) (0.044,0.000) (0.043,0.000) (0.041,0.000) (0.039,0.000) (0.038,0.000) (0.036,0.000) (0.035,0.000) (0.033,0.000) (0.032,0.000) (0.031,0.000) (0.030,0.000) (0.028,0.000) (0.027,0.000) (0.026,0.000) (0.025,0.000) (0.024,0.000) (0.023,0.000) (0.022,0.000) (0.021,0.000) (0.021,0.000) (0.020,0.000) (0.019,0.000) (0.018,0.000) (0.018,0.000) (0.017,0.000) (0.016,0.000) (0.016,0.000) (0.015,0.000)};
+\draw[couleurN,-{Stealth[length=4pt]}] (0.641,0.714) -- (0.629,0.672);
+\draw[couleurN,thick] plot[smooth] coordinates {(0.000,1.600) (0.000,1.418) (0.000,1.257) (0.000,1.114) (0.000,0.988) (0.000,0.875) (0.000,0.776) (0.000,0.688) (0.000,0.610) (0.000,0.540) (0.000,0.479) (0.000,0.425) (0.000,0.376) (0.000,0.334) (0.000,0.296) (0.000,0.262) (0.000,0.232) (0.000,0.206) (0.000,0.183) (0.000,0.162) (0.000,0.143) (0.000,0.127) (0.000,0.113) (0.000,0.100) (0.000,0.089) (0.000,0.078) (0.000,0.070) (0.000,0.062) (0.000,0.055) (0.000,0.048) (0.000,0.043) (0.000,0.038) (0.000,0.034) (0.000,0.030) (0.000,0.027) (0.000,0.023) (0.000,0.021) (0.000,0.018) (0.000,0.016) (0.000,0.015) (0.000,0.013) (0.000,0.011) (0.000,0.010) (0.000,0.009) (0.000,0.008) (0.000,0.007) (0.000,0.006) (0.000,0.006) (0.000,0.005) (0.000,0.004) (0.000,0.004) (0.000,0.003) (0.000,0.003) (0.000,0.003) (0.000,0.002) (0.000,0.002) (0.000,0.002) (0.000,0.002) (0.000,0.001) (0.000,0.001) (0.000,0.001) (0.000,0.001) (0.000,0.001) (0.000,0.001) (0.000,0.001) (0.000,0.001) (0.000,0.001) (0.000,0.000) (0.000,0.000) (0.000,0.000) (0.000,0.000) (0.000,0.000) (0.000,0.000) (0.000,0.000) (0.000,0.000) (0.000,0.000) (0.000,0.000) (0.000,0.000) (0.000,0.000) (0.000,0.000) (0.000,0.000) (0.000,0.000) (0.000,0.000) (0.000,0.000) (0.000,0.000) (0.000,0.000) (0.000,0.000) (0.000,0.000) (0.000,0.000) (0.000,0.000) (0.000,0.000) (0.000,0.000) (0.000,0.000) (0.000,0.000) (0.000,0.000) (0.000,0.000) (0.000,0.000) (0.000,0.000) (0.000,0.000) (0.000,0.000)};
+\draw[couleurN,-{Stealth[length=4pt]}] (0.000,0.988) -- (0.000,0.930);
+\draw[couleurN,thick] plot[smooth] coordinates {(-0.800,1.386) (-0.768,1.228) (-0.738,1.089) (-0.709,0.965) (-0.681,0.855) (-0.654,0.758) (-0.629,0.672) (-0.604,0.596) (-0.580,0.528) (-0.557,0.468) (-0.535,0.415) (-0.514,0.368) (-0.494,0.326) (-0.474,0.289) (-0.456,0.256) (-0.438,0.227) (-0.420,0.201) (-0.404,0.178) (-0.388,0.158) (-0.373,0.140) (-0.358,0.124) (-0.344,0.110) (-0.330,0.098) (-0.317,0.086) (-0.305,0.077) (-0.293,0.068) (-0.281,0.060) (-0.270,0.053) (-0.260,0.047) (-0.249,0.042) (-0.240,0.037) (-0.230,0.033) (-0.221,0.029) (-0.212,0.026) (-0.204,0.023) (-0.196,0.020) (-0.188,0.018) (-0.181,0.016) (-0.174,0.014) (-0.167,0.013) (-0.160,0.011) (-0.154,0.010) (-0.148,0.009) (-0.142,0.008) (-0.136,0.007) (-0.131,0.006) (-0.126,0.005) (-0.121,0.005) (-0.116,0.004) (-0.112,0.004) (-0.107,0.003) (-0.103,0.003) (-0.099,0.003) (-0.095,0.002) (-0.091,0.002) (-0.088,0.002) (-0.084,0.002) (-0.081,0.001) (-0.078,0.001) (-0.075,0.001) (-0.072,0.001) (-0.069,0.001) (-0.066,0.001) (-0.064,0.001) (-0.061,0.001) (-0.059,0.001) (-0.056,0.000) (-0.054,0.000) (-0.052,0.000) (-0.050,0.000) (-0.048,0.000) (-0.046,0.000) (-0.044,0.000) (-0.043,0.000) (-0.041,0.000) (-0.039,0.000) (-0.038,0.000) (-0.036,0.000) (-0.035,0.000) (-0.033,0.000) (-0.032,0.000) (-0.031,0.000) (-0.030,0.000) (-0.028,0.000) (-0.027,0.000) (-0.026,0.000) (-0.025,0.000) (-0.024,0.000) (-0.023,0.000) (-0.022,0.000) (-0.021,0.000) (-0.021,0.000) (-0.020,0.000) (-0.019,0.000) (-0.018,0.000) (-0.018,0.000) (-0.017,0.000) (-0.016,0.000) (-0.016,0.000) (-0.015,0.000)};
+\draw[couleurN,-{Stealth[length=4pt]}] (-0.641,0.714) -- (-0.629,0.672);
+\draw[couleurN,thick] plot[smooth] coordinates {(-1.386,0.800) (-1.331,0.709) (-1.279,0.629) (-1.228,0.557) (-1.180,0.494) (-1.133,0.438) (-1.089,0.388) (-1.046,0.344) (-1.005,0.305) (-0.965,0.270) (-0.927,0.240) (-0.890,0.212) (-0.855,0.188) (-0.822,0.167) (-0.789,0.148) (-0.758,0.131) (-0.728,0.116) (-0.700,0.103) (-0.672,0.091) (-0.646,0.081) (-0.620,0.072) (-0.596,0.064) (-0.572,0.056) (-0.550,0.050) (-0.528,0.044) (-0.507,0.039) (-0.487,0.035) (-0.468,0.031) (-0.450,0.027) (-0.432,0.024) (-0.415,0.021) (-0.398,0.019) (-0.383,0.017) (-0.368,0.015) (-0.353,0.013) (-0.339,0.012) (-0.326,0.010) (-0.313,0.009) (-0.301,0.008) (-0.289,0.007) (-0.278,0.006) (-0.267,0.006) (-0.256,0.005) (-0.246,0.004) (-0.236,0.004) (-0.227,0.004) (-0.218,0.003) (-0.209,0.003) (-0.201,0.002) (-0.193,0.002) (-0.186,0.002) (-0.178,0.002) (-0.171,0.002) (-0.165,0.001) (-0.158,0.001) (-0.152,0.001) (-0.146,0.001) (-0.140,0.001) (-0.135,0.001) (-0.129,0.001) (-0.124,0.001) (-0.119,0.001) (-0.115,0.000) (-0.110,0.000) (-0.106,0.000) (-0.102,0.000) (-0.098,0.000) (-0.094,0.000) (-0.090,0.000) (-0.086,0.000) (-0.083,0.000) (-0.080,0.000) (-0.077,0.000) (-0.074,0.000) (-0.071,0.000) (-0.068,0.000) (-0.065,0.000) (-0.063,0.000) (-0.060,0.000) (-0.058,0.000) (-0.056,0.000) (-0.053,0.000) (-0.051,0.000) (-0.049,0.000) (-0.047,0.000) (-0.045,0.000) (-0.044,0.000) (-0.042,0.000) (-0.040,0.000) (-0.039,0.000) (-0.037,0.000) (-0.036,0.000) (-0.034,0.000) (-0.033,0.000) (-0.032,0.000) (-0.030,0.000) (-0.029,0.000) (-0.028,0.000) (-0.027,0.000) (-0.026,0.000)};
+\draw[couleurN,-{Stealth[length=4pt]}] (-0.946,0.254) -- (-0.927,0.240);
+\draw[couleurN,thick] plot[smooth] coordinates {(-1.600,0.000) (-1.537,0.000) (-1.476,0.000) (-1.418,0.000) (-1.362,0.000) (-1.309,0.000) (-1.257,0.000) (-1.208,0.000) (-1.160,0.000) (-1.114,0.000) (-1.070,0.000) (-1.028,0.000) (-0.988,0.000) (-0.949,0.000) (-0.911,0.000) (-0.875,0.000) (-0.841,0.000) (-0.808,0.000) (-0.776,0.000) (-0.745,0.000) (-0.716,0.000) (-0.688,0.000) (-0.661,0.000) (-0.635,0.000) (-0.610,0.000) (-0.586,0.000) (-0.563,0.000) (-0.540,0.000) (-0.519,0.000) (-0.499,0.000) (-0.479,0.000) (-0.460,0.000) (-0.442,0.000) (-0.425,0.000) (-0.408,0.000) (-0.392,0.000) (-0.376,0.000) (-0.362,0.000) (-0.347,0.000) (-0.334,0.000) (-0.320,0.000) (-0.308,0.000) (-0.296,0.000) (-0.284,0.000) (-0.273,0.000) (-0.262,0.000) (-0.252,0.000) (-0.242,0.000) (-0.232,0.000) (-0.223,0.000) (-0.214,0.000) (-0.206,0.000) (-0.198,0.000) (-0.190,0.000) (-0.183,0.000) (-0.175,0.000) (-0.168,0.000) (-0.162,0.000) (-0.155,0.000) (-0.149,0.000) (-0.143,0.000) (-0.138,0.000) (-0.132,0.000) (-0.127,0.000) (-0.122,0.000) (-0.117,0.000) (-0.113,0.000) (-0.108,0.000) (-0.104,0.000) (-0.100,0.000) (-0.096,0.000) (-0.092,0.000) (-0.089,0.000) (-0.085,0.000) (-0.082,0.000) (-0.078,0.000) (-0.075,0.000) (-0.072,0.000) (-0.070,0.000) (-0.067,0.000) (-0.064,0.000) (-0.062,0.000) (-0.059,0.000) (-0.057,0.000) (-0.055,0.000) (-0.052,0.000) (-0.050,0.000) (-0.048,0.000) (-0.047,0.000) (-0.045,0.000) (-0.043,0.000) (-0.041,0.000) (-0.040,0.000) (-0.038,0.000) (-0.037,0.000) (-0.035,0.000) (-0.034,0.000) (-0.032,0.000) (-0.031,0.000) (-0.030,0.000)};
+\draw[couleurN,-{Stealth[length=4pt]}] (-0.988,0.000) -- (-0.968,0.000);
+\draw[couleurN,thick] plot[smooth] coordinates {(-1.386,-0.800) (-1.331,-0.709) (-1.279,-0.629) (-1.228,-0.557) (-1.180,-0.494) (-1.133,-0.438) (-1.089,-0.388) (-1.046,-0.344) (-1.005,-0.305) (-0.965,-0.270) (-0.927,-0.240) (-0.890,-0.212) (-0.855,-0.188) (-0.822,-0.167) (-0.789,-0.148) (-0.758,-0.131) (-0.728,-0.116) (-0.700,-0.103) (-0.672,-0.091) (-0.646,-0.081) (-0.620,-0.072) (-0.596,-0.064) (-0.572,-0.056) (-0.550,-0.050) (-0.528,-0.044) (-0.507,-0.039) (-0.487,-0.035) (-0.468,-0.031) (-0.450,-0.027) (-0.432,-0.024) (-0.415,-0.021) (-0.398,-0.019) (-0.383,-0.017) (-0.368,-0.015) (-0.353,-0.013) (-0.339,-0.012) (-0.326,-0.010) (-0.313,-0.009) (-0.301,-0.008) (-0.289,-0.007) (-0.278,-0.006) (-0.267,-0.006) (-0.256,-0.005) (-0.246,-0.004) (-0.236,-0.004) (-0.227,-0.004) (-0.218,-0.003) (-0.209,-0.003) (-0.201,-0.002) (-0.193,-0.002) (-0.186,-0.002) (-0.178,-0.002) (-0.171,-0.002) (-0.165,-0.001) (-0.158,-0.001) (-0.152,-0.001) (-0.146,-0.001) (-0.140,-0.001) (-0.135,-0.001) (-0.129,-0.001) (-0.124,-0.001) (-0.119,-0.001) (-0.115,-0.000) (-0.110,-0.000) (-0.106,-0.000) (-0.102,-0.000) (-0.098,-0.000) (-0.094,-0.000) (-0.090,-0.000) (-0.086,-0.000) (-0.083,-0.000) (-0.080,-0.000) (-0.077,-0.000) (-0.074,-0.000) (-0.071,-0.000) (-0.068,-0.000) (-0.065,-0.000) (-0.063,-0.000) (-0.060,-0.000) (-0.058,-0.000) (-0.056,-0.000) (-0.053,-0.000) (-0.051,-0.000) (-0.049,-0.000) (-0.047,-0.000) (-0.045,-0.000) (-0.044,-0.000) (-0.042,-0.000) (-0.040,-0.000) (-0.039,-0.000) (-0.037,-0.000) (-0.036,-0.000) (-0.034,-0.000) (-0.033,-0.000) (-0.032,-0.000) (-0.030,-0.000) (-0.029,-0.000) (-0.028,-0.000) (-0.027,-0.000) (-0.026,-0.000)};
+\draw[couleurN,-{Stealth[length=4pt]}] (-0.946,-0.254) -- (-0.927,-0.240);
+\draw[couleurN,thick] plot[smooth] coordinates {(-0.800,-1.386) (-0.768,-1.228) (-0.738,-1.089) (-0.709,-0.965) (-0.681,-0.855) (-0.654,-0.758) (-0.629,-0.672) (-0.604,-0.596) (-0.580,-0.528) (-0.557,-0.468) (-0.535,-0.415) (-0.514,-0.368) (-0.494,-0.326) (-0.474,-0.289) (-0.456,-0.256) (-0.438,-0.227) (-0.420,-0.201) (-0.404,-0.178) (-0.388,-0.158) (-0.373,-0.140) (-0.358,-0.124) (-0.344,-0.110) (-0.330,-0.098) (-0.317,-0.086) (-0.305,-0.077) (-0.293,-0.068) (-0.281,-0.060) (-0.270,-0.053) (-0.260,-0.047) (-0.249,-0.042) (-0.240,-0.037) (-0.230,-0.033) (-0.221,-0.029) (-0.212,-0.026) (-0.204,-0.023) (-0.196,-0.020) (-0.188,-0.018) (-0.181,-0.016) (-0.174,-0.014) (-0.167,-0.013) (-0.160,-0.011) (-0.154,-0.010) (-0.148,-0.009) (-0.142,-0.008) (-0.136,-0.007) (-0.131,-0.006) (-0.126,-0.005) (-0.121,-0.005) (-0.116,-0.004) (-0.112,-0.004) (-0.107,-0.003) (-0.103,-0.003) (-0.099,-0.003) (-0.095,-0.002) (-0.091,-0.002) (-0.088,-0.002) (-0.084,-0.002) (-0.081,-0.001) (-0.078,-0.001) (-0.075,-0.001) (-0.072,-0.001) (-0.069,-0.001) (-0.066,-0.001) (-0.064,-0.001) (-0.061,-0.001) (-0.059,-0.001) (-0.056,-0.000) (-0.054,-0.000) (-0.052,-0.000) (-0.050,-0.000) (-0.048,-0.000) (-0.046,-0.000) (-0.044,-0.000) (-0.043,-0.000) (-0.041,-0.000) (-0.039,-0.000) (-0.038,-0.000) (-0.036,-0.000) (-0.035,-0.000) (-0.033,-0.000) (-0.032,-0.000) (-0.031,-0.000) (-0.030,-0.000) (-0.028,-0.000) (-0.027,-0.000) (-0.026,-0.000) (-0.025,-0.000) (-0.024,-0.000) (-0.023,-0.000) (-0.022,-0.000) (-0.021,-0.000) (-0.021,-0.000) (-0.020,-0.000) (-0.019,-0.000) (-0.018,-0.000) (-0.018,-0.000) (-0.017,-0.000) (-0.016,-0.000) (-0.016,-0.000) (-0.015,-0.000)};
+\draw[couleurN,-{Stealth[length=4pt]}] (-0.641,-0.714) -- (-0.629,-0.672);
+\draw[couleurN,thick] plot[smooth] coordinates {(-0.000,-1.600) (-0.000,-1.418) (-0.000,-1.257) (-0.000,-1.114) (-0.000,-0.988) (-0.000,-0.875) (-0.000,-0.776) (-0.000,-0.688) (-0.000,-0.610) (-0.000,-0.540) (-0.000,-0.479) (-0.000,-0.425) (-0.000,-0.376) (-0.000,-0.334) (-0.000,-0.296) (-0.000,-0.262) (-0.000,-0.232) (-0.000,-0.206) (-0.000,-0.183) (-0.000,-0.162) (-0.000,-0.143) (-0.000,-0.127) (-0.000,-0.113) (-0.000,-0.100) (-0.000,-0.089) (-0.000,-0.078) (-0.000,-0.070) (-0.000,-0.062) (-0.000,-0.055) (-0.000,-0.048) (-0.000,-0.043) (-0.000,-0.038) (-0.000,-0.034) (-0.000,-0.030) (-0.000,-0.027) (-0.000,-0.023) (-0.000,-0.021) (-0.000,-0.018) (-0.000,-0.016) (-0.000,-0.015) (-0.000,-0.013) (-0.000,-0.011) (-0.000,-0.010) (-0.000,-0.009) (-0.000,-0.008) (-0.000,-0.007) (-0.000,-0.006) (-0.000,-0.006) (-0.000,-0.005) (-0.000,-0.004) (-0.000,-0.004) (-0.000,-0.003) (-0.000,-0.003) (-0.000,-0.003) (-0.000,-0.002) (-0.000,-0.002) (-0.000,-0.002) (-0.000,-0.002) (-0.000,-0.001) (-0.000,-0.001) (-0.000,-0.001) (-0.000,-0.001) (-0.000,-0.001) (-0.000,-0.001) (-0.000,-0.001) (-0.000,-0.001) (-0.000,-0.001) (-0.000,-0.000) (-0.000,-0.000) (-0.000,-0.000) (-0.000,-0.000) (-0.000,-0.000) (-0.000,-0.000) (-0.000,-0.000) (-0.000,-0.000) (-0.000,-0.000) (-0.000,-0.000) (-0.000,-0.000) (-0.000,-0.000) (-0.000,-0.000) (-0.000,-0.000) (-0.000,-0.000) (-0.000,-0.000) (-0.000,-0.000) (-0.000,-0.000) (-0.000,-0.000) (-0.000,-0.000) (-0.000,-0.000) (-0.000,-0.000) (-0.000,-0.000) (-0.000,-0.000) (-0.000,-0.000) (-0.000,-0.000) (-0.000,-0.000) (-0.000,-0.000) (-0.000,-0.000) (-0.000,-0.000) (-0.000,-0.000) (-0.000,-0.000) (-0.000,-0.000)};
+\draw[couleurN,-{Stealth[length=4pt]}] (-0.000,-0.988) -- (-0.000,-0.930);
+\draw[couleurN,thick] plot[smooth] coordinates {(0.800,-1.386) (0.768,-1.228) (0.738,-1.089) (0.709,-0.965) (0.681,-0.855) (0.654,-0.758) (0.629,-0.672) (0.604,-0.596) (0.580,-0.528) (0.557,-0.468) (0.535,-0.415) (0.514,-0.368) (0.494,-0.326) (0.474,-0.289) (0.456,-0.256) (0.438,-0.227) (0.420,-0.201) (0.404,-0.178) (0.388,-0.158) (0.373,-0.140) (0.358,-0.124) (0.344,-0.110) (0.330,-0.098) (0.317,-0.086) (0.305,-0.077) (0.293,-0.068) (0.281,-0.060) (0.270,-0.053) (0.260,-0.047) (0.249,-0.042) (0.240,-0.037) (0.230,-0.033) (0.221,-0.029) (0.212,-0.026) (0.204,-0.023) (0.196,-0.020) (0.188,-0.018) (0.181,-0.016) (0.174,-0.014) (0.167,-0.013) (0.160,-0.011) (0.154,-0.010) (0.148,-0.009) (0.142,-0.008) (0.136,-0.007) (0.131,-0.006) (0.126,-0.005) (0.121,-0.005) (0.116,-0.004) (0.112,-0.004) (0.107,-0.003) (0.103,-0.003) (0.099,-0.003) (0.095,-0.002) (0.091,-0.002) (0.088,-0.002) (0.084,-0.002) (0.081,-0.001) (0.078,-0.001) (0.075,-0.001) (0.072,-0.001) (0.069,-0.001) (0.066,-0.001) (0.064,-0.001) (0.061,-0.001) (0.059,-0.001) (0.056,-0.000) (0.054,-0.000) (0.052,-0.000) (0.050,-0.000) (0.048,-0.000) (0.046,-0.000) (0.044,-0.000) (0.043,-0.000) (0.041,-0.000) (0.039,-0.000) (0.038,-0.000) (0.036,-0.000) (0.035,-0.000) (0.033,-0.000) (0.032,-0.000) (0.031,-0.000) (0.030,-0.000) (0.028,-0.000) (0.027,-0.000) (0.026,-0.000) (0.025,-0.000) (0.024,-0.000) (0.023,-0.000) (0.022,-0.000) (0.021,-0.000) (0.021,-0.000) (0.020,-0.000) (0.019,-0.000) (0.018,-0.000) (0.018,-0.000) (0.017,-0.000) (0.016,-0.000) (0.016,-0.000) (0.015,-0.000)};
+\draw[couleurN,-{Stealth[length=4pt]}] (0.641,-0.714) -- (0.629,-0.672);
+\draw[couleurN,thick] plot[smooth] coordinates {(1.386,-0.800) (1.331,-0.709) (1.279,-0.629) (1.228,-0.557) (1.180,-0.494) (1.133,-0.438) (1.089,-0.388) (1.046,-0.344) (1.005,-0.305) (0.965,-0.270) (0.927,-0.240) (0.890,-0.212) (0.855,-0.188) (0.822,-0.167) (0.789,-0.148) (0.758,-0.131) (0.728,-0.116) (0.700,-0.103) (0.672,-0.091) (0.646,-0.081) (0.620,-0.072) (0.596,-0.064) (0.572,-0.056) (0.550,-0.050) (0.528,-0.044) (0.507,-0.039) (0.487,-0.035) (0.468,-0.031) (0.450,-0.027) (0.432,-0.024) (0.415,-0.021) (0.398,-0.019) (0.383,-0.017) (0.368,-0.015) (0.353,-0.013) (0.339,-0.012) (0.326,-0.010) (0.313,-0.009) (0.301,-0.008) (0.289,-0.007) (0.278,-0.006) (0.267,-0.006) (0.256,-0.005) (0.246,-0.004) (0.236,-0.004) (0.227,-0.004) (0.218,-0.003) (0.209,-0.003) (0.201,-0.002) (0.193,-0.002) (0.186,-0.002) (0.178,-0.002) (0.171,-0.002) (0.165,-0.001) (0.158,-0.001) (0.152,-0.001) (0.146,-0.001) (0.140,-0.001) (0.135,-0.001) (0.129,-0.001) (0.124,-0.001) (0.119,-0.001) (0.115,-0.000) (0.110,-0.000) (0.106,-0.000) (0.102,-0.000) (0.098,-0.000) (0.094,-0.000) (0.090,-0.000) (0.086,-0.000) (0.083,-0.000) (0.080,-0.000) (0.077,-0.000) (0.074,-0.000) (0.071,-0.000) (0.068,-0.000) (0.065,-0.000) (0.063,-0.000) (0.060,-0.000) (0.058,-0.000) (0.056,-0.000) (0.053,-0.000) (0.051,-0.000) (0.049,-0.000) (0.047,-0.000) (0.045,-0.000) (0.044,-0.000) (0.042,-0.000) (0.040,-0.000) (0.039,-0.000) (0.037,-0.000) (0.036,-0.000) (0.034,-0.000) (0.033,-0.000) (0.032,-0.000) (0.030,-0.000) (0.029,-0.000) (0.028,-0.000) (0.027,-0.000) (0.026,-0.000)};
+\draw[couleurN,-{Stealth[length=4pt]}] (0.946,-0.254) -- (0.927,-0.240);
+  \end{scope}
+  \begin{scope}[shift={(3.9,0)}]
+    \clip (-1.75,-1.75) rectangle (1.75,1.75);
+\draw[couleurN,thick] plot[smooth] coordinates {(-0.080,-1.600) (-0.083,-1.537) (-0.087,-1.476) (-0.090,-1.418) (-0.094,-1.362) (-0.098,-1.309) (-0.102,-1.257) (-0.106,-1.208) (-0.110,-1.160) (-0.115,-1.114) (-0.120,-1.070) (-0.124,-1.028) (-0.130,-0.988) (-0.135,-0.949) (-0.140,-0.911) (-0.146,-0.875) (-0.152,-0.841) (-0.158,-0.808) (-0.165,-0.776) (-0.172,-0.745) (-0.179,-0.716) (-0.186,-0.688) (-0.194,-0.661) (-0.202,-0.635) (-0.210,-0.610) (-0.219,-0.586) (-0.228,-0.563) (-0.237,-0.540) (-0.247,-0.519) (-0.257,-0.499) (-0.267,-0.479) (-0.278,-0.460) (-0.290,-0.442) (-0.301,-0.425) (-0.314,-0.408) (-0.327,-0.392) (-0.340,-0.376) (-0.354,-0.362) (-0.369,-0.347) (-0.384,-0.334) (-0.399,-0.320) (-0.416,-0.308) (-0.433,-0.296) (-0.451,-0.284) (-0.469,-0.273) (-0.488,-0.262) (-0.508,-0.252) (-0.529,-0.242) (-0.551,-0.232) (-0.574,-0.223) (-0.597,-0.214) (-0.622,-0.206) (-0.647,-0.198) (-0.674,-0.190) (-0.701,-0.183) (-0.730,-0.175) (-0.760,-0.168) (-0.791,-0.162) (-0.824,-0.155) (-0.857,-0.149) (-0.893,-0.143) (-0.929,-0.138) (-0.967,-0.132) (-1.007,-0.127) (-1.048,-0.122) (-1.091,-0.117) (-1.136,-0.113) (-1.183,-0.108) (-1.231,-0.104) (-1.282,-0.100) (-1.334,-0.096) (-1.389,-0.092) (-1.446,-0.089) (-1.505,-0.085) (-1.567,-0.082) (-1.631,-0.078) (-1.698,-0.075)};
+\draw[couleurN,-{Stealth[length=4pt]}] (-0.223,-0.574) -- (-0.228,-0.563);
+\draw[couleurN,thick] plot[smooth] coordinates {(-0.080,1.600) (-0.083,1.537) (-0.087,1.476) (-0.090,1.418) (-0.094,1.362) (-0.098,1.309) (-0.102,1.257) (-0.106,1.208) (-0.110,1.160) (-0.115,1.114) (-0.120,1.070) (-0.124,1.028) (-0.130,0.988) (-0.135,0.949) (-0.140,0.911) (-0.146,0.875) (-0.152,0.841) (-0.158,0.808) (-0.165,0.776) (-0.172,0.745) (-0.179,0.716) (-0.186,0.688) (-0.194,0.661) (-0.202,0.635) (-0.210,0.610) (-0.219,0.586) (-0.228,0.563) (-0.237,0.540) (-0.247,0.519) (-0.257,0.499) (-0.267,0.479) (-0.278,0.460) (-0.290,0.442) (-0.301,0.425) (-0.314,0.408) (-0.327,0.392) (-0.340,0.376) (-0.354,0.362) (-0.369,0.347) (-0.384,0.334) (-0.399,0.320) (-0.416,0.308) (-0.433,0.296) (-0.451,0.284) (-0.469,0.273) (-0.488,0.262) (-0.508,0.252) (-0.529,0.242) (-0.551,0.232) (-0.574,0.223) (-0.597,0.214) (-0.622,0.206) (-0.647,0.198) (-0.674,0.190) (-0.701,0.183) (-0.730,0.175) (-0.760,0.168) (-0.791,0.162) (-0.824,0.155) (-0.857,0.149) (-0.893,0.143) (-0.929,0.138) (-0.967,0.132) (-1.007,0.127) (-1.048,0.122) (-1.091,0.117) (-1.136,0.113) (-1.183,0.108) (-1.231,0.104) (-1.282,0.100) (-1.334,0.096) (-1.389,0.092) (-1.446,0.089) (-1.505,0.085) (-1.567,0.082) (-1.631,0.078) (-1.698,0.075)};
+\draw[couleurN,-{Stealth[length=4pt]}] (-0.223,0.574) -- (-0.228,0.563);
+\draw[couleurN,thick] plot[smooth] coordinates {(0.080,-1.600) (0.083,-1.537) (0.087,-1.476) (0.090,-1.418) (0.094,-1.362) (0.098,-1.309) (0.102,-1.257) (0.106,-1.208) (0.110,-1.160) (0.115,-1.114) (0.120,-1.070) (0.124,-1.028) (0.130,-0.988) (0.135,-0.949) (0.140,-0.911) (0.146,-0.875) (0.152,-0.841) (0.158,-0.808) (0.165,-0.776) (0.172,-0.745) (0.179,-0.716) (0.186,-0.688) (0.194,-0.661) (0.202,-0.635) (0.210,-0.610) (0.219,-0.586) (0.228,-0.563) (0.237,-0.540) (0.247,-0.519) (0.257,-0.499) (0.267,-0.479) (0.278,-0.460) (0.290,-0.442) (0.301,-0.425) (0.314,-0.408) (0.327,-0.392) (0.340,-0.376) (0.354,-0.362) (0.369,-0.347) (0.384,-0.334) (0.399,-0.320) (0.416,-0.308) (0.433,-0.296) (0.451,-0.284) (0.469,-0.273) (0.488,-0.262) (0.508,-0.252) (0.529,-0.242) (0.551,-0.232) (0.574,-0.223) (0.597,-0.214) (0.622,-0.206) (0.647,-0.198) (0.674,-0.190) (0.701,-0.183) (0.730,-0.175) (0.760,-0.168) (0.791,-0.162) (0.824,-0.155) (0.857,-0.149) (0.893,-0.143) (0.929,-0.138) (0.967,-0.132) (1.007,-0.127) (1.048,-0.122) (1.091,-0.117) (1.136,-0.113) (1.183,-0.108) (1.231,-0.104) (1.282,-0.100) (1.334,-0.096) (1.389,-0.092) (1.446,-0.089) (1.505,-0.085) (1.567,-0.082) (1.631,-0.078) (1.698,-0.075)};
+\draw[couleurN,-{Stealth[length=4pt]}] (0.223,-0.574) -- (0.228,-0.563);
+\draw[couleurN,thick] plot[smooth] coordinates {(0.080,1.600) (0.083,1.537) (0.087,1.476) (0.090,1.418) (0.094,1.362) (0.098,1.309) (0.102,1.257) (0.106,1.208) (0.110,1.160) (0.115,1.114) (0.120,1.070) (0.124,1.028) (0.130,0.988) (0.135,0.949) (0.140,0.911) (0.146,0.875) (0.152,0.841) (0.158,0.808) (0.165,0.776) (0.172,0.745) (0.179,0.716) (0.186,0.688) (0.194,0.661) (0.202,0.635) (0.210,0.610) (0.219,0.586) (0.228,0.563) (0.237,0.540) (0.247,0.519) (0.257,0.499) (0.267,0.479) (0.278,0.460) (0.290,0.442) (0.301,0.425) (0.314,0.408) (0.327,0.392) (0.340,0.376) (0.354,0.362) (0.369,0.347) (0.384,0.334) (0.399,0.320) (0.416,0.308) (0.433,0.296) (0.451,0.284) (0.469,0.273) (0.488,0.262) (0.508,0.252) (0.529,0.242) (0.551,0.232) (0.574,0.223) (0.597,0.214) (0.622,0.206) (0.647,0.198) (0.674,0.190) (0.701,0.183) (0.730,0.175) (0.760,0.168) (0.791,0.162) (0.824,0.155) (0.857,0.149) (0.893,0.143) (0.929,0.138) (0.967,0.132) (1.007,0.127) (1.048,0.122) (1.091,0.117) (1.136,0.113) (1.183,0.108) (1.231,0.104) (1.282,0.100) (1.334,0.096) (1.389,0.092) (1.446,0.089) (1.505,0.085) (1.567,0.082) (1.631,0.078) (1.698,0.075)};
+\draw[couleurN,-{Stealth[length=4pt]}] (0.223,0.574) -- (0.228,0.563);
+\draw[couleurN,thick] plot[smooth] coordinates {(-0.300,-1.600) (-0.312,-1.537) (-0.325,-1.476) (-0.338,-1.418) (-0.352,-1.362) (-0.367,-1.309) (-0.382,-1.257) (-0.397,-1.208) (-0.414,-1.160) (-0.431,-1.114) (-0.448,-1.070) (-0.467,-1.028) (-0.486,-0.988) (-0.506,-0.949) (-0.527,-0.911) (-0.548,-0.875) (-0.571,-0.841) (-0.594,-0.808) (-0.619,-0.776) (-0.644,-0.745) (-0.670,-0.716) (-0.698,-0.688) (-0.726,-0.661) (-0.756,-0.635) (-0.787,-0.610) (-0.820,-0.586) (-0.853,-0.563) (-0.888,-0.540) (-0.925,-0.519) (-0.963,-0.499) (-1.002,-0.479) (-1.043,-0.460) (-1.086,-0.442) (-1.131,-0.425) (-1.177,-0.408) (-1.225,-0.392) (-1.275,-0.376) (-1.328,-0.362) (-1.382,-0.347) (-1.439,-0.334) (-1.498,-0.320) (-1.559,-0.308) (-1.623,-0.296) (-1.690,-0.284)};
+\draw[couleurN,-{Stealth[length=4pt]}] (-0.537,-0.893) -- (-0.548,-0.875);
+\draw[couleurN,thick] plot[smooth] coordinates {(-0.300,1.600) (-0.312,1.537) (-0.325,1.476) (-0.338,1.418) (-0.352,1.362) (-0.367,1.309) (-0.382,1.257) (-0.397,1.208) (-0.414,1.160) (-0.431,1.114) (-0.448,1.070) (-0.467,1.028) (-0.486,0.988) (-0.506,0.949) (-0.527,0.911) (-0.548,0.875) (-0.571,0.841) (-0.594,0.808) (-0.619,0.776) (-0.644,0.745) (-0.670,0.716) (-0.698,0.688) (-0.726,0.661) (-0.756,0.635) (-0.787,0.610) (-0.820,0.586) (-0.853,0.563) (-0.888,0.540) (-0.925,0.519) (-0.963,0.499) (-1.002,0.479) (-1.043,0.460) (-1.086,0.442) (-1.131,0.425) (-1.177,0.408) (-1.225,0.392) (-1.275,0.376) (-1.328,0.362) (-1.382,0.347) (-1.439,0.334) (-1.498,0.320) (-1.559,0.308) (-1.623,0.296) (-1.690,0.284)};
+\draw[couleurN,-{Stealth[length=4pt]}] (-0.537,0.893) -- (-0.548,0.875);
+\draw[couleurN,thick] plot[smooth] coordinates {(0.300,-1.600) (0.312,-1.537) (0.325,-1.476) (0.338,-1.418) (0.352,-1.362) (0.367,-1.309) (0.382,-1.257) (0.397,-1.208) (0.414,-1.160) (0.431,-1.114) (0.448,-1.070) (0.467,-1.028) (0.486,-0.988) (0.506,-0.949) (0.527,-0.911) (0.548,-0.875) (0.571,-0.841) (0.594,-0.808) (0.619,-0.776) (0.644,-0.745) (0.670,-0.716) (0.698,-0.688) (0.726,-0.661) (0.756,-0.635) (0.787,-0.610) (0.820,-0.586) (0.853,-0.563) (0.888,-0.540) (0.925,-0.519) (0.963,-0.499) (1.002,-0.479) (1.043,-0.460) (1.086,-0.442) (1.131,-0.425) (1.177,-0.408) (1.225,-0.392) (1.275,-0.376) (1.328,-0.362) (1.382,-0.347) (1.439,-0.334) (1.498,-0.320) (1.559,-0.308) (1.623,-0.296) (1.690,-0.284)};
+\draw[couleurN,-{Stealth[length=4pt]}] (0.537,-0.893) -- (0.548,-0.875);
+\draw[couleurN,thick] plot[smooth] coordinates {(0.300,1.600) (0.312,1.537) (0.325,1.476) (0.338,1.418) (0.352,1.362) (0.367,1.309) (0.382,1.257) (0.397,1.208) (0.414,1.160) (0.431,1.114) (0.448,1.070) (0.467,1.028) (0.486,0.988) (0.506,0.949) (0.527,0.911) (0.548,0.875) (0.571,0.841) (0.594,0.808) (0.619,0.776) (0.644,0.745) (0.670,0.716) (0.698,0.688) (0.726,0.661) (0.756,0.635) (0.787,0.610) (0.820,0.586) (0.853,0.563) (0.888,0.540) (0.925,0.519) (0.963,0.499) (1.002,0.479) (1.043,0.460) (1.086,0.442) (1.131,0.425) (1.177,0.408) (1.225,0.392) (1.275,0.376) (1.328,0.362) (1.382,0.347) (1.439,0.334) (1.498,0.320) (1.559,0.308) (1.623,0.296) (1.690,0.284)};
+\draw[couleurN,-{Stealth[length=4pt]}] (0.537,0.893) -- (0.548,0.875);
+\draw[couleurN,thick] plot[smooth] coordinates {(-0.800,-1.600) (-0.833,-1.537) (-0.867,-1.476) (-0.903,-1.418) (-0.940,-1.362) (-0.978,-1.309) (-1.018,-1.257) (-1.060,-1.208) (-1.103,-1.160) (-1.149,-1.114) (-1.196,-1.070) (-1.245,-1.028) (-1.296,-0.988) (-1.349,-0.949) (-1.404,-0.911) (-1.462,-0.875) (-1.522,-0.841) (-1.585,-0.808) (-1.650,-0.776) (-1.717,-0.745)};
+\draw[couleurN,-{Stealth[length=4pt]}] (-1.039,-1.232) -- (-1.060,-1.208);
+\draw[couleurN,thick] plot[smooth] coordinates {(-0.800,1.600) (-0.833,1.537) (-0.867,1.476) (-0.903,1.418) (-0.940,1.362) (-0.978,1.309) (-1.018,1.257) (-1.060,1.208) (-1.103,1.160) (-1.149,1.114) (-1.196,1.070) (-1.245,1.028) (-1.296,0.988) (-1.349,0.949) (-1.404,0.911) (-1.462,0.875) (-1.522,0.841) (-1.585,0.808) (-1.650,0.776) (-1.717,0.745)};
+\draw[couleurN,-{Stealth[length=4pt]}] (-1.039,1.232) -- (-1.060,1.208);
+\draw[couleurN,thick] plot[smooth] coordinates {(0.800,-1.600) (0.833,-1.537) (0.867,-1.476) (0.903,-1.418) (0.940,-1.362) (0.978,-1.309) (1.018,-1.257) (1.060,-1.208) (1.103,-1.160) (1.149,-1.114) (1.196,-1.070) (1.245,-1.028) (1.296,-0.988) (1.349,-0.949) (1.404,-0.911) (1.462,-0.875) (1.522,-0.841) (1.585,-0.808) (1.650,-0.776) (1.717,-0.745)};
+\draw[couleurN,-{Stealth[length=4pt]}] (1.039,-1.232) -- (1.060,-1.208);
+\draw[couleurN,thick] plot[smooth] coordinates {(0.800,1.600) (0.833,1.537) (0.867,1.476) (0.903,1.418) (0.940,1.362) (0.978,1.309) (1.018,1.257) (1.060,1.208) (1.103,1.160) (1.149,1.114) (1.196,1.070) (1.245,1.028) (1.296,0.988) (1.349,0.949) (1.404,0.911) (1.462,0.875) (1.522,0.841) (1.585,0.808) (1.650,0.776) (1.717,0.745)};
+\draw[couleurN,-{Stealth[length=4pt]}] (1.039,1.232) -- (1.060,1.208);
+\draw[rougecours,thick] (0,-1.75) -- (0,1.75); \draw[couleurN,thick] (-1.75,0) -- (1.75,0); \draw[rougecours,-{Stealth[length=4pt]}] (0,1.3) -- (0,1.2); \draw[rougecours,-{Stealth[length=4pt]}] (0,-1.3) -- (0,-1.2); \draw[couleurN,-{Stealth[length=4pt]}] (1.2,0) -- (1.3,0); \draw[couleurN,-{Stealth[length=4pt]}] (-1.2,0) -- (-1.3,0);
+  \end{scope}
+  \begin{scope}[shift={(7.8,0)}]
+    \clip (-1.75,-1.75) rectangle (1.75,1.75);
+\draw[couleurN,thick] plot[smooth] coordinates {(1.600,0.000) (1.569,0.094) (1.532,0.185) (1.491,0.272) (1.446,0.355) (1.396,0.433) (1.343,0.507) (1.287,0.576) (1.228,0.641) (1.166,0.701) (1.101,0.756) (1.035,0.806) (0.967,0.851) (0.898,0.892) (0.828,0.927) (0.757,0.958) (0.685,0.984) (0.614,1.005) (0.542,1.021) (0.471,1.033) (0.401,1.041) (0.332,1.044) (0.264,1.043) (0.197,1.038) (0.132,1.029) (0.068,1.017) (0.007,1.001) (-0.052,0.982) (-0.109,0.959) (-0.164,0.934) (-0.216,0.906) (-0.265,0.875) (-0.311,0.842) (-0.355,0.807) (-0.396,0.771) (-0.433,0.732) (-0.468,0.692) (-0.500,0.651) (-0.528,0.609) (-0.554,0.565) (-0.576,0.522) (-0.596,0.477) (-0.612,0.433) (-0.626,0.388) (-0.636,0.344) (-0.644,0.299) (-0.649,0.255) (-0.652,0.212) (-0.651,0.169) (-0.648,0.128) (-0.643,0.087) (-0.636,0.047) (-0.626,0.009) (-0.614,-0.029) (-0.600,-0.064) (-0.585,-0.098) (-0.568,-0.131) (-0.549,-0.162) (-0.528,-0.191) (-0.507,-0.219) (-0.484,-0.244) (-0.460,-0.268) (-0.435,-0.290) (-0.409,-0.310) (-0.383,-0.328) (-0.356,-0.344) (-0.329,-0.358) (-0.301,-0.371) (-0.273,-0.381) (-0.245,-0.390) (-0.218,-0.397) (-0.190,-0.402) (-0.162,-0.405) (-0.135,-0.407) (-0.109,-0.407) (-0.083,-0.405) (-0.057,-0.402) (-0.032,-0.397) (-0.008,-0.392) (0.015,-0.384) (0.038,-0.376) (0.059,-0.366) (0.079,-0.356) (0.099,-0.344) (0.117,-0.331) (0.135,-0.318) (0.151,-0.304) (0.166,-0.289) (0.179,-0.273) (0.192,-0.257) (0.203,-0.241) (0.214,-0.224) (0.223,-0.207) (0.231,-0.190) (0.237,-0.173) (0.243,-0.155) (0.247,-0.138) (0.250,-0.121) (0.253,-0.103) (0.254,-0.086) (0.254,-0.070) (0.253,-0.053) (0.251,-0.037) (0.248,-0.022) (0.245,-0.007) (0.240,0.008) (0.235,0.022) (0.229,0.035) (0.223,0.048) (0.216,0.060) (0.208,0.072) (0.199,0.083) (0.191,0.093) (0.181,0.102) (0.172,0.111) (0.162,0.119) (0.152,0.126) (0.141,0.133) (0.131,0.138) (0.120,0.143) (0.109,0.148) (0.098,0.151) (0.087,0.154) (0.076,0.156) (0.066,0.158) (0.055,0.158) (0.045,0.159) (0.034,0.158) (0.024,0.157) (0.015,0.155) (0.005,0.153) (-0.004,0.150) (-0.013,0.147) (-0.021,0.144) (-0.029,0.140) (-0.037,0.135) (-0.044,0.130) (-0.051,0.125) (-0.057,0.120) (-0.063,0.114) (-0.069,0.108) (-0.074,0.102) (-0.078,0.095) (-0.082,0.089) (-0.086,0.082) (-0.089,0.076) (-0.092,0.069) (-0.094,0.062) (-0.096,0.055) (-0.097,0.049) (-0.098,0.042) (-0.099,0.035) (-0.099,0.029) (-0.099,0.022) (-0.098,0.016) (-0.097,0.010) (-0.096,0.004) (-0.094,-0.002) (-0.092,-0.007) (-0.090,-0.013) (-0.087,-0.018) (-0.085,-0.022) (-0.082,-0.027) (-0.078,-0.031) (-0.075,-0.035) (-0.072,-0.039) (-0.068,-0.043) (-0.064,-0.046) (-0.060,-0.049) (-0.056,-0.051) (-0.052,-0.053) (-0.048,-0.055) (-0.043,-0.057) (-0.039,-0.059) (-0.035,-0.060) (-0.031,-0.061) (-0.027,-0.061) (-0.022,-0.062) (-0.018,-0.062) (-0.014,-0.062) (-0.010,-0.061) (-0.007,-0.061) (-0.003,-0.060) (0.001,-0.059) (0.004,-0.058) (0.007,-0.056) (0.011,-0.055) (0.014,-0.053) (0.017,-0.051) (0.019,-0.049) (0.022,-0.047) (0.024,-0.045) (0.026,-0.043) (0.028,-0.040) (0.030,-0.038) (0.032,-0.035) (0.033,-0.033) (0.034,-0.030) (0.036,-0.027) (0.036,-0.025)};
+\draw[couleurN,-{Stealth[length=4pt]}] (-0.023,0.992) -- (-0.052,0.982);
+\draw[couleurN,thick] plot[smooth] coordinates {(-1.600,0.000) (-1.569,-0.094) (-1.532,-0.185) (-1.491,-0.272) (-1.446,-0.355) (-1.396,-0.433) (-1.343,-0.507) (-1.287,-0.576) (-1.228,-0.641) (-1.166,-0.701) (-1.101,-0.756) (-1.035,-0.806) (-0.967,-0.851) (-0.898,-0.892) (-0.828,-0.927) (-0.757,-0.958) (-0.685,-0.984) (-0.614,-1.005) (-0.542,-1.021) (-0.471,-1.033) (-0.401,-1.041) (-0.332,-1.044) (-0.264,-1.043) (-0.197,-1.038) (-0.132,-1.029) (-0.068,-1.017) (-0.007,-1.001) (0.052,-0.982) (0.109,-0.959) (0.164,-0.934) (0.216,-0.906) (0.265,-0.875) (0.311,-0.842) (0.355,-0.807) (0.396,-0.771) (0.433,-0.732) (0.468,-0.692) (0.500,-0.651) (0.528,-0.609) (0.554,-0.565) (0.576,-0.522) (0.596,-0.477) (0.612,-0.433) (0.626,-0.388) (0.636,-0.344) (0.644,-0.299) (0.649,-0.255) (0.652,-0.212) (0.651,-0.169) (0.648,-0.128) (0.643,-0.087) (0.636,-0.047) (0.626,-0.009) (0.614,0.029) (0.600,0.064) (0.585,0.098) (0.568,0.131) (0.549,0.162) (0.528,0.191) (0.507,0.219) (0.484,0.244) (0.460,0.268) (0.435,0.290) (0.409,0.310) (0.383,0.328) (0.356,0.344) (0.329,0.358) (0.301,0.371) (0.273,0.381) (0.245,0.390) (0.218,0.397) (0.190,0.402) (0.162,0.405) (0.135,0.407) (0.109,0.407) (0.083,0.405) (0.057,0.402) (0.032,0.397) (0.008,0.392) (-0.015,0.384) (-0.038,0.376) (-0.059,0.366) (-0.079,0.356) (-0.099,0.344) (-0.117,0.331) (-0.135,0.318) (-0.151,0.304) (-0.166,0.289) (-0.179,0.273) (-0.192,0.257) (-0.203,0.241) (-0.214,0.224) (-0.223,0.207) (-0.231,0.190) (-0.237,0.173) (-0.243,0.155) (-0.247,0.138) (-0.250,0.121) (-0.253,0.103) (-0.254,0.086) (-0.254,0.070) (-0.253,0.053) (-0.251,0.037) (-0.248,0.022) (-0.245,0.007) (-0.240,-0.008) (-0.235,-0.022) (-0.229,-0.035) (-0.223,-0.048) (-0.216,-0.060) (-0.208,-0.072) (-0.199,-0.083) (-0.191,-0.093) (-0.181,-0.102) (-0.172,-0.111) (-0.162,-0.119) (-0.152,-0.126) (-0.141,-0.133) (-0.131,-0.138) (-0.120,-0.143) (-0.109,-0.148) (-0.098,-0.151) (-0.087,-0.154) (-0.076,-0.156) (-0.066,-0.158) (-0.055,-0.158) (-0.045,-0.159) (-0.034,-0.158) (-0.024,-0.157) (-0.015,-0.155) (-0.005,-0.153) (0.004,-0.150) (0.013,-0.147) (0.021,-0.144) (0.029,-0.140) (0.037,-0.135) (0.044,-0.130) (0.051,-0.125) (0.057,-0.120) (0.063,-0.114) (0.069,-0.108) (0.074,-0.102) (0.078,-0.095) (0.082,-0.089) (0.086,-0.082) (0.089,-0.076) (0.092,-0.069) (0.094,-0.062) (0.096,-0.055) (0.097,-0.049) (0.098,-0.042) (0.099,-0.035) (0.099,-0.029) (0.099,-0.022) (0.098,-0.016) (0.097,-0.010) (0.096,-0.004) (0.094,0.002) (0.092,0.007) (0.090,0.013) (0.087,0.018) (0.085,0.022) (0.082,0.027) (0.078,0.031) (0.075,0.035) (0.072,0.039) (0.068,0.043) (0.064,0.046) (0.060,0.049) (0.056,0.051) (0.052,0.053) (0.048,0.055) (0.043,0.057) (0.039,0.059) (0.035,0.060) (0.031,0.061) (0.027,0.061) (0.022,0.062) (0.018,0.062) (0.014,0.062) (0.010,0.061) (0.007,0.061) (0.003,0.060) (-0.001,0.059) (-0.004,0.058) (-0.007,0.056) (-0.011,0.055) (-0.014,0.053) (-0.017,0.051) (-0.019,0.049) (-0.022,0.047) (-0.024,0.045) (-0.026,0.043) (-0.028,0.040) (-0.030,0.038) (-0.032,0.035) (-0.033,0.033) (-0.034,0.030) (-0.036,0.027) (-0.036,0.025)};
+\draw[couleurN,-{Stealth[length=4pt]}] (0.023,-0.992) -- (0.052,-0.982);
+  \end{scope}
+  \begin{scope}[shift={(11.7,0)}]
+    \clip (-1.75,-1.75) rectangle (1.75,1.75);
+\draw[couleurN,thick] plot[smooth cycle] coordinates {(0.500,0.000) (0.497,0.053) (0.489,0.105) (0.475,0.156) (0.456,0.205) (0.432,0.252) (0.403,0.296) (0.370,0.337) (0.332,0.374) (0.291,0.407) (0.246,0.435) (0.199,0.459) (0.149,0.477) (0.098,0.490) (0.046,0.498) (-0.007,0.500) (-0.059,0.496) (-0.111,0.487) (-0.162,0.473) (-0.211,0.453) (-0.258,0.429) (-0.301,0.399) (-0.342,0.365) (-0.378,0.327) (-0.411,0.285) (-0.438,0.240) (-0.461,0.193) (-0.479,0.143) (-0.491,0.092) (-0.498,0.040) (-0.500,-0.013) (-0.496,-0.066) (-0.486,-0.118) (-0.471,-0.168) (-0.450,-0.217) (-0.425,-0.263) (-0.395,-0.307) (-0.360,-0.346) (-0.322,-0.383) (-0.280,-0.414) (-0.235,-0.442) (-0.187,-0.464) (-0.137,-0.481) (-0.085,-0.493) (-0.033,-0.499) (0.020,-0.500) (0.072,-0.495) (0.124,-0.484) (0.174,-0.469) (0.223,-0.448) (0.269,-0.422) (0.312,-0.391) (0.351,-0.356) (0.387,-0.317) (0.418,-0.274) (0.445,-0.229) (0.466,-0.181) (0.483,-0.130) (0.494,-0.079) (0.499,-0.026)};
+\draw[couleurN,-{Stealth[length=4pt]}] (-0.258,0.429) -- (-0.280,0.414);
+\draw[couleurN,thick] plot[smooth cycle] coordinates {(1.000,0.000) (0.994,0.105) (0.978,0.210) (0.950,0.312) (0.912,0.410) (0.864,0.504) (0.806,0.592) (0.739,0.674) (0.664,0.748) (0.581,0.814) (0.492,0.870) (0.398,0.917) (0.299,0.954) (0.197,0.980) (0.092,0.996) (-0.013,1.000) (-0.119,0.993) (-0.223,0.975) (-0.324,0.946) (-0.422,0.907) (-0.515,0.857) (-0.603,0.798) (-0.683,0.730) (-0.757,0.654) (-0.821,0.571) (-0.877,0.481) (-0.923,0.386) (-0.958,0.286) (-0.983,0.184) (-0.997,0.079) (-1.000,-0.026) (-0.991,-0.132) (-0.972,-0.235) (-0.942,-0.337) (-0.901,-0.434) (-0.850,-0.526) (-0.790,-0.613) (-0.721,-0.693) (-0.644,-0.765) (-0.560,-0.829) (-0.469,-0.883) (-0.374,-0.928) (-0.274,-0.962) (-0.171,-0.985) (-0.066,-0.998) (0.040,-0.999) (0.145,-0.989) (0.248,-0.969) (0.349,-0.937) (0.446,-0.895) (0.538,-0.843) (0.623,-0.782) (0.702,-0.712) (0.774,-0.634) (0.836,-0.549) (0.889,-0.458) (0.932,-0.361) (0.965,-0.261) (0.987,-0.158) (0.999,-0.053)};
+\draw[couleurN,-{Stealth[length=4pt]}] (-0.515,0.857) -- (-0.560,0.829);
+\draw[couleurN,thick] plot[smooth cycle] coordinates {(1.500,0.000) (1.492,0.158) (1.467,0.314) (1.425,0.467) (1.368,0.615) (1.296,0.756) (1.209,0.888) (1.109,1.011) (0.996,1.122) (0.872,1.220) (0.739,1.306) (0.597,1.376) (0.448,1.431) (0.295,1.471) (0.138,1.494) (-0.020,1.500) (-0.178,1.489) (-0.334,1.462) (-0.486,1.419) (-0.633,1.360) (-0.773,1.286) (-0.904,1.197) (-1.025,1.095) (-1.135,0.981) (-1.232,0.856) (-1.315,0.721) (-1.384,0.579) (-1.437,0.430) (-1.474,0.276) (-1.495,0.119) (-1.499,-0.040) (-1.487,-0.197) (-1.458,-0.353) (-1.413,-0.505) (-1.351,-0.651) (-1.275,-0.790) (-1.185,-0.920) (-1.081,-1.039) (-0.966,-1.148) (-0.840,-1.243) (-0.704,-1.325) (-0.560,-1.391) (-0.410,-1.443) (-0.256,-1.478) (-0.099,-1.497) (0.059,-1.499) (0.217,-1.484) (0.372,-1.453) (0.523,-1.406) (0.669,-1.343) (0.806,-1.265) (0.935,-1.173) (1.054,-1.068) (1.160,-0.951) (1.254,-0.823) (1.334,-0.686) (1.399,-0.542) (1.448,-0.391) (1.481,-0.237) (1.498,-0.079)};
+\draw[couleurN,-{Stealth[length=4pt]}] (-0.773,1.286) -- (-0.840,1.243);
+  \end{scope}
+  \foreach \k in {0,1,2,3} \fill[rougecours] (\k*3.9,0) circle (1.6pt);
+\end{tikzpicture}
+\end{center}
+
+\noindent Les quatre portraits de phase types, calculés par $\exp(tA)$, avec le sens de parcours. Pour le nœud $A = \mathrm{diag}(-1, -3)$, toutes les orbites rejoignent l'origine, tangentiellement à l'axe horizontal, direction propre de la valeur propre la plus proche de $0$. Pour le col $A = \mathrm{diag}(1, -1)$, les orbites sont des branches d'hyperboles, et seules celles portées par l'axe vertical, en rouge, tendent vers l'équilibre. Le foyer, pour $\alpha = -0{,}3$, s'enroule vers l'origine ; le centre, pour $\alpha = 0$, est formé de cercles.
+
+\subsection{Un système non linéaire : proies et prédateurs}
+
+\noindent Le système de Lotka et Volterra modélise une population de proies $x$ et de prédateurs $y$ :
+\[ x' = x(1 - y), \qquad y' = y(x - 1), \]
+sur $\Omega = \left]0, +\infty\right[^{2}$. L'unique équilibre dans $\Omega$ est $(1, 1)$.
+
+\begin{cadre}
+\propo{5} La fonction $H(x, y) = x - \ln x + y - \ln y$ est une \mot{intégrale première} : elle est constante le long de toute solution. Toute solution maximale issue d'un point de $\Omega$ reste dans $\Omega$ et est définie sur $\R$.
+\end{cadre}
+
+\begin{demo}
+\etape{Conservation.} Le long d'une solution,
+\[ \frac{\dd}{\dd t}H(x, y) = \left(1 - \frac{1}{x}\right)x' + \left(1 - \frac{1}{y}\right)y' = (x - 1)(1 - y) + (y - 1)(x - 1) = 0. \]
+
+\etape{Solutions globales.} Comme $u - \ln u \to +\infty$ quand $u \to 0^{+}$ ou $u \to +\infty$, et que $u - \ln u \geqslant 1$, l'ensemble $\{H \leqslant c\}$ est fermé et borné dans $\R^{2}$, inclus dans $\Omega$ : c'est un compact de $\Omega$. Une solution issue d'un point où $H = c$ y reste ; par le théorème des bouts (chapitre 6, théorème 3), elle est définie sur $\R$.
+\end{demo}
+
+\noindent On admet que chaque orbite non réduite à l'équilibre est une courbe fermée, parcourue périodiquement : les populations oscillent, les prédateurs culminant après les proies. Une méthode numérique doit respecter cette conservation, et c'est là que la méthode d'Euler échoue.
+
+% ---- niveaux de H = 2,1 ; 2,3069 (= H(2,1), trait fort) ; 2,6 ; 3,0 (matplotlib contour) ;
+% ---- polygone d'Euler de pas 0,1 depuis (2, 1), 120 pas (H passe de 2,307 a 2,952) (calcules)
+\begin{center}
+\begin{tikzpicture}[scale=1.3]
+  \draw[gray,->] (0,0) -- (4.45,0) node[below,font=\small] {$x$};
+  \draw[gray,->] (0,0) -- (0,4.4) node[left,font=\small] {$y$};
+  \foreach \k in {1,2,3,4} {\draw[gray] (\k,0.05) -- (\k,-0.05) node[below,font=\scriptsize] {$\k$}; \draw[gray] (0.05,\k) -- (-0.05,\k) node[left,font=\scriptsize] {$\k$};}
+  \begin{scope}
+    \clip (0.05,0.05) rectangle (4.4,4.35);
+\draw[couleurN!45,thick] plot[smooth cycle] coordinates {(0.937,0.620) (0.913,0.623) (0.884,0.629) (0.856,0.636) (0.832,0.644) (0.809,0.653) (0.791,0.662) (0.767,0.676) (0.751,0.687) (0.732,0.702) (0.714,0.718) (0.700,0.734) (0.686,0.752) (0.671,0.775) (0.661,0.792) (0.650,0.816) (0.641,0.840) (0.634,0.864) (0.628,0.889) (0.622,0.921) (0.619,0.945) (0.617,0.978) (0.617,1.010) (0.618,1.043) (0.621,1.071) (0.624,1.100) (0.629,1.126) (0.635,1.156) (0.642,1.181) (0.649,1.205) (0.657,1.229) (0.666,1.254) (0.677,1.278) (0.686,1.297) (0.697,1.319) (0.710,1.341) (0.722,1.359) (0.734,1.376) (0.751,1.396) (0.767,1.414) (0.783,1.430) (0.799,1.444) (0.816,1.457) (0.840,1.473) (0.856,1.482) (0.880,1.493) (0.905,1.502) (0.929,1.508) (0.958,1.514) (0.986,1.516) (1.018,1.516) (1.043,1.514) (1.075,1.508) (1.100,1.502) (1.124,1.495) (1.148,1.486) (1.173,1.476) (1.195,1.465) (1.213,1.455) (1.238,1.441) (1.254,1.430) (1.274,1.416) (1.294,1.400) (1.311,1.387) (1.327,1.373) (1.343,1.358) (1.359,1.341) (1.376,1.324) (1.392,1.305) (1.407,1.286) (1.419,1.270) (1.432,1.251) (1.446,1.229) (1.457,1.210) (1.468,1.189) (1.479,1.165) (1.489,1.141) (1.497,1.117) (1.505,1.091) (1.510,1.067) (1.514,1.043) (1.516,1.010) (1.515,0.978) (1.513,0.954) (1.506,0.921) (1.499,0.897) (1.490,0.872) (1.481,0.855) (1.468,0.832) (1.457,0.815) (1.440,0.795) (1.424,0.777) (1.408,0.761) (1.392,0.747) (1.376,0.734) (1.353,0.718) (1.335,0.707) (1.313,0.694) (1.294,0.684) (1.270,0.673) (1.246,0.663) (1.221,0.654) (1.197,0.646) (1.173,0.639) (1.148,0.634) (1.124,0.629) (1.091,0.623) (1.067,0.620) (1.035,0.618) (1.002,0.617) (0.970,0.618)};
+\draw[couleurN,very thick] plot[smooth cycle] coordinates {(0.905,0.410) (0.880,0.412) (0.848,0.415) (0.824,0.419) (0.791,0.424) (0.767,0.430) (0.742,0.436) (0.718,0.443) (0.694,0.451) (0.669,0.460) (0.645,0.471) (0.624,0.483) (0.605,0.494) (0.586,0.507) (0.565,0.523) (0.548,0.539) (0.531,0.556) (0.518,0.572) (0.505,0.588) (0.491,0.610) (0.480,0.629) (0.468,0.653) (0.458,0.674) (0.450,0.695) (0.442,0.720) (0.434,0.748) (0.428,0.775) (0.423,0.799) (0.418,0.830) (0.414,0.856) (0.411,0.889) (0.409,0.913) (0.407,0.945) (0.407,0.978) (0.406,1.010) (0.407,1.043) (0.408,1.075) (0.410,1.102) (0.412,1.132) (0.415,1.165) (0.418,1.192) (0.422,1.221) (0.426,1.253) (0.430,1.278) (0.434,1.303) (0.440,1.335) (0.445,1.359) (0.450,1.384) (0.458,1.416) (0.464,1.440) (0.471,1.465) (0.478,1.489) (0.486,1.514) (0.494,1.538) (0.502,1.562) (0.512,1.587) (0.521,1.611) (0.531,1.635) (0.540,1.653) (0.551,1.676) (0.563,1.700) (0.572,1.717) (0.586,1.741) (0.596,1.757) (0.612,1.781) (0.624,1.798) (0.637,1.815) (0.653,1.835) (0.669,1.853) (0.686,1.869) (0.702,1.885) (0.718,1.899) (0.734,1.912) (0.756,1.927) (0.775,1.939) (0.797,1.952) (0.816,1.961) (0.840,1.971) (0.864,1.980) (0.889,1.987) (0.915,1.992) (0.945,1.997) (0.978,2.000) (1.010,2.000) (1.043,1.998) (1.075,1.995) (1.100,1.991) (1.130,1.984) (1.156,1.978) (1.181,1.971) (1.205,1.963) (1.229,1.954) (1.254,1.944) (1.273,1.936) (1.294,1.926) (1.319,1.914) (1.340,1.903) (1.359,1.892) (1.383,1.879) (1.400,1.868) (1.422,1.854) (1.440,1.842) (1.459,1.830) (1.481,1.814) (1.497,1.802) (1.514,1.789) (1.535,1.773) (1.554,1.758) (1.570,1.744) (1.587,1.730) (1.603,1.716) (1.620,1.700) (1.637,1.684) (1.653,1.668) (1.670,1.652) (1.685,1.635) (1.701,1.619) (1.716,1.602) (1.733,1.583) (1.749,1.565) (1.764,1.546) (1.777,1.530) (1.790,1.514) (1.806,1.493) (1.820,1.473) (1.831,1.457) (1.846,1.435) (1.858,1.416) (1.871,1.396) (1.883,1.376) (1.895,1.355) (1.906,1.335) (1.918,1.311) (1.927,1.291) (1.937,1.270) (1.947,1.246) (1.957,1.221) (1.965,1.197) (1.973,1.173) (1.980,1.148) (1.986,1.124) (1.992,1.091) (1.996,1.067) (1.999,1.035) (2.000,1.002) (1.999,0.970) (1.996,0.937) (1.992,0.913) (1.984,0.880) (1.977,0.856) (1.968,0.832) (1.960,0.814) (1.949,0.791) (1.936,0.769) (1.924,0.751) (1.911,0.734) (1.895,0.714) (1.879,0.695) (1.863,0.679) (1.846,0.664) (1.830,0.649) (1.814,0.636) (1.793,0.621) (1.773,0.607) (1.757,0.596) (1.733,0.581) (1.716,0.572) (1.692,0.559) (1.670,0.548) (1.652,0.539) (1.627,0.528) (1.603,0.518) (1.578,0.508) (1.554,0.500) (1.530,0.491) (1.505,0.483) (1.481,0.476) (1.457,0.469) (1.432,0.462) (1.408,0.456) (1.383,0.450) (1.351,0.443) (1.327,0.439) (1.303,0.434) (1.270,0.429) (1.246,0.425) (1.213,0.420) (1.189,0.417) (1.156,0.414) (1.124,0.411) (1.100,0.410) (1.067,0.408) (1.035,0.407) (1.002,0.406) (0.970,0.407) (0.937,0.408)};
+\draw[couleurN!45,thick] plot[smooth cycle] coordinates {(0.929,0.263) (0.905,0.264) (0.872,0.266) (0.840,0.268) (0.807,0.270) (0.783,0.273) (0.751,0.276) (0.725,0.280) (0.694,0.285) (0.669,0.289) (0.639,0.296) (0.613,0.303) (0.588,0.310) (0.564,0.318) (0.540,0.328) (0.519,0.337) (0.499,0.347) (0.475,0.361) (0.458,0.372) (0.440,0.385) (0.421,0.402) (0.405,0.418) (0.390,0.434) (0.377,0.450) (0.361,0.474) (0.351,0.491) (0.339,0.515) (0.329,0.537) (0.320,0.558) (0.312,0.581) (0.304,0.608) (0.297,0.637) (0.291,0.661) (0.286,0.686) (0.281,0.718) (0.277,0.742) (0.273,0.775) (0.271,0.799) (0.268,0.832) (0.266,0.864) (0.265,0.897) (0.264,0.923) (0.263,0.954) (0.263,0.986) (0.263,1.018) (0.263,1.051) (0.264,1.081) (0.264,1.108) (0.266,1.140) (0.267,1.173) (0.269,1.205) (0.271,1.238) (0.273,1.262) (0.276,1.294) (0.279,1.327) (0.281,1.351) (0.285,1.384) (0.288,1.413) (0.291,1.440) (0.296,1.473) (0.299,1.497) (0.304,1.530) (0.308,1.554) (0.312,1.584) (0.317,1.611) (0.321,1.635) (0.328,1.668) (0.332,1.692) (0.337,1.716) (0.345,1.749) (0.350,1.773) (0.356,1.798) (0.362,1.822) (0.369,1.849) (0.377,1.878) (0.384,1.903) (0.392,1.927) (0.400,1.952) (0.408,1.976) (0.416,2.001) (0.425,2.025) (0.434,2.048) (0.442,2.069) (0.451,2.090) (0.462,2.114) (0.473,2.138) (0.483,2.158) (0.493,2.179) (0.507,2.203) (0.516,2.220) (0.531,2.244) (0.541,2.260) (0.556,2.282) (0.570,2.301) (0.582,2.317) (0.596,2.335) (0.613,2.353) (0.629,2.370) (0.645,2.386) (0.661,2.401) (0.678,2.415) (0.698,2.431) (0.718,2.445) (0.734,2.455) (0.759,2.469) (0.779,2.479) (0.799,2.488) (0.824,2.498) (0.848,2.506) (0.872,2.512) (0.905,2.519) (0.929,2.523) (0.962,2.526) (0.994,2.527) (1.027,2.526) (1.059,2.524) (1.091,2.521) (1.116,2.517) (1.142,2.512) (1.173,2.505) (1.197,2.499) (1.221,2.491) (1.246,2.484) (1.270,2.475) (1.294,2.466) (1.319,2.457) (1.342,2.447) (1.361,2.439) (1.384,2.428) (1.408,2.416) (1.428,2.406) (1.449,2.396) (1.473,2.382) (1.489,2.373) (1.514,2.359) (1.530,2.349) (1.554,2.335) (1.570,2.324) (1.594,2.309) (1.611,2.298) (1.630,2.285) (1.652,2.270) (1.668,2.258) (1.688,2.244) (1.708,2.229) (1.725,2.216) (1.741,2.203) (1.762,2.187) (1.781,2.171) (1.798,2.158) (1.814,2.145) (1.831,2.130) (1.849,2.114) (1.868,2.098) (1.886,2.082) (1.903,2.066) (1.919,2.051) (1.936,2.036) (1.952,2.020) (1.968,2.004) (1.984,1.988) (2.001,1.972) (2.017,1.955) (2.033,1.938) (2.049,1.921) (2.065,1.904) (2.081,1.887) (2.095,1.871) (2.110,1.854) (2.124,1.838) (2.138,1.821) (2.155,1.802) (2.171,1.782) (2.184,1.765) (2.197,1.749) (2.212,1.731) (2.228,1.709) (2.241,1.692) (2.253,1.676) (2.268,1.654) (2.281,1.635) (2.293,1.619) (2.309,1.595) (2.319,1.578) (2.333,1.556) (2.345,1.538) (2.358,1.516) (2.369,1.497) (2.382,1.474) (2.391,1.457) (2.404,1.432) (2.414,1.412) (2.424,1.392) (2.436,1.367) (2.447,1.343) (2.455,1.323) (2.463,1.303) (2.472,1.278) (2.481,1.254) (2.489,1.229) (2.496,1.205) (2.504,1.177) (2.510,1.148) (2.515,1.124) (2.520,1.095) (2.523,1.067) (2.526,1.035) (2.527,1.002) (2.526,0.970) (2.524,0.937) (2.520,0.910) (2.514,0.880) (2.508,0.856) (2.501,0.832) (2.492,0.807) (2.481,0.783) (2.471,0.763) (2.460,0.742) (2.447,0.722) (2.433,0.702) (2.421,0.686) (2.406,0.667) (2.390,0.649) (2.374,0.632) (2.358,0.617) (2.341,0.602) (2.325,0.588) (2.304,0.572) (2.285,0.558) (2.268,0.547) (2.245,0.531) (2.228,0.521) (2.204,0.507) (2.187,0.498) (2.163,0.485) (2.142,0.475) (2.122,0.465) (2.098,0.455) (2.074,0.444) (2.049,0.434) (2.027,0.426) (2.005,0.418) (1.982,0.410) (1.958,0.402) (1.933,0.393) (1.906,0.385) (1.879,0.377) (1.854,0.371) (1.830,0.364) (1.806,0.358) (1.781,0.352) (1.750,0.345) (1.725,0.339) (1.700,0.334) (1.673,0.329) (1.643,0.323) (1.619,0.318) (1.587,0.313) (1.562,0.309) (1.533,0.304) (1.505,0.300) (1.476,0.296) (1.449,0.292) (1.416,0.288) (1.392,0.286) (1.359,0.282) (1.335,0.280) (1.303,0.277) (1.270,0.274) (1.242,0.272) (1.213,0.270) (1.181,0.268) (1.148,0.266) (1.116,0.265) (1.083,0.264) (1.059,0.263) (1.027,0.263) (0.994,0.263) (0.962,0.263)};
+\draw[couleurN!45,thick] plot[smooth cycle] coordinates {(0.751,0.166) (0.726,0.168) (0.694,0.170) (0.661,0.174) (0.637,0.176) (0.605,0.181) (0.580,0.184) (0.548,0.190) (0.523,0.195) (0.499,0.201) (0.475,0.208) (0.450,0.215) (0.426,0.224) (0.402,0.234) (0.377,0.246) (0.361,0.256) (0.337,0.272) (0.320,0.285) (0.304,0.299) (0.288,0.316) (0.272,0.337) (0.261,0.353) (0.247,0.375) (0.238,0.393) (0.227,0.418) (0.218,0.442) (0.210,0.467) (0.203,0.491) (0.197,0.515) (0.191,0.545) (0.186,0.572) (0.182,0.596) (0.177,0.629) (0.174,0.653) (0.171,0.686) (0.168,0.718) (0.166,0.745) (0.164,0.775) (0.163,0.807) (0.161,0.840) (0.160,0.872) (0.160,0.905) (0.159,0.937) (0.159,0.970) (0.159,1.002) (0.159,1.035) (0.159,1.067) (0.160,1.100) (0.160,1.132) (0.161,1.165) (0.162,1.197) (0.163,1.229) (0.164,1.262) (0.166,1.294) (0.167,1.319) (0.168,1.351) (0.170,1.384) (0.172,1.416) (0.174,1.449) (0.176,1.473) (0.178,1.505) (0.181,1.538) (0.182,1.563) (0.185,1.595) (0.188,1.627) (0.191,1.656) (0.193,1.684) (0.196,1.716) (0.199,1.741) (0.203,1.773) (0.206,1.806) (0.209,1.830) (0.213,1.863) (0.216,1.887) (0.220,1.919) (0.224,1.944) (0.228,1.976) (0.232,2.001) (0.237,2.033) (0.241,2.057) (0.246,2.090) (0.251,2.114) (0.256,2.142) (0.261,2.171) (0.266,2.195) (0.272,2.225) (0.277,2.252) (0.283,2.276) (0.288,2.301) (0.296,2.333) (0.302,2.358) (0.308,2.382) (0.314,2.406) (0.321,2.431) (0.329,2.458) (0.337,2.485) (0.345,2.511) (0.353,2.536) (0.361,2.560) (0.369,2.583) (0.377,2.606) (0.385,2.627) (0.394,2.650) (0.405,2.674) (0.415,2.698) (0.426,2.722) (0.434,2.739) (0.446,2.763) (0.458,2.786) (0.468,2.804) (0.482,2.828) (0.492,2.845) (0.507,2.867) (0.520,2.885) (0.531,2.902) (0.548,2.923) (0.563,2.942) (0.578,2.958) (0.593,2.974) (0.609,2.991) (0.627,3.007) (0.645,3.023) (0.661,3.036) (0.678,3.048) (0.702,3.064) (0.718,3.074) (0.742,3.087) (0.761,3.096) (0.783,3.106) (0.807,3.115) (0.832,3.123) (0.856,3.129) (0.889,3.136) (0.913,3.140) (0.945,3.144) (0.970,3.146) (1.002,3.146) (1.035,3.145) (1.059,3.144) (1.091,3.140) (1.118,3.137) (1.148,3.131) (1.173,3.127) (1.199,3.121) (1.229,3.113) (1.254,3.106) (1.278,3.098) (1.303,3.090) (1.327,3.081) (1.351,3.072) (1.373,3.064) (1.392,3.056) (1.416,3.045) (1.440,3.035) (1.465,3.023) (1.482,3.015) (1.505,3.003) (1.530,2.991) (1.546,2.982) (1.570,2.969) (1.590,2.958) (1.611,2.947) (1.633,2.934) (1.652,2.923) (1.673,2.910) (1.692,2.898) (1.712,2.885) (1.733,2.872) (1.750,2.861) (1.773,2.845) (1.789,2.834) (1.810,2.820) (1.830,2.806) (1.846,2.795) (1.867,2.780) (1.887,2.765) (1.903,2.753) (1.922,2.739) (1.943,2.723) (1.960,2.710) (1.976,2.697) (1.995,2.682) (2.015,2.666) (2.033,2.652) (2.049,2.638) (2.065,2.625) (2.084,2.609) (2.103,2.593) (2.122,2.577) (2.138,2.563) (2.155,2.548) (2.171,2.534) (2.187,2.519) (2.205,2.504) (2.222,2.487) (2.240,2.471) (2.257,2.455) (2.274,2.439) (2.291,2.423) (2.308,2.406) (2.325,2.390) (2.341,2.374) (2.358,2.358) (2.374,2.341) (2.390,2.325) (2.406,2.309) (2.421,2.293) (2.437,2.276) (2.452,2.260) (2.467,2.244) (2.483,2.228) (2.497,2.212) (2.512,2.195) (2.528,2.178) (2.544,2.159) (2.561,2.141) (2.577,2.122) (2.591,2.106) (2.605,2.090) (2.618,2.074) (2.634,2.055) (2.650,2.035) (2.665,2.017) (2.678,2.001) (2.691,1.984) (2.707,1.964) (2.722,1.944) (2.735,1.927) (2.747,1.911) (2.763,1.889) (2.777,1.871) (2.789,1.854) (2.804,1.833) (2.817,1.814) (2.829,1.798) (2.845,1.774) (2.856,1.757) (2.869,1.737) (2.882,1.716) (2.893,1.699) (2.908,1.676) (2.918,1.660) (2.932,1.635) (2.942,1.619) (2.956,1.595) (2.966,1.576) (2.978,1.554) (2.991,1.530) (2.999,1.514) (3.011,1.489) (3.023,1.465) (3.031,1.448) (3.042,1.424) (3.052,1.400) (3.063,1.376) (3.072,1.352) (3.080,1.331) (3.088,1.308) (3.096,1.284) (3.104,1.258) (3.112,1.230) (3.119,1.205) (3.125,1.181) (3.130,1.156) (3.136,1.124) (3.139,1.100) (3.143,1.067) (3.145,1.043) (3.146,1.010) (3.146,0.978) (3.145,0.954) (3.141,0.921) (3.137,0.891) (3.131,0.864) (3.125,0.840) (3.118,0.816) (3.109,0.791) (3.099,0.767) (3.088,0.745) (3.078,0.726) (3.064,0.702) (3.053,0.686) (3.039,0.666) (3.023,0.646) (3.009,0.629) (2.994,0.613) (2.978,0.596) (2.961,0.580) (2.943,0.564) (2.926,0.550) (2.910,0.537) (2.891,0.523) (2.869,0.508) (2.853,0.498) (2.829,0.483) (2.812,0.473) (2.788,0.459) (2.771,0.450) (2.747,0.438) (2.723,0.426) (2.704,0.418) (2.682,0.408) (2.658,0.398) (2.634,0.388) (2.609,0.379) (2.585,0.370) (2.561,0.361) (2.536,0.353) (2.512,0.345) (2.487,0.337) (2.463,0.330) (2.439,0.323) (2.414,0.316) (2.390,0.310) (2.366,0.304) (2.335,0.296) (2.309,0.290) (2.285,0.285) (2.260,0.279) (2.228,0.272) (2.203,0.267) (2.179,0.263) (2.147,0.256) (2.122,0.252) (2.096,0.247) (2.065,0.242) (2.041,0.238) (2.009,0.233) (1.984,0.230) (1.952,0.225) (1.927,0.222) (1.895,0.217) (1.871,0.214) (1.838,0.210) (1.811,0.207) (1.781,0.203) (1.749,0.200) (1.725,0.197) (1.692,0.194) (1.660,0.191) (1.635,0.189) (1.603,0.186) (1.570,0.183) (1.546,0.181) (1.514,0.179) (1.481,0.176) (1.452,0.174) (1.424,0.173) (1.392,0.171) (1.359,0.169) (1.327,0.167) (1.303,0.166) (1.270,0.165) (1.238,0.163) (1.205,0.162) (1.173,0.161) (1.140,0.160) (1.108,0.160) (1.075,0.159) (1.043,0.159) (1.010,0.159) (0.978,0.159) (0.945,0.159) (0.913,0.159) (0.880,0.160) (0.848,0.161) (0.816,0.162) (0.783,0.164)};
+\draw[couleurD,thick] (2.000,1.000) -- (2.000,1.100) -- (1.980,1.210) -- (1.938,1.329) -- (1.875,1.453) -- (1.790,1.580) -- (1.686,1.705) -- (1.567,1.822) -- (1.438,1.925) -- (1.305,2.010) -- (1.173,2.071) -- (1.048,2.107) -- (0.932,2.117) -- (0.828,2.103) -- (0.736,2.066) -- (0.658,2.012) -- (0.591,1.943) -- (0.535,1.864) -- (0.489,1.777) -- (0.451,1.686) -- (0.420,1.594) -- (0.395,1.501) -- (0.375,1.411) -- (0.360,1.322) -- (0.348,1.238) -- (0.340,1.157) -- (0.335,1.081) -- (0.332,1.009) -- (0.332,0.942) -- (0.334,0.879) -- (0.338,0.820) -- (0.344,0.766) -- (0.352,0.716) -- (0.362,0.669) -- (0.374,0.626) -- (0.388,0.587) -- (0.404,0.551) -- (0.422,0.518) -- (0.442,0.488) -- (0.465,0.461) -- (0.490,0.437) -- (0.518,0.414) -- (0.548,0.394) -- (0.581,0.376) -- (0.617,0.361) -- (0.657,0.347) -- (0.700,0.335) -- (0.746,0.325) -- (0.797,0.317) -- (0.851,0.310) -- (0.910,0.306) -- (0.973,0.303) -- (1.041,0.302) -- (1.113,0.303) -- (1.191,0.307) -- (1.274,0.313) -- (1.361,0.321) -- (1.454,0.333) -- (1.551,0.348) -- (1.652,0.367) -- (1.756,0.391) -- (1.863,0.420) -- (1.971,0.457) -- (2.078,0.501) -- (2.182,0.555) -- (2.279,0.621) -- (2.365,0.700) -- (2.436,0.796) -- (2.486,0.910) -- (2.508,1.045) -- (2.497,1.203) -- (2.446,1.383) -- (2.353,1.583) -- (2.215,1.797) -- (2.039,2.016) -- (1.832,2.225) -- (1.607,2.410) -- (1.381,2.556) -- (1.166,2.654) -- (0.973,2.698) -- (0.808,2.691) -- (0.671,2.639) -- (0.561,2.552) -- (0.474,2.440) -- (0.406,2.312) -- (0.353,2.174) -- (0.311,2.034) -- (0.279,1.894) -- (0.254,1.757) -- (0.235,1.626) -- (0.220,1.502) -- (0.209,1.384) -- (0.201,1.275) -- (0.196,1.173) -- (0.192,1.079) -- (0.191,0.992) -- (0.191,0.911) -- (0.193,0.838) -- (0.196,0.770) -- (0.200,0.708) -- (0.206,0.651) -- (0.213,0.600) -- (0.222,0.552) -- (0.232,0.509) -- (0.243,0.470) -- (0.256,0.435) -- (0.270,0.402) -- (0.286,0.373) -- (0.304,0.346) -- (0.324,0.322) -- (0.346,0.301) -- (0.371,0.281) -- (0.397,0.263) -- (0.426,0.247) -- (0.459,0.233) -- (0.494,0.221) -- (0.532,0.209) -- (0.574,0.200) -- (0.620,0.191) -- (0.670,0.184) -- (0.725,0.178);
+  \end{scope}
+  \fill[rougecours] (1,1) circle (1.4pt);
+  \fill[couleurD] (2,1) circle (1.4pt);
+  \node[couleurD,font=\small,anchor=west] at (3.2,0.45) {Euler, $h = 0{,}1$};
+\end{tikzpicture}
+\end{center}
+
+\noindent Les courbes de niveau de $H$, en bleu, sont les orbites ; celle qui passe par $(2, 1)$ est en trait fort. Le polygone d'Euler de pas $0{,}1$, en orange, part de $(2, 1)$ et s'en écarte en spirale vers l'extérieur : en $120$ pas, $H$ passe de $2{,}307$ à $2{,}952$. La méthode d'Euler suit la tangente, et la tangente d'une courbe fermée convexe sort de la région qu'elle borde : chaque pas fait gagner un peu d'«~énergie~».
+
+\begin{lstlisting}
+import numpy as np
+from scipy.integrate import solve_ivp
+
+F = lambda t, u: np.array([u[0]*(1 - u[1]), u[1]*(u[0] - 1)])
+H = lambda u: u[0] - np.log(u[0]) + u[1] - np.log(u[1])
+
+u = np.array([2.0, 1.0]); h = 0.1      # Euler, 120 pas
+for n in range(120):
+    u = u + h * F(0, u)
+sol = solve_ivp(F, [0, 12], [2.0, 1.0], rtol=1e-10, atol=1e-12)
+print(H(np.array([2.0, 1.0])), H(u), H(sol.y[:, -1]))
+\end{lstlisting}
+
+\noindent Le programme affiche \texttt{2.3068528194400546 2.951675472406177 2.3068528194436313} : le solveur de \texttt{scipy}, présenté à la section 7.8, conserve $H$ à $4 \cdot 10^{-12}$ près sur la même durée.
+
+\subsection{Le portrait de phase de \texorpdfstring{$y' = t + y^{2}$}{y' = t + y\^{}2}}
+
+\noindent Une équation scalaire non autonome $y' = F(t, y)$ se ramène au système autonome $t' = 1$, $y' = F(t, y)$ dans le plan $(t, y)$ : son portrait de phase est le champ de directions accompagné des courbes intégrales. Le programme suivant trace celui de l'équation de Riccati étudiée au chapitre 6, section 6.9 ; la figure obtenue est celle de la section 6.9.
+
+\needspace{16\baselineskip}
+\begin{lstlisting}
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.integrate import solve_ivp
+
+T, Y = np.meshgrid(np.linspace(-4, 4, 17), np.linspace(-3.5, 3.5, 15))
+P = T + Y**2                                    # pente en (t, y)
+N = np.hypot(1, P)
+plt.quiver(T, Y, 1/N, P/N, angles='xy', color='gray')
+stop = lambda t, y: abs(y[0]) - 3.6             # arret hors de la fenetre
+stop.terminal = True
+for y0 in [-3, -2, -1, -0.5, 0, 0.5, 1]:
+    for T1 in [4, -4]:                          # vers la droite, vers la gauche
+        s = solve_ivp(lambda t, y: t + y**2, [0, T1], [y0],
+                      max_step=0.02, events=stop)
+        plt.plot(s.t, s.y[0], 'b')
+plt.ylim(-3.6, 3.6); plt.savefig('riccati.png')
+\end{lstlisting}
+
+\noindent L'option \texttt{events} arrête le calcul quand la solution sort de la fenêtre ; sans elle, le solveur poursuivrait jusqu'à l'explosion et échouerait. Le même outil donne l'instant d'explosion $\beta(y_{0})$ de la solution telle que $y(0) = y_{0}$, en passant à $z = \dfrac{1}{y}$, qui vérifie $z' = -(1 + tz^{2})$ et s'annule à l'instant où $y$ explose.
+
+% ---- beta(y0) : instant d'explosion de y' = t + y^2, y(0) = y0, y0 dans [-3, 3] (solve_ivp, changement z = 1/y a partir de y = 10)
+% ---- beta(0) = 1,98635 ; beta(Ai'(0)/Ai(0) = -0,72901) = 2,33811 ; limite en -infini : 2,66635 (premier zero de u'' + tu = 0, u(0) = 0) (calcules)
+\begin{center}
+\begin{tikzpicture}
+  \begin{axis}[width=11cm,height=4.8cm,xmin=-3.2,xmax=3.2,ymin=0,ymax=3,axis lines=left,
+    xlabel={$y_{0}$},ylabel={$\beta(y_{0})$},label style={font=\small},tick label style={font=\scriptsize,/pgf/number format/use comma},clip=false]
+    \addplot[couleurQ,very thick] coordinates {(-3.000,2.5524) (-2.900,2.5489) (-2.800,2.5453) (-2.700,2.5414) (-2.600,2.5373) (-2.500,2.5328) (-2.400,2.5281) (-2.300,2.5230) (-2.200,2.5176) (-2.100,2.5117) (-2.000,2.5054) (-1.900,2.4985) (-1.800,2.4910) (-1.700,2.4828) (-1.600,2.4739) (-1.500,2.4641) (-1.400,2.4533) (-1.300,2.4413) (-1.200,2.4280) (-1.100,2.4130) (-1.000,2.3962) (-0.900,2.3771) (-0.800,2.3554) (-0.700,2.3305) (-0.600,2.3017) (-0.500,2.2682) (-0.400,2.2290) (-0.300,2.1827) (-0.200,2.1280) (-0.100,2.0630) (0.000,1.9864) (0.100,1.8968) (0.200,1.7943) (0.300,1.6806) (0.400,1.5595) (0.500,1.4363) (0.600,1.3166) (0.700,1.2044) (0.800,1.1023) (0.900,1.0112) (1.000,0.9306) (1.100,0.8597) (1.200,0.7974) (1.300,0.7425) (1.400,0.6941) (1.500,0.6512) (1.600,0.6129) (1.700,0.5787) (1.800,0.5479) (1.900,0.5201) (2.000,0.4949) (2.100,0.4720) (2.200,0.4511) (2.300,0.4319) (2.400,0.4142) (2.500,0.3979) (2.600,0.3828) (2.700,0.3688) (2.800,0.3558) (2.900,0.3437) (3.000,0.3323)};
+    \addplot[gray,densely dashed,domain=-3.2:3.2] {2.66635};
+    \addplot[only marks,mark=*,mark size=1.6pt,rougecours] coordinates {(0,1.98635) (-0.72901,2.33811)};
+    \node[rougecours,font=\small,anchor=west] at (axis cs:0.12,2.05) {$\beta(0) \approx 1{,}986$};
+    \node[rougecours,font=\small,anchor=north east] at (axis cs:-0.8,2.28) {séparatrice};
+    \node[gray,font=\small,anchor=south east] at (axis cs:3.2,2.68) {$2{,}666$};
+  \end{axis}
+\end{tikzpicture}
+\end{center}
+
+\noindent L'instant d'explosion, en violet, décroît avec la valeur initiale : plus on part haut, plus vite la solution part à l'infini. Quand $y_{0} \to +\infty$, $\beta(y_{0}) \sim \dfrac{1}{y_{0}}$, comme pour $y' = y^{2}$ ; quand $y_{0} \to -\infty$, $\beta(y_{0})$ tend vers $2{,}666$, premier zéro positif de la solution de $u'' + tu = 0$ telle que $u(0) = 0$, ce que le lien avec l'équation linéaire du chapitre 6 permet d'établir en exercice.
+%===============================================================================
+\section[Erreur des schémas à un pas]{Majoration de l'erreur des schémas à un pas}
+%===============================================================================
+
+\noindent La démonstration du théorème 1 a deux ingrédients : l'erreur commise sur un pas par la solution exacte, et la façon dont le schéma propage les erreurs. On les isole pour traiter d'un coup tous les schémas des sections suivantes.
+
+\begin{center}
+\begin{tabularx}{15cm}{||X}
+\noindent \textbf{\underline{Définition :}} Soit $h^{*} > 0$ et $\Phi : [t_{0}, T] \times \R^{p} \times [0, h^{*}] \to \R^{p}$ continue. Le \mot{schéma à un pas} associé à $\Phi$ est la récurrence
+\[ \rmath{y_{n + 1} = y_{n} + h\,\Phi(t_{n}, y_{n}, h)}. \]
+Son \mot{erreur de consistance} au rang $n$ est $\tau_{n} = y(t_{n + 1}) - y(t_{n}) - h\,\Phi(t_{n}, y(t_{n}), h)$, où $y$ est la solution exacte. Le schéma est \mot{d'ordre $p$} s'il existe $C$ tel que $\norme{\tau_{n}} \leqslant C h^{p + 1}$ pour tout $h \in \left]0, h^{*}\right]$ et tout $n$. Il est \mot{stable} si $\Phi$ est $\Lambda$-lipschitzienne par rapport à $y$.
+\end{tabularx}
+\end{center}
+
+\noindent La méthode d'Euler correspond à $\Phi(t, y, h) = F(t, y)$ : elle est d'ordre $1$ et stable, de constante $\Lambda = L$. L'erreur de consistance mesure ce que la solution exacte ne vérifie pas dans le schéma ; elle est en $h^{p + 1}$ sur un pas, et l'on va voir qu'elle donne une erreur en $h^{p}$ après les $N = \dfrac{T - t_{0}}{h}$ pas.
+
+\begin{center}
+\begin{tabularx}{15cm}{||X||}
+\hline \\
+\textbf{\underline{\textcolor{rougecours}{Théorème 2 : Consistance et stabilité entraînent la convergence :}}} \\
+Si le schéma est d'ordre $p$ et stable de constante $\Lambda$, alors, pour tout $n \in \intn{0}{N}$,
+\[ \rmath{\norme{y(t_{n}) - y_{n}} \leqslant \ee^{\Lambda(t_{n} - t_{0})}\norme{y(t_{0}) - y_{0}} + \frac{C h^{p}}{\Lambda}\left(\ee^{\Lambda(t_{n} - t_{0})} - 1\right)}. \]
+\medbreak
+\\ \hline
+\end{tabularx}
+\end{center}
+
+\begin{demo}
+On retranche $y(t_{n + 1}) = y(t_{n}) + h\Phi(t_{n}, y(t_{n}), h) + \tau_{n}$ et $y_{n + 1} = y_{n} + h\Phi(t_{n}, y_{n}, h)$ :
+\[ e_{n + 1} \leqslant e_{n} + h\Lambda e_{n} + C h^{p + 1}, \]
+et la proposition 1, avec $\varepsilon = C h^{p + 1}$, donne la majoration.
+\end{demo}
+
+\noindent Le premier terme de la majoration montre aussi que le schéma est peu sensible à une erreur sur la donnée initiale, comme l'équation elle-même (chapitre 6, lemme de Gronwall).
+
+\begin{cadre}
+\propo{6} \emph{(Ordre et dérivées en $h = 0$.)} On suppose $F$ de classe $\Cc^{2}$ et $\Phi$ de classe $\Cc^{2}$, et l'on note $F^{[1]} = \dpd{F}{t} + \dd_{y}F \cdot F$, de sorte que $y'' = F^{[1]}(t, y)$ pour toute solution.
+\begin{enumerate}[label=(\roman*),topsep=3pt,itemsep=3pt]
+  \item Si $\Phi(t, y, 0) = F(t, y)$ pour tous $(t, y)$, le schéma est d'ordre au moins $1$.
+  \item Si de plus $\dpd{\Phi}{h}(t, y, 0) = \dfrac{1}{2}F^{[1]}(t, y)$ pour tous $(t, y)$, il est d'ordre au moins $2$.
+\end{enumerate}
+\end{cadre}
+
+\begin{demo}
+La courbe exacte $\{(t, y(t)), t \in [t_{0}, T]\}$ est compacte ; soit $K$ un voisinage compact de celle-ci. Les dérivées de $y$ jusqu'à l'ordre $3$ et les dérivées de $\Phi$ jusqu'à l'ordre $2$ sur $K \times [0, h^{*}]$ sont bornées. Par la formule de Taylor (chapitre 4, proposition 2), uniformément en $n$,
+\[ y(t_{n + 1}) - y(t_{n}) = h\,F(t_{n}, y(t_{n})) + \frac{h^{2}}{2}F^{[1]}(t_{n}, y(t_{n})) + O(h^{3}), \]
+\[ h\,\Phi(t_{n}, y(t_{n}), h) = h\,\Phi(t_{n}, y(t_{n}), 0) + h^{2}\dpd{\Phi}{h}(t_{n}, y(t_{n}), 0) + O(h^{3}). \]
+Sous (i), la différence $\tau_{n}$ est un $O(h^{2})$ ; sous (ii), les termes en $h^{2}$ se compensent aussi et $\tau_{n} = O(h^{3})$.
+\end{demo}
+
+\begin{remarque}
+\emph{Les erreurs d'arrondi.} En arithmétique flottante, chaque pas ajoute une erreur d'arrondi de l'ordre de la précision machine $\eta$, relativement à $\norme{y_{n}}$. Dans la récurrence de la démonstration du théorème 2, cela revient à remplacer $C h^{p + 1}$ par $C h^{p + 1} + \eta'$, d'où une erreur finale de l'ordre de $C' h^{p} + \dfrac{\eta''}{h}$ : diminuer le pas finit par dégrader le résultat. Le pas optimal est d'autant plus grand que l'ordre est élevé.
+\end{remarque}
+
+% ---- Euler pour y' = y sur [0, 1], N = 10 a 10^6 pas : erreur |y_N - e| en double precision (eta = 1,1e-16) et en simple precision (eta = 6e-8), numpy.float32 (calculees)
+\begin{center}
+\begin{tikzpicture}
+  \begin{loglogaxis}[width=11cm,height=6.2cm,xmin=6e-7,xmax=0.2,ymin=2e-7,ymax=0.3,
+    xlabel={pas $h$},ylabel={erreur en $t = 1$},label style={font=\small},tick label style={font=\scriptsize},clip=false]
+    \addplot[couleurD!45,very thick,mark=*,mark size=1.3pt] coordinates {(1.000e-01,1.245e-01) (3.333e-02,4.396e-02) (1.000e-02,1.347e-02) (3.333e-03,4.517e-03) (1.000e-03,1.358e-03) (3.333e-04,4.529e-04) (1.000e-04,1.359e-04) (3.333e-05,4.530e-05) (1.000e-05,1.359e-05) (3.333e-06,4.530e-06) (1.000e-06,1.359e-06)};
+    \addplot[couleurD,very thick,mark=*,mark size=1.3pt] coordinates {(1.000e-01,1.245e-01) (3.333e-02,4.396e-02) (1.000e-02,1.347e-02) (3.333e-03,4.517e-03) (1.000e-03,1.361e-03) (3.333e-04,4.619e-04) (1.000e-04,1.384e-04) (3.333e-05,4.443e-05) (1.000e-05,4.944e-05) (3.333e-06,3.510e-04) (1.000e-06,1.963e-04)};
+    \node[couleurD!65,font=\small,anchor=north west] at (axis cs:5e-6,2.5e-6) {double précision};
+    \node[couleurD,font=\small,anchor=south west] at (axis cs:1.3e-6,6e-4) {simple précision};
+  \end{loglogaxis}
+\end{tikzpicture}
+\end{center}
+
+\noindent L'erreur de la méthode d'Euler pour $y' = y$ en fonction du pas, en échelles logarithmiques. En double précision, en orange clair, l'erreur décroît comme $h$ sur toute la plage : une droite de pente $1$. En simple précision ($\eta \approx 6 \cdot 10^{-8}$), en orange, elle cesse de décroître vers $h = 3 \cdot 10^{-5}$, où elle vaut $4 \cdot 10^{-5}$, puis remonte de façon irrégulière : les arrondis accumulés sur des centaines de milliers de pas l'emportent.
+%===============================================================================
+\newpage
+\section[Euler modifiée et Heun]{Schémas d'ordre 2 : Euler modifiée et Heun}
+%===============================================================================
+
+\noindent La méthode d'Euler utilise la pente au début du pas, alors que la courbe tourne pendant le pas. Pour corriger, on évalue la pente ailleurs : au milieu du pas, ou aux deux extrémités.
+
+\begin{center}
+\begin{tabularx}{15cm}{||X}
+\noindent \textbf{\underline{Définition :}} La méthode d'\mot{Euler modifiée}, ou du point milieu, et la méthode de \mot{Heun}, ou des trapèzes explicite, sont définies par
+\[ y_{n + 1} = y_{n} + h\,F\Big(t_{n} + \frac{h}{2},\ y_{n} + \frac{h}{2}F(t_{n}, y_{n})\Big) \qquad \text{(Euler modifiée)}, \]
+\[ y_{n + 1} = y_{n} + \frac{h}{2}\Big(F(t_{n}, y_{n}) + F\big(t_{n + 1},\ y_{n} + hF(t_{n}, y_{n})\big)\Big) \qquad \text{(Heun)}. \]
+\end{tabularx}
+\end{center}
+
+\noindent Dans les deux cas, on fait d'abord un pas d'Euler d'essai, de longueur $\dfrac{h}{2}$ ou $h$, pour savoir où évaluer la pente corrigée. Chaque pas coûte deux évaluations de $F$, au lieu d'une.
+
+\begin{cadre}
+\propo{7} Si $F$ est de classe $\Cc^{2}$ et $L$-lipschitzienne par rapport à $y$, les méthodes d'Euler modifiée et de Heun sont d'ordre $2$ et stables, de constante $\Lambda = L\left(1 + \dfrac{h^{*}L}{2}\right)$. Leur erreur est donc un $O(h^{2})$.
+\end{cadre}
+
+\begin{demo}
+\etape{Ordre.} Pour Euler modifiée, la fonction
+\[ \Phi(t, y, h) = F\left(t + \frac{h}{2}, y + \frac{h}{2}F(t, y)\right), \]
+de classe $\Cc^{2}$, vérifie $\Phi(t, y, 0) = F(t, y)$ et, par la règle de la chaîne,
+\[ \dpd{\Phi}{h}(t, y, 0) = \frac{1}{2}\dpd{F}{t}(t, y) + \dd_{y}F(t, y) \cdot \frac{1}{2}F(t, y) = \frac{1}{2}F^{[1]}(t, y). \]
+Pour Heun, $\Phi(t, y, h) = \dfrac{1}{2}\big(F(t, y) + F(t + h, y + hF(t, y))\big)$ vérifie de même $\Phi(t, y, 0) = F(t, y)$ et $\dpd{\Phi}{h}(t, y, 0) = \dfrac{1}{2}\left(\dpd{F}{t} + \dd_{y}F \cdot F\right)(t, y)$. La proposition 6 conclut.
+
+\etape{Stabilité.} Pour Euler modifiée,
+\[ \norme{\Phi(t, y, h) - \Phi(t, z, h)} \leqslant L\Big\|y - z + \frac{h}{2}\big(F(t, y) - F(t, z)\big)\Big\| \leqslant L\left(1 + \frac{hL}{2}\right)\norme{y - z}, \]
+et le calcul est le même pour Heun. Le théorème 2 donne l'erreur en $O(h^{2})$.
+\end{demo}
+
+% ---- y' = y^2, y(0) = 1, solution 1/(1 - t), un pas h = 0,5 : exacte y(0,5) = 2 ; Euler 1,5 ;
+% ---- point milieu : (0,25 ; 1,25), pente 1,5625, y_1 = 1,78125 ; Heun : pente 2,25 en (0,5 ; 1,5), moyenne 1,625, y_1 = 1,8125 (calcules)
+\begin{center}
+\begin{tikzpicture}[x=16cm,y=4.2cm]
+  \draw[gray,->] (-0.02,0.9) -- (0.62,0.9) node[below,font=\small] {$t$};
+  \draw[gray,->] (0,0.88) -- (0,2.15) node[left,font=\small] {$y$};
+  \foreach \k/\l in {0.25/{t_{0} + \frac{h}{2}},0.5/t_{1}} \draw[gray] (\k,0.915) -- (\k,0.885) node[below,font=\scriptsize] {$\l$};
+  \draw[gray] (0,0.915) -- (0,0.885) node[below,font=\scriptsize] {$t_{0}$};
+  \draw[couleurN,very thick,domain=0:0.5,samples=60] plot (\x,{1/(1-\x)});
+  \draw[couleurD,thick] (0,1) -- (0.5,1.5);
+  \fill[couleurD] (0.5,1.5) circle (0.9pt);
+  \fill[couleurZ] (0.25,1.25) circle (0.9pt);
+  \draw[couleurZ,densely dashed] (0.17,1.125) -- (0.33,1.375);
+  \draw[couleurZ,very thick] (0,1) -- (0.5,1.78125);
+  \fill[couleurZ] (0.5,1.78125) circle (0.9pt);
+  \draw[couleurZ!60!black,densely dotted,thick] (0.42,1.32) -- (0.58,1.68);
+  \fill[couleurZ!60!black] (0.5,1.8125) circle (0.9pt);
+  \fill[couleurN] (0.5,2) circle (0.9pt);
+  \node[couleurN,font=\small,anchor=west] at (0.51,2.02) {$y(t_{1}) = 2$};
+  \node[couleurZ!60!black,font=\small,anchor=west] at (0.512,1.845) {Heun : $1{,}8125$};
+  \node[couleurZ,font=\small,anchor=west] at (0.512,1.75) {point milieu : $1{,}781$};
+  \node[couleurD,font=\small,anchor=west] at (0.512,1.48) {Euler : $1{,}5$};
+  \node[couleurZ,font=\small,anchor=north west] at (0.2,1.11) {pente $1{,}5625$ au milieu};
+\end{tikzpicture}
+\end{center}
+
+\noindent Un pas $h = 0{,}5$ pour $y' = y^{2}$, $y(0) = 1$, dont la solution est $\dfrac{1}{1 - t}$. Le pas d'Euler, en orange, suit la pente $1$ du départ. Le point milieu fait un demi-pas d'Euler jusqu'à $(0{,}25 ; 1{,}25)$, y lit la pente $1{,}5625$, en tirets, et refait tout le pas avec cette pente, en vert. Heun fait la moyenne de la pente du départ et de la pente $2{,}25$ au point d'Euler, en pointillés. Les deux schémas d'ordre $2$ divisent ici l'erreur par plus de deux ; la section 7.6 montre jusqu'où l'on peut pousser l'idée.
+%===============================================================================
+\section{Méthodes de Runge-Kutta}
+%===============================================================================
+
+\noindent Les schémas de la section 7.5 évaluent $F$ deux fois par pas. Les méthodes de Runge-Kutta généralisent l'idée : $s$ évaluations, chacune en un point construit à partir des précédentes, puis une moyenne pondérée des pentes obtenues.
+
+\begin{center}
+\begin{tabularx}{15cm}{||X}
+\noindent \textbf{\underline{Définition :}} Soit $s \geqslant 1$, une matrice $(a_{ij})_{1 \leqslant j < i \leqslant s}$ strictement triangulaire inférieure, des poids $b_{1}, \dots, b_{s}$, et $c_{i} = \displaystyle\sum_{j < i} a_{ij}$. La \mot{méthode de Runge-Kutta explicite} à $s$ étages associée calcule, à chaque pas,
+\[ k_{i} = F\Big(t_{n} + c_{i}h,\ y_{n} + h\sum_{j < i} a_{ij}k_{j}\Big) \quad (1 \leqslant i \leqslant s), \qquad y_{n + 1} = y_{n} + h\sum_{i = 1}^{s} b_{i}k_{i}. \]
+On résume la méthode par son \mot{tableau de Butcher}, qui contient les $c_{i}$ en colonne, la matrice $(a_{ij})$ et la ligne des $b_{i}$.
+\end{tabularx}
+\end{center}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.25}
+$\begin{array}{c|c} 0 & \\ \hline & 1 \end{array}$
+\qquad\qquad
+$\begin{array}{c|cc} 0 & & \\ \frac{1}{2} & \frac{1}{2} & \\ \hline & 0 & 1 \end{array}$
+\qquad\qquad
+$\begin{array}{c|cc} 0 & & \\ 1 & 1 & \\ \hline & \frac{1}{2} & \frac{1}{2} \end{array}$
+\qquad\qquad
+$\begin{array}{c|cccc} 0 & & & & \\ \frac{1}{2} & \frac{1}{2} & & & \\ \frac{1}{2} & 0 & \frac{1}{2} & & \\ 1 & 0 & 0 & 1 & \\ \hline & \frac{1}{6} & \frac{1}{3} & \frac{1}{3} & \frac{1}{6} \end{array}$
+\end{center}
+
+\noindent Les tableaux de la méthode d'Euler, d'Euler modifiée, de Heun et de la méthode de Runge-Kutta classique d'ordre $4$, dite RK4. Dans cette dernière, $k_{1}$ est la pente au départ, $k_{2}$ et $k_{3}$ deux pentes au milieu du pas, $k_{4}$ une pente à l'arrivée, et la moyenne $\dfrac{k_{1} + 2k_{2} + 2k_{3} + k_{4}}{6}$ reproduit les poids de la formule de Simpson.
+
+\begin{cadre}
+\propo{8} On suppose $F$ de classe $\Cc^{2}$ et $L$-lipschitzienne par rapport à $y$. Une méthode de Runge-Kutta explicite est stable ; elle est d'ordre au moins $1$ si $\displaystyle\sum_{i} b_{i} = 1$, et d'ordre au moins $2$ si de plus $\displaystyle\sum_{i} b_{i}c_{i} = \frac{1}{2}$.
+\end{cadre}
+
+\begin{demo}
+\etape{Stabilité.} Notons $k_{i}(y)$ et $k_{i}(z)$ les pentes calculées à partir de $y$ et de $z$. Par récurrence sur $i$, $\norme{k_{i}(y) - k_{i}(z)} \leqslant \lambda_{i}\norme{y - z}$, avec $\lambda_{1} = L$ et $\lambda_{i} = L\Big(1 + h^{*}\displaystyle\sum_{j < i}|a_{ij}|\lambda_{j}\Big)$ ; donc $\Phi = \displaystyle\sum_{i} b_{i}k_{i}$ est lipschitzienne en $y$.
+
+\etape{Ordre.} En $h = 0$, tous les $k_{i}$ valent $F(t, y)$, donc $\Phi(t, y, 0) = \Big(\displaystyle\sum_{i} b_{i}\Big)F(t, y)$. En dérivant $k_{i}$ par rapport à $h$ en $h = 0$, par la règle de la chaîne et puisque $k_{j} = F$ en $h = 0$,
+\[ \dpd{k_{i}}{h}\Big|_{h = 0} = c_{i}\dpd{F}{t} + \dd_{y}F \cdot \Big(\sum_{j < i} a_{ij}F\Big) = c_{i}F^{[1]}, \qquad \text{donc} \qquad \dpd{\Phi}{h}(t, y, 0) = \Big(\sum_{i} b_{i}c_{i}\Big)F^{[1]}(t, y). \]
+La proposition 6 conclut.
+\end{demo}
+
+\noindent C'est ici que sert la convention $c_{i} = \displaystyle\sum_{j} a_{ij}$ : elle fait coïncider l'instant où l'on évalue la pente avec la position atteinte. On retrouve que les méthodes d'Euler modifiée ($b_{2}c_{2} = \dfrac{1}{2}$) et de Heun ($b_{2}c_{2} = \dfrac{1}{2}$) sont d'ordre $2$.
+
+\begin{center}
+\begin{tabularx}{15cm}{||X||}
+\hline \\
+\textbf{\underline{\textcolor{rougecours}{Théorème 3 : Runge-Kutta d'ordre 4 :}}} \\
+Si $F$ est de classe $\Cc^{4}$ et lipschitzienne par rapport à $y$, la méthode RK4 est d'ordre $4$ : son erreur est un $O(h^{4})$ sur $[t_{0}, T]$.
+\medbreak
+\\ \hline
+\end{tabularx}
+\end{center}
+
+\begin{demo}
+\emph{Admise.} Le principe est celui de la proposition 8 : on développe $y(t + h)$ et $h\Phi(t, y, h)$ jusqu'à l'ordre $4$ en $h$ et l'on identifie les coefficients. La difficulté est combinatoire : les dérivées successives $y^{(k)}$ s'expriment à l'aide des différentielles d'ordre supérieur de $F$ (chapitre 4), et l'ordre $4$ demande huit conditions sur les coefficients, comme $\displaystyle\sum_{i} b_{i}c_{i}^{2} = \frac{1}{3}$ ou $\displaystyle\sum_{i, j} b_{i}a_{ij}c_{j} = \frac{1}{6}$. Butcher les a organisées en 1963 à l'aide d'arbres ; elles sont toutes vérifiées par le tableau de RK4.
+\end{demo}
+
+\noindent Pour l'équation linéaire $y' = \lambda y$, le calcul se fait à la main, ou avec \texttt{sympy}.
+
+\begin{lstlisting}
+import sympy as sp
+z = sp.symbols('z')                     # z = h*lambda, pour y' = lambda*y
+k1 = 1
+k2 = 1 + z/2*k1
+k3 = 1 + z/2*k2
+k4 = 1 + z*k3
+R = sp.expand(1 + z/6*(k1 + 2*k2 + 2*k3 + k4))   # y_{n+1} = R(z) y_n
+print(R)
+print(sp.series(sp.exp(z) - R, z, 0, 6))
+\end{lstlisting}
+
+\noindent Le programme affiche \texttt{z**4/24 + z**3/6 + z**2/2 + z + 1} puis \texttt{z**5/120 + O(z**6)} : un pas de RK4 multiplie $y_{n}$ par le développement de Taylor de $\ee^{h\lambda}$ à l'ordre $4$, et l'erreur sur un pas est en $h^{5}$, comme l'annonce le théorème.
+
+% ---- y' = -2 t y^2, y(0) = 1 (solution 1/(1 + t^2)), erreur en t = 2 pour h = 0,2 ... 0,00625 (calculees) :
+% ---- Euler 1,42e-2 ... 3,94e-4 ; Heun 2,99e-3 ... 2,54e-6 ; point milieu 1,61e-3 ... 1,29e-6 ; RK4 1,10e-5 ... 9,43e-12
+\begin{center}
+\begin{tikzpicture}
+  \begin{loglogaxis}[width=9.5cm,height=7cm,xmin=0.004,xmax=0.24,ymin=4e-12,ymax=0.05,
+    xlabel={pas $h$},ylabel={erreur en $t = 2$},label style={font=\small},tick label style={font=\scriptsize},clip=false]
+    \addplot[couleurD,very thick,mark=*,mark size=1.3pt] coordinates {(0.2,1.4201e-02) (0.1,6.6581e-03) (0.05,3.2317e-03) (0.025,1.5931e-03) (0.0125,7.9106e-04) (0.00625,3.9418e-04)};
+    \addplot[couleurZ!60!black,very thick,mark=square*,mark size=1.3pt] coordinates {(0.2,2.9884e-03) (0.1,6.9456e-04) (0.05,1.6754e-04) (0.025,4.1163e-05) (0.0125,1.0203e-05) (0.00625,2.5401e-06)};
+    \addplot[couleurZ,very thick,mark=triangle*,mark size=1.5pt] coordinates {(0.2,1.6067e-03) (0.1,3.6399e-04) (0.05,8.6360e-05) (0.025,2.1025e-05) (0.0125,5.1867e-06) (0.00625,1.2881e-06)};
+    \addplot[couleurQ,very thick,mark=diamond*,mark size=1.6pt] coordinates {(0.2,1.0954e-05) (0.1,6.5412e-07) (0.05,3.9711e-08) (0.025,2.4430e-09) (0.0125,1.5144e-10) (0.00625,9.4252e-12)};
+    \node[couleurD,font=\small,anchor=west] at (axis cs:0.26,1.42e-2) {Euler (pente 1)};
+    \node[couleurZ!80!black,font=\small,anchor=west] at (axis cs:0.26,1.9e-3) {Heun, point milieu (pente 2)};
+    \node[couleurQ,font=\small,anchor=west] at (axis cs:0.26,1.1e-5) {RK4 (pente 4)};
+  \end{loglogaxis}
+\end{tikzpicture}
+\end{center}
+
+\noindent L'erreur en $t = 2$ pour $y' = -2ty^{2}$, $y(0) = 1$, dont la solution est $\dfrac{1}{1 + t^{2}}$, en fonction du pas. En échelles logarithmiques, une erreur en $C h^{p}$ est une droite de pente $p$ : on lit les pentes $1$ pour Euler, $2$ pour les deux schémas d'ordre $2$, $4$ pour RK4. À coût égal, quarante évaluations de $F$, Euler ($h = 0{,}05$) commet une erreur de $3{,}2 \cdot 10^{-3}$, Heun ($h = 0{,}1$) de $6{,}9 \cdot 10^{-4}$, et RK4 ($h = 0{,}2$) de $1{,}1 \cdot 10^{-5}$.
+
+\begin{remarque}
+Un ordre élevé n'est un avantage que si la solution est régulière : le théorème 3 suppose $F$ de classe $\Cc^{4}$. Pour une fonction $F$ seulement continue, ou près d'une explosion où les dérivées de $y$ deviennent énormes, la constante $C$ de la majoration devient gigantesque, et c'est le contrôle du pas de la section 7.8 qui sauve le calcul.
+\end{remarque}
+%===============================================================================
+\section[Picard en Python]{La méthode de Picard en Python}
+%===============================================================================
+
+\noindent La méthode de Picard du chapitre 6 (section 6.8) n'est pas un schéma pas à pas : elle améliore à chaque itération une fonction définie sur tout l'intervalle,
+\[ y_{k + 1}(t) = y_{0} + \int_{t_{0}}^{t} F(s, y_{k}(s))\,\dd s. \]
+Au chapitre 6, les itérés de $y' = t + y^{2}$ ont été calculés exactement avec \texttt{sympy} ; leur degré double presque à chaque itération ($2$, $5$, $11$, $23$), et le calcul exact devient vite impraticable. Numériquement, on représente chaque itéré par ses valeurs sur une grille fine, et l'on remplace l'intégrale par la méthode des trapèzes cumulée.
+
+\needspace{13\baselineskip}
+\begin{lstlisting}
+import numpy as np
+from scipy.integrate import solve_ivp, cumulative_trapezoid
+
+t = np.linspace(0, 1.5, 1501)                    # grille de pas 0,001
+F = lambda t, y: t + y**2                        # y' = t + y^2, y(0) = 0
+ref = solve_ivp(F, [0, 1.5], [0], t_eval=t, rtol=1e-12, atol=1e-12).y[0]
+y = np.zeros_like(t)                             # y_0 = 0
+for k in range(1, 13):
+    y = cumulative_trapezoid(F(t, y), t, initial=0)   # y_k = Phi(y_{k-1})
+    print(k, "%.2e" % np.max(np.abs(y - ref)))
+\end{lstlisting}
+
+\noindent Le programme affiche l'écart maximal sur $[0 ; 1{,}5]$ entre le $k$-ième itéré et une solution de référence :
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+\rowcolor{couleurD!35} $k$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$ \\ \hline
+écart & $0{,}66$ & $0{,}28$ & $0{,}10$ & $0{,}030$ & $7{,}5\cdot 10^{-3}$ & $1{,}6\cdot 10^{-3}$ \\ \hline
+\rowcolor{couleurD!35} $k$ & $7$ & $8$ & $9$ & $10$ & $11$ & $12$ \\ \hline
+écart & $2{,}9\cdot 10^{-4}$ & $4{,}5\cdot 10^{-5}$ & $4{,}5\cdot 10^{-6}$ & $1{,}5\cdot 10^{-6}$ & $2{,}2\cdot 10^{-6}$ & $2{,}3\cdot 10^{-6}$ \\ \hline
+\end{tabular}
+\end{center}
+
+\noindent Deux régimes apparaissent. Jusqu'à $k = 9$, l'écart décroît de plus en plus vite, conformément à la majoration en $\dfrac{M L^{k}|t - t_{0}|^{k + 1}}{(k + 1)!}$ du théorème 4 du chapitre 6. Ensuite, il stagne vers $2 \cdot 10^{-6}$ : les itérations convergent vers le point fixe de l'opérateur \emph{discrétisé}, qui diffère de la solution exacte de l'erreur de la méthode des trapèzes, en $O(h^{2})$ avec $h = 10^{-3}$. L'erreur la plus répandue est de croire que poursuivre les itérations améliore indéfiniment le résultat : au-delà d'un certain rang, seule une grille plus fine le peut.
+
+\begin{remarque}
+La méthode de Picard est surtout un outil théorique. Chaque itération coûte autant qu'un calcul complet par un schéma à un pas, et elle ne converge que sur un intervalle où l'opérateur est contractant, ou dont une itérée l'est : près d'une explosion, comme ici après $t = 1{,}5$, elle devient inutilisable. Les schémas des sections 7.2 à 7.6 avancent au contraire pas à pas, et s'adaptent localement à la solution.
+\end{remarque}
+%===============================================================================
+\section[Les solveurs de scipy]{Équations différentielles avec \texttt{scipy}}
+%===============================================================================
+
+\noindent En pratique, on n'écrit pas soi-même la méthode de Runge-Kutta : la fonction \texttt{solve\_ivp} du module \texttt{scipy.integrate} résout le problème de Cauchy $y' = F(t, y)$, $y(t_{0}) = y_{0}$, avec plusieurs méthodes au choix. Deux idées la distinguent des schémas à pas fixe étudiés jusqu'ici.
+
+\subsection{Le contrôle automatique du pas}
+
+\noindent La méthode par défaut, \texttt{RK45}, est celle de Dormand et Prince (1980). Elle calcule à chaque pas, avec les mêmes évaluations de $F$, deux approximations : l'une d'ordre $5$, l'autre d'ordre $4$. Leur différence estime l'erreur locale ; si elle dépasse la tolérance $\texttt{atol} + \texttt{rtol}\cdot\norme{y_{n}}$, le pas est refusé et recommencé plus court, sinon il est accepté et le pas suivant est ajusté en conséquence. Le pas devient ainsi petit là où la solution varie vite, et grand ailleurs.
+
+% ---- pas acceptes par solve_ivp (RK45, rtol = 1e-6, atol = 1e-9) pour y' = t + y^2, y(0) = 0, arrete quand y = 1000 (t = 1,98535) :
+% ---- 54 pas, 608 evaluations de F (calcules)
+\begin{center}
+\begin{tikzpicture}
+  \begin{semilogyaxis}[width=11.5cm,height=4.8cm,xmin=0,xmax=2.08,ymin=5e-5,ymax=0.5,
+    xlabel={$t$},ylabel={pas $h$},label style={font=\small},tick label style={font=\scriptsize,/pgf/number format/use comma},clip=false]
+    \addplot[couleurQ,only marks,mark=*,mark size=1.3pt] coordinates {(0.0000,0.00010) (0.0001,0.00100) (0.0011,0.01000) (0.0111,0.09905) (0.1102,0.14502) (0.2552,0.19964) (0.4548,0.24911) (0.7039,0.22705) (0.9310,0.17644) (1.1074,0.13996) (1.2474,0.11364) (1.3610,0.09372) (1.4547,0.07819) (1.5329,0.06577) (1.5987,0.05566) (1.6544,0.04731) (1.7017,0.04034) (1.7420,0.03447) (1.7765,0.02952) (1.8060,0.02531) (1.8313,0.02172) (1.8530,0.01865) (1.8717,0.01603) (1.8877,0.01378) (1.9015,0.01185) (1.9133,0.01019) (1.9235,0.00877) (1.9323,0.00754) (1.9398,0.00649) (1.9463,0.00558) (1.9519,0.00480) (1.9567,0.00413) (1.9608,0.00356) (1.9644,0.00306) (1.9674,0.00264) (1.9701,0.00227) (1.9723,0.00195) (1.9743,0.00168) (1.9760,0.00145) (1.9774,0.00124) (1.9787,0.00107) (1.9797,0.00092) (1.9807,0.00079) (1.9815,0.00068) (1.9821,0.00059) (1.9827,0.00051) (1.9832,0.00044) (1.9837,0.00037) (1.9840,0.00032) (1.9844,0.00028) (1.9846,0.00024) (1.9849,0.00021) (1.9851,0.00018) (1.9853,0.00009)};
+    \addplot[rougecours,densely dashed] coordinates {(1.98635,5e-5) (1.98635,0.5)};
+    \node[rougecours,font=\small,anchor=south east] at (axis cs:1.975,0.15) {explosion};
+  \end{semilogyaxis}
+\end{tikzpicture}
+\end{center}
+
+\noindent Les pas acceptés par \texttt{RK45} pour $y' = t + y^{2}$, $y(0) = 0$, avec $\texttt{rtol} = 10^{-6}$. Après une phase de démarrage prudente, le pas atteint $0{,}25$ là où la solution est presque plate, puis diminue régulièrement à l'approche de l'explosion en $t \approx 1{,}986$, mise en évidence au chapitre 6 : il est divisé par plus de mille entre $t = 0{,}5$ et $t = 1{,}985$, où l'on arrête le calcul ($y = 1\,000$).
+
+\subsection{Événements et équations raides}
+
+\noindent Le programme suivant utilise ces deux possibilités : un \emph{événement}, fonction qui arrête le calcul quand elle s'annule, et le choix d'une méthode implicite.
+
+\begin{lstlisting}
+import numpy as np
+from scipy.integrate import solve_ivp
+
+grand = lambda t, y: y[0] - 1e8                  # y' = t + y^2 : explosion
+grand.terminal = True
+s = solve_ivp(lambda t, y: t + y**2, [0, 3], [0.0], method='RK45',
+              rtol=1e-10, atol=1e-12, events=grand)
+print(s.t_events[0][0], s.nfev)
+
+F = lambda t, y: -1000 * (y - np.cos(t))         # equation raide
+exacte = (1e6*np.cos(1) + 1e3*np.sin(1) - 1e6*np.exp(-1000)) / (1e6 + 1)
+for m in ['RK45', 'Radau']:
+    s = solve_ivp(F, [0, 1], [0.0], method=m, rtol=1e-6, atol=1e-9)
+    print(m, s.nfev, len(s.t) - 1, "%.1e" % abs(s.y[0, -1] - exacte))
+\end{lstlisting}
+
+\noindent Le programme affiche
+\begin{verbatim}
+1.9863526974598136 4856
+RK45 2270 378 2.0e-07
+Radau 422 57 9.1e-10
+\end{verbatim}
+
+\noindent La première ligne donne l'instant où $y$ atteint $10^{8}$ ; comme $y(t) \approx \dfrac{1}{\beta - t}$ près de l'explosion, il précède $\beta$ d'environ $10^{-8}$, et l'on retrouve $\beta \approx 1{,}986\,35$, valeur obtenue au chapitre 6. Il faut cependant près de cinq mille évaluations de $F$ : la tolérance est exigeante et la fin du parcours difficile.
+
+\noindent Les deux dernières lignes concernent $y' = -1\,000\,(y - \cos t)$, $y(0) = 0$, dont la solution exacte, calculée par variation de la constante, rejoint dès $t \approx 0{,}005$ la courbe $\dfrac{10^{6}\cos t + 10^{3}\sin t}{10^{6} + 1}$, très proche de $\cos t$, et la suit ensuite. La solution est lisse, et pourtant \texttt{RK45} a besoin de $378$ pas : comme pour la méthode d'Euler explicite et la proposition 2, la stabilité d'un schéma explicite impose $h\lambda$ borné, ici $h \lesssim 3 \cdot 10^{-3}$ avec $\lambda = 1\,000$, quelle que soit la régularité de la solution. Une telle équation est dite \mot{raide}, terme dû à Curtiss et Hirschfelder (1952). La méthode \texttt{Radau}, de Runge-Kutta \emph{implicite}, n'a pas cette contrainte, comme la méthode d'Euler implicite : elle fait $57$ pas, cinq fois moins d'évaluations de $F$, et une erreur deux cents fois plus petite.
+
+\begin{remarque}
+Le choix de la méthode se fait donc selon l'équation. Pour une équation non raide, \texttt{RK45}, ou \texttt{DOP853} si l'on veut une grande précision ; pour une équation raide, ce que révèle un nombre de pas anormalement élevé pour une solution lisse, \texttt{Radau}, \texttt{BDF} ou \texttt{LSODA}, qui choisit automatiquement.
+\end{remarque}
+%===============================================================================
+\section{Bilan}
+%===============================================================================
+
+\noindent Un schéma numérique se juge sur trois critères : son ordre, qui fixe la vitesse de convergence quand le pas tend vers $0$ ; sa stabilité, qui dit si les erreurs commises à chaque pas restent maîtrisées ; son coût, mesuré en évaluations de $F$. Le théorème 2 relie les deux premiers à l'erreur finale.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.35}
+\begin{tabularx}{15cm}{|>{\raggedright\arraybackslash}p{3.6cm}|>{\centering\arraybackslash}p{1.4cm}|>{\centering\arraybackslash}p{2.2cm}|>{\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{couleurD!35} \textbf{Méthode} & \textbf{Ordre} & \textbf{Évaluations par pas} & \textbf{Référence et commentaire} \\ \hline
+Euler explicite & $1$ & $1$ & théorème 1 ; instable si $h\lambda > 2$ (proposition 2) \\ \hline
+Euler implicite & $1$ & une équation & stable pour tout pas (proposition 2) \\ \hline
+Euler modifiée, Heun & $2$ & $2$ & proposition 7 \\ \hline
+Runge-Kutta explicite & $1$, $2$\ldots & $s$ & ordre $2$ si $\sum_{i} b_{i}c_{i} = \frac{1}{2}$ (proposition 8) \\ \hline
+RK4 & $4$ & $4$ & théorème 3 (admis) \\ \hline
+\texttt{RK45} (\texttt{scipy}) & $5$ et $4$ & $6$ & pas adaptatif, section 7.8 \\ \hline
+\texttt{Radau} (\texttt{scipy}) & $5$ & implicite & équations raides, section 7.8 \\ \hline
+Picard discrétisé & & & convergence limitée par la quadrature, section 7.7 \\ \hline
+\end{tabularx}
+\end{center}
+
+\begin{center}
+\begin{tikzpicture}[q/.style={draw=couleurN,fill=couleurN!8,rounded corners=3pt,align=center,font=\small,minimum height=1.05cm,text width=2.7cm},
+  fl/.style={-{Stealth},thick,gray}]
+  \node[q] (T) at (0,0) {Taylor\\ (chapitre 4)};
+  \node[q] (G) at (0,-1.9) {Gronwall discret\\ (proposition 1)};
+  \node[q] (C) at (4.4,0) {consistance\\ d'ordre $p$};
+  \node[q] (S) at (4.4,-1.9) {stabilité\\ ($\Phi$ lipschitzienne)};
+  \node[q] (E) at (8.8,-0.95) {erreur en $O(h^{p})$\\ (théorème 2)};
+  \draw[fl] (T) -- (C); \draw[fl] (G) -- (S);
+  \draw[fl] (C) -- (E); \draw[fl] (S) -- (E);
+\end{tikzpicture}
+\end{center}
+
+\noindent Le schéma rappelle la structure commune de toutes les démonstrations de convergence du chapitre : la formule de Taylor du chapitre 4 mesure l'erreur sur un pas, le lemme de Gronwall discret contrôle sa propagation, et leur réunion donne l'erreur globale. C'est la version discrète du raisonnement d'unicité du chapitre 6.
+
+\medskip
+\noindent Ce chapitre clôt l'unité de calcul différentiel : les outils du chapitre 1 (complétude, point fixe, compacité), la différentielle et la formule de Taylor des chapitres 2 à 4 y servent tous, pour démontrer l'existence des solutions au chapitre 6 puis pour les calculer ici.
+
+\end{document}

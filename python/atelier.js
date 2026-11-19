@@ -69,6 +69,7 @@ const CSS = `
 .at-vide { color: var(--encre-3); font: italic 13px var(--f-ui); padding: 4px 0; }
 .at-sortie { font: 13.5px/1.5 var(--f-mono); padding: 2px 10px 0; white-space: pre-wrap; word-break: break-word; max-height: 260px; overflow-y: auto; min-height: 3em; }
 .at-sortie .meta { color: var(--encre-3); }
+.at-sortie .at-figure { display: block; max-width: 100%; height: auto; margin: 6px 0; background: #fff; border-radius: 6px; }
 .at-sortie .err { color: var(--at-rouge); }
 .at-sortie .aide { color: var(--encre); font-family: var(--f-ui); font-size: 13.5px; display: block; margin: 2px 0 4px;
   border-left: 3px solid var(--at-rouge); padding: 2px 8px; background: color-mix(in srgb, var(--at-rouge) 7%, transparent); }
@@ -131,6 +132,7 @@ const Python = {
         if (m.type === 'pret') { this.version = m.version; ok(); }
         else if (m.type === 'echec') ko(new Error(m.message));
         else if (m.type === 'sortie') this.ateliers.get(m.wid)?.ecrire(m.texte);
+        else if (m.type === 'image') this.ateliers.get(m.wid)?.image(m.png);
         else if (m.type === 'fin') { const f = this.attentes.get(m.id); this.attentes.delete(m.id); this.occupe = null; f?.(m.resultat); }
       };
       this.worker.onerror = (e) => ko(new Error(e.message || 'Le worker Python n\'a pas pu démarrer.'));
@@ -272,6 +274,11 @@ class Atelier {
     this.poser();
     const sp = document.createElement('span'); sp.className = cl; sp.textContent = texte; this.sortie.append(sp); this.taille = (this.taille || 0) + texte.length;
     this.sortie.scrollTop = this.sortie.scrollHeight;
+  }
+  image(png) {   // figure matplotlib, posée dans la console à la suite de l'affichage
+    this.poser();
+    const im = document.createElement('img'); im.className = 'at-figure'; im.alt = 'Figure produite par le programme'; im.src = 'data:image/png;base64,' + png;
+    this.sortie.append(im); im.onload = () => { this.sortie.scrollTop = this.sortie.scrollHeight; };
   }
   poser() {
     if (this.rafId) { cancelAnimationFrame(this.rafId); this.rafId = 0; }

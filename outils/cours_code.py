@@ -20,23 +20,28 @@ import pdfplumber, yaml
 
 SORTIE = 'outils/cours-code.json'
 FOND = (0.961, 0.961, 0.961)
-SOURCES = {'py-01': 'outils/sources-cours/python_chap01.tex'}
+# Cours dont les exemples de code s'essaient dans l'atelier : source LaTeX, environnement des blocs exécutables,
+# couleur de fond de ces blocs dans le PDF.
+SOURCES = {
+    'py-01': {'tex': 'outils/sources-cours/python_chap01.tex', 'env': 'python', 'fond': FOND},
+    'l3-cd-07': {'tex': 'outils/sources-cours/l3_calcul_differentiel_chap07.tex', 'env': 'lstlisting', 'fond': (0.98, 0.98, 0.98)},
+}
 
 
-def blocs_tex(chemin):
+def blocs_tex(chemin, env='python'):
     t = open(chemin, encoding='utf-8').read()
     t = t[re.search(r'(?m)^\\begin\{document\}', t).end():]
-    return [re.sub(r'^\[[^\]]*\]', '', m.group(1)).strip('\n') for m in re.finditer(r'\\begin\{python\}(.*?)\\end\{python\}', t, re.S)]
+    return [re.sub(r'^\[[^\]]*\]', '', m.group(1)).strip('\n') for m in re.finditer(r'\\begin\{' + env + r'\}(.*?)\\end\{' + env + r'\}', t, re.S)]
 
 
-def zones_pdf(chemin):
+def zones_pdf(chemin, fond=FOND):
     out = []
     with pdfplumber.open(chemin) as pdf:
         for i, p in enumerate(pdf.pages):
             bandes = []
             for r in p.rects:
                 c = r.get('non_stroking_color')
-                if isinstance(c, (list, tuple)) and len(c) == 3 and tuple(round(x, 3) for x in c) == FOND and r['width'] > 50:
+                if isinstance(c, (list, tuple)) and len(c) == 3 and tuple(round(x, 3) for x in c) == fond and r['width'] > 50:
                     bandes.append(r)
             bandes.sort(key=lambda r: r['top'])
             cur = None
@@ -59,10 +64,10 @@ def sans_blanc(s):
 
 
 def traiter(c):
-    codes = blocs_tex(c['tex'])
+    codes = blocs_tex(c['tex'], c['env'])
     normes = [sans_blanc(x) for x in codes]
     zones, k, rest = [], 0, ''
-    for z in zones_pdf(c['pdf']):
+    for z in zones_pdf(c['pdf'], c['fond']):
         t = sans_blanc(z['texte'])
         if not t or z['page'] == 1: continue      # page de titre : le code y est un décor
         trouve = None
@@ -95,7 +100,7 @@ def empreinte(*chemins):
 
 def main():
     ids = set(sys.argv[1:])
-    cours = [dict(c, tex=SOURCES[c['id']]) for c in yaml.safe_load(open('rubriques/cours.yaml', encoding='utf-8'))['cours'] if c['id'] in SOURCES and c.get('pdf')]
+    cours = [dict(c, **SOURCES[c['id']]) for c in yaml.safe_load(open('rubriques/cours.yaml', encoding='utf-8'))['cours'] if c['id'] in SOURCES and c.get('pdf')]
     try: res = json.load(open(SORTIE, encoding='utf-8'))
     except FileNotFoundError: res = {}
     for c in cours:

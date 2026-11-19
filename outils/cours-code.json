@@ -1,4 +1,65 @@
 {
+ "l3-cd-07": {
+  "codes": [
+   "import numpy as np\n\ndef euler(F, t0, y0, T, N):\n    \"\"\"Methode d'Euler : N pas de longueur h = (T - t0)/N.\"\"\"\n    h = (T - t0) / N\n    t, y = t0, np.array(y0, dtype=float)\n    for n in range(N):\n        y = y + h * F(t, y)\n        t = t + h\n    return y\n\nF = lambda t, y: y                       # y' = y, y(0) = 1\nfor N in [10, 100, 1000]:\n    yN = euler(F, 0, [1.0], 1, N)[0]\n    print(N, yN, np.e - yN)",
+   "import numpy as np\nfrom scipy.integrate import solve_ivp\n\nF = lambda t, u: np.array([u[0]*(1 - u[1]), u[1]*(u[0] - 1)])\nH = lambda u: u[0] - np.log(u[0]) + u[1] - np.log(u[1])\n\nu = np.array([2.0, 1.0]); h = 0.1      # Euler, 120 pas\nfor n in range(120):\n    u = u + h * F(0, u)\nsol = solve_ivp(F, [0, 12], [2.0, 1.0], rtol=1e-10, atol=1e-12)\nprint(H(np.array([2.0, 1.0])), H(u), H(sol.y[:, -1]))",
+   "import numpy as np\nimport matplotlib.pyplot as plt\nfrom scipy.integrate import solve_ivp\n\nT, Y = np.meshgrid(np.linspace(-4, 4, 17), np.linspace(-3.5, 3.5, 15))\nP = T + Y**2                                    # pente en (t, y)\nN = np.hypot(1, P)\nplt.quiver(T, Y, 1/N, P/N, angles='xy', color='gray')\nstop = lambda t, y: abs(y[0]) - 3.6             # arret hors de la fenetre\nstop.terminal = True\nfor y0 in [-3, -2, -1, -0.5, 0, 0.5, 1]:\n    for T1 in [4, -4]:                          # vers la droite, vers la gauche\n        s = solve_ivp(lambda t, y: t + y**2, [0, T1], [y0],\n                      max_step=0.02, events=stop)\n        plt.plot(s.t, s.y[0], 'b')\nplt.ylim(-3.6, 3.6); plt.savefig('riccati.png')",
+   "import sympy as sp\nz = sp.symbols('z')                     # z = h*lambda, pour y' = lambda*y\nk1 = 1\nk2 = 1 + z/2*k1\nk3 = 1 + z/2*k2\nk4 = 1 + z*k3\nR = sp.expand(1 + z/6*(k1 + 2*k2 + 2*k3 + k4))   # y_{n+1} = R(z) y_n\nprint(R)\nprint(sp.series(sp.exp(z) - R, z, 0, 6))",
+   "import numpy as np\nfrom scipy.integrate import solve_ivp, cumulative_trapezoid\n\nt = np.linspace(0, 1.5, 1501)                    # grille de pas 0,001\nF = lambda t, y: t + y**2                        # y' = t + y^2, y(0) = 0\nref = solve_ivp(F, [0, 1.5], [0], t_eval=t, rtol=1e-12, atol=1e-12).y[0]\ny = np.zeros_like(t)                             # y_0 = 0\nfor k in range(1, 13):\n    y = cumulative_trapezoid(F(t, y), t, initial=0)   # y_k = Phi(y_{k-1})\n    print(k, \"%.2e\" % np.max(np.abs(y - ref)))",
+   "import numpy as np\nfrom scipy.integrate import solve_ivp\n\ngrand = lambda t, y: y[0] - 1e8                  # y' = t + y^2 : explosion\ngrand.terminal = True\ns = solve_ivp(lambda t, y: t + y**2, [0, 3], [0.0], method='RK45',\n              rtol=1e-10, atol=1e-12, events=grand)\nprint(s.t_events[0][0], s.nfev)\n\nF = lambda t, y: -1000 * (y - np.cos(t))         # equation raide\nexacte = (1e6*np.cos(1) + 1e3*np.sin(1) - 1e6*np.exp(-1000)) / (1e6 + 1)\nfor m in ['RK45', 'Radau']:\n    s = solve_ivp(F, [0, 1], [0.0], method=m, rtol=1e-6, atol=1e-9)\n    print(m, s.nfev, len(s.t) - 1, \"%.1e\" % abs(s.y[0, -1] - exacte))"
+  ],
+  "sha": "e253dcdae2d5f801a19e58e30eda3a04e5cbce61eff6a8febdde887dee5700b4",
+  "zones": [
+   {
+    "b": 0,
+    "h": 0.1953,
+    "p": 3,
+    "w": 0.7619,
+    "x": 0.119,
+    "y": 0.665
+   },
+   {
+    "b": 1,
+    "h": 0.1432,
+    "p": 6,
+    "w": 0.7619,
+    "x": 0.119,
+    "y": 0.557
+   },
+   {
+    "b": 2,
+    "h": 0.2083,
+    "p": 7,
+    "w": 0.7619,
+    "x": 0.119,
+    "y": 0.0532
+   },
+   {
+    "b": 3,
+    "h": 0.1172,
+    "p": 11,
+    "w": 0.7619,
+    "x": 0.119,
+    "y": 0.1693
+   },
+   {
+    "b": 4,
+    "h": 0.1302,
+    "p": 12,
+    "w": 0.7619,
+    "x": 0.119,
+    "y": 0.0532
+   },
+   {
+    "b": 5,
+    "h": 0.1822,
+    "p": 13,
+    "w": 0.7619,
+    "x": 0.119,
+    "y": 0.1102
+   }
+  ]
+ },
  "py-01": {
   "codes": [
    "def bonjour(nom):\n    return \"Bonjour \" + nom + \" !\"\n\nfor eleve in classe:\n    print(bonjour(eleve))",

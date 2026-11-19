@@ -924,10 +924,21 @@ ordre supérieur et Taylor ; extrema libres et liés ; équations différentiell
 Exercices à venir. « À revoir avant » n'est pas posé par chapitre (la table `PRECEDENT`, domaine apparence, n'a pas
 `l3`) : prérequis au niveau de l'UE (mp-04, mp-05, mp-17). Termes écartés : fragments et formes tronquées
 (« -difféomorphisme », « -ième dérivée partielle »…), par chapitre. Le chapitre 7 contient du Python (`lstlisting`) :
-les boutons « Essayer » de `cours_code.py` ne sont pas posés (sources non rangées dans `outils/sources-cours/`).
+boutons « Essayer » posés le 19 nov. (voir « Atelier dans la Licence » plus bas).
 Symboles validés le 19 nov. : repris `ouvert` (ch. 1, comme mp-04), `tangente` (ch. 2), `dl` (ch. 4), `tangence` (ch. 5, comme mp-17), `champdir` (ch. 6, comme mp-16) ; nouveaux `hyperplan` (ch. 3 : disque {g ≤ 0}, droite tangente et gradient normal au point, calculés) et `euler` (ch. 7 : y = e^t sur [0, 2] et polygone d'Euler de pas 0,5, de 1 à 1,5⁴ ≈ 5,06).
 
 ## Note de la conversation « À propos – apparence » (19 nov. 2026) : ordre des niveaux, couleur des UE
 
 À la demande de l'auteur (détail : `MEMO_atlas_apropos.md` §87). Dans `rubriques/cours.yaml`, `l3` est désormais placé avant `master` ; l'accueil range dans « À l'université » tout niveau dont l'identifiant est `l1`, `l2`, `l3`…, `m1`, `m2` ou `master`, pourvu qu'il soit placé entre le dernier niveau de prépa et `python` : garder ces identifiants et cet ordre pour les niveaux à venir. Une UE prend la couleur de la famille de l'édifice la plus représentée parmi les `theories` de ses chapitres (`couleurUE` du gabarit) ; champ facultatif `couleur` (nom de famille : `ana`, `alg`, `geo`…) pour forcer. « À revoir avant » : un chapitre de `l3` peut citer `ma` et `mp` ; un cours de `master`, `ma`, `mp` et `l3`.
 
+**Atelier dans la Licence (19 nov.).** Un chapitre de n'importe quel niveau reçoit les boutons « Essayer » et la carte
+« Atelier Python » s'il porte `atelier: true` (l3-cd-07). `outils/cours_code.py` : `SOURCES` donne pour chaque cours
+la source (`outils/sources-cours/`), l'environnement des blocs (`python` ou `lstlisting`) et la couleur de fond des
+blocs dans le PDF (`fondcode` 0,961 pour py-01, `backcolour` 0,98 pour l3-cd-07) ; les numéros de ligne de listings
+sont hors du fond, donc hors des zones. l3-cd-07 : 6 blocs, 6 zones, tous exécutés avec CPython avant dépôt.
+Bibliothèques : ces blocs importent numpy, scipy, matplotlib, sympy, absents du cœur de Pyodide hébergé (13 Mo). Le
+worker (`bibliotheques`) les charge à la demande par `loadPackagesFromImports`, avec `packageBaseUrl` =
+`https://cdn.jsdelivr.net/pyodide/v314.0.6/full/` (même version que `vendor/`), en annonçant « [Chargement de NumPy…] »,
+ou « [Téléchargement impossible…] » sans réseau. Matplotlib passe en Agg, `plt.show` ne fait rien, et les figures
+ouvertes après l'exécution sont envoyées en PNG (message `image`, `Atelier.image`, classe `.at-figure`). Le CDN n'est
+pas joignable depuis l'environnement de travail : le chargement réel n'a pu être vérifié qu'en ligne.
