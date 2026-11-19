@@ -943,6 +943,10 @@ ou « [Téléchargement impossible…] » sans réseau. Matplotlib passe en Agg,
 ouvertes après l'exécution sont envoyées en PNG (message `image`, `Atelier.image`, classe `.at-figure`). Le CDN n'est
 pas joignable depuis l'environnement de travail : le chargement réel n'a pu être vérifié qu'en ligne.
 
+**19 nov., soir : chapitres 1 à 7 révisés.** Retouches de rédaction (`\noindent` retirés, quatre phrases
+reformulées, macros `\dpd` et `\Isom` ajoutées au préambule) ; pages et sommaires inchangés, termes identiques ;
+cours complet refusionné (108 p.), source du chapitre 7 et zones de code (`cours_code.py l3-cd-07`) mises à jour.
+
 ### 56. Feuilles d'exercices de la Licence 3 (19 nov. 2026)
 
 Sept feuilles `f-l3-cd-01` à `f-l3-cd-07` (35, 58, 33, 19, 17, 33 et 17 exercices : 212), converties par
