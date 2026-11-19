@@ -1510,6 +1510,34 @@ a.acc-etape:hover { background: var(--trame); }
 .cours-lies .cl-lieu { display: block; font-size: 12px; color: var(--encre-2); letter-spacing: .02em; }
 .cours-lie .cl-titre { text-decoration: underline; text-decoration-color: var(--encre-3); text-underline-offset: 3px; }
 .cours-lie:hover .cl-titre { text-decoration-color: currentColor; }
+/* Cours : niveaux de Licence rangés par semestre et par UE (clé ues de rubriques/cours.yaml) */
+.semestre { margin: 0 0 22px; }
+.semestre-titre { font-family: var(--f-titre); font-size: 17px; font-weight: 600; margin: 18px 0 10px; color: var(--encre-2); letter-spacing: .02em; text-transform: uppercase; }
+.ue { margin: 0 0 16px; }
+.ue-tete { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; gap: 4px 12px; align-items: center; cursor: pointer; list-style: none; padding: 10px 14px; margin: 0 0 6px; border: 1px solid var(--filet); border-left: 4px solid var(--accent, currentColor); border-radius: 10px; text-decoration: none; color: inherit; background: var(--carte, transparent); }
+.ue-tete:hover { background: var(--papier); }
+.ue-code { font-size: 12.5px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--encre-2); }
+.ue-titre { font-family: var(--f-titre); font-size: 19px; font-weight: 600; }
+.ue-info { font-size: 13px; color: var(--encre-2); white-space: nowrap; }
+.ue-tete::-webkit-details-marker { display: none; }
+.ue-chevron { width: 9px; height: 9px; border-right: 2px solid var(--encre-2); border-bottom: 2px solid var(--encre-2); transform: rotate(45deg); margin: -4px 4px 0 6px; transition: transform .15s; }
+details.ue[open] .ue-chevron { transform: rotate(-135deg); margin-top: 4px; }
+details.ue[open] > .ue-tete { border-bottom-left-radius: 10px; }
+.ue-corps { padding: 2px 0 0; }
+.ue-lien { display: inline-block; margin: 2px 0 8px 18px; font-size: 13.5px; color: var(--accent, inherit); }
+.ue-vide { display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; padding: 10px 14px; opacity: .75; }
+.ue-actions { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 18px; }
+.ue-grille { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 18px; align-items: start; }
+.ue-grille aside { display: grid; gap: 14px; }
+.ue-grille aside .carte { padding: 14px 16px; }
+.ue-plan { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; counter-reset: ch; }
+.ue-plan a { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 8px; padding: 5px 8px; border-radius: 7px; text-decoration: none; color: inherit; font-size: 14px; line-height: 1.35; }
+.ue-plan a:hover { background: var(--papier); }
+.ue-plan a[aria-current] { background: var(--papier); font-weight: 600; }
+.ue-plan .n { color: var(--encre-2); text-align: right; }
+.ue-ariane { color: inherit; }
+.ue-boutons { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+@media (max-width: 860px) { .ue-grille { grid-template-columns: minmax(0, 1fr); } .ue-tete { grid-template-columns: minmax(0, 1fr) auto; } .ue-tete .ue-code { grid-column: 1 / -1; } .ue-tete .ue-info { grid-column: 1; } .ue-tete .ue-chevron { grid-column: 2; grid-row: 2 / 4; } }
 .voisins { display: flex; justify-content: space-between; gap: 12px; margin-top: 20px; font-size: 13.5px; }
 .voisins a { color: var(--encre-2); text-decoration: none; }
 .voisins a:hover { color: var(--encre); }
@@ -4285,6 +4313,8 @@ function pageCours(chemin) {
     const c = tous.find(x => x.id === chemin);
     if (c) return pageChapitre(c, tous);
   }
+  const mUE = /^ue\/(.+)$/.exec(chemin || '');
+  if (mUE) { const u = (C.ues || []).find(x => x.id === mUE[1]); if (u) return pageUE(u, tous); }
   // #cours/niveau/<id> : la rubrique filtrée sur un niveau (adresse des pages /cours/niveau/<id>/, §84 du mémo À propos)
   const mNiv = /^niveau\/(.+)$/.exec(chemin || '');
   if (mNiv && (C.niveaux || []).some(n => n.id === mNiv[1]) && pageCours.vuNiv !== chemin) { pageCours.filtre = mNiv[1]; pageCours.vuNiv = chemin; }
@@ -4298,14 +4328,50 @@ function pageCours(chemin) {
   for (const n of presents) {
     if (niv !== 'tous' && niv !== n.id) continue;
     const liste = tous.filter(c => c.niveau === n.id);
+    const uesN = (C.ues || []).filter(u => u.niveau === n.id);
+    if (uesN.length) { h += coursNiveauParUE(n, liste, uesN); continue; }
     h += `<section class="niveau"><div class="niveau-tete"><h3>${n.titre}</h3><span>${esc(n.description || '')} · ${liste.length} ${liste.length > 1 ? 'chapitres' : 'chapitre'}</span></div><ol class="chapitres carte">`;
-    for (const c of liste) {
-      h += `<li style="--bande-ch: ${bandeChapitre(c)}"><a class="chapitre" href="#cours/${c.id}"><span class="num"><span>${c.chapitre || '·'}</span>${symboleChapitre(c)}</span><span><span class="ch-titre">${c.titre}</span>${c.resume ? `<span class="ch-resume">${c.resume.replace(/<\/?p>/g, ' ')}</span>` : ''}</span><span class="ch-theories">${(c.theories || []).map(miniTheorie).join('')}</span></a><span class="ch-etat">${statut(c.statut)}${coursVideoBouton(c)}</span></li>`;
-    }
+    for (const c of liste) h += ligneChapitre(c);
     h += `</ol></section>`;
   }
   const absents = (C.niveaux || []).filter(n => !presents.includes(n));
   if (absents.length && niv === 'tous') h += `<p class="bientot">Niveaux prévus, sans chapitre déposé pour l'instant : ${absents.map(n => n.titre).join(', ')}.</p>`;
+  return h;
+}
+// Ligne d'un chapitre dans les listes de la page Cours.
+const ligneChapitre = c => `<li style="--bande-ch: ${bandeChapitre(c)}"><a class="chapitre" href="#cours/${c.id}"><span class="num"><span>${c.chapitre || '·'}</span>${symboleChapitre(c)}</span><span><span class="ch-titre">${c.titre}</span>${c.resume ? `<span class="ch-resume">${c.resume.replace(/<\/?p>/g, ' ')}</span>` : ''}</span><span class="ch-theories">${(c.theories || []).map(miniTheorie).join('')}</span></a><span class="ch-etat">${statut(c.statut)}${coursVideoBouton(c)}</span></li>`;
+// Niveaux de Licence : rangés par semestre, puis par UE (rubriques/cours.yaml, clé ues ; champ ue des chapitres).
+// Chaque UE est un onglet repliable, fermé au départ ; celles que l'on ouvre le restent pendant la visite.
+const coursUEOuvertes = new Set();   // UE dépliées pendant la visite (fermées au départ)
+document.addEventListener('toggle', e => { const d = e.target; if (d.matches?.('details.ue')) d.open ? coursUEOuvertes.add(d.dataset.ue) : coursUEOuvertes.delete(d.dataset.ue); }, true);
+const ueDe = id => ((R.cours || {}).ues || []).find(u => u.id === id);
+function coursNiveauParUE(n, liste, uesN) {
+  let h = `<section class="niveau"><div class="niveau-tete"><h3>${n.titre}</h3><span>${esc(n.description || '')} · ${liste.length} ${liste.length > 1 ? 'chapitres' : 'chapitre'}</span></div>`;
+  for (const s of [...new Set(uesN.map(u => u.semestre))]) {
+    h += `<div class="semestre"><h4 class="semestre-titre">Semestre ${s}</h4>`;
+    for (const u of uesN.filter(u => u.semestre === s)) {
+      const lu = liste.filter(c => c.ue === u.id);
+      if (!lu.length) { h += `<div class="ue"><div class="ue-vide carte"><span class="ue-code">${esc(u.code || '')}</span><span class="ue-titre">${u.titre}</span><span class="statut">À venir</span></div></div>`; continue; }
+      h += `<details class="ue" data-ue="${u.id}"${coursUEOuvertes.has(u.id) ? ' open' : ''}><summary class="ue-tete"><span class="ue-code">${esc(u.code || '')}</span><span class="ue-titre">${u.titre}</span><span class="ue-info">${lu.length} chapitres${u.pages ? ` · ${u.pages} pages` : ''}</span><span class="ue-chevron" aria-hidden="true"></span></summary><div class="ue-corps"><a class="ue-lien" href="#cours/ue/${u.id}">Présentation de l'UE et cours complet (PDF) →</a><ol class="chapitres carte">${lu.map(ligneChapitre).join('')}</ol></div></details>`;
+    }
+    h += `</div>`;
+  }
+  return h + `</section>`;
+}
+function planUE(u, actif) {
+  const lu = (R.cours?.cours || []).filter(c => c.ue === u.id);
+  return `<ol class="ue-plan">${lu.map(c => `<li><a href="#cours/${c.id}"${c.id === actif ? ' aria-current="page"' : ''}><span class="n">${c.chapitre}</span><span>${c.titre}</span></a></li>`).join('')}</ol>`;
+}
+function pageUE(u, tous) {
+  const lu = tous.filter(c => c.ue === u.id);
+  let h = tete(`${esc(niveauDe(u.niveau).titre)} · Semestre ${u.semestre} · ${esc(u.code || 'Unité d\'enseignement')}`, u.titre, u.resume || '');
+  h += `<div class="ue-actions">${lu[0] ? `<a class="bouton plein" href="#cours/${lu[0].id}">Commencer : chapitre 1 →</a>` : ''}${u.pdf_complet ? `<a class="bouton" href="${u.pdf_complet}" download>Le cours complet (PDF${u.pages ? `, ${u.pages} pages` : ''})</a>` : ''}${u.fiches ? `<a class="bouton" href="${u.fiches}" target="_blank" rel="noopener">Les fiches de synthèse (PDF, une page par chapitre)</a>` : ''}</div>`;
+  h += `<div class="ue-grille"><ol class="chapitres carte">${lu.map(ligneChapitre).join('')}</ol><aside>`;
+  const pre = (u.prerequis || []).map(id => tous.find(x => x.id === id)).filter(Boolean);
+  if (pre.length) h += `<div class="carte carte-avant"><h3 class="titre-bloc">À revoir avant l'UE</h3><ul class="cours-lies">${pre.map(x => `<li><a class="cours-lie" href="#cours/${x.id}"><span class="cl-lieu">${esc(niveauDe(x.niveau).titre)}${x.chapitre ? `, ch. ${x.chapitre}` : ''}</span><span class="cl-titre">${x.titre}</span></a></li>`).join('')}</ul></div>`;
+  const autres = ((R.cours || {}).ues || []).filter(x => x.niveau === u.niveau && x.semestre === u.semestre && x.id !== u.id);
+  if (autres.length) h += `<div class="carte"><h3 class="titre-bloc">Même semestre</h3><ul class="cours-lies">${autres.map(x => `<li><span class="cours-lie"><span class="cl-lieu">${esc(x.code || '')}</span><span class="cl-titre">${x.titre}</span></span></li>`).join('')}</ul></div>`;
+  h += `</aside></div><nav class="voisins"><span></span><a href="#cours">Tous les cours</a><span></span></nav>`;
   return h;
 }
 // Chapitres liés : ceux que c cite dans `liens` et ceux qui citent c, dans l'ordre des niveaux puis des chapitres.
@@ -4316,10 +4382,11 @@ function coursLies(c, tous) {
 }
 function pageChapitre(c, tous) {
   posLecture = null;
-  const meme = tous.filter(x => x.niveau === c.niveau);
+  const ue = c.ue && ueDe(c.ue);
+  const meme = tous.filter(x => ue ? x.ue === c.ue : x.niveau === c.niveau);
   const i = meme.indexOf(c), prec = meme[i - 1], suiv = meme[i + 1];
   const feuille = (R.exercices?.feuilles || []).find(f => f.id === c.exercices);
-  let h = tete(`${esc(niveauDe(c.niveau).titre)}${c.chapitre ? ` · chapitre ${c.chapitre}` : ''}`, c.titre, c.resume || '<p class="vide-note">Résumé à venir.</p>');
+  let h = tete(ue ? `${esc(niveauDe(c.niveau).titre)} · S${ue.semestre} · <a href="#cours/ue/${ue.id}" class="ue-ariane">${esc(ue.titre)}</a> · chapitre ${c.chapitre}` : `${esc(niveauDe(c.niveau).titre)}${c.chapitre ? ` · chapitre ${c.chapitre}` : ''}`, c.titre, c.resume || '<p class="vide-note">Résumé à venir.</p>');
   if (!c.pdf) h += maquette('Le PDF de ce chapitre n\'est pas encore déposé ; il s\'affichera ici.');
   h += `<div class="lecture"><div class="lecteur carte">`;
   const actif = c.pdf ? '' : ' aria-disabled="true"';
@@ -4330,6 +4397,7 @@ function pageChapitre(c, tous) {
   if (c.pdf) h += `<div class="lecteur-raccourci"><button type="button" data-vers-cote aria-label="Aller au sommaire, aux liens et aux exercices du chapitre">Sommaire et liens ↓</button></div>`;
   h += `</div><aside class="cote"><button type="button" class="cote-retour" data-vers-lecteur>↑ Revenir au PDF</button>`;
   h += `<div class="carte"><h3 class="titre-bloc">Sommaire</h3>${c.sommaire ? `<ol class="sommaire">${c.sommaire.map((x, i) => `<li>${c.pdf && c.sommaire_pages ? `<button type="button" class="vers-page" data-pdf-page="${c.sommaire_pages[i]}" title="Aller à la page ${c.sommaire_pages[i]} du PDF">${x}<span class="num-page">p. ${c.sommaire_pages[i]}</span></button>` : x}</li>`).join('')}</ol>` : '<p class="vide-note">Tiré du PDF une fois déposé.</p>'}</div>`;
+  if (ue) h += `<div class="carte"><h3 class="titre-bloc">${esc(ue.code || 'UE')} · ${ue.titre}</h3>${planUE(ue, c.id)}<div class="ue-boutons">${c.fiche ? `<a class="bouton" href="${c.fiche}" target="_blank" rel="noopener">Fiche de synthèse du chapitre (PDF)</a>` : ''}<a class="bouton" href="#cours/ue/${ue.id}">Présentation de l'UE</a>${ue.pdf_complet ? `<a class="bouton" href="${ue.pdf_complet}" download>Le cours complet (PDF)</a>` : ''}</div></div>`;
   // Formulaires d'une page rattachés au chapitre (rubriques/cours.yaml, clé formulaires)
   const formulaires = (R.cours?.formulaires || []).filter(x => x.pdf && (x.chapitres || []).includes(c.id));
   if (formulaires.length) h += `<div class="carte"><h3 class="titre-bloc">Formulaires</h3><div style="display:flex;gap:6px;flex-wrap:wrap">${formulaires.map(x => lienPdf(x.pdf, 0, `Formulaire : ${x.titre}`)).join('')}</div></div>`;
@@ -4371,7 +4439,7 @@ function pageChapitre(c, tous) {
   }
   h += `<div class="carte"><h3 class="titre-bloc">Fichiers</h3><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">${statut(c.statut)}${c.pdf ? `<a class="lien-simple" href="${c.pdf}" download style="font-size:13.5px">PDF${c.pages ? `, ${c.pages} pages` : ''}</a>` : '<span style="font-size:13px;color:var(--encre-2)">PDF</span>'}</div></div>`;
   h += `</aside></div>`;
-  h += `<nav class="voisins">${prec ? `<a href="#cours/${prec.id}">← ${prec.titre}</a>` : '<span></span>'}<a href="#cours">Tous les cours</a>${suiv ? `<a href="#cours/${suiv.id}">${suiv.titre} →</a>` : '<span></span>'}</nav>`;
+  h += `<nav class="voisins">${prec ? `<a href="#cours/${prec.id}">← ${prec.titre}</a>` : '<span></span>'}${ue ? `<a href="#cours/ue/${ue.id}">${esc(ue.code || 'UE')} : ${ue.titre}</a>` : `<a href="#cours">Tous les cours</a>`}${suiv ? `<a href="#cours/${suiv.id}">${suiv.titre} →</a>` : '<span></span>'}</nav>`;
   return h;
 }
 
@@ -4492,7 +4560,7 @@ function vueNiveauxExos(E) {
 // Mots qui désignent un niveau dans la recherche tapée (« exercice 6 MPSI », « terminale suites »).
 const NIVEAUX_TAPES = { seconde: 'seconde', '2nde': 'seconde', '2de': 'seconde', premiere: 'premiere', '1ere': 'premiere', '1re': 'premiere',
   terminale: 'terminale', tale: 'terminale', tle: 'terminale', expertes: 'expertes', experte: 'expertes', approfondies: 'approfondies',
-  approfondie: 'approfondies', mpsi: 'ma', sup: 'ma', prepa: 'ma', mp: 'mp', spe: 'mp', ecg: 'ecg', master: 'master', python: 'python' };
+  approfondie: 'approfondies', mpsi: 'ma', sup: 'ma', prepa: 'ma', mp: 'mp', spe: 'mp', ecg: 'ecg', master: 'master', l3: 'l3', licence: 'l3', python: 'python' };
 function motsRecherche(q) {
   let t = sansAccents(q).replace(/n\s*°|\bno\b|\bnumeros?\b/g, ' ').replace(/\b(chapitre|chap|ch)\.?\s*(\d+)/g, ' @ch$2 ').split(/[\s,;]+/).filter(Boolean);
   const niveaux = new Set(t.filter(m => NIVEAUX_TAPES[m]).map(m => NIVEAUX_TAPES[m]));
@@ -6690,6 +6758,7 @@ function adressePartage() {
     if (nom === 'exercices' && etatExo.ex) return `${ADRESSE_SITE}exercices/${etatExo.ex}/?ouvrir`;   // ?ouvrir : redirection vers la page interactive
     if (nom === 'exercices' && etatExo.feuille) return `${ADRESSE_SITE}exercices/feuille/${etatExo.feuille}/?ouvrir`;   // page de lecture (lecture-cours.mjs)
     if (nom === 'exercices' && etatExo.vue === 'niveau' && etatExo.niveauVu) return `${ADRESSE_SITE}exercices/niveau/${etatExo.niveauVu}/?ouvrir`;   // pages par niveau (lecture-cours.mjs, §84)
+    if (nom === 'cours' && (ch || '').startsWith('ue/')) return `${ADRESSE_SITE}#cours/${ch}`;   // page d'une UE (niveaux de Licence)
     if (nom === 'cours' && pageCours.filtre && pageCours.filtre !== 'tous' && (R.cours?.cours || []).some(c => c.niveau === pageCours.filtre)) return `${ADRESSE_SITE}cours/niveau/${pageCours.filtre}/?ouvrir`;
     if (nom === 'a-propos' && ch) return `${ADRESSE_SITE}a-propos/${ch}/`;   // pages de renvoi (rendu.mjs, §84)
     if (nom === 'accueil') return ADRESSE_SITE;

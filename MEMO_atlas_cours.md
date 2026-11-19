@@ -893,3 +893,36 @@ la feuille `f-mp-14` (corrigé non reçu, §53).
 **18 nov. : MP 15 à 17 révisés.** Les théorèmes passent de l'environnement `cadre` à un tableau encadré à titre
 rouge souligné (« Théorème 1 : Formule de transfert : ») ; aucun nouveau terme relevé par `cours_termes.py`. Seul
 changement de pagination : mp-16, section 7 en page 10 (au lieu de 9).
+
+### 55. Niveau Licence 3, par semestre et par UE (19 nov. 2026)
+
+**Niveau** `l3` (« Licence 3 »), déclaré **après `master`** et avant `python` : la carte « En prépa » de l'accueil
+(domaine À propos) prend les niveaux situés entre `approfondies` et `master`, et la Licence n'y a pas sa place.
+Recherche : alias `l3`, `licence` (`NIVEAUX_TAPES`).
+
+**Données** (`rubriques/cours.yaml`). Clé `ues` : `id`, `niveau`, `semestre` (entier), `titre`, `code` facultatif
+(« UE 1 »…), `resume`, `pdf_complet`, `fiches`, `pages`, `prerequis` (ids de chapitres, tout niveau). Chaque chapitre
+porte `ue` et, s'il y en a une, `fiche` (PDF d'une page). La numérotation des chapitres recommence dans chaque UE ;
+ids `l3-<ue>-NN`. `construire.py` vérifie les UE (niveau, semestre, fichiers, prérequis), le rattachement des chapitres
+et l'unicité (niveau, UE, numéro). Fichiers : chapitres dans `documents/cours/l3/`, cours complet (fusion des PDF de
+chapitres par pypdf) et fiches dans `documents/ue/l3/`, hors de `documents/cours/` pour que `cours_termes.py` n'y relève
+rien. Le PDF des fiches de l'auteur est découpé page par page (une fiche par chapitre).
+
+**Affichage** (`gabarit.html`, domaine Cours). `pageCours` : pour un niveau qui a des UE, `coursNiveauParUE` range
+par semestre, chaque UE en `<details class="ue">` fermé au départ (onglet), ouvertes gardées pendant la visite
+(`coursUEOuvertes`) ; une UE sans chapitre est une ligne « À venir ». `pageUE` (`#cours/ue/<id>`) : présentation,
+boutons « Commencer », cours complet, fiches ; liste des chapitres ; « À revoir avant l'UE » ; autres UE du semestre.
+`pageChapitre` : sur-titre en fil d'Ariane (niveau · S5 · UE liée · chapitre), carte de l'UE sous le sommaire (plan,
+chapitre courant marqué, fiche du chapitre, présentation, cours complet), précédent et suivant dans l'UE. Ligne d'un
+chapitre factorisée (`ligneChapitre`). `adressePartage` : une page d'UE se partage par son adresse `#cours/ue/<id>`.
+Pages de lecture (`lecture-cours.mjs`) : lieu « Licence 3, semestre 5, <UE>, chapitre N », boutons fiche et cours complet.
+Le prototype du 18 nov. (worktree du scratchpad) a servi de maquette.
+
+**Première UE** : `l3-s5-cd`, « Calcul différentiel et équations différentielles » (semestre 5, 108 pages), chapitres
+`l3-cd-01` à `l3-cd-07` (espaces normés ; applications différentiables ; inversion locale et fonctions implicites ;
+ordre supérieur et Taylor ; extrema libres et liés ; équations différentielles : existence ; approximation numérique).
+Exercices à venir. « À revoir avant » n'est pas posé par chapitre (la table `PRECEDENT`, domaine apparence, n'a pas
+`l3`) : prérequis au niveau de l'UE (mp-04, mp-05, mp-17). Termes écartés : fragments et formes tronquées
+(« -difféomorphisme », « -ième dérivée partielle »…), par chapitre. Le chapitre 7 contient du Python (`lstlisting`) :
+les boutons « Essayer » de `cours_code.py` ne sont pas posés (sources non rangées dans `outils/sources-cours/`).
+Symboles : planche à faire valider.

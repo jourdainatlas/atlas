@@ -71,7 +71,8 @@ export function pagesCoursExercices(ctx) {
   const difficulte = k => k ? `<span class="difficulte" title="Difficulté ${k} sur 4" aria-label="Difficulté ${k} sur 4">${[1, 2, 3, 4].map(i => `<i class="${i <= k ? 'plein' : ''}"></i>`).join('')}</span>` : '';
   const puces = ids => (ids || []).filter(id => D.noeuds[id]).map(puce).join('');
   const lieuFeuille = f => `${texteBrut(niveau(f.niveau).titre)}${f.chapitre ? `, chapitre ${f.chapitre}` : ''}`;
-  const lieuCours = c => `${texteBrut(niveau(c.niveau).titre)}${c.chapitre ? `, chapitre ${c.chapitre}` : ''}`;
+  const ueDe = id => (R.cours?.ues || []).find(u => u.id === id);   // niveaux de Licence : le chapitre appartient à une UE
+  const lieuCours = c => { const u = c.ue && ueDe(c.ue); return `${texteBrut(niveau(c.niveau).titre)}${u ? `, semestre ${u.semestre}, ${texteBrut(u.titre)}` : ''}${c.chapitre ? `, chapitre ${c.chapitre}` : ''}`; };
   const boutons = l => `<div class="l-boutons">${l.filter(Boolean).join('')}</div>`;
   const bouton = (href, texte, plein) => href ? `<a${plein ? ' class="plein"' : ''} href="${attr(href)}"${/^\/documents\//.test(href) ? ' rel="noopener"' : ''}>${texte}</a>` : '';
   const FIL_C = { name: 'Cours', href: '/cours/' }, FIL_E = { name: 'Exercices', href: '/exercices/' };
@@ -85,7 +86,9 @@ export function pagesCoursExercices(ctx) {
     h += boutons([bouton(pdf(c.pdf), `Cours (PDF${c.pages ? `, ${c.pages} pages` : ''})`, true),
       f && bouton(`/exercices/feuille/${f.id}/`, `Les ${f.nombre || exosDe(f.id).length} exercices corrigés`),
       f && bouton(pdf(f.pdf_enonce), 'Feuille (PDF)'), f && bouton(pdf(f.pdf_corrige), 'Corrigé (PDF)'),
-      ...(R.cours?.formulaires || []).filter(x => x.pdf && (x.chapitres || []).includes(c.id)).map(x => bouton(pdf(x.pdf), `Formulaire : ${x.titre} (PDF)`))]);
+      ...(R.cours?.formulaires || []).filter(x => x.pdf && (x.chapitres || []).includes(c.id)).map(x => bouton(pdf(x.pdf), `Formulaire : ${x.titre} (PDF)`)),
+      c.fiche && bouton(pdf(c.fiche), 'Fiche de synthèse du chapitre (PDF)'),
+      c.ue && ueDe(c.ue)?.pdf_complet && bouton(pdf(ueDe(c.ue).pdf_complet), `Le cours complet de l'UE (PDF)`)]);
     if (c.resume) h += relier(c.resume);
     if (c.niveau === 'python') h += `<p class="l-meta">Sur la <a href="/#cours/${attr(c.id)}">page interactive du cours</a>, chaque exemple de code porte un bouton « Essayer » qui l'ouvre dans l'atelier Python : on l'exécute, on le suit pas à pas et on le modifie dans le navigateur, sans rien installer.</p>`;
     if ((c.sommaire || []).length) {

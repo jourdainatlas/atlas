@@ -1277,9 +1277,12 @@ if 'cours' in rubriques:
         if c.get('niveau') not in ids_niv: erreur(f"rubriques/cours {c['id']} : niveau inconnu {c.get('niveau')}")
         for l in c.get('liens') or []:
             if l not in ids_c or l == c['id']: erreur(f"rubriques/cours {c['id']} : lien invalide {l}")
-        if c.get('chapitre'):
-            if (c['niveau'], c['chapitre']) in vus: erreur(f"rubriques/cours {c['id']} : chapitre {c['chapitre']} déjà pris au niveau {c['niveau']}")
-            vus.add((c['niveau'], c['chapitre']))
+        if c.get('chapitre'):   # dans un niveau rangé par UE (Licence), la numérotation recommence à chaque UE
+            cle = (c['niveau'], c.get('ue'), c['chapitre'])
+            if cle in vus: erreur(f"rubriques/cours {c['id']} : chapitre {c['chapitre']} déjà pris au niveau {c['niveau']}{' dans l’UE ' + c['ue'] if c.get('ue') else ''}")
+            vus.add(cle)
+        for champ in ('fiche',):
+            if c.get(champ) and not os.path.isfile(c[champ]): erreur(f"rubriques/cours {c['id']} : fichier introuvable {c[champ]}")
         # Pages de début des parties du sommaire (outils/pages_sommaire.py) : une par partie, croissantes,
         # dans le PDF. Un PDF déposé avec un sommaire sans ces pages n'est qu'un avertissement.
         sp = c.get('sommaire_pages')
@@ -1290,6 +1293,19 @@ if 'cours' in rubriques:
                 erreur(f"rubriques/cours {c['id']} : sommaire_pages {sp} non croissant ou hors du PDF")
         elif c.get('pdf') and c.get('sommaire'):
             avert(f"rubriques/cours {c['id']} : sommaire sans pages (python3 outils/pages_sommaire.py --ecrire {c['id']})")
+    # Unités d'enseignement (clé ues, niveaux de Licence) : niveau déclaré, semestre, fichiers, prérequis ; chaque
+    # chapitre qui porte un champ ue renvoie à une UE de son niveau.
+    ues = {u['id']: u for u in Cr.get('ues') or []}
+    for u in Cr.get('ues') or []:
+        if u.get('niveau') not in ids_niv: erreur(f"rubriques/cours UE {u['id']} : niveau inconnu {u.get('niveau')}")
+        if not isinstance(u.get('semestre'), int): erreur(f"rubriques/cours UE {u['id']} : semestre (entier) manquant")
+        for champ in ('pdf_complet', 'fiches'):
+            if u.get(champ) and not os.path.isfile(u[champ]): erreur(f"rubriques/cours UE {u['id']} : fichier introuvable {u[champ]}")
+        for x in u.get('prerequis') or []:
+            if x not in ids_c: erreur(f"rubriques/cours UE {u['id']} : prérequis inconnu {x}")
+    for c in Cr.get('cours', []):
+        if c.get('ue') and (c['ue'] not in ues or ues[c['ue']].get('niveau') != c.get('niveau')):
+            erreur(f"rubriques/cours {c['id']} : UE inconnue ou d'un autre niveau {c['ue']}")
 # Nouveautés (domaine À propos – Contact) : forme des entrées, et filet de sécurité contre les ajouts
 # non annoncés. Est « annonçable » : une théorie de l'édifice, un cours ou une feuille déposés, une session
 # d'annales. Un tel élément doit figurer dans le socle (rubriques/nouveautes/socle.yaml : ce qui était en
