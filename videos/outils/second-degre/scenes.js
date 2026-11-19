@@ -7,8 +7,8 @@
   // ---------- 1. la fonction trinôme ----------
   function trinome(ctx, t) { const V = S.trinome;
     phase(ctx, t, 2, 6, () => { const kd = ap(t, V.def); carte(ctx, 510, 165, 900, 150, 'DÉFINITION', kd); formule(ctx, 't_def', CX, 250, { fs: 52, mil: 1, a: kd });
-      const kh = ap(t, V.haut, 0.7), kb = ap(t, V.bas, 0.7), ks = ap(t, V.sommet); para(ctx, 600, 640, 0.8, -2.2, kh, { sommet: ks > 0 }); para(ctx, 1320, 470, -0.8, 2.2, kb, { sommet: ks > 0 });
-      formule(ctx, 't_ap', 600, 400, { fs: 44, mil: 1, a: kh }); formule(ctx, 't_an', 1320, 700, { fs: 44, mil: 1, a: kb }); });
+      const kh = ap(t, V.haut, 0.7), kb = ap(t, V.bas, 0.7), ks = ap(t, V.sommet); para(ctx, 700, 565, 0.8, -2.2, kh, { sommet: ks > 0 }); para(ctx, 1220, 565, -0.8, 2.2, kb, { sommet: ks > 0 });      // les deux axes sur une même horizontale
+      formule(ctx, 't_ap', 700, 380, { fs: 44, mil: 1, a: kh }); formule(ctx, 't_an', 1220, 380, { fs: 44, mil: 1, a: kb }); });
     legs(ctx, t, V, [['Un [trinôme] du second degré a pour courbe une [parabole].'], ['Tournée vers le haut ou vers le bas selon le signe de $a$, elle a un [sommet].']]); }
 
   // ---------- 2. la forme canonique ----------
@@ -55,6 +55,7 @@
       phase(ctx, t, 34, 42, () => { const km = fen(t, V.marche[0] - 0.3, V.sortie, 0.3), y = g2(x); if (km > 0) { txt(ctx, `x = ${K.fr(x, 2)}`, 1300, 300, { fam: F.ui, w: 600, size: 44, a: km }); txt(ctx, `f(x) = ${K.fr(y, 2)}`, 1300, 400, { fam: F.ui, w: 600, size: 44, c: y >= 0 ? VRAI : C.orange, a: km }); txt(ctx, y >= 0 ? 'positif' : 'négatif', 1660, 400, { fam: F.ui, w: 600, size: 36, c: y >= 0 ? VRAI : C.orange, a: km }); }
         const kp = ap(t, V.prop); carte(ctx, 1060, 520, 800, 170, 'PROPRIÉTÉ', kp); txt(ctx, 'f(x) est du signe de a', 1460, 606, { fam: F.ui, w: 600, size: 32, a: kp }); txt(ctx, 'à l’extérieur des racines.', 1460, 652, { fam: F.ui, w: 600, size: 32, c: C.cours, a: kp }); });
       phase(ctx, t, 42, 46, () => { const kt = ap(t, V.tab), X = [1080, 1200, 1340, 1480, 1620, 1760, 1860], y1 = 250, y2 = 350; ctx.save(); ctx.globalAlpha *= kt; ctx.strokeStyle = C.gm; ctx.lineWidth = 2.5; ctx.strokeRect(1040, 200, 860, 200); ctx.beginPath(); ctx.moveTo(1040, 300); ctx.lineTo(1900, 300); ctx.moveTo(1140, 200); ctx.lineTo(1140, 400); ctx.stroke(); ctx.restore();
+        for (const x of [1400, 1640]) { seg(ctx, [x, 300], [x, 400], { c: C.gm, lw: 2.5, dash: [7, 7], a: kt }); ctx.save(); ctx.globalAlpha *= kt; ctx.fillStyle = C.papier; ctx.fillRect(x - 15, 330, 30, 40); ctx.restore(); }                    // une barre sous chaque racine sépare les signes
         [['g_x', 1090, y1], ['g_fx', 1090, y2], ['g_mi', 1200, y1], ['g_r1', 1400, y1], ['g_r2', 1640, y1], ['g_pi', 1850, y1], ['g_p', 1290, y2], ['g_0', 1400, y2], ['g_m', 1520, y2], ['g_0', 1640, y2], ['g_p', 1760, y2]].forEach(([id, x, y]) => formule(ctx, id, x, y, { fs: 38, mil: 1, a: kt }));
         fo(ctx, t, 'g_in', 1470, 520, 48, V.ineq); fo(ctx, t, 'g_S', 1470, 660, 44, V.sol); }); });
     legs(ctx, t, V, [['Une parabole tournée vers le haut, deux racines.'], ['Le point d’abscisse $x$ avance : le signe de $f(x)$ change à chaque racine.'], ['Positif, négatif, positif : le signe de $a$ revient à l’extérieur des racines.'], ['Le tableau de signes résume la figure.'], ['Il donne aussitôt les solutions d’une inéquation.']]); }

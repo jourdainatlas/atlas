@@ -485,6 +485,11 @@ Demandés par l'auteur en un seul lot, montrés en prototype, **ni validés ni i
 | `logique-mpsi` | MPSI 1, Logique et ensembles (`ma-01`) | `logique-ensembles-mpsi-prototype-1.mp4` | il est le y qui répond à chaque x, puis se fait dépasser |
 | `structures` | MP 1, Structures algébriques (`mp-01`) | `structures-algebriques-mp-prototype-1.mp4` | il avance de 18, recule de 12 : 12ℤ + 18ℤ = 6ℤ |
 
+Retours de l'auteur sur le second degré (19 novembre), faits dans `second-degre-premiere-prototype-2.mp4` : les deux
+paraboles (a > 0, a < 0) ont leurs axes sur une même horizontale, au centre de l'écran, étiquettes au-dessus ;
+**tout tableau de signes porte une barre verticale, en pointillé, sous chaque valeur où l'expression s'annule**, le
+zéro posé dessus, pour séparer les cases « + » des cases « − » (règle à suivre dans tous les films).
+
 Exemples propres aux vidéos (tout le reste vient des cours) : Maths expertes, 47 et −47 divisés par 5, 211 et
 30 031 = 59 × 509 pour l'argument d'Euclide, 84/126 = 2/3 ; MPSI, l'exponentielle pour illustrer les parties paire et
 impaire (sans nommer ch et sh, définis plus tard). Tous les calculs sont vérifiés avec Python.
