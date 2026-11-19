@@ -921,8 +921,8 @@ Le prototype du 18 nov. (worktree du scratchpad) a servi de maquette.
 **Première UE** : `l3-s5-cd`, « Calcul différentiel et équations différentielles » (semestre 5, 108 pages), chapitres
 `l3-cd-01` à `l3-cd-07` (espaces normés ; applications différentiables ; inversion locale et fonctions implicites ;
 ordre supérieur et Taylor ; extrema libres et liés ; équations différentielles : existence ; approximation numérique).
-Exercices à venir. « À revoir avant » n'est pas posé par chapitre (la table `PRECEDENT`, domaine apparence, n'a pas
-`l3`) : prérequis au niveau de l'UE (mp-04, mp-05, mp-17). Termes écartés : fragments et formes tronquées
+Exercices à venir. « À revoir avant » : posé par chapitre le 19 nov. au soir, une fois `l3` ajouté aux tables `PRECEDENT` (vers ma et mp), en plus des prérequis
+de l'UE (mp-04, mp-05, mp-17) ; liste dans `cours-prerequis.yaml`. Termes écartés : fragments et formes tronquées
 (« -difféomorphisme », « -ième dérivée partielle »…), par chapitre. Le chapitre 7 contient du Python (`lstlisting`) :
 boutons « Essayer » posés le 19 nov. (voir « Atelier dans la Licence » plus bas).
 Symboles validés le 19 nov. : repris `ouvert` (ch. 1, comme mp-04), `tangente` (ch. 2), `dl` (ch. 4), `tangence` (ch. 5, comme mp-17), `champdir` (ch. 6, comme mp-16) ; nouveaux `hyperplan` (ch. 3 : disque {g ≤ 0}, droite tangente et gradient normal au point, calculés) et `euler` (ch. 7 : y = e^t sur [0, 2] et polygone d'Euler de pas 0,5, de 1 à 1,5⁴ ≈ 5,06).
