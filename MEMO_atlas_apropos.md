@@ -1068,3 +1068,12 @@ Vérifié à cette occasion :
 **Mise en ligne (20 nov. 2026, vers 14 h), d'après la conversation Atelier.** `https://atelier.atlasjourdain.fr` est servi par un VPS OVH (Local Zone de Prague, Union européenne ; IPv4 `141.227.135.229`, IPv6 `2001:41d0:ab04::4:0:209`), certificat Let's Encrypt obtenu sans difficulté (aucun CAA ne s'y opposait donc). Seuls les enregistrements `atelier` A et AAAA ont été ajoutés à la zone. Application en `noindex`, sans journal des visites ni mesure d'audience ; aucun élève invité avant l'information des familles. Le site `www` répondait normalement après l'ajout.
 Reste de GitHub Pages signalé par la conversation Atelier : la ligne TXT `_github-pages-challenge-jourdainatlas` de la zone ne sert plus depuis le retrait de Pages (§83). Elle est sans effet ; l'auteur peut la supprimer. Ne pas la confondre avec les TXT de Google (Search Console) et le SPF, à garder.
 
+## 90. Lien « Atelier » dans la barre de navigation et le menu du logo (20 nov. 2026)
+
+Demande de l'auteur : un lien vers l'Atelier ATLAS (`https://atelier.atlasjourdain.fr/`, §89), présenté comme une rubrique, accessible pendant le développement de l'application. Dans `gabarit.html` :
+- **Barre du haut** : `a.nav-rub-ext[data-onglet="atelier"]` après Activités, ouvert dans un nouvel onglet (`target="_blank" rel="noopener"`), suivi d'une petite flèche ↗ (`.nav-rub-fleche`, masquée quand les pastilles sont repliées). Ce n'est pas une rubrique de l'application : `majOnglets` ne la marque jamais comme courante ; l'infobulle dit « espace de travail en équipe, sur invitation ». Sur téléphone, septième pastille ronde, cerclée de rouge (la rangée tient à 360 px).
+- **Menu du logo** : entrée « Atelier ↗ » après Activités (`data-rubrique="atelier"`, barre rouge).
+- **Symbole** `sym-atelier` (classes `at-1`, `at-2`, `at-3`, `at-f`) : une équipe de trois et un crayon. Choix de l'auteur ; écartés : bulles de discussion, équerre et crayon, équipe seule, équipe avec feuille, engrenage ou graphe du logo.
+- **Rouge** : nouvelle exception décidée par l'auteur à la règle « rouge réservé aux définitions, aux axiomes et au logo », après le Parcours du jour (§78).
+Pas d'encadré parmi les rubriques de l'accueil, pas de lien sur les pages de lecture, pas de mention dans l'À propos pour l'instant (choix de l'auteur). Le lien est public alors que l'Atelier est sur invitation : un visiteur arrive sur la page de connexion ; l'auteur garde le lien tel quel pour le moment.
+
