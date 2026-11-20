@@ -24,6 +24,10 @@ FOND = (0.961, 0.961, 0.961)
 # couleur de fond de ces blocs dans le PDF.
 SOURCES = {
     'py-01': {'tex': 'outils/sources-cours/python_chap01.tex', 'env': 'python', 'fond': FOND},
+    'l3-cd-03': {'tex': 'outils/sources-cours/l3_calcul_differentiel_chap03.tex', 'env': 'lstlisting', 'fond': (0.98, 0.98, 0.98)},
+    'l3-cd-04': {'tex': 'outils/sources-cours/l3_calcul_differentiel_chap04.tex', 'env': 'lstlisting', 'fond': (0.98, 0.98, 0.98)},
+    'l3-cd-05': {'tex': 'outils/sources-cours/l3_calcul_differentiel_chap05.tex', 'env': 'lstlisting', 'fond': (0.98, 0.98, 0.98)},
+    'l3-cd-06': {'tex': 'outils/sources-cours/l3_calcul_differentiel_chap06.tex', 'env': 'lstlisting', 'fond': (0.98, 0.98, 0.98)},
     'l3-cd-07': {'tex': 'outils/sources-cours/l3_calcul_differentiel_chap07.tex', 'env': 'lstlisting', 'fond': (0.98, 0.98, 0.98)},
 }
 

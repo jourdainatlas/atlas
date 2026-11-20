@@ -988,3 +988,14 @@ du sommaire). Corrections manuelles éventuelles : `outils/exercices-cours-corre
 4 129 exercices sur 4 132 reliés (3 sans mot commun). **À relancer** après tout dépôt ou remplacement de feuille ou de
 cours (`python3 outils/exercices_cours.py [f-…]`), sinon les nouveaux exercices n'ont pas la ligne.
 
+### 58. Atelier Python : chapitres 3 à 6 de la Licence, exercices qui demandent Python (20 nov. 2026)
+
+À la demande de l'auteur. Cours : `l3-cd-03` à `l3-cd-06` reçoivent `atelier: true` et leur source dans
+`outils/sources-cours/` (table `SOURCES` de `cours_code.py`, `lstlisting`, fond 0,98) ; 1, 2, 2 et 1 blocs, une zone
+chacun, tous exécutés avec CPython avant dépôt (sympy, numpy, scipy). Exercices : `construire.py` marque `python: true`
+tout exercice dont l'énoncé nomme Python, un programme, un script, numpy, scipy, matplotlib ou sympy, ou contient un bloc
+```` ```python ```` ; la carte montre alors « S'entraîner en Python », comme au niveau `python` (énoncé recopié dans
+l'éditeur, corrigé jamais). 49 exercices hors du niveau Python, dont `l3-cd-07-03`, `-09`, `-16`, `-17` ; les autres
+exercices numériques du chapitre 7 (tableau d'Euler de l'exercice 2, portraits de phase de l'exercice 13) ne nomment pas
+Python et n'ont pas le bouton.
+

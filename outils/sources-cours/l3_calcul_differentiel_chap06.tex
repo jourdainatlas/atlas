@@ -1,0 +1,929 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Cours de L3 - Calcul differentiel - M. JOURDAIN
+%
+%  PREAMBULE COMMUN DE L'UE (identique dans les sept chapitres et dans le
+%  volume complet L3_S5_COURS_calcul_differentiel.tex, qui inclut chaque
+%  chapitre tel quel grace au paquet docmute).
+%  Tire du preambule des cours de MP ; ajouts : hyperref (liens invisibles),
+%  listings (code Python des chapitres 6 et 7), macros de l'UE.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[a4paper,twoside]{report}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage[table]{xcolor}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{tikz}
+\usepackage{array}
+\usepackage{multirow}                            % cellules fusionnees des tableaux bilans
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{tabularx}
+
+% ---- paquets optionnels utilises dans l'UE ----
+\usepackage{stmaryrd}                            % crochets doubles des intervalles d'entiers
+\usepackage{needspace}                           % pas de titre «~Exemples :~» isole en bas de page
+\usepackage{tikz-cd}                             % diagrammes commutatifs (chapitres 2 et 3)
+\usepackage{pgfplots}                            % courbes et surfaces
+\pgfplotsset{compat=1.18}
+\usepackage{listings}                            % code Python (chapitres 6 et 7)
+\graphicspath{{/home/armandj/Documents/A Documents/image/}}  % chemin des images (fixe)
+
+\usetikzlibrary{arrows.meta,decorations.pathreplacing,patterns,calc}
+
+\geometry{hmargin=2.5cm,vmargin=1.5cm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% COULEURS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Le code couleur propre a chaque chapitre est decrit dans l'en-tete du
+%  chapitre (bloc «~CODE COULEUR~»). Couleurs disponibles :
+\definecolor{rougecours}{RGB}{192,0,0}
+\definecolor{couleurN}{RGB}{0,112,192}
+\definecolor{couleurZ}{RGB}{0,150,120}
+\definecolor{couleurD}{RGB}{224,150,0}
+\definecolor{couleurQ}{RGB}{150,80,180}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.98,0.98,0.98}
+% Mot defini, en gras rouge
+\newcommand{\mot}[1]{\textcolor{rougecours}{\textbf{#1}}}
+% Notation ou formule mise en avant en rouge
+\newcommand{\rmath}[1]{\textcolor{rougecours}{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% EN-TETES ET PIEDS DE PAGE %%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\lauteur}{Cours de L3 - Calcul différentiel - M. JOURDAIN}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE]{\footnotesize\rightmark}
+\fancyhead[RE]{\footnotesize\leftmark}
+\fancyhead[LO]{\footnotesize\leftmark}
+\fancyhead[RO]{\footnotesize\rightmark}
+\fancyfoot[LE,LO]{\thepage}
+\fancyfoot[RE,RO]{\footnotesize\lauteur}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\fancypagestyle{plain}{%
+  \fancyhf{}%
+  \fancyfoot[C]{\thepage}%
+  \renewcommand{\headrulewidth}{0pt}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ENVIRONNEMENTS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Cadre pour les propositions
+\newenvironment{cadre}%
+ {\par\vspace{2mm}\noindent\begin{tabular}{|@{\hspace{4mm}}p{0.93\textwidth}@{\hspace{4mm}}|}
+  \hline \\[-2mm]}%
+ {\\[2mm] \hline \end{tabular}\par\vspace{3mm}}
+
+\newcommand{\definition}{\textbf{Définition :}~}
+\newcommand{\propo}[1]{\textbf{\underline{Proposition #1 :}}~}
+\newcommand{\theoreme}[1]{\textbf{Théorème #1 :}~}
+\newcommand{\methode}{\textbf{\underline{$\heartsuit$ Méthode :}}~}
+% Enonce de niveau prerequis, donne sans demonstration ou avec une preuve courte
+\newcommand{\rappel}{\textit{(Rappel.)}~}
+
+% Demonstration
+\newenvironment{demo}%
+ {\par\needspace{4\baselineskip}\vspace{1mm}\noindent$\circ$ \underline{Démonstration :}~\setlength{\parskip}{3pt plus 1pt}}%
+ {\hfill$\square$\par\vspace{2mm}}
+
+% Etape d'une demonstration longue : nouvel alinea, intitule en italique
+\newcommand{\etape}[1]{\par\smallskip\noindent$\triangleright$~\textit{#1}~}
+
+% Exemples et remarques : blocs indentes
+\newenvironment{exemple}%
+ {\par\needspace{6\baselineskip}\vspace{1mm}\begin{list}{}{\leftmargin=1cm \rightmargin=0.5cm}\item[]%
+  \textit{Exemple :}~}%
+ {\end{list}\vspace{1mm}}
+
+\newenvironment{remarque}%
+ {\par\needspace{6\baselineskip}\vspace{1mm}\begin{list}{}{\leftmargin=1cm \rightmargin=0.5cm}\item[]%
+  \textit{\underline{Remarque :}}~}%
+ {\end{list}\vspace{1mm}}
+
+\newenvironment{remarques}%
+ {\par\needspace{6\baselineskip}\vspace{1mm}\begin{list}{}{\leftmargin=1cm \rightmargin=0.5cm}\item[]%
+  \textit{\underline{Remarques :}}%
+  \begin{itemize}[label=$\bullet$,leftmargin=0.45cm,topsep=3pt,itemsep=4pt]}%
+ {\end{itemize}\end{list}\vspace{1mm}}
+
+\newenvironment{exemples}%
+ {\par\needspace{6\baselineskip}\vspace{1mm}\begin{list}{}{\leftmargin=1cm \rightmargin=0.5cm}\item[]%
+  \textit{Exemples :}%
+  \begin{itemize}[label=$\bullet$,leftmargin=0.45cm,topsep=3pt,itemsep=4pt]}%
+ {\end{itemize}\end{list}\vspace{1mm}}
+
+% Rediger un raisonnement type, encadre a gauche
+\newenvironment{redaction}%
+ {\par\vspace{2mm}\begin{center}\begin{tabular}{|@{\hspace{3mm}}p{0.85\textwidth}@{\hspace{3mm}}}}%
+ {\end{tabular}\end{center}\vspace{2mm}}
+
+%--- Style du code Python (lstlisting) -----------------------------------------
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour}, commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta}, numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple}, basicstyle=\ttfamily\small,
+    breakatwhitespace=false, breaklines=true, captionpos=b, keepspaces=true,
+    numbers=left, numbersep=5pt, showspaces=false, showstringspaces=false,
+    showtabs=false, tabsize=4, language=Python}
+\lstset{style=mystyle}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% MACROS DE L'UE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Ensembles de nombres
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\K}{\mathbb{K}}                       % corps de base : R ou C
+\newcommand{\intn}[2]{\llbracket #1\,,#2 \rrbracket}   % intervalle d'entiers (stmaryrd)
+
+% Applications
+\newcommand{\appli}[5]{\begin{array}{r|ccl}                % application sur deux lignes
+  #1 : & #2 & \longrightarrow & #3 \\ & #4 & \longmapsto & #5 \end{array}}
+\newcommand{\id}{\mathrm{id}}                     % identite
+\newcommand{\ee}{\mathrm{e}}                      % exponentielle
+\newcommand{\ii}{\mathrm{i}}                      % unite imaginaire
+\newcommand{\dd}{\mathrm{d}}                      % differentielle, element d'integration
+\newcommand{\limn}{\lim\limits_{n \to +\infty}}
+\newcommand{\cvu}{\xrightarrow[]{\ \mathrm{CU}\ }}           % convergence uniforme
+
+% Algebre lineaire
+\newcommand{\Ker}{\operatorname{Ker}}
+\newcommand{\Imf}{\operatorname{Im}}              % image (\Im est la partie imaginaire)
+\newcommand{\rg}{\operatorname{rg}}
+\newcommand{\Vect}{\operatorname{Vect}}
+\newcommand{\tr}{\operatorname{tr}}               % trace
+\newcommand{\tra}[1]{{#1}^{T}}                    % transposee
+\newcommand{\Mnp}[2]{\mathcal{M}_{#1,#2}(\K)}      % matrices a #1 lignes et #2 colonnes
+\newcommand{\Mn}[1]{\mathcal{M}_{#1}(\K)}          % matrices carrees
+\newcommand{\GL}{\mathrm{GL}}                     % groupe lineaire
+\newcommand{\Sp}{\operatorname{Sp}}               % spectre
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\Bc}{\mathcal{B}}                     % bases
+
+% Espaces normes (chapitre 1)
+\newcommand{\norme}[1]{\lVert #1 \rVert}         % norme
+\newcommand{\nop}[1]{|\mkern-1.5mu|\mkern-1.5mu|#1|\mkern-1.5mu|\mkern-1.5mu|}   % norme subordonnee (triple barre)
+\newcommand{\ps}[2]{\langle #1, #2 \rangle}       % produit scalaire
+\newcommand{\Bo}{B}                               % boule ouverte B(a, r)
+\newcommand{\Bf}{B_{f}}                           % boule fermee B_f(a, r)
+\newcommand{\Sph}{S}                              % sphere S(a, r)
+\newcommand{\adh}[1]{\overline{#1}}               % adherence
+\newcommand{\inte}[1]{\mathring{#1}}              % interieur
+\newcommand{\Fr}{\operatorname{Fr}}               % frontiere
+\newcommand{\Bor}{\mathcal{B}}                    % fonctions bornees B(X, F)
+\newcommand{\Cc}{\mathcal{C}}                     % fonctions continues, de classe C^k
+\newcommand{\Lc}{\mathcal{L}}                     % applications lineaires continues L(E, F)
+\newcommand{\dist}{d}                             % distance a une partie
+\newcommand{\diam}{\operatorname{diam}}           % diametre
+
+% Calcul differentiel (chapitres 2 a 5)
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}   % derivee partielle
+\newcommand{\dpd}[2]{\dfrac{\partial #1}{\partial #2}}  % derivee partielle, en ligne en style display
+\newcommand{\Isom}{\mathrm{Isom}}                 % isomorphismes continus d inverse continu
+\newcommand{\grad}{\nabla}                        % gradient
+\newcommand{\Du}[1]{D_{#1}}                       % derivee selon un vecteur
+\newcommand{\Hs}{H}                               % matrice hessienne
+\newcommand{\Jac}{J}                              % matrice jacobienne
+\newcommand{\Ou}{\Omega}                          % ouvert de definition
+
+% Une formule en ligne n'est jamais coupee par un retour a la ligne
+\relpenalty=10000
+\binoppenalty=10000
+
+\setlength{\parindent}{1cm}
+
+% Liens du sommaire, des signets et des renvois : invisibles (charge en dernier)
+\usepackage[hidelinks,bookmarksnumbered,pdfauthor={M. JOURDAIN},pdftitle={Cours de L3 - Calcul differentiel}]{hyperref}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CODE COULEUR %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Code couleur du chapitre 6 (constant d'une figure a l'autre) :
+%     couleurN (bleu)   : les solutions de l'equation (courbes integrales, trajectoires)
+%     gris clair        : le champ de directions
+%     couleurD (orange) : les solutions approchees (polygones d'Euler, iteres de Picard)
+%     couleurQ (violet) : les domaines (U, cylindres, compacts, isoclines)
+%     rougecours        : la solution distinguee (condition initiale, separatrice) et les points
+%  Source : sommaire seul (sections 6.1 a 6.7 et 6.10 du sommaire).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+% Ce fichier constitue le chapitre 6
+\setcounter{chapter}{5}
+
+%===============================================================================
+\chapter[Équations différentielles : existence]{Équations différentielles : existence et unicité}
+%===============================================================================
+
+\section{Introduction historique}
+
+\begin{quote}
+\emph{Dans le cinquième Chapitre d'un Mémoire sur les équations aux dérivées partielles, j'ai rapidement indiqué comment certaines méthodes d'approximations successives pouvaient être employées dans l'étude de quelques équations différentielles ordinaires.}
+\begin{flushright}Émile Picard - \emph{Sur l'application des méthodes d'approximations successives à l'étude de certaines équations différentielles ordinaires}, J. math. pures appl., t.~9, 1893\end{flushright}
+\end{quote}
+
+\subsection{Intégrer, ou démontrer que la solution existe}
+
+Depuis Newton, les lois de la physique s'écrivent sous forme d'équations différentielles : la vitesse d'un système dépend de son état. Pendant un siècle et demi, on cherche à les \emph{intégrer}, c'est-à-dire à exprimer leurs solutions à l'aide de fonctions connues ; mais la plupart des équations, même simples, résistent à ce traitement. Il faut changer de point de vue : démontrer que la solution existe et qu'elle est unique, sans la calculer.
+
+Dans ses leçons des années 1820, \textbf{Cauchy} le fait en approchant la courbe cherchée par des lignes brisées, la méthode d'Euler de la section 6.5, et dégage une condition qui garantit l'unicité. En 1868, \textbf{Rudolf Lipschitz} donne à cette condition sa forme définitive, d'où le nom de théorème de Cauchy-Lipschitz.
+
+\subsection{Approximations successives ou compacité}
+
+En 1890, \textbf{Émile Picard} introduit la méthode des approximations successives : on part d'une fonction quelconque, on l'injecte dans l'équation mise sous forme intégrale, et l'on recommence, comme dans la phrase citée en exergue. \textbf{Ernst Lindelöf} en précise la portée en 1894, et l'on y reconnaît aujourd'hui le théorème du point fixe du chapitre 1. La même année 1890, \textbf{Giuseppe Peano} démontre l'existence sous la seule hypothèse de continuité, après une première version erronée de 1886 : sans unicité, il faut un argument de compacité.
+
+Ces deux voies organisent le chapitre : après les outils (sections 6.2 à 6.4), la compacité donne l'existence et les solutions maximales (sections 6.5 et 6.6), le point fixe l'unicité (sections 6.7 et 6.8), et l'on termine par l'étude qualitative de $y' = t + y^{2}$, qu'on ne sait pas résoudre explicitement (section 6.9).
+
+\vfill
+% ---- champ de directions de y' = y - t et solutions y = t + 1 + C e^t (C = -1, -0.5, 0, 0.25, 0.5) ; en rouge C = -0.5, passant par (0, 0.5)
+\noindent\begin{minipage}[c]{5.2cm}
+\begin{tikzpicture}[scale=0.85]
+  \begin{scope}
+    \clip (-2.6,-2.1) rectangle (2.6,3.1);
+\draw[gray!55] (-2.402,-1.826) -- (-2.098,-1.674) (-2.370,-1.370) -- (-2.130,-1.130) (-2.344,-0.891) -- (-2.156,-0.609) (-2.326,-0.402) -- (-2.174,-0.098) (-2.313,0.092) -- (-2.187,0.408) (-2.304,0.589) -- (-2.196,0.911) (-2.297,1.087) -- (-2.203,1.413) (-2.291,1.585) -- (-2.209,1.915) (-2.287,2.084) -- (-2.213,2.416) (-2.283,2.583) -- (-2.217,2.917) (-1.920,-1.750) -- (-1.580,-1.750) (-1.902,-1.326) -- (-1.598,-1.174) (-1.870,-0.870) -- (-1.630,-0.630) (-1.844,-0.391) -- (-1.656,-0.109) (-1.826,0.098) -- (-1.674,0.402) (-1.813,0.592) -- (-1.687,0.908) (-1.804,1.089) -- (-1.696,1.411) (-1.797,1.587) -- (-1.703,1.913) (-1.791,2.085) -- (-1.709,2.415) (-1.787,2.584) -- (-1.713,2.916) (-1.402,-1.674) -- (-1.098,-1.826) (-1.420,-1.250) -- (-1.080,-1.250) (-1.402,-0.826) -- (-1.098,-0.674) (-1.370,-0.370) -- (-1.130,-0.130) (-1.344,0.109) -- (-1.156,0.391) (-1.326,0.598) -- (-1.174,0.902) (-1.313,1.092) -- (-1.187,1.408) (-1.304,1.589) -- (-1.196,1.911) (-1.297,2.087) -- (-1.203,2.413) (-1.291,2.585) -- (-1.209,2.915) (-0.870,-1.630) -- (-0.630,-1.870) (-0.902,-1.174) -- (-0.598,-1.326) (-0.920,-0.750) -- (-0.580,-0.750) (-0.902,-0.326) -- (-0.598,-0.174) (-0.870,0.130) -- (-0.630,0.370) (-0.844,0.609) -- (-0.656,0.891) (-0.826,1.098) -- (-0.674,1.402) (-0.813,1.592) -- (-0.687,1.908) (-0.804,2.089) -- (-0.696,2.411) (-0.797,2.587) -- (-0.703,2.913) (-0.344,-1.609) -- (-0.156,-1.891) (-0.370,-1.130) -- (-0.130,-1.370) (-0.402,-0.674) -- (-0.098,-0.826) (-0.420,-0.250) -- (-0.080,-0.250) (-0.402,0.174) -- (-0.098,0.326) (-0.370,0.630) -- (-0.130,0.870) (-0.344,1.109) -- (-0.156,1.391) (-0.326,1.598) -- (-0.174,1.902) (-0.313,2.092) -- (-0.187,2.408) (-0.304,2.589) -- (-0.196,2.911) (0.174,-1.598) -- (0.326,-1.902) (0.156,-1.109) -- (0.344,-1.391) (0.130,-0.630) -- (0.370,-0.870) (0.098,-0.174) -- (0.402,-0.326) (0.080,0.250) -- (0.420,0.250) (0.098,0.674) -- (0.402,0.826) (0.130,1.130) -- (0.370,1.370) (0.156,1.609) -- (0.344,1.891) (0.174,2.098) -- (0.326,2.402) (0.187,2.592) -- (0.313,2.908) (0.687,-1.592) -- (0.813,-1.908) (0.674,-1.098) -- (0.826,-1.402) (0.656,-0.609) -- (0.844,-0.891) (0.630,-0.130) -- (0.870,-0.370) (0.598,0.326) -- (0.902,0.174) (0.580,0.750) -- (0.920,0.750) (0.598,1.174) -- (0.902,1.326) (0.630,1.630) -- (0.870,1.870) (0.656,2.109) -- (0.844,2.391) (0.674,2.598) -- (0.826,2.902) (1.196,-1.589) -- (1.304,-1.911) (1.187,-1.092) -- (1.313,-1.408) (1.174,-0.598) -- (1.326,-0.902) (1.156,-0.109) -- (1.344,-0.391) (1.130,0.370) -- (1.370,0.130) (1.098,0.826) -- (1.402,0.674) (1.080,1.250) -- (1.420,1.250) (1.098,1.674) -- (1.402,1.826) (1.130,2.130) -- (1.370,2.370) (1.156,2.609) -- (1.344,2.891) (1.703,-1.587) -- (1.797,-1.913) (1.696,-1.089) -- (1.804,-1.411) (1.687,-0.592) -- (1.813,-0.908) (1.674,-0.098) -- (1.826,-0.402) (1.656,0.391) -- (1.844,0.109) (1.630,0.870) -- (1.870,0.630) (1.598,1.326) -- (1.902,1.174) (1.580,1.750) -- (1.920,1.750) (1.598,2.174) -- (1.902,2.326) (1.630,2.630) -- (1.870,2.870) (2.209,-1.585) -- (2.291,-1.915) (2.203,-1.087) -- (2.297,-1.413) (2.196,-0.589) -- (2.304,-0.911) (2.187,-0.092) -- (2.313,-0.408) (2.174,0.402) -- (2.326,0.098) (2.156,0.891) -- (2.344,0.609) (2.130,1.370) -- (2.370,1.130) (2.098,1.826) -- (2.402,1.674) (2.080,2.250) -- (2.420,2.250) (2.098,2.674) -- (2.402,2.826);
+    \foreach \c in {-1,0,0.25,0.5} \draw[couleurN,thick,domain=-2.6:2.6,samples=60] plot (\x,{\x+1+\c*exp(\x)});
+    \draw[rougecours,very thick,domain=-2.6:2.6,samples=60] plot (\x,{\x+1-0.5*exp(\x)});
+  \end{scope}
+  \draw[gray,->] (-2.7,0) -- (2.75,0) node[below,font=\small] {$t$};
+  \draw[gray,->] (0,-2.2) -- (0,3.25) node[left,font=\small] {$y$};
+  \fill[rougecours] (0,0.5) circle (1.3pt);
+  \node[rougecours,font=\small,anchor=north west,fill=white,inner sep=1pt] at (0.1,0.44) {$(t_{0}, y_{0})$};
+\end{tikzpicture}
+\end{minipage}\hfill
+\begin{minipage}[c]{9.4cm}
+Le champ de directions de l'équation $y' = y - t$ : en chaque point $(t, y)$, un petit segment gris de pente $y - t$. Les solutions, en bleu, sont les courbes tangentes en chacun de leurs points au segment qui y est tracé ; ici on les connaît, $y = t + 1 + C\ee^{t}$. Par chaque point passe une solution et une seule, comme celle, en rouge, qui passe par $(0 ; 0{,}5)$ : c'est ce qu'affirme le théorème de Cauchy-Lipschitz, et c'est ce que l'on démontrera sans formule explicite.
+\end{minipage}
+\vfill
+\newpage
+%===============================================================================
+\section[Fonctions à valeurs vectorielles]{Intégration et dérivation des fonctions à valeurs vectorielles}
+%===============================================================================
+
+Les solutions d'une équation différentielle sont des fonctions d'une variable réelle à valeurs dans $\R^{p}$. Dans tout le chapitre, $\R^{p}$ est muni d'une norme $\norme{\cdot}$ quelconque, toutes étant équivalentes. On rassemble ici les outils du chapitre 2 dont on aura besoin, et l'on y ajoute le lemme de Gronwall, qui servira à démontrer l'unicité et l'existence globale.
+
+\begin{cadre}
+\propo{1} \emph{(Outils du chapitre 2.)} Soit $I$ un intervalle et $f : I \to \R^{p}$ continue.
+\begin{enumerate}[label=(\roman*),topsep=3pt,itemsep=2pt]
+  \item Pour $t_{0} \in I$, la fonction $F(t) = \displaystyle\int_{t_{0}}^{t} f(s)\,\dd s$ est de classe $\Cc^{1}$ sur $I$, de dérivée $f$ ; et si $g : I \to \R^{p}$ est de classe $\Cc^{1}$, $g(t) = g(t_{0}) + \displaystyle\int_{t_{0}}^{t} g'(s)\,\dd s$.
+  \item Pour $t_{0} \leqslant t$ dans $I$, $\rmath{\left\|\int_{t_{0}}^{t} f(s)\,\dd s\right\| \leqslant \int_{t_{0}}^{t} \norme{f(s)}\,\dd s}$.
+  \item Si $\norme{g'(s)} \leqslant M$ sur $I$, alors $\norme{g(t) - g(s)} \leqslant M|t - s|$ pour tous $s$, $t \in I$.
+\end{enumerate}
+\end{cadre}
+
+\begin{demo}
+(i) est le théorème fondamental de l'analyse (chapitre 2, théorème 2), (ii) la proposition 7 du chapitre 2, et (iii) l'inégalité des accroissements finis pour une variable (chapitre 2, théorème 1).
+\end{demo}
+
+\begin{cadre}
+\propo{2} \emph{(Lemme de Gronwall.)} Soit $t_{0} < t_{1}$, $u$ et $k$ deux fonctions continues et positives sur $[t_{0}, t_{1}]$, et $A \geqslant 0$. Si
+\[ \rmath{u(t) \leqslant A + \int_{t_{0}}^{t} k(s)\,u(s)\,\dd s} \qquad \text{pour tout } t \in [t_{0}, t_{1}], \]
+alors $\rmath{u(t) \leqslant A\exp\left(\displaystyle\int_{t_{0}}^{t} k(s)\,\dd s\right)}$ pour tout $t \in [t_{0}, t_{1}]$. En particulier, si $A = 0$, alors $u = 0$.
+\end{cadre}
+
+\begin{demo}
+On pose $v(t) = A + \displaystyle\int_{t_{0}}^{t} k(s)u(s)\,\dd s$ et $K(t) = \displaystyle\int_{t_{0}}^{t} k(s)\,\dd s$. La fonction $v$ est de classe $\Cc^{1}$, et $v' = ku \leqslant kv$ puisque $k \geqslant 0$ et $u \leqslant v$. Ainsi $\big(v\,\ee^{-K}\big)' = (v' - kv)\,\ee^{-K} \leqslant 0$ : la fonction $v\,\ee^{-K}$ décroît, et vaut $A$ en $t_{0}$. D'où $u \leqslant v \leqslant A\,\ee^{K}$.
+\end{demo}
+
+\begin{remarques}
+  \item Le lemme transforme une inégalité \emph{intégrale}, celle que l'on obtient en intégrant une équation différentielle, en une borne \emph{explicite}. L'erreur la plus répandue est de l'appliquer avec une fonction $k$ qui change de signe : la positivité de $k$ sert à passer de $v' = ku$ à $v' \leqslant kv$, et sans elle la conclusion peut être fausse.
+  \item Le cas $A = 0$ sera l'argument d'unicité de la section 6.7 : deux solutions qui partent du même point ont une distance qui vérifie l'inégalité avec $A = 0$.
+\end{remarques}
+%===============================================================================
+\section[Équations différentielles]{Équations différentielles}
+%===============================================================================
+
+\begin{center}
+\begin{tabularx}{15cm}{||X}
+\noindent \textbf{\underline{Définition :}} Soit $U$ un ouvert de $\R \times \R^{p}$ et $F : U \to \R^{p}$ continue. Une \mot{solution} de l'équation différentielle
+\[ \rmath{y' = F(t, y)} \]
+est un couple $(J, y)$, où $J$ est un intervalle de $\R$ non réduit à un point et $y : J \to \R^{p}$ une fonction dérivable telle que, pour tout $t \in J$, $(t, y(t)) \in U$ et $y'(t) = F(t, y(t))$. Son graphe $\{(t, y(t)) \mid t \in J\}$ est une \mot{courbe intégrale}. Étant donné $(t_{0}, y_{0}) \in U$, le \mot{problème de Cauchy} consiste à trouver les solutions telles que $t_{0} \in J$ et $y(t_{0}) = y_{0}$.
+\end{tabularx}
+\end{center}
+
+\begin{remarques}
+  \item Une solution est automatiquement de classe $\Cc^{1}$, puisque $y' = F(t, y)$ est continue comme composée de fonctions continues.
+  \item L'équation est dite \mot{autonome} si $F$ ne dépend pas de $t$, et \mot{linéaire} si $F(t, y) = A(t)y + b(t)$, avec $A$ et $b$ continues sur un intervalle.
+\end{remarques}
+
+\begin{cadre}
+\propo{3} \emph{(Forme intégrale.)} Une fonction continue $y : J \to \R^{p}$, dont le graphe est inclus dans $U$, est solution du problème de Cauchy en $(t_{0}, y_{0})$ si et seulement si
+\[ \rmath{y(t) = y_{0} + \int_{t_{0}}^{t} F(s, y(s))\,\dd s} \qquad \text{pour tout } t \in J. \]
+\end{cadre}
+
+\begin{demo}
+Si $y$ est solution, elle est de classe $\Cc^{1}$, et la proposition 1 (i) donne l'égalité. Réciproquement, $s \mapsto F(s, y(s))$ est continue, donc le membre de droite est de classe $\Cc^{1}$, de dérivée $F(t, y(t))$, et il vaut $y_{0}$ en $t_{0}$.
+\end{demo}
+
+\noindent La forme intégrale a deux avantages : elle ne fait intervenir que des fonctions continues, et elle se prête aux passages à la limite uniforme, ce qu'utiliseront les sections 6.5 et 6.8.
+
+\begin{cadre}
+\propo{4} \emph{(Recollement.)} Soit $(J_{1}, y_{1})$ et $(J_{2}, y_{2})$ deux solutions, avec $J_{1} \cap J_{2} = \{c\}$ et $y_{1}(c) = y_{2}(c)$. La fonction égale à $y_{1}$ sur $J_{1}$ et à $y_{2}$ sur $J_{2}$ est une solution sur $J_{1} \cup J_{2}$.
+\end{cadre}
+
+\begin{demo}
+La fonction $y$ ainsi définie est continue, et, pour tout $t \in J_{1} \cup J_{2}$,
+\[ y(t) = y(c) + \int_{c}^{t} F(s, y(s))\,\dd s, \]
+puisque cette égalité vaut sur $J_{1}$ et sur $J_{2}$ par la proposition 3. On conclut par la proposition 3.
+\end{demo}
+
+\subsection{Deux phénomènes nouveaux}
+
+Deux exemples montrent ce que la théorie devra maîtriser : une solution peut cesser d'exister au bout d'un temps fini, et le problème de Cauchy peut avoir plusieurs solutions.
+
+\begin{exemple}
+\emph{Explosion en temps fini.} Pour $y' = y^{2}$, avec $U = \R \times \R$, la fonction $y(t) = \dfrac{y_{0}}{1 - y_{0}t}$ est solution, avec $y(0) = y_{0}$. Pour $y_{0} > 0$, elle est définie sur $\left]-\infty, \dfrac{1}{y_{0}}\right[$ et tend vers $+\infty$ en $\dfrac{1}{y_{0}}$ : bien que $F(t, y) = y^{2}$ soit définie et régulière sur tout le plan, la solution ne se prolonge pas au-delà. L'erreur la plus répandue est de croire qu'une équation définie pour tout $t$ a des solutions définies pour tout $t$ ; c'est vrai pour les équations linéaires (section 6.8), faux en général.
+\end{exemple}
+
+% ---- y = y0 / (1 - y0 t), y0 = 0.5, 1, 2 (explosion en 2, 1, 0.5) et y0 = -1 ; asymptotes en pointilles
+\begin{center}
+\begin{tikzpicture}[x=1.3cm,y=0.42cm]
+  \begin{scope}
+    \clip (-2.5,-3) rectangle (2.6,8.2);
+    \foreach \a/\b in {0.5/1.98,1/0.99,2/0.495} {
+      \draw[couleurQ,densely dotted] ({1/\a},-3) -- ({1/\a},8.2);
+      \draw[couleurN,thick,domain=-2.5:\b,samples=80] plot (\x,{\a/(1-\a*\x)});
+    }
+    \draw[couleurN,thick,domain=-0.69:2.6,samples=60] plot (\x,{-1/(1+\x)});
+  \end{scope}
+  \draw[gray,->] (-2.6,0) -- (2.75,0) node[below,font=\small] {$t$};
+  \draw[gray,->] (0,-3.1) -- (0,8.5) node[left,font=\small] {$y$};
+  \foreach \t/\l in {0.5/\frac{1}{2},1/1,2/2} \node[couleurQ,font=\scriptsize,anchor=north] at (\t,-3.05) {$\l$};
+  \node[couleurN,font=\small,anchor=north east,fill=white,inner sep=1pt] at (-1.05,-1.6) {$y_{0} = -1$};
+  \node[couleurN,font=\small,anchor=east,fill=white,inner sep=1pt] at (0.42,6.8) {$y_{0} = 2$};
+  \node[couleurN,font=\small,anchor=west,fill=white,inner sep=1pt] at (2.05,6.8) {$y_{0} = \frac{1}{2}$};
+\end{tikzpicture}
+\end{center}
+
+\noindent Les solutions de $y' = y^{2}$ issues de $y_{0} = \dfrac{1}{2}$, $1$, $2$ en $t = 0$ explosent aux instants $2$, $1$, $\dfrac{1}{2}$, marqués par les asymptotes violettes en pointillés : plus la valeur initiale est grande, plus l'explosion est proche. Celle issue de $y_{0} = -1$, définie pour $t > -1$, tend vers $0$ quand $t \to +\infty$ et vers $-\infty$ quand $t \to -1$ : l'explosion peut aussi se produire dans le passé.
+
+\begin{exemple}
+\emph{Non-unicité.} Pour $y' = 2\sqrt{|y|}$, la fonction nulle est solution du problème de Cauchy en $(0, 0)$. Mais, pour tout $c \geqslant 0$, la fonction nulle sur $\left]-\infty, c\right]$ et égale à $(t - c)^{2}$ sur $[c, +\infty[$ l'est aussi, puisque la dérivée de $(t - c)^{2}$ vaut $2(t - c) = 2\sqrt{(t - c)^{2}}$ pour $t \geqslant c$. De même, pour $c \leqslant 0$, la fonction égale à $-(t - c)^{2}$ avant $c$ et nulle après est solution. Le problème de Cauchy en $(0, 0)$ a une infinité de solutions : la fonction $y \mapsto 2\sqrt{|y|}$, continue, n'est pas lipschitzienne au voisinage de $0$, et la section 6.7 montrera que c'est la cause du phénomène.
+\end{exemple}
+
+% ---- solutions de y' = 2 sqrt|y| passant par (0,0) : nulle, (t - c)^2 pour t >= c (c = 0, 0.6, 1.2), -(t - c)^2 pour t <= c (c = 0, -0.6)
+\begin{center}
+\begin{tikzpicture}[x=1.5cm,y=0.75cm]
+  \begin{scope}
+    \clip (-2.2,-2.6) rectangle (2.4,2.6);
+    \foreach \c in {0,0.6,1.2} \draw[couleurN,thick,domain=\c:2.4,samples=40] plot (\x,{(\x-\c)^2});
+    \foreach \c in {0,-0.6} \draw[couleurN,thick,domain=-2.2:\c,samples=40] plot (\x,{-(\x-\c)^2});
+    \draw[couleurN,thick] (-2.2,0) -- (2.4,0);
+  \end{scope}
+  \draw[gray,->] (0,-2.7) -- (0,2.75) node[left,font=\small] {$y$};
+  \draw[gray] (2.4,0) -- (2.55,0) node[below,font=\small] {$t$};
+  \fill[rougecours] (0,0) circle (1.6pt);
+  \foreach \c in {0.6,1.2} \fill[couleurN] (\c,0) circle (1pt);
+  \fill[couleurN] (-0.6,0) circle (1pt);
+  \node[couleurN,font=\small,anchor=north,fill=white,inner sep=1pt] at (0.6,-0.12) {$0{,}6$};
+  \node[couleurN,font=\small,anchor=north,fill=white,inner sep=1pt] at (1.2,-0.12) {$1{,}2$};
+  \node[couleurN,font=\small,anchor=south,fill=white,inner sep=1pt] at (-0.6,0.12) {$-0{,}6$};
+\end{tikzpicture}
+\end{center}
+
+\noindent Par l'origine, en rouge, passent la solution nulle et une infinité d'autres solutions, en bleu, qui restent sur l'axe un certain temps puis le quittent selon une demi-parabole : vers le haut à partir des instants $0$, $0{,}6$ ou $1{,}2$, ou vers le bas, en remontant le temps, à partir des instants $0$ ou $-0{,}6$. Toutes les combinaisons d'un départ vers le bas et d'un départ vers le haut sont encore des solutions.
+%===============================================================================
+\section[Ordre supérieur à 1]{Équations d'ordre supérieur à 1}
+%===============================================================================
+
+Une équation d'ordre $n$ s'écrit $y^{(n)} = G\big(t, y, y', \dots, y^{(n - 1)}\big)$, avec $G$ continue sur un ouvert $\Omega$ de l'espace $\R \times (\R^{p})^{n}$. Une solution est une fonction $n$ fois dérivable sur un intervalle, telle que le point $(t, y(t), \dots, y^{(n - 1)}(t))$ reste dans $\Omega$ et vérifie l'équation. Le procédé suivant ramène toute la théorie à l'ordre $1$.
+
+\begin{cadre}
+\propo{5} \emph{(Réduction à l'ordre 1.)} La fonction $y$ est solution de l'équation d'ordre $n$ si et seulement si $Y = (y, y', \dots, y^{(n - 1)})$, à valeurs dans $(\R^{p})^{n} = \R^{np}$, est solution du système d'ordre $1$
+\[ \rmath{Y' = \mathcal{F}(t, Y)}, \qquad \mathcal{F}(t, Y_{0}, \dots, Y_{n - 1}) = \big(Y_{1}, \dots, Y_{n - 1}, G(t, Y_{0}, \dots, Y_{n - 1})\big). \]
+La condition initiale porte alors sur $y(t_{0})$, $y'(t_{0})$, \dots, $y^{(n - 1)}(t_{0})$.
+\end{cadre}
+
+\begin{demo}
+Si $y$ est solution, $Y$ est dérivable et $Y' = (y', \dots, y^{(n - 1)}, y^{(n)}) = \mathcal{F}(t, Y)$. Réciproquement, si $Y = (Y_{0}, \dots, Y_{n - 1})$ est solution du système, alors $Y_{k}' = Y_{k + 1}$ pour $k < n - 1$, d'où par récurrence $Y_{k} = Y_{0}^{(k)}$, et $Y_{n - 1}' = G(t, Y)$ donne $Y_{0}^{(n)} = G\big(t, Y_{0}, \dots, Y_{0}^{(n - 1)}\big)$.
+\end{demo}
+
+\begin{remarque}
+\emph{Piège.} Pour une équation d'ordre $n$, l'état du système à l'instant $t_{0}$ n'est pas la seule valeur $y(t_{0})$ : il faut aussi les $n - 1$ premières dérivées. Une équation du second ordre a, sous les hypothèses de la section 6.8, une unique solution pour chaque position \emph{et} vitesse initiales ; deux solutions peuvent passer par le même point avec des vitesses différentes, sans contredire l'unicité.
+\end{remarque}
+
+\begin{exemple}
+\emph{Le pendule.} L'angle $\theta$ d'un pendule simple, avec des unités convenables, vérifie $\theta'' = -\sin\theta$. Le système associé, pour $Y = (\theta, \omega)$ avec $\omega = \theta'$, est $\theta' = \omega$, $\omega' = -\sin\theta$. La quantité $E = \dfrac{\omega^{2}}{2} - \cos\theta$, l'énergie, est constante le long de toute solution, puisque sa dérivée vaut $\omega\omega' + \theta'\sin\theta = -\omega\sin\theta + \omega\sin\theta = 0$. Les trajectoires dans le plan $(\theta, \omega)$, appelé \mot{plan de phase}, sont donc portées par les lignes de niveau de $E$.
+\end{exemple}
+
+% ---- lignes de niveau -0.6, 0, 0.5 (bleu fonce), 1 (separatrice, rouge), 1.6, 2.6 (bleu clair) de E = w^2/2 - cos(th), extraites par matplotlib
+\begin{center}
+\begin{tikzpicture}[x=0.95cm,y=0.75cm]
+  \begin{scope}
+    \clip (-6.5,-3.1) rectangle (6.5,3.1);
+\draw[couleurN,thick] plot[smooth] coordinates {(6.483,-0.872) (6.431,-0.882) (6.353,-0.892) (6.301,-0.894) (6.244,-0.893) (6.171,-0.887) (6.112,-0.878) (6.046,-0.862) (5.995,-0.847) (5.952,-0.831) (5.912,-0.815) (5.860,-0.789) (5.823,-0.769) (5.782,-0.744) (5.750,-0.723) (5.708,-0.691) (5.678,-0.667) (5.652,-0.644) (5.621,-0.614) (5.591,-0.583) (5.564,-0.552) (5.539,-0.521) (5.516,-0.489) (5.495,-0.458) (5.470,-0.417) (5.450,-0.381) (5.435,-0.350) (5.418,-0.311) (5.403,-0.272) (5.392,-0.238) (5.380,-0.194) (5.370,-0.148) (5.364,-0.117) (5.359,-0.070) (5.356,-0.023) (5.356,0.023) (5.359,0.070) (5.364,0.117) (5.370,0.148) (5.380,0.194) (5.392,0.238) (5.403,0.272) (5.418,0.311) (5.435,0.350) (5.450,0.381) (5.470,0.417) (5.495,0.458) (5.516,0.489) (5.539,0.521) (5.564,0.552) (5.591,0.583) (5.621,0.614) (5.652,0.644) (5.678,0.667) (5.708,0.691) (5.750,0.723) (5.782,0.744) (5.823,0.769) (5.860,0.789) (5.912,0.815) (5.952,0.831) (5.995,0.847) (6.046,0.862) (6.112,0.878) (6.171,0.887) (6.244,0.893) (6.301,0.894) (6.353,0.892) (6.431,0.882) (6.483,0.872) (6.483,0.872)};
+\draw[couleurN,thick] plot[smooth] coordinates {(-6.483,0.872) (-6.431,0.882) (-6.353,0.892) (-6.301,0.894) (-6.244,0.893) (-6.171,0.887) (-6.112,0.878) (-6.046,0.862) (-5.995,0.847) (-5.952,0.831) (-5.912,0.815) (-5.860,0.789) (-5.823,0.769) (-5.782,0.744) (-5.750,0.723) (-5.708,0.691) (-5.678,0.667) (-5.652,0.644) (-5.621,0.614) (-5.591,0.583) (-5.564,0.552) (-5.539,0.521) (-5.516,0.489) (-5.495,0.458) (-5.470,0.417) (-5.450,0.381) (-5.435,0.350) (-5.418,0.311) (-5.403,0.272) (-5.392,0.238) (-5.380,0.194) (-5.370,0.148) (-5.364,0.117) (-5.359,0.070) (-5.356,0.023) (-5.356,-0.023) (-5.359,-0.070) (-5.364,-0.117) (-5.370,-0.148) (-5.380,-0.194) (-5.392,-0.238) (-5.403,-0.272) (-5.418,-0.311) (-5.435,-0.350) (-5.450,-0.381) (-5.470,-0.417) (-5.495,-0.458) (-5.516,-0.489) (-5.539,-0.521) (-5.564,-0.552) (-5.591,-0.583) (-5.621,-0.614) (-5.652,-0.644) (-5.678,-0.667) (-5.708,-0.691) (-5.750,-0.723) (-5.782,-0.744) (-5.823,-0.769) (-5.860,-0.789) (-5.912,-0.815) (-5.952,-0.831) (-5.995,-0.847) (-6.046,-0.862) (-6.112,-0.878) (-6.171,-0.887) (-6.244,-0.893) (-6.301,-0.894) (-6.353,-0.892) (-6.431,-0.882) (-6.483,-0.872) (-6.483,-0.872)};
+\draw[couleurN,thick] plot[smooth cycle] coordinates {(-0.039,-0.894) (-0.091,-0.890) (-0.169,-0.878) (-0.221,-0.867) (-0.273,-0.852) (-0.325,-0.834) (-0.369,-0.816) (-0.403,-0.800) (-0.455,-0.772) (-0.486,-0.754) (-0.533,-0.723) (-0.559,-0.704) (-0.594,-0.676) (-0.630,-0.645) (-0.663,-0.614) (-0.689,-0.587) (-0.715,-0.557) (-0.741,-0.525) (-0.767,-0.491) (-0.788,-0.458) (-0.807,-0.427) (-0.825,-0.396) (-0.845,-0.358) (-0.862,-0.319) (-0.875,-0.287) (-0.890,-0.241) (-0.899,-0.210) (-0.910,-0.163) (-0.919,-0.117) (-0.923,-0.085) (-0.926,-0.039) (-0.927,0.008) (-0.925,0.054) (-0.922,0.088) (-0.916,0.132) (-0.907,0.179) (-0.896,0.221) (-0.885,0.256) (-0.870,0.298) (-0.855,0.334) (-0.841,0.365) (-0.819,0.408) (-0.798,0.443) (-0.778,0.474) (-0.756,0.505) (-0.732,0.536) (-0.706,0.567) (-0.678,0.598) (-0.647,0.629) (-0.613,0.660) (-0.585,0.684) (-0.555,0.707) (-0.511,0.738) (-0.481,0.757) (-0.432,0.785) (-0.402,0.800) (-0.351,0.823) (-0.299,0.843) (-0.247,0.860) (-0.195,0.873) (-0.143,0.883) (-0.065,0.892) (-0.013,0.894) (0.041,0.893) (0.117,0.887) (0.171,0.878) (0.237,0.862) (0.289,0.847) (0.331,0.831) (0.377,0.812) (0.429,0.787) (0.460,0.769) (0.507,0.741) (0.533,0.723) (0.575,0.691) (0.611,0.662) (0.637,0.639) (0.663,0.614) (0.692,0.583) (0.719,0.552) (0.744,0.521) (0.767,0.489) (0.793,0.452) (0.816,0.412) (0.833,0.381) (0.848,0.350) (0.869,0.303) (0.880,0.272) (0.895,0.225) (0.903,0.194) (0.914,0.148) (0.921,0.101) (0.924,0.070) (0.927,0.023) (0.927,-0.023) (0.924,-0.070) (0.921,-0.101) (0.914,-0.148) (0.903,-0.194) (0.895,-0.225) (0.880,-0.272) (0.869,-0.303) (0.848,-0.350) (0.833,-0.381) (0.816,-0.412) (0.793,-0.452) (0.767,-0.489) (0.744,-0.521) (0.719,-0.552) (0.692,-0.583) (0.663,-0.614) (0.637,-0.639) (0.611,-0.662) (0.575,-0.691) (0.533,-0.723) (0.507,-0.741) (0.460,-0.769) (0.429,-0.787) (0.377,-0.812) (0.331,-0.831) (0.289,-0.847) (0.237,-0.862) (0.171,-0.878) (0.117,-0.887) (0.041,-0.893) (-0.013,-0.894)};
+\draw[couleurN,thick] plot[smooth] coordinates {(6.483,-1.400) (6.431,-1.406) (6.353,-1.412) (6.275,-1.414) (6.197,-1.412) (6.134,-1.406) (6.067,-1.398) (6.015,-1.389) (5.952,-1.375) (5.892,-1.360) (5.840,-1.344) (5.794,-1.329) (5.752,-1.313) (5.704,-1.294) (5.652,-1.271) (5.611,-1.251) (5.574,-1.232) (5.524,-1.204) (5.496,-1.188) (5.447,-1.158) (5.418,-1.139) (5.378,-1.111) (5.340,-1.084) (5.314,-1.064) (5.276,-1.033) (5.239,-1.002) (5.210,-0.977) (5.184,-0.953) (5.154,-0.925) (5.123,-0.893) (5.093,-0.862) (5.065,-0.831) (5.038,-0.800) (5.013,-0.769) (4.988,-0.738) (4.965,-0.707) (4.943,-0.676) (4.922,-0.645) (4.898,-0.608) (4.874,-0.567) (4.857,-0.536) (4.840,-0.505) (4.820,-0.464) (4.804,-0.427) (4.791,-0.396) (4.774,-0.350) (4.763,-0.319) (4.749,-0.272) (4.741,-0.241) (4.731,-0.194) (4.723,-0.148) (4.717,-0.101) (4.715,-0.070) (4.713,-0.023) (4.713,0.023) (4.715,0.070) (4.717,0.101) (4.723,0.148) (4.731,0.194) (4.741,0.241) (4.749,0.272) (4.763,0.319) (4.774,0.350) (4.791,0.396) (4.804,0.427) (4.820,0.464) (4.840,0.505) (4.857,0.536) (4.874,0.567) (4.898,0.608) (4.922,0.645) (4.943,0.676) (4.965,0.707) (4.988,0.738) (5.013,0.769) (5.038,0.800) (5.065,0.831) (5.093,0.862) (5.123,0.893) (5.154,0.925) (5.184,0.953) (5.210,0.977) (5.239,1.002) (5.276,1.033) (5.314,1.064) (5.340,1.084) (5.378,1.111) (5.418,1.139) (5.447,1.158) (5.496,1.188) (5.524,1.204) (5.574,1.232) (5.611,1.251) (5.652,1.271) (5.704,1.294) (5.752,1.313) (5.794,1.329) (5.840,1.344) (5.892,1.360) (5.952,1.375) (6.015,1.389) (6.067,1.398) (6.134,1.406) (6.197,1.412) (6.275,1.414) (6.353,1.412) (6.431,1.406) (6.483,1.400) (6.483,1.400)};
+\draw[couleurN,thick] plot[smooth] coordinates {(-6.483,1.400) (-6.431,1.406) (-6.353,1.412) (-6.275,1.414) (-6.197,1.412) (-6.134,1.406) (-6.067,1.398) (-6.015,1.389) (-5.952,1.375) (-5.892,1.360) (-5.840,1.344) (-5.794,1.329) (-5.752,1.313) (-5.704,1.294) (-5.652,1.271) (-5.611,1.251) (-5.574,1.232) (-5.524,1.204) (-5.496,1.188) (-5.447,1.158) (-5.418,1.139) (-5.378,1.111) (-5.340,1.084) (-5.314,1.064) (-5.276,1.033) (-5.239,1.002) (-5.210,0.977) (-5.184,0.953) (-5.154,0.925) (-5.123,0.893) (-5.093,0.862) (-5.065,0.831) (-5.038,0.800) (-5.013,0.769) (-4.988,0.738) (-4.965,0.707) (-4.943,0.676) (-4.922,0.645) (-4.898,0.608) (-4.874,0.567) (-4.857,0.536) (-4.840,0.505) (-4.820,0.464) (-4.804,0.427) (-4.791,0.396) (-4.774,0.350) (-4.763,0.319) (-4.749,0.272) (-4.741,0.241) (-4.731,0.194) (-4.723,0.148) (-4.717,0.101) (-4.715,0.070) (-4.713,0.023) (-4.713,-0.023) (-4.715,-0.070) (-4.717,-0.101) (-4.723,-0.148) (-4.731,-0.194) (-4.741,-0.241) (-4.749,-0.272) (-4.763,-0.319) (-4.774,-0.350) (-4.791,-0.396) (-4.804,-0.427) (-4.820,-0.464) (-4.840,-0.505) (-4.857,-0.536) (-4.874,-0.567) (-4.898,-0.608) (-4.922,-0.645) (-4.943,-0.676) (-4.965,-0.707) (-4.988,-0.738) (-5.013,-0.769) (-5.038,-0.800) (-5.065,-0.831) (-5.093,-0.862) (-5.123,-0.893) (-5.154,-0.925) (-5.184,-0.953) (-5.210,-0.977) (-5.239,-1.002) (-5.276,-1.033) (-5.314,-1.064) (-5.340,-1.084) (-5.378,-1.111) (-5.418,-1.139) (-5.447,-1.158) (-5.496,-1.188) (-5.524,-1.204) (-5.574,-1.232) (-5.611,-1.251) (-5.652,-1.271) (-5.704,-1.294) (-5.752,-1.313) (-5.794,-1.329) (-5.840,-1.344) (-5.892,-1.360) (-5.952,-1.375) (-6.015,-1.389) (-6.067,-1.398) (-6.134,-1.406) (-6.197,-1.412) (-6.275,-1.414) (-6.353,-1.412) (-6.431,-1.406) (-6.483,-1.400) (-6.483,-1.400)};
+\draw[couleurN,thick] plot[smooth cycle] coordinates {(-0.143,-1.407) (-0.195,-1.401) (-0.257,-1.391) (-0.325,-1.377) (-0.377,-1.364) (-0.429,-1.349) (-0.481,-1.332) (-0.532,-1.313) (-0.570,-1.297) (-0.611,-1.280) (-0.663,-1.256) (-0.703,-1.235) (-0.741,-1.215) (-0.786,-1.189) (-0.819,-1.169) (-0.860,-1.142) (-0.896,-1.117) (-0.927,-1.095) (-0.969,-1.064) (-1.000,-1.039) (-1.026,-1.018) (-1.062,-0.987) (-1.097,-0.956) (-1.129,-0.925) (-1.156,-0.897) (-1.182,-0.870) (-1.208,-0.842) (-1.234,-0.813) (-1.260,-0.782) (-1.286,-0.749) (-1.312,-0.715) (-1.338,-0.679) (-1.361,-0.645) (-1.381,-0.614) (-1.400,-0.583) (-1.418,-0.552) (-1.442,-0.507) (-1.458,-0.474) (-1.473,-0.443) (-1.492,-0.396) (-1.504,-0.365) (-1.520,-0.319) (-1.529,-0.287) (-1.542,-0.241) (-1.549,-0.210) (-1.557,-0.163) (-1.564,-0.117) (-1.568,-0.070) (-1.571,-0.023) (-1.571,0.023) (-1.568,0.070) (-1.564,0.117) (-1.557,0.163) (-1.549,0.210) (-1.542,0.241) (-1.529,0.287) (-1.520,0.319) (-1.504,0.365) (-1.492,0.396) (-1.473,0.443) (-1.458,0.474) (-1.442,0.507) (-1.418,0.552) (-1.400,0.583) (-1.381,0.614) (-1.361,0.645) (-1.338,0.679) (-1.312,0.715) (-1.286,0.749) (-1.260,0.782) (-1.234,0.813) (-1.208,0.842) (-1.182,0.870) (-1.156,0.897) (-1.129,0.925) (-1.097,0.956) (-1.062,0.987) (-1.026,1.018) (-1.000,1.039) (-0.969,1.064) (-0.927,1.095) (-0.896,1.117) (-0.860,1.142) (-0.819,1.169) (-0.786,1.189) (-0.741,1.215) (-0.703,1.235) (-0.663,1.256) (-0.611,1.280) (-0.570,1.297) (-0.532,1.313) (-0.481,1.332) (-0.429,1.349) (-0.377,1.364) (-0.325,1.377) (-0.257,1.391) (-0.195,1.401) (-0.143,1.407) (-0.065,1.413) (0.013,1.414) (0.091,1.411) (0.149,1.406) (0.221,1.397) (0.273,1.388) (0.331,1.375) (0.391,1.360) (0.443,1.344) (0.489,1.329) (0.533,1.313) (0.585,1.291) (0.637,1.268) (0.672,1.251) (0.715,1.229) (0.760,1.204) (0.793,1.185) (0.836,1.158) (0.870,1.135) (0.906,1.111) (0.948,1.080) (0.974,1.060) (1.008,1.033) (1.045,1.002) (1.078,0.972) (1.104,0.948) (1.130,0.923) (1.160,0.893) (1.190,0.862) (1.218,0.831) (1.245,0.800) (1.270,0.769) (1.295,0.738) (1.318,0.707) (1.340,0.676) (1.364,0.640) (1.390,0.599) (1.409,0.567) (1.427,0.536) (1.443,0.505) (1.466,0.458) (1.479,0.427) (1.494,0.391) (1.510,0.350) (1.520,0.318) (1.534,0.272) (1.545,0.225) (1.552,0.194) (1.560,0.148) (1.566,0.101) (1.569,0.054) (1.571,0.008) (1.570,-0.039) (1.567,-0.085) (1.562,-0.132) (1.555,-0.179) (1.546,-0.222) (1.538,-0.256) (1.525,-0.303) (1.515,-0.334) (1.498,-0.381) (1.486,-0.412) (1.468,-0.453) (1.451,-0.489) (1.435,-0.521) (1.416,-0.555) (1.391,-0.598) (1.371,-0.629) (1.351,-0.660) (1.329,-0.691) (1.307,-0.723) (1.283,-0.754) (1.258,-0.785) (1.232,-0.816) (1.204,-0.847) (1.175,-0.878) (1.145,-0.909) (1.113,-0.940) (1.080,-0.971) (1.052,-0.995) (1.026,-1.018) (0.988,-1.049) (0.948,-1.080) (0.922,-1.099) (0.883,-1.127) (0.845,-1.152) (0.812,-1.173) (0.767,-1.200) (0.732,-1.220) (0.689,-1.243) (0.640,-1.266) (0.606,-1.282) (0.559,-1.302) (0.507,-1.322) (0.455,-1.340) (0.403,-1.356) (0.351,-1.370) (0.299,-1.383) (0.247,-1.393) (0.169,-1.404) (0.117,-1.409) (0.039,-1.414) (-0.039,-1.414) (-0.117,-1.409)};
+\draw[couleurN,thick] plot[smooth] coordinates {(6.483,-1.720) (6.405,-1.728) (6.327,-1.731) (6.249,-1.732) (6.171,-1.728) (6.093,-1.722) (6.041,-1.715) (5.963,-1.703) (5.912,-1.692) (5.860,-1.680) (5.808,-1.667) (5.756,-1.652) (5.704,-1.635) (5.652,-1.617) (5.600,-1.597) (5.551,-1.577) (5.515,-1.562) (5.470,-1.541) (5.418,-1.515) (5.387,-1.499) (5.340,-1.474) (5.301,-1.453) (5.262,-1.430) (5.223,-1.406) (5.184,-1.381) (5.151,-1.360) (5.106,-1.329) (5.080,-1.311) (5.040,-1.282) (5.002,-1.253) (4.976,-1.233) (4.939,-1.204) (4.902,-1.173) (4.872,-1.148) (4.846,-1.125) (4.813,-1.095) (4.779,-1.064) (4.746,-1.033) (4.716,-1.004) (4.690,-0.978) (4.664,-0.951) (4.638,-0.923) (4.611,-0.893) (4.584,-0.862) (4.557,-0.831) (4.532,-0.800) (4.507,-0.769) (4.482,-0.738) (4.456,-0.702) (4.430,-0.666) (4.406,-0.629) (4.386,-0.598) (4.366,-0.567) (4.348,-0.536) (4.326,-0.497) (4.306,-0.458) (4.291,-0.427) (4.274,-0.390) (4.258,-0.350) (4.246,-0.319) (4.231,-0.272) (4.222,-0.241) (4.210,-0.194) (4.201,-0.148) (4.197,-0.116) (4.192,-0.070) (4.189,-0.023) (4.189,0.023) (4.192,0.070) (4.197,0.116) (4.201,0.148) (4.210,0.194) (4.222,0.241) (4.231,0.272) (4.246,0.319) (4.258,0.350) (4.274,0.390) (4.291,0.427) (4.306,0.458) (4.326,0.497) (4.348,0.536) (4.366,0.567) (4.386,0.598) (4.406,0.629) (4.430,0.666) (4.456,0.702) (4.482,0.738) (4.507,0.769) (4.532,0.800) (4.557,0.831) (4.584,0.862) (4.611,0.893) (4.638,0.923) (4.664,0.951) (4.690,0.978) (4.716,1.004) (4.746,1.033) (4.779,1.064) (4.813,1.095) (4.846,1.125) (4.872,1.148) (4.902,1.173) (4.939,1.204) (4.976,1.233) (5.002,1.253) (5.040,1.282) (5.080,1.311) (5.106,1.329) (5.151,1.360) (5.184,1.381) (5.223,1.406) (5.262,1.430) (5.301,1.453) (5.340,1.474) (5.387,1.499) (5.418,1.515) (5.470,1.541) (5.515,1.562) (5.551,1.577) (5.600,1.597) (5.652,1.617) (5.704,1.635) (5.756,1.652) (5.808,1.667) (5.860,1.680) (5.912,1.692) (5.963,1.703) (6.041,1.715) (6.093,1.722) (6.171,1.728) (6.249,1.732) (6.327,1.731) (6.405,1.728) (6.483,1.720) (6.483,1.720)};
+\draw[couleurN,thick] plot[smooth] coordinates {(-6.483,1.720) (-6.405,1.728) (-6.327,1.731) (-6.249,1.732) (-6.171,1.728) (-6.093,1.722) (-6.041,1.715) (-5.963,1.703) (-5.912,1.692) (-5.860,1.680) (-5.808,1.667) (-5.756,1.652) (-5.704,1.635) (-5.652,1.617) (-5.600,1.597) (-5.551,1.577) (-5.515,1.562) (-5.470,1.541) (-5.418,1.515) (-5.387,1.499) (-5.340,1.474) (-5.301,1.453) (-5.262,1.430) (-5.223,1.406) (-5.184,1.381) (-5.151,1.360) (-5.106,1.329) (-5.080,1.311) (-5.040,1.282) (-5.002,1.253) (-4.976,1.233) (-4.939,1.204) (-4.902,1.173) (-4.872,1.148) (-4.846,1.125) (-4.813,1.095) (-4.779,1.064) (-4.746,1.033) (-4.716,1.004) (-4.690,0.978) (-4.664,0.951) (-4.638,0.923) (-4.611,0.893) (-4.584,0.862) (-4.557,0.831) (-4.532,0.800) (-4.507,0.769) (-4.482,0.738) (-4.456,0.702) (-4.430,0.666) (-4.406,0.629) (-4.386,0.598) (-4.366,0.567) (-4.348,0.536) (-4.326,0.497) (-4.306,0.458) (-4.291,0.427) (-4.274,0.390) (-4.258,0.350) (-4.246,0.319) (-4.231,0.272) (-4.222,0.241) (-4.210,0.194) (-4.201,0.148) (-4.197,0.116) (-4.192,0.070) (-4.189,0.023) (-4.189,-0.023) (-4.192,-0.070) (-4.197,-0.116) (-4.201,-0.148) (-4.210,-0.194) (-4.222,-0.241) (-4.231,-0.272) (-4.246,-0.319) (-4.258,-0.350) (-4.274,-0.390) (-4.291,-0.427) (-4.306,-0.458) (-4.326,-0.497) (-4.348,-0.536) (-4.366,-0.567) (-4.386,-0.598) (-4.406,-0.629) (-4.430,-0.666) (-4.456,-0.702) (-4.482,-0.738) (-4.507,-0.769) (-4.532,-0.800) (-4.557,-0.831) (-4.584,-0.862) (-4.611,-0.893) (-4.638,-0.923) (-4.664,-0.951) (-4.690,-0.978) (-4.716,-1.004) (-4.746,-1.033) (-4.779,-1.064) (-4.813,-1.095) (-4.846,-1.125) (-4.872,-1.148) (-4.902,-1.173) (-4.939,-1.204) (-4.976,-1.233) (-5.002,-1.253) (-5.040,-1.282) (-5.080,-1.311) (-5.106,-1.329) (-5.151,-1.360) (-5.184,-1.381) (-5.223,-1.406) (-5.262,-1.430) (-5.301,-1.453) (-5.340,-1.474) (-5.387,-1.499) (-5.418,-1.515) (-5.470,-1.541) (-5.515,-1.562) (-5.551,-1.577) (-5.600,-1.597) (-5.652,-1.617) (-5.704,-1.635) (-5.756,-1.652) (-5.808,-1.667) (-5.860,-1.680) (-5.912,-1.692) (-5.963,-1.703) (-6.041,-1.715) (-6.093,-1.722) (-6.171,-1.728) (-6.249,-1.732) (-6.327,-1.731) (-6.405,-1.728) (-6.483,-1.720) (-6.483,-1.720)};
+\draw[couleurN,thick] plot[smooth cycle] coordinates {(-0.221,-1.718) (-0.273,-1.711) (-0.325,-1.702) (-0.399,-1.686) (-0.455,-1.672) (-0.507,-1.658) (-0.559,-1.642) (-0.611,-1.624) (-0.655,-1.608) (-0.694,-1.593) (-0.741,-1.574) (-0.793,-1.550) (-0.835,-1.531) (-0.870,-1.513) (-0.922,-1.486) (-0.954,-1.468) (-1.000,-1.442) (-1.035,-1.422) (-1.078,-1.395) (-1.109,-1.375) (-1.156,-1.344) (-1.182,-1.326) (-1.222,-1.297) (-1.260,-1.269) (-1.286,-1.250) (-1.324,-1.220) (-1.363,-1.189) (-1.390,-1.166) (-1.418,-1.142) (-1.453,-1.111) (-1.488,-1.080) (-1.520,-1.049) (-1.546,-1.024) (-1.572,-0.999) (-1.599,-0.971) (-1.629,-0.940) (-1.658,-0.909) (-1.686,-0.878) (-1.713,-0.847) (-1.739,-0.816) (-1.764,-0.785) (-1.789,-0.754) (-1.812,-0.723) (-1.835,-0.691) (-1.858,-0.658) (-1.884,-0.620) (-1.907,-0.583) (-1.926,-0.552) (-1.944,-0.521) (-1.962,-0.487) (-1.984,-0.443) (-1.999,-0.412) (-2.014,-0.378) (-2.031,-0.334) (-2.042,-0.303) (-2.057,-0.256) (-2.066,-0.223) (-2.076,-0.179) (-2.084,-0.132) (-2.090,-0.085) (-2.093,-0.054) (-2.094,-0.008) (-2.094,0.039) (-2.092,0.070) (-2.087,0.117) (-2.079,0.163) (-2.069,0.210) (-2.061,0.241) (-2.047,0.287) (-2.037,0.319) (-2.019,0.365) (-2.006,0.396) (-1.988,0.436) (-1.969,0.474) (-1.953,0.505) (-1.935,0.536) (-1.910,0.579) (-1.888,0.614) (-1.867,0.645) (-1.846,0.676) (-1.824,0.707) (-1.800,0.738) (-1.776,0.769) (-1.752,0.800) (-1.726,0.831) (-1.699,0.862) (-1.672,0.893) (-1.643,0.925) (-1.614,0.956) (-1.584,0.987) (-1.553,1.018) (-1.521,1.049) (-1.494,1.074) (-1.468,1.098) (-1.436,1.127) (-1.400,1.158) (-1.364,1.188) (-1.338,1.209) (-1.305,1.235) (-1.264,1.266) (-1.234,1.289) (-1.200,1.313) (-1.156,1.344) (-1.130,1.361) (-1.085,1.391) (-1.052,1.411) (-1.009,1.437) (-0.974,1.457) (-0.926,1.484) (-0.896,1.500) (-0.845,1.526) (-0.802,1.546) (-0.767,1.562) (-0.715,1.585) (-0.663,1.605) (-0.612,1.624) (-0.566,1.639) (-0.517,1.655) (-0.462,1.670) (-0.403,1.685) (-0.351,1.697) (-0.299,1.706) (-0.228,1.717) (-0.169,1.724) (-0.091,1.730) (-0.013,1.732) (0.065,1.731) (0.143,1.726) (0.221,1.718) (0.273,1.711) (0.325,1.702) (0.399,1.686) (0.455,1.672) (0.507,1.658) (0.559,1.642) (0.611,1.624) (0.655,1.608) (0.694,1.593) (0.741,1.574) (0.793,1.550) (0.835,1.531) (0.870,1.513) (0.922,1.486) (0.954,1.468) (1.000,1.442) (1.035,1.422) (1.078,1.395) (1.109,1.375) (1.156,1.344) (1.182,1.326) (1.222,1.297) (1.260,1.269) (1.286,1.250) (1.324,1.220) (1.363,1.189) (1.390,1.166) (1.418,1.142) (1.453,1.111) (1.488,1.080) (1.520,1.049) (1.546,1.024) (1.572,0.999) (1.599,0.971) (1.629,0.940) (1.658,0.909) (1.686,0.878) (1.713,0.847) (1.739,0.816) (1.764,0.785) (1.789,0.754) (1.812,0.723) (1.835,0.691) (1.858,0.658) (1.884,0.620) (1.907,0.583) (1.926,0.552) (1.944,0.521) (1.962,0.487) (1.984,0.443) (1.999,0.412) (2.014,0.378) (2.031,0.334) (2.042,0.303) (2.057,0.256) (2.066,0.223) (2.076,0.179) (2.084,0.132) (2.090,0.085) (2.093,0.054) (2.094,0.008) (2.094,-0.039) (2.092,-0.070) (2.087,-0.117) (2.079,-0.163) (2.069,-0.210) (2.061,-0.241) (2.047,-0.287) (2.037,-0.319) (2.019,-0.365) (2.006,-0.396) (1.988,-0.436) (1.969,-0.474) (1.953,-0.505) (1.935,-0.536) (1.910,-0.579) (1.888,-0.614) (1.867,-0.645) (1.846,-0.676) (1.824,-0.707) (1.800,-0.738) (1.776,-0.769) (1.752,-0.800) (1.726,-0.831) (1.699,-0.862) (1.672,-0.893) (1.643,-0.925) (1.614,-0.956) (1.584,-0.987) (1.553,-1.018) (1.521,-1.049) (1.494,-1.074) (1.468,-1.098) (1.436,-1.127) (1.400,-1.158) (1.364,-1.188) (1.338,-1.209) (1.305,-1.235) (1.264,-1.266) (1.234,-1.289) (1.200,-1.313) (1.156,-1.344) (1.130,-1.361) (1.085,-1.391) (1.052,-1.411) (1.009,-1.437) (0.974,-1.457) (0.926,-1.484) (0.896,-1.500) (0.845,-1.526) (0.802,-1.546) (0.767,-1.562) (0.715,-1.585) (0.663,-1.605) (0.612,-1.624) (0.566,-1.639) (0.517,-1.655) (0.462,-1.670) (0.403,-1.685) (0.351,-1.697) (0.299,-1.706) (0.228,-1.717) (0.169,-1.724) (0.091,-1.730) (0.013,-1.732) (-0.065,-1.731) (-0.143,-1.726)};
+\draw[rougecours,thick] plot[smooth] coordinates {(6.483,-1.990) (6.405,-1.996) (6.353,-1.999) (6.275,-2.000) (6.197,-1.998) (6.145,-1.995) (6.067,-1.988) (6.009,-1.981) (5.938,-1.970) (5.886,-1.961) (5.834,-1.950) (5.770,-1.935) (5.712,-1.919) (5.659,-1.904) (5.611,-1.888) (5.565,-1.872) (5.522,-1.857) (5.470,-1.837) (5.418,-1.816) (5.369,-1.795) (5.335,-1.779) (5.288,-1.757) (5.237,-1.733) (5.206,-1.717) (5.158,-1.692) (5.119,-1.670) (5.080,-1.649) (5.036,-1.624) (5.002,-1.604) (4.959,-1.577) (4.924,-1.556) (4.885,-1.531) (4.846,-1.506) (4.814,-1.484) (4.768,-1.453) (4.742,-1.435) (4.701,-1.406) (4.664,-1.380) (4.637,-1.360) (4.595,-1.329) (4.560,-1.303) (4.533,-1.282) (4.493,-1.251) (4.456,-1.222) (4.430,-1.201) (4.395,-1.173) (4.357,-1.142) (4.326,-1.117) (4.300,-1.095) (4.264,-1.064) (4.227,-1.033) (4.197,-1.007) (4.171,-0.984) (4.138,-0.956) (4.103,-0.925) (4.068,-0.893) (4.041,-0.869) (4.015,-0.846) (3.982,-0.816) (3.948,-0.785) (3.914,-0.754) (3.885,-0.726) (3.859,-0.702) (3.831,-0.676) (3.798,-0.645) (3.765,-0.614) (3.733,-0.583) (3.703,-0.554) (3.677,-0.529) (3.651,-0.504) (3.620,-0.474) (3.588,-0.443) (3.556,-0.412) (3.525,-0.381) (3.495,-0.351) (3.469,-0.326) (3.443,-0.300) (3.414,-0.272) (3.383,-0.241) (3.351,-0.210) (3.320,-0.179) (3.289,-0.148) (3.261,-0.119) (3.235,-0.093) (3.209,-0.067) (3.179,-0.039) (3.131,-0.009) (3.103,-0.039) (3.073,-0.070) (3.041,-0.101) (3.010,-0.132) (2.978,-0.163) (2.949,-0.192) (2.923,-0.218) (2.897,-0.244) (2.869,-0.272) (2.838,-0.303) (2.806,-0.334) (2.775,-0.365) (2.743,-0.396) (2.715,-0.423) (2.689,-0.448) (2.663,-0.474) (2.631,-0.505) (2.599,-0.536) (2.567,-0.567) (2.534,-0.598) (2.508,-0.623) (2.482,-0.648) (2.452,-0.676) (2.419,-0.707) (2.386,-0.738) (2.352,-0.769) (2.326,-0.793) (2.300,-0.817) (2.267,-0.847) (2.233,-0.878) (2.198,-0.909) (2.170,-0.934) (2.144,-0.957) (2.110,-0.987) (2.074,-1.018) (2.040,-1.047) (2.014,-1.069) (1.982,-1.095) (1.945,-1.127) (1.910,-1.155) (1.884,-1.176) (1.849,-1.204) (1.810,-1.235) (1.780,-1.259) (1.750,-1.282) (1.709,-1.313) (1.676,-1.338) (1.647,-1.360) (1.604,-1.391) (1.572,-1.413) (1.538,-1.437) (1.494,-1.467) (1.468,-1.485) (1.423,-1.515) (1.390,-1.536) (1.350,-1.562) (1.312,-1.585) (1.273,-1.608) (1.234,-1.631) (1.192,-1.655) (1.156,-1.675) (1.107,-1.702) (1.077,-1.717) (1.026,-1.742) (0.982,-1.764) (0.948,-1.779) (0.896,-1.802) (0.845,-1.824) (0.802,-1.841) (0.761,-1.857) (0.715,-1.874) (0.663,-1.891) (0.611,-1.907) (0.559,-1.922) (0.507,-1.936) (0.447,-1.950) (0.377,-1.965) (0.325,-1.974) (0.273,-1.981) (0.195,-1.990) (0.117,-1.997) (0.065,-1.999) (-0.013,-2.000) (-0.091,-1.998) (-0.143,-1.995) (-0.221,-1.988) (-0.274,-1.981) (-0.351,-1.969) (-0.403,-1.960) (-0.455,-1.949) (-0.513,-1.935) (-0.571,-1.919) (-0.624,-1.904) (-0.672,-1.888) (-0.718,-1.872) (-0.767,-1.855) (-0.819,-1.835) (-0.870,-1.814) (-0.914,-1.795) (-0.949,-1.779) (-1.000,-1.755) (-1.046,-1.733) (-1.078,-1.716) (-1.130,-1.689) (-1.165,-1.670) (-1.208,-1.646) (-1.247,-1.624) (-1.286,-1.600) (-1.325,-1.577) (-1.364,-1.552) (-1.399,-1.531) (-1.442,-1.502) (-1.470,-1.484) (-1.515,-1.453) (-1.546,-1.432) (-1.582,-1.406) (-1.624,-1.376) (-1.650,-1.357) (-1.689,-1.329) (-1.728,-1.299) (-1.754,-1.279) (-1.790,-1.251) (-1.830,-1.220) (-1.858,-1.197) (-1.888,-1.173) (-1.926,-1.142) (-1.962,-1.113) (-1.988,-1.091) (-2.019,-1.064) (-2.056,-1.033) (-2.092,-1.002) (-2.118,-0.980) (-2.145,-0.956) (-2.181,-0.925) (-2.215,-0.893) (-2.248,-0.864) (-2.274,-0.841) (-2.301,-0.816) (-2.335,-0.785) (-2.369,-0.754) (-2.402,-0.723) (-2.430,-0.697) (-2.456,-0.673) (-2.485,-0.645) (-2.518,-0.614) (-2.550,-0.583) (-2.583,-0.552) (-2.611,-0.524) (-2.637,-0.499) (-2.663,-0.474) (-2.695,-0.443) (-2.727,-0.412) (-2.759,-0.381) (-2.790,-0.350) (-2.819,-0.321) (-2.845,-0.295) (-2.871,-0.269) (-2.900,-0.241) (-2.932,-0.210) (-2.963,-0.179) (-2.994,-0.148) (-3.025,-0.117) (-3.053,-0.088) (-3.079,-0.062) (-3.105,-0.036) (-3.157,-0.014) (-3.183,-0.041) (-3.211,-0.070) (-3.242,-0.101) (-3.273,-0.132) (-3.304,-0.163) (-3.336,-0.194) (-3.365,-0.223) (-3.391,-0.249) (-3.417,-0.274) (-3.446,-0.303) (-3.477,-0.334) (-3.509,-0.365) (-3.540,-0.396) (-3.572,-0.427) (-3.599,-0.453) (-3.625,-0.479) (-3.652,-0.505) (-3.684,-0.536) (-3.717,-0.567) (-3.749,-0.598) (-3.781,-0.628) (-3.807,-0.653) (-3.833,-0.677) (-3.864,-0.707) (-3.897,-0.738) (-3.931,-0.769) (-3.963,-0.798) (-3.989,-0.822) (-4.016,-0.847) (-4.050,-0.878) (-4.085,-0.909) (-4.119,-0.939) (-4.145,-0.961) (-4.173,-0.987) (-4.209,-1.018) (-4.246,-1.049) (-4.274,-1.073) (-4.301,-1.095) (-4.338,-1.127) (-4.376,-1.158) (-4.404,-1.181) (-4.434,-1.204) (-4.473,-1.235) (-4.508,-1.263) (-4.534,-1.283) (-4.574,-1.313) (-4.612,-1.342) (-4.638,-1.361) (-4.679,-1.391) (-4.716,-1.417) (-4.745,-1.437) (-4.791,-1.468) (-4.820,-1.488) (-4.861,-1.515) (-4.898,-1.539) (-4.934,-1.562) (-4.976,-1.588) (-5.010,-1.608) (-5.054,-1.634) (-5.091,-1.655) (-5.132,-1.678) (-5.176,-1.702) (-5.210,-1.719) (-5.262,-1.745) (-5.301,-1.764) (-5.340,-1.782) (-5.392,-1.805) (-5.442,-1.826) (-5.481,-1.841) (-5.522,-1.857) (-5.574,-1.875) (-5.626,-1.893) (-5.678,-1.909) (-5.730,-1.924) (-5.782,-1.937) (-5.836,-1.950) (-5.912,-1.966) (-5.963,-1.974) (-6.015,-1.982) (-6.093,-1.991) (-6.169,-1.997) (-6.223,-1.999) (-6.301,-2.000) (-6.379,-1.998) (-6.431,-1.995) (-6.483,-1.990)};
+\draw[rougecours,thick] plot[smooth] coordinates {(-6.483,1.990) (-6.405,1.996) (-6.353,1.999) (-6.275,2.000) (-6.197,1.998) (-6.145,1.995) (-6.067,1.988) (-6.009,1.981) (-5.938,1.970) (-5.886,1.961) (-5.834,1.950) (-5.770,1.935) (-5.712,1.919) (-5.659,1.904) (-5.611,1.888) (-5.565,1.872) (-5.522,1.857) (-5.470,1.837) (-5.418,1.816) (-5.369,1.795) (-5.335,1.779) (-5.288,1.757) (-5.237,1.733) (-5.206,1.717) (-5.158,1.692) (-5.119,1.670) (-5.080,1.649) (-5.036,1.624) (-5.002,1.604) (-4.959,1.577) (-4.924,1.556) (-4.885,1.531) (-4.846,1.506) (-4.814,1.484) (-4.768,1.453) (-4.742,1.435) (-4.701,1.406) (-4.664,1.380) (-4.637,1.360) (-4.595,1.329) (-4.560,1.303) (-4.533,1.282) (-4.493,1.251) (-4.456,1.222) (-4.430,1.201) (-4.395,1.173) (-4.357,1.142) (-4.326,1.117) (-4.300,1.095) (-4.264,1.064) (-4.227,1.033) (-4.197,1.007) (-4.171,0.984) (-4.138,0.956) (-4.103,0.925) (-4.068,0.893) (-4.041,0.869) (-4.015,0.846) (-3.982,0.816) (-3.948,0.785) (-3.914,0.754) (-3.885,0.726) (-3.859,0.702) (-3.831,0.676) (-3.798,0.645) (-3.765,0.614) (-3.733,0.583) (-3.703,0.554) (-3.677,0.529) (-3.651,0.504) (-3.620,0.474) (-3.588,0.443) (-3.556,0.412) (-3.525,0.381) (-3.495,0.351) (-3.469,0.326) (-3.443,0.300) (-3.414,0.272) (-3.383,0.241) (-3.351,0.210) (-3.320,0.179) (-3.289,0.148) (-3.261,0.119) (-3.235,0.093) (-3.209,0.067) (-3.179,0.039) (-3.131,0.009) (-3.103,0.039) (-3.073,0.070) (-3.041,0.101) (-3.010,0.132) (-2.978,0.163) (-2.949,0.192) (-2.923,0.218) (-2.897,0.244) (-2.869,0.272) (-2.838,0.303) (-2.806,0.334) (-2.775,0.365) (-2.743,0.396) (-2.715,0.423) (-2.689,0.448) (-2.663,0.474) (-2.631,0.505) (-2.599,0.536) (-2.567,0.567) (-2.534,0.598) (-2.508,0.623) (-2.482,0.648) (-2.452,0.676) (-2.419,0.707) (-2.386,0.738) (-2.352,0.769) (-2.326,0.793) (-2.300,0.817) (-2.267,0.847) (-2.233,0.878) (-2.198,0.909) (-2.170,0.934) (-2.144,0.957) (-2.110,0.987) (-2.074,1.018) (-2.040,1.047) (-2.014,1.069) (-1.982,1.095) (-1.945,1.127) (-1.910,1.155) (-1.884,1.176) (-1.849,1.204) (-1.810,1.235) (-1.780,1.259) (-1.750,1.282) (-1.709,1.313) (-1.676,1.338) (-1.647,1.360) (-1.604,1.391) (-1.572,1.413) (-1.538,1.437) (-1.494,1.467) (-1.468,1.485) (-1.423,1.515) (-1.390,1.536) (-1.350,1.562) (-1.312,1.585) (-1.273,1.608) (-1.234,1.631) (-1.192,1.655) (-1.156,1.675) (-1.107,1.702) (-1.077,1.717) (-1.026,1.742) (-0.982,1.764) (-0.948,1.779) (-0.896,1.802) (-0.845,1.824) (-0.802,1.841) (-0.761,1.857) (-0.715,1.874) (-0.663,1.891) (-0.611,1.907) (-0.559,1.922) (-0.507,1.936) (-0.447,1.950) (-0.377,1.965) (-0.325,1.974) (-0.273,1.981) (-0.195,1.990) (-0.117,1.997) (-0.065,1.999) (0.013,2.000) (0.091,1.998) (0.143,1.995) (0.221,1.988) (0.274,1.981) (0.351,1.969) (0.403,1.960) (0.455,1.949) (0.513,1.935) (0.571,1.919) (0.624,1.904) (0.672,1.888) (0.718,1.872) (0.767,1.855) (0.819,1.835) (0.870,1.814) (0.914,1.795) (0.949,1.779) (1.000,1.755) (1.046,1.733) (1.078,1.716) (1.130,1.689) (1.165,1.670) (1.208,1.646) (1.247,1.624) (1.286,1.600) (1.325,1.577) (1.364,1.552) (1.399,1.531) (1.442,1.502) (1.470,1.484) (1.515,1.453) (1.546,1.432) (1.582,1.406) (1.624,1.376) (1.650,1.357) (1.689,1.329) (1.728,1.299) (1.754,1.279) (1.790,1.251) (1.830,1.220) (1.858,1.197) (1.888,1.173) (1.926,1.142) (1.962,1.113) (1.988,1.091) (2.019,1.064) (2.056,1.033) (2.092,1.002) (2.118,0.980) (2.145,0.956) (2.181,0.925) (2.215,0.893) (2.248,0.864) (2.274,0.841) (2.301,0.816) (2.335,0.785) (2.369,0.754) (2.402,0.723) (2.430,0.697) (2.456,0.673) (2.485,0.645) (2.518,0.614) (2.550,0.583) (2.583,0.552) (2.611,0.524) (2.637,0.499) (2.663,0.474) (2.695,0.443) (2.727,0.412) (2.759,0.381) (2.790,0.350) (2.819,0.321) (2.845,0.295) (2.871,0.269) (2.900,0.241) (2.932,0.210) (2.963,0.179) (2.994,0.148) (3.025,0.117) (3.053,0.088) (3.079,0.062) (3.105,0.036) (3.157,0.014) (3.183,0.041) (3.211,0.070) (3.242,0.101) (3.273,0.132) (3.304,0.163) (3.336,0.194) (3.365,0.223) (3.391,0.249) (3.417,0.274) (3.446,0.303) (3.477,0.334) (3.509,0.365) (3.540,0.396) (3.572,0.427) (3.599,0.453) (3.625,0.479) (3.652,0.505) (3.684,0.536) (3.717,0.567) (3.749,0.598) (3.781,0.628) (3.807,0.653) (3.833,0.677) (3.864,0.707) (3.897,0.738) (3.931,0.769) (3.963,0.798) (3.989,0.822) (4.016,0.847) (4.050,0.878) (4.085,0.909) (4.119,0.939) (4.145,0.961) (4.173,0.987) (4.209,1.018) (4.246,1.049) (4.274,1.073) (4.301,1.095) (4.338,1.127) (4.376,1.158) (4.404,1.181) (4.434,1.204) (4.473,1.235) (4.508,1.263) (4.534,1.283) (4.574,1.313) (4.612,1.342) (4.638,1.361) (4.679,1.391) (4.716,1.417) (4.745,1.437) (4.791,1.468) (4.820,1.488) (4.861,1.515) (4.898,1.539) (4.934,1.562) (4.976,1.588) (5.010,1.608) (5.054,1.634) (5.091,1.655) (5.132,1.678) (5.176,1.702) (5.210,1.719) (5.262,1.745) (5.301,1.764) (5.340,1.782) (5.392,1.805) (5.442,1.826) (5.481,1.841) (5.522,1.857) (5.574,1.875) (5.626,1.893) (5.678,1.909) (5.730,1.924) (5.782,1.937) (5.836,1.950) (5.912,1.966) (5.963,1.974) (6.015,1.982) (6.093,1.991) (6.169,1.997) (6.223,1.999) (6.301,2.000) (6.379,1.998) (6.431,1.995) (6.483,1.990)};
+\draw[couleurN!55,thick] plot[smooth] coordinates {(6.483,-2.272) (6.416,-2.276) (6.353,-2.279) (6.275,-2.280) (6.197,-2.279) (6.145,-2.276) (6.067,-2.270) (5.989,-2.261) (5.938,-2.254) (5.883,-2.245) (5.808,-2.231) (5.756,-2.220) (5.704,-2.208) (5.652,-2.194) (5.600,-2.180) (5.548,-2.164) (5.496,-2.147) (5.444,-2.130) (5.392,-2.111) (5.340,-2.091) (5.297,-2.074) (5.259,-2.059) (5.210,-2.038) (5.158,-2.015) (5.117,-1.997) (5.080,-1.980) (5.028,-1.955) (4.987,-1.935) (4.950,-1.916) (4.898,-1.889) (4.866,-1.872) (4.820,-1.848) (4.779,-1.826) (4.742,-1.805) (4.695,-1.779) (4.664,-1.762) (4.613,-1.733) (4.586,-1.717) (4.534,-1.687) (4.506,-1.670) (4.456,-1.641) (4.427,-1.624) (4.378,-1.595) (4.348,-1.577) (4.300,-1.549) (4.269,-1.531) (4.223,-1.503) (4.190,-1.484) (4.145,-1.458) (4.109,-1.437) (4.067,-1.413) (4.027,-1.391) (3.989,-1.370) (3.942,-1.344) (3.911,-1.328) (3.859,-1.301) (3.820,-1.282) (3.781,-1.263) (3.729,-1.239) (3.685,-1.220) (3.647,-1.204) (3.599,-1.186) (3.547,-1.167) (3.495,-1.150) (3.443,-1.136) (3.391,-1.123) (3.327,-1.111) (3.261,-1.102) (3.183,-1.096) (3.105,-1.096) (3.027,-1.101) (2.956,-1.111) (2.897,-1.122) (2.845,-1.134) (2.793,-1.149) (2.741,-1.165) (2.689,-1.184) (2.637,-1.204) (2.599,-1.220) (2.559,-1.237) (2.508,-1.260) (2.463,-1.282) (2.430,-1.298) (2.378,-1.325) (2.342,-1.344) (2.300,-1.367) (2.256,-1.391) (2.222,-1.410) (2.174,-1.437) (2.144,-1.455) (2.093,-1.484) (2.066,-1.500) (2.014,-1.531) (1.988,-1.546) (1.936,-1.577) (1.909,-1.593) (1.858,-1.623) (1.830,-1.639) (1.780,-1.669) (1.751,-1.686) (1.702,-1.714) (1.670,-1.733) (1.624,-1.759) (1.588,-1.779) (1.546,-1.803) (1.504,-1.826) (1.468,-1.845) (1.417,-1.872) (1.388,-1.888) (1.338,-1.913) (1.296,-1.935) (1.260,-1.952) (1.208,-1.977) (1.166,-1.997) (1.130,-2.013) (1.078,-2.036) (1.026,-2.058) (0.986,-2.074) (0.947,-2.090) (0.896,-2.109) (0.845,-2.128) (0.793,-2.146) (0.741,-2.162) (0.689,-2.178) (0.637,-2.193) (0.585,-2.206) (0.533,-2.219) (0.481,-2.230) (0.403,-2.245) (0.351,-2.253) (0.298,-2.261) (0.221,-2.270) (0.143,-2.276) (0.091,-2.279) (0.013,-2.280) (-0.065,-2.279) (-0.133,-2.276) (-0.195,-2.272) (-0.273,-2.264) (-0.325,-2.257) (-0.401,-2.245) (-0.455,-2.235) (-0.507,-2.225) (-0.559,-2.213) (-0.614,-2.199) (-0.671,-2.183) (-0.724,-2.168) (-0.773,-2.152) (-0.820,-2.137) (-0.870,-2.119) (-0.922,-2.099) (-0.974,-2.079) (-1.024,-2.059) (-1.061,-2.043) (-1.104,-2.025) (-1.156,-2.001) (-1.200,-1.981) (-1.234,-1.965) (-1.286,-1.939) (-1.327,-1.919) (-1.364,-1.900) (-1.416,-1.873) (-1.446,-1.857) (-1.494,-1.831) (-1.532,-1.810) (-1.572,-1.788) (-1.616,-1.764) (-1.650,-1.744) (-1.697,-1.717) (-1.728,-1.699) (-1.777,-1.670) (-1.806,-1.653) (-1.856,-1.624) (-1.884,-1.607) (-1.935,-1.577) (-1.962,-1.561) (-2.014,-1.531) (-2.040,-1.515) (-2.092,-1.485) (-2.120,-1.468) (-2.170,-1.440) (-2.201,-1.422) (-2.248,-1.395) (-2.284,-1.375) (-2.326,-1.353) (-2.371,-1.329) (-2.404,-1.312) (-2.456,-1.285) (-2.495,-1.266) (-2.534,-1.248) (-2.585,-1.225) (-2.636,-1.204) (-2.676,-1.189) (-2.719,-1.173) (-2.767,-1.157) (-2.819,-1.141) (-2.878,-1.127) (-2.949,-1.112) (-3.001,-1.104) (-3.079,-1.097) (-3.157,-1.096) (-3.235,-1.099) (-3.313,-1.109) (-3.365,-1.118) (-3.417,-1.129) (-3.469,-1.143) (-3.521,-1.159) (-3.573,-1.176) (-3.625,-1.195) (-3.677,-1.216) (-3.721,-1.235) (-3.755,-1.251) (-3.807,-1.275) (-3.852,-1.297) (-3.885,-1.314) (-3.937,-1.341) (-3.970,-1.360) (-4.015,-1.384) (-4.055,-1.406) (-4.093,-1.428) (-4.136,-1.453) (-4.171,-1.473) (-4.217,-1.499) (-4.249,-1.518) (-4.296,-1.546) (-4.326,-1.564) (-4.374,-1.593) (-4.404,-1.610) (-4.453,-1.639) (-4.482,-1.656) (-4.533,-1.686) (-4.560,-1.702) (-4.612,-1.732) (-4.640,-1.748) (-4.690,-1.776) (-4.723,-1.795) (-4.768,-1.820) (-4.808,-1.841) (-4.846,-1.862) (-4.896,-1.888) (-4.926,-1.904) (-4.976,-1.929) (-5.019,-1.950) (-5.054,-1.967) (-5.106,-1.992) (-5.151,-2.012) (-5.186,-2.028) (-5.236,-2.049) (-5.288,-2.071) (-5.336,-2.090) (-5.377,-2.106) (-5.419,-2.121) (-5.470,-2.139) (-5.522,-2.156) (-5.574,-2.172) (-5.626,-2.187) (-5.678,-2.201) (-5.731,-2.214) (-5.801,-2.230) (-5.860,-2.241) (-5.912,-2.250) (-5.985,-2.261) (-6.041,-2.268) (-6.119,-2.274) (-6.171,-2.278) (-6.249,-2.280) (-6.327,-2.280) (-6.405,-2.277) (-6.457,-2.274) (-6.483,-2.272)};
+\draw[couleurN!55,thick] plot[smooth] coordinates {(-6.483,2.272) (-6.416,2.276) (-6.353,2.279) (-6.275,2.280) (-6.197,2.279) (-6.145,2.276) (-6.067,2.270) (-5.989,2.261) (-5.938,2.254) (-5.883,2.245) (-5.808,2.231) (-5.756,2.220) (-5.704,2.208) (-5.652,2.194) (-5.600,2.180) (-5.548,2.164) (-5.496,2.147) (-5.444,2.130) (-5.392,2.111) (-5.340,2.091) (-5.297,2.074) (-5.259,2.059) (-5.210,2.038) (-5.158,2.015) (-5.117,1.997) (-5.080,1.980) (-5.028,1.955) (-4.987,1.935) (-4.950,1.916) (-4.898,1.889) (-4.866,1.872) (-4.820,1.848) (-4.779,1.826) (-4.742,1.805) (-4.695,1.779) (-4.664,1.762) (-4.613,1.733) (-4.586,1.717) (-4.534,1.687) (-4.506,1.670) (-4.456,1.641) (-4.427,1.624) (-4.378,1.595) (-4.348,1.577) (-4.300,1.549) (-4.269,1.531) (-4.223,1.503) (-4.190,1.484) (-4.145,1.458) (-4.109,1.437) (-4.067,1.413) (-4.027,1.391) (-3.989,1.370) (-3.942,1.344) (-3.911,1.328) (-3.859,1.301) (-3.820,1.282) (-3.781,1.263) (-3.729,1.239) (-3.685,1.220) (-3.647,1.204) (-3.599,1.186) (-3.547,1.167) (-3.495,1.150) (-3.443,1.136) (-3.391,1.123) (-3.327,1.111) (-3.261,1.102) (-3.183,1.096) (-3.105,1.096) (-3.027,1.101) (-2.956,1.111) (-2.897,1.122) (-2.845,1.134) (-2.793,1.149) (-2.741,1.165) (-2.689,1.184) (-2.637,1.204) (-2.599,1.220) (-2.559,1.237) (-2.508,1.260) (-2.463,1.282) (-2.430,1.298) (-2.378,1.325) (-2.342,1.344) (-2.300,1.367) (-2.256,1.391) (-2.222,1.410) (-2.174,1.437) (-2.144,1.455) (-2.093,1.484) (-2.066,1.500) (-2.014,1.531) (-1.988,1.546) (-1.936,1.577) (-1.909,1.593) (-1.858,1.623) (-1.830,1.639) (-1.780,1.669) (-1.751,1.686) (-1.702,1.714) (-1.670,1.733) (-1.624,1.759) (-1.588,1.779) (-1.546,1.803) (-1.504,1.826) (-1.468,1.845) (-1.417,1.872) (-1.388,1.888) (-1.338,1.913) (-1.296,1.935) (-1.260,1.952) (-1.208,1.977) (-1.166,1.997) (-1.130,2.013) (-1.078,2.036) (-1.026,2.058) (-0.986,2.074) (-0.947,2.090) (-0.896,2.109) (-0.845,2.128) (-0.793,2.146) (-0.741,2.162) (-0.689,2.178) (-0.637,2.193) (-0.585,2.206) (-0.533,2.219) (-0.481,2.230) (-0.403,2.245) (-0.351,2.253) (-0.298,2.261) (-0.221,2.270) (-0.143,2.276) (-0.091,2.279) (-0.013,2.280) (0.065,2.279) (0.133,2.276) (0.195,2.272) (0.273,2.264) (0.325,2.257) (0.401,2.245) (0.455,2.235) (0.507,2.225) (0.559,2.213) (0.614,2.199) (0.671,2.183) (0.724,2.168) (0.773,2.152) (0.820,2.137) (0.870,2.119) (0.922,2.099) (0.974,2.079) (1.024,2.059) (1.061,2.043) (1.104,2.025) (1.156,2.001) (1.200,1.981) (1.234,1.965) (1.286,1.939) (1.327,1.919) (1.364,1.900) (1.416,1.873) (1.446,1.857) (1.494,1.831) (1.532,1.810) (1.572,1.788) (1.616,1.764) (1.650,1.744) (1.697,1.717) (1.728,1.699) (1.777,1.670) (1.806,1.653) (1.856,1.624) (1.884,1.607) (1.935,1.577) (1.962,1.561) (2.014,1.531) (2.040,1.515) (2.092,1.485) (2.120,1.468) (2.170,1.440) (2.201,1.422) (2.248,1.395) (2.284,1.375) (2.326,1.353) (2.371,1.329) (2.404,1.312) (2.456,1.285) (2.495,1.266) (2.534,1.248) (2.585,1.225) (2.636,1.204) (2.676,1.189) (2.719,1.173) (2.767,1.157) (2.819,1.141) (2.878,1.127) (2.949,1.112) (3.001,1.104) (3.079,1.097) (3.157,1.096) (3.235,1.099) (3.313,1.109) (3.365,1.118) (3.417,1.129) (3.469,1.143) (3.521,1.159) (3.573,1.176) (3.625,1.195) (3.677,1.216) (3.721,1.235) (3.755,1.251) (3.807,1.275) (3.852,1.297) (3.885,1.314) (3.937,1.341) (3.970,1.360) (4.015,1.384) (4.055,1.406) (4.093,1.428) (4.136,1.453) (4.171,1.473) (4.217,1.499) (4.249,1.518) (4.296,1.546) (4.326,1.564) (4.374,1.593) (4.404,1.610) (4.453,1.639) (4.482,1.656) (4.533,1.686) (4.560,1.702) (4.612,1.732) (4.640,1.748) (4.690,1.776) (4.723,1.795) (4.768,1.820) (4.808,1.841) (4.846,1.862) (4.896,1.888) (4.926,1.904) (4.976,1.929) (5.019,1.950) (5.054,1.967) (5.106,1.992) (5.151,2.012) (5.186,2.028) (5.236,2.049) (5.288,2.071) (5.336,2.090) (5.377,2.106) (5.419,2.121) (5.470,2.139) (5.522,2.156) (5.574,2.172) (5.626,2.187) (5.678,2.201) (5.731,2.214) (5.801,2.230) (5.860,2.241) (5.912,2.250) (5.985,2.261) (6.041,2.268) (6.119,2.274) (6.171,2.278) (6.249,2.280) (6.327,2.280) (6.405,2.277) (6.457,2.274) (6.483,2.272)};
+\draw[couleurN!55,thick] plot[smooth] coordinates {(6.483,-2.676) (6.406,-2.680) (6.353,-2.682) (6.275,-2.683) (6.197,-2.682) (6.145,-2.680) (6.067,-2.675) (5.989,-2.667) (5.938,-2.661) (5.860,-2.650) (5.808,-2.642) (5.756,-2.632) (5.688,-2.618) (5.626,-2.604) (5.574,-2.592) (5.522,-2.578) (5.470,-2.564) (5.418,-2.549) (5.366,-2.533) (5.314,-2.516) (5.262,-2.499) (5.210,-2.481) (5.160,-2.463) (5.118,-2.447) (5.077,-2.432) (5.028,-2.413) (4.976,-2.392) (4.924,-2.371) (4.884,-2.354) (4.846,-2.338) (4.794,-2.316) (4.742,-2.293) (4.703,-2.276) (4.664,-2.259) (4.612,-2.236) (4.563,-2.214) (4.529,-2.199) (4.482,-2.178) (4.430,-2.155) (4.389,-2.137) (4.352,-2.120) (4.300,-2.097) (4.249,-2.075) (4.211,-2.059) (4.171,-2.042) (4.119,-2.020) (4.067,-1.999) (4.021,-1.981) (3.981,-1.966) (3.937,-1.949) (3.885,-1.931) (3.833,-1.913) (3.781,-1.896) (3.729,-1.880) (3.677,-1.865) (3.625,-1.852) (3.573,-1.839) (3.509,-1.826) (3.443,-1.814) (3.391,-1.806) (3.313,-1.797) (3.261,-1.793) (3.183,-1.789) (3.105,-1.789) (3.027,-1.792) (2.975,-1.797) (2.897,-1.805) (2.845,-1.813) (2.774,-1.826) (2.715,-1.838) (2.663,-1.850) (2.611,-1.864) (2.559,-1.879) (2.508,-1.894) (2.456,-1.911) (2.404,-1.929) (2.352,-1.947) (2.302,-1.966) (2.262,-1.981) (2.222,-1.997) (2.170,-2.018) (2.118,-2.040) (2.072,-2.059) (2.036,-2.074) (1.988,-2.095) (1.936,-2.118) (1.894,-2.137) (1.858,-2.153) (1.806,-2.176) (1.755,-2.199) (1.720,-2.214) (1.676,-2.234) (1.624,-2.257) (1.580,-2.276) (1.544,-2.292) (1.494,-2.314) (1.442,-2.336) (1.399,-2.354) (1.362,-2.370) (1.312,-2.390) (1.260,-2.411) (1.208,-2.431) (1.165,-2.447) (1.123,-2.463) (1.078,-2.479) (1.026,-2.497) (0.974,-2.515) (0.922,-2.531) (0.870,-2.547) (0.819,-2.563) (0.767,-2.577) (0.715,-2.591) (0.663,-2.603) (0.596,-2.618) (0.533,-2.631) (0.481,-2.641) (0.428,-2.649) (0.351,-2.660) (0.299,-2.667) (0.221,-2.674) (0.143,-2.679) (0.091,-2.682) (0.013,-2.683) (-0.065,-2.682) (-0.123,-2.680) (-0.195,-2.676) (-0.273,-2.669) (-0.325,-2.664) (-0.403,-2.653) (-0.455,-2.645) (-0.518,-2.634) (-0.585,-2.621) (-0.637,-2.609) (-0.689,-2.597) (-0.741,-2.584) (-0.793,-2.570) (-0.845,-2.555) (-0.896,-2.539) (-0.948,-2.523) (-1.000,-2.506) (-1.052,-2.488) (-1.104,-2.470) (-1.156,-2.451) (-1.206,-2.432) (-1.246,-2.416) (-1.286,-2.400) (-1.338,-2.379) (-1.390,-2.358) (-1.436,-2.339) (-1.472,-2.323) (-1.520,-2.302) (-1.572,-2.280) (-1.615,-2.261) (-1.650,-2.245) (-1.702,-2.222) (-1.754,-2.199) (-1.789,-2.183) (-1.832,-2.164) (-1.884,-2.141) (-1.929,-2.121) (-1.964,-2.106) (-2.014,-2.084) (-2.066,-2.062) (-2.109,-2.043) (-2.146,-2.028) (-2.196,-2.007) (-2.248,-1.987) (-2.300,-1.967) (-2.344,-1.950) (-2.387,-1.935) (-2.432,-1.919) (-2.482,-1.903) (-2.534,-1.886) (-2.585,-1.871) (-2.638,-1.857) (-2.702,-1.841) (-2.767,-1.827) (-2.819,-1.817) (-2.871,-1.809) (-2.949,-1.799) (-3.001,-1.794) (-3.079,-1.790) (-3.157,-1.789) (-3.235,-1.791) (-3.287,-1.795) (-3.365,-1.803) (-3.420,-1.810) (-3.495,-1.823) (-3.547,-1.834) (-3.599,-1.845) (-3.651,-1.858) (-3.703,-1.873) (-3.755,-1.888) (-3.807,-1.904) (-3.859,-1.922) (-3.911,-1.940) (-3.963,-1.959) (-4.015,-1.979) (-4.061,-1.997) (-4.099,-2.012) (-4.145,-2.031) (-4.197,-2.053) (-4.247,-2.074) (-4.283,-2.090) (-4.326,-2.109) (-4.378,-2.132) (-4.424,-2.152) (-4.459,-2.168) (-4.508,-2.190) (-4.560,-2.213) (-4.598,-2.230) (-4.638,-2.248) (-4.690,-2.271) (-4.739,-2.292) (-4.775,-2.308) (-4.820,-2.327) (-4.872,-2.349) (-4.922,-2.370) (-4.960,-2.385) (-5.002,-2.402) (-5.054,-2.423) (-5.106,-2.443) (-5.158,-2.462) (-5.203,-2.478) (-5.248,-2.494) (-5.293,-2.510) (-5.341,-2.525) (-5.392,-2.541) (-5.444,-2.557) (-5.497,-2.572) (-5.556,-2.587) (-5.619,-2.603) (-5.678,-2.616) (-5.730,-2.627) (-5.782,-2.637) (-5.855,-2.649) (-5.912,-2.658) (-5.969,-2.665) (-6.041,-2.672) (-6.119,-2.678) (-6.171,-2.681) (-6.249,-2.683) (-6.327,-2.683) (-6.405,-2.681) (-6.457,-2.678) (-6.483,-2.676)};
+\draw[couleurN!55,thick] plot[smooth] coordinates {(-6.483,2.676) (-6.406,2.680) (-6.353,2.682) (-6.275,2.683) (-6.197,2.682) (-6.145,2.680) (-6.067,2.675) (-5.989,2.667) (-5.938,2.661) (-5.860,2.650) (-5.808,2.642) (-5.756,2.632) (-5.688,2.618) (-5.626,2.604) (-5.574,2.592) (-5.522,2.578) (-5.470,2.564) (-5.418,2.549) (-5.366,2.533) (-5.314,2.516) (-5.262,2.499) (-5.210,2.481) (-5.160,2.463) (-5.118,2.447) (-5.077,2.432) (-5.028,2.413) (-4.976,2.392) (-4.924,2.371) (-4.884,2.354) (-4.846,2.338) (-4.794,2.316) (-4.742,2.293) (-4.703,2.276) (-4.664,2.259) (-4.612,2.236) (-4.563,2.214) (-4.529,2.199) (-4.482,2.178) (-4.430,2.155) (-4.389,2.137) (-4.352,2.120) (-4.300,2.097) (-4.249,2.075) (-4.211,2.059) (-4.171,2.042) (-4.119,2.020) (-4.067,1.999) (-4.021,1.981) (-3.981,1.966) (-3.937,1.949) (-3.885,1.931) (-3.833,1.913) (-3.781,1.896) (-3.729,1.880) (-3.677,1.865) (-3.625,1.852) (-3.573,1.839) (-3.509,1.826) (-3.443,1.814) (-3.391,1.806) (-3.313,1.797) (-3.261,1.793) (-3.183,1.789) (-3.105,1.789) (-3.027,1.792) (-2.975,1.797) (-2.897,1.805) (-2.845,1.813) (-2.774,1.826) (-2.715,1.838) (-2.663,1.850) (-2.611,1.864) (-2.559,1.879) (-2.508,1.894) (-2.456,1.911) (-2.404,1.929) (-2.352,1.947) (-2.302,1.966) (-2.262,1.981) (-2.222,1.997) (-2.170,2.018) (-2.118,2.040) (-2.072,2.059) (-2.036,2.074) (-1.988,2.095) (-1.936,2.118) (-1.894,2.137) (-1.858,2.153) (-1.806,2.176) (-1.755,2.199) (-1.720,2.214) (-1.676,2.234) (-1.624,2.257) (-1.580,2.276) (-1.544,2.292) (-1.494,2.314) (-1.442,2.336) (-1.399,2.354) (-1.362,2.370) (-1.312,2.390) (-1.260,2.411) (-1.208,2.431) (-1.165,2.447) (-1.123,2.463) (-1.078,2.479) (-1.026,2.497) (-0.974,2.515) (-0.922,2.531) (-0.870,2.547) (-0.819,2.563) (-0.767,2.577) (-0.715,2.591) (-0.663,2.603) (-0.596,2.618) (-0.533,2.631) (-0.481,2.641) (-0.428,2.649) (-0.351,2.660) (-0.299,2.667) (-0.221,2.674) (-0.143,2.679) (-0.091,2.682) (-0.013,2.683) (0.065,2.682) (0.123,2.680) (0.195,2.676) (0.273,2.669) (0.325,2.664) (0.403,2.653) (0.455,2.645) (0.518,2.634) (0.585,2.621) (0.637,2.609) (0.689,2.597) (0.741,2.584) (0.793,2.570) (0.845,2.555) (0.896,2.539) (0.948,2.523) (1.000,2.506) (1.052,2.488) (1.104,2.470) (1.156,2.451) (1.206,2.432) (1.246,2.416) (1.286,2.400) (1.338,2.379) (1.390,2.358) (1.436,2.339) (1.472,2.323) (1.520,2.302) (1.572,2.280) (1.615,2.261) (1.650,2.245) (1.702,2.222) (1.754,2.199) (1.789,2.183) (1.832,2.164) (1.884,2.141) (1.929,2.121) (1.964,2.106) (2.014,2.084) (2.066,2.062) (2.109,2.043) (2.146,2.028) (2.196,2.007) (2.248,1.987) (2.300,1.967) (2.344,1.950) (2.387,1.935) (2.432,1.919) (2.482,1.903) (2.534,1.886) (2.585,1.871) (2.638,1.857) (2.702,1.841) (2.767,1.827) (2.819,1.817) (2.871,1.809) (2.949,1.799) (3.001,1.794) (3.079,1.790) (3.157,1.789) (3.235,1.791) (3.287,1.795) (3.365,1.803) (3.420,1.810) (3.495,1.823) (3.547,1.834) (3.599,1.845) (3.651,1.858) (3.703,1.873) (3.755,1.888) (3.807,1.904) (3.859,1.922) (3.911,1.940) (3.963,1.959) (4.015,1.979) (4.061,1.997) (4.099,2.012) (4.145,2.031) (4.197,2.053) (4.247,2.074) (4.283,2.090) (4.326,2.109) (4.378,2.132) (4.424,2.152) (4.459,2.168) (4.508,2.190) (4.560,2.213) (4.598,2.230) (4.638,2.248) (4.690,2.271) (4.739,2.292) (4.775,2.308) (4.820,2.327) (4.872,2.349) (4.922,2.370) (4.960,2.385) (5.002,2.402) (5.054,2.423) (5.106,2.443) (5.158,2.462) (5.203,2.478) (5.248,2.494) (5.293,2.510) (5.341,2.525) (5.392,2.541) (5.444,2.557) (5.497,2.572) (5.556,2.587) (5.619,2.603) (5.678,2.616) (5.730,2.627) (5.782,2.637) (5.855,2.649) (5.912,2.658) (5.969,2.665) (6.041,2.672) (6.119,2.678) (6.171,2.681) (6.249,2.683) (6.327,2.683) (6.405,2.681) (6.457,2.678) (6.483,2.676)};
+  \end{scope}
+  \draw[gray,->] (-6.6,0) -- (6.75,0) node[below,font=\small] {$\theta$};
+  \draw[gray,->] (0,-3.2) -- (0,3.35) node[left,font=\small] {$\omega$};
+  \foreach \x/\l in {-6.2832/-2\pi,6.2832/2\pi} \draw[gray] (\x,0.1) -- (\x,-0.1) node[below,font=\scriptsize,fill=white,inner sep=1pt] {$\l$};
+  \foreach \x/\l in {-3.1416/-\pi,3.1416/\pi} \node[gray,font=\scriptsize] at (\x,-0.85) {$\l$};
+  \foreach \x in {-6.2832,0,6.2832} \fill[couleurN] (\x,0) circle (1.3pt);
+  \foreach \x in {-3.1416,3.1416} \fill[rougecours] (\x,0) circle (1.3pt);
+\end{tikzpicture}
+\end{center}
+
+\noindent Le plan de phase du pendule. Autour des positions d'équilibre stables $\theta \in 2\pi\Z$, les courbes fermées, en bleu foncé, sont les oscillations ; au-dessus et au-dessous, les courbes ouvertes, en bleu clair, sont les mouvements de rotation, où le pendule fait des tours complets. La séparatrice $E = 1$, en rouge, sépare les deux régimes et relie les équilibres instables $\theta = \pm\pi$, en rouge : le pendule lâché exactement avec cette énergie met un temps infini à atteindre la position verticale haute.
+
+\subsection{Systèmes linéaires à coefficients constants}
+
+Pour $A \in \Mn{p}$ avec $\K = \R$, la série $\exp(B) = \displaystyle\sum_{k \geqslant 0} \dfrac{B^{k}}{k!}$ converge absolument dans $\Mn{p}$, muni d'une norme subordonnée, puisque $\nop{B^{k}} \leqslant \nop{B}^{k}$ ; elle converge donc (chapitre 1, théorème 9). Pour deux matrices qui commutent, $\exp(B + C) = \exp(B)\exp(C)$, par le produit de Cauchy de deux séries absolument convergentes (\emph{Rappel.}).
+
+\begin{cadre}
+\propo{6} \emph{(Exponentielle de matrice.)} L'application $t \mapsto \exp(tA)$ est dérivable sur $\R$, de dérivée $A\exp(tA) = \exp(tA)A$. Pour tous $t_{0} \in \R$ et $y_{0} \in \R^{p}$, la fonction $y(t) = \exp((t - t_{0})A)\,y_{0}$ est l'unique solution sur $\R$ du problème de Cauchy $y' = Ay$, $y(t_{0}) = y_{0}$.
+\end{cadre}
+
+\begin{demo}
+Comme $tA$ et $hA$ commutent,
+\[ \exp((t + h)A) - \exp(tA) - hA\exp(tA) = \exp(tA)\big(\exp(hA) - I_{p} - hA\big), \]
+et
+\[ \nop{\exp(hA) - I_{p} - hA} \leqslant \sum_{k \geqslant 2} \frac{|h|^{k}\nop{A}^{k}}{k!} \leqslant |h|^{2}\nop{A}^{2}\,\ee^{|h|\,\nop{A}}, \]
+qui est un $o(h)$ : la dérivée est $A\exp(tA)$, et $A$ commute avec chaque somme partielle, donc avec $\exp(tA)$. La fonction $y$ est donc solution. Si $z$ en est une autre, la dérivée de $t \mapsto \exp(-(t - t_{0})A)\,z(t)$ vaut $-A\exp(-(t - t_{0})A)z(t) + \exp(-(t - t_{0})A)Az(t) = 0$ : cette fonction est constante, égale à $y_{0}$, et $\exp(-(t - t_{0})A)$ a pour inverse $\exp((t - t_{0})A)$, d'où $z = y$.
+\end{demo}
+
+\begin{cadre}
+\propo{7} \emph{(Formule de Liouville.)} Pour tout $t \in \R$, $\rmath{\det\exp(tA) = \ee^{t\tr A}}$.
+\end{cadre}
+
+\begin{demo}
+On pose $M(t) = \exp(tA)$, inversible d'inverse $\exp(-tA)$, et $\varphi(t) = \det M(t)$. Par la règle de la chaîne et la différentielle du déterminant, $\dd\det(M)\cdot H = \det(M)\tr(M^{-1}H)$ pour $M$ inversible (chapitre 2, et chapitre 4, section 4.5),
+\[ \varphi'(t) = \det M(t)\,\tr\big(M(t)^{-1}A\,M(t)\big) = \varphi(t)\tr A, \]
+puisque deux matrices semblables ont la même trace. Comme $\varphi(0) = 1$, $\varphi(t) = \ee^{t\tr A}$.
+\end{demo}
+
+\noindent La formule de Liouville tient la promesse du chapitre 4 : le flot $y_{0} \mapsto \exp(tA)y_{0}$ multiplie les aires, et en dimension $p$ les volumes, par $\ee^{t\tr A}$. Si $\tr A < 0$, toute région de l'espace des phases voit son volume décroître exponentiellement.
+
+% ---- A = [[-0.15, -1], [1, -0.15]], tr A = -0.3 ; trajectoires issues de (+-1.8, 0) sur [0, 9] ;
+% ---- carre [0.9, 1.5]^2 (aire 0.36) et son image par exp(2A) (aire 0.36 e^{-0.6} = 0.1976) (scipy.linalg.expm)
+\begin{center}
+\begin{tikzpicture}[scale=1.6]
+  \draw[gray,->] (-2,0) -- (2.05,0);
+  \draw[gray,->] (0,-1.9) -- (0,1.95);
+\draw[couleurN,thick] plot[smooth] coordinates {(1.800,0.000) (1.789,0.067) (1.775,0.134) (1.758,0.200) (1.740,0.264) (1.719,0.328) (1.696,0.390) (1.670,0.451) (1.643,0.510) (1.613,0.569) (1.582,0.626) (1.549,0.681) (1.513,0.734) (1.476,0.786) (1.437,0.837) (1.397,0.885) (1.355,0.932) (1.311,0.977) (1.267,1.020) (1.220,1.061) (1.173,1.100) (1.124,1.137) (1.075,1.171) (1.024,1.204) (0.972,1.235) (0.920,1.263) (0.867,1.290) (0.813,1.314) (0.759,1.336) (0.704,1.356) (0.649,1.374) (0.593,1.390) (0.537,1.403) (0.481,1.414) (0.425,1.423) (0.369,1.430) (0.314,1.435) (0.258,1.438) (0.202,1.438) (0.147,1.437) (0.093,1.433) (0.038,1.427) (-0.015,1.420) (-0.068,1.410) (-0.121,1.399) (-0.172,1.385) (-0.223,1.370) (-0.273,1.353) (-0.322,1.334) (-0.370,1.314) (-0.417,1.292) (-0.462,1.268) (-0.507,1.242) (-0.550,1.216) (-0.592,1.187) (-0.633,1.158) (-0.672,1.127) (-0.710,1.094) (-0.747,1.061) (-0.782,1.026) (-0.815,0.990) (-0.847,0.954) (-0.877,0.916) (-0.906,0.877) (-0.933,0.838) (-0.959,0.797) (-0.982,0.756) (-1.004,0.715) (-1.025,0.673) (-1.044,0.630) (-1.060,0.587) (-1.076,0.544) (-1.089,0.500) (-1.101,0.456) (-1.111,0.412) (-1.120,0.368) (-1.126,0.323) (-1.131,0.279) (-1.134,0.235) (-1.136,0.191) (-1.136,0.147) (-1.134,0.104) (-1.131,0.061) (-1.126,0.018) (-1.120,-0.024) (-1.112,-0.066) (-1.102,-0.107) (-1.091,-0.148) (-1.079,-0.188) (-1.065,-0.227) (-1.050,-0.265) (-1.033,-0.303) (-1.015,-0.340) (-0.996,-0.375) (-0.976,-0.410) (-0.954,-0.444) (-0.931,-0.477) (-0.908,-0.509) (-0.883,-0.540) (-0.857,-0.569) (-0.830,-0.598) (-0.803,-0.625) (-0.774,-0.651) (-0.745,-0.676) (-0.715,-0.700) (-0.684,-0.722) (-0.653,-0.743) (-0.621,-0.763) (-0.588,-0.781) (-0.555,-0.798) (-0.522,-0.814) (-0.488,-0.828) (-0.454,-0.841) (-0.420,-0.853) (-0.385,-0.863) (-0.350,-0.872) (-0.315,-0.880) (-0.280,-0.886) (-0.246,-0.891) (-0.211,-0.895) (-0.176,-0.897) (-0.141,-0.898) (-0.107,-0.897) (-0.072,-0.896) (-0.038,-0.893) (-0.005,-0.888) (0.029,-0.883) (0.061,-0.876) (0.094,-0.868) (0.126,-0.859) (0.157,-0.849) (0.188,-0.838) (0.218,-0.826) (0.248,-0.812) (0.277,-0.798) (0.305,-0.782) (0.332,-0.766) (0.359,-0.749) (0.384,-0.731) (0.409,-0.712) (0.433,-0.692) (0.456,-0.671) (0.479,-0.650) (0.500,-0.628) (0.520,-0.605) (0.540,-0.582) (0.558,-0.558) (0.575,-0.533) (0.592,-0.509) (0.607,-0.483) (0.621,-0.457) (0.634,-0.431) (0.647,-0.405) (0.658,-0.378) (0.668,-0.351) (0.676,-0.324) (0.684,-0.296) (0.691,-0.269) (0.697,-0.241) (0.701,-0.214) (0.705,-0.186) (0.707,-0.159) (0.709,-0.131) (0.709,-0.104) (0.709,-0.076) (0.707,-0.049) (0.704,-0.023) (0.701,0.004) (0.696,0.030) (0.691,0.056) (0.684,0.081) (0.677,0.107) (0.669,0.131) (0.659,0.155) (0.649,0.179) (0.639,0.202) (0.627,0.225) (0.615,0.247) (0.601,0.268) (0.588,0.289) (0.573,0.309) (0.558,0.329) (0.542,0.348) (0.526,0.366) (0.508,0.383) (0.491,0.400) (0.473,0.416) (0.454,0.431) (0.435,0.445) (0.416,0.458) (0.396,0.471) (0.376,0.483) (0.355,0.494) (0.335,0.504) (0.314,0.513) (0.293,0.522) (0.271,0.530) (0.250,0.536) (0.228,0.542) (0.206,0.547) (0.184,0.552) (0.163,0.555) (0.141,0.558) (0.119,0.559) (0.097,0.560) (0.076,0.560) (0.054,0.560) (0.033,0.558) (0.012,0.556) (-0.009,0.553) (-0.030,0.549) (-0.050,0.544) (-0.070,0.539) (-0.090,0.533) (-0.109,0.526) (-0.128,0.519) (-0.147,0.511) (-0.165,0.502) (-0.183,0.493) (-0.200,0.483) (-0.217,0.472) (-0.233,0.461) (-0.249,0.449) (-0.264,0.437) (-0.279,0.425) (-0.293,0.411) (-0.307,0.398) (-0.319,0.384) (-0.332,0.369) (-0.344,0.355) (-0.355,0.340) (-0.365,0.324) (-0.375,0.308) (-0.384,0.292) (-0.393,0.276) (-0.400,0.260) (-0.408,0.243) (-0.414,0.226) (-0.420,0.209) (-0.425,0.192)};
+\draw[couleurN,thick] plot[smooth] coordinates {(-1.800,0.000) (-1.789,-0.067) (-1.775,-0.134) (-1.758,-0.200) (-1.740,-0.264) (-1.719,-0.328) (-1.696,-0.390) (-1.670,-0.451) (-1.643,-0.510) (-1.613,-0.569) (-1.582,-0.626) (-1.549,-0.681) (-1.513,-0.734) (-1.476,-0.786) (-1.437,-0.837) (-1.397,-0.885) (-1.355,-0.932) (-1.311,-0.977) (-1.267,-1.020) (-1.220,-1.061) (-1.173,-1.100) (-1.124,-1.137) (-1.075,-1.171) (-1.024,-1.204) (-0.972,-1.235) (-0.920,-1.263) (-0.867,-1.290) (-0.813,-1.314) (-0.759,-1.336) (-0.704,-1.356) (-0.649,-1.374) (-0.593,-1.390) (-0.537,-1.403) (-0.481,-1.414) (-0.425,-1.423) (-0.369,-1.430) (-0.314,-1.435) (-0.258,-1.438) (-0.202,-1.438) (-0.147,-1.437) (-0.093,-1.433) (-0.038,-1.427) (0.015,-1.420) (0.068,-1.410) (0.121,-1.399) (0.172,-1.385) (0.223,-1.370) (0.273,-1.353) (0.322,-1.334) (0.370,-1.314) (0.417,-1.292) (0.462,-1.268) (0.507,-1.242) (0.550,-1.216) (0.592,-1.187) (0.633,-1.158) (0.672,-1.127) (0.710,-1.094) (0.747,-1.061) (0.782,-1.026) (0.815,-0.990) (0.847,-0.954) (0.877,-0.916) (0.906,-0.877) (0.933,-0.838) (0.959,-0.797) (0.982,-0.756) (1.004,-0.715) (1.025,-0.673) (1.044,-0.630) (1.060,-0.587) (1.076,-0.544) (1.089,-0.500) (1.101,-0.456) (1.111,-0.412) (1.120,-0.368) (1.126,-0.323) (1.131,-0.279) (1.134,-0.235) (1.136,-0.191) (1.136,-0.147) (1.134,-0.104) (1.131,-0.061) (1.126,-0.018) (1.120,0.024) (1.112,0.066) (1.102,0.107) (1.091,0.148) (1.079,0.188) (1.065,0.227) (1.050,0.265) (1.033,0.303) (1.015,0.340) (0.996,0.375) (0.976,0.410) (0.954,0.444) (0.931,0.477) (0.908,0.509) (0.883,0.540) (0.857,0.569) (0.830,0.598) (0.803,0.625) (0.774,0.651) (0.745,0.676) (0.715,0.700) (0.684,0.722) (0.653,0.743) (0.621,0.763) (0.588,0.781) (0.555,0.798) (0.522,0.814) (0.488,0.828) (0.454,0.841) (0.420,0.853) (0.385,0.863) (0.350,0.872) (0.315,0.880) (0.280,0.886) (0.246,0.891) (0.211,0.895) (0.176,0.897) (0.141,0.898) (0.107,0.897) (0.072,0.896) (0.038,0.893) (0.005,0.888) (-0.029,0.883) (-0.061,0.876) (-0.094,0.868) (-0.126,0.859) (-0.157,0.849) (-0.188,0.838) (-0.218,0.826) (-0.248,0.812) (-0.277,0.798) (-0.305,0.782) (-0.332,0.766) (-0.359,0.749) (-0.384,0.731) (-0.409,0.712) (-0.433,0.692) (-0.456,0.671) (-0.479,0.650) (-0.500,0.628) (-0.520,0.605) (-0.540,0.582) (-0.558,0.558) (-0.575,0.533) (-0.592,0.509) (-0.607,0.483) (-0.621,0.457) (-0.634,0.431) (-0.647,0.405) (-0.658,0.378) (-0.668,0.351) (-0.676,0.324) (-0.684,0.296) (-0.691,0.269) (-0.697,0.241) (-0.701,0.214) (-0.705,0.186) (-0.707,0.159) (-0.709,0.131) (-0.709,0.104) (-0.709,0.076) (-0.707,0.049) (-0.704,0.023) (-0.701,-0.004) (-0.696,-0.030) (-0.691,-0.056) (-0.684,-0.081) (-0.677,-0.107) (-0.669,-0.131) (-0.659,-0.155) (-0.649,-0.179) (-0.639,-0.202) (-0.627,-0.225) (-0.615,-0.247) (-0.601,-0.268) (-0.588,-0.289) (-0.573,-0.309) (-0.558,-0.329) (-0.542,-0.348) (-0.526,-0.366) (-0.508,-0.383) (-0.491,-0.400) (-0.473,-0.416) (-0.454,-0.431) (-0.435,-0.445) (-0.416,-0.458) (-0.396,-0.471) (-0.376,-0.483) (-0.355,-0.494) (-0.335,-0.504) (-0.314,-0.513) (-0.293,-0.522) (-0.271,-0.530) (-0.250,-0.536) (-0.228,-0.542) (-0.206,-0.547) (-0.184,-0.552) (-0.163,-0.555) (-0.141,-0.558) (-0.119,-0.559) (-0.097,-0.560) (-0.076,-0.560) (-0.054,-0.560) (-0.033,-0.558) (-0.012,-0.556) (0.009,-0.553) (0.030,-0.549) (0.050,-0.544) (0.070,-0.539) (0.090,-0.533) (0.109,-0.526) (0.128,-0.519) (0.147,-0.511) (0.165,-0.502) (0.183,-0.493) (0.200,-0.483) (0.217,-0.472) (0.233,-0.461) (0.249,-0.449) (0.264,-0.437) (0.279,-0.425) (0.293,-0.411) (0.307,-0.398) (0.319,-0.384) (0.332,-0.369) (0.344,-0.355) (0.355,-0.340) (0.365,-0.324) (0.375,-0.308) (0.384,-0.292) (0.393,-0.276) (0.400,-0.260) (0.408,-0.243) (0.414,-0.226) (0.420,-0.209) (0.425,-0.192)};
+  \fill[couleurQ!25] (0.900,0.900) -- (1.500,0.900) -- (1.500,1.500) -- (0.900,1.500) -- cycle; \draw[couleurQ,thick] (0.900,0.900) -- (1.500,0.900) -- (1.500,1.500) -- (0.900,1.500) -- cycle;
+  \fill[couleurQ!25] (-0.884,0.329) -- (-1.069,0.733) -- (-1.473,0.548) -- (-1.288,0.144) -- cycle; \draw[couleurQ,thick] (-0.884,0.329) -- (-1.069,0.733) -- (-1.473,0.548) -- (-1.288,0.144) -- cycle;
+  \node[couleurQ,font=\small,anchor=west] at (1.55,1.2) {aire $0{,}36$};
+  \node[couleurQ,font=\small,anchor=east,fill=white,inner sep=1pt] at (-1.55,0.95) {aire $0{,}198$};
+  \draw[couleurQ,thin] (-1.55,0.95) -- (-1.25,0.5);
+  \fill[rougecours] (0,0) circle (1pt);
+\end{tikzpicture}
+\end{center}
+
+\noindent Pour $A = \begin{pmatrix} -0{,}15 & -1 \\ 1 & -0{,}15 \end{pmatrix}$, les trajectoires, en bleu, s'enroulent en spirale vers l'origine. Le carré violet de droite, d'aire $0{,}36$, est transporté par le flot en deux unités de temps sur le parallélogramme violet de gauche, d'aire $0{,}36\,\ee^{-0{,}6} \approx 0{,}198$, comme le prévoit la formule de Liouville avec $\tr A = -0{,}3$ : la figure tourne, et sa surface diminue de près de moitié.
+%===============================================================================
+\section[Théorème de Peano]{Le théorème de Peano}
+%===============================================================================
+
+Sous la seule hypothèse que $F$ est continue, on construit des solutions approchées, les polygones d'Euler, puis on en extrait une suite convergente. L'outil d'extraction est le théorème d'Ascoli, qui joue pour les suites de fonctions le rôle que le théorème de Bolzano-Weierstrass joue pour les suites de points.
+
+\subsection{Le théorème d'Ascoli}
+
+\begin{center}
+\begin{tabularx}{15cm}{||X}
+\noindent \textbf{\underline{Définition :}} Une suite $(f_{n})$ de fonctions de $[a, b]$ dans $\R^{p}$ est \mot{équicontinue} si, pour tout $\varepsilon > 0$, il existe $\eta > 0$ tel que, pour tout $n$ et tous $s$, $t \in [a, b]$, $\rmath{|s - t| \leqslant \eta \Rightarrow \norme{f_{n}(s) - f_{n}(t)} \leqslant \varepsilon}$. Elle est \mot{uniformément bornée} s'il existe $R$ tel que $\norme{f_{n}(t)} \leqslant R$ pour tous $n$ et $t$.
+\end{tabularx}
+\end{center}
+
+\noindent Le $\eta$ ne dépend ni de $n$ ni du point : c'est la continuité uniforme, uniforme de plus par rapport à $n$. Une suite de fonctions toutes $M$-lipschitziennes, avec le même $M$, est équicontinue : $\eta = \dfrac{\varepsilon}{M}$ convient.
+
+\begin{center}
+\begin{tabularx}{15cm}{||X||}
+\hline \\
+\textbf{\underline{\textcolor{rougecours}{Théorème 1 : Ascoli :}}} \\
+De toute suite de fonctions de $[a, b]$ dans $\R^{p}$ équicontinue et uniformément bornée, on peut extraire une sous-suite qui converge uniformément sur $[a, b]$.
+\medbreak
+\\ \hline
+\end{tabularx}
+\end{center}
+
+\begin{demo}
+\etape{Convergence sur les rationnels.} Les rationnels de $[a, b]$ forment une suite $(r_{j})_{j \geqslant 1}$. La suite $(f_{n}(r_{1}))$ est bornée dans $\R^{p}$ : par le théorème de Bolzano-Weierstrass (chapitre 1, théorème 1), on en extrait une sous-suite $(f_{\sigma_{1}(n)})$ qui converge en $r_{1}$. De celle-ci on extrait une sous-suite $(f_{\sigma_{1}\circ\sigma_{2}(n)})$ qui converge aussi en $r_{2}$, et ainsi de suite. La \emph{suite diagonale} $g_{k} = f_{\sigma_{1}\circ\dots\circ\sigma_{k}(k)}$ est extraite de $(f_{n})$, et, pour chaque $j$, $(g_{k})_{k \geqslant j}$ est extraite de la $j$-ème sous-suite : elle converge en chaque $r_{j}$.
+
+\etape{Convergence uniforme.} Soit $\varepsilon > 0$ et $\eta$ donné par l'équicontinuité. On découpe $[a, b]$ en un nombre fini d'intervalles de longueur au plus $\eta$, et l'on choisit un rationnel $r_{j_{i}}$ dans chacun, $1 \leqslant i \leqslant m$. Il existe $K$ tel que $\norme{g_{k}(r_{j_{i}}) - g_{l}(r_{j_{i}})} \leqslant \varepsilon$ pour tous $k$, $l \geqslant K$ et tout $i$. Pour $t \in [a, b]$, soit $r_{j_{i}}$ dans le même petit intervalle ; alors, pour $k$, $l \geqslant K$,
+\[ \norme{g_{k}(t) - g_{l}(t)} \leqslant \norme{g_{k}(t) - g_{k}(r_{j_{i}})} + \norme{g_{k}(r_{j_{i}}) - g_{l}(r_{j_{i}})} + \norme{g_{l}(r_{j_{i}}) - g_{l}(t)} \leqslant 3\varepsilon. \]
+La suite $(g_{k})$ est uniformément de Cauchy, donc converge uniformément, $\R^{p}$ étant complet (chapitre 1, théorèmes 6 et 7).
+\end{demo}
+
+\begin{remarque}
+L'équicontinuité est indispensable : la suite $f_{n}(t) = t^{n}$ sur $[0, 1]$ est bornée, mais aucune de ses sous-suites ne converge uniformément, puisque la limite simple est discontinue en $1$ (chapitre 1). Elle n'est pas équicontinue en $1$ : les fonctions y deviennent de plus en plus raides.
+\end{remarque}
+
+\subsection{L'énoncé}
+
+Dans la suite, un \mot{cylindre de sécurité} en $(t_{0}, y_{0})$ est un ensemble $C = [t_{0} - a, t_{0} + a] \times \Bf(y_{0}, b)$ inclus dans $U$ ; on note $M = \max_{C}\norme{F}$, qui existe car $C$ est compact (chapitre 1, théorème 3), et $\alpha = \min\left(a, \dfrac{b}{M}\right)$, avec $\alpha = a$ si $M = 0$.
+
+\par\medskip\noindent\begin{minipage}{\linewidth}
+% ---- cylindre [t0 - a, t0 + a] x B(y0, b) et cone de pentes +-M ; ici a = 2, b = 1, M = 1, alpha = 1 (schema)
+\begin{center}
+\begin{tikzpicture}[scale=1.5]
+  \fill[couleurQ!10] (-2,-1) rectangle (2,1);
+  \draw[couleurQ,thick] (-2,-1) rectangle (2,1);
+  \fill[couleurD!18] (0,0) -- (1,1) -- (1,-1) -- cycle;
+  \fill[couleurD!18] (0,0) -- (-1,1) -- (-1,-1) -- cycle;
+  \draw[couleurD,thick] (-1,-1) -- (1,1) (-1,1) -- (1,-1);
+  \draw[couleurQ,densely dashed] (-1,-1) -- (-1,1) (1,-1) -- (1,1);
+  \draw[couleurN,very thick] plot[smooth] coordinates {(-1,0.35) (-0.6,0.28) (-0.3,0.12) (0,0) (0.35,-0.1) (0.7,0.05) (1,0.3)};
+  \fill[rougecours] (0,0) circle (1.2pt);
+  \node[rougecours,font=\small,anchor=north] at (0,-0.45) {$(t_{0}, y_{0})$};
+  \draw[gray,<->] (-2,-1.25) -- (2,-1.25) node[midway,below,font=\small] {$2a$};
+  \draw[gray,<->] (2.25,-1) -- (2.25,1) node[midway,right,font=\small] {$2b$};
+  \draw[gray,<->] (-1,1.25) -- (1,1.25) node[midway,above,font=\small] {$2\alpha$};
+  \node[couleurD,font=\small,anchor=west] at (1.05,0.75) {pente $M$};
+  \node[couleurQ,font=\small,anchor=south west] at (-2,1.02) {$C \subset U$};
+\end{tikzpicture}
+\end{center}
+
+\noindent Le cylindre de sécurité, en violet, et le cône orange de pentes $\pm M$ issu du point initial, en rouge. Une solution, en bleu, a une pente au plus $M$ en norme tant qu'elle reste dans $C$ : elle reste donc dans le cône, et le cône ne sort pas du cylindre tant que $|t - t_{0}| \leqslant \alpha = \min\left(a, \dfrac{b}{M}\right)$. Ici $b = Ma/2$, et c'est la hauteur du cylindre qui limite $\alpha$.
+\end{minipage}
+
+\begin{center}
+\begin{tabularx}{15cm}{||X||}
+\hline \\
+\textbf{\underline{\textcolor{rougecours}{Théorème 2 : Peano :}}} \\
+Soit $U$ un ouvert de $\R \times \R^{p}$, $F : U \to \R^{p}$ continue, et $C$ un cylindre de sécurité en $(t_{0}, y_{0}) \in U$. Le problème de Cauchy en $(t_{0}, y_{0})$ admet une solution définie sur $[t_{0} - \alpha, t_{0} + \alpha]$, dont le graphe est inclus dans $C$.
+\medbreak
+\\ \hline
+\end{tabularx}
+\end{center}
+
+\begin{demo}
+On construit une solution sur $[t_{0}, t_{0} + \alpha]$ ; le cas de $[t_{0} - \alpha, t_{0}]$ est symétrique, et l'on recolle les deux par la proposition 4.
+
+\etape{Les polygones d'Euler.} Pour $n \geqslant 1$, on pose $t_{k} = t_{0} + \dfrac{k\alpha}{n}$ pour $0 \leqslant k \leqslant n$, et l'on définit $y_{n}$ affine sur chaque $[t_{k}, t_{k + 1}]$ par
+\[ y_{n}(t_{0}) = y_{0}, \qquad y_{n}(t) = y_{n}(t_{k}) + (t - t_{k})\,F\big(t_{k}, y_{n}(t_{k})\big) \quad \text{pour } t \in [t_{k}, t_{k + 1}]. \]
+Par récurrence sur $k$, le point $(t_{k}, y_{n}(t_{k}))$ appartient à $C$, donc la pente $F(t_{k}, y_{n}(t_{k}))$ est de norme au plus $M$, et $\norme{y_{n}(t) - y_{0}} \leqslant M(t - t_{0}) \leqslant M\alpha \leqslant b$ : le polygone reste dans $C$, et il est $M$-lipschitzien.
+
+\etape{Extraction.} La suite $(y_{n})$ est équicontinue, puisque toutes ses fonctions sont $M$-lipschitziennes, et uniformément bornée par $\norme{y_{0}} + b$. Par le théorème 1, une sous-suite $(y_{n_{j}})$ converge uniformément vers une fonction $y$, continue, à valeurs dans $\Bf(y_{0}, b)$.
+
+\etape{Passage à la limite.} Pour $s \in [t_{0}, t_{0} + \alpha[$, notons $\tau_{n}(s)$ le plus grand $t_{k}$ inférieur ou égal à $s$. Le polygone étant affine par morceaux, $y_{n}(t) = y_{0} + \displaystyle\int_{t_{0}}^{t} F\big(\tau_{n}(s), y_{n}(\tau_{n}(s))\big)\,\dd s$. Soit $\varepsilon > 0$. La fonction $F$ est uniformément continue sur le compact $C$ (chapitre 1, théorème 4) : il existe $\eta > 0$ tel que $\norme{F(s, u) - F(s', u')} \leqslant \varepsilon$ dès que $|s - s'| \leqslant \eta$ et $\norme{u - u'} \leqslant \eta$, ces points étant dans $C$. Pour $n$ assez grand dans la sous-suite, $\dfrac{\alpha}{n} \leqslant \eta$, $\dfrac{M\alpha}{n} \leqslant \dfrac{\eta}{2}$ et $\norme{y_{n} - y}_{\infty} \leqslant \dfrac{\eta}{2}$, de sorte que
+\[ |\tau_{n}(s) - s| \leqslant \eta, \qquad \norme{y_{n}(\tau_{n}(s)) - y(s)} \leqslant \norme{y_{n}(\tau_{n}(s)) - y_{n}(s)} + \norme{y_{n}(s) - y(s)} \leqslant \eta, \]
+et donc
+\[ \norme{F\big(\tau_{n}(s), y_{n}(\tau_{n}(s))\big) - F(s, y(s))} \leqslant \varepsilon. \]
+En passant à la limite dans la forme intégrale, $y(t) = y_{0} + \displaystyle\int_{t_{0}}^{t} F(s, y(s))\,\dd s$, et $y$ est solution par la proposition 3.
+\end{demo}
+
+\begin{remarques}
+  \item La démonstration ne dit pas quelle solution on obtient, ni si la suite entière des polygones converge : en cas de non-unicité, comme pour $y' = 2\sqrt{|y|}$, différentes sous-suites peuvent converger vers différentes solutions.
+  \item Le théorème est faux en dimension infinie : Dieudonné a construit, en 1950, une équation $y' = F(y)$ à second membre continu dans un espace de Banach de dimension infinie, sans aucune solution. C'est le théorème d'Ascoli qui y fait défaut, les boules fermées n'étant plus compactes (chapitre 1, théorème 10).
+\end{remarques}
+
+% ---- polygones d'Euler pour y' = y, y(0) = 1, sur [0, 1] : n = 2, 4, 8 ; valeurs en 1 : 2.25, 2.4414, 2.5658 ; e = 2.7183 (calcules)
+\begin{center}
+\begin{tikzpicture}[x=7cm,y=1.6cm]
+  \draw[gray,->] (0,1) -- (1.1,1) node[below,font=\small] {$t$};
+  \draw[gray,->] (0,0.92) -- (0,2.95) node[left,font=\small] {$y$};
+  \draw[couleurN,very thick,domain=0:1,samples=50] plot (\x,{exp(\x)});
+  \draw[couleurD!45,thick] (0,1) -- (0.5,1.5) -- (1,2.25);
+  \draw[couleurD!70,thick] (0,1) -- (0.25,1.25) -- (0.5,1.5625) -- (0.75,1.953125) -- (1,2.44140625);
+  \draw[couleurD,thick] plot coordinates {(0,1) (0.125,1.125) (0.25,1.265625) (0.375,1.423828) (0.5,1.601807) (0.625,1.802032) (0.75,2.027287) (0.875,2.280697) (1,2.565785)};
+  \draw[couleurD!45,thick] (0.06,2.75) -- (0.14,2.75) node[right,font=\small,text=couleurD] {$n = 2$};
+  \draw[couleurD!70,thick] (0.06,2.5) -- (0.14,2.5) node[right,font=\small,text=couleurD] {$n = 4$};
+  \draw[couleurD,thick] (0.06,2.25) -- (0.14,2.25) node[right,font=\small,text=couleurD] {$n = 8$};
+  \draw[couleurN,very thick] (0.06,2.0) -- (0.14,2.0) node[right,font=\small,text=couleurN] {$\ee^{t}$};
+  \draw[gray] (1,1.03) -- (1,0.97) node[below,font=\scriptsize] {$1$};
+  \node[gray,font=\scriptsize,anchor=east] at (-0.01,1) {$1$};
+\end{tikzpicture}
+\end{center}
+
+\noindent Pour $y' = y$, $y(0) = 1$, les polygones d'Euler à $2$, $4$ et $8$ pas, en orange de plus en plus soutenu, ont pour valeurs en $t = 1$ les nombres $\left(1 + \dfrac{1}{n}\right)^{n}$, soit $2{,}25$ ; $2{,}441$ ; $2{,}566$, qui s'approchent de $\ee \approx 2{,}718$, valeur de la solution exacte en bleu. Ici la suite entière converge ; la convergence est lente, ce que le chapitre 7 quantifiera et améliorera.
+%===============================================================================
+\section[Solutions maximales]{Solutions maximales, théorème des bouts}
+%===============================================================================
+
+Le théorème de Peano ne fournit qu'une solution locale. On cherche maintenant à la prolonger le plus loin possible.
+
+\begin{center}
+\begin{tabularx}{15cm}{||X}
+\noindent \textbf{\underline{Définition :}} Une solution $(\tilde{J}, \tilde{y})$ \mot{prolonge} la solution $(J, y)$ si $J \subset \tilde{J}$ et $\tilde{y} = y$ sur $J$. Une solution est \mot{maximale} si elle n'admet pas d'autre prolongement qu'elle-même. Lorsque $U = I \times \R^{p}$, avec $I$ intervalle ouvert, une solution est \mot{globale} si elle est définie sur $I$ tout entier.
+\end{tabularx}
+\end{center}
+
+\begin{cadre}
+\propo{8} L'intervalle de définition d'une solution maximale est ouvert. De plus (\emph{admis}), toute solution se prolonge en une solution maximale.
+\end{cadre}
+
+\begin{demo}
+Si une solution est définie sur un intervalle contenant sa borne supérieure $\beta$, le théorème 2, appliqué en $(\beta, y(\beta)) \in U$, fournit une solution sur $[\beta, \beta + \alpha]$, et le recollement de la proposition 4 prolonge strictement la solution : elle n'était pas maximale. De même pour la borne inférieure. La seconde affirmation est admise : sans unicité, une solution a en général plusieurs prolongements incompatibles, et le choix d'un prolongement maximal repose sur le lemme de Zorn, qui dépasse le cadre de ce cours. Sous l'hypothèse de Cauchy-Lipschitz, le théorème 5 l'établira sans aucun choix.
+\end{demo}
+
+\begin{center}
+\begin{tabularx}{15cm}{||X||}
+\hline \\
+\textbf{\underline{\textcolor{rougecours}{Théorème 3 : Théorème des bouts :}}} \\
+Soit $F : U \to \R^{p}$ continue et $(\left]\alpha, \beta\right[, y)$ une solution maximale. Pour tout compact $K \subset U$, il existe $t_{K} < \beta$ tel que $(t, y(t)) \notin K$ pour tout $t \in \left]t_{K}, \beta\right[$ : la courbe intégrale \emph{sort définitivement de tout compact} de $U$ quand $t \to \beta$. De même quand $t \to \alpha$.
+\medbreak
+\\ \hline
+\end{tabularx}
+\end{center}
+
+\begin{demo}
+On munit $\R \times \R^{p}$ de la norme $\norme{(t, y)} = \max(|t|, \norme{y})$. Raisonnons par l'absurde : soit $K \subset U$ compact et une suite $t_{n} \to \beta$, $t_{n} < \beta$, avec $(t_{n}, y(t_{n})) \in K$. Comme $K$ est borné, $\beta$ est fini.
+
+\etape{Un voisinage uniforme.} La distance de $K$ au fermé $\complement U$ est strictement positive : la fonction $x \mapsto d(x, \complement U)$ est continue et strictement positive sur le compact $K$, donc minorée par un $\delta_{0} > 0$ (chapitre 1, théorème 3). Pour $0 < \delta < \delta_{0}$, l'ensemble $K_{\delta}$ des points à distance au plus $\delta$ de $K$ est fermé, borné, donc compact, et inclus dans $U$ ; soit $M = \max_{K_{\delta}}\norme{F}$, que l'on peut supposer non nul.
+
+\etape{La courbe est piégée.} Choisissons $n$ tel que $\beta - t_{n} < \min\left(\delta, \dfrac{\delta}{M}\right)$, et notons
+\[ C_{n} = [t_{n} - \delta, t_{n} + \delta] \times \Bf(y(t_{n}), \delta) \subset K_{\delta}. \]
+ Si la courbe quittait $C_{n}$ entre $t_{n}$ et $\beta$, il y aurait un premier instant $s \in \left]t_{n}, \beta\right[$ où $\norme{y(s) - y(t_{n})} = \delta$ ; mais sur $[t_{n}, s]$, la courbe est dans $C_{n}$, donc $\norme{y'} \leqslant M$, et $\norme{y(s) - y(t_{n})} \leqslant M(s - t_{n}) < \delta$, ce qui est absurde. Ainsi la courbe reste dans $C_{n}$ sur $[t_{n}, \beta[$, et $y$ y est $M$-lipschitzienne.
+
+\etape{Prolongement.} Une fonction lipschitzienne sur $[t_{n}, \beta[$ vérifie le critère de Cauchy en $\beta$ ; comme $\R^{p}$ est complet, $y$ a une limite $\ell$ en $\beta$, et le point $(\beta, \ell)$ appartient à $C_{n} \subset U$. En passant à la limite dans $y(t) = y(t_{n}) + \displaystyle\int_{t_{n}}^{t} F(s, y(s))\,\dd s$, on voit que la fonction prolongée par $y(\beta) = \ell$ vérifie la forme intégrale sur $\left]\alpha, \beta\right]$ : c'est une solution qui prolonge strictement $y$, ce qui contredit la maximalité.
+\end{demo}
+
+% ---- schema : ouvert U (violet), compact K, courbe integrale maximale qui sort de K et s'echappe vers le bord de U (pour t -> beta)
+\begin{center}
+\begin{tikzpicture}[scale=1.2]
+  \fill[couleurQ!8] plot[smooth cycle] coordinates {(-3,-0.6) (-2.2,1.3) (0,1.7) (2.4,1.6) (3.4,0.4) (2.6,-1.4) (0,-1.6) (-2.4,-1.5)};
+  \draw[couleurQ,thick,densely dashed] plot[smooth cycle] coordinates {(-3,-0.6) (-2.2,1.3) (0,1.7) (2.4,1.6) (3.4,0.4) (2.6,-1.4) (0,-1.6) (-2.4,-1.5)};
+  \fill[couleurQ!25] (0,0.05) ellipse (1.25 and 0.75);
+  \draw[couleurQ,thick] (0,0.05) ellipse (1.25 and 0.75);
+  \draw[couleurN,very thick] plot[smooth] coordinates {(-2.6,-0.9) (-1.6,-0.5) (-0.5,-0.2) (0.4,0.25) (1.0,0.5) (2.1,0.65) (2.7,0.95) (3.05,1.15)};
+  \fill[rougecours] (3.08,1.17) circle (1.1pt);
+  \draw[gray,->] (-3.3,-2) -- (3.8,-2) node[below,font=\small] {$t$};
+  \draw[rougecours,densely dotted] (3.08,1.17) -- (3.08,-2);
+  \node[rougecours,font=\small,anchor=north] at (3.08,-2.05) {$\beta$};
+  \node[couleurQ,font=\small] at (-0.55,0.45) {$K$};
+  \node[couleurQ,font=\small,anchor=north] at (-1.2,-1.62) {$U$};
+  \fill[couleurN] (1.0,0.5) circle (1.3pt);
+  \draw[couleurN,densely dotted] (1.0,0.5) -- (1.0,-2);
+  \node[couleurN,font=\small,anchor=north] at (1.0,-2.05) {$t_{K}$};
+\end{tikzpicture}
+\end{center}
+
+\noindent L'ouvert $U$, dont le bord est en tirets, un compact $K$ en violet foncé, et une courbe intégrale maximale en bleu. Après l'instant $t_{K}$, où elle franchit le bord de $K$ pour la dernière fois, la courbe ne revient plus dans $K$ ; quand $t$ tend vers $\beta$, elle s'approche du bord de $U$, ce qui est la seule façon de cesser d'exister. Si $U = I \times \R^{p}$, s'approcher du bord avant la fin de $I$, c'est partir à l'infini.
+
+\begin{cadre}
+\propo{9} \emph{(Explosion.)} Si $U = I \times \R^{p}$, avec $I$ intervalle ouvert, et si $(\left]\alpha, \beta\right[, y)$ est une solution maximale avec $\beta < \sup I$, alors $\rmath{\norme{y(t)} \to +\infty}$ quand $t \to \beta$.
+\end{cadre}
+
+\begin{demo}
+Soit $R > 0$ et $t_{1} \in \left]\alpha, \beta\right[$. Comme $\beta \in I$, l'ensemble $K = [t_{1}, \beta] \times \Bf(0, R)$ est un compact inclus dans $U$. Par le théorème 3, $(t, y(t)) \notin K$ pour $t$ proche de $\beta$, c'est-à-dire $\norme{y(t)} > R$.
+\end{demo}
+
+\begin{remarque}
+\emph{Piège.} La proposition ne dit pas que $y$ explose si $\beta < +\infty$, mais si $\beta$ est inférieur à la borne supérieure de $I$. Pour $y' = -\dfrac{1}{2y}$ sur $U = \R \times \left]0, +\infty\right[$, la solution $y = \sqrt{1 - t}$ s'arrête en $t = 1$ en restant bornée : elle s'approche du bord $y = 0$ de $U$, ce qui est l'autre manière de sortir de tout compact.
+\end{remarque}
+%===============================================================================
+\section[Lipschitz locale et unicité]{Fonctions localement lipschitziennes et unicité}
+%===============================================================================
+
+\begin{center}
+\begin{tabularx}{15cm}{||X}
+\noindent \textbf{\underline{Définition :}} Une fonction continue $F : U \to \R^{p}$ est \mot{localement lipschitzienne par rapport à $y$} si tout point de $U$ admet un voisinage $V \subset U$ et une constante $L$ tels que
+\[ \rmath{\norme{F(t, y) - F(t, z)} \leqslant L\norme{y - z}} \qquad \text{pour tous } (t, y), (t, z) \in V. \]
+\end{tabularx}
+\end{center}
+
+\begin{cadre}
+\propo{10} Si $F$ est de classe $\Cc^{1}$ sur $U$, ou plus généralement si $F$ est continue et admet une différentielle partielle $\dd_{y}F$ continue sur $U$, alors $F$ est localement lipschitzienne par rapport à $y$.
+\end{cadre}
+
+\begin{demo}
+Soit $(t_{0}, y_{0}) \in U$ et $V = [t_{0} - r, t_{0} + r] \times \Bf(y_{0}, r) \subset U$. Comme $V$ est compact et $\dd_{y}F$ continue, $L = \max_{V}\nop{\dd_{y}F}$ existe. Pour $t$ fixé, $y \mapsto F(t, y)$ est différentiable sur la boule $\Bf(y_{0}, r)$, convexe, de différentielle bornée par $L$ : l'inégalité des accroissements finis (chapitre 2, théorème 4) donne $\norme{F(t, y) - F(t, z)} \leqslant L\norme{y - z}$.
+\end{demo}
+
+\begin{exemples}
+  \item Les fonctions $t + y^{2}$, $y^{2}$, $-\sin\theta$, et toute fonction affine en $y$ à coefficients continus, sont localement lipschitziennes par rapport à $y$.
+  \item La fonction $y \mapsto 2\sqrt{|y|}$ ne l'est pas au voisinage de $0$ : le quotient $\dfrac{2\sqrt{|y|} - 0}{|y - 0|} = \dfrac{2}{\sqrt{|y|}}$ n'est pas borné.
+\end{exemples}
+
+\begin{cadre}
+\propo{11} \emph{(Unicité.)} Soit $F$ continue et localement lipschitzienne par rapport à $y$, et $(J, y)$, $(J, z)$ deux solutions sur un même intervalle $J$ telles que $y(t_{0}) = z(t_{0})$ en un point $t_{0} \in J$. Alors $y = z$ sur $J$.
+\end{cadre}
+
+\begin{demo}
+L'ensemble $T = \{t \in J \mid y(t) = z(t)\}$ contient $t_{0}$ et est fermé dans $J$, par continuité. Montrons qu'il est ouvert dans $J$. Soit $t_{1} \in T$ et $V$, $L$ donnés par la définition en $(t_{1}, y(t_{1}))$. Par continuité, il existe $r > 0$ tel que $(t, y(t))$ et $(t, z(t))$ appartiennent à $V$ pour $t \in J$, $|t - t_{1}| \leqslant r$. Pour ces $t$ avec $t \geqslant t_{1}$, la forme intégrale donne
+\[ \norme{y(t) - z(t)} \leqslant \int_{t_{1}}^{t} \norme{F(s, y(s)) - F(s, z(s))}\,\dd s \leqslant \int_{t_{1}}^{t} L\norme{y(s) - z(s)}\,\dd s, \]
+et le lemme de Gronwall avec $A = 0$ (proposition 2) donne $y = z$ sur $[t_{1}, t_{1} + r] \cap J$ ; de même à gauche, en changeant $t$ en $-t$. Ainsi $T$ est ouvert et fermé dans l'intervalle $J$, non vide : $T = J$, puisqu'un intervalle est connexe (\emph{Rappel.}).
+\end{demo}
+
+%===============================================================================
+\section[Méthode de Picard]{La méthode itérative de Picard}
+%===============================================================================
+
+La forme intégrale de la proposition 3 dit qu'une solution est un point fixe de l'opérateur
+\[ \rmath{\Phi(y)(t) = y_{0} + \int_{t_{0}}^{t} F(s, y(s))\,\dd s}. \]
+La méthode de Picard consiste à itérer $\Phi$ à partir de la fonction constante $y_{0}$ : $y_{0}(t) = y_{0}$, $y_{n + 1} = \Phi(y_{n})$. Le théorème du point fixe du chapitre 1 en assure la convergence.
+
+\begin{center}
+\begin{tabularx}{15cm}{||X||}
+\hline \\
+\textbf{\underline{\textcolor{rougecours}{Théorème 4 : Cauchy-Lipschitz, version locale :}}} \\
+Soit $F : U \to \R^{p}$ continue et localement lipschitzienne par rapport à $y$, et $(t_{0}, y_{0}) \in U$. Il existe un cylindre de sécurité $C$ en $(t_{0}, y_{0})$ sur lequel $F$ est $L$-lipschitzienne par rapport à $y$ et bornée par $M$. Avec $\alpha = \min\left(a, \dfrac{b}{M}\right)$, le problème de Cauchy en $(t_{0}, y_{0})$ admet une unique solution $y$ sur $[t_{0} - \alpha, t_{0} + \alpha]$, limite uniforme des itérés de Picard, avec
+\[ \rmath{\norme{y_{n}(t) - y(t)} \leqslant \frac{M\,L^{n}\,|t - t_{0}|^{n + 1}}{(n + 1)!}}. \]
+\medbreak
+\\ \hline
+\end{tabularx}
+\end{center}
+
+\begin{demo}
+\etape{Le cylindre.} Le voisinage $V$ de $(t_{0}, y_{0})$ donné par la définition contient un cylindre de sécurité $C = [t_{0} - a, t_{0} + a] \times \Bf(y_{0}, b)$,
+sur lequel $F$ est $L$-lipschitzienne en $y$ et bornée par $M = \max_{C}\norme{F}$.
+
+\etape{L'espace complet.} Soit $I_{\alpha} = [t_{0} - \alpha, t_{0} + \alpha]$ et $X$ l'ensemble des fonctions continues de $I_{\alpha}$ dans $\Bf(y_{0}, b)$, muni de la distance uniforme. C'est une partie fermée de l'espace de Banach $\Cc(I_{\alpha}, \R^{p})$ (chapitre 1, théorème 8), donc un espace métrique complet. Pour $y \in X$, la fonction $\Phi(y)$ est continue, et $\Phi$ envoie $X$ dans $X$ puisque
+\[ \norme{\Phi(y)(t) - y_{0}} \leqslant M|t - t_{0}| \leqslant M\alpha \leqslant b. \]
+
+\etape{Une itérée contractante.} Par récurrence sur $n$, pour $y$, $z \in X$ et $t \in I_{\alpha}$,
+\[ \norme{\Phi^{n}(y)(t) - \Phi^{n}(z)(t)} \leqslant \frac{(L|t - t_{0}|)^{n}}{n!}\,\norme{y - z}_{\infty} : \]
+c'est clair pour $n = 0$, et, si c'est vrai au rang $n$, pour $t \geqslant t_{0}$,
+\[ \norme{\Phi^{n + 1}(y)(t) - \Phi^{n + 1}(z)(t)} \leqslant \int_{t_{0}}^{t} L\,\frac{(L(s - t_{0}))^{n}}{n!}\,\norme{y - z}_{\infty}\,\dd s = \frac{(L(t - t_{0}))^{n + 1}}{(n + 1)!}\,\norme{y - z}_{\infty}, \]
+et de même pour $t \leqslant t_{0}$. Comme $\dfrac{(L\alpha)^{n}}{n!} \to 0$, une itérée $\Phi^{n}$ est contractante : par la proposition 19 du chapitre 1, $\Phi$ a un unique point fixe $y$ dans $X$, limite uniforme des itérés de Picard. Par la proposition 3, c'est une solution du problème de Cauchy sur $I_{\alpha}$, et elle est unique par la proposition 11.
+
+\etape{L'estimation.} Par récurrence : $\norme{y_{0} - y(t)} = \norme{y(t) - y(t_{0})} \leqslant M|t - t_{0}|$, et si l'estimation vaut au rang $n$, alors
+\[ \norme{y_{n + 1}(t) - y(t)} \leqslant \left|\int_{t_{0}}^{t} L\norme{y_{n}(s) - y(s)}\,\dd s\right| \leqslant \frac{M\,L^{n + 1}|t - t_{0}|^{n + 2}}{(n + 2)!}. \]
+\end{demo}
+
+\begin{center}
+\begin{tabularx}{15cm}{||X||}
+\hline \\
+\textbf{\underline{\textcolor{rougecours}{Théorème 5 : Cauchy-Lipschitz, solution maximale :}}} \\
+Sous les hypothèses du théorème 4, le problème de Cauchy en $(t_{0}, y_{0})$ admet une unique solution maximale, et toute solution de ce problème en est une restriction.
+\medbreak
+\\ \hline
+\end{tabularx}
+\end{center}
+
+\begin{demo}
+Soit $J$ la réunion des intervalles de définition de toutes les solutions du problème de Cauchy : c'est un intervalle, puisque ces intervalles contiennent tous $t_{0}$. Pour $t \in J$, toutes les solutions définies en $t$ y prennent la même valeur, par la proposition 11 appliquée sur l'intersection de leurs intervalles : on définit ainsi $y(t)$. Au voisinage de chaque point de $J$, $y$ coïncide avec une solution, donc $(J, y)$ est une solution ; elle prolonge toutes les autres, ce qui la rend maximale et unique.
+\end{demo}
+
+\begin{remarque}
+Géométriquement, deux courbes intégrales distinctes ne se coupent jamais : si elles avaient un point commun, elles coïncideraient. C'est ce que l'on observe sur le champ de directions de l'introduction, et ce qui tombe en défaut pour $y' = 2\sqrt{|y|}$.
+\end{remarque}
+
+\begin{cadre}
+\propo{12} \emph{(Existence globale.)} Soit $I$ un intervalle ouvert, $U = I \times \R^{p}$, et $F$ continue et localement lipschitzienne par rapport à $y$. On suppose qu'il existe $a$, $b : I \to \R_{+}$ continues telles que $\norme{F(t, y)} \leqslant a(t)\norme{y} + b(t)$ sur $U$. Alors toutes les solutions maximales sont définies sur $I$. C'est le cas des équations linéaires $y' = A(t)y + b(t)$, avec $A : I \to \Mn{p}$ et $b : I \to \R^{p}$ continues.
+\end{cadre}
+
+\begin{demo}
+Soit $(\left]\alpha, \beta\right[, y)$ maximale et $t_{0} \in \left]\alpha, \beta\right[$. Supposons $\beta < \sup I$. Pour $t \in [t_{0}, \beta[$,
+\[ \norme{y(t)} \leqslant \norme{y(t_{0})} + \int_{t_{0}}^{t} \big(a(s)\norme{y(s)} + b(s)\big)\,\dd s \leqslant \Big(\norme{y(t_{0})} + \int_{t_{0}}^{\beta} b\Big) + \int_{t_{0}}^{t} a(s)\norme{y(s)}\,\dd s, \]
+et le lemme de Gronwall, sur chaque $[t_{0}, t_{1}]$ avec $t_{1} < \beta$, borne $\norme{y}$ sur $[t_{0}, \beta[$ par une constante, puisque $a$ et $b$ sont continues sur $[t_{0}, \beta] \subset I$. Cela contredit la proposition 9. De même à gauche. Pour une équation linéaire, $a = \nop{A}$ et $b = \norme{b}$ conviennent.
+\end{demo}
+
+\begin{exemple}
+Pour $y' = t + y^{2}$ et $y(0) = 0$, la fonction $F(t, y) = t + y^{2}$ est de classe $\Cc^{1}$ : il y a une unique solution maximale. Les itérés de Picard se calculent par simple intégration de polynômes :
+\[ y_{1} = \frac{t^{2}}{2}, \qquad y_{2} = \frac{t^{2}}{2} + \frac{t^{5}}{20}, \qquad y_{3} = \frac{t^{2}}{2} + \frac{t^{5}}{20} + \frac{t^{8}}{160} + \frac{t^{11}}{4\,400}. \]
+En $t = 1$, $y_{1}$, $y_{2}$, $y_{3}$, $y_{4}$ valent $0{,}5$ ; $0{,}55$ ; $0{,}556\,48$ ; $0{,}557\,11$, et la solution, calculée numériquement, vaut $0{,}557\,16$. La croissance de $F$ en $y^{2}$ empêche d'appliquer la proposition 12, et la section 6.9 montrera que cette solution explose effectivement, vers $t \approx 1{,}986$.
+\end{exemple}
+
+\begin{lstlisting}
+import sympy as sp
+t, s = sp.symbols('t s')
+y = sp.Integer(0)                                  # y_0 = 0
+for n in range(1, 4):
+    y = sp.expand(sp.integrate(s + y.subs(t, s)**2, (s, 0, t)))
+    print(n, y)
+\end{lstlisting}
+
+\noindent Le programme affiche les trois itérés écrits plus haut, sous la forme \texttt{1 t**2/2}, \texttt{2 t**5/20 + t**2/2}, \texttt{3 t**11/4400 + t**8/160 + t**5/20 + t**2/2}.
+
+% ---- iteres de Picard y1..y4 (polynomes, sympy) et solution numerique (solve_ivp, rtol 1e-11) de y' = t + y^2, y(0) = 0, sur [0, 1.6]
+\begin{center}
+\begin{tikzpicture}
+  \begin{axis}[width=12cm,height=6.4cm,xmin=0,xmax=1.75,ymin=0,ymax=2.55,axis lines=left,
+    xlabel={$t$},label style={font=\small},tick label style={font=\scriptsize,/pgf/number format/use comma},clip=false]
+    \addplot[couleurD!30,thick,domain=0:1.6,samples=60] {x^2/2};
+    \addplot[couleurD!55,thick,domain=0:1.6,samples=60] {x^2/2+x^5/20};
+    \addplot[couleurD!80,thick,domain=0:1.6,samples=60] {x^2/2+x^5/20+x^8/160+x^11/4400};
+    \addplot[couleurD,thick,domain=0:1.6,samples=60] {x^2/2+x^5/20+x^8/160+7*x^11/8800+3*x^14/49280+87*x^17/23936000+x^20/7040000+x^23/445280000};
+    \addplot[couleurN,very thick] coordinates {(0.000,0.0000) (0.040,0.0008) (0.080,0.0032) (0.120,0.0072) (0.160,0.0128) (0.200,0.0200) (0.240,0.0288) (0.280,0.0393) (0.320,0.0514) (0.360,0.0651) (0.400,0.0805) (0.440,0.0976) (0.480,0.1165) (0.520,0.1371) (0.560,0.1596) (0.600,0.1840) (0.640,0.2104) (0.680,0.2388) (0.720,0.2693) (0.760,0.3022) (0.800,0.3375) (0.840,0.3754) (0.880,0.4160) (0.920,0.4597) (0.960,0.5066) (1.000,0.5572) (1.040,0.6116) (1.080,0.6704) (1.120,0.7342) (1.160,0.8034) (1.200,0.8789) (1.240,0.9615) (1.280,1.0524) (1.320,1.1530) (1.360,1.2651) (1.400,1.3907) (1.440,1.5329) (1.480,1.6953) (1.520,1.8832) (1.560,2.1034) (1.600,2.3658)};
+    \node[couleurD!45,font=\small,anchor=west] at (axis cs:1.62,1.28) {$y_{1}$};
+    \node[couleurD!65,font=\small,anchor=west] at (axis cs:1.62,1.80) {$y_{2}$};
+    \node[couleurD!85,font=\small,anchor=west] at (axis cs:1.62,2.08) {$y_{3}$};
+    \node[couleurD,font=\small,anchor=west] at (axis cs:1.62,2.25) {$y_{4}$};
+    \node[couleurN,font=\small,anchor=west] at (axis cs:1.62,2.43) {$y$};
+  \end{axis}
+\end{tikzpicture}
+\end{center}
+
+\noindent Les quatre premiers itérés de Picard, en orange de plus en plus soutenu, et la solution, en bleu. L'accord est excellent tant que $t$ reste petit, conformément à la majoration du théorème 4 en $\dfrac{|t|^{n + 1}}{(n + 1)!}$ ; vers $t = 1{,}5$, où la solution commence à croître très vite, il faut de plus en plus d'itérés, et aucun polynôme ne peut suivre l'explosion qui se prépare.
+%===============================================================================
+\section[Étude qualitative]{Étude qualitative de l'équation $y' = t + y^{2}$}
+%===============================================================================
+
+L'équation $y' = t + y^{2}$, dite équation de Riccati, ne se résout pas à l'aide des fonctions usuelles. Les théorèmes de ce chapitre permettent pourtant d'en décrire les solutions avec précision, sans jamais les calculer. C'est la démarche typique de l'étude qualitative.
+
+\subsection{Existence, unicité, monotonie}
+
+La fonction $F(t, y) = t + y^{2}$ est de classe $\Cc^{1}$ sur $U = \R^{2}$. Par la proposition 10 et le théorème 5, pour tout $(t_{0}, y_{0}) \in \R^{2}$, il existe une unique solution maximale $(\left]\alpha, \beta\right[, y)$ telle que $y(t_{0}) = y_{0}$, et deux courbes intégrales distinctes ne se coupent pas.
+
+Le signe de $y'(t) = t + y(t)^{2}$ se lit sur le plan : la parabole $\mathcal{P}$ d'équation $t = -y^{2}$, appelée \mot{isocline} de pente nulle, sépare la région $t + y^{2} < 0$, à sa gauche, où les solutions décroissent, de la région $t + y^{2} > 0$, où elles croissent. En particulier, toute solution est strictement croissante sur $\left]\alpha, \beta\right[ \cap \left]0, +\infty\right[$, et une solution ne peut traverser $\mathcal{P}$ qu'avec une tangente horizontale.
+
+\subsection{Explosion à droite}
+
+\begin{cadre}
+\propo{13} Toute solution maximale $(\left]\alpha, \beta\right[, y)$ de $y' = t + y^{2}$ explose à droite : $\beta < +\infty$ et $\rmath{y(t) \to +\infty}$ quand $t \to \beta$. Plus précisément, pour tout $t_{0} \in \left]\alpha, \beta\right[$,
+\[ \rmath{\beta \leqslant \max(t_{0}, 1) + \pi}. \]
+\end{cadre}
+
+\begin{demo}
+Posons $t_{1} = \max(t_{0}, 1)$. Si $t_{1} \geqslant \beta$, la majoration est acquise. Sinon, pour $t \in [t_{1}, \beta[$, on a $y'(t) \geqslant 1 + y(t)^{2}$, donc
+\[ \frac{\dd}{\dd t}\arctan y(t) = \frac{y'(t)}{1 + y(t)^{2}} \geqslant 1, \qquad \text{d'où} \qquad \arctan y(t) \geqslant \arctan y(t_{1}) + (t - t_{1}) > -\frac{\pi}{2} + (t - t_{1}). \]
+Comme $\arctan y(t) < \dfrac{\pi}{2}$, il vient $t - t_{1} < \pi$ pour tout $t \in [t_{1}, \beta[$, donc $\beta \leqslant t_{1} + \pi$. Dans les deux cas, $\beta$ est fini, inférieur à la borne $+\infty$ de $I = \R$, et la proposition 9 donne $|y(t)| \to +\infty$. Alors $y'(t) = t + y(t)^{2} > 0$ pour $t$ proche de $\beta$, puisque $t$ reste borné : $y$ est croissante au voisinage de $\beta$, et ne peut donc tendre que vers $+\infty$.
+\end{demo}
+
+\begin{remarque}
+La majoration est grossière : pour la solution nulle en $0$, elle donne $\beta \leqslant 1 + \pi \approx 4{,}14$, alors que le calcul numérique de l'exemple de la section 6.8 donne $\beta \approx 1{,}986$. Elle a l'avantage d'être obtenue sans aucun calcul de solution, ce qui est l'esprit de l'étude qualitative : comparer l'équation à une équation que l'on sait résoudre, ici $y' = 1 + y^{2}$, dont les solutions $\tan(t - c)$ explosent au bout d'un temps $\pi$.
+\end{remarque}
+
+\subsection{Comportement à gauche}
+
+À gauche, deux comportements coexistent, comme le montre la figure. Les solutions qui démarrent assez haut sont définies jusqu'en $-\infty$ et y suivent la branche supérieure de la parabole, $y \approx \sqrt{-t}$ ; celles qui démarrent assez bas explosent vers $-\infty$ en un temps fini $\alpha$. La frontière entre ces deux familles est une solution particulière, la \mot{séparatrice}, qui suit la branche inférieure $y \approx -\sqrt{-t}$ de la parabole quand $t \to -\infty$ ; numériquement, elle vaut $y(0) \approx -0{,}729\,01$. La démonstration de ces affirmations, qui repose sur des comparaisons du même type que dans la proposition 13, fera l'objet d'exercices.
+
+\par\medskip\noindent\begin{minipage}{\linewidth}
+% ---- y' = t + y^2 : champ de directions (pas 0,5), isocline t = -y^2 (violet, tirets), solutions avec y(0) = -3, -2, -1, -0.5, 0, 0.5, 1 (bleu, solve_ivp), separatrice y(0) = Ai'(0)/Ai(0) = -0.72901 (rouge, bissection en arriere)
+\begin{center}
+\begin{tikzpicture}[x=1.6cm,y=0.72cm]
+  \begin{scope}
+  \clip (-4,-3.6) rectangle (4,3.6);
+\draw[gray!55] (-3.776,-3.428) -- (-3.724,-3.072) (-3.796,-2.924) -- (-3.704,-2.576) (-3.859,-2.393) -- (-3.641,-2.107) (-3.898,-1.648) -- (-3.602,-1.852) (-3.825,-1.086) -- (-3.675,-1.414) (-3.804,-0.578) -- (-3.696,-0.922) (-3.797,-0.076) -- (-3.703,-0.424) (-3.797,0.424) -- (-3.703,0.076) (-3.804,0.922) -- (-3.696,0.578) (-3.825,1.414) -- (-3.675,1.086) (-3.898,1.852) -- (-3.602,1.648) (-3.859,2.107) -- (-3.641,2.393) (-3.796,2.576) -- (-3.704,2.924) (-3.776,3.072) -- (-3.724,3.428) (-3.274,-3.428) -- (-3.226,-3.072) (-3.291,-2.925) -- (-3.209,-2.575) (-3.337,-2.408) -- (-3.163,-2.092) (-3.427,-1.717) -- (-3.073,-1.783) (-3.342,-1.095) -- (-3.158,-1.405) (-3.313,-0.581) -- (-3.187,-0.919) (-3.304,-0.078) -- (-3.196,-0.422) (-3.304,0.422) -- (-3.196,0.078) (-3.313,0.919) -- (-3.187,0.581) (-3.342,1.405) -- (-3.158,1.095) (-3.427,1.783) -- (-3.073,1.717) (-3.337,2.092) -- (-3.163,2.408) (-3.291,2.575) -- (-3.209,2.925) (-3.274,3.072) -- (-3.226,3.428) (-2.773,-3.429) -- (-2.727,-3.071) (-2.787,-2.926) -- (-2.713,-2.574) (-2.821,-2.415) -- (-2.679,-2.085) (-2.922,-1.804) -- (-2.578,-1.696) (-2.866,-1.112) -- (-2.634,-1.388) (-2.825,-0.586) -- (-2.675,-0.914) (-2.813,-0.081) -- (-2.687,-0.419) (-2.813,0.419) -- (-2.687,0.081) (-2.825,0.914) -- (-2.675,0.586) (-2.866,1.388) -- (-2.634,1.112) (-2.922,1.696) -- (-2.578,1.804) (-2.821,2.085) -- (-2.679,2.415) (-2.787,2.574) -- (-2.713,2.926) (-2.773,3.071) -- (-2.727,3.429) (-2.271,-3.429) -- (-2.229,-3.071) (-2.283,-2.927) -- (-2.217,-2.573) (-2.310,-2.420) -- (-2.190,-2.080) (-2.390,-1.864) -- (-2.110,-1.636) (-2.398,-1.148) -- (-2.102,-1.352) (-2.342,-0.595) -- (-2.158,-0.905) (-2.325,-0.086) -- (-2.175,-0.414) (-2.325,0.414) -- (-2.175,0.086) (-2.342,0.905) -- (-2.158,0.595) (-2.398,1.352) -- (-2.102,1.148) (-2.390,1.636) -- (-2.110,1.864) (-2.310,2.080) -- (-2.190,2.420) (-2.283,2.573) -- (-2.217,2.927) (-2.271,3.071) -- (-2.229,3.429) (-1.770,-3.429) -- (-1.730,-3.071) (-1.781,-2.927) -- (-1.719,-2.573) (-1.802,-2.422) -- (-1.698,-2.078) (-1.859,-1.893) -- (-1.641,-1.607) (-1.927,-1.217) -- (-1.573,-1.283) (-1.866,-0.612) -- (-1.634,-0.888) (-1.842,-0.095) -- (-1.658,-0.405) (-1.842,0.405) -- (-1.658,0.095) (-1.866,0.888) -- (-1.634,0.612) (-1.927,1.283) -- (-1.573,1.217) (-1.859,1.607) -- (-1.641,1.893) (-1.802,2.078) -- (-1.698,2.422) (-1.781,2.573) -- (-1.719,2.927) (-1.770,3.071) -- (-1.730,3.429) (-1.269,-3.429) -- (-1.231,-3.071) (-1.278,-2.928) -- (-1.222,-2.572) (-1.296,-2.424) -- (-1.204,-2.076) (-1.337,-1.908) -- (-1.163,-1.592) (-1.422,-1.304) -- (-1.078,-1.196) (-1.398,-0.648) -- (-1.102,-0.852) (-1.366,-0.112) -- (-1.134,-0.388) (-1.366,0.388) -- (-1.134,0.112) (-1.398,0.852) -- (-1.102,0.648) (-1.422,1.196) -- (-1.078,1.304) (-1.337,1.592) -- (-1.163,1.908) (-1.296,2.076) -- (-1.204,2.424) (-1.278,2.572) -- (-1.222,2.928) (-1.269,3.071) -- (-1.231,3.429) (-0.768,-3.429) -- (-0.732,-3.071) (-0.776,-2.928) -- (-0.724,-2.572) (-0.791,-2.425) -- (-0.709,-2.075) (-0.821,-1.915) -- (-0.679,-1.585) (-0.890,-1.364) -- (-0.610,-1.136) (-0.927,-0.717) -- (-0.573,-0.783) (-0.898,-0.148) -- (-0.602,-0.352) (-0.898,0.352) -- (-0.602,0.148) (-0.927,0.783) -- (-0.573,0.717) (-0.890,1.136) -- (-0.610,1.364) (-0.821,1.585) -- (-0.679,1.915) (-0.791,2.075) -- (-0.709,2.425) (-0.776,2.572) -- (-0.724,2.928) (-0.768,3.071) -- (-0.732,3.429) (-0.267,-3.429) -- (-0.233,-3.071) (-0.274,-2.928) -- (-0.226,-2.572) (-0.287,-2.426) -- (-0.213,-2.074) (-0.310,-1.920) -- (-0.190,-1.580) (-0.359,-1.393) -- (-0.141,-1.107) (-0.422,-0.804) -- (-0.078,-0.696) (-0.427,-0.217) -- (-0.073,-0.283) (-0.427,0.283) -- (-0.073,0.217) (-0.422,0.696) -- (-0.078,0.804) (-0.359,1.107) -- (-0.141,1.393) (-0.310,1.580) -- (-0.190,1.920) (-0.287,2.074) -- (-0.213,2.426) (-0.274,2.572) -- (-0.226,2.928) (-0.267,3.071) -- (-0.233,3.429) (0.233,-3.429) -- (0.267,-3.071) (0.227,-2.929) -- (0.273,-2.571) (0.217,-2.427) -- (0.283,-2.073) (0.198,-1.922) -- (0.302,-1.578) (0.163,-1.408) -- (0.337,-1.092) (0.110,-0.864) -- (0.390,-0.636) (0.078,-0.304) -- (0.422,-0.196) (0.078,0.196) -- (0.422,0.304) (0.110,0.636) -- (0.390,0.864) (0.163,1.092) -- (0.337,1.408) (0.198,1.578) -- (0.302,1.922) (0.217,2.073) -- (0.283,2.427) (0.227,2.571) -- (0.273,2.929) (0.233,3.071) -- (0.267,3.429) (0.734,-3.429) -- (0.766,-3.071) (0.729,-2.929) -- (0.771,-2.571) (0.719,-2.427) -- (0.781,-2.073) (0.704,-1.924) -- (0.796,-1.576) (0.679,-1.415) -- (0.821,-1.085) (0.641,-0.893) -- (0.859,-0.607) (0.610,-0.364) -- (0.890,-0.136) (0.610,0.136) -- (0.890,0.364) (0.641,0.607) -- (0.859,0.893) (0.679,1.085) -- (0.821,1.415) (0.704,1.576) -- (0.796,1.924) (0.719,2.073) -- (0.781,2.427) (0.729,2.571) -- (0.771,2.929) (0.734,3.071) -- (0.766,3.429) (1.235,-3.429) -- (1.265,-3.071) (1.230,-2.929) -- (1.270,-2.571) (1.222,-2.428) -- (1.278,-2.072) (1.209,-1.925) -- (1.291,-1.575) (1.190,-1.420) -- (1.310,-1.080) (1.163,-0.908) -- (1.337,-0.592) (1.141,-0.393) -- (1.359,-0.107) (1.141,0.107) -- (1.359,0.393) (1.163,0.592) -- (1.337,0.908) (1.190,1.080) -- (1.310,1.420) (1.209,1.575) -- (1.291,1.925) (1.222,2.072) -- (1.278,2.428) (1.230,2.571) -- (1.270,2.929) (1.235,3.071) -- (1.265,3.429) (1.735,-3.429) -- (1.765,-3.071) (1.731,-2.929) -- (1.769,-2.571) (1.724,-2.428) -- (1.776,-2.072) (1.713,-1.926) -- (1.787,-1.574) (1.698,-1.422) -- (1.802,-1.078) (1.679,-0.915) -- (1.821,-0.585) (1.663,-0.408) -- (1.837,-0.092) (1.663,0.092) -- (1.837,0.408) (1.679,0.585) -- (1.821,0.915) (1.698,1.078) -- (1.802,1.422) (1.713,1.574) -- (1.787,1.926) (1.724,2.072) -- (1.776,2.428) (1.731,2.571) -- (1.769,2.929) (1.735,3.071) -- (1.765,3.429) (2.236,-3.429) -- (2.264,-3.071) (2.232,-2.929) -- (2.268,-2.571) (2.226,-2.428) -- (2.274,-2.072) (2.217,-1.927) -- (2.283,-1.573) (2.204,-1.424) -- (2.296,-1.076) (2.190,-0.920) -- (2.310,-0.580) (2.179,-0.415) -- (2.321,-0.085) (2.179,0.085) -- (2.321,0.415) (2.190,0.580) -- (2.310,0.920) (2.204,1.076) -- (2.296,1.424) (2.217,1.573) -- (2.283,1.927) (2.226,2.072) -- (2.274,2.428) (2.232,2.571) -- (2.268,2.929) (2.236,3.071) -- (2.264,3.429) (2.737,-3.429) -- (2.763,-3.071) (2.733,-2.929) -- (2.767,-2.571) (2.727,-2.429) -- (2.773,-2.071) (2.719,-1.927) -- (2.781,-1.573) (2.709,-1.425) -- (2.791,-1.075) (2.698,-0.922) -- (2.802,-0.578) (2.690,-0.420) -- (2.810,-0.080) (2.690,0.080) -- (2.810,0.420) (2.698,0.578) -- (2.802,0.922) (2.709,1.075) -- (2.791,1.425) (2.719,1.573) -- (2.781,1.927) (2.727,2.071) -- (2.773,2.429) (2.733,2.571) -- (2.767,2.929) (2.737,3.071) -- (2.763,3.429) (3.237,-3.430) -- (3.263,-3.070) (3.233,-2.929) -- (3.267,-2.571) (3.229,-2.429) -- (3.271,-2.071) (3.222,-1.928) -- (3.278,-1.572) (3.213,-1.426) -- (3.287,-1.074) (3.204,-0.924) -- (3.296,-0.576) (3.198,-0.422) -- (3.302,-0.078) (3.198,0.078) -- (3.302,0.422) (3.204,0.576) -- (3.296,0.924) (3.213,1.074) -- (3.287,1.426) (3.222,1.572) -- (3.278,1.928) (3.229,2.071) -- (3.271,2.429) (3.233,2.571) -- (3.267,2.929) (3.237,3.070) -- (3.263,3.430) (3.737,-3.430) -- (3.763,-3.070) (3.734,-2.929) -- (3.766,-2.571) (3.730,-2.429) -- (3.770,-2.071) (3.724,-1.928) -- (3.776,-1.572) (3.717,-1.427) -- (3.783,-1.073) (3.709,-0.925) -- (3.791,-0.575) (3.704,-0.424) -- (3.796,-0.076) (3.704,0.076) -- (3.796,0.424) (3.709,0.575) -- (3.791,0.925) (3.717,1.073) -- (3.783,1.427) (3.724,1.572) -- (3.776,1.928) (3.730,2.071) -- (3.770,2.429) (3.734,2.571) -- (3.766,2.929) (3.737,3.070) -- (3.763,3.430);
+  \draw[couleurQ,thick,densely dashed] plot[smooth,domain=-2.05:2.05,samples=41,variable=\u] ({-\u*\u},{\u});
+\draw[couleurN,thick] plot[smooth] coordinates {(-0.056,-3.600) (-0.011,-3.106) (0.031,-2.741) (0.091,-2.351) (0.151,-2.054) (0.211,-1.819) (0.271,-1.627) (0.331,-1.465) (0.391,-1.327) (0.451,-1.206) (0.511,-1.097) (0.571,-0.999) (0.631,-0.908) (0.691,-0.824) (0.751,-0.743) (0.811,-0.667) (0.871,-0.592) (0.931,-0.520) (0.991,-0.448) (1.051,-0.377) (1.111,-0.305) (1.171,-0.232) (1.231,-0.157) (1.291,-0.081) (1.351,-0.001) (1.411,0.082) (1.471,0.169) (1.531,0.262) (1.591,0.361) (1.651,0.469) (1.711,0.587) (1.771,0.717) (1.831,0.862) (1.891,1.027) (1.951,1.218) (2.011,1.443) (2.071,1.714) (2.131,2.052) (2.191,2.490) (2.251,3.085) (2.290,3.600)};
+\draw[couleurN,thick] plot[smooth] coordinates {(-0.225,-3.600) (-0.175,-3.052) (-0.115,-2.587) (-0.055,-2.244) (0.000,-2.000) (0.055,-1.802) (0.115,-1.621) (0.175,-1.469) (0.235,-1.339) (0.295,-1.225) (0.355,-1.123) (0.415,-1.030) (0.475,-0.945) (0.535,-0.866) (0.595,-0.791) (0.655,-0.719) (0.715,-0.650) (0.775,-0.582) (0.835,-0.516) (0.895,-0.450) (0.955,-0.384) (1.015,-0.318) (1.075,-0.250) (1.135,-0.181) (1.195,-0.110) (1.255,-0.036) (1.315,0.041) (1.375,0.122) (1.435,0.208) (1.495,0.300) (1.555,0.399) (1.615,0.506) (1.675,0.624) (1.735,0.755) (1.795,0.902) (1.855,1.070) (1.915,1.264) (1.975,1.495) (2.035,1.775) (2.095,2.126) (2.155,2.584) (2.215,3.215) (2.243,3.600)};
+\draw[couleurN,thick] plot[smooth] coordinates {(-0.823,-3.600) (-0.780,-3.148) (-0.720,-2.686) (-0.660,-2.349) (-0.600,-2.092) (-0.540,-1.889) (-0.480,-1.724) (-0.420,-1.587) (-0.360,-1.471) (-0.300,-1.370) (-0.240,-1.281) (-0.180,-1.201) (-0.120,-1.128) (-0.060,-1.062) (0.000,-1.000) (0.060,-0.942) (0.120,-0.886) (0.180,-0.833) (0.240,-0.781) (0.300,-0.731) (0.360,-0.681) (0.420,-0.632) (0.480,-0.583) (0.540,-0.533) (0.600,-0.484) (0.660,-0.433) (0.720,-0.382) (0.780,-0.329) (0.840,-0.275) (0.900,-0.219) (0.960,-0.161) (1.020,-0.101) (1.080,-0.037) (1.140,0.029) (1.200,0.100) (1.260,0.175) (1.320,0.255) (1.380,0.341) (1.440,0.435) (1.500,0.537) (1.560,0.650) (1.620,0.776) (1.680,0.918) (1.740,1.080) (1.800,1.269) (1.860,1.493) (1.920,1.765) (1.980,2.106) (2.040,2.550) (2.100,3.159) (2.133,3.600)};
+\draw[couleurN,thick] plot[smooth] coordinates {(-4.000,1.931) (-3.940,1.914) (-3.880,1.898) (-3.820,1.881) (-3.760,1.864) (-3.700,1.847) (-3.640,1.829) (-3.580,1.811) (-3.520,1.793) (-3.460,1.775) (-3.400,1.756) (-3.340,1.737) (-3.280,1.717) (-3.220,1.697) (-3.160,1.676) (-3.100,1.655) (-3.040,1.633) (-2.980,1.610) (-2.920,1.587) (-2.860,1.562) (-2.800,1.536) (-2.740,1.509) (-2.680,1.481) (-2.620,1.450) (-2.560,1.419) (-2.500,1.385) (-2.440,1.349) (-2.380,1.310) (-2.320,1.269) (-2.260,1.225) (-2.200,1.178) (-2.140,1.127) (-2.080,1.073) (-2.020,1.016) (-1.960,0.955) (-1.900,0.890) (-1.840,0.822) (-1.780,0.750) (-1.720,0.676) (-1.660,0.599) (-1.600,0.520) (-1.540,0.439) (-1.480,0.358) (-1.420,0.277) (-1.360,0.197) (-1.300,0.119) (-1.240,0.043) (-1.180,-0.029) (-1.120,-0.098) (-1.060,-0.162) (-1.000,-0.222) (-0.940,-0.276) (-0.880,-0.325) (-0.820,-0.369) (-0.760,-0.408) (-0.700,-0.440) (-0.640,-0.468) (-0.580,-0.491) (-0.520,-0.509) (-0.460,-0.522) (-0.400,-0.532) (-0.340,-0.537) (-0.280,-0.538) (-0.220,-0.536) (-0.160,-0.530) (-0.100,-0.521) (-0.040,-0.509) (0.020,-0.495) (0.080,-0.478) (0.140,-0.458) (0.200,-0.436) (0.260,-0.411) (0.320,-0.384) (0.380,-0.355) (0.440,-0.324) (0.500,-0.290) (0.560,-0.253) (0.620,-0.215) (0.680,-0.173) (0.740,-0.129) (0.800,-0.083) (0.860,-0.033) (0.920,0.021) (0.980,0.078) (1.040,0.139) (1.100,0.205) (1.160,0.277) (1.220,0.354) (1.280,0.438) (1.340,0.531) (1.400,0.634) (1.460,0.748) (1.520,0.877) (1.580,1.024) (1.640,1.194) (1.700,1.395) (1.760,1.636) (1.820,1.934) (1.880,2.314) (1.940,2.822) (2.000,3.541) (2.004,3.600)};
+\draw[couleurN,thick] plot[smooth] coordinates {(-4.000,1.931) (-3.951,1.918) (-3.891,1.901) (-3.831,1.885) (-3.771,1.868) (-3.711,1.851) (-3.651,1.834) (-3.591,1.816) (-3.531,1.799) (-3.471,1.781) (-3.411,1.763) (-3.351,1.744) (-3.291,1.725) (-3.231,1.706) (-3.171,1.687) (-3.111,1.668) (-3.051,1.648) (-2.991,1.627) (-2.931,1.606) (-2.871,1.585) (-2.811,1.563) (-2.751,1.541) (-2.691,1.518) (-2.631,1.494) (-2.571,1.470) (-2.511,1.445) (-2.451,1.419) (-2.391,1.393) (-2.331,1.365) (-2.271,1.337) (-2.211,1.307) (-2.151,1.276) (-2.091,1.244) (-2.031,1.211) (-1.971,1.177) (-1.911,1.141) (-1.851,1.104) (-1.791,1.065) (-1.731,1.025) (-1.671,0.983) (-1.611,0.940) (-1.551,0.896) (-1.491,0.851) (-1.431,0.804) (-1.371,0.756) (-1.311,0.708) (-1.251,0.659) (-1.191,0.610) (-1.131,0.561) (-1.071,0.513) (-1.011,0.464) (-0.951,0.417) (-0.891,0.371) (-0.831,0.327) (-0.771,0.284) (-0.711,0.244) (-0.651,0.206) (-0.591,0.171) (-0.531,0.139) (-0.471,0.110) (-0.411,0.084) (-0.351,0.061) (-0.291,0.042) (-0.231,0.027) (-0.171,0.015) (-0.111,0.006) (-0.051,0.001) (-0.001,0.000) (0.000,0.000) (0.031,0.000) (0.091,0.004) (0.151,0.011) (0.211,0.022) (0.271,0.037) (0.331,0.055) (0.391,0.077) (0.451,0.103) (0.511,0.132) (0.571,0.166) (0.631,0.204) (0.691,0.247) (0.751,0.295) (0.811,0.348) (0.871,0.407) (0.931,0.472) (0.991,0.546) (1.051,0.627) (1.111,0.720) (1.171,0.824) (1.231,0.942) (1.291,1.079) (1.351,1.239) (1.411,1.428) (1.471,1.657) (1.531,1.941) (1.591,2.303) (1.651,2.786) (1.711,3.468) (1.720,3.600)};
+\draw[couleurN,thick] plot[smooth] coordinates {(-4.000,1.931) (-3.940,1.915) (-3.880,1.898) (-3.820,1.882) (-3.760,1.865) (-3.700,1.848) (-3.640,1.831) (-3.580,1.813) (-3.520,1.796) (-3.460,1.778) (-3.400,1.760) (-3.340,1.741) (-3.280,1.723) (-3.220,1.704) (-3.160,1.685) (-3.100,1.665) (-3.040,1.646) (-2.980,1.626) (-2.920,1.605) (-2.860,1.585) (-2.800,1.563) (-2.740,1.542) (-2.680,1.520) (-2.620,1.497) (-2.560,1.475) (-2.500,1.451) (-2.440,1.427) (-2.380,1.403) (-2.320,1.378) (-2.260,1.352) (-2.200,1.326) (-2.140,1.299) (-2.080,1.272) (-2.020,1.243) (-1.960,1.215) (-1.900,1.185) (-1.840,1.155) (-1.780,1.125) (-1.720,1.094) (-1.660,1.062) (-1.600,1.030) (-1.540,0.997) (-1.480,0.964) (-1.420,0.931) (-1.360,0.898) (-1.300,0.865) (-1.240,0.832) (-1.180,0.799) (-1.120,0.767) (-1.060,0.735) (-1.000,0.704) (-0.940,0.675) (-0.880,0.646) (-0.820,0.619) (-0.760,0.594) (-0.700,0.570) (-0.640,0.549) (-0.580,0.530) (-0.520,0.513) (-0.460,0.499) (-0.400,0.488) (-0.340,0.480) (-0.280,0.475) (-0.220,0.473) (-0.160,0.475) (-0.100,0.481) (-0.040,0.491) (0.020,0.505) (0.080,0.524) (0.140,0.548) (0.200,0.577) (0.260,0.612) (0.320,0.653) (0.380,0.702) (0.440,0.759) (0.500,0.824) (0.560,0.901) (0.620,0.990) (0.680,1.093) (0.740,1.216) (0.800,1.362) (0.860,1.537) (0.920,1.752) (0.980,2.022) (1.040,2.371) (1.100,2.839) (1.160,3.505) (1.167,3.600)};
+\draw[couleurN,thick] plot[smooth] coordinates {(-4.000,1.931) (-3.940,1.915) (-3.880,1.898) (-3.820,1.882) (-3.760,1.865) (-3.700,1.848) (-3.640,1.831) (-3.580,1.813) (-3.520,1.796) (-3.460,1.778) (-3.400,1.760) (-3.340,1.742) (-3.280,1.723) (-3.220,1.704) (-3.160,1.685) (-3.100,1.666) (-3.040,1.647) (-2.980,1.627) (-2.920,1.607) (-2.860,1.586) (-2.800,1.565) (-2.740,1.544) (-2.680,1.522) (-2.620,1.501) (-2.560,1.478) (-2.500,1.456) (-2.440,1.433) (-2.380,1.409) (-2.320,1.385) (-2.260,1.361) (-2.200,1.336) (-2.140,1.311) (-2.080,1.286) (-2.020,1.260) (-1.960,1.234) (-1.900,1.207) (-1.840,1.181) (-1.780,1.154) (-1.720,1.127) (-1.660,1.100) (-1.600,1.073) (-1.540,1.046) (-1.480,1.020) (-1.420,0.994) (-1.360,0.968) (-1.300,0.943) (-1.240,0.919) (-1.180,0.895) (-1.120,0.873) (-1.060,0.853) (-1.000,0.833) (-0.940,0.816) (-0.880,0.801) (-0.820,0.787) (-0.760,0.777) (-0.700,0.769) (-0.640,0.764) (-0.580,0.762) (-0.520,0.764) (-0.460,0.770) (-0.400,0.780) (-0.340,0.795) (-0.280,0.815) (-0.220,0.841) (-0.160,0.874) (-0.100,0.914) (-0.040,0.962) (0.020,1.021) (0.080,1.090) (0.140,1.174) (0.200,1.274) (0.260,1.394) (0.320,1.540) (0.380,1.720) (0.440,1.945) (0.500,2.235) (0.560,2.617) (0.620,3.147) (0.658,3.600)};
+\draw[rougecours,very thick] plot[smooth] coordinates {(-4.000,-2.058) (-3.940,-2.044) (-3.880,-2.030) (-3.820,-2.015) (-3.760,-2.001) (-3.700,-1.986) (-3.640,-1.971) (-3.580,-1.957) (-3.520,-1.942) (-3.460,-1.927) (-3.400,-1.911) (-3.340,-1.896) (-3.280,-1.881) (-3.220,-1.865) (-3.160,-1.850) (-3.100,-1.834) (-3.040,-1.818) (-2.980,-1.802) (-2.920,-1.786) (-2.860,-1.770) (-2.800,-1.753) (-2.740,-1.737) (-2.680,-1.720) (-2.620,-1.703) (-2.560,-1.686) (-2.500,-1.669) (-2.440,-1.652) (-2.380,-1.635) (-2.320,-1.617) (-2.260,-1.599) (-2.200,-1.581) (-2.140,-1.563) (-2.080,-1.545) (-2.020,-1.526) (-1.960,-1.508) (-1.900,-1.489) (-1.840,-1.470) (-1.780,-1.450) (-1.720,-1.431) (-1.660,-1.411) (-1.600,-1.391) (-1.540,-1.371) (-1.480,-1.350) (-1.420,-1.330) (-1.360,-1.309) (-1.300,-1.287) (-1.240,-1.266) (-1.180,-1.244) (-1.120,-1.222) (-1.060,-1.199) (-1.000,-1.176) (-0.940,-1.153) (-0.880,-1.130) (-0.820,-1.106) (-0.760,-1.081) (-0.700,-1.057) (-0.640,-1.031) (-0.580,-1.006) (-0.520,-0.980) (-0.460,-0.953) (-0.400,-0.926) (-0.340,-0.898) (-0.280,-0.870) (-0.220,-0.841) (-0.160,-0.811) (-0.100,-0.781) (-0.040,-0.750) (0.020,-0.718) (0.080,-0.686) (0.140,-0.652) (0.200,-0.618) (0.260,-0.582) (0.320,-0.546) (0.380,-0.508) (0.440,-0.469) (0.500,-0.429) (0.560,-0.387) (0.620,-0.344) (0.680,-0.299) (0.740,-0.251) (0.800,-0.202) (0.860,-0.150) (0.920,-0.096) (0.980,-0.039) (1.040,0.022) (1.100,0.086) (1.160,0.155) (1.220,0.229) (1.280,0.308) (1.340,0.394) (1.400,0.488) (1.460,0.591) (1.520,0.706) (1.580,0.834) (1.640,0.980) (1.700,1.148) (1.760,1.345) (1.820,1.580) (1.880,1.869) (1.940,2.235) (2.000,2.719) (2.060,3.396) (2.074,3.600)};
+  \end{scope}
+  \draw[gray,->] (-4.05,0) -- (4.2,0) node[below,font=\small] {$t$};
+  \draw[gray,->] (0,-3.65) -- (0,3.85) node[left,font=\small] {$y$};
+  \foreach \k in {-4,-2,2,4} \draw[gray] (\k,0.06) -- (\k,-0.06);
+  \node[font=\scriptsize,gray,anchor=north,fill=white,inner sep=1pt] at (2,-0.08) {$2$};
+  \node[font=\scriptsize,gray,anchor=north,fill=white,inner sep=1pt] at (-2,-0.08) {$-2$};
+  \node[couleurQ,font=\small,anchor=west,fill=white,inner sep=1pt] at (-3.95,2.75) {$\mathcal{P} : t = -y^{2}$};
+  \node[rougecours,font=\small,anchor=north west,fill=white,inner sep=1pt] at (-3.95,-2.3) {séparatrice};
+\end{tikzpicture}
+\end{center}
+
+\noindent Le champ de directions de $y' = t + y^{2}$, la parabole $\mathcal{P}$ où les pentes sont nulles, en violet, sept solutions en bleu et la séparatrice en rouge. À droite, toutes les courbes finissent par se redresser à la verticale : c'est l'explosion de la proposition 13. À gauche, les courbes situées au-dessus de la séparatrice se rapprochent de la branche supérieure de $\mathcal{P}$, celles situées en dessous plongent vers $-\infty$.
+\end{minipage}
+
+\begin{remarque}
+\emph{Lien avec une équation linéaire.} Si $u$ est une solution de l'équation $u'' + tu = 0$, qui est linéaire, et ne s'annule pas sur un intervalle $J$, la fonction $y = -\dfrac{u'}{u}$ vérifie sur $J$
+\[ y' = -\frac{u''}{u} + \frac{u'^{2}}{u^{2}} = t + y^{2}. \]
+Par la proposition 12, $u$ est définie sur $\R$ tout entier, et les instants d'explosion de $y$ sont exactement les zéros de $u$ : l'équation non linéaire explose là où l'équation linéaire, qui n'explose jamais, s'annule. Les solutions de $u'' + tu = 0$ s'expriment avec les fonctions d'Airy, qui ne sont pas des fonctions usuelles ; la séparatrice correspond à $u(t) = \mathrm{Ai}(-t)$, d'où la valeur $y(0) = \dfrac{\mathrm{Ai}'(0)}{\mathrm{Ai}(0)} \approx -0{,}729\,01$, et elle explose au premier zéro positif de $\mathrm{Ai}(-t)$, vers $t \approx 2{,}338$.
+\end{remarque}
+
+%===============================================================================
+\section{Bilan}
+%===============================================================================
+
+Devant une équation $y' = F(t, y)$, on vérifie d'abord la régularité de $F$, qui décide de ce que l'on peut affirmer : existence seule, ou existence et unicité ; on cherche ensuite si les solutions sont globales, par une majoration affine de $F$ ou au contraire par une comparaison qui force l'explosion.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.35}
+\begin{tabularx}{15cm}{|>{\raggedright\arraybackslash}p{4.6cm}|>{\raggedright\arraybackslash}X|>{\centering\arraybackslash}p{2.4cm}|}
+\hline
+\rowcolor{couleurD!35} \textbf{Hypothèse} & \textbf{Résultat} & \textbf{Référence} \\ \hline
+$\varphi \leqslant A + \int L\varphi$ & $\varphi \leqslant A\,\ee^{L(t - t_{0})}$ & proposition 2 \\ \hline
+ordre $n$ & système d'ordre 1 dans $\R^{np}$ & proposition 5 \\ \hline
+$Y' = AY$, $A$ constante & $Y = \exp(tA)Y_{0}$ & proposition 6 \\ \hline
+$F$ continue & existence locale & théorème 2 \\ \hline
+solution maximale & sort de tout compact de $U$ & théorème 3 \\ \hline
+$U = I \times \R^{p}$, $\beta < \sup I$ & $\norme{y(t)} \to +\infty$ & proposition 9 \\ \hline
+$F$ localement lipschitzienne en $y$ & unique solution maximale & théorèmes 4, 5 \\ \hline
+$\norme{F(t, y)} \leqslant a(t)\norme{y} + b(t)$ & solutions globales & proposition 12 \\ \hline
+\end{tabularx}
+\end{center}
+
+\begin{center}
+\begin{tikzpicture}[q/.style={draw=couleurN,fill=couleurN!8,rounded corners=3pt,align=center,font=\small,minimum height=1.05cm,text width=2.7cm},
+  fl/.style={-{Stealth},thick,gray}]
+  \node[q] (A) at (0,0) {théorème d'Ascoli\\ (section 6.5)};
+  \node[q] (P) at (0,-1.9) {point fixe\\ (chapitre 1)};
+  \node[q] (G) at (0,-3.8) {Gronwall\\ (section 6.2)};
+  \node[q] (E) at (4.4,0) {Peano :\\ existence};
+  \node[q] (C) at (4.4,-1.9) {Cauchy-Lipschitz};
+  \node[q] (U) at (4.4,-3.8) {unicité,\\ solutions globales};
+  \node[q] (M) at (8.8,-1.9) {solutions maximales,\\ bouts, explosion};
+  \draw[fl] (A) -- (E); \draw[fl] (P) -- (C); \draw[fl] (G) -- (U);
+  \draw[fl] (E) -- (M); \draw[fl] (C) -- (M); \draw[fl] (U) -- (M);
+\end{tikzpicture}
+\end{center}
+
+\noindent Le schéma rappelle d'où viennent les outils : le théorème d'Ascoli, conséquence de la compacité, donne l'existence sous la seule continuité, le théorème du point fixe donne l'existence et l'unicité sous l'hypothèse de Lipschitz, et le lemme de Gronwall contrôle l'écart entre deux solutions comme la croissance d'une solution. Les trois convergent vers la description des solutions maximales.
+
+\medskip
+\noindent Le chapitre 7 reprend ces équations du point de vue du calcul : méthode d'Euler et ses variantes, majoration de l'erreur, méthodes de Runge-Kutta, et tracé de portraits de phase en Python.
+
+\end{document}

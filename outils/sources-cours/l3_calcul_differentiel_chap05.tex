@@ -1,0 +1,733 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Cours de L3 - Calcul differentiel - M. JOURDAIN
+%
+%  PREAMBULE COMMUN DE L'UE (identique dans les sept chapitres et dans le
+%  volume complet L3_S5_COURS_calcul_differentiel.tex, qui inclut chaque
+%  chapitre tel quel grace au paquet docmute).
+%  Tire du preambule des cours de MP ; ajouts : hyperref (liens invisibles),
+%  listings (code Python des chapitres 6 et 7), macros de l'UE.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[a4paper,twoside]{report}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage[table]{xcolor}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{tikz}
+\usepackage{array}
+\usepackage{multirow}                            % cellules fusionnees des tableaux bilans
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{tabularx}
+
+% ---- paquets optionnels utilises dans l'UE ----
+\usepackage{stmaryrd}                            % crochets doubles des intervalles d'entiers
+\usepackage{needspace}                           % pas de titre «~Exemples :~» isole en bas de page
+\usepackage{tikz-cd}                             % diagrammes commutatifs (chapitres 2 et 3)
+\usepackage{pgfplots}                            % courbes et surfaces
+\pgfplotsset{compat=1.18}
+\usepackage{listings}                            % code Python (chapitres 6 et 7)
+\graphicspath{{/home/armandj/Documents/A Documents/image/}}  % chemin des images (fixe)
+
+\usetikzlibrary{arrows.meta,decorations.pathreplacing,patterns,calc}
+
+\geometry{hmargin=2.5cm,vmargin=1.5cm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% COULEURS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Le code couleur propre a chaque chapitre est decrit dans l'en-tete du
+%  chapitre (bloc «~CODE COULEUR~»). Couleurs disponibles :
+\definecolor{rougecours}{RGB}{192,0,0}
+\definecolor{couleurN}{RGB}{0,112,192}
+\definecolor{couleurZ}{RGB}{0,150,120}
+\definecolor{couleurD}{RGB}{224,150,0}
+\definecolor{couleurQ}{RGB}{150,80,180}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.98,0.98,0.98}
+% Mot defini, en gras rouge
+\newcommand{\mot}[1]{\textcolor{rougecours}{\textbf{#1}}}
+% Notation ou formule mise en avant en rouge
+\newcommand{\rmath}[1]{\textcolor{rougecours}{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% EN-TETES ET PIEDS DE PAGE %%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\lauteur}{Cours de L3 - Calcul différentiel - M. JOURDAIN}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE]{\footnotesize\rightmark}
+\fancyhead[RE]{\footnotesize\leftmark}
+\fancyhead[LO]{\footnotesize\leftmark}
+\fancyhead[RO]{\footnotesize\rightmark}
+\fancyfoot[LE,LO]{\thepage}
+\fancyfoot[RE,RO]{\footnotesize\lauteur}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\fancypagestyle{plain}{%
+  \fancyhf{}%
+  \fancyfoot[C]{\thepage}%
+  \renewcommand{\headrulewidth}{0pt}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ENVIRONNEMENTS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Cadre pour les propositions
+\newenvironment{cadre}%
+ {\par\vspace{2mm}\noindent\begin{tabular}{|@{\hspace{4mm}}p{0.93\textwidth}@{\hspace{4mm}}|}
+  \hline \\[-2mm]}%
+ {\\[2mm] \hline \end{tabular}\par\vspace{3mm}}
+
+\newcommand{\definition}{\textbf{Définition :}~}
+\newcommand{\propo}[1]{\textbf{\underline{Proposition #1 :}}~}
+\newcommand{\theoreme}[1]{\textbf{Théorème #1 :}~}
+\newcommand{\methode}{\textbf{\underline{$\heartsuit$ Méthode :}}~}
+% Enonce de niveau prerequis, donne sans demonstration ou avec une preuve courte
+\newcommand{\rappel}{\textit{(Rappel.)}~}
+
+% Demonstration
+\newenvironment{demo}%
+ {\par\needspace{4\baselineskip}\vspace{1mm}\noindent$\circ$ \underline{Démonstration :}~\setlength{\parskip}{3pt plus 1pt}}%
+ {\hfill$\square$\par\vspace{2mm}}
+
+% Etape d'une demonstration longue : nouvel alinea, intitule en italique
+\newcommand{\etape}[1]{\par\smallskip\noindent$\triangleright$~\textit{#1}~}
+
+% Exemples et remarques : blocs indentes
+\newenvironment{exemple}%
+ {\par\needspace{6\baselineskip}\vspace{1mm}\begin{list}{}{\leftmargin=1cm \rightmargin=0.5cm}\item[]%
+  \textit{Exemple :}~}%
+ {\end{list}\vspace{1mm}}
+
+\newenvironment{remarque}%
+ {\par\needspace{6\baselineskip}\vspace{1mm}\begin{list}{}{\leftmargin=1cm \rightmargin=0.5cm}\item[]%
+  \textit{\underline{Remarque :}}~}%
+ {\end{list}\vspace{1mm}}
+
+\newenvironment{remarques}%
+ {\par\needspace{6\baselineskip}\vspace{1mm}\begin{list}{}{\leftmargin=1cm \rightmargin=0.5cm}\item[]%
+  \textit{\underline{Remarques :}}%
+  \begin{itemize}[label=$\bullet$,leftmargin=0.45cm,topsep=3pt,itemsep=4pt]}%
+ {\end{itemize}\end{list}\vspace{1mm}}
+
+\newenvironment{exemples}%
+ {\par\needspace{6\baselineskip}\vspace{1mm}\begin{list}{}{\leftmargin=1cm \rightmargin=0.5cm}\item[]%
+  \textit{Exemples :}%
+  \begin{itemize}[label=$\bullet$,leftmargin=0.45cm,topsep=3pt,itemsep=4pt]}%
+ {\end{itemize}\end{list}\vspace{1mm}}
+
+% Rediger un raisonnement type, encadre a gauche
+\newenvironment{redaction}%
+ {\par\vspace{2mm}\begin{center}\begin{tabular}{|@{\hspace{3mm}}p{0.85\textwidth}@{\hspace{3mm}}}}%
+ {\end{tabular}\end{center}\vspace{2mm}}
+
+%--- Style du code Python (lstlisting) -----------------------------------------
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour}, commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta}, numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple}, basicstyle=\ttfamily\small,
+    breakatwhitespace=false, breaklines=true, captionpos=b, keepspaces=true,
+    numbers=left, numbersep=5pt, showspaces=false, showstringspaces=false,
+    showtabs=false, tabsize=4, language=Python}
+\lstset{style=mystyle}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% MACROS DE L'UE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Ensembles de nombres
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\K}{\mathbb{K}}                       % corps de base : R ou C
+\newcommand{\intn}[2]{\llbracket #1\,,#2 \rrbracket}   % intervalle d'entiers (stmaryrd)
+
+% Applications
+\newcommand{\appli}[5]{\begin{array}{r|ccl}                % application sur deux lignes
+  #1 : & #2 & \longrightarrow & #3 \\ & #4 & \longmapsto & #5 \end{array}}
+\newcommand{\id}{\mathrm{id}}                     % identite
+\newcommand{\ee}{\mathrm{e}}                      % exponentielle
+\newcommand{\ii}{\mathrm{i}}                      % unite imaginaire
+\newcommand{\dd}{\mathrm{d}}                      % differentielle, element d'integration
+\newcommand{\limn}{\lim\limits_{n \to +\infty}}
+\newcommand{\cvu}{\xrightarrow[]{\ \mathrm{CU}\ }}           % convergence uniforme
+
+% Algebre lineaire
+\newcommand{\Ker}{\operatorname{Ker}}
+\newcommand{\Imf}{\operatorname{Im}}              % image (\Im est la partie imaginaire)
+\newcommand{\rg}{\operatorname{rg}}
+\newcommand{\Vect}{\operatorname{Vect}}
+\newcommand{\tr}{\operatorname{tr}}               % trace
+\newcommand{\tra}[1]{{#1}^{T}}                    % transposee
+\newcommand{\Mnp}[2]{\mathcal{M}_{#1,#2}(\K)}      % matrices a #1 lignes et #2 colonnes
+\newcommand{\Mn}[1]{\mathcal{M}_{#1}(\K)}          % matrices carrees
+\newcommand{\GL}{\mathrm{GL}}                     % groupe lineaire
+\newcommand{\Sp}{\operatorname{Sp}}               % spectre
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\Bc}{\mathcal{B}}                     % bases
+
+% Espaces normes (chapitre 1)
+\newcommand{\norme}[1]{\lVert #1 \rVert}         % norme
+\newcommand{\nop}[1]{|\mkern-1.5mu|\mkern-1.5mu|#1|\mkern-1.5mu|\mkern-1.5mu|}   % norme subordonnee (triple barre)
+\newcommand{\ps}[2]{\langle #1, #2 \rangle}       % produit scalaire
+\newcommand{\Bo}{B}                               % boule ouverte B(a, r)
+\newcommand{\Bf}{B_{f}}                           % boule fermee B_f(a, r)
+\newcommand{\Sph}{S}                              % sphere S(a, r)
+\newcommand{\adh}[1]{\overline{#1}}               % adherence
+\newcommand{\inte}[1]{\mathring{#1}}              % interieur
+\newcommand{\Fr}{\operatorname{Fr}}               % frontiere
+\newcommand{\Bor}{\mathcal{B}}                    % fonctions bornees B(X, F)
+\newcommand{\Cc}{\mathcal{C}}                     % fonctions continues, de classe C^k
+\newcommand{\Lc}{\mathcal{L}}                     % applications lineaires continues L(E, F)
+\newcommand{\dist}{d}                             % distance a une partie
+\newcommand{\diam}{\operatorname{diam}}           % diametre
+
+% Calcul differentiel (chapitres 2 a 5)
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}   % derivee partielle
+\newcommand{\dpd}[2]{\dfrac{\partial #1}{\partial #2}}  % derivee partielle, en ligne en style display
+\newcommand{\Isom}{\mathrm{Isom}}                 % isomorphismes continus d inverse continu
+\newcommand{\grad}{\nabla}                        % gradient
+\newcommand{\Du}[1]{D_{#1}}                       % derivee selon un vecteur
+\newcommand{\Hs}{H}                               % matrice hessienne
+\newcommand{\Jac}{J}                              % matrice jacobienne
+\newcommand{\Ou}{\Omega}                          % ouvert de definition
+
+% Une formule en ligne n'est jamais coupee par un retour a la ligne
+\relpenalty=10000
+\binoppenalty=10000
+
+\setlength{\parindent}{1cm}
+
+% Liens du sommaire, des signets et des renvois : invisibles (charge en dernier)
+\usepackage[hidelinks,bookmarksnumbered,pdfauthor={M. JOURDAIN},pdftitle={Cours de L3 - Calcul differentiel}]{hyperref}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CODE COULEUR %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Code couleur du chapitre 5 (constant d'une figure a l'autre) :
+%     couleurN (bleu)   : la fonction a optimiser (graphe, lignes de niveau)
+%     couleurQ (violet) : la contrainte (courbe, surface, domaine admissible)
+%     couleurZ (vert)   : les gradients
+%     couleurD (orange) : les approximations (tangentes, droite des moindres carres, cercles de niveau)
+%     rougecours        : les points critiques et les extrema
+%     gris              : les reperes
+%  Source : sommaire seul (sections 5.1 et 5.2 du sommaire).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+% Ce fichier constitue le chapitre 5
+\setcounter{chapter}{4}
+
+%===============================================================================
+\chapter[Extrema libres, extrema liés]{Extrema libres, extrema liés}
+%===============================================================================
+
+\section{Introduction historique}
+
+\begin{quote}
+\emph{Lorsqu'une fonction de plusieurs variables doit être un maximum ou minimum, et qu'il y a entre ces variables une ou plusieurs équations, il suffira d'ajouter à la fonction proposée les fonctions qui doivent être nulles, multipliées chacune par une quantité indéterminée, et de chercher ensuite le maximum ou minimum comme si les variables étaient indépendantes.}
+\begin{flushright}Lagrange - \emph{Théorie des fonctions analytiques}, 1797\end{flushright}
+\end{quote}
+
+\subsection{Le plus grand et le plus petit}
+
+Chercher le plus grand ou le plus petit, c'est le problème le plus ancien de l'analyse. Vers 1637, dans un texte envoyé à Descartes par l'intermédiaire de Mersenne, \textbf{Pierre de Fermat} décrit une méthode pour trouver les maxima et minima : comparer la valeur en $x$ et en un point voisin $x + e$, et exprimer qu'elles sont «~presque égales~». C'est, avant l'invention de la dérivée, la condition $f'(x) = 0$ de la section 5.2.
+
+\subsection{Deux difficultés nouvelles en plusieurs variables}
+
+Pour les fonctions de plusieurs variables, deux difficultés apparaissent. La première est de reconnaître la nature d'un point où toutes les dérivées partielles s'annulent : minimum, maximum, ou col. La réponse passe par les dérivées secondes et leur déterminant, que \textbf{Otto Hesse} étudie dans les années 1840 et que \textbf{Sylvester} baptise ensuite «~hessien~». La seconde est d'optimiser sous contrainte, quand les variables sont liées par des équations. \textbf{Lagrange} la résout d'abord en mécanique, dans la \emph{Mécanique analytique} de 1788, où les équations de liaison sont multipliées par des «~coefficients indéterminés~», puis l'énonce comme un principe général d'analyse dans la \emph{Théorie des fonctions analytiques} de 1797 : c'est la phrase citée en exergue, et c'est l'objet de la section 5.3.
+
+Le dessin ci-dessous résume la méthode de Lagrange. On cherche les extrema de $f(x, y) = xy$ sur le cercle unité : en un tel point, la ligne de niveau de $f$ est tangente au cercle, c'est-à-dire que les gradients de $f$ et de la contrainte sont colinéaires.
+
+% ---- lignes de niveau xy = c (c = +-0.25, +-0.5, +-1) et cercle unite ; points (+-0.7071, +-0.7071), xy = +-1/2 ;
+% ---- en (0.7071, 0.7071) : grad f = (0.7071, 0.7071), trace a l'echelle 0.45 ; grad g = (1.4142, 1.4142) lui est colineaire (calcules)
+\vfill
+\noindent\begin{minipage}[c]{7.0cm}
+\begin{tikzpicture}[scale=1.8]
+  \begin{scope}
+    \clip (-1.75,-1.45) rectangle (1.75,1.45);
+    \foreach \c/\s in {0.25/couleurN!45,0.5/couleurN,1/couleurN!45} {
+      \draw[\s,thick,domain=\c/1.45:1.75,samples=40] plot (\x,{\c/\x});
+      \draw[\s,thick,domain=-1.75:-\c/1.45,samples=40] plot (\x,{\c/\x});
+      \draw[\s,thick,densely dashed,domain=\c/1.45:1.75,samples=40] plot (\x,{-\c/\x});
+      \draw[\s,thick,densely dashed,domain=-1.75:-\c/1.45,samples=40] plot (\x,{-\c/\x});
+    }
+  \end{scope}
+  \draw[gray,->] (-1.8,0) -- (1.85,0) node[below,font=\small] {$x$};
+  \draw[gray,->] (0,-1.5) -- (0,1.55) node[left,font=\small] {$y$};
+  \draw[couleurQ,very thick] (0,0) circle (1);
+  \draw[couleurZ,thick,->,>=Stealth] (0.7071,0.7071) -- (1.0253,1.0253) node[above right=-2pt,font=\small] {$\grad f$};
+  \foreach \p in {(0.7071,0.7071),(-0.7071,-0.7071)} \fill[rougecours] \p circle (1.2pt);
+  \foreach \p in {(0.7071,-0.7071),(-0.7071,0.7071)} \fill[rougecours!60] \p circle (1.2pt);
+  \node[couleurQ,font=\small,anchor=north west,fill=white,inner sep=1pt] at (0.62,-0.85) {$x^{2} + y^{2} = 1$};
+\end{tikzpicture}
+\end{minipage}\hfill
+\begin{minipage}[c]{8.6cm}
+Les lignes de niveau de $f(x, y) = xy$ sont des hyperboles, en trait plein pour les niveaux positifs et en tirets pour les niveaux négatifs ; les niveaux $\pm\dfrac{1}{2}$, en bleu soutenu, touchent le cercle violet en quatre points rouges. Aux deux points foncés, $f$ atteint son maximum $\dfrac{1}{2}$ sur le cercle, aux deux points clairs son minimum $-\dfrac{1}{2}$. En chacun d'eux, le gradient de $f$, en vert, est normal au cercle : il n'a pas de composante le long de la contrainte, et $f$ ne peut ni croître ni décroître au premier ordre en restant sur le cercle.
+\end{minipage}
+\vfill
+\newpage
+%===============================================================================
+\section[Extrema libres]{Extrema libres}
+%===============================================================================
+
+Dans tout le chapitre, $E$ est un espace vectoriel normé réel, $U$ un ouvert de $E$, et les fonctions à optimiser sont à valeurs réelles. Les extrema sont dits \emph{libres} quand la variable parcourt un ouvert, sans autre contrainte.
+
+\subsection{Définitions et existence}
+
+\begin{center}
+\begin{tabularx}{15cm}{||X}
+\noindent \textbf{\underline{Définition :}} Soit $A$ une partie de $E$, $f : A \to \R$ et $a \in A$. On dit que $f$ admet en $a$ un \mot{minimum local} s'il existe $r > 0$ tel que $\rmath{f(x) \geqslant f(a)}$ pour tout $x \in A \cap \Bo(a, r)$, un \mot{minimum local strict} si de plus $f(x) > f(a)$ pour $x \neq a$, et un \mot{minimum global} si $f(x) \geqslant f(a)$ pour tout $x \in A$. On définit de même les maxima ; un \mot{extremum} est un minimum ou un maximum. Si $f$ est différentiable en $a \in U$ et $\dd f(a) = 0$, on dit que $a$ est un \mot{point critique} de $f$.
+\end{tabularx}
+\end{center}
+
+\noindent L'existence d'un extremum global repose sur la compacité : une fonction continue sur une partie compacte non vide de $\R^{p}$ y atteint ses bornes (chapitre 1, théorème 3). Quand la partie n'est pas bornée, on se ramène à un compact.
+
+\begin{cadre}
+\propo{1} \emph{(Fonctions coercives.)} Soit $F$ une partie fermée non vide de $\R^{p}$ et $f : F \to \R$ continue, telle que $f(x) \to +\infty$ quand $\norme{x} \to +\infty$ en restant dans $F$. Alors $f$ atteint son minimum sur $F$.
+\end{cadre}
+
+\begin{demo}
+Soit $x_{0} \in F$. Par hypothèse, il existe $R > 0$ tel que $f(x) > f(x_{0})$ pour $x \in F$ et $\norme{x} > R$. L'ensemble $K = \{x \in F \mid f(x) \leqslant f(x_{0})\}$ est fermé, comme image réciproque d'un fermé par une application continue sur le fermé $F$, et inclus dans $\Bf(0, R)$ : il est compact et contient $x_{0}$. La fonction $f$ y atteint son minimum en un point $a$, et $f(a) \leqslant f(x_{0}) < f(x)$ pour tout $x \in F \setminus K$ : c'est le minimum de $f$ sur $F$.
+\end{demo}
+
+\subsection{La condition du premier ordre}
+
+\begin{cadre}
+\propo{2} Si $f : U \to \R$ admet un extremum local en $a \in U$ et est différentiable en $a$, alors $\rmath{\dd f(a) = 0}$. Dans $\R^{p}$, cela signifie que $\grad f(a) = 0$, c'est-à-dire que toutes les dérivées partielles s'annulent en $a$.
+\end{cadre}
+
+\begin{demo}
+Supposons que $a$ soit un minimum local, et fixons $h \in E$. Comme $U$ est ouvert, $\varphi(t) = f(a + th)$ est définie sur un intervalle ouvert contenant $0$, et y admet un minimum local en $0$. Elle est dérivable en $0$, de dérivée $\dd f(a)\cdot h$ (chapitre 2, proposition 4). Pour $t > 0$ petit, $\dfrac{\varphi(t) - \varphi(0)}{t} \geqslant 0$, et pour $t < 0$, ce quotient est négatif : à la limite, $\varphi'(0) \geqslant 0$ et $\varphi'(0) \leqslant 0$. Ainsi $\dd f(a)\cdot h = 0$ pour tout $h$.
+\end{demo}
+
+\begin{remarques}
+  \item \emph{Piège.} La condition n'est pas suffisante : $x \mapsto x^{3}$ en $0$, ou $(x, y) \mapsto x^{2} - y^{2}$ en $(0, 0)$, ont un point critique sans extremum. Les points critiques sont seulement des \emph{candidats}.
+  \item \emph{Piège.} La condition suppose que $a$ est \emph{intérieur} au domaine. Sur le segment $[0, 1]$, la fonction $x \mapsto x$ atteint son maximum en $1$, où sa dérivée vaut $1$. L'erreur la plus répandue, dans la recherche d'un extremum sur un domaine fermé, est d'oublier d'examiner séparément le bord, où les extrema se cachent souvent ; la section 5.3 donne la méthode quand le bord est une courbe ou une surface.
+\end{remarques}
+
+\subsection{Les conditions du second ordre}
+
+En un point critique, la formule de Taylor à l'ordre $2$ (chapitre 4, théorème 1) s'écrit
+\[ f(a + h) - f(a) = \frac{1}{2}\,\dd^{2} f(a)(h, h) + o(\norme{h}^{2}) : \]
+le signe de l'accroissement est, au premier ordre non nul, celui de la forme quadratique $h \mapsto \dd^{2} f(a)(h, h)$.
+
+\begin{cadre}
+\propo{3} \emph{(Condition nécessaire du second ordre.)} Si $f : U \to \R$, de classe $\Cc^{2}$, admet un minimum local en $a$, alors $\rmath{\dd^{2} f(a)(h, h) \geqslant 0}$ pour tout $h \in E$. Dans $\R^{p}$, la hessienne $\Hs_{f}(a)$ est positive : ses valeurs propres sont positives ou nulles.
+\end{cadre}
+
+\begin{demo}
+Par la proposition 2, $\dd f(a) = 0$. Fixons $h$ ; pour $t \neq 0$ petit,
+\[ 0 \leqslant f(a + th) - f(a) = \frac{t^{2}}{2}\,\dd^{2} f(a)(h, h) + o(t^{2}). \]
+En divisant par $t^{2}$ et en faisant tendre $t$ vers $0$, on obtient $\dd^{2} f(a)(h, h) \geqslant 0$. Dans $\R^{p}$, la hessienne est symétrique (chapitre 4, théorème 2), et sa forme quadratique est positive si et seulement si ses valeurs propres le sont (\emph{Rappel.}).
+\end{demo}
+
+\begin{center}
+\begin{tabularx}{15cm}{||X||}
+\hline \\
+\textbf{\underline{\textcolor{rougecours}{Théorème 1 : Condition suffisante du second ordre :}}} \\
+Soit $f : U \to \R$ de classe $\Cc^{2}$ et $a \in U$ un point critique de $f$. On suppose qu'il existe $\alpha > 0$ tel que
+\[ \rmath{\dd^{2} f(a)(h, h) \geqslant \alpha\norme{h}^{2}} \qquad \text{pour tout } h \in E. \]
+Alors $f$ admet en $a$ un minimum local strict. Dans $\R^{p}$, cette hypothèse équivaut à : $\Hs_{f}(a)$ est \emph{définie positive}, et l'on peut prendre pour $\alpha$ sa plus petite valeur propre, pour la norme euclidienne.
+\medbreak
+\\ \hline
+\end{tabularx}
+\end{center}
+
+\begin{demo}
+Par la formule de Taylor-Young, il existe $r > 0$ tel que $\Bo(a, r) \subset U$ et
+\[ \left|f(a + h) - f(a) - \tfrac{1}{2}\,\dd^{2} f(a)(h, h)\right| \leqslant \frac{\alpha}{4}\norme{h}^{2} \qquad \text{pour } \norme{h} < r. \]
+Pour $0 < \norme{h} < r$, on en déduit $f(a + h) - f(a) \geqslant \dfrac{\alpha}{2}\norme{h}^{2} - \dfrac{\alpha}{4}\norme{h}^{2} > 0$. Dans $\R^{p}$, si $\Hs_{f}(a)$ est définie positive, la diagonalisation dans une base orthonormée donne $\tra{h}\,\Hs_{f}(a)\,h \geqslant \lambda_{\min}\norme{h}_{2}^{2}$, avec $\lambda_{\min} > 0$ ; la réciproque est claire.
+\end{demo}
+
+\begin{remarques}
+  \item En dimension infinie, «~$\dd^{2} f(a)(h, h) > 0$ pour tout $h \neq 0$~» ne suffit pas : la minoration uniforme par $\alpha\norme{h}^{2}$ est indispensable. En dimension finie, les deux sont équivalentes, par compacité de la sphère unité.
+  \item Pour un maximum, on change $f$ en $-f$ : un point critique où la hessienne est \emph{définie négative} est un maximum local strict. Si la hessienne a des valeurs propres strictement positives et strictement négatives, $f$ croît dans certaines directions et décroît dans d'autres : $a$ est un \mot{col}, et non un extremum.
+\end{remarques}
+
+\noindent En dimension $2$, on note souvent, avec les notations de Monge, $r = \dfrac{\partial^{2} f}{\partial x^{2}}(a)$, $s = \dfrac{\partial^{2} f}{\partial x\,\partial y}(a)$, $t = \dfrac{\partial^{2} f}{\partial y^{2}}(a)$.
+
+\begin{cadre}
+\propo{4} \emph{(Cas de $\R^{2}$.)} Soit $f$ de classe $\Cc^{2}$ sur un ouvert de $\R^{2}$ et $a$ un point critique.
+\begin{enumerate}[label=(\roman*),topsep=3pt,itemsep=2pt]
+  \item Si $rt - s^{2} > 0$ et $r > 0$, $f$ admet en $a$ un minimum local strict ; si $rt - s^{2} > 0$ et $r < 0$, un maximum local strict.
+  \item Si $rt - s^{2} < 0$, $a$ est un col : $f$ n'a pas d'extremum en $a$.
+  \item Si $rt - s^{2} = 0$, on ne peut pas conclure à l'ordre $2$.
+\end{enumerate}
+\end{cadre}
+
+\begin{demo}
+Les valeurs propres $\lambda_{1}$, $\lambda_{2}$ de $\Hs_{f}(a) = \begin{pmatrix} r & s \\ s & t \end{pmatrix}$ ont pour produit $rt - s^{2}$ et pour somme $r + t$. Si $rt - s^{2} > 0$, elles sont de même signe ; comme $rt > s^{2} \geqslant 0$, $r$ et $t$ sont de même signe, celui de $\lambda_{1} + \lambda_{2}$, donc de $\lambda_{1}$ et $\lambda_{2}$ : on conclut par le théorème 1. Si $rt - s^{2} < 0$, les valeurs propres sont de signes contraires, et le long d'un vecteur propre $h$ de valeur propre $\lambda$, $f(a + \tau h) - f(a) = \dfrac{\lambda\tau^{2}}{2}\norme{h}^{2} + o(\tau^{2})$ a le signe de $\lambda$ pour $\tau \neq 0$ petit. Le cas (iii) est illustré plus bas.
+\end{demo}
+
+% ---- surfaces z = x^2 + y^2 (minimum), z = x^2 - y^2 (col), z = x^2 (degenere), sur [-1, 1]^2
+\begin{center}
+\begin{tikzpicture}
+  \begin{axis}[name=A,width=5.6cm,height=5cm,view={30}{28},axis lines=none,colormap={bleu}{color=(couleurN!20) color=(couleurN!85)},
+    title={\small minimum : $x^{2} + y^{2}$},title style={yshift=-4pt}]
+    \addplot3[surf,shader=faceted interp,draw=couleurN!50,line width=0.1pt,samples=15,domain=-1:1,y domain=-1:1] {x^2+y^2};
+    \addplot3[only marks,mark=*,mark size=1.4pt,color=rougecours] coordinates {(0,0,0)};
+  \end{axis}
+  \begin{axis}[at={(A.east)},anchor=west,xshift=0.1cm,width=5.6cm,height=5cm,view={30}{28},axis lines=none,colormap={bleu}{color=(couleurN!20) color=(couleurN!85)},
+    title={\small col : $x^{2} - y^{2}$},title style={yshift=-4pt}]
+    \addplot3[surf,shader=faceted interp,draw=couleurN!50,line width=0.1pt,samples=15,domain=-1:1,y domain=-1:1] {x^2-y^2};
+    \addplot3[only marks,mark=*,mark size=1.4pt,color=rougecours] coordinates {(0,0,0)};
+  \end{axis}
+  \begin{axis}[at={(A.east)},anchor=west,xshift=5.0cm,width=5.6cm,height=5cm,view={30}{28},axis lines=none,colormap={bleu}{color=(couleurN!20) color=(couleurN!85)},
+    title={\small dégénéré : $x^{2}$},title style={yshift=-4pt}]
+    \addplot3[surf,shader=faceted interp,draw=couleurN!50,line width=0.1pt,samples=15,domain=-1:1,y domain=-1:1] {x^2};
+    \addplot3[only marks,mark=*,mark size=1.4pt,color=rougecours] coordinates {(0,0,0)};
+  \end{axis}
+\end{tikzpicture}
+\end{center}
+
+\noindent Les trois allures possibles au voisinage d'un point critique, en rouge, correspondant aux trois formes quadratiques du chapitre 4 : une cuvette pour une hessienne définie positive, une selle de cheval pour une hessienne de signature mixte, et une gouttière, dont le fond est formé de minima non stricts, pour une hessienne dégénérée.
+
+\begin{exemple}
+Pour $f(x, y) = x^{3} + y^{3} - 3xy$, les points critiques vérifient $x^{2} = y$ et $y^{2} = x$, d'où $x^{4} = x$ : ce sont $(0, 0)$ et $(1, 1)$. Avec $r = 6x$, $s = -3$, $t = 6y$ : en $(0, 0)$, $rt - s^{2} = -9 < 0$, c'est un col ; en $(1, 1)$, $rt - s^{2} = 27 > 0$ et $r = 6 > 0$, c'est un minimum local strict, où $f$ vaut $-1$. Ce minimum n'est pas global : $f(x, 0) = x^{3}$ tend vers $-\infty$ quand $x \to -\infty$.
+\end{exemple}
+
+% ---- lignes de niveau -0.9, -0.6, -0.3, 0, 0.4, 1 de f = x^3 + y^3 - 3xy (matplotlib, contour) ; niveau 0 : folium de Descartes
+\begin{center}
+\begin{tikzpicture}[scale=1.75]
+  \begin{scope}
+    \clip (-1.6,-1.6) rectangle (2.3,2.3);
+\draw[couleurN!70] plot[smooth] coordinates {(-1.600,0.617) (-1.587,0.604) (-1.574,0.591) (-1.561,0.579) (-1.548,0.566) (-1.535,0.553) (-1.522,0.540) (-1.509,0.528) (-1.496,0.515) (-1.483,0.502) (-1.470,0.489) (-1.457,0.477) (-1.444,0.464) (-1.430,0.451) (-1.417,0.438) (-1.404,0.425) (-1.390,0.412) (-1.377,0.399) (-1.364,0.386) (-1.350,0.373) (-1.337,0.360) (-1.324,0.347) (-1.310,0.334) (-1.297,0.321) (-1.283,0.308) (-1.270,0.295) (-1.257,0.282) (-1.243,0.269) (-1.230,0.256) (-1.216,0.243) (-1.203,0.230) (-1.190,0.217) (-1.177,0.204) (-1.164,0.192) (-1.151,0.179) (-1.138,0.166) (-1.125,0.154) (-1.112,0.141) (-1.099,0.129) (-1.086,0.116) (-1.073,0.103) (-1.060,0.091) (-1.047,0.078) (-1.034,0.066) (-1.021,0.053) (-1.008,0.041) (-0.994,0.028) (-0.981,0.015) (-0.967,0.002) (-0.954,-0.011) (-0.940,-0.024) (-0.927,-0.037) (-0.913,-0.050) (-0.900,-0.063) (-0.886,-0.076) (-0.873,-0.089) (-0.859,-0.103) (-0.846,-0.116) (-0.832,-0.129) (-0.819,-0.142) (-0.806,-0.154) (-0.793,-0.167) (-0.780,-0.180) (-0.767,-0.192) (-0.754,-0.205) (-0.741,-0.218) (-0.728,-0.230) (-0.715,-0.243) (-0.702,-0.256) (-0.688,-0.268) (-0.675,-0.281) (-0.662,-0.294) (-0.649,-0.307) (-0.636,-0.319) (-0.623,-0.332) (-0.610,-0.345) (-0.597,-0.358) (-0.584,-0.371) (-0.571,-0.383) (-0.558,-0.396) (-0.545,-0.409) (-0.532,-0.422) (-0.519,-0.435) (-0.506,-0.448) (-0.493,-0.461) (-0.480,-0.474) (-0.467,-0.487) (-0.454,-0.500) (-0.441,-0.513) (-0.428,-0.526) (-0.415,-0.539) (-0.402,-0.553) (-0.389,-0.566) (-0.376,-0.579) (-0.363,-0.592) (-0.350,-0.605) (-0.337,-0.619) (-0.324,-0.632) (-0.311,-0.645) (-0.298,-0.658) (-0.285,-0.672) (-0.272,-0.685) (-0.259,-0.698) (-0.246,-0.712) (-0.233,-0.725) (-0.220,-0.738) (-0.207,-0.752) (-0.194,-0.765) (-0.181,-0.779) (-0.168,-0.792) (-0.155,-0.806) (-0.142,-0.819) (-0.129,-0.832) (-0.117,-0.845) (-0.104,-0.858) (-0.091,-0.871) (-0.079,-0.884) (-0.066,-0.897) (-0.054,-0.910) (-0.041,-0.923) (-0.029,-0.936) (-0.016,-0.949) (-0.003,-0.962) (0.009,-0.975) (0.022,-0.988) (0.034,-1.001) (0.047,-1.014) (0.060,-1.028) (0.073,-1.041) (0.086,-1.055) (0.099,-1.068) (0.112,-1.082) (0.125,-1.095) (0.138,-1.109) (0.151,-1.122) (0.164,-1.136) (0.177,-1.149) (0.190,-1.163) (0.204,-1.176) (0.217,-1.189) (0.230,-1.203) (0.242,-1.216) (0.255,-1.229) (0.267,-1.242) (0.280,-1.255) (0.293,-1.268) (0.305,-1.281) (0.318,-1.294) (0.331,-1.307) (0.343,-1.320) (0.356,-1.333) (0.369,-1.346) (0.381,-1.359) (0.394,-1.372) (0.407,-1.385) (0.419,-1.398) (0.432,-1.411) (0.445,-1.424) (0.458,-1.437) (0.470,-1.450) (0.483,-1.464) (0.496,-1.477) (0.510,-1.490) (0.523,-1.504) (0.536,-1.517) (0.549,-1.530) (0.562,-1.544) (0.575,-1.557) (0.588,-1.570) (0.601,-1.583) (0.614,-1.597)};
+\draw[couleurN!70] plot[smooth] coordinates {(0.874,0.776) (0.855,0.779) (0.835,0.784) (0.816,0.795) (0.803,0.806) (0.791,0.822) (0.783,0.838) (0.778,0.861) (0.776,0.881) (0.777,0.900) (0.782,0.926) (0.787,0.946) (0.795,0.965) (0.803,0.983) (0.810,0.998) (0.822,1.017) (0.830,1.030) (0.842,1.046) (0.855,1.063) (0.866,1.076) (0.878,1.089) (0.891,1.102) (0.905,1.115) (0.920,1.127) (0.933,1.137) (0.947,1.148) (0.965,1.159) (0.979,1.167) (0.998,1.176) (1.017,1.185) (1.037,1.191) (1.056,1.197) (1.076,1.200) (1.102,1.201) (1.122,1.199) (1.141,1.193) (1.161,1.183) (1.174,1.172) (1.187,1.155) (1.193,1.141) (1.200,1.116) (1.201,1.095) (1.200,1.075) (1.195,1.050) (1.189,1.030) (1.182,1.011) (1.174,0.992) (1.166,0.978) (1.155,0.959) (1.146,0.946) (1.135,0.929) (1.122,0.913) (1.110,0.900) (1.098,0.887) (1.085,0.874) (1.071,0.861) (1.056,0.849) (1.043,0.839) (1.028,0.829) (1.011,0.818) (0.996,0.809) (0.978,0.800) (0.959,0.792) (0.939,0.785) (0.920,0.780) (0.894,0.777) (0.874,0.776)};
+\draw[couleurN!70] plot[smooth] coordinates {(-1.600,0.667) (-1.587,0.655) (-1.574,0.643) (-1.561,0.631) (-1.548,0.619) (-1.535,0.607) (-1.521,0.594) (-1.507,0.581) (-1.493,0.568) (-1.479,0.555) (-1.464,0.542) (-1.450,0.529) (-1.437,0.517) (-1.424,0.505) (-1.411,0.494) (-1.398,0.482) (-1.385,0.470) (-1.371,0.457) (-1.357,0.444) (-1.342,0.431) (-1.327,0.418) (-1.314,0.406) (-1.301,0.394) (-1.287,0.383) (-1.274,0.371) (-1.261,0.360) (-1.247,0.347) (-1.232,0.334) (-1.217,0.321) (-1.203,0.308) (-1.190,0.296) (-1.177,0.285) (-1.164,0.274) (-1.150,0.262) (-1.135,0.249) (-1.120,0.236) (-1.105,0.223) (-1.092,0.212) (-1.079,0.200) (-1.066,0.189) (-1.053,0.177) (-1.037,0.164) (-1.022,0.151) (-1.008,0.139) (-0.994,0.128) (-0.981,0.117) (-0.968,0.106) (-0.953,0.093) (-0.938,0.080) (-0.923,0.067) (-0.910,0.056) (-0.897,0.045) (-0.884,0.034) (-0.869,0.021) (-0.853,0.008) (-0.838,-0.004) (-0.825,-0.015) (-0.812,-0.026) (-0.799,-0.037) (-0.784,-0.050) (-0.768,-0.063) (-0.754,-0.076) (-0.741,-0.087) (-0.728,-0.098) (-0.715,-0.109) (-0.699,-0.122) (-0.684,-0.135) (-0.669,-0.148) (-0.656,-0.159) (-0.643,-0.171) (-0.630,-0.182) (-0.617,-0.194) (-0.602,-0.207) (-0.587,-0.220) (-0.573,-0.233) (-0.558,-0.246) (-0.545,-0.257) (-0.532,-0.269) (-0.519,-0.281) (-0.506,-0.293) (-0.493,-0.305) (-0.480,-0.317) (-0.467,-0.330) (-0.453,-0.343) (-0.439,-0.356) (-0.426,-0.369) (-0.413,-0.382) (-0.400,-0.395) (-0.387,-0.409) (-0.374,-0.422) (-0.361,-0.435) (-0.349,-0.448) (-0.336,-0.461) (-0.324,-0.474) (-0.311,-0.487) (-0.298,-0.501) (-0.285,-0.515) (-0.272,-0.529) (-0.259,-0.544) (-0.246,-0.558) (-0.234,-0.571) (-0.222,-0.584) (-0.211,-0.597) (-0.199,-0.610) (-0.187,-0.624) (-0.174,-0.639) (-0.161,-0.654) (-0.148,-0.669) (-0.137,-0.682) (-0.126,-0.695) (-0.115,-0.708) (-0.103,-0.722) (-0.089,-0.738) (-0.076,-0.753) (-0.065,-0.767) (-0.054,-0.780) (-0.043,-0.793) (-0.031,-0.807) (-0.018,-0.822) (-0.005,-0.838) (0.007,-0.851) (0.018,-0.864) (0.029,-0.877) (0.041,-0.892) (0.054,-0.907) (0.067,-0.923) (0.078,-0.936) (0.089,-0.949) (0.100,-0.962) (0.112,-0.976) (0.125,-0.992) (0.138,-1.007) (0.150,-1.021) (0.161,-1.034) (0.172,-1.047) (0.184,-1.060) (0.197,-1.075) (0.210,-1.090) (0.223,-1.105) (0.234,-1.118) (0.245,-1.131) (0.257,-1.144) (0.269,-1.158) (0.282,-1.173) (0.295,-1.188) (0.308,-1.203) (0.319,-1.216) (0.331,-1.229) (0.342,-1.242) (0.354,-1.255) (0.366,-1.269) (0.379,-1.284) (0.392,-1.298) (0.405,-1.313) (0.418,-1.327) (0.429,-1.340) (0.441,-1.353) (0.453,-1.366) (0.464,-1.379) (0.477,-1.393) (0.490,-1.407) (0.503,-1.421) (0.516,-1.436) (0.529,-1.450) (0.541,-1.463) (0.553,-1.476) (0.565,-1.489) (0.577,-1.502) (0.589,-1.515) (0.601,-1.529) (0.614,-1.543) (0.627,-1.557) (0.640,-1.571) (0.653,-1.585) (0.666,-1.599)};
+\draw[couleurN!70] plot[smooth] coordinates {(0.679,0.516) (0.659,0.519) (0.640,0.524) (0.620,0.531) (0.601,0.541) (0.588,0.550) (0.573,0.562) (0.560,0.575) (0.549,0.589) (0.538,0.607) (0.529,0.626) (0.523,0.645) (0.518,0.666) (0.515,0.685) (0.513,0.711) (0.514,0.737) (0.516,0.761) (0.519,0.783) (0.523,0.803) (0.529,0.825) (0.536,0.846) (0.542,0.865) (0.549,0.882) (0.556,0.900) (0.565,0.920) (0.574,0.939) (0.581,0.953) (0.592,0.972) (0.601,0.987) (0.611,1.004) (0.620,1.018) (0.633,1.037) (0.642,1.050) (0.653,1.065) (0.666,1.082) (0.677,1.095) (0.688,1.109) (0.699,1.122) (0.711,1.135) (0.724,1.149) (0.737,1.162) (0.750,1.175) (0.763,1.188) (0.777,1.200) (0.791,1.213) (0.807,1.226) (0.822,1.238) (0.835,1.248) (0.849,1.258) (0.867,1.271) (0.881,1.281) (0.896,1.291) (0.913,1.301) (0.929,1.310) (0.946,1.320) (0.965,1.330) (0.979,1.336) (0.998,1.345) (1.017,1.353) (1.037,1.360) (1.056,1.367) (1.076,1.372) (1.095,1.377) (1.122,1.382) (1.141,1.384) (1.167,1.386) (1.193,1.386) (1.219,1.383) (1.239,1.380) (1.258,1.374) (1.278,1.367) (1.297,1.356) (1.310,1.348) (1.324,1.336) (1.337,1.323) (1.349,1.308) (1.360,1.291) (1.369,1.272) (1.375,1.254) (1.381,1.232) (1.384,1.213) (1.386,1.187) (1.386,1.161) (1.384,1.135) (1.381,1.115) (1.375,1.089) (1.370,1.069) (1.364,1.050) (1.358,1.030) (1.350,1.011) (1.343,0.993) (1.336,0.978) (1.326,0.959) (1.317,0.941) (1.309,0.926) (1.297,0.907) (1.289,0.894) (1.278,0.876) (1.267,0.861) (1.258,0.848) (1.245,0.831) (1.233,0.816) (1.222,0.803) (1.211,0.789) (1.200,0.776) (1.187,0.762) (1.174,0.749) (1.161,0.736) (1.148,0.723) (1.135,0.711) (1.121,0.698) (1.105,0.685) (1.090,0.672) (1.076,0.661) (1.063,0.651) (1.047,0.640) (1.030,0.628) (1.017,0.619) (0.998,0.607) (0.985,0.599) (0.965,0.588) (0.952,0.581) (0.933,0.571) (0.913,0.562) (0.898,0.555) (0.881,0.548) (0.861,0.541) (0.842,0.534) (0.822,0.528) (0.798,0.523) (0.776,0.518) (0.757,0.516) (0.731,0.513) (0.705,0.513) (0.679,0.516)};
+\draw[couleurN!70] plot[smooth] coordinates {(-1.600,0.715) (-1.587,0.703) (-1.574,0.692) (-1.559,0.679) (-1.544,0.666) (-1.529,0.653) (-1.515,0.641) (-1.502,0.630) (-1.489,0.619) (-1.475,0.607) (-1.460,0.594) (-1.445,0.581) (-1.431,0.569) (-1.418,0.558) (-1.405,0.548) (-1.390,0.536) (-1.375,0.523) (-1.359,0.510) (-1.346,0.499) (-1.333,0.488) (-1.319,0.477) (-1.303,0.464) (-1.287,0.451) (-1.274,0.441) (-1.261,0.430) (-1.247,0.418) (-1.230,0.405) (-1.216,0.394) (-1.203,0.384) (-1.189,0.373) (-1.173,0.360) (-1.157,0.348) (-1.144,0.338) (-1.130,0.327) (-1.113,0.314) (-1.099,0.303) (-1.086,0.293) (-1.071,0.282) (-1.053,0.269) (-1.040,0.259) (-1.027,0.249) (-1.009,0.236) (-0.994,0.225) (-0.981,0.216) (-0.965,0.204) (-0.949,0.192) (-0.936,0.183) (-0.919,0.171) (-0.903,0.160) (-0.890,0.151) (-0.873,0.138) (-0.858,0.128) (-0.845,0.119) (-0.826,0.106) (-0.812,0.096) (-0.797,0.086) (-0.780,0.074) (-0.767,0.065) (-0.749,0.054) (-0.734,0.043) (-0.720,0.034) (-0.702,0.021) (-0.688,0.013) (-0.672,0.002) (-0.656,-0.009) (-0.643,-0.018) (-0.623,-0.031) (-0.610,-0.040) (-0.594,-0.050) (-0.578,-0.062) (-0.565,-0.071) (-0.547,-0.083) (-0.532,-0.093) (-0.519,-0.103) (-0.500,-0.116) (-0.487,-0.125) (-0.473,-0.135) (-0.455,-0.148) (-0.441,-0.159) (-0.428,-0.169) (-0.413,-0.181) (-0.397,-0.194) (-0.382,-0.205) (-0.369,-0.216) (-0.356,-0.227) (-0.343,-0.239) (-0.328,-0.252) (-0.314,-0.265) (-0.301,-0.278) (-0.288,-0.291) (-0.275,-0.304) (-0.263,-0.317) (-0.250,-0.330) (-0.239,-0.343) (-0.226,-0.358) (-0.213,-0.373) (-0.200,-0.389) (-0.189,-0.402) (-0.179,-0.415) (-0.168,-0.430) (-0.155,-0.447) (-0.144,-0.461) (-0.135,-0.474) (-0.122,-0.491) (-0.111,-0.506) (-0.102,-0.519) (-0.089,-0.537) (-0.079,-0.552) (-0.070,-0.566) (-0.057,-0.584) (-0.048,-0.597) (-0.037,-0.614) (-0.026,-0.630) (-0.018,-0.643) (-0.005,-0.662) (0.004,-0.675) (0.015,-0.691) (0.026,-0.708) (0.035,-0.721) (0.047,-0.740) (0.057,-0.754) (0.067,-0.769) (0.079,-0.786) (0.087,-0.799) (0.099,-0.816) (0.110,-0.832) (0.119,-0.845) (0.132,-0.864) (0.141,-0.877) (0.151,-0.891) (0.164,-0.910) (0.174,-0.923) (0.184,-0.937) (0.197,-0.955) (0.206,-0.968) (0.217,-0.982) (0.230,-1.000) (0.240,-1.014) (0.249,-1.027) (0.262,-1.044) (0.273,-1.060) (0.283,-1.073) (0.295,-1.088) (0.308,-1.105) (0.318,-1.118) (0.328,-1.131) (0.340,-1.147) (0.353,-1.164) (0.363,-1.177) (0.373,-1.190) (0.386,-1.206) (0.399,-1.222) (0.409,-1.235) (0.420,-1.248) (0.431,-1.263) (0.444,-1.279) (0.456,-1.294) (0.467,-1.307) (0.478,-1.320) (0.490,-1.335) (0.503,-1.351) (0.515,-1.366) (0.526,-1.379) (0.537,-1.392) (0.549,-1.406) (0.562,-1.421) (0.575,-1.437) (0.586,-1.450) (0.597,-1.463) (0.608,-1.476) (0.620,-1.491) (0.633,-1.506) (0.646,-1.521) (0.658,-1.535) (0.669,-1.548) (0.681,-1.561) (0.692,-1.574) (0.705,-1.589)};
+\draw[couleurN!70] plot[smooth] coordinates {(0.510,0.301) (0.490,0.303) (0.467,0.308) (0.444,0.314) (0.427,0.321) (0.412,0.328) (0.392,0.339) (0.379,0.349) (0.366,0.360) (0.353,0.374) (0.340,0.391) (0.331,0.405) (0.322,0.425) (0.314,0.444) (0.308,0.464) (0.304,0.483) (0.301,0.504) (0.299,0.529) (0.299,0.555) (0.300,0.581) (0.302,0.601) (0.306,0.627) (0.309,0.646) (0.314,0.669) (0.320,0.692) (0.325,0.711) (0.332,0.731) (0.338,0.750) (0.345,0.770) (0.353,0.789) (0.360,0.806) (0.367,0.822) (0.376,0.842) (0.385,0.861) (0.392,0.875) (0.402,0.894) (0.412,0.911) (0.421,0.926) (0.431,0.944) (0.440,0.959) (0.451,0.975) (0.462,0.991) (0.470,1.005) (0.483,1.023) (0.493,1.037) (0.503,1.050) (0.516,1.067) (0.528,1.082) (0.539,1.095) (0.550,1.109) (0.562,1.122) (0.575,1.137) (0.588,1.152) (0.601,1.166) (0.614,1.179) (0.627,1.193) (0.640,1.205) (0.653,1.218) (0.666,1.230) (0.679,1.242) (0.692,1.254) (0.705,1.265) (0.720,1.278) (0.736,1.291) (0.750,1.302) (0.763,1.313) (0.778,1.323) (0.796,1.336) (0.809,1.346) (0.824,1.356) (0.842,1.367) (0.855,1.375) (0.874,1.387) (0.887,1.395) (0.907,1.406) (0.923,1.415) (0.939,1.423) (0.959,1.432) (0.977,1.441) (0.992,1.447) (1.011,1.455) (1.030,1.462) (1.050,1.469) (1.069,1.475) (1.089,1.481) (1.112,1.486) (1.135,1.491) (1.154,1.494) (1.180,1.497) (1.202,1.499) (1.226,1.500) (1.246,1.499) (1.271,1.497) (1.297,1.493) (1.317,1.488) (1.336,1.482) (1.356,1.474) (1.371,1.467) (1.388,1.457) (1.402,1.447) (1.418,1.434) (1.431,1.421) (1.443,1.408) (1.454,1.393) (1.464,1.375) (1.473,1.358) (1.480,1.343) (1.486,1.323) (1.493,1.298) (1.496,1.278) (1.499,1.252) (1.500,1.232) (1.499,1.206) (1.498,1.187) (1.495,1.161) (1.492,1.141) (1.487,1.115) (1.482,1.095) (1.477,1.076) (1.471,1.056) (1.464,1.037) (1.457,1.017) (1.450,0.998) (1.441,0.978) (1.434,0.963) (1.426,0.946) (1.416,0.926) (1.408,0.911) (1.399,0.894) (1.388,0.876) (1.379,0.861) (1.369,0.844) (1.359,0.829) (1.349,0.815) (1.336,0.796) (1.327,0.783) (1.317,0.769) (1.304,0.752) (1.292,0.737) (1.282,0.724) (1.271,0.711) (1.258,0.697) (1.245,0.682) (1.232,0.668) (1.219,0.654) (1.206,0.640) (1.193,0.627) (1.180,0.615) (1.167,0.602) (1.154,0.590) (1.141,0.578) (1.128,0.567) (1.115,0.555) (1.099,0.542) (1.083,0.529) (1.069,0.518) (1.056,0.508) (1.041,0.496) (1.024,0.484) (1.011,0.475) (0.995,0.464) (0.978,0.453) (0.965,0.444) (0.946,0.432) (0.933,0.425) (0.913,0.413) (0.899,0.405) (0.881,0.395) (0.862,0.386) (0.848,0.379) (0.829,0.370) (0.809,0.361) (0.790,0.353) (0.774,0.347) (0.756,0.340) (0.737,0.334) (0.717,0.327) (0.695,0.321) (0.672,0.315) (0.653,0.311) (0.633,0.307) (0.607,0.303) (0.588,0.301) (0.562,0.299) (0.536,0.299) (0.510,0.301)};
+\draw[couleurN,very thick] plot[smooth] coordinates {(-1.600,0.761) (-1.587,0.750) (-1.571,0.737) (-1.555,0.724) (-1.541,0.713) (-1.528,0.703) (-1.515,0.692) (-1.498,0.679) (-1.483,0.666) (-1.470,0.656) (-1.457,0.646) (-1.441,0.633) (-1.424,0.620) (-1.411,0.610) (-1.398,0.600) (-1.382,0.588) (-1.366,0.575) (-1.353,0.565) (-1.339,0.555) (-1.322,0.542) (-1.307,0.531) (-1.294,0.522) (-1.278,0.510) (-1.261,0.498) (-1.248,0.488) (-1.232,0.477) (-1.216,0.465) (-1.203,0.456) (-1.186,0.444) (-1.170,0.433) (-1.157,0.424) (-1.139,0.412) (-1.125,0.402) (-1.110,0.392) (-1.092,0.381) (-1.079,0.372) (-1.060,0.360) (-1.047,0.351) (-1.029,0.340) (-1.014,0.331) (-0.998,0.321) (-0.981,0.311) (-0.965,0.301) (-0.949,0.291) (-0.932,0.282) (-0.916,0.273) (-0.898,0.262) (-0.884,0.254) (-0.864,0.243) (-0.851,0.236) (-0.832,0.226) (-0.814,0.217) (-0.799,0.209) (-0.780,0.199) (-0.762,0.190) (-0.747,0.183) (-0.728,0.174) (-0.708,0.165) (-0.692,0.158) (-0.675,0.150) (-0.656,0.142) (-0.636,0.134) (-0.617,0.126) (-0.599,0.119) (-0.583,0.112) (-0.565,0.106) (-0.545,0.099) (-0.526,0.092) (-0.506,0.085) (-0.487,0.079) (-0.467,0.072) (-0.448,0.067) (-0.426,0.060) (-0.402,0.054) (-0.382,0.049) (-0.363,0.044) (-0.343,0.039) (-0.321,0.034) (-0.298,0.030) (-0.278,0.026) (-0.252,0.021) (-0.233,0.018) (-0.210,0.015) (-0.187,0.012) (-0.161,0.009) (-0.142,0.007) (-0.116,0.004) (-0.089,0.003) (-0.070,0.002) (-0.044,0.001) (-0.018,0.000) (0.000,0.008) (0.000,0.034) (0.001,0.060) (0.002,0.080) (0.004,0.106) (0.006,0.132) (0.008,0.157) (0.011,0.177) (0.014,0.204) (0.017,0.223) (0.021,0.249) (0.024,0.269) (0.028,0.288) (0.033,0.314) (0.037,0.334) (0.042,0.353) (0.047,0.376) (0.053,0.399) (0.059,0.418) (0.064,0.438) (0.070,0.457) (0.076,0.477) (0.083,0.496) (0.089,0.516) (0.096,0.536) (0.103,0.555) (0.111,0.575) (0.119,0.594) (0.125,0.611) (0.132,0.627) (0.141,0.646) (0.149,0.666) (0.158,0.684) (0.165,0.698) (0.174,0.718) (0.184,0.737) (0.191,0.750) (0.201,0.770) (0.210,0.786) (0.219,0.803) (0.230,0.821) (0.238,0.835) (0.249,0.854) (0.257,0.868) (0.269,0.885) (0.278,0.900) (0.288,0.916) (0.300,0.933) (0.308,0.946) (0.321,0.963) (0.331,0.978) (0.341,0.991) (0.353,1.008) (0.365,1.024) (0.375,1.037) (0.386,1.050) (0.399,1.066) (0.412,1.082) (0.423,1.095) (0.434,1.109) (0.446,1.122) (0.457,1.135) (0.470,1.149) (0.483,1.163) (0.496,1.177) (0.510,1.191) (0.523,1.204) (0.536,1.217) (0.549,1.229) (0.562,1.242) (0.575,1.254) (0.588,1.266) (0.601,1.278) (0.616,1.291) (0.631,1.304) (0.646,1.317) (0.659,1.327) (0.672,1.338) (0.687,1.349) (0.704,1.362) (0.718,1.373) (0.731,1.382) (0.749,1.395) (0.763,1.405) (0.778,1.415) (0.796,1.426) (0.809,1.435) (0.829,1.447) (0.842,1.454) (0.861,1.465) (0.875,1.473) (0.894,1.483) (0.912,1.493) (0.926,1.500) (0.946,1.509) (0.965,1.518) (0.983,1.525) (0.999,1.532) (1.017,1.539) (1.037,1.546) (1.056,1.552) (1.076,1.558) (1.097,1.564) (1.122,1.570) (1.141,1.575) (1.161,1.578) (1.187,1.582) (1.206,1.585) (1.232,1.587) (1.258,1.587) (1.284,1.587) (1.310,1.585) (1.330,1.582) (1.355,1.577) (1.375,1.572) (1.395,1.566) (1.415,1.558) (1.428,1.551) (1.447,1.541) (1.462,1.532) (1.479,1.519) (1.493,1.507) (1.506,1.494) (1.518,1.480) (1.528,1.467) (1.538,1.452) (1.548,1.434) (1.558,1.415) (1.564,1.398) (1.571,1.379) (1.577,1.356) (1.581,1.336) (1.584,1.317) (1.586,1.291) (1.587,1.265) (1.587,1.239) (1.585,1.213) (1.583,1.193) (1.579,1.167) (1.576,1.148) (1.571,1.123) (1.566,1.102) (1.560,1.082) (1.554,1.063) (1.548,1.043) (1.541,1.024) (1.534,1.004) (1.526,0.985) (1.519,0.968) (1.512,0.952) (1.503,0.933) (1.493,0.913) (1.486,0.899) (1.476,0.881) (1.467,0.863) (1.458,0.848) (1.447,0.829) (1.439,0.816) (1.428,0.798) (1.418,0.783) (1.408,0.768) (1.396,0.750) (1.387,0.737) (1.375,0.722) (1.363,0.705) (1.353,0.692) (1.343,0.679) (1.330,0.662) (1.317,0.646) (1.306,0.633) (1.295,0.620) (1.283,0.607) (1.271,0.594) (1.258,0.579) (1.245,0.565) (1.232,0.552) (1.219,0.538) (1.206,0.525) (1.193,0.512) (1.180,0.499) (1.167,0.487) (1.154,0.475) (1.141,0.463) (1.128,0.451) (1.113,0.438) (1.098,0.425) (1.082,0.412) (1.069,0.401) (1.056,0.391) (1.042,0.379) (1.025,0.366) (1.011,0.355) (0.998,0.346) (0.981,0.334) (0.965,0.322) (0.952,0.313) (0.935,0.301) (0.920,0.291) (0.906,0.282) (0.887,0.270) (0.874,0.262) (0.855,0.250) (0.842,0.242) (0.822,0.230) (0.809,0.223) (0.789,0.212) (0.774,0.204) (0.757,0.194) (0.737,0.184) (0.724,0.177) (0.705,0.168) (0.685,0.158) (0.670,0.151) (0.653,0.144) (0.633,0.135) (0.614,0.127) (0.595,0.119) (0.578,0.112) (0.562,0.106) (0.542,0.099) (0.523,0.092) (0.503,0.085) (0.483,0.078) (0.464,0.072) (0.444,0.066) (0.425,0.060) (0.401,0.054) (0.379,0.048) (0.360,0.043) (0.340,0.039) (0.320,0.034) (0.295,0.029) (0.275,0.025) (0.252,0.021) (0.230,0.018) (0.210,0.015) (0.184,0.011) (0.158,0.008) (0.138,0.006) (0.112,0.004) (0.086,0.002) (0.067,0.001) (0.041,0.001) (0.015,0.000) (0.000,-0.011) (0.000,-0.037) (0.001,-0.063) (0.002,-0.083) (0.004,-0.109) (0.006,-0.135) (0.008,-0.157) (0.011,-0.181) (0.014,-0.207) (0.017,-0.226) (0.021,-0.252) (0.025,-0.272) (0.028,-0.291) (0.034,-0.317) (0.038,-0.337) (0.042,-0.356) (0.047,-0.377) (0.054,-0.402) (0.059,-0.422) (0.065,-0.441) (0.070,-0.461) (0.077,-0.480) (0.083,-0.500) (0.089,-0.519) (0.096,-0.539) (0.103,-0.558) (0.111,-0.578) (0.118,-0.597) (0.125,-0.616) (0.132,-0.632) (0.139,-0.649) (0.148,-0.669) (0.156,-0.688) (0.164,-0.707) (0.171,-0.721) (0.180,-0.741) (0.190,-0.760) (0.197,-0.775) (0.206,-0.793) (0.216,-0.812) (0.223,-0.826) (0.233,-0.845) (0.243,-0.863) (0.251,-0.877) (0.261,-0.897) (0.269,-0.910) (0.280,-0.929) (0.288,-0.943) (0.299,-0.962) (0.308,-0.976) (0.319,-0.994) (0.327,-1.008) (0.339,-1.027) (0.347,-1.040) (0.360,-1.060) (0.368,-1.073) (0.379,-1.090) (0.389,-1.105) (0.399,-1.119) (0.411,-1.138) (0.420,-1.151) (0.431,-1.167) (0.442,-1.183) (0.451,-1.196) (0.464,-1.214) (0.474,-1.229) (0.484,-1.242) (0.496,-1.260) (0.507,-1.274) (0.517,-1.287) (0.529,-1.304) (0.541,-1.320) (0.551,-1.333) (0.562,-1.348) (0.575,-1.365) (0.585,-1.379) (0.595,-1.392) (0.607,-1.407) (0.620,-1.424) (0.630,-1.437) (0.641,-1.450) (0.653,-1.466) (0.666,-1.482) (0.677,-1.496) (0.687,-1.509) (0.698,-1.523) (0.711,-1.539) (0.724,-1.554) (0.735,-1.567) (0.745,-1.580) (0.757,-1.595)};
+\draw[couleurN!40] plot[smooth] coordinates {(-1.600,0.821) (-1.584,0.809) (-1.567,0.797) (-1.554,0.787) (-1.541,0.776) (-1.523,0.763) (-1.509,0.753) (-1.496,0.743) (-1.479,0.731) (-1.463,0.720) (-1.450,0.711) (-1.433,0.698) (-1.418,0.688) (-1.405,0.679) (-1.386,0.666) (-1.372,0.656) (-1.358,0.646) (-1.340,0.634) (-1.327,0.626) (-1.308,0.614) (-1.294,0.604) (-1.278,0.594) (-1.261,0.584) (-1.247,0.575) (-1.229,0.563) (-1.215,0.555) (-1.196,0.544) (-1.182,0.536) (-1.164,0.525) (-1.149,0.516) (-1.131,0.506) (-1.114,0.496) (-1.099,0.488) (-1.079,0.478) (-1.065,0.470) (-1.047,0.461) (-1.027,0.452) (-1.012,0.444) (-0.994,0.436) (-0.975,0.427) (-0.956,0.418) (-0.940,0.412) (-0.923,0.404) (-0.903,0.397) (-0.884,0.389) (-0.864,0.382) (-0.845,0.375) (-0.825,0.368) (-0.806,0.362) (-0.786,0.356) (-0.767,0.351) (-0.747,0.346) (-0.722,0.340) (-0.702,0.336) (-0.682,0.333) (-0.656,0.329) (-0.636,0.326) (-0.610,0.324) (-0.584,0.323) (-0.558,0.323) (-0.532,0.324) (-0.506,0.326) (-0.487,0.329) (-0.461,0.333) (-0.441,0.338) (-0.422,0.343) (-0.402,0.350) (-0.382,0.358) (-0.363,0.366) (-0.350,0.373) (-0.330,0.383) (-0.315,0.392) (-0.298,0.404) (-0.285,0.413) (-0.269,0.425) (-0.253,0.438) (-0.239,0.450) (-0.226,0.462) (-0.213,0.474) (-0.200,0.487) (-0.187,0.501) (-0.174,0.515) (-0.161,0.529) (-0.150,0.542) (-0.139,0.555) (-0.128,0.568) (-0.116,0.584) (-0.103,0.600) (-0.092,0.614) (-0.082,0.627) (-0.070,0.643) (-0.057,0.659) (-0.048,0.672) (-0.037,0.686) (-0.024,0.704) (-0.014,0.718) (-0.004,0.731) (0.008,0.748) (0.020,0.763) (0.029,0.776) (0.041,0.792) (0.053,0.809) (0.063,0.822) (0.073,0.836) (0.086,0.853) (0.098,0.868) (0.108,0.881) (0.119,0.895) (0.132,0.912) (0.143,0.926) (0.153,0.939) (0.164,0.953) (0.177,0.969) (0.190,0.985) (0.201,0.998) (0.212,1.011) (0.223,1.024) (0.236,1.039) (0.249,1.054) (0.262,1.069) (0.274,1.082) (0.285,1.095) (0.297,1.109) (0.309,1.122) (0.321,1.135) (0.334,1.148) (0.347,1.161) (0.360,1.175) (0.373,1.188) (0.386,1.201) (0.399,1.214) (0.412,1.227) (0.425,1.239) (0.438,1.252) (0.452,1.265) (0.466,1.278) (0.481,1.291) (0.496,1.304) (0.510,1.316) (0.523,1.327) (0.536,1.338) (0.549,1.349) (0.565,1.362) (0.581,1.375) (0.594,1.386) (0.607,1.396) (0.624,1.408) (0.640,1.420) (0.653,1.430) (0.668,1.441) (0.685,1.452) (0.698,1.461) (0.716,1.473) (0.731,1.483) (0.746,1.493) (0.763,1.503) (0.778,1.512) (0.796,1.523) (0.811,1.532) (0.829,1.541) (0.847,1.551) (0.861,1.559) (0.881,1.569) (0.898,1.577) (0.913,1.585) (0.933,1.594) (0.952,1.602) (0.970,1.610) (0.986,1.616) (1.004,1.623) (1.024,1.631) (1.043,1.637) (1.063,1.644) (1.082,1.650) (1.104,1.655) (1.128,1.662) (1.148,1.666) (1.167,1.670) (1.193,1.674) (1.213,1.677) (1.239,1.680) (1.258,1.682) (1.284,1.683) (1.310,1.683) (1.336,1.682) (1.356,1.680) (1.382,1.676) (1.402,1.673) (1.421,1.668) (1.443,1.662) (1.461,1.655) (1.480,1.648) (1.499,1.639) (1.516,1.629) (1.532,1.620) (1.546,1.610) (1.562,1.597) (1.576,1.584) (1.589,1.571) (1.600,1.558) (1.611,1.545) (1.623,1.527) (1.632,1.512) (1.642,1.493) (1.649,1.478) (1.656,1.460) (1.663,1.441) (1.668,1.420) (1.674,1.395) (1.677,1.375) (1.681,1.349) (1.682,1.330) (1.683,1.304) (1.683,1.278) (1.681,1.255) (1.680,1.232) (1.676,1.206) (1.673,1.187) (1.669,1.161) (1.665,1.141) (1.660,1.122) (1.655,1.102) (1.649,1.080) (1.642,1.059) (1.636,1.039) (1.629,1.021) (1.623,1.003) (1.616,0.985) (1.608,0.965) (1.600,0.946) (1.591,0.926) (1.584,0.911) (1.575,0.894) (1.566,0.874) (1.558,0.859) (1.549,0.842) (1.538,0.823) (1.530,0.809) (1.519,0.789) (1.511,0.776) (1.499,0.757) (1.491,0.744) (1.480,0.726) (1.470,0.711) (1.460,0.696) (1.448,0.679) (1.439,0.666) (1.428,0.650) (1.415,0.633) (1.406,0.620) (1.395,0.606) (1.382,0.590) (1.370,0.575) (1.360,0.562) (1.349,0.549) (1.336,0.533) (1.323,0.518) (1.310,0.503) (1.299,0.490) (1.287,0.477) (1.276,0.464) (1.264,0.451) (1.251,0.438) (1.239,0.424) (1.226,0.411) (1.213,0.398) (1.200,0.384) (1.187,0.371) (1.174,0.359) (1.161,0.346) (1.148,0.334) (1.134,0.321) (1.120,0.308) (1.106,0.295) (1.091,0.282) (1.077,0.269) (1.063,0.256) (1.050,0.245) (1.037,0.234) (1.024,0.223) (1.009,0.210) (0.993,0.197) (0.978,0.185) (0.965,0.174) (0.952,0.164) (0.937,0.151) (0.920,0.138) (0.907,0.128) (0.894,0.118) (0.878,0.106) (0.861,0.093) (0.848,0.083) (0.835,0.073) (0.818,0.060) (0.803,0.049) (0.789,0.039) (0.774,0.028) (0.757,0.015) (0.744,0.005) (0.730,-0.005) (0.713,-0.018) (0.698,-0.028) (0.685,-0.038) (0.669,-0.050) (0.653,-0.062) (0.640,-0.072) (0.626,-0.083) (0.609,-0.096) (0.594,-0.107) (0.581,-0.118) (0.568,-0.129) (0.552,-0.142) (0.537,-0.155) (0.523,-0.167) (0.510,-0.179) (0.496,-0.191) (0.483,-0.204) (0.470,-0.217) (0.457,-0.231) (0.444,-0.245) (0.433,-0.259) (0.423,-0.272) (0.412,-0.286) (0.399,-0.304) (0.391,-0.317) (0.380,-0.337) (0.373,-0.350) (0.363,-0.369) (0.355,-0.389) (0.348,-0.409) (0.342,-0.428) (0.336,-0.448) (0.332,-0.467) (0.328,-0.493) (0.325,-0.513) (0.323,-0.539) (0.323,-0.565) (0.323,-0.591) (0.325,-0.617) (0.327,-0.643) (0.330,-0.662) (0.334,-0.688) (0.337,-0.708) (0.341,-0.728) (0.347,-0.750) (0.353,-0.773) (0.358,-0.793) (0.364,-0.812) (0.371,-0.832) (0.377,-0.851) (0.384,-0.871) (0.392,-0.890) (0.399,-0.909) (0.405,-0.925) (0.413,-0.942) (0.421,-0.962) (0.430,-0.981) (0.438,-0.999) (0.445,-1.014) (0.455,-1.034) (0.464,-1.052) (0.471,-1.066) (0.481,-1.086) (0.490,-1.102) (0.499,-1.118) (0.510,-1.137) (0.517,-1.151) (0.528,-1.170) (0.536,-1.183) (0.548,-1.203) (0.555,-1.216) (0.567,-1.235) (0.575,-1.248) (0.588,-1.268) (0.596,-1.281) (0.607,-1.298) (0.617,-1.314) (0.627,-1.328) (0.639,-1.346) (0.647,-1.359) (0.659,-1.377) (0.669,-1.392) (0.679,-1.405) (0.692,-1.424) (0.701,-1.437) (0.711,-1.451) (0.724,-1.470) (0.734,-1.483) (0.744,-1.496) (0.757,-1.514) (0.767,-1.528) (0.777,-1.541) (0.789,-1.558) (0.801,-1.574) (0.811,-1.587)};
+\draw[couleurN!40] plot[smooth] coordinates {(-1.600,0.906) (-1.581,0.894) (-1.567,0.884) (-1.552,0.874) (-1.535,0.863) (-1.522,0.854) (-1.502,0.842) (-1.489,0.834) (-1.471,0.822) (-1.457,0.813) (-1.439,0.803) (-1.424,0.793) (-1.407,0.783) (-1.392,0.774) (-1.373,0.763) (-1.359,0.755) (-1.340,0.744) (-1.327,0.737) (-1.307,0.727) (-1.290,0.718) (-1.274,0.710) (-1.255,0.700) (-1.239,0.692) (-1.222,0.684) (-1.203,0.674) (-1.184,0.666) (-1.169,0.659) (-1.151,0.651) (-1.131,0.643) (-1.112,0.635) (-1.092,0.627) (-1.073,0.620) (-1.054,0.614) (-1.035,0.607) (-1.015,0.601) (-0.994,0.594) (-0.975,0.589) (-0.955,0.584) (-0.936,0.579) (-0.916,0.575) (-0.890,0.569) (-0.871,0.566) (-0.845,0.562) (-0.825,0.560) (-0.799,0.558) (-0.773,0.556) (-0.747,0.556) (-0.721,0.556) (-0.695,0.558) (-0.669,0.560) (-0.649,0.563) (-0.623,0.567) (-0.604,0.571) (-0.584,0.576) (-0.564,0.581) (-0.543,0.588) (-0.524,0.594) (-0.506,0.601) (-0.487,0.609) (-0.467,0.618) (-0.449,0.627) (-0.435,0.634) (-0.415,0.645) (-0.402,0.653) (-0.382,0.665) (-0.369,0.673) (-0.351,0.685) (-0.337,0.695) (-0.323,0.705) (-0.306,0.718) (-0.291,0.729) (-0.278,0.739) (-0.265,0.750) (-0.249,0.763) (-0.234,0.776) (-0.220,0.789) (-0.207,0.800) (-0.194,0.812) (-0.181,0.824) (-0.168,0.836) (-0.155,0.848) (-0.141,0.861) (-0.127,0.874) (-0.114,0.887) (-0.101,0.900) (-0.087,0.913) (-0.074,0.926) (-0.061,0.939) (-0.048,0.952) (-0.035,0.965) (-0.022,0.978) (-0.009,0.991) (0.004,1.004) (0.017,1.017) (0.030,1.030) (0.043,1.043) (0.057,1.056) (0.070,1.069) (0.083,1.082) (0.096,1.095) (0.109,1.109) (0.123,1.122) (0.136,1.135) (0.149,1.148) (0.163,1.161) (0.177,1.174) (0.190,1.187) (0.204,1.199) (0.217,1.211) (0.230,1.223) (0.243,1.235) (0.256,1.247) (0.269,1.259) (0.282,1.271) (0.297,1.284) (0.312,1.297) (0.327,1.310) (0.340,1.322) (0.353,1.333) (0.366,1.344) (0.381,1.356) (0.396,1.369) (0.412,1.382) (0.425,1.392) (0.438,1.402) (0.453,1.415) (0.470,1.428) (0.483,1.438) (0.496,1.448) (0.513,1.460) (0.529,1.472) (0.542,1.481) (0.558,1.493) (0.575,1.504) (0.588,1.513) (0.605,1.525) (0.620,1.535) (0.635,1.545) (0.653,1.556) (0.666,1.565) (0.685,1.577) (0.698,1.585) (0.718,1.596) (0.731,1.604) (0.750,1.615) (0.764,1.623) (0.783,1.633) (0.800,1.642) (0.816,1.650) (0.835,1.660) (0.851,1.668) (0.868,1.676) (0.887,1.685) (0.907,1.694) (0.922,1.701) (0.939,1.708) (0.959,1.716) (0.978,1.724) (0.998,1.731) (1.017,1.738) (1.037,1.745) (1.056,1.751) (1.076,1.757) (1.095,1.763) (1.115,1.768) (1.135,1.773) (1.161,1.779) (1.180,1.783) (1.200,1.787) (1.226,1.791) (1.245,1.794) (1.271,1.796) (1.297,1.798) (1.317,1.799) (1.343,1.800) (1.369,1.799) (1.388,1.798) (1.415,1.796) (1.440,1.792) (1.460,1.789) (1.480,1.784) (1.500,1.779) (1.521,1.773) (1.539,1.766) (1.558,1.758) (1.577,1.749) (1.595,1.740) (1.610,1.731) (1.626,1.721) (1.642,1.709) (1.655,1.698) (1.668,1.687) (1.681,1.674) (1.694,1.660) (1.708,1.644) (1.718,1.629) (1.727,1.616) (1.739,1.597) (1.747,1.583) (1.756,1.564) (1.764,1.545) (1.771,1.525) (1.777,1.506) (1.783,1.486) (1.787,1.467) (1.792,1.441) (1.795,1.421) (1.798,1.395) (1.799,1.375) (1.800,1.349) (1.799,1.323) (1.799,1.304) (1.797,1.278) (1.794,1.252) (1.792,1.232) (1.788,1.206) (1.784,1.187) (1.779,1.161) (1.775,1.141) (1.770,1.122) (1.765,1.102) (1.759,1.082) (1.753,1.062) (1.747,1.042) (1.740,1.023) (1.734,1.004) (1.726,0.985) (1.719,0.965) (1.711,0.946) (1.703,0.926) (1.694,0.907) (1.688,0.893) (1.679,0.874) (1.670,0.855) (1.662,0.838) (1.654,0.822) (1.644,0.803) (1.636,0.788) (1.626,0.770) (1.616,0.753) (1.608,0.737) (1.597,0.719) (1.589,0.705) (1.577,0.686) (1.569,0.672) (1.558,0.655) (1.548,0.640) (1.538,0.625) (1.526,0.607) (1.518,0.594) (1.506,0.577) (1.495,0.562) (1.486,0.549) (1.473,0.531) (1.462,0.516) (1.453,0.503) (1.441,0.487) (1.428,0.470) (1.418,0.457) (1.408,0.444) (1.395,0.429) (1.382,0.412) (1.371,0.399) (1.360,0.386) (1.349,0.373) (1.336,0.357) (1.323,0.342) (1.311,0.327) (1.299,0.314) (1.288,0.301) (1.276,0.288) (1.265,0.275) (1.252,0.261) (1.239,0.246) (1.226,0.232) (1.213,0.218) (1.200,0.204) (1.187,0.190) (1.174,0.177) (1.162,0.164) (1.149,0.151) (1.137,0.138) (1.124,0.125) (1.112,0.112) (1.099,0.099) (1.086,0.086) (1.073,0.073) (1.060,0.060) (1.047,0.047) (1.034,0.034) (1.021,0.021) (1.008,0.008) (0.995,-0.005) (0.982,-0.018) (0.969,-0.031) (0.956,-0.044) (0.943,-0.057) (0.930,-0.070) (0.917,-0.083) (0.905,-0.096) (0.892,-0.109) (0.879,-0.122) (0.867,-0.135) (0.854,-0.148) (0.842,-0.162) (0.829,-0.176) (0.816,-0.190) (0.803,-0.204) (0.789,-0.219) (0.777,-0.233) (0.766,-0.246) (0.755,-0.259) (0.744,-0.273) (0.731,-0.289) (0.719,-0.304) (0.709,-0.317) (0.698,-0.332) (0.686,-0.350) (0.677,-0.363) (0.666,-0.381) (0.656,-0.395) (0.646,-0.413) (0.638,-0.428) (0.628,-0.448) (0.620,-0.462) (0.612,-0.480) (0.604,-0.500) (0.596,-0.519) (0.589,-0.539) (0.583,-0.558) (0.577,-0.578) (0.572,-0.597) (0.568,-0.617) (0.563,-0.643) (0.561,-0.662) (0.558,-0.688) (0.556,-0.715) (0.556,-0.741) (0.556,-0.767) (0.557,-0.793) (0.559,-0.819) (0.562,-0.839) (0.565,-0.864) (0.568,-0.884) (0.573,-0.910) (0.577,-0.929) (0.582,-0.949) (0.588,-0.970) (0.594,-0.993) (0.600,-1.014) (0.607,-1.034) (0.613,-1.053) (0.620,-1.073) (0.627,-1.090) (0.633,-1.107) (0.640,-1.125) (0.648,-1.144) (0.657,-1.164) (0.665,-1.183) (0.672,-1.198) (0.681,-1.216) (0.690,-1.235) (0.698,-1.252) (0.706,-1.268) (0.716,-1.287) (0.724,-1.303) (0.734,-1.320) (0.744,-1.339) (0.752,-1.353) (0.763,-1.372) (0.770,-1.385) (0.782,-1.405) (0.789,-1.418) (0.801,-1.437) (0.809,-1.450) (0.821,-1.470) (0.829,-1.483) (0.842,-1.502) (0.850,-1.515) (0.861,-1.532) (0.871,-1.548) (0.881,-1.562) (0.893,-1.580) (0.902,-1.593)};
+  \end{scope}
+  \draw[gray] (-1.6,-1.6) rectangle (2.3,2.3);
+  \draw[gray,densely dotted] (-1.6,0) -- (2.3,0) (0,-1.6) -- (0,2.3);
+  \fill[rougecours] (0,0) circle (1.1pt);
+  \fill[rougecours] (1,1) circle (1.1pt);
+  \node[rougecours,font=\small,anchor=north east,fill=white,inner sep=1pt] at (-0.08,-0.08) {col};
+  \node[rougecours,font=\small,anchor=west,fill=white,inner sep=1pt] at (1.07,1.0) {min.};
+  \node[couleurN,font=\small,anchor=west,fill=white,inner sep=1pt] at (0.3,1.75) {$f = 0$};
+  \draw[couleurN,thin] (0.45,1.62) -- (0.61,1.32);
+\end{tikzpicture}
+\end{center}
+
+\noindent Les lignes de niveau de $f(x, y) = x^{3} + y^{3} - 3xy$, d'autant plus foncées que le niveau est bas ; la ligne de niveau $0$, en trait épais, est le folium de Descartes du chapitre 3. À l'intérieur de la boucle, les lignes de niveau négatives se resserrent autour du minimum $(1, 1)$, où $f = -1$. À l'origine, la ligne de niveau $0$ se croise elle-même : c'est la signature d'un col, où $f$ prend des valeurs des deux signes dans tout voisinage.
+
+\subsection{Les cas douteux}
+
+Quand $rt - s^{2} = 0$, ou plus généralement quand la hessienne est dégénérée, l'ordre $2$ ne permet pas de conclure. Les fonctions $x^{4} + y^{4}$ et $x^{4} - y^{4}$ ont toutes deux une hessienne nulle en $(0, 0)$ ; la première y a un minimum strict, la seconde un col. L'exemple suivant, attribué à Peano, est plus troublant.
+
+\begin{exemple}
+Soit $g(x, y) = (y - x^{2})(y - 2x^{2})$. En $(0, 0)$, le gradient est nul et $\Hs_{g}(0, 0) = \begin{pmatrix} 0 & 0 \\ 0 & 2 \end{pmatrix}$ est positive : la condition nécessaire de la proposition 3 est satisfaite. Sur toute droite passant par l'origine, $g$ a un minimum local strict en $0$ : sur la droite $y = mx$ avec $m \neq 0$, $g = x^{2}(m - x)(m - 2x) \sim m^{2}x^{2}$ ; sur $y = 0$, $g = 2x^{4}$ ; sur $x = 0$, $g = y^{2}$. Pourtant $(0, 0)$ n'est pas un minimum local : sur la parabole $y = \dfrac{3}{2}x^{2}$, $g = -\dfrac{x^{4}}{4} < 0$.
+\end{exemple}
+
+% ---- paraboles y = x^2 et y = 2x^2 ; g < 0 entre elles ; parabole y = 1.5 x^2 en tirets ; droites y = mx en pointilles
+\begin{center}
+\begin{tikzpicture}[x=4.6cm,y=2.6cm]
+  \fill[rougecours!12] plot[domain=-0.9487:0.9487,samples=40] (\x,{\x*\x}) -- (0.6708,0.9) -- plot[domain=0.6708:-0.6708,samples=40] (\x,{2*\x*\x}) -- (-0.9487,0.9) -- cycle;
+  \draw[gray,->] (-1.12,0) -- (1.15,0) node[below,font=\small] {$x$};
+  \draw[gray,->] (0,-0.35) -- (0,1.0) node[left,font=\small] {$y$};
+  \foreach \m in {0.3,0.7,-0.3,-0.7} \draw[couleurD,thick,densely dotted] (-0.45,{-0.45*\m}) -- (0.45,{0.45*\m});
+  \draw[couleurN,thick,domain=-0.9487:0.9487,samples=40] plot (\x,{\x*\x});
+  \draw[couleurN,thick,domain=-0.6708:0.6708,samples=40] plot (\x,{2*\x*\x});
+  \draw[couleurQ,thick,densely dashed,domain=-0.7746:0.7746,samples=40] plot (\x,{1.5*\x*\x});
+  \fill[rougecours] (0,0) circle (0.8pt);
+  \node[couleurN,font=\small,anchor=south] at (0.9487,0.92) {$y = x^{2}$};
+  \node[couleurN,font=\small,anchor=south] at (-0.6708,0.92) {$y = 2x^{2}$};
+  \node[rougecours,font=\small,anchor=west] at (0.85,0.35) {$g < 0$};
+  \draw[rougecours,thin] (0.85,0.38) -- (0.68,0.62);
+\end{tikzpicture}
+\end{center}
+
+\noindent La fonction $g$ est négative dans la région colorée, entre les deux paraboles bleues, et positive ailleurs. Chaque droite issue de l'origine, en pointillés orange, finit par sortir de la région colorée près de l'origine, d'où le minimum sur chaque droite ; mais la parabole violette en tirets reste dans la région où $g < 0$. Étudier une fonction de deux variables sur les seules droites passant par un point ne suffit pas, comme pour la continuité au chapitre 1.
+
+\subsection{Convexité et extrema globaux}
+
+Les conditions précédentes sont locales. La convexité les rend globales.
+
+\begin{cadre}
+\propo{5} Soit $U$ un ouvert convexe de $E$ et $f : U \to \R$ convexe et différentiable. Alors
+\[ \rmath{f(x) \geqslant f(a) + \dd f(a)\cdot(x - a)} \qquad \text{pour tous } a, x \in U, \]
+et tout point critique de $f$ est un minimum global.
+\end{cadre}
+
+\begin{demo}
+Pour $t \in \left]0, 1\right]$, la convexité donne $f(a + t(x - a)) \leqslant (1 - t)f(a) + tf(x)$, soit
+\[ \frac{f(a + t(x - a)) - f(a)}{t} \leqslant f(x) - f(a). \]
+Quand $t \to 0^{+}$, le membre de gauche tend vers $\dd f(a)\cdot(x - a)$. Si $\dd f(a) = 0$, on obtient $f(x) \geqslant f(a)$ pour tout $x$.
+\end{demo}
+
+\begin{cadre}
+\propo{6} Soit $U$ un ouvert convexe de $\R^{p}$ et $f : U \to \R$ de classe $\Cc^{2}$. Alors $f$ est convexe si et seulement si $\Hs_{f}(x)$ est positive pour tout $x \in U$.
+\end{cadre}
+
+\begin{demo}
+Pour $a$, $x \in U$, on pose $\varphi(t) = f(a + t(x - a))$, définie sur un intervalle ouvert contenant $[0, 1]$, avec $\varphi''(t) = \tra{(x - a)}\,\Hs_{f}(a + t(x - a))\,(x - a)$ (chapitre 4). La fonction $f$ est convexe si et seulement si toutes ces fonctions $\varphi$ le sont, et une fonction d'une variable de classe $\Cc^{2}$ est convexe si et seulement si sa dérivée seconde est positive (\emph{Rappel.}). Si les hessiennes sont positives, les $\varphi''$ le sont. Réciproquement, si $f$ est convexe, $\varphi''(0) = \tra{h}\,\Hs_{f}(a)\,h \geqslant 0$ pour $h = x - a$, et tout $h$ assez petit est de cette forme, puisque $U$ est ouvert.
+\end{demo}
+
+\begin{exemple}
+\emph{Les moindres carrés.} On cherche la droite $y = \alpha x + \beta$ qui approche au mieux les points $(x_{i}, y_{i})$, au sens où elle minimise $S(\alpha, \beta) = \displaystyle\sum_{i}(\alpha x_{i} + \beta - y_{i})^{2}$. Avec la matrice $M$ de lignes $(x_{i}, 1)$, $S(u) = \norme{Mu - Y}_{2}^{2}$, de gradient $2\,\tra{M}(Mu - Y)$ et de hessienne $2\,\tra{M}M$, positive puisque $\tra{h}\,\tra{M}Mh = \norme{Mh}_{2}^{2}$. La fonction $S$ est convexe, et ses points critiques, solutions des \mot{équations normales} $\tra{M}Mu = \tra{M}Y$, sont ses minima globaux. Pour les six points d'abscisses $0$, $1$, \dots, $5$ et d'ordonnées $1{,}1$ ; $2{,}9$ ; $5{,}2$ ; $6{,}8$ ; $9{,}1$ ; $10{,}9$, on trouve
+\[ \tra{M}M = \begin{pmatrix} 55 & 15 \\ 15 & 6 \end{pmatrix}, \qquad \tra{M}Y = \begin{pmatrix} 124{,}6 \\ 36 \end{pmatrix}, \qquad \alpha \approx 1{,}977, \quad \beta \approx 1{,}057, \]
+et la somme des carrés des écarts vaut environ $0{,}111$.
+\end{exemple}
+
+% ---- points (0,1.1) (1,2.9) (2,5.2) (3,6.8) (4,9.1) (5,10.9) ; droite y = 1.97714 x + 1.05714 (numpy)
+\begin{center}
+\begin{tikzpicture}[x=1.6cm,y=0.42cm]
+  \draw[gray,->] (-0.3,0) -- (5.6,0) node[below,font=\small] {$x$};
+  \draw[gray,->] (0,-0.5) -- (0,12.3) node[left,font=\small] {$y$};
+  \foreach \t in {1,...,5} \draw[gray] (\t,0.15) -- (\t,-0.15) node[below,font=\scriptsize] {$\t$};
+  \foreach \t in {5,10} \draw[gray] (0.05,\t) -- (-0.05,\t) node[left,font=\scriptsize] {$\t$};
+  \draw[couleurD,thick] (-0.2,0.6617) -- (5.5,11.9314);
+  \foreach \a/\b/\c in {0/1.1/1.0571,1/2.9/3.0343,2/5.2/5.0114,3/6.8/6.9886,4/9.1/8.9657,5/10.9/10.9429} {
+    \draw[rougecours,thick] (\a,\b) -- (\a,\c);
+    \fill[couleurN] (\a,\b) circle (1.6pt);
+  }
+  \node[couleurD,font=\small,anchor=west] at (3.5,5.6) {$y = 1{,}977\,x + 1{,}057$};
+\end{tikzpicture}
+\end{center}
+
+\noindent Les six points de mesure, en bleu, et la droite des moindres carrés, en orange. Les écarts verticaux, en rouge, sont ceux dont la somme des carrés est minimale : aucune autre droite ne fait mieux, et la convexité de $S$ garantit que le point critique trouvé est bien le minimum global, sans étude du second ordre.
+
+\needspace{16\baselineskip}
+\subsection{Recherche des points critiques avec Python}
+
+La recherche et la classification des points critiques se programment avec \texttt{sympy}.
+
+\begin{lstlisting}
+import sympy as sp
+x, y = sp.symbols('x y', real=True)
+f = x**3 + y**3 - 3*x*y
+H = sp.hessian(f, (x, y))
+for p in sp.solve([sp.diff(f, x), sp.diff(f, y)], [x, y], dict=True):
+    if p[x].is_real and p[y].is_real:
+        Hp = H.subs(p)
+        print(p, Hp.det(), Hp[0, 0], f.subs(p))
+\end{lstlisting}
+
+\noindent Le programme affiche \texttt{\{x: 0, y: 0\} -9 0 0} puis \texttt{\{x: 1, y: 1\} 27 6 -1} : pour chaque point critique réel, le déterminant $rt - s^{2}$ de la hessienne, le coefficient $r$ et la valeur de $f$, d'où le col et le minimum trouvés plus haut. Le test sur \texttt{is\_real} écarte les solutions complexes de $x^{4} = x$.
+%===============================================================================
+\section[Extrema liés]{Multiplicateurs de Lagrange et extrema liés}
+%===============================================================================
+
+On cherche maintenant les extrema de $f$ non plus sur un ouvert, mais sur une partie définie par des équations : $S = \{x \in U \mid g_{1}(x) = \dots = g_{n}(x) = 0\}$, avec $U$ ouvert de $\R^{p}$ et $n < p$. On parle d'\mot{extrema liés}, les variables étant liées par les équations, appelées \mot{contraintes}. Un extremum de $f$ sur $S$ n'est en général pas un point critique de $f$ : dans l'introduction, $\grad f$ ne s'annule qu'à l'origine, qui n'est pas sur le cercle.
+
+\subsection{Le théorème de Lagrange}
+
+La démonstration repose sur la description de l'espace tangent du chapitre 3 et sur un lemme d'algèbre linéaire.
+
+\begin{cadre}
+\propo{7} Soit $\ell_{1}$, \dots, $\ell_{n}$ et $\varphi$ des formes linéaires sur $\R^{p}$. Si $\varphi$ s'annule sur $\Ker\ell_{1} \cap \dots \cap \Ker\ell_{n}$, alors $\varphi$ est combinaison linéaire de $\ell_{1}$, \dots, $\ell_{n}$.
+\end{cadre}
+
+\begin{demo}
+Soit $\Lambda = (\ell_{1}, \dots, \ell_{n}) : \R^{p} \to \R^{n}$, de noyau $\Ker\ell_{1} \cap \dots \cap \Ker\ell_{n} \subset \Ker\varphi$. Si $\Lambda(x) = \Lambda(x')$, alors $x - x' \in \Ker\Lambda$, donc $\varphi(x) = \varphi(x')$ : on peut définir une application $\psi$ sur l'image de $\Lambda$ en posant $\psi(\Lambda(x)) = \varphi(x)$, et $\psi$ est linéaire. On la prolonge en une forme linéaire sur $\R^{n}$, qui s'écrit $\psi(u) = \lambda_{1}u_{1} + \dots + \lambda_{n}u_{n}$. Alors $\varphi = \psi \circ \Lambda = \lambda_{1}\ell_{1} + \dots + \lambda_{n}\ell_{n}$.
+\end{demo}
+
+\begin{center}
+\begin{tabularx}{15cm}{||X||}
+\hline \\
+\textbf{\underline{\textcolor{rougecours}{Théorème 2 : Multiplicateurs de Lagrange :}}} \\
+Soit $U$ un ouvert de $\R^{p}$, $f$, $g_{1}$, \dots, $g_{n} : U \to \R$ de classe $\Cc^{1}$, $S = \{x \in U \mid g_{1}(x) = \dots = g_{n}(x) = 0\}$, et $a \in S$ tel que les gradients $\grad g_{1}(a)$, \dots, $\grad g_{n}(a)$ soient linéairement indépendants. Si la restriction de $f$ à $S$ admet un extremum local en $a$, il existe des réels $\lambda_{1}$, \dots, $\lambda_{n}$, appelés \mot{multiplicateurs de Lagrange}, tels que
+\[ \rmath{\grad f(a) = \lambda_{1}\grad g_{1}(a) + \dots + \lambda_{n}\grad g_{n}(a)}. \]
+\medbreak
+\\ \hline
+\end{tabularx}
+\end{center}
+
+\begin{demo}
+Par la proposition 11 du chapitre 3, l'ensemble des vecteurs tangents à $S$ en $a$ est $T_{a}S = \Ker\dd g_{1}(a) \cap \dots \cap \Ker\dd g_{n}(a)$. Soit $v \in T_{a}S$ et $\gamma$ une courbe tracée sur $S$, dérivable en $0$, avec $\gamma(0) = a$ et $\gamma'(0) = v$. La fonction $f \circ \gamma$ admet un extremum local en $0$, intérieur à son intervalle de définition ; par la proposition 2, sa dérivée $\dd f(a)\cdot v$ est nulle. Ainsi la forme linéaire $\dd f(a)$ s'annule sur $T_{a}S$, et la proposition 7 l'exprime comme combinaison linéaire des $\dd g_{i}(a)$ ; on traduit en gradients.
+\end{demo}
+
+\noindent En pratique, on introduit le \mot{lagrangien} $L(x, \lambda) = f(x) - \lambda_{1}g_{1}(x) - \dots - \lambda_{n}g_{n}(x)$. Les conditions du théorème, jointes aux contraintes, expriment que $(a, \lambda)$ est un point critique de $L$ sur $U \times \R^{n}$ : les dérivées par rapport aux $x_{j}$ donnent la relation entre gradients, et les dérivées par rapport aux $\lambda_{i}$ redonnent les contraintes. C'est exactement le principe de Lagrange cité en exergue : on ajoute à $f$ les fonctions qui doivent être nulles, multipliées par des quantités indéterminées, et l'on cherche les points critiques comme si les variables étaient indépendantes.
+
+\begin{remarques}
+  \item Pour une seule contrainte $g = 0$, la condition s'écrit $\grad f(a) = \lambda\grad g(a)$ : les deux gradients sont colinéaires, donc la ligne de niveau de $f$ passant par $a$ est tangente à $S$, comme sur le dessin de l'introduction.
+  \item Comme la condition du premier ordre, le théorème ne fournit que des \emph{candidats}. Pour conclure, on combine en général la liste des candidats avec un argument d'existence : si $S$ est compact et $f$ continue, le maximum et le minimum sont atteints, et ils figurent parmi les candidats, à condition que tous les points de $S$ soient réguliers.
+\end{remarques}
+
+\begin{remarque}
+\emph{Piège.} L'hypothèse d'indépendance des gradients ne peut pas être omise. Sur la courbe $S$ d'équation $g(x, y) = y^{2} - x^{3} = 0$, on a $x^{3} = y^{2} \geqslant 0$, donc $x \geqslant 0$ : la fonction $f(x, y) = x$ atteint son minimum sur $S$ à l'origine. Pourtant $\grad f = (1, 0)$ n'est jamais colinéaire à $\grad g = (-3x^{2}, 2y)$ sur $S$ : l'égalité $(1, 0) = \lambda(-3x^{2}, 2y)$ impose $y = 0$, donc $x = 0$, puis $1 = 0$. Le système de Lagrange n'a aucune solution, et l'oublier ferait conclure à l'absence de minimum. L'erreur vient de l'origine, où $\grad g(0, 0) = 0$ : c'est un point singulier, qu'il faut toujours examiner à part.
+\end{remarque}
+
+% ---- courbe y^2 = x^3 (parametree x = t^2, y = t^3), lignes de niveau x = c de f, grad f = (1, 0) ; grad g(0,0) = 0
+\begin{center}
+\begin{tikzpicture}[scale=2.2]
+  \foreach \c in {0.25,0.5,0.75,1} \draw[couleurN!45] (\c,-1.05) -- (\c,1.05);
+  \draw[couleurN,thick] (0,-1.05) -- (0,1.05);
+  \draw[gray,->] (-0.6,0) -- (1.35,0) node[below,font=\small] {$x$};
+  \draw[gray,->] (0,-1.1) -- (0,1.15) node[left,font=\small] {$y$};
+  \draw[couleurQ,very thick,domain=-1.0:1.0,samples=60] plot ({\x*\x},{\x*\x*\x});
+  \draw[couleurZ,thick,->,>=Stealth] (0,0) -- (0.62,0) node[anchor=south west,font=\small,fill=white,inner sep=1pt] {$\grad f$};
+  \fill[rougecours] (0,0) circle (1pt);
+  \node[couleurQ,font=\small,anchor=west] at (1.03,0.95) {$y^{2} = x^{3}$};
+  \node[couleurN,font=\small,anchor=east] at (-0.05,0.85) {$x = 0$};
+  \node[rougecours,font=\small,anchor=north east] at (-0.05,-0.05) {$\grad g = 0$};
+\end{tikzpicture}
+\end{center}
+
+\noindent La courbe violette présente un point de rebroussement à l'origine. La ligne de niveau $x = 0$ de $f$, en bleu foncé, ne la touche qu'en ce point, et la courbe reste du côté où $f$ est positive : l'origine est bien le minimum. Mais le gradient de $f$, en vert, n'est pas normal à la courbe en un sens utilisable, puisque la contrainte n'y a pas de direction normale : $\grad g$ s'annule.
+
+\subsection{Une condition suffisante du second ordre}
+
+Comme pour les extrema libres, on peut conclure à l'aide des dérivées secondes, à condition de ne regarder que les directions tangentes à la contrainte.
+
+\begin{center}
+\begin{tabularx}{15cm}{||X||}
+\hline \\
+\textbf{\underline{\textcolor{rougecours}{Théorème 3 : Condition suffisante pour un extremum lié :}}} \\
+On reprend les hypothèses du théorème 2, avec $f$ et les $g_{i}$ de classe $\Cc^{2}$, et l'on suppose que $\grad f(a) = \sum_{i}\lambda_{i}\grad g_{i}(a)$. Soit $L = f - \sum_{i}\lambda_{i}g_{i}$, les $\lambda_{i}$ étant fixés. Si
+\[ \rmath{\dd^{2} L(a)(v, v) > 0} \qquad \text{pour tout } v \in T_{a}S \setminus \{0\}, \]
+alors la restriction de $f$ à $S$ admet un minimum local strict en $a$.
+\medbreak
+\\ \hline
+\end{tabularx}
+\end{center}
+
+\begin{demo}
+Quitte à renuméroter les coordonnées, la proposition 11 du chapitre 3 décrit $S$, près de $a$, comme le graphe d'une fonction $\varphi : V \to W$ de $p - n$ variables, de classe $\Cc^{2}$ puisque les $g_{i}$ le sont (chapitre 4, proposition 13). On pose $\Phi(x') = (x', \varphi(x'))$ pour $x' \in V$, et $a = \Phi(a')$. Comme les $g_{i}$ sont nulles sur $S$, la fonction $h = f \circ \Phi$ est égale à $L \circ \Phi$. Par la règle de la chaîne, $\dd h(x')\cdot u = \dd L(\Phi(x'))\cdot\big(\dd\Phi(x')\cdot u\big)$, et, en dérivant une seconde fois,
+\[ \dd^{2} h(a')(u, u) = \dd^{2} L(a)\big(\dd\Phi(a')u, \dd\Phi(a')u\big) + \dd L(a)\cdot\big(\dd^{2}\Phi(a')(u, u)\big). \]
+Le dernier terme est nul, puisque $\dd L(a) = \dd f(a) - \sum_{i}\lambda_{i}\dd g_{i}(a) = 0$, et $\dd h(a') = 0$ pour la même raison. Pour $u \neq 0$, $v = \dd\Phi(a')u = (u, \dd\varphi(a')u)$ est non nul et tangent à $S$ en $a$, de sorte que $\dd^{2} h(a')(u, u) > 0$. Par le théorème 1, $h$ a un minimum local strict en $a'$, et, $\Phi$ étant une bijection de $V$ sur un voisinage de $a$ dans $S$, $f$ restreinte à $S$ a un minimum local strict en $a$.
+\end{demo}
+
+\begin{remarque}
+\emph{Piège.} C'est la hessienne de $L$, et non celle de $f$, qu'il faut restreindre à $T_{a}S$ : la courbure de la contrainte intervient par le terme $-\sum_{i}\lambda_{i}\dd^{2} g_{i}(a)$. Pour $f(x, y) = x^{2} + y^{2}$ sur la droite $x + y = 2$, les deux coïncident ; sur un cercle, non.
+\end{remarque}
+
+\needspace{10\baselineskip}
+\subsection{Exemples}
+
+\begin{exemples}
+  \item \emph{Le produit $xy$ sur le cercle.} Avec $g(x, y) = x^{2} + y^{2} - 1$, dont le gradient $2(x, y)$ ne s'annule pas sur le cercle, la condition $(y, x) = \lambda(2x, 2y)$ donne $y = 2\lambda x$ et $x = 2\lambda y$, d'où $x = 4\lambda^{2}x$. Comme $x = 0$ entraînerait $y = 0$, hors du cercle, on a $\lambda = \pm\dfrac{1}{2}$ et $y = \pm x$ : les quatre candidats sont les points $\left(\pm\dfrac{\sqrt{2}}{2}, \pm\dfrac{\sqrt{2}}{2}\right)$ de l'introduction. Le cercle étant compact, le maximum $\dfrac{1}{2}$ et le minimum $-\dfrac{1}{2}$ sont atteints, et ce sont nécessairement ces points.
+  \item \emph{Distance d'un point à une courbe.} Le chapitre 1 a montré que la distance d'un point $P$ à un fermé de $\R^{p}$ est atteinte (chapitre 1, proposition 10). Pour la trouver quand le fermé est une courbe $g = 0$ régulière, on minimise $\norme{x - P}_{2}^{2}$ sous la contrainte : la condition $2(x - P) = \lambda\grad g(x)$ exprime que le segment joignant $P$ au point le plus proche est \emph{normal} à la courbe. Pour $P = (0, 2)$ et la parabole $y = x^{2}$, avec $g(x, y) = y - x^{2}$, on obtient $x = -\lambda x$ et $2(y - 2) = \lambda$. Si $x = 0$, le candidat est $(0, 0)$, à distance $2$ ; sinon $\lambda = -1$, $y = \dfrac{3}{2}$, $x = \pm\dfrac{\sqrt{6}}{2}$, à distance $\dfrac{\sqrt{7}}{2} \approx 1{,}323$. La distance de $P$ à la parabole vaut donc $\dfrac{\sqrt{7}}{2}$, atteinte en deux points ; l'origine est un maximum local de la distance le long de la parabole, puisque $x^{2} + (x^{2} - 2)^{2} = x^{4} - 3x^{2} + 4$ y a un maximum local.
+\end{exemples}
+
+% ---- parabole y = x^2, P = (0, 2) ; points les plus proches (+-1.2247, 1.5), distance sqrt(7)/2 = 1.3229 ; origine a distance 2 (calcules)
+\begin{center}
+\begin{tikzpicture}[scale=1.5]
+  \draw[gray,->] (-2.4,0) -- (2.5,0) node[below,font=\small] {$x$};
+  \draw[gray,->] (0,-0.25) -- (0,3.75) node[left,font=\small] {$y$};
+  \draw[couleurD,densely dashed] (0,2) circle (1.3229);
+  \draw[couleurD!50,densely dotted] (0,2) circle (2);
+  \draw[couleurQ,very thick,domain=-1.85:1.85,samples=60] plot (\x,{\x*\x});
+  \draw[rougecours,thick] (0,2) -- (1.2247,1.5);
+  \draw[rougecours,thick] (0,2) -- (-1.2247,1.5);
+  \draw[couleurZ,thick,->,>=Stealth] (1.2247,1.5) -- ({1.2247+0.5*2.4495/2.6458},{1.5-0.5*1/2.6458});
+  \fill[couleurN] (0,2) circle (1.2pt) node[above right=-1pt,font=\small] {$P$};
+  \fill[rougecours] (1.2247,1.5) circle (1.2pt);
+  \fill[rougecours] (-1.2247,1.5) circle (1.2pt);
+  \fill[rougecours!50] (0,0) circle (1.2pt);
+  \node[couleurQ,font=\small,anchor=west] at (1.9,3.3) {$y = x^{2}$};
+  \node[couleurZ,font=\small,anchor=north west] at (1.68,1.3) {$\grad g$};
+\end{tikzpicture}
+\end{center}
+
+\noindent Le cercle en tirets, centré en $P$ et de rayon $\dfrac{\sqrt{7}}{2}$, est tangent à la parabole violette aux deux points les plus proches, en rouge : le segment qui les joint à $P$ est porté par la normale à la parabole, dirigée par $\grad g$, en vert. Le cercle en pointillés, de rayon $2$, passe par l'origine, autre point critique, où la distance est localement maximale le long de la parabole.
+
+\begin{cadre}
+\propo{8} \emph{(Inégalité arithmético-géométrique.)} Pour tous réels $x_{1}$, \dots, $x_{p} > 0$,
+\[ \rmath{(x_{1}x_{2}\cdots x_{p})^{1/p} \leqslant \frac{x_{1} + x_{2} + \dots + x_{p}}{p}}, \]
+avec égalité si et seulement si tous les $x_{i}$ sont égaux.
+\end{cadre}
+
+\begin{demo}
+Par homogénéité, il suffit de traiter le cas $x_{1} + \dots + x_{p} = p$ et de montrer que le produit vaut au plus $1$, avec égalité seulement en $(1, \dots, 1)$. Sur le compact $K = \{x \in \R_{+}^{p} \mid x_{1} + \dots + x_{p} = p\}$, la fonction continue $P(x) = x_{1}\cdots x_{p}$ atteint son maximum, qui vaut au moins $P(1, \dots, 1) = 1$ ; il est donc atteint en un point $a$ dont toutes les coordonnées sont strictement positives. Sur l'ouvert $U = \left]0, +\infty\right[^{p}$, la contrainte $g(x) = x_{1} + \dots + x_{p} - p$ a pour gradient $(1, \dots, 1) \neq 0$, et le théorème 2 donne $\dpd{P}{x_{i}}(a) = \dfrac{P(a)}{a_{i}} = \lambda$ pour tout $i$ : tous les $a_{i}$ sont égaux, donc égaux à $1$. Le maximum vaut $1$, et il n'est atteint qu'en $(1, \dots, 1)$.
+\end{demo}
+
+\begin{cadre}
+\propo{9} \emph{(Quotient de Rayleigh.)} Soit $A \in \Mn{p}$ symétrique réelle et $q(x) = \tra{x}Ax$. Le maximum et le minimum de $q$ sur la sphère unité $\norme{x}_{2} = 1$ sont atteints en des vecteurs propres de $A$, et valent la plus grande et la plus petite valeur propre de $A$. En particulier, $A$ possède au moins une valeur propre réelle.
+\end{cadre}
+
+\begin{demo}
+La sphère unité est compacte, et $q$ y atteint son maximum en un point $a$. La contrainte $g(x) = \norme{x}_{2}^{2} - 1$ a pour gradient $2x \neq 0$ sur la sphère, et $\grad q(x) = 2Ax$, puisque $A$ est symétrique. Le théorème 2 donne $2Aa = 2\lambda a$ : $a$ est un vecteur propre, et $q(a) = \tra{a}Aa = \lambda\norme{a}_{2}^{2} = \lambda$. Pour tout vecteur propre unitaire $x$ de valeur propre $\mu$, $\mu = q(x) \leqslant q(a) = \lambda$ : $\lambda$ est la plus grande valeur propre. On raisonne de même pour le minimum.
+\end{demo}
+
+\begin{remarques}
+  \item En appliquant la proposition 9 à la restriction de $A$ à l'orthogonal d'un vecteur propre, stable par $A$, on obtient par récurrence le théorème spectral : toute matrice symétrique réelle se diagonalise dans une base orthonormée. L'analyse fournit ainsi une démonstration d'un résultat d'algèbre.
+  \item Appliquée à $\tra{A}A$, la proposition 9 redonne la formule de la proposition 17 du chapitre 1 :
+  \[ \nop{A}_{2}^{2} = \max_{\norme{x}_{2} = 1} \norme{Ax}_{2}^{2} = \max_{\norme{x}_{2} = 1} \tra{x}\,\tra{A}A\,x = \rho(\tra{A}A). \]
+\end{remarques}
+
+% ---- A = [[2, 1], [1, 3]] : valeurs propres 1.382 et 3.618, vecteurs propres (-0.8507, 0.5257) et (0.5257, 0.8507) (numpy) ;
+% ---- lignes de niveau q = 1.382 et q = 3.618 : ellipses d'axes les vecteurs propres (v_max a 58.28 degres), demi-axes sqrt(c/lambda)
+\begin{center}
+\begin{tikzpicture}[scale=1.9]
+  \draw[gray,->] (-1.75,0) -- (1.8,0) node[below,font=\small] {$x$};
+  \draw[gray,->] (0,-1.75) -- (0,1.8) node[left,font=\small] {$y$};
+  \begin{scope}[rotate=58.2825]
+    \draw[couleurN,thick] (0,0) ellipse (1 and {sqrt(3.618/1.382)});
+    \draw[couleurN!60,thick] (0,0) ellipse ({sqrt(1.382/3.618)} and 1);
+  \end{scope}
+  \draw[couleurQ,very thick] (0,0) circle (1);
+  \draw[couleurZ,thick,->,>=Stealth] (0,0) -- (0.5257,0.8507) node[above right=-2pt,font=\small] {$v_{\max}$};
+  \draw[couleurZ,thick,->,>=Stealth] (0,0) -- (-0.8507,0.5257) node[above left=-2pt,font=\small] {$v_{\min}$};
+  \foreach \p in {(0.5257,0.8507),(-0.5257,-0.8507),(-0.8507,0.5257),(0.8507,-0.5257)} \fill[rougecours] \p circle (1.1pt);
+  \node[couleurN,font=\small,anchor=west] at (1.05,-1.3) {$q = \lambda_{\max} \approx 3{,}618$};
+  \node[couleurN!70,font=\small,anchor=west] at (1.05,-1.6) {$q = \lambda_{\min} \approx 1{,}382$};
+\end{tikzpicture}
+\end{center}
+
+\noindent Pour $A = \begin{pmatrix} 2 & 1 \\ 1 & 3 \end{pmatrix}$, les lignes de niveau de $q$ sont des ellipses d'axes les vecteurs propres, en vert. L'ellipse de niveau $\lambda_{\max}$, en bleu foncé, entoure le cercle unité violet, sur lequel $q \leqslant \lambda_{\max}$, et le touche aux extrémités de $v_{\max}$ ; celle de niveau $\lambda_{\min}$, en bleu clair, est intérieure au cercle et le touche aux extrémités de $v_{\min}$. Ces quatre points de tangence, en rouge, sont les solutions de la condition de Lagrange.
+
+\subsection{Deux contraintes : un calcul avec Python}
+
+Reprenons la courbe du chapitre 3, intersection de la sphère $x^{2} + y^{2} + z^{2} = 3$ et du plan $x + y - z = 1$, et cherchons ses points les plus haut et le plus bas, c'est-à-dire les extrema de $f(x, y, z) = z$. Les gradients des contraintes, $2(x, y, z)$ et $(1, 1, -1)$, sont indépendants sur la courbe, sauf si $(x, y, z)$ est colinéaire à $(1, 1, -1)$, ce qui donnerait $3x = 1$ et $3x^{2} = 3$, impossible. Le théorème 2 s'applique, avec deux multiplicateurs $\lambda$ et $\mu$.
+
+\begin{lstlisting}
+import sympy as sp
+x, y, z, l, m = sp.symbols('x y z lambda mu', real=True)
+f = z
+g1 = x**2 + y**2 + z**2 - 3
+g2 = x + y - z - 1
+L = f - l*g1 - m*g2
+eqs = [sp.diff(L, v) for v in (x, y, z)] + [g1, g2]
+for s in sp.solve(eqs, [x, y, z, l, m], dict=True):
+    print(s[x], s[y], s[z], '  f =', f.subs(s))
+\end{lstlisting}
+
+\noindent Le programme affiche deux solutions : \texttt{-1/3 -1/3 -5/3} avec \texttt{f = -5/3}, et \texttt{1 1 1} avec \texttt{f = 1}. La courbe est un cercle, compact, donc $z$ y atteint son maximum $1$ au point $(1, 1, 1)$ et son minimum $-\dfrac{5}{3}$ au point $\left(-\dfrac{1}{3}, -\dfrac{1}{3}, -\dfrac{5}{3}\right)$. On retrouve que la tangente en $(1, 1, 1)$, dirigée par $(1, -1, 0)$, est horizontale, comme l'avait montré le calcul de $z'(1) = 0$ au chapitre 3.
+%===============================================================================
+\section{Bilan}
+%===============================================================================
+
+Chercher un extremum se fait en trois temps : établir qu'il existe, souvent par compacité ; dresser la liste des candidats, par la condition du premier ordre ou par les multiplicateurs de Lagrange, sans oublier les points du bord et les points singuliers des contraintes ; enfin départager les candidats, en comparant les valeurs, par le second ordre, ou par la convexité.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.35}
+\begin{tabularx}{15cm}{|>{\raggedright\arraybackslash}p{4.6cm}|>{\raggedright\arraybackslash}X|>{\centering\arraybackslash}p{2.4cm}|}
+\hline
+\rowcolor{couleurD!35} \textbf{Situation} & \textbf{Résultat} & \textbf{Référence} \\ \hline
+$f$ continue, $f \to +\infty$ à l'infini & le minimum est atteint & proposition 1 \\ \hline
+extremum local en $a$ intérieur & $\dd f(a) = 0$ & proposition 2 \\ \hline
+minimum local, $f$ de classe $\Cc^{2}$ & $\dd^{2} f(a)$ positive & proposition 3 \\ \hline
+point critique, $\dd^{2} f(a)(h, h) \geqslant \alpha\norme{h}^{2}$ & minimum local strict & théorème 1 \\ \hline
+point critique dans $\R^{2}$ & signe de $rt - s^{2}$ et de $r$ & proposition 4 \\ \hline
+$f$ convexe différentiable & point critique $\Rightarrow$ minimum global & proposition 5 \\ \hline
+$f$ de classe $\Cc^{2}$ sur un convexe de $\R^{p}$ & convexe $\iff$ hessienne positive & proposition 6 \\ \hline
+extremum de $f$ sur $\{g = 0\}$, gradients des $g_{i}$ indépendants & $\grad f(a) = \sum_{i}\lambda_{i}\grad g_{i}(a)$ & théorème 2 \\ \hline
+de plus $\dd^{2} L(a) > 0$ sur $T_{a}S$ & minimum lié strict & théorème 3 \\ \hline
+\end{tabularx}
+\end{center}
+
+\begin{center}
+\begin{tikzpicture}[q/.style={draw=couleurN,fill=couleurN!8,rounded corners=3pt,align=center,font=\small,minimum height=1.05cm,text width=2.7cm},
+  fl/.style={-{Stealth},thick,gray}]
+  \node[q] (C) at (0,0) {compacité\\ (chapitre 1)};
+  \node[q] (T) at (0,-1.9) {Taylor ordre 2\\ (chapitre 4)};
+  \node[q] (H) at (0,-3.8) {hyperplan tangent\\ (chapitre 3)};
+  \node[q] (E) at (4.4,0) {existence\\ d'un extremum};
+  \node[q] (L) at (4.4,-1.9) {extrema libres :\\ $\grad f = 0$, hessienne};
+  \node[q] (G) at (4.4,-3.8) {extrema liés :\\ Lagrange};
+  \node[q] (R) at (8.8,-1.9) {liste des candidats,\\ puis comparaison};
+  \draw[fl] (C) -- (E); \draw[fl] (T) -- (L); \draw[fl] (H) -- (G);
+  \draw[fl] (E) -- (R); \draw[fl] (L) -- (R); \draw[fl] (G) -- (R);
+\end{tikzpicture}
+\end{center}
+
+\noindent Le schéma rappelle d'où viennent les outils : la compacité du chapitre 1 garantit l'existence, la formule de Taylor du chapitre 4 décide de la nature des points critiques, et l'hyperplan tangent du chapitre 3 conduit aux multiplicateurs de Lagrange. Les trois convergent vers la même démarche : une liste finie de candidats, que l'on compare.
+
+\noindent Le chapitre 6 change de sujet : il étudie les équations différentielles, dont les solutions sont des fonctions d'une variable à valeurs vectorielles, et y réutilise le théorème du point fixe du chapitre 1.
+
+\end{document}

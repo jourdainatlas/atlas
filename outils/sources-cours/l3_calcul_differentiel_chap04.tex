@@ -1,0 +1,947 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Cours de L3 - Calcul differentiel - M. JOURDAIN
+%
+%  PREAMBULE COMMUN DE L'UE (identique dans les sept chapitres et dans le
+%  volume complet L3_S5_COURS_calcul_differentiel.tex, qui inclut chaque
+%  chapitre tel quel grace au paquet docmute).
+%  Tire du preambule des cours de MP ; ajouts : hyperref (liens invisibles),
+%  listings (code Python des chapitres 6 et 7), macros de l'UE.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[a4paper,twoside]{report}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage[table]{xcolor}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{tikz}
+\usepackage{array}
+\usepackage{multirow}                            % cellules fusionnees des tableaux bilans
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{tabularx}
+
+% ---- paquets optionnels utilises dans l'UE ----
+\usepackage{stmaryrd}                            % crochets doubles des intervalles d'entiers
+\usepackage{needspace}                           % pas de titre «~Exemples :~» isole en bas de page
+\usepackage{tikz-cd}                             % diagrammes commutatifs (chapitres 2 et 3)
+\usepackage{pgfplots}                            % courbes et surfaces
+\pgfplotsset{compat=1.18}
+\usepackage{listings}                            % code Python (chapitres 6 et 7)
+\graphicspath{{/home/armandj/Documents/A Documents/image/}}  % chemin des images (fixe)
+
+\usetikzlibrary{arrows.meta,decorations.pathreplacing,patterns,calc}
+
+\geometry{hmargin=2.5cm,vmargin=1.5cm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% COULEURS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Le code couleur propre a chaque chapitre est decrit dans l'en-tete du
+%  chapitre (bloc «~CODE COULEUR~»). Couleurs disponibles :
+\definecolor{rougecours}{RGB}{192,0,0}
+\definecolor{couleurN}{RGB}{0,112,192}
+\definecolor{couleurZ}{RGB}{0,150,120}
+\definecolor{couleurD}{RGB}{224,150,0}
+\definecolor{couleurQ}{RGB}{150,80,180}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.98,0.98,0.98}
+% Mot defini, en gras rouge
+\newcommand{\mot}[1]{\textcolor{rougecours}{\textbf{#1}}}
+% Notation ou formule mise en avant en rouge
+\newcommand{\rmath}[1]{\textcolor{rougecours}{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% EN-TETES ET PIEDS DE PAGE %%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\lauteur}{Cours de L3 - Calcul différentiel - M. JOURDAIN}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE]{\footnotesize\rightmark}
+\fancyhead[RE]{\footnotesize\leftmark}
+\fancyhead[LO]{\footnotesize\leftmark}
+\fancyhead[RO]{\footnotesize\rightmark}
+\fancyfoot[LE,LO]{\thepage}
+\fancyfoot[RE,RO]{\footnotesize\lauteur}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\fancypagestyle{plain}{%
+  \fancyhf{}%
+  \fancyfoot[C]{\thepage}%
+  \renewcommand{\headrulewidth}{0pt}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ENVIRONNEMENTS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Cadre pour les propositions
+\newenvironment{cadre}%
+ {\par\vspace{2mm}\noindent\begin{tabular}{|@{\hspace{4mm}}p{0.93\textwidth}@{\hspace{4mm}}|}
+  \hline \\[-2mm]}%
+ {\\[2mm] \hline \end{tabular}\par\vspace{3mm}}
+
+\newcommand{\definition}{\textbf{Définition :}~}
+\newcommand{\propo}[1]{\textbf{\underline{Proposition #1 :}}~}
+\newcommand{\theoreme}[1]{\textbf{Théorème #1 :}~}
+\newcommand{\methode}{\textbf{\underline{$\heartsuit$ Méthode :}}~}
+% Enonce de niveau prerequis, donne sans demonstration ou avec une preuve courte
+\newcommand{\rappel}{\textit{(Rappel.)}~}
+
+% Demonstration
+\newenvironment{demo}%
+ {\par\needspace{4\baselineskip}\vspace{1mm}\noindent$\circ$ \underline{Démonstration :}~\setlength{\parskip}{3pt plus 1pt}}%
+ {\hfill$\square$\par\vspace{2mm}}
+
+% Etape d'une demonstration longue : nouvel alinea, intitule en italique
+\newcommand{\etape}[1]{\par\smallskip\noindent$\triangleright$~\textit{#1}~}
+
+% Exemples et remarques : blocs indentes
+\newenvironment{exemple}%
+ {\par\needspace{6\baselineskip}\vspace{1mm}\begin{list}{}{\leftmargin=1cm \rightmargin=0.5cm}\item[]%
+  \textit{Exemple :}~}%
+ {\end{list}\vspace{1mm}}
+
+\newenvironment{remarque}%
+ {\par\needspace{6\baselineskip}\vspace{1mm}\begin{list}{}{\leftmargin=1cm \rightmargin=0.5cm}\item[]%
+  \textit{\underline{Remarque :}}~}%
+ {\end{list}\vspace{1mm}}
+
+\newenvironment{remarques}%
+ {\par\needspace{6\baselineskip}\vspace{1mm}\begin{list}{}{\leftmargin=1cm \rightmargin=0.5cm}\item[]%
+  \textit{\underline{Remarques :}}%
+  \begin{itemize}[label=$\bullet$,leftmargin=0.45cm,topsep=3pt,itemsep=4pt]}%
+ {\end{itemize}\end{list}\vspace{1mm}}
+
+\newenvironment{exemples}%
+ {\par\needspace{6\baselineskip}\vspace{1mm}\begin{list}{}{\leftmargin=1cm \rightmargin=0.5cm}\item[]%
+  \textit{Exemples :}%
+  \begin{itemize}[label=$\bullet$,leftmargin=0.45cm,topsep=3pt,itemsep=4pt]}%
+ {\end{itemize}\end{list}\vspace{1mm}}
+
+% Rediger un raisonnement type, encadre a gauche
+\newenvironment{redaction}%
+ {\par\vspace{2mm}\begin{center}\begin{tabular}{|@{\hspace{3mm}}p{0.85\textwidth}@{\hspace{3mm}}}}%
+ {\end{tabular}\end{center}\vspace{2mm}}
+
+%--- Style du code Python (lstlisting) -----------------------------------------
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour}, commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta}, numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple}, basicstyle=\ttfamily\small,
+    breakatwhitespace=false, breaklines=true, captionpos=b, keepspaces=true,
+    numbers=left, numbersep=5pt, showspaces=false, showstringspaces=false,
+    showtabs=false, tabsize=4, language=Python}
+\lstset{style=mystyle}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% MACROS DE L'UE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Ensembles de nombres
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\K}{\mathbb{K}}                       % corps de base : R ou C
+\newcommand{\intn}[2]{\llbracket #1\,,#2 \rrbracket}   % intervalle d'entiers (stmaryrd)
+
+% Applications
+\newcommand{\appli}[5]{\begin{array}{r|ccl}                % application sur deux lignes
+  #1 : & #2 & \longrightarrow & #3 \\ & #4 & \longmapsto & #5 \end{array}}
+\newcommand{\id}{\mathrm{id}}                     % identite
+\newcommand{\ee}{\mathrm{e}}                      % exponentielle
+\newcommand{\ii}{\mathrm{i}}                      % unite imaginaire
+\newcommand{\dd}{\mathrm{d}}                      % differentielle, element d'integration
+\newcommand{\limn}{\lim\limits_{n \to +\infty}}
+\newcommand{\cvu}{\xrightarrow[]{\ \mathrm{CU}\ }}           % convergence uniforme
+
+% Algebre lineaire
+\newcommand{\Ker}{\operatorname{Ker}}
+\newcommand{\Imf}{\operatorname{Im}}              % image (\Im est la partie imaginaire)
+\newcommand{\rg}{\operatorname{rg}}
+\newcommand{\Vect}{\operatorname{Vect}}
+\newcommand{\tr}{\operatorname{tr}}               % trace
+\newcommand{\tra}[1]{{#1}^{T}}                    % transposee
+\newcommand{\Mnp}[2]{\mathcal{M}_{#1,#2}(\K)}      % matrices a #1 lignes et #2 colonnes
+\newcommand{\Mn}[1]{\mathcal{M}_{#1}(\K)}          % matrices carrees
+\newcommand{\GL}{\mathrm{GL}}                     % groupe lineaire
+\newcommand{\Sp}{\operatorname{Sp}}               % spectre
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\Bc}{\mathcal{B}}                     % bases
+
+% Espaces normes (chapitre 1)
+\newcommand{\norme}[1]{\lVert #1 \rVert}         % norme
+\newcommand{\nop}[1]{|\mkern-1.5mu|\mkern-1.5mu|#1|\mkern-1.5mu|\mkern-1.5mu|}   % norme subordonnee (triple barre)
+\newcommand{\ps}[2]{\langle #1, #2 \rangle}       % produit scalaire
+\newcommand{\Bo}{B}                               % boule ouverte B(a, r)
+\newcommand{\Bf}{B_{f}}                           % boule fermee B_f(a, r)
+\newcommand{\Sph}{S}                              % sphere S(a, r)
+\newcommand{\adh}[1]{\overline{#1}}               % adherence
+\newcommand{\inte}[1]{\mathring{#1}}              % interieur
+\newcommand{\Fr}{\operatorname{Fr}}               % frontiere
+\newcommand{\Bor}{\mathcal{B}}                    % fonctions bornees B(X, F)
+\newcommand{\Cc}{\mathcal{C}}                     % fonctions continues, de classe C^k
+\newcommand{\Lc}{\mathcal{L}}                     % applications lineaires continues L(E, F)
+\newcommand{\dist}{d}                             % distance a une partie
+\newcommand{\diam}{\operatorname{diam}}           % diametre
+
+% Calcul differentiel (chapitres 2 a 5)
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}   % derivee partielle
+\newcommand{\dpd}[2]{\dfrac{\partial #1}{\partial #2}}  % derivee partielle, en ligne en style display
+\newcommand{\Isom}{\mathrm{Isom}}                 % isomorphismes continus d inverse continu
+\newcommand{\grad}{\nabla}                        % gradient
+\newcommand{\Du}[1]{D_{#1}}                       % derivee selon un vecteur
+\newcommand{\Hs}{H}                               % matrice hessienne
+\newcommand{\Jac}{J}                              % matrice jacobienne
+\newcommand{\Ou}{\Omega}                          % ouvert de definition
+
+% Une formule en ligne n'est jamais coupee par un retour a la ligne
+\relpenalty=10000
+\binoppenalty=10000
+
+\setlength{\parindent}{1cm}
+
+% Liens du sommaire, des signets et des renvois : invisibles (charge en dernier)
+\usepackage[hidelinks,bookmarksnumbered,pdfauthor={M. JOURDAIN},pdftitle={Cours de L3 - Calcul differentiel}]{hyperref}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CODE COULEUR %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Code couleur du chapitre 4 (constant d'une figure a l'autre) :
+%     couleurN (bleu)   : la fonction (graphe, courbe, lignes de niveau)
+%     couleurD (orange) : ses approximations de Taylor (polynomes, parabole, quadrique)
+%     couleurZ (vert)   : les vecteurs (accroissements h, k, vecteurs derives)
+%     couleurQ (violet) : les formes bilineaires et quadratiques, les domaines
+%     rougecours        : les points etudies
+%     gris              : les reperes
+%  Source : sommaire seul (annexe 3, sections 4.1 a 4.3 du sommaire).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+% Ce fichier constitue le chapitre 4
+\setcounter{chapter}{3}
+
+%===============================================================================
+\chapter[Ordre supérieur, Taylor]{Différentielles d'ordre supérieur, formules de Taylor}
+%===============================================================================
+
+\section{Introduction historique}
+
+\begin{quote}
+\emph{Le premier terme du développement sera la fonction proposée, qu'on appellera fonction primitive ; les termes suivants seront formés de différentes fonctions de la même variable, multipliées par les puissances successives de l'indéterminée.}
+\begin{flushright}Lagrange - \emph{Théorie des fonctions analytiques}, introduction, 2\textsuperscript{e} éd., 1813\end{flushright}
+\end{quote}
+
+\subsection{Développer une fonction en puissances de l'accroissement}
+
+La différentielle remplace une fonction, près d'un point, par une fonction affine, avec une erreur négligeable devant l'accroissement $h$. Ce chapitre pousse l'approximation plus loin : en ajoutant des termes de degré $2$, $3$, \dots{} en $h$, on rend l'erreur négligeable devant $\norme{h}^{2}$, $\norme{h}^{3}$, \dots{} Les coefficients de ces termes sont les différentielles d'ordre supérieur.
+
+En 1715, dans son \emph{Methodus incrementorum directa et inversa}, \textbf{Brook Taylor} exprime l'accroissement d'une fonction comme une série de puissances de l'accroissement de la variable. Son travail passe presque inaperçu jusqu'à \textbf{Lagrange}, qui y voit le principe même du calcul différentiel : sa \emph{Théorie des fonctions analytiques}, parue en 1797, veut fonder toute l'analyse sur ces développements, sans infiniment petits ni limites. Les fonctions de la phrase citée en exergue sont ses \emph{fonctions dérivées}, d'où notre mot «~dérivée~» ; c'est là aussi qu'apparaît le reste qui porte son nom. Le programme de Lagrange échoue pourtant : dans les années 1820, \textbf{Cauchy} exhibe la fonction $x \mapsto \ee^{-1/x^{2}}$, indéfiniment dérivable, dont toutes les dérivées sont nulles en $0$, et qui n'est donc pas la somme de sa série de Taylor. Les formules de Taylor restent vraies, mais à un ordre fini et avec un reste.
+
+\subsection{L'ordre des dérivations importe-t-il ?}
+
+Pour les fonctions de plusieurs variables, \textbf{Euler} et \textbf{Clairaut} publient en 1740 des démonstrations non rigoureuses de l'égalité $\dfrac{\partial^{2} f}{\partial x\,\partial y} = \dfrac{\partial^{2} f}{\partial y\,\partial x}$ ; \textbf{Lindelöf} en montre les lacunes en 1867, et \textbf{Hermann Schwarz} donne la première démonstration rigoureuse en 1873. Le chapitre va de Taylor pour une variable (section~4.2) à cette symétrie des différentielles de tout ordre (section 4.6), où l'on étudie aussi le contre-exemple classique attribué à \textbf{Peano}, en passant par les applications bilinéaires et multilinéaires (sections 4.3~à~4.5).
+
+\vfill
+% ---- sin et ses polynomes de Taylor en 0 d'ordre 1, 3, 5, 7 (traces par pgfplots, sin en degres)
+\begin{center}
+\begin{tikzpicture}
+  \begin{axis}[width=14.5cm,height=5.4cm,xmin=-7,xmax=7,ymin=-2.2,ymax=2.2,axis lines=middle,
+    restrict y to domain=-3:3,samples=200,
+    xtick={-6.2832,-3.1416,3.1416,6.2832},xticklabels={$-2\pi$,$-\pi$,$\pi$,$2\pi$},ytick={-1,1},
+    tick label style={font=\scriptsize},clip=true]
+    \addplot[couleurD!35,thick,domain=-7:7] {x};
+    \addplot[couleurD!55,thick,domain=-7:7] {x-x^3/6};
+    \addplot[couleurD!75,thick,domain=-7:7] {x-x^3/6+x^5/120};
+    \addplot[couleurD,thick,domain=-7:7] {x-x^3/6+x^5/120-x^7/5040};
+    \addplot[couleurN,very thick,domain=-7:7] {sin(deg(x))};
+    \node[couleurD!45,font=\small,anchor=west] at (axis cs:1.75,1.95) {$T_{1}$};
+    \node[couleurD!65,font=\small,anchor=east] at (axis cs:2.35,-1.75) {$T_{3}$};
+    \node[couleurD!85,font=\small,anchor=east] at (axis cs:3.95,1.95) {$T_{5}$};
+    \node[couleurD,font=\small,anchor=west] at (axis cs:4.75,-1.85) {$T_{7}$};
+    \node[couleurN,font=\small,anchor=north] at (axis cs:5.5,-1.05) {$\sin$};
+  \end{axis}
+\end{tikzpicture}
+\end{center}
+
+\noindent La fonction sinus, en bleu, et ses polynômes de Taylor en $0$ d'ordres $1$, $3$, $5$ et $7$, en orange de plus en plus soutenu : l'accord est d'autant meilleur que l'on est près du point et que l'ordre est élevé, mais chaque polynôme finit par s'écarter de la courbe.
+\vfill
+\newpage
+%===============================================================================
+\section[Taylor, une variable]{Formules de Taylor pour une variable réelle}
+%===============================================================================
+
+Dans tout le chapitre, $E$, $F$ et $G$ sont des espaces vectoriels normés réels et $U$ est un ouvert de $E$. On commence par les fonctions d'une variable réelle, qui serviront ensuite, par restriction à un segment $t \mapsto a + th$, à traiter les fonctions de plusieurs variables. Pour les fonctions à valeurs réelles, les énoncés sont des rappels ; on les étend aux fonctions à valeurs dans un espace de Banach $F$, grâce à l'intégrale construite au chapitre 2.
+
+\subsection{Le reste intégral}
+
+Pour $f : I \to F$ de classe $\Cc^{n}$ sur un intervalle $I$ et $a \in I$, le \mot{polynôme de Taylor} d'ordre $n$ de $f$ en $a$ est
+\[ \rmath{T_{n}(x) = \sum_{k = 0}^{n} \frac{(x - a)^{k}}{k!}\,f^{(k)}(a)}, \]
+à coefficients dans $F$, et le \mot{reste} est $R_{n}(x) = f(x) - T_{n}(x)$.
+
+\begin{cadre}
+\propo{1} \emph{(Taylor avec reste intégral.)} Soit $F$ un espace de Banach, $I$ un intervalle, $f : I \to F$ de classe $\Cc^{n + 1}$, et $a$, $b \in I$. Alors
+\[ \rmath{f(b) = \sum_{k = 0}^{n} \frac{(b - a)^{k}}{k!}\,f^{(k)}(a) + \int_{a}^{b} \frac{(b - t)^{n}}{n!}\,f^{(n + 1)}(t)\,\dd t}. \]
+\end{cadre}
+
+\begin{demo}
+Par récurrence sur $n$. Pour $n = 0$, c'est le théorème fondamental de l'analyse (chapitre 2, théorème 2). Supposons la formule vraie au rang $n - 1$ pour les fonctions de classe $\Cc^{n}$, et soit $f$ de classe $\Cc^{n + 1}$. La fonction $\varphi(t) = \dfrac{(b - t)^{n}}{n!}\,f^{(n)}(t)$ est le produit d'une fonction réelle et d'une fonction à valeurs dans $F$, tous deux de classe $\Cc^{1}$ ; la formule de dérivation d'un produit (chapitre 2, proposition 12) donne
+\[ \varphi'(t) = -\frac{(b - t)^{n - 1}}{(n - 1)!}\,f^{(n)}(t) + \frac{(b - t)^{n}}{n!}\,f^{(n + 1)}(t). \]
+En intégrant de $a$ à $b$, on obtient $\varphi(b) - \varphi(a) = -\dfrac{(b - a)^{n}}{n!}\,f^{(n)}(a)$ d'un côté, et la différence des deux intégrales de l'autre :
+\[ \int_{a}^{b} \frac{(b - t)^{n - 1}}{(n - 1)!}\,f^{(n)}(t)\,\dd t = \frac{(b - a)^{n}}{n!}\,f^{(n)}(a) + \int_{a}^{b} \frac{(b - t)^{n}}{n!}\,f^{(n + 1)}(t)\,\dd t. \]
+On reporte dans la formule au rang $n - 1$, dont le reste est le membre de gauche.
+\end{demo}
+
+\begin{cadre}
+\propo{2} \emph{(Inégalité de Taylor-Lagrange.)} Sous les hypothèses de la proposition 1, si $\norme{f^{(n + 1)}(t)} \leqslant M$ pour tout $t$ entre $a$ et $b$, alors
+\[ \rmath{\norme{f(b) - T_{n}(b)} \leqslant M\,\frac{|b - a|^{n + 1}}{(n + 1)!}}. \]
+\end{cadre}
+
+\begin{demo}
+On majore la norme de l'intégrale par l'intégrale de la norme (chapitre 2, proposition 7) : pour $a \leqslant b$, $\norme{R_{n}(b)} \leqslant M\displaystyle\int_{a}^{b} \frac{(b - t)^{n}}{n!}\,\dd t = M\,\dfrac{(b - a)^{n + 1}}{(n + 1)!}$, et de même si $b < a$.
+\end{demo}
+
+\begin{cadre}
+\propo{3} \emph{(Rappel. Égalité de Taylor-Lagrange.)} Si $f : [a, b] \to \R$ est de classe $\Cc^{n}$ sur $[a, b]$ et $n + 1$ fois dérivable sur $\left]a, b\right[$, il existe $c \in \left]a, b\right[$ tel que
+\[ \rmath{f(b) = \sum_{k = 0}^{n} \frac{(b - a)^{k}}{k!}\,f^{(k)}(a) + \frac{(b - a)^{n + 1}}{(n + 1)!}\,f^{(n + 1)}(c)}. \]
+\end{cadre}
+
+\begin{remarque}
+\emph{Piège.} L'égalité de Taylor-Lagrange est fausse pour les fonctions à valeurs vectorielles, déjà à l'ordre $0$, où elle se réduit à l'égalité des accroissements finis : pour la fonction définie sur $[0, 2\pi]$ par $f(t) = (\cos t, \sin t)$, $f(2\pi) - f(0) = 0$, alors que $\norme{f'(c)}_{2} = 1$ pour tout $c$ (chapitre 2). L'erreur la plus répandue est d'appliquer l'égalité composante par composante, avec un même point $c$ : chaque composante a son propre $c$. Seule l'\emph{inégalité} de la proposition 2 survit.
+\end{remarque}
+
+\subsection{La formule de Taylor-Young}
+
+\begin{cadre}
+\propo{4} \emph{(Taylor-Young.)} Soit $F$ un espace de Banach, $I$ un intervalle, $f : I \to F$ de classe $\Cc^{n}$, et $a \in I$. Alors
+\[ \rmath{f(a + h) = \sum_{k = 0}^{n} \frac{h^{k}}{k!}\,f^{(k)}(a) + o(h^{n})} \qquad \text{quand } h \to 0,\ a + h \in I. \]
+\end{cadre}
+
+\begin{demo}
+Pour $n = 0$, c'est la continuité de $f$ en $a$. Pour $n \geqslant 1$, la proposition 1 à l'ordre $n - 1$ donne
+\[ f(a + h) - T_{n}(a + h) = \int_{a}^{a + h} \frac{(a + h - t)^{n - 1}}{(n - 1)!}\,\big(f^{(n)}(t) - f^{(n)}(a)\big)\,\dd t, \]
+puisque $\displaystyle\int_{a}^{a + h} \frac{(a + h - t)^{n - 1}}{(n - 1)!}\,\dd t = \dfrac{h^{n}}{n!}$. Avec $\varepsilon(h) = \sup\{\norme{f^{(n)}(t) - f^{(n)}(a)} \mid t \text{ entre } a \text{ et } a + h\}$, qui tend vers $0$ par continuité de $f^{(n)}$, la norme du reste est majorée par $\varepsilon(h)\,\dfrac{|h|^{n}}{n!}$.
+\end{demo}
+
+\begin{remarques}
+  \item La formule de Taylor-Young reste vraie si $f$ est seulement $n$ fois dérivable \emph{au point} $a$ (\emph{Rappel.} pour les fonctions réelles) ; l'hypothèse $\Cc^{n}$ simplifie la démonstration et suffira dans la suite.
+  \item Les trois formules n'ont pas le même rôle. Taylor-Young est \emph{locale} : elle décrit $f$ près de $a$, sans contrôler l'erreur à distance finie. Le reste intégral et l'inégalité de Taylor-Lagrange sont \emph{globaux} : ils donnent une majoration explicite sur tout un intervalle, celle qu'on utilise dans les estimations numériques.
+\end{remarques}
+
+\begin{exemple}
+Pour $\gamma(t) = (\cos t, \sin t)$, à valeurs dans $\R^{2}$, en $0$ : $\gamma(0) = (1, 0)$, $\gamma'(0) = (0, 1)$, $\gamma''(0) = (-1, 0)$. Le polynôme de Taylor d'ordre $2$ est $T_{2}(t) = \left(1 - \dfrac{t^{2}}{2}, t\right)$ : il décrit une parabole. Comme $\norme{\gamma'''(t)}_{2} = 1$, l'inégalité de Taylor-Lagrange donne $\norme{\gamma(t) - T_{2}(t)}_{2} \leqslant \dfrac{|t|^{3}}{6}$. Pour $t = 0{,}5$, l'écart vaut environ $0{,}020\,7$, pour une borne de $0{,}020\,8$ ; pour $t = 1$, il vaut $0{,}163\,6$, pour une borne de $0{,}166\,7$ : l'inégalité est presque une égalité.
+\end{exemple}
+
+% ---- cercle et parabole T2(t) = (1 - t^2/2, t) ; points t = 0.5 et t = 1 sur chacune ;
+% ---- gamma(0.5) = (0.8776, 0.4794), T2(0.5) = (0.875, 0.5) ; gamma(1) = (0.5403, 0.8415), T2(1) = (0.5, 1) (calcules)
+\begin{center}
+\begin{tikzpicture}[scale=2.3]
+  \draw[gray,->] (-0.3,0) -- (1.5,0) node[below,font=\small] {$x$};
+  \draw[gray,->] (0,-1.25) -- (0,1.35) node[left,font=\small] {$y$};
+  \draw[couleurN,very thick] (0,0) circle (1);
+  \draw[couleurD,thick,domain=-1.25:1.25,samples=50] plot ({1-\x*\x/2},{\x});
+  \fill[rougecours] (1,0) circle (0.8pt) node[below right=-1pt,font=\small] {$\gamma(0)$};
+  \draw[couleurZ,thick,->,>=Stealth] (1,0) -- (1,0.45) node[right,font=\small] {$\gamma'(0)$};
+  \draw[couleurZ,thick,->,>=Stealth] (1,0) -- (0.6,0) node[pos=0.55,below,font=\small] {$\gamma''(0)$};
+  \fill[couleurN] (0.5403,0.8415) circle (0.7pt);
+  \fill[couleurD] (0.5,1) circle (0.7pt);
+  \draw[gray,densely dotted] (0.5403,0.8415) -- (0.5,1);
+  \node[font=\small,anchor=east] at (0.45,1.05) {$t = 1$};
+  \node[couleurN,font=\small,anchor=north east] at (-0.74,-0.74) {cercle};
+  \node[couleurD,font=\small,anchor=west] at (0.25,1.22) {$T_{2}$};
+\end{tikzpicture}
+\end{center}
+
+\noindent Le cercle, en bleu, et la parabole $T_{2}$, en orange, ont en $\gamma(0)$ la même position, la même vitesse $\gamma'(0)$ et la même accélération $\gamma''(0)$, en vert : ils se séparent lentement, l'écart en pointillés au paramètre $t = 1$ restant inférieur à $\dfrac{1}{6}$. C'est la parabole qui «~colle~» le mieux au cercle en ce point, et le chapitre 2 a déjà montré, avec l'hélice, que la dérivée seconde d'une courbe décrit sa courbure.
+
+\subsection{Le contre-exemple de Cauchy}
+
+La fonction $\phi(x) = \ee^{-1/x^{2}}$, prolongée par $\phi(0) = 0$, est de classe $\Cc^{\infty}$ sur $\R$, et toutes ses dérivées sont nulles en $0$ : par récurrence, $\phi^{(k)}(x) = P_{k}\left(\dfrac{1}{x}\right)\ee^{-1/x^{2}}$ pour $x \neq 0$, avec $P_{k}$ un polynôme, et cette expression tend vers $0$ en $0$ parce que l'exponentielle l'emporte sur toute puissance. Tous ses polynômes de Taylor en $0$ sont nuls, et la formule de Taylor-Young s'écrit $\phi(x) = o(x^{n})$ pour tout $n$ : elle est vraie, mais ne dit rien de la valeur de $\phi(x)$ pour $x \neq 0$.
+
+% ---- phi(x) = exp(-1/x^2) ; phi(1) = 0.3679, phi(0.5) = 0.0183, phi(0.3) = 1.5e-5 (calcules)
+\begin{center}
+\begin{tikzpicture}
+  \begin{axis}[width=12cm,height=4.6cm,xmin=-3,xmax=3,ymin=-0.05,ymax=1.05,axis lines=middle,
+    tick label style={font=\scriptsize},xtick={-2,-1,1,2},ytick={1},samples=301,clip=false]
+    \addplot[gray,densely dashed,domain=-3:3] {1};
+    \addplot[couleurN,very thick,domain=0.12:3] {exp(-1/(x^2))};
+    \addplot[couleurN,very thick,domain=-3:-0.12] {exp(-1/(x^2))};
+    \addplot[couleurN,very thick] coordinates {(-0.12,0) (0.12,0)};
+    \addplot[couleurD,very thick,domain=-0.45:0.45] {0};
+    \node[couleurN,font=\small,anchor=south west] at (axis cs:1.6,0.72) {$\ee^{-1/x^{2}}$};
+    \node[couleurD,font=\small,anchor=north] at (axis cs:0,-0.06) {$T_{n} = 0$};
+  \end{axis}
+\end{tikzpicture}
+\end{center}
+
+\noindent Le graphe bleu est si plat près de $0$ qu'il s'y confond avec l'axe, où sont tous ses polynômes de Taylor, en orange ; il tend vers $1$, en tirets, à l'infini. La fonction n'est pourtant pas nulle : $\phi(0{,}5) \approx 0{,}018$ et $\phi(1) \approx 0{,}368$. Connaître toutes les dérivées en un point ne détermine donc pas une fonction de classe $\Cc^{\infty}$, ce que Lagrange espérait.
+%===============================================================================
+\section[Applications bilinéaires]{Applications bilinéaires continues}
+%===============================================================================
+
+La différentielle seconde d'une fonction, définie à la section suivante, est une application linéaire à valeurs dans un espace d'applications linéaires ; on l'identifie à une application bilinéaire. Cette section étudie ces applications pour elles-mêmes, et tient la promesse du chapitre 2 sur leur continuité.
+
+\begin{center}
+\begin{tabularx}{15cm}{||X}
+\noindent \textbf{\underline{Définition :}} Une application $B : E \times F \to G$ est \mot{bilinéaire} si elle est linéaire par rapport à chaque variable, l'autre étant fixée. On note $\rmath{\Lc_{2}(E \times F, G)}$ l'ensemble des applications bilinéaires \emph{continues} de $E \times F$ dans $G$, et $\Lc_{2}(E, G) = \Lc_{2}(E \times E, G)$. Une application bilinéaire $B : E \times E \to G$ est \mot{symétrique} si $B(h, k) = B(k, h)$ pour tous $h$, $k$.
+\end{tabularx}
+\end{center}
+
+\begin{cadre}
+\propo{5} Pour une application bilinéaire $B : E \times F \to G$, les propriétés suivantes sont équivalentes :
+\begin{enumerate}[label=(\roman*),topsep=3pt,itemsep=2pt]
+  \item $B$ est continue ;
+  \item $B$ est continue en $(0, 0)$ ;
+  \item il existe $C \geqslant 0$ tel que $\rmath{\norme{B(x, y)} \leqslant C\norme{x}\,\norme{y}}$ pour tous $x \in E$, $y \in F$.
+\end{enumerate}
+La plus petite constante $C$ est notée $\nop{B}$ ; c'est une norme sur $\Lc_{2}(E \times F, G)$. Si $E$ et $F$ sont de dimension finie, toute application bilinéaire est continue.
+\end{cadre}
+
+\begin{demo}
+(i) $\Rightarrow$ (ii) est clair. (ii) $\Rightarrow$ (iii) : il existe $r > 0$ tel que $\norme{B(x, y)} \leqslant 1$ dès que $\norme{x} \leqslant r$ et $\norme{y} \leqslant r$, la norme de $E \times F$ étant la norme produit. Pour $x$, $y$ non nuls, on applique ceci à $\dfrac{rx}{\norme{x}}$ et $\dfrac{ry}{\norme{y}}$ : par bilinéarité, $\norme{B(x, y)} \leqslant \dfrac{1}{r^{2}}\norme{x}\,\norme{y}$. (iii) $\Rightarrow$ (i) : on écrit
+\[ B(x, y) - B(x_{0}, y_{0}) = B(x - x_{0}, y) + B(x_{0}, y - y_{0}), \]
+de norme au plus $C\norme{x - x_{0}}\,\norme{y} + C\norme{x_{0}}\,\norme{y - y_{0}}$, qui tend vers $0$ quand $(x, y) \to (x_{0}, y_{0})$. Les axiomes de norme se vérifient comme pour la norme subordonnée (chapitre 1, proposition 15). Enfin, en dimension finie, la proposition 2 du chapitre 2 a établi l'inégalité (iii).
+\end{demo}
+
+\begin{cadre}
+\propo{6} \emph{(Identification.)} Pour $u \in \Lc(E, \Lc(F, G))$, l'application $\Phi(u) : (x, y) \mapsto u(x)(y)$ est bilinéaire continue, et $\Phi$ est une bijection linéaire de $\Lc(E, \Lc(F, G))$ sur $\Lc_{2}(E \times F, G)$ qui conserve la norme : $\nop{\Phi(u)} = \nop{u}$. En particulier, si $G$ est un espace de Banach, $\Lc_{2}(E \times F, G)$ en est un.
+\end{cadre}
+
+\begin{demo}
+$\Phi(u)$ est bilinéaire, et $\norme{u(x)(y)} \leqslant \nop{u(x)}\,\norme{y} \leqslant \nop{u}\,\norme{x}\,\norme{y}$, d'où $\nop{\Phi(u)} \leqslant \nop{u}$. Réciproquement, pour $B \in \Lc_{2}(E \times F, G)$ et $x \in E$, l'application $B(x, \cdot)$ est linéaire, de norme au plus $\nop{B}\,\norme{x}$ ; donc $u : x \mapsto B(x, \cdot)$ appartient à $\Lc(E, \Lc(F, G))$, avec $\nop{u} \leqslant \nop{B}$, et $\Phi(u) = B$. Ainsi $\Phi$ est bijective et conserve la norme. Si $G$ est complet, $\Lc(F, G)$ puis $\Lc(E, \Lc(F, G))$ le sont (chapitre 1, théorème 11), et $\Phi$ transporte la complétude.
+\end{demo}
+
+\begin{exemples}
+  \item \emph{Formes bilinéaires sur $\R^{p}$.} Toute forme bilinéaire sur $\R^{p}$ s'écrit
+  \[ B(x, y) = \tra{x}Ay = \sum_{i, j} a_{ij}x_{i}y_{j}, \qquad \text{avec } a_{ij} = B(e_{i}, e_{j}) ; \] elle est symétrique si et seulement si $A$ l'est. Avec la norme subordonnée $\nop{A}_{2}$ du chapitre 1, l'inégalité de Cauchy-Schwarz donne
+  \[ |B(x, y)| \leqslant \nop{A}_{2}\,\norme{x}_{2}\,\norme{y}_{2}. \]
+  \item \emph{Le produit matriciel.} $(M, N) \mapsto MN$ est bilinéaire de $\Mn{n} \times \Mn{n}$ dans $\Mn{n}$, et, pour une norme subordonnée, $\nop{MN} \leqslant \nop{M}\,\nop{N}$ : sa norme vaut au plus $1$, et exactement $1$ puisque $I_{n}^{2} = I_{n}$.
+  \item \emph{Le produit vectoriel} de $\R^{3}$ est bilinéaire antisymétrique, de norme $1$ pour la norme euclidienne, puisque $\norme{x \wedge y}_{2} = \norme{x}_{2}\,\norme{y}_{2}\,|\sin\theta|$.
+\end{exemples}
+
+\begin{remarque}
+En dimension infinie, une application bilinéaire peut ne pas être continue. Sur l'espace des polynômes, muni de la norme $\norme{P} = \sup_{[0, 1]} |P|$, la forme bilinéaire $(P, Q) \mapsto P(2)Q(2)$ prend la valeur $4^{n}$ en $(X^{n}, X^{n})$, alors que $\norme{X^{n}} = 1$ : aucune constante $C$ ne convient.
+\end{remarque}
+
+\subsection{Formes quadratiques}
+
+À une forme bilinéaire symétrique $B$ sur $\R^{p}$, de matrice symétrique $A$, on associe la \mot{forme quadratique} $q$ définie par $q(h) = B(h, h) = \tra{h}Ah$. Elle détermine $B$ par l'identité de polarisation $B(h, k) = \dfrac{1}{4}\big(q(h + k) - q(h - k)\big)$. Une forme bilinéaire non symétrique $B$ et sa partie symétrique $\dfrac{1}{2}\big(B(h, k) + B(k, h)\big)$ définissent la même forme quadratique : $q$ ne voit que la partie symétrique.
+
+\noindent Le théorème spectral (\emph{Rappel.}) diagonalise $A$ dans une base orthonormée : dans cette base,
+\[ q(h) = \lambda_{1}h_{1}^{2} + \dots + \lambda_{p}h_{p}^{2}, \]
+où les $\lambda_{i}$ sont les valeurs propres de $A$. La forme est \mot{définie positive} si toutes sont strictement positives, \mot{définie négative} si toutes sont strictement négatives, et \mot{non dégénérée} si aucune n'est nulle. Ces signes gouverneront, au chapitre 5, la nature des points critiques.
+
+% ---- lignes de niveau de q1 = x^2 + 2y^2 (ellipses), q2 = x^2 - y^2 (hyperboles, parametrees par cosh/sinh), q3 = x^2 (droites)
+% ---- niveaux 0.25, 1, 2.25 ; hyperboles de niveau +-1 et asymptotes y = +-x
+\begin{center}
+\begin{tikzpicture}[scale=1.05]
+  \begin{scope}
+    \clip (-2,-1.6) rectangle (2,1.6);
+    \foreach \c in {0.5,1,1.5} \draw[couleurQ,thick] (0,0) ellipse ({\c} and {\c/sqrt(2)});
+  \end{scope}
+  \draw[gray,->] (-2,0) -- (2.05,0); \draw[gray,->] (0,-1.6) -- (0,1.65);
+  \node[font=\small,below,align=center] at (0,-1.65) {$q(h) = h_{1}^{2} + 2h_{2}^{2}$\\ définie positive};
+  \begin{scope}[xshift=5cm]
+    \begin{scope}
+      \clip (-2,-1.6) rectangle (2,1.6);
+      \draw[gray,densely dashed] (-1.6,-1.6) -- (1.6,1.6) (-1.6,1.6) -- (1.6,-1.6);
+      \foreach \c in {0.5,1} {
+        \draw[couleurQ,thick,domain=-1.6:1.6,samples=40] plot ({\c*cosh(\x)},{\c*sinh(\x)});
+        \draw[couleurQ,thick,domain=-1.6:1.6,samples=40] plot ({-\c*cosh(\x)},{\c*sinh(\x)});
+        \draw[couleurQ!50,thick,domain=-1.6:1.6,samples=40] plot ({\c*sinh(\x)},{\c*cosh(\x)});
+        \draw[couleurQ!50,thick,domain=-1.6:1.6,samples=40] plot ({\c*sinh(\x)},{-\c*cosh(\x)});
+      }
+    \end{scope}
+    \draw[gray,->] (-2,0) -- (2.05,0); \draw[gray,->] (0,-1.6) -- (0,1.65);
+    \node[font=\small,below,align=center] at (0,-1.65) {$q(h) = h_{1}^{2} - h_{2}^{2}$\\ non dégénérée};
+  \end{scope}
+  \begin{scope}[xshift=10cm]
+    \foreach \c in {0.5,1,1.5} {\draw[couleurQ,thick] (\c,-1.6) -- (\c,1.6); \draw[couleurQ,thick] (-\c,-1.6) -- (-\c,1.6);}
+    \draw[gray,->] (-2,0) -- (2.05,0); \draw[gray,->] (0,-1.6) -- (0,1.65);
+    \node[font=\small,below,align=center] at (0,-1.65) {$q(h) = h_{1}^{2}$\\ dégénérée};
+  \end{scope}
+\end{tikzpicture}
+\end{center}
+
+\noindent Les lignes de niveau, en violet, de trois formes quadratiques de $\R^{2}$ : des ellipses concentriques pour la forme définie positive, des hyperboles, de niveaux positifs en foncé et négatifs en clair, de part et d'autre des asymptotes en tirets, pour la forme de signature $(1, 1)$, et des droites parallèles pour la forme dégénérée, constante le long de la direction du noyau. Ce sont, à une transformation linéaire près, les trois allures possibles en dimension $2$.
+%===============================================================================
+\section[Différentielle seconde]{Différentielle seconde, formule de Taylor à l'ordre 2}
+%===============================================================================
+
+\subsection{Différentielle seconde}
+
+Si $f : U \to F$ est différentiable sur $U$, sa différentielle $\dd f : U \to \Lc(E, F)$ est une application à valeurs dans un espace normé, que l'on peut à son tour chercher à différentier.
+
+\begin{center}
+\begin{tabularx}{15cm}{||X}
+\noindent \textbf{\underline{Définition :}} Soit $f : U \to F$ différentiable sur $U$ et $a \in U$. On dit que $f$ est \mot{deux fois différentiable en $a$} si $\dd f$ est différentiable en $a$. Sa différentielle $\dd(\dd f)(a) \in \Lc(E, \Lc(E, F))$ s'identifie, par la proposition 6, à une application bilinéaire continue, la \mot{différentielle seconde} de $f$ en $a$ :
+\[ \rmath{\dd^{2} f(a)(h, k) = \big(\dd(\dd f)(a)\cdot h\big)\cdot k}. \]
+L'application $f$ est \mot{de classe $\Cc^{2}$} sur $U$ si elle est deux fois différentiable en tout point et si $\dd^{2} f : U \to \Lc_{2}(E, F)$ est continue.
+\end{tabularx}
+\end{center}
+
+\noindent Concrètement, $\dd^{2} f(a)(h, k)$ est la dérivée en $a$, dans la direction $h$, de la fonction $x \mapsto \dd f(x)\cdot k$ : on dérive d'abord selon $k$, puis selon $h$. En effet, $x \mapsto \dd f(x)\cdot k$ est la composée de $\dd f$ et de l'application linéaire continue «~évaluation en $k$~», d'où, par la règle de la chaîne,
+\[ \rmath{\dd^{2} f(a)(h, k) = D_{h}\big(D_{k} f\big)(a)}. \]
+
+\begin{cadre}
+\propo{7} \emph{(Dans $\R^{p}$.)} Soit $f : U \subset \R^{p} \to F$, deux fois différentiable en $a$. Les dérivées partielles secondes $\dfrac{\partial^{2} f}{\partial x_{i}\,\partial x_{j}}(a) = \dpd{}{x_{i}}\left(\dpd{f}{x_{j}}\right)(a)$ existent, et
+\[ \rmath{\dd^{2} f(a)(h, k) = \sum_{i, j = 1}^{p} \frac{\partial^{2} f}{\partial x_{i}\,\partial x_{j}}(a)\,h_{i}k_{j}}. \]
+De plus, $f$ est de classe $\Cc^{2}$ sur $U$ si et seulement si ses dérivées partielles d'ordre $1$ et $2$ existent et sont continues sur $U$. Pour $F = \R$, la matrice $\rmath{\Hs_{f}(a) = \left(\dfrac{\partial^{2} f}{\partial x_{i}\,\partial x_{j}}(a)\right)_{i, j}}$ est la \mot{matrice hessienne} de $f$ en $a$, et $\dd^{2} f(a)(h, k) = \tra{h}\,\Hs_{f}(a)\,k$.
+\end{cadre}
+
+\begin{demo}
+Par la formule précédente, $\dd^{2} f(a)(e_{i}, e_{j}) = D_{e_{i}}(D_{e_{j}} f)(a) = \dpd{}{x_{i}}\left(\dpd{f}{x_{j}}\right)(a)$, et l'on développe par bilinéarité. Pour la seconde affirmation, on écrit
+\[ \dd f(x)\cdot k = \sum_{j} k_{j}\,\frac{\partial f}{\partial x_{j}}(x) : \]
+l'application $\dd f$ correspond, par l'isomorphisme $u \mapsto (u(e_{1}), \dots, u(e_{p}))$ de $\Lc(\R^{p}, F)$ sur $F^{p}$, à la famille des dérivées partielles. Ainsi $\dd f$ est de classe $\Cc^{1}$ si et seulement si chaque $\dpd{f}{x_{j}}$ l'est, c'est-à-dire, par le théorème 5 du chapitre 2, si et seulement si leurs dérivées partielles sont continues.
+\end{demo}
+
+\begin{remarque}
+\emph{Piège de notation.} L'ordre des indices dans $\dfrac{\partial^{2} f}{\partial x_{i}\,\partial x_{j}}$ varie selon les ouvrages ; ici, on dérive d'abord par rapport à $x_{j}$, celui qui est le plus près de $f$. Le théorème de Schwarz (section 4.6) rendra cette précaution inutile pour les fonctions de classe $\Cc^{2}$, mais elle compte pour le contre-exemple de Peano.
+\end{remarque}
+
+\begin{exemples}
+  \item Pour une application bilinéaire continue $B$, la différentielle $\dd B(a, b)\cdot(h, k) = B(a, k) + B(h, b)$ (chapitre 2) dépend linéairement de $(a, b)$ ; sa différentielle est donc constante, et
+  \[ \dd^{2} B(a, b)\big((h, k), (h', k')\big) = B(h', k) + B(h, k'). \]
+  \item Pour $f(x) = \norme{x}_{2}^{2}$ sur $\R^{p}$, $\dd f(x)\cdot k = 2\ps{x}{k}$, donc $\dd^{2} f(a)(h, k) = 2\ps{h}{k}$ : la hessienne est $2I_{p}$.
+  \item Pour $f(x, y) = \ee^{x}\cos y$, on trouve
+  \[ \frac{\partial^{2} f}{\partial x^{2}} = \ee^{x}\cos y, \qquad \frac{\partial^{2} f}{\partial y^{2}} = -\ee^{x}\cos y, \qquad \frac{\partial^{2} f}{\partial x\,\partial y} = \frac{\partial^{2} f}{\partial y\,\partial x} = -\ee^{x}\sin y, \]
+  d'où $\Hs_{f}(0, 0) = \begin{pmatrix} 1 & 0 \\ 0 & -1 \end{pmatrix}$.
+\end{exemples}
+
+\subsection{La formule de Taylor à l'ordre 2}
+
+La méthode est toujours la même : restreindre $f$ au segment $[a, a + h]$ et appliquer les formules de la section 4.2 à $\varphi(t) = f(a + th)$. Si $f$ est de classe $\Cc^{2}$, la règle de la chaîne donne $\varphi'(t) = \dd f(a + th)\cdot h$, puis, en dérivant $t \mapsto \dd f(a + th)\cdot h$ de la même façon,
+\[ \rmath{\varphi''(t) = \dd^{2} f(a + th)(h, h)}. \]
+
+\begin{center}
+\begin{tabularx}{15cm}{||X||}
+\hline \\
+\textbf{\underline{\textcolor{rougecours}{Théorème 1 : Taylor à l'ordre 2 :}}} \\
+Soit $F$ un espace de Banach, $f : U \to F$ de classe $\Cc^{2}$, et $a$, $h$ tels que le segment $[a, a + h]$ soit inclus dans $U$.
+\begin{enumerate}[label=(\roman*),topsep=3pt,itemsep=2pt]
+  \item \emph{Reste intégral :} $f(a + h) = f(a) + \dd f(a)\cdot h + \displaystyle\int_{0}^{1} (1 - t)\,\dd^{2} f(a + th)(h, h)\,\dd t$.
+  \item \emph{Inégalité de Taylor-Lagrange :} si $\nop{\dd^{2} f(x)} \leqslant M$ sur $[a, a + h]$, alors
+  \[ \rmath{\norme{f(a + h) - f(a) - \dd f(a)\cdot h} \leqslant \frac{M}{2}\norme{h}^{2}}. \]
+  \item \emph{Taylor-Young :} quand $h \to 0$,
+  \[ \rmath{f(a + h) = f(a) + \dd f(a)\cdot h + \frac{1}{2}\,\dd^{2} f(a)(h, h) + o(\norme{h}^{2})}. \]
+\end{enumerate}
+\medbreak
+\\ \hline
+\end{tabularx}
+\end{center}
+
+\begin{demo}
+La fonction $\varphi(t) = f(a + th)$ est de classe $\Cc^{2}$ sur un intervalle ouvert contenant $[0, 1]$, puisque $U$ est ouvert. (i) est la proposition 1 pour $n = 1$ entre $0$ et $1$. (ii) découle de (i), puisque $\norme{\dd^{2} f(a + th)(h, h)} \leqslant M\norme{h}^{2}$ et $\displaystyle\int_{0}^{1}(1 - t)\,\dd t = \dfrac{1}{2}$. Pour (iii), on écrit $\dfrac{1}{2}\,\dd^{2} f(a)(h, h)$ comme l'intégrale de $(1 - t)\,\dd^{2} f(a)(h, h)$ sur $[0, 1]$, d'où
+\[ \norme{f(a + h) - f(a) - \dd f(a)\cdot h - \tfrac{1}{2}\,\dd^{2} f(a)(h, h)} \leqslant \frac{1}{2}\sup_{t \in [0, 1]} \nop{\dd^{2} f(a + th) - \dd^{2} f(a)}\,\norme{h}^{2}, \]
+et le $\sup$ tend vers $0$ avec $h$ par continuité de $\dd^{2} f$ en $a$.
+\end{demo}
+
+\noindent Dans $\R^{p}$, pour $f$ à valeurs réelles, la formule de Taylor-Young s'écrit avec le gradient et la hessienne :
+\[ \rmath{f(a + h) = f(a) + \ps{\grad f(a)}{h} + \frac{1}{2}\,\tra{h}\,\Hs_{f}(a)\,h + o(\norme{h}^{2})}. \]
+Le terme d'ordre $2$ est une forme quadratique en $h$, dont la section 4.3 a décrit les allures possibles.
+
+\begin{exemple}
+Pour $f(x, y) = \ee^{x}\cos y$ en $(0, 0)$, $f(0, 0) = 1$, $\grad f(0, 0) = (1, 0)$, et la hessienne calculée plus haut donne
+\[ \ee^{x}\cos y = 1 + x + \frac{x^{2} - y^{2}}{2} + o(x^{2} + y^{2}). \]
+On retrouve ce résultat en multipliant les développements d'une variable $\ee^{x} = 1 + x + \dfrac{x^{2}}{2} + o(x^{2})$ et $\cos y = 1 - \dfrac{y^{2}}{2} + o(y^{2})$, ce qui est souvent le moyen le plus rapide de calculer un développement de Taylor.
+\end{exemple}
+
+% ---- lignes de niveau 0.5, 0.75, 1, 1.25, 1.5 de f = e^x cos y (bleu) et de T2 = 1 + x + (x^2 - y^2)/2 (orange, tirets),
+% ---- extraites par matplotlib (contour) sur [-1.1, 1.1]^2 ; f = c coupe l'axe en x = ln c
+\begin{center}
+\begin{tikzpicture}[scale=2.6]
+  \begin{scope}
+    \clip (-1.1,-1.1) rectangle (1.1,1.1);
+\draw[couleurN,thick] plot[smooth] coordinates {(0.097,1.100) (0.078,1.090) (0.059,1.080) (0.040,1.070) (0.020,1.059) (0.000,1.047) (-0.020,1.035) (-0.037,1.025) (-0.055,1.014) (-0.075,1.002) (-0.093,0.990) (-0.110,0.979) (-0.130,0.965) (-0.145,0.954) (-0.165,0.940) (-0.180,0.929) (-0.199,0.915) (-0.215,0.902) (-0.230,0.890) (-0.248,0.875) (-0.265,0.861) (-0.280,0.848) (-0.295,0.834) (-0.311,0.820) (-0.327,0.805) (-0.342,0.790) (-0.357,0.775) (-0.371,0.760) (-0.385,0.745) (-0.400,0.729) (-0.415,0.712) (-0.429,0.695) (-0.442,0.680) (-0.455,0.663) (-0.469,0.645) (-0.480,0.630) (-0.494,0.610) (-0.505,0.594) (-0.518,0.575) (-0.530,0.556) (-0.540,0.539) (-0.551,0.520) (-0.563,0.500) (-0.573,0.480) (-0.583,0.460) (-0.593,0.440) (-0.602,0.420) (-0.611,0.400) (-0.620,0.378) (-0.629,0.355) (-0.636,0.335) (-0.644,0.310) (-0.650,0.290) (-0.658,0.265) (-0.664,0.240) (-0.670,0.215) (-0.675,0.190) (-0.679,0.165) (-0.683,0.140) (-0.687,0.115) (-0.690,0.085) (-0.691,0.060) (-0.693,0.030) (-0.693,0.000) (-0.693,-0.030) (-0.691,-0.060) (-0.690,-0.085) (-0.687,-0.115) (-0.683,-0.140) (-0.679,-0.165) (-0.675,-0.190) (-0.670,-0.215) (-0.664,-0.240) (-0.658,-0.265) (-0.650,-0.290) (-0.644,-0.310) (-0.636,-0.335) (-0.629,-0.355) (-0.620,-0.378) (-0.611,-0.400) (-0.602,-0.420) (-0.593,-0.440) (-0.583,-0.460) (-0.573,-0.480) (-0.563,-0.500) (-0.551,-0.520) (-0.540,-0.539) (-0.530,-0.556) (-0.518,-0.575) (-0.505,-0.594) (-0.494,-0.610) (-0.480,-0.630) (-0.469,-0.645) (-0.455,-0.663) (-0.442,-0.680) (-0.429,-0.695) (-0.415,-0.712) (-0.400,-0.729) (-0.385,-0.745) (-0.371,-0.760) (-0.357,-0.775) (-0.342,-0.790) (-0.327,-0.805) (-0.311,-0.820) (-0.295,-0.834) (-0.280,-0.848) (-0.265,-0.861) (-0.248,-0.875) (-0.230,-0.890) (-0.215,-0.902) (-0.199,-0.915) (-0.180,-0.929) (-0.165,-0.940) (-0.145,-0.954) (-0.130,-0.965) (-0.110,-0.979) (-0.093,-0.990) (-0.075,-1.002) (-0.055,-1.014) (-0.037,-1.025) (-0.020,-1.035) (0.000,-1.047) (0.020,-1.059) (0.040,-1.070) (0.059,-1.080) (0.078,-1.090) (0.097,-1.100)};
+\draw[couleurN,thick] plot[smooth] coordinates {(0.503,1.100) (0.483,1.090) (0.465,1.080) (0.445,1.069) (0.425,1.058) (0.405,1.047) (0.385,1.035) (0.368,1.025) (0.350,1.014) (0.330,1.001) (0.313,0.990) (0.295,0.978) (0.275,0.965) (0.260,0.954) (0.240,0.940) (0.225,0.929) (0.207,0.915) (0.190,0.902) (0.175,0.890) (0.157,0.875) (0.140,0.861) (0.125,0.847) (0.110,0.834) (0.095,0.820) (0.079,0.805) (0.064,0.790) (0.049,0.775) (0.034,0.760) (0.020,0.745) (0.005,0.728) (-0.010,0.711) (-0.024,0.695) (-0.036,0.680) (-0.050,0.663) (-0.063,0.645) (-0.075,0.629) (-0.089,0.610) (-0.100,0.594) (-0.112,0.575) (-0.125,0.555) (-0.135,0.539) (-0.146,0.520) (-0.157,0.500) (-0.168,0.480) (-0.178,0.460) (-0.188,0.440) (-0.197,0.420) (-0.205,0.400) (-0.215,0.377) (-0.223,0.355) (-0.230,0.335) (-0.239,0.310) (-0.245,0.290) (-0.252,0.265) (-0.259,0.240) (-0.264,0.215) (-0.270,0.190) (-0.274,0.165) (-0.278,0.140) (-0.281,0.115) (-0.284,0.085) (-0.286,0.060) (-0.287,0.030) (-0.288,0.000) (-0.287,-0.030) (-0.286,-0.060) (-0.284,-0.085) (-0.281,-0.115) (-0.278,-0.140) (-0.274,-0.165) (-0.270,-0.190) (-0.264,-0.215) (-0.259,-0.240) (-0.252,-0.265) (-0.245,-0.290) (-0.239,-0.310) (-0.230,-0.335) (-0.223,-0.355) (-0.215,-0.377) (-0.205,-0.400) (-0.197,-0.420) (-0.188,-0.440) (-0.178,-0.460) (-0.168,-0.480) (-0.157,-0.500) (-0.146,-0.520) (-0.135,-0.539) (-0.125,-0.555) (-0.112,-0.575) (-0.100,-0.594) (-0.089,-0.610) (-0.075,-0.629) (-0.063,-0.645) (-0.050,-0.663) (-0.036,-0.680) (-0.024,-0.695) (-0.010,-0.711) (0.005,-0.728) (0.020,-0.745) (0.034,-0.760) (0.049,-0.775) (0.064,-0.790) (0.079,-0.805) (0.095,-0.820) (0.110,-0.834) (0.125,-0.847) (0.140,-0.861) (0.157,-0.875) (0.175,-0.890) (0.190,-0.902) (0.207,-0.915) (0.225,-0.929) (0.240,-0.940) (0.260,-0.954) (0.275,-0.965) (0.295,-0.978) (0.313,-0.990) (0.330,-1.001) (0.350,-1.014) (0.368,-1.025) (0.385,-1.035) (0.405,-1.047) (0.425,-1.058) (0.445,-1.069) (0.465,-1.080) (0.483,-1.090) (0.503,-1.100)};
+\draw[couleurN,thick] plot[smooth] coordinates {(0.791,1.100) (0.771,1.090) (0.752,1.080) (0.734,1.070) (0.715,1.060) (0.695,1.048) (0.675,1.037) (0.656,1.025) (0.639,1.015) (0.620,1.003) (0.600,0.990) (0.585,0.980) (0.565,0.966) (0.549,0.955) (0.530,0.941) (0.514,0.930) (0.495,0.915) (0.480,0.904) (0.463,0.890) (0.445,0.875) (0.430,0.863) (0.415,0.850) (0.399,0.835) (0.382,0.820) (0.367,0.805) (0.351,0.790) (0.336,0.775) (0.322,0.760) (0.308,0.745) (0.294,0.730) (0.280,0.714) (0.265,0.696) (0.252,0.680) (0.240,0.665) (0.225,0.646) (0.213,0.630) (0.200,0.612) (0.189,0.595) (0.175,0.575) (0.165,0.559) (0.153,0.540) (0.142,0.520) (0.131,0.500) (0.120,0.480) (0.110,0.460) (0.100,0.440) (0.091,0.420) (0.082,0.400) (0.074,0.380) (0.065,0.357) (0.057,0.335) (0.050,0.314) (0.043,0.290) (0.036,0.265) (0.030,0.244) (0.024,0.220) (0.019,0.195) (0.015,0.170) (0.010,0.141) (0.007,0.115) (0.004,0.090) (0.002,0.060) (0.000,0.030) (0.000,0.000) (0.000,-0.030) (0.002,-0.060) (0.004,-0.090) (0.007,-0.115) (0.010,-0.141) (0.015,-0.170) (0.019,-0.195) (0.024,-0.220) (0.030,-0.244) (0.036,-0.265) (0.043,-0.290) (0.050,-0.314) (0.057,-0.335) (0.065,-0.357) (0.074,-0.380) (0.082,-0.400) (0.091,-0.420) (0.100,-0.440) (0.110,-0.460) (0.120,-0.480) (0.131,-0.500) (0.142,-0.520) (0.153,-0.540) (0.165,-0.559) (0.175,-0.575) (0.189,-0.595) (0.200,-0.612) (0.213,-0.630) (0.225,-0.646) (0.240,-0.665) (0.252,-0.680) (0.265,-0.696) (0.280,-0.714) (0.294,-0.730) (0.308,-0.745) (0.322,-0.760) (0.336,-0.775) (0.351,-0.790) (0.367,-0.805) (0.382,-0.820) (0.399,-0.835) (0.415,-0.850) (0.430,-0.863) (0.445,-0.875) (0.463,-0.890) (0.480,-0.904) (0.495,-0.915) (0.514,-0.930) (0.530,-0.941) (0.549,-0.955) (0.565,-0.966) (0.585,-0.980) (0.600,-0.990) (0.620,-1.003) (0.639,-1.015) (0.656,-1.025) (0.675,-1.037) (0.695,-1.048) (0.715,-1.060) (0.734,-1.070) (0.752,-1.080) (0.771,-1.090) (0.791,-1.100)};
+\draw[couleurN,thick] plot[smooth] coordinates {(1.014,1.100) (0.994,1.090) (0.975,1.080) (0.955,1.069) (0.935,1.058) (0.915,1.046) (0.895,1.035) (0.879,1.025) (0.860,1.013) (0.840,1.001) (0.823,0.990) (0.805,0.978) (0.786,0.965) (0.770,0.954) (0.751,0.940) (0.735,0.928) (0.718,0.915) (0.700,0.901) (0.685,0.889) (0.668,0.875) (0.650,0.860) (0.635,0.847) (0.620,0.833) (0.605,0.819) (0.590,0.805) (0.574,0.790) (0.559,0.775) (0.545,0.760) (0.530,0.744) (0.515,0.727) (0.500,0.710) (0.487,0.695) (0.475,0.680) (0.460,0.661) (0.447,0.645) (0.435,0.628) (0.422,0.610) (0.410,0.592) (0.398,0.575) (0.386,0.555) (0.375,0.537) (0.365,0.520) (0.354,0.500) (0.343,0.480) (0.333,0.460) (0.323,0.440) (0.314,0.420) (0.305,0.399) (0.295,0.375) (0.288,0.355) (0.280,0.334) (0.272,0.310) (0.265,0.287) (0.259,0.265) (0.252,0.240) (0.246,0.215) (0.241,0.190) (0.237,0.165) (0.233,0.140) (0.230,0.115) (0.227,0.085) (0.225,0.060) (0.224,0.030) (0.223,0.000) (0.224,-0.030) (0.225,-0.060) (0.227,-0.085) (0.230,-0.115) (0.233,-0.140) (0.237,-0.165) (0.241,-0.190) (0.246,-0.215) (0.252,-0.240) (0.259,-0.265) (0.265,-0.287) (0.272,-0.310) (0.280,-0.334) (0.288,-0.355) (0.295,-0.375) (0.305,-0.399) (0.314,-0.420) (0.323,-0.440) (0.333,-0.460) (0.343,-0.480) (0.354,-0.500) (0.365,-0.520) (0.375,-0.537) (0.386,-0.555) (0.398,-0.575) (0.410,-0.592) (0.422,-0.610) (0.435,-0.628) (0.447,-0.645) (0.460,-0.661) (0.475,-0.680) (0.487,-0.695) (0.500,-0.710) (0.515,-0.727) (0.530,-0.744) (0.545,-0.760) (0.559,-0.775) (0.574,-0.790) (0.590,-0.805) (0.605,-0.819) (0.620,-0.833) (0.635,-0.847) (0.650,-0.860) (0.668,-0.875) (0.685,-0.889) (0.700,-0.901) (0.718,-0.915) (0.735,-0.928) (0.751,-0.940) (0.770,-0.954) (0.786,-0.965) (0.805,-0.978) (0.823,-0.990) (0.840,-1.001) (0.860,-1.013) (0.879,-1.025) (0.895,-1.035) (0.915,-1.046) (0.935,-1.058) (0.955,-1.069) (0.975,-1.080) (0.994,-1.090) (1.014,-1.100)};
+\draw[couleurN,thick] plot[smooth] coordinates {(1.100,1.048) (1.080,1.036) (1.061,1.025) (1.045,1.015) (1.025,1.003) (1.006,0.990) (0.990,0.980) (0.970,0.966) (0.954,0.955) (0.935,0.941) (0.920,0.930) (0.900,0.915) (0.885,0.903) (0.868,0.890) (0.850,0.875) (0.835,0.862) (0.820,0.849) (0.804,0.835) (0.788,0.820) (0.772,0.805) (0.757,0.790) (0.742,0.775) (0.727,0.760) (0.713,0.745) (0.700,0.730) (0.685,0.713) (0.670,0.696) (0.657,0.680) (0.645,0.665) (0.630,0.645) (0.619,0.630) (0.605,0.611) (0.594,0.595) (0.581,0.575) (0.570,0.558) (0.559,0.540) (0.547,0.520) (0.536,0.500) (0.525,0.480) (0.515,0.460) (0.506,0.440) (0.496,0.420) (0.488,0.400) (0.479,0.380) (0.470,0.355) (0.463,0.335) (0.455,0.312) (0.448,0.290) (0.441,0.265) (0.435,0.242) (0.430,0.220) (0.425,0.195) (0.420,0.170) (0.415,0.140) (0.412,0.115) (0.410,0.090) (0.407,0.060) (0.406,0.030) (0.405,0.000) (0.406,-0.030) (0.407,-0.060) (0.410,-0.090) (0.412,-0.115) (0.415,-0.140) (0.420,-0.170) (0.425,-0.195) (0.430,-0.220) (0.435,-0.242) (0.441,-0.265) (0.448,-0.290) (0.455,-0.312) (0.463,-0.335) (0.470,-0.355) (0.479,-0.380) (0.488,-0.400) (0.496,-0.420) (0.506,-0.440) (0.515,-0.460) (0.525,-0.480) (0.536,-0.500) (0.547,-0.520) (0.559,-0.540) (0.570,-0.558) (0.581,-0.575) (0.594,-0.595) (0.605,-0.611) (0.619,-0.630) (0.630,-0.645) (0.645,-0.665) (0.657,-0.680) (0.670,-0.696) (0.685,-0.713) (0.700,-0.730) (0.713,-0.745) (0.727,-0.760) (0.742,-0.775) (0.757,-0.790) (0.772,-0.805) (0.788,-0.820) (0.804,-0.835) (0.820,-0.849) (0.835,-0.862) (0.850,-0.875) (0.868,-0.890) (0.885,-0.903) (0.900,-0.915) (0.920,-0.930) (0.935,-0.941) (0.954,-0.955) (0.970,-0.966) (0.990,-0.980) (1.006,-0.990) (1.025,-1.003) (1.045,-1.015) (1.061,-1.025) (1.080,-1.036) (1.100,-1.048)};
+\draw[couleurD,thick,densely dashed] plot[smooth] coordinates {(-1.100,-0.100) (-1.085,-0.085) (-1.070,-0.070) (-1.055,-0.055) (-1.040,-0.040) (-1.025,-0.025) (-1.010,-0.010) (-1.010,0.010) (-1.025,0.025) (-1.040,0.040) (-1.055,0.055) (-1.070,0.070) (-1.085,0.085) (-1.100,0.100)};
+\draw[couleurD,thick,densely dashed] plot[smooth] coordinates {(0.100,1.100) (0.085,1.085) (0.070,1.070) (0.055,1.055) (0.040,1.040) (0.025,1.025) (0.010,1.010) (-0.005,0.995) (-0.020,0.980) (-0.035,0.965) (-0.050,0.950) (-0.065,0.935) (-0.080,0.920) (-0.095,0.905) (-0.110,0.890) (-0.125,0.875) (-0.140,0.860) (-0.155,0.845) (-0.170,0.830) (-0.185,0.815) (-0.200,0.800) (-0.215,0.785) (-0.230,0.770) (-0.245,0.755) (-0.260,0.740) (-0.275,0.725) (-0.290,0.710) (-0.305,0.695) (-0.320,0.680) (-0.335,0.665) (-0.350,0.650) (-0.365,0.635) (-0.380,0.620) (-0.395,0.605) (-0.410,0.590) (-0.425,0.575) (-0.440,0.560) (-0.455,0.545) (-0.470,0.530) (-0.485,0.515) (-0.500,0.500) (-0.515,0.485) (-0.530,0.470) (-0.545,0.455) (-0.560,0.440) (-0.575,0.425) (-0.590,0.410) (-0.605,0.395) (-0.620,0.380) (-0.635,0.365) (-0.650,0.350) (-0.665,0.335) (-0.680,0.320) (-0.695,0.305) (-0.710,0.290) (-0.725,0.275) (-0.740,0.260) (-0.755,0.245) (-0.770,0.230) (-0.785,0.215) (-0.800,0.200) (-0.815,0.185) (-0.830,0.170) (-0.845,0.155) (-0.860,0.140) (-0.875,0.125) (-0.890,0.110) (-0.905,0.095) (-0.920,0.080) (-0.935,0.065) (-0.950,0.050) (-0.965,0.035) (-0.980,0.020) (-0.995,0.005) (-0.990,-0.010) (-0.975,-0.025) (-0.960,-0.040) (-0.945,-0.055) (-0.930,-0.070) (-0.915,-0.085) (-0.900,-0.100) (-0.885,-0.115) (-0.870,-0.130) (-0.855,-0.145) (-0.840,-0.160) (-0.825,-0.175) (-0.810,-0.190) (-0.795,-0.205) (-0.780,-0.220) (-0.765,-0.235) (-0.750,-0.250) (-0.735,-0.265) (-0.720,-0.280) (-0.705,-0.295) (-0.690,-0.310) (-0.675,-0.325) (-0.660,-0.340) (-0.645,-0.355) (-0.630,-0.370) (-0.615,-0.385) (-0.600,-0.400) (-0.585,-0.415) (-0.570,-0.430) (-0.555,-0.445) (-0.540,-0.460) (-0.525,-0.475) (-0.510,-0.490) (-0.495,-0.505) (-0.480,-0.520) (-0.465,-0.535) (-0.450,-0.550) (-0.435,-0.565) (-0.420,-0.580) (-0.405,-0.595) (-0.390,-0.610) (-0.375,-0.625) (-0.360,-0.640) (-0.345,-0.655) (-0.330,-0.670) (-0.315,-0.685) (-0.300,-0.700) (-0.285,-0.715) (-0.270,-0.730) (-0.255,-0.745) (-0.240,-0.760) (-0.225,-0.775) (-0.210,-0.790) (-0.195,-0.805) (-0.180,-0.820) (-0.165,-0.835) (-0.150,-0.850) (-0.135,-0.865) (-0.120,-0.880) (-0.105,-0.895) (-0.090,-0.910) (-0.075,-0.925) (-0.060,-0.940) (-0.045,-0.955) (-0.030,-0.970) (-0.015,-0.985) (0.000,-1.000) (0.015,-1.015) (0.030,-1.030) (0.045,-1.045) (0.060,-1.060) (0.075,-1.075) (0.090,-1.090)};
+\draw[couleurD,thick,densely dashed] plot[smooth] coordinates {(0.308,1.100) (0.295,1.085) (0.280,1.067) (0.266,1.050) (0.253,1.035) (0.240,1.019) (0.225,1.000) (0.213,0.985) (0.200,0.970) (0.185,0.951) (0.172,0.935) (0.160,0.920) (0.145,0.901) (0.133,0.885) (0.120,0.869) (0.106,0.850) (0.094,0.835) (0.080,0.816) (0.068,0.800) (0.055,0.783) (0.042,0.765) (0.030,0.749) (0.016,0.730) (0.005,0.714) (-0.009,0.695) (-0.020,0.679) (-0.033,0.660) (-0.045,0.642) (-0.056,0.625) (-0.069,0.605) (-0.080,0.589) (-0.092,0.570) (-0.104,0.550) (-0.115,0.532) (-0.125,0.515) (-0.137,0.495) (-0.148,0.475) (-0.159,0.455) (-0.170,0.435) (-0.180,0.415) (-0.190,0.395) (-0.200,0.375) (-0.209,0.355) (-0.218,0.335) (-0.226,0.315) (-0.235,0.292) (-0.243,0.270) (-0.250,0.250) (-0.258,0.225) (-0.265,0.201) (-0.270,0.180) (-0.276,0.155) (-0.281,0.130) (-0.285,0.105) (-0.289,0.075) (-0.291,0.050) (-0.293,0.020) (-0.293,-0.010) (-0.292,-0.040) (-0.290,-0.065) (-0.287,-0.095) (-0.283,-0.120) (-0.278,-0.145) (-0.273,-0.170) (-0.267,-0.195) (-0.260,-0.218) (-0.253,-0.240) (-0.245,-0.265) (-0.238,-0.285) (-0.230,-0.305) (-0.220,-0.329) (-0.211,-0.350) (-0.202,-0.370) (-0.192,-0.390) (-0.183,-0.410) (-0.172,-0.430) (-0.162,-0.450) (-0.151,-0.470) (-0.140,-0.489) (-0.130,-0.507) (-0.119,-0.525) (-0.107,-0.545) (-0.095,-0.565) (-0.085,-0.581) (-0.073,-0.600) (-0.060,-0.619) (-0.050,-0.635) (-0.036,-0.655) (-0.025,-0.671) (-0.012,-0.690) (0.000,-0.707) (0.013,-0.725) (0.025,-0.742) (0.038,-0.760) (0.050,-0.776) (0.064,-0.795) (0.075,-0.810) (0.090,-0.830) (0.102,-0.845) (0.115,-0.862) (0.129,-0.880) (0.141,-0.895) (0.155,-0.913) (0.168,-0.930) (0.180,-0.945) (0.195,-0.963) (0.208,-0.980) (0.221,-0.995) (0.235,-1.013) (0.249,-1.030) (0.262,-1.045) (0.275,-1.061) (0.290,-1.079) (0.303,-1.095)};
+\draw[couleurD,thick,densely dashed] plot[smooth] coordinates {(0.487,1.100) (0.475,1.084) (0.461,1.065) (0.450,1.050) (0.436,1.030) (0.425,1.015) (0.411,0.995) (0.400,0.980) (0.386,0.960) (0.375,0.944) (0.362,0.925) (0.350,0.907) (0.339,0.890) (0.325,0.870) (0.315,0.854) (0.303,0.835) (0.290,0.815) (0.280,0.799) (0.268,0.780) (0.256,0.760) (0.245,0.742) (0.235,0.725) (0.224,0.705) (0.212,0.685) (0.201,0.665) (0.190,0.645) (0.180,0.626) (0.170,0.607) (0.160,0.588) (0.150,0.568) (0.140,0.547) (0.130,0.526) (0.120,0.505) (0.111,0.485) (0.103,0.465) (0.095,0.445) (0.085,0.421) (0.077,0.400) (0.070,0.380) (0.061,0.355) (0.055,0.335) (0.047,0.310) (0.040,0.286) (0.035,0.265) (0.028,0.240) (0.023,0.215) (0.018,0.190) (0.014,0.165) (0.010,0.140) (0.006,0.110) (0.004,0.085) (0.002,0.055) (0.000,0.025) (0.000,-0.005) (0.001,-0.035) (0.002,-0.065) (0.005,-0.095) (0.007,-0.120) (0.010,-0.145) (0.015,-0.174) (0.020,-0.200) (0.025,-0.225) (0.030,-0.247) (0.036,-0.270) (0.043,-0.295) (0.050,-0.320) (0.056,-0.340) (0.065,-0.365) (0.072,-0.385) (0.080,-0.408) (0.089,-0.430) (0.097,-0.450) (0.105,-0.470) (0.115,-0.493) (0.125,-0.515) (0.134,-0.535) (0.144,-0.555) (0.154,-0.575) (0.164,-0.595) (0.174,-0.615) (0.185,-0.635) (0.195,-0.654) (0.205,-0.672) (0.215,-0.690) (0.226,-0.710) (0.238,-0.730) (0.250,-0.750) (0.260,-0.767) (0.271,-0.785) (0.284,-0.805) (0.295,-0.823) (0.306,-0.840) (0.319,-0.860) (0.330,-0.877) (0.342,-0.895) (0.355,-0.914) (0.366,-0.930) (0.379,-0.950) (0.390,-0.965) (0.404,-0.985) (0.415,-1.001) (0.428,-1.020) (0.440,-1.036) (0.454,-1.055) (0.465,-1.071) (0.479,-1.090)};
+\draw[couleurD,thick,densely dashed] plot[smooth] coordinates {(0.646,1.100) (0.635,1.083) (0.623,1.065) (0.610,1.045) (0.600,1.030) (0.587,1.010) (0.575,0.990) (0.565,0.974) (0.553,0.955) (0.541,0.935) (0.530,0.917) (0.520,0.900) (0.508,0.880) (0.497,0.860) (0.485,0.840) (0.475,0.822) (0.465,0.804) (0.455,0.785) (0.444,0.765) (0.434,0.745) (0.423,0.725) (0.413,0.705) (0.403,0.685) (0.394,0.665) (0.384,0.645) (0.375,0.625) (0.365,0.603) (0.355,0.580) (0.347,0.560) (0.339,0.540) (0.330,0.519) (0.321,0.495) (0.314,0.475) (0.305,0.451) (0.298,0.430) (0.290,0.405) (0.284,0.385) (0.277,0.360) (0.270,0.336) (0.265,0.315) (0.259,0.290) (0.253,0.265) (0.248,0.240) (0.243,0.215) (0.239,0.190) (0.235,0.160) (0.232,0.135) (0.230,0.110) (0.227,0.080) (0.226,0.050) (0.225,0.025) (0.225,-0.005) (0.225,-0.030) (0.226,-0.060) (0.228,-0.090) (0.230,-0.115) (0.233,-0.145) (0.236,-0.170) (0.240,-0.195) (0.245,-0.224) (0.250,-0.250) (0.255,-0.274) (0.260,-0.296) (0.266,-0.320) (0.272,-0.345) (0.279,-0.370) (0.285,-0.390) (0.293,-0.415) (0.300,-0.436) (0.308,-0.460) (0.315,-0.480) (0.325,-0.505) (0.333,-0.525) (0.341,-0.545) (0.350,-0.568) (0.359,-0.590) (0.368,-0.610) (0.377,-0.630) (0.387,-0.650) (0.396,-0.670) (0.406,-0.690) (0.416,-0.710) (0.426,-0.730) (0.436,-0.750) (0.447,-0.770) (0.457,-0.790) (0.468,-0.810) (0.479,-0.830) (0.490,-0.849) (0.500,-0.866) (0.511,-0.885) (0.523,-0.905) (0.535,-0.925) (0.545,-0.942) (0.556,-0.960) (0.569,-0.980) (0.580,-0.998) (0.591,-1.015) (0.604,-1.035) (0.615,-1.053) (0.626,-1.070) (0.640,-1.090)};
+\draw[couleurD,thick,densely dashed] plot[smooth] coordinates {(0.792,1.100) (0.780,1.081) (0.770,1.064) (0.758,1.045) (0.747,1.025) (0.735,1.005) (0.725,0.988) (0.715,0.970) (0.704,0.950) (0.693,0.930) (0.682,0.910) (0.671,0.890) (0.660,0.870) (0.650,0.850) (0.640,0.830) (0.630,0.810) (0.620,0.790) (0.610,0.770) (0.601,0.750) (0.592,0.730) (0.582,0.710) (0.574,0.690) (0.565,0.670) (0.555,0.647) (0.546,0.625) (0.538,0.605) (0.530,0.584) (0.521,0.560) (0.514,0.540) (0.505,0.515) (0.498,0.495) (0.490,0.470) (0.484,0.450) (0.477,0.425) (0.470,0.401) (0.464,0.380) (0.458,0.355) (0.452,0.330) (0.447,0.305) (0.442,0.280) (0.437,0.255) (0.433,0.230) (0.429,0.205) (0.425,0.175) (0.422,0.150) (0.420,0.125) (0.417,0.095) (0.416,0.065) (0.415,0.040) (0.414,0.010) (0.414,-0.020) (0.415,-0.047) (0.416,-0.075) (0.418,-0.105) (0.420,-0.130) (0.423,-0.160) (0.426,-0.185) (0.430,-0.212) (0.434,-0.240) (0.439,-0.265) (0.444,-0.290) (0.449,-0.315) (0.455,-0.340) (0.460,-0.363) (0.466,-0.385) (0.472,-0.410) (0.480,-0.435) (0.486,-0.455) (0.493,-0.480) (0.500,-0.500) (0.509,-0.525) (0.516,-0.545) (0.525,-0.570) (0.532,-0.590) (0.540,-0.610) (0.550,-0.634) (0.559,-0.655) (0.567,-0.675) (0.576,-0.695) (0.585,-0.716) (0.595,-0.738) (0.605,-0.759) (0.615,-0.780) (0.625,-0.800) (0.635,-0.820) (0.645,-0.840) (0.655,-0.860) (0.665,-0.879) (0.675,-0.898) (0.685,-0.916) (0.695,-0.935) (0.706,-0.955) (0.718,-0.975) (0.729,-0.995) (0.740,-1.014) (0.750,-1.031) (0.761,-1.050) (0.773,-1.070) (0.785,-1.089)};
+  \end{scope}
+  \draw[gray] (-1.1,-1.1) rectangle (1.1,1.1);
+  \draw[gray,densely dotted] (-1.1,0) -- (1.1,0) (0,-1.1) -- (0,1.1);
+  \fill[rougecours] (0,0) circle (0.7pt);
+  \foreach \x/\l in {-0.693/{0{,}5},-0.288/{0{,}75},0/1,0.405/{1{,}5}} \node[couleurN,font=\scriptsize,anchor=north] at (\x,-1.12) {$\l$};
+  \node[couleurN,font=\scriptsize,anchor=north] at (0.223,-1.27) {$1{,}25$};
+  \draw[couleurN,thin] (0.223,-1.1) -- (0.223,-1.27);
+  \draw[couleurN,thick] (1.3,0.5) -- (1.5,0.5) node[right,font=\small] {$f$};
+  \draw[couleurD,thick,densely dashed] (1.3,0.25) -- (1.5,0.25) node[right,font=\small] {$T_{2}$};
+\end{tikzpicture}
+\end{center}
+
+\noindent Les lignes de niveau $0{,}5$ ; $0{,}75$ ; $1$ ; $1{,}25$ ; $1{,}5$ de $f$, en bleu, et de son approximation d'ordre $2$, en tirets orange, sur le carré $[-1{,}1 ; 1{,}1]^{2}$, les niveaux étant indiqués sous le cadre. Près de l'origine, en rouge, les deux familles se confondent ; elles s'écartent quand on s'en éloigne, d'autant plus vite que le terme d'ordre $3$ négligé, $\dfrac{x^{3}}{6} - \dfrac{xy^{2}}{2}$, devient important. Le niveau $0{,}5$ de l'approximation se réduit même à deux droites sécantes, puisque $T_{2}(x, y) - \dfrac{1}{2} = \dfrac{(x + 1)^{2} - y^{2}}{2}$ : loin du point, la forme de la ligne de niveau n'a plus rien à voir avec celle de $f$.
+
+\noindent La figure suivante mesure cet accord. Le long de la direction $u = (0{,}8 ; 0{,}6)$, on trace l'erreur commise en remplaçant $f(tu)$ par son approximation d'ordre $1$, puis d'ordre $2$, en fonction de $t$, en échelle logarithmique.
+
+% ---- erreurs |f(tu) - T1(tu)| et |f(tu) - T2(tu)|, u = (0.8, 0.6), t de 1e-3 a 1 ; pentes calculees 1.998 et 3.003
+\begin{center}
+\begin{tikzpicture}
+  \begin{loglogaxis}[width=10cm,height=6.4cm,xmin=8e-4,xmax=1.2,ymin=3e-11,ymax=0.5,
+    xlabel={$t$},ylabel={erreur},label style={font=\small},tick label style={font=\scriptsize},clip=false]
+    \addplot[couleurD!55,thick,mark=*,mark size=1.2pt] coordinates {(1.000e-03,1.399e-07) (1.778e-03,4.424e-07) (3.162e-03,1.398e-06) (5.623e-03,4.417e-06) (1.000e-02,1.394e-05) (1.778e-02,4.394e-05) (3.162e-02,1.381e-04) (5.623e-02,4.319e-04) (1.000e-01,1.338e-03) (1.778e-01,4.061e-03) (3.162e-01,1.177e-02) (5.623e-01,2.983e-02) (1.000e+00,3.682e-02)};
+    \addplot[couleurD,thick,mark=square*,mark size=1.2pt] coordinates {(1.000e-03,5.870e-11) (1.778e-03,3.303e-10) (3.162e-03,1.859e-09) (5.623e-03,1.047e-08) (1.000e-02,5.902e-08) (1.778e-02,3.334e-07) (3.162e-02,1.891e-06) (5.623e-02,1.079e-05) (1.000e-01,6.226e-05) (1.778e-01,3.666e-04) (3.162e-01,2.234e-03) (5.623e-01,1.445e-02) (1.000e+00,1.032e-01)};
+    \node[couleurD!65,font=\small,anchor=south east] at (axis cs:0.012,6e-5) {ordre 1 : pente $2$};
+    \node[couleurD,font=\small,anchor=west] at (axis cs:0.03,3e-9) {ordre 2 : pente $3$};
+  \end{loglogaxis}
+\end{tikzpicture}
+\end{center}
+
+\noindent Les deux nuages de points sont alignés, de pentes respectives $2$ et $3$ (les régressions sur les six premiers points donnent $1{,}998$ et $3{,}003$) : l'erreur d'ordre $1$ se comporte comme $t^{2}$, celle d'ordre $2$ comme $t^{3}$. Diviser $t$ par $10$ divise la première par $100$ et la seconde par $1\,000$. Pour $t = 1$, en revanche, l'approximation d'ordre $2$ est moins bonne que celle d'ordre $1$ : Taylor-Young ne dit rien loin du point.
+
+\needspace{14\baselineskip}
+\subsection{Calcul formel avec Python}
+
+La bibliothèque \texttt{sympy} calcule gradients, hessiennes et développements de Taylor, ce qui permet de vérifier les calculs à la main.
+
+\begin{lstlisting}
+import sympy as sp
+x, y = sp.symbols('x y')
+f = sp.exp(x)*sp.cos(y)
+
+grad = [sp.diff(f, v).subs({x: 0, y: 0}) for v in (x, y)]
+H = sp.hessian(f, (x, y)).subs({x: 0, y: 0})
+T2 = f.subs({x: 0, y: 0}) + grad[0]*x + grad[1]*y \
+     + sp.Rational(1, 2)*sp.expand((sp.Matrix([[x, y]])*H*sp.Matrix([x, y]))[0])
+print(grad, H, T2)
+\end{lstlisting}
+
+\noindent Le programme affiche \texttt{[1, 0]}, puis la matrice \texttt{Matrix([[1, 0], [0, -1]])}, puis le polynôme \texttt{x**2/2 + x - y**2/2 + 1}, conformément au calcul précédent.
+
+\subsection{Retour sur la méthode de Newton}
+
+Le chapitre 3 a établi la convergence quadratique de la méthode de Newton sous l'hypothèse que $\dd f$ est lipschitzienne près de la racine (chapitre 3, proposition 3), et annoncé que cette hypothèse est satisfaite par les fonctions de classe $\Cc^{2}$.
+
+\begin{cadre}
+\propo{8} Soit $f : U \to F$ de classe $\Cc^{2}$, et $C$ une partie convexe de $U$ sur laquelle $\nop{\dd^{2} f(x)} \leqslant M$. Alors $\dd f$ est $M$-lipschitzienne sur $C$. En particulier, si $U \subset \R^{p}$, $\dd f$ est lipschitzienne sur toute boule fermée incluse dans $U$, et la méthode de Newton converge quadratiquement au voisinage de toute racine $c$ telle que $\dd f(c)$ soit inversible.
+\end{cadre}
+
+\begin{demo}
+L'application $\dd f : U \to \Lc(E, F)$ est différentiable, de différentielle $\dd(\dd f)(x)$, de norme $\nop{\dd^{2} f(x)} \leqslant M$ par la proposition 6. L'inégalité des accroissements finis (chapitre 2, théorème 4) sur la partie convexe $C$ donne $\nop{\dd f(x) - \dd f(x')} \leqslant M\norme{x - x'}$. Dans $\R^{p}$, une boule fermée est compacte (chapitre 1, théorème 2), et $\dd^{2} f$, continue, y est bornée (chapitre 1, théorème 3) ; on conclut par la proposition 3 du chapitre 3.
+\end{demo}
+%===============================================================================
+\section[Applications multilinéaires]{Applications multilinéaires continues}
+%===============================================================================
+
+Les différentielles d'ordre $k$ seront des applications $k$-linéaires. On étend donc la section 4.3 à un nombre quelconque de variables, avec les mêmes démonstrations.
+
+\begin{center}
+\begin{tabularx}{15cm}{||X}
+\noindent \textbf{\underline{Définition :}} Soit $E_{1}$, \dots, $E_{n}$ et $G$ des espaces normés. Une application $M : E_{1} \times \dots \times E_{n} \to G$ est \mot{$n$-linéaire} si elle est linéaire par rapport à chaque variable, les autres étant fixées. On note $\Lc_{n}(E_{1} \times \dots \times E_{n}, G)$ l'ensemble des applications $n$-linéaires continues, et $\rmath{\Lc_{n}(E, G)}$ lorsque tous les $E_{i}$ sont égaux à $E$. Une application $n$-linéaire $M : E^{n} \to G$ est \mot{symétrique} si $M(h_{\sigma(1)}, \dots, h_{\sigma(n)}) = M(h_{1}, \dots, h_{n})$ pour toute permutation $\sigma$ de $\llbracket 1, n \rrbracket$.
+\end{tabularx}
+\end{center}
+
+\begin{cadre}
+\propo{9} Une application $n$-linéaire $M$ est continue si et seulement s'il existe $C \geqslant 0$ tel que
+\[ \rmath{\norme{M(x_{1}, \dots, x_{n})} \leqslant C\norme{x_{1}}\cdots\norme{x_{n}}} \qquad \text{pour tous } x_{1}, \dots, x_{n}. \]
+La plus petite constante $C$, notée $\nop{M}$, est une norme sur $\Lc_{n}(E_{1} \times \dots \times E_{n}, G)$. Si les $E_{i}$ sont de dimension finie, toute application $n$-linéaire est continue.
+\end{cadre}
+
+\begin{demo}
+La démonstration de la proposition 5 s'adapte sans changement : la continuité en $0$ donne la constante $C = r^{-n}$, et la différence entre $M(x_{1}, \dots, x_{n})$ et $M(y_{1}, \dots, y_{n})$ s'écrit comme une somme de $n$ termes où une seule variable change, le premier étant $M(x_{1} - y_{1}, x_{2}, \dots, x_{n})$. En dimension finie, on développe chaque $x_{i}$ dans une base : $M(x_{1}, \dots, x_{n})$ est une somme finie de produits de coordonnées par des vecteurs fixes, majorée par $C\norme{x_{1}}_{\infty}\cdots\norme{x_{n}}_{\infty}$, et toutes les normes sont équivalentes.
+\end{demo}
+
+\begin{cadre}
+\propo{10} L'application qui à $u \in \Lc(E_{1}, \Lc_{n - 1}(E_{2} \times \dots \times E_{n}, G))$ associe $(x_{1}, \dots, x_{n}) \mapsto u(x_{1})(x_{2}, \dots, x_{n})$ est une bijection linéaire, qui conserve la norme, sur $\Lc_{n}(E_{1} \times \dots \times E_{n}, G)$. Si $G$ est un espace de Banach, $\Lc_{n}(E_{1} \times \dots \times E_{n}, G)$ en est un.
+\end{cadre}
+
+\begin{demo}
+C'est la démonstration de la proposition 6, où l'on remplace $\Lc(F, G)$ par l'espace $\Lc_{n - 1}(E_{2} \times \dots \times E_{n}, G)$ ; la complétude s'obtient par récurrence sur $n$.
+\end{demo}
+
+\begin{cadre}
+\propo{11} \emph{(Différentielle d'une application multilinéaire.)} Toute $M \in \Lc_{n}(E_{1} \times \dots \times E_{n}, G)$ est différentiable, et
+\[ \rmath{\dd M(a_{1}, \dots, a_{n})\cdot(h_{1}, \dots, h_{n}) = \sum_{i = 1}^{n} M(a_{1}, \dots, a_{i - 1}, h_{i}, a_{i + 1}, \dots, a_{n})}. \]
+\end{cadre}
+
+\begin{demo}
+En développant $M(a_{1} + h_{1}, \dots, a_{n} + h_{n})$ par multilinéarité, on obtient $2^{n}$ termes : $M(a_{1}, \dots, a_{n})$, les $n$ termes où un seul $h_{i}$ apparaît, dont la somme $L(h)$ est linéaire continue en $h$, et des termes contenant au moins deux $h_{i}$. Pour la norme produit et $\norme{h} \leqslant 1$, chacun de ces derniers est majoré par
+\[ \nop{M}\,\norme{h}^{2}\,\max(1, \norme{a})^{n}. \] Leur somme est un $O(\norme{h}^{2})$, donc un $o(\norme{h})$.
+\end{demo}
+
+\begin{exemples}
+  \item \emph{Le déterminant.} L'application $(C_{1}, \dots, C_{n}) \mapsto \det(C_{1}, \dots, C_{n})$, qui à $n$ colonnes associe le déterminant de la matrice qu'elles forment, est $n$-linéaire sur $(\R^{n})^{n}$. Par la proposition 11, $\dd\det(A)\cdot H = \displaystyle\sum_{i = 1}^{n} \det(C_{1}, \dots, C_{i - 1}, H_{i}, C_{i + 1}, \dots, C_{n})$, où $C_{i}$ et $H_{i}$ sont les colonnes de $A$ et de $H$. Développer chaque terme selon sa $i$-ème colonne donne $\dd\det(A)\cdot H = \tr\big(\tra{\mathrm{Com}(A)}\,H\big)$, et, pour $A = I_{n}$, $\dd\det(I_{n})\cdot H = \tr H$ : c'est la formule obtenue au chapitre 2 pour $A$ inversible, maintenant valable pour toute $A$.
+  \item \emph{Les puissances de matrices.} $X \mapsto X^{n}$ est la composée de $X \mapsto (X, \dots, X)$ et du produit $n$-linéaire $(X_{1}, \dots, X_{n}) \mapsto X_{1}\cdots X_{n}$. Sa différentielle est $H \mapsto \displaystyle\sum_{k = 0}^{n - 1} X^{k}HX^{n - 1 - k}$, qui vaut $nX^{n - 1}H$ seulement si $H$ commute avec $X$. L'erreur la plus répandue est d'écrire $nX^{n - 1}H$ dans tous les cas.
+\end{exemples}
+
+% ---- carre unite et son image par I + tH, t = 1/2, H = [[3/5, 1/2], [-1/5, 3/10]] :
+% ---- M = [[1.3, 0.25], [-0.1, 1.15]], det M = 38/25 = 1.52 ; 1 + t tr H = 1.45 ; t^2 det H = 0.07 (calcules)
+\begin{center}
+\begin{tikzpicture}[scale=2.5]
+  \draw[gray,->] (-0.2,0) -- (1.85,0);
+  \draw[gray,->] (0,-0.3) -- (0,1.4);
+  \fill[couleurQ!15] (0,0) rectangle (1,1);
+  \draw[couleurQ,thick] (0,0) rectangle (1,1);
+  \fill[couleurN!15,opacity=0.8] (0,0) -- (1.3,-0.1) -- (1.55,1.05) -- (0.25,1.15) -- cycle;
+  \draw[couleurN,thick] (0,0) -- (1.3,-0.1) -- (1.55,1.05) -- (0.25,1.15) -- cycle;
+  \draw[couleurZ,thick,->,>=Stealth] (0,0) -- (1.3,-0.1);
+  \draw[couleurZ,thick,->,>=Stealth] (0,0) -- (0.25,1.15);
+  \node[couleurQ,font=\small] at (0.5,0.5) {aire $1$};
+  \node[couleurN,font=\small,anchor=west] at (1.6,0.75) {aire $\det(I_{2} + tH) = 1{,}52$};
+  \node[couleurZ,font=\small,anchor=north] at (1.3,-0.12) {$(I_{2} + tH)e_{1}$};
+  \node[couleurZ,font=\small,anchor=south] at (0.25,1.17) {$(I_{2} + tH)e_{2}$};
+\end{tikzpicture}
+\end{center}
+
+\noindent Le carré unité, en violet, est envoyé par $I_{2} + tH$, avec $t = \dfrac{1}{2}$ et $H = \begin{pmatrix} 0{,}6 & 0{,}5 \\ -0{,}2 & 0{,}3 \end{pmatrix}$, sur le parallélogramme bleu construit sur les deux vecteurs verts. Son aire, $1{,}52$, est proche de l'approximation au premier ordre $1 + t\tr H = 1{,}45$ ; l'écart, $0{,}07$, est le terme d'ordre $2$, égal ici à $t^{2}\det H$. La trace mesure donc la variation relative d'aire sous une petite déformation, ce que le chapitre 6 retrouvera pour les flots d'équations différentielles.
+\newpage
+%===============================================================================
+\section[Ordre supérieur, symétrie]{Différentielles d'ordre supérieur, principe de symétrie}
+%===============================================================================
+
+\subsection{Définitions}
+
+On itère la construction de la section 4.4, en identifiant à chaque étape, par la proposition 10, l'espace $\Lc(E, \Lc_{k - 1}(E, F))$ à l'espace $\Lc_{k}(E, F)$.
+
+\begin{center}
+\begin{tabularx}{15cm}{||X}
+\noindent \textbf{\underline{Définition :}} Par récurrence sur $k \geqslant 2$ : $f : U \to F$ est \mot{$k$ fois différentiable en $a$} si elle est $k - 1$ fois différentiable sur un voisinage de $a$ et si $\dd^{k - 1} f$ est différentiable en $a$ ; on pose alors
+\[ \rmath{\dd^{k} f(a)(h_{1}, h_{2}, \dots, h_{k}) = \big(\dd(\dd^{k - 1} f)(a)\cdot h_{1}\big)(h_{2}, \dots, h_{k})}, \]
+qui définit $\dd^{k} f(a) \in \Lc_{k}(E, F)$. L'application $f$ est \mot{de classe $\Cc^{k}$} sur $U$ si elle est $k$ fois différentiable en tout point et si $\dd^{k} f$ est continue sur $U$, et \mot{de classe $\Cc^{\infty}$} si elle est de classe $\Cc^{k}$ pour tout $k$.
+\end{tabularx}
+\end{center}
+
+\noindent Comme pour l'ordre $2$, $\dd^{k} f(a)(h_{1}, \dots, h_{k}) = D_{h_{1}}D_{h_{2}}\cdots D_{h_{k}} f(a)$ : on dérive successivement selon $h_{k}$, puis $h_{k - 1}$, et ainsi de suite. Dans $\R^{p}$, on obtient, comme à la proposition 7 et par récurrence,
+\[ \dd^{k} f(a)(h_{1}, \dots, h_{k}) = \sum_{i_{1}, \dots, i_{k}} \frac{\partial^{k} f}{\partial x_{i_{1}}\cdots\partial x_{i_{k}}}(a)\,h_{1, i_{1}}\cdots h_{k, i_{k}}, \]
+où $h_{m, i}$ désigne la $i$-ème coordonnée de $h_{m}$, et $f$ est de classe $\Cc^{k}$ si et seulement si ses dérivées partielles jusqu'à l'ordre $k$ existent et sont continues.
+
+\begin{exemples}
+  \item Une application linéaire continue $u$ est de classe $\Cc^{\infty}$ : $\dd u(a) = u$ est constante, et $\dd^{k} u = 0$ pour $k \geqslant 2$.
+  \item Une application $n$-linéaire continue $M$ est de classe $\Cc^{\infty}$ : par la proposition 11, $\dd M$ est une somme d'applications $(n - 1)$-linéaires continues composées avec des applications linéaires, et une récurrence sur $n$ montre que $\dd^{n} M$ est constante et $\dd^{n + 1} M = 0$.
+  \item Toute fonction polynomiale en les coordonnées de $\R^{p}$ est de classe $\Cc^{\infty}$, ses dérivées partielles étant encore polynomiales.
+\end{exemples}
+
+\subsection{Le théorème de Schwarz}
+
+Le point de départ est la quantité, symétrique en $h$ et $k$,
+\[ \rmath{\Delta(h, k) = f(a + h + k) - f(a + h) - f(a + k) + f(a)}. \]
+Calculée en différentiant d'abord selon $k$ puis selon $h$, elle vaut à peu près $\dd^{2} f(a)(h, k)$ ; dans l'autre ordre, à peu près $\dd^{2} f(a)(k, h)$. Sa symétrie impose l'égalité des deux.
+
+% ---- les quatre points de Delta(h, k), avec leurs signes
+\begin{center}
+\begin{tikzpicture}[scale=2.2]
+  \coordinate (A) at (0,0); \coordinate (H) at (1.6,0.25); \coordinate (K) at (0.45,1.05); \coordinate (HK) at (2.05,1.3);
+  \fill[couleurQ!10] (A) -- (H) -- (HK) -- (K) -- cycle;
+  \draw[couleurQ,densely dashed] (H) -- (HK) -- (K);
+  \draw[couleurZ,thick,->,>=Stealth] (A) -- (H) node[pos=0.5,below,font=\small] {$h$};
+  \draw[couleurZ,thick,->,>=Stealth] (A) -- (K) node[pos=0.5,left,font=\small] {$k$};
+  \fill[rougecours] (A) circle (0.9pt) node[below left,font=\small] {$a$ : $+$};
+  \fill[rougecours] (H) circle (0.9pt) node[below right,font=\small] {$a + h$ : $-$};
+  \fill[rougecours] (K) circle (0.9pt) node[above left,font=\small] {$a + k$ : $-$};
+  \fill[rougecours] (HK) circle (0.9pt) node[above right,font=\small] {$a + h + k$ : $+$};
+\end{tikzpicture}
+\end{center}
+
+\noindent La quantité $\Delta(h, k)$ combine les valeurs de $f$ aux quatre sommets du parallélogramme construit sur $h$ et $k$, en vert, avec les signes indiqués. Échanger $h$ et $k$ échange les deux sommets affectés du signe $-$ : $\Delta(h, k) = \Delta(k, h)$.
+
+\begin{center}
+\begin{tabularx}{15cm}{||X||}
+\hline \\
+\textbf{\underline{\textcolor{rougecours}{Théorème 2 : Schwarz :}}} \\
+Soit $f : U \to F$ différentiable sur $U$ et deux fois différentiable en $a \in U$. Alors $\dd^{2} f(a)$ est symétrique :
+\[ \rmath{\dd^{2} f(a)(h, k) = \dd^{2} f(a)(k, h)} \qquad \text{pour tous } h, k \in E. \]
+En particulier, si $f : U \subset \R^{p} \to F$ est de classe $\Cc^{2}$, alors $\dfrac{\partial^{2} f}{\partial x_{i}\,\partial x_{j}} = \dfrac{\partial^{2} f}{\partial x_{j}\,\partial x_{i}}$ pour tous $i$, $j$, et la hessienne est symétrique.
+\medbreak
+\\ \hline
+\end{tabularx}
+\end{center}
+
+\begin{demo}
+On note $B = \dd^{2} f(a)$, de sorte que $B(u, \cdot) = \dd(\dd f)(a)\cdot u$. Soit $\varepsilon > 0$. Par différentiabilité de $\dd f$ en $a$, il existe $r > 0$ tel que $\Bo(a, 2r) \subset U$ et que $A(u) = \dd f(a + u) - \dd f(a) - B(u, \cdot)$ vérifie $\nop{A(u)} \leqslant \varepsilon\norme{u}$ pour $\norme{u} < 2r$.
+
+\etape{Comparaison avec $B(k, h)$.} Fixons $h$, $k$ de normes inférieures à $r$, et posons, pour $u \in \Bo(0, r)$,
+\[ \psi(u) = f(a + u + k) - f(a + u) - B(k, u). \]
+Alors $\psi(h) - \psi(0) = \Delta(h, k) - B(k, h)$. L'application $\psi$ est différentiable, et
+\[ \dd\psi(u) = \dd f(a + u + k) - \dd f(a + u) - B(k, \cdot) = A(u + k) - A(u), \]
+puisque $B(u + k, \cdot) - B(u, \cdot) = B(k, \cdot)$. Sur le segment $[0, h]$, $\nop{\dd\psi(u)} \leqslant \varepsilon(\norme{u + k} + \norme{u}) \leqslant \varepsilon(2\norme{h} + \norme{k})$, et l'inégalité des accroissements finis (chapitre 2, théorème 4) donne
+\[ \norme{\Delta(h, k) - B(k, h)} \leqslant \varepsilon\,(2\norme{h} + \norme{k})\,\norme{h}. \]
+
+\etape{Symétrisation.} En échangeant $h$ et $k$, et puisque $\Delta(k, h) = \Delta(h, k)$, on obtient
+\[ \norme{\Delta(h, k) - B(h, k)} \leqslant \varepsilon\,(2\norme{k} + \norme{h})\,\norme{k}. \]
+Par différence, si $\norme{h} = \norme{k} = \rho < r$,
+\[ \norme{B(h, k) - B(k, h)} \leqslant 6\varepsilon\rho^{2}. \]
+
+\etape{Conclusion.} Pour $h$, $k$ quelconques non nuls, on applique ceci à $\dfrac{\rho h}{\norme{h}}$ et $\dfrac{\rho k}{\norme{k}}$ : par bilinéarité,
+\[ \norme{B(h, k) - B(k, h)} \leqslant 6\varepsilon\norme{h}\,\norme{k}. \]
+Ceci vaut pour tout $\varepsilon > 0$, d'où $B(h, k) = B(k, h)$. Dans $\R^{p}$, on applique le résultat à $h = e_{i}$ et $k = e_{j}$, grâce à la proposition 7.
+\end{demo}
+
+\begin{remarques}
+  \item La démonstration n'utilise que la différentiabilité de $\dd f$ au point $a$ ; la continuité des dérivées secondes, souvent demandée, est plus que suffisante.
+  \item Grâce au théorème de Schwarz, la formule de Taylor-Young à l'ordre $2$ reste vraie pour une fonction seulement deux fois différentiable en $a$ ; on ne s'en servira pas.
+\end{remarques}
+
+\subsection{Le contre-exemple de Peano}
+
+L'hypothèse de différentiabilité seconde ne peut pas être remplacée par l'existence des dérivées partielles secondes. Soit
+\[ g(x, y) = \frac{xy(x^{2} - y^{2})}{x^{2} + y^{2}} \quad \text{pour } (x, y) \neq (0, 0), \qquad g(0, 0) = 0. \]
+En coordonnées polaires, $g = \dfrac{r^{2}}{4}\sin 4\theta$ : la fonction est continue, et même de classe $\Cc^{1}$ sur $\R^{2}$. Pour $y \neq 0$, $\dfrac{g(t, y) - g(0, y)}{t} = \dfrac{y(t^{2} - y^{2})}{t^{2} + y^{2}} \to -y$, et ce calcul vaut aussi pour $y = 0$ ; ainsi $\dpd{g}{x}(0, y) = -y$ pour tout $y$. De même, $\dpd{g}{y}(x, 0) = x$. On en déduit
+\[ \rmath{\frac{\partial^{2} g}{\partial y\,\partial x}(0, 0) = -1, \qquad \frac{\partial^{2} g}{\partial x\,\partial y}(0, 0) = 1}. \]
+Les dérivées partielles secondes existent en $(0, 0)$ mais diffèrent : par le théorème 2, $g$ n'est pas deux fois différentiable en $(0, 0)$, et ses dérivées secondes ne sont pas continues en ce point.
+
+% ---- g = r^2 sin(4 theta)/4, parametree en polaires sur r <= 1 (surface tracee par pgfplots)
+\begin{center}
+\begin{tikzpicture}
+  \begin{axis}[width=12cm,height=8.5cm,view={35}{35},axis lines=center,axis line style={gray},
+    xlabel={$x$},ylabel={$y$},zlabel={$z$},label style={font=\small},ticks=none,
+    xmin=-1.25,xmax=1.25,ymin=-1.25,ymax=1.25,zmin=-0.3,zmax=0.35,
+    colormap={bleu}{color=(couleurN!20) color=(couleurN!85)},z buffer=sort,clip=false]
+    \addplot3[surf,shader=faceted interp,draw=couleurN!50,line width=0.1pt,samples=10,samples y=49,domain=0:1,y domain=0:360]
+      ({x*cos(y)},{x*sin(y)},{x^2*sin(4*y)/4});
+    \addplot3[only marks,mark=*,mark size=1.5pt,color=rougecours] coordinates {(0,0,0)};
+  \end{axis}
+\end{tikzpicture}
+\end{center}
+
+\noindent Le graphe de $g$, en bleu, présente quatre bosses et quatre creux autour de l'origine, en rouge. Le long de l'axe des $y$, la pente dans la direction $x$ vaut $-y$, et le long de l'axe des $x$, la pente dans la direction $y$ vaut $x$ : la surface se tord dans des sens opposés selon l'ordre dans lequel on dérive, ce que les dérivées croisées $-1$ et $1$ mesurent.
+
+\noindent Le calcul se vérifie avec \texttt{sympy}, en calculant les dérivées partielles en $(0, 0)$ comme des limites de taux d'accroissement :
+
+\begin{lstlisting}
+import sympy as sp
+x, y, h = sp.symbols('x y h', real=True)
+g = x*y*(x**2 - y**2)/(x**2 + y**2)
+gx0 = sp.limit(g.subs(x, h)/h, h, 0)     # derivee en x au point (0, y)
+gy0 = sp.limit(g.subs(y, h)/h, h, 0)     # derivee en y au point (x, 0)
+print(gx0, gy0, sp.diff(gx0, y), sp.diff(gy0, x))
+\end{lstlisting}
+
+\noindent Il affiche \texttt{-y x -1 1}.
+
+\subsection{Symétrie à tout ordre}
+
+\begin{cadre}
+\propo{12} Si $f : U \to F$ est de classe $\Cc^{k}$, avec $k \geqslant 2$, alors $\dd^{k} f(a)$ est symétrique pour tout $a \in U$. Dans $\R^{p}$, une dérivée partielle d'ordre au plus $k$ ne dépend pas de l'ordre des dérivations.
+\end{cadre}
+
+\begin{demo}
+Par récurrence sur $k$, le cas $k = 2$ étant le théorème 2. Soit $k \geqslant 3$, et $f$ de classe $\Cc^{k}$. Toute permutation de $\llbracket 1, k \rrbracket$ est une composée de la transposition qui échange $1$ et $2$ et de permutations qui fixent $1$ ; il suffit donc d'établir les deux symétries correspondantes.
+
+\emph{Symétrie en $(h_{2}, \dots, h_{k})$.} Par hypothèse de récurrence appliquée à $f$, de classe $\Cc^{k - 1}$, $\dd^{k - 1} f(x)$ est symétrique pour tout $x$. L'ensemble des applications $(k - 1)$-linéaires symétriques est un sous-espace fermé, et $\dd^{k} f(a)\cdot h_{1}$, limite de $\dfrac{1}{t}\big(\dd^{k - 1} f(a + th_{1}) - \dd^{k - 1} f(a)\big)$, est symétrique.
+
+\emph{Symétrie en $(h_{1}, h_{2})$.} Fixons $h_{3}$, \dots, $h_{k}$, et posons
+\[ G(x) = \dd^{k - 2} f(x)(h_{3}, \dots, h_{k}), \]
+composée de $\dd^{k - 2} f$, de classe $\Cc^{2}$, et d'une application linéaire continue. Alors
+\[ \dd^{2} G(a)(h_{1}, h_{2}) = \dd^{k} f(a)(h_{1}, h_{2}, h_{3}, \dots, h_{k}), \]
+qui est symétrique en $(h_{1}, h_{2})$ par le théorème 2.
+\end{demo}
+
+% ---- derivees partielles d'ordre <= 3 de f(x, y) : chaque fleche gauche est d/dx, chaque fleche droite d/dy ;
+% ---- nombre de chemins = coefficients binomiaux (1 ; 1 2 1 ; 1 3 3 1)
+\begin{center}
+\begin{tikzpicture}[x=1.9cm,y=1.05cm,n/.style={draw=couleurN,fill=couleurN!8,rounded corners=2pt,font=\small,inner sep=3pt},
+  fx/.style={->,>=Stealth,couleurD},fy/.style={->,>=Stealth,couleurZ}]
+  \node[n] (f) at (0,0) {$f$};
+  \node[n] (x) at (-1,-1) {$f_{x}$}; \node[n] (y) at (1,-1) {$f_{y}$};
+  \node[n] (xx) at (-2,-2) {$f_{xx}$}; \node[n] (xy) at (0,-2) {$f_{xy} = f_{yx}$}; \node[n] (yy) at (2,-2) {$f_{yy}$};
+  \node[n] (xxx) at (-3,-3) {$f_{xxx}$}; \node[n] (xxy) at (-1,-3) {$f_{xxy}$ (3)}; \node[n] (xyy) at (1,-3) {$f_{xyy}$ (3)}; \node[n] (yyy) at (3,-3) {$f_{yyy}$};
+  \draw[fx] (f) -- (x); \draw[fy] (f) -- (y);
+  \draw[fx] (x) -- (xx); \draw[fy] (x) -- (xy); \draw[fx] (y) -- (xy); \draw[fy] (y) -- (yy);
+  \draw[fx] (xx) -- (xxx); \draw[fy] (xx) -- (xxy); \draw[fx] (xy) -- (xxy); \draw[fy] (xy) -- (xyy); \draw[fx] (yy) -- (xyy); \draw[fy] (yy) -- (yyy);
+  \node[couleurD,font=\small,anchor=east] at (-1.6,0) {$\dpd{}{x}$ : flèche à gauche};
+  \node[couleurZ,font=\small,anchor=west] at (1.6,0) {$\dpd{}{y}$ : flèche à droite};
+\end{tikzpicture}
+\end{center}
+
+\noindent Les dérivées partielles d'une fonction $f(x, y)$ de classe $\Cc^{3}$, en notant les dérivations en indice, chaque flèche orange étant une dérivation en $x$ et chaque flèche verte une dérivation en $y$. Grâce à la proposition 12, deux chemins qui comportent les mêmes nombres de flèches de chaque sorte aboutissent à la même dérivée : il y a $k + 1$ dérivées d'ordre $k$, et non $2^{k}$. Le nombre de chemins menant à chacune, indiqué entre parenthèses quand il dépasse $1$, est un coefficient binomial ; il apparaît dans la formule de Taylor ci-dessous.
+
+\subsection{La formule de Taylor à l'ordre \texorpdfstring{$n$}{n}}
+
+On note $\dd^{k} f(a)\,h^{k} = \dd^{k} f(a)(h, \dots, h)$, avec $h$ répété $k$ fois. Pour $\varphi(t) = f(a + th)$, une récurrence fondée sur la règle de la chaîne, comme pour $\varphi''$, donne $\varphi^{(k)}(t) = \dd^{k} f(a + th)\,h^{k}$.
+
+\begin{center}
+\begin{tabularx}{15cm}{||X||}
+\hline \\
+\textbf{\underline{\textcolor{rougecours}{Théorème 3 : Taylor à l'ordre $n$ :}}} \\
+Soit $F$ un espace de Banach, $f : U \to F$ de classe $\Cc^{n}$, avec $n \geqslant 1$, et $a \in U$.
+\begin{enumerate}[label=(\roman*),topsep=3pt,itemsep=2pt]
+  \item \emph{Taylor-Young :} quand $h \to 0$,
+  \[ \rmath{f(a + h) = \sum_{k = 0}^{n} \frac{1}{k!}\,\dd^{k} f(a)\,h^{k} + o(\norme{h}^{n})}. \]
+  \item \emph{Reste intégral :} si $f$ est de classe $\Cc^{n + 1}$ et $[a, a + h] \subset U$, le reste vaut $\displaystyle\int_{0}^{1} \frac{(1 - t)^{n}}{n!}\,\dd^{n + 1} f(a + th)\,h^{n + 1}\,\dd t$, et il est majoré par $\dfrac{M}{(n + 1)!}\norme{h}^{n + 1}$ si $\nop{\dd^{n + 1} f} \leqslant M$ sur $[a, a + h]$.
+\end{enumerate}
+\medbreak
+\\ \hline
+\end{tabularx}
+\end{center}
+
+\begin{demo}
+(ii) est la proposition 1 appliquée à $\varphi$ entre $0$ et $1$, suivie de la majoration de la proposition 2. Pour (i), la proposition 1 à l'ordre $n - 1$ donne un reste $\displaystyle\int_{0}^{1}\dfrac{(1 - t)^{n - 1}}{(n - 1)!}\,\dd^{n} f(a + th)\,h^{n}\,\dd t$ ; on lui retranche $\dfrac{1}{n!}\,\dd^{n} f(a)\,h^{n}$, qui en est l'intégrale avec $\dd^{n} f(a)$ à la place de $\dd^{n} f(a + th)$, et l'on conclut comme au théorème 1 par la continuité de $\dd^{n} f$ en $a$.
+\end{demo}
+
+\noindent Dans $\R^{2}$, grâce à la symétrie, $\dd^{k} f(a)\,h^{k}$ se développe comme une puissance binomiale : pour $h = (u, v)$,
+\[ \dd^{3} f(a)\,h^{3} = f_{xxx}(a)\,u^{3} + 3f_{xxy}(a)\,u^{2}v + 3f_{xyy}(a)\,uv^{2} + f_{yyy}(a)\,v^{3}, \]
+avec les coefficients $1$, $3$, $3$, $1$ comptés par la figure précédente. Pour $f(x, y) = \ee^{x}\cos y$ en $(0, 0)$, on trouve $f_{xxx} = 1$, $f_{xxy} = 0$, $f_{xyy} = -1$, $f_{yyy} = 0$, d'où le terme d'ordre $3$, $\dfrac{1}{6}\,\dd^{3} f(0)\,h^{3} = \dfrac{u^{3}}{6} - \dfrac{uv^{2}}{2}$, annoncé à la section 4.4.
+
+\subsection{Opérations sur les fonctions de classe \texorpdfstring{$\Cc^{k}$}{Ck}}
+
+\begin{cadre}
+\propo{13} Soit $k \in \N^{*} \cup \{\infty\}$.
+\begin{enumerate}[label=(\roman*),topsep=3pt,itemsep=2pt]
+  \item Si $f : U \to F$ et $g : V \to G$ sont de classe $\Cc^{k}$, avec $f(U) \subset V$, alors $g \circ f$ est de classe $\Cc^{k}$.
+  \item Si $f_{1} : U \to F_{1}$ et $f_{2} : U \to F_{2}$ sont de classe $\Cc^{k}$ et $B \in \Lc_{2}(F_{1} \times F_{2}, G)$, alors $B(f_{1}, f_{2})$ est de classe $\Cc^{k}$.
+  \item Si $E$ et $F$ sont des espaces de Banach, l'inversion $u \mapsto u^{-1}$ est de classe $\Cc^{\infty}$ sur $\Isom(E, F)$, et la réciproque d'un $\Cc^{1}$-difféomorphisme de classe $\Cc^{k}$ est de classe $\Cc^{k}$.
+\end{enumerate}
+\end{cadre}
+
+\begin{demo}
+On démontre (i) et (ii) ensemble, par récurrence sur $k$ fini ; le cas $k = \infty$ s'en déduit. Pour $k = 1$, ce sont la règle de la chaîne et la formule de Leibniz du chapitre 2. Supposons (i) et (ii) vrais à l'ordre $k - 1$, pour toutes fonctions. Pour (ii), $\dd\big(B(f_{1}, f_{2})\big) = B_{1}(f_{1}, \dd f_{2}) + B_{2}(\dd f_{1}, f_{2})$, où $B_{1}(y, v) = B(y, v\,\cdot)$ et $B_{2}(u, z) = B(u\,\cdot, z)$ sont bilinéaires continues, et $f_{i}$, $\dd f_{i}$ sont de classe $\Cc^{k - 1}$ : par l'hypothèse de récurrence, cette différentielle est de classe $\Cc^{k - 1}$. Pour (i), $\dd(g \circ f) = \mathrm{c}\big(\dd g \circ f, \dd f\big)$, où $\mathrm{c}(v, u) = v \circ u$ est bilinéaire continue de $\Lc(F, G) \times \Lc(E, F)$ dans $\Lc(E, G)$ ; $\dd g \circ f$ est de classe $\Cc^{k - 1}$ par (i) à l'ordre $k - 1$, et l'on conclut par (ii) à l'ordre $k - 1$.
+
+(iii) La différentielle de l'inversion est $\dd(\mathrm{inv})(u)\cdot h = -u^{-1}hu^{-1}$ (chapitre 2, proposition 3, dont la démonstration vaut sur $\Isom(E, F)$), c'est-à-dire $\dd(\mathrm{inv}) = \beta(\mathrm{inv}, \mathrm{inv})$, avec $\beta(v, w)\cdot h = -vhw$ bilinéaire continue. Si $\mathrm{inv}$ est de classe $\Cc^{j}$, (ii) montre que $\dd(\mathrm{inv})$ l'est, donc que $\mathrm{inv}$ est de classe $\Cc^{j + 1}$ ; partant de $j = 1$ (chapitre 2, proposition 15), $\mathrm{inv}$ est de classe $\Cc^{\infty}$. Enfin, si $f$ est un $\Cc^{1}$-difféomorphisme de classe $\Cc^{k}$ et $g = f^{-1}$, alors $\dd g = \mathrm{inv} \circ \dd f \circ g$ (chapitre 3, théorème 1). Si $g$ est de classe $\Cc^{j}$ avec $j < k$, cette expression est de classe $\Cc^{j}$ par (i), donc $g$ est de classe $\Cc^{j + 1}$ ; on part de $j = 1$ et l'on s'arrête à $j = k$.
+\end{demo}
+
+\begin{remarque}
+Le point (iii) tient la promesse du chapitre 3 : dans les théorèmes d'inversion locale et des fonctions implicites, la réciproque locale et la fonction implicite $\varphi$ ont la même classe $\Cc^{k}$ que $f$. Par exemple, la racine carrée locale d'une matrice proche de $I_{n}$ dépend de façon $\Cc^{\infty}$ de la matrice.
+\end{remarque}
+\newpage
+%===============================================================================
+\section{Bilan}
+%===============================================================================
+
+Le fil du chapitre est la restriction à un segment : en posant $\varphi(t) = f(a + th)$, toute formule de Taylor pour une variable devient une formule pour $f$, avec $\varphi^{(k)}(t) = \dd^{k} f(a + th)\,h^{k}$. Les différentielles d'ordre $k$ sont des applications $k$-linéaires continues, symétriques grâce au théorème de Schwarz ; dans $\R^{p}$, elles se calculent avec les dérivées partielles, dont l'ordre importe peu pour les fonctions de classe $\Cc^{k}$, mais importe pour le contre-exemple de Peano.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.35}
+\begin{tabularx}{15cm}{|>{\raggedright\arraybackslash}p{4.4cm}|>{\raggedright\arraybackslash}X|>{\centering\arraybackslash}p{2.4cm}|}
+\hline
+\rowcolor{couleurD!35} \textbf{Situation} & \textbf{Résultat} & \textbf{Référence} \\ \hline
+$f : I \to F$ de classe $\Cc^{n + 1}$, $F$ Banach & reste intégral, inégalité de Taylor-Lagrange & propositions 1 et 2 \\ \hline
+$f : [a, b] \to \R$ & égalité de Taylor-Lagrange (fausse à valeurs vectorielles) & proposition 3 \\ \hline
+$f$ de classe $\Cc^{n}$ & Taylor-Young : reste $o(h^{n})$ & proposition 4 \\ \hline
+$B$ bilinéaire & continue $\iff \norme{B(x, y)} \leqslant C\norme{x}\,\norme{y}$ & proposition 5 \\ \hline
+$\Lc(E, \Lc(F, G))$ & s'identifie isométriquement à $\Lc_{2}(E \times F, G)$ & proposition 6 \\ \hline
+$f$ deux fois différentiable, $U \subset \R^{p}$ & $\dd^{2} f(a)(h, k) = \tra{h}\,\Hs_{f}(a)\,k$ & proposition 7 \\ \hline
+$f$ de classe $\Cc^{2}$ & Taylor à l'ordre $2$ : terme $\frac{1}{2}\dd^{2} f(a)(h, h)$, reste $o(\norme{h}^{2})$ & théorème 1 \\ \hline
+$\nop{\dd^{2} f} \leqslant M$ sur un convexe & $\dd f$ est $M$-lipschitzienne & proposition 8 \\ \hline
+$M$ multilinéaire & continuité, identification, différentielle & propositions 9 à 11 \\ \hline
+$\dd f$ différentiable en $a$ & $\dd^{2} f(a)$ symétrique (Schwarz) & théorème 2 \\ \hline
+$f$ de classe $\Cc^{k}$ & $\dd^{k} f(a)$ symétrique & proposition 12 \\ \hline
+$f$ de classe $\Cc^{n}$ & Taylor à l'ordre $n$ & théorème 3 \\ \hline
+composées, inverses & restent de classe $\Cc^{k}$ & proposition 13 \\ \hline
+\end{tabularx}
+\end{center}
+
+\begin{center}
+\begin{tikzpicture}[q/.style={draw=couleurN,fill=couleurN!8,rounded corners=3pt,align=center,font=\small,minimum height=1.05cm,text width=2.6cm},
+  fl/.style={-{Stealth},thick,gray}]
+  \node[q] (T1) at (0,0) {Taylor pour\\ une variable};
+  \node[q] (B) at (0,-1.9) {applications\\ bilinéaires};
+  \node[q] (D2) at (3.5,-0.95) {différentielle\\ seconde};
+  \node[q] (TY) at (7,0) {Taylor à\\ l'ordre 2};
+  \node[q] (S) at (7,-1.9) {Schwarz};
+  \node[q] (TN) at (10.5,-0.95) {Taylor à\\ l'ordre $n$};
+  \node[q] (E) at (10.5,-2.9) {extrema\\ (chapitre 5)};
+  \draw[fl] (T1) -- (TY);
+  \draw[fl] (B) -- (D2);
+  \draw[fl] (D2) -- (TY);
+  \draw[fl] (D2) -- (S);
+  \draw[fl] (TY) -- (TN);
+  \draw[fl] (S) -- (TN);
+  \draw[fl,densely dashed] (TY) to[out=-20,in=150] (E);
+\end{tikzpicture}
+\end{center}
+
+\noindent Chaque flèche pleine indique un résultat qui sert à démontrer le suivant ; la flèche en tirets annonce le chapitre 5, qui utilise la formule de Taylor à l'ordre $2$ pour étudier les extrema : en un point où le gradient s'annule, le signe de $f(a + h) - f(a)$ est celui de la forme quadratique $\dfrac{1}{2}\,\tra{h}\,\Hs_{f}(a)\,h$, dès qu'elle n'est pas dégénérée, et les trois allures de la section 4.3 deviennent un minimum, un col et un cas douteux.
+
+\end{document}

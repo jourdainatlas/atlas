@@ -1238,6 +1238,11 @@ if 'exercices' in rubriques:
                 erreur(f"rubriques/exercices {fe['id']} : fichier introuvable {fe[champ]}")
     for e in E['exercices']:
         e['mots_cles'] = [m.strip().lower() if m.strip() != 'Python' else m for m in e.get('mots_cles', [])]
+    # Atelier Python sous l'énoncé : niveau python (gabarit), ou exercice qui demande de programmer en Python (énoncé
+    # qui nomme Python, un programme ou une bibliothèque de calcul, ou contient un bloc de code Python).
+    PY = re.compile(r'\bPython\b|\bprogramm|\bscript\b|\b(?:numpy|scipy|matplotlib|sympy)\b|```python', re.I)
+    for e in E['exercices']:
+        if PY.search(e.get('enonce') or ''): e['python'] = True
     # « Dans le cours » des cartes d'exercice : parties du cours concernées (indices du sommaire), calculées par
     # outils/exercices_cours.py et rangées dans outils/exercices-cours.json.
     if os.path.isfile('outils/exercices-cours.json'):
