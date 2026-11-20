@@ -1055,3 +1055,13 @@ Demande de l'auteur : les pastilles de niveau, devenues nombreuses (dix), gagnen
 
 Choix de l'auteur parmi trois pistes : monogrammes en cartouche teinté, **monogrammes en pastille pleine** (retenue), pictogrammes d'objets mathématiques (écartés : peu lisibles à cette taille). Chaque groupe est aussi précédé du symbole de son cycle (`span.niv-cycle-sym` : cartable, livres et fronton de l'accueil, et `sym-p-python`, une console grise dessinée pour l'occasion) : d'abord retirés comme redondants, ils ont été rétablis à la demande de l'auteur, qui veut les deux. La vue par niveau de la rubrique Exercices n'est pas concernée.
 
+## 89. Sous-domaine `atelier.atlasjourdain.fr` pour l'Atelier ATLAS (20 nov. 2026)
+
+Demande de la conversation « Atelier ATLAS » (application privée de travail en équipe pour l'équipe TFJM² de l'auteur ; dépôt à part, mémo `MEMO_atlas_atelier.md`). **Accord donné** pour deux enregistrements DNS, et eux seuls, posés par l'auteur dans la zone OVH : `atelier` A et `atelier` AAAA vers un VPS OVH. Les enregistrements `@`, `www`, MX, SPF et TXT ne changent pas. Aucun lien depuis le site ni mention dans l'À propos pour l'instant ; les mentions de l'application (hébergeur, données) sont dans l'application.
+
+Vérifié à cette occasion :
+- **Cookie `atlas-theme`** : posé par `document.cookie = 'atlas-theme=…; path=/; SameSite=Lax'` (gabarit, seul endroit du dépôt qui écrit un cookie), sans attribut `Domain` : il est propre à l'hôte `www.atlasjourdain.fr` et n'est pas envoyé à un sous-domaine. **Règle : ne jamais ajouter `Domain=.atlasjourdain.fr` à un cookie du site.** Le serveur ne pose aucun cookie (pas de `Set-Cookie`).
+- **Pas de HSTS** ni de politique de sécurité de contenu envoyés par le site (`htaccess-ovh`) : rien n'est imposé aux sous-domaines. **Règle : si un en-tête HSTS est ajouté un jour, ne pas y mettre `includeSubDomains` sans prévenir la conversation Atelier.**
+- **CAA** : non vérifiable depuis l'environnement de travail (pas de requête DNS possible). Indice favorable : OVH a obtenu des certificats Let's Encrypt pour `atlasjourdain.fr` et `www` le 10 nov. (§64), ce qu'un CAA interdisant Let's Encrypt aurait empêché, et la recherche CAA d'un sous-domaine remonte au domaine. À confirmer par l'auteur dans la zone OVH (aucune ligne de type CAA).
+- Stockage local, service worker et mesure d'audience du site sont propres à l'origine `www` : sans effet sur le sous-domaine.
+
