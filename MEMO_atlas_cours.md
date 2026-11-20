@@ -997,5 +997,6 @@ tout exercice dont l'énoncé nomme Python, un programme, un script, numpy, scip
 ```` ```python ```` ; la carte montre alors « S'entraîner en Python », comme au niveau `python` (énoncé recopié dans
 l'éditeur, corrigé jamais). 49 exercices hors du niveau Python, dont `l3-cd-07-03`, `-09`, `-16`, `-17` ; les autres
 exercices numériques du chapitre 7 (tableau d'Euler de l'exercice 2, portraits de phase de l'exercice 13) ne nomment pas
-Python et n'ont pas le bouton.
+Python : ajoutés à la demande de l'auteur (20 nov.) par la table `PY_AUSSI` de `construire.py`, où l'on inscrit
+tout autre exercice à pourvoir. Chargement de NumPy depuis le CDN vérifié en ligne par l'auteur.
 

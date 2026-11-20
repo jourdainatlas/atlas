@@ -1241,8 +1241,10 @@ if 'exercices' in rubriques:
     # Atelier Python sous l'énoncé : niveau python (gabarit), ou exercice qui demande de programmer en Python (énoncé
     # qui nomme Python, un programme ou une bibliothèque de calcul, ou contient un bloc de code Python).
     PY = re.compile(r'\bPython\b|\bprogramm|\bscript\b|\b(?:numpy|scipy|matplotlib|sympy)\b|```python', re.I)
+    # Exercices numériques qui ne nomment pas Python mais s'y prêtent, ajoutés à la demande de l'auteur.
+    PY_AUSSI = {'l3-cd-07-02', 'l3-cd-07-13'}
     for e in E['exercices']:
-        if PY.search(e.get('enonce') or ''): e['python'] = True
+        if PY.search(e.get('enonce') or '') or e['id'] in PY_AUSSI: e['python'] = True
     # « Dans le cours » des cartes d'exercice : parties du cours concernées (indices du sommaire), calculées par
     # outils/exercices_cours.py et rangées dans outils/exercices-cours.json.
     if os.path.isfile('outils/exercices-cours.json'):
