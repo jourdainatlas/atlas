@@ -341,3 +341,13 @@ Décisions de l'auteur (21 nov.) : polytopes réguliers laissés « à venir » 
 lien vers les fractions rationnelles symétriques (Galois) gardé pour les polynômes symétriques ; exercice 11.10
 (groupe affine de la droite) gardé en attendant d'autres. Chaque lot a été relu par un agent indépendant (agrégation externe, sections 1 à 4 : 30 corrections ;
 interne, sections 1 à 6 : 50) ; rapports dans le bloc-notes.
+
+**Boutons d'annales des concours de l'enseignement ; élagage du moteur (21 nov. 2026, signalé par l'auteur).** Un
+bouton « Densité 11 Agrégation externe » envoyait au moteur la filière « Agrégation externe » (inexistante) :
+aucun résultat. Le bouton porte désormais `data-rq-conc` (concours du programme) et `data-rq-fil` vide pour
+une famille sans filière ; le moteur règle alors le menu des concours. Le moteur écartait aussi les sujets
+dont le score était inférieur au cinquième du meilleur, y compris ceux qui portent le thème reconnu en
+secondaire, si bien que le bouton annonçait plus de sujets que le moteur n'en montrait (11 contre 9) : un sujet
+qui porte le thème reconnu en tête (ou l'un de ses thèmes fins), même en secondaire, n'est plus écarté. Le
+moteur peut encore en montrer davantage (mots-clés). Bouton « Effacer la recherche » : en-tête centré
+verticalement et 10 px d'écart avec le texte d'aide.

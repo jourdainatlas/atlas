@@ -1741,7 +1741,8 @@ table.grille button.pli-ann:hover { border-color: var(--encre); }
 .grille .rapports a:hover { color: var(--encre); text-decoration-color: currentColor; }
 .case[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--rouge); }
 .rech-ann { padding: 18px 20px; margin: 26px 0 8px; scroll-margin-top: 14px; }
-.rech-ann .rech-tete { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.rech-ann .rech-tete { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
+.rech-ann .rech-tete h3 { margin: 0; }
 .rech-ann .rech-effacer { font-size: 13.5px; font-weight: 600; background: var(--encre); border-color: var(--encre); color: var(--surface); padding: 7px 14px; box-shadow: 0 1px 0 rgba(0,0,0,.25); }
 .rech-ann .rech-effacer:hover { background: var(--encre-2); border-color: var(--encre-2); }
 .rech-ann .rech-effacer:focus-visible { outline: 2px solid var(--encre-2); outline-offset: 2px; }
@@ -5020,7 +5021,7 @@ function vueProgrammeAnnales(fam, fil) {
         if ((pt.ex || []).length) liens.push(`<span class="pg-g"><span class="pg-lab">Exercices</span>${pt.ex.map(lienExoPg).join('')}</span>`);
         // deux boutons par thème : les sujets de la filière, et tous les sujets étiquetés (autres filières, concours, examens)
         if (th.length) liens.push(`<span class="pg-g"><span class="pg-lab">Annales</span>${th.map(t => { const T = indexAnnales().themes[t], nb = (F.tout[t] || new Set()).size, nt = (FT.tout[t] || new Set()).size;
-          const fl = nb || !F.total ? `<button type="button" class="pg-l pg-ann" data-rq-ext="${esc(T.titre)}" data-rq-fil="${esc(cible)}" title="Chercher les sujets ${esc(cible)} qui travaillent ou emploient ce thème">${esc(T.titre)}${F.total ? ` <small>${nb} ${esc(cible)}</small>` : ''}</button>` : '';
+          const fl = nb || !F.total ? `<button type="button" class="pg-l pg-ann" data-rq-ext="${esc(T.titre)}" data-rq-fil="${esc(fil || '')}"${p.concours ? ` data-rq-conc="${esc(p.concours)}"` : ''} title="Chercher les sujets ${esc(cible)} qui travaillent ou emploient ce thème">${esc(T.titre)}${F.total ? ` <small>${nb} ${esc(cible)}</small>` : ''}</button>` : '';
           const ts = nt > nb ? `<button type="button" class="pg-l pg-ann pg-tous" data-rq-ext="${esc(T.titre)}" data-rq-tous title="Chercher ce thème dans tous les sujets de prépa et de l'enseignement (autres filières et concours, sans le baccalauréat)">${fl ? '' : `${esc(T.titre)} `}<small>${nt} en tout</small></button>` : '';
           return `<span class="pg-annp">${fl}${ts}</span>`; }).join('')}</span>`);
         h += `<li class="pg-pt${m ? ' maitrise' : ''}" id="pt-${cle.replace(/[:.]/g, '-')}" data-t="${esc(cleTextePg(`${pt.contenu} ${pt.precisions || ''}`))}"><input type="checkbox" class="pg-coche" data-pg-m="${cle}"${m ? ' checked' : ''} aria-label="Je maîtrise ce point" title="Je maîtrise ce point (retenu dans ce navigateur)"><div class="pg-pc"><div class="pg-contenu">${pt.contenu}${(pt.filieres || []).length ? ` <span class="pg-demo">${esc(pt.filieres.join(', '))} seulement</span>` : ''}${pt.demo ? ` <span class="pg-demo">démonstration ${esc(pt.demo)}</span>` : ''}${av ? ' <span class="pg-venir" title="Le site ne traite pas encore ce point">à venir</span>' : ''}</div>${pt.precisions ? `<div class="pg-prec">${pt.precisions}</div>` : ''}${pt.note ? `<div class="pg-note">${pt.note}</div>` : ''}${liens.length ? `<div class="pg-liens">${liens.join('')}</div>` : ''}</div></li>`;
@@ -5254,27 +5255,30 @@ function rechercherAnnales(q) {
   const thRet = th.filter(x => x.s === best || x.s >= Math.max(3.3, .7 * best));
   const poids = Object.fromEntries(thRet.map(x => [x.t.id, x.s / 10]));
   for (const x of thRet) for (const c of I.enfants[x.t.id] || []) if (!(c in poids)) poids[c] = .95 * x.s / 10;
+  // thème reconnu en tête (et ses thèmes fins) : ce que comptent les boutons de la vue Programme
+  const tete = thRet.length ? thRet[0].t.id : null, deTete = x => !!tete && (x === tete || (I.themes[x] || {}).parent === tete);
   const res = [];
   for (const s of I.sujets) {
     if (!passeFiltresAnn(s)) continue;
     const parts = s.parties.map((p, i) => {
-      let sc = 0, prin = false;
+      let sc = 0, prin = false, th = false;
       const [thP, thS] = themesPartie(s, p, v);
-      for (const t of thP) if (poids[t]) { sc += 3 * poids[t]; prin = true; }
-      for (const t of thS) if (poids[t]) sc += 1 * poids[t];
+      for (const t of thP) if (poids[t]) { sc += 3 * poids[t]; prin = true; th = th || deTete(t); }
+      for (const t of thS) if (poids[t]) { sc += 1 * poids[t]; th = th || deTete(t); }
       const sm = Math.max(0, ...p.motsN.map(k => scoreCle(n, k)));
       if (sm >= 4) { sc += 3.5 * sm / 10; prin = prin || sm >= 6; }
       if (scoreCle(n, p.titreN) >= 4) sc += 1;
-      return { p, i, sc, prin };
+      return { p, i, sc, prin, th };
     }).filter(x => x.sc > 0).sort((a, b) => b.sc - a.sc);
     if (!parts.length) continue;
     let sc = parts[0].sc + .3 * parts.slice(1).reduce((u, x) => u + x.sc, 0);
     if (scoreCle(n, s.texteN) >= 4) sc += 1;
-    res.push({ s, sc, parts });
+    res.push({ s, sc, parts, th: parts.some(x => x.th) });
   }
   res.sort((a, b) => b.sc - a.sc || (b.s.annee || 0) - (a.s.annee || 0));
-  // on écarte les correspondances très faibles devant les meilleures
-  if (res.length) { const m = res[0].sc; while (res.length && res[res.length - 1].sc < .2 * m) res.pop(); }
+  // on écarte les correspondances très faibles devant les meilleures, sauf un sujet qui porte le thème reconnu
+  // (même en secondaire) : les nombres de la vue Programme comptent ces sujets-là (frequencePg, « tout »)
+  if (res.length) { const m = res[0].sc; for (let k = res.length - 1; k >= 0; k--) if (res[k].sc < .2 * m && !res[k].th) res.splice(k, 1); }
   // dès qu'un filtre est posé (ou sur demande), du plus récent au plus ancien ; à date égale, par pertinence
   if (triAnnDate()) res.sort((a, b) => dateSujetAnn(b.s) - dateSujetAnn(a.s) || b.sc - a.sc);
   return { themes: thRet.map(x => x.t), res };
@@ -7046,12 +7050,13 @@ $('#rubrique').addEventListener('click', ev => {
     const famR = rx.dataset.rqFam || '', changeFam = famR !== etatRech.fam && (famR || vocabAnn() !== 'general');
     if (changeFam) Object.assign(etatRech, { fam: famR, conc: '', fil: '' });
     // depuis le programme d'une filière : les sujets de cette filière
-    const filR = rx.dataset.rqFil || '', tous = 'rqTous' in rx.dataset;
+    // (concours de l'enseignement : pas de filière, le programme désigne un concours, data-rq-conc)
+    const filR = rx.dataset.rqFil || '', concR = rx.dataset.rqConc || '', tous = 'rqTous' in rx.dataset;
     // depuis le programme : « tous » cherche dans tous les concours et examens, sans filtre
     // (le baccalauréat n'est pas mêlé aux concours : « tous » = prépas et enseignement)
     const famTous = vocabFamAnn(etatAnn.famille) === 'general' ? '*sup' : etatAnn.famille;
-    const changeFil = tous ? etatRech.fam !== famTous || !!(etatRech.fil || etatRech.conc) : !!filR && (etatRech.fil !== filR || etatRech.fam !== etatAnn.famille);
-    if (changeFil) Object.assign(etatRech, tous ? { fam: famTous, fil: '', conc: '' } : { fam: etatAnn.famille, fil: filR, conc: '' });
+    const changeFil = tous ? etatRech.fam !== famTous || !!(etatRech.fil || etatRech.conc) : !!(filR || concR) && (etatRech.fil !== filR || etatRech.conc !== concR || etatRech.fam !== etatAnn.famille);
+    if (changeFil) Object.assign(etatRech, tous ? { fam: famTous, fil: '', conc: '' } : { fam: etatAnn.famille, fil: filR, conc: concR });
     if (location.hash.startsWith('#annales/sujet/')) location.hash = '#annales';
     setTimeout(() => { if (changeFam || changeFil) { const z = $('#rech-ann'); if (z) z.outerHTML = blocRechercheAnnales(); } const i = $('#ann-q'); if (i) i.value = etatRech.q; majRechercheAnnales(); const z = $('#rech-ann'); if (z) z.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 30);
     return;
