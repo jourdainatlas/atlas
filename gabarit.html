@@ -4955,11 +4955,13 @@ function lienExoPg(id) {
   const et = e.etoiles ? `<span class="pg-et" aria-label="difficulté ${e.etoiles} sur 4">${'★'.repeat(e.etoiles)}</span>` : '';
   return `<a class="pg-l pg-ex" href="#exercices/ex/${e.id}" data-retour-pg title="${esc(`${niveauDe(f.niveau).titre}${f.chapitre ? `, ch. ${f.chapitre}` : ''} (${rgTexte(f.titre || '')}) — exercice ${e.numero}${e.partie ? ' : ' + rgTexte(e.partie) : ''}`)}">${f.chapitre ? `${f.chapitre}.` : ''}${e.numero}${et}</a>`;
 }
+// sigle d'un programme dans une filière (le programme de MPSI est aussi celui de MP2I : court_filiere)
+const courtPg = (p, fil) => ((p.court_filiere || {})[fil]) || p.court || p.id;
 // entrée de la vue « Programme » : un bandeau sous la barre (les boutons de la barre gardent leur largeur)
 function entreeProgramme(fam, fil) {
   const progs = progsDeFiliere(fam.id, fil); if (!progs.length) return '';
   const dedans = etatAnn.vue === 'programme';
-  return `<button type="button" class="pg-entree${dedans ? ' dedans' : ''}" data-vue-ann="${dedans ? 'grille' : 'programme'}"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 1.5h7l3 3v10H3zM5 6h6v1.3H5zM5 8.6h6v1.3H5zM5 11.2h4v1.3H5z"/></svg>${dedans ? `<span><b>← Revenir à la grille des sujets</b></span>` : `<span><b>Programme officiel ${esc(fil || '')}</b> (${progs.map(p => esc(p.court || p.id)).join(' puis ')}) : chaque point relié aux cours, aux exercices et aux sujets</span><span class="pg-entree-f" aria-hidden="true">→</span>`}</button>`;
+  return `<button type="button" class="pg-entree${dedans ? ' dedans' : ''}" data-vue-ann="${dedans ? 'grille' : 'programme'}"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 1.5h7l3 3v10H3zM5 6h6v1.3H5zM5 8.6h6v1.3H5zM5 11.2h4v1.3H5z"/></svg>${dedans ? `<span><b>← Revenir à la grille des sujets</b></span>` : `<span><b>Programme officiel ${esc(fil || '')}</b> (${progs.map(p => esc(courtPg(p, fil))).join(' puis ')}) : chaque point relié aux cours, aux exercices et aux sujets</span><span class="pg-entree-f" aria-hidden="true">→</span>`}</button>`;
 }
 function vueProgrammeAnnales(fam, fil) {
   const progs = progsDeFiliere(fam.id, fil);
@@ -4968,7 +4970,7 @@ function vueProgrammeAnnales(fam, fil) {
   const attente = chargerProgramme(p), attEx = chargerIndexExosPg();
   for (const a of [attente, attEx]) if (a) a.then(() => { const z = $('#rubrique'); if (enRubrique() && z.dataset.nom === 'annales' && etatAnn.vue === 'programme') rafraichirRubrique(); });
   let h = `<section class="pg" id="pg">`;
-  if (progs.length > 1) h += `<div class="segments pg-progs" role="group" aria-label="Programme">${progs.map(x => `<button type="button" data-pg-prog="${x.id}" aria-pressed="${x.id === p.id}">${x.court ? `<b>${esc(x.court)}</b> ` : ''}${x.annee ? esc(x.annee) : x.intitule}</button>`).join('')}</div>`;
+  if (progs.length > 1) h += `<div class="segments pg-progs" role="group" aria-label="Programme">${progs.map(x => `<button type="button" data-pg-prog="${x.id}" aria-pressed="${x.id === p.id}">${courtPg(x, fil) ? `<b>${esc(courtPg(x, fil))}</b> ` : ''}${x.annee ? esc(x.annee) : x.intitule}</button>`).join('')}</div>`;
   h += `<div class="pg-tete"><h3>${p.intitule}</h3>`;
   if (p.source) h += `<p class="pg-source">Texte officiel&nbsp;: <a href="${esc(p.source.url)}" target="_blank" rel="noopener">${esc(p.source.nom)}</a>. Les points sont ceux de la colonne « Contenus », dans l'ordre et avec les mots du programme ; les précisions résument la colonne « Capacités et commentaires ».</p>`;
   if (p.preambule) h += `<details class="pg-org"><summary>Organisation du programme</summary><p class="pg-pre">${p.preambule}</p></details>`;
