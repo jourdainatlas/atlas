@@ -1049,3 +1049,5 @@ Vérifié sur l3-cd-06 : « Picard » 9, « Gronwall » 6, « solution maximale 
 ### 62. Couleur de la rubrique Exercices (21 nov. 2026)
 
 Variante B validée par l'auteur : titres « Exercice N » (`.exo-tete h3`, lien `.lien-exo`) en `var(--r-exercices)`, filet de 4 px de cette couleur en haut des cartes d'exercice (`.exo.carte`) et de feuille (`.feuille.carte`), barres de difficulté pleines des cartes d'exercice dans la même couleur (styles placés après `.exo-tete h3`).
+
+La barre du lecteur est collante (`.lecteur > .lecteur-barre`, `position: sticky`, fond `--surface`) : champ de recherche, résultat et flèches restent visibles pendant la lecture. Sur écran étroit, `pdfBarreCaler()` (appelée par `monterPdf` et au redimensionnement) décale son haut collant pour ne garder que la ligne de recherche. Pages : `scroll-margin-top: 64px`, pour que « aller à la page » ne cache pas le haut de la page sous la barre.

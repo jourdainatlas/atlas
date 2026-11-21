@@ -1518,6 +1518,8 @@ a.acc-etape:hover { background: var(--trame); }
 .lecteur-pages { position: relative; }
 .pdf-surl { position: absolute; background: rgba(255, 200, 0, .35); border-radius: 2px; pointer-events: none; mix-blend-mode: multiply; }
 .pdf-surl.actuel { background: rgba(255, 130, 0, .55); box-shadow: 0 0 0 2px rgba(230, 100, 0, .9); }
+.lecteur > .lecteur-barre { position: sticky; top: 0; z-index: 4; background: var(--surface); }
+.lecteur-pages .page-pdf, .lecteur-pages .page-cadre { scroll-margin-top: 64px; }
 .pdf-cherche { flex: 1 1 220px; max-width: 360px; min-width: 0; } .pdf-cherche .bouton { flex: none; }
 .pdf-cherche .pdf-q { flex: 1 1 0; width: 0; min-width: 0; font: inherit; font-size: 14px; padding: 5px 9px; border: 1px solid var(--filet); border-radius: 6px; background: var(--papier); color: var(--encre); }
 .pdf-cherche .pdf-res { font-size: 12.5px; color: var(--encre-2); white-space: nowrap; }
@@ -7006,7 +7008,13 @@ document.addEventListener('keydown', ev => {
   }
 });
 document.addEventListener('click', ev => { const b = ev.target.closest?.('[data-pdf-res]'); if (b) pdfCherche.aller(+b.dataset.pdfRes); });
-addEventListener('resize', () => { if (pdfCherche.res.length && pdfCherche.zone?.isConnected) pdfCherche.montrer(false); });
+addEventListener('resize', () => { pdfBarreCaler(); if (pdfCherche.res.length && pdfCherche.zone?.isConnected) pdfCherche.montrer(false); });
+// La barre du lecteur reste en haut de l'écran pendant la lecture (position sticky). Sur un écran étroit, où elle tient
+// sur plusieurs lignes, seule sa dernière ligne (la recherche) reste visible : le haut collant est décalé d'autant.
+function pdfBarreCaler() {
+  const b = $('#rubrique .lecteur > .lecteur-barre'), c = b?.querySelector('.pdf-cherche');
+  if (b) b.style.top = c && c.offsetTop > 20 ? `-${c.offsetTop - 6}px` : '0px';
+}
 async function monterPdf(z) {
   pageVoulue = null;
   const zone = z.querySelector('[data-pdf]');
@@ -7023,7 +7031,7 @@ async function monterPdf(z) {
     total.innerHTML = `page <span class="pdf-num">1</span> / ${doc.numPages}`;
     const largeur = Math.max(260, zone.clientWidth - 32), dpr = Math.min(2, devicePixelRatio || 1);
     const vues = [];
-    pdfCherche.init(zone, doc);
+    pdfCherche.init(zone, doc); pdfBarreCaler();
     for (let i = 1; i <= doc.numPages; i++) {
       const page = await doc.getPage(i);
       const v = page.getViewport({ scale: largeur / page.getViewport({ scale: 1 }).width });
