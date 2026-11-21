@@ -4990,7 +4990,7 @@ function vueProgrammeAnnales(fam, fil) {
   // ce que désignent « les sujets » : la filière, ou le concours du programme (enseignement)
   const cible = fil || (((fam.concours || []).find(c => c.id === p.concours) || {}).titre || '').replace(/<[^>]+>/g, '');
   const tout = p.sections.map((s, i) => s.blocs.flatMap((b, j) => b.points.map((pt, k) => ({ pt, cle: `${p.id}:${i}.${j}.${k}` }))));
-  const plat = tout.flat(), couvert = x => (x.pt.cours || []).length || (x.pt.ex || []).length;
+  const plat = tout.flat().filter(x => !x.pt.sans_lien), couvert = x => (x.pt.cours || []).length || (x.pt.ex || []).length;
   const nCouv = plat.filter(couvert).length, nM = plat.filter(x => M.has(x.cle)).length;
   const freqSec = tout.map(l => { const u = new Set(); for (const x of l) for (const t of x.pt.themes || []) for (const k of F.par[t] || []) u.add(k); return F.total ? u.size / F.total : 0; });
   const pct = x => `${Math.round(100 * x)}&nbsp;%`;
@@ -5009,7 +5009,7 @@ function vueProgrammeAnnales(fam, fil) {
     for (const b of s.blocs) {
       h += `<div class="pg-blk">${b.intitule ? `<h4 class="pg-bloc">${b.intitule}</h4>` : ''}<ul class="pg-pts">`;
       for (const pt of b.points) {
-        const { cle } = tout[i][k0++], m = M.has(cle), av = !(pt.cours || []).length && !(pt.ex || []).length;
+        const { cle } = tout[i][k0++], m = M.has(cle), av = !pt.sans_lien && !(pt.cours || []).length && !(pt.ex || []).length;   // sans_lien : point d'organisation (épreuves), jamais « à venir »
         const th = (pt.themes || []).filter(t => (indexAnnales().themes[t] || {}).titre && (!FT.total || (FT.tout[t] || new Set()).size));   // thème sans aucun sujet étiqueté : masqué
         const liens = [];
         if ((pt.cours || []).length) liens.push(`<span class="pg-g"><span class="pg-lab">Cours</span>${pt.cours.map(lienCoursPg).join('')}</span>`);
