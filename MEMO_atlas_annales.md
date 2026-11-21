@@ -285,3 +285,17 @@ application ponctuelle reste secondaire. Les thèmes des points des programmes o
 141 points changés, MP : 72), chaque lot relu. Les nombres des boutons d'annales de la vue Programme comptent
 désormais les parties où le thème est principal ou secondaire (`frequencePg(...).tout`, comme le moteur) ; la
 teinte des sections ne compte que les principaux. Scripts (`fusion_themes.py`) et rapports : bloc-notes.
+
+**Filières MPI, PC (21 nov. 2026) et règles de liaison pour les filières plus étroites.** MPI : mêmes programmes
+que MP (MPSI et MP2I ont un texte commun, MP et MPI aussi) ; sigles d'onglet par filière (`court_filiere`).
+PC : programmes de PCSI (BO spécial n° 1 du 11 févr. 2021, 418 points) et de PC (BO n° 31 du 26 août 2021,
+224 points), transcrits puis relus (PC : 11 corrections, PCSI : 9 ; le PDF n'a pu être vu en image : colonnes de
+« Extension aux suites C^k », « Exemples d'études… », « Système quasi-complet » (PC) et barre de « A et B̄ » à
+contrôler un jour sur le PDF). Le site n'a pas de cours de PCSI ni de PC : les points renvoient aux cours de
+MPSI et de MP, en partant des liens relus de MPSI et MP puis en retirant tout exercice dont une partie notable
+sort du programme de la filière (trace, comatrice, Vandermonde, blocs, polynôme minimal, adjoint, nilpotents,
+compacité, Abel radial, semi-convergence…), sauf si l'essentiel reste au programme et qu'aucun autre exercice
+ne travaille le point ; alors une note signale les questions hors programme (cas des vrai-faux). Les notes
+citent les exercices par leur numéro affiché (« exercice 13.46 »), jamais par leur identifiant interne. Un
+thème posé sur aucune partie hors bac (`limites-fonctions`, `suites-arith-geom`, `second-degre`,
+`geometrie-espace`, reliquats du bac) n'est pas employé. PSI suit (programme de PSI, BO n° 31, 255 points).
