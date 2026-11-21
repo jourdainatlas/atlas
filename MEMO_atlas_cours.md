@@ -1000,3 +1000,22 @@ exercices numériques du chapitre 7 (tableau d'Euler de l'exercice 2, portraits 
 Python : ajoutés à la demande de l'auteur (20 nov.) par la table `PY_AUSSI` de `construire.py`, où l'on inscrit
 tout autre exercice à pourvoir. Chargement de NumPy depuis le CDN vérifié en ligne par l'auteur.
 
+### 59. Licence 3 : UE Intégration (21 nov. 2026)
+
+UE `l3-s5-int` (« Intégration », semestre 5, 84 p., sans fiches de révision : champ `fiches` absent), chapitres
+`l3-in-01` à `l3-in-09` : tribus et mesures ; mesure de Lebesgue sur ℝⁿ ; fonctions mesurables, intégrale des fonctions
+positives ; fonctions intégrables, convergence dominée ; intégrales à paramètres, Fourier, Laplace, Mellin ; changement de
+variables, Sard ; Fubini ; espaces Lᵖ ; convolution. PDF `documents/cours/l3/integration_chapNN_<slug>.pdf`, cours
+complet `documents/ue/l3/integration_cours_complet.pdf` (fusion pypdf). Résumés rédigés d'après les bilans et les
+énoncés numérotés des .tex ; sommaires = titres longs des `\section` (mathématiques en `$…$`), pages relevées sur les
+titres de taille > 13 pt. Théories : graphes `mes`, `anf-lp`, `fourier`, `edo-changement`, `edp`. Prérequis de l'UE
+[ma-18, mp-12, mp-13] ; « À revoir avant » par chapitre dans `cours-prerequis.yaml`. Activités : aire-primitive (3),
+rectangles (3, 4), suites-fonctions (4), matrice (6). Termes exclus : 15 fragments ou mots d'insistance (`l3-in-0N : …`).
+Pas de Python. Symboles validés le 21 nov. (variantes A) : repris `partition` (ch. 1) et `domine` (ch. 4) ; nouveaux
+`paves` (disque, carrés de côté 3 contenus en f2, rencontrés en f3), `tranches` (étagée à niveaux espacés de 5 sous
+16,5·sin(πu)^1,5, franchissements calculés par dichotomie), `gamma` (graphe de Γ, points n = 1, 2, 3), `polaires`
+(secteur d'anneau r ∈ [5,5 ; 18], θ ∈ [6°, 84°], grille 3 × 3, cellule centrale), `fubini` (domaine sous 0,28 + 0,62√x,
+section verticale en x = 0,55, horizontale en y = 0,62), `boules` (boules unités des normes 1, 2, ∞) et `convolution`
+(créneau et son autoconvolée triangulaire). Variantes écartées : `cantor`, `lineaire`. Préparé sur la branche
+`ue-integration` en attendant la validation, puis fusionné dans main.
+
