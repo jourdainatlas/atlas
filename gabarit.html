@@ -4927,7 +4927,7 @@ function frequencePg(famId, fil) {
   const I = indexAnnales(), cle = famId + '|' + fil;
   if (freqPgCache.I === I && freqPgCache[cle]) return freqPgCache[cle];
   if (freqPgCache.I !== I) freqPgCache = { I };
-  const sujets = I.sujets.filter(s => (!famId || s.fam === famId) && (!fil || s.filieres.includes(fil))), par = {};
+  const sujets = I.sujets.filter(s => (famId === '*sup' ? s.vocab === 'general' : !famId || s.fam === famId) && (!fil || s.filieres.includes(fil))), par = {};
   sujets.forEach((s, k) => {
     const vus = new Set();
     for (const p of s.parties) for (const t of p.thG || p.themes || []) { vus.add(t); const pa = (I.themes[t] || {}).parent; if (pa) vus.add(pa); }
@@ -4966,7 +4966,7 @@ function vueProgrammeAnnales(fam, fil) {
   if (p.source) h += `<p class="pg-source">Texte officiel&nbsp;: <a href="${esc(p.source.url)}" target="_blank" rel="noopener">${esc(p.source.nom)}</a>. Les points sont ceux de la colonne « Contenus », dans l'ordre et avec les mots du programme ; les précisions résument la colonne « Capacités et commentaires ».</p>`;
   if (p.preambule) h += `<details class="pg-org"><summary>Organisation du programme</summary><p class="pg-pre">${p.preambule}</p></details>`;
   if (!(p.sections || []).length) return h + `</div><p class="vide-note">${attente ? 'Chargement du programme…' : 'Programme à venir.'}</p></section>`;
-  const F = frequencePg(fam.id, fil), FT = frequencePg('', ''), M = pgMaitrise();
+  const F = frequencePg(fam.id, fil), FT = frequencePg(vocabFamAnn(fam.id) === 'general' ? '*sup' : fam.id, ''), M = pgMaitrise();
   const tout = p.sections.map((s, i) => s.blocs.flatMap((b, j) => b.points.map((pt, k) => ({ pt, cle: `${p.id}:${i}.${j}.${k}` }))));
   const plat = tout.flat(), couvert = x => (x.pt.cours || []).length || (x.pt.ex || []).length;
   const nCouv = plat.filter(couvert).length, nM = plat.filter(x => M.has(x.cle)).length;
@@ -4995,7 +4995,7 @@ function vueProgrammeAnnales(fam, fil) {
         // deux boutons par thème : les sujets de la filière, et tous les sujets étiquetés (autres filières, concours, examens)
         if (th.length) liens.push(`<span class="pg-g"><span class="pg-lab">Annales</span>${th.map(t => { const T = indexAnnales().themes[t], nb = (F.par[t] || new Set()).size, nt = (FT.par[t] || new Set()).size;
           const fl = nb || !F.total ? `<button type="button" class="pg-l pg-ann" data-rq-ext="${esc(T.titre)}" data-rq-fil="${esc(fil || '')}" title="Chercher les sujets ${esc(fil || '')} sur ce thème">${esc(T.titre)}${F.total ? ` <small>${nb} ${esc(fil || '')}</small>` : ''}</button>` : '';
-          const ts = nt > nb ? `<button type="button" class="pg-l pg-ann pg-tous" data-rq-ext="${esc(T.titre)}" data-rq-tous title="Chercher ce thème dans tous les concours et examens (autres filières, enseignement, baccalauréat)">${fl ? '' : `${esc(T.titre)} `}<small>${nt} en tout</small></button>` : '';
+          const ts = nt > nb ? `<button type="button" class="pg-l pg-ann pg-tous" data-rq-ext="${esc(T.titre)}" data-rq-tous title="Chercher ce thème dans tous les sujets de prépa et de l'enseignement (autres filières et concours, sans le baccalauréat)">${fl ? '' : `${esc(T.titre)} `}<small>${nt} en tout</small></button>` : '';
           return `<span class="pg-annp">${fl}${ts}</span>`; }).join('')}</span>`);
         h += `<li class="pg-pt${m ? ' maitrise' : ''}" id="pt-${cle.replace(/[:.]/g, '-')}" data-t="${esc(cleTextePg(`${pt.contenu} ${pt.precisions || ''}`))}"><input type="checkbox" class="pg-coche" data-pg-m="${cle}"${m ? ' checked' : ''} aria-label="Je maîtrise ce point" title="Je maîtrise ce point (retenu dans ce navigateur)"><div class="pg-pc"><div class="pg-contenu">${pt.contenu}${(pt.filieres || []).length ? ` <span class="pg-demo">${esc(pt.filieres.join(', '))} seulement</span>` : ''}${pt.demo ? ` <span class="pg-demo">démonstration ${esc(pt.demo)}</span>` : ''}${av ? ' <span class="pg-venir" title="Le site ne traite pas encore ce point">à venir</span>' : ''}</div>${pt.precisions ? `<div class="pg-prec">${pt.precisions}</div>` : ''}${pt.note ? `<div class="pg-note">${pt.note}</div>` : ''}${liens.length ? `<div class="pg-liens">${liens.join('')}</div>` : ''}</div></li>`;
       }
@@ -5115,7 +5115,8 @@ function allerRechercheAnnales() {
    des thèmes du vocabulaire (rubriques/annales-themes.yaml), principaux ou secondaires, et des mots-clés. */
 const etatRech = { q: '', fam: '', conc: '', fil: '', de: '', a: '', tri: '', montres: 12 };   // tri : '' (date si un filtre est posé, sinon pertinence), 'date', 'pertinence'
 // filtres du moteur (famille, école ou concours, filière, période) appliqués à un sujet
-const passeFiltresAnn = s => !(etatRech.fam && s.fam !== etatRech.fam)
+// « *sup » : tous les concours du supérieur (vocabulaire général), sans le baccalauréat
+const passeFiltresAnn = s => !(etatRech.fam === '*sup' ? s.vocab !== 'general' : etatRech.fam && s.fam !== etatRech.fam)
   && !(etatRech.conc && !s.cases.some(c => c.concours === etatRech.conc))
   && !(etatRech.fil && !s.filieres.includes(etatRech.fil))
   && !(etatRech.de && s.annee < +etatRech.de) && !(etatRech.a && s.annee > +etatRech.a);
@@ -5136,6 +5137,7 @@ function compteAnnales() {
   return compte;
 }
 // vocabulaire des thèmes : celui de la famille choisie (lycée pour le baccalauréat), sinon le vocabulaire général
+const vocabFamAnn = id => ((((R.annales || {}).familles || []).find(f => f.id === id)) || {}).vocabulaire || 'general';
 const vocabAnn = () => ((((R.annales || {}).familles || []).find(f => f.id === etatRech.fam)) || {}).vocabulaire || 'general';
 const themesPartie = (s, p, v) => s.vocab === v || !p.thG ? [p.themes || [], p.secondaires || []] : [p.thG, p.secG];
 const filtreAnnActif = () => !!(etatRech.fam || etatRech.conc || etatRech.fil || etatRech.de || etatRech.a);
@@ -5343,7 +5345,7 @@ function blocRechercheAnnales() {
   h += `<p class="rech-aide">Tapez une notion (${lyc ? '« loi binomiale », « intégration par parties », « représentation paramétrique »' : '« séries entières », « Perron-Frobenius », « loi de Poisson »'}…) : le moteur renvoie les ${lyc ? 'exercices' : 'parties de sujets'} qui la travaillent, avec un lien qui ouvre le PDF à la bonne page. Un thème large (${lyc ? '« Géométrie dans l\'espace »' : '« Variables aléatoires »'}) regroupe des thèmes fins (${lyc ? '« Droites et plans »' : '« Loi de Poisson »'}) qu'on peut choisir ensuite pour préciser.${lyc ? ' Les thèmes proposés sont ceux du programme du lycée.' : ''} Sujets étiquetés : session${ans.length > 1 ? 's' : ''} ${ans.length > 3 ? `${ans[0]} à ${ans[ans.length - 1]}` : ans.join(', ')} (${I.sujets.length} sujets)${ans.length < 16 ? ', les autres années suivront' : ''}.</p>`;
   h += `<div class="rech-ligne"><input type="search" id="ann-q" value="${esc(etatRech.q)}" placeholder="Un thème, un théorème, un objet…" aria-label="Rechercher un thème dans les sujets" autocomplete="off" list="ann-themes">`;
   h += `<datalist id="ann-themes">${(() => { const C = compteAnnales(); return Object.values(I.themes).filter(t => C[t.id]); })().map(t => `<option value="${esc(t.titre)}">`).join('')}</datalist>`;
-  h += `<select id="ann-fam" aria-label="Famille de concours"><option value="">Tous les concours</option>${fams.map(f => `<option value="${f.id}"${etatRech.fam === f.id ? ' selected' : ''}>${esc(f.titre)}</option>`).join('')}</select>`;
+  h += `<select id="ann-fam" aria-label="Famille de concours"><option value="">Tous les concours et examens</option><option value="*sup"${etatRech.fam === '*sup' ? ' selected' : ''}>Prépas et enseignement (sans le bac)</option>${fams.map(f => `<option value="${f.id}"${etatRech.fam === f.id ? ' selected' : ''}>${esc(f.titre)}</option>`).join('')}</select>`;
   // écoles (ingénieurs) ou concours (enseignement) de la famille choisie, ceux qui ont des sujets étiquetés
   const famCh = fams.find(f => f.id === etatRech.fam);
   if (famCh) {
@@ -5353,7 +5355,7 @@ function blocRechercheAnnales() {
     h += `<select id="ann-conc" aria-label="${famCh.nom_concours || (famCh.filieres ? 'École' : 'Concours')}"><option value="">${libre}</option>${cs.map(c => `<option value="${c.id}"${etatRech.conc === c.id ? ' selected' : ''}>${esc(c.titre.replace(/<[^>]+>/g, ''))}</option>`).join('')}</select>`;
   }
   // filières de la famille choisie (aucune pour les concours de l'enseignement : le menu disparaît)
-  const filsAnn = [...new Set(fams.filter(f => !etatRech.fam || f.id === etatRech.fam).flatMap(f => f.filieres || []))];
+  const filsAnn = [...new Set(fams.filter(f => !etatRech.fam || f.id === etatRech.fam || etatRech.fam === '*sup' && (f.vocabulaire || 'general') === 'general').flatMap(f => f.filieres || []))];
   if (filsAnn.length) h += `<select id="ann-fil" aria-label="Filière"><option value="">${famCh && famCh.nom_filiere ? 'Tous niveaux' : 'Toutes filières'}</option>${filsAnn.map(f => `<option${etatRech.fil === f ? ' selected' : ''}>${f}</option>`).join('')}</select>`;
   const opts = v => anTous.map(y => `<option${String(y) === v ? ' selected' : ''}>${y}</option>`).join('');
   h += `<span class="rech-periode">de <select id="ann-de" aria-label="Première session"><option value="">${anTous[0]}</option>${opts(etatRech.de)}</select> à <select id="ann-a" aria-label="Dernière session"><option value="">${anTous[anTous.length - 1]}</option>${opts(etatRech.a)}</select></span></div>`;
@@ -6990,8 +6992,10 @@ $('#rubrique').addEventListener('click', ev => {
     // depuis le programme d'une filière : les sujets de cette filière
     const filR = rx.dataset.rqFil || '', tous = 'rqTous' in rx.dataset;
     // depuis le programme : « tous » cherche dans tous les concours et examens, sans filtre
-    const changeFil = tous ? !!(etatRech.fam || etatRech.fil || etatRech.conc) : !!filR && (etatRech.fil !== filR || etatRech.fam !== etatAnn.famille);
-    if (changeFil) Object.assign(etatRech, tous ? { fam: '', fil: '', conc: '' } : { fam: etatAnn.famille, fil: filR, conc: '' });
+    // (le baccalauréat n'est pas mêlé aux concours : « tous » = prépas et enseignement)
+    const famTous = vocabFamAnn(etatAnn.famille) === 'general' ? '*sup' : etatAnn.famille;
+    const changeFil = tous ? etatRech.fam !== famTous || !!(etatRech.fil || etatRech.conc) : !!filR && (etatRech.fil !== filR || etatRech.fam !== etatAnn.famille);
+    if (changeFil) Object.assign(etatRech, tous ? { fam: famTous, fil: '', conc: '' } : { fam: etatAnn.famille, fil: filR, conc: '' });
     if (location.hash.startsWith('#annales/sujet/')) location.hash = '#annales';
     setTimeout(() => { if (changeFam || changeFil) { const z = $('#rech-ann'); if (z) z.outerHTML = blocRechercheAnnales(); } const i = $('#ann-q'); if (i) i.value = etatRech.q; majRechercheAnnales(); const z = $('#rech-ann'); if (z) z.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 30);
     return;
