@@ -4928,12 +4928,19 @@ function frequencePg(famId, fil) {
   if (freqPgCache.I === I && freqPgCache[cle]) return freqPgCache[cle];
   if (freqPgCache.I !== I) freqPgCache = { I };
   const sujets = I.sujets.filter(s => (famId === '*sup' ? s.vocab === 'general' : !famId || s.fam === famId) && (!fil || s.filieres.includes(fil))), par = {};
+  // par : thèmes principaux (teinte des sections) ; tout : principaux et secondaires (nombres des boutons, comme le moteur)
+  const tout = {};
   sujets.forEach((s, k) => {
-    const vus = new Set();
-    for (const p of s.parties) for (const t of p.thG || p.themes || []) { vus.add(t); const pa = (I.themes[t] || {}).parent; if (pa) vus.add(pa); }
+    const vus = new Set(), vusT = new Set();
+    const aj = (e, t) => { e.add(t); const pa = (I.themes[t] || {}).parent; if (pa) e.add(pa); };
+    for (const p of s.parties) {
+      for (const t of p.thG || p.themes || []) { aj(vus, t); aj(vusT, t); }
+      for (const t of (p.thG ? p.secG : p.secondaires) || []) aj(vusT, t);
+    }
     for (const t of vus) (par[t] = par[t] || new Set()).add(k);
+    for (const t of vusT) (tout[t] = tout[t] || new Set()).add(k);
   });
-  return (freqPgCache[cle] = { total: sujets.length, par });
+  return (freqPgCache[cle] = { total: sujets.length, par, tout });
 }
 const cleTextePg = h => normRech(rgTexte(h));
 function lienCoursPg(ref) {
@@ -4988,13 +4995,13 @@ function vueProgrammeAnnales(fam, fil) {
       h += `<div class="pg-blk">${b.intitule ? `<h4 class="pg-bloc">${b.intitule}</h4>` : ''}<ul class="pg-pts">`;
       for (const pt of b.points) {
         const { cle } = tout[i][k0++], m = M.has(cle), av = !(pt.cours || []).length && !(pt.ex || []).length;
-        const th = (pt.themes || []).filter(t => (indexAnnales().themes[t] || {}).titre && (!FT.total || (FT.par[t] || new Set()).size));   // thème sans aucun sujet étiqueté : masqué
+        const th = (pt.themes || []).filter(t => (indexAnnales().themes[t] || {}).titre && (!FT.total || (FT.tout[t] || new Set()).size));   // thème sans aucun sujet étiqueté : masqué
         const liens = [];
         if ((pt.cours || []).length) liens.push(`<span class="pg-g"><span class="pg-lab">Cours</span>${pt.cours.map(lienCoursPg).join('')}</span>`);
         if ((pt.ex || []).length) liens.push(`<span class="pg-g"><span class="pg-lab">Exercices</span>${pt.ex.map(lienExoPg).join('')}</span>`);
         // deux boutons par thème : les sujets de la filière, et tous les sujets étiquetés (autres filières, concours, examens)
-        if (th.length) liens.push(`<span class="pg-g"><span class="pg-lab">Annales</span>${th.map(t => { const T = indexAnnales().themes[t], nb = (F.par[t] || new Set()).size, nt = (FT.par[t] || new Set()).size;
-          const fl = nb || !F.total ? `<button type="button" class="pg-l pg-ann" data-rq-ext="${esc(T.titre)}" data-rq-fil="${esc(fil || '')}" title="Chercher les sujets ${esc(fil || '')} sur ce thème">${esc(T.titre)}${F.total ? ` <small>${nb} ${esc(fil || '')}</small>` : ''}</button>` : '';
+        if (th.length) liens.push(`<span class="pg-g"><span class="pg-lab">Annales</span>${th.map(t => { const T = indexAnnales().themes[t], nb = (F.tout[t] || new Set()).size, nt = (FT.tout[t] || new Set()).size;
+          const fl = nb || !F.total ? `<button type="button" class="pg-l pg-ann" data-rq-ext="${esc(T.titre)}" data-rq-fil="${esc(fil || '')}" title="Chercher les sujets ${esc(fil || '')} qui travaillent ou emploient ce thème">${esc(T.titre)}${F.total ? ` <small>${nb} ${esc(fil || '')}</small>` : ''}</button>` : '';
           const ts = nt > nb ? `<button type="button" class="pg-l pg-ann pg-tous" data-rq-ext="${esc(T.titre)}" data-rq-tous title="Chercher ce thème dans tous les sujets de prépa et de l'enseignement (autres filières et concours, sans le baccalauréat)">${fl ? '' : `${esc(T.titre)} `}<small>${nt} en tout</small></button>` : '';
           return `<span class="pg-annp">${fl}${ts}</span>`; }).join('')}</span>`);
         h += `<li class="pg-pt${m ? ' maitrise' : ''}" id="pt-${cle.replace(/[:.]/g, '-')}" data-t="${esc(cleTextePg(`${pt.contenu} ${pt.precisions || ''}`))}"><input type="checkbox" class="pg-coche" data-pg-m="${cle}"${m ? ' checked' : ''} aria-label="Je maîtrise ce point" title="Je maîtrise ce point (retenu dans ce navigateur)"><div class="pg-pc"><div class="pg-contenu">${pt.contenu}${(pt.filieres || []).length ? ` <span class="pg-demo">${esc(pt.filieres.join(', '))} seulement</span>` : ''}${pt.demo ? ` <span class="pg-demo">démonstration ${esc(pt.demo)}</span>` : ''}${av ? ' <span class="pg-venir" title="Le site ne traite pas encore ce point">à venir</span>' : ''}</div>${pt.precisions ? `<div class="pg-prec">${pt.precisions}</div>` : ''}${pt.note ? `<div class="pg-note">${pt.note}</div>` : ''}${liens.length ? `<div class="pg-liens">${liens.join('')}</div>` : ''}</div></li>`;

@@ -266,3 +266,22 @@ Consignes et scripts (`CONSIGNE_extraction.md`, `CONSIGNE_verif_extraction.md`, 
 `CONSIGNE_relecture_liens.md`, `valider_prog.py`, `valider_liens.py`, `fusion_prog.py`) : bloc-notes de
 la conversation, à recréer d'après ce paragraphe. Quand un cours ou une feuille change de sommaire, la
 construction signale les renvois devenus faux ; refaire alors la liaison du chapitre concerné.
+
+**Audit du vocabulaire des thèmes et bac écarté des concours (21 nov. 2026, demande de l'auteur).** *Bac.* Le
+moteur a un choix « Prépas et enseignement (sans le bac) » (valeur `*sup` de `etatRech.fam` : sujets de
+vocabulaire général) ; les boutons « N en tout » de la vue Programme y renvoient et ne comptent que ces sujets
+(`frequencePg('*sup')`). « Tous les concours et examens » garde le bac. *Audit.* Trois agents (algèbre ;
+analyse ; probabilités, géométrie, numérique) ont confronté le vocabulaire aux programmes et aux 2 411 parties
+des concours : 105 thèmes proposés (un doublon fusionné : 104), une centaine de thèmes corrigés (synonymes,
+titres, parents : « Nilpotents, Jordan, Dunford » devient « Endomorphismes nilpotents » sous « Réduction », avec
+Jordan et Dunford en fins ; « Fonctions usuelles » nouveau thème large de « Fonctions exponentielle et
+logarithme », « Fonctions circulaires et trigonométrie », « Fonctions hyperboliques », « Fonctions circulaires
+réciproques »), `graphes-denombrement` absorbé par `denombrement`. Liste validée par l'auteur. Les parties
+proposées ont été relues par six agents indépendants sur le texte des sujets (retraits, rangs, oublis), puis
+appliquées par script : thème fin principal à la place de son parent quand celui-ci est sur la partie, sinon
+ajouté ; 1 032 ajouts, 785 remplacements du parent, 40 secondaires non posés faute de place (cinq au plus).
+Règle confirmée : « principal » seulement si au moins une question étudie la notion elle-même ; une
+application ponctuelle reste secondaire. Les thèmes des points des programmes ont ensuite été revus (MPSI :
+141 points changés, MP : 72), chaque lot relu. Les nombres des boutons d'annales de la vue Programme comptent
+désormais les parties où le thème est principal ou secondaire (`frequencePg(...).tout`, comme le moteur) ; la
+teinte des sections ne compte que les principaux. Scripts (`fusion_themes.py`) et rapports : bloc-notes.
