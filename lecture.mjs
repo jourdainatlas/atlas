@@ -343,9 +343,42 @@ export function pagesLecture(ctx) {
       fil: [{ name: 'Annales', href: '/annales/' }, { name: titreC }], corps: h,
       apercu: { cle: `annales/${sl}`, rub: 'annales', sur: `Annales · ${titreC.split(', ')[0].replace(' — ', ' · ')}`, titre: (d?.nom && Ft(d.nom, d)) || 'Sujet d’écrit de mathématiques' } });
   }
+  // Programmes officiels (vue « Programme » des Annales, MEMO_atlas_annales.md §45) : une page par programme, ses
+  // points dans l'ordre du texte officiel et leurs renvois aux pages de lecture des cours et des exercices.
+  const AP = R['annales-programmes'] || {};
+  const coursId = Object.fromEntries((R.cours?.cours || []).map(c => [c.id, c]));
+  const exId = Object.fromEntries((R.exercices?.exercices || []).map(e => [e.id, e]));
+  const feuilleId = Object.fromEntries((R.exercices?.feuilles || []).map(f => [f.id, f]));
+  const progsLus = [];
+  for (const p of AP.programmes || []) {
+    if (!(p.sections || []).length) continue;
+    const nom = texteBrut(p.intitule);
+    let h = `<article class="fiche l-ann"><p class="sur-titre"><span class="sorte">Annales</span><span>Programme officiel</span></p><h1>${p.intitule}</h1>`;
+    if (p.source) h += `<p class="l-meta">Texte officiel : <a href="${attr(p.source.url)}" rel="noopener">${esc(p.source.nom)}</a>. Chaque point renvoie aux cours et aux exercices d'ATLAS qui le traitent.</p>`;
+    h += `<div class="l-boutons"><a class="plein" href="/#annales/programme/${p.id}">Programme interactif (fréquence aux concours, cases « je maîtrise »)</a></div>`;
+    if (p.preambule) h += `<p>${p.preambule}</p>`;
+    for (const [i, s] of p.sections.entries()) {
+      h += `<h2 class="l-sec">${i + 1}. ${s.intitule}</h2>`;
+      if (s.objectif) h += `<p>${s.objectif}</p>`;
+      if ((s.hors_programme || []).length) h += `<p class="l-meta">Hors programme : ${s.hors_programme.join(' ')}</p>`;
+      for (const b of s.blocs || []) {
+        if (b.intitule) h += `<h3>${b.intitule}</h3>`;
+        h += `<ul class="l-liste">${(b.points || []).map(pt => {
+          const l = [...(pt.cours || []).map(r => { const [cid, k] = String(r).split(':'), c = coursId[cid]; return c ? `<a href="/cours/${cid}/">${(c.sommaire || [])[k - 1] || c.titre}</a>` : ''; }),
+            ...(pt.ex || []).map(id => { const e = exId[id], f = e && feuilleId[e.feuille]; return e ? `<a href="/exercices/${id}/">exercice ${f?.chapitre ? `${f.chapitre}.` : ''}${e.numero}</a>` : ''; })].filter(Boolean);
+          return `<li>${pt.contenu}${pt.demo ? ` <span class="l-sorte">(démonstration ${esc(pt.demo)})</span>` : ''}${l.length ? ` <span class="l-sorte">— ${l.join(', ')}</span>` : ''}</li>`;
+        }).join('')}</ul>`;
+      }
+    }
+    h += '</article>';
+    page({ chemin: `annales/programme/${p.id}/`, titre: `ATLAS – Programme officiel : ${nom}`, description: `${nom}, d'après le texte officiel (${p.source?.nom || ''}) : chaque point du programme relié aux cours et aux exercices corrigés d'ATLAS.`,
+      ancre: `annales/programme/${p.id}`, fil: [{ name: 'Annales', href: '/annales/' }, { name: nom }], corps: h });
+    progsLus.push(p);
+  }
   // Page d'entrée des annales : tous les sujets, par famille, concours et session.
   {
     let h = `<article class="fiche"><p class="sur-titre"><span class="sorte">Rubrique</span></p><h1>Annales</h1><div>${R.annales?.intro || ''}</div></article>`;
+    if (progsLus.length) h += `<h2 class="l-sec">Programmes officiels</h2><ul class="l-liste">${progsLus.map(p => `<li><a href="/annales/programme/${p.id}/">${p.intitule}</a></li>`).join('')}</ul>`;
     for (const f of A.familles || []) {
       h += `<h2 class="l-sec">${esc(texteBrut(f.titre))}</h2>`;
       for (const c of f.concours || []) {

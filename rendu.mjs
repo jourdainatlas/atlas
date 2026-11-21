@@ -193,6 +193,22 @@ for (const e of D.rubriques?.exercices?.exercices || []) {
   e.recherche = sansAccent([e.titre, e.partie, ...(e.mots_cles || []), ...(e.types || []), brut].filter(Boolean).join(' ')).replace(/\s+/g, ' ');
 }
 for (const [nom, r] of Object.entries(D.rubriques || {})) rendreRubrique(r, `rubriques/${nom}`);
+// Programmes officiels (vue « Programme » des Annales) : textes rendus en ligne (formules vérifiées par KaTeX,
+// publiées comme repères kx, composées par le navigateur).
+for (const p of D.rubriques?.['annales-programmes']?.programmes || []) {
+  const ou = `rubriques/annales-programmes/${p.id}`;
+  for (const k of ['intitule', 'preambule']) if (p[k]) p[k] = enLigne(p[k], `${ou}/${k}`);
+  for (const [i, s] of (p.sections || []).entries()) {
+    const os = `${ou}/section ${i + 1}`;
+    for (const k of ['intitule', 'objectif', 'periode']) if (s[k]) s[k] = enLigne(s[k], `${os}/${k}`);
+    s.hors_programme = (s.hors_programme || []).map((t, j) => enLigne(t, `${os}/hors programme ${j + 1}`));
+    for (const b of s.blocs || []) {
+      if (b.intitule) b.intitule = enLigne(b.intitule, `${os}/${b.intitule}`);
+      for (const [j, pt] of (b.points || []).entries())
+        for (const k of ['contenu', 'precisions', 'note']) if (pt[k]) pt[k] = enLigne(pt[k], `${os}/point ${j + 1}/${k}`);
+    }
+  }
+}
 // Inventaire des admis (page « État de l'édifice ») : l'objet de chaque entrée est rendu en ligne.
 for (const e of D.admis?.entrees || []) e.objet = enLigne(e.objet, `${e.id}/admis`);
 
@@ -380,6 +396,19 @@ if (AIsite) {
   AIsite.katex = KATEX_JS;
   AIsite.nombre = (AIsite.sujets || []).length;
   AIsite.sujets = [];
+}
+// Programmes officiels : un fichier par programme, chargé à l'ouverture de la vue « Programme ».
+const APsite = Dsite.rubriques?.['annales-programmes'];
+fs.rmSync('site/annales-programmes', { recursive: true, force: true });
+if (APsite) {
+  fs.mkdirSync('site/annales-programmes', { recursive: true });
+  for (const p of APsite.programmes || []) {
+    const contenu = JSON.stringify(p.sections || []);
+    fs.writeFileSync(`site/annales-programmes/${p.id}.json`, contenu);
+    p.aCharger = `annales-programmes/${p.id}.json?v=${empreinte(contenu)}`;
+    p.nombre = (p.sections || []).reduce((n, s) => n + (s.blocs || []).reduce((m, b) => m + (b.points || []).length, 0), 0);
+    p.sections = [];
+  }
 }
 const Esite = Dsite.rubriques?.exercices;
 if (Esite) {

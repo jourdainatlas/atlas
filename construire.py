@@ -1256,6 +1256,37 @@ if 'exercices' in rubriques:
             l = [i for i in EC.get(e['id'], []) if c and isinstance(i, int) and 0 <= i < len(c.get('sommaire') or [])]
             if len(l) != len(EC.get(e['id'], [])): avertissements.append(f"outils/exercices-cours.json : {e['id']} renvoie hors du sommaire de son cours")
             if l: e['cours_parties'] = l
+# Programmes officiels (vue « Programme » des Annales, MEMO_atlas_annales.md §45) : la liste dans
+# rubriques/annales-programmes.yaml, le texte de chaque programme dans rubriques/annales-programmes/<id>.yaml.
+# Chaque point renvoie à des sections de cours (« chapitre:rang du sommaire », à partir de 1), à des exercices
+# et à des thèmes d'annales : tous doivent exister.
+if 'annales-programmes' in rubriques:
+    AP = rubriques['annales-programmes']
+    _cours = {c['id']: c for c in (rubriques.get('cours') or {}).get('cours', [])}
+    _ex = {e['id'] for e in (rubriques.get('exercices') or {}).get('exercices', [])}
+    _th = {t['id'] for t in (rubriques.get('annales-themes') or {}).get('themes', [])}
+    _ids = []
+    for p in AP.get('programmes') or []:
+        _ids.append(p['id'])
+        f = f"rubriques/annales-programmes/{p['id']}.yaml"
+        if not os.path.isfile(f): erreur(f"rubriques/annales-programmes : fichier introuvable {f}"); continue
+        p.update({k: v for k, v in (yaml.safe_load(open(f, encoding='utf-8')) or {}).items() if k != 'id'})
+        for i, s in enumerate(p.get('sections') or [], 1):
+            for b in s.get('blocs') or []:
+                for pt in b.get('points') or []:
+                    ou = f"rubriques/annales-programmes/{p['id']} section {i} « {str(pt.get('contenu', ''))[:40]} »"
+                    for c in pt.get('cours') or []:
+                        ch, _, r = str(c).partition(':')
+                        if ch not in _cours: erreur(f"{ou} : chapitre inconnu {c}")
+                        elif not r.isdigit() or not 1 <= int(r) <= len(_cours[ch].get('sommaire') or []): erreur(f"{ou} : section hors du sommaire {c}")
+                    for e in pt.get('ex') or []:
+                        if e not in _ex: erreur(f"{ou} : exercice inconnu {e}")
+                    for t in pt.get('themes') or []:
+                        if t not in _th: erreur(f"{ou} : thème d'annales inconnu {t}")
+    for fam, fils in (AP.get('filieres') or {}).items():
+        for fil, l in (fils or {}).items():
+            for x in l or []:
+                if x not in _ids: erreur(f"rubriques/annales-programmes : programme inconnu {x} ({fam}, {fil})")
 for nom, r in rubriques.items(): verifie_rubrique(nom, r, '')
 # Vidéos de cours (videos/catalogue.json, MEMO_atlas_videos.md §10) : chaque vidéo du catalogue est rattachée à son
 # chapitre, qui reçoit alors le bouton « Vidéo » et le lecteur de la rubrique Cours. `en_ligne` n'est mis à vrai
