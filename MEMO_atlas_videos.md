@@ -470,7 +470,7 @@ une retouche faite dans `film.js` serait perdue. `conf.json` accepte `bornes` et
 parties. Pièges : dans une légende, `[…]` est la balise rouge (ne pas y écrire un intervalle) ; lancer deux rendus à
 la fois double leur durée ; l'assemblage son-image prend alors plusieurs minutes (attendre la ligne « wrote »).
 
-## 13. Sept prototypes des chapitres 1 (18 novembre 2026), en attente du retour de l'auteur
+## 13. Sept vidéos des chapitres 1 (18 novembre 2026), validées par l'auteur le 21 novembre 2026
 
 Demandés par l'auteur en un seul lot, montrés en prototype, **ni validés ni inscrits au catalogue**. Tous durent
 4 min 03 s (six parties aux mesures 2, 6, 14, 22, 26, 34 ; bilan 46) et sont assemblés par `videos/outils/asm.py`.
@@ -527,3 +527,12 @@ solution unique modulo 15 » ; une scène nouvelle, « D'où viennent 70, 21 et 
 deux autres modules, multiplié par l'inverse de son reste : 2 × 35 = 70, facteur en violet ; 21 et 15 n'ont rien à
 corriger) avant le tableau des restes et la combinaison. Règle à retenir : **aucun nombre n'apparaît dans un calcul sans
 que l'écran ait montré d'où il vient**, et une légende ne dit jamais « les trois nombres » sans les nommer.
+
+**Validées toutes les sept le 21 novembre** (second degré : prototype 2 ; suites : prototype 4 ; structures :
+prototype 2 ; les quatre autres : prototype 1). Étapes 1 et 2 du protocole (§ 10) faites : entrées au catalogue
+(`s-01`, `p-01`, `t-01`, `me-01`, `ap-01`, `ma-01`, `mp-01`, `youtube` vide, `en_ligne` faux), fichiers, miniatures
+et fiches remis à l'auteur (`atlas-seconde-01-nombres-calculs`, `atlas-premiere-01-second-degre`,
+`atlas-terminale-01-suites-numeriques`, `atlas-expertes-01-divisibilite-primalite`,
+`atlas-approfondies-01-ensembles-logique`, `atlas-mpsi-01-logique-ensembles`, `atlas-mp-01-structures-algebriques`).
+Deux listes de lecture nouvelles sur YouTube : « Maths approfondies » (option de Terminale, et non la filière ECG)
+et « MP ». **Reste l'étape 4**, à faire quand l'auteur donnera les sept adresses.
