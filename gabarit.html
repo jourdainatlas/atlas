@@ -1810,6 +1810,12 @@ table.grille button.pli-ann:hover { border-color: var(--encre); }
 .pg-entree:hover { border-color: var(--r-annales); background: color-mix(in srgb, var(--r-annales) 13%, var(--surface)); }
 .pg-entree:hover .pg-entree-f { transform: translateX(3px); }
 .pg-entree.dedans { width: auto; display: inline-flex; }
+.pg-entree-multi { cursor: default; flex-wrap: wrap; }
+.pg-entree-multi:hover { background: color-mix(in srgb, var(--r-annales) 7%, var(--surface)); border-color: color-mix(in srgb, var(--r-annales) 40%, var(--filet)); }
+.pg-entree-choix { display: flex; flex-wrap: wrap; gap: 6px; }
+.pg-entree-choix .chip { font-size: 13px; border-color: color-mix(in srgb, var(--r-annales) 50%, var(--filet)); }
+.pg-entree-choix .chip:hover { border-color: var(--r-annales); }
+.pg-lien-ligne { display: block; margin-top: 4px; padding: 0; border: 0; background: none; cursor: pointer; font: 12px var(--f-ui); color: var(--r-annales); text-decoration: underline; text-underline-offset: 3px; }
 .pg-progs { margin-bottom: 14px; }
 .pg-progs b { font-family: var(--f-mono); font-weight: 600; margin-right: 2px; }
 .pg-tete h3 { font-family: var(--f-titre); font-size: 22px; margin: 0 0 4px; }
@@ -4846,7 +4852,7 @@ function pageAnnales(chemin) {
     // lignes repliables (baccalauréat) : fermées par défaut, ouvertes par le bouton « + » de la colonne des centres
     const ouverte = !fam.lignes_repliables || etatAnn.lignes.has(c.id);
     const pli = fam.lignes_repliables ? `<button type="button" class="pli-ann" data-pli="${c.id}" aria-expanded="${ouverte}" aria-label="${ouverte ? 'Replier' : 'Déplier'} la ligne ${esc(nomC)}" title="${ouverte ? 'Refermer' : 'Ouvrir'} : sujets de ${esc(nomC)}">${ouverte ? '−' : '+'}</button>` : '';
-    h += `<tr${ouverte ? '' : ' class="replie"'}><th scope="row">${pli ? `<span class="pli-tete"><span>${c.titre}</span>${pli}</span>` : c.titre}${fam.cases_sujets ? '' : `<small>${epsTout.map(e => esc(e.nom) + (e.annees ? ` (${anPlage(e.annees)})` : '')).join(' · ')}</small>`}</th>`;
+    h += `<tr${ouverte ? '' : ' class="replie"'}><th scope="row">${pli ? `<span class="pli-tete"><span>${c.titre}</span>${pli}</span>` : c.titre}${fam.cases_sujets ? '' : `<small>${epsTout.map(e => esc(e.nom) + (e.annees ? ` (${anPlage(e.annees)})` : '')).join(' · ')}</small>`}${(() => { const pc = progsDeFiliere(fam.id, fil).find(p => p.concours === c.id); return pc ? `<button type="button" class="pg-lien-ligne" data-pg-ouvrir="${pc.id}" title="Programme officiel : ${esc(c.titre.replace(/<[^>]+>/g, ''))}">programme ›</button>` : ''; })()}</th>`;
     for (const an of ans) {
       const eps = epsTout.filter(e => !e.annees || e.annees.includes(an)).map(e => e.nom).filter(ep => !fam.cases_sujets || trouver(c, an, ep));
       // épreuve inexistante cette année-là (filière ou concours créés plus tard)
@@ -4923,19 +4929,22 @@ function chargerProgramme(p) {
 }
 // sujets étiquetés de la filière, et pour chaque thème (et son thème large) l'ensemble des sujets qui le portent
 let freqPgCache = {};
-function frequencePg(famId, fil) {
-  const I = indexAnnales(), cle = famId + '|' + fil;
+function frequencePg(famId, fil, conc) {
+  const I = indexAnnales(), cle = famId + '|' + fil + '|' + (conc || '');
   if (freqPgCache.I === I && freqPgCache[cle]) return freqPgCache[cle];
   if (freqPgCache.I !== I) freqPgCache = { I };
-  const sujets = I.sujets.filter(s => (famId === '*sup' ? s.vocab === 'general' : !famId || s.fam === famId) && (!fil || s.filieres.includes(fil))), par = {};
+  const sujets = I.sujets.filter(s => (famId === '*sup' ? s.vocab === 'general' : !famId || s.fam === famId) && (!fil || s.filieres.includes(fil)) && (!conc || s.cases.some(c => c.concours === conc))), par = {};
+  // famille d'un vocabulaire propre (lycée) : ses thèmes à elle, pas leurs correspondants généraux
+  const propre = famId && famId !== '*sup' && vocabFamAnn(famId) !== 'general';
   // par : thèmes principaux (teinte des sections) ; tout : principaux et secondaires (nombres des boutons, comme le moteur)
   const tout = {};
   sujets.forEach((s, k) => {
     const vus = new Set(), vusT = new Set();
     const aj = (e, t) => { e.add(t); const pa = (I.themes[t] || {}).parent; if (pa) e.add(pa); };
     for (const p of s.parties) {
-      for (const t of p.thG || p.themes || []) { aj(vus, t); aj(vusT, t); }
-      for (const t of (p.thG ? p.secG : p.secondaires) || []) aj(vusT, t);
+      const gen = !propre && p.thG;
+      for (const t of (gen ? p.thG : p.themes) || []) { aj(vus, t); aj(vusT, t); }
+      for (const t of (gen ? p.secG : p.secondaires) || []) aj(vusT, t);
     }
     for (const t of vus) (par[t] = par[t] || new Set()).add(k);
     for (const t of vusT) (tout[t] = tout[t] || new Set()).add(k);
@@ -4961,6 +4970,8 @@ const courtPg = (p, fil) => ((p.court_filiere || {})[fil]) || p.court || p.id;
 function entreeProgramme(fam, fil) {
   const progs = progsDeFiliere(fam.id, fil); if (!progs.length) return '';
   const dedans = etatAnn.vue === 'programme';
+  // famille sans filières (enseignement) : un programme par concours, un bouton chacun
+  if (!fil && !dedans && progs.length > 1) return `<div class="pg-entree pg-entree-multi"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 1.5h7l3 3v10H3zM5 6h6v1.3H5zM5 8.6h6v1.3H5zM5 11.2h4v1.3H5z"/></svg><span><b>Programmes officiels</b> : chaque point relié aux cours, aux exercices et aux sujets</span><span class="pg-entree-choix">${progs.map(p => `<button type="button" class="chip" data-pg-ouvrir="${p.id}">${esc(courtPg(p, fil))}</button>`).join('')}</span></div>`;
   return `<button type="button" class="pg-entree${dedans ? ' dedans' : ''}" data-vue-ann="${dedans ? 'grille' : 'programme'}"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 1.5h7l3 3v10H3zM5 6h6v1.3H5zM5 8.6h6v1.3H5zM5 11.2h4v1.3H5z"/></svg>${dedans ? `<span><b>← Revenir à la grille des sujets</b></span>` : `<span><b>Programme officiel ${esc(fil || '')}</b> (${progs.map(p => esc(courtPg(p, fil))).join(' puis ')}) : chaque point relié aux cours, aux exercices et aux sujets</span><span class="pg-entree-f" aria-hidden="true">→</span>`}</button>`;
 }
 function vueProgrammeAnnales(fam, fil) {
@@ -4975,7 +4986,9 @@ function vueProgrammeAnnales(fam, fil) {
   if (p.source) h += `<p class="pg-source">Texte officiel&nbsp;: <a href="${esc(p.source.url)}" target="_blank" rel="noopener">${esc(p.source.nom)}</a>. Les points sont ceux de la colonne « Contenus », dans l'ordre et avec les mots du programme ; les précisions résument la colonne « Capacités et commentaires ».</p>`;
   if (p.preambule) h += `<details class="pg-org"><summary>Organisation du programme</summary><p class="pg-pre">${p.preambule}</p></details>`;
   if (!(p.sections || []).length) return h + `</div><p class="vide-note">${attente ? 'Chargement du programme…' : 'Programme à venir.'}</p></section>`;
-  const F = frequencePg(fam.id, fil), FT = frequencePg(vocabFamAnn(fam.id) === 'general' ? '*sup' : fam.id, ''), M = pgMaitrise();
+  const F = frequencePg(fam.id, fil, p.concours), FT = frequencePg(vocabFamAnn(fam.id) === 'general' ? '*sup' : fam.id, ''), M = pgMaitrise();
+  // ce que désignent « les sujets » : la filière, ou le concours du programme (enseignement)
+  const cible = fil || (((fam.concours || []).find(c => c.id === p.concours) || {}).titre || '').replace(/<[^>]+>/g, '');
   const tout = p.sections.map((s, i) => s.blocs.flatMap((b, j) => b.points.map((pt, k) => ({ pt, cle: `${p.id}:${i}.${j}.${k}` }))));
   const plat = tout.flat(), couvert = x => (x.pt.cours || []).length || (x.pt.ex || []).length;
   const nCouv = plat.filter(couvert).length, nM = plat.filter(x => M.has(x.cle)).length;
@@ -4983,13 +4996,13 @@ function vueProgrammeAnnales(fam, fil) {
   const pct = x => `${Math.round(100 * x)}&nbsp;%`;
   h += `<div class="pg-bilan"><span><b>${plat.length}</b> points au programme</span><span class="pg-b-site"><i style="--v:${nCouv / plat.length}"></i><b>${nCouv}</b> traités sur le site (cours ou exercices)</span><span class="pg-b-moi"><i style="--v:${nM / plat.length}"></i><b class="pg-nm">${nM}</b> cochés «&nbsp;je maîtrise&nbsp;»</span></div></div>`;
   // carte du programme : un segment par section, large de son nombre de points, teinté de sa fréquence aux concours
-  h += `<div class="pg-carte" role="list" aria-label="Carte du programme">${p.sections.map((s, i) => `<button type="button" role="listitem" class="pg-seg" data-pg-aller="${i}" style="flex:${tout[i].length} 1 0;--f:${Math.round(12 + 78 * freqSec[i])}%" title="${esc(`${i + 1}. ${rgTexte(s.intitule)} — ${tout[i].length} points ; ${F.total ? `abordée dans ${Math.round(100 * freqSec[i])} % des sujets ${fil || ''} étiquetés` : 'fréquence aux concours en cours de chargement'}`)}">${i + 1}</button>`).join('')}</div>`;
-  h += `<p class="pg-carte-leg">Chaque case est une section du programme : sa largeur suit le nombre de points, sa teinte la part des ${F.total ? `${F.total} ` : ''}sujets ${esc(fil || '')} étiquetés qui l'abordent (plus elle est foncée, plus la section tombe souvent).</p>`;
+  h += `<div class="pg-carte" role="list" aria-label="Carte du programme">${p.sections.map((s, i) => `<button type="button" role="listitem" class="pg-seg" data-pg-aller="${i}" style="flex:${tout[i].length} 1 0;--f:${Math.round(12 + 78 * freqSec[i])}%" title="${esc(`${i + 1}. ${rgTexte(s.intitule)} — ${tout[i].length} points ; ${F.total ? `abordée dans ${Math.round(100 * freqSec[i])} % des sujets ${esc(cible)} étiquetés` : 'fréquence aux concours en cours de chargement'}`)}">${i + 1}</button>`).join('')}</div>`;
+  h += `<p class="pg-carte-leg">Chaque case est une section du programme : sa largeur suit le nombre de points, sa teinte la part des ${F.total ? `${F.total} ` : ''}sujets ${esc(cible)} étiquetés qui l'abordent (plus elle est foncée, plus la section tombe souvent).</p>`;
   h += `<div class="pg-outils"><input type="search" id="pg-filtre" value="${esc(etatPg.filtre)}" placeholder="Chercher dans le programme (Cayley-Hamilton, série entière…)" aria-label="Chercher dans le programme"><button type="button" class="bouton" data-pg-tout>${p.sections.every((s, i) => etatPg.ouverts.has(`${p.id}:${i}`)) ? 'Tout replier' : 'Tout déplier'}</button><label class="pg-cacher"><input type="checkbox" id="pg-cacher"${etatPg.cacher ? ' checked' : ''}> masquer ce que je maîtrise</label></div>`;
   h += `<div class="pg-sections${etatPg.cacher ? ' cacher-m' : ''}">`;
   for (const [i, s] of p.sections.entries()) {
     const n = tout[i].length, nc = tout[i].filter(couvert).length, ouvert = etatPg.ouverts.has(`${p.id}:${i}`);
-    h += `<details class="pg-sec carte" id="pg-${p.id}-${i}" data-pg-sec="${p.id}:${i}"${ouvert ? ' open' : ''}><summary><span class="pg-num" style="--f:${Math.round(12 + 78 * freqSec[i])}%">${i + 1}</span><span class="pg-st">${s.intitule}${s.periode ? `<small>${s.periode}</small>` : ''}</span><span class="pg-indic"><span title="${nc} points sur ${n} traités sur le site">${nc}/${n}</span>${F.total ? `<span class="pg-fq" title="Abordée dans ${Math.round(100 * freqSec[i])} % des ${F.total} sujets ${esc(fil || '')} étiquetés">${pct(freqSec[i])} des sujets</span>` : ''}</span></summary><div class="pg-corps">`;
+    h += `<details class="pg-sec carte" id="pg-${p.id}-${i}" data-pg-sec="${p.id}:${i}"${ouvert ? ' open' : ''}><summary><span class="pg-num" style="--f:${Math.round(12 + 78 * freqSec[i])}%">${i + 1}</span><span class="pg-st">${s.intitule}${s.periode ? `<small>${s.periode}</small>` : ''}</span><span class="pg-indic"><span title="${nc} points sur ${n} traités sur le site">${nc}/${n}</span>${F.total ? `<span class="pg-fq" title="Abordée dans ${Math.round(100 * freqSec[i])} % des ${F.total} sujets ${esc(cible)} étiquetés">${pct(freqSec[i])} des sujets</span>` : ''}</span></summary><div class="pg-corps">`;
     if (s.objectif) h += `<p class="pg-obj">${s.objectif}</p>`;
     if ((s.hors_programme || []).length) h += `<p class="pg-hp"><b>Hors programme&nbsp;:</b> ${s.hors_programme.map((t, j, l) => j < l.length - 1 && !/[.;!?]\s*$/.test(rgTexte(t)) ? t + ' ;' : t).join(' ')}</p>`;
     let k0 = 0;
@@ -5003,7 +5016,7 @@ function vueProgrammeAnnales(fam, fil) {
         if ((pt.ex || []).length) liens.push(`<span class="pg-g"><span class="pg-lab">Exercices</span>${pt.ex.map(lienExoPg).join('')}</span>`);
         // deux boutons par thème : les sujets de la filière, et tous les sujets étiquetés (autres filières, concours, examens)
         if (th.length) liens.push(`<span class="pg-g"><span class="pg-lab">Annales</span>${th.map(t => { const T = indexAnnales().themes[t], nb = (F.tout[t] || new Set()).size, nt = (FT.tout[t] || new Set()).size;
-          const fl = nb || !F.total ? `<button type="button" class="pg-l pg-ann" data-rq-ext="${esc(T.titre)}" data-rq-fil="${esc(fil || '')}" title="Chercher les sujets ${esc(fil || '')} qui travaillent ou emploient ce thème">${esc(T.titre)}${F.total ? ` <small>${nb} ${esc(fil || '')}</small>` : ''}</button>` : '';
+          const fl = nb || !F.total ? `<button type="button" class="pg-l pg-ann" data-rq-ext="${esc(T.titre)}" data-rq-fil="${esc(cible)}" title="Chercher les sujets ${esc(cible)} qui travaillent ou emploient ce thème">${esc(T.titre)}${F.total ? ` <small>${nb} ${esc(cible)}</small>` : ''}</button>` : '';
           const ts = nt > nb ? `<button type="button" class="pg-l pg-ann pg-tous" data-rq-ext="${esc(T.titre)}" data-rq-tous title="Chercher ce thème dans tous les sujets de prépa et de l'enseignement (autres filières et concours, sans le baccalauréat)">${fl ? '' : `${esc(T.titre)} `}<small>${nt} en tout</small></button>` : '';
           return `<span class="pg-annp">${fl}${ts}</span>`; }).join('')}</span>`);
         h += `<li class="pg-pt${m ? ' maitrise' : ''}" id="pt-${cle.replace(/[:.]/g, '-')}" data-t="${esc(cleTextePg(`${pt.contenu} ${pt.precisions || ''}`))}"><input type="checkbox" class="pg-coche" data-pg-m="${cle}"${m ? ' checked' : ''} aria-label="Je maîtrise ce point" title="Je maîtrise ce point (retenu dans ce navigateur)"><div class="pg-pc"><div class="pg-contenu">${pt.contenu}${(pt.filieres || []).length ? ` <span class="pg-demo">${esc(pt.filieres.join(', '))} seulement</span>` : ''}${pt.demo ? ` <span class="pg-demo">démonstration ${esc(pt.demo)}</span>` : ''}${av ? ' <span class="pg-venir" title="Le site ne traite pas encore ce point">à venir</span>' : ''}</div>${pt.precisions ? `<div class="pg-prec">${pt.precisions}</div>` : ''}${pt.note ? `<div class="pg-note">${pt.note}</div>` : ''}${liens.length ? `<div class="pg-liens">${liens.join('')}</div>` : ''}</div></li>`;
@@ -7015,6 +7028,7 @@ $('#rubrique').addEventListener('click', ev => {
       Object.assign(etatRech, { fam: etatAnn.famille, conc: '', montres: 12 }); if (!(f.filieres || []).includes(etatRech.fil)) etatRech.fil = ''; }
     rafraichirRubrique(); return; }
   const va = t.closest('[data-vue-ann]'); if (va) { etatAnn.vue = va.dataset.vueAnn; rafraichirRubrique(); return; }
+  const po = t.closest('[data-pg-ouvrir]'); if (po) { etatPg.prog = po.dataset.pgOuvrir; etatPg.filtre = ''; etatAnn.vue = 'programme'; rafraichirRubrique(); const z = $('#pg'); if (z) z.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
   const pp = t.closest('[data-pg-prog]'); if (pp) { etatPg.prog = pp.dataset.pgProg; etatPg.filtre = ''; rafraichirRubrique(); return; }
   if (t.closest('[data-pg-tout]')) { const l = [...document.querySelectorAll('#pg .pg-sec')], ouvrir = !l.every(d => d.open); etatPg.filtre = ''; for (const d of l) { d.hidden = false; d.open = ouvrir; ouvrir ? etatPg.ouverts.add(d.dataset.pgSec) : etatPg.ouverts.delete(d.dataset.pgSec); } rafraichirRubrique(); return; }
   const pa = t.closest('[data-pg-aller]'); if (pa) { const d = $(`#pg-${etatPg.prog}-${pa.dataset.pgAller}`); if (d) { d.hidden = false; d.open = true; etatPg.ouverts.add(d.dataset.pgSec); d.scrollIntoView({ behavior: 'smooth', block: 'start' }); } return; }
