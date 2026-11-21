@@ -1283,6 +1283,25 @@ if 'annales-programmes' in rubriques:
                         if e not in _ex: erreur(f"{ou} : exercice inconnu {e}")
                     for t in pt.get('themes') or []:
                         if t not in _th: erreur(f"{ou} : thème d'annales inconnu {t}")
+    # Veille des cours (MEMO_atlas_annales.md §45) : reference-cours.json garde les sommaires des chapitres et le
+    # nombre d'exercices de chaque feuille au moment de la dernière liaison. Une section renommée ou déplacée (un
+    # lien « chapitre:rang » viserait alors une autre section), un chapitre ou une feuille nouveaux ou enrichis
+    # sont signalés : les programmes sont à relier de nouveau pour ces chapitres.
+    _rf = 'rubriques/annales-programmes/reference-cours.json'
+    if os.path.isfile(_rf):
+        _ref = json.load(open(_rf, encoding='utf-8'))
+        _nf = {}
+        for e in (rubriques.get('exercices') or {}).get('exercices', []): _nf[e['feuille']] = _nf.get(e['feuille'], 0) + 1
+        _neufs, _changes, _feuilles = [], [], []
+        for cid, c in _cours.items():
+            som = [str(x) for x in (c.get('sommaire') or [])]
+            if cid not in _ref.get('cours', {}): _neufs.append(cid)
+            elif som != _ref['cours'][cid]: _changes.append(cid)
+        for fid, n in _nf.items():
+            if n != _ref.get('feuilles', {}).get(fid): _feuilles.append(fid)
+        if _neufs: avert(f"programmes des annales : chapitres nouveaux, à relier aux programmes : {', '.join(sorted(_neufs))}")
+        if _changes: avert(f"programmes des annales : sommaire modifié depuis la liaison (vérifier les liens « chapitre:rang ») : {', '.join(sorted(_changes))}")
+        if _feuilles: avert(f"programmes des annales : feuilles d'exercices nouvelles ou enrichies, à relier : {', '.join(sorted(_feuilles))}")
     for fam, fils in (AP.get('filieres') or {}).items():
         for fil, l in (fils or {}).items():
             for x in l or []:

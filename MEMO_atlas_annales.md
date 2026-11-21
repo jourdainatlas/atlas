@@ -299,3 +299,16 @@ ne travaille le point ; alors une note signale les questions hors programme (cas
 citent les exercices par leur numéro affiché (« exercice 13.46 »), jamais par leur identifiant interne. Un
 thème posé sur aucune partie hors bac (`limites-fonctions`, `suites-arith-geom`, `second-degre`,
 `geometrie-espace`, reliquats du bac) n'est pas employé. PSI : programmes de PCSI et de PSI (BO n° 31, arrêté ESRS2111748A, 255 points ; relecture : 1 correction), liés de même ; l'exercice de Maths expertes 3.22 reste le seul exercice élémentaire de Cayley-Hamilton (les autres passent par le polynôme minimal, hors programme de PSI).
+
+**Veille des cours (21 nov. 2026, demande de l'auteur : actualiser les programmes quand de nouveaux cours
+arrivent).** `rubriques/annales-programmes/reference-cours.json` garde, au moment de la dernière liaison, le
+sommaire de chaque chapitre et le nombre d'exercices de chaque feuille. À chaque construction, `construire.py`
+avertit (sans bloquer) : chapitres nouveaux, sommaires modifiés (un lien « chapitre:rang » pourrait viser une
+autre section), feuilles nouvelles ou enrichies. La conversation Cours n'a rien à faire de plus que son travail
+habituel. La conversation Annales, quand ces avertissements paraissent : `python3 outils/annales_programmes_bilan.py`
+donne la liste de travail (points « à venir », points sans exercice, chapitres et feuilles en cause) ; un agent
+relie les points des programmes concernés selon `CONSIGNE_liaison.md` (en priorité les points « à venir » et
+sans exercice des sections qui touchent ces chapitres, et la vérification des liens vers un sommaire modifié),
+un second agent relit, on fusionne, puis `--mettre-a-jour-reference` enregistre le nouvel état ; les
+avertissements disparaissent. Les liens d'exercices étant des identifiants, une feuille renumérotée est déjà
+signalée comme erreur par `construire.py` (exercice inconnu).
