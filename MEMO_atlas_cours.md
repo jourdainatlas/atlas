@@ -1045,3 +1045,7 @@ le champ, un second appui rend la main au navigateur ; au plus 999 occurrences ;
 Vérifié sur l3-cd-06 : « Picard » 9, « Gronwall » 6, « solution maximale » 11, comme pdftotext. Le visualiseur plein
 écran de l'application installée (`vpOuvrir`, domaine apparence) n'a pas ce champ.
 
+
+### 62. Couleur de la rubrique Exercices (21 nov. 2026)
+
+Variante B validée par l'auteur : titres « Exercice N » (`.exo-tete h3`, lien `.lien-exo`) en `var(--r-exercices)`, filet de 4 px de cette couleur en haut des cartes d'exercice (`.exo.carte`) et de feuille (`.feuille.carte`), barres de difficulté pleines des cartes d'exercice dans la même couleur (styles placés après `.exo-tete h3`).
