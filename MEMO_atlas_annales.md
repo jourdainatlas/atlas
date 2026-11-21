@@ -351,3 +351,14 @@ secondaire, si bien que le bouton annonçait plus de sujets que le moteur n'en m
 qui porte le thème reconnu en tête (ou l'un de ses thèmes fins), même en secondaire, n'est plus écarté. Le
 moteur peut encore en montrer davantage (mots-clés). Bouton « Effacer la recherche » : en-tête centré
 verticalement et 10 px d'écart avec le texte d'aide.
+
+**Sujets dépliés sous chaque point (21 nov. 2026, aperçu validé par l'auteur).** Au bout de la ligne Annales d'un
+point, « Voir les sujets » (`pg-voir`, `data-pg-sujets` = thèmes du point, `data-pg-fam`, `-fil`, `-conc`) déplie
+sous le point (`pg-sujets`, rempli au premier clic par `sujetsPointPg`) les 4 sujets de la filière, ou du concours,
+dont une partie porte l'un des thèmes du point ou l'un de leurs thèmes fins, en principal ou en secondaire (mêmes
+sujets que le nombre du bouton). Ordre : sujets où le thème est principal d'abord, du plus récent au plus ancien,
+puis ceux où il n'est que secondaire (marqués « thème secondaire ») ; par sujet, au plus deux parties (les
+principales s'il y en a), lien vers le PDF à la page, « + N parties ». En bas : « N autres sujets : tout voir dans le
+moteur de recherche » (mêmes attributs que les boutons de thème). Limite connue : deux points de mêmes thèmes
+montrent la même liste ; seuls des thèmes plus fins sur les points les distingueraient.
+
