@@ -1088,3 +1088,4 @@ appelle `pjVersCarte()` : la carte ouvre son corrigé, appelle `corrEtapes`, mon
 ou à la dernière étape) puis `corrMaj` et `composerDans` ; revenir à l'énoncé (étape 0) ne touche pas la carte. Avec des
 marques de question, `etapesCorrige(C, false)` et `etapesCorrige(C, true)` donnent les mêmes étapes ; sans marque, la
 carte n'a pas d'étapes et un corrigé ouvert y est entier. Vérifié sur `ma-10-03` (8 questions) et `ma-10-06` (sans marques).
+Saut à chaque étape de la projection corrigé le même jour : `pjRendu` compose ses formules aussitôt (`composerDans(PJ.el, true)`) ; composées à la vue, elles changeaient la hauteur des blocs après le défilement vers la dernière étape.
