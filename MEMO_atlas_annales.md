@@ -298,4 +298,4 @@ compacité, Abel radial, semi-convergence…), sauf si l'essentiel reste au prog
 ne travaille le point ; alors une note signale les questions hors programme (cas des vrai-faux). Les notes
 citent les exercices par leur numéro affiché (« exercice 13.46 »), jamais par leur identifiant interne. Un
 thème posé sur aucune partie hors bac (`limites-fonctions`, `suites-arith-geom`, `second-degre`,
-`geometrie-espace`, reliquats du bac) n'est pas employé. PSI suit (programme de PSI, BO n° 31, 255 points).
+`geometrie-espace`, reliquats du bac) n'est pas employé. PSI : programmes de PCSI et de PSI (BO n° 31, arrêté ESRS2111748A, 255 points ; relecture : 1 correction), liés de même ; l'exercice de Maths expertes 3.22 reste le seul exercice élémentaire de Cayley-Hamilton (les autres passent par le polynôme minimal, hors programme de PSI).
