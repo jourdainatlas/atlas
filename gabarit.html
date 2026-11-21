@@ -1515,6 +1515,14 @@ a.acc-etape:hover { background: var(--trame); }
 .lecteur-fond { background: var(--trame); padding: 28px 16px; display: flex; justify-content: center; }
 .lecteur-pages { flex-direction: column; align-items: center; gap: 16px; padding: 16px; min-height: 300px; }
 .page-pdf { width: 100%; height: auto; background: #fff; box-shadow: var(--ombre); display: block; }
+.lecteur-pages { position: relative; }
+.pdf-surl { position: absolute; background: rgba(255, 200, 0, .35); border-radius: 2px; pointer-events: none; mix-blend-mode: multiply; }
+.pdf-surl.actuel { background: rgba(255, 130, 0, .55); box-shadow: 0 0 0 2px rgba(230, 100, 0, .9); }
+.pdf-cherche { flex: 1 1 220px; max-width: 360px; min-width: 0; } .pdf-cherche .bouton { flex: none; }
+.pdf-cherche .pdf-q { flex: 1 1 0; width: 0; min-width: 0; font: inherit; font-size: 14px; padding: 5px 9px; border: 1px solid var(--filet); border-radius: 6px; background: var(--papier); color: var(--encre); }
+.pdf-cherche .pdf-res { font-size: 12.5px; color: var(--encre-2); white-space: nowrap; }
+.pdf-cherche .bouton[disabled] { opacity: .4; }
+@media (max-width: 600px) { .pdf-cherche { order: 3; flex-basis: 100%; max-width: none; } .pdf-cherche .pdf-q { font-size: 16px; } }
 .feuille-a4 {
   width: min(100%, 560px); aspect-ratio: 1 / 1.414; background: #fff; color: #1b1e24; box-shadow: var(--ombre);
   padding: 9% 10%; display: flex; flex-direction: column; gap: 10px; font-family: var(--f-texte);
@@ -4536,6 +4544,7 @@ function pageChapitre(c, tous) {
   h += `<div class="lecture"><div class="lecteur carte">`;
   const actif = c.pdf ? '' : ' aria-disabled="true"';
   h += `<div class="lecteur-barre"><div class="groupe"><button type="button" class="bouton" data-pdf-pas="-1"${actif} aria-label="Page précédente">‹</button><span>page <span class="pdf-num">${c.pdf ? 1 : '—'}</span> / ${c.pages || '—'}</span><button type="button" class="bouton" data-pdf-pas="1"${actif} aria-label="Page suivante">›</button></div>`;
+  if (c.pdf) h += `<div class="groupe pdf-cherche" role="search"><input type="search" class="pdf-q" placeholder="Chercher dans le PDF" aria-label="Chercher dans le PDF du chapitre" autocomplete="off" spellcheck="false"><span class="pdf-res" aria-live="polite"></span><button type="button" class="bouton" data-pdf-res="-1" aria-label="Résultat précédent" disabled>↑</button><button type="button" class="bouton" data-pdf-res="1" aria-label="Résultat suivant" disabled>↓</button></div>`;
   h += `<div class="groupe"><a class="bouton"${c.pdf ? ` href="${c.pdf}" target="_blank" rel="noopener"` : actif}>Ouvrir le PDF</a>${c.pdf ? `<a class="bouton" href="${c.pdf}" download>Télécharger</a>` : ''}${aProposSignalBouton(`Cours › ${niveauDe(c.niveau).titre}${c.chapitre ? `, chapitre ${c.chapitre}` : ''} — ${c.titre}`, `${ADRESSE_SITE}cours/${c.id}/`)}${c.tex ? `<a class="bouton" href="${c.tex}" download>Source .tex</a>` : ''}${c.video ? `<button type="button" class="bouton chapitre-video-b" data-cours-video="${c.id}" aria-haspopup="dialog"><svg viewBox="0 0 10 12" aria-hidden="true"><path d="M0 0v12l10-6z"/></svg>Vidéo</button>` : ''}</div></div>`;
   h += c.pdf ? `<div class="lecteur-fond lecteur-pages" data-pdf="${c.pdf}"${c.niveau === 'python' || c.atelier ? ` data-cours-code="${c.id}"` : ''}><p class="vide-note">Chargement du PDF…</p></div>`
     : `<div class="lecteur-fond"><div class="feuille-a4" aria-hidden="true"><div class="fa-titre">Chapitre ${c.chapitre || ''} — ${c.titre.replace(/<[^>]+>/g, '')}</div>${'<div class="fa-ligne"></div>'.repeat(4)}<div class="fa-cadre">${'<div class="fa-ligne"></div>'.repeat(3)}</div>${'<div class="fa-ligne"></div>'.repeat(6)}<div class="fa-note">Le PDF du chapitre s'affichera ici.</div></div></div>`;
@@ -6855,6 +6864,95 @@ function allerPage(n) {
   c.scrollIntoView({ block: 'start', behavior: 'smooth' });
   const num = $('#rubrique .pdf-num'); if (num) num.textContent = n;
 }
+/* Recherche dans le PDF d'un chapitre (domaine Cours, demande de l'auteur, 21 nov. 2026). Les pages sont dessinées dans
+   des canvas : Ctrl F (ou ⌘ F) du navigateur n'y voit rien. Le texte de chaque page est lu par PDF.js (getTextContent) à
+   la première recherche ; la comparaison ignore la casse, les accents, les ligatures et les espaces multiples. Les
+   occurrences sont surlignées par des rectangles posés sur les pages (.pdf-surl), la courante plus fort ; ↑ ↓, Entrée
+   et Maj Entrée passent de l'une à l'autre. Ctrl F sur une page de chapitre met le curseur dans le champ ; un second
+   Ctrl F, champ déjà actif, rend la main au navigateur. */
+const pdfCherche = {
+  zone: null, doc: null, vues: {}, textes: null, res: [], k: -1, q: '',
+  init(zone, doc) { Object.assign(this, { zone, doc, vues: {}, textes: null, res: [], k: -1, q: '' }); },
+  norm(t) { return t.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase(); },
+  async lire() {
+    if (this.textes) return this.textes;
+    const doc = this.doc, T = [];
+    for (let p = 1; p <= doc.numPages; p++) {
+      const items = (await (await doc.getPage(p)).getTextContent()).items;
+      // texte normalisé de la page et, pour chaque caractère, l'élément et la position d'origine
+      let n = '', carte = [];
+      items.forEach((it, j) => {
+        [...it.str].forEach((ch, ci) => { for (const x of this.norm(ch)) { const b = /\s/.test(x); if (b && n.endsWith(' ')) continue; n += b ? ' ' : x; carte.push([j, ci]); } });
+        if (it.hasEOL && !n.endsWith(' ')) { n += ' '; carte.push([j, it.str.length]); }
+      });
+      T.push({ n, carte, items });
+    }
+    return (this.textes = T);
+  },
+  async chercher(q) {
+    this.q = q; const qn = this.norm(q).replace(/\s+/g, ' ').trim();
+    this.res = []; this.k = -1;
+    if (qn.length >= 2 && this.doc) {
+      const T = await this.lire(); if (this.q !== q) return;
+      T.forEach((t, i) => { let a = t.n.indexOf(qn); while (a >= 0 && this.res.length < 999) { this.res.push({ p: i + 1, a, b: a + qn.length }); a = t.n.indexOf(qn, a + 1); } });
+      if (this.res.length) { const vue = +($('#rubrique .pdf-num')?.textContent) || 1; this.k = Math.max(0, this.res.findIndex(r => r.p >= vue)); }
+    }
+    this.montrer(true);
+  },
+  aller(d) { if (!this.res.length) return; this.k = (this.k + d + this.res.length) % this.res.length; this.montrer(true); },
+  // rectangles d'une occurrence, en pixels CSS dans la zone des pages
+  rects(r) {
+    const c = this.zone.querySelector(`.page-pdf[data-page="${r.p}"]`), v = this.vues[r.p], t = this.textes[r.p - 1];
+    if (!c || !v) return null;
+    const k = c.clientWidth / v.width, ox = c.offsetLeft + (c.closest('.page-cadre')?.offsetLeft || 0), oy = c.offsetTop + (c.closest('.page-cadre')?.offsetTop || 0);
+    const parItem = new Map();
+    for (let i = r.a; i < r.b; i++) { const [j, ci] = t.carte[i] || []; if (j == null) continue; const m = parItem.get(j) || [ci, ci]; parItem.set(j, [Math.min(m[0], ci), Math.max(m[1], ci)]); }
+    return [...parItem].map(([j, [c0, c1]]) => {
+      const it = t.items[j], tx = pdfjsLib.Util.transform(v.transform, it.transform), h = Math.hypot(tx[2], tx[3]), L = Math.max(1, it.str.length), w = it.width * v.scale;
+      return { x: ox + k * (tx[4] + w * c0 / L), y: oy + k * (tx[5] - h), w: Math.max(3, k * w * (c1 - c0 + 1) / L), h: k * h * 1.2 };
+    });
+  },
+  montrer(defiler) {
+    const z = this.zone; if (!z) return;
+    z.querySelectorAll('.pdf-surl').forEach(e => e.remove());
+    const barre = z.closest('.lecteur')?.querySelector('.pdf-cherche');
+    if (barre) {
+      barre.querySelector('.pdf-res').textContent = !this.q || this.norm(this.q).trim().length < 2 ? '' : this.res.length ? `${this.k + 1} sur ${this.res.length}${this.res.length >= 999 ? '+' : ''}` : 'aucun résultat';
+      barre.querySelectorAll('[data-pdf-res]').forEach(b => { b.disabled = this.res.length < 2; });
+    }
+    if (!this.res.length) return;
+    let actuel = null;
+    this.res.forEach((r, i) => {
+      if (Math.abs(r.p - this.res[this.k].p) > 1) return;   // surlignage de la page courante et de ses voisines
+      for (const q of this.rects(r) || []) {
+        const e = document.createElement('span'); e.className = 'pdf-surl' + (i === this.k ? ' actuel' : '');
+        e.style.cssText = `left:${q.x}px;top:${q.y}px;width:${q.w}px;height:${q.h}px`; z.append(e);
+        if (i === this.k && !actuel) actuel = e;
+      }
+    });
+    if (defiler) {
+      if (actuel) { actuel.scrollIntoView({ block: 'center', behavior: 'smooth' }); const num = $('#rubrique .pdf-num'); if (num) num.textContent = this.res[this.k].p; }
+      else { allerPage(this.res[this.k].p); setTimeout(() => this.montrer(true), 400); }   // page pas encore dessinée
+    }
+  },
+};
+let pdfChercheMinuteur = null;
+document.addEventListener('input', ev => {
+  const q = ev.target.closest?.('.pdf-q'); if (!q) return;
+  clearTimeout(pdfChercheMinuteur); pdfChercheMinuteur = setTimeout(() => pdfCherche.chercher(q.value), 250);
+});
+document.addEventListener('keydown', ev => {
+  const q = ev.target.closest?.('.pdf-q');
+  if (q && ev.key === 'Enter') { ev.preventDefault(); clearTimeout(pdfChercheMinuteur); if (pdfCherche.q !== q.value) pdfCherche.chercher(q.value); else pdfCherche.aller(ev.shiftKey ? -1 : 1); return; }
+  if (q && ev.key === 'Escape' && q.value) { ev.preventDefault(); q.value = ''; pdfCherche.chercher(''); return; }
+  // Ctrl F / ⌘ F sur une page de chapitre : le champ de recherche du PDF (un second appui rend la main au navigateur)
+  if ((ev.ctrlKey || ev.metaKey) && !ev.altKey && ev.key.toLowerCase() === 'f') {
+    const champ = $('#rubrique .pdf-q');
+    if (champ && document.activeElement !== champ) { ev.preventDefault(); champ.focus(); champ.select(); }
+  }
+});
+document.addEventListener('click', ev => { const b = ev.target.closest?.('[data-pdf-res]'); if (b) pdfCherche.aller(+b.dataset.pdfRes); });
+addEventListener('resize', () => { if (pdfCherche.res.length && pdfCherche.zone?.isConnected) pdfCherche.montrer(false); });
 async function monterPdf(z) {
   pageVoulue = null;
   const zone = z.querySelector('[data-pdf]');
@@ -6871,9 +6969,11 @@ async function monterPdf(z) {
     total.innerHTML = `page <span class="pdf-num">1</span> / ${doc.numPages}`;
     const largeur = Math.max(260, zone.clientWidth - 32), dpr = Math.min(2, devicePixelRatio || 1);
     const vues = [];
+    pdfCherche.init(zone, doc);
     for (let i = 1; i <= doc.numPages; i++) {
       const page = await doc.getPage(i);
       const v = page.getViewport({ scale: largeur / page.getViewport({ scale: 1 }).width });
+      pdfCherche.vues[i] = v;
       const c = document.createElement('canvas');
       c.width = Math.floor(v.width * dpr); c.height = Math.floor(v.height * dpr);
       c.className = 'page-pdf'; c.dataset.page = i;

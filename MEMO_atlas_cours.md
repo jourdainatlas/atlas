@@ -1031,3 +1031,17 @@ ou à la dernière étape) puis `corrMaj` et `composerDans` ; revenir à l'énon
 marques de question, `etapesCorrige(C, false)` et `etapesCorrige(C, true)` donnent les mêmes étapes ; sans marque, la
 carte n'a pas d'étapes et un corrigé ouvert y est entier. Vérifié sur `ma-10-03` (8 questions) et `ma-10-06` (sans marques).
 Saut à chaque étape de la projection corrigé le même jour : `pjRendu` compose ses formules aussitôt (`composerDans(PJ.el, true)`) ; composées à la vue, elles changeaient la hauteur des blocs après le défilement vers la dernière étape.
+
+### 61. Recherche dans le PDF d'un chapitre (21 nov. 2026)
+
+Les pages du visualiseur sont des canvas : Ctrl F du navigateur n'y voit rien. Champ « Chercher dans le PDF » dans la
+barre du lecteur (`pageChapitre`, groupe `.pdf-cherche`), objet `pdfCherche` placé avant `monterPdf` (qui l'initialise
+avec le document et garde le viewport de chaque page). Texte lu par `getTextContent` à la première recherche,
+normalisé caractère par caractère (NFKD, sans accents, minuscules, ligatures dépliées, espaces réduites) avec une table
+vers (élément, caractère) d'origine ; rectangles `.pdf-surl` calculés par `pdfjsLib.Util.transform(viewport, item)`,
+à la proportion des caractères dans l'élément, posés dans `.lecteur-pages` (position relative) sur la page courante et
+ses voisines ; l'occurrence courante en orange. Entrée / Maj Entrée, ↑ ↓, Échap vide ; Ctrl F (⌘ F) met le curseur dans
+le champ, un second appui rend la main au navigateur ; au plus 999 occurrences ; redessin au redimensionnement.
+Vérifié sur l3-cd-06 : « Picard » 9, « Gronwall » 6, « solution maximale » 11, comme pdftotext. Le visualiseur plein
+écran de l'application installée (`vpOuvrir`, domaine apparence) n'a pas ce champ.
+
