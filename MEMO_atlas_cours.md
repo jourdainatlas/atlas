@@ -1052,3 +1052,5 @@ Variante B validée par l'auteur : titres « Exercice N » (`.exo-tete h3`, lien
 
 La barre du lecteur est collante (`.lecteur > .lecteur-barre`, `position: sticky`, fond `--surface`) : champ de recherche, résultat et flèches restent visibles pendant la lecture. Sur écran étroit, `pdfBarreCaler()` (appelée par `monterPdf` et au redimensionnement) décale son haut collant pour ne garder que la ligne de recherche. Pages : `scroll-margin-top: 64px`, pour que « aller à la page » ne cache pas le haut de la page sous la barre.
 Projection (21 nov., à la demande de l'auteur) : le titre « Exercice N » (`.pj-tete h1`) et les barres de difficulté pleines (`.pj .difficulte i.plein`) prennent le mauve de la projection, `--pj-v`, comme les cartes de la rubrique.
+
+Le même soir, à la demande de l'auteur, le filet mauve est retiré des cartes de feuille (vues « Par feuille » et « Par niveau ») ; il ne reste que sur les cartes d'exercice.
