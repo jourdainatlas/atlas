@@ -210,3 +210,56 @@ filière gardée si elle existe dans la catégorie). Le menu du moteur reste lib
 recherche » le ramène à la catégorie de la grille, et ce réglage par défaut n'est pas compté comme un filtre
 pour l'affichage du bouton (`rechVide`). Il compte en revanche pour l'ordre des résultats : avec une
 catégorie choisie, ils vont du plus récent au plus ancien.
+
+### 45. Vue « Programme » : les programmes officiels reliés aux cours, exercices et annales (21 nov. 2026)
+
+*Demande de l'auteur* : rendre visible le programme détaillé de chaque concours ou examen des Annales, et
+relier chaque point aux cours, donc aux exercices, du site. Pilote : MPSI et MP (filière MP de la famille
+« Écoles d'ingénieurs »). Suite prévue : MP2I et MPI, PCSI et PC, PSI ; baccalauréat (Première,
+Terminale) ; CAPES et agrégations (l'agrégation externe se complétera au fil des cours de L3 et Master).
+
+*Données.* `rubriques/annales-programmes.yaml` : la liste des programmes (`id`, `court`, `annee`) et
+`filieres` : famille → filière (« * » pour une famille sans filières) → programmes, dans l'ordre des onglets.
+Un fichier par programme, `rubriques/annales-programmes/<id>.yaml` : `intitule`, `source {nom, url}`,
+`preambule`, `sections` [`intitule`, `periode`, `objectif`, `hors_programme`, `blocs` [`intitule`, `points`
+[`contenu`, `precisions`, `demo`, `filieres`, `cours`, `ex`, `themes`, `note`]]]. Un point = une ligne de la
+colonne « Contenus », dans l'ordre et avec les mots du texte officiel ; `precisions` résume la colonne
+« Capacités et commentaires » ; `demo` reprend « non exigible » / « hors programme ». Liens : `cours` en
+« chapitre:rang du sommaire » (à partir de 1, au plus 3), `ex` (au plus 6, du plus accessible au plus
+difficile, seulement des exercices qui travaillent le point lui-même), `themes` (thèmes d'annales, au plus 3).
+Point sans cours ni exercice : affiché « à venir ». Les noms de champs évitent ceux de `RICHES`/`COURTS`
+(`titre`, `texte`…) et `noeuds`/`notions` (vérifiés par `verifie_rubrique`).
+
+*Construction.* `construire.py` fusionne les fichiers et vérifie chaque renvoi (chapitre et rang de section,
+exercice, thème, programme cité par `filieres`). `rendu.mjs` rend les textes en ligne (formules vérifiées par
+KaTeX, repères `kx`) et écrit `site/annales-programmes/<id>.json` (chargé à l'ouverture de la vue).
+`lecture.mjs` écrit une page de lecture indexable par programme, `/annales/programme/<id>/`, listée sur
+`/annales/`.
+
+*Écran* (`vueProgrammeAnnales` du gabarit, `etatPg`) : bouton « Programme » à côté de Grille et Liste
+(seulement si la famille et la filière ont un programme), onglets par année, bilan (points, points traités
+sur le site, points cochés), **carte du programme** (une case par section, largeur = nombre de points,
+teinte = part des sujets étiquetés de la filière dont une partie porte l'un des thèmes de la section,
+`frequencePg`), recherche dans le programme (sans redessiner, `filtrerProgramme`), sections repliables.
+Chaque point : case « je maîtrise » (localStorage `atlas-programme-maitrise`, clé `prog:s.b.p` — changer le
+découpage d'un programme décale les cases cochées), liens Cours (ouvre le PDF à la page de la section,
+`data-cours-page`), Exercices (`#exercices/ex/<id>`, numéro « chapitre.numéro » et étoiles ; l'index des
+exercices est chargé seul, `chargerIndexExosPg`), Annales (thème + nombre de sujets de la filière ; un clic
+règle le moteur sur la famille et la filière, `data-rq-fil`). Depuis un cours ou un exercice, le bouton
+« ← Retour au programme » ramène au point. Adresse : `#annales/programme/<id>` (aussi celle du bouton
+Partager). Couleurs : celles des rubriques (cours vert, exercices violet, annales orange).
+
+*Méthode suivie pour le pilote* (à reprendre pour chaque programme). 1) Transcription du texte officiel
+(BO ; PDF fourni par l'auteur pour MPSI, lu par Exa et Parallel pour MP, le proxy refusant le téléchargement
+direct du site du ministère) par un agent, relue contre le texte par un second agent indépendant (MPSI :
+12 corrections ; MP : 8, dont une coquille du BO, « X′ = A′(t)X + B(t) » rétabli en $X'=A(t)X+B(t)$).
+2) Liaison par lots de 50 à 120 points (catalogue des sections de cours et des exercices), chaque section de
+cours vérifiée sur le texte du PDF du chapitre ; puis relecture indépendante de chaque lot (corrections
+typiques : exercices qui ne font que se servir du point retirés, contre-exemples gardés seulement s'ils
+éclairent le point, section où l'énoncé est démontré mise avant celle qui le rappelle, notes réduites à
+« aucun exercice » supprimées — la page montre déjà l'absence). Bilan : MPSI 513 points, tous avec cours,
+460 avec exercices (1 343 renvois) ; MP 330 points, tous avec cours, 305 avec exercices (967 renvois).
+Consignes et scripts (`CONSIGNE_extraction.md`, `CONSIGNE_verif_extraction.md`, `CONSIGNE_liaison.md`,
+`CONSIGNE_relecture_liens.md`, `valider_prog.py`, `valider_liens.py`, `fusion_prog.py`) : bloc-notes de
+la conversation, à recréer d'après ce paragraphe. Quand un cours ou une feuille change de sommaire, la
+construction signale les renvois devenus faux ; refaire alors la liaison du chapitre concerné.

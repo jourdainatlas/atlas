@@ -18,7 +18,8 @@ a poussé entre-temps, un fichier commun réécrit à partir d'une copie périm�
 
 1. **Chaque conversation a son domaine de fichiers et n'écrit pas dans celui des autres.**
    - *Annales* : `rubriques/annales.yaml`, `rubriques/annales-themes.yaml`, `rubriques/annales-index.yaml`,
-     `rubriques/annales-index/`, `documents/annales/`, `MEMO_atlas_annales.md`, et tout outil nommé
+     `rubriques/annales-index/`, `rubriques/annales-programmes.yaml`, `rubriques/annales-programmes/`,
+     `documents/annales/`, `MEMO_atlas_annales.md`, et tout outil nommé
      `outils/annales_*`.
    - *Cours et exercices* : `rubriques/cours.yaml`, `rubriques/exercices.yaml`, `rubriques/exercices/`,
      `documents/cours/`, `documents/exercices/`, `documents/figures/`, `outils/tex2exos.py`,
