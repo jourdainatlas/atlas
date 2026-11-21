@@ -1089,3 +1089,4 @@ ou à la dernière étape) puis `corrMaj` et `composerDans` ; revenir à l'énon
 marques de question, `etapesCorrige(C, false)` et `etapesCorrige(C, true)` donnent les mêmes étapes ; sans marque, la
 carte n'a pas d'étapes et un corrigé ouvert y est entier. Vérifié sur `ma-10-03` (8 questions) et `ma-10-06` (sans marques).
 Saut à chaque étape de la projection corrigé le même jour : `pjRendu` compose ses formules aussitôt (`composerDans(PJ.el, true)`) ; composées à la vue, elles changeaient la hauteur des blocs après le défilement vers la dernière étape.
+Projection (21 nov., à la demande de l'auteur) : le titre « Exercice N » (`.pj-tete h1`) et les barres de difficulté pleines (`.pj .difficulte i.plein`) prennent le mauve de la projection, `--pj-v`, comme les cartes de la rubrique.
