@@ -331,9 +331,12 @@ Exercices d'une feuille sans chapitre (Master) : « Galois 3 ». *Notes.* Après
 `notes_lisibles.py` (bloc-notes) réécrit les identifiants internes des notes (« ma-05:4 », « mp-03-50 ») en
 « Maths Sup – MPSI, ch. 5, section 4 », « exercice 3.50 », puis on corrige la grammaire (« au Maths Sup » →
 « dans Maths Sup », « de exercice » → « de l'exercice »). *Bilan* (outil de bilan) : CAPES 69 points / 0 « à
-venir » ; CAPES bac+3 80 / 2 (les deux `sans_lien`) ; agrégation externe 358 / 31 ; agrégation interne 342 / 29 ;
+venir » ; CAPES bac+3 80 / 2 (les deux `sans_lien`) ; agrégation externe 358 / 32 ; agrégation interne 342 / 29 ;
 Première 2026 90 / 6 ; Première 2019 67 / 5 ; Terminale 110 / 5. Les « à venir » du lycée tiennent à des
 démonstrations absentes des cours (dérivée de ln, convexité, E(X)=np…), signalées à l'auteur ; ceux des
-agrégations à des chapitres non encore écrits (quotients, dualité, connexité, angles inscrits, options A, B, C de
-l'agrégation externe non transcrites). Chaque lot a été relu par un agent indépendant (agrégation externe, sections 1 à 4 : 30 corrections ;
+agrégations à des chapitres non encore écrits (quotients, dualité, connexité, angles inscrits, polytopes réguliers). Les options A, B, C de l'agrégation externe ne sont
+pas transcrites : elles ne concernent que l'oral de modélisation, et les Annales ne portent que sur l'écrit.
+Décisions de l'auteur (21 nov.) : polytopes réguliers laissés « à venir » malgré le triangle et le carré ;
+lien vers les fractions rationnelles symétriques (Galois) gardé pour les polynômes symétriques ; exercice 11.10
+(groupe affine de la droite) gardé en attendant d'autres. Chaque lot a été relu par un agent indépendant (agrégation externe, sections 1 à 4 : 30 corrections ;
 interne, sections 1 à 6 : 50) ; rapports dans le bloc-notes.
