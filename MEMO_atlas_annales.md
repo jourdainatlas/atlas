@@ -236,8 +236,9 @@ KaTeX, repères `kx`) et écrit `site/annales-programmes/<id>.json` (chargé à 
 `lecture.mjs` écrit une page de lecture indexable par programme, `/annales/programme/<id>/`, listée sur
 `/annales/`.
 
-*Écran* (`vueProgrammeAnnales` du gabarit, `etatPg`) : bouton « Programme » à côté de Grille et Liste
-(seulement si la famille et la filière ont un programme), onglets par année, bilan (points, points traités
+*Écran* (`vueProgrammeAnnales` du gabarit, `etatPg`) : bandeau orange sous la barre de la grille
+(`entreeProgramme`, seulement si la famille et la filière ont un programme ; d'abord un bouton à côté de
+Grille et Liste, retiré à la demande de l'auteur car il élargissait la barre), onglets par année, bilan (points, points traités
 sur le site, points cochés), **carte du programme** (une case par section, largeur = nombre de points,
 teinte = part des sujets étiquetés de la filière dont une partie porte l'un des thèmes de la section,
 `frequencePg`), recherche dans le programme (sans redessiner, `filtrerProgramme`), sections repliables.
@@ -245,7 +246,9 @@ Chaque point : case « je maîtrise » (localStorage `atlas-programme-maitrise`,
 découpage d'un programme décale les cases cochées), liens Cours (ouvre le PDF à la page de la section,
 `data-cours-page`), Exercices (`#exercices/ex/<id>`, numéro « chapitre.numéro » et étoiles ; l'index des
 exercices est chargé seul, `chargerIndexExosPg`), Annales (thème + nombre de sujets de la filière ; un clic
-règle le moteur sur la famille et la filière, `data-rq-fil`). Depuis un cours ou un exercice, le bouton
+règle le moteur sur la famille et la filière, `data-rq-fil` ; à côté, en pointillés, « N en tout » : tous les
+sujets étiquetés, toutes familles, `data-rq-tous`, demande de l'auteur du 21 nov. ; un thème sans aucun sujet
+est masqué, un thème sans sujet de la filière ne garde que ce second bouton). Depuis un cours ou un exercice, le bouton
 « ← Retour au programme » ramène au point. Adresse : `#annales/programme/<id>` (aussi celle du bouton
 Partager). Couleurs : celles des rubriques (cours vert, exercices violet, annales orange).
 
