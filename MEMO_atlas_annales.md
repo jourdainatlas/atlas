@@ -312,3 +312,28 @@ sans exercice des sections qui touchent ces chapitres, et la vérification des l
 un second agent relit, on fusionne, puis `--mettre-a-jour-reference` enregistre le nouvel état ; les
 avertissements disparaissent. Les liens d'exercices étant des identifiants, une feuille renumérotée est déjà
 signalée comme erreur par `construire.py` (exercice inconnu).
+
+**Concours de l'enseignement et baccalauréat (21 nov. 2026).** *Écran.* Les quatre concours de l'enseignement
+partagent une grille : choix validé par l'auteur, « bandeau + lien par ligne ». La famille « enseignement » a une
+filière « * » listant `capes`, `capes-bac3`, `agreg-ext`, `agreg-int` ; chaque programme porte `concours` (id du
+concours dans `annales.yaml`). Le bandeau montre un bouton par programme (`pg-entree-multi`, `data-pg-ouvrir`),
+chaque ligne de la grille un lien « programme › » (`pg-lien-ligne`). Dans la vue, la carte et les nombres ne
+comptent que les sujets de ce concours (`frequencePg(fam, fil, p.concours)`), et les libellés nomment le
+concours plutôt que la filière. Onglets : `annee` seule (l'intitulé long n'y est plus). Bac : filière Terminale
+→ `premiere2019` puis `terminale` (programme de 2019, valable jusqu'à la session 2027 ; un nouveau programme de
+Terminale, arrêté du 26 févr. 2026, s'appliquera à la rentrée 2027) ; filière Première → `premiere2026` (arrêté
+du 26 févr. 2026, BO n° 14 du 2 avr. 2026, en vigueur à la rentrée 2026). Les familles à vocabulaire propre (bac,
+`ly-…`) comptent par `p.themes` (`propre` dans `frequencePg`). *Données.* `sans_lien: true` sur un point
+d'organisation (CAPES bac+3, dernière section) : jamais « à venir », jamais compté. Blocs dont l'intitulé est
+une lettre seule (« a) », texte de l'agrégation externe qui n'a pas de titres de paragraphe) : simple repère en
+pointillés (`pg-bloc-lettre`). Numéros de section retirés des intitulés des agrégations (la case les affiche).
+Exercices d'une feuille sans chapitre (Master) : « Galois 3 ». *Notes.* Après chaque fusion,
+`notes_lisibles.py` (bloc-notes) réécrit les identifiants internes des notes (« ma-05:4 », « mp-03-50 ») en
+« Maths Sup – MPSI, ch. 5, section 4 », « exercice 3.50 », puis on corrige la grammaire (« au Maths Sup » →
+« dans Maths Sup », « de exercice » → « de l'exercice »). *Bilan* (outil de bilan) : CAPES 69 points / 0 « à
+venir » ; CAPES bac+3 80 / 2 (les deux `sans_lien`) ; agrégation externe 358 / 31 ; agrégation interne 342 / 29 ;
+Première 2026 90 / 6 ; Première 2019 67 / 5 ; Terminale 110 / 5. Les « à venir » du lycée tiennent à des
+démonstrations absentes des cours (dérivée de ln, convexité, E(X)=np…), signalées à l'auteur ; ceux des
+agrégations à des chapitres non encore écrits (quotients, dualité, connexité, angles inscrits, options A, B, C de
+l'agrégation externe non transcrites). Chaque lot a été relu par un agent indépendant (agrégation externe, sections 1 à 4 : 30 corrections ;
+interne, sections 1 à 6 : 50) ; rapports dans le bloc-notes.
