@@ -314,10 +314,11 @@ avertissements disparaissent. Les liens d'exercices étant des identifiants, une
 signalée comme erreur par `construire.py` (exercice inconnu).
 
 **Concours de l'enseignement et baccalauréat (21 nov. 2026).** *Écran.* Les quatre concours de l'enseignement
-partagent une grille : choix validé par l'auteur, « bandeau + lien par ligne ». La famille « enseignement » a une
+partagent une grille : choix validé par l'auteur, « bandeau + lien par ligne », lien par ligne retiré ensuite. La famille « enseignement » a une
 filière « * » listant `capes`, `capes-bac3`, `agreg-ext`, `agreg-int` ; chaque programme porte `concours` (id du
-concours dans `annales.yaml`). Le bandeau montre un bouton par programme (`pg-entree-multi`, `data-pg-ouvrir`),
-chaque ligne de la grille un lien « programme › » (`pg-lien-ligne`). Dans la vue, la carte et les nombres ne
+concours dans `annales.yaml`). Le bandeau montre un bouton par programme (`pg-entree-multi`, `data-pg-ouvrir`).
+Un lien « programme › » sous chaque ligne de la grille a été retiré à la demande de l'auteur (jugé inutile) ;
+le bandeau, un `div` à `width: 100%`, déborde à droite sans `box-sizing: border-box`. Dans la vue, la carte et les nombres ne
 comptent que les sujets de ce concours (`frequencePg(fam, fil, p.concours)`), et les libellés nomment le
 concours plutôt que la filière. Onglets : `annee` seule (l'intitulé long n'y est plus). Bac : filière Terminale
 → `premiere2019` puis `terminale` (programme de 2019, valable jusqu'à la session 2027 ; un nouveau programme de
