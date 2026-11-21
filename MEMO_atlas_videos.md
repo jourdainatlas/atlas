@@ -535,4 +535,8 @@ et fiches remis à l'auteur (`atlas-seconde-01-nombres-calculs`, `atlas-premiere
 `atlas-terminale-01-suites-numeriques`, `atlas-expertes-01-divisibilite-primalite`,
 `atlas-approfondies-01-ensembles-logique`, `atlas-mpsi-01-logique-ensembles`, `atlas-mp-01-structures-algebriques`).
 Deux listes de lecture nouvelles sur YouTube : « Maths approfondies » (option de Terminale, et non la filière ECG)
-et « MP ». **Reste l'étape 4**, à faire quand l'auteur donnera les sept adresses.
+et « MP ». **Étape 4 faite le 21 novembre pour cinq vidéos** : adresses YouTube au catalogue (seconde `L_5_WNZpv_Q`,
+première `g9K_QycqVJo`, terminale `dGS9e65GmM0`, Maths expertes `XK-pGgwma_I`, MPSI `_4BsmJaVNFk`), versions allégées
+(16,5 à 20,5 Mo) et vignettes dans `videos-fichiers`, `en_ligne` vrai ; lecteur ouvert et lu pour les cinq sur le site
+construit (clair, sombre, ordinateur, téléphone). Quatorze vidéos sont en ligne. **Restent `ap-01` et `mp-01`**, en
+attente de leurs adresses (listes de lecture « Maths approfondies » et « MP » à créer par l'auteur).
