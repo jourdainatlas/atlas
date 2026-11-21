@@ -4979,7 +4979,8 @@ function entreeProgramme(fam, fil) {
 }
 function vueProgrammeAnnales(fam, fil) {
   const progs = progsDeFiliere(fam.id, fil);
-  const p = progs.find(x => x.id === etatPg.prog) || progs[0]; etatPg.prog = p.id;
+  // par défaut, le programme de l'année de la filière (le dernier onglet : Terminale plutôt que Première, MP plutôt que MPSI)
+  const p = progs.find(x => x.id === etatPg.prog) || (fil ? progs[progs.length - 1] : progs[0]); etatPg.prog = p.id;
   // le programme et l'index des exercices (numéros, étoiles) sont chargés à l'ouverture de la vue
   const attente = chargerProgramme(p), attEx = chargerIndexExosPg();
   for (const a of [attente, attEx]) if (a) a.then(() => { const z = $('#rubrique'); if (enRubrique() && z.dataset.nom === 'annales' && etatAnn.vue === 'programme') rafraichirRubrique(); });
