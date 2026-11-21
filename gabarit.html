@@ -6575,6 +6575,7 @@ function pjOuvrir(id) {
   const C = document.createElement('div'); C.innerHTML = e.corrige || '';
   const etapes = etapesCorrige(C, true);
   Object.assign(PJ, { e, etape: 0, tout: false, blocs: etapes.map(g => g.map(b => b.outerHTML).join('')), sombre: document.documentElement.dataset.theme === 'dark' });
+  pjDepuisCarte(id);
   if (!PJ.el) {
     PJ.el = document.createElement('div'); PJ.el.className = 'pj'; PJ.el.setAttribute('role', 'dialog'); PJ.el.setAttribute('aria-modal', 'true'); PJ.el.tabIndex = -1;
     document.body.appendChild(PJ.el);
@@ -6584,8 +6585,33 @@ function pjOuvrir(id) {
   document.documentElement.requestFullscreen?.().catch(() => {});
   pjRendu(); PJ.el.focus({ preventScroll: true });
 }
+// Le corrigé suit l'exercice entre sa carte et la projection (demande de l'auteur, 21 nov. 2026). Avec des marques de
+// question, la carte (etapesCorrige(C, false)) et la projection (etapesCorrige(C, true)) découpent le corrigé de la
+// même façon : la question k de la carte est l'étape k de la projection. Sans marque, la carte n'a pas d'étapes
+// (.corr-etape) : un corrigé ouvert y est entier, ce qui répond au corrigé entier de la projection.
+function pjDepuisCarte(id) {
+  const d = document.querySelector(`#ex-${CSS.escape(id)} details.corrige`), n = PJ.blocs.length;
+  if (!d || !d.open || !n) return;
+  const E = [...d.querySelectorAll('.corr-etape')], k = E.filter(x => !x.hidden).length;
+  if (!E.length || k >= E.length || E.length !== n) { PJ.etape = n; PJ.tout = true; }
+  else PJ.etape = Math.max(1, k);
+}
+function pjVersCarte() {
+  const d = PJ.e && document.querySelector(`#ex-${CSS.escape(PJ.e.id)} details.corrige`), n = PJ.blocs.length;
+  if (!d || PJ.etape === 0) return;   // revenu à l'énoncé : la carte garde son corrigé tel qu'il était
+  if (!d.open) d.open = true;
+  corrEtapes(d);
+  const E = [...d.querySelectorAll('.corr-etape')];
+  if (E.length) {
+    const tout = PJ.tout || PJ.etape >= n || E.length !== n;
+    E.forEach((x, i) => { x.hidden = !tout && i >= PJ.etape; });
+    corrMaj(d);
+  }
+  if (typeof composerDans === 'function') composerDans(d, true);
+}
 function pjFermer() {
   if (!PJ.el || PJ.el.hidden) return;
+  pjVersCarte();
   PJ.el.hidden = true; PJ.el.innerHTML = '';
   if (document.fullscreenElement) document.exitFullscreen?.().catch(() => {});
   document.querySelector(`.pj-elt[data-pj="${PJ.e?.id}"]`)?.focus({ preventScroll: true });

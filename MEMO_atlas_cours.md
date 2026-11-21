@@ -1019,3 +1019,14 @@ section verticale en x = 0,55, horizontale en y = 0,62), `boules` (boules unité
 (créneau et son autoconvolée triangulaire). Variantes écartées : `cantor`, `lineaire`. Préparé sur la branche
 `ue-integration` en attendant la validation, puis fusionné dans main.
 
+
+
+### 60. le corrigé suit l'exercice entre carte et projection
+
+À la demande de l'auteur, qui a confié ce travail à la conversation Cours. `pjOuvrir` appelle `pjDepuisCarte(id)` : si le
+corrigé de la carte est ouvert, la projection démarre à la question atteinte (k étapes `.corr-etape` visibles → étape k),
+ou sur tout le corrigé s'il est entier (aucune `.corr-etape`, toutes visibles, ou découpages différents). `pjFermer`
+appelle `pjVersCarte()` : la carte ouvre son corrigé, appelle `corrEtapes`, montre les questions 1 à k (toutes après C
+ou à la dernière étape) puis `corrMaj` et `composerDans` ; revenir à l'énoncé (étape 0) ne touche pas la carte. Avec des
+marques de question, `etapesCorrige(C, false)` et `etapesCorrige(C, true)` donnent les mêmes étapes ; sans marque, la
+carte n'a pas d'étapes et un corrigé ouvert y est entier. Vérifié sur `ma-10-03` (8 questions) et `ma-10-06` (sans marques).

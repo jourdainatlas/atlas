@@ -1077,3 +1077,14 @@ Demande de l'auteur : un lien vers l'Atelier ATLAS (`https://atelier.atlasjourda
 - **Rouge** : nouvelle exception décidée par l'auteur à la règle « rouge réservé aux définitions, aux axiomes et au logo », après le Parcours du jour (§78).
 Pas d'encadré parmi les rubriques de l'accueil, pas de lien sur les pages de lecture, pas de mention dans l'À propos pour l'instant (choix de l'auteur). Le lien est public alors que l'Atelier est sur invitation : un visiteur arrive sur la page de connexion ; l'auteur garde le lien tel quel pour le moment.
 
+
+
+## Note de la conversation « Cours » (21 nov. 2026) : le corrigé suit l'exercice entre carte et projection
+
+À la demande de l'auteur, qui a confié ce travail à la conversation Cours. `pjOuvrir` appelle `pjDepuisCarte(id)` : si le
+corrigé de la carte est ouvert, la projection démarre à la question atteinte (k étapes `.corr-etape` visibles → étape k),
+ou sur tout le corrigé s'il est entier (aucune `.corr-etape`, toutes visibles, ou découpages différents). `pjFermer`
+appelle `pjVersCarte()` : la carte ouvre son corrigé, appelle `corrEtapes`, montre les questions 1 à k (toutes après C
+ou à la dernière étape) puis `corrMaj` et `composerDans` ; revenir à l'énoncé (étape 0) ne touche pas la carte. Avec des
+marques de question, `etapesCorrige(C, false)` et `etapesCorrige(C, true)` donnent les mêmes étapes ; sans marque, la
+carte n'a pas d'étapes et un corrigé ouvert y est entier. Vérifié sur `ma-10-03` (8 questions) et `ma-10-06` (sans marques).
