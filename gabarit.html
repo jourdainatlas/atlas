@@ -1801,6 +1801,15 @@ table.grille button.pli-ann:hover { border-color: var(--encre); }
 .vue-ann svg { width: 14px; height: 14px; fill: currentColor; }
 /* Vue « Programme » (MEMO_atlas_annales.md §45) : couleurs des rubriques (cours, exercices, annales) */
 .pg { margin-top: 6px; }
+.pg-entree { display: flex; align-items: center; gap: 10px; width: 100%; margin: -4px 0 14px; padding: 9px 14px; text-align: left; cursor: pointer; font: 14px var(--f-ui); color: var(--encre-2);
+  border: 1px solid color-mix(in srgb, var(--r-annales) 40%, var(--filet)); border-radius: 8px; background: color-mix(in srgb, var(--r-annales) 7%, var(--surface)); }
+.pg-entree b { color: var(--encre); font-weight: 600; }
+.pg-entree svg { flex: none; width: 16px; height: 16px; fill: var(--r-annales); }
+.pg-entree span:first-of-type { flex: 1; }
+.pg-entree-f { font-size: 16px; color: var(--r-annales); transition: transform .15s; }
+.pg-entree:hover { border-color: var(--r-annales); background: color-mix(in srgb, var(--r-annales) 13%, var(--surface)); }
+.pg-entree:hover .pg-entree-f { transform: translateX(3px); }
+.pg-entree.dedans { width: auto; display: inline-flex; }
 .pg-progs { margin-bottom: 14px; }
 .pg-progs b { font-family: var(--f-mono); font-weight: 600; margin-right: 2px; }
 .pg-tete h3 { font-family: var(--f-titre); font-size: 22px; margin: 0 0 4px; }
@@ -1838,7 +1847,9 @@ table.grille button.pli-ann:hover { border-color: var(--encre); }
 .pg-obj { font-size: 14px; color: var(--encre-2); margin: 10px 0 6px; max-width: 80ch; }
 .pg-hp { font-size: 13px; color: var(--encre-2); margin: 6px 0; padding: 6px 10px; border-left: 3px solid var(--rouge); background: var(--rouge-fond); border-radius: 0 5px 5px 0; }
 .pg-hp b { color: var(--rouge); }
-.pg-bloc { font: 600 13px var(--f-ui); letter-spacing: .02em; color: var(--encre-2); margin: 16px 0 4px; text-transform: none; }
+.pg-bloc { font: 600 14.5px var(--f-ui); letter-spacing: .01em; color: color-mix(in srgb, var(--r-annales) 70%, var(--encre)); margin: 22px 0 6px; padding: 5px 10px;
+  border-left: 3px solid var(--r-annales); border-radius: 0 5px 5px 0; background: linear-gradient(90deg, color-mix(in srgb, var(--r-annales) 12%, transparent), transparent 75%); }
+.pg-blk:first-of-type .pg-bloc { margin-top: 14px; }
 .pg-pts { list-style: none; margin: 0; padding: 0; }
 .pg-pt { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px dashed var(--trame); }
 .pg-pt:last-child { border-bottom: 0; }
@@ -4808,17 +4819,17 @@ function pageAnnales(chemin) {
 
   h += `<div class="annales-barre"><div class="segments" role="group" aria-label="Famille de concours">${fams.map(f => `<button type="button" data-famille="${f.id}" aria-pressed="${f.id === fam.id}">${f.titre}</button>`).join('')}</div>`;
   if (fam.filieres) h += `<div class="puces-chips" role="group" aria-label="Filière">${fam.filieres.map(x => `<button type="button" class="chip" data-filiere="${x}" aria-pressed="${x === etatAnn.filiere}">${x}</button>`).join('')}</div>`;
-  h += `<div class="segments vue-ann" role="group" aria-label="Affichage"><button type="button" data-vue-ann="grille" aria-pressed="${etatAnn.vue === 'grille'}"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h5v5H2zM9 2h5v5H9zM2 9h5v5H2zM9 9h5v5H9z"/></svg>Grille</button><button type="button" data-vue-ann="liste" aria-pressed="${etatAnn.vue === 'liste'}"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 3h2v2H2zM6 3h8v2H6zM2 7h2v2H2zM6 7h8v2H6zM2 11h2v2H2zM6 11h8v2H6z"/></svg>Liste</button>${progsDeFiliere(fam.id, fil).length ? `<button type="button" data-vue-ann="programme" aria-pressed="${etatAnn.vue === 'programme'}" title="Le programme officiel, relié aux cours, aux exercices et aux sujets"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 1.5h7l3 3v10H3zM5 6h6v1.3H5zM5 8.6h6v1.3H5zM5 11.2h4v1.3H5z"/></svg>Programme</button>` : ''}</div>`;
+  h += `<div class="segments vue-ann" role="group" aria-label="Affichage"><button type="button" data-vue-ann="grille" aria-pressed="${etatAnn.vue === 'grille'}"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h5v5H2zM9 2h5v5H9zM2 9h5v5H2zM9 9h5v5H9z"/></svg>Grille</button><button type="button" data-vue-ann="liste" aria-pressed="${etatAnn.vue === 'liste'}"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 3h2v2H2zM6 3h8v2H6zM2 7h2v2H2zM6 7h8v2H6zM2 11h2v2H2zM6 11h8v2H6z"/></svg>Liste</button></div>`;
   // années de la filière (l'épreuve anticipée de Première n'existe que depuis 2026)
   const ans = (fam.annees_filiere || {})[fil] || fam.annees;
   const srcFam = (fam.sources || {})[fil];
   if (etatAnn.vue === 'programme' && progsDeFiliere(fam.id, fil).length) {
-    h += `</div>` + vueProgrammeAnnales(fam, fil);
+    h += `</div>` + entreeProgramme(fam, fil) + vueProgrammeAnnales(fam, fil);
   } else if (etatAnn.vue === 'liste') {
-    h += `</div>` + vueListeAnnales(fam, fil);
+    h += `</div>` + entreeProgramme(fam, fil) + vueListeAnnales(fam, fil);
   } else {
   h += `<div class="defil-annees" role="group" aria-label="Faire défiler les années"><span class="bout">${ans[0]}</span><button type="button" data-defil="-1" aria-label="Années plus récentes">‹</button><input type="range" min="0" max="1000" step="1" value="${Math.round(etatAnn.defil * 1000)}" aria-label="Faire défiler les années de ${ans[0]} à ${ans[ans.length - 1]}"><button type="button" data-defil="1" aria-label="Années plus anciennes">›</button><span class="bout">${ans[ans.length - 1]}</span><span class="visible" aria-live="polite"></span></div>`;
-  h += `</div>${fam.lignes_repliables ? `<p class="aide-pli">Chaque centre est replié : le bouton <span class="pli-signe" aria-hidden="true">+</span> au bout de sa ligne l'ouvre et montre ses sujets, les corrigés disponibles et la description du contenu.</p>` : ''}<div class="carte grille-wrap"><table class="grille${fam.lignes_repliables ? ' grille-pli' : ''}"><thead><tr><th>${fam.lignes_repliables ? (() => { const tout = fam.concours.every(c => etatAnn.lignes.has(c.id)); return `<span class="pli-tete"><span>${fam.cases_sujets ? 'Centre' : 'Concours'}</span><button type="button" class="pli-tout" data-pli="*" aria-expanded="${tout}" aria-label="${tout ? 'Tout fermer' : 'Tout ouvrir'}" title="${tout ? 'Fermer' : 'Ouvrir'} toutes les lignes"><span class="pli-txt">${tout ? 'tout fermer' : 'tout ouvrir'}</span><span class="pli-signe" aria-hidden="true">${tout ? '−' : '+'}</span></button></span>`; })() : (fam.cases_sujets ? 'Centre' : 'Concours')}</th>${ans.map(a => `<th data-an="${a}">${a}</th>`).join('')}</tr></thead><tbody>`;
+  h += `</div>${entreeProgramme(fam, fil)}${fam.lignes_repliables ? `<p class="aide-pli">Chaque centre est replié : le bouton <span class="pli-signe" aria-hidden="true">+</span> au bout de sa ligne l'ouvre et montre ses sujets, les corrigés disponibles et la description du contenu.</p>` : ''}<div class="carte grille-wrap"><table class="grille${fam.lignes_repliables ? ' grille-pli' : ''}"><thead><tr><th>${fam.lignes_repliables ? (() => { const tout = fam.concours.every(c => etatAnn.lignes.has(c.id)); return `<span class="pli-tete"><span>${fam.cases_sujets ? 'Centre' : 'Concours'}</span><button type="button" class="pli-tout" data-pli="*" aria-expanded="${tout}" aria-label="${tout ? 'Tout fermer' : 'Tout ouvrir'}" title="${tout ? 'Fermer' : 'Ouvrir'} toutes les lignes"><span class="pli-txt">${tout ? 'tout fermer' : 'tout ouvrir'}</span><span class="pli-signe" aria-hidden="true">${tout ? '−' : '+'}</span></button></span>`; })() : (fam.cases_sujets ? 'Centre' : 'Concours')}</th>${ans.map(a => `<th data-an="${a}">${a}</th>`).join('')}</tr></thead><tbody>`;
   for (const c of fam.concours) {
     // une épreuve est un libellé, ou {nom, annees} pour une épreuve qui n'a existé que certaines années
     const epsTout = epreuvesDe(c).map(e => typeof e === 'string' ? { nom: e } : e);
@@ -4933,6 +4944,12 @@ function lienExoPg(id) {
   const et = e.etoiles ? `<span class="pg-et" aria-label="difficulté ${e.etoiles} sur 4">${'★'.repeat(e.etoiles)}</span>` : '';
   return `<a class="pg-l pg-ex" href="#exercices/ex/${e.id}" data-retour-pg title="${esc(`${niveauDe(f.niveau).titre}${f.chapitre ? `, ch. ${f.chapitre}` : ''} (${rgTexte(f.titre || '')}) — exercice ${e.numero}${e.partie ? ' : ' + rgTexte(e.partie) : ''}`)}">${f.chapitre ? `${f.chapitre}.` : ''}${e.numero}${et}</a>`;
 }
+// entrée de la vue « Programme » : un bandeau sous la barre (les boutons de la barre gardent leur largeur)
+function entreeProgramme(fam, fil) {
+  const progs = progsDeFiliere(fam.id, fil); if (!progs.length) return '';
+  const dedans = etatAnn.vue === 'programme';
+  return `<button type="button" class="pg-entree${dedans ? ' dedans' : ''}" data-vue-ann="${dedans ? 'grille' : 'programme'}"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 1.5h7l3 3v10H3zM5 6h6v1.3H5zM5 8.6h6v1.3H5zM5 11.2h4v1.3H5z"/></svg>${dedans ? `<span><b>← Revenir à la grille des sujets</b></span>` : `<span><b>Programme officiel ${esc(fil || '')}</b> (${progs.map(p => esc(p.court || p.id)).join(' puis ')}) : chaque point relié aux cours, aux exercices et aux sujets</span><span class="pg-entree-f" aria-hidden="true">→</span>`}</button>`;
+}
 function vueProgrammeAnnales(fam, fil) {
   const progs = progsDeFiliere(fam.id, fil);
   const p = progs.find(x => x.id === etatPg.prog) || progs[0]; etatPg.prog = p.id;
@@ -4967,7 +4984,7 @@ function vueProgrammeAnnales(fam, fil) {
       h += `<div class="pg-blk">${b.intitule ? `<h4 class="pg-bloc">${b.intitule}</h4>` : ''}<ul class="pg-pts">`;
       for (const pt of b.points) {
         const { cle } = tout[i][k0++], m = M.has(cle), av = !(pt.cours || []).length && !(pt.ex || []).length;
-        const th = (pt.themes || []).filter(t => (indexAnnales().themes[t] || {}).titre);
+        const th = (pt.themes || []).filter(t => (indexAnnales().themes[t] || {}).titre && (!F.total || (F.par[t] || new Set()).size));   // thème sans sujet de la filière : masqué
         const liens = [];
         if ((pt.cours || []).length) liens.push(`<span class="pg-g"><span class="pg-lab">Cours</span>${pt.cours.map(lienCoursPg).join('')}</span>`);
         if ((pt.ex || []).length) liens.push(`<span class="pg-g"><span class="pg-lab">Exercices</span>${pt.ex.map(lienExoPg).join('')}</span>`);
