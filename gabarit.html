@@ -1901,9 +1901,6 @@ table.grille button.pli-ann:hover { border-color: var(--encre); }
 .pg-ann { --c: var(--r-annales); }
 .pg-ann small { font-family: var(--f-mono); color: var(--encre-3); }
 .pg-annp { display: inline-flex; }
-.pg-voir { font: 12.5px var(--f-ui); color: color-mix(in srgb, var(--r-annales) 75%, var(--encre)); background: none; border: 0; padding: 2px 4px; margin-left: 2px; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: color-mix(in srgb, var(--r-annales) 45%, transparent); }
-.pg-voir span { display: inline-block; transition: transform .15s; }
-.pg-voir[aria-expanded="true"] span { transform: rotate(180deg); }
 .pg-sujets { margin: 8px 0 2px; padding: 8px 12px; border-left: 2px solid color-mix(in srgb, var(--r-annales) 55%, transparent); background: color-mix(in srgb, var(--r-annales) 5%, transparent); border-radius: 0 6px 6px 0; }
 .pg-sj { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; }
 .pg-sj li { display: grid; gap: 1px; }
@@ -1915,6 +1912,10 @@ table.grille button.pli-ann:hover { border-color: var(--encre); }
 .pg-sj .pp { font: 11.5px var(--f-mono); color: var(--encre-3); }
 .pg-sj-tout { font: inherit; color: color-mix(in srgb, var(--r-annales) 75%, var(--encre)); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
 .pg-sj-p.sec::after { content: ' · thème secondaire'; font: 11px var(--f-ui); color: var(--encre-3); text-decoration: none; display: inline-block; margin-left: 4px; }
+.pg-ann[aria-expanded="true"] { background: color-mix(in srgb, var(--r-annales) 16%, var(--surface)); border-color: var(--r-annales); }
+.pg-sj-plus { display: flex; flex-wrap: wrap; gap: 4px 22px; }
+.pg-sj-sombre, .pg-sj-sombre .pg-sj-tout { color: var(--encre-3); }
+.pg-sj-sombre .pg-sj-tout { text-decoration-color: color-mix(in srgb, var(--encre-3) 60%, transparent); }
 .pg-sj-plus, .pg-sj-vide { margin: 8px 0 0; font-size: 12.5px; color: var(--encre-2); }
 .pg-tous small { color: var(--encre-2); }
 .pg-annp .pg-ann:not(:only-child):first-child { border-top-right-radius: 0; border-bottom-right-radius: 0; }
@@ -4966,7 +4967,7 @@ function chargerProgramme(p) {
 let freqPgCache = {};
 // Sujets d'un point du programme, dépliés sous le point : les plus récents de la filière (ou du concours) dont une
 // partie porte l'un des thèmes du point ou l'un de leurs thèmes fins, en principal ou en secondaire (comme les nombres des boutons)
-function sujetsPointPg(themes, famId, fil, conc, cible) {
+function sujetsPointPg(themes, famId, fil, conc, cible, nt) {
   const I = indexAnnales(), T = new Set(themes);
   for (const t of themes) for (const c of I.enfants[t] || []) T.add(c);
   const propre = famId && vocabFamAnn(famId) !== 'general';
@@ -4995,7 +4996,11 @@ function sujetsPointPg(themes, famId, fil, conc, cible) {
       return `<a class="pg-sj-p${pr ? '' : ' sec'}" href="${esc(s.sujet)}#page=${a}" target="_blank" rel="noopener" title="${telecharge ? `Le site officiel impose le téléchargement : la partie commence page ${a}` : `Ouvrir le sujet à la page ${a}`}${pr ? '' : ' (le thème y est secondaire)'}">${annalesF(esc(p.nom || ''), s)}</a><span class="pp">p.&nbsp;${a}${b > a ? `–${b}` : ''}</span>`; }).join('')}${(() => { const r = parts.length - Math.min(2, (prin({ parts }) ? parts.filter(x => x.pr) : parts).length); return r > 0 ? `<span class="pp">+ ${r} partie${r > 1 ? 's' : ''}</span>` : ''; })()}</span></li>`;
   }
   h += `</ul>`;
-  if (res.length > N) h += `<p class="pg-sj-plus">${res.length - N} autre${res.length - N > 1 ? 's' : ''} sujet${res.length - N > 1 ? 's' : ''} : <button type="button" class="pg-sj-tout" data-rq-ext="${esc(I.themes[themes[0]].titre)}" data-rq-fil="${esc(fil || '')}"${conc ? ` data-rq-conc="${esc(conc)}"` : ''}>tout voir dans le moteur de recherche ›</button></p>`;
+  const lien = (attr, txt) => `<button type="button" class="pg-sj-tout" data-rq-ext="${esc(I.themes[themes[0]].titre)}" ${attr}>${txt}</button>`;
+  const pied = [];
+  pied.push(`<span>${res.length > N ? `${res.length - N} autre${res.length - N > 1 ? 's' : ''} sujet${res.length - N > 1 ? 's' : ''} ${esc(cible)}` : `${res.length} sujet${res.length > 1 ? 's' : ''} ${esc(cible)}`} : ${lien(`data-rq-fil="${esc(fil || '')}"${conc ? ` data-rq-conc="${esc(conc)}"` : ''}`, 'tout voir dans le moteur de recherche ›')}</span>`);
+  if (nt > res.length) pied.push(`<span class="pg-sj-sombre">${nt} sujets en tout, autres filières et concours compris : ${lien('data-rq-tous', 'tout voir dans le moteur de recherche ›')}</span>`);
+  h += `<p class="pg-sj-plus">${pied.join('')}</p>`;
   return h;
 }
 function frequencePg(famId, fil, conc) {
@@ -5086,9 +5091,10 @@ function vueProgrammeAnnales(fam, fil) {
         if ((pt.ex || []).length) liens.push(`<span class="pg-g"><span class="pg-lab">Exercices</span>${pt.ex.map(lienExoPg).join('')}</span>`);
         // deux boutons par thème : les sujets de la filière, et tous les sujets étiquetés (autres filières, concours, examens)
         if (th.length) liens.push(`<span class="pg-g"><span class="pg-lab">Annales</span>${th.map(t => { const T = indexAnnales().themes[t], nb = (F.tout[t] || new Set()).size, nt = (FT.tout[t] || new Set()).size;
-          const fl = nb || !F.total ? `<button type="button" class="pg-l pg-ann" data-rq-ext="${esc(T.titre)}" data-rq-fil="${esc(fil || '')}"${p.concours ? ` data-rq-conc="${esc(p.concours)}"` : ''} title="Chercher les sujets ${esc(cible)} qui travaillent ou emploient ce thème">${esc(T.titre)}${F.total ? ` <small>${nb} ${esc(cible)}</small>` : ''}</button>` : '';
+          // la pastille de la filière déplie sous le point les sujets les plus récents (sujetsPointPg) ; sans sujet compté, elle mène au moteur
+          const fl = nb || !F.total ? `<button type="button" class="pg-l pg-ann"${nb ? ` data-pg-sujets="${esc(t)}" data-pg-fam="${esc(fam.id)}" data-pg-fil="${esc(fil || '')}" data-pg-conc="${esc(p.concours || '')}" data-pg-cible="${esc(cible)}" data-pg-nt="${nt}" aria-expanded="false" title="Voir les sujets ${esc(cible)} les plus récents qui travaillent ou emploient ce thème"` : ` data-rq-ext="${esc(T.titre)}" data-rq-fil="${esc(fil || '')}"${p.concours ? ` data-rq-conc="${esc(p.concours)}"` : ''} title="Chercher les sujets ${esc(cible)} qui travaillent ou emploient ce thème"`}>${esc(T.titre)}${F.total ? ` <small>${nb} ${esc(cible)}</small>` : ''}</button>` : '';
           const ts = nt > nb ? `<button type="button" class="pg-l pg-ann pg-tous" data-rq-ext="${esc(T.titre)}" data-rq-tous title="Chercher ce thème dans tous les sujets de prépa et de l'enseignement (autres filières et concours, sans le baccalauréat)">${fl ? '' : `${esc(T.titre)} `}<small>${nt} en tout</small></button>` : '';
-          return `<span class="pg-annp">${fl}${ts}</span>`; }).join('')}${th.some(t => (F.tout[t] || new Set()).size) ? `<button type="button" class="pg-voir" data-pg-sujets="${esc(th.join(','))}" data-pg-fam="${esc(fam.id)}" data-pg-fil="${esc(fil || '')}" data-pg-conc="${esc(p.concours || '')}" data-pg-cible="${esc(cible)}" aria-expanded="false">Voir les sujets <span aria-hidden="true">▾</span></button>` : ''}</span>`);
+          return `<span class="pg-annp">${fl}${ts}</span>`; }).join('')}</span>`);
         h += `<li class="pg-pt${m ? ' maitrise' : ''}" id="pt-${cle.replace(/[:.]/g, '-')}" data-t="${esc(cleTextePg(`${pt.contenu} ${pt.precisions || ''}`))}"><input type="checkbox" class="pg-coche" data-pg-m="${cle}"${m ? ' checked' : ''} aria-label="Je maîtrise ce point" title="Je maîtrise ce point (retenu dans ce navigateur)"><div class="pg-pc"><div class="pg-contenu">${pt.contenu}${(pt.filieres || []).length ? ` <span class="pg-demo">${esc(pt.filieres.join(', '))} seulement</span>` : ''}${pt.demo ? ` <span class="pg-demo">démonstration ${esc(pt.demo)}</span>` : ''}${av ? ' <span class="pg-venir" title="Le site ne traite pas encore ce point">à venir</span>' : ''}</div>${pt.precisions ? `<div class="pg-prec">${pt.precisions}</div>` : ''}${pt.note ? `<div class="pg-note">${pt.note}</div>` : ''}${liens.length ? `<div class="pg-liens">${liens.join('')}</div><div class="pg-sujets" hidden></div>` : ''}</div></li>`;
       }
       h += `</ul></div>`;
@@ -7198,9 +7204,9 @@ $('#rubrique').addEventListener('click', ev => {
       Object.assign(etatRech, { fam: etatAnn.famille, conc: '', montres: 12 }); if (!(f.filieres || []).includes(etatRech.fil)) etatRech.fil = ''; }
     rafraichirRubrique(); return; }
   const va = t.closest('[data-vue-ann]'); if (va) { etatAnn.vue = va.dataset.vueAnn; rafraichirRubrique(); return; }
-  const pv = t.closest('[data-pg-sujets]'); if (pv) { const z = pv.closest('.pg-pc').querySelector('.pg-sujets'), ouvrir = z.hidden;
-    if (ouvrir && !z.dataset.fait) { z.innerHTML = sujetsPointPg(pv.dataset.pgSujets.split(','), pv.dataset.pgFam, pv.dataset.pgFil, pv.dataset.pgConc, pv.dataset.pgCible); z.dataset.fait = '1'; }
-    z.hidden = !ouvrir; pv.setAttribute('aria-expanded', String(ouvrir)); return; }
+  const pv = t.closest('[data-pg-sujets]'); if (pv) { const pc = pv.closest('.pg-pc'), z = pc.querySelector('.pg-sujets'), cle = pv.dataset.pgSujets, fermer = !z.hidden && z.dataset.cle === cle;
+    if (!fermer && z.dataset.cle !== cle) { z.innerHTML = sujetsPointPg([cle], pv.dataset.pgFam, pv.dataset.pgFil, pv.dataset.pgConc, pv.dataset.pgCible, +pv.dataset.pgNt || 0); z.dataset.cle = cle; }
+    z.hidden = fermer; for (const b of pc.querySelectorAll('[data-pg-sujets]')) b.setAttribute('aria-expanded', String(!fermer && b === pv)); return; }
   const po = t.closest('[data-pg-ouvrir]'); if (po) { etatPg.prog = po.dataset.pgOuvrir; etatPg.filtre = ''; etatAnn.vue = 'programme'; rafraichirRubrique(); const z = $('#pg'); if (z) z.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
   const pp = t.closest('[data-pg-prog]'); if (pp) { etatPg.prog = pp.dataset.pgProg; etatPg.filtre = ''; rafraichirRubrique(); return; }
   if (t.closest('[data-pg-tout]')) { const l = [...document.querySelectorAll('#pg .pg-sec')], ouvrir = !l.every(d => d.open); etatPg.filtre = ''; for (const d of l) { d.hidden = false; d.open = ouvrir; ouvrir ? etatPg.ouverts.add(d.dataset.pgSec) : etatPg.ouverts.delete(d.dataset.pgSec); } rafraichirRubrique(); return; }

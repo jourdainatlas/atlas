@@ -352,13 +352,15 @@ qui porte le thème reconnu en tête (ou l'un de ses thèmes fins), même en sec
 moteur peut encore en montrer davantage (mots-clés). Bouton « Effacer la recherche » : en-tête centré
 verticalement et 10 px d'écart avec le texte d'aide.
 
-**Sujets dépliés sous chaque point (21 nov. 2026, aperçu validé par l'auteur).** Au bout de la ligne Annales d'un
-point, « Voir les sujets » (`pg-voir`, `data-pg-sujets` = thèmes du point, `data-pg-fam`, `-fil`, `-conc`) déplie
-sous le point (`pg-sujets`, rempli au premier clic par `sujetsPointPg`) les 4 sujets de la filière, ou du concours,
-dont une partie porte l'un des thèmes du point ou l'un de leurs thèmes fins, en principal ou en secondaire (mêmes
-sujets que le nombre du bouton). Ordre : sujets où le thème est principal d'abord, du plus récent au plus ancien,
-puis ceux où il n'est que secondaire (marqués « thème secondaire ») ; par sujet, au plus deux parties (les
-principales s'il y en a), lien vers le PDF à la page, « + N parties ». En bas : « N autres sujets : tout voir dans le
-moteur de recherche » (mêmes attributs que les boutons de thème). Limite connue : deux points de mêmes thèmes
-montrent la même liste ; seuls des thèmes plus fins sur les points les distingueraient.
-
+**Sujets dépliés sous chaque point (21 nov. 2026, demande de l'auteur).** Un clic sur la pastille d'un thème
+(« Espaces vectoriels normés 43 MP » : `pg-ann` avec `data-pg-sujets` = le thème, `data-pg-fam`, `-fil`, `-conc`,
+`-cible`, `-nt`) déplie sous le point (`pg-sujets`, `sujetsPointPg`) les 4 sujets de la filière, ou du concours,
+dont une partie porte ce thème ou l'un de ses thèmes fins, en principal ou en secondaire (mêmes sujets que le
+nombre de la pastille) ; un second clic referme, un clic sur l'autre pastille du point remplace la liste ; la
+pastille ouverte est teintée (`aria-expanded`). Ordre : thème principal d'abord, du plus récent au plus ancien,
+puis secondaire (marqué « thème secondaire ») ; par sujet, au plus deux parties (les principales s'il y en a),
+lien vers le PDF à la page. Pied : « N autres sujets MP : tout voir dans le moteur de recherche › » (filière ou
+concours), puis, plus sombre, « M sujets en tout, autres filières et concours compris : tout voir… » (`data-rq-tous`).
+La pastille pointillée « M en tout » mène toujours directement au moteur ; une pastille sans sujet de la filière
+aussi. (Premier essai, remplacé le même soir : un bouton « Voir les sujets » au bout de la ligne.) Limite
+connue : deux points de même thème montrent la même liste.
