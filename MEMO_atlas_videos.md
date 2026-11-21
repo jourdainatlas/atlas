@@ -518,3 +518,12 @@ l'écran, chute sur la figure, jeu, saut vertical vers le jardin) et par `vignet
 `outils.js` : `phase`, `legs`, `fo`, `tx`, `acte`, `axeGradue`. Compter, par film, une heure de travail dont dix
 minutes de rendu ; ne lancer qu'un rendu à la fois quand c'est possible.
 
+
+**Retour du 21 novembre sur « Structures algébriques » (MP), prototype 2.** L'auteur a trouvé que la scène « Le secret
+de la règle de Sunzi » ne disait pas d'où viennent 70, 21 et 15, et que le théorème chinois manquait de clarté. La
+partie 6 passe de douze à seize mesures (`bornes [2, 6, 14, 22, 26, 34, 50]`, 4 min 19 s) : la grille 3 × 5 se termine
+par un exemple (case 8 encadrée, x ≡ 2 [3] et x ≡ 3 [5] ⟺ x ≡ 8 [15]) et par la lecture « système de congruences,
+solution unique modulo 15 » ; une scène nouvelle, « D'où viennent 70, 21 et 15 ? », fabrique chaque nombre (produit des
+deux autres modules, multiplié par l'inverse de son reste : 2 × 35 = 70, facteur en violet ; 21 et 15 n'ont rien à
+corriger) avant le tableau des restes et la combinaison. Règle à retenir : **aucun nombre n'apparaît dans un calcul sans
+que l'écran ait montré d'où il vient**, et une légende ne dit jamais « les trois nombres » sans les nommer.
