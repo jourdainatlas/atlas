@@ -538,5 +538,5 @@ Deux listes de lecture nouvelles sur YouTube : « Maths approfondies » (option 
 et « MP ». **Étape 4 faite le 21 novembre pour cinq vidéos** : adresses YouTube au catalogue (seconde `L_5_WNZpv_Q`,
 première `g9K_QycqVJo`, terminale `dGS9e65GmM0`, Maths expertes `XK-pGgwma_I`, MPSI `_4BsmJaVNFk`), versions allégées
 (16,5 à 20,5 Mo) et vignettes dans `videos-fichiers`, `en_ligne` vrai ; lecteur ouvert et lu pour les cinq sur le site
-construit (clair, sombre, ordinateur, téléphone). Quatorze vidéos sont en ligne. **Restent `ap-01` et `mp-01`**, en
-attente de leurs adresses (listes de lecture « Maths approfondies » et « MP » à créer par l'auteur).
+construit (clair, sombre, ordinateur, téléphone). Quatorze vidéos sont en ligne. Puis, le même soir, `ap-01` (`Jb-iS3IPyT4`) et `mp-01`
+(`0-fJIJZNqTc`), listes de lecture « Maths approfondies » et « MP » créées par l'auteur : **seize vidéos sont en ligne**.
