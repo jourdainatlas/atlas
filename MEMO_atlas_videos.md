@@ -540,3 +540,35 @@ première `g9K_QycqVJo`, terminale `dGS9e65GmM0`, Maths expertes `XK-pGgwma_I`, 
 (16,5 à 20,5 Mo) et vignettes dans `videos-fichiers`, `en_ligne` vrai ; lecteur ouvert et lu pour les cinq sur le site
 construit (clair, sombre, ordinateur, téléphone). Quatorze vidéos sont en ligne. Puis, le même soir, `ap-01` (`Jb-iS3IPyT4`) et `mp-01`
 (`0-fJIJZNqTc`), listes de lecture « Maths approfondies » et « MP » créées par l'auteur : **seize vidéos sont en ligne**.
+
+## 14. Sept prototypes des chapitres 2 (21-22 novembre 2026), en attente du retour de l'auteur
+
+Demandés par l'auteur en un seul lot après la mise en ligne des chapitres 1 (seize vidéos en ligne). Montrés en
+prototype, **ni validés ni inscrits au catalogue**. Tous sont assemblés par `videos/outils/asm.py`.
+
+| Dossier | Chapitre | Durée | Rôle du chien |
+|---|---|---|---|
+| `litteral` | Seconde 2, Calcul littéral (`s-02`, 35 ex.) | 4 min 03 s | il arpente le côté a + b du carré que l'on découpe ; il parcourt la droite graduée en sautant les deux valeurs interdites de Q |
+| `suites-premiere` | Première 2, Notion de suite (`p-02`, 30 ex.) | 4 min 19 s | il avance à pas égaux de 1/2 à partir de 3/4 ; il gravit l'escalier 1 + 2 + … + 6 |
+| `probabilites-terminale` | Terminale 2, Probabilités (`t-02`, 42 ex.) | 4 min 03 s | il suit le chemin S, S, S̄ de l'arbre ; il dépose trois billes dans cinq tasses |
+| `complexes` | Maths expertes 2, Nombres complexes (`me-02`, 37 ex.) | 4 min 03 s | il parcourt la droite des réels (x² reste positif) ; il descend au sommet de la parabole de z² − 4z + 5 |
+| `applications` | Maths approfondies 2, Applications (`ap-02`, 25 ex.) | 4 min 03 s | il parcourt la droite y = 1/2 qui coupe cinq fois la sinusoïde ; il est le x qui parcourt A = [−1 ; 2] pendant que x² décrit [0 ; 4] |
+| `applications-relations` | MPSI 2, Applications et relations binaires (`ma-02`, 48 ex.) | 4 min 07 s | il range quatre objets dans trois tiroirs ; il descend la diagonale du tableau de Cantor |
+| `diagonalisation` | MP 2, Éléments propres et diagonalisation (`mp-02`, 55 ex.) | 4 min 39 s | il est le vecteur unitaire x sur le cercle (Ax aligné à 45° et 135°) ; il parcourt les nombres de Fibonacci |
+
+Propres aux vidéos (tout le reste vient des cours) : Première, v₄ n'est pas calculé (voir plus bas) ; Maths expertes,
+le produit (2 + 3i)(1 − 2i) isolé et (1 + i)³ = −2 + 2i ; Maths approfondies, la droite y = 1/2 (le cours prend y = 1
+et y = 2) ; MPSI, les cinq premières lignes du tableau de Cantor. Le chapitre de Maths expertes ne contient pas le plan
+complexe (chapitre 5) : la vidéo ne le montre pas. Aucune étoile : le cours de MPSI compare les cardinaux finis sans
+axiome du choix (plus petit antécédent pour une numérotation). Le rouge de la figure d'introduction du cours de MP
+(droites propres) est remplacé par le turquoise.
+
+**Relevé dans les PDF des cours, non corrigé (domaine Cours), signalé à l'auteur** : Première ch. 2, exemple des suites
+géométriques, « suite arithmétique de raison 3 » pour une suite géométrique, et v₈ = 3^(7−1)/2 = 729/2 alors que
+vₙ = 3^(n−1)/2 donne v₈ = 3⁷/2 = 2187/2 ; même chapitre, la somme « 1 + 4 + 7 + 10 + 13 + 15 + … + 31 » (16 et non 15).
+
+Outils de ce lot (dans `/home/claude/outils-video/`, hors dépôt, à refaire au besoin) : `pl.sh <dossier> <png> m,b…`
+(planche d'images aux instants L(m, b)), `vues.sh` (la même chose depuis le film fini), `rendu.sh` et `demon.sh` (file
+d'attente : un seul rendu à la fois, les dossiers inscrits dans `/tmp/file-rendus.txt`). Pièges : une partie ne peut pas
+s'appeler `fleche` (fonction de `commun.js`) ; une macro LaTeX suivie d'une lettre demande une espace
+(`\preccurlyeq x`) ; l'assemblage son-image dure deux à trois minutes après la fin du rendu.
