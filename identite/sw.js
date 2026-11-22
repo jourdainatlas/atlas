@@ -4,7 +4,7 @@
 //
 // Stratégie « réseau d'abord » : en ligne, on sert toujours la version publiée (et on en garde une copie) ;
 // hors ligne seulement, on sert la dernière copie gardée. Les PDF (documents/) ne sont jamais mis en cache,
-// pour ne pas remplir le téléphone ; les polices de Google Fonts, immuables, sont servies depuis le cache.
+// pour ne pas remplir le téléphone ; les polices sont servies par le site (dossier polices/), comme le reste.
 const CACHE = 'atlas-__VERSION__';
 // Fichiers à empreinte (…?v=<empreinte>) : leur contenu ne change jamais sous une même adresse. Ils sont
 // gardés dans un cache durable, que les nouvelles versions n'effacent pas, et servis depuis ce cache : une
@@ -78,5 +78,4 @@ self.addEventListener('fetch', ev => {
     if (url.searchParams.has('v')) return ev.respondWith(fixe(req));
     return ev.respondWith(reseauDabord(req));
   }
-  if (url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com') return ev.respondWith(cacheDabord(req));
 });

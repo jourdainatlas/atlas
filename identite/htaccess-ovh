@@ -41,6 +41,20 @@ RewriteRule ^ https://www.atlasjourdain.fr%{REQUEST_URI} [L,R=301]
     Header set Cache-Control "no-cache"
   </FilesMatch>
   Header set X-Content-Type-Options "nosniff"
+  # En-têtes de sécurité (audit du 22 nov. 2026, MEMO_atlas_apropos.md §91).
+  # HTTPS imposé pendant six mois aux navigateurs déjà venus. Pas de « includeSubDomains » : le sous-domaine
+  # atelier.atlasjourdain.fr est une application à part, qui règle ses propres en-têtes.
+  Header always set Strict-Transport-Security "max-age=15552000"
+  # Le site ne s'affiche pas dans un cadre d'un autre site.
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  Header set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+  # Politique de sécurité de contenu : tout vient du site lui-même. Exceptions : la mesure d'audience (envoi du
+  # comptage à atlasjourdain.goatcounter.com) et les bibliothèques scientifiques de l'atelier Python, que Pyodide
+  # télécharge depuis cdn.jsdelivr.net en vérifiant leur empreinte. « unsafe-inline » : la page est un fichier unique
+  # dont scripts et styles sont en ligne. « wasm-unsafe-eval » : Pyodide. Toute nouvelle source extérieure (script,
+  # image, police, requête) doit être ajoutée ici, sinon le navigateur la bloque.
+  Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://atlasjourdain.goatcounter.com; font-src 'self' data: blob:; connect-src 'self' https://atlasjourdain.goatcounter.com https://cdn.jsdelivr.net; worker-src 'self' blob:; media-src 'self' blob:; frame-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'"
 </IfModule>
 
 <IfModule mod_deflate.c>

@@ -174,7 +174,7 @@ body.l-corps { min-height: 100%; margin: 0; display: block; }
     // deux façons tombe sur la même ligne du tableau de bord. Seulement sur le site publié ; pas la page 404.
     const tA = String(ancre || '').split('/')[0];
     const cheminAudience = !ancre || ancre === 'accueil' ? '/' : RUBRIQUES_APPLI.has(tA) ? '/' + ancre : '/edifice/' + String(ancre).replace('.', '/');
-    const audience = indexable ? `<script>if(/(^|\\.)atlasjourdain\\.fr$/.test(location.hostname)){window.goatcounter={path:${JSON.stringify(cheminAudience).replace(/</g, '\\u003c')}};var s=document.createElement('script');s.async=true;s.src='https://gc.zgo.at/count.js';s.dataset.goatcounter='https://atlasjourdain.goatcounter.com/count';document.head.appendChild(s)}</script>\n` : '';
+    const audience = indexable ? `<script>if(/(^|\\.)atlasjourdain\\.fr$/.test(location.hostname)){window.goatcounter={path:${JSON.stringify(cheminAudience).replace(/</g, '\\u003c')}};var s=document.createElement('script');s.async=true;s.src='/compteur.js';s.dataset.goatcounter='https://atlasjourdain.goatcounter.com/count';document.head.appendChild(s)}</script>\n` : '';
     const sortie = fichier ? `site/${fichier}` : `site/${chemin}index.html`;
     if (!fichier) fs.mkdirSync('site/' + chemin, { recursive: true });
     fs.writeFileSync(sortie, `<!doctype html>
@@ -200,9 +200,7 @@ ${imageApercu(chemin, apercu)}
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
 ${THEME}
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<link rel="stylesheet" href="/polices/polices.css">
 <link rel="stylesheet" href="/katex.css?v=${vCss}">
 <link rel="stylesheet" href="/lecture.css?v=${vLecture}">
 ${filLd}${ressLd}

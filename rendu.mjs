@@ -601,6 +601,11 @@ console.log(`Pages de partage : ${nbPartage}`);
 // Icônes et image d'aperçu (fabriquées par identite/fabriquer-icones.mjs).
 for (const f of ['favicon.ico', 'favicon.svg', 'favicon-32.png', 'apple-touch-icon.png', 'icone-192.png', 'icone-512.png', 'icone-masquable-512.png', 'apercu.png', ...[...APERCUS].map(r => `apercu-${r}.png`), 'portrait.jpg', 'site.webmanifest'])
   fs.copyFileSync(`identite/${f}`, `site/${f}`);
+// Polices et script de mesure d'audience servis par le site lui-même (plus de requête vers Google Fonts ni vers
+// gc.zgo.at) : MEMO_atlas_apropos.md §91.
+fs.mkdirSync('site/polices', { recursive: true });
+for (const f of fs.readdirSync('identite/polices')) fs.copyFileSync(`identite/polices/${f}`, `site/polices/${f}`);
+fs.copyFileSync('identite/compteur.js', 'site/compteur.js');
 // Images d'aperçu par page (domaine À propos, §77) : la liste des fiches demandées est écrite pour la fabrique
 // (identite/fabriquer-apercus-pages.mjs), les images déjà fabriquées sont copiées, et la construction dit combien
 // de pages attendent la leur (elles affichent en attendant l'image de leur rubrique).
@@ -727,7 +732,7 @@ for (const f of ['pyodide.mjs', 'pyodide.asm.mjs', 'pyodide.asm.wasm', 'python_s
 // Les têtes d'ancre connues de lecture.mjs doivent aussi rester celles des rubriques du gabarit.
 {
   const sans = [], voir = d => { for (const e of fs.readdirSync(d, { withFileTypes: true })) { const f = `${d}/${e.name}`;
-    if (e.isDirectory()) { if (!/^site\/(pdfjs|python|documents|fonts|apercus)$/.test(f)) voir(f); }
+    if (e.isDirectory()) { if (!/^site\/(pdfjs|python|documents|fonts|polices|apercus)$/.test(f)) voir(f); }
     else if (e.name.endsWith('.html') && f !== 'site/404.html' && f !== 'site/index.html') { const t = fs.readFileSync(f, 'utf8'); if (!t.includes('goatcounter') && !/<script>location\.replace\(/.test(t)) sans.push(f); } } };
   voir('site');
   const rubGabarit = [...(ctxLecture.gabarit.match(/\nconst RUBRIQUES = \{([\s\S]*?)\n\};/)?.[1] || '').matchAll(/^\s*'?([a-z-]+)'?: \{ titre:/gm)].map(m => m[1]).filter(r => r !== 'accueil');

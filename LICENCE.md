@@ -31,8 +31,8 @@ tous droits réservés, sauf autorisation de l'auteur.
 | Composant | Rôle | Licence |
 |---|---|---|
 | [KaTeX](https://katex.org) 0.16.22 | composition des formules ; sa feuille de style et ses polices sont incluses dans la page | MIT, © 2013-2020 Khan Academy et contributeurs ; la mention de licence figure dans la page |
-| Polices Spectral et IBM Plex | typographie, chargées depuis Google Fonts | SIL Open Font License 1.1 |
-| [GoatCounter](https://www.goatcounter.com) | mesure d'audience anonyme, sans cookie ; script `count.js` chargé depuis gc.zgo.at, sur le site publié seulement ; cité ici seulement, pas sur le site (choix de l'auteur) | EUPL 1.2, version légèrement modifiée (logiciel) ; service hébergé gratuit pour un usage non commercial |
+| Polices Spectral et IBM Plex | typographie, servies par le site lui-même (`identite/polices/`, fichiers des paquets @fontsource) | SIL Open Font License 1.1 |
+| [GoatCounter](https://www.goatcounter.com) | mesure d'audience anonyme, sans cookie ; script `count.js` (licence ISC) copié dans `identite/compteur.js` et servi par le site, sur le site publié seulement ; cité ici seulement, pas sur le site (choix de l'auteur) | EUPL 1.2, version légèrement modifiée (logiciel) ; service hébergé gratuit pour un usage non commercial |
 | [PDF.js](https://mozilla.github.io/pdf.js/) 3.11.174 | lecteur des PDF de cours ; copie de `pdfjs-dist` dans `vendor/pdfjs-3.11.174/`, servie par le site | Apache 2.0, © Mozilla et contributeurs (texte dans `vendor/pdfjs-3.11.174/LICENSE`) |
 | NetworkX, PyYAML | utilisés seulement pour construire le site, non distribués | BSD-3-Clause, MIT |
 | [animation-studio](https://github.com/i-afaqrashid/claude-animation-studio) 1.1.0 | moteur de rendu et de synthèse sonore des vidéos, copié dans `videos/presentation/engine/` ; sert seulement à fabriquer les vidéos, n'est pas servi par le site | MIT, © 2026 Afaq Rashid (texte dans `videos/presentation/engine/LICENSE`) |

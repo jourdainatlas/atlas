@@ -9,9 +9,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="author" content="Armand Jourdain">
 <link rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<link rel="stylesheet" href="/polices/polices.css">
 <style>
 /*KATEX*/
 </style>
@@ -7048,7 +7046,7 @@ async function monterPdf(z) {
   try {
     await chargerScript(PDFJS + 'pdf.min.js');
     pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS + 'pdf.worker.min.js';
-    const doc = await pdfjsLib.getDocument(url).promise;
+    const doc = await pdfjsLib.getDocument({ url, isEvalSupported: false }).promise /* CVE-2024-4367 (PDF.js < 4.2.67) : aucune évaluation de code tiré du PDF */;
     const codes = zone.dataset.coursCode ? await coursCode(zone.dataset.coursCode) : null;
     if (!zone.isConnected) return;
     zone.innerHTML = '';
@@ -7702,7 +7700,7 @@ if (/(^|\.)atlasjourdain\.fr$/.test(location.hostname)) {
     }, 1000);
   };
   const sc = document.createElement('script');
-  sc.async = true; sc.src = 'https://gc.zgo.at/count.js'; sc.dataset.goatcounter = AUDIENCE;
+  sc.async = true; sc.src = '/compteur.js'; sc.dataset.goatcounter = AUDIENCE;   // copie du count.js de GoatCounter servie par le site (identite/compteur.js)
   sc.onload = audienceCompter;
   document.head.append(sc);
   addEventListener('hashchange', audienceCompter);
@@ -7745,7 +7743,7 @@ async function vpMonter(url, page) {
   try {
     await chargerScript(PDFJS + 'pdf.min.js');
     pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS + 'pdf.worker.min.js';
-    const doc = await pdfjsLib.getDocument(url).promise;
+    const doc = await pdfjsLib.getDocument({ url, isEvalSupported: false }).promise /* CVE-2024-4367 (PDF.js < 4.2.67) : aucune évaluation de code tiré du PDF */;
     if (!VP.ouvert || VP.url !== url) return;
     zone.innerHTML = ''; num.querySelector('i').textContent = doc.numPages;
     const largeur = Math.min(900, zone.clientWidth - 16), dpr = Math.min(2, devicePixelRatio || 1);

@@ -105,6 +105,14 @@ a poussé entre-temps, un fichier commun réécrit à partir d'une copie périm�
    de lecture écrite avec `page()` (lecture.mjs) l'est d'office : ne pas écrire de page HTML autrement. La
    construction s'arrête sur une ERREUR si une page n'est pas comptée, ou si une rubrique ajoutée à `RUBRIQUES`
    (gabarit) manque dans `RUBRIQUES_APPLI` (lecture.mjs) : l'y ajouter suffit.
+11. **Sources extérieures et politique de sécurité (22 nov. 2026, MEMO_atlas_apropos.md §91) :** le serveur envoie une
+   politique de sécurité de contenu (`identite/htaccess-ovh`) : le navigateur bloque tout script, style, image, police,
+   vidéo, cadre ou requête qui ne vient pas du site lui-même. Seules exceptions : `atlasjourdain.goatcounter.com`
+   (comptage) et `cdn.jsdelivr.net` (bibliothèques de l'atelier Python). Une rubrique qui a besoin d'une autre source
+   extérieure (image hébergée ailleurs, vidéo intégrée, bibliothèque d'un CDN, appel à un service) doit soit copier le
+   fichier dans le dépôt, soit demander à la conversation « À propos – apparence » d'ouvrir la politique ; sinon l'élément
+   fonctionnera en local et pas en ligne. Les liens ordinaires vers d'autres sites ne sont pas concernés. Les polices
+   sont servies par le site (`identite/polices/`), comme le script de comptage (`identite/compteur.js`).
 
 ## 1. Ce qu'est l'atlas
 

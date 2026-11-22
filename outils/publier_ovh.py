@@ -21,10 +21,37 @@ MANIFESTE = '.manifeste-atlas.json'
 FILS = 8
 
 
+EMPREINTES = os.path.join(RACINE, 'outils', 'ovh-empreintes.txt')
+_vu = threading.Event()
+
+
+def verifier_serveur(t):
+    """Authentifie le serveur avant de lui donner le mot de passe : l'empreinte SHA-256 de sa clé publique doit
+    figurer dans outils/ovh-empreintes.txt (une par ligne, « # » pour un commentaire). Une empreinte de clé
+    publique n'est pas un secret. Fichier absent ou vide : l'empreinte est seulement affichée, pour l'y inscrire."""
+    import base64
+    cle = t.get_remote_server_key()
+    emp = 'SHA256:' + base64.b64encode(hashlib.sha256(cle.asbytes()).digest()).decode().rstrip('=')
+    connues = []
+    if os.path.exists(EMPREINTES):
+        connues = [l.split('#')[0].strip() for l in open(EMPREINTES, encoding='utf-8')]
+        connues = [l for l in connues if l]
+    if not connues:
+        if not _vu.is_set():
+            _vu.set()
+            print(f'Clé du serveur ({cle.get_name()}) : {emp} — non vérifiée (outils/ovh-empreintes.txt est vide).', flush=True)
+        return
+    if emp not in connues:
+        t.close()
+        sys.exit(f'Clé du serveur inconnue ({cle.get_name()} {emp}) : rien n\'est envoyé, le mot de passe n\'a pas été transmis. '
+                 'Si OVH a changé la clé de son serveur, vérifier puis ajouter cette empreinte à outils/ovh-empreintes.txt.')
+
+
 def connexion():
     hote, util, mdp = (os.environ[k].strip() for k in ('OVH_HOTE', 'OVH_UTILISATEUR', 'OVH_MOT_DE_PASSE'))
     t = paramiko.Transport((hote, int(os.environ.get('OVH_PORT') or 22)))
     t.start_client(timeout=30)
+    verifier_serveur(t)
     try:
         t.auth_password(util, mdp)
     except paramiko.AuthenticationException:
