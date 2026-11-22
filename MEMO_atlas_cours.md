@@ -1085,3 +1085,16 @@ fichiers `py/`.
 ### 64. Exercices de Licence : un onglet par UE (22 nov. 2026)
 
 Demande de l'auteur. `vueFeuilles` : pour un niveau qui a des UE (vue « Par niveau » et section du niveau dans « Par feuille »), les feuilles sont rangées dans un `<details class="ue ue-exos">` par UE, fermé au départ, avec le code ou le semestre, le titre, « N feuilles · M exercices » et la couleur de l'UE (`couleurUE`) ; les cartes sont écrites par `vueFeuillesCartes`. L'état ouvert est gardé pendant la visite dans `coursUEOuvertes` (clé `exos-<id de l'UE>`, distincte de celle de la rubrique Cours). Les feuilles hors UE suivent les onglets.
+
+
+### 65. Exercices de Licence 3, UE Intégration, feuilles 6 à 9 (22 nov. 2026)
+
+Feuilles `f-l3-in-06` à `f-l3-in-09` : changement de variables (24 exercices, 4 parties), produits de mesures et Fubini
+(25, 3 parties), espaces $L^p$ (22, 4 parties), convolution et régularisation (28, 5 parties), soit 99 exercices et
+22 figures ; l'UE compte désormais 227 exercices. Métadonnées dans `outils/meta_l3_in_06.py` à `09.py` (même schéma que
+les feuilles 1 à 5) ; PDF sous `documents/exercices/l3/integration_chap0N_<slug>_{enonce,corrige}.pdf` avec les slugs
+`changement_variables`, `produits_fubini`, `espaces_lp`, `convolution_regularisation`. Aucun `\input` externe, aucun
+avertissement de conversion ; les sources sortent lisibles telles quelles. Contrôle des mots : aucun mot du site absent
+des PDF (hors coupures). Test de rendu : 198 pages sans débordement ; figures vérifiées en sombre sur téléphone.
+La nouveauté du 22 nov. « Licence 3 : les exercices de l'UE Intégration » a été étendue (neuf feuilles, 227 exercices,
+lien vers la feuille 7) plutôt que doublée. Les 217 avertissements KaTeX « No character metrics » sont les anciens (§ plus haut).
