@@ -1566,6 +1566,7 @@ a.acc-etape:hover { background: var(--trame); }
 details.ue[open] .ue-chevron { transform: rotate(-135deg); margin-top: 4px; }
 details.ue[open] > .ue-tete { border-bottom-left-radius: 10px; }
 .ue-corps { padding: 2px 0 0; }
+.ue-exos .ue-corps > .feuilles { margin-top: 14px; }
 .ue-lien { display: inline-block; margin: 2px 0 8px 18px; font-size: 13.5px; color: var(--accent, inherit); }
 .ue-vide { display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; padding: 10px 14px; opacity: .75; }
 .ue-actions { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 18px; }
@@ -4681,6 +4682,23 @@ function vueFeuilles(E, liste) {
   const ordre = (R.cours?.niveaux || []).map(n => n.id);
   const niveaux = [...new Set(toutes.map(f => f.niveau))].sort((a, b) => ordre.indexOf(a) - ordre.indexOf(b));
   if (!liste && niveaux.length > 1) return niveaux.map(n => `<section class="niveau-exos"><div class="niveau-tete"><h3>${esc(niveauDe(n).titre)}</h3><span>${esc(niveauDe(n).description || '')}</span></div>${vueFeuilles(E, toutes.filter(f => f.niveau === n))}</section>`).join('');
+  // Niveau rangé par UE (Licence) : un onglet repliable par UE, fermé au départ, comme dans la rubrique Cours
+  // (demande de l'auteur, 22 nov. 2026) ; les feuilles hors UE suivent.
+  const uesN = (R.cours?.ues || []).filter(u => niveaux.length === 1 && u.niveau === niveaux[0]);
+  if (uesN.length) {
+    const ueDeF = f => (R.cours?.cours || []).find(x => x.id === f.cours)?.ue;
+    let h = '';
+    for (const u of uesN) {
+      const fs = toutes.filter(f => ueDeF(f) === u.id); if (!fs.length) continue;
+      const lu = (R.cours?.cours || []).filter(c => c.ue === u.id), nb = fs.reduce((t, f) => t + (f.nombre || 0), 0), cle = 'exos-' + u.id;
+      h += `<details class="ue ue-exos" data-ue="${cle}" style="--accent: ${couleurUE(u, lu)}"${coursUEOuvertes.has(cle) ? ' open' : ''}><summary class="ue-tete"><span class="ue-code">${esc(u.code || (u.semestre ? 'S' + u.semestre : ''))}</span><span class="ue-titre">${u.titre}</span><span class="ue-info">${fs.length} ${fs.length > 1 ? 'feuilles' : 'feuille'} · ${nb} exercices</span><span class="ue-chevron" aria-hidden="true"></span></summary><div class="ue-corps">${vueFeuillesCartes(fs)}</div></details>`;
+    }
+    const hors = toutes.filter(f => !uesN.some(u => u.id === ueDeF(f)));
+    return h + (hors.length ? vueFeuillesCartes(hors) : '');
+  }
+  return vueFeuillesCartes(toutes);
+}
+function vueFeuillesCartes(toutes) {
   let h = '<div class="feuilles">';
   const couleurs = ['var(--c-ana)', 'var(--c-nb)', 'var(--c-geo)', 'var(--rouge)'];
   for (const f of toutes) {

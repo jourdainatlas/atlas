@@ -1081,3 +1081,7 @@ script de l'auteur et non transmis. Les segments des étapes K₀ à K₄ (retra
 sont celles de la figure du PDF. À refaire à toute nouvelle version de ce corrigé, ou demander à l'auteur les deux
 fichiers `py/`.
 
+
+### 64. Exercices de Licence : un onglet par UE (22 nov. 2026)
+
+Demande de l'auteur. `vueFeuilles` : pour un niveau qui a des UE (vue « Par niveau » et section du niveau dans « Par feuille »), les feuilles sont rangées dans un `<details class="ue ue-exos">` par UE, fermé au départ, avec le code ou le semestre, le titre, « N feuilles · M exercices » et la couleur de l'UE (`couleurUE`) ; les cartes sont écrites par `vueFeuillesCartes`. L'état ouvert est gardé pendant la visite dans `coursUEOuvertes` (clé `exos-<id de l'UE>`, distincte de celle de la rubrique Cours). Les feuilles hors UE suivent les onglets.
