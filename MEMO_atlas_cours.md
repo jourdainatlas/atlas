@@ -1054,3 +1054,30 @@ La barre du lecteur est collante (`.lecteur > .lecteur-barre`, `position: sticky
 Projection (21 nov., à la demande de l'auteur) : le titre « Exercice N » (`.pj-tete h1`) et les barres de difficulté pleines (`.pj .difficulte i.plein`) prennent le mauve de la projection, `--pj-v`, comme les cartes de la rubrique.
 
 Le même soir, à la demande de l'auteur, le filet mauve est retiré des cartes de feuille (vues « Par feuille » et « Par niveau ») ; il ne reste que sur les cartes d'exercice.
+
+### 63. Exercices de l'UE Intégration, feuilles 1 à 5 (22 nov. 2026)
+
+`f-l3-in-01` à `f-l3-in-05` (35, 16, 25, 30, 22 exercices : 128), `outils/meta_l3_in_01.py` à `05`, PDF
+`documents/exercices/l3/integration_chap0N_<slug>_{enonce,corrige}.pdf`, champ `exercices` des chapitres `l3-in-0N`,
+nouveauté du 22 nov., `exercices_cours.py` relancé pour ces feuilles. 31 figures.
+
+**Sources lisibles** (`tex2exos.source_lisible`). Les commentaires `% Source :` de ces feuilles mêlent références et notes
+de travail. Gardé : la première phrase seulement (les remarques suivantes, « Correction : … », « La question 3 est
+ajoutée. », sont des notes ; une initiale « J. » ne coupe pas). Retiré : les parties « document photographié »,
+« les questions … sont reportées … », « questions … ajoutées », et les parenthèses qui parlent de feuilles, de reports,
+de corrections ou d'ajouts (les parenthèses citées entre guillemets « d) » ne comptent pas). Les noms de fichiers
+deviennent « attribution (nom) » : `TD02_2020.pdf (Lyon 1)` → « Lyon 1 (TD02 2020) », l'attribution donnée une fois
+valant pour les autres mentions du même fichier dans la feuille ; un numéro de fichier seul sans attribution
+(`fic00047.pdf`, `f3.pdf`) est retiré ; un autre nom sans attribution est gardé sans `.pdf` (« M61B TD3 »). La règle du
+19 nov. (toute source commençant par un fichier tenue pour interne) est remplacée par celle-ci. 116 sources affichées
+sur 128 exercices ; les 12 autres n'avaient que des documents photographiés.
+
+**`\DeclareMathOperator*`** : forme étoilée et corps composé lus (`\limsupens` = `\mathop{\overline{\lim}}\limits`).
+
+**Figure du corrigé 2, exercice 9.** Le .tex fait `\input{py/kt.tex}` et `\input{py/kg.tex}`, fichiers produits par un
+script de l'auteur et non transmis. Les segments des étapes K₀ à K₄ (retrait du tiers central ; retrait d'une fraction
+1/(n+1)² de chaque segment) ont été recalculés en fractions exactes et insérés dans une copie du corrigé
+(scratchpad `in/CORRIGE_ch2.tex`) ; les mesures obtenues (0,667 ; 0,444 ; 0,296 ; 0,198 et 0,75 ; 0,667 ; 0,625 ; 0,600)
+sont celles de la figure du PDF. À refaire à toute nouvelle version de ce corrigé, ou demander à l'auteur les deux
+fichiers `py/`.
+

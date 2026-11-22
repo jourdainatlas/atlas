@@ -69,8 +69,12 @@ def lire_macros(pre):
         if pre[i] != '{': continue
         f = accolade(pre, i)
         if nom not in STRUCTURELLES: M[nom] = (n, pre[i+1:f-1])
-    for m in re.finditer(r'\\DeclareMathOperator\{\\([A-Za-z]+)\}\{([^}]*)\}', pre):
-        M[m.group(1)] = (0, r'\mathrm{%s}' % m.group(2))
+    # \DeclareMathOperator{\op}{…} et la forme étoilée (limites dessous), corps éventuellement composé
+    # (\DeclareMathOperator*{\limsupens}{\overline{\lim}} des feuilles d'intégration)
+    for m in re.finditer(r'\\DeclareMathOperator(\*?)\s*\{\\([A-Za-z]+)\}\s*\{', pre):
+        f = accolade(pre, m.end() - 1); corps = pre[m.end():f-1]
+        if re.fullmatch(r'[A-Za-z]+', corps): M[m.group(2)] = (0, (r'\operatorname*{%s}' if m.group(1) else r'\mathrm{%s}') % corps)
+        else: M[m.group(2)] = (0, r'\mathop{%s}%s' % (corps, r'\limits' if m.group(1) else r'\nolimits'))
     M['gui'] = (1, r'«\,#1\,»')            # \guillemotleft inconnu de KaTeX
     return M
 
@@ -634,14 +638,68 @@ def sources(t_brut):
     """Sources indiquées en commentaire juste avant un exercice : « % Source : … » → {numéro: texte} ;
     « % Inspiré de : … » donne « inspiré de … »."""
     r = {}
+    # « TD02_2020.pdf (Lyon 1) » : l'attribution donnée une fois vaut pour les autres mentions du même fichier
+    attrib = {}
+    for m in re.finditer(r'([\w.-]+)\.pdf\s*\(([^()]*)\)', '\n'.join(re.findall(r'%\s*(?:Sources?|Inspiré de)\s*:(.*)', t_brut))):
+        attrib.setdefault(m.group(1), m.group(2).strip())
     tete = r'(?:(?:\\par\s*)?\\needspace\{[^}]*\}\s*)?(?:\\exo(?:orig)?\{|\\noindent\s*\\textbf\{\s*\\underline\{\s*Exercice\s+)(\d+)'
     for m in re.finditer(r'%\s*(Sources?|Inspiré de)\s*:\s*(.*)\n(?:%[^\n]*\n|\s*\n|\\newpage\s*\n)*' + tete, t_brut):
         texte = m.group(2).strip()
         # Les commentaires LaTeX sont souvent écrits sans accents : titre du polycopié rétabli.
         texte = texte.replace('Mathematiques : du lycee aux CPGE', 'Mathématiques : du lycée aux CPGE')
         if source_interne(texte): continue   # exercice composé pour la feuille : rien n'est affiché
+        texte = source_lisible(texte, attrib)
+        if not texte: continue
         r[int(m.group(3))] = texte if m.group(1).startswith('Source') else 'inspiré de ' + texte   # affiché « Source : inspiré de … »
     return r
+
+def _parties(texte, sep=';'):
+    """Découpe au séparateur hors parenthèses."""
+    parts, prof, cour = [], 0, ''
+    for ch in texte:
+        prof += (ch == '(') - (ch == ')')
+        if ch == sep and prof == 0: parts.append(cour); cour = ''
+        else: cour += ch
+    return parts + [cour]
+
+def source_lisible(texte, attrib):
+    """Source telle qu'un lecteur peut s'en servir (feuilles de Licence, nov. 2026) : seule la première phrase, la liste
+    des références, est gardée (les remarques qui suivent, « Correction : … », « La question 3 est ajoutée. », sont des
+    notes de travail) ; les parties qui ne renvoient à rien de consultable (document photographié, exercice composé
+    pour la feuille, « les questions … sont reportées … ») et les parenthèses qui parlent des feuilles sont retirées ;
+    un nom de fichier devient « attribution (nom) » : « TD02_2020.pdf (Lyon 1) » → « Lyon 1 (TD02 2020) »."""
+    prof, fin = 0, len(texte)
+    for i, ch in enumerate(texte):
+        prof += (ch == '(') - (ch == ')')
+        if ch == '.' and prof == 0 and re.match(r'\.\s+[A-ZÉÈÀ«]', texte[i:]) and not re.search(r'(^|[\s(])[A-Z]$', texte[:i]):
+            fin = i; break
+    garde = []
+    for x in _parties(texte[:fin]):
+        x = x.strip().rstrip('.')
+        if not x or re.match(r'(exercice composé pour|promesse de|(les? )?questions?\b|la question\b)', x, re.I) or re.search(r'photographi', x, re.I):
+            continue
+        # parenthèses (même imbriquées) qui parlent des feuilles : notes internes ; les parenthèses citées entre
+        # guillemets (« d) ») ne comptent pas
+        x = re.sub(r'«[^»]*»', lambda m: m.group(0).replace('(', '\x01').replace(')', '\x02'), x)
+        while True:
+            prof, deb, sup = 0, None, None
+            for i, ch in enumerate(x):
+                if ch == '(':
+                    if prof == 0: deb = i
+                    prof += 1
+                elif ch == ')':
+                    prof -= 1
+                    if prof == 0 and deb is not None and re.search(r'feuille|report|corrig|coquille|ajout', x[deb:i]): sup = (deb, i + 1); break
+            if not sup: break
+            x = (x[:sup[0]].rstrip() + x[sup[1]:]).strip()
+        x = x.replace('\x01', '(').replace('\x02', ')')
+        joli = lambda n: n.replace('_', ' ')
+        x = re.sub(r'([\w.-]+)\.pdf\s*\(([^()]*)\)', lambda m: f'{m.group(2).strip()} ({joli(m.group(1))})', x)
+        nu = re.match(r'([\w.-]+)\.pdf\b', x)
+        if nu and nu.group(1) not in attrib and re.fullmatch(r'(fic|f)\d+', nu.group(1)): continue   # numéro de fichier seul
+        x = re.sub(r'([\w.-]+)\.pdf\b', lambda m: f'{attrib[m.group(1)]} ({joli(m.group(1))})' if m.group(1) in attrib else joli(m.group(1)), x)
+        garde.append(x)
+    return ' ; '.join(garde)
 
 def source_interne(texte):
     """Vrai si la source ne renvoie à aucun document extérieur : chaque partie (séparée par « ; » hors
@@ -652,10 +710,10 @@ def source_interne(texte):
         if ch == ';' and prof == 0: parts.append(cour); cour = ''
         else: cour += ch
     parts.append(cour)
-    # Une source qui ne nomme qu'un fichier de travail (« f3.pdf, exercice 2 », « feuille 2 photographiée ») ne
-    # renvoie le lecteur à rien qu'il puisse consulter : elle est traitée comme interne.
+    # Un document photographié ne renvoie le lecteur à rien qu'il puisse consulter ; les noms de fichiers sont
+    # traités par source_lisible (attribution, ou retrait des numéros de fichier sans attribution).
     return all(re.match(r'\s*(exercice composé pour (la|cette) feuille|promesse de (la|cette) feuille'
-                        r'|[\w.-]+\.pdf\b|feuille [^,;]*photographiée)', x, re.I) for x in parts)
+                        r'|feuille [^,;]*photographiée)', x, re.I) for x in parts)
 
 def pages(pdf):
     n = int(re.search(r'Pages:\s+(\d+)', subprocess.run(['pdfinfo', pdf], capture_output=True, text=True, errors='replace').stdout).group(1))
