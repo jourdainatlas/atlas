@@ -1122,3 +1122,6 @@ m-galois) ; nouveaux `ideal` (ch. 2 : l'idéal 2ℤ dans ℤ, pairs en f1 sur la
 (ch. 4 : escalier de l'idéal ⟨X⁴, X²Y, XY³, Y⁵⟩ de la figure du cours, unité 3, générateurs en f1) et `unite` (ch. 8 :
 racines 8-ièmes de l'unité sur le cercle de rayon 8,5, primitives (k impair) en f1). Variantes écartées : `horloge`,
 `blocs`, `newton` (polygone de Newton de (X+1)⁴ + 1), `cyclique`. Générateur : scratchpad `sa/sym.py`.
+**À faire (demande de l'auteur, 23 nov.)** : une fois les feuilles d'exercices de l'UE Structures algébriques versées,
+rappeler à l'auteur d'écrire le prompt pour la conversation Annales (relier les chapitres `l3-sa-01` à `08` et les
+feuilles `f-l3-sa-NN`, ainsi que `l3-in-*` et `f-l3-in-*`, aux programmes des annales).
