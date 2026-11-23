@@ -1125,3 +1125,25 @@ racines 8-ièmes de l'unité sur le cercle de rayon 8,5, primitives (k impair) e
 **À faire (demande de l'auteur, 23 nov.)** : une fois les feuilles d'exercices de l'UE Structures algébriques versées,
 rappeler à l'auteur d'écrire le prompt pour la conversation Annales (relier les chapitres `l3-sa-01` à `08` et les
 feuilles `f-l3-sa-NN`, ainsi que `l3-in-*` et `f-l3-in-*`, aux programmes des annales).
+
+### 67. Exercices de l'UE Structures algébriques (23 nov. 2026)
+
+`f-l3-sa-01` à `f-l3-sa-08` (20, 15, 11, 10, 15, 10, 11, 21 exercices : 113 ; 30 figures), `outils/meta_l3_sa_0N.py`,
+PDF `documents/exercices/l3/structures_algebriques_chap0N_<slug>_{enonce,corrige}.pdf` (slug du fichier reçu ; feuille 8 :
+`corps_finis_cyclotomie`, différent du cours), champ `exercices` des chapitres `l3-sa-0N`, nouveauté du 23 nov.,
+`exercices_cours.py` relancé. Contrôle des mots, rendu (226 pages) et figures en sombre : rien à signaler.
+112 sources affichées (l'exercice 7.5, « promesse du cours », n'en a pas).
+
+Retouches de `tex2exos.py`, sans effet sur les feuilles déjà en ligne tant qu'on ne les reconvertit pas :
+- **Sources sur plusieurs lignes** : une ligne de commentaire suivante continue la source si une parenthèse est restée
+  ouverte, si la précédente finit par « , ; ( » ou si elle commence par une minuscule ou un chiffre ; sinon c'est une
+  note de travail. Les `~` deviennent des espaces fines insécables (« Corps finis »).
+- **Notes retirées** : parenthèses parlant de fusion, d'inventaire ou d'intégration ; citation de l'énoncé d'origine
+  entre parenthèses (`(« … »)`) ; fin « …, démontrés ici car … ».
+- **`\def\R{1.6}` dans une figure** (corrigé 1, deux figures) : renommé comme les variables de `\foreach`, sinon `\R`
+  devient `\mathbb{R}` et pgf échoue (« Unknown function RR »). Les variables après « / » d'un `\foreach` aussi.
+- **`$\boxed{\text{…}}$` long** (plus de 28 caractères visibles) : formule centrée avec sa ponctuation, comme les
+  `\boxed` longs en mode texte ; sans cela, trois exercices de la feuille 8 débordaient sur téléphone.
+
+Rappel en attente (§66) : prompt Annales à écrire maintenant que les feuilles sont en ligne (chapitres `l3-sa-*`,
+feuilles `f-l3-sa-*` et `f-l3-in-*`).
