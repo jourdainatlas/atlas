@@ -1896,6 +1896,7 @@ table.grille button.pli-ann:hover { border-color: var(--encre); }
 .pg-l:hover, .pg-l:focus-visible { border-color: var(--c); background: color-mix(in srgb, var(--c) 15%, var(--surface)); }
 .pg-cours { --c: var(--r-cours); }
 .pg-cours b { font-weight: 600; color: var(--r-cours); white-space: nowrap; }
+.pg-ex .pg-ue { font: 11px var(--f-ui); opacity: .75; }
 .pg-ex { --c: var(--r-exercices); font-family: var(--f-mono); font-size: 12px; }
 .pg-et { color: var(--r-exercices); font-size: 9px; letter-spacing: -1px; }
 .pg-ann { --c: var(--r-annales); }
@@ -5043,17 +5044,24 @@ function frequencePg(famId, fil, conc) {
   return (freqPgCache[cle] = { total: sujets.length, par, tout });
 }
 const cleTextePg = h => normRech(rgTexte(h));
+// Licence 3 : plusieurs UE numérotent leurs chapitres à partir de 1 ; l'UE lève l'ambiguïté (« Licence 3 – Intégration, ch. 4 »,
+// exercice « Int. 4.5 »). Abréviations propres à la vue Programme ; à défaut, le premier mot du titre de l'UE.
+const UE_COURT_PG = { 'l3-s5-cd': 'Calc. diff.', 'l3-s5-int': 'Int.', 'l3-s5-sa': 'Struct. alg.' };
+const UE_MOYEN_PG = { 'l3-s5-cd': 'Calcul différentiel', 'l3-s5-int': 'Intégration', 'l3-s5-sa': 'Structures algébriques' };
+const uePg = id => (R.cours?.ues || []).find(u => u.id === id);
+const ueCourtPg = id => UE_COURT_PG[id] || (uePg(id)?.titre || '').split(' ')[0];
 function lienCoursPg(ref) {
   const [id, r] = String(ref).split(':'), c = (R.cours?.cours || []).find(x => x.id === id); if (!c) return '';
   const i = +r - 1, titre = (c.sommaire || [])[i] || '', pg = (c.sommaire_pages || [])[i];
-  const lieu = `${niveauDe(c.niveau).titre}${c.chapitre ? `, ch. ${c.chapitre}` : ''}`;
+  const lieu = `${niveauDe(c.niveau).titre}${c.ue && uePg(c.ue) ? ` – ${UE_MOYEN_PG[c.ue] || rgTexte(uePg(c.ue).titre)}` : ''}${c.chapitre ? `, ch. ${c.chapitre}` : ''}`;
   return `<a class="pg-l pg-cours" href="#cours/${c.id}"${c.pdf && pg ? ` data-cours-page="${pg}"` : ''} data-retour-pg title="${esc(`${lieu} — ${rgTexte(c.titre)} › ${rgTexte(titre)}${pg ? `, page ${pg}` : ''}`)}"><b>${esc(lieu)}</b> ${titre}</a>`;
 }
 function lienExoPg(id) {
   const E = R.exercices || {}, e = (E.exercices || []).find(x => x.id === id); if (!e) return '';
   const f = (E.feuilles || []).find(x => x.id === e.feuille) || {};
+  const ue = ((R.cours?.cours || []).find(c => c.id === f.cours) || {}).ue;
   const et = e.etoiles ? `<span class="pg-et" aria-label="difficulté ${e.etoiles} sur 4">${'★'.repeat(e.etoiles)}</span>` : '';
-  return `<a class="pg-l pg-ex" href="#exercices/ex/${e.id}" data-retour-pg title="${esc(`${niveauDe(f.niveau).titre}${f.chapitre ? `, ch. ${f.chapitre}` : ''} (${rgTexte(f.titre || '')}) — exercice ${e.numero}${e.partie ? ' : ' + rgTexte(e.partie) : ''}`)}">${f.chapitre ? `${f.chapitre}.` : f.niveau === 'master' ? `${esc(rgTexte(f.titre || '').split(' ').pop())} ` : ''}${e.numero}${et}</a>`;
+  return `<a class="pg-l pg-ex" href="#exercices/ex/${e.id}" data-retour-pg title="${esc(`${niveauDe(f.niveau).titre}${ue && uePg(ue) ? ` – ${rgTexte(uePg(ue).titre)}` : ''}${f.chapitre ? `, ch. ${f.chapitre}` : ''} (${rgTexte(f.titre || '')}) — exercice ${e.numero}${e.partie ? ' : ' + rgTexte(e.partie) : ''}`)}">${ue ? `<span class="pg-ue">${esc(ueCourtPg(ue))}</span> ` : ''}${f.chapitre ? `${f.chapitre}.` : f.niveau === 'master' ? `${esc(rgTexte(f.titre || '').split(' ').pop())} ` : ''}${e.numero}${et}</a>`;
 }
 // sigle d'un programme dans une filière (le programme de MPSI est aussi celui de MP2I : court_filiere)
 const courtPg = (p, fil) => ((p.court_filiere || {})[fil]) || p.court || p.id;
