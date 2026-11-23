@@ -1098,3 +1098,27 @@ avertissement de conversion ; les sources sortent lisibles telles quelles. Contr
 des PDF (hors coupures). Test de rendu : 198 pages sans débordement ; figures vérifiées en sombre sur téléphone.
 La nouveauté du 22 nov. « Licence 3 : les exercices de l'UE Intégration » a été étendue (neuf feuilles, 227 exercices,
 lien vers la feuille 7) plutôt que doublée. Les 217 avertissements KaTeX « No character metrics » sont les anciens (§ plus haut).
+
+
+### 66. Licence 3 : UE Structures algébriques (23 nov. 2026)
+
+UE `l3-s5-sa` (« Structures algébriques », semestre 5, 65 p., sans fiches), chapitres `l3-sa-01` à `l3-sa-08` : groupes,
+anneaux, corps ; idéaux et anneaux quotients ; anneaux factoriels et principaux ; modules, anneaux noethériens,
+théorème de Hilbert ; polynômes (factorialité, irréductibilité) ; polynômes symétriques, résultant, discriminant ;
+extensions de corps ; extensions quadratiques, corps finis, extensions cyclotomiques. PDF
+`documents/cours/l3/structures_algebriques_chapNN_<slug>.pdf` (les PDF reçus `…_apercu.pdf`, renommés), cours complet
+`documents/ue/l3/structures_algebriques_cours_complet.pdf` (fusion pypdf). Titres = titres longs des `\chapter` ;
+sommaires = `\section` (titre long pour le ch. 5, § 3) ; pages relevées sur les titres de taille > 13 pt. Résumés
+rédigés d'après les énoncés numérotés et les bilans des .tex, sans l'introduction historique. Théories : graphes `alg`,
+`gf`, `ac`, `z-polynomes`, `galois`, `galois-cyclotomie`, plus `o-zorn` (ch. 2 et 7), `c-dalembert` (ch. 7) et
+`v-det-matrice` (ch. 6 : l'édifice n'a pas de nœud pour les polynômes symétriques ni le résultant). Prérequis de l'UE
+[ma-11, ma-13, mp-01] ; « À revoir avant » par chapitre dans `cours-prerequis.yaml`. Liens : ma-11, ma-12, ma-13,
+ma-14, ma-17, mp-01, m-galois. Activités : taquin → ch. 1, euclide → ch. 3, racines → ch. 6. Annales : thèmes
+`groupes`, `anneaux`, `corps`, `corps-finis`, `polynomes-cyclotomiques`, `resultant`… Termes exclus : fragments
+(`-algèbres`, `-espace vectoriel`, `-module`, globaux) et, par chapitre, engendre, paires, « groupe symétrique S »,
+« tout élément irréductible est premier », -linéaire, engendré, finie, primitives. Pas de Python.
+Symboles validés le 23 nov. : repris `loi` (ch. 1), `pgcd` (ch. 3), `racines` (ch. 5 et 6), `tour` (ch. 7, comme
+m-galois) ; nouveaux `ideal` (ch. 2 : l'idéal 2ℤ dans ℤ, pairs en f1 sur la droite, impairs en f2), `monomial`
+(ch. 4 : escalier de l'idéal ⟨X⁴, X²Y, XY³, Y⁵⟩ de la figure du cours, unité 3, générateurs en f1) et `unite` (ch. 8 :
+racines 8-ièmes de l'unité sur le cercle de rayon 8,5, primitives (k impair) en f1). Variantes écartées : `horloge`,
+`blocs`, `newton` (polygone de Newton de (X+1)⁴ + 1), `cyclique`. Générateur : scratchpad `sa/sym.py`.
