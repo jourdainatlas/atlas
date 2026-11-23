@@ -23,7 +23,10 @@ def lire(p):
         # alors que \R vaut \mathbb{R}) : le développement des macros les détruirait. On les renomme dans la figure.
         def renommer(m):
             fig = m.group(0)
-            for v in set(re.findall(r'\\foreach\s*\\([A-Za-z]+)', fig)):
+            # même chose pour \foreach \a/\R in … et pour une macro redéfinie localement (\def\R{1.6})
+            noms = set(re.findall(r'\\foreach\s*\\([A-Za-z]+)', fig)) | set(re.findall(r'\\foreach\s*\\[A-Za-z]+\s*/\s*\\([A-Za-z]+)', fig))
+            noms |= set(re.findall(r'\\def\s*\\([A-Za-z]+)', fig))
+            for v in noms:
                 # seules les variables qui sont aussi des macros du préambule ; \x reste \x (variable de plot)
                 if not re.search(r'\\(?:(?:re)?newcommand\*?\s*\{?|def|DeclareMathOperator\*?\s*\{?)\\' + v + r'(?![A-Za-z])', s[:i]): continue
                 fig = re.sub(r'\\' + v + r'(?![A-Za-z])', lambda _: '\\fv' + v, fig)
@@ -401,7 +404,15 @@ class Conv:
                 elif c == '}': d -= 1
                 elif c == '$' and d == 0: break
                 k += 1
-            out.append(t[i:j]); out.append(s.jeton('MI', t[j+1:k])); i = k + 1
+            c = t[j+1:k]
+            # formule en ligne réduite à un \boxed{\text{…}} long (feuilles de Structures algébriques) : la boîte ne se
+            # coupe pas et déborderait sur téléphone ; formule centrée, avec la ponctuation qui suit
+            bx = re.match(r'\s*\\boxed\s*\{', c)
+            if bx and accolade(c, bx.end() - 1) == len(c.rstrip()) and len(re.sub(r'\\[A-Za-z]+|[{}\s]', '', c)) > 28:
+                pm = re.match(r'\s*([.,;:])', t[k+1:])
+                out.append(t[i:j]); out.append(s.jeton('MD', c.strip() + (pm.group(1) if pm else '')))
+                i = k + 1 + (pm.end() if pm else 0); continue
+            out.append(t[i:j]); out.append(s.jeton('MI', c)); i = k + 1
         # \boxed{…} écrit hors de toute formule (amsmath le compose alors comme une formule encadrée) : formule en ligne
         def encadres(x):
             while True:
@@ -645,6 +656,18 @@ def sources(t_brut):
     tete = r'(?:(?:\\par\s*)?\\needspace\{[^}]*\}\s*)?(?:\\exo(?:orig)?\{|\\noindent\s*\\textbf\{\s*\\underline\{\s*Exercice\s+)(\d+)'
     for m in re.finditer(r'%\s*(Sources?|Inspiré de)\s*:\s*(.*)\n(?:%[^\n]*\n|\s*\n|\\newpage\s*\n)*' + tete, t_brut):
         texte = m.group(2).strip()
+        # Source écrite sur plusieurs lignes de commentaire (feuilles de Structures algébriques, nov. 2026) : une ligne
+        # suivante la continue si une parenthèse est restée ouverte, si la ligne précédente finit par « , ; ( » ou si
+        # elle commence par une minuscule ou un chiffre ; sinon c'est une note de travail, qui n'est pas reprise.
+        for l in t_brut[m.end(2):m.start(3)].split('\n')[1:]:
+            l = l.strip()
+            if not l.startswith('%') or re.match(r'%\s*[-=]{4,}', l): break
+            l = l.lstrip('%').strip()
+            if not l: break
+            ouvert = texte.count('(') > texte.count(')')
+            if ouvert or re.search(r'[,;(]$', texte) or re.match(r'[a-zà-ÿ0-9(]', l): texte += ' ' + l
+            else: break
+        texte = texte.replace('~', ' ')
         # Les commentaires LaTeX sont souvent écrits sans accents : titre du polycopié rétabli.
         texte = texte.replace('Mathematiques : du lycee aux CPGE', 'Mathématiques : du lycée aux CPGE')
         if source_interne(texte): continue   # exercice composé pour la feuille : rien n'est affiché
@@ -680,6 +703,8 @@ def source_lisible(texte, attrib):
             continue
         # parenthèses (même imbriquées) qui parlent des feuilles : notes internes ; les parenthèses citées entre
         # guillemets (« d) ») ne comptent pas
+        x = re.sub(r'\s*\(«[^»]*»\)', '', x)   # citation de l'énoncé d'origine entre parenthèses : note
+        x = re.sub(r',\s*démontrés? ici\b.*$', '', x)   # « …, démontrés ici car utilisés … » : note
         x = re.sub(r'«[^»]*»', lambda m: m.group(0).replace('(', '\x01').replace(')', '\x02'), x)
         while True:
             prof, deb, sup = 0, None, None
@@ -689,7 +714,7 @@ def source_lisible(texte, attrib):
                     prof += 1
                 elif ch == ')':
                     prof -= 1
-                    if prof == 0 and deb is not None and re.search(r'feuille|report|corrig|coquille|ajout', x[deb:i]): sup = (deb, i + 1); break
+                    if prof == 0 and deb is not None and re.search(r'feuille|report|corrig|coquille|ajout|fusionn|inventaire|intégr', x[deb:i]): sup = (deb, i + 1); break
             if not sup: break
             x = (x[:sup[0]].rstrip() + x[sup[1]:]).strip()
         x = x.replace('\x01', '(').replace('\x02', ')')
