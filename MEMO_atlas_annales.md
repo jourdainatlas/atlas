@@ -364,3 +364,24 @@ concours), puis, plus sombre, « M sujets en tout, autres filières et concours 
 La pastille pointillée « M en tout » mène toujours directement au moteur ; une pastille sans sujet de la filière
 aussi. (Premier essai, remplacé le même soir : un bouton « Voir les sujets » au bout de la ligne.) Limite
 connue : deux points de même thème montrent la même liste.
+
+**Première actualisation par la veille des cours (23 nov. 2026, demande de la conversation Cours).** Arrivée de
+deux UE de L3 : Structures algébriques (`l3-sa-01` à `08`, 113 exercices) et les 227 exercices d'Intégration
+(`f-l3-in-01` à `09`). Procédure suivie (à reprendre) : catalogue régénéré (`mesoutils/gen_catalogue.py l3`,
+bloc-notes) ; liens actuels exportés par tranche de sections (`mesoutils/exporter_liens.py`) ; consigne
+complémentaire `CONSIGNE_l3nov.md` (repartir des liens relus, priorité aux points « à venir » et sans exercice,
+une section qui démontre passe devant celle qui rappelle, au plus 3 sections, notes devenues fausses
+réécrites) ; trois agents de liaison (algèbre : agrég. externe §1-3, interne §3-4, CAPES ; intégration : agrég.
+externe §7 et §10-11, interne §9-10 et §13 — numéros affichés), trois relectures indépendantes ; report dans
+les YAML par `mesoutils/appliquer_liens.py` (ne touche que les points du lot ; vérifié sans effet sur un
+export inchangé), puis `notes_lisibles.py` et les corrections de grammaire, puis
+`--mettre-a-jour-reference`. Une relecture a découvert que les fichiers d'un agent de liaison étaient restés
+identiques aux liens d'avant (bogue de son script) : elle a rejoué son journal de changements. **Toujours
+comparer `lie/` à `actuel/` avant de relire.** Bilan : agrég. externe « à venir » 32 → 28, sans exercice
+53 → 37 ; agrég. interne 29 → 26 et 53 → 37 ; CAPES : un exercice. Champ `annales_themes` des 17 chapitres
+corrigé dans `cours.yaml` (remplacement ciblé, avec l'accord de la conversation Cours) d'après les deux
+relectures (par ex. `probabilites-discretes` → `borel-cantelli` en l3-in-01, `galois` retiré de l3-sa-07 et
+08, `convolution` ajouté en l3-in-09 ; `analyse-complexe` écarté de l3-in-05, la formule de Cauchy n'y étant
+pas exposée). Affichage : l'UE est nommée dans les liens de L3 (« Licence 3 – Intégration, ch. 4 », exercice
+« Int. 4.5 », table `UE_COURT_PG` / `UE_MOYEN_PG` du gabarit) et dans les notes (`notes_lisibles.py`).
+
