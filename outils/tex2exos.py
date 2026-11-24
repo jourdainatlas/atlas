@@ -408,7 +408,7 @@ class Conv:
             # formule en ligne réduite à un \boxed{\text{…}} long (feuilles de Structures algébriques) : la boîte ne se
             # coupe pas et déborderait sur téléphone ; formule centrée, avec la ponctuation qui suit
             bx = re.match(r'\s*\\boxed\s*\{', c)
-            if bx and accolade(c, bx.end() - 1) == len(c.rstrip()) and len(re.sub(r'\\[A-Za-z]+|[{}\s]', '', c)) > 28:
+            if bx and accolade(c, bx.end() - 1) == len(c.rstrip()) and len(re.sub(r'\\[A-Za-z]+|[{}\s]', '', c)) > 24:
                 pm = re.match(r'\s*([.,;:])', t[k+1:])
                 out.append(t[i:j]); out.append(s.jeton('MD', c.strip() + (pm.group(1) if pm else '')))
                 i = k + 1 + (pm.end() if pm else 0); continue

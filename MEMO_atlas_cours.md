@@ -1200,7 +1200,10 @@ Sources : nouvelles notes de travail retirées par `source_lisible` — parenth�
 en temps libre de lycée de l'auteur (document non consultable) est retiré comme les documents photographiés.
 « TD vecteurs discrets » devient « Annales ESCP-HEC (TD « Vecteurs aléatoires discrets ») », forme donnée par l'auteur
 ailleurs dans la même feuille ; « Bordeaux TD4 ex. 8 » est normalisé. 191 sources affichées (l'exercice 6.12 n'avait
-que le devoir de lycée).
+que le devoir de lycée). Seuil de la règle `$\boxed{…}$` → formule centrée abaissé de 28 à 24 caractères visibles :
+`\boxed{\mathbb{E}[X] = (1 - p)\Big(20 - \frac{20}{3}\Big) = \frac{40(1 - p)}{3}}` (27) débordait de 3 px sur téléphone
+(exercice 4.3) ; six formules de ces feuilles passent en display. Rendu : 384 vues (ordinateur clair, téléphone
+sombre) sans débordement ni erreur KaTeX ; 45 figures vérifiées en sombre. Contrôle des mots : seules des coupures.
 
 **Rappel en attente** : prompt Annales pour les chapitres `l3-pr-*` et les feuilles `f-l3-pr-*` (avec `l3-sa-*`,
 `l3-in-*` si la conversation Annales ne les a pas encore traités).
