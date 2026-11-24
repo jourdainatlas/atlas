@@ -580,3 +580,9 @@ au-dessus et les deux flèches de 4 (orange) au-dessous, pour qu'elles ne se che
 `videos/outils/litteral/scenes.js` ; l'abscisse de chaque terme vient de formules de mesure jamais affichées (`z_…`
 dans `formules-src.mjs` : la largeur d'un préfixe moins la demi-largeur du terme). À reprendre dans tout film où un
 facteur se distribue.
+
+**Retour du 24 novembre sur « Notion de suite » (Première), prototype 2.** À la demande de l'auteur, le résumé range les
+formules par paires : un encadré pour les deux relations de récurrence, un pour les deux formules explicites, un pour
+les deux sommes (entiers, puissances de q) ; dans chaque encadré, l'arithmétique est en haut, la géométrique en bas.
+`bilanCartes` (`outils.js`) accepte désormais un couple d'identifiants à la place d'un seul (`"ids": [["a", "b"], …]`
+dans `conf.json`). À retenir : quand un chapitre met deux familles en parallèle, le résumé les montre côte à côte.

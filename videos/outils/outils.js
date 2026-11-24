@@ -23,7 +23,8 @@
     B.cartes.forEach((tc, i) => { const k = ap(t, tc), cx = x + LC[i] / 2; x += LC[i] + 40; if (k <= 0) return;
       ctx.save(); ctx.globalAlpha *= k; ctx.translate(0, (1 - k) * 24);
       cadre(ctx, cx, 465, LC[i], 370, { fill: C.surface, stroke: C.filet, lw: 2 });
-      formule(ctx, ID[i], cx, 395, { fs: FS[i], mil: 1 });
+      if (Array.isArray(ID[i])) { formule(ctx, ID[i][0], cx, 350, { fs: FS[i], mil: 1 }); formule(ctx, ID[i][1], cx, 462, { fs: FS[i], mil: 1 }); }      // deux formules dans une même carte
+      else formule(ctx, ID[i], cx, 395, { fs: FS[i], mil: 1 });
       txt(ctx, TX[i][0], cx, 560, { size: 26, w: 600 }); txt(ctx, TX[i][1], cx, 600, { size: 25, w: 500, c: C.encre2 });
       ctx.restore(); });
     const kp = ap(t, B.phrase); ligne(ctx, phrase, CX, 745 + (1 - kp) * 20, { size: 50, w: 700, a: kp });

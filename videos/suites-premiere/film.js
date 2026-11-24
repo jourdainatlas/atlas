@@ -83,7 +83,8 @@
     B.cartes.forEach((tc, i) => { const k = ap(t, tc), cx = x + LC[i] / 2; x += LC[i] + 40; if (k <= 0) return;
       ctx.save(); ctx.globalAlpha *= k; ctx.translate(0, (1 - k) * 24);
       cadre(ctx, cx, 465, LC[i], 370, { fill: C.surface, stroke: C.filet, lw: 2 });
-      formule(ctx, ID[i], cx, 395, { fs: FS[i], mil: 1 });
+      if (Array.isArray(ID[i])) { formule(ctx, ID[i][0], cx, 350, { fs: FS[i], mil: 1 }); formule(ctx, ID[i][1], cx, 462, { fs: FS[i], mil: 1 }); }      // deux formules dans une même carte
+      else formule(ctx, ID[i], cx, 395, { fs: FS[i], mil: 1 });
       txt(ctx, TX[i][0], cx, 560, { size: 26, w: 600 }); txt(ctx, TX[i][1], cx, 600, { size: 25, w: 500, c: C.encre2 });
       ctx.restore(); });
     const kp = ap(t, B.phrase); ligne(ctx, phrase, CX, 745 + (1 - kp) * 20, { size: 50, w: 700, a: kp });
@@ -179,7 +180,7 @@
   const ACTES_DEF = () => [acte(3, S.arith, AX.ech, posAr, S.arith.sortie), acte(5, S.sommes, ES.ech, posEsc, S.sommes.sortie)];
   function vignetteFig(ctx) { const s = { ...ES }; Object.assign(ES, { x: 1180, y: 760, u: 78 }); for (let i = 1; i <= 6; i++) for (let j = 0; j < i; j++) bloc(ctx, ES.x + (i - 1) * ES.u, ES.y - (j + 1) * ES.u, ES.u, ES.u, C.bleu, 1); K.chienSur(ctx, ES.x + 5.5 * ES.u, ES.y - 6 * ES.u - 4, 0, 3.4, { t: 0.4, assis: 1, tete: -0.1 }); Object.assign(ES, s); formule(ctx, 'b_s', 520, 720, { fs: 52, mil: 1 }); }
   // ---------- bilan ----------
-  function bilan(ctx, t) { bilanCartes(ctx, t, "Trois formules", ["b_a", "b_g", "b_s"], [44, 44, 36], [500, 500, 620], [["Suite arithmétique :", "on ajoute toujours la raison."], ["Suite géométrique :", "on multiplie toujours par la raison."], ["La somme des entiers", "de 1 à n."]], "Une formule explicite donne {n’importe quel terme}, directement."); }
+  function bilan(ctx, t) { bilanCartes(ctx, t, "Arithmétique, géométrique", [["t_a1", "t_g1"], ["t_a2", "t_g2"], ["b_s", "b_sg"]], [40, 40, 30], [470, 470, 640], [["Les relations de récurrence :", "ajouter r, ou multiplier par q."], ["Les formules explicites,", "à partir du rang 0."], ["Les sommes : celle des entiers,", "celle des puissances de q."]], "Une formule explicite donne {n’importe quel terme}, directement."); }
 
   // ---------- fin : le logo, le titre, le renvoi vers le cours (pas de signature : décision de l'auteur) ----------
   function fin(ctx, t) {
