@@ -1162,3 +1162,26 @@ Demande de l'auteur, dans `python/atelier.js` (vaut pour les exercices, les cour
   `min-height` de 240 px de la console reste le plancher.
 Vérifié avec Playwright : exécution, effacement (bouton et Ctrl+L), tirage des poignées, double-clic, téléphone sans
 débordement.
+
+### 69. Licence 3 : UE Probabilités, premier semestre 6 (24 nov. 2026)
+
+UE `l3-s6-pr` (« Probabilités », semestre 6, 102 p., sans fiches), chapitres `l3-pr-01` à `l3-pr-10` : espaces
+probabilisés ; conditionnement, indépendance ; variables discrètes ; variables réelles et à densité ; vecteurs discrets,
+covariance ; séries génératrices et fonctions caractéristiques ; vecteurs à densité ; convergences ; lois des grands
+nombres et TCL ; vecteurs gaussiens. PDF `documents/cours/l3/probabilites_chapNN_<slug>.pdf` (PDF `…_apercu` reçus,
+renommés), cours complet `documents/ue/l3/probabilites_cours_complet.pdf`. Mêmes conventions qu'aux §59 et §66
+(titres longs, sommaires = `\section`, pages relevées sur les titres > 13 pt, résumés sans introduction historique).
+Théories : graphes `proba`, `fourier` (`fo-caracteristiques`, `fo-loi-esperances`, `fo-tcl`), `mes` (`m-tribus`,
+`m-mesures`, `m-fubini`), `cv-changement`. Prérequis de l'UE [ma-21, mp-14, mp-15] ; « À revoir avant » par chapitre.
+Liens vers mp-07, 08, 09, 12, 14, 15, ma-21 et les chapitres de l'UE Intégration. Activités : anniversaires → ch. 1,
+monty-hall et conditionnelles → ch. 2, binomiale et grands-nombres → ch. 9. Annales : thèmes du domaine `proba`.
+Termes exclus par chapitre : fragments (« mutuellement) indépendantes », « de norme », « degrés de liberté »,
+« dans tous les »), « sachant », « loi » (ch. 6), « pour tout », et les formes abîmées « presque sßr(ement) »,
+« cid:224) … ». Pas de Python.
+Symboles validés le 24 nov. (variantes A) : repris `partition` (ch. 1), `arbre` (ch. 2), `binomiale` (ch. 3),
+`polaires` (ch. 7), `convergence` (ch. 8), `lgn` (ch. 9) ; nouveaux `densite` (ch. 4 : N(0, 1), x ↦ 12 + 3,3x,
+y = 20 − 15 e^{−x²/2}, aire f2 entre −1 et 0,8), `nuage` (ch. 5 : dix points f1 et leur droite des moindres carrés,
+pente −0,67 en coordonnées SVG), `moyennecercle` (ch. 6 : φ(t) = E[e^{itX}] comme barycentre de quatre points du cercle
+de rayon 9, aux angles 15°, 75°, 120°, 160°, barycentre (11,52 ; 6,53)) et `niveaux` (ch. 10 : trois ellipses f3, f2,
+f1 de demi-axes 10 × 5,2, 6,6 × 3,4, 3,2 × 1,65, tournées de 35°). Écartées : venn, esperance, fubini, domine, tcl.
+Générateur : scratchpad `pr/sym.py`.
