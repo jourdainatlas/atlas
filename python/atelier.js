@@ -74,7 +74,22 @@ const CSS = `
 .at-sortie .aide { color: var(--encre); font-family: var(--f-ui); font-size: 13.5px; display: block; margin: 2px 0 4px;
   border-left: 3px solid var(--at-rouge); padding: 2px 8px; background: color-mix(in srgb, var(--at-rouge) 7%, transparent); }
 .at-sortie .ent { color: var(--at-bleu); }
-.at-ligne { display: flex; align-items: baseline; gap: 6px; padding: 2px 10px 8px; font: 13.5px var(--f-mono); }
+.at-ligne { display: flex; align-items: center; gap: 8px; padding: 2px 6px 6px 10px; font: 13.5px var(--f-mono); }
+.at-ligne label { flex: 1; min-width: 0; display: flex; align-items: baseline; gap: 6px; }
+/* Effacer la console : en bas à droite, discret */
+.at-effacer { flex: none; font: 12px var(--f-ui); color: var(--encre-3); background: none; border: 1px solid transparent; border-radius: 5px;
+  padding: 2px 7px; cursor: pointer; }
+.at-effacer:hover { color: var(--encre); border-color: var(--filet); background: var(--surface); }
+.atelier.debogage .at-effacer { visibility: hidden; }
+/* Poignées de hauteur (ordinateur) : on tire le bord bas d'un cadre ; double-clic : hauteur automatique */
+.at-cadre { position: relative; }
+.at-poignee { display: none; }
+@media (hover: hover) and (pointer: fine) {
+  .at-poignee { display: block; position: absolute; left: 0; right: 0; bottom: -6px; height: 11px; cursor: ns-resize; z-index: 3; touch-action: none; }
+  .at-poignee::after { content: ""; position: absolute; left: 50%; top: 4px; width: 36px; height: 3px; margin-left: -18px; border-radius: 2px;
+    background: var(--encre-3); opacity: 0; transition: opacity .15s; }
+  .at-cadre:hover > .at-poignee::after, .at-poignee.tire::after { opacity: .55; }
+}
 .at-ligne span { color: var(--at-bleu); font-weight: 500; }
 .atelier.saisie .at-ligne { background: color-mix(in srgb, var(--at-bleu) 10%, transparent); box-shadow: inset 3px 0 0 var(--at-bleu); }
 .atelier.saisie .at-ligne input::placeholder { color: var(--at-bleu); opacity: .75; }
@@ -189,7 +204,8 @@ class Atelier {
         <div class="at-cadre at-variables"><h4>Variables <small class="at-portee"></small></h4><div class="at-vars"><div class="at-vide">Elles apparaîtront après l'exécution.</div></div></div>
         <div class="at-cadre at-console"><h4>Console <small>(<i>Shell</i>)</small></h4>
           <div class="at-sortie" aria-live="polite"></div>
-          <label class="at-ligne"><span>&gt;&gt;&gt;</span><input type="text" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Instruction pour la console"></label></div>
+          <div class="at-ligne"><label><span>&gt;&gt;&gt;</span><input type="text" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Instruction pour la console"></label>
+          <button type="button" class="at-effacer" title="Effacer la console (Ctrl+L)">Effacer</button></div></div>
       </div>`;
     hote.append(el);
     const $ = (s) => el.querySelector(s);
@@ -215,6 +231,38 @@ class Atelier {
       const p = b.dataset.pas; this.aller(p === 'debut' ? 0 : p === 'fin' ? this.dbg.etapes.length - 1 : this.k + (+p));
     });
     this.entree.addEventListener('keydown', (e) => this.toucheConsole(e));
+    $('.at-effacer').onclick = () => { this.effacer(); this.entree.focus({ preventScroll: true }); };
+    this.poignees();
+  }
+
+  // Hauteur des cadres réglable à la souris : la poignée du bas fixe la hauteur de la partie qui défile (code,
+  // affichage de la console, variables) ; double-clic : retour à la hauteur automatique. Hauteurs gardées dans ce
+  // navigateur, les mêmes pour tous les ateliers.
+  poignees() {
+    const parties = { editeur: '.at-zone', console: '.at-sortie', variables: '.at-vars' };
+    let memo = {}; try { memo = JSON.parse(lire('atlas-atelier-hauteurs') || '{}') || {}; } catch {}
+    const poser = (t, h) => {
+      Object.assign(t.style, h == null ? { height: '', maxHeight: '', flex: '', overflowY: '' }
+        : { height: h + 'px', maxHeight: 'none', flex: '0 0 auto', overflowY: 'auto' });
+    };
+    for (const [nom, sel] of Object.entries(parties)) {
+      const cadre = this.el.querySelector('.at-' + nom), t = cadre.querySelector(sel);
+      if (matchMedia('(hover: hover) and (pointer: fine)').matches && memo[nom]) poser(t, memo[nom]);
+      const p = document.createElement('div'); p.className = 'at-poignee'; p.title = 'Tirer pour changer la hauteur (double-clic : hauteur automatique)';
+      cadre.append(p);
+      p.addEventListener('pointerdown', (e) => {
+        if (e.button !== 0) return;
+        e.preventDefault(); p.setPointerCapture(e.pointerId); p.classList.add('tire');
+        const y0 = e.clientY, h0 = t.getBoundingClientRect().height;
+        const bouge = (ev) => { const h = Math.round(Math.max(60, Math.min(2000, h0 + ev.clientY - y0))); poser(t, h); memo[nom] = h; };
+        const fin = () => {
+          p.classList.remove('tire'); p.removeEventListener('pointermove', bouge); p.removeEventListener('pointerup', fin); p.removeEventListener('pointercancel', fin);
+          ecrire('atlas-atelier-hauteurs', JSON.stringify(memo));
+        };
+        p.addEventListener('pointermove', bouge); p.addEventListener('pointerup', fin); p.addEventListener('pointercancel', fin);
+      });
+      p.addEventListener('dblclick', () => { poser(t, null); delete memo[nom]; ecrire('atlas-atelier-hauteurs', JSON.stringify(memo)); });
+    }
   }
 
   // Charger un autre programme dans le même atelier (exemples du cours) : la console est gardée.
@@ -292,6 +340,11 @@ class Atelier {
     }
     s.scrollTop = s.scrollHeight;
   }
+  effacer() {   // vider la console (bouton « Effacer », Ctrl+L) ; pas pendant le débogage, dont l'affichage y est posé
+    if (this.dbg) return;
+    if (this.rafId) { cancelAnimationFrame(this.rafId); this.rafId = 0; }
+    this.attente = ''; this.sortie.textContent = ''; this.taille = 0;
+  }
   finLigne() { this.poser(); const d = this.sortie.lastChild; if (!d || d.classList?.contains('aide')) return; if (!d.textContent.endsWith('\n')) this.ecrire('\n'); }
   demanderSaisie(invite) {
     // input() : la réponse se tape dans la console, comme dans Thonny.
@@ -309,6 +362,7 @@ class Atelier {
     ok(v);
   }
   async toucheConsole(e) {
+    if (e.key === 'l' && e.ctrlKey && !e.metaKey && !e.altKey) { e.preventDefault(); this.effacer(); return; }
     if (this.attenteSaisie) { if (e.key === 'Enter') { e.preventDefault(); const v = this.entree.value; this.entree.value = ''; this.finSaisie(v); } return; }
     if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
       e.preventDefault(); if (!this.histo.length) return;
