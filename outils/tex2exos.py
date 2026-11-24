@@ -701,6 +701,13 @@ def source_lisible(texte, attrib):
         x = x.strip().rstrip('.')
         if not x or re.match(r'(exercice composé pour|promesse de|(les? )?questions?\b|la question\b)', x, re.I) or re.search(r'photographi', x, re.I):
             continue
+        # notes de travail des feuilles de Probabilités (24 nov.) : renvois internes, devoirs de l'auteur
+        if re.match(r"(V\d+ et V\d+ |l'application finale est|devoir en temps libre)", x, re.I):
+            continue
+        x = re.sub(r',\s*même modèle$', '', x)
+        x = re.sub(r'\s*[:;]\s*la simulation[^()]*', '', x)
+        x = re.sub(r'\bTD vecteurs discrets\b', 'Annales ESCP-HEC (TD « Vecteurs aléatoires discrets »)', x)
+        x = re.sub(r'\bBordeaux TD\s*(\d+) ex\. (\d+)', r'Bordeaux, TD \1, exercice \2', x)
         # parenthèses (même imbriquées) qui parlent des feuilles : notes internes ; les parenthèses citées entre
         # guillemets (« d) ») ne comptent pas
         x = re.sub(r'\s*\(«[^»]*»\)', '', x)   # citation de l'énoncé d'origine entre parenthèses : note
@@ -714,7 +721,7 @@ def source_lisible(texte, attrib):
                     prof += 1
                 elif ch == ')':
                     prof -= 1
-                    if prof == 0 and deb is not None and re.search(r'feuille|report|corrig|coquille|ajout|fusionn|inventaire|intégr', x[deb:i]): sup = (deb, i + 1); break
+                    if prof == 0 and deb is not None and re.search(r'feuille|report|corrig|coquille|ajout|fusionn|inventaire|intégr|gardés?\b|déplac|décision|renvoi|statistique, L3', x[deb:i]): sup = (deb, i + 1); break
             if not sup: break
             x = (x[:sup[0]].rstrip() + x[sup[1]:]).strip()
         x = x.replace('\x01', '(').replace('\x02', ')')

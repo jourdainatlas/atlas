@@ -1185,3 +1185,22 @@ pente −0,67 en coordonnées SVG), `moyennecercle` (ch. 6 : φ(t) = E[e^{itX}] 
 de rayon 9, aux angles 15°, 75°, 120°, 160°, barycentre (11,52 ; 6,53)) et `niveaux` (ch. 10 : trois ellipses f3, f2,
 f1 de demi-axes 10 × 5,2, 6,6 × 3,4, 3,2 × 1,65, tournées de 35°). Écartées : venn, esperance, fubini, domine, tcl.
 Générateur : scratchpad `pr/sym.py`.
+
+### 70. Exercices de l'UE Probabilités (24 nov. 2026)
+
+`f-l3-pr-01` à `f-l3-pr-10` (18, 21, 18, 18, 22, 12, 16, 21, 29, 17 exercices : 192 ; 45 figures), reçus en deux lots,
+`outils/meta_l3_pr_01.py` à `10.py` (nœuds des graphes `proba`, `fourier`, `mes`, `cv-changement`), PDF
+`documents/exercices/l3/probabilites_chapNN_<slug>_{enonce,corrige}.pdf` (slug du fichier reçu, différent de celui du
+cours pour les feuilles 2, 6 et 9), champ `exercices` des chapitres `l3-pr-NN`, nouveauté du 24 nov.,
+`exercices_cours.py` relancé. Aucun avertissement de conversion.
+
+Sources : nouvelles notes de travail retirées par `source_lisible` — parenthèses « (M1, gardé …) », « (déplacé vers… »,
+« (décision du 24/11 …) », « (par renvoi à …) », « (statistique, L3) » ; parties « V9 et V26 sont le même exercice »,
+« l'application finale est à l'exercice 10 », « …, même modèle », « ; la simulation … n'est pas reprise » ; le devoir
+en temps libre de lycée de l'auteur (document non consultable) est retiré comme les documents photographiés.
+« TD vecteurs discrets » devient « Annales ESCP-HEC (TD « Vecteurs aléatoires discrets ») », forme donnée par l'auteur
+ailleurs dans la même feuille ; « Bordeaux TD4 ex. 8 » est normalisé. 191 sources affichées (l'exercice 6.12 n'avait
+que le devoir de lycée).
+
+**Rappel en attente** : prompt Annales pour les chapitres `l3-pr-*` et les feuilles `f-l3-pr-*` (avec `l3-sa-*`,
+`l3-in-*` si la conversation Annales ne les a pas encore traités).

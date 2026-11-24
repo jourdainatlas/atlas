@@ -1,0 +1,522 @@
+- id: "l3-pr-03-01"
+  feuille: "f-l3-pr-03"
+  numero: 1
+  partie: "Lois, espérance, variance"
+  etoiles: 1
+  types: [Calcul]
+  mots_cles: [espérance et variance]
+  noeuds: [p-variables, p-esperance]
+  notions: [variable-aleatoire, esperance, variance]
+  source: "Bordeaux, L3 Probabilités 2015-2016, TD 2, exercice 2 ; Durand (Orsay), exercices 2.22 et 1.37"
+  page_enonce: 1
+  page_corrige: 1
+  enonce: |
+    **1.** Soit $A$ et $B$ deux évènements indépendants, de probabilités $p_{A}$ et $p_{B}$, et $X = \mathbf{1}_{A}$, $Y = \mathbf{1}_{B}$. Déterminer les lois de $X$, $Y$, $XY$ et $X + Y$, et leurs espérances. Les variables $X$ et $Y$ sont-elles indépendantes ?
+
+    **2.** Soit $A$, $B$ deux évènements quelconques et $a$, $b$ deux réels non nuls. Déterminer la loi de $a\mathbf{1}_{A} + b\mathbf{1}_{B}$. Examiner les cas où $A$ et $B$ sont incompatibles, et où ils sont indépendants.
+
+    **3.** Soit $U$ une variable de loi uniforme sur $[0, 1]$ (c'est-à-dire telle que $\mathbb{P}(U \leqslant t) = t$ pour $t \in [0, 1]$) et $c \in \, ]0, 1[$. Quelle est la loi de $\mathbf{1}_{\{U \leqslant c\}}$ ?
+
+    **4.** Une variable aléatoire réelle peut-elle être indépendante d'elle-même ?
+  corrige: |
+    **1.** $X \sim \mathcal{B}(p_{A})$ et $Y \sim \mathcal{B}(p_{B})$, d'espérances $p_{A}$ et $p_{B}$. Comme $XY = \mathbf{1}_{A \cap B}$, $XY \sim \mathcal{B}(p_{A}p_{B})$, d'espérance $p_{A}p_{B}$. La variable $X + Y$ prend les valeurs $0$, $1$, $2$ avec les probabilités 
+    $$(1 - p_{A})(1 - p_{B}), \qquad p_{A} + p_{B} - 2p_{A}p_{B}, \qquad p_{A}p_{B},$$
+     et $\mathbb{E}[X + Y] = p_{A} + p_{B}$. Les variables sont indépendantes : les évènements $\{X = i\}$ et $\{Y = j\}$ sont $A$ ou $\overline{A}$ et $B$ ou $\overline{B}$, indépendants (chapitre 2, prop. 5), et l'on applique le critère discret (cours, prop. 7).
+
+    **2.** La variable $a\mathbf{1}_{A} + b\mathbf{1}_{B}$ prend les valeurs $0$, $a$, $b$, $a + b$ sur les quatre atomes $\overline{A} \cap \overline{B}$, $A \cap \overline{B}$, $\overline{A} \cap B$, $A \cap B$, avec leurs probabilités (en regroupant si $a = b$). Si $A$ et $B$ sont incompatibles, la valeur $a + b$ disparaît : la loi est $\mathbb{P}(A)\delta_{a} + \mathbb{P}(B)\delta_{b} + (1 - \mathbb{P}(A) - \mathbb{P}(B))\delta_{0}$. S'ils sont indépendants, chaque atome a la probabilité produit.
+
+    **3.** $\mathbb{P}(\mathbf{1}_{\{U \leqslant c\}} = 1) = \mathbb{P}(U \leqslant c) = c$ : c'est la loi $\boxed{\mathcal{B}(c)}$. C'est ainsi que l'on simule une variable de Bernoulli à partir d'un générateur uniforme.
+
+    **4.** Si $X$ est indépendante d'elle-même, pour tout réel $t$, $\mathbb{P}(X \leqslant t) = \mathbb{P}(X \leqslant t)^{2}$, donc $F_{X}(t) \in \{0, 1\}$. La fonction $F_{X}$, croissante, de limites $0$ et $1$, saute donc de $0$ à $1$ en un point $c$ : $\boxed{X = c \text{ presque sûrement}}$. Réciproquement, une constante est indépendante de toute variable. C'est la version « variable » de l'exercice 14 de la feuille 2.
+- id: "l3-pr-03-02"
+  feuille: "f-l3-pr-03"
+  numero: 2
+  partie: "Lois, espérance, variance"
+  etoiles: 1
+  types: [Calcul]
+  mots_cles: [espérance et variance]
+  noeuds: [p-variables, p-esperance]
+  notions: [variable-aleatoire, esperance, variance]
+  source: "Durand, exercices 2.28 et 2.46 ; Rubenthaler (Nice, 2021), chapitre 6, exercice 3"
+  page_enonce: 1
+  page_corrige: 1
+  enonce: |
+    **1.** Soit $\Omega$ un ensemble dénombrable muni d'une probabilité $\mathbb{P}$, et $f : \Omega \to E$ une application. Montrer que $Q(x) = \mathbb{P}(f^{-1}(\{x\}))$, $x \in f(\Omega)$, définit une probabilité sur $f(\Omega)$, et calculer $Q(A)$ pour $A \subset f(\Omega)$. Que représente $Q$ quand $\Omega$ est une population munie de la probabilité uniforme, et $f$ la nationalité d'une personne ?
+
+    **2.** On lance deux dés. Déterminer la loi de leur somme $S$, puis calculer $\mathbb{E}[S]$ à partir de cette loi. Retrouver ce résultat sans calcul.
+
+    **3.** Soit $X \sim \mathcal{P}(\theta)$. Pour $u \geqslant 0$, calculer $\mathbb{E}[\mathrm{e}^{-uX}]$, puis $\mathbb{E}\big[\frac{1}{1 + X}\big]$.
+  corrige: |
+    **1.** Les fibres $f^{-1}(\{x\})$, $x \in f(\Omega)$, forment une partition dénombrable de $\Omega$ ; les $Q(x)$ sont positifs, et leur somme vaut $\mathbb{P}(\Omega) = 1$ par $\sigma$-additivité. Pour $A \subset f(\Omega)$, $Q(A) = \sum_{x \in A}Q(x) = \mathbb{P}(f^{-1}(A))$ : $Q$ est la loi image (cours, prop. 1). Si $\Omega$ est une population munie de la loi uniforme et $f$ la nationalité, $Q(x)$ est la proportion de personnes de nationalité $x$ : la loi image est la répartition de la population selon ce caractère.
+
+    **2.** La loi de $S$ est $\mathbb{P}(S = s) = \frac{6 - |s - 7|}{36}$ pour $2 \leqslant s \leqslant 12$, et 
+    $$\mathbb{E}[S] = \frac{2 \cdot 1 + 3 \cdot 2 + 4 \cdot 3 + 5 \cdot 4 + 6 \cdot 5 + 7 \cdot 6 + 8 \cdot 5 + 9 \cdot 4 + 10 \cdot 3 + 11 \cdot 2 + 12 \cdot 1}{36} = \frac{252}{36} = \boxed{7}.$$
+     Sans calcul : par linéarité, $\mathbb{E}[S] = 3{,}5 + 3{,}5 = 7$ ; ou par symétrie, $S$ et $14 - S$ ont la même loi.
+
+    **3.** Par la formule de transfert (cours, th. 2), 
+    $$\mathbb{E}[\mathrm{e}^{-uX}] = \sum_{k \geqslant 0}\mathrm{e}^{-uk}\,\mathrm{e}^{-\theta}\frac{\theta^{k}}{k!} = \mathrm{e}^{-\theta}\mathrm{e}^{\theta\mathrm{e}^{-u}} = \boxed{\exp\big(\theta(\mathrm{e}^{-u} - 1)\big)},$$
+
+    $$\mathbb{E}\Big[\frac{1}{1 + X}\Big] = \sum_{k \geqslant 0}\frac{\mathrm{e}^{-\theta}\theta^{k}}{(k + 1)!} = \frac{\mathrm{e}^{-\theta}}{\theta}\sum_{j \geqslant 1}\frac{\theta^{j}}{j!} = \boxed{\frac{1 - \mathrm{e}^{-\theta}}{\theta}}.$$
+     La première, vue comme fonction de $u$, est la transformée de Laplace de la loi de Poisson ; le chapitre 6 l'étudiera sous la forme de la série génératrice $\mathbb{E}[s^{X}] = \mathrm{e}^{\theta(s - 1)}$.
+- id: "l3-pr-03-03"
+  feuille: "f-l3-pr-03"
+  numero: 3
+  partie: "Lois, espérance, variance"
+  etoiles: 2
+  types: [Calcul]
+  mots_cles: [espérance et variance, loi binomiale]
+  noeuds: [p-variables, p-esperance, pol-binome]
+  notions: [variable-aleatoire, esperance, variance, loi-variable, coefficient-binomial]
+  source: "Durand, exercices 2.32, 2.33 et 2.34"
+  page_enonce: 1
+  page_corrige: 2
+  enonce: |
+    **1.** Sous quelles hypothèses le nombre de garçons d'une famille de $n$ enfants suit-il une loi binomiale ? Vérifier directement que $\sum_{k = 0}^{n}(k - np)^{2}\binom{n}{k}p^{k}(1 - p)^{n - k} = np(1 - p)$.
+
+    **2.** Soit $B \sim \mathcal{B}(n, p)$. Comparer les lois de $B$ et de $n - B$. En étudiant le rapport $\frac{\mathbb{P}(B = k + 1)}{\mathbb{P}(B = k)}$, déterminer les *modes* de $B$, c'est-à-dire les valeurs de probabilité maximale.
+
+    **3.** Déterminer de même les modes de la loi $\mathcal{P}(\lambda)$.
+
+    **4.** Chacun des $100$ individus d'une population est porteur d'un caractère avec la probabilité $0{,}02$, indépendamment des autres. Calculer la probabilité d'avoir $0$, $1$, $2$, $3$, $4$ porteurs, et au moins $5$, et comparer à l'approximation de Poisson du cours.
+
+    **5.** On suppose que le nombre de raisins d'une galette suit une loi de Poisson. Quel nombre moyen de raisins par galette faut-il prévoir pour qu'au moins $98\,\%$ des galettes contiennent au moins un raisin ? Donner une autre situation qui conduit au même calcul.
+  corrige: |
+    **1.** Il faut que les sexes des $n$ enfants soient indépendants et que chacun soit un garçon avec la même probabilité $p$ (chapitre 2, prop. 7). L'identité est $\mathbb{E}[(B - np)^{2}] = \operatorname{Var}(B)$ ; directement, avec $k\binom{n}{k} = n\binom{n - 1}{k - 1}$ et $k(k - 1)\binom{n}{k} = n(n - 1)\binom{n - 2}{k - 2}$, on obtient $\mathbb{E}[B] = np$ et $\mathbb{E}[B(B - 1)] = n(n - 1)p^{2}$, d'où 
+    $$\sum_{k = 0}^{n}(k - np)^{2}\binom{n}{k}p^{k}q^{n - k} = n(n - 1)p^{2} + np - n^{2}p^{2} = np(1 - p).$$
+
+    **2.** $n - B$ compte les échecs : $n - B \sim \mathcal{B}(n, q)$. La loi $\mathcal{B}(n, \frac{1}{2})$ est donc symétrique par rapport à $\frac{n}{2}$. De plus 
+    $$\frac{\mathbb{P}(B = k + 1)}{\mathbb{P}(B = k)} = \frac{n - k}{k + 1} \cdot \frac{p}{q} \geqslant 1 \iff k \leqslant (n + 1)p - 1.$$
+     Les probabilités croissent puis décroissent ; le mode est $\boxed{\lfloor (n + 1)p \rfloor}$, et il y a deux modes, $(n + 1)p - 1$ et $(n + 1)p$, lorsque $(n + 1)p$ est entier.
+
+    **3.** Pour $\mathcal{P}(\lambda)$, le rapport vaut $\frac{\lambda}{k + 1}$ : le mode est $\boxed{\lfloor\lambda\rfloor}$, avec deux modes $\lambda - 1$ et $\lambda$ si $\lambda$ est entier.
+
+    **4.** Le nombre de porteurs suit la loi $\mathcal{B}(100\,;\, 0{,}02)$, que l'on approche par $\mathcal{P}(2)$ (cours, prop. 6) :
+
+    $$\begin{array}{|c|c|c|c|c|c|c|} \hline \text{porteurs} & 0 & 1 & 2 & 3 & 4 & \geqslant 5 \\ \hline \mathcal{B}(100\,;\, 0{,}02) & 0{,}1326 & 0{,}2707 & 0{,}2734 & 0{,}1823 & 0{,}0902 & 0{,}0508 \\ \hline \mathcal{P}(2) & 0{,}1353 & 0{,}2707 & 0{,}2707 & 0{,}1804 & 0{,}0902 & 0{,}0527 \\ \hline \end{array}$$
+
+    1.5em
+
+    ![Figure](documents/figures/7a74f72a945914ea.svg)
+
+    Les deux lois diffèrent de moins de $0{,}003$ en chaque point : avec $n = 100$ et $p = 0{,}02$, l'approximation de Poisson est excellente. Les deux modes $1$ et $2$ de la loi de Poisson ($\lambda = 2$ entier) se retrouvent presque à l'identique dans la binomiale, dont le mode est $\lfloor 101 \times 0{,}02 \rfloor = 2$.
+
+    **5.** Si $N \sim \mathcal{P}(\lambda)$, $\mathbb{P}(N \geqslant 1) = 1 - \mathrm{e}^{-\lambda} \geqslant 0{,}98$ si et seulement si $\lambda \geqslant \ln 50 \approx \boxed{3{,}9}$ raisins par galette. Le même calcul donne, par exemple, le nombre moyen de fautes de frappe par page à partir duquel $98\,\%$ des pages en contiennent au moins une, ou le nombre moyen de clients par minute pour qu'une minute soit presque toujours occupée.
+- id: "l3-pr-03-04"
+  feuille: "f-l3-pr-03"
+  numero: 4
+  partie: "Lois, espérance, variance"
+  etoiles: 2
+  types: [Démonstration, Calcul]
+  mots_cles: [espérance et variance]
+  noeuds: [p-variables, p-esperance]
+  notions: [variable-aleatoire, esperance, variance]
+  source: "Durand, exercice 2.5"
+  page_enonce: 2
+  page_corrige: 3
+  enonce: |
+    Soit $X$ une variable aléatoire réelle. On dit que $m$ est une *médiane* de $X$ si 
+    $$\mathbb{P}(X < m) \leqslant \frac{1}{2} \leqslant \mathbb{P}(X \leqslant m).$$
+
+    **1.** Soit $x_{1} < \cdots < x_{n}$ des réels. Déterminer les médianes de la loi uniforme sur $\{x_{1}, \dots, x_{n}\}$.
+
+    **2.** On suppose $\mathbb{E}[|X|] < +\infty$. Montrer que, si $m$ est une médiane, $\mathbb{E}[|X - a|] \geqslant \mathbb{E}[|X - m|]$ pour tout réel $a$, et que $\mathbb{E}[|X - m|]$ est la même pour toutes les médianes. *On pourra commencer par le cas d'une loi discrète finie.*
+
+    **3.** On suppose $\mathbb{E}[X^{2}] < +\infty$. Montrer que $\mathbb{E}[(X - a)^{2}] \geqslant \operatorname{Var}(X)$ pour tout réel $a$, puis que $\mathbb{E}[|X - m|] \leqslant \sigma(X)$ et $|\mathbb{E}[X] - m| \leqslant \sigma(X)$ pour toute médiane $m$, où $\sigma(X) = \sqrt{\operatorname{Var}(X)}$.
+  corrige: |
+    **1.** Si $n = 2r + 1$ est impair, $\mathbb{P}(X < m) \leqslant \frac{1}{2} \leqslant \mathbb{P}(X \leqslant m)$ impose $m = x_{r + 1}$ : la médiane est unique. Si $n = 2r$ est pair, tout $m \in [x_{r}, x_{r + 1}]$ convient : $\mathbb{P}(X < m) \leqslant \frac{r}{n} = \frac{1}{2} \leqslant \mathbb{P}(X \leqslant m)$. Les médianes forment le segment $[x_{r}, x_{r + 1}]$.
+
+    **2.** Soit $a > m$. Pour tout réel $x$, on vérifie, selon que $x \leqslant m$, $m < x < a$ ou $x \geqslant a$, que 
+    $$|x - a| - |x - m| \geqslant (a - m)\big(\mathbf{1}_{\{x \leqslant m\}} - \mathbf{1}_{\{x > m\}}\big).$$
+     En prenant l'espérance (cours, th. 1), $\mathbb{E}|X - a| - \mathbb{E}|X - m| \geqslant (a - m)(2\mathbb{P}(X \leqslant m) - 1) \geqslant 0$. Le cas $a < m$ est symétrique, avec $\mathbb{P}(X \geqslant m) \geqslant \frac{1}{2}$. Si $m_{1}$ et $m_{2}$ sont deux médianes, l'inégalité appliquée dans les deux sens donne $\mathbb{E}|X - m_{1}| = \mathbb{E}|X - m_{2}|$ : 
+    $$\boxed{\text{la médiane minimise l'écart absolu moyen}}.$$
+
+    **3.** On a $\mathbb{E}[(X - a)^{2}] = \operatorname{Var}(X) + (\mathbb{E}[X] - a)^{2} \geqslant \operatorname{Var}(X)$ : l'espérance minimise l'écart quadratique moyen. Par l'inégalité $\mathbb{E}[Y]^{2} \leqslant \mathbb{E}[Y^{2}]$ (variance positive) appliquée à $Y = |X - \mathbb{E}[X]|$, puis la question 2 avec $a = \mathbb{E}[X]$, 
+    $$\mathbb{E}|X - m| \leqslant \mathbb{E}|X - \mathbb{E}[X]| \leqslant \sqrt{\mathbb{E}[(X - \mathbb{E}[X])^{2}]} = \sigma(X), \quad |\mathbb{E}[X] - m| = |\mathbb{E}[X - m]| \leqslant \mathbb{E}|X - m| \leqslant \sigma(X).$$
+     Ainsi, 
+    $$\boxed{\text{la médiane est à moins d'un écart type de l'espérance}}.$$
+- id: "l3-pr-03-05"
+  feuille: "f-l3-pr-03"
+  numero: 5
+  partie: "Temps d'attente, loi géométrique"
+  etoiles: 2
+  types: [Calcul]
+  mots_cles: [loi géométrique]
+  noeuds: [p-variables, p-independance]
+  notions: [variable-aleatoire, loi-variable]
+  source: "Bordeaux, TD 2, exercice 3 ; Durand, exercices 2.4 (1), 2.21 et 2.25"
+  page_enonce: 2
+  page_corrige: 3
+  enonce: |
+    **1.** Soit $X$ une variable à valeurs dans $\mathbb{N}$. Montrer que $\mathbb{E}[X] = \sum_{j \geqslant 0}\mathbb{P}(X > j)$, dans $[0, +\infty]$.
+
+    **2.** Soit $X$ une variable à valeurs dans $\mathbb{N}^{*}$ qui vérifie l'absence de mémoire : 
+    $$\mathbb{P}(X > k + n \,|\, X > n) = \mathbb{P}(X > k) \quad \text{pour tous } k, n \in \mathbb{N}^{*} \text{ tels que } \mathbb{P}(X > n) > 0.$$
+     On pose $p = \mathbb{P}(X = 1)$. Calculer $\mathbb{P}(X > k)$, puis $\mathbb{P}(X = k)$, et conclure. Que se passe-t-il si $p = 1$ ?
+
+    **3.** Soit $T$ une variable à valeurs dans $\mathbb{N}^{*}$, et, lorsque $\mathbb{P}(T \geqslant n) > 0$, $h(n) = \mathbb{P}(T = n \,|\, T \geqslant n)$ son *taux de défaillance*. Exprimer $\mathbb{P}(T \geqslant n)$ à l'aide de $h(1)$, …, $h(n - 1)$. Déterminer la loi et l'espérance de $T$ si $h$ est constant, égal à $\alpha \in \, ]0, 1[$. Interpréter.
+  corrige: |
+    **1.** $X = \sum_{j \geqslant 0}\mathbf{1}_{\{X > j\}}$, somme de variables positives ; par convergence monotone (ou en intervertissant les sommes de termes positifs, feuille 1, exercice 9), 
+    $$\mathbb{E}[X] = \sum_{k \geqslant 0}k\,\mathbb{P}(X = k) = \sum_{k \geqslant 0}\sum_{j = 0}^{k - 1}\mathbb{P}(X = k) = \sum_{j \geqslant 0}\sum_{k > j}\mathbb{P}(X = k) = \sum_{j \geqslant 0}\mathbb{P}(X > j).$$
+
+    **2.** Avec $n = 1$, $\mathbb{P}(X > k + 1) = \mathbb{P}(X > 1)\mathbb{P}(X > k) = q\,\mathbb{P}(X > k)$ tant que $\mathbb{P}(X > k) > 0$, où $q = 1 - p$ ; par récurrence, $\mathbb{P}(X > k) = q^{k}$, et $\mathbb{P}(X = k) = q^{k - 1} - q^{k} = pq^{k - 1}$ : $\boxed{X \sim \mathcal{G}(p)}$, si $0 < p < 1$. Le cas $p = 0$ est exclu, puisque $\mathbb{P}(X > k) = 1$ pour tout $k$ contredirait $X$ fini. Si $p = 1$, $X = 1$ presque sûrement, et la condition ne porte sur rien ($\mathbb{P}(X > n) = 0$) : c'est la loi géométrique dégénérée.
+
+    **3.** $\mathbb{P}(T \geqslant n + 1) = \mathbb{P}(T \geqslant n)(1 - h(n))$, d'où $\mathbb{P}(T \geqslant n) = \prod_{j = 1}^{n - 1}(1 - h(j))$. Si $h = \alpha$, $\mathbb{P}(T \geqslant n) = (1 - \alpha)^{n - 1}$, et $\boxed{T \sim \mathcal{G}(\alpha)}$, d'espérance $\frac{1}{\alpha}$ (par la question 1 : $\sum_{n \geqslant 1}(1 - \alpha)^{n - 1}$). Un taux de défaillance constant signifie que l'appareil ne s'use pas : sa probabilité de tomber en panne le jour suivant ne dépend pas de son âge. C'est l'absence de mémoire.
+- id: "l3-pr-03-06"
+  feuille: "f-l3-pr-03"
+  numero: 6
+  partie: "Temps d'attente, loi géométrique"
+  etoiles: 2
+  types: [Calcul]
+  mots_cles: [loi géométrique]
+  noeuds: [p-variables, p-independance]
+  notions: [variable-aleatoire, loi-variable]
+  source: "Durand, exercices 2.25 et 2.40"
+  page_enonce: 2
+  page_corrige: 4
+  enonce: |
+    On lance indéfiniment une pièce qui tombe sur pile avec la probabilité $p \in \, ]0, 1[$, les lancers étant indépendants. On note $T_{n}$ le rang du $n$-ième pile.
+
+    **1.** Donner la loi de $T_{1}$, sa fonction de répartition, et celle de $\min(T_{1}, N + 1)$, pour $N \in \mathbb{N}$.
+
+    **2.** Calculer $\mathbb{P}(T_{n} > N)$ et la loi de $T_{n}$. Déterminer $\mathbb{E}[T_{n}]$, en écrivant $T_{n}$ comme une somme de temps d'attente.
+
+    **3.** Déterminer la loi de $X_{N} = \min(T_{n}, N + 1)$ et sa limite quand $N \to +\infty$, à $n$ fixé.
+
+    **4.** Pour la pièce équilibrée, calculer $\mathbb{P}(T_{n} \leqslant 2n)$, et sa valeur pour $n = 1$, $5$, $20$.
+  corrige: |
+    **1.** $T_{1} \sim \mathcal{G}(p)$, $\mathbb{P}(T_{1} \leqslant k) = 1 - q^{k}$ pour $k \in \mathbb{N}$. La variable $\min(T_{1}, N + 1)$ a la même loi que $T_{1}$ sur $\llbracket 1, N \rrbracket$, et la masse $q^{N}$ en $N + 1$ ; sa fonction de répartition coïncide avec celle de $T_{1}$ jusqu'à $N$ et vaut $1$ à partir de $N + 1$.
+
+    **2.** $T_{n} > N$ si et seulement si les $N$ premiers lancers contiennent moins de $n$ piles : 
+    $$\mathbb{P}(T_{n} > N) = \sum_{j = 0}^{n - 1}\binom{N}{j}p^{j}q^{N - j}, \qquad \boxed{\mathbb{P}(T_{n} = k) = \binom{k - 1}{n - 1}p^{n}q^{k - n}}, \quad k \geqslant n,$$
+     car le $k$-ième lancer est un pile et les $k - 1$ précédents en contiennent $n - 1$. En écrivant $T_{n} = T_{1} + (T_{2} - T_{1}) + \cdots + (T_{n} - T_{n - 1})$, chaque terme est un temps d'attente de loi $\mathcal{G}(p)$, et $\boxed{\mathbb{E}[T_{n}] = \frac{n}{p}}$ par linéarité.
+
+    **3.** $X_{N}$ a la loi de $T_{n}$ sur $\llbracket n, N \rrbracket$, et la masse $\mathbb{P}(T_{n} > N)$ en $N + 1$. Quand $N \to +\infty$, $\mathbb{P}(T_{n} > N) \to 0$ (somme finie de termes $\binom{N}{j}q^{N} \to 0$) : la loi de $X_{N}$ tend vers celle de $T_{n}$, et la masse en $N + 1$ s'en va à l'infini.
+
+    **4.** Pour $p = \frac{1}{2}$, $\mathbb{P}(T_{n} \leqslant 2n) = \sum_{k = n}^{2n}\binom{k - 1}{n - 1}2^{-k}$, qui vaut $0{,}75$ pour $n = 1$, $0{,}623$ pour $n = 5$ et $0{,}563$ pour $n = 20$. C'est aussi la probabilité d'avoir au moins $n$ piles en $2n$ lancers, qui tend vers $\frac{1}{2}$ (chapitre 9).
+- id: "l3-pr-03-07"
+  feuille: "f-l3-pr-03"
+  numero: 7
+  partie: "Temps d'attente, loi géométrique"
+  etoiles: 2
+  types: [Calcul]
+  mots_cles: [loi géométrique, variance]
+  noeuds: [p-variables, p-independance, p-esperance]
+  notions: [variable-aleatoire, loi-variable, variance]
+  source: "Bordeaux, TD 2, exercice 4"
+  page_enonce: 3
+  page_corrige: 4
+  enonce: |
+    Un gardien de nuit doit ouvrir une porte avec l'une des $10$ clés de son trousseau, d'allures semblables ; une seule convient, et il les essaie au hasard. Il a deux méthodes : la méthode $A$ consiste à essayer les clés l'une après l'autre, sans réutiliser une clé déjà essayée ; la méthode $B$ consiste à agiter le trousseau avant chaque essai, si bien que la clé essayée a pu l'être déjà.
+
+    **1.** Soit $X_{A}$ le nombre de clés essayées, y compris celle qui convient, par la méthode $A$. Déterminer sa loi.
+
+    **2.** Même question pour le nombre $X_{B}$ de clés essayées par la méthode $B$.
+
+    **3.** Calculer les espérances et les variances de $X_{A}$ et $X_{B}$.
+
+    **4.** Quelle est la probabilité d'essayer plus de $8$ clés par la méthode $A$ ? par la méthode $B$ ?
+
+    **5.** Le gardien utilise la méthode $A$ lorsqu'il est à jeun, et la méthode $B$ lorsqu'il est ivre, ce qui arrive un jour sur trois. Sachant que les $8$ premiers essais ont échoué, quelle est la probabilité qu'il soit ivre ?
+  corrige: |
+    **1.** Par la méthode $A$, l'ordre d'essai des clés est une permutation uniforme, et la bonne clé y occupe une place uniforme : $\boxed{X_{A} \sim \mathcal{U}(\llbracket 1, 10 \rrbracket)}$. On le vérifie par les probabilités composées : $\mathbb{P}(X_{A} = k) = \frac{9}{10} \cdot \frac{8}{9}\cdots\frac{10 - k + 1}{10 - k + 2} \cdot \frac{1}{10 - k + 1} = \frac{1}{10}$.
+
+    **2.** Par la méthode $B$, les essais sont indépendants et réussissent avec la probabilité $\frac{1}{10}$ : $\boxed{X_{B} \sim \mathcal{G}(\frac{1}{10})}$.
+
+    **3.** $\mathbb{E}[X_{A}] = \frac{11}{2}$, $\operatorname{Var}(X_{A}) = \frac{10^{2} - 1}{12} = \frac{33}{4}$ ; $\mathbb{E}[X_{B}] = 10$, $\operatorname{Var}(X_{B}) = \frac{0{,}9}{0{,}01} = 90$ (cours, section 3.6).
+
+    **4.** $\mathbb{P}(X_{A} > 8) = \frac{2}{10} = \boxed{0{,}2}$ et $\mathbb{P}(X_{B} > 8) = 0{,}9^{8} \approx \boxed{0{,}430}$.
+
+    **5.** Par la formule de Bayes, avec $\mathbb{P}(\text{ivre}) = \frac{1}{3}$, 
+    $$\mathbb{P}(\text{ivre} \,|\, X > 8) = \frac{\frac{1}{3} \times 0{,}9^{8}}{\frac{1}{3} \times 0{,}9^{8} + \frac{2}{3} \times 0{,}2} \approx \boxed{0{,}518}.$$
+     Huit échecs font passer la probabilité d'ivresse de $\frac{1}{3}$ à un peu plus de $\frac{1}{2}$.
+
+    1.5em
+
+    ![Figure](documents/figures/5f52959d59f5feb2.svg)
+
+    Les lois du nombre d'essais par les deux méthodes, la seconde tronquée à $20$. La méthode $A$ ne dépasse jamais $10$ essais ; la méthode $B$ commence avec la même probabilité $\frac{1}{10}$ de réussir au premier essai, mais sa loi décroît lentement, d'où une espérance double.
+- id: "l3-pr-03-08"
+  feuille: "f-l3-pr-03"
+  numero: 8
+  partie: "Temps d'attente, loi géométrique"
+  etoiles: 2
+  types: [Calcul]
+  mots_cles: [loi géométrique, variance]
+  noeuds: [p-variables, p-independance, p-esperance]
+  notions: [variable-aleatoire, loi-variable, variance]
+  source: "Durand, exercices 2.2 et 2.20"
+  page_enonce: 3
+  page_corrige: 5
+  enonce: |
+    **1.** Jean et Luc lancent chacun une pièce qui tombe sur face avec la probabilité $p \in \, ]0, 1[$, jusqu'à obtenir face. Soit $X$ et $Y$ les nombres de piles obtenus par Jean et par Luc avant leur premier face. Déterminer les lois de $X$ et $Y$, la probabilité qu'ils obtiennent face après le même nombre de lancers, puis les lois de $X + Y$ et de $\min(X, Y)$.
+
+    **2.** Soit $X \sim \mathcal{G}(p)$ et $Y = \frac{1}{X}$. Déterminer la loi de $Y$ et calculer $\mathbb{E}[Y]$.
+
+    **3.** Soit $X_{1}$, …, $X_{n}$ indépendantes de loi $\mathcal{G}(p)$ et $S_{n} = X_{1} + \cdots + X_{n}$. Calculer l'espérance, la variance et la loi de $S_{n}$. Pour $n \geqslant 2$ et $1 \leqslant m \leqslant k - n + 1$, calculer $\mathbb{P}(X_{1} = m \,|\, S_{n} = k)$. Que remarque-t-on pour $n = 2$ ?
+  corrige: |
+    **1.** $\mathbb{P}(X = k) = q^{k}p$ pour $k \in \mathbb{N}$ : $X + 1 \sim \mathcal{G}(p)$, et de même pour $Y$. Ils obtiennent face au même lancer si $X = Y$ : 
+    $$\mathbb{P}(X = Y) = \sum_{k \geqslant 0}p^{2}q^{2k} = \frac{p^{2}}{1 - q^{2}} = \boxed{\frac{p}{2 - p}}.$$
+     Par indépendance, 
+    $$\mathbb{P}(X + Y = s) = \sum_{k = 0}^{s}pq^{k}\,pq^{s - k} = \boxed{(s + 1)p^{2}q^{s}}, \qquad \mathbb{P}(\min(X, Y) \geqslant k) = \mathbb{P}(X \geqslant k)\mathbb{P}(Y \geqslant k) = q^{2k},$$
+     et $\min(X, Y) + 1 \sim \boxed{\mathcal{G}(1 - q^{2})}$. Le minimum est le nombre de doubles lancers ratés avant qu'au moins l'un des deux obtienne face.
+
+    **2.** $Y$ prend les valeurs $\frac{1}{k}$, $k \in \mathbb{N}^{*}$, avec les probabilités $pq^{k - 1}$, et 
+    $$\mathbb{E}[Y] = \sum_{k \geqslant 1}\frac{pq^{k - 1}}{k} = \frac{p}{q}\sum_{k \geqslant 1}\frac{q^{k}}{k} = \boxed{\frac{-p\ln p}{1 - p}}.$$
+     Par exemple, $\mathbb{E}[Y] = \ln 2 \approx 0{,}69$ pour $p = \frac{1}{2}$, alors que $\frac{1}{\mathbb{E}[X]} = \frac{1}{2}$ : l'espérance de l'inverse n'est pas l'inverse de l'espérance.
+
+    **3.** Par linéarité et par le th. 4 du cours, $\mathbb{E}[S_{n}] = \frac{n}{p}$ et $\operatorname{Var}(S_{n}) = \frac{nq}{p^{2}}$ ; de plus, $S_{n}$ a la loi de $T_{n}$ (exercice 6) : $\mathbb{P}(S_{n} = k) = \binom{k - 1}{n - 1}p^{n}q^{k - n}$, $k \geqslant n$. Par indépendance de $X_{1}$ et de $X_{2} + \cdots + X_{n}$, qui a la même loi que $S_{n - 1}$, 
+    $$\mathbb{P}(X_{1} = m \,|\, S_{n} = k) = \frac{pq^{m - 1}\binom{k - m - 1}{n - 2}p^{n - 1}q^{k - m - n + 1}}{\binom{k - 1}{n - 1}p^{n}q^{k - n}} = \boxed{\frac{\binom{k - m - 1}{n - 2}}{\binom{k - 1}{n - 1}}}.$$
+     Le résultat ne dépend pas de $p$. Pour $n = 2$, il vaut $\frac{1}{k - 1}$ : sachant que le deuxième succès a lieu au rang $k$, le premier est uniforme sur $\llbracket 1, k - 1 \rrbracket$. Pour $n = 1$, $X_{1} = S_{1}$ et la question est sans objet.
+- id: "l3-pr-03-09"
+  feuille: "f-l3-pr-03"
+  numero: 9
+  partie: "Temps d'attente, loi géométrique"
+  etoiles: 2
+  types: [Calcul]
+  mots_cles: [loi géométrique]
+  noeuds: [p-variables, p-independance]
+  notions: [variable-aleatoire, loi-variable]
+  source: "Durand, exercice 2.42 ; Annales ESCP-HEC (TD « Vecteurs aléatoires discrets »), exercice 29 (QSP HEC 2017)"
+  page_enonce: 3
+  page_corrige: 6
+  enonce: |
+    **1.** Soit $G_{1}$, …, $G_{d}$ des variables indépendantes, avec $\mathbb{P}(G_{i} = k) = (1 - r_{i})r_{i}^{k - 1}$ pour $k \geqslant 1$, où $0 \leqslant r_{i} < 1$. Déterminer la loi de $\min(G_{1}, \dots, G_{d})$. Reprendre la question pour les variables censurées $\min(G_{i} - 1, N)$, à valeurs dans $\{0, \dots, N\}$.
+
+    **2.** Soit $(X_{n})_{n \geqslant 1}$ des variables indépendantes, $X_{n}$ de loi $\mathcal{G}(p_{n})$, et $Z_{n} = \min(X_{1}, \dots, X_{n})$. Calculer $\mathbb{P}(Z_{n} \geqslant k)$ et la loi de $Z_{n}$. On suppose $p_{n} = \frac{1}{(n + 1)^{2}}$ ; calculer $\lim_{n}\mathbb{P}(Z_{n} = k)$ pour $k \in \mathbb{N}^{*}$. *On pourra utiliser $\prod_{j = 2}^{n + 1}\big(1 - \frac{1}{j^{2}}\big) = \frac{n + 2}{2(n + 1)}$, à démontrer.*
+  corrige: |
+    **1.** $\mathbb{P}(G_{i} \geqslant k) = r_{i}^{k - 1}$, et par indépendance $\mathbb{P}(\min G_{i} \geqslant k) = (r_{1}\cdots r_{d})^{k - 1}$ : le minimum suit la loi géométrique de paramètre $\boxed{1 - r_{1}\cdots r_{d}}$. Pour les variables censurées, $\mathbb{P}(\min(G_{i} - 1, N) \geqslant k) = r_{i}^{k}$ pour $0 \leqslant k \leqslant N$, et le minimum vérifie $\mathbb{P}(\min \geqslant k) = (r_{1}\cdots r_{d})^{k}$ pour $k \leqslant N$ : c'est la loi géométrique sur $\mathbb{N}$ de paramètre $1 - r_{1}\cdots r_{d}$, censurée en $N$.
+
+    **2.** $\mathbb{P}(Z_{n} \geqslant k) = \prod_{j = 1}^{n}(1 - p_{j})^{k - 1} = \rho_{n}^{k - 1}$ avec $\rho_{n} = \prod_{j}(1 - p_{j})$ : $Z_{n} \sim \mathcal{G}(1 - \rho_{n})$. Pour $p_{j} = \frac{1}{(j + 1)^{2}}$, $1 - \frac{1}{i^{2}} = \frac{(i - 1)(i + 1)}{i^{2}}$, et le produit télescope : 
+    $$\rho_{n} = \prod_{i = 2}^{n + 1}\frac{i - 1}{i} \cdot \prod_{i = 2}^{n + 1}\frac{i + 1}{i} = \frac{1}{n + 1} \cdot \frac{n + 2}{2} \xrightarrow[n \to +\infty]{} \frac{1}{2},$$
+     donc $\boxed{\mathbb{P}(Z_{n} = k) \to \frac{1}{2^{k}}}$ : la loi limite est $\mathcal{G}(\frac{1}{2})$. Bien que chaque $X_{n}$ ait une espérance $(n + 1)^{2}$ de plus en plus grande, le minimum reste petit, à cause des premiers termes.
+- id: "l3-pr-03-10"
+  feuille: "f-l3-pr-03"
+  numero: 10
+  partie: "Temps d'attente, loi géométrique"
+  etoiles: 1
+  types: [Démonstration, Calcul]
+  mots_cles: [loi géométrique]
+  noeuds: [p-variables, p-independance]
+  notions: [variable-aleatoire, loi-variable]
+  source: "Durand, exercice 3.12 (1)"
+  page_enonce: 3
+  page_corrige: 6
+  enonce: |
+    *(Paradoxe de Saint-Pétersbourg.)* Un croupier lance une pièce jusqu'à obtenir face ; si face apparaît pour la première fois au $j$-ième lancer, il donne $2^{j}$ euros au joueur.
+
+    **1.** Déterminer la loi du gain $X$ et montrer que $\mathbb{E}[X] = +\infty$. Quel droit d'entrée est-il « équitable » de demander au joueur ?
+
+    **2.** Le casino ne peut pas payer plus de $2^{M}$ euros : le gain devient $\min(X, 2^{M})$. Calculer son espérance, et sa valeur pour une banque de $2^{30}$ euros, soit environ un milliard. Commenter.
+  corrige: |
+    **1.** $\mathbb{P}(X = 2^{j}) = 2^{-j}$, $j \in \mathbb{N}^{*}$, et $\mathbb{E}[X] = \sum_{j}2^{j}2^{-j} = \sum_{j}1 = +\infty$. Aucun droit d'entrée fini n'est « équitable » au sens de l'espérance : le joueur devrait accepter de payer n'importe quelle somme. Pourtant, personne ne paierait cent euros : c'est le paradoxe que Daniel Bernoulli résolvait par l'utilité.
+
+    **2.** $\mathbb{E}[\min(X, 2^{M})] = \sum_{j = 1}^{M}2^{j}2^{-j} + 2^{M}\mathbb{P}(X > 2^{M}) = M + 2^{M}2^{-M} = \boxed{M + 1}$. Pour une banque de $2^{30}$ euros, l'espérance n'est que de $31$ euros : l'espérance infinie vient de gains astronomiques et très improbables, qu'aucun casino ne peut payer. La feuille 9 montrera que le gain moyen de $n$ parties croît comme $\log_{2}n$.
+- id: "l3-pr-03-11"
+  feuille: "f-l3-pr-03"
+  numero: 11
+  partie: "Plusieurs variables, indépendance"
+  etoiles: 1
+  types: [Calcul]
+  mots_cles: [variables indépendantes]
+  noeuds: [p-independance, p-variables]
+  notions: [independance, variable-aleatoire]
+  source: "Bordeaux, TD 2, exercice 6"
+  page_enonce: 4
+  page_corrige: 6
+  enonce: |
+    Une urne contient $n \geqslant 2$ boules numérotées de $1$ à $n$. On tire successivement deux boules avec remise ; on note $X$ et $Y$ leurs numéros, et $Z = \min(X, Y)$.
+
+    **1.** Déterminer la loi de $T = (-1)^{X}$.
+
+    **2.** Calculer $\mathbb{P}(Z \geqslant k)$ pour $k \in \llbracket 1, n \rrbracket$, et en déduire la loi de $Z$ et son espérance.
+
+    **3.** Calculer $\mathbb{P}(X - Y = -2)$, puis la loi de $X - Y$.
+  corrige: |
+    On prend $\Omega = \llbracket 1, n \rrbracket^{2}$, uniforme : $X$ et $Y$ sont indépendantes, de loi $\mathcal{U}(\llbracket 1, n \rrbracket)$.
+
+    **1.** $T$ vaut $1$ si $X$ est pair : $\mathbb{P}(T = 1) = \frac{\lfloor n/2 \rfloor}{n}$ et $\mathbb{P}(T = -1) = \frac{\lceil n/2 \rceil}{n}$. Pour $n$ pair, $T$ suit la loi uniforme sur $\{-1, 1\}$ (loi de Rademacher).
+
+    **2.** $\mathbb{P}(Z \geqslant k) = \mathbb{P}(X \geqslant k)\mathbb{P}(Y \geqslant k) = \Big(\frac{n - k + 1}{n}\Big)^{2}$, d'où 
+    $$\mathbb{P}(Z = k) = \frac{(n - k + 1)^{2} - (n - k)^{2}}{n^{2}} = \boxed{\frac{2(n - k) + 1}{n^{2}}},$$
+
+    $$\mathbb{E}[Z] = \sum_{k = 1}^{n}\mathbb{P}(Z \geqslant k) = \frac{1}{n^{2}}\sum_{j = 1}^{n}j^{2} = \frac{(n + 1)(2n + 1)}{6n},$$
+     par l'exercice 5. Pour un dé ($n = 6$), le plus petit de deux résultats vaut en moyenne $\frac{91}{36} \approx 2{,}53$.
+
+    **3.** $X - Y = -2$ pour les couples $(i, i + 2)$, $1 \leqslant i \leqslant n - 2$ : $\boxed{\mathbb{P}(X - Y = -2) = \frac{n - 2}{n^{2}}}$. De même, $\mathbb{P}(X - Y = d) = \frac{n - |d|}{n^{2}}$ pour $|d| \leqslant n - 1$ : loi « triangulaire ».
+- id: "l3-pr-03-12"
+  feuille: "f-l3-pr-03"
+  numero: 12
+  partie: "Plusieurs variables, indépendance"
+  etoiles: 2
+  types: [Démonstration, Calcul]
+  mots_cles: [variables indépendantes]
+  noeuds: [p-independance, p-variables, pol-binome]
+  notions: [independance, variable-aleatoire, coefficient-binomial]
+  source: "Bordeaux, DS du 16/03/2016, exercice 2 ; Annales ESCP-HEC (TD « Vecteurs aléatoires discrets »), exercice 6 ; Durand, exercice 2.23"
+  page_enonce: 4
+  page_corrige: 7
+  enonce: |
+    **1.** En séparant $\llbracket 1, 2n \rrbracket$ en deux parties, justifier en une phrase l'identité $\binom{2n}{n} = \sum_{k = 0}^{n}\binom{n}{k}\binom{n}{n - k}$.
+
+    **2.** Deux joueurs lancent chacun $n$ fois une pièce équilibrée ; $X$ et $Y$ sont leurs nombres de piles. Quelle est la loi de $X$ ? Calculer $\mathbb{P}(X = Y)$, puis la loi de $X - Y$. Donner un équivalent de $\mathbb{P}(X = Y)$ quand $n \to +\infty$ (on admettra la formule de Stirling).
+
+    **3.** Soit $X \sim \mathcal{B}(n, \frac{1}{2})$ et $Y \sim \mathcal{B}(m, \frac{1}{2})$ indépendantes. Rappeler la loi de $X + Y$, puis calculer $\mathbb{P}(X = Y)$ et $\mathbb{P}(X \neq Y)$. *On pourra remarquer que $m - Y$ a la même loi que $Y$.*
+  corrige: |
+    **1.** Choisir $n$ éléments parmi $2n$, c'est en choisir $k$ dans la première moitié et $n - k$ dans la seconde, pour un certain $k$.
+
+    **2.** $X$ et $Y$ suivent la loi $\mathcal{B}(n, \frac{1}{2})$ et sont indépendantes. Par la question 1, 
+    $$\mathbb{P}(X = Y) = \sum_{k = 0}^{n}\binom{n}{k}^{2}4^{-n} = \boxed{\binom{2n}{n}4^{-n}}.$$
+     La variable $n - Y$ a la même loi que $Y$ et est indépendante de $X$, donc $X + (n - Y) \sim \mathcal{B}(2n, \frac{1}{2})$ (somme de $2n$ lancers), et $\mathbb{P}(X - Y = d) = \mathbb{P}(X + n - Y = n + d) = \binom{2n}{n + d}4^{-n}$. Par la formule de Stirling, $\binom{2n}{n} \sim \frac{4^{n}}{\sqrt{\pi n}}$, d'où $\boxed{\mathbb{P}(X = Y) \sim \frac{1}{\sqrt{\pi n}}}$ : $0{,}246$ pour $n = 5$ (équivalent $0{,}252$), $0{,}080$ pour $n = 50$.
+
+    **3.** $X + Y \sim \mathcal{B}(n + m, \frac{1}{2})$, et $m - Y$ a la loi de $Y$, indépendante de $X$ : $X + (m - Y) \sim \mathcal{B}(n + m, \frac{1}{2})$, et 
+    $$\boxed{\mathbb{P}(X = Y) = \mathbb{P}(X + m - Y = m) = \binom{n + m}{m}2^{-(n + m)}}, \qquad \mathbb{P}(X \neq Y) = 1 - \binom{n + m}{m}2^{-(n + m)}.$$
+- id: "l3-pr-03-13"
+  feuille: "f-l3-pr-03"
+  numero: 13
+  partie: "Plusieurs variables, indépendance"
+  etoiles: 2
+  types: [Démonstration, Calcul]
+  mots_cles: [variables indépendantes]
+  noeuds: [p-independance, p-variables, pol-binome]
+  notions: [independance, variable-aleatoire, coefficient-binomial]
+  source: "Durand, exercice 2.36 ; Annales ESCP-HEC (TD « Vecteurs aléatoires discrets »), exercice 24"
+  page_enonce: 4
+  page_corrige: 7
+  enonce: |
+    **1.** On tire $n \geqslant 1$ fois, avec remise, un jeton parmi $N$ jetons numérotés de $1$ à $N$. Décrire le modèle, calculer la probabilité que tous les numéros tirés soient au plus égaux à $k$, et en déduire la fonction de répartition et la loi du maximum $M$. Quels sont ses modes ? Quel nombre minimal de tirages assure $\mathbb{P}(M > N/2) > p$, pour $p \in \, ]0, 1[$ donné ?
+
+    **2.** On lance deux dés. Donner la loi du maximum. Le minimum et le maximum sont-ils indépendants ?
+
+    **3.** On tire maintenant $n$ boules simultanément dans une urne de $m \geqslant n \geqslant 2$ boules numérotées de $1$ à $m$ ; $I_{n}$ et $S_{n}$ sont le plus petit et le plus grand numéro obtenus. Montrer que $\sum_{k = p}^{q}\binom{k}{p} = \binom{q + 1}{p + 1}$ pour $p \leqslant q$. Calculer $\mathbb{P}(S_{n} \leqslant k)$, la loi de $S_{n}$ et son espérance, puis celles de $I_{n}$.
+  corrige: |
+    **1.** On prend $\Omega = \llbracket 1, N \rrbracket^{n}$, uniforme. Tous les numéros sont au plus égaux à $k$ dans $k^{n}$ issues : 
+    $$\mathbb{P}(M \leqslant k) = \Big(\frac{k}{N}\Big)^{n}, \qquad \boxed{\mathbb{P}(M = k) = \frac{k^{n} - (k - 1)^{n}}{N^{n}}}, \quad 1 \leqslant k \leqslant N.$$
+     Pour $n \geqslant 2$, $k^{n} - (k - 1)^{n}$ croît avec $k$ : le mode est $N$. Pour $n = 1$, la loi est uniforme. Si $N$ est pair, $\mathbb{P}(M > N/2) = 1 - 2^{-n} > p$ si et seulement si $n > \log_{2}\frac{1}{1 - p}$ ; si $N$ est impair, on remplace $\frac{1}{2}$ par $\frac{\lfloor N/2 \rfloor}{N}$.
+
+    1.5em
+
+    ![Figure](documents/figures/b5d2a336dc1d4e96.svg)
+
+    La loi du plus grand numéro tiré parmi $N = 30$ jetons. Avec un seul tirage, elle est uniforme ; avec cinq tirages, elle se concentre sur les grandes valeurs, et le mode $30$ a la probabilité $\frac{30^{5} - 29^{5}}{30^{5}} \approx 0{,}156$.
+
+    **2.** Pour deux dés, $\mathbb{P}(M = k) = \frac{2k - 1}{36}$. Le minimum et le maximum ne sont pas indépendants : $\mathbb{P}(\min = 6, \max = 1) = 0$, alors que $\mathbb{P}(\min = 6)\mathbb{P}(\max = 1) = \frac{1}{36} \cdot \frac{1}{36}$. Plus simplement, $\min \leqslant \max$.
+
+    **3.** L'identité compte les parties à $p + 1$ éléments de $\llbracket 0, q \rrbracket$ selon leur plus grand élément $k$ : il faut choisir les $p$ autres dans $\llbracket 0, k - 1 \rrbracket$. Le tirage est une partie uniforme à $n$ éléments de $\llbracket 1, m \rrbracket$. $S_{n} \leqslant k$ si les $n$ boules sont dans $\llbracket 1, k \rrbracket$ : 
+    $$\mathbb{P}(S_{n} \leqslant k) = \frac{\binom{k}{n}}{\binom{m}{n}}, \qquad \mathbb{P}(S_{n} = k) = \frac{\binom{k - 1}{n - 1}}{\binom{m}{n}}, \quad n \leqslant k \leqslant m,$$
+     puisque $\binom{k}{n} - \binom{k - 1}{n} = \binom{k - 1}{n - 1}$. Avec $k\binom{k - 1}{n - 1} = n\binom{k}{n}$ et l'identité, 
+    $$\mathbb{E}[S_{n}] = \frac{n}{\binom{m}{n}}\sum_{k = n}^{m}\binom{k}{n} = \frac{n\binom{m + 1}{n + 1}}{\binom{m}{n}} = \boxed{\frac{n(m + 1)}{n + 1}}.$$
+     Par symétrie, $m + 1 - I_{n}$ a la loi de $S_{n}$ : $\mathbb{P}(I_{n} = k) = \binom{m - k}{n - 1}\big/\binom{m}{n}$ et $\boxed{\mathbb{E}[I_{n}] = \frac{m + 1}{n + 1}}$. Les $n$ boules découpent $\llbracket 1, m \rrbracket$ en $n + 1$ intervalles de longueur moyenne $\frac{m + 1}{n + 1}$ environ.
+- id: "l3-pr-03-14"
+  feuille: "f-l3-pr-03"
+  numero: 14
+  partie: "Plusieurs variables, indépendance"
+  etoiles: 2
+  types: [Démonstration, Calcul]
+  mots_cles: [variables indépendantes, loi binomiale]
+  noeuds: [p-independance, p-variables]
+  notions: [independance, variable-aleatoire, loi-variable]
+  source: "Durand, exercice 2.1"
+  page_enonce: 4
+  page_corrige: 8
+  enonce: |
+    Une population de $N \geqslant 2$ personnes a voté pour $A$ ou pour $B$ ; $m$ personnes ont voté pour $A$. On interroge $k$ personnes distinctes, choisies au hasard ($1 \leqslant k \leqslant N$). On note $a_{1}$, …, $a_{m}$ les électeurs de $A$ et $X_{i}$ l'indicatrice de l'évènement « $a_{i}$ est interrogée ».
+
+    **1.** Quelle est la loi de $X_{i}$ ? Pour $i \neq j$, $X_{i}$ et $X_{j}$ sont-elles indépendantes ?
+
+    **2.** Soit $S = X_{1} + \cdots + X_{m}$. Quelle est la loi de $S$ (*loi hypergéométrique*) ? Calculer $\mathbb{E}[S]$, puis $\operatorname{Var}(S)$ à l'aide des $X_{i}$.
+
+    **3.** Montrer que, si $N$ et $m$ tendent vers $+\infty$ avec $\frac{m}{N} \to a \in [0, 1]$, $k$ restant fixe, la loi de $S$ tend vers une loi binomiale. Commenter.
+  corrige: |
+    **1.** Les $k$ personnes interrogées forment une partie uniforme à $k$ éléments ; $a_{i}$ y figure dans $\binom{N - 1}{k - 1}$ parties sur $\binom{N}{k}$ : $X_{i} \sim \mathcal{B}(\frac{k}{N})$. De même, $\mathbb{P}(X_{i}X_{j} = 1) = \frac{k(k - 1)}{N(N - 1)}$, et 
+    $$\operatorname{Cov}(X_{i}, X_{j}) = \frac{k(k - 1)}{N(N - 1)} - \frac{k^{2}}{N^{2}} = -\frac{k(N - k)}{N^{2}(N - 1)} < 0 \quad \text{si } 1 \leqslant k < N :$$
+     $X_{i}$ et $X_{j}$ ne sont pas indépendantes. Si $a_{i}$ est interrogée, il reste moins de places pour $a_{j}$.
+
+    **2.** $S$ est le nombre d'électeurs de $A$ parmi les personnes interrogées : 
+    $$\boxed{\mathbb{P}(S = j) = \frac{\binom{m}{j}\binom{N - m}{k - j}}{\binom{N}{k}}}, \qquad \mathbb{E}[S] = m\,\frac{k}{N} = k\,\frac{m}{N}.$$
+     En développant $\operatorname{Var}(S) = \sum_{i}\operatorname{Var}(X_{i}) + \sum_{i \neq j}\operatorname{Cov}(X_{i}, X_{j})$ (chapitre 5, prop. 5), 
+    $$\operatorname{Var}(S) = m\frac{k}{N}\Big(1 - \frac{k}{N}\Big) - m(m - 1)\frac{k(N - k)}{N^{2}(N - 1)} = \boxed{k\,\frac{m}{N}\Big(1 - \frac{m}{N}\Big)\frac{N - k}{N - 1}}.$$
+
+    **3.** Pour $j$ fixé, on a $\binom{m}{j} \sim \frac{m^{j}}{j!}$ et $\binom{N}{k} \sim \frac{N^{k}}{k!}$, et de même pour $\binom{N - m}{k - j}$ si $N - m \to +\infty$, d'où $\mathbb{P}(S = j) \to \binom{k}{j}a^{j}(1 - a)^{k - j}$ (avec les conventions évidentes si $a \in \{0, 1\}$) : la loi de $S$ tend vers $\boxed{\mathcal{B}(k, a)}$. Quand la population est grande devant l'échantillon, interroger sans remise ou avec remise revient au même ; le facteur $\frac{N - k}{N - 1}$ de la variance mesure le gain de précision dû au tirage sans remise.
+- id: "l3-pr-03-15"
+  feuille: "f-l3-pr-03"
+  numero: 15
+  partie: "Plusieurs variables, indépendance"
+  etoiles: 2
+  types: [Calcul]
+  mots_cles: [variables indépendantes]
+  noeuds: [p-independance, p-variables]
+  notions: [independance, variable-aleatoire]
+  source: "Durand, exercice 1.5 (6)"
+  page_enonce: 5
+  page_corrige: 9
+  enonce: |
+    On place $m \geqslant 1$ boules au hasard, indépendamment, dans $n \geqslant 2$ boîtes, et l'on note $V$ le nombre de boîtes vides. En écrivant $V$ comme une somme d'indicatrices, calculer $\mathbb{E}[V]$ et $\operatorname{Var}(V)$. Que deviennent-ils quand $m = n \to +\infty$ ?
+  corrige: |
+    Soit $V_{i}$ l'indicatrice de l'évènement « la boîte $i$ est vide », de probabilité $\big(1 - \frac{1}{n}\big)^{m}$ ; pour $i \neq j$, $\mathbb{P}(V_{i}V_{j} = 1) = \big(1 - \frac{2}{n}\big)^{m}$. Donc, par linéarité, 
+    $$\boxed{\mathbb{E}[V] = n\Big(1 - \frac{1}{n}\Big)^{m}},$$
+
+    $$\operatorname{Var}(V) = \mathbb{E}[V^{2}] - \mathbb{E}[V]^{2} = \boxed{n\Big(1 - \frac{1}{n}\Big)^{m} + n(n - 1)\Big(1 - \frac{2}{n}\Big)^{m} - n^{2}\Big(1 - \frac{1}{n}\Big)^{2m}},$$
+     en développant $V^{2} = \sum_{i}V_{i} + \sum_{i \neq j}V_{i}V_{j}$. Pour $m = n$, $\frac{\mathbb{E}[V]}{n} \to \mathrm{e}^{-1} \approx 0{,}368$ : avec autant de boules que de boîtes, environ $37\,\%$ des boîtes restent vides. Un développement limité donne $\frac{\operatorname{Var}(V)}{n} \to \mathrm{e}^{-1} - 2\mathrm{e}^{-2} \approx 0{,}097$ (vérifié numériquement : $0{,}0972$ pour $n = 1\,000$) : l'écart type, d'ordre $\sqrt{n}$, est petit devant l'espérance.
+- id: "l3-pr-03-16"
+  feuille: "f-l3-pr-03"
+  numero: 16
+  partie: "Plusieurs variables, indépendance"
+  etoiles: 2
+  types: [Démonstration, Calcul]
+  mots_cles: [variables indépendantes]
+  noeuds: [p-independance, p-variables]
+  notions: [independance, variable-aleatoire]
+  source: "Durand, exercice 3.5 (1)"
+  page_enonce: 5
+  page_corrige: 9
+  enonce: |
+    *(Collectionneur de coupons.)* Chaque paquet de céréales contient l'un de $n$ coupons, choisi au hasard et indépendamment des autres paquets. Soit $\tau_{k}$ le nombre de paquets achetés pour obtenir $k$ coupons différents ($\tau_{0} = 0$), et $T_{n} = \tau_{n}$.
+
+    **1.** Pour $k \in \llbracket 1, n \rrbracket$, déterminer la loi de $\tau_{k} - \tau_{k - 1}$. *On admettra que ces variables sont indépendantes.*
+
+    **2.** En déduire $\mathbb{E}[T_{n}]$ et $\operatorname{Var}(T_{n})$, puis montrer que $\mathbb{E}[T_{n}] \sim n\ln n$ et $\operatorname{Var}(T_{n}) = O(n^{2})$. Combien faut-il acheter de paquets, en moyenne, pour réunir les $50$ coupons d'une collection ?
+  corrige: |
+    **1.** Une fois $k - 1$ coupons différents obtenus, chaque nouveau paquet en apporte un nouveau avec la probabilité $\frac{n - k + 1}{n}$, indépendamment des précédents : $\boxed{\tau_{k} - \tau_{k - 1} \sim \mathcal{G}\Big(\frac{n - k + 1}{n}\Big)}$.
+
+    **2.** Par linéarité et indépendance (cours, th. 4), 
+    $$\mathbb{E}[T_{n}] = \sum_{k = 1}^{n}\frac{n}{n - k + 1} = n\sum_{j = 1}^{n}\frac{1}{j}, \qquad \operatorname{Var}(T_{n}) = \sum_{j = 1}^{n}\frac{1 - j/n}{(j/n)^{2}} \leqslant n^{2}\sum_{j \geqslant 1}\frac{1}{j^{2}} = \frac{\pi^{2}}{6}n^{2}.$$
+     Comme $\sum_{j \leqslant n}\frac{1}{j} \sim \ln n$, on obtient 
+    $$\boxed{\mathbb{E}[T_{n}] \sim n\ln n} \qquad \text{et} \qquad \operatorname{Var}(T_{n}) = O(n^{2}).$$
+     Pour $n = 50$, $\mathbb{E}[T_{50}] = 50 \times \big(1 + \frac{1}{2} + \cdots + \frac{1}{50}\big) \approx \boxed{225}$ paquets, dont près de $50$ pour le dernier coupon à lui seul. La feuille 8 montrera que $\frac{T_{n}}{n\ln n} \to 1$ en probabilité.
+- id: "l3-pr-03-17"
+  feuille: "f-l3-pr-03"
+  numero: 17
+  partie: "Plusieurs variables, indépendance"
+  etoiles: 2
+  types: [Calcul]
+  mots_cles: [variables indépendantes]
+  noeuds: [p-independance, p-variables]
+  notions: [independance, variable-aleatoire]
+  source: "Durand, exercice 2.31"
+  page_enonce: 5
+  page_corrige: 9
+  enonce: |
+    Deux lettres occupent deux positions distinctes, choisies au hasard, dans une pile de $n \geqslant 2$ feuilles. On note $X_{1}$ le nombre de feuilles ordinaires avant la première lettre, et $X_{2}$ le nombre de feuilles entre les deux lettres. Déterminer la loi du couple $(X_{1}, X_{2})$, ses lois marginales, $\mathbb{P}(X_{1} = X_{2})$, la loi de $Z = X_{1} + X_{2} + 2$ et son interprétation, et les modes de ces lois.
+  corrige: |
+    Les positions $U < V$ des deux lettres forment une paire uniforme parmi les $\binom{n}{2}$ paires de $\llbracket 1, n \rrbracket$, et $X_{1} = U - 1$, $X_{2} = V - U - 1$. Le couple $(X_{1}, X_{2})$ est uniforme sur le triangle $\{(i, j) \in \mathbb{N}^{2} \,;\, i + j \leqslant n - 2\}$ : 
+    $$\mathbb{P}(X_{1} = i, X_{2} = j) = \frac{2}{n(n - 1)}, \qquad \mathbb{P}(X_{1} = i) = \mathbb{P}(X_{2} = i) = \frac{2(n - 1 - i)}{n(n - 1)}, \quad 0 \leqslant i \leqslant n - 2.$$
+     Les deux marginales sont égales, de mode $0$ : le plus probable est qu'une lettre soit en haut de la pile, et que les deux lettres soient voisines. On a $\mathbb{P}(X_{1} = X_{2}) = \frac{2\lfloor n/2 \rfloor}{n(n - 1)}$, en comptant les $i$ tels que $2i \leqslant n - 2$. Enfin $Z = V$ est la position de la seconde lettre : $\mathbb{P}(Z = z) = \frac{2(z - 1)}{n(n - 1)}$, $2 \leqslant z \leqslant n$, de mode $n$. C'est le nombre de feuilles à parcourir pour trouver les deux lettres.
+- id: "l3-pr-03-18"
+  feuille: "f-l3-pr-03"
+  numero: 18
+  partie: "Plusieurs variables, indépendance"
+  etoiles: 2
+  types: [Calcul]
+  mots_cles: [variables indépendantes]
+  noeuds: [p-independance, p-variables, pol-binome]
+  notions: [independance, variable-aleatoire, coefficient-binomial]
+  source: "Durand, exercice 2.15"
+  page_enonce: 5
+  page_corrige: 10
+  enonce: |
+    Le nombre $X$ d'enfants d'une famille suit la loi $\mathcal{G}(p)$, et, sachant $X$, les sexes des enfants sont indépendants et équiprobables. Déterminer la loi du nombre $Y$ de filles. *On pourra utiliser $(1 - x)^{-r - 1} = \sum_{n \geqslant 0}\binom{n + r}{n}x^{n}$ pour $|x| < 1$ et $r \in \mathbb{N}$.* Calculer $\mathbb{P}(Y = 0)$ et $\mathbb{E}[Y]$.
+  corrige: |
+    Sachant $X = n$, $Y \sim \mathcal{B}(n, \frac{1}{2})$. Par la formule des probabilités totales, avec $q = 1 - p$ et $x = \frac{q}{2}$, pour $r \geqslant 1$, 
+    $$\mathbb{P}(Y = r) = \sum_{n \geqslant r}pq^{n - 1}\binom{n}{r}2^{-n} = \frac{p}{q}\sum_{n \geqslant r}\binom{n}{r}x^{n} = \frac{p}{q}\cdot\frac{x^{r}}{(1 - x)^{r + 1}} = \boxed{\frac{2p}{q(1 + p)}\Big(\frac{q}{1 + p}\Big)^{r}},$$
+     car $1 - x = \frac{1 + p}{2}$. Pour $r = 0$, $\mathbb{P}(Y = 0) = \sum_{n \geqslant 1}pq^{n - 1}2^{-n} = \frac{p/2}{1 - q/2} = \boxed{\frac{p}{1 + p}}$. On vérifie que la somme vaut $1$. Sachant $Y \geqslant 1$, $Y$ suit une loi géométrique de paramètre $\frac{2p}{1 + p}$. Enfin, par la formule des probabilités totales, $\mathbb{E}[Y] = \sum_{n}\mathbb{P}(X = n)\frac{n}{2} = \boxed{\frac{1}{2p}}$ : en moyenne, la moitié des enfants sont des filles.
+
