@@ -1207,3 +1207,12 @@ sombre) sans débordement ni erreur KaTeX ; 45 figures vérifiées en sombre. Co
 
 **Rappel en attente** : prompt Annales pour les chapitres `l3-pr-*` et les feuilles `f-l3-pr-*` (avec `l3-sa-*`,
 `l3-in-*` si la conversation Annales ne les a pas encore traités).
+
+### 71. Thèmes d'annales des Probabilités (24 nov. 2026, soir)
+
+Listes `annales_themes` de `l3-pr-01` à `10` remplacées par celles de la conversation Annales (proposées par un agent,
+relues par un second ; thème principal en tête) : `crible`, `esperance-queue`, `projection-orthogonale`,
+`matrices-symetriques-positives`… ajoutés, `modeles-urnes` passé du ch. 1 au ch. 2, `inegalites-probabilistes` retiré du
+ch. 8. Ids vérifiés dans `annales-themes.yaml` (forme `{id: …}`). Le commit d7b79e4 de la conversation Annales, qui avait
+modifié elle-même ces listes pour `l3-in-*` et `l3-sa-*`, a été relu : rien à reprendre. Désormais elle passe par des
+propositions, et la conversation Cours les reporte. Construction sans avertissement sur les programmes des annales.
