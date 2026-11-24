@@ -235,11 +235,11 @@ class Atelier {
     this.poignees();
   }
 
-  // Hauteur des cadres réglable à la souris : la poignée du bas fixe la hauteur de la partie qui défile (code,
-  // affichage de la console, variables) ; double-clic : retour à la hauteur automatique. Hauteurs gardées dans ce
+  // Hauteur de l'éditeur et de la console réglable à la souris : la poignée du bas fixe la hauteur de la partie qui
+  // défile (code, affichage de la console) ; double-clic : retour à la hauteur automatique. Hauteurs gardées dans ce
   // navigateur, les mêmes pour tous les ateliers.
   poignees() {
-    const parties = { editeur: '.at-zone', console: '.at-sortie', variables: '.at-vars' };
+    const parties = { editeur: '.at-zone', console: '.at-sortie' };   // les variables suivent la hauteur des deux autres
     let memo = {}; try { memo = JSON.parse(lire('atlas-atelier-hauteurs') || '{}') || {}; } catch {}
     const poser = (t, h) => {
       Object.assign(t.style, h == null ? { height: '', maxHeight: '', flex: '', overflowY: '' }

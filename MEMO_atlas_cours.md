@@ -1155,9 +1155,9 @@ Demande de l'auteur, dans `python/atelier.js` (vaut pour les exercices, les cour
   cette ligne ; méthode `effacer()`, sans effet pendant le débogage (l'affichage des étapes est posé dans la console).
   La ligne de saisie est devenue `<div class="at-ligne"><label>…</label><button>…</button></div>` (le bouton ne peut
   pas vivre dans le `label`).
-- **Hauteurs** : poignée `.at-poignee` sur le bord bas de chaque cadre, visible seulement avec une souris
+- **Hauteurs** : poignée `.at-poignee` sur le bord bas de l'éditeur et de la console (pas des variables, qui suivent les deux autres : demande de l'auteur, 24 nov.), visible seulement avec une souris
   (`(hover: hover) and (pointer: fine)`) ; on la tire pour fixer la hauteur de la partie qui défile (`.at-zone`,
-  `.at-sortie`, `.at-vars`, de 60 à 2000 px), double-clic pour revenir à la hauteur automatique. Hauteurs gardées
+  `.at-sortie`, de 60 à 2000 px), double-clic pour revenir à la hauteur automatique. Hauteurs gardées
   dans le navigateur (`atlas-atelier-hauteurs`), les mêmes pour tous les ateliers. Dans la disposition `cote`, le
   `min-height` de 240 px de la console reste le plancher.
 Vérifié avec Playwright : exécution, effacement (bouton et Ctrl+L), tirage des poignées, double-clic, téléphone sans
