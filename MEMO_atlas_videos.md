@@ -572,3 +572,11 @@ Outils de ce lot (dans `/home/claude/outils-video/`, hors dépôt, à refaire au
 d'attente : un seul rendu à la fois, les dossiers inscrits dans `/tmp/file-rendus.txt`). Pièges : une partie ne peut pas
 s'appeler `fleche` (fonction de `commun.js`) ; une macro LaTeX suivie d'une lettre demande une espace
 (`\preccurlyeq x`) ; l'assemblage son-image dure deux à trois minutes après la fin du rendu.
+
+**Retour du 24 novembre sur « Calcul littéral » (Seconde), prototype 2.** À la demande de l'auteur, la distributivité
+est montrée par des **flèches courbes animées**, du facteur vers chaque terme qu'il multiplie, de la couleur du
+facteur : pour la simple, deux flèches violettes au-dessus de 5(2x − 3) ; pour la double, les deux flèches de x (bleu)
+au-dessus et les deux flèches de 4 (orange) au-dessous, pour qu'elles ne se chevauchent pas. Outil : `arcDist` dans
+`videos/outils/litteral/scenes.js` ; l'abscisse de chaque terme vient de formules de mesure jamais affichées (`z_…`
+dans `formules-src.mjs` : la largeur d'un préfixe moins la demi-largeur du terme). À reprendre dans tout film où un
+facteur se distribue.

@@ -25,5 +25,7 @@ export default [
   ['q_R', `R(x)=${f('x^2-4', 'x^2+4x+4')}`], ['q_Rf', `=${f(`${v('(x+2)')}(x-2)`, `${v('(x+2)')}(x+2)`)}`], ['q_Rr', `=${t(f('x-2', 'x+2'))}`],
   ['q_e', `${f('x+3', 'x+5')}\\neq${f(3, 5)}`], ['q_t', `x=1:\\quad${f(4, 6)}=${f(2, 3)}\\neq${f(3, 5)}`],
   ['q_S', `S(x)=${f(2, b('x'))}+${f(3, o('x+1'))}`], ['q_S2', `=${f(`2(${o('x+1')})`, `${b('x')}(${o('x+1')})`)}+${f(`3${b('x')}`, `${b('x')}(${o('x+1')})`)}`], ['q_S3', `=${t(f('5x+2', 'x(x+1)'))}`],
+  // formules de mesure, jamais affichées : elles donnent l'abscisse de chaque terme pour y accrocher les flèches de la distributivité
+  ['z_5', '5'], ['z_52x', '5(2x'], ['z_2x', '2x'], ['z_523', '5(2x-3'], ['z_3', '3'], ['z_px', '(x'], ['z_x', 'x'], ['z_px4', '(x+4'], ['z_4', '4'], ['z_p3x', '(x+4)(3x'], ['z_3x', '3x'], ['z_p2', '(x+4)(3x-2'], ['z_2', '2'],
   ['b_1', `(a+b)^2=a^2+2ab+b^2`], ['b_2', `a^2-b^2=(a+b)(a-b)`], ['b_3', `A\\times B=0\\iff A=0${ou}B=0`],
 ];

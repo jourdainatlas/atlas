@@ -8,6 +8,11 @@
       fo(ctx, t, 'e_s', 600, 640, 46, V.nat[0]); tx(ctx, t, 'une somme', 600, 715, V.nat[0], { c: C.cours }); fo(ctx, t, 'e_p', 1320, 640, 46, V.nat[1]); tx(ctx, t, 'un produit', 1320, 715, V.nat[1], { c: C.cours }); });
     legs(ctx, t, V, [['Une [expression littérale] contient des lettres, qui représentent des nombres.'], ['On calcule sa valeur en remplaçant $x$ par un nombre :', 'un nombre négatif se met entre parenthèses.'], ['La dernière opération à effectuer dit si l’expression est une somme ou un produit.']]); }
 
+  // flèche courbe de la distributivité : du facteur (x1) au terme qu'il multiplie (x2), au-dessus (sens 1) ou au-dessous (sens −1) de la ligne y
+  function arcDist(ctx, x1, x2, y, sens, h, c, k) { if (k <= 0) return; const y0 = y - sens * 30, P = (u) => [(1 - u) * (1 - u) * x1 + 2 * u * (1 - u) * (x1 + x2) / 2 + u * u * x2, y0 - sens * 4 * h * u * (1 - u) * 0.5 * 2], n = Math.max(2, Math.round(40 * k));
+    ctx.save(); ctx.strokeStyle = c; ctx.fillStyle = c; ctx.lineWidth = 3.5; ctx.lineCap = 'round'; ctx.beginPath(); for (let i = 0; i <= n; i++) { const p = P(k * i / n); if (i) ctx.lineTo(p[0], p[1]); else ctx.moveTo(p[0], p[1]); } ctx.stroke();
+    const e = P(k), d = P(Math.max(0, k - 0.06)), an = Math.atan2(e[1] - d[1], e[0] - d[0]); ctx.translate(e[0], e[1]); ctx.rotate(an); ctx.beginPath(); ctx.moveTo(5, 0); ctx.lineTo(-11, -7); ctx.lineTo(-11, 7); ctx.closePath(); ctx.fill(); ctx.restore(); }
+
   // ---------- 2. développer ----------
   function developper(ctx, t) { const V = S.developper;
     phase(ctx, t, 6, 10, () => { const kp = ap(t, V.prop); carte(ctx, 260, 165, 1400, 150, 'PROPRIÉTÉ', kp); formule(ctx, 'd_s', 620, 250, { fs: 42, mil: 1, a: kp }); formule(ctx, 'd_d', 1250, 250, { fs: 42, mil: 1, a: kp });
@@ -17,9 +22,13 @@
       const kl = ap(t, V.rect[0] - 0.6); formule(ctx, 'l_a', x0 + wa / 2, y0 + hd + hc + 36, { fs: 38, mil: 1, a: kl }); formule(ctx, 'l_b', x0 + wa + wb / 2, y0 + hd + hc + 36, { fs: 38, mil: 1, a: kl }); formule(ctx, 'l_c', x0 - 34, y0 + hd + hc / 2, { fs: 38, mil: 1, a: kl }); formule(ctx, 'l_d', x0 - 34, y0 + hd / 2, { fs: 38, mil: 1, a: kl });
       tx(ctx, t, 'aire du grand rectangle', 1330, 450, V.rect[0] - 0.6, { c: C.encre2, w: 500, size: 28 }); tx(ctx, t, '(a + b)(c + d)', 1330, 510, V.rect[0] - 0.6, { size: 44, fam: F.main, w: 400 });
       tx(ctx, t, 'somme des quatre aires', 1330, 610, V.aire, { c: C.encre2, w: 500, size: 28 }); tx(ctx, t, 'ac + ad + bc + bd', 1330, 670, V.aire, { size: 44, fam: F.main, w: 400, c: C.cours }); });
-    phase(ctx, t, 10, 14, () => { fo(ctx, t, 'd_A', CX, 230, 44, V.A); const w = largeur('d_B1', 44), x = CX - (w + largeur('d_B2', 44) + 16) / 2; formule(ctx, 'd_B1', x, 370, { fs: 44, mil: 1, align: 'left', a: ap(t, V.B1), monte: 1 }); formule(ctx, 'd_B2', x + w + 16, 370, { fs: 44, mil: 1, align: 'left', a: ap(t, V.B2), monte: 1 });
+    phase(ctx, t, 10, 14, () => { fo(ctx, t, 'd_A', CX, 230, 44, V.A); const w = largeur('d_B1', 44), x = CX - (w + largeur('d_B2', 44) + 16) / 2;
+      const mi = (pre, tok) => largeur(pre, 44) - largeur(tok, 44) / 2, xA = CX - largeur('d_A', 44) / 2, a5 = xA + largeur('z_5', 44) / 2;      // abscisses des termes
+      arcDist(ctx, a5, xA + mi('z_52x', 'z_2x'), 230, 1, 34, VIOLET, pr(t, V.A + 0.4, 0.6)); arcDist(ctx, a5, xA + mi('z_523', 'z_3'), 230, 1, 58, VIOLET, pr(t, V.A + 1.1, 0.6));
+      const bx = x + mi('z_px', 'z_x'), b4 = x + mi('z_px4', 'z_4'), b3x = x + mi('z_p3x', 'z_3x'), b2 = x + mi('z_p2', 'z_2');
+      arcDist(ctx, bx, b3x, 370, 1, 36, C.bleu, pr(t, V.B1 + 0.4, 0.55)); arcDist(ctx, bx, b2, 370, 1, 60, C.bleu, pr(t, V.B1 + 1.0, 0.55)); arcDist(ctx, b4, b3x, 370, -1, 36, C.orange, pr(t, V.B1 + 1.7, 0.55)); arcDist(ctx, b4, b2, 370, -1, 60, C.orange, pr(t, V.B1 + 2.3, 0.55)); formule(ctx, 'd_B1', x, 370, { fs: 44, mil: 1, align: 'left', a: ap(t, V.B1), monte: 1 }); formule(ctx, 'd_B2', x + w + 16, 370, { fs: 44, mil: 1, align: 'left', a: ap(t, V.B2), monte: 1 });
       const kp = ap(t, V.piege); carte(ctx, 460, 500, 1000, 190, 'PIÈGE', kp); formule(ctx, 'd_m', 800, 610, { fs: 46, mil: 1, a: kp }); tx(ctx, t, 'et non', 1090, 620, V.faux, { c: C.encre2, w: 500 }); fo(ctx, t, 'd_f', 1240, 610, 46, V.faux); });
-    legs(ctx, t, V, [['Développer, c’est transformer un produit en somme : on distribue.'], ['La [double distributivité] se lit sur des aires : le rectangle se découpe en quatre.'], ['La simple distributivité : le facteur 5 multiplie chaque terme.'], ['La double : chaque terme de la première parenthèse multiplie chaque terme de la seconde.'], ['Un signe moins devant une parenthèse change le signe de tous ses termes.']]); }
+    legs(ctx, t, V, [['Développer, c’est transformer un produit en somme : on distribue.'], ['La [double distributivité] se lit sur des aires : le rectangle se découpe en quatre.'], ['La simple distributivité : le facteur 5 multiplie chaque terme de la parenthèse.'], ['La double : $x$ multiplie les deux termes de la seconde parenthèse, puis 4 fait de même.'], ['Un signe moins devant une parenthèse change le signe de tous ses termes.']]); }
 
   // ---------- 3. les identités remarquables ----------
   const CA = { x: 250, y: 300, a: 250, b: 160, ech: 2.5 };
