@@ -33,7 +33,15 @@
 
   // ---------- raccourcis d'écriture des scènes ----------
   const phase = (ctx, t, m0, m1, f) => { const k = fen(t, L(m0) + 0.1, L(m1), 0.4); if (k > 0) { ctx.save(); ctx.globalAlpha *= k; f(k); ctx.restore(); } };
-  const legs = (ctx, t, V, T) => T.forEach((l, i) => legende(ctx, t, V.leg[i], l, l.length > 1 ? { size: 40 } : {}));
+  // Une légende d'une ligne qui dépasserait 1780 px est coupée en deux, à l'espace le plus proche du milieu (de préférence après
+  // une ponctuation), jamais à l'intérieur d'une balise ni devant un signe double : aucune phrase ne peut sortir de l'écran.
+  const COUPES = new Map();
+  function coupe(ctx, l) { if (l.length > 1) return l; const s = l[0]; if (COUPES.has(s)) return COUPES.get(s); let r = l;
+    if (ligne(ctx, s, 0, -999, { size: 44, a: 0 }) > 1780) { let best = -1, sc = 1e9, d = 0, m = 0; for (let i = 0; i < s.length; i++) { const c = s[i]; if (c === '$') m ^= 1; else if (c === '[' || c === '{') d++; else if (c === ']' || c === '}') d--;
+        else if (c === ' ' && !d && !m && !':;?!»'.includes(s[i + 1]) && s[i - 1] !== '«') { const v = Math.abs(i - s.length / 2) - (':;,.?'.includes(s[i - 1]) ? 14 : 0); if (v < sc) { sc = v; best = i; } } }
+      if (best > 0) r = [s.slice(0, best), s.slice(best + 1)]; }
+    COUPES.set(s, r); return r; }
+  const legs = (ctx, t, V, T) => T.forEach((l0, i) => { const l = coupe(ctx, l0); legende(ctx, t, V.leg[i], l, l.length > 1 ? { size: 40 } : {}); });
   const fo = (ctx, t, id, x, y, fs, t0, o = {}) => formule(ctx, id, x, y, { fs, mil: 1, a: ap(t, t0), monte: 1, ...o });
   const tx = (ctx, t, s, x, y, t0, o = {}) => txt(ctx, s, x, y, { fam: F.ui, w: 600, size: 30, a: ap(t, t0), ...o });
   // Un acte du chien : il bondit sous l'écran (V.bond), retombe du haut (V.chute) sur la figure au point pos(V.chute[1]).p,

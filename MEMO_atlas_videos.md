@@ -586,3 +586,15 @@ formules par paires : un encadré pour les deux relations de récurrence, un pou
 les deux sommes (entiers, puissances de q) ; dans chaque encadré, l'arithmétique est en haut, la géométrique en bas.
 `bilanCartes` (`outils.js`) accepte désormais un couple d'identifiants à la place d'un seul (`"ids": [["a", "b"], …]`
 dans `conf.json`). À retenir : quand un chapitre met deux familles en parallèle, le résumé les montre côte à côte.
+
+**Retours du 24 novembre sur « Probabilités » (Terminale), prototype 2.** Les issues de l'arbre de Bernoulli étaient
+affichées à demi-opacité par erreur (`kn` plafonnait à 0,5) : elles sont à pleine opacité, et les issues écartées
+restent lisibles (0,45). Une légende sortait de l'écran (triangle de Pascal, 2 015 px pour 1 920).
+**Règle désormais garantie par le code : aucune légende ne sort de l'écran.** `legs` (`outils.js`) mesure toute légende
+d'une ligne et, au-delà de 1 780 px, la coupe en deux à l'espace le plus proche du milieu (de préférence après une
+ponctuation, jamais dans une balise ni devant un signe double). Deux autres légendes larges (1 833 et 1 819 px, dans
+l'écran mais sans marge) ont été recoupées de la même façon : `applications-approfondies-prototype-2.mp4` et
+`applications-relations-mpsi-prototype-2.mp4`. Contrôle : `node /home/claude/outils-video/larg.mjs <dossiers>` (hors
+dépôt) mesure les légendes en Spectral 600. Relevé dans les films **déjà en ligne**, non corrigé : « Une implication et
+sa contraposée… » (Maths approfondies ch. 1) mesure 1 929 px et touche les deux bords ; cinq autres légendes des
+chapitres 1 dépassent 1 780 px sans sortir (suites de Terminale, deux ; Maths expertes, deux ; MPSI, une).

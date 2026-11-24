@@ -83,7 +83,8 @@
     B.cartes.forEach((tc, i) => { const k = ap(t, tc), cx = x + LC[i] / 2; x += LC[i] + 40; if (k <= 0) return;
       ctx.save(); ctx.globalAlpha *= k; ctx.translate(0, (1 - k) * 24);
       cadre(ctx, cx, 465, LC[i], 370, { fill: C.surface, stroke: C.filet, lw: 2 });
-      formule(ctx, ID[i], cx, 395, { fs: FS[i], mil: 1 });
+      if (Array.isArray(ID[i])) { formule(ctx, ID[i][0], cx, 350, { fs: FS[i], mil: 1 }); formule(ctx, ID[i][1], cx, 462, { fs: FS[i], mil: 1 }); }      // deux formules dans une même carte
+      else formule(ctx, ID[i], cx, 395, { fs: FS[i], mil: 1 });
       txt(ctx, TX[i][0], cx, 560, { size: 26, w: 600 }); txt(ctx, TX[i][1], cx, 600, { size: 25, w: 500, c: C.encre2 });
       ctx.restore(); });
     const kp = ap(t, B.phrase); ligne(ctx, phrase, CX, 745 + (1 - kp) * 20, { size: 50, w: 700, a: kp });
@@ -92,7 +93,15 @@
 
   // ---------- raccourcis d'écriture des scènes ----------
   const phase = (ctx, t, m0, m1, f) => { const k = fen(t, L(m0) + 0.1, L(m1), 0.4); if (k > 0) { ctx.save(); ctx.globalAlpha *= k; f(k); ctx.restore(); } };
-  const legs = (ctx, t, V, T) => T.forEach((l, i) => legende(ctx, t, V.leg[i], l, l.length > 1 ? { size: 40 } : {}));
+  // Une légende d'une ligne qui dépasserait 1780 px est coupée en deux, à l'espace le plus proche du milieu (de préférence après
+  // une ponctuation), jamais à l'intérieur d'une balise ni devant un signe double : aucune phrase ne peut sortir de l'écran.
+  const COUPES = new Map();
+  function coupe(ctx, l) { if (l.length > 1) return l; const s = l[0]; if (COUPES.has(s)) return COUPES.get(s); let r = l;
+    if (ligne(ctx, s, 0, -999, { size: 44, a: 0 }) > 1780) { let best = -1, sc = 1e9, d = 0, m = 0; for (let i = 0; i < s.length; i++) { const c = s[i]; if (c === '$') m ^= 1; else if (c === '[' || c === '{') d++; else if (c === ']' || c === '}') d--;
+        else if (c === ' ' && !d && !m && !':;?!»'.includes(s[i + 1]) && s[i - 1] !== '«') { const v = Math.abs(i - s.length / 2) - (':;,.?'.includes(s[i - 1]) ? 14 : 0); if (v < sc) { sc = v; best = i; } } }
+      if (best > 0) r = [s.slice(0, best), s.slice(best + 1)]; }
+    COUPES.set(s, r); return r; }
+  const legs = (ctx, t, V, T) => T.forEach((l0, i) => { const l = coupe(ctx, l0); legende(ctx, t, V.leg[i], l, l.length > 1 ? { size: 40 } : {}); });
   const fo = (ctx, t, id, x, y, fs, t0, o = {}) => formule(ctx, id, x, y, { fs, mil: 1, a: ap(t, t0), monte: 1, ...o });
   const tx = (ctx, t, s, x, y, t0, o = {}) => txt(ctx, s, x, y, { fam: F.ui, w: 600, size: 30, a: ap(t, t0), ...o });
   // Un acte du chien : il bondit sous l'écran (V.bond), retombe du haut (V.chute) sur la figure au point pos(V.chute[1]).p,
@@ -152,8 +161,8 @@
     phase(ctx, t, 21, 26, () => { const ka = pr(t, V.arbre[0], V.arbre[1] - V.arbre[0]), kc = t > V.marche[0] ? posArbre(t).k : 0, k3 = ap(t, V.trois);
       for (const s of ['S', 'E', 'SS', 'SE', 'ES', 'EE', ...FEUILLES]) branche(ctx, s, borne(ka * 3 - (s.length - 1)));
       ['S', 'SS', 'SSE'].forEach((s, i) => branche(ctx, s, borne(kc * 3 - i), { c: C.cours, lw: 6 })); for (const ch of DEUX.slice(1)) for (let i = 1; i <= 3; i++) branche(ctx, ch.slice(0, i), 1, { c: C.cours, lw: 6, a: k3 });
-      const kn = borne(ka * 3 - 2.5); for (const s of ['S', 'E', 'SS', 'SE', 'ES', 'EE']) { const p = noeud(s); ctx.save(); ctx.globalAlpha *= borne(ka * 3 - (s.length - 0.5)); ctx.fillStyle = C.papier; ctx.beginPath(); ctx.arc(p[0], p[1], 22, 0, 6.3); ctx.fill(); ctx.restore(); formule(ctx, s.endsWith('S') ? 'n_S' : 'n_E', p[0], p[1], { fs: 34, mil: 1, a: borne(ka * 3 - (s.length - 0.5)) }); }
-      FEUILLES.forEach((s, i) => { const p = noeud(s); formule(ctx, `n_f${i}`, p[0] + 70, p[1], { fs: 30, mil: 1, a: kn * (k3 > 0 && !DEUX.includes(s) ? 1 - 0.6 * k3 : 1) }); });
+      const kn = borne((ka * 3 - 2.5) * 2); for (const s of ['S', 'E', 'SS', 'SE', 'ES', 'EE']) { const p = noeud(s); ctx.save(); ctx.globalAlpha *= borne(ka * 3 - (s.length - 0.5)); ctx.fillStyle = C.papier; ctx.beginPath(); ctx.arc(p[0], p[1], 22, 0, 6.3); ctx.fill(); ctx.restore(); formule(ctx, s.endsWith('S') ? 'n_S' : 'n_E', p[0], p[1], { fs: 34, mil: 1, a: borne(ka * 3 - (s.length - 0.5)) }); }
+      FEUILLES.forEach((s, i) => { const p = noeud(s); formule(ctx, `n_f${i}`, p[0] + 70, p[1], { fs: 30, mil: 1, a: kn * (k3 > 0 && !DEUX.includes(s) ? 1 - 0.55 * k3 : 1) }); });
       formule(ctx, 'n_p', 310, 370, { fs: 32, mil: 1, a: borne(ka * 3) }); formule(ctx, 'n_q', 300, 580, { fs: 32, mil: 1, a: borne(ka * 3) });
       tx(ctx, t, 'un chemin à deux succès :', 1520, 300, V.un, { c: C.encre2, w: 500, size: 28 }); fo(ctx, t, 'n_un', 1520, 370, 34, V.un); tx(ctx, t, 'trois chemins à deux succès :', 1520, 520, V.trois, { c: C.encre2, w: 500, size: 28 }); fo(ctx, t, 'n_3', 1520, 600, 40, V.p2); });
     legs(ctx, t, V, [['Une [épreuve de Bernoulli] : deux issues seulement, le succès et l’échec.'], ['La variable qui vaut 1 pour un succès suit la [loi de Bernoulli] de paramètre $p$.'], ['Un [schéma de Bernoulli] répète la même épreuve, de façon indépendante : ici trois fois.'], ['Le long d’un chemin, les probabilités se multiplient.'], ['Trois chemins comptent exactement deux succès : on ajoute leurs probabilités.']]); }
