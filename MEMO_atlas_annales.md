@@ -385,3 +385,15 @@ relectures (par ex. `probabilites-discretes` → `borel-cantelli` en l3-in-01, `
 pas exposée). Affichage : l'UE est nommée dans les liens de L3 (« Licence 3 – Intégration, ch. 4 », exercice
 « Int. 4.5 », table `UE_COURT_PG` / `UE_MOYEN_PG` du gabarit) et dans les notes (`notes_lisibles.py`).
 
+**Probabilités de L3 (24 nov. 2026).** Même procédure pour l'UE Probabilités (`l3-pr-01` à `10`, 192 exercices ;
+consigne `CONSIGNE_l3pr.md` : la section en langage probabiliste passe devant celle en langage de la mesure,
+sauf point formulé en termes de mesure ; relire toute note « le site ne traite pas… »). Un agent de liaison
+(agrég. externe §10-11, interne §13, CAPES §15, bac+3 §15-17, numéros affichés), une relecture (7 corrections,
+dont un exercice rétabli au CAPES bac+3 : `ma-21-61`, seul sur la loi uniforme). Bilan : agrég. externe « à
+venir » 28 → 25, sans exercice 37 → 34 ; agrég. interne 26 → 22 et 37 → 32. Synonymes de `loi-normale` enrichis
+(théorème de Cochran, lois du khi-deux et de Student : un seul bloc hors bac s'y rattache, un thème propre ne se
+justifiait pas). Le champ `annales_themes` des chapitres l3-pr n'a **pas** été modifié : la conversation Cours
+demande désormais des propositions, qu'elle reporte elle-même dans `cours.yaml` (propositions relues remises à
+l'auteur le 24 nov.). `notes_lisibles` fusionne désormais « ch. N, section A, …, ch. N, section B » en
+« ch. N, sections A et B » (script ponctuel).
+
