@@ -1216,3 +1216,26 @@ relues par un second ; thème principal en tête) : `crible`, `esperance-queue`,
 ch. 8. Ids vérifiés dans `annales-themes.yaml` (forme `{id: …}`). Le commit d7b79e4 de la conversation Annales, qui avait
 modifié elle-même ces listes pour `l3-in-*` et `l3-sa-*`, a été relu : rien à reprendre. Désormais elle passe par des
 propositions, et la conversation Cours les reporte. Construction sans avertissement sur les programmes des annales.
+
+### 72. Licence 3 : UE Espaces de Hilbert et séries de Fourier (25 nov. 2026)
+
+UE `l3-s6-hf` (semestre 6, 81 p., sans fiches), chapitres `l3-hf-01` à `l3-hf-08` : espaces préhilbertiens ; espaces de
+Hilbert et projection ; bases hilbertiennes, Parseval ; dualité, adjoint, théorème ergodique ; séries de Fourier dans
+$L^{2}$ ; convergence ponctuelle ; transformation de Fourier sur $L^{1}(\mathbb{R})$ ; sur $L^{2}(\mathbb{R})$ (Plancherel,
+Heisenberg, Shannon). PDF `documents/cours/l3/hilbert_fourier_chapNN_<slug>.pdf` (slugs en minuscules : `series_fourier_l2`,
+`transformation_fourier_l1`), cours complet `documents/ue/l3/hilbert_fourier_cours_complet.pdf`. Mêmes conventions qu'aux
+§59, §66, §69. Théories : `f-hilbert`, `f-evn`, `f-bases-hilbertiennes`, `f-riesz`, `f-operateurs` (graphe `anf`) et les
+nœuds `fo-*` des séries et de la transformée de Fourier. Le chapitre 3 admet, avec le lemme de Zorn, l'existence d'une base
+hilbertienne dans le cas non séparable (le résumé le dit). Prérequis de l'UE [mp-10, mp-11, mp-04] ; « À revoir avant » par
+chapitre. Activité : produit-scalaire → ch. 1. `annales_themes` posés provisoirement (prehilbertiens, espaces-fonctionnels,
+parseval, series-fourier, convergence-fourier, transformee-fourier, formule-sommatoire-poisson, theorie-ergodique…), à
+confirmer par la conversation Annales. Termes exclus : 18 fragments par chapitre (ch. 2, 3, 6, 7, 8).
+Symboles validés le 25 nov. : repris `plan` (ch. 1, comme mp-10), `hyperplan` (ch. 4, comme l3-cd-03 : forme linéaire
+de Riesz), `creneau` (ch. 5, comme mp-11) ; nouveaux `projconvexe` (ch. 2 : disque de centre (9, 14) et de rayon 7, point
+(21, 4), projeté (14,38 ; 9,52) calculé ; le nom `convexe` était pris par ma-09), `parseval` (ch. 3 : carrés 1/n², n = 1…6,
+empilés en f1/f2 à côté d'une colonne f3 de même hauteur, leur somme 1,4914 ramenée à 18), `dirichlet` (ch. 6 : noyau
+D₂(x) = sin(2,5x)/sin(x/2) sur [−π, π], maximum 5, minimum −1,25), `sinc` (ch. 7 : sin t / t sur [−2π, 2π]) et
+`incertitude` (ch. 8 : gaussiennes de σ = 1,5 et 6, de hauteurs 16 et 4, donc de même aire). Écartées : `projection`,
+`orbite` (rotation irrationnelle), `echantillons`. Générateur : scratchpad `hf/sym.py`.
+Signalé : sur téléphone, le titre court de l'en-tête affiche le LaTeX brut (« L^{2} ») des titres à formule, comme pour
+`l3-in-08` ; c'est l'en-tête du domaine apparence.
