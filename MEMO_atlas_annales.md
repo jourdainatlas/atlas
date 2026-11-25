@@ -408,3 +408,11 @@ Agrég. interne : 2 points. CAPES : rien. Synonymes ajoutés : « théorème de 
 proposées à l'auteur (report par la conversation Cours). Libellés : « Licence 3 – Hilbert et Fourier »,
 exercice « Hilb.-Four. ».
 
+**Exercices de Hilbert et Fourier (25 nov. 2026, soir).** Les 98 exercices `f-l3-hf-01` à `08` reliés (agrég.
+externe §4, §8, §10 ; interne §6, §10, numéros affichés), un agent puis une relecture (4 retraits, 4
+remplacements, 2 ajouts ; `l3-hf-01-01`, sur une forme hermitienne, n'est relié nulle part). 49 points modifiés ;
+sans exercice : agrég. externe 34 → 33, interne 32 → 31. Restent sans exercice dans ces sections : formes
+bilinéaires générales, non dégénérées, isotropes, décomposition polaire complexe, espace de Schwartz,
+meilleure approximation en moyenne quadratique. Grammaire des notes : « les exercices exercice … », « : exercice
+N » corrigés (à ajouter aux corrections habituelles après `notes_lisibles`).
+
