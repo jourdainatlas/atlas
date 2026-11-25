@@ -397,3 +397,14 @@ demande désormais des propositions, qu'elle reporte elle-même dans `cours.yaml
 l'auteur le 24 nov.). `notes_lisibles` fusionne désormais « ch. N, section A, …, ch. N, section B » en
 « ch. N, sections A et B » (script ponctuel).
 
+**Espaces de Hilbert et séries de Fourier (25 nov. 2026).** UE `l3-hf-01` à `08` (cours seuls, pas encore
+d'exercices : la veille signalera les feuilles à leur arrivée). Même procédure (consigne `CONSIGNE_l3nov.md`),
+un agent de liaison, une relecture (1 note réécrite). Agrég. externe : 18 points (topologie : projection sur un
+convexe fermé, Riesz, bases hilbertiennes ; calcul intégral : Plancherel sort de « à venir », inversion,
+Dirichlet, Fejér, Parseval dans L¹(T)) ; « à venir » 25 → 24 (l'espace de Schwartz reste absent du site).
+Agrég. interne : 2 points. CAPES : rien. Synonymes ajoutés : « théorème de représentation de Riesz »
+(`dualite`), « phénomène de Gibbs » (`convergence-fourier`), « inégalité de Heisenberg »
+(`inegalites-fonctionnelles`), « principe d'incertitude » (`transformee-fourier`). Listes `annales_themes`
+proposées à l'auteur (report par la conversation Cours). Libellés : « Licence 3 – Hilbert et Fourier »,
+exercice « Hilb.-Four. ».
+
