@@ -1227,9 +1227,9 @@ Heisenberg, Shannon). PDF `documents/cours/l3/hilbert_fourier_chapNN_<slug>.pdf`
 §59, §66, §69. Théories : `f-hilbert`, `f-evn`, `f-bases-hilbertiennes`, `f-riesz`, `f-operateurs` (graphe `anf`) et les
 nœuds `fo-*` des séries et de la transformée de Fourier. Le chapitre 3 admet, avec le lemme de Zorn, l'existence d'une base
 hilbertienne dans le cas non séparable (le résumé le dit). Prérequis de l'UE [mp-10, mp-11, mp-04] ; « À revoir avant » par
-chapitre. Activité : produit-scalaire → ch. 1. `annales_themes` posés provisoirement (prehilbertiens, espaces-fonctionnels,
-parseval, series-fourier, convergence-fourier, transformee-fourier, formule-sommatoire-poisson, theorie-ergodique…), à
-confirmer par la conversation Annales. Termes exclus : 18 fragments par chapitre (ch. 2, 3, 6, 7, 8).
+chapitre. Activité : produit-scalaire → ch. 1. `annales_themes` : listes de la conversation Annales reportées le 25 nov. (commit 26b4874 de son côté ; `transformees`
+retiré des ch. 7 et 8, ajouts `projection-convexe`, `adjoint-normaux`, `theorie-ergodique` au ch. 5, `integrale-gauss`,
+`inegalites-fonctionnelles`). Termes exclus : 18 fragments par chapitre (ch. 2, 3, 6, 7, 8).
 Symboles validés le 25 nov. : repris `plan` (ch. 1, comme mp-10), `hyperplan` (ch. 4, comme l3-cd-03 : forme linéaire
 de Riesz), `creneau` (ch. 5, comme mp-11) ; nouveaux `projconvexe` (ch. 2 : disque de centre (9, 14) et de rayon 7, point
 (21, 4), projeté (14,38 ; 9,52) calculé ; le nom `convexe` était pris par ma-09), `parseval` (ch. 3 : carrés 1/n², n = 1…6,
