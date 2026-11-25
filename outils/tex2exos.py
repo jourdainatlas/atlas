@@ -234,9 +234,64 @@ def image_svg(nom, opts):
     sys.stderr.write(f'image introuvable : {nom} (variable TEX2EXOS_IMAGES)\n'); return None
 
 # ------------------------------------------------------------------ conversion d'un fragment
+EVERYMATH = re.compile(r'^[^%\n]*\\everymath\s*\{\s*\\displaystyle\s*\}', re.M)
+GROS_OP = re.compile(r'\\(sum|prod|coprod|int|iint|iiint|oint|frac|binom|lim|limsup|liminf|sup|inf|max|min|bigcup|bigcap|bigoplus|bigotimes|bigsqcup|underset|overset|limits)(?![A-Za-z])')
+
+OP_AFF = re.compile(r'\\(sum|prod|coprod|int|iint|iiint|oint|lim|limsup|liminf|sup|inf|max|min|bigcup|bigcap|bigoplus|bigotimes|bigsqcup)(?![A-Za-z])')
+SANS_MATHS = re.compile(r'\\(text\w*|mathrm|operatorname\*?|mbox|label|textcolor|color|hspace|mathbb|mathcal|mathfrak|mathscr)(?![A-Za-z])')
+
+def _argument(v, i):
+    """Fin de l'argument qui commence en v[i] (espaces sautés) : groupe {…}, commande ou caractère."""
+    while i < len(v) and v[i] == ' ': i += 1
+    if i >= len(v): return i
+    if v[i] == '{': return accolade(v, i)
+    if v[i] == '\\':
+        m = re.match(r'\\([A-Za-z]+|.)', v[i:]); return i + m.end()
+    return i + 1
+
+def style_affiche(v):
+    """Équivalent local de \\displaystyle, qui laisse la formule sécable en fin de ligne : \\frac et \\binom du niveau
+    principal deviennent \\dfrac et \\dbinom, et les grands opérateurs, avec leurs bornes, \\mathop{\\displaystyle …}.
+    Les exposants, indices, arguments de fractions et textes restent tels quels, comme sous \\displaystyle."""
+    out = []; i = 0; n = len(v)
+    while i < n:
+        c = v[i]
+        if c == '\\':
+            m = re.match(r'\\([A-Za-z]+|.)', v[i:]); nom = m.group(0); j = i + m.end()
+            if nom in ('\\frac', '\\binom'):
+                k = _argument(v, _argument(v, j))
+                out.append('\\d' + nom[1:] + v[j:k]); i = k; continue
+            if OP_AFF.fullmatch(nom):
+                k = j
+                while True:
+                    mm = re.match(r'\s*(\\limits|\\nolimits)', v[k:])
+                    if mm: k += mm.end(); continue
+                    mm = re.match(r'\s*[_^]', v[k:])
+                    if mm: k = _argument(v, k + mm.end()); continue
+                    break
+                out.append('\\mathop{\\displaystyle ' + v[i:k].strip() + '}'); i = k; continue
+            if SANS_MATHS.fullmatch(nom):
+                k = j
+                while k < n and v[k] in ' [': 
+                    if v[k] == '[': k = v.index(']', k) + 1
+                    else: k += 1
+                k = _argument(v, k) if k < n and v[k] == '{' else k
+                out.append(v[i:k]); i = k; continue
+            out.append(nom); i = j; continue
+        if c in '^_':
+            k = _argument(v, i + 1); out.append(v[i:k]); i = k; continue
+        if c == '{':
+            k = accolade(v, i); out.append('{' + style_affiche(v[i+1:k-1]) + '}'); i = k; continue
+        out.append(c); i += 1
+    return ''.join(out)
+
 class Conv:
     def __init__(s, pre): s.pre = pre; s.ph = {}; s.n = 0
     def jeton(s, genre, val):
+        # \everymath{\displaystyle} du préambule (feuilles de Licence, corrigés de MPSI et de MP) : KaTeX compose les
+        # formules en ligne en style réduit ; style_affiche rend le style « affiché » là où il change le rendu (25 nov.).
+        if genre == 'MI' and EVERYMATH.search(s.pre):
+            val = style_affiche(val)
         s.n += 1; k = f'@@{genre}{s.n}@@'; s.ph[k] = (genre, val); return k
 
     def tableau(s, spec, corps):

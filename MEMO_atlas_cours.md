@@ -1251,3 +1251,22 @@ lots, `outils/meta_l3_hf_01.py` à `08.py`, PDF `documents/exercices/l3/hilbert_
 `tex2exos.sources` : une ligne de commentaire continue aussi la source quand la précédente ne finit pas par un point et
 qu'elle n'est pas une note (« Mot : … ») — « Mathovore, exercices » / « L3, exercice 7 » était coupé. `source_lisible` retire
 aussi « conservé au ch. N ».
+
+### 74. `\everymath{\displaystyle}` : style affiché des formules en ligne (25 nov. 2026)
+
+Remarque de l'auteur : les formules en ligne de ses PDF sont en style affiché (grand Σ à bornes dessous, fractions pleines),
+celles du site en style réduit. Cause : le préambule des feuilles de Licence (énoncés et corrigés, sauf les énoncés de Calcul
+différentiel) et des corrigés MPSI 10 à 22 et MP 1 à 17 contient `\everymath{\displaystyle}`, que `tex2exos` ignorait. Les
+énoncés MPSI et MP, les corrigés MPSI 1 à 9, le lycée, les Maths approfondies et Galois ne l'ont pas.
+
+`tex2exos.style_affiche` (appelée dans `Conv.jeton` pour les formules en ligne quand le préambule contient la ligne) : au
+niveau principal de la formule, `\frac`/`\binom` → `\dfrac`/`\dbinom`, et les grands opérateurs avec leurs bornes
+(`\sum`, `\int`, `\lim`, `\max`, `\bigcup`…) → `\mathop{\displaystyle …}` ; exposants, indices, arguments de fractions et
+textes inchangés, comme sous `\displaystyle`. **Pas de `\displaystyle` en tête de formule** : KaTeX en fait alors un seul
+bloc insécable, et 21 exercices débordaient sur téléphone. Les 72 feuilles en ligne ont été traitées par un script
+(scratchpad `ds/ds.py`, même fonction, sans reconversion : métadonnées et sources intactes) — 35 feuilles de Licence en
+entier, les corrigés de `f-l3-cd-*`, `f-ma-10` à `22` et `f-mp-*` ; environ 11 700 formules, résultat identique à une
+reconversion (vérifié sur `f-l3-hf-05`). Test téléphone des 1 957 exercices touchés : un seul débordement nouveau
+(`mp-14-10`, question 2 du corrigé, fraction de 49 caractères), passé à la main en formule centrée (à refaire si l'on
+reconvertit cette feuille). 20 débordements sur téléphone existaient déjà avant (ma-10-26, ma-18-23, ma-18-56, ma-20-34,
+54, 57, 63, ma-21-20, 75, 87, 88, 96, 109, ma-22-28, 30, mp-10-07, 38, 47, l3-cd-06-14, l3-cd-07-07) : signalés, non traités.
