@@ -665,7 +665,8 @@ def sources(t_brut):
             l = l.lstrip('%').strip()
             if not l: break
             ouvert = texte.count('(') > texte.count(')')
-            if ouvert or re.search(r'[,;(]$', texte) or re.match(r'[a-zà-ÿ0-9(]', l): texte += ' ' + l
+            note = re.match(r"[A-ZÀ-Ÿ][\w’' -]*?\s*:", l)
+            if ouvert or re.search(r'[,;(]$', texte) or re.match(r'[a-zà-ÿ0-9(]', l) or (not note and not texte.rstrip().endswith('.')): texte += ' ' + l
             else: break
         texte = texte.replace('~', ' ')
         # Les commentaires LaTeX sont souvent écrits sans accents : titre du polycopié rétabli.
@@ -702,7 +703,7 @@ def source_lisible(texte, attrib):
         if not x or re.match(r'(exercice composé pour|promesse de|(les? )?questions?\b|la question\b)', x, re.I) or re.search(r'photographi', x, re.I):
             continue
         # notes de travail des feuilles de Probabilités (24 nov.) : renvois internes, devoirs de l'auteur
-        if re.match(r"(V\d+ et V\d+ |l'application finale est|devoir en temps libre)", x, re.I):
+        if re.match(r"(V\d+ et V\d+ |l'application finale est|devoir en temps libre|conservée? au ch)", x, re.I):
             continue
         x = re.sub(r',\s*même modèle$', '', x)
         x = re.sub(r'\s*[:;]\s*la simulation[^()]*', '', x)

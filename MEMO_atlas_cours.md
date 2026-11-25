@@ -1239,3 +1239,15 @@ D₂(x) = sin(2,5x)/sin(x/2) sur [−π, π], maximum 5, minimum −1,25), `sinc
 `orbite` (rotation irrationnelle), `echantillons`. Générateur : scratchpad `hf/sym.py`.
 Signalé : sur téléphone, le titre court de l'en-tête affiche le LaTeX brut (« L^{2} ») des titres à formule, comme pour
 `l3-in-08` ; c'est l'en-tête du domaine apparence.
+
+### 73. Exercices de l'UE Hilbert et Fourier (25 nov. 2026)
+
+`f-l3-hf-01` à `f-l3-hf-08` (11, 11, 8, 18, 16, 15, 12, 7 exercices : 98 ; 42 figures, dont des pgfplots), reçus en deux
+lots, `outils/meta_l3_hf_01.py` à `08.py`, PDF `documents/exercices/l3/hilbert_fourier_chapNN_<slug>_{enonce,corrige}.pdf`
+(slugs en minuscules, `series_fourier_l2`, `transformation_fourier_l1`). Titres des feuilles = titres des chapitres de
+`cours.yaml` (ceux des sources contiennent `\R`). Champ `exercices` des chapitres, nouveauté du 25 nov.,
+`exercices_cours.py` relancé. Aucun avertissement de conversion ; 98 sources affichées.
+
+`tex2exos.sources` : une ligne de commentaire continue aussi la source quand la précédente ne finit pas par un point et
+qu'elle n'est pas une note (« Mot : … ») — « Mathovore, exercices » / « L3, exercice 7 » était coupé. `source_lisible` retire
+aussi « conservé au ch. N ».
