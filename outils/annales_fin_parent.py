@@ -45,8 +45,9 @@ for f in fichiers:
             while j < len(L) and not re.match(r'^  - nom:|^- |^\S', L[j]): j += 1
             B = L[i:j]
             def liste(cle):
-                k = next((k for k, x in enumerate(B) if x == f'    {cle}:'), None)
+                k = next((k for k, x in enumerate(B) if x == f'    {cle}:' or x == f'    {cle}: []'), None)
                 if k is None: return None, None, []
+                if B[k].endswith('[]'): return k, k + 1, []
                 e = k + 1
                 while e < len(B) and re.match(r'^    - ', B[e]): e += 1
                 return k, e, [x[6:].strip() for x in B[k + 1:e]]

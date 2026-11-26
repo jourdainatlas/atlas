@@ -116,12 +116,12 @@ mathématiques du baccalauréat général pris sur les annales de l'APMEP (pages
 avec le lien du corrigé APMEP. Choix de l'auteur : toutes les sessions (normale, remplacement, secours) ; en
 Première, la seule spécialité, sujets zéro compris ; un lien « Corrigé APMEP » à la place du rapport du jury.
 
-**Inventaire (241 sujets, 241 corrigés, tous vérifiés en HTTP 200).** Terminale S 2011-2020 (série S, un sujet
+**Inventaire (241 sujets, 241 corrigés, vérifiés en HTTP 200 le 10 nov. 2026 ; l'audit du 26 nov. a trouvé trois liens rompus depuis, voir la fin du mémo).** Terminale S 2011-2020 (série S, un sujet
 par centre et par session ; 2020 : quatre sujets de septembre et décembre seulement), Terminale spécialité
 2021-2026 (jour 1 et jour 2 ; 2021 : candidats libres, sujet zéro et les deux sujets du 15 mars, épreuves
 annulées en janvier 2021 mais sujets publiés), Première 2026 (10 sujets de l'épreuve anticipée de spécialité
 et 2 sujets zéro). Exclus : compilations annuelles, sujets « hors spécialité » et technologiques de Première.
-Le PDF de Pondichéry 2017 est un corrigé qui reproduit l'énoncé (l'APMEP ne publie que lui) ; les versions
+Pondichéry 2017 : l'APMEP ne publie l'énoncé seul que dans sa compilation annuelle `Bac_S_annee_2017_DV.pdf` (pages 3 à 10) ; depuis l'audit du 26 nov. 2026, la case pointe vers elle (champ `page_debut: 3` de la grille, pages des blocs comptées dans la compilation) au lieu du corrigé qui reproduisait l'énoncé ; les versions
 « obligatoire » de Nouvelle-Calédonie (mars) et de Polynésie (septembre) ne contiennent pas l'exercice de
 spécialité ; l'aperçu le dit.
 
