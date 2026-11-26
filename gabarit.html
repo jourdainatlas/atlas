@@ -1554,7 +1554,9 @@ a.acc-etape:hover { background: var(--trame); }
 .semestre { margin: 0 0 22px; }
 .semestre-titre { font-family: var(--f-titre); font-size: 17px; font-weight: 600; margin: 18px 0 10px; color: var(--encre-2); letter-spacing: .02em; text-transform: uppercase; }
 .ue { margin: 0 0 16px; }
-.ue-tete { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; gap: 4px 12px; align-items: center; cursor: pointer; list-style: none; padding: 10px 14px; margin: 0 0 6px; border: 1px solid var(--filet); border-left: 4px solid var(--accent, currentColor); border-radius: 10px; text-decoration: none; color: inherit; background: var(--carte, transparent); }
+.ue-tete { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; gap: 4px 12px; align-items: center; cursor: pointer; list-style: none; padding: 10px 14px; margin: 0 0 6px; border: 1px solid var(--filet); border-left: 4px solid transparent; position: relative; border-radius: 10px; text-decoration: none; color: inherit; background: var(--carte, transparent); }
+/* liseré de l'UE : dégradé des couleurs de ses chapitres (--bande-ue), posé sur la seule bordure gauche */
+.ue-tete::before { content: ''; position: absolute; inset: -1px -1px -1px -4px; border-radius: inherit; border-left: 4px solid transparent; background: var(--bande-ue, var(--accent, currentColor)) border-box; -webkit-mask: linear-gradient(#000 0 0) padding-box, linear-gradient(#000 0 0) border-box; -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) padding-box exclude, linear-gradient(#000 0 0) border-box; pointer-events: none; }
 .ue-tete:hover { background: var(--papier); }
 .ue-code { font-size: 12.5px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--encre-2); }
 .ue-titre { font-family: var(--f-titre); font-size: 19px; font-weight: 600; }
@@ -4539,7 +4541,7 @@ function coursNiveauParUE(n, liste, uesN) {
     for (const u of uesN.filter(u => u.semestre === s)) {
       const lu = liste.filter(c => c.ue === u.id);
       if (!lu.length) { h += `<div class="ue"><div class="ue-vide carte"><span class="ue-code">${esc(u.code || '')}</span><span class="ue-titre">${u.titre}</span><span class="statut">À venir</span></div></div>`; continue; }
-      h += `<details class="ue" data-ue="${u.id}" style="--accent: ${couleurUE(u, lu)}"${coursUEOuvertes.has(u.id) ? ' open' : ''}><summary class="ue-tete"><span class="ue-code">${esc(u.code || '')}</span><span class="ue-titre">${u.titre}</span><span class="ue-info">${lu.length} chapitres${u.pages ? ` · ${u.pages} pages` : ''}</span><span class="ue-chevron" aria-hidden="true"></span></summary><div class="ue-corps"><a class="ue-lien" href="#cours/ue/${u.id}">Présentation de l'UE et cours complet (PDF) →</a><ol class="chapitres carte">${lu.map(ligneChapitre).join('')}</ol></div></details>`;
+      h += `<details class="ue" data-ue="${u.id}" style="--accent: ${couleurUE(u, lu)}; --bande-ue: ${CoursBandeUE(u, lu)}"${coursUEOuvertes.has(u.id) ? ' open' : ''}><summary class="ue-tete"><span class="ue-code">${esc(u.code || '')}</span><span class="ue-titre">${u.titre}</span><span class="ue-info">${lu.length} chapitres${u.pages ? ` · ${u.pages} pages` : ''}</span><span class="ue-chevron" aria-hidden="true"></span></summary><div class="ue-corps"><a class="ue-lien" href="#cours/ue/${u.id}">Présentation de l'UE et cours complet (PDF) →</a><ol class="chapitres carte">${lu.map(ligneChapitre).join('')}</ol></div></details>`;
     }
     h += `</div>`;
   }
@@ -4700,7 +4702,7 @@ function vueFeuilles(E, liste) {
     for (const u of uesN) {
       const fs = toutes.filter(f => ueDeF(f) === u.id); if (!fs.length) continue;
       const lu = (R.cours?.cours || []).filter(c => c.ue === u.id), nb = fs.reduce((t, f) => t + (f.nombre || 0), 0), cle = 'exos-' + u.id;
-      h += `<details class="ue ue-exos" data-ue="${cle}" style="--accent: ${couleurUE(u, lu)}"${coursUEOuvertes.has(cle) ? ' open' : ''}><summary class="ue-tete"><span class="ue-code">${esc(u.code || (u.semestre ? 'S' + u.semestre : ''))}</span><span class="ue-titre">${u.titre}</span><span class="ue-info">${fs.length} ${fs.length > 1 ? 'feuilles' : 'feuille'} · ${nb} exercices</span><span class="ue-chevron" aria-hidden="true"></span></summary><div class="ue-corps">${vueFeuillesCartes(fs)}</div></details>`;
+      h += `<details class="ue ue-exos" data-ue="${cle}" style="--accent: ${couleurUE(u, lu)}; --bande-ue: ${CoursBandeUE(u, lu)}"${coursUEOuvertes.has(cle) ? ' open' : ''}><summary class="ue-tete"><span class="ue-code">${esc(u.code || (u.semestre ? 'S' + u.semestre : ''))}</span><span class="ue-titre">${u.titre}</span><span class="ue-info">${fs.length} ${fs.length > 1 ? 'feuilles' : 'feuille'} · ${nb} exercices</span><span class="ue-chevron" aria-hidden="true"></span></summary><div class="ue-corps">${vueFeuillesCartes(fs)}</div></details>`;
     }
     const hors = toutes.filter(f => !uesN.some(u => u.id === ueDeF(f)));
     return h + (hors.length ? vueFeuillesCartes(hors) : '');
@@ -6571,6 +6573,16 @@ function couleurUE(u, lu) {
   if (u.couleur) return `var(--c-${u.couleur})`;
   const n = {}; for (const c of lu) for (const x of couleursChapitre(c)) n[x] = (n[x] || 0) + 1;
   return Object.entries(n).sort((a, b) => b[1] - a[1])[0]?.[0] || 'var(--encre-2)';
+}
+// Liseré d'une UE (demande de l'auteur, 26 nov.) : dégradé vertical des couleurs dominantes de ses chapitres,
+// dans l'ordre des chapitres (deux chapitres voisins de même couleur n'en font qu'une) ; couleur unie si l'UE n'en
+// a qu'une, ou si cours.yaml lui donne un champ couleur.
+function CoursBandeUE(u, lu) {
+  if (u.couleur) return `var(--c-${u.couleur})`;
+  const dom = c => { const n = {}; for (const x of couleursChapitre(c)) n[x] = (n[x] || 0) + 1;
+    return Object.entries(n).sort((a, b) => b[1] - a[1])[0]?.[0]; };
+  const d = lu.map(dom).filter(Boolean).filter((x, i, t) => i === 0 || x !== t[i - 1]);
+  return !d.length ? 'var(--encre-2)' : d.length === 1 ? d[0] : `linear-gradient(to bottom, ${d.join(', ')})`;
 }
 function symboleChapitre(c) {
   const dessin = SYM_DESSINS[SYM_CHAPITRES[c.id]];

@@ -1414,3 +1414,14 @@ flèche sur un disque du plan), `helice` (ch. 6 : revêtement ℝ → 𝕊¹, h�
 [0, 4π] au-dessus du cercle) et `genre2` (ch. 7 : réunion de deux disques de rayon 6,6 à 9,2 l'un de l'autre, deux trous,
 `evenodd`). Écartées : `sinustopo`, `moebius`, `homotopie`, `indice2`, `tore`. Générateur : scratchpad `gt/sym.py`.
 Préparé sur la branche `ue-geometrie-topologie`.
+
+### 82. Liseré des UE en dégradé (26 nov. 2026, soir)
+
+Demande de l'auteur. Le liseré gauche des onglets d'UE (`details.ue > .ue-tete`, page Cours et vue « Par niveau » des
+Exercices) n'est plus la seule couleur dominante de l'UE : `CoursBandeUE(u, lu)` donne un dégradé vertical des couleurs
+dominantes de ses chapitres (celle du symbole de chaque chapitre), dans l'ordre des chapitres, deux voisins de même
+couleur n'en faisant qu'une ; couleur unie si l'UE n'en a qu'une ou porte un champ `couleur`. Variable `--bande-ue` à
+côté de `--accent` (qui reste `couleurUE`, pour le lien « Présentation de l'UE »). La bordure gauche de `.ue-tete` est
+devenue transparente ; un `::before` couvrant la boîte, masqué hors de la bordure gauche (`mask` padding-box / border-box
+en exclusion), peint le dégradé : la forme arrondie du liseré est celle de l'ancienne bordure. Les UE dont tous les
+chapitres sont de la même famille (calcul différentiel, intégration, probabilités, Hilbert-Fourier) restent unies.
