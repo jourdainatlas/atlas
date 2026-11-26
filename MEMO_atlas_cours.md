@@ -1298,8 +1298,10 @@ renommés), cours complet `documents/ue/l3/geometrie_differentielle_cours_comple
 graphes `edo-courbes` (`cb-*`) et `edo-surfaces` (`sf-*`), nœuds `gd-*` de `geod`, `cdiff-lagrange`, `v-formes-alternees`,
 `v-algebre-exterieure`. Seuls des rappels sont admis (Cauchy-Lipschitz avec paramètre, inversion locale) ; pas de choix.
 Prérequis de l'UE [l3-cd-03, mp-17, mp-07] ; « À revoir avant » par chapitre (ma, mp). Aucune activité ne s'y rattache.
-`annales_themes` provisoires (courbes-surfaces, arcs-parametres, longueur-courbure, sous-varietes, extrema-lies,
-formes-differentielles, calcul-differentiel…) : à remplacer par les listes de la conversation Annales. Pas de Python.
+`annales_themes` : listes de la conversation Annales reportées le 26 nov. au soir (son commit 756b929 ; proposées par un
+agent, relues par un second) : ch. 1 longueur-courbure, arcs-parametres ; ch. 2 sous-varietes, extrema-lies, inversion-locale ;
+ch. 3 courbes-surfaces, sous-varietes ; ch. 4 courbes-surfaces, calcul-variations ; ch. 5 formes-differentielles,
+topologie-algebrique (calcul-differentiel, formes-quadratiques, equations-differentielles retirés : employés, non exposés). Pas de Python.
 `THEME_GRAPHE` : `edo-courbes` et `edo-surfaces` → « géométrie différentielle » (sinon ces nœuds, rangés sous `edo`, seraient
 comptés en équations différentielles). Termes exclus par chapitre : côtés et sphère (étiquettes de figure), selle, pour tout,
 différentielle (rouge d'insistance), « Rappel (admis) : Cauchy-Lipschitz… », -tenseur.
