@@ -435,3 +435,55 @@ notes ajoutées. Synonymes ajoutés (`courbes-surfaces`, `longueur-courbure`, `a
 (fractions continues dans le sujet de 2016) et « point d'inflexion » (déjà lycée). Listes `annales_themes`
 proposées à l'auteur.
 
+
+**Topologie générale (26 nov. 2026).** UE `l3-gt-01` à `07` (cours). Agrég. externe : espaces métriques et
+topologiques, connexité, compacité, groupe fondamental, revêtements, point fixe de Brouwer ; agrég. interne :
+topologie des espaces métriques. « À venir » de l'agrég. externe : 22 → 19 ; agrég. interne : 14. Listes
+`annales_themes` proposées : gt-01 et gt-03 `[topologie-evn]`, gt-02 `[connexite, compacite]`, gt-04
+`[topologie-algebrique, actions-groupes]`, gt-05 et gt-07 `[topologie-algebrique]`, gt-06
+`[topologie-algebrique, point-fixe-topologique]`. Synonymes ajoutés à `topologie-evn`, `topologie-algebrique`,
+`groupes` (« groupe de Klein »).
+
+### 46. Audit du 26 nov. 2026 : ce qui a été appliqué et les règles qui en sortent
+
+L'audit de l'auteur (moteur, vue Programme sur téléphone, grille, fiches, programmes ; décisions 1 à 11) a été
+appliqué en huit lots, chacun relu par un second agent (commits f7ab4ce à c170ea7).
+
+**Moteur.** Toute la chaîne des thèmes compte : `indexAnnales` calcule `ancetres` et `descendants`, utilisés par
+`compte`, `compteAnnales`, `frequencePg`, `sujetsPointPg` et `rechercherAnnales` (un sujet étiqueté
+« Jordan » répond à « réduction »). Rapport T01 du vocabulaire appliqué (environ 195 corrections relues). Les
+synonymes s'écrivent en ASCII, puisque `normRech` ne garde que a-z et 0-9.
+
+**Vue Programme.** Plus aucun débordement à 390 px (agrég. externe, MP, MPSI, CAPES vérifiés) : `.kx` et KaTeX
+contenus, libellés repliés. `annales-programmes.yaml` porte deux champs nouveaux : `defaut` (onglet ouvert par
+défaut : Première → programme de 2026) et `avis` (phrase sous les onglets, qui dit quel programme vaut pour
+quels sujets).
+
+**Grille.** Libellés « Maths 1 » / « Mathématiques » / « Maths 2 » par années (e3a ≤ 2019, CCP PC/PSI 2011-2014) :
+la liste `annees` des épreuves est **à prolonger à chaque session** si l'intitulé reste le même. Une case sans
+sujet officiel trouvable porte `attente: "…"` (texte affiché) plutôt qu'une source non officielle (11 cases :
+Centrale MP 2011, 2013, 2014 M2, Centrale PC 2011, Mines PSI 2011 à 2013…). Champ `page_debut` d'une case : le
+lien et le bouton « Sujet (PDF) » ouvrent `#page=N` (Pondichéry 2017, page 3 d'une compilation). Sessions de
+novembre 2026 ajoutées (Amérique du Sud J1-J2, Nouvelle-Calédonie J1-J2).
+
+**Règles d'étiquetage (s'appliquent désormais à toute fiche).**
+- Thème fin et ancêtre jamais au même rang (décision 3), au bac comme aux concours ; `outils/annales_fin_parent.py`
+  l'applique (simulation par défaut, `--appliquer`) ; il annonce aujourd'hui « 0 changements ».
+- Anti-réponse étendue aux questions fermées (« … est-il un losange ? ») : ni nom, ni mot-clé, ni aperçu ne
+  livre la réponse (décision 4).
+- Une annexe éloignée n'entre pas dans les pages du bloc ; sa page est citée dans le nom du bloc (« …, algorithme
+  en annexe, p. 6 ») ; vaut aussi pour les concours (décision 5). Une page 1 qui porte le début d'un exercice
+  entre dans son bloc.
+- Contrôle sans construire : `python3 outils/annales_fiches_valider.py [fichiers]` doit dire « Aucune erreur »
+  (2 avertissements connus : pages interverties volontairement dans X-ENS 2023 Maths D).
+
+**Images d'aperçu.** 55 fabriquées, 35 obsolètes supprimées (2255 sur 2255). Règle : **à chaque ajout ou
+renommage de sujet, l'image se fabrique dans le même commit** (`node identite/fabriquer-apercus-pages.mjs
+<polices>`, polices @fontsource spectral, ibm-plex-sans, gfs-didot) ; on ne pousse jamais un lot qui laisse
+« à fabriquer ».
+
+**Constats écartés ou en attente.** X-ENS 2023 Maths C : le PDF de l'ENS répond 404, reste sur vmaths (de même
+Maths C 2025). Corrigé de Nouvelle-Calédonie J1 2025 : introuvable à l'APMEP, retiré (celui de sujetdebac non
+retenu) ; J2 2025 pointe vers la copie maths-paris (source citée) faute de scan officiel. Logique au lycée
+(décision 9) et nilpotents de PSI (décision 6) : laissés en l'état. En attente de l'auteur : reclassement des
+exercices par étoiles (échelles de MPSI et de MP comparables ?), point PSI 6.2.1.
