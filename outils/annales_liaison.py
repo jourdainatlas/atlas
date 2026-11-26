@@ -185,7 +185,7 @@ def cmd_notes():
     def lieu(c): return f"{nomniv(c)}, ch. {c['chapitre']}" if c.get('chapitre') else nomniv(c)
     def lab_ex(i):
         e = ex[i]; f = fe.get(e['feuille'], {}); c = cours.get(f.get('cours'), {'niveau': f.get('niveau')})
-        if not f.get('chapitre'): return f"exercice {e['numero']} ({f.get('titre', '')})"
+        if not f.get('chapitre'): return f"exercice {e['numero']} de la feuille « {f.get('titre', '')} » ({nomniv(c)})"
         return f"exercice {f['chapitre']}.{e['numero']}" + (f" ({nomniv(c)})" if f.get('niveau') not in ('ma', 'mp') else '')
     alt = lambda ids: '|'.join(map(re.escape, sorted(ids, key=len, reverse=True)))
     RX_EX = re.compile(r"(?:l'exercice |exercice )?\b(" + alt(ex) + r")\b")

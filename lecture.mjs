@@ -319,7 +319,7 @@ export function pagesLecture(ctx) {
     h += `<h1>${esc(titreC)}</h1>`;
     if (d?.nom) h += `<p class="l-meta">${F(d.nom, d)}${d.pages ? ` · ${d.pages} pages` : ''}</p>`;
     const abs = u => /^https?:/.test(u) ? u : '/' + String(u).replace(/^\//, '');
-    h += `<div class="l-boutons">${x.sujet ? `<a class="plein" href="${attr(abs(x.sujet))}" rel="noopener">Sujet (PDF)</a>` : ''}${x.rapport ? `<a href="${attr(abs(x.rapport))}" rel="noopener">Rapport du jury</a>` : ''}${x.corrige_pdf ? `<a href="${attr(abs(x.corrige_pdf))}" rel="noopener">Corrigé${srcF ? ' ' + esc(srcF.nom) : ''}</a>` : ''}</div>`;
+    h += `<div class="l-boutons">${x.sujet ? `<a class="plein" href="${attr(abs(x.sujet))}${x.page_debut ? '#page=' + x.page_debut : ''}" rel="noopener">Sujet (PDF)</a>` : ''}${x.rapport ? `<a href="${attr(abs(x.rapport))}" rel="noopener">Rapport du jury</a>` : ''}${x.corrige_pdf ? `<a href="${attr(abs(x.corrige_pdf))}" rel="noopener">Corrigé${srcF ? ' ' + esc(srcF.nom) : ''}</a>` : ''}</div>`;
     if (x.source) h += `<p class="l-meta">PDF hébergé hors du site officiel — source : <a href="${attr(x.source.url)}" rel="noopener">${esc(x.source.nom)}</a></p>`;
     else if (srcF) h += `<p class="l-meta">Sujet${x.corrige_pdf ? ' et corrigé' : ''} publiés par l'<a href="${attr(srcF.url)}" rel="noopener">${esc(srcF.nom)}</a>.</p>`;
     if (x.attente) h += `<p class="l-meta">${esc(x.attente)}</p>`;

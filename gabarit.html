@@ -1832,6 +1832,7 @@ table.grille button.pli-ann:hover { border-color: var(--encre); }
 .pg-entree-choix .chip { font-size: 13px; border-color: color-mix(in srgb, var(--r-annales) 50%, var(--filet)); }
 .pg-entree-choix .chip:hover { border-color: var(--r-annales); }
 .pg-progs { margin-bottom: 14px; }
+.pg-avis { margin: -6px 0 14px; font-size: 13.5px; color: var(--encre-2); max-width: 70ch; }
 .pg-progs b { font-family: var(--f-mono); font-weight: 600; margin-right: 2px; }
 .pg-tete h3 { font-family: var(--f-titre); font-size: 22px; margin: 0 0 4px; }
 .pg-org > summary { cursor: pointer; font-size: 13px; color: var(--encre-2); margin: 4px 0; }
@@ -4927,7 +4928,7 @@ function pageAnnales(chemin) {
       const cases = eps.map((ep, i) => {
         const x = trouver(c, an, ep), lib = `${nomC}${fil ? ' ' + fil : ''} ${an}, ${ep}${x && x.date ? `, ${x.date}${x.lieu ? ' (' + x.lieu + ')' : ''}` : ''}`;
         const srcX = x && (x.source || srcFam);
-        if (x && x.sujet) return `<a class="case present" href="${esc(x.sujet)}" target="_blank" rel="noopener" title="${esc(lib)} : ${srcX ? `sujet (PDF), source : ${esc(srcX.nom)}` : 'sujet officiel (PDF)'}">${court(ep, i)}</a>`;
+        if (x && x.sujet) return `<a class="case present" href="${esc(x.sujet)}${x.page_debut ? '#page=' + x.page_debut : ''}" target="_blank" rel="noopener" title="${esc(lib)} : ${srcX ? `sujet (PDF), source : ${esc(srcX.nom)}` : 'sujet officiel (PDF)'}">${court(ep, i)}</a>`;
         if (x && x.attente) { const cle = [fam.id, fil || '', c.id, an, ep].join('|'); return `<button type="button" class="case attente" data-cle="${esc(cle)}" aria-pressed="${etatAnn.cle === cle}" title="${esc(lib)} : ${esc(x.attente)}">${court(ep, i)}</button>`; }
         return `<span class="case" title="${esc(lib)} : pas encore référencé">${court(ep, i)}</span>`;
       }).join('');
@@ -5085,12 +5086,17 @@ function entreeProgramme(fam, fil) {
 function vueProgrammeAnnales(fam, fil) {
   const progs = progsDeFiliere(fam.id, fil);
   // par défaut, le programme de l'année de la filière (le dernier onglet : Terminale plutôt que Première, MP plutôt que MPSI)
-  const p = progs.find(x => x.id === etatPg.prog) || (fil ? progs[progs.length - 1] : progs[0]); etatPg.prog = p.id;
+  // (sauf choix explicite de la filière dans annales-programmes.yaml, champ defaut)
+  const AP = R['annales-programmes'] || {}, defF = ((AP.defaut || {})[fam.id] || {})[fil || '*'];
+  const p = progs.find(x => x.id === etatPg.prog) || progs.find(x => x.id === defF) || (fil ? progs[progs.length - 1] : progs[0]); etatPg.prog = p.id;
   // le programme et l'index des exercices (numéros, étoiles) sont chargés à l'ouverture de la vue
   const attente = chargerProgramme(p), attEx = chargerIndexExosPg();
   for (const a of [attente, attEx]) if (a) a.then(() => { const z = $('#rubrique'); if (enRubrique() && z.dataset.nom === 'annales' && etatAnn.vue === 'programme') rafraichirRubrique(); });
   let h = `<section class="pg" id="pg">`;
   if (progs.length > 1) h += `<div class="segments pg-progs" role="group" aria-label="Programme">${progs.map(x => `<button type="button" data-pg-prog="${x.id}" aria-pressed="${x.id === p.id}">${courtPg(x, fil) ? `<b>${esc(courtPg(x, fil))}</b> ` : ''}${x.annee ? esc(x.annee) : ''}</button>`).join('')}</div>`;
+  // phrase propre à une filière (avis), par ex. Première : les sujets de 2026 portent sur le programme de 2019
+  const avisF = ((AP.avis || {})[fam.id] || {})[fil || '*'];
+  if (avisF) h += `<p class="pg-avis">${esc(avisF)}</p>`;
   h += `<div class="pg-tete"><h3>${p.intitule}</h3>`;
   if (p.source) h += `<p class="pg-source">Texte officiel&nbsp;: <a href="${esc(p.source.url)}" target="_blank" rel="noopener">${esc(p.source.nom)}</a>. Les points suivent le texte officiel, dans l'ordre et avec ses mots ; les précisions en reprennent les commentaires et les capacités attendues.</p>`;
   if (p.preambule) h += `<details class="pg-org"><summary>Organisation du programme</summary><p class="pg-pre">${p.preambule}</p></details>`;
@@ -5181,7 +5187,7 @@ function ficheSujetHTML(x, complet) {
   const srcF = sourceFamAnnales(x);
   let h = `<article class="fiche-ann carte${complet ? ' complete' : ''}" data-slug="${sl}">`;
   h += `<div class="fa-tete"><span class="res-conc">${titreConc}</span><span class="fa-liens">`;
-  if (x.sujet) h += `<a class="bouton plein fa-pdf" href="${esc(x.sujet)}" target="_blank" rel="noopener">Sujet (PDF)</a>`;
+  if (x.sujet) h += `<a class="bouton plein fa-pdf" href="${esc(x.sujet)}${x.page_debut ? '#page=' + x.page_debut : ''}" target="_blank" rel="noopener">Sujet (PDF)</a>`;
   if (x.rapport) h += `<a class="bouton" href="${esc(x.rapport)}" target="_blank" rel="noopener">Rapport du jury</a>`;
   if (x.corrige_pdf) h += `<a class="bouton" href="${esc(x.corrige_pdf)}" target="_blank" rel="noopener">Corrigé${srcF ? ' ' + esc(srcF.nom) : ''}</a>`;
   if (!complet && d) h += `<a class="bouton" href="#annales/sujet/${sl}" title="Contenu du sujet, partie par partie (adresse à partager)">Contenu</a>`;
@@ -5441,9 +5447,10 @@ function resultatsAnnales() {
   let h = '';
   if (themes.length) {
     h += `<div class="rech-themes"><span>Thème${themes.length > 1 ? 's' : ''} reconnu${themes.length > 1 ? 's' : ''} :</span>`;
+    let dejaPar;
     for (const t of themes.slice(0, 6)) {
       const l = (t.noeuds || []).map(lienEdifice).find(Boolean), par = t.parent && I.themes[t.parent];
-      if (par) h += `<button type="button" class="chip" data-rq="${esc(par.titre)}" title="Thème plus large">${esc(par.titre)}</button><span aria-hidden="true">›</span>`;
+      if (par && !themes.some(x => x.id === par.id) && !(dejaPar = dejaPar || new Set()).has(par.id)) { dejaPar.add(par.id); h += `<button type="button" class="chip" data-rq="${esc(par.titre)}" title="Thème plus large">${esc(par.titre)}</button><span aria-hidden="true">›</span>`; }
       h += `<button type="button" class="chip" data-rq="${esc(t.titre)}" aria-pressed="${normRech(t.titre) === normRech(q)}">${esc(t.titre)}</button>${l ? `<a class="edif" href="${l}" title="Voir la théorie correspondante dans l'édifice">dans l'édifice →</a>` : ''}`;
       const fins = (I.enfants[t.id] || []).filter(c => C[c]).sort((a, b) => C[b] - C[a]);
       if (fins.length) h += `<div class="sous"><span>Préciser :</span>${fins.map(c => `<button type="button" class="chip" data-rq="${esc(I.themes[c].titre)}">${esc(I.themes[c].titre)}<small>${C[c]}</small></button>`).join('')}</div>`;
@@ -5459,7 +5466,7 @@ function resultatsAnnales() {
     const fils = s.filieres.length ? ` · ${s.filieres.join(', ')}` : '';
     const eps = [...new Set(s.cases.map(c => c.epreuve))].join(', ');
     h += `<article class="res-ann carte"><div class="res-tete"><span class="res-conc">${esc(cf.titre || s.concours)}${fils} · ${s.annee} · ${esc(eps)}</span>${s.cases[0] ? `<a class="lien-fiche" href="#annales/sujet/${slugSujet(s.cases[0])}">contenu du sujet</a>` : ''}</div>`;
-    h += `<h4><a href="${esc(s.sujet)}" target="_blank" rel="noopener">${annalesF(esc(s.nom || ''), s)}</a></h4>`;
+    h += `<h4><a href="${esc(s.sujet)}#page=${((s.blocs || [])[0] || {}).pages?.[0] || 1}" target="_blank" rel="noopener">${annalesF(esc(s.nom || ''), s)}</a></h4>`;
     if (s.apercu) h += `<p class="res-resume">${annalesF(surligner(s.apercu, q), s)}</p>`;
     h += `<ul class="res-parties">${r.parts.map(({ p, prin }) => {
       const [a, b] = p.pages || [1, 1];
