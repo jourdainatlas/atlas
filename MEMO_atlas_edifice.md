@@ -2220,3 +2220,21 @@ sessionStorage, suites de § 115 relancées (test_navigation 132/132 une fois co
 Relu par un agent indépendant : aucun bloquant, et ses quatre souhaitables sont appliqués.
 
 Entrée de nouveautés (rubrique site).
+
+## 117. Corrections de l'audit du 26 novembre 2026
+
+Audit complet de l'édifice (commit c55ea08 ; 95 graphes, 1 090 entrées, tous les exemples ; constats A — erreurs
+importantes —, B — imprécisions —, C — points à trancher). Corrections en trois parties parallèles (fichiers
+disjoints), chacune relue par un agent indépendant ; consignes et rapports hors dépôt : /home/claude/travail/audit-26nov/.
+Décisions d'Armand sur la section C : (1) Hodges : au choix de l'intégrateur ; (2) ⋆ harmonisé ; (3) et (4) après
+recherche approfondie (RECHERCHE-C.md), propositions validées le 26 nov.
+
+- Topologie, géométrie, homologie, calculabilité : tous les constats A et B appliqués, aucun écarté. A3 (gd-forme-volume) :
+  cartes directes de l'un ou l'autre cercle, composées par ρ sur le premier ; la construction naïve échoue (changement
+  de carte ρ, déterminant −1). dt-dualite : bijectivité en degré 1 démontrée sans choix (dr-surjectivite, dt-lisse-continu
+  (iii), dt-simplexes (iv)) ; ⋆ restreint aux degrés ⩾ 2 (politique §57), y compris en hom-cohomologie et dans la fiche de
+  théorie derham. ℳ′ : « x × 0 = 0 » ajouté (Q6) ; Ackermann : nombre d'étapes voisin des deux tiers du carré de la valeur
+  (simulation). grtop : exemples réordonnés pour garder l'ouverture en dernier. Section C : Hurewicz (p. 521, Satz I
+  p. 522), Blass (Trans. AMS 255, th. 2.1 ; ex. 7.1 p. 51 sq.), réciproque de Jordan-Brouwer fausse dès la dimension 2
+  (cercle de Varsovie, pseudo-cercle de Bing, Pacific J. Math. 1, 1951, p. 48), symétrie de Tor pour des présentations
+  projectives (⋆ pour tout groupe abélien, sans choix pour le type fini). Baer (Math. Z. 38, 1934, p. 375-416).
