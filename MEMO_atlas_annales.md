@@ -1,6 +1,6 @@
 # Mémo ATLAS — complément : rubrique Annales
 
-> Complète `MEMO_atlas.md` (sections 0 à 16) ; sections propres : 17, 18, 27, 44, 45, à lire avec lui. Ce mémo appartient à la conversation
+> Complète `MEMO_atlas.md` (sections 0 à 16) ; sections propres : 17, 18, 27, 44, 45, 46, à lire avec lui. Ce mémo appartient à la conversation
 > « Annales » : elle seule le modifie (voir `MEMO_atlas.md`, section 0). La version du dépôt fait foi ;
 > la copie du projet Claude en est le reflet.
 
