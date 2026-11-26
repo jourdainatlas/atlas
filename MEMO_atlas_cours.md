@@ -1286,3 +1286,27 @@ de Fourier et en probabilités). Au lycée, l'algèbre linéaire devient « vect
 nouvelle feuille reçoit ses grands thèmes à la construction. Résultat : « probabilités » 581 exercices (Seconde 58, Première
 36, Terminale 92, expertes 20, MPSI 92, MP 88, Licence 192, Python 3). **Un nouveau graphe de l'édifice employé par des
 exercices doit être ajouté à `THEME_GRAPHE`**, sinon ses exercices n'ont pas de grand thème.
+
+### 76. Licence 3 : UE Géométrie différentielle (26 nov. 2026)
+
+UE `l3-s6-gd` (semestre 6, 70 p., sans fiches), chapitres `l3-gd-01` à `l3-gd-05` : courbes de $\mathbb{R}^{n}$ ;
+sous-variétés de $\mathbb{R}^{n}$ ; surfaces, formes fondamentales et courbures ; géodésiques et Theorema egregium ;
+formes différentielles. PDF `documents/cours/l3/geometrie_differentielle_chapNN_<slug>.pdf` (slugs `courbes`,
+`sous_varietes`, `surfaces_courbures`, `geodesiques_egregium`, `formes_differentielles` ; PDF `…_apercu` reçus,
+renommés), cours complet `documents/ue/l3/geometrie_differentielle_cours_complet.pdf`. Mêmes conventions qu'aux §59, §66,
+§69, §72 (résumés d'après les bilans, sans l'introduction historique ; pages relevées sur les titres > 13 pt). Théories :
+graphes `edo-courbes` (`cb-*`) et `edo-surfaces` (`sf-*`), nœuds `gd-*` de `geod`, `cdiff-lagrange`, `v-formes-alternees`,
+`v-algebre-exterieure`. Seuls des rappels sont admis (Cauchy-Lipschitz avec paramètre, inversion locale) ; pas de choix.
+Prérequis de l'UE [l3-cd-03, mp-17, mp-07] ; « À revoir avant » par chapitre (ma, mp). Aucune activité ne s'y rattache.
+`annales_themes` provisoires (courbes-surfaces, arcs-parametres, longueur-courbure, sous-varietes, extrema-lies,
+formes-differentielles, calcul-differentiel…) : à remplacer par les listes de la conversation Annales. Pas de Python.
+`THEME_GRAPHE` : `edo-courbes` et `edo-surfaces` → « géométrie différentielle » (sinon ces nœuds, rangés sous `edo`, seraient
+comptés en équations différentielles). Termes exclus par chapitre : côtés et sphère (étiquettes de figure), selle, pour tout,
+différentielle (rouge d'insistance), « Rappel (admis) : Cauchy-Lipschitz… », -tenseur.
+Symboles validés le 26 nov. (toutes variantes A), tous nouveaux : `osculateur` (ch. 1 : y = 4 + 0,11(x − 12)², cercle
+osculateur en x = 15, rayon 7,82, centre (10,69 ; 11,52), calculés), `sphere` (ch. 2 : sphère, équateur en pointillés, plan
+tangent en un point de la face avant, vu en projection orthogonale), `normales` (ch. 3 : calotte y = 9 + 0,1(x − 12)² et
+normales unitaires en x = 5,5, 12, 18,5), `grandcercle` (ch. 4 : grand cercle en ellipse de demi-axes 9,5 et 3,42 tournée
+de −22°, moitié arrière en pointillés, deux points) et `lacet` (ch. 5 : plan privé de l'origine en f3, `fill-rule="evenodd"`,
+lacet orienté autour du trou : la forme angle, fermée et non exacte). Écartées : `frenet`, `hyperplan`, `surface`,
+`parallelogramme`. Générateur : scratchpad `gd/sym.py`. Préparé sur la branche `ue-geometrie-differentielle`.
