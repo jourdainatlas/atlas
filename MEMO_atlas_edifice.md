@@ -2238,3 +2238,15 @@ recherche approfondie (RECHERCHE-C.md), propositions validées le 26 nov.
   p. 522), Blass (Trans. AMS 255, th. 2.1 ; ex. 7.1 p. 51 sq.), réciproque de Jordan-Brouwer fausse dès la dimension 2
   (cercle de Varsovie, pseudo-cercle de Bing, Pacific J. Math. 1, 1951, p. 48), symétrie de Tor pour des présentations
   projectives (⋆ pour tout groupe abélien, sans choix pour le type fini). Baer (Math. Z. 38, 1934, p. 375-416).
+- Analyse (analyse réelle, complexe, fonctionnelle, mesure, probabilités, martingales, Fourier, nban, EDO, EDP, Lie) :
+  A4 (fc-separabilite, remarque 2) : j = plus petit indice tel qu'un u ∈ Pₙ vérifie ‖g_j − 1_{u}‖∞ < 1/3, u unique (seul
+  point où g_j > 2/3), Pₙ à deux points isolés non nommés : plus de circularité ; A5 (L² ⊂ L¹ « peut » être stricte) ;
+  A7 (mk-couplage : trois remarques). Appliqués autrement : mk-chaines (nœuds d'aval nommés en texte simple, un lien
+  vers l'aval étant refusé dans un énoncé) ; majorant de π(100) : 10 + 200 ln 2 / ln 10 ≈ 70,21 (l'audit proposait 70,2,
+  faux ; la borne vaut 70,2059…), d'où π(100) ⩽ 70 ; ex-serie : seuils recalculés (164, 271, 414). Ajouts : droite
+  achevée et mesurabilité à valeurs dans [−∞, +∞] (m-mesurables) ; absence d'injection de [0, 1] dans ℕ par la remarque
+  de su-segments (fc-separabilite, f-lp) ; nb-chebyshev distingue son ψ de celui de nb-phi. Section C : Hilbert,
+  Vierte Mitteilung, p. 157-227 ; Saint-Vincent prop. CIX (réciproque CXXX), titre de Sarasa « Mersenno » ; Tchebychev
+  encadre ψ puis θ entre 0,921x et 1,106x par un quotient de factorielles ; fc-polynomes renvoie aux polynômes qₙ de
+  fc-dini (circularité levée) ; citation de Lebesgue rétablie (Kahane, Gazette 89, 2001, p. 5-20). Renvois vers
+  rr-archimede libellés par son titre.
