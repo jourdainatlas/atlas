@@ -1258,7 +1258,8 @@ if 'exercices' in rubriques:
         'edo': 'équations différentielles', 'edo-changement': 'intégration', 'edp': 'équations aux dérivées partielles',
         'fourier': 'analyse de Fourier', 'anf': 'analyse fonctionnelle', 'anc': 'séries entières',
         'rel': 'ensembles et applications', 'zf': 'ensembles et applications', 'ord': 'ensembles et applications',
-        'log': 'logique', 'geod': 'géométrie différentielle', 'tan-reciprocite': 'arithmétique',
+        'log': 'logique', 'geod': 'géométrie différentielle',
+        'edo-courbes': 'géométrie différentielle', 'edo-surfaces': 'géométrie différentielle', 'tan-reciprocite': 'arithmétique',
         'q': 'ensembles de nombres', 'r': 'ensembles de nombres'}
     THEME_NOEUD = {
         'cx-exponentielle': ['nombres complexes'], 'cx-pi': ['nombres complexes', 'trigonométrie'],
