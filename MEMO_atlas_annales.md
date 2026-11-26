@@ -425,3 +425,13 @@ relecture et des propositions `annales_themes`). Les agents travaillent dans le 
 dépôt. Première exécution de `notes` : quelques tournures du lycée corrigées (« : exercice 3.22 » → « : l'exercice
 3.22 », « les exercices exercice … »).
 
+**Géométrie différentielle (26 nov. 2026).** UE `l3-gd-01` à `05` (cours seuls). Première liaison avec les outils
+du dépôt. Agrég. externe §9 (numéro affiché) : sous-variétés, espace tangent, position par rapport au plan
+tangent, courbes, extrema liés ; « à venir » 24 → 22. Agrég. interne §11-13 : courbes, longueur, Frenet,
+intégrales curvilignes (l3-gd-05:7) ; « à venir » 22 → 18 (reste la construction en polaires). CAPES bac+3 :
+courbes paramétrées (le site n'a pas de cours de MPSI sur ce sujet). Relecture : aucun lien corrigé, trois
+notes ajoutées. Synonymes ajoutés (`courbes-surfaces`, `longueur-courbure`, `arcs-parametres`,
+`sous-varietes`, `formes-differentielles`, `topologie-algebrique`) ; refusés : « application de Gauss » seul
+(fractions continues dans le sujet de 2016) et « point d'inflexion » (déjà lycée). Listes `annales_themes`
+proposées à l'auteur.
+
