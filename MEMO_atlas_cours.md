@@ -1348,3 +1348,14 @@ l'attribution valant pour les autres listes de la feuille (clé `__liste__` de `
 les parenthèses qui parlent du cours, de doublons, de photos, de bonus, d'hypothèses ajoutées ou de parties non reprises.
 Restent « Bibmath, … », « examen du 25/04/2016 », « devoir surveillé du 18/03/2016 » tels quels. 54 sources affichées
 sur 81 exercices (les autres sont des créations ou ne citent que le manuel).
+
+### 79. Figures `py/` intégrées par l'auteur (26 nov. 2026, soir)
+
+À la suite de la remarque sur les fichiers `py/`, l'auteur a renvoyé les corrigés de Géométrie différentielle (ch. 2, 3,
+4) et celui d'Intégration (ch. 2) avec le contenu des fichiers `py/*.tex` recopié dans le .tex (entre « % --- debut de
+py/… (insere) » et « % --- fin de py/… »), sans autre changement. Les onze figures (dix de Géométrie différentielle,
+découpées jusque-là dans le PDF, §78 ; celle des ensembles K₀ à K₄ d'Intégration, recalculée à la main, §63) sont
+désormais compilées depuis la source comme les autres. Seuls les chemins des figures ont changé dans les feuilles :
+les retouches à la main de `l3-gd-02-04` et `l3-gd-02-11` sont gardées ; le script de découpe n'a plus lieu d'être.
+Au passage, cinq sources des feuilles d'Intégration et une de MPSI gardaient des `~` autour des guillemets
+(« «~clan~» ») : remplacés par des espaces fines insécables, comme le fait `tex2exos` depuis le 23 nov.
