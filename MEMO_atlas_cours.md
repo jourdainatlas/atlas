@@ -1270,3 +1270,19 @@ reconversion (vérifié sur `f-l3-hf-05`). Test téléphone des 1 957 exercices 
 (`mp-14-10`, question 2 du corrigé, fraction de 49 caractères), passé à la main en formule centrée (à refaire si l'on
 reconvertit cette feuille). 20 débordements sur téléphone existaient déjà avant (ma-10-26, ma-18-23, ma-18-56, ma-20-34,
 54, 57, 63, ma-21-20, 75, 87, 88, 96, 109, ma-22-28, 30, mp-10-07, 38, 47, l3-cd-06-14, l3-cd-07-07) : signalés, non traités.
+
+### 75. Grands thèmes des exercices (26 nov. 2026)
+
+Remarque de l'auteur : avec le seul filtre « probabilités », la rubrique Exercices ne montrait que la Première, la Terminale
+et la Maths Sup. Les thèmes sont les mots-clés des feuilles, fins et propres à chaque feuille (1 122 thèmes distincts).
+`construire.py` (bloc des rubriques, après la normalisation des `mots_cles`) ajoute désormais à chaque exercice le grand
+thème de chacun de ses nœuds : table `THEME_GRAPHE` (graphe qui contient le nœud → thème : probabilités, algèbre linéaire,
+dérivation, suites, intégration, arithmétique, polynômes, nombres complexes, structures algébriques, topologie, calcul
+différentiel, équations différentielles, analyse de Fourier, trigonométrie, exponentielle et logarithme, continuité, analyse
+asymptotique, séries entières, ensembles et applications, logique, théorie de Galois, géométrie différentielle…), et
+exceptions par nœud `THEME_NOEUD` (les nœuds `c-` des complexes et de la continuité sont séparés par leur graphe ; produit
+scalaire, espaces de Hilbert, sommes, récurrence, dénombrement, séries ; les fonctions caractéristiques comptent en analyse
+de Fourier et en probabilités). Au lycée, l'algèbre linéaire devient « vecteurs ». Rien n'est écrit dans les feuilles : une
+nouvelle feuille reçoit ses grands thèmes à la construction. Résultat : « probabilités » 581 exercices (Seconde 58, Première
+36, Terminale 92, expertes 20, MPSI 92, MP 88, Licence 192, Python 3). **Un nouveau graphe de l'édifice employé par des
+exercices doit être ajouté à `THEME_GRAPHE`**, sinon ses exercices n'ont pas de grand thème.

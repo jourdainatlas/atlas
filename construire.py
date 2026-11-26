@@ -1238,6 +1238,58 @@ if 'exercices' in rubriques:
                 erreur(f"rubriques/exercices {fe['id']} : fichier introuvable {fe[champ]}")
     for e in E['exercices']:
         e['mots_cles'] = [m.strip().lower() if m.strip() != 'Python' else m for m in e.get('mots_cles', [])]
+    # Grands thèmes (demande de l'auteur, 26 nov.) : les mots-clés des feuilles sont fins (« loi binomiale »,
+    # « convergence en loi »…) ; chaque exercice reçoit aussi le grand thème de chacun de ses nœuds, d'après le graphe
+    # qui contient le nœud (THEME_GRAPHE), sauf exception par nœud (THEME_NOEUD, liste vide : aucun grand thème).
+    # Au lycée (Seconde, Première, Terminale), les vecteurs du graphe d'algèbre linéaire sont « vecteurs ».
+    THEME_GRAPHE = {
+        'proba': 'probabilités', 'mart': 'probabilités',
+        'alglin': 'algèbre linéaire', 'v-det': 'algèbre linéaire', 'ac-reduction': 'algèbre linéaire',
+        'lie': 'algèbre linéaire',
+        'ar-deriv': 'dérivation', 'ar-suites': 'suites', 'ar-exp': 'exponentielle et logarithme',
+        'ar-trigo': 'trigonométrie', 'ar-riemann': 'intégration', 'mes': 'intégration', 'anf-lp': 'intégration',
+        'ar-asymptotique': 'analyse asymptotique', 'continuite': 'continuité', 'ar-topo': 'topologie',
+        'met': 'topologie', 'anf-continues': 'suites et séries de fonctions',
+        'z': 'arithmétique', 'z-polynomes': 'polynômes', 'c': 'nombres complexes',
+        'alg': 'structures algébriques', 'gf': 'structures algébriques', 'ac': 'structures algébriques',
+        'ac-modules': 'structures algébriques',
+        'galois': 'théorie de Galois', 'galois-cyclotomie': 'théorie de Galois', 'geoalg': 'théorie de Galois',
+        'cdiff': 'calcul différentiel', 'cdiff-quadratiques': 'calcul différentiel', 'cdiff-lagrange': 'calcul différentiel',
+        'edo': 'équations différentielles', 'edo-changement': 'intégration', 'edp': 'équations aux dérivées partielles',
+        'fourier': 'analyse de Fourier', 'anf': 'analyse fonctionnelle', 'anc': 'séries entières',
+        'rel': 'ensembles et applications', 'zf': 'ensembles et applications', 'ord': 'ensembles et applications',
+        'log': 'logique', 'geod': 'géométrie différentielle', 'tan-reciprocite': 'arithmétique',
+        'q': 'ensembles de nombres', 'r': 'ensembles de nombres'}
+    THEME_NOEUD = {
+        'cx-exponentielle': ['nombres complexes'], 'cx-pi': ['nombres complexes', 'trigonométrie'],
+        'me-produit-scalaire': ['produit scalaire'], 'fq-orthogonalite': ['produit scalaire'],
+        'fq-bases-orthogonales': ['produit scalaire'],
+        'f-autoadjoints': ['algèbre linéaire'], 'f-spectral-fini': ['algèbre linéaire'],
+        'f-evn': ['topologie'], 'f-compacts': ['topologie'],
+        'f-hilbert': ['espaces de Hilbert'], 'f-bases-hilbertiennes': ['espaces de Hilbert'],
+        'f-riesz': ['espaces de Hilbert'], 'f-operateurs': ['espaces de Hilbert'],
+        'fo-caracteristiques': ['analyse de Fourier', 'probabilités'], 'fo-loi-esperances': ['probabilités'],
+        'fo-tcl': ['probabilités'], 'fo-levy': ['probabilités'],
+        'n-sommes': ['sommes'], 'n-recurrence': ['récurrence'], 'n-recdef': ['récurrence'], 'n-fini': ['dénombrement'],
+        'n-operations': [], 'n': [],
+        'ar-corps': ['ensembles de nombres'], 'ar-archimede': ['ensembles de nombres'], 'ar-tfa': ['intégration'],
+        'ar-bw': ['suites'], 'ar-cauchy': ['suites'], 'as-series': ['séries'],
+        'cx-series-entieres': ['séries entières'], 'cx-derivation-series': ['séries entières'],
+        'cx-convergence-uniforme': ['suites et séries de fonctions'], 'cx-suites': ['nombres complexes'],
+        'cv-changement': ['intégration'], 'cv-polaires': ['intégration'], 'cv-gaussienne': ['intégration'],
+        'ds-regularisation': ['intégration'], 'ds-parametre': ['intégration']}
+    LYCEE = {'s', 'p', 't'}
+    def grands_themes(e):
+        niv = e['id'].split('-')[0]
+        for v in e.get('noeuds') or []:
+            if v in THEME_NOEUD: yield from THEME_NOEUD[v]; continue
+            g = v if v in G else (noeuds[v]['graphe'] if v in noeuds else None)
+            t = THEME_GRAPHE.get(g)
+            if t == 'algèbre linéaire' and niv in LYCEE: t = 'vecteurs'
+            if t: yield t
+    for e in E['exercices']:
+        for t in grands_themes(e):
+            if t not in e['mots_cles']: e['mots_cles'].append(t)
     # Atelier Python sous l'énoncé : niveau python (gabarit), ou exercice qui demande de programmer en Python (énoncé
     # qui nomme Python, un programme ou une bibliothèque de calcul, ou contient un bloc de code Python).
     PY = re.compile(r'\bPython\b|\bprogramm|\bscript\b|\b(?:numpy|scipy|matplotlib|sympy)\b|```python', re.I)
