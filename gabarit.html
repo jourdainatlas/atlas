@@ -1889,7 +1889,13 @@ table.grille button.pli-ann:hover { border-color: var(--encre); }
 .pg-demo, .pg-venir { display: inline-block; font: 11px var(--f-ui); padding: 0 6px; border-radius: 999px; border: 1px solid var(--filet); color: var(--encre-3); vertical-align: 1px; white-space: nowrap; }
 .pg-venir { border-style: dashed; }
 .pg-liens { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 5px; }
-.pg-g { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+.pg-g { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px; min-width: 0; max-width: 100%; }
+/* audit du 26 nov. 2026 : à 390 px, une pastille de cours (« Maths Spé – MP, ch. 1 Les anneaux Z/nZ ») débordait de la
+   carte ; elle passe à la ligne et s'aligne à gauche */
+.pg-l { min-width: 0; white-space: normal; overflow-wrap: anywhere; text-align: left; }
+.pg-liens > * { min-width: 0; max-width: 100%; }
+.pg-progs { display: inline-flex; flex-wrap: wrap; max-width: 100%; box-sizing: border-box; }
+.pg-progs button { min-width: 0; }
 .pg-lab { font: 600 10.5px var(--f-ui); letter-spacing: .05em; text-transform: uppercase; color: var(--encre-3); margin-right: 2px; }
 .pg-l { --c: var(--encre-3); display: inline-flex; align-items: baseline; gap: 4px; font: 12.5px var(--f-ui); color: var(--encre); text-decoration: none; padding: 1px 8px; border-radius: 11px; cursor: pointer;
   border: 1px solid color-mix(in srgb, var(--c) 45%, var(--filet)); background: color-mix(in srgb, var(--c) 7%, var(--surface)); max-width: 100%; }
@@ -4990,7 +4996,7 @@ let freqPgCache = {};
 // partie porte l'un des thèmes du point ou l'un de leurs thèmes fins, en principal ou en secondaire (comme les nombres des boutons)
 function sujetsPointPg(themes, famId, fil, conc, cible, nt) {
   const I = indexAnnales(), T = new Set(themes);
-  for (const t of themes) for (const c of I.enfants[t] || []) T.add(c);
+  for (const t of themes) for (const c of I.descendants[t] || []) T.add(c);
   const propre = famId && vocabFamAnn(famId) !== 'general';
   const res = [];
   for (const s of I.sujets) {
@@ -5035,7 +5041,7 @@ function frequencePg(famId, fil, conc) {
   const tout = {};
   sujets.forEach((s, k) => {
     const vus = new Set(), vusT = new Set();
-    const aj = (e, t) => { e.add(t); const pa = (I.themes[t] || {}).parent; if (pa) e.add(pa); };
+    const aj = (e, t) => { e.add(t); for (const a of I.ancetres[t] || []) e.add(a); };
     for (const p of s.parties) {
       const gen = !propre && p.thG;
       for (const t of (gen ? p.thG : p.themes) || []) { aj(vus, t); aj(vusT, t); }
@@ -5256,7 +5262,7 @@ function compteAnnales() {
   const v = vocabAnn();
   for (const s of I.sujets) if (passeFiltresAnn(s)) for (const p of s.parties) {
     const vus = new Set();
-    for (const t of themesPartie(s, p, v)[0]) { vus.add(t); if (I.themes[t] && I.themes[t].parent) vus.add(I.themes[t].parent); }
+    for (const t of themesPartie(s, p, v)[0]) { vus.add(t); for (const a of I.ancetres[t] || []) vus.add(a); }
     for (const t of vus) compte[t] = (compte[t] || 0) + 1;
   }
   compteAnnCache = { cle, I, compte };
@@ -5313,15 +5319,22 @@ function indexAnnales() {
   });
   const enfants = {};
   for (const t of Object.values(themes)) if (t.parent) (enfants[t.parent] = enfants[t.parent] || []).push(t.id);
-  // une partie compte pour un thème fin, et pour le thème large qui le regroupe
+  // toute la chaîne (audit du 26 nov. 2026 : 21 thèmes ont un grand-parent, ex. rayon-spectral → normes-subordonnees →
+  // espaces-normes) : ancetres[t] = parent, grand-parent… ; descendants[t] = enfants, petits-enfants…
+  const ancetres = {}, descendants = {};
+  for (const t of Object.keys(themes)) {
+    const a = []; for (let p = themes[t].parent; p && themes[p] && !a.includes(p); p = themes[p].parent) a.push(p);
+    ancetres[t] = a; for (const x of a) (descendants[x] = descendants[x] || []).push(t);
+  }
+  // une partie compte pour un thème fin, et pour chacun des thèmes plus larges qui le regroupent
   const compte = {};
   for (const s of sujets) for (const p of s.parties) {
     const vus = new Set();
-    for (const t of p.thG || p.themes || []) { vus.add(t); if (themes[t] && themes[t].parent) vus.add(themes[t].parent); }
+    for (const t of p.thG || p.themes || []) { vus.add(t); for (const a of ancetres[t] || []) vus.add(a); }
     for (const t of vus) compte[t] = (compte[t] || 0) + 1;
   }
   const parUrl = Object.fromEntries(sujets.map(s => [s.sujet, s]));
-  return (indexAnn = { themes, sujets, domaines: T.domaines || [], famDe, compte, enfants, parUrl });
+  return (indexAnn = { themes, sujets, domaines: T.domaines || [], famDe, compte, enfants, ancetres, descendants, parUrl });
 }
 // distance d'édition bornée (tolérance aux fautes de frappe)
 function proche(a, b) {
@@ -5353,9 +5366,9 @@ function rechercherAnnales(q) {
   const best = th.length ? th[0].s : 0;
   const thRet = th.filter(x => x.s === best || x.s >= Math.max(3.3, .7 * best));
   const poids = Object.fromEntries(thRet.map(x => [x.t.id, x.s / 10]));
-  for (const x of thRet) for (const c of I.enfants[x.t.id] || []) if (!(c in poids)) poids[c] = .95 * x.s / 10;
+  for (const x of thRet) for (const c of I.descendants[x.t.id] || []) if (!(c in poids)) poids[c] = .95 * x.s / 10;
   // thème reconnu en tête (et ses thèmes fins) : ce que comptent les boutons de la vue Programme
-  const tete = thRet.length ? thRet[0].t.id : null, deTete = x => !!tete && (x === tete || (I.themes[x] || {}).parent === tete);
+  const tete = thRet.length ? thRet[0].t.id : null, deTete = x => !!tete && (x === tete || (I.ancetres[x] || []).includes(tete));
   const res = [];
   for (const s of I.sujets) {
     if (!passeFiltresAnn(s)) continue;
