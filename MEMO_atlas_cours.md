@@ -1388,3 +1388,29 @@ procédures §21 et §22 (point 5).
 `\not=`…) par leur signe (table `TEX_NON`, la même que `texteTexLisible` de `rendu.mjs`) ; la description de
 `exercices/l3-in-02-10` disait « x mathrel R y », elle dit « x R y ». Les « mathrel » restant dans les pages de lecture
 sont dans les annotations TeX du MathML de KaTeX, pas dans le texte.
+
+### 81. Licence 3 : UE Géométrie et topologie (26 nov. 2026)
+
+UE `l3-s6-gt` (semestre 6, 78 p., sans fiches), chapitres `l3-gt-01` à `l3-gt-07` : espaces topologiques ; connexité et
+compacité ; constructions d'espaces (quotients, recollements) ; variétés topologiques (atlas, revêtements, actions de
+groupes, espaces projectifs) ; groupe fondamental ; revêtements et calcul du groupe fondamental ; classification des
+surfaces compactes. PDF `documents/cours/l3/geometrie_topologie_chapNN_<slug>.pdf` (slugs `espaces_topologiques`,
+`connexite_compacite`, `constructions`, `varietes`, `groupe_fondamental`, `revetements_calcul_pi1`,
+`classification_surfaces`), cours complet `documents/ue/l3/geometrie_topologie_cours_complet.pdf`. Mêmes conventions
+qu'aux §59, §66, §69, §72, §76. Théories : graphes `top` (`t-*`), `ar-topo` (`tr-*`), `topalg` (`ta-*`), `rv-*`,
+`vk-spheres`, `vk-retractes`, `gt-quotient`, `cw-recollement`, `cw-surfaces`, `cw-euler`, `c-dalembert`. Admis dans les
+cours : invariance de la dimension, théorème de Radó, invariance de la caractéristique d'Euler, Riesz (cité) ; pas de
+choix. Prérequis de l'UE [mp-04, mp-05, ma-11] ; « À revoir avant » par chapitre (ma, mp). Aucune activité ne s'y
+rattache. `annales_themes` provisoires (topologie-evn, connexite, compacite, topologie-algebrique,
+point-fixe-topologique…), à remplacer par les listes de la conversation Annales. `THEME_GRAPHE` : `top` et `grtop` →
+« topologie » ; `topalg`, `topalg-revetements`, `topalg-van-kampen`, `hom-cellulaire` → « topologie algébrique ». Termes
+exclus : non ouvert dans, plus petite topologie contenant, continue en (ch. 1), « cid:224) base dénombrable », -atlas
+(ch. 4). Images d'aperçu fabriquées (7 chapitres, page de niveau).
+Symboles validés le 26 nov. (toutes variantes A) : repris `ouvert` (ch. 1, comme mp-04) et `lacet` (ch. 5, comme
+l3-gd-05) ; nouveaux `recouvrement` (ch. 2 : segment [3, 21] couvert par trois disques ouverts f3 de rayon 5,6 centrés en
+6,6, 12, 17,4, extrémités pleines), `carretore` (ch. 3 : carré f3, côtés opposés marqués par des flèches pleines f1,
+simple en haut et en bas, double à gauche et à droite, même sens), `carte` (ch. 4 : ouvert f3, disque f2 envoyé par une
+flèche sur un disque du plan), `helice` (ch. 6 : revêtement ℝ → 𝕊¹, hélice 12 + 8 cos t, 14,2 − 0,9 t + 1,5 sin t sur
+[0, 4π] au-dessus du cercle) et `genre2` (ch. 7 : réunion de deux disques de rayon 6,6 à 9,2 l'un de l'autre, deux trous,
+`evenodd`). Écartées : `sinustopo`, `moebius`, `homotopie`, `indice2`, `tore`. Générateur : scratchpad `gt/sym.py`.
+Préparé sur la branche `ue-geometrie-topologie`.
