@@ -769,7 +769,7 @@ def source_lisible(texte, attrib):
         if re.match(r'(manuel\b|créations?\b|on\s)', x, re.I):
             continue
         if attrib.get('__liste__'):
-            x = re.sub(r'^liste (\d+)(?: \([^()]*\d{4}\))?', lambda m: f"{attrib['__liste__']}, liste {m.group(1)}", x)
+            x = re.sub(r'^liste (\d+)(?: \([^()]*\d{4}\))?', lambda m: f"{attrib['__liste__']}, feuille {m.group(1)}", x)
         x = re.sub(r',\s*même modèle$', '', x)
         x = re.sub(r'\s*[:;]\s*la simulation[^()]*', '', x)
         x = re.sub(r'\bTD vecteurs discrets\b', 'Annales ESCP-HEC (TD « Vecteurs aléatoires discrets »)', x)

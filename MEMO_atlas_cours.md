@@ -1342,7 +1342,7 @@ place de « La figure est dans le PDF de la feuille » dans l'ordre (script scra
 sont lourdes (≈ 800 Ko chacune, surfaces ombrées). À refaire à toute nouvelle version de ces corrigés, ou demander à
 l'auteur les fichiers `py/`.
 
-**Sources** (`tex2exos.source_lisible`, 26 nov.) : « liste N (Bordeaux 2016) » devient « Bordeaux 2016, liste N »,
+**Sources** (`tex2exos.source_lisible`, 26 nov.) : « liste N (Bordeaux 2016) » devient « Bordeaux 2016, feuille N » (« feuille » plutôt que « liste » : demande de l'auteur, 26 nov.),
 l'attribution valant pour les autres listes de la feuille (clé `__liste__` de `attrib`) ; les parties « manuel (photos) »
 (manuel photographié, sans titre), « création(s) » et les fins de note commençant par « on … » sont retirées, ainsi que
 les parenthèses qui parlent du cours, de doublons, de photos, de bonus, d'hypothèses ajoutées ou de parties non reprises.
