@@ -143,6 +143,15 @@ exercices », c'est-à-dire la vue « Par exercice » filtrée sur ce niveau. Le
    niveau. Le bandeau de la page Cours et la carte de l'accueil listent seuls les niveaux en ligne.
 4. Les cours suivent la chronologie scolaire, et non celle de l'édifice. Un écart de statut (admis au
    lycée, démontré dans l'édifice) n'est pas une incohérence.
+5. **Image d'aperçu de la page (règle du point 9 de `MEMO_atlas.md` §0, rappelée le 26 nov. 2026).** Avant de valider,
+lire la dernière ligne « Images d'aperçu par page » de `sh construire.sh`. Si elle porte « … à fabriquer » : installer
+les polices hors du dépôt (`npm i @fontsource/spectral @fontsource/ibm-plex-sans @fontsource/gfs-didot` dans un dossier
+du scratchpad), lancer `node identite/fabriquer-apercus-pages.mjs <ce dossier>` (seules les images manquantes ou
+périmées sont refaites), relancer `sh construire.sh` (la ligne doit dire « N sur N »), regarder deux ou trois images de
+`identite/apercus/` (titre lisible, pas de débordement, bon niveau dans la ligne de contexte) et joindre
+`identite/apercus/` au commit du dépôt. Ne jamais pousser un dépôt qui laisse « à fabriquer » pour ses propres pages ;
+si la ligne signale des pages d'autres domaines (activités, édifice, annales), ne pas les fabriquer et le signaler à
+l'auteur. Vaut aussi pour tout ajout d'UE ou de niveau et tout changement de titre.
 
 ### 22. Verser une feuille d'exercices
 
@@ -196,6 +205,15 @@ exercices », c'est-à-dire la vue « Par exercice » filtrée sur ce niveau. Le
    avec le texte du PDF dans les deux sens (seuls doivent manquer les en-têtes, les pieds de page, les
    césures et les étiquettes des figures) ; enfin regarder sur le site les tableaux, les figures et
    les images, en clair et en sombre, sur ordinateur et sur téléphone.
+5. **Image d'aperçu de la page (règle du point 9 de `MEMO_atlas.md` §0, rappelée le 26 nov. 2026).** Avant de valider,
+lire la dernière ligne « Images d'aperçu par page » de `sh construire.sh`. Si elle porte « … à fabriquer » : installer
+les polices hors du dépôt (`npm i @fontsource/spectral @fontsource/ibm-plex-sans @fontsource/gfs-didot` dans un dossier
+du scratchpad), lancer `node identite/fabriquer-apercus-pages.mjs <ce dossier>` (seules les images manquantes ou
+périmées sont refaites), relancer `sh construire.sh` (la ligne doit dire « N sur N »), regarder deux ou trois images de
+`identite/apercus/` (titre lisible, pas de débordement, bon niveau dans la ligne de contexte) et joindre
+`identite/apercus/` au commit du dépôt. Ne jamais pousser un dépôt qui laisse « à fabriquer » pour ses propres pages ;
+si la ligne signale des pages d'autres domaines (activités, édifice, annales), ne pas les fabriquer et le signaler à
+l'auteur. Vaut aussi pour tout ajout d'UE ou de niveau et tout changement de titre.
 
 ### 23. Page d'un cours : colonne de droite et raccourci sur téléphone (31 oct. 2026)
 
@@ -1359,3 +1377,14 @@ désormais compilées depuis la source comme les autres. Seuls les chemins des f
 les retouches à la main de `l3-gd-02-04` et `l3-gd-02-11` sont gardées ; le script de découpe n'a plus lieu d'être.
 Au passage, cinq sources des feuilles d'Intégration et une de MPSI gardaient des `~` autour des guillemets
 (« «~clan~» ») : remplacés par des espaces fines insécables, comme le fait `tex2exos` depuis le 23 nov.
+
+### 80. Images d'aperçu de la Licence 3 ; `texSimple` et les relations (26 nov. 2026, soir)
+
+Signalé par la conversation À propos : 64 pages de Licence 3 (32 cours, 32 feuilles, UE `sa`, `pr`, `hf`, `gd`…)
+n'avaient pas leur image d'aperçu et montraient celle de leur rubrique au partage. Images fabriquées (64, et les deux
+pages de niveau `niveau-l3` mises à jour), construction à « 2233 sur 2233 ». L'étape est désormais inscrite aux
+procédures §21 et §22 (point 5).
+`lecture-cours.mjs`, `texSimple` : `\mathrel{…}` est remplacé par son contenu et les relations niées (`\not\subset`,
+`\not=`…) par leur signe (table `TEX_NON`, la même que `texteTexLisible` de `rendu.mjs`) ; la description de
+`exercices/l3-in-02-10` disait « x mathrel R y », elle dit « x R y ». Les « mathrel » restant dans les pages de lecture
+sont dans les annotations TeX du MathML de KaTeX, pas dans le texte.

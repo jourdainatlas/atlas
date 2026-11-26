@@ -19,7 +19,11 @@ const TEX = { pi: 'π', infty: '∞', leqslant: '≤', geqslant: '≥', leq: '�
   cup: '∪', cap: '∩', emptyset: '∅', varnothing: '∅', alpha: 'α', beta: 'β', gamma: 'γ', delta: 'δ', varepsilon: 'ε', epsilon: 'ε',
   lambda: 'λ', mu: 'μ', theta: 'θ', varphi: 'φ', phi: 'φ', omega: 'ω', sigma: 'σ', Delta: 'Δ', Omega: 'Ω', sum: 'Σ', prod: 'Π',
   int: '∫', sqrt: '√', pm: '±', approx: '≈', sim: '∼', ldots: '…', dots: '…', cdots: '…', circ: '∘', partial: '∂', nabla: '∇' };
+// relations niées : un seul signe, comme texteTexLisible de rendu.mjs (MEMO_atlas_apropos.md §92)
+const TEX_NON = { subset: '⊄', subseteq: '⊈', equiv: '≢', models: '⊭', sim: '≁', simeq: '≄', to: '↛', leqslant: '≰', geqslant: '≱', leq: '≰', geq: '≱', Rightarrow: '⇏', in: '∉', mid: '∤', '=': '≠', '<': '≮', '>': '≯' };
 function texSimple(t) {
+  t = t.replace(/\\not\s*(?:\\([a-zA-Z]+)|([=<>]))/g, (m, a, b) => TEX_NON[a || b] ? ` ${TEX_NON[a || b]} ` : m)
+    .replace(/\\mathrel\s*\{([^{}]*)\}/g, ' $1 ').replace(/\\mathrel(?![a-zA-Z])/g, ' ');
   const simple = x => /^[\p{L}\p{N}.,′'∞π]+$/u.test(x.trim());
   const groupe = x => simple(x) ? x.trim() : `(${x.trim()})`;
   t = t.replace(/\\mathbb\{([A-Z])\}/g, (m, l) => ({ R: 'ℝ', N: 'ℕ', Z: 'ℤ', Q: 'ℚ', C: 'ℂ', U: '𝕌' })[l] || l)
