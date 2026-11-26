@@ -2250,3 +2250,16 @@ recherche approfondie (RECHERCHE-C.md), propositions validées le 26 nov.
   encadre ψ puis θ entre 0,921x et 1,106x par un quotient de factorielles ; fc-polynomes renvoie aux polynômes qₙ de
   fc-dini (circularité levée) ; citation de Lebesgue rétablie (Kahane, Gazette 89, 2001, p. 5-20). Renvois vers
   rr-archimede libellés par son titre.
+- Algèbre et lexique (n, z, q, r, c, alg, alglin, gf, cohgr, galois, ac, tan, geoalg ; tout lexique.yaml) : tous les
+  constats appliqués, aucun écarté. A1 (an-ideaux (ii)) : N(γ)² = N(2) = 4, N(γ) = 2, valeur que a² + 5b² ne prend pas ;
+  A2 (matrice-permutation) : multiplier à droite par P_σ met en position j la colonne σ(j), la colonne k va en σ⁻¹(k) ;
+  A6 (groupe-homologie : cycles modulo les bords) ; A8. Autrement : 0⁰ = 1 sans le binôme (pol-binome en aval) ;
+  partie-bornee (cas de l'espace vide) ; complexe-cochaines noté (Kⁿ, δⁿ). Section C : ⋆ sur Krull (a-premier-maximal,
+  ac-locaux), les automorphismes de ℂ, radical-ideal, espace-L1 ; Hilbert 90 (Satz 90 pour un corps de degré premier ℓ ;
+  forme générale de Speiser, puis Noether ; Lorenz 1998) ; Gauss, Disquisitiones, énoncé art. 131, démonstration art. 135
+  à 144 ; Euler 1736 « première démonstration publiée » (Leibniz inédit) ; Hodges 1976 gardé (corollaire 10), Hodges
+  1979 « Krull implies Zorn » cité ; Zassenhaus gardé. fonction-mesurable étendue à [−∞, +∞] ; rr-archimede étiqueté
+  « Archimède, corps complets » (distinct d'ar-archimede).
+
+Bilan : tous les constats A et B appliqués ou appliqués autrement avec raison, aucun jugé infondé ; le seul chiffre
+proposé faux par l'audit (π(100) ⩽ 70,2) est remplacé par la valeur juste. Section C entièrement tranchée.
