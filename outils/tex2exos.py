@@ -708,6 +708,10 @@ def sources(t_brut):
     attrib = {}
     for m in re.finditer(r'([\w.-]+)\.pdf\s*\(([^()]*)\)', '\n'.join(re.findall(r'%\s*(?:Sources?|Inspiré de)\s*:(.*)', t_brut))):
         attrib.setdefault(m.group(1), m.group(2).strip())
+    # « liste 1 (Bordeaux 2016), exercice 1 » (feuilles de Géométrie différentielle, 26 nov.) : l'attribution vaut
+    # pour les autres listes de la feuille
+    m = re.search(r'%\s*(?:Sources?|Inspiré de)\s*:.*?\bliste \d+ \(([^()]*\d{4})\)', t_brut)
+    if m: attrib['__liste__'] = m.group(1).strip()
     tete = r'(?:(?:\\par\s*)?\\needspace\{[^}]*\}\s*)?(?:\\exo(?:orig)?\{|\\noindent\s*\\textbf\{\s*\\underline\{\s*Exercice\s+)(\d+)'
     for m in re.finditer(r'%\s*(Sources?|Inspiré de)\s*:\s*(.*)\n(?:%[^\n]*\n|\s*\n|\\newpage\s*\n)*' + tete, t_brut):
         texte = m.group(2).strip()
@@ -760,6 +764,12 @@ def source_lisible(texte, attrib):
         # notes de travail des feuilles de Probabilités (24 nov.) : renvois internes, devoirs de l'auteur
         if re.match(r"(V\d+ et V\d+ |l'application finale est|devoir en temps libre|conservée? au ch)", x, re.I):
             continue
+        # Géométrie différentielle (26 nov.) : « manuel (photos) » est un manuel photographié, sans titre ; les
+        # « créations » sont des exercices composés pour la feuille
+        if re.match(r'(manuel\b|créations?\b|on\s)', x, re.I):
+            continue
+        if attrib.get('__liste__'):
+            x = re.sub(r'^liste (\d+)(?: \([^()]*\d{4}\))?', lambda m: f"{attrib['__liste__']}, liste {m.group(1)}", x)
         x = re.sub(r',\s*même modèle$', '', x)
         x = re.sub(r'\s*[:;]\s*la simulation[^()]*', '', x)
         x = re.sub(r'\bTD vecteurs discrets\b', 'Annales ESCP-HEC (TD « Vecteurs aléatoires discrets »)', x)
@@ -777,7 +787,7 @@ def source_lisible(texte, attrib):
                     prof += 1
                 elif ch == ')':
                     prof -= 1
-                    if prof == 0 and deb is not None and re.search(r'feuille|report|corrig|coquille|ajout|fusionn|inventaire|intégr|gardés?\b|déplac|décision|renvoi|statistique, L3', x[deb:i]): sup = (deb, i + 1); break
+                    if prof == 0 and deb is not None and re.search(r'feuille|report|corrig|coquille|ajout|fusionn|inventaire|intégr|gardés?\b|déplac|décision|renvoi|statistique, L3|\bcours\b|doublons?\b|photo|bonus|supposé|n.est pas repris', x[deb:i]): sup = (deb, i + 1); break
             if not sup: break
             x = (x[:sup[0]].rstrip() + x[sup[1]:]).strip()
         x = x.replace('\x01', '(').replace('\x02', ')')

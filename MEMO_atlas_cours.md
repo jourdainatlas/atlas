@@ -1312,3 +1312,39 @@ normales unitaires en x = 5,5, 12, 18,5), `grandcercle` (ch. 4 : grand cercle en
 de −22°, moitié arrière en pointillés, deux points) et `lacet` (ch. 5 : plan privé de l'origine en f3, `fill-rule="evenodd"`,
 lacet orienté autour du trou : la forme angle, fermée et non exacte). Écartées : `frenet`, `hyperplan`, `surface`,
 `parallelogramme`. Générateur : scratchpad `gd/sym.py`. Préparé sur la branche `ue-geometrie-differentielle`.
+
+### 77. Corrigés révisés de l'UE Hilbert et Fourier (26 nov. 2026)
+
+L'auteur a renvoyé les huit corrigés (.tex et PDF). Changement principal : la macro `\etape{N.}` (rendue « ▹ *N.* »)
+devient `\qu{N.}` (`\par\smallskip\noindent\textbf{#1}~`, rendue « **N.** »), avec quelques formules passées en display.
+Reconversion des huit feuilles avec les énoncés et leurs PDF inchangés : énoncés, sources, pages et métadonnées identiques
+à l'ancienne version, sauf `types` de `l3-hf-02-11` (le méta proposait « Problème » en plus), remis à l'ancienne valeur.
+Les 42 figures des corrigés changent d'empreinte (préambule modifié) : anciennes retirées, nouvelles versées (contenu
+identique, git les voit comme des renommages). Le PDF du corrigé 6 passe de 10 à 11 pages. 196 vues sans débordement.
+Le commit des PDF de ces corrigés a emporté aussi les 27 figures TikZ des feuilles de Géométrie différentielle (§78),
+convertie juste avant : elles n'ont été citées qu'au commit suivant.
+
+### 78. Exercices de l'UE Géométrie différentielle (26 nov. 2026)
+
+`f-l3-gd-01` à `f-l3-gd-05` (20, 20, 12, 13, 16 exercices : 81), `outils/meta_l3_gd_01.py` à `05.py` (nœuds `cb-*`,
+`gd-*`, `cdiff-lagrange`, `sf-*`, `v-formes-alternees`, `v-algebre-exterieure`, `c-dalembert`, `ta-homotopie`), PDF
+`documents/exercices/l3/geometrie_differentielle_chapNN_<slug>_{enonce,corrige}.pdf` (slugs des fichiers reçus : `courbes`,
+`sous_varietes`, `formes_fondamentales_courbures`, `geodesiques_theorema_egregium`, `formes_differentielles` ; celui du
+chapitre 3 diffère de celui du cours). Titres des feuilles = titres des chapitres. Champ `exercices` des chapitres,
+nouveauté du 26 nov., `exercices_cours.py` relancé. Le paragraphe de notations n'est pas repris (règle du §37).
+
+**Figures `\input{py/…}`.** Dix figures des corrigés (ch. 2 : parapluie de Cartan, hyperboloïde, Möbius, hélicoïde ;
+ch. 3 : loxodromie sur la sphère, triangle de l'octant, caténoïde → hélicoïde, paraboloïde hyperbolique ; ch. 4 : tore et
+caténoïde avec géodésiques) lisent des fichiers `py/*.tex` produits par un script de l'auteur et non transmis (13 fichiers).
+Elles ont été découpées dans le PDF du corrigé : boîte des tracés relevée par pdfplumber (regroupement vertical des
+courbes et traits), élargie aux étiquettes (`Oz`, `y`), page recadrée par pypdf puis `pdftocairo -svg`, et posées à la
+place de « La figure est dans le PDF de la feuille » dans l'ordre (script scratchpad `gdx/rogner.py`). Les figures du ch. 4
+sont lourdes (≈ 800 Ko chacune, surfaces ombrées). À refaire à toute nouvelle version de ces corrigés, ou demander à
+l'auteur les fichiers `py/`.
+
+**Sources** (`tex2exos.source_lisible`, 26 nov.) : « liste N (Bordeaux 2016) » devient « Bordeaux 2016, liste N »,
+l'attribution valant pour les autres listes de la feuille (clé `__liste__` de `attrib`) ; les parties « manuel (photos) »
+(manuel photographié, sans titre), « création(s) » et les fins de note commençant par « on … » sont retirées, ainsi que
+les parenthèses qui parlent du cours, de doublons, de photos, de bonus, d'hypothèses ajoutées ou de parties non reprises.
+Restent « Bibmath, … », « examen du 25/04/2016 », « devoir surveillé du 18/03/2016 » tels quels. 54 sources affichées
+sur 81 exercices (les autres sont des créations ou ne citent que le manuel).
