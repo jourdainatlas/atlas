@@ -2311,7 +2311,10 @@ const KX_OPTS = { throwOnError: false, strict: 'ignore', output: 'html', trust: 
 function composerFormule(el) {
   if (!window.katex || !el.isConnected) return;
   let h;
-  try { h = katex.renderToString(el.textContent, { ...KX_OPTS, displayMode: el.classList.contains('kxd') }); }
+  // « \\not\\subset » soudé en une relation insécable : rendu.mjs le fait déjà pour les textes du site ; ici pour les
+  // formules écrites par les modules (activités), sinon KaTeX peut couper la ligne entre la barre et la relation.
+  const tex = el.textContent.replace(/(\\mathrel\{\s*)?\\not\s*(\\[a-zA-Z]+|[=<>])/g, (m, deja, rel) => deja ? m : `\\mathrel{\\not${rel}}`);
+  try { h = katex.renderToString(tex, { ...KX_OPTS, displayMode: el.classList.contains('kxd') }); }
   catch (e) { el.classList.replace('kx', 'kx-erreur'); return; }
   // terme cliquable dans une formule : la partie visible de KaTeX est aria-hidden, le terme reste donc hors de la
   // tabulation (tabindex -1) ; la souris et le toucher l'ouvrent comme avant, et le mot est accessible dans le texte.

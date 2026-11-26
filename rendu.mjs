@@ -32,11 +32,15 @@ const insecables = h => h.replace(/(<[^>]*>)|([^<]+)/g, (m, balise, texte) => ba
 
 // Dans une formule, \lex{id}{corps} marque une notation définie au lexique (un ensemble usuel,
 // par exemple) : le corps est composé normalement, puis enveloppé comme un terme cliquable.
+const soudeNot = tex => tex.replace(/(\\mathrel\{\s*)?\\not\s*(\\[a-zA-Z]+|[=<>])/g, (m, deja, rel) => deja ? m : `\\mathrel{\\not${rel}}`);
 function formule(tex, affichee, ou) {
   tex = tex.replace(/\\lex\{([^}]+)\}/g, (m, id) => {
     if (!D.lexique[id]) erreurs.push(`${ou} : notation inconnue \\lex{${id}}`);
     return `\\htmlData{g=${id}}`;
   });
+  // « \not\subset » : KaTeX permet une coupure de ligne entre la barre et la relation (« C / » puis « ⊂ D » sur
+  // téléphone). On en fait une seule relation insécable (MEMO_atlas_apropos.md §92) ; sans effet si c'est déjà fait.
+  tex = soudeNot(tex);
   // Allègement (9 nov. 2026, MEMO_atlas_apropos.md §52) : la formule est vérifiée ici par KaTeX (une erreur bloque
   // la publication), mais publiée comme un repère <span class="kx">source</span> (kxd : formule centrée) ; le
   // navigateur la compose à l'affichage (gabarit : composerFormule), les pages de lecture en MathML (lecture.mjs).
@@ -520,7 +524,11 @@ const TEX_SYM = { colon: ':', mid: '∣', le: '≤', leq: '≤', leqslant: '≤'
 const TEX_BB = { N: 'ℕ', Z: 'ℤ', Q: 'ℚ', R: 'ℝ', C: 'ℂ', K: '𝕂', P: 'ℙ' };
 const SUP = { 0: '⁰', 1: '¹', 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷', 8: '⁸', 9: '⁹', '+': '⁺', '-': '⁻', n: 'ⁿ', i: 'ⁱ' };
 const SUB = { 0: '₀', 1: '₁', 2: '₂', 3: '₃', 4: '₄', 5: '₅', 6: '₆', 7: '₇', 8: '₈', 9: '₉', n: 'ₙ', k: 'ₖ', i: 'ᵢ', j: 'ⱼ', p: 'ₚ' };
+const TEX_NON = { subset: '⊄', subseteq: '⊈', equiv: '≢', models: '⊭', sim: '≁', simeq: '≄', to: '↛', leqslant: '≰', geqslant: '≱', leq: '≰', geq: '≱', Rightarrow: '⇏', in: '∉', mid: '∤', '=': '≠', '<': '≮', '>': '≯' };
 const texteTexLisible = tex => {
+  // relations niées et \mathrel (dont le « \mathrel{\not\subset} » posé par soudeNot) : un seul signe en texte
+  tex = tex.replace(/\\not\s*(?:\\([a-zA-Z]+)|([=<>]))/g, (m, a, b) => TEX_NON[a || b] ? ` ${TEX_NON[a || b]} ` : m)
+    .replace(/\\mathrel\s*\{([^{}]*)\}/g, ' $1 ').replace(/\\mathrel(?![a-zA-Z])/g, ' ');
   let t = tex.replace(/\\(?:left|right|big|Big|bigg|Bigg)(?![a-zA-Z])/g, '').replace(/\\(?:,|;|:|!|quad|qquad)/g, ' ').replace(/~/g, ' ')
     .replace(/\\mathbb\s*\{?([A-Z])\}?/g, (m, l) => TEX_BB[l] || l)
     .replace(/\\[dt]?frac\{([^{}]*)\}\{([^{}]*)\}/g, (m, a, b) => `${/^\w$/.test(a) ? a : '(' + a + ')'}/${/^\w$/.test(b) ? b : '(' + b + ')'}`)

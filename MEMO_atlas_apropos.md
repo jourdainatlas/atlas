@@ -1108,3 +1108,13 @@ Projection (21 nov., à la demande de l'auteur) : le titre « Exercice N » (`.p
 
 **Restent ouverts.** Chiffrement TLS et zone DNS (SPF, DMARC) non vérifiables depuis l'environnement de travail ; double authentification des comptes GitHub et OVH (auteur) ; branche `main` non protégée et mises à jour de sécurité automatiques désactivées (sans gravité tant que l'auteur est seul à écrire) ; actions GitHub désignées par étiquette et non par empreinte.
 
+## 92. Relations niées insécables : « \not\subset » ne se coupe plus (26 nov. 2026)
+
+Signalé par la conversation Audit : KaTeX autorise une coupure de ligne entre `\not` et la relation qui suit ; sur téléphone, `C \not\subset D` s'affichait « C / » en fin de ligne puis « ⊂ D » à la suivante (constaté à 390 px sur `ord.od-coupures` et `cal-incompletude.cal-tarski`). Environ cent occurrences dans l'édifice, les exemples et les feuilles (`\not\equiv`, `\not\subset`, `\not\to`, `\not\models`, `\not\simeq`, `\not\subseteq`, `\not\sim`, `\not\leqslant`, `\not\Rightarrow`).
+
+Correction à la composition, sans toucher aux sources : `soudeNot` (rendu.mjs, appelée par `formule()`) remplace `\not\X` et `\not=`, `\not<`, `\not>` par `\mathrel{\not\X}`, une seule relation que KaTeX ne coupe pas ; sans effet si l'auteur a déjà écrit `\mathrel{\not…}`, et `\notin` n'est pas concerné. Le texte publié porte donc la forme soudée, ce qui vaut pour l'application et pour les pages de lecture (MathML). `composerFormule` (gabarit) applique la même règle aux formules écrites par les modules, activités comprises. **Dans les sources, on continue d'écrire `\not\subset` simplement.**
+
+Versions en texte simple (descriptions des pages, recherche, fil RSS) : `texteTexLisible` rend une relation niée par son signe (table `TEX_NON` : ⊄ ⊈ ≢ ⊭ ≁ ≄ ↛ ≰ ≱ ⇏ ∉ ∤ ≠) et retire `\mathrel`, qui laissait jusque-là le mot « mathrel » dans quelques descriptions (`r-relation` : « x mathrel R y »). Reste une description fautive, `exercices/l3-in-02-10`, composée par `texSimple` de `lecture-cours.mjs` (domaine Cours).
+
+Contrôle : `python3 outils/edifice_largeurs.py` sur les 982 fiches à 390 px ne signale plus que les quatre formules centrées du chapitre asymptotique (`as-etude-locale`, `as-primitive`, deux dans `as-taylor-young`), qui défilent horizontalement et relèvent de la conversation Édifice.
+
