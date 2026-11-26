@@ -182,7 +182,7 @@ def cmd_notes():
     C, cours = charger_cours(); fe, ex = charger_exercices()
     niv = {n['id']: n['titre'] for n in C['niveaux']}; ue = {u['id']: u['titre'] for u in C.get('ues', [])}
     def nomniv(c): return niv.get(c['niveau'], c['niveau']) + (f" – {ue[c['ue']]}" if c.get('ue') in ue else '')
-    def lieu(c): return f"{nomniv(c)}, ch. {c['chapitre']}" if c.get('chapitre') else nomniv(c)
+    def lieu(c): return f"{nomniv(c)}, ch. {c['chapitre']}" if c.get('chapitre') else f"{nomniv(c)} – {c['titre']}"
     def lab_ex(i):
         e = ex[i]; f = fe.get(e['feuille'], {}); c = cours.get(f.get('cours'), {'niveau': f.get('niveau')})
         if not f.get('chapitre'): return f"exercice {e['numero']} de la feuille « {f.get('titre', '')} » ({nomniv(c)})"
