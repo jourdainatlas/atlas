@@ -416,3 +416,12 @@ bilinéaires générales, non dégénérées, isotropes, décomposition polaire 
 meilleure approximation en moyenne quadratique. Grammaire des notes : « les exercices exercice … », « : exercice
 N » corrigés (à ajouter aux corrections habituelles après `notes_lisibles`).
 
+**Outils de liaison dans le dépôt (26 nov. 2026).** Le bloc-notes de la conversation a été vidé entre deux
+sessions : consignes et scripts de liaison (gardés jusque-là hors dépôt) étaient perdus. Ils sont désormais
+dans le dépôt : `outils/annales_liaison.py` (commandes `catalogue`, `themes`, `points`, `exporter`, `valider`,
+`appliquer`, `notes` ; ces deux dernières remplacent `appliquer_liens.py` et `notes_lisibles.py` avec les
+corrections de grammaire) et `outils/annales_liaison_consignes.md` (règles de l'agent de liaison, de l'agent de
+relecture et des propositions `annales_themes`). Les agents travaillent dans le bloc-notes et ne lisent que le
+dépôt. Première exécution de `notes` : quelques tournures du lycée corrigées (« : exercice 3.22 » → « : l'exercice
+3.22 », « les exercices exercice … »).
+
