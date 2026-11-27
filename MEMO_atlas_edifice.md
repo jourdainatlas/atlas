@@ -2263,3 +2263,54 @@ recherche approfondie (RECHERCHE-C.md), propositions validées le 26 nov.
 
 Bilan : tous les constats A et B appliqués ou appliqués autrement avec raison, aucun jugé infondé ; le seul chiffre
 proposé faux par l'audit (π(100) ⩽ 70,2) est remplacé par la valeur juste. Section C entièrement tranchée.
+
+## 169. Nœuds demandés par l'audit de la rubrique Cours (27 novembre 2026)
+
+Numérotation : la règle commune (MEMO_atlas.md §0, point 7) prend le numéro suivant le plus grand employé, tous mémos
+confondus ; MEMO_atlas_activites.md va jusqu'à 168. La section « 117 » de ce mémo (audit du 26 nov.) aurait dû porter
+le numéro 169 ; elle n'est pas renumérotée.
+
+Audit de la rubrique Cours : des chapitres de cours se rattachaient faute de mieux à des nœuds voisins. Armand a
+retenu toutes les propositions (« Je retiens tout »). Cinq lots parallèles, un worktree chacun, consignes hors dépôt :
+/home/claude/travail/cours-27nov/ (CONSIGNE.md, RELECTURE.md, lot1 à lot5 avec NOTES.md, verif.py, RELECTURE.md) ;
+chaque lot relu par un agent indépendant, corrections appliquées, intégration par cherry-pick (les lot.patch faits par
+`git diff origin/main` sur une base périmée défaisaient le travail des autres conversations : ne jamais intégrer un
+patch de ce type sans vérifier sa base).
+- Lot 1 : `as-dalembert-cauchy` (ar-asymptotique ; convergence absolue des séries réelles démontrée ; contre-exemple
+  (2 + (−1)ⁿ)/2ⁿ), `fo-poisson` (conventions du graphe, f̂(ξ) = ∫ f e^{−ixξ} ; θ ; historique d'après
+  Kosmann-Schwarzbach 2022 : gaussienne en 1823, p. 420), `f-ergodique` (⋆ par la projection, sans choix si H a une
+  suite dense ; Ker(I − U) ⊥ Im(I − U) sans adjoint), `f-ergodique-mesure` (Koopman, rotation irrationnelle en cos et
+  sin, L² réel ; Birkhoff admis hors cadre). anf : 1 → 4 croisements (dépendances réelles). Les cours mp-06 et mp-09
+  citaient `c-dalembert` (d'Alembert-Gauss) pour la règle de d'Alembert ; les exercices f-mp-06 (l. 59, 754, 1524) et
+  f-mp-09 (l. 99) aussi : signalé aux domaines Cours et Exercices.
+- Lot 2 : chapitre `met-euclidien` (9 fiches eu- : Gram-Schmidt, projection en dimension finie, O(E), orientation,
+  Cartan-Dieudonné, O(2), SO(3), isométries affines entre préhilbertiens ; t ↦ (t, sin t) isométrie non affine pour
+  ‖·‖∞) ; termes déplacés depuis lie, anf, edo-courbes, cdiff : groupe-orthogonal, matrice-orthogonale,
+  famille-orthonormee, orthogonal-partie, projection-orthogonale (une seule entrée, le cas Hilbert reste f-hilbert
+  (iii)), distance-partie, orientation, meme-orientation, base-orthonormee-directe, deplacement-plan, deplacement ;
+  « rotation » retiré des exemples d'amont. Dans edo-changement : `cv-isometries` (b + A conserve λ ⇔ |det A| = 1),
+  `cv-sard` (même dimension, sans choix ; cas général admis hors cadre ; Sard 1942, Morse 1939). Renvois vers
+  cv-changement et cv-liouville annoncés, sans arête (§83).
+- Lot 3 : chapitre `ar-impropres` « Intégrales généralisées » (9 fiches ig-, arête ar-cauchy → ar-impropres) ;
+  integrale-convergente déplacée depuis nb-sommation (qui devient le cas complexe, titre « intégrales généralisées
+  complexes ») ; localement-integrable-riemann distinct de localement-integrable (L¹_loc) ; rappels dans rs-demi-cercle,
+  ly-equation, ri-*. Le cours mp-12 cite `localement-integrable` au lieu de `localement-integrable-riemann` (signalé).
+- Lot 4 : `z-congruences` (terme congruence déplacé depuis z-zn) ; dans z-polynomes : pol-symetriques (𝔖ₙ posé),
+  pol-fondamental, pol-newton, pol-discriminant (z-polynomes 0 → 2 croisements) ; chapitre `ac-resultant` (préfixe res-,
+  rs- étant pris) : Sylvester, Res par les racines sur l'anneau générique construit sur A (ℤ → A n'est défini qu'en
+  galois), a·disc(P) = (−1)^{n(n−1)/2} Res(P, P′), élimination (plan réel annoncé, rien n'en dépend) ; remarque de
+  gs-abel-ruffini (groupe dans 𝔄ₙ ⇔ discriminant carré).
+- Lot 5 : chapitre `hom-surfaces` (10 fiches sc- : surfaces, présentations polygonales à au moins deux côtés, quotients
+  séparés et compacts, voisinage du sommet par cycle de coins, découpage-recollement-repliement, algorithme en quatre
+  phases à terminaison explicite, H₁(Σ_g) = ℤ^{2g}, H₁(N_k) = ℤ^{k−1} ⊕ ℤ/2, triangulations par homologie locale,
+  classification des surfaces triangulables) ; Radó admis hors cadre ; admis levés dans cw-exemples (Σ_g est une
+  surface) et cw-bord (bouteille de Klein) ; renvoi depuis vk-tore. Möbius 1863 : Berichte (et non Abhandlungen) 15,
+  p. 18-57.
+Outil : `edifice_largeurs.py` compose désormais toutes les formules avant de mesurer (la composition paresseuse du
+gabarit cachait les débordements du bas des fiches) ; sept débordements anciens trouvés et coupés (as-*, v-matrices).
+Textes des théories met, ac, edo, hom complétés ; lien vers discriminant dans c-racines-carrees ; cinq entrées de
+nouveautés. Bilan : 1123 nœuds, 1129 termes, 99 graphes ; édifice 15 croisements ; diagnostic à 0.
+Identifiants pour la rubrique Cours : mp-06, mp-09 → as-dalembert-cauchy ; l3-sa-06 → pol-symetriques,
+pol-fondamental, pol-newton, pol-discriminant, ac-resultant ; mp-07 → met-euclidien (eu-*) ; ma-12 → z-congruences ;
+mp-12 → ar-impropres (ig-*) ; l3-hf-07 → fo-poisson ; l3-hf-04 → f-ergodique, f-ergodique-mesure ; l3-gt-07 →
+hom-surfaces (sc-*) ; l3-in-06 → cv-isometries, cv-sard.
