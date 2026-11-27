@@ -497,3 +497,12 @@ inchangées. Synonymes ajoutés : groupe résoluble, Sylow (`groupes`) ; éléme
 clôture algébrique (`corps`) ; correspondance de Galois, Abel-Ruffini, Artin (`galois`) ; Gauss-Wantzel,
 simplicité du groupe alterné, théorème fondamental de l'algèbre ; De Morgan, produit cartésien, opérations sur
 les ensembles, ensemble des parties (`logique-raisonnement` ; « partition » écarté : partitions d'entiers).
+
+**Exercices de topologie générale (27 nov. 2026).** Les 65 exercices `f-l3-gt-01` à `05` reliés (agrég. externe
+§1, §5-7 ; interne §9, indices internes), un agent puis une relecture (3 corrections : l3-gt-04-09 retiré des
+actions de groupes au point 1/0/6, ordre de 1/0/7, l3-gt-02-10 à la place de l3-gt-02-07 en 5/0/9). 20 points
+modifiés ; sans exercice : agrég. interne 24 → 23 (connexité). Feuilles f-l3-gd déjà reliées le 26 nov.
+Listes posées par Cours relues : ma-01 `[logique-raisonnement, ly-recurrence]` → retirer `ly-recurrence` (la
+pastille ne règle que la requête : dans la famille par défaut, « Raisonnement par récurrence » retombe sur
+`logique-raisonnement`, doublon) ; m-galois → liste ci-dessus (ajouter `corps-finis`,
+`arithmetique-polynomes`, `anneaux`).
