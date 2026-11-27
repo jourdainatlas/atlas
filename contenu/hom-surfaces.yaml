@@ -1,0 +1,544 @@
+# Niveau 2 : structure interne du chapitre « Classification des surfaces compactes » (nœud hom-surfaces du
+# graphe hom, créé le 27 nov. 2026, après hom-cellulaire).
+# Surfaces (séparé, localement homéomorphe à ℝ²), sphère et tore ; présentations polygonales sur le carré Q
+# (structures de polygone, critère d'homéomorphisme par application fermée, indépendance de la structure par le
+# cône sur un homéomorphisme du bord, rotation, inversion, renommage) ; structure cellulaire de X_w (classes de
+# sommets, bord d_2 lu sur le mot pour un nombre quelconque de côtés, χ = V − n/2 + 1), sphère, ℝP², Σ_g, N_k,
+# bouteille de Klein ; X_w est une surface (coins, cycles de demi-côtés, voisinage carré recollé par secteurs) ;
+# découpage-recollement (demi-carrés affines) et repliement (z ↦ z² sur le demi-disque) ; opérations dérivées :
+# paire tordue, commutateur, réduction d'un sommet (comptage des sommets au-dessus d'un point), tore + plan
+# projectif ; algorithme de réduction en quatre phases, mesures explicites ; homologie des formes normales,
+# orientabilité (H₂ ≠ 0), unicité par |H₁/2H₁| et la torsion ; triangulations, homologie locale par le cône sur
+# le link (excision), arêtes dans deux triangles, links connexes ; présentation tirée d'une triangulation (arbre
+# de recollement), classification, somme connexe par concaténation.
+# Admis (remarques, hors cadre) : théorème de Radó (triangulabilité), somme connexe géométrique, ruban de Möbius,
+# présentation du groupe fondamental de X_w, version lisse et fonctions de Morse.
+# Choix : aucun (tout est fini ; les rayons δ sont des minima explicites).
+
+graphe: hom-surfaces
+titre: Classification des surfaces
+conteneur: hom-surfaces
+
+entrees:
+  hom-cellulaire: [sc-polygones, sc-triangulations]
+
+noeuds:
+  - id: sc-surfaces
+    etiquette: Surfaces
+    nature: définition
+    titre: Surfaces topologiques
+    texte: |
+      Une [[surface-topologique|surface]] est un espace topologique [[separe|séparé]] dont tout point possède un [[voisinage]] [[ouvert]] [[espaces-homeomorphes|homéomorphe]] à $\lex{n-uplet}{\mathbb R^2}$. Une surface compacte est une surface qui est un espace [[compact]], au sens du nœud {{t-compact|Compacts}}.
+
+      On note $\|y\|_\infty = \max(|y_1|, |y_2|)$ et $\|y\|$ la norme euclidienne de $\mathbb R^2$, et l'on note $\lex{sphere-unite}{S^2}$ la sphère unité de $\mathbb R^3$ ({{tr-sphere|Sphère unité Sⁿ}}). Le [[tore]] est $T = S^1 \times S^1$, où le cercle $S^1$ est ici le quotient $\mathbb R/\mathbb Z$, avec la projection $p : \mathbb R \to S^1$ du nœud {{ta-cercle|Groupe fondamental du cercle}} et $P(u, v) = (p(u), p(v))$, comme au nœud {{vk-tore-ouverts|Ouverts du tore}}. Partout ailleurs dans le chapitre, $S^1$ désigne le cercle unité de $\mathbb R^2$, comme au chapitre d'homologie cellulaire.
+    enonce: |
+      (i) Pour $a \in \mathbb R^2$ et $r > 0$, la [[boule-ouverte|boule ouverte]] euclidienne $B(a, r)$ et le carré ouvert $\{y : \|y - a\|_\infty < r\}$ sont homéomorphes à $\mathbb R^2$. Une partie ouverte d'une surface est une surface ; une partie ouverte de $\mathbb R^2$ est une surface.
+
+      (ii) La sphère $S^2$ est une surface compacte connexe.
+
+      (iii) Le tore $T$ est une surface compacte connexe.
+
+      (iv) Le disque fermé $D^2 = \{y \in \mathbb R^2 : \|y\| \leqslant 1\}$ n'est pas une surface.
+    preuve: |
+      (i) L'application $y \mapsto \frac{y - a}{r - \|y - a\|}$ est continue sur $B(a, r)$, et
+      $$z \mapsto a + \frac{r\,z}{1 + \|z\|}$$
+      est continue sur $\mathbb R^2$, à valeurs dans $B(a, r)$. Ce sont des bijections réciproques : si $\rho = \|y - a\| < r$ et $z = \frac{y - a}{r - \rho}$, alors $\|z\| = \frac{\rho}{r - \rho}$ et $\frac{rz}{1 + \|z\|} = \frac{r(y - a)}{r - \rho + \rho} = y - a$ ; l'autre composée se vérifie de même. Pour le carré, on applique coordonnée par coordonnée l'homéomorphisme $t \mapsto \frac{t}{r - |t|}$ de $]{-r}, r[$ sur $\mathbb R$, de réciproque $u \mapsto \frac{ru}{1 + |u|}$, après la translation par $-a$.
+
+      Soit $U$ une partie ouverte d'une surface $X$ et $x \in U$. Soit $V$ un voisinage ouvert de $x$ et $\varphi : V \to \mathbb R^2$ un homéomorphisme. L'ouvert $\varphi(U \cap V)$ de $\mathbb R^2$ contient une boule $B(\varphi(x), r)$, dont l'image réciproque par $\varphi$ est un voisinage ouvert de $x$ dans $U$, homéomorphe à cette boule, donc à $\mathbb R^2$. Enfin $U$ est séparé comme partie d'un espace séparé ({{t-separe|Espaces séparés}}, (iii)). Le cas d'un ouvert de $\mathbb R^2$ s'en déduit, $\mathbb R^2$ étant lui-même une surface.
+
+      (ii) La sphère est séparée, comme partie de $\mathbb R^3$, et compacte, puisqu'elle est fermée et bornée ({{me-rn|L'espace ℝⁿ}}, (iii)). Pour $x \in S^2$, la sphère privée du point $-x$ est un voisinage ouvert de $x$ homéomorphe à $\mathbb R^2$ ({{hj-calottes|Calottes}}, (i)). Enfin $S^2$ est connexe par arcs ({{h-spheres|Homologie des sphères}}, preuve), donc connexe ({{ta-chemins|Chemins}}, (iii)).
+
+      (iii) Le tore est séparé et compact ({{vk-bouquet|Bouquet de deux cercles}}, (i) et preuve de (ii)), et connexe comme image du carré $[0, 1]^2$, connexe par arcs, par l'application continue $P$. Soit $(u, v) \in \mathbb R^2$, $J = \,]u - \frac12, u + \frac12[$ et $J' = \,]v - \frac12, v + \frac12[$. La restriction de $p$ à $J$ est un homéomorphisme sur l'ouvert $p(J)$ de $S^1$ ({{ta-cercle|Groupe fondamental du cercle}}, preuve de (i)), et de même pour $J'$. Le produit de ces deux homéomorphismes est un homéomorphisme du carré ouvert $J \times J'$ sur $p(J) \times p(J')$, qui est un voisinage ouvert de $P(u, v)$ dans $T$ ({{t-produit|Topologie produit}}) ; ce carré est homéomorphe à $\mathbb R^2$ par (i).
+
+      (iv) Supposons qu'un voisinage ouvert $V$ du point $e = (1, 0)$ dans $D^2$ soit homéomorphe à $\mathbb R^2$ par $\varphi$. L'application $\varphi^{-1} : \mathbb R^2 \to \mathbb R^2$, à valeurs dans $V \subset D^2$, est continue et injective ; par l'invariance du domaine ({{hj-invariance-domaine|Invariance du domaine}}, (i)), son image $V$ est ouverte dans $\mathbb R^2$. Elle contiendrait donc un point $(1 + \varepsilon, 0)$, avec $\varepsilon > 0$, qui n'est pas dans $D^2$ : c'est absurde.
+    remarques:
+      - |
+        On ajoute souvent à la définition d'une surface que l'espace a une base dénombrable d'ouverts. Pour une surface compacte, c'est automatique : elle est recouverte par un nombre fini d'ouverts homéomorphes à $\mathbb R^2$, et chacun a pour base les images des boules de centre à coordonnées rationnelles et de rayon rationnel, qui forment une famille dénombrable. Le chapitre ne considère que des surfaces compactes, et cette condition n'y joue aucun rôle.
+      - |
+        L'erreur la plus répandue est de croire que tout « morceau de plan » est une surface. Le point (iv) montre que le disque fermé n'en est pas une : les points du cercle unité n'ont pas de voisinage homéomorphe au plan. C'est une *surface à bord*, notion que le chapitre n'étudie pas. La démonstration de (iv) emploie l'invariance du domaine, conséquence de l'homologie des sphères ; le nœud {{sc-triangulations|Triangulations}} retrouvera ce genre d'obstruction par l'homologie locale $H_2(X, X \setminus \{x\})$.
+      - |
+        Une surface compacte connexe est le cadre du théorème de classification ({{sc-classification|Classification}}) : la liste annoncée comprend la sphère, le tore, et deux familles infinies que l'on construira par recollement d'un polygone. Le point (iii) en donne le premier exemple non trivial, construit au chapitre de Seifert-van Kampen comme produit de deux cercles.
+
+  - id: sc-polygones
+    etiquette: Présentations polygonales
+    nature: définition
+    titre: Présentations polygonales et recollement des côtés
+    texte: |
+      Soit $Q = [-1, 1]^2$, $\|y\|_\infty = \max(|y_1|, |y_2|)$ et $\partial Q = \{y : \|y\|_\infty = 1\}$ le bord du carré, comme au nœud {{cw-exemples|Exemples}}. On parcourt ce bord par l'application $\gamma : \mathbb R \to \partial Q$, de période $8$, définie sur $[0, 8]$ par
+      $$\gamma(t) = \begin{cases} (-1 + t, -1) & t \in [0, 2], \\ (1, t - 3) & t \in [2, 4], \\ (5 - t, 1) & t \in [4, 6], \\ (-1, 7 - t) & t \in [6, 8]. \end{cases}$$
+      Elle est continue, les formules coïncidant en $2$, $4$, $6$, et $\gamma(8) = \gamma(0)$. Pour tout réel $\alpha$, sa restriction à $[\alpha, \alpha + 8[$ est une bijection sur $\partial Q$, chacun des quatre morceaux décrivant un côté privé de son extrémité.
+
+      Pour $n \geqslant 2$, on pose $t_i = \frac{8i}n$, $v_i = \gamma(t_i)$, les indices étant pris modulo $n$, et, pour $1 \leqslant i \leqslant n$ et $s \in [-1, 1]$,
+      $$\lambda^n_i(s) = \gamma\Big(t_{i-1} + \frac{4(1 + s)}n\Big).$$
+      Pour $n = 4g$, ce sont les arcs $\lambda_i$ du nœud {{cw-exemples|Exemples}} : $\gamma$ est affine sur chaque intervalle $[t_{i-1}, t_i]$, qui ne contient pas d'entier pair en son intérieur. On note $\|y\|$ la norme euclidienne, $D^2$ et $B^2$ les boules unité fermée et ouverte de $\mathbb R^2$, et $h : D^2 \to Q$ l'homéomorphisme $y \mapsto \frac{\|y\|}{\|y\|_\infty}y$ du nœud {{hj-calottes|Calottes}}, (ii), qui envoie le cercle unité $S^1$ sur $\partial Q$ ; on a $\|h(y)\|_\infty = \|y\|$.
+
+      Pour $n \geqslant 2$, une *structure de polygone à $n$ côtés* sur $Q$ est une suite $\kappa = (\kappa_1, \dots, \kappa_n)$ d'applications continues et injectives de $[-1, 1]$ dans $\partial Q$, telles que $\kappa_i(1) = \kappa_{i+1}(-1)$ (indices modulo $n$), dont les images recouvrent $\partial Q$, et telles que $\kappa_i(s) = \kappa_j(s')$, pour $(i, s) \neq (j, s')$, n'ait lieu que si ces deux couples sont $(k, 1)$ et $(k + 1, -1)$ pour un indice $k$. La structure *standard* $\lambda^n = (\lambda^n_1, \dots, \lambda^n_n)$ en est une, par la bijectivité de $\gamma$ sur $[t_0, t_0 + 8[$.
+
+      ```schema sc-polygones
+      La structure standard à six côtés : le bord du carré est parcouru dans le sens direct à partir du coin $(-1, -1)$ et découpé en six arcs de même longueur pour la fonction $\|y\|_\infty$, de sommets $v_0, \dots, v_5$ ; certains arcs contiennent un coin du carré. Chaque côté porte une lettre du mot $a\,b\,c\,a^{-1}b^{-1}c^{-1}$, et la flèche indique le sens de la lettre.
+      ```
+
+      Soit $S$ un ensemble fini non vide. Une [[presentation-polygonale|présentation polygonale]] $\mathcal P$ est une famille $(w_1, \dots, w_r)$, $r \geqslant 1$, de [[mot-ensemble|mots]] de longueur au moins $2$ sur $S$ telle que chaque élément de $S$ apparaisse exactement deux fois en tout, comme [[lettre-ensemble|lettre]] $\beta$ ou $\beta^{-1}$. On écrit $w_k = x^k_1 \cdots x^k_{n_k}$ et $x^k_i = (\beta^k_i, \varepsilon^k_i)$ ; le couple $(k, i)$ est une *occurrence* de $\beta^k_i$, d'exposant $\varepsilon^k_i$, et les deux occurrences d'une même lettre sont dites *appariées*. Un mot de surface est un mot $w$ tel que $(w)$ soit une présentation ; on omet alors l'indice $k$. Une lettre $\beta$ est [[lettre-tordue|tordue]] si ses deux occurrences ont le même exposant, comme $a$ dans $aXaY$.
+
+      Soit $Q_{\mathcal P} = Q \times \{1, \dots, r\} \subset \mathbb R^3$, compact et séparé, et $\kappa = (\kappa^1, \dots, \kappa^r)$, où $\kappa^k$ est une structure de polygone à $n_k$ côtés. La relation $\sim_\kappa$ est la [[relation-equivalence|relation d'équivalence]] sur $Q_{\mathcal P}$ engendrée par
+      $$\big(\kappa^k_i(\varepsilon s), k\big) \sim \big(\kappa^l_j(\varepsilon' s), l\big),$$
+      pour $s \in [-1, 1]$ et deux occurrences appariées $(k, i)$ et $(l, j)$, d'exposants $\varepsilon$ et $\varepsilon'$. On note $X_{\mathcal P, \kappa}$ le quotient, muni de la [[topologie-quotient|topologie quotient]] ({{t-quotient|Topologie quotient}}), $\pi$ la [[application-canonique|projection]], et $X_{\mathcal P}$ le quotient pour les structures standard ; pour un mot de surface $w$, on écrit $X_w$. Le *chemin orienté* d'une occurrence d'exposant $\varepsilon$ est $s \mapsto \pi(\kappa^k_i(\varepsilon s), k)$ : deux occurrences appariées ont le même chemin orienté.
+    enonce: |
+      (i) *Critère.* Soit $Y$ un espace séparé et $F : Q_{\mathcal P} \to Y$ une application continue et surjective telle que $F(y) = F(y')$ si et seulement si $y \sim_\kappa y'$. Alors $F$ induit un [[homeomorphisme|homéomorphisme]] de $X_{\mathcal P, \kappa}$ sur $Y$ ; en particulier $X_{\mathcal P, \kappa}$ est séparé et compact.
+
+      (ii) *Transport.* Soit $\mathcal P'$ une autre présentation, munie de structures $\kappa'$, et $F : Q_{\mathcal P'} \to Q_{\mathcal P}$ continue et surjective, telle que $F(y) \sim_\kappa F(y')$ si et seulement si $y \sim_{\kappa'} y'$. Alors $F$ induit un homéomorphisme de $X_{\mathcal P', \kappa'}$ sur $X_{\mathcal P, \kappa}$.
+
+      (iii) *Indépendance.* Pour toutes structures $\kappa$, il existe un homéomorphisme de $X_{\mathcal P}$ sur $X_{\mathcal P, \kappa}$ qui envoie $\pi(\lambda^k_i(s), k)$ sur $\pi(\kappa^k_i(s), k)$ pour tous $k$, $i$ et $s$ : il envoie le chemin orienté de chaque occurrence sur celui de la même occurrence.
+
+      (iv) *Opérations.* L'espace $X_{\mathcal P}$ ne change pas, à homéomorphisme près, si l'on remplace un mot $x_1 \cdots x_n$ de $\mathcal P$ par sa rotation $x_2 \cdots x_n x_1$, ou par son inverse $x_n^{-1} \cdots x_1^{-1}$ ([[inverse-lettre|lettres inverses]]), si l'on renomme les lettres par une bijection de $S$ sur un autre ensemble, ou si l'on remplace une lettre $\beta$ par $\beta^{-1}$ dans ses deux occurrences. L'homéomorphisme envoie le chemin orienté de chaque occurrence sur celui de l'occurrence correspondante, parcouru en sens inverse pour la lettre $\beta$ dans le dernier cas.
+    preuve: |
+      (i) L'application $\Psi : X_{\mathcal P, \kappa} \to Y$ induite par $F$ est continue ({{t-quotient|Topologie quotient}}) et bijective, par hypothèse. Soit $C$ un fermé du quotient. Son image réciproque $\pi^{-1}(C)$ est fermée dans le compact $Q_{\mathcal P}$, donc compacte, et $\Psi(C) = F(\pi^{-1}(C))$ est compacte, donc fermée dans le séparé $Y$ ({{t-compact-prop|Parties compactes}}). Ainsi $\Psi$ est fermée, et c'est un homéomorphisme ; le quotient est séparé et compact comme $Y$, qui est l'image continue du compact $Q_{\mathcal P}$.
+
+      (ii) L'application $\pi \circ F$ est constante sur les classes de $\sim_{\kappa'}$ ; elle induit une application continue $\Psi$, injective et surjective par hypothèse. Soit $C$ un fermé de $X_{\mathcal P', \kappa'}$ et $K = \pi'^{-1}(C)$, compact et saturé. Son image $F(K)$ est compacte, donc fermée dans le séparé $Q_{\mathcal P}$. Elle est saturée : si $y \sim_\kappa F(k)$ avec $k \in K$, on écrit $y = F(y'')$, puis $y'' \sim_{\kappa'} k$, donc $y'' \in K$. Ainsi $\pi^{-1}(\Psi(C)) = F(K)$ est fermé, et $\Psi(C)$ aussi : $\Psi$ est fermée, donc un homéomorphisme.
+
+      (iii) Fixons $k$, et écrivons $\lambda_i$, $\kappa_i$, $n$ pour $\lambda^k_i$, $\kappa^k_i$, $n_k$. Tout point de $\partial Q$ s'écrit $\lambda_i(s)$ pour un unique couple $(i, s)$, sauf les sommets $v_i = \lambda_i(1) = \lambda_{i+1}(-1)$ ; la même description vaut pour $\kappa$, et $\kappa_i(1) = \kappa_{i+1}(-1)$. La formule $g(\lambda_i(s)) = \kappa_i(s)$ définit donc une bijection $g$ de $\partial Q$ sur lui-même. Elle est continue par le nœud {{cw-recollement|Recollement de compacts}}, (ii), puisque $\partial Q$, séparé, est la réunion des images des compacts $[-1, 1]$ par les $\lambda_i$, et que chaque $g \circ \lambda_i = \kappa_i$ est continue. Comme $\partial Q$ est compact, $g$ est un homéomorphisme ({{t-bij-compact|Bijection d'un compact}}).
+
+      On prolonge $g$ par le cône :
+      $$G(y) = \|y\|_\infty\, g\Big(\frac{y}{\|y\|_\infty}\Big), \qquad G(0) = 0.$$
+      Elle est continue hors de $0$ comme composée, et en $0$ puisque $\|G(y)\|_\infty = \|y\|_\infty$. Elle envoie $Q$ dans $Q$, et le cône de $g^{-1}$ en est la réciproque, puisque $\frac{G(y)}{\|G(y)\|_\infty} = g\big(\frac{y}{\|y\|_\infty}\big)$ ; c'est un homéomorphisme de $Q$, et $G \circ \lambda_i = \kappa_i$.
+
+      L'application $(y, k) \mapsto (G_k(y), k)$, où $G_k$ est le cône construit pour la structure $\kappa^k$, est une bijection de $Q_{\mathcal P}$ sur lui-même qui envoie les couples générateurs de $\sim_\lambda$ sur ceux de $\sim_\kappa$. Une bijection envoie la relation d'équivalence engendrée par des couples sur celle qu'engendrent leurs images ; on applique (ii).
+
+      (iv) *Rotation.* Pour le mot $x_2 \cdots x_n x_1$, la suite $\kappa_i = \lambda_{i+1}$ (indices modulo $n$) est une structure de polygone, et la relation $\sim_\kappa$ du mot tourné a exactement les mêmes couples générateurs que $\sim_\lambda$ pour le mot initial : les deux quotients sont égaux, et l'on conclut par (iii).
+
+      *Inversion.* Pour $w^{-1} = y_1 \cdots y_n$, avec $y_i = x_{n+1-i}^{-1}$, posons $\kappa_i(s) = \lambda_{n+1-i}(-s)$. C'est une structure de polygone, puisque $\kappa_i(1) = \lambda_{n+1-i}(-1) = v_{n-i} = \lambda_{n-i}(1) = \kappa_{i+1}(-1)$. L'exposant de $y_i$ est $-\varepsilon_{n+1-i}$, et
+      $$\kappa_i\big(-\varepsilon_{n+1-i}s\big) = \lambda_{n+1-i}\big(\varepsilon_{n+1-i}s\big) :$$
+      les couples générateurs sont ceux du mot $w$, et l'on conclut comme pour la rotation.
+
+      *Renommage.* Une bijection de $S$ ne change pas les couples générateurs. Remplacer $\beta$ par $\beta^{-1}$ dans ses deux occurrences remplace le couple $(\kappa(\varepsilon s), \kappa'(\varepsilon' s))$ par $(\kappa(-\varepsilon s), \kappa'(-\varepsilon' s))$, et $s$ parcourt $[-1, 1]$ dans les deux cas : la relation est la même.
+    remarques:
+      - |
+        Le carré $Q$ joue le rôle du polygone, et une structure dit où sont ses côtés. Le point (iii) dit que la forme et la place des côtés n'importent pas, seul leur ordre le long du bord compte : c'est ce qui permet de dessiner un polygone régulier, ou de déplacer les sommets à sa guise. Le prolongement d'un homéomorphisme du bord par le cône est l'argument dit d'Alexander ; il ne demande que la fonction $\|y\|_\infty$, qui joue le rôle du rayon.
+      - |
+        Une présentation peut avoir plusieurs mots : l'espace est alors un recollement de plusieurs carrés. Ce n'est pas un cas d'école : couper un polygone le long d'une diagonale en donne deux ({{sc-decoupage|Découpage et recollement}}), et une surface triangulée est le recollement de ses triangles ({{sc-classification|Classification}}).
+      - |
+        L'erreur la plus répandue est d'oublier la condition « exactement deux fois ». Avec le mot $ab$, dont les lettres n'apparaissent qu'une fois, la relation est l'égalité et le quotient est le carré lui-même, dont le bord n'est recollé à rien ; avec une lettre qui apparaîtrait trois fois, trois côtés seraient recollés ensemble, et les points de l'arête obtenue auraient un voisinage formé de trois demi-disques.
+      - |
+        Aucune forme du choix n'intervient : la présentation est finie, et les homéomorphismes sont donnés par des formules.
+
+  - id: sc-cellulaire
+    etiquette: Structure cellulaire
+    nature: proposition
+    titre: Structure cellulaire et formes normales
+    texte: |
+      Soit $w = x_1 \cdots x_n$ un mot de surface, $x_i = (\beta_i, \varepsilon_i)$, avec la structure standard $\lambda_i = \lambda^n_i$ et les sommets $v_i = \lambda_i(1)$, indices modulo $n$ ; on a $n = 2|S| \geqslant 2$. Pour une occurrence $i$, l'origine et l'extrémité de son chemin orienté sont les images des sommets $o_i = \lambda_i(-\varepsilon_i)$ et $f_i = \lambda_i(\varepsilon_i)$. Les [[classe-sommets|classes de sommets]] sont les classes de la relation d'équivalence $\approx$ sur $\{v_1, \dots, v_n\}$ engendrée par $o_i \approx o_j$ et $f_i \approx f_j$, pour toute paire d'occurrences appariées $i$, $j$ ; on note $V$ leur nombre. On pose $\psi_i = h^{-1} \circ \lambda_i$, arcs du cercle $S^1$.
+
+      Les [[forme-normale-surface|formes normales]] sont les mots
+      $$\begin{aligned} &aa^{-1}, \\ &a_1b_1a_1^{-1}b_1^{-1} \cdots a_gb_ga_g^{-1}b_g^{-1} \quad (g \geqslant 1), \\ &a_1a_1 \cdots a_ka_k \quad (k \geqslant 1). \end{aligned}$$
+      On note $N_k$ le quotient du troisième mot, la [[surface-non-orientable|surface non orientable de genre $k$]], nom que la suite du chapitre justifiera, et $K = X_{aba^{-1}b}$ la [[bouteille-klein|bouteille de Klein]].
+    enonce: |
+      (i) *Les classes.* Deux points $y \neq y'$ de $Q$ ont même image dans $X_w$ si et seulement si, ou bien $y = \lambda_i(s)$ et $y' = \lambda_j(\varepsilon_i\varepsilon_js)$ avec $|s| < 1$ pour deux occurrences appariées $i$ et $j$, ou bien $y$ et $y'$ sont deux sommets de la même classe. En particulier, $\pi$ est injective sur l'intérieur de $Q$, dont l'image ne rencontre pas $\pi(\partial Q)$.
+
+      (ii) *Structure cellulaire.* L'espace $X_w$ est séparé, compact et connexe. C'est un [[complexe-cellulaire|complexe cellulaire fini]], de squelettes $X^0 = \pi(\{v_1, \dots, v_n\})$, formé de $V$ points, et $X^1 = \pi(\partial Q)$, dont les cellules de dimension $1$ sont les $\Phi_\beta(s) = \pi(\lambda_i(\varepsilon_is))$, pour $\beta \in S$ et une occurrence $i$ de $\beta$, et dont l'unique cellule de dimension $2$ a pour application caractéristique $\pi \circ h$. Son [[application-attachement|application d'attachement]] $\varphi$ vérifie $\varphi \circ \psi_i(s) = \Phi_{\beta_i}(\varepsilon_is)$.
+
+      (iii) *Bords.* On a $d_1(e_\beta) = [\pi(f_i)] - [\pi(o_i)]$, et
+      $$d_2(e) = \eta \sum_{i=1}^n \varepsilon_i\,e_{\beta_i},$$
+      où $\eta = \pm 1$ ne dépend que de $n$ et de $\iota_2$ : le bord de la cellule de dimension $2$ est le mot rendu commutatif.
+
+      (iv) La [[caracteristique-euler|caractéristique d'Euler-Poincaré]] de $X_w$ vaut $V - \frac n2 + 1$.
+
+      (v) *Exemples.* $X_{aa^{-1}}$ est homéomorphe à $S^2$, et $N_1$ à l'[[espace-projectif-reel|espace projectif]] $\mathbb RP^2$. Pour $g \geqslant 1$, la [[surface-genre|surface de genre $g$]] $\Sigma_g$ du nœud {{cw-exemples|Exemples}} est homéomorphe au quotient de $a_1b_1a_1^{-1}b_1^{-1} \cdots a_gb_ga_g^{-1}b_g^{-1}$, par un homéomorphisme qui respecte les cellules. Le mot $aa^{-1}$ a deux classes de sommets, et chacun des autres mots de la liste, ainsi que $aba^{-1}b$, n'en a qu'une.
+    preuve: |
+      (i) Notons $R$ la relation de l'énoncé, augmentée de l'égalité. Chaque point de $\partial Q$ qui n'est pas un sommet est intérieur à un seul côté, $\lambda_i(s)$ avec $|s| < 1$ ; l'application $\lambda_i(s) \mapsto \lambda_j(\varepsilon_i\varepsilon_js)$, où $j$ est l'occurrence appariée à $i$, est une involution sans point fixe de l'ensemble de ces points, puisque $j \neq i$. Les classes de $R$ sont donc les singletons de l'intérieur de $Q$, les paires de cette involution et les classes de sommets : elles forment une partition de $Q$, et $R$ est une relation d'équivalence.
+
+      Un couple générateur $(\lambda_i(\varepsilon_is), \lambda_j(\varepsilon_js))$ est une paire de l'involution si $|s| < 1$, et le couple $(o_i, o_j)$ ou $(f_i, f_j)$ si $s = \mp 1$ : $R$ contient les générateurs, donc $\sim_\lambda$. Inversement, les paires de l'involution sont des générateurs, et $\approx$ est engendrée par des couples générateurs : $R$ est contenue dans $\sim_\lambda$.
+
+      (ii) *Le graphe.* Soit $Y^0$ l'ensemble fini des classes de sommets, muni de la topologie discrète, qui est compacte. Pour $\beta \in S$ et une occurrence $i$ de $\beta$, posons $\phi_\beta(-1) = [o_i]$ et $\phi_\beta(1) = [f_i]$ ; c'est indépendant de l'occurrence, par définition de $\approx$. Le nœud {{cw-attachement|Attachement de cellules}} fournit un complexe cellulaire $Y^1$ de dimension $1$, de cellules $\Phi'_\beta$ prolongeant les $\phi_\beta$.
+
+      *Le disque.* Les arcs $\psi_i$ recouvrent $S^1$ et ne se rencontrent qu'aux points $h^{-1}(v_i)$, comme les $\lambda_i$ sur $\partial Q$. Posons $\varphi'(\psi_i(s)) = \Phi'_{\beta_i}(\varepsilon_is)$. Au point $h^{-1}(v_i) = \psi_i(1) = \psi_{i+1}(-1)$, la première formule donne $\Phi'_{\beta_i}(\varepsilon_i) = [\lambda_i(1)] = [v_i]$, que $\varepsilon_i$ vaille $1$ ou $-1$, et la seconde $[\lambda_{i+1}(-1)] = [v_i]$ : $\varphi'$ est bien définie, et continue par le nœud {{cw-recollement|Recollement de compacts}}, (ii). Soit $Y = Y^1 \cup_{\varphi'} D^2$, complexe cellulaire fini de dimension $2$ ({{cw-attachement|Attachement de cellules}}, (ii)), et $\Phi'$ l'application caractéristique de sa cellule de dimension $2$.
+
+      *Comparaison.* L'application $F = \Phi' \circ h^{-1} : Q \to Y$ est continue et surjective. Sur l'intérieur de $Q$, envoyé par $h^{-1}$ sur la boule ouverte $B^2$, elle est injective, à valeurs hors de $Y^1$. Sur le bord, $F(\lambda_i(s)) = \Phi'_{\beta_i}(\varepsilon_is)$ ; pour $|s| < 1$, ce point est dans la cellule ouverte de $\beta_i$, où $\Phi'_{\beta_i}$ est injective, et les cellules ouvertes sont disjointes et ne contiennent pas de point de $Y^0$. Ainsi $F(\lambda_i(s)) = F(\lambda_j(s'))$, avec $|s|, |s'| < 1$, équivaut à $\beta_i = \beta_j$ et $\varepsilon_is = \varepsilon_js'$, c'est-à-dire à $j = i$ et $s' = s$, ou $j$ appariée à $i$ et $s' = \varepsilon_i\varepsilon_js$ ; enfin $F(v_i) = [v_i]$. Par (i), $F(y) = F(y')$ équivaut à $y \sim y'$, et le nœud {{sc-polygones|Présentations polygonales}}, (i), fournit un homéomorphisme $\bar F$ de $X_w$ sur $Y$.
+
+      On transporte par $\bar F^{-1}$ la structure cellulaire de $Y$ : $\bar F^{-1}(Y^0) = \pi(\{v_i\})$, $\bar F^{-1}(Y^1) = \pi(\partial Q)$, $\bar F^{-1} \circ \Phi'_\beta = \Phi_\beta$, puisque $F(\lambda_i(\varepsilon_is)) = \Phi'_{\beta_i}(s)$, et $\bar F^{-1} \circ \Phi' = \pi \circ h$. L'espace $X_w = \pi(Q)$ est connexe comme image du convexe $Q$, connexe par arcs.
+
+      (iii) Le premier point est le nœud {{cw-bord|Bord cellulaire}}, (i), avec $\Phi_\beta(1) = \pi(f_i)$ et $\Phi_\beta(-1) = \pi(o_i)$.
+
+      Pour le second, notons $V' = \{h^{-1}(v_i)\}$, ensemble fini de $n$ points de $S^1$. Le cercle s'obtient à partir de $V'$ par l'attachement des $n$ cellules $\psi_i$ de dimension $1$, par l'argument du point (iii) du nœud {{cw-exemples|Exemples}}. Le groupe $H_1(S^1, V')$ est donc libre de base les $u_i = \psi_{i*}(\iota_1)$ ({{cw-cellules-relatives|Homologie d'un attachement}}), et $\partial u_i = [h^{-1}(v_i)] - [h^{-1}(v_{i-1})]$ (comme au nœud {{cw-bord|Bord cellulaire}}, (i)) ; ainsi
+      $$\partial\Big(\sum_i c_iu_i\Big) = \sum_i (c_i - c_{i+1})\,[h^{-1}(v_i)],$$
+      nul si et seulement si les $c_i$ sont égaux, les $n$ points étant distincts. Comme $H_1(V') = 0$, le morphisme $j' : H_1(S^1) \to H_1(S^1, V')$ est injectif, d'image le noyau de $\partial$, engendré par $\sum_i u_i$ ; le générateur $\partial\iota_2$ de $H_1(S^1)$ vérifie donc $j'(\partial\iota_2) = \eta\sum_i u_i$, avec $\eta = \pm 1$.
+
+      L'application d'attachement envoie $V'$ dans $X^0$, et $\varphi \circ \psi_i(s) = \Phi_{\beta_i}(\varepsilon_is)$ ; donc $\varphi_*(u_i) = \varepsilon_ie_{\beta_i}$ ({{cw-degre|Degré}}, (ii) et (iii), l'application $-\mathrm{id}$ de $S^0$ étant une réflexion). Le point (ii) du nœud {{cw-bord|Bord cellulaire}}, avec $S' = V'$, donne la formule.
+
+      (iv) On compte les cellules ({{cw-euler|Euler-Poincaré}}) : $V$ en dimension $0$, $|S| = \frac n2$ en dimension $1$, une en dimension $2$.
+
+      (v) *La sphère.* Pour $w = aa^{-1}$, $n = 2$, $\lambda_1(s) = \gamma(2 + 2s)$ et $\lambda_2(s) = \gamma(6 + 2s)$. Les couples générateurs $(\lambda_1(s), \lambda_2(-s))$ sont les $(\gamma(t), \gamma(8 - t))$, et $\gamma(8 - t) = \rho(\gamma(t))$, où $\rho(y_1, y_2) = (y_2, y_1)$, comme on le vérifie sur chaque côté. Par (i), les classes sont les paires $\{y, \rho(y)\}$ de points du bord et les singletons ; les deux sommets $v_1 = (1, 1)$ et $v_2 = (-1, -1)$, fixes par $\rho$, forment deux classes.
+
+      L'application linéaire $L(y_1, y_2) = \big(\frac{y_1 + y_2}2, \frac{y_2 - y_1}2\big) = (p, q)$ envoie $Q$ sur le losange $|p| + |q| \leqslant 1$, puisque $|y_1 + y_2| + |y_2 - y_1| = 2\|y\|_\infty$, et $\rho$ sur $(p, q) \mapsto (p, -q)$. Pour $|p| < 1$, posons $r = \sqrt{1 - p^2}$ et $\sigma = \frac{q}{1 - |p|} \in [-1, 1]$, et
+      $$\Pi(p, q) = \Big(p,\ r(1 - 2\sigma^2),\ 2r\sigma\sqrt{1 - \sigma^2}\Big),$$
+      avec $\Pi(\pm 1, 0) = (\pm 1, 0, 0)$. Comme $(1 - 2\sigma^2)^2 + 4\sigma^2(1 - \sigma^2) = 1$, $\Pi$ est à valeurs dans $S^2$ ; elle est continue, aussi en $(\pm 1, 0)$, les deux dernières coordonnées étant bornées par $r$. Si $\Pi(p, q) = \Pi(p', q')$, alors $p = p'$, et, si $|p| < 1$, $r > 0$ donne $\sigma^2 = \sigma'^2$ et $\sigma\sqrt{1 - \sigma^2} = \sigma'\sqrt{1 - \sigma'^2}$, d'où $\sigma = \sigma'$ si $|\sigma| < 1$ : les seules identifications sont celles des points $(p, \pm(1 - |p|))$ du bord du losange. Elle est surjective : pour $(p, Y, Z) \in S^2$ avec $|p| < 1$, on prend $\sigma^2 = \frac12(1 - \frac Yr)$, et $\sigma$ du signe de $Z$. Le nœud {{sc-polygones|Présentations polygonales}}, (i), appliqué à $\Pi \circ L$, conclut.
+
+      *Le plan projectif.* Pour $w = aa$, $\lambda_2(s) = \gamma(6 + 2s) = -\lambda_1(s)$, puisque $\gamma(t + 4) = -\gamma(t)$ : les classes sont les paires $\{y, -y\}$ de points du bord et les singletons. L'application $\Psi_2 \circ h^{-1}$, où $\Psi_2(z) = q(z, \sqrt{1 - \|z\|^2})$ est l'application caractéristique de la cellule de dimension $2$ de $\mathbb RP^2$ ({{cw-exemples|Exemples}}, (iv)), est continue et surjective ; $\Psi_2$ est injective sur $B^2$, à valeurs hors de $q(S^1)$, et $\Psi_2(z) = \Psi_2(z')$ pour $z, z' \in S^1$ équivaut à $z' = \pm z$ (même nœud, preuve de (iv)). Comme $h$ est impaire, le critère s'applique.
+
+      *Les surfaces $\Sigma_g$.* Pour le mot $a_1b_1a_1^{-1}b_1^{-1} \cdots$, les identifications de sommets des quatre lettres d'un bloc relient les cinq sommets consécutifs de ce bloc ($v_0 \approx v_3 \approx v_2 \approx v_1 \approx v_4$), et deux blocs consécutifs ont un sommet commun : il y a une seule classe. Le graphe $Y^1$ de (ii) s'obtient donc à partir d'un point par l'attachement de $2g$ cellules, comme le bouquet $W_{2g}$, et l'application $\varphi'$ est donnée par les formules du point (vi) du nœud {{cw-exemples|Exemples}}. Le point (iii) du nœud {{cw-attachement|Attachement de cellules}}, appliqué deux fois, fournit l'homéomorphisme.
+
+      *Les autres mots.* Dans $a_1a_1 \cdots a_ka_k$, la lettre $a_m$ relie l'origine et l'extrémité de ses deux occurrences consécutives, de sorte que $v_{2m-2} \approx v_{2m-1} \approx v_{2m}$ : une seule classe. Dans $aba^{-1}b$, la lettre $a$ donne $v_0 \approx v_3$ et $v_1 \approx v_2$, la lettre $b$ donne $v_1 \approx v_3$ et $v_2 \approx v_4 = v_0$ : une seule classe.
+
+      ```schema sc-cellulaire
+      À gauche, le mot $aabb$ de $N_2$ : chaque lettre est lue deux fois dans le même sens, et les quatre sommets vont en un seul point. À droite, le mot $aba^{-1}b$ de la bouteille de Klein : la lettre $a$ est lue dans les deux sens, la lettre $b$ deux fois dans le même sens ; là aussi, les quatre sommets vont en un seul point.
+      ```
+    remarques:
+      - |
+        Le point (iii) généralise le point (iii) du nœud {{cw-bord|Bord cellulaire}}, écrit pour un polygone à $4g$ côtés, à un nombre quelconque de côtés. Le bord de la cellule de dimension $2$ ne dépend que du mot rendu commutatif, et c'est par lui que le nœud {{sc-homologie|Homologie des formes normales}} distinguera les formes normales.
+      - |
+        La bouteille de Klein, dont le bord cellulaire a été calculé au nœud {{cw-bord|Bord cellulaire}}, est ainsi un quotient de polygone au sens de ce chapitre ; le nœud {{sc-surface|Les quotients sont des surfaces}} montrera que c'est une surface, et le nœud {{sc-operations|Opérations}} qu'elle est homéomorphe à $N_2$.
+      - |
+        L'erreur la plus répandue est de croire que les sommets d'un polygone recollé vont toujours en un seul point. Le mot $aa^{-1}$ en fournit deux ; le mot $abca^{-1}b^{-1}c^{-1}$ de la figure du nœud {{sc-polygones|Présentations polygonales}} aussi : la lettre $a$ identifie $v_0$ à $v_4$ et $v_1$ à $v_3$, la lettre $b$ identifie $v_1$ à $v_5$ et $v_2$ à $v_4$, la lettre $c$ identifie $v_2$ à $v_0$ et $v_3$ à $v_5$, d'où les deux classes $\{v_0, v_2, v_4\}$ et $\{v_1, v_3, v_5\}$. Le point (iv) donne $\chi = 2 - 3 + 1 = 0$, comme pour le tore.
+      - |
+        Aucune forme du choix n'intervient : les occurrences, en nombre fini, sont données par le mot.
+
+  - id: sc-surface
+    etiquette: Les quotients sont des surfaces
+    nature: théorème
+    titre: Le quotient d'un polygone est une surface
+    texte: |
+      Soit $w = x_1 \cdots x_n$ un mot de surface, avec les notations du nœud {{sc-cellulaire|Structure cellulaire}}. Un *rayon* est un couple $(i, \sigma)$, avec $1 \leqslant i \leqslant n$ et $\sigma = \pm 1$ : c'est l'extrémité $\lambda_i(\sigma)$ du côté $i$, vue depuis ce côté. Le *coin* du sommet $v_i$ est formé des deux rayons $(i, 1)$ et $(i + 1, -1)$. Si $j$ est l'occurrence appariée à $i$, on pose
+      $$\tau(i, \sigma) = (j, \varepsilon_i\varepsilon_j\sigma) ;$$
+      c'est une involution sans point fixe de l'ensemble des $2n$ rayons, et le sommet $\lambda_i(\sigma)$ est identifié au sommet $\lambda_j(\varepsilon_i\varepsilon_j\sigma)$ par le couple générateur correspondant. Le *graphe des coins* a pour sommets les $n$ coins, et une arête $\{r, \tau(r)\}$ entre le coin de $r$ et celui de $\tau(r)$ pour chaque rayon $r$.
+    enonce: |
+      (i) *Coins.* Les composantes du graphe des coins sont des cycles, et les classes de sommets sont les ensembles de sommets de ces composantes. Ainsi les sommets d'une classe se numérotent $z_1, \dots, z_k$ de sorte qu'un rayon du coin de $z_m$ soit apparié à un rayon du coin de $z_{m+1}$, indices modulo $k$, chaque rayon servant une fois.
+
+      (ii) *Le théorème.* L'espace $X_w$ est une [[surface-topologique|surface]] compacte connexe. En particulier, la sphère, les surfaces $\Sigma_g$, les surfaces $N_k$ et la bouteille de Klein sont des surfaces compactes connexes.
+    preuve: |
+      (i) Chaque coin a deux rayons, et chaque rayon appartient à une seule arête, $\tau$ étant une involution sans point fixe : chaque coin est de degré $2$, une boucle comptant deux fois. Partons d'un coin $c_1$, quittons-le par l'une de ses arêtes, et, en chaque coin atteint, repartons par l'autre arête. On ne peut atteindre un coin déjà visité, autre que $c_1$, puisque ses deux arêtes sont déjà employées ; le parcours, fini, revient donc en $c_1$, et les coins visités, dont les deux arêtes sont employées, forment une composante, parcourue comme un cycle.
+
+      La relation $\approx$ est engendrée par les couples $(o_i, o_j)$ et $(f_i, f_j)$, c'est-à-dire par les couples formés du sommet de $r$ et de celui de $\tau(r)$ : ce sont les arêtes du graphe, et les classes en sont les composantes.
+
+      (ii) Le nœud {{sc-cellulaire|Structure cellulaire}}, (ii), donne la séparation, la compacité et la connexité. Soit $x \in X_w$. Si $x$ est l'image d'un point intérieur à $Q$, il appartient à la cellule ouverte de dimension $2$, ouverte dans $X_w$ et homéomorphe à $B^2$ ({{cw-complexes|Complexes cellulaires}}, (ii)), donc à $\mathbb R^2$ ({{sc-surfaces|Surfaces}}, (i)).
+
+      *Les demi-côtés.* Sinon, $Z = \pi^{-1}(x)$ est contenu dans $\partial Q$. Pour $z \in Z$, soit $t_z \in [0, 8[$ tel que $\gamma(t_z) = z$. Pour $\delta > 0$, les deux *demi-côtés* de $z$ sont $\gamma([t_z, t_z + \delta])$ et $\gamma([t_z - \delta, t_z])$, notés $(z, +)$ et $(z, -)$. Par le nœud {{sc-cellulaire|Structure cellulaire}}, (i), $Z$ est une paire $\{\lambda_i(s), \lambda_j(\varepsilon_i\varepsilon_js)\}$ avec $|s| < 1$, ou une classe de sommets. On choisit $\delta$ inférieur à $\frac4n(1 - |s|)$ dans le premier cas, à $\frac4n$ dans le second, à la moitié de $\|z - z'\|_\infty$ pour $z \neq z'$ dans $Z$, et à $1 - |z_c|$ pour tout $z \in Z$ et toute coordonnée $c$ telle que $|z_c| < 1$.
+
+      Comme $\lambda_i(s) = \gamma(t_{i-1} + \frac{4(1+s)}n)$, avancer de $\rho$ sur un demi-côté fait varier le paramètre du côté de $\frac{n\rho}4$. Dans le premier cas, pour $0 < \rho \leqslant \delta$, le point $\gamma(t_z \pm \rho)$ est $\lambda_i(s \pm \frac{n\rho}4)$, avec $|s \pm \frac{n\rho}4| < 1$, et son seul partenaire est $\lambda_j(\varepsilon_i\varepsilon_j(s \pm \frac{n\rho}4))$, à la distance $\rho$ de l'autre point de $Z$ sur l'un de ses demi-côtés. Dans le second, pour $z = v_i$, les demi-côtés sont formés des points $\lambda_{i+1}(-1 + \frac{n\rho}4)$ et $\lambda_i(1 - \frac{n\rho}4)$, c'est-à-dire des rayons du coin de $v_i$, et le recollement suit $\tau$, à la même distance $\rho$ du sommet. Dans les deux cas, chaque demi-côté de $Z$ est recollé, point par point et à distance égale, à un autre demi-côté de $Z$, et, par (i) dans le second cas, on numérote $Z = \{z_1, \dots, z_k\}$ et l'on qualifie d'entrant et de sortant les demi-côtés de chaque $z_m$, de sorte que le sortant de $z_m$ soit recollé à l'entrant de $z_{m+1}$, indices modulo $k$. Pour $k = 1$, les deux demi-côtés de $z_1$ sont recollés entre eux.
+
+      *Les secteurs.* Soit $z \in Z$ et $\bar N_z = \{y \in Q : \|y - z\|_\infty \leqslant \delta\}$. La rotation $R(y_1, y_2) = (-y_2, y_1)$ conserve $Q$ et $\|\cdot\|_\infty$, et $\gamma(t + 2) = R(\gamma(t))$ ; on peut donc supposer $z$ sur le côté inférieur, $z = (z_1, -1)$, avec $|z_1| < 1$ ou $z_1 = -1$. Si $|z_1| < 1$, le choix de $\delta$ donne
+      $$\bar N_z = \{z + \rho u : 0 \leqslant \rho \leqslant \delta,\ u \in A_z\},$$
+      où $A_z = \{u \in \partial Q : u_2 \geqslant 0\} = \gamma([3, 7])$, et $\gamma(t_z + \rho) = z + \rho\,\gamma(3)$, $\gamma(t_z - \rho) = z + \rho\,\gamma(7)$. Si $z = (-1, -1)$, la même égalité vaut avec $A_z = \{u \in \partial Q : u_1, u_2 \geqslant 0\} = \gamma([3, 5])$, et $\gamma(\rho) = z + \rho\,\gamma(3)$, $\gamma(-\rho) = z + \rho\,\gamma(5)$. Dans les deux cas, l'écriture $y = z + \rho u$ d'un point $y \neq z$ est unique, avec $\rho = \|y - z\|_\infty$, et $\bar N_z \cap \partial Q$ est la réunion des deux demi-côtés. On note $b_z : [-1, 1] \to A_z$ la paramétrisation affine en $t$ de l'arc $A_z$ qui va de la direction du demi-côté entrant, en $-1$, à celle du sortant, en $1$.
+
+      ```schema sc-surface
+      Pour la surface de genre $2$, les huit sommets de l'octogone forment une seule classe, et leurs huit coins, en couleurs alternées, se recollent le long des demi-côtés dans l'ordre du cycle de l'énoncé (i). À droite, ces huit secteurs mis bout à bout autour du point $x$ forment un voisinage homéomorphe à un disque : chaque demi-côté sortant est recollé à l'entrant du secteur suivant.
+      ```
+
+      *Le voisinage.* Soit $\bar B = \{y \in \mathbb R^2 : \|y\|_\infty \leqslant \delta\}$, et $\lambda^{2k}_l$ la structure standard à $2k$ côtés, dont les arcs partagent $\bar B$ en $2k$ secteurs $\{\rho\lambda^{2k}_l(s)\}$. Pour $1 \leqslant m \leqslant k$, $0 \leqslant \rho \leqslant \delta$ et $s \in [-1, 1]$, posons
+      $$\begin{aligned} \Lambda\big(\rho\lambda^{2k}_{2m-1}(s)\big) &= \pi\Big(z_m + \rho\,b_{z_m}\big(\tfrac{s - 1}2\big)\Big), \\ \Lambda\big(\rho\lambda^{2k}_{2m}(s)\big) &= \pi\Big(z_m + \rho\,b_{z_m}\big(\tfrac{s + 1}2\big)\Big). \end{aligned}$$
+      Les formules s'accordent : en $\rho = 0$, toutes valent $x$ ; sur le rayon commun aux secteurs $2m - 1$ et $2m$, elles donnent $z_m + \rho\,b_{z_m}(0)$ ; sur celui des secteurs $2m$ et $2m + 1$, le point du demi-côté sortant de $z_m$ et celui du demi-côté entrant de $z_{m+1}$ à la distance $\rho$, qui sont recollés. L'application $\Lambda$ est continue par le nœud {{cw-recollement|Recollement de compacts}}, (ii), $\bar B$ étant la réunion des images des compacts $[0, \delta] \times [-1, 1]$.
+
+      Elle est injective : un point $z_m + \rho u$ avec $\rho > 0$ n'est pas dans $Z$, les boules étant disjointes, et deux tels points distincts n'ont la même image que s'ils sont sur deux demi-côtés recollés, à la même distance, ce qui correspond au même point de $\bar B$. Son image est $\pi(\bigcup_z \bar N_z)$. Comme $\bar B$ est compact et $X_w$ séparé, $\Lambda$ est un homéomorphisme sur son image ({{t-bij-compact|Bijection d'un compact}}). Enfin, si $N_z = \{y \in Q : \|y - z\|_\infty < \delta\}$, la réunion des $N_z$ est un ouvert de $Q$ saturé, puisque les points des demi-côtés sont recollés à distance égale : son image $U$ est un voisinage ouvert de $x$, et $\Lambda$ induit un homéomorphisme du carré ouvert $\{\|y\|_\infty < \delta\}$ sur $U$. On conclut par le point (i) du nœud {{sc-surfaces|Surfaces}}.
+
+      Les exemples sont des quotients de mots ({{sc-cellulaire|Structure cellulaire}}, (v)).
+    remarques:
+      - |
+        Le point délicat est le sommet. Autour d'un point intérieur à une arête, deux demi-disques se recollent le long de leur diamètre ; autour d'une classe de $k$ sommets, ce sont $k$ coins qu'il faut mettre bout à bout, et la démonstration montre qu'ils forment un seul cycle, et non plusieurs : c'est l'énoncé (i). Si deux cycles de coins allaient au même point, on obtiendrait deux disques ayant un point commun, dont le bord local aurait deux composantes, ce que l'homologie locale du nœud {{sc-triangulations|Triangulations}} interdit à une surface ; l'énoncé (i), selon lequel une classe est exactement l'ensemble des sommets d'un seul cycle, exclut ce cas.
+      - |
+        Le nœud {{cw-exemples|Exemples}} laissait de côté la nature de surface de $\Sigma_g$, et le nœud {{cw-bord|Bord cellulaire}} celle de la bouteille de Klein ; le point (ii) les établit. Pour $\Sigma_g$, les $4g$ coins de l'unique classe se succèdent dans l'ordre que dicte le mot, comme le montre la figure pour $g = 2$.
+      - |
+        Le nombre de cycles de coins est le nombre $V$ de cellules de dimension $0$ du nœud {{sc-cellulaire|Structure cellulaire}} ; le graphe des coins le calcule sans dessiner le polygone. Pour la sphère $aa^{-1}$, chacun des deux coins a ses rayons appariés entre eux : deux cycles d'un seul coin.
+      - |
+        Aucune forme du choix n'intervient : le rayon $\delta$ est un minimum de quantités explicites, en nombre fini, et la numérotation du cycle est obtenue par un parcours fini.
+
+  - id: sc-decoupage
+    etiquette: Découpage et recollement
+    nature: lemme
+    titre: Découpage, recollement et repliement
+    texte: |
+      Pour deux présentations, on écrit $\mathcal P \equiv \mathcal P'$ lorsque $X_{\mathcal P}$ et $X_{\mathcal P'}$ sont homéomorphes ; pour des mots de surface, $w \equiv w'$. On note $Q^- = [-1, 1] \times [-1, 0]$, $Q^+ = [-1, 1] \times [0, 1]$, et
+      $$A_\mp(y_1, y_2) = \Big(y_1, \frac{y_2 \mp 1}2\Big),$$
+      homéomorphismes affines de $Q$ sur $Q^-$ et sur $Q^+$. On note $D^+ = \{y \in D^2 : y_2 \geqslant 0\}$ et $\mathrm{sq}(y_1, y_2) = (y_1^2 - y_2^2,\ 2y_1y_2)$.
+    enonce: |
+      (i) *Découpage-recollement.* Soit $\mathcal P = (uv, w_2, \dots, w_r)$ une [[presentation-polygonale|présentation]], où $u$ et $v$ sont des mots non vides, et $c$ une lettre étrangère à $S$. Alors $\mathcal P' = (uc, c^{-1}v, w_2, \dots, w_r)$ est une présentation, et $\mathcal P' \equiv \mathcal P$. Lu en sens inverse : deux mots $Ua$ et $a^{-1}V$ d'une présentation, avec $U$ et $V$ non vides, se recollent en un seul mot $UV$.
+
+      (ii) *Repliement.* Si $\mathcal P = (uaa^{-1}, w_2, \dots, w_r)$, avec $u$ de longueur au moins $2$, ce qui est automatique pour un seul mot, de longueur paire, alors $\mathcal P \equiv (u, w_2, \dots, w_r)$.
+
+      (iii) *Suivi.* Les homéomorphismes de (i) et (ii) envoient le chemin orienté de chaque occurrence d'une lettre de $S$, autre que $a$ dans (ii), sur celui de la même occurrence. Dans (i), le chemin orienté de $c$ va sur un chemin de l'extrémité du dernier côté de $u$ à l'origine du premier.
+    preuve: |
+      (i) Chaque lettre de $S$ apparaît encore deux fois, et $c$ deux fois. Soit $p = |u|$, $q = |v|$ et $n = p + q$. On munit le mot $uv$ de la structure $\kappa_i(s) = \gamma(\tau_{i-1} + \frac{1+s}2(\tau_i - \tau_{i-1}))$, où $\tau_i = -1 + \frac{4i}p$ pour $0 \leqslant i \leqslant p$ et $\tau_{p+j} = 3 + \frac{4j}q$ pour $0 \leqslant j \leqslant q$ : les côtés de $u$ couvrent l'arc inférieur $\gamma([-1, 3])$, de $(-1, 0)$ à $(1, 0)$, ceux de $v$ l'arc supérieur $\gamma([3, 7])$.
+
+      L'homéomorphisme $A_-^{-1}(y_1, y_2) = (y_1, 2y_2 + 1)$ envoie l'arc inférieur sur la réunion des côtés gauche, inférieur et droit de $Q$, et le diamètre $[-1, 1] \times \{0\}$ sur le côté supérieur. La suite formée des $A_-^{-1} \circ \kappa_i$, $1 \leqslant i \leqslant p$, et de $s \mapsto (-s, 1)$ est donc une structure de polygone à $p + 1$ côtés sur $Q$, pour le mot $uc$ ; de même, les $A_+^{-1} \circ \kappa_{p+j}$, $1 \leqslant j \leqslant q$, suivis de $s \mapsto (s, -1)$, en forment une pour le mot $vc^{-1}$. Notons $\kappa'$ ces deux structures, les autres mots gardant la structure standard.
+
+      Soit $F : Q_{\mathcal P''} \to Q_{\mathcal P}$, pour $\mathcal P'' = (uc, vc^{-1}, w_2, \dots)$, égale à $A_-$ sur le premier carré, à $A_+$ sur le second, à l'identité sur les autres. Elle est continue et surjective, puisque $Q^- \cup Q^+ = Q$, et deux points distincts n'ont la même image que s'ils sont $((y_1, 1), 1)$ et $((y_1, -1), 2)$, d'image $(y_1, 0)$. Ce sont exactement les couples générateurs de $c$ : $\kappa'(s) = (-s, 1)$ dans le premier mot, d'exposant $1$, et $\kappa'(-s) = (-s, -1)$ dans le second, d'exposant $-1$. Les couples générateurs des lettres de $S$ sont envoyés par $F$ sur ceux de $\sim_\kappa$, puisque $F \circ \kappa'_i = \kappa_i$.
+
+      Ainsi la relation « $F(y) \sim_\kappa F(y')$ » est une relation d'équivalence qui contient les générateurs de $\sim_{\kappa'}$, donc la contient. Inversement, la relation formée des couples $(F(y), F(y'))$ avec $y \sim_{\kappa'} y'$ est une relation d'équivalence, $F$ étant surjective et n'identifiant que des points équivalents, et elle contient les générateurs de $\sim_\kappa$ : elle contient $\sim_\kappa$. Le nœud {{sc-polygones|Présentations polygonales}}, (ii), donne un homéomorphisme de $X_{\mathcal P'', \kappa'}$ sur $X_{\mathcal P, \kappa}$ ; le point (iii) du même nœud remplace les structures par les structures standard, et le point (iv) la rotation de $vc^{-1}$ en $c^{-1}v$.
+
+      ```schema sc-decoupage
+      Le polygone du mot $uv$ est coupé le long du diamètre horizontal, qui devient la lettre $c$ : la moitié inférieure, qui porte $u$, est envoyée par $A_-^{-1}$ sur un carré entier, dont le côté supérieur est $c$, et la moitié supérieure, qui porte $v$, sur un carré dont le côté inférieur est $c^{-1}$. Recoller les deux carrés le long de $c$ redonne le polygone de départ.
+      ```
+
+      (ii) Soit $m = |u|$. On munit le mot $uaa^{-1}$ de la structure dont les $m$ côtés de $u$ sont les arcs de même paramètre de $\gamma([2, 8])$, et dont les côtés de $a$ et $a^{-1}$ sont $\kappa_{m+1}(s) = \big(\frac{s - 1}2, -1\big)$ et $\kappa_{m+2}(s) = \big(\frac{s + 1}2, -1\big)$. Les couples générateurs de $a$, $(\kappa_{m+1}(s), \kappa_{m+2}(-s))$, sont les couples $((y_1, -1), (-y_1, -1))$ : la lettre $a$ replie le côté inférieur sur lui-même, autour de son milieu.
+
+      Soit $\Theta = h \circ \mathrm{sq} \circ h^{-1} \circ A_+ : Q \to Q$. L'application $A_+$ envoie $Q$ sur $Q^+$, et $h^{-1}$, qui multiplie chaque point par un nombre strictement positif et fixe le diamètre, envoie $Q^+$ sur $D^+$. L'application $\mathrm{sq}$ vérifie $\|\mathrm{sq}(y)\| = \|y\|^2$ ; elle envoie $D^+$ sur $D^2$ : pour $(a, b) \in D^2$ et $R = \|(a, b)\|$, le point $y_2 = \sqrt{\frac{R - a}2}$, $y_1 = \frac{b}{2y_2}$ si $y_2 > 0$, et $y_1 = \sqrt a$ si $y_2 = 0$, convient. Si $\mathrm{sq}(y) = \mathrm{sq}(y')$ dans $D^+$, alors $\|y\| = \|y'\|$ et $y_1^2 - y_2^2 = y_1'^2 - y_2'^2$, donc $y_1^2 = y_1'^2$ et $y_2^2 = y_2'^2$, donc $y_2 = y_2'$, puis $y_1 = y_1'$ si $y_2 > 0$ : $\mathrm{sq}$ n'identifie que les points $(y_1, 0)$ et $(-y_1, 0)$ du diamètre.
+
+      Ainsi $\Theta$ est continue et surjective, et deux points distincts n'ont la même image que s'ils sont les deux points $(y_1, -1)$ et $(-y_1, -1)$ d'un couple générateur de $a$. Elle envoie $\gamma([2, 8])$ sur $\partial Q$, injectivement sauf aux deux extrémités, envoyées sur $(1, 0)$ : $A_+$ envoie cet arc sur $\partial Q \cap \{y_2 \geqslant 0\}$, $h^{-1}$ sur le demi-cercle supérieur, $\mathrm{sq}$ sur $S^1$, n'identifiant que ses extrémités, et $h$ sur $\partial Q$. Les $\Theta \circ \kappa_i$, $1 \leqslant i \leqslant m$, forment donc une structure de polygone à $m$ côtés pour le mot $u$, et l'on conclut comme en (i), avec l'application égale à $\Theta$ sur le premier carré et à l'identité sur les autres.
+
+      (iii) En (i), l'application $F$ vérifie $F \circ \kappa'_i = \kappa_i$ pour les côtés de $u$ et de $v$, et les homéomorphismes des points (iii) et (iv) du nœud {{sc-polygones|Présentations polygonales}} suivent les chemins orientés. Le côté $c$ du premier carré est envoyé sur le diamètre, parcouru de $(1, 0)$, extrémité de $u$, à $(-1, 0)$, origine de $u$. En (ii), l'application $\Theta$ envoie les côtés de $u$ sur ceux de la nouvelle structure.
+    remarques:
+      - |
+        Ces opérations, avec la rotation, l'inversion et le renommage, sont les seules qui changent le polygone ; toutes les autres en sont des combinaisons ({{sc-operations|Opérations}}). Elles n'ont de sens qu'à homéomorphisme près : le découpage ajoute une lettre et un polygone, le recollement en retire, le repliement retire deux côtés.
+      - |
+        Dans le repliement, le sommet commun à $a$ et $a^{-1}$ va au centre $(0, 0)$, point intérieur du nouveau polygone, et les deux côtés deviennent le segment qui le relie au bord : le repliement « referme » le coin. L'erreur la plus répandue est de l'appliquer à un mot de longueur $2$, $aa^{-1}$ : le mot $u$ serait vide, et la sphère ne se replie pas en un polygone sans côté.
+      - |
+        La règle de recollement demande que la lettre $a$ apparaisse une fois dans chacun des deux mots, avec des exposants opposés ; si elle apparaît avec le même exposant, on inverse d'abord l'un des mots ({{sc-polygones|Présentations polygonales}}, (iv)). Les mots $U$ et $V$ doivent être non vides, faute de quoi le mot obtenu, ou l'un des morceaux du découpage, n'aurait qu'un côté ; un polygone a toujours au moins deux côtés, puisqu'une application injective de $[-1, 1]$ ne peut pas faire seule le tour du bord en revenant à son point de départ.
+
+  - id: sc-operations
+    etiquette: Opérations
+    nature: proposition
+    titre: Opérations sur les mots
+    texte: |
+      Les mots $X$, $Y$, $A$, $B$, $C$, $D$, $R_1$, $R_2$, $Z$ sont des mots sur $S$, éventuellement vides, et $a$, $b$, $c$ des lettres ; les égalités $\equiv$ sont celles du nœud {{sc-decoupage|Découpage et recollement}}, et les mots écrits sont des mots de surface. Une [[lettre-tordue|lettre tordue]] a ses deux occurrences de même exposant ({{sc-polygones|Présentations polygonales}}).
+    enonce: |
+      (i) *Paire tordue.* $aXaY \equiv aaXY^{-1}$.
+
+      (ii) *Commutateur.* $aAbBa^{-1}Cb^{-1}D \equiv aba^{-1}b^{-1}CBAD$.
+
+      (iii) *Réduction d'un sommet.* Si $b \notin \{a, a^{-1}\}$, alors
+      $$\begin{aligned} abR_1a^{-1}R_2 &\equiv bcR_2c^{-1}R_1, \\ abR_1aR_2 &\equiv bcR_1^{-1}cR_2^{-1}. \end{aligned}$$
+      Soit $P$ l'image dans $X_w$ du sommet commun à $a$ et $b$, et $P'$ celle de l'extrémité de $b$. Si $P' \neq P$, l'homéomorphisme obtenu envoie les sommets du nouveau polygone sur ceux de l'ancien de sorte que le nombre de sommets au-dessus de $P$ diminue de $1$, que celui au-dessus de $P'$ augmente de $1$, et que les autres ne changent pas.
+
+      (iv) *Tore et plan projectif.* $cc\,aba^{-1}b^{-1}Z \equiv aabbccZ$.
+    preuve: |
+      On emploie la rotation, l'inversion et le renommage ({{sc-polygones|Présentations polygonales}}, (iv)), le découpage et le recollement ({{sc-decoupage|Découpage et recollement}}, (i)) ; à chaque découpage, les deux morceaux sont non vides, et à chaque recollement les mots $U$ et $V$ le sont aussi, ce qu'on vérifie sur les formules.
+
+      (i) Par rotation, $aXaY \equiv XaYa$. On découpe avec $u = Xa$ et $v = Ya$ :
+      $$\begin{aligned} XaYa &\equiv (Xac,\ c^{-1}Ya) \\ &\equiv (cXa,\ a^{-1}Y^{-1}c), \end{aligned}$$
+      le premier mot ayant tourné et le second ayant été inversé. On recolle le long de $a$, avec $U = cX$ et $V = Y^{-1}c$ : on obtient $cXY^{-1}c \equiv ccXY^{-1}$, puis $aaXY^{-1}$ en renommant $c$.
+
+      ```schema sc-operations
+      La paire tordue $aXaY$ : on coupe le long de $c$, qui joint l'extrémité de la première occurrence de $a$ à celle de la seconde, puis on retourne le morceau qui porte $Y$ et on le recolle le long de $a$. Les deux occurrences de $c$ sont alors consécutives, dans le même sens, et $Y$ est lu à l'envers.
+      ```
+
+      (ii) On découpe avec $u = aAbBa^{-1}$ et $v = Cb^{-1}D$, on fait tourner, puis on recolle le long de $b$, avec $U = Ba^{-1}caA$ et $V = Dc^{-1}C$ :
+      $$\begin{aligned} &aAbBa^{-1}Cb^{-1}D \\ &\quad \equiv (aAbBa^{-1}c,\ c^{-1}Cb^{-1}D) \\ &\quad \equiv (Ba^{-1}caA\,b,\ b^{-1}Dc^{-1}C) \\ &\quad \equiv Ba^{-1}caADc^{-1}C. \end{aligned}$$
+      On fait tourner en $caADc^{-1}CBa^{-1}$, on découpe avec $u = caAD$ et $v = c^{-1}CBa^{-1}$, on fait tourner, puis on recolle le long de $a$, avec $U = ADdc$ et $V = d^{-1}c^{-1}CB$ :
+      $$\begin{aligned} &caADc^{-1}CBa^{-1} \\ &\quad \equiv (caADd,\ d^{-1}c^{-1}CBa^{-1}) \\ &\quad \equiv (ADdc\,a,\ a^{-1}d^{-1}c^{-1}CB) \\ &\quad \equiv ADdcd^{-1}c^{-1}CB. \end{aligned}$$
+      Par rotation et renommage de $d$ en $a$ et de $c$ en $b$, on obtient $aba^{-1}b^{-1}CBAD$.
+
+      (iii) On découpe avec $u = ab$ et on recolle le long de $a$, avec $U = bc$. Dans le premier cas,
+      $$\begin{aligned} abR_1a^{-1}R_2 &\equiv (abc,\ c^{-1}R_1a^{-1}R_2) \\ &\equiv (bc\,a,\ a^{-1}R_2c^{-1}R_1) \\ &\equiv bcR_2c^{-1}R_1 ; \end{aligned}$$
+      dans le second, le second morceau est inversé avant d'être tourné :
+      $$\begin{aligned} abR_1aR_2 &\equiv (abc,\ c^{-1}R_1aR_2) \\ &\equiv (bc\,a,\ a^{-1}R_1^{-1}cR_2^{-1}) \\ &\equiv bcR_1^{-1}cR_2^{-1}. \end{aligned}$$
+
+      *Le comptage.* Chaque sommet du polygone est l'extrémité d'un unique côté, le polygone étant parcouru dans le sens direct. Par le point (iii) du nœud {{sc-decoupage|Découpage et recollement}}, l'homéomorphisme envoie le chemin orienté de chaque occurrence d'une lettre autre que $a$ et $c$ sur celui de la même occurrence, et le chemin de $c$ sur un chemin de l'extrémité $e$ de $b$ à l'origine $o$ de $a$. Notons $\mathcal E(w)$ la liste, avec répétitions, des images des extrémités des côtés de $w$.
+
+      Dans le premier cas, $\mathcal E(w)$ est formée de $P$ (côté $a$), de $P'$ (côté $b$), des images des extrémités des côtés de $R_1$ et de $R_2$, et de l'image de l'extrémité de $a^{-1}$, qui est l'origine du chemin de $a$, c'est-à-dire $\pi(o)$. Pour le nouveau mot, on trouve $P'$ (côté $b$), $\pi(o)$ (côté $c$), $P'$ (côté $c^{-1}$, dont l'extrémité est l'origine du chemin de $c$), et les mêmes images pour les côtés de $R_1$ et $R_2$, parcourus dans le même sens. Les deux listes ne diffèrent que par un terme, $P$ dans la première et $P'$ dans la seconde.
+
+      Dans le second cas, les côtés de $R_1^{-1}$ et $R_2^{-1}$ sont ceux de $R_1$ et $R_2$ parcourus en sens inverse : leurs extrémités sont les origines des côtés de $R_1$ et $R_2$. Le long de $R_1$, la liste des origines est celle des extrémités, où l'on a remplacé l'extrémité du dernier côté, origine $o'$ de la seconde occurrence de $a$, par l'origine $e$ du premier ; de même le long de $R_2$, de l'extrémité de la seconde occurrence de $a$ à $o$. On trouve que $\mathcal E$ perd $P$ et $\pi(o')$ et gagne $P'$ et $\pi(o)$ ; or $\pi(o') = \pi(o)$, les origines des deux occurrences de $a$ étant identifiées. Dans les deux cas, $P$ perd un sommet au profit de $P'$.
+
+      (iv) Le point (i), lu en sens inverse avec $X = ab$ et $Y = Z^{-1}ba$, donne $cc\,aba^{-1}b^{-1}Z \equiv cabcZ^{-1}ba$. On applique ensuite (i) à $a$, avec la rotation $a\,(bcZ^{-1}b)\,a\,(c)$, puis à $b$, puis à $c$ :
+      $$\begin{aligned} cabcZ^{-1}ba &\equiv aabcZ^{-1}bc^{-1} \\ &\equiv bbcZ^{-1}a^{-1}a^{-1}c \\ &\equiv ccZ^{-1}a^{-1}a^{-1}b^{-1}b^{-1}. \end{aligned}$$
+      L'inversion donne $bbaaZc^{-1}c^{-1}$ ; en renommant $c^{-1}$ en $c$, puis par rotation, $ccbbaaZ$, et le renommage conclut.
+    remarques:
+      - |
+        Le point (i) appliqué à $aba^{-1}b$, où la lettre $b$ est tordue, donne $baba^{-1} \equiv bba\,a$ : la bouteille de Klein est homéomorphe à $N_2$. Le point (iv), avec $Z$ vide, dit que le tore recollé à un plan projectif donne $N_3$, comme la bouteille de Klein recollée à un plan projectif, au sens de la somme connexe du nœud {{sc-classification|Classification}}.
+      - |
+        Le point (iii) est le seul qui change le nombre de sommets d'une classe : il déplace un sommet d'une classe vers une autre, sans changer la longueur du mot ni le nombre $V$ de classes de sommets. L'hypothèse $P' \neq P$ est indispensable, et l'erreur la plus répandue est de l'oublier : si l'extrémité de $b$ est dans la classe de $P$, l'opération retire un sommet de $P$ et lui en rend un, sans progrès.
+      - |
+        L'opération du commutateur rassemble deux lettres entrelacées $a \cdots b \cdots a^{-1} \cdots b^{-1}$ en un bloc $aba^{-1}b^{-1}$, comme on détache une anse : le reste du mot n'est que réordonné, sans qu'aucune de ses lettres change d'exposant.
+
+  - id: sc-forme-normale
+    etiquette: Forme normale
+    nature: théorème
+    titre: Réduction à la forme normale
+    enonce: |
+      Pour tout mot de surface $w$, l'espace $X_w$ est homéomorphe au quotient d'une [[forme-normale-surface|forme normale]] : la sphère $S^2$, une surface $\Sigma_g$ avec $g \geqslant 1$, ou une surface $N_k$ avec $k \geqslant 1$.
+
+      Plus précisément, l'algorithme suivant s'arrête, et chacune de ses étapes remplace $w$ par un mot $w'$ tel que $w' \equiv w$.
+
+      *Phase 1.* Tant que $n \geqslant 4$ et $V \geqslant 2$ : s'il y a deux lettres consécutives $xx^{-1}$, on les retire par repliement ; sinon, on choisit une classe $\mathcal C$ ayant le moins de sommets, un sommet de $\mathcal C$ suivi d'un sommet hors de $\mathcal C$, et l'on applique la réduction d'un sommet.
+
+      *Phase 2.* Tant qu'une lettre tordue a ses deux occurrences non consécutives, on applique l'opération de la paire tordue.
+
+      *Phase 3.* Tant qu'une lettre non tordue $a$ n'appartient à aucun bloc $xyx^{-1}y^{-1}$ de quatre lettres consécutives, on choisit une lettre $b$ dont une occurrence est entre $a$ et $a^{-1}$ et l'autre hors de cet intervalle, et l'on applique l'opération du commutateur.
+
+      *Phase 4.* Tant que le mot contient un bloc $xx$ et un bloc $xyx^{-1}y^{-1}$, on applique l'opération du tore et du plan projectif.
+    preuve: |
+      Les opérations sont celles du nœud {{sc-operations|Opérations}}, et le repliement ({{sc-decoupage|Découpage et recollement}}, (ii)), à homéomorphisme près, avec rotations, inversions et renommages.
+
+      *Deux remarques.* (a) Si deux mots de même longueur $n$ sont équivalents, ils ont le même nombre $V$ de [[classe-sommets|classes de sommets]] : la caractéristique $V - \frac n2 + 1$ ({{sc-cellulaire|Structure cellulaire}}, (iv)) ne dépend que de l'homologie ({{cw-euler|Euler-Poincaré}}, (iv)), invariante par homéomorphisme. (b) Si une classe n'a qu'un sommet $v_i$ et si $n \geqslant 4$, les lettres $x_ix_{i+1}$ sont de la forme $xx^{-1}$ : l'occurrence $j$ appariée à $i$ a une extrémité identifiée à $v_i$, donc égale à $v_i$, ce qui impose $j = i + 1$, et le sommet $v_i$ est l'extrémité du chemin de $x_i$ si et seulement s'il est l'extrémité de celui de $x_{i+1}$, ce qui impose des exposants opposés. Réciproquement, deux lettres consécutives $xx^{-1}$ ont pour sommet commun une classe à un seul sommet, ses deux rayons étant appariés entre eux ({{sc-surface|Les quotients sont des surfaces}}) : si $V = 1$ et $n \geqslant 4$, il n'y en a pas.
+
+      *Phase 1.* Soit $s$ le plus petit nombre de sommets d'une classe. Un repliement diminue $n$ de $2$. Sinon, par (b), toute classe a au moins deux sommets ; comme $V \geqslant 2$, la classe $\mathcal C$ contient un sommet $v_i$ suivi d'un sommet $v_{i+1}$ hors de $\mathcal C$. Les lettres $x_i$ et $x_{i+1}$ portent deux éléments distincts de $S$ : $x_{i+1} = x_i^{-1}$ est exclu, faute de lettres $xx^{-1}$, et si $x_{i+1} = x_i$, les deux occurrences identifieraient leurs extrémités, ou leurs origines si l'exposant vaut $-1$, c'est-à-dire $v_i$ et $v_{i+1}$. Après rotation et renommage, $w = abR$, où $a = x_i$ et $b = x_{i+1}$ ont l'exposant $1$ ; le sommet commun à $a$ et $b$ est $v_i$, et l'extrémité de $b$ est $v_{i+1}$, hors de la classe de $v_i$. La réduction d'un sommet s'applique ({{sc-operations|Opérations}}, (iii)), sans changer $n$ ni $V$, et $\mathcal C$ perd un sommet : $s$ diminue strictement. Le couple $(n, s)$ diminue donc strictement pour l'ordre lexicographique de $\mathbb N^2$ : la phase s'arrête, avec $n = 2$ ou $V = 1$. Si $n = 2$, le mot est $aa^{-1}$ ou $aa$, à renommage près, et l'on a fini.
+
+      *Phases 2 à 4.* On a désormais $V = 1$ et $n \geqslant 4$ ; les opérations suivantes ne changent pas $n$, donc pas $V$, par (a), et il n'y a jamais de lettres consécutives $xx^{-1}$, par (b).
+
+      Phase 2 : écrivons $w = aXaY$ ; comme les occurrences de $a$ ne sont pas consécutives, l'opération (i) donne $aaXY^{-1}$. Un bloc $xx$ de $w$ ne contient pas $a$, donc est contenu dans $X$ ou dans $Y$, et reste un bloc de la forme $xx$ ou $x^{-1}x^{-1}$ dans $XY^{-1}$. Le nombre de blocs $xx$ augmente donc d'au moins $1$ ; il est au plus $\frac n2$ : la phase s'arrête, et toutes les lettres tordues sont alors dans des blocs $xx$.
+
+      Phase 3 : écrivons $w = aXa^{-1}Y$. Si aucune lettre n'avait une occurrence dans $X$ et l'autre dans $Y$, les sommets compris entre l'extrémité de $a$ et l'origine de $a^{-1}$ seraient une réunion de classes, puisque les lettres de $X$ n'identifient que ces sommets entre eux et que $a$ identifie ces deux sommets extrêmes ; ce ne serait pas toutes les classes, l'origine de $a$ n'en faisant pas partie, contre $V = 1$. Soit donc $b$ une telle lettre. Elle n'est pas tordue, ses occurrences n'étant pas consécutives, et elle n'appartient à aucun bloc : un bloc est formé de lettres consécutives et contient les deux occurrences de chacune de ses lettres, donc est contenu dans $X$ ou dans $Y$, puisque $a$ n'est dans aucun bloc. Quitte à renommer $b$ en $b^{-1}$, $w = aAbBa^{-1}Cb^{-1}D$, et l'opération (ii) donne $aba^{-1}b^{-1}CBAD$. Les blocs de $w$, contenus dans $A$, $B$, $C$ ou $D$, subsistent, et $a$, $b$ forment un bloc nouveau : le nombre de lettres prises dans un bloc augmente d'au moins $2$. La phase s'arrête, et toute lettre est alors dans un bloc.
+
+      *La décomposition.* Pour $n > 4$, une lettre non tordue $x$ n'est que dans un bloc $xyx^{-1}y^{-1}$ ou $yxy^{-1}x^{-1}$ : les quatre positions d'un tel bloc contiennent celles de $x$ et de $x^{-1}$, à distance $2$, et il n'y a que deux suites de quatre positions consécutives qui les contiennent ; la seconde forme un bloc seulement si $n = 4$. Les blocs partagent donc les positions du mot cyclique en intervalles consécutifs, et le mot est, à rotation près, une suite de blocs $xx$ et $xyx^{-1}y^{-1}$ ; pour $n = 4$, le mot est $xxyy$ ou $xyx^{-1}y^{-1}$, à rotation et renommage près.
+
+      Phase 4 : deux blocs de types différents sont voisins quelque part ; par rotation, et par inversion s'il le faut, qui change un bloc $xx$ en $x^{-1}x^{-1}$ et un bloc $xyx^{-1}y^{-1}$ en $yxy^{-1}x^{-1}$, on écrit $w = cc\,aba^{-1}b^{-1}Z$, où $Z$ est une suite de blocs. L'opération (iv) donne $aabbccZ$, qui a un bloc $xyx^{-1}y^{-1}$ de moins : la phase s'arrête.
+
+      *Conclusion.* Le mot final est une suite de $k$ blocs $xx$, et c'est $a_1a_1 \cdots a_ka_k$ à renommage près, ou une suite de $g$ blocs $xyx^{-1}y^{-1}$, et c'est le mot de $\Sigma_g$.
+    remarques:
+      - |
+        La bouteille de Klein $aba^{-1}b$ a une seule classe ; la phase 2 la ramène en une étape à $bbaa$, c'est-à-dire à $N_2$. Le mot $abca^{-1}b^{-1}c^{-1}$ a deux classes de trois sommets ; la phase 1 lui applique deux réductions de sommet, qui font passer ces classes à quatre et deux sommets, puis à cinq et un, et un repliement, qui donne un mot de la forme $xyx^{-1}y^{-1}$ : c'est un tore.
+      - |
+        La terminaison repose sur des quantités explicites : le couple formé de la longueur et du plus petit nombre de sommets d'une classe, puis le nombre de blocs. L'erreur serait de croire qu'une étape ne défait pas le travail des précédentes ; c'est pourquoi chaque phase vérifie que ses opérations conservent les blocs déjà formés, et que les phases 2 à 4 conservent la longueur, donc la classe unique.
+      - |
+        Cette démonstration combinatoire suit celle de W. S. Massey (*Algebraic Topology: An Introduction*, Harcourt, Brace & World, 1967, chapitre 1 ; rééd. Springer, Graduate Texts in Mathematics 56, 1977), qui procède par découpages et recollements.
+      - |
+        Aucune forme du choix n'intervient : chaque phase choisit une lettre, une classe ou un sommet parmi un nombre fini, par exemple le premier qui convient.
+
+  - id: sc-homologie
+    etiquette: Homologie des formes normales
+    nature: théorème
+    titre: Homologie, orientabilité et unicité des formes normales
+    texte: |
+      Une surface compacte connexe $X$ est [[surface-orientable|orientable]] si $H_2(X) \neq 0$. La définition s'applique au quotient $X_w$ d'un mot de surface, qui est une surface compacte connexe ({{sc-surface|Les quotients sont des surfaces}}). On rappelle qu'une [[lettre-tordue|lettre tordue]] d'un mot de surface est une lettre dont les deux occurrences ont le même exposant ({{sc-polygones|Présentations polygonales}}).
+    enonce: |
+      (i) Pour tout mot de surface $w$, $H_0(X_w) \cong \mathbb Z$, $H_k(X_w) = 0$ pour $k \geqslant 3$, et $H_2(X_w) \cong \mathbb Z$ si $w$ n'a pas de lettre tordue, $H_2(X_w) = 0$ sinon. Ainsi $X_w$ est orientable si et seulement si $w$ n'a pas de lettre tordue.
+
+      (ii) $H_1(S^2) = 0$, $H_1(\Sigma_g) \cong \mathbb Z^{2g}$ et $H_1(N_k) \cong \mathbb Z^{k-1} \oplus \mathbb Z/2\mathbb Z$ ; $S^2$ et $\Sigma_g$ sont orientables, $N_k$ ne l'est pas. Les caractéristiques d'Euler-Poincaré valent $\chi(S^2) = 2$, $\chi(\Sigma_g) = 2 - 2g$ et $\chi(N_k) = 2 - k$.
+
+      (iii) *Unicité.* Les quotients de deux formes normales distinctes ne sont pas homotopiquement équivalents, donc pas homéomorphes.
+    preuve: |
+      (i) Le complexe cellulaire de $X_w$ est $\mathbb Z^V \xleftarrow{d_1} \mathbb Z^S \xleftarrow{d_2} \mathbb Z$, et ({{sc-cellulaire|Structure cellulaire}}, (iii))
+      $$d_2(e) = \eta \sum_{\beta \in S} (\varepsilon_\beta + \varepsilon'_\beta)\,e_\beta,$$
+      où $\varepsilon_\beta$ et $\varepsilon'_\beta$ sont les exposants des deux occurrences de $\beta$ : le coefficient de $e_\beta$ est nul si $\beta$ n'est pas tordue, et vaut $\pm 2$ sinon. Il n'y a pas de cellule de dimension $3$, et $H_2(X_w) \cong \operatorname{Ker} d_2$ ({{cw-complexe-cellulaire|Homologie cellulaire}}, (i)). Si aucune lettre n'est tordue, $d_2 = 0$ et $H_2 \cong \mathbb Z$ ; sinon, $d_2(me) \neq 0$ pour $m \neq 0$, et $H_2 = 0$. Les groupes de degré au moins $3$ sont nuls ({{cw-squelettes|Squelettes}}, (ii)). Enfin $X_w$ est connexe par arcs, comme image de $Q$, et $H_0(X_w) \cong \mathbb Z$ ({{h-degre0|Degré 0, point}}).
+
+      (ii) *La sphère.* Pour $aa^{-1}$, il y a deux classes $P$ et $P'$ et une cellule $e_a$, avec $d_1(e_a) = \pm([P'] - [P]) \neq 0$ : $d_1$ est injectif, et $H_1 = 0$.
+
+      *Les surfaces $\Sigma_g$.* Une seule classe, donc $d_1 = 0$ ; aucune lettre tordue, donc $d_2 = 0$ : $H_1 \cong \mathbb Z^{2g}$, comme au nœud {{cw-surfaces|Tore et surfaces}}, (iii).
+
+      *Les surfaces $N_k$.* Une seule classe, $d_1 = 0$, et $d_2(e) = \pm 2f$, où $f = e_1 + \cdots + e_k$. Les éléments $e_1, \dots, e_{k-1}, f$ forment une base de $\mathbb Z^k$, puisque $e_k = f - e_1 - \cdots - e_{k-1}$, et
+      $$H_1 \cong \mathbb Z^k/2\mathbb Zf \cong \mathbb Z^{k-1} \oplus \mathbb Z/2\mathbb Z.$$
+      L'orientabilité vient de (i), $aa^{-1}$ et le mot de $\Sigma_g$ n'ayant pas de lettre tordue, et $a_1a_1 \cdots a_ka_k$ n'ayant que des lettres tordues. Les caractéristiques sont $2 - 1 + 1$, $1 - 2g + 1$ et $1 - k + 1$ ({{sc-cellulaire|Structure cellulaire}}, (iv)).
+
+      (iii) Une équivalence d'homotopie induit des isomorphismes en homologie ({{h-homotopie|Invariance par homotopie}}, (ii)). Or deux groupes isomorphes $G$ et $G'$ ont des quotients $G/2G$ et $G'/2G'$ de même cardinal, et l'un a un élément non nul d'ordre fini si et seulement si l'autre en a. Pour $H_1$, on trouve $|H_1/2H_1| = 1$ pour $S^2$, $2^{2g}$ pour $\Sigma_g$ ({{hj-reduite|Homologie réduite}}, preuve de (ii)) et $2^k$ pour $N_k$, puisque $(\mathbb Z^{k-1} \oplus \mathbb Z/2\mathbb Z)/2(\cdots) \cong (\mathbb Z/2\mathbb Z)^k$ ; et seuls les $H_1(N_k)$ ont un élément non nul d'ordre fini. Deux formes normales orientables distinctes ont donc des $|H_1/2H_1|$ différents, deux non orientables aussi, et une forme orientable et une non orientable se séparent par la torsion.
+    remarques:
+      - |
+        L'orientabilité est définie ici par l'homologie : une surface compacte connexe est orientable si elle a une classe fondamentale, la cellule de dimension $2$ dont le bord est nul ({{cw-surfaces|Tore et surfaces}}, remarque). Pour une surface lisse, la géométrie différentielle définit l'orientabilité par un atlas dont les changements de carte ont un jacobien positif ; que les deux définitions coïncident pour les surfaces compactes connexes lisses est admis ici, la difficulté contournée étant la comparaison de l'homologie singulière à une notion d'orientation locale, que la cohomologie de de Rham permet de faire.
+      - |
+        L'erreur la plus répandue est de croire que $H_1$ ou la caractéristique séparent à eux seuls le tore et la bouteille de Klein. Les deux ont $\chi = 0$ et un $H_1$ dont le quotient par $2H_1$ a quatre éléments, $\mathbb Z^2$ pour l'un et $\mathbb Z \oplus \mathbb Z/2\mathbb Z$ pour l'autre ; c'est l'élément d'ordre $2$, classe de $e_1 + e_2$ dans $N_2$, ou l'annulation de $H_2$, qui les distingue.
+      - |
+        Le premier groupe d'homologie est le mot rendu commutatif : $H_1(X_w)$ est le quotient de $\mathbb Z^S$ par le sous-groupe engendré par $d_2(e)$, quand $V = 1$. Il est cohérent avec le groupe $\langle S \mid w \rangle$ de présentation ({{vk-presentations|Présentations}}), dont il est l'abélianisé ; que ce groupe soit le groupe fondamental de $X_w$ quand $V = 1$, ce qui généralise la présentation de $\pi_1(\Sigma_g)$ laissée de côté au nœud {{vk-tore|Tore}}, est admis ici. La difficulté contournée est l'application du théorème de Seifert-van Kampen au recollement d'un disque sur un bouquet de cercles.
+    admis:
+      - lieu: remarque
+        statut: hors-cadre
+        objet: L'orientabilité homologique coïncide avec l'orientabilité par un atlas pour les surfaces lisses
+      - lieu: remarque
+        statut: hors-cadre
+        objet: Le groupe fondamental de $X_w$ est $\langle S \mid w \rangle$ quand les sommets forment une seule classe
+
+  - id: sc-triangulations
+    etiquette: Triangulations
+    nature: proposition
+    titre: Triangulations et homologie locale
+    texte: |
+      Soit $\Delta_2 = \{(t_0, t_1, t_2) \in \mathbb R^3 : t_i \geqslant 0,\ t_0 + t_1 + t_2 = 1\}$, de sommets $e_0$, $e_1$, $e_2$ ({{h-singuliere|Homologie singulière}}), et $[e_i, e_j]$ ses arêtes. Une [[triangulation-surface|triangulation]] d'un espace compact $X$ est une famille finie de parties $T_1, \dots, T_N$, munies d'homéomorphismes $\tau_k : \Delta_2 \to T_k$, telle que $X = \bigcup_k T_k$ et que, pour $k \neq l$, l'intersection $T_k \cap T_l$ soit vide, ou réduite à un sommet commun, ou une arête commune sur laquelle $\tau_l^{-1} \circ \tau_k$ est la restriction d'une application affine. Les sommets et les arêtes de $T_k$ sont les images par $\tau_k$ de ceux de $\Delta_2$.
+
+      Pour $x \in X$, soit $I_x$ l'ensemble des $k$ tels que $x \in T_k$ et $a_k = \tau_k^{-1}(x)$. Pour $a \in \Delta_2$, soit $J_a = \{i : a_i > 0\}$ et $F_a$ la réunion des arêtes de $\Delta_2$ qui ne contiennent pas $a$ : c'est l'ensemble des $y \in \Delta_2$ tels que $y_i = 0$ pour un $i \in J_a$. L'*étoile* de $x$ est $\mathrm{St}_x = \bigcup_{k \in I_x} T_k$, son *bord* est $L_x = \bigcup_{k \in I_x} \tau_k(F_{a_k})$, et $U_x = \mathrm{St}_x \setminus L_x$.
+    enonce: |
+      (i) *Cône.* Pour $a \in \Delta_2$, l'application $(y, t) \mapsto (1 - t)a + ty$ de $F_a \times [0, 1]$ sur $\Delta_2$ est injective sur $F_a \times\, ]0, 1]$, et sa réciproque sur $\Delta_2 \setminus \{a\}$ est $b \mapsto \big(a + \frac{b - a}{\theta(b)}, \theta(b)\big)$, où $\theta(b) = \max_{i \in J_a}\big(1 - \frac{b_i}{a_i}\big)$ est continue et strictement positive.
+
+      (ii) *Homologie locale.* Pour $x \in X$, $U_x$ est un voisinage ouvert de $x$, et
+      $$H_k(X, X \setminus \{x\}) \cong \tilde H_{k-1}(L_x)$$
+      pour tout $k$, l'espace $L_x$ étant un complexe cellulaire fini de dimension au plus $1$.
+
+      (iii) *Surfaces.* Si $X$ est une [[surface-topologique|surface]], $H_1(X, X \setminus \{x\}) = 0$ et $H_2(X, X \setminus \{x\}) \cong \mathbb Z$ pour tout $x$.
+
+      (iv) Si $X$ est une surface triangulée, chaque arête est contenue dans exactement deux triangles, et, pour chaque sommet $p$, deux triangles qui contiennent $p$ sont reliés par une suite de triangles contenant $p$, dont deux consécutifs ont en commun une arête issue de $p$.
+    preuve: |
+      (i) Pour $b \neq a$, $\theta(b) > 0$ : sinon $b_i \geqslant a_i$ pour tout $i \in J_a$, et, comme $\sum_{i \in J_a} a_i = 1 = \sum_i b_i$, on aurait $b = a$. On a $\theta(b) \leqslant 1$, et le point $y = a + \frac{b - a}{\theta(b)}$ a des coordonnées de somme $1$, positives, l'une de celles d'indice dans $J_a$ étant nulle : $y \in F_a$, et $b = (1 - \theta(b))a + \theta(b)y$. Inversement, si $b = (1 - t)a + ty$ avec $y \in F_a$ et $t > 0$, alors $\frac{b_i}{a_i} = 1 - t + t\frac{y_i}{a_i} \geqslant 1 - t$ pour $i \in J_a$, avec égalité pour un indice : $t = \theta(b)$, et $y$ s'en déduit.
+
+      (ii) *Le cône dans $X$.* Pour $y \in \tau_k(F_{a_k})$, $k \in I_x$, et $t \in [0, 1]$, posons $C(y, t) = \tau_k\big((1 - t)a_k + t\,\tau_k^{-1}(y)\big)$. Si $y$ est aussi dans $\tau_l(F_{a_l})$, $l \neq k$, l'intersection $T_k \cap T_l$ contient $x$ et $y \neq x$ : c'est une arête commune, qui contient le segment de $x$ à $y$, et sur laquelle $\tau_l^{-1}\tau_k$ est affine ; les deux formules coïncident. Par (i), $C$ est surjective sur $\mathrm{St}_x$, injective sur $L_x \times\, ]0, 1]$, et $C(y, 0) = x$ ; l'injectivité vaut aussi d'un triangle à l'autre : si $C(y, t) = C(y', t') = b$ avec $t, t' > 0$, $y \in T_k$ et $y' \in T_l$, alors $b \neq x$, et $T_k \cap T_l$, qui contient $x$ et $b$, est une arête commune $E$ ; dans chaque triangle, la demi-droite issue de $x$ qui passe par $b$ reste dans $E$ et en sort à l'extrémité de $E$ située au-delà de $b$, de sorte que $y = y'$, puis $t = t'$, la transition étant affine sur $E$. $C$ est continue ({{cw-recollement|Recollement de compacts}}, (iii)).
+
+      *Ouverture.* Une face de $T_l$, $l \in I_x$, qui ne contient pas $x$ est contenue dans $\tau_l(F_{a_l})$ : un sommet $\tau_l(e_i) \neq x$ vérifie $e_i \in F_{a_l}$, puisque $J_{a_l} \neq \{i\}$, et une arête qui ne contient pas $x$ est dans $F_{a_l}$, $J_{a_l}$ ayant un indice hors de ses deux indices. Un triangle $T_k$, $k \notin I_x$, ne rencontre donc $\mathrm{St}_x$ que dans $L_x$, et $X \setminus U_x = L_x \cup \bigcup_{k \notin I_x} T_k$, réunion finie de compacts, est fermé.
+
+      *Contraction.* L'application $G(\tau_k(b), s) = \tau_k((1 - s)b + sa_k)$, bien définie et continue sur $\mathrm{St}_x \times I$ pour la même raison, conserve $U_x$, sur lequel elle relie l'identité à la constante $x$ : $U_x$ est [[contractile|contractile]], et $\tilde H(U_x) = 0$ ({{h-homotopie|Invariance par homotopie}} ; {{hj-reduite|Homologie réduite}}, (iii)).
+
+      *Rétraction.* Soit $L' = C(L_x \times \{\frac12\})$, homéomorphe à $L_x$ par $y \mapsto C(y, \frac12)$, bijection continue d'un compact sur un séparé. L'application $K(C(y, t), s) = C(y, (1 - s)t + \frac s2)$, pour $t > 0$, est continue sur $(U_x \setminus \{x\}) \times I$ : elle l'est, par (i), sur chacun des $(T_k \cap U_x \setminus \{x\}) \times I$, en nombre fini, fermés puisque $T_k$ est compact dans le séparé $X$, et l'on recolle par le lemme de recollement ({{ta-chemins|Chemins}}, (i)), appliqué un nombre fini de fois : $L'$ est un [[retracte-deformation|rétracte par déformation]] de $U_x \setminus \{x\}$, et $\tilde H_{k-1}(U_x \setminus \{x\}) \cong \tilde H_{k-1}(L_x)$.
+
+      *Conclusion.* La partie $Z = X \setminus U_x$ est fermée et contenue dans l'ouvert $X \setminus \{x\}$ ; l'excision ({{cw-excision|Excision}}, (iii)) donne $H_k(X, X \setminus \{x\}) \cong H_k(U_x, U_x \setminus \{x\})$, et la suite réduite de la paire ({{cw-relative|Homologie relative}}, (iv)), $\tilde H(U_x)$ étant nul, l'isomorphisme $\partial$ sur $\tilde H_{k-1}(U_x \setminus \{x\})$.
+
+      *Le bord est un graphe.* Deux arêtes distinctes de la triangulation se rencontrent au plus en un sommet commun, puisque deux triangles ne se rencontrent que selon une face commune. Les sommets de la triangulation contenus dans $L_x$ forment un ensemble fini, et chaque arête contenue dans $L_x$, paramétrée par $\tau_k$ et une application affine, est une cellule de dimension $1$ ({{cw-complexes|Complexes cellulaires}}).
+
+      (iii) Soit $W$ un voisinage ouvert de $x$ et $\varphi : W \to \mathbb R^2$ un homéomorphisme, avec $\varphi(x) = 0$. L'excision, appliquée à $Z = X \setminus W$, donne $H_k(X, X \setminus \{x\}) \cong H_k(\mathbb R^2, \mathbb R^2 \setminus \{0\})$, isomorphe à $\tilde H_{k-1}(\mathbb R^2 \setminus \{0\})$ par la suite réduite, $\mathbb R^2$ étant étoilé. Le cercle $S^1$ est un rétracte par déformation de $\mathbb R^2 \setminus \{0\}$, par $(y, s) \mapsto (1 - s)y + s\frac{y}{\|y\|}$, et $\tilde H_1(S^1) \cong \mathbb Z$, $\tilde H_0(S^1) = 0$ ({{h-spheres|Homologie des sphères}} ; {{hj-reduite|Homologie réduite}}).
+
+      (iv) *Arêtes.* Soit $x$ un point intérieur à une arête $E$, contenue dans $m \geqslant 1$ triangles, d'extrémités $p$, $q$, et soit $r_1, \dots, r_m$ les sommets opposés. Le graphe $L_x$ a $m + 2$ sommets $p, q, r_1, \dots, r_m$, distincts puisque deux triangles distincts n'ont pas trois sommets communs, et $2m$ arêtes $[p, r_j]$, $[q, r_j]$. Par (ii) et (iii), $\tilde H_0(L_x) = 0$ et $H_1(L_x) \cong \mathbb Z$ ; avec $H_0(L_x) \cong \mathbb Z$, le point (iv) du nœud {{cw-euler|Euler-Poincaré}} donne
+      $$2^{\chi(L_x)} = \frac21 \cdot \Big(\frac21\Big)^{-1} = 1,$$
+      d'où $\chi(L_x) = (m + 2) - 2m = 0$, et $m = 2$.
+
+      *Sommets.* Pour un sommet $p$, $L_p$ est formé des arêtes opposées à $p$ dans les triangles qui le contiennent, et $\tilde H_0(L_p) = 0$ : $L_p$ est connexe. Si les arêtes de $L_p$ se partageaient en deux familles non vides sans sommet commun, leurs réunions seraient deux fermés disjoints non vides de réunion $L_p$. Deux arêtes opposées à $p$ sont donc reliées par une suite d'arêtes de $L_p$ dont deux consécutives ont un sommet $q$ commun ; les deux triangles correspondants ont alors en commun l'arête $[p, q]$.
+    remarques:
+      - |
+        Le point (ii) est un calcul d'homologie locale : le groupe $H_2(X, X \setminus \{x\})$ ne dépend que d'un voisinage de $x$, par excision, et il voit la forme du bord de ce voisinage. Pour un point intérieur à une arête commune à trois triangles, ce bord est un graphe à cinq sommets et six arêtes, de caractéristique $-1$, et non $0$ comme l'exige la preuve de (iv) : trois demi-disques recollés le long d'un diamètre ne forment pas une surface.
+      - |
+        Le point (iii) généralise le point (iv) du nœud {{sc-surfaces|Surfaces}} : pour un point $x$ du cercle unité, le point (ii), appliqué au disque fermé triangulé par deux triangles, donne un bord local formé d'un seul arc, contractile, et $H_2(D^2, D^2 \setminus \{x\}) = 0$. L'homologie locale est l'outil général qui distingue les points intérieurs des points du bord, et les surfaces des espaces voisins.
+      - |
+        Le point (iv) est ce dont la classification a besoin : il fait d'une triangulation une présentation polygonale, chaque arête devenant une lettre qui apparaît deux fois ({{sc-classification|Classification}}). Aucune forme du choix n'intervient.
+
+  - id: sc-classification
+    etiquette: Classification
+    nature: théorème
+    titre: Classification des surfaces compactes triangulables
+    texte: |
+      Une surface est *triangulable* si elle admet une [[triangulation-surface|triangulation]]. Pour deux mots de surface $w_1$ et $w_2$ sur des ensembles disjoints, la [[somme-connexe|somme connexe]] est $w_1 \# w_2 = w_1w_2$, et l'on note $X_{w_1} \# X_{w_2} = X_{w_1w_2}$.
+    enonce: |
+      (i) *Triangles.* Toute surface compacte connexe triangulée $X$ est homéomorphe à $X_w$ pour un mot de surface $w$.
+
+      (ii) *Classification.* Toute surface compacte connexe triangulable est homéomorphe à une et une seule des surfaces $S^2$, $\Sigma_g$ ($g \geqslant 1$), $N_k$ ($k \geqslant 1$). Deux surfaces compactes connexes triangulables sont homéomorphes si et seulement si elles ont la même caractéristique d'Euler-Poincaré et sont toutes deux orientables ou toutes deux non orientables.
+
+      (iii) *Somme connexe.* Pour deux mots de surface sur des ensembles disjoints, $V(w_1w_2) = V(w_1) + V(w_2) - 1$, $\chi(X_{w_1w_2}) = \chi(X_{w_1}) + \chi(X_{w_2}) - 2$, et $X_{w_1w_2}$ est orientable si et seulement si $X_{w_1}$ et $X_{w_2}$ le sont. Par conséquent, la classe d'homéomorphie de $X_{w_1} \# X_{w_2}$ ne dépend que de celles de $X_{w_1}$ et $X_{w_2}$, et
+      $$\begin{aligned} \Sigma_g \# \Sigma_h &\cong \Sigma_{g+h}, \quad N_k \# N_l \cong N_{k+l}, \\ \Sigma_g \# N_k &\cong N_{2g+k}, \quad S^2 \# X \cong X. \end{aligned}$$
+    preuve: |
+      (i) *Le carré et le triangle.* La fonction $\mu(y) = \max(-y_1, -y_2, y_1 + y_2)$ est continue, positivement homogène, et strictement positive hors de $0$, les trois formes linéaires étant de somme nulle. L'application $H(y) = \frac{\|y\|_\infty}{\mu(y)}y$, prolongée par $H(0) = 0$, est un homéomorphisme de $Q$ sur le triangle $\{\mu \leqslant 1\}$, de sommets $(-1, -1)$, $(2, -1)$ et $(-1, 2)$, de réciproque $y \mapsto \frac{\mu(y)}{\|y\|_\infty}y$ : ces applications sont continues en $0$, les quotients $\frac{\|y\|_\infty}{\mu(y)}$ et $\frac{\mu(y)}{\|y\|_\infty}$, constants sur chaque demi-droite issue de $0$, étant bornés, puisque continus sur le compact $\partial Q$. Elle envoie $\partial Q$ sur la réunion $\{\mu = 1\}$ des trois arêtes, comme au nœud {{sc-polygones|Présentations polygonales}}, (iii). Composée avec l'application affine $(y_1, y_2) \mapsto \frac13(1 - y_1 - y_2,\ 1 + y_1,\ 1 + y_2)$, elle donne un homéomorphisme $\vartheta$ de $Q$ sur $\Delta_2$ ; si $\sigma_1$, $\sigma_2$, $\sigma_3$ sont les paramétrisations affines des arêtes $[e_0, e_1]$, $[e_1, e_2]$, $[e_2, e_0]$, les $\vartheta^{-1} \circ \sigma_j$ forment une structure de polygone à trois côtés.
+
+      *La présentation.* Pour chaque arête $E$ de la triangulation, soit $k$ le plus petit indice d'un triangle qui la contient, et $\psi_E = \tau_k \circ \sigma$ la paramétrisation de $E$ par l'arête correspondante de $\Delta_2$. Pour un triangle $T_l$ contenant $E$, $\tau_l^{-1}\tau_k$ est affine sur l'arête, de sorte que $\tau_l \circ \sigma_j(s) = \psi_E(\varepsilon s)$ pour l'arête $j$ de $T_l$ qui est envoyée sur $E$ et un signe $\varepsilon$. Le triangle $T_l$ donne le mot $E_1^{\varepsilon_1}E_2^{\varepsilon_2}E_3^{\varepsilon_3}$, et, chaque arête étant dans deux triangles ({{sc-triangulations|Triangulations}}, (iv)), ces $N$ mots forment une présentation $\mathcal P$.
+
+      L'application $(y, l) \mapsto \tau_l(\vartheta(y))$ de $Q_{\mathcal P}$ sur $X$ est continue et surjective, et elle envoie les deux points de chaque couple générateur sur le même point $\psi_E(s)$. Inversement, un point intérieur à un triangle n'a qu'un antécédent ; un point intérieur à une arête en a deux, qui forment un couple générateur ; et les antécédents d'un sommet $p$, coins des triangles qui le contiennent, sont reliés deux à deux par des chaînes de triangles ayant une arête issue de $p$ en commun ({{sc-triangulations|Triangulations}}, (iv)), dont chacune identifie deux coins. Le critère ({{sc-polygones|Présentations polygonales}}, (i) et (iii)) donne $X \cong X_{\mathcal P}$.
+
+      *L'arbre.* Tant que $\mathcal P$ a au moins deux mots, l'un d'eux a une lettre dont l'autre occurrence est dans un autre mot : sinon, la réunion des triangles d'un mot et celle des autres seraient deux fermés non vides recouvrant $X$, disjoints, puisque deux triangles qui ont un sommet commun sont reliés par une chaîne de triangles ayant deux à deux une arête commune ; $X$ ne serait pas connexe. Chaque mot a au moins trois lettres ; après rotation et inversion, on recolle les deux mots le long de cette lettre ({{sc-decoupage|Découpage et recollement}}, (i)), ce qui diminue de $1$ le nombre de mots. On obtient un seul mot $w$, avec $X \cong X_w$.
+
+      (ii) *Existence.* Par (i) et le nœud {{sc-forme-normale|Forme normale}}, la surface est homéomorphe au quotient d'une forme normale.
+
+      *Unicité.* Deux formes normales distinctes ne sont pas homéomorphes ({{sc-homologie|Homologie des formes normales}}, (iii)).
+
+      *Invariants.* La caractéristique d'Euler-Poincaré, calculée sur la structure cellulaire de la forme normale, ne dépend que de l'homologie ({{cw-euler|Euler-Poincaré}}, (iv)), et l'orientabilité est une propriété de $H_2$ : ce sont des invariants d'homéomorphie. Les formes normales ont des couples (orientabilité, caractéristique) deux à deux distincts : $(\text{oui}, 2)$ pour $S^2$, $(\text{oui}, 2 - 2g)$ pour $\Sigma_g$, $(\text{non}, 2 - k)$ pour $N_k$ ({{sc-homologie|Homologie des formes normales}}, (ii)).
+
+      (iii) *Les classes.* Soient $n_1$ et $n_2$ les longueurs. Les rayons de $w_1w_2$ sont ceux de $w_1$ et de $w_2$, appariés de la même façon. Les coins de $w_1w_2$ sont ceux de $w_1$ et de $w_2$, sauf que le coin $c_1$ de $w_1$, entre son dernier et son premier côté, et le coin $c_2$ de $w_2$ sont remplacés par deux coins mixtes : $d$, formé du dernier rayon de $w_1$ et du premier de $w_2$, et $d'$, formé du dernier rayon de $w_2$ et du premier de $w_1$. Dans le graphe des coins ({{sc-surface|Les quotients sont des surfaces}}, (i)), le cycle de $w_1$ qui passe par $c_1$ devient un chemin de $d$ à $d'$, et celui de $w_2$ qui passe par $c_2$ un chemin de $d'$ à $d$ ; ils forment un seul cycle, et les autres cycles ne changent pas. Donc $V(w_1w_2) = (V(w_1) - 1) + (V(w_2) - 1) + 1$.
+
+      *Les invariants.* La caractéristique s'en déduit ({{sc-cellulaire|Structure cellulaire}}, (iv)) :
+      $$\begin{aligned} \chi(X_{w_1w_2}) &= V(w_1w_2) - \tfrac{n_1 + n_2}2 + 1 \\ &= \chi(X_{w_1}) + \chi(X_{w_2}) - 2. \end{aligned}$$
+      Les lettres tordues de $w_1w_2$ sont celles de $w_1$ et de $w_2$ ({{sc-homologie|Homologie des formes normales}}, (i)). Par le nœud {{sc-forme-normale|Forme normale}} et le point (ii) du nœud {{sc-homologie|Homologie des formes normales}}, qui montre que les formes normales sont distinguées par l'orientabilité et la caractéristique, la classe d'homéomorphie d'un quotient $X_w$ est déterminée par ces deux invariants ; pour $X_{w_1w_2}$, qui ne dépendent que des classes de $X_{w_1}$ et $X_{w_2}$. Les formules en découlent : par exemple $\chi(\Sigma_g \# N_k) = (2 - 2g) + (2 - k) - 2 = 2 - (2g + k)$, non orientable.
+    remarques:
+      - |
+        Toute surface compacte est triangulable : c'est le théorème de T. Radó (« Über den Begriff der Riemannschen Fläche », *Acta Litterarum ac Scientiarum*, Szeged, 2, volume daté de 1924-1926, p. 101-121, article daté de janvier 1925), admis ici. La classification s'étend donc à toutes les surfaces compactes connexes. La difficulté contournée est de découper la surface en triangles à partir des seules cartes : il faut contrôler les intersections de petits disques, et la plupart des démonstrations reposent sur le théorème de Jordan-Schoenflies, selon lequel une courbe fermée simple du plan borde un disque, au moins pour les polygones (E. E. Moise, *Geometric Topology in Dimensions 2 and 3*, Graduate Texts in Mathematics 47, Springer, 1977, chapitres 3 et 8). La démonstration de Radó l'emploie sans le dire, et l'exposé d'Ahlfors et Sario le rend explicite ; A. Hatcher en donne une qui l'évite (« The Kirby torus trick for surfaces », arXiv:1312.3518).
+      - |
+        Géométriquement, la somme connexe de deux surfaces s'obtient en retirant un petit disque ouvert de chacune et en recollant les deux cercles obtenus. Que cette construction donne, à homéomorphisme près, l'espace $X_{w_1w_2}$, et ne dépende pas des disques retirés, est admis ici ; la difficulté contournée est l'indépendance du choix des disques, qui relève elle aussi du théorème de Schoenflies. Le point (iii) n'en a pas besoin : il établit l'indépendance pour la définition par concaténation, a posteriori, par les invariants.
+      - |
+        Le genre est le nombre $g$ de tores de $\Sigma_g$, ou le nombre $k$ de plans projectifs de $N_k$, qui est le genre non orientable. La bouteille de Klein est $N_2$ ({{sc-operations|Opérations}}, remarque), somme connexe de deux plans projectifs, et l'égalité $\Sigma_1 \# N_1 \cong N_3$ dit qu'en présence d'un plan projectif, un tore se change en une bouteille de Klein. Une surface non orientable contient un ruban de Möbius, quotient du carré $[0, 1]^2$ par $(0, y) \sim (1, 1 - y)$, au voisinage d'un côté portant une lettre tordue ; ce fait, qui relie l'orientabilité homologique à l'image intuitive d'une surface « à une seule face », est admis ici.
+      - |
+        L'histoire est longue. A. F. Möbius (« Theorie der elementaren Verwandtschaft », *Berichte über die Verhandlungen der Königlich Sächsischen Gesellschaft der Wissenschaften zu Leipzig, Mathematisch-physische Classe* 15, 1863, p. 18-57) et C. Jordan (« Sur la déformation des surfaces », *Journal de mathématiques pures et appliquées*, 2e série, 11, 1866, p. 105-109) énoncent la classification des surfaces orientables, sans les outils d'une démonstration. M. Dehn et P. Heegaard en donnent une version combinatoire dans l'article « Analysis situs » de l'*Encyklopädie der mathematischen Wissenschaften* (tome III, première partie, 1907, p. 153-220), et H. R. Brahana la première démonstration complète pour les surfaces triangulées (« Systems of circuits on two-dimensional manifolds », *Annals of Mathematics* 23, 1921, p. 144-168), par réduction d'un polygone à une forme normale, comme ici.
+      - |
+        L'erreur la plus répandue est d'oublier une hypothèse. Le plan $\mathbb R^2$ est une surface connexe non compacte, et il n'est homéomorphe à aucune surface de la liste, qui sont compactes ; la réunion disjointe de deux sphères est une surface compacte non connexe. Les surfaces non compactes ont une classification bien plus riche.
+      - |
+        Pour une surface compacte lisse, on peut démontrer la classification sans triangulation, par une fonction de Morse, dont les points critiques non dégénérés découpent la surface en anses (M. W. Hirsch, *Differential Topology*, Graduate Texts in Mathematics 33, Springer, 1976, chapitre « Surfaces ») ; l'existence de telles fonctions et cette démonstration sont admises ici, en ouverture. Elle prolonge l'approche de Möbius, qui découpait déjà la surface par les niveaux d'une fonction.
+    admis:
+      - lieu: remarque
+        statut: hors-cadre
+        objet: Toute surface compacte est triangulable (théorème de Radó)
+      - lieu: remarque
+        statut: hors-cadre
+        objet: La somme connexe géométrique est homéomorphe au quotient du mot concaténé et ne dépend pas des disques retirés
+      - lieu: remarque
+        statut: hors-cadre
+        objet: Une surface non orientable contient un ruban de Möbius
+      - lieu: remarque
+        statut: hors-cadre
+        objet: Classification des surfaces lisses par les fonctions de Morse
+
+aretes:
+  - [sc-surfaces, sc-surface]
+  - [sc-surfaces, sc-triangulations]
+  - [sc-polygones, sc-cellulaire]
+  - [sc-polygones, sc-decoupage]
+  - [sc-cellulaire, sc-surface]
+  - [sc-surface, sc-homologie]
+  - [sc-decoupage, sc-operations]
+  - [sc-operations, sc-forme-normale]
+  - [sc-surface, sc-forme-normale]
+  - [sc-forme-normale, sc-classification]
+  - [sc-homologie, sc-classification]
+  - [sc-triangulations, sc-classification]
