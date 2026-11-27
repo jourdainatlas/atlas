@@ -1,0 +1,202 @@
+# Niveau 2 : structure interne du chapitre « Résultant et élimination » (nœud ac-resultant du graphe ac, 27 nov. 2026).
+# Matrice de Sylvester et résultant sur un anneau intègre (déterminant calculé dans le corps des fractions, comme
+# au chapitre ac-reduction) ; changement d'anneau, relation Res = UP + VQ, facteur commun ; formule
+# Res = a^m ∏ Q(αᵢ) démontrée sur le polynôme générique puis spécialisée, sans corps de décomposition (la théorie
+# de Galois n'est pas en amont) ; discriminant d'un polynôme quelconque par Res(P, P′) ; élimination d'une
+# indéterminée, intersection de deux courbes planes. Aucune forme du choix n'intervient.
+
+graphe: ac-resultant
+titre: Résultant et élimination
+conteneur: ac-resultant
+
+entrees:
+  ac-gauss: [res-sylvester]
+
+noeuds:
+  - id: res-sylvester
+    etiquette: Résultant
+    nature: théorème
+    titre: Matrice de Sylvester et résultant
+    texte: |
+      Dans ce chapitre, $A$ est un [[anneau-integre|anneau intègre]] et $K$ son [[corps-fractions|corps des fractions]] ({{a-fractions|Corps des fractions}}), dans lequel on identifie $a \in A$ à $a/1$, de sorte que $\lex{anneau-polynomes}{A[X]} \subset K[X]$.
+
+      Soient $n, m \in \lex{ensemble-entiers-naturels}{\mathbb N}$ avec $n + m \geqslant 1$, et $P = \sum_{k=0}^n p_kX^k$, $Q = \sum_{k=0}^m q_kX^k$ deux polynômes de $A[X]$, de [[degre-polynome|degrés]] au plus $n$ et $m$ ; on pose $p_k = 0$ pour $k \notin \{0, \dots, n\}$ et $q_k = 0$ pour $k \notin \{0, \dots, m\}$. La [[matrice-sylvester|matrice de Sylvester]] $S_{n,m}(P, Q)$ est la [[matrice]] carrée de taille $N = n + m$ dont les colonnes sont les coefficients de
+      $$\begin{aligned} &X^{m-1}P,\ \dots,\ XP,\ P, \\ &X^{n-1}Q,\ \dots,\ XQ,\ Q \end{aligned}$$
+      dans l'ordre $X^{N-1}, \dots, X, 1$ : son coefficient $(i, j)$ est $p_{n-i+j}$ si $j \leqslant m$, et $q_{j-i}$ si $j > m$. Pour $n = 3$ et $m = 2$,
+      $$S_{3,2}(P, Q) = \begin{pmatrix} p_3 & 0 & q_2 & 0 & 0 \\ p_2 & p_3 & q_1 & q_2 & 0 \\ p_1 & p_2 & q_0 & q_1 & q_2 \\ p_0 & p_1 & 0 & q_0 & q_1 \\ 0 & p_0 & 0 & 0 & q_0 \end{pmatrix}.$$
+
+      Le [[resultant|résultant]] $\operatorname{Res}_{n,m}(P, Q)$ est le [[determinant|déterminant]] de cette matrice, calculé dans le corps $K$ ({{v-det-matrice|Déterminant d'une matrice}}). La formule $\sum_\sigma \varepsilon(\sigma)\prod_j s_{\sigma(j)\,j}$ n'emploie que des sommes, des produits et des signes : appliquée à des coefficients de $A$, elle donne un élément de $A$. Quand $n = \deg P$ et $m = \deg Q$, on note simplement $\operatorname{Res}(P, Q)$.
+    enonce: |
+      (i) *Changement d'anneau.* Pour tout [[morphisme-anneaux|morphisme d'anneaux]] $\varphi$ de $A$ dans un anneau intègre $B$, $\varphi\big(\operatorname{Res}_{n,m}(P, Q)\big) = \operatorname{Res}_{n,m}(\varphi P, \varphi Q)$, où $\varphi P$ est le polynôme obtenu en appliquant $\varphi$ aux coefficients de $P$.
+
+      (ii) $\operatorname{Res}_{m,n}(Q, P) = (-1)^{nm}\operatorname{Res}_{n,m}(P, Q)$.
+
+      (iii) Il existe $U, V \in A[X]$, de degrés respectivement inférieurs à $m$ et à $n$, tels que
+      $$\operatorname{Res}_{n,m}(P, Q) = UP + VQ.$$
+
+      (iv) Supposons $p_n \neq 0$ ou $q_m \neq 0$. Alors $\operatorname{Res}_{n,m}(P, Q) = 0$ si et seulement si $P$ et $Q$ ont un diviseur commun de degré au moins $1$ dans $K[X]$. Si de plus $A$ est [[anneau-factoriel|factoriel]], c'est le cas si et seulement s'ils ont un diviseur commun de degré au moins $1$ dans $A[X]$.
+    preuve: |
+      (i) Un morphisme d'anneaux respecte les sommes et les produits, et envoie $\pm 1$ sur $\pm 1$ : il transforme la formule du déterminant de $S_{n,m}(P, Q)$ en celle du déterminant de $S_{n,m}(\varphi P, \varphi Q)$.
+
+      (ii) On amène les $n$ colonnes de $Q$ devant les $m$ colonnes de $P$, en gardant leur ordre : chacune franchit les $m$ colonnes de $P$ par $m$ échanges de colonnes voisines, soit $nm$ échanges en tout, et chacun change le signe du déterminant, qui est alterné ({{v-det-matrice|Déterminant d'une matrice}}, (iii)). La matrice obtenue est $S_{m,n}(Q, P)$.
+
+      (iii) Soit $S = S_{n,m}(P, Q)$ et $C = {}^t\!\operatorname{com} S$ la transposée de sa [[comatrice|comatrice]] ; ses coefficients sont, au signe près, des déterminants de matrices extraites de $S$, donc des éléments de $A$, par la même formule. Par le nœud {{v-comatrice|Comatrice}}, $SC = (\det S)\,\lex{matrice-identite}{I_N}$, égalité de matrices à coefficients dans $A$.
+
+      Soit $w = (X^{N-1}, \dots, X, 1)$, ligne à coefficients dans l'anneau commutatif $A[X]$. Par construction des colonnes de $S$,
+      $$wS = (X^{m-1}P, \dots, P, X^{n-1}Q, \dots, Q).$$
+      Le produit des matrices étant associatif sur tout anneau commutatif, par le même calcul qu'au nœud {{v-matrices|Matrices}}, $(wS)C = w(SC) = (\det S)\,w$. La dernière composante de cette égalité s'écrit
+      $$\sum_{j=1}^m C_{jN}X^{m-j}P + \sum_{j=1}^n C_{m+j,N}X^{n-j}Q = \det S,$$
+      ce qui donne $U = \sum_{j \leqslant m} C_{jN}X^{m-j}$ et $V = \sum_{j \leqslant n} C_{m+j,N}X^{n-j}$.
+
+      (iv) Pour $x = (u_1, \dots, u_m, v_1, \dots, v_n) \in \lex{n-uplet}{K^N}$, le produit $Sx$ est la colonne des coefficients de $UP + VQ$, où $U = \sum_j u_jX^{m-j}$ et $V = \sum_j v_jX^{n-j}$ ; tout couple $(U, V)$ de degrés inférieurs à $m$ et à $n$ s'obtient ainsi, d'une seule manière.
+
+      Supposons que $P$ et $Q$ aient un diviseur commun $D$ de degré au moins $1$ : $P = DP_1$ et $Q = DQ_1$, avec $\deg P_1 \leqslant n - 1$ et $\deg Q_1 \leqslant m - 1$ ({{pol-anneau|Anneau A[X]}}, (iii)). Alors $Q_1P + (-P_1)Q = 0$, et le couple $(Q_1, -P_1)$ n'est pas nul, puisque $P$ ou $Q$ ne l'est pas. Il fournit $x \neq 0$ tel que $Sx = 0$ ; donc $S$ n'est pas [[matrice-inversible|inversible]], sans quoi $x = S^{-1}Sx = 0$, et $\det S = 0$ ({{v-det-matrice|Déterminant d'une matrice}}, (ii)).
+
+      Réciproquement, si $\det S = 0$, l'application $x \mapsto Sx$ de $K^N$ dans lui-même n'est pas bijective, donc pas injective ({{v-rang|Théorème du rang}}) : il existe $(U, V) \neq (0, 0)$, de degrés inférieurs à $m$ et à $n$, tel que $UP + VQ = 0$. Si l'on avait $P \wedge Q = 1$ et $p_n \neq 0$, $P$ diviserait $VQ$, donc $V$ par le lemme de Gauss ({{pol-principal|K[X] principal}}, (iii)) ; comme $\deg V < n = \deg P$, on aurait $V = 0$, puis $UP = 0$ et $U = 0$ par intégrité de $K[X]$ ; le cas $q_m \neq 0$ est symétrique. Donc le [[pgcd-polynomes|PGCD]] $P \wedge Q$, unitaire et différent de $1$, est un diviseur commun de degré au moins $1$.
+
+      Supposons enfin $A$ factoriel, et soit $D \in K[X]$ un diviseur commun de degré au moins $1$. Écrivons $D = \lambda D_0$, avec $D_0 \in A[X]$ [[polynome-primitif-factoriel|primitif]] de même degré ({{ac-contenu|Contenu, lemme de Gauss}}, (ii)). Alors $D_0$ divise $P$ dans $K[X]$, et l'argument de la preuve du nœud {{ac-gauss|Gauss}}, (i), qui n'emploie que la primitivité, montre qu'il le divise dans $A[X]$ ; de même pour $Q$. La réciproque est claire, puisque $A[X] \subset K[X]$.
+    remarques:
+      - |
+        Pour $P = X - a$ et $Q = X - b$, $S_{1,1}(P, Q) = \begin{pmatrix} 1 & 1 \\ -a & -b \end{pmatrix}$, et $\operatorname{Res}(P, Q) = a - b$. La transposée de la comatrice a pour dernière colonne $(-1, 1)$, d'où $U = -1$, $V = 1$, et l'on retrouve $-(X - a) + (X - b) = a - b$ : le résultant s'annule exactement quand les deux racines coïncident.
+      - |
+        Le point (iii) dit que $\operatorname{Res}(P, Q)$ appartient à l'idéal engendré par $P$ et $Q$, mais cet idéal peut ne pas contenir $1$ quand $A$ n'est pas un corps. Dans $\lex{ensemble-entiers-relatifs}{\mathbb Z}[X]$, $\operatorname{Res}(X, X + 2) = \det\begin{pmatrix} 1 & 1 \\ 0 & 2 \end{pmatrix} = 2$, et l'idéal $(X, X + 2)$ est formé des polynômes dont le terme constant est pair : $X$ et $X + 2$ sont premiers entre eux dans $F[X]$, où $F$ est le corps des fractions de $\mathbb Z$, sans relation $UX + V(X + 2) = 1$ dans $\mathbb Z[X]$.
+      - |
+        L'hypothèse de (iv) ne peut pas être omise, et l'erreur la plus répandue est d'oublier que le résultant dépend des degrés $n$ et $m$ choisis. Avec $P = Q = 1$ et $n = m = 1$, la matrice $\begin{pmatrix} 0 & 0 \\ 1 & 1 \end{pmatrix}$ a une ligne nulle, et $\operatorname{Res}_{1,1}(1, 1) = 0$, bien que $1$ et $1$ n'aient aucun diviseur commun de degré $1$ : il faut qu'au moins l'un des deux coefficients $p_n$ et $q_m$ soit non nul.
+      - |
+        La matrice est due à Sylvester, « A method of determining by mere inspection the derivatives from two equations of any degree », *Philosophical Magazine* 16 (1840), p. 132-135 : c'est sa méthode dialytique d'élimination, qui multiplie chaque équation par des puissances de l'inconnue pour obtenir un système linéaire carré.
+
+  - id: res-racines
+    etiquette: Résultant et racines
+    nature: théorème
+    titre: Le résultant par les racines
+    texte: |
+      Les notations sont celles du nœud {{res-sylvester|Résultant}} ; $A$ est intègre.
+    enonce: |
+      (i) Soit $P = a\prod_{i=1}^n (X - \alpha_i) \in \lex{anneau-polynomes}{A[X]}$, avec $a, \alpha_1, \dots, \alpha_n \in A$, et $Q \in A[X]$ de degré au plus $m$, avec $n + m \geqslant 1$. Alors
+      $$\operatorname{Res}_{n,m}(P, Q) = a^m\prod_{i=1}^n Q(\alpha_i).$$
+
+      (ii) Si de plus $Q = b\prod_{j=1}^m (X - \beta_j)$, avec $b, \beta_1, \dots, \beta_m \in A$,
+      $$\operatorname{Res}_{n,m}(P, Q) = a^mb^n\prod_{i=1}^n\prod_{j=1}^m (\alpha_i - \beta_j),$$
+      et $\operatorname{Res}_{m,n}(Q, P) = b^n\prod_{j=1}^m P(\beta_j)$.
+
+      (iii) Si $a \neq 0$, $\operatorname{Res}_{n,m}(P, Q) = 0$ si et seulement si $P$ et $Q$ ont une [[racine-polynome|racine]] commune dans $A$.
+    preuve: |
+      (i) *Le polynôme générique.* Soient $u$, $T_1, \dots, T_n$, $Z_0, \dots, Z_m$ des indéterminées, $R' = A[u, T_1, \dots, T_n, Z_1, \dots, Z_m]$ et $R = R'[Z_0]$ ; ces anneaux sont intègres ({{pol-anneau|Anneau A[X]}}, (iii), appliqué une fois par indéterminée). Dans $R[X]$, posons
+      $$\mathbf P = u\prod_{i=1}^n (X - T_i), \qquad \mathbf Q = \sum_{k=0}^m Z_kX^k.$$
+      Le morphisme $\psi : R \to A$ qui fixe $A$, envoie $u$ sur $a$, $T_i$ sur $\alpha_i$ et $Z_k$ sur $q_k$ ({{pol-evaluation|Évaluation}}, (iii)) envoie $\mathbf P$ sur $P$ et $\mathbf Q$ sur $Q$ ; par le point (i) du nœud {{res-sylvester|Résultant}}, il suffit d'établir $\operatorname{Res}_{n,m}(\mathbf P, \mathbf Q) = u^m\prod_i \mathbf Q(T_i)$ dans $R$.
+
+      *Le cas $m = 0$.* La matrice est diagonale, de coefficients diagonaux $Z_0$, et le résultant vaut $Z_0^n = \prod_i \mathbf Q(T_i)$.
+
+      *Le cas $m \geqslant 1$.* On a $\mathbf Q(T_i) = Z_0 + c_i$, avec $c_i = \sum_{k=1}^m Z_kT_i^k \in R'$, et les $c_i$ sont deux à deux distincts : pour $i \neq j$, le monôme $Z_1T_i$ a le coefficient $1$ dans $c_i - c_j$, qui n'est donc pas nul ({{pol-symetriques|Polynômes symétriques}}, (i)).
+
+      *Le degré en $Z_0$.* Chaque terme $\varepsilon(\sigma)\prod_j s_{\sigma(j)\,j}$ du déterminant prend un coefficient dans chaque colonne ; $Z_0$ ne figure que dans les $n$ colonnes de $\mathbf Q$, au plus une fois par coefficient, et seulement aux places diagonales $(j, j)$, $j > m$, puisque le coefficient $(i, j)$ y est $Z_{j-i}$. Donc $\rho = \operatorname{Res}_{n,m}(\mathbf P, \mathbf Q)$, vu comme polynôme en $Z_0$ à coefficients dans $R'$, est de degré au plus $n$.
+
+      Les termes de degré $n$ en $Z_0$ sont ceux des $\sigma$ qui fixent chaque $j > m$ ; ces $\sigma$ s'identifient aux permutations de $\{1, \dots, m\}$, avec la même signature, et leur somme est $Z_0^n$ fois le déterminant du bloc des $m$ premières lignes et colonnes. Ce bloc, de coefficients $p_{n-i+j}$, est nul au-dessus de la diagonale et vaut $u$ sur la diagonale : seule [[identite|l'identité]] y donne un produit non nul, puisqu'une permutation $\sigma$ telle que $\sigma(j) \geqslant j$ pour tout $j$ est l'identité, et ce déterminant vaut $u^m$. Le coefficient de $Z_0^n$ dans $\rho$ est donc $u^m \neq 0$.
+
+      *Les racines en $Z_0$.* L'évaluation en $Z_0 = -c_i$, morphisme de $R$ dans $R'$, envoie $\mathbf Q$ sur un polynôme $\mathbf Q_i$ qui s'annule en $T_i$, donc divisible par $X - T_i$ ({{pol-racines|Racines}}, (i)), comme $\mathbf P$. Par le point (iv) du nœud {{res-sylvester|Résultant}}, appliqué sur l'anneau intègre $R'$ avec $u \neq 0$, puis par son point (i), l'image de $\rho$ est $\operatorname{Res}_{n,m}(\mathbf P, \mathbf Q_i) = 0$. Les $-c_i$ sont des racines distinctes de $\rho$ ; par le point (iii) du nœud {{pol-racines|Racines}}, $\prod_i (Z_0 + c_i)$ divise $\rho$ dans $R'[Z_0]$ : $\rho = D\prod_i (Z_0 + c_i)$. Ce produit étant unitaire de degré $n$, $D$ est de degré nul en $Z_0$ ({{pol-anneau|Anneau A[X]}}, (ii)), donc $D \in R'$, et la comparaison des coefficients de $Z_0^n$ donne $D = u^m$.
+
+      (ii) L'évaluation en $\alpha_i$ étant un morphisme, $Q(\alpha_i) = b\prod_j (\alpha_i - \beta_j)$, d'où la première formule. Par le point (ii) du nœud {{res-sylvester|Résultant}}, $\operatorname{Res}_{m,n}(Q, P) = (-1)^{nm}a^mb^n\prod_{i,j}(\alpha_i - \beta_j) = b^n\prod_j a\prod_i (\beta_j - \alpha_i)$, et $P(\beta_j) = a\prod_i (\beta_j - \alpha_i)$.
+
+      (iii) Si $a \neq 0$, l'intégrité de $A$ ramène la nullité de $a^m\prod_iQ(\alpha_i)$ à celle d'un $Q(\alpha_i)$ ; et toute racine $c$ de $P$ est l'un des $\alpha_i$, puisque $a\prod_i (c - \alpha_i) = 0$.
+    remarques:
+      - |
+        Pour $P = (X - 1)(X - 2) = X^2 - 3X + 2$ et $Q = X^2 + 1$ dans $\lex{ensemble-entiers-relatifs}{\mathbb Z}[X]$, la formule donne $\operatorname{Res}(P, Q) = Q(1)\,Q(2) = 2 \cdot 5 = 10$, ce que confirme le déterminant de
+        $$S_{2,2}(P, Q) = \begin{pmatrix} 1 & 0 & 1 & 0 \\ -3 & 1 & 0 & 1 \\ 2 & -3 & 1 & 0 \\ 0 & 2 & 0 & 1 \end{pmatrix}.$$
+        Pour $Q = X^2 - 1$, au contraire, $Q(1) = 0$ : $P$ et $Q$ ont la racine commune $1$, et leur résultant est nul.
+      - |
+        La démonstration ne suppose pas que $P$ ou $Q$ ait des racines dans un corps plus grand : elle établit une identité entre polynômes en des indéterminées, puis la spécialise par un morphisme. C'est le principe des identités génériques, qui évite ici les corps de décomposition, construits seulement en théorie de Galois ({{gs-decomposition|Corps de décomposition}}), branche qui n'est pas en amont de celle-ci.
+
+        Le point (i) vaut pour les degrés $n$ et $m$ choisis, même si $\deg Q < m$. Ainsi $\operatorname{Res}_{n,1}(P, 1) = a$, alors que $\operatorname{Res}_{n,0}(P, 1) = 1$ ; l'erreur la plus répandue est d'oublier ce facteur $a^m$, qui disparaît seulement quand $P$ est unitaire.
+
+  - id: res-discriminant
+    etiquette: Discriminant et résultant
+    nature: théorème
+    titre: Discriminant d'un polynôme quelconque
+    texte: |
+      Les notations sont celles du nœud {{res-sylvester|Résultant}} ; $A$ est intègre. Soit $P = \sum_{k=0}^n p_kX^k \in \lex{anneau-polynomes}{A[X]}$ de [[degre-polynome|degré]] $n \geqslant 1$, de [[coefficient-dominant|coefficient dominant]] $a = p_n$, et $P'$ sa [[derivee-formelle|dérivée]], de degré au plus $n - 1$.
+
+      Pour $n \geqslant 2$, la première ligne de $S_{n,n-1}(P, P')$ est $(a, 0, \dots, 0, n \cdot a, 0, \dots, 0)$, le coefficient $n \cdot a$ étant celui de $X^{n-1}$ dans $P'$, en colonne $n$. Le déterminant étant linéaire par rapport à la première ligne ({{v-det-matrice|Déterminant d'une matrice}}, (iii)), $\operatorname{Res}_{n,n-1}(P, P') = a\,R(P)$, où $R(P) \in A$ est le déterminant de la matrice obtenue en remplaçant cette ligne par $(1, 0, \dots, 0, n \cdot 1, 0, \dots, 0)$. Pour $n = 1$, la matrice est $(a)$, et l'on pose $R(P) = 1$.
+
+      Le [[discriminant-general|discriminant]] de $P$ est
+      $$\operatorname{disc}(P) = (-1)^{n(n-1)/2}R(P),$$
+      de sorte que $a\operatorname{disc}(P) = (-1)^{n(n-1)/2}\operatorname{Res}_{n,n-1}(P, P')$.
+    enonce: |
+      (i) Si $P = a\prod_{i=1}^n (X - \alpha_i)$ est [[polynome-scinde|scindé]] sur $A$,
+      $$\operatorname{disc}(P) = a^{2n-2}\prod_{i<j} (\alpha_i - \alpha_j)^2.$$
+
+      (ii) Si $P$ est [[polynome-unitaire|unitaire]], $\operatorname{disc}(P)$ est le [[discriminant|discriminant]] du nœud {{pol-discriminant|Discriminant}}.
+
+      (iii) Pour tous $a \neq 0$, $b$, $c$, $p$ et $q$ dans $A$,
+      $$\begin{aligned} \operatorname{disc}(aX^2 + bX + c) &= b^2 - 4ac, \\ \operatorname{disc}(X^3 + pX + q) &= -4p^3 - 27q^2. \end{aligned}$$
+
+      (iv) Si $A$ est un [[corps]], $\operatorname{disc}(P) = 0$ si et seulement si $P$ et $P'$ ont un diviseur commun de degré au moins $1$ ; si $P$ est scindé, si et seulement si $P$ a une [[racine-multiple|racine multiple]].
+    preuve: |
+      (i) Par le nœud {{res-racines|Résultant et racines}}, (i), $\operatorname{Res}_{n,n-1}(P, P') = a^{n-1}\prod_i P'(\alpha_i)$. Comme au point (ii) du nœud {{pol-discriminant|Discriminant}}, $P' = a\sum_k\prod_{l \neq k}(X - \alpha_l)$, donc $P'(\alpha_i) = a\prod_{j \neq i}(\alpha_i - \alpha_j)$, et
+      $$\begin{aligned} \prod_i P'(\alpha_i) &= a^n(-1)^{n(n-1)/2} \\ &\quad \times \prod_{i<j}(\alpha_i - \alpha_j)^2. \end{aligned}$$
+      Ainsi $a\operatorname{disc}(P) = a^{2n-1}\prod_{i<j}(\alpha_i - \alpha_j)^2$, et l'on simplifie par $a \neq 0$.
+
+      (ii) Soit $B = A[Y_1, \dots, Y_n]$, intègre, et $G = X^n + Y_1X^{n-1} + \cdots + Y_n \in B[X]$ ; soit $E = \operatorname{disc}(G) \in B$. Le discriminant est un déterminant dont les coefficients sont des coefficients du polynôme, leurs multiples entiers, $1$ et $n \cdot 1$ ; comme au point (i) du nœud {{res-sylvester|Résultant}}, il est respecté par les morphismes d'anneaux intègres qui préservent le degré.
+
+      Pour $P = X^n + c_1X^{n-1} + \cdots + c_n$, le morphisme $Y_k \mapsto c_k$ donne $\operatorname{disc}(P) = E(c_1, \dots, c_n)$. Avec des indéterminées $T_1, \dots, T_n$, le morphisme $Y_k \mapsto (-1)^k\sigma_k$, de $B$ dans l'anneau intègre $A[T_1, \dots, T_n]$, envoie $G$ sur $\prod_i (X - T_i)$ ({{pol-symetriques|Polynômes symétriques}}, (iii)) ; par (i), $E(-\sigma_1, \dots, (-1)^n\sigma_n) = \Delta_n$.
+
+      Le polynôme $E'(Y_1, \dots, Y_n) = E(-Y_1, Y_2, \dots, (-1)^nY_n)$ vérifie donc $E'(\sigma_1, \dots, \sigma_n) = \Delta_n = D_n(\sigma_1, \dots, \sigma_n)$, et $E' = D_n$ par l'unicité du théorème fondamental ({{pol-fondamental|Théorème fondamental}}, (iii)). D'où $\operatorname{disc}(P) = E(c_1, \dots, c_n) = D_n(-c_1, \dots, (-1)^nc_n)$.
+
+      (iii) Pour $P = aX^2 + bX + c$, $P' = 2aX + b$, et
+      $$R(P) = \det\begin{pmatrix} 1 & 2 & 0 \\ b & b & 2a \\ c & 0 & b \end{pmatrix} = b^2 - 2(b^2 - 2ac) = 4ac - b^2,$$
+      d'où $\operatorname{disc}(P) = -R(P) = b^2 - 4ac$.
+
+      Pour $P = X^3 + pX + q$, $P' = 3X^2 + p$, et l'on retranche de la troisième colonne $3$ fois la première, et de la quatrième $3$ fois la deuxième, ce qui ne change pas le déterminant :
+      $$\begin{vmatrix} 1 & 0 & 3 & 0 & 0 \\ 0 & 1 & 0 & 3 & 0 \\ p & 0 & p & 0 & 3 \\ q & p & 0 & p & 0 \\ 0 & q & 0 & 0 & p \end{vmatrix} = \begin{vmatrix} 1 & 0 & 0 & 0 & 0 \\ 0 & 1 & 0 & 0 & 0 \\ p & 0 & -2p & 0 & 3 \\ q & p & -3q & -2p & 0 \\ 0 & q & 0 & -3q & p \end{vmatrix}.$$
+      En développant deux fois suivant la première ligne ({{v-comatrice|Comatrice}}, appliqué à la transposée), il reste le déterminant du bloc $3 \times 3$ inférieur droit, $-2p(-2p^2) + 3 \cdot 9q^2 = 4p^3 + 27q^2$ : c'est $\operatorname{Res}(P, P') = R(P)$, et $\operatorname{disc}(P) = (-1)^3R(P)$.
+
+      (iv) Sur un corps, $a \neq 0$, et $\operatorname{disc}(P) = 0$ équivaut à $\operatorname{Res}_{n,n-1}(P, P') = 0$, donc, par le point (iv) du nœud {{res-sylvester|Résultant}}, à l'existence d'un diviseur commun de degré au moins $1$. Si $P$ est scindé, (i) montre que $\operatorname{disc}(P) = 0$ si et seulement si deux $\alpha_i$ coïncident, c'est-à-dire, comme au point (iv) du nœud {{pol-discriminant|Discriminant}}, si et seulement si $P$ a une racine multiple.
+    remarques:
+      - |
+        Les relations $\operatorname{Res}(P, P') = (-1)^{n(n-1)/2}a\operatorname{disc}(P)$ et (iii) ont été vérifiées par un calcul formel pour les polynômes de degrés $2$, $3$ et $4$ à coefficients indéterminés. Pour $X^4 + pX + q$, on trouve $\operatorname{disc} = 256q^3 - 27p^4$. Dans $\lex{ensemble-entiers-relatifs}{\mathbb Z}[X]$, $2X^2 - 2 = 2(X - 1)(X + 1)$ a pour discriminant $0 - 4 \cdot 2 \cdot (-2) = 16 = 2^2(1 - (-1))^2$, comme le veut (i), avec le facteur $a^{2n-2} = 4$.
+      - |
+        L'erreur la plus répandue est de prendre $\operatorname{Res}(P, P')$ pour le discriminant. Pour $X^2 + bX + c$, $\operatorname{Res}(P, P') = -(b^2 - 4c)$ : le signe $(-1)^{n(n-1)/2}$ et le facteur $a$ distinguent les deux, et ils sont choisis pour que (i) donne le produit des carrés des différences de racines.
+      - |
+        Sur un corps, (iv) dit que $\operatorname{disc}(P) \neq 0$ si et seulement si $P$ est premier avec $P'$. La théorie de Galois montre que c'est exactement la condition pour que $P$ n'ait de racine multiple dans aucune extension ({{gs-separabilite|Séparabilité}}) : le discriminant teste la séparabilité sans qu'on ait à construire les racines.
+
+  - id: res-elimination
+    etiquette: Élimination
+    nature: proposition
+    titre: Élimination d'une indéterminée
+    texte: |
+      Soit $K$ un [[corps]]. L'anneau $K[X, Y] = K[X][Y]$ est intègre, et [[anneau-factoriel|factoriel]] ({{ac-gauss|Gauss}}, (ii)). Soient $P, Q \in K[X, Y]$, vus comme polynômes en $Y$ à coefficients dans $K[X]$ :
+      $$\begin{aligned} P &= \sum_{k=0}^n p_k(X)\,Y^k, \\ Q &= \sum_{k=0}^m q_k(X)\,Y^k, \end{aligned}$$
+      avec $p_n \neq 0$, $q_m \neq 0$ et $n + m \geqslant 1$. Le [[resultant|résultant]] en $Y$ de $P$ et $Q$ est $R = \operatorname{Res}_{n,m}(P, Q) \in K[X]$ ({{res-sylvester|Résultant}}). Un zéro commun de $P$ et $Q$ est un couple $(x, y) \in K^2$ tel que $P(x, y) = Q(x, y) = 0$.
+    enonce: |
+      (i) Si $(x, y)$ est un zéro commun de $P$ et $Q$, alors $R(x) = 0$.
+
+      (ii) Si $R(x) = 0$, si $p_n(x) \neq 0$ et si $P(x, Y)$ est [[polynome-scinde|scindé]] sur $K$, l'une des racines $y$ de $P(x, Y)$ est racine de $Q(x, Y)$, et $(x, y)$ est un zéro commun.
+
+      (iii) $R = 0$ si et seulement si $P$ et $Q$ ont un diviseur commun de degré au moins $1$ en $Y$ dans $K[X, Y]$.
+    preuve: |
+      (i) L'évaluation en $x$ est un morphisme de $K[X]$ dans $K$ ({{pol-evaluation|Évaluation}}, (i)) ; par le point (i) du nœud {{res-sylvester|Résultant}}, $R(x) = \operatorname{Res}_{n,m}\big(P(x, Y), Q(x, Y)\big)$, et ce résultant s'écrit $U\,P(x, Y) + V\,Q(x, Y)$ avec $U, V \in K[Y]$, par le point (iii) du même nœud. On évalue en $y$.
+
+      (ii) Écrivons $P(x, Y) = p_n(x)\prod_{i=1}^n (Y - \alpha_i)$. Par le nœud {{res-racines|Résultant et racines}}, (i), $0 = R(x) = p_n(x)^m\prod_i Q(x, \alpha_i)$, et, $p_n(x)$ étant non nul, l'un des $Q(x, \alpha_i)$ est nul.
+
+      (iii) C'est le point (iv) du nœud {{res-sylvester|Résultant}}, appliqué à l'anneau factoriel $K[X]$, avec $p_n \neq 0$ : un diviseur commun de degré au moins $1$ dans $K[X][Y]$ est un diviseur commun de degré au moins $1$ en $Y$.
+    remarques:
+      - |
+        Sur le corps $F$ des fractions de $\lex{ensemble-entiers-relatifs}{\mathbb Z}$, prenons le cercle $P = X^2 + Y^2 - 5$ et l'hyperbole $Q = XY - 2$, de degrés $2$ et $1$ en $Y$. Dans le corps des fractions de $F[X]$, $Q = X\,(Y - 2/X)$ est scindé ; le nœud {{res-racines|Résultant et racines}}, (i), appliqué à $Q$, et le point (ii) du nœud {{res-sylvester|Résultant}} donnent
+        $$\begin{aligned} R &= (-1)^2\operatorname{Res}_{1,2}(Q, P) \\ &= X^2\,P\big(X, \tfrac 2X\big) = X^4 - 5X^2 + 4 \\ &= (X - 1)(X + 1)(X - 2)(X + 2). \end{aligned}$$
+        Pour chacune de ces quatre valeurs $x$, $q_1(x) = x \neq 0$, et $y = 2/x$ : les zéros communs sont $(1, 2)$, $(-1, -2)$, $(2, 1)$ et $(-2, -1)$, et l'on vérifie que $1 + 4 = 5$.
+
+        ```schema res-elimination
+        Le cercle $x^2 + y^2 = 5$, en bleu, et l'hyperbole $xy = 2$, en vert, dessinés dans le plan réel, se coupent en quatre points, en rouge. Leurs abscisses, reportées sur l'axe par les pointillés, sont les quatre racines $\pm 1$ et $\pm 2$ du résultant $X^4 - 5X^2 + 4$ : éliminer $Y$, c'est projeter les points communs sur l'axe des $x$.
+        ```
+      - |
+        L'hypothèse $p_n(x) \neq 0$ de (ii) ne peut pas être omise. Pour $P = XY - 1$ et $Q = XY - 2$, $R = \det\begin{pmatrix} X & X \\ -1 & -2 \end{pmatrix} = -X$ s'annule en $x = 0$, mais $P(0, Y) = -1$ et $Q(0, Y) = -2$ n'ont aucune racine : les deux hyperboles $xy = 1$ et $xy = 2$ ne se coupent pas, et la racine $0$ du résultant traduit leur comportement commun quand $y$ devient grand, là où les deux coefficients de tête s'annulent. L'erreur la plus répandue est de prendre toute racine du résultant pour l'abscisse d'un point commun.
+      - |
+        Le degré de $R$ est ici $4 = 2 \times 2$, produit des degrés des deux courbes. Ce n'est pas un hasard : le théorème de Bézout affirme que deux courbes planes de degrés $d$ et $e$, sans composante commune, se coupent en au plus $de$ points, et en exactement $de$ points dans le plan projectif sur un corps algébriquement clos, comptés avec multiplicité. Ce théorème est admis ici, comme ouverture : sa démonstration demande la géométrie projective et les multiplicités d'intersection, que l'atlas ne développe pas ; l'élimination par le résultant en est la première étape.
+    admis:
+      - lieu: remarque
+        statut: hors-cadre
+        objet: Théorème de Bézout sur le nombre de points d'intersection de deux courbes planes
+
+aretes:
+  - [res-sylvester, res-racines]
+  - [res-racines, res-discriminant]
+  - [res-racines, res-elimination]
