@@ -487,3 +487,13 @@ Maths C 2025). Corrigé de Nouvelle-Calédonie J1 2025 : introuvable à l'APMEP,
 retenu) ; J2 2025 pointe vers la copie maths-paris (source citée) faute de scan officiel. Logique au lycée
 (décision 9) et nilpotents de PSI (décision 6) : laissés en l'état. En attente de l'auteur : reclassement des
 exercices par étoiles (échelles de MPSI et de MP comparables ?), point PSI 6.2.1.
+
+**Audit de la rubrique Cours (27 nov. 2026).** Il annonçait 52 images d'aperçu à fabriquer et l3-gt, f-l3-gd
+à relier : constats faits sur un clone antérieur à c170ea7 et b943b45 (sur `main` : 2255 sur 2255, veille sans
+avertissement, 13 liens de cours l3-gt et 42 exercices f-l3-gd dans les programmes). Listes `annales_themes`
+proposées, relues : ma-01 `[logique-raisonnement]` ; m-galois `[galois, corps, corps-finis, constructibles,
+arithmetique-polynomes, groupe-symetrique, actions-groupes, polynomes-cyclotomiques, groupes, anneaux]` ; l3-gt
+inchangées. Synonymes ajoutés : groupe résoluble, Sylow (`groupes`) ; élément primitif, séparable, normale,
+clôture algébrique (`corps`) ; correspondance de Galois, Abel-Ruffini, Artin (`galois`) ; Gauss-Wantzel,
+simplicité du groupe alterné, théorème fondamental de l'algèbre ; De Morgan, produit cartésien, opérations sur
+les ensembles, ensemble des parties (`logique-raisonnement` ; « partition » écarté : partitions d'entiers).
