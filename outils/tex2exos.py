@@ -71,6 +71,9 @@ def lire_macros(pre):
         while pre[i] in ' \n': i += 1
         if pre[i] != '{': continue
         f = accolade(pre, i)
+        # corps employant des commandes internes (\dimen@, \@M… entre \makeatletter et \makeatother) :
+        # mise en page LaTeX (ex. \renewcommand{\needspace} des feuilles L3 GT), sans objet sur le site
+        if '@' in pre[i+1:f-1]: continue
         if nom not in STRUCTURELLES: M[nom] = (n, pre[i+1:f-1])
     # \DeclareMathOperator{\op}{…} et la forme étoilée (limites dessous), corps éventuellement composé
     # (\DeclareMathOperator*{\limsupens}{\overline{\lim}} des feuilles d'intégration)
