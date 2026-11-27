@@ -8,7 +8,8 @@ Usage (après `sh construire.sh`) :
 Sert le dossier site/ sur un port libre, ouvre chaque fiche (preuves dépliées), et signale tout display,
 paragraphe, schéma ou tableau plus large que sa colonne. Un dépassement de 2 px au plus est ignoré : c'est la
 cellule vide que KaTeX ajoute après un indice en fin de ligne, invisible à l'écran. Code de sortie 1 s'il
-reste un débordement. Convention d'aération : MEMO_atlas_edifice.md, §34. Demande Playwright et Chromium.
+reste un débordement. Toutes les formules de la fiche sont composées avant la mesure (le gabarit ne
+compose qu'à l'approche de l'écran ; sans cela, celles du bas échappaient au contrôle). Convention d'aération : MEMO_atlas_edifice.md, §34. Demande Playwright et Chromium.
 """
 import asyncio, glob, http.server, json, os, socket, sys, threading
 import yaml
@@ -61,6 +62,9 @@ async def mesurer(ids, port, largeur):
                 await pg.goto(f'http://127.0.0.1:{port}/#{h}')
                 await pg.wait_for_timeout(500)
                 await pg.evaluate("document.querySelectorAll('details').forEach(d => d.open = true)")
+                # Les formules hors écran ne sont composées qu'à l'approche (composition paresseuse du
+                # gabarit) : on les compose toutes, sinon leurs débordements échappent à la mesure.
+                await pg.evaluate("document.querySelectorAll('.fiche').forEach(f => window.composerDans && composerDans(f, true))")
                 await pg.wait_for_timeout(150)
                 r = await pg.evaluate(JS, TOLERANCE)
                 if r:
