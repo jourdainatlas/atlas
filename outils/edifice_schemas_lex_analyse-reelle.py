@@ -988,3 +988,41 @@ def lex_au_voisinage_2():
     S.texte((X(-1.1) - 6, y2), ']0, 1]', 'g', ancre='end', taille=15)
     _dans_cadre(S, (X(-1.1) - 6, y2), ']0, 1]', taille=15, ancre='end')
     return S
+
+
+# ---------------------------------------------------------------------------------------------- chapitre ar-impropres
+
+@schema('lex-integrale-absolument-convergente-2')
+def lex_integrale_absolument_convergente_2():
+    """Exemple déplacé de nban (ancien lex-integrale-convergente-3) avec le terme integrale-convergente."""
+    W, Hh = 420, 200
+    S = Schema(W, Hh, 'Des pics de hauteur 1 de plus en plus étroits')
+    R = Repere(0.6, 7.6, -0.18, 1.32, 26, 12, 380, 170)
+
+    def etiq(p, s, c='g', ancre='middle', taille=14):
+        _dans_cadre(S, p, s, taille, ancre)
+        S.texte(p, s, c, ancre=ancre, taille=taille)
+
+    S.fleche(R(0.6, 0), R(7.6, 0), 'g')
+    etiq(R(7.6, 0) + [-4, -13], 'x', ancre='end', taille=16)
+    S.fleche(R(0.6, -0.18), R(0.6, 1.32), 'g')
+    xs, ys = [1.0], [0.0]
+    aires = []
+    for k in range(2, 8):
+        e = 1 / k ** 2
+        xs += [k - e, k, k + e]
+        ys += [0, 1, 0]
+        aires.append(e)                                                  # aire du triangle : base 2e, hauteur 1
+        assert k + e < (k + 1) - 1 / (k + 1) ** 2                       # pics disjoints
+    xs.append(7.5)
+    ys.append(0)
+    assert abs(sum(aires[:3]) - (1 / 4 + 1 / 9 + 1 / 16)) < 1e-12
+    assert sum(1 / k ** 2 for k in range(2, 10 ** 5)) < 1                # série des aires convergente, majorée par 1
+    S.poly(R(np.array(xs), np.array(ys)), 'r', l=2.2)
+    for k in range(1, 8):
+        S.ligne(R(k, 0) + [0, -3], R(k, 0) + [0, 3], 'g')
+        etiq(R(k, 0) + [0, 16], str(k))
+    S.ligne(R(0.6, 1) + [-3, 0], R(0.6, 1) + [3, 0], 'g')
+    etiq(R(0.6, 1) + [8, 0], '1', ancre='start')
+    S.ligne(R(1.6, 1), R(7.5, 1), 'g', d=True)
+    return S

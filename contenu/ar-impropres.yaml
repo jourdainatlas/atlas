@@ -1,0 +1,422 @@
+# Niveau 2 : structure interne du chapitre « Intégrales généralisées » (cours mp-12).
+# Fonctions localement intégrables au sens de Riemann sur [a, b[, ]a, b] ou ]a, b[ (bornes réelles ou infinies) ;
+# intégrale convergente, indépendance du point de coupure, cohérence avec l'intégrale de Riemann ; linéarité,
+# Chasles, positivité ; intégrales de référence (puissances, exponentielle, logarithme ; Bertrand en remarque) ;
+# critère de Cauchy, démontré sans choix (suite explicite) ; fonctions positives, comparaison par O, o, ∼ (relations
+# du chapitre ar-asymptotique) ; intégration par parties et changement de variable ; convergence absolue et
+# semi-convergence (sin t / t^α) ; comparaison série-intégrale ; mises en garde (fonction à pics, limite à l'infini,
+# lemme de Barbalat, intégrales sur ℝ). Aucune démonstration n'emploie l'axiome du choix.
+
+graphe: ar-impropres
+titre: Intégrales généralisées
+conteneur: ar-impropres
+
+entrees:
+  ar-riemann: [ig-definition]
+  ar-asymptotique: [ig-definition, ig-series]
+  ar-cauchy: [ig-cauchy]
+
+noeuds:
+  - id: ig-definition
+    etiquette: Intégrale généralisée
+    nature: définition
+    titre: Intégrale généralisée sur un intervalle
+    texte: |
+      Dans ce chapitre, $a$ et $b$ sont des réels, ou bien $a = -\infty$ ou $b = +\infty$, avec $a < b$, et l'on considère les intervalles $[a, b[$ (pour $a$ réel), $]a, b]$ (pour $b$ réel) et $]a, b[$. Une fonction $f$ définie sur un tel intervalle $I$, à valeurs réelles, est [[localement-integrable-riemann|localement intégrable au sens de Riemann]] sur $I$ si elle est [[riemann-integrable|intégrable au sens de Riemann]] sur tout segment $[u, v]$ contenu dans $I$, avec $u < v$. C'est le cas des fonctions continues sur $I$ ({{ri-continues|Fonctions continues}}) et des fonctions monotones sur $I$ ({{ri-monotones|Fonctions monotones}}). L'intégrale orientée $\int_u^v f$ est alors définie pour tous $u, v \in I$, et elle vérifie la relation de Chasles ({{ri-proprietes|Propriétés de l'intégrale}}, (v)).
+
+      Les limites en $b$ d'une fonction définie sur $[a, b[$ sont celles du nœud {{as-comparaison|Relations de comparaison}}, avec $D = [a, b[$ : cas (a) si $b$ est réel, puisqu'il est alors adhérent à $[a, b[$, et cas (b) si $b = +\infty$. Une propriété est vraie au voisinage de $b$ si et seulement si elle est vraie sur un intervalle $[c, b[$, avec $c \in [a, b[$. En effet, si $b$ est réel, le voisinage relatif, intersection de $[a, b[$ et de $]b - \delta, b + \delta[$, contient $[c, b[$ pour $c = \max(a, b - \delta/2)$, et, réciproquement, $[c, b[$ contient le voisinage relatif associé à $\delta = b - c$ si $c > a$, et il est égal à $D$ si $c = a$ ; si $b = +\infty$, les voisinages relatifs sont exactement les $[c, +\infty[$. De même en $a$ pour une fonction définie sur $]a, b]$, avec les intervalles $]a, c]$.
+
+      Soit $f$ localement intégrable au sens de Riemann sur $[a, b[$, et $F(x) = \int_a^x f$ pour $x \in [a, b[$. L'intégrale $\int_a^b f$ [[integrale-convergente|converge]] si $F$ a une limite finie en $b$ ; cette limite, unique ({{de-limite|Limite en un point}}), est la valeur de l'intégrale, notée $\int_a^b f$ ou $\int_a^b f(t)\,dt$. Sinon, l'intégrale *diverge*. De même, pour $f$ localement intégrable au sens de Riemann sur $]a, b]$, l'intégrale $\int_a^b f$ converge si $x \mapsto \int_x^b f$ a une limite finie en $a$.
+
+      Pour $f$ localement intégrable au sens de Riemann sur $]a, b[$, l'intégrale $\int_a^b f$ converge s'il existe $c \in \,]a, b[$ tel que $\int_a^c f$ et $\int_c^b f$ convergent toutes deux, et sa valeur est $\int_a^c f + \int_c^b f$ ; le point (iv) montre que ni la convergence ni la valeur ne dépendent de $c$. On parle d'intégrale *généralisée*, ou *impropre*.
+    enonce: |
+      (i) *Primitive.* Soit $J$ un [[intervalle]] non réduit à un point et $g : J \to \lex{ensemble-reels}{\mathbb R}$ [[derivable]], de dérivée $g'$ continue. Pour tous $u, v \in J$, on a $\int_u^v g' = g(v) - g(u)$. Par suite, si $J = [a, b[$, l'intégrale $\int_a^b g'$ converge si et seulement si $g$ a une limite finie $\ell$ en $b$, et alors $\int_a^b g' = \ell - g(a)$ ; de même sur $]a, b]$.
+
+      (ii) *Cohérence.* Si $b$ est réel et si $f$ est intégrable au sens de Riemann sur $[a, b]$, l'intégrale généralisée de sa restriction à $[a, b[$ converge, et sa valeur est l'intégrale de Riemann $\int_a^b f$. De même sur $]a, b]$. Enfin, si $f$ est localement intégrable au sens de Riemann sur $[a, b[$, avec $b$ réel ou $+\infty$, l'intégrale de sa restriction à $]a, b[$ converge si et seulement si $\int_a^b f$ converge sur $[a, b[$, et les deux valeurs sont égales ; de même sur $]a, b]$. Un intervalle semi-ouvert peut donc toujours être remplacé par l'intervalle ouvert de mêmes extrémités.
+
+      (iii) *Point de départ.* Soit $f$ localement intégrable au sens de Riemann sur $[a, b[$ et $c \in [a, b[$. L'intégrale $\int_a^b f$ converge si et seulement si $\int_c^b f$ converge, et alors
+      $$\int_a^b f = \int_a^c f + \int_c^b f.$$
+      De même sur $]a, b]$, pour $c \in \,]a, b]$.
+
+      (iv) *Point de coupure.* Soit $f$ localement intégrable au sens de Riemann sur $]a, b[$. Si $\int_a^c f$ et $\int_c^b f$ convergent pour un $c \in \,]a, b[$, elles convergent pour tout $c' \in \,]a, b[$, et $\int_a^{c'} f + \int_{c'}^b f = \int_a^c f + \int_c^b f$.
+    preuve: |
+      (i) La fonction $g'$ est continue, donc intégrable sur tout segment contenu dans $J$ ({{ri-continues|Fonctions continues}}). Posons $G(x) = \int_u^x g'$ pour $x \in J$. Par le théorème fondamental ({{ar-tfa|Théorème fondamental}}), $G$ est dérivable sur $J$ et $G' = g'$. La fonction $G - g$ a donc une dérivée nulle sur l'intervalle $J$ : elle est constante ({{de-monotonie|Signe de la dérivée}}, (ii)), égale à sa valeur $-g(u)$ en $u$, et en $v$ on obtient $\int_u^v g' = g(v) - g(u)$.
+
+      Sur $J = [a, b[$, la fonction $x \mapsto \int_a^x g'$ est donc $g - g(a)$. Ajouter une constante $k$ conserve l'existence d'une limite finie et ajoute $k$ à la limite, puisque $h \to \ell$ signifie $h - \ell = \lex{fonction-negligeable}{o}(1)$ ({{as-comparaison|Relations de comparaison}}, (ii)). Sur $]a, b]$, on écrit de même $\int_x^b g' = g(b) - g(x)$.
+
+      (ii) La restriction de $f$ à tout segment contenu dans $[a, b[$ est intégrable ({{ri-proprietes|Propriétés de l'intégrale}}, (iii)). Soit $M$ un réel tel que $|f| \leqslant M$. Pour $x \in [a, b[$, la relation de Chasles et l'inégalité de la moyenne ({{ri-proprietes|Propriétés de l'intégrale}}, (v), et {{ri-moyenne|Inégalité de la moyenne}}, (i)) donnent
+      $$\Big|\int_a^b f - \int_a^x f\Big| = \Big|\int_x^b f\Big| \leqslant M(b - x).$$
+      Pour $\varepsilon > 0$, ce majorant est inférieur à $\varepsilon$ dès que $b - x < \varepsilon/(M + 1)$, c'est-à-dire sur un voisinage relatif de $b$ : $\int_a^x f$ tend vers $\int_a^b f$. Sur $]a, b]$, on majore de même $\big|\int_a^x f\big|$ par $M(x - a)$.
+
+      Pour la dernière affirmation, soit $c \in \,]a, b[$. Par définition, l'intégrale sur $]a, b[$ converge si et seulement si $\int_a^c f$, sur $]a, c]$, et $\int_c^b f$, sur $[c, b[$, convergent. La première converge toujours, vers l'intégrale de Riemann $\int_a^c f$, par ce qui précède appliqué sur $[a, c]$. Par (iii), $\int_c^b f$ converge si et seulement si $\int_a^b f$ converge sur $[a, b[$, et alors $\int_a^b f = \int_a^c f + \int_c^b f$, qui est aussi la valeur sur $]a, b[$. Sur $]a, b]$, on échange les rôles des deux bornes.
+
+      (iii) Pour $x \in [c, b[$, la relation de Chasles orientée donne $\int_a^x f = \int_a^c f + \int_c^x f$. Sur l'intervalle $[c, b[$, qui est un voisinage relatif de $b$, les fonctions $x \mapsto \int_a^x f$ et $x \mapsto \int_c^x f$ diffèrent donc de la constante $\int_a^c f$. Comme on peut remplacer l'ensemble de définition par un voisinage relatif de $b$ sans changer ce qui est vrai au voisinage de $b$ ({{as-comparaison|Relations de comparaison}}), l'une a une limite finie en $b$ si et seulement si l'autre en a une, et les deux limites diffèrent de $\int_a^c f$, comme en (i). Sur $]a, b]$, on part de $\int_x^b f = \int_x^c f + \int_c^b f$, pour $x \in \,]a, c]$.
+
+      (iv) Soit $c' \in \,]a, b[$, et notons $m = \min(c, c')$ et $M = \max(c, c')$. Le point (iii), appliqué sur $]a, M]$ avec le point $m$, montre que $\int_a^c f$ et $\int_a^{c'} f$ convergent ensemble ; la relation de Chasles orientée, écrite dans l'un ou l'autre ordre, donne
+      $$\int_a^{c'} f = \int_a^c f + \int_c^{c'} f.$$
+      Le point (iii), appliqué sur $[m, b[$ avec le point $M$, montre de même que $\int_c^b f$ et $\int_{c'}^b f$ convergent ensemble, avec
+      $$\int_c^b f = \int_c^{c'} f + \int_{c'}^b f.$$
+      En ajoutant ces deux égalités, $\int_a^{c'} f + \int_{c'}^b f = \int_a^c f + \int_c^b f$.
+    remarques:
+      - |
+        L'intégrale de Riemann ne s'applique ni aux fonctions non bornées ni aux intervalles non bornés ({{ri-integrable|Fonctions intégrables}}, deuxième remarque). La définition par une limite les atteint. Sur $]0, 1]$, la fonction $g(t) = 2\sqrt t$ a pour dérivée $\frac1{\sqrt t}$ ({{tg-tangente|Tangente, cos et sin}}, (ii)), donc, par (i),
+        $$\int_x^1 \frac{dt}{\sqrt t} = 2 - 2\sqrt x \xrightarrow[x \to 0]{} 2 :$$
+        l'intégrale converge et vaut $2$, bien que la fonction ne soit pas bornée. Pour $\frac1t$, au contraire, $\int_x^1 \frac{dt}t = -\ln x$ tend vers $+\infty$ ({{ex-logarithme|Logarithme}}, (iii)), et l'intégrale diverge. Une région non bornée peut donc avoir une aire finie ; plus loin, le nœud {{ig-references|Intégrales de référence}} dira exactement quand, pour les puissances.
+      - |
+        L'erreur la plus répandue, pour un intervalle $]a, b[$, est de faire tendre les deux bornes ensemble. La définition exige la convergence séparée des deux moitiés : $\int_{-x}^x t\,dt = 0$ pour tout $x$, mais $\int_0^{+\infty} t\,dt$ diverge, et l'intégrale de $t$ sur $]{-\infty}, +\infty[$ diverge, comme le montrera plus loin le nœud {{ig-mises-en-garde|Mises en garde}}, (iv).
+      - |
+        Plus loin, la même définition sert pour les fonctions à valeurs complexes, en théorie analytique des nombres ({{nb-sommation|Sommation d'Abel}}), et l'intégrale de Lebesgue ({{m-integrale|Intégrale positive}}) traite d'un coup tous les intervalles, mais seulement pour les fonctions dont la valeur absolue a une intégrale finie : les intégrales semi-convergentes du nœud {{ig-absolue|Convergence absolue}} lui échappent.
+
+  - id: ig-proprietes
+    etiquette: Propriétés
+    nature: proposition
+    titre: Linéarité, relation de Chasles et positivité
+    texte: |
+      Dans ce nœud, $I$ est un intervalle d'extrémités $a < b$, de l'une des trois formes du nœud {{ig-definition|Intégrale généralisée}}, et $f$ et $g$ sont [[localement-integrable-riemann|localement intégrables au sens de Riemann]] sur $I$. On note $\int_a^b f$ l'intégrale généralisée sur $I$, quelle que soit sa forme.
+    enonce: |
+      (i) *Linéarité.* Si $\int_a^b f$ et $\int_a^b g$ convergent, alors, pour tout réel $\lambda$, l'intégrale $\int_a^b (f + \lambda g)$ converge, et
+      $$\int_a^b (f + \lambda g) = \int_a^b f + \lambda\int_a^b g.$$
+      Si $\int_a^b f$ converge et si $\int_a^b g$ diverge, alors $\int_a^b (f + g)$ diverge.
+
+      (ii) *Relation de Chasles.* Si $\int_a^b f$ converge, alors, pour tout $c \in \,]a, b[$, les intégrales $\int_a^c f$ et $\int_c^b f$ convergent, et $\int_a^b f = \int_a^c f + \int_c^b f$.
+
+      (iii) *Croissance.* Si $f \leqslant g$ sur $I$ et si $\int_a^b f$ et $\int_a^b g$ convergent, alors $\int_a^b f \leqslant \int_a^b g$. En particulier, si $f$ est positive et si son intégrale converge, celle-ci est positive.
+
+      (iv) *Stricte positivité.* Si $f$ est continue et positive sur $I$, si $\int_a^b f$ converge et vaut $0$, alors $f$ est nulle sur $I$.
+
+      (v) *Reste.* Si $I = [a, b[$ et si $\int_a^b f$ converge, le reste $\int_x^b f$ tend vers $0$ quand $x$ tend vers $b$.
+    preuve: |
+      (i) Sur $[a, b[$, la linéarité de l'intégrale de Riemann ({{ri-proprietes|Propriétés de l'intégrale}}, (i)) donne $\int_a^x (f + \lambda g) = \int_a^x f + \lambda\int_a^x g$. Si $\int_a^x f - \ell$ et $\int_a^x g - m$ sont des $\lex{fonction-negligeable}{o}(1)$ au voisinage de $b$, il en est de même de $\int_a^x (f + \lambda g) - (\ell + \lambda m)$ ({{as-regles|Règles de calcul}}, (ii)), ce qui est l'affirmation ({{as-comparaison|Relations de comparaison}}, (ii)). Sur $]a, b]$, l'argument est le même ; sur $]a, b[$, on l'applique aux deux moitiés, coupées au même point $c$. Enfin, si $\int_a^b (f + g)$ convergeait, $\int_a^b g = \int_a^b \big((f + g) - f\big)$ convergerait par ce qui précède.
+
+      (ii) Sur $[a, b[$, l'intégrale $\int_a^c f$ est une intégrale de Riemann, et le point (iii) du nœud {{ig-definition|Intégrale généralisée}} donne la convergence de $\int_c^b f$ et l'égalité ; de même sur $]a, b]$. Sur $]a, b[$, c'est le point (iv) du même nœud.
+
+      (iii) Sur $[a, b[$, posons $F(x) = \int_a^x f$ et $G(x) = \int_a^x g$, de limites $\ell$ et $m$ en $b$ ; on a $F \leqslant G$ ({{ri-proprietes|Propriétés de l'intégrale}}, (ii)). Si l'on avait $\ell > m$, avec $\varepsilon = \frac{\ell - m}2$, les inégalités $|F(x) - \ell| < \varepsilon$ et $|G(x) - m| < \varepsilon$ seraient vraies simultanément sur un voisinage relatif de $b$, qui n'est pas vide, et en un point $x$ de celui-ci,
+      $$G(x) < m + \varepsilon = \ell - \varepsilon < F(x),$$
+      ce qui est absurde. Sur $]a, b]$ de même, et sur $]a, b[$ on ajoute les inégalités obtenues sur les deux moitiés. Le cas particulier est celui de la fonction nulle, minorant $f$.
+
+      (iv) Soit $[u, v]$ un segment contenu dans $I$, avec $u < v$. Par (ii), appliqué une ou deux fois selon que $u$ et $v$ sont ou non des extrémités de $I$, $\int_a^b f$ est la somme de $\int_u^v f$ et d'au plus deux intégrales de $f$ sur des intervalles contenus dans $I$, toutes positives par (iii) ou par la croissance de l'intégrale de Riemann. Leur somme étant nulle, $\int_u^v f = 0$, et $f$ est nulle sur $[u, v]$ ({{ri-moyenne|Inégalité de la moyenne}}, (iii)). Tout point de $I$ appartient à un tel segment, puisque $a < b$.
+
+      (v) Par (ii), $\int_x^b f = \int_a^b f - \int_a^x f$ pour $x \in [a, b[$, et le second membre tend vers $0$ par définition de $\int_a^b f$.
+    remarques:
+      - |
+        L'erreur la plus répandue est de couper une intégrale en deux avant de savoir que les deux morceaux convergent. Sur $[1, +\infty[$, la fonction $t \mapsto -\ln\big(1 + \frac1t\big) = \ln t - \ln(t + 1)$ a pour dérivée $\frac1t - \frac1{t + 1}$, et elle tend vers $-\ln 1 = 0$ en $+\infty$ ; par le point (i) du nœud {{ig-definition|Intégrale généralisée}},
+        $$\int_1^{+\infty} \Big(\frac1t - \frac1{t + 1}\Big)\,dt = 0 - (-\ln 2) = \ln 2.$$
+        Pourtant $\int_1^{+\infty} \frac{dt}t$ et $\int_1^{+\infty} \frac{dt}{t + 1}$ divergent toutes deux : écrire la première intégrale comme leur différence reviendrait à soustraire deux infinis. La linéarité (i) ne s'applique qu'à des intégrales convergentes.
+      - |
+        Appliquée à $-|f| \leqslant f \leqslant |f|$, la croissance (iii) donne $\big|\int_a^b f\big| \leqslant \int_a^b |f|$ lorsque les deux intégrales convergent. Le nœud {{ig-absolue|Convergence absolue}} montrera que la convergence de la seconde entraîne celle de la première ; la réciproque est fausse, et c'est toute la question de la semi-convergence.
+
+  - id: ig-references
+    etiquette: Intégrales de référence
+    nature: proposition
+    titre: Intégrales de référence
+    enonce: |
+      (i) Pour tout réel $\alpha$, l'intégrale $\displaystyle\int_1^{+\infty} \frac{dt}{t^\alpha}$ converge si et seulement si $\alpha > 1$, et vaut alors $\frac1{\alpha - 1}$.
+
+      (ii) Pour tout réel $\alpha$, l'intégrale $\displaystyle\int_0^1 \frac{dt}{t^\alpha}$ converge si et seulement si $\alpha < 1$, et vaut alors $\frac1{1 - \alpha}$.
+
+      (iii) Pour tout réel $c$, l'intégrale $\int_0^{+\infty} e^{-ct}\,dt$ converge si et seulement si $c > 0$, et vaut alors $\frac1c$.
+
+      (iv) L'intégrale $\int_0^1 \ln t\,dt$ converge et vaut $-1$.
+    preuve: |
+      Toutes les fonctions intégrées sont continues sur l'intervalle considéré, donc [[localement-integrable-riemann|localement intégrables au sens de Riemann]] ; on applique le point (i) du nœud {{ig-definition|Intégrale généralisée}} à une primitive.
+
+      (i) Pour $\alpha \neq 1$, la fonction $g(t) = \frac{t^{1 - \alpha}}{1 - \alpha}$ a pour dérivée $t^{-\alpha}$ sur $]0, +\infty[$ ({{ex-puissances|Puissances réelles}}, (iii)), et
+      $$\int_1^x \frac{dt}{t^\alpha} = \frac{x^{1 - \alpha} - 1}{1 - \alpha}.$$
+      Si $\alpha > 1$, l'exposant $1 - \alpha$ est strictement négatif, $x^{1 - \alpha}$ tend vers $0$ quand $x \to +\infty$ ({{ex-puissances|Puissances réelles}}, (iv)), et l'intégrale vaut $\frac{-1}{1 - \alpha} = \frac1{\alpha - 1}$. Si $\alpha < 1$, $x^{1 - \alpha}$ tend vers $+\infty$, et l'intégrale diverge. Si $\alpha = 1$, $\int_1^x \frac{dt}t = \ln x$ tend vers $+\infty$ ({{ex-logarithme|Logarithme}}, (i) et (iii)).
+
+      (ii) Avec la même primitive, pour $\alpha \neq 1$ et $x \in \,]0, 1]$,
+      $$\int_x^1 \frac{dt}{t^\alpha} = \frac{1 - x^{1 - \alpha}}{1 - \alpha}.$$
+      Si $\alpha < 1$, la fonction $x \mapsto x^{1 - \alpha}$ est continue sur $[0, +\infty[$ et nulle en $0$ ({{ex-puissances|Puissances réelles}}, (iv)), et l'intégrale vaut $\frac1{1 - \alpha}$. Si $\alpha > 1$, $x^{1 - \alpha} = 1/x^{\alpha - 1}$ est l'inverse d'une quantité strictement positive qui tend vers $0$ : il tend vers $+\infty$, et l'intégrale diverge. Si $\alpha = 1$, $\int_x^1 \frac{dt}t = -\ln x$ tend vers $+\infty$ quand $x \to 0$.
+
+      (iii) Pour $c \neq 0$, la fonction $g(t) = -\frac{e^{-ct}}c$ a pour dérivée $e^{-ct}$ ({{ex-exponentielle|Exponentielle}}, (ii), et {{de-composee|Dérivée d'une composée}}), et $\int_0^x e^{-ct}\,dt = \frac{1 - e^{-cx}}c$. Si $c > 0$, l'inégalité $e^y \geqslant 1 + y$ ({{ex-croissances|Croissances comparées}}, (i)) donne, pour $x \geqslant 0$,
+      $$0 < e^{-cx} = \frac1{e^{cx}} \leqslant \frac1{1 + cx},$$
+      qui tend vers $0$ : l'intégrale vaut $\frac1c$. Si $c < 0$, la même inégalité donne $\int_0^x e^{-ct}\,dt = \frac{e^{|c|x} - 1}{|c|} \geqslant x$, qui tend vers $+\infty$. Si $c = 0$, $\int_0^x 1\,dt = x$ tend vers $+\infty$.
+
+      (iv) Sur $]0, 1]$, la fonction $g(t) = t\ln t - t$ a pour dérivée $\ln t + 1 - 1 = \ln t$ ({{de-operations|Opérations}}, (ii)), d'où
+      $$\int_x^1 \ln t\,dt = -1 - x\ln x + x.$$
+      Comme $x\ln x = -x\ln\frac1x$ tend vers $0$ quand $x \to 0$ ({{ex-croissances|Croissances comparées}}, (iii), avec $\varepsilon = 1$), l'intégrale vaut $-1$.
+    remarques:
+      - |
+        La fonction $\frac1t$ est la frontière des deux premiers cas, et elle est du côté divergent dans les deux.
+
+        ```schema ig-references
+        À gauche, sur $[1, +\infty[$ : l'aire rouge sous $t^{-2}$, égale à $1$, est finie, alors que l'aire sous $\frac1t$, en bleu, ne l'est pas ; il faut $\alpha > 1$. À droite, sur $]0, 1]$ : l'aire rouge sous $t^{-1/2}$, égale à $2$, est finie bien que la région monte à l'infini, alors que celle sous $\frac1t$ ne l'est pas ; il faut $\alpha < 1$. Les valeurs sont celles de (i) et (ii).
+        ```
+
+        Une puissance converge en $+\infty$ quand elle décroît plus vite que $\frac1t$, et en $0$ quand elle explose moins vite. En conséquence, $\int_0^{+\infty} \frac{dt}{t^\alpha}$ ne converge pour aucun $\alpha$, puisqu'il faudrait à la fois $\alpha < 1$ et $\alpha > 1$ : l'erreur la plus répandue est de conclure sur l'un des bords en oubliant l'autre.
+      - |
+        Quand $\alpha = 1$, un facteur logarithmique décide. Pour $\beta \neq 1$, la fonction $\frac{(\ln t)^{1 - \beta}}{1 - \beta}$ a pour dérivée $\frac1{t(\ln t)^\beta}$ sur $]1, +\infty[$, et, pour $\beta = 1$, la fonction $\ln(\ln t)$ a la même propriété ; comme $\ln e = 1$, la méthode de (i) montre que l'intégrale de Bertrand
+        $$\int_e^{+\infty} \frac{dt}{t(\ln t)^\beta}$$
+        converge si et seulement si $\beta > 1$, et vaut alors $\frac1{\beta - 1}$, soit $1$ pour $\beta = 2$. La divergence pour $\beta = 1$ est d'une lenteur extrême : l'intégrale de $e$ à $10^{100}$ vaut $\ln(100\ln 10) \approx 5{,}44$. Joseph Bertrand a fait de ces fonctions une échelle de comparaison pour les séries (« Règles sur la convergence des séries », *Journal de mathématiques pures et appliquées* 7, 1842, p. 35-54).
+
+  - id: ig-cauchy
+    etiquette: Critère de Cauchy
+    nature: théorème
+    titre: Critère de Cauchy pour les intégrales généralisées
+    enonce: |
+      Soit $f$ [[localement-integrable-riemann|localement intégrable au sens de Riemann]] sur $[a, b[$. L'intégrale $\int_a^b f$ converge si et seulement si, pour tout $\varepsilon > 0$, il existe $c \in [a, b[$ tel que
+      $$\Big|\int_x^y f\Big| < \varepsilon \quad\text{pour tous } x, y \in [c, b[.$$
+      De même sur $]a, b]$, avec les intervalles $]a, c]$.
+    preuve: |
+      Notons $F(x) = \int_a^x f$, de sorte que $\int_x^y f = F(y) - F(x)$ par la relation de Chasles orientée.
+
+      *La condition est nécessaire.* Si $F$ tend vers $\ell$ en $b$ et si $\varepsilon > 0$, il existe $c \in [a, b[$ tel que $|F(x) - \ell| < \varepsilon/2$ pour $x \in [c, b[$ ({{ig-definition|Intégrale généralisée}}) ; pour $x, y$ dans cet intervalle, $|F(y) - F(x)| < \varepsilon$.
+
+      *La condition est suffisante.* Posons $x_n = b - \frac{b - a}{n + 1}$ si $b$ est réel, et $x_n = a + n$ si $b = +\infty$. C'est une [[suite]] de points de $[a, b[$ et, pour tout $c \in [a, b[$, on a $x_n \geqslant c$ dès que $n + 1 \geqslant \frac{b - a}{b - c}$, ou dès que $n \geqslant c - a$, ce qui arrive à partir d'un certain rang par la propriété d'Archimède ({{ar-archimede|Archimède, densité de ℚ}}).
+
+      Soit $\varepsilon > 0$, $c$ donné par l'hypothèse, et $N$ tel que $x_n \geqslant c$ pour $n \geqslant N$. Pour $p, q \geqslant N$, $|F(x_p) - F(x_q)| < \varepsilon$ : la suite $\big(F(x_n)\big)$ est de [[suite-cauchy|Cauchy]], et elle converge vers un réel $\ell$ ({{ar-cauchy|Complétude}}).
+
+      Il reste à voir que $F(x)$ tend vers $\ell$. Soit $\varepsilon > 0$, $c$ et $N$ comme ci-dessus, et $n \geqslant N$ tel que $|F(x_n) - \ell| < \varepsilon$. Pour tout $x \in [c, b[$,
+      $$\begin{aligned} |F(x) - \ell| &\leqslant |F(x) - F(x_n)| \\ &\quad + |F(x_n) - \ell| < 2\varepsilon, \end{aligned}$$
+      et $[c, b[$ est un voisinage relatif de $b$. Sur $]a, b]$, on prend $x_n = a + \frac{b - a}{n + 1}$ ou $x_n = b - n$.
+    remarques:
+      - |
+        La démonstration n'emploie aucune forme de l'axiome du choix. Elle ne passe pas par la caractérisation séquentielle des limites, qui demanderait, dans le sens réciproque, de choisir un point dans chacun d'une infinité d'ensembles ({{c-sequentielle|Caractérisation séquentielle}}) : la suite $(x_n)$ est donnée par une formule, et le retour de la suite aux points quelconques se fait par l'hypothèse de Cauchy elle-même.
+      - |
+        Le critère porte sur tous les couples $x, y$ assez près de $b$, et non sur des intervalles de longueur fixée. Pour $f(t) = \frac1t$ sur $[1, +\infty[$, on a $\int_x^{x + 1} \frac{dt}t = \ln\big(1 + \frac1x\big)$, qui tend vers $0$, et pourtant l'intégrale diverge, puisque $\int_1^x \frac{dt}t = \ln x$ tend vers $+\infty$ (c'est le cas $\alpha = 1$ du nœud voisin {{ig-references|Intégrales de référence}}, (i)) : $\int_x^{x^2} \frac{dt}t = \ln x$ ne tend pas vers $0$. C'est le pendant de la série harmonique, dont le terme général tend vers $0$ sans que la série converge ({{as-series|Séries et équivalents}}, (v)).
+      - |
+        Le critère sert surtout quand on ne connaît pas la valeur de l'intégrale. Il donnera plus loin, au nœud {{ig-absolue|Convergence absolue}}, la convergence d'une intégrale dont la valeur absolue a une intégrale convergente, sans calculer aucune limite.
+
+  - id: ig-positives
+    etiquette: Fonctions positives
+    nature: théorème
+    titre: Fonctions positives et comparaison
+    texte: |
+      Dans ce nœud, $f$ et $g$ sont [[localement-integrable-riemann|localement intégrables au sens de Riemann]] sur $[a, b[$, et les relations $\lex{fonction-dominee}{O}$, $\lex{fonction-negligeable}{o}$ et $\mathrel{\lex{fonction-equivalente}{\sim}}$ sont prises au voisinage de $b$, dans le cadre du nœud {{as-comparaison|Relations de comparaison}} rappelé au nœud {{ig-definition|Intégrale généralisée}}.
+    enonce: |
+      (i) Si $f$ est positive sur $[a, b[$, la fonction $F(x) = \int_a^x f$ est croissante, et l'intégrale $\int_a^b f$ converge si et seulement si $F$ est majorée ; elle vaut alors $\sup F$. Sinon, $F$ tend vers $+\infty$ en $b$.
+
+      (ii) *Comparaison.* Si $0 \leqslant f \leqslant g$ au voisinage de $b$ et si $\int_a^b g$ converge, alors $\int_a^b f$ converge ; si $\int_a^b f$ diverge, alors $\int_a^b g$ diverge.
+
+      (iii) *Domination.* Si $f$ et $g$ sont positives au voisinage de $b$ et si $f = O(g)$, en particulier si $f = o(g)$, la convergence de $\int_a^b g$ entraîne celle de $\int_a^b f$.
+
+      (iv) *Équivalents.* Si $f \sim g$ et si $g$ est positive au voisinage de $b$, les intégrales $\int_a^b f$ et $\int_a^b g$ ont même nature.
+
+      (v) *Comparaison aux puissances.* Supposons $f$ positive au voisinage de $b$. Si $b = +\infty$, l'intégrale $\int_a^b f$ converge dès que $f(t) = O(t^{-\alpha})$ pour un $\alpha > 1$, et diverge dès que $\frac1t = O(f(t))$. Si $b$ est réel, elle converge dès que $f(t) = O\big((b - t)^{-\alpha}\big)$ pour un $\alpha < 1$, et diverge dès que $\frac1{b - t} = O(f(t))$.
+
+      Les mêmes énoncés valent sur $]a, b]$, au voisinage de $a$.
+    preuve: |
+      (i) Pour $x < y$ dans $[a, b[$, $F(y) - F(x) = \int_x^y f \geqslant 0$ ({{ri-proprietes|Propriétés de l'intégrale}}, (ii) et (v)). Si $F$ est majorée, elle a une borne supérieure $s$ ({{ar-corps|Borne supérieure}}) ; pour $\varepsilon > 0$, il existe $x_0$ tel que $F(x_0) > s - \varepsilon$, et, pour $x \in [x_0, b[$, $s - \varepsilon < F(x_0) \leqslant F(x) \leqslant s$ : comme $[x_0, b[$ est un voisinage relatif de $b$, $F$ tend vers $s$. Réciproquement, si $F$ tend vers $\ell$ et si l'on avait $F(x) > \ell$ pour un $x$, on aurait $F(y) - \ell \geqslant F(x) - \ell > 0$ pour tout $y \geqslant x$, ce qui interdit $|F(y) - \ell| < F(x) - \ell$ au voisinage de $b$ : $F$ est majorée par $\ell$. Enfin, si $F$ n'est pas majorée, pour tout réel $A$ il existe $x_0$ tel que $F(x_0) > A$, et alors $F > A$ sur $[x_0, b[$ : $F$ tend vers $+\infty$.
+
+      (ii) Soit $c \in [a, b[$ tel que $0 \leqslant f \leqslant g$ sur $[c, b[$. Par le point (iii) du nœud {{ig-definition|Intégrale généralisée}}, il suffit d'étudier les intégrales sur $[c, b[$. Pour $x \in [c, b[$, la croissance de l'intégrale de Riemann, puis (i) appliqué à $g$ sur $[c, b[$, donnent
+      $$\int_c^x f \leqslant \int_c^x g \leqslant \int_c^b g.$$
+      La fonction $x \mapsto \int_c^x f$ est majorée, et (i) conclut. La seconde affirmation est la contraposée de la première.
+
+      (iii) Il existe $C \geqslant 0$ et un voisinage relatif de $b$, que l'on peut prendre de la forme $[c, b[$, sur lequel $f \geqslant 0$, $g \geqslant 0$ et $f \leqslant C g$ ({{as-comparaison|Relations de comparaison}}, définition de $O$, et point (i) pour $o$). L'intégrale de $Cg$ converge par linéarité ({{ig-proprietes|Propriétés}}, (i)), et (ii) conclut.
+
+      (iv) Par les règles (iv) et (v) du nœud {{as-regles|Règles de calcul}}, $f = O(g)$, $g = O(f)$, et $f$ a le signe de $g$ au voisinage de $b$ : elle y est positive. Le point (iii), appliqué dans les deux sens, conclut.
+
+      (v) Si $b = +\infty$, on peut supposer $a \geqslant 1$, quitte à remplacer $a$ par $\max(a, 1)$ ({{ig-definition|Intégrale généralisée}}, (iii)). L'intégrale de $t^{-\alpha}$ converge pour $\alpha > 1$, et celle de $\frac1t$ diverge ({{ig-references|Intégrales de référence}}, (i), et point (iii) du nœud {{ig-definition|Intégrale généralisée}}) ; le point (iii) conclut, dans le second cas par contraposée.
+
+      Si $b$ est réel, pour $\alpha \neq 1$, la fonction $t \mapsto -\frac{(b - t)^{1 - \alpha}}{1 - \alpha}$ a pour dérivée $(b - t)^{-\alpha}$ sur $[a, b[$ ({{ex-puissances|Puissances réelles}}, (iii), et {{de-composee|Dérivée d'une composée}}), d'où
+      $$\int_a^x \frac{dt}{(b - t)^\alpha} = \frac{(b - a)^{1 - \alpha} - (b - x)^{1 - \alpha}}{1 - \alpha},$$
+      qui tend vers $\frac{(b - a)^{1 - \alpha}}{1 - \alpha}$ quand $x \to b$ si $\alpha < 1$, comme dans le point (ii) du nœud {{ig-references|Intégrales de référence}}. Pour $\alpha = 1$, la primitive $-\ln(b - t)$ donne $\ln(b - a) - \ln(b - x)$, qui tend vers $+\infty$. Le point (iii) conclut de même.
+    remarques:
+      - |
+        L'intégrale de Gauss $\int_0^{+\infty} e^{-t^2}\,dt$ converge. Pour $t \geqslant 1$, on a $t^2 \geqslant t$, donc $0 < e^{-t^2} \leqslant e^{-t}$, et $\int_1^{+\infty} e^{-t}\,dt$ converge ({{ig-references|Intégrales de référence}}, (iii)) ; le point (ii) conclut, la fonction étant continue sur $[0, 1]$. La comparaison donne la convergence, non la valeur, $\frac{\sqrt\pi}2 \approx 0{,}8862$, que la théorie des probabilités calculera plus loin par l'intégrale double ({{p-normale|Loi normale}}).
+      - |
+        Pour tout réel $x$, l'intégrale $\int_0^{+\infty} t^{x - 1}e^{-t}\,dt$ converge si et seulement si $x > 0$. On la coupe en $1$ ({{ig-definition|Intégrale généralisée}}, (iv)). Au voisinage de $0$, $t^{x - 1}e^{-t} \sim t^{x - 1}$, puisque $e^{-t}$ tend vers $1$, et le point (iv), sur $]0, 1]$, donne la même nature que $\int_0^1 t^{x - 1}\,dt$, convergente si et seulement si $1 - x < 1$ ({{ig-references|Intégrales de référence}}, (ii)). Au voisinage de $+\infty$, $t^2 \cdot t^{x - 1}e^{-t} = t^{x + 1}e^{-t}$ tend vers $0$ ({{ex-croissances|Croissances comparées}}, (iii)), donc la fonction est $o(t^{-2})$, et le point (v) donne la convergence pour tout $x$. C'est la fonction $\Gamma$ d'Euler, $\Gamma(x) = \int_0^{+\infty} t^{x - 1}e^{-t}\,dt$, définie pour $x > 0$.
+      - |
+        Toutes les hypothèses de signe sont nécessaires. Le critère (iv) des équivalents est faux pour des fonctions qui changent de signe : plus loin, le nœud {{ig-absolue|Convergence absolue}} en donnera un contre-exemple, analogue à celui des séries ({{as-series|Séries et équivalents}}, première remarque).
+
+  - id: ig-calcul
+    etiquette: Parties, changement de variable
+    nature: proposition
+    titre: Intégration par parties et changement de variable
+    enonce: |
+      (i) *Intégration par parties sur un segment.* Si $u$ et $v$ sont [[derivee-successive|de classe $C^1$]] sur un segment $[\alpha, \beta]$, alors
+      $$\begin{aligned} \int_\alpha^\beta u v' &= u(\beta)v(\beta) - u(\alpha)v(\alpha) \\ &\quad - \int_\alpha^\beta u' v. \end{aligned}$$
+
+      (ii) *Intégration par parties généralisée.* Si $u$ et $v$ sont de classe $C^1$ sur $[a, b[$ et si $uv$ a une limite finie $L$ en $b$, les intégrales $\int_a^b u v'$ et $\int_a^b u' v$ ont même nature, et, si elles convergent,
+      $$\int_a^b u v' = L - u(a)v(a) - \int_a^b u' v.$$
+      De même sur $]a, b]$.
+
+      (iii) *Changement de variable sur un segment.* Soit $\varphi$ de classe $C^1$ sur $[\alpha, \beta]$, $J$ un intervalle non réduit à un point qui contient $\varphi([\alpha, \beta])$, et $f$ continue sur $J$. Alors
+      $$\int_{\varphi(\alpha)}^{\varphi(\beta)} f(x)\,dx = \int_\alpha^\beta f\big(\varphi(s)\big)\,\varphi'(s)\,ds.$$
+
+      (iv) *Changement de variable généralisé.* Soit $\alpha < \beta$ et $a < b$ des réels ou des infinis, $\varphi : \,]\alpha, \beta[ \to \,]a, b[$ une [[bijection]] de classe $C^1$ strictement monotone, et $f$ continue sur $]a, b[$. Les intégrales
+      $$\begin{aligned} &\int_a^b f(x)\,dx \quad\text{et} \\ &\int_\alpha^\beta f\big(\varphi(s)\big)\,|\varphi'(s)|\,ds \end{aligned}$$
+      ont même nature, et elles sont égales si elles convergent.
+    preuve: |
+      (i) Les fonctions $u'v$ et $uv'$ sont continues, et $(uv)' = u'v + uv'$ ({{de-operations|Opérations}}, (ii)) est continue. Le point (i) du nœud {{ig-definition|Intégrale généralisée}} et la linéarité de l'intégrale ({{ri-proprietes|Propriétés de l'intégrale}}, (i)) donnent $\int_\alpha^\beta u'v + \int_\alpha^\beta uv' = u(\beta)v(\beta) - u(\alpha)v(\alpha)$.
+
+      (ii) Pour $x \in \,]a, b[$, le point (i) sur $[a, x]$ donne
+      $$\int_a^x u v' = u(x)v(x) - u(a)v(a) - \int_a^x u' v.$$
+      Le premier terme du second membre tend vers $L$. Si $\int_a^x u'v$ a une limite finie en $b$, le second membre aussi, par les règles sur les $\lex{fonction-negligeable}{o}(1)$ ({{as-regles|Règles de calcul}}, (ii)) ; réciproquement, si $\int_a^x uv'$ a une limite finie, $\int_a^x u'v = u(x)v(x) - u(a)v(a) - \int_a^x uv'$ en a une. Le cas de $]a, b]$ est le même.
+
+      (iii) Par le théorème fondamental ({{ar-tfa|Théorème fondamental}}), la fonction $H(y) = \int_{\varphi(\alpha)}^y f$ est dérivable sur $J$, de dérivée $f$. La composée $H \circ \varphi$ est dérivable, de dérivée $f(\varphi)\,\varphi'$ ({{de-composee|Dérivée d'une composée}}), qui est continue. Le point (i) du nœud {{ig-definition|Intégrale généralisée}} donne
+      $$\begin{aligned} &\int_\alpha^\beta f(\varphi(s))\varphi'(s)\,ds \\ &\quad = H(\varphi(\beta)) - H(\varphi(\alpha)), \end{aligned}$$
+      c'est-à-dire $\int_{\varphi(\alpha)}^{\varphi(\beta)} f$, puisque $H(\varphi(\alpha)) = 0$.
+
+      (iv) Les deux fonctions intégrées sont continues, donc [[localement-integrable-riemann|localement intégrables au sens de Riemann]]. Supposons d'abord $\varphi$ strictement croissante, de sorte que $\varphi' \geqslant 0$ ({{de-monotonie|Signe de la dérivée}}, (i)). Fixons $c \in \,]\alpha, \beta[$ et posons $\gamma = \varphi(c)$, $G(y) = \int_\gamma^y f$ pour $y \in \,]a, b[$ et $K(s) = \int_c^s f(\varphi)\varphi'$ pour $s \in \,]\alpha, \beta[$. Par (iii), appliqué sur le segment d'extrémités $c$ et $s$ avec $J = \,]a, b[$, on a $K = G \circ \varphi$, et donc $G = K \circ \varphi^{-1}$.
+
+      Si $G$ tend vers $\ell$ en $b$ et si $\varepsilon > 0$, il existe $y_0 \in [\gamma, b[$ tel que $|G(y) - \ell| < \varepsilon$ pour $y \in [y_0, b[$ ; pour $s \geqslant \varphi^{-1}(y_0)$, on a $\varphi(s) \geqslant y_0$ et $|K(s) - \ell| < \varepsilon$. Comme $[\varphi^{-1}(y_0), \beta[$ est un voisinage relatif de $\beta$, $K$ tend vers $\ell$ en $\beta$. L'application $\varphi^{-1}$ étant elle aussi une bijection strictement croissante, le même raisonnement montre que, si $K$ tend vers $\ell$ en $\beta$, $G$ tend vers $\ell$ en $b$. Ainsi $\int_\gamma^b f$ et $\int_c^\beta f(\varphi)\varphi'$ ont même nature et même valeur, et de même $\int_a^\gamma f$ et $\int_\alpha^c f(\varphi)\varphi'$, en $a$ et en $\alpha$. Par la définition et la relation de Chasles ({{ig-proprietes|Propriétés}}, (ii)), la conclusion suit.
+
+      Si $\varphi$ est strictement décroissante, $\varphi(s)$ tend vers $a$ quand $s$ tend vers $\beta$, et $|\varphi'| = -\varphi'$. Pour $s \in [c, \beta[$, le point (iii) donne $\int_c^s f(\varphi)\,|\varphi'| = \int_{\varphi(s)}^\gamma f$, et le même raisonnement montre que $\int_c^\beta f(\varphi)|\varphi'|$ et $\int_a^\gamma f$ ont même nature et même valeur ; de même pour $\int_\alpha^c f(\varphi)|\varphi'|$ et $\int_\gamma^b f$.
+    remarques:
+      - |
+        L'hypothèse sur la limite de $uv$ ne peut pas être omise. Sur $[1, +\infty[$, avec $u = 1$ et $v = \sin$, on a $u'v = 0$, dont l'intégrale converge, alors que $\int_1^x u v' = \int_1^x \cos t\,dt = \sin x - \sin 1$ n'a pas de limite : $\sin$ vaut $1$ en $\frac\pi2$ et $0$ en $0$ ({{tg-prolongement|Cosinus et sinus sur ℝ}}, (i) et (ii)), donc $1$ aux points $\frac\pi2 + 2k\pi$, par périodicité ({{tg-addition|Formules d'addition}}, (v)), et $0$ aux points $k\pi$, puisque $\sin(x + \pi) = -\sin x$. C'est le crochet $uv = \sin$, sans limite, qui porte toute la divergence.
+      - |
+        Le changement de variable $x = \frac1s$, bijection strictement décroissante de $]1, +\infty[$ sur $]0, 1[$, de dérivée $-\frac1{s^2}$, transforme $\int_0^1 \frac{dx}{x^\alpha}$ en
+        $$\int_1^{+\infty} s^\alpha \cdot \frac{ds}{s^2} = \int_1^{+\infty} \frac{ds}{s^{2 - \alpha}}.$$
+        Il échange les deux premiers cas du nœud voisin {{ig-references|Intégrales de référence}}, établis là par un calcul de primitive indépendant de celui-ci : $\alpha < 1$ équivaut à $2 - \alpha > 1$, et les valeurs $\frac1{1 - \alpha}$ et $\frac1{(2 - \alpha) - 1}$ coïncident. Le bord $0$, où la fonction explose, devient le bord $+\infty$, où elle décroît.
+
+  - id: ig-absolue
+    etiquette: Convergence absolue
+    nature: théorème
+    titre: Convergence absolue et semi-convergence
+    texte: |
+      Soit $f$ [[localement-integrable-riemann|localement intégrable au sens de Riemann]] sur un intervalle $I$ d'extrémités $a < b$. La fonction $|f|$ l'est aussi ({{ri-proprietes|Propriétés de l'intégrale}}, (iv)). L'intégrale $\int_a^b f$ [[integrale-absolument-convergente|converge absolument]] si $\int_a^b |f|$ converge ; on dit aussi que $f$ est *intégrable* sur $I$. Elle est [[integrale-semi-convergente|semi-convergente]] si elle converge sans converger absolument.
+    enonce: |
+      (i) Si $\int_a^b f$ converge absolument, elle converge, et $\big|\int_a^b f\big| \leqslant \int_a^b |f|$.
+
+      (ii) Si $|f| \leqslant g$ au voisinage de $b$, ou plus généralement si $f = \lex{fonction-dominee}{O}(g)$ avec $g$ positive au voisinage de $b$, et si $\int_a^b g$ converge, alors $\int_a^b f$ converge absolument ; de même au voisinage de $a$.
+
+      (iii) L'intégrale $\int_1^{+\infty} \frac{\cos(2t)}t\,dt$ converge, et l'intégrale $\int_1^{+\infty} \frac{\sin^2 t}t\,dt$ diverge.
+
+      (iv) Pour tout $\alpha > 0$, l'intégrale $\int_1^{+\infty} \frac{\sin t}{t^\alpha}\,dt$ converge ; elle converge absolument si et seulement si $\alpha > 1$. En particulier, $\int_1^{+\infty} \frac{\sin t}t\,dt$ est semi-convergente.
+    preuve: |
+      (i) Supposons $I = [a, b[$. Pour $x \leqslant y$ dans $I$, on a $\big|\int_x^y f\big| \leqslant \int_x^y |f|$ ({{ri-proprietes|Propriétés de l'intégrale}}, (iv)). Le critère de Cauchy ({{ig-cauchy|Critère de Cauchy}}), appliqué à $|f|$, fournit pour tout $\varepsilon > 0$ un $c \in [a, b[$ tel que $\int_x^y |f| < \varepsilon$ pour $c \leqslant x \leqslant y < b$ ; la même condition vaut donc pour $f$, et le critère de Cauchy, dans l'autre sens, donne la convergence de $\int_a^b f$. Le cas de $]a, b]$ est le même, et sur $]a, b[$ on traite les deux moitiés. L'inégalité vient de la croissance ({{ig-proprietes|Propriétés}}, (iii)), appliquée à $-|f| \leqslant f \leqslant |f|$, et de la linéarité.
+
+      (ii) Le point (iii) du nœud {{ig-positives|Fonctions positives}}, appliqué à $|f|$ et $g$, puisque $f = O(g)$ équivaut à $|f| = O(g)$.
+
+      (iii) Posons, sur $[1, +\infty[$, $u(t) = \frac1t$ et $v(t) = \frac{\sin(2t)}2$, de classe $C^1$, avec $v'(t) = \cos(2t)$ ({{tg-prolongement|Cosinus et sinus sur ℝ}}, (iii), et {{de-composee|Dérivée d'une composée}}). Le produit $uv$ tend vers $0$ en $+\infty$, puisque $|u(t)v(t)| \leqslant \frac1{2t}$. La fonction $u'v = -\frac{\sin(2t)}{2t^2}$ est majorée en valeur absolue par $\frac1{2t^2}$, dont l'intégrale converge ({{ig-references|Intégrales de référence}}, (i)) : par (ii) et (i), $\int_1^{+\infty} u'v$ converge, et l'intégration par parties généralisée ({{ig-calcul|Parties, changement de variable}}, (ii)) donne la convergence de $\int_1^{+\infty} uv' = \int_1^{+\infty} \frac{\cos(2t)}t\,dt$.
+
+      Par la formule d'addition ({{tg-addition|Formules d'addition}}, (iii)), $\cos(2t) = \cos^2 t - \sin^2 t = 1 - 2\sin^2 t$, puisque $\cos^2 + \sin^2 = 1$. Ainsi
+      $$\frac1{2t} = \frac{\sin^2 t}t + \frac{\cos(2t)}{2t}.$$
+      Si $\int_1^{+\infty} \frac{\sin^2 t}t\,dt$ convergeait, l'intégrale de $\frac1{2t}$ convergerait par linéarité ({{ig-proprietes|Propriétés}}, (i)), contrairement au point (i) du nœud {{ig-references|Intégrales de référence}}, pour $\alpha = 1$.
+
+      (iv) *Convergence.* Posons $u(t) = t^{-\alpha}$ et $v(t) = -\cos t$, de sorte que $v' = \sin$. Le produit $uv$ tend vers $0$, puisque $|\cos t| \leqslant 1$ et que $t^{-\alpha}$ tend vers $0$ ({{ex-puissances|Puissances réelles}}, (iv)). La fonction $u'v = \alpha\, t^{-\alpha - 1}\cos t$ est majorée en valeur absolue par $\alpha\, t^{-(\alpha + 1)}$, avec $\alpha + 1 > 1$ : comme en (iii), $\int_1^{+\infty} u'v$ converge, et l'intégration par parties généralisée donne la convergence de $\int_1^{+\infty} \frac{\sin t}{t^\alpha}\,dt$.
+
+      *Convergence absolue.* Si $\alpha > 1$, $\frac{|\sin t|}{t^\alpha} \leqslant t^{-\alpha}$, et (ii) conclut. Si $0 < \alpha \leqslant 1$, pour $t \geqslant 1$, on a $t^\alpha \leqslant t$, et $\sin^2 t \leqslant |\sin t|$ puisque $|\sin t| \leqslant 1$, d'où
+      $$0 \leqslant \frac{\sin^2 t}t \leqslant \frac{|\sin t|}t \leqslant \frac{|\sin t|}{t^\alpha}.$$
+      L'intégrale de la plus petite de ces fonctions diverge par (iii), et celle de la plus grande diverge par comparaison ({{ig-positives|Fonctions positives}}, (ii)).
+    remarques:
+      - |
+        La figure lit (iv) comme une série alternée. Sur $[k\pi, (k + 1)\pi]$, la fonction $\sin$ a le signe de $(-1)^k$, puisque $\sin(t + \pi) = -\sin t$ et que $\sin$ est positive sur $[0, \pi]$.
+
+        ```schema ig-absolue
+        La fonction $t \mapsto \frac{\sin t}t$, prolongée par $1$ en $0$, entre les courbes pointillées $\pm\frac1t$. Les arches rouges, au-dessus de l'axe, et bleues, au-dessous, ont des aires $a_k$ qui décroissent vers $0$ : l'intégrale converge comme la série alternée $\sum (-1)^k a_k$. Mais $a_k \geqslant \frac2{(k + 1)\pi}$, et la somme des aires, c'est-à-dire l'intégrale de $\frac{|\sin t|}t$, est infinie.
+        ```
+
+        Avec $a_k = \int_{k\pi}^{(k + 1)\pi} \frac{|\sin t|}t\,dt$, on a $\int_\pi^{(N + 1)\pi} \frac{\sin t}t\,dt = \sum_{k=1}^N (-1)^k a_k$, et, pour $k \geqslant 1$, l'encadrement $\frac2{(k + 1)\pi} \leqslant a_k \leqslant \frac2{k\pi}$ vient de $\int_{k\pi}^{(k + 1)\pi} |\sin t|\,dt = 2$. Numériquement, $\int_1^{+\infty} \frac{\sin t}t\,dt \approx 0{,}6247$ et $\int_0^1 \frac{\sin t}t\,dt \approx 0{,}9461$, dont la somme, $1{,}5708$ à $10^{-4}$ près, est voisine de $\frac\pi2$.
+      - |
+        Sur $]0, +\infty[$, le bord $0$ ajoute sa propre condition. Au voisinage de $0$, $\sin t \sim t$ ({{as-usuels|Développements usuels}}), donc $\frac{\sin t}{t^\alpha} \sim t^{1 - \alpha}$, qui est positive ; par le point (iv) du nœud {{ig-positives|Fonctions positives}}, sur $]0, 1]$, et par le point (ii) du nœud {{ig-references|Intégrales de référence}}, l'intégrale sur $]0, 1]$ converge si et seulement si $\alpha - 1 < 1$, et elle converge alors absolument, la fonction étant positive près de $0$. Avec (iv), $\int_0^{+\infty} \frac{\sin t}{t^\alpha}\,dt$ converge donc pour $0 < \alpha < 2$, et absolument pour $1 < \alpha < 2$ seulement : l'erreur la plus répandue est d'affirmer la convergence absolue pour tout $\alpha > 1$ en oubliant le bord $0$, où $\frac{\sin t}{t^2} \sim \frac1t$ n'est pas intégrable.
+      - |
+        L'erreur la plus répandue est d'appliquer le critère des équivalents ({{ig-positives|Fonctions positives}}, (iv)) à des fonctions qui changent de signe. Sur $[1, +\infty[$, posons $f(t) = \frac{\sin t}{\sqrt t}$ et $g(t) = f(t) + \frac{\sin^2 t}t$. Comme $\big|\frac{\sin^2 t}t\big| = \frac{|\sin t|}{\sqrt t}\,|f(t)| \leqslant \frac{|f(t)|}{\sqrt t}$, on a $g - f = \lex{fonction-negligeable}{o}(f)$, c'est-à-dire $g \mathrel{\lex{fonction-equivalente}{\sim}} f$. L'intégrale de $f$ converge par (iv), avec $\alpha = \frac12$. Celle de $g$ diverge : sinon $\int_1^{+\infty} \frac{\sin^2 t}t\,dt = \int_1^{+\infty} (g - f)$ convergerait, contrairement à (iii). C'est l'analogue exact du contre-exemple des séries ({{as-series|Séries et équivalents}}, première remarque).
+      - |
+        On dit souvent « $f$ est intégrable sur $I$ » pour « $\int_I f$ converge absolument ». C'est le vocabulaire qu'adopte plus loin l'intégrale de Lebesgue ({{m-integrale|Intégrale positive}}) : une fonction n'y a d'intégrale finie que si sa valeur absolue en a une, de sorte que $\frac{\sin t}t$ n'est pas intégrable sur $[1, +\infty[$ en ce sens, bien que son intégrale généralisée converge. Il en va de même de la série $\sum (-1)^n/(n + 1)$, convergente sans l'être absolument.
+
+  - id: ig-series
+    etiquette: Séries et intégrales
+    nature: théorème
+    titre: Comparaison d'une série et d'une intégrale
+    texte: |
+      Soit $n_0$ un entier naturel et $f : [n_0, +\infty[ \to \lex{ensemble-reels}{\mathbb R}$ une fonction positive et [[application-croissante|décroissante]]. Elle est intégrable sur tout segment ({{ri-monotones|Fonctions monotones}}), donc [[localement-integrable-riemann|localement intégrable au sens de Riemann]]. Les séries sont celles du nœud {{as-series|Séries et équivalents}}.
+    enonce: |
+      (i) Pour tout entier $n \geqslant n_0$, on a $f(n + 1) \leqslant \int_n^{n + 1} f \leqslant f(n)$.
+
+      (ii) La [[serie-reelle|série]] $\sum_{n \geqslant n_0} f(n)$ et l'intégrale $\int_{n_0}^{+\infty} f$ ont même nature.
+
+      (iii) La suite $w_N = \sum_{n = n_0}^N f(n) - \int_{n_0}^N f$, pour $N \geqslant n_0$, est décroissante et converge vers une limite comprise entre $0$ et $f(n_0)$.
+
+      (iv) *Restes.* Si la série converge, alors, pour tout $N \geqslant n_0$,
+      $$\int_{N + 1}^{+\infty} f \leqslant \sum_{n > N} f(n) \leqslant \int_N^{+\infty} f.$$
+
+      (v) *Sommes partielles.* Si la série diverge, $\sum_{n = n_0}^N f(n) \mathrel{\lex{fonction-equivalente}{\sim}} \int_{n_0}^N f$ quand $N \to +\infty$.
+
+      (vi) *Séries de Riemann.* Pour $\alpha > 1$, le reste de la [[serie-riemann|série de Riemann]] vérifie
+      $$\sum_{n > N} \frac1{n^\alpha} \sim \frac{N^{1 - \alpha}}{\alpha - 1},$$
+      et, pour $0 < \alpha < 1$, ses sommes partielles vérifient
+      $$\sum_{n = 1}^N \frac1{n^\alpha} \sim \frac{N^{1 - \alpha}}{1 - \alpha}.$$
+    preuve: |
+      (i) Pour $t \in [n, n + 1]$, la décroissance donne $f(n + 1) \leqslant f(t) \leqslant f(n)$, et l'on intègre ({{ri-moyenne|Inégalité de la moyenne}}, (i)).
+
+      ```schema ig-series
+      Pour $f(t) = \frac1t$ et $n_0 = 1$, les rectangles verts, de hauteur $f(n + 1)$ sur $[n, n + 1]$, sont sous la courbe, et les rectangles bleus, de hauteur $f(n)$, au-dessus : l'aire sous la courbe de $1$ à $N$ est comprise entre $\sum_{n=2}^N f(n)$ et $\sum_{n=1}^{N-1} f(n)$. Les petites régions rouges, entre la courbe et les rectangles bleus, ont pour aire totale $w_N - f(N)$ : celle de $[n, n + 1]$ tient dans une bande de hauteur $f(n) - f(n + 1)$, et, glissées au-dessus de $[1, 2]$, elles s'empilent dans une colonne de hauteur $f(1) - f(N)$, ce qui borne $w_N$.
+      ```
+
+      (ii) En sommant (i) de $n_0$ à $N - 1$, pour $N > n_0$, la relation de Chasles donne
+      $$\sum_{n = n_0 + 1}^N f(n) \leqslant \int_{n_0}^N f \leqslant \sum_{n = n_0}^{N - 1} f(n).$$
+      La fonction $F(x) = \int_{n_0}^x f$ est croissante ({{ig-positives|Fonctions positives}}, (i)), et tout $x \geqslant n_0$ est majoré par un entier $N$ ({{ar-archimede|Archimède, densité de ℚ}}) : $F$ est majorée si et seulement si la suite $\big(F(N)\big)$ l'est. Par l'encadrement, cela équivaut à ce que les sommes partielles de la série soient majorées. Le point (i) du nœud {{ig-positives|Fonctions positives}} et le point (ii) du nœud {{as-series|Séries et équivalents}} concluent.
+
+      (iii) On a $w_{N + 1} - w_N = f(N + 1) - \int_N^{N + 1} f \leqslant 0$ par (i). De plus
+      $$\begin{aligned} w_N &= \sum_{n = n_0}^{N - 1} \Big(f(n) - \int_n^{n + 1} f\Big) + f(N) \\ &\geqslant 0, \end{aligned}$$
+      chaque terme étant positif par (i), et $w_{n_0} = f(n_0)$. La suite, décroissante et minorée, converge ({{su-monotone|Limite monotone}}), et sa limite est entre $0$ et $f(n_0)$ ({{su-inegalites|Passage à la limite}}).
+
+      (iv) Pour $M > N$, en sommant (i) de $N$ à $M - 1$ puis de $N + 1$ à $M$,
+      $$\int_{N + 1}^{M + 1} f \leqslant \sum_{n = N + 1}^M f(n) \leqslant \int_N^M f.$$
+      Quand $M \to +\infty$, les deux intégrales tendent vers $\int_{N + 1}^{+\infty} f$ et $\int_N^{+\infty} f$, qui convergent par (ii) et par le point (iii) du nœud {{ig-definition|Intégrale généralisée}}, et la somme vers le reste ; on passe à la limite dans les inégalités ({{su-inegalites|Passage à la limite}}).
+
+      (v) La suite $(w_N)$ est bornée par (iii), c'est-à-dire $w_N = \lex{fonction-dominee}{O}(1)$, et $\int_{n_0}^N f$ tend vers $+\infty$ par (ii) et par le point (i) du nœud {{ig-positives|Fonctions positives}}, de sorte que $1 = \lex{fonction-negligeable}{o}\big(\int_{n_0}^N f\big)$. Par transitivité ({{as-regles|Règles de calcul}}, (i)), la différence $w_N$ entre la somme partielle et l'intégrale est négligeable devant l'intégrale : c'est l'équivalence annoncée.
+
+      (vi) La fonction $t^{-\alpha}$ est positive et décroissante sur $[1, +\infty[$ pour $\alpha > 0$ ({{ex-puissances|Puissances réelles}}, (iv)), et, pour $x \geqslant 1$ et $\alpha \neq 1$, $\int_x^{+\infty} t^{-\alpha}\,dt = \frac{x^{1 - \alpha}}{\alpha - 1}$ si $\alpha > 1$, comme au nœud {{ig-references|Intégrales de référence}}, (i). Pour $\alpha > 1$, (iv) donne
+      $$\Big(\frac{N + 1}N\Big)^{1 - \alpha} \leqslant \frac{\sum_{n > N} n^{-\alpha}}{N^{1 - \alpha}/(\alpha - 1)} \leqslant 1,$$
+      et le minorant tend vers $1$, par continuité de $x \mapsto x^{1 - \alpha}$ en $1$ ; le quotient tend vers $1$ par encadrement ({{su-encadrement|Encadrement}}), ce qui est l'équivalence ({{as-comparaison|Relations de comparaison}}, (iii)). Pour $0 < \alpha < 1$, la série diverge ({{as-series|Séries et équivalents}}, (v)), et (v) donne $\sum_{n=1}^N n^{-\alpha} \sim \int_1^N t^{-\alpha}\,dt = \frac{N^{1 - \alpha} - 1}{1 - \alpha}$, qui est équivalent à $\frac{N^{1 - \alpha}}{1 - \alpha}$ puisque $N^{1 - \alpha}$ tend vers $+\infty$.
+    remarques:
+      - |
+        Pour $f(t) = \frac1t$ et $n_0 = 1$, la suite $w_N$ de (iii) est $H_N - \ln N$ : on retrouve la convergence qui définit la [[constante-euler|constante d'Euler]] ({{as-series|Séries et équivalents}}, (vii)), et l'encadrement $0 \leqslant \gamma \leqslant 1$. Le nœud des séries l'obtenait par un développement limité et donnait le minorant plus fin $1 - \ln 2$ ; le présent argument n'emploie que la décroissance de $\frac1t$, et vaut pour toute fonction positive décroissante.
+      - |
+        Les encadrements sont précis. Pour $\alpha = 2$ et $N = 10$, le reste $\sum_{n > 10} \frac1{n^2} \approx 0{,}0952$ est bien entre $\frac1{11} \approx 0{,}0909$ et $\frac1{10}$. Pour $\alpha = \frac12$ et $N = 10^4$, la somme partielle vaut environ $198{,}54$, et l'équivalent de (vi) donne $2\sqrt N = 200$.
+
+        La fonction $f(t) = \frac1{t\ln t}$ est positive et décroissante sur $[2, +\infty[$, et $\int_2^x f = \ln(\ln x) - \ln(\ln 2)$ tend vers $+\infty$ : la série $\sum_{n \geqslant 2} \frac1{n\ln n}$ diverge, comme l'intégrale de Bertrand du nœud {{ig-references|Intégrales de référence}}. Ses sommes partielles sont équivalentes à $\ln(\ln N)$ par (v), mais l'équivalent est lent à se manifester : pour $N = 10^6$, la somme vaut environ $3{,}420$, et $\ln(\ln N) \approx 2{,}626$, la différence restant bornée par (iii).
+      - |
+        La décroissance ne peut pas être omise, dans aucun des deux sens. La fonction $\sin^2(\pi t)$ est positive, nulle en chaque entier, puisque $\sin(n\pi) = 0$, et son intégrale sur chaque $[n, n + 1]$ vaut $\frac12$, par $\sin^2 = \frac{1 - \cos(2\,\cdot)}2$ : la série de ses valeurs aux entiers converge, de somme nulle, alors que son intégrale sur $[0, +\infty[$ diverge. À l'inverse, plus loin, la fonction à pics du nœud {{ig-mises-en-garde|Mises en garde}}, (i), aura une intégrale convergente, alors que ses valeurs aux entiers, égales à $n$ pour $n \geqslant 2$, forment une série divergente.
+      - |
+        L'idée de comparer une série à l'aire sous une courbe décroissante se trouve chez Colin Maclaurin, *A Treatise of Fluxions* (Édimbourg, 1742, t. 1, p. 289-290) ; Cauchy l'a retrouvée et démontrée sous forme générale (« Sur la convergence des séries », *Exercices de mathématiques* 2, 1827 ; *Œuvres*, 2ᵉ série, t. 7, p. 267-279), d'où le nom de critère de Maclaurin-Cauchy.
+
+  - id: ig-mises-en-garde
+    etiquette: Mises en garde
+    nature: proposition
+    titre: Intégrale convergente et limite à l'infini ; intégrales sur ℝ
+    enonce: |
+      (i) Il existe une fonction $f : [0, +\infty[ \to \lex{ensemble-reels}{\mathbb R}$, continue et positive, dont l'intégrale converge, et qui n'est pas bornée ; en particulier, elle ne tend pas vers $0$ en $+\infty$.
+
+      (ii) Soit $f$ [[localement-integrable-riemann|localement intégrable au sens de Riemann]] sur $[a, +\infty[$. Si $\int_a^{+\infty} f$ converge et si $f$ a une limite $\ell$ en $+\infty$, réelle ou infinie, alors $\ell = 0$.
+
+      (iii) *Lemme de Barbalat.* Si $f$ est [[continuite-uniforme|uniformément continue]] sur $[a, +\infty[$ et si $\int_a^{+\infty} f$ converge, alors $f$ tend vers $0$ en $+\infty$.
+
+      (iv) *Intégrales sur ℝ.* Si $\int_{-\infty}^{+\infty} f$ converge, alors $\int_{-A}^A f$ tend vers $\int_{-\infty}^{+\infty} f$ quand $A \to +\infty$. La réciproque est fausse : $\int_{-A}^A t\,dt = 0$ pour tout $A > 0$, alors que $\int_{-\infty}^{+\infty} t\,dt$ diverge.
+    preuve: |
+      (i) Pour tout entier $k \geqslant 2$, posons $h_k = k^{-3}$ et, pour $t \in [k - \frac12, k + \frac12]$,
+      $$f(t) = \max\big(0,\ k - k^4|t - k|\big),$$
+      et $f(t) = 0$ pour $t \in [0, \frac32]$. Ces intervalles recouvrent $[0, +\infty[$ et ne se rencontrent qu'en leurs extrémités, où les deux définitions donnent $0$, puisque $k^4 \cdot \frac12 > k$. Sur chacun, $f$ est continue, comme composée de fonctions continues, la fonction $y \mapsto \max(0, y)$ étant $1$-lipschitzienne . En un point commun $k + \frac12$ de deux de ces intervalles, les deux restrictions sont continues et valent $0$, de sorte que $f$ a la limite $0 = f(k + \frac12)$ à gauche comme à droite ; $f$ est donc continue et positive sur $[0, +\infty[$. Elle est nulle hors des segments $[k - h_k, k + h_k]$, qui sont contenus dans $]k - \frac12, k + \frac12[$ puisque $h_k \leqslant \frac18$.
+
+      Sur $[k - h_k, k]$, on a $f(t) = k^4\big(t - (k - h_k)\big)$, puisque $k^4 h_k = k$, et de même sur $[k, k + h_k]$ par symétrie. Par le point (i) du nœud {{ig-definition|Intégrale généralisée}}, avec la primitive $\frac{k^4}2\big(t - (k - h_k)\big)^2$,
+      $$\int_{k - h_k}^{k + h_k} f = 2 \cdot \frac{k^4 h_k^2}2 = \frac1{k^2}.$$
+
+      ```schema ig-mises-en-garde
+      La fonction $f$ sur $[0, 5{,}6]$ : en chaque entier $k \geqslant 2$, un pic triangulaire de hauteur $k$ et de demi-base $k^{-3}$, d'aire $\frac1{k^2}$, soit $\frac14$, $\frac19$, $\frac1{16}$, $\frac1{25}$. Les pics montent sans fin et s'amincissent plus vite encore : leurs aires forment une série convergente, et l'aire totale sous le graphe, $\sum_{k \geqslant 2} \frac1{k^2} \approx 0{,}645$, est finie.
+      ```
+
+      Pour $x \geqslant 0$, soit $K$ un entier supérieur à $x$. Par la relation de Chasles et la positivité de $f$, $\int_0^x f \leqslant \int_0^{K + \frac12} f = \sum_{k=2}^K \frac1{k^2}$. Comme $\frac1{k^2} \leqslant \frac1{k(k - 1)} = \frac1{k - 1} - \frac1k$, cette somme est majorée par $1 - \frac1K < 1$. La fonction $x \mapsto \int_0^x f$ est majorée, et l'intégrale converge ({{ig-positives|Fonctions positives}}, (i)). Pourtant $f(k) = k$ pour tout $k \geqslant 2$.
+
+      (ii) Supposons $\ell > 0$, éventuellement $\ell = +\infty$, et posons $m = \frac\ell2$ si $\ell$ est réel, $m = 1$ sinon. Il existe $B \geqslant a$ tel que $f \geqslant m$ sur $[B, +\infty[$, et alors, pour $x \geqslant B$,
+      $$\int_B^x f \geqslant m(x - B),$$
+      qui tend vers $+\infty$. Donc $\int_B^{+\infty} f$ diverge, et $\int_a^{+\infty} f$ aussi ({{ig-definition|Intégrale généralisée}}, (iii)). Si $\ell < 0$, on raisonne sur $-f$.
+
+      (iii) Supposons que $f$ ne tende pas vers $0$ : il existe $\varepsilon > 0$ tel que, pour tout $B$, il existe $x \geqslant B$ avec $|f(x)| \geqslant \varepsilon$. La fonction $f$, uniformément continue, est continue, donc localement intégrable au sens de Riemann. Par continuité uniforme, il existe $\delta > 0$ tel que $|f(y) - f(x)| < \frac\varepsilon2$ dès que $|y - x| < \delta$. Pour $x \geqslant a$, on a $\int_x^{x + \delta/2} f = \int_x^{+\infty} f - \int_{x + \delta/2}^{+\infty} f$, et les deux restes tendent vers $0$ ({{ig-proprietes|Propriétés}}, (v)) : il existe $c \geqslant a$ tel que $\big|\int_x^{x + \delta/2} f\big| < \frac{\varepsilon\delta}4$ pour tout $x \geqslant c$.
+
+      Prenons $x \geqslant c$ tel que $|f(x)| \geqslant \varepsilon$, et supposons $f(x) > 0$, l'autre cas se traitant avec $-f$. Pour $y \in [x, x + \frac\delta2]$, on a $f(y) > f(x) - \frac\varepsilon2 \geqslant \frac\varepsilon2$, et l'inégalité de la moyenne ({{ri-moyenne|Inégalité de la moyenne}}, (i)) donne
+      $$\int_x^{x + \delta/2} f \geqslant \frac\varepsilon2 \cdot \frac\delta2 = \frac{\varepsilon\delta}4,$$
+      ce qui contredit le choix de $c$.
+
+      (iv) Par définition, $\int_{-\infty}^0 f$ et $\int_0^{+\infty} f$ convergent, et $\int_{-A}^A f = \int_{-A}^0 f + \int_0^A f$ tend vers leur somme. Pour $f(t) = t$, la fonction est impaire et $\int_{-A}^A t\,dt = \frac{A^2}2 - \frac{A^2}2 = 0$ par le point (i) du nœud {{ig-definition|Intégrale généralisée}}, alors que $\int_0^x t\,dt = \frac{x^2}2$ tend vers $+\infty$ : la moitié $\int_0^{+\infty} t\,dt$ diverge, et l'intégrale sur $]{-\infty}, +\infty[$ aussi.
+    remarques:
+      - |
+        Le point (i) sépare les intégrales des séries : le terme général d'une série convergente tend vers $0$ ({{as-series|Séries et équivalents}}, (i)), alors que l'intégrande d'une intégrale convergente peut n'avoir aucune limite, et même n'être pas bornée. Les points (ii) et (iii) disent ce qui reste vrai : la seule limite possible est $0$, et elle est atteinte dès que $f$ ne peut pas varier trop vite. La fonction de (i) n'est pas uniformément continue : près de $k$, elle passe de $0$ à $k$ sur un intervalle de longueur $k^{-3}$.
+      - |
+        La limite symétrique de (iv) s'appelle parfois la valeur principale de l'intégrale ; c'est une autre notion, plus faible, et qui dépend de la manière dont les bornes tendent vers l'infini. Pour $f(t) = t$, on a $\int_{-A}^{2A} t\,dt = \frac{3A^2}2$, qui tend vers $+\infty$, alors que la limite symétrique est nulle. Plus loin, le calcul des résidus ({{rs-demi-cercle|Intégrales sur ℝ}}) obtiendra des limites symétriques, et vérifiera ensuite que les intégrales généralisées convergent.
+
+aretes:
+  - [ig-definition, ig-proprietes]
+  - [ig-definition, ig-references]
+  - [ig-definition, ig-cauchy]
+  - [ig-proprietes, ig-positives]
+  - [ig-references, ig-positives]
+  - [ig-proprietes, ig-calcul]
+  - [ig-positives, ig-absolue]
+  - [ig-cauchy, ig-absolue]
+  - [ig-calcul, ig-absolue]
+  - [ig-positives, ig-series]
+  - [ig-positives, ig-mises-en-garde]

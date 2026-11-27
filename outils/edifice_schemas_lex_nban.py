@@ -167,29 +167,3 @@ def lex_continue_par_morceaux_2():
     S.ligne(R(0, 1), R(1.0, 1), 'g', d=True)
     S.ligne(R(0, -1), R(1.0, -1), 'g', d=True)
     return S
-
-
-@schema('lex-integrale-convergente-3')
-def lex_integrale_convergente_3():
-    Hh = 200
-    S = Schema(W, Hh, 'Des pics de hauteur 1 de plus en plus étroits')
-    R = Repere(0.6, 7.6, -0.18, 1.32, 26, 12, 380, 170)
-    _axes(S, R, 'x', '', origine=(0.6, 0))
-    xs, ys = [1.0], [0.0]
-    aires = []
-    for k in range(2, 8):
-        e = 1 / k ** 2
-        xs += [k - e, k, k + e]
-        ys += [0, 1, 0]
-        aires.append(e)
-        assert k + e < (k + 1) - 1 / (k + 1) ** 2                       # pics disjoints
-    xs.append(7.5)
-    ys.append(0)
-    assert abs(sum(aires[:3]) - (1 / 4 + 1 / 9 + 1 / 16)) < 1e-12
-    S.poly(R(np.array(xs), np.array(ys)), 'r', l=2.2)
-    for k in range(1, 8):
-        _grad_x(S, R, k, str(k))
-    S.ligne(R(0.6, 1) + [-3, 0], R(0.6, 1) + [3, 0], 'g')
-    _etiq(S, R(0.6, 1) + [8, 0], '1', 'g', ancre='start', taille=14)
-    S.ligne(R(1.6, 1), R(7.5, 1), 'g', d=True)
-    return S
