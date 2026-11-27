@@ -1682,3 +1682,66 @@ def fc_treillis():
             S.texte(R(0.75, g[1500]) + [8, 14], 'g', 'r', ancre='start', taille=15)
         S.texte(R(0.05, f(0.05)) + [0, -16], 'f', 't')
     return S
+
+
+@schema('fo-poisson')
+def fo_poisson():
+    # f(x) = e^{-x²/8} = √(8π) G_2, d'où f^(k) = √(8π) e^{-2k²} ; F(x) = Σ f(x + 2πn).
+    pi = math.pi
+    f = lambda x: np.exp(-x ** 2 / 8)
+    F = lambda x: sum(f(x + 2 * pi * n) for n in range(-12, 13))
+    fh = lambda k: math.sqrt(8 * pi) * math.exp(-2 * k * k)
+    S1 = lambda x: (fh(0) + 2 * fh(1) * np.cos(x)) / (2 * pi)
+    x = np.linspace(-3 * pi, 3 * pi, 6001)
+    assert np.max(np.abs(F(x) - S1(x))) < 6e-4                     # écart cité dans la légende
+    assert np.max(np.abs(F(x) - sum(fh(k) * np.cos(k * x) for k in range(-6, 7)) / (2 * pi))) < 1e-12
+    assert np.all(f(x - 2 * pi) <= F(x) + 1e-15)
+    S = Schema(520, 300, 'Périodisée d’une gaussienne et ses deux premiers termes de Fourier')
+    R = Repere(-3 * pi - 0.3, 3 * pi + 0.6, -0.12, 1.28, 18, 10, 470, 268)
+    R.axes(S, 'x', '')
+    for n in (-1, 0, 1):
+        S.poly(R(x, f(x + 2 * pi * n)), 'g', l=1.4)
+    S.poly(R(x, F(x)), 'r', l=2.4)
+    S.poly(R(x, S1(x)), 'b', d=True, l=1.6)
+    for xv, s in [(-2 * pi, '−2π'), (2 * pi, '2π')]:
+        S.ligne(R(xv, 0) + [0, -3], R(xv, 0) + [0, 3], 'g')
+        S.texte(R(xv, 0) + [0, 16], s, 'g', taille=15)
+    assert F(np.array([0.0]))[0] > 1.0 and F(np.array([pi]))[0] < 0.6
+    S.texte(R(0.35, F(np.array([0.0]))[0]) + [4, -14], 'F', 'r', ancre='start', taille=17)
+    # étiquette sous la translatée de gauche, au-dessus de l'axe, loin des courbes
+    xs = np.linspace(-9.2, -7.4, 50)
+    assert np.all(f(xs + 2 * pi) > 0.3) and np.all(f(xs) < 0.01) and np.all(F(xs) > 0.3)
+    S.texte(R(-9.2, 0.16), 'f(x + 2π)', 'g', ancre='start', taille=15)
+    return S
+
+
+@schema('f-ergodique')
+def f_ergodique():
+    # U(x1, x2) = (x1, -x2), v = (2, 3/2) : A_N v = (2, 3/(2N)) pour N impair, (2, 0) pour N pair.
+    U = np.diag([1.0, -1.0])
+    v = np.array([2.0, 1.5])
+    A = lambda N: sum(np.linalg.matrix_power(U, k) for k in range(N)) @ v / N
+    for N in range(1, 12):
+        assert np.allclose(A(N), [2, 1.5 / N if N % 2 else 0])
+    assert np.allclose(U @ v, [2, -1.5]) and np.allclose(U @ U @ v, v)
+    S = Schema(480, 300, 'Orbite d’un vecteur par une symétrie et moyennes ergodiques')
+    R = Repere(-0.4, 3.2, -1.9, 1.9, 40, 14, 400, 272)
+    R.axes(S, 'x_1', 'x_2')
+    S.ligne(R(-0.4, 0), R(3.2, 0), 'b', l=2.6)
+    S.texte(R(2.62, 0) + [0, -14], '`Ker`(I − U)', 'b', taille=15)
+    S.fleche(R(0, 0), R(2, 1.5), 't')
+    S.fleche(R(0, 0), R(2, -1.5), 't')
+    S.point(R(2, 1.5), 't', r=3.6)
+    S.point(R(2, -1.5), 't', r=3.6)
+    S.texte(R(2, 1.5) + [12, -4], 'v', 't', ancre='start')
+    S.texte(R(2, -1.5) + [12, 4], 'U(v)', 't', ancre='start')
+    S.ligne(R(2, 1.5), R(2, -1.5), 'g', d=True)
+    for N in (1, 3, 5, 7):
+        p = A(N)
+        S.point(R(*p), 'r', r=3.6)
+    S.texte(R(*A(3)) + [10, 0], 'A_3(v)', 'r', ancre='start', taille=14)
+    S.texte(R(*A(5)) + [-10, 0], 'A_5(v)', 'r', ancre='end', taille=14)
+    assert (A(3)[1] - A(5)[1]) * 272 / 3.8 > 12      # les deux étiquettes, de part et d'autre, ne se touchent pas
+    S.point(R(2, 0), 'r', r=4.6)
+    S.texte(R(2, 0) + [12, 14], 'P(v)', 'r', ancre='start', taille=15)
+    return S

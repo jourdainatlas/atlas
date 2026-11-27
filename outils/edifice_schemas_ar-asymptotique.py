@@ -169,3 +169,39 @@ def as_series():
     q = R(3, v[2]) + [10, 14]
     S.texte(q, 'H_n − `ln`(n+1)', 'b', ancre='start', taille=15)
     return S
+
+
+@schema('as-dalembert-cauchy')
+def as_dalembert_cauchy():
+    N = 20
+    n = np.arange(1, N + 1)
+    u = lambda k: (2 + (-1.0) ** k) / 2.0 ** k
+    rac = np.array([u(k) ** (1 / k) for k in n])
+    quo = np.array([u(k + 1) / u(k) for k in n])
+    assert np.allclose(quo[n % 2 == 0], 1 / 6) and np.allclose(quo[n % 2 == 1], 3 / 2)
+    assert np.all(rac >= 0.5 - 1e-12) and np.all(rac <= 3 ** (1 / n) / 2 + 1e-12)
+    assert abs(rac[-1] - 0.5) < 0.03 and np.all(np.abs(np.diff(rac[::2])) >= 0) and np.all(np.diff(rac[1::2]) <= 1e-12)
+    S = Schema(500, 300, 'Quotients et racines n-ièmes de u_n = (2 + (−1)^n)/2^n')
+    R = Repere(0, N + 1.2, 0, 1.75, 50, 18, 410, 250)
+    S.fleche(R(0, 0), R(N + 1.2, 0), 'g')
+    S.texte(R(N + 1.2, 0) + [8, 0], 'n', 'g', ancre='start', taille=15)
+    _dans(S, R(N + 1.2, 0) + [8, 0], 'n', 15, 'start')
+    S.fleche(R(0, 0), R(0, 1.75), 'g')
+    for m in (1, 5, 10, 15, 20):
+        S.ligne(R(m, 0) + [0, -3], R(m, 0) + [0, 3], 'g')
+        S.texte(R(m, 0) + [0, 15], str(m), 'g', taille=13)
+    for yv, lab in [(1 / 6, '1/6'), (0.5, '1/2'), (1.0, '1'), (1.5, '3/2')]:
+        S.ligne(R(0, yv) + [-3, 0], R(0, yv) + [3, 0], 'g')
+        S.texte(R(0, yv) + [-8, 0], lab, 'g', ancre='end', taille=13)
+        _dans(S, R(0, yv) + [-8, 0], lab, 13, 'end')
+    S.ligne(R(0.3, 1), R(N + 0.6, 1), 'g', d=True)
+    S.ligne(R(0.3, 0.5), R(N + 0.6, 0.5), 'r', d=True, l=0.8)
+    for k in range(N):
+        S.point(R(n[k], quo[k]), 'b', r=3.6)
+        S.point(R(n[k], rac[k]), 'r', r=3.6)
+    p = R(3, 1.5) + [12, -14]
+    S.texte(p, 'u_{n+1}/u_n', 'b', ancre='start', taille=15)
+    q = R(6, rac[5]) + [6, -16]
+    assert rac[5] + 0.12 < 1      # l'étiquette rouge reste sous la droite y = 1
+    S.texte(q, 'u_n^{1/n}', 'r', ancre='start', taille=15)
+    return S

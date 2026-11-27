@@ -6,6 +6,7 @@
 # gaussienne, inversion, Plancherel, fonctions caractéristiques ; convergence en loi, lemme de Scheffé et
 # théorème de continuité de Lévy (sens direct, démontré le 29 oct. 2026) ; convergence en loi et espérances,
 # troncature, sélection de Helly, forme complète de Lévy, TCL sous un moment d'ordre 2 (29 oct. 2026).
+# Formule sommatoire de Poisson (fo-poisson, 27 nov. 2026) : périodisée, théta de Jacobi, Σ 1/(a² + k²).
 # Parents : analyse fonctionnelle, analyse complexe (exponentielle complexe ; cos, sin, π et exp réels
 # viennent de l'analyse réelle depuis le 2 nov. 2026), probabilités (loi
 # normale et ∫ e^{-x²/2} = √(2π)).
@@ -307,6 +308,79 @@ noeuds:
     remarques:
       - |
         La transformée d'une fonction intégrable n'est pas toujours intégrable : pour $f = \mathbf 1_{[-1, 1]}$, $\hat f(\xi) = \frac{2\sin\xi}{\xi}$, dont l'intégrale du module diverge. La formule d'inversion ne s'applique alors pas telle quelle, ce qui annonce le cadre $\lex{espace-L2}{L^2}$ du nœud suivant.
+
+  - id: fo-poisson
+    etiquette: Formule de Poisson
+    nature: théorème
+    titre: Formule sommatoire de Poisson
+    texte: |
+      Pour une suite $(c_n)_{n \in \lex{ensemble-entiers-relatifs}{\mathbb Z}}$ de nombres réels ou complexes, on note $\sum_{n \in \mathbb Z} c_n$ la somme $\sum_{n \geqslant 0} c_n + \sum_{n \geqslant 1} c_{-n}$, lorsque ces deux séries convergent.
+
+      Soit $f : \lex{ensemble-reels}{\mathbb R} \to \mathbb R$. Sa *périodisée* est la fonction $F(x) = \sum_{n \in \mathbb Z} f(x + 2\pi n)$, là où la somme a un sens ; elle est $2\pi$-[[fonction-periodique|périodique]] dès qu'elle est définie partout. La [[formule-sommatoire-poisson|formule sommatoire de Poisson]] dit que les coefficients de Fourier $a_k$, $b_k$ de $F$ s'expriment par les valeurs aux entiers de la [[transformee-fourier|transformée de Fourier]] $\hat f(\xi) = \int_{\mathbb R} f(x)e^{-ix\xi}\,dx$ du nœud {{fo-transformee|Transformée de Fourier}} (point (i)), et que la série de Fourier de $F$ converge vers $F$.
+    enonce: |
+      Soit $f : \mathbb R \to \mathbb R$ continue, et $C$ un réel tel que $|f(x)| \leqslant \frac{C}{1 + x^2}$ pour tout réel $x$. Alors $f$ est intégrable.
+
+      (i) *Périodisée.* La série qui définit $F$ converge uniformément sur tout segment ; $F$ est continue et $2\pi$-périodique, et ses sommes partielles de Fourier sont
+      $$S_NF(x) = \frac1{2\pi}\sum_{k=-N}^{N} \hat f(k)\,e^{ikx}.$$
+
+      (ii) *Formule de Poisson.* Si de plus $\sum_{k \geqslant 0} |\hat f(k)|$ converge, alors, pour tout réel $x$,
+      $$\begin{aligned} &\sum_{n \in \mathbb Z} f(x + 2\pi n) \\ &\quad = \frac1{2\pi}\sum_{k \in \mathbb Z} \hat f(k)\,e^{ikx}, \end{aligned}$$
+      et en particulier $\sum_{n \in \mathbb Z} f(2\pi n) = \frac1{2\pi}\sum_{k \in \mathbb Z} \hat f(k)$.
+
+      (iii) *Pas quelconque.* Soit $T > 0$. Si $\sum_{k \geqslant 0} |\hat f(2\pi k/T)|$ converge, alors
+      $$\sum_{n \in \mathbb Z} f(nT) = \frac1T\sum_{k \in \mathbb Z} \hat f\Big(\frac{2\pi k}{T}\Big).$$
+      Pour $T = 1$, c'est $\sum_n f(n) = \sum_k \hat f(2\pi k)$.
+
+      (iv) *Fonction thêta.* Pour $t > 0$, posons $\theta(t) = \sum_{n \in \mathbb Z} e^{-\pi n^2t}$. Alors
+      $$\theta\Big(\frac1t\Big) = \sqrt t\;\theta(t).$$
+    preuve: |
+      *Intégrabilité.* La fonction $\arctan$ a pour dérivée $\frac1{1 + x^2}$ et vérifie $|\arctan x| < 2$ ({{tg-arctan|Arc tangente}}, (i) et (ii)) ; ainsi $\int_{-m}^m \frac{dx}{1 + x^2} = 2\arctan m < 4$ ({{ar-tfa|Théorème fondamental}}), ces intégrales de fonctions continues étant aussi celles de Lebesgue ({{m-riemann|Riemann et Lebesgue}}). Par convergence monotone ({{m-beppo-levi|Convergence monotone}}), $\int_{\mathbb R} \frac{dx}{1 + x^2} \leqslant 4$, et $f$, mesurable puisque continue, est intégrable.
+
+      (i) Soit $A > 0$, $|x| \leqslant A$, et $n$ un entier tel que $\pi|n| \geqslant A$. Alors $|x + 2\pi n| \geqslant 2\pi|n| - A \geqslant \pi|n|$, d'où
+      $$|f(x + 2\pi n)| \leqslant \frac{C}{1 + \pi^2n^2} \leqslant \frac{C}{\pi^2n^2}.$$
+      La série $\sum 1/n^2$ converge ({{as-series|Séries et équivalents}}, (v)) : par le critère de Weierstrass ({{cx-convergence-uniforme|Convergence uniforme}}, (ii)), les deux séries $\sum_{n \geqslant 0} f(x + 2\pi n)$ et $\sum_{n \geqslant 1} f(x - 2\pi n)$ convergent uniformément sur $[-A, A]$, et $F$ y est continue, comme limite uniforme de fonctions continues (même nœud, (i)). Les sommes symétriques $\sum_{|n| \leqslant M} f(x + 2\pi n)$ tendent vers $F(x)$ ; celles qui calculent $F(x + 2\pi)$ s'en déduisent en décalant l'indice, et n'en diffèrent que de $f(x + 2\pi(M + 1)) - f(x - 2\pi M)$, qui tend vers $0$ : $F$ est $2\pi$-périodique.
+
+      Pour $k \geqslant 0$, la convergence uniforme sur $[-\pi, \pi]$ permet d'intégrer terme à terme (même nœud, (iii)) :
+      $$\begin{aligned} &\int_{-\pi}^{\pi} F(x)\cos(kx)\,dx \\ &\quad = \sum_{n \in \mathbb Z} \int_{-\pi}^{\pi} f(x + 2\pi n)\cos(kx)\,dx. \end{aligned}$$
+      Par la translation $u = x + 2\pi n$, sous laquelle $\cos(k(u - 2\pi n)) = \cos(ku)$ ({{tg-addition|Formules d'addition}}, (v)), le terme d'indice $n$ est l'intégrale de $f(u)\cos(ku)$ sur $[(2n - 1)\pi, (2n + 1)\pi]$. Par la relation de Chasles, la somme des termes d'indices $|n| \leqslant M$ est l'intégrale sur $[-(2M + 1)\pi, (2M + 1)\pi]$, qui tend vers $\int_{\mathbb R} f(u)\cos(ku)\,du$ par convergence dominée ({{m-convergence-dominee|Convergence dominée}}, (i)), avec la domination par $|f|$. Il en va de même avec $\sin$.
+
+      Comme $f$ est réelle, $\hat f(k) = \int f(u)\cos(ku)\,du - i\int f(u)\sin(ku)\,du$ ({{cx-exponentielle|Exponentielle}}, (iii)). Les coefficients de $F$ ({{fo-coefficients|Coefficients de Fourier}}) sont donc
+      $$\begin{aligned} a_k(F) &= \frac1\pi\operatorname{Re}\hat f(k), \\ b_k(F) &= -\frac1\pi\operatorname{Im}\hat f(k). \end{aligned}$$
+      Comme $\hat f(-k)$ est le [[conjugue-complexe|conjugué]] de $\hat f(k)$, pour $k \geqslant 1$,
+      $$\begin{aligned} &\hat f(k)e^{ikx} + \hat f(-k)e^{-ikx} \\ &\quad = 2\operatorname{Re}\big(\hat f(k)e^{ikx}\big) \\ &\quad = 2\pi\big(a_k\cos(kx) + b_k\sin(kx)\big), \end{aligned}$$
+      et $\frac1{2\pi}\hat f(0) = \frac{a_0}2$ : c'est la formule annoncée pour $S_NF$.
+
+      (ii) Comme $|\hat f(-k)| = |\hat f(k)|$, les deux séries $\sum_{k \geqslant 0}\hat f(k)e^{ikx}$ et $\sum_{k \geqslant 1}\hat f(-k)e^{-ikx}$ convergent uniformément sur $\mathbb R$, par le critère de Weierstrass : $S_NF$ tend uniformément vers la fonction $G$ du second membre.
+
+      Les moyennes de Fejér $\sigma_NF = \frac1{N + 1}\sum_{j=0}^N S_jF$ tendent alors aussi uniformément vers $G$. Soit en effet $\varepsilon > 0$, et $J$ tel que $\sup|S_jF - G| \leqslant \varepsilon$ pour $j \geqslant J$ ; pour $N \geqslant J$,
+      $$\begin{aligned} &\sup|\sigma_NF - G| \\ &\quad \leqslant \frac1{N + 1}\sum_{j < J}\sup|S_jF - G| + \varepsilon, \end{aligned}$$
+      qui est au plus $2\varepsilon$ pour $N$ assez grand, les fonctions $S_jF - G$ étant bornées. Or $\sigma_NF$ tend uniformément vers $F$, continue et $2\pi$-périodique, par le théorème de Fejér ({{fo-fejer|Théorème de Fejér}}, (iii)). Par unicité de la limite, $F = G$ ; on obtient le cas particulier en $x = 0$.
+
+      (iii) Posons $g(y) = f(Ty/2\pi)$. Elle est continue, et $|g(y)| \leqslant \frac{C'}{1 + y^2}$ avec $C' = C\max\big(1, (2\pi/T)^2\big)$. Pour $m > 0$, les intégrales $\int_{-m}^m g(y)e^{-iy\xi}\,dy$ et $\frac{2\pi}T\int_{-Tm/2\pi}^{Tm/2\pi} f(x)e^{-ix(2\pi\xi/T)}\,dx$, de fonctions continues, sont égales : comme au nœud {{fo-transformee|Transformée de Fourier}}, (iii), elles ont même dérivée par rapport à $m$ ({{ar-tfa|Théorème fondamental}}) et sont nulles pour $m = 0$. En faisant tendre l'entier $m$ vers l'infini, par convergence dominée appliquée aux [[partie-reelle|parties réelle]] et imaginaire,
+      $$\hat g(\xi) = \frac{2\pi}T\,\hat f\Big(\frac{2\pi\xi}T\Big).$$
+      La série $\sum_k |\hat g(k)|$ converge, et (ii) en $x = 0$ donne $\sum_n f(nT) = \sum_n g(2\pi n) = \frac1{2\pi}\sum_k \hat g(k)$, qui est la formule annoncée.
+
+      (iv) Soit $f(x) = e^{-\pi tx^2}$, et $\varepsilon = 1/\sqrt{2\pi t}$. Avec les notations du nœud {{fo-transformee|Transformée de Fourier}}, (iii), $f = \frac1{\sqrt t}\,G_\varepsilon$, puisque $\varepsilon\sqrt{2\pi} = \frac1{\sqrt t}$ ; par linéarité,
+      $$\begin{aligned} \hat f(\xi) &= \frac1{\sqrt t}\,e^{-\varepsilon^2\xi^2/2} = \frac1{\sqrt t}\,e^{-\xi^2/(4\pi t)}, \\ \hat f(2\pi k) &= \frac1{\sqrt t}\,e^{-\pi k^2/t}. \end{aligned}$$
+      La fonction $f$ est continue, et $e^{\pi tx^2} \geqslant 1 + \pi tx^2$ ({{ex-croissances|Croissances comparées}}, (i)) donne $f(x) \leqslant \frac{\max(1, 1/\pi t)}{1 + x^2}$. Pour $k \geqslant 1$, $k^2 \geqslant k$, d'où $0 < \hat f(2\pi k) \leqslant \frac1{\sqrt t}\,q^k$ avec $q = e^{-\pi/t} < 1$ : la série $\sum_k |\hat f(2\pi k)|$ converge par comparaison à une série géométrique ({{as-dalembert-cauchy|d'Alembert et Cauchy}}, (i)). Le point (iii), avec $T = 1$, donne
+      $$\begin{aligned} \theta(t) = \sum_n f(n) &= \frac1{\sqrt t}\sum_k e^{-\pi k^2/t} \\ &= \frac1{\sqrt t}\,\theta\Big(\frac1t\Big). \end{aligned}$$
+    remarques:
+      - |
+        L'erreur la plus répandue est de recopier la formule $\sum_n f(n) = \sum_k \hat f(k)$ d'un ouvrage qui définit la transformée par $\int f(x)e^{-2i\pi x\xi}\,dx$. Avec la convention de ce graphe, il faut évaluer $\hat f$ aux points $2\pi k$, comme en (iii). Pour $f(x) = e^{-\pi x^2}$, on a $\sum_n f(n) = \theta(1) \approx 1{,}0864$, qui est bien $\sum_k \hat f(2\pi k)$ ; la somme fautive $\sum_k \hat f(k) = \sum_k e^{-k^2/4\pi}$ vaut environ $6{,}2832$.
+      - |
+        La continuité de $f$ ne peut pas être omise. Pour $f = \mathbf 1_{[0, 1]}$, bornée et nulle hors d'un segment, on a $\hat f(2\pi k) = \int_0^1 e^{-2i\pi kx}\,dx = 0$ pour $k \neq 0$ et $\hat f(0) = 1$ : la série des $|\hat f(2\pi k)|$ converge, mais $\sum_n f(n) = f(0) + f(1) = 2$, alors que $\sum_k \hat f(2\pi k) = 1$. La périodisée $\sum_n f(x + n)$ vaut $1$ partout, sauf aux entiers, où elle vaut $2$ ; sa série de Fourier, constante égale à $1$, ignore cette valeur isolée, comme toute intégrale.
+      - |
+        La formule transforme une série qui converge lentement en une série qui converge vite. Pour $t = 0{,}1$, les termes $e^{-0{,}1\pi n^2}$ de $\theta(0{,}1)$ ne descendent sous $10^{-15}$ qu'au-delà de $n = 10$, alors que $\sqrt{10}\,\theta(10) = \sqrt{10}\,\big(1 + 2e^{-10\pi} + \cdots\big)$ donne $\theta(0{,}1) = 3{,}16227766016\ldots$ dès son premier terme, l'écart avec $\sqrt{10}$ étant de l'ordre de $10^{-13}$. B. Riemann a tiré de cette identité, en 1859, l'équation fonctionnelle de sa fonction $\zeta$.
+
+        ```schema fo-poisson
+        La gaussienne $f(x) = e^{-x^2/8}$ et ses translatées $f(x \pm 2\pi)$ (en gris) se chevauchent ; leur somme, avec toutes les autres, est la périodisée $F$ (en rouge). Elle coïncide, à $6 \cdot 10^{-4}$ près, avec les deux premiers termes de sa série de Fourier, $\frac1{2\pi}\big(\hat f(0) + 2\hat f(1)\cos x\big)$ (en bleu pointillé), puisque $\hat f(k) = \sqrt{8\pi}\,e^{-2k^2}$ décroît très vite.
+        ```
+      - |
+        La formule calcule aussi des sommes de fractions rationnelles. Pour $a > 0$ et $f(x) = e^{-a|x|}$, la parité et la primitive $e^{-ax}\frac{\xi\sin(\xi x) - a\cos(\xi x)}{a^2 + \xi^2}$ de $e^{-ax}\cos(\xi x)$ donnent $\hat f(\xi) = \frac{2a}{a^2 + \xi^2}$. Les hypothèses de (ii) sont satisfaites, puisque $e^{y} \geqslant \max\big(1, \frac{y^2}2\big)$ pour $y \geqslant 0$ ({{ex-croissances|Croissances comparées}}, (ii)) et que $0 < \hat f(k) \leqslant 2a/k^2$ pour $k \neq 0$, et la formule en $x = 0$, où $\sum_n e^{-2\pi a|n|}$ est une somme de deux séries géométriques, donne
+        $$\sum_{k \in \mathbb Z} \frac1{a^2 + k^2} = \frac\pi a\cdot\frac{1 + e^{-2\pi a}}{1 - e^{-2\pi a}}.$$
+        Pour $a = 1$, la somme vaut environ $3{,}1533$. Quand $a$ tend vers $0$, en retirant le terme $k = 0$ et en développant $e^{-2\pi a}$ à l'ordre $3$ ({{as-usuels|Développements usuels}}), on retrouve $\sum_{k \geqslant 1} \frac1{k^2} = \frac{\pi^2}6$, comme au nœud {{fo-parseval|Parseval}} ; le passage à la limite sous la somme est licite, chaque terme $\frac1{a^2 + k^2}$ croissant vers $\frac1{k^2}$.
+      - |
+        La formule porte le nom de S.-D. Poisson, qui en donne le cas de la gaussienne, c'est-à-dire l'identité (iv) sous une autre écriture, à la page 420 de sa « Suite du mémoire sur les intégrales définies et sur la sommation des séries », *Journal de l'École polytechnique*, 19ᵉ cahier, t. 12 (1823), p. 404-509, et un cas un peu plus général, celui d'une gaussienne translatée, dans son « Mémoire sur le calcul numérique des intégrales définies », *Mémoires de l'Académie des sciences* 6 (année 1823, paru en 1827) (Y. Kosmann-Schwarzbach, « Seven concepts attributed to Siméon-Denis Poisson », *SIGMA* 18, 2022, 092). Comme toute la transformée de Fourier de ce graphe, la formule s'énonce avec la mesure de Lebesgue, dont elle hérite le [[choix-denombrable|choix dénombrable]] ; la démonstration n'en ajoute aucun.
 
   - id: fo-plancherel
     etiquette: Plancherel
@@ -725,3 +799,4 @@ aretes:
   - [fo-troncature, fo-levy-complet]
   - [fo-loi-esperances, fo-levy-complet]
   - [fo-levy, fo-tcl]
+  - [fo-transformee, fo-poisson]

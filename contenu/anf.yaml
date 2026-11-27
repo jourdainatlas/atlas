@@ -4,7 +4,10 @@
 # bases hilbertiennes, système de Haar), Hahn-Banach, Banach-Steinhaus, application ouverte ;
 # opérateurs autoadjoints, théorème spectral en dimension finie (quotient de Rayleigh, sans ℂ),
 # opérateurs compacts (diagonaux, à noyau continu) et théorème spectral des opérateurs compacts
-# autoadjoints.
+# autoadjoints. Théorème ergodique de von Neumann (contractions d'un Hilbert) et son application aux
+# transformations qui préservent une mesure : opérateur de Koopman, moyennes de Birkhoff dans L², rotation
+# irrationnelle et équirépartition en moyenne quadratique (27 nov. 2026 ; ⋆ par la projection, sans choix
+# quand H a une suite dense).
 # Les normes, les espaces métriques complets et le théorème de Baire viennent du graphe
 # « Espaces métriques et normés » (met), parent de celui-ci. Deux chapitres (30 oct. 2026) : anf-lp
 # (puissances réelles par ln x = ∫₁ˣ dt/t, espaces Lᵖ, Hölder, Minkowski, Radon-Nikodym par von Neumann,
@@ -272,6 +275,118 @@ noeuds:
         L'hypothèse que $F$ est fermé est indispensable. Dans $\ell^2$, le sous-espace des suites à support fini est dense et distinct de $\ell^2$ ; son orthogonal est $\{0\}$, si bien que $F \oplus F^\perp \neq \ell^2$ et $F^{\perp\perp} = \ell^2 \neq F$.
       - |
         La norme de $\lex{espace-L1}{L^1}$ ne vérifie pas l'identité du parallélogramme : pour la mesure de comptage sur $\lex{ensemble-entiers-naturels}{\mathbb N}$, les suites $x = (1, 0, 0, \dots)$ et $y = (0, 1, 0, \dots)$ donnent $\|x + y\|_1^2 + \|x - y\|_1^2 = 8$ et $2\|x\|_1^2 + 2\|y\|_1^2 = 4$. Elle ne provient donc d'aucun produit scalaire, et le théorème de projection y est faux en général.
+
+  - id: f-ergodique
+    etiquette: Théorème ergodique
+    nature: théorème
+    titre: Théorème ergodique de von Neumann
+    texte: |
+      Soit $H$ un [[espace-hilbert|espace de Hilbert]] et $U \in \lex{espace-applications-continues}{\mathcal L_c}(H, H)$ tel que $|||U||| \leqslant 1$, ce qu'on appelle une *contraction*. On note $I$ l'identité de $H$, $U^0 = I$ et $U^{k+1} = U \circ U^k$, et l'on forme les *moyennes ergodiques*
+      $$A_N = \frac1N\sum_{k=0}^{N-1} U^k, \qquad N \geqslant 1.$$
+      Les vecteurs fixes de $U$ forment le noyau $\operatorname{Ker}(I - U)$ ; on note $F$ l'[[adherence]] de l'image $\operatorname{Im}(I - U) = \{y - U(y) : y \in H\}$, qui est un sous-espace fermé.
+    choix: |
+      Le point (i) n'utilise aucun choix. Le point (ii) emploie la décomposition $H = F \oplus F^\perp$ du théorème de projection ({{f-hilbert|Espaces de Hilbert}}, (iii)), dont la démonstration choisit une suite minimisante : c'est un usage du [[choix-denombrable]]. Le reste de la démonstration n'invoque, pour chaque $\varepsilon$, qu'une seule existence. Le point (iii) n'utilise aucun choix : quand $H$ possède une suite dense, la projection sur $F$ s'obtient sans choix ({{f-hilbert|Espaces de Hilbert}}, (iv)).
+    enonce: |
+      (i) *Vecteurs fixes.* Si $U(x) = x$, alors $\langle x, U(y) \rangle = \langle x, y \rangle$ pour tout $y \in H$. Le noyau $\operatorname{Ker}(I - U)$ est l'[[orthogonal-partie|orthogonal]] de $\operatorname{Im}(I - U)$, et aussi celui de $F$ :
+      $$\operatorname{Ker}(I - U) = F^\perp.$$
+
+      (ii) *[[theoreme-ergodique-von-neumann|Théorème ergodique de von Neumann]].* On a $H = \operatorname{Ker}(I - U) \oplus F$, et $|||A_N||| \leqslant 1$ pour tout $N$. Notons $P$ la projection sur le sous-espace fermé $\operatorname{Ker}(I - U)$ ({{f-hilbert|Espaces de Hilbert}}, (iii)). Pour tout $x \in H$,
+      $$\begin{aligned} A_N(x) &= \frac1N\sum_{k=0}^{N-1} U^k(x) \\ &\xrightarrow[N \to \infty]{} P(x). \end{aligned}$$
+
+      (iii) *Sans choix.* Si $H$ possède une suite dont l'ensemble des termes est [[partie-dense|dense]], (ii) se démontre sans aucun choix.
+    preuve: |
+      (i) Soit $x$ tel que $U(x) = x$, $y \in H$ et $t$ réel. Comme $U(x + ty) = x + tU(y)$ et $|||U||| \leqslant 1$, on a $\|x + tU(y)\|^2 \leqslant \|x + ty\|^2$, c'est-à-dire, en développant,
+      $$\begin{aligned} &2t\big(\langle x, U(y) \rangle - \langle x, y \rangle\big) \\ &\quad \leqslant t^2\big(\|y\|^2 - \|U(y)\|^2\big). \end{aligned}$$
+      En divisant par $t > 0$, puis par $t < 0$, et en faisant tendre $t$ vers $0$, on obtient $\langle x, U(y) \rangle - \langle x, y \rangle \leqslant 0$ puis $\geqslant 0$ : ainsi $\langle x, y - U(y) \rangle = 0$ pour tout $y$, et $x$ est orthogonal à $\operatorname{Im}(I - U)$.
+
+      Réciproquement, soit $x$ orthogonal à $\operatorname{Im}(I - U)$. Avec $y = x$, il vient $\langle x, x - U(x) \rangle = 0$, c'est-à-dire $\langle x, U(x) \rangle = \|x\|^2$, d'où
+      $$\begin{aligned} \|x - U(x)\|^2 &= \|x\|^2 - 2\langle x, U(x) \rangle \\ &\quad + \|U(x)\|^2 \\ &= \|U(x)\|^2 - \|x\|^2 \leqslant 0, \end{aligned}$$
+      et $U(x) = x$. Enfin, une partie et son adhérence ont le même orthogonal, puisque, pour $x$ fixé, $a \mapsto \langle x, a \rangle$ est continue par l'inégalité de Cauchy-Schwarz ({{f-hilbert|Espaces de Hilbert}}, (i)).
+
+      (ii) Par {{f-operateurs|Opérateurs continus}}, (ii), $|||U^k||| \leqslant |||U|||^k \leqslant 1$, donc $|||A_N||| \leqslant \frac1N\sum_k |||U^k||| \leqslant 1$. Le théorème de projection, appliqué au sous-espace fermé $F$ ({{f-hilbert|Espaces de Hilbert}}, (iii)), donne $H = F \oplus F^\perp$, c'est-à-dire, par (i), $H = \operatorname{Ker}(I - U) \oplus F$. Écrivons $x = p + z$ avec $p \in \operatorname{Ker}(I - U)$ et $z \in F$. Comme $F \subset F^{\perp\perp} = \operatorname{Ker}(I - U)^\perp$, le vecteur $x - p = z$ est orthogonal à $\operatorname{Ker}(I - U)$, et $p = P(x)$ par la caractérisation de la projection sur un sous-espace fermé (même nœud, (iii)).
+
+      On a $U^k(p) = p$ pour tout $k$, donc $A_N(p) = p$. Il reste à voir que $A_N(z) \to 0$. Si $z = y - U(y)$, la somme est télescopique :
+      $$\begin{aligned} A_N(z) &= \frac1N\sum_{k=0}^{N-1}\big(U^k(y) - U^{k+1}(y)\big) \\ &= \frac{y - U^N(y)}N, \end{aligned}$$
+      de norme au plus $\frac{2\|y\|}N$. Dans le cas général, soit $\varepsilon > 0$ ; il existe $y$ tel que $\|z - (y - U(y))\| \leqslant \varepsilon$, et
+      $$\begin{aligned} \|A_N(z)\| &\leqslant \big\|A_N\big(z - (y - U(y))\big)\big\| \\ &\quad + \frac{2\|y\|}N \leqslant \varepsilon + \frac{2\|y\|}N, \end{aligned}$$
+      qui est au plus $2\varepsilon$ dès que $N \geqslant 2\|y\|/\varepsilon$.
+
+      (iii) Dans un espace qui possède une suite dense, la projection sur $F$, donc la décomposition $H = F \oplus F^\perp$, s'obtient sans choix ({{f-hilbert|Espaces de Hilbert}}, (iv)) ; le reste de la démonstration n'invoque, pour chaque $\varepsilon$, que l'existence d'un seul vecteur $y$.
+    remarques:
+      - |
+        Les itérés $U^k(x)$ ne convergent pas en général ; seules leurs moyennes convergent. Dans $\lex{n-uplet}{\mathbb R^2}$, muni du produit scalaire $x_1y_1 + x_2y_2$, la symétrie $U(x_1, x_2) = (x_1, -x_2)$ est une isométrie, de vecteurs fixes l'axe des abscisses ; l'orbite de $v = (2, \frac32)$ va et vient entre $v$ et $U(v) = (2, -\frac32)$, alors que $A_N(v)$ vaut $(2, \frac3{2N})$ pour $N$ impair et $(2, 0)$ pour $N$ pair, et tend vers la projection $P(v) = (2, 0)$.
+
+        ```schema f-ergodique
+        L'orbite de $v = (2, \frac32)$ par la symétrie $U$ ne prend que deux valeurs, $v$ et $U(v)$, extrémités des deux flèches. Les moyennes $A_N(v)$, en rouge pour $N = 1, 3, 5, 7$, valent $(2, \frac3{2N})$ et descendent vers $P(v) = (2, 0)$, que les moyennes d'indice pair atteignent déjà ; l'axe des abscisses, en bleu, est le noyau de $I - U$.
+        ```
+      - |
+        L'hypothèse $|||U||| \leqslant 1$ ne peut pas être omise, même quand $U$ a des vecteurs fixes. Le cisaillement $U(x_1, x_2) = (x_1 + x_2, x_2)$ de $\mathbb R^2$ fixe l'axe des abscisses, mais $U^k(0, 1) = (k, 1)$, et $A_N(0, 1) = \big(\frac{N - 1}2, 1\big)$ n'est pas bornée. Ici $|||U||| > 1$, puisque $\|U(0, 1)\| = \sqrt2$.
+      - |
+        La convergence a lieu vecteur par vecteur, et non pour la norme d'opérateur. Dans $\lex{espace-l2-suites}{\ell^2}$, soit $U$ l'opérateur qui multiplie la $j$-ième coordonnée par $1 - \frac1{j+1}$ ; c'est une contraction sans vecteur fixe non nul, et $A_N(x) \to 0$ pour tout $x$. Mais, pour la suite $e_N$ nulle sauf un $1$ en position $N$, on trouve $A_N(e_N) = \big(1 - (1 - \frac1{N+1})^N\big)\frac{N+1}N\,e_N$, de norme au moins $1 - e^{-N/(N+1)} \geqslant 1 - e^{-1/2} \approx 0{,}39$ pour tout $N$, puisque $1 - u \leqslant e^{-u}$ : on n'a jamais $|||A_N - P||| \to 0$.
+      - |
+        J. von Neumann a démontré ce théorème dans « Proof of the quasi-ergodic hypothesis », *Proc. Nat. Acad. Sci. USA* 18 (1932), p. 70-82, pour les opérateurs unitaires associés par B. O. Koopman aux flots qui préservent une mesure. Il donnait ainsi un sens précis à l'égalité des moyennes temporelles et des moyennes spatiales que postule la mécanique statistique ; le nœud suivant en tire l'application aux transformations qui préservent une mesure.
+
+  - id: f-ergodique-mesure
+    etiquette: Moyennes de Birkhoff
+    nature: théorème
+    titre: Transformations qui préservent une mesure, équirépartition en moyenne
+    texte: |
+      Soit $(X, \mathcal A, \mu)$ un [[espace-mesure|espace mesuré]]. Une application $T : X \to X$ est *mesurable* si $T^{-1}(A) \in \mathcal A$ pour tout $A \in \mathcal A$ ; elle [[transformation-preservant-mesure|préserve la mesure]] $\mu$ si, de plus, $\mu\big(T^{-1}(A)\big) = \mu(A)$ pour tout $A \in \mathcal A$. On note $T^0 = \mathrm{id}_X$ et $T^{k+1} = T \circ T^k$. Une fonction $f$ est *invariante* si $f \circ T = f$ presque partout. Les *moyennes de Birkhoff* de $f$ sont
+      $$A_Nf = \frac1N\sum_{k=0}^{N-1} f \circ T^k.$$
+
+      L'exemple principal est la *rotation* d'angle $\alpha \in [0, 1[$ : sur $X = [0, 1[$, muni de la tribu des boréliens de $\mathbb R$ contenus dans $[0, 1[$ et de la mesure de Lebesgue $\lambda$ ({{m-lebesgue|Mesure de Lebesgue}}), on pose $R_\alpha(x) = x + \alpha$ si $x < 1 - \alpha$ et $R_\alpha(x) = x + \alpha - 1$ sinon, c'est-à-dire $x + \alpha$ réduit modulo $1$. On note $c_k(x) = \cos(2\pi kx)$ et $s_k(x) = \sin(2\pi kx)$ pour $k \geqslant 1$ entier, et l'on appelle *polynôme trigonométrique* toute combinaison linéaire finie de la constante $1$ et des $c_k$, $s_k$.
+    choix: |
+      Le point (i) n'utilise aucun choix. Le point (ii) emploie la complétude de $\lex{espace-L2}{L^2}(\mu)$ ({{f-lp|Espaces L¹ et L²}}, (ii)) et le théorème ergodique ({{f-ergodique|Théorème ergodique}}, (ii)), qui font appel au [[choix-denombrable]] ; quand la tribu est engendrée par une suite de parties et la mesure σ-finie, $L^2(\mu)$ est complet et possède une suite dense sans aucun choix ({{f-lp|Espaces L¹ et L²}}, (v)), et (ii) se démontre sans choix ({{f-ergodique|Théorème ergodique}}, (iii)). C'est le cas de la rotation : les points (iii) et (iv) ne dépendent que du choix dénombrable dont hérite la mesure de Lebesgue.
+    enonce: |
+      (i) *Opérateur de Koopman.* Si $T$ préserve $\mu$, alors $\int f \circ T\,d\mu = \int f\,d\mu$ pour toute fonction mesurable $f : X \to \lex{demi-droite-achevee}{[0, +\infty]}$. L'application $U_T : f \mapsto f \circ T$ est bien définie sur les classes de $L^2(\mu)$, linéaire, et isométrique : $\|f \circ T\|_2 = \|f\|_2$.
+
+      (ii) *Moyennes de Birkhoff.* Pour tout $f \in L^2(\mu)$, $A_Nf$ converge dans $L^2(\mu)$ vers la projection $Pf$ de $f$ sur le sous-espace fermé des classes invariantes.
+
+      (iii) *Rotation.* $R_\alpha$ préserve $\lambda$. Si $k \geqslant 1$ est un entier tel que $k\alpha$ ne soit pas entier, alors, pour tout $x \in [0, 1[$ et tout $N \geqslant 1$,
+      $$\begin{aligned} |A_Nc_k(x)| &\leqslant \frac1{N\,|\sin(\pi k\alpha)|}, \\ |A_Ns_k(x)| &\leqslant \frac1{N\,|\sin(\pi k\alpha)|}. \end{aligned}$$
+
+      (iv) *Équirépartition en moyenne quadratique.* Si $\alpha$ est irrationnel, les fonctions invariantes de $L^2(\lambda)$ sont les constantes, et $A_Nf \to \int_0^1 f\,d\lambda$ dans $L^2$ pour tout $f \in L^2(\lambda)$. En particulier, pour $0 \leqslant a < b \leqslant 1$, la proportion
+      $$\frac1N\,\mathrm{Card}\{j < N : R_\alpha^j(x) \in [a, b[\}$$
+      des $N$ premiers points de l'orbite de $x$ qui tombent dans $[a, b[$ converge vers $b - a$ dans $L^2(\lambda)$, comme fonction de $x$.
+    preuve: |
+      (i) Pour $f$ mesurable, $\{f \circ T > a\} = T^{-1}(\{f > a\})$ appartient à $\mathcal A$ : $f \circ T$ est mesurable. Pour $f = \mathbf 1_A$, on a $f \circ T = \mathbf 1_{T^{-1}(A)}$, et l'égalité des intégrales est l'hypothèse ; elle passe aux [[fonction-etagee|fonctions étagées]] positives par linéarité. Pour $f$ mesurable positive, les fonctions étagées $s_n$ du nœud {{m-etagees|Fonctions étagées}} croissent vers $f$, les $s_n \circ T$ sont étagées et croissent vers $f \circ T$, et le théorème de convergence monotone ({{m-beppo-levi|Convergence monotone}}) conclut des deux côtés.
+
+      Si $f = g$ presque partout, l'ensemble $\{f \neq g\}$ est mesurable et de mesure nulle, et son image réciproque $\{f \circ T \neq g \circ T\}$ aussi : $U_T$ est bien défini sur les classes. Il est linéaire, et l'égalité des intégrales, appliquée à $f^2$, donne $\|f \circ T\|_2 = \|f\|_2$.
+
+      (ii) Par (i), $U_T$ est un opérateur continu de norme au plus $1$ de l'espace de Hilbert $L^2(\mu)$ ({{f-lp|Espaces L¹ et L²}}, (ii)) ; par récurrence, $U_T^k f = f \circ T^k$, et $A_Nf$ est la moyenne ergodique de $U_T$. Le noyau de $I - U_T$ est l'ensemble des classes invariantes, et le théorème ergodique ({{f-ergodique|Théorème ergodique}}, (ii)) conclut.
+
+      (iii) *Mesurabilité et invariance.* Pour toute partie $A$ de $[0, 1[$,
+      $$\begin{aligned} R_\alpha^{-1}(A) = {}&\big((A \cap [\alpha, 1[) - \alpha\big) \\ &\cup \big((A \cap [0, \alpha[) + 1 - \alpha\big), \end{aligned}$$
+      réunion disjointe d'une partie de $[0, 1 - \alpha[$ et d'une partie de $[1 - \alpha, 1[$. Pour tout réel $c$, l'ensemble des $B \subset \mathbb R$ tels que $B + c$ soit borélien est une tribu, qui contient les demi-droites $]{-\infty}, a]$, puisque $]{-\infty}, a] + c = \,]{-\infty}, a + c]$ ; elle contient donc tous les boréliens ({{m-tribus|Tribus}}, (iii)). Ainsi $R_\alpha^{-1}(A)$ est borélien si $A$ l'est, et, par l'invariance de $\lambda$ par translation ({{m-lebesgue|Mesure de Lebesgue}}, (iii)),
+      $$\begin{aligned} \lambda\big(R_\alpha^{-1}(A)\big) &= \lambda(A \cap [\alpha, 1[) \\ &\quad + \lambda(A \cap [0, \alpha[) \\ &= \lambda(A). \end{aligned}$$
+
+      *Le calcul.* Par récurrence, $R_\alpha^j(x) = x + j\alpha - m$ pour un entier $m$, et, la fonction $t \mapsto \cos(2\pi kt)$ étant de période $1$ ({{tg-addition|Formules d'addition}}, (v)), $c_k(R_\alpha^j(x)) = \cos(u + jb)$ avec $u = 2\pi kx$ et $b = 2\pi k\alpha$. Les formules d'addition (même nœud, (iii)) donnent
+      $$\begin{aligned} &2\sin\frac b2\,\cos(u + jb) \\ &\quad = \sin\Big(u + \big(j + \tfrac12\big)b\Big) \\ &\qquad - \sin\Big(u + \big(j - \tfrac12\big)b\Big). \end{aligned}$$
+      En sommant de $j = 0$ à $N - 1$, la somme télescopique vaut $\sin\big(u + (N - \frac12)b\big) - \sin\big(u - \frac b2\big)$, de valeur absolue au plus $2$. Or $\sin\frac b2 = \sin(\pi k\alpha) \neq 0$, puisque $k\alpha$ n'est pas entier ({{tg-cercle|Paramétrage du cercle}}, (i)) ; d'où la majoration de $A_Nc_k$. Pour $s_k$, on emploie de même
+      $$\begin{aligned} &2\sin\frac b2\,\sin(u + jb) \\ &\quad = \cos\Big(u + \big(j - \tfrac12\big)b\Big) \\ &\qquad - \cos\Big(u + \big(j + \tfrac12\big)b\Big). \end{aligned}$$
+
+      (iv) *Polynômes trigonométriques.* Si $\alpha$ est irrationnel, $k\alpha$ n'est entier pour aucun $k \geqslant 1$. Par (iii), pour un polynôme trigonométrique $p$ de terme constant $m_0$, $A_Np \to m_0$ uniformément sur $[0, 1[$, donc dans $L^2$, puisque $\|g\|_2 \leqslant \sup|g|$ pour $\lambda([0, 1[) = 1$. Comme $\int_0^1 c_k = \big[\frac{\sin(2\pi kt)}{2\pi k}\big]_0^1 = 0$, et de même pour $s_k$ ({{ar-tfa|Théorème fondamental}}, {{m-riemann|Riemann et Lebesgue}}), on a $m_0 = \int_0^1 p\,d\lambda$. Par unicité de la limite dans $L^2$, $Pp = \int_0^1 p$.
+
+      *Densité.* L'ensemble $\mathcal P$ des polynômes trigonométriques est dense dans $L^2(\lambda)$. La tribu de $X$ est celle des $Y^{-1}(B)$, $B$ borélien, pour l'injection $Y$ de $[0, 1[$ dans $\mathbb R$ ; elle est engendrée par les parties $\{Y \leqslant q\} = [0, 1[ \,\cap\, ]{-\infty}, q]$, $q$ rationnel (troisième remarque du nœud {{f-lp|Espaces L¹ et L²}}) ; par le point (v) de ce nœud, les combinaisons linéaires finies d'indicatrices d'intervalles contenus dans $[0, 1[$ sont denses dans $L^2$. Si $I$ est un tel intervalle, d'extrémités $c < d$, et $0 < \eta < \frac{d - c}2$, la fonction continue $g$ nulle hors de $]c, d[$, égale à $1$ sur $[c + \eta, d - \eta]$ et affine entre les deux, vérifie $\|\mathbf 1_I - g\|_2^2 \leqslant 2\eta$ ; elle vérifie $g(0) = g(1) = 0$, et l'on note encore $g$ son prolongement de période $1$ à $\mathbb R$, qui est continu.
+
+      La fonction $h(t) = g(t/2\pi)$ est continue et $2\pi$-périodique ; elle passe au quotient en une fonction continue sur $\mathbb R/2\pi\mathbb Z$ (définition de la [[topologie-quotient]]), et l'[[homeomorphisme]] du nœud {{tg-cercle|Paramétrage du cercle}}, (iv), en fait une fonction $G$ continue sur le cercle $\lex{sphere-unite}{S^1}$, telle que $G(\cos t, \sin t) = h(t)$. Par {{fc-polynomes|Applications}}, (ii), pour $\varepsilon > 0$, il existe une [[fonction-polynomiale|fonction polynomiale]] $Q$ en deux variables telle que $|G - Q| \leqslant \varepsilon$ sur $S^1$, c'est-à-dire $\big|g(s) - Q(c_1(s), s_1(s))\big| \leqslant \varepsilon$ pour tout $s \in [0, 1[$. Enfin $\mathcal P$ est stable par produit, par les formules
+      $$\begin{aligned} 2c_jc_k &= c_{|j-k|} + c_{j+k}, \\ 2s_js_k &= c_{|j-k|} - c_{j+k}, \\ 2s_jc_k &= s_{j+k} \pm s_{|j-k|}, \end{aligned}$$
+      où $c_0 = 1$, $s_0 = 0$, et le signe est celui de $j - k$, qui découlent des formules d'addition. Il contient $1$, $c_1$ et $s_1$, donc $Q(c_1, s_1)$. Un polynôme trigonométrique approche ainsi $g$ uniformément, donc dans $L^2$, et $\mathbf 1_I$ à $\sqrt{2\eta} + \varepsilon$ près.
+
+      *Conclusion.* Les applications $f \mapsto Pf$ et $f \mapsto \int_0^1 f\,d\lambda$, à valeurs dans $L^2$, sont linéaires et continues, la seconde par l'inégalité de Cauchy-Schwarz $|\int_0^1 f| \leqslant \|f\|_2$ ({{f-lp|Espaces L¹ et L²}}, (i)). Elles coïncident sur $\mathcal P$, donc sur son adhérence, qui est $L^2$ : $Pf = \int_0^1 f$ pour tout $f$, et (ii) donne la convergence annoncée. Une fonction invariante $f$ vérifie $f = Pf$ : elle est constante presque partout. Pour $f = \mathbf 1_{[a, b[}$, on a $A_Nf(x) = \frac1N\mathrm{Card}\{j < N : R_\alpha^j(x) \in [a, b[\}$ et $\int_0^1 f = b - a$.
+    remarques:
+      - |
+        L'irrationalité de $\alpha$ ne peut pas être omise. Pour $\alpha = \frac pq$, avec $q \geqslant 1$, on a $R_\alpha^q = \mathrm{id}$, et la fonction $c_q$, non constante, est invariante : $A_Nc_q = c_q$ ne tend pas vers $\int_0^1 c_q = 0$. Pour $\alpha = \frac13$ et $f = \mathbf 1_{[0, 1/2[}$, chaque orbite compte un ou deux points sur trois dans $[0, \frac12[$ : les moyennes tendent vers une fonction qui ne prend que les valeurs $\frac13$ et $\frac23$, à distance $\frac16$ de la constante $\frac12$ dans $L^2$. Pour $\alpha = \frac{\sqrt5 - 1}2$, au contraire, l'écart $\|A_Nf - \frac12\|_2$ vaut environ $0{,}059$, $0{,}0073$ et $0{,}0007$ pour $N = 10$, $100$ et $1000$.
+      - |
+        L'erreur la plus répandue est de lire le théorème, pour une $f$ seulement de carré intégrable, comme une convergence en chaque point. Il affirme une convergence en moyenne quadratique, d'où l'on ne tire, pour une suite extraite, qu'une convergence presque partout ({{f-lp|Espaces L¹ et L²}}, (iii)). Le théorème ergodique de G. D. Birkhoff (« Proof of the ergodic theorem », *Proc. Nat. Acad. Sci. USA* 17, 1931, p. 656-660) affirme la convergence presque partout de la suite $A_Nf$ elle-même, pour $f$ intégrable ; sa démonstration, par l'inégalité maximale, est admise ici et sort du cadre de ce graphe.
+      - |
+        Si $\alpha$ est irrationnel, pour une fonction $g$ continue de période $1$, la convergence a lieu en tout point, et même uniformément. Si un polynôme trigonométrique $p$ approche $g$ à $\varepsilon$ près uniformément, ce que donne le passage au cercle de la démonstration de (iv), alors $|A_Ng - A_Np| \leqslant \varepsilon$ partout, $A_Np \to \int_0^1 p$ uniformément par (iii), et $|\int_0^1 g - \int_0^1 p| \leqslant \varepsilon$. C'est le théorème d'équirépartition de H. Weyl, « Über die Gleichverteilung von Zahlen mod. Eins », *Math. Ann.* 77 (1916), p. 313-352, qui en déduit, par encadrement entre fonctions continues, que la proportion des $N$ premiers points de toute orbite dans $[a, b[$ tend vers $b - a$.
+      - |
+        L'opérateur $U_T$ porte le nom de B. O. Koopman (« Hamiltonian systems and transformations in Hilbert space », *Proc. Nat. Acad. Sci. USA* 17, 1931, p. 315-318). Quand $\mu$ est une probabilité, la projection $Pf$ sur les fonctions invariantes est l'espérance conditionnelle de $f$ sachant la tribu des parties invariantes, que le chapitre des martingales définira ({{mt-conditionnelle|Espérance conditionnelle}}).
+    admis:
+      - lieu: remarque
+        statut: hors-cadre
+        objet: Théorème ergodique de Birkhoff (convergence presque partout)
 
   - id: f-riesz
     etiquette: Théorème de Riesz
@@ -1042,3 +1157,7 @@ aretes:
   - [f-compacts-exemples, f-spectral-compact]
   - [f-spectral-fini, f-spectral-compact]
   - [f-bases-hilbertiennes, f-spectral-compact]
+  - [f-hilbert, f-ergodique]
+  - [f-operateurs, f-ergodique]
+  - [f-ergodique, f-ergodique-mesure]
+  - [anf-continues, f-ergodique-mesure]
