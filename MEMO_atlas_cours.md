@@ -1426,3 +1426,16 @@ côté de `--accent` (qui reste `couleurUE`, pour le lien « Présentation de l'
 devenue transparente ; un `::before` couvrant la boîte, masqué hors de la bordure gauche (`mask` padding-box / border-box
 en exclusion), peint le dégradé : la forme arrondie du liseré est celle de l'ancienne bordure. Les UE dont tous les
 chapitres sont de la même famille (calcul différentiel, intégration, probabilités, Hilbert-Fourier) restent unies.
+
+### 83. Exercices de Géométrie et topologie, feuilles 1 à 5 (27 nov. 2026)
+
+`f-l3-gt-01` à `f-l3-gt-05` (12, 13, 10, 17, 13 exercices : 65 ; 40 figures), `outils/meta_l3_gt_01.py` à `05.py`
+(nœuds `t-*`, `tr-connexes`, `cw-recollement`, `gt-quotient`, `rv-*`, `ta-*`, `vk-*`), PDF
+`documents/exercices/l3/geometrie_topologie_chapNN_<slug>_{enonce,corrige}.pdf` (mêmes slugs que le cours), champ
+`exercices` des chapitres, nouveauté du 27 nov., `exercices_cours.py` relancé, images d'aperçu fabriquées (5 feuilles et
+`exercices/niveau-l3`). Feuilles 6 et 7 à venir. Rendu : 130 vues, corrigés entièrement déroulés, sans débordement.
+Sources : l'attribution « feuille N (Bordeaux 2016) » vaut désormais comme « liste N (…) » (`__liste__`) ; la feuille 3
+ne la porte pas, ses deux renvois « feuille 2, exercice 4 » et « feuille 3, exercice 1 » ont reçu « Bordeaux 2016 » à
+la main (même série de feuilles que le reste de l'UE). `source_lisible` retire aussi les parenthèses qui parlent
+d'indication, de rappel dans l'énoncé, d'une proposition, d'un théorème ou d'un chapitre. « manuel « D » » (manuel
+photographié) et les exercices créés n'ont pas de source : 44 sources sur 65.
