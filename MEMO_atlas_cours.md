@@ -1479,3 +1479,16 @@ Rapport et annexe (45 lots) transmis par l'auteur. Fait ici :
   caractéristique ≠ 2, où 2 est inversible : l'hypothèse suffit, rien à corriger. Le contre-exemple ℤ/4ℤ de l'audit
   vaut pour un anneau ; à vérifier dans le PDF du cours l3-sa-06, qui relève de la conversation des .tex.
 - **PDF des cours** : rien corrigé ici (conversation des .tex).
+
+## 85. Ligne parasite « 0@10@ii@ii-@>@ii@ii>@-\@M » dans les feuilles L3 GT (27 nov.)
+
+- **Symptôme.** Avant la source de nombreux exercices de f-l3-gt-01 à 05 (120 lignes en tout), signalé par
+  l'auteur sur l3-gt-02-03.
+- **Cause.** Le préambule des feuilles GT redéfinit `\needspace` entre `\makeatletter` et `\makeatother`, avec des
+  commandes internes (`\dimen@`, `\@M`…). `lire_macros` retenait cette définition et `developper` remplaçait chaque
+  `\needspace{10\baselineskip}` du corps par son texte, avant le nettoyage qui supprime `\needspace{…}`.
+- **Correction.** `tex2exos.lire_macros` ignore toute définition dont le corps contient `@` : c'est de la mise en
+  page LaTeX, sans objet sur le site. Les cinq feuilles ont été reconverties : seule la ligne parasite (et la ligne
+  vide qui la précédait) disparaît, le préfixe « Bordeaux 2016, » de la feuille 3 a été remis.
+- **Contrôle à garder** après toute conversion : `grep -l "@ii\|0@1\|\\\\@" rubriques/exercices/*.yaml` ne doit rien
+  renvoyer.
