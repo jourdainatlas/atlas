@@ -1502,3 +1502,18 @@ l3-gt-01 à 07 étaient déjà celles du §81. Feuilles f-l3-gd-* et f-l3-gt-01 
 Annales. Remarques sur le contenu, transmises à la conversation des .tex : l'énoncé de l3-gt-02-06 ne définit ni $S$ ni
 $\Gamma$ (renvoi au cours, § 2.3.2) ; SU(n) n'est défini par aucun cours, mais l'énoncé de l3-gt-02-08 le définit
 lui-même (U(n) ∩ {det = 1}).
+
+### 87. Nœuds nouveaux de l'édifice reportés ; règle de d'Alembert dans les feuilles MP (27 nov. 2026, soir)
+
+Suite de l'audit (§84) : l'édifice a créé les nœuds qui manquaient (commit cf53795). Ajoutés aux champs `theories` et
+`notions` de `cours.yaml` (script scratchpad `ajout.py`, ajout sans doublon, ordre conservé) : mp-06 et mp-09
+(`as-dalembert-cauchy`, `ig-series` pour mp-06 ; `regle-dalembert`, `regle-cauchy-series`), mp-12 (`ar-impropres` et
+`ig-*` ; `localement-integrable` remplacé par `localement-integrable-riemann`, ajout des intégrales absolument et
+semi-convergentes), mp-07 (`met-euclidien` et `eu-*`, sept notions), l3-in-06 (`cv-isometries`, `cv-sard`,
+`eu-isometries`), l3-sa-06 (`pol-symetriques`… `ac-resultant`, `res-*`), ma-12 (`z-congruences`, `inverse-modulo`),
+l3-hf-07 (`fo-poisson`), l3-hf-04 (`f-ergodique`, `f-ergodique-mesure`), l3-gt-07 (`hom-surfaces`, `sc-*`, huit notions).
+Aucun identifiant refusé par la vérification de l'ordre d'apparition.
+Exercices : `c-dalembert` (d'Alembert-Gauss) remplacé par `as-dalembert-cauchy` dans mp-06-02, mp-06-25, mp-06-49 et
+mp-09-03, qui emploient la règle de d'Alembert (aucun la règle de Cauchy), avec la notion `regle-dalembert` ; même
+correction dans la règle « alembert » de `meta_mp_06.py` et `meta_mp_09.py`, pour qu'une reconversion la garde. Les
+`c-dalembert` de f-me-02 et f-ma-13 visent bien d'Alembert-Gauss : inchangés.

@@ -15,7 +15,7 @@ R = [
     (r'matrice|\\mn', 'séries de matrices', ['li-exponentielle'], []),
     (r'riemann|\\frac\{1\}\{n\^', 'séries de Riemann', ['as-series'], ['serie-riemann']),
     (r'intégrale|\\int', 'comparaison série-intégrale', ['ri-integrable'], []),
-    (r'alembert', 'règle de d\'Alembert', ['c-dalembert'], []),
+    (r'alembert', 'règle de d\'Alembert', ['as-dalembert-cauchy'], ['regle-dalembert']),
     (r'\\sim|équivalent|asymptotique|o\(', 'relations de comparaison', ['as-series'], []),
     (r'dériv|vitesse|tangente', 'dérivation', ['de-derivee'], ['derivable']),
     (r'accroissements finis', 'accroissements finis', ['gd-accroissements'], []),

@@ -12,7 +12,7 @@ PARTIES = [
 ]
 R = [
     (r'rayon', 'rayon de convergence', ['cx-series-entieres'], ['serie-entiere']),
-    (r'alembert', 'règle de d\'Alembert', ['c-dalembert'], []),
+    (r'alembert', 'règle de d\'Alembert', ['as-dalembert-cauchy'], ['regle-dalembert']),
     (r'\\exp|\\ee\^|exponentielle', 'exponentielle', ['cx-exponentielle'], []),
     (r'dériv|terme à terme|\\int', 'dérivation et intégration terme à terme', ['cx-derivation-series'], []),
     (r'développable|développement', 'développements usuels', ['as-usuels'], []),
