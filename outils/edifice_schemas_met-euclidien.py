@@ -58,9 +58,9 @@ def eu_gram_schmidt():
     S.fleche(R(0, 0), R(*v2), 'g', l=1.8)
     S.ligne(R(*p), R(*v2), 'r', d=True, l=1.8)
     S.point(R(*p), 'r', r=3.6)
-    S.fleche(R(0, 0), R(*w2), 'r', l=2.6)
     S.fleche(R(0, 0), R(*e1), 'b', l=2.6)
-    S.fleche(R(0, 0), R(*e2), 'b', l=2.6)
+    S.fleche(R(0, 0), R(*e2), 'b', l=2.2)
+    S.fleche(R(0, 0), R(*w2), 'r', l=4.2)               # par-dessus e₂, colinéaire et plus court
     _etiq(S, R(*v1) + [12, 4], 'v_1', 'g', ancre='start')
     _etiq(S, R(*v2) + [10, -6], 'v_2', 'g', ancre='start')
     _etiq(S, R(*e1) + [14, 8], 'e_1', 'b', ancre='start')
