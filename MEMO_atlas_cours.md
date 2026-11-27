@@ -1492,3 +1492,13 @@ Rapport et annexe (45 lots) transmis par l'auteur. Fait ici :
   vide qui la précédait) disparaît, le préfixe « Bordeaux 2016, » de la feuille 3 a été remis.
 - **Contrôle à garder** après toute conversion : `grep -l "@ii\|0@1\|\\\\@" rubriques/exercices/*.yaml` ne doit rien
   renvoyer.
+
+### 86. Thèmes d'annales relus de ma-01 et m-galois (27 nov. 2026)
+
+Listes relues par la conversation Annales, reportées : ma-01 [logique-raisonnement] (`ly-recurrence` retiré, il retombe
+sur logique-raisonnement dans la famille par défaut) ; m-galois [galois, corps, corps-finis, constructibles,
+arithmetique-polynomes, groupe-symetrique, actions-groupes, polynomes-cyclotomiques, groupes, anneaux]. Celles de
+l3-gt-01 à 07 étaient déjà celles du §81. Feuilles f-l3-gd-* et f-l3-gt-01 à 05 reliées aux programmes par la conversation
+Annales. Remarques sur le contenu, transmises à la conversation des .tex : l'énoncé de l3-gt-02-06 ne définit ni $S$ ni
+$\Gamma$ (renvoi au cours, § 2.3.2) ; SU(n) n'est défini par aucun cours, mais l'énoncé de l3-gt-02-08 le définit
+lui-même (U(n) ∩ {det = 1}).
