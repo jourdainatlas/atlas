@@ -30,49 +30,6 @@ def _aire(P):
     return ((x2 - x1) * (y3 - y1) - (x3 - x1) * (y2 - y1)) / 2
 
 
-@schema('lex-groupe-orthogonal-1')
-def lex_groupe_orthogonal_1():
-    t = math.pi / 3
-    R = np.array([[math.cos(t), -math.sin(t)], [math.sin(t), math.cos(t)]])
-    phi = math.pi / 6
-    Sm = np.array([[math.cos(2 * phi), math.sin(2 * phi)], [math.sin(2 * phi), -math.cos(2 * phi)]])
-    for M in (R, Sm):
-        assert np.allclose(M.T @ M, np.eye(2))
-    assert abs(np.linalg.det(R) - 1) < 1e-12 and abs(np.linalg.det(Sm) + 1) < 1e-12
-    axe = np.array([math.cos(phi), math.sin(phi)])
-    assert np.allclose(Sm @ axe, axe)                               # l'axe de S est la droite d'angle π/6
-    P = np.array([[0.5, -0.55], [1.0, -0.55], [0.5, -0.2]])
-    PR, PS = P @ R.T, P @ Sm.T
-    assert _aire(P) > 0 and _aire(PR) > 0 and _aire(PS) < 0        # légende : sens conservé, puis inversé
-    Hh = 290
-    S = Schema(W, Hh, 'Un triangle et ses images par une rotation et par une symétrie')
-    k = 270 / 2.12
-    Rp = Repere(-0.62, 1.28, -0.78, 1.34, (W - 1.9 * k) / 2, 10, 1.9 * k, 2.12 * k)
-    # même échelle sur les deux axes
-    ex = Rp.L / (Rp.xmax - Rp.xmin)
-    ey = Rp.H / (Rp.ymax - Rp.ymin)
-    assert abs(ex - ey) < 1e-9, (ex, ey)
-    S.ligne(Rp(-0.62, 0), Rp(1.25, 0), 'g')
-    S.ligne(Rp(0, -0.75), Rp(0, 1.2), 'g')
-    d0, d1 = -0.55, 1.35
-    S.ligne(Rp(*(d0 * axe)), Rp(*(d1 * axe)), 'g', d=True)
-    S.point(Rp(0, 0), 'g', r=3)
-    for Q, c in ((P, 'g'), (PR, 'b'), (PS, 'v')):
-        S.poly(Rp(Q[:, 0], Q[:, 1]), c, ferme=True, rempli=c if c != 'g' else None, l=2.2)
-        g = Q.mean(axis=0)
-        for k, v in enumerate(Q):
-            u = v - g
-            u = u / np.linalg.norm(u)
-            q = Rp(*v) + 15 * np.array([u[0], -u[1]])
-            _etiq(S, q, str(k + 1), c, taille=17)
-    # noms des matrices près des images
-    gR, gS = PR.mean(axis=0), PS.mean(axis=0)
-    _etiq(S, Rp(*gR) + [62, 6], 'R', 'b')
-    _etiq(S, Rp(*gS) + [-58, 4], 'S', 'v')
-    assert Rp(1.28, 0)[0] <= W - 2 and Rp(0, -0.78)[1] <= Hh - 2
-    return S
-
-
 @schema('lex-crochet-matrices-3')
 def lex_crochet_matrices_3():
     s = 0.35

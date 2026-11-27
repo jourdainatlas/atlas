@@ -287,30 +287,3 @@ def lex_champ_vecteurs_2():
     return S
 
 
-@schema('lex-meme-orientation-1')
-def lex_meme_orientation_1():
-    S = Schema(W0, 260, 'Deux bases qui partagent leur premier vecteur')
-    ech = 82
-    R = Repere(-1.55, 1.85, -1.35, 1.45, (W0 - 3.4 * ech) / 2, 10, 3.4 * ech, 2.8 * ech)
-    O = R(0, 0)
-    u, v, w = (1, 1), (-1, 1), (1, -1)
-    assert u[0] * v[1] - u[1] * v[0] == 2 and u[0] * w[1] - u[1] * w[0] == -2
-    S.fleche(O, R(1, 0), 'g', l=1.6)
-    S.fleche(O, R(0, 1), 'g', l=1.6)
-    S.fleche(O, R(*u), 't', l=2.2)
-    S.fleche(O, R(*v), 'b', l=2.2)
-    S.fleche(O, R(*w), 'r', l=2.2)
-    _etiq(S, R(1, 0) + [6, 12], 'e_1', 'g', ancre='start', taille=15)
-    _etiq(S, R(0, 1) + [-8, -8], 'e_2', 'g', ancre='end', taille=15)
-    _etiq(S, R(*u) + [10, -4], 'u', 't', ancre='start')
-    _etiq(S, R(*v) + [-10, -4], 'v', 'b', ancre='end')
-    _etiq(S, R(*w) + [10, 4], 'w', 'r', ancre='start')
-    # arcs fléchés de u vers v (sens de e₁ vers e₂) et de u vers w (sens contraire), rayon 0,55
-    rr = 0.55
-    for c, a0, a1 in [('b', PI / 4, 3 * PI / 4), ('r', PI / 4, -PI / 4)]:
-        ts = np.linspace(a0, a1, 40)
-        pts = R(rr * np.cos(ts), rr * np.sin(ts))
-        S.courbe_fleche(pts, c)
-    ts = np.linspace(0.12, PI / 2 - 0.12, 30)
-    S.courbe_fleche(R(0.32 * np.cos(ts), 0.32 * np.sin(ts)), 'g')
-    return S

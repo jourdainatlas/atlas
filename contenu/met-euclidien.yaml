@@ -1,0 +1,473 @@
+# Niveau 2 : structure interne du chapitre « Espaces euclidiens et groupe orthogonal » (nœud met-euclidien du
+# graphe met, créé le 27 nov. 2026). Espaces euclidiens, familles et bases orthonormées, coordonnées ; procédé de
+# Gram-Schmidt (existence et prolongement des bases orthonormées) ; orthogonal d'une partie, supplémentaire
+# orthogonal, projection orthogonale sur un sous-espace de dimension finie d'un espace muni d'un produit scalaire
+# quelconque, distance à un sous-espace, inégalité de Bessel finie ; endomorphismes orthogonaux, O(E), O(n), SO(n) ;
+# orientation et bases orthonormées directes ; réflexions et théorème de Cartan-Dieudonné ; O(2) et angle d'une
+# rotation du plan ; rotations de l'espace de dimension 3 (axe, angle par la trace) ; isométries d'un espace muni
+# d'un produit scalaire, affines et de partie linéaire orthogonale, déplacements et antidéplacements.
+# Placement : met est la première théorie qui a à la fois ℝ, l'algèbre linéaire (déterminant compris, par alglin)
+# et le produit scalaire (me-produit-scalaire) ; cos, sin et π viennent de l'analyse réelle (ar-trigo). Les termes
+# groupe orthogonal, matrice orthogonale, famille orthonormée, orthogonal d'une partie, projection orthogonale,
+# distance à une partie, orientation, base orthonormée directe et déplacement, définis jusque-là dans des branches
+# parallèles et lointaines (lie, anf, edo-courbes, geod), le sont désormais ici.
+# Aucune démonstration n'emploie l'axiome du choix : tout se passe en dimension finie, et chaque construction
+# (Gram-Schmidt, projection) est donnée par une formule.
+
+graphe: met-euclidien
+titre: Espaces euclidiens
+conteneur: met-euclidien
+
+entrees:
+  me-produit-scalaire: [eu-bases]
+
+noeuds:
+  - id: eu-bases
+    etiquette: Bases orthonormées
+    nature: définition
+    titre: Espaces euclidiens et bases orthonormées
+    texte: |
+      Un [[espace-euclidien|espace euclidien]] est un $\lex{ensemble-reels}{\mathbb R}$-[[espace-vectoriel|espace vectoriel]] $E$ de [[dimension]] finie muni d'un [[produit-scalaire|produit scalaire]] $\langle \cdot, \cdot \rangle$, et de la [[norme]] associée $\|x\| = \langle x, x \rangle^{1/2}$ ({{me-produit-scalaire|Produit scalaire}}, (iv)). L'exemple type est $\lex{n-uplet}{\mathbb R^n}$ muni du [[produit-scalaire-usuel|produit scalaire usuel]] $\langle x, y \rangle = \sum_i x_iy_i$.
+
+      Une famille $(e_i)_{i \in I}$ d'un espace muni d'un produit scalaire est *orthogonale* si ses vecteurs sont deux à deux [[vecteurs-orthogonaux|orthogonaux]], et [[famille-orthonormee|orthonormée]], ou orthonormale, si de plus ils sont de norme $1$, c'est-à-dire si $\langle e_i, e_j \rangle$ vaut $1$ pour $i = j$ et $0$ sinon. Une base orthonormée est une [[base-vectorielle|base]] qui est une famille orthonormée.
+
+      Dans tout ce chapitre, on note $\delta_{ij}$ le réel qui vaut $1$ si $i = j$ et $0$ sinon, et l'on identifie une [[matrice]] à une ligne et une colonne à son unique coefficient.
+    enonce: |
+      Soit $E$ un espace vectoriel réel muni d'un produit scalaire.
+
+      (i) *Liberté.* Une famille orthogonale de vecteurs non nuls est [[famille-libre|libre]] ; en particulier, toute famille orthonormée est libre. Si $E$ est euclidien de dimension $n$, une famille orthonormée a au plus $n$ éléments, et une famille orthonormée de $n$ éléments est une base orthonormée.
+
+      (ii) *Pythagore.* Si $v_1, \dots, v_p$ sont deux à deux orthogonaux, alors
+      $$\Big\|\sum_{i=1}^p v_i\Big\|^2 = \sum_{i=1}^p \|v_i\|^2.$$
+
+      (iii) *Coordonnées.* Soit $(e_1, \dots, e_n)$ une base orthonormée d'un espace euclidien $E$. Pour tous $x, y \in E$, de [[coordonnees-base|coordonnées]] $x_i$ et $y_i$, on a $x_i = \langle x, e_i \rangle$, c'est-à-dire
+      $$x = \sum_{i=1}^n \langle x, e_i \rangle\, e_i,$$
+      et
+      $$\begin{aligned} \langle x, y \rangle &= \sum_{i=1}^n x_iy_i = {}^tX\,Y, \\ \|x\|^2 &= \sum_{i=1}^n x_i^2, \end{aligned}$$
+      où $X$ et $Y$ sont les colonnes des coordonnées. L'application qui envoie $x$ sur la suite de ses coordonnées est un [[isomorphisme]] de $E$ sur $\mathbb R^n$ qui transporte le produit scalaire de $E$ sur le produit scalaire usuel.
+    preuve: |
+      (i) Soit $(v_i)$ orthogonale, formée de vecteurs non nuls, et $\sum_i \lambda_iv_i = 0$, somme finie. Le produit scalaire avec $v_j$ donne, par linéarité,
+      $$0 = \sum_i \lambda_i\langle v_i, v_j \rangle = \lambda_j\|v_j\|^2,$$
+      et $\|v_j\|^2 > 0$, d'où $\lambda_j = 0$. Une famille orthonormée est orthogonale, et ses vecteurs, de norme $1$, sont non nuls. En dimension $n$, une famille libre a au plus $n$ éléments, et une famille libre de $n$ éléments est une base ({{v-dimension|Dimension}}, (ii)).
+
+      (ii) Par linéarité en chaque variable, $\big\langle \sum_i v_i, \sum_j v_j \big\rangle = \sum_{i,j} \langle v_i, v_j \rangle$, et seuls les termes $i = j$ ne sont pas nuls.
+
+      (iii) Si $x = \sum_i x_ie_i$, le produit scalaire avec $e_j$ donne $\langle x, e_j \rangle = \sum_i x_i\delta_{ij} = x_j$. De même
+      $$\langle x, y \rangle = \sum_{i,j} x_iy_j\langle e_i, e_j \rangle = \sum_i x_iy_i,$$
+      qui est l'unique coefficient de ${}^tX\,Y$ par la définition du produit des matrices, et $\|x\|^2$ en est le cas $y = x$. L'application des coordonnées est un isomorphisme ({{v-libre|Familles libres, bases}}, (iii)), et la formule précédente dit qu'elle transporte $\langle \cdot, \cdot \rangle$ sur le produit scalaire usuel.
+    remarques:
+      - |
+        Le point (iii) est le ressort de tout le chapitre : dans une base orthonormée, un espace euclidien se calcule exactement comme $\mathbb R^n$ muni du produit scalaire usuel. L'erreur la plus répandue est d'appliquer ces formules dans une base qui n'est pas orthonormée. Dans $\mathbb R^2$, la base $b_1 = (1, 0)$, $b_2 = (1, 1)$ donne au vecteur $x = (0, 1) = -b_1 + b_2$ les coordonnées $(-1, 1)$, dont la somme des carrés vaut $2$, alors que $\|x\|^2 = 1$ ; les produits scalaires $\langle x, b_1 \rangle = 0$ et $\langle x, b_2 \rangle = 1$ ne sont pas non plus ses coordonnées.
+      - |
+        Une famille orthogonale peut contenir le vecteur nul, et n'est alors pas libre : dans $\mathbb R^2$, la famille $\big((1, 0), (0, 0)\big)$ est orthogonale et liée. C'est l'hypothèse « vecteurs non nuls » de (i) qui sert, par $\|v_j\|^2 > 0$.
+      - |
+        Le procédé de Gram-Schmidt, au nœud suivant, montrera que tout espace euclidien a une base orthonormée ; le point (iii) en fait alors une copie de $\mathbb R^n$ muni du produit scalaire usuel. En dimension infinie, le chapitre {{anf|Analyse fonctionnelle}} remplace les sommes finies de (iii) par des séries ({{f-bases-hilbertiennes|Bases hilbertiennes}}).
+
+  - id: eu-gram-schmidt
+    etiquette: Gram-Schmidt
+    nature: théorème
+    titre: Procédé d'orthonormalisation de Gram-Schmidt
+    enonce: |
+      Soit $E$ un espace vectoriel réel muni d'un produit scalaire, et $(v_1, \dots, v_p)$ une famille libre de $E$.
+
+      (i) *Gram-Schmidt.* Il existe une unique famille orthonormée $(e_1, \dots, e_p)$ telle que, pour tout $k \leqslant p$, les familles $(e_1, \dots, e_k)$ et $(v_1, \dots, v_k)$ engendrent le même sous-espace, noté $F_k$, et que $\langle v_k, e_k \rangle > 0$. Elle est donnée par récurrence par
+      $$\begin{aligned} w_k &= v_k - \sum_{j < k} \langle v_k, e_j \rangle\, e_j, \\ e_k &= \frac{w_k}{\|w_k\|}. \end{aligned}$$
+
+      (ii) *Existence.* Tout espace euclidien a une base orthonormée.
+
+      (iii) *Prolongement.* Dans un espace euclidien, toute famille orthonormée se complète en une base orthonormée.
+    preuve: |
+      (i) *Existence.* Raisonnons par récurrence sur $k$, en supposant construits $e_1, \dots, e_{k-1}$ orthonormés, avec $F_j = \operatorname{Vect}(e_1, \dots, e_j)$ pour $j < k$ ; pour $k = 1$, il n'y a rien de construit et la somme qui définit $w_1$ est vide.
+
+      Le vecteur $w_k$ n'est pas nul : sinon $v_k$ serait dans $\operatorname{Vect}(e_1, \dots, e_{k-1}) = F_{k-1}$, engendré par $v_1, \dots, v_{k-1}$, ce que la liberté interdit. Pour $i < k$, par orthonormalité,
+      $$\langle w_k, e_i \rangle = \langle v_k, e_i \rangle - \sum_{j < k} \langle v_k, e_j \rangle\,\delta_{ji} = 0.$$
+      Donc $e_k = w_k/\|w_k\|$ est de norme $1$ et orthogonal à $e_1, \dots, e_{k-1}$.
+
+      Par construction, $e_k \in \operatorname{Vect}(v_k, e_1, \dots, e_{k-1}) \subset F_k$ et $v_k = \|w_k\|\,e_k + \sum_{j < k} \langle v_k, e_j \rangle e_j$, si bien que $(e_1, \dots, e_k)$ et $(v_1, \dots, v_k)$ engendrent le même sous-espace. Enfin $\langle v_k, e_k \rangle = \langle w_k, e_k \rangle = \|w_k\| > 0$, puisque les autres termes de $v_k$ sont orthogonaux à $e_k$.
+
+      *Unicité.* Soit $(e'_1, \dots, e'_p)$ une autre famille qui convient, et supposons $e'_j = e_j$ pour $j < k$. Le vecteur $e'_k$ appartient à $F_k$, et il est orthogonal à $F_{k-1} = \operatorname{Vect}(e_1, \dots, e_{k-1})$. Or $F_k$ a pour base orthonormée $(e_1, \dots, e_k)$ ({{eu-bases|Bases orthonormées}}, (i)), et les coordonnées de $e'_k$ dans cette base sont les $\langle e'_k, e_i \rangle$ ({{eu-bases|Bases orthonormées}}, (iii)), nulles pour $i < k$ : $e'_k = te_k$, et $|t| = 1$. Enfin $\langle v_k, e'_k \rangle = t\,\|w_k\|$ est strictement positif, d'où $t = 1$.
+
+      (ii) Un espace euclidien $E$ de dimension $n$ a une base $(v_1, \dots, v_n)$ ({{v-dimension|Dimension}}, (i)). La famille $(e_1, \dots, e_n)$ de (i) est orthonormée et a $n$ éléments : c'est une base ({{eu-bases|Bases orthonormées}}, (i)). Si $n = 0$, la famille vide est une base orthonormée.
+
+      (iii) Soit $(e_1, \dots, e_p)$ orthonormée, donc libre. Complétons-la en une base $(e_1, \dots, e_p, v_{p+1}, \dots, v_n)$ ({{v-dimension|Dimension}}, (iii)), et appliquons (i) à cette base. Pour $k \leqslant p$, le vecteur construit au rang $k$ est $e_k$ lui-même : par récurrence, si les $k - 1$ premiers sont $e_1, \dots, e_{k-1}$, alors $w_k = e_k - \sum_{j < k} \langle e_k, e_j \rangle e_j = e_k$, qui est de norme $1$. On obtient une base orthonormée dont les $p$ premiers vecteurs sont les $e_k$.
+
+      Aucun choix n'intervient : chaque vecteur est donné par une formule, et le seul objet pris arbitrairement est une base de $E$, ou un complément de la famille, dont l'existence est assurée par la dimension finie.
+    remarques:
+      - |
+        Dans $\mathbb R^2$, partons de $v_1 = (3, 4)$ et $v_2 = (1, 2)$. On trouve $e_1 = \frac15(3, 4)$, puis $\langle v_2, e_1 \rangle = \frac{11}5$ et
+        $$\begin{aligned} w_2 &= (1, 2) - \tfrac{11}{25}(3, 4) \\ &= \tfrac{2}{25}(-4, 3), \end{aligned}$$
+        de norme $\frac25$, d'où $e_2 = \frac15(-4, 3)$. Le vecteur $w_2$ est ce qui reste de $v_2$ quand on lui retire sa composante sur $e_1$ ; la condition $\langle v_2, e_2 \rangle = \frac25 > 0$ choisit, parmi les deux vecteurs unitaires orthogonaux à $e_1$, celui qui est du côté de $v_2$.
+
+        ```schema eu-gram-schmidt
+        Le vecteur $v_1$, en gris, est normalisé en $e_1$, en bleu. Le vecteur $v_2$, en gris, est la somme de sa composante $\frac{11}5 e_1$ sur $e_1$, qui aboutit au point rouge marqué sur $v_1$, et du vecteur $w_2$, orthogonal à $e_1$, tracé en rouge pointillé depuis ce point et en rouge plein depuis l'origine ; normalisé, $w_2$ donne $e_2$, en bleu. Le quart de cercle pointillé rappelle que $e_1$ et $e_2$ sont de norme $1$, et l'angle droit qu'ils sont orthogonaux.
+        ```
+      - |
+        L'erreur la plus répandue est de retrancher les composantes sur les $v_j$ au lieu des $e_j$, ou d'oublier de diviser par la norme. Avec les vecteurs de l'exemple précédent, $v_2 - \langle v_2, v_1 \rangle v_1 = (1, 2) - 11\,(3, 4) = (-32, -42)$ a pour produit scalaire avec $v_1$ le réel $-96 - 168 = -264$, qui n'est pas nul. La formule correcte avec les $v_j$ serait $v_2 - \frac{\langle v_2, v_1 \rangle}{\|v_1\|^2}v_1$ ; elle n'est juste qu'à l'étape $2$, et seule l'écriture avec les $e_j$, déjà orthonormés, se généralise.
+      - |
+        Le procédé a une traduction matricielle. Si $A \in \lex{groupe-lineaire}{GL_n}(\mathbb R)$ a pour colonnes $v_1, \dots, v_n$, la relation $v_k = \sum_{j \leqslant k} r_{jk}\,e_j$, avec $r_{jk} = \langle v_k, e_j \rangle$ et $r_{kk} = \|w_k\| > 0$, s'écrit $A = QR$, où $Q$ a pour colonnes les $e_j$ et $R = (r_{jk})$ est [[matrice-triangulaire|triangulaire supérieure]] à coefficients diagonaux strictement positifs. Les colonnes de $Q$ forment une base orthonormée : $Q$ est orthogonale, au sens du nœud {{eu-isometries|Endomorphismes orthogonaux}}, (ii). C'est la décomposition $QR$ des numériciens.
+      - |
+        J. P. Gram a donné ces formules en 1883, pour développer une fonction en série par la méthode des moindres carrés (« Ueber die Entwickelung reeller Functionen in Reihen mittelst der Methode der kleinsten Quadrate », *Journal für die reine und angewandte Mathematik* 94, p. 41 et suivantes). E. Schmidt les a reprises en 1907 dans sa théorie des équations intégrales, en signalant qu'elles étaient pour l'essentiel celles de Gram (« Zur Theorie der linearen und nichtlinearen Integralgleichungen. I. Teil », *Mathematische Annalen* 63, p. 433-476). En dimension infinie, le procédé s'applique à une suite libre et donne les bases hilbertiennes ({{f-bases-hilbertiennes|Bases hilbertiennes}}, (iii)).
+
+  - id: eu-orthogonal
+    etiquette: Projection orthogonale
+    nature: théorème
+    titre: Orthogonal, supplémentaire orthogonal et projection orthogonale
+    texte: |
+      Soit $E$ un espace vectoriel réel muni d'un produit scalaire, de dimension quelconque. L'[[orthogonal-partie|orthogonal]] d'une partie $A$ de $E$ est
+      $$\begin{aligned} A^\perp = \{x \in E :{} &\langle x, a \rangle = 0 \\ &\text{pour tout } a \in A\}. \end{aligned}$$
+      Deux parties $A$ et $B$ sont orthogonales si tout vecteur de l'une est orthogonal à tout vecteur de l'autre, c'est-à-dire si $B \subset A^\perp$.
+
+      Dans un [[espace-metrique|espace métrique]] $(X, d)$, la [[distance-partie|distance]] d'un point $x$ à une partie non vide $A$ est $d(x, A) = \inf_{a \in A} d(x, a)$, [[borne-inferieure|borne inférieure]] d'une partie non vide de $[0, +\infty[$. Pour $x, y \in X$ et $a \in A$, on a $d(x, A) \leqslant d(x, a) \leqslant d(x, y) + d(y, a)$ ; en passant à la borne inférieure en $a$, puis en échangeant $x$ et $y$,
+      $$|d(x, A) - d(y, A)| \leqslant d(x, y).$$
+      De plus $d(x, A) = 0$ si et seulement si toute boule $B(x, r)$ rencontre $A$, c'est-à-dire si et seulement si $x$ est [[adherence|adhérent]] à $A$ ({{me-topologie|Topologie d'une distance}}, (ii)). Dans $E$, on prend la distance $d(x, y) = \|x - y\|$.
+    enonce: |
+      (i) Pour toute partie $A$, $A^\perp$ est un [[sous-espace-vectoriel|sous-espace vectoriel]], égal à l'orthogonal du [[sous-espace-engendre|sous-espace engendré]] par $A$, et $A \subset (A^\perp)^\perp$. Pour tout sous-espace $F$, $F \cap F^\perp = \{0\}$.
+
+      (ii) *Projection orthogonale.* Soit $F$ un sous-espace de dimension finie de $E$, et $(e_1, \dots, e_p)$ une base orthonormée de $F$. Pour tout $x \in E$, il existe un unique $y \in F$ tel que $x - y \in F^\perp$, à savoir
+      $$p_F(x) = \sum_{i=1}^p \langle x, e_i \rangle\, e_i.$$
+      Ainsi $E = F \oplus F^\perp$ : $F^\perp$ est un [[supplementaire|supplémentaire]] de $F$, appelé le [[supplementaire-orthogonal|supplémentaire orthogonal]] de $F$. L'application $p_F$, la [[projection-orthogonale|projection orthogonale]] sur $F$, est le [[projecteur]] sur $F$ parallèlement à $F^\perp$ ; elle ne dépend pas de la base orthonormée choisie.
+
+      (iii) *Meilleure approximation.* Pour $x \in E$ et $y \in F$,
+      $$\begin{aligned} \|x - y\|^2 &= \|x - p_F(x)\|^2 \\ &\quad + \|p_F(x) - y\|^2. \end{aligned}$$
+      Par suite $d(x, F) = \|x - p_F(x)\|$, et $p_F(x)$ est l'unique point de $F$ qui réalise cette distance.
+
+      (iv) *Inégalité de Bessel.* Avec les notations de (ii),
+      $$\sum_{i=1}^p \langle x, e_i \rangle^2 = \|p_F(x)\|^2 \leqslant \|x\|^2,$$
+      avec égalité si et seulement si $x \in F$, et $d(x, F)^2 = \|x\|^2 - \sum_i \langle x, e_i \rangle^2$.
+
+      (v) Si $E$ est euclidien de dimension $n$, tout sous-espace $F$ vérifie $\dim F^\perp = n - \dim F$ et $(F^\perp)^\perp = F$.
+    preuve: |
+      (i) Chaque condition $\langle x, a \rangle = 0$ est linéaire en $x$ : $A^\perp$ est une intersection de sous-espaces. Si $x$ est orthogonal à tous les éléments de $A$, il l'est à leurs combinaisons linéaires, par linéarité en la seconde variable ; l'inclusion inverse vient de ce que $A \subset \operatorname{Vect}(A)$. Tout $a \in A$ est orthogonal à tout élément de $A^\perp$, par symétrie, d'où $A \subset (A^\perp)^\perp$. Enfin, un $x \in F \cap F^\perp$ est orthogonal à lui-même : $\|x\|^2 = 0$ et $x = 0$.
+
+      (ii) Une base orthonormée de $F$ existe ({{eu-gram-schmidt|Gram-Schmidt}}, (ii)). Le vecteur $p_F(x)$ appartient à $F$, et, pour tout $j$, par orthonormalité,
+      $$\langle x - p_F(x), e_j \rangle = \langle x, e_j \rangle - \sum_i \langle x, e_i \rangle\,\delta_{ij} = 0 ;$$
+      donc $x - p_F(x)$ est orthogonal aux $e_j$, et à $F$ qu'ils engendrent, par (i).
+
+      Si $y, y' \in F$ conviennent tous deux, $y - y' = (x - y') - (x - y)$ est dans $F \cap F^\perp = \{0\}$. L'unicité montre que $p_F(x)$ ne dépend pas de la base choisie. L'écriture $x = p_F(x) + \big(x - p_F(x)\big)$ donne $E = F + F^\perp$, et la somme est directe par (i) ({{v-somme-directe|Sommes directes}}, (i)) ; $p_F$ est le projecteur associé ({{v-somme-directe|Sommes directes}}, (ii)).
+
+      (iii) Les vecteurs $x - p_F(x) \in F^\perp$ et $p_F(x) - y \in F$ sont orthogonaux, et leur somme est $x - y$ : c'est le théorème de Pythagore ({{eu-bases|Bases orthonormées}}, (ii)). Donc $\|x - y\| \geqslant \|x - p_F(x)\|$ pour tout $y \in F$, avec égalité si et seulement si $p_F(x) - y = 0$. La borne inférieure qui définit $d(x, F)$ est donc atteinte, et seulement en $p_F(x)$.
+
+      (iv) Par Pythagore, $\|p_F(x)\|^2 = \sum_i \langle x, e_i \rangle^2$ ; le cas $y = 0$ de (iii) donne $\|x\|^2 = d(x, F)^2 + \|p_F(x)\|^2$. L'égalité de Bessel a lieu si et seulement si $d(x, F) = 0$, c'est-à-dire $x = p_F(x) \in F$.
+
+      (v) Par (ii), $E = F \oplus F^\perp$, donc $\dim F^\perp = n - \dim F$ ({{v-rang|Théorème du rang}}). On a $F \subset (F^\perp)^\perp$ par (i), et ces deux sous-espaces ont la même dimension $n - (n - \dim F)$ : ils sont égaux ({{v-dimension|Dimension}}, (iii)).
+
+      Aucun choix n'intervient : la projection est donnée par une formule, et l'unicité la rend indépendante de la base.
+    remarques:
+      - |
+        Dans $\mathbb R^3$, soit $F$ le plan engendré par $v_1 = (1, 1, 0)$ et $v_2 = (0, 1, 1)$, et $x = (1, 0, 0)$. Le procédé de Gram-Schmidt donne $e_1 = \frac1{\sqrt2}(1, 1, 0)$ et $e_2 = \frac1{\sqrt6}(-1, 1, 2)$, puis $\langle x, e_1 \rangle = \frac1{\sqrt2}$, $\langle x, e_2 \rangle = -\frac1{\sqrt6}$ et
+        $$p_F(x) = \tfrac12(1, 1, 0) - \tfrac16(-1, 1, 2) = \tfrac13(2, 1, -1).$$
+        Le vecteur $x - p_F(x) = \frac13(1, -1, 1)$ est bien orthogonal à $v_1$ et à $v_2$ : il dirige la droite $F^\perp$. La distance de $x$ au plan vaut $\frac1{\sqrt3}$, et l'inégalité de Bessel s'écrit $\frac12 + \frac16 = \frac23 \leqslant 1$, l'écart $\frac13$ étant le carré de cette distance.
+      - |
+        L'erreur la plus répandue est d'appliquer la formule de (ii) avec une base qui n'est pas orthonormée. Pour la droite $F = \mathbb Rv$ de $\mathbb R^2$, avec $v = (1, 1)$, et $x = (1, 0)$, l'expression $\langle x, v \rangle v = (1, 1)$ n'est pas le projeté : $x - (1, 1) = (0, -1)$ n'est pas orthogonal à $v$. Le projeté est $\frac{\langle x, v \rangle}{\|v\|^2}\,v = \frac12(1, 1)$, ce que donne la formule avec le vecteur unitaire $v/\sqrt2$.
+      - |
+        La dimension finie de $F$ ne peut pas être omise dans (ii). Dans l'espace $\ell^2$ des suites de carré sommable, le sous-espace des suites nulles à partir d'un certain rang a pour orthogonal $\{0\}$ et n'est pas l'espace entier ; il n'a donc pas de supplémentaire orthogonal. Le théorème de projection de l'{{anf|analyse fonctionnelle}} remplace la dimension finie par une hypothèse de complétude ({{f-hilbert|Espaces de Hilbert}}, (iii)).
+      - |
+        Le point (ii) vaut dans un espace de dimension quelconque, pourvu que $F$ soit de dimension finie : c'est sous cette forme que le chapitre {{anf|Analyse fonctionnelle}} l'emploie pour les sous-espaces propres des opérateurs compacts ({{f-spectral-compact|Théorème spectral des opérateurs compacts}}). Le cas d'une droite $F = \mathbb Ry$ est le calcul du nœud {{me-produit-scalaire|Produit scalaire}}, (iii), où $p = ty$ était déjà le projeté orthogonal de $x$.
+
+  - id: eu-isometries
+    etiquette: Endomorphismes orthogonaux
+    nature: théorème
+    titre: Endomorphismes orthogonaux, groupe orthogonal
+    texte: |
+      Soit $E$ un espace euclidien de dimension $n$. Un [[endomorphisme]] $u$ de $E$ est [[endomorphisme-orthogonal|orthogonal]], ou est une isométrie vectorielle, si $\|u(x)\| = \|x\|$ pour tout $x \in E$. On note $O(E)$ l'ensemble des endomorphismes orthogonaux.
+
+      Une matrice $A \in \lex{espace-matrices}{\mathcal M_n}(\mathbb R)$ est [[matrice-orthogonale|orthogonale]] si ${}^tA\,A = \lex{matrice-identite}{I_n}$, où ${}^tA$ est la [[matrice-transposee|transposée]] de $A$. Le [[groupe-orthogonal|groupe orthogonal]] est l'ensemble $O(n)$ des matrices orthogonales de taille $n$, et le [[groupe-special-orthogonal|groupe spécial orthogonal]] est
+      $$SO(n) = \{A \in O(n) : \det A = 1\} ;$$
+      de même, $SO(E)$ est l'ensemble des $u \in O(E)$ de [[determinant|déterminant]] $1$.
+    enonce: |
+      (i) *Caractérisations.* Pour un endomorphisme $u$ de $E$, les conditions suivantes sont équivalentes :
+
+      (a) $\|u(x)\| = \|x\|$ pour tout $x$ ;
+
+      (b) $\langle u(x), u(y) \rangle = \langle x, y \rangle$ pour tous $x, y$ ;
+
+      (c) l'image par $u$ de toute base orthonormée est une base orthonormée ;
+
+      (d) l'image par $u$ d'une base orthonormée est une famille orthonormée ;
+
+      (e) la [[matrice-application-lineaire|matrice]] $A$ de $u$ dans une base orthonormée vérifie ${}^tA\,A = I_n$.
+
+      (ii) *Matrices.* Pour $A \in \mathcal M_n(\mathbb R)$, les conditions ${}^tA\,A = I_n$, $A\,{}^tA = I_n$, « les colonnes de $A$ forment une base orthonormée de $\mathbb R^n$ » et « les lignes de $A$ forment une base orthonormée de $\mathbb R^n$ » sont équivalentes, pour le [[produit-scalaire-usuel|produit scalaire usuel]]. Une matrice orthogonale est [[matrice-inversible|inversible]], d'inverse ${}^tA$, et $\det A = \pm 1$.
+
+      (iii) *Groupes.* $O(E)$ est un [[sous-groupe]] du [[groupe-lineaire|groupe linéaire]] de $E$, et $SO(E)$ un sous-groupe de $O(E)$ ; de même $O(n)$ est un sous-groupe de $GL_n(\mathbb R)$, et $SO(n)$ un sous-groupe de $O(n)$, distinct de $O(n)$ si $n \geqslant 1$. Si $B$ est une base orthonormée de $E$, l'application qui envoie $u$ sur sa matrice dans $B$ est un isomorphisme de groupes de $O(E)$ sur $O(n)$, qui envoie $SO(E)$ sur $SO(n)$.
+
+      (iv) *Changements de base.* Si $B$ est une base orthonormée, une base $B'$ est orthonormée si et seulement si la [[matrice-passage|matrice de passage]] de $B$ à $B'$ est orthogonale.
+
+      (v) Les [[valeur-propre|valeurs propres]] d'un endomorphisme orthogonal sont parmi $1$ et $-1$.
+    preuve: |
+      (i) *(a) entraîne (b).* Par la formule de polarisation, conséquence du développement de $\|x + y\|^2$ ({{me-produit-scalaire|Produit scalaire}}, (ii)),
+      $$\langle x, y \rangle = \tfrac12\big(\|x + y\|^2 - \|x\|^2 - \|y\|^2\big),$$
+      et de même pour $u(x)$, $u(y)$, puisque $u(x) + u(y) = u(x + y)$ : les deux membres de (b) s'expriment par les mêmes normes.
+
+      *(b) entraîne (c).* Si $(e_i)$ est une base orthonormée, $\langle u(e_i), u(e_j) \rangle = \langle e_i, e_j \rangle = \delta_{ij}$ : la famille $(u(e_i))$ est orthonormée, de $n$ éléments, donc une base ({{eu-bases|Bases orthonormées}}, (i)).
+
+      *(c) entraîne (d)*, puisque $E$ a une base orthonormée ({{eu-gram-schmidt|Gram-Schmidt}}, (ii)).
+
+      *(d) entraîne (e).* Soit $(e_i)$ une base orthonormée dont l'image est orthonormée, et $A = (a_{ij})$ la matrice de $u$ dans cette base : sa $j$-ième colonne est formée des coordonnées de $u(e_j)$. Par le nœud {{eu-bases|Bases orthonormées}}, (iii), le coefficient d'indice $(i, j)$ de ${}^tA\,A$ est
+      $$\sum_k a_{ki}a_{kj} = \langle u(e_i), u(e_j) \rangle = \delta_{ij}.$$
+
+      *(e) entraîne (a).* Soit $(e_i)$ une base orthonormée où la matrice $A$ de $u$ vérifie ${}^tA\,A = I_n$, et $X$ la colonne des coordonnées de $x$ ; celle de $u(x)$ est $AX$. Par le même nœud, (iii), et l'associativité du produit,
+      $$\|u(x)\|^2 = {}^t(AX)(AX) = {}^tX\,{}^tA\,A\,X = {}^tX\,X = \|x\|^2.$$
+
+      (ii) Le coefficient d'indice $(i, j)$ de ${}^tA\,A$ est le produit scalaire usuel des colonnes $i$ et $j$ de $A$, et celui de $A\,{}^tA$ le produit scalaire des lignes $i$ et $j$. La première condition dit donc que les colonnes forment une famille orthonormée, c'est-à-dire, ayant $n$ éléments, une base orthonormée ({{eu-bases|Bases orthonormées}}, (i)) ; la deuxième le dit des lignes.
+
+      Si ${}^tA\,A = I_n$, alors $\det{}^tA \cdot \det A = (\det A)^2 = 1$ ({{v-det-matrice|Déterminant d'une matrice}}, (ii) et (iii)), donc $\det A = \pm 1$ et $A$ est inversible. En multipliant ${}^tA\,A = I_n$ à droite par $A^{-1}$, on obtient ${}^tA = A^{-1}$, puis $A\,{}^tA = I_n$. La réciproque s'obtient en appliquant ce qui précède à ${}^tA$, dont la transposée est $A$.
+
+      (iii) Soit $B$ une base orthonormée. Par (i), $u \in O(E)$ si et seulement si sa matrice $A$ dans $B$ est orthogonale. La matrice de $u \circ v$ est le produit des matrices, celle de l'identité est $I_n$, et une matrice orthogonale est inversible : $u$ est bijectif ({{v-matrices|Matrices}}, (iv)). Il suffit donc de montrer que $O(n)$ est un sous-groupe de $GL_n(\mathbb R)$. Il contient $I_n$ ; si $A, C \in O(n)$, alors ${}^t(AC)(AC) = {}^tC\,{}^tA\,A\,C = I_n$, et $A^{-1} = {}^tA$ est orthogonale par (ii).
+
+      Le déterminant étant multiplicatif, $SO(n)$ est un sous-groupe ; la matrice de passage à la base $B$ conserve le déterminant ({{v-det-matrice|Déterminant d'une matrice}}, (i)), d'où l'énoncé pour $SO(E)$. Pour $n \geqslant 1$, la matrice [[matrice-diagonale|diagonale]] de coefficients $-1, 1, \dots, 1$ est orthogonale, de déterminant $-1$.
+
+      (iv) Soit $P$ la matrice de passage de $B = (e_i)$ à $B' = (e'_j)$ : sa $j$-ième colonne est formée des coordonnées de $e'_j$ dans $B$. Comme dans (i), le coefficient d'indice $(i, j)$ de ${}^tP\,P$ est $\langle e'_i, e'_j \rangle$. Donc ${}^tP\,P = I_n$ si et seulement si $B'$ est orthonormée ; c'est alors une base par (ii).
+
+      (v) Si $u(x) = \lambda x$ avec $x \neq 0$, alors $\|x\| = \|u(x)\| = |\lambda|\,\|x\|$, d'où $|\lambda| = 1$.
+    remarques:
+      - |
+        L'erreur la plus répandue est de croire que des colonnes deux à deux orthogonales suffisent. La matrice
+        $$A = \begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix}$$
+        a des colonnes orthogonales, mais de norme $\sqrt 2$ : ${}^tA\,A = 2I_2$, et l'application $x \mapsto Ax$ multiplie les normes par $\sqrt 2$. Ce n'est qu'après division par $\sqrt 2$ que l'on obtient une matrice orthogonale.
+      - |
+        La condition (a) ne porte que sur des applications linéaires. La translation $x \mapsto x + c$, avec $c \neq 0$, conserve les distances, mais pas les normes, et elle n'est pas linéaire ; le nœud {{eu-affine|Isométries}} montrera que les applications qui conservent les distances sont exactement les composées d'une translation et d'un endomorphisme orthogonal. Inversement, $2\,\mathrm{id}$ conserve l'orthogonalité des vecteurs sans conserver les normes : conserver les angles droits ne suffit pas.
+      - |
+        Pour la matrice
+        $$A = \frac13\begin{pmatrix} 2 & -1 & 2 \\ 2 & 2 & -1 \\ -1 & 2 & 2 \end{pmatrix},$$
+        les colonnes sont de norme $1$, puisque $4 + 4 + 1 = 9$, et deux à deux orthogonales, par exemple $-2 + 4 - 2 = 0$ pour les deux premières : $A \in O(3)$, et l'on calcule $\det A = 1$, si bien que $A \in SO(3)$. Le nœud {{eu-so3|Rotations de l'espace}} en fera une rotation d'axe dirigé par $(1, 1, 1)$.
+      - |
+        Le groupe orthogonal réapparaît plus loin comme sous-variété de $\mathcal M_n(\mathbb R)$ de dimension $\frac{n(n-1)}2$, et comme groupe de Lie ({{li-definition|Groupes de Lie}}, (iii)) ; le théorème spectral y diagonalise toute matrice symétrique par une matrice orthogonale ({{f-spectral-fini|Théorème spectral}}, (iii)).
+
+  - id: eu-orientation
+    etiquette: Orientation
+    nature: proposition
+    titre: Orientation et bases orthonormées directes
+    texte: |
+      Soit $E$ un espace vectoriel réel de dimension $n \geqslant 1$. Deux bases de $E$ ont [[meme-orientation|même orientation]] si la [[matrice-passage|matrice de passage]] de l'une à l'autre a un [[determinant|déterminant]] strictement positif. Une [[orientation]] de $E$ est une [[classe-equivalence|classe d'équivalence]] pour cette relation ; orienter $E$, c'est choisir l'une des deux classes, dont les bases sont dites directes, les autres étant indirectes. L'espace $\lex{n-uplet}{\mathbb R^n}$ est orienté par la classe de sa [[base-canonique-kn|base canonique]].
+
+      Si $E$ est euclidien et orienté, une [[base-orthonormee-directe|base orthonormée directe]] est une base orthonormée qui appartient à l'orientation choisie.
+    enonce: |
+      (i) « Avoir même orientation » est une relation d'équivalence sur les bases de $E$, qui a exactement deux classes. Un automorphisme $u$ de $E$ envoie chaque base sur une base de même orientation si et seulement si $\det u > 0$, et sinon il envoie chaque base sur une base d'orientation opposée.
+
+      (ii) Si $E$ est euclidien, la matrice de passage entre deux bases orthonormées a pour déterminant $1$ si elles ont même orientation, et $-1$ sinon.
+
+      (iii) Si $E$ est euclidien et orienté, un endomorphisme orthogonal envoie les bases orthonormées directes sur des bases orthonormées directes si et seulement s'il appartient à $SO(E)$. Toute famille orthonormée de $n - 1$ vecteurs se complète d'une seule façon en une base orthonormée directe.
+
+      (iv) Une base orthonormée $(e_1, \dots, e_n)$ de $\mathbb R^n$ est directe si et seulement si la matrice de colonnes $e_1, \dots, e_n$ est de déterminant $1$.
+    preuve: |
+      (i) Si $P$ et $Q$ sont les matrices de passage de $\mathcal B$ à $\mathcal B'$ et de $\mathcal B'$ à $\mathcal B''$, celle de $\mathcal B$ à $\mathcal B''$ est $PQ$ ({{v-matrices|Matrices}}, (ii)), et $\det(PQ) = \det P \det Q$ ({{v-det-matrice|Déterminant d'une matrice}}, (ii)) ; la matrice de passage inverse est $P^{-1}$, de déterminant $1/\det P$, et celle de $\mathcal B$ à elle-même est l'identité. La relation est donc réflexive, symétrique et transitive.
+
+      Soit $\mathcal B = (e_1, \dots, e_n)$ une base, et $\mathcal B^-$ la base obtenue en remplaçant $e_1$ par $-e_1$. La matrice de passage de $\mathcal B$ à $\mathcal B^-$ est diagonale de coefficients $-1, 1, \dots, 1$, de déterminant $-1$ : il y a au moins deux classes. Une base quelconque $\mathcal C$, de matrice de passage $P$ depuis $\mathcal B$, a même orientation que $\mathcal B$ si $\det P > 0$, et que $\mathcal B^-$ sinon, puisque la matrice de passage de $\mathcal B^-$ à $\mathcal C$ a pour déterminant $-\det P$, et que $\det P \neq 0$. Il y a donc exactement deux classes.
+
+      Enfin, la matrice de passage de $\mathcal B$ à $u(\mathcal B)$ est la matrice de $u$ dans $\mathcal B$, de déterminant $\det u$ ({{v-det-matrice|Déterminant d'une matrice}}, (i)).
+
+      (ii) Cette matrice de passage est orthogonale ({{eu-isometries|Endomorphismes orthogonaux}}, (iv)), donc de déterminant $\pm 1$ ({{eu-isometries|Endomorphismes orthogonaux}}, (ii)), et son signe décide de l'orientation.
+
+      (iii) La première affirmation est (i), appliquée à $u \in O(E)$, de déterminant $\pm 1$. Soit $(e_1, \dots, e_{n-1})$ orthonormée. Elle se complète en une base orthonormée $(e_1, \dots, e_{n-1}, e_n)$ ({{eu-gram-schmidt|Gram-Schmidt}}, (iii)). Un vecteur $e$ qui complète la famille en une base orthonormée est unitaire et orthogonal à $e_1, \dots, e_{n-1}$ ; ses coordonnées dans la base $(e_1, \dots, e_n)$ sont les $\langle e, e_i \rangle$ ({{eu-bases|Bases orthonormées}}, (iii)), nulles pour $i < n$, si bien que $e = \langle e, e_n \rangle e_n$, et $e = \pm e_n$ puisque $\|e\| = 1$. La matrice de passage de $(e_1, \dots, e_{n-1}, e_n)$ à $(e_1, \dots, e_{n-1}, -e_n)$ est de déterminant $-1$ : exactement l'une des deux bases est directe.
+
+      (iv) La matrice de colonnes $e_1, \dots, e_n$ est la matrice de passage de la base canonique à $(e_1, \dots, e_n)$.
+    remarques:
+      - |
+        Dans $\mathbb R^3$, la base $(e_2, e_3, e_1)$, obtenue par permutation circulaire de la base canonique, est directe, alors que $(e_2, e_1, e_3)$ est indirecte : les matrices de passage, obtenues en permutant les colonnes de $I_3$, ont pour déterminants $1$ et $-1$. Pour $u = \frac1{\sqrt2}(1, 1, 0)$ et $v = \frac1{\sqrt2}(-1, 1, 0)$, le point (iii) complète $(u, v)$ en une base directe par $e_3$, puisque le déterminant de $(u, v, e_3)$ vaut $\frac12 + \frac12 = 1$, et en une base indirecte par $-e_3$.
+      - |
+        L'erreur la plus répandue est de croire qu'une orientation est une propriété des vecteurs eux-mêmes. C'est un choix entre deux classes de bases ; $\mathbb R^n$ n'a une orientation « canonique » que parce que l'on a choisi sa base canonique. Un plan de $\mathbb R^3$, par exemple, n'a aucune orientation privilégiée : il faut en choisir une, par exemple en se donnant un vecteur normal unitaire $a$ et en déclarant directes les bases $(f_1, f_2)$ du plan telles que $(a, f_1, f_2)$ soit directe.
+      - |
+        La géométrie différentielle étend la notion aux variétés, en orientant chaque espace tangent de façon cohérente ({{gd-orientation|Orientation}}). Dans $\mathbb R^3$, le produit vectoriel $u \wedge v$ de deux vecteurs orthonormés est le vecteur qui complète $(u, v)$ en une base orthonormée directe ({{cb-frenet|Repère de Frenet}}, (i)).
+
+  - id: eu-reflexions
+    etiquette: Réflexions
+    nature: théorème
+    titre: Réflexions et théorème de Cartan-Dieudonné
+    texte: |
+      Soit $E$ un espace euclidien de dimension $n \geqslant 1$. Un hyperplan de $E$ est un sous-espace de dimension $n - 1$. Si $H$ est un hyperplan, son orthogonal $H^\perp$ est une droite ({{eu-orthogonal|Projection orthogonale}}, (v)), engendrée par un vecteur unitaire $a$, unique au signe près, et $E = H \oplus \mathbb Ra$. La [[reflexion|réflexion]] d'hyperplan $H$ est l'endomorphisme $s_H$ égal à l'identité sur $H$ et à $-\mathrm{id}$ sur $\mathbb Ra$ :
+      $$s_H(x) = x - 2\langle x, a \rangle\, a,$$
+      formule qui ne change pas quand on remplace $a$ par $-a$. On la note aussi $s_a$. Pour $n = 1$, l'hyperplan est $\{0\}$ et $s_H = -\mathrm{id}$.
+    enonce: |
+      (i) Une réflexion $s_H$ est un endomorphisme orthogonal, vérifie $s_H \circ s_H = \mathrm{id}$, a pour déterminant $-1$, et les vecteurs qu'elle fixe forment exactement $H$.
+
+      (ii) *Échange.* Si $b$ et $c$ sont deux vecteurs distincts de même norme, la réflexion $s_a$, où $a = \frac{b - c}{\|b - c\|}$, échange $b$ et $c$.
+
+      (iii) *Théorème de Cartan-Dieudonné.* Tout endomorphisme orthogonal de $E$ est la composée d'au plus $n$ réflexions, l'identité étant la composée de zéro réflexion. Les éléments de $SO(E)$ sont les composées d'un nombre pair de réflexions, les autres éléments de $O(E)$ celles d'un nombre impair.
+
+      (iv) Dans $\mathbb R^n$, muni du produit scalaire usuel, la matrice de $s_a$ est $I_n - 2\,a\,{}^ta$, où $a$ est vu comme une colonne.
+    preuve: |
+      (i) Pour $x = h + ta$, avec $h \in H$, on a $s_H(x) = h - ta$, et $\|s_H(x)\|^2 = \|h\|^2 + t^2 = \|x\|^2$ par Pythagore ({{eu-bases|Bases orthonormées}}, (ii)). Appliquée deux fois, $s_H$ redonne $h + ta$. Dans une base formée d'une base de $H$ et de $a$, sa matrice est diagonale de coefficients $1, \dots, 1, -1$, de déterminant $-1$. Enfin $s_H(x) = x$ équivaut à $-ta = ta$, c'est-à-dire $t = 0$, ou $x \in H$.
+
+      (ii) Comme $\|b\| = \|c\|$, on a $\langle b - c, b + c \rangle = \|b\|^2 - \|c\|^2 = 0$. Écrivons $b = \frac{b + c}2 + \frac{b - c}2$ : le premier terme est orthogonal à $a$, donc fixé par $s_a$, et le second est colinéaire à $a$, donc changé en son opposé. Ainsi
+      $$s_a(b) = \frac{b + c}2 - \frac{b - c}2 = c,$$
+      et $s_a(c) = s_a(s_a(b)) = b$.
+
+      (iii) Par récurrence sur $n$, pour tous les espaces euclidiens de dimension $n$. Pour $n = 1$, soit $e$ unitaire, de sorte que $E = \mathbb Re$, et $u \in O(E)$ : $u(e) = \lambda e$ avec $|\lambda| = 1$, donc $u = \mathrm{id}$, composée de zéro réflexion, ou $u = -\mathrm{id}$, qui est la réflexion d'hyperplan $\{0\}$.
+
+      Soit $n \geqslant 2$, $u \in O(E)$ et $e$ un vecteur unitaire.
+
+      *Premier cas : $u(e) = e$.* L'hyperplan $H = e^\perp$ est stable par $u$, car pour $x \in H$, $\langle u(x), e \rangle = \langle u(x), u(e) \rangle = \langle x, e \rangle = 0$ ({{eu-isometries|Endomorphismes orthogonaux}}, (i)). La restriction $u_H$ de $u$ à $H$, muni du produit scalaire induit, conserve la norme : par l'hypothèse de récurrence, c'est une composée $\sigma_1 \circ \cdots \circ \sigma_k$ de $k \leqslant n - 1$ réflexions de $H$. Chaque $\sigma_i$ est $x \mapsto x - 2\langle x, a_i \rangle a_i$ pour un vecteur unitaire $a_i$ de $H$ ; la réflexion $s_{a_i}$ de $E$ coïncide avec $\sigma_i$ sur $H$, et fixe $e$, orthogonal à $a_i$. Les endomorphismes $u$ et $s_{a_1} \circ \cdots \circ s_{a_k}$ coïncident sur $H$ et en $e$, donc sur $E = H \oplus \mathbb Re$.
+
+      *Second cas : $u(e) \neq e$.* Les vecteurs $u(e)$ et $e$ ont même norme ; par (ii), une réflexion $s$ envoie $u(e)$ sur $e$. L'endomorphisme orthogonal $s \circ u$ fixe $e$ : par le premier cas, c'est une composée de $k \leqslant n - 1$ réflexions, et $u = s \circ (s \circ u)$, puisque $s \circ s = \mathrm{id}$, en est une de $k + 1 \leqslant n$.
+
+      Enfin, une composée de $k$ réflexions a pour déterminant $(-1)^k$, par (i) et la multiplicativité du déterminant ({{v-determinant|Déterminant d'un endomorphisme}}, (i)) : elle est dans $SO(E)$ si et seulement si $k$ est pair.
+
+      (iv) La colonne de $s_a(x)$ est $X - 2a\,({}^ta\,X) = (I_n - 2a\,{}^ta)X$, par associativité du produit des matrices.
+    remarques:
+      - |
+        Le nombre $n$ ne peut pas être abaissé. Une composée de $k$ réflexions $s_{H_1} \circ \cdots \circ s_{H_k}$ fixe chaque vecteur de $H_1 \cap \cdots \cap H_k$, sous-espace de dimension au moins $n - k$, puisque $\dim(F \cap H) \geqslant \dim F - 1$ pour tout sous-espace $F$ et tout hyperplan $H$, par la formule $\dim(F + H) = \dim F + \dim H - \dim(F \cap H)$ ({{v-rang|Théorème du rang}}). Or $-\mathrm{id}$ ne fixe que $0$ : il faut $k \geqslant n$, et dans une base orthonormée, $-\mathrm{id} = s_{e_1} \circ \cdots \circ s_{e_n}$ en emploie exactement $n$.
+
+        ```schema eu-reflexions
+        Les vecteurs $b$ et $c$, en rouge, ont même norme : ils sont sur un même cercle de centre $0$. La réflexion d'hyperplan $H$, en bleu, orthogonal à $b - c$, les échange, et le milieu $\frac{b + c}2$, sur $H$, reste fixe. C'est l'étape du théorème de Cartan-Dieudonné qui ramène $u(e)$ sur $e$.
+        ```
+      - |
+        La réflexion $s_a$ de (iv) est la matrice de Householder des numériciens : en l'appliquant à une colonne $b$ avec $c = \|b\|\,e_1$, le point (ii) annule tous les coefficients de $b$ sauf le premier, sans jamais diviser par un petit pivot. L'erreur serait de prendre pour $a$ un vecteur non unitaire : $I_n - 2a\,{}^ta$ n'est alors plus orthogonale. Pour $a = (2, 0)$, la matrice $I_2 - 2a\,{}^ta$ a pour premier coefficient $1 - 8 = -7$, et elle multiplie la norme de $e_1$ par $7$.
+      - |
+        Le théorème porte les noms d'Élie Cartan, qui le démontre au début de ses *Leçons sur la théorie des spineurs* (Hermann, 1938, tome I, p. 13-17), et de Jean Dieudonné, à qui l'on doit sa forme générale pour les formes quadratiques non dégénérées sur un corps de caractéristique différente de $2$. Le nœud {{eu-o2|Groupe orthogonal du plan}} en donne le cas $n = 2$ : toute rotation du plan est la composée de deux réflexions.
+
+  - id: eu-o2
+    etiquette: Groupe O(2)
+    nature: théorème
+    titre: Groupe orthogonal du plan, angle d'une rotation
+    texte: |
+      Pour tout réel $\theta$, on pose
+      $$\begin{aligned} R_\theta &= \begin{pmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{pmatrix}, \\ S_\theta &= \begin{pmatrix} \cos\theta & \sin\theta \\ \sin\theta & -\cos\theta \end{pmatrix}, \end{aligned}$$
+      où $\lex{cosinus-sinus}{\cos}$ et $\sin$ sont les fonctions du nœud {{tg-prolongement|Cosinus et sinus sur ℝ}}. Dans un plan euclidien orienté, c'est-à-dire un espace euclidien orienté de dimension $2$, une [[rotation]] est un élément de $SO(E)$.
+    enonce: |
+      (i) *Description.* Les éléments de $SO(2)$ sont les matrices $R_\theta$, et ceux de $O(2) \setminus SO(2)$ les matrices $S_\theta$, pour $\theta$ réel ; on a $R_\theta = R_\varphi$, ou $S_\theta = S_\varphi$, si et seulement si $\theta - \varphi \in 2\pi\lex{ensemble-entiers-relatifs}{\mathbb Z}$.
+
+      (ii) *Composition des rotations.* $R_\theta R_\varphi = R_{\theta + \varphi}$ ; le groupe $SO(2)$ est [[groupe-abelien|commutatif]].
+
+      (iii) *Réflexions.* $S_\theta$ est la [[reflexion|réflexion]] dont l'hyperplan est la droite engendrée par $(\cos\frac\theta2, \sin\frac\theta2)$, et
+      $$S_\theta S_\varphi = R_{\theta - \varphi}.$$
+      La composée de la réflexion d'axe d'angle $\beta$ suivie de celle d'axe d'angle $\alpha$ est donc la rotation $R_{2(\alpha - \beta)}$.
+
+      (iv) *Angle.* Soit $E$ un plan euclidien orienté et $u \in SO(E)$. Il existe un réel $\theta$, unique modulo $2\pi$, tel que la matrice de $u$ dans toute base orthonormée directe soit $R_\theta$ ; c'est l'angle de la rotation $u$. Dans une base orthonormée indirecte, la matrice de $u$ est $R_{-\theta}$. Pour tout vecteur unitaire $x$, on a $\cos\theta = \langle u(x), x \rangle$, et $\sin\theta$ est le déterminant de $(x, u(x))$ dans une base orthonormée directe.
+    preuve: |
+      (i) Soit $A \in O(2)$. Sa première colonne $(a, b)$ est de norme $1$ ({{eu-isometries|Endomorphismes orthogonaux}}, (ii)) : $(a, b)$ appartient au cercle $\lex{sphere-unite}{S^1}$, et il existe un réel $\theta$ tel que $(a, b) = (\cos\theta, \sin\theta)$, unique modulo $2\pi$ ({{tg-cercle|Paramétrage du cercle}}, (iii)).
+
+      Les vecteurs $(a, b)$ et $(-b, a)$ forment une base orthonormée de $\mathbb R^2$. Les coordonnées de la seconde colonne $(x, y)$ dans cette base sont $ax + by$, nul par orthogonalité des colonnes, et $-bx + ay$ ({{eu-bases|Bases orthonormées}}, (iii)) ; ainsi $(x, y) = t(-b, a)$, avec $|t| = 1$ puisque cette colonne est de norme $1$. Si $t = 1$, $A = R_\theta$, de déterminant $\cos^2\theta + \sin^2\theta = 1$ ; si $t = -1$, $A = S_\theta$, de déterminant $-1$. Réciproquement, $R_\theta$ et $S_\theta$ ont des colonnes orthonormées, donc sont orthogonales. L'unicité de $\theta$ modulo $2\pi$ se lit sur la première colonne.
+
+      (ii) Le produit $R_\theta R_\varphi$ a pour coefficients $\cos\theta\cos\varphi - \sin\theta\sin\varphi = \cos(\theta + \varphi)$ et $\sin\theta\cos\varphi + \cos\theta\sin\varphi = \sin(\theta + \varphi)$, et les deux autres s'en déduisent de même, par les formules d'addition ({{tg-addition|Formules d'addition}}, (iii)). La commutativité vient de $\theta + \varphi = \varphi + \theta$.
+
+      (iii) Posons $D = S_0$, matrice diagonale de coefficients $1$ et $-1$. On vérifie $S_\theta = R_\theta D$ et $DR_\varphi = R_{-\varphi}D$, par la parité du cosinus et l'imparité du sinus ({{tg-addition|Formules d'addition}}, (iv)). Alors
+      $$S_\theta S_\varphi = R_\theta D R_\varphi D = R_\theta R_{-\varphi} D^2 = R_{\theta - \varphi}.$$
+      En particulier $S_\theta^2 = R_0 = I_2$. Soit $h = \frac\theta2$, $w = (\cos h, \sin h)$ et $w' = (-\sin h, \cos h)$. Par les formules d'addition, $S_\theta w = (\cos(\theta - h), \sin(\theta - h)) = w$ et $S_\theta w' = (\sin(\theta - h), -\cos(\theta - h)) = -w'$. Comme $w'$ est unitaire et orthogonal à $w$, $S_\theta$ est la réflexion d'hyperplan $\mathbb Rw$. La réflexion d'axe d'angle $\alpha$ est donc $S_{2\alpha}$, et $S_{2\alpha}S_{2\beta} = R_{2(\alpha - \beta)}$.
+
+      (iv) Soit $B$ une base orthonormée directe ; la matrice de $u$ dans $B$ est dans $SO(2)$ ({{eu-isometries|Endomorphismes orthogonaux}}, (iii)), donc égale à un $R_\theta$ par (i). Si $B'$ est une autre base orthonormée directe, la matrice de passage $P$ est dans $SO(2)$ ({{eu-orientation|Orientation}}, (ii)), et la matrice de $u$ dans $B'$ est $P^{-1}R_\theta P = R_\theta$, puisque $SO(2)$ est commutatif. Si $B'$ est indirecte, $P = S_\varphi$ pour un réel $\varphi$, et
+      $$S_\varphi^{-1}R_\theta S_\varphi = S_\varphi R_\theta S_\varphi = R_{-\theta},$$
+      car $S_\varphi R_\theta = R_\varphi D R_\theta = R_{\varphi - \theta}D = S_{\varphi - \theta}$, puis $S_{\varphi - \theta}S_\varphi = R_{-\theta}$ par (iii).
+
+      Pour $x$ unitaire, complétons-le en une base orthonormée directe $(x, x')$ ({{eu-orientation|Orientation}}, (iii)). Dans cette base, $u(x) = \cos\theta\, x + \sin\theta\, x'$, d'où $\langle u(x), x \rangle = \cos\theta$, et le déterminant de $(x, u(x))$ dans la base $(x, x')$ est $\sin\theta$ ; il est le même dans toute base orthonormée directe, la matrice de passage étant de déterminant $1$.
+    remarques:
+      - |
+        La composée de deux réflexions est une rotation d'angle double de l'angle de leurs axes. Pour des axes d'angles $\beta = \frac\pi{12}$ et $\alpha = \frac\pi4$, la composée $S_{2\alpha}S_{2\beta}$ est la rotation d'angle $2(\alpha - \beta) = \frac\pi3$ : un point $x$ est d'abord envoyé sur son symétrique par rapport au premier axe, puis celui-ci sur son symétrique par rapport au second, et l'angle total parcouru est deux fois l'angle entre les axes. C'est le cas $n = 2$ du théorème de Cartan-Dieudonné ({{eu-reflexions|Réflexions}}, (iii)).
+
+        ```schema eu-o2
+        Le point $x$, en rouge, est réfléchi par rapport à l'axe $D_\beta$ d'angle $\frac\pi{12}$, en gris, puis le point obtenu par rapport à l'axe $D_\alpha$ d'angle $\frac\pi4$, en bleu. Le point final, en rouge, est l'image de $x$ par la rotation d'angle $\frac\pi3$, double de l'angle $\frac\pi6$ entre les axes ; les trois points sont sur un même cercle de centre $0$.
+        ```
+      - |
+        L'erreur la plus répandue est de parler de l'angle d'une rotation d'un plan qui n'est pas orienté. Changer l'orientation change $\theta$ en $-\theta$, par (iv) : dans $\mathbb R^2$, la rotation $R_{\pi/2}$ envoie $e_1$ sur $e_2$, et dans la base indirecte $(e_2, e_1)$ sa matrice est $R_{-\pi/2}$. Seul $\cos\theta$, qui vaut $\langle u(x), x \rangle$, ne dépend pas de l'orientation.
+      - |
+        Le groupe $O(2)$ n'est pas commutatif, bien que $SO(2)$ le soit : $S_0R_\theta = R_{-\theta}S_0 = S_{-\theta}$, alors que $R_\theta S_0 = S_\theta$, et $S_\theta \neq S_{-\theta}$ dès que $2\theta \notin 2\pi\mathbb Z$. L'identification de $R_\theta$ au nombre complexe de module $1$ d'argument $\theta$ fait de $SO(2)$ le cercle de l'analyse complexe ({{li-definition|Groupes de Lie}}).
+
+  - id: eu-so3
+    etiquette: Rotations de l'espace
+    nature: théorème
+    titre: Rotations de l'espace de dimension 3
+    texte: |
+      Soit $E$ un espace euclidien orienté de dimension $3$. Une [[rotation]] de $E$ est un élément de $SO(E)$.
+    enonce: |
+      Soit $u \in SO(E)$.
+
+      (i) *Axe.* Le réel $1$ est [[valeur-propre|valeur propre]] de $u$.
+
+      (ii) *Forme réduite.* Il existe une base orthonormée directe $(e_1, e_2, e_3)$ de $E$ et un réel $\theta$ tels que la matrice de $u$ dans cette base soit
+      $$\begin{pmatrix} 1 & 0 & 0 \\ 0 & \cos\theta & -\sin\theta \\ 0 & \sin\theta & \cos\theta \end{pmatrix}.$$
+      Si $u \neq \mathrm{id}$, l'ensemble des vecteurs fixés par $u$ est la droite $\mathbb Re_1$, l'axe de $u$, et $\theta \notin 2\pi\mathbb Z$.
+
+      (iii) *Angle.* On a $\operatorname{tr} u = 1 + 2\cos\theta$. Pour tout vecteur unitaire $x$ orthogonal à $e_1$, $\cos\theta = \langle u(x), x \rangle$ et $\sin\theta = \det(e_1, x, u(x))$, déterminant dans une base orthonormée directe. Remplacer $e_1$ par $-e_1$ change $\theta$ en $-\theta$ modulo $2\pi$.
+
+      (iv) Si $v \in O(E)$ est de déterminant $-1$, alors $-v \in SO(E)$ : $v$ est l'opposé d'une rotation.
+    preuve: |
+      (i) Soit $A$ la matrice de $u$ dans une base orthonormée, de sorte que $A\,{}^tA = I_3$ et $\det A = 1$ ({{eu-isometries|Endomorphismes orthogonaux}}, (ii) et (iii)). Alors $A - I_3 = A(I_3 - {}^tA) = A\,{}^t(I_3 - A)$, et
+      $$\begin{aligned} \det(A - I_3) &= \det A\,\det(I_3 - A) \\ &= (-1)^3\det(A - I_3), \end{aligned}$$
+      le déterminant étant multiplicatif, invariant par transposition, et multiplié par $(-1)^3$ quand on change le signe des trois colonnes ({{v-det-matrice|Déterminant d'une matrice}}, (ii) et (iii)). Donc $\det(A - I_3) = 0$, et $1$ est valeur propre ({{v-valeurs-propres|Valeurs propres}}, (i)).
+
+      (ii) Soit $e_1$ un vecteur propre de norme $1$ associé à $1$, et $P = e_1^\perp$, plan par le nœud {{eu-orthogonal|Projection orthogonale}}, (v). Il est stable par $u$, puisque $\langle u(x), e_1 \rangle = \langle u(x), u(e_1) \rangle = \langle x, e_1 \rangle$. Complétons $e_1$ en une base orthonormée $(e_1, f_2, f_3)$ ({{eu-gram-schmidt|Gram-Schmidt}}, (iii)), posons $e_2 = f_2$, qui appartient à $P$, et complétons $(e_1, e_2)$ en une base orthonormée directe $(e_1, e_2, e_3)$ ({{eu-orientation|Orientation}}, (iii)) ; alors $e_3 \in P$.
+
+      La matrice de $u$ dans cette base est formée du bloc $1$ et d'un bloc $B$ de taille $2$, matrice de la restriction de $u$ à $P$ dans la base orthonormée $(e_2, e_3)$. Cette restriction conserve la norme, donc $B \in O(2)$ ; en développant le déterminant selon la première colonne ({{v-comatrice|Comatrice}}), $\det B = \det u = 1$. Par le nœud {{eu-o2|Groupe orthogonal du plan}}, (i), $B = R_\theta$.
+
+      Un vecteur $x = te_1 + y$, avec $y \in P$, est fixé par $u$ si et seulement si $R_\theta Y = Y$, où $Y$ est la colonne de $y$. Or $\det(R_\theta - I_2) = (\cos\theta - 1)^2 + \sin^2\theta = 2 - 2\cos\theta$. Si $\theta \notin 2\pi\mathbb Z$, on a $\cos\theta \neq 1$ ({{tg-cercle|Paramétrage du cercle}}, (ii)), donc $Y = 0$ et les vecteurs fixés forment $\mathbb Re_1$ ; si $\theta \in 2\pi\mathbb Z$, alors $R_\theta = I_2$ et $u = \mathrm{id}$.
+
+      (iii) La trace d'un endomorphisme se lit sur sa matrice dans n'importe quelle base ({{v-trace|Trace}}, (iii)) : $\operatorname{tr} u = 1 + 2\cos\theta$. Soit $x \in P$ unitaire, de coordonnées $(p, q)$ dans $(e_2, e_3)$. Alors $u(x)$ a pour coordonnées $(p\cos\theta - q\sin\theta, p\sin\theta + q\cos\theta)$, et
+      $$\langle u(x), x \rangle = (p^2 + q^2)\cos\theta = \cos\theta.$$
+      Le déterminant de $(e_1, x, u(x))$ dans la base $(e_1, e_2, e_3)$, développé selon la première colonne, vaut
+      $$p(p\sin\theta + q\cos\theta) - q(p\cos\theta - q\sin\theta) = \sin\theta ;$$
+      il est le même dans toute base orthonormée directe ({{eu-orientation|Orientation}}, (ii)). Remplacer $e_1$ par $-e_1$ change ce déterminant de signe, et laisse $\cos\theta$ inchangé : $\theta$ devient $-\theta$ modulo $2\pi$ ({{tg-cercle|Paramétrage du cercle}}, (iii)).
+
+      (iv) On a $-v \in O(E)$ et $\det(-v) = (-1)^3\det v = 1$.
+    remarques:
+      - |
+        Pour la matrice $A = \frac13\begin{pmatrix} 2 & -1 & 2 \\ 2 & 2 & -1 \\ -1 & 2 & 2 \end{pmatrix}$ de $SO(3)$ ({{eu-isometries|Endomorphismes orthogonaux}}), on vérifie $A(1, 1, 1) = (1, 1, 1)$ : l'axe est dirigé par $e_1 = \frac1{\sqrt3}(1, 1, 1)$. La trace vaut $2 = 1 + 2\cos\theta$, d'où $\cos\theta = \frac12$. Avec $x = \frac1{\sqrt2}(1, -1, 0)$, orthogonal à $e_1$, on trouve $\det(e_1, x, Ax) = \frac{\sqrt3}2$ : l'angle est $\frac\pi3$, l'axe étant orienté par $e_1$.
+
+        ```schema eu-so3
+        La rotation $A$, vue en perspective : l'axe, en bleu, est dirigé par $e_1 = \frac1{\sqrt3}(1, 1, 1)$, et le cercle du plan orthogonal à l'axe, en gris, est laissé globalement invariant. Le vecteur $x$, en rouge, tourne d'un angle $\frac\pi3$ dans ce plan, dans le sens direct autour de $e_1$, jusqu'à $Ax$, en rouge ; tout vecteur de l'axe est fixé.
+        ```
+      - |
+        L'erreur la plus répandue est de lire l'angle sur la seule trace. Elle ne donne que $\cos\theta$, donc $\theta$ au signe près : la matrice ${}^tA$, inverse de la précédente, a même trace et même axe, mais pour angle $-\frac\pi3$. Le signe se lit sur $\det(e_1, x, u(x))$, après avoir orienté l'axe ; sans orientation de l'axe, « tourner de $\frac\pi3$ » n'a pas de sens.
+      - |
+        La dimension $3$ intervient par son imparité, à travers le facteur $(-1)^3$ de (i). Dans $\mathbb R^2$, la rotation $R_{\pi/2}$ ne fixe aucun vecteur non nul ; dans $\mathbb R^4$, la matrice diagonale par blocs formée de deux blocs $R_{\pi/2}$ est dans $SO(4)$, et $\det(A - I_4) = 2 \times 2 = 4 \neq 0$ : elle n'a pas d'axe.
+      - |
+        La matrice qui envoie $e_1$ sur $e_2$, $e_2$ sur $e_3$ et $e_3$ sur $e_1$ est une rotation de trace $0$, d'axe dirigé par $(1, 1, 1)$, d'angle $\frac{2\pi}3$ autour de $e_1 = \frac1{\sqrt3}(1, 1, 1)$, puisque $\cos\theta = -\frac12$ et $\det(e_1, x, u(x)) = \frac{\sqrt3}2$ pour $x = \frac1{\sqrt2}(1, -1, 0)$. Elle permute circulairement les trois axes de coordonnées, et son cube est l'identité.
+
+  - id: eu-affine
+    etiquette: Isométries
+    nature: théorème
+    titre: Isométries d'un espace euclidien
+    texte: |
+      Une [[isometrie|isométrie]] d'un espace métrique $(X, d)$ dans un espace métrique $(Y, d')$ est une application $f : X \to Y$ qui conserve la distance : $d'(f(x), f(y)) = d(x, y)$ pour tous $x, y$. Un espace vectoriel muni d'un produit scalaire est muni de la distance $\|x - y\|$, et l'on regarde ses éléments comme des points : c'est l'espace affine euclidien associé.
+
+      Soit $E$ un espace euclidien orienté. Une isométrie de $E$ dans lui-même de la forme $x \mapsto c + u(x)$, avec $c \in E$, est un [[deplacement|déplacement]] si $u \in SO(E)$, et un [[antideplacement|antidéplacement]] si $u \in O(E) \setminus SO(E)$ ; ces notions ne dépendent pas de l'orientation. Les [[deplacement-plan|déplacements du plan]] $\mathbb R^2$ sont donc les applications $x \mapsto R_\varphi x + c$, où $R_\varphi$ est une matrice de rotation ({{eu-o2|Groupe orthogonal du plan}}).
+    enonce: |
+      (i) *Les isométries sont affines.* Soient $E$ et $F$ deux espaces vectoriels réels munis de produits scalaires, de dimensions quelconques, et $f : E \to F$ une isométrie. Il existe une [[application-lineaire|application linéaire]] $u : E \to F$ telle que $f(x) = f(0) + u(x)$ pour tout $x$, et $\langle u(x), u(y) \rangle = \langle x, y \rangle$ pour tous $x, y$ : $f$ est une [[application-affine|application affine]], de partie linéaire $u$.
+
+      (ii) *Isométries d'un espace euclidien.* Si $E$ est euclidien, les isométries de $E$ dans lui-même sont exactement les applications $x \mapsto c + u(x)$, avec $c \in E$ et $u \in O(E)$. Elles sont bijectives et forment un groupe pour la composition, et $f \mapsto u$ est un morphisme de ce groupe sur $O(E)$, dont le noyau est le groupe des translations.
+
+      (iii) *Déplacements.* Toute isométrie d'un espace euclidien orienté dans lui-même est un déplacement ou un antidéplacement, et les déplacements forment un sous-groupe.
+    preuve: |
+      (i) Posons $g(x) = f(x) - f(0)$ : c'est encore une isométrie, et $g(0) = 0$, d'où $\|g(x)\| = \|x\|$. Le développement de $\|g(x) - g(y)\|^2 = \|x - y\|^2$ ({{me-produit-scalaire|Produit scalaire}}, (ii)) donne alors
+      $$\langle g(x), g(y) \rangle = \langle x, y \rangle.$$
+
+      *Additivité.* Développons $\|g(x + y) - g(x) - g(y)\|^2$ : c'est une combinaison de produits scalaires de $g(x + y)$, $g(x)$ et $g(y)$ deux à deux, que l'égalité précédente remplace par les produits scalaires correspondants de $x + y$, $x$ et $y$. On obtient donc
+      $$\|g(x + y) - g(x) - g(y)\|^2 = \|(x + y) - x - y\|^2 = 0.$$
+
+      *Homogénéité.* De même, pour $\lambda$ réel,
+      $$\|g(\lambda x) - \lambda g(x)\|^2 = \|\lambda x\|^2 - 2\lambda\langle \lambda x, x \rangle + \lambda^2\|x\|^2 = 0.$$
+      L'application $u = g$ est donc linéaire, et conserve le produit scalaire.
+
+      (ii) Si $f$ est une isométrie de $E$, la partie linéaire $u$ de (i) conserve la norme : $u \in O(E)$ ({{eu-isometries|Endomorphismes orthogonaux}}, (i)). Réciproquement, si $f(x) = c + u(x)$ avec $u \in O(E)$, alors $\|f(x) - f(y)\| = \|u(x - y)\| = \|x - y\|$. Une telle $f$ est bijective, de réciproque $y \mapsto u^{-1}(y - c)$, qui est de la même forme, $u^{-1}$ étant orthogonal ({{eu-isometries|Endomorphismes orthogonaux}}, (iii)). La composée de $x \mapsto c + u(x)$ et de $x \mapsto c' + u'(x)$, dans cet ordre, est
+      $$x \mapsto \big(c' + u'(c)\big) + u' \circ u(x),$$
+      de la même forme et de partie linéaire $u' \circ u$ : c'est un morphisme, surjectif puisque chaque $u \in O(E)$ est une isométrie, et dont le noyau est formé des $x \mapsto c + x$.
+
+      (iii) La partie linéaire est dans $O(E)$, de déterminant $\pm 1$ ; les déplacements forment l'image réciproque du sous-groupe $SO(E)$ par le morphisme de (ii).
+    remarques:
+      - |
+        Pour un vecteur unitaire $a$ et un réel $t$, la réflexion affine $\sigma_t(x) = x - 2\big(\langle x, a \rangle - t\big)a$ fixe l'hyperplan affine $\{x : \langle x, a \rangle = t\}$ ; sa partie linéaire est la réflexion $s_a$ ({{eu-reflexions|Réflexions}}), et c'est un antidéplacement. La composée $\sigma_t \circ \sigma_0$ vaut $x \mapsto x + 2ta$ : deux réflexions d'hyperplans parallèles, à distance $|t|$, composent une translation de longueur $2|t|$, qui est un déplacement, comme l'annonçait la parité du nombre de réflexions.
+      - |
+        L'erreur la plus répandue est de croire qu'une application qui conserve la distance d'une norme quelconque est affine. Munissons $\mathbb R^2$ de $\|\cdot\|_\infty$ ({{gd-normes|Normes}}). L'application $f(t) = (t, \sin t)$ de $\mathbb R$ dans $\mathbb R^2$ vérifie $|\sin t - \sin s| \leqslant |t - s|$, par l'égalité des accroissements finis ({{de-taf|Accroissements finis}}) et $|\cos| \leqslant 1$, donc
+        $$\|f(t) - f(s)\|_\infty = \max\big(|t - s|, |\sin t - \sin s|\big) = |t - s| :$$
+        c'est une isométrie. Elle n'est pas affine, puisque $f(0) = (0, 0)$ et $f(\pi) = (\pi, 0)$, alors que $f(\frac\pi2) = (\frac\pi2, 1)$ n'est pas le milieu $(\frac\pi2, 0)$. La démonstration de (i) repose sur l'identité qui relie la norme au produit scalaire, et c'est elle qui manque ici.
+
+        Mazur et Ulam ont montré en 1932 qu'une isométrie surjective entre deux espaces vectoriels normés réels est affine (« Sur les transformations isométriques d'espaces vectoriels normés », *Comptes rendus de l'Académie des sciences* 194, p. 946-948) ; ce résultat est admis ici, et l'exemple précédent, qui n'est pas surjectif, montre que la surjectivité ne peut pas être omise.
+      - |
+        Les isométries d'une norme non euclidienne sont aussi beaucoup moins nombreuses. La rotation $R_{\pi/4}$ de $\mathbb R^2$ envoie $(1, 0)$, de norme $\|\cdot\|_\infty$ égale à $1$, sur $\frac1{\sqrt2}(1, 1)$, de norme $\frac1{\sqrt2}$ : elle conserve la norme euclidienne, mais pas $\|\cdot\|_\infty$.
+      - |
+        Le chapitre {{edo-changement|Changement de variables}} montrera que toute isométrie de $\mathbb R^n$ conserve la mesure de Lebesgue, puisque sa partie linéaire est de déterminant $\pm 1$, et que la réciproque est fausse ({{cv-isometries|Applications qui conservent la mesure}}).
+    admis:
+      - lieu: remarque
+        statut: hors-cadre
+        objet: Théorème de Mazur-Ulam (une isométrie surjective entre espaces normés réels est affine)
+
+aretes:
+  - [eu-bases, eu-gram-schmidt]
+  - [eu-gram-schmidt, eu-orthogonal]
+  - [eu-gram-schmidt, eu-isometries]
+  - [eu-isometries, eu-orientation]
+  - [eu-orthogonal, eu-reflexions]
+  - [eu-isometries, eu-reflexions]
+  - [eu-orientation, eu-o2]
+  - [eu-reflexions, eu-o2]
+  - [eu-o2, eu-so3]
+  - [eu-o2, eu-affine]

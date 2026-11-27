@@ -866,25 +866,6 @@ def lex_repere_frenet_2():
     return S
 
 
-@schema('lex-deplacement-plan-2')
-def lex_deplacement_plan_2():
-    arc = [(q, q * q / 2) for q in np.linspace(0, 1.6, 120)]
-    kap = lambda P: [((P[i + 1][0] - P[i - 1][0]) * (P[i + 1][1] - 2 * P[i][1] + P[i - 1][1]) -
-                      (P[i + 1][1] - P[i - 1][1]) * (P[i + 1][0] - 2 * P[i][0] + P[i - 1][0])) for i in range(1, len(P) - 1)]
-    phi = PI / 3; c = np.array([2.9, -0.45])
-    Rm = np.array([[math.cos(phi), -math.sin(phi)], [math.sin(phi), math.cos(phi)]])
-    bleu = [tuple(Rm @ np.array(p) + c) for p in arc]
-    vert = [(p[0], -p[1]) for p in arc]
-    assert all(k_ > 0 for k_ in kap(arc)) and all(k_ > 0 for k_ in kap(bleu)) and all(k_ < 0 for k_ in kap(vert))
-    R, ech = _repere_egal(-0.3, 3.4, -1.45, 1.8, H=270)
-    S = Schema(W0, 270, 'Un déplacement conserve la courbure, une symétrie la change de signe')
-    _axes(S, R, '', '')
-    for P, col in ((arc, 'r'), (bleu, 'b'), (vert, 'v')):
-        _param(S, R, P, col, l=2.4)
-        _fleche_sur(S, R, P[-6], P[-1], col)
-    return S
-
-
 @schema('lex-torsion-courbe-2')
 def lex_torsion_courbe_2():
     b = 0.25

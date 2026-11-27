@@ -226,91 +226,8 @@ def lex_espace_L2_3():
 
 # ---------------------------------------------------------------- famille-orthonormee
 
-@schema('lex-famille-orthonormee-1')
-def lex_famille_orthonormee_1():
-    G = np.array([[2, 1], [1, 1]])
-    ps = lambda u, v: float(np.array(u) @ G @ np.array(v))
-    e1, e2 = np.array([1, 0]), np.array([0, 1])
-    f = e1 - e2
-    assert ps(e2, e2) == 1 and ps(f, f) == 1 and ps(e2, f) == 0 and ps(e1, e1) == 2
-    # ellipse ⟨x, x⟩ = 1 : x = G^{-1/2} (cos t, sin t)
-    w, V = np.linalg.eigh(G)
-    th = np.linspace(0, 2 * np.pi, 361)
-    P = (V @ np.diag(1 / np.sqrt(w)) @ V.T @ np.vstack([np.cos(th), np.sin(th)])).T
-    assert np.allclose([ps(p, p) for p in P], 1)
-    H = 290
-    S = Schema(W, H, 'Le cercle unité d’un produit scalaire de ℝ²')
-    R = _repere(-1.6, 1.6, -1.6, 1.6, 400, 274, 10, 8, egal=True)
-    S.ligne(R(-1.6, 0), R(1.6, 0), 'g')
-    S.ligne(R(0, -1.6), R(0, 1.6), 'g')
-    S.poly(R(P[:, 0], P[:, 1]), 'b', ferme=True, rempli='b', l=2)
-    S.fleche(R(0, 0), R(*e1), 'v', l=2.4)
-    S.fleche(R(0, 0), R(*e2), 'r', l=2.4)
-    S.fleche(R(0, 0), R(*f), 'r', l=2.4)
-    S.texte(R(*e1) + [10, -14], 'e_1', 'v', ancre='start')
-    S.texte(R(*e2) + [12, -4], 'e_2', 'r', ancre='start')
-    S.texte(R(*f) + [12, 10], 'e_1 − e_2', 'r', ancre='start')
-    return S
-
-
-@schema('lex-famille-orthonormee-3')
-def lex_famille_orthonormee_3():
-    mil = (np.arange(256) + 0.5) / 256
-    for i in (1, 2, 3):
-        assert np.mean(_rademacher(i, mil) ** 2) == 1
-        for j in (1, 2, 3):
-            if i < j:
-                assert np.mean(_rademacher(i, mil) * _rademacher(j, mil)) == 0
-    # sur chaque palier de r_1, r_2 vaut 1 et −1 sur des longueurs égales
-    for m in (mil < 0.5, mil >= 0.5):
-        assert np.sum(_rademacher(2, mil[m])) == 0
-    H = 280
-    S = Schema(W, H, 'Les fonctions de Rademacher r₁, r₂, r₃')
-    h, haut, gauche, larg = 64, 12, 60, 330
-    cs = {1: 'b', 2: 'v', 3: 'r'}
-    for i, j in enumerate((1, 2, 3)):
-        R = Repere(0, 1, -1.3, 1.3, gauche, haut + i * (h + 24), larg, h)
-        S.ligne(R(0, 0), R(1.04, 0), 'g')
-        for xv in (0.5, 1.0):
-            S.ligne(R(xv, -1.2), R(xv, 1.2), 'g', d=True)
-        m = [(k / 2 ** j, (k + 1) / 2 ** j, (-1) ** k) for k in range(2 ** j)]
-        _marche(S, R, m, cs[j], l=2.6)
-        S.texte(R(0, 0) + [-12, 0], f'r_{j}', cs[j], ancre='end', taille=16)
-    R = Repere(0, 1, -1.3, 1.3, gauche, haut + 2 * (h + 24), larg, h)
-    for xv, s in [(0, '0'), (0.5, '1/2'), (1, '1')]:
-        S.texte(R(xv, -1.3) + [0, 12], s, 'g', taille=14)
-    assert haut + 3 * h + 2 * 24 + 22 <= H
-    return S
-
 
 # ---------------------------------------------------------------- orthogonal-partie
-
-@schema('lex-orthogonal-partie-2')
-def lex_orthogonal_partie_2():
-    t = Fr(1, 3)
-    H = 230
-    S = Schema(W, H, 'Le point 1/3 et les intervalles dyadiques qui le contiennent')
-    gauche, larg, haut, pas = 60, 340, 16, 42
-    R = Repere(0, 1, 0, 1, gauche, 0, larg, 1)
-    for i, j in enumerate((1, 2, 3, 4)):
-        y = haut + i * pas
-        for k in range(2 ** j):
-            a, b = Fr(k, 2 ** j), Fr(k + 1, 2 ** j)
-            dedans = a <= t < b
-            if dedans:
-                assert a < t < b and (t - a) > 0 and (b - t) > 0     # 1/3 intérieur : déborde des deux côtés
-            xa, xb = R(float(a), 0)[0], R(float(b), 0)[0]
-            S.rect(xa + 1.5, y, xb - xa - 3, 20, 'b' if dedans else 'g', rempli='b' if dedans else None, rx=2)
-        S.texte([gauche - 10, y + 10], f'j = {j}', 'g', ancre='end', taille=15)
-    yb = haut + 4 * pas
-    S.ligne([R(0, 0)[0], yb], [R(1, 0)[0], yb], 'g')
-    for xv, s_ in [(0, '0'), (0.5, '1/2'), (1, '1')]:
-        S.texte([R(xv, 0)[0], yb + 16], s_, 'g', taille=15)
-    xr = R(float(t), 0)[0]
-    S.ligne([xr, haut - 8], [xr, yb + 4], 'r', l=2)
-    S.texte([xr, yb + 16], '1/3', 'r', taille=15)
-    assert yb + 28 <= H
-    return S
 
 
 # ---------------------------------------------------------------- exposants-conjugues
@@ -342,29 +259,6 @@ def lex_exposants_conjugues_1():
 
 
 # ---------------------------------------------------------------- projection-orthogonale
-
-@schema('lex-projection-orthogonale-2')
-def lex_projection_orthogonale_2():
-    xs = np.linspace(0, 1, 20001)
-    e = xs ** 2 - xs + 1 / 6
-    assert abs(np.trapezoid(e, xs)) < 1e-9 and abs(np.trapezoid(e * xs, xs)) < 1e-9     # écart ⊥ 1 et ⊥ x
-    r = np.roots([1, -1, 1 / 6])
-    assert np.allclose(sorted(r), [0.5 - math.sqrt(1 / 12), 0.5 + math.sqrt(1 / 12)])     # symétriques / 1/2
-    H = 280
-    S = Schema(W, H, 'La parabole x² et sa projection x − 1/6 sur les fonctions affines')
-    R = _repere(-0.08, 1.12, -0.25, 1.05, 380, 250, 24, 12, egal=True)
-    R.axes(S, 'x', '')
-    S.poly(R(xs, xs ** 2), 'g', l=2.2)
-    S.poly(R(xs, xs - 1 / 6), 'r', l=2.4)
-    for z in sorted(r):
-        S.point(R(z, z ** 2), 'r', r=3.6)
-    S.texte(R(0, 0) + [-6, 14], '0', 'g', ancre='end', taille=15)
-    S.ligne(R(1, -0.02), R(1, 0.02), 'g')
-    S.texte(R(1, 0) + [0, 16], '1', 'g', taille=15)
-    S.texte(R(0.93, 0.93 ** 2) + [-12, -12], 'x^2', 'g', ancre='end')
-    S.texte(R(0.95, 0.95 - 1 / 6) + [8, 10], 'x − 1/6', 'r', ancre='start', taille=16)
-    assert R(0.95, 0)[0] + 8 + largeur_texte('x − 1/6', 16) <= W
-    return S
 
 
 # ---------------------------------------------------------------- convergence-uniforme-compact
@@ -547,37 +441,3 @@ def lex_polynomes_bernstein_3():
 
 # ---------------------------------------------------------------- distance-partie
 
-@schema('lex-distance-partie-3')
-def lex_distance_partie_3():
-    xs = np.linspace(-2, 3, 5001)
-    dF = np.maximum(0, np.maximum(-xs, xs - 1))                  # distance à F = [0, 1]
-    dC = np.maximum(0, np.minimum(xs + 1, 2 - xs))               # distance au complémentaire de ]-1, 2[
-    assert np.all(dF + dC > 0)
-    f = dC / (dC + dF)
-    assert np.all(f[(xs >= 0) & (xs <= 1)] == 1) and np.all(f[(xs <= -1) | (xs >= 2)] == 0)
-    m = (xs > -1) & (xs < 0)
-    assert np.allclose(f[m], xs[m] + 1)
-    m = (xs > 1) & (xs < 2)
-    assert np.allclose(f[m], 2 - xs[m])
-    assert abs(dC.max() - 1.5) < 1e-9 and abs(xs[dC.argmax()] - 0.5) < 1e-3     # tente de sommet 3/2 en 1/2
-    H = 270
-    S = Schema(W, H, 'Une fonction d’Urysohn sur ℝ')
-    R = _repere(-2.2, 3, -0.15, 1.75, 366, 236, 44, 12)
-    S.ligne(R(-2.2, 0), R(3, 0), 'g')
-    S.ligne(R(-2.2, -0.1), R(-2.2, 1.7), 'g')
-    for yv, t_ in [(1, '1'), (1.5, '3/2')]:
-        S.ligne(R(-2.2, yv) + [-4, 0], R(-2.2, yv), 'g')
-        S.texte(R(-2.2, yv) + [-8, 0], t_, 'g', ancre='end', taille=15)
-    S.ligne(R(-2.2, 1), R(3, 1), 'g', d=True)
-    mk = dF <= 1.7
-    S.poly(R(xs[mk & (xs < 0.5)], dF[mk & (xs < 0.5)]), 'b', l=1.8)
-    S.poly(R(xs[mk & (xs > 0.5)], dF[mk & (xs > 0.5)]), 'b', l=1.8)
-    S.poly(R(xs, dC), 'v', l=4.5)
-    S.poly(R(xs, f), 'r', l=2.4)
-    for xv, t_ in [(-1, '−1'), (0, '0'), (1, '1'), (2, '2')]:
-        S.ligne(R(xv, -0.03), R(xv, 0.03), 'g')
-        S.texte(R(xv, 0) + [0, 16], t_, 'g', taille=15)
-    S.texte(R(0.5, 1) + [0, 14], 'f', 'r')
-    S.texte(R(2.4, 1.6) + [-8, 0], 'd(x, F)', 'b', ancre='end', taille=15)
-    S.texte(R(0.5, 1.5) + [0, -14], 'd(x, ℝ ∖ U)', 'v', taille=15)
-    return S
