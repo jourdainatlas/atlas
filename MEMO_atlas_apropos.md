@@ -1118,3 +1118,9 @@ Versions en texte simple (descriptions des pages, recherche, fil RSS) : `texteTe
 
 Contrôle : `python3 outils/edifice_largeurs.py` sur les 982 fiches à 390 px ne signale plus que les quatre formules centrées du chapitre asymptotique (`as-etude-locale`, `as-primitive`, deux dans `as-taylor-young`), qui défilent horizontalement et relèvent de la conversation Édifice.
 
+## 93. En-tête : titres de chapitre à formule (27 nov. 2026)
+
+Signalé par l'audit de la rubrique Cours (et déjà au §72 du mémo Cours) : dans la barre du haut, le fil de position d'un chapitre dont le titre porte une formule affichait le LaTeX brut (« Transformation de Fourier sur L^{1}(\mathbb{R}) »). Neuf chapitres touchés : `ma-12`, `l3-in-02`, `l3-in-08`, `l3-in-09`, `l3-hf-05`, `l3-hf-07`, `l3-hf-08`, `l3-gd-01`, `l3-gd-02`. Cause : `afficherRubrique` retirait les balises du titre composé, ce qui laissait la source de la formule, et `majOnglets` recopiait le texte du fil.
+
+Correction (gabarit) : le fil garde le titre composé ; `majOnglets` écrit chaque étape en texte simple par `filFormule` (ℝ, ℤ, exposants et indices courts en caractères Unicode, tables `FIL_SUP` et `FIL_SUB`), en reprenant la ponctuation collée à la formule (`data-av`, `data-ap` : sans cela « L², formule de Parseval » perdait sa virgule). Une composition par KaTeX a été essayée puis écartée : une formule composée dans le titre coupé sur deux lignes (`-webkit-line-clamp`) se place sur une ligne à part et sort de la pastille. Résultat : « Transformation de Fourier sur L¹(ℝ) », « Les espaces Lᵖ », « Courbes de ℝⁿ ». Un exposant sans équivalent Unicode reste écrit `^…`.
+

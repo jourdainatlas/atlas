@@ -7212,10 +7212,10 @@ function afficherRubrique(nom, chemin) {
   // fil d'Ariane
   const ol = $('#fil'); ol.innerHTML = '';
   const elems = [[RUBRIQUES[nom].titre, '#' + nom]];
-  if (nom === 'cours' && chemin) { const c = (R.cours?.cours || []).find(x => x.id === chemin); if (c) elems.push([c.titre.replace(/<[^>]+>/g, ''), '']); }
-  elems.forEach(([t, href], i) => {
+  if (nom === 'cours' && chemin) { const c = (R.cours?.cours || []).find(x => x.id === chemin); if (c) elems.push([c.titre, '', true]); }   // titre composé par rendu.mjs : il peut porter une formule (« Les espaces Lᵖ »)
+  elems.forEach(([t, href, riche], i) => {
     const li = document.createElement('li'), b = document.createElement('button');
-    b.type = 'button'; b.textContent = t;
+    b.type = 'button'; if (riche) b.innerHTML = t; else b.textContent = t;
     if (i === elems.length - 1) b.setAttribute('aria-current', 'location');
     else b.addEventListener('click', () => { location.hash = href; });
     li.append(b); ol.append(li);
@@ -7550,6 +7550,11 @@ document.querySelectorAll('#menu-rubriques a[data-rubrique] .m-titre').forEach(t
 document.querySelectorAll('#nav-rub a[data-onglet]').forEach(a => { const t = a.textContent, ext = a.classList.contains('nav-rub-ext'); a.title = ext ? 'Atelier ATLAS : espace de travail en équipe, sur invitation (nouvel onglet)' : t; a.innerHTML = `${symbole(a.dataset.onglet)}<span class="nav-rub-nom">${t}</span>${ext ? '<span class="nav-rub-fleche" aria-hidden="true">↗</span>' : ''}`; });
 // La pastille courante s'agrandit pour contenir la suite du fil d'Ariane (après le nom de la rubrique) : chaque
 // étape reprend le texte de l'élément du fil et, au clic, déclenche son bouton (le fil garde toute la logique).
+const FIL_SUP = { 0: '⁰', 1: '¹', 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷', 8: '⁸', 9: '⁹', '+': '⁺', '-': '⁻', n: 'ⁿ', i: 'ⁱ', p: 'ᵖ', k: 'ᵏ', d: 'ᵈ', m: 'ᵐ' };
+const FIL_SUB = { 0: '₀', 1: '₁', 2: '₂', 3: '₃', 4: '₄', 5: '₅', 6: '₆', 7: '₇', 8: '₈', 9: '₉', n: 'ₙ', k: 'ₖ', i: 'ᵢ', j: 'ⱼ', p: 'ₚ' };
+// Formule d'un titre en texte simple pour l'en-tête : exposants et indices courts en caractères Unicode.
+const filFormule = tex => texteFormule(tex.replace(/([\^_])(?:\{([^{}]*)\}|([A-Za-z0-9]))/g, (m, op, a, b) => { const e = a ?? b, T = op === '^' ? FIL_SUP : FIL_SUB;
+  return [...e].every(c => T[c]) ? [...e].map(c => T[c]).join('') : m; })).replace(/[{}]/g, '');
 function majOnglets() {
   majParcours();
   const nav = $('#nav-rub'); if (!nav) return;
@@ -7570,7 +7575,12 @@ function majOnglets() {
   const suite = document.createElement('span'); suite.className = 'nav-rub-suite';
   etapes.forEach((li, i) => {
     const b = document.createElement('button'); b.type = 'button';
-    const t = li.textContent.trim(); b.innerHTML = `<span>${esc(t)}</span>`; b.title = t;
+    // Une étape peut porter une formule (titre de chapitre « Les espaces Lᵖ ») : son texte serait le LaTeX brut. On
+    // l'écrit en texte simple (ℝ, exposants et indices en caractères Unicode) : une formule composée par KaTeX
+    // casserait la coupe du titre sur deux lignes (-webkit-line-clamp).
+    const net = (li.querySelector('button, a') || li).cloneNode(true);
+    net.querySelectorAll('.kx').forEach(k => k.replaceWith((k.dataset.av || '') + filFormule(k.textContent) + (k.dataset.ap || '')));   // data-av, data-ap : ponctuation collée à la formule net.querySelectorAll('.katex-html').forEach(k => k.remove());
+    const t = net.textContent.replace(/\s+/g, ' ').trim(); b.innerHTML = `<span>${esc(t)}</span>`; b.title = t;
     if (i === etapes.length - 1) b.setAttribute('aria-current', 'location');
     b.addEventListener('click', () => li.querySelector('button, a')?.click());
     suite.appendChild(b);
