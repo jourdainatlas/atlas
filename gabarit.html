@@ -1566,6 +1566,12 @@ a.acc-etape:hover { background: var(--trame); }
 details.ue[open] .ue-chevron { transform: rotate(-135deg); margin-top: 4px; }
 details.ue[open] > .ue-tete { border-bottom-left-radius: 10px; }
 .ue-corps { padding: 2px 0 0; }
+/* vue « Tous » de la page Cours : un onglet replié par niveau (27 nov.) */
+details.niv-tous > .ue-tete .ue-titre { font-size: 21px; }
+details.niv-tous > .ue-corps > .niveau { margin-top: 6px; }
+details.niv-tous .niv-desc { font-size: 13.5px; color: var(--encre-2); margin: 4px 0 10px; }
+/* résumé des chapitres coupé à deux lignes sur téléphone (décision de l'auteur, 27 nov.) */
+@media (max-width: 860px) { .chapitre .ch-resume { display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; } }
 .ue-exos .ue-corps > .feuilles { margin-top: 14px; }
 .ue-lien { display: inline-block; margin: 2px 0 8px 18px; font-size: 13.5px; color: var(--accent, inherit); }
 .ue-vide { display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; padding: 10px 14px; opacity: .75; }
@@ -4523,24 +4529,31 @@ function pageCours(chemin) {
     if (niv !== 'tous' && niv !== n.id) continue;
     const liste = tous.filter(c => c.niveau === n.id);
     const uesN = (C.ues || []).filter(u => u.niveau === n.id);
-    if (uesN.length) { h += coursNiveauParUE(n, liste, uesN); continue; }
-    h += `<section class="niveau"><div class="niveau-tete"><h3>${n.titre}</h3><span>${esc(n.description || '')} · ${liste.length} ${liste.length > 1 ? 'chapitres' : 'chapitre'}</span></div><ol class="chapitres carte">`;
-    for (const c of liste) h += ligneChapitre(c);
-    h += `</ol></section>`;
+    let s;
+    if (uesN.length) s = coursNiveauParUE(n, liste, uesN, niv === 'tous');
+    else {
+      s = `<section class="niveau">${niv === 'tous' ? (n.description ? `<p class="niv-desc">${esc(n.description)}</p>` : '') : `<div class="niveau-tete"><h3>${n.titre}</h3><span>${esc(n.description || '')} · ${liste.length} ${liste.length > 1 ? 'chapitres' : 'chapitre'}</span></div>`}<ol class="chapitres carte">`;
+      for (const c of liste) s += ligneChapitre(c);
+      s += `</ol></section>`;
+    }
+    // Vue « Tous » (décision de l'auteur, 27 nov.) : chaque niveau est un onglet replié, aucun n'est ouvert au départ.
+    h += niv === 'tous' ? CoursNiveauReplie(n, liste, s) : s;
   }
   const absents = (C.niveaux || []).filter(n => !presents.includes(n));
   if (absents.length && niv === 'tous') h += `<p class="bientot">Niveaux prévus, sans chapitre déposé pour l'instant : ${absents.map(n => n.titre).join(', ')}.</p>`;
   return h;
 }
+// Onglet replié d'un niveau dans la vue « Tous » de la page Cours, sur le modèle des UE de Licence.
+const CoursNiveauReplie = (n, liste, corps) => `<details class="ue niv-tous" data-niv="${n.id}" style="--accent: ${couleurUE({}, liste)}; --bande-ue: ${CoursBandeUE({}, liste)}"><summary class="ue-tete"><span class="ue-code"></span><span class="ue-titre">${n.titre}</span><span class="ue-info">${liste.length} ${liste.length > 1 ? 'chapitres' : 'chapitre'}</span><span class="ue-chevron" aria-hidden="true"></span></summary><div class="ue-corps">${corps}</div></details>`;
 // Ligne d'un chapitre dans les listes de la page Cours.
 const ligneChapitre = c => `<li style="--bande-ch: ${bandeChapitre(c)}"><a class="chapitre" href="#cours/${c.id}"><span class="num"><span>${c.chapitre || '·'}</span>${symboleChapitre(c)}</span><span><span class="ch-titre">${c.titre}</span>${c.resume ? `<span class="ch-resume">${c.resume.replace(/<\/?p>/g, ' ')}</span>` : ''}</span><span class="ch-theories">${(c.theories || []).map(miniTheorie).join('')}</span></a><span class="ch-etat">${statut(c.statut)}${coursVideoBouton(c)}</span></li>`;
 // Niveaux de Licence : rangés par semestre, puis par UE (rubriques/cours.yaml, clé ues ; champ ue des chapitres).
 // Chaque UE est un onglet repliable, fermé au départ ; celles que l'on ouvre le restent pendant la visite.
 const coursUEOuvertes = new Set();   // UE dépliées pendant la visite (fermées au départ)
-document.addEventListener('toggle', e => { const d = e.target; if (d.matches?.('details.ue')) d.open ? coursUEOuvertes.add(d.dataset.ue) : coursUEOuvertes.delete(d.dataset.ue); }, true);
+document.addEventListener('toggle', e => { const d = e.target; if (d.matches?.('details.ue') && d.dataset.ue) d.open ? coursUEOuvertes.add(d.dataset.ue) : coursUEOuvertes.delete(d.dataset.ue); }, true);
 const ueDe = id => ((R.cours || {}).ues || []).find(u => u.id === id);
-function coursNiveauParUE(n, liste, uesN) {
-  let h = `<section class="niveau"><div class="niveau-tete"><h3>${n.titre}</h3><span>${esc(n.description || '')} · ${liste.length} ${liste.length > 1 ? 'chapitres' : 'chapitre'}</span></div>`;
+function coursNiveauParUE(n, liste, uesN, replie) {
+  let h = `<section class="niveau">${replie ? (n.description ? `<p class="niv-desc">${esc(n.description)}</p>` : '') : `<div class="niveau-tete"><h3>${n.titre}</h3><span>${esc(n.description || '')} · ${liste.length} ${liste.length > 1 ? 'chapitres' : 'chapitre'}</span></div>`}`;
   for (const s of [...new Set(uesN.map(u => u.semestre))]) {
     h += `<div class="semestre"><h4 class="semestre-titre">Semestre ${s}</h4>`;
     for (const u of uesN.filter(u => u.semestre === s)) {
@@ -4564,7 +4577,7 @@ function pageUE(u, tous) {
   const pre = (u.prerequis || []).map(id => tous.find(x => x.id === id)).filter(Boolean);
   if (pre.length) h += `<div class="carte carte-avant"><h3 class="titre-bloc">À revoir avant l'UE</h3><ul class="cours-lies">${pre.map(x => `<li><a class="cours-lie" href="#cours/${x.id}"><span class="cl-lieu">${esc(niveauDe(x.niveau).titre)}${x.chapitre ? `, ch. ${x.chapitre}` : ''}</span><span class="cl-titre">${x.titre}</span></a></li>`).join('')}</ul></div>`;
   const autres = ((R.cours || {}).ues || []).filter(x => x.niveau === u.niveau && x.semestre === u.semestre && x.id !== u.id);
-  if (autres.length) h += `<div class="carte"><h3 class="titre-bloc">Même semestre</h3><ul class="cours-lies">${autres.map(x => `<li><span class="cours-lie"><span class="cl-lieu">${esc(x.code || '')}</span><span class="cl-titre">${x.titre}</span></span></li>`).join('')}</ul></div>`;
+  if (autres.length) h += `<div class="carte"><h3 class="titre-bloc">Même semestre</h3><ul class="cours-lies">${autres.map(x => `<li><a class="cours-lie" href="#cours/ue/${x.id}"><span class="cl-lieu">${esc(x.code || '')}</span><span class="cl-titre">${x.titre}</span></a></li>`).join('')}</ul></div>`;
   h += `</aside></div><nav class="voisins"><span></span><a href="#cours">Tous les cours</a><span></span></nav>`;
   return h;
 }

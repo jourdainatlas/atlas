@@ -1439,3 +1439,43 @@ ne la porte pas, ses deux renvois « feuille 2, exercice 4 » et « feuille 3, e
 la main (même série de feuilles que le reste de l'UE). `source_lisible` retire aussi les parenthèses qui parlent
 d'indication, de rappel dans l'énoncé, d'une proposition, d'un théorème ou d'un chapitre. « manuel « D » » (manuel
 photographié) et les exercices créés n'ont pas de source : 44 sources sur 65.
+
+### 84. Audit de la rubrique Cours du 27 nov. 2026 : corrections reportées
+
+Rapport et annexe (45 lots) transmis par l'auteur. Fait ici :
+- **cours.yaml.** me-07 `sommaire_pages` [1, 2, 3, 5]. Théories : `c-dalembert` (d'Alembert-Gauss) retiré de mp-06 et
+  mp-09 (règle de d'Alembert) et ajouté à mp-05 (théorème 8), `f-compacts` (opérateurs compacts) retiré de mp-05 ;
+  ma-20 sans `q-denombrable` ni la notion `denombrable` ; ma-10 rattaché aux nœuds `as-*` de `ar-asymptotique`
+  (`de-taylor`, `su-infinies`, `ar-deriv` retirés, notions `fonction-equivalente`, `developpement-limite` ajoutées).
+  Rattachements lâches de l'annexe retirés quand le nœud n'est ni défini ni démontré dans le chapitre : `fourier` (t-09),
+  `ed-lineaires` (t-08, ma-06, et la notion `riemann-integrable` de ma-06), `z-zn` et les notions `anneau-zn`, `ideal`
+  (ma-12), `gd-accroissements` (ma-22), `l-syntaxe` et `z-bezout` (py-01), `edo-liapounov` et `equilibre-stable`
+  (l3-cd-07), `m-caratheodory` (l3-in-02), `fq-orthogonalite` (mp-10). Ajouts suggérés : `cv-gaussienne` (mp-12),
+  `gs-engendrer-sp`, `galois-hilbert90`, notions `sous-groupe-sylow`, `signature-permutation` (m-galois),
+  `c-non-ordonnable` et `racine-nieme-unite` (ma-04), `me-produit-scalaire` (l3-hf-01). Laissés tels quels, jugés
+  « acceptables » par l'annexe : `ar-corps` (s-04, s-07), `v-libre`, `ar-suites`, `gd-normes` (p-07), `ex-convexite`,
+  `tr-*` de mp-04 et ma-22, `ed-cauchy-lipschitz` et `rd-diagonalisable` (mp-16), `lp-holder`, `lp-radon-nikodym`,
+  `m-lebesgue`, `an-gauss`, `f-hilbert` (l3-hf-08), `cw-surfaces` (l3-gt-07, faute de nœud de classification).
+  Résumés repris : mp-12, ma-20 (ensemble quelconque, problème de Bâle), ma-22 (continuité par ε et δ, caractérisée par
+  les suites), ap-06, p-03 (systèmes, pas de positions relatives), mp-07 (rotations de l'espace), l3-gt-01 (réciproque
+  du critère séquentiel seulement affirmée), l3-pr-10, ma-03 et ma-07 (incises tirées de l'épigraphe et de
+  l'introduction, §32), m-galois (Cauchy, Sylow, cyclotomie, Kummer ; clôture algébrique : existence et unicité
+  admises), mp-05 (démonstration de d'Alembert-Gauss), ma-21 (inégalité de concentration). Titres alignés sur les PDF :
+  ma-18 « Intégration sur un segment », ma-20 « Séries numériques et familles sommables », ma-21 « Dénombrement,
+  probabilités et variables aléatoires », p-08 « Exponentielle », py-01 « Initiation à la programmation en Python »
+  (images d'aperçu refaites ; les titres des feuilles d'exercices correspondantes ne changent pas). Liens : ma-19 dans
+  mp-10 (et « À revoir avant » mp-10 : [ma-19, ma-14, ma-15]), ma-20 dans mp-11. `annales_themes` posés pour ma-01
+  (logique-raisonnement, ly-recurrence) et m-galois (galois, groupe-symetrique, groupes, corps,
+  polynomes-cyclotomiques, constructibles, actions-groupes), à faire relire par la conversation Annales.
+- **Gabarit.** `pageUE`, carte « Même semestre » : liens `#cours/ue/<id>`. Page Cours, vue « Tous » (décision de
+  l'auteur) : chaque niveau est un `<details class="ue niv-tous">` (`CoursNiveauReplie`, liseré `CoursBandeUE` des
+  chapitres du niveau), aucun ouvert au départ ni gardé ouvert ; la description du niveau passe en tête du corps ; la
+  vue d'un seul niveau est inchangée. L'écouteur `toggle` des UE ignore les `details.ue` sans `data-ue`. Sur téléphone
+  (≤ 860 px), `.ch-resume` est coupé à deux lignes (`line-clamp`). Hauteur de la vue « Tous » sur téléphone : 1 845 px
+  (environ 60 000 avant).
+- **Pages de lecture** (`lecture-cours.mjs`) : sections « À revoir avant » (liens vers `/cours/<id>/`) et « Dans les
+  annales » (titres des thèmes, renvoi à la rubrique Annales : le moteur n'a pas d'adresse par recherche).
+- **f-l3-sa-06.** L'exercice 4 (polynômes antisymétriques = δ × symétriques) se place sur un **corps** de
+  caractéristique ≠ 2, où 2 est inversible : l'hypothèse suffit, rien à corriger. Le contre-exemple ℤ/4ℤ de l'audit
+  vaut pour un anneau ; à vérifier dans le PDF du cours l3-sa-06, qui relève de la conversation des .tex.
+- **PDF des cours** : rien corrigé ici (conversation des .tex).

@@ -101,6 +101,12 @@ export function pagesCoursExercices(ctx) {
     }
     const acts = (R.activites?.activites || []).filter(x => (x.cours || []).includes(c.id));
     if (acts.length) h += `<h2 class="l-sec">Activités</h2><ul class="l-liste">${acts.map(x => `<li><a href="/activites/${x.id}/">${texteBrut(x.titre)}</a>${x.niveau ? ` <span class="l-sorte">${esc(x.niveau)}</span>` : ''}</li>`).join('')}</ul>`;
+    // « À revoir avant » et « Dans les annales », comme sur la page interactive (audit du 27 nov.)
+    const avant = ((R['cours-prerequis'] || {}).a_revoir || {})[c.id] || [];
+    const avantC = avant.map(coursDe).filter(Boolean);
+    if (avantC.length) h += `<h2 class="l-sec">À revoir avant</h2><ul class="l-liste">${avantC.map(x => `<li><span class="l-sorte">${esc(lieuCours(x))}</span><a href="/cours/${x.id}/">${x.titre}</a></li>`).join('')}</ul>`;
+    const themesAnn = (c.annales_themes || []).map(id => ((R['annales-themes'] || {}).themes || []).find(t => t.id === id)).filter(Boolean);
+    if (themesAnn.length) h += `<h2 class="l-sec">Dans les annales</h2><p class="l-meta">Thèmes des sujets de concours qui portent sur ce chapitre, à chercher dans le moteur de la <a href="/#annales">rubrique Annales</a> : ${themesAnn.map(t => esc(t.titre)).join(', ')}.</p>`;
     const liens = [...new Set([...(c.liens || []), ...coursTous.filter(x => (x.liens || []).includes(c.id)).map(x => x.id)])].map(coursDe).filter(Boolean)
       .sort((a, b) => ordreNiv(a.niveau) - ordreNiv(b.niveau) || (a.chapitre || 0) - (b.chapitre || 0));
     h += `<div class="liens">`;
