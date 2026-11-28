@@ -282,7 +282,7 @@ sur un intervalle $[t_{0}, T]$, avec $F : [t_{0}, T] \times \R^{p} \to \R^{p}$ c
 \begin{exemple}
 Pour $y' = y$, $y(0) = 1$ sur $[0, 1]$, on obtient $y_{n + 1} = (1 + h)y_{n}$, donc $y_{N} = \left(1 + \dfrac{1}{N}\right)^{N}$, qui tend vers $\ee = y(1)$. Le développement
 \[ N\ln\left(1 + \frac{1}{N}\right) = 1 - \frac{1}{2N} + O\left(\frac{1}{N^{2}}\right) \]
-donne $\ee - y_{N} \sim \dfrac{\ee}{2N}$ : l'erreur est proportionnelle au pas. Il faut mille pas pour obtenir trois décimales exactes.
+donne $\ee - y_{N} \sim \dfrac{\ee}{2N}$ : l'erreur est proportionnelle au pas. Mille pas ne donnent que deux décimales exactes ($y_{1000} \approx 2{,}716\,92$) ; il en faut plusieurs milliers pour en obtenir trois.
 \end{exemple}
 
 \begin{cadre}
@@ -442,7 +442,7 @@ Avant de calculer, il faut savoir quoi regarder. Pour un système autonome du pl
 \begin{cadre}
 \propo{4} Soit $A \in \mathcal{M}_{2}(\R)$, inversible, et le système $X' = AX$, dont $0$ est l'unique point d'équilibre.
 \begin{enumerate}[label=(\roman*),topsep=3pt,itemsep=3pt]
-  \item Si $A$ a deux valeurs propres réelles $\lambda_{1}$, $\lambda_{2}$ de même signe, de vecteurs propres $v_{1}$, $v_{2}$, les solutions $c_{1}\ee^{\lambda_{1}t}v_{1} + c_{2}\ee^{\lambda_{2}t}v_{2}$ tendent toutes vers $0$ si $\lambda_{1}, \lambda_{2} < 0$ (\mot{nœud stable}), ou toutes vers l'infini si $\lambda_{1}, \lambda_{2} > 0$.
+  \item Si $A$ a deux valeurs propres réelles distinctes $\lambda_{1}$, $\lambda_{2}$ de même signe, de vecteurs propres $v_{1}$, $v_{2}$, les solutions $c_{1}\ee^{\lambda_{1}t}v_{1} + c_{2}\ee^{\lambda_{2}t}v_{2}$ tendent toutes vers $0$ si $\lambda_{1}, \lambda_{2} < 0$ (\mot{nœud stable}), ou toutes, sauf la solution nulle, vers l'infini si $\lambda_{1}, \lambda_{2} > 0$.
   \item Si $\lambda_{1} < 0 < \lambda_{2}$, seules les solutions portées par la droite $\R v_{1}$ tendent vers $0$ (\mot{col}).
   \item Si $A$ a deux valeurs propres complexes conjuguées $\alpha \pm \ii\beta$, $\beta \neq 0$, il existe $P \in \GL_{2}(\R)$ telle que $P^{-1}X(t) = \ee^{\alpha t}R_{\beta t}\,P^{-1}X(0)$, où $R_{\theta}$ est la rotation d'angle $\theta$ : les orbites sont des spirales (\mot{foyer}) si $\alpha \neq 0$, des ellipses (\mot{centre}) si $\alpha = 0$.
 \end{enumerate}
@@ -451,6 +451,10 @@ Avant de calculer, il faut savoir quoi regarder. Pour un système autonome du pl
 \begin{demo}
 Les solutions sont les $X(t) = \exp(tA)X(0)$ (chapitre 6, proposition 6). Dans les cas (i) et (ii), $A$ est diagonalisable (\emph{Rappel.}) et $\exp(tA)v_{i} = \ee^{\lambda_{i}t}v_{i}$, d'où l'expression des solutions ; dans le cas (ii), $c_{2}\ee^{\lambda_{2}t}v_{2}$ tend vers l'infini dès que $c_{2} \neq 0$. Dans le cas (iii), si $v = u + \ii w$ est un vecteur propre pour $\alpha + \ii\beta$, la matrice de $A$ dans la base $(u, -w)$ est $B = \begin{pmatrix} \alpha & -\beta \\ \beta & \alpha \end{pmatrix} = \alpha I_{2} + \beta J$, avec $J = R_{\pi/2}$, et $\exp(tB) = \ee^{\alpha t}\exp(t\beta J) = \ee^{\alpha t}R_{\beta t}$ puisque $\alpha I_{2}$ et $J$ commutent et que $J^{2} = -I_{2}$.
 \end{demo}
+
+\begin{remarque}
+Le cas d'une valeur propre double $\lambda \neq 0$ est exclu de (i). Si $A = \lambda I_{2}$, toutes les orbites sont des demi-droites (\mot{nœud étoilé}) ; sinon $A$ est semblable à $\begin{pmatrix} \lambda & 1 \\ 0 & \lambda \end{pmatrix}$ dans une base $(v_{1}, v_{2})$, et les solutions s'écrivent $\ee^{\lambda t}\big((c_{1} + c_{2}t)v_{1} + c_{2}v_{2}\big)$ (\mot{nœud impropre}). Dans les deux cas, elles tendent vers $0$ si $\lambda < 0$.
+\end{remarque}
 
 % ---- trajectoires exp(tA) X0 (scipy.linalg.expm) : noeud A = diag(-1,-3) ; col A = diag(1,-1) (axes en rouge : droites propres) ;
 % ---- foyer A = [[-0.3,-1],[1,-0.3]] ; centre A = [[0,-1],[1,0]] ; fenetre [-1,75 ; 1,75]^2 (calculees)
@@ -925,7 +929,7 @@ La méthode par défaut, \texttt{RK45}, est celle de Dormand et Prince (1980). E
 \end{tikzpicture}
 \end{center}
 
-\noindent Les pas acceptés par \texttt{RK45} pour $y' = t + y^{2}$, $y(0) = 0$, avec $\texttt{rtol} = 10^{-6}$. Après une phase de démarrage prudente, le pas atteint $0{,}25$ là où la solution est presque plate, puis diminue régulièrement à l'approche de l'explosion en $t \approx 1{,}986$, mise en évidence au chapitre 6 : il est divisé par plus de mille entre $t = 0{,}5$ et $t = 1{,}985$, où l'on arrête le calcul ($y = 1\,000$).
+\noindent Les pas acceptés par \texttt{RK45} pour $y' = t + y^{2}$, $y(0) = 0$, avec $\texttt{rtol} = 10^{-6}$ et $\texttt{atol} = 10^{-9}$. Après une phase de démarrage prudente, le pas atteint $0{,}25$ là où la solution est presque plate, puis diminue régulièrement à l'approche de l'explosion en $t \approx 1{,}986$, mise en évidence au chapitre 6 : il est divisé par plus de mille entre $t = 0{,}5$ et $t = 1{,}985$, où l'on arrête le calcul ($y = 1\,000$).
 
 \subsection{Événements et équations raides}
 

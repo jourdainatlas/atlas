@@ -1517,3 +1517,27 @@ Exercices : `c-dalembert` (d'Alembert-Gauss) remplacé par `as-dalembert-cauchy`
 mp-09-03, qui emploient la règle de d'Alembert (aucun la règle de Cauchy), avec la notion `regle-dalembert` ; même
 correction dans la règle « alembert » de `meta_mp_06.py` et `meta_mp_09.py`, pour qu'une reconversion la garde. Les
 `c-dalembert` de f-me-02 et f-ma-13 visent bien d'Alembert-Gauss : inchangés.
+
+### 88. Cours corrigés et réécrits après l'audit (28 nov. 2026)
+
+Deux envois de l'auteur. **Corrections du 27 nov.** (109 cours : Seconde hors ch. 7-8, Terminale hors ch. 6, Maths expertes
+3, 4, 7, 8, 9, MPSI hors ch. 16, MP, Python, Galois, et les chapitres de Licence touchés ; journaux de la conversation des
+.tex) : nombre de pages et pages de début des sections inchangés, `sommaire_pages` vérifiés par `pages_sommaire.py` (les
+écarts relevés sont ses erreurs connues, fiches justes), sommaire de py-01 juste (la table des matières du PDF l'est
+désormais aussi). **Réécritures du 28 nov.** (23 chapitres : s-07, s-08, p-01 à p-08, t-06, me-01, me-02, me-05,
+ap-01 à ap-09) : `pages` et `sommaire_pages` repris du LISEZMOI de l'auteur et contrôlés sur le texte des PDF, sommaires
+alignés sur les `\section` des nouveaux .tex (lycée et expertes), résumés réécrits d'après les .tex (s-07, s-08, p-01 à
+p-08, t-06, me-01, me-02, me-05, ap-03, ap-06, ap-08 ; ce qui est démontré ou admis y est dit). Titres alignés sur les PDF :
+s-08 « Équations de droites », p-08 « Fonction exponentielle » (images d'aperçu refaites ; titres des feuilles inchangés).
+s-08 n'emploie plus vecteurs, colinéarité ni déterminant : `theories` [r-application, v-det-matrice] (le critère
+ab′ − a′b), notions [application] ; l'édifice n'a pas de nœud pour les équations de droite ni les systèmes.
+Cours complets des sept UE de Licence refusionnés (pypdf). Sources de l'atelier mises à jour (`outils/sources-cours/` :
+py-01, l3-cd-03 à 07), `cours_code.py` relancé (zones inchangées). `exercices_cours.py` relancé. Termes : 132 PDF relus ;
+30 exclusions par chapitre ajoutées (fragments « … à », mots d'insistance, étiquettes) ; les formes abîmées « mŒme »,
+« sßr », « cid:224) » ont disparu des nouveaux PDF.
+Feuille `f-l3-gt-02` : l'exercice 6 définit désormais Γ, J et S (énoncé et PDF de l'auteur, corrigé inchangé) ; reconvertie,
+seul cet énoncé change.
+**À signaler** : la construction avertit que les sommaires de me-01, me-02, me-05, p-01, p-03 à p-08, s-07 et s-08 ont
+changé depuis leur liaison aux programmes des annales (liens « chapitre:rang ») : à vérifier par la conversation Annales.
+Points laissés à l'auteur par la conversation des .tex : voir les deux LISEZMOI (épigraphe de Laplace en p-03, Maths
+expertes non homogènes, renvois de numérotation de ap-08, dates à confirmer, Galois).
